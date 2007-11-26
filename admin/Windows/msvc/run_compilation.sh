@@ -64,7 +64,8 @@ ftver=2.3.5
 libxml2ver=2.6.30
 fontconfigver=2.5.0
 gdver=2.0.35
-hdf5ver=1.6.5
+hdf5ver=1.6.6
+libiconvver=1.12
 
 ###################################################################################
 
@@ -434,7 +435,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/png.lib" libpng
     todo_check "$tbindir/arpack.dll" ARPACK
     todo_check "$tbindir/jpeg6b.dll" libjpeg
-    todo_check "$tbindir/iconv.dll" libiconv
+    todo_check "$tlibdir/iconv.lib" libiconv
     todo_check "$tbindir/intl.dll" gettext
     todo_check "$tbindir/libcairo-2.dll" cairo
     todo_check "$tbindir/libglib-2.0-0.dll" glib
@@ -696,17 +697,50 @@ fi
 ########
 
 if check_package FFTW; then
-  download_file fftw-3.1.2-dll.zip ftp://ftp.fftw.org/pub/fftw/fftw-3.1.2-dll.zip
+  download_file fftw-3.1.2.tar.gz ftp://ftp.fftw.org/pub/fftw/fftw-3.1.2.tar.gz
   echo -n "decompressing FFTW... "
-  (cd "$DOWNLOAD_DIR" && mkdir fftw3 && cd fftw3 && unzip -q ../fftw-3.1.2-dll.zip)
+  unpack_file fftw-3.1.2.tar.gz
   echo "done"
-  echo -n "installing FFTW ..."
-  (cd "$DOWNLOAD_DIR/fftw3" &&
-    cp fftw-wisdom.exe libfftw3-3.dll "$tbindir" && 
-    cp fftw3.h "$tincludedir" &&
-    lib -out:fftw3.lib -def:libfftw3-3.def &&
-    cp fftw3.lib "$tlibdir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/fftw3"
+  echo -n "compiling FFTW ..."
+  (cd "$DOWNLOAD_DIR/fftw-3.1.2" &&
+    create_module_rc FFTW 3.1.2 libfftw3-3.dll "FFTW (www.fftw.org)" \
+      "FFTW - Discrete Fourier Transform Computation Library" \
+      "Copyright (c) 2003, 2006 Massachusetts Institute of Technology" > fftw.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
+      --enable-sse2 &&
+    post_process_libtool &&
+    sed -e 's/^libfftw3_la_LDFLAGS =/libfftw3_la_LDFLAGS = -Wl,fftw.res -Wl,-def:fftw.def/' \
+        -e 's/^libfftw3\.la:/libfftw3.la: fftw.res fftw.def/' Makefile > ttt &&
+      mv ttt Makefile &&
+    (cat >> Makefile <<\EOF
+fftw.res: fftw.rc
+	rc -fo $@ $<
+fftw.def: $(libfftw3_la_OBJECTS) $(libfftw3_la_LIBADD)
+	@echo "Generating $@..."
+	@echo "EXPORTS" > $@
+	@sublibs=; for lib in $(libfftw3_la_LIBADD); do \
+	    sublibs="$$sublibs `dirname $$lib`/.libs/`sed -n -e "s/old_library='\(.*\)'/\1/p" $$lib`"; \
+	  done;\
+	nm $(addprefix .libs/, $(libfftw3_la_OBJECTS:.lo=.o)) $$sublibs | \
+          grep -v -e ' R __real@[0-9a-fA-F]\+' | \
+	  sed -n -e 's/^[0-9a-fA-F]\+ T _\([^         ]*\).*$$/\1/p' \
+	         -e 's/^[0-9a-fA-F]\+ [BDGSR] _\([^         ]*\).*$$/\1 DATA/p' >> $@
+EOF
+      ) &&
+    sed -e 's/^LDFLAGS =/LDFLAGS = -Wl,-subsystem:console/' tools/Makefile > ttt &&
+      mv ttt tools/Makefile &&
+    sed -e 's/^LDFLAGS =/LDFLAGS = -Wl,-subsystem:console/' \
+        -e 's/^DEFS =/DEFS = -DFFTW_DLL/' tests/Makefile > ttt &&
+      mv ttt tests/Makefile &&
+    sed -e 's/^AR =.*$/AR = ar/' libbench2/Makefile > ttt &&
+      mv ttt libbench2/Makefile &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libfftw3.la &&
+    true) >&5 2>&1
+  #rm -rf "$DOWNLOAD_DIR/fftw-3.1.2"
   if ! test -f "$tbindir/libfftw3-3.dll"; then
     echo "failed"
     exit -1
@@ -997,9 +1031,11 @@ if check_package HDF5; then
 #define EWOULDBLOCK WSAEWOULDBLOCK
 ;}' src/H5FDstream.c > ttt &&
         mv ttt src/H5FDstream.c &&
+      cd src
       rc -fo hdf5.res hdf5.rc &&
       make &&
-      make install
+      make install &&
+      rm -f $tlibdir_quoted/libhdf5.la
     fi) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/hdf5-$hdf5ver"
   if test ! -f "$tlibdir/hdf5.lib"; then
@@ -1143,20 +1179,51 @@ fi
 ############
 
 if check_package libiconv; then
-  download_file libiconv-1.11.tar.gz ftp://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.11.tar.gz
+  download_file libiconv-$libiconvver.tar.gz ftp://ftp.gnu.org/pub/gnu/libiconv/libiconv-$libiconvver.tar.gz
   echo -n "decompressing libiconv... "
-  (cd "$DOWNLOAD_DIR" && tar xfz libiconv-1.11.tar.gz)
-  cp libs/libiconv-1.11.diff "$DOWNLOAD_DIR/libiconv-1.11"
+  unpack_file libiconv-$libiconvver.tar.gz
   echo "done"
   echo -n "compiling libiconv... "
-  (cd "$DOWNLOAD_DIR/libiconv-1.11" &&
-    patch -p1 < libiconv-1.11.diff &&
-    nmake -f Makefile.msvc NO_NLS=1 DLL=1 MFLAGS=-MD PREFIX=$tdir_w32 IIPREFIX=$tdir_w32_1 &&
-	cp lib/iconv.dll "$tbindir" &&
-	cp lib/iconv.lib "$tlibdir" &&
-	cp include/iconv.h "$tincludedir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/libiconv-1.11"
-  if test ! -f "$tbindir/iconv.dll"; then
+  (cd "$DOWNLOAD_DIR/libiconv-$libiconvver" &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static  --disable-nls &&
+    post_process_libtool &&
+    post_process_libtool libcharset/libtool &&
+    sed -e '/^#define LIBCHARSET_DLL_EXPORTED *$/ {c\
+\#ifdef BUILDING_LIBCHARSET\
+\#define LIBCHARSET_DLL_EXPORTED __declspec(dllexport)\
+\#else\
+\#define LIBCHARSET_DLL_EXPORTED __declspec(dllimport)\
+\#endif
+;}' libcharset/include/localcharset.h > ttt &&
+      mv ttt libcharset/include/localcharset.h &&
+    sed -e 's/__declspec *(dllimport)//' \
+        -e '/^#define LIBICONV_DLL_EXPORTED *$/ {c\
+\#ifdef BUILDING_LIBICONV\
+\#define LIBICONV_DLL_EXPORTED __declspec(dllexport)\
+\#else\
+\#define LIBICONV_DLL_EXPORTED __declspec(dllimport)\
+\#endif
+;}' include/iconv.h > ttt
+      mv ttt include/iconv.h &&
+    sed -e 's/q}/q;}/' \
+        -e '/-DPACKAGE_VERSION_SUBMINOR/ {s/\${version}/${version}.0/;}' windows/windres-options > ttt &&
+      mv ttt windows/windres-options &&
+    sed -e 's/^OBJECTS_EXP_yes =/#OBJECTS_EXP_yes/' \
+        -e 's/^LDFLAGS =/LDFLAGS = -Wl,libiconv.res/' lib/Makefile > ttt &&
+      mv ttt lib/Makefile &&
+    sed -e '/^BUILT_SOURCES =.*\\$/N' \
+        -e '/^BUILT_SOURCES =/ {s/string\.h//;s/unistd\.h//;s/stdlib\.h//;}' srclib/Makefile > ttt &&
+      mv ttt srclib/Makefile &&
+    sed -e 's/hpux/mingw32/' src/Makefile > ttt &&
+      mv ttt src/Makefile &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libiconv.la $tlibdir_quoted/libcharset.la &&
+    true) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/libiconv-$libiconvver"
+  if test ! -f "$tlibdir/iconv.lib"; then
     echo "failed"
     exit -1
   else
@@ -1427,7 +1494,7 @@ fi
 #########
 
 if check_package libgd; then
-  download_file gd-$gdver.tar.bz2 http://www.libgd.org/releases/oldreleases/gd-$gdver.tar.bz2
+  download_file gd-$gdver.tar.bz2 http://www.libgd.org/releases/gd-$gdver.tar.bz2
   echo -n "decompressing libgd... "
   unpack_file gd-$gdver.tar.bz2
   echo "done"
@@ -1454,7 +1521,7 @@ EOF
     make &&
     make install &&
     cp COPYING "$tlicdir/COPYING.LIBGD") >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/gd-$gdver"
+  rm -rf "$DOWNLOAD_DIR/gd-$gdver"
   if test ! -f "$tlibdir/gd.lib"; then
     echo "failed"
     exit -1

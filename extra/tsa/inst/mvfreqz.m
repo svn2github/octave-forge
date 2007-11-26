@@ -1,6 +1,6 @@
 function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]=mvfreqz(B,A,C,N,Fs)
 % MVFREQZ multivariate frequency response
-% [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF,coh,GGC,Af] = mvfreqz(B,A,C,N,Fs)
+% [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF,coh,GGC,Af,GPDC] = mvfreqz(B,A,C,N,Fs)
 %
 % INPUT: 
 % ======= 
@@ -24,7 +24,6 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 %       A = [eye(M),-AR];
 %       B = eye(M); 
 %       C = PE(:,M*P+1:M*(P+1)); 
-%       D = sqrtm(C); 
 %
 % OUTPUT: 
 % ======= 
@@ -41,8 +40,8 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 %	   !!! it uses a Multivariate AR model, and computes the bivariate GGC as in [Bressler et al 2007]. 
 %	   This is not the same as using bivariate AR models and GGC as in [Bressler et al 2007]
 % Af	Frequency transform of A(z) 
-% PDCF 	partial directed coherence
-% GPDC 	generalized partial directed coherence [9]
+% PDCF 	Partial Directed Coherence Factor [2]
+% GPDC 	Generalized Partial Directed Coherence [9,10]
 %
 % see also: FREQZ, MVFILTER, MVAR
 %
@@ -67,7 +66,10 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 %	Statistics in Medicine, doi: 10.1002/sim.2935 
 % [8] Geweke J., 1982	
 %	J.Am.Stat.Assoc., 77, 304-313.
-% [9] L.A. Baccala, D.Y. Takahashi, K. Sameshima. 
+% [9] L.A. Baccala, D.Y. Takahashi, K. Sameshima. (2006) 
+% 	Generalized Partial Directed Coherence. 
+%	Submitted to XVI Congresso Brasileiro de Automatica, Salvador, Bahia.  
+% [10] L.A. Baccala, D.Y. Takahashi, K. Sameshima. 
 % 	Computer Intensive Testing for the Influence Between Time Series, 
 %	Eds. B. Schelter, M. Winterhalder, J. Timmer: 
 %	Handbook of Time Series Analysis - Recent Theoretical Developments and Applications
@@ -84,7 +86,7 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
 % License as published by the Free Software Foundation; either
-% Version 2 of the License, or (at your option) any later version.
+% Version 3 of the License, or (at your option) any later version.
 %
 % This library is distributed in the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -143,6 +145,7 @@ detG = zeros(N,1);
 
 %D = sqrtm(C);
 %iD= inv(D);
+ddc2 = diag(diag(C).^(-1/2)); 
 for n=1:N,
         atmp = zeros(K1);
         for k = 1:p+1,
@@ -160,7 +163,7 @@ for n=1:N,
         Af(:,:,n)  = atmp/btmp;        
         S(:,:,n)  = h(:,:,n)*C*h(:,:,n)'/Fs;        
         S1(:,:,n) = h(:,:,n)*h(:,:,n)';        
-        ctmp = diag(diag(C).^(-1/2))*atmp;	%% used for GPDC 
+        ctmp = ddc2*atmp;	%% used for GPDC 
         for k1 = 1:K1,
                 tmp = squeeze(atmp(:,k1));
                 tmp1(k1) = sqrt(tmp'*tmp);
@@ -181,7 +184,6 @@ for n=1:N,
         g = atmp/btmp;        
         G(:,:,n) = g'*invC*g;
         detG(n) = det(G(:,:,n));        
-        
 end;
 
 if nargout<4, return; end;
@@ -191,8 +193,8 @@ for k1=1:K1;
         DEN=sum(abs(h(k1,:,:)).^2,2);	        
         for k2=1:K2;
                 %COH2(k1,k2,:) = abs(S(k1,k2,:).^2)./(abs(S(k1,k1,:).*S(k2,k2,:)));
-                COH(k1,k2,:) = (S(k1,k2,:))./sqrt(abs(S(k1,k1,:).*S(k2,k2,:)));
-                coh(k1,k2,:) = (S1(k1,k2,:))./sqrt(abs(S1(k1,k1,:).*S1(k2,k2,:)));
+                COH(k1,k2,:)   = (S(k1,k2,:))./sqrt(abs(S(k1,k1,:).*S(k2,k2,:)));
+                coh(k1,k2,:)   = (S1(k1,k2,:))./sqrt(abs(S1(k1,k1,:).*S1(k2,k2,:)));
                 %DTF(k1,k2,:)  = sqrt(abs(h(k1,k2,:).^2))./DEN;	        
                 DTF(k1,k2,:)   = abs(h(k1,k2,:))./sqrt(DEN);
                 ffDTF(k1,k2,:) = abs(h(k1,k2,:))./sqrt(sum(DEN,3));

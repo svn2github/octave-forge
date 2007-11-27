@@ -47,6 +47,7 @@ function [varargout] = ode2r (varargin)
 %# The following tests have been added to check the function's input arguments 
 %# and output arguments
 %!test
+%!  warning ("off", "OdePkg:InvalidOption");
 %!  if (!strcmp (which ("odepkg_mexsolver_radau"), ""))
 %!    vsol = ode2r (@odepkg_equations_vanderpol, [0 2], [2 0]);
 %!  end 
@@ -91,6 +92,7 @@ function [varargout] = ode2r (varargin)
 %!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
 %!    [vx, vy, va, vb, vc] = ode2r (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
 %!  end
+%!  warning ("on", "OdePkg:InvalidOption");
 
 %!demo
 %!

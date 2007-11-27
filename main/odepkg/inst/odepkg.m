@@ -64,10 +64,10 @@ function [] = odepkg_validate_mfiles ()
     test (vfun{vcnt}, 'quiet'); fflush (1);
   end
 
-  printf ('Testing function odepkg_testsuite_chemakzo ... ');
-  odepkg_testsuite_chemakzo (@odepkg_mexsolver_radau,  10^-04);
-  printf ('Testing function odepkg_testsuite_chemakzo ... ');
-  odepkg_testsuite_chemakzo (@odepkg_mexsolver_seulex, 10^-04);
+%  printf ('Testing function odepkg_testsuite_chemakzo ... ');
+%  odepkg_testsuite_chemakzo (@odepkg_mexsolver_radau,  10^-04);
+%  printf ('Testing function odepkg_testsuite_chemakzo ... ');
+%  odepkg_testsuite_chemakzo (@odepkg_mexsolver_seulex, 10^-04);
 
 function [] = odepkg_internal_helpextract ()
 

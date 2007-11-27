@@ -38,13 +38,11 @@ function res = odepkg_equations_ilorenz (t, y, yd)
 	 y(1) * y(2) - 8/3 * y(3) - yd(3)];
 
 %!test
-%!  if (!strcmp (which ("odepkg_mexsolver_rodas"), ""))
+%!  if (!strcmp (which ("odebdi"), ""))
 %!    warning ("off", "OdePkg:InvalidOption");
 %!    A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1);
 %!    [vt, vy] = odebdi (@odepkg_equations_ilorenz, [0 25], 
 %!                       [3 15 1], [120 81 42.333333], A);
-%#!    assert (vt(end,:), 25, 1e-3);
-%#!    assert (vy(end,:), [9.626662, 13.572730, 23.811914], 1e-3);
 %!    warning ("on", "OdePkg:InvalidOption");
 %!  endif
 

@@ -82,7 +82,7 @@ for [v,k] = opt
   end
 end
 
-if length (ws) && ! length (es), warn (ws);
+if length (ws) && ! length (es), warning (ws);
 elseif              length (es), error ([ws,es]);
 end
 
@@ -97,7 +97,9 @@ equiv = struct ("TolX"       , "utol"   , "TolFun"     , "ftol",\
 		"Backend"    , "backend");
 
 for [v,k] = equiv
-  if struct_contains (opt,k), opm = setfield (opm, getfield(equiv,k),v); end
+  if struct_contains (opt,k)
+    opm = setfield (opm, getfield(equiv,k), getfield(opt,k));
+  end
 end
 
 				# Transform "off" into 0, other strings into
@@ -125,21 +127,21 @@ end
 if struct_contains (opt, "MinEquiv")
   x = opml;			
   if nargout > 1
-    warn ("Only 1 return value is defined with the 'MinEquiv' option");
+    warning ("Only 1 return value is defined with the 'MinEquiv' option");
   end
   return
 				# Use the backend option #############
 elseif struct_contains (opm, "backend")
   [x,fval] = minimize (fun, args, opml);
   if nargout > 2
-    warn ("Only 2 return values are defined with the 'Backend' option");
+    warning ("Only 2 return values are defined with the 'Backend' option");
   end
   return
 else  				# Do the minimization ################
   [x,fval,out] = minimize (fun, args, opml);
   
   if struct_contains (opm, "maxev")
-    flag = out(1) < maxev;
+    flag = out(1) < getfield(opm,"maxev");
   else
     flag = 1;
   end

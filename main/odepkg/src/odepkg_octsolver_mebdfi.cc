@@ -246,12 +246,12 @@ octave_idx_type odepkg_auxiliary_mebdfanalysis (octave_idx_type verr) {
 
     case -3:
       error_with_id ("OdePkg:InternalError",
-	"Integration was halted after failing to achieve corrector convergence (error occured in \"mebdfi\" core solver function)");
+	"Integration was halted after failing to achieve a corrector convergence (error occured in \"mebdfi\" core solver function)");
       break;
 
     case -4:
       error_with_id ("OdePkg:InternalError",
-	"Immediate halt because of illegal input arguments (error occured in \"mebdfi\" core solver function)");
+	"Immediate halt because of illegal number of input arguments (error occured in the \"mebdfi\" core solver function)");
       break;
 
     case -5:
@@ -659,7 +659,7 @@ demo odebdi\n\
 
   octave_idx_type MF = vmebdfijac;
   octave_idx_type IDID = 1;
-  octave_idx_type LOUT = 0;
+  octave_idx_type LOUT = 42; // Logical output channel "not opened"
   octave_idx_type LWORK = 32*N+2*N*N+3;
   double WORK[LWORK];
   for (octave_idx_type vcnt = 0; vcnt < LWORK; vcnt++)

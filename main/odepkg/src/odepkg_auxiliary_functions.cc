@@ -320,6 +320,7 @@ octave_value odepkg_auxiliary_evalmassode
   else if (vmass.is_function_handle () || vmass.is_inline_function ()) {
     error_with_id ("OdePkg:InvalidArgument",
       "Missing implementation for MStateDependence");
+    // if (vmass.string_value ().compare ("none") == 0)
     octave_value_list varin;
     octave_value_list varout;
     varin(0) = vt;

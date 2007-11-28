@@ -114,6 +114,39 @@ function [] = odepkg_internal_helpextract ()
   end
   fclose (vout);
 
+function [] = odepkg_internal_ccrefextract ()
+
+  vfiles = {'../src/odepkg_octsolver_mebdfi.cc', ...
+	    '../src/odepkg_auxiliary_functions.cc', ...
+            };
+  vfiles = sort (vfiles);
+
+  [vout, vmsg] = fopen ('../doc/ccfunref.texi', 'w');
+  if ~(isempty (vmsg)), error (vmsg); end
+  for vcnt = 1:length (vfiles)
+    if (exist (vfiles{vcnt}, 'file'))
+      [vfid, vmsg] = fopen (vfiles{vcnt}, 'r');
+      if ~(isempty (vmsg)), error (vmsg); end
+      while (true)
+        vlin = fgets (vfid);
+        if ~(ischar (vlin)), break; end
+        if (regexp (vlin, '^(/\* -\*- texinfo -\*-)'))
+	  vlin = ' * '; %# Needed for the first call of while()
+          while (~isempty (regexp (vlin, '^( \*)')) && ...
+                  isempty (regexp (vlin, '^( \*/)')))
+            vlin = fgets (vfid);
+            if (length (vlin) > 3), fprintf (vout, '%s', vlin(4:end));
+            else fprintf (vout, '%s', vlin(3:end));
+            end
+          end
+          fprintf (vout, '\n');
+        end
+      end
+      fclose (vfid);
+    end
+  end
+  fclose (vout);
+
 function [] = odepkg_performance_mathires ()
   vfun = {@ode113, @ode23, @ode45, ...
           @ode15s, @ode23s, @ode23t, @ode23tb};

@@ -1,6 +1,6 @@
 diff -ur gnuplot-4.2.2/config/makefile.nt gnuplot-4.2.2-new/config/makefile.nt
 --- gnuplot-4.2.2/config/makefile.nt	Fri Aug 11 18:35:29 2006
-+++ gnuplot-4.2.2-new/config/makefile.nt	Fri Nov 23 15:36:40 2007
++++ gnuplot-4.2.2-new/config/makefile.nt	Wed Nov 28 13:50:52 2007
 @@ -31,8 +31,17 @@
  # where to place gnuplot.gih helpfile
  HELPFILE = wgnuplot.hlp
@@ -268,7 +268,7 @@ diff -ur gnuplot-4.2.2/config/makefile.nt gnuplot-4.2.2-new/config/makefile.nt
 +	xcopy /Y ..\demo $(DESTDIR)\share\gnuplot\demo
 diff -ur gnuplot-4.2.2/src/command.c gnuplot-4.2.2-new/src/command.c
 --- gnuplot-4.2.2/src/command.c	Fri Aug  3 04:55:38 2007
-+++ gnuplot-4.2.2-new/src/command.c	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/src/command.c	Wed Nov 28 13:50:52 2007
 @@ -2686,6 +2686,9 @@
  	    if (last >= 0) {
  		if (gp_input_line[last] == '\n') {	/* remove any newline */
@@ -281,7 +281,7 @@ diff -ur gnuplot-4.2.2/src/command.c gnuplot-4.2.2-new/src/command.c
  			--last;
 diff -ur gnuplot-4.2.2/src/plot.c gnuplot-4.2.2-new/src/plot.c
 --- gnuplot-4.2.2/src/plot.c	Mon Jun 18 03:31:48 2007
-+++ gnuplot-4.2.2-new/src/plot.c	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/src/plot.c	Wed Nov 28 13:50:52 2007
 @@ -480,7 +480,7 @@
      else
  	interactive = FALSE;
@@ -293,7 +293,7 @@ diff -ur gnuplot-4.2.2/src/plot.c gnuplot-4.2.2-new/src/plot.c
      interactive = isatty(fileno(stdin));
 diff -ur gnuplot-4.2.2/src/readline.c gnuplot-4.2.2-new/src/readline.c
 --- gnuplot-4.2.2/src/readline.c	Fri Apr 28 18:54:03 2006
-+++ gnuplot-4.2.2-new/src/readline.c	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/src/readline.c	Wed Nov 28 13:50:52 2007
 @@ -259,7 +259,12 @@
  #  include "win/winmain.h"
  #  define TEXTUSER 0xf1
@@ -335,7 +335,7 @@ diff -ur gnuplot-4.2.2/src/readline.c gnuplot-4.2.2-new/src/readline.c
  static char
 diff -ur gnuplot-4.2.2/src/term.c gnuplot-4.2.2-new/src/term.c
 --- gnuplot-4.2.2/src/term.c	Thu Mar 22 06:05:07 2007
-+++ gnuplot-4.2.2-new/src/term.c	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/src/term.c	Wed Nov 28 13:50:52 2007
 @@ -101,6 +101,7 @@
  void close_printer __PROTO((FILE * outfile));
  # ifdef __MSC__
@@ -346,7 +346,7 @@ diff -ur gnuplot-4.2.2/src/term.c gnuplot-4.2.2-new/src/term.c
  # endif                         /* MSC */
 diff -ur gnuplot-4.2.2/src/version.c gnuplot-4.2.2-new/src/version.c
 --- gnuplot-4.2.2/src/version.c	Fri Aug 31 08:26:20 2007
-+++ gnuplot-4.2.2-new/src/version.c	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/src/version.c	Wed Nov 28 13:50:52 2007
 @@ -40,7 +40,7 @@
  
  
@@ -358,7 +358,7 @@ diff -ur gnuplot-4.2.2/src/version.c gnuplot-4.2.2-new/src/version.c
  
 diff -ur gnuplot-4.2.2/src/win/wgnuplib.h gnuplot-4.2.2-new/src/win/wgnuplib.h
 --- gnuplot-4.2.2/src/win/wgnuplib.h	Sun Mar  5 02:15:56 2006
-+++ gnuplot-4.2.2-new/src/win/wgnuplib.h	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/src/win/wgnuplib.h	Wed Nov 28 13:50:52 2007
 @@ -45,7 +45,9 @@
  #include <windows.h>
  
@@ -372,7 +372,7 @@ diff -ur gnuplot-4.2.2/src/win/wgnuplib.h gnuplot-4.2.2-new/src/win/wgnuplib.h
  /* HBB 19990506: The following used to be #ifdef __DLL__.
 diff -ur gnuplot-4.2.2/src/win/winmain.c gnuplot-4.2.2-new/src/win/winmain.c
 --- gnuplot-4.2.2/src/win/winmain.c	Thu Mar 22 06:08:26 2007
-+++ gnuplot-4.2.2-new/src/win/winmain.c	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/src/win/winmain.c	Wed Nov 28 13:51:48 2007
 @@ -62,6 +62,7 @@
  #include <string.h>
  #include <stdarg.h>
@@ -469,7 +469,7 @@ diff -ur gnuplot-4.2.2/src/win/winmain.c gnuplot-4.2.2-new/src/win/winmain.c
  /* replacement stdio routines that use Text Window for stdin/stdout */
  /* WARNING: Do not write to stdout/stderr with functions not listed
     in win/wtext.h */
-@@ -583,6 +614,90 @@
+@@ -583,6 +614,91 @@
      }
      return fread(ptr, size, n, file);
  }
@@ -538,6 +538,7 @@ diff -ur gnuplot-4.2.2/src/win/winmain.c gnuplot-4.2.2-new/src/win/winmain.c
 +            {
 +                DWORD c;
 +                GetExitCodeThread(h, &c);
++		CloseHandle(h);
 +                return c;
 +            }
 +        }
@@ -562,7 +563,7 @@ diff -ur gnuplot-4.2.2/src/win/winmain.c gnuplot-4.2.2-new/src/win/winmain.c
   * (formerly in win.trm)
 diff -ur gnuplot-4.2.2/src/win/winmain.h gnuplot-4.2.2-new/src/win/winmain.h
 --- gnuplot-4.2.2/src/win/winmain.h	Sun Jul 16 04:50:56 2006
-+++ gnuplot-4.2.2-new/src/win/winmain.h	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/src/win/winmain.h	Wed Nov 28 13:50:52 2007
 @@ -55,6 +55,7 @@
  
  extern LPSTR winhelpname;
@@ -573,7 +574,7 @@ diff -ur gnuplot-4.2.2/src/win/winmain.h gnuplot-4.2.2-new/src/win/winmain.h
  void screen_dump __PROTO((void));
 diff -ur gnuplot-4.2.2/src/win/wtext.h gnuplot-4.2.2-new/src/win/wtext.h
 --- gnuplot-4.2.2/src/win/wtext.h	Thu Jul  1 19:10:11 2004
-+++ gnuplot-4.2.2-new/src/win/wtext.h	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/src/win/wtext.h	Wed Nov 28 13:50:52 2007
 @@ -40,6 +40,8 @@
  /* redefine functions that can talk to tty devices, to use
   * implementation in winmain.c/wgnuplot.dll */
@@ -595,7 +596,7 @@ diff -ur gnuplot-4.2.2/src/win/wtext.h gnuplot-4.2.2-new/src/win/wtext.h
 +#endif /* CONSOLE */
 diff -ur gnuplot-4.2.2/src/wxterminal/gp_cairo.c gnuplot-4.2.2-new/src/wxterminal/gp_cairo.c
 --- gnuplot-4.2.2/src/wxterminal/gp_cairo.c	Sun Aug 26 06:54:28 2007
-+++ gnuplot-4.2.2-new/src/wxterminal/gp_cairo.c	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/src/wxterminal/gp_cairo.c	Wed Nov 28 13:50:52 2007
 @@ -78,6 +78,10 @@
  #include <pango/pangocairo.h>
  #include <glib.h>
@@ -625,7 +626,7 @@ diff -ur gnuplot-4.2.2/src/wxterminal/gp_cairo.c gnuplot-4.2.2-new/src/wxtermina
  	/* free the layout object */
 diff -ur gnuplot-4.2.2/src/wxterminal/wxt_gui.cpp gnuplot-4.2.2-new/src/wxterminal/wxt_gui.cpp
 --- gnuplot-4.2.2/src/wxterminal/wxt_gui.cpp	Thu May 24 06:45:30 2007
-+++ gnuplot-4.2.2-new/src/wxterminal/wxt_gui.cpp	Fri Nov 23 15:37:47 2007
++++ gnuplot-4.2.2-new/src/wxterminal/wxt_gui.cpp	Wed Nov 28 13:50:52 2007
 @@ -327,7 +327,7 @@
  	/* set up the toolbar */
  	wxToolBar * toolbar = CreateToolBar();
@@ -662,7 +663,7 @@ diff -ur gnuplot-4.2.2/src/wxterminal/wxt_gui.cpp gnuplot-4.2.2-new/src/wxtermin
  #endif
 diff -ur gnuplot-4.2.2/term/post.trm gnuplot-4.2.2-new/term/post.trm
 --- gnuplot-4.2.2/term/post.trm	Mon Jun 18 03:31:49 2007
-+++ gnuplot-4.2.2-new/term/post.trm	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/term/post.trm	Wed Nov 28 13:50:52 2007
 @@ -3122,9 +3122,9 @@
  # if defined(_Windows)
  	/* retrieve prologues path relatively to gnuplot executable,
@@ -677,7 +678,7 @@ diff -ur gnuplot-4.2.2/term/post.trm gnuplot-4.2.2-new/term/post.trm
  	strcat(ps_prologue_dir, GNUPLOT_PS_DIR);
 diff -ur gnuplot-4.2.2/term/win.trm gnuplot-4.2.2-new/term/win.trm
 --- gnuplot-4.2.2/term/win.trm	Mon Jul 30 06:17:21 2007
-+++ gnuplot-4.2.2-new/term/win.trm	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/term/win.trm	Wed Nov 28 13:50:52 2007
 @@ -86,6 +86,7 @@
  TERM_PUBLIC void WIN_set_cursor __PROTO((int, int, int));
  TERM_PUBLIC void WIN_put_tmptext __PROTO((int, const char str[]));
@@ -717,7 +718,7 @@ diff -ur gnuplot-4.2.2/term/win.trm gnuplot-4.2.2-new/term/win.trm
      , WIN_make_palette, 0 /* previous_palette */,
 diff -ur gnuplot-4.2.2/term/wxt.trm gnuplot-4.2.2-new/term/wxt.trm
 --- gnuplot-4.2.2/term/wxt.trm	Fri Sep 15 16:09:36 2006
-+++ gnuplot-4.2.2-new/term/wxt.trm	Fri Nov 23 15:36:08 2007
++++ gnuplot-4.2.2-new/term/wxt.trm	Wed Nov 28 13:50:52 2007
 @@ -59,12 +59,20 @@
  
  /* terminal state, defined extern in wxt_term.h */

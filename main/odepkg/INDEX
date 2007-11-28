@@ -14,6 +14,8 @@ OdePkg DAE Solver Functions
  ode5r
  oders
  odesx
+OdePkg IDE Solver Functions
+ odebdi
 OdePkg Options Functions
  odeset
  odeget
@@ -23,6 +25,7 @@ OdePkg Output Functions
  odephas2
  odephas3
 OdePkg Example Functions
+ odepkg_equations_ilorenz
  odepkg_equations_lorenz
  odepkg_equations_pendulous
  odepkg_equations_roessler
@@ -33,6 +36,7 @@ OdePkg Testsuite Functions
  odepkg_testsuite_calcmescd
  odepkg_testsuite_chemakzo
  odepkg_testsuite_hires
+ odepkg_testsuite_implakzo
  odepkg_testsuite_implrober
  odepkg_testsuite_oregonator
  odepkg_testsuite_pollution

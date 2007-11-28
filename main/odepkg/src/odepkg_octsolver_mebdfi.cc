@@ -22,7 +22,8 @@ Compile this file manually and run some tests with the following command
 
   bash:$ mkoctfile -v -Wall -W -Wshadow odepkg_octsolver_mebdfi.cc \
     odepkg_auxiliary_functions.cc cash/mebdfi.f -o odebdi.oct
-  octave> octave --quiet --eval "test 'odepkg_octsolver_mebdfi.cc'"
+  octave> octave --quiet --eval "autoload ('odebdi', [pwd, '/odebdi.oct']); \
+    test 'odepkg_octsolver_mebdfi.cc'"
 
 If you have installed 'gfortran' or 'g95' on your computer then use
 the FFLAGS=-fno-automatic option because otherwise the solver function
@@ -31,7 +32,8 @@ will be broken, eg.
   bash:$ FFLAGS="-fno-automatic ${FFLAGS}" mkoctfile -v -Wall -W \
     -Wshadow odepkg_octsolver_mebdfi.cc odepkg_auxiliary_functions.cc \
     cash/mebdfi.f -o odebdi.oct
-  octave> octave --quiet --eval "test 'odepkg_octsolver_mebdfi.cc'"
+  octave> octave --quiet --eval "autoload ('odebdi', [pwd, '/odebdi.oct']); \
+    test 'odepkg_octsolver_mebdfi.cc'"
 */
 
 #include <config.h>
@@ -39,17 +41,20 @@ will be broken, eg.
 #include <oct-map.h>
 #include <f77-fcn.h>
 #include <parse.h>
-
 #include "odepkg_auxiliary_functions.h"
 
 /* -*- texinfo -*-
- * TODO: THIS IS SOURCE FILE XYZ
- */
-
-/* -*- texinfo -*-
- * @deftp {typedef} {octave_idx_type *odepkg_mebdfi_usrtype} (const octave_idx_type& N, const double& T, const double* Y, double* DELTA, const double* YPRIME, const octave_idx_type* IPAR, const double* RPAR, const octave_idx_type& IERR)
+ * @subsection Source File @file{odepkg_octsolver_mebdfi.cc}
  *
- * The @code{*odepkg_mebdfi_usrtype} is used to represent the information about the user type interface for the ODE problem that is needed by the Fortran mebdfi core solver and that is defined in this C++ source file, cf. the Fortran source file @file{mebdfi.f} for further details.
+ * @deftp {Typedef} {octave_idx_type (*odepkg_mebdfi_usrtype)}
+ * This @code{typedef} is used to define the input and output arguments of the user function for the IDE problem that is further needed by the Fortran core solver @code{mebdfi}. The implementation of this @code{typedef} is
+ *
+ * @example
+ * typedef octave_idx_type (*odepkg_mebdfi_usrtype)
+ *   (const octave_idx_type& N, const double& T, const double* Y, 
+ *    double* DELTA, const double* YPRIME, const octave_idx_type* IPAR,
+ *    const double* RPAR, const octave_idx_type& IERR);
+ * @end example
  * @end deftp
  */
 typedef octave_idx_type (*odepkg_mebdfi_usrtype)
@@ -58,9 +63,16 @@ typedef octave_idx_type (*odepkg_mebdfi_usrtype)
    const double* RPAR, const octave_idx_type& IERR);
 
 /* -*- texinfo -*-
- * @deftp {typedef} {octave_idx_type *odepkg_mebdfi_usrtype} (const octave_idx_type& N, const double& T, const double* Y, double* DELTA, const double* YPRIME, const octave_idx_type* IPAR, const double* RPAR, const octave_idx_type& IERR)
+ * @deftp {Typedef} {octave_idx_type (*odepkg_mebdfi_jactype)}
  *
- * The @code{*odepkg_mebdfi_usrtype} is used to represent the information about the user type interface for the ODE problem that is needed by the Fortran mebdfi core solver and that is defined in this C++ source file, cf. the Fortran source file @file{mebdfi.f} for further details.
+ * This @code{typedef} is used to define the input and output arguments of the @code{Jacobian} function for the IDE problem that is further needed by the Fortran core solver @code{mebdfi}. The implementation of this @code{typedef} is
+ *
+ * @example
+ * typedef octave_idx_type (*odepkg_mebdfi_jactype)
+ *   (const double& T, const double* Y, double* PD, const octave_idx_type& N,
+ *    const double* YPRIME, const octave_idx_type* MBND, const double& CON,
+ *    const octave_idx_type* IPAR, const double* RPAR, const octave_idx_type& IERR);
+ * @end example
  * @end deftp
  */
 typedef octave_idx_type (*odepkg_mebdfi_jactype) // 3 arguments per line
@@ -70,15 +82,11 @@ typedef octave_idx_type (*odepkg_mebdfi_jactype) // 3 arguments per line
    const octave_idx_type& IERR);
 
 extern "C" {
-/* TODO TEXINFO DOCUMENTATION
- * F77_FUNC (mebdfi, MEBDFI) - The prototype of the mebdfi Fortran solver
+/* -*- texinfo -*-
+ * @deftp {Prototype} {F77_RET_T F77_FUNC (mebdfi, MEBDFI)} (const octave_idx_type& N, const double& T0, const double& HO, const double* Y0, const double* YPRIME, const double& TOUT, const double& TEND, const octave_idx_type& MF, octave_idx_type& IDID, const octave_idx_type& LOUT, const octave_idx_type& LWORK, const double* WORK, const octave_idx_type& LIWORK, const octave_idx_type* IWORK, const octave_idx_type* MBND, const octave_idx_type& MAXDER, const octave_idx_type& ITOL, const double* RTOL, const double* ATOL, const double* RPAR, const octave_idx_type* IPAR, odepkg_mebdfi_jactype, odepkg_mebdfi_usrtype, octave_idx_type& IERR);
  *
- * Define the prototype of the mebdfi core Fortran solver that is
- * needed from the following wrapper function and that is of the form
- * @MEBDFI (@N, @T0, @HO, @Y0, @YPRIME, @TOUT, @TEND, @MF, @IDID,
- * @LOUT, @LWORK, @WORK, @LIWORK, @IWORK, @MBND, @MAXDER, @ITOL,
- * @RTOL, @ATOL, @RPAR, @IPAR, @PDERV, @RESID, @IERR), cf. source file
- * mebdfi.f for further details.
+ * The prototype @code{F77_FUNC (mebdfi, MEBDFI)} is used to represent the information about the Fortran core solver @code{mebdfi} that is defined in the Fortran source file @file{mebdfi.f} (cf. the Fortran source file @file{mebdfi.f} for further details).
+ * @end deftp
  */
   F77_RET_T F77_FUNC (mebdfi, MEBDFI) // 3 arguments per line
     (const octave_idx_type& N, const double& T0, const double& HO,
@@ -91,42 +99,48 @@ extern "C" {
      odepkg_mebdfi_jactype, odepkg_mebdfi_usrtype, octave_idx_type& IERR);
 }
 
-/* TODO TEXINFO DOCUMENTATION
- * Define some static variables to pass their values to F77 functions
+/* -*- texinfo -*-
+ * @deftypevr {Variable} {static octave_value_list} {vmebdfiextarg}
  *
- * vmebdfiextarg - The variable for the extra arguments needed by the
- *   OutputFcn, the Events and the Jacobian if some or all are defined
- * vmebdfiodefun - The variable for the user defined function of the
- *   set of implicite differential equations
- * vmebdfijacfun - The user defined Jacobian function (handle or matrix)
+ * This static variable is used to store the extra arguments that are needed by some or by all of the @code{OutputFcn}, the @code{Jacobian} function and the @code{Events} function while solving the IDE problem.
+ * @end deftypevr
  */
 static octave_value_list vmebdfiextarg;
-static octave_function *vmebdfiodefun;
+
+/* -*- texinfo -*-
+ * @deftypevr {Variable} {static octave_value} {*vmebdfiodefun}
+ *
+ * This static variable is used to store the value for the user function that defines the set of IDEs.
+ * @end deftypevr
+ */
+static octave_value vmebdfiodefun;
+
+/* -*- texinfo -*-
+ * @deftypevr {Variable} {static octave_value} {vmebdfijacfun}
+ *
+ * This static variable is used to store the value for the @code{Jacobian} function or the @code{Jacobian} matrix that is needed if Jacobian evaluation should be performed.
+ * @end deftypevr
+ */
 static octave_value vmebdfijacfun;
 
-/* TODO TEXINFO DOCUMENTATION
- * odepkg_mebdfi_usrfcn - The mebdfi type user function
- * @N: The number of equations that are defined for the IDE--problem
- * @T: The actual time stamp for the current function evaluation
- * @Y: The function values from the last successful integration step of length @N
- * @DELTA: The residual vector that needs to be calculated of length @N
- * @YPRIME: The derivative values from the last successful integration step of length @N
- * @IPAR: The integer parameters that are passed to the user function (unused)
- * @RPAR: The real parameters that are passed to the user function (unused)
- * @IERR: The error flag that can be set on each evaluation (currently unused)
+/* -*- texinfo -*-
+ * @deftypefn {Function} {octave_idx_type} {odepkg_mebdfi_usrfcn} (const octave_idx_type& N, const double& T, const double* Y, double* DELTA, const double* YPRIME, GCC_ATTR_UNUSED const octave_idx_type* IPAR, GCC_ATTR_UNUSED const double* RPAR, GCC_ATTR_UNUSED const octave_idx_type& IERR)
  *
- * Call the user defined Octave function that evaluates the set of
- * IDE--equations from within the mebdfi core Fortran solver. The used
- * input arguments of this function are @N, @T, @Y, @YPRIME and
- * @IERR. An integer value with an error number can be returned in
- * @IERR on failure. Return the residual vector @DELTA keeping the
- * calculated values, cf. source file mebdfi.f for further
- * details. The Octave user function must be of the form [@delta] =
- * @UserFunc (@t, @y, @y', @varargin).
+ * Return @code{true} if the evaluation of the user function was successful, return @code{false} otherwise. This function is directly called from the Fortran core solver @code{mebdfi}. The input arguments of this function are
  *
- * Return value: %true if finished
- **/
-octave_idx_type odepkg_mebdfi_usrfcn // 3 arguments per line
+ * @itemize @minus
+ * @item @var{N}: The number of equations that are defined for the IDE--problem
+ * @item @var{T}: The actual time stamp for the current function evaluation
+ * @item @var{Y}: The function values from the last successful integration step of length @var{N}
+ * @item @var{DELTA}: The residual vector that needs to be calculated of length @var{N}
+ * @item @var{YPRIME}: The derivative values from the last successful integration step of length @var{N}
+ * @item @var{IPAR}: The integer parameters that are passed to the user function (unused)
+ * @item @var{RPAR}: The real parameters that are passed to the user function (unused)
+ * @item @var{IERR}: The error flag that can be set on each evaluation (unused)
+ * @end itemize
+ * @end deftypefn
+ */
+octave_idx_type odepkg_mebdfi_usrfcn
   (const octave_idx_type& N, const double& T, const double* Y, 
    double* DELTA, const double* YPRIME, GCC_ATTR_UNUSED const octave_idx_type* IPAR,
    GCC_ATTR_UNUSED const double* RPAR, GCC_ATTR_UNUSED const octave_idx_type& IERR) {
@@ -144,7 +158,7 @@ octave_idx_type odepkg_mebdfi_usrfcn // 3 arguments per line
   varin(0) = T; varin(1) = A; varin(2) = APRIME;
   for (octave_idx_type vcnt = 0; vcnt < vmebdfiextarg.length (); vcnt++)
     varin(vcnt+3) = vmebdfiextarg(vcnt);
-  octave_value_list vout = feval (vmebdfiodefun, varin, 1);
+  octave_value_list vout = feval (vmebdfiodefun.function_value (), varin, 1);
 
   // Return the results from the function evaluation to the Fortran
   // solver, again copy them and don't just create a Fortran vector
@@ -152,49 +166,28 @@ octave_idx_type odepkg_mebdfi_usrfcn // 3 arguments per line
   for (octave_idx_type vcnt = 0; vcnt < N; vcnt++)
     DELTA[vcnt] = vcol(vcnt);
 
-  /*
-  octave_stdout << "++++++++++" << std::endl;
-  octave_stdout << "N = " << N << std::endl;
-  octave_stdout << "T = " << T << std::endl;
-  for (octave_idx_type vcnt = 0; vcnt < N; vcnt++)
-    octave_stdout << "Y[" << vcnt << "] = " << Y[vcnt] << std::endl;
-  for (octave_idx_type vcnt = 0; vcnt < N; vcnt++)
-    octave_stdout << "DELTA[" << vcnt << "] = " << DELTA[vcnt] <<  std::endl;
-  for (octave_idx_type vcnt = 0; vcnt < N; vcnt++)
-    octave_stdout << "YPRIME[" << vcnt << "] = " << YPRIME[vcnt] <<  std::endl;
-  octave_stdout << "IPAR = " << IPAR[0] << std::endl;
-  octave_stdout << "RPAR = " << RPAR[0] << std::endl;
-  octave_stdout << "IERR = " << IERR << std::endl;
-  */
-
   return (true);
 }
 
-/* TODO TEXINFO DOCUMENTATION
- * odepkg_mebdfi_jacfcn - The mebdfi type Jacobian function
- * @T: The actual time stamp for the current function evaluation
- * @Y: The function values from the last successful integration step of length @N
- * @PD: The values of partial derivatives of the Jacobian matrix of size @N
- * @N: The number of equations that are defined for the IDE--problem
- * @YPRIME: The derivative values from the last successful integration step of length @N
- * @MBND: A vector of size 4 describing the sizes of a banded Jacobian (unused)
- * @CON: A constant value that is set before the evaluation of the Jacobian function
- * @IPAR: The integer parameters that are passed to the user function (unused)
- * @RPAR: The real parameters that are passed to the user function (unused)
- * @IERR: The error flag that can be set on each evaluation (currently unused)
+/* -*- texinfo -*-
+ * @deftypefn {Function} {octave_idx_type} {odepkg_mebdfi_jacfcn} (const double& T, const double* Y, double* PD, const octave_idx_type& N, const double* YPRIME, GCC_ATTR_UNUSED const octave_idx_type* MBND, const double& CON, GCC_ATTR_UNUSED const octave_idx_type* IPAR, GCC_ATTR_UNUSED const double* RPAR, GCC_ATTR_UNUSED const octave_idx_type& IERR)
  *
- * Call the user defined Octave function that evaluates the Jacobian
- * function of partial derivatives for the given IDE--problem from
- * within the mebdfi core Fortran solver. The used input arguments of
- * this function are @T, @Y, @N, @YPRIME and @CON. An integer value
- * with an error number can be returned in @IERR on failure. Return
- * the partial derivatives matrix @PD keeping the calculated values,
- * cf. source file mebdfi.f for further details. The Octave Jacobian
- * function must be of the form [@dy/@dt, @dy'/@dt] = @Jacobian (@t,
- * @y, @varargin).
+ * Return @code{true} if the evaluation of the Jacobian function (that is defined for a special IDE problem in Octave) was successful, otherwise return @code{false}. This function is directly called from the Fortran core solver @code{mebdfi}. The input arguments of this function are
  *
- * Return value: %true if finished
- **/
+ * @itemize @minus
+ * @item @var{T}: The actual time stamp for the current function evaluation
+ * @item @var{Y}: The function values from the last successful integration step of length @var{N}
+ * @item @var{PD}: The values of partial derivatives of the Jacobian matrix of size @var{N}
+ * @item @var{N}: The number of equations that are defined for the IDE--problem
+ * @item @var{YPRIME}: The derivative values from the last successful integration step of length @var{N}
+ * @item @var{MBND}: A vector of size 4 describing the sizes of a banded Jacobian (unused)
+ * @item @var{CON}: A constant value that is set before the evaluation of the Jacobian function
+ * @item @var{IPAR}: The integer parameters that are passed to the user function (unused)
+ * @item @var{RPAR}: The real parameters that are passed to the user function (unused)
+ * @item @var{IERR}: The error flag that can be set on each evaluation (unused)
+ * @end itemize
+ * @end deftypefn
+ */
 octave_idx_type odepkg_mebdfi_jacfcn
   (const double& T, const double* Y, double* PD, const octave_idx_type& N,
    const double* YPRIME, GCC_ATTR_UNUSED const octave_idx_type* MBND, 
@@ -230,10 +223,132 @@ octave_idx_type odepkg_mebdfi_jacfcn
   return (true);
 }
 
+/* -*- texinfo -*-
+ * @deftypefn {Function} octave_idx_type odepkg_auxiliary_mebdfanalysis (octave_idx_type verr)
+ * TODO
+ * @end deftypefn
+ */
+octave_idx_type odepkg_auxiliary_mebdfanalysis (octave_idx_type verr) {
+  
+  switch (verr)
+    {
+    case 0: break; // Everything is fine
 
+    case -1:
+      error_with_id ("OdePkg:InternalError",
+	"Integration was halted after failing to pass one error test (error occured in \"mebdfi\" core solver function)");
+      break;
 
-// TODO Extraction of the 
-DEFUN_DLD (odebdi, args, nargout, 
+    case -2:
+      error_with_id ("OdePkg:InternalError",
+	"Integration was halted after failing to pass a repeated error test (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -3:
+      error_with_id ("OdePkg:InternalError",
+	"Integration was halted after failing to achieve corrector convergence (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -4:
+      error_with_id ("OdePkg:InternalError",
+	"Immediate halt because of illegal input arguments (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -5:
+      error_with_id ("OdePkg:InternalError",
+	"Idid was -1 on input (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -6:
+      error_with_id ("OdePkg:InternalError",
+	"Maximum number of allowed integration steps exceeded (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -7:
+      error_with_id ("OdePkg:InternalError",
+	"Stepsize grew too small (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -11:
+      error_with_id ("OdePkg:InternalError",
+	"Insufficient real workspace for integration (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -12:
+      error_with_id ("OdePkg:InternalError",
+	"Insufficient integer workspace for integration (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -40:
+      error_with_id ("OdePkg:InternalError",
+	"Error too small to be attained for the machine precision (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -41:
+      error_with_id ("OdePkg:InternalError",
+	"Illegal input argument IDID (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -42:
+      error_with_id ("OdePkg:InternalError",
+	"Illegal input argument ATOL (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -43:
+      error_with_id ("OdePkg:InternalError",
+	"Illegal input argument RTOL (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -44:
+      error_with_id ("OdePkg:InternalError",
+	"Illegal input argument N<0 (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -45:
+      error_with_id ("OdePkg:InternalError",
+	"Illegal input argument (T0-TOUT)*H>0 (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -46:
+      error_with_id ("OdePkg:InternalError",
+	"Illegal input argument MF!=21 && MF!=22 (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -47:
+      error_with_id ("OdePkg:InternalError",
+	"Illegal input argument ITOL (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -48:
+      error_with_id ("OdePkg:InternalError",
+	"Illegal input argument MAXDER (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    case -49:
+      error_with_id ("OdePkg:InternalError",
+	"Illegal input argument INDEX VARIABLES (error occured in \"mebdfi\" core solver function)");
+      break;
+
+    default:
+      error_with_id ("OdePkg:InternalError",
+	"Integration was halted after failing to pass the error test (error occured in \"mebdfi\" core solver function with error number \"%d\")", verr);
+      break;
+    }
+
+  return (true);
+}
+
+/* -*- texinfo -*-
+ * @deftypefn {Function} {} {DEFUN_DLD} {(odebdi, args, nargout, 'help string')}
+ *
+ * Return the results of the solving process of the IDE problem from the Fortran core solver @code{mebdfi} to the caller function (cf. @command{help odebdi} within Octave for further details about this function). the Argument @var{odebdi} is the name of the function that can be used in Octave and @var{'help string'} is the help text that is displayed if the command @command{help odebdi} is called from Octave. The input arguments of this function are
+ * @itemize @minus
+ * @item @var{args}: The input arguments in form of an @code{octave_value_list}
+ * @item @var{nargout}: The number of output arguments that are required
+ * @end itemize
+ * @end deftypefn
+ */
+DEFUN_DLD (odebdi, args, nargout,
 "-*- texinfo -*-\n\
 @deftypefn  {Function} odebdi (@var{@@fun, slot, y0, dy0, [opt], [P1, P2, @dots{}]})\n\
 @deftypefnx {Function} {@var{sol} =} odebdi (@var{@@fun, slot, y0, dy0, [opt], [P1, P2, @dots{}]})\n\
@@ -272,7 +387,8 @@ demo odebdi\n\
       "First input argument must be a valid function handle");
     return (vretval);
   }
-  else vmebdfiodefun = args(0).function_value();
+  else // We store the args(0) argument in the static variable vmebdfiodefun
+    vmebdfiodefun = args(0);
 
   // Check if the second input argument is a valid vector describing
   // the time window of solving, it may be of length 2 or longer
@@ -454,22 +570,6 @@ demo odebdi\n\
   // Implementation of the option Events has been finished, this
   // option can be set by the user to another value than default
   // value, odepkg_structure_check already checks for a valid value
-  /* This function can be taken as a simple test procedure
-    function vres = fbal (vt, vy, vyd, varargin)
-      vres(1,1) =  vy(2) + 3 - vyd(1);
-      vres(2,1) = -9.81 - vyd(2);
-    endfunction
-
-    function [veve, vterm, vdir] = feve (vt, vy, varargin)
-      veve  = vy(1); %# Which event component should be tread
-      vterm =     1; %# Terminate if an event is found
-      vdir  =    -1; %# In which direction, -1 for falling
-    endfunction
-
-    A = odeset ('Events', @feve);
-    B = odebdi (@fbal, [0 3], [1 3], [0 0], A);
-    plot (B.x, B.y(:,1));
-  */
   octave_value vevents = odepkg_auxiliary_getmapvalue ("Events", vodeopt);
   octave_value_list veveres; // We save the results of Events here
 
@@ -655,7 +755,7 @@ demo odebdi\n\
       }
       if (!vplot.is_empty ()) {
         if (!odepkg_auxiliary_evalplotfun (vplot, voutsel, vtim, vsol, vmebdfiextarg, 1)) {
-          error ("Missing message");
+          error ("Missing error message implementation");
           return (vretval);
         }
       }
@@ -703,7 +803,7 @@ demo odebdi\n\
       }
       if (!vplot.is_empty ()) {
         if (!odepkg_auxiliary_evalplotfun (vplot, voutsel, vtim, vsol, vmebdfiextarg, 1)) {
-          error ("Missing message");
+          error ("Missing error message implementation");
           return (vretval);
         }
       }
@@ -733,10 +833,19 @@ demo odebdi\n\
 
   // Get the stats information as an Octave_map if the option 'Stats'
   // has been set with odeset
+  octave_value_list vstatinput;
+  vstatinput(0) = IWORK[4];
+  vstatinput(1) = IWORK[5];
+  vstatinput(2) = IWORK[6];
+  vstatinput(3) = IWORK[7];
+  vstatinput(4) = IWORK[8];
+  vstatinput(5) = IWORK[9];
   octave_value vstatinfo;
-  if (vstats.string_value () == "on") 
-    vstatinfo = odepkg_auxiliary_makestats (IWORK[4], IWORK[5], IWORK[6], 
-      IWORK[7], IWORK[8], IWORK[9], true);
+  if (vstats.string_value () == "on" && (nargout == 1))
+    vstatinfo = odepkg_auxiliary_makestats (vstatinput, false);
+  else if (vstats.string_value () == "on" && (nargout != 1))
+    vstatinfo = odepkg_auxiliary_makestats (vstatinput, true);
+
 
   // Set up output arguments that depends on how many output arguments
   // are desired by the caller
@@ -776,60 +885,118 @@ demo odebdi\n\
 }
 
 /*
-%!function res = implroberfun (t, y, yd, varargin)
-%!    res(1,1) = -0.04 * y(1) + 1e4 * y(2) * y(3) - yd(1);
-%!    res(2,1) =  0.04 * y(1) - 1e4 * y(2) * y(3) - 3e7 * y(2)^2 - yd(2);
-%!    res(3,1) =  y(1) + y(2) + y(3) - 1;
-%!  endfunction
-%!function [dfdy, dfdyd] = implroberjac (t, y, yd, varargin)
-%!    dfdy(1,1)  = -0.04; dfdy(1,2)  =  1e4 * y(3); dfdy(1,3)  =  1e4 * y(2);
-%!    dfdy(2,1)  =  0.04; dfdy(2,2)  = -1e4 * y(3) - 6e7 * y(2); dfdy(2,3)  = -1e4 * y(2);
-%!    dfdy(3,1)  =  1; dfdy(3,2)  =  1; dfdy(3,3)  =  1;
-%!    dfdyd(1,1) = -1; dfdyd(2,2) = -1; dfdyd(3,3) =  0;
-%!  endfunction
-%!test
+%!function [vres] = fimprob (vt, vy, vdy, varargin) %# The Robertson problem
+%!  vres(1,1) = -0.04 * vy(1) + 1e4 * vy(2) * vy(3) - vdy(1);
+%!  vres(2,1) =  0.04 * vy(1) - 1e4 * vy(2) * vy(3) - 3e7 * vy(2)^2 - vdy(2);
+%!  vres(3,1) =  vy(1) + vy(2) + vy(3) - 1;
+%!function [vdfdy, vdfdyd] = fimpjac (vt, vy, vdy, varargin) %# The Jacobian
+%!  vdfdy(1,:)  = [-0.04, 1e4 * vy(3), 1e4 * vy(2)];
+%!  vdfdy(2,:)  = [ 0.04, -1e4 * vy(3) - 6e7 * vy(2), -1e4 * vy(2)];
+%!  vdfdy(3,:)  = [ 1, 1, 1];
+%!  vdfdyd(1,1) = -1; vdfdyd(2,2) = -1; vdfdyd(3,3) = 0;
+%!function [vres] = fimpbal (vt, vy, vdy, varargin) %# The ball curve problem
+%!  vres(1,1) = vy(2) + 3 - vdy(1);
+%!  vres(2,1) = -9.81 - vdy(2);
+%!function [veve, vterm, vdir] = fimpeve (vt, vy, varargin) %# The Events func
+%!  veve  = vy(1); %# The event component that should be treaded
+%!  vterm =     1; %# Terminate solving if an event is found, 1
+%!  vdir  =    -1; %# Direction at zero-crossing, -1 for falling
+%!error 
 %!  warning ("off", "OdePkg:InvalidOption");
-%!  vres = odebdi (@implroberfun, [1e-9, 1e9], [1, 1e-10, 1e-10], 
-%!    [-4e-2, 4e-2, 1e-10]);
+%!  B = odebdi (1, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1]);
+%!error 
+%!  B = odebdi (@fimprob, 1, [1, 1e-10, 1e-10], [0, 0, 1]);
+%!error 
+%!  B = odebdi (@fimprob, [1e-9, 1e9], 1, [0, 0, 1]);
+%!error 
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], 1);
 %!test
-%!  [vx, vy] = odebdi (@implroberfun, [1e-9, 1e9], [1, 1e-10, 1e-10], 
-%!    [-4e-2, 4e-2, 1e-10]);
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1]);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
 %!test
-%!  [vx, vy, va, vb, vc] = odebdi (@implroberfun, [1e-9, 1e9], 
-%!    [1, 1e-10, 1e-10], [-4e-2, 4e-2, 1e-10]);
+%!  A = odeset ('AbsTol', 1e-7, 'RelTol', [1e-7, 1e-7, 1e-7]);
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
 %!test
-%!  vres = odebdi (@implroberfun, [1e-9, 1, 1e9], [1, 1e-10, 1e-10], 
-%!    [-4e-2, 4e-2, 1e-10]);
+%!  A = odeset ('AbsTol', [1e-7, 1e-7, 1e-7], 'RelTol', 1e-7);
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
 %!test
-%!  [vx, vy] = odebdi (@implroberfun, [1e-9, 1, 1e9], [1, 1e-10, 1e-10], 
-%!    [-4e-2, 4e-2, 1e-10]);
+%!  A = odeset ('NormControl', 'on');
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
 %!test
-%!  [vx, vy, va, vb, vc] = odebdi (@implroberfun, [1e-9, 1, 1e9], 
-%!    [1, 1e-10, 1e-10], [-4e-2, 4e-2, 1e-10]);
+%!  A = odeset ('NonNegative', [1 2 3]);
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
+%#!test
+%#!  A = odeset ('OutputFcn', @odeplot, 'OutputSel', [1 3]);
+%#!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%#!test
+%#!  A = odeset ('OutputSel', [1 3]);
+%#!  odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
 %!test
-%!  A = odeset ("Jacobian", @implroberjac);
-%!  vres = odebdi (@implroberfun, [1e-9, 1, 1e9], [1, 1e-10, 1e-10], 
-%!    [-4e-2, 4e-2, 1e-10], A);
+%!  A = odeset ('Refine', 3);
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
 %!test
-%!  A = odeset ("Jacobian", @implroberjac);
-%!  [vx, vy] = odebdi (@implroberfun, [1e-9, 1, 1e9], [1, 1e-10, 1e-10], 
-%!    [-4e-2, 4e-2, 1e-10], A);
+%!  A = odeset ('InitialStep', 1e-5, 'MaxStep', 1e7);
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
 %!test
-%!  A = odeset ("Jacobian", @implroberjac);
-%!  [vx, vy, va, vb, vc] = odebdi (@implroberfun, [1e-9, 1, 1e9], 
-%!    [1, 1e-10, 1e-10], [-4e-2, 4e-2, 1e-10], A);
+%!  A = odeset ('Events', @fimpeve, 'Stats', 'on');
+%!  B = odebdi (@fimpbal, [0 3], [1 3], [0 0], A);
+%!  assert (B.ie, 1, 0);
+%!  assert (B.xe, B.x(end), 0);
+%!  assert (B.ye, B.y(end,:), 0);
 %!test
-%!  A = odeset ("Jacobian", @implroberjac);
-%!  vres = odebdi (@implroberfun, [1e-9, 1, 1e9], [1, 1e-10, 1e-10], 
-%!    [-4e-2, 4e-2, 1e-10], A, 13, 'a');
+%!  A = odeset ('Jacobian', @fimpjac);
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
 %!test
-%!  A = odeset ("Jacobian", @implroberjac);
-%!  [vx, vy] = odebdi (@implroberfun, [1e-9, 1, 1e9], [1, 1e-10, 1e-10], 
-%!    [-4e-2, 4e-2, 1e-10], A, 13, 'a');
+%!  A = odeset ('Mass', eye (3,3), 'MStateDependence', 'strong', ...
+%!              'MvPattern', sparse([0, 1; 1, 0]), 'MassSingular', 'yes');
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
 %!test
-%!  A = odeset ("Jacobian", @implroberjac);
-%!  [vx, vy, va, vb, vc] = odebdi (@implroberfun, [1e-9, 1, 1e9], 
-%!    [1, 1e-10, 1e-10], [-4e-2, 4e-2, 1e-10], A, 13, 'a');
+%!  A = odeset ('InitialSlope', [1 2 3]);
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
+%!test
+%!  A = odeset ('MaxOrder', 7, 'BDF', 'off');
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
+%!test
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], 13, 14, 15);
+%!  assert (B.solver, 'odebdi', 0);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
+%!test
+%!  A = odeset ();
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A, 13, 14, 15);
+%!  assert (B.solver, 'odebdi', 0);
+%!  assert (B.x(end), 1e9, 1e-3);
+%!  assert (B.y(end,:), [0, 0, 1], 1e-3);
+%!test
+%!  [t, y] = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], 13, 14, 15);
+%!  assert (t(end), 1e9, 1e-3);
+%!  assert (y(end,:), [0, 0, 1], 1e-3);
+%!test
+%!  A = odeset ();
+%!  [t, y] = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A, 13, 14, 15);
+%!  assert (t(end), 1e9, 1e-3);
+%!  assert (y(end,:), [0, 0, 1], 1e-3);
 %!  warning ("on", "OdePkg:InvalidOption");
 */
 

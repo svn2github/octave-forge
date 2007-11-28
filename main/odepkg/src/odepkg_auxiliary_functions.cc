@@ -17,21 +17,41 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
-
 #include "oct.h"
 #include "oct-map.h"
 #include "parse.h"
 #include "odepkg_auxiliary_functions.h"
 
+/* -*- texinfo -*-
+ * @subsection Source file @file{odepkg_auxiliary_functions.cc}
+ *
+ * @deftypefn {Function} octave_value odepkg_auxiliary_getmapvalue (std::string vnam, Octave_map vmap)
+ *
+ * Return the @code{octave_value} from the field that is identified by the string @var{vnam} of the @code{Octave_map} that is given by @var{vmap}. The input arguments of this function are
+ *
+ * @itemize @minus
+ * @item @var{vnam}: The name of the field whose value is returned
+ * @item @var{vmap}: The map that is checked for the presence of the field
+ * @end itemize
+ * @end deftypefn
+ */
 octave_value odepkg_auxiliary_getmapvalue (std::string vnam, Octave_map vmap) {
   Octave_map::const_iterator viter;
   viter = vmap.seek (vnam);
   return (vmap.contents(viter)(0));
 }
 
+/* -*- texinfo -*-
+ * @deftypefn {Function} octave_idx_type odepkg_auxiliary_isvector (octave_value vval)
+ *
+ * Return the constant @code{true} if the value of the input argument @var{vval} is a valid numerical vector of @code{length > 1} or return the constant @code{false} otherwise. The input argument of this function is
+ *
+ * @itemize @minus
+ * @item @var{vval}: The @code{octave_value} that is checked for being a valid numerical vector
+ * @end itemize
+ * @end deftypefn
+ */
 octave_idx_type odepkg_auxiliary_isvector (octave_value vval) {
   if (vval.is_numeric_type () && 
       vval.ndims () == 2 && // ported from the is_vector.m file
@@ -41,6 +61,19 @@ octave_idx_type odepkg_auxiliary_isvector (octave_value vval) {
     return (false);
 }
 
+/* -*- texinfo -*-
+ * @deftypefn {Function} octave_value_list odepkg_auxiliary_evaleventfun (octave_value veve, octave_value vt, octave_value vy, octave_value_list vextarg, octave_idx_type vdeci)
+ *
+ * Return the values that come from the evaluation of the @code{Events} user function. The return arguments depend on the call to this function, ie. if @var{vdeci} is @code{0} then initilaization of the @code{Events} function is performed. If @var{vdeci} is @code{1} then a normal evaluation of the @code{Events} function is performed and the information from the @code{Events} evaluation is returned (cf. @file{odepkg_event_handle.m} for further details). If @var{vdeci} is @code{2} then cleanup of the @code{Events} function is performed and nothing is returned. The input arguments of this function are
+ * @itemize @minus
+ * @item @var{veve}: The @code{Events} function that is evaluated
+ * @item @var{vt}: The time stamp at which the events function is called
+ * @item @var{vy}: The solutions of the set of ODEs at time @var{vt}
+ * @item @var{vextarg}: Extra arguments that are feed through to the @code{Events} function
+ * @item @var{vdeci}: A decision flag that describes what evaluation should be done
+ * @end itemize
+ * @end deftypefn
+ */
 octave_value_list odepkg_auxiliary_evaleventfun
   (octave_value veve, octave_value vt, octave_value vy, 
    octave_value_list vextarg, octave_idx_type vdeci) {
@@ -63,6 +96,7 @@ octave_value_list odepkg_auxiliary_evaleventfun
 
     case 1:
       varin(3) = "";
+      // varout = feval ("odepkg_event_handle", varin, 1);
       varout = feval ("odepkg_event_handle", varin, 1);
       break;
 
@@ -82,6 +116,20 @@ octave_value_list odepkg_auxiliary_evaleventfun
   return (varout);
 }
 
+/* -*- texinfo -*-
+ * @deftypefn {Function} octave_idx_type odepkg_auxiliary_evalplotfun (octave_value vplt, octave_value vsel, octave_value vt, octave_value vy, octave_value_list vextarg, octave_idx_type vdeci)
+ *
+ * Return a constant that comes from the evaluation of the @code{OutputFcn} function. The return argument depends on the call to this function, ie. if @var{vdeci} is @code{0} then initilaization of the @code{OutputFcn} function is performed and nothing is returned. If @var{vdeci} is @code{1} then a normal evaluation of the @code{OutputFcn} function is performed and either the constant @code{true} is returned if solving should be stopped or @code{false} is returned if solving should be continued (cf. @file{odeplot.m} for further details). If @var{vdeci} is @code{2} then cleanup of the @code{OutputFcn} function is performed and nothing is returned. The input arguments of this function are
+ * @itemize @minus
+ * @item @var{vplt}: The @code{OutputFcn} function that is evaluated
+ * @item @var{vsel}: The output selection vector for which values should be treated
+ * @item @var{vt}: The time stamp at which the events function is called
+ * @item @var{vy}: The solutions of the set of ODEs at time @var{vt}
+ * @item @var{vextarg}: Extra arguments that are feed through to the @code{OutputFcn} function
+ * @item @var{vdeci}: A decision flag that describes what evaluation should be done
+ * @end itemize
+ * @end deftypefn
+ */
 octave_idx_type odepkg_auxiliary_evalplotfun 
   (octave_value vplt, octave_value vsel, octave_value vt,
    octave_value vy, octave_value_list vextarg, octave_idx_type vdeci) {
@@ -136,183 +184,223 @@ octave_idx_type odepkg_auxiliary_evalplotfun
   return (true);
 }
 
+/* -*- texinfo -*-
+ * @deftypefn {Function} octave_value_list odepkg_auxiliary_evaljacide (octave_value vjac, octave_value vt, octave_value vy, octave_value vdy, octave_value_list vextarg)
+ *
+ * Return two matrices that come from the evaluation of the @code{Jacobian} function. The input arguments of this function are
+ * @itemize @minus
+ * @item @var{vjac}: The @code{Jacobian} function that is evaluated
+ * @item @var{vt}: The time stamp at which the events function is called
+ * @item @var{vy}: The solutions of the set of IDEs at time @var{vt}
+ * @item @var{vdy}: The derivatives of the set of IDEs at time @var{vt}
+ * @item @var{vextarg}: Extra arguments that are feed through to the @code{Jacobian} function
+ * @end itemize
+ *
+ * @indent @b{Note:} This function can only be used for IDE problem solvers.
+ * @end deftypefn
+ */
 octave_value_list odepkg_auxiliary_evaljacide
   (octave_value vjac, octave_value vt, octave_value vy, 
-   octave_value vyd, octave_value_list vextarg) {
+   octave_value vdy, octave_value_list vextarg) {
 
   octave_value_list varout;
 
-  // Check if vjac either describes a function or if the Jacbian
-  // information is a cell array (of two matrices)
-  if (!vjac.is_function_handle () && !vjac.is_inline_function () &&
-      !vjac.is_cell ()) {
-    error_with_id ("OdePkg:InvalidArgument",
-      "Jacobian value must be a function handle or a cell array");
-  }
-
   // If vjac is a cell array then we expect that two matrices are
-  // returned to the caller function
-  else if (vjac.is_cell ()) {
-    octave_stdout << "missing implementation in function odepkg_auxiliaryfun_evaljacide" << std::endl;
+  // returned to the caller function, we can't check for this before
+  if (vjac.is_cell () && (vjac.length () == 2)) {
+    varout(0) = vjac.cell_value ()(0);
+    varout(1) = vjac.cell_value ()(1);
+    if (!varout(0).is_matrix_type () || !varout(1).is_matrix_type ()) {
+      error_with_id ("OdePkg:InvalidArgument",
+        "If Jacobian is a 2x1 cell array then both cells must be matrices");
+    }
   }
 
+  // If vjac is a function_hanlde or an inline_function then evaluate
+  // the function and return the results
   else if (vjac.is_function_handle () || vjac.is_inline_function ()) {
     octave_value_list varin;
-    varin(0) = vt;
-    varin(1) = vy;
-    varin(2) = vyd;
-    //    varin(0).print_with_name (octave_stdout, "vt", true);
-    //    varin(1).print_with_name (octave_stdout, "vy", true);
-    //    varin(2).print_with_name (octave_stdout, "vyd", true);
+    varin(0) = vt;  // varin(0).print_with_name (octave_stdout, "vt", true);
+    varin(1) = vy;  // varin(1).print_with_name (octave_stdout, "vy", true);
+    varin(2) = vdy; // varin(2).print_with_name (octave_stdout, "vdy", true);
+    // Fill up RHS arguments with extra arguments that are given
     for (octave_idx_type vcnt = 0; vcnt < vextarg.length (); vcnt++)
       varin(vcnt+3) = vextarg(vcnt);
-
+    // Evaluate the Jacobian function and return results
     varout = feval (vjac.function_value (), varin, 1);
+  }
+
+  // In principle this is not possible because odepkg_structure_check
+  // should find all occurences that are not valid
+  else {
+    error_with_id ("OdePkg:InvalidArgument",
+      "Jacobian must be a function handle or a cell array with length two");
   }
 
   return (varout);
 }
 
-/**
- * odepkg_auxiliary_makestats - Return the Stats structure
+/* -*- texinfo -*-
+ * @deftypefn {Function} octave_value odepkg_auxiliary_evaljacode (octave_value vjac, octave_value vt, octave_value vy, octave_value_list vextarg)
  *
- **/
-octave_value odepkg_auxiliary_makestats
-  (octave_idx_type vsucc, octave_idx_type vfail, octave_idx_type vcall,
-   octave_idx_type vpart, octave_idx_type vlude, octave_idx_type vlsol,
-   octave_idx_type vprnt) {
+ * Return a matrix that comes from the evaluation of the @code{Jacobian} function. The input arguments of this function are
+ * @itemize @minus
+ * @item @var{vjac}: The @code{Jacobian} function that is evaluated
+ * @item @var{vt}: The time stamp at which the events function is called
+ * @item @var{vy}: The solutions of the set of ODEs at time @var{vt}
+ * @item @var{vextarg}: Extra arguments that are feed through to the @code{Jacobian} function
+ * @end itemize
+ *
+ * @indent @b{Note:} This function can only be used for ODE and DAE problem solvers.
+ * @end deftypefn
+ */
+octave_value odepkg_auxiliary_evaljacode (octave_value vjac,
+  octave_value vt, octave_value vy, octave_value_list vextarg) {
 
-  Octave_map vstats;
+  octave_value vret;
 
-  vstats.assign ("success", octave_value (vsucc));
-  vstats.assign ("failed", octave_value (vfail));
-  vstats.assign ("fevals", octave_value (vcall));
-  vstats.assign ("partial", octave_value (vpart));
-  vstats.assign ("ludecom", octave_value (vlude));
-  vstats.assign ("linsol", octave_value (vlsol));
-
-  if (vprnt == true) {
-    octave_stdout << "Number of function calls:    " << vsucc << std::endl;
-    octave_stdout << "Number of failed attempts:   " << vfail << std::endl;
-    octave_stdout << "Number of function evals:    " << vcall << std::endl;
-    octave_stdout << "Number of Jacobian evals:    " << vpart << std::endl;
-    octave_stdout << "Number of LU decompositions: " << vlude << std::endl;
-    octave_stdout << "Number of backward solves:   " << vlsol << std::endl;
+  // If vjac is a matrix then return its value to the caller function
+  if (vjac.is_matrix_type ()) {
+    vret = vjac;
   }
 
-  return (octave_value (vstats));
+  // If vjac is a function_hanlde or an inline_function then evaluate
+  // the function and return the results
+  else if (vjac.is_function_handle () || vjac.is_inline_function ()) {
+    octave_value_list varin;
+    octave_value_list varout;
+    varin(0) = vt;
+    varin(1) = vy;
+    // Fill up RHS arguments with extra arguments that are given
+    for (octave_idx_type vcnt = 0; vcnt < vextarg.length (); vcnt++)
+      varin(vcnt+2) = vextarg(vcnt);
+    // Evaluate the Jacobian function and return results
+    varout = feval (vjac.function_value (), varin, 1);
+    vret = varout(0);
+  }
+
+  // In principle this is not possible because odepkg_structure_check
+  // should find all occurences that are not valid
+  else {
+    error_with_id ("OdePkg:InvalidArgument",
+      "Jacobian must be a function handle or a matrix");
+  }
+
+  return (vret);
 }
 
-octave_idx_type odepkg_auxiliary_mebdfanalysis (octave_idx_type verr) {
-  
-  switch (verr)
-    {
-    case 0: break; // Everything is fine
+/* -*- texinfo -*-
+ * @deftypefn {Function} octave_value odepkg_auxiliary_evalmassode (octave_value vmass, octave_value vstate, octave_value vt, octave_value vy, octave_value_list vextarg)
+ *
+ * Return a matrix that comes from the evaluation of the @code{Mass} function. The input arguments of this function are
+ * @itemize @minus
+ * @item @var{vmass}: The @code{Mass} function that is evaluated
+ * @item @var{vstate}: The state variable that either is the string @code{'none'}, @code{'weak'} or @code{'strong'}
+ * @item @var{vt}: The time stamp at which the events function is called
+ * @item @var{vy}: The solutions of the set of ODEs at time @var{vt}
+ * @item @var{vextarg}: Extra arguments that are feed through to the @code{Mass} function
+ * @end itemize
+ *
+ * @indent @b{Note:} This function can only be used for ODE and DAE problem solvers.
+ * @end deftypefn
+ */
+octave_value odepkg_auxiliary_evalmassode
+  (octave_value vmass, octave_value vstate, octave_value vt,
+   octave_value vy, octave_value_list vextarg) {
 
-    case -1:
-      error_with_id ("OdePkg:InternalError",
-	"Integration was halted after failing to pass the error test (error occured in \"mebdfi\" core solver function)");
-      break;
+  octave_value vret;
 
-    case -2:
-      error_with_id ("OdePkg:InternalError",
-	"Integration was halted after failing to pass a repeated error test (error occured in \"mebdfi\" core solver function)");
-      break;
+  // If vmass is a matrix then return its value to the caller function
+  if (vmass.is_matrix_type ()) {
+    vret = vmass;
+  }
 
-    case -3:
-      error_with_id ("OdePkg:InternalError",
-	"Integration was halted after failing to achieve corrector convergence (error occured in \"mebdfi\" core solver function)");
-      break;
+  // If vmass is a function_hanlde or an inline_function then evaluate
+  // the function and return the results
+  else if (vmass.is_function_handle () || vmass.is_inline_function ()) {
+    error_with_id ("OdePkg:InvalidArgument",
+      "Missing implementation for MStateDependence");
+    octave_value_list varin;
+    octave_value_list varout;
+    varin(0) = vt;
+    varin(1) = vy;
+    // Fill up RHS arguments with extra arguments that are given
+    for (octave_idx_type vcnt = 0; vcnt < vextarg.length (); vcnt++)
+      varin(vcnt+2) = vextarg(vcnt);
+    // Evaluate the Mass function and return results
+    varout = feval (vmass.function_value (), varin, 1);
+    vret = varout(0);
+  }
 
-    case -4:
-      error_with_id ("OdePkg:InternalError",
-	"Immediate halt because of illegal input arguments (error occured in \"mebdfi\" core solver function)");
-      break;
+  // In principle this is not possible because odepkg_structure_check
+  // should find all occurences that are not valid
+  else {
+    error_with_id ("OdePkg:InvalidArgument",
+      "Mass must be a function handle or a matrix");
+  }
 
-    case -5:
-      error_with_id ("OdePkg:InternalError",
-	"Idid was -1 on input (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -6:
-      error_with_id ("OdePkg:InternalError",
-	"Maximum number of allowed integration steps exceeded (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -7:
-      error_with_id ("OdePkg:InternalError",
-	"Stepsize grew too small (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -11:
-      error_with_id ("OdePkg:InternalError",
-	"Insufficient real workspace for integration (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -12:
-      error_with_id ("OdePkg:InternalError",
-	"Insufficient integer workspace for integration (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -40:
-      error_with_id ("OdePkg:InternalError",
-	"Error too small to be attained for the machine precision (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -41:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument IDID (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -42:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument ATOL (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -43:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument RTOL (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -44:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument N<0 (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -45:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument (T0-TOUT)*H>0 (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -46:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument MF!=21 && MF!=22 (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -47:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument ITOL (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -48:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument MAXDER (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    case -49:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument INDEX VARIABLES (error occured in \"mebdfi\" core solver function)");
-      break;
-
-    default:
-      error_with_id ("OdePkg:InternalError",
-	"Integration was halted after failing to pass the error test (error occured in \"mebdfi\" core solver function with error number \"%d\")", verr);
-      break;
-    }
-
-  return (true);
+  return (vret);
 }
 
+/* -*- texinfo -*-
+ * @deftypefn {Function} octave_value odepkg_auxiliary_makestats (octave_value_list vstats, octave_idx_type vprnt)
+ *
+ * Return an @var{octave_value} that contains fields about performance informations of a finished solving process. The input arguments of this function are
+ * @itemize @minus
+ * @item @var{vstats}: The statistics informations list that has to be handled. The values that are treated have to be ordered as follows
+ * @enumerate
+ * @item Number of successful succesful steps
+ * @item Number of failed attempts
+ * @item Number of function evaluations
+ * @item Number of partial derivatives
+ * @item Number of LU decompositions
+ * @item Number of linear solutions
+ * @end enumerate
+ * @item @var{vprnt}: If @code{true} then the statistics information also is displayed on screen
+ * @end itemize
+ * @end deftypefn
+ */
+octave_value odepkg_auxiliary_makestats
+  (octave_value_list vstats, octave_idx_type vprnt) {
+
+  Octave_map vretval;
+
+  if (vstats.length () < 5)
+    error_with_id ("OdePkg:InvalidArgument",
+      "C++ function odepkg_auxiliary_makestats error");
+  else {
+    vretval.assign ("success", vstats(0));
+    vretval.assign ("failed",  vstats(1));
+    vretval.assign ("fevals",  vstats(2));
+    vretval.assign ("partial", vstats(3));
+    vretval.assign ("ludecom", vstats(4));
+    vretval.assign ("linsol",  vstats(5));
+  }
+
+  if (vprnt == true) {
+    octave_stdout << "Number of function calls:    " << vstats(0).int_value () << std::endl;
+    octave_stdout << "Number of failed attempts:   " << vstats(1).int_value () << std::endl;
+    octave_stdout << "Number of function evals:    " << vstats(2).int_value () << std::endl;
+    octave_stdout << "Number of Jacobian evals:    " << vstats(3).int_value () << std::endl;
+    octave_stdout << "Number of LU decompositions: " << vstats(4).int_value () << std::endl;
+    octave_stdout << "Number of backward solves:   " << vstats(5).int_value () << std::endl;
+  }
+
+  return (octave_value (vretval));
+}
+
+/* -*- texinfo -*-
+ * @deftypefn {Function} octave_idx_type odepkg_auxiliary_solstore (octave_value &vt, octave_value &vy, octave_value vsel, octave_idx_type vdeci)
+ *
+ * If @var{vdeci} is @code{0} (@var{vt} is a pointer to the initial time step and @var{vy} is a pointer to the initial values vector) then this function is initialized. Otherwise if @var{vdeci} is @code{1} (@var{vt} is a pointer to another time step and @var{vy} is a pointer to the solution vector) the values of @var{vt} and @var{vy} are added to the internal variable, if @var{vdeci} is @code{2} then the internal vectors are returned. The input arguments of this function are
+ * @itemize @minus
+ * @item @var{vt}: The time stamp at which the events function is called
+ * @item @var{vy}: The solutions of the set of ODEs at time @var{vt}
+ * @item @var{vsel}: The selection vector for which values should be treated
+ * @item @var{vdeci}: A decision flag that describes what evaluation should be done
+ * @end itemize
+ * @end deftypefn
+ */
 octave_idx_type odepkg_auxiliary_solstore 
   (octave_value &vt, octave_value &vy, octave_value vsel, octave_idx_type vdeci) {
 

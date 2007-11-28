@@ -901,7 +901,7 @@ demo odebdi\n\
 %!  veve  = vy(1); %# The event component that should be treaded
 %!  vterm =     1; %# Terminate solving if an event is found, 1
 %!  vdir  =    -1; %# Direction at zero-crossing, -1 for falling
-%!error 
+%!error
 %!  warning ("off", "OdePkg:InvalidOption");
 %!  B = odebdi (1, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1]);
 %!error 

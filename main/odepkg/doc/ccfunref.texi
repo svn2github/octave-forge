@@ -92,8 +92,16 @@ Return a matrix that comes from the evaluation of the @code{Mass} function. The 
 @end deftypefn
 
 
-@deftypefn {Function} octave_value odepkg_auxiliary_makestats (octave_idx_type vsucc, octave_idx_type vfail, octave_idx_type vcall, octave_idx_type vpart, octave_idx_type vlude, octave_idx_type vlsol, octave_idx_type vprnt)
-TODO
+@deftypefn {Function} octave_value odepkg_auxiliary_makestats (octave_value_list vstats, octave_idx_type vprnt)
+
+Return an @var{octave_value} that contains fields about performance informations of a finished solving process. The input arguments of this function are
+@itemize @minus
+@item @var{vstats}: The statistics informations that need to be handled
+@enumerate
+@item hello
+@end enumerate
+@item @var{vprnt}: If @code{true} then the statistics information also is displayed on screen
+@end itemize
 @end deftypefn
 
 
@@ -153,7 +161,7 @@ This static variable is used to store the extra arguments that are needed by som
 @end deftypevr
 
 
-@deftypevr {Variable} {static octave_function} {*vmebdfiodefun}
+@deftypevr {Variable} {static octave_value} {*vmebdfiodefun}
 
 This static variable is used to store the value for the user function that defines the set of IDEs.
 @end deftypevr
@@ -201,7 +209,7 @@ Return @code{true} if the evaluation of the Jacobian function (that is defined f
 @end deftypefn
 
 
-@deftypefn {Function} {} {DEFUN_DLD odebdi} {(odebdi, args, nargout, 'help string')}
+@deftypefn {Function} {} {DEFUN_DLD} {(odebdi, args, nargout, 'help string')}
 
 Return the results of the solving process of the IDE problem from the Fortran core solver @code{mebdfi} to the caller function (cf. @command{help odebdi} within Octave for further details about this function). the Argument @var{odebdi} is the name of the function that can be used in Octave and @var{'help string'} is the help text that is displayed if the command @command{help odebdi} is called from Octave. The input arguments of this function are
 @itemize @minus

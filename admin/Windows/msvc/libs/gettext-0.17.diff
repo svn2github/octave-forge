@@ -161,7 +161,7 @@ diff -ur gettext-0.17/gettext-runtime/libasprintf/Makefile.in gettext-0.17-new/g
 +asprintf.def: $(libasprintf_la_OBJECTS)
 +	echo "EXPORTS" > $@
 +	nm $(addprefix .libs/, $(libasprintf_la_OBJECTS:.lo=.o)) | \
-+	  sed -n -e 's/^.* T _\(.*\)$/\1/p' >> $@
++	  sed -n -e 's/^.* T _\(.*\)$$/\1/p' >> $@
 diff -ur gettext-0.17/gettext-runtime/libasprintf/config.h.in gettext-0.17-new/gettext-runtime/libasprintf/config.h.in
 --- gettext-0.17/gettext-runtime/libasprintf/config.h.in	Wed Nov  7 00:35:10 2007
 +++ gettext-0.17-new/gettext-runtime/libasprintf/config.h.in	Thu Nov 29 15:45:04 2007

@@ -66,6 +66,7 @@ fontconfigver=2.5.0
 gdver=2.0.35
 hdf5ver=1.6.6
 libiconvver=1.12
+gettextver=0.17
 
 ###################################################################################
 
@@ -436,7 +437,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/arpack.dll" ARPACK
     todo_check "$tbindir/jpeg6b.dll" libjpeg
     todo_check "$tlibdir/iconv.lib" libiconv
-    todo_check "$tbindir/intl.dll" gettext
+    todo_check "$tlibdir/intl.lib" gettext
     todo_check "$tbindir/libcairo-2.dll" cairo
     todo_check "$tbindir/libglib-2.0-0.dll" glib
     todo_check "$tbindir/libpango-1.0-0.dll" pango
@@ -1237,22 +1238,27 @@ fi
 ###########
 
 if check_package gettext; then
-  download_file gettext-0.15.tar.gz ftp://ftp.belnet.be/mirror/ftp.gnu.org/gnu/gettext/gettext-0.15.tar.gz
+  download_file gettext-$gettextver.tar.gz ftp://ftp.belnet.be/mirror/ftp.gnu.org/gnu/gettext/gettext-$gettextver.tar.gz
   echo -n "decompressing gettext... "
-  (cd "$DOWNLOAD_DIR" && tar xfz gettext-0.15.tar.gz)
-  cp libs/gettext-0.15.diff "$DOWNLOAD_DIR/gettext-0.15"
+  unpack_file gettext-$gettextver.tar.gz
+  cp libs/gettext-$gettextver.diff "$DOWNLOAD_DIR/gettext-$gettextver"
   echo "done"
   echo -n "compiling gettext... "
-  (cd "$DOWNLOAD_DIR/gettext-0.15" &&
-    patch -p1 < gettext-0.15.diff &&
-    nmake -f Makefile.msvc DLL=1 MFLAGS=-MD PREFIX=$tdir_w32 IIPREFIX=$tdir_w32_1 &&
-    cp gettext-tools/lib/gettextlib.dll gettext-tools/src/gettextsrc.dll "$tbindir" &&
-    cp gettext-tools/src/msgfmt.exe gettext-tools/src/xgettext.exe gettext-tools/src/msgmerge.exe "$tbindir" &&
-    cp gettext-runtime/intl/intl.dll "$tbindir" &&
-    cp gettext-runtime/intl/intl.lib "$tlibdir" &&
-    cp gettext-runtime/intl/libintl.h "$tincludedir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gettext-0.15"
-  if test ! -f "$tbindir/intl.dll"; then
+  (cd "$DOWNLOAD_DIR/gettext-$gettextver" &&
+    patch -p1 < gettext-$gettextver.diff &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 `pkg-config --cflags glib-2.0 libxml-2.0`" \
+      AR=ar-msvc RANLIB=ranlib-msvc ac_cv_func_memset=yes \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static  --disable-nls \
+      --disable-java --disable-native-java --enable-relocatable --with-included-gettext &&
+    for lt in `find . -name libtool`; do
+      post_process_libtool $lt
+    done &&
+    make &&
+    make install &&
+    rm $tlibdir_quoted/lib*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/gettext-$gettextver"
+  if test ! -f "$tlibdir/intl.lib"; then
     echo "failed"
     exit -1
   else

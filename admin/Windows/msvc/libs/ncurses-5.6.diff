@@ -433,7 +433,7 @@ diff -urN ncurses-5.6/ncurses/tinfo/home_terminfo.c ncurses-5.6-new/ncurses/tinf
 +    int n = 1024, nr;
 +
 +    if (temp == 0) {
-+        HMODULE hmod = GetModuleHandle("ncurses");
++        HMODULE hmod = GetModuleHandle("libncurses-5");
 +        do {
 +            if (temp == 0)
 +                temp = typeMalloc(char, n);

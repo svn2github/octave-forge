@@ -1,26 +1,18 @@
 diff -urN ncurses-5.6/aclocal.m4 ncurses-5.6-new/aclocal.m4
 --- ncurses-5.6/aclocal.m4	Sun Dec 17 17:12:38 2006
-+++ ncurses-5.6-new/aclocal.m4	Tue Nov 13 12:03:59 2007
-@@ -1846,6 +1846,7 @@
- 	case $cf_cv_system_name in
- 	OS/2*)	LIB_PREFIX=''     ;;
- 	os2*)	LIB_PREFIX=''     ;;
-+	msdosmsvc*)	LIB_PREFIX=''     ;;
- 	*)	LIB_PREFIX='lib'  ;;
- 	esac
- ifelse($1,,,[$1=$LIB_PREFIX])
-@@ -1927,6 +1928,10 @@
++++ ncurses-5.6-new/aclocal.m4	Thu Nov 29 13:38:58 2007
+@@ -1927,6 +1927,10 @@
  				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/\${SHARED_LIB} ../lib/\${IMPORT_LIB}"
  				continue
  			fi
 +			if test $cf_cv_system_name = msdosmsvc; then
-+				SHARED_LIB="${cf_dir}.dll"
-+				IMPORT_LIB="${cf_prefix}${cf_dir}.lib"
++				SHARED_LIB="${cf_prefix}${cf_dir}-\$(ABI_VERSION).dll"
++				IMPORT_LIB="${cf_dir}.lib"
 +			fi
  			fi
  			LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
  		done
-@@ -2328,7 +2333,7 @@
+@@ -2328,7 +2332,7 @@
  	profile) $2='_p.a' ;;
  	shared)
  		case $cf_cv_system_name in
@@ -29,7 +21,7 @@ diff -urN ncurses-5.6/aclocal.m4 ncurses-5.6-new/aclocal.m4
  		darwin*) $2='.dylib' ;;
  		hpux*)
  			case $target in
-@@ -3752,6 +3757,10 @@
+@@ -3752,6 +3756,10 @@
  	cf_cv_shlib_version_infix=no
  
  	case $cf_cv_system_name in
@@ -42,7 +34,7 @@ diff -urN ncurses-5.6/aclocal.m4 ncurses-5.6-new/aclocal.m4
  		;;
 diff -urN ncurses-5.6/c++/cursslk.h ncurses-5.6-new/c++/cursslk.h
 --- ncurses-5.6/c++/cursslk.h	Sat May 28 23:58:18 2005
-+++ ncurses-5.6-new/c++/cursslk.h	Tue Nov 13 12:03:59 2007
++++ ncurses-5.6-new/c++/cursslk.h	Thu Nov 29 13:38:58 2007
 @@ -100,10 +100,10 @@
    } Label_Layout;
  
@@ -78,7 +70,7 @@ diff -urN ncurses-5.6/c++/cursslk.h ncurses-5.6-new/c++/cursslk.h
    inline int labels() const { return num_labels; }
 diff -urN ncurses-5.6/c++/demo.cc ncurses-5.6-new/c++/demo.cc
 --- ncurses-5.6/c++/demo.cc	Sun Apr 23 00:38:57 2006
-+++ ncurses-5.6-new/c++/demo.cc	Tue Nov 13 12:03:59 2007
++++ ncurses-5.6-new/c++/demo.cc	Thu Nov 29 13:38:58 2007
 @@ -43,7 +43,12 @@
  #include "cursesm.h"
  #include "cursesf.h"
@@ -94,7 +86,7 @@ diff -urN ncurses-5.6/c++/demo.cc ncurses-5.6-new/c++/demo.cc
  
 diff -urN ncurses-5.6/configure ncurses-5.6-new/configure
 --- ncurses-5.6/configure	Sun Dec 17 17:33:38 2006
-+++ ncurses-5.6-new/configure	Tue Nov 13 12:03:59 2007
++++ ncurses-5.6-new/configure	Thu Nov 29 14:37:34 2007
 @@ -4254,6 +4254,7 @@
  	case $cf_cv_system_name in
  	OS/2*)	LIB_PREFIX=''     ;;
@@ -144,15 +136,7 @@ diff -urN ncurses-5.6/configure ncurses-5.6-new/configure
  		darwin*) CXX_LIB_SUFFIX='.dylib' ;;
  		hpux*)
  			case $target in
-@@ -16390,6 +16400,7 @@
- 	case $cf_cv_system_name in
- 	OS/2*)	LIB_PREFIX=''     ;;
- 	os2*)	LIB_PREFIX=''     ;;
-+	msdosmsvc*)	LIB_PREFIX=''     ;;
- 	*)	LIB_PREFIX='lib'  ;;
- 	esac
- cf_prefix=$LIB_PREFIX
-@@ -16413,7 +16424,7 @@
+@@ -16413,7 +16423,7 @@
  	profile) cf_suffix='_p.a' ;;
  	shared)
  		case $cf_cv_system_name in
@@ -161,18 +145,20 @@ diff -urN ncurses-5.6/configure ncurses-5.6-new/configure
  		darwin*) cf_suffix='.dylib' ;;
  		hpux*)
  			case $target in
-@@ -16472,6 +16483,10 @@
+@@ -16472,6 +16482,12 @@
  				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/\${SHARED_LIB} ../lib/\${IMPORT_LIB}"
  				continue
  			fi
 +			if test $cf_cv_system_name = msdosmsvc; then
-+				SHARED_LIB="${cf_dir}.dll"
-+				IMPORT_LIB="${cf_prefix}${cf_dir}.lib"
++				SHARED_LIB="${cf_prefix}${cf_dir}-\$(ABI_VERSION).dll"
++				IMPORT_LIB="${cf_dir}.lib"
++				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/\${SHARED_LIB} ../lib/\${IMPORT_LIB}"
++				continue
 +			fi
  			fi
  			LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
  		done
-@@ -16513,7 +16528,7 @@
+@@ -16513,7 +16529,7 @@
  	profile) cf_suffix='_p.a' ;;
  	shared)
  		case $cf_cv_system_name in
@@ -183,7 +169,7 @@ diff -urN ncurses-5.6/configure ncurses-5.6-new/configure
  			case $target in
 diff -urN ncurses-5.6/include/MKterm.h.awk.in ncurses-5.6-new/include/MKterm.h.awk.in
 --- ncurses-5.6/include/MKterm.h.awk.in	Sun Nov 26 02:18:23 2006
-+++ ncurses-5.6-new/include/MKterm.h.awk.in	Tue Nov 13 12:03:59 2007
++++ ncurses-5.6-new/include/MKterm.h.awk.in	Thu Nov 29 13:38:58 2007
 @@ -130,8 +130,47 @@
  		    print  "#else /* !HAVE_TERMIO_H */"
  		    print  ""
@@ -234,7 +220,7 @@ diff -urN ncurses-5.6/include/MKterm.h.awk.in ncurses-5.6-new/include/MKterm.h.a
  		    print  "#endif /* HAVE_TERMIO_H */"
 diff -urN ncurses-5.6/include/ncurses_defs ncurses-5.6-new/include/ncurses_defs
 --- ncurses-5.6/include/ncurses_defs	Sat Aug  5 21:27:02 2006
-+++ ncurses-5.6-new/include/ncurses_defs	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/include/ncurses_defs	Thu Nov 29 13:38:58 2007
 @@ -30,7 +30,6 @@
  # See "MKncurses_def.sh" for an explanation.
  #
@@ -245,7 +231,7 @@ diff -urN ncurses-5.6/include/ncurses_defs ncurses-5.6-new/include/ncurses_defs
  CC_HAS_INLINE_FUNCS
 diff -urN ncurses-5.6/include/ncurses_dll.h ncurses-5.6-new/include/ncurses_dll.h
 --- ncurses-5.6/include/ncurses_dll.h	Sun Apr 23 00:07:51 2006
-+++ ncurses-5.6-new/include/ncurses_dll.h	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/include/ncurses_dll.h	Thu Nov 29 13:38:58 2007
 @@ -34,10 +34,12 @@
  /* but this structure may be useful at some point for an MSVC build */
  /* so, for now unconditionally define the important flags           */
@@ -263,7 +249,7 @@ diff -urN ncurses-5.6/include/ncurses_dll.h ncurses-5.6-new/include/ncurses_dll.
  #      undef NCURSES_STATIC
 diff -urN ncurses-5.6/include/term_entry.h ncurses-5.6-new/include/term_entry.h
 --- ncurses-5.6/include/term_entry.h	Sat Jul 16 23:15:07 2005
-+++ ncurses-5.6-new/include/term_entry.h	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/include/term_entry.h	Thu Nov 29 13:38:58 2007
 @@ -155,8 +155,8 @@
  extern NCURSES_EXPORT(int) _nc_resolve_uses (bool); /* obs 20040705 */
  extern NCURSES_EXPORT(int) _nc_resolve_uses2 (bool, bool);
@@ -277,7 +263,7 @@ diff -urN ncurses-5.6/include/term_entry.h ncurses-5.6-new/include/term_entry.h
  extern NCURSES_EXPORT(void) _nc_trace_xnames (TERMTYPE *);
 diff -urN ncurses-5.6/include/tic.h ncurses-5.6-new/include/tic.h
 --- ncurses-5.6/include/tic.h	Sat Aug 19 16:17:49 2006
-+++ ncurses-5.6-new/include/tic.h	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/include/tic.h	Thu Nov 29 13:38:58 2007
 @@ -300,6 +300,9 @@
  
  /* home_terminfo.c */
@@ -300,7 +286,7 @@ diff -urN ncurses-5.6/include/tic.h ncurses-5.6-new/include/tic.h
      dbdCfgList,
 diff -urN ncurses-5.6/mk-1st.awk ncurses-5.6-new/mk-1st.awk
 --- ncurses-5.6/mk-1st.awk	Sun Oct  8 02:14:08 2006
-+++ ncurses-5.6-new/mk-1st.awk	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/mk-1st.awk	Thu Nov 29 14:32:32 2007
 @@ -83,7 +83,7 @@
  		printf "\t$(MK_SHARED_LIB) $(%s_OBJS) $(%s) $(LDFLAGS)\n", objs, shlib_list
  	}
@@ -310,16 +296,26 @@ diff -urN ncurses-5.6/mk-1st.awk ncurses-5.6-new/mk-1st.awk
  			printf "\tcd %s && (", directory
  			if ( DoLinks == "reverse" ) {
  				if ( ShlibVer == "rel" ) {
-@@ -212,6 +212,8 @@
+@@ -212,6 +212,9 @@
  					abi_name = sprintf("%s%s$(ABI_VERSION)%s", "cyg", name, suffix);
  					rel_name = sprintf("%s%s$(REL_VERSION)%s", "cyg", name, suffix);
  					imp_name = sprintf("%s%s%s.a", prefix, name, suffix);
 +				} else if (ShlibVerInfix == "msvcdll") {
-+					imp_name = sprintf("%s%s.lib", prefix, name);
++					abi_name = sprintf("%s%s-$(ABI_VERSION)%s", prefix, name, suffix);
++					imp_name = sprintf("%s.lib", name);
  				} else if (ShlibVerInfix == "yes") {
  					abi_name = sprintf("%s%s.$(ABI_VERSION)%s", prefix, name, suffix);
  					rel_name = sprintf("%s%s.$(REL_VERSION)%s", prefix, name, suffix);
-@@ -237,7 +239,7 @@
+@@ -224,7 +227,7 @@
+ 				} else {
+ 					if ( ShlibVer == "rel" ) {
+ 						end_name = rel_name;
+-					} else if ( ShlibVer == "abi" || ShlibVer == "cygdll" ) {
++					} else if ( ShlibVer == "abi" || ShlibVer == "cygdll" || ShlibVer = "msvcdll" ) {
+ 						end_name = abi_name;
+ 					} else {
+ 						end_name = lib_name;
+@@ -237,7 +240,7 @@
  				print  "install \\"
  				print  "install.libs \\"
  
@@ -328,7 +324,7 @@ diff -urN ncurses-5.6/mk-1st.awk ncurses-5.6-new/mk-1st.awk
  
  					dst_dirs = "$(DESTDIR)$(bindir) $(DESTDIR)$(libdir)";
  					printf "install.%s :: %s $(LIBRARIES)\n", name, dst_dirs
-@@ -271,7 +273,7 @@
+@@ -271,7 +274,7 @@
  				print  "uninstall \\"
  				print  "uninstall.libs \\"
  				printf "uninstall.%s ::\n", name
@@ -339,7 +335,7 @@ diff -urN ncurses-5.6/mk-1st.awk ncurses-5.6-new/mk-1st.awk
  					printf "\t-@rm -f $(DESTDIR)$(bindir)/%s\n", end_name
 diff -urN ncurses-5.6/ncurses/Makefile.in ncurses-5.6-new/ncurses/Makefile.in
 --- ncurses-5.6/ncurses/Makefile.in	Sat Oct 14 21:08:11 2006
-+++ ncurses-5.6-new/ncurses/Makefile.in	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/ncurses/Makefile.in	Thu Nov 29 13:38:58 2007
 @@ -88,7 +88,7 @@
  CFLAGS		= @CFLAGS@
  
@@ -351,7 +347,7 @@ diff -urN ncurses-5.6/ncurses/Makefile.in ncurses-5.6-new/ncurses/Makefile.in
  
 diff -urN ncurses-5.6/ncurses/curses.priv.h ncurses-5.6-new/ncurses/curses.priv.h
 --- ncurses-5.6/ncurses/curses.priv.h	Sun Dec 10 01:55:14 2006
-+++ ncurses-5.6-new/ncurses/curses.priv.h	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/ncurses/curses.priv.h	Thu Nov 29 13:38:58 2007
 @@ -676,7 +676,11 @@
  #define	W_OK	2		/* Test for write permission.  */
  #endif
@@ -366,7 +362,7 @@ diff -urN ncurses-5.6/ncurses/curses.priv.h ncurses-5.6-new/ncurses/curses.priv.
  #define	F_OK	0		/* Test for existence.  */
 diff -urN ncurses-5.6/ncurses/modules ncurses-5.6-new/ncurses/modules
 --- ncurses-5.6/ncurses/modules	Sat Aug 12 16:19:44 2006
-+++ ncurses-5.6-new/ncurses/modules	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/ncurses/modules	Thu Nov 29 13:38:58 2007
 @@ -182,6 +182,7 @@
  lib_kernel	lib		$(tinfo)	../include/term.h
  lib_keyname	lib		.		../include/term.h
@@ -377,7 +373,7 @@ diff -urN ncurses-5.6/ncurses/modules ncurses-5.6-new/ncurses/modules
  lib_raw 	lib		$(tinfo)	../include/term.h
 diff -urN ncurses-5.6/ncurses/tinfo/comp_parse.c ncurses-5.6-new/ncurses/tinfo/comp_parse.c
 --- ncurses-5.6/ncurses/tinfo/comp_parse.c	Sat Jul  8 20:55:14 2006
-+++ ncurses-5.6-new/ncurses/tinfo/comp_parse.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/ncurses/tinfo/comp_parse.c	Thu Nov 29 13:38:58 2007
 @@ -56,11 +56,11 @@
  MODULE_ID("$Id: comp_parse.c,v 1.63 2006/07/08 18:55:14 tom Exp $")
  
@@ -394,7 +390,7 @@ diff -urN ncurses-5.6/ncurses/tinfo/comp_parse.c ncurses-5.6-new/ncurses/tinfo/c
   *
 diff -urN ncurses-5.6/ncurses/tinfo/db_iterator.c ncurses-5.6-new/ncurses/tinfo/db_iterator.c
 --- ncurses-5.6/ncurses/tinfo/db_iterator.c	Sat Dec 16 20:06:42 2006
-+++ ncurses-5.6-new/ncurses/tinfo/db_iterator.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/ncurses/tinfo/db_iterator.c	Thu Nov 29 13:38:58 2007
 @@ -168,6 +168,11 @@
  		result = _nc_home_terminfo();
  	    }
@@ -409,7 +405,7 @@ diff -urN ncurses-5.6/ncurses/tinfo/db_iterator.c ncurses-5.6-new/ncurses/tinfo/
  		if ((result = NEXT_DBD(getenv("TERMINFO_DIRS"), offset)) != 0)
 diff -urN ncurses-5.6/ncurses/tinfo/home_terminfo.c ncurses-5.6-new/ncurses/tinfo/home_terminfo.c
 --- ncurses-5.6/ncurses/tinfo/home_terminfo.c	Sat Jul  2 21:43:38 2005
-+++ ncurses-5.6-new/ncurses/tinfo/home_terminfo.c	Tue Nov 13 12:10:06 2007
++++ ncurses-5.6-new/ncurses/tinfo/home_terminfo.c	Thu Nov 29 13:38:58 2007
 @@ -34,6 +34,12 @@
   *	home_terminfo.c -- return the $HOME/.terminfo string, expanded
   */
@@ -477,7 +473,7 @@ diff -urN ncurses-5.6/ncurses/tinfo/home_terminfo.c ncurses-5.6-new/ncurses/tinf
 +#endif
 diff -urN ncurses-5.6/ncurses/tinfo/lib_msvc.c ncurses-5.6-new/ncurses/tinfo/lib_msvc.c
 --- ncurses-5.6/ncurses/tinfo/lib_msvc.c	Thu Jan  1 01:00:00 1970
-+++ ncurses-5.6-new/ncurses/tinfo/lib_msvc.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/ncurses/tinfo/lib_msvc.c	Thu Nov 29 13:38:58 2007
 @@ -0,0 +1,21 @@
 +#include <term.h>
 +
@@ -502,7 +498,7 @@ diff -urN ncurses-5.6/ncurses/tinfo/lib_msvc.c ncurses-5.6-new/ncurses/tinfo/lib
 +}
 diff -urN ncurses-5.6/ncurses/tinfo/lib_print.c ncurses-5.6-new/ncurses/tinfo/lib_print.c
 --- ncurses-5.6/ncurses/tinfo/lib_print.c	Sun Nov 26 01:26:34 2006
-+++ ncurses-5.6-new/ncurses/tinfo/lib_print.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/ncurses/tinfo/lib_print.c	Thu Nov 29 13:38:58 2007
 @@ -35,6 +35,11 @@
  
  #include <term.h>
@@ -517,7 +513,7 @@ diff -urN ncurses-5.6/ncurses/tinfo/lib_print.c ncurses-5.6-new/ncurses/tinfo/li
  NCURSES_EXPORT(int)
 diff -urN ncurses-5.6/ncurses/tty/lib_tstp.c ncurses-5.6-new/ncurses/tty/lib_tstp.c
 --- ncurses-5.6/ncurses/tty/lib_tstp.c	Sat Apr  1 21:31:34 2006
-+++ ncurses-5.6-new/ncurses/tty/lib_tstp.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/ncurses/tty/lib_tstp.c	Thu Nov 29 13:38:58 2007
 @@ -59,16 +59,20 @@
  signal_name(int sig)
  {
@@ -563,7 +559,7 @@ diff -urN ncurses-5.6/ncurses/tty/lib_tstp.c ncurses-5.6-new/ncurses/tty/lib_tst
  	sigemptyset(&act.sa_mask);
 diff -urN ncurses-5.6/progs/getopt.c ncurses-5.6-new/progs/getopt.c
 --- ncurses-5.6/progs/getopt.c	Thu Jan  1 01:00:00 1970
-+++ ncurses-5.6-new/progs/getopt.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/progs/getopt.c	Thu Nov 29 14:47:31 2007
 @@ -0,0 +1,751 @@
 +/* Getopt for GNU.
 +   NOTE: getopt is now part of the C library, so if you don't know what
@@ -599,7 +595,7 @@ diff -urN ncurses-5.6/progs/getopt.c ncurses-5.6-new/progs/getopt.c
 +#endif
 +
 +#include <stdio.h>
-+#include "tailor.h"
++/*#include "tailor.h"*/
 +
 +/* Comment out all this code if we are using the GNU C Library, and are not
 +   actually compiling the library itself.  This code is part of the GNU C
@@ -1318,7 +1314,7 @@ diff -urN ncurses-5.6/progs/getopt.c ncurses-5.6-new/progs/getopt.c
 +#endif /* TEST */
 diff -urN ncurses-5.6/progs/getopt.h ncurses-5.6-new/progs/getopt.h
 --- ncurses-5.6/progs/getopt.h	Thu Jan  1 01:00:00 1970
-+++ ncurses-5.6-new/progs/getopt.h	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/progs/getopt.h	Thu Nov 29 13:38:58 2007
 @@ -0,0 +1,127 @@
 +/* Declarations for getopt.
 +   Copyright (C) 1989, 1990, 1991, 1992, 1993 Free Software Foundation, Inc.
@@ -1449,7 +1445,7 @@ diff -urN ncurses-5.6/progs/getopt.h ncurses-5.6-new/progs/getopt.h
 +#endif /* _GETOPT_H */
 diff -urN ncurses-5.6/progs/infocmp.c ncurses-5.6-new/progs/infocmp.c
 --- ncurses-5.6/progs/infocmp.c	Sat Aug 19 23:20:37 2006
-+++ ncurses-5.6-new/progs/infocmp.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/progs/infocmp.c	Thu Nov 29 13:38:58 2007
 @@ -51,6 +51,10 @@
  
  const char *_nc_progname = "infocmp";
@@ -1463,7 +1459,7 @@ diff -urN ncurses-5.6/progs/infocmp.c ncurses-5.6-new/progs/infocmp.c
  /***************************************************************************
 diff -urN ncurses-5.6/progs/progs.priv.h ncurses-5.6-new/progs/progs.priv.h
 --- ncurses-5.6/progs/progs.priv.h	Sun Nov 26 01:28:01 2006
-+++ ncurses-5.6-new/progs/progs.priv.h	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/progs/progs.priv.h	Thu Nov 29 13:38:58 2007
 @@ -138,7 +138,11 @@
  #endif
  
@@ -1476,342 +1472,9 @@ diff -urN ncurses-5.6/progs/progs.priv.h ncurses-5.6-new/progs/progs.priv.h
  #endif
  
  #ifndef F_OK
-diff -urN ncurses-5.6/progs/tailor.h ncurses-5.6-new/progs/tailor.h
---- ncurses-5.6/progs/tailor.h	Thu Jan  1 01:00:00 1970
-+++ ncurses-5.6-new/progs/tailor.h	Tue Nov 13 12:04:00 2007
-@@ -0,0 +1,329 @@
-+/* tailor.h -- target dependent definitions
-+ * Copyright (C) 1992-1993 Jean-loup Gailly.
-+ * This is free software; you can redistribute it and/or modify it under the
-+ * terms of the GNU General Public License, see the file COPYING.
-+ */
-+
-+/* The target dependent definitions should be defined here only.
-+ * The target dependent functions should be defined in tailor.c.
-+ */
-+
-+/* $Id: ncurses-5.6.diff 4075 2007-10-01 19:56:26Z goffioul $ */
-+
-+#if defined(__MSDOS__) && !defined(MSDOS)
-+#  define MSDOS
-+#endif
-+
-+#if defined(__OS2__) && !defined(OS2)
-+#  define OS2
-+#endif
-+
-+#if defined(OS2) && defined(MSDOS) /* MS C under OS/2 */
-+#  undef MSDOS
-+#endif
-+
-+#ifdef MSDOS
-+#  ifdef __GNUC__
-+     /* DJGPP version 1.09+ on MS-DOS.
-+      * The DJGPP 1.09 stat() function must be upgraded before gzip will
-+      * fully work.
-+      * No need for DIRENT, since <unistd.h> defines POSIX_SOURCE which
-+      * implies DIRENT.
-+      */
-+#    define near
-+#  else
-+#    define MAXSEG_64K
-+#    ifdef __TURBOC__
-+#      define NO_OFF_T
-+#      ifdef __BORLANDC__
-+#        define DIRENT
-+#      else
-+#        define NO_UTIME
-+#      endif
-+#    else /* MSC */
-+#      define HAVE_SYS_UTIME_H
-+#      define NO_UTIME_H
-+#    endif
-+#  endif
-+#  define PATH_SEP2 '\\'
-+#  define PATH_SEP3 ':'
-+#  define MAX_PATH_LEN  128
-+#  define NO_MULTIPLE_DOTS
-+#  define MAX_EXT_CHARS 3
-+#  define Z_SUFFIX "z"
-+#  define NO_CHOWN
-+#  define PROTO
-+#  define STDC_HEADERS
-+#  define NO_SIZE_CHECK
-+#  define casemap(c) tolow(c) /* Force file names to lower case */
-+#  include <io.h>
-+#  define OS_CODE  0x00
-+#  define SET_BINARY_MODE(fd) setmode(fd, O_BINARY)
-+#  if !defined(NO_ASM) && !defined(ASMV)
-+#    define ASMV
-+#  endif
-+#else
-+#  define near
-+#endif
-+
-+#ifdef OS2
-+#  define PATH_SEP2 '\\'
-+#  define PATH_SEP3 ':'
-+#  define MAX_PATH_LEN  260
-+#  ifdef OS2FAT
-+#    define NO_MULTIPLE_DOTS
-+#    define MAX_EXT_CHARS 3
-+#    define Z_SUFFIX "z"
-+#    define casemap(c) tolow(c)
-+#  endif
-+#  define NO_CHOWN
-+#  define PROTO
-+#  define STDC_HEADERS
-+#  include <io.h>
-+#  define OS_CODE  0x06
-+#  define SET_BINARY_MODE(fd) setmode(fd, O_BINARY)
-+#  ifdef _MSC_VER
-+#    define HAVE_SYS_UTIME_H
-+#    define NO_UTIME_H
-+#    define MAXSEG_64K
-+#    undef near
-+#    define near _near
-+#  endif
-+#  ifdef __EMX__
-+#    define HAVE_SYS_UTIME_H
-+#    define NO_UTIME_H
-+#    define DIRENT
-+#    define EXPAND(argc,argv) \
-+       {_response(&argc, &argv); _wildcard(&argc, &argv);}
-+#  endif
-+#  ifdef __BORLANDC__
-+#    define DIRENT
-+#  endif
-+#  ifdef __ZTC__
-+#    define NO_DIR
-+#    define NO_UTIME_H
-+#    include <dos.h>
-+#    define EXPAND(argc,argv) \
-+       {response_expand(&argc, &argv);}
-+#  endif
-+#endif
-+
-+#ifdef WIN32 /* Windows NT */
-+#  define HAVE_SYS_UTIME_H
-+#  define NO_UTIME_H
-+#  define PATH_SEP2 '\\'
-+#  define PATH_SEP3 ':'
-+#  define MAX_PATH_LEN  260
-+#  define NO_CHOWN
-+#  define PROTO
-+#  define STDC_HEADERS
-+#  define SET_BINARY_MODE(fd) setmode(fd, O_BINARY)
-+#  include <stdlib.h>
-+#  include <io.h>
-+#  include <malloc.h>
-+#  ifdef NTFAT
-+#    define NO_MULTIPLE_DOTS
-+#    define MAX_EXT_CHARS 3
-+#    define Z_SUFFIX "z"
-+#    define casemap(c) tolow(c) /* Force file names to lower case */
-+#  endif
-+#  define OS_CODE  0x0b
-+#endif
-+
-+#ifdef MSDOS
-+#  ifdef __TURBOC__
-+#    include <alloc.h>
-+#    define DYN_ALLOC
-+     /* Turbo C 2.0 does not accept static allocations of large arrays */
-+     void * fcalloc (unsigned items, unsigned size);
-+     void fcfree (void *ptr);
-+#  else /* MSC */
-+#    include <malloc.h>
-+#    define fcalloc(nitems,itemsize) halloc((long)(nitems),(itemsize))
-+#    define fcfree(ptr) hfree(ptr)
-+#  endif
-+#else
-+#  ifdef MAXSEG_64K
-+#    define fcalloc(items,size) calloc((items),(size))
-+#  else
-+#    define fcalloc(items,size) malloc((size_t)(items)*(size_t)(size))
-+#  endif
-+#  define fcfree(ptr) free(ptr)
-+#endif
-+
-+#if defined(VAXC) || defined(VMS)
-+#  define PATH_SEP ']'
-+#  define PATH_SEP2 ':'
-+#  define SUFFIX_SEP ';'
-+#  define NO_MULTIPLE_DOTS
-+#  define Z_SUFFIX "-gz"
-+#  define RECORD_IO 1
-+#  define casemap(c) tolow(c)
-+#  define OS_CODE  0x02
-+#  define OPTIONS_VAR "GZIP_OPT"
-+#  define STDC_HEADERS
-+#  define NO_UTIME
-+#  define EXPAND(argc,argv) vms_expand_args(&argc,&argv);
-+#  include <file.h>
-+#  define unlink delete
-+#  ifdef VAXC
-+#    define NO_FCNTL_H
-+#    include <unixio.h>
-+#  endif
-+#endif
-+
-+#ifdef AMIGA
-+#  define PATH_SEP2 ':'
-+#  define STDC_HEADERS
-+#  define OS_CODE  0x01
-+#  define ASMV
-+#  ifdef __GNUC__
-+#    define DIRENT
-+#    define HAVE_UNISTD_H
-+#  else /* SASC */
-+#    define NO_STDIN_FSTAT
-+#    define SYSDIR
-+#    define NO_SYMLINK
-+#    define NO_CHOWN
-+#    define NO_FCNTL_H
-+#    include <fcntl.h> /* for read() and write() */
-+#    define direct dirent
-+     extern void _expand_args(int *argc, char ***argv);
-+#    define EXPAND(argc,argv) _expand_args(&argc,&argv);
-+#    undef  O_BINARY /* disable useless --ascii option */
-+#  endif
-+#endif
-+
-+#if defined(ATARI) || defined(atarist)
-+#  ifndef STDC_HEADERS
-+#    define STDC_HEADERS
-+#    define HAVE_UNISTD_H
-+#    define DIRENT
-+#  endif
-+#  define ASMV
-+#  define OS_CODE  0x05
-+#  ifdef TOSFS
-+#    define PATH_SEP2 '\\'
-+#    define PATH_SEP3 ':'
-+#    define MAX_PATH_LEN  128
-+#    define NO_MULTIPLE_DOTS
-+#    define MAX_EXT_CHARS 3
-+#    define Z_SUFFIX "z"
-+#    define NO_CHOWN
-+#    define casemap(c) tolow(c) /* Force file names to lower case */
-+#    define NO_SYMLINK
-+#  endif
-+#endif
-+
-+#ifdef MACOS
-+#  define PATH_SEP ':'
-+#  define DYN_ALLOC
-+#  define PROTO
-+#  define NO_STDIN_FSTAT
-+#  define NO_CHOWN
-+#  define NO_UTIME
-+#  define chmod(file, mode) (0)
-+#  define OPEN(name, flags, mode) open(name, flags)
-+#  define OS_CODE  0x07
-+#  ifdef MPW
-+#    define isatty(fd) ((fd) <= 2)
-+#  endif
-+#endif
-+
-+#ifdef __50SERIES /* Prime/PRIMOS */
-+#  define PATH_SEP '>'
-+#  define STDC_HEADERS
-+#  define NO_MEMORY_H
-+#  define NO_UTIME_H
-+#  define NO_UTIME
-+#  define NO_CHOWN 
-+#  define NO_STDIN_FSTAT 
-+#  define NO_SIZE_CHECK 
-+#  define NO_SYMLINK
-+#  define RECORD_IO  1
-+#  define casemap(c)  tolow(c) /* Force file names to lower case */
-+#  define put_char(c) put_byte((c) & 0x7F)
-+#  define get_char(c) ascii2pascii(get_byte())
-+#  define OS_CODE  0x0F    /* temporary, subject to change */
-+#  ifdef SIGTERM
-+#    undef SIGTERM         /* We don't want a signal handler for SIGTERM */
-+#  endif
-+#endif
-+
-+#if defined(pyr) && !defined(NOMEMCPY) /* Pyramid */
-+#  define NOMEMCPY /* problem with overlapping copies */
-+#endif
-+
-+#ifdef TOPS20
-+#  define OS_CODE  0x0a
-+#endif
-+
-+#ifndef unix
-+#  define NO_ST_INO /* don't rely on inode numbers */
-+#endif
-+
-+
-+	/* Common defaults */
-+
-+#ifndef OS_CODE
-+#  define OS_CODE  0x03  /* assume Unix */
-+#endif
-+
-+#ifndef PATH_SEP
-+#  define PATH_SEP '/'
-+#endif
-+
-+#ifndef casemap
-+#  define casemap(c) (c)
-+#endif
-+
-+#ifndef OPTIONS_VAR
-+#  define OPTIONS_VAR "GZIP"
-+#endif
-+
-+#ifndef Z_SUFFIX
-+#  define Z_SUFFIX ".gz"
-+#endif
-+
-+#ifdef MAX_EXT_CHARS
-+#  define MAX_SUFFIX  MAX_EXT_CHARS
-+#else
-+#  define MAX_SUFFIX  30
-+#endif
-+
-+#ifndef MAKE_LEGAL_NAME
-+#  ifdef NO_MULTIPLE_DOTS
-+#    define MAKE_LEGAL_NAME(name)   make_simple_name(name)
-+#  else
-+#    define MAKE_LEGAL_NAME(name)
-+#  endif
-+#endif
-+
-+#ifndef MIN_PART
-+#  define MIN_PART 3
-+   /* keep at least MIN_PART chars between dots in a file name. */
-+#endif
-+
-+#ifndef EXPAND
-+#  define EXPAND(argc,argv)
-+#endif
-+
-+#ifndef RECORD_IO
-+#  define RECORD_IO 0
-+#endif
-+
-+#ifndef SET_BINARY_MODE
-+#  define SET_BINARY_MODE(fd)
-+#endif
-+
-+#ifndef OPEN
-+#  define OPEN(name, flags, mode) open(name, flags, mode)
-+#endif
-+
-+#ifndef get_char
-+#  define get_char() get_byte()
-+#endif
-+
-+#ifndef put_char
-+#  define put_char(c) put_byte(c)
-+#endif
 diff -urN ncurses-5.6/progs/tic.c ncurses-5.6-new/progs/tic.c
 --- ncurses-5.6/progs/tic.c	Sat Dec  2 23:13:17 2006
-+++ ncurses-5.6-new/progs/tic.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/progs/tic.c	Thu Nov 29 13:38:58 2007
 @@ -48,6 +48,10 @@
  
  const char *_nc_progname = "tic";
@@ -1825,7 +1488,7 @@ diff -urN ncurses-5.6/progs/tic.c ncurses-5.6-new/progs/tic.c
  static bool capdump = FALSE;	/* running as infotocap? */
 diff -urN ncurses-5.6/progs/toe.c ncurses-5.6-new/progs/toe.c
 --- ncurses-5.6/progs/toe.c	Sat Aug 19 20:18:09 2006
-+++ ncurses-5.6-new/progs/toe.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/progs/toe.c	Thu Nov 29 13:38:58 2007
 @@ -36,6 +36,69 @@
   *	toe.c --- table of entries report generator
   */
@@ -1898,7 +1561,7 @@ diff -urN ncurses-5.6/progs/toe.c ncurses-5.6-new/progs/toe.c
  #include <sys/stat.h>
 diff -urN ncurses-5.6/progs/tput.c ncurses-5.6-new/progs/tput.c
 --- ncurses-5.6/progs/tput.c	Sun Nov 26 01:27:47 2006
-+++ ncurses-5.6-new/progs/tput.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/progs/tput.c	Thu Nov 29 13:38:58 2007
 @@ -45,6 +45,11 @@
  #endif
  #include <transform.h>
@@ -1913,7 +1576,7 @@ diff -urN ncurses-5.6/progs/tput.c ncurses-5.6-new/progs/tput.c
  #define PUTS(s)		fputs(s, stdout)
 diff -urN ncurses-5.6/progs/tset.c ncurses-5.6-new/progs/tset.c
 --- ncurses-5.6/progs/tset.c	Sat Sep 16 19:51:10 2006
-+++ ncurses-5.6-new/progs/tset.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/progs/tset.c	Thu Nov 29 13:38:58 2007
 @@ -105,12 +105,20 @@
  
  MODULE_ID("$Id: tset.c,v 1.67 2006/09/16 17:51:10 tom Exp $")
@@ -1937,7 +1600,7 @@ diff -urN ncurses-5.6/progs/tset.c ncurses-5.6-new/progs/tset.c
  
 diff -urN ncurses-5.6/tack/Makefile.in ncurses-5.6-new/tack/Makefile.in
 --- ncurses-5.6/tack/Makefile.in	Sun Dec 17 16:58:32 2006
-+++ ncurses-5.6-new/tack/Makefile.in	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/tack/Makefile.in	Thu Nov 29 13:38:58 2007
 @@ -166,7 +166,7 @@
  	$(MODEL)/tack$o
  
@@ -1949,7 +1612,7 @@ diff -urN ncurses-5.6/tack/Makefile.in ncurses-5.6-new/tack/Makefile.in
  # Utility productions start here
 diff -urN ncurses-5.6/tack/init.c ncurses-5.6-new/tack/init.c
 --- ncurses-5.6/tack/init.c	Sun Nov 26 01:16:01 2006
-+++ ncurses-5.6-new/tack/init.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/tack/init.c	Thu Nov 29 13:38:58 2007
 @@ -21,6 +21,9 @@
  /* initialization and wrapup code */
  
@@ -1985,7 +1648,7 @@ diff -urN ncurses-5.6/tack/init.c ncurses-5.6-new/tack/init.c
  }
 diff -urN ncurses-5.6/tack/sysdep.c ncurses-5.6-new/tack/sysdep.c
 --- ncurses-5.6/tack/sysdep.c	Sat Sep 17 21:49:16 2005
-+++ ncurses-5.6-new/tack/sysdep.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/tack/sysdep.c	Thu Nov 29 13:38:58 2007
 @@ -425,10 +425,16 @@
  {
  	/* ignore signals */
@@ -2031,7 +1694,7 @@ diff -urN ncurses-5.6/tack/sysdep.c ncurses-5.6-new/tack/sysdep.c
  }
 diff -urN ncurses-5.6/test/bs.c ncurses-5.6-new/test/bs.c
 --- ncurses-5.6/test/bs.c	Sat May 20 17:38:52 2006
-+++ ncurses-5.6-new/test/bs.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/test/bs.c	Thu Nov 29 13:38:58 2007
 @@ -220,10 +220,12 @@
  
      CATCHALL(uninitgame);
@@ -2047,7 +1710,7 @@ diff -urN ncurses-5.6/test/bs.c ncurses-5.6-new/test/bs.c
      (void) initscr();
 diff -urN ncurses-5.6/test/dots.c ncurses-5.6-new/test/dots.c
 --- ncurses-5.6/test/dots.c	Sat Nov  4 20:54:42 2006
-+++ ncurses-5.6-new/test/dots.c	Tue Nov 13 12:04:00 2007
++++ ncurses-5.6-new/test/dots.c	Thu Nov 29 13:38:58 2007
 @@ -50,7 +50,7 @@
  {
      if (interrupted) {
@@ -2059,7 +1722,7 @@ diff -urN ncurses-5.6/test/dots.c ncurses-5.6-new/test/dots.c
      }
 diff -urN ncurses-5.6/test/firstlast.c ncurses-5.6-new/test/firstlast.c
 --- ncurses-5.6/test/firstlast.c	Sat Apr  1 21:03:18 2006
-+++ ncurses-5.6-new/test/firstlast.c	Tue Nov 13 12:04:01 2007
++++ ncurses-5.6-new/test/firstlast.c	Thu Nov 29 13:38:58 2007
 @@ -48,6 +48,11 @@
      }
  }
@@ -2074,7 +1737,7 @@ diff -urN ncurses-5.6/test/firstlast.c ncurses-5.6-new/test/firstlast.c
       char *argv[]GCC_UNUSED)
 diff -urN ncurses-5.6/test/railroad.c ncurses-5.6-new/test/railroad.c
 --- ncurses-5.6/test/railroad.c	Sat May 20 18:02:04 2006
-+++ ncurses-5.6-new/test/railroad.c	Tue Nov 13 12:04:01 2007
++++ ncurses-5.6-new/test/railroad.c	Thu Nov 29 13:38:58 2007
 @@ -59,7 +59,7 @@
  {
      if (interrupted) {
@@ -2097,7 +1760,7 @@ diff -urN ncurses-5.6/test/railroad.c ncurses-5.6-new/test/railroad.c
  ShowCursor(int flag)
 diff -urN ncurses-5.6/test/tclock.c ncurses-5.6-new/test/tclock.c
 --- ncurses-5.6/test/tclock.c	Sat Apr 16 18:39:27 2005
-+++ ncurses-5.6-new/test/tclock.c	Tue Nov 13 12:04:01 2007
++++ ncurses-5.6-new/test/tclock.c	Thu Nov 29 13:38:58 2007
 @@ -133,8 +133,8 @@
      int my_bg = COLOR_BLACK;
  #if HAVE_GETTIMEOFDAY
@@ -2110,7 +1773,7 @@ diff -urN ncurses-5.6/test/tclock.c ncurses-5.6-new/test/tclock.c
  
 diff -urN ncurses-5.6/test/test.priv.h ncurses-5.6-new/test/test.priv.h
 --- ncurses-5.6/test/test.priv.h	Sat Jul 15 20:27:24 2006
-+++ ncurses-5.6-new/test/test.priv.h	Tue Nov 13 12:04:01 2007
++++ ncurses-5.6-new/test/test.priv.h	Thu Nov 29 13:38:58 2007
 @@ -444,11 +444,17 @@
  
  #define VT_ACSC "``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~"
@@ -2131,7 +1794,7 @@ diff -urN ncurses-5.6/test/test.priv.h ncurses-5.6-new/test/test.priv.h
  #endif /* __TEST_PRIV_H */
 diff -urN ncurses-5.6/test/view.c ncurses-5.6-new/test/view.c
 --- ncurses-5.6/test/view.c	Sat May 20 17:37:03 2006
-+++ ncurses-5.6-new/test/view.c	Tue Nov 13 12:04:01 2007
++++ ncurses-5.6-new/test/view.c	Thu Nov 29 13:38:58 2007
 @@ -62,7 +62,9 @@
  #if HAVE_TERMIOS_H
  # include <termios.h>

@@ -2205,9 +2205,9 @@ diff -ur readline-5.2/support/shobj-conf readline-5.2-new/support/shobj-conf
 +	SHOBJ_CFLAGS='-MD -D__MINGW32__ -DREADLINE_DLL'
 +	SHOBJ_LDFLAGS='-shared -g'
 +
-+	SHLIB_LIBPREF=
++	SHLIB_DOT=
 +	SHLIB_LIBSUFF='dll'
-+	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF)'
++	SHLIB_LIBVERSION='-$(SHLIB_MAJOR).$(SHLIB_LIBSUFF)'
 +	SHLIB_LIBS='-ladvapi32 -luser32 $(TERMCAP_LIB)'
 +	;;
 +

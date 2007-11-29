@@ -24,7 +24,7 @@
 
 function z = __kernel_normal(z)
 
-	z = normal_pdf(z);
+	z = normpdf(z);
 	z = prod(z,2);
 
 endfunction

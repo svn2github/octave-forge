@@ -1,0 +1,791 @@
+diff -ur gettext-0.17/gettext-runtime/config.h.in gettext-0.17-new/gettext-runtime/config.h.in
+--- gettext-0.17/gettext-runtime/config.h.in	Wed Nov  7 00:34:02 2007
++++ gettext-0.17-new/gettext-runtime/config.h.in	Thu Nov 29 15:45:03 2007
+@@ -655,3 +655,4 @@
+ # include "intl/os2compat.h"
+ #endif
+ 
++#define intmax_t long long
+diff -ur gettext-0.17/gettext-runtime/configure gettext-0.17-new/gettext-runtime/configure
+--- gettext-0.17/gettext-runtime/configure	Wed Nov  7 00:33:39 2007
++++ gettext-0.17-new/gettext-runtime/configure	Thu Nov 29 15:44:42 2007
+@@ -32002,8 +32002,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_string_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/string.h#{
+-		 s#.*"\(.*/string.h\)".*#\1#
++	       sed -n '\#[/\\]string.h#{
++		 s#.*"\(.*[/\\]string.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -33721,8 +33721,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_iconv_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/iconv.h#{
+-		 s#.*"\(.*/iconv.h\)".*#\1#
++	       sed -n '\#[/\\]iconv.h#{
++		 s#.*"\(.*[/\\]iconv.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -35017,8 +35017,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_stdint_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/stdint.h#{
+-		 s#.*"\(.*/stdint.h\)".*#\1#
++	       sed -n '\#[/\\]stdint.h#{
++		 s#.*"\(.*[/\\]stdint.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -36044,8 +36044,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_stdlib_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/stdlib.h#{
+-		 s#.*"\(.*/stdlib.h\)".*#\1#
++	       sed -n '\#[/\\]stdlib.h#{
++		 s#.*"\(.*[/\\]stdlib.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -36583,8 +36583,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_unistd_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/unistd.h#{
+-		 s#.*"\(.*/unistd.h\)".*#\1#
++	       sed -n '\#[/\\]unistd.h#{
++		 s#.*"\(.*[/\\]unistd.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -36805,8 +36805,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_wchar_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/wchar.h#{
+-		 s#.*"\(.*/wchar.h\)".*#\1#
++	       sed -n '\#[/\\]wchar.h#{
++		 s#.*"\(.*[/\\]wchar.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -36891,8 +36891,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_wctype_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/wctype.h#{
+-		 s#.*"\(.*/wctype.h\)".*#\1#
++	       sed -n '\#[/\\]wctype.h#{
++		 s#.*"\(.*[/\\]wctype.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+diff -ur gettext-0.17/gettext-runtime/gnulib-lib/Makefile.in gettext-0.17-new/gettext-runtime/gnulib-lib/Makefile.in
+--- gettext-0.17/gettext-runtime/gnulib-lib/Makefile.in	Wed Nov  7 00:34:30 2007
++++ gettext-0.17-new/gettext-runtime/gnulib-lib/Makefile.in	Thu Nov 29 15:45:06 2007
+@@ -158,7 +158,7 @@
+ ALLOCA = @ALLOCA@
+ ALLOCA_H = @ALLOCA_H@
+ AMTAR = @AMTAR@
+-AR = @AR@
++AR = ar
+ AS = @AS@
+ AUTOCONF = @AUTOCONF@
+ AUTOHEADER = @AUTOHEADER@
+diff -ur gettext-0.17/gettext-runtime/intl/Makefile.in gettext-0.17-new/gettext-runtime/intl/Makefile.in
+--- gettext-0.17/gettext-runtime/intl/Makefile.in	Sun Nov  4 22:21:12 2007
++++ gettext-0.17-new/gettext-runtime/intl/Makefile.in	Thu Nov 29 15:45:02 2007
+@@ -85,7 +85,7 @@
+ CPPFLAGS = @CPPFLAGS@
+ CFLAGS = @CFLAGS@ @CFLAG_VISIBILITY@
+ LDFLAGS = @LDFLAGS@ $(LDFLAGS_@WOE32DLL@)
+-LDFLAGS_yes = -Wl,--export-all-symbols
++LDFLAGS_yes = -Wl,libintl.res -Wl,--export-all-symbols
+ LDFLAGS_no =
+ LIBS = @LIBS@
+ 
+@@ -307,7 +307,7 @@
+ 	    -e 's,@''HAVE_SNPRINTF''@,@HAVE_SNPRINTF@,g' \
+ 	    -e 's,@''HAVE_WPRINTF''@,@HAVE_WPRINTF@,g' \
+ 	  < $(srcdir)/libgnuintl.h.in \
+-	| if test '@WOE32DLL@' = yes; then \
++	| if test 'no' = yes; then \
+ 	    sed -e 's/extern \([^()]*\);/extern __declspec (dllimport) \1;/'; \
+ 	  else \
+ 	    cat; \
+diff -ur gettext-0.17/gettext-runtime/intl/export.h gettext-0.17-new/gettext-runtime/intl/export.h
+--- gettext-0.17/gettext-runtime/intl/export.h	Wed Jul 27 13:23:13 2005
++++ gettext-0.17-new/gettext-runtime/intl/export.h	Thu Nov 29 15:45:01 2007
+@@ -2,5 +2,9 @@
+ #if @HAVE_VISIBILITY@ && BUILDING_LIBINTL
+ #define LIBINTL_DLL_EXPORTED __attribute__((__visibility__("default")))
+ #else
+-#define LIBINTL_DLL_EXPORTED
++#ifdef BUILDING_LIBINTL
++#define LIBINTL_DLL_EXPORTED __declspec(dllexport)
++#else
++#define LIBINTL_DLL_EXPORTED __declspec(dllimport)
++#endif
+ #endif
+diff -ur gettext-0.17/gettext-runtime/libasprintf/Makefile.in gettext-0.17-new/gettext-runtime/libasprintf/Makefile.in
+--- gettext-0.17/gettext-runtime/libasprintf/Makefile.in	Wed Nov  7 00:35:22 2007
++++ gettext-0.17-new/gettext-runtime/libasprintf/Makefile.in	Thu Nov 29 15:45:05 2007
+@@ -290,7 +290,7 @@
+ # How to build libasprintf.
+ # With libtool 1.5.14, on some platforms, like BeOS, "libtool --tag=CXX" fails
+ # to create a shared library, however "libtool --tag=CC" succeeds.
+-libasprintf_la_LDFLAGS = @LTNOUNDEF@
++libasprintf_la_LDFLAGS = -Wl,-def:asprintf.def @LTNOUNDEF@
+ MAKEINFOFLAGS = --no-split
+ info_TEXINFOS = autosprintf.texi
+ CLEANFILES = autosprintf.pdf
+@@ -958,7 +958,7 @@
+ dist-hook:
+ 	rm -f $(distdir)/autosprintf.h
+ lib-asprintf.lo: $(lib_asprintf_EXTRASOURCES)
+-libasprintf.la: $(libasprintf_la_OBJECTS) $(libasprintf_la_DEPENDENCIES)
++libasprintf.la: $(libasprintf_la_OBJECTS) $(libasprintf_la_DEPENDENCIES) asprintf.def
+ 	$(CXXLINK) -rpath $(libdir) $(libasprintf_la_LDFLAGS) $(libasprintf_la_OBJECTS) $(libasprintf_la_LIBADD) $(LIBS) || \
+ 	$(LINK) -rpath $(libdir) $(libasprintf_la_LDFLAGS) $(libasprintf_la_OBJECTS) $(libasprintf_la_LIBADD) $(LIBS)
+ 
+@@ -1031,3 +1031,7 @@
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
++asprintf.def: $(libasprintf_la_OBJECTS)
++	echo "EXPORTS" > $@
++	nm $(addprefix .libs/, $(libasprintf_la_OBJECTS:.lo=.o)) | \
++	  sed -n -e 's/^.* T _\(.*\)$/\1/p' >> $@
+diff -ur gettext-0.17/gettext-runtime/libasprintf/config.h.in gettext-0.17-new/gettext-runtime/libasprintf/config.h.in
+--- gettext-0.17/gettext-runtime/libasprintf/config.h.in	Wed Nov  7 00:35:10 2007
++++ gettext-0.17-new/gettext-runtime/libasprintf/config.h.in	Thu Nov 29 15:45:04 2007
+@@ -135,3 +135,4 @@
+ 
+ /* Define to `unsigned int' if <sys/types.h> does not define. */
+ #undef size_t
++#define intmax_t long long
+diff -ur gettext-0.17/gettext-tools/config.h.in gettext-0.17-new/gettext-tools/config.h.in
+--- gettext-0.17/gettext-tools/config.h.in	Wed Nov  7 00:38:27 2007
++++ gettext-0.17-new/gettext-tools/config.h.in	Thu Nov 29 15:45:07 2007
+@@ -1024,7 +1024,7 @@
+ #define gl_va_copy(a,b) ((a) = (b))
+ 
+ /* Define to rpl_gmtime if the replacement function should be used. */
+-#undef gmtime
++/*#undef gmtime*/
+ 
+ /* Define to `__inline__' or `__inline' if that's what the C compiler
+    calls it, or to nothing if 'inline' is not supported under any name.  */
+@@ -1036,7 +1036,7 @@
+ #undef intmax_t
+ 
+ /* Define to rpl_localtime if the replacement function should be used. */
+-#undef localtime
++/*#undef localtime*/
+ 
+ /* Define to a type if <wchar.h> does not define. */
+ #undef mbstate_t
+diff -ur gettext-0.17/gettext-tools/configure gettext-0.17-new/gettext-tools/configure
+--- gettext-0.17/gettext-tools/configure	Wed Nov  7 00:37:40 2007
++++ gettext-0.17-new/gettext-tools/configure	Thu Nov 29 15:44:59 2007
+@@ -33226,8 +33226,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_sys_time_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/sys/time.h#{
+-		 s#.*"\(.*/sys/time.h\)".*#\1#
++	       sed -n '\#[/\\]sys[/\\]time.h#{
++		 s#.*"\(.*[/\\]sys[/\\]time.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -35589,8 +35589,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_string_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/string.h#{
+-		 s#.*"\(.*/string.h\)".*#\1#
++	       sed -n '\#[/\\]string.h#{
++		 s#.*"\(.*[/\\]string.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -42511,8 +42511,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_fcntl_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/fcntl.h#{
+-		 s#.*"\(.*/fcntl.h\)".*#\1#
++	       sed -n '\#[/\\]fcntl.h#{
++		 s#.*"\(.*[/\\]fcntl.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -42580,8 +42580,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_float_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/float.h#{
+-		 s#.*"\(.*/float.h\)".*#\1#
++	       sed -n '\#[/\\]float.h#{
++		 s#.*"\(.*[/\\]float.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -44783,8 +44783,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_iconv_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/iconv.h#{
+-		 s#.*"\(.*/iconv.h\)".*#\1#
++	       sed -n '\#[/\\]iconv.h#{
++		 s#.*"\(.*[/\\]iconv.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -45571,8 +45571,8 @@
+ #include <libcroco-0.6/libcroco/libcroco-config.h>
+ _ACEOF
+       gl_cv_absolute_libcroco_0_6_libcroco_libcroco_config_h=`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-sed -n '\#/libcroco-0.6/libcroco/libcroco-config.h#{
+-	s#.*"\(.*/libcroco-0.6/libcroco/libcroco-config.h\)".*#\1#
++sed -n '\#[/\\]libcroco-0.6[/\\]libcroco[/\\]libcroco-config.h#{
++	s#.*"\(.*[/\\]libcroco-0.6[/\\]libcroco[/\\]libcroco-config.h\)".*#\1#
+ 	s#^/[^/]#//&#
+ 	p
+ 	q
+@@ -47061,8 +47061,8 @@
+ #include <libxml2/libxml/xmlversion.h>
+ _ACEOF
+       gl_cv_absolute_libxml2_libxml_xmlversion_h=`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-sed -n '\#/libxml2/libxml/xmlversion.h#{
+-	s#.*"\(.*/libxml2/libxml/xmlversion.h\)".*#\1#
++sed -n '\#[/\\]libxml2[/\\]libxml[/\\]xmlversion.h#{
++	s#.*"\(.*[/\\]libxml2[/\\]libxml[/\\]xmlversion.h\)".*#\1#
+ 	s#^/[^/]#//&#
+ 	p
+ 	q
+@@ -47689,8 +47689,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_locale_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/locale.h#{
+-		 s#.*"\(.*/locale.h\)".*#\1#
++	       sed -n '\#[/\\]locale.h#{
++		 s#.*"\(.*[/\\]locale.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -50838,8 +50838,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_signal_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/signal.h#{
+-		 s#.*"\(.*/signal.h\)".*#\1#
++	       sed -n '\#[/\\]signal.h#{
++		 s#.*"\(.*[/\\]signal.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -52321,8 +52321,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_stdint_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/stdint.h#{
+-		 s#.*"\(.*/stdint.h\)".*#\1#
++	       sed -n '\#[/\\]stdint.h#{
++		 s#.*"\(.*[/\\]stdint.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -53474,8 +53474,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_stdio_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/stdio.h#{
+-		 s#.*"\(.*/stdio.h\)".*#\1#
++	       sed -n '\#[/\\]stdio.h#{
++		 s#.*"\(.*[/\\]stdio.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -53526,8 +53526,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_stdlib_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/stdlib.h#{
+-		 s#.*"\(.*/stdlib.h\)".*#\1#
++	       sed -n '\#[/\\]stdlib.h#{
++		 s#.*"\(.*[/\\]stdlib.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -54779,8 +54779,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_sys_stat_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/sys/stat.h#{
+-		 s#.*"\(.*/sys/stat.h\)".*#\1#
++	       sed -n '\#[/\\]sys[/\\]stat.h#{
++		 s#.*"\(.*[/\\]sys[/\\]stat.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -55205,8 +55205,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_unistd_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/unistd.h#{
+-		 s#.*"\(.*/unistd.h\)".*#\1#
++	       sed -n '\#[/\\]unistd.h#{
++		 s#.*"\(.*[/\\]unistd.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -56306,8 +56306,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_wchar_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/wchar.h#{
+-		 s#.*"\(.*/wchar.h\)".*#\1#
++	       sed -n '\#[/\\]wchar.h#{
++		 s#.*"\(.*[/\\]wchar.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -56392,8 +56392,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_wctype_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/wctype.h#{
+-		 s#.*"\(.*/wctype.h\)".*#\1#
++	       sed -n '\#[/\\]wctype.h#{
++		 s#.*"\(.*[/\\]wctype.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -58030,8 +58030,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_iconv_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/iconv.h#{
+-		 s#.*"\(.*/iconv.h\)".*#\1#
++	       sed -n '\#[/\\]iconv.h#{
++		 s#.*"\(.*[/\\]iconv.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -59684,8 +59684,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_stdint_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/stdint.h#{
+-		 s#.*"\(.*/stdint.h\)".*#\1#
++	       sed -n '\#[/\\]stdint.h#{
++		 s#.*"\(.*[/\\]stdint.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -60711,8 +60711,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_stdio_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/stdio.h#{
+-		 s#.*"\(.*/stdio.h\)".*#\1#
++	       sed -n '\#[/\\]stdio.h#{
++		 s#.*"\(.*[/\\]stdio.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -60763,8 +60763,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_stdlib_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/stdlib.h#{
+-		 s#.*"\(.*/stdlib.h\)".*#\1#
++	       sed -n '\#[/\\]stdlib.h#{
++		 s#.*"\(.*[/\\]stdlib.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -61212,8 +61212,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_unistd_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/unistd.h#{
+-		 s#.*"\(.*/unistd.h\)".*#\1#
++	       sed -n '\#[/\\]unistd.h#{
++		 s#.*"\(.*[/\\]unistd.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -61599,8 +61599,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_wchar_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/wchar.h#{
+-		 s#.*"\(.*/wchar.h\)".*#\1#
++	       sed -n '\#[/\\]wchar.h#{
++		 s#.*"\(.*[/\\]wchar.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+@@ -61685,8 +61685,8 @@
+ 
+ _ACEOF
+ 	    	    	    	    gl_cv_next_wctype_h='"'`(eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+-	       sed -n '\#/wctype.h#{
+-		 s#.*"\(.*/wctype.h\)".*#\1#
++	       sed -n '\#[/\\]wctype.h#{
++		 s#.*"\(.*[/\\]wctype.h\)".*#\1#
+ 		 s#^/[^/]#//&#
+ 		 p
+ 		 q
+diff -ur gettext-0.17/gettext-tools/gnulib-lib/Makefile.in gettext-0.17-new/gettext-tools/gnulib-lib/Makefile.in
+--- gettext-0.17/gettext-tools/gnulib-lib/Makefile.in	Wed Nov  7 00:39:50 2007
++++ gettext-0.17-new/gettext-tools/gnulib-lib/Makefile.in	Thu Nov 29 15:45:23 2007
+@@ -317,7 +317,7 @@
+ 	xerror.h xerror.c xmalloca.c xreadlink.c xsetenv.h xsetenv.c \
+ 	xsize.h xstriconv.h xstriconv.c xvasprintf.h xvasprintf.c \
+ 	xasprintf.c
+-@WOE32DLL_TRUE@am__objects_1 = ../woe32dll/gettextlib-exports.lo
++
+ @WOE32DLL_FALSE@am__objects_2 = html-styled-ostream.lo
+ @WOE32DLL_TRUE@am__objects_3 = ../woe32dll/c++html-styled-ostream.lo
+ @WOE32DLL_FALSE@am__objects_4 = term-styled-ostream.lo
+@@ -1173,7 +1173,7 @@
+ # Need @LTLIBICONV@ because linebreak.c and striconv.c use iconv().
+ # Need @LIB_ACL@ because copy-file.c uses acl.h.
+ # Need @LTLIBC@ for -no-undefined to work on many platforms.
+-libgettextlib_la_LDFLAGS = $(AM_LDFLAGS) -release @VERSION@ \
++libgettextlib_la_LDFLAGS = -Wl,-def:gettextlib.def -Wl,gettext.res $(AM_LDFLAGS) -release @VERSION@ \
+ 	@LTLIBINTL@ @LTLIBICONV@ @LIB_ACL@ @LTLIBC@ @LTNOUNDEF@ \
+ 	$(am__append_3) $(am__append_11)
+ 
+@@ -1500,7 +1500,7 @@
+ libxml/xmlwriter.lo: libxml/$(am__dirstamp)
+ libxml/xpath.lo: libxml/$(am__dirstamp)
+ libxml/xpointer.lo: libxml/$(am__dirstamp)
+-libgettextlib.la: $(libgettextlib_la_OBJECTS) $(libgettextlib_la_DEPENDENCIES) 
++libgettextlib.la: $(libgettextlib_la_OBJECTS) $(libgettextlib_la_DEPENDENCIES)  gettextlib.def
+ 	$(libgettextlib_la_LINK) -rpath $(libdir) $(libgettextlib_la_OBJECTS) $(libgettextlib_la_LIBADD) $(LIBS)
+ glib/libglib_rpl_la-ghash.lo: glib/$(am__dirstamp)
+ glib/libglib_rpl_la-glist.lo: glib/$(am__dirstamp)
+@@ -3379,3 +3379,9 @@
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
++allobjects = $(libgettextlib_la_OBJECTS) $(gl_LTLIBOBJS)
++gettextlib.def: $(allobjects)
++	echo "EXPORTS" > $@
++	nm $(join $(dir $(allobjects)), $(addprefix .libs/, $(notdir $(allobjects:.lo=.o)))) | \
++	  sed -n -e 's/^.* T _\(.*\)$$/\1/p' | sort | uniq >> $@
++	sed -n -e 's/^VARIABLE(\(.*\))/\1 DATA/p' ../woe32dll/gettextlib-exports.c >> $@
+diff -ur gettext-0.17/gettext-tools/gnulib-lib/html-styled-ostream.h gettext-0.17-new/gettext-tools/gnulib-lib/html-styled-ostream.h
+--- gettext-0.17/gettext-tools/gnulib-lib/html-styled-ostream.h	Sun Oct  7 22:55:39 2007
++++ gettext-0.17-new/gettext-tools/gnulib-lib/html-styled-ostream.h	Thu Nov 29 15:45:11 2007
+@@ -130,6 +130,13 @@
+ 
+ #endif
+ 
++#ifdef __cplusplus
++extern "C" {
++#endif
++extern const typeinfo_t html_styled_ostream_typeinfo;
++#ifdef __cplusplus
++};
++#endif
+ extern const typeinfo_t html_styled_ostream_typeinfo;
+ #define html_styled_ostream_SUPERCLASSES &html_styled_ostream_typeinfo, styled_ostream_SUPERCLASSES
+ #define html_styled_ostream_SUPERCLASSES_LENGTH (1 + styled_ostream_SUPERCLASSES_LENGTH)
+diff -ur gettext-0.17/gettext-tools/gnulib-lib/ostream.h gettext-0.17-new/gettext-tools/gnulib-lib/ostream.h
+--- gettext-0.17/gettext-tools/gnulib-lib/ostream.h	Sun Oct  7 22:55:41 2007
++++ gettext-0.17-new/gettext-tools/gnulib-lib/ostream.h	Thu Nov 29 15:45:15 2007
+@@ -108,6 +108,13 @@
+ 
+ #endif
+ 
++#ifdef __cplusplus
++extern "C" {
++#endif
++extern const typeinfo_t ostream_typeinfo;
++#ifdef __cplusplus
++};
++#endif
+ extern const typeinfo_t ostream_typeinfo;
+ #define ostream_SUPERCLASSES &ostream_typeinfo, NULL
+ #define ostream_SUPERCLASSES_LENGTH (1 + 1)
+diff -ur gettext-0.17/gettext-tools/gnulib-lib/setenv.c gettext-0.17-new/gettext-tools/gnulib-lib/setenv.c
+--- gettext-0.17/gettext-tools/gnulib-lib/setenv.c	Sun Oct  7 22:29:34 2007
++++ gettext-0.17-new/gettext-tools/gnulib-lib/setenv.c	Thu Nov 29 15:45:16 2007
+@@ -39,7 +39,7 @@
+ #if !_LIBC
+ # define __environ	environ
+ # ifndef HAVE_ENVIRON_DECL
+-extern char **environ;
++#define __environ _environ
+ # endif
+ #endif
+ 
+diff -ur gettext-0.17/gettext-tools/gnulib-lib/styled-ostream.h gettext-0.17-new/gettext-tools/gnulib-lib/styled-ostream.h
+--- gettext-0.17/gettext-tools/gnulib-lib/styled-ostream.h	Sun Oct  7 22:55:43 2007
++++ gettext-0.17-new/gettext-tools/gnulib-lib/styled-ostream.h	Thu Nov 29 15:45:13 2007
+@@ -132,6 +132,13 @@
+ 
+ #endif
+ 
++#ifdef __cplusplus
++extern "C" {
++#endif
++extern DLL_VARIABLE const typeinfo_t styled_ostream_typeinfo;
++#ifdef __cplusplus
++};
++#endif
+ extern DLL_VARIABLE const typeinfo_t styled_ostream_typeinfo;
+ #define styled_ostream_SUPERCLASSES &styled_ostream_typeinfo, ostream_SUPERCLASSES
+ #define styled_ostream_SUPERCLASSES_LENGTH (1 + ostream_SUPERCLASSES_LENGTH)
+diff -ur gettext-0.17/gettext-tools/gnulib-lib/sys_stat.in.h gettext-0.17-new/gettext-tools/gnulib-lib/sys_stat.in.h
+--- gettext-0.17/gettext-tools/gnulib-lib/sys_stat.in.h	Thu Oct  4 00:24:57 2007
++++ gettext-0.17-new/gettext-tools/gnulib-lib/sys_stat.in.h	Thu Nov 29 15:45:09 2007
+@@ -265,7 +265,8 @@
+    Additionally, it declares _mkdir (and depending on compile flags, an
+    alias mkdir), only in the nonstandard io.h.  */
+ #if ! @HAVE_DECL_MKDIR@ && @HAVE_IO_H@
+-# include <io.h>
++#include <direct.h>
++#include <io.h>
+ 
+ static inline int
+ rpl_mkdir (char const *name, mode_t mode)
+diff -ur gettext-0.17/gettext-tools/gnulib-lib/unsetenv.c gettext-0.17-new/gettext-tools/gnulib-lib/unsetenv.c
+--- gettext-0.17/gettext-tools/gnulib-lib/unsetenv.c	Sun Oct  7 22:29:39 2007
++++ gettext-0.17-new/gettext-tools/gnulib-lib/unsetenv.c	Thu Nov 29 15:45:17 2007
+@@ -28,7 +28,7 @@
+ #if !_LIBC
+ # define __environ	environ
+ # ifndef HAVE_ENVIRON_DECL
+-extern char **environ;
++#define __environ _environ
+ # endif
+ #endif
+ 
+diff -ur gettext-0.17/gettext-tools/libgettextpo/Makefile.in gettext-0.17-new/gettext-tools/libgettextpo/Makefile.in
+--- gettext-0.17/gettext-tools/libgettextpo/Makefile.in	Wed Nov  7 00:39:59 2007
++++ gettext-0.17-new/gettext-tools/libgettextpo/Makefile.in	Thu Nov 29 15:45:32 2007
+@@ -258,7 +258,7 @@
+ 	format-perl-brace.lo format-php.lo format-gcc-internal.lo \
+ 	format-qt.lo format-kde.lo format-boost.lo format.lo \
+ 	plural-exp.lo plural-eval.lo msgl-check.lo
+-@WOE32DLL_TRUE@am__objects_2 = gettextpo-exports.lo
++
+ am_libgettextpo_la_OBJECTS = gettext-po.lo $(am__objects_1) \
+ 	$(am__objects_2)
+ libgettextpo_la_OBJECTS = $(am_libgettextpo_la_OBJECTS)
+@@ -871,7 +871,7 @@
+ # Don't make it depend on libgettextsrc.la or libgettextlib.la, since they
+ # define an uncontrolled amount of symbols.
+ libgettextpo_la_LIBADD = libgnu.la $(WOE32_LDADD)
+-libgettextpo_la_LDFLAGS = -version-info \
++libgettextpo_la_LDFLAGS = -Wl,-def:gettextpo.def -Wl,libgettextpo.res -version-info \
+ 	$(LTV_CURRENT):$(LTV_REVISION):$(LTV_AGE) -rpath $(libdir) \
+ 	@LTLIBINTL@ @LTLIBICONV@ -lc @LTNOUNDEF@ $(am__append_2)
+ @WOE32_FALSE@WOE32_LDADD = 
+@@ -982,7 +982,7 @@
+ 	  echo "rm -f \"$${dir}/so_locations\""; \
+ 	  rm -f "$${dir}/so_locations"; \
+ 	done
+-libgettextpo.la: $(libgettextpo_la_OBJECTS) $(libgettextpo_la_DEPENDENCIES) 
++libgettextpo.la: $(libgettextpo_la_OBJECTS) $(libgettextpo_la_DEPENDENCIES)  gettextpo.def
+ 	$(libgettextpo_la_LINK) -rpath $(libdir) $(libgettextpo_la_OBJECTS) $(libgettextpo_la_LIBADD) $(LIBS)
+ libgnu.la: $(libgnu_la_OBJECTS) $(libgnu_la_DEPENDENCIES) 
+ 	$(libgnu_la_LINK)  $(libgnu_la_OBJECTS) $(libgnu_la_LIBADD) $(LIBS)
+@@ -1401,7 +1401,7 @@
+ 	          sf=`echo "$$f" | sed -e 's,\\.[^.]*$$,,'`.c; \
+ 	          test -f $$sf || sf=$(srcdir)/$$sf; \
+ 	          of=`echo "$$f" | sed -e 's,^.*/,,' -e 's,\\.[^.]*$$,,'`.$(OBJEXT); \
+-	          $(COMPILE) -c $$sf || { rm -f config.h; exit 1; }; \
++	          $(COMPILE) -c $$sf 2>&1 1>/dev/null || { rm -f config.h; exit 1; }; \
+ 	          sh ./exported.sh $$of 1>&5; \
+ 	          rm -f $$of `echo "$$of" | sed -e 's,\\.$(OBJEXT)$$,.lo,'`; \
+ 	          ;; \
+@@ -1834,3 +1834,8 @@
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
++gettextpo.def: gettext-po.lo
++	echo "EXPORTS" > $@
++	nm .libs/gettext-po.o | \
++	  sed -n -e 's/^.* T _\(.*\)$$/\1/p' | sort | uniq >> $@
++	sed -n -e 's/^VARIABLE(\(.*\))/\1 DATA/p' ../woe32dll/gettextpo-exports.c >> $@
+diff -ur gettext-0.17/gettext-tools/libgrep/Makefile.in gettext-0.17-new/gettext-tools/libgrep/Makefile.in
+--- gettext-0.17/gettext-tools/libgrep/Makefile.in	Wed Nov  7 00:40:01 2007
++++ gettext-0.17-new/gettext-tools/libgrep/Makefile.in	Thu Nov 29 15:45:20 2007
+@@ -228,7 +228,7 @@
+ ALLOCA = @ALLOCA@
+ ALLOCA_H = @ALLOCA_H@
+ AMTAR = @AMTAR@
+-AR = @AR@
++AR = ar
+ AS = @AS@
+ AUTOCONF = @AUTOCONF@
+ AUTOHEADER = @AUTOHEADER@
+diff -ur gettext-0.17/gettext-tools/src/Makefile.in gettext-0.17-new/gettext-tools/src/Makefile.in
+--- gettext-0.17/gettext-tools/src/Makefile.in	Wed Nov  7 00:40:15 2007
++++ gettext-0.17-new/gettext-tools/src/Makefile.in	Thu Nov 29 15:45:21 2007
+@@ -259,7 +259,7 @@
+ @WOE32DLL_TRUE@	format-perl.lo format-perl-brace.lo \
+ @WOE32DLL_TRUE@	format-php.lo format-gcc-internal.lo \
+ @WOE32DLL_TRUE@	format-qt.lo format-kde.lo format-boost.lo
+-@WOE32DLL_TRUE@am__objects_3 = gettextsrc-exports.lo
++
+ am_libgettextsrc_la_OBJECTS = $(am__objects_1) read-catalog.lo \
+ 	color.lo write-catalog.lo write-properties.lo \
+ 	write-stringtable.lo write-po.lo msgl-ascii.lo msgl-iconv.lo \
+@@ -1102,7 +1102,7 @@
+ # Need @LTLIBINTL@ because many source files use gettext().
+ # Need @LTLIBICONV@ because po-charset.c, po-lex.c, msgl-iconv.c, write-po.c
+ # use iconv().
+-libgettextsrc_la_LDFLAGS = -release @VERSION@ \
++libgettextsrc_la_LDFLAGS = -Wl,-def:gettextsrc.def -Wl,gettext.res -release @VERSION@ \
+ 	../gnulib-lib/libgettextlib.la @LTLIBINTL@ @LTLIBICONV@ -lc \
+ 	@LTNOUNDEF@ $(am__append_2)
+ 
+@@ -1162,7 +1162,7 @@
+ @RELOCATABLE_VIA_LD_TRUE@msgen_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
+ @RELOCATABLE_VIA_LD_TRUE@msgexec_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
+ @RELOCATABLE_VIA_LD_TRUE@msgfilter_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
+-@RELOCATABLE_VIA_LD_TRUE@msggrep_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
++@RELOCATABLE_VIA_LD_TRUE@msggrep_LDFLAGS = -lmsvcprt `$(RELOCATABLE_LDFLAGS) $(bindir)`
+ @RELOCATABLE_VIA_LD_TRUE@msginit_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
+ @RELOCATABLE_VIA_LD_TRUE@msguniq_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
+ @RELOCATABLE_VIA_LD_TRUE@recode_sr_latin_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
+@@ -1357,7 +1357,7 @@
+ 	  echo "rm -f \"$${dir}/so_locations\""; \
+ 	  rm -f "$${dir}/so_locations"; \
+ 	done
+-libgettextsrc.la: $(libgettextsrc_la_OBJECTS) $(libgettextsrc_la_DEPENDENCIES) 
++libgettextsrc.la: $(libgettextsrc_la_OBJECTS) $(libgettextsrc_la_DEPENDENCIES)  gettextsrc.def
+ 	$(libgettextsrc_la_LINK) -rpath $(libdir) $(libgettextsrc_la_OBJECTS) $(libgettextsrc_la_LIBADD) $(LIBS)
+ install-binPROGRAMS: $(bin_PROGRAMS)
+ 	@$(NORMAL_INSTALL)
+@@ -2222,3 +2222,8 @@
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
++gettextsrc.def: $(libgettextsrc_la_OBJECTS)
++	echo "EXPORTS" > $@
++	nm $(addprefix .libs/, $(libgettextsrc_la_OBJECTS:.lo=.o)) | \
++	  sed -n -e 's/^.* T _\(.*\)$$/\1/p' | sort | uniq >> $@
++	sed -n -e 's/^VARIABLE(\(.*\))/\1 DATA/p' ../woe32dll/gettextsrc-exports.c >> $@
+diff -ur gettext-0.17/gettext-tools/src/hostname.c gettext-0.17-new/gettext-tools/src/hostname.c
+--- gettext-0.17/gettext-tools/src/hostname.c	Sun Oct  7 21:37:38 2007
++++ gettext-0.17-new/gettext-tools/src/hostname.c	Thu Nov 29 15:45:18 2007
+@@ -46,7 +46,9 @@
+ #endif
+ 
+ /* Get MAXHOSTNAMELEN.  */
++#ifdef HAVE_SYS_PARAM_H
+ #include <sys/param.h>
++#endif
+ #ifndef MAXHOSTNAMELEN
+ # define MAXHOSTNAMELEN 64
+ #endif
+diff -ur gettext-0.17/gettext-tools/src/read-po.h gettext-0.17-new/gettext-tools/src/read-po.h
+--- gettext-0.17/gettext-tools/src/read-po.h	Sun Oct  7 21:37:38 2007
++++ gettext-0.17-new/gettext-tools/src/read-po.h	Thu Nov 29 15:45:31 2007
+@@ -21,6 +21,12 @@
+ #include "read-catalog-abstract.h"
+ 
+ /* Describes a .po / .pot file parser.  */
++#ifdef __cplusplus
++extern "C" {
++#endif
+ extern DLL_VARIABLE const struct catalog_input_format input_format_po;
++#ifdef __cplusplus
++};
++#endif
+ 
+ #endif /* _READ_PO_H */
+diff -ur gettext-0.17/gettext-tools/src/read-properties.h gettext-0.17-new/gettext-tools/src/read-properties.h
+--- gettext-0.17/gettext-tools/src/read-properties.h	Sun Oct  7 21:37:38 2007
++++ gettext-0.17-new/gettext-tools/src/read-properties.h	Thu Nov 29 15:45:25 2007
+@@ -21,6 +21,12 @@
+ #include "read-catalog-abstract.h"
+ 
+ /* Describes a .properties file parser.  */
++#ifdef __cplusplus
++extern "C" {
++#endif
+ extern DLL_VARIABLE const struct catalog_input_format input_format_properties;
++#ifdef __cplusplus
++};
++#endif
+ 
+ #endif /* _READ_PROPERTIES_H */
+diff -ur gettext-0.17/gettext-tools/src/read-stringtable.h gettext-0.17-new/gettext-tools/src/read-stringtable.h
+--- gettext-0.17/gettext-tools/src/read-stringtable.h	Sun Oct  7 21:37:39 2007
++++ gettext-0.17-new/gettext-tools/src/read-stringtable.h	Thu Nov 29 15:45:28 2007
+@@ -21,6 +21,12 @@
+ #include "read-catalog-abstract.h"
+ 
+ /* Describes a .strings file parser.  */
++#ifdef __cplusplus
++extern "C" {
++#endif
+ extern DLL_VARIABLE const struct catalog_input_format input_format_stringtable;
++#ifdef __cplusplus
++};
++#endif
+ 
+ #endif /* _READ_STRINGTABLE_H */
+diff -ur gettext-0.17/gettext-tools/src/write-properties.h gettext-0.17-new/gettext-tools/src/write-properties.h
+--- gettext-0.17/gettext-tools/src/write-properties.h	Sun Oct  7 21:37:39 2007
++++ gettext-0.17-new/gettext-tools/src/write-properties.h	Thu Nov 29 15:45:27 2007
+@@ -21,6 +21,12 @@
+ #include "write-catalog.h"
+ 
+ /* Describes a PO file in Java .properties syntax.  */
++#ifdef __cplusplus
++extern "C" {
++#endif
+ extern DLL_VARIABLE const struct catalog_output_format output_format_properties;
++#ifdef __cplusplus
++};
++#endif
+ 
+ #endif /* _WRITE_PROPERTIES_H */
+diff -ur gettext-0.17/gettext-tools/src/write-stringtable.h gettext-0.17-new/gettext-tools/src/write-stringtable.h
+--- gettext-0.17/gettext-tools/src/write-stringtable.h	Sun Oct  7 21:37:39 2007
++++ gettext-0.17-new/gettext-tools/src/write-stringtable.h	Thu Nov 29 15:45:29 2007
+@@ -21,6 +21,12 @@
+ #include "write-catalog.h"
+ 
+ /* Describes a PO file in .strings syntax.  */
++#ifdef __cplusplus
++extern "C" {
++#endif
+ extern DLL_VARIABLE const struct catalog_output_format output_format_stringtable;
++#ifdef __cplusplus
++};
++#endif
+ 
+ #endif /* _WRITE_STRINGTABLE_H */
+diff -ur gettext-0.17/gettext-tools/tests/setlocale.c gettext-0.17-new/gettext-tools/tests/setlocale.c
+--- gettext-0.17/gettext-tools/tests/setlocale.c	Sun Oct  7 21:37:40 2007
++++ gettext-0.17-new/gettext-tools/tests/setlocale.c	Thu Nov 29 15:45:24 2007
+@@ -1,3 +1,4 @@
++#ifndef _MSC_VER
+ /* Fake setlocale - platform independent, for testing purposes.
+    Copyright (C) 2001-2002 Free Software Foundation, Inc.
+ 
+@@ -161,3 +162,4 @@
+     }
+   return retval;
+ }
++#endif

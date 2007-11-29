@@ -6,7 +6,7 @@ diff -urN texinfo-4.8/configure texinfo-4.8-mod/configure
  /* end confdefs.h.  */
  #include <libintl.h>
 -extern int _nl_msg_cat_cntr;
-+/*extern int _nl_msg_cat_cntr;*/
++extern __declspec(dllimport) int _nl_msg_cat_cntr;
  extern
  #ifdef __cplusplus
  "C"

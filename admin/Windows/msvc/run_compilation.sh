@@ -426,8 +426,8 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/libfftw3-3.dll" FFTW
     todo_check "$tlibdir/pcre.lib" PCRE
     todo_check "$tlibdir/glpk.lib" GLPK
-    todo_check "$tbindir/ncurses.dll" ncurses
-    todo_check "$tbindir/readline.dll" readline
+    todo_check "$tlibdir/ncurses.lib" ncurses
+    todo_check "$tlibdir/readline.lib" readline
     todo_check "$tbindir/zlib1.dll" zlib
     todo_check "$tlibdir/cxsparse.lib" SuiteSparse
     todo_check "$tlibdir/hdf5.lib" HDF5
@@ -880,6 +880,7 @@ if check_package ncurses; then
     create_module_rc Ncurses 5.6 ncurses.dll "Free Software Foundation (http://www.fsf.org)" \
       "GNU New Curses Library" "$ncurses_copyright" > ncurses/ncurses.rc &&
     CC=cc-msvc CXX=cc-msvc AR=ar-msvc RANLIB=ranlib-msvc CFLAGS="-O2 -MD" \
+      CXXFLAGS="-O2 -MD -EHs" CPPFLAGS="-DWIN32 -D_WIN32" \
       ./configure --build=i686-pc-msdosmsvc --prefix=$INSTALL_DIR --without-cxx-binding \
       --without-libtool --with-shared --without-normal --without-debug &&
     sed -e "s/^SHARED_OBJS =/SHARED_OBJS = ncurses.res/" ncurses/Makefile > ttt &&
@@ -890,7 +891,7 @@ if check_package ncurses; then
     make -C include install && make -C ncurses install && make -C progs install &&
     make -C tack install && make -C misc install) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/ncurses-5.6"
-  if ! test -f "$tbindir/ncurses.dll"; then
+  if ! test -f "$tlibdir/ncurses.lib"; then
     echo "failed"
     exit -1
   else
@@ -921,11 +922,11 @@ if check_package readline; then
     CC=cc-msvc CXX=cc-msvc ./configure --build=i686-pc-msdosmsvc --prefix=$INSTALLDIR &&
     make shared &&
     make install-shared DESTDIR=$INSTALL_DIR &&
-    cp shlib/readline.lib "$tlibdir" &&
-    cp shlib/history.lib "$tlibdir"&&
-    mv "$tlibdir/readline.dll" "$tlibdir/history.dll" "$tbindir") >&5 2>&1
+    cp shlib/*readline*.lib "$tlibdir/readline.lib" &&
+    cp shlib/*history*.lib "$tlibdir/history.lib"&&
+    mv $tlibdir_quoted/*readline*.dll $tlibdir_quoted/*history*.dll "$tbindir") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/readline-5.2"
-  if ! test -f "$tbindir/readline.dll"; then
+  if ! test -f "$tlibdir/readline.lib"; then
     echo "failed"
     exit -1
   else

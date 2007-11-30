@@ -69,9 +69,11 @@ typedef octave_idx_type (*odepkg_mebdfi_usrtype)
  *
  * @example
  * typedef octave_idx_type (*odepkg_mebdfi_jactype)
- *   (const double& T, const double* Y, double* PD, const octave_idx_type& N,
- *    const double* YPRIME, const octave_idx_type* MBND, const double& CON,
- *    const octave_idx_type* IPAR, const double* RPAR, const octave_idx_type& IERR);
+ *   (const double& T, const double* Y, double* PD, 
+ *    const octave_idx_type& N, const double* YPRIME, 
+ *    const octave_idx_type* MBND, const double& CON,
+ *    const octave_idx_type* IPAR, const double* RPAR, 
+ *    const octave_idx_type& IERR);
  * @end example
  * @end deftp
  */
@@ -236,102 +238,125 @@ octave_idx_type odepkg_auxiliary_mebdfanalysis (octave_idx_type verr) {
 
     case -1:
       error_with_id ("OdePkg:InternalError",
-	"Integration was halted after failing to pass one error test (error occured in \"mebdfi\" core solver function)");
+	"Integration was halted after failing to pass one error test (error \
+occured in \"mebdfi\" core solver function with error number \"%d\")", verr);
       break;
 
     case -2:
       error_with_id ("OdePkg:InternalError",
-	"Integration was halted after failing to pass a repeated error test (error occured in \"mebdfi\" core solver function)");
+	"Integration was halted after failing to pass a repeated error test \
+(error occured in \"mebdfi\" core solver function with error number \
+\"%d\")", verr);
       break;
 
     case -3:
       error_with_id ("OdePkg:InternalError",
-	"Integration was halted after failing to achieve a corrector convergence (error occured in \"mebdfi\" core solver function)");
+	"Integration was halted after failing to achieve a corrector \
+convergence (error occured in \"mebdfi\" core solver function with \
+error number \"%d\")", verr);
       break;
 
     case -4:
       error_with_id ("OdePkg:InternalError",
-	"Immediate halt because of illegal number of input arguments (error occured in the \"mebdfi\" core solver function)");
+	"Immediate halt because of illegal number of input arguments (error \
+occured in the \"mebdfi\" core solver function with error number \
+\"%d\")", verr);
       break;
 
     case -5:
       error_with_id ("OdePkg:InternalError",
-	"Idid was -1 on input (error occured in \"mebdfi\" core solver function)");
+	"Idid was -1 on input (error occured in \"mebdfi\" core solver function \
+with error number \"%d\")", verr);
       break;
 
     case -6:
       error_with_id ("OdePkg:InternalError",
-	"Maximum number of allowed integration steps exceeded (error occured in \"mebdfi\" core solver function)");
+	"Maximum number of allowed integration steps exceeded (error occured in \
+\"mebdfi\" core solver function with error number \"%d\")", verr);
       break;
 
     case -7:
       error_with_id ("OdePkg:InternalError",
-	"Stepsize grew too small (error occured in \"mebdfi\" core solver function)");
+	"Stepsize grew too small (error occured in \"mebdfi\" core solver \
+function with error number \"%d\")", verr);
       break;
 
     case -11:
       error_with_id ("OdePkg:InternalError",
-	"Insufficient real workspace for integration (error occured in \"mebdfi\" core solver function)");
+	"Insufficient real workspace for integration (error occured in \
+\"mebdfi\" core solver function with error number \"%d\")", verr);
       break;
 
     case -12:
       error_with_id ("OdePkg:InternalError",
-	"Insufficient integer workspace for integration (error occured in \"mebdfi\" core solver function)");
+	"Insufficient integer workspace for integration (error occured in \
+\"mebdfi\" core solver function with error number \"%d\")", verr);
       break;
 
     case -40:
       error_with_id ("OdePkg:InternalError",
-	"Error too small to be attained for the machine precision (error occured in \"mebdfi\" core solver function)");
+	"Error too small to be attained for the machine precision (error \
+occured in \"mebdfi\" core solver function with error number \"%d\")", verr);
       break;
 
     case -41:
       error_with_id ("OdePkg:InternalError",
-	"Illegal input argument IDID (error occured in \"mebdfi\" core solver function)");
+	"Illegal input argument IDID (error occured in \"mebdfi\" core solver \
+function with error number \"%d\")", verr);
       break;
 
     case -42:
       error_with_id ("OdePkg:InternalError",
-	"Illegal input argument ATOL (error occured in \"mebdfi\" core solver function)");
+	"Illegal input argument ATOL (error occured in \"mebdfi\" core solver \
+function with error number \"%d\")", verr);
       break;
 
     case -43:
       error_with_id ("OdePkg:InternalError",
-	"Illegal input argument RTOL (error occured in \"mebdfi\" core solver function)");
+	"Illegal input argument RTOL (error occured in \"mebdfi\" core solver \
+function with error number \"%d\")", verr);
       break;
 
     case -44:
       error_with_id ("OdePkg:InternalError",
-	"Illegal input argument N<0 (error occured in \"mebdfi\" core solver function)");
+	"Illegal input argument N<0 (error occured in \"mebdfi\" core solver \
+function with error number \"%d\")", verr);
       break;
 
     case -45:
       error_with_id ("OdePkg:InternalError",
-	"Illegal input argument (T0-TOUT)*H>0 (error occured in \"mebdfi\" core solver function)");
+	"Illegal input argument (T0-TOUT)*H>0 (error occured in \"mebdfi\" core \
+solver function with error number \"%d\")", verr);
       break;
 
     case -46:
       error_with_id ("OdePkg:InternalError",
-	"Illegal input argument MF!=21 && MF!=22 (error occured in \"mebdfi\" core solver function)");
+	"Illegal input argument MF!=21 && MF!=22 (error occured in \"mebdfi\" \
+core solver function with error number \"%d\")", verr);
       break;
 
     case -47:
       error_with_id ("OdePkg:InternalError",
-	"Illegal input argument ITOL (error occured in \"mebdfi\" core solver function)");
+	"Illegal input argument ITOL (error occured in \"mebdfi\" core solver \
+function with error number \"%d\")", verr);
       break;
 
     case -48:
       error_with_id ("OdePkg:InternalError",
-	"Illegal input argument MAXDER (error occured in \"mebdfi\" core solver function)");
+	"Illegal input argument MAXDER (error occured in \"mebdfi\" core solver \
+function with error number \"%d\")", verr);
       break;
 
     case -49:
       error_with_id ("OdePkg:InternalError",
-	"Illegal input argument INDEX VARIABLES (error occured in \"mebdfi\" core solver function)");
+	"Illegal input argument INDEX VARIABLES (error occured in \"mebdfi\" \
+core solver function with error number \"%d\")", verr);
       break;
 
     default:
       error_with_id ("OdePkg:InternalError",
-	"Integration was halted after failing to pass the error test (error occured in \"mebdfi\" core solver function with error number \"%d\")", verr);
+	"Integration was halted after failing to pass the error test (error \
+occured in \"mebdfi\" core solver function with error number \"%d\")", verr);
       break;
     }
 
@@ -339,14 +364,15 @@ octave_idx_type odepkg_auxiliary_mebdfanalysis (octave_idx_type verr) {
 }
 
 /* -*- texinfo -*-
- * @deftypefn {Function} {} {DEFUN_DLD} {(odebdi, args, nargout, 'help string')}
+ * @deftp {Function} {DEFUN_DLD} (odebdi, args, nargout, 'help string')
+ * @findex odebdi
  *
  * Return the results of the solving process of the IDE problem from the Fortran core solver @code{mebdfi} to the caller function (cf. @command{help odebdi} within Octave for further details about this function). the Argument @var{odebdi} is the name of the function that can be used in Octave and @var{'help string'} is the help text that is displayed if the command @command{help odebdi} is called from Octave. The input arguments of this function are
  * @itemize @minus
  * @item @var{args}: The input arguments in form of an @code{octave_value_list}
  * @item @var{nargout}: The number of output arguments that are required
  * @end itemize
- * @end deftypefn
+ * @end deftp
  */
 DEFUN_DLD (odebdi, args, nargout,
 "-*- texinfo -*-\n\

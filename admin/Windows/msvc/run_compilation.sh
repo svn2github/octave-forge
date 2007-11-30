@@ -417,7 +417,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/f2c.lib" libf2c
     todo_check "$tbindir/fort77" fort77
     todo_check "$tlibdir/blas.lib" BLAS
-    todo_check "$tbindir/lapack.dll" LAPACK
+    todo_check "$tlibdir/lapack.lib" LAPACK
     if $DOATLAS; then
       echo -n "checking for ATLAS... "
       atl_dlls=`find "$tbindir" -name "blas_atl_*.dll"`
@@ -654,11 +654,11 @@ if check_package LAPACK; then
       "Lapack F77 Reference Implementation" "$lapack_copyright" > lapack.rc &&
     rc -fo lapack.res lapack.rc &&
     make -f lapack.makefile &&
-    cp lapack.dll "$tbindir" &&
+    cp liblapack.dll "$tbindir" &&
     cp lapack.lib liblapack_f77.lib "$tlibdir" &&
     cp ../COPYING "$tlicdir/COPYING.LAPACK") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/lapack-lite-$lapackver"
-  if ! test -f "$tbindir/lapack.dll"; then
+  if ! test -f "$tlibdir/lapack.lib"; then
     echo "failed"
     exit -1
   else

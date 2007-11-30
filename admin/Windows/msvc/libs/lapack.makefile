@@ -1,4 +1,7 @@
-LIBTARGET = lapack.dll
+NAME = lapack
+
+LIBTARGET = lib$(NAME).dll
+LIBIMPLIB = $(NAME).lib
 LIBSTATIC = liblapack_f77.lib
 
 CC = cc-msvc
@@ -41,7 +44,7 @@ $(LIBTARGET): $(OBJECTS) $(LIB_DEFFILE)
 	@if test -f lapack.res; then \
 		echo lapack.res >> link.tmp ; \
 	fi
-	$(CC) -shared -o $@ @link.tmp -lf2c -lblas -Wl,-def:$(LIB_DEFFILE)
+	$(CC) -shared -o $@ @link.tmp -lf2c -lblas -Wl,-def:$(LIB_DEFFILE) -Wl,-implib:$(LIBIMPLIB)
 	@rm -f link.tmp
 
 $(LIBSTATIC): $(OBJECTS) $(LIB_DEFFILE)

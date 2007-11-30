@@ -1,4 +1,7 @@
-LIBTARGET = blas.dll
+NAME = blas
+
+LIBTARGET = lib$(NAME).dll
+LIBIMPLIB = $(NAME).lib
 
 CC = cc-msvc
 CFLAGS = -MD -O2
@@ -35,7 +38,7 @@ $(LIB_DEFFILE): $(DEF_FILES)
 	cat $(DEF_FILES) >> $@
 
 $(LIBTARGET): $(OBJECTS) $(LIB_DEFFILE)
-	$(CC) -shared -o $@ $(OBJECTS) -lf2c -Wl,-def:$(LIB_DEFFILE)
+	$(CC) -shared -o $@ $(OBJECTS) -lf2c -Wl,-def:$(LIB_DEFFILE) -Wl,-implib:$(LIBIMPLIB)
 
 OTHER_CLEANFILES = $(patsubst %.dll, %.exp, $(LIBTARGET)) \
 		   $(patsubst %.dll, %.ilk, $(LIBTARGET)) \

@@ -359,8 +359,11 @@ fi
 echo -n "checking for unistd.h... "
 if test ! -f "$tincludedir/unistd.h"; then
   echo "creating"
-  echo "#include <process.h>" > "$tincludedir/unistd.h"
-  echo "#include <io.h>" >> "$tincludedir/unistd.h"
+  cat >> "$tincludedir/unistd.h" <<\EOF
+#include <direct.h>
+#include <process.h>
+#include <io.h>
+EOF
 else
   echo "installed"
 fi
@@ -412,7 +415,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/f2c.exe" f2c
     todo_check "$tlibdir/f2c.lib" libf2c
     todo_check "$tbindir/fort77" fort77
-    todo_check "$tbindir/blas.dll" BLAS
+    todo_check "$tlibdir/blas.lib" BLAS
     todo_check "$tbindir/lapack.dll" LAPACK
     if $DOATLAS; then
       echo -n "checking for ATLAS... "
@@ -434,8 +437,8 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/hdf5.lib" HDF5
     todo_check "$tlibdir/glob.lib" glob
     todo_check "$tlibdir/png.lib" libpng
-    todo_check "$tbindir/arpack.dll" ARPACK
-    todo_check "$tbindir/jpeg6b.dll" libjpeg
+    todo_check "$tlibdir/arpack.lib" ARPACK
+    todo_check "$tlibdir/jpeg.lib" libjpeg
     todo_check "$tlibdir/iconv.lib" libiconv
     todo_check "$tlibdir/intl.lib" gettext
     todo_check "$tbindir/libcairo-2.dll" cairo
@@ -622,10 +625,10 @@ if check_package BLAS; then
     create_module_rc BLAS 1.0 blas.dll "Netlib (http://www.netlib.org)" \
       "BLAS F77 Reference Implementation" "Public Domain" > blas.rc &&
     make -f blas.makefile && 
-    cp blas.dll "$tbindir" &&
+    cp libblas.dll "$tbindir" &&
     cp blas.lib "$tlibdir") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/BLAS"
-  if ! test -f "$tbindir/blas.dll"; then
+  if ! test -f "$tlibdir/blas.lib"; then
     echo "failed"
     exit -1
   else
@@ -741,7 +744,7 @@ EOF
     make install &&
     rm -f $tlibdir_quoted/libfftw3.la &&
     true) >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/fftw-3.1.2"
+  rm -rf "$DOWNLOAD_DIR/fftw-3.1.2"
   if ! test -f "$tbindir/libfftw3-3.dll"; then
     echo "failed"
     exit -1
@@ -1020,7 +1023,7 @@ if check_package HDF5; then
         "NCSA Hierarchical Data Format (HDF) Library" \
         "Copyright by the Board of Trustees of the University of Illinois." > src/hdf5.rc &&
       CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-        F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D_HDF5DLL_" AR=ar-msvc RANLIB=ranlib-msvc \
+        F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D_HDF5DLL_ -Dssize_t=long" AR=ar-msvc RANLIB=ranlib-msvc \
         ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
       post_process_libtool &&
       sed -e '/^postinstall_cmds=/ {s/\$name/\\$name/; s/\$implibname/\\$implibname/;}' libtool > ttt
@@ -1039,7 +1042,7 @@ if check_package HDF5; then
       make install &&
       rm -f $tlibdir_quoted/libhdf5.la
     fi) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/hdf5-$hdf5ver"
+  #rm -rf "$DOWNLOAD_DIR/hdf5-$hdf5ver"
   if test ! -f "$tlibdir/hdf5.lib"; then
     echo "failed"
     exit -1
@@ -1138,11 +1141,11 @@ if check_package ARPACK; then
     create_module_rc ARPACK 96.0 arpack.dll "Rice University (http://www.caam.rice.edu)" \
       "ARPACK Library for Large-Scale Eigenvalues Problems" "Copyright (©) 2001, Rice University" > arpack.rc &&
     make -f arpack.makefile && 
-    cp arpack.dll "$tbindir" &&
+    cp libarpack.dll "$tbindir" &&
     cp arpack.lib "$tlibdir") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/ARPACK"
   wget $WGET_FLAGS -O "$tlicdir/COPYING.ARPACK.doc" http://www.caam.rice.edu/software/ARPACK/RiceBSD.doc
-  if ! test -f "$tbindir/arpack.dll"; then
+  if ! test -f "$tlibdir/arpack.lib"; then
     echo "failed"
     exit -1
   else
@@ -1154,21 +1157,70 @@ fi
 # libjpeg #
 ###########
 
+#if check_package libjpeg; then
+#  download_file jpeg-6b-4-src.zip 'http://downloads.sourceforge.net/gnuwin32/jpeg-6b-4-src.zip?modtime=1116176612&big_mirror=0'
+#  echo -n "decompressing libjpeg... "
+#  (cd "$DOWNLOAD_DIR" && mkdir jpeg && cd jpeg && unzip -q ../jpeg-6b-4-src.zip)
+#  cp libs/libjpeg-6b.diff "$DOWNLOAD_DIR/jpeg"
+#  echo "done"
+#  (cd "$DOWNLOAD_DIR/jpeg" &&
+#    patch -p1 < libjpeg-6b.diff &&
+#    cd src/jpeg/6b/jpeg-6b-src &&
+#    nmake -f makefile.vc nodebug=1 &&
+#    cp jpeg6b.dll "$tbindir" &&
+#    cp jpeg.lib "$tlibdir" &&
+#    cp jconfig.h jerror.h jmorecfg.h jpeglib.h "$tincludedir") >&5 2>&1
+#  rm -rf "$DOWNLOAD_DIR/jpeg"
+#  if test ! -f "$tbindir/jpeg6b.dll"; then
+#    echo "failed"
+#    exit -1
+#  else
+#    echo "done"
+#  fi
+#fi
+
 if check_package libjpeg; then
-  download_file jpeg-6b-4-src.zip 'http://downloads.sourceforge.net/gnuwin32/jpeg-6b-4-src.zip?modtime=1116176612&big_mirror=0'
+  download_file jpegsrc.v6b.tar.gz ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
   echo -n "decompressing libjpeg... "
-  (cd "$DOWNLOAD_DIR" && mkdir jpeg && cd jpeg && unzip -q ../jpeg-6b-4-src.zip)
-  cp libs/libjpeg-6b.diff "$DOWNLOAD_DIR/jpeg"
+  unpack_file jpegsrc.v6b.tar.gz
   echo "done"
-  (cd "$DOWNLOAD_DIR/jpeg" &&
-    patch -p1 < libjpeg-6b.diff &&
-    cd src/jpeg/6b/jpeg-6b-src &&
-    nmake -f makefile.vc nodebug=1 &&
-    cp jpeg6b.dll "$tbindir" &&
-    cp jpeg.lib "$tlibdir" &&
-    cp jconfig.h jerror.h jmorecfg.h jpeglib.h "$tincludedir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/jpeg"
-  if test ! -f "$tbindir/jpeg6b.dll"; then
+  (cd "$DOWNLOAD_DIR/jpeg-6b" &&
+    create_module_rc Libjpeg 6.2 libjpeg-62.dll "Independent JPEG Group <www.ijg.org>" \
+      "Libjpeg - Library and Tools for JPEG Images" "© `date +%Y` Independent JPEG Group <www.ijg.org>" > jpeg.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      CPP="/mingw/bin/cpp" \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    sed -e 's/libjpeg\.la:.*$/& jpeg.def jpeg.res/' Makefile > ttt &&
+      mv ttt Makefile &&
+    (cat >> Makefile <<\EOF
+jpeg.res: jpeg.rc
+	rc -fo $@ $<
+jpeg.def: $(LIBOBJECTS)
+	echo "EXPORTS" > $@
+	nm $(LIBOBJECTS) | sed -n -e 's/^.* T _\(.*\)$$/\1/p' >> $@
+EOF
+) &&
+    sed -e 's/^build_libtool_libs=.*$/build_libtool_libs=yes/' \
+        -e 's/^build_old_libs=.*$/build_old_libs=no/' \
+        -e 's/^version_type=.*$/version_type=windows/' \
+        -e 's/^library_names_spec=.*$/library_names_spec="lib\\$name-\\$versuffix.dll"/' \
+		-e '/^[	 ]*case "\$version_type" in.*$/ {p;i\
+windows)\
+  major=`expr $current - $age`\
+  versuffix="$major"\
+  ;;
+;d;}' \
+        -e 's/^hardcode_libdir_flag_spec=.*$/hardcode_libdir_flag_spec=""/' \
+        -e 's/^archive_cmds=.*$/archive_cmds="\\$CC -shared -o \\$lib\\$libobjs -Wl,-def:jpeg.def -Wl,jpeg.res"/' \
+        libtool > ttt &&
+      mv ttt libtool &&
+    make libjpeg.la &&
+    cp jconfig.h jpeglib.h jmorecfg.h jerror.h "$tincludedir" &&
+    cp .libs/libjpeg*.dll "$tbindir" &&
+    cp .libs/libjpeg*.lib "$tlibdir/jpeg.lib") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/jpeg-6b"
+  if test ! -f "$tlibdir/jpeg.lib"; then
     echo "failed"
     exit -1
   else

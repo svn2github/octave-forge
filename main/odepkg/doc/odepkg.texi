@@ -61,13 +61,14 @@ Documentation License".
 @c %*** Start of first chapter: Beginner's Guide
 @node Beginner's Guide, User's Guide, Top, Top
 @chapter Beginner's Guide
-The ``Beginner's Guide'' is intended for users who are new to OdePkg and who want to solve differential equations with the Octave language and the package OdePkg. In this section it will be explained what OdePkg is about in @ref{About OdePkg} and how OdePkg grew up from the beginning in @ref{OdePkg history and roadmap}. In section @ref{Installation and deinstallation} it is explained how OdePkg can be installed in Octave and how it can be removed from Octave. If you encounter problems while using OdePkg then have a look at @ref{Reporting Bugs} how these bugs can be reported. In the subsection @ref{First example and demos} a first example is explained.
+The ``Beginner's Guide'' is intended for users who are new to OdePkg and who want to solve differential equations with the Octave language and the package OdePkg. In this section it will be explained what OdePkg is about in @ref{About OdePkg} and how OdePkg grew up from the beginning in @ref{OdePkg history and roadmap}. In @ref{Installation and deinstallation} it is explained how OdePkg can be installed in Octave and how it can later be removed from Octave. If you encounter problems while using OdePkg then have a look at @ref{Reporting Bugs} how these bugs can be reported. In the @ref{First example and demos} a first example is explained.
 
 @menu
 * About OdePkg::                An introduction about OdePkg
 * OdePkg history and roadmap::  From the first OdePkg release to the future
 * Installation and deinstallation::  Setting up OdePkg on your system
 * Reporting Bugs::              Writing comments and bugs to the help list
+* Help is wanted::              Everybody can help to improve OdePkg
 * First example and demos::     A first example and where to go from here
 @end menu
 
@@ -84,15 +85,15 @@ OdePkg formerly was initiated to solve ordinary differential equations (ODEs) on
 
 @multitable @columnfractions .25 .75
 @item OdePkg Version 0.0.1
-@tab The initial release was a modification of the old ``ode package'' that is hosted at Octave--Forge and that was written by Marc Compere somewhen between 2000 and 2001. The four variable step--size Runge--Kutta algorithms in three solver files and the three fixed step--size solvers have been merged. It was possible to set some further options for these solvers. The four output--functions (@command{odeprint}, @command{odeplot}, @command{odephas2} and @command{odephas3}) have been added along with other examples that initially have not been there.
+@tab The initial release was a modification of the old ``ode package'' that is hosted at Octave--Forge and that was written by Marc Compere somewhen between 2000 and 2001. The four variable step--size Runge--Kutta algorithms in three solver files and the three fixed step--size solvers have been merged. It was possible to set some options for these solvers. The four output--functions (@command{odeprint}, @command{odeplot}, @command{odephas2} and @command{odephas3}) have been added along with other examples that initially have not been there.
 @item OdePkg Version 0.1.x
 @tab The major milestone along versions 0.1.x was that four stable solvers have been implemented (ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}) supporting all options that can be set for these kind of solvers and also all necessary functions for setting their options (eg. @command{odeset}, @command{odepkg_structure_check, odepkg_event_handle}). Since version 0.1.3 there is also source code available that interfaces the Fortran solver @file{dopri5.f} (that is written by Ernst Hairer and Gerhard Wanner, cf. @file{odepkg_mexsolver_dopri5.c} and the helper files @file{odepkgext.c} and @file{odepkgmex.c}).
 @item OdePkg Version 0.2.x
 @tab The main work along version 0.2.x was to make the interface functions for the non--stiff and stiff solvers from Ernst Hairer and Gerhard Wanner enough stable so that they could be compiled and installed by default. Wrapper functions have been added to the package containing a help text and test functions (eg. @command{ode2r}, @command{ode5r}, @command{oders}). Six testsuite functions have been added to check the performance of the different solvers (eg. @command{odepkg_testsuite_chemakzo}, @command{odepkg_testsuite_oregonator}).
 @item @b{(current)} Version 0.3.x
-@tab Fixed some minor bugs along version 0.3.x. Thanks to Jeff Cash, who released his Fortran @command{mebdfX} solvers under the GNU GPL V2 after some discussion. The first IDE solver @command{odebdi} appeared that is an interface function for Cash's @command{mebdfi} core Fortran solver. With version 0.3.5 of OdePkg a first new interface function was created based on Octave's C++DLD interface to achieve the highest performance available. Added more examples and testsuite functions (eg. @command{odepkg_equations_ilorenz}, @command{odepkg_testsuite_implrober}). Porting all at this time present Mex--file solvers to Octave's C++DLD interface. Ongoing work with this manual. 
+@tab Fixed some minor bugs along version 0.3.x. Thanks to Jeff Cash, who released his Fortran @command{mebdfX} solvers under the GNU GPL V2 after some discussion. The first IDE solver @command{odebdi} appeared that is an interface function for Cash's @command{mebdfi} Fortran core solver. With version 0.3.5 of OdePkg a first new interface function was created based on Octave's C++ @code{DEFUN_DLD} interface to achieve the highest performance available. Added more examples and testsuite functions (eg. @command{odepkg_equations_ilorenz}, @command{odepkg_testsuite_implrober}). Porting all at this time present Mex--file solvers to Octave's C++ @code{DEFUN_DLD} interface. Ongoing work with this manual. 
 @item @b{(future)} Version 0.4.x
-@tab (Maybe) Ongoing work with this manual. Fetching and adding the DASRT IDE solver from Netlib.
+@tab (Maybe) Fetching and adding the DASRT IDE solver from Netlib. Ongoing work with this manual.
 @item @b{(future)} Version 0.5.x
 @tab (Maybe) Adding a last type of solvers (DDE) to OdePkg.
 @item @b{(future)} Version 0.6.x
@@ -108,7 +109,7 @@ OdePkg formerly was initiated to solve ordinary differential equations (ODEs) on
 @cindex installation
 @cindex deinstallation
 
-OdePkg can be installed easily using the @command{pkg} command of Octave. To install OdePkg get into the directory where the current release of OdePkg can be found, start Octave and type
+OdePkg can be installed easily using the @command{pkg} command in Octave. To install OdePkg download the latest release of OdePkg from the Octave--Forge download site, then get into that directory where the downloaded release of OdePkg has been saved, start Octave and type
 @example
 pkg install odepkg-x.x.x.tar.gz
 @end example
@@ -116,12 +117,12 @@ where @file{x.x.x} in the name of the @file{*.tar.gz} file is the current releas
 @example
 pkg uninstall odepkg
 @end example
-and make sure that OdePkg has been removed completely with the following command
+and make sure that OdePkg has been removed completely and does not appear in the list of installed packages anymore with the following command
 @example
 pkg list
 @end example
 
-@node Reporting Bugs, First example and demos, Installation and deinstallation, Beginner's Guide
+@node Reporting Bugs, Help is wanted, Installation and deinstallation, Beginner's Guide
 @section Reporting Bugs
 @cindex bugs
 If you encounter problems during the installation process of OdePkg with the @command{pkg} command or if you have an OdePkg that seems to be broken or if you encounter problems while using OdePkg or if you find bugs in the source codes then please report all of that via email at the Octave--Forge mailing--list using the email address 
@@ -140,7 +141,12 @@ and directly send a copy to the email address
 @end ifhtml
 . Not only bugs are welcome but also any kind of comments are welcome (eg. if you think that OdePkg is absolutely useful or even unnecessary).
 
-@node First example and demos,  , Reporting Bugs, Beginner's Guide
+@node Help is wanted, First example and demos, Reporting Bugs, Beginner's Guide
+@section Help is wanted
+@cindex help
+-*- TODO -*-
+
+@node First example and demos,  , Help is wanted, Beginner's Guide
 @section First example and demos
 @cindex First example and demos
 Have a look at the first ordinary differential equation with the name ``@command{foo}''. The @command{foo} equation of second order may be of the form 
@@ -755,12 +761,12 @@ plot (B.x, B.y(:,1));
 The option @option{MaxOrder} can be used to set the maximum order of the backward differentiation algorithm of the @command{odebdi} solver. It must be a scalar integer value between @math{1} and @math{7}. Evaluate the following example for the visualization of the effect if this option is set
 @example
 function res = fwei (t, y, yp, varargin)
-  res = t * y^2 * yp^3 - y^3 * yp^2 + t * yp * (t^2 + 1) - t^2 * y;
+  res = t*y^2*yp^3 - y^3*yp^2 + t*yp*(t^2 + 1) - t^2*y;
 endfunction
 
 function [dy, dyp] = fjac (t, y, yp, varargin)
-  dy = 2 * t * y * yp^3 - 3 * y^2 * yp^2 - t^2;
-  dyp = 3 * t * y^2 * yp^2 - 2 * y^3 * yp + t * (t^2 + 1);
+  dy  = 2*t*y*yp^3 - 3*y^2*yp^2 - t^2;
+  dyp = 3*t*y^2*yp^2 - 2*y^3*yp + t*(t^2 + 1);
 endfunction
 
 A = odeset ('AbsTol', 1e-6, 'RelTol', 1e-6, 'Jacobian', @@fjac, ...

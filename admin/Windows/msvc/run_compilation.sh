@@ -1317,6 +1317,12 @@ if check_package gettext; then
     for lt in `find . -name libtool`; do
       post_process_libtool $lt
     done &&
+    read "WARNING: gettext-runtime/libasprintf/libtool and gettext-tools/libtool needs manual post-processing; press <ENTER> when done " &&
+    for cs in gettext-runtime/config.status gettext-tools/config.status; do
+      sed -e '/@USE_INCLUDED_LIBINTL@/ {s/no/yes/;}' "$cs" > ttt &&
+        mv ttt "$cs" &&
+      (cd `dirname "$cs"` && ./config.status)
+    done &&
     make &&
     make install &&
     rm $tlibdir_quoted/lib*.la) >&5 2>&1

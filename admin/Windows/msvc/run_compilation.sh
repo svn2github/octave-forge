@@ -6,6 +6,7 @@
 #	- Visual Studio (tested with VC++ Express 2005)
 #	- MSYS shell
 #	- MSYS Development Toolkit (DTK)
+#	- MinGW
 #	- wget (GnuWin32)
 #	- unzip (GnuWin32)
 #	- octave-forge CVS tree (at least the admin/Windows/msvc/ directory)
@@ -697,6 +698,75 @@ if $DOATLAS && check_package ATLAS; then
 fi
 
 ########
+# PCRE #
+########
+
+if check_package PCRE; then
+  download_file pcre-$pcrever.tar.bz2 ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$pcrever.tar.bz2
+  echo -n "decompressing PCRE... "
+  unpack_file pcre-$pcrever.tar.bz2
+  echo "done"
+  echo -n "compiling PCRE... "
+  pcre_desc="Perl Compatible Regular Expression Library"
+  pcre_company="Philip Hazel <ph10@cam.ac.uk>"
+  pcre_copyright=`grep -e '^Copyright' "$DOWNLOAD_DIR/pcre-$pcrever/LICENCE" | head -n 1`
+  (cd "$DOWNLOAD_DIR/pcre-$pcrever" &&
+    create_module_rc PCRE $pcrever pcre.dll "$pcre_company" "$pcre_desc" "$pcre_copyright" > pcre.rc &&
+    if false && check_cmake; then
+      sed -e "s/SET(PCRE_SOURCES/SET(PCRE_SOURCES pcre.rc/" CMakeLists.txt > ttt &&
+        mv ttt CMakeLists.txt &&
+      cmake -G "NMake Makefiles" -D BUILD_SHARED_LIBS:BOOL=ON \
+            -D PCRE_NEWLINE:STRING=ANYCRLF \
+            -D PCRE_SUPPORT_UNICODE_PROPERTIES:BOOL=ON \
+            -D PCRE_BUILD_PCRECPP:BOOL=OFF \
+            -D CMAKE_BUILD_TYPE:STRING=Release \
+            -D "CMAKE_INSTALL_PREFIX:STRING=$tdir_w32_forward" . &&
+      nmake &&
+      nmake install
+    else
+      CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" \
+        CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+        ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
+        --disable-cpp --enable-unicode-properties --enable-newline-is-anycrlf &&
+      post_process_libtool &&
+      sed -e 's/^return !isdirectory(filename) *$/\0;/' pcregrep.c > ttt &&
+        mv ttt pcregrep.c &&
+      sed -e 's/libpcre_la_LDFLAGS =/libpcre_la_LDFLAGS = -Wl,pcre.res/' \
+          -e 's/libpcre_la_OBJECTS =/libpcre_la_OBJECTS = pcre.res/' Makefile > ttt &&
+        mv ttt Makefile &&
+      echo "pcre.res: pcre.rc"  >> Makefile &&
+      echo "	rc -fo \$@ \$<" >> Makefile &&
+      make &&
+      make install &&
+	  rm -f $tlibdir_quoted/libpcre*.la
+    fi) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/pcre-$pcrever"
+  if ! test -f "$tlibdir/pcre.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# fc-msvc #
+###########
+
+if check_package fc-msvc; then
+  echo -n "compiling fc-msvc... "
+  cl -nologo -MD -O2 -EHs fc-msvc.cc pcre.lib
+  mt -outputresource:fc-msvc.exe -manifest fc-msvc.exe.manifest
+  if ! test -f fc-msvc.exe; then
+    echo "failed to compile fc-msvc.exe"
+    exit -1
+  fi
+  mv -f fc-msvc.exe "$tbindir"
+  rm -f fc-msvc.obj fc-msvc.exe.manifest
+  echo "done"
+fi
+
+########
 # FFTW #
 ########
 
@@ -751,75 +821,6 @@ EOF
   else
     echo "done"
   fi
-fi
-
-########
-# PCRE #
-########
-
-if check_package PCRE; then
-  download_file pcre-$pcrever.tar.bz2 ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$pcrever.tar.bz2
-  echo -n "decompressing PCRE... "
-  unpack_file pcre-$pcrever.tar.bz2
-  echo "done"
-  echo -n "compiling PCRE... "
-  pcre_desc="Perl Compatible Regular Expression Library"
-  pcre_company="Philip Hazel <ph10@cam.ac.uk>"
-  pcre_copyright=`grep -e '^Copyright' "$DOWNLOAD_DIR/pcre-$pcrever/LICENCE" | head -n 1`
-  (cd "$DOWNLOAD_DIR/pcre-$pcrever" &&
-    create_module_rc PCRE $pcrever pcre.dll "$pcre_company" "$pcre_desc" "$pcre_copyright" > pcre.rc &&
-    if false && check_cmake; then
-      sed -e "s/SET(PCRE_SOURCES/SET(PCRE_SOURCES pcre.rc/" CMakeLists.txt > ttt &&
-        mv ttt CMakeLists.txt &&
-      cmake -G "NMake Makefiles" -D BUILD_SHARED_LIBS:BOOL=ON \
-            -D PCRE_NEWLINE:STRING=ANYCRLF \
-            -D PCRE_SUPPORT_UNICODE_PROPERTIES:BOOL=ON \
-            -D PCRE_BUILD_PCRECPP:BOOL=OFF \
-            -D CMAKE_BUILD_TYPE:STRING=Release \
-            -D "CMAKE_INSTALL_PREFIX:STRING=$tdir_w32_forward" . &&
-      nmake &&
-      nmake install
-    else
-      CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-        F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-        ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
-        --disable-cpp --enable-unicode-properties --enable-newline-is-anycrlf &&
-      post_process_libtool &&
-      sed -e 's/^return !isdirectory(filename) *$/\0;/' pcregrep.c > ttt &&
-        mv ttt pcregrep.c &&
-      sed -e 's/libpcre_la_LDFLAGS =/libpcre_la_LDFLAGS = -Wl,pcre.res/' \
-          -e 's/libpcre_la_OBJECTS =/libpcre_la_OBJECTS = pcre.res/' Makefile > ttt &&
-        mv ttt Makefile &&
-      echo "pcre.res: pcre.rc"  >> Makefile &&
-      echo "	rc -fo \$@ \$<" >> Makefile &&
-      make &&
-      make install &&
-	  rm -f $tlibdir_quoted/libpcre*.la
-    fi) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/pcre-$pcrever"
-  if ! test -f "$tlibdir/pcre.lib"; then
-    echo "failed"
-    exit -1
-  else
-    echo "done"
-  fi
-fi
-
-###########
-# fc-msvc #
-###########
-
-if check_package fc-msvc; then
-  echo -n "compiling fc-msvc... "
-  cl -nologo -MD -O2 -EHs fc-msvc.cc pcre.lib
-  mt -outputresource:fc-msvc.exe -manifest fc-msvc.exe.manifest
-  if ! test -f fc-msvc.exe; then
-    echo "failed to compile fc-msvc.exe"
-    exit -1
-  fi
-  mv -f fc-msvc.exe "$tbindir"
-  rm -f fc-msvc.obj fc-msvc.exe.manifest
-  echo "done"
 fi
 
 ########
@@ -1030,19 +1031,21 @@ if check_package HDF5; then
         mv ttt libtool &&
       sed -e 's/\$(LIB)/$(HLIB)/g' \
           -e 's/^LIB=/HLIB=/g' \
+          -e 's/^LIBS=.*$/& -lws2_32/' \
           -e 's/^LDFLAGS=/LDFLAGS= -no-undefined -Wl,hdf5.res/' src/Makefile > ttt &&
         mv ttt src/Makefile &&
       sed -e '/^#ifdef \+H5_HAVE_STREAM.*$/ {p; c\
 #define EWOULDBLOCK WSAEWOULDBLOCK
 ;}' src/H5FDstream.c > ttt &&
         mv ttt src/H5FDstream.c &&
+      echo "#define HDsetvbuf(A,B,C,D) (((D)>1)?setvbuf(A,B,C,D):setvbuf(A,B,C,2))" >> src/H5pubconf.h &&
       cd src
       rc -fo hdf5.res hdf5.rc &&
       make &&
       make install &&
       rm -f $tlibdir_quoted/libhdf5.la
     fi) >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/hdf5-$hdf5ver"
+  rm -rf "$DOWNLOAD_DIR/hdf5-$hdf5ver"
   if test ! -f "$tlibdir/hdf5.lib"; then
     echo "failed"
     exit -1
@@ -1215,6 +1218,14 @@ windows)\
         -e 's/^archive_cmds=.*$/archive_cmds="\\$CC -shared -o \\$lib\\$libobjs -Wl,-def:jpeg.def -Wl,jpeg.res"/' \
         libtool > ttt &&
       mv ttt libtool &&
+    (cat >> jconfig.h <<\EOF
+
+#ifndef __RPCNDR_H__
+typedef unsigned char boolean;
+#endif
+#define HAVE_BOOLEAN
+EOF
+) &&
     make libjpeg.la &&
     cp jconfig.h jpeglib.h jmorecfg.h jerror.h "$tincludedir" &&
     cp .libs/libjpeg*.dll "$tbindir" &&

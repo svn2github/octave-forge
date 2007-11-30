@@ -2306,23 +2306,23 @@ function get_nsi_additional_files()
   case "$packname" in
     image)
       echo "  SetOutPath \"\$INSTDIR\\bin\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\jpeg6b.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libjpeg-62.dll\""
       echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng13.dll\""
       ;;
     octcdf)
       echo "  SetOutPath \"\$INSTDIR\\bin\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\netcdf.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libnetcdf-4.dll\""
       echo "  SetOutPath \"\$INSTDIR\\license\""
       echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.NETCDF\""
       ;;
     gsl)
       echo "  SetOutPath \"\$INSTDIR\\bin\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\libgsl.dll\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\libgslcblas.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libgsl-0.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libgslcblas-0.dll\""
       ;;
     arpack)
       echo "  SetOutPath \"\$INSTDIR\\bin\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\arpack.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libarpack.dll\""
       echo "  SetOutPath \"\$INSTDIR\\license\""
       echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.ARPACK.doc\""
       ;;

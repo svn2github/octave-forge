@@ -126,12 +126,12 @@ Section "Core" SEC_CORE
   File /r /x "packages" /x "octave_packages" "${OCTAVE_ROOT}\share\*.*"
   ; support libraries and executables
   SetOutPath "$INSTDIR\bin"
-  File "${VCLIBS_ROOT}\bin\pcre.dll"
-  File "${VCLIBS_ROOT}\bin\readline.dll"
-  File "${VCLIBS_ROOT}\bin\ncurses.dll"
+  File "${VCLIBS_ROOT}\bin\libpcre-0.dll"
+  File "${VCLIBS_ROOT}\bin\libreadline-5.dll"
+  File "${VCLIBS_ROOT}\bin\libncurses-5.dll"
   File "${VCLIBS_ROOT}\bin\libfftw3-3.dll"
-  File "${VCLIBS_ROOT}\bin\hdf5.dll"
-  File "${VCLIBS_ROOT}\bin\glpk_4_19.dll"
+  File "${VCLIBS_ROOT}\bin\libhdf5-0.dll"
+  File "${VCLIBS_ROOT}\bin\libglpk-0.dll"
   File "${VCLIBS_ROOT}\bin\fftw-wisdom.exe"
   File "${VCLIBS_ROOT}\bin\zlib1.dll"
   File "${VCLIBS_ROOT}\bin\libcurl.dll"
@@ -233,8 +233,8 @@ SectionGroup /e "Linear Algebra Libraries" GRP_LINALG
 Section "Generic" SEC_LA_GEN
   SetOutPath "$INSTDIR\bin"
   SetOverwrite try
-  File /oname=blas.dll "${VCLIBS_ROOT}\bin\blas.dll"
-  File /oname=lapack.dll "${VCLIBS_ROOT}\bin\lapack.dll"
+  File /oname=libblas.dll "${VCLIBS_ROOT}\bin\libblas_f77.dll"
+  File /oname=liblapack.dll "${VCLIBS_ROOT}\bin\liblapack_f77.dll"
   SetOutPath "$INSTDIR\license"
   File "${VCLIBS_ROOT}\license\COPYING.LAPACK"
 SectionEnd
@@ -242,16 +242,16 @@ SectionEnd
 Section /o "P4/SSE2" SEC_LA_P4SSE2
   SetOutPath "$INSTDIR\bin"
   SetOverwrite try
-  File /oname=blas.dll "${VCLIBS_ROOT}\bin\blas_atl_WinNT_P4SSE2.dll"
-  File /oname=lapack.dll "${VCLIBS_ROOT}\bin\lapack_atl_WinNT_P4SSE2.dll"
+  File /oname=libblas.dll "${VCLIBS_ROOT}\bin\libblas_atl_WinNT_P4SSE2.dll"
+  File /oname=liblapack.dll "${VCLIBS_ROOT}\bin\liblapack_atl_WinNT_P4SSE2.dll"
 SectionEnd
 
 !ifdef ATLAS_PM
 Section /o "PM/SSE2" SEC_LA_PMSSE2
   SetOutPath "$INSTDIR\bin"
   SetOverwrite try
-  File /oname=blas.dll "${VCLIBS_ROOT}\bin\blas_atl_PMSSE2.dll"
-  File /oname=lapack.dll "${VCLIBS_ROOT}\bin\lapack_atl_PMSSE2.dll"
+  File /oname=libblas.dll "${VCLIBS_ROOT}\bin\libblas_atl_PMSSE2.dll"
+  File /oname=liblapack.dll "${VCLIBS_ROOT}\bin\liblapack_atl_PMSSE2.dll"
 SectionEnd
 !endif
 
@@ -309,11 +309,11 @@ Section "Gnuplot" SEC_GNUPLOT
   File "${VCLIBS_ROOT}\bin\wgnuplot.exe"
   File "${VCLIBS_ROOT}\bin\wgnuplot.hlp"
   File "${VCLIBS_ROOT}\bin\wgnuplot.mnu"
-  File "${VCLIBS_ROOT}\bin\bgd.dll"
-  File "${VCLIBS_ROOT}\bin\freetype6.dll"
-  File "${VCLIBS_ROOT}\bin\iconv.dll"
-  File "${VCLIBS_ROOT}\bin\intl.dll"
-  File "${VCLIBS_ROOT}\bin\jpeg6b.dll"
+  File "${VCLIBS_ROOT}\bin\libgd-2.dll"
+  File "${VCLIBS_ROOT}\bin\libfreetype-6.dll"
+  File "${VCLIBS_ROOT}\bin\libiconv-2.dll"
+  File "${VCLIBS_ROOT}\bin\libintl-8.dll"
+  File "${VCLIBS_ROOT}\bin\libjpeg-62.dll"
   File "${VCLIBS_ROOT}\bin\libcairo-2.dll"
   File "${VCLIBS_ROOT}\bin\libglib-2.0-0.dll"
   File "${VCLIBS_ROOT}\bin\libgmodule-2.0-0.dll"
@@ -345,9 +345,9 @@ Section "Octplot" SEC_OPLOT
   SetOverwrite try
   SetOutPath "$INSTDIR\bin"
   File "${VCLIBS_ROOT}\bin\fltkdll.dll"
-  File "${VCLIBS_ROOT}\bin\jpeg6b.dll"
+  File "${VCLIBS_ROOT}\bin\libjpeg-62.dll"
   File "${VCLIBS_ROOT}\bin\libpng13.dll"
-  File "${VCLIBS_ROOT}\bin\freetype6.dll"
+  File "${VCLIBS_ROOT}\bin\libfreetype-6.dll"
   SetOutPath "$INSTDIR\share\octplot"
   File /r "${OCTAVE_ROOT}\share\octplot\*.*"
   SetOutPath "$INSTDIR\license"
@@ -403,8 +403,8 @@ Section "Tools" SEC_TOOLS
   SetOverwrite try
   File "${VCLIBS_ROOT}\bin\less.exe"
   File "${VCLIBS_ROOT}\bin\sed.exe"
-  File "${VCLIBS_ROOT}\bin\iconv.dll"
-  File "${VCLIBS_ROOT}\bin\intl.dll"
+  File "${VCLIBS_ROOT}\bin\libiconv-2.dll"
+  File "${VCLIBS_ROOT}\bin\libintl-8.dll"
   File "${VCLIBS_ROOT}\bin\makeinfo.exe"
 
 ; Shortcuts

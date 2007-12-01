@@ -679,15 +679,15 @@ if $DOATLAS && check_package ATLAS; then
   echo -n "compiling ATLAS... "
   (cd "$DOWNLOAD_DIR/ATLAS" &&
     patch -p1 < atlas-3.6.0.diff &&
-    start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -i &&
-	exit -1 &&
+#    start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -i &&
+#	exit -1 &&
     start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make xconfig && echo -n '' | ./xconfig -c mvc" &&
 	arch=`ls Make.*_* | sed -e 's/Make\.//'` &&
 	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make install arch=$arch" &&
 	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && cd lib/$arch && build_atlas_dll" &&
-	cp lib/$arch/blas.dll "$tbindir/blas_atl_$arch.dll" &&
-	cp lib/$arch/lapack.dll "$tbindir/lapack_atl_$arch.dll") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/ATLAS"
+	cp lib/$arch/libblas.dll "$tbindir/libblas_atl_$arch.dll" &&
+	cp lib/$arch/liblapack.dll "$tbindir/liblapack_atl_$arch.dll") >&5 2>&1
+  #rm -rf "$DOWNLOAD_DIR/ATLAS"
   atl_dlls=`find "$tbindir" -name "blas_atl_*.dll"`
   if test -z "$atl_dlls"; then
     echo "failed"
@@ -1024,7 +1024,7 @@ if check_package HDF5; then
         "NCSA Hierarchical Data Format (HDF) Library" \
         "Copyright by the Board of Trustees of the University of Illinois." > src/hdf5.rc &&
       CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-        F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D_HDF5DLL_ -Dssize_t=long" AR=ar-msvc RANLIB=ranlib-msvc \
+        F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D_HDF5DLL_" AR=ar-msvc RANLIB=ranlib-msvc \
         ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
       post_process_libtool &&
       sed -e '/^postinstall_cmds=/ {s/\$name/\\$name/; s/\$implibname/\\$implibname/;}' libtool > ttt
@@ -1039,6 +1039,7 @@ if check_package HDF5; then
 ;}' src/H5FDstream.c > ttt &&
         mv ttt src/H5FDstream.c &&
       echo "#define HDsetvbuf(A,B,C,D) (((D)>1)?setvbuf(A,B,C,D):setvbuf(A,B,C,2))" >> src/H5pubconf.h &&
+      echo "#define ssize_t long" >> src/H5pubconf.h &&
       cd src
       rc -fo hdf5.res hdf5.rc &&
       make &&
@@ -1383,6 +1384,8 @@ if check_package glib; then
   echo "done"
   echo "compiling glib... "
   (cd "$DOWNLOAD_DIR/glib-$glibver" &&
+    sed -e 's/extern int _nl_msg_cat_cntr/extern __declspec(dllimport) int _nl_msg_cat_cntr/' configure > ttt &&
+      mv ttt configure &&
     CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
       ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \

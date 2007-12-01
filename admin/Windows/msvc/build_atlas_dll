@@ -39,7 +39,7 @@ case `uname -s` in
 esac
 
 echo "Generating BLAS DLL..."
-cc-msvc -shared -o blas.dll -Wl,-def:$topdir/lib/atl_blas.def libatlas.lib libf77blas.lib libcblas.lib -lf2c
+cc-msvc -shared -o libblas.dll -Wl,-def:$topdir/lib/atl_blas.def libatlas.lib libf77blas.lib libcblas.lib -lf2c
 if test -f "blas.exp"; then
   rm -f blas.exp
 fi
@@ -57,7 +57,7 @@ echo "Merging object files in LAPACK/F77..."
 lib -nologo liblapack_f77.lib *.o
 
 echo "Generating LAPACK DLL..."
-cc-msvc -shared -o lapack.dll -Wl,-def:$topdir/lib/lapack.def liblapack_f77.lib blas.lib -lf2c
+cc-msvc -shared -o liblapack.dll -Wl,-def:$topdir/lib/lapack.def liblapack_f77.lib libblas.lib -lf2c
 if test -f "lapack.exp"; then
   rm -f lapack.exp
 fi

@@ -17,7 +17,7 @@
 
 function [ h ] = bar3h (varargin)
 
-  tmp = __bar__ ("bar3h", 1, varargin{:});
+  tmp = __bar3__ ("bar3h", 1, varargin{:});
   if (nargout > 0)
     h = tmp;
   endif

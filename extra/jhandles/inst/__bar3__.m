@@ -15,23 +15,19 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ h ] = __bar__ (orient, mode3D, varargin)
+function [ h ] = __bar3__ (from, orient, varargin)
 
   newplot ();
 
-  [xx, yy, w, c, mode, ax] = parseInputArgs(mode3D, varargin{:});
-  if (mode3D)
-    tmp = makeBar3D (ax, xx, yy, w, mode, c, orient);
-  else
-    tmp = __jhandles_go_barseries (ax, xx, yy, w, mode, c, orient);
-  endif
+  [xx, yy, w, c, mode, ax] = parseInputArgs(from, varargin{:});
+  tmp = makeBar3D (from, ax, xx, yy, w, mode, c, orient);
   if (nargout > 0)
     h = tmp;
   endif
 
 endfunction
 
-function [ h ] = makeBar3D (ax, xx, yy, w, mode, c, orient)
+function [ h ] = makeBar3D (from, ax, xx, yy, w, mode, c, orient)
 
   if (length (xx) > 1)
     dx = min (diff (xx));
@@ -118,7 +114,7 @@ function [ h ] = makeBar3D (ax, xx, yy, w, mode, c, orient)
 	  h = [h hp];
     endfor
   else
-    error ("invalid bar mode");
+    error ("%s: invalid bar mode", from);
   endif
 
   if (! ishold ())
@@ -138,17 +134,13 @@ function [ h ] = makeBar3D (ax, xx, yy, w, mode, c, orient)
 
 endfunction
 
-function [xx, yy, w, c, mode, ax] = parseInputArgs(mode3D, varargin)
+function [xx, yy, w, c, mode, ax] = parseInputArgs(from, varargin)
 
   xx = [];
   yy = [];
   w = 0.8;
   c = "flat";
-  if (mode3D)
-    mode = "detached";
-  else
-    mode = "grouped";
-  endif
+  mode = "detached";
   ax = gca ();
   idx = 1;
   nargs = length (varargin);
@@ -163,13 +155,13 @@ function [xx, yy, w, c, mode, ax] = parseInputArgs(mode3D, varargin)
     yy = varargin{idx+1};
     if (! isvector (xx) || ! ismatrix (yy) || (isvector (yy) && length (xx) != length (yy)) ||
       (! isvector (yy) && length (xx) != size (yy, 1)))
-      error ("invalid input arguments - X/Y sizes do not match");
+      error ("%s: invalid input arguments - X/Y sizes do not match", from);
     endif
     idx = idx+2;
   elseif (nargs >= idx && isnumeric (varargin{idx}))
     yy = varargin{idx};
     if (! ismatrix (yy))
-      error ("invalid input arguments - expected matrix input");
+      error ("%s: invalid input arguments - expected matrix input", from);
     endif
     if (isvector (yy))
       xx = 1:length (yy);
@@ -178,7 +170,7 @@ function [xx, yy, w, c, mode, ax] = parseInputArgs(mode3D, varargin)
     endif
     idx = idx+1;
   else
-    error ("invalid input arguments - expected matrix input");
+    error ("%s: invalid input arguments - expected matrix input", from);
   endif
 
   [xx, k] = sort (xx);
@@ -197,21 +189,21 @@ function [xx, yy, w, c, mode, ax] = parseInputArgs(mode3D, varargin)
     if (isnumeric (varargin{k}) && isscalar (varargin{k}))
       w = varargin{k};
     elseif (ischar (varargin{k}))
-      if (strcmp (varargin{k}, "grouped") || strcmp (varargin{k}, "stacked") || (strcmp (varargin{k}, "detached") && mode3D))
+      if (strcmp (varargin{k}, "grouped") || strcmp (varargin{k}, "stacked") || strcmp (varargin{k}, "detached"))
         mode = varargin{k};
       elseif (length (varargin{k}) == 1)
-        c = decodeColor (varargin{k});
+        c = decodeColor (from, varargin{k});
       else
-        error ("unexpected argument");
+        error ("%s: unexpected argument", from);
       endif
     else
-      error ("unexpected argument");
+      error ("%s: unexpected argument", from);
     endif
   endfor
 
 endfunction
 
-function [ c ] = decodeColor (s)
+function [ c ] = decodeColor (from, s)
 
   persistent cmap;
 
@@ -230,7 +222,7 @@ function [ c ] = decodeColor (s)
   if (ischar (s) && length (s) == 1 && ! isempty (idx = findstr ("rgbmyckw", s)))
     c = cmap(idx, :);
   else
-    error ("invalid color specification");
+    error ("%s: invalid color specification", from);
   endif
 
 endfunction

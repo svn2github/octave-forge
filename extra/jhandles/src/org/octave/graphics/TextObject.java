@@ -62,9 +62,6 @@ public class TextObject extends GraphicObject
 	{
 		super(parent, "text");
 
-		this.content = new SimpleTextEngine.Content(txt);
-		this.data = null;
-
 		Rotation = new DoubleProperty(this, "Rotation", 0.0);
 		HAlign = new RadioProperty(this, "HorizontalAlignment", new String[] {"left", "center", "right"}, "left");
 		VAlign = new RadioProperty(this, "VerticalAlignment", new String[] {"top", "middle", "bottom", "baseline"}, "baseline");
@@ -107,6 +104,9 @@ public class TextObject extends GraphicObject
 
 	public void validate()
 	{
+		currentUnits = Units.getValue();
+		content = new SimpleTextEngine.Content(TextString.toString());
+		data = null;
 		updateMinMax();
 		super.validate();
 	}

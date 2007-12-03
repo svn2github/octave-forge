@@ -2071,18 +2071,20 @@ public class AxesObject extends HandleObject
 	double[] convertUnits(double[] pos, String units, String toUnits)
 	{
 		double[] p;
+		double dz = (x_zmax-x_zmin), z1 = x_zmin;
 
 		if (units.equalsIgnoreCase("data"))
 			p = (double[])pos.clone();
 		else
 		{
 			Rectangle bb = getBoundingBox();
+			double hc = getCanvas().getHeight();
 			double dpi = Utils.getScreenResolution();
 
 			if (units.equalsIgnoreCase("pixels"))
 				p = (double[])pos.clone();
 			else if (units.equalsIgnoreCase("normalized"))
-				p = new double[] {pos[0]*bb.width, pos[1]*bb.height, pos[2]};
+				p = new double[] {pos[0]*bb.width, pos[1]*bb.height, dz*pos[2]};
 			else if (units.equalsIgnoreCase("inches"))
 				p = new double[] {pos[0]*dpi, pos[1]*dpi, pos[2]*dpi};
 			else if (units.equalsIgnoreCase("centimeters"))
@@ -2091,22 +2093,25 @@ public class AxesObject extends HandleObject
 				p = new double[] {pos[0]*dpi/72.0, pos[1]*dpi/72.0, pos[2]*dpi/72.0};
 			else
 				p = new double[] {0, 0, 0};
-			unTransform(bb.x+p[0], bb.y+p[1], p[2], p, 0);
+			unTransform(bb.x+p[0], hc-(bb.y+p[1]), z1+p[2], p, 0);
 		}
 
 		if (!toUnits.equalsIgnoreCase("data"))
 		{
 			Rectangle bb = getBoundingBox();
+			double hc = getCanvas().getHeight();
 			double dpi = Utils.getScreenResolution();
 
 			transform(p[0], p[1], p[2], p, 0);
 			p[0] -= bb.x;
-			p[1] -= bb.y;
+			p[1] = hc-bb.y-p[1];
+			p[2] -= z1;
 			
 			if (toUnits.equalsIgnoreCase("normalized"))
 			{
 				p[0] /= bb.width;
 				p[1] /= bb.height;
+				p[2] /= dz;
 			}
 			else if (toUnits.equalsIgnoreCase("inches"))
 			{

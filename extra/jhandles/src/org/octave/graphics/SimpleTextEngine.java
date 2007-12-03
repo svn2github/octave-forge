@@ -32,11 +32,13 @@ class SimpleTextEngine
 		private String buffer;
 		private LinkedList list;
 		private int anchor = 0, current = 0;
+		private StringBuilder builder;
 
 		SimpleFactory(String txt, LinkedList lst)
 		{
 			buffer = txt;
 			list = lst;
+			builder = new StringBuilder();
 		}
 
 		int matchBrace(int start)
@@ -77,17 +79,34 @@ class SimpleTextEngine
 			}
 		}
 
+		String getTeXCommand(int start)
+		{
+			int end = start;
+			while (end < buffer.length())
+			{
+				char c = buffer.charAt(end);
+				if (!Character.isLetterOrDigit(c))
+					break;
+				end++;
+			}
+			anchor = end;
+			return buffer.substring(start, end);
+		}
+
 		void flush()
 		{
-			if (current > anchor)
+			if (current > anchor && builder.length() > 0)
 			{
-				list.add(new Element(buffer.substring(anchor, current)));
+				list.add(new Element(builder.toString()));
 				anchor = current;
+				builder.setLength(0);
 			}
 		}
 
 		void parse()
 		{
+			String arg;
+
 			current = anchor;
 			while (current < buffer.length())
 			{
@@ -96,7 +115,7 @@ class SimpleTextEngine
 				case '^':
 				case '_':
 					flush();
-					String arg = getArgument(current+1);
+					arg = getArgument(current+1);
 					if (arg != null)
 					{
 						if (buffer.charAt(current) == '_')
@@ -108,8 +127,40 @@ class SimpleTextEngine
 					else
 						current++;
 					break;
+				case '{':
+					flush();
+					arg = getArgument(current);
+					if (arg != null && arg.length() > 0)
+						list.add(new LineElement(arg));
+					current = anchor;
+					break;
+				case '\\':
+					if (current+1 < buffer.length())
+						switch (buffer.charAt(current+1))
+						{
+							case '\\':
+							case '{':
+							case '}':
+							case '_':
+							case '^':
+								builder.append(buffer.charAt(current+1));
+								current = anchor = current+2;
+								break;
+							default:
+								flush();
+								arg = getTeXCommand(current+1);
+								if (arg != null && arg.length() > 0)
+									list.add(new TeXElement(arg));
+								else
+									System.err.println("WARNING: unable to interpret TeX command: " + buffer.substring(current));
+								current = anchor;
+								break;
+						}
+					else
+						System.err.println("WARNING: unable to interpret TeX command: " + buffer.substring(current));
+					break;
 				default:
-					current++;
+					builder.append(buffer.charAt(current++));
 					break;
 				}
 			}
@@ -264,9 +315,66 @@ class SimpleTextEngine
 		}
 	}
 
+	static class TeXElement extends Element
+	{
+		private static String[] symbol_names = {
+			"alpha",
+			"beta",
+			"gamma",
+			"mu",
+			"int",
+			"forall",
+			"Delta",
+			"Sigma",
+			null
+		};
+		private static int[] symbol_codes = {
+			0x03B1,		// alpha
+			0x03B2,		// beta
+			0x03B3,		// gamma
+			0x03BC,		// mu
+			0x222B,		// int
+			0x2200,		// forall
+			0x0394,		// Delta
+			0x03A3,		// Sigma
+			0
+		};
+		private static Map symbol_map;
+
+		TeXElement(String txt)
+		{
+			super(convertString(txt));
+		}
+
+		private static String convertString(String s)
+		{
+			System.out.println("convert: " + s);
+			int c = getSymbolCode(s);
+			if (c != 0)
+				return new String(new int[] {c}, 0, 1);
+			return "";
+		}
+
+		private static int getSymbolCode(String s)
+		{
+			if (symbol_map == null)
+			{
+				symbol_map = new HashMap();
+				for (int i=0; i<symbol_names.length; i++)
+					if (symbol_names[i] != null)
+						symbol_map.put(symbol_names[i], new Integer(symbol_codes[i]));
+			}
+			Integer c = (Integer)symbol_map.get(s);
+			if (c != null)
+				return c.intValue();
+			return 0;
+		}
+	}
+
 	static class Content extends Element
 	{
 		private LineElement[] lines;
+		public int align;
 
 		Content(String txt)
 		{
@@ -281,12 +389,36 @@ class SimpleTextEngine
 
 		Rectangle layout(RenderCanvas comp, Font font)
 		{
-			return lines[0].layout(comp, font);
+			int w = 0, h = 0;
+			Rectangle r;
+
+			for (int i=0; i<lines.length; i++)
+			{
+				r = lines[i].layout(comp, font);
+				if (r.width > w)
+					w = r.width;
+				h += r.height;
+			}
+			rect = new Rectangle(0, -(h-lines[0].rect.height-lines[0].rect.y), w, h);
+			return rect;
+			//return lines[0].layout(comp, font);
 		}
 
 		void render(Graphics2D g)
 		{
-			lines[0].render(g);
+			int xoffset = 0, yoffset = 0;
+
+			for (int i=0; i<lines.length; i++)
+			{
+				int dx = rect.width-lines[i].rect.width;
+				xoffset = (align == 0 ? 0 : (align == 1 ? dx/2 : dx));
+				g.translate(xoffset, 0);
+				lines[i].render(g);
+				g.translate(-xoffset, lines[i].rect.height);
+				yoffset += lines[i].rect.height;
+			}
+			g.translate(0, -yoffset);
+			//lines[0].render(g);
 		}
 	}
 

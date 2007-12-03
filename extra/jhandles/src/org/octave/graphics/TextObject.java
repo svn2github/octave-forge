@@ -100,6 +100,7 @@ public class TextObject extends GraphicObject
 		listen(FontSize);
 		listen(FontWeight);
 		listen(FontUnits);
+		listen(HAlign);
 	}
 
 	public void validate()
@@ -186,6 +187,7 @@ public class TextObject extends GraphicObject
 		}
 		g.setColor(TextColor.getColor());
 		g.setFont(fnt);
+		content.align = (HAlign.is("left") ? 0 : (HAlign.is("center") ? 1 : 2));
 		content.render(g);
 		g.dispose();
 		com.sun.opengl.util.ImageUtil.flipImageVertically(img);
@@ -266,7 +268,7 @@ public class TextObject extends GraphicObject
 		}
 		else if (p == Rotation || p == TextColor || p == BackgroundColor || p == EdgeColor ||
 				 p == Margin || p == LineStyle || p == LineWidth || p == FontAngle ||
-				 p == FontName || p == FontSize || p == FontWeight)
+				 p == FontName || p == FontSize || p == FontWeight || (p == HAlign && TextString.toString().indexOf('\n') != -1))
 			data = null;
 
 		if (p == Units || p == Position)

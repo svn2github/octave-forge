@@ -123,6 +123,19 @@ class SimpleTextEngine
 						else if (buffer.charAt(current) == '^')
 							list.add(new SuperscriptElement(arg));
 						current = anchor;
+
+						if (list.size() > 1)
+						{
+							Element e1 = (Element)list.get(list.size()-2);
+							Element e2 = (Element)list.get(list.size()-1);
+							if ((e1 instanceof SubscriptElement && e2 instanceof SuperscriptElement) ||
+							    (e2 instanceof SubscriptElement && e1 instanceof SuperscriptElement))
+							{
+								list.remove(list.size()-2);
+								list.remove(list.size()-1);
+								list.add(new ScriptElement(e1, e2));
+							}
+						}
 					}
 					else
 						current++;
@@ -130,8 +143,10 @@ class SimpleTextEngine
 				case '{':
 					flush();
 					arg = getArgument(current);
-					if (arg != null && arg.length() > 0)
+					if (arg != null)
 						list.add(new LineElement(arg));
+					else
+						System.err.println("WARNING: unmatched brace '{'");
 					current = anchor;
 					break;
 				case '\\':
@@ -315,13 +330,60 @@ class SimpleTextEngine
 		}
 	}
 
+	static class ScriptElement extends Element
+	{
+		private Element[] elems = new Element[2];
+
+		ScriptElement(Element e1, Element e2)
+		{
+			super("");
+			elems[0] = e1;
+			elems[1] = e2;
+		}
+
+		Rectangle layout(RenderCanvas comp, Font font)
+		{
+			rect = elems[0].layout(comp, font);
+			rect = rect.union(elems[1].layout(comp, font));
+			return rect;
+		}
+
+		void render(Graphics2D g)
+		{
+			elems[0].render(g);
+			elems[1].render(g);
+		}
+	}
+
 	static class TeXElement extends Element
 	{
 		private static String[] symbol_names = {
 			"alpha",
 			"beta",
 			"gamma",
+			"delta",
+			"epsilon",
+			"zeta",
+			"eta",
+			"theta",
+			//"vartheta",
+			"iota",
+			"kappa",
+			"lambda",
 			"mu",
+			"nu",
+			"xi",
+			"pi",
+			"rho",
+			"sigma",
+			//"varsigma",
+			"tau",
+			"upsilon",
+			"phi",
+			"chi",
+			"psi",
+			"omega",
+			"equiv",
 			"int",
 			"forall",
 			"Delta",
@@ -332,7 +394,29 @@ class SimpleTextEngine
 			0x03B1,		// alpha
 			0x03B2,		// beta
 			0x03B3,		// gamma
+			0x03B4,		// delta
+			0x03B5,		// epsilon
+			0x03B6,		// zeta
+			0x03B7,		// eta
+			0x03B8,		// theta
+			//0,		// vartheta
+			0x03B9,		// iota
+			0x03BA,		// kappa
+			0x03BB,		// lambda
 			0x03BC,		// mu
+			0x03BD,		// nu
+			0x03BE,		// xi
+			0x03C0,		// pi
+			0x03C1,		// rho
+			0x03C3,		// sigma
+			//0,		// varsigma
+			0x03C4,		// tau
+			0x03C5,		// upsilon
+			0x03C6,		// phi
+			0x03C7,		// chi
+			0x03C8,		// psi
+			0x03C9,		// omega
+			0x2261,		// equiv
 			0x222B,		// int
 			0x2200,		// forall
 			0x0394,		// Delta

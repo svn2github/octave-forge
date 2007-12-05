@@ -677,140 +677,183 @@ class SimpleTextEngine
 
 			null
 		};
-		private static int[] symbol_codes = {
-			0x03B1,		// alpha
-			0x03B2,		// beta
-			0x03B3,		// gamma
-			0x03B4,		// delta
-			0x03B5,		// epsilon
-			0x03B6,		// zeta
-			0x03B7,		// eta
-			0x03B8,		// theta
-			0x03D1,		// vartheta
-			0x03B9,		// iota
-			0x03BA,		// kappa
-			0x03BB,		// lambda
-			0x03BC,		// mu
-			0x03BD,		// nu
-			0x03BE,		// xi
-			0x03C0,		// pi
-			0x03C1,		// rho
-			0x03C3,		// sigma
-			0x03C2,		// varsigma
-			0x03C4,		// tau
-			0x2261,		// equiv
-			0x2111,		// Im
-			0x2297,		// otimes
-			0x2229,		// cap
-			0x2283,		// supset
-			0x222B,		// int
-			0x230B,		// rfloor
-			0x230A,		// lfloor
-			0x22A5,		// perp
-			0x2227,		// wedge
-			0x2309,		// rceil
-			0x2228,		// vee
-			0x2220,		// langle
+		private static int[][] symbol_codes = {
+			{ 0x03B1, 0xF061 },		// alpha
+			{ 0x03B2, 0xF062 },		// beta
+			{ 0x03B3, 0xF067 },		// gamma
+			{ 0x03B4, 0xF064 },		// delta
+			{ 0x03B5, 0xF065 },		// epsilon
+			{ 0x03B6, 0xF07A },		// zeta
+			{ 0x03B7, 0xF068 },		// eta
+			{ 0x03B8, 0xF071 },		// theta
+			{ 0x03D1, 0xF04A },		// vartheta
+			{ 0x03B9, 0xF069 },		// iota
+			{ 0x03BA, 0xF06B },		// kappa
+			{ 0x03BB, 0xF06C },		// lambda
+			{ 0x03BC, 0xF06D },		// mu
+			{ 0x03BD, 0xF06E },		// nu
+			{ 0x03BE, 0xF078 },		// xi
+			{ 0x03C0, 0xF070 },		// pi
+			{ 0x03C1, 0xF072 },		// rho
+			{ 0x03C3, 0xF073 },		// sigma
+			{ 0x03C2, 0xF056 },		// varsigma
+			{ 0x03C4, 0xF074 },		// tau
+			{ 0x2261, 0xF0BA },		// equiv
+			{ 0x2111, 0xF0C1 },		// Im
+			{ 0x2297, 0xF0C4 },		// otimes
+			{ 0x2229, 0xF0C7 },		// cap
+			{ 0x2283, 0xF0C9 },		// supset
+			{ 0x222B, 0xF0F2 },		// int
+			{ 0x230B, 0xF0FB },		// rfloor
+			{ 0x230A, 0xF0EB },		// lfloor
+			{ 0x22A5, 0xF05E },		// perp
+			{ 0x2227, 0xF0D9 },		// wedge
+			{ 0x2309, 0xF0F9 },		// rceil
+			{ 0x2228, 0xF0DA },		// vee
+			{ 0x2220, 0xF0E1 },		// langle
 
-			0x03C5,		// upsilon
-			0x03C6,		// phi
-			0x03C7,		// chi
-			0x03C8,		// psi
-			0x03C9,		// omega
-			0x0393,		// Gamma
-			0x0394,		// Delta
-			0x0398,		// Theta
-			0x039B,		// Lambda
-			0x039E,		// Xi
-			0x03A0,		// Pi
-			0x03A3,		// Sigma
-			0x03D2,		// Upsilon
-			0x03A6,		// Phi
-			0x03A8,		// Psi
-			0x03A9,		// Omega
-			0x2200,		// forall
-			0x2203,		// exists
-			0x220B,		// ni
-			0x2245,		// cong
-			0x2248,		// approx
-			0x211C,		// Re
-			0x2295,		// oplus
-			0x222A,		// cup
-			0x2286,		// subseteq
-			0x2208,		// in
-			0x2308,		// lceil
-			0x22C5,		// cdot
-			0x00AC,		// neg
-			0x00D7,		// times
-			0x221A,		// surd
-			0x03D6,		// varpi
-			0x232A,		// rangle
+			{ 0x03C5, 0xF075 },		// upsilon
+			{ 0x03C6, 0xF066 },		// phi
+			{ 0x03C7, 0xF063 },		// chi
+			{ 0x03C8, 0xF079 },		// psi
+			{ 0x03C9, 0xF077 },		// omega
+			{ 0x0393, 0xF047 },		// Gamma
+			{ 0x0394, 0xF044 },		// Delta
+			{ 0x0398, 0xF051 },		// Theta
+			{ 0x039B, 0xF04C },		// Lambda
+			{ 0x039E, 0xF058 },		// Xi
+			{ 0x03A0, 0xF050 },		// Pi
+			{ 0x03A3, 0xF053 },		// Sigma
+			{ 0x03D2, 0xF055 },		// Upsilon
+			{ 0x03A6, 0xF046 },		// Phi
+			{ 0x03A8, 0xF059 },		// Psi
+			{ 0x03A9, 0xF057 },		// Omega
+			{ 0x2200, 0xF022 },		// forall
+			{ 0x2203, 0xF024 },		// exists
+			{ 0x220B, 0xF027 },		// ni
+			{ 0x2245, 0xF040 },		// cong
+			{ 0x2248, 0xF0BB },		// approx
+			{ 0x211C, 0xF0C2 },		// Re
+			{ 0x2295, 0xF0C5 },		// oplus
+			{ 0x222A, 0xF0C8 },		// cup
+			{ 0x2286, 0xF0CD },		// subseteq
+			{ 0x2208, 0xF0CE },		// in
+			{ 0x2308, 0xF0E9 },		// lceil
+			{ 0x22C5, 0xF0D7 },		// cdot
+			{ 0x00AC, 0xF0D8 },		// neg
+			{ 0x00D7, 0xF0B4 },		// times
+			{ 0x221A, 0xF0D6 },		// surd
+			{ 0x03D6, 0xF076 },		// varpi
+			{ 0x232A, 0xF0F1 },		// rangle
 
-			0x2264,		// leq
-			0x221E,		// infty
-			0x2663,		// clubsuit
-			0x2666,		// diamondsuit
-			0x2665,		// heartsuit
-			0x2660,		// spadesuit
-			0x2194,		// leftrightarrow
-			0x2190,		// leftarrow
-			0x2191,		// uparrow
-			0x2192,		// rightarrow
-			0x2193,		// downarrow
-			0x25CB,		// circ
-			0x00B1,		// pm
-			0x2265,		// geq
-			0x221D,		// propto
-			0x2202,		// partial
-			0x2022,		// bullet
-			0x00F7,		// div
-			0x2260,		// neq
-			0x2135,		// aleph
-			0x2118,		// wp
-			0x2298,		// oslash
-			0x2287,		// supseteq
-			0x2282,		// subset
-			0x03BF,		// o
-			0x2207,		// nabla
-			0x2026,		// ldots
-			0x2032,		// prime
-			0x2205,		// 0
-			0x2223,		// mid
-			0x00A9,		// copyright
+			{ 0x2264, 0xF0A3 },		// leq
+			{ 0x221E, 0xF0A5 },		// infty
+			{ 0x2663, 0xF0A7 },		// clubsuit
+			{ 0x2666, 0xF0A8 },		// diamondsuit
+			{ 0x2665, 0xF0A9 },		// heartsuit
+			{ 0x2660, 0xF0AA },		// spadesuit
+			{ 0x2194, 0xF0AB },		// leftrightarrow
+			{ 0x2190, 0xF0AC },		// leftarrow
+			{ 0x2191, 0xF0AD },		// uparrow
+			{ 0x2192, 0xF0AE },		// rightarrow
+			{ 0x2193, 0xF0AF },		// downarrow
+			{ 0x25CB, 0xF0B0 },		// circ
+			{ 0x00B1, 0xF0B1 },		// pm
+			{ 0x2265, 0xF0B3 },		// geq
+			{ 0x221D, 0xF0B5 },		// propto
+			{ 0x2202, 0xF0B6 },		// partial
+			{ 0x2022, 0xF0B7 },		// bullet
+			{ 0x00F7, 0xF0B8 },		// div
+			{ 0x2260, 0xF0B9 },		// neq
+			{ 0x2135, 0xF0C0 },		// aleph
+			{ 0x2118, 0xF0C3 },		// wp
+			{ 0x2298, 0xF0C6 },		// oslash
+			{ 0x2287, 0xF0CA },		// supseteq
+			{ 0x2282, 0xF0CC },		// subset
+			{ 0x03BF, 0xF0B0 },		// o
+			{ 0x2207, 0xF0D1 },		// nabla
+			{ 0x2026, 0xF0BC },		// ldots
+			{ 0x2032, 0xF0A2 },		// prime
+			{ 0x2205, 0xF0C6 },		// 0
+			{ 0x2223, 0xF0BD },		// mid
+			{ 0x00A9, 0xF0E3 },		// copyright
 
-			0
+			{ 0, 0 }
 		};
 		private static Map symbol_map;
+		private static boolean use_symbol_font = System.getProperty("os.name").startsWith("Windows");
 
 		TeXElement(String txt)
 		{
-			super(convertString(txt));
+			super(convertString(txt, (use_symbol_font ? 1 : 0)));
 		}
 
-		private static String convertString(String s)
+		Rectangle layout(Layouter l)
 		{
-			int c = getSymbolCode(s);
+			if (use_symbol_font)
+			{
+				Font currentFont = l.font;
+				l.font = getSymbolFont(currentFont);
+				super.layout(l);
+				l.font = currentFont;
+				return rect;
+			}
+			else
+				return super.layout(l);
+		}
+
+		void render(Graphics2D g)
+		{
+			if (use_symbol_font)
+			{
+				Font currentFont = g.getFont();
+				g.setFont(getSymbolFont(currentFont));
+				super.render(g);
+				g.setFont(currentFont);
+			}
+			else
+				super.render(g);
+		}
+
+		private static Font getSymbolFont(Font f)
+		{
+			return new Font("Symbol", f.getStyle(), f.getSize());
+		}
+
+		private static String convertString(String s, int idx)
+		{
+			int c = getSymbolCode(s, idx);
 			if (c >= 0)
 				return new String(new int[] {c}, 0, 1);
 			return "";
 		}
 
-		private static int getSymbolCode(String s)
+		private static String convertString(String s)
+		{
+			return convertString(s, 0);
+		}
+
+		private static int getSymbolCode(String s, int idx)
 		{
 			if (symbol_map == null)
 			{
 				symbol_map = new HashMap();
 				for (int i=0; i<symbol_names.length; i++)
-					if (symbol_names[i] != null && symbol_codes[i] != 0)
-						symbol_map.put(symbol_names[i], new Integer(symbol_codes[i]));
+					if (symbol_names[i] != null && symbol_codes[i][0] != 0)
+						symbol_map.put(symbol_names[i], symbol_codes[i]);
 			}
-			Integer c = (Integer)symbol_map.get(s);
-			if (c != null)
-				return c.intValue();
+			int[] c = (int[])symbol_map.get(s);
+			if (c != null && idx >= 0 && idx < c.length)
+				return c[idx];
 			return -1;
 		}
 
-		public static boolean isSymbol(String s)
+		private static int getSymbolCode(String s)
+		{
+			return getSymbolCode(s, 0);
+		}
+
+		static boolean isSymbol(String s)
 		{
 			return (getSymbolCode(s) >= 0);
 		}

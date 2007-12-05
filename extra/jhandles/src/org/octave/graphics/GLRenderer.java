@@ -391,12 +391,15 @@ public class GLRenderer implements Renderer
 			setClipping(useClipping);
 		if (!useZBuffer)
 			gl.glDisable(GL.GL_DEPTH_TEST);
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glEnable(GL.GL_ALPHA_TEST);
 		gl.glAlphaFunc(GL.GL_GREATER, 0.0f);
 		gl.glRasterPos3d(sx.scale(pos[0]), sy.scale(pos[1]), sz.scale(pos[2]));
 		gl.glBitmap(0, 0, 0, 0, -xOffset, -yOffset, null, 0);
 		gl.glDrawPixels(w, h, GL.GL_ABGR_EXT, GL.GL_UNSIGNED_BYTE, data);
 		gl.glDisable(GL.GL_ALPHA_TEST);
+		gl.glDisable(GL.GL_BLEND);
 		if (!useZBuffer)
 			gl.glEnable(GL.GL_DEPTH_TEST);
 		if (hasClip != useClipping)

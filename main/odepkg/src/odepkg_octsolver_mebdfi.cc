@@ -489,7 +489,7 @@ demo odebdi\n\
 /* Start PREPROCESSING, ie. check which options have been set and
  * print warnings if there are options that can't be handled by this
  * solver or have not been implemented yet
- */
+ *******************************************************************/
 
   // Implementation of the option RelTol has been finished, this
   // option can be set by the user to another value than default value
@@ -668,7 +668,7 @@ demo odebdi\n\
 /* Start MAINPROCESSING, set up all variables that are needed by this
  * solver and then initialize the solver function and get into the
  * main integration loop
- */
+ ********************************************************************/
   ColumnVector vTIME (args(1).vector_value ());
   NDArray vRTOL   = vreltol.array_value ();
   NDArray vATOL   = vabstol.array_value ();
@@ -713,10 +713,10 @@ demo odebdi\n\
   // etc. and initialize the plot, events and the solstore functions
   octave_value vtim (T0); octave_value vsol (vY0);
   odepkg_auxiliary_solstore (vtim, vsol, voutsel, 0);
-  if (!vplot.is_empty ())
-    odepkg_auxiliary_evalplotfun (vplot, voutsel, args(1), args(2), vmebdfiextarg, 0);
-  if (!vevents.is_empty ())
-    odepkg_auxiliary_evaleventfun (vevents, vtim, args(2), vmebdfiextarg, 0);
+  if (!vplot.is_empty ()) odepkg_auxiliary_evalplotfun 
+    (vplot, voutsel, args(1), args(2), vmebdfiextarg, 0);
+  if (!vevents.is_empty ()) odepkg_auxiliary_evaleventfun 
+    (vevents, vtim, args(2), vmebdfiextarg, 0);
 
   // We are calling the core solver here to intialize all variables
   F77_XFCN (mebdfi, MEBDFI, // Keep 5 arguments per line here
@@ -840,7 +840,7 @@ demo odebdi\n\
 
 /* Start POSTPROCESSING, check how many arguments should be returned
  * to the caller and check which extra arguments have to be set
- */
+ *******************************************************************/
 
   // Set up values that come from the last Fortran call and that are
   // needed to call the OdePkg output function one last time again

@@ -285,7 +285,7 @@ octave_value odepkg_auxiliary_evaljacode (octave_value vjac,
     error_with_id ("OdePkg:InvalidArgument",
       "Jacobian must be a function handle or a matrix");
   }
-
+  // vret.print (octave_stdout, true);
   return (vret);
 }
 
@@ -311,34 +311,42 @@ octave_value odepkg_auxiliary_evalmassode
   octave_value vret;
 
   // If vmass is a matrix then return its value to the caller function
-  if (vmass.is_matrix_type ()) {
-    vret = vmass;
-  }
+  if (vmass.is_matrix_type ())
+    return (vmass);
 
   // If vmass is a function_hanlde or an inline_function then evaluate
   // the function and return the results
   else if (vmass.is_function_handle () || vmass.is_inline_function ()) {
-    error_with_id ("OdePkg:InvalidArgument",
-      "Missing implementation for MStateDependence");
-    // if (vmass.string_value ().compare ("none") == 0)
     octave_value_list varin;
     octave_value_list varout;
-    varin(0) = vt;
-    varin(1) = vy;
-    // Fill up RHS arguments with extra arguments that are given
-    for (octave_idx_type vcnt = 0; vcnt < vextarg.length (); vcnt++)
-      varin(vcnt+2) = vextarg(vcnt);
+    if (vstate.is_empty () || !vstate.is_string ())
+      error_with_id ("OdePkg:InvalidOption",
+        "If \"Mass\" value is a handle then \"MStateDependence\" must be given");
+ 
+    else if (vstate.string_value ().compare ("none") == 0) {
+      varin(0) = vt;
+      for (octave_idx_type vcnt = 0; vcnt < vextarg.length (); vcnt++)
+	varin(vcnt+1) = vextarg(vcnt);
+    }
+
+    else { // If "MStateDependence" is "weak" or "strong"
+      varin(0) = vt; varin(1) = vy;
+      // Fill up RHS arguments with extra arguments that are given
+      for (octave_idx_type vcnt = 0; vcnt < vextarg.length (); vcnt++)
+	varin(vcnt+2) = vextarg(vcnt);
+    }
+
     // Evaluate the Mass function and return results
     varout = feval (vmass.function_value (), varin, 1);
     vret = varout(0);
   }
 
-  // In principle this is not possible because odepkg_structure_check
-  // should find all occurences that are not valid
-  else {
+  // In principle the execution of the next line is not possible
+  // because odepkg_structure_check should find all occurences that
+  // are not valid
+  else
     error_with_id ("OdePkg:InvalidArgument",
       "Mass must be a function handle or a matrix");
-  }
 
   return (vret);
 }
@@ -350,12 +358,12 @@ octave_value odepkg_auxiliary_evalmassode
  * @itemize @minus
  * @item @var{vstats}: The statistics informations list that has to be handled. The values that are treated have to be ordered as follows
  * @enumerate
- * @item Number of successful succesful steps
- * @item Number of failed attempts
+ * @item Number of computed steps
+ * @item Number of rejected steps
  * @item Number of function evaluations
- * @item Number of partial derivatives
+ * @item Number of Jacobian evaluations
  * @item Number of LU decompositions
- * @item Number of linear solutions
+ * @item Number of forward backward substitutions
  * @end enumerate
  * @item @var{vprnt}: If @code{true} then the statistics information also is displayed on screen
  * @end itemize
@@ -375,7 +383,7 @@ octave_value odepkg_auxiliary_makestats
     vretval.assign ("fevals",  vstats(2));
     vretval.assign ("partial", vstats(3));
     vretval.assign ("ludecom", vstats(4));
-    vretval.assign ("linsol",  vstats(5));
+    vretval.assign ("fbsubst", vstats(5));
   }
 
   if (vprnt == true) {
@@ -384,7 +392,7 @@ octave_value odepkg_auxiliary_makestats
     octave_stdout << "Number of function evals:    " << vstats(2).int_value () << std::endl;
     octave_stdout << "Number of Jacobian evals:    " << vstats(3).int_value () << std::endl;
     octave_stdout << "Number of LU decompositions: " << vstats(4).int_value () << std::endl;
-    octave_stdout << "Number of backward solves:   " << vstats(5).int_value () << std::endl;
+    octave_stdout << "Number of fwd/backwd subst:  " << vstats(5).int_value () << std::endl;
   }
 
   return (octave_value (vretval));

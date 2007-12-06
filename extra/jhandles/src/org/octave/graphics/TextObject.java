@@ -277,4 +277,13 @@ public class TextObject extends GraphicObject
 		if (p == Position)
 			updateMinMax();
 	}
+
+	public String toPostScript()
+	{
+		SimpleTextEngine.PSTextRenderer r = new SimpleTextEngine.PSTextRenderer(
+				FontName.toString(), Utils.getFontSize(FontSize, FontUnits, getAxes().getCanvas().getHeight()),
+				(FontAngle.is("normal") ? 0 : Font.ITALIC)|(FontWeight.is("normal") ? 0 : Font.BOLD));
+		content.render(r);
+		return r.toString();
+	}
 }

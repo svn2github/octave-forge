@@ -2819,7 +2819,25 @@ static void gl2psPrintPostScriptHeader(void)
               "/L  { lineto } BD\n"
               "/LE { lineto stroke } BD\n"
               "/T  { newpath moveto lineto lineto closepath fill } BD\n");
-  
+
+  /* FIXME: prolog to add
+  /SP { [ currentpoint ] } BD
+	  /RP { aload pop moveto } BD
+	  /Tflag false def
+	  /Tshow {
+		    {dup dup 1 get exch 0 get findfont exch scalefont setfont
+				   dup 2 get dup 0 exch rmoveto exch 3 get Tflag {false charpath}
+				      {show} ifelse neg 0 exch rmoveto}
+					    forall} BD
+							/Tbbox {gsave newpath 0 0 moveto /Tflag true def Tshow /Tflag
+								  false def flattenpath pathbbox grestore} BD
+								  /LLshow {SP exch Tshow RP} BD
+								  /LCshow {SP exch dup Tbbox pop 2 div neg 0 rmoveto pop pop Tshow RP} BD
+								  /LRshow {SP exch dup Tbbox pop neg 0 rmoveto pop pop Tshow SP} BD
+								  /Pshow {0 exch {dup Tbbox exch pop 3 2 roll pop 4 -1 roll neg add
+									    -2 sub neg 0 exch rmoveto currentpoint 4 -1 roll LCshow moveto} forall} BD
+*/
+
   /* Smooth-shaded triangle with PostScript level 3 shfill operator:
         x3 y3 r3 g3 b3 x2 y2 r2 g2 b2 x1 y1 r1 g1 b1 STshfill */
 

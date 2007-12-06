@@ -234,6 +234,155 @@ class SimpleTextEngine
 
 	}
 
+	interface TextRenderer
+	{
+		void render(Element e);
+		void render(LineElement e);
+		void render(SubscriptElement e);
+		void render(SuperscriptElement e);
+		void render(ScriptElement e);
+		void render(TeXElement e);
+		void render(TeXFontCommand e);
+		void render(Content e);
+	}
+
+	static class PSTextRenderer implements TextRenderer
+	{
+		private StringBuffer buf;
+		private LinkedList stateList;
+		private float f;
+
+		private class PSState
+		{
+			String fontName;
+			float fontSize;
+			int fontStyle;
+			float yOffset;
+
+			PSState(String fontName, float fontSize, int fontStyle, float yOffset)
+			{
+				this.fontName = fontName;
+				this.fontSize = fontSize;
+				this.fontStyle = fontStyle;
+				this.yOffset = yOffset;
+			}
+			
+			private void outputFont()
+			{
+				buf.append("/" + fontName + fontModifier(fontStyle) + " findfont " + round(fontSize) + " scalefont setfont\n");
+			}
+		}
+
+		PSTextRenderer(String fname, float fsize, int fstyle)
+		{
+			buf = new StringBuffer();
+			stateList = new LinkedList();
+			f = 72.0f / Utils.getScreenResolution();
+			pushState(fname, fsize, fstyle, 0);
+		}
+
+		private PSState currentState()
+		{
+			return (PSState)stateList.get(0);
+		}
+
+		private void pushState(String fontName, float fontSize, int fontStyle, float yOffset)
+		{
+			stateList.add(0, new PSState(fontName, fontSize, fontStyle, yOffset));
+		}
+
+		private void pushState()
+		{
+			PSState st = currentState();
+			pushState(st.fontName, st.fontSize, st.fontStyle, st.yOffset);
+		}
+
+		private void popState()
+		{
+			stateList.remove(0);
+		}
+
+		private String fontModifier(int style)
+		{
+			if ((style & (Font.ITALIC|Font.BOLD)) != 0)
+				return "-BoldOblique";
+			else if ((style & Font.ITALIC) != 0)
+				return "-Oblique";
+			else if ((style & Font.BOLD) != 0)
+				return "-Bold";
+			else return "";
+		}
+
+		private String quote(String s)
+		{
+			return s.replaceAll("([()])", "\\\\$1");
+		}
+
+		private float round(float d)
+		{
+			return Math.round(d*100)/100;
+		}
+
+		public String toString()
+		{
+			return buf.toString();
+		}
+
+		public void render(Content e)
+		{
+			buf.append("\n");
+			for (int i=0; i<e.lines.length; i++)
+			{
+				if (i > 0)
+					buf.append("0 " + round(f*(e.lines[i-1].rect.y-(e.lines[i].rect.height+e.lines[i].rect.y))) + " rmoveto\n");
+				buf.append("[");
+				e.lines[i].render(this);
+				buf.append("] " + (e.align == 0 ? "LLshow" : (e.align == 1 ? "LCshow" : "LRshow")) + "\n");
+			}
+		}
+
+		public void render(LineElement e)
+		{
+			Iterator it = e.iterator();
+
+			pushState();
+			while (it.hasNext())
+			{
+				Element elem = (Element)it.next();
+				elem.render(this);
+			}
+			popState();
+		}
+
+		public void render(Element e)
+		{
+			PSState st = currentState();
+			buf.append("[/" + st.fontName + " " + round(st.fontSize) + " " + round(st.yOffset) + " (" + quote(e.text) + ")]\n");
+		}
+
+		public void render(SubscriptElement e)
+		{
+			PSState st = currentState();
+			pushState(st.fontName, st.fontSize-2, st.fontStyle,
+				st.yOffset-f*(e.rect.height+e.rect.y));
+			this.render((LineElement)e);
+			popState();
+		}
+
+		public void render(SuperscriptElement e)
+		{
+			PSState st = currentState();
+			pushState(st.fontName, st.fontSize-2, st.fontStyle,
+				st.yOffset+st.fontSize/2.0f);
+			this.render((LineElement)e);
+			popState();
+		}
+
+		public void render(ScriptElement e) {}
+		public void render(TeXElement e) {}
+		public void render(TeXFontCommand e) {}
+	}
+
 	static class Layouter
 	{
 		public RenderCanvas canvas;
@@ -264,6 +413,7 @@ class SimpleTextEngine
 		Element(String txt)
 		{
 			text = txt;
+			rect = new Rectangle();
 		}
 
 		void render(Graphics2D g)
@@ -282,6 +432,8 @@ class SimpleTextEngine
 			rect = new Rectangle(0, -fm.getMaxDescent(), fm.stringWidth(text), fm.getMaxDescent()+fm.getMaxAscent());
 			return rect;
 		}
+
+		void render(TextRenderer r) { r.render(this); }
 	}
 
 	static class LineElement extends Element
@@ -345,6 +497,13 @@ class SimpleTextEngine
 		{
 			elements.add(e);
 		}
+
+		Iterator iterator()
+		{
+			return elements.iterator();
+		}
+		
+		void render(TextRenderer r) { r.render(this); }
 	}
 
 	static class SubscriptElement extends LineElement
@@ -380,6 +539,8 @@ class SimpleTextEngine
 			super.render(g);
 			g.setFont(currentFont);
 		}
+		
+		void render(TextRenderer r) { r.render(this); }
 	}
 
 	static class SuperscriptElement extends LineElement
@@ -420,6 +581,8 @@ class SimpleTextEngine
 			g.translate(0, (rect.height+rect.y)+ascent/2);
 			g.setFont(currentFont);
 		}
+		
+		void render(TextRenderer r) { r.render(this); }
 	}
 
 	static class ScriptElement extends Element
@@ -445,6 +608,8 @@ class SimpleTextEngine
 			elems[0].render(g);
 			elems[1].render(g);
 		}
+		
+		void render(TextRenderer r) { r.render(this); }
 	}
 
 	static abstract class TeXFontCommand extends Element
@@ -454,7 +619,8 @@ class SimpleTextEngine
 			super("");
 		}
 
-		abstract Font newFont(Font f);
+		Font newFont(Font f) { return f; }
+		Color newColor(Color c) { return c; }
 
 		Rectangle layout(Layouter l)
 		{
@@ -465,9 +631,15 @@ class SimpleTextEngine
 
 		void render(Graphics2D g)
 		{
+			// Font
 			Font f = g.getFont();
 			g.setFont(newFont(f));
+			// Color
+			Color c = g.getColor();
+			g.setColor(newColor(c));
 		}
+		
+		void render(TextRenderer r) { r.render(this); }
 	}
 
 	static class TeXFontSwitchCommand extends TeXFontCommand
@@ -546,14 +718,9 @@ class SimpleTextEngine
 			}
 		}
 
-		Font newFont(Font f)
+		Color newColor(Color c)
 		{
-			return f;
-		}
-
-		void render(Graphics2D g)
-		{
-			g.setColor(newColor);
+			return newColor;
 		}
 	}
 
@@ -814,6 +981,8 @@ class SimpleTextEngine
 			else
 				super.render(g);
 		}
+		
+		void render(TextRenderer r) { r.render(this); }
 
 		private static Font getSymbolFont(Font f)
 		{
@@ -861,8 +1030,8 @@ class SimpleTextEngine
 
 	static class Content extends Element
 	{
-		private LineElement[] lines;
-		public int align;
+		LineElement[] lines;
+		int align;
 
 		Content(String txt)
 		{
@@ -908,6 +1077,8 @@ class SimpleTextEngine
 			g.translate(0, -yoffset);
 			//lines[0].render(g);
 		}
+		
+		void render(TextRenderer r) { r.render(this); }
 	}
 
 	public static Dimension drawAsImage(RenderCanvas comp, String txt, double[] pos, int halign, int valign)

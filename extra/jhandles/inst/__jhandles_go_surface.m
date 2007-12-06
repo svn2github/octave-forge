@@ -48,9 +48,6 @@ function [ h ] = __jhandles_go_surface (ax, varargin)
     ax_obj = __get_object__ (ax);
     surf_obj = java_new ("org.octave.graphics.SurfaceObject", ax_obj, ...
       x, y, z);
-    #surf_obj.set ("facecolor", "w");
-    #surf_obj.set ("edgecolor", "flat");
-    surf_obj.validate ();
   unwind_protect_cleanup
     java_convert_matrix (j1);
     java_unsigned_conversion (j2);
@@ -63,6 +60,8 @@ function [ h ] = __jhandles_go_surface (ax, varargin)
   else
     __request_drawnow__;
   endif
+
+  surf_obj.validate ();
 
   if (nargout > 0)
     h = tmp;

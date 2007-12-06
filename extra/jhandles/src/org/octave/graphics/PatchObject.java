@@ -448,12 +448,12 @@ public class PatchObject extends GraphicObject
 
 		if (!FaceColor.isSet() && !FaceColor.is("none"))
 		{
-			if (FaceColor.is("flat") && nfv != nf && nfv != nv)
+			if (FaceColor.is("flat") && nfv != nf && nfv != nv && nfv != 1)
 			{
 				System.err.println("Warning: Color data must be given per-face");
 				return false;
 			}
-			else if (FaceColor.is("interp") && nfv != nv)
+			else if (FaceColor.is("interp") && nfv != nv && nfv != 1)
 			{
 				System.err.println("Warning: Color data must be given per-vertex");
 				return false;
@@ -462,7 +462,7 @@ public class PatchObject extends GraphicObject
 
 		if (!EdgeColor.isSet() && !EdgeColor.is("none"))
 		{
-			if (nfv != nv)
+			if (nfv != nv && nfv != 1)
 			{
 				System.err.println("Warning: Color data must be given per-vertex");
 				return false;

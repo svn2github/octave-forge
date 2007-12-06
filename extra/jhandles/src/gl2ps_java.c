@@ -154,3 +154,17 @@ JNIEXPORT jint JNICALL Java_org_octave_graphics_GL2PS_gl2psLineWidth
   printf("gl2psLineWidth: %f\n", w);
   return gl2psLineWidth(w);
 }
+
+JNIEXPORT jint JNICALL Java_org_octave_graphics_GL2PS_gl2psSpecial
+  (JNIEnv *env, jclass cls,
+   jint format, jstring _string, jint moveTo)
+{
+  GLint result;
+
+  WITH_JSTRING(string,
+    result = gl2psSpecial(format, string, moveTo);
+    )
+
+  return result;
+}
+

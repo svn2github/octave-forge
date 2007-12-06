@@ -1885,14 +1885,24 @@ public class GLRenderer implements Renderer
 		if (isGL2PS)
 		{
 			double[] pos = text.getAxes().convertUnits(text.Position.getArray(), text.Units.getValue());
+			/*
 			int halign = (text.HAlign.is("left") ? 0 : (text.HAlign.is("center") ? 1 : 2));
 			int valign = (text.VAlign.is("bottom") ? 0 : (text.VAlign.is("top") ? 2 :
 						(text.VAlign.is("baseline") ? 3 : 1)));
+						*/
 
 			setColor(text.TextColor.getColor());
+			/*
 			drawGL2PSText(text.TextString.toString(), pos, halign, valign, text.Rotation.floatValue(),
 					text.Margin.floatValue(), false, text.LineWidth.floatValue(), text.EdgeColor.getColor(),
 					text.LineStyle.getValue(), text.BackgroundColor.getColor(), text.Units.is("data"));
+					*/
+			gl.glRasterPos3d(pos[0], pos[1], pos[2]);
+			if (!text.Units.is("data"))
+				gl.glDisable(GL.GL_DEPTH_TEST);
+			GL2PS.gl2psSpecial(GL2PS.GL2PS_PS, text.toPostScript(), 1);
+			if (!text.Units.is("data"))
+				gl.glEnable(GL.GL_DEPTH_TEST);
 		}
 	}
 

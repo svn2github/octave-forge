@@ -84,4 +84,5 @@ public class GL2PS
 	public static native int gl2psBeginViewport(int[] viewport);
 	public static native int gl2psEndViewport();
 	public static native int gl2psLineWidth(float w);
+	public static native int gl2psSpecial(int format, String str, int moveTo);
 }

@@ -2820,23 +2820,22 @@ static void gl2psPrintPostScriptHeader(void)
               "/LE { lineto stroke } BD\n"
               "/T  { newpath moveto lineto lineto closepath fill } BD\n");
 
-  /* FIXME: prolog to add
-  /SP { [ currentpoint ] } BD
-	  /RP { aload pop moveto } BD
-	  /Tflag false def
-	  /Tshow {
-		    {dup dup 1 get exch 0 get findfont exch scalefont setfont
-				   dup 2 get dup 0 exch rmoveto exch 3 get Tflag {false charpath}
-				      {show} ifelse neg 0 exch rmoveto}
-					    forall} BD
-							/Tbbox {gsave newpath 0 0 moveto /Tflag true def Tshow /Tflag
-								  false def flattenpath pathbbox grestore} BD
-								  /LLshow {SP exch Tshow RP} BD
-								  /LCshow {SP exch dup Tbbox pop 2 div neg 0 rmoveto pop pop Tshow RP} BD
-								  /LRshow {SP exch dup Tbbox pop neg 0 rmoveto pop pop Tshow SP} BD
-								  /Pshow {0 exch {dup Tbbox exch pop 3 2 roll pop 4 -1 roll neg add
-									    -2 sub neg 0 exch rmoveto currentpoint 4 -1 roll LCshow moveto} forall} BD
-*/
+  /* enhanced text - octave addon */
+
+  gl2psPrintf("/SP { [ currentpoint ] } BD\n"
+              "/RP { aload pop moveto } BD\n"
+              "/Tflag false def\n"
+              "/Tshow {{dup dup 1 get exch 0 get findfont exch scalefont setfont\n"
+              "        dup 2 get dup 0 exch rmoveto exch 3 get Tflag {false charpath}\n"
+              "        {show} ifelse neg 0 exch rmoveto} forall} BD\n"
+              "/Tbbox {gsave newpath 0 0 moveto /Tflag true def Tshow /Tflag\n"
+              "        false def flattenpath pathbbox grestore} BD\n"
+              "/LLshow {SP exch Tshow RP} BD\n"
+              "/LCshow {SP exch dup Tbbox pop 2 div neg 0 rmoveto pop pop Tshow RP} BD\n"
+              "/LRshow {SP exch dup Tbbox pop neg 0 rmoveto pop pop Tshow SP} BD\n"
+              "%%/Pshow {0 exch {dup Tbbox exch pop 3 2 roll pop 4 -1 roll neg add\n"
+              "%%        -2 sub neg 0 exch rmoveto currentpoint 4 -1 roll LCshow moveto}\n"
+              "%%        forall} BD\n");
 
   /* Smooth-shaded triangle with PostScript level 3 shfill operator:
         x3 y3 r3 g3 b3 x2 y2 r2 g2 b2 x1 y1 r1 g1 b1 STshfill */
@@ -3211,6 +3210,8 @@ static void gl2psPrintPostScriptPrimitive(void *data)
     }
     break;
   case GL2PS_SPECIAL :
+    if (prim->data.text->fontsize > 0)
+      gl2psPrintf("%g %g moveto\n", prim->verts[0].xyz[0], prim->verts[0].xyz[1]);
     /* alignment contains the format for which the special output text
        is intended */
     if(prim->data.text->alignment == GL2PS_PS ||
@@ -5882,9 +5883,9 @@ GL2PSDLL_API GLint gl2psText(const char *str, const char *fontname, GLshort font
       0, NULL, 0, 0, NULL);
 }
 
-GL2PSDLL_API GLint gl2psSpecial(GLint format, const char *str)
+GL2PSDLL_API GLint gl2psSpecial(GLint format, const char *str, int moveTo)
 {
-  return gl2psAddText(GL2PS_SPECIAL, str, "", 0, format, 0.0F, 0.0F, GL_FALSE,
+  return gl2psAddText(GL2PS_SPECIAL, str, "", (moveTo ? 1 : 0), format, 0.0F, 0.0F, GL_FALSE,
       0, NULL, 0, 0, NULL);
 }
 

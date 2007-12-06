@@ -113,6 +113,22 @@ public class Utils
 
 		return null;
 	}
+
+	public static float getFontSize(DoubleProperty FontSize, RadioProperty FontUnits, double h)
+	{
+		float fs = 12;
+		if (FontUnits.is("points"))
+			fs = FontSize.floatValue();
+		else if (FontUnits.is("normalized"))
+			fs = (float)(FontSize.doubleValue()*h*72.0/Utils.getScreenResolution());
+		else if (FontUnits.is("inches"))
+			fs = FontSize.floatValue()*72;
+		else if (FontUnits.is("centimeters"))
+			fs = (FontSize.floatValue()/2.54f)*72;
+		else
+			System.out.println("Warning: ignoring FontUnits (" + FontUnits.getValue() + ")");
+		return fs;
+	}
 	
 	public static Font getFont(StringProperty FontName, DoubleProperty FontSize,
 		RadioProperty FontUnits, RadioProperty FontAngle, RadioProperty FontWeight, double h)
@@ -126,17 +142,7 @@ public class Utils
 			FontWeight.is("normal") ? TextAttribute.WEIGHT_REGULAR :
 			FontWeight.is("light") ? TextAttribute.WEIGHT_LIGHT :
 			FontWeight.is("demi") ? TextAttribute.WEIGHT_SEMIBOLD : TextAttribute.WEIGHT_BOLD);
-		float fs = 12;
-		if (FontUnits.is("points"))
-			fs = FontSize.floatValue();
-		else if (FontUnits.is("normalized"))
-			fs = (float)(FontSize.doubleValue()*h*72.0/Utils.getScreenResolution());
-		else if (FontUnits.is("inches"))
-			fs = FontSize.floatValue()*72;
-		else if (FontUnits.is("centimeters"))
-			fs = (FontSize.floatValue()/2.54f)*72;
-		else
-			System.out.println("Warning: ignoring FontUnits (" + FontUnits.getValue() + ")");
+		float fs = getFontSize(FontSize, FontUnits, h);
 		map.put(TextAttribute.SIZE, new Float(Math.round(fs*Utils.getScreenResolution()/72.0)));
 		
 		return new Font(map);

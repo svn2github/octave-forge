@@ -134,6 +134,7 @@ public class FigureObject extends AxesContainer
 		listen(Resize);
 		listen(Renderer);
 		listen(RendererMode);
+		listen(Visible);
 	}
 
 	// Methods
@@ -182,7 +183,8 @@ public class FigureObject extends AxesContainer
 		axPanel.add(getCanvas().getComponent());
 
 		updateTitle();
-		frame.setVisible(true);
+		if (Visible.isSet())
+			frame.setVisible(true);
 		updateFramePosition();
 	}
 	
@@ -322,6 +324,11 @@ public class FigureObject extends AxesContainer
 		{
 			updateHandle();
 			updateTitle();
+		}
+		else if (p == Visible)
+		{
+			frame.setVisible(Visible.isSet());
+			updateFramePosition();
 		}
 		else if (p == Position && !isAutoMode())
 		{

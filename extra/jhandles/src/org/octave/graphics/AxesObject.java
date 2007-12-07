@@ -539,8 +539,12 @@ public class AxesObject extends HandleObject
 	void updatePosition()
 	{
 		RenderCanvas canvas = getCanvas();
-		double[] p = Utils.convertPosition(OuterPosition.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
+
+		if (fm == null)
+			return;
+
+		double[] p = Utils.convertPosition(OuterPosition.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		int marginH = 10+fm.stringWidth("0000")+fm.getHeight()+5+7,
 			marginV = 10+2*fm.getHeight()+10+7;
 
@@ -554,8 +558,12 @@ public class AxesObject extends HandleObject
 	void updateOuterPosition()
 	{
 		RenderCanvas canvas = getCanvas();
-		double[] p = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
+
+		if (fm == null)
+			return;
+
+		double[] p = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
 		int marginH = 10+fm.stringWidth("0000")+fm.getHeight()+5+7,
 			marginV = 10+2*fm.getHeight()+10+7;
 		

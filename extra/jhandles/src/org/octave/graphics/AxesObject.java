@@ -1068,7 +1068,7 @@ public class AxesObject extends HandleObject
 						try { xLabObj.Rotation.set(new Double(angle)); }
 						catch (PropertyException e) {}
 				}
-				xLabObj.draw(r);
+				//xLabObj.draw(r);
 			}
 		}
 
@@ -1244,7 +1244,7 @@ public class AxesObject extends HandleObject
 						try { yLabObj.Rotation.set(new Double(angle)); }
 						catch (PropertyException e) {}
 				}
-				yLabObj.draw(r);
+				//yLabObj.draw(r);
 			}
 		}
 		
@@ -1470,7 +1470,7 @@ public class AxesObject extends HandleObject
 						try { zLabObj.Rotation.set(new Double(angle)); }
 						catch (PropertyException e) {}
 				}
-				zLabObj.draw(r);
+				//zLabObj.draw(r);
 			}
 		}
 
@@ -1489,7 +1489,7 @@ public class AxesObject extends HandleObject
 				unTransform(bb.x+bb.width/2, getCanvas().getHeight()-(bb.y+bb.height+10), (x_zmin+x_zmax)/2, p, 0);
 				titleObj.Position.reset(p);
 			}
-			titleObj.draw(r);
+			//titleObj.draw(r);
 		}
 
 		// Children

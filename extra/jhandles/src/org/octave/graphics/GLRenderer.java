@@ -497,6 +497,18 @@ public class GLRenderer implements Renderer
 			int margin = 0;
 			drawGL2PSText(txt, pos, halign, valign, 0, margin, true,
 					0, null, "-", null, true);
+
+			/*
+			StringBuffer buf = new StringBuffer();
+			SimpleTextEngine.Content content = new SimpleTextEngine.Content(txt);
+			SimpleTextEngine.PSTextRenderer ps = new SimpleTextEngine.PSTextRenderer(buf,
+					"Helvetica", 8, 0, Color.black);
+
+			gl.glRasterPos3d(pos[0], pos[1], pos[2]);
+			content.align = halign;
+			content.render(ps);
+			GL2PS.gl2psSpecial(GL2PS.GL2PS_PS, buf.toString(), 1);
+			*/
 		}
 		return dim;
 	}
@@ -1889,10 +1901,8 @@ public class GLRenderer implements Renderer
 			int halign = (text.HAlign.is("left") ? 0 : (text.HAlign.is("center") ? 1 : 2));
 			int valign = (text.VAlign.is("bottom") ? 0 : (text.VAlign.is("top") ? 2 :
 						(text.VAlign.is("baseline") ? 3 : 1)));
-						*/
 
 			setColor(text.TextColor.getColor());
-			/*
 			drawGL2PSText(text.TextString.toString(), pos, halign, valign, text.Rotation.floatValue(),
 					text.Margin.floatValue(), false, text.LineWidth.floatValue(), text.EdgeColor.getColor(),
 					text.LineStyle.getValue(), text.BackgroundColor.getColor(), text.Units.is("data"));

@@ -257,28 +257,25 @@ class SimpleTextEngine
 			String fontName;
 			float fontSize;
 			int fontStyle;
+			Color fontColor;
 			float yOffset;
 
-			PSState(String fontName, float fontSize, int fontStyle, float yOffset)
+			PSState(String fontName, float fontSize, int fontStyle, Color fontColor, float yOffset)
 			{
 				this.fontName = fontName;
 				this.fontSize = fontSize;
 				this.fontStyle = fontStyle;
+				this.fontColor = fontColor;
 				this.yOffset = yOffset;
-			}
-			
-			private void outputFont()
-			{
-				buf.append("/" + fontName + fontModifier(fontStyle) + " findfont " + round(fontSize) + " scalefont setfont\n");
 			}
 		}
 
-		PSTextRenderer(String fname, float fsize, int fstyle)
+		PSTextRenderer(StringBuffer buffer, String fname, float fsize, int fstyle, Color fcolor)
 		{
-			buf = new StringBuffer();
+			buf = buffer;
 			stateList = new LinkedList();
 			f = 72.0f / Utils.getScreenResolution();
-			pushState(fname, fsize, fstyle, 0);
+			pushState(fname, fsize, fstyle, fcolor, 0);
 		}
 
 		private PSState currentState()
@@ -286,15 +283,15 @@ class SimpleTextEngine
 			return (PSState)stateList.get(0);
 		}
 
-		private void pushState(String fontName, float fontSize, int fontStyle, float yOffset)
+		private void pushState(String fontName, float fontSize, int fontStyle, Color fontColor, float yOffset)
 		{
-			stateList.add(0, new PSState(fontName, fontSize, fontStyle, yOffset));
+			stateList.add(0, new PSState(fontName, fontSize, fontStyle, fontColor, yOffset));
 		}
 
 		private void pushState()
 		{
 			PSState st = currentState();
-			pushState(st.fontName, st.fontSize, st.fontStyle, st.yOffset);
+			pushState(st.fontName, st.fontSize, st.fontStyle, st.fontColor, st.yOffset);
 		}
 
 		private void popState()
@@ -304,7 +301,7 @@ class SimpleTextEngine
 
 		private String fontModifier(int style)
 		{
-			if ((style & (Font.ITALIC|Font.BOLD)) != 0)
+			if ((style & Font.ITALIC) != 0 && (style & Font.BOLD) != 0)
 				return "-BoldOblique";
 			else if ((style & Font.ITALIC) != 0)
 				return "-Oblique";
@@ -323,14 +320,15 @@ class SimpleTextEngine
 			return Math.round(d*100)/100;
 		}
 
-		public String toString()
+		private String colorCmd(Color c)
 		{
-			return buf.toString();
+			float[] cv = c.getRGBColorComponents(null);
+			return (cv[0] + " " + cv[1] + " " + cv[2] + " C");
 		}
 
 		public void render(Content e)
 		{
-			buf.append("\n");
+			buf.append(colorCmd(currentState().fontColor) + "\n");
 			for (int i=0; i<e.lines.length; i++)
 			{
 				if (i > 0)
@@ -344,6 +342,7 @@ class SimpleTextEngine
 		public void render(LineElement e)
 		{
 			Iterator it = e.iterator();
+			Color c = currentState().fontColor;
 
 			pushState();
 			while (it.hasNext())
@@ -351,20 +350,23 @@ class SimpleTextEngine
 				Element elem = (Element)it.next();
 				elem.render(this);
 			}
+			if (!currentState().fontColor.equals(c))
+				buf.append("{" + colorCmd(c) + "}\n");
 			popState();
 		}
 
 		public void render(Element e)
 		{
 			PSState st = currentState();
-			buf.append("[/" + st.fontName + " " + round(st.fontSize) + " " + round(st.yOffset) + " (" + quote(e.text) + ")]\n");
+			buf.append("[/" + st.fontName + fontModifier(st.fontStyle) + " " + round(st.fontSize) +
+					" " + round(st.yOffset) + " (" + quote(e.text) + ")]\n");
 		}
 
 		public void render(SubscriptElement e)
 		{
 			PSState st = currentState();
 			pushState(st.fontName, st.fontSize-2, st.fontStyle,
-				st.yOffset-f*(e.rect.height+e.rect.y));
+				st.fontColor, st.yOffset-f*(e.rect.height+e.rect.y));
 			this.render((LineElement)e);
 			popState();
 		}
@@ -373,14 +375,49 @@ class SimpleTextEngine
 		{
 			PSState st = currentState();
 			pushState(st.fontName, st.fontSize-2, st.fontStyle,
-				st.yOffset+st.fontSize/2.0f);
+				st.fontColor, st.yOffset+st.fontSize/2.0f);
 			this.render((LineElement)e);
 			popState();
 		}
 
-		public void render(ScriptElement e) {}
-		public void render(TeXElement e) {}
-		public void render(TeXFontCommand e) {}
+		public void render(ScriptElement e)
+		{
+			buf.append("{[");
+			e.elems[0].render(this);
+			e.elems[1].render(this);
+			buf.append("] PTshow}\n");
+		}
+
+		public void render(TeXElement e)
+		{
+			int code = TeXElement.getSymbolCode(e.symbol, 1);
+			PSState st = currentState();
+
+			if (code > 0)
+			{
+				String hx = Integer.toHexString(code&0xFF);
+				if (hx.length() == 1)
+					hx = "0" + hx;
+				buf.append("[/Symbol" + fontModifier(st.fontStyle) + " " + round(st.fontSize) +
+						" " + round(st.yOffset) + " <" + hx + ">]\n");
+			}
+		}
+
+		public void render(TeXFontCommand e)
+		{
+			if (e instanceof TeXFontColorCommand)
+			{
+				Color c = ((TeXFontColorCommand)e).newColor;
+				buf.append("{" + colorCmd(c) + "}\n");
+				currentState().fontColor = c;
+			}
+			else if (e instanceof TeXFontSwitchCommand)
+				currentState().fontStyle = ((TeXFontSwitchCommand)e).newStyle;
+			else if (e instanceof TeXFontSizeCommand)
+				currentState().fontSize = ((TeXFontSizeCommand)e).newSize;
+			else if (e instanceof TeXFontNameCommand)
+				currentState().fontName = ((TeXFontNameCommand)e).newName;
+		}
 	}
 
 	static class Layouter
@@ -587,7 +624,7 @@ class SimpleTextEngine
 
 	static class ScriptElement extends Element
 	{
-		private Element[] elems = new Element[2];
+		Element[] elems = new Element[2];
 
 		ScriptElement(Element e1, Element e2)
 		{
@@ -644,7 +681,7 @@ class SimpleTextEngine
 
 	static class TeXFontSwitchCommand extends TeXFontCommand
 	{
-		private int newStyle;
+		int newStyle;
 
 		TeXFontSwitchCommand(int newStyle)
 		{
@@ -659,7 +696,7 @@ class SimpleTextEngine
 
 	static class TeXFontSizeCommand extends TeXFontCommand
 	{
-		private int newSize;
+		int newSize;
 
 		TeXFontSizeCommand(String sz)
 		{
@@ -679,7 +716,7 @@ class SimpleTextEngine
 
 	static class TeXFontColorCommand extends TeXFontCommand
 	{
-		private Color newColor = Color.black;
+		Color newColor = Color.black;
 
 		TeXFontColorCommand(String mode, String color)
 		{
@@ -726,7 +763,7 @@ class SimpleTextEngine
 
 	static class TeXFontNameCommand extends TeXFontCommand
 	{
-		private String newName;
+		String newName;
 
 		TeXFontNameCommand(String name)
 		{
@@ -950,9 +987,12 @@ class SimpleTextEngine
 		private static Map symbol_map;
 		private static boolean use_symbol_font = System.getProperty("os.name").startsWith("Windows");
 
+		String symbol;
+
 		TeXElement(String txt)
 		{
 			super(convertString(txt, (use_symbol_font ? 1 : 0)));
+			this.symbol = txt;
 		}
 
 		Rectangle layout(Layouter l)
@@ -984,12 +1024,12 @@ class SimpleTextEngine
 		
 		void render(TextRenderer r) { r.render(this); }
 
-		private static Font getSymbolFont(Font f)
+		static Font getSymbolFont(Font f)
 		{
 			return new Font("Symbol", f.getStyle(), f.getSize());
 		}
 
-		private static String convertString(String s, int idx)
+		static String convertString(String s, int idx)
 		{
 			int c = getSymbolCode(s, idx);
 			if (c >= 0)
@@ -997,12 +1037,12 @@ class SimpleTextEngine
 			return "";
 		}
 
-		private static String convertString(String s)
+		static String convertString(String s)
 		{
 			return convertString(s, 0);
 		}
 
-		private static int getSymbolCode(String s, int idx)
+		static int getSymbolCode(String s, int idx)
 		{
 			if (symbol_map == null)
 			{
@@ -1017,7 +1057,7 @@ class SimpleTextEngine
 			return -1;
 		}
 
-		private static int getSymbolCode(String s)
+		static int getSymbolCode(String s)
 		{
 			return getSymbolCode(s, 0);
 		}

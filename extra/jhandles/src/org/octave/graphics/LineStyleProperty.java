@@ -88,4 +88,18 @@ public class LineStyleProperty extends RadioProperty
 	{
 		return !(is("none") || is(""));
 	}
+
+	public String toPostScript()
+	{
+		if (is(":"))
+			return "[0 3 1 3 1 3 1 3 1 0] 0 setdash";
+		else if (is("-"))
+			return "[] 0 setdash";
+		else if (is("--"))
+			return "[11 5] 0 setdash";
+		else if (is("-."))
+			return "[4 5 1 6] 0 setdash";
+		else
+			return "[0 16] 0 setdash";
+	}
 }

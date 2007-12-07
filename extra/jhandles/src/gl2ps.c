@@ -2825,10 +2825,14 @@ static void gl2psPrintPostScriptHeader(void)
   gl2psPrintf("/SP { [ currentpoint ] } BD\n"
               "/RP { aload pop moveto } BD\n"
               "/Tflag false def\n"
-              "/Tshow {{dup dup 1 get exch 0 get findfont exch scalefont setfont\n"
-              "        dup 2 get dup 0 exch rmoveto exch 3 get Tflag {false charpath}\n"
-              "        {show} ifelse neg 0 exch rmoveto} forall} BD\n"
-              "/Tbbox {gsave newpath 0 0 moveto /Tflag true def Tshow /Tflag\n"
+			  "/TEshow{dup dup 1 get exch 0 get findfont exch scalefont setfont\n"
+			  "        dup 2 get dup 0 exch rmoveto exch 3 get Tflag {false charpath}\n"
+			  "        {show} ifelse neg 0 exch rmoveto} BD\n"
+			  "/Tshow {{dup xcheck {exec} {TEshow} ifelse} forall} BD\n"
+			  "/PTshow{dup length exch SP exch {TEshow currentpoint pop 3 1 roll dup RP}\n"
+			  "        forall pop 1 sub {2 copy gt {pop} {exch pop} ifelse} repeat\n"
+			  "        currentpoint exch pop moveto} BD\n"
+			  "/Tbbox {gsave newpath 0 0 moveto /Tflag true def Tshow /Tflag\n"
               "        false def flattenpath pathbbox grestore} BD\n"
               "/LLshow {SP exch Tshow RP} BD\n"
               "/LCshow {SP exch dup Tbbox pop 2 div neg 0 rmoveto pop pop Tshow RP} BD\n"
@@ -2937,6 +2941,12 @@ static void gl2psPrintPostScriptHeader(void)
               "{ /ST { STnoshfill } BD }\n"
               "ifelse\n");
 
+  /* add symbol oblique font - octave addon */
+
+  gl2psPrintf("/Symbol-Oblique /Symbol findfont [1 0 .167 1 0 0] makefont\n"
+              "dup length dict begin {1 index /FID eq {pop pop} {def} ifelse} forall\n"
+              "currentdict end definefont pop\n");
+					
   gl2psPrintf("end\n"
               "%%%%EndProlog\n"
               "%%%%BeginSetup\n"

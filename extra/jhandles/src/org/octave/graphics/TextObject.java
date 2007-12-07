@@ -74,7 +74,7 @@ public class TextObject extends GraphicObject
 		TextString = new StringProperty(this, "String", txt);
 		BackgroundColor = new ColorProperty(this, "BackgroundColor", (Color)null);
 		EdgeColor = new ColorProperty(this, "EdgeColor", (Color)null);
-		LineWidth = new DoubleProperty(this, "LineWidth", 1.0);
+		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
 		Margin = new DoubleProperty(this, "Margin", 2.0);
 		LineStyle = new LineStyleProperty(this, "LineStyle", "-");
 		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "oblique", "italic"}, "normal");
@@ -106,8 +106,7 @@ public class TextObject extends GraphicObject
 	public void validate()
 	{
 		currentUnits = Units.getValue();
-		content = new SimpleTextEngine.Content(TextString.toString());
-		data = null;
+		updateContent();
 		updateMinMax();
 		super.validate();
 	}
@@ -122,6 +121,13 @@ public class TextObject extends GraphicObject
 	public void render(Graphics g)
 	{
 		content.render((Graphics2D)g);
+	}
+
+	private void updateContent()
+	{
+		content = new SimpleTextEngine.Content(TextString.toString());
+		content.align = (HAlign.is("left") ? 0 : (HAlign.is("center") ? 1 : 2));
+		data = null;
 	}
 
 	private void updateData()
@@ -187,7 +193,6 @@ public class TextObject extends GraphicObject
 		}
 		g.setColor(TextColor.getColor());
 		g.setFont(fnt);
-		content.align = (HAlign.is("left") ? 0 : (HAlign.is("center") ? 1 : 2));
 		content.render(g);
 		g.dispose();
 		com.sun.opengl.util.ImageUtil.flipImageVertically(img);
@@ -248,7 +253,8 @@ public class TextObject extends GraphicObject
 
 	public void draw(Renderer renderer)
 	{
-		renderer.draw(this);
+		if (TextString.toString() != "")
+			renderer.draw(this);
 	}
 
 	public void propertyChanged(Property p) throws PropertyException
@@ -262,14 +268,14 @@ public class TextObject extends GraphicObject
 			currentUnits = Units.getValue();
 		}
 		else if (p == TextString)
-		{
-			content = new SimpleTextEngine.Content(TextString.toString());
-			data = null;
-		}
+			updateContent();
 		else if (p == Rotation || p == TextColor || p == BackgroundColor || p == EdgeColor ||
 				 p == Margin || p == LineStyle || p == LineWidth || p == FontAngle ||
 				 p == FontName || p == FontSize || p == FontWeight || (p == HAlign && TextString.toString().indexOf('\n') != -1))
 			data = null;
+
+		if (p == HAlign)
+			content.align = (HAlign.is("left") ? 0 : (HAlign.is("center") ? 1 : 2));
 
 		if (p == Units || p == Position)
 			PositionMode.set(new Boolean(false));
@@ -280,10 +286,78 @@ public class TextObject extends GraphicObject
 
 	public String toPostScript()
 	{
-		SimpleTextEngine.PSTextRenderer r = new SimpleTextEngine.PSTextRenderer(
+		StringBuffer buf = new StringBuffer();
+		SimpleTextEngine.PSTextRenderer r = new SimpleTextEngine.PSTextRenderer(buf,
 				FontName.toString(), Utils.getFontSize(FontSize, FontUnits, getAxes().getCanvas().getHeight()),
-				(FontAngle.is("normal") ? 0 : Font.ITALIC)|(FontWeight.is("normal") ? 0 : Font.BOLD));
+				(FontAngle.is("normal") ? 0 : Font.ITALIC)|(FontWeight.is("normal") ? 0 : Font.BOLD),
+				TextColor.getColor());
+
+		/* save current state */
+		buf.append("gsave\n");
+		/* text rotation */
+		float angle = Rotation.floatValue();
+		if (angle != 0.0f)
+			buf.append(angle + " rotate\n");
+		/* text box */
+		float f = 72.0f/Utils.getScreenResolution();
+		Rectangle re = getExtent();
+		if (BackgroundColor.isSet() || (EdgeColor.isSet() && !LineStyle.is("none")))
+		{
+			float x = 0, y = 0, margin = Margin.floatValue(), w, h;
+
+			if (HAlign.is("center")) x = -re.width/2-margin;
+			else if (HAlign.is("right")) x = -re.width-2*margin;
+			else x = -margin;
+			if (VAlign.is("baseline")) y = re.height+re.y+margin;
+			else if (VAlign.is("bottom")) y = re.height+2*margin;
+			else if (VAlign.is("top")) y = margin;
+			else y = re.height/2+margin;
+
+			w = re.width+2*margin;
+			h = re.height+2*margin;
+
+			buf.append("gsave\n" + (f*x) + " " + (f*y) + " rmoveto SP\n");
+			if (BackgroundColor.isSet())
+			{
+				float[] bk = BackgroundColor.getColor().getRGBColorComponents(null);
+
+				buf.append(bk[0] + " " + bk[1] + " " + bk[2] + " C\n");
+				buf.append("newpath dup RP\n");
+				buf.append((f*w) + " 0 rlineto\n");
+				buf.append("0 " + (f*(-h)) + " rlineto\n");
+				buf.append((f*(-w)) + " 0 rlineto\n");
+				buf.append("0 " + (f*h) + " rlineto\nclosepath fill\n");
+			}
+			if (EdgeColor.isSet() && !LineStyle.is("none"))
+			{
+				float[] ed = EdgeColor.getColor().getRGBColorComponents(null);
+
+				buf.append(ed[0] + " " + ed[1] + " " + ed[2] + " C\n");
+				buf.append(LineWidth.floatValue() + " W\n");
+				buf.append(LineStyle.toPostScript() + "\n");
+				buf.append("newpath dup RP\n");
+				buf.append((f*w) + " 0 rlineto\n");
+				buf.append("0 " + (f*(-h)) + " rlineto\n");
+				buf.append((f*(-w)) + " 0 rlineto\n");
+				buf.append("0 " + (f*h) + " rlineto\nclosepath stroke\n");
+			}
+			buf.append("pop grestore\n");
+		}
+		/* text vertical alignment */
+		if (!VAlign.is("baseline"))
+		{
+			if (VAlign.is("top"))
+				buf.append("0 -" + (f*(re.height+re.y)) + " rmoveto\n");
+			else if (VAlign.is("bottom"))
+				buf.append("0 " + (f*(-re.y)) + " rmoveto\n");
+			else
+				buf.append("0 " + (f*(-re.height/2-re.y)) + " rmoveto\n");
+		}
+		/* text content */
 		content.render(r);
-		return r.toString();
+		/* restore state */
+		buf.append("grestore\n");
+
+		return buf.toString();
 	}
 }

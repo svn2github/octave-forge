@@ -10,6 +10,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <unistd.h>
+//#include <stdint.h>
 #include <cerrno>
 // #include <string.h>
 #include <sys/types.h>
@@ -160,9 +161,9 @@ static void channel_error (const int channel, const char *str)
 {
   STATUS("sending error !!!e (" << strlen(str) << ") " << str);
 
-  unsigned long int len = strlen(str);
+  uint32_t len = strlen(str);
   write(channel,"!!!e",4);
-  unsigned long int t = htonl(len); write(channel,&t,4);
+  uint32_t t = htonl(len); write(channel,&t,4);
   write(channel,str,len);
 }
 
@@ -201,7 +202,7 @@ static void
 process_commands(int channel)
 {
   // XXX FIXME XXX check read/write return values
-  assert(sizeof(unsigned long int) == 4);
+  assert(sizeof(uint32_t) == 4);
   char command[5];
   char def_context[16536];
   bool ok;
@@ -233,7 +234,7 @@ process_commands(int channel)
 
     // Get command length
     if (debug) tic(); // time the read
-    int len;
+    uint32_t len;
     if (!reads(channel, &len, 4)) break;
     len = ntohl(len);
     // STATUS("read 4 byte command length in " << toc() << "us"); 
@@ -274,7 +275,7 @@ process_commands(int channel)
       {
 	// XXX FIXME XXX this can be removed: app can do send(name,value)
 	STATUS("sending " << context);
-	unsigned long t;
+	uint32_t t;
 	
 	// read the matrix contents
 	octave_value def = get_octave_value(context);
@@ -408,7 +409,7 @@ send(name,value)\n\
 #endif
 {
   bool ok;
-  unsigned long t;
+  uint32_t t;
   octave_value_list ret;
   int nargin = args.length();
   if (nargin < 1 || nargin > 2)
@@ -593,7 +594,7 @@ listen(...,'loopback')\n\
   if (error_state) return ret;
 
   debug = false;
-  unsigned int inaddr = INADDR_ANY;
+  uint32_t inaddr = INADDR_ANY;
 
   string_vector hostlist;
   hostlist.append(std::string("127.0.0.1"));
@@ -629,7 +630,7 @@ listen(...,'loopback')\n\
     return ret;
   }
 
-  if (setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(int)) == -1) {
+  if (setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(yes)) == -1) {
     perror("setsockopt");
     return ret;
   }

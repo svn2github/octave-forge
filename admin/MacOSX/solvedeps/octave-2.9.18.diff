@@ -1,0 +1,186 @@
+diff -ruN octave-2.9.18.orig/doc/interpreter/geometryimages.m octave-2.9.18/doc/interpreter/geometryimages.m
+--- octave-2.9.18.orig/doc/interpreter/geometryimages.m	2007-12-05 16:38:53.000000000 +0100
++++ octave-2.9.18/doc/interpreter/geometryimages.m	2007-12-06 14:42:11.000000000 +0100
+@@ -26,6 +26,8 @@
+ 	  || strcmp (nm, "convhull") || strcmp (nm, "delaunay")
+ 	  || strcmp (nm, "triplot")))
+     sombreroimage (nm, typ);
++  elseif (strcmp (typ, "txt"))
++    image_as_txt (nm);
+   elseif (strcmp (nm, "voronoi"))
+     rand("state",9);
+     x = rand(10,1);
+@@ -194,3 +196,13 @@
+     end_unwind_protect
+   endif
+ endfunction
++
++## generate something for the texinfo @image command to process
++function image_as_txt(nm)
++  fid = fopen (sprintf ("%s.txt", nm), "wt");
++  fputs (fid, "\n");
++  fputs (fid, "+---------------------------------+\n");
++  fputs (fid, "| Image unavailable in text mode. |\n");
++  fputs (fid, "+---------------------------------+\n");
++  fclose (fid);
++endfunction
+diff -ruN octave-2.9.18.orig/doc/interpreter/interpimages.m octave-2.9.18/doc/interpreter/interpimages.m
+--- octave-2.9.18.orig/doc/interpreter/interpimages.m	2007-12-05 16:38:53.000000000 +0100
++++ octave-2.9.18/doc/interpreter/interpimages.m	2007-12-06 14:42:11.000000000 +0100
+@@ -21,7 +21,9 @@
+   if (strcmp (typ, "png"))
+     set (0, "defaulttextfontname", "*");
+   endif
+-  if (strcmp (nm, "interpft"))
++  if (strcmp (typ, "txt"))
++    image_as_txt (nm);
++  elseif (strcmp (nm, "interpft"))
+     t = 0 : 0.3 : pi; dt = t(2)-t(1);
+     n = length (t); k = 100;
+     ti = t(1) + [0 : k-1]*dt*n/k;
+@@ -74,3 +76,13 @@
+   f = figure (1);
+   set (f, "visible", "off");
+ endfunction
++
++## generate something for the texinfo @image command to process
++function image_as_txt(nm)
++  fid = fopen (sprintf ("%s.txt", nm), "wt");
++  fputs (fid, "\n");
++  fputs (fid, "+---------------------------------+\n");
++  fputs (fid, "| Image unavailable in text mode. |\n");
++  fputs (fid, "+---------------------------------+\n");
++  fclose (fid);
++endfunction
+diff -ruN octave-2.9.18.orig/doc/interpreter/sparseimages.m octave-2.9.18/doc/interpreter/sparseimages.m
+--- octave-2.9.18.orig/doc/interpreter/sparseimages.m	2007-12-05 16:38:53.000000000 +0100
++++ octave-2.9.18/doc/interpreter/sparseimages.m	2007-12-06 14:42:11.000000000 +0100
+@@ -262,3 +262,13 @@
+     end_unwind_protect
+   endif
+ endfunction
++
++## generate something for the texinfo @image command to process
++function image_as_txt(nm)
++  fid = fopen (sprintf ("%s.txt", nm), "wt");
++  fputs (fid, "\n");
++  fputs (fid, "+---------------------------------+\n");
++  fputs (fid, "| Image unavailable in text mode. |\n");
++  fputs (fid, "+---------------------------------+\n");
++  fclose (fid);
++endfunction
+diff -ruN octave-2.9.18.orig/libcruft/blas-xtra/Makefile.in octave-2.9.18/libcruft/blas-xtra/Makefile.in
+--- octave-2.9.18.orig/libcruft/blas-xtra/Makefile.in	2007-10-12 23:27:12.000000000 +0200
++++ octave-2.9.18/libcruft/blas-xtra/Makefile.in	2007-12-06 14:45:00.000000000 +0100
+@@ -26,7 +26,7 @@
+ 
+ EXTERNAL_DISTFILES = $(DISTFILES)
+ 
+-FSRC = xddot.f xdnrm2.f xdznrm2.f xerbla.f xzdotu.f
++FSRC = lsame.f xddot.f xdnrm2.f xdznrm2.f xerbla.f xzdotu.f
+ 
+ include $(TOPDIR)/Makeconf
+ 
+diff -ruN octave-2.9.18.orig/libcruft/blas-xtra/lsame.f octave-2.9.18/libcruft/blas-xtra/lsame.f
+--- octave-2.9.18.orig/libcruft/blas-xtra/lsame.f	1970-01-01 01:00:00.000000000 +0100
++++ octave-2.9.18/libcruft/blas-xtra/lsame.f	2007-12-06 14:44:46.000000000 +0100
+@@ -0,0 +1,87 @@
++      LOGICAL          FUNCTION LSAME( CA, CB )
++*
++*  -- LAPACK auxiliary routine (version 2.0) --
++*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
++*     Courant Institute, Argonne National Lab, and Rice University
++*     January 31, 1994
++*
++*     .. Scalar Arguments ..
++      CHARACTER          CA, CB
++*     ..
++*
++*  Purpose
++*  =======
++*
++*  LSAME returns .TRUE. if CA is the same letter as CB regardless of
++*  case.
++*
++*  Arguments
++*  =========
++*
++*  CA      (input) CHARACTER*1
++*  CB      (input) CHARACTER*1
++*          CA and CB specify the single characters to be compared.
++*
++* =====================================================================
++*
++*     .. Intrinsic Functions ..
++      INTRINSIC          ICHAR
++*     ..
++*     .. Local Scalars ..
++      INTEGER            INTA, INTB, ZCODE
++*     ..
++*     .. Executable Statements ..
++*
++*     Test if the characters are equal
++*
++      LSAME = CA.EQ.CB
++      IF( LSAME )
++     $   RETURN
++*
++*     Now test for equivalence if both characters are alphabetic.
++*
++      ZCODE = ICHAR( 'Z' )
++*
++*     Use 'Z' rather than 'A' so that ASCII can be detected on Prime
++*     machines, on which ICHAR returns a value with bit 8 set.
++*     ICHAR('A') on Prime machines returns 193 which is the same as
++*     ICHAR('A') on an EBCDIC machine.
++*
++      INTA = ICHAR( CA )
++      INTB = ICHAR( CB )
++*
++      IF( ZCODE.EQ.90 .OR. ZCODE.EQ.122 ) THEN
++*
++*        ASCII is assumed - ZCODE is the ASCII code of either lower or
++*        upper case 'Z'.
++*
++         IF( INTA.GE.97 .AND. INTA.LE.122 ) INTA = INTA - 32
++         IF( INTB.GE.97 .AND. INTB.LE.122 ) INTB = INTB - 32
++*
++      ELSE IF( ZCODE.EQ.233 .OR. ZCODE.EQ.169 ) THEN
++*
++*        EBCDIC is assumed - ZCODE is the EBCDIC code of either lower or
++*        upper case 'Z'.
++*
++         IF( INTA.GE.129 .AND. INTA.LE.137 .OR.
++     $       INTA.GE.145 .AND. INTA.LE.153 .OR.
++     $       INTA.GE.162 .AND. INTA.LE.169 ) INTA = INTA + 64
++         IF( INTB.GE.129 .AND. INTB.LE.137 .OR.
++     $       INTB.GE.145 .AND. INTB.LE.153 .OR.
++     $       INTB.GE.162 .AND. INTB.LE.169 ) INTB = INTB + 64
++*
++      ELSE IF( ZCODE.EQ.218 .OR. ZCODE.EQ.250 ) THEN
++*
++*        ASCII is assumed, on Prime machines - ZCODE is the ASCII code
++*        plus 128 of either lower or upper case 'Z'.
++*
++         IF( INTA.GE.225 .AND. INTA.LE.250 ) INTA = INTA - 32
++         IF( INTB.GE.225 .AND. INTB.LE.250 ) INTB = INTB - 32
++      END IF
++      LSAME = INTA.EQ.INTB
++*
++*     RETURN
++*
++*     End of LSAME
++*
++      END
+diff -ruN octave-2.9.18.orig/src/Makefile.in octave-2.9.18/src/Makefile.in
+--- octave-2.9.18.orig/src/Makefile.in	2007-12-05 18:08:28.000000000 +0100
++++ octave-2.9.18/src/Makefile.in	2007-12-06 14:45:35.000000000 +0100
+@@ -262,7 +262,7 @@
+ endif
+ 
+ OCTINTERP_LINK_DEPS = \
+-  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS)
++  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS) -lfftw3
+ 
+ OCT_LINK_DEPS = \
+   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \

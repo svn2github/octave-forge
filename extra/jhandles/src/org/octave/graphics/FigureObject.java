@@ -186,6 +186,11 @@ public class FigureObject extends AxesContainer
 		if (Visible.isSet())
 			frame.setVisible(true);
 		updateFramePosition();
+		if (!Visible.isSet())
+		{
+			frame.layout();
+			axPanel.layout();
+		}
 	}
 	
 	private void updateHandle()

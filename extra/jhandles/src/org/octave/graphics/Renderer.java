@@ -52,6 +52,8 @@ public interface Renderer
 
 	public void setLineWidth(float w);
 
+	public void setFont(Font f);
+
 	public void end();
 
 	public void draw(LineObject line);

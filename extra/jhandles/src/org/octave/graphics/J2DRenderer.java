@@ -109,6 +109,12 @@ public class J2DRenderer implements Renderer
 		if (g != null)
 			g.setColor(c);
 	}
+	
+	public void setFont(Font f)
+	{
+		if (g != null)
+			g.setFont(f);
+	}
 
 	private void updateStroke()
 	{
@@ -299,7 +305,6 @@ public class J2DRenderer implements Renderer
 				xoff = (int)Math.round(tpos[0])+xoff;
 				yoff = (int)Math.round(tpos[1])+yoff;
 				g.translate(xoff, yoff);
-				g.setFont(canvas.getFont());
 				content.render(g);
 				g.translate(-xoff, -yoff);
 

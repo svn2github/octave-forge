@@ -309,7 +309,7 @@ public class TextObject extends GraphicObject
 			else if (HAlign.is("right")) x = -re.width-2*margin;
 			else x = -margin;
 			if (VAlign.is("baseline")) y = re.height+re.y+margin;
-			else if (VAlign.is("bottom")) y = re.height+2*margin;
+			else if (VAlign.is("bottom")) y = re.height+margin;
 			else if (VAlign.is("top")) y = margin;
 			else y = re.height/2+margin;
 

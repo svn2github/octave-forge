@@ -1098,7 +1098,6 @@ class SimpleTextEngine
 			}
 			rect = new Rectangle(0, -(h-lines[0].rect.height-lines[0].rect.y), w, h);
 			return rect;
-			//return lines[0].layout(comp, font);
 		}
 
 		void render(Graphics2D g)
@@ -1115,18 +1114,17 @@ class SimpleTextEngine
 				yoffset += lines[i].rect.height;
 			}
 			g.translate(0, -yoffset);
-			//lines[0].render(g);
 		}
 		
 		void render(TextRenderer r) { r.render(this); }
 	}
 
-	public static Dimension drawAsImage(RenderCanvas comp, String txt, double[] pos, int halign, int valign)
+	public static Dimension drawAsImage(RenderCanvas comp, Font f, String txt, double[] pos, int halign, int valign)
 	{
 		// create internal image
 		int margin = 0;
 		Content content = new Content(txt);
-		Rectangle r = (Rectangle)content.layout(comp, comp.getFont()).clone();
+		Rectangle r = (Rectangle)content.layout(comp, f).clone();
 
 		if (r.width <=0 || r.height <= 0)
 			return new Dimension(0, 0);
@@ -1137,7 +1135,7 @@ class SimpleTextEngine
 
 		// draw string
 		Graphics g = img.getGraphics();
-		g.setFont(comp.getFont());
+		g.setFont(f);
 		g.translate(margin, margin);
 		content.render((Graphics2D)g);
 		g.dispose();

@@ -23,6 +23,7 @@ package org.octave.graphics;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.image.*;
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
@@ -53,6 +54,7 @@ public class GLRenderer implements Renderer
 	private boolean isFirst = false;
 	private Matrix3D xForm;
 	private double xZ1, xZ2;
+	private Font font;
 
 	public GLRenderer(GLAutoDrawable d)
 	{
@@ -491,24 +493,29 @@ public class GLRenderer implements Renderer
 
 	public Dimension drawText(String txt, double[] pos, int halign, int valign)
 	{
-		Dimension dim = SimpleTextEngine.drawAsImage((RenderCanvas)d, txt, pos, halign, valign);
+		Dimension dim = SimpleTextEngine.drawAsImage((RenderCanvas)d, font, txt, pos, halign, valign);
 		if (isGL2PS)
 		{
+			/*
 			int margin = 0;
 			drawGL2PSText(txt, pos, halign, valign, 0, margin, true,
 					0, null, "-", null, true);
+					*/
 
-			/*
 			StringBuffer buf = new StringBuffer();
 			SimpleTextEngine.Content content = new SimpleTextEngine.Content(txt);
 			SimpleTextEngine.PSTextRenderer ps = new SimpleTextEngine.PSTextRenderer(buf,
-					"Helvetica", 8, 0, Color.black);
+					font.getName(), font.getSize(), font.getStyle(), Color.black);
 
 			gl.glRasterPos3d(pos[0], pos[1], pos[2]);
+			switch (valign)
+			{
+				case 1: buf.append("0 -" + (dim.height/2) + " rmoveto\n"); break;
+				case 2: buf.append("0 -" + dim.height + " rmoveto\n"); break;
+			}
 			content.align = halign;
 			content.render(ps);
 			GL2PS.gl2psSpecial(GL2PS.GL2PS_PS, buf.toString(), 1);
-			*/
 		}
 		return dim;
 	}
@@ -2063,6 +2070,11 @@ public class GLRenderer implements Renderer
 		gl.glLineWidth(w);
 		if (isGL2PS)
 			GL2PS.gl2psLineWidth(w);
+	}
+
+	public void setFont(Font f)
+	{
+		font = f;
 	}
 
 	private void setPolygonOffset(boolean flag)

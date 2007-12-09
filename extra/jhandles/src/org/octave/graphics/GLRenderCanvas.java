@@ -74,7 +74,7 @@ public class GLRenderCanvas extends GLCanvas
 
 	public void init(GLAutoDrawable d)
 	{
-		GL gl = getGL();
+		GL gl = d.getGL();
 
 		r = new GLRenderer(d);
 		gl.glEnable(GL.GL_DEPTH_TEST);
@@ -96,7 +96,7 @@ public class GLRenderCanvas extends GLCanvas
 		
 		if (reshapeDone && !Threading.isSingleThreaded())
 		{
-			GL gl = getGL();
+			GL gl = d.getGL();
 			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 			d.swapBuffers();
 		}

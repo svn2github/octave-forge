@@ -1,0 +1,13 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fftw-3.1.2-orig/configure fftw-3.1.2/configure
+--- fftw-3.1.2-orig/configure	Tue Jul  4 00:44:10 2006
++++ fftw-3.1.2/configure	Thu Nov  8 13:14:58 2007
+@@ -10187,7 +10187,8 @@
+       ;;
+     mingw*)
+       # MinGW DLLs use traditional 'lib' prefix
+-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      #soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib//'`${shared_ext}'
+       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
+         # It is most probably a Windows format PATH printed by

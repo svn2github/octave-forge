@@ -3,13 +3,9 @@ jhandles
  addlistener
  addprop
  hggroup
- hidden
  light
  mat2java
- shading
- sphere
  uicontrol
- ancestor
  gcbo
  uipanel
  allchild

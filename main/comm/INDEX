@@ -9,6 +9,8 @@ Random Signals
  scatterplot
  symerr
  wgn
+ bsc
+
 Source Coding
  arithenco
  arithdeco
@@ -90,6 +92,8 @@ Modulations
  pskmod
  qaskdeco
  qaskenco
+ qammod
+ qamdemod
 Special Filters
  hank2sys
  hilbiir
@@ -165,8 +169,10 @@ Utility Functions
  comms
  bi2de
  de2bi
+ oct2dec
  istrellis
  poly2trellis
  vec2mat
  qfunc
  qfuncinv
+ marcumq

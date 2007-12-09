@@ -464,7 +464,7 @@ Matrix properties
  islogical isdefinite
  logical 
  isscalar isvector ismatrix issquare 
- issymmetric is_duplicate_entry isequalwithequalnans
+ issymmetric ishermitian is_duplicate_entry isequalwithequalnans
  size_equal
 Assignment
  subsasgn subsref
@@ -601,6 +601,7 @@ Sparse matrix reordering
 Linear algebra
  condest
  normest
+ onenormest
  spchol
  spchol2inv
  spcholinv
@@ -636,6 +637,7 @@ Miscellaneous
  spmax
  spatan2
  spdiag
+ sparse_auto_mutate
 
 strings >> Strings
 Creation
@@ -951,7 +953,7 @@ Line plots
  semilogx 
  semilogy 
  polar 
- plotyy= use <f>__gnuplot_raw__</f> with <code> ... axes x1y2</code>
+ plotyy
  errorbar semilogxerr semilogyerr loglogerr
  scatter 
  plotmatrix 
@@ -962,6 +964,7 @@ Line plots
  feather
  line
  triplot 
+ quiver 
 Business graphs
  pie 
  pie3 
@@ -984,7 +987,6 @@ Surface plots
  mesh 
  surf 
  comet3 
- quiver 
  meshc 
  meshz 
  scatter3 
@@ -995,6 +997,13 @@ Surface plots
  fill3 
  sombrero
  peaks
+ hidden
+ sphere
+ cylinder
+ quiver3
+ slice
+ surface
+ surfnorm
 
 plot >> Plot controls
 Figure controls
@@ -1014,6 +1023,7 @@ Figure controls
  gca gcf
  get set
  findobj
+ ancestor
 Axis controls
  axis
  box 
@@ -1024,6 +1034,7 @@ Axis controls
  multiplot subwindow oneplot plot_border
  datetick
  tics
+ xlim ylim zlim
 Labels
  axes
  title bottom_title top_title
@@ -1044,6 +1055,7 @@ Printing
  dxfwrite
 
 Colour controls
+ shading
  colormap 
  spinmap 
  rgbplot 
@@ -1065,6 +1077,7 @@ Colour maps
  spring 
  winter 
  summer
+ gmap40
  lines 
  colorcube 
  vga 
@@ -1384,7 +1397,6 @@ Compatibility
  isdt=use <f>is_digital</f>
  issiso=use <f>is_siso</f>
  append(sys)=use <f>sysappend</f>
- connect=use <f>sysconnect</f>
  lft=use <f>starp</f>
  norm(sys)=use <f>h2norm</f>, <f>hinfnorm</f> or <f>zgrownorm</f>
  zero=use <f>tzero</f> or <f>tzero2</f>

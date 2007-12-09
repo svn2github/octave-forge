@@ -6,7 +6,7 @@ diff -urN -x *.o -x *.bak -x *.dll -x *.a -x *.exe -x *.def libpng-1.2.18-orig/M
  	$(LINK) -rpath $(libdir) $(libpng12_la_LDFLAGS) $(libpng12_la_OBJECTS) $(libpng12_la_LIBADD) $(LIBS)
  
 +libpng.dll : libpng.la
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +	-Wl,--export-all-symbols \
 +	-Wl,--whole-archive ./.libs/libpng.a \
 +	-Wl,--out-implib=$(basename $<).dll.a \

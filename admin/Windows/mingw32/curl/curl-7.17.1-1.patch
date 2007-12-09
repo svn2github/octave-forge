@@ -1,6 +1,6 @@
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x ca-bundle.h -x libcurl.res curl-7.17.1-orig/include/curl/curl.h curl-7.17.1/include/curl/curl.h
 --- curl-7.17.1-orig/include/curl/curl.h	Mon Oct 22 16:30:17 2007
-+++ curl-7.17.1/include/curl/curl.h	Wed Nov 14 22:02:56 2007
++++ curl-7.17.1/include/curl/curl.h	Tue Nov 20 20:18:46 2007
 @@ -147,7 +147,7 @@
  
  #if defined(WIN32) && !defined(_WIN32_WCE) && !defined(__GNUC__) && \
@@ -12,8 +12,21 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x ca-bundle.h -x libcurl.res
  #include <winsock2.h>
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x ca-bundle.h -x libcurl.res curl-7.17.1-orig/lib/Makefile.m32 curl-7.17.1/lib/Makefile.m32
 --- curl-7.17.1-orig/lib/Makefile.m32	Mon Aug 27 15:01:10 2007
-+++ curl-7.17.1/lib/Makefile.m32	Tue Nov 13 19:30:26 2007
-@@ -34,21 +34,22 @@
++++ curl-7.17.1/lib/Makefile.m32	Sun Dec  9 12:03:43 2007
+@@ -15,6 +15,12 @@
+ ##              Joern Hartroth <hartroth@acm.org>
+ #########################################################################
+ 
++SRCDIR = @SRCDIR@/lib
++
++vpath %.c $(SRCDIR)
++vpath %.h $(SRCDIR)
++vpath %.rc $(SRCDIR)
++
+ # Edit the path below to point to the base of your Zlib sources.
+ ifndef ZLIB_PATH
+ ZLIB_PATH = ../../zlib-1.2.3
+@@ -34,21 +40,22 @@
  
  ARES_LIB = ../ares
  
@@ -22,27 +35,33 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x ca-bundle.h -x libcurl.res
 +CFLAGS=$(GCC_ARCH_FLAGS) $(GCC_OPT_FLAGS)
  AR = ar
  # comment LDFLAGS below to keep debug info
- LDFLAGS = -s
+-LDFLAGS = -s
++# LDFLAGS = -s
  RANLIB = ranlib
  RC = windres
- RCFLAGS = --include-dir=../include -DCURLDEBUG=0 -O COFF -i
+-RCFLAGS = --include-dir=../include -DCURLDEBUG=0 -O COFF -i
 -RM = del /q /f
 -STRIP = strip -g
++RCFLAGS = --include-dir=$(SRCDIR)/../include -DCURLDEBUG=0 -O COFF -i
 +RM = rm -f
 +STRIP = strip
  
  ########################################################
  ## Nothing more to do below this line!
  
- INCLUDES = -I. -I../include
+-INCLUDES = -I. -I../include
 -CFLAGS = -g -O2 -DBUILDING_LIBCURL
++INCLUDES = -I. -I$(SRCDIR)/../include
 +CFLAGS = $(GCC_ARCH_FLAGS) $(GCC_OPT_FLAGS) -DBUILDING_LIBCURL
  ifdef ARES
    INCLUDES += -I$(ARES_LIB)
    CFLAGS += -DUSE_ARES
-@@ -102,8 +103,8 @@
+@@ -100,10 +107,10 @@
+ COMPILE = $(CC) $(INCLUDES) $(CFLAGS)
+ 
  # Makefile.inc provides the CSOURCES and HHEADERS defines
- include Makefile.inc
+-include Makefile.inc
++include $(SRCDIR)/Makefile.inc
  
 -libcurl_dll_LIBRARY = libcurl.dll
 -libcurl_dll_a_LIBRARY = libcurldll.a
@@ -51,7 +70,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x ca-bundle.h -x libcurl.res
  libcurl_a_LIBRARY = libcurl.a
  
  libcurl_a_OBJECTS := $(patsubst %.c,%.o,$(strip $(CSOURCES)))
-@@ -119,14 +120,15 @@
+@@ -119,14 +126,15 @@
  	-$(RM) $@
  	$(AR) cru $@ $(libcurl_a_OBJECTS)
  	$(RANLIB) $@
@@ -69,7 +88,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x ca-bundle.h -x libcurl.res
  
  .c.o:
  	$(COMPILE) -c $<
-@@ -144,7 +146,7 @@
+@@ -144,7 +152,7 @@
  
  ca-bundle.h: FORCE Makefile.m32
  	@echo Creating $@

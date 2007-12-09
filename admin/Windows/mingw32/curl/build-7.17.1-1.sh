@@ -27,8 +27,6 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=${SRCDIR}/lib
 
 # Make file to use
 MAKEFILE="Makefile.m32"
@@ -42,21 +40,32 @@ INCLUDE_DIR=include/curl
 
 source ../common.sh
 
-#mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+mkdirs_post()
+{
+   mkdir -vp ${BUILDDIR}/lib
+}
+
+conf()
+{
+   substvars ${SRCDIR}/lib/${MAKEFILE} ${BUILDDIR}/lib/${MAKEFILE}
+}
 
 build() 
 {
-   export ZLIB_PATH=${LIBRARY_PATH}
-   echo ${CPATH}
-   ( cd ${BUILDDIR} && make -f Makefile.m32 ZLIB=1 )
+   export ZLIB_PATH=${INCLUDE_BASE}/${INCLUDE_DEFAULT}
+   ( cd ${BUILDDIR}/lib && make -f Makefile.m32 ZLIB=1 )
 }
 
 install()
 {
    install_pre
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/curl.dll ${SHAREDLIB_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/libcurl.dll.a ${LIBRARY_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/libcurl.a ${STATICLIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/curl.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/libcurl.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/libcurl.a ${STATICLIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/include/curl/$a ${INCLUDE_PATH}; done
    install_post
 }
@@ -74,6 +83,8 @@ all()
    download
    unpack
    applypatch
+   mkdirs
+   conf
    build
    install
 }

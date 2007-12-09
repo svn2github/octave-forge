@@ -26,8 +26,6 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=${SRCDIR}
 
 # Make file to use
 MAKEFILE="Makefile.mingw32"
@@ -40,6 +38,15 @@ INSTALL_HEADERS=""
 
 source ../gcc42_common.sh
 
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   substvars ${SRCDIR}/${MAKEFILE} ${BUILDDIR}/${MAKEFILE}
+}
 
 install()
 {
@@ -51,5 +58,15 @@ uninstall()
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/less.exe
 }
 
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
+}
 
 main $*

@@ -1,10 +1,15 @@
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/Makefile.mingw32 less-406/Makefile.mingw32
 --- less-406-orig/Makefile.mingw32	Thu Jan  1 01:00:00 1970
-+++ less-406/Makefile.mingw32	Tue Nov 20 21:21:46 2007
-@@ -0,0 +1,74 @@
++++ less-406/Makefile.mingw32	Sun Dec  9 12:17:43 2007
+@@ -0,0 +1,79 @@
 +# Makefile for less.
 +# Windows version
 +# mingw32 gcc
++
++SRCDIR = @SRCDIR@
++
++vpath %.c $(SRCDIR)
++vpath %.h $(SRCDIR)
 +
 +#### Start of system configuration section. ####
 +# 
@@ -16,7 +21,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/Ma
 +#LIBDIR = $(MAKEDIR)\..\lib
 +
 +CFLAGS = $(GCC_ARCH_FLAGS) $(GCC_OPT_FLAGS)
-+LDFLAGS = -mconsole
++LDFLAGS += -mconsole
 +LD = $(CC)
 +#LIBS = ${LIBDIR}\import32.lib ${LIBDIR}\cw32.lib
 +LIBS = -lpcre -lregex
@@ -28,7 +33,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/Ma
 +# in addition to whatever the user asks for.
 +# 
 +.c.o:
-+	${CC} -c -I. ${CPPFLAGS} ${CFLAGS} $<
++	${CC} -c -I$(SRCDIR) ${CPPFLAGS} ${CFLAGS} $<
 +
 +OBJ =	main.o screen.o brac.o ch.o charset.o cmdbuf.o command.o \
 +	decode.o edit.o filename.o forwback.o help.o ifile.o \
@@ -55,7 +60,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/Ma
 +	${CC} ${LDFLAGS} -o $@ $^ ${LIBS}
 +	strip $(STRIP_FLAGS) $@
 +
-+defines.h: defines.wn
++defines.h: $(SRCDIR)/defines.wn
 +	-rm defines.h
 +	-cp defines.wn defines.h
 +

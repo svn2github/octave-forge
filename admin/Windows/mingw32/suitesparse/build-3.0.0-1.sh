@@ -26,8 +26,6 @@ TOPDIR=`pwd`
 SRCDIR=${PKG}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=${SRCDIR}
 
 # Make file to use
 MAKEFILE=""
@@ -47,6 +45,36 @@ CCOLAMD_INCLUDES="ccolamd.h"
 CXSPARSE_INCLUDES="cs.h"
 
 source ../common.sh
+
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+mkdirs_post()
+{
+   mkdir -vp ${BUILDDIR}/AMD/Lib
+   mkdir -vp ${BUILDDIR}/CAMD/Lib
+   mkdir -vp ${BUILDDIR}/CCOLAMD/Lib
+   mkdir -vp ${BUILDDIR}/COLAMD/Lib
+   mkdir -vp ${BUILDDIR}/CSparse/Lib
+   mkdir -vp ${BUILDDIR}/CXSparse/Lib
+   mkdir -vp ${BUILDDIR}/CHOLMOD/Lib
+   mkdir -vp ${BUILDDIR}/UMFPACK/Lib
+   mkdir -vp ${BUILDDIR}/UFconfig
+}
+
+conf()
+{
+   substvars ${SRCDIR}/UFconfig/UFconfig.mk ${BUILDDIR}/UFconfig/UFconfig.mk
+   ${CP} ${CP_FLAGS} ${SRCDIR}/AMD/Lib/GNUmakefile     ${BUILDDIR}/AMD/Lib/GNUmakefile
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CAMD/Lib/GNUmakefile    ${BUILDDIR}/CAMD/Lib/GNUmakefile
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CCOLAMD/Lib/Makefile    ${BUILDDIR}/CCOLAMD/Lib/Makefile
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/Lib/Makefile    ${BUILDDIR}/CHOLMOD/Lib/Makefile
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COLAMD/Lib/Makefile     ${BUILDDIR}/COLAMD/Lib/Makefile
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CSparse/Lib/Makefile    ${BUILDDIR}/CSparse/Lib/Makefile
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CXSparse/Lib/Makefile   ${BUILDDIR}/CXSparse/Lib/Makefile
+   ${CP} ${CP_FLAGS} ${SRCDIR}/UMFPACK/Lib/GNUmakefile ${BUILDDIR}/UMFPACK/Lib/GNUmakefile
+}
 
 build() {
 (
@@ -92,7 +120,7 @@ uninstall_lib_core() {
 
 install_header_core() {
 (
-  for a in $2; do ${CP} ${CP_FLAGS} ${BUILDDIR}/$1/Include/${a} ${INCLUDE_PATH}; done
+  for a in $2; do ${CP} ${CP_FLAGS} ${SRCDIR}/$1/Include/${a} ${INCLUDE_PATH}; done
 )
 }
 
@@ -126,7 +154,7 @@ install()
    install_header_core COLAMD "${COLAMD_INCLUDES}"
    install_header_core CCOLAMD "${CCOLAMD_INCLUDES}"
    install_header_core CXSPARSE "${CXSPARSE_INCLUDES}"
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/UFconfig/UFconfig.h ${INCLUDE_PATH}
+   ${CP} ${CP_FLAGS} ${SRCDIR}/UFconfig/UFconfig.h ${INCLUDE_PATH}
    
 }
 
@@ -157,6 +185,8 @@ all() {
   download
   unpack
   applypatch
+  mkdirs
+  conf
   build
   install
 }

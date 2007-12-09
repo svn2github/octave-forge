@@ -26,8 +26,6 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=${SRCDIR}
 
 # Make file to use
 MAKEFILE=""
@@ -37,6 +35,24 @@ DIFF_FLAGS="-x *.def"
 
 source ../common.sh
 
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+mkdirs_post()
+{
+   mkdir -vp ${BUILDDIR}/SRC
+   mkdir -vp ${BUILDDIR}/INSTALL
+}
+
+conf()
+{
+   substvars ${SRCDIR}/make.inc ${BUILDDIR}/make.inc
+   ${CP} ${CP_FLAGS} ${SRCDIR}/makefile         ${BUILDDIR}/makefile
+   ${CP} ${CP_FLAGS} ${SRCDIR}/INSTALL/makefile ${BUILDDIR}/INSTALL/makefile
+   ${CP} ${CP_FLAGS} ${SRCDIR}/SRC/makefile     ${BUILDDIR}/SRC/makefile
+}
+
 build() 
 {
    ( cd ${BUILDDIR} && make lapacklib )
@@ -44,9 +60,9 @@ build()
 
 install()
 {
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.dll   ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.dll.a ${LIBRARY_PATH}/liblapack.dll.a
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.a ${STATICLIBRARY_PATH}/liblapack.a
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.a     ${STATICLIBRARY_PATH}/liblapack.a
 }
 
 uninstall()
@@ -60,6 +76,8 @@ all() {
   download
   unpack
   applypatch
+  mkdirs
+  conf
   build
   install
 }

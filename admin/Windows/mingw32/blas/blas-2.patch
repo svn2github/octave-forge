@@ -1,18 +1,68 @@
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def blas-orig/makefile.mingw32 blas/makefile.mingw32
---- blas-orig/makefile.mingw32	Thu Jan  1 00:00:00 1970
-+++ blas/makefile.mingw32	Mon Nov  5 13:45:23 2007
-@@ -0,0 +1,49 @@
+--- blas-orig/makefile.mingw32	Thu Jan  1 01:00:00 1970
++++ blas/makefile.mingw32	Sat Dec  8 15:40:20 2007
+@@ -0,0 +1,103 @@
++SRCDIR = @SRCDIR@
++
++vpath %.f $(SRCDIR)
++vpath %.def $(SRCDIR)
++
 +LIBTARGET = blas.dll
++STATICLIB = libblas.a
++RANLIB=ranlib
 +
 +FFLAGS = -O3 -funroll-all-loops
 +
-+FSOURCES = $(wildcard *.f)
++FSOURCES = \
++caxpy.f  chbmv.f   chpr2.f   ctbmv.f  \
++daxpy.f   drot.f    dspr2.f   dtbsv.f   \
++icamax.f  \
++scopy.f   srotg.f   ssymm.f   stpsv.f   \
++zdotu.f   zhemm.f   zrotg.f   ztpsv.f  \
++ccopy.f  chemm.f   crotg.f   ctbsv.f  \
++dcabs1.f  drotg.f   dswap.f   dtpmv.f   \
++idamax.f  \
++sdot.f  srotm.f   ssymv.f   strmm.f   \
++zdrot.f   zhemv.f   zscal.f   ztrmm.f \
++cdotc.f  chemv.f   cscal.f  ctpmv.f  \
++dcopy.f   drotm.f   dsymm.f   dtpsv.f   \
++isamax.f  \
++sdsdot.f  srotmg.f  ssyr.f    strmv.f  \
++zdscal.f  zher.f    zswap.f   ztrmv.f \
++cdotu.f  cher.f    csrot.f   ctpsv.f  \
++ddot.f    drotmg.f  dsymv.f   dtrmm.f   \
++izamax.f  \
++sgbmv.f   ssbmv.f   ssyr2.f   strsm.f   \
++zgbmv.f   zher2.f   zsymm.f   ztrsm.f  \
++cgbmv.f  cher2.f   csscal.f  ctrmm.f  \
++dgbmv.f   dsbmv.f   dsyr.f    dtrmv.f   \
++lsame.f   \
++sgemm.f   sscal.f   ssyr2k.f  strsv.f   \
++zgemm.f   zher2k.f  zsyr2k.f  ztrsv.f   \
++cgemm.f  cher2k.f  cswap.f   ctrmv.f  \
++dgemm.f   dscal.f   dsyr2.f   dtrsm.f   \
++sasum.f   sgemv.f   sspmv.f   ssyrk.f   \
++xerbla.f  \
++zgemv.f   zherk.f   zsyrk.f \
++cgemv.f  cherk.f   csymm.f   ctrsm.f  \
++dgemv.f   dsdot.f   dsyr2k.f  dtrsv.f   \
++saxpy.f   sger.f    sspr.f    stbmv.f   \
++zaxpy.f   zgerc.f   zhpmv.f   ztbmv.f \
++cgerc.f  chpmv.f   csyr2k.f  ctrsv.f  \
++dger.f    dspmv.f   dsyrk.f   dzasum.f  \
++scasum.f  snrm2.f   sspr2.f   stbsv.f   \
++zcopy.f   zgeru.f   zhpr.f    ztbsv.f  \
++cgeru.f  chpr.f    csyrk.f   \
++dasum.f  dnrm2.f   dspr.f    dtbmv.f   dznrm2.f  \
++scnrm2.f  srot.f    sswap.f   stpmv.f   \
++zdotc.f   zhbmv.f   zhpr2.f   ztpmv.f
++
 +OBJECTS = $(patsubst %.f,%.o, $(FSOURCES))
 +
 +DEF_FILES = $(patsubst %.f,%.def, $(FSOURCES))
 +LIB_DEFFILE = $(patsubst %.dll,%.def, $(LIBTARGET))
 +
-+all: $(LIBTARGET)
++all: $(LIBTARGET) $(STATICLIB)
 +
 +.SUFFIXES: .f .c .o .def
 +
@@ -29,8 +79,13 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def blas-orig/makefile.m
 +	echo "EXPORTS" > $@
 +	cat $(DEF_FILES) >> $@
 +
++$(STATICLIB): $(OBJECTS)
++	-$(RM) -f $@
++	$(AR) cr $@ $^
++	- $(RANLIB) $@
++
 +$(LIBTARGET): $(OBJECTS) $(LIB_DEFFILE)
-+	$(F77) -shared -o $@ $(OBJECTS) \
++	$(F77) -shared $(FLDFLAGS) -o $@ $(OBJECTS) \
 +		-Wl,--out-implib,libblas.dll.a \
 +		-Wl,--output-def,libblas.def \
 +		-Wl,--export-all-symbols \
@@ -48,6 +103,5 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def blas-orig/makefile.m
 +	$(RM) $(LIBTARGET) $(OTHER_CLEANFILES)
 +
 +install: blas.dll
-+	cp blas.dll $(BINARY_PATH)
++	cp blas.dll $(SHAREDLIB_PATH)
 +	cp libblas.dll.a $(LIBRARY_PATH)
-+	cp libblas.def $(LIBRARY_PATH)/lib

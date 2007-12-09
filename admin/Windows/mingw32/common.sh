@@ -19,6 +19,8 @@ WGET_FLAGS=-N
 RM=rm
 RM_FLAGS=-v
 
+SED=sed
+
 export STRIP STRIP_FLAGS
 
 # Prefix for our build
@@ -138,10 +140,10 @@ build_post() { echo ; }
 
 install_pre()
 {
-  if [ ! -e ${BINARY_PATH} ]; then mkdir -p ${BINARY_PATH}; fi
-  if [ ! -e ${LIBRARY_PATH} ]; then mkdir -p ${LIBRARY_PATH}; fi
-  if [ ! -e ${INCLUDE_PATH} ]; then mkdir -p ${INCLUDE_PATH}; fi
-  if [ ! -e ${STATICLIBRARY_PATH} ]; then mkdir -p ${STATICLIBRARY_PATH}; fi
+  if [ ! -e ${BINARY_PATH} ]; then mkdir -vp ${BINARY_PATH}; fi
+  if [ ! -e ${LIBRARY_PATH} ]; then mkdir -vp ${LIBRARY_PATH}; fi
+  if [ ! -e ${INCLUDE_PATH} ]; then mkdir -vp ${INCLUDE_PATH}; fi
+  if [ ! -e ${STATICLIBRARY_PATH} ]; then mkdir -vp ${STATICLIBRARY_PATH}; fi
  }
 install()
 {
@@ -211,10 +213,19 @@ mkdirs_pre() { echo ; }
 mkdirs()
 {
    mkdirs_pre;
-   ( cd ${TOPDIR} && mkdir -p ${BUILDDIR}; )
+   ( cd ${TOPDIR} && mkdir -vp ${BUILDDIR}; )
    mkdirs_post;
 }
 mkdirs_post() { echo; }
+
+substvars_pre() { echo ; }
+substvars()
+{
+   echo Making $2 from $1 ...
+   ${SED} -e "s+@SRCDIR@+${TOPDIR}/${SRCDIR}+" \
+   $1 > $2
+}
+substvars_post() { echo ; }
 
 main() {
 (

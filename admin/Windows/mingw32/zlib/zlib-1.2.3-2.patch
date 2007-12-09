@@ -1,7 +1,15 @@
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak zlib-1.2.3-orig/win32/Makefile.gcc zlib-1.2.3/win32/Makefile.gcc
---- zlib-1.2.3-orig/win32/Makefile.gcc	Sat Aug  2 03:49:00 2003
-+++ zlib-1.2.3/win32/Makefile.gcc	Thu Nov  8 07:14:26 2007
-@@ -25,13 +25,12 @@
+--- zlib-1.2.3-orig/win32/Makefile.gcc	Sat Aug  2 05:49:00 2003
++++ zlib-1.2.3/win32/Makefile.gcc	Sat Dec  8 10:19:41 2007
+@@ -19,25 +19,26 @@
+ #
+ #   make install -fmakefile.gcc
+ 
++SRCDIR= @SRCDIR@
++
+ # Note:
+ # If the platform is *not* MinGW (e.g. it is Cygwin or UWIN),
+ # the DLL name should be changed from "zlib1.dll".
  
  STATICLIB = libz.a
  SHAREDLIB = zlib1.dll
@@ -17,7 +25,24 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak zlib-1.2.3-orig/win32/Makefil
  
  AS = $(CC)
  ASFLAGS = $(LOC) -Wall
-@@ -78,10 +77,14 @@
+ 
+ LD = $(CC)
+-LDFLAGS = $(LOC) -s
++LDFLAGS += $(LOC) -s
+ 
+ AR = ar
+ ARFLAGS = rcs
+@@ -53,6 +54,9 @@
+ prefix = /usr/local
+ exec_prefix = $(prefix)
+ 
++vpath	%.h  $(SRCDIR)
++vpath	%.c  $(SRCDIR)
++
+ OBJS = adler32.o compress.o crc32.o deflate.o gzio.o infback.o \
+        inffast.o inflate.o inftrees.o trees.o uncompr.o zutil.o
+ OBJA =
+@@ -78,10 +82,15 @@
  
  $(IMPLIB): $(SHAREDLIB)
  
@@ -26,28 +51,45 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak zlib-1.2.3-orig/win32/Makefil
 -	  --implib $(IMPLIB) -o $@ $(OBJS) $(OBJA) zlibrc.o
 -	strip $@
 +$(SHAREDLIB): $(STATICLIB)
-+	$(CC) -shared \
++	$(CC) -shared $(LDFLAGS) \
 +	  -o $@ \
 +	  -Wl,--out-implib=$(IMPLIB) \
-+	  win32/zlib.def \
++	  $(SRCDIR)/win32/zlib.def \
 +	  -Wl,--whole-archive $< \
-+	  -Wl,--no-whole-archive
++	  -Wl,--no-whole-archive \
++	  -Wl,-s
 +	strip $(STRIP_FLAGS) $@
  
  example: example.o $(STATICLIB)
  	$(LD) $(LDFLAGS) -o $@ example.o $(STATICLIB)
-@@ -104,18 +107,18 @@
+@@ -95,8 +104,8 @@
+ minigzip_d: minigzip.o $(IMPLIB)
+ 	$(LD) $(LDFLAGS) -o $@ minigzip.o $(IMPLIB)
+ 
+-zlibrc.o: win32/zlib1.rc
+-	$(RC) $(RCFLAGS) -o $@ win32/zlib1.rc
++zlibrc.o: $(SRCDIR)/win32/zlib1.rc
++	$(RC) $(RCFLAGS) -o $@ $<
+ 
+ 
+ # INCLUDE_PATH and LIBRARY_PATH must be set.
+@@ -104,18 +113,21 @@
  .PHONY: install uninstall clean
  
  install: zlib.h zconf.h $(LIB)
 -	-@if not exist $(INCLUDE_PATH)/nul mkdir $(INCLUDE_PATH)
 -	-@if not exist $(LIBRARY_PATH)/nul mkdir $(LIBRARY_PATH)
- 	-$(INSTALL) zlib.h $(INCLUDE_PATH)
- 	-$(INSTALL) zconf.h $(INCLUDE_PATH)
+-	-$(INSTALL) zlib.h $(INCLUDE_PATH)
+-	-$(INSTALL) zconf.h $(INCLUDE_PATH)
 -	-$(INSTALL) $(STATICLIB) $(LIBRARY_PATH)
++	-mkdir -p $(INCLUDE_PATH)
++	-mkdir -p $(LIBRARY_PATH)
++	-mkdir -p $(SHAREDLIB_PATH)
++	-$(INSTALL) $(SRCDIR)/zlib.h $(INCLUDE_PATH)
++	-$(INSTALL) $(SRCDIR)/zconf.h $(INCLUDE_PATH)
 +	-$(INSTALL) $(STATICLIB) $(STATICLIBRARY_PATH)
  	-$(INSTALL) $(IMPLIB) $(LIBRARY_PATH)
-+	-$(INSTALL) $(SHAREDLIB) $(BINARY_PATH)
++	-$(INSTALL) $(SHAREDLIB) $(SHAREDLIB_PATH) 
  
  uninstall:
  	-$(RM) $(INCLUDE_PATH)/zlib.h
@@ -55,7 +97,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak zlib-1.2.3-orig/win32/Makefil
 -	-$(RM) $(LIBRARY_PATH)/$(STATICLIB)
 +	-$(RM) $(STATICLIBRARY_PATH)/$(STATICLIB)
  	-$(RM) $(LIBRARY_PATH)/$(IMPLIB)
-+	-$(RM) $(BINARY_PATH)/$(SHAREDLIB)
++	-$(RM) $(SHAREDLIB_PATH)/$(SHAREDLIB)
  
  clean:
  	-$(RM) $(STATICLIB)

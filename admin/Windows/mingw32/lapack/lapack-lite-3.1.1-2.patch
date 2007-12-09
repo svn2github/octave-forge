@@ -1,11 +1,24 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def lapack-lite-3.1.1-orig/INSTALL/Makefile lapack-lite-3.1.1/INSTALL/Makefile
+--- lapack-lite-3.1.1-orig/INSTALL/Makefile	Mon Feb 26 19:19:47 2007
++++ lapack-lite-3.1.1/INSTALL/Makefile	Sat Dec  8 22:02:24 2007
+@@ -1,5 +1,9 @@
+ include ../make.inc
+ 
++SRCDIR = $(SRCTOP)/INSTALL
++
++vpath %.f $(SRCDIR)
++
+ .SUFFIXES : .o .f 
+ all:  testlsame testslamch testdlamch testsecond testdsecnd testieee testversion 
+ 
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def lapack-lite-3.1.1-orig/Makefile lapack-lite-3.1.1/Makefile
---- lapack-lite-3.1.1-orig/Makefile	Mon Feb 26 18:20:49 2007
-+++ lapack-lite-3.1.1/Makefile	Mon Nov  5 15:01:54 2007
+--- lapack-lite-3.1.1-orig/Makefile	Mon Feb 26 19:20:49 2007
++++ lapack-lite-3.1.1/Makefile	Sat Dec  8 21:57:19 2007
 @@ -22,6 +22,12 @@
  
  lapacklib:	lapack_install
  	( cd SRC; $(MAKE) )
-+	$(F77) -shared -o lapack.dll \
++	$(F77) -shared $(FLDFLAGS) -o lapack.dll \
 +	  -Wl,--export-all-symbols \
 +	  -Wl,--out-implib=lapack.dll.a \
 +	  -Wl,--whole-archive lapack.a \
@@ -14,10 +27,23 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def lapack-lite-3.1.1-or
  
  tmglib:
  	( cd TESTING/MATGEN; $(MAKE) )
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def lapack-lite-3.1.1-orig/SRC/Makefile lapack-lite-3.1.1/SRC/Makefile
+--- lapack-lite-3.1.1-orig/SRC/Makefile	Mon Feb 26 19:20:07 2007
++++ lapack-lite-3.1.1/SRC/Makefile	Sat Dec  8 22:02:55 2007
+@@ -1,5 +1,9 @@
+ include ../make.inc
+ 
++SRCDIR = $(SRCTOP)/SRC
++
++vpath %.f $(SRCDIR)
++
+ #######################################################################
+ #  This is the makefile to create a library for LAPACK.
+ #  The files are organized as follows:
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def lapack-lite-3.1.1-orig/make.inc lapack-lite-3.1.1/make.inc
---- lapack-lite-3.1.1-orig/make.inc	Thu Jan  1 00:00:00 1970
-+++ lapack-lite-3.1.1/make.inc	Mon Nov  5 14:50:35 2007
-@@ -0,0 +1,57 @@
+--- lapack-lite-3.1.1-orig/make.inc	Thu Jan  1 01:00:00 1970
++++ lapack-lite-3.1.1/make.inc	Sat Dec  8 22:22:44 2007
+@@ -0,0 +1,59 @@
 +####################################################################
 +#  LAPACK make include file.                                       #
 +#  LAPACK, Version 3.1.1                                           #
@@ -75,3 +101,5 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def lapack-lite-3.1.1-or
 +TMGLIB       = tmglib$(PLAT).a
 +EIGSRCLIB    = eigsrc$(PLAT).a
 +LINSRCLIB    = linsrc$(PLAT).a
++
++SRCTOP = @SRCDIR@

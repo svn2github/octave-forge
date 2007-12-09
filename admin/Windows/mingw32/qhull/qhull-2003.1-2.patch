@@ -1,7 +1,19 @@
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak qhull-2003.1-orig/src/Makefile qhull-2003.1/src/Makefile
---- qhull-2003.1-orig/src/Makefile	Wed Dec 31 03:20:50 2003
-+++ qhull-2003.1/src/Makefile	Tue Nov 13 07:15:29 2007
-@@ -43,8 +43,8 @@
+--- qhull-2003.1-orig/src/Makefile	Wed Dec 31 04:20:50 2003
++++ qhull-2003.1/src/Makefile	Sun Dec  9 11:18:02 2007
+@@ -32,6 +32,11 @@
+ #       FILES -- all other files
+ #       OBJS -- specifies the object files of libqhull.a
+ #
++SRCDIR = @SRCDIR@/src
++
++vpath %.c $(SRCDIR)
++vpath %.h $(SRCDIR)
++
+ BINDIR  = /usr/local/bin
+ MANDIR  = /usr/local/man/man1
+ 
+@@ -43,8 +48,8 @@
  
  #for Gnu's gcc compiler -O2 for optimization, -g for debugging, -Wall for check
  #
@@ -12,7 +24,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak qhull-2003.1-orig/src/Makefil
  
  # for Sun's cc compiler, -fast or O2 for optimization, -g for debugging, -Xc for ANSI
  #CC = cc
-@@ -80,6 +80,17 @@
+@@ -80,6 +85,17 @@
  		qdelau_f.htm qhalf.htm qvoronoi.htm qvoron_f.htm rbox.htm 
  
  all: rbox qconvex qdelaunay qhalf qvoronoi qhull
@@ -20,7 +32,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak qhull-2003.1-orig/src/Makefil
 +lib: libqhull.a qhull.dll
 +
 +qhull.dll : libqhull.a
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +	-Wl,--export-all-symbols \
 +	-Wl,--enable-runtime-pseudo-reloc \
 +	-Wl,--out-implib=$(<:.a=.dll.a) \

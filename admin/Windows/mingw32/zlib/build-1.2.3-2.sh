@@ -26,16 +26,39 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=${SRCDIR}
 
 # Make file to use
 MAKEFILE=win32/Makefile.gcc
 
 source ../gcc42_common.sh
 
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
 check_pre() { MAKEFILE=""; }
 
 echo ${PREFIX}
+
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+mkdirs_post() 
+{ 
+   mkdir -p ${BUILDDIR}/win32
+}
+
+conf()
+{
+   substvars ${SRCDIR}/${MAKEFILE} ${BUILDDIR}/${MAKEFILE}
+}
+
+all() {
+  download
+  unpack
+  applypatch
+  mkdirs
+  conf
+  build
+  install
+}
 
 main $*

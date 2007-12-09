@@ -26,8 +26,6 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=${SRCDIR}
 
 # Make file to use
 MAKEFILE=""
@@ -37,6 +35,22 @@ DIFF_FLAGS="-x *.def"
 
 source ../gcc42_common.sh
 
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+mkdirs_post()
+{
+   mkdir -vp ${BUILDDIR}/src
+   mkdir -vp ${BUILDDIR}/lib
+}
+
+conf()
+{
+   substvars ${SRCDIR}/makefile ${BUILDDIR}/makefile
+   substvars ${SRCDIR}/src/makefile ${BUILDDIR}/src/makefile
+}
+
 build() 
 {
    ( cd ${BUILDDIR} && make alllib )
@@ -44,9 +58,9 @@ build()
 
 install()
 {
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/MINGW32/cblas.dll ${BINARY_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/MINGW32/libcblas.dll.a ${LIBRARY_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/MINGW32/libcblas.a ${STATICLIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/cblas.dll ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/libcblas.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/libcblas.a ${STATICLIBRARY_PATH}
 }
 
 uninstall()
@@ -60,6 +74,8 @@ all() {
   download
   unpack
   applypatch
+  mkdirs
+  conf
   build
   install
 }

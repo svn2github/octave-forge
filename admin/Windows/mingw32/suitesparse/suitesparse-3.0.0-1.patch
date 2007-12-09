@@ -1,33 +1,88 @@
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/AMD/Lib/GNUmakefile suitesparse/AMD/Lib/GNUmakefile
---- suitesparse-orig/AMD/Lib/GNUmakefile	Sun May  6 12:32:19 2007
-+++ suitesparse/AMD/Lib/GNUmakefile	Thu Nov  8 09:58:17 2007
-@@ -2,7 +2,7 @@
+--- suitesparse-orig/AMD/Lib/GNUmakefile	Sun May  6 14:32:19 2007
++++ suitesparse/AMD/Lib/GNUmakefile	Sat Dec  8 13:35:55 2007
+@@ -2,11 +2,16 @@
  # AMD Makefile for compiling on Unix systems (for GNU make only)
  #-------------------------------------------------------------------------------
  
 -default: ../Lib/libamd.a
++
 +default: ../Lib/libamd.a ../Lib/amd.dll
  
  include ../../UFconfig/UFconfig.mk
  
-@@ -46,6 +46,13 @@
- ../Lib/libamd.a: amd_global.o $(AMDI) $(AMDL)
+-C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
++SRCDIR = $(SRCTOP)/AMD
++
++vpath %.c $(SRCDIR)/Source
++
++C = $(CC) $(CFLAGS) $(CONFIG) -I$(SRCDIR)/Include -I$(SRCDIR)/../UFconfig
+ 
+ #-------------------------------------------------------------------------------
+ # source files
+@@ -15,9 +20,9 @@
+ AMD = amd_aat amd_1 amd_2 amd_dump amd_postorder amd_post_tree amd_defaults \
+ 	amd_order amd_control amd_info amd_valid amd_preprocess
+ 
+-UFCONFIG = ../../UFconfig/UFconfig.h
++UFCONFIG = $(SRCDIR)/../UFconfig/UFconfig.h
+ 
+-INC = ../Include/amd.h ../Include/amd_internal.h $(UFCONFIG)
++INC = $(SRCDIR)/Include/amd.h $(SRCDIR)/Include/amd_internal.h $(UFCONFIG)
+ 
+ #-------------------------------------------------------------------------------
+ # object files for each version
+@@ -30,13 +35,13 @@
+ # compile each int and long routine (with no real/complex version)
+ #-------------------------------------------------------------------------------
+ 
+-amd_global.o: ../Source/amd_global.c $(INC)
++amd_global.o: $(SRCDIR)/Source/amd_global.c $(INC)
+ 	$(C) -c $< -o $@
+ 
+-amd_i_%.o: ../Source/amd_%.c $(INC)
++amd_i_%.o: $(SRCDIR)/Source/amd_%.c $(INC)
+ 	$(C) -DDINT -c $< -o $@
+ 
+-amd_l_%.o: ../Source/amd_%.c $(INC)
++amd_l_%.o: $(SRCDIR)/Source/amd_%.c $(INC)
+ 	$(C) -DDLONG -c $< -o $@
+ 
+ #-------------------------------------------------------------------------------
+@@ -47,6 +52,13 @@
  	$(AR) ../Lib/libamd.a $^
  	- $(RANLIB) ../Lib/libamd.a
-+
+ 
 +../Lib/amd.dll : ../Lib/libamd.a
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +		-Wl,--whole-archive $< \
 +		-Wl,--out-implib,$(basename $<).dll.a \
 +		-Wl,--no-whole-archive
 +	$(STRIP) $(STRIP_FLAGS) $@
- 
++
  #-------------------------------------------------------------------------------
  # compile the Fortran versions and the libamdf77.a library
+ #-------------------------------------------------------------------------------
+@@ -55,11 +67,11 @@
+ 
+ AMDF77 = amd.o amdbar.o
+ 
+-amd.o: ../Source/amd.f
+-	$(F77) $(F77FLAGS) -c ../Source/amd.f -o amd.o
++amd.o: $(SRCDIR)/Source/amd.f
++	$(F77) $(F77FLAGS) -c $< -o amd.o
+ 
+-amdbar.o: ../Source/amdbar.f
+-	$(F77) $(F77FLAGS) -c ../Source/amdbar.f -o amdbar.o
++amdbar.o: $(SRCDIR)/Source/amdbar.f
++	$(F77) $(F77FLAGS) -c $< -o amdbar.o
+ 
+ ../Lib/libamdf77.a: $(AMDF77)
+ 	$(AR) ../Lib/libamdf77.a $^
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CAMD/Lib/GNUmakefile suitesparse/CAMD/Lib/GNUmakefile
---- suitesparse-orig/CAMD/Lib/GNUmakefile	Sat May  5 14:29:25 2007
-+++ suitesparse/CAMD/Lib/GNUmakefile	Thu Nov  8 09:58:43 2007
-@@ -2,7 +2,7 @@
+--- suitesparse-orig/CAMD/Lib/GNUmakefile	Sat May  5 16:29:25 2007
++++ suitesparse/CAMD/Lib/GNUmakefile	Sat Dec  8 13:39:23 2007
+@@ -2,11 +2,15 @@
  # CAMD Makefile for compiling on Unix systems (for GNU make only)
  #-------------------------------------------------------------------------------
  
@@ -36,13 +91,51 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CAM
  
  include ../../UFconfig/UFconfig.mk
  
-@@ -46,6 +46,13 @@
+-C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
++SRCDIR = $(SRCTOP)/CAMD
++
++vpath %.c $(SRCDIR)/Source
++
++C = $(CC) $(CFLAGS) $(CONFIG) -I$(SRCDIR)/Include -I$(SRCDIR)/../UFconfig
+ 
+ #-------------------------------------------------------------------------------
+ # source files
+@@ -15,9 +19,9 @@
+ CAMD = camd_aat camd_1 camd_2 camd_dump camd_postorder camd_defaults \
+ 	camd_order camd_control camd_info camd_valid camd_preprocess
+ 
+-UFCONFIG = ../../UFconfig/UFconfig.h
++UFCONFIG = $(SRCDIR)/../UFconfig/UFconfig.h
+ 
+-INC = ../Include/camd.h ../Include/camd_internal.h $(UFCONFIG)
++INC = $(SRCDIR)/Include/camd.h $(SRCDIR)/Include/camd_internal.h $(UFCONFIG)
+ 
+ #-------------------------------------------------------------------------------
+ # object files for each version
+@@ -30,13 +34,13 @@
+ # compile each int and long routine (with no real/complex version)
+ #-------------------------------------------------------------------------------
+ 
+-camd_global.o: ../Source/camd_global.c $(INC)
++camd_global.o: $(SRCDIR)/Source/camd_global.c $(INC)
+ 	$(C) -c $< -o $@
+ 
+-camd_i_%.o: ../Source/camd_%.c $(INC)
++camd_i_%.o: $(SRCDIR)/Source/camd_%.c $(INC)
+ 	$(C) -DDINT -c $< -o $@
+ 
+-camd_l_%.o: ../Source/camd_%.c $(INC)
++camd_l_%.o: $(SRCDIR)/Source/camd_%.c $(INC)
+ 	$(C) -DDLONG -c $< -o $@
+ 
+ #-------------------------------------------------------------------------------
+@@ -46,6 +50,13 @@
  libcamd.a: camd_global.o $(CAMDI) $(CAMDL)
  	$(AR) libcamd.a $^
  	- $(RANLIB) libcamd.a
 +
 +camd.dll : libcamd.a
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +		-Wl,--whole-archive $< \
 +		-Wl,--out-implib,$(basename $<).dll.a \
 +		-Wl,--no-whole-archive
@@ -51,9 +144,9 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CAM
  #-------------------------------------------------------------------------------
  # Remove all but the files in the original distribution
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CCOLAMD/Lib/Makefile suitesparse/CCOLAMD/Lib/Makefile
---- suitesparse-orig/CCOLAMD/Lib/Makefile	Sat May  5 13:59:13 2007
-+++ suitesparse/CCOLAMD/Lib/Makefile	Thu Nov  8 09:58:55 2007
-@@ -2,7 +2,7 @@
+--- suitesparse-orig/CCOLAMD/Lib/Makefile	Sat May  5 15:59:13 2007
++++ suitesparse/CCOLAMD/Lib/Makefile	Sat Dec  8 14:03:26 2007
+@@ -2,22 +2,33 @@
  # CCOLAMD Makefile
  #-------------------------------------------------------------------------------
  
@@ -62,13 +155,31 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CCO
  
  include ../../UFconfig/UFconfig.mk
  
-@@ -18,6 +18,13 @@
- 	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd.c
- 	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd.c -DDLONG -o ccolamd_l.o
+-I = -I../Include -I../../UFconfig
++SRCDIR = $(SRCTOP)/CCOLAMD
+ 
+-INC = ../Include/ccolamd.h ../../UFconfig/UFconfig.h
++vpath %.c $(SRCDIR)/Source
+ 
+-SRC = ../Source/ccolamd.c ../Source/ccolamd_global.c
++I = -I$(SRCDIR)/Include -I$(SRCDIR)/../UFconfig
++
++INC = $(SRCDIR)/Include/ccolamd.h $(SRCDIR)/../UFconfig/UFconfig.h
++
++SRC = $(SRCDIR)/Source/ccolamd.c $(SRCDIR)/Source/ccolamd_global.c
+ 
+ # creates libccolamd.a, a C-callable COLAMD library
+ libccolamd.a:  $(SRC) $(INC)
+-	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd_global.c
+-	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd.c
+-	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd.c -DDLONG -o ccolamd_l.o
++	$(CC) $(CFLAGS) $(I) -c $(SRCDIR)/Source/ccolamd_global.c
++	$(CC) $(CFLAGS) $(I) -c $(SRCDIR)/Source/ccolamd.c
++	$(CC) $(CFLAGS) $(I) -c $(SRCDIR)/Source/ccolamd.c -DDLONG -o ccolamd_l.o
  	$(AR) libccolamd.a ccolamd.o ccolamd_l.o ccolamd_global.o
 +
 +ccolamd.dll : libccolamd.a
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +		-Wl,--whole-archive $< \
 +		-Wl,--out-implib,$(basename $<).dll.a \
 +		-Wl,--no-whole-archive
@@ -77,10 +188,16 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CCO
  ccode: libccolamd.a
  
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CHOLMOD/Lib/Makefile suitesparse/CHOLMOD/Lib/Makefile
---- suitesparse-orig/CHOLMOD/Lib/Makefile	Sat May  5 14:36:56 2007
-+++ suitesparse/CHOLMOD/Lib/Makefile	Thu Nov  8 09:59:09 2007
-@@ -10,7 +10,7 @@
+--- suitesparse-orig/CHOLMOD/Lib/Makefile	Sat May  5 16:36:56 2007
++++ suitesparse/CHOLMOD/Lib/Makefile	Sat Dec  8 14:00:34 2007
+@@ -8,9 +8,13 @@
  
+ include ../../UFconfig/UFconfig.mk
+ 
++SRCDIR = $(SRCTOP)/CHOLMOD
++
++vpath %.c $(SRCDIR)/Source
++
  C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG)
  
 -all: libcholmod.a
@@ -88,24 +205,524 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CHO
  
  library: libcholmod.a
  
-@@ -112,6 +112,13 @@
- libcholmod.a: $(OBJ)
+@@ -26,19 +30,19 @@
+ # ../Include/ directory contains all include files:
+ #-------------------------------------------------------------------------------
+ 
+-INC =   ../Include/cholmod.h \
+-	../Include/cholmod_blas.h \
+-	../Include/cholmod_check.h \
+-	../Include/cholmod_cholesky.h \
+-	../Include/cholmod_complexity.h \
+-	../Include/cholmod_config.h \
+-	../Include/cholmod_core.h \
+-	../Include/cholmod_internal.h \
+-	../Include/cholmod_matrixops.h \
+-	../Include/cholmod_modify.h \
+-	../Include/cholmod_partition.h \
+-	../Include/cholmod_supernodal.h \
+-	../Include/cholmod_template.h
++INC =   $(SRCDIR)/Include/cholmod.h \
++	$(SRCDIR)/Include/cholmod_blas.h \
++	$(SRCDIR)/Include/cholmod_check.h \
++	$(SRCDIR)/Include/cholmod_cholesky.h \
++	$(SRCDIR)/Include/cholmod_complexity.h \
++	$(SRCDIR)/Include/cholmod_config.h \
++	$(SRCDIR)/Include/cholmod_core.h \
++	$(SRCDIR)/Include/cholmod_internal.h \
++	$(SRCDIR)/Include/cholmod_matrixops.h \
++	$(SRCDIR)/Include/cholmod_modify.h \
++	$(SRCDIR)/Include/cholmod_partition.h \
++	$(SRCDIR)/Include/cholmod_supernodal.h \
++	$(SRCDIR)/Include/cholmod_template.h
+ 
+ #-------------------------------------------------------------------------------
+ # The 7 CHOLMOD library modules (int, double)
+@@ -113,34 +117,41 @@
  	$(AR) libcholmod.a $(OBJ)
  	$(RANLIB) libcholmod.a
-+
+ 
 +cholmod.dll : libcholmod.a
-+	$(CC) -shared -o $@ -L../../AMD/Lib -L../../COLAMD/Lib \
++	$(CC) -shared $(LDFLAGS) -o $@ -L../../AMD/Lib -L../../COLAMD/Lib \
 +		-Wl,--whole-archive $< \
 +		-Wl,--out-implib,$(basename $<).dll.a \
 +		-Wl,--no-whole-archive -lamd -lcolamd $(LAPACK) $(BLAS)
 +	$(STRIP) $(STRIP_FLAGS) $@
- 
++
  $(OBJ): $(INC)
  
+-I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD/Include \
+-	-I$(METIS_PATH)/Lib -I../../CCOLAMD/Include -I../../CAMD/Include \
+-	-I../Include -I../../UFconfig
++I = -I$(SRCDIR)/../AMD/Include -I$(SRCDIR)/../AMD/Source -I$(SRCDIR)/../COLAMD/Include \
++	-I$(METIS_PATH)/Lib -I$(SRCDIR)/../CCOLAMD/Include -I$(SRCDIR)/../CAMD/Include \
++	-I$(SRCDIR)/Include -I$(SRCDIR)/../UFconfig
+ 
+ #-------------------------------------------------------------------------------
+ # Check Module:
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_check.o: ../Check/cholmod_check.c
++cholmod_check.o: $(SRCDIR)/Check/cholmod_check.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_read.o: ../Check/cholmod_read.c
++cholmod_read.o: $(SRCDIR)/Check/cholmod_read.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_write.o: ../Check/cholmod_write.c
++cholmod_write.o: $(SRCDIR)/Check/cholmod_write.c
+ 	$(C) -c $(I) $<
+ 
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_l_check.o: ../Check/cholmod_check.c
++cholmod_l_check.o: $(SRCDIR)/Check/cholmod_check.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_read.o: ../Check/cholmod_read.c
++cholmod_l_read.o: $(SRCDIR)/Check/cholmod_read.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_write.o: ../Check/cholmod_write.c
++cholmod_l_write.o: $(SRCDIR)/Check/cholmod_write.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+ 
+@@ -148,92 +159,92 @@
+ # Core Module:
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_common.o: ../Core/cholmod_common.c
++cholmod_common.o: $(SRCDIR)/Core/cholmod_common.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_dense.o: ../Core/cholmod_dense.c ../Core/t_cholmod_dense.c
++cholmod_dense.o: $(SRCDIR)/Core/cholmod_dense.c $(SRCDIR)/Core/t_cholmod_dense.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_factor.o: ../Core/cholmod_factor.c
++cholmod_factor.o: $(SRCDIR)/Core/cholmod_factor.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_change_factor.o: ../Core/cholmod_change_factor.c \
+-	../Core/t_cholmod_change_factor.c
++cholmod_change_factor.o: $(SRCDIR)/Core/cholmod_change_factor.c \
++	$(SRCDIR)/Core/t_cholmod_change_factor.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_memory.o: ../Core/cholmod_memory.c
++cholmod_memory.o: $(SRCDIR)/Core/cholmod_memory.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_sparse.o: ../Core/cholmod_sparse.c
++cholmod_sparse.o: $(SRCDIR)/Core/cholmod_sparse.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_complex.o: ../Core/cholmod_complex.c
++cholmod_complex.o: $(SRCDIR)/Core/cholmod_complex.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_transpose.o: ../Core/cholmod_transpose.c ../Core/t_cholmod_transpose.c
++cholmod_transpose.o: $(SRCDIR)/Core/cholmod_transpose.c $(SRCDIR)/Core/t_cholmod_transpose.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_band.o: ../Core/cholmod_band.c
++cholmod_band.o: $(SRCDIR)/Core/cholmod_band.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_copy.o: ../Core/cholmod_copy.c
++cholmod_copy.o: $(SRCDIR)/Core/cholmod_copy.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_triplet.o: ../Core/cholmod_triplet.c ../Core/t_cholmod_triplet.c
++cholmod_triplet.o: $(SRCDIR)/Core/cholmod_triplet.c $(SRCDIR)/Core/t_cholmod_triplet.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_error.o: ../Core/cholmod_error.c
++cholmod_error.o: $(SRCDIR)/Core/cholmod_error.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_aat.o: ../Core/cholmod_aat.c
++cholmod_aat.o: $(SRCDIR)/Core/cholmod_aat.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_add.o: ../Core/cholmod_add.c
++cholmod_add.o: $(SRCDIR)/Core/cholmod_add.c
+ 	$(C) -c $(I) $<
+ 
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_l_common.o: ../Core/cholmod_common.c
++cholmod_l_common.o: $(SRCDIR)/Core/cholmod_common.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_dense.o: ../Core/cholmod_dense.c ../Core/t_cholmod_dense.c
++cholmod_l_dense.o: $(SRCDIR)/Core/cholmod_dense.c $(SRCDIR)/Core/t_cholmod_dense.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_factor.o: ../Core/cholmod_factor.c
++cholmod_l_factor.o: $(SRCDIR)/Core/cholmod_factor.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_change_factor.o: ../Core/cholmod_change_factor.c \
+-	../Core/t_cholmod_change_factor.c
++cholmod_l_change_factor.o: $(SRCDIR)/Core/cholmod_change_factor.c \
++	$(SRCDIR)/Core/t_cholmod_change_factor.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_memory.o: ../Core/cholmod_memory.c
++cholmod_l_memory.o: $(SRCDIR)/Core/cholmod_memory.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_sparse.o: ../Core/cholmod_sparse.c
++cholmod_l_sparse.o: $(SRCDIR)/Core/cholmod_sparse.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_complex.o: ../Core/cholmod_complex.c
++cholmod_l_complex.o: $(SRCDIR)/Core/cholmod_complex.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_transpose.o: ../Core/cholmod_transpose.c ../Core/t_cholmod_transpose.c
++cholmod_l_transpose.o: $(SRCDIR)/Core/cholmod_transpose.c $(SRCDIR)/Core/t_cholmod_transpose.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_band.o: ../Core/cholmod_band.c
++cholmod_l_band.o: $(SRCDIR)/Core/cholmod_band.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_copy.o: ../Core/cholmod_copy.c
++cholmod_l_copy.o: $(SRCDIR)/Core/cholmod_copy.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_triplet.o: ../Core/cholmod_triplet.c ../Core/t_cholmod_triplet.c
++cholmod_l_triplet.o: $(SRCDIR)/Core/cholmod_triplet.c $(SRCDIR)/Core/t_cholmod_triplet.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_error.o: ../Core/cholmod_error.c
++cholmod_l_error.o: $(SRCDIR)/Core/cholmod_error.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_aat.o: ../Core/cholmod_aat.c
++cholmod_l_aat.o: $(SRCDIR)/Core/cholmod_aat.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_add.o: ../Core/cholmod_add.c
++cholmod_l_add.o: $(SRCDIR)/Core/cholmod_add.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+ 
+@@ -241,116 +252,116 @@
+ # Cholesky Module:
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_amd.o: ../Cholesky/cholmod_amd.c
++cholmod_amd.o: $(SRCDIR)/Cholesky/cholmod_amd.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_analyze.o: ../Cholesky/cholmod_analyze.c
++cholmod_analyze.o: $(SRCDIR)/Cholesky/cholmod_analyze.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_colamd.o: ../Cholesky/cholmod_colamd.c
++cholmod_colamd.o: $(SRCDIR)/Cholesky/cholmod_colamd.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_etree.o: ../Cholesky/cholmod_etree.c
++cholmod_etree.o: $(SRCDIR)/Cholesky/cholmod_etree.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_factorize.o: ../Cholesky/cholmod_factorize.c
++cholmod_factorize.o: $(SRCDIR)/Cholesky/cholmod_factorize.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_postorder.o: ../Cholesky/cholmod_postorder.c
++cholmod_postorder.o: $(SRCDIR)/Cholesky/cholmod_postorder.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_rcond.o: ../Cholesky/cholmod_rcond.c
++cholmod_rcond.o: $(SRCDIR)/Cholesky/cholmod_rcond.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_resymbol.o: ../Cholesky/cholmod_resymbol.c
++cholmod_resymbol.o: $(SRCDIR)/Cholesky/cholmod_resymbol.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_rowcolcounts.o: ../Cholesky/cholmod_rowcolcounts.c
++cholmod_rowcolcounts.o: $(SRCDIR)/Cholesky/cholmod_rowcolcounts.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_solve.o: ../Cholesky/cholmod_solve.c ../Cholesky/t_cholmod_lsolve.c \
+-	../Cholesky/t_cholmod_ltsolve.c ../Cholesky/t_cholmod_solve.c
++cholmod_solve.o: $(SRCDIR)/Cholesky/cholmod_solve.c $(SRCDIR)/Cholesky/t_cholmod_lsolve.c \
++	$(SRCDIR)/Cholesky/t_cholmod_ltsolve.c $(SRCDIR)/Cholesky/t_cholmod_solve.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_spsolve.o: ../Cholesky/cholmod_spsolve.c
++cholmod_spsolve.o: $(SRCDIR)/Cholesky/cholmod_spsolve.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_rowfac.o: ../Cholesky/cholmod_rowfac.c ../Cholesky/t_cholmod_rowfac.c
++cholmod_rowfac.o: $(SRCDIR)/Cholesky/cholmod_rowfac.c $(SRCDIR)/Cholesky/t_cholmod_rowfac.c
+ 	$(C) -c $(I) $<
+ 
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_l_amd.o: ../Cholesky/cholmod_amd.c
++cholmod_l_amd.o: $(SRCDIR)/Cholesky/cholmod_amd.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_analyze.o: ../Cholesky/cholmod_analyze.c
++cholmod_l_analyze.o: $(SRCDIR)/Cholesky/cholmod_analyze.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_colamd.o: ../Cholesky/cholmod_colamd.c
++cholmod_l_colamd.o: $(SRCDIR)/Cholesky/cholmod_colamd.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_etree.o: ../Cholesky/cholmod_etree.c
++cholmod_l_etree.o: $(SRCDIR)/Cholesky/cholmod_etree.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_factorize.o: ../Cholesky/cholmod_factorize.c
++cholmod_l_factorize.o: $(SRCDIR)/Cholesky/cholmod_factorize.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_postorder.o: ../Cholesky/cholmod_postorder.c
++cholmod_l_postorder.o: $(SRCDIR)/Cholesky/cholmod_postorder.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_rcond.o: ../Cholesky/cholmod_rcond.c
++cholmod_l_rcond.o: $(SRCDIR)/Cholesky/cholmod_rcond.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_resymbol.o: ../Cholesky/cholmod_resymbol.c
++cholmod_l_resymbol.o: $(SRCDIR)/Cholesky/cholmod_resymbol.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_rowcolcounts.o: ../Cholesky/cholmod_rowcolcounts.c
++cholmod_l_rowcolcounts.o: $(SRCDIR)/Cholesky/cholmod_rowcolcounts.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_solve.o: ../Cholesky/cholmod_solve.c ../Cholesky/t_cholmod_lsolve.c \
+-	../Cholesky/t_cholmod_ltsolve.c ../Cholesky/t_cholmod_solve.c
++cholmod_l_solve.o: $(SRCDIR)/Cholesky/cholmod_solve.c $(SRCDIR)/Cholesky/t_cholmod_lsolve.c \
++	$(SRCDIR)/Cholesky/t_cholmod_ltsolve.c $(SRCDIR)/Cholesky/t_cholmod_solve.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_spsolve.o: ../Cholesky/cholmod_spsolve.c
++cholmod_l_spsolve.o: $(SRCDIR)/Cholesky/cholmod_spsolve.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_rowfac.o: ../Cholesky/cholmod_rowfac.c ../Cholesky/t_cholmod_rowfac.c
++cholmod_l_rowfac.o: $(SRCDIR)/Cholesky/cholmod_rowfac.c $(SRCDIR)/Cholesky/t_cholmod_rowfac.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+ #-------------------------------------------------------------------------------
+ # Partition Module:
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_ccolamd.o: ../Partition/cholmod_ccolamd.c
++cholmod_ccolamd.o: $(SRCDIR)/Partition/cholmod_ccolamd.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_csymamd.o: ../Partition/cholmod_csymamd.c
++cholmod_csymamd.o: $(SRCDIR)/Partition/cholmod_csymamd.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_camd.o: ../Partition/cholmod_camd.c
++cholmod_camd.o: $(SRCDIR)/Partition/cholmod_camd.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_metis.o: ../Partition/cholmod_metis.c
++cholmod_metis.o: $(SRCDIR)/Partition/cholmod_metis.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_nesdis.o: ../Partition/cholmod_nesdis.c
++cholmod_nesdis.o: $(SRCDIR)/Partition/cholmod_nesdis.c
+ 	$(C) -c $(I) $<
+ 
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_l_ccolamd.o: ../Partition/cholmod_ccolamd.c
++cholmod_l_ccolamd.o: $(SRCDIR)/Partition/cholmod_ccolamd.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_csymamd.o: ../Partition/cholmod_csymamd.c
++cholmod_l_csymamd.o: $(SRCDIR)/Partition/cholmod_csymamd.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_camd.o: ../Partition/cholmod_camd.c
++cholmod_l_camd.o: $(SRCDIR)/Partition/cholmod_camd.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_metis.o: ../Partition/cholmod_metis.c
++cholmod_l_metis.o: $(SRCDIR)/Partition/cholmod_metis.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_nesdis.o: ../Partition/cholmod_nesdis.c
++cholmod_l_nesdis.o: $(SRCDIR)/Partition/cholmod_nesdis.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+ 
+@@ -358,88 +369,88 @@
+ # MatrixOps Module:
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_horzcat.o: ../MatrixOps/cholmod_horzcat.c
++cholmod_horzcat.o: $(SRCDIR)/MatrixOps/cholmod_horzcat.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_norm.o: ../MatrixOps/cholmod_norm.c
++cholmod_norm.o: $(SRCDIR)/MatrixOps/cholmod_norm.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_scale.o: ../MatrixOps/cholmod_scale.c
++cholmod_scale.o: $(SRCDIR)/MatrixOps/cholmod_scale.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_drop.o: ../MatrixOps/cholmod_drop.c
++cholmod_drop.o: $(SRCDIR)/MatrixOps/cholmod_drop.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_sdmult.o: ../MatrixOps/cholmod_sdmult.c \
+-	../MatrixOps/t_cholmod_sdmult.c
++cholmod_sdmult.o: $(SRCDIR)/MatrixOps/cholmod_sdmult.c \
++	$(SRCDIR)/MatrixOps/t_cholmod_sdmult.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_ssmult.o: ../MatrixOps/cholmod_ssmult.c
++cholmod_ssmult.o: $(SRCDIR)/MatrixOps/cholmod_ssmult.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_submatrix.o: ../MatrixOps/cholmod_submatrix.c
++cholmod_submatrix.o: $(SRCDIR)/MatrixOps/cholmod_submatrix.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_vertcat.o: ../MatrixOps/cholmod_vertcat.c
++cholmod_vertcat.o: $(SRCDIR)/MatrixOps/cholmod_vertcat.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_symmetry.o: ../MatrixOps/cholmod_symmetry.c
++cholmod_symmetry.o: $(SRCDIR)/MatrixOps/cholmod_symmetry.c
+ 	$(C) -c $(I) $<
+ 
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_l_horzcat.o: ../MatrixOps/cholmod_horzcat.c
++cholmod_l_horzcat.o: $(SRCDIR)/MatrixOps/cholmod_horzcat.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_norm.o: ../MatrixOps/cholmod_norm.c
++cholmod_l_norm.o: $(SRCDIR)/MatrixOps/cholmod_norm.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_scale.o: ../MatrixOps/cholmod_scale.c
++cholmod_l_scale.o: $(SRCDIR)/MatrixOps/cholmod_scale.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_drop.o: ../MatrixOps/cholmod_drop.c
++cholmod_l_drop.o: $(SRCDIR)/MatrixOps/cholmod_drop.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_sdmult.o: ../MatrixOps/cholmod_sdmult.c \
+-	../MatrixOps/t_cholmod_sdmult.c
++cholmod_l_sdmult.o: $(SRCDIR)/MatrixOps/cholmod_sdmult.c \
++	$(SRCDIR)/MatrixOps/t_cholmod_sdmult.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_ssmult.o: ../MatrixOps/cholmod_ssmult.c
++cholmod_l_ssmult.o: $(SRCDIR)/MatrixOps/cholmod_ssmult.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_submatrix.o: ../MatrixOps/cholmod_submatrix.c
++cholmod_l_submatrix.o: $(SRCDIR)/MatrixOps/cholmod_submatrix.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_vertcat.o: ../MatrixOps/cholmod_vertcat.c
++cholmod_l_vertcat.o: $(SRCDIR)/MatrixOps/cholmod_vertcat.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_symmetry.o: ../MatrixOps/cholmod_symmetry.c
++cholmod_l_symmetry.o: $(SRCDIR)/MatrixOps/cholmod_symmetry.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+ #-------------------------------------------------------------------------------
+ # Modify Module:
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_rowadd.o: ../Modify/cholmod_rowadd.c
++cholmod_rowadd.o: $(SRCDIR)/Modify/cholmod_rowadd.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_rowdel.o: ../Modify/cholmod_rowdel.c
++cholmod_rowdel.o: $(SRCDIR)/Modify/cholmod_rowdel.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_updown.o: ../Modify/cholmod_updown.c \
+-	../Modify/t_cholmod_updown.c ../Modify/t_cholmod_updown_numkr.c
++cholmod_updown.o: $(SRCDIR)/Modify/cholmod_updown.c \
++	$(SRCDIR)/Modify/t_cholmod_updown.c $(SRCDIR)/Modify/t_cholmod_updown_numkr.c
+ 	$(C) -c $(I) $<
+ 
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_l_rowadd.o: ../Modify/cholmod_rowadd.c
++cholmod_l_rowadd.o: $(SRCDIR)/Modify/cholmod_rowadd.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_rowdel.o: ../Modify/cholmod_rowdel.c
++cholmod_l_rowdel.o: $(SRCDIR)/Modify/cholmod_rowdel.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_updown.o: ../Modify/cholmod_updown.c \
+-	../Modify/t_cholmod_updown.c ../Modify/t_cholmod_updown_numkr.c
++cholmod_l_updown.o: $(SRCDIR)/Modify/cholmod_updown.c \
++	$(SRCDIR)/Modify/t_cholmod_updown.c $(SRCDIR)/Modify/t_cholmod_updown_numkr.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+ 
+@@ -447,26 +458,26 @@
+ # Supernodal Module:
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_super_numeric.o: ../Supernodal/cholmod_super_numeric.c \
+-	../Supernodal/t_cholmod_super_numeric.c
++cholmod_super_numeric.o: $(SRCDIR)/Supernodal/cholmod_super_numeric.c \
++	$(SRCDIR)/Supernodal/t_cholmod_super_numeric.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_super_symbolic.o: ../Supernodal/cholmod_super_symbolic.c
++cholmod_super_symbolic.o: $(SRCDIR)/Supernodal/cholmod_super_symbolic.c
+ 	$(C) -c $(I) $<
+ 
+-cholmod_super_solve.o: ../Supernodal/cholmod_super_solve.c \
+-	../Supernodal/t_cholmod_super_solve.c
++cholmod_super_solve.o: $(SRCDIR)/Supernodal/cholmod_super_solve.c \
++	$(SRCDIR)/Supernodal/t_cholmod_super_solve.c
+ 	$(C) -c $(I) $<
+ 
+ #-------------------------------------------------------------------------------
+ 
+-cholmod_l_super_numeric.o: ../Supernodal/cholmod_super_numeric.c \
+-	../Supernodal/t_cholmod_super_numeric.c
++cholmod_l_super_numeric.o: $(SRCDIR)/Supernodal/cholmod_super_numeric.c \
++	$(SRCDIR)/Supernodal/t_cholmod_super_numeric.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_super_symbolic.o: ../Supernodal/cholmod_super_symbolic.c
++cholmod_l_super_symbolic.o: $(SRCDIR)/Supernodal/cholmod_super_symbolic.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
+ 
+-cholmod_l_super_solve.o: ../Supernodal/cholmod_super_solve.c \
+-	../Supernodal/t_cholmod_super_solve.c
++cholmod_l_super_solve.o: $(SRCDIR)/Supernodal/cholmod_super_solve.c \
++	$(SRCDIR)/Supernodal/t_cholmod_super_solve.c
+ 	$(C) -DDLONG -c $(I) $< -o $@
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/COLAMD/Lib/Makefile suitesparse/COLAMD/Lib/Makefile
---- suitesparse-orig/COLAMD/Lib/Makefile	Sat May  5 13:41:47 2007
-+++ suitesparse/COLAMD/Lib/Makefile	Thu Nov  8 09:59:18 2007
-@@ -2,7 +2,7 @@
+--- suitesparse-orig/COLAMD/Lib/Makefile	Sat May  5 15:41:47 2007
++++ suitesparse/COLAMD/Lib/Makefile	Sat Dec  8 13:51:29 2007
+@@ -2,22 +2,33 @@
  # COLAMD Makefile
  #-------------------------------------------------------------------------------
  
@@ -114,13 +731,31 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/COL
  
  include ../../UFconfig/UFconfig.mk
  
-@@ -18,6 +18,13 @@
- 	$(CC) $(CFLAGS) $(I) -c ../Source/colamd.c
- 	$(CC) $(CFLAGS) $(I) -c ../Source/colamd.c -DDLONG -o colamd_l.o
+-I = -I../Include -I../../UFconfig
++SRCDIR = $(SRCTOP)/COLAMD
+ 
+-INC = ../Include/colamd.h ../../UFconfig/UFconfig.h
++vpath %.c $(SRCDIR)/Source
+ 
+-SRC = ../Source/colamd.c ../Source/colamd_global.c
++I = -I$(SRCDIR)/Include -I$(SRCDIR)/../UFconfig
++
++INC = $(SRCDIR)/Include/colamd.h $(SRCDIR)/../UFconfig/UFconfig.h
++
++SRC = $(SRCDIR)/Source/colamd.c $(SRCDIR)/Source/colamd_global.c
+ 
+ # creates libcolamd.a, a C-callable COLAMD library
+ libcolamd.a:  $(SRC) $(INC)
+-	$(CC) $(CFLAGS) $(I) -c ../Source/colamd_global.c
+-	$(CC) $(CFLAGS) $(I) -c ../Source/colamd.c
+-	$(CC) $(CFLAGS) $(I) -c ../Source/colamd.c -DDLONG -o colamd_l.o
++	$(CC) $(CFLAGS) $(I) -c $(SRCDIR)/Source/colamd_global.c
++	$(CC) $(CFLAGS) $(I) -c $(SRCDIR)/Source/colamd.c
++	$(CC) $(CFLAGS) $(I) -c $(SRCDIR)/Source/colamd.c -DDLONG -o colamd_l.o
  	$(AR) libcolamd.a colamd.o colamd_l.o colamd_global.o
 +
 +colamd.dll : libcolamd.a
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +		-Wl,--whole-archive $< \
 +		-Wl,--out-implib,$(basename $<).dll.a \
 +		-Wl,--no-whole-archive
@@ -129,14 +764,20 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/COL
  ccode: libcolamd.a
  
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CSparse/Lib/Makefile suitesparse/CSparse/Lib/Makefile
---- suitesparse-orig/CSparse/Lib/Makefile	Sat May  5 20:46:13 2007
-+++ suitesparse/CSparse/Lib/Makefile	Thu Nov  8 09:59:29 2007
-@@ -1,11 +1,11 @@
+--- suitesparse-orig/CSparse/Lib/Makefile	Sat May  5 22:46:13 2007
++++ suitesparse/CSparse/Lib/Makefile	Sat Dec  8 15:04:57 2007
+@@ -1,11 +1,17 @@
  # Modify the "-O" optimization option for best performance (-O3 on Linux):
 -CC = cc
 -CFLAGS = -O -I../Include
 +#CC = cc
-+CFLAGS_ADD = -I../Include
++include ../../UFconfig/UFconfig.mk
++
++SRCDIR = $(SRCTOP)/CSparse
++
++vpath %.c $(SRCDIR)/Source
++
++CFLAGS_ADD = -I$(SRCDIR)/Include
  
  AR = ar cr
  RANLIB = ranlib
@@ -146,11 +787,16 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CSp
  
  CS = cs_add.o cs_amd.o cs_chol.o cs_cholsol.o cs_counts.o cs_cumsum.o \
  	cs_droptol.o cs_dropzeros.o cs_dupl.o cs_entry.o \
-@@ -20,11 +20,18 @@
- $(CS): ../Include/cs.h Makefile
+@@ -17,14 +23,21 @@
+ 	cs_maxtrans.o cs_dmperm.o cs_updown.o cs_print.o cs_norm.o cs_load.o \
+ 	cs_dfs.o cs_reach.o cs_spsolve.o cs_ereach.o cs_leaf.o cs_randperm.o
  
- %.o: ../Source/%.c ../Include/cs.h
+-$(CS): ../Include/cs.h Makefile
++$(CS): $(SRCDIR)/Include/cs.h
+ 
+-%.o: ../Source/%.c ../Include/cs.h
 -	$(CC) $(CFLAGS) -c $<
++%.o: $(SRCDIR)/Source/%.c $(SRCDIR)/Include/cs.h
 +	$(CC) $(CFLAGS) $(CFLAGS_ADD) -c $<
  
  libcsparse.a: $(CS)
@@ -158,7 +804,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CSp
  	$(RANLIB) libcsparse.a
 +
 +csparse.dll : libcsparse.a
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +		-Wl,--whole-archive $< \
 +		-Wl,--out-implib,$(basename $<).dll.a \
 +		-Wl,--no-whole-archive
@@ -167,15 +813,22 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CSp
  clean:
  	rm -f *.o
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CXSparse/Lib/Makefile suitesparse/CXSparse/Lib/Makefile
---- suitesparse-orig/CXSparse/Lib/Makefile	Sat May  5 21:03:41 2007
-+++ suitesparse/CXSparse/Lib/Makefile	Thu Nov  8 09:59:41 2007
-@@ -1,12 +1,12 @@
+--- suitesparse-orig/CXSparse/Lib/Makefile	Sat May  5 23:03:41 2007
++++ suitesparse/CXSparse/Lib/Makefile	Sat Dec  8 15:05:21 2007
+@@ -1,12 +1,18 @@
  # Modify the "-O" optimization option for best performance (-O3 on Linux):
 -CC = cc
 -CFLAGS = -O
+-I = -I../../UFconfig -I../Include
 +#CC = cc
 +#CFLAGS = -O
- I = -I../../UFconfig -I../Include
++include ../../UFconfig/UFconfig.mk
++
++SRCDIR = $(SRCTOP)/CXSparse
++
++vpath %.c $(SRCDIR)/Source
++
++I = -I$(SRCDIR)/../UFconfig -I$(SRCDIR)/Include
  
  AR = ar cr
  RANLIB = ranlib
@@ -185,13 +838,39 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CXS
  
  CS_SOURCE = cs_add.c cs_amd.c cs_chol.c cs_cholsol.c cs_counts.c cs_cumsum.c \
  	cs_droptol.c cs_dropzeros.c cs_dupl.c cs_entry.c \
-@@ -88,6 +88,13 @@
+@@ -68,26 +74,33 @@
+ 
+ CS = cs_convert.o $(CS_DI_OBJ) $(CS_DL_OBJ) $(CS_CI_OBJ) $(CS_CL_OBJ)
+ 
+-$(CS): ../Include/cs.h Makefile
++$(CS): $(SRCDIR)/Include/cs.h
+ 
+-cs_convert.o: ../Source/cs_convert.c
++cs_convert.o: $(SRCDIR)/Source/cs_convert.c
+ 	$(CC) $(CFLAGS) $(I) -c $< -o $@
+ 
+-%_di.o : ../Source/%.c
++%_di.o : $(SRCDIR)/Source/%.c
+ 	$(CC) $(CFLAGS) $(I) -c $< -o $@
+ 
+-%_dl.o : ../Source/%.c
++%_dl.o : $(SRCDIR)/Source/%.c
+ 	$(CC) $(CFLAGS) $(I) -DCS_LONG -c $< -o $@
+ 
+-%_ci.o : ../Source/%.c
++%_ci.o : $(SRCDIR)/Source/%.c
+ 	$(CC) $(CFLAGS) $(I) -DCS_COMPLEX -c $< -o $@
+ 
+-%_cl.o : ../Source/%.c
++%_cl.o : $(SRCDIR)/Source/%.c
+ 	$(CC) $(CFLAGS) $(I) -DCS_LONG -DCS_COMPLEX -c $< -o $@
+ 
  libcxsparse.a: $(CS)
  	$(AR) libcxsparse.a $(CS)
  	$(RANLIB) libcxsparse.a
 +
 +cxsparse.dll : libcxsparse.a
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +		-Wl,--whole-archive $< \
 +		-Wl,--out-implib,$(basename $<).dll.a \
 +		-Wl,--no-whole-archive
@@ -200,9 +879,14 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/CXS
  clean:
  	rm -f *.o
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/UFconfig/UFconfig.mk suitesparse/UFconfig/UFconfig.mk
---- suitesparse-orig/UFconfig/UFconfig.mk	Thu May 10 13:46:08 2007
-+++ suitesparse/UFconfig/UFconfig.mk	Thu Nov  8 09:21:35 2007
-@@ -32,8 +32,8 @@
+--- suitesparse-orig/UFconfig/UFconfig.mk	Thu May 10 15:46:08 2007
++++ suitesparse/UFconfig/UFconfig.mk	Sat Dec  8 10:36:04 2007
+@@ -29,11 +29,13 @@
+ # Generic configuration
+ #------------------------------------------------------------------------------
+ 
++SRCTOP = @SRCDIR@
++
  # C compiler and compiler flags:  These will normally not give you optimal
  # performance.  You should select the optimization parameters that are best
  # for your system.  On Linux, use "CFLAGS = -O3 -fexceptions" for example.
@@ -213,7 +897,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/UFc
  
  # ranlib, and ar, for generating libraries
  RANLIB = ranlib
-@@ -44,8 +44,8 @@
+@@ -44,8 +46,8 @@
  MV = mv -f
  
  # Fortran compiler (not normally required)
@@ -224,7 +908,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/UFc
  F77LIB =
  
  # C and Fortran libraries
-@@ -85,7 +85,8 @@
+@@ -85,7 +87,8 @@
  # BLAS = -lgoto -lgfortran -lgfortranbegin
  
  # This is probably slow ... it might connect to the Standard Reference BLAS:
@@ -234,7 +918,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/UFc
  LAPACK = -llapack
  
  # The BLAS might not contain xerbla, an error-handling routine for LAPACK and
-@@ -176,7 +177,7 @@
+@@ -176,7 +179,7 @@
  # -DNSUNPERF	    for Solaris only.  If defined, do not use the Sun
  #			Performance Library
  
@@ -243,7 +927,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/UFc
  
  #------------------------------------------------------------------------------
  # Linux
-@@ -193,7 +194,7 @@
+@@ -193,7 +196,7 @@
  # CFLAGS = -O3 -fexceptions \
     	-Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
      	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
@@ -253,9 +937,9 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/UFc
  
  # consider:
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/UMFPACK/Lib/GNUmakefile suitesparse/UMFPACK/Lib/GNUmakefile
---- suitesparse-orig/UMFPACK/Lib/GNUmakefile	Sun May  6 12:31:22 2007
-+++ suitesparse/UMFPACK/Lib/GNUmakefile	Thu Nov  8 09:59:54 2007
-@@ -2,7 +2,7 @@
+--- suitesparse-orig/UMFPACK/Lib/GNUmakefile	Sun May  6 14:31:22 2007
++++ suitesparse/UMFPACK/Lib/GNUmakefile	Sat Dec  8 15:02:25 2007
+@@ -2,12 +2,16 @@
  # UMFPACK Makefile for compiling on Unix systems (for GNU Make)
  #-------------------------------------------------------------------------------
  
@@ -264,13 +948,243 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def suitesparse-orig/UMF
  
  include ../../UFconfig/UFconfig.mk
  
-@@ -246,6 +246,13 @@
++SRCDIR = $(SRCTOP)/UMFPACK
++
++vpath %.c $(SRCDIR)/Source
++
+ C = $(CC) $(CFLAGS) $(UMFPACK_CONFIG) \
+-    -I../Include -I../Source -I../../AMD/Include -I../../UFconfig
++    -I$(SRCDIR)/Include -I$(SRCDIR)/Source -I$(SRCDIR)/../AMD/Include -I$(SRCDIR)/../UFconfig
+ 
+ #-------------------------------------------------------------------------------
+ # source files
+@@ -65,14 +69,14 @@
+ # include files:
+ #-------------------------------------------------------------------------------
+ 
+-INC = ../Include/umfpack.h ../../UFconfig/UFconfig.h \
+-	../Source/umf_config.h ../Source/umf_version.h \
+-	../Source/umf_internal.h ../Source/umf_triplet.h \
+-	$(addprefix ../Source/,  $(addsuffix .h,$(UMFCH))) \
+-	$(addprefix ../Source/,  $(addsuffix .h,$(UMFINT))) \
+-	$(addprefix ../Include/, $(addsuffix .h,$(USER))) \
+-	$(addprefix ../Include/, $(addsuffix .h,$(GENERIC))) \
+-	../../AMD/Include/amd_internal.h ../../AMD/Include/amd.h
++INC = $(SRCDIR)/Include/umfpack.h $(SRCDIR)/../UFconfig/UFconfig.h \
++	$(SRCDIR)/Source/umf_config.h $(SRCDIR)/Source/umf_version.h \
++	$(SRCDIR)/Source/umf_internal.h $(SRCDIR)/Source/umf_triplet.h \
++	$(addprefix $(SRCDIR)/Source/,  $(addsuffix .h,$(UMFCH))) \
++	$(addprefix $(SRCDIR)/Source/,  $(addsuffix .h,$(UMFINT))) \
++	$(addprefix $(SRCDIR)/Include/, $(addsuffix .h,$(USER))) \
++	$(addprefix $(SRCDIR)/Include/, $(addsuffix .h,$(GENERIC))) \
++	$(SRCDIR)/../AMD/Include/amd_internal.h $(SRCDIR)/../AMD/Include/amd.h
+ 
+ #-------------------------------------------------------------------------------
+ # object files for each version
+@@ -90,153 +94,153 @@
+ # compile each int and UF_long routine (with no real/complex version)
+ #-------------------------------------------------------------------------------
+ 
+-umf_i_%.o: ../Source/umf_%.c $(INC)
++umf_i_%.o: $(SRCDIR)/Source/umf_%.c $(INC)
+ 	$(C) -DDINT -c $< -o $@
+ 
+-umf_l_%.o: ../Source/umf_%.c $(INC)
++umf_l_%.o: $(SRCDIR)/Source/umf_%.c $(INC)
+ 	$(C) -DDLONG -c $< -o $@
+ 
+ #-------------------------------------------------------------------------------
+ # compile each routine in the DI version
+ #-------------------------------------------------------------------------------
+ 
+-umf_di_%.o: ../Source/umf_%.c $(INC)
++umf_di_%.o: $(SRCDIR)/Source/umf_%.c $(INC)
+ 	$(C) -DDINT -c $< -o $@
+ 
+-umf_di_%hsolve.o: ../Source/umf_%tsolve.c $(INC)
++umf_di_%hsolve.o: $(SRCDIR)/Source/umf_%tsolve.c $(INC)
+ 	$(C) -DDINT -DCONJUGATE_SOLVE -c $< -o $@
+ 
+-umf_di_triplet_map_x.o: ../Source/umf_triplet.c $(INC)
++umf_di_triplet_map_x.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DDINT -DDO_MAP -DDO_VALUES -c $< -o $@
+ 
+-umf_di_triplet_map_nox.o: ../Source/umf_triplet.c $(INC)
++umf_di_triplet_map_nox.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DDINT -DDO_MAP -c $< -o $@
+ 
+-umf_di_triplet_nomap_x.o: ../Source/umf_triplet.c $(INC)
++umf_di_triplet_nomap_x.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DDINT -DDO_VALUES -c $< -o $@
+ 
+-umf_di_triplet_nomap_nox.o: ../Source/umf_triplet.c $(INC)
++umf_di_triplet_nomap_nox.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DDINT -c $< -o $@
+ 
+-umf_di_assemble_fixq.o: ../Source/umf_assemble.c $(INC)
++umf_di_assemble_fixq.o: $(SRCDIR)/Source/umf_assemble.c $(INC)
+ 	$(C) -DDINT -DFIXQ -c $< -o $@
+ 
+-umf_di_store_lu_drop.o: ../Source/umf_store_lu.c $(INC)
++umf_di_store_lu_drop.o: $(SRCDIR)/Source/umf_store_lu.c $(INC)
+ 	$(C) -DDINT -DDROP -c $< -o $@
+ 
+-umfpack_di_wsolve.o: ../Source/umfpack_solve.c $(INC)
++umfpack_di_wsolve.o: $(SRCDIR)/Source/umfpack_solve.c $(INC)
+ 	$(C) -DDINT -DWSOLVE -c $< -o $@
+ 
+-umfpack_di_%.o: ../Source/umfpack_%.c $(INC)
++umfpack_di_%.o: $(SRCDIR)/Source/umfpack_%.c $(INC)
+ 	$(C) -DDINT -c $< -o $@
+ 
+ #-------------------------------------------------------------------------------
+ # compile each routine in the DL version
+ #-------------------------------------------------------------------------------
+ 
+-umf_dl_%.o: ../Source/umf_%.c $(INC)
++umf_dl_%.o: $(SRCDIR)/Source/umf_%.c $(INC)
+ 	$(C) -DDLONG -c $< -o $@
+ 
+-umf_dl_%hsolve.o: ../Source/umf_%tsolve.c $(INC)
++umf_dl_%hsolve.o: $(SRCDIR)/Source/umf_%tsolve.c $(INC)
+ 	$(C) -DDLONG -DCONJUGATE_SOLVE -c $< -o $@
+ 
+-umf_dl_triplet_map_x.o: ../Source/umf_triplet.c $(INC)
++umf_dl_triplet_map_x.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DDLONG -DDO_MAP -DDO_VALUES -c $< -o $@
+ 
+-umf_dl_triplet_map_nox.o: ../Source/umf_triplet.c $(INC)
++umf_dl_triplet_map_nox.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DDLONG -DDO_MAP -c $< -o $@
+ 
+-umf_dl_triplet_nomap_x.o: ../Source/umf_triplet.c $(INC)
++umf_dl_triplet_nomap_x.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DDLONG -DDO_VALUES -c $< -o $@
+ 
+-umf_dl_triplet_nomap_nox.o: ../Source/umf_triplet.c $(INC)
++umf_dl_triplet_nomap_nox.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DDLONG -c $< -o $@
+ 
+-umf_dl_assemble_fixq.o: ../Source/umf_assemble.c $(INC)
++umf_dl_assemble_fixq.o: $(SRCDIR)/Source/umf_assemble.c $(INC)
+ 	$(C) -DDLONG -DFIXQ -c $< -o $@
+ 
+-umf_dl_store_lu_drop.o: ../Source/umf_store_lu.c $(INC)
++umf_dl_store_lu_drop.o: $(SRCDIR)/Source/umf_store_lu.c $(INC)
+ 	$(C) -DDLONG -DDROP -c $< -o $@
+ 
+-umfpack_dl_wsolve.o: ../Source/umfpack_solve.c $(INC)
++umfpack_dl_wsolve.o: $(SRCDIR)/Source/umfpack_solve.c $(INC)
+ 	$(C) -DDLONG -DWSOLVE -c $< -o $@
+ 
+-umfpack_dl_%.o: ../Source/umfpack_%.c $(INC)
++umfpack_dl_%.o: $(SRCDIR)/Source/umfpack_%.c $(INC)
+ 	$(C) -DDLONG -c $< -o $@
+ 
+ #-------------------------------------------------------------------------------
+ # compile each routine in the ZI version
+ #-------------------------------------------------------------------------------
+ 
+-umf_zi_%.o: ../Source/umf_%.c $(INC)
++umf_zi_%.o: $(SRCDIR)/Source/umf_%.c $(INC)
+ 	$(C) -DZINT -c $< -o $@
+ 
+-umf_zi_%hsolve.o: ../Source/umf_%tsolve.c $(INC)
++umf_zi_%hsolve.o: $(SRCDIR)/Source/umf_%tsolve.c $(INC)
+ 	$(C) -DZINT -DCONJUGATE_SOLVE -c $< -o $@
+ 
+-umf_zi_triplet_map_x.o: ../Source/umf_triplet.c $(INC)
++umf_zi_triplet_map_x.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DZINT -DDO_MAP -DDO_VALUES -c $< -o $@
+ 
+-umf_zi_triplet_map_nox.o: ../Source/umf_triplet.c $(INC)
++umf_zi_triplet_map_nox.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DZINT -DDO_MAP -c $< -o $@
+ 
+-umf_zi_triplet_nomap_x.o: ../Source/umf_triplet.c $(INC)
++umf_zi_triplet_nomap_x.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DZINT -DDO_VALUES -c $< -o $@
+ 
+-umf_zi_triplet_nomap_nox.o: ../Source/umf_triplet.c $(INC)
++umf_zi_triplet_nomap_nox.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DZINT -c $< -o $@
+ 
+-umf_zi_assemble_fixq.o: ../Source/umf_assemble.c $(INC)
++umf_zi_assemble_fixq.o: $(SRCDIR)/Source/umf_assemble.c $(INC)
+ 	$(C) -DZINT -DFIXQ -c $< -o $@
+ 
+-umf_zi_store_lu_drop.o: ../Source/umf_store_lu.c $(INC)
++umf_zi_store_lu_drop.o: $(SRCDIR)/Source/umf_store_lu.c $(INC)
+ 	$(C) -DZINT -DDROP -c $< -o $@
+ 
+-umfpack_zi_wsolve.o: ../Source/umfpack_solve.c $(INC)
++umfpack_zi_wsolve.o: $(SRCDIR)/Source/umfpack_solve.c $(INC)
+ 	$(C) -DZINT -DWSOLVE -c $< -o $@
+ 
+-umfpack_zi_%.o: ../Source/umfpack_%.c $(INC)
++umfpack_zi_%.o: $(SRCDIR)/Source/umfpack_%.c $(INC)
+ 	$(C) -DZINT -c $< -o $@
+ 
+ #-------------------------------------------------------------------------------
+ # compile each routine in the ZL version
+ #-------------------------------------------------------------------------------
+ 
+-umf_zl_%.o: ../Source/umf_%.c $(INC)
++umf_zl_%.o: $(SRCDIR)/Source/umf_%.c $(INC)
+ 	$(C) -DZLONG -c $< -o $@
+ 
+-umf_zl_%hsolve.o: ../Source/umf_%tsolve.c $(INC)
++umf_zl_%hsolve.o: $(SRCDIR)/Source/umf_%tsolve.c $(INC)
+ 	$(C) -DZLONG -DCONJUGATE_SOLVE -c $< -o $@
+ 
+-umf_zl_triplet_map_x.o: ../Source/umf_triplet.c $(INC)
++umf_zl_triplet_map_x.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DZLONG -DDO_MAP -DDO_VALUES -c $< -o $@
+ 
+-umf_zl_triplet_map_nox.o: ../Source/umf_triplet.c $(INC)
++umf_zl_triplet_map_nox.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DZLONG -DDO_MAP -c $< -o $@
+ 
+-umf_zl_triplet_nomap_x.o: ../Source/umf_triplet.c $(INC)
++umf_zl_triplet_nomap_x.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DZLONG -DDO_VALUES -c $< -o $@
+ 
+-umf_zl_triplet_nomap_nox.o: ../Source/umf_triplet.c $(INC)
++umf_zl_triplet_nomap_nox.o: $(SRCDIR)/Source/umf_triplet.c $(INC)
+ 	$(C) -DZLONG -c $< -o $@
+ 
+-umf_zl_assemble_fixq.o: ../Source/umf_assemble.c $(INC)
++umf_zl_assemble_fixq.o: $(SRCDIR)/Source/umf_assemble.c $(INC)
+ 	$(C) -DZLONG -DFIXQ -c $< -o $@
+ 
+-umf_zl_store_lu_drop.o: ../Source/umf_store_lu.c $(INC)
++umf_zl_store_lu_drop.o: $(SRCDIR)/Source/umf_store_lu.c $(INC)
+ 	$(C) -DZLONG -DDROP -c $< -o $@
+ 
+-umfpack_zl_wsolve.o: ../Source/umfpack_solve.c $(INC)
++umfpack_zl_wsolve.o: $(SRCDIR)/Source/umfpack_solve.c $(INC)
+ 	$(C) -DZLONG -DWSOLVE -c $< -o $@
+ 
+-umfpack_zl_%.o: ../Source/umfpack_%.c $(INC)
++umfpack_zl_%.o: $(SRCDIR)/Source/umfpack_%.c $(INC)
+ 	$(C) -DZLONG -c $< -o $@
+ 
+ #-------------------------------------------------------------------------------
+ # Create the generic routines (GN) using a generic rule
+ #-------------------------------------------------------------------------------
+ 
+-umfpack_gn_%.o: ../Source/umfpack_%.c $(INC)
++umfpack_gn_%.o: $(SRCDIR)/Source/umfpack_%.c $(INC)
+ 	$(C) -c $< -o $@
+ 
+ #-------------------------------------------------------------------------------
+@@ -246,6 +250,13 @@
  ../Lib/libumfpack.a: $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
  	$(AR) ../Lib/libumfpack.a $^
  	- $(RANLIB) ../Lib/libumfpack.a
 +
 +../Lib/umfpack.dll : ../Lib/libumfpack.a
-+	$(CC) -shared -o $@ -L../../AMD/Lib \
++	$(CC) -shared $(LDFLAGS) -o $@ -L../../AMD/Lib \
 +		-Wl,--whole-archive $< \
 +		-Wl,--out-implib,$(basename $<).dll.a \
 +		-Wl,--no-whole-archive -lamd $(BLAS)

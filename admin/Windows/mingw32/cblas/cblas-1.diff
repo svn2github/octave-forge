@@ -1,6 +1,15 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def cblas-orig/Makefile cblas/Makefile
+--- cblas-orig/Makefile	Mon Mar 15 21:26:42 1999
++++ cblas/Makefile	Sat Dec  8 21:43:49 2007
+@@ -1,4 +1,4 @@
+-dlvl = ./.
++dlvl = @SRCDIR@
+ include $(dlvl)/Makefile.in
+ help:
+ 	@ echo "Make sure you are using correct Makefile.in for your system."
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def cblas-orig/makefile.in cblas/makefile.in
 --- cblas-orig/makefile.in	Thu Jan  1 01:00:00 1970
-+++ cblas/makefile.in	Tue Nov 20 19:51:19 2007
++++ cblas/makefile.in	Sat Dec  8 21:49:10 2007
 @@ -0,0 +1,53 @@
 +#
 +# Makefile.LINUX
@@ -28,7 +37,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def cblas-orig/makefile.
 + 
 +BLLIB = -lblas
 +CBDIR = $(TOPDIR)/$(SRCDIR)
-+CBLIBDIR = $(CBDIR)/lib/$(PLAT)
++CBLIBDIR = ../lib
 +CBLIB = $(CBLIBDIR)/libcblas.a
 +CBLIBDLL=$(CBLIBDIR)/cblas.dll
 +IMPLIB=$(CBLIBDIR)/libcblas.dll.a
@@ -57,12 +66,26 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def cblas-orig/makefile.
 +RANLIB = echo
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def cblas-orig/src/Makefile cblas/src/Makefile
 --- cblas-orig/src/Makefile	Mon Mar 15 21:11:03 1999
-+++ cblas/src/Makefile	Tue Nov 20 19:51:19 2007
-@@ -234,6 +234,13 @@
++++ cblas/src/Makefile	Sat Dec  8 21:47:48 2007
+@@ -1,9 +1,12 @@
+ # This Makefile compiles the CBLAS routines
+ #
+-dlvl = ../.
++dlvl = @SRCDIR@
+ include $(dlvl)/Makefile.in
+ INC = -I$(CBDIR)/src
+ 
++vpath %.c $(dlvl)/src
++vpath %.f $(dlvl)/src
++
+ #
+ # Erase all object and archive files
+ #
+@@ -234,11 +237,18 @@
  all: $(alev)  
  	$(ARCH) $(ARCHFLAGS)  $(CBLIB) $(alev) 
  	$(RANLIB) $(CBLIB)
-+	$(F77) -shared -o $(CBLIBDLL) \
++	$(F77) -shared $(FLDFLAGS) -o $(CBLIBDLL) \
 +	  -Wl,--export-all-symbols \
 +	  -Wl,--allow-multiple-definition \
 +	  -Wl,--out-implib=$(IMPLIB) \
@@ -72,3 +95,10 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def cblas-orig/src/Makef
  
  
  .SUFFIXES: .o .c .f
+ 
+ .c.o:
+-	$(CC) $(CFLAGS) $(INC) -c $*.c
++	$(CC) $(CFLAGS) $(INC) -c $<
+ .f.o:
+-	$(FC) $(FFLAGS) -c $*.f
++	$(FC) $(FFLAGS) -c $<

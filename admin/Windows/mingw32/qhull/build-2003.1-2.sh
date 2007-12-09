@@ -27,8 +27,6 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=${SRCDIR}
 
 # Make file to use
 MAKEFILE="makefile"
@@ -42,11 +40,28 @@ INCLUDE_DIR=include/qhull
 
 source ../gcc42_common.sh
 
-#mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+mkdirs_post()
+{
+   mkdir -vp ${BUILDDIR}/src
+}
+
+conf()
+{
+   substvars ${SRCDIR}/src/${MAKEFILE} ${BUILDDIR}/src/${MAKEFILE}
+}
 
 build() 
 {
    cd ${BUILDDIR}/src && make lib
+}
+
+clean() 
+{
+   cd ${BUILDDIR}/src && make clean
 }
 
 install()
@@ -65,6 +80,17 @@ uninstall()
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libqhull.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libqhull.a
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
+}
+
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
 }
 
 main $*

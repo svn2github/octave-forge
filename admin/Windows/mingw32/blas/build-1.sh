@@ -26,8 +26,8 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=${SRCDIR}
+## Directory the lib is built in
+#BUILDDIR=${SRCDIR}
 
 # Make file to use
 MAKEFILE=makefile.mingw32
@@ -37,14 +37,26 @@ DIFF_FLAGS="-x *.def"
 
 source ../common.sh
 
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
 # BLAS is packed NOT in a subdirectory, so we must manually create one...
 unpack_pre() { mkdir ${SRCDIR} && cd ${SRCDIR}; }
 unpack_post() { cd ..; }
+
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   substvars ${SRCDIR}/${MAKEFILE} ${BUILDDIR}/${MAKEFILE}
+}
 
 all() {
   download
   unpack
   applypatch
+  mkdirs
+  conf
   build
   install
 }

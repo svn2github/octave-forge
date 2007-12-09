@@ -19,6 +19,8 @@ WGET_FLAGS=-N
 RM=rm
 RM_FLAGS=-v
 
+SED=sed
+
 export STRIP STRIP_FLAGS
 
 # Prefix for our build
@@ -29,12 +31,14 @@ PREFIX_OCT=${PREFIX}/octave
 # Base paths for include files, import libraries, binaries&dlls, static libraries
 INCLUDE_BASE=${PREFIX}
 LIBRARY_BASE=${PREFIX}
+SHAREDLIB_BASE=${PREFIX}
 BINARY_BASE=${PREFIX}
 STATICLIBRARY_BASE=${PREFIX}
 
 # default subdirectories
 INCLUDE_DEFAULT=include
 BINARY_DEFAULT=bin
+SHAREDLIB_DEFAULT=bin
 LIBRARY_DEFAULT=lib
 STATICLIBRARY_DEFAULT=lib
 
@@ -42,12 +46,14 @@ STATICLIBRARY_DEFAULT=lib
 # (e.g. for GSL: ${INCLUDE} = include/gsl )
 if [ -z ${INCLUDE_DIR} ]; then INCLUDE_DIR=${INCLUDE_DEFAULT}; fi
 if [ -z ${BINARY_DIR} ]; then BINARY_DIR=${BINARY_DEFAULT}; fi
+if [ -z ${SHAREDLIB_DIR} ]; then SHAREDLIB_DIR=${SHAREDLIB_DEFAULT}; fi
 if [ -z ${LIBRARY_DIR} ]; then LIBRARY_DIR=${LIBRARY_DEFAULT}; fi
 if [ -z ${STATICLIBRARY_DIR} ]; then STATICLIBRARY_DIR=${STATICLIBRARY_DEFAULT}; fi
 
 # create full paths for component directories
 BINARY_PATH=${BINARY_BASE}/${BINARY_DIR}
 INCLUDE_PATH=${INCLUDE_BASE}/${INCLUDE_DIR}
+SHAREDLIB_PATH=${SHAREDLIB_BASE}/${SHAREDLIB_DIR}
 LIBRARY_PATH=${LIBRARY_BASE}/${LIBRARY_DIR}
 STATICLIBRARY_PATH=${STATICLIBRARY_BASE}/${STATICLIBRARY_DIR}
 
@@ -76,12 +82,12 @@ export CC CXX F77
 
 # Architecture flags
 GCC_ARCH_FLAGS="-march=i686 -mtune=i686"
-# Optimizatino flags
-GCC_OPT_FLAGS="-O3"
+# Optimization flags
+GCC_OPT_FLAGS="-O2"
 # Linker flags
-LDFLAGS=""
+LDFLAGS="-shared-libgcc -Wl,-Bdynamic -Wl,-s"
 
-export GCC_ARCH_FLAGS GCC_OPT_FLAGS
+export GCC_ARCH_FLAGS GCC_OPT_FLAGS LDFLAGS
 
 # Common Functions
 
@@ -211,6 +217,14 @@ mkdirs()
    mkdirs_post;
 }
 mkdirs_post() { echo; }
+
+substvars_pre() { echo ; }
+substvars()
+{
+   ${SED} -e "s+@SRCDIR@+${TOPDIR}/${SRCDIR}+" \
+   $1 > $2
+}
+substvars_post() { echo ; }
 
 main() {
 (

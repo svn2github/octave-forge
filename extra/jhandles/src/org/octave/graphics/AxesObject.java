@@ -193,6 +193,11 @@ public class AxesObject extends HandleObject
 	BooleanProperty Key;
 	DoubleProperty LineWidth;
 	ArrayProperty ColorOrder;
+	RadioProperty FontAngle;
+	StringProperty FontName;
+	DoubleProperty FontSize;
+	RadioProperty FontWeight;
+	RadioProperty FontUnits;
 
 	public AxesObject(HandleObject parent, boolean init3D)
 	{
@@ -295,6 +300,12 @@ public class AxesObject extends HandleObject
 					0,  0.5,  0,  0.75,     0,  0.75,  0.25,
 					1,    0,  0,  0.75,  0.75,     0,  0.25},
 				new int[] {7, 3}));
+		FontAngle = new RadioProperty(this, "FontAngle", new String[] {"normal", "oblique", "italic"}, "normal");
+		FontName = new StringProperty(this, "FontName", "Helvetica");
+		FontSize = new DoubleProperty(this, "FontSize", 10);
+		FontWeight = new RadioProperty(this, "FontWeight", new String[] {"light", "normal", "demi", "bold"}, "normal");
+		FontUnits = new RadioProperty(this, "FontUnits", new String[] {"points", "normalized", "inches",
+			"centimeters", "pixels"}, "points");
 
 		updatePosition();
 		autoTick();
@@ -539,12 +550,9 @@ public class AxesObject extends HandleObject
 	void updatePosition()
 	{
 		RenderCanvas canvas = getCanvas();
-		FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
-
-		if (fm == null)
-			return;
-
 		double[] p = Utils.convertPosition(OuterPosition.getArray(), Units.getValue(), "pixels", canvas.getComponent());
+		FontMetrics fm = canvas.getFontMetrics(Utils.getFont(FontName, FontSize, FontUnits,
+					FontAngle, FontWeight, p[3]));
 		int marginH = 10+fm.stringWidth("0000")+fm.getHeight()+5+7,
 			marginV = 10+2*fm.getHeight()+10+7;
 
@@ -558,12 +566,9 @@ public class AxesObject extends HandleObject
 	void updateOuterPosition()
 	{
 		RenderCanvas canvas = getCanvas();
-		FontMetrics fm = canvas.getFontMetrics(canvas.getFont());
-
-		if (fm == null)
-			return;
-
 		double[] p = Utils.convertPosition(Position.getArray(), Units.getValue(), "pixels", canvas.getComponent());
+		FontMetrics fm = canvas.getFontMetrics(Utils.getFont(FontName, FontSize, FontUnits,
+					FontAngle, FontWeight, p[3]));
 		int marginH = 10+fm.stringWidth("0000")+fm.getHeight()+5+7,
 			marginV = 10+2*fm.getHeight()+10+7;
 		
@@ -903,6 +908,9 @@ public class AxesObject extends HandleObject
 			r.drawSegments(l1);
 			l1.clear();
 		}
+
+		r.setFont(Utils.getFont(FontName, FontSize, FontUnits, FontAngle,
+			FontWeight, getBoundingBox().height));
 
 		// X Grid
 

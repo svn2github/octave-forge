@@ -15,14 +15,14 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function drawnow (term, file)
+function drawnow (term, file, mono, debugfile)
 
   h = get(0, 'currentfigure');
   if (! isempty (h) && h != 0 && ishandle (h))
     fig = __get_object__ (h);
     if (nargin == 0)
       fig.redraw ();
-    elseif (nargin == 2)
+    elseif (nargin >= 2)
       elt = cellstr (split (term, " "));
       switch elt{1}
       case {"png", "postscript"}

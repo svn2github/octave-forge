@@ -278,7 +278,7 @@ public class J2DRenderer implements Renderer
 		}
 	}
 
-	public Dimension drawText(String txt, double[] pos, int halign, int valign)
+	public Rectangle drawText(String txt, double[] pos, int halign, int valign)
 	{
 		if (g != null)
 		{
@@ -308,11 +308,11 @@ public class J2DRenderer implements Renderer
 				content.render(g);
 				g.translate(-xoff, -yoff);
 
-				return new Dimension(r.width, r.height);
+				return r;
 			}
 		}
 
-		return new Dimension(0, 0);
+		return new Rectangle();
 	}
 
 	public void setXForm(AxesObject ax)

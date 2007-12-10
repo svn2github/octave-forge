@@ -317,7 +317,7 @@ class SimpleTextEngine
 
 		private float round(float d)
 		{
-			return Math.round(d*100)/100;
+			return Math.round(d*100)/100.0f;
 		}
 
 		private String colorCmd(Color c)
@@ -1119,7 +1119,7 @@ class SimpleTextEngine
 		void render(TextRenderer r) { r.render(this); }
 	}
 
-	public static Dimension drawAsImage(RenderCanvas comp, Font f, String txt, double[] pos, int halign, int valign)
+	public static Rectangle drawAsImage(RenderCanvas comp, Font f, String txt, double[] pos, int halign, int valign)
 	{
 		// create internal image
 		int margin = 0;
@@ -1127,7 +1127,7 @@ class SimpleTextEngine
 		Rectangle r = (Rectangle)content.layout(comp, f).clone();
 
 		if (r.width <=0 || r.height <= 0)
-			return new Dimension(0, 0);
+			return new Rectangle();
 
 		r.width += 2*margin;
 		r.height += 2*margin;
@@ -1162,6 +1162,6 @@ class SimpleTextEngine
 		comp.getRenderer().drawBitmap(img, pos, xoff, yoff);
 
 		// return value
-		return new Dimension(r.width, r.height);
+		return r;
 	}
 }

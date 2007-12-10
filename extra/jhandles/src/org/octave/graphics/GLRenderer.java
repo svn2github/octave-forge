@@ -23,6 +23,7 @@ package org.octave.graphics;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.Font;
 import java.awt.image.*;
 import javax.media.opengl.*;
@@ -491,9 +492,9 @@ public class GLRenderer implements Renderer
 		}
 	}
 
-	public Dimension drawText(String txt, double[] pos, int halign, int valign)
+	public Rectangle drawText(String txt, double[] pos, int halign, int valign)
 	{
-		Dimension dim = SimpleTextEngine.drawAsImage((RenderCanvas)d, font, txt, pos, halign, valign);
+		Rectangle dim = SimpleTextEngine.drawAsImage((RenderCanvas)d, font, txt, pos, halign, valign);
 		if (isGL2PS)
 		{
 			/*
@@ -502,16 +503,17 @@ public class GLRenderer implements Renderer
 					0, null, "-", null, true);
 					*/
 
+			float f = 72.0f / Utils.getScreenResolution();
 			StringBuffer buf = new StringBuffer();
 			SimpleTextEngine.Content content = new SimpleTextEngine.Content(txt);
 			SimpleTextEngine.PSTextRenderer ps = new SimpleTextEngine.PSTextRenderer(buf,
-					font.getName(), font.getSize(), font.getStyle(), Color.black);
+					font.getName(), Math.round(f*font.getSize()), font.getStyle(), Color.black);
 
 			gl.glRasterPos3d(pos[0], pos[1], pos[2]);
 			switch (valign)
 			{
-				case 1: buf.append("0 -" + (dim.height/2) + " rmoveto\n"); break;
-				case 2: buf.append("0 -" + dim.height + " rmoveto\n"); break;
+				case 1: buf.append("0 -" + (f*((dim.height/2+dim.y))) + " rmoveto\n"); break;
+				case 2: buf.append("0 -" + (f*dim.height) + " rmoveto\n"); break;
 			}
 			content.align = halign;
 			content.render(ps);
@@ -1914,7 +1916,7 @@ public class GLRenderer implements Renderer
 					text.Margin.floatValue(), false, text.LineWidth.floatValue(), text.EdgeColor.getColor(),
 					text.LineStyle.getValue(), text.BackgroundColor.getColor(), text.Units.is("data"));
 					*/
-			gl.glRasterPos3d(pos[0], pos[1], pos[2]);
+			gl.glRasterPos3d(sx.scale(pos[0]), sy.scale(pos[1]), sz.scale(pos[2]));
 			if (!text.Units.is("data"))
 				gl.glDisable(GL.GL_DEPTH_TEST);
 			GL2PS.gl2psSpecial(GL2PS.GL2PS_PS, text.toPostScript(), 1);

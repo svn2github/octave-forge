@@ -71,7 +71,7 @@ public interface Renderer
 		boolean useZBuffer);
 		*/
 
-	public Dimension drawText(String txt, double[] pos, int halign, int valign);
+	public Rectangle drawText(String txt, double[] pos, int halign, int valign);
 	
 	public void draw(PatchObject patch);
 

@@ -984,7 +984,7 @@ public class AxesObject extends HandleObject
 			for (int i=0; i<xticks.length && i<xticklabels.length; i++)
 			{
 				String txt = (x_logTickLabels ? "10^{"+xticklabels[i]+"}" : xticklabels[i]);
-				Dimension d = r.drawText(txt, (double[])l2.get(i),
+				Rectangle d = r.drawText(txt, (double[])l2.get(i),
 						(xstate == AXE_HORZ_DIR ? 1 : (xySym ? 0 : 2)),
 						(xstate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 && !x2Dtop ? 2 : 0)));
 				if (d.width > wmax) wmax = d.width;
@@ -1160,7 +1160,7 @@ public class AxesObject extends HandleObject
 			for (int i=0; i<yticks.length && i<yticklabels.length; i++)
 			{
 				String txt = (y_logTickLabels ? "10^{"+yticklabels[i]+"}" : yticklabels[i]);
-				Dimension d = r.drawText(txt, (double[])l2.get(i),
+				Rectangle d = r.drawText(txt, (double[])l2.get(i),
 						(ystate == AXE_HORZ_DIR ? 1 : (!xySym || y2Dright ? 0 : 2)),
 						(ystate == AXE_VERT_DIR ? 1 : (zd*zv[2] <= 0 ? 2 : 0)));
 				if (d.width > wmax) wmax = d.width;
@@ -1352,7 +1352,7 @@ public class AxesObject extends HandleObject
 			for (int i=0; i<zticks.length && i<zticklabels.length; i++)
 			{
 				String txt = (z_logTickLabels ? "10^{"+zticklabels[i]+"}" : zticklabels[i]);
-				Dimension d = r.drawText(txt, (double[])l2.get(i),
+				Rectangle d = r.drawText(txt, (double[])l2.get(i),
 						2,
 						(zstate == AXE_VERT_DIR ? 1 : (zd*zv[2] < 0 ? 0 : 2)));
 				if (d.width > wmax) wmax = d.width;

@@ -363,6 +363,13 @@ public class GLRenderer implements Renderer
 				gl.glVertex2d( sz/2, -sz/2);
 				gl.glEnd();
 				break;
+			case 'o':
+				double ang_step = Math.PI / 5;
+				gl.glBegin(GL.GL_LINE_LOOP);
+				for (double ang = 0; ang < (2*Math.PI); ang += ang_step)
+					gl.glVertex2d(sz*Math.cos(ang)/2, sz*Math.sin(ang)/2);
+				gl.glEnd();
+				break;
 		}
 		gl.glEndList();
 

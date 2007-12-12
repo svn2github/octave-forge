@@ -178,7 +178,10 @@ public abstract class Property implements HandleEventSource
 
 		lockNotify = true;
 		try { set(value); }
-		catch (PropertyException e) { }
+		catch (PropertyException e)
+		{
+			System.err.println("WARNING: exception during property reset: " + e);
+		}
 		lockNotify = oldLockNotify;
 	}
 

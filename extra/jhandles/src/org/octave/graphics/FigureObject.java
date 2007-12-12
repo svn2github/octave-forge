@@ -195,7 +195,7 @@ public class FigureObject extends AxesContainer
 	
 	private void updateHandle()
 	{
-		int handle = getHandle();
+		double handle = getHandle();
 		if (IntegerHandle.isSet() && handle < 0)
 			setHandle(RootObject.getInstance().getUnusedFigureNumber());
 		else if (!IntegerHandle.isSet() && handle > 0)

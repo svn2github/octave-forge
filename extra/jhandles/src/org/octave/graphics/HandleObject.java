@@ -29,7 +29,7 @@ import java.lang.ref.WeakReference;
 /**Base class for handle-based graphics*/
 public class HandleObject extends PropertySet implements HandleEventSource, HandleEventSink
 {
-	private int handle;
+	private double handle;
 	private Renderer.CachedData cachedData = null;
 	private boolean valid = false;
 	private HandleEventSourceHelper eventSource;
@@ -38,7 +38,7 @@ public class HandleObject extends PropertySet implements HandleEventSource, Hand
 	protected int autoMode = 0;
 	protected PropertySet defaultSet = new PropertySet();
 
-	private static int handleSeed = -1;
+	private static double handleSeed = -1 - Math.random();
 	private static HashMap handleMap = new HashMap();
 
 	/* Properties */
@@ -55,9 +55,11 @@ public class HandleObject extends PropertySet implements HandleEventSource, Hand
 	ObjectProperty UserData;
 	BooleanProperty Visible;
 
-	protected static int newHandle()
+	protected static double newHandle()
 	{
-		return handleSeed--;
+		double h = handleSeed;
+		handleSeed = Math.ceil(handleSeed) - 1 - Math.random();
+		return h;
 	}
 
 	public HandleObject(HandleObject parent, String type)
@@ -65,7 +67,7 @@ public class HandleObject extends PropertySet implements HandleEventSource, Hand
 		this(parent, newHandle(), type);
 	}
 
-	public HandleObject(HandleObject parent, int handle, String type)
+	public HandleObject(HandleObject parent, double handle, String type)
 	{
 		this.handle = handle;
 		this.eventSource = new HandleEventSourceHelper(this, new String[] {"ObjectDeleted"});
@@ -102,7 +104,7 @@ public class HandleObject extends PropertySet implements HandleEventSource, Hand
 			parent.addChild(this);
 	}
 
-	protected void setHandle(int handle)
+	protected void setHandle(double handle)
 	{
 		removeHandleObject(getHandle());
 		this.handle = handle;
@@ -116,7 +118,7 @@ public class HandleObject extends PropertySet implements HandleEventSource, Hand
 			eventSourceSet.add(p);
 	}
 
-	public int getHandle()
+	public double getHandle()
 	{
 		return handle;
 	}
@@ -233,17 +235,17 @@ public class HandleObject extends PropertySet implements HandleEventSource, Hand
 		return valid;
 	}
 
-	public static boolean isHandle(int handle)
+	public static boolean isHandle(double handle)
 	{
-		WeakReference ref = (WeakReference)handleMap.get(new Integer(handle));
+		WeakReference ref = (WeakReference)handleMap.get(new Double(handle));
 		if (ref != null && ref.get() != null)
 			return true;
 		return false;
 	}
 
-	public static HandleObject getHandleObject(int handle) throws Exception
+	public static HandleObject getHandleObject(double handle) throws Exception
 	{
-		WeakReference ref = (WeakReference)handleMap.get(new Integer(handle));
+		WeakReference ref = (WeakReference)handleMap.get(new Double(handle));
 		if (ref != null && ref.get() != null)
 		{
 			return (HandleObject)ref.get();
@@ -253,14 +255,14 @@ public class HandleObject extends PropertySet implements HandleEventSource, Hand
 		throw new Exception("invalid handle - " + handle);
 	}
 
-	public static void removeHandleObject(int handle)
+	public static void removeHandleObject(double handle)
 	{
-		handleMap.remove(new Integer(handle));
+		handleMap.remove(new Double(handle));
 	}
 
-	public static void addHandleObject(int handle, HandleObject obj)
+	public static void addHandleObject(double handle, HandleObject obj)
 	{
-		handleMap.put(new Integer(handle), new WeakReference(obj));
+		handleMap.put(new Double(handle), new WeakReference(obj));
 	}
 
 	public static void shutdown()

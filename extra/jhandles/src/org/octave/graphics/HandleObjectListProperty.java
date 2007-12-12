@@ -66,7 +66,7 @@ public class HandleObjectListProperty extends Property
 
 		if (value instanceof Number)
 		{
-			int h = ((Number)value).intValue();
+			double h = ((Number)value).doubleValue();
 			try
 			{
 				v.add(HandleObject.getHandleObject(h));
@@ -85,7 +85,7 @@ public class HandleObjectListProperty extends Property
 			try
 			{
 				for (int i=0; i<hv.length; i++)
-					v.add(HandleObject.getHandleObject((int)hv[i]));
+					v.add(HandleObject.getHandleObject(hv[i]));
 			}
 			catch (Exception e)
 			{
@@ -184,7 +184,7 @@ public class HandleObjectListProperty extends Property
 		while (it.hasNext())
 		{
 			HandleObject hObj = (HandleObject)it.next();
-			buf += (hObj.getHandle() + " ");
+			buf += (Utils.handleToString(hObj.getHandle()) + " ");
 			if (buf.length() > 64)
 				return ("[ 1 x " + objectList.size() + " handle array ]");
 		}

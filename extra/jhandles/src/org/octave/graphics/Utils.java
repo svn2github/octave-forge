@@ -306,4 +306,11 @@ public class Utils
 				Double.isInfinite(y) || Double.isNaN(y) ||
 				Double.isInfinite(z) || Double.isNaN(z));
 	}
+
+	private static java.text.DecimalFormat hFmt = new java.text.DecimalFormat("0.0000");
+
+	public static String handleToString(double handle)
+	{
+		return hFmt.format(handle);
+	}
 }

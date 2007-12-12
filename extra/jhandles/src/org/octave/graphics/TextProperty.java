@@ -50,7 +50,7 @@ public class TextProperty extends Property
 			return value;
 		else if (value instanceof Double)
 		{
-			int h = ((Double)value).intValue();
+			double h = ((Double)value).doubleValue();
 			if (HandleObject.isHandle(h))
 			{
 				try
@@ -91,7 +91,7 @@ public class TextProperty extends Property
 
 	public String toString()
 	{
-		return ("[ " + getText().getHandle() + " ]");
+		return ("[ " + Utils.handleToString(getText().getHandle()) + " ]");
 		//return txtObject.TextString.toString();
 	}
 

@@ -40,7 +40,7 @@ public abstract class AxesContainer extends HandleObject
 
 	// Constructor
 
-	public AxesContainer(HandleObject parent, String type, int handle)
+	public AxesContainer(HandleObject parent, String type, double handle)
 	{
 		super(parent, handle, type);
 	}

@@ -57,7 +57,7 @@
 ##
 ##    Make sure you've logged all changes to licenses and doc strings.
 ##
-## 9) ./release.sh
+## 9) ./admin/release.sh
 ##
 ##    This is the actual release step.  It tags the SVN tree.
 ##
@@ -100,7 +100,7 @@ PROJECT=octave-forge
 TAG=R`date +%Y-%m-%d`
 
 # generate the updated ChangeLog and version command
-$SVN2CL --fsf --file ChangeLog.tmp
+$SVN2CL --file ChangeLog.tmp
 echo "# Automatically generated file --- DO NOT EDIT" | cat - ChangeLog.tmp > ChangeLog
 rm ChangeLog.tmp
 cp -f ChangeLog doc/htdocs/ChangeLog
@@ -111,4 +111,6 @@ cp -f ChangeLog doc/htdocs/ChangeLog
 svn commit -m "$TAG release" ChangeLog README AUTHORS
 
 # tag the SVN tree with the revision number
-svn copy trunk tags/$TAG
+svn copy -m "Tag release $TAG" \
+  https://octave.svn.sourceforge.net/svnroot/octave/trunk/octave-forge \
+  https://octave.svn.sourceforge.net/svnroot/octave/tags/$TAG

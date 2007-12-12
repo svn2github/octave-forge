@@ -356,11 +356,12 @@ public class GLRenderer implements Renderer
 		switch (p.getValue().charAt(0))
 		{
 			case 's':
-				gl.glBegin(GL.GL_LINE_LOOP);
+				gl.glBegin(GL.GL_LINE_STRIP);
 				gl.glVertex2d(-sz/2, -sz/2);
 				gl.glVertex2d(-sz/2,  sz/2);
 				gl.glVertex2d( sz/2,  sz/2);
 				gl.glVertex2d( sz/2, -sz/2);
+				gl.glVertex2d(-sz/2, -sz/2);
 				gl.glEnd();
 				break;
 			case 'o':
@@ -368,6 +369,14 @@ public class GLRenderer implements Renderer
 				gl.glBegin(GL.GL_LINE_LOOP);
 				for (double ang = 0; ang < (2*Math.PI); ang += ang_step)
 					gl.glVertex2d(sz*Math.cos(ang)/2, sz*Math.sin(ang)/2);
+				gl.glEnd();
+				break;
+			case '+':
+				gl.glBegin(GL.GL_LINES);
+				gl.glVertex2d(0,    -sz/2);
+				gl.glVertex2d(0,     sz/2);
+				gl.glVertex2d(-sz/2,    0);
+				gl.glVertex2d( sz/2,    0);
 				gl.glEnd();
 				break;
 		}

@@ -1219,7 +1219,9 @@ windows)\
         -e 's/^archive_cmds=.*$/archive_cmds="\\$CC -shared -o \\$lib\\$libobjs -Wl,-def:jpeg.def -Wl,jpeg.res"/' \
         libtool > ttt &&
       mv ttt libtool &&
-    (cat >> jconfig.h <<\EOF
+  (cat >> jconfig.h <<\EOF
+
+#include <windows.h>
 
 #ifndef __RPCNDR_H__
 typedef unsigned char boolean;
@@ -1227,6 +1229,8 @@ typedef unsigned char boolean;
 #define HAVE_BOOLEAN
 EOF
 ) &&
+    sed -e 's/^#ifndef \+XMD_H/#if !defined(XMD_H) \&\& !defined(_WIN32)/' jmorecfg.h > ttt &&
+      mv ttt jmorecfg.h &&
     make libjpeg.la &&
     cp jconfig.h jpeglib.h jmorecfg.h jerror.h "$tincludedir" &&
     cp .libs/libjpeg*.dll "$tbindir" &&
@@ -2108,6 +2112,10 @@ if check_package octave; then
       sed -e "s/'extern \"C\" void exit (int);'/'extern \"C\" __declspec(noreturn dllimport) void exit (int);' 'extern \"C\" void exit (int);'/g" "$config_script" > configure.tmp
       mv configure.tmp "$config_script"
     fi
+    #FIXME: remove this - specific to 2.9.19 version
+    (cd "$DOWNLOAD_DIR/octave-$octave_version" &&
+      sed -e 's/trunc/ceil/' src/graphics.cc > ttt &&
+        mv ttt src/graphics.cc)
     echo "done"
   fi
   echo -n "compiling octave... "

@@ -7,7 +7,7 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
-<dt>December ??, 2007</dt>
+<dt>December 12, 2007</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 2.9.18. Many packages
  will also function function with earlier versions of Octave 2.9.
@@ -17,11 +17,15 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
    integration with core Octave plotting functions.</li>
    <li>plot: Removal of many functions ported to 2.9.18. Additional of
    ellipsoid function.</li>
-   <li>odepkg: First version of and oct-file implemention of the solvers.</li>
+   <li>odepkg: First version of an IDE problem solver in form of an 
+   oct-file implemention.</li>
    <li>audio: Avoid 64bit issues in sound.m.</li>
    <li>MinGW: Build support for MinGW.</li>
    <li>general bug fixes and improvements.</li>
 </ul>
+</dd>
+<dt>December 08, 2007</dt>
+<dd>Updated the OS X binary release to Octave.app 2.9.18.
 </dd>
 <dt>November 11, 2007</dt>
 <dd>Updated the OS X binary release to Octave.app 2.9.17.

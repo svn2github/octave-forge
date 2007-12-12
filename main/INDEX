@@ -464,7 +464,7 @@ Matrix properties
  islogical isdefinite
  logical 
  isscalar isvector ismatrix issquare 
- issymmetric ishermitian is_duplicate_entry isequalwithequalnans
+ issymmetric is_duplicate_entry isequalwithequalnans
  size_equal
 Assignment
  subsasgn subsref

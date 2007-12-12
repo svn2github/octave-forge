@@ -24,6 +24,7 @@ irsa
 linear-algebra
 mapping
 miscellaneous
+multicore
 octcdf
 ode
 optim

@@ -1891,6 +1891,8 @@ if check_package GiNaC; then
   echo -n "compiling GiNaC... "
   (cd "$DOWNLOAD_DIR/ginac-1.3.6" &&
     patch -p1 < ginac-1.3.6.diff &&
+    sed -e '/^Libs:/ { s/-lginac//; s/.*/& -lginac/; }' ginac.pc.in > ttt &&
+      mv ttt ginac.pc.in &&
     CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHs -MD" \
       CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc ./configure --disable-shared \
       --prefix=$tdir_w32_forward &&

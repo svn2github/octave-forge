@@ -45,6 +45,8 @@ public class PatchObject extends GraphicObject
 	LineStyleProperty LineStyle;
 	DoubleProperty LineWidth;
 	MarkerProperty Marker;
+	ColorProperty MarkerEdgeColor;
+	ColorProperty MarkerFaceColor;
 	DoubleProperty MarkerSize;
 	DoubleProperty AmbientStrength;
 	DoubleProperty DiffuseStrength;
@@ -76,6 +78,8 @@ public class PatchObject extends GraphicObject
 		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
 		Marker = new MarkerProperty(this, "Marker", "none");
 		MarkerSize = new DoubleProperty(this, "MarkerSize", 7.0);
+		MarkerEdgeColor = new ColorProperty(this, "MarkerEdgeColor", new String[] {"none", "auto", "flat"}, "auto");
+		MarkerFaceColor = new ColorProperty(this, "MarkerFaceColor", new String[] {"none", "auto", "flat"}, "none");
 		AmbientStrength = new DoubleProperty(this, "AmbientStrength", 0.3);
 		DiffuseStrength = new DoubleProperty(this, "DiffuseStrength", 0.6);
 		SpecularStrength = new DoubleProperty(this, "SpecularStrength", 0.9);

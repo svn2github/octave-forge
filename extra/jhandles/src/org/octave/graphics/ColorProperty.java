@@ -120,7 +120,7 @@ public class ColorProperty extends Property
 
 	protected Object getInternal()
 	{
-		return getArray();
+		return (isSet() ? getArray() : pvalue);
 	}
 
 	public Color getColor()

@@ -36,6 +36,8 @@ public class LineObject extends GraphicObject
 	StringProperty KeyLabel;
 	MarkerProperty Marker;
 	DoubleProperty MarkerSize;
+	ColorProperty MarkerEdgeColor;
+	ColorProperty MarkerFaceColor;
 
 	public LineObject(HandleObject parent)
 	{
@@ -50,6 +52,8 @@ public class LineObject extends GraphicObject
 		KeyLabel = new StringProperty(this, "KeyLabel", "");
 		Marker = new MarkerProperty(this, "Marker");
 		MarkerSize = new DoubleProperty(this, "MarkerSize");
+		MarkerEdgeColor = new ColorProperty(this, "MarkerEdgeColor", new String[] {"none", "auto"});
+		MarkerFaceColor = new ColorProperty(this, "MarkerFaceColor", new String[] {"none", "auto"});
 
 		if (ZData.getArray().length > 0)
 			ZLimInclude.reset("on");

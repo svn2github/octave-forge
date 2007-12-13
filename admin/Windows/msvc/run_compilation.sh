@@ -2221,7 +2221,7 @@ function install_forge_packages
           else
             auto_=$auto
           fi
-          "$octave_prefix/bin/octave.exe" -q -f -H --eval "page_screen_output(0); pkg install $auto_ -verbose $packpack"
+          TERM=vt100 "$octave_prefix/bin/octave.exe" -q -f -H --eval "page_screen_output(0); pkg install $auto_ -verbose $packpack"
         fi)
       found=`find "$oforge_prefix" -type d -a -name "$pack-*" -maxdepth 1`
       if test ! -z "$found"; then
@@ -2235,8 +2235,8 @@ function install_forge_packages
   return 0
 }
 
-extra_pkgs="fpl msh bim civil-engineering integration java jhandles mapping nan secs1d secs2d symband triangular tsa windows"
-main_pkgs="signal audio combinatorics communications control econometrics fixed general gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp odepkg optim outliers physicalconstants plot specfun special-matrix sockets splines statistics strings struct symbolic time"
+extra_pkgs="fpl msh bim civil-engineering integration java mapping nan secs1d secs2d symband triangular tsa windows jhandles"
+main_pkgs="signal audio combinatorics communications control econometrics fixed general gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp optim outliers physicalconstants plot specfun special-matrix sockets splines statistics strings struct symbolic time odepkg"
 lang_pkgs="pt_br"
 nonfree_pkgs="arpack"
 

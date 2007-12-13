@@ -687,11 +687,11 @@ demo odebdi\n\
   octave_idx_type IDID = 1;
   octave_idx_type LOUT = 42; // Logical output channel "not opened"
   octave_idx_type LWORK = 32*N+2*N*N+3;
-  double WORK[LWORK];
+  OCTAVE_LOCAL_BUFFER (double, WORK, LWORK);
   for (octave_idx_type vcnt = 0; vcnt < LWORK; vcnt++)
     WORK[vcnt] = 0.0;
   octave_idx_type LIWORK = N+14;
-  octave_idx_type IWORK[LIWORK];
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, IWORK, LIWORK);
   for (octave_idx_type vcnt = 0; vcnt < LIWORK; vcnt++)
     IWORK[vcnt] = 0;
   octave_idx_type MBND[4] = {N, N, N, N};

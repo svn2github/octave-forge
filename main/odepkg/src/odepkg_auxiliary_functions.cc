@@ -434,11 +434,11 @@ octave_idx_type odepkg_auxiliary_solstore
   // Now have a look at the vdeci variable and do 0..initialization,
   // 1..store other elements, 2..return stored elements to the caller
   // function, 3..delete the last line of the matrices
+  static ColumnVector vtstore(1);
+  static Matrix vystore;
+
   switch (vdeci) {
     case 0:
-      static ColumnVector vtstore(1);
-      static Matrix vystore;
-
       // Keep the resize command here because otherwise we stack the
       // new values of t even if we have already started a new call to
       // the solver

@@ -1,4 +1,28 @@
+/*
+ * jhandles 
+ *
+ * Copyright (C) 2007 Michael Goffioul 
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ *
+ */
+
 package org.octave.graphics;
+
+import java.awt.Color;
+import javax.media.opengl.*;
 
 public class GL2PS
 {
@@ -85,4 +109,138 @@ public class GL2PS
 	public static native int gl2psEndViewport();
 	public static native int gl2psLineWidth(float w);
 	public static native int gl2psSpecial(int format, String str, int moveTo);
+
+	public static void drawMarkers(GL gl, MarkerProperty m, DoubleProperty ms, double[][] data,
+			int[] clip, int n, Color lc, float lw, Color fc)
+	{
+		String s = makeMarkerPSString(m, ms, lc, lw, fc);
+
+		double[] x = data[0];
+		double[] y = data[1];
+		double[] z = (data.length > 2 ? data[2] : new double[0]);
+
+		if (z.length == 0)
+		{
+			for (int i=0; i<n; i++)
+			{
+				if (clip[i] == 64)
+				{
+					gl.glRasterPos2d(x[i], y[i]);
+					gl2psSpecial(GL2PS_PS, s, 1);
+				}
+			}
+		}
+		else
+		{
+			for (int i=0; i<n; i++)
+			{
+				if (clip[i] == 64)
+				{
+					gl.glRasterPos3d(x[i], y[i], z[i]);
+					gl2psSpecial(GL2PS_PS, s, 1);
+				}
+			}
+		}
+	}
+	
+	public static String makeMarkerPSString(MarkerProperty p, DoubleProperty s, Color lc, float lw, Color fc)
+	{
+		String str;
+		double sz2 = s.doubleValue()/2, sz = s.doubleValue();
+
+		str = ("gsave " + lw + " W [] 0 setdash\n");
+		switch (p.getValue().charAt(0))
+		{
+			case 's':
+				str += ((-sz2) + " " + (-sz2) + " rmoveto SP newpath RP\n");
+				str += ((-sz) + " 0 0 " + sz + " " + sz + " 0 3 {rlineto} repeat closepath\n");
+				break;
+			case 'o':
+				str += ("currentpoint newpath " + sz2 + " 0 360 arc\n");
+				break;
+			case 'x':
+				str += ((-sz2) + " " + (-sz2) + " rmoveto SP newpath RP\n");
+				str += (sz + " " + sz + " rlineto\n0 " + (-sz) + " rmoveto " + (-sz) + " " + sz + " rlineto\n");
+				fc = null;
+				break;
+			case '+':
+				str += ((-sz2) + " 0 rmoveto SP newpath RP\n");
+				str += (sz + " 0 rlineto " + (-sz2) + " " + (-sz2) + " rmoveto\n");
+				str += ("0 " + sz + " rlineto\n");
+				fc = null;
+				break;
+			case '<':
+				str += ((-2*sz/3) + " 0 rmoveto SP newpath RP\n");
+				str += (sz + " " + sz2 + " rlineto 0 " + (-sz) + " rlineto closepath\n");
+				break;
+			case '>':
+				str += ((2*sz/3) + " 0 rmoveto SP newpath RP\n");
+				str += ((-sz) + " " + sz2 + " rlineto 0 " + (-sz) + " rlineto closepath\n");
+				break;
+			case '^':
+				str += ("0 " + (2*sz/3) + " rmoveto SP newpath RP\n");
+				str += ((-sz2) + " " + (-sz) + " rlineto " + sz + " 0 rlineto closepath\n");
+				break;
+			case 'v':
+				str += ("0 " + (-2*sz/3) + " rmoveto SP newpath RP\n");
+				str += ((-sz2) + " " + sz + " rlineto " + sz + " 0 rlineto closepath\n");
+				break;
+			case 'd':
+				str += ((-sz2) + " 0 rmoveto SP newpath RP\n");
+				str += ((-sz2) + " " + (-sz2) + " "+  sz2 + " " + (-sz2) + " " + sz2 + " " + sz2 + " 3 {rlineto} repeat closepath\n");
+				break;
+			case '*':
+				str += ("0 " + (-sz2) + " rmoveto SP newpath RP\n");
+				str += ("0 " + sz + " rlineto\n");
+				str += ((-sz2) + " " + (-sz2) + " rmoveto " + sz + " 0 rlineto\n");
+				str += ((-sz/6) + " " + (-sz/3) + " rmoveto " + (-2*sz/3) + " " + (2*sz/3) + " rlineto\n");
+				str += ((2*sz/3) + " 0 rmoveto " + (-2*sz/3) + " " + (-2*sz/3) + " rlineto\n");
+				fc = null;
+				break;
+			case '.':
+				str += ("currentpoint newpath 1 0 360 arc\n");
+				if (lc == null)
+					return "";
+				fc = lc;
+				lc = null;
+				break;
+			case 'p':
+				double px = 0, py = sz/2+1;
+				boolean pflag = true;
+				str += (px + " " + py + " rmoveto SP newpath RP\n");
+				for (int i=0; i<10; i++, pflag=!pflag)
+				{
+					double r = (pflag ? sz/2+1 : sz/4);
+					double angle = Math.PI/2 + 2*i*Math.PI/10.0;
+					double x1 = r*Math.cos(angle), y1 = r*Math.sin(angle);
+					str += ((x1-px) + " " + (y1-py) + " rlineto\n");
+					px = x1;
+					py = y1;
+				}
+				str += "closepath\n";
+				break;
+			case 'h':
+				double hx = 0, hy = sz/2+1;
+				boolean hflag = true;
+				str += (hx + " " + hy + " rmoveto SP newpath RP\n");
+				for (int i=0; i<12; i++, hflag=!hflag)
+				{
+					double r = (hflag ? sz/2 : sz/4)+1;
+					double angle = Math.PI/2 + 2*i*Math.PI/12.0;
+					double x1 = r*Math.cos(angle), y1 = r*Math.sin(angle);
+					str += ((x1-hx) + " " + (y1-hy) + " rlineto\n");
+					hx = x1;
+					hy = y1;
+				}
+				str += "closepath\n";
+				break;
+		}
+		if (fc != null)
+			str += (fc.getRed()/255.0 + " " + fc.getGreen()/255.0 + " " + fc.getBlue()/255.0 + " C gsave fill grestore\n");
+		if (lc != null)
+			str += (lc.getRed()/255.0 + " " + lc.getGreen()/255.0 + " " + lc.getBlue()/255.0 + " C stroke\n");
+		str += "grestore\n";
+
+		return str;
+	}	
 }

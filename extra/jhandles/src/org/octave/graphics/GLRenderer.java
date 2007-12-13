@@ -272,7 +272,7 @@ public class GLRenderer implements Renderer
 			setLineStyle("-", false);
 		}
 
-		if (line.Marker.isSet() && true)
+		if (line.Marker.isSet() && false)
 		{
 			MarkerProperty.Marker m = line.Marker.makeMarker(line.MarkerSize.doubleValue(), line.LineWidth.doubleValue()); 
 			int w = m.w, h = m.h, xhot = m.xhot, yhot = m.yhot;
@@ -306,48 +306,93 @@ public class GLRenderer implements Renderer
 			}
 			gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 4);
 		}
-		else if (line.Marker.isSet())
+		else if (line.Marker.isSet() && !(line.MarkerEdgeColor.is("none") && line.MarkerFaceColor.is("none")))
 		{
-			gl.glMatrixMode(GL.GL_PROJECTION);
-			gl.glPushMatrix();
-			gl.glLoadIdentity();
-			gl.glOrtho(0, d.getWidth(), d.getHeight(), 0, xZ1, xZ2);
-			gl.glMatrixMode(GL.GL_MODELVIEW);
-			gl.glPushMatrix();
-			setClipping(false);
+			Color lc = null, fc = null;
 
-			setColor(line.LineColor.getColor());
-			setLineWidth(line.LineWidth.floatValue());
+			if (line.MarkerEdgeColor.isSet())
+				lc = line.MarkerEdgeColor.getColor();
+			else if (line.MarkerEdgeColor.is("auto"))
+				lc = line.LineColor.getColor();
+			if (line.MarkerFaceColor.isSet())
+				fc = line.MarkerFaceColor.getColor();
+			else if (line.MarkerFaceColor.is("auto"))
+				fc = line.LineColor.getColor();
 
-			int ID = makeMarkerList(line.Marker, line.MarkerSize);
-			double[] tmp = new double[4];
-
-			if (z.length == 0)
-			{
-				for (int i=0; i<n; i++)
-				{
-					if (clip[i] == 64)
-					{
-						xForm.transform(x[i], y[i], 0.0, tmp, 0);
-						gl.glLoadIdentity();
-						gl.glTranslated(tmp[0], tmp[1], -tmp[2]);
-						gl.glCallList(ID);
-					}
-				}
-			}
-			gl.glDeleteLists(ID, 1);
-
-			setLineWidth(0.5f);
-
-			gl.glMatrixMode(GL.GL_MODELVIEW);
-			gl.glPopMatrix();
-			gl.glMatrixMode(GL.GL_PROJECTION);
-			gl.glPopMatrix();
-			setClipping(line.Clipping.isSet());
+			drawMarkers(line.Marker, line.MarkerSize, new double[][] { x, y, z },
+					clip, n, lc, line.LineWidth.floatValue(), fc);
 		}
 	}
 
-	public int makeMarkerList(MarkerProperty p, DoubleProperty s)
+	public void drawMarkers(MarkerProperty m, DoubleProperty ms, double[][] data, int[] clip, int n, Color lc, float lw, Color fc)
+	{
+		if (isGL2PS)
+		{
+			GL2PS.drawMarkers(gl, m, ms, data, clip, n, lc, lw, fc);
+			return;
+		}
+
+		boolean hasClip = hasClipping();
+		boolean doFill = (fc != null), doLine = (lc != null);
+
+		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
+		gl.glOrtho(0, d.getWidth(), d.getHeight(), 0, xZ1, xZ2);
+		gl.glMatrixMode(GL.GL_MODELVIEW);
+		gl.glPushMatrix();
+		setClipping(false);
+		if (doFill)
+			gl.glPolygonOffset(po, po);
+
+		if (doLine)
+			setColor(lc);
+		else if (doFill)
+			setColor(fc);
+		setLineWidth(lw);
+
+		int ID = (doLine ? makeMarkerList(m, ms, false) : 0);
+		int ID2 = (doFill ? makeMarkerList(m, ms, true) : 0);
+		double[] tmp = new double[4];
+
+		double[] x = data[0];
+		double[] y = data[1];
+		double[] z = (data.length > 2 ? data[2] : new double[0]);
+		boolean use_clip = (clip != null && clip.length == x.length), use_z = (z.length > 0);
+
+		for (int i=0; i<n; i++)
+		{
+			if (use_clip && clip[i] == 64)
+			{
+				xForm.transform(x[i], y[i], (use_z ? z[i] : 0.0), tmp, 0);
+				gl.glLoadIdentity();
+				gl.glTranslated(tmp[0], tmp[1], -tmp[2]);
+				if (doFill)
+				{
+					if (doLine)
+						setColor(fc);
+					setPolygonOffset(true);
+					gl.glCallList(ID2);
+					setPolygonOffset(false);
+					if (doLine)
+						setColor(lc);
+				}
+				if (doLine)
+					gl.glCallList(ID);
+			}
+		}
+		gl.glDeleteLists(ID, 1);
+
+		setLineWidth(0.5f);
+
+		gl.glMatrixMode(GL.GL_MODELVIEW);
+		gl.glPopMatrix();
+		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glPopMatrix();
+		setClipping(hasClip);
+	}
+
+	public int makeMarkerList(MarkerProperty p, DoubleProperty s, boolean filled)
 	{
 		int ID = gl.glGenLists(1);
 		double sz = s.doubleValue() * Utils.getScreenResolution() / 72.0;
@@ -356,27 +401,126 @@ public class GLRenderer implements Renderer
 		switch (p.getValue().charAt(0))
 		{
 			case 's':
-				gl.glBegin(GL.GL_LINE_STRIP);
+				gl.glBegin((filled ? GL.GL_POLYGON : GL.GL_LINE_LOOP));
 				gl.glVertex2d(-sz/2, -sz/2);
 				gl.glVertex2d(-sz/2,  sz/2);
 				gl.glVertex2d( sz/2,  sz/2);
 				gl.glVertex2d( sz/2, -sz/2);
-				gl.glVertex2d(-sz/2, -sz/2);
 				gl.glEnd();
 				break;
 			case 'o':
 				double ang_step = Math.PI / 5;
-				gl.glBegin(GL.GL_LINE_LOOP);
+				gl.glBegin((filled ? GL.GL_POLYGON : GL.GL_LINE_LOOP));
 				for (double ang = 0; ang < (2*Math.PI); ang += ang_step)
 					gl.glVertex2d(sz*Math.cos(ang)/2, sz*Math.sin(ang)/2);
 				gl.glEnd();
 				break;
 			case '+':
-				gl.glBegin(GL.GL_LINES);
-				gl.glVertex2d(0,    -sz/2);
-				gl.glVertex2d(0,     sz/2);
-				gl.glVertex2d(-sz/2,    0);
-				gl.glVertex2d( sz/2,    0);
+				if (!filled)
+				{
+					gl.glBegin(GL.GL_LINES);
+					gl.glVertex2d(0,    -sz/2);
+					gl.glVertex2d(0,     sz/2);
+					gl.glVertex2d(-sz/2,    0);
+					gl.glVertex2d( sz/2,    0);
+					gl.glEnd();
+				}
+				break;
+			case 'x':
+				if (!filled)
+				{
+					gl.glBegin(GL.GL_LINES);
+					gl.glVertex2d(-sz/2, -sz/2);
+					gl.glVertex2d( sz/2,  sz/2);
+					gl.glVertex2d( sz/2, -sz/2);
+					gl.glVertex2d(-sz/2,  sz/2);
+					gl.glEnd();
+				}
+				break;
+			case '<':
+				gl.glBegin((filled ? GL.GL_POLYGON : GL.GL_LINE_LOOP));
+				gl.glVertex2d(-2*sz/3, 0);
+				gl.glVertex2d(sz/3,    sz/2);
+				gl.glVertex2d(sz/3,   -sz/2);
+				gl.glEnd();
+				break;
+			case '>':
+				gl.glBegin((filled ? GL.GL_POLYGON : GL.GL_LINE_LOOP));
+				gl.glVertex2d(2*sz/3, 0);
+				gl.glVertex2d(-sz/3,  sz/2);
+				gl.glVertex2d(-sz/3, -sz/2);
+				gl.glEnd();
+				break;
+			case 'v':
+				gl.glBegin((filled ? GL.GL_POLYGON : GL.GL_LINE_LOOP));
+				gl.glVertex2d( 0,     2*sz/3);
+				gl.glVertex2d( sz/2, -sz/3);
+				gl.glVertex2d(-sz/2, -sz/3);
+				gl.glEnd();
+				break;
+			case '^':
+				gl.glBegin((filled ? GL.GL_POLYGON : GL.GL_LINE_LOOP));
+				gl.glVertex2d( 0,   -2*sz/3);
+				gl.glVertex2d( sz/2, sz/3);
+				gl.glVertex2d(-sz/2, sz/3);
+				gl.glEnd();
+				break;
+			case 'd':
+				gl.glBegin((filled ? GL.GL_POLYGON : GL.GL_LINE_LOOP));
+				gl.glVertex2d(-sz/2, 0);
+				gl.glVertex2d( 0,    sz/2);
+				gl.glVertex2d( sz/2, 0);
+				gl.glVertex2d( 0,   -sz/2);
+				gl.glEnd();
+				break;
+			case '*':
+				if (!filled)
+				{
+					gl.glBegin(GL.GL_LINES);
+					gl.glVertex2d( sz/2, 0);
+					gl.glVertex2d(-sz/2, 0);
+					gl.glVertex2d(0,  sz/2);
+					gl.glVertex2d(0, -sz/2);
+					gl.glVertex2d(-sz/3,  sz/3);
+					gl.glVertex2d( sz/3, -sz/3);
+					gl.glVertex2d( sz/3,  sz/3);
+					gl.glVertex2d(-sz/3, -sz/3);
+					gl.glEnd();
+				}
+				break;
+			case '.':
+				if (!filled)
+				{
+					gl.glPointSize(3.0f);
+					gl.glBegin(GL.GL_POINTS);
+					gl.glVertex2i(0, 0);
+					gl.glEnd();
+				}
+				break;
+			case 'p':
+				boolean pflag = true;
+				gl.glBegin((filled ? GL.GL_TRIANGLE_FAN : GL.GL_LINE_LOOP));
+				if (filled)
+					gl.glVertex2i(0, 0);
+				for (int i=0; i<=10; i++, pflag=!pflag)
+				{
+					double r = (pflag ? sz/2+1 : sz/5);
+					double angle = 3*Math.PI/2 + 2*i*Math.PI/10.0;
+					gl.glVertex2d(r*Math.cos(angle), r*Math.sin(angle));
+				}
+				gl.glEnd();
+				break;
+			case 'h':
+				boolean hflag = true;
+				gl.glBegin((filled ? GL.GL_TRIANGLE_FAN : GL.GL_LINE_LOOP));
+				if (filled)
+					gl.glVertex2i(0, 0);
+				for (int i=0; i<=12; i++, hflag=!hflag)
+				{
+					double r = (hflag ? sz/2+1 : sz/4);
+					double angle = 3*Math.PI/2 + 2*i*Math.PI/12.0;
+					gl.glVertex2d(r*Math.cos(angle), r*Math.sin(angle));
+				}
 				gl.glEnd();
 				break;
 		}
@@ -384,7 +528,7 @@ public class GLRenderer implements Renderer
 
 		return ID;
 	}
-	
+
 	public void draw(LightObject light)
 	{
 		Color c = light.LightColor.getColor();
@@ -435,6 +579,7 @@ public class GLRenderer implements Renderer
 		gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 4);
 	}
 
+	/*
 	private void drawGL2PSText(String txt, double[] pos, int halign, int valign, float angle, float margin,
 			boolean offsetmargin, float linewidth, Color linecolor, String linepattern, Color fillcolor,
 			boolean useZBuffer)
@@ -507,6 +652,7 @@ public class GLRenderer implements Renderer
 				gl.glEnable(GL.GL_DEPTH_TEST);
 		}
 	}
+	*/
 
 	public Rectangle drawText(String txt, double[] pos, int halign, int valign)
 	{
@@ -525,6 +671,7 @@ public class GLRenderer implements Renderer
 			SimpleTextEngine.PSTextRenderer ps = new SimpleTextEngine.PSTextRenderer(buf,
 					font.getName(), Math.round(f*font.getSize()), font.getStyle(), Color.black);
 
+			buf.append("gsave\n");
 			gl.glRasterPos3d(pos[0], pos[1], pos[2]);
 			switch (valign)
 			{
@@ -533,6 +680,7 @@ public class GLRenderer implements Renderer
 			}
 			content.align = halign;
 			content.render(ps);
+			buf.append("grestore\n");
 			GL2PS.gl2psSpecial(GL2PS.GL2PS_PS, buf.toString(), 1);
 		}
 		return dim;

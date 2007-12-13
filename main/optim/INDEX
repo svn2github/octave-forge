@@ -13,6 +13,7 @@ Data fitting
  expfit expdemo
  wpolyfit wpolyfitdemo 
  leasqr leasqrdemo
+ LinearRegression
 Root finding
  fzero 
  fsolve fsolve_options

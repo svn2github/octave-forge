@@ -56,6 +56,8 @@ public class LegendObject extends AxesObject
 			item.marker.LineColor.reset(line.get("Color"));
 			item.marker.LineStyle.reset("none");
 			item.marker.Marker.reset(line.get("Marker"));
+			item.marker.MarkerEdgeColor.reset(line.get("MarkerEdgeColor"));
+			item.marker.MarkerFaceColor.reset(line.get("MarkerFaceColor"));
 			item.marker.validate();
 		}
 		catch (PropertyException e) {}

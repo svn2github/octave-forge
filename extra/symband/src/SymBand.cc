@@ -586,7 +586,7 @@ DEFUN_DLD (SBEig, args, nargout , "[...] = SBEig (...)\n\
   //  int tmpnargout;
 
   int nargin = args.length ();
-  if ((nargin <2)&&(nargin>4)) {
+  if ((nargin <2)||(nargin>4)) {
     print_usage ();
     return retval;
   }

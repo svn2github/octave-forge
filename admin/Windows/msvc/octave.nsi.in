@@ -652,6 +652,9 @@ end_octplot:
 jhandles:
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 3" "Flags" ""
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 4" "Flags" "NOTABSTOP"
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 1" "State" 0
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 3" "State" 1
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 5" "State" 0
   Goto end_jhandles
 no_jhandles:
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 3" "Flags" "DISABLED"

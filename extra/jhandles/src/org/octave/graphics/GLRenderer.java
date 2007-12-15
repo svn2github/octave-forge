@@ -498,29 +498,27 @@ public class GLRenderer implements Renderer
 				}
 				break;
 			case 'p':
-				boolean pflag = true;
+				double[][] ppts = Utils.getPentagramPoints();
+				double pr = (sz/2+1);
 				gl.glBegin((filled ? GL.GL_TRIANGLE_FAN : GL.GL_LINE_LOOP));
 				if (filled)
 					gl.glVertex2i(0, 0);
-				for (int i=0; i<=10; i++, pflag=!pflag)
-				{
-					double r = (pflag ? sz/2+1 : sz/5);
-					double angle = 3*Math.PI/2 + 2*i*Math.PI/10.0;
-					gl.glVertex2d(r*Math.cos(angle), r*Math.sin(angle));
-				}
+				for (int i=0; i<ppts.length; i++)
+					gl.glVertex2d(pr*ppts[i][0], -pr*ppts[i][1]);
+				if (filled)
+					gl.glVertex2d(pr*ppts[0][0], -pr*ppts[0][1]);
 				gl.glEnd();
 				break;
 			case 'h':
-				boolean hflag = true;
+				double[][] hpts = Utils.getHexagramPoints();
+				double hr = (sz/2+1);
 				gl.glBegin((filled ? GL.GL_TRIANGLE_FAN : GL.GL_LINE_LOOP));
 				if (filled)
 					gl.glVertex2i(0, 0);
-				for (int i=0; i<=12; i++, hflag=!hflag)
-				{
-					double r = (hflag ? sz/2+1 : sz/4);
-					double angle = 3*Math.PI/2 + 2*i*Math.PI/12.0;
-					gl.glVertex2d(r*Math.cos(angle), r*Math.sin(angle));
-				}
+				for (int i=0; i<hpts.length; i++)
+					gl.glVertex2d(hr*hpts[i][0], -hr*hpts[i][1]);
+				if (filled)
+					gl.glVertex2d(hr*hpts[0][0], -hr*hpts[0][1]);
 				gl.glEnd();
 				break;
 		}

@@ -205,14 +205,12 @@ public class GL2PS
 				lc = null;
 				break;
 			case 'p':
-				double px = 0, py = sz/2+1;
-				boolean pflag = true;
+				double[][] pts = Utils.getPentagramPoints();
+				double pr = (sz/2+1), px = pr*pts[0][0], py = pr*pts[0][1];
 				str += (px + " " + py + " rmoveto SP newpath RP\n");
-				for (int i=0; i<10; i++, pflag=!pflag)
+				for (int i=1; i<pts.length; i++)
 				{
-					double r = (pflag ? sz/2+1 : sz/4);
-					double angle = Math.PI/2 + 2*i*Math.PI/10.0;
-					double x1 = r*Math.cos(angle), y1 = r*Math.sin(angle);
+					double x1 = pr*pts[i][0], y1 = pr*pts[i][1];
 					str += ((x1-px) + " " + (y1-py) + " rlineto\n");
 					px = x1;
 					py = y1;
@@ -220,14 +218,12 @@ public class GL2PS
 				str += "closepath\n";
 				break;
 			case 'h':
-				double hx = 0, hy = sz/2+1;
-				boolean hflag = true;
+				double[][] hpts = Utils.getHexagramPoints();
+				double hr = (sz/2+1), hx = hr*hpts[0][0], hy = hr*hpts[0][1];
 				str += (hx + " " + hy + " rmoveto SP newpath RP\n");
-				for (int i=0; i<12; i++, hflag=!hflag)
+				for (int i=1; i<hpts.length; i++)
 				{
-					double r = (hflag ? sz/2 : sz/4)+1;
-					double angle = Math.PI/2 + 2*i*Math.PI/12.0;
-					double x1 = r*Math.cos(angle), y1 = r*Math.sin(angle);
+					double x1 = hr*hpts[i][0], y1 = hr*hpts[i][1];
 					str += ((x1-hx) + " " + (y1-hy) + " rlineto\n");
 					hx = x1;
 					hy = y1;

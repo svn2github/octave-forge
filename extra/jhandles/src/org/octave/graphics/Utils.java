@@ -313,4 +313,48 @@ public class Utils
 	{
 		return hFmt.format(handle);
 	}
+
+	private static double[][] pentagramPoints;
+
+	public static double[][] getPentagramPoints()
+	{
+		if (pentagramPoints == null)
+		{
+			pentagramPoints = new double[10][2];
+
+			double f = Math.sin(Math.PI/10)/Math.sin(3*Math.PI/10);
+			boolean flag = true;
+			for (int i=0; i<10; i++, flag=!flag)
+			{
+				double ang = Math.PI/2 + 2*i*Math.PI/10;
+				double r = (flag ? 1 : f);
+				pentagramPoints[i][0] = r*Math.cos(ang);
+				pentagramPoints[i][1] = r*Math.sin(ang);
+			}
+		}
+
+		return pentagramPoints;
+	}
+	
+	private static double[][] hexagramPoints;
+
+	public static double[][] getHexagramPoints()
+	{
+		if (hexagramPoints == null)
+		{
+			hexagramPoints = new double[12][2];
+
+			double f = 1/Math.sqrt(3);
+			boolean flag = true;
+			for (int i=0; i<12; i++, flag=!flag)
+			{
+				double ang = Math.PI/2 + 2*i*Math.PI/12;
+				double r = (flag ? 1 : f);
+				hexagramPoints[i][0] = r*Math.cos(ang);
+				hexagramPoints[i][1] = r*Math.sin(ang);
+			}
+		}
+
+		return hexagramPoints;
+	}
 }

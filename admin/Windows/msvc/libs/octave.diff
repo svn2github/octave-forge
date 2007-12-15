@@ -1,13 +1,13 @@
 Index: octMakefile.in
 ===================================================================
 RCS file: /cvs/octave/octMakefile.in,v
-retrieving revision 1.219
-diff -c -p -r1.219 octMakefile.in
-*** octMakefile.in	27 Mar 2007 16:05:15 -0000	1.219
---- octMakefile.in	13 Jul 2007 07:58:38 -0000
-*************** octave-config: octave-config.in Makeconf
-*** 81,90 ****
---- 81,104 ----
+retrieving revision 1.232
+diff -c -r1.232 octMakefile.in
+*** octMakefile.in	13 Dec 2007 21:35:36 -0000	1.232
+--- octMakefile.in	15 Dec 2007 18:58:54 -0000
+***************
+*** 97,106 ****
+--- 97,120 ----
   	@$(do-subst-default-vals)
   	chmod a+rx $@
   
@@ -18,7 +18,7 @@ diff -c -p -r1.219 octMakefile.in
 + 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
 + 	$(ALL_LDFLAGS) -o $@ octave-config.o
 + 
-  mkoctfile: mkoctfile.in Makeconf octMakefile
+  mkoctfile: mkoctfile.in Makeconf octMakefile $(top_srcdir)/src/version.h
   	@$(do-subst-config-vals)
   	chmod a+rx $@
   

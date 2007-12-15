@@ -40,15 +40,15 @@ function tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_color_spe
     # low-level patch object creation
     if (vertical)
       if (have_color_spec)
-        p = patch (bs, xb(:,:,i), yb(:,:,i), newargs {:});
+        p = patch (bs, xb(:,:,i), yb(:,:,i), newargs {:}, "parent", bs);
       else
-        p = patch (bs, xb(:,:,i), yb(:,:,i), "cdata", i * ones(1, ny), "facecolor", "flat", newargs {:});
+        p = patch (bs, xb(:,:,i), yb(:,:,i), "cdata", i * ones(1, ny), "facecolor", "flat", newargs {:}, "parent", bs);
       endif
     else
       if (have_color_spec)
-        p = patch (bs, yb(:,:,i), xb(:,:,i), newargs {:});
+        p = patch (bs, yb(:,:,i), xb(:,:,i), newargs {:}, "parent", bs);
       else
-        p = patch (bs, yb(:,:,i), xb(:,:,i), "cdata", i * ones(1, ny) , "facecolor", "flat", newargs {:});
+        p = patch (bs, yb(:,:,i), xb(:,:,i), "cdata", i * ones(1, ny) , "facecolor", "flat", newargs {:}, "parent", bs);
       endif
     endif
     # high-level properties creation

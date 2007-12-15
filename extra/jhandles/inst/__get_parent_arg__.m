@@ -15,22 +15,19 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function [ h ] = __jhandles_go_patch (ax, varargin)
+function [ p, args ] = __get_parent_arg__ (p, args)
 
-  [ax, args] = __get_parent_arg__ (ax, varargin);
-  ax_obj = __get_object__ (ax);
-
-  p_obj = java_new ("org.octave.graphics.PatchObject", ax_obj);
-  tmp = p_obj.getHandle ();
-  if (length (args) >= 0)
-    set (tmp, args{:});
-  else
-    __request_drawnow__;
+  idx = find (strcmp (args, "Parent"));
+  if (isempty (idx))
+    idx = find (strcmp (args, "parent"));
   endif
-  p_obj.validate ();
 
-  if (nargout > 0)
-    h = tmp;
+  if (! isempty (idx) && length (args) > idx(1))
+    p = args{idx(1)+1};
+    args(idx(1):idx(1)+1) = [];
+  elseif (length (args) > 0 && ishandle (args{1}))
+    p = args{1};
+    args(1) = [];
   endif
 
 endfunction

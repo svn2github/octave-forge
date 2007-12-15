@@ -96,4 +96,7 @@ end_try_catch
 
 clear oplot_path scite_path msys_path gf line
 
+# Set gnuplot default terminal to wxt
+putenv ("GNUTERM", "wxt");
+
 fprintf ("\n");

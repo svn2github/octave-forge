@@ -52,10 +52,10 @@ resultCell
 
 %% Close the secondary process
 if (is_multiprocess)
-	fclose (in0);
+	fclose(in0)
 	fclose(out0)
 %	pclose(pid0) % doesn't work with Octave-2.9.16
-	[err, msg] = kill (pid0, 2)
+%	[err, msg] = kill (pid0, 2)
 end
 
 

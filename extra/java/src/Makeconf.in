@@ -17,6 +17,7 @@ libdir = @libdir@
 datadir = @datadir@
 infodir = @infodir@
 includedir = @includedir@
+datarootdir = @datarootdir@
 
 DESTDIR =
 

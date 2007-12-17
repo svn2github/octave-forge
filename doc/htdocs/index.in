@@ -65,6 +65,9 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>general bug fixes and improvements.</li>
 </ul>
 </dd>
+<dt>December 14, 2007</dt>
+<dd>Updated Windows installer to Octave 2.9.19.
+</dd>
 <dt>December 08, 2007</dt>
 <dd>Updated the OS X binary release to Octave.app 2.9.18.
 </dd>

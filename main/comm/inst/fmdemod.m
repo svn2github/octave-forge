@@ -21,10 +21,10 @@
 ## @end deftypefn
 
 
-function m = my_fmdemod(s,fc,fs)
+function m = fmdemod(s,fc,fs)
 	 if (nargin != 3)
-		usage ("ammod(x,fs,fc)");
+		usage ("fmdemod(x,fs,fc)");
 	endif
 	
 	ds = diff(s);
-	m = my_amdemod(abs(ds),fc,fs);
+	m = amdemod(abs(ds),fc,fs);

@@ -25,7 +25,7 @@ function [y] = ammod(x,fc,fs)
     if (nargin != 3)
 		usage ("ammod(x,fs,fc)");
 	endif
+	
     l = length(x);
-    K = 1./max(abs(x));
-    t=linspace(0,l.*fs,l);
-    y = (1+K.*x).*cos(2.*pi.*fc.*t./fs);
+    t=0:1./fs:(l-1)./fs;
+    y = x.*cos(2.*pi.*fc.*t);

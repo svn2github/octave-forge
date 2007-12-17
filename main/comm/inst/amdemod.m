@@ -25,8 +25,7 @@ function [m] = amdemod(s,fc,fs)
     if(nargin ~= 3)
 	usage("m = amdemod(s,fc,fs)");
     end
-
-    e = abs(s);
-    [b a] = butter(5,fc./fs);
-    m = filter(b,a,e);
-    m = m-mean(m);
+    t = 0:1./fs:(length(s)-1)./fs;
+    e = s.*cos(2.*pi.*fc.*t);
+    [b a] = butter(5,fc.*2./fs);
+    m = filtfilt(b,a,e).*2;

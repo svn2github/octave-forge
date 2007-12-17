@@ -20,12 +20,12 @@
 ## @seealso{ammod,fmdemod,amdemod}
 ## @end deftypefn
 
-function [s] = my_fmmod(m,fc,fs,freqdev)
+function [s] = fmmod(m,fc,fs,freqdev)
 	if(nargin < 3)
 		usage('s = my_fmmod(m,fc,fs,freqdev)');
 	end
 	l = length(m);
-	t=linspace(0,l./fs,l);
-	int_m = cumsum(m);
+	t=0:1./fs:(l-1)./fs;
+	int_m = cumsum(m)./fs;
 	
-	s = cos(2*pi.*fc.*t + freqdev.*int_m);
+	s = cos(2*pi.*fc.*t + 2*pi.*freqdev.*int_m);

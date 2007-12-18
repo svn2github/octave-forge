@@ -47,6 +47,12 @@ public class SurfaceObject extends GraphicObject
 	ArrayProperty VertexNormals;
 	ArrayProperty AlphaData;
 	RadioProperty AlphaDataMapping;
+	MarkerProperty Marker;
+	ColorProperty MarkerEdgeColor;
+	ColorProperty MarkerFaceColor;
+	DoubleProperty MarkerSize;
+	LineStyleProperty LineStyle;
+	DoubleProperty LineWidth;
 
 	public SurfaceObject(HandleObject parent, Matrix xdata, Matrix ydata, Matrix zdata)
 	{
@@ -71,6 +77,12 @@ public class SurfaceObject extends GraphicObject
 		VertexNormals = new ArrayProperty(this, "VertexNormals", new String[] {"double"}, 3, null);
 		AlphaData = new ArrayProperty(this, "AlphaData", new String[] {"double", "byte"}, 2, null);
 		AlphaDataMapping = new RadioProperty(this, "AlphaDataMapping", new String[] {"none", "scaled", "direct"}, "scaled");
+		Marker = new MarkerProperty(this, "Marker", "none");
+		MarkerSize = new DoubleProperty(this, "MarkerSize", 7.0);
+		MarkerEdgeColor = new ColorProperty(this, "MarkerEdgeColor", new String[] {"none", "auto", "flat"}, "auto");
+		MarkerFaceColor = new ColorProperty(this, "MarkerFaceColor", new String[] {"none", "auto", "flat"}, "none");
+		LineStyle = new LineStyleProperty(this, "LineStyle", "-");
+		LineWidth = new DoubleProperty(this, "LineWidth", 0.5);
 
 		ZLimInclude.reset(new Boolean(true));
 		CLimInclude.reset(new Boolean(true));

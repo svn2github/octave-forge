@@ -110,45 +110,65 @@ public class GL2PS
 	public static native int gl2psLineWidth(float w);
 	public static native int gl2psSpecial(int format, String str, int moveTo);
 
-	public static void drawMarkers(GL gl, MarkerProperty m, DoubleProperty ms, double[][] data,
-			int[] clip, int n, Color lc, float lw, Color fc)
+	public static GLRenderer.MarkerDrawer getMarkerDrawer(GL gl)
 	{
-		String s = makeMarkerPSString(m, ms, lc, lw, fc);
+		return new GL2PSMarkerDrawer(gl);
+	}
 
-		double[] x = data[0];
-		double[] y = data[1];
-		double[] z = (data.length > 2 ? data[2] : new double[0]);
+	private static class GL2PSMarkerDrawer implements GLRenderer.MarkerDrawer
+	{
+		String mFormat;
+		boolean dotStyle;
+		boolean canFill;
+		GL gl;
 
-		if (z.length == 0)
+		public GL2PSMarkerDrawer(GL gl)
 		{
-			for (int i=0; i<n; i++)
-			{
-				if (clip[i] == 64)
-				{
-					gl.glRasterPos2d(x[i], y[i]);
-					gl2psSpecial(GL2PS_PS, s, 1);
-				}
-			}
+			this.gl = gl;
+			this.dotStyle = false;
 		}
-		else
+		
+		public void begin(MarkerProperty m, DoubleProperty ms, float lw)
 		{
-			for (int i=0; i<n; i++)
+			mFormat = makeMarkerPSString(m, ms, lw);
+			dotStyle = m.is(".");
+			canFill = (m.is("s") || m.is("o") || m.is("<") || m.is(">") || m.is("v") || m.is("^") ||
+				   m.is("p") || m.is("h") || m.is("d"));
+		}
+		
+		public void end()
+		{
+		}
+		
+		public void draw(double x, double y, double z, double[] lc, double[] fc)
+		{
+			String str = ("gsave\n" + mFormat);
+
+			if (dotStyle)
 			{
-				if (clip[i] == 64)
-				{
-					gl.glRasterPos3d(x[i], y[i], z[i]);
-					gl2psSpecial(GL2PS_PS, s, 1);
-				}
+				fc = lc;
+				lc = null;
 			}
+			else if (!canFill)
+				fc = null;
+
+			if (fc != null)
+				str += (fc[0] + " " + fc[1] + " " + fc[2] + " C gsave fill grestore\n");
+			if (lc != null)
+				str += (lc[0] + " " + lc[1] + " " + lc[2] + " C stroke\n");
+			str += "grestore\n";
+
+			gl.glRasterPos3d(x, y, z);
+			gl2psSpecial(GL2PS_PS, str, 1);
 		}
 	}
 	
-	public static String makeMarkerPSString(MarkerProperty p, DoubleProperty s, Color lc, float lw, Color fc)
+	public static String makeMarkerPSString(MarkerProperty p, DoubleProperty s, float lw)
 	{
 		String str;
 		double sz2 = s.doubleValue()/2, sz = s.doubleValue();
 
-		str = ("gsave " + lw + " W [] 0 setdash\n");
+		str = (lw + " W [] 0 setdash\n");
 		switch (p.getValue().charAt(0))
 		{
 			case 's':
@@ -161,13 +181,11 @@ public class GL2PS
 			case 'x':
 				str += ((-sz2) + " " + (-sz2) + " rmoveto SP newpath RP\n");
 				str += (sz + " " + sz + " rlineto\n0 " + (-sz) + " rmoveto " + (-sz) + " " + sz + " rlineto\n");
-				fc = null;
 				break;
 			case '+':
 				str += ((-sz2) + " 0 rmoveto SP newpath RP\n");
 				str += (sz + " 0 rlineto " + (-sz2) + " " + (-sz2) + " rmoveto\n");
 				str += ("0 " + sz + " rlineto\n");
-				fc = null;
 				break;
 			case '<':
 				str += ((-2*sz/3) + " 0 rmoveto SP newpath RP\n");
@@ -195,14 +213,9 @@ public class GL2PS
 				str += ((-sz2) + " " + (-sz2) + " rmoveto " + sz + " 0 rlineto\n");
 				str += ((-sz/6) + " " + (-sz/3) + " rmoveto " + (-2*sz/3) + " " + (2*sz/3) + " rlineto\n");
 				str += ((2*sz/3) + " 0 rmoveto " + (-2*sz/3) + " " + (-2*sz/3) + " rlineto\n");
-				fc = null;
 				break;
 			case '.':
 				str += ("currentpoint newpath 1 0 360 arc\n");
-				if (lc == null)
-					return "";
-				fc = lc;
-				lc = null;
 				break;
 			case 'p':
 				double[][] pts = Utils.getPentagramPoints();
@@ -231,11 +244,6 @@ public class GL2PS
 				str += "closepath\n";
 				break;
 		}
-		if (fc != null)
-			str += (fc.getRed()/255.0 + " " + fc.getGreen()/255.0 + " " + fc.getBlue()/255.0 + " C gsave fill grestore\n");
-		if (lc != null)
-			str += (lc.getRed()/255.0 + " " + lc.getGreen()/255.0 + " " + lc.getBlue()/255.0 + " C stroke\n");
-		str += "grestore\n";
 
 		return str;
 	}	

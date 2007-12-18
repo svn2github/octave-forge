@@ -57,6 +57,81 @@ public class GLRenderer implements Renderer
 	private double xZ1, xZ2;
 	private Font font;
 
+	public interface MarkerDrawer
+	{
+		public void begin(MarkerProperty m, DoubleProperty ms, float lw);
+		public void end();
+		public void draw(double x, double y, double z, double[] lc, double[] fc);
+	}
+
+	private class GLMarkerDrawer implements MarkerDrawer
+	{
+		private int ID, ID2;
+		private boolean hasClip;
+		private double[] tmp = new double[4];
+
+		public GLMarkerDrawer()
+		{
+		}
+
+		public void begin(MarkerProperty m, DoubleProperty ms, float lw)
+		{
+			gl.glMatrixMode(GL.GL_PROJECTION);
+			gl.glPushMatrix();
+			gl.glLoadIdentity();
+			gl.glOrtho(0, d.getWidth(), d.getHeight(), 0, xZ1, xZ2);
+			gl.glMatrixMode(GL.GL_MODELVIEW);
+			gl.glPushMatrix();
+
+			hasClip = hasClipping();
+			setClipping(false);
+			setLineWidth(lw);
+		
+			ID = makeMarkerList(m, ms, false);
+			ID2 = makeMarkerList(m, ms, true);
+		}
+
+		public void end()
+		{
+			gl.glDeleteLists(ID, 1);
+			gl.glDeleteLists(ID2, 1);
+
+			gl.glMatrixMode(GL.GL_MODELVIEW);
+			gl.glPopMatrix();
+			gl.glMatrixMode(GL.GL_PROJECTION);
+			gl.glPopMatrix();
+			setClipping(hasClip);
+			setLineWidth(0.5f);
+		}
+
+		public void draw(double x, double y, double z, double[] lc, double[] fc)
+		{
+			xForm.transform(x, y, z, tmp, 0);
+			gl.glLoadIdentity();
+			gl.glTranslated(tmp[0], tmp[1], -tmp[2]);
+			if (fc != null)
+			{
+				gl.glColor3d(fc[0], fc[1], fc[2]);
+				setPolygonOffset(true);
+				gl.glCallList(ID2);
+				setPolygonOffset(false);
+			}
+			if (lc != null)
+			{
+				gl.glColor3d(lc[0], lc[1], lc[2]);
+				gl.glCallList(ID);
+			}
+		}
+	}
+
+	public MarkerDrawer getMarkerDrawer()
+	{
+		if (isGL2PS)
+			return GL2PS.getMarkerDrawer(gl);
+		else
+			return new GLMarkerDrawer();
+	}
+
 	public GLRenderer(GLAutoDrawable d)
 	{
 		this.d = d;
@@ -326,70 +401,21 @@ public class GLRenderer implements Renderer
 
 	public void drawMarkers(MarkerProperty m, DoubleProperty ms, double[][] data, int[] clip, int n, Color lc, float lw, Color fc)
 	{
-		if (isGL2PS)
-		{
-			GL2PS.drawMarkers(gl, m, ms, data, clip, n, lc, lw, fc);
-			return;
-		}
-
-		boolean hasClip = hasClipping();
-		boolean doFill = (fc != null), doLine = (lc != null);
-
-		gl.glMatrixMode(GL.GL_PROJECTION);
-		gl.glPushMatrix();
-		gl.glLoadIdentity();
-		gl.glOrtho(0, d.getWidth(), d.getHeight(), 0, xZ1, xZ2);
-		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glPushMatrix();
-		setClipping(false);
-		if (doFill)
-			gl.glPolygonOffset(po, po);
-
-		if (doLine)
-			setColor(lc);
-		else if (doFill)
-			setColor(fc);
-		setLineWidth(lw);
-
-		int ID = (doLine ? makeMarkerList(m, ms, false) : 0);
-		int ID2 = (doFill ? makeMarkerList(m, ms, true) : 0);
-		double[] tmp = new double[4];
-
+		MarkerDrawer md = getMarkerDrawer();
 		double[] x = data[0];
 		double[] y = data[1];
 		double[] z = (data.length > 2 ? data[2] : new double[0]);
 		boolean use_clip = (clip != null && clip.length == x.length), use_z = (z.length > 0);
+		double[] lcv = (lc != null ? new double[] {lc.getRed()/255.0, lc.getGreen()/255.0, lc.getBlue()/255.0} : null);
+		double[] fcv = (fc != null ? new double[] {fc.getRed()/255.0, fc.getGreen()/255.0, fc.getBlue()/255.0} : null);
 
+		md.begin(m, ms, lw);
 		for (int i=0; i<n; i++)
 		{
-			if (use_clip && clip[i] == 64)
-			{
-				xForm.transform(x[i], y[i], (use_z ? z[i] : 0.0), tmp, 0);
-				gl.glLoadIdentity();
-				gl.glTranslated(tmp[0], tmp[1], -tmp[2]);
-				if (doFill)
-				{
-					if (doLine)
-						setColor(fc);
-					setPolygonOffset(true);
-					gl.glCallList(ID2);
-					setPolygonOffset(false);
-					if (doLine)
-						setColor(lc);
-				}
-				if (doLine)
-					gl.glCallList(ID);
-			}
+			if (!use_clip || clip[i] == 64)
+				md.draw(x[i], y[i], (use_z ? z[i] : 0.0), lcv, fcv);
 		}
-		gl.glDeleteLists(ID, 1);
-
-		setLineWidth(0.5f);
-
-		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glPopMatrix();
-		gl.glMatrixMode(GL.GL_PROJECTION);
-		gl.glPopMatrix();
-		setClipping(hasClip);
+		md.end();
 	}
 
 	public int makeMarkerList(MarkerProperty p, DoubleProperty s, boolean filled)
@@ -1338,6 +1364,43 @@ public class GLRenderer implements Renderer
 			}
 		}
 
+		if (patch.Marker.isSet() && !(patch.MarkerEdgeColor.is("none") && patch.MarkerFaceColor.is("none")))
+		{
+			MarkerDrawer md = getMarkerDrawer();
+			
+			boolean doEdge = !patch.MarkerEdgeColor.is("none");
+			boolean doFace = !patch.MarkerFaceColor.is("none");
+
+			double[] mecolor = patch.MarkerEdgeColor.getArray();
+			double[] mfcolor = patch.MarkerFaceColor.getArray();
+			if (mecolor == null && patch.MarkerEdgeColor.is("auto"))
+			{
+				mecolor = patch.EdgeColor.getArray();
+				doEdge = !patch.EdgeColor.is("none");
+			}
+			if (mfcolor == null && patch.MarkerFaceColor.is("auto"))
+			{
+				mfcolor = patch.FaceColor.getArray();
+				doFace = !patch.FaceColor.is("none");
+			}
+
+			if ((mecolor == null || mfcolor == null) && c == null)
+				c = patch.getCData();
+
+			md.begin(patch.Marker, patch.MarkerSize, patch.LineWidth.floatValue());
+			for (int i=0; i<v.length; i++)
+			{
+				if (clip[i])
+					continue;
+
+				double[] lc = (doEdge ? (mecolor == null ? c[i] : mecolor) : null);
+				double[] fc = (doFace ? (mfcolor == null ? c[i] : mfcolor) : null);
+
+				md.draw(v[i][0], v[i][1], (has_z ? v[i][2] : 0.0), lc, fc);
+			}
+			md.end();
+		}
+
 	}
 
 	public void draw(SurfaceObject surf)
@@ -1628,6 +1691,9 @@ public class GLRenderer implements Renderer
 				if (edgeLightMode > 0)
 					gl.glEnable(GL.GL_LIGHTING);
 				gl.glShadeModel((edgeColorMode == 2 || edgeLightMode == 2) ? GL.GL_SMOOTH : GL.GL_FLAT);
+				
+				setLineStyle(surf.LineStyle.getValue(), false);
+				setLineWidth(surf.LineWidth.floatValue());
 
 				for (int i=0; i<x.length; i++)
 				{
@@ -1722,6 +1788,9 @@ public class GLRenderer implements Renderer
 						gl.glEnd();
 					}
 				}
+				
+				setLineStyle("-", false);
+				setLineWidth(0.5f);
 
 				if (edgeLightMode > 0)
 					gl.glDisable(GL.GL_LIGHTING);
@@ -1729,6 +1798,8 @@ public class GLRenderer implements Renderer
 			else
 			{
 				final double ealpha = surf.EdgeAlpha.doubleValue();
+				final String lineStyle = surf.LineStyle.getValue();
+				final float lineWidth = surf.LineWidth.floatValue();
 
 				for (int i=0; i<x.length; i++)
 				{
@@ -1781,6 +1852,8 @@ public class GLRenderer implements Renderer
 										gl.glShadeModel(GL.GL_SMOOTH);
 									else
 										gl.glShadeModel(GL.GL_FLAT);
+									setLineStyle(lineStyle, false);
+									setLineWidth(lineWidth);
 									gl.glBegin(GL.GL_LINES);
 									for (int i=0; i<2; i++)
 									{
@@ -1802,6 +1875,8 @@ public class GLRenderer implements Renderer
 										gl.glVertex3d(xx[i], yy[i], zz[i]);
 									}
 									gl.glEnd();
+									setLineStyle("-", false);
+									setLineWidth(0.5f);
 									if (edgeLightMode > 0)
 										gl.glDisable(GL.GL_LIGHTING);
 								}
@@ -1860,6 +1935,8 @@ public class GLRenderer implements Renderer
 										gl.glShadeModel(GL.GL_SMOOTH);
 									else
 										gl.glShadeModel(GL.GL_FLAT);
+									setLineStyle(lineStyle, false);
+									setLineWidth(lineWidth);
 									gl.glBegin(GL.GL_LINES);
 									for (int i=0; i<2; i++)
 									{
@@ -1881,6 +1958,8 @@ public class GLRenderer implements Renderer
 										gl.glVertex3d(xx[i], yy[i], zz[i]);
 									}
 									gl.glEnd();
+									setLineStyle("-", false);
+									setLineWidth(0.5f);
 									if (edgeLightMode > 0)
 										gl.glDisable(GL.GL_LIGHTING);
 								}
@@ -1888,6 +1967,46 @@ public class GLRenderer implements Renderer
 					}
 				}
 			}
+		}
+
+		if (surf.Marker.isSet() && !(surf.MarkerEdgeColor.is("none") && surf.MarkerFaceColor.is("none")))
+		{
+			MarkerDrawer md = getMarkerDrawer();
+			
+			boolean doEdge = !surf.MarkerEdgeColor.is("none");
+			boolean doFace = !surf.MarkerFaceColor.is("none");
+
+			double[] mecolor = surf.MarkerEdgeColor.getArray();
+			double[] mfcolor = surf.MarkerFaceColor.getArray();
+			if (mecolor == null && surf.MarkerEdgeColor.is("auto"))
+			{
+				mecolor = surf.EdgeColor.getArray();
+				doEdge = !surf.EdgeColor.is("none");
+			}
+			if (mfcolor == null && surf.MarkerFaceColor.is("auto"))
+			{
+				mfcolor = surf.FaceColor.getArray();
+				doFace = !surf.FaceColor.is("none");
+			}
+
+			if ((mecolor == null || mfcolor == null) && c == null)
+				c = surf.getCData();
+
+			md.begin(surf.Marker, surf.MarkerSize, surf.LineWidth.floatValue());
+			for (int i=0; i<x.length; i++)
+			{
+				for (int j=0; j<x[i].length; j++)
+				{
+					if (clip[i][j])
+						continue;
+
+					double[] lc = (doEdge ? (mecolor == null ? c[i][j] : mecolor) : null);
+					double[] fc = (doFace ? (mfcolor == null ? c[i][j] : mfcolor) : null);
+
+					md.draw(x[i][j], y[i][j], z[i][j], lc, fc);
+				}
+			}
+			md.end();
 		}
 	}
 

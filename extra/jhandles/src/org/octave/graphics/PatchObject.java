@@ -473,6 +473,21 @@ public class PatchObject extends GraphicObject
 			}
 		}
 
+		if (Marker.isSet())
+		{
+			if ((!MarkerEdgeColor.isSet() && (MarkerEdgeColor.is("flat") ||
+				(MarkerEdgeColor.is("auto") && (EdgeColor.is("flat") || EdgeColor.is("interp"))))) ||
+			    (!MarkerFaceColor.isSet() && (MarkerFaceColor.is("flat") ||
+				(MarkerFaceColor.is("auto") && (EdgeColor.is("flat") || EdgeColor.is("interp"))))))
+			{
+				if (nfv != nv && nfv != 1)
+				{
+					System.err.println("Warning: Color data must be given per-vertex");
+					return false;
+				}
+			}
+		}
+
 		return true;
 	}
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2004,2005,2006  Michael Creel   <michael.creel@uab.es>
+// Copyright (C) 2004,2005,2006,2007  Michael Creel   <michael.creel@uab.es>
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 // __bisectionstep: fallback stepsize algorithm
 // __newtonstep: default stepsize algorithm
 // __bfgsmin: the DLD function that does the minimization, to be called from bfgsmin.m
-
 
 
 #include <oct.h>
@@ -174,7 +173,6 @@ int __bisectionstep(double &step, double &obj, const std::string f, const octave
 	ColumnVector x (f_args(minarg - 1).column_vector_value());
 
 	// initial values
-	obj_0 = obj;
 	improvement_0 = 0;
 	a = 1.0;
 	found_improvement = 0;
@@ -183,6 +181,7 @@ int __bisectionstep(double &step, double &obj, const std::string f, const octave
 	while (a > 2*DBL_EPSILON) // limit iterations
 	{
 		__bfgsmin_obj(obj, f, f_args, x + a*dx, minarg);
+		if (a == 1.0) obj_0 = obj;
 		// reduce stepsize if worse, or if function can't be evaluated
 		if ((obj >= obj_0) || lo_ieee_isnan(obj)) a = 0.5 * a;
 		else
@@ -211,7 +210,10 @@ int __bisectionstep(double &step, double &obj, const std::string f, const octave
 				improvement_0 = improvement;
 				obj_0 = obj;
 			}
-			else break;
+			else {
+				a = a / 0.5; // put it back to best found
+				break;
+			}
 		}
 		else {
 			a = a / 0.5; // put it back to best found
@@ -252,20 +254,25 @@ int __newtonstep(double &a, double &obj, const std::string f, const octave_value
 	if (a < 0) 	// since direction is descending, a must be positive
 	{ 		// if it is not, go to bisection step
 		if (verbose) warning("__stepsize: no improvement with Newton step, falling back to bisection");
-		found_improvement = __bisectionstep(a, obj, f, f_args, dx, minarg, verbose);
+		found_improvement = __bisectionstep(a, obj_0, f, f_args, dx, minarg, verbose);
 		return 0;
 	}
 
-	a = (a < 10.0)*a + 10.0*(a>=10.0); // Let's avoid extreme steps that might cause crashes
+	a = (a < 1.0)*a + 1.0*(a>=1.0); // maximum stepsize is 1.0 - conservative
 
 	// ensure that this is improvement
 	__bfgsmin_obj(obj, f, f_args, x + a*dx, minarg);
 
 	// if not, fall back to bisection
-	if ((obj >= obj_0) || lo_ieee_isnan(obj))
-	{
+	if (obj >= obj_0) {
 		if (verbose) warning("__stepsize: no improvement with Newton step, falling back to bisection");
 		found_improvement = __bisectionstep(a, obj, f, f_args, dx, minarg, verbose);
+	}
+	else found_improvement = 1;
+
+	if (lo_ieee_isnan(obj)) {
+		if (verbose) warning("__stepsize: objective function crash in Newton step, falling back to bisection");
+		found_improvement = __bisectionstep(a, obj_0, f, f_args, dx, minarg, verbose);
 	}
 	else found_improvement = 1;
 
@@ -357,6 +364,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 		if (stepsize == 0.0) {  // fall back to steepest descent
 			if (warnings) warning("bfgsmin: BFGS direction fails, switch to steepest descent");
 			d = -g; // try steepest descent
+			H = identity_matrix(k,k); // accompany with Hessian reset, for good measure
 			__newtonstep(stepsize, obj_value, f, f_args, d, minarg, warnings);
 			if (stepsize == 0.0) {  // if true, exit, we can't find a direction of descent
 				warning("bfgsmin: failure, exiting. Try different start values?");

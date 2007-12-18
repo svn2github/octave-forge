@@ -1,8 +1,6 @@
 - implement barseries in m-code + cleanup code
   (BarseriesObject, BaseLineObject)
 
-- OpenGL implementation of markers?
-
 - normal computation at surface boundaries
 
 - fix re-entrant axes property setting (Position) when
@@ -12,3 +10,5 @@
   for special values: "default" and "factory"
 
 - implement "perspective" projections
+
+- support single-color specification for patch objects

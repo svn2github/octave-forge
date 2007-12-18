@@ -15,16 +15,18 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301  USA
 
-function tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_color_spec, varargin)
+function tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_color_spec, base_value, varargin)
 
   ycols = columns (y);
   ny = rows (y);
   newargs = varargin;
   if (group)
     layout = "grouped";
+    width = width*ycols*ycols;
   else
     layout = "stacked";
   endif
+  width = width + 10*eps;
   if (vertical)
     hmode = "off";
   else
@@ -61,8 +63,63 @@ function tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_color_spe
     addprop (bs, "FaceColor", "colorradio", "flat|interp|none", get (p, "FaceColor"));
     addprop (bs, "BarGroup", "handle", "hidden");
     addprop (bs, "Horizontal", "radio", "on|off", hmode);
+    addlistener (bs, {"BarWidth", "BarLayout", "Horizontal"}, @updateGroup);
+    addlistener (bs, {"XData", "YData", "BarWidth", "BarLayout", "Horizontal"}, @updateData);
+    addlistener (bs, {"EdgeColor", "FaceColor"}, @updateColors);
     # store handle
     tmp = [tmp, bs];
+  endfor
+
+  if (! isempty (tmp))
+    set (tmp, "BarGroup", tmp);
+  endif
+
+endfunction
+
+function updateData (h)
+
+  hlist = get (h, "BarGroup");
+  x = get (h, "XData");
+  y = [];
+  for hh = hlist(:)'
+    ytmp = get (hh, "YData");
+    y = [y ytmp(:)];
+  endfor
+  x = x(:);
+
+  [xb, yb] = bar (x, y, get (h, "BarWidth"), get (h, "BarLayout"));
+  ny = columns (y);
+  vert = strcmp (get (h, "Horizontal"), "off");
+
+  for i = 1:ny
+    hp = get (hlist(i), "Children");
+    if (vert)
+      set (hp, "XData", xb(:,:,i), "YData", yb(:,:,i));
+    else
+      set (hp, "XData", yb(:,:,i), "YData", xb(:,:,i));
+    endif
+  endfor
+
+endfunction
+
+function updateColors (h)
+
+  hp = get (h, "Children");
+  set (hp, "EdgeColor", get (h, "EdgeColor"), ...
+           "FaceColor", get (h, "FaceColor"));
+
+endfunction
+
+function updateGroup (h)
+
+  hlist = get (h, "BarGroup");
+  args = { "BarWidth", get(h, "BarWidth"), ...
+           "BarLayout", get(h, "BarLayout"), ...
+           "Horizontal", get(h, "Horizontal") };
+  for hh = hlist(:)'
+    if (hh != h)
+      reset_property (hh, args{:});
+    endif
   endfor
 
 endfunction

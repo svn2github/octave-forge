@@ -167,7 +167,7 @@ public class FigureObject extends AxesContainer
 		zoomBtn.addActionListener(this);
 		rotateBtn = new JToggleButton(Utils.loadIcon("view-refresh"));
 		rotateBtn.setActionCommand("rotate");
-		rotateBtn.setToolTipText("3D roration");
+		rotateBtn.setToolTipText("3D rotation");
 		rotateBtn.addActionListener(this);
 		figureTB.add(editBtn);
 		figureTB.add(zoomBtn);

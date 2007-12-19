@@ -184,7 +184,7 @@ int __bisectionstep(double &step, double &obj, const std::string f, const octave
 		a = 0.5*a;
 		__bfgsmin_obj(obj, f, f_args, x + a*dx, minarg);
 		// reduce stepsize if worse, or if function can't be evaluated
-		if (obj < obj_0) {
+		if (obj <= obj_0) {
 			obj_0 = obj;
 			found_improvement = 1;
 			break;

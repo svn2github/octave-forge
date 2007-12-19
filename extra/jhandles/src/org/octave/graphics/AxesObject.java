@@ -1585,6 +1585,132 @@ public class AxesObject extends HandleObject
 		autoScaleZ();
 	}
 
+	protected double[] getChildrenLimits(String Lim, boolean logMode, boolean isZ)
+	{
+		String LimInclude = Lim+"Include";
+		double[] lim = (logMode ?
+				new double[] { Double.POSITIVE_INFINITY, Double.MIN_VALUE } :
+				new double[] { Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY });
+
+		for (int i=0; i<Children.size(); i++)
+		{
+			GraphicObject go = (GraphicObject)Children.elementAt(i);
+			if (go.Visible.isSet() && ((BooleanProperty)go.getProperty(LimInclude)).isSet())
+			{
+				double[] _lim = ((VectorProperty)go.getProperty(Lim)).getArray();
+				if (logMode)
+				{
+					lim[0] = Math.min(_lim[2], lim[0]);
+					lim[1] = Math.max(_lim[3], lim[1]);
+				}
+				else
+				{
+					lim[0] = Math.min(_lim[0], lim[0]);
+					lim[1] = Math.max(_lim[1], lim[1]);
+				}
+			}
+		}
+
+		if (logMode)
+		{
+			if (lim[0] > lim[1])
+			{
+				lim[0] = 1;
+				lim[1] = 10;
+			}
+		}
+		else
+		{
+			if (lim[0] > lim[1])
+			{
+				lim[0] = (isZ ? -0.5 : 0);
+				lim[1] = (isZ ? 0.5 : 1);
+			}
+			else if (lim[0] == lim[1])
+			{
+				lim[0] -= 0.5;
+				lim[1] += 0.5;
+			}
+		}
+
+		return lim;
+	}
+
+	protected double getTickInterval(double[] lim, int nMax)
+	{
+		double range = (lim[1]-lim[0]);
+		double power = Math.pow(10, Math.floor(Math.log10(range)));
+		double ndec = range/power;
+		double ntickdec = nMax/ndec;
+		double tick;
+
+		if (ntickdec > 40)
+			tick = 0.05;
+		else if (ntickdec > 20)
+			tick = 0.1;
+		else if (ntickdec > 10)
+			tick = 0.2;
+		else if (ntickdec > 4)
+			tick = 0.5;
+		else if (ntickdec > 1.5)
+			tick = 1;
+		else if (ntickdec > 0.5)
+			tick = 2;
+		else
+			tick = Math.ceil(ndec);
+
+		return (tick*power);
+	}
+
+	protected void autoAxis(VectorProperty Lim, boolean autoLim, VectorProperty Tick, boolean autoTick, RadioProperty Scale, boolean isZ)
+	{
+		double[] lim = (autoLim ? getChildrenLimits(Lim.getName(), Scale.is("log"), isZ) : Lim.getArray());
+
+		if (Scale.is("linear"))
+		{
+			double tickVal = getTickInterval(lim, 10);
+
+			if (autoLim)
+			{
+				lim[0] = Math.floor(lim[0]/tickVal) * tickVal;
+				lim[1] = Math.ceil(lim[1]/tickVal) * tickVal;
+				autoSet(Lim, lim);
+			}
+
+			if (autoTick)
+			{
+				double vmin = Math.ceil(lim[0]/tickVal) * tickVal;
+				double vmax = Math.floor(lim[1]/tickVal) * tickVal;
+				int nv = (int)Math.round((vmax-vmin)/tickVal+1);
+				double[] tickV = new double[nv];
+
+				for (int i=0; i<nv; i++)
+					tickV[i] = vmin + i * tickVal;
+				autoSet(Tick, tickV);
+			}
+		}
+		else
+		{
+			if (autoLim)
+			{
+				lim[0] = Math.pow(10, Math.floor(Math.log10(lim[0])));
+				lim[1] = Math.pow(10, Math.ceil(Math.log10(lim[1])));
+				autoSet(Lim, lim);
+			}
+
+			if (autoTick)
+			{
+				int n1 = (int)Math.ceil(Math.log10(lim[0])),
+				    n2 = (int)Math.floor(Math.log10(lim[1]));
+				double[] tickV = new double[n2-n1+1];
+				for (int i=0; i<tickV.length; i++)
+					tickV[i] = Math.pow(10, n1+i);
+				autoSet(Tick, tickV);
+			}
+		}
+	}
+
+	/*
 	protected double[] computeAutoScale(String Lim, RadioProperty Scale, boolean isZ)
 	{
 			double[] lim;
@@ -1647,34 +1773,62 @@ public class AxesObject extends HandleObject
 
 			return lim;
 	}
+	*/
 
 	protected void autoScaleX()
 	{
+		/*
 		if (XLimMode.is("auto") && Children.size() > 0)
 		{
 			double[] xlim = computeAutoScale("XLim", XScale, false);
 			autoSet(XLim, xlim);
 			autoTickX();
 		}
+		*/
+
+		if (XLimMode.is("auto") || XTickMode.is("auto"))
+		{
+			autoAxis(XLim, XLimMode.is("auto"), XTick, XTickMode.is("auto"), XScale, false);
+			autoMinorTickX();
+			autoTickLabelX();
+		}
 	}
 
 	protected void autoScaleY()
 	{
+		/*
 		if (YLimMode.is("auto") && Children.size() > 0)
 		{
 			double[] ylim = computeAutoScale("YLim", YScale, false);
 			autoSet(YLim, ylim);
 			autoTickY();
 		}
+		*/
+
+		if (YLimMode.is("auto") || YTickMode.is("auto"))
+		{
+			autoAxis(YLim, YLimMode.is("auto"), YTick, YTickMode.is("auto"), YScale, false);
+			autoMinorTickY();
+			autoTickLabelY();
+		}
 	}
 
 	protected void autoScaleZ()
 	{
+		/*
 		if (ZLimMode.is("auto") && Children.size() > 0)
 		{
 			double[] zlim = computeAutoScale("ZLim", ZScale, true);
 			autoSet(ZLim, zlim);
 			autoTickZ();
+		}
+		*/
+
+		if (ZLimMode.is("auto") || ZTickMode.is("auto"))
+		{
+			autoAxis(ZLim, ZLimMode.is("auto"), ZTick, ZTickMode.is("auto"), ZScale, true);
+			autoMinorTickZ();
+			autoTickLabelZ();
 		}
 	}
 
@@ -1721,6 +1875,7 @@ public class AxesObject extends HandleObject
 		autoTickZ();
 	}
 
+	/*
 	protected double[] computeAutoTicks(VectorProperty Lim, RadioProperty Scale)
 	{
 			double vmin = Lim.getArray()[0], vmax = Lim.getArray()[1];
@@ -1741,6 +1896,7 @@ public class AxesObject extends HandleObject
 			}
 			return ticks;
 	}
+	*/
 
 	protected double[] computeMinorTicks(VectorProperty Lim, VectorProperty Tick, RadioProperty Scale)
 	{
@@ -1782,6 +1938,7 @@ public class AxesObject extends HandleObject
 
 	protected void autoTickX()
 	{
+		/*
 		if (XTickMode.is("auto"))
 		{
 			double[] ticks = computeAutoTicks(XLim, XScale);
@@ -1789,6 +1946,8 @@ public class AxesObject extends HandleObject
 		}
 		autoMinorTickX();
 		autoTickLabelX();
+		*/
+		autoScaleX();
 	}
 
 	protected void autoMinorTickX()
@@ -1798,6 +1957,7 @@ public class AxesObject extends HandleObject
 
 	protected void autoTickY()
 	{
+		/*
 		if (YTickMode.is("auto"))
 		{
 			double[] ticks = computeAutoTicks(YLim, YScale);
@@ -1805,6 +1965,8 @@ public class AxesObject extends HandleObject
 		}
 		autoMinorTickY();
 		autoTickLabelY();
+		*/
+		autoScaleY();
 	}
 
 	protected void autoMinorTickY()
@@ -1814,6 +1976,7 @@ public class AxesObject extends HandleObject
 
 	protected void autoTickZ()
 	{
+		/*
 		if (ZTickMode.is("auto"))
 		{
 			double[] ticks = computeAutoTicks(ZLim, ZScale);
@@ -1821,6 +1984,8 @@ public class AxesObject extends HandleObject
 		}
 		autoMinorTickZ();
 		autoTickLabelZ();
+		*/
+		autoScaleZ();
 	}
 
 	protected void autoMinorTickZ()
@@ -1846,6 +2011,11 @@ public class AxesObject extends HandleObject
 		return result;
 	}
 
+	private boolean isInteger(double val)
+	{
+		return ((double)Math.floor(val) == val);
+	}
+
 	protected boolean computeAutoTickLabels(VectorProperty Tick, RadioProperty Scale, StringArrayProperty TickLabel)
 	{
 		boolean retval = false;
@@ -1854,8 +2024,13 @@ public class AxesObject extends HandleObject
 		if (Scale.is("linear") || !allPowerOf10(ticks))
 			for (int i=0; i<ticks.length; i++)
 			{
-				double val = ((double)Math.round(ticks[i]*100))/100;
-				labels[i] = Double.toString(val);
+				if (isInteger(ticks[i]))
+					labels[i] = Long.toString(Math.round(ticks[i]));
+				else
+				{
+					double val = ((double)Math.round(ticks[i]*100))/100;
+					labels[i] = Double.toString(val);
+				}
 			}
 		else
 		{

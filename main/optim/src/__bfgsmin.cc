@@ -22,6 +22,7 @@
 // __bfgsmin: the DLD function that does the minimization, to be called from bfgsmin.m
 
 
+
 #include <oct.h>
 #include <octave/parse.h>
 #include <octave/Cell.h>
@@ -174,26 +175,23 @@ int __bisectionstep(double &step, double &obj, const std::string f, const octave
 
 	// initial values
 	improvement_0 = 0;
-	a = 1.0;
 	found_improvement = 0;
+	a = 1.0;
+	__bfgsmin_obj(obj_0, f, f_args, x, minarg);
 
 	// this first loop goes until an improvement is found
-	while (a > 2*DBL_EPSILON) // limit iterations
-	{
+	while (a > 2*DBL_EPSILON) {
+		a = 0.5*a;
 		__bfgsmin_obj(obj, f, f_args, x + a*dx, minarg);
-		if (a == 1.0) obj_0 = obj;
 		// reduce stepsize if worse, or if function can't be evaluated
-		if ((obj >= obj_0) || lo_ieee_isnan(obj)) a = 0.5 * a;
-		else
-		{
+		if (obj < obj_0) {
 			obj_0 = obj;
 			found_improvement = 1;
 			break;
 		}
 	}
 	// If unable to find any improvement break out with stepsize zero
-	if (!found_improvement)
-	{
+	if (!found_improvement) {
 		if (verbose) warning("bisectionstep: unable to find improvement, setting step to zero");
 		step = 0.0;
 		obj = obj_0;
@@ -206,17 +204,14 @@ int __bisectionstep(double &step, double &obj, const std::string f, const octave
 		// if improved, record new best and try another step
 		if (obj < obj_0) {
 			improvement = obj_0 - obj;
+			obj_0 = obj;
 			if (improvement > 0.5*improvement_0) {
 				improvement_0 = improvement;
-				obj_0 = obj;
 			}
-			else {
-				a = a / 0.5; // put it back to best found
-				break;
-			}
+			else break;
 		}
 		else {
-			a = a / 0.5; // put it back to best found
+			a = 2.0*a; // put it back to best found
 			break;
 		}
 	}

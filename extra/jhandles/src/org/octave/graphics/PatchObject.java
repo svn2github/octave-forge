@@ -108,11 +108,19 @@ public class PatchObject extends GraphicObject
 	public void validate()
 	{
 		if (!Faces.isEmpty() && !Vertices.isEmpty())
-			updateXYZData();
+		{
+			/* only compute XYZ data if needed */
+			if (XData.isEmpty() || YData.isEmpty())
+				updateXYZData();
+		}
 		else
 			updateFVData();
 		if (!FaceVertexCData.isEmpty())
-			updateCData();
+		{
+			/* only compute CData is needed */
+			if (CData.isEmpty())
+				updateCData();
+		}
 		else if (!CData.isEmpty())
 			updateFVCData();
 		updateFaceCount();

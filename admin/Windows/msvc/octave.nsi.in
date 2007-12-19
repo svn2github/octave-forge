@@ -96,7 +96,7 @@ var ICONS_GROUP
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "octave-${OCTAVE_VERSION}-setup.exe"
 InstallDir "$PROGRAMFILES\Octave"
-InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
+InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" "Path"
 ShowInstDetails show
 ShowUnInstDetails show
 XPStyle on

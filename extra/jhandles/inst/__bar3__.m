@@ -125,7 +125,7 @@ function [ h ] = makeBar3D (from, ax, xx, yy, w, mode, c, orient)
     if (orient)
       set (ax, "dataaspectratio", [1, (dy/dz)/0.6, 1], "ydir", "reverse");
     else
-      set (ax, "dataaspectratio", [1, 1, (dz/dy)/0.6]);
+      set (ax, "dataaspectratio", [1, 1, (dz/dy)/0.6], "ydir", "reverse");
     endif
     grid on;
     axis labelyz;

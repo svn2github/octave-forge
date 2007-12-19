@@ -991,6 +991,7 @@ public class AxesObject extends HandleObject
 				if (d.height > hmax) hmax = d.height;
 			}
 			l2.clear();
+			wmax += 5;
 
 			// minor grid lines
 			if (doXMinorGrid)
@@ -1167,6 +1168,7 @@ public class AxesObject extends HandleObject
 				if (d.height > hmax) hmax = d.height;
 			}
 			l2.clear();
+			wmax += 5;
 
 			// minor grid lines
 			if (doYMinorGrid)
@@ -1359,6 +1361,7 @@ public class AxesObject extends HandleObject
 				if (d.height > hmax) hmax = d.height;
 			}
 			l2.clear();
+			wmax += 5;
 
 			// minor grid lines
 			if (doZMinorGrid)

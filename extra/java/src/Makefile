@@ -23,11 +23,11 @@ all:
 	@echo "Java support not compiled"
 endif
 
-__java__.oct: __java__.cc
+__java__.oct: __java__.cc __java__.h
 	if [ "X$(JAVA_ARCH)X" = "XX" ]; then \
-		$(MKOCTFILE) $(JAVA_INCS) -o $@ $^ $(JAVA_LIBS); \
+		$(MKOCTFILE) -DJAVAPKG_BUILD $(JAVA_INCS) -o $@ __java__.cc $(JAVA_LIBS); \
 	else \
-		$(MKOCTFILE) -DJAVA_ARCH=\\\"$(JAVA_ARCH)\\\" -DJAVA_HOME=\\\"$(JAVA_HOME)\\\" $(JAVA_INCS) -o $@ $^ $(JAVA_LIBS); \
+		$(MKOCTFILE) -DJAVAPKG_BUILD -DJAVA_ARCH=\\\"$(JAVA_ARCH)\\\" -DJAVA_HOME=\\\"$(JAVA_HOME)\\\" $(JAVA_INCS) -o $@ __java__.cc $(JAVA_LIBS); \
 	fi
 
 octave.jar: $(JAVA_CLASSES)

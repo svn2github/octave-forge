@@ -174,6 +174,35 @@ public:
       const std::string& name, const octave_value_list& args)
     { return do_java_invoke(jni_env (), class_name, name, args); }
 
+  static octave_value do_java_create (JNIEnv* jni_env, const std::string& name,
+      const octave_value_list& args);
+  
+  static octave_value do_java_create (const std::string& name, const octave_value_list& args)
+    { return do_java_create (jni_env (), name, args); }
+
+  octave_value do_java_get (JNIEnv* jni_env, const std::string& name);
+  
+  octave_value do_java_get (const std::string& name)
+    { return do_java_get (jni_env (), name); }
+
+  static octave_value do_java_get (JNIEnv* jni_env, const std::string& class_name,
+      const std::string& name);
+  
+  static octave_value do_java_get (const std::string& class_name, const std::string& name)
+    { return do_java_get (jni_env (), class_name, name); }
+
+  octave_value do_java_set (JNIEnv* jni_env, const std::string& name, const octave_value& val);
+  
+  octave_value do_java_set (const std::string& name, const octave_value& val)
+    { return do_java_set (jni_env (), name, val); }
+
+  static octave_value do_java_set (JNIEnv* jni_env, const std::string& class_name,
+      const std::string& name, const octave_value& val);
+  
+  static octave_value do_java_set (const std::string& class_name, const std::string& name,
+      const octave_value& val)
+    { return do_java_set (jni_env (), class_name, name, val); }
+
 private:
   void init (jobject jobj, jclass jcls)
     {

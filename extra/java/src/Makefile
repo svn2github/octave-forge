@@ -1,7 +1,7 @@
 sinclude ./Makeconf
 export LFLAGS
 
-PROGS = __java__.oct octave.jar
+PROGS = __java__.oct __java__.lib __java__.h octave.jar
 
 JAVASRC = ClassHelper.java OctClassLoader.java Octave.java OctaveReference.java Matrix.java
 JAVADIR = org/octave

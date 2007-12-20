@@ -1043,116 +1043,6 @@ int unbox (JNIEnv* jni_env, const octave_value_list& args, jobjectArray_ref& job
 }
 
 
-static octave_value do_java_create (JNIEnv* jni_env, const std::string& name, const octave_value_list& args)
-{
-  octave_value retval;
-
-  if (jni_env)
-    {
-      jobjectArray_ref arg_objs (jni_env), arg_types (jni_env);
-      if (unbox (jni_env, args, arg_objs, arg_types))
-        {
-          jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
-          jmethodID mID = jni_env->GetStaticMethodID (helperClass, "invokeConstructor",
-              "(Ljava/lang/String;[Ljava/lang/Object;[Ljava/lang/Class;)Ljava/lang/Object;");
-          jstring_ref clsName (jni_env, jni_env->NewStringUTF (name.c_str ()));
-          jobject_ref resObj (jni_env, jni_env->CallStaticObjectMethod (helperClass, mID,
-              jstring (clsName), jobjectArray (arg_objs), jobjectArray (arg_types)));
-          if (resObj)
-            retval = box (jni_env, resObj);
-          else
-            check_exception (jni_env);
-        }
-    }
-  return retval;
-}
-
-static octave_value do_java_get (JNIEnv* jni_env, octave_java *obj, const std::string& name)
-{
-  octave_value retval;
-
-  if (jni_env)
-    {
-      jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
-      jmethodID mID = jni_env->GetStaticMethodID (helperClass, "getField",
-          "(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;");
-      jstring_ref fName (jni_env, jni_env->NewStringUTF (name.c_str ()));
-      jobject_ref resObj (jni_env, jni_env->CallStaticObjectMethod (helperClass, mID,
-          obj->to_java (), jstring (fName)));
-      if (resObj)
-        retval = box (jni_env, resObj);
-      else
-        retval = check_exception (jni_env);
-    }
-  return retval;
-}
-
-static octave_value do_java_get (JNIEnv* jni_env, const std::string& class_name, const std::string& name)
-{
-  octave_value retval;
-
-  if (jni_env)
-    {
-      jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
-      jmethodID mID = jni_env->GetStaticMethodID (helperClass, "getStaticField",
-          "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;");
-      jstring_ref cName (jni_env, jni_env->NewStringUTF (class_name.c_str ()));
-      jstring_ref fName (jni_env, jni_env->NewStringUTF (name.c_str ()));
-      jobject_ref resObj (jni_env, jni_env->CallStaticObjectMethod (helperClass, mID,
-          jstring (cName), jstring (fName)));
-      if (resObj)
-        retval = box (jni_env, resObj);
-      else
-        retval = check_exception (jni_env);
-    }
-  return retval;
-}
-
-static octave_value do_java_set (JNIEnv* jni_env, octave_java *obj, const std::string& name, const octave_value& val)
-{
-  octave_value retval;
-
-  if (jni_env)
-    {
-      jobject_ref jobj (jni_env);
-      jclass_ref jcls (jni_env);
-
-      if (unbox (jni_env, val, jobj, jcls))
-        {
-          jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
-          jmethodID mID = jni_env->GetStaticMethodID (helperClass, "setField",
-              "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
-          jstring_ref fName (jni_env, jni_env->NewStringUTF (name.c_str ()));
-          jni_env->CallStaticObjectMethod (helperClass, mID, obj->to_java (), jstring (fName), jobject (jobj));
-          check_exception (jni_env);
-        }
-    }
-  return retval;
-}
-
-static octave_value do_java_set (JNIEnv* jni_env, const std::string& class_name, const std::string& name, const octave_value& val)
-{
-  octave_value retval;
-
-  if (jni_env)
-    {
-      jobject_ref jobj (jni_env);
-      jclass_ref jcls (jni_env);
-
-      if (unbox (jni_env, val, jobj, jcls))
-        {
-          jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
-          jmethodID mID = jni_env->GetStaticMethodID (helperClass, "setStaticField",
-              "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V");
-          jstring_ref cName (jni_env, jni_env->NewStringUTF (class_name.c_str ()));
-          jstring_ref fName (jni_env, jni_env->NewStringUTF (name.c_str ()));
-          jni_env->CallStaticObjectMethod (helperClass, mID, jstring (cName), jstring (fName), jobject (jobj));
-          check_exception (jni_env);
-        }
-    }
-  return retval;
-}
-
 static long get_current_thread_ID(JNIEnv *jni_env)
 {
   if (jni_env)
@@ -1250,7 +1140,7 @@ arguments @var{arg1}, ...\n\
             octave_value_list tmp;
             for (int i=1; i<args.length (); i++)
               tmp(i-1) = args(i);
-            retval = do_java_create (current_env, name, tmp);
+            retval = octave_java::do_java_create (current_env, name, tmp);
           }
           else
             error ("java_new: first argument must be a string");
@@ -1349,12 +1239,12 @@ as a shortcut syntax. For instance, the two following statements are equivalent\
               if (args(0).class_name () == "octave_java")
                 {
                   octave_java *jobj = TO_JAVA (args(0));
-                  retval = do_java_get (current_env, jobj, name);
+                  retval = jobj->do_java_get (current_env, name);
                 }
               else if (args(0).is_string ())
                 {
                   std::string cls = args(0).string_value ();
-                  retval = do_java_get (current_env, cls, name);
+                  retval = octave_java::do_java_get (current_env, cls, name);
                 }
               else
                 error ("java_get: first argument must be a Java object or a string");
@@ -1400,12 +1290,12 @@ a shortcut syntax. For instance, the two following statements are equivalent\n\
               if (args(0).class_name () == "octave_java")
                 {
                   octave_java *jobj = TO_JAVA (args(0));
-                  retval = do_java_set (current_env, jobj, name, args(2));
+                  retval = jobj->do_java_set (current_env, name, args(2));
                 }
               else if (args(0).is_string ())
                 {
                   std::string cls = args(0).string_value ();
-                  retval = do_java_set (current_env, cls, name, args(2));
+                  retval = octave_java::do_java_set (current_env, cls, name, args(2));
                 }
               else
                 error ("java_set: first argument must be a Java object or a string");
@@ -1763,6 +1653,116 @@ octave_value octave_java:: do_java_invoke (JNIEnv* jni_env, const std::string& c
             retval = box (jni_env, resObj);
           else
             retval = check_exception (jni_env);
+        }
+    }
+  return retval;
+}
+
+octave_value octave_java::do_java_create (JNIEnv* jni_env, const std::string& name, const octave_value_list& args)
+{
+  octave_value retval;
+
+  if (jni_env)
+    {
+      jobjectArray_ref arg_objs (jni_env), arg_types (jni_env);
+      if (unbox (jni_env, args, arg_objs, arg_types))
+        {
+          jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
+          jmethodID mID = jni_env->GetStaticMethodID (helperClass, "invokeConstructor",
+              "(Ljava/lang/String;[Ljava/lang/Object;[Ljava/lang/Class;)Ljava/lang/Object;");
+          jstring_ref clsName (jni_env, jni_env->NewStringUTF (name.c_str ()));
+          jobject_ref resObj (jni_env, jni_env->CallStaticObjectMethod (helperClass, mID,
+              jstring (clsName), jobjectArray (arg_objs), jobjectArray (arg_types)));
+          if (resObj)
+            retval = box (jni_env, resObj);
+          else
+            check_exception (jni_env);
+        }
+    }
+  return retval;
+}
+
+octave_value octave_java::do_java_get (JNIEnv* jni_env, const std::string& name)
+{
+  octave_value retval;
+
+  if (jni_env)
+    {
+      jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
+      jmethodID mID = jni_env->GetStaticMethodID (helperClass, "getField",
+          "(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;");
+      jstring_ref fName (jni_env, jni_env->NewStringUTF (name.c_str ()));
+      jobject_ref resObj (jni_env, jni_env->CallStaticObjectMethod (helperClass, mID,
+          to_java (), jstring (fName)));
+      if (resObj)
+        retval = box (jni_env, resObj);
+      else
+        retval = check_exception (jni_env);
+    }
+  return retval;
+}
+
+octave_value octave_java::do_java_get (JNIEnv* jni_env, const std::string& class_name, const std::string& name)
+{
+  octave_value retval;
+
+  if (jni_env)
+    {
+      jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
+      jmethodID mID = jni_env->GetStaticMethodID (helperClass, "getStaticField",
+          "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;");
+      jstring_ref cName (jni_env, jni_env->NewStringUTF (class_name.c_str ()));
+      jstring_ref fName (jni_env, jni_env->NewStringUTF (name.c_str ()));
+      jobject_ref resObj (jni_env, jni_env->CallStaticObjectMethod (helperClass, mID,
+          jstring (cName), jstring (fName)));
+      if (resObj)
+        retval = box (jni_env, resObj);
+      else
+        retval = check_exception (jni_env);
+    }
+  return retval;
+}
+
+octave_value octave_java::do_java_set (JNIEnv* jni_env, const std::string& name, const octave_value& val)
+{
+  octave_value retval;
+
+  if (jni_env)
+    {
+      jobject_ref jobj (jni_env);
+      jclass_ref jcls (jni_env);
+
+      if (unbox (jni_env, val, jobj, jcls))
+        {
+          jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
+          jmethodID mID = jni_env->GetStaticMethodID (helperClass, "setField",
+              "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
+          jstring_ref fName (jni_env, jni_env->NewStringUTF (name.c_str ()));
+          jni_env->CallStaticObjectMethod (helperClass, mID, to_java (), jstring (fName), jobject (jobj));
+          check_exception (jni_env);
+        }
+    }
+  return retval;
+}
+
+octave_value octave_java::do_java_set (JNIEnv* jni_env, const std::string& class_name, const std::string& name, const octave_value& val)
+{
+  octave_value retval;
+
+  if (jni_env)
+    {
+      jobject_ref jobj (jni_env);
+      jclass_ref jcls (jni_env);
+
+      if (unbox (jni_env, val, jobj, jcls))
+        {
+          jclass_ref helperClass (jni_env, find_octave_class (jni_env, "org/octave/ClassHelper"));
+          jmethodID mID = jni_env->GetStaticMethodID (helperClass, "setStaticField",
+              "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V");
+          jstring_ref cName (jni_env, jni_env->NewStringUTF (class_name.c_str ()));
+          jstring_ref fName (jni_env, jni_env->NewStringUTF (name.c_str ()));
+          jni_env->CallStaticObjectMethod (helperClass, mID, jstring (cName), jstring (fName), jobject (jobj));
+          check_exception (jni_env);
         }
     }
   return retval;

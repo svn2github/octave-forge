@@ -59,9 +59,9 @@ static std::map<int,octave_value> octave_ref_map;
 static int octave_refcount = 0;
 static long octave_thread_ID = -1;
 
-static bool Vjava_convert_matrix = false;
-static bool Vjava_unsigned_conversion = true;
-static bool Vjava_debug = false;
+bool Vjava_convert_matrix = false;
+bool Vjava_unsigned_conversion = true;
+bool Vjava_debug = false;
 
 class JVMArgs
 {

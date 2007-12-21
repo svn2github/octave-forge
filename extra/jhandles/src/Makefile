@@ -1,6 +1,6 @@
 sinclude ./Makeconf
 
-JAR_FILES = jhandles.jar $(LIBPRE)gl2ps_java.$(SHLEXT)
+JAR_FILES = jhandles.jar $(LIBPRE)gl2ps_java.$(SHLEXT) __jhandles__.oct
 CLASSPATH = $(JOGL_JAR)${OCTAVE_PATHSEP}$(OCTAVE_JAR)
 JAVA_DIR = org/octave/graphics
 JAVA_SOURCES = $(wildcard $(addprefix $(JAVA_DIR)/, *.java))
@@ -36,3 +36,6 @@ clean:
 
 %.o: %.c
 	$(MKOCTFILE) -v -I. -c $<
+
+__jhandles__.oct: __jhandles__.cc
+	$(MKOCTFILE) '-I$(OCTAVE_JAVA_DIR)' $^ '-L$(OCTAVE_JAVAOCT_DIR)' -l__java__

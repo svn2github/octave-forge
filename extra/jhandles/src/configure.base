@@ -314,6 +314,8 @@ AC_SUBST(JAVA_INCS)
 AC_SUBST(JAVA_LIBS)
 AC_SUBST(HAVE_JAVA)
 AC_SUBST(OCTAVE_JAR)
+AC_SUBST(OCTAVE_JAVA_DIR)
+AC_SUBST(OCTAVE_JAVAOCT_DIR)
 AC_SUBST(JOGL_JAR)
 AC_SUBST(OCTAVE_PATHSEP)
 AC_SUBST(OPENGL_LIBS)
@@ -385,6 +387,7 @@ if test "$HAVE_JAVA" = "yes"; then
      OCTAVE_JAVA_DIR=[`echo "pkg('load','java');disp(fileparts(file_in_loadpath('javaclasspath.m')))" | octave -qf`]
      AC_MSG_RESULT($OCTAVE_JAVA_DIR)
      OCTAVE_JAR="${OCTAVE_JAVA_DIR}${OCTAVE_FILESEP}octave.jar"
+     OCTAVE_JAVAOCT_DIR=[`echo "pkg('load','java');disp(fileparts(file_in_loadpath('__java__.oct')))" | octave -qf`]
      JOGL_JAR=[`echo 'jogl=file_in_path(EXEC_PATH,"jogl.jar");if (!isempty(jogl)), disp(jogl);, endif' | octave -qf`]
      if test "x$JOGL_JAR" = "x"; then
        JOGL_JAR=jogl.jar

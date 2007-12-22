@@ -1,0 +1,115 @@
+diff -ruN octave-3.0.0.orig/libcruft/blas-xtra/Makefile.in octave-3.0.0/libcruft/blas-xtra/Makefile.in
+--- octave-3.0.0.orig/libcruft/blas-xtra/Makefile.in	2007-10-12 23:27:12.000000000 +0200
++++ octave-3.0.0/libcruft/blas-xtra/Makefile.in	2007-12-21 13:23:08.000000000 +0100
+@@ -26,7 +26,7 @@
+ 
+ EXTERNAL_DISTFILES = $(DISTFILES)
+ 
+-FSRC = xddot.f xdnrm2.f xdznrm2.f xerbla.f xzdotu.f
++FSRC = lsame.f xddot.f xdnrm2.f xdznrm2.f xerbla.f xzdotu.f
+ 
+ include $(TOPDIR)/Makeconf
+ 
+diff -ruN octave-3.0.0.orig/libcruft/blas-xtra/lsame.f octave-3.0.0/libcruft/blas-xtra/lsame.f
+--- octave-3.0.0.orig/libcruft/blas-xtra/lsame.f	1970-01-01 01:00:00.000000000 +0100
++++ octave-3.0.0/libcruft/blas-xtra/lsame.f	2007-12-21 13:22:29.000000000 +0100
+@@ -0,0 +1,87 @@
++      LOGICAL          FUNCTION LSAME( CA, CB )
++*
++*  -- LAPACK auxiliary routine (version 2.0) --
++*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
++*     Courant Institute, Argonne National Lab, and Rice University
++*     January 31, 1994
++*
++*     .. Scalar Arguments ..
++      CHARACTER          CA, CB
++*     ..
++*
++*  Purpose
++*  =======
++*
++*  LSAME returns .TRUE. if CA is the same letter as CB regardless of
++*  case.
++*
++*  Arguments
++*  =========
++*
++*  CA      (input) CHARACTER*1
++*  CB      (input) CHARACTER*1
++*          CA and CB specify the single characters to be compared.
++*
++* =====================================================================
++*
++*     .. Intrinsic Functions ..
++      INTRINSIC          ICHAR
++*     ..
++*     .. Local Scalars ..
++      INTEGER            INTA, INTB, ZCODE
++*     ..
++*     .. Executable Statements ..
++*
++*     Test if the characters are equal
++*
++      LSAME = CA.EQ.CB
++      IF( LSAME )
++     $   RETURN
++*
++*     Now test for equivalence if both characters are alphabetic.
++*
++      ZCODE = ICHAR( 'Z' )
++*
++*     Use 'Z' rather than 'A' so that ASCII can be detected on Prime
++*     machines, on which ICHAR returns a value with bit 8 set.
++*     ICHAR('A') on Prime machines returns 193 which is the same as
++*     ICHAR('A') on an EBCDIC machine.
++*
++      INTA = ICHAR( CA )
++      INTB = ICHAR( CB )
++*
++      IF( ZCODE.EQ.90 .OR. ZCODE.EQ.122 ) THEN
++*
++*        ASCII is assumed - ZCODE is the ASCII code of either lower or
++*        upper case 'Z'.
++*
++         IF( INTA.GE.97 .AND. INTA.LE.122 ) INTA = INTA - 32
++         IF( INTB.GE.97 .AND. INTB.LE.122 ) INTB = INTB - 32
++*
++      ELSE IF( ZCODE.EQ.233 .OR. ZCODE.EQ.169 ) THEN
++*
++*        EBCDIC is assumed - ZCODE is the EBCDIC code of either lower or
++*        upper case 'Z'.
++*
++         IF( INTA.GE.129 .AND. INTA.LE.137 .OR.
++     $       INTA.GE.145 .AND. INTA.LE.153 .OR.
++     $       INTA.GE.162 .AND. INTA.LE.169 ) INTA = INTA + 64
++         IF( INTB.GE.129 .AND. INTB.LE.137 .OR.
++     $       INTB.GE.145 .AND. INTB.LE.153 .OR.
++     $       INTB.GE.162 .AND. INTB.LE.169 ) INTB = INTB + 64
++*
++      ELSE IF( ZCODE.EQ.218 .OR. ZCODE.EQ.250 ) THEN
++*
++*        ASCII is assumed, on Prime machines - ZCODE is the ASCII code
++*        plus 128 of either lower or upper case 'Z'.
++*
++         IF( INTA.GE.225 .AND. INTA.LE.250 ) INTA = INTA - 32
++         IF( INTB.GE.225 .AND. INTB.LE.250 ) INTB = INTB - 32
++      END IF
++      LSAME = INTA.EQ.INTB
++*
++*     RETURN
++*
++*     End of LSAME
++*
++      END
+diff -ruN octave-3.0.0.orig/src/Makefile.in octave-3.0.0/src/Makefile.in
+--- octave-3.0.0.orig/src/Makefile.in	2007-12-05 18:07:42.000000000 +0100
++++ octave-3.0.0/src/Makefile.in	2007-12-21 13:23:37.000000000 +0100
+@@ -262,7 +262,7 @@
+ endif
+ 
+ OCTINTERP_LINK_DEPS = \
+-  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS)
++  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS) -lfftw3
+ 
+ OCT_LINK_DEPS = \
+   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \

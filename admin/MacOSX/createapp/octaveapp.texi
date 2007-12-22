@@ -291,7 +291,7 @@ bash:~/cln-1.1.9$
 @end example
 @item Configure, compile and install the library to the directoy @file{<Octave.app>/Contents/Resources} specified by the flag @command{--prefix}, eg.
 @example
-bash:~/cln-1.1.9$ PATH=/Applications/Octave.app/Contents/Resources/bin:{$PATH} \
+bash:~/cln-1.1.9$ PATH=/Applications/Octave.app/Contents/Resources/bin:@{$PATH@} \
   ./configure --prefix=/Applications/Octave.app/Contents/Resources
 bash:~/cln-1.1.9$ make && make install
 @end example
@@ -308,7 +308,7 @@ bash:~/ginac-1.4.0$
 @end example
 @item Configure, compile and install the library to the directoy @file{<Octave.app>/Contents/Resources} specified by the flag @command{--prefix}, eg.
 @example
-bash:~/ginac-1.4.0$ PATH=/usr/local/bin:/Applications/Octave.app/Contents/Resources/bin:{$PATH} \
+bash:~/ginac-1.4.0$ PATH=/usr/local/bin:/Applications/Octave.app/Contents/Resources/bin:@{$PATH@} \
   ./configure --prefix=/Applications/Octave.app/Contents/Resources \
   CFLAGS="-I/Applications/Octave.app/Contents/Resources/include" \
   LDFLAGS="-L/Applications/Octave.app/Contents/Resources/lib"

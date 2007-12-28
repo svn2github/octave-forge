@@ -119,4 +119,12 @@ public class Vector3D
 		newV.normalize();
 		return newV;
 	}
+
+	public void print(String name)
+	{
+		System.out.println(name);
+		for (int i=0; i<3; i++)
+			System.out.print(v[i] + " ");
+		System.out.println("");
+	}
 }

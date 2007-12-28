@@ -186,4 +186,15 @@ public class Matrix3D
 
 		return ret;
 	}
+
+        public void print(String name)
+        {
+          System.out.println(name);
+          for (int i=0; i<4; i++)
+          {
+            for (int j=0; j<4; j++)
+              System.out.print(data[j*4+i] + " ");
+            System.out.println("");
+          }
+        }
 }

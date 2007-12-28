@@ -184,6 +184,9 @@ public class AxesObject extends HandleObject
 	RadioProperty ZDir;
 	ArrayProperty x_NormRenderTransform;
 	ArrayProperty x_RenderTransform;
+	ArrayProperty x_ViewTransform;
+	ArrayProperty x_ProjectionTransform;
+	ArrayProperty x_ViewportTransform;
 	RadioProperty XScale;
 	RadioProperty YScale;
 	RadioProperty ZScale;
@@ -280,6 +283,12 @@ public class AxesObject extends HandleObject
 		x_NormRenderTransform = new ArrayProperty(this, "x_NormRenderTransform", new String[] {"double"}, 2,
 			new Matrix(new double[16], new int[] {4, 4}));
 		x_RenderTransform = new ArrayProperty(this, "x_RenderTransform", new String[] {"double"}, 2,
+			new Matrix(new double[16], new int[] {4, 4}));
+		x_ViewTransform = new ArrayProperty(this, "x_ViewTransform", new String[] {"double"}, 2,
+			new Matrix(new double[16], new int[] {4, 4}));
+		x_ProjectionTransform = new ArrayProperty(this, "x_ProjectionTransform", new String[] {"double"}, 2,
+			new Matrix(new double[16], new int[] {4, 4}));
+		x_ViewportTransform = new ArrayProperty(this, "x_ViewportTransform", new String[] {"double"}, 2,
 			new Matrix(new double[16], new int[] {4, 4}));
 		XScale = new RadioProperty(this, "XScale", new String[] {"linear", "log"}, "linear");
 		YScale = new RadioProperty(this, "YScale", new String[] {"linear", "log"}, "linear");
@@ -2924,5 +2933,8 @@ public class AxesObject extends HandleObject
 		
 		x_NormRenderTransform.reset(new Matrix(x_normrender.getData(), new int[] {4, 4}));
 		x_RenderTransform.reset(new Matrix(x_render.getData(), new int[] {4, 4}));
+		x_ViewTransform.reset(new Matrix(x_view.getData(), new int[] {4, 4}));
+		x_ProjectionTransform.reset(new Matrix(x_projection.getData(), new int[] {4, 4}));
+		x_ViewportTransform.reset(new Matrix(x_viewport.getData(), new int[] {4, 4}));
 	}
 }

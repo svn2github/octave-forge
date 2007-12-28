@@ -29,7 +29,7 @@ Open Source Initiative (www.opensource.org)
 #include "galois.h"
 #include "ov-galois.h"
 
-#ifndef HAVE_OCTAVE_29
+#if ! defined (HAVE_OCTAVE_29) && ! defined (HAVE_OCTAVE_30)
 extern int Vstruct_levels_to_print;
 #endif
 

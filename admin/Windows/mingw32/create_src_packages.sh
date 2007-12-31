@@ -10,6 +10,8 @@ source pkg_version.sh
 VER=${PKG_VER}
 REL=${PKG_REL}
 
+SRCPKGDIR=srcpkg/${VER}-${REL}
+
 packit()
 {
 (
@@ -23,10 +25,11 @@ packit()
    
    T=${PKG}${VER}${REL}-src${EXT}
    
-   ( cd ${PKG} && ${TAR} ${TARFLAGS} ${T}  build${VER}${REL}.sh ${DF} $* && mv ${T} .. )
+   ( cd ${PKG} && ${TAR} ${TARFLAGS} ${T}  build${VER}${REL}.sh ${DF} $* && mv ${T} ../${SRCPKGDIR} )
 )
 }
 
+mkdir -p ${SRCPKGDIR}
 
 # The common building scripts...
 BUILD_SCRIPTS="\
@@ -41,7 +44,7 @@ BUILD_SCRIPTS="\
 	create_src_packages.sh \
 	pkg_version.sh"
 
-${TAR} ${TARFLAGS} build-scripts-${VER}-${REL}${EXT} ${BUILD_SCRIPTS}
+${TAR} ${TARFLAGS} ${SRCPKGDIR}/build-scripts-${VER}-${REL}${EXT} ${BUILD_SCRIPTS}
 
 # The dependency libraries
 #
@@ -62,12 +65,13 @@ packit	"libtiff"	3.8.2	1	"tiff-3.8.2.tar.gz" "tiff-3.8.2-1.diff"
 packit	"pcre"	7.0	1	"pcre-7.0.tar.bz2"
 packit	"readline"	5.2	1	"readline-5.2.tar.gz"
 packit	"regex"	2.5.1	1	"mingw-libgnurx-2.5.1-src.tar.gz"
-packit	"suitesparse"	2.4.0	1	"SuiteSparse-2.4.0.tar.gz"
+packit	"suitesparse"	3.0.0	1	"SuiteSparse-3.0.0.tar.gz"
 packit	"zlib"	1.2.3	1	"zlib-1.2.3.tar.bz2"
-packit	"curl"	7.16.4	1	"curl-7.16.4.tar.bz2"
+packit	"curl"	7.17.1	1	"curl-7.17.1.tar.bz2"
+packit	"qhull"	2003.1	1	"qhull-2003.1-src.tgz"
 
 # Octave itself
-packit	"octave"	2.9.12	2	"octave-2.9.12.tar.bz2"
+packit	"octave"	2.9.17	1	"octave-2.9.17.tar.bz2"
 
 # Additional Tools 
 packit	"sed"	4.1.5	1	"sed-4.1.5.tar.gz"

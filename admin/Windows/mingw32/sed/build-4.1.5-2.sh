@@ -26,8 +26,6 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=".build_mingw32_${VER}-${REL}_gcc421_dw2"
 
 # Make file to use
 MAKEFILE=""
@@ -40,11 +38,13 @@ INSTALL_HEADERS=""
 
 source ../gcc42_common.sh
 
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
 mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 
 conf()
 {
-   mkdirs;
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
      --srcdir=${TOPDIR}/${SRCDIR} \
      CC=${CC} \
@@ -69,5 +69,15 @@ uninstall()
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/sed.exe
 }
 
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
+}
 
 main $*

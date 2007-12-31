@@ -23,9 +23,14 @@ SED=sed
 
 export STRIP STRIP_FLAGS
 
+# GCC compilers used
+GCC_VER=-4.2.1
+GCC_SYS=-sjlj
+GCC_PREFIX=mingw32-
+
 # Prefix for our build
 #PREFIX=`echo ${TOPDIR} | sed -e 's+\(.*\)/[^/]*$+\1+'`/usr/local
-PREFIX=/usr/local/octm32gcc42
+PREFIX=/usr/local/octm32gcc${GCC_VER}${GCC_SYS}
 PREFIX_OCT=${PREFIX}/octave
 
 # Base paths for include files, import libraries, binaries&dlls, static libraries
@@ -59,7 +64,7 @@ STATICLIBRARY_PATH=${STATICLIBRARY_BASE}/${STATICLIBRARY_DIR}
 
 PATH=${PATH}:${BINARY_PATH}
 
-export BINARY_PATH INCLUDE_PATH LIBRARY_PATH STATICLIBRARY_PATH
+export BINARY_PATH INCLUDE_PATH LIBRARY_PATH SHAREDLIB_PATH STATICLIBRARY_PATH
 
 # Set environment variables for GCC
 LIBRARY_PATH=${LIBRARY_PATH}
@@ -67,10 +72,6 @@ CPATH=${INCLUDE_PATH}
 
 export LIBRARY_PATH CPATH
 
-# GCC compilers used
-GCC_VER=-4.2.1
-GCC_SYS=-dw2
-GCC_PREFIX=mingw32-
 
 CC=${GCC_PREFIX}gcc${GCC_VER}${GCC_SYS}
 CXX=${GCC_PREFIX}g++${GCC_VER}${GCC_SYS}
@@ -140,10 +141,10 @@ build_post() { echo ; }
 
 install_pre()
 {
-  if [ ! -e ${BINARY_PATH} ]; then mkdir -p ${BINARY_PATH}; fi
-  if [ ! -e ${LIBRARY_PATH} ]; then mkdir -p ${LIBRARY_PATH}; fi
-  if [ ! -e ${INCLUDE_PATH} ]; then mkdir -p ${INCLUDE_PATH}; fi
-  if [ ! -e ${STATICLIBRARY_PATH} ]; then mkdir -p ${STATICLIBRARY_PATH}; fi
+  if [ ! -e ${BINARY_PATH} ]; then mkdir -vp ${BINARY_PATH}; fi
+  if [ ! -e ${LIBRARY_PATH} ]; then mkdir -vp ${LIBRARY_PATH}; fi
+  if [ ! -e ${INCLUDE_PATH} ]; then mkdir -vp ${INCLUDE_PATH}; fi
+  if [ ! -e ${STATICLIBRARY_PATH} ]; then mkdir -vp ${STATICLIBRARY_PATH}; fi
  }
 install()
 {
@@ -213,7 +214,7 @@ mkdirs_pre() { echo ; }
 mkdirs()
 {
    mkdirs_pre;
-   ( cd ${TOPDIR} && mkdir -p ${BUILDDIR}; )
+   ( cd ${TOPDIR} && mkdir -vp ${BUILDDIR}; )
    mkdirs_post;
 }
 mkdirs_post() { echo; }
@@ -221,6 +222,7 @@ mkdirs_post() { echo; }
 substvars_pre() { echo ; }
 substvars()
 {
+   echo Making $2 from $1 ...
    ${SED} -e "s+@SRCDIR@+${TOPDIR}/${SRCDIR}+" \
    $1 > $2
 }

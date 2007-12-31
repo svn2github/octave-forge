@@ -67,16 +67,16 @@ clean()
 install()
 {
    install_pre
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/qhull.dll ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/qhull.dll      ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/libqhull.dll.a ${LIBRARY_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/libqhull.a ${STATICLIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/libqhull.a     ${STATICLIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/src/$a ${INCLUDE_PATH}; done
    install_post
 }
 
 uninstall()
 {
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/qhull.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/qhull.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libqhull.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libqhull.a
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done

@@ -26,8 +26,6 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=".build_mingw32_${VER}-${REL}_gcc421_dw2"
 
 # Make file to use
 MAKEFILE=""
@@ -259,11 +257,13 @@ wavelet/gsl_wavelet2d.h
 
 source ../gcc42_common.sh
 
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
 mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 
 conf()
 {
-   mkdirs;
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
      --srcdir=${TOPDIR}/${SRCDIR} \
      CC=${CC} \
@@ -281,7 +281,7 @@ install_pre() { if [ ! -e ${INCLUDE_PATH} ]; then mkdir -p ${INCLUDE_PATH}; fi; 
 install()
 {
   install_pre
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/{gsl.dll,gslcblas.dll} ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/{gsl.dll,gslcblas.dll} ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/{libgsl,libgslcblas}.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgsl.a ${STATICLIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/cblas/.libs/libgslcblas.a ${STATICLIBRARY_PATH}
@@ -291,11 +291,21 @@ install()
 
 uninstall()
 {
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/{gsl,gslcblas}.all
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/{gsl,gslcblas}.all
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/{libgsl,libgslcblas}.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/{libgsl,libgslcblas}.a
    for a in ${INSTALL_HEADERS}; do ${Rm} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
 }
 
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
+}
 
 main $*

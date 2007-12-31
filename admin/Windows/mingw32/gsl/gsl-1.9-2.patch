@@ -16,7 +16,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gsl-1.9-orig/Makefile.in gsl-
  	$(LINK) -rpath $(libdir) $(libgsl_la_LDFLAGS) $(libgsl_la_OBJECTS) $(libgsl_la_LIBADD) $(LIBS)
 +
 +gsl.dll : libgsl.la
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +	-Wl,--export-all-symbols \
 +	-Wl,--whole-archive ./.libs/libgsl.a \
 +	-Wl,--out-implib=libgsl.dll.a \
@@ -24,7 +24,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gsl-1.9-orig/Makefile.in gsl-
 +	strip $(STRIP_FLAGS) $@
 +
 +gslcblas.dll : libgsl.la
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +	-Wl,--export-all-symbols \
 +	-Wl,--whole-archive ./cblas/.libs/libgslcblas.a \
 +	-Wl,--out-implib=libgslcblas.dll.a \

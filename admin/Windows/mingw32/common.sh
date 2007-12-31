@@ -23,6 +23,11 @@ SED=sed
 
 export STRIP STRIP_FLAGS
 
+# GCC compilers used
+GCC_VER=-3.4.5
+GCC_SYS=
+GCC_PREFIX=mingw32-
+
 # Prefix for our build
 #PREFIX=`echo ${TOPDIR} | sed -e 's+\(.*\)/[^/]*$+\1+'`/usr/local
 PREFIX=/usr/local/octm32-gcc345
@@ -67,10 +72,6 @@ CPATH=${INCLUDE_BASE}/${INCLUDE_DEFAULT}
 
 export LIBRARY_PATH CPATH
 
-# GCC compilers used
-GCC_VER=-3.4.5
-GCC_SYS=
-GCC_PREFIX=mingw32-
 
 CC=${GCC_PREFIX}gcc${GCC_VER}${GCC_SYS}
 CXX=${GCC_PREFIX}g++${GCC_VER}${GCC_SYS}
@@ -82,12 +83,12 @@ export CC CXX F77
 
 # Architecture flags
 GCC_ARCH_FLAGS=""
-# Optimizatino flags
+# Optimization flags
 GCC_OPT_FLAGS="-O2"
 # Linker flags
 LDFLAGS=""
 
-export GCC_ARCH_FLAGS GCC_OPT_FLAGS
+export GCC_ARCH_FLAGS GCC_OPT_FLAGS LDFLAGS
 
 # Common Functions
 

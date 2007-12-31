@@ -26,8 +26,6 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=".build_mingw32_${VER}-${REL}_gcc421_dw2"
 
 # Make file to use
 MAKEFILE=""
@@ -59,13 +57,15 @@ source ../gcc42_common.sh
 
 mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
 # IMPORTANT !!
 #  DISABLE OPTIMIZATION FLAGS with GCC
 #  Othewise the checks for HW number conversions FAIL
 
 conf()
 {
-   mkdirs;
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
      --srcdir=${TOPDIR}/${SRCDIR} \
      CC=${CC} \
@@ -86,7 +86,7 @@ conf()
 
 install()
 {
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/hdf5.dll ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/hdf5.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libhdf5.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libhdf5.a ${STATICLIBRARY_PATH}
 
@@ -97,7 +97,7 @@ install()
 
 uninstall()
 {
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/hdf5.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/hdf5.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libhdf5.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libhdf5.a
    
@@ -112,6 +112,17 @@ check_pre()
   export SRCDIR
   PATH=${PATH}:${TOPDIR}/${BUILDDIR}/src/.libs
   HDF5_NOCLEANUP=1
+}
+
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
 }
 
 main $*

@@ -26,8 +26,6 @@ TOPDIR=`pwd -W | sed -e 's+\([a-z]\):/+/\1/+'`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=".build_mingw32_${VER}-${REL}_gcc421_dw2"
 
 # Make file to use
 MAKEFILE=""
@@ -40,11 +38,13 @@ INSTALL_HEADERS=""
 
 source ../gcc42_common.sh
 
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
 mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 
 conf()
 {
-   mkdirs;
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
      --srcdir=../${SRCDIR} \
      CC=${CC} \
@@ -57,18 +57,19 @@ conf()
      --disable-static \
      --enable-shared
    )
+   # GMP cannot build static and dynamic library simultaneously!
 }
 
 install()
 {
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/gmp.dll ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/gmp.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgmp.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/gmp.h ${INCLUDE_PATH}
 }
 
 uninstall()
 {
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/gmp.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/gmp.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libgmp.dll.a
    ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/gmp.h
 }
@@ -77,6 +78,7 @@ all() {
   download
   unpack
   applypatch
+  mkdirs
   conf
   build
   install

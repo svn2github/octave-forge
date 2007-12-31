@@ -58,14 +58,14 @@ build()
 
 install()
 {
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/cblas.dll ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/cblas.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/libcblas.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/libcblas.a ${STATICLIBRARY_PATH}
 }
 
 uninstall()
 {
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/cblas.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/cblas.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libcblas.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libcblas.a
 }

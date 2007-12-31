@@ -63,7 +63,7 @@ build()
 install()
 {
    install_pre
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/curl.dll ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/curl.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/libcurl.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/libcurl.a ${STATICLIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/include/curl/$a ${INCLUDE_PATH}; done
@@ -72,7 +72,7 @@ install()
 
 uninstall()
 {
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/curl.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/curl.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libcurl.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libcurl.a
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done

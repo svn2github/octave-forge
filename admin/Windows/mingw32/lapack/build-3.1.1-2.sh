@@ -60,14 +60,14 @@ build()
 
 install()
 {
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.dll   ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.dll   ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.dll.a ${LIBRARY_PATH}/liblapack.dll.a
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.a     ${STATICLIBRARY_PATH}/liblapack.a
 }
 
 uninstall()
 {
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/lapack.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/lapack.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/liblapack.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/liblapack.a
 }

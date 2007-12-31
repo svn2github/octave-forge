@@ -5,7 +5,7 @@ PKG=suitesparse
 # Version of Package
 VER=3.0.0
 # Release of (this patched) package
-REL=1
+REL=2
 # Name&Version of Package
 PKGVER=${PKG}-${VER}
 # Full name of this patched Package

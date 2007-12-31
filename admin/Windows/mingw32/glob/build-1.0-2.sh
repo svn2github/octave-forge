@@ -26,8 +26,6 @@ TOPDIR=`pwd`
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
-# Directory the lib is built in
-BUILDDIR=".build_mingw32_${VER}-${REL}_gcc421_dw2"
 
 # Make file to use
 MAKEFILE=""
@@ -40,11 +38,13 @@ INSTALL_HEADERS="glob.h fnmatch.h"
 
 source ../gcc42_common.sh
 
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
 mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 
 conf()
 {
-   mkdirs;
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
      --srcdir=${TOPDIR}/${SRCDIR} \
      CC=${CC} \
@@ -59,7 +59,7 @@ conf()
 
 install()
 {
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/glob.dll ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/glob.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/libglob.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/libglob.a ${STATICLIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}; done
@@ -67,7 +67,7 @@ install()
 
 uninstall()
 {
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/glob.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/glob.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libglob.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libglob.a
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
@@ -77,6 +77,7 @@ all() {
   download
   unpack
   applypatch
+  mkdirs
   conf
   build
   install

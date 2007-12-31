@@ -13,7 +13,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak glob-orig/Makefile.in glob/Ma
  	$(RANLIB) $@
 +
 +glob.dll: libglob.a
-+	$(CC) -shared -o $@ \
++	$(CC) -shared $(LDFLAGS) -o $@ \
 +	-Wl,--export-all-symbols \
 +	-Wl,--out-implib=libglob.dll.a \
 +	-Wl,--whole-archive $< \

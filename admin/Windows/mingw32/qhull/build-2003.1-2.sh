@@ -56,12 +56,12 @@ conf()
 
 build() 
 {
-   cd ${BUILDDIR}/src && make lib
+   ( cd ${BUILDDIR}/src && make lib )
 }
 
 clean() 
 {
-   cd ${BUILDDIR}/src && make clean
+   ( cd ${BUILDDIR}/src && make clean )
 }
 
 install()

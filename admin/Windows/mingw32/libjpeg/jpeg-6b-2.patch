@@ -1,6 +1,6 @@
-diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def jpeg-6b-orig/makefile.cfg jpeg-6b/makefile.cfg
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak jpeg-6b-orig/makefile.cfg jpeg-6b/makefile.cfg
 --- jpeg-6b-orig/makefile.cfg	Sat Mar 21 20:08:57 1998
-+++ jpeg-6b/makefile.cfg	Sun Jun 17 23:18:31 2007
++++ jpeg-6b/makefile.cfg	Tue Jan  1 16:34:29 2008
 @@ -133,7 +133,15 @@
  TROBJECTS= jpegtran.$(O) rdswitch.$(O) cdjpeg.$(O) transupp.$(O)
  

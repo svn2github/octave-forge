@@ -23,7 +23,7 @@ URL="http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-3.0.0.tar.g
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`
 # Directory Source code is extracted to (relative to TOPDIR)
-SRCDIR=${PKG}
+SRCDIR=${PKG}-${VER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
 SRCDIR_ORIG=${SRCDIR}-orig
 
@@ -48,6 +48,20 @@ source ../gcc42_common.sh
 
 # Directory the lib is built in
 BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+unpack()
+{
+   unpack_pre
+   ( mkdir tmp && cd tmp && ${TAR} -${TAR_TYPE} -${TAR_FLAGS} ${TOPDIR}/${SRCFILE} && mv SuiteSparse ${TOPDIR}/${SRCDIR} && cd .. && rm -rf tmp )
+   unpack_post
+}
+
+unpack_orig()
+{
+   unpack_orig_pre;
+   ( mkdir tmp && cd tmp && ${TAR} -${TAR_TYPE} -${TAR_FLAGS} ${TOPDIR}/${SRCFILE} && mv SuiteSparse ${TOPDIR}/${SRCDIR_ORIG} && cd .. && rm -rf tmp )
+   unpack_orig_post
+}
 
 mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 mkdirs_post()

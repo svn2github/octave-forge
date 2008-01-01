@@ -1,0 +1,27 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak libpng-1.2.18-orig/Makefile.in libpng-1.2.18/Makefile.in
+--- libpng-1.2.18-orig/Makefile.in	Wed May 16 01:52:42 2007
++++ libpng-1.2.18/Makefile.in	Sun Dec  9 12:35:48 2007
+@@ -418,6 +418,14 @@
+ libpng12.la: $(libpng12_la_OBJECTS) $(libpng12_la_DEPENDENCIES) 
+ 	$(LINK) -rpath $(libdir) $(libpng12_la_LDFLAGS) $(libpng12_la_OBJECTS) $(libpng12_la_LIBADD) $(LIBS)
+ 
++libpng.dll : libpng.la
++	$(CC) -shared $(LDFLAGS) -o $@ \
++	-Wl,--export-all-symbols \
++	-Wl,--whole-archive ./.libs/libpng.a \
++	-Wl,--out-implib=$(basename $<).dll.a \
++	-Wl,--no-whole-archive -lz
++	strip $(STRIP_FLAGS) $@
++
+ clean-checkPROGRAMS:
+ 	@list='$(check_PROGRAMS)'; for p in $$list; do \
+ 	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+@@ -1119,7 +1127,7 @@
+ 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
+ check: check-am
+ all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(MANS) $(DATA) $(HEADERS) \
+-		config.h
++		config.h libpng.dll
+ installdirs:
+ 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man3dir)" "$(DESTDIR)$(man5dir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(pkgincludedir)"; do \
+ 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \

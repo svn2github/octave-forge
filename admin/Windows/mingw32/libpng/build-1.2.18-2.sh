@@ -5,7 +5,7 @@ PKG=libpng
 # Version of Package
 VER=1.2.18
 # Release of (this patched) package
-REL=1
+REL=2
 # Name&Version of Package
 PKGVER=${PKG}-${VER}
 # Full name of this patched Package
@@ -15,7 +15,7 @@ FULLPKG=${PKGVER}-${REL}
 SRCFILE=${PKGVER}.tar.bz2
 TAR_TYPE=j
 # Name of Patch file
-PATCHFILE=${FULLPKG}.diff
+PATCHFILE=${FULLPKG}.patch
 
 # URL of source code file
 URL="http://prdownloads.sourceforge.net/libpng/libpng-1.2.18.tar.bz2"
@@ -36,7 +36,7 @@ MAKEFILE=""
 # header files to be installed
 INSTALL_HEADERS="png.h pngconf.h"
 
-source ../common.sh
+source ../gcc42_common.sh
 
 # Directory the lib is built in
 BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"

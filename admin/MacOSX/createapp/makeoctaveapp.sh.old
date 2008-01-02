@@ -15,39 +15,31 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301 USA
 
+
 # You must install the Octave.app at least on your desktop - you need
 # read/write permission for installing packages with Octave's 'pkg'
 # command.
 
-# This is the target platform for which Octave.app should be created.
-TARGETPLATFORM=ppc # can either be 'i386' or 'ppc'
-
-# This is the Octave version number of the Octave.app that is created.
-OCTAVEVERSION=3.0.0 # must be the version number of Octave
-
-# This is the directory where all the dependencies are installed. Make
-# sure that there are no other files in this directory that are not
-# needed.
-DEPSDIR=/tmp/dependencies-${TARGETPLATFORM}
-
 # This is the binary of Octave that has been created. The absolute
 # path and the version number need to be given.
-OCTBIN=${DEPSDIR}/bin/octave-${OCTAVEVERSION}
+OCTBIN=/tmp/dependencies-ppc/bin/octave-3.0.0
 
-# This is a temporary directory that is used for copying Octave and
-# its libraries (and remove other directories like 'man' etc.) that
-# depend on Octave.app.
+# This is the temporary directory that is used for copying Octave and
+# its libraries that depend on the Octave.app.
 TEMPDIR=/tmp/TEMPDIR
 
+# This is the directory where all the dependencies have been
+# installed. Make sure that there are no other files in this directory
+# that are not needed.
+DEPSDIR=/tmp/dependencies-ppc
+
 # These are the files that are copied into the docs directory of the
-# octave-VERSION-ARCH.dmg image. The files that are copied here are
+# octave-VERSION-ARCH.dmg file. The files that are needed are
 # Octave-FAQ.pdf, octave.pdf, liboctave.pdf, refcard-a4.pdf,
 # refcard-legal.pdf and refcard-letter.pdf.
-OCDOCS=~/tmp/oct-${TARGETPLATFORM}/solvedeps/octave-${OCTAVEVERSION}/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
+PDFDOCS=~/tmp/oct-ppc/solvedeps/octave-3.0.0/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
 
-# These are extras (of which kind they may ever be) that are copied
-# into the Extras directory of the octave-VERSION-ARCH.dmg image.
-OCEXTRAS=~/Savings/gnuplot-4.2.2-${TARGETPLATFORM}.dmg
+OCEXTRAS=~/Savings/gnuplot-4.2.2-ppc.dmg
 
 # This is the temporary directory that is used for installing all
 # files and libraries that are then packed into the
@@ -98,8 +90,8 @@ solvedeps() {
 }
 
 # This is the main bash routine
-if [ $# -ne 0 ]; then
-  echo "Usage: makeoctaveapp.sh without any input argument"
+if [ $# -ne 1 ]; then
+  echo "Usage: makeoctaveapp.sh --ppc|--i386"
   exit 1
 else
 
@@ -107,11 +99,11 @@ else
   PREFIX=${OCTBIN%/bin*}
   DATE=`date`
 
-  case ${TARGETPLATFORM} in
-    ppc)
+  case ${1} in
+    --ppc)
       ARCH="ppc"
       ;;
-    i386)
+    --i386)
       ARCH="i386"
       ;;
     *)
@@ -189,7 +181,7 @@ echo "FIXME - COPYING *ALL* *a,*la LIBS AND *ALL* INCLUDES"
 
   echo "makeoctaveapp.sh: Installing the Octave Docs ..."
   evalfailexit "install -d ${DMGDIR}/Doc"
-  evalfailexit "cp -R -P -vp ${OCDOCS} ${DMGDIR}/Doc"
+  evalfailexit "cp -R -P -vp ${PDFDOCS} ${DMGDIR}/Doc"
 
   echo "makeoctaveapp.sh: Installing the Octave Extras ..."
   evalfailexit "install -d ${DMGDIR}/Extras"

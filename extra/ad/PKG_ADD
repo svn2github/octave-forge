@@ -1,0 +1,2 @@
+autoload ("isgradient", fullfile (fileparts (mfilename ("fullpath")), "gradinit.oct"));
+autoload ("use_sparse_jacobians", fullfile (fileparts (mfilename ("fullpath")), "gradinit.oct"));

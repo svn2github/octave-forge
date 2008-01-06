@@ -43,3 +43,4 @@ function R=hartley_entropy(P)
   end
   R=renyi_entropy(0,P);
 end
+%!assert( hartley_entropy([0.2 0.3 0.5]), 1.0986, 1e-3 )

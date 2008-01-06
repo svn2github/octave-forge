@@ -37,6 +37,4 @@ endif
 
 Hcond = infoentr_seq(x,y) - infoentr_seq(y);
 end
-%!
-%!
-%!
+%!assert(condentr_seq([2, 2, 1, 1, 2],[1, 1, 2, 1, 1]),0.64902,1e-4)

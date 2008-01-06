@@ -64,3 +64,4 @@ function tag=arithmetic_encode(message,problist)
   tag=0.5*(Up+Lo);
   return;
 end
+%!arithmetic_encode([1, 1, 2, 3, 4],[0.5 0.25 0.15 0.10]),0.18078,1e-4)

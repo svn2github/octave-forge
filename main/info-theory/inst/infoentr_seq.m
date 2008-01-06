@@ -108,6 +108,4 @@ else
 	H = sum(sum(Pr .* h));
 endif
 end
-%!
-%!
-%!
+%!assert(infoentr_seq([2, 2, 1, 1, 2]),0.970950594454669,1e-5)

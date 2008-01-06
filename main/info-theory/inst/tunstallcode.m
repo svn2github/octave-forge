@@ -1,5 +1,4 @@
 ## Copyright (C) 2006 Muthiah Annamalai <muthiah.annamalai@uta.edu>
-## <muthiah.annamalai@uta.edu>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -84,9 +83,11 @@ function [cw_list,prob_list]=tunstallcode(prob_list)
 
   return
 end
-%!
-%!P=[  0.500000   0.250000   0.125000   0.125];
-%!tunstallcode(P)
-%!tunstallcode([0.6 .3 0.1])
-%!
+%!assert(tunstallcode([0.7 0.3]),{"111","2","12","112"})
+
+%
+%P=[  0.500000   0.250000   0.125000   0.125];
+%tunstallcode(P)
+%tunstallcode([0.6 .3 0.1])
+%
 

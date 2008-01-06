@@ -28,3 +28,4 @@ function E=shannon_entropy(P)
   E=entropy(P);
   return
 end
+%!assert(shannon_entropy([0.5 0.5]),1,1e-4)

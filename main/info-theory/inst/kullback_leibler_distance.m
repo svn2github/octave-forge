@@ -42,3 +42,6 @@ function dist=kullback_leibler_distance(P,Q)
   P(idx)=[];
   dist=dot(P,log(PQ));
 end
+%!
+%!assert(kullback_leibler_distance([0.2 0.3 0.5],[0.1 0.8 0.1]) ,0.64910,1e-5)
+%!

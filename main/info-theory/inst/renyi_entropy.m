@@ -47,3 +47,4 @@ function R=renyi_entropy(alpha,P)
   end
   return
 end
+%!assert( renyi_entropy(0,[0.2 0.3 0.5]), 1.0986 , 1e-3 )

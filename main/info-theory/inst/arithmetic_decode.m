@@ -96,3 +96,4 @@ function message=arithmetic_decode(tag,problist,tolerance)
   end
   return;
 end
+%!assert(arithmetic_decode(0.18078,[0.5 0.25 0.15 0.10]),[1, 1, 2, 3, 4,1, 4, 4, 2, 4,1],1)

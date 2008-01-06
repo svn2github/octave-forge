@@ -24,6 +24,7 @@
 ## @seealso{marginalc}
 
 function val=marginalr(XY)
-   val=sum(XY');
+   val=sum(XY,2);
    return
 end
+%!assert(marginalr([0.7 0.1 0.2; 0.1 0.7 0.2; 0.2 0.2 0.6]),[1; 1; 1;],1)

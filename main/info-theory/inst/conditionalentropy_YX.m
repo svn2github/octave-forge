@@ -52,3 +52,4 @@ function val=conditionalentropy_YX(XY)
   end
   return
 end
+%!assert(conditionalentropy_YX([0.7 0.3; 0.3 0.7]),1.7626,1e-4)

@@ -37,3 +37,5 @@ if nargin!=2
 endif
 
 I = infoentr_seq(x) - condentr_seq(x,y);
+end
+%!assert(mutualinfo_seq([1,2,2,1],[1,2,2,2]),0.31128,1e-4)

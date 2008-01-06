@@ -42,9 +42,7 @@ function [val,ent,lavg]=redundancy(code_word_list,symprob)
   val=1.0-(ent/lavg);
   return
 end
-
 %!
 %!assert(redundancy({"1","01","000","001"},[0.5 0.25 0.15 0.1]),0.0041499,1e-3)
 %!assert(redundancy({"00","01","10","11"},[0.25 0.25 0.25 0.25]),0,0)
 %!
-

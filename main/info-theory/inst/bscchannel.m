@@ -23,7 +23,8 @@
 ## @end deftypefn
 ## @seealso{entropy}
 
-function transmat=bschannel(p)
+function transmat=bscchannel(p)
   transmat=[ 1-p p; p 1-p];
   return
 end
+%!assert(bscchannel(0.5),0.5*ones(2),1)

@@ -37,6 +37,7 @@ function val=relativeentropy(p,q)
   val(nonzero_idx)= p(nonzero_idx).*log2(p_by_q(nonzero_idx));
   return
 end
+%!assert(relativeentropy([0.5 0.5],[0.3 0.7]),[0.36848, -0.24271],[1e-5,1e-5])
 %!
-%!
-%!
+
+

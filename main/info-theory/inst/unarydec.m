@@ -36,3 +36,5 @@
 function rval=unarydec(val)
      rval=log2(val+2)-1;
 end
+%!assert(unarydec([62   30   30    2    2    2],[5   4   4   1   1 1],1))
+

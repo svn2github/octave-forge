@@ -27,3 +27,4 @@ function val=marginalc(XY)
   val=sum(XY);
   return
 end
+%!assert(marginalc([0.7 0.1 0.2; 0.1 0.7 0.2; 0.2 0.2 0.6]),[1 1 1],1)

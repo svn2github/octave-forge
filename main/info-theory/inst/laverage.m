@@ -40,9 +40,6 @@ function Lavg=laverage(codebook,problist)
      end
      return
 end
-
 %!
-%! x={"0","111","1110"}; 
-%! p=[0.1 0.5 0.4];
-%! assert(laverage(x,p),3.200,0.001);
+%!assert(laverage({"0","111","1110"},[0.1, 0.5, 0.4]),3.200,0.001);
 %!

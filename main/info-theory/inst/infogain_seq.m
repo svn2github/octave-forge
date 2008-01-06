@@ -43,6 +43,4 @@ IGR = mutualinfo_seq(x,y)/infoentr_seq(x);
 # Could also do
 # IGR = 1 - condentr(x,y)/infoentr(x);
 end
-%!
-%!
-%!
+%!assert(infogain_seq([2, 2, 1, 1, 2],[2, 2, 1, 1, 2]),2,0)

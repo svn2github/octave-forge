@@ -50,3 +50,4 @@ function val=mutualinformation(XY)
 
   return
 end
+%!assert(mutualinformation([0.7 0.3; 0.3 0.7]),-1.7626,1e-4)

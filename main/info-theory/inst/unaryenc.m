@@ -51,3 +51,4 @@ function rval=unaryenc(val)
      rval=2.^(val)-1; % add somany 1's
      rval=rval*2;    % append 0
 end
+%!assert(unaryenc([5   4   4   1   1   1]), [62   30   30    2    2 2],1)

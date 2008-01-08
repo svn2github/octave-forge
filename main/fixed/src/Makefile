@@ -4,20 +4,15 @@ FIXEDVERTARGET = fixedversion.h
 FIXEDTARGET = fixed.oct 
 
 LIBPRE = lib
-LIBEXT = dll
+LIBEXT = a
 LIBIMPEXT = dll.a
 DLLDEF =
-ifeq (,$(findstring cygwin,$(canonical_host_type)))
- ifeq (,$(findstring mingw,$(canonical_host_type)))
-   ifneq (,$(findstring msdosmsvc,$(canonical_host_type)))
-    DLLDEF = -DFIXED_DLL
-   endif
-   OCT_INCLUDES_LIB = 1
- else
-   LIBPRE =
-   LIBIMPEXT = lib
-   DLLDEF = -DFIXED_DLL
- endif
+
+ifeq (,$(findstring msdosmsvc,$(canonical_host_type)))
+  LIBPRE =
+  LIBEXT = lib
+  LIBIMPEXT = lib
+  DLLDEF =
 endif
 
 ifeq (1,$(OCT_INCLUDES_LIB))

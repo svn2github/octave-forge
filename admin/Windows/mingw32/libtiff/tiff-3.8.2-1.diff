@@ -16,7 +16,7 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def tiff-3.8.2-orig/libtiff/Makef
  	-rm -f *.tab.c
 +
 +libtiff.dll : libtiff.la
-+	$(CC) -shared -o libtiff.dll \
++	$(CC) -shared $(LDFLAGS) -o libtiff.dll \
 +	-Wl,--export-all-symbols \
 +	-Wl,--whole-archive ./.libs/libtiff.a \
 +	-Wl,--out-implib=$(basename $@).dll.a \
@@ -24,7 +24,7 @@ diff -urN -x *.o -x *.dll -x *.a -x *.exe -x *.def tiff-3.8.2-orig/libtiff/Makef
 +	strip $(STRIP_FLAGS) $@
 +
 +libtiffxx.dll : libtiffxx.la
-+	$(CXX) -shared -o libtiffxx.dll \
++	$(CXX) -shared $(LDFLAGS) -o libtiffxx.dll \
 +	-Wl,--export-all-symbols \
 +	-Wl,--whole-archive ./.libs/libtiffxx.a \
 +	-Wl,--out-implib=$(basename $@).dll.a \

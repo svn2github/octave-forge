@@ -1,0 +1,1268 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/Makeconf.in octave-2.9.17/Makeconf.in
+--- octave-2.9.17-orig/Makeconf.in	Fri Oct 26 20:22:04 2007
++++ octave-2.9.17/Makeconf.in	Tue Nov 20 17:31:45 2007
+@@ -571,9 +571,9 @@
+ define do-subst-texinfo-vals
+ echo "making $@ from $<"
+ $(SED) < $< \
+-  -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
+-  -e "s|%top_srcdir%|${top_srcdir}|" \
+-  -e "s|%OCTAVE_HOME%|${prefix}|" \
++  -e "s|%abs_top_srcdir%|`cd ${abs_top_srcdir} && pwd -W`|" \
++  -e "s|%top_srcdir%|`cd ${top_srcdir} && pwd -W`|" \
++  -e "s|%OCTAVE_HOME%|`cd ${prefix} && pwd -W`|" \
+   -e "s|%OCTAVE_VERSION%|${version}|" \
+   -e "s|%TEXINFO_COLAMD%|${TEXINFO_COLAMD}|" \
+   -e "s|%TEXINFO_CHOLMOD%|${TEXINFO_CHOLMOD}|" \
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/aclocal.m4 octave-2.9.17/aclocal.m4
+--- octave-2.9.17-orig/aclocal.m4	Wed Oct 24 22:35:20 2007
++++ octave-2.9.17/aclocal.m4	Mon Nov 12 22:20:27 2007
+@@ -562,7 +562,7 @@
+ AC_DEFUN(OCTAVE_PROG_GHOSTSCRIPT, [
+   case "$canonical_host_type" in
+     *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
+-      gs_names="gs gswin32"
++      gs_names="gs gswin32c gswin32"
+     ;;
+     *)
+       gs_names=gs
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/configure.in octave-2.9.17/configure.in
+--- octave-2.9.17-orig/configure.in	Sat Nov 10 06:17:27 2007
++++ octave-2.9.17/configure.in	Mon Dec 31 22:08:32 2007
+@@ -435,7 +435,11 @@
+ AC_CACHE_CHECK([whether pcre.h has the macros we need],
+ 	       [ac_cv_pcre_h_macros_present],
+                [AC_EGREP_CPP([PCRE_HAS_MACROS_WE_NEED], [
++#ifdef HAVE_PCRE_PCRE_H 
++#include <pcre/pcre.h> 
++#else 
+ #include <pcre.h>
++#endif
+ #if defined (PCRE_INFO_NAMECOUNT) \
+   && defined (PCRE_INFO_NAMEENTRYSIZE) \
+   && defined (PCRE_INFO_NAMETABLE)
+@@ -966,6 +970,8 @@
+ OCTAVE_DLL_DEFS=
+ OCTINTERP_DLL_DEFS=
+ library_path_var=LD_LIBRARY_PATH
++SCRIPTS_EXE_SUFFIX=
++SCRIPTS_SRC_SUFFIX=
+ case "$canonical_host_type" in
+   *-*-386bsd* | *-*-netbsd*)
+     SH_LD=ld
+@@ -1003,17 +1009,19 @@
+     library_path_var=DYLD_LIBRARY_PATH	
+   ;;
+   *-*-cygwin* | *-*-mingw*)
+-    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
++    DL_LDFLAGS="-shared ${LDFLAGS} -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+     CXXPICFLAG=
+     CPICFLAG=
+     FPICFLAG=
+     SHLEXT=dll
+     SHLLIB=dll.a
+     SHLBIN=dll
+-    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
++    SH_LDFLAGS="-shared ${LDFLAGS} -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
+     SHLLINKEXT=.dll
+     SONAME_FLAGS='-Wl,--out-implib=$@.a'
+     library_path_var=PATH
++    SCRIPTS_EXE_SUFFIX=.exe
++    SCRIPTS_SRC_SUFFIX=.cc
+   ;;
+   *-*-msdosmsvc)
+     DL_LDFLAGS="-shared"
+@@ -1168,6 +1176,8 @@
+ AC_SUBST(OCTAVE_DLL_DEFS)
+ AC_SUBST(OCTINTERP_DLL_DEFS)
+ AC_SUBST(library_path_var)
++AC_SUBST(SCRIPTS_EXE_SUFFIX)
++AC_SUBST(SCRIPTS_SRC_SUFFIX)
+ 
+ ### special checks for odd OS specific things.
+ ###
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/doc/faq/Makefile.in octave-2.9.17/doc/faq/Makefile.in
+--- octave-2.9.17-orig/doc/faq/Makefile.in	Fri Oct 26 20:22:05 2007
++++ octave-2.9.17/doc/faq/Makefile.in	Mon Nov 19 18:40:56 2007
+@@ -54,14 +54,14 @@
+ 
+ Octave-FAQ.dvi: $(TEXINFO)
+ 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+-	  $(TEXI2DVI) $<
++	  $(TEXI2DVI) -I.. $<
+ 
+ Octave-FAQ.ps: Octave-FAQ.dvi
+ 	-dvips -o $@ $<
+ 
+ Octave-FAQ.pdf: $(TEXINFO)
+ 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+-	  $(TEXI2PDF) $<
++	  $(TEXI2PDF) -I.. $<
+ 
+ Octave-FAQ.html: $(TEXINFO)
+ 	-$(MAKEINFO) --html --ifinfo --no-split --output=$@ -I.. -I$(srcdir) -I$(srcdir)/.. $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/doc/interpreter/Makefile.in octave-2.9.17/doc/interpreter/Makefile.in
+--- octave-2.9.17-orig/doc/interpreter/Makefile.in	Fri Oct 26 20:22:05 2007
++++ octave-2.9.17/doc/interpreter/Makefile.in	Tue Nov 20 17:29:06 2007
+@@ -117,10 +117,10 @@
+ # targeted file name (e.g. to generate octave-a4.pdf, copy to
+ # octave-a4.texi) and call texi2[dvi|pdf] on it.
+ 
+-TEXI2DVICOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
++TEXI2DVICOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+ 	  $(TEXI2DVI)
+ 
+-TEXI2PDFCOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
++TEXI2PDFCOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+ 	  $(TEXI2PDF)
+ 
+ FORMATTED = octave.info octave.pdf octave-a4.pdf octave.info-[0-9]*
+@@ -188,14 +188,14 @@
+ 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
+ 
+ octave.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES)
+-	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+-	  $(TEXI2DVI) $(MAIN_TEXINFO)
++	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
++	  $(TEXI2DVI) -I.. $(MAIN_TEXINFO)
+ 
+ octave-a4.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES) octave-a4.texi
+-	-$(TEXI2DVICOMMAND) octave-a4.texi -t @afourpaper
++	-$(TEXI2DVICOMMAND) -I.. octave-a4.texi -t @afourpaper
+ 
+ octave-smallbook.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES) octave-smallbook.texi
+-	-$(TEXI2DVICOMMAND) octave-smallbook.texi -t @smallbook
++	-$(TEXI2DVICOMMAND) -I.. octave-smallbook.texi -t @smallbook
+ 
+ octave.ps: octave.dvi
+ 	-dvips -o $@ $<
+@@ -207,13 +207,13 @@
+ 	-dvips -o $@ $<
+ 
+ octave.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES)
+-	-$(TEXI2PDFCOMMAND) $(MAIN_TEXINFO)
++	-$(TEXI2PDFCOMMAND) -I.. $(MAIN_TEXINFO)
+ 
+ octave-a4.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES) octave-a4.texi
+-	-$(TEXI2PDFCOMMAND) octave-a4.texi -t @afourpaper
++	-$(TEXI2PDFCOMMAND) -I.. octave-a4.texi -t @afourpaper
+ 
+ octave-smallbook.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES) octave-smallbook.texi
+-	-$(TEXI2PDFCOMMAND) octave-smallbook.texi -t @smallbook
++	-$(TEXI2PDFCOMMAND) -I.. octave-smallbook.texi -t @smallbook
+ 
+ ../../INSTALL.OCTAVE: install.texi
+ 	rm -f INSTALL
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/doc/liboctave/Makefile.in octave-2.9.17/doc/liboctave/Makefile.in
+--- octave-2.9.17-orig/doc/liboctave/Makefile.in	Fri Oct 26 20:22:05 2007
++++ octave-2.9.17/doc/liboctave/Makefile.in	Mon Nov 19 18:43:19 2007
+@@ -67,14 +67,14 @@
+ 
+ liboctave.dvi: $(TEXINFO)
+ 	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+-	  $(TEXI2DVI) $<
++	  $(TEXI2DVI) -I.. $<
+ 
+ liboctave.ps: liboctave.dvi
+ 	-dvips -o $@ $<
+ 
+ liboctave.pdf: $(TEXINFO)
+ 	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+-	  $(TEXI2PDF) $<
++	  $(TEXI2PDF) -I.. $<
+ 
+ HTML/index.html: $(TEXINFO)
+ 	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/doc/refcard/Makefile.in octave-2.9.17/doc/refcard/Makefile.in
+--- octave-2.9.17-orig/doc/refcard/Makefile.in	Fri Oct 12 23:27:12 2007
++++ octave-2.9.17/doc/refcard/Makefile.in	Mon Nov 19 18:43:51 2007
+@@ -41,31 +41,31 @@
+ all: $(FORMATTED)
+ 
+ refcard-a4.dvi: refcard-a4.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex -I.. $<
+ 
+ refcard-a4.ps: refcard-a4.dvi
+ 	-dvips -T 297mm,210mm -o $@ $<
+ 
+ refcard-a4.pdf: refcard-a4.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex -I.. $<
+ 
+ refcard-legal.dvi: refcard-legal.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex -I.. $<
+ 
+ refcard-legal.ps: refcard-legal.dvi
+ 	-dvips -T 14in,8.5in -o $@ $<
+ 
+ refcard-legal.pdf: refcard-legal.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex -I.. $<
+ 
+ refcard-letter.dvi: refcard-letter.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex -I.. $<
+ 
+ refcard-letter.ps: refcard-letter.dvi
+ 	-dvips -T 11in,8.5in -o $@ $<
+ 
+ refcard-letter.pdf: refcard-letter.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex -I.. $<
+ 
+ check install install-strip uninstall:
+ .PHONY: check install install-strip uninstall
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/mkoctfile.cc.in octave-2.9.17/mkoctfile.cc.in
+--- octave-2.9.17-orig/mkoctfile.cc.in	Thu Jan  1 01:00:00 1970
++++ octave-2.9.17/mkoctfile.cc.in	Mon Nov 12 23:01:41 2007
+@@ -0,0 +1,712 @@
++#if defined (HAVE_CONFIG_H)
++#include "config.h"
++#endif
++
++#include <string>
++#include <map>
++#include <list>
++#include <algorithm>
++#include <iostream>
++#include <fstream>
++#include <vector>
++#include <cstdlib>
++
++#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
++#include <windows.h>
++#ifdef _MSC_VER
++#define popen _popen
++#define pclose _pclose
++#endif
++#endif
++
++using namespace std;
++
++static bool initialized = false;
++static map<string,string> vars;
++
++static string OCTAVE_VERSION = %OCTAVE_CONF_VERSION%;
++
++static std::string substitute_prefix(const std::string& s, const std::string& prefix, const std::string& new_prefix)
++{
++	std::string retval = s;
++
++	if (!prefix.empty() && new_prefix != prefix)
++	{
++		int len = prefix.length();
++		if (retval.find(prefix) == 0)
++			retval.replace(0, len, new_prefix);
++	}
++
++#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
++	std::replace(retval.begin(), retval.end(), '/', '\\');
++#endif
++
++	return retval;
++}
++
++static string get_line(FILE *fp)
++{
++	static vector<char> buf(100);
++	int idx = 0;
++	char c;
++
++	while (1)
++	{
++		c = (char)fgetc(fp);
++		if (c == '\n' || c == EOF)
++			break;
++		if (buf.size() <= idx)
++			buf.resize(buf.size() + 100);
++		buf[idx++] = c;
++	}
++	if (idx == 0)
++		return string("");
++	else
++		return string(&buf[0], idx);
++}
++
++
++static string get_variable(const char *name, const string& defval)
++{
++	const char *val = getenv(name);
++	if (val == NULL || val[0] == '\0')
++		return defval;
++	else
++		return string(val);
++}
++
++static string quote_path(const string& s)
++{
++	if (s.find(' ') != string::npos && s[0] != '"')
++		return "\"" + s + "\"";
++	return s;
++}
++
++static void initialize(void)
++{
++	if (initialized)
++		return;
++
++	initialized = true;
++
++	vars["OCTAVE_HOME"] = get_variable("OCTAVE_HOME", "");
++
++#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
++	int n = 1024;
++
++	std::string bin_dir (n, '\0');
++
++	while (true)
++	{
++		int status = GetModuleFileName (0, &bin_dir[0], n);
++
++		if (status < n)
++		{
++			bin_dir.resize (status);
++			break;
++		}
++		else
++		{
++			n *= 2;
++			bin_dir.resize (n);
++		}
++	}
++
++	if (! bin_dir.empty ())
++	{
++		size_t pos = bin_dir.rfind ("\\bin\\");
++
++		if (pos != string::npos)
++			vars["OCTAVE_HOME"] = bin_dir.substr (0, pos);
++	}
++#endif
++	
++	vars["SED"] = get_variable("SED", %OCTAVE_CONF_SED%);
++
++	vars["OCTAVE_PREFIX"] = %OCTAVE_CONF_PREFIX%;
++
++	std::string DEFAULT_OCTINCLUDEDIR = %OCTAVE_CONF_OCTINCLUDEDIR%;
++	std::string DEFAULT_INCLUDEDIR = %OCTAVE_CONF_INCLUDEDIR%;
++	std::string DEFAULT_LIBDIR = %OCTAVE_CONF_LIBDIR%;
++	std::string DEFAULT_OCTLIBDIR = %OCTAVE_CONF_OCTLIBDIR%;
++
++	if (! vars["OCTAVE_HOME"].empty())
++	{
++		DEFAULT_OCTINCLUDEDIR = substitute_prefix(DEFAULT_OCTINCLUDEDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
++		DEFAULT_INCLUDEDIR = substitute_prefix(DEFAULT_INCLUDEDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
++		DEFAULT_LIBDIR = substitute_prefix(DEFAULT_LIBDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
++		DEFAULT_OCTLIBDIR = substitute_prefix(DEFAULT_OCTLIBDIR, vars["OCTAVE_PREFIX"], vars["OCTAVE_HOME"]);
++	}
++
++	vars["OCTINCLUDEDIR"] = get_variable("OCTINCLUDEDIR", DEFAULT_OCTINCLUDEDIR);
++	vars["INCLUDEDIR"] = get_variable("INCLUDEDIR", DEFAULT_INCLUDEDIR);
++	vars["LIBDIR"] = get_variable("LIBDIR", DEFAULT_LIBDIR);
++	vars["OCTLIBDIR"] = get_variable("OCTLIBDIR", DEFAULT_OCTLIBDIR);
++
++#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
++	std::string DEFAULT_INCFLAGS = "-I" + quote_path(vars["OCTINCLUDEDIR"]) + " -I" + quote_path(vars["OCTINCLUDEDIR"] + "\\octave");
++#else
++	std::string DEFAULT_INCFLAGS = "-I" + quote_path(vars["OCTINCLUDEDIR"]) + " -I" + quote_path(vars["OCTINCLUDEDIR"] + "/octave");
++#endif
++	if (vars["INCLUDEDIR"] != "/usr/include")
++		DEFAULT_INCFLAGS += " -I" + quote_path(vars["INCLUDEDIR"]);
++
++	std::string DEFAULT_LFLAGS = "-L" + quote_path(vars["OCTLIBDIR"]);
++	if (vars["LIBDIR"] != "/usr/lib")
++		DEFAULT_LFLAGS += " -L" + quote_path(vars["LIBDIR"]);
++
++	vars["CPPFLAGS"] = get_variable("CPPFLAGS", %OCTAVE_CONF_CPPFLAGS%);
++	vars["INCFLAGS"] = get_variable("INCFLAGS", DEFAULT_INCFLAGS);
++	vars["F2C"] = get_variable("F2C", %OCTAVE_CONF_F2C%);
++	vars["F2CFLAGS"] = get_variable("F2CFLAGS", %OCTAVE_CONF_F2CFLAGS%);
++	vars["F77"] = get_variable("F77", %OCTAVE_CONF_F77%);
++	vars["FFLAGS"] = get_variable("FFLAGS", %OCTAVE_CONF_FFLAGS%);
++	vars["FPICFLAG"] = get_variable("FPICFLAG", %OCTAVE_CONF_FPICFLAG%);
++	vars["CC"] = get_variable("CC", %OCTAVE_CONF_CC%);
++	vars["CFLAGS"] = get_variable("CFLAGS", %OCTAVE_CONF_CFLAGS%);
++	vars["CPICFLAG"] = get_variable("CPICFLAG", %OCTAVE_CONF_CPICFLAG%);
++	vars["CXX"] = get_variable("CXX", %OCTAVE_CONF_CXX%);
++	vars["CXXFLAGS"] = get_variable("CXXFLAGS", %OCTAVE_CONF_CXXFLAGS%);
++	vars["CXXPICFLAG"] = get_variable("CXXPICFLAG", %OCTAVE_CONF_CXXPICFLAG%);
++	vars["XTRA_CFLAGS"] = get_variable("XTRA_CFLAGS", %OCTAVE_CONF_XTRA_CFLAGS%);
++	vars["XTRA_CXXFLAGS"] = get_variable("XTRA_CXXFLAGS", %OCTAVE_CONF_XTRA_CXXFLAGS%);
++
++	vars["DEPEND_FLAGS"] = get_variable("DEPEND_FLAGS", %OCTAVE_CONF_DEPEND_FLAGS%);
++	vars["DEPEND_EXTRA_SED_PATTERN"] = get_variable("DEPEND_EXTRA_SED_PATTERN", %OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%);
++
++	vars["DL_LD"] = get_variable("DL_LD", %OCTAVE_CONF_DL_LD%);
++	vars["DL_LDFLAGS"] = get_variable("DL_LDFLAGS", %OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%);
++
++	vars["RLD_FLAG"] = get_variable("RLD_FLAG", %OCTAVE_CONF_RLD_FLAG%);
++	vars["RDYNAMIC_FLAG"] = get_variable("RDYNAMIC_FLAG", %OCTAVE_CONF_RDYNAMIC_FLAG%);
++	vars["LIBOCTAVE"] = "-loctave";
++	vars["LIBOCTINTERP"] = "-loctinterp";
++	vars["LIBREADLINE"] = "-lreadline";
++	vars["LIBCRUFT"] = "-lcruft";
++	vars["BLAS_LIBS"] = get_variable("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
++	vars["FFTW_LIBS"] = get_variable("FFTW_LIBS", %OCTAVE_CONF_FFTW_LIBS%);
++	vars["LIBS"] = get_variable("LIBS", %OCTAVE_CONF_LIBS%);
++	vars["FLIBS"] = get_variable("FLIBS", %OCTAVE_CONF_FLIBS%);
++	vars["LD_CXX"] = get_variable("LD_CXX", %OCTAVE_CONF_LD_CXX%);
++	vars["LDFLAGS"] = get_variable("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
++	vars["LD_STATIC_FLAG"] = get_variable("LD_STATIC_FLAG", %OCTAVE_CONF_LD_STATIC_FLAG%);
++	vars["LFLAGS"] = get_variable("LFLAGS", DEFAULT_LFLAGS);
++
++	vars["ALL_FFLAGS"] = vars["FFLAGS"];
++
++	vars["ALL_CFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CFLAGS"] + " " + vars["CFLAGS"];
++
++	vars["ALL_CXXFLAGS"] = vars["INCFLAGS"] + " " + vars["XTRA_CXXFLAGS"] + " " + vars["CXXFLAGS"];
++
++	vars["ALL_LDFLAGS"] = vars["LD_STATIC_FLAG"] + " " + vars["CPICFLAG"] + " " + vars["LDFLAGS"];
++
++	vars["OCTAVE_LIBS"] = vars["LIBOCTINTERP"] + " " + vars["LIBOCTAVE"] + " " + vars["SPECIAL_MATH_LIB"] + " " + vars["LIBCRUFT"];
++}
++
++static string usage_msg = "usage: mkoctfile [options] file ...";
++static string version_msg = "mkoctfile, version " + OCTAVE_VERSION;
++static bool debug = false;
++static string help_msg =
++"\n"
++"Options:\n"
++"\n"
++"  -h, -?, --help          Print this message.\n"
++"\n"
++"  -IDIR                   Add -IDIR to compile commands.\n"
++"\n"
++"  -idirafter DIR          Add -idirafter DIR to compile commands.\n"
++"\n"
++"  -DDEF                   Add -DDEF to compile commands.\n"
++"\n"
++"  -lLIB                   Add library LIB to link command.\n"
++"\n"
++"  -LDIR                   Add -LDIR to link command.\n"
++"\n"
++"  -M, --depend            Generate dependency files (.d) for C and C++\n"
++"                          source files.\n"
++"\n"
++"  -RDIR                   Add -RDIR to link command.\n"
++"\n"
++"  -Wl,...                 Pass flags though the linker like -Wl,-rpath=...\n"
++"\n"
++"  -W...                   Pass flags though the compiler like -Wa,OPTION.\n"
++"\n"
++"  -c, --compile           Compile, but do not link.\n"
++"\n"
++"  -o FILE, --output FILE  Output file name.  Default extension is .oct\n"
++"                          (or .mex if --mex is specified) unless linking\n"
++"                          a stand-alone executable.\n"
++"\n"
++"  -g                      Enable debugging options for compilers.\n"
++"\n"
++"  -p VAR, --print VAR     Print configuration variable VAR.  Recognized\n"
++"                          variables are:\n"
++"\n"
++"			    ALL_CFLAGS                FFTW_LIBS     \n"
++"			    ALL_CXXFLAGS              FLIBS       \n"
++"			    ALL_FFLAGS                FPICFLAG      \n"
++"			    ALL_LDFLAGS               INCFLAGS      \n"
++"			    BLAS_LIBS                 LDFLAGS             \n"
++"			    CC                        LD_CXX              \n"
++"			    CFLAGS                    LD_STATIC_FLAG\n"
++"			    CPICFLAG                  LFLAGS              \n"
++"			    CPPFLAGS                  LIBCRUFT      \n"
++"			    CXX                       LIBOCTAVE     \n"
++"			    CXXFLAGS                  LIBOCTINTERP  \n"
++"			    CXXPICFLAG                LIBREADLINE   \n"
++"			    DEPEND_EXTRA_SED_PATTERN  LIBS        \n"
++"			    DEPEND_FLAGS              OCTAVE_LIBS   \n"
++"			    DL_LD                     RDYNAMIC_FLAG \n"
++"			    DL_LDFLAGS                RLD_FLAG      \n"
++"			    F2C                       SED         \n"
++"			    F2CFLAGS                  XTRA_CFLAGS   \n"
++"			    F77                       XTRA_CXXFLAGS \n"
++"			    FFLAGS\n"
++"\n"
++"  --link-stand-alone      Link a stand-alone executable file.\n"
++"\n"
++"  --mex                   Assume we are creating a MEX file.  Set the\n"
++"                          default output extension to \".mex\".\n"
++"\n"
++"  -s, --strip             Strip output file.\n"
++"\n"
++"  -v, --verbose           Echo commands as they are executed.\n"
++"\n"
++"  FILE                    Compile or link FILE.  Recognized file types are:\n"
++"\n"
++"                            .c    C source\n"
++"                            .cc   C++ source\n"
++"                            .C    C++ source\n"
++"                            .cpp  C++ source\n"
++"                            .f    Fortran source (fixed form)\n"
++"                            .F    Fortran source (fixed form)\n"
++"                            .f90  Fortran source (free form)\n"
++"                            .F90  Fortran source (free form)\n"
++"                            .o    object file\n"
++"                            .a    library file\n"
++#ifdef _MSC_VER
++"                            .lib  library file\n"
++#endif
++"\n";
++
++static string basename(const string& s, bool strip_path = false)
++{
++	size_t pos = s.rfind('.');
++	string retval;
++
++	if (pos == string::npos)
++		retval = s;
++	else
++		retval = s.substr(0, pos);
++	if (strip_path)
++	{
++		size_t p1 = retval.rfind('/'), p2 = retval.rfind('\\');
++		pos = (p1 != string::npos && p2 != string::npos ? max(p1, p2) : (p2 != string::npos ? p2 : p1));
++		if (pos != string::npos)
++			retval = retval.substr(0, pos);
++	}
++	return retval;
++}
++
++inline bool starts_with(const string& s, const string& prefix)
++{
++	return (s.length() >= prefix.length() && s.find(prefix) == 0);
++}
++
++inline bool ends_with(const string& s, const string& suffix)
++{
++	return (s.length() >= suffix.length() && s.rfind(suffix) == s.length()-suffix.length());
++}
++
++static int run_command(const string& cmd)
++{
++	if (debug)
++		cout << cmd << endl;
++	return system(cmd.c_str());
++}
++
++int main(int argc, char **argv)
++{
++	initialize();
++
++	string objfiles, libfiles, octfile, outputfile, incflags, defs, ldflags, pass_on_options, output_ext, file, output_option, cmd;
++	bool strip, no_oct_file_strip_on_this_platform, link, link_stand_alone, depend, compile;
++	list<string> cfiles, ccfiles, f77files;
++	int result = 0;
++
++	//cfiles = "";
++	//ccfiles = "";
++	//f77files = "";
++	objfiles = "";
++	libfiles = "";
++	octfile = "";
++	outputfile = "";
++	incflags = "";
++	defs = "";
++	ldflags = "";
++	pass_on_options = "";
++	strip = false;
++	no_oct_file_strip_on_this_platform = %NO_OCT_FILE_STRIP%;
++	link = true;
++	link_stand_alone = false;
++	output_ext = ".oct";
++	depend = false;
++	compile = true;
++
++	if (argc == 1)
++	{
++		cout << usage_msg << endl;
++		return 1;
++	}
++
++	if (argc == 2 && (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")))
++	{
++		cout << version_msg << endl;
++		return 0;
++	}
++
++	for (int i=1; i<argc; i++)
++	{
++		string arg = argv[i];
++		size_t len = arg.length();
++
++		if (ends_with(arg, ".c"))
++		{
++			file = arg;
++			cfiles.push_back(file);
++		}
++		else if (ends_with(arg, ".cc") || ends_with(arg, ".C") || ends_with(arg, ".cpp"))
++		{
++			file = arg;
++			ccfiles.push_back(file);
++		}
++		else if (ends_with(arg, ".f") || ends_with(arg, ".F") ||
++			 ends_with(arg, "f90") || ends_with(arg, ".F90"))
++		{
++			file = arg;
++			f77files.push_back(file);
++		}
++		else if (ends_with(arg, ".o") || ends_with(arg, ".obj"))
++		{
++			file = arg;
++			objfiles += (" " + quote_path(arg));
++		}
++		else if (ends_with(arg, ".lib") || ends_with(arg, ".a"))
++		{
++			file = arg;
++			libfiles += (" " + quote_path(arg));
++		}
++		else if (arg == "-d" || arg == "--debug" || arg == "-v" || arg == "--verbose")
++		{
++			debug = true;
++			if (vars["CC"] == "cc-msvc")
++				vars["CC"] += " -d";
++			if (vars["CXX"] == "cc-msvc")
++				vars["CXX"] += " -d";
++			if (vars["DL_LD"] == "cc-msvc")
++				vars["DL_LD"] += " -d";
++		}
++		else if (arg == "-h" || arg == "-?" || arg == "--help")
++		{
++			cout << usage_msg << endl;
++			cout << help_msg << endl;
++			return 0;
++		}
++		else if (starts_with(arg, "-I"))
++		{
++			incflags += (" " + quote_path(arg));
++		}
++		else if (arg == "-idirafter")
++		{
++			if (i < argc-1)
++			{
++				arg = argv[++i];
++				incflags += (" -idirafter " + arg);
++			}
++			else
++				cerr << "mkoctfile: include directory name missing" << endl;
++		}
++		else if (starts_with(arg, "-D"))
++		{
++			defs += (" " + arg);
++		}
++		else if (starts_with(arg, "-Wl,") || starts_with(arg, "-l") || starts_with(arg, "-L") || starts_with(arg, "-R"))
++		{
++			ldflags += (" " + arg);
++		}
++		else if (arg == "-M" || arg == "--depend")
++		{
++			depend = true;
++			compile = false;
++		}
++		else if (arg == "-o" || arg == "--output")
++		{
++			if (i < argc-1)
++			{
++				arg = argv[++i];
++				outputfile = arg;
++			}
++			else
++				cerr << "mkoctfile: output file name missing" << endl;
++		}
++		else if (arg == "-p" || arg == "--print")
++		{
++			if (i < argc-1)
++			{
++				arg = argv[++i];
++				cout << vars[arg] << endl;
++				return 0;
++			}
++			else
++				cerr << "mkoctfile: --print requires argument" << endl;
++		}
++		else if (arg == "-s" || arg == "--strip")
++		{
++			if (no_oct_file_strip_on_this_platform)
++				cerr << "mkoctfile: stripping disabled on this platform" << endl;
++			else
++				strip = true;
++		}
++		else if (arg == "-c" || arg == "--compile")
++		{
++			link = false;
++		}
++		else if (arg == "-g")
++		{
++			vars["ALL_CFLAGS"] += " -g";
++			vars["ALL_CXXFLAGS"] += " -g";
++			vars["ALL_FFLAGS"] += " -g";
++		}
++		else if (arg == "--link-stand-alone")
++		{
++			link_stand_alone = true;
++		}
++		else if (arg == "--mex")
++		{
++			incflags += " -I.";
++			ldflags += " -Wl,-export:mexFunction";
++			output_ext = ".mex";
++		}
++		else if (starts_with(arg, "-W"))
++		{
++			pass_on_options += (" " + arg);
++		}
++		else
++		{
++			cerr << "mkoctfile: unrecognized argument " << arg;
++			return 1;
++		}
++
++		if (!file.empty() && octfile.empty())
++			octfile = file;
++	}
++
++	if (link_stand_alone)
++	{
++		if (!outputfile.empty())
++			output_option = "-o " + outputfile;
++	}
++	else
++	{
++		if (!outputfile.empty())
++			octfile = outputfile;
++		else
++			octfile = basename(octfile, true) + output_ext;
++	}
++
++	list<string>::const_iterator it;
++
++	if (depend)
++	{
++		for (it=cfiles.begin(); it!=cfiles.end(); ++it)
++		{
++			string f = *it, dfile = basename(f) + ".d", line;
++
++			unlink(dfile.c_str());
++			cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " " + vars["CPPFLAGS"] + " " +
++			      vars["ALL_CFLAGS"] + " " + incflags  + " " + defs + " " + quote_path(f);
++
++			FILE *fd = popen(cmd.c_str(), "r");
++			ofstream fo(dfile.c_str());
++			int pos;
++			while (!feof(fd))
++			{
++				line = get_line(fd);
++				if ((pos=line.rfind(".o:")) != string::npos)
++				{
++					int spos = line.rfind('/', pos);
++					string ofile = (spos == string::npos ? line.substr(0, pos+2) : line.substr(spos+1, pos-spos+1));
++					fo << "pic/" << ofile << " " << ofile << " " << dfile << line.substr(pos) << endl;
++				}
++				else
++					fo << line << endl;
++			}
++			pclose(fd);
++			fo.close();
++		}
++
++		for (it=ccfiles.begin(); it!=ccfiles.end(); ++it)
++		{
++			string f = *it, dfile = basename(f) + ".d", line;
++
++			unlink(dfile.c_str());
++			cmd = vars["CC"] + " " + vars["DEPEND_FLAGS"] + " " + vars["CPPFLAGS"] + " " +
++			      vars["ALL_CXXFLAGS"] + " " + incflags  + " " + defs + " " + quote_path(f);
++
++			FILE *fd = popen(cmd.c_str(), "r");
++			ofstream fo(dfile.c_str());
++			int pos;
++			while (!feof(fd))
++			{
++				line = get_line(fd);
++				if ((pos=line.rfind(".o:")) != string::npos)
++				{
++					int spos = line.rfind('/', pos);
++					string ofile = (spos == string::npos ? line.substr(0, pos+2) : line.substr(spos+1, pos-spos+1));
++					fo << "pic/" << ofile << " " << ofile << " " << dfile << line.substr(pos+2) << endl;
++				}
++				else
++					fo << line << endl;
++			}
++			pclose(fd);
++			fo.close();
++		}
++
++		return 0;
++	}
++
++	for (it=f77files.begin(); it!=f77files.end(); ++it)
++	{
++		string f = *it, b = basename(f);
++		if (!vars["F2C"].empty() && vars["F2C"] != "@F2C@")
++		{
++			string c = b + ".c";
++			cfiles.push_back(c);
++			cmd = vars["F2C"] + " " + vars["F2CFLAGS"] + " < " + f + " > " + c;
++			result = run_command(cmd);
++		}
++		else if (!vars["F77"].empty())
++		{
++			string o;
++			if (!outputfile.empty())
++			{
++				if (link)
++					o = b + ".o";
++				else
++					o = outputfile;
++			}
++			else
++				o = b + ".o";
++			objfiles += (" " + o);
++			cmd = vars["F77"] + " -c " + vars["FPICFLAG"] + " " + vars["ALL_FFLAGS"] + " " + incflags + " " + defs + " " +
++			      pass_on_options + " " + f + " -o " + o;
++			result = run_command(cmd);
++		}
++		else
++		{
++			cerr << "mkoctfile: no way to compile Fortran file " << f << endl;
++			return 1;
++		}
++	}
++
++	for (it=cfiles.begin(); it!=cfiles.end(); ++it)
++	{
++		string f = *it;
++		if (!vars["CC"].empty())
++		{
++			string b = basename(f), o;
++			if (!outputfile.empty())
++			{
++				if (link)
++					o = b + ".o";
++				else
++					o = outputfile;
++			}
++			else
++				o = b + ".o";
++			objfiles += (" " + o);
++			cmd = vars["CC"] + " -c " + vars["CPPFLAGS"] + " " + vars["CPICFLAG"] + " " + vars["ALL_CFLAGS"] + " " +
++			      pass_on_options + " " + incflags + " " + defs + " " + quote_path(f) + " -o " + quote_path(o);
++			result = run_command(cmd);
++		}
++		else
++		{
++			cerr << "mkoctfile: no way to compile C file " << f << endl;
++			return 1;
++		}
++	}
++	
++	for (it=ccfiles.begin(); it!=ccfiles.end(); ++it)
++	{
++		string f = *it;
++		if (!vars["CXX"].empty())
++		{
++			string b = basename(f), o;
++			if (!outputfile.empty())
++			{
++				if (link)
++					o = b + ".o";
++				else
++					o = outputfile;
++			}
++			else
++				o = b + ".o";
++			objfiles += (" " + o);
++			cmd = vars["CXX"] + " -c " + vars["CPPFLAGS"] + " " + vars["CXXPICFLAG"] + " " + vars["ALL_CXXFLAGS"] + " " +
++			      pass_on_options + " " + incflags + " " + defs + " " + quote_path(f) + " -o " + quote_path(o);
++			result = run_command(cmd);
++		}
++		else
++		{
++			cerr << "mkoctfile: no way to compile C++ file " << f << endl;
++			return 1;
++		}
++	}
++
++	if (link && !objfiles.empty())
++	{
++		if (link_stand_alone)
++		{
++			if (!vars["LD_CXX"].empty())
++			{
++				cmd= vars["LD_CXX"] + " " + vars["CPPFLAGS"] + " " + vars["ALL_CXXFLAGS"] + " " + vars["RDYNAMIC_FLAG"] + " " +
++				     vars["ALL_LDFLAGS"] + " " +  pass_on_options + " " +  output_option + " " + objfiles + " " + libfiles + " " +
++				     ldflags + " " + vars["LFLAGS"] + " " + vars["RLD_FLAG"] + " " + vars["OCTAVE_LIBS"] + " " + 
++				     vars["BLAS_LIBS"] + " " + vars["FFTW_LIBS"] + " " + vars["LIBREADLINE"] + " " + vars["LIBS"]
++#ifndef __MINGW32__
++				     + " " +
++				     vars["FLIBS"];
++#else
++				     ;
++#endif
++				result = run_command(cmd);
++			}
++			else
++			{
++				cerr << "mkoctfile: no way to link stand-alone executable file" << endl;
++				return 1;
++			}
++		}
++		else
++		{
++			string LINK_DEPS = vars["LFLAGS"] + " " + vars["OCTAVE_LIBS"] + " " + vars["LDFLAGS"] + " " + vars["BLAS_LIBS"] + " " +
++					   vars["FFTW_LIBS"] + " " + vars["LIBS"]
++#ifndef __MINGW32__
++					   + " " + vars["FLIBS"];
++#else
++					   ;
++#endif
++			cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " " + pass_on_options + " -o " + octfile + " " + objfiles + " " +
++			      libfiles + " " + ldflags + " " + LINK_DEPS;
++			result = run_command(cmd);
++		}
++
++		if (strip)
++		{
++			cmd = "strip " + octfile;
++			result = run_command(cmd);
++		}
++	}
++
++	return result;
++}
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/octMakefile.in octave-2.9.17/octMakefile.in
+--- octave-2.9.17-orig/octMakefile.in	Fri Nov  9 18:08:52 2007
++++ octave-2.9.17/octMakefile.in	Mon Dec 31 21:56:10 2007
+@@ -26,6 +26,9 @@
+ abs_top_srcdir = @abs_top_srcdir@
+ VPATH = @srcdir@
+ 
++SCRIPTS_EXE_SUFFIX=@SCRIPTS_EXE_SUFFIX@
++SCRIPTS_SRC_SUFFIC=@SCRIPTS_SRC_SUFFIX@
++
+ include $(TOPDIR)/Makeconf
+ 
+ INSTALL = @INSTALL@
+@@ -46,8 +49,8 @@
+ 	NEWS.[0-9] PROJECTS README README.Linux README.Windows \
+ 	README.Cygwin README.MSVC README.kpathsea ROADMAP SENDING-PATCHES \
+ 	THANKS move-if-change octave-sh octave-bug.in \
+-	octave-config.in mk-opts.pl mkinstalldirs \
+-	mkoctfile.in run-octave.in ChangeLog ChangeLog.[0-9]
++	octave-config$(SCRIPTS_SRC_SUFFIX).in mk-opts.pl mkinstalldirs \
++	mkoctfile$(SCRIPTS_SRC_SUFFIX).in run-octave.in ChangeLog ChangeLog.[0-9]
+ 
+ # Subdirectories in which to run `make all'.
+ SUBDIRS = @DLFCN_DIR@ libcruft liboctave src scripts doc examples
+@@ -69,7 +72,7 @@
+   $(shell echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}') \
+   $(shell echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}')
+ 
+-SHELL_SCRIPTS = octave-bug octave-config mkoctfile run-octave
++SHELL_SCRIPTS = octave-bug octave-config$(SCRIPTS_EXE_SUFFIX) mkoctfile$(SCRIPTS_EXE_SUFFIX) run-octave
+ 
+ all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS)) dist-info-files
+ 	@echo ""
+@@ -93,18 +96,22 @@
+ 	@$(do-subst-config-vals)
+ 	chmod a+rx $@
+ 
+-octave-config: octave-config.in Makeconf octMakefile
++octave-config.cc: octave-config.cc.in Makeconf octMakefile
+ 	@$(do-subst-default-vals)
+-	chmod a+rx $@
+ 
+-mkoctfile: mkoctfile.in Makeconf octMakefile
++mkoctfile.cc: mkoctfile.cc.in Makeconf octMakefile
+ 	@$(do-subst-config-vals)
+-	chmod a+rx $@
+ 
+ run-octave: run-octave.in Makeconf octMakefile
+ 	@$(do-subst-script-vals)
+ 	chmod a+rx "$@"
+ 
++mkoctfile.exe : mkoctfile.cc
++octave-config.exe : octave-config.cc
++
++mkoctfile.exe octave-config.exe: %.exe : %.cc
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@ $< && strip $(STRIP_FLAGS) $@
++
+ check:
+ 	$(MAKE) -C test $@
+ .PHONY: check
+@@ -122,13 +129,13 @@
+ 	rm -f $(DESTDIR)$(bindir)/octave-bug
+ 	$(INSTALL_SCRIPT) octave-bug $(DESTDIR)$(bindir)/octave-bug-$(version)
+ 	(cd $(DESTDIR)$(bindir); $(LN_S) octave-bug-$(version) $(DESTDIR)$(bindir)/octave-bug)
+-	rm -f $(DESTDIR)$(bindir)/octave-config
++	rm -f $(DESTDIR)$(bindir)/octave-config$(SCRIPTS_EXE_SUFFIX)
+ 	$(INSTALL_SCRIPT) \
+-	  octave-config $(DESTDIR)$(bindir)/octave-config-$(version)
+-	(cd $(DESTDIR)$(bindir); $(LN_S) octave-config-$(version) $(DESTDIR)$(bindir)/octave-config)
+-	rm -f $(DESTDIR)$(bindir)/mkoctfile
+-	$(INSTALL_SCRIPT) mkoctfile $(DESTDIR)$(bindir)/mkoctfile-$(version)
+-	(cd $(DESTDIR)$(bindir); $(LN_S) mkoctfile-$(version) $(DESTDIR)$(bindir)/mkoctfile)
++	  octave-config$(SCRIPTS_EXE_SUFFIX) $(DESTDIR)$(bindir)/octave-config-$(version)$(SCRIPTS_EXE_SUFFIX)
++	(cd $(DESTDIR)$(bindir); $(LN_S) octave-config-$(version)$(SCRIPTS_EXE_SUFFIX) $(DESTDIR)$(bindir)/octave-config$(SCRIPTS_EXE_SUFFIX))
++	rm -f $(DESTDIR)$(bindir)/mkoctfile$(SCRIPTS_EXE_SUFFIX)
++	$(INSTALL_SCRIPT) mkoctfile$(SCRIPTS_EXE_SUFFIX) $(DESTDIR)$(bindir)/mkoctfile-$(version)$(SCRIPTS_EXE_SUFFIX)
++	(cd $(DESTDIR)$(bindir); $(LN_S) mkoctfile-$(version)$(SCRIPTS_EXE_SUFFIX) $(DESTDIR)$(bindir)/mkoctfile$(SCRIPTS_EXE_SUFFIX))
+ 	$(INSTALL_DATA) config.h $(DESTDIR)$(octincludedir)/octave/config.h
+ 	$(INSTALL_DATA) $(srcdir)/NEWS $(DESTDIR)$(datadir)/octave/$(version)/NEWS
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/octave-config.cc.in octave-2.9.17/octave-config.cc.in
+--- octave-2.9.17-orig/octave-config.cc.in	Thu Jan  1 01:00:00 1970
++++ octave-2.9.17/octave-config.cc.in	Mon Nov 12 23:03:12 2007
+@@ -0,0 +1,197 @@
++#if defined (HAVE_CONFIG_H)
++#include "config.h"
++#endif
++
++#include <string>
++#include <map>
++#include <iostream>
++#include <algorithm>
++#include <cstdlib>
++
++#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
++#include <windows.h>
++#endif
++
++static bool initialized = false;
++static std::map<std::string,std::string> vars;
++static std::string OCTAVE_HOME, PREFIX;
++static std::string usage_msg = "usage: octave-config [options]";
++static std::string help_msg =
++"\n"
++"Options:\n"
++"\n"
++"  -h, -?, --help        Print this message.\n"
++"\n"
++"  --m-site-dir          Print the name of the directory where Octave\n"
++"                        expects to find locally installed .m files.\n"
++"\n"
++"  --oct-site-dir        Print the name of the directory where Octave\n"
++"                        expects to find locally installed .oct files.\n"
++"\n"
++"  -p VAR, --print VAR   Print the value of the given configuration\n"
++"		        variable VAR.  Recognized variables are:\n"
++"\n"
++"			  API_VERSION	         LOCALAPIARCHLIBDIR\n"
++"			  CANONICAL_HOST_TYPE	 LOCALAPIFCNFILEDIR\n"
++"			  DEFAULT_PAGER	         LOCALAPIOCTFILEDIR\n"
++"			  ARCHLIBDIR	         LOCALARCHLIBDIR\n"
++"			  BINDIR	         LOCALFCNFILEDIR\n"
++"			  DATADIR	         LOCALOCTFILEDIR\n"
++"			  DATAROOTDIR	         LOCALSTARTUPFILEDIR\n"
++"			  EXEC_PREFIX	         LOCALVERARCHLIBDIR\n"
++"			  FCNFILEDIR		 LOCALVERFCNFILEDIR\n"
++"			  LOCALVEROCTFILEDIR	 MAN1DIR\n"
++"			  IMAGEDIR	         MANDIR\n"
++"			  MAN1EXT	         OCTFILEDIR\n"
++"			  INCLUDEDIR	         OCTINCLUDEDIR\n"
++"			  INFODIR	         OCTLIBDIR\n"
++"			  INFOFILE	         PREFIX\n"
++"			  LIBDIR	         STARTUPFILEDIR\n"
++"			  LIBEXECDIR		 VERSION\n"
++"\n"
++"  -v, --version         Print the Octave version number.\n"
++"\n";
++
++static std::string substitute_prefix(const std::string& s, const std::string& prefix, const std::string new_prefix)
++{
++	std::string retval = s;
++
++	if (!prefix.empty() && new_prefix != prefix)
++	{
++		int len = prefix.length();
++		if (retval.find(prefix) == 0)
++			retval.replace(0, len, new_prefix);
++	}
++
++#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
++	std::replace(retval.begin(), retval.end(), '/', '\\');
++#endif
++
++	return retval;
++}
++
++static void initialize(void)
++{
++	if (initialized)
++		return;
++
++	initialized = true;
++
++	const char *homestr = getenv("OCTAVE_HOME");
++	OCTAVE_HOME = (homestr ? homestr : "");
++	PREFIX = %OCTAVE_PREFIX%;
++
++#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
++	int n = 1024;
++
++	std::string bin_dir (n, '\0');
++
++	while (true)
++	{
++		int status = GetModuleFileName (0, &bin_dir[0], n);
++
++		if (status < n)
++		{
++			bin_dir.resize (status);
++			break;
++		}
++		else
++		{
++			n *= 2;
++			bin_dir.resize (n);
++		}
++	}
++
++	if (! bin_dir.empty ())
++	{
++		size_t pos = bin_dir.rfind ("\\bin\\");
++
++		if (pos != std::string::npos)
++			OCTAVE_HOME = bin_dir.substr (0, pos);
++	}
++#endif
++
++	vars["API_VERSION"] = %OCTAVE_API_VERSION%;
++	vars["CANONICAL_HOST_TYPE"] = %OCTAVE_CANONICAL_HOST_TYPE%;
++	vars["DEFAULT_PAGER"] = %OCTAVE_DEFAULT_PAGER%;
++	vars["ARCHLIBDIR"] = substitute_prefix (%OCTAVE_ARCHLIBDIR%, PREFIX, OCTAVE_HOME);
++	vars["BINDIR"] = substitute_prefix (%OCTAVE_BINDIR%, PREFIX, OCTAVE_HOME);
++	vars["DATADIR"] =substitute_prefix (%OCTAVE_DATADIR%, PREFIX, OCTAVE_HOME);
++	vars["DATAROOTDIR"] =substitute_prefix (%OCTAVE_DATAROOTDIR%, PREFIX, OCTAVE_HOME);
++	vars["EXEC_PREFIX"] =substitute_prefix (%OCTAVE_EXEC_PREFIX%, PREFIX, OCTAVE_HOME);
++	vars["FCNFILEDIR"] =substitute_prefix (%OCTAVE_FCNFILEDIR%, PREFIX, OCTAVE_HOME);
++	vars["IMAGEDIR"] =substitute_prefix (%OCTAVE_IMAGEDIR%, PREFIX, OCTAVE_HOME);
++	vars["INCLUDEDIR"] =substitute_prefix (%OCTAVE_INCLUDEDIR%, PREFIX, OCTAVE_HOME);
++	vars["INFODIR"] =substitute_prefix (%OCTAVE_INFODIR%, PREFIX, OCTAVE_HOME);
++	vars["INFOFILE"] =substitute_prefix (%OCTAVE_INFOFILE%, PREFIX, OCTAVE_HOME);
++	vars["LIBDIR"] =substitute_prefix (%OCTAVE_LIBDIR%, PREFIX, OCTAVE_HOME);
++	vars["LIBEXECDIR"] =substitute_prefix (%OCTAVE_LIBEXECDIR%, PREFIX, OCTAVE_HOME);
++	vars["LOCALAPIARCHLIBDIR"] =substitute_prefix (%OCTAVE_LOCALAPIARCHLIBDIR%, PREFIX, OCTAVE_HOME);
++	vars["LOCALAPIFCNFILEDIR"] =substitute_prefix (%OCTAVE_LOCALAPIFCNFILEDIR%, PREFIX, OCTAVE_HOME);
++	vars["LOCALAPIOCTFILEDIR"] =substitute_prefix (%OCTAVE_LOCALAPIOCTFILEDIR%, PREFIX, OCTAVE_HOME);
++	vars["LOCALARCHLIBDIR"] =substitute_prefix (%OCTAVE_LOCALARCHLIBDIR%, PREFIX, OCTAVE_HOME);
++	vars["LOCALFCNFILEDIR"] =substitute_prefix (%OCTAVE_LOCALFCNFILEDIR%, PREFIX, OCTAVE_HOME);
++	vars["LOCALOCTFILEDIR"] =substitute_prefix (%OCTAVE_LOCALOCTFILEDIR%, PREFIX, OCTAVE_HOME);
++	vars["LOCALSTARTUPFILEDIR"] =substitute_prefix (%OCTAVE_LOCALSTARTUPFILEDIR%, PREFIX, OCTAVE_HOME);
++	vars["LOCALVERARCHLIBDIR"] =substitute_prefix (%OCTAVE_LOCALVERARCHLIBDIR%, PREFIX, OCTAVE_HOME);
++	vars["LOCALVERFCNFILEDIR"] =substitute_prefix (%OCTAVE_LOCALVERFCNFILEDIR%, PREFIX, OCTAVE_HOME);
++	vars["LOCALVEROCTFILEDIR"] =substitute_prefix (%OCTAVE_LOCALVEROCTFILEDIR%, PREFIX, OCTAVE_HOME);
++	vars["MAN1DIR"] =substitute_prefix (%OCTAVE_MAN1DIR%, PREFIX, OCTAVE_HOME);
++	vars["MAN1EXT"] = %OCTAVE_MAN1EXT%;
++	vars["MANDIR"] =substitute_prefix (%OCTAVE_MANDIR%, PREFIX, OCTAVE_HOME);
++	vars["OCTFILEDIR"] =substitute_prefix (%OCTAVE_OCTFILEDIR%, PREFIX, OCTAVE_HOME);
++	vars["OCTINCLUDEDIR"] =substitute_prefix (%OCTAVE_OCTINCLUDEDIR%, PREFIX, OCTAVE_HOME);
++	vars["OCTLIBDIR"] =substitute_prefix (%OCTAVE_OCTLIBDIR%, PREFIX, OCTAVE_HOME);
++	vars["PREFIX"] = (OCTAVE_HOME.empty() ? PREFIX : OCTAVE_HOME);
++	vars["STARTUPFILEDIR"] =substitute_prefix (%OCTAVE_STARTUPFILEDIR%, PREFIX, OCTAVE_HOME);
++	vars["VERSION"] = %OCTAVE_VERSION%;
++}
++
++int main(int argc, char **argv)
++{
++	initialize();
++
++	if (argc == 1)
++	{
++		std::cout << usage_msg << std::endl;
++		return 1;
++	}
++
++	for (int i=1; i<argc; i++)
++	{
++		std::string arg(argv[i]);
++
++		if (arg == "-h" || arg == "-?" || arg == "--help")
++		{
++			std::cout << usage_msg << std::endl;
++			std::cout << help_msg;
++			return 0;
++		}
++		else if (arg == "--m-site-dir")
++			std::cout << vars["LOCALVERFCNFILEDIR"] << std::endl;
++		else if (arg == "--oct-site-dir")
++			std::cout << vars["LOCALVEROCTFILEDIR"] << std::endl;
++		else if (arg == "-v" || arg == "--version")
++			std::cout << vars["VERSION"] << std::endl;
++		else if (arg == "-p" || arg == "--print")
++		{
++			if (i < argc-1)
++			{
++				arg = argv[++i];
++				std::cout << vars[arg] << std::endl;
++			}
++			else
++			{
++				std::cerr << "octave-config: " << arg << " options requires argument" << std::endl;
++				return 1;
++			}
++		}
++		else
++		{
++			std::cerr << "octave-config: unrecognized argument " << arg << std::endl;
++			return 1;
++		}
++	}
++
++	return 0;
++}
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/scripts/pkg/pkg.m octave-2.9.17/scripts/pkg/pkg.m
+--- octave-2.9.17-orig/scripts/pkg/pkg.m	Tue Nov  6 23:47:35 2007
++++ octave-2.9.17/scripts/pkg/pkg.m	Mon Nov 12 22:34:33 2007
+@@ -1032,6 +1032,8 @@
+       if (isempty (getenv ("RANLIB")))
+         flags = strcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
+       endif
++      flags = strcat( flags, " LDFLAGS=-L\"", fullfile(OCTAVE_HOME,"lib"), "\"" );
++      flags = strcat( flags, " CPPFLAGS=-I\"", fullfile(OCTAVE_HOME,"include"), "\"" );
+       [status, output] = shell (strcat ("cd ", src, "; ./configure --prefix=\"",
+                                         desc.dir, "\"", flags));
+       if (status != 0)
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-2.9.17-orig/scripts/startup/main-rcfile octave-2.9.17/scripts/startup/main-rcfile
+--- octave-2.9.17-orig/scripts/startup/main-rcfile	Fri Oct 26 18:09:12 2007
++++ octave-2.9.17/scripts/startup/main-rcfile	Mon Nov 12 22:35:44 2007
+@@ -18,3 +18,39 @@
+ ## will also skip automatic loading of packages.
+ 
+ pkg ("load", "auto");
++
++## check for notepad++ editor
++
++sci_path = fullfile( octave_config_info("prefix"), "tools", "notepad++" );
++if( exist(sci_path,"dir") )
++   EDITOR( fullfile( sci_path, "notepad++.exe" ) );
++   #edit("mode","async");
++endif
++
++## check for MSYS environment
++
++msys_path = fullfile( octave_config_info("prefix"), "MSYS" );
++if( exist( msys_path, "dir" ) )
++   msys_path = cat(2, msys_path, filesep, "bin", ";", EXEC_PATH );
++   EXEC_PATH( msys_path );
++endif
++
++## check for mingw32
++
++mingw_path = fullfile( octave_config_info("prefix"), "MINGW32" );
++if( exist(mingw_path, "dir") )
++   mingw_path = cat(2, mingw_path, filesep, "bin", ";", EXEC_PATH );
++   EXEC_PATH( mingw_path );
++endif
++ 
++## set warning state less intrusive
++
++warning("off","Octave:string-concat");
++warning("off","Octave:single-quote-string");
++warning("off","Octave:resize-on-range-error");
++
++## set default prompt
++
++PS1("\\s:\\#:\\w\n> ");
++
++clear mingw_path sci_path msys_path;

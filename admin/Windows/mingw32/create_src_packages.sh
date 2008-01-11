@@ -21,7 +21,7 @@ packit()
    shift; shift; shift
    
    D=${PKG}${VER}${REL}.diff
-   if [ -n -e ${T} ]; then DF=""; else DF=$D; fi
+   if [ -n -e ${D} ]; then DF=""; else DF=$D; fi
    
    T=${PKG}${VER}${REL}-src${EXT}
    
@@ -42,7 +42,8 @@ BUILD_SCRIPTS="\
 	install_octave.sh \
 	install_tools.sh \
 	create_src_packages.sh \
-	pkg_version.sh"
+	pkg_version.sh \
+	copy-if-changed.sh"
 
 ${TAR} ${TARFLAGS} ${SRCPKGDIR}/build-scripts-${VER}-${REL}${EXT} ${BUILD_SCRIPTS}
 

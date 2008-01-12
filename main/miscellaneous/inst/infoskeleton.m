@@ -11,7 +11,7 @@
 ##
 
 ##-*- texinfo -*-
-##@deftypefn{Function File}{ }infoskeleton(prototype,index_str,index_str)
+##@deftypefn{Function File}{ }infoskeleton(prototype,index_str,seealso)
 ##@cindex infoskeleton
 ## The function infoskeleton generates TeXinfo skeleton documentation of the
 ##given @var{prototype}. Optionally @var{index_str} and @var{seealso}
@@ -26,7 +26,7 @@
 ##
 function infoskeleton( prototype , index_str, seealso)
 
-  ## FIXME: add placeholders for math TeX code, etc.
+  ## FIXME: add placeholders for math TeX code, examples etc.
 
   if nargin < 1
     print_usage();
@@ -43,8 +43,13 @@ function infoskeleton( prototype , index_str, seealso)
   ## 
   ## try to parse the function prototype
   ## as:
-  ## fname retval = ( arg1, arg2, etc )"
+  ## function retval = fname ( arg1, arg2, etc )"
   ##
+  prototype = strtrim( prototype );
+  idx = strfind( prototype, "function" );
+  if ( !isempty( idx ) )
+    prototype(idx:idx+7) = "";
+  end
 
   idx = strfind( prototype, "=" );
   retval = "";
@@ -85,7 +90,7 @@ function infoskeleton( prototype , index_str, seealso)
   ## generate the code
   fprintf("## -*- texinfo -*-\n")
   if ( length( retval ) > 0 )
-    fprintf("## @deftypefn{Function File} {@var{%s} ={} } %s (", \
+    fprintf("## @deftypefn{Function File} {@var{%s} = } %s (", \
 	    retval,fname );
   else
     fprintf("## @deftypefn{Function File} { } %s (", \
@@ -108,11 +113,16 @@ function infoskeleton( prototype , index_str, seealso)
   if ( length(args) > 0 )
     fprintf(" @var{%s} is   .\n", args{pos+1} );
   end
-  
+   
+  fprintf("## @example\n");
+  fprintf("## \n");
+  fprintf("## @end example\n");
+
   fprintf("## @seealso{%s}\n",seealso);
   fprintf("## @end deftypefn\n");
 end
-##   examples:
+##   examples: 
 ##   infoskeleton( ' [x,y,z]=infoskeleton(func , z , z9 , jj, fjh, x)  ')
 ##   infoskeleton('[V,Q] = eig( A )','linear algebra','eigs, chol, qr, det')
+##   infoskeleton( 'function [x,y,z] =  indian_languages ( x)  ')
 ##

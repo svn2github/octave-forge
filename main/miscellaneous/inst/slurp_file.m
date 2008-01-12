@@ -10,13 +10,19 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## s = slurp_file (f) - return a whole text file as a string
+## -*- texinfo -*-
+## @deftypefn{Function File} {@var{s} = } slurp_file ( f ) 
+## @cindex  
+## slurp_file return a whole text file @var{f} as a string @var{s}.
 ##
-## f : string : filename
-## s : string : contents of the file
+## @var{f} : string : filename
+## @var{s} : string : contents of the file
 ##
-## If f is not an absolute filename, and f is not an immediately accessible
-## file, slurp_file () will look for f in the path.
+## If @var{f} is not an absolute filename, and 
+## is not an immediately accessible file, slurp_file () 
+## will look for @var{f} in the path.
+## @seealso{}
+## @end deftypefn
 
 ## Author  : Etienne Grossmann <etienne@cs.uky.edu>
 function s = slurp_file (f)

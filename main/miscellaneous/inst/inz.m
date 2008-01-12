@@ -1,9 +1,12 @@
-##       y = inz(x) ==  x(find(x)) - Indices of Non-Zeros
-##   [y,f] =        == [x(find(x)),find(x)]
-##
+## -*- texinfo -*-
+## @deftypefn{Function File} {@var{function [y,f]} ={} } inz ( x ) 
+## @cindex  
 ## This function is just to save typing and improve readability, as in
-##
-##   foo(find(foo(:,p)),p)  vs.  inz(foo(:,p)) 
+## foo(find(foo(:,p)),p)  vs.  inz(foo(:,p)) 
+##  y = inz(x) ==  x(find(x)) - Indices of Non-Zeros
+## [y,f] = [x(find(x)),find(x)]
+## @seealso{grep}
+## @end deftypefn
 
 ## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: October 2000

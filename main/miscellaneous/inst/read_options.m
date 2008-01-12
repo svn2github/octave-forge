@@ -10,33 +10,43 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
+## -*- texinfo -*-
+## @deftypefn{Function File} {@var{[op,nread]} = } read_options ( args, varargin ) 
+## @cindex  
+##  The function read_options parses arguments to a function as,
 ## [ops,nread] = read_options (args,...) - Read options
 ##
-## INPUT -------------
-## args     : list   : Options and values
+## The input being @var{args} a list of options and values.
+## The options can be any of the following,
 ##
-## OPTIONS -------
 ## 'op0'    , string : Space-separated names of opt taking no argument  <''>
+## 
 ## 'op1'    , string : Space-separated names of opt taking one argument <''>
+## 
 ## 'extra'  , string : Name of nameless trailing arguments.             <''>
+## 
 ## 'default', struct : Struct holding default option values           <none>
+## 
 ## 'prefix' , int    : If false, only accept whole opt names. Otherwise, <0>
 ##                     recognize opt from first chars, and choose 
 ##                     shortest if many opts start alike.
+## 
 ## 'nocase' , int    : If set, ignore case in option names               <0>
+## 
 ## 'quiet'  , int    : Behavior when a non-string or unknown opt is met  <0>
 ##              0    - Produce an error
 ##              1    - Return quietly (can be diagnosed by checking 'nread')
+## 
 ## 'skipnan', int    : Ignore NaNs if there is a default value.
 ##     Note : At least one of 'op0' or 'op1' should be specified.
 ## 
-## OUTPUT ------------
-## ops      : struct : Struct whose key/values are option names/values
-## nread    : int    : Number of elements of args that were read
+## The output variables are,
+## @var{ops}      : struct : Struct whose key/values are option names/values
+## @var{nread}    : int    : Number of elements of args that were read
 ##
-## USAGE -------------
-##
-##                              # Define options and defaults
+## USAGE 
+## @example
+## # Define options and defaults
 ## op0 = "is_man is_plane flies"
 ## default = struct ("is_man",1, "flies",0);
 ##
@@ -48,6 +58,10 @@
 ##
 ## [is_man, is_plane, flies] = getfields (s,"is_man", "is_plane", "flies")
 ## pre 2.1.39 function [op,nread] = read_options (args, ...)
+## @end example
+## @seealso{}
+## @end deftypefn
+
 function [op,nread] = read_options (args, varargin) ## pos 2.1.39
 
 

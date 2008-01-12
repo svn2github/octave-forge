@@ -17,6 +17,11 @@
 ## write to the Free Software Foundation,  51 Franklin Street, 
 ## Fifth Floor, Boston, MA  02110-1301  USA
 
+
+## -*- texinfo -*-
+## @deftypefn{Function File} {@var{result} = } map ( fun_handle, varargin ) 
+## @cindex  
+## 
 ## usage: result = map ( FUN_HANDLE, ARG1, ... )
 ##
 ## map, like Lisp's ( & numerous other language's ) function for
@@ -29,32 +34,36 @@
 ## function handle (recommended).
 ##
 ## Example:
+## @example
 ##
 ## octave> A
 ## A 
-## {
+## @{
 ##   [1,1] = 0.0096243
 ##   [2,1] = 0.82781
 ##   [1,2] = 0.052571
 ##   [2,2] = 0.84645
-## }
+## @}
 ## octave> B
 ## B =
-## {
+## @{
 ##   [1,1] = 0.75563
 ##   [2,1] = 0.84858
 ##   [1,2] = 0.16765
 ##   [2,2] = 0.85477
-## }
-## octave> map(@min,A,B)
+## @}
+## octave> map(@@min,A,B)
 ## ans =
-## {
+## @{
 ##   [1,1] = 0.0096243
 ##   [2,1] = 0.82781
 ##   [1,2] = 0.052571
 ##   [2,2] = 0.84645
-## }
- 
+## @}
+## @end example
+## @seealso{ reduce, match, apply }
+## @end deftypefn
+
 ## Author: Tomer Altman
 ## Keywords: map matrix cell 
 ## Maintainer: Tomer Altman

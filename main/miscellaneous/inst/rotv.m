@@ -11,7 +11,11 @@
 ## for more details.
 ##
 
-## r = rotv(v [,ang])           - Matrix of rotation about v w/ angle |v|
+## -*- texinfo -*-
+## @deftypefn{Function File} {@var{r} = } rotv ( v, ang ) 
+## @cindex  
+## The functionrotv calculates a Matrix of rotation about @var{v} w/ angle |v|
+## r = rotv(v [,ang])    
 ##
 ## Returns the rotation matrix w/ axis v, and angle, in radians, norm(v) or
 ## ang (if present).
@@ -23,6 +27,12 @@
 ## v and ang may be vertically stacked : If 'v' is 2x3, then 
 ## rotv( v ) == [rotv(v(1,:)); rotv(v(2,:))]
 ##
+## @example
+## 
+## @end example
+## @seealso{rotparams}
+## @end deftypefn
+
 ## See also : rota, rot
 ##
 

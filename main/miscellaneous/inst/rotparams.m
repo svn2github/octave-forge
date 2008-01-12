@@ -10,17 +10,23 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## w = rotparams (r)            - Inverse to rotv()
-## 
-## w    = rotparams(r)  is such that rotv(w)*r' == eye(3).
-## 
-## [v,a]=rotparams(r)   idem, with v (1 x 3) s.t. w == a*v.
+## -*- texinfo -*-
+## @deftypefn{Function File} {@var{[vstacked, astacked]} = } rotparams ( rstacked ) 
+## @cindex  
+##  The function w = rotparams (r)            - Inverse to rotv().
+##  Using, @var{w}    = rotparams(@var{r})  is such that
+##  rotv(w)*r' == eye(3). 
+##
+##  If used as, [v,a]=rotparams(r) ,  idem, with v (1 x 3) s.t. w == a*v.
 ## 
 ##     0 <= norm(w)==a <= pi
 ## 
 ##     :-O !!  Does not check if 'r' is a rotation matrix.
 ##
 ##  Ignores matrices with zero rows or with NaNs. (returns 0 for them)
+##
+## @seealso{rotv}
+## @end deftypefn
 
 ## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 

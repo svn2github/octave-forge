@@ -31,7 +31,12 @@
 ##
 ## @var{fun_handle} can either be a function name string or a
 ## function handle (recommended).
-##
+## 
+## Typically you can use it as,
+## @example
+## match(@@(x) ( x >= 1 ), [-1 0 1 2])
+## [1, 2]
+## @end example
 ## @end deftypefn
  
 ## Last Modified by Muthiah Annamalai

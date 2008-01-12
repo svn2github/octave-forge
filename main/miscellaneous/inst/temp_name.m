@@ -10,6 +10,9 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
+## -*- texinfo -*-
+## @deftypefn{Function File} {@var{n} = } temp_name ( rootname, quick ) 
+## @cindex  
 ## name = temp_name(rootname, quick=1) - Return a name that is not used
 ##
 ## Returns a name, suitable for defining a new function, script or global
@@ -23,6 +26,8 @@
 ## temp_name() will find the smallest acceptable number for the name.
 ## Otherwise, a hopefully quicker method is used.
 ##
+## @seealso{}
+## @end deftypefn
 function n = temp_name (rootname, quick)
 
 ### Keep track of previously asked names

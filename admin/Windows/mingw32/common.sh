@@ -10,7 +10,7 @@ TARTYPE=
 STRIP=strip
 STRIP_FLAGS=--strip-unneeded
 
-CP=cp
+CP=${TOPDIR}/../copy-if-changed.sh
 CP_FLAGS=-v
 
 WGET=wget
@@ -18,6 +18,9 @@ WGET_FLAGS=-N
 
 RM=rm
 RM_FLAGS=-v
+
+MV=mv
+MV_FLAGS=-v
 
 SED=sed
 
@@ -45,7 +48,7 @@ INCLUDE_DEFAULT=include
 BINARY_DEFAULT=bin
 SHAREDLIB_DEFAULT=bin
 LIBRARY_DEFAULT=lib
-STATICLIBRARY_DEFAULT=lib
+STATICLIBRARY_DEFAULT=staticlib
 
 # subdirs for above components, can be overridden locally
 # (e.g. for GSL: ${INCLUDE} = include/gsl )

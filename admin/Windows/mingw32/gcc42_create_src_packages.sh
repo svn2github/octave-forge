@@ -21,7 +21,7 @@ packit()
    shift; shift; shift
    
    D=${PKG}${VER}${REL}.patch
-   if [ -n -e ${D} ]; then DF=""; else DF=$D; fi
+   if [ ! -e ${D} ]; then DF=""; else DF=$D; fi
    
    T=${PKG}${VER}${REL}-src${EXT}
    

@@ -383,7 +383,7 @@ int main (int argc, char **_argv)
 			if (keep_c)
 				cfile = get_basename(ffile) + ".c";
 			else
-				cfile = "fc-msvc-tmp.c";
+				cfile = "fc-msvc-" + get_basename(ffile) + "-tmp.c";
 
 			if (cpp || match("\\.F$", ffile))
 			{

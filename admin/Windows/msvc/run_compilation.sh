@@ -2235,7 +2235,7 @@ function install_forge_packages
   return 0
 }
 
-extra_pkgs="fpl msh bim civil-engineering integration java mapping nan secs1d secs2d symband triangular tsa windows jhandles"
+extra_pkgs="fpl msh ad bim civil-engineering integration java mapping nan secs1d secs2d symband triangular tsa windows jhandles"
 main_pkgs="signal audio combinatorics communications control econometrics fixed general gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp optim outliers physicalconstants plot specfun special-matrix sockets splines statistics strings struct symbolic time odepkg"
 lang_pkgs="pt_br"
 nonfree_pkgs="arpack"
@@ -2310,7 +2310,7 @@ fi
 # NSI package generation #
 ##########################
 
-isolated_packages="fpl msh bim civil-engineering integration mapping nan secs1d secs2d symband triangular tsa pt_br nnet"
+isolated_packages="fpl msh bim civil-engineering integration mapping nan secs1d secs2d symband triangular tsa pt_br nnet ad"
 isolated_sizes=
 
 function get_nsi_additional_files()

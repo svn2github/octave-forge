@@ -74,7 +74,7 @@ end;
 %       }; 
 
 if isempty(DIM),
-        DIM=min(find(size(i)>1))
+        DIM=min(find(size(i)>1));
         if (DIM<1) DIM = 1; end; %% Hack, because min([])=0 for FreeMat v3.5
         if isempty(DIM), DIM = 1; end;
 end;

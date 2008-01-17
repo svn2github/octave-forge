@@ -35,12 +35,15 @@ function [z,e,REV,ESU,V,Z,SPUR] = amarma(y, Mode, MOP, UC, z0, Z0, V0, W);
 % REFERENCE(S): 
 % [1] A. Schloegl (2000), The electroencephalogram and the adaptive autoregressive model: theory and applications. 
 %     ISBN 3-8265-7640-3 Shaker Verlag, Aachen, Germany. 
+% [2] Schlögl A, Lee FY, Bischof H, Pfurtscheller G
+%     Characterization of Four-Class Motor Imagery EEG Data for the BCI-Competition 2005.
+%     Journal of neural engineering 2 (2005) 4, S. L14-L22
 %
 % More references can be found at 
 %     http://www.dpmi.tu-graz.ac.at/~schloegl/publications/
 
 %	$Id$
-%       Copyright (c) 1998-2002,2005,2006,2007 by  Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 1998-2002,2005,2006,2007,2008 by  Alois Schloegl <a.schloegl@ieee.org>
 %
 
 %#realonly 
@@ -50,7 +53,6 @@ function [z,e,REV,ESU,V,Z,SPUR] = amarma(y, Mode, MOP, UC, z0, Z0, V0, W);
 [nc,nr]=size(y);
 
 if nargin<2 Mode=0; 
-elseif ischar(Mode) Mode=bin2dec(Mode); 
 elseif isnan(Mode) return; end;
 if nargin<3, MOP=[0,10,0]; end;
 if nargin<8, W  = nan ; end;
@@ -73,8 +75,6 @@ T = zeros(nc,1);
 ESU = zeros(nc,1)+nan;
 SPUR = zeros(nc,1)+nan;
 z = z0(ones(nc,1),:);
-
-arc = poly((1-UC*2)*[1;1]); b0=sum(arc); % Whale forgetting factor for Mode=258,(Bianci et al. 1997)
 
 dW = UC/MOP*eye(MOP);                % Schloegl
 

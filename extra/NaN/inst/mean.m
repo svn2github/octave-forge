@@ -42,38 +42,31 @@ function [y]=mean(x,DIM,opt)
 %    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 
-% original Copyright by:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 %	$Id$
-%	Copyright (C) 2000-2004 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2004,2008 by Alois Schloegl <a.schloegl@ieee.org>	
 %    	This is part of the NaN-toolbox. For more details see
 %    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
-
-
 
 if nargin<2
         DIM=[]; 
         opt='a';
 end
 if (nargin<3)
-        if ~isnumeric(DIM), %>=65;%abs('a'), 
+        %if ~isnumeric(DIM), %>=65;%abs('A'), 
+        if (DIM>64) %abs('A'), 
                 opt=DIM;
                 DIM=[]; 
         else
                 opt='a';
         end;	
 else 
-        if ~isnumeric(DIM), %>=65;%abs('a'), 
+        %if ~isnumeric(DIM), %>=65;%abs('A'), 
+        if (DIM>64) %abs('A'), 
                 tmp=opt;
                 opt=DIM;
-                DIM=opt;
+                DIM=tmp;
         end;
 end;	
-if isempty(DIM), 
-        DIM=min(find(size(x)>1));
-        if isempty(DIM), DIM=1; end;
-end;
-
-%warning('off') % no more division-by-zero warnings
 
 opt = upper(opt); % eliminate old version 
 

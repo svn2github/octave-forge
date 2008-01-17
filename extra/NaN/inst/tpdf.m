@@ -13,8 +13,7 @@ function p = tpdf(x,n);
 
 %	$Revision$
 %	$Id$
-%	Version 1.28   Date: 13 Mar 2003
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003,2008 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -37,8 +36,11 @@ ix = (n>0) & (n~=inf) & ~isnan(x);
 % make size of x and n equal
 n = x+n-x;
 x = x+n-n;
+
 % workaround for invalid arguments in BETA
+if any(ix)
 p(ix) = (exp (-(n(ix)+1).*log(1+x(ix).^2./n(ix))/2) ./ (sqrt(n(ix)).* beta(n(ix)/2, 1/2)));
+end; 
 p(~ix)= NaN;
 
 % shape output

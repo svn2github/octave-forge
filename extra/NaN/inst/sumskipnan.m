@@ -73,9 +73,9 @@ end;
 %		o3    += tmp.*tmp;
 %       }; 
 
-
 if isempty(DIM),
         DIM=min(find(size(i)>1));
+        if (DIM<1) DIM = 1;  %% Hack, because min([])=0 for FreeMat v3.5
         if isempty(DIM), DIM = 1; end;
 end;
 
@@ -111,3 +111,5 @@ if nargout>2,
                 S4M = sumskipnan(i.^2,DIM);
         end;
 end;
+
+end; % function 

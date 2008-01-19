@@ -6,12 +6,10 @@ OdePkg ODE Solver Functions
  ode45
  ode54
  ode78
- ode5d
- ode8d
- odeox
 OdePkg DAE Solver Functions
  ode2r
  ode5r
+ odebda
  oders
  odesx
 OdePkg IDE Solver Functions

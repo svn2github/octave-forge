@@ -198,7 +198,7 @@ endfunction
 @end example
 It can be seen that this ODEs do not depend on time, nevertheless the first input argument of this function needs to be defined as the time argument @var{vt} followed by a solution array argument @command{vy} as the second input argument and a variable size input argument @command{varargin} that can be used to set up user defined constants or control variables.
 
-As it is known that @command{foo} is a set of @slanted{ordinary} differential equations we can choose one of the four M--file Runge--Kutta solvers (cf. @ref{Solver families}). It is also known that the time period of interest may be between
+As it is known that @command{foo} is a set of @i{ordinary} differential equations we can choose one of the four M--file Runge--Kutta solvers (cf. @ref{Solver families}). It is also known that the time period of interest may be between
 @ifhtml
 @example
 @math{t0 = 0.0}

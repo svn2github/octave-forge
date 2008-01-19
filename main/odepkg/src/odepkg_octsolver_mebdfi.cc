@@ -226,11 +226,11 @@ octave_idx_type odepkg_mebdfi_jacfcn
 }
 
 /* -*- texinfo -*-
- * @deftypefn {Function} octave_idx_type odepkg_auxiliary_mebdfanalysis (octave_idx_type verr)
+ * @deftypefn {Function} octave_idx_type odepkg_mebdfi_error (octave_idx_type verr)
  * TODO
  * @end deftypefn
  */
-octave_idx_type odepkg_auxiliary_mebdfanalysis (octave_idx_type verr) {
+octave_idx_type odepkg_mebdfi_error (octave_idx_type verr) {
   
   switch (verr)
     {
@@ -245,22 +245,24 @@ occured in \"mebdfi\" core solver function with error number \"%d\")", verr);
     case -2:
       error_with_id ("OdePkg:InternalError",
 	"Integration was halted after failing to pass a repeated error test \
-(error occured in \"mebdfi\" core solver function with error number \
-\"%d\")", verr);
+after a successful initialisation step or because of an invalid option \
+in RelTol or AbsTol (error occured in \"mebdfi\" core solver function with \
+error number \"%d\")", verr);
       break;
 
     case -3:
       error_with_id ("OdePkg:InternalError",
 	"Integration was halted after failing to achieve a corrector \
-convergence (error occured in \"mebdfi\" core solver function with \
-error number \"%d\")", verr);
+convergence  even after reducing the step size h by a factor of 1e-10 \
+(error occured in \"mebdfi\" core solver function with error number \
+\"%d\")", verr);
       break;
 
     case -4:
       error_with_id ("OdePkg:InternalError",
-	"Immediate halt because of illegal number of input arguments (error \
-occured in the \"mebdfi\" core solver function with error number \
-\"%d\")", verr);
+	"Immediate halt because of illegal number or illegal values of input \
+arguments (error occured in the \"mebdfi\" core solver function with \
+error number \"%d\")", verr);
       break;
 
     case -5:
@@ -283,80 +285,20 @@ function with error number \"%d\")", verr);
 
     case -11:
       error_with_id ("OdePkg:InternalError",
-	"Insufficient real workspace for integration (error occured in \
+	"Insufficient real workspace for the integration (error occured in \
 \"mebdfi\" core solver function with error number \"%d\")", verr);
       break;
 
     case -12:
       error_with_id ("OdePkg:InternalError",
-	"Insufficient integer workspace for integration (error occured in \
+	"Insufficient integer workspace for the integration (error occured in \
 \"mebdfi\" core solver function with error number \"%d\")", verr);
-      break;
-
-    case -40:
-      error_with_id ("OdePkg:InternalError",
-	"Error too small to be attained for the machine precision (error \
-occured in \"mebdfi\" core solver function with error number \"%d\")", verr);
-      break;
-
-    case -41:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument IDID (error occured in \"mebdfi\" core solver \
-function with error number \"%d\")", verr);
-      break;
-
-    case -42:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument ATOL (error occured in \"mebdfi\" core solver \
-function with error number \"%d\")", verr);
-      break;
-
-    case -43:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument RTOL (error occured in \"mebdfi\" core solver \
-function with error number \"%d\")", verr);
-      break;
-
-    case -44:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument N<0 (error occured in \"mebdfi\" core solver \
-function with error number \"%d\")", verr);
-      break;
-
-    case -45:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument (T0-TOUT)*H>0 (error occured in \"mebdfi\" core \
-solver function with error number \"%d\")", verr);
-      break;
-
-    case -46:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument MF!=21 && MF!=22 (error occured in \"mebdfi\" \
-core solver function with error number \"%d\")", verr);
-      break;
-
-    case -47:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument ITOL (error occured in \"mebdfi\" core solver \
-function with error number \"%d\")", verr);
-      break;
-
-    case -48:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument MAXDER (error occured in \"mebdfi\" core solver \
-function with error number \"%d\")", verr);
-      break;
-
-    case -49:
-      error_with_id ("OdePkg:InternalError",
-	"Illegal input argument INDEX VARIABLES (error occured in \"mebdfi\" \
-core solver function with error number \"%d\")", verr);
       break;
 
     default:
       error_with_id ("OdePkg:InternalError",
-	"Integration was halted after failing to pass the error test (error \
-occured in \"mebdfi\" core solver function with error number \"%d\")", verr);
+	"Unknown error (error occured in \"mebdfi\" core solver function with \
+error number \"%d\")", verr);
       break;
     }
 
@@ -376,11 +318,11 @@ occured in \"mebdfi\" core solver function with error number \"%d\")", verr);
  */
 DEFUN_DLD (odebdi, args, nargout,
 "-*- texinfo -*-\n\
-@deftypefn  {Function} odebdi (@var{@@fun, slot, y0, dy0, [opt], [P1, P2, @dots{}]})\n\
+@deftypefn  {Function File} odebdi (@var{@@fun, slot, y0, dy0, [opt], [P1, P2, @dots{}]})\n\
 @deftypefnx {Function} {@var{sol} =} odebdi (@var{@@fun, slot, y0, dy0, [opt], [P1, P2, @dots{}]})\n\
 @deftypefnx {Function} {@var{[t, y, [xe, ye, ie]]} =} odebdi (@var{@@fun, slot, y0, dy0, [opt], [P1, P2, @dots{}]})\n\
 \n\
-This function file can be used to solve a set of stiff and non-stiff implicit differential equations (IDEs). This function file is a wrapper file that uses Jeff Cash's Fortran solver @file{mebdfi.f}.\n\
+This function file can be used to solve a set of non--stiff and stiff implicit differential equations (IDEs). This function file is a wrapper file that uses Jeff Cash's Fortran solver @file{mebdfi.f}.\n\
 \n\
 If this function is called with no return argument then plot the solution over time in a figure window while solving the set of IDEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{y0} is a double vector that defines the initial values of the states, @var{dy0} is a double vector that defines the initial values of the derivatives, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.\n\
 \n\
@@ -388,9 +330,18 @@ If this function is called with one return argument then return the solution @va
 \n\
 If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.\n\
 \n\
-Run examples with the command\n\
+For example,\n\
 @example\n\
-demo odebdi\n\
+function res = odepkg_equations_ilorenz (t, y, yd)\n\
+  res = [10 * (y(2) - y(1)) - yd(1);\n\
+         y(1) * (28 - y(3)) - yd(2);\n\
+         y(1) * y(2) - 8/3 * y(3) - yd(3)];\n\
+endfunction\n\
+\n\
+vopt = odeset (\"InitialStep\", 1e-3, \"MaxStep\", 1e-1, \\\n\
+               \"OutputFcn\", @@odephas3, \"Refine\", 5);\n\
+odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
+        [120 81 42.333333], vopt);\n\
 @end example\n\
 @end deftypefn\n\
 \n\
@@ -685,7 +636,7 @@ demo odebdi\n\
 
   octave_idx_type MF = vmebdfijac;
   octave_idx_type IDID = 1;
-  octave_idx_type LOUT = 42; // Logical output channel "not opened"
+  octave_idx_type LOUT = 6; // Logical output channel "not opened"
   octave_idx_type LWORK = 32*N+2*N*N+3;
   OCTAVE_LOCAL_BUFFER (double, WORK, LWORK);
   for (octave_idx_type vcnt = 0; vcnt < LWORK; vcnt++)
@@ -704,9 +655,9 @@ demo odebdi\n\
   octave_idx_type IPAR[1] = {0};
   octave_idx_type IERR = 0;
 
-  //IWORK[0]  = N;   // Number of variables of index 1
-  //IWORK[1]  = 0;   // Number of variables of index 2
-  //IWORK[2]  = 0;   // Number of variables of index 3
+  // IWORK[0]  = N;    // Number of variables of index 1
+  // IWORK[1]  = 0;    // Number of variables of index 2
+  // IWORK[2]  = 0;    // Number of variables of index 3
   IWORK[13] = 1000000; // The maximum number of steps allowed
 
   // Check if the user has set some of the options "OutputFcn", "Events"
@@ -728,7 +679,7 @@ demo odebdi\n\
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("Unrecoverable error in \"mebdfi\" core solver function");
   if (IDID < 0) {
-    odepkg_auxiliary_mebdfanalysis (IDID);
+    odepkg_mebdfi_error (IDID);
     return (vretval);
   }
 
@@ -759,7 +710,7 @@ demo odebdi\n\
       if (f77_exception_encountered)
         (*current_liboctave_error_handler) ("Unrecoverable error in mebdfi");
       if (IDID < 0) {
-        odepkg_auxiliary_mebdfanalysis (IDID);
+        odepkg_mebdfi_error (IDID);
 	return (vretval);
       }
 
@@ -807,7 +758,7 @@ demo odebdi\n\
       if (f77_exception_encountered)
         (*current_liboctave_error_handler) ("Unrecoverable error in mebdfi");
       if (IDID < 0) {
-        odepkg_auxiliary_mebdfanalysis (IDID);
+        odepkg_mebdfi_error (IDID);
 	return (vretval);
       }
 

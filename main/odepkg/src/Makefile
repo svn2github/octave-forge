@@ -20,7 +20,8 @@ EXTERNALPACKS = $(patsubst %, %.tgz,  $(EXTERNALDIRS))
 EXTERNALDIFFS = $(patsubst %, %.diff, $(EXTERNALDIRS))
 
 SOLVERSOURCES = odepkg_octsolver_mebdfdae.cc odepkg_octsolver_mebdfi.cc \
-		odepkg_octsolver_rodas.cc odepkg_octsolver_radau.cc
+		odepkg_octsolver_radau.cc odepkg_octsolver_radau5.cc \
+		odepkg_octsolver_rodas.cc odepkg_octsolver_seulex.cc
 SOLVERDEPENDS = odepkg_auxiliary_functions.cc
 SOLVEREXTERNS = cash/mebdfdae.f cash/mebdfi.f \
 		hairer/decsol.f hairer/dc_decsol.f \

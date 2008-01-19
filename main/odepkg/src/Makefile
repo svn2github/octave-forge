@@ -7,8 +7,8 @@ DEVELOPERDEFS = -Wall -W -Wshadow
 TGZUNPACK = tar -xzf  # "tar -xzvf" to print some output
 PATCHPROG = patch -p0 # Needed to patch the Fortran codes
 
-#MKOCTFILE = $(MKOCTFILE) has already been defined in Makeconf
-MKMEXFILE = $(MKOCTFILE) --mex
+# MKOCTFILE = $(MKOCTFILE) has already been defined in Makeconf
+# MKMEXFILE = $(MKOCTFILE) --mex
 ifeq (fort77,$(findstring fort77,$(F77)))
   MKF77FILE = FFLAGS="$(FFLAGS)" $(MKOCTFILE)
 else
@@ -23,7 +23,8 @@ SOLVERSOURCES = odepkg_octsolver_mebdfdae.cc odepkg_octsolver_mebdfi.cc \
 		odepkg_octsolver_rodas.cc odepkg_octsolver_radau.cc
 SOLVERDEPENDS = odepkg_auxiliary_functions.cc
 SOLVEREXTERNS = cash/mebdfdae.f cash/mebdfi.f \
-		hairer/decsol.f hairer/dc_decsol.f hairer/rodas.f hairer/radau.f
+		hairer/decsol.f hairer/dc_decsol.f \
+		hairer/radau.f hairer/radau5.f hairer/rodas.f hairer/seulex.f
 SOLVEROBJECTS = $(patsubst %.cc, %.o, $(SOLVERSOURCES)) \
 	 	$(patsubst %.cc, %.o, $(SOLVERDEPENDS)) \
 		$(patsubst %.f, %.o,  $(SOLVEREXTERNS))

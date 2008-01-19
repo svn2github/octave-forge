@@ -1,0 +1,196 @@
+--- hairer/dc_decsol.f  2007-02-07 20:51:36.000000000 +0100
++++ hairer/dc_decsol.f  2007-02-07 20:53:03.000000000 +0100
+@@ -1280,6 +1280,7 @@
+       DIMENSION CONT(N),RPAR(1),IPAR(1)
+       LOGICAL FIRST,REJECT
+       COMMON/LINAL/MLE,MUE,MBJAC,MBB,MDIAG,MDIFF,MBDIAG
++      MM=0.0D0
+       HEE1=DD1/H
+       HEE2=DD2/H
+       HEE3=DD3/H
+@@ -1611,6 +1612,7 @@
+       DIMENSION DD(NS),CONT(N),RPAR(1),IPAR(1)
+       LOGICAL FIRST,REJECT
+       COMMON/LINAL/MLE,MUE,MBJAC,MBB,MDIAG,MDIFF,MBDIAG
++      MM=0.0D0
+       GOTO (1,2,3,4,5,6,7,55,55,55,11,12,13,14,15), IJOB
+ C
+    1  CONTINUE
+
+--- hairer/odex.f       2007-02-07 20:10:07.000000000 +0100
++++ hairer/odex.f       2007-02-07 20:09:33.000000000 +0100
+@@ -879,6 +879,7 @@
+       DIMENSION Y(NCON),ICOMP(N)
+       COMMON /CONODX/XOLD,H,IMIT
+ C ----- COMPUTE PLACE OF II-TH COMPONENT 
++      CONTEX = -1.0D0
+       I=0 
+       DO 5 J=1,N 
+       IF (ICOMP(J).EQ.II) I=J
+
+--- hairer/dopri5.f     2007-02-07 20:35:35.000000000 +0100
++++ hairer/dopri5.f     2007-02-07 20:37:39.000000000 +0100
+@@ -388,6 +388,7 @@
+       LAST=.FALSE. 
+       HLAMB=0.D0
+       IASTI=0
++      NONSTI=0
+       CALL FCN(N,X,Y,K1,RPAR,IPAR)
+       HMAX=ABS(HMAX)     
+       IORD=5  
+@@ -629,6 +630,7 @@
+       COMMON /CONDO5/XOLD,H
+ C ----- COMPUTE PLACE OF II-TH COMPONENT 
+       I=0 
++      CONTD5=-1.0D0
+       DO 5 J=1,ND 
+       IF (ICOMP(J).EQ.II) I=J
+    5  CONTINUE
+
+--- hairer/dop853.f     2007-02-04 13:38:37.000000000 +0100
++++ hairer/dop853.f     2007-02-07 20:42:52.000000000 +0100
+@@ -555,6 +555,7 @@
+       LAST=.FALSE. 
+       HLAMB=0.D0
+       IASTI=0
++      NONSTI=0
+       CALL FCN(N,X,Y,K1,RPAR,IPAR)
+       HMAX=ABS(HMAX)     
+       IORD=8  
+@@ -859,6 +860,7 @@
+       COMMON /CONDO8/XOLD,H
+ C ----- COMPUTE PLACE OF II-TH COMPONENT 
+       I=0 
++      CONTD8=-1.0D0
+       DO 5 J=1,ND 
+       IF (ICOMP(J).EQ.II) I=J
+    5  CONTINUE
+
+--- hairer/radau.f      2007-02-04 13:39:46.000000000 +0100
++++ hairer/radau.new    2007-02-08 18:08:46.000000000 +0100
+@@ -751,7 +751,7 @@
+       INDEX2=NIND2.NE.0
+       INDEX3=NIND3.NE.0
+ C ------- COMPUTE MASS MATRIX FOR IMPLICIT CASE ----------
+-      IF (IMPLCT) CALL MAS(NM1,FMAS,LDMAS,RPAR,IPAR)
++      IF (IMPLCT) CALL MAS(NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+       VARIAB=NSMIN.LT.NSMAX
+ C ---------- CONSTANTS ---------
+       EXPO=1.D0/(NS+1.D0)
+@@ -780,6 +780,13 @@
+       NNS=N*NS
+       NSCON=NS
+       LRC=NNS+N
++      RTOL1=0.0D0
++      ATOL1=0.0D0
++      NEWT=0.0D0
++      THQOLD=0.0D0
++      DYNOLD=0.0D0
++      HACC=0.0D0
++      ERRACC=0.0D0
+       CALL COERTV(NSMAX)
+       CALL COERCV(NS,C,DD,U1,ALPH,BETA)
+       IF (M1.GT.0) IJOB=IJOB+10
+@@ -892,6 +899,8 @@
+       ELSE
+ C --- COMPUTE JACOBIAN MATRIX ANALYTICALLY
+          CALL JAC(N,X,Y,FJAC,LDJAC,RPAR,IPAR)
++C --- RECOMPUTE MASS MATRIX FOR IMPLICIT CASE
++         IF (IMPLCT) CALL MAS(NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+       END IF
+       CALJAC=.TRUE.
+       CALHES=.TRUE.
+
+--- hairer/radau5.f     2007-02-04 13:39:30.000000000 +0100
++++ hairer/radau5.f     2007-02-11 11:29:29.000000000 +0100
+@@ -691,6 +691,10 @@
+ C *** *** *** *** *** *** ***
+ C  INITIALISATIONS
+ C *** *** *** *** *** *** ***
++      THQOLD=-1.0D0
++      DYNOLD=-1.0D0
++      HACC=-1.0D0
++      ERRACC=-1.0D0
+ C --------- DUPLIFY N FOR COMMON BLOCK CONT -----
+       NN=N
+       NN2=2*N
+@@ -701,7 +705,7 @@
+       INDEX2=NIND2.NE.0
+       INDEX3=NIND3.NE.0
+ C ------- COMPUTE MASS MATRIX FOR IMPLICIT CASE ----------
+-      IF (IMPLCT) CALL MAS(NM1,FMAS,LDMAS,RPAR,IPAR)
++      IF (IMPLCT) CALL MAS(NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+ C ---------- CONSTANTS ---------
+       SQ6=DSQRT(6.D0)
+       C1=(4.D0-SQ6)/10.D0
+@@ -841,6 +845,8 @@
+       ELSE
+ C --- COMPUTE JACOBIAN MATRIX ANALYTICALLY
+          CALL JAC(N,X,Y,FJAC,LDJAC,RPAR,IPAR)
++C --- RECOMPUTE MASS MATRIX FOR IMPLICIT CASE
++         IF (IMPLCT) CALL MAS(NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+       END IF
+       CALJAC=.TRUE.
+       CALHES=.TRUE.
+
+--- hairer/seulex.f     2007-02-04 13:40:00.000000000 +0100
++++ hairer/seulex.f     2007-02-11 13:46:00.000000000 +0100
+@@ -654,10 +654,11 @@
+           END DO
+        END IF
+ C ------- COMPUTE MASS MATRIX FOR IMPLICIT CASE ----------
+-      IF (IMPLCT) CALL MAS(NM1,FMAS,LDMAS,RPAR,IPAR)
++      IF (IMPLCT) CALL MAS(NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+ C *** *** *** *** *** *** ***
+ C  INITIALISATIONS
+ C *** *** *** *** *** *** ***
++       HOPT=-1.0D0
+        LRDE=(KM+2)*NRD
+        MLE=MLJAC
+        MUE=MUJAC
+@@ -793,6 +794,8 @@
+             ELSE
+ C --- COMPUTE JACOBIAN MATRIX ANALYTICALLY
+                CALL JAC(N,X,Y,FJAC,LFJAC,RPAR,IPAR)
++C --- RECOMPUTE MASS MATRIX FOR IMPLICIT CASE
++               IF (IMPLCT) CALL MAS(NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+            END IF
+            CALJAC=.TRUE.
+            CALHES=.TRUE.
+@@ -1174,6 +1177,7 @@
+       COMMON /COSEU/XOLD,H,NRD,IR
+ C ----- COMPUTE PLACE OF II-TH COMPONENT 
+       I=0 
++      CONTEX=0.0D0
+       DO J=1,NRD
+         IF (IC(J).EQ.II) I=J
+       END DO
+
+--- hairer/rodas.f      2007-02-04 13:39:54.000000000 +0100
++++ hairer/rodas.f      2007-02-11 18:26:10.000000000 +0100
+@@ -553,12 +553,15 @@
+ C *** *** *** *** *** *** ***
+ C  INITIALISATIONS
+ C *** *** *** *** *** *** ***    
++      HOPT=0.0D0
++      HACC=0.0D0
++      ERRACC=0.0D0
+       NN=N 
+       NN2=2*N
+       NN3=3*N
+       LRC=4*N
+ C ------- COMPUTE MASS MATRIX FOR IMPLICIT CASE ----------
+-      IF (IMPLCT) CALL MAS (NM1,FMAS,LDMAS,RPAR,IPAR)
++      IF (IMPLCT) CALL MAS (NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+ C ------ SET THE PARAMETERS OF THE METHOD -----
+       CALL ROCOE(METH,A21,A31,A32,A41,A42,A43,A51,A52,A53,A54,
+      &    C21,C31,C32,C41,C42,C43,C51,C52,C53,C54,C61,
+@@ -664,6 +667,8 @@
+       ELSE
+ C --- COMPUTE JACOBIAN MATRIX ANALYTICALLY
+          CALL JAC(N,X,Y,FJAC,LDJAC,RPAR,IPAR)
++C --- RECOMPUTE MASS MATRIX FOR IMPLICIT CASE
++         IF (IMPLCT) CALL MAS (NM1,X,Y,FMAS,LDMAS,RPAR,IPAR)
+       END IF
+       IF (.NOT.AUTNMS) THEN
+          IF (IDFX.EQ.0) THEN

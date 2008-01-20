@@ -31,8 +31,8 @@
 %       This script is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
-FLAG_WARNING = warning;
-warning('off');
+%FLAG_WARNING = warning;
+%warning('off');
 
 try,
 	x = randn([3,4,5]); 
@@ -172,19 +172,19 @@ if exist('bitshift')==2,
                 fprintf(1,'BITSHIFT can return NaN.\n');
         end;
 end;
-%%%%% ANY - this test addresses a problem in Octave
+%%%%% ALL - this test addresses a problem in some old Octave and FreeMat v3.5
 if any(NaN)==1,
-	fprintf(1,'WARNING: ANY(NaN) returns 1 instead of zero\n');
+	fprintf(1,'WARNING: ANY(NaN) returns 1 instead of 0\n');
 end;
 if any([])==1,
-	fprintf(1,'WARNING: ANY([]) returns 1 instead of zero\n');
+	fprintf(1,'WARNING: ANY([]) returns 1 instead of 0\n');
 end;
-%%%%% ALL - this test addresses a problem in Octave
+%%%%% ALL - this test addresses a problem in some old Octave and FreeMat v3.5
 if all(NaN)==0,
-	fprintf(1,'WARNING: ALL(NaN) returns 0 instead of zero\n');
+	fprintf(1,'WARNING: ALL(NaN) returns 0 instead of 1\n');
 end;
 if all([])==0,
-	fprintf(1,'WARNING: ALL([]) returns 0 instead of zero\n');
+	fprintf(1,'WARNING: ALL([]) returns 0 instead of 1\n');
 end;
 	
 %%%%% SORT - this was once a problem in Octave Version < 2.1.36 %%%%
@@ -223,10 +223,10 @@ tmp7 = y/y;
 tmp8 = y\y;
 
 if ~all(isnan(tmp1(:))),
-        fprintf(2,'WARNING: matrix division NaN/NaN does not result in NaN\n');
+        fprintf(1,'WARNING: matrix division NaN/NaN does not result in NaN\n');
 end;
 if ~all(isnan(tmp2(:))),
-        fprintf(2,'WARNING: matrix division NaN\\NaN does not result in NaN\n');
+        fprintf(1,'WARNING: matrix division NaN\\NaN does not result in NaN\n');
 end;
 if ~all(isnan(tmp3(:))),
         fprintf(2,'WARNING: matrix division 0/0 does not result in NaN\n');
@@ -249,7 +249,7 @@ end;
 
 tmp  = [tmp1;tmp2;tmp3;tmp4;tmp5;tmp6;tmp7;tmp8];
 
-warning(FLAG_WARNING); 
+%warning(FLAG_WARNING); 
 
 
 %%%%% QUANTILE TEST 

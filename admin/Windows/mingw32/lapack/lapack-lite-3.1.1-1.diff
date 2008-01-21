@@ -13,11 +13,24 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def lapack-lite-3.1.1-or
  
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def lapack-lite-3.1.1-orig/Makefile lapack-lite-3.1.1/Makefile
 --- lapack-lite-3.1.1-orig/Makefile	Mon Feb 26 19:20:49 2007
-+++ lapack-lite-3.1.1/Makefile	Sat Dec  8 21:57:19 2007
-@@ -22,6 +22,12 @@
++++ lapack-lite-3.1.1/Makefile	Mon Jan 21 20:05:34 2008
+@@ -6,7 +6,7 @@
+ 
+ include make.inc
+ 
+-all: lapack_install lib lapack_testing blas_testing
++all: lapack_install lib lapack_testing blas_testing shlib
+ 
+ lib: lapacklib tmglib
+ #lib: blaslib lapacklib tmglib
+@@ -22,6 +22,16 @@
  
  lapacklib:	lapack_install
  	( cd SRC; $(MAKE) )
++
++shlib : lapack.dll
++
++lapack.dll : lapack.a
 +	$(F77) -shared $(FLDFLAGS) -o lapack.dll \
 +	  -Wl,--export-all-symbols \
 +	  -Wl,--out-implib=lapack.dll.a \

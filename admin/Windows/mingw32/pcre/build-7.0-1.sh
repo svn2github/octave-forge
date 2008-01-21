@@ -34,9 +34,9 @@ MAKEFILE=""
 #DIFF_FLAGS="-x *.def"
 
 # header files to be installed
-INSTALL_HEADERS="pcre_stringpiece.h"
-INSTALL_HEADERS2="pcre_scanner.h pcre.h"
-INCLUDE_DIR=include/pcre
+INSTALL_HEADERS=""
+INSTALL_HEADERS2="pcre.h"
+#INCLUDE_DIR=include
 
 source ../common.sh
 

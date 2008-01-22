@@ -26,7 +26,7 @@ function __jhandles_set(h, varargin)
         h.set (varargin{k}, varargin{k+1});
       endfor
     else
-      for hk = h
+      for hk = h(:)'
         handle = __get_object__ (hk);
         if (! isempty (handle))
           for k = 1:2:length(varargin)

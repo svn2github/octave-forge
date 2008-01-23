@@ -1,8 +1,8 @@
 # Filename:    Makefile
-# Describtion: Makefile for the OdePkg directory
-# ChangeLog: 20070227, this Makefile was originally be created
+# Description: Makefile for OdePkg
+# ChangeLog: 20070222, this Makefile was originally be created
 #    from the Makefile of the comm package. Modifications have
-#    been done to create the OdePkg.
+#    been done to create OdePkg.
 
 sinclude ../../Makeconf
 

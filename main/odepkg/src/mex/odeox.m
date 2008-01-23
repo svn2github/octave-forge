@@ -1,5 +1,5 @@
-%# Copyright (C) 2006, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - Package for solving ordinary differential equations with octave
+%# Copyright (C) 2006-2007, Thomas Treichl <treichl@users.sourceforge.net>
+%# OdePkg - A package for solving differential equations with GNU Octave
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by
@@ -34,56 +34,6 @@ function [varargout] = odeox (varargin)
   else
     [varargout{1:nargout}] = odepkg_mexsolver_odex (varargin{:});
   end
-
-%# The following tests have been added to check the function's input arguments 
-%# and output arguments
-%!test
-%!  warning ("off", "OdePkg:InvalidOption");
-%!  if (!strcmp (which ("odepkg_mexsolver_odex"), ""))
-%!    vsol = odeox (@odepkg_equations_vanderpol, [0 2], [2 0]);
-%!  end 
-%!test
-%!  if (!strcmp (which ("odepkg_mexsolver_odex"), ""))
-%!    [vx, vy] = odeox (@odepkg_equations_vanderpol, [0 2], [2 0]);
-%!  end
-%!test
-%!  if (!strcmp (which ("odepkg_mexsolver_odex"), ""))
-%!    [vx, vy, va, vb, vc] = odeox (@odepkg_equations_vanderpol, [0 2], [2 0]);
-%!  end
-%#
-%# Removed the fixed step size tests because they won't work with this solver
-%#
-%!test
-%!  if (!strcmp (which ("odepkg_mexsolver_odex"), ""))
-%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%!    vsol = odeox (@odepkg_equations_vanderpol, [0 2], [2 0], A);
-%!  end
-%!test
-%!  if (!strcmp (which ("odepkg_mexsolver_odex"), ""))
-%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%!    [vx, vy] = odeox (@odepkg_equations_vanderpol, [0 2], [2 0], A);
-%!  end
-%!test
-%!  if (!strcmp (which ("odepkg_mexsolver_odex"), ""))
-%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%!    [vx, vy, va, vb, vc] = odeox (@odepkg_equations_vanderpol, [0 2], [2 0], A);
-%!  end
-%!test
-%!  if (!strcmp (which ("odepkg_mexsolver_odex"), ""))
-%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%!    vsol = odeox (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
-%!  end
-%!test
-%!  if (!strcmp (which ("odepkg_mexsolver_odex"), ""))
-%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%!    [vx, vy] = odeox (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
-%!  end
-%!test
-%!  if (!strcmp (which ("odepkg_mexsolver_odex"), ""))
-%!    A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
-%!    [vx, vy, va, vb, vc] = odeox (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
-%!  end
-%!  warning ("on", "OdePkg:InvalidOption");
 
 %!demo
 %!

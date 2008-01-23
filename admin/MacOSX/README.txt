@@ -33,3 +33,7 @@ then this is done in two steps:
    It collects the files from /tmp, builds the *.app and finally packs
    another *.dmg image. It is called without any input argument but
    some adjustments have to be done at the toplevel of this file.
+
+--
+02.01.2008
+treichl@users.sourceforge.net

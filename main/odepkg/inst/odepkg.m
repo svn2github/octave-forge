@@ -43,13 +43,10 @@ function [] = odepkg (vstr)
 
 function [] = odepkg_validate_mfiles ()
 
-  %# Can do all tests that do not produce output, if functions have to be
-  %# tested that do produce output then look below - they are called
-  %# manually. From command line run something like this:
+  %# From command line in the 'inst' directory do something like this: 
   %#   octave --quiet --eval "odepkg ('odepkg_validate_mfiles')"
 
   vfun = {'ode23', 'ode45', 'ode54', 'ode78', ...
-          'ode5d', 'ode8d', 'odeox', ...
           'ode2r', 'ode5r', 'oders', 'odesx', ...
           'odeget', 'odeset', ...
           'odepkg_structure_check', ... %# 'odepkg_event_handle', ...
@@ -64,10 +61,23 @@ function [] = odepkg_validate_mfiles ()
     test (vfun{vcnt}, 'quiet'); fflush (1);
   end
 
-%  printf ('Testing function odepkg_testsuite_chemakzo ... ');
-%  odepkg_testsuite_chemakzo (@odepkg_mexsolver_radau,  10^-04);
-%  printf ('Testing function odepkg_testsuite_chemakzo ... ');
-%  odepkg_testsuite_chemakzo (@odepkg_mexsolver_seulex, 10^-04);
+function [] = odepkg_validate_ccfiles ()
+
+  %# From command line in the 'src' directory do something like this: 
+  %#   octave --quiet --eval "odepkg ('odepkg_validate_ccfiles')"
+
+  vfile = {"odepkg_octsolver_mebdfdae.cc", "odepkg_octsolver_mebdfi.cc", \
+           "odepkg_octsolver_radau.cc", "odepkg_octsolver_radau5.cc", \
+           "odepkg_octsolver_rodas.cc", "odepkg_octsolver_seulex.cc"};
+  vsolv = {"odebda", "odebdi", \
+           "ode2r", "ode5r", \
+           "oders", "odesx"};
+
+  for vcnt=1:length(vfile)
+    printf ("Testing function %s ... ", vsolv{vcnt});
+    autoload (vsolv{vcnt}, canonicalize_file_name ("dldsolver.oct"));
+    test (vfile{vcnt}, 'quiet'); fflush (1);
+  end
 
 function [] = odepkg_internal_helpextract ()
 

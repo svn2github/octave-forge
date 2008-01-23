@@ -1,14 +1,6 @@
 \input texinfo @c -*-texinfo-*-
-
-@c Copyright (c)  2007  Thomas Treichl <treichl@users.sourceforge.net>
-@c odepkg.texi - A package for solving differential equations with Octave
-@c
-@c Permission is granted to copy, distribute and/or modify this document
-@c under the terms of the GNU Free Documentation License, Version 1.2
-@c or any later version published by the Free Software Foundation;
-@c with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
-@c Texts.  A copy of the license is included in the section entitled "GNU
-@c Free Documentation License".
+@c Copyright (c) 2006-2008, Thomas Treichl <treichl@users.sourceforge.net>
+@c OdePkg - A package for solving differential equations with GNU Octave
 
 @c %*** Start of HEADER
 @setfilename odepkg.info
@@ -20,12 +12,19 @@
 
 @c %*** Start of COPYRIGHT
 @copying
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.2 or
-any later version published by the Free Software Foundation; with no
-Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
-copy of the license is included in the section entitled "GNU Free
-Documentation License".
+Copyright @copyright{} 2008 
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the same conditions as for modified versions.
 @end copying
 @c %*** End of COPYRIGHT
 
@@ -53,7 +52,6 @@ Documentation License".
 * Beginner's Guide::            Manual for users who are completely new to OdePkg
 * User's Guide::                Manual for users who are already familiar with OdePkg
 * Programmer's Guide::          Manual for users who want to make changes to OdePkg
-* Appendix::                    The GNU Free Documentation License of this document
 * Function Index::              Reference about all functions from this package
 * Index::                       
 @end menu
@@ -795,7 +793,7 @@ TODO
 @c %*** End of second chapter: User's Guide
 
 @c %*** Start of third chapter: Programmer's Guide
-@node Programmer's Guide, Appendix, User's Guide, Top
+@node Programmer's Guide, Function Index, User's Guide, Top
 @chapter Programmer's Guide
 @cindex Programmer's Guide
 
@@ -816,17 +814,11 @@ TODO
 
 @c %*** End of second chapter: Programmer's Guide
 
-@node Appendix, Function Index, Programmer's Guide, Top
-@appendix
-@cindex Appendix
+@c @node Appendix, Function Index, Programmer's Guide, Top
+@c @appendix
+@c @cindex Appendix
 
-@menu
-* GNU Free Documentation License::  
-@end menu
-
-@include fdl.texi
-
-@node Function Index, Index, Appendix, Top
+@node Function Index, Index, Programmer's Guide, Top
 @unnumbered Function Index
 @printindex fn
 

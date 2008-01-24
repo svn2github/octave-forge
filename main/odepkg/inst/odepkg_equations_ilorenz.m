@@ -1,5 +1,5 @@
-%# Copyright (C) 2007, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - Package for solving ordinary differential equations with octave
+%# Copyright (C) 2007-2008, Thomas Treichl <treichl@users.sourceforge.net>
+%# OdePkg - A package for solving differential equations with GNU Octave
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@ function res = odepkg_equations_ilorenz (t, y, yd)
   %# yd0 = [120 81 42.333333]'
   %# odebdi (@odepkg_equations_ilorenz, [0, 25], [3 15 1]', [120 81 42.333333]')
   res = [10 * (y(2) - y(1)) - yd(1);
-	 y(1) * (28 - y(3)) - yd(2);
-	 y(1) * y(2) - 8/3 * y(3) - yd(3)];
+         y(1) * (28 - y(3)) - yd(2);
+         y(1) * y(2) - 8/3 * y(3) - yd(3)];
 
 %!test
 %!  if (!strcmp (which ("odebdi"), ""))

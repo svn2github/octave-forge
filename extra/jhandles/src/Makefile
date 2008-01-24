@@ -35,7 +35,7 @@ clean:
 	-rm -f FILES core octave-core *~ $(JAR_FILES) $(JAVA_DIR)/*.class *.o
 
 %.o: %.c
-	$(MKOCTFILE) -v -I. -c $<
+	$(MKOCTFILE) -v -I. $(JAVA_INCS) -c $<
 
 __jhandles__.oct: __jhandles__.cc
 	$(MKOCTFILE) '-I$(OCTAVE_JAVA_DIR)' $^ '-L$(OCTAVE_JAVAOCT_DIR)' -l__java__

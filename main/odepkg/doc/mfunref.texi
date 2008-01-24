@@ -16,24 +16,6 @@ demo ode23
 @end example
 @end deftypefn
 
-@deftypefn  {Function File} {[@var{}] =} ode2r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{sol}] =} ode2r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode2r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-
-This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) or non--stiff differential algebraic equations (non--stiff DAEs). This function file is a wrapper to @file{odepkg_mexsolver_radau.c} that uses Hairer's and Wanner's Fortran solver @file{radau.f}.
-
-If this function is called with no return argument then plot the solution over time in a figure window while solving the set of ODEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.
-
-If this function is called with one return argument then return the solution @var{sol} of type structure array after solving the set of ODEs. The solution @var{sol} has the fields @var{x} of type double column vector for the steps chosen by the solver, @var{y} of type double column vector for the solutions at each time step of @var{x}, @var{solver} of type string for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector that keep the informations of the event function if an event function handle is set in the option argument @var{opt}.
-
-If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.
-
-Run examples with the command
-@example
-demo ode2r
-@end example
-@end deftypefn
-
 @deftypefn  {Function File} {[@var{}] =} ode45 (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 @deftypefnx {Command} {[@var{sol}] =} ode45 (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode45 (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
@@ -70,34 +52,6 @@ demo ode54
 @end example
 @end deftypefn
 
-@deftypefn  {Function File} {[@var{}] =} ode5d (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{sol}] =} ode5d (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode5d (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-
-This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) or non--stiff differential algebraic equations (non--stiff DAEs) with the well known explicit Runge--Kutta method of order (5,4).
-
-@b{Note: The function files @file{odepkg_mexsolver_dopri5} and @file{ode5d} will be removed when version 0.4.0 of OdePkg will be released. A similiar solver method is @file{ode54}, please use the @file{ode54} solver instead.}
-
-@end deftypefn
-
-@deftypefn  {Function File} {[@var{}] =} ode5r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{sol}] =} ode5r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode5r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-
-This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) and non-stiff differential algebraic equations (non-stiff DAEs). This function file is a wrapper to @file{odepkg_mexsolver_radau5.c} that uses Hairer's and Wanner's Fortran solver @file{radau5.f}.
-
-If this function is called with no return argument then plot the solution over time in a figure window while solving the set of ODEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.
-
-If this function is called with one return argument then return the solution @var{sol} of type structure array after solving the set of ODEs. The solution @var{sol} has the fields @var{x} of type double column vector for the steps chosen by the solver, @var{y} of type double column vector for the solutions at each time step of @var{x}, @var{solver} of type string for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector that keep the informations of the event function if an event function handle is set in the option argument @var{opt}.
-
-If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.
-
-Run examples with the command
-@example
-demo ode5r
-@end example
-@end deftypefn
-
 @deftypefn  {Function File} {[@var{}] =} ode78 (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 @deftypefnx {Command} {[@var{sol}] =} ode78 (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode78 (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
@@ -116,16 +70,6 @@ demo ode78
 @end example
 @end deftypefn
 
-@deftypefn  {Function File} {[@var{}] =} ode8d (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{sol}] =} ode8d (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode8d (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-
-This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) or non--stiff differential algebraic equations (non--stiff DAEs) with the well known explicit Runge--Kutta method of order (8,5,3).
-
-@b{Note: The function files @file{odepkg_mexsolver_dop853} and @file{ode8d} will be removed when version 0.4.0 of OdePkg will be released. A similiar solver method is @file{ode78}, please use the @file{ode78} solver instead.}
-
-@end deftypefn
-
 @deftypefn  {Function File} {[@var{value}] =} odeget (@var{odestruct}, @var{option}, [@var{default}])
 @deftypefnx {Command} {[@var{values}] =} odeget (@var{odestruct}, @{@var{opt1}, @var{opt2}, @dots{}@}, [@{@var{def1}, @var{def2}, @dots{}@}])
 
@@ -139,16 +83,6 @@ demo odeget
 @end example
 @end deftypefn
 
-@deftypefn  {Function File} {[@var{}] =} odeox (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{sol}] =} odeox (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} odeox (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-
-This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) and non--stiff differential algebraic equations (non--stiff DAEs).
-
-@b{Note: The function files @file{odepkg_mexsolver_odex} and @file{odeox} will be removed when version 0.4.0 of OdePkg will be released. A similiar solver method does not exist in OdePkg but you can use @file{ode23, ode45, ode54} or @file{ode78} instead.}
-
-@end deftypefn
-
 @deftypefn {Function File} {[@var{ret}] =} odephas2 (@var{t}, @var{y}, @var{flag})
 
 Open a new figure window and plot the first result from the variable @var{y} that is of type double column vector over the second result from the variable @var{y} while solving. The types and the values of the input parameter @var{t} and the output parameter @var{ret} depend on the input value @var{flag} that is of type string. If @var{flag} is
@@ -156,7 +90,7 @@ Open a new figure window and plot the first result from the variable @var{y} tha
 @item  @code{"init"}
 then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
 @item  @code{""}
-then @var{t} must be a double scalar specifying the actual time step and the return value is true (resp. value 1),
+then @var{t} must be a double scalar specifying the actual time step and the return value is false (resp. value 0) for 'not stop solving',
 @item  @code{"done"}
 then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
 @end table
@@ -176,7 +110,7 @@ Open a new figure window and plot the first result from the variable @var{y} tha
 @item  @code{"init"}
 then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
 @item  @code{""}
-then @var{t} must be a double scalar specifying the actual time step and the return value is true (resp. value 1),
+then @var{t} must be a double scalar specifying the actual time step and the return value is false (resp. value 0) for 'not stop solving',
 @item  @code{"done"}
 then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
 @end table
@@ -395,7 +329,7 @@ Open a new figure window and plot the results from the variable @var{y} of type 
 @item  @code{"init"}
 then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
 @item  @code{""}
-then @var{t} must be a double scalar specifying the actual time step and the return value is true (resp. value 1),
+then @var{t} must be a double scalar specifying the actual time step and the return value is false (resp. value 0) for 'not stop solving',
 @item  @code{"done"}
 then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
 @end table
@@ -415,7 +349,7 @@ Display the results of the set of differential equations in the Octave window wh
 @item  @code{"init"}
 then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
 @item  @code{""}
-then @var{t} must be a double scalar specifying the actual time step and the return value is true (resp. value 1),
+then @var{t} must be a double scalar specifying the actual time step and the return value is false (resp. value 0) for 'not stop solving',
 @item  @code{"done"}
 then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
 @end table
@@ -425,24 +359,6 @@ This function is called by a OdePkg solver function if it was specified in an Od
 Run examples with the command
 @example
 demo odeprint
-@end example
-@end deftypefn
-
-@deftypefn  {Function File} {[@var{}] =} oders (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{sol}] =} oders (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} oders (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-
-This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) and non-stiff differential algebraic equations (non-stiff DAEs). This function file is a wrapper to @file{odepkg_mexsolver_rodas.c} that uses Hairer's and Wanner's Fortran solver @file{rodas.f}.
-
-If this function is called with no return argument then plot the solution over time in a figure window while solving the set of ODEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.
-
-If this function is called with one return argument then return the solution @var{sol} of type structure array after solving the set of ODEs. The solution @var{sol} has the fields @var{x} of type double column vector for the steps chosen by the solver, @var{y} of type double column vector for the solutions at each time step of @var{x}, @var{solver} of type string for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector that keep the informations of the event function if an event function handle is set in the option argument @var{opt}.
-
-If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.
-
-Run examples with the command
-@example
-demo oders
 @end example
 @end deftypefn
 
@@ -466,22 +382,3 @@ Run examples with the command
 demo odeset
 @end example
 @end deftypefn
-
-@deftypefn  {Function File} {[@var{}] =} odesx (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{sol}] =} odesx (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-@deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} odesx (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
-
-This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) and non-stiff differential algebraic equations (non-stiff DAEs). This function file is a wrapper to @file{odepkg_mexsolver_seulex.c} that uses Hairer's and Wanner's Fortran solver @file{seulex.f}.
-
-If this function is called with no return argument then plot the solution over time in a figure window while solving the set of ODEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.
-
-If this function is called with one return argument then return the solution @var{sol} of type structure array after solving the set of ODEs. The solution @var{sol} has the fields @var{x} of type double column vector for the steps chosen by the solver, @var{y} of type double column vector for the solutions at each time step of @var{x}, @var{solver} of type string for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector that keep the informations of the event function if an event function handle is set in the option argument @var{opt}.
-
-If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.
-
-Run examples with the command
-@example
-demo odesx
-@end example
-@end deftypefn
-

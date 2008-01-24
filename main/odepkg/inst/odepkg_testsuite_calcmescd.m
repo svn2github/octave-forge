@@ -1,5 +1,5 @@
-%# Copyright (C) 2007, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - Package for solving differential equations with octave
+%# Copyright (C) 2007-2008, Thomas Treichl <treichl@users.sourceforge.net>
+%# OdePkg - A package for solving differential equations with GNU Octave
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by

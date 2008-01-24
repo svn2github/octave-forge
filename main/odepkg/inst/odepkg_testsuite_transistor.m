@@ -1,5 +1,5 @@
-%# Copyright (C) 2007, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - Package for solving ordinary differential equations with octave
+%# Copyright (C) 2007-2008, Thomas Treichl <treichl@users.sourceforge.net>
+%# OdePkg - A package for solving differential equations with GNU Octave
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by
@@ -32,12 +32,13 @@ function vret = odepkg_testsuite_transistor (vhandle, vrtol)
 
   if (nargin ~= 2) %# Check number and types of all input arguments
     help  ('odepkg_testsuite_transistor');
-    error ('Number of input arguments must be exactly two');
+    error ('OdePkg:InvalidArgument', ...
+	   'Number of input arguments must be exactly two');
   elseif (~isa (vhandle, 'function_handle') || ~isscalar (vrtol))
-    usage ('odepkg_testsuite_transistor (@solver, reltol)');
+    print_usage;
   end
 
-  vret{1} = vhandle; %# The name for the solver that is used
+  vret{1} = vhandle; %# The handle for the solver that is used
   vret{2} = vrtol;   %# The value for the realtive tolerance
   vret{3} = vret{2}; %# The value for the absolute tolerance
   vret{4} = vret{2}; %# The value for the first time step
@@ -67,11 +68,11 @@ function vret = odepkg_testsuite_transistor (vhandle, vrtol)
   end
   vret{5}  = odepkg_testsuite_calcmescd (vlst, vref, vret{3}, vret{2});
   vret{6}  = odepkg_testsuite_calcscd (vlst, vref, vret{3}, vret{2});
-  vret{7}  = vsol.stats.success + vsol.stats.failed; %# The value for all evals
-  vret{8}  = vsol.stats.success;  %# The value for success evals
-  vret{9}  = vsol.stats.fevals;   %# The value for fun calls
-  vret{10} = vsol.stats.partial;  %# The value for partial derivations
-  vret{11} = vsol.stats.ludecom;  %# The value for LU decompositions
+  vret{7}  = vsol.stats.nsteps + vsol.stats.nfailed; %# The value for all evals
+  vret{8}  = vsol.stats.nsteps;   %# The value for success evals
+  vret{9}  = vsol.stats.nfevals;  %# The value for fun calls
+  vret{10} = vsol.stats.npds;     %# The value for partial derivations
+  vret{11} = vsol.stats.ndecomps; %# The value for LU decompositions
 
 %# Returns the results for the for the TRANSISTOR problem
 function f = odepkg_testsuite_transistorfun (t, y, varargin)

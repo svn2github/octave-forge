@@ -738,12 +738,12 @@ demo ode2r\n\
 %!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
 %!  assert (B.x(end), 0.2, 1e-12);
 %!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%!test
-%!  A = odeset ('OutputFcn', @odeplot, 'OutputSel', [1 2], 'Refine', 5);
-%!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
-%!  assert (B.x(end), 0.2, 1e-12);
-%!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%!  assert (B.y(end,:), [17.536442, -0.160655], 1e-3);
+%+!test
+%+!  A = odeset ('OutputFcn', @odeplot, 'OutputSel', [1 2], 'Refine', 5);
+%+!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
+%+!  assert (B.x(end), 0.2, 1e-12);
+%+!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
+%+!  assert (B.y(end,:), [17.536442, -0.160655], 1e-3);
 %!test
 %!  A = odeset ('Stats', 'on');
 %!  B = ode2r (@flor, [0 0.2], [3 15 1], A);

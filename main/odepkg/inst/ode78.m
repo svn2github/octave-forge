@@ -1,5 +1,5 @@
-%# Copyright (C) 2006, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - Package for solving ordinary differential equations with Octave
+%# Copyright (C) 2006-2008, Thomas Treichl <treichl@users.sourceforge.net>
+%# OdePkg - A package for solving differential equations with GNU Octave
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@
 %#     under the GPL for the use with Octave. This function has been
 %#     taken as a base for the following implementation.
 %#   20060810, Thomas Treichl
-%#     This function was adapted to the new syntax that is used by
-%#     OdePkg for Octave. An equivalent function in MatLab does not
+%#     This function was adapted to the new syntax that is used by the
+%#     new OdePkg for Octave. An equivalent function in Matlab does not
 %#     exist.
 
 function [varargout] = ode78 (vfun, vslot, vinit, varargin)
@@ -50,7 +50,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
   if (nargin == 0) %# Check number and types of all input arguments
     help ('ode78');
     error ('OdePkg:InvalidArgument', ...
-      'Number of input arguments must be greater than zero');
+           'Number of input arguments must be greater than zero');
 
   elseif (nargin < 3)
     print_usage;
@@ -93,11 +93,11 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
   %# Preprocessing, have a look which options have been set in
   %# vodeoptions. Check if a invalid option has been set and print
   %# warnings.
-  if (size (vslot, 1) > size (vslot, 2)), vslot = vslot'; end %# create row vector
-  if (size (vinit, 1) > size (vinit, 2)), vinit = vinit'; end %# create row vector
-  if (size (vslot, 2) > 2), vstepsizegiven = true;            %# Step size checking
+  vslot = vslot(:)';                              %# Create a row vector
+  vinit = vinit(:)';                              %# Create a row vector
+  if (length (vslot) > 2), vstepsizegiven = true; %# Step size checking
   else vstepsizegiven = false; end  
-  %# A row vector could always easily be created with vinit = (vinit(:))';
+
   %# Get the default options that can be set with 'odeset' temporarily
   vodetemp = odeset;
 
@@ -171,7 +171,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
 
   %# Implementation of the option InitialStep has been finished. This
   %# option can be set by the user to another value than default value.
-  if (isempty (vodeoptions.InitialStep))
+  if (isempty (vodeoptions.InitialStep) && ~vstepsizegiven)
     vodeoptions.InitialStep = abs (vslot(1,1) - vslot(1,2)) / 10;
     vodeoptions.InitialStep = vodeoptions.InitialStep / 10^vodeoptions.Refine;
     warning ('OdePkg:InvalidOption', ...
@@ -180,7 +180,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
 
   %# Implementation of the option MaxStep has been finished. This option
   %# can be set by the user to another value than default value.
-  if (isempty (vodeoptions.MaxStep))
+  if (isempty (vodeoptions.MaxStep) && ~vstepsizegiven)
     vodeoptions.MaxStep = abs (vslot(1,1) - vslot(1,length (vslot))) / 10;
     %# vodeoptions.MaxStep = vodeoptions.MaxStep / 10^vodeoptions.Refine;
     warning ('OdePkg:InvalidOption', ...
@@ -215,7 +215,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
   elseif (isa (vodeoptions.Mass, 'function_handle'))
     vhavemasshandle = true; %# mass defined by a function handle
   else %# no mass matrix - creating a diag-matrix of ones for mass
-    vhavemasshandle = false; vmass = diag (ones (length (vinit), 1), 0);
+    vhavemasshandle = false; %# vmass = diag (ones (length (vinit), 1), 0);
   end
 
   %# Implementation of the option MStateDependence has been finished.
@@ -324,22 +324,22 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
 
     %# Estimate the thirteen results when using this solver
     for j = 1:13
+      vthetime  = vtimestamp + vc(j,1) * vstepsize;
+      vtheinput = vu' + vstepsize * vk(:,1:j-1) * va(j,1:j-1)';
       if (vhavemasshandle)   %# Handle only the dynamic mass matrix,
         if (vmassdependence) %# constant mass matrices have already
           vmass = feval ...  %# been set before (if any)
-            (vodeoptions.Mass, vtimestamp + vc(j,1) * vstepsize, ...
-             vu' + vstepsize * vk(:,1:j-1) * va(j,1:j-1)', ...
-             vfunarguments{:});
+            (vodeoptions.Mass, vthetime, vtheinput, vfunarguments{:});
         else                 %# if (vmassdependence == false)
           vmass = feval ...  %# then we only have the time argument
-            (vodeoptions.Mass, vtimestamp + vc(j,1) * vstepsize, ...
-             vfunarguments{:});
+            (vodeoptions.Mass, vthetime, vfunarguments{:});
         end
+        vk(:,j) = vmass \ feval ...
+          (vfun, vthetime, vtheinput, vfunarguments{:});
+      else
+        vk(:,j) = feval ...
+          (vfun, vthetime, vtheinput, vfunarguments{:});
       end
-      vk(:,j) = vmass \ feval ...
-        (vfun, vtimestamp + vc(j,1) * vstepsize, ...
-         vu' + vstepsize * vk(:,1:j-1) * va(j,1:j-1)', ...
-         vfunarguments{:});
     end
 
     %# Compute the 7th and the 8th order estimation
@@ -373,7 +373,8 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
       vretvaltime(vcntloop,:) = vtimestamp;
       if (vhaveoutputselection)
         vretvalresult(vcntloop,:) = vu(vodeoptions.OutputSel);
-      else vretvalresult(vcntloop,:) = vu;
+      else
+        vretvalresult(vcntloop,:) = vu;
       end
       vcntloop = vcntloop + 1; vcntiter = 0;
 
@@ -394,7 +395,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
         end
         vpltret = feval (vodeoptions.OutputFcn, vtimestamp, ...
           vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
-        if (~vpltret), vunhandledtermination = false; break; end
+        if (vpltret), vunhandledtermination = false; break; end
       end
 
       %# Call event only if a valid result has been found, therefore this
@@ -404,8 +405,6 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
         vevent = ...
           odepkg_event_handle (vodeoptions.Events, vtimestamp, ...
             vu(:), [], vfunarguments{:});
-        %# 20070222, bugfix, Calling event function does not depend on
-        %# OutputSel vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
         if (~isempty (vevent{1}) && vevent{1} == 1)
           vretvaltime(vcntloop-1,:) = vevent{3}(end,:);
           vretvalresult(vcntloop-1,:) = vevent{4}(end,:);
@@ -474,15 +473,18 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
   %# Print additional information if option Stats is set
   if (strcmp (vodeoptions.Stats, 'on'))
     vhavestats = true;
-    vsuccess   = vcntloop-2;                    %# vcntloop from 2..end
-    vfailed    = (vcntcycles-1)-(vcntloop-2)+1; %# vcntcycl from 1..end
-    vfuncalls  = 13*(vcntcycles-1);             %# number of ode evaluations
-    vludecomp  = 0;                             %# number of LU decompositions
-    vpartderv  = 0;                             %# number of partial derivatives
-    vlinsols   = 0;                             %# no. of solutions of linear systems
-    vmsg = sprintf ('Number of successful steps: %d', vsuccess); disp (vmsg);
-    vmsg = sprintf ('Number of failed attempts:  %d', vfailed); disp (vmsg);
-    vmsg = sprintf ('Number of function calls:   %d', vfuncalls); disp (vmsg);
+    vnsteps    = vcntloop-2;                    %# vcntloop from 2..end
+    vnfailed   = (vcntcycles-1)-(vcntloop-2)+1; %# vcntcycl from 1..end
+    vnfevals   = 13*(vcntcycles-1);             %# number of ode evaluations
+    vndecomps  = 0;                             %# number of LU decompositions
+    vnpds      = 0;                             %# number of partial derivatives
+    vnlinsols  = 0;                             %# no. of solutions of linear systems
+    %# Print cost statistics if no output argument is given
+    if (nargout == 0)
+      vmsg = fprintf (1, 'Number of successful steps: %d', vnsteps);
+      vmsg = fprintf (1, 'Number of failed attempts:  %d', vnfailed);
+      vmsg = fprintf (1, 'Number of function calls:   %d', vnfevals);
+    end
   else vhavestats = false;
   end
 
@@ -496,12 +498,12 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
       varargout{1}.ye = vevent{4};  %# Results when an event occured
     end
     if (vhavestats)
-      varargout{1}.stats.success = vsuccess;
-      varargout{1}.stats.failed  = vfailed;    
-      varargout{1}.stats.fevals  = vfuncalls;  
-      varargout{1}.stats.partial = vpartderv; 
-      varargout{1}.stats.ludecom = vludecomp;
-      varargout{1}.stats.linsol  = vlinsols; 
+      varargout{1}.stats.nsteps   = vnsteps;
+      varargout{1}.stats.nfailed  = vnfailed;
+      varargout{1}.stats.nfevals  = vnfevals;
+      varargout{1}.stats.npds     = vnpds;
+      varargout{1}.stats.ndecomps = vndecomps;
+      varargout{1}.stats.nlinsols = vnlinsols;
     end
   elseif (nargout == 2)
     varargout{1} = vretvaltime;     %# Time stamps are first output argument

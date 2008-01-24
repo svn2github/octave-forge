@@ -243,8 +243,6 @@ octave_idx_type odepkg_radau_solfcn
       (vradaupltfun, vradauoutsel, vt, vy, vradauextarg, 1);
   }
 
-  //  if (NR > 10) IRTRN = -1;
-
   return (true);
 }
 

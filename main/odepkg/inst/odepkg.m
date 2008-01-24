@@ -1,5 +1,5 @@
-%# Copyright (C) 2007, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - Package for solving ordinary differential equations with octave
+%# Copyright (C) 2006-2008, Thomas Treichl <treichl@users.sourceforge.net>
+%# OdePkg - A package for solving differential equations with GNU Octave
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by
@@ -29,16 +29,15 @@
 
 function [] = odepkg (vstr)
 
-  if (nargin == 0) %# Check number and types of all input arguments
+  %# Check number and types of all input arguments
+  if (nargin == 0)
     doc ('odepkg');
   elseif (nargin > 1)
-    error ('Number of input arguments must be exactly one');
-  elseif (ischar (vstr) == true)
-    feval (str2func (vstr));
-  elseif (isa (vstr, 'function_handle') == true)
+    error ('Number of input arguments must at most be one');
+  elseif (ischar (vstr))
     feval (vstr);
   else
-    error ('Input argument must be a valid string or a valid function handle');
+    error ('Input argument must be a valid string');
   end
 
 function [] = odepkg_validate_mfiles ()
@@ -52,8 +51,8 @@ function [] = odepkg_validate_mfiles ()
           'odepkg_structure_check', ... %# 'odepkg_event_handle', ...
           'odeplot', 'odephas2', 'odephas3', 'odeprint', ...
           'odepkg_equations_lorenz', 'odepkg_equations_ilorenz', ...
-	  'odepkg_equations_pendulous', 'odepkg_equations_roessler', ...
-	  'odepkg_equations_secondorderlag', 'odepkg_equations_vanderpol', ...
+          'odepkg_equations_pendulous', 'odepkg_equations_roessler', ...
+          'odepkg_equations_secondorderlag', 'odepkg_equations_vanderpol', ...
           'odepkg_testsuite_calcscd', 'odepkg_testsuite_calcmescd'};
 
   for vcnt=1:length(vfun)
@@ -66,37 +65,35 @@ function [] = odepkg_validate_ccfiles ()
   %# From command line in the 'src' directory do something like this: 
   %#   octave --quiet --eval "odepkg ('odepkg_validate_ccfiles')"
 
-  vfile = {"odepkg_octsolver_mebdfdae.cc", "odepkg_octsolver_mebdfi.cc", \
-           "odepkg_octsolver_radau.cc", "odepkg_octsolver_radau5.cc", \
-           "odepkg_octsolver_rodas.cc", "odepkg_octsolver_seulex.cc"};
-  vsolv = {"odebda", "odebdi", \
-           "ode2r", "ode5r", \
-           "oders", "odesx"};
+  vfile = {'odepkg_octsolver_mebdfdae.cc', 'odepkg_octsolver_mebdfi.cc', ...
+           'odepkg_octsolver_radau.cc', 'odepkg_octsolver_radau5.cc', ...
+           'odepkg_octsolver_rodas.cc', 'odepkg_octsolver_seulex.cc'};
+  vsolv = {'odebda', 'odebdi', ...
+           'ode2r', 'ode5r', ...
+           'oders', 'odesx'};
 
   for vcnt=1:length(vfile)
-    printf ("Testing function %s ... ", vsolv{vcnt});
-    autoload (vsolv{vcnt}, canonicalize_file_name ("dldsolver.oct"));
+    printf ('Testing function %s ... ', vsolv{vcnt});
+    autoload (vsolv{vcnt}, canonicalize_file_name ('dldsolver.oct'));
     test (vfile{vcnt}, 'quiet'); fflush (1);
   end
 
-function [] = odepkg_internal_helpextract ()
+function [] = odepkg_mfunctions_helpextract ()
 
   vfun = {'odepkg', ...
           'ode23', 'ode45', 'ode54', 'ode78', ...
-          'ode5d', 'ode8d', 'odeox', ...
-          'ode2r', 'ode5r', 'oders', 'odesx', ...
           'odeget', 'odeset', ...
           'odeplot', 'odephas2', 'odephas3', 'odeprint', ...
           'odepkg_structure_check', 'odepkg_event_handle', ...
           'odepkg_equations_lorenz', 'odepkg_equations_ilorenz', ...
-	  'odepkg_equations_pendulous', 'odepkg_equations_roessler', ...
-	  'odepkg_equations_secondorderlag', 'odepkg_equations_vanderpol', ...
+          'odepkg_equations_pendulous', 'odepkg_equations_roessler', ...
+          'odepkg_equations_secondorderlag', 'odepkg_equations_vanderpol', ...
           'odepkg_testsuite_calcscd', 'odepkg_testsuite_calcmescd', ...
-	  'odepkg_testsuite_chemakzo', 'odepkg_testsuite_hires', ...
-	  'odepkg_testsuite_implrober', 'odepkg_testsuite_implakzo', ...
-	  'odepkg_testsuite_oregonator', 'odepkg_testsuite_pollution', ...
-	  'odepkg_testsuite_robertson', 'odepkg_testsuite_transistor', ...
-	  };
+          'odepkg_testsuite_chemakzo', 'odepkg_testsuite_hires', ...
+          'odepkg_testsuite_implrober', 'odepkg_testsuite_implakzo', ...
+          'odepkg_testsuite_oregonator', 'odepkg_testsuite_pollution', ...
+          'odepkg_testsuite_robertson', 'odepkg_testsuite_transistor', ...
+          };
   vfun = sort (vfun);
 
   [vout, vmsg] = fopen ('../doc/mfunref.texi', 'w');
@@ -109,10 +106,10 @@ function [] = odepkg_internal_helpextract ()
         vlin = fgets (vfid);
         if ~(ischar (vlin)), break; end
         if (regexp (vlin, '^(%# -\*- texinfo -\*-)'))
-	  while (~isempty (regexp (vlin, '^(%#)')) && ...
-		  isempty (regexp (vlin, '^(%# @end deftypefn)')))
-	    vlin = fgets (vfid);
-	    if (length (vlin) > 3), fprintf (vout, '%s', vlin(4:end));
+          while (~isempty (regexp (vlin, '^(%#)')) && ...
+                  isempty (regexp (vlin, '^(%# @end deftypefn)')))
+            vlin = fgets (vfid);
+            if (length (vlin) > 3), fprintf (vout, '%s', vlin(4:end));
             else fprintf (vout, '%s', vlin(3:end));
             end
           end
@@ -127,8 +124,8 @@ function [] = odepkg_internal_helpextract ()
 function [] = odepkg_internal_ccrefextract ()
 
   vfiles = {'../src/odepkg_octsolver_mebdfi.cc', ...
-	    '../src/odepkg_octsolver_rodas.cc', ...
-	    '../src/odepkg_auxiliary_functions.cc', ...
+            '../src/odepkg_octsolver_rodas.cc', ...
+            '../src/odepkg_auxiliary_functions.cc', ...
             };
   vfiles = sort (vfiles);
 
@@ -142,7 +139,7 @@ function [] = odepkg_internal_ccrefextract ()
         vlin = fgets (vfid);
         if ~(ischar (vlin)), break; end
         if (regexp (vlin, '^(/\* -\*- texinfo -\*-)'))
-	  vlin = ' * '; %# Needed for the first call of while()
+          vlin = ' * '; %# Needed for the first call of while()
           while (~isempty (regexp (vlin, '^( \*)')) && ...
                   isempty (regexp (vlin, '^( \*/)')))
             vlin = fgets (vfid);
@@ -167,10 +164,8 @@ function [] = odepkg_performance_mathires ()
   odepkg_testsuite_write (vsol);
 
 function [] = odepkg_performance_octavehires ()
-  vfun = {@ode23, @ode45, @ode54, @ode78, @odepkg_mexsolver_odex, ...
-          @odepkg_mexsolver_dopri5, @odepkg_mexsolver_dop853, ...
-          @odepkg_mexsolver_radau, @odepkg_mexsolver_radau5, ...
-          @odepkg_mexsolver_seulex, @odepkg_mexsolver_rodas};
+  vfun = {@ode23, @ode45, @ode54, @ode78};
+%#          @ode2r, @ode5r, @oders, @odesx, @odebda};
   for vcnt=1:length(vfun)
     vsol{vcnt, 1} = odepkg_testsuite_hires (vfun{vcnt}, 1e-7);
   end
@@ -185,10 +180,7 @@ function [] = odepkg_performance_matchemakzo ()
   odepkg_testsuite_write (vsol);
 
 function [] = odepkg_performance_octavechemakzo ()
-  vfun = {@ode23, @ode45, @ode54, @ode78, @odepkg_mexsolver_odex, ...
-          @odepkg_mexsolver_dopri5, @odepkg_mexsolver_dop853, ...
-          @odepkg_mexsolver_radau, @odepkg_mexsolver_radau5, ...
-          @odepkg_mexsolver_seulex, @odepkg_mexsolver_rodas};
+  vfun = {@ode23, @ode45, @ode54, @ode78};
   for vcnt=1:length(vfun)
     vsol{vcnt, 1} = odepkg_testsuite_chemakzo (vfun{vcnt}, 1e-7);
   end

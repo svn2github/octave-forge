@@ -237,9 +237,10 @@ octave_idx_type odepkg_radau_solfcn
 	  (vradaupltfun, vradauoutsel, vtr, vyr, vradauextarg, 1);
       }
     }
-    // Evaluate the 'OutputFcn' with the results from the solver
-    IRTRN = (odepkg_auxiliary_evalplotfun
-      (vradaupltfun, vradauoutsel, vt, vy, vradauextarg, 1) ? 0 : -1);
+    // Evaluate the 'OutputFcn' with the results from the solver, if
+    // the OutputFcn returns true then set a negative value in IRTRN
+    IRTRN = - odepkg_auxiliary_evalplotfun
+      (vradaupltfun, vradauoutsel, vt, vy, vradauextarg, 1);
   }
 
   //  if (NR > 10) IRTRN = -1;
@@ -739,12 +740,12 @@ demo ode2r\n\
 %!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
 %!  assert (B.x(end), 0.2, 1e-12);
 %!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%+!test
-%+!  A = odeset ('OutputFcn', @odeplot, 'OutputSel', [1 2], 'Refine', 5);
-%+!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
-%+!  assert (B.x(end), 0.2, 1e-12);
-%-!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%+!  assert (B.y(end,:), [17.536442, -0.160655], 1e-3);
+%!test
+%!  A = odeset ('OutputFcn', @odeplot, 'OutputSel', [1 2], 'Refine', 5);
+%!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
+%!  assert (B.x(end), 0.2, 1e-12);
+%!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
+%!  assert (B.y(end,:), [17.536442, -0.160655], 1e-3);
 %!test
 %!  A = odeset ('Stats', 'on');
 %!  B = ode2r (@flor, [0 0.2], [3 15 1], A);

@@ -378,12 +378,12 @@ octave_value odepkg_auxiliary_makestats
     error_with_id ("OdePkg:InvalidArgument",
       "C++ function odepkg_auxiliary_makestats error");
   else {
-    vretval.assign ("success", vstats(0));
-    vretval.assign ("failed",  vstats(1));
-    vretval.assign ("fevals",  vstats(2));
-    vretval.assign ("partial", vstats(3));
-    vretval.assign ("ludecom", vstats(4));
-    vretval.assign ("fbsubst", vstats(5));
+    vretval.assign ("nsteps",   vstats(0));
+    vretval.assign ("nfailed",  vstats(1));
+    vretval.assign ("nfevals",  vstats(2));
+    vretval.assign ("npds",     vstats(3));
+    vretval.assign ("ndecomps", vstats(4));
+    vretval.assign ("nlinsols", vstats(5));
   }
 
   if (vprnt == true) {

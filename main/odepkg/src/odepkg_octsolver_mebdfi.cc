@@ -731,7 +731,7 @@ odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
 	  }
       }
       if (!vplot.is_empty ()) {
-        if (!odepkg_auxiliary_evalplotfun (vplot, voutsel, vtim, vsol, vmebdfiextarg, 1)) {
+        if (odepkg_auxiliary_evalplotfun (vplot, voutsel, vtim, vsol, vmebdfiextarg, 1)) {
           error ("Missing error message implementation");
           return (vretval);
         }
@@ -779,7 +779,7 @@ odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
 	  }
       }
       if (!vplot.is_empty ()) {
-        if (!odepkg_auxiliary_evalplotfun (vplot, voutsel, vtim, vsol, vmebdfiextarg, 1)) {
+        if (odepkg_auxiliary_evalplotfun (vplot, voutsel, vtim, vsol, vmebdfiextarg, 1)) {
           error ("Missing error message implementation");
           return (vretval);
         }

@@ -237,9 +237,10 @@ octave_idx_type odepkg_radau5_solfcn
 	  (vradau5pltfun, vradau5outsel, vtr, vyr, vradau5extarg, 1);
       }
     }
-    // Evaluate the 'OutputFcn' with the results from the solver
-    IRTRN = (odepkg_auxiliary_evalplotfun
-      (vradau5pltfun, vradau5outsel, vt, vy, vradau5extarg, 1) ? 0 : -1);
+    // Evaluate the 'OutputFcn' with the results from the solver, if
+    // the OutputFcn returns true then set a negative value in IRTRN
+    IRTRN = - odepkg_auxiliary_evalplotfun
+      (vradau5pltfun, vradau5outsel, vt, vy, vradau5extarg, 1);
   }
 
   //  if (NR > 10) IRTRN = -1;

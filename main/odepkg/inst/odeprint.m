@@ -1,5 +1,5 @@
-%# Copyright (C) 2006, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - Package for solving ordinary differential equations with octave
+%# Copyright (C) 2006-2008, Thomas Treichl <treichl@users.sourceforge.net>
+%# OdePkg - A package for solving differential equations with GNU Octave
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 %# @item  @code{"init"}
 %# then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
 %# @item  @code{""}
-%# then @var{t} must be a double scalar specifying the actual time step and the return value is true (resp. value 1),
+%# then @var{t} must be a double scalar specifying the actual time step and the return value is false (resp. value 0) for 'not stop solving',
 %# @item  @code{"done"}
 %# then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
 %# @end table
@@ -45,18 +45,15 @@ function [varargout] = odeprint (vt, vy, vflag, varargin)
   %# odephas2 and odephas3 for another implementation. vflag either
   %# is "init", [] or "done".
 
-  if (strcmp (vflag, 'init') == true)
+  if (strcmp (vflag, 'init'))
     fprintf (1, '%f%s\n', vt (1,1), sprintf (' %f', vy) );
     fflush (1);
 
-  elseif (isempty (vflag) == true) %# Return varargout{1}
+  elseif (isempty (vflag)) %# Return value varargout{1} needed
     fprintf (1, '%f%s\n', vt (1,1), sprintf (' %f', vy) );
-    fflush (1);
-    varargout{1} = true; 
-    %# Do not stop the integration algorithm
-    %# if varargout{1} = false; stop the integration algorithm
+    fflush (1); varargout{1} = false; 
 
-  elseif (strcmp (vflag, 'done') == true) 
+  elseif (strcmp (vflag, 'done')) 
     %# Cleanup could be done, but nothing to do in this function
 
   end

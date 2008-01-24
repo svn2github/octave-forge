@@ -1,5 +1,5 @@
-%# Copyright (C) 2006, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - Package for solving ordinary differential equations with octave
+%# Copyright (C) 2006-2008, Thomas Treichl <treichl@users.sourceforge.net>
+%# OdePkg - A package for solving differential equations with GNU Octave
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 %# @item  @code{"init"}
 %# then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
 %# @item  @code{""}
-%# then @var{t} must be a double scalar specifying the actual time step and the return value is true (resp. value 1),
+%# then @var{t} must be a double scalar specifying the actual time step and the return value is false (resp. value 0) for 'not stop solving',
 %# @item  @code{"done"}
 %# then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
 %# @end table
@@ -43,27 +43,23 @@ function [varargout] = odephas2 (vt, vy, vflag)
   %# No input argument check is done for a higher processing speed
   persistent vfigure; persistent vyold; persistent vcounter;
 
-  if (strcmp (vflag, 'init') == true) 
+  if (strcmp (vflag, 'init'))
     %# Nothing to return, vt is either the time slot [tstart tstop]
     %# or [t0, t1, ..., tn], vy is the inital value vector 'vinit'
     vfigure = figure; vyold = vy(:,1); vcounter = 1;
 
-  elseif (isempty (vflag) == true) 
-    %# Return something in varargout{1}, either true for 'not stopping
-    %# the integration' or false for 'stopping the integration'
-    vcounter = vcounter + 1; 
-    figure (vfigure);
+  elseif (isempty (vflag))
+    %# Return something in varargout{1}, either false for 'not stopping
+    %# the integration' or true for 'stopping the integration'
+    vcounter = vcounter + 1; figure (vfigure);
     vyold(:,vcounter) = vy(:,1); 
     plot (vyold(1,:), vyold(2,:), '-o');
-    drawnow;
-    varargout{1} = true; 
-    %# Do not stop the integration algorithm if varargout{1} = true;
-    %# stop the integration algorithm if varargout{1} = false;
+    drawnow; varargout{1} = false; 
 
-  elseif (strcmp (vflag, 'done') == true) 
+  elseif (strcmp (vflag, 'done'))
     %# Cleanup has to be done, clear the persistent variables because
     %# we don't need them anymore
-    clear ('vfigure', 'vyold', 'vcounter')
+    clear ('vfigure', 'vyold', 'vcounter');
 
   end
 

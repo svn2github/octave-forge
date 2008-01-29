@@ -1,9 +1,9 @@
 #!/usr/bin/sh
 
-#  BUILD DEPENDENCIES FOR OCTAVE 2.9.17/MINGW32
+#  BUILD DEPENDENCIES FOR OCTAVE 3.0.0/MINGW32
 #
 #  This script successivly builds the dependencies 
-#  required for a Octave 2.9.17 build
+#  required for a Octave 3.0.0 build
 #
 #  This script requires a working MSYS 1.0.10/MSYSDTK environment
 #
@@ -21,12 +21,12 @@ VER_GLOB=1.0-2
 VER_READLINE=5.2-2
 VER_REGEX=2.5.1-2
 VER_SUITESPARSE=3.0.0-2
-VER_PCRE=7.2-1
+VER_PCRE=7.5-2
 VER_FFTW3=3.1.2-2
 VER_GMP=4.2.1-2
 VER_GLPK=4.17-2
-VER_GSL=1.9-2
-VER_LIBPNG=1.2.18-2
+VER_GSL=1.10-2
+VER_LIBPNG=1.2.24-2
 VER_LIBJPEG=6b-2
 VER_LIBTIFF=3.8.2-2
 VER_HDF5=1.6.5-2

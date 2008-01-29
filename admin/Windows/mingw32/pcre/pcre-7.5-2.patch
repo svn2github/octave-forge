@@ -1,0 +1,27 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak pcre-7.5-orig/configure pcre-7.5/configure
+--- pcre-7.5-orig/configure	Thu Jan 10 17:48:25 2008
++++ pcre-7.5/configure	Mon Jan 21 22:45:23 2008
+@@ -9245,7 +9245,7 @@
+       ;;
+     mingw*)
+       # MinGW DLLs use traditional 'lib' prefix
+-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib//'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
+         # It is most probably a Windows format PATH printed by
+@@ -22232,11 +22232,11 @@
+ # The extra LDFLAGS for each particular library
+ # (Note: The libpcre*_version bits are m4 variables, assigned above)
+ 
+-EXTRA_LIBPCRE_LDFLAGS="$NO_UNDEFINED -version-info 0:1:0"
++EXTRA_LIBPCRE_LDFLAGS="$NO_UNDEFINED -version-info 7:5:0"
+ 
+-EXTRA_LIBPCREPOSIX_LDFLAGS="$NO_UNDEFINED -version-info 0:0:0"
++EXTRA_LIBPCREPOSIX_LDFLAGS="$NO_UNDEFINED -version-info 7:5:0"
+ 
+-EXTRA_LIBPCRECPP_LDFLAGS="$NO_UNDEFINED $EXPORT_ALL_SYMBOLS -version-info 0:0:0"
++EXTRA_LIBPCRECPP_LDFLAGS="$NO_UNDEFINED $EXPORT_ALL_SYMBOLS -version-info 7:5:0"
+ 
+ 
+ 

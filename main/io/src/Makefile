@@ -1,4 +1,4 @@
-all: dlmread.oct textread.oct
+all: dlmread.oct dlmreadnew.oct textread.oct
 
 %.oct: %.cc
 	mkoctfile $<

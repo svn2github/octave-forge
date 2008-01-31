@@ -1,5 +1,5 @@
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{function [y,f]} ={} } inz ( x ) 
+## @deftypefn{Function File} [@var{y},@var{f}] = inz ( @var{x} ) 
 ## @cindex  
 ## This function is just to save typing and improve readability, as in
 ## foo(find(foo(:,p)),p)  vs.  inz(foo(:,p)) 

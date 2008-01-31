@@ -40,7 +40,7 @@ packages=
 available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
-VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig"
+VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick"
 octave_version=
 of_version=
 do_nsi=false
@@ -68,6 +68,7 @@ gdver=2.0.35
 hdf5ver=1.6.6
 libiconvver=1.12
 gettextver=0.17
+gmagickver=1.1.10
 
 ###################################################################################
 
@@ -474,6 +475,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/pkg-config.exe" pkg-config
     todo_check "$tbindir/fc-msvc.exe" fc-msvc
     todo_check "$tbindir/libcurl.dll" libcurl
+    todo_check "$tlibdir/GraphicsMagick.lib" GraphicsMagick
   fi
 else
   packages="$todo_packages"
@@ -1103,6 +1105,8 @@ AdditionalDependencies=\"zlib.lib\"\\
 ImportLibrary=\"\$(TargetDir)png.lib\"\\
 AdditionalLibraryDirectories=\"$tdir_w32\\\\lib\"/" libpng.vcproj > ttt &&
     mv ttt libpng.vcproj &&
+    sed -e "s/^ *; *png_get_libpng_ver/  png_get_libpng_ver/" ../../scripts/pngw32.def > ttt &&
+      mv ttt ../../scripts/pngw32.def &&
     vcbuild -u libpng.vcproj 'DLL Release|Win32' &&
 	sed -e "s,^prefix=.*$,prefix=$tdir_w32_forward," \
         -e "s,@exec_prefix@,\${prefix}," \
@@ -2084,6 +2088,69 @@ if check_package libcurl; then
     mkdir "$tincludedir/curl" && cp include/curl/*.h "$tincludedir/curl") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/curl-$curlver"
   if test ! -f "$tbindir/libcurl.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##################
+# GraphicsMagick #
+##################
+
+if check_package GraphicsMagick; then
+  download_file GraphicsMagick-$gmagickver.tar.bz2 ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/GraphicsMagick-$gmagickver.tar.bz2
+  echo -n "decompressing GraphicsMagick... "
+  unpack_file GraphicsMagick-$gmagickver.tar.bz2
+  echo "done"
+  echo -n "compiling GraphicsMagick... "
+  (cd "$DOWNLOAD_DIR/GraphicsMagick-$gmagickver" &&
+    create_module_rc GraphicsMagick $gmagickver libGraphicsMagick-1.dll "http://www.graphicsmagick.org" \
+      "GraphicsMagick - Image Processing Library" "Copyright (C) 2002-`date +%Y` GraphicsMagick Group" > magick/magick.rc &&
+    create_module_rc GraphicsMagick $gmagickver libGraphicsMagick++-1.dll "http://www.graphicsmagick.org" \
+      "GraphicsMagick++ - Image Processing Library" "Copyright (C) 2002-`date +%Y` GraphicsMagick Group" > Magick++/lib/magick++.rc &&
+    create_module_rc GraphicsMagick $gmagickver libGraphicsMagickWand-1.dll "http://www.graphicsmagick.org" \
+      "GraphicsMagickWand - Image Processing Library" "Copyright (C) 2002-`date +%Y` GraphicsMagick Group" > wand/magickwand.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__ -D_VISUALC_" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --without-perl &&
+    post_process_libtool &&
+    for f in coders/msl.c coders/url.c coders/svg.c; do
+      sed -e "s/^# *include <win32config\.h>//g" $f > ttt &&
+        mv ttt $f
+    done &&
+    for f in magick/static.h magick/static.c; do
+      sed -e "s/^.*[Rr]egisterXTRNImage.*$//" $f > ttt &&
+        mv ttt $f
+    done &&
+    echo "#define HAVE_MEMCPY 1" >> magick/magick_config.h &&
+    sed -e "s/^CPPFLAGS =.*$/& -D_WANDLIB_/" \
+        -e "s/^libGraphicsMagickWand_la_LDFLAGS =/& -Wl,magickwand.res/" \
+        wand/Makefile > ttt &&
+      mv ttt wand/Makefile &&
+    sed -e "s/^LTCXXLIBOPTS =.*$/LTCXXLIBOPTS =/" \
+        -e "s/^libGraphicsMagick___la_LDFLAGS =/& -no-undefined -Wl,magick++.res/" \
+        Magick++/lib/Makefile > ttt &&
+      mv ttt Magick++/lib/Makefile &&
+    sed -e "s/^libGraphicsMagick_la_LDFLAGS =/& -Wl,magick.res/" \
+        -e "/^MAGICK_DEP_LIBS =/ {s/^.*$/& -luser32 -lkernel32 -ladvapi32/;}" \
+        magick/Makefile > ttt &&
+      mv ttt magick/Makefile &&
+    for f in wand/GraphicsMagickWand.pc wand/GraphicsMagickWand-config magick/GraphicsMagick.pc \
+             magick/GraphicsMagick-config Magick++/bin/GraphicsMagick++-config \
+             Magick++/lib/GraphicsMagick++.pc; do
+      sed -e "s,/\([a-z]\)/,\1:/,g" $f > ttt &&
+        mv ttt $f
+    done &&
+    (cd magick && rc -fo magick.res magick.rc) &&
+    (cd wand && rc -fo magickwand.res magickwand.rc) &&
+    (cd Magick++/lib && rc -fo magick++.res magick++.rc) &&
+    make &&
+    make install
+    rm -f $tlibdir_quoted/libGraphicsMagicks*.la) >&5 2>&1
+  #rm -rf "$DOWNLOAD_DIR/GraphicsMagick-$gmagickver"
+  if ! test -f "$tlibdir/GraphicsMagick.lib"; then
     echo "failed"
     exit -1
   else

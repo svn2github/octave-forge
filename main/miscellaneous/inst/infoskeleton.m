@@ -11,19 +11,19 @@
 ##
 
 ##-*- texinfo -*-
-##@deftypefn{Function File}{ }infoskeleton(prototype,index_str,seealso)
-##@cindex infoskeleton
-## The function infoskeleton generates TeXinfo skeleton documentation of the
-##given @var{prototype}. Optionally @var{index_str} and @var{seealso}
-##can be specified. 
+## @deftypefn{Function File} infoskeleton(@var{prototype}, @var{index_str}, @var{see_also})
+## @cindex infoskeleton
+## The function @var{infoskeleton} generates TeXinfo skeleton documentation of the
+## given @var{prototype}. Optionally @var{index_str} and @var{see_also}
+## can be specified. 
 ##
-##Usage of this function is typically,
-##@example
+## Usage of this function is typically,
+## @example
 ## infoskeleton('[V,Q] = eig( A )','linear algebra','eigs, chol, qr, det')
-##@end example
-##@seealso{info}
-##@end deftypefn
-##
+## @end example
+## @seealso{info}
+## @end deftypefn
+
 function infoskeleton( prototype , index_str, seealso)
 
   ## FIXME: add placeholders for math TeX code, examples etc.

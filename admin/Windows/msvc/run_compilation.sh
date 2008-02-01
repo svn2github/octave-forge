@@ -41,7 +41,7 @@ available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline 
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
-ImageMagick"
+ImageMagick libtiff"
 octave_version=
 of_version=
 do_nsi=false
@@ -481,6 +481,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/bz2.lib" bzip2
     #todo_check "$tlibdir/GraphicsMagick.lib" GraphicsMagick
     todo_check "$tlibdir/Magick.lib" ImageMagick
+    todo_check "$tlibdir/tiff.lib" libtiff
   fi
 else
   packages="$todo_packages"
@@ -2136,6 +2137,39 @@ EOF
     cp bzlib.h "$tincludedir") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/bzip2-$bzip2ver"
   if test ! -f "$tlibdir/bz2.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# libtiff #
+###########
+
+if check_package libtiff; then
+  download_file tiff-$tiffver.tar.gz http://www.tiff.org/tiff-$tiffver.tar.gz
+  echo -n "decompressing libtiff... "
+  unpack_file tiff-$tiffver.tar.gz
+  echo "done"
+  echo -n "compiling libtiff... "
+  (cd "$DOWNLOAD_DIR/tiff-$tiffver" &&
+    sed -e "s/^#JPEG_SUPPORT/JPEG_SUPPORT/" \
+        -e "s/^#ZIP_SUPPORT/ZLIB_SUPPORT/" \
+        -e "s/^#JPEG_LIB.*$/JPEG_LIB = jpeg.lib/" \
+        -e "s/^#ZLIB_LIB.*$/ZLIB_LIB = zlib.lib/" \
+        nmake.opt > ttt &&
+      mv ttt nmake.opt &&
+    sed -e "s/libtiff\.lib/libtiff_i.lib/" tools/Makefile.vc > ttt &&
+      mv ttt tools/Makefile.vc &&
+    nmake -f Makefile.vc &&
+    cp libtiff/libtiff.dll "$tbindir" &&
+    cp libtiff/libtiff_i.lib "$tlibdir/tiff.lib" &&
+    cp tools/*.exe "$tbindir" &&
+    cp libtiff/tiff.h libtiff/tiffconf.h libtiff/tiffio.h libtiff/tiffvers.h "$tincludedir" &&
+    true) >&5 2>&1
+  if test ! -f "$tlibdir/tiff.lib"; then
     echo "failed"
     exit -1
   else

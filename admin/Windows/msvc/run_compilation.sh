@@ -40,7 +40,8 @@ packages=
 available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
-VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick"
+VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
+ImageMagick"
 octave_version=
 of_version=
 do_nsi=false
@@ -69,6 +70,8 @@ hdf5ver=1.6.6
 libiconvver=1.12
 gettextver=0.17
 gmagickver=1.1.10
+bzip2ver=1.0.4
+imagickver=6.3.8
 
 ###################################################################################
 
@@ -475,7 +478,9 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/pkg-config.exe" pkg-config
     todo_check "$tbindir/fc-msvc.exe" fc-msvc
     todo_check "$tbindir/libcurl.dll" libcurl
-    todo_check "$tlibdir/GraphicsMagick.lib" GraphicsMagick
+    todo_check "$tlibdir/bz2.lib" bzip2
+    #todo_check "$tlibdir/GraphicsMagick.lib" GraphicsMagick
+    todo_check "$tlibdir/Magick.lib" ImageMagick
   fi
 else
   packages="$todo_packages"
@@ -2095,6 +2100,49 @@ if check_package libcurl; then
   fi
 fi
 
+#########
+# bzip2 #
+#########
+
+if check_package bzip2; then
+  download_file bzip2-$bzip2ver.tar.gz http://www.bzip.org/$bzip2ver/bzip2-$bzip2ver.tar.gz
+  echo -n "decompressing bzip2... "
+  unpack_file bzip2-$bzip2ver.tar.gz
+  echo "done"
+  echo -n "compiling bzip2... "
+  (cd "$DOWNLOAD_DIR/bzip2-$bzip2ver" &&
+    create_module_rc BZip2 $bzip2ver libbz2.dll "http://www.bzip.org" \
+      "BZip2 - Data Compression Library" "`grep -e '^Copyright ' README`" > bzip2.rc &&
+    (cat >> makefile.msc <<\EOF
+dll: $(OBJS)
+	cl /LD /Felibbz2.dll $(OBJS) bzip2.res /link /implib:bz2.lib /def:libbz2.def
+	mt -outputresource:libbz2.dll -manifest libbz2.dll.manifest
+EOF
+      ) &&
+    sed -e "s/^bzip2: .*$/bzip2: dll/" \
+        -e "s/libbz2\.lib/bz2.lib/g" makefile.msc > ttt &&
+      mv ttt makefile.msc &&
+    sed -e "s/WINAPI/__cdecl/g" bzlib.h > ttt &&
+      mv ttt bzlib.h &&
+    rc -fo bzip2.res bzip2.rc &&
+    nmake -f makefile.msc bzip2 &&
+    for f in libbz2.dll bzip2.exe bzip2recover.exe; do
+      mt -outputresource:$f -manifest $f.manifest
+    done &&
+    cp libbz2.dll bzip2.exe bzip2recover.exe "$tbindir" &&
+    cp bzip2.exe "$tbindir/bunzip2.exe" &&
+    cp bzip2.exe "$tbindir/bzcat.exe" &&
+    cp bz2.lib "$tlibdir" &&
+    cp bzlib.h "$tincludedir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/bzip2-$bzip2ver"
+  if test ! -f "$tlibdir/bz2.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
 ##################
 # GraphicsMagick #
 ##################
@@ -2151,6 +2199,71 @@ if check_package GraphicsMagick; then
     rm -f $tlibdir_quoted/libGraphicsMagicks*.la) >&5 2>&1
   #rm -rf "$DOWNLOAD_DIR/GraphicsMagick-$gmagickver"
   if ! test -f "$tlibdir/GraphicsMagick.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###############
+# ImageMagick #
+###############
+
+if check_package ImageMagick; then
+  download_file ImageMagick.tar.gz ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick.tar.gz
+  echo -n "decompressing ImageMagick... "
+  unpack_file ImageMagick.tar.gz
+  echo "done"
+  echo -n "compiling ImageMagick... "
+  (cd "$DOWNLOAD_DIR/ImageMagick-$imagickver" &&
+    create_module_rc ImageMagick $imagickver libMagick-10.dll "http://www.imagemagick.org" \
+      "ImageMagick - Image Processing Library" "`grep -e '^Copyright ' LICENSE | sed -e 's/,.*$//'`" > magick/magick.rc &&
+    create_module_rc ImageMagick $imagickver libMagick++-10.dll "http://www.imagemagick.org" \
+      "ImageMagick - Image Processing Library" "`grep -e '^Copyright ' LICENSE | sed -e 's/,.*$//'`" > Magick++/lib/magick++.rc &&
+    create_module_rc ImageMagick $imagickver libWand-10.dll "http://www.imagemagick.org" \
+      "ImageMagick - Image Processing Library" "`grep -e '^Copyright ' LICENSE | sed -e 's/,.*$//'`" > wand/magickwand.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__ -D_VISUALC_" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --without-perl --with-xml --without-modules &&
+    post_process_libtool &&
+    for f in coders/msl.c coders/url.c coders/svg.c; do
+      sed -e "s/^# *include <win32config\.h>//g" $f > ttt &&
+        mv ttt $f
+    done &&
+    for f in magick/static.h magick/static.c; do
+      sed -e "s/^.*[Rr]egisterXTRNImage.*$//" $f > ttt &&
+        mv ttt $f
+    done &&
+    (cat >> magick/magick_config.h <<\EOF
+#ifndef __cplusplus
+#define inline __inline
+#endif
+EOF
+      ) &&
+    sed -e "s/^wand_libWand_la_LDFLAGS =/& -Wl,magickwand.res/" \
+        -e "s/^Magick___lib_libMagick___la_LDFLAGS =/& -no-undefined -Wl,magick++.res/" \
+        -e "s/^magick_libMagick_la_LDFLAGS =/& -Wl,magick.res/" \
+        -e "s/^LTCXXLIBOPTS =.*$/LTCXXLIBOPTS =/" \
+        -e "/^MAGICK_DEP_LIBS =/ {s/^.*$/& -luser32 -lkernel32 -ladvapi32/;}" \
+        -e "s/-export-symbols-regex \"[^\"]*\"//g" \
+        Makefile > ttt &&
+      mv ttt Makefile &&
+    for f in wand/Wand.pc wand/Wand-config magick/ImageMagick.pc \
+             magick/Magick-config Magick++/bin/Magick++-config \
+             Magick++/lib/ImageMagick++.pc; do
+      sed -e "s,/\([a-z]\)/,\1:/,g" $f > ttt &&
+        mv ttt $f
+    done &&
+    (cd magick && rc -fo magick.res magick.rc) &&
+    (cd wand && rc -fo magickwand.res magickwand.rc) &&
+    (cd Magick++/lib && rc -fo magick++.res magick++.rc) &&
+    make &&
+    make install
+    rm -f $tlibdir_quoted/libWand*.la &&
+    rm -f $tlibdir_quoted/libMagick*.la) >&5 2>&1
+  #rm -rf "$DOWNLOAD_DIR/ImageMagick-$imagickver"
+  if ! test -f "$tlibdir/Magick.lib"; then
     echo "failed"
     exit -1
   else

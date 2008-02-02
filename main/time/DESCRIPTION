@@ -1,8 +1,8 @@
 Name: time
-Version: 1.0.4
-Date: 2007-12-05
-Author: Bill Denney <bill@givebillmoney.com>
-Maintainer: Bill Denney <bill@givebillmoney.com>
+Version: 1.0.5
+Date: 2007-02-01
+Author: Bill Denney <bill@denney.ws>
+Maintainer: Bill Denney <bill@denney.ws>
 Title: Time and Dates
 Description: Additional date manipulation tools.
 Categories: Time

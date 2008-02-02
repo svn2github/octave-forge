@@ -90,3 +90,6 @@ endfunction
 ## Test Independence day observing on a Monday (July 5) and Christmas
 ## observing on a Friday (Dec 24)
 %!assert(holidays(datenum(2004,1,1), datenum(2004,12,31)), datenum(2004*ones(9,1), [1;1;2;4;5;7;9;11;12], [1;19;16;9;31;5;6;25;24]))
+%!assert(holidays(datenum(2008,3,5), datenum(2008,3,8)), [])
+%!assert(holidays(datenum(2008,3,5), datenum(2008,3,5)), [])
+%!assert(holidays(datenum(2008,1,1), datenum(2008,1,1)), datenum(2008,1,1))

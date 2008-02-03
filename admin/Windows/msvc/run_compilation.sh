@@ -72,6 +72,7 @@ gettextver=0.17
 gmagickver=1.1.10
 bzip2ver=1.0.4
 imagickver=6.3.8
+tiffver=3.8.2
 
 ###################################################################################
 
@@ -2149,26 +2150,32 @@ fi
 ###########
 
 if check_package libtiff; then
-  download_file tiff-$tiffver.tar.gz http://www.tiff.org/tiff-$tiffver.tar.gz
+  download_file tiff-$tiffver.tar.gz ftp://ftp.remotesensing.org/pub/libtiff/tiff-$tiffver.tar.gz
   echo -n "decompressing libtiff... "
   unpack_file tiff-$tiffver.tar.gz
   echo "done"
   echo -n "compiling libtiff... "
   (cd "$DOWNLOAD_DIR/tiff-$tiffver" &&
+    create_module_rc LibTIFF $tiffver libtiff.dll "http://www.libtiff.org" \
+      "LibTIFF - TIFF Image Library" "Copyright (C) 1988-`date +%Y` Sam Leffl" > libtiff/libtiff.rc &&
     sed -e "s/^#JPEG_SUPPORT/JPEG_SUPPORT/" \
-        -e "s/^#ZIP_SUPPORT/ZLIB_SUPPORT/" \
+        -e "s/^#ZIP_SUPPORT/ZIP_SUPPORT/" \
         -e "s/^#JPEG_LIB.*$/JPEG_LIB = jpeg.lib/" \
         -e "s/^#ZLIB_LIB.*$/ZLIB_LIB = zlib.lib/" \
         nmake.opt > ttt &&
       mv ttt nmake.opt &&
     sed -e "s/libtiff\.lib/libtiff_i.lib/" tools/Makefile.vc > ttt &&
       mv ttt tools/Makefile.vc &&
+    (cd libtiff && rc -fo libtiff.res libtiff.rc) &&
+    sed -e "s/^OBJ[ 	]*=/& libtiff.res/" libtiff/Makefile.vc > ttt &&
+      mv ttt libtiff/Makefile.vc &&
     nmake -f Makefile.vc &&
     cp libtiff/libtiff.dll "$tbindir" &&
     cp libtiff/libtiff_i.lib "$tlibdir/tiff.lib" &&
     cp tools/*.exe "$tbindir" &&
     cp libtiff/tiff.h libtiff/tiffconf.h libtiff/tiffio.h libtiff/tiffvers.h "$tincludedir" &&
     true) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/tiff-$tiffver"
   if test ! -f "$tlibdir/tiff.lib"; then
     echo "failed"
     exit -1

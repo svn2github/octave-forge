@@ -2268,6 +2268,7 @@ if check_package ImageMagick; then
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__ -D_VISUALC_" AR=ar-msvc RANLIB=ranlib-msvc \
       ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --without-perl --with-xml --without-modules &&
     post_process_libtool &&
+    read "WARNING: libtool needs manual post-processing; press <ENTER> when done " &&
     for f in coders/msl.c coders/url.c coders/svg.c; do
       sed -e "s/^# *include <win32config\.h>//g" $f > ttt &&
         mv ttt $f
@@ -2276,15 +2277,15 @@ if check_package ImageMagick; then
       sed -e "s/^.*[Rr]egisterXTRNImage.*$//" $f > ttt &&
         mv ttt $f
     done &&
-    (cat >> magick/magick_config.h <<\EOF
+    (cat >> magick/magick-config.h <<\EOF
 #ifndef __cplusplus
 #define inline __inline
 #endif
 EOF
       ) &&
-    sed -e "s/^wand_libWand_la_LDFLAGS =/& -Wl,magickwand.res/" \
-        -e "s/^Magick___lib_libMagick___la_LDFLAGS =/& -no-undefined -Wl,magick++.res/" \
-        -e "s/^magick_libMagick_la_LDFLAGS =/& -Wl,magick.res/" \
+    sed -e "s/^wand_libWand_la_LDFLAGS =/& -Wl,wand\/magickwand.res/" \
+        -e "s/^Magick___lib_libMagick___la_LDFLAGS =/& -no-undefined -Wl,Magick++\/lib\/magick++.res/" \
+        -e "s/^magick_libMagick_la_LDFLAGS =/& -Wl,magick\/magick.res/" \
         -e "s/^LTCXXLIBOPTS =.*$/LTCXXLIBOPTS =/" \
         -e "/^MAGICK_DEP_LIBS =/ {s/^.*$/& -luser32 -lkernel32 -ladvapi32/;}" \
         -e "s/-export-symbols-regex \"[^\"]*\"//g" \
@@ -2303,7 +2304,7 @@ EOF
     make install
     rm -f $tlibdir_quoted/libWand*.la &&
     rm -f $tlibdir_quoted/libMagick*.la) >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/ImageMagick-$imagickver"
+  rm -rf "$DOWNLOAD_DIR/ImageMagick-$imagickver"
   if ! test -f "$tlibdir/Magick.lib"; then
     echo "failed"
     exit -1

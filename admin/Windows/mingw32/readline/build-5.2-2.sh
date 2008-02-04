@@ -70,7 +70,7 @@ install()
 {
    install_pre
    ${CP} ${CP_FLAGS} ${BUILDDIR}/shlib/{readline,history}.dll ${SHAREDLIB_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/shlib/{readline,history}.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/shlib/{libreadline,libhistory}.dll.a ${LIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}; done
    install_post
 }
@@ -78,7 +78,7 @@ install()
 uninstall()
 {
    ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/{readline,history}.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/{readline,history}.dll.a
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/{libreadline,libhistory}.dll.a
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
 }
 

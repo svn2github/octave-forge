@@ -17,6 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{intrlvd} =} intrlv(@var{data},@var{elements})
 ##	Interleaved elements of @var{data} according to @var{elements}.
+## @seealso{deintrlv}
 ## @end deftypefn
 
 function intrlvd = intrlv(data,elements)
@@ -34,7 +35,7 @@ function intrlvd = intrlv(data,elements)
 		end
 		intrlvd = data(elements);
 	else
-		if(length(elements) ~= size(data,1) | any(sort(elements) ~= 1:size(data,1)))
+		if(length(elements) ~= size(data,1) || any(sort(elements) ~= 1:size(data,1)))
 			error("elements must be a permutation of data indices");
 		end
 		intrlvd = data(elements,:);

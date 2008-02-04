@@ -1,4 +1,4 @@
-md5="220740ec0d6c52a2b23cd1ccb05e8a5b";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="220740ec0d6c52a2b23cd1ccb05e8a5b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} __pltopt__ (@var{chamador}, @var{op@value{cedilha}@value{o_til}es})
 Decodifica seq@"u@^encias de caracteres que representam op@value{cedilha}@value{o_til}es de impress@~ao.

@@ -1,4 +1,4 @@
-md5="e450ca243849b51ae6d0650f32413b5e";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="e450ca243849b51ae6d0650f32413b5e";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} cut (@var{x}, @var{breaks})
 Cria sa@'ida de dados categ@'orica de dados num@'ericos ou dados cont@'inuos atrav@'es

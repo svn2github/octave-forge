@@ -1,4 +1,4 @@
-md5="d2a74737f7eb984170bad2844225bfb0";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d2a74737f7eb984170bad2844225bfb0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{pval}, @var{tsq}] =} hotelling_test (@var{x}, @var{m})
 Para uma amostra @var{x} a partir de uma distribui@value{cedilha}@~ao normal de v@'arias vari@'aveis com m@'edia e

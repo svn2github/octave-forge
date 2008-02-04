@@ -1,4 +1,4 @@
-md5="6f370f19768f5cc033d23c1843ef1ff1";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="6f370f19768f5cc033d23c1843ef1ff1";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} arg (@var{z})
 @deftypefnx {Fun@value{cedilha}@~ao de Mapeamento} {} angle (@var{z})

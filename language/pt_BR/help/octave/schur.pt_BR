@@ -1,4 +1,4 @@
-md5="737489dc654421319ab01b131337f0db";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="737489dc654421319ab01b131337f0db";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {@var{s} =} schur (@var{a})
 @deftypefnx {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})

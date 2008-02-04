@@ -1,4 +1,4 @@
-md5="d525f47726c0f4185f550a842d7ea2ad";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d525f47726c0f4185f550a842d7ea2ad";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{f}, @var{w}, @var{rsys}] =} __bodquist__ (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
 Usado por @command{bode}, @command{nyquist}; calcula a freq@"u@^encia de resposta do sistema.

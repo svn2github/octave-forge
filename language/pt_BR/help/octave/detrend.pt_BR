@@ -1,4 +1,4 @@
-md5="1a0cdc743ebcfff521031711d2dc6f65";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="1a0cdc743ebcfff521031711d2dc6f65";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} detrend (@var{x}, @var{p})
 Se @var{x} for um vetor, @code{detrend (@var{x}, @var{p})} remove o

@@ -1,4 +1,4 @@
-md5="0c794e1fff25824f6cdc73e139ed47e3";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="0c794e1fff25824f6cdc73e139ed47e3";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} residue (@var{b}, @var{a}, @var{tol})
 Se @var{b} e @var{a} forem vetores de coeficientes polinomiais, ent@~ao

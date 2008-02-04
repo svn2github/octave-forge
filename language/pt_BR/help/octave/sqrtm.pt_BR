@@ -1,4 +1,4 @@
-md5="b651b785acc6ad57ed7e6cc1dce4f5e8";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b651b785acc6ad57ed7e6cc1dce4f5e8";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{result}, @var{error_estimate}] =} sqrtm (@var{a})
 Calcula a ra@'is quadradada de matriz da matriz quadrada @var{a}.

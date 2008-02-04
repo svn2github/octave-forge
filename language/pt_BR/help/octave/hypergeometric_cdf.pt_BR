@@ -1,4 +1,4 @@
-md5="aa8452c9c5596b4d7c393301086c425e";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="aa8452c9c5596b4d7c393301086c425e";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} hypergeometric_cdf (@var{x}, @var{m}, @var{t}, @var{n})
 Calcula a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa em @var{x} da

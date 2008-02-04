@@ -1,4 +1,4 @@
-md5="974959d1ad7262ba81f8fb4f4f2c5f93";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="974959d1ad7262ba81f8fb4f4f2c5f93";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} cauchy_cdf (@var{x}, @var{lambda}, @var{sigma})
 Para cada elemento de @var{x}, calcula a fun@,{c}@~ao de distribui@,{c}@~ao

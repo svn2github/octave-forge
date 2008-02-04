@@ -1,4 +1,4 @@
-md5="7148f229f6995b0a743ffefb10a8fd99";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="7148f229f6995b0a743ffefb10a8fd99";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} spkron (@var{a}, @var{b})
 forma o produto de kronecker de duas matrizes esparsas. Isso @'e definido

@@ -1,4 +1,4 @@
-md5="dd4caec95ef10d6e65dc5e9726487421";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="dd4caec95ef10d6e65dc5e9726487421";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 @deftypefn {Fun@value{cedilha}@~ao Interna} {@var{val} =} output_precision ()
 @deftypefnx {Fun@value{cedilha}@~ao Interna} {@var{ant_val} =} output_precision (@var{novo_val})
 Pesquisa ou altera a vari@'avel interna que especifica o menor n@'umero de

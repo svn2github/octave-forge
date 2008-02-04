@@ -1,4 +1,4 @@
-md5="a9585da2c329177a20136a8ac1dbbe06";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="a9585da2c329177a20136a8ac1dbbe06";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{Lp}, @var{Lf}, @var{P}, @var{Z}] =} dkalman (@var{A}, @var{G}, @var{C}, @var{Qw}, @var{Rv}, @var{S})
 Constr@'oi o estimador quadr@'atico linear (preditor de Kalman) para o

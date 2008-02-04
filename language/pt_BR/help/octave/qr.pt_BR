@@ -1,4 +1,4 @@
-md5="11b2ac9903f77ecf836f75ffe707587e";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="11b2ac9903f77ecf836f75ffe707587e";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a})
 @cindex QR factorization

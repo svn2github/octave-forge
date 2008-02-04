@@ -1,4 +1,4 @@
-md5="90ef11ebcf1efdf954fbbe9f607ea593";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="90ef11ebcf1efdf954fbbe9f607ea593";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} daspk (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
 Resolve o conjunto de equa@,{c}@~oes diferenciais alg@'ebricas

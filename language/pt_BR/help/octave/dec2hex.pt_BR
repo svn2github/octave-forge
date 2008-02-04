@@ -1,4 +1,4 @@
-md5="4bc112258827d0c6d4f3517048f53729";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="4bc112258827d0c6d4f3517048f53729";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} dec2hex (@var{n}, @var{len})
 Retorna a seq@"u@^encia de caracteres hexadecimal correspondendo ao inteiro

@@ -1,4 +1,4 @@
-md5="52e68a7e95b71231226e762559e89a8c";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="52e68a7e95b71231226e762559e89a8c";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} create_set (@var{x})
 Retorna um vetor linha contendo valores n@~ao repetidos de @var{x}, catalogados em

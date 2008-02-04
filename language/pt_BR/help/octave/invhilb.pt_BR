@@ -1,4 +1,4 @@
-md5="b948764a547296bd8575bb51682759ba";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b948764a547296bd8575bb51682759ba";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} invhilb (@var{n})
 Retorna a inversa da matriz de Hilbert de ordem @var{n}.  Isso pode ser

@@ -1,4 +1,4 @@
-md5="347c087ffb692eb03865ce7d58ae4599";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="347c087ffb692eb03865ce7d58ae4599";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} expm (@var{a})
 Retorna a exponencial de uma matriz, definida como a s@'erie de Taylor

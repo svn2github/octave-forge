@@ -1,4 +1,4 @@
-md5="185fe74b2a123c2c0c1c53e354d9c203";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="185fe74b2a123c2c0c1c53e354d9c203";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} printf (@var{modelo}, @dots{})
 Mostra argumentos opcionais sob o controle da seq@"u@^encia de caracteres modelo

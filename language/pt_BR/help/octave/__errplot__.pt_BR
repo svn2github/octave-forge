@@ -1,4 +1,4 @@
-md5="545f1e5a76b3832692e6925f38eb7fc8";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="545f1e5a76b3832692e6925f38eb7fc8";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} __errplot__ (@var{args})
 Realmente imprime exibi@value{cedilha}@value{o_til}es de errorbar. Interface de usu@'ario na fun@value{cedilha}@~ao errorbar.

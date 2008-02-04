@@ -51,9 +51,20 @@ case $1 in
         shift
         for file in $*; do
 	    _file=`find help -name $file.$lang`
-	    tranver=`head -1 $_file | sed -e's/^.*rev="//;s/".*$//'`
-	    basedir=`find $base -name $file | xargs dirname`
-	    (cd $basedir && svn diff -cp -r $tranver ${file%.??})
+	    if test -n "$_file"; then
+	      tranver=`head -1 $_file | sed -e's/^.*rev="\([0-9]\+\).*$/\1/'`
+	      if test -n "$tranver"; then
+		  basedir=`find $base -name $file | xargs dirname`
+		  (cd $basedir && svn diff -r $tranver ${file%.??})
+	      else
+		  echo "Error: Can not use old CVS revision number for diff!!"
+		  echo "Error: please retag the translated help file"
+		  exit -1
+	      fi
+	    else
+		echo "Error: Can not use find the file $_file"
+		exit -1
+	    fi
 	done
     ;;
     tag)

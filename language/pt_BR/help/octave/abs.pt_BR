@@ -1,4 +1,4 @@
-md5="47a653e9c3b9dc45c842df36759a2658";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="47a653e9c3b9dc45c842df36759a2658";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} abs (@var{z})
 Calcula o m@'odulo de @var{z}, definido como

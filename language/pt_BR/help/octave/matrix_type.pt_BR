@@ -1,4 +1,4 @@
-md5="9c8052c99724a6613a451e137796578c";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="9c8052c99724a6613a451e137796578c";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {@var{type} =} matrix_type (@var{a})
 @deftypefnx {Fun@value{cedilha}@~ao Carreg@'avel} {@var{a} =} matrix_type (@var{a}, @var{type})

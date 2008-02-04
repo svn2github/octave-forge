@@ -1,4 +1,4 @@
-md5="b037dfdb4b66b9e8e18c96e61f37312d";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b037dfdb4b66b9e8e18c96e61f37312d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{retval} =} is_abcd (@var{a}, @var{b}, @var{c}, @var{d})
  Retorna @var{retval} = 1 se as dimens@~oes de @var{a}, @var{b},

@@ -1,4 +1,4 @@
-md5="12c8cb954c6a5e3d5df0966ddf74eb5b";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="12c8cb954c6a5e3d5df0966ddf74eb5b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} weibull_cdf (@var{x}, @var{shape}, @var{scale})
 Calcula a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa em @var{x} da

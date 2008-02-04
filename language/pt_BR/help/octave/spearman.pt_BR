@@ -1,4 +1,4 @@
-md5="16a94f335b19639d090489fb28011aee";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="16a94f335b19639d090489fb28011aee";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} spearman (@var{x}, @var{y})
 Calcula o coeficiente de correla@,{c}@~ao de classe de Spearman @var{rho} para cada uma das

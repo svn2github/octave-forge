@@ -1,4 +1,4 @@
-md5="78b46117139272f8626244a31620b613";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="78b46117139272f8626244a31620b613";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} gammainc (@var{x}, @var{a})
 Calcula a fun@value{cedilha}@~ao gama incompleta,

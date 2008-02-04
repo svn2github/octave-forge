@@ -1,4 +1,4 @@
-md5="0e1c4f2490f686bd0b5492ec16d1c6ff";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="0e1c4f2490f686bd0b5492ec16d1c6ff";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{y}, @var{t}] =} step (@var{sys}, @var{inp}, @var{tstop}, @var{n})
 Resposta de etapa para um sistema linear.

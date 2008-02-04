@@ -1,4 +1,4 @@
-md5="9a74626d65479d6fe6ff0855faca8eef";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="9a74626d65479d6fe6ff0855faca8eef";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} buildssic (@var{clst}, @var{ulst}, @var{olst}, @var{ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
 

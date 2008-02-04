@@ -1,4 +1,4 @@
-md5="ac6cc32b943502f56960d4f43cd069b1";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="ac6cc32b943502f56960d4f43cd069b1";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} mod (@var{x}, @var{y})
 Calcula a fun@value{cedilha}@~ao m@'odulo, usando

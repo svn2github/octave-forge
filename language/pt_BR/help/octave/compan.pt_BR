@@ -1,4 +1,4 @@
-md5="fcae34a4b7d8dd31a6e1bed74ee2498f";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="fcae34a4b7d8dd31a6e1bed74ee2498f";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} compan (@var{c})
 Calcula a matriz companheira correspondente ao vetor de coeficientes

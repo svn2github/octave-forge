@@ -1,4 +1,4 @@
-md5="33f78343957e12cf824037fb5c3bc6c6";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="33f78343957e12cf824037fb5c3bc6c6";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} fftfilt (@var{b}, @var{x}, @var{n})
 

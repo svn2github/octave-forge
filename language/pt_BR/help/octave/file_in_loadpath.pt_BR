@@ -1,4 +1,4 @@
-md5="0f7df3a29a0027ebac56aa928220824f";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="0f7df3a29a0027ebac56aa928220824f";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} file_in_loadpath (@var{arquivo})
 @deftypefnx {Fun@value{cedilha}@~ao Interna} {} file_in_loadpath (@var{arquivo}, "all")

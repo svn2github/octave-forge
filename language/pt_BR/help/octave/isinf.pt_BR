@@ -1,4 +1,4 @@
-md5="06738fe9cdeb399005cda5a6ab560e48";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="06738fe9cdeb399005cda5a6ab560e48";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Mapping Function} {} isinf (@var{x})
 Retorna 1 para elementos de @var{x} que forem infinito e zero

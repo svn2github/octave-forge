@@ -1,4 +1,4 @@
-md5="3bb7631393ddadbf62a8a8acaf498f92";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="3bb7631393ddadbf62a8a8acaf498f92";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} median (@var{x})
 Se @var{x} for um vetor, calcula o valor da mediana dos elementos de

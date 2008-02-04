@@ -1,4 +1,4 @@
-md5="d90b85cff986d46a4bba06df857112db";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d90b85cff986d46a4bba06df857112db";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {@var{contador} =} fwrite (@var{fid}, @var{dados}, @var{precis@~ao}, @var{skip}, @var{arch})
 Escreve dados na forma bin@'aria do tipo @var{precis@~ao} para o ID de arquivo especificado

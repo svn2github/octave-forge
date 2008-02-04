@@ -1,4 +1,4 @@
-md5="5e45629b93ceb0ba1224360873fe7030";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="5e45629b93ceb0ba1224360873fe7030";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} size (@var{a}, @var{n})
 Retorna o n@'umero de linhas e colunas de @var{a}.

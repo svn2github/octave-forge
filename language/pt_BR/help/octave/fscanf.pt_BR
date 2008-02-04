@@ -1,4 +1,4 @@
-md5="9ba7364850ba63d8c8f171d3eacb9086";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="9ba7364850ba63d8c8f171d3eacb9086";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {[@var{val}, @var{contador}] =} fscanf (@var{fid}, @var{modelo}, @var{tamanho})
 @deftypefnx {Fun@value{cedilha}@~ao Interna} {[@var{v1}, @var{v2}, @dots{}, @var{contador}] = } fscanf (@var{fid}, @var{modelo}, "C")

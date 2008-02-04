@@ -1,4 +1,4 @@
-md5="0853a5c0c86e3daf6592b245db7523e9";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="0853a5c0c86e3daf6592b245db7523e9";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{err}, @var{y1}, @dots{}] =} common_size (@var{x1}, @dots{})
 Determina se todos os argumentos de entrada s@~ao ou escalar ou de tamanho

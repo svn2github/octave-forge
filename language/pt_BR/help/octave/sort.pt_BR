@@ -1,4 +1,4 @@
-md5="81192d0cdbcd1fce2419863682ce5e7c";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="81192d0cdbcd1fce2419863682ce5e7c";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{s}, @var{i}] =} sort (@var{x})
 @deftypefnx {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})

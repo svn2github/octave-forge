@@ -1,4 +1,4 @@
-md5="03b46686b7cc54c5e878d7c09da541ac";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="03b46686b7cc54c5e878d7c09da541ac";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} isvector (@var{a})
 Retorna 1 se @var{a} for um vetor.  De outra forma, retorna 0.

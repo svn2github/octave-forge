@@ -1,4 +1,4 @@
-md5="d80a55bbe66aebf1f17d9015ec957549";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d80a55bbe66aebf1f17d9015ec957549";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{l}, @var{u}, @var{p}, @var{q}] =} luinc (@var{a}, '0')
 @deftypefnx {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{l}, @var{u}, @var{p}, @var{q}] =} luinc (@var{a}, @var{droptol})

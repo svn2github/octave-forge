@@ -1,4 +1,4 @@
-md5="46fbd13496762c314c85a82c97162ed0";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="46fbd13496762c314c85a82c97162ed0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} skewness (@var{x}, @var{dim})
 Se @var{x} for um vetor de comprimento @math{n}, retorna a assimetria

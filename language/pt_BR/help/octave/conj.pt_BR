@@ -1,4 +1,4 @@
-md5="f3eed67207a01f50eeb8027232c2357b";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="f3eed67207a01f50eeb8027232c2357b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} conj (@var{z})
 Retorna o conjugado do n@'umero complexo @var{z}, definido como

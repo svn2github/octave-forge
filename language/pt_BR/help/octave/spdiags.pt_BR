@@ -1,4 +1,4 @@
-md5="70430726c481bca28f9692350be478b1";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="70430726c481bca28f9692350be478b1";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {fun@value{cedilha}@~ao File} {[@var{b}, @var{c}] =} spdiags (@var{a})
 @deftypefnx {fun@value{cedilha}@~ao File} {@var{b} =} spdiags (@var{a}, @var{c})

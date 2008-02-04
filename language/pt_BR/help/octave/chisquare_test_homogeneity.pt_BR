@@ -1,4 +1,4 @@
-md5="5ba7130c66e8631796f88c77343ee946";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="5ba7130c66e8631796f88c77343ee946";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{pval}, @var{chisq}, @var{df}] =} chisquare_test_homogeneity (@var{x}, @var{y}, @var{c})
 Dadas duas amostras @var{x} e @var{y}, executa um teste de chi-quadrado para

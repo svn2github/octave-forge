@@ -1,4 +1,4 @@
-md5="ed355ca5187ca4d28f00ff0d77bb1417";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="ed355ca5187ca4d28f00ff0d77bb1417";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 
 [x, lambda, info, iter] = __qp__ (x0, H, q, Aeq, beq, Ain, bin, maxit)

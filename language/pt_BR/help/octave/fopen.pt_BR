@@ -1,4 +1,4 @@
-md5="1b4e7ea67c58fcc33fec9734546ff70e";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="1b4e7ea67c58fcc33fec9734546ff70e";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {[@var{fid}, @var{msg}] =} fopen (@var{name}, @var{mode}, @var{arch})
 @deftypefnx {Fun@value{cedilha}@~ao Interna} {@var{fid_list} =} fopen ("all")

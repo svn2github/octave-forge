@@ -1,4 +1,4 @@
-md5="b6a9a5e3371e8fbf85ca6969875324c2";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b6a9a5e3371e8fbf85ca6969875324c2";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} gamma (@var{z})
 Calcula fun@value{cedilha}@~ao Gama,

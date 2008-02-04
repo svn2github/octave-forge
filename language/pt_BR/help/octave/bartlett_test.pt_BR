@@ -1,4 +1,4 @@
-md5="4aaafb64b0943d4db855537a9ea6d21f";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="4aaafb64b0943d4db855537a9ea6d21f";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{pval}, @var{chisq}, @var{df}] =} bartlett_test (@var{x1}, @dots{}) 
 Executa o teste de Bartlett para a homogeneidade de vari@^ancias nos vetores de

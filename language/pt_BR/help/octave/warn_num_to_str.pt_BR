@@ -1,4 +1,4 @@
-md5="10c049fd81f17029d6753f476016bc83";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="10c049fd81f17029d6753f476016bc83";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @defvr {Vari@'avel Interna} warn_num_to_str
 Se o valor de @code{warn_num_to_str} for não nulo, um alerta é

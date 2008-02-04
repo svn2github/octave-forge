@@ -1,4 +1,4 @@
-md5="34304b89c6b3683f4ae9c948ba3d44c6";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="34304b89c6b3683f4ae9c948ba3d44c6";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})
 @cindex LU decomposition

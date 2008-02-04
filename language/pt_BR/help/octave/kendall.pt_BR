@@ -1,4 +1,4 @@
-md5="f28d70268a57aee03807331d69dd4cca";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="f28d70268a57aee03807331d69dd4cca";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} kendall (@var{x}, @var{y})
 Calcula o @var{tau} de Kendall para cada uma das vari@'aveis especificadas atrav@'es

@@ -1,4 +1,4 @@
-md5="5250db8d7df03a6cd2c9b1529a723061";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="5250db8d7df03a6cd2c9b1529a723061";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} uniform_cdf (@var{x}, @var{a}, @var{b})
 Retorna a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa em @var{x} da distribui@value{cedilha}@~ao uniforme sobre [@var{a},

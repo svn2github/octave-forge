@@ -1,4 +1,4 @@
-md5="273658fd816be8096791ea65d43d7ddc";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="273658fd816be8096791ea65d43d7ddc";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Function File} {} weibrnd (@var{scale}, @var{shape}, @var{r}, @var{c})
 @deftypefnx {Function File} {} weibrnd (@var{scale}, @var{shape}, @var{sz})

@@ -1,4 +1,4 @@
-md5="2bd24a76ff1856a0620addb794ddbab5";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="2bd24a76ff1856a0620addb794ddbab5";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{x}, @var{info}, @var{msg}] =} fsolve (@var{fcn}, @var{x0})
 Dado @var{fcn}, o nome de uma fun@value{cedilha}@~ao da forma @code{f (@var{x})}

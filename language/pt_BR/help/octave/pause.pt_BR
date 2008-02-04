@@ -1,4 +1,4 @@
-md5="f361cd56df93c53e710e418ee1d29aca";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="f361cd56df93c53e710e418ee1d29aca";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} pause (@var{segundos})
 Suspende a execu@,{c}@~ao do programa.  Se invocada sem qualquer argumento,

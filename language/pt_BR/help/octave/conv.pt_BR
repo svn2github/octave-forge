@@ -1,4 +1,4 @@
-md5="a4db42e2f89f1a71c495b7661aa07124";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="a4db42e2f89f1a71c495b7661aa07124";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} conv (@var{a}, @var{b})
 Convolve dois vetores.

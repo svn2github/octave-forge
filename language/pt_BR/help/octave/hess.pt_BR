@@ -1,4 +1,4 @@
-md5="581767592e80701a09dbe294bd55b90a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="581767592e80701a09dbe294bd55b90a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {@var{h} =} hess (@var{a})
 @deftypefnx {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{p}, @var{h}] =} hess (@var{a})

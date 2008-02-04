@@ -1,4 +1,4 @@
-md5="7bd5adb4eebd5b7ff41f712d5c7ac7e5";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="7bd5adb4eebd5b7ff41f712d5c7ac7e5";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} sprand (@var{m}, @var{n}, @var{d})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} sprand (@var{s})

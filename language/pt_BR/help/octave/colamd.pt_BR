@@ -1,4 +1,4 @@
-md5="d5223776b257cd1db4ca849e16f43b74";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d5223776b257cd1db4ca849e16f43b74";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {@var{p} =} colamd (@var{s})
 @deftypefnx {Fun@value{cedilha}@~ao Carreg@'avel} {@var{p} =} colamd (@var{s}, @var{knobs})

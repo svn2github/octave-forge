@@ -1,4 +1,4 @@
-md5="61b6ac1772244d182ee8277d76f7ae8c";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="61b6ac1772244d182ee8277d76f7ae8c";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deffn {Comando} load op@value{cedilha}@value{o_til}es @var{arq} v1 v2 @dots{}
 Chama as vari@'aveis nomeadas contidas no arquivo @var{arq}.  Da mesma forma que @code{save},

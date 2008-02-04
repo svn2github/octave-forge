@@ -1,4 +1,4 @@
-md5="1518a89f2c5a8446a19a47b3f21fda23";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="1518a89f2c5a8446a19a47b3f21fda23";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} ctrb (@var{sys}, @var{b})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} ctrb (@var{a}, @var{b})

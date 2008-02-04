@@ -1,4 +1,4 @@
-md5="93d85eaee18bad6d1173c6ba6cdeb3b6";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="93d85eaee18bad6d1173c6ba6cdeb3b6";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} norm (@var{a}, @var{p})
 Calcula a norma de p da matriz @var{a}.  Se o segundo argumento for

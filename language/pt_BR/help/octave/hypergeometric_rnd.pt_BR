@@ -1,4 +1,4 @@
-md5="3c85bc45d939dd5455c8331f37732b48";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="3c85bc45d939dd5455c8331f37732b48";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Function File} {} hypergeometric_rnd (@var{m}, @var{t}, @var{n}, @var{r}, @var{c})
 @deftypefnx {Function File} {} hygernd (@var{m}, @var{t}, @var{n}, @var{sz})

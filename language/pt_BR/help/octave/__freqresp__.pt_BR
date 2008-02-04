@@ -1,4 +1,4 @@
-md5="05ecea6d54f5899bf4be23768e053e2f";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="05ecea6d54f5899bf4be23768e053e2f";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} __freqresp__ (@var{sys}, @var{USEW}, @var{w})
 Fun@value{cedilha}@~ao de resposta de freq@"u@^encia - usada internamente por @command{bode}, @command{nyquist}.

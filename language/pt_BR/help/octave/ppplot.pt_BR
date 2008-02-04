@@ -1,4 +1,4 @@
-md5="d41aab52c3ee3e8fc0bed604b2997379";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d41aab52c3ee3e8fc0bed604b2997379";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{p}, @var{y}] =} ppplot (@var{x}, @var{dist}, @var{params})
 Executa um PP-plot (gr@'afico de probabilidade).

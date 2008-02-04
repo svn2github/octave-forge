@@ -1,4 +1,4 @@
-md5="cb33f75dcf669b787c1219719936a44a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="cb33f75dcf669b787c1219719936a44a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{pval}, @var{f}, @var{df_b}, @var{df_w}] =} anova (@var{y}, @var{g})
 Executa uma an@'alise de m@~ao @'unica da vari@^ancia (ANOVA - analysis of variance).  O objetivo @'e testar

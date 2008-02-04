@@ -1,4 +1,4 @@
-md5="37004428a8f2e523a21d7d6b8978a4cc";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="37004428a8f2e523a21d7d6b8978a4cc";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{cont}, @var{h}, @var{orig}, @var{post}, @var{r}]} = symbfact (@var{s}, @var{tipo}, @var{modo})
 

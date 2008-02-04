@@ -1,4 +1,4 @@
-md5="2101e785be3424b422ec648a8faed5cf";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="2101e785be3424b422ec648a8faed5cf";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{pval}, @var{chisq}, @var{df}] =} mcnemar_test (@var{x})
 Para uma tabela de conting@^encia quadrada @var{x} de dados classificados de forma cruzada sobre

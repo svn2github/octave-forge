@@ -1,4 +1,4 @@
-md5="82aa154b7abf32bcbd58f9b9d0daa1cc";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="82aa154b7abf32bcbd58f9b9d0daa1cc";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} cauchy_inv (@var{x}, @var{lambda}, @var{sigma})
 Para cada elemento de @var{x}, calcula o quantil (o inverso da

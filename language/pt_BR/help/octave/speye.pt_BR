@@ -1,4 +1,4 @@
-md5="67b33986d4df8d49779ac7d821f48362";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="67b33986d4df8d49779ac7d821f48362";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{y} =} speye (@var{m})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {@var{y} =} speye (@var{m}, @var{n})

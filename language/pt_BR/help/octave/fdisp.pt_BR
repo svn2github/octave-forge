@@ -1,4 +1,4 @@
-md5="58f8633024b11daa2fa8e5e9ac546f4d";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="58f8633024b11daa2fa8e5e9ac546f4d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} fdisp (@var{fid}, @var{x})
 Mostra o valor de @var{x} sobre o fluxo @var{fid}.  Por exemplo,

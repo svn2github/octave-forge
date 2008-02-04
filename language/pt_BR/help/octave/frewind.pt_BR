@@ -1,4 +1,4 @@
-md5="fcedbb6fc9ec51a004ac6a856c2f9692";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="fcedbb6fc9ec51a004ac6a856c2f9692";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} frewind (@var{fid})
 Move o apontador de arquivo para o in@'icio do arquivo @var{fid}, retornando

@@ -1,4 +1,4 @@
-md5="a32408fae454d549f24a0ff3f2c3bc3f";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="a32408fae454d549f24a0ff3f2c3bc3f";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} mean (@var{x}, @var{dim}, @var{opt})
 Se @var{x} for um vetor, calcula a m@'edia dos elementos de @var{x}

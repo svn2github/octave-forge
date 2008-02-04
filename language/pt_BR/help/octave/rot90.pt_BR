@@ -1,4 +1,4 @@
-md5="5bb358550ac8169dc65e40502392a715";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="5bb358550ac8169dc65e40502392a715";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} rot90 (@var{x}, @var{n})
 Retorna uma c@'opia de @var{x} com os elementos rotacionados no sentido anti-hor@'ario em

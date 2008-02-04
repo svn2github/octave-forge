@@ -1,4 +1,4 @@
-md5="13bb11a5ab673c82baf8d741850f3135";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="13bb11a5ab673c82baf8d741850f3135";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} split (@var{s}, @var{t}, @var{n})
 Divide a seq@"u@^encia de caracteres @var{s} dentro de pe@,{c}as separadas por @var{t}, retornando

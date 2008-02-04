@@ -1,4 +1,4 @@
-md5="c574565a1b5a37a725e343f7df707f1d";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="c574565a1b5a37a725e343f7df707f1d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} shift (@var{x}, @var{b})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} shift (@var{x}, @var{b}, @var{dim})

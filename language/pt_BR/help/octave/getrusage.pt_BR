@@ -1,4 +1,4 @@
-md5="d2ac78419a163419f911c9e988055ed4";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d2ac78419a163419f911c9e988055ed4";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} getrusage ()
 Retorna uma estrutura contendo um n@'umero de estat@'isticas sobre o processo

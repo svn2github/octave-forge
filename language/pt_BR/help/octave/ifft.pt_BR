@@ -1,4 +1,4 @@
-md5="3e1394b4e755422fe4da458c0c6866e3";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="3e1394b4e755422fe4da458c0c6866e3";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} ifft (@var{a}, @var{n}, @var{dim})
 Calcula a transforma@value{cedilha}@~ao r@'apida de Fourier inversa de @var{a} usando subrotinas de

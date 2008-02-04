@@ -1,4 +1,4 @@
-md5="42589ac4f1692a1a72ec98b2d2400966";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="42589ac4f1692a1a72ec98b2d2400966";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} sin (@var{x})
 Calcula o seno de cada elemento de @var{x}.

@@ -1,4 +1,4 @@
-md5="26f758444fdd7da47b3f6b0d16079021";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="26f758444fdd7da47b3f6b0d16079021";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{retsys} =} sysscale (@var{sys}, @var{outscale}, @var{inscale}, @var{nomesai}, @var{nomeent})
 ajusta proporcionalmente entradas/sa@'idas de um sistema.

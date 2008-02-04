@@ -1,4 +1,4 @@
-md5="0eced18eb66ca850078dd64f65dde97d";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="0eced18eb66ca850078dd64f65dde97d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} discrete_inv (@var{x}, @var{v}, @var{p})
 Para cada componente de @var{x}, calcula o quantil (o inverso da

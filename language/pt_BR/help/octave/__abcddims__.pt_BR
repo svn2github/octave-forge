@@ -1,4 +1,4 @@
-md5="55223b60a8f78f880d499955a6364201";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="55223b60a8f78f880d499955a6364201";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{y}, @var{my}, @var{ny}] =} __abcddims__ (@var{x})
 

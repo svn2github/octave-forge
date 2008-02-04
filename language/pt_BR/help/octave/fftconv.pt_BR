@@ -1,4 +1,4 @@
-md5="217718d89004a1a57c7bdd74224042be";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="217718d89004a1a57c7bdd74224042be";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} fftconv (@var{a}, @var{b}, @var{n})
 Retorna a convolu@,{c}@~ao dos vetores @var{a} e @var{b}, como um vetor

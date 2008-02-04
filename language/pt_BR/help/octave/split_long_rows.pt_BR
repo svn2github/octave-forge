@@ -1,4 +1,4 @@
-md5="cc58f6cd259ed328f66a24257a701b13";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="cc58f6cd259ed328f66a24257a701b13";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 @deftypefn {Fun@value{cedilha}@~ao Interna} {@var{val} =} split_long_rows ()
 @deftypefnx {Fun@value{cedilha}@~ao Interna} {@var{old_val} =} split_long_rows (@var{new_val})
 Pesquisa ou altera a vari@'avel interna que controla se linhas de uma matriz

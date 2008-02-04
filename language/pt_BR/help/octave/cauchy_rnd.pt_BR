@@ -1,4 +1,4 @@
-md5="2d4b61fd0b0e988c2c957bcdd4acb631";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="2d4b61fd0b0e988c2c957bcdd4acb631";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} cauchy_rnd (@var{lambda}, @var{sigma}, @var{r}, @var{c})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} cauchy_rnd (@var{lambda}, @var{sigma}, @var{sz})

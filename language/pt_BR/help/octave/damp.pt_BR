@@ -1,4 +1,4 @@
-md5="cae532dacc2450302ed389e46c1f1527";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="cae532dacc2450302ed389e46c1f1527";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} damp (@var{p}, @var{tsam})
 Mostra autovalores, freq@"u@^encias naturais e raz@~oes de damping

@@ -1,4 +1,4 @@
-md5="2c89e113d834a1a896d92d30f1e8a648";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="2c89e113d834a1a896d92d30f1e8a648";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} deblank (@var{s})
 Remove trailing blanks and nulls from @var{s}.  Se @var{s}

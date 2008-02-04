@@ -1,4 +1,4 @@
-md5="67449c1e465da0a44c6812d2ee2c69b9";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="67449c1e465da0a44c6812d2ee2c69b9";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{retsys} =} sysprune (@var{asys}, @var{out_idx}, @var{in_idx})
 Extrai entradas/sa@'idas especificadas de um sistema

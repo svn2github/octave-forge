@@ -1,4 +1,4 @@
-md5="224d808ece51a2004cb69b9961af9c83";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="224d808ece51a2004cb69b9961af9c83";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{y}, @var{t}] =} __stepimp__ (@var{sitype}, @var{sys} [, @var{inp}, @var{tstop}, @var{n}])
 Aplica o comando @command{Impulse} ou o comando @command{step} a um sistema linear.

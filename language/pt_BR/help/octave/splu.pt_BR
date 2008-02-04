@@ -1,4 +1,4 @@
-md5="3b4386b096c8872453aa2f0cdd73515c";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="3b4386b096c8872453aa2f0cdd73515c";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{l}, @var{u}] =} splu (@var{a})
 @deftypefnx {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{l}, @var{u}, @var{P}] =} splu (@var{a})

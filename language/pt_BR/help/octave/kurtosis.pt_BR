@@ -1,4 +1,4 @@
-md5="25f86152be2e6208d1e205b1012ab2d0";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="25f86152be2e6208d1e205b1012ab2d0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} kurtosis (@var{x}, @var{dim})
 Se @var{x} for um vetor de comprimento @math{N}, retorna a curtose

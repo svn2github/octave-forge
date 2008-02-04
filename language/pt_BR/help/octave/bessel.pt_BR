@@ -1,4 +1,4 @@
-md5="07135ffcc55882fbd22ef7bf7829c5c0";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="07135ffcc55882fbd22ef7bf7829c5c0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Mapping Function} {} besseli (@var{alpha}, @var{x})
 @deftypefnx {Mapping Function} {} besselj (@var{alpha}, @var{x})

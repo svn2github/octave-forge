@@ -1,4 +1,4 @@
-md5="d7d8c3f0828801ae03034533c05d37af";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d7d8c3f0828801ae03034533c05d37af";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} hilb (@var{n})
 Retorna a matriz de Hilbert de ordem @var{n}.  O elemento

@@ -1,4 +1,4 @@
-md5="d52f61a8b12616e7b99f7cd5ecbf18fb";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d52f61a8b12616e7b99f7cd5ecbf18fb";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} axis (@var{limites})
 Escolhe os limites dos eixos para montagem d gr@'aficos.

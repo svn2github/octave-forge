@@ -1,4 +1,4 @@
-md5="508b7ecc2d7c8917b0524fe3adf799de";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="508b7ecc2d7c8917b0524fe3adf799de";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} saveimage (@var{arq}, @var{x}, @var{fmt}, @var{map})
 Grava a matriz @var{x} no arquivo @var{arq} no formato de imagem @var{fmt}.  Valores

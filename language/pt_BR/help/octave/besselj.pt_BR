@@ -1,4 +1,4 @@
-md5="befc9b8a96679b7e94ba18e4b65b1f00";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="befc9b8a96679b7e94ba18e4b65b1f00";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
 @deftypefnx {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})

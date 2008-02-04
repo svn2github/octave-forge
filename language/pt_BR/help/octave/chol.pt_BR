@@ -1,4 +1,4 @@
-md5="4b8e6435990c2743ae22ad51cbe8f5c2";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="4b8e6435990c2743ae22ad51cbe8f5c2";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} chol (@var{a})
 @cindex Cholesky factorization

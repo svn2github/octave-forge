@@ -1,4 +1,4 @@
-md5="5dd025b3cfb497dd63f8dbe5e8fa2c2d";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="5dd025b3cfb497dd63f8dbe5e8fa2c2d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} spdiag (@var{v}, @var{k})
 Retorna uma matriz diagonal com o vetor esparso @var{v} sobre a diagonal

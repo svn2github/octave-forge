@@ -1,4 +1,4 @@
-md5="295c5b26dfd25ea3fe84bc5a085d8d69";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="295c5b26dfd25ea3fe84bc5a085d8d69";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{aa}, @var{bb}, @var{q}, @var{z}] =} qzhess (@var{a}, @var{b})
 Calcula a decomposi@,{c}@~ao triangular de Hessenberg da ordem da matriz polinomial genrica de grau 1

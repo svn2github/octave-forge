@@ -1,4 +1,4 @@
-md5="097f6cba1746b8cd6fe3cc90d5195f02";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="097f6cba1746b8cd6fe3cc90d5195f02";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{retval} =} is_stabilizable (@var{sys}, @var{tol})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {@var{retval} =} is_stabilizable (@var{a}, @var{b}, @var{tol}, @var{dflg})

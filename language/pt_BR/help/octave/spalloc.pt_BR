@@ -1,4 +1,4 @@
-md5="816473abf130f30c6eee36839b2db0ef";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="816473abf130f30c6eee36839b2db0ef";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{s} =} spalloc (@var{r}, @var{c}, @var{nz})
 Retorna uma matriz esparsa vazia de tamanho @var{r}-por-@var{c}. Como Octave

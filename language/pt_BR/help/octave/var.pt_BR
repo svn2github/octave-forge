@@ -1,4 +1,4 @@
-md5="c06c939ab24bc70bbf1f31646083cb05";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="c06c939ab24bc70bbf1f31646083cb05";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} var (@var{x})
 Para argumentos vetoriais, retorna a (real) variância dos valores.

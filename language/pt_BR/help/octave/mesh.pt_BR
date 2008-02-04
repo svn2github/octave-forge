@@ -1,4 +1,4 @@
-md5="a294f9c8b3b8e43fefc45762e38b6172";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="a294f9c8b3b8e43fefc45762e38b6172";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} mesh (@var{x}, @var{y}, @var{z})
 Monta uma malha dadas as matrizes @var{x}, e @var{y} de @code{meshgrid} e

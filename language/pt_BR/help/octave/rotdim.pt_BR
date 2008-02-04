@@ -1,4 +1,4 @@
-md5="56c8e1d6a31f8f58adb182797f7f00d0";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="56c8e1d6a31f8f58adb182797f7f00d0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} rotdim (@var{x}, @var{n}, @var{plano})
 Retorna uma c@'opia de @var{x} com os elementos rotacionados no sentido anti-hor@'ario em

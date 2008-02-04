@@ -1,4 +1,4 @@
-md5="6b0ad55e40efed9eda6f65080bd3c598";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="6b0ad55e40efed9eda6f65080bd3c598";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} spatan2 (@var{y}, @var{x})
 Calcula o arco cuja tangente vale (Y / X) para os correspondentes elementos das matrizes esparsas Y e X.

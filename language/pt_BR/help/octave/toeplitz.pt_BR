@@ -1,4 +1,4 @@
-md5="a5c4a1cec672f14b00483a7946464197";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="a5c4a1cec672f14b00483a7946464197";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} toeplitz (@var{c}, @var{r})
 Retorna a matriz de Toeplitz construida a partir da primeira coluna @var{c},

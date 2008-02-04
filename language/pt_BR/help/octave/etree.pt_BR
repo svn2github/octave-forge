@@ -1,4 +1,4 @@
-md5="5dbe55d92552aff939a0bf90fee2e54a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="5dbe55d92552aff939a0bf90fee2e54a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {@var{p} =} etree (@var{s})
 @deftypefnx {Fun@value{cedilha}@~ao Carreg@'avel} {@var{p} =} etree (@var{s}, @var{typ})

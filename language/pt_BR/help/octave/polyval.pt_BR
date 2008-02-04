@@ -1,4 +1,4 @@
-md5="c6400e76baba9f60d96c59601d1bd375";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="c6400e76baba9f60d96c59601d1bd375";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} polyval (@var{c}, @var{x})
 Avalia um polin@^omio.

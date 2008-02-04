@@ -1,4 +1,4 @@
-md5="49225ab7301bfee86e3e453873ec5a7d";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="49225ab7301bfee86e3e453873ec5a7d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} union (@var{x}, @var{y})
 Retorna o conjunto de elementos que est@~ao ou no conjunto @var{x} ou no conjunto

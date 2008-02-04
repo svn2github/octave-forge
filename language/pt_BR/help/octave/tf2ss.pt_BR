@@ -1,4 +1,4 @@
-md5="1028d0fd28435ca2dfe8e1b02e87948a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="1028d0fd28435ca2dfe8e1b02e87948a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{a}, @var{b}, @var{c}, @var{d}] =} tf2ss (@var{num}, @var{den})
 Convers@~ao de fun@value{cedilha}@~ao de transfer@^encia para espa@,{c}o-estado.

@@ -1,4 +1,4 @@
-md5="3d7d071961baea797ebd54e18dc26f0b";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="3d7d071961baea797ebd54e18dc26f0b";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} dec2base (@var{n}, @var{b}, @var{len})
 Retorna uma seq@"u@^encia de caracteres de s@'imbolos na base @var{b} correspondendo ao

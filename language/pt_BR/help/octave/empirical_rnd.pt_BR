@@ -1,4 +1,4 @@
-md5="5cc6d041b5b997994f0ed99dca7c32b9";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="5cc6d041b5b997994f0ed99dca7c32b9";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} empirical_rnd (@var{n}, @var{data})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} empirical_rnd (@var{data}, @var{r}, @var{c})

@@ -1,4 +1,4 @@
-md5="e0d5a1a6453ea375c3154aeae0bf58e2";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="e0d5a1a6453ea375c3154aeae0bf58e2";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {[@var{val}, @var{contador}] =} fread (@var{fid}, @var{tamanho}, @var{precis@~ao}, @var{pulo}, @var{arch})
 L@^e dados bin@'arios do tipo @var{precis@~ao} usando o identificador de arquivo especificado

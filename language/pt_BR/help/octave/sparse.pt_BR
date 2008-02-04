@@ -1,4 +1,4 @@
-md5="a0227ff2c7f5b59e3225941b713a0da5";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="a0227ff2c7f5b59e3225941b713a0da5";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {@var{sparse_val} =} sparse (...)
 SPARSE: cria uma matriz esparsa

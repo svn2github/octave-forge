@@ -1,4 +1,4 @@
-md5="74d14bd1c243b44fb46e802a6cb3c6cf";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="74d14bd1c243b44fb46e802a6cb3c6cf";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{dist}, @var{params})
 Executa um QQ-plot (gr@'afico do quantil).

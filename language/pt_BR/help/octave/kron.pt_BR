@@ -1,4 +1,4 @@
-md5="2645197aa2fc38331493386b4520c624";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="2645197aa2fc38331493386b4520c624";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} kron (@var{a}, @var{b})
 Forma o produto de kronecker de duas matrizes, definido bloco por bloco como

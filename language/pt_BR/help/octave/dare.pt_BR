@@ -1,4 +1,4 @@
-md5="68361390818b394e88d40cd5658628aa";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="68361390818b394e88d40cd5658628aa";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{x} =} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{opt})
 

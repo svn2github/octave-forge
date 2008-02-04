@@ -1,4 +1,4 @@
-md5="8662d3c481a67a9d3173d076828ab19a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="8662d3c481a67a9d3173d076828ab19a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} fliplr (@var{x})
 Retorna uma c@'opia de @var{x} com a ordem das colunas invertida.  Por

@@ -1,4 +1,4 @@
-md5="83e89d8ed302f5fc2b48cf0c89238c15";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="83e89d8ed302f5fc2b48cf0c89238c15";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{pval}, @var{f}, @var{df_num}, @var{df_den}] =} f_test_regression (@var{y}, @var{x}, @var{rr}, @var{r})
 Executa um teste F para a hipótese do nulo rr * b = r em um modelo de

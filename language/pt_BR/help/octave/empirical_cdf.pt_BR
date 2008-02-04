@@ -1,4 +1,4 @@
-md5="9ae6a5d859b37cd3f678b46f91445999";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="9ae6a5d859b37cd3f678b46f91445999";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} empirical_cdf (@var{x}, @var{data})
 Para cada elemento de @var{x}, calcula a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa

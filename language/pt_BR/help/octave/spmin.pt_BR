@@ -1,4 +1,4 @@
-md5="383cb320d9f1f5c7f36aa73f1d4b809a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="383cb320d9f1f5c7f36aa73f1d4b809a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Mapping Function} {} spmin (@var{x}, @var{y}, @var{dim})
 @deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} spmin (@var{x})

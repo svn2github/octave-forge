@@ -1,4 +1,4 @@
-md5="0e5affc63e823b484067389f2a54bfe0";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="0e5affc63e823b484067389f2a54bfe0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {y =} filter (@var{b}, @var{a}, @var{x})
 @deftypefnx {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})

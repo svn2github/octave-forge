@@ -1,4 +1,4 @@
-md5="232892831df864b0efdd60bba5684bad";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="232892831df864b0efdd60bba5684bad";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} pow2 (@var{x})
 @deftypefnx {Fun@value{cedilha}@~ao de Mapeamento} {} pow2 (@var{f}, @var{e})

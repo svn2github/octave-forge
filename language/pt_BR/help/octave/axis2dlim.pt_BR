@@ -1,4 +1,4 @@
-md5="5dcb4b0aa397a56ab64f14fc9da3e211";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="5dcb4b0aa397a56ab64f14fc9da3e211";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} axis2dlim (@var{axdata})
 Determina os limites dos eixos para dados em duas dimens@~oes (vetores coluna); leaves a 10%

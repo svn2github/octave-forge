@@ -1,4 +1,4 @@
-md5="99d0f9d5e325d8e19f55f9cc72afc980";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="99d0f9d5e325d8e19f55f9cc72afc980";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} fclose (@var{fid})
 Fecha o arquivo especificado.  Se obtiver sucesso, @code{fclose} retorna 0,

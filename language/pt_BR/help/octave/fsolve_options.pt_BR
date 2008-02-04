@@ -1,4 +1,4 @@
-md5="54db6077201efd3328bec3728ca3cb95";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="54db6077201efd3328bec3728ca3cb95";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} fsolve_options (@var{opt}, @var{val})
 Quando chamada com dois argumentos, essa fun@value{cedilha}@~ao permite a voc@^e escolher par@^ametros de 

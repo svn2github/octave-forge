@@ -1,4 +1,4 @@
-md5="641400db9ba4affc847a31ed2b1eeafc";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="641400db9ba4affc847a31ed2b1eeafc";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} normal_rnd (@var{m}, @var{v}, @var{r}, @var{c})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} normal_rnd (@var{m}, @var{v}, @var{sz})

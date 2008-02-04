@@ -1,4 +1,4 @@
-md5="b213aadfda8f4a961a69db459f2a7009";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b213aadfda8f4a961a69db459f2a7009";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} tanh (@var{x})
 Calcula a tangente hiperb@'olica de cada elemento de @var{x}.

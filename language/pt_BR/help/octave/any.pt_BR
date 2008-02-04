@@ -1,4 +1,4 @@
-md5="c2463a2a49f0e68a56588d18c2f280d5";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="c2463a2a49f0e68a56588d18c2f280d5";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} any (@var{x}, @var{dim})
 Para um argumento vetor, retorna 1 se qualquer elemento do vetor for diferente

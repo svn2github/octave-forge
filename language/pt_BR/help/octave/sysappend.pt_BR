@@ -1,4 +1,4 @@
-md5="f700849cf196ca3c9004cadef5ddfb71";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="f700849cf196ca3c9004cadef5ddfb71";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{sys} =} sysappend (@var{syst}, @var{b}, @var{c}, @var{d}, @var{nomesai}, @var{nomeent}, @var{yd})
 anexa ao final novas entradas e/ou sa@'idas a um sistema

@@ -1,4 +1,4 @@
-md5="c165ffaa5bff156fabd2e1f12b9c8497";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="c165ffaa5bff156fabd2e1f12b9c8497";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao interna} {@var{val} =} fixed_point_format ()
 @deftypefnx {Fun@value{cedilha}@~ao Interna} {@var{ant_val} =} fixed_point_format (@var{novo_val})

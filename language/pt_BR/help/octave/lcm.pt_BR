@@ -1,4 +1,4 @@
-md5="fe3d7e0386e44e88bd4fcf707abb6ec0";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="fe3d7e0386e44e88bd4fcf707abb6ec0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} lcm (@var{x}, @dots{})
 Calcula o menor m@'ultiplo comum entre os elementos de @var{x}, ou

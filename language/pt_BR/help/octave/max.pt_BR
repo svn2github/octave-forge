@@ -1,4 +1,4 @@
-md5="3a64aa3404bf5ca116fa92403fdac5e9";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="3a64aa3404bf5ca116fa92403fdac5e9";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} max (@var{x}, @var{y}, @var{dim})
 @deftypefnx {Fun@value{cedilha}@~ao de Mapeamento} {[@var{w}, @var{iw}] =} max (@var{x})

@@ -1,4 +1,4 @@
-md5="d7f306d4817aaf3b3dc573872bdfcc5e";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d7f306d4817aaf3b3dc573872bdfcc5e";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} polyderiv (@var{c})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {[@var{q}] =} polyder (@var{b}, @var{a})

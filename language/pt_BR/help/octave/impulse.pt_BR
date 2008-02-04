@@ -1,4 +1,4 @@
-md5="eccf014eacd80edaa4965f870576ef28";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="eccf014eacd80edaa4965f870576ef28";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{y}, @var{t}] =} impulse (@var{sys}, @var{inp}, @var{tstop}, @var{n})
 Resposta de impulso para um sistema linear.

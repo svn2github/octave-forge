@@ -1,4 +1,4 @@
-md5="d98991881721daeab0552e4463000550";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d98991881721daeab0552e4463000550";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} eye (@var{x})
 @deftypefnx {Fun@value{cedilha}@~ao Interna} {} eye (@var{n}, @var{m})

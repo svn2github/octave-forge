@@ -1,4 +1,4 @@
-md5="38c1b83f45ccf7ca1cb3d73a38f40a68";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="38c1b83f45ccf7ca1cb3d73a38f40a68";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} hex2dec (@var{s})
 Retorna o inteiro correspondente ao n@'umero hexadecimal armazenado

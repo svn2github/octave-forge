@@ -1,4 +1,4 @@
-md5="33c6f652d75db318a4bd596d5df540ab";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="33c6f652d75db318a4bd596d5df540ab";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} tril (@var{a}, @var{k})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} triu (@var{a}, @var{k})

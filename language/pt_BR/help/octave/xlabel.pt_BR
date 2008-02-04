@@ -1,4 +1,4 @@
-md5="aec970c6dd9f13235b3ab79ed5288459";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="aec970c6dd9f13235b3ab79ed5288459";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} xlabel (@var{string})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} ylabel (@var{string})

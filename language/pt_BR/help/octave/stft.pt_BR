@@ -1,4 +1,4 @@
-md5="850ac1e823d83c78e9e4c8ea203abf73";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="850ac1e823d83c78e9e4c8ea203abf73";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{y}, @var{c}] =} stft (@var{x}, @var{win_size}, @var{inc}, @var{num_coef}, @var{w_type})
 Calcula o termo curto da transforma@,{c}@~ao de Fourier do vetor @var{x} com

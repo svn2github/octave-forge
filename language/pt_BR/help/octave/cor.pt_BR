@@ -1,4 +1,4 @@
-md5="be6b5d9658d9d4947bba8ed9635657f0";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="be6b5d9658d9d4947bba8ed9635657f0";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} cor (@var{x}, @var{y})
 A (@var{i}, @var{j})-@'esima entrada de @code{cor (@var{x}, @var{y})} @'e

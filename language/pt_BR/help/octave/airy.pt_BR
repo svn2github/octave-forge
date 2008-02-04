@@ -1,4 +1,4 @@
-md5="d37fe732c6fe617a36fc696335bac276";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d37fe732c6fe617a36fc696335bac276";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})
 Calcula fun@value{cedilha}@~oes A@'ereas (Airy) de primeiro e de segundo tipo, e suas

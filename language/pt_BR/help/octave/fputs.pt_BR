@@ -1,4 +1,4 @@
-md5="9131517998259972476b3d7baeb780ce";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="9131517998259972476b3d7baeb780ce";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} fputs (@var{fid}, @var{string})
 Escreve uma seq@"u@^encia de caracteres em um arquivo sem nenhuma formata@,{c}@~ao.

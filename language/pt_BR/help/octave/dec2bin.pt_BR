@@ -1,4 +1,4 @@
-md5="9b9977019680b02df74e8b0c4b4a470a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="9b9977019680b02df74e8b0c4b4a470a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} dec2bin (@var{n}, @var{len})
 Retorna um n@'umero bin@'ario correspondendo ao n@'umero decimal n@~ao negativo

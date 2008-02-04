@@ -1,4 +1,4 @@
-md5="0fa474e5295823c7a6b5df3c2934d29a";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="0fa474e5295823c7a6b5df3c2934d29a";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x}, @var{phi}, @var{g}, @var{h})
 Resolve o programa n@~ao linear

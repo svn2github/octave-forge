@@ -1,4 +1,4 @@
-md5="51719ae92355b48e957adac64ab8fcc6";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="51719ae92355b48e957adac64ab8fcc6";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{pval}, @var{lm}] =} arch_test (@var{y}, @var{x}, @var{p})
 Para um modelo de regress@~ao linear

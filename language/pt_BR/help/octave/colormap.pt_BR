@@ -1,4 +1,4 @@
-md5="58fee6f73675758fc51c5807d73798ae";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="58fee6f73675758fc51c5807d73798ae";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} colormap (@var{map})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} colormap ("default")

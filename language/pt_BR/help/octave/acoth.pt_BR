@@ -1,4 +1,4 @@
-md5="22daac10cac54054d97f48c13b8a01d1";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="22daac10cac54054d97f48c13b8a01d1";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao de Mapeamento} {} acoth (@var{x})
 Calcula o arco-cotangente hiperb@'olico de cada elemento de @var{x}.

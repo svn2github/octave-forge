@@ -1,4 +1,4 @@
-md5="880986ae12b636650d1c9cbf35feabed";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="880986ae12b636650d1c9cbf35feabed";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} all (@var{x}, @var{dim})
 A fun@value{cedilha}@~ao @code{all} comporta-se como a fun@value{cedilha}@~ao @code{any}, exceto

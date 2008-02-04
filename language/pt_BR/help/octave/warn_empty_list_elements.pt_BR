@@ -1,4 +1,4 @@
-md5="87c2a3725efcdea68ceedb6c121f089e";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="87c2a3725efcdea68ceedb6c121f089e";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @defvr {Vari@'avel Interna} warn_empty_list_elements
 Se o valor de @code{warn_empty_list_elementos} for n@~ao nulo, mostra um

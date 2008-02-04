@@ -1,4 +1,4 @@
-md5="3f8e8e6c17005c2d26841ab0ffbc1b33";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="3f8e8e6c17005c2d26841ab0ffbc1b33";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} fseek (@var{fid}, @var{desl}, @var{pos})
 Posiciona o apontador de arquivos em qualquer localiza@,{c}@~ao dentro do arquivo @var{fid}.

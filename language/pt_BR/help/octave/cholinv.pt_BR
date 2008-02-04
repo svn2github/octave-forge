@@ -1,4 +1,4 @@
-md5="12b5849e8a7fb248d683ff14fd1e9ae5";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="12b5849e8a7fb248d683ff14fd1e9ae5";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} cholinv (@var{a})
 Usa a fatora@,{c}@~ao de cholensky para calcular o inverso da

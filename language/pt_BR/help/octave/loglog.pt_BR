@@ -1,4 +1,4 @@
-md5="605172337f3118290783562227e9b898";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="605172337f3118290783562227e9b898";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} loglog (@var{args})
 Monta um gr@'afico bidimensional usando escalas logar@'itmas para ambos os eixos.  Veja a

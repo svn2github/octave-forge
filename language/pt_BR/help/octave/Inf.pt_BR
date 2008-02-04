@@ -1,4 +1,4 @@
-md5="5a43592ddf81ed5a0b7908b717529310";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="5a43592ddf81ed5a0b7908b717529310";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {} Inf (@var{x})
 @deftypefnx {Fun@value{cedilha}@~ao Interna} {} Inf (@var{n}, @var{m})

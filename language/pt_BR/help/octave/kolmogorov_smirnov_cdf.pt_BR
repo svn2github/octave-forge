@@ -1,4 +1,4 @@
-md5="a9e0c0c7f03d4579b3fd6412ca9a8a39";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="a9e0c0c7f03d4579b3fd6412ca9a8a39";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} kolmogorov_smirnov_cdf (@var{x}, @var{tol})
 Retorna a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa em @var{x} da distribui@,{c}@~ao de Kolmogorov-Smirnov,

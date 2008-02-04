@@ -1,4 +1,4 @@
-md5="1486ccd0a2dc20aac1b18dc29cf8003d";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="1486ccd0a2dc20aac1b18dc29cf8003d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} manova (@var{y}, @var{g})
 Executa uma an@'alise de v@'arias vari@'aveis de m@~ao @'unica da variância (MANOVA). A

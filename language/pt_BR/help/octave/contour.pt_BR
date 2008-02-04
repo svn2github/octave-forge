@@ -1,4 +1,4 @@
-md5="b4a0f5690b03d3bca85635162be9f529";rev="1.4";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b4a0f5690b03d3bca85635162be9f529";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} {@var{c} =} contour (@var{z})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} {@var{c} =} contour (@var{z}, @var{vn})

@@ -1,4 +1,4 @@
-md5="7536ce2616d1ff694375c315b42a82b9";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="7536ce2616d1ff694375c315b42a82b9";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} flipdim (@var{x}, @var{dim})
 Retorna uma c@'opia de @var{x} invertida sobre a dimens@~ao @var{dim}.

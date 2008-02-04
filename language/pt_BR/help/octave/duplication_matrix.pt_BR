@@ -1,4 +1,4 @@
-md5="bd143222caba6ac5a3f783aac0823eba";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="bd143222caba6ac5a3f783aac0823eba";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} duplication_matrix (@var{n})
 Retorna a matriz de duplica@,{c}@~ao

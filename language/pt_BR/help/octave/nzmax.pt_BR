@@ -1,4 +1,4 @@
-md5="0cbc76742c17ca88f69e81f0214f6901";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="0cbc76742c17ca88f69e81f0214f6901";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Interna} {@var{scalar} =} nzmax (@var{SM})
 Retorna o montante de armazenamento alocado para a matriz esparsa @var{SM}.

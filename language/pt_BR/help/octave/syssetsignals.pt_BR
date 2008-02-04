@@ -1,4 +1,4 @@
-md5="79767b19ce01de5e0a2bfe13fddd7c27";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="79767b19ce01de5e0a2bfe13fddd7c27";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} syssetsignals (@var{sys}, @var{opt}, @var{nomes}, @var{sig_idx})
 altera os nomes das entradas, sa@'idas e estados que forem selecionados.

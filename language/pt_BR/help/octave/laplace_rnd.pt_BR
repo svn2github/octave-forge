@@ -1,4 +1,4 @@
-md5="ebbbbb83ec1ad79834f3ff7e08f0f964";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="ebbbbb83ec1ad79834f3ff7e08f0f964";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} laplace_rnd (@var{r}, @var{c})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} laplace_rnd (@var{sz});

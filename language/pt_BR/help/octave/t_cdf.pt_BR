@@ -1,4 +1,4 @@
-md5="c7dfbbe444f559cbb9fdc8503e41b32d";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="c7dfbbe444f559cbb9fdc8503e41b32d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} t_cdf (@var{x}, @var{n})
 Para cada elemento de @var{x}, calcula a fun@,{c}@~ao de distribui@,{c}@~ao cumulativa em @var{x} da

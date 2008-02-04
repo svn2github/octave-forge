@@ -1,4 +1,4 @@
-md5="dec5ae668b90e7af69cc4ee061f9fa50";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="dec5ae668b90e7af69cc4ee061f9fa50";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} vander (@var{c})
 Retorna a matriz de Vandermonde cuja coluna penultima @'e @var{c}.

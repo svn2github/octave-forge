@@ -1,4 +1,4 @@
-md5="cc5c2c9817d8e2e8ab48bd2e73b3f540";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="cc5c2c9817d8e2e8ab48bd2e73b3f540";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} polyinteg (@var{c})
 Retorna os coeficientes da integral do polin@^omio cujos

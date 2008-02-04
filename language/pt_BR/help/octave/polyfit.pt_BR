@@ -1,4 +1,4 @@
-md5="1447c96f6fbe3dfa5f2eaa8b40d9af33";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="1447c96f6fbe3dfa5f2eaa8b40d9af33";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{p}, @var{s}] =} polyfit (@var{x}, @var{y}, @var{n})
 Retorna os coeficientes de um polin@^omio @var{p}(@var{x}) de grau

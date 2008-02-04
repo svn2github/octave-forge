@@ -1,4 +1,4 @@
-md5="0a00e972b050d5767131a2c583aaa088";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="0a00e972b050d5767131a2c583aaa088";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} __tf2sysl__ (@var{vec})
 usada internamente em @code{tf2sys}.

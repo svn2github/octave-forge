@@ -1,4 +1,4 @@
-md5="468eeff302239bae8ffe5d43276d6ed3";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="468eeff302239bae8ffe5d43276d6ed3";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Mapping Function} {} spmax (@var{x}, @var{y}, @var{dim})
 @deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} spmax (@var{x})

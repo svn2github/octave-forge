@@ -1,4 +1,4 @@
-md5="b410a0be83112b74841cb4a9370e8ef2";rev="1.2";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b410a0be83112b74841cb4a9370e8ef2";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{contador}, @var{m@'edia}, @var{var}] =} spstats (@var{s})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {[@var{contador}, @var{m@'edia}, @var{var}] =} spstats (@var{s}, @var{j})

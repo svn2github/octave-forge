@@ -1,4 +1,4 @@
-md5="23a1234bb805dc7607765026d478888e";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="23a1234bb805dc7607765026d478888e";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{a}, @var{b}] =} arch_fit (@var{y}, @var{x}, @var{p}, @var{iter}, @var{gamma}, @var{a0}, @var{b0})
 Ajusta um modelo de regress@~ao de ARCO para a s@'erie de tempo @var{y} usando o

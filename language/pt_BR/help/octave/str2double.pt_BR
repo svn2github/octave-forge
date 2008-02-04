@@ -1,4 +1,4 @@
-md5="d61b3887bc9790ad751c963b847c8a24";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="d61b3887bc9790ad751c963b847c8a24";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{num}, @var{status}, @var{strarray}] =} str2double (@var{str}, @var{cdelim}, @var{rdelim}, @var{ddelim})
 Converte seq@"u@^encias de caracteres em valores num@'ericos.

@@ -1,4 +1,4 @@
-md5="73c45236decd091d052d0f50846403cf";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="73c45236decd091d052d0f50846403cf";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} complement (@var{x}, @var{y})
 Retorna os elementos do conjunto @var{y} que n@~ao est@~ao no conjunto @var{x}.  Por

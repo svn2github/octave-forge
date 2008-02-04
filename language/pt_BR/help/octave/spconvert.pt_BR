@@ -1,4 +1,4 @@
-md5="b683c8502c88d80a3b87c1683ae6c051";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="b683c8502c88d80a3b87c1683ae6c051";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {@var{x} =} spconvert (@var{m})
 Essa fun@value{cedilha}@~ao converte para o formato de matriz esparsa simples facilmente

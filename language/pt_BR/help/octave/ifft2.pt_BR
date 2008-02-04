@@ -1,4 +1,4 @@
-md5="09277ef1ed63a011dc04840a3c422b99";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="09277ef1ed63a011dc04840a3c422b99";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {} fft2 (@var{a}, @var{n}, @var{m})
 Calcula a inversa bidimensional da transforma@value{cedilha}@~ao r@'apida de Fourier de @var{a} usando subrotinas de

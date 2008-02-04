@@ -1,4 +1,4 @@
-md5="718fb77fb01597310c3ca3b663bfad0f";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="718fb77fb01597310c3ca3b663bfad0f";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {[@var{idxvec}, @var{errmsg}] =} cellidx (@var{listvar}, @var{strlist})
 Retorna @'indices de entradas de seq@"u@^encia de caracteres em @var{listvar} que coincidem com seq@"u@^encias de caracteres

@@ -1,4 +1,4 @@
-md5="1d9470f81cf4d75ee749469f3188ed8d";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="1d9470f81cf4d75ee749469f3188ed8d";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} d2c (@var{sys}, @var{tol})
 @deftypefnx {Arquivo de Fun@value{cedilha}@~ao} {} d2c (@var{sys}, @var{opt})

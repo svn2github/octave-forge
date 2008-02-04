@@ -1,4 +1,4 @@
-md5="9af4e6b0591e3e73b49197aa2f0f9c84";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="9af4e6b0591e3e73b49197aa2f0f9c84";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} poisson_rnd (@var{lambda}, @var{r}, @var{c})
 Retorna uma matriz @var{r} por @var{c} de amostras aleat@'orias da

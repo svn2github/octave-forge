@@ -1,4 +1,4 @@
-md5="ba1e9b3ab0343eb8a6f2ed429abd3063";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="ba1e9b3ab0343eb8a6f2ed429abd3063";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} dgram (@var{a}, @var{b})
 Retorna controlabilidade gramiana do sistema tempo discreto

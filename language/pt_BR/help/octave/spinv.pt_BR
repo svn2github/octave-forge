@@ -1,4 +1,4 @@
-md5="e00a4820c163af9be4897042869edbe5";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="e00a4820c163af9be4897042869edbe5";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Fun@value{cedilha}@~ao Carreg@'avel} {[@var{x}, @var{rcond}] = } spinv (@var{a}, @var{Q})
 Calcula a inversa da matriz quadrada esparsa @var{a}.  Retorna uma estimativa

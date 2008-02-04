@@ -1,4 +1,4 @@
-md5="851aeda382fd323cce6c0bb3eef5a2b6";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="851aeda382fd323cce6c0bb3eef5a2b6";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deffn {Comando} format op@value{cedilha}@value{o_til}es
 Controla o formato da sa@'ida produzida por @code{disp} e pelo mecanismo

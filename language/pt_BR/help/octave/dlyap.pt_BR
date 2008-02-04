@@ -1,4 +1,4 @@
-md5="bc6db52fcc344d4ed459a41e850492d8";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="bc6db52fcc344d4ed459a41e850492d8";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} dlyap (@var{a}, @var{b})
 Resolve a equa@,{c}@~ao tempo discreta de Lyapunov 

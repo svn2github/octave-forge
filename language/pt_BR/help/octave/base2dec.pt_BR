@@ -1,4 +1,4 @@
-md5="5518b961e8e2778ebffcb0a12ae083bf";rev="1.1";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
+md5="5518b961e8e2778ebffcb0a12ae083bf";rev="4142";by="Jorge Barros de Abreu <ficmatin01 at skipthis solar dot com dot br>"
 -*- texinfo -*-
 @deftypefn {Arquivo de Fun@value{cedilha}@~ao} {} base2dec (@var{s}, @var{b})
 Converte @var{s} de uma seq@"u@^encia de caracteres de d@'igitos de base @var{b} em um

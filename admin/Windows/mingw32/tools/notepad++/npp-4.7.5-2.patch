@@ -1,0 +1,233 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.7.5-orig/PowerEditor/src/config.model.xml npp-4.7.5/PowerEditor/src/config.model.xml
+--- npp-4.7.5-orig/PowerEditor/src/config.model.xml	Thu Nov 29 23:40:02 2007
++++ npp-4.7.5/PowerEditor/src/config.model.xml	Tue Jan 29 14:56:26 2008
+@@ -55,7 +55,7 @@
+                                 2 : verbose backup
+                       -->
+         <GUIConfig name="Backup" action="0" />
+-        <GUIConfig name="TaskList">yes</GUIConfig>
++        <GUIConfig name="TaskList">no</GUIConfig>
+         <GUIConfig name="SaveOpenFileInSameDir">no</GUIConfig>
+ 		
+ 			<!--
+@@ -71,6 +71,7 @@
+ 						>= 4 : undocked -> FloatingWindow id
+ 			-->
+ 
++        <GUIConfig name="MRU">no</GUIConfig>
+     </GUIConfigs>
+     <!-- The History of opened files list -->
+     <History nbMaxFile="15"/>
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.7.5-orig/PowerEditor/src/langs.model.xml npp-4.7.5/PowerEditor/src/langs.model.xml
+--- npp-4.7.5-orig/PowerEditor/src/langs.model.xml	Mon Jan 14 00:46:42 2008
++++ npp-4.7.5/PowerEditor/src/langs.model.xml	Tue Jan 29 14:54:32 2008
+@@ -111,7 +111,7 @@
+         <Language name="makefile" ext="mak" commentLine="#">
+         </Language>
+         <Language name="matlab" ext="m" commentLine="%" commentStart="" commentEnd="">
+-            <Keywords name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while</Keywords>
++            <Keywords name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while do endfor endfunction endif endswitch endwhile end_unwind_protect unwind_protect unwind_protect_cleanup</Keywords>
+         </Language>
+         <Language name="nfo" ext="nfo">
+         </Language>
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.7.5-orig/PowerEditor/src/shortcuts.xml npp-4.7.5/PowerEditor/src/shortcuts.xml
+--- npp-4.7.5-orig/PowerEditor/src/shortcuts.xml	Tue Aug  7 00:55:52 2007
++++ npp-4.7.5/PowerEditor/src/shortcuts.xml	Tue Jan 29 14:56:19 2008
+@@ -1,5 +1,8 @@
+ <NotepadPlus>
+-    <InternalCommands />
++    <InternalCommands>
++        <Shortcut name="Go to next document" id="50003" Ctrl="no" Alt="yes" Shift="no" Key="38" />
++        <Shortcut name="Go to previous document" id="50004" Ctrl="no" Alt="yes" Shift="no" Key="40" />
++    </InternalCommands>
+     <UserDefinedCommands>
+         <Command name="launch in Firefox" Ctrl="yes" Alt="yes" Shift="yes" Key="88">firefox &quot;$(FULL_CURRENT_PATH)&quot;</Command>
+         <Command name="launch in IE" Ctrl="yes" Alt="yes" Shift="yes" Key="73">iexplore &quot;$(FULL_CURRENT_PATH)&quot;</Command>
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.7.5-orig/PowerEditor/src/userDefineLang.xml npp-4.7.5/PowerEditor/src/userDefineLang.xml
+--- npp-4.7.5-orig/PowerEditor/src/userDefineLang.xml	Tue Aug  7 00:55:52 2007
++++ npp-4.7.5/PowerEditor/src/userDefineLang.xml	Tue Jan 29 14:56:29 2008
+@@ -59,4 +59,38 @@
+             <WordsStyle name="OPERATOR" styleID="10" fgColor="804000" bgColor="FFFFFF" fontName="" fontStyle="1" fontSize="" />
+         </Styles>
+     </UserLang>
++    <UserLang name="gnuplot" ext="gp">
++        <Settings>
++            <Global caseIgnored="no" />
++            <TreatAsSymbol comment="no" commentLine="no" />
++            <Prefix words1="no" words2="no" words3="no" words4="no" />
++        </Settings>
++        <KeywordLists>
++            <Keywords name="Delimiters">&quot;00&quot;00</Keywords>
++            <Keywords name="Folder+"></Keywords>
++            <Keywords name="Folder-"></Keywords>
++            <Keywords name="Operators">$ ( ) , . @ =</Keywords>
++            <Keywords name="Comment">1 1 2 2 0#</Keywords>
++            <Keywords name="Words1">call cd clear exit fit help history if load lower pause plot print pwd quit raise replot reread reset save set shell show splot system test unset update</Keywords>
++            <Keywords name="Words2">angles arrow autoscale bars bmargin border boxwidth cbdata cbdtics cblabel cbmtics cbrange cbtics clabel clip cntrparam colorbox contour datafile decimalsign dgrid3d dummy encoding fontpath format functions grid hidden3d historysize isosamples key label lmargin loadpath locale logscale macros mapping margin mouse multiplot mx2tics mxtics my2tics mytics mztics nomxtics nomytics nomztics noxtics noytics noztics offsets origin output palette parametric pm3d pointsize polar print object rmargin rrange samples size style surface table term terminal termoption tics ticslevel ticscale timestamp timefmt title tmargin trange urange variables version view vrange x2data x2dtics x2label x2mtics x2range x2tics x2zeroaxis xdata xdtics xlabel xmtics xrange xtics xyplane xzeroaxis y2data y2dtics y2label y2mtics y2range y2tics y2zeroaxis ydata ydtics ylabel ymtics yrange ytics yyplane yzeroaxis zdata zdtics zero zeroaxis zlabel zmtics zrange ztics zzeroaxis</Keywords>
++            <Keywords name="Words3">every index lc linecolor lines linestyle linetype linewidth linespoints ls lt lw pointsize pointtype ps pt rgb using with</Keywords>
++            <Keywords name="Words4"></Keywords>
++        </KeywordLists>
++        <Styles>
++            <WordsStyle name="DEFAULT" styleID="11" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="FOLDEROPEN" styleID="12" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="FOLDERCLOSE" styleID="13" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD1" styleID="5" fgColor="FF0000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD2" styleID="6" fgColor="0000FF" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD3" styleID="7" fgColor="FF8000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD4" styleID="8" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="COMMENT" styleID="1" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="COMMENT LINE" styleID="2" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="NUMBER" styleID="4" fgColor="0080C0" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="OPERATOR" styleID="10" fgColor="FF8040" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER1" styleID="14" fgColor="808080" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER2" styleID="15" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER3" styleID="16" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++        </Styles>
++    </UserLang>
+ </NotepadPlus>
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.7.5-orig/scintilla/src/LexMatlab.cxx npp-4.7.5/scintilla/src/LexMatlab.cxx
+--- npp-4.7.5-orig/scintilla/src/LexMatlab.cxx	Tue Aug  7 00:55:52 2007
++++ npp-4.7.5/scintilla/src/LexMatlab.cxx	Tue Jan 29 14:57:15 2008
+@@ -156,7 +156,7 @@
+ 
+ static void ColouriseMatlabDoc(unsigned int startPos, int length, int initStyle,
+                                WordList *keywordlists[], Accessor &styler) {
+-	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabCommentChar);
++	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveCommentChar);
+ }
+ 
+ static void ColouriseOctaveDoc(unsigned int startPos, int length, int initStyle,
+@@ -210,7 +210,7 @@
+ 
+ static void FoldMatlabDoc(unsigned int startPos, int length, int initStyle,
+                           WordList *keywordlists[], Accessor &styler) {
+-	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabComment);
++	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveComment);
+ }
+ 
+ static void FoldOctaveDoc(unsigned int startPos, int length, int initStyle,
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.7.5-orig/scintilla/src/LexSearchResult.cxx npp-4.7.5/scintilla/src/LexSearchResult.cxx
+--- npp-4.7.5-orig/scintilla/src/LexSearchResult.cxx	Tue Dec 25 16:20:06 2007
++++ npp-4.7.5/scintilla/src/LexSearchResult.cxx	Tue Jan 29 14:57:17 2008
+@@ -48,7 +48,7 @@
+ 
+ inline bool isSpaceChar(char ch) {
+ 	return ((ch == ' ')  || (ch == '	'));
+-};
++}
+ 
+ // return value : false if the end of line is reached, otherwise true
+ inline bool eatWhiteSpaces(const char *line, unsigned int & pos) {
+@@ -58,7 +58,7 @@
+ 	for ( ; line[pos] && isSpaceChar(line[pos]) ; pos++);
+ 
+ 	return (pos < strlen(line));
+-};
++}
+ 
+ static void ColouriseSearchResultLine(WordList *keywordlists[], char *lineBuffer, unsigned int lengthLine, unsigned int startLine, unsigned int endPos, Accessor &styler) 
+ {
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.7.5-orig/scintilla/win32/makefile npp-4.7.5/scintilla/win32/makefile
+--- npp-4.7.5-orig/scintilla/win32/makefile	Tue Aug  7 00:55:52 2007
++++ npp-4.7.5/scintilla/win32/makefile	Tue Jan 29 14:57:38 2008
+@@ -7,29 +7,26 @@
+ # safely if using a newer version which may display warning messages.
+ 
+ .SUFFIXES: .cxx
+-CC = g++
++CC=$(CXX)
+ DLLWRAP = dllwrap
+-DEL = del /q
++DEL = rm -rf
+ 
+ COMPONENT = ../bin/Scintilla.dll
+ LEXCOMPONENT = ../bin/SciLexer.dll
+-LEXLIB = Lexers.a
++LEXLIB = ../lib/Lexers.a
+ 
+-ifndef NOTHUNKS
+-gversion = $(word 1,$(subst ., ,$(shell g++ --version)))
+-ifeq ($(gversion),2)
+-THUNKFLAGS=-fvtable-thunks
+-endif
+-endif
++SRCDIR = @SRCDIR@
+ 
+-vpath %.h ../src ../include
+-vpath %.cxx ../src
++vpath %.h   $(SRCDIR)/src   $(SRCDIR)/include $(SRCDIR)/win32
++vpath %.cxx $(SRCDIR)/src   $(SRCDIR)/win32
++vpath %.rc  $(SRCDIR)/src   $(SRCDIR)/win32
++vpath %.def $(SRCDIR)/win32
+ 
+-LDFLAGS=-mwindows -lstdc++ -limm32 -lole32 -luuid -mno-cygwin
++LDLIBS=-mwindows -limm32 -lole32 -luuid 
+ # Add -MMD to get dependencies
+ #CXXFLAGS = -g -pg -pedantic -Os -fno-exceptions -fvtable-thunks -fno-rtti
+-INCLUDEDIRS=-I ../include -I ../src
+-CXXBASEFLAGS=-Wall -Wno-missing-braces -Wno-char-subscripts -pedantic $(INCLUDEDIRS) -Os -fno-exceptions $(THUNKFLAGS) -fno-rtti -mno-cygwin
++INCLUDEDIRS=-I $(SRCDIR)/include -I $(SRCDIR)/src
++CXXBASEFLAGS=-Wall -Wno-missing-braces -Wno-char-subscripts -pedantic $(INCLUDEDIRS) -Os -fno-exceptions $(THUNKFLAGS) -fno-rtti
+ 
+ ifdef DEBUG
+ CXXFLAGS=-DDEBUG $(CXXBASEFLAGS)
+@@ -40,13 +37,18 @@
+ .cxx.o:
+ 	$(CC) $(CXXFLAGS) -c $<
+ 
+-ALL:	$(COMPONENT) $(LEXCOMPONENT) $(LEXLIB) ScintillaWinS.o WindowAccessor.o
++ALL:	deps $(COMPONENT) $(LEXCOMPONENT) $(LEXLIB) ScintillaWinS.o WindowAccessor.o
+ 
+ clean:
+ 	$(DEL) *.exe *.o *.obj *.dll *.res *.map
++	$(DEL) $(COMPONENT)
++	$(DEL) $(LEXCOMPONENT)
++	$(DEL) $(LEXLIB)
+ 
+ deps:
+-	$(CC) -MM $(CXXFLAGS) *.cxx ../src/*.cxx >deps.mak
++	$(CC) -MM $(CXXFLAGS) $(SRCDIR)/win32/*.cxx $(SRCDIR)/src/*.cxx | sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g' > deps.mak
++	touch deps
++
+ 
+ #++Autogenerated -- run src/LexGen.py to regenerate
+ #**LEXOBJS=\\\n\(\*.o \)
+@@ -56,10 +58,10 @@
+ LexCrontab.o LexCsound.o LexCSS.o LexD.o LexEiffel.o LexErlang.o LexEScript.o \
+ LexFlagship.o LexForth.o LexFortran.o LexGui4Cli.o LexHaskell.o LexHTML.o \
+ LexInno.o LexKix.o LexLisp.o LexLout.o LexLua.o LexMatlab.o LexMetapost.o \
+-LexMMIXAL.o LexMPT.o LexMSSQL.o LexNsis.o LexOpal.o LexOthers.o LexPascal.o \
++LexMMIXAL.o LexMPT.o LexMSSQL.o LexNsis.o LexOpal.o LexObjC.o LexOthers.o LexPascal.o \
+ LexPB.o LexPerl.o LexPOV.o LexPS.o LexPython.o LexRebol.o LexRuby.o \
+-LexScriptol.o LexSmalltalk.o LexSpecman.o LexSpice.o LexSQL.o LexTADS3.o \
+-LexTCL.o LexTeX.o LexVB.o LexVerilog.o LexVHDL.o LexYAML.o
++LexScriptol.o LexSearchResult.o LexSmalltalk.o LexSpecman.o LexSpice.o LexSQL.o LexTADS3.o \
++LexTCL.o LexTeX.o LexUser.o LexVB.o LexVerilog.o LexVHDL.o LexYAML.o
+ #--Autogenerated -- end of automatically generated section
+ 
+ SOBJS	= ScintillaWin.o ScintillaBase.o Editor.o CharClassify.o Document.o \
+@@ -67,7 +69,7 @@
+ 	ScintRes.o PlatWin.o KeyMap.o Indicator.o LineMarker.o RESearch.o \
+ 	Style.o ViewStyle.o AutoComplete.o UniConversion.o PropSet.o XPM.o
+ $(COMPONENT): $(SOBJS) Scintilla.def
+-	$(DLLWRAP) --add-stdcall-alias --target i386-mingw32 -o $@ $(SOBJS) $(LDFLAGS) -s --relocatable
++	$(CC) -shared $(LDFLAGS) -o $@ $(SOBJS) -Wl,--no-whole-archive $(LDLIBS)
+ 
+ LOBJS	= ScintillaWinL.o ScintillaBaseL.o Editor.o CharClassify.o Document.o \
+ 	ContractionState.o CellBuffer.o CallTip.o \
+@@ -75,7 +77,7 @@
+ 	Style.o ViewStyle.o AutoComplete.o UniConversion.o KeyWords.o \
+ 	DocumentAccessor.o PropSet.o ExternalLexer.o StyleContext.o XPM.o $(LEXOBJS)
+ $(LEXCOMPONENT): $(LOBJS) Scintilla.def
+-	$(DLLWRAP) --add-stdcall-alias --target i386-mingw32 -o $@ $(LOBJS) $(LDFLAGS) -s --relocatable
++	$(CC) -shared $(LDFLAGS) -o $@ $(LOBJS) -Wl,--no-whole-archive $(LDLIBS)
+ 
+ $(LEXLIB): $(LEXOBJS)
+ 	$(AR) rc $@ $^
+@@ -110,5 +112,5 @@
+ 	$(CC) $(CXXFLAGS) -D SCI_LEXER -c $< -o $@
+ 
+ ScintRes.o:	ScintRes.rc PlatformRes.h
+-	windres ScintRes.rc $@
++	windres -I $(SRCDIR)/win32 $< $@
+ 

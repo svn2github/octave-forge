@@ -41,7 +41,7 @@ available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline 
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
-ImageMagick libtiff libwmf"
+ImageMagick libtiff libwmf jasper"
 octave_version=
 of_version=
 do_nsi=false
@@ -74,6 +74,7 @@ bzip2ver=1.0.4
 imagickver=6.3.8
 tiffver=3.8.2
 wmfver=0.2.8.4
+jasperver=1.900.1
 
 ###################################################################################
 
@@ -489,6 +490,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/Magick.lib" ImageMagick
     todo_check "$tlibdir/tiff.lib" libtiff
     todo_check "$tlibdir/wmf.lib" libwmf
+    todo_check "$tlibdir/jasper.lib" jasper
   fi
 else
   packages="$todo_packages"
@@ -2241,6 +2243,53 @@ EOF
     rm -f $tlibdir_quoted/libwmf*.la) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/libwmf-$wmfver"
   if test ! -f "$tlibdir/wmf.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##########
+# jasper #
+##########
+
+if check_package jasper; then
+  download_file jasper-$jasperver.zip "http://www.ece.uvic.ca/~mdadams/jasper/software/jasper-$jasperver.zip"
+  echo -n "decompressing jasper... "
+  (cd "$DOWNLOAD_DIR" && unzip -q jasper-$jasperver.zip)
+  echo "done"
+  echo -n "compiling jasper... "
+  (cd "$DOWNLOAD_DIR/jasper-$jasperver" &&
+    create_module_rc libjasper $jasperver libjasper.dll "The JasPer Project (http://www.ece.uvic.ca/~mdadams/jasper)" \
+      "JasPer - JPEG-2000 Library" "Copyright (C) 1999-`date +%Y` Michael D. Adams" > src/libjasper/jasper.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --disable-opengl &&
+    post_process_libtool &&
+    sed -e "s/^libjasper_la_LDFLAGS =/& -Wl,-def:jasper.def -Wl,jasper.res -no-undefined/" \
+        -e "s/^libjasper\.la:.*$/& jasper.def jasper.res/" \
+        src/libjasper/Makefile > ttt &&
+      mv ttt src/libjasper/Makefile &&
+    (cat >> src/libjasper/Makefile <<\EOF
+jasper.res: jasper.rc
+	rc -fo $@ $<
+jasper.def: $(libjasper_la_OBJECTS) $(libjasper_la_LIBADD)
+	@echo "Generating $@..."
+	@echo "EXPORTS" > $@
+	@sublibs=; for lib in $(libjasper_la_LIBADD); do \
+	    sublibs="$$sublibs `dirname $$lib`/.libs/`sed -n -e "s/old_library='\(.*\)'/\1/p" $$lib`"; \
+	  done;\
+	nm $(addprefix .libs/, $(libjasper_la_OBJECTS:.lo=.o)) $$sublibs | \
+          grep -v -e ' R __real@[0-9a-fA-F]\+' | \
+	  sed -n -e 's/^[0-9a-fA-F]\+ T _\([^         ]*\).*$$/\1/p' \
+	         -e 's/^[0-9a-fA-F]\+ [BDGSR] _\([^         ]*\).*$$/\1 DATA/p' >> $@
+EOF
+      ) &&
+    (cd src/libjasper && make && make install) &&
+    rm -f $tlibdir_quoted/libjasper*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/jasper-$jasperver"
+  if test ! -f "$tlibdir/jasper.lib"; then
     echo "failed"
     exit -1
   else

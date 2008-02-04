@@ -27,9 +27,7 @@ function [odata,it,res] = DDGOXTgummelmap (imesh,Dsides,...
 %  GNU General Public License for more details.
 %
 %  You should have received a copy of the GNU General Public License
-%  along with SECS2D; if not, write to the Free Software
-%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-%  USA
+%  along with SECS2D; If not, see <http://www.gnu.org/licenses/>.
 
 clear DDGOXNLPOISSON_LAP DDGOXNLPOISSON_MASS DDGOXNLPOISSON_RHS DDG_RHS DDG_MASS
 global DDGOXNLPOISSON_LAP DDGOXNLPOISSON_MASS DDGOXNLPOISSON_RHS DDG_RHS DDG_MASS

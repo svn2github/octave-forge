@@ -117,5 +117,8 @@ install_pkg() {
    install_msys
 }
 
+build() { echo $0: build not required; }
+install() { echo $0: install not required; }
+
 # do whatever the user specified...
 $*

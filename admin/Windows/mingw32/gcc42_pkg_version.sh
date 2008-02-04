@@ -1,7 +1,9 @@
 #! /usr/bin/sh
 
 # Version of Octave we are building & packaging
-source gcc42_version.sh
+if [ -e gcc42_version.sh ];       then source gcc42_version.sh; fi
+if [ -e ../gcc42_version.sh ];    then source ../gcc42_version.sh; fi
+if [ -e ../../gcc42_version.sh ]; then source ../../gcc42_version.sh; fi
 
 PKG_VER=`echo ${VER_OCTAVE} | sed -e "s%\([^-]*\)-\([^-]*\)%\1%"`
 PKG_REL=`echo ${VER_OCTAVE} | sed -e "s%\([^-]*\)-\([^-]*\)%\2%"`

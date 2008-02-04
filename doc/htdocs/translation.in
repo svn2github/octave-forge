@@ -138,11 +138,11 @@ called explicitly.</p>
 <p>Once per Octave release, somebody will need to update the help
 messages stored in the base translation tree.</p>
 <ol>
-<li>Download and unbundle the latest 2.9.xx development release from 
+<li>Download and unbundle the latest 3.0.xx stable release from 
 <a href="http://www.octave.org/download.html">www.octave.org</a></li>
 <li>Create src/DOCSTRINGS and scripts/DOCSTRINGS using:
 <pre>
-	cd octave-2.9.xx
+	cd octave-3.0.xx
 	./configure
 	(cd src &amp;&amp; make omit_deps=1 DOCSTRINGS)
 	(cd scripts &amp;&amp; make DOCSTRINGS)
@@ -150,7 +150,7 @@ messages stored in the base translation tree.</p>
 </li>
 <li>Update base docs using:
 <pre>
-	export OCTAVE_ROOT=~/Downloads/octave-2.9.xx
+	export OCTAVE_ROOT=~/Downloads/octave-3.0.xx
 	cd octave-forge/language/base/help/octave
 	../../../admin/split_docstrings $OCTAVE_ROOT/src/DOCSTRINGS
 	../../../admin/split_docstrings $OCTAVE_ROOT/scripts/DOCSTRINGS

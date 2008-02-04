@@ -94,9 +94,7 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 % Library General Public License for more details.
 %
 % You should have received a copy of the GNU Library General Public
-% License along with this library; if not, write to the
-% Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-% Boston, MA  02110-1301, USA.
+% License along with this library; If not, see <http://www.gnu.org/licenses/>.
 
 [K1,K2] = size(A);
 p = K2/K1-1;

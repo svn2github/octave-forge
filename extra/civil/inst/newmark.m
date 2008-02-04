@@ -11,8 +11,8 @@
 ## for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this software; see the file COPYING.  If not, write to the Free
-## Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02111 USA.
+## along with this software; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{x} =} newmark(@var{m}, @var{c}, @var{k}, @var{f}, @var{dt}, @var{x0} = 0, @var{x'0} = 0, @var{alpha} = 1/2, @var{beta} = 1/4, @var{flags} = "")

@@ -5,9 +5,8 @@
 ##
 ## This code is released under GPL
 ## You should have received a copy of the GNU General Public License
-## along with this software; see the file COPYING.  If not, write to the Free
-## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-## 02110-1301, USA.
+## along with this software; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{Val},@var{unit},@var{uncertanity},@var{desc},@var{name}] {} =physical_constant(@var{arg})

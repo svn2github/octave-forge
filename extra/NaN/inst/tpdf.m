@@ -26,8 +26,7 @@ function p = tpdf(x,n);
 %    GNU General Public License for more details.
 %
 %    You should have received a copy of the GNU General Public License
-%    along with this program; if not, write to the Free Software
-%    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+%    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 % allocate memory and check size of arguments
 p = x+n;	  % if this line causes an error, size of input arguments do not fit. 

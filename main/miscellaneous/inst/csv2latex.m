@@ -11,8 +11,8 @@
 ## GNU General Public License for more details.
 
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+## along with this program; If not, see <http://www.gnu.org/licenses/>.
+
 function csv2latex(csv_file, csv_sep, latex_file, tabular_alignments, has_hline, column_titles, row_titles)
 ## Creates a latex file from a csv file. The generated latex file contains a 
 ## tabular with all values of the csv file. The tabular can be decorated with 

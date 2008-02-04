@@ -15,9 +15,8 @@ dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 dnl General Public License for more details.
 dnl
 dnl You should have received a copy of the GNU General Public License
-dnl along with Octave; see the file COPYING.  If not, write to the Free
-dnl Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA
-dnl 02110-1301, USA.
+dnl along with Octave; see the file COPYING.  If not, see
+dnl <http://www.gnu.org/licenses/>.
 dnl
 dnl
 dnl -------------------------------------------------------------------

@@ -61,9 +61,7 @@ function [a,e,REV,TOC,CPUTIME,ESU] = aar(y, Mode, arg3, arg4, arg5, arg6, arg7, 
 % Library General Public License for more details.
 %
 % You should have received a copy of the GNU Library General Public
-% License along with this library; if not, write to the
-% Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-% Boston, MA  02110-1301, USA.
+% License along with this library; If not, see <http://www.gnu.org/licenses/>.
 
 % for compilation with the Matlab compiler mcc -V1.2 -ir
 %#realonly 

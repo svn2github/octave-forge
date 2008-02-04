@@ -2,12 +2,18 @@
 ##
 ## (C) 2007 Muthiah Annamalai
 ##
-## Code is released under GNU GPL.
-## should have received a copy of the GNU General Public License
-## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-## 02110-1301, USA.
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
 ##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; If not, see <http://www.gnu.org/licenses/>.
 ##
 ## This is the code generator that works on the NIST file.
 ## 
@@ -25,9 +31,7 @@ def make_oct_func(name,Description,Val,Units,Uncertainity,path):
     print "##"
     print "## This code is released under GPL"
     print """## You should have received a copy of the GNU General Public License
-## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-## 02110-1301, USA."""
+## along with Octave; see the file COPYING.  If not, see
     print ""
     print "## -*- texinfo -*-"
     print "## @deftypefn {Function File} [@var{Val},@var{unit},@var{uncertanity}] {} "+ \
@@ -75,9 +79,8 @@ def make_physconst_func(func_metadata,PATH):
     print "##"
     print "## This code is released under GPL"
     print """## You should have received a copy of the GNU General Public License
-## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-## 02110-1301, USA."""
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>."""
     print ""
     print "## -*- texinfo -*-"
     print "## @deftypefn {Function File} [@var{Val},@var{unit},@var{uncertanity},@var{desc},@var{name}] {} =physical_constant(@var{arg})"

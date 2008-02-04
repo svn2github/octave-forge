@@ -55,7 +55,7 @@ function R=histo2(Y)
 if yr==1,
         % Makes sure there is a second row
         % Sort does not support the DIM-argument, therefore,
-        % this function would not work correctly with Octave
+        % this function would not work correctly with this software
         % Once this is fixed, this part can be removed. 
         Y = [Y; NaN+ones(size(Y))];  
 end;

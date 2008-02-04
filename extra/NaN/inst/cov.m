@@ -15,7 +15,7 @@ function CC = cov(X,Y,Mode);
 %       This implementation follows Octave. If the result could be ambigous or  
 %       incompatible, a warning will be presented in Matlab. To avoid this warning use: 
 %       a) use COV([X(:),Y(:)]) if you want the traditional Matlab result. 
-%       b) use C = COV([X,Y]), C = C(1:size(X,2),size(X,2)+1:size(C,2)); if you want to be compatible with Octave.  
+%       b) use C = COV([X,Y]), C = C(1:size(X,2),size(X,2)+1:size(C,2)); if you want to be compatible with this software.  
 %
 % Mode = 0 [default] scales C by (N-1)
 % Mode = 1 scales C by N. 

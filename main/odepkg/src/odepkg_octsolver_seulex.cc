@@ -1,6 +1,6 @@
 /*
 Copyright (C) 2007, Thomas Treichl <treichl@users.sourceforge.net>
-OdePkg - Package for solving ordinary differential equations with Octave
+OdePkg - Package for solving ordinary differential equations with this software
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

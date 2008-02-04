@@ -38,7 +38,7 @@
 
 %# ChangeLog:
 %#   20010519 the function file "ode78.m" was written by Marc Compere
-%#     under the GPL for the use with Octave. This function has been
+%#     under the GPL for the use with this software. This function has been
 %#     taken as a base for the following implementation.
 %#   20060810, Thomas Treichl
 %#     This function was adapted to the new syntax that is used by the

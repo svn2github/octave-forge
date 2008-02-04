@@ -105,7 +105,7 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % + significance test for null-hypthesis: r=0 
 % + confidence interval included
 % - rank correlation works for cell arrays, too (no check for missing values).
-% + compatible with Octave and Matlab
+% + compatible with this software and Matlab
 
 
 NARG = nargout;	% needed because nargout is not reentrant in Octave

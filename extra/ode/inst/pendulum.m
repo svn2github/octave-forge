@@ -10,7 +10,7 @@
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 % General Public License for more details at www.gnu.org/copyleft/gpl.html.
 %
-% This file is intended for use with Octave.
+% This file is intended for use with this software.
 % --------------------------------------------------------------------
 
 % This integrates a set of ordinary differential equations (ODE) using 6 different

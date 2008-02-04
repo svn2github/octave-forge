@@ -22,11 +22,17 @@
  *************************************************************************/
 
 #include <octave/oct.h>
+
+// Note the extern "C" is need for mingw with a version of termcap.h 
+// without the extern "C" explicitly included. Doing it twice should be
+// harmless.
+extern "C" {
 #if defined (HAVE_TERM_H)
 #  include <term.h>
 #elif defined (HAVE_TERMCAP_H)
 #  include <termcap.h>
 #endif
+};
 
 #define BUF_SIZE	256
 #define MAX_LEN		240

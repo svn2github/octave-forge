@@ -39,7 +39,7 @@
 %% details.
 %%
 %% You should have received a copy of the GNU General Public
-%% License along with Octave; see the file COPYING.  If not,
+%% License along with this software; see the file COPYING.  If not,
 %% write to the Free Software Foundation,  51 Franklin Street,
 %% Fifth Floor, Boston, MA  02110-1301  USA
 

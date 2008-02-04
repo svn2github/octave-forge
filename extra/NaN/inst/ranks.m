@@ -48,7 +48,7 @@ function r = ranks(X,DIM,Mode);
 % + memory effort is O(n.log(n)), instead of O(n^2). 
 %     Now, the ranks of 8000 elements can be easily calculated
 % + NaN's in the input yield NaN in the output 
-% + compatible with Octave and Matlab
+% + compatible with this software and Matlab
 % + traditional method is also implemented for comparison. 
 
 

@@ -77,7 +77,7 @@ case $1 in
 	    _file=`find help -name $file.$lang`
 	    basefile=`find $base -name $file`
 	    basedir=`dirname $basefile`
-	    baserev=`svn status -v $file | awk '{print $1}'`
+	    baserev=`svn status -v $basefile | awk '{print $1}'`
 	    if test -n "$have_md5"; then
 		basesum=`md5 -q $basefile`
 	    else

@@ -1,0 +1,1949 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/aclocal.m4 ncurses-5.6/aclocal.m4
+--- ncurses-5.6-orig/aclocal.m4	Sun Dec 17 17:12:38 2006
++++ ncurses-5.6/aclocal.m4	Wed Jan 30 20:24:26 2008
+@@ -1927,6 +1927,14 @@
+ 				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/\${SHARED_LIB} ../lib/\${IMPORT_LIB}"
+ 				continue
+ 			fi
++			if test $cf_cv_system_name = msdosmsvc; then
++				SHARED_LIB="${cf_prefix}${cf_dir}-\$(ABI_VERSION).dll"
++				IMPORT_LIB="${cf_dir}.lib"
++			fi
++			if test $cf_cv_system_name = mingw32; then
++				SHARED_LIB="${cf_dir}-\$(ABI_VERSION).dll"
++				IMPORT_LIB="${cf_prefix}${cf_dir}.dll.a"
++			fi
+ 			fi
+ 			LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
+ 		done
+@@ -2328,7 +2336,7 @@
+ 	profile) $2='_p.a' ;;
+ 	shared)
+ 		case $cf_cv_system_name in
+-		cygwin*) $2='.dll' ;;
++		cygwin*|msdosmsvc*|mingw*) $2='.dll' ;;
+ 		darwin*) $2='.dylib' ;;
+ 		hpux*)
+ 			case $target in
+@@ -3752,6 +3760,14 @@
+ 	cf_cv_shlib_version_infix=no
+ 
+ 	case $cf_cv_system_name in
++	mingw*)
++		CC_SHARED_OPTS=
++		MK_SHARED_LIB='${CC} ${CFLAGS} ${LDFLAGS} -shared -Wl,--out-implib=../lib/${IMPORT_LIB} -Wl,--export-all-symbols -o ../lib/${SHARED_LIB}'
++		;;
++	msdosmsvc*)
++		CC_SHARED_OPTS=
++		MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-implib:../lib/${IMPORT_LIB} -o ../lib/${SHARED_LIB}'
++		;;
+ 	beos*)
+ 		MK_SHARED_LIB='${CC} ${CFLAGS} -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
+ 		;;
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/c++/Makefile.in ncurses-5.6/c++/Makefile.in
+--- ncurses-5.6-orig/c++/Makefile.in	Sat Oct 21 19:07:49 2006
++++ ncurses-5.6/c++/Makefile.in	Mon Feb  4 13:36:16 2008
+@@ -72,7 +72,7 @@
+ CXXLIBS		= @CXXLIBS@
+ 
+ INCDIR		= ../include
+-CPPFLAGS	= -I../c++ -I$(INCDIR) -I$(srcdir) -DHAVE_CONFIG_H @CPPFLAGS@
++CPPFLAGS	= -I../c++ -I$(INCDIR) -I$(srcdir) -DHAVE_CONFIG_H -DNCURSES_DLL @CPPFLAGS@
+ 
+ CCFLAGS		= $(CPPFLAGS) $(CXXFLAGS)
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/c++/cursslk.h ncurses-5.6/c++/cursslk.h
+--- ncurses-5.6-orig/c++/cursslk.h	Sat May 28 23:58:18 2005
++++ ncurses-5.6/c++/cursslk.h	Wed Jan 30 20:10:49 2008
+@@ -100,10 +100,10 @@
+   } Label_Layout;
+ 
+ private:
+-  static long NCURSES_IMPEXP count;               // Number of Key Sets
+-  static Label_Layout NCURSES_IMPEXP  format;     // Layout of the Key Sets
+-  static int  NCURSES_IMPEXP num_labels;          // Number Of Labels in Key Sets
+-  bool NCURSES_IMPEXP b_attrInit;                 // Are attributes initialized
++  static long count;               // Number of Key Sets
++  static Label_Layout format;     // Layout of the Key Sets
++  static int  num_labels;          // Number Of Labels in Key Sets
++  bool b_attrInit;                 // Are attributes initialized
+ 
+   Soft_Label_Key *slk_array;       // The array of SLK's
+ 
+@@ -143,7 +143,7 @@
+ 
+   // This constructor assumes, that you already constructed a Key Set
+   // with a layout by the constructor above. This layout will be reused.
+-  NCURSES_IMPEXP Soft_Label_Key_Set();
++  Soft_Label_Key_Set();
+ 
+   Soft_Label_Key_Set& operator=(const Soft_Label_Key_Set& rhs)
+   {
+@@ -164,7 +164,7 @@
+   virtual ~Soft_Label_Key_Set();
+ 
+   // Get Label# i. Label counting starts with 1!
+-  NCURSES_IMPEXP Soft_Label_Key& operator[](int i);
++  Soft_Label_Key& operator[](int i);
+ 
+   // Retrieve number of Labels
+   inline int labels() const { return num_labels; }
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/c++/demo.cc ncurses-5.6/c++/demo.cc
+--- ncurses-5.6-orig/c++/demo.cc	Sun Apr 23 00:38:57 2006
++++ ncurses-5.6/c++/demo.cc	Mon Feb  4 13:37:22 2008
+@@ -43,7 +43,12 @@
+ #include "cursesm.h"
+ #include "cursesf.h"
+ 
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#include <windows.h>
++#define sleep(x) Sleep(x*1000)
++#else
+ extern "C" unsigned int sleep(unsigned int);
++#endif
+ 
+ #undef index // needed for NeXT
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/configure ncurses-5.6/configure
+--- ncurses-5.6-orig/configure	Sun Dec 17 17:33:38 2006
++++ ncurses-5.6/configure	Mon Feb  4 12:52:42 2008
+@@ -4254,6 +4254,7 @@
+ 	case $cf_cv_system_name in
+ 	OS/2*)	LIB_PREFIX=''     ;;
+ 	os2*)	LIB_PREFIX=''     ;;
++	msdosmsvc*)	LIB_PREFIX=''     ;;
+ 	*)	LIB_PREFIX='lib'  ;;
+ 	esac
+ cf_prefix=$LIB_PREFIX
+@@ -4910,6 +4911,18 @@
+ 	cf_cv_shlib_version_infix=no
+ 
+ 	case $cf_cv_system_name in
++	mingw*)
++		CC_SHARED_OPTS=
++		MK_SHARED_LIB='$(CC) $(CFLAGS) $(LDFLAGS) -shared -Wl,--out-implib=../lib/$(IMPORT_LIB) -Wl,--export-all-symbols -o ../lib/$(SHARED_LIB)'
++		cf_cv_shlib_version=mingw32dll
++		cf_cv_shlib_version_infix=mingw32dll
++		;;
++	msdosmsvc*)
++		CC_SHARED_OPTS=
++		MK_SHARED_LIB='${CC} ${CFLAGS} -shared -Wl,-implib:../lib/${IMPORT_LIB} -o ../lib/${SHARED_LIB}'
++		cf_cv_shlib_version=msvcdll
++		cf_cv_shlib_version_infix=msvcdll
++		;;
+ 	beos*)
+ 		MK_SHARED_LIB='${CC} ${CFLAGS} -o $@ -Xlinker -soname=`basename $@` -nostart -e 0'
+ 		;;
+@@ -15052,7 +15065,7 @@
+ 	profile) DFT_DEP_SUFFIX='_p.a' ;;
+ 	shared)
+ 		case $cf_cv_system_name in
+-		cygwin*) DFT_DEP_SUFFIX='.dll' ;;
++		cygwin*|msdosmsvc*|mingw*) DFT_DEP_SUFFIX='.dll' ;;
+ 		darwin*) DFT_DEP_SUFFIX='.dylib' ;;
+ 		hpux*)
+ 			case $target in
+@@ -15066,9 +15079,12 @@
+ 	test -n "$LIB_SUFFIX" && DFT_DEP_SUFFIX="${LIB_SUFFIX}${DFT_DEP_SUFFIX}"
+ if test $DFT_LWR_MODEL = shared ; then
+ 	case $cf_cv_system_name in #(vi
+-	cygwin*)
++	cygwin*|mingw*)
+ 		DFT_DEP_SUFFIX=".dll.a"
+ 		;;
++	msdosmsvc*)
++		DFT_DEP_SUFFIX=".lib"
++		;;
+ 	esac
+ fi
+ echo "$as_me:15074: result: $DFT_DEP_SUFFIX" >&5
+@@ -15108,7 +15124,7 @@
+ 	profile) CXX_LIB_SUFFIX='_p.a' ;;
+ 	shared)
+ 		case $cf_cv_system_name in
+-		cygwin*) CXX_LIB_SUFFIX='.dll' ;;
++		cygwin*|msdosmsvc*|mingw*) CXX_LIB_SUFFIX='.dll' ;;
+ 		darwin*) CXX_LIB_SUFFIX='.dylib' ;;
+ 		hpux*)
+ 			case $target in
+@@ -16413,7 +16429,7 @@
+ 	profile) cf_suffix='_p.a' ;;
+ 	shared)
+ 		case $cf_cv_system_name in
+-		cygwin*) cf_suffix='.dll' ;;
++		cygwin*|msdosmsvc*|mingw*) cf_suffix='.dll' ;;
+ 		darwin*) cf_suffix='.dylib' ;;
+ 		hpux*)
+ 			case $target in
+@@ -16472,6 +16488,18 @@
+ 				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/\${SHARED_LIB} ../lib/\${IMPORT_LIB}"
+ 				continue
+ 			fi
++			if test $cf_cv_system_name = msdosmsvc; then
++				SHARED_LIB="${cf_prefix}${cf_dir}-\$(ABI_VERSION).dll"
++				IMPORT_LIB="${cf_dir}.lib"
++				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/\${SHARED_LIB} ../lib/\${IMPORT_LIB}"
++				continue
++			fi
++			if test $cf_cv_system_name = mingw32; then
++				SHARED_LIB="${cf_dir}-\$(ABI_VERSION).dll"
++				IMPORT_LIB="${cf_prefix}${cf_dir}.dll.a"
++				LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/\$(SHARED_LIB) ../lib/\$(IMPORT_LIB)"
++				continue
++			fi
+ 			fi
+ 			LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
+ 		done
+@@ -16513,7 +16541,7 @@
+ 	profile) cf_suffix='_p.a' ;;
+ 	shared)
+ 		case $cf_cv_system_name in
+-		cygwin*) cf_suffix='.dll' ;;
++		cygwin*|msdosmsvc*|mingw*) cf_suffix='.dll' ;;
+ 		darwin*) cf_suffix='.dylib' ;;
+ 		hpux*)
+ 			case $target in
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/form/Makefile.in ncurses-5.6/form/Makefile.in
+--- ncurses-5.6-orig/form/Makefile.in	Sat Oct 14 22:40:36 2006
++++ ncurses-5.6/form/Makefile.in	Mon Feb  4 13:28:17 2008
+@@ -79,7 +79,7 @@
+ CPP		= @CPP@
+ CFLAGS		= @CFLAGS@
+ 
+-CPPFLAGS	= -I@top_srcdir@/ncurses -DHAVE_CONFIG_H @CPPFLAGS@
++CPPFLAGS	= -I@top_srcdir@/ncurses -DHAVE_CONFIG_H -DNCURSES_DLL @CPPFLAGS@
+ 
+ CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/include/MKterm.h.awk.in ncurses-5.6/include/MKterm.h.awk.in
+--- ncurses-5.6-orig/include/MKterm.h.awk.in	Sun Nov 26 02:18:23 2006
++++ ncurses-5.6/include/MKterm.h.awk.in	Wed Jan 30 20:30:03 2008
+@@ -130,8 +130,47 @@
+ 		    print  "#else /* !HAVE_TERMIO_H */"
+ 		    print  ""
+ 		    print  "#undef TERMIOS"
++		    print  "#if !defined(_MSC_VER) && !defined(__MINGW32__)"
+ 		    print  "#include <sgtty.h>"
+ 		    print  "#include <sys/ioctl.h>"
++		    print  "#else"
++		    print  "struct sgttyb {"
++		    print  "	char sg_ispeed;"
++		    print  "	char sg_ospeed;"
++		    print  "	char sg_erase;"
++		    print  "	char sg_kill;"
++		    print  "	int sg_flags;"
++		    print  "};"
++		    print  ""
++		    print  "#define TIOCFLUSH	0x000001"
++		    print  ""
++		    print  "#define CBREAK		0x000001"
++		    print  "#define RAW		0x000002"
++		    print  "#define XTABS		0x000004"
++		    print  "#define CRMOD		0x000008"
++		    print  "#define ECHO		0x000010"
++		    print  "#define PASS8		0x000020"
++		    print  "#define TANDEM		0x000040"
++		    print  "#define MDMBUF		0x000080"
++		    print  "#define DECCTQ		0x000100"
++		    print  ""
++		    print  "#define B0	0x0000"
++		    print  "#define B50	0x0001"
++		    print  "#define B75	0x0002"
++		    print  "#define B110	0x0003"
++		    print  "#define B134	0x0004"
++		    print  "#define B150	0x0005"
++		    print  "#define B200	0x0006"
++		    print  "#define B300	0x0007"
++		    print  "#define B600	0x0008"
++		    print  "#define B1200	0x0009"
++		    print  "#define B1800	0x000a"
++		    print  "#define B2400	0x000b"
++		    print  "#define B4800	0x000c"
++		    print  "#define B9600	0x000d"
++		    print  "#define B19200	0x000e"
++		    print  "#define B38400	0x000f"
++		    print  "#endif"
+ 		    print  "#define TTY struct sgttyb"
+ 		    print  ""
+ 		    print  "#endif /* HAVE_TERMIO_H */"
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/include/ncurses_dll.h ncurses-5.6/include/ncurses_dll.h
+--- ncurses-5.6-orig/include/ncurses_dll.h	Sun Apr 23 00:07:51 2006
++++ ncurses-5.6/include/ncurses_dll.h	Wed Jan 30 20:29:58 2008
+@@ -34,10 +34,12 @@
+ /* but this structure may be useful at some point for an MSVC build */
+ /* so, for now unconditionally define the important flags           */
+ /* "the right way" for proper static and dll+auto-import behavior   */
++/*
+ #undef NCURSES_DLL
+-#define NCURSES_STATIC
++#undef NCURSES_STATIC
++*/
+ 
+-#if defined(__CYGWIN__)
++#if defined(__CYGWIN__) || defined(_MSC_VER) || defined(__MINGW32__)
+ #  if defined(NCURSES_DLL)
+ #    if defined(NCURSES_STATIC)
+ #      undef NCURSES_STATIC
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/include/term_entry.h ncurses-5.6/include/term_entry.h
+--- ncurses-5.6-orig/include/term_entry.h	Sat Jul 16 23:15:07 2005
++++ ncurses-5.6/include/term_entry.h	Wed Jan 30 20:28:12 2008
+@@ -155,8 +155,8 @@
+ extern NCURSES_EXPORT(int) _nc_resolve_uses (bool); /* obs 20040705 */
+ extern NCURSES_EXPORT(int) _nc_resolve_uses2 (bool, bool);
+ extern NCURSES_EXPORT(void) _nc_free_entries (ENTRY *);
+-extern NCURSES_IMPEXP void NCURSES_API (*_nc_check_termtype)(TERMTYPE *); /* obs 20040705 */
+-extern NCURSES_IMPEXP void NCURSES_API (*_nc_check_termtype2)(TERMTYPE *, bool);
++extern NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype)(TERMTYPE *); /* obs 20040705 */
++extern NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2)(TERMTYPE *, bool);
+ 
+ /* trace_xnames.c */
+ extern NCURSES_EXPORT(void) _nc_trace_xnames (TERMTYPE *);
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/include/tic.h ncurses-5.6/include/tic.h
+--- ncurses-5.6-orig/include/tic.h	Sat Aug 19 16:17:49 2006
++++ ncurses-5.6/include/tic.h	Wed Jan 30 20:31:02 2008
+@@ -300,6 +300,9 @@
+ 
+ /* home_terminfo.c */
+ extern NCURSES_EXPORT(char *) _nc_home_terminfo (void);
++#if defined(_MSC_VER) || defined(__MINGW32__)
++extern NCURSES_EXPORT(char *) _nc_win32_terminfo (void);
++#endif
+ 
+ /* lib_tparm.c */
+ #define NUM_PARM 9
+@@ -319,6 +322,9 @@
+     dbdTIC = 0,
+ #if USE_DATABASE
+     dbdEnvOnce,
++#if defined(_MSC_VER) || defined(__MINGW32__)
++    dbWin32,
++#endif
+     dbdHome,
+     dbdEnvList,
+     dbdCfgList,
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/menu/Makefile.in ncurses-5.6/menu/Makefile.in
+--- ncurses-5.6-orig/menu/Makefile.in	Sat Oct 14 22:40:36 2006
++++ ncurses-5.6/menu/Makefile.in	Mon Feb  4 13:26:55 2008
+@@ -79,7 +79,7 @@
+ CPP		= @CPP@
+ CFLAGS		= @CFLAGS@
+ 
+-CPPFLAGS	= -I@top_srcdir@/ncurses -DHAVE_CONFIG_H @CPPFLAGS@
++CPPFLAGS	= -I@top_srcdir@/ncurses -DHAVE_CONFIG_H -DNCURSES_DLL @CPPFLAGS@
+ 
+ CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/mk-1st.awk ncurses-5.6/mk-1st.awk
+--- ncurses-5.6-orig/mk-1st.awk	Sun Oct  8 02:14:08 2006
++++ ncurses-5.6/mk-1st.awk	Mon Feb  4 13:20:12 2008
+@@ -83,7 +83,7 @@
+ 		printf "\t$(MK_SHARED_LIB) $(%s_OBJS) $(%s) $(LDFLAGS)\n", objs, shlib_list
+ 	}
+ function sharedlinks(directory) {
+-		if ( ShlibVer != "auto" && ShlibVer != "cygdll" ) {
++		if ( ShlibVer != "auto" && ShlibVer != "cygdll"  && ShlibVer != "msvcdll"  && ShlibVer != "mingw32dll") {
+ 			printf "\tcd %s && (", directory
+ 			if ( DoLinks == "reverse" ) {
+ 				if ( ShlibVer == "rel" ) {
+@@ -117,7 +117,7 @@
+ 		} else {
+ 				make_shlib(OBJS, "SHLIB_LIST")
+ 		}
+-		sharedlinks(directory)
++#		sharedlinks(directory)
+ 	}
+ function install_dll(directory,filename) {
+ 		src_name = sprintf("../lib/%s", filename);
+@@ -212,6 +212,12 @@
+ 					abi_name = sprintf("%s%s$(ABI_VERSION)%s", "cyg", name, suffix);
+ 					rel_name = sprintf("%s%s$(REL_VERSION)%s", "cyg", name, suffix);
+ 					imp_name = sprintf("%s%s%s.a", prefix, name, suffix);
++				} else if (ShlibVerInfix == "msvcdll") {
++					abi_name = sprintf("%s%s-$(ABI_VERSION)%s", prefix, name, suffix);
++					imp_name = sprintf("%s.lib", name);
++				} else if (ShlibVerInfix == "mingw32dll") {
++					abi_name = sprintf("%s-$(ABI_VERSION)%s", name, suffix);
++					imp_name = sprintf("%s%s%s.a", prefix, name, suffix);
+ 				} else if (ShlibVerInfix == "yes") {
+ 					abi_name = sprintf("%s%s.$(ABI_VERSION)%s", prefix, name, suffix);
+ 					rel_name = sprintf("%s%s.$(REL_VERSION)%s", prefix, name, suffix);
+@@ -224,7 +230,7 @@
+ 				} else {
+ 					if ( ShlibVer == "rel" ) {
+ 						end_name = rel_name;
+-					} else if ( ShlibVer == "abi" || ShlibVer == "cygdll" ) {
++					} else if ( ShlibVer == "abi" || ShlibVer == "cygdll" || ShlibVer = "msvcdll" || ShlibVer = "mingw32dll" ) {
+ 						end_name = abi_name;
+ 					} else {
+ 						end_name = lib_name;
+@@ -237,7 +243,7 @@
+ 				print  "install \\"
+ 				print  "install.libs \\"
+ 
+-				if ( ShlibVer == "cygdll" ) {
++				if ( ShlibVer == "cygdll" || ShlibVer == "msvcdll" || ShlibVer == "mingw32dll" ) {
+ 
+ 					dst_dirs = "$(DESTDIR)$(bindir) $(DESTDIR)$(libdir)";
+ 					printf "install.%s :: %s $(LIBRARIES)\n", name, dst_dirs
+@@ -271,7 +277,7 @@
+ 				print  "uninstall \\"
+ 				print  "uninstall.libs \\"
+ 				printf "uninstall.%s ::\n", name
+-				if ( ShlibVer == "cygdll" ) {
++				if ( ShlibVer == "cygdll" || ShlibVer == "msvcdll" || ShlibVer == "mingw32dll") {
+ 
+ 					printf "\t@echo uninstalling $(DESTDIR)$(bindir)/%s\n", end_name
+ 					printf "\t-@rm -f $(DESTDIR)$(bindir)/%s\n", end_name
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/Makefile.in ncurses-5.6/ncurses/Makefile.in
+--- ncurses-5.6-orig/ncurses/Makefile.in	Sat Oct 14 21:08:11 2006
++++ ncurses-5.6/ncurses/Makefile.in	Wed Jan 30 20:36:15 2008
+@@ -88,7 +88,7 @@
+ CFLAGS		= @CFLAGS@
+ 
+ INCDIR		= $(srcdir)/../include
+-CPPFLAGS	= -DHAVE_CONFIG_H -I../ncurses -I$(srcdir) @CPPFLAGS@
++CPPFLAGS	= -DHAVE_CONFIG_H -DNCURSES_DLL -I../ncurses -I$(srcdir) @CPPFLAGS@
+ 
+ CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/curses.priv.h ncurses-5.6/ncurses/curses.priv.h
+--- ncurses-5.6-orig/ncurses/curses.priv.h	Sun Dec 10 01:55:14 2006
++++ ncurses-5.6/ncurses/curses.priv.h	Wed Jan 30 20:37:11 2008
+@@ -676,7 +676,11 @@
+ #define	W_OK	2		/* Test for write permission.  */
+ #endif
+ #ifndef X_OK
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#define X_OK	0
++#else
+ #define	X_OK	1		/* Test for execute permission.  */
++#endif
+ #endif
+ #ifndef F_OK
+ #define	F_OK	0		/* Test for existence.  */
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/modules ncurses-5.6/ncurses/modules
+--- ncurses-5.6-orig/ncurses/modules	Sat Aug 12 16:19:44 2006
++++ ncurses-5.6/ncurses/modules	Wed Jan 30 21:55:23 2008
+@@ -182,6 +182,7 @@
+ lib_kernel	lib		$(tinfo)	../include/term.h
+ lib_keyname	lib		.		../include/term.h
+ lib_longname	lib		$(tinfo)
++lib_mingw32	lib		$(tinfo)	../include/term.h
+ lib_napms	lib		$(tinfo)
+ lib_options	lib		$(tinfo)	../include/term.h
+ lib_raw 	lib		$(tinfo)	../include/term.h
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/tinfo/comp_parse.c ncurses-5.6/ncurses/tinfo/comp_parse.c
+--- ncurses-5.6-orig/ncurses/tinfo/comp_parse.c	Sat Jul  8 20:55:14 2006
++++ ncurses-5.6/ncurses/tinfo/comp_parse.c	Wed Jan 30 20:58:14 2008
+@@ -56,11 +56,11 @@
+ MODULE_ID("$Id: comp_parse.c,v 1.63 2006/07/08 18:55:14 tom Exp $")
+ 
+ static void sanity_check2(TERMTYPE *, bool);
+-NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype2) (TERMTYPE *, bool) = sanity_check2;
++NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2) (TERMTYPE *, bool) = sanity_check2;
+ 
+ /* obsolete: 20040705 */
+ static void sanity_check(TERMTYPE *);
+-NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
++NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype) (TERMTYPE *) = sanity_check;
+ 
+ /****************************************************************************
+  *
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/tinfo/db_iterator.c ncurses-5.6/ncurses/tinfo/db_iterator.c
+--- ncurses-5.6-orig/ncurses/tinfo/db_iterator.c	Sat Dec 16 20:06:42 2006
++++ ncurses-5.6/ncurses/tinfo/db_iterator.c	Wed Jan 30 20:59:10 2008
+@@ -168,6 +168,11 @@
+ 		result = _nc_home_terminfo();
+ 	    }
+ 	    break;
++#if defined(_MSC_VER) || defined(__MINGW32__)
++        case dbWin32:
++            result = _nc_win32_terminfo();
++            break;
++#endif
+ 	case dbdEnvList:
+ 	    if (use_terminfo_vars()) {
+ 		if ((result = NEXT_DBD(getenv("TERMINFO_DIRS"), offset)) != 0)
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/tinfo/home_terminfo.c ncurses-5.6/ncurses/tinfo/home_terminfo.c
+--- ncurses-5.6-orig/ncurses/tinfo/home_terminfo.c	Sat Jul  2 21:43:38 2005
++++ ncurses-5.6/ncurses/tinfo/home_terminfo.c	Mon Feb  4 13:50:12 2008
+@@ -34,6 +34,12 @@
+  *	home_terminfo.c -- return the $HOME/.terminfo string, expanded
+  */
+ 
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#include <windows.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#endif
++
+ #include <curses.priv.h>
+ #include <tic.h>
+ 
+@@ -66,3 +72,52 @@
+ #endif
+     return result;
+ }
++
++
++#if defined(_MSC_VER) || defined(__MINGW32__)
++NCURSES_EXPORT(char *)
++_nc_win32_terminfo(void)
++{
++    char *result = 0;
++    static char *temp = 0;
++    int n = 1024, nr;
++
++    if (temp == 0) {
++        HMODULE hmod = GetModuleHandle("ncurses-5");
++        do {
++            if (temp == 0)
++                temp = typeMalloc(char, n);
++            else {
++                n *= 2;
++                temp = typeRealloc(char, n, temp);
++            }
++
++            if ((nr = GetModuleFileName(hmod, temp, n)) == 0)
++                break;
++            else if (nr < n) {
++                char *p = strrchr(temp, '\\');
++                if (p != 0) {
++                    *p = 0;
++                    nr = strlen(temp);
++                    if (nr > 4 && strncmp(&temp[nr-4], "\\bin", 4) == 0) {
++                        struct stat st;
++                        temp = typeRealloc(char, nr-4+64, temp);
++                        strcpy(&temp[nr-4], "\\share\\terminfo");
++                        if (stat(temp, &st) == 0 && (st.st_mode & _S_IFDIR) != 0)
++                            result = temp;
++                    }
++                }
++                break;
++            }
++        } while (1);
++    } else
++        result = temp;
++
++    if (result == 0 && temp != 0) {
++        free(temp);
++        temp = 0;
++    }
++
++    return result;
++}
++#endif
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/tinfo/lib_mingw32.c ncurses-5.6/ncurses/tinfo/lib_mingw32.c
+--- ncurses-5.6-orig/ncurses/tinfo/lib_mingw32.c	Thu Jan  1 01:00:00 1970
++++ ncurses-5.6/ncurses/tinfo/lib_mingw32.c	Wed Jan 30 21:59:28 2008
+@@ -0,0 +1,21 @@
++#include <term.h>
++
++NCURSES_EXPORT(int) stty(int fd, struct sgttyb *buf)
++{
++	return 0;
++}
++
++NCURSES_EXPORT(int) gtty(int fd, struct sgttyb *buf)
++{
++	return 0;
++}
++
++NCURSES_EXPORT(char*) ttyname(int fd)
++{
++	char buf[64] = {0};
++	return buf;
++}
++
++NCURSES_EXPORT(int) ioctl(int fd, int cmd, void* arg)
++{
++}
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/tinfo/lib_msvc.c ncurses-5.6/ncurses/tinfo/lib_msvc.c
+--- ncurses-5.6-orig/ncurses/tinfo/lib_msvc.c	Thu Jan  1 01:00:00 1970
++++ ncurses-5.6/ncurses/tinfo/lib_msvc.c	Wed Jan 30 21:01:16 2008
+@@ -0,0 +1,21 @@
++#include <term.h>
++
++CURSES_EXPORT(int) stty(int fd, struct sgttyb *buf)
++{
++	return 0;
++}
++
++NCURSES_EXPORT(int) gtty(int fd, struct sgttyb *buf)
++{
++	return 0;
++}
++
++NCURSES_EXPORT(char*) ttyname(int fd)
++{
++	char buf[64] = {0};
++	return buf;
++}
++
++NCURSES_EXPORT(int) ioctl(int fd, int cmd, void* arg)
++{
++}
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/tinfo/lib_print.c ncurses-5.6/ncurses/tinfo/lib_print.c
+--- ncurses-5.6-orig/ncurses/tinfo/lib_print.c	Sun Nov 26 01:26:34 2006
++++ ncurses-5.6/ncurses/tinfo/lib_print.c	Wed Jan 30 21:02:07 2008
+@@ -35,6 +35,11 @@
+ 
+ #include <term.h>
+ 
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#include <windows.H>
++#define sleep(x) Sleep(x*1000)
++#endif
++
+ MODULE_ID("$Id: lib_print.c,v 1.16 2006/11/26 00:26:34 tom Exp $")
+ 
+ NCURSES_EXPORT(int)
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/tinfo/write_entry.c ncurses-5.6/ncurses/tinfo/write_entry.c
+--- ncurses-5.6-orig/ncurses/tinfo/write_entry.c	Sat Oct 14 22:45:16 2006
++++ ncurses-5.6/ncurses/tinfo/write_entry.c	Wed Jan 30 22:12:29 2008
+@@ -54,6 +54,12 @@
+ #define TRACE_OUT(p)		/*nothing */
+ #endif
+ 
++#if defined(__MINGW32__)
++#define MKDIR(x,y) _mkdir(x)
++#else
++#define MKDIR(x,y) mkdir(x,y)
++#endif
++
+ MODULE_ID("$Id: write_entry.c,v 1.68 2006/10/14 20:45:16 tom Exp $")
+ 
+ static int total_written;
+@@ -172,7 +178,7 @@
+ 	struct stat statbuf;
+ 
+ 	if ((rc = stat(path, &statbuf)) < 0) {
+-	    rc = mkdir(path, 0777);
++	    rc = MKDIR(path, 0777);
+ 	} else if (_nc_access(path, R_OK | W_OK | X_OK) < 0) {
+ 	    rc = -1;		/* permission denied */
+ 	} else if (!(S_ISDIR(statbuf.st_mode))) {
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/tty/lib_tstp.c ncurses-5.6/ncurses/tty/lib_tstp.c
+--- ncurses-5.6-orig/ncurses/tty/lib_tstp.c	Sat Apr  1 21:31:34 2006
++++ ncurses-5.6/ncurses/tty/lib_tstp.c	Wed Jan 30 21:03:58 2008
+@@ -59,16 +59,20 @@
+ signal_name(int sig)
+ {
+     switch (sig) {
++#ifdef SIGALRM
+     case SIGALRM:
+ 	return "SIGALRM";
++#endif
+ #ifdef SIGCONT
+     case SIGCONT:
+ 	return "SIGCONT";
+ #endif
+     case SIGINT:
+ 	return "SIGINT";
++#ifdef SIGQUIT
+     case SIGQUIT:
+ 	return "SIGQUIT";
++#endif
+     case SIGTERM:
+ 	return "SIGTERM";
+ #ifdef SIGTSTP
+@@ -166,7 +170,9 @@
+      * to repaint the screen.
+      */
+     (void) sigemptyset(&mask);
++#ifdef SIGALRM
+     (void) sigaddset(&mask, SIGALRM);
++#endif
+ #if USE_SIGWINCH
+     (void) sigaddset(&mask, SIGWINCH);
+ #endif
+@@ -243,7 +249,10 @@
+      */
+     if (!nested++
+ 	&& (sig == SIGINT
+-	    || sig == SIGQUIT)) {
++#ifdef SIGQUIT
++	    || sig == SIGQUIT
++#endif
++	    )) {
+ #if HAVE_SIGACTION || HAVE_SIGVEC
+ 	sigaction_t act;
+ 	sigemptyset(&act.sa_mask);
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/ncurses/tty/lib_twait.c ncurses-5.6/ncurses/tty/lib_twait.c
+--- ncurses-5.6-orig/ncurses/tty/lib_twait.c	Sat May 27 23:57:43 2006
++++ ncurses-5.6/ncurses/tty/lib_twait.c	Wed Jan 30 22:09:48 2008
+@@ -61,6 +61,12 @@
+ # endif
+ #endif
+ 
++#ifdef __MINGW32__
++#if defined HAVE_SYS_TIME_H
++#include <sys/time.h>
++#endif
++#endif
++
+ MODULE_ID("$Id: lib_twait.c,v 1.51 2006/05/27 21:57:43 tom Exp $")
+ 
+ static long
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/panel/Makefile.in ncurses-5.6/panel/Makefile.in
+--- ncurses-5.6-orig/panel/Makefile.in	Sat Oct 14 22:40:36 2006
++++ ncurses-5.6/panel/Makefile.in	Mon Feb  4 13:19:30 2008
+@@ -80,7 +80,7 @@
+ CPP		= @CPP@
+ CFLAGS		= @CFLAGS@
+ 
+-CPPFLAGS	= -I@top_srcdir@/ncurses -DHAVE_CONFIG_H @CPPFLAGS@
++CPPFLAGS	= -I@top_srcdir@/ncurses -DHAVE_CONFIG_H -DNCURSES_DLL @CPPFLAGS@
+ 
+ CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/progs/getopt.c ncurses-5.6/progs/getopt.c
+--- ncurses-5.6-orig/progs/getopt.c	Thu Jan  1 01:00:00 1970
++++ ncurses-5.6/progs/getopt.c	Mon Feb  4 13:02:46 2008
+@@ -0,0 +1,751 @@
++/* Getopt for GNU.
++   NOTE: getopt is now part of the C library, so if you don't know what
++   "Keep this file name-space clean" means, talk to roland@gnu.ai.mit.edu
++   before changing it!
++
++   Copyright (C) 1987, 88, 89, 90, 91, 92, 1993
++   	Free Software Foundation, Inc.
++
++   This program is free software; you can redistribute it and/or modify it
++   under the terms of the GNU General Public License as published by the
++   Free Software Foundation; either version 2, or (at your option) any
++   later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
++
++#ifndef __STDC__
++#  ifndef const
++#    define const
++#  endif
++#endif
++
++/* This tells Alpha OSF/1 not to define a getopt prototype in <stdio.h>.  */
++#ifndef _NO_PROTO
++#define _NO_PROTO
++#endif
++
++#include <stdio.h>
++/*#include "tailor.h"*/
++
++/* Comment out all this code if we are using the GNU C Library, and are not
++   actually compiling the library itself.  This code is part of the GNU C
++   Library, but also included in many other GNU distributions.  Compiling
++   and linking in this code is a waste when using the GNU C library
++   (especially if it is a shared library).  Rather than having every GNU
++   program understand `configure --with-gnu-libc' and omit the object files,
++   it is simpler to just do this in the source for each such file.  */
++
++#if defined (_LIBC) || !defined (__GNU_LIBRARY__)
++
++
++/* This needs to come after some library #include
++   to get __GNU_LIBRARY__ defined.  */
++#ifdef	__GNU_LIBRARY__
++/* Don't include stdlib.h for non-GNU C libraries because some of them
++   contain conflicting prototypes for getopt.  */
++#include <stdlib.h>
++#endif	/* GNU C library.  */
++
++/* If GETOPT_COMPAT is defined, `+' as well as `--' can introduce a
++   long-named option.  Because this is not POSIX.2 compliant, it is
++   being phased out.  */
++/* #define GETOPT_COMPAT */
++
++/* This version of `getopt' appears to the caller like standard Unix `getopt'
++   but it behaves differently for the user, since it allows the user
++   to intersperse the options with the other arguments.
++
++   As `getopt' works, it permutes the elements of ARGV so that,
++   when it is done, all the options precede everything else.  Thus
++   all application programs are extended to handle flexible argument order.
++
++   Setting the environment variable POSIXLY_CORRECT disables permutation.
++   Then the behavior is completely standard.
++
++   GNU application programs can use a third alternative mode in which
++   they can distinguish the relative order of options and other arguments.  */
++
++#include "getopt.h"
++
++/* For communication from `getopt' to the caller.
++   When `getopt' finds an option that takes an argument,
++   the argument value is returned here.
++   Also, when `ordering' is RETURN_IN_ORDER,
++   each non-option ARGV-element is returned here.  */
++
++char *optarg = 0;
++
++/* Index in ARGV of the next element to be scanned.
++   This is used for communication to and from the caller
++   and for communication between successive calls to `getopt'.
++
++   On entry to `getopt', zero means this is the first call; initialize.
++
++   When `getopt' returns EOF, this is the index of the first of the
++   non-option elements that the caller should itself scan.
++
++   Otherwise, `optind' communicates from one call to the next
++   how much of ARGV has been scanned so far.  */
++
++/* XXX 1003.2 says this must be 1 before any call.  */
++int optind = 0;
++
++/* The next char to be scanned in the option-element
++   in which the last option character we returned was found.
++   This allows us to pick up the scan where we left off.
++
++   If this is zero, or a null string, it means resume the scan
++   by advancing to the next ARGV-element.  */
++
++static char *nextchar;
++
++/* Callers store zero here to inhibit the error message
++   for unrecognized options.  */
++
++int opterr = 1;
++
++/* Set to an option character which was unrecognized.
++   This must be initialized on some systems to avoid linking in the
++   system's own getopt implementation.  */
++
++#define BAD_OPTION '\0'
++int optopt = BAD_OPTION;
++
++/* Describe how to deal with options that follow non-option ARGV-elements.
++
++   If the caller did not specify anything,
++   the default is REQUIRE_ORDER if the environment variable
++   POSIXLY_CORRECT is defined, PERMUTE otherwise.
++
++   REQUIRE_ORDER means don't recognize them as options;
++   stop option processing when the first non-option is seen.
++   This is what Unix does.
++   This mode of operation is selected by either setting the environment
++   variable POSIXLY_CORRECT, or using `+' as the first character
++   of the list of option characters.
++
++   PERMUTE is the default.  We permute the contents of ARGV as we scan,
++   so that eventually all the non-options are at the end.  This allows options
++   to be given in any order, even with programs that were not written to
++   expect this.
++
++   RETURN_IN_ORDER is an option available to programs that were written
++   to expect options and other ARGV-elements in any order and that care about
++   the ordering of the two.  We describe each non-option ARGV-element
++   as if it were the argument of an option with character code 1.
++   Using `-' as the first character of the list of option characters
++   selects this mode of operation.
++
++   The special argument `--' forces an end of option-scanning regardless
++   of the value of `ordering'.  In the case of RETURN_IN_ORDER, only
++   `--' can cause `getopt' to return EOF with `optind' != ARGC.  */
++
++static enum
++{
++  REQUIRE_ORDER, PERMUTE, RETURN_IN_ORDER
++} ordering;
++
++#if defined(__GNU_LIBRARY__) || defined(__MINGW32__)
++/* We want to avoid inclusion of string.h with non-GNU libraries
++   because there are many ways it can cause trouble.
++   On some systems, it contains special magic macros that don't work
++   in GCC.  */
++#include <string.h>
++#define	my_index	strchr
++#define	my_strlen	strlen
++#else
++
++/* Avoid depending on library functions or files
++   whose names are inconsistent.  */
++
++#if __STDC__ || defined(PROTO)
++extern char *getenv(const char *name);
++extern int  strcmp (const char *s1, const char *s2);
++extern int  strncmp(const char *s1, const char *s2, int n);
++
++static int my_strlen(const char *s);
++static char *my_index (const char *str, int chr);
++#else
++extern char *getenv ();
++#endif
++
++static int
++my_strlen (str)
++     const char *str;
++{
++  int n = 0;
++  while (*str++)
++    n++;
++  return n;
++}
++
++static char *
++my_index (str, chr)
++     const char *str;
++     int chr;
++{
++  while (*str)
++    {
++      if (*str == chr)
++	return (char *) str;
++      str++;
++    }
++  return 0;
++}
++
++#endif				/* GNU C library.  */
++
++/* Handle permutation of arguments.  */
++
++/* Describe the part of ARGV that contains non-options that have
++   been skipped.  `first_nonopt' is the index in ARGV of the first of them;
++   `last_nonopt' is the index after the last of them.  */
++
++static int first_nonopt;
++static int last_nonopt;
++
++/* Exchange two adjacent subsequences of ARGV.
++   One subsequence is elements [first_nonopt,last_nonopt)
++   which contains all the non-options that have been skipped so far.
++   The other is elements [last_nonopt,optind), which contains all
++   the options processed since those non-options were skipped.
++
++   `first_nonopt' and `last_nonopt' are relocated so that they describe
++   the new indices of the non-options in ARGV after they are moved.
++
++   To perform the swap, we first reverse the order of all elements. So
++   all options now come before all non options, but they are in the
++   wrong order. So we put back the options and non options in original
++   order by reversing them again. For example:
++       original input:      a b c -x -y
++       reverse all:         -y -x c b a
++       reverse options:     -x -y c b a
++       reverse non options: -x -y a b c
++*/
++
++#if __STDC__ || defined(PROTO)
++static void exchange (char **argv);
++#endif
++
++static void
++exchange (argv)
++     char **argv;
++{
++  char *temp, **first, **last;
++
++  /* Reverse all the elements [first_nonopt, optind) */
++  first = &argv[first_nonopt];
++  last  = &argv[optind-1];
++  while (first < last) {
++    temp = *first; *first = *last; *last = temp; first++; last--;
++  }
++  /* Put back the options in order */
++  first = &argv[first_nonopt];
++  first_nonopt += (optind - last_nonopt);
++  last  = &argv[first_nonopt - 1];
++  while (first < last) {
++    temp = *first; *first = *last; *last = temp; first++; last--;
++  }
++
++  /* Put back the non options in order */
++  first = &argv[first_nonopt];
++  last_nonopt = optind;
++  last  = &argv[last_nonopt-1];
++  while (first < last) {
++    temp = *first; *first = *last; *last = temp; first++; last--;
++  }
++}
++
++/* Scan elements of ARGV (whose length is ARGC) for option characters
++   given in OPTSTRING.
++
++   If an element of ARGV starts with '-', and is not exactly "-" or "--",
++   then it is an option element.  The characters of this element
++   (aside from the initial '-') are option characters.  If `getopt'
++   is called repeatedly, it returns successively each of the option characters
++   from each of the option elements.
++
++   If `getopt' finds another option character, it returns that character,
++   updating `optind' and `nextchar' so that the next call to `getopt' can
++   resume the scan with the following option character or ARGV-element.
++
++   If there are no more option characters, `getopt' returns `EOF'.
++   Then `optind' is the index in ARGV of the first ARGV-element
++   that is not an option.  (The ARGV-elements have been permuted
++   so that those that are not options now come last.)
++
++   OPTSTRING is a string containing the legitimate option characters.
++   If an option character is seen that is not listed in OPTSTRING,
++   return BAD_OPTION after printing an error message.  If you set `opterr' to
++   zero, the error message is suppressed but we still return BAD_OPTION.
++
++   If a char in OPTSTRING is followed by a colon, that means it wants an arg,
++   so the following text in the same ARGV-element, or the text of the following
++   ARGV-element, is returned in `optarg'.  Two colons mean an option that
++   wants an optional arg; if there is text in the current ARGV-element,
++   it is returned in `optarg', otherwise `optarg' is set to zero.
++
++   If OPTSTRING starts with `-' or `+', it requests different methods of
++   handling the non-option ARGV-elements.
++   See the comments about RETURN_IN_ORDER and REQUIRE_ORDER, above.
++
++   Long-named options begin with `--' instead of `-'.
++   Their names may be abbreviated as long as the abbreviation is unique
++   or is an exact match for some defined option.  If they have an
++   argument, it follows the option name in the same ARGV-element, separated
++   from the option name by a `=', or else the in next ARGV-element.
++   When `getopt' finds a long-named option, it returns 0 if that option's
++   `flag' field is nonzero, the value of the option's `val' field
++   if the `flag' field is zero.
++
++   The elements of ARGV aren't really const, because we permute them.
++   But we pretend they're const in the prototype to be compatible
++   with other systems.
++
++   LONGOPTS is a vector of `struct option' terminated by an
++   element containing a name which is zero.
++
++   LONGIND returns the index in LONGOPT of the long-named option found.
++   It is only valid when a long-named option has been found by the most
++   recent call.
++
++   If LONG_ONLY is nonzero, '-' as well as '--' can introduce
++   long-named options.  */
++
++int
++_getopt_internal (argc, argv, optstring, longopts, longind, long_only)
++     int argc;
++     char *const *argv;
++     const char *optstring;
++     const struct option *longopts;
++     int *longind;
++     int long_only;
++{
++  int option_index;
++
++  optarg = 0;
++
++  /* Initialize the internal data when the first call is made.
++     Start processing options with ARGV-element 1 (since ARGV-element 0
++     is the program name); the sequence of previously skipped
++     non-option ARGV-elements is empty.  */
++
++  if (optind == 0)
++    {
++      first_nonopt = last_nonopt = optind = 1;
++
++      nextchar = NULL;
++
++      /* Determine how to handle the ordering of options and nonoptions.  */
++
++      if (optstring[0] == '-')
++	{
++	  ordering = RETURN_IN_ORDER;
++	  ++optstring;
++	}
++      else if (optstring[0] == '+')
++	{
++	  ordering = REQUIRE_ORDER;
++	  ++optstring;
++	}
++      else if (getenv ("POSIXLY_CORRECT") != NULL)
++	ordering = REQUIRE_ORDER;
++      else
++	ordering = PERMUTE;
++    }
++
++  if (nextchar == NULL || *nextchar == '\0')
++    {
++      if (ordering == PERMUTE)
++	{
++	  /* If we have just processed some options following some non-options,
++	     exchange them so that the options come first.  */
++
++	  if (first_nonopt != last_nonopt && last_nonopt != optind)
++	    exchange ((char **) argv);
++	  else if (last_nonopt != optind)
++	    first_nonopt = optind;
++
++	  /* Now skip any additional non-options
++	     and extend the range of non-options previously skipped.  */
++
++	  while (optind < argc
++		 && (argv[optind][0] != '-' || argv[optind][1] == '\0')
++#ifdef GETOPT_COMPAT
++		 && (longopts == NULL
++		     || argv[optind][0] != '+' || argv[optind][1] == '\0')
++#endif				/* GETOPT_COMPAT */
++		 )
++	    optind++;
++	  last_nonopt = optind;
++	}
++
++      /* Special ARGV-element `--' means premature end of options.
++	 Skip it like a null option,
++	 then exchange with previous non-options as if it were an option,
++	 then skip everything else like a non-option.  */
++
++      if (optind != argc && !strcmp (argv[optind], "--"))
++	{
++	  optind++;
++
++	  if (first_nonopt != last_nonopt && last_nonopt != optind)
++	    exchange ((char **) argv);
++	  else if (first_nonopt == last_nonopt)
++	    first_nonopt = optind;
++	  last_nonopt = argc;
++
++	  optind = argc;
++	}
++
++      /* If we have done all the ARGV-elements, stop the scan
++	 and back over any non-options that we skipped and permuted.  */
++
++      if (optind == argc)
++	{
++	  /* Set the next-arg-index to point at the non-options
++	     that we previously skipped, so the caller will digest them.  */
++	  if (first_nonopt != last_nonopt)
++	    optind = first_nonopt;
++	  return EOF;
++	}
++
++      /* If we have come to a non-option and did not permute it,
++	 either stop the scan or describe it to the caller and pass it by.  */
++
++      if ((argv[optind][0] != '-' || argv[optind][1] == '\0')
++#ifdef GETOPT_COMPAT
++	  && (longopts == NULL
++	      || argv[optind][0] != '+' || argv[optind][1] == '\0')
++#endif				/* GETOPT_COMPAT */
++	  )
++	{
++	  if (ordering == REQUIRE_ORDER)
++	    return EOF;
++	  optarg = argv[optind++];
++	  return 1;
++	}
++
++      /* We have found another option-ARGV-element.
++	 Start decoding its characters.  */
++
++      nextchar = (argv[optind] + 1
++		  + (longopts != NULL && argv[optind][1] == '-'));
++    }
++
++  if (longopts != NULL
++      && ((argv[optind][0] == '-'
++	   && (argv[optind][1] == '-' || long_only))
++#ifdef GETOPT_COMPAT
++	  || argv[optind][0] == '+'
++#endif				/* GETOPT_COMPAT */
++	  ))
++    {
++      const struct option *p;
++      char *s = nextchar;
++      int exact = 0;
++      int ambig = 0;
++      const struct option *pfound = NULL;
++      int indfound = 0;
++
++      while (*s && *s != '=')
++	s++;
++
++      /* Test all options for either exact match or abbreviated matches.  */
++      for (p = longopts, option_index = 0; p->name;
++	   p++, option_index++)
++	if (!strncmp (p->name, nextchar, s - nextchar))
++	  {
++	    if (s - nextchar == my_strlen (p->name))
++	      {
++		/* Exact match found.  */
++		pfound = p;
++		indfound = option_index;
++		exact = 1;
++		break;
++	      }
++	    else if (pfound == NULL)
++	      {
++		/* First nonexact match found.  */
++		pfound = p;
++		indfound = option_index;
++	      }
++	    else
++	      /* Second nonexact match found.  */
++	      ambig = 1;
++	  }
++
++      if (ambig && !exact)
++	{
++	  if (opterr)
++	    fprintf (stderr, "%s: option `%s' is ambiguous\n",
++		     argv[0], argv[optind]);
++	  nextchar += my_strlen (nextchar);
++	  optind++;
++	  return BAD_OPTION;
++	}
++
++      if (pfound != NULL)
++	{
++	  option_index = indfound;
++	  optind++;
++	  if (*s)
++	    {
++	      /* Don't test has_arg with >, because some C compilers don't
++		 allow it to be used on enums.  */
++	      if (pfound->has_arg)
++		optarg = s + 1;
++	      else
++		{
++		  if (opterr)
++		    {
++		      if (argv[optind - 1][1] == '-')
++			/* --option */
++			fprintf (stderr,
++				 "%s: option `--%s' doesn't allow an argument\n",
++				 argv[0], pfound->name);
++		      else
++			/* +option or -option */
++			fprintf (stderr,
++			     "%s: option `%c%s' doesn't allow an argument\n",
++			     argv[0], argv[optind - 1][0], pfound->name);
++		    }
++		  nextchar += my_strlen (nextchar);
++		  return BAD_OPTION;
++		}
++	    }
++	  else if (pfound->has_arg == 1)
++	    {
++	      if (optind < argc)
++		optarg = argv[optind++];
++	      else
++		{
++		  if (opterr)
++		    fprintf (stderr, "%s: option `%s' requires an argument\n",
++			     argv[0], argv[optind - 1]);
++		  nextchar += my_strlen (nextchar);
++		  return optstring[0] == ':' ? ':' : BAD_OPTION;
++		}
++	    }
++	  nextchar += my_strlen (nextchar);
++	  if (longind != NULL)
++	    *longind = option_index;
++	  if (pfound->flag)
++	    {
++	      *(pfound->flag) = pfound->val;
++	      return 0;
++	    }
++	  return pfound->val;
++	}
++      /* Can't find it as a long option.  If this is not getopt_long_only,
++	 or the option starts with '--' or is not a valid short
++	 option, then it's an error.
++	 Otherwise interpret it as a short option.  */
++      if (!long_only || argv[optind][1] == '-'
++#ifdef GETOPT_COMPAT
++	  || argv[optind][0] == '+'
++#endif				/* GETOPT_COMPAT */
++	  || my_index (optstring, *nextchar) == NULL)
++	{
++	  if (opterr)
++	    {
++	      if (argv[optind][1] == '-')
++		/* --option */
++		fprintf (stderr, "%s: unrecognized option `--%s'\n",
++			 argv[0], nextchar);
++	      else
++		/* +option or -option */
++		fprintf (stderr, "%s: unrecognized option `%c%s'\n",
++			 argv[0], argv[optind][0], nextchar);
++	    }
++	  nextchar = (char *) "";
++	  optind++;
++	  return BAD_OPTION;
++	}
++    }
++
++  /* Look at and handle the next option-character.  */
++
++  {
++    char c = *nextchar++;
++    char *temp = my_index (optstring, c);
++
++    /* Increment `optind' when we start to process its last character.  */
++    if (*nextchar == '\0')
++      ++optind;
++
++    if (temp == NULL || c == ':')
++      {
++	if (opterr)
++	  {
++#if 0
++	    if (c < 040 || c >= 0177)
++	      fprintf (stderr, "%s: unrecognized option, character code 0%o\n",
++		       argv[0], c);
++	    else
++	      fprintf (stderr, "%s: unrecognized option `-%c'\n", argv[0], c);
++#else
++	    /* 1003.2 specifies the format of this message.  */
++	    fprintf (stderr, "%s: illegal option -- %c\n", argv[0], c);
++#endif
++	  }
++	optopt = c;
++	return BAD_OPTION;
++      }
++    if (temp[1] == ':')
++      {
++	if (temp[2] == ':')
++	  {
++	    /* This is an option that accepts an argument optionally.  */
++	    if (*nextchar != '\0')
++	      {
++		optarg = nextchar;
++		optind++;
++	      }
++	    else
++	      optarg = 0;
++	    nextchar = NULL;
++	  }
++	else
++	  {
++	    /* This is an option that requires an argument.  */
++	    if (*nextchar != '\0')
++	      {
++		optarg = nextchar;
++		/* If we end this ARGV-element by taking the rest as an arg,
++		   we must advance to the next element now.  */
++		optind++;
++	      }
++	    else if (optind == argc)
++	      {
++		if (opterr)
++		  {
++#if 0
++		    fprintf (stderr, "%s: option `-%c' requires an argument\n",
++			     argv[0], c);
++#else
++		    /* 1003.2 specifies the format of this message.  */
++		    fprintf (stderr, "%s: option requires an argument -- %c\n",
++			     argv[0], c);
++#endif
++		  }
++		optopt = c;
++		if (optstring[0] == ':')
++		  c = ':';
++		else
++		  c = BAD_OPTION;
++	      }
++	    else
++	      /* We already incremented `optind' once;
++		 increment it again when taking next ARGV-elt as argument.  */
++	      optarg = argv[optind++];
++	    nextchar = NULL;
++	  }
++      }
++    return c;
++  }
++}
++
++int
++getopt (argc, argv, optstring)
++     int argc;
++     char *const *argv;
++     const char *optstring;
++{
++  return _getopt_internal (argc, argv, optstring,
++			   (const struct option *) 0,
++			   (int *) 0,
++			   0);
++}
++
++int
++getopt_long (argc, argv, options, long_options, opt_index)
++     int argc;
++     char *const *argv;
++     const char *options;
++     const struct option *long_options;
++     int *opt_index;
++{
++  return _getopt_internal (argc, argv, options, long_options, opt_index, 0);
++}
++
++#endif	/* _LIBC or not __GNU_LIBRARY__.  */
++
++#ifdef TEST
++
++/* Compile with -DTEST to make an executable for use in testing
++   the above definition of `getopt'.  */
++
++int
++main (argc, argv)
++     int argc;
++     char **argv;
++{
++  int c;
++  int digit_optind = 0;
++
++  while (1)
++    {
++      int this_option_optind = optind ? optind : 1;
++
++      c = getopt (argc, argv, "abc:d:0123456789");
++      if (c == EOF)
++	break;
++
++      switch (c)
++	{
++	case '0':
++	case '1':
++	case '2':
++	case '3':
++	case '4':
++	case '5':
++	case '6':
++	case '7':
++	case '8':
++	case '9':
++	  if (digit_optind != 0 && digit_optind != this_option_optind)
++	    printf ("digits occur in two different argv-elements.\n");
++	  digit_optind = this_option_optind;
++	  printf ("option %c\n", c);
++	  break;
++
++	case 'a':
++	  printf ("option a\n");
++	  break;
++
++	case 'b':
++	  printf ("option b\n");
++	  break;
++
++	case 'c':
++	  printf ("option c with value `%s'\n", optarg);
++	  break;
++
++	case BAD_OPTION:
++	  break;
++
++	default:
++	  printf ("?? getopt returned character code 0%o ??\n", c);
++	}
++    }
++
++  if (optind < argc)
++    {
++      printf ("non-option ARGV-elements: ");
++      while (optind < argc)
++	printf ("%s ", argv[optind++]);
++      printf ("\n");
++    }
++
++  exit (0);
++}
++
++#endif /* TEST */
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/progs/getopt.h ncurses-5.6/progs/getopt.h
+--- ncurses-5.6-orig/progs/getopt.h	Thu Jan  1 01:00:00 1970
++++ ncurses-5.6/progs/getopt.h	Wed Jan 30 21:08:33 2008
+@@ -0,0 +1,127 @@
++/* Declarations for getopt.
++   Copyright (C) 1989, 1990, 1991, 1992, 1993 Free Software Foundation, Inc.
++
++   This program is free software; you can redistribute it and/or modify it
++   under the terms of the GNU General Public License as published by the
++   Free Software Foundation; either version 2, or (at your option) any
++   later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
++
++#ifndef _GETOPT_H
++#define _GETOPT_H 1
++
++#ifdef	__cplusplus
++extern "C" {
++#endif
++
++/* For communication from `getopt' to the caller.
++   When `getopt' finds an option that takes an argument,
++   the argument value is returned here.
++   Also, when `ordering' is RETURN_IN_ORDER,
++   each non-option ARGV-element is returned here.  */
++
++extern char *optarg;
++
++/* Index in ARGV of the next element to be scanned.
++   This is used for communication to and from the caller
++   and for communication between successive calls to `getopt'.
++
++   On entry to `getopt', zero means this is the first call; initialize.
++
++   When `getopt' returns EOF, this is the index of the first of the
++   non-option elements that the caller should itself scan.
++
++   Otherwise, `optind' communicates from one call to the next
++   how much of ARGV has been scanned so far.  */
++
++extern int optind;
++
++/* Callers store zero here to inhibit the error message `getopt' prints
++   for unrecognized options.  */
++
++extern int opterr;
++
++/* Set to an option character which was unrecognized.  */
++
++extern int optopt;
++
++/* Describe the long-named options requested by the application.
++   The LONG_OPTIONS argument to getopt_long or getopt_long_only is a vector
++   of `struct option' terminated by an element containing a name which is
++   zero.
++
++   The field `has_arg' is:
++   no_argument		(or 0) if the option does not take an argument,
++   required_argument	(or 1) if the option requires an argument,
++   optional_argument 	(or 2) if the option takes an optional argument.
++
++   If the field `flag' is not NULL, it points to a variable that is set
++   to the value given in the field `val' when the option is found, but
++   left unchanged if the option is not found.
++
++   To have a long-named option do something other than set an `int' to
++   a compiled-in constant, such as set a value from `optarg', set the
++   option's `flag' field to zero and its `val' field to a nonzero
++   value (the equivalent single-letter option character, if there is
++   one).  For long options that have a zero `flag' field, `getopt'
++   returns the contents of the `val' field.  */
++
++struct option
++{
++#if	__STDC__
++  const char *name;
++#else
++  char *name;
++#endif
++  /* has_arg can't be an enum because some compilers complain about
++     type mismatches in all the code that assumes it is an int.  */
++  int has_arg;
++  int *flag;
++  int val;
++};
++
++/* Names for the values of the `has_arg' field of `struct option'.  */
++
++#define	no_argument		0
++#define required_argument	1
++#define optional_argument	2
++
++#if __STDC__ || defined(PROTO)
++#if defined(__GNU_LIBRARY__)
++/* Many other libraries have conflicting prototypes for getopt, with
++   differences in the consts, in stdlib.h.  To avoid compilation
++   errors, only prototype getopt for the GNU C library.  */
++extern int getopt (int argc, char *const *argv, const char *shortopts);
++#endif /* not __GNU_LIBRARY__ */
++extern int getopt_long (int argc, char *const *argv, const char *shortopts,
++		        const struct option *longopts, int *longind);
++extern int getopt_long_only (int argc, char *const *argv,
++			     const char *shortopts,
++		             const struct option *longopts, int *longind);
++
++/* Internal only.  Users should not call this directly.  */
++extern int _getopt_internal (int argc, char *const *argv,
++			     const char *shortopts,
++		             const struct option *longopts, int *longind,
++			     int long_only);
++#else /* not __STDC__ */
++extern int getopt ();
++extern int getopt_long ();
++extern int getopt_long_only ();
++
++extern int _getopt_internal ();
++#endif /* not __STDC__ */
++
++#ifdef	__cplusplus
++}
++#endif
++
++#endif /* _GETOPT_H */
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/progs/infocmp.c ncurses-5.6/progs/infocmp.c
+--- ncurses-5.6-orig/progs/infocmp.c	Sat Aug 19 23:20:37 2006
++++ ncurses-5.6/progs/infocmp.c	Wed Jan 30 21:09:10 2008
+@@ -51,6 +51,10 @@
+ 
+ const char *_nc_progname = "infocmp";
+ 
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#include "getopt.c"
++#endif
++
+ typedef char path[PATH_MAX];
+ 
+ /***************************************************************************
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/progs/progs.priv.h ncurses-5.6/progs/progs.priv.h
+--- ncurses-5.6-orig/progs/progs.priv.h	Sun Nov 26 01:28:01 2006
++++ ncurses-5.6/progs/progs.priv.h	Wed Jan 30 21:10:01 2008
+@@ -138,7 +138,11 @@
+ #endif
+ 
+ #ifndef X_OK
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#define X_OK	0
++#else
+ #define	X_OK	1		/* Test for executable.  */
++#endif
+ #endif
+ 
+ #ifndef F_OK
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/progs/tic.c ncurses-5.6/progs/tic.c
+--- ncurses-5.6-orig/progs/tic.c	Sat Dec  2 23:13:17 2006
++++ ncurses-5.6/progs/tic.c	Wed Jan 30 21:10:39 2008
+@@ -48,6 +48,10 @@
+ 
+ const char *_nc_progname = "tic";
+ 
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#include "getopt.c"
++#endif
++
+ static FILE *log_fp;
+ static FILE *tmp_fp;
+ static bool capdump = FALSE;	/* running as infotocap? */
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/progs/toe.c ncurses-5.6/progs/toe.c
+--- ncurses-5.6-orig/progs/toe.c	Sat Aug 19 20:18:09 2006
++++ ncurses-5.6/progs/toe.c	Mon Feb  4 13:05:52 2008
+@@ -36,6 +36,69 @@
+  *	toe.c --- table of entries report generator
+  */
+ 
++#if defined(_MSC_VER)
++#include <windows.h>
++
++struct direct {
++	char *d_name;
++	int d_namlen;
++};
++
++typedef struct {
++	HANDLE hnd;
++	WIN32_FIND_DATA fd;
++	int dirty;
++	struct direct d;
++	const char* current;
++} DIR;
++
++DIR* opendir(const char *name)
++{
++	DIR *d = (DIR*)malloc(sizeof(DIR));
++	static char buffer[MAX_PATH];
++
++	strncpy(buffer, name, MAX_PATH);
++	strncat(buffer, "\\*", MAX_PATH);
++	d->current = buffer;
++	d->hnd = FindFirstFile(buffer, &(d->fd));
++	if (d->hnd == INVALID_HANDLE_VALUE)
++		return NULL;
++	d->dirty = 1;
++	return d;
++}
++
++void rewinddir(DIR* d)
++{
++	if (d->hnd != INVALID_HANDLE_VALUE)
++		FindClose(d->hnd);
++	d->hnd = FindFirstFile(d->current, &(d->fd));
++	d->dirty = 1;
++}
++
++void closedir(DIR *d)
++{
++	if (d->hnd != INVALID_HANDLE_VALUE)
++		FindClose(d->hnd);
++	free(d);
++}
++
++struct direct* readdir(DIR *d)
++{
++	if (!d->dirty)
++	{
++		if (!FindNextFile(d->hnd, &(d->fd)))
++			return NULL;
++	}
++	d->d.d_name = d->fd.cFileName;
++	d->d.d_namlen = strlen(d->fd.cFileName);
++	d->dirty = 0;
++	return &(d->d);
++}
++
++#include "getopt.c"
++
++#endif
++
+ #include <progs.priv.h>
+ 
+ #include <sys/stat.h>
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/progs/tput.c ncurses-5.6/progs/tput.c
+--- ncurses-5.6-orig/progs/tput.c	Sun Nov 26 01:27:47 2006
++++ ncurses-5.6/progs/tput.c	Wed Jan 30 21:12:03 2008
+@@ -45,6 +45,11 @@
+ #endif
+ #include <transform.h>
+ 
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#define WIN32
++#include "getopt.c"
++#endif
++
+ MODULE_ID("$Id: tput.c,v 1.38 2006/11/26 00:27:47 tom Exp $")
+ 
+ #define PUTS(s)		fputs(s, stdout)
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/progs/tset.c ncurses-5.6/progs/tset.c
+--- ncurses-5.6-orig/progs/tset.c	Sat Sep 16 19:51:10 2006
++++ ncurses-5.6/progs/tset.c	Wed Jan 30 21:12:53 2008
+@@ -105,12 +105,20 @@
+ 
+ MODULE_ID("$Id: tset.c,v 1.67 2006/09/16 17:51:10 tom Exp $")
+ 
++#ifdef _MSC_VER
++extern __declspec(dllimport) char **environ;
++#else
+ extern char **environ;
++#endif
+ 
+ #undef CTRL
+ #define CTRL(x)	((x) & 0x1f)
+ 
+ const char *_nc_progname = "tset";
++
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#include "getopt.c"
++#endif
+ 
+ static TTY mode, oldmode, original;
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/tack/Makefile.in ncurses-5.6/tack/Makefile.in
+--- ncurses-5.6-orig/tack/Makefile.in	Sun Dec 17 16:58:32 2006
++++ ncurses-5.6/tack/Makefile.in	Mon Feb  4 13:11:25 2008
+@@ -166,7 +166,7 @@
+ 	$(MODEL)/tack$o
+ 
+ tack$x: $(DEPS_TACK) $(DEPS_CURSES)
+-	@ECHO_LINK@ $(LINK) $(DEPS_TACK) $(LDFLAGS_DEFAULT) -o $@
++	@ECHO_LINK@ $(LINK) $(DEPS_TACK) $(LDFLAGS_DEFAULT) -luser32 -o $@
+ 
+ #
+ # Utility productions start here
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/tack/init.c ncurses-5.6/tack/init.c
+--- ncurses-5.6-orig/tack/init.c	Sun Nov 26 01:16:01 2006
++++ ncurses-5.6/tack/init.c	Mon Feb  4 13:11:21 2008
+@@ -21,6 +21,9 @@
+ /* initialization and wrapup code */
+ 
+ #include <tack.h>
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#include <windows.h>
++#endif
+ 
+ MODULE_ID("$Id: init.c,v 1.7 2006/11/26 00:16:01 tom Exp $")
+ 
+@@ -258,7 +261,11 @@
+ 	   of this, I allow the terminal some time to catch up.
+ 	*/
+ 	fflush(stdout);	/* waste some time */
++#if defined(_MSC_VER) || defined(__MINGW32__)
++	Sleep(1000);
++#else
+ 	sleep(1);	/* waste more time */
++#endif
+ 	charset_can_test();
+ 	can_test("lines cols cr nxon rf if iprog rmp smcup rmcup", FLAG_CAN_TEST);
+ 	edit_init();			/* initialize the edit data base */
+@@ -311,6 +318,10 @@
+ 	fclose(stdout);
+ 	fclose(stderr);
+ 	if (not_a_tty)
++#if defined(_MSC_VER) || defined(__MINGW32__)
++		Sleep(1000);
++#else
+ 		sleep(1);
++#endif
+ 	exit(n);
+ }
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/tack/sysdep.c ncurses-5.6/tack/sysdep.c
+--- ncurses-5.6-orig/tack/sysdep.c	Sat Sep 17 21:49:16 2005
++++ ncurses-5.6/tack/sysdep.c	Wed Jan 30 21:16:39 2008
+@@ -425,10 +425,16 @@
+ {
+ 	/* ignore signals */
+ 	signal(SIGINT, SIG_IGN);
++#ifdef SIGHUP
+ 	signal(SIGHUP, SIG_IGN);
++#endif
++#ifdef SIGQUIT
+ 	signal(SIGQUIT, SIG_IGN);
++#endif
+ 	signal(SIGTERM, SIG_IGN);
++#ifdef SIGALRM
+ 	signal(SIGALRM, SIG_IGN);
++#endif
+ }
+ 
+  /*
+@@ -466,11 +472,15 @@
+ 	if ((signal(SIGINT, SIG_IGN)) == SIG_DFL)
+ 		signal(SIGINT, onintr);
+ 
++#ifdef SIGHUP
+ 	if ((signal(SIGHUP, SIG_IGN)) == SIG_DFL)
+ 		signal(SIGHUP, onintr);
++#endif
+ 
++#ifdef SIGQUIT
+ 	if ((signal(SIGQUIT, SIG_IGN)) == SIG_DFL)
+ 		signal(SIGQUIT, onintr);
++#endif
+ 
+ 	if ((signal(SIGTERM, SIG_IGN)) == SIG_DFL)
+ 		signal(SIGTERM, onintr);
+@@ -498,7 +508,9 @@
+ set_alarm_clock(
+ 	int seconds)
+ {
++#ifdef SIGALRM
+ 	signal(SIGALRM, alarm_event);
+ 	no_alarm_event = 1;
+ 	(void) alarm((unsigned) seconds);
++#endif
+ }
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/test/bs.c ncurses-5.6/test/bs.c
+--- ncurses-5.6-orig/test/bs.c	Sat May 20 17:38:52 2006
++++ ncurses-5.6/test/bs.c	Wed Jan 30 21:17:33 2008
+@@ -220,10 +220,12 @@
+ 
+     CATCHALL(uninitgame);
+ 
++#if !defined(_MSC_VER) && !defined(__MINGW32__)
+     if ((tmpname = getlogin()) != 0) {
+ 	(void) strcpy(name, tmpname);
+ 	name[0] = toupper(name[0]);
+     } else
++#endif
+ 	(void) strcpy(name, dftname);
+ 
+     (void) initscr();
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/test/dots.c ncurses-5.6/test/dots.c
+--- ncurses-5.6-orig/test/dots.c	Sat Nov  4 20:54:42 2006
++++ ncurses-5.6/test/dots.c	Wed Jan 30 21:17:58 2008
+@@ -50,7 +50,7 @@
+ {
+     if (interrupted) {
+ 	char tmp = c;
+-	write(STDOUT_FILENO, &tmp, 1);
++	write(fileno(stdout), &tmp, 1);
+     } else {
+ 	putc(c, stdout);
+     }
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/test/firstlast.c ncurses-5.6/test/firstlast.c
+--- ncurses-5.6-orig/test/firstlast.c	Sat Apr  1 21:03:18 2006
++++ ncurses-5.6/test/firstlast.c	Mon Feb  4 13:33:17 2008
+@@ -48,6 +48,11 @@
+     }
+ }
+ 
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#define large _large
++#define small _small
++#endif
++
+ int
+ main(int argc GCC_UNUSED,
+      char *argv[]GCC_UNUSED)
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/test/railroad.c ncurses-5.6/test/railroad.c
+--- ncurses-5.6-orig/test/railroad.c	Sat May 20 18:02:04 2006
++++ ncurses-5.6/test/railroad.c	Wed Jan 30 21:19:03 2008
+@@ -59,7 +59,7 @@
+ {
+     if (interrupted) {
+ 	char tmp = c;
+-	write(STDOUT_FILENO, &tmp, 1);
++	write(fileno(stdout), &tmp, 1);
+     } else {
+ 	putc(c, stdout);
+     }
+@@ -79,6 +79,10 @@
+ {
+     tputs(backup != 0 ? backup : "\b", 1, outc);
+ }
++
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#define ShowCursor NC_ShowCursor
++#endif
+ 
+ static void
+ ShowCursor(int flag)
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/test/tclock.c ncurses-5.6/test/tclock.c
+--- ncurses-5.6-orig/test/tclock.c	Sat Apr 16 18:39:27 2005
++++ ncurses-5.6/test/tclock.c	Wed Jan 30 21:19:31 2008
+@@ -133,8 +133,8 @@
+     int my_bg = COLOR_BLACK;
+ #if HAVE_GETTIMEOFDAY
+     struct timeval current;
+-    double fraction = 0.0;
+ #endif
++    double fraction = 0.0;
+ 
+     setlocale(LC_ALL, "");
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/test/test.priv.h ncurses-5.6/test/test.priv.h
+--- ncurses-5.6-orig/test/test.priv.h	Sat Jul 15 20:27:24 2006
++++ ncurses-5.6/test/test.priv.h	Wed Jan 30 21:20:35 2008
+@@ -444,11 +444,18 @@
+ 
+ #define VT_ACSC "``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~"
+ 
++#if defined(_MSC_VER) || defined(__MINGW32__)
++#define CATCHALL
++#include <windows.h>
++#define sleep(x) Sleep(x*1000)
++#else
++
+ #define CATCHALL(handler) { \
+ 		int nsig; \
+ 		for (nsig = SIGHUP; nsig < SIGTERM; ++nsig) \
+ 		    if (nsig != SIGKILL) \
+ 			signal(nsig, handler); \
+ 	    }
++#endif
+ 
+ #endif /* __TEST_PRIV_H */
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak ncurses-5.6-orig/test/view.c ncurses-5.6/test/view.c
+--- ncurses-5.6-orig/test/view.c	Sat May 20 17:37:03 2006
++++ ncurses-5.6/test/view.c	Wed Jan 30 21:21:13 2008
+@@ -62,7 +62,9 @@
+ #if HAVE_TERMIOS_H
+ # include <termios.h>
+ #else
+-# include <sgtty.h>
++# if !defined(_MSC_VER) && !defined(__MINGW32__)
++#  include <sgtty.h>
++# endif
+ #endif
+ 
+ #if !defined(sun) || !HAVE_TERMIOS_H

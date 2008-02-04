@@ -41,7 +41,7 @@ available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline 
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
-ImageMagick libtiff"
+ImageMagick libtiff libwmf"
 octave_version=
 of_version=
 do_nsi=false
@@ -73,6 +73,7 @@ gmagickver=1.1.10
 bzip2ver=1.0.4
 imagickver=6.3.8
 tiffver=3.8.2
+wmfver=0.2.8.4
 
 ###################################################################################
 
@@ -210,17 +211,21 @@ function create_module_rc
   module_copyright="$6"
   module_major=`echo $module_version | sed -e "s/\..*//"`
   module_minor=`echo $module_version | sed -e "s/^[^.]*\.//" -e "s/\..*//"`
-  module_patch=`echo $module_version | sed -n -e "s/[0-9]\+\.[0-9]\+\.//p"`
+  module_patch=`echo $module_version | sed -n -e "s/[0-9]\+\.[0-9]\+\.\([^.]*\).*/\1/p"`
+  module_build=`echo $module_version | sed -n -e "s/[0-9]\+\.[0-9]\+\.[0-9]\+\.\([^.]*\).*/\1/p"`
   if test -z "$module_patch"; then
     module_patch=0
+  fi
+  if test -z "$module_build"; then
+    module_build=0
   fi
   cat <<EOF
 #define WINDOWS_LEAN_AND_MEAN
 #include <windows.h>
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION		$module_major, $module_minor, $module_patch, 0
-PRODUCTVERSION	$module_major, $module_minor, $module_patch, 0
+FILEVERSION		$module_major, $module_minor, $module_patch, $module_build
+PRODUCTVERSION	$module_major, $module_minor, $module_patch, $module_build
 FILEFLAGSMASK	0x3fL
 FILEFLAGS 0
 FILEOS VOS_NT_WINDOWS32
@@ -483,6 +488,7 @@ if test -z "$todo_packages"; then
     #todo_check "$tlibdir/GraphicsMagick.lib" GraphicsMagick
     todo_check "$tlibdir/Magick.lib" ImageMagick
     todo_check "$tlibdir/tiff.lib" libtiff
+    todo_check "$tlibdir/wmf.lib" libwmf
   fi
 else
   packages="$todo_packages"
@@ -2157,7 +2163,7 @@ if check_package libtiff; then
   echo -n "compiling libtiff... "
   (cd "$DOWNLOAD_DIR/tiff-$tiffver" &&
     create_module_rc LibTIFF $tiffver libtiff.dll "http://www.libtiff.org" \
-      "LibTIFF - TIFF Image Library" "Copyright (C) 1988-`date +%Y` Sam Leffl" > libtiff/libtiff.rc &&
+      "LibTIFF - TIFF Image Library" "Copyright (C) 1988-`date +%Y` Sam Leffler" > libtiff/libtiff.rc &&
     sed -e "s/^#JPEG_SUPPORT/JPEG_SUPPORT/" \
         -e "s/^#ZIP_SUPPORT/ZIP_SUPPORT/" \
         -e "s/^#JPEG_LIB.*$/JPEG_LIB = jpeg.lib/" \
@@ -2177,6 +2183,64 @@ if check_package libtiff; then
     true) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/tiff-$tiffver"
   if test ! -f "$tlibdir/tiff.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##########
+# libwmf #
+##########
+
+if check_package libwmf; then
+  download_file libwmf-$wmfver.tar.gz "http://downloads.sourceforge.net/wvware/libwmf-$wmfver.tar.gz?big_mirror=0"
+  echo -n "decompressing libwmf... "
+  unpack_file libwmf-$wmfver.tar.gz
+  echo "done"
+  echo -n "compiling libwmf... "
+  (cd "$DOWNLOAD_DIR/libwmf-$wmfver" &&
+    create_module_rc libwmf $wmfver libwmf.dll "http://wvware.sourceforge.net/libwmf.html" \
+      "LibWMF - Library for converting WMF" "Copyright (C) wvWare projects" > src/wmf.rc &&
+    create_module_rc libwmf $wmfver libwmflite.dll "http://wvware.sourceforge.net/libwmf.html" \
+      "LibWMF - Library for converting WMF" "Copyright (C) wvWare projects" > src/wmflite.rc &&
+    sed -e "/^LIBS=\"-lpng/ {s/-lm//;}" configure > ttt &&
+      mv ttt configure &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --disable-gd &&
+    post_process_libtool &&
+    sed -e "s,/\([a-z]\)/,\1:/,g" libwmf-config > ttt &&
+      mv ttt libwmf-config &&
+    sed -e "s/^libwmflite_la_LDFLAGS =/& -Wl,-def:wmflite.def -Wl,wmflite.res/" \
+        -e "s/^libwmflite\.la:.*$/& wmflite.def wmflite.res/" \
+        -e "s/^libwmf_la_LDFLAGS =/& -Wl,-def:wmf.def -Wl,wmf.res/" \
+        -e "s/^libwmf\.la:.*$/& wmf.def wmf.res/" \
+        src/Makefile > ttt &&
+      mv ttt src/Makefile &&
+    (cat >> src/Makefile <<\EOF
+wmflite.def: $(libwmflite_la_OBJECTS)
+	@echo "Generating $@..."
+	@echo "EXPORTS" > $@
+	@nm $(addprefix .libs/, $(libwmflite_la_OBJECTS:.lo=.o)) | \
+	  sed -n -e 's/^[0-9a-fA-F]\+ T _\([^   ]*\).*$$/\1/p' >> $@
+wmf.def: $(libwmf_la_OBJECTS)
+	@echo "Generating $@..."
+	@echo "EXPORTS" > $@
+	@nm $(addprefix .libs/, $(libwmf_la_OBJECTS:.lo=.o)) ipa/.libs/libipa.lib | \
+	  sed -n -e 's/^[0-9a-fA-F]\+ T _\([^   @]*\).*$$/\1/p' >> $@
+wmf.res: wmf.rc
+	rc -fo $@ wmf.rc
+wmflite.res: wmflite.rc
+	rc -fo $@ wmflite.rc
+EOF
+      ) &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libwmf*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/libwmf-$wmfver"
+  if test ! -f "$tlibdir/wmf.lib"; then
     echo "failed"
     exit -1
   else

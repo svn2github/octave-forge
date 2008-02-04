@@ -1,11 +1,14 @@
 -*- texinfo -*-
 @deftypefn {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})
 Return a row vector with @var{n} linearly spaced elements between
-@var{base} and @var{limit}.  The number of elements, @var{n}, must be
-greater than 1.  The @var{base} and @var{limit} are always included in
+@var{base} and @var{limit}.  If the number of elements is greater than one,
+then the @var{base} and @var{limit} are always included in
 the range.  If @var{base} is greater than @var{limit}, the elements are
 stored in decreasing order.  If the number of points is not specified, a
 value of 100 is used.
 
 The @code{linspace} function always returns a row vector.
+
+For compatibility with @sc{Matlab}, return the second argument if
+fewer than two values are requested.
 @end deftypefn

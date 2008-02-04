@@ -1,11 +1,11 @@
 -*- texinfo -*-
 @deftypefn {Loadable Function} {} ifftn (@var{a}, @var{size})
-Compute the invesre N dimensional FFT of @var{a} using subroutines from
-@sc{Fftpack}. The optional vector argument @var{size} may be used specify the
+Compute the inverse N dimensional FFT of @var{a} using subroutines from
+@sc{Fftw}. The optional vector argument @var{size} may be used specify the
 dimensions of the array to be used. If an element of @var{size} is
 smaller than the corresponding dimension, then the dimension is
 truncated prior to performing the inverse FFT. Otherwise if an element
 of @var{size} is larger than the corresponding dimension @var{a}
 is resized and padded with zeros.
-@seealso {fftn, ifft, ifft2, fftw_wisdom}
+@seealso {fftn, ifft, ifft2, fftw}
 @end deftypefn

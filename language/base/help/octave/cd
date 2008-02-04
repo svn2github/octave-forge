@@ -2,7 +2,7 @@
 @deffn {Command} cd dir
 @deffnx {Command} chdir dir
 Change the current working directory to @var{dir}.  If @var{dir} is
-omitted, the current directory is changed to the users home
+omitted, the current directory is changed to the user's home
 directory.  For example,
 
 @example

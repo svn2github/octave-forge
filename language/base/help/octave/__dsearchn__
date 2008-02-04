@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})
+Undocumented internal function.
+@end deftypefn

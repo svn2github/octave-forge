@@ -1,0 +1,11 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{yi} =} griddatan (@var{x}, @var{y}, @var{xi}, @var{method}, @var{options})
+
+Generate a regular mesh from irregular data using interpolation.
+The function is defined by @code{@var{y} = f (@var{x})}.
+The interpolation points are all @var{xi}.  
+
+The interpolation method can be @code{"nearest"} or @code{"linear"}.
+If method is omitted it defaults to @code{"linear"}.
+@seealso{griddata, delaunayn}
+@end deftypefn

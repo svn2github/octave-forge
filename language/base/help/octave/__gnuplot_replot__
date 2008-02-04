@@ -1,2 +1,5 @@
+-*- texinfo -*-
 Plot with gnuplot.
 
+@strong{This function is obsolete and will be removed from a future version
+of Octave.}

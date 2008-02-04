@@ -29,5 +29,5 @@ Times of the step response.
 @end table
 
 When invoked with the output parameter @var{y} the plot is not displayed.
-@seealso{impulse, __stepimp__}
+@seealso{impulse}
 @end deftypefn

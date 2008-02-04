@@ -1,0 +1,101 @@
+-*- texinfo -*-
+@deftypefn {Command} edit @var{name}
+@deftypefnx {Command} edit @var{field} @var{value}
+@deftypefnx {Command} @var{value} = edit get @var{field}
+Edit the named function, or change editor settings.
+
+If @code{edit} is called with the name of a file or function as
+its argument it will be opened in a text editor.
+
+@itemize @bullet
+@item
+If the function @var{name} is available in a file on your path and
+that file is modifiable, then it will be edited in place.  If it 
+is a system function, then it will first be copied to the directory
+@code{HOME} (see further down) and then edited.  
+
+@item
+If @var{name} is the name of a function defined in the interpreter but 
+not in an m-file, then an m-file will be created in @code{HOME}
+to contain that function along with its current definition.  
+
+@item
+If @code{name.cc} is specified, then it will search for @code{name.cc}
+in the path and try to modify it, otherwise it will create a new
+@file{.cc} file in @code{HOME}.  If @var{name} happens to be an
+m-file or interpreter defined function, then the text of that
+function will be inserted into the .cc file as a comment.
+
+@item
+If @var{name.ext} is on your path then it will be editted, otherwise
+the editor will be started with @file{HOME/name.ext} as the
+filename.  If @file{name.ext} is not modifiable, it will be copied to
+@code{HOME} before editing.
+
+@strong{WARNING!} You may need to clear name before the new definition
+is available.  If you are editing a .cc file, you will need
+to mkoctfile @file{name.cc} before the definition will be available.
+@end itemize
+
+If @code{edit} is called with @var{field} and @var{value} variables,
+the value of the control field @var{field} will be @var{value}.
+If an output argument is requested and the first argument is @code{get}
+then @code{edit} will return the value of the control field @var{field}.
+The following control fields are used:
+
+@table @samp
+@item editor
+This is the editor to use to modify the functions.  By default it uses
+Octave's @code{EDITOR} built-in function, which comes from 
+@code{getenv("EDITOR")} and defaults to @code{emacs}.  Use @code{%s}
+In place of the function name.  For example,
+@table @samp
+@item [EDITOR, " %s"]
+Use the editor which Octave uses for @code{bug_report}.
+@item "xedit %s &"           
+pop up simple X11 editor in a separate window
+@item "gnudoit -q \"(find-file \\\"%s\\\")\""   
+Send it to current Emacs; must have @code{(gnuserv-start)} in @file{.emacs}.
+@end table
+
+On cygwin, you will need to convert the cygwin path to a windows
+path if you are using a native Windows editor.  For example
+@example
+'"C:/Program Files/Good Editor/Editor.exe" "$(cygpath -wa %s)"'
+@end example
+
+@item home
+This is the location of user local m-files. Be be sure it is in your
+path. The default is @file{~/octave}.
+
+@item author
+This is the name to put after the "## Author:" field of new functions.
+By default it guesses from the @code{gecos} field of password database.
+
+@item email
+This is the e-mail address to list after the name in the author field.
+By default it guesses @code{<$LOGNAME@@$HOSTNAME>}, and if @code{$HOSTNAME}
+is not defined it uses @code{uname -n}.  You probably want to override this.
+Be sure to use @code{<user@@host>} as your format.
+
+@item license
+@table @samp
+@item gpl
+GNU General Public License (default).
+@item bsd
+BSD-style license without advertising clause.
+@item pd
+Public domain.
+@item "text"
+Your own default copyright and license.
+@end table
+
+@item mode
+This value determines whether the editor should be started in async mode
+or sync mode. Set it to "async" to start the editor in async mode. The
+default is "sync" (see also "system").
+
+Unless you specify @samp{pd}, edit will prepend the copyright statement 
+with "Copyright (C) yyyy Function Author".
+@end table
+@end deftypefn

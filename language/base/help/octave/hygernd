@@ -1,10 +1,15 @@
 -*- texinfo -*-
-@deftypefn {Function File} {} hygernd (@var{m}, @var{t}, @var{n}, @var{r}, @var{c})
-@deftypefnx {Function File} {} hygernd (@var{m}, @var{t}, @var{n}, @var{sz})
+@deftypefn {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r}, @var{c})
+@deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{sz})
+@deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n})
 Return an @var{r} by @var{c} matrix of random samples from the
-hypergeometric distribution with parameters @var{m}, @var{t},
+hypergeometric distribution with parameters @var{t}, @var{m},
 and @var{n}.
 
-The parameters @var{m}, @var{t}, and @var{n} must positive integers
+The parameters @var{t}, @var{m}, and @var{n} must positive integers
 with @var{m} and @var{n} not greater than @var{t}.
+
+The parameter @var{sz} must be scalar or a vector of matrix
+dimensions. If @var{sz} is scalar, then a @var{sz} by @var{sz}
+matrix of random samples is generated.
 @end deftypefn

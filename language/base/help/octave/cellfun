@@ -1,12 +1,12 @@
  -*- texinfo -*-
-@deftypefn {Lodable Function} {} cellfun (@var{name}, @var{c})
-@deftypefnx {Lodable Function} {} cellfun ("size", @var{c}, @var{k})
-@deftypefnx {Lodable Function} {} cellfun ("isclass", @var{c}, @var{class})
-@deftypefnx {Lodable Function} {} cellfun (@var{func}, @var{c})
-@deftypefnx {Lodable Function} {} cellfun (@var{func}, @var{c}, @var{d})
-@deftypefnx {Lodable Function} {[@var{a}, @var{b}]} = cellfun (@dots{})
-@deftypefnx {Lodable Function} {} cellfun (@dots{}, 'ErrorHandler',@var{errfunc})
-@deftypefnx {Lodable Function} {} cellfun (@dots{}, 'UniformOutput',@var{val})
+@deftypefn {Loadable Function} {} cellfun (@var{name}, @var{c})
+@deftypefnx {Loadable Function} {} cellfun ("size", @var{c}, @var{k})
+@deftypefnx {Loadable Function} {} cellfun ("isclass", @var{c}, @var{class})
+@deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{c})
+@deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{c}, @var{d})
+@deftypefnx {Loadable Function} {[@var{a}, @var{b}] =} cellfun (@dots{})
+@deftypefnx {Loadable Function} {} cellfun (@dots{}, 'ErrorHandler', @var{errfunc})
+@deftypefnx {Loadable Function} {} cellfun (@dots{}, 'UniformOutput', @var{val})
 
 Evaluate the function named @var{name} on the elements of the cell array
 @var{c}.  Elements in @var{c} are passed on to the named function
@@ -56,7 +56,8 @@ a cell array. For example
 
 @example
 @group
-cellfun ("tolower(x)", @{"Foo", "Bar", "FooBar"@},'UniformOutput',false)
+cellfun ("tolower(x)", @{"Foo", "Bar", "FooBar"@},
+         "UniformOutput",false)
 @result{} ans = @{"foo", "bar", "foobar"@}
 @end group
 @end example

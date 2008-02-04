@@ -97,6 +97,13 @@ output argument.  For example,
 @example
 p = pkg prefix
 @end example
+
+The location in which to install the architecture dependent files can be
+independent specified with an addition argument. For example
+
+@example
+pkg prefix ~/my_octave_packages ~/my_octave_packages_for_my_pc
+@end example
 @item local_list
 Set the file in which to look for information on the locally
 installed packages. Locally installed packages are those that are

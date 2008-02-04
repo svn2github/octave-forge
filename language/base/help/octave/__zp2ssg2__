@@ -1,6 +1,1 @@
--*- texinfo -*-
-@deftypefn {Function File} {[@var{poly}, @var{rvals}] =} __zp2ssg2__ (@var{rvals})
-Used internally in @code{zp2ss}
-Extract 2 values from @var{rvals} (if possible) and construct
-a polynomial with those roots.
-@end deftypefn
+Undocumented internal function.

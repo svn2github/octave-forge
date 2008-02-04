@@ -14,7 +14,7 @@ Purely discrete portion of sys (returned empty if there is
 no purely discrete path from inputs to outputs).
 @item    adc
 @itemx   cdc
-Connections from continuous states to discrete states and discrete.
+Connections from continuous states to discrete states and discrete
 outputs, respectively.
 @end table
 @end deftypefn

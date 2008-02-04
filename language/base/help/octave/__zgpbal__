@@ -1,17 +1,1 @@
--*- texinfo -*-
-@deftypefn {Function File} {} __zgpbal__ (@var{sys})
-
-Used internally in @command{tzero}; minimal argument checking performed.
-
-Implementation of zero computation generalized eigenvalue problem
-balancing method (Hodel and Tiller, Allerton Conference, 1991)
-Based on Ward's balancing algorithm (@acronym{SIAM} J. Sci Stat. Comput., 1981).
-
-@command{__zgpbal__} computes a state/input/output weighting that attempts to
-reduced the range of the magnitudes of the nonzero elements of [@var{a}, @var{b},
-@var{c}, @var{d}].
-The weighting uses scalar multiplication by powers of 2, so no roundoff
-will occur.
-
-@command{__zgpbal__} should be followed by @command{zgpred}.
-@end deftypefn
+Undocumented internal function.

@@ -25,7 +25,7 @@ Assumes @code{@var{x} = 1:rows (@var{z})} and @code{@var{y} =
 1:columns (@var{z})}
 
 @item interp2 (@var{z}, @var{n}) 
-Interleaves the Matrix @var{z} n-times. If @var{n} is ommited a value
+Interleaves the Matrix @var{z} n-times. If @var{n} is omitted a value
 of @code{@var{n} = 1} is assumed.
 @end table
 
@@ -43,13 +43,13 @@ Piece-wise cubic hermite interpolating polynomial (not implemented yet).
 Cubic interpolation from four nearest neighbors.
 @item 'spline'
 Cubic spline interpolation--smooth first and second derivatives
-throughout the curve (not implemented yet).
+throughout the curve.
 @end table
 
 If a scalar value @var{extrapval} is defined as the final value, then
 values outside the mesh as set to this value. Note that in this case 
 @var{method} must be defined as well. If @var{extrapval} is not
-defined then NaN is assumed. 
+defined then NA is assumed. 
 
 @seealso{interp1}
 @end deftypefn

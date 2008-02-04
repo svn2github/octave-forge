@@ -7,10 +7,10 @@
 Constrained column approximate minimum degree permutation. @code{@var{p} =
 ccolamd (@var{s})} returns the column approximate minimum degree permutation
 vector for the sparse matrix @var{s}. For a non-symmetric matrix @var{s},
-@code{@var{s}(:,@var{p})} tends to have sparser LU factors than @var{s}.
-@code{chol (@var{s}(:,@var{p})'*@var{s}(:,@var{p}))} also tends to be
-sparser than @code{chol (@var{s}'*@var{s})}. @code{@var{p} = ccolamd
-(@var{s},1)} optimizes the ordering for @code{lu (@var{s}(:,@var{p}))}.
+@code{@var{s} (:, @var{p})} tends to have sparser LU factors than @var{s}.
+@code{chol (@var{s} (:, @var{p})' * @var{s} (:, @var{p}))} also tends to be
+sparser than @code{chol (@var{s}' * @var{s})}. @code{@var{p} = ccolamd
+(@var{s}, 1)} optimizes the ordering for @code{lu (@var{s} (:, @var{p}))}.
 The ordering is followed by a column elimination tree post-ordering.
 
 @var{knobs} is an optional one- to five-element input vector, with a default
@@ -19,18 +19,18 @@ are set to their defaults.
 
 @table @code
 @item @var{knobs}(1)
-if nonzero, the ordering is optimized for @code{lu(S(:,p))}. It will be a
-poor ordering for @code{chol(@var{s}(:,@var{p})'*@var{s}(:,@var{p}))}. This
-is the most important knob for ccolamd.
+if nonzero, the ordering is optimized for @code{lu (S (:, p))}. It will be a
+poor ordering for @code{chol (@var{s} (:, @var{p})' * @var{s} (:,
+@var{p}))}. This is the most important knob for ccolamd.
 
 @item @var{knob}(2)
-if @var{s} is m-by-n, rows with more than @code{max(16,@var{knobs}(2)*
-sqrt(n))} entries are ignored.
+if @var{s} is m-by-n, rows with more than @code{max (16, @var{knobs} (2) *
+sqrt (n))} entries are ignored.
 
 @item @var{knob}(3)
-columns with more than @code{max(16,@var{knobs}(3)*sqrt(min(m,n)))}
-entries are ignored and ordered last in the output permutation (subject
-to the cmember constraints).
+columns with more than @code{max (16, @var{knobs} (3) * sqrt (min (@var{m},
+@var{n})))} entries are ignored and ordered last in the output permutation
+(subject to the cmember constraints).
 
 @item @var{knob}(4)
 if nonzero, aggressive absorption is performed.
@@ -41,36 +41,38 @@ if nonzero, statistics and knobs are printed.
 @end table
 
 @var{cmember} is an optional vector of length n.  It defines the constraints
-on the column ordering.  If @code{@var{cmember}(j) = @var{c}}, then column j
-is in constraint set @var{c} (@var{c} must be in the range 1 to n).  In
-the output permutation @var{p}, all columns in set 1 appear first, followed
-by all columns in set 2, and so on.  @code{@var{cmember} = ones(1,n)} if
-not present or empty.  @code{ccolamd (@var{s},[],1:n)} returns @code{1:n}
+on the column ordering.  If @code{@var{cmember} (j) = @var{c}}, then column
+@var{j} is in constraint set @var{c} (@var{c} must be in the range 1 to
+@var{n}).  In the output permutation @var{p}, all columns in set 1 appear
+first, followed by all columns in set 2, and so on.  @code{@var{cmember} =
+ones(1,n)} if not present or empty.  @code{ccolamd (@var{s}, [], 1 :
+@var{n})} returns @code{1 : @var{n}}
 
-@code{@var{p} = ccolamd(@var{s})} is about the same as @code{@var{p} =
-colamd(@var{s})}. @var{knobs} and its default values differ. @code{colamd}
+@code{@var{p} = ccolamd (@var{s})} is about the same as @code{@var{p} =
+colamd (@var{s})}. @var{knobs} and its default values differ. @code{colamd}
 always does aggressive absorption, and it finds an ordering suitable for
-both @code{lu(@var{s}(:,@var{p}))} and @code{chol(@var{S}(:,@var{p})'*
-@var{s}(:,@var{p}))}; it cannot optimize its ordering for @code{lu(@var{s}
-(:,@var{p}))} to the extent that @code{ccolamd(@var{s},1)} can.
+both @code{lu (@var{s} (:, @var{p}))} and @code{chol (@var{S} (:, @var{p})'
+* @var{s} (:, @var{p}))}; it cannot optimize its ordering for
+@code{lu (@var{s} (:, @var{p}))} to the extent that
+@code{ccolamd (@var{s}, 1)} can.
 
 @var{stats} is an optional 20-element output vector that provides data
 about the ordering and the validity of the input matrix @var{s}. Ordering
-statistics are in @code{@var{stats} (1:3)}. @code{@var{stats} (1)} and
+statistics are in @code{@var{stats} (1 : 3)}. @code{@var{stats} (1)} and
 @code{@var{stats} (2)} are the number of dense or empty rows and columns
 ignored by CCOLAMD and @code{@var{stats} (3)} is the number of garbage
 collections performed on the internal data structure used by CCOLAMD
-(roughly of size @code{2.2 * nnz(@var{s}) + 4 * @var{m} + 7 * @var{n}}
+(roughly of size @code{2.2 * nnz (@var{s}) + 4 * @var{m} + 7 * @var{n}}
 integers).
 
-@code{@var{stats} (4:7)} provide information if CCOLAMD was able to
+@code{@var{stats} (4 : 7)} provide information if CCOLAMD was able to
 continue. The matrix is OK if @code{@var{stats} (4)} is zero, or 1 if
 invalid. @code{@var{stats} (5)} is the rightmost column index that is
 unsorted or contains duplicate entries, or zero if no such column exists.
 @code{@var{stats} (6)} is the last seen duplicate or out-of-order row
 index in the column index given by @code{@var{stats} (5)}, or zero if no
 such row index exists. @code{@var{stats} (7)} is the number of duplicate
-or out-of-order row indices. @code{@var{stats} (8:20)} is always zero in
+or out-of-order row indices. @code{@var{stats} (8 : 20)} is always zero in
 the current version of CCOLAMD (reserved for future use).
 
 The authors of the code itself are S. Larimore, T. Davis (Uni of Florida)

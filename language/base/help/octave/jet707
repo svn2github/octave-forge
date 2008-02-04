@@ -15,6 +15,7 @@ System inputs: (1) thrust and (2) elevator angle.
 
 System outputs:  (1) airspeed and (2) pitch angle.
 
-@strong{Reference}: R. Brockhaus: @cite{Flugregelung} (Flight Control), Springer, 1994.
+@strong{Reference}: R. Brockhaus: @cite{Flugregelung} (Flight
+Control), Springer, 1994.
 @seealso{ord2}
 @end deftypefn

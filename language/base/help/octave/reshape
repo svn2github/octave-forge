@@ -1,8 +1,8 @@
 -*- texinfo -*-
-@deftypefn {Function File} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})
-@deftypefnx {Function File} {} reshape (@var{a}, @var{siz})
+@deftypefn {Built-in Function} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})
+@deftypefnx {Built-in Function} {} reshape (@var{a}, @var{siz})
 Return a matrix with the given dimensions whose elements are taken
-from the matrix @var{a}.  The elements of the matrix are access in
+from the matrix @var{a}.  The elements of the matrix are accessed in
 column-major order (like Fortran arrays are stored).
 
 For example,

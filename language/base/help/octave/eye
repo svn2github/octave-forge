@@ -37,6 +37,7 @@ the specified type, like
 val = zeros (n,m, "uint8")
 @end example
 
-For compatibility with @sc{Matlab}, calling @code{eye} with no arguments
-is equivalent to calling it with an argument of 1.
+Calling @code{eye} with no arguments is equivalent to calling it
+with an argument of 1.  This odd definition is for compatibility
+with @sc{Matlab}.
 @end deftypefn

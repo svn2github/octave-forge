@@ -16,7 +16,7 @@ P(x) = (-1) * (1-x  )    * ----  P (x)
 @end group
 
 with:
-Legendre Polynom of degree n
+Legendre polynomial of degree n
 
 @group
           1     d^n   2    n

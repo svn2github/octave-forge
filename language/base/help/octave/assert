@@ -17,10 +17,12 @@ observed and expected can be strings, scalars, vectors, matrices,
 lists or structures.
 
 @item assert(@var{observed}, @var{expected}, @var{tol})
-Produce an error if relative error is less than tolerance. That is, 
-@code{abs(@var{observed} - @var{expected}) > @var{tol} * @var{expected}}.  
-Absolute error @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})} 
-will be used when tolerance is negative or when the expected value is zero.
+Accept a tolerance when comparing numbers. 
+If @var{tol} is possitive use it as an absolute tolerance, will produce an error if
+@code{abs(@var{observed} - @var{expected}) > abs(@var{tol})}.
+If @var{tol} is negative use it as a relative tolerance, will produce an error if
+@code{abs(@var{observed} - @var{expected}) > abs(@var{tol} * @var{expected})}.
+If @var{expected} is zero @var{tol} will always be used as an absolute tolerance.
 @end table
 @seealso{test}
 @end deftypefn

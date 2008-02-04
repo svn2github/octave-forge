@@ -60,7 +60,7 @@ Maximum number of values of the artificial stepsize parameter to be
 tried if the @code{"compute consistent initial condition"} option has
 been set to 1 (default is 5).
 
-Note that the maximum number of Newton iterations allowed in all is
+Note that the maximum total number of Newton iterations allowed is
 @code{MXNIT*MXNJ*MXNH} if the @code{"compute consistent initial
 condition"} option has been set to 1 and @code{MXNIT*MXNJ} if it is
 set to 2.
@@ -125,7 +125,7 @@ Greater than zero.
 This option only has an effect if the
 @code{"enforce inequality constraints"} option is nonzero.
 @item "initial step size"
-Differential-algebraic problems may occaisionally suffer from severe
+Differential-algebraic problems may occasionally suffer from severe
 scaling difficulties on the first step.  If you know a great deal
 about the scaling of your problem, you can help to alleviate this
 problem by specifying an initial stepsize (default is computed

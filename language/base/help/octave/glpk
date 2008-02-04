@@ -3,27 +3,62 @@
 Solve a linear program using the GNU GLPK library.  Given three
 arguments, @code{glpk} solves the following standard LP:
 
+@iftex
+@tex
+$$
+  \min_x C^T x
+$$
+@end tex
+@end iftex
+@ifnottex
 @example
 min C'*x
 @end example
+@end ifnottex
 
 subject to
 
+@iftex
+@tex
+$$
+  Ax = b \qquad x \geq 0
+$$
+@end tex
+@end iftex
+@ifnottex
 @example
 @group
 A*x  = b
   x >= 0
 @end group
 @end example
+@end ifnottex
 
 but may also solve problems of the form
 
+@iftex
+@tex
+$$
+  [ \min_x | \max_x ] C^T x
+$$
+@end tex
+@end iftex
+@ifnottex
 @example
 [ min | max ] C'*x
 @end example
+@end ifnottex
 
 subject to
 
+@iftex
+@tex
+$$
+ Ax [ = | \leq | \geq ] b \qquad  LB \leq x \leq UB
+$$
+@end tex
+@end iftex
+@ifnottex
 @example
 @group
 A*x [ "=" | "<=" | ">=" ] b
@@ -31,6 +66,7 @@ A*x [ "=" | "<=" | ">=" ] b
   x <= UB
 @end group
 @end example
+@end ifnottex
 
 Input arguments:
 
@@ -61,26 +97,25 @@ constraint matrix.  Each element of the array may be one of the
 following values
 @table @code
 @item "F"
-Free (unbounded) variable (the constraint is ignored).
+A free (unbounded) constraint (the constraint is ignored).
 @item "U"
-Variable with upper bound (@code{A(i,:)*x <= b(i)}).
+An inequality constraint with an upper bound (@code{A(i,:)*x <= b(i)}).
 @item "S"
-Fixed Variable (@code{A(i,:)*x = b(i)}).
+An equality constraint (@code{A(i,:)*x = b(i)}).
 @item "L"
-Variable with lower bound (@code{A(i,:)*x >= b(i)}).
+An inequality with a lower bound (@code{A(i,:)*x >= b(i)}).
 @item "D"
-Double-bounded variable (@code{A(i,:)*x >= -b(i)} @emph{and}
-(@code{A(i,:)*x <= b(i)}).
+An inequality constraint with both upper and lower bounds
+(@code{A(i,:)*x >= -b(i)} @emph{and} (@code{A(i,:)*x <= b(i)}).
 @end table
 
 @item vartype
 A column array containing the types of the variables.
 @table @code
-@item "F"
-"C"
-Continuous variable.
-"I"
-Integer variable
+@item "C"
+A continuous variable.
+@item "I"
+An integer variable.
 @end table
 
 @item sense
@@ -113,9 +148,9 @@ Full output (includes informational messages).
 Scaling option: 
 @table @asis
 @item 0
-No scaling .
+No scaling.
 @item 1
-Equilibration scaling .
+Equilibration scaling.
 @item 2
 Geometric mean scaling, then equilibration scaling.
 @end table
@@ -194,7 +229,7 @@ Revised simplex method.
 Interior point method.
 @end table
 @item save (default: 0)
-If this parameter is nonzero, save a copy of the problem problem in
+If this parameter is nonzero, save a copy of the problem in
 CPLEX LP format to the file @file{"outpb.lp"}.  There is currently no
 way to change the name of the output file.
 @end table

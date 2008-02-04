@@ -1,5 +1,1 @@
--*- texinfo -*-
-@deftypefn {Function File} {} __bar__ (@dots{})
-Support function for @code{bar} and @code{hbar}. 
-@seealso{bar, hbar}
-@end deftypefn
+Undocumented internal function.

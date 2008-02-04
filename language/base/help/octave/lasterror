@@ -1,0 +1,38 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {@var{err} =} lasterror (@var{err})
+@deftypefnx {Built-in Function} {} lasterror ('reset')
+Returns or sets the last error message. Called without any arguments
+returns a structure containing the last error message, as well as other
+information related to this error. The elements of this structure are:
+
+@table @asis
+@item 'message'
+The text of the last error message
+@item 'identifier'
+The message identifier of this error message
+@item 'stack'
+A structure containing information on where the message occurred. This might
+be an empty structure if this in the case where this information can not
+be obtained. The fields of this structure are:
+
+@table @asis
+@item 'file'
+The name of the file where the error occurred
+@item 'name'
+The name of function in which the error occurred
+@item 'line'
+The line number at which the error occurred
+@item 'column'
+An optional field with the column number at which the error occurred
+@end table
+@end table
+
+The @var{err} structure may also be passed to @code{lasterror} to set the
+information about the last error. The only constraint on @var{err} in that
+case is that it is a scalar structure. Any fields of @var{err} that match
+the above are set to the value passed in @var{err}, while other fields are
+set to their default values.
+
+If @code{lasterror} is called with the argument 'reset', all values take
+their default values.
+@end deftypefn

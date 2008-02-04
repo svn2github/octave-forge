@@ -1,0 +1,13 @@
+ -*- texinfo -*-
+@deftypefn {Loadable Function} {} bsxfun (@var{f}, @var{a}, @var{b})
+Applies a binary function @var{f} element-wise to two matrix arguments
+@var{a} and @var{b}. The function @var{f} must be capable of accepting
+two column vector arguments of equal length, or one column vector
+argument and a scalar.
+
+The dimensions of @var{a} and @var{b} must be equal or singleton. The
+singleton dimensions of the matrices will be expanded to the same
+dimensionality as the other matrix.
+
+@seealso{arrayfun, cellfun}
+@end deftypefn

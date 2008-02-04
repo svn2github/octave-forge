@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} gt (@var{x}, @var{y})
+This function is equivalent to @code{x > y}.
+@end deftypefn

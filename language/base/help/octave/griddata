@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
+@deftypefnx {Function File} {[@var{xi}, @var{yi}, @var{zi}] =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
+
+Generate a regular mesh from irregular data using interpolation.
+The function is defined by @code{@var{z} = f (@var{x}, @var{y})}.
+The interpolation points are all @code{(@var{xi}, @var{yi})}.  If
+@var{xi}, @var{yi} are vectors then they are made into a 2D mesh.
+
+The interpolation method can be @code{"nearest"}, @code{"cubic"} or
+@code{"linear"}.  If method is omitted it defaults to @code{"linear"}.
+@seealso{delaunay}
+@end deftypefn

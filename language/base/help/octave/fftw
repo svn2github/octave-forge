@@ -5,7 +5,7 @@
 @deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom', @var{wisdom})
 
 Manage FFTW wisdom data. Wisdom data can be used to significantly
-accelerate the calculation of the FFTs but implies a initial cost
+accelerate the calculation of the FFTs but implies an initial cost
 in its calculation. The wisdom used by Octave can be imported directly,
 usually from a file /etc/fftw/wisdom, or @dfn{fftw} can be used
 to import wisdom. For example
@@ -44,13 +44,13 @@ and the best is selected based on their execution time.
 @item 'patient'
 This is like 'measure', but a wider range of algorithms is considered.
 
-@item 'exhasutive'
-This is like 'meaure', but all possible algorithms that may be used to
+@item 'exhaustive'
+This is like 'measure', but all possible algorithms that may be used to
 treat the transform are considered.
 
 @item 'hybrid'
 As run-time measurement of the algorithm can be expensive, this is a
-compromise where 'measure' is used for transforms upto the size of 8192
+compromise where 'measure' is used for transforms up to the size of 8192
 and beyond that the 'estimate' method is used.
 @end table
 

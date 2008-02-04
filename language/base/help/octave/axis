@@ -10,7 +10,6 @@ fifth and sixth specify the limits for the z axis.
 Without any arguments, @code{axis} turns autoscaling on.  
 
 With one output argument, @code{x=axis} returns the current axes 
-(this is not yet implemented for automatic axes).
 
 The vector argument specifying limits is optional, and additional
 string arguments may be used to specify various axis properties.  For
@@ -90,4 +89,6 @@ Reverse y-axis, so lower values are nearer the top.
 Restore y-axis, so higher values are nearer the top. 
 @end table
 
+If an axes handle is passed as the first argument, then operate on
+this axes rather than the current axes.
 @end deftypefn

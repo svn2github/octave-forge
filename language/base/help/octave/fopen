@@ -42,7 +42,7 @@ The possible values @samp{mode} may have are
 Open a file for reading.
 
 @item @samp{w}
-Open a file for writing.  The previous contents are discared.
+Open a file for writing.  The previous contents are discarded.
 
 @item @samp{a}
 Open or create a file for writing at the end of the file.
@@ -63,7 +63,7 @@ Append a "t" to the mode string to open the file in text mode or a
 "b" to open in binary mode.  On Windows and Macintosh systems, text
 mode reading and writing automatically converts linefeeds to the
 appropriate line end character for the system (carriage-return linefeed
-on Windows, carriage-returnn on Macintosh).  The default if no mode is
+on Windows, carriage-return on Macintosh).  The default if no mode is
 specified is binary mode.
 
 Additionally, you may append a "z" to the mode string to open a

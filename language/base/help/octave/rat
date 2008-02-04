@@ -1,0 +1,17 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{s} =} rat (@var{x}, @var{tol})
+@deftypefnx {Function File} {[@var{n}, @var{d}] =} rat (@var{x}, @var{tol})
+
+Find a rational approximation to @var{x} within tolerance defined
+by @var{tol} using a continued fraction expansion. E.g,
+
+@example
+rat(pi) = 3 + 1/(7 + 1/16) = 355/113
+rat(e) = 3 + 1/(-4 + 1/(2 + 1/(5 + 1/(-2 + 1/(-7))))) 
+       = 1457/536
+@end example
+
+Called with two arguments returns the numerator and denominator separately
+as two matrices.
+@end deftypefn
+@seealso{rats}

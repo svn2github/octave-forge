@@ -1,11 +1,11 @@
 -*- texinfo -*-
 @deftypefn {Loadable Function} {} fftn (@var{a}, @var{size})
 Compute the N dimensional FFT of @var{a} using subroutines from
-@sc{Fftpack}. The optional vector argument @var{size} may be used specify the
+@sc{Fftw}. The optional vector argument @var{size} may be used specify the
 dimensions of the array to be used. If an element of @var{size} is
 smaller than the corresponding dimension, then the dimension is
 truncated prior to performing the FFT. Otherwise if an element
 of @var{size} is larger than the corresponding dimension @var{a}
 is resized and padded with zeros.
-@seealso {ifftn, fft, fft2, fftw_wisdom}
+@seealso {ifftn, fft, fft2, fftw}
 @end deftypefn

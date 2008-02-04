@@ -1,11 +1,12 @@
 -*- texinfo -*-
-@deftypefn {Function File} {@var{zi}=} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
+@deftypefn {Function File} {@var{zi}=} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{extrapval})
 
 Return a matrix @var{zi} corresponding to the bicubic
 interpolations at @var{xi} and @var{yi} of the data supplied
-as @var{x}, @var{y} and @var{z}. 
+as @var{x}, @var{y} and @var{z}. Points outside the grid are set
+to @var{extrapval}
 
-For further information please see bicubic.pdf available at
-@url{http://wiki.woodpecker.org.cn/moin/Octave/Bicubic}
+See @url{http://wiki.woodpecker.org.cn/moin/Octave/Bicubic}
+for further information.
 @seealso{interp2}
 @end deftypefn

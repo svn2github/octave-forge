@@ -1,0 +1,22 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} pie (@var{y})
+@deftypefnx {Function File} {} pie (@var{y}, @var{explode})
+@deftypefnx {Function File} {} pie (@dots{}, @var{labels})
+@deftypefnx {Function File} {} pie (@var{h}, @dots{});
+@deftypefnx {Function File} {@var{h} =} pie (@dots{});
+Produce a pie chart. 
+
+Called with a single vector arrgument, produces a pie chart of the
+elements in @var{x}, with the size of the slice determined by percentage
+size of the values of @var{x}.
+
+The variable @var{explode} is a vector of the same length as @var{x} that
+if non zero 'explodes' the slice from the pie chart.
+
+If given @var{labels} is a cell array of strings of the same length as
+@var{x}, giving the labels of each of the slices of the pie chart. 
+
+The optional return value @var{h} provides a handle to the patch object.
+
+@seealso{bar, stem}
+@end deftypefn

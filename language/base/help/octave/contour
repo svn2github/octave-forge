@@ -1,13 +1,15 @@
 -*- texinfo -*-
-@deftypefn {Function File} {} {@var{c} =} contour (@var{z})
-@deftypefnx {Function File} {} {@var{c} =} contour (@var{z}, @var{vn})
-@deftypefnx {Function File} {} {@var{c} =} contour (@var{x}, @var{y}, @var{z})
-@deftypefnx {Function File} {} {@var{c} =} contour (@var{x}, @var{y}, @var{z}, @var{vn})
-
+@deftypefn {Function File} {} contour (@var{z})
+@deftypefnx {Function File} {} contour (@var{z}, @var{vn})
+@deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z})
+@deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z}, @var{vn})
+@deftypefnx {Function File} {} contour (@dots{}, @var{style})
+@deftypefnx {Function File} {} contour (@var{h}, @dots{})
+@deftypefnx {Function File} {[@var{c}, @var{h}] =} contour (@dots{})
 Plot level curves (contour lines) of the matrix @var{z}, using the
 contour matrix @var{c} computed by @code{contourc} from the same
-arguments; see the latter for their interpretation.  @var{c} is only
-returned if requested.  For example:
+arguments; see the latter for their interpretation.  The set of
+contour levels, @var{c}, is only returned if requested.  For example:
 
 @example
 @group
@@ -15,8 +17,15 @@ x = 0:2;
 y = x;
 z = x' * y;
 contour (x, y, z, 2:3)
-
 @end group
 @end example
-@seealso{contourc, line, plot}
+
+The style to use for the plot can be defined with a line style @var{style}
+in a similar manner to the line styles used with the @code{plot} command.
+Any markers defined by @var{style} are ignored.
+
+The optional input and output argument @var{h} allows an axis handle to 
+be passed to @code{contour} and the handles to the contour objects to be
+returned.
+@seealso{contourc, patch, plot}
 @end deftypefn

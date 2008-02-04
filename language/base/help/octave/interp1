@@ -7,7 +7,7 @@
 One-dimensional interpolation. Interpolate @var{y}, defined at the
 points @var{x}, at the points @var{xi}. The sample points @var{x} 
 must be strictly monotonic. If @var{y} is an array, treat the columns
-of @var{y} seperately.
+of @var{y} separately.
 
 Method is one of:
 
@@ -32,7 +32,7 @@ and is never slower. The default method is 'linear'.
 
 If @var{extrap} is the string 'extrap', then extrapolate values beyond
 the endpoints.  If @var{extrap} is a number, replace values beyond the
-endpoints with that number.  If @var{extrap} is missing, assume NaN.
+endpoints with that number.  If @var{extrap} is missing, assume NA.
 
 If the string argument 'pp' is specified, then @var{xi} should not be
 supplied and @code{interp1} returns the piece-wise polynomial that
@@ -51,8 +51,9 @@ An example of the use of @code{interp1} is
    spl=interp1(xp,yp,xf,'spline');
    cub=interp1(xp,yp,xf,'cubic');
    near=interp1(xp,yp,xf,'nearest');
-   plot(xf,yf,';original;',xf,lin,';linear;',xf,spl,';spline;',...
-        xf,cub,';cubic;',xf,near,';nearest;',xp,yp,'*;;');
+   plot(xf,yf,"r",xf,lin,"g",xf,spl,"b", ...
+        xf,cub,"c",xf,near,"m",xp,yp,"r*");
+   legend ("original","linear","spline","cubic","nearest")
 @end group
 @end example
 

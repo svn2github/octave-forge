@@ -21,5 +21,10 @@ If @var{directory} is not a directory, return information about the
 named @var{filename}.  @var{directory} may be a list of directories
 specified either by name or with wildcard characters (like * and ?)
 which will be expanded with glob.
-@seealso{ls, stat, readdir, glob, filesep}
+
+Note that for symbolic links, @code{dir} returns information about
+the file that a symbolic link points to instead of the link itself.
+However, if the link points to a nonexistent file, @code{dir} returns
+information about the link.
+@seealso{ls, stat, lstat, readdir, glob, filesep}
 @end deftypefn

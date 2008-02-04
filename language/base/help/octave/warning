@@ -1,6 +1,6 @@
 -*- texinfo -*-
 @deftypefn {Built-in Function} {} warning (@var{template}, @dots{})
-@deftypefnx {Built-in Function} {} warning (@var{id}, @var{template})
+@deftypefnx {Built-in Function} {} warning (@var{id}, @var{template}, @dots{})
 Format the optional arguments under the control of the template string
 @var{template} using the same rules as the @code{printf} family of
 functions (@pxref{Formatted Output}) and print the resulting message
@@ -18,7 +18,7 @@ be used to set the state of all warnings.
 @deftypefnx {Built-in Function} {} warning ("off", @var{id})
 @deftypefnx {Built-in Function} {} warning ("error", @var{id})
 @deftypefnx {Built-in Function} {} warning ("query", @var{id})
-Set or query the the state of a particular warning using the identifier
+Set or query the state of a particular warning using the identifier
 @var{id}.  If the identifier is omitted, a value of @samp{"all"} is
 assumed.  If you set the state of a warning to @samp{"error"}, the
 warning named by @var{id} is handled as if it were an error instead.

@@ -1,1 +1,4 @@
-[x, lambda, info, iter] = __qp__ (x0, H, q, Aeq, beq, Ain, bin, maxit)
+-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{x}, @var{lambda}, @var{info}, @var{iter}] =} __qp__ (@var{x0}, @var{H}, @var{q}, @var{Aeq}, @var{beq}, @var{Ain}, @var{bin}, @var{maxit})
+Undocumented internal function.
+@end deftypefn

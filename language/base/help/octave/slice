@@ -1,0 +1,50 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} slice (@var{x}, @var{y}, @var{z}, @var{v}, @var{sx}, @var{sy}, @var{sz})
+@deftypefnx {Function File} {} slice (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
+@deftypefnx {Function File} {} slice (@var{v}, @var{sx}, @var{sy}, @var{sz})
+@deftypefnx {Function File} {} slice (@var{v}, @var{xi}, @var{yi}, @var{zi})
+@deftypefnx {Function File} {@var{h} =} slice (@dots{})
+@deftypefnx {Function File} {@var{h} =} slice (@dots{}, @var{method})
+Plot slices of 3D data/scalar fields. Each element of the 3-dimensional 
+array @var{v} represents a scalar value at a location given by the
+parameters @var{x}, @var{y}, and @var{z}. The parameters @var{x},
+@var{x}, and @var{z} are either 3-dimensional arrays of the same size
+as the array @var{v} in the "meshgrid" format or vectors. The
+parameters @var{xi}, etc respect a similar format to @var{x}, etc,
+and they represent the points at which the array @var{vi} is
+interpolated using interp3. The vectors @var{sx}, @var{sy}, and
+@var{sz} contain points of orthogonal slices of the respective axes.
+
+If @var{x}, @var{y}, @var{z} are omitted, they are assumed to be 
+@code{x = 1:size (@var{v}, 2)}, @code{y = 1:size (@var{v}, 1)} and
+@code{z = 1:size (@var{v}, 3)}. 
+
+@var{Method} is one of:
+
+@table @code
+@item "nearest"
+Return the nearest neighbour.
+@item "linear"
+Linear interpolation from nearest neighbours.
+@item "cubic"
+Cubic interpolation from four nearest neighbours (not implemented yet).
+@item "spline"
+Cubic spline interpolation---smooth first and second derivatives
+throughout the curve.
+@end table
+
+The default method is @code{"linear"}.
+The optional return value @var{h} is a vector of handles to the
+surface graphic objects.
+
+Examples:
+@example
+[x, y, z] = meshgrid (linspace (-8, 8, 32));
+v = sin (sqrt (x.^2 + y.^2 + z.^2)) ./ (sqrt (x.^2 + y.^2 + z.^2));
+slice (x, y, z, v, [], 0, []);
+[xi, yi] = meshgrid (linspace (-7, 7));
+zi = xi + yi;
+slice (x, y, z, v, xi, yi, zi);
+@end example
+@seealso{interp3, surface, pcolor}
+@end deftypefn

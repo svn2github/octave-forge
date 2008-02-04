@@ -13,7 +13,7 @@ the file will be deleted automatically when Octave exits, or when
 the function @code{purge_tmp_files} is called.
 
 If successful, @var{fid} is a valid file ID, @var{name} is the name of
-the file, and and @var{msg} is an empty string.  Otherwise, @var{fid}
+the file, and @var{msg} is an empty string.  Otherwise, @var{fid}
 is -1, @var{name} is empty, and @var{msg} contains a system-dependent
 error message.
 @seealso{tmpfile, tmpnam, P_tmpdir}

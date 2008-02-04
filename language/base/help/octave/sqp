@@ -1,37 +1,43 @@
 -*- texinfo -*-
 @deftypefn {Function File} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x}, @var{phi}, @var{g}, @var{h})
 Solve the nonlinear program
-@ifinfo
+@iftex
+@tex
+$$
+\min_x \phi (x)
+$$
+@end tex
+@end iftex
+@ifnottex
 
 @example
      min phi (x)
       x
 @end example
 
-@end ifinfo
+@end ifnottex
+subject to
 @iftex
 @tex
+$$
+ g(x) = 0 \qquad h(x) \geq 0
+$$
 @end tex
 @end iftex
-subject to
-@ifinfo
+@ifnottex
 
 @example
      g(x)  = 0
      h(x) >= 0
 @end example
-@end ifinfo
-@iftex
-@tex
-@end tex
-@end iftex
+@end ifnottex
 
 @noindent
 using a successive quadratic programming method.
 
 The first argument is the initial guess for the vector @var{x}.
 
-The second argument is a function handle pointing to the ojective
+The second argument is a function handle pointing to the objective
 function.  The objective function must be of the form
 
 @example
@@ -53,7 +59,7 @@ formula is used to approximate the hessian.
 If supplied, the gradient function must be of the form
 
 @example
-     g = gradient (x)
+g = gradient (x)
 @end example
 
 @noindent
@@ -62,7 +68,7 @@ in which @var{x} is a vector and @var{g} is a vector.
 If supplied, the hessian function must be of the form
 
 @example
-     h = hessian (x)
+h = hessian (x)
 @end example
 
 @noindent
@@ -79,7 +85,7 @@ If supplied, the equality and inequality constraint functions must be
 of the form
 
 @example
-     r = f (x)
+r = f (x)
 @end example
 
 @noindent
@@ -90,44 +96,57 @@ function handles.  The first element should point to the constraint
 function and the second should point to a function that computes the
 gradient of the constraint function:
 
+@iftex
+@tex
+$$
+ \Bigg( {\partial f(x) \over \partial x_1}, 
+        {\partial f(x) \over \partial x_2}, \ldots,
+        {\partial f(x) \over \partial x_N} \Bigg)^T
+$$
+@end tex
+@end iftex
+@ifnottex
 @example
                 [ d f(x)   d f(x)        d f(x) ]
     transpose ( [ ------   -----   ...   ------ ] )
                 [  dx_1     dx_2          dx_N  ]
 @end example
+@end ifnottex
 
 Here is an example of calling @code{sqp}:
 
 @example
-     function r = g (x)
-       r = [ sumsq(x)-10; x(2)*x(3)-5*x(4)*x(5); x(1)^3+x(2)^3+1];
-     endfunction
+function r = g (x)
+  r = [ sumsq(x)-10;
+        x(2)*x(3)-5*x(4)*x(5); 
+        x(1)^3+x(2)^3+1 ];
+endfunction
 
-     function obj = phi (x)
-       obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
-     endfunction
+function obj = phi (x)
+  obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
+endfunction
 
-     x0 = [-1.8; 1.7; 1.9; -0.8; -0.8];
+x0 = [-1.8; 1.7; 1.9; -0.8; -0.8];
 
-     [x, obj, info, iter, nf, lambda] = sqp (x0, @@phi, @@g, [])
+[x, obj, info, iter, nf, lambda] = sqp (x0, @@phi, @@g, [])
 
-     x =
+x =
+    
+  -1.71714
+   1.59571
+   1.82725
+  -0.76364
+  -0.76364
      
-       -1.71714
-        1.59571
-        1.82725
-       -0.76364
-       -0.76364
-     
-     obj = 0.053950
-     info = 101
-     iter = 8
-     nf = 10
-     lambda =
-     
-       -0.0401627
-        0.0379578
-       -0.0052227
+obj = 0.053950
+info = 101
+iter = 8
+nf = 10
+lambda =
+    
+  -0.0401627
+   0.0379578
+  -0.0052227
 @end example
 
 The value returned in @var{info} may be one of the following:

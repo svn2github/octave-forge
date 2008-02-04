@@ -1,12 +1,12 @@
 -*- texinfo -*-
 @deftypefn {Loadable Function} {} fft2 (@var{a}, @var{n}, @var{m})
 Compute the inverse two dimensional FFT of @var{a} using subroutines from
-@sc{Fftpack}. The optional arguments @var{n} and @var{m} may be used specify the
+@sc{Fftw}. The optional arguments @var{n} and @var{m} may be used specify the
 number of rows and columns of @var{a} to use.  If either of these is
 larger than the size of @var{a}, @var{a} is resized and padded with
 zeros.
 
 If @var{a} is a multi-dimensional matrix, each two-dimensional sub-matrix
-of @var{a} is treated seperately
-@seealso {fft2, ifft, ifftn, fftw_wisdom}
+of @var{a} is treated separately
+@seealso {fft2, ifft, ifftn, fftw}
 @end deftypefn

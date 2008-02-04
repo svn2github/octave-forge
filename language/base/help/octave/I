@@ -13,6 +13,6 @@ to the pure imaginary unit, defined as
 @ifinfo
   @code{sqrt (-1)}.
 @end ifinfo
-Since I (also i, J, and J) is a function, you can use the name(s) for
+Since I (also i, J, and j) is a function, you can use the name(s) for
 other purposes.
 @end deftypefn

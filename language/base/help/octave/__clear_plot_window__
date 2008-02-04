@@ -2,4 +2,7 @@
 @deftypefn {Loadable Function} {} clearplot
 @deftypefnx {Loadable Function} {} clg
 Clear the plot window and any titles or axis labels.
+
+@strong{This function is obsolete and will be removed from a future version
+of Octave.}
 @end deftypefn

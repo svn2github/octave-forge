@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{T} =} __delaunayn__ (@var{P}[, @var{opt}])
+Undocumented internal function.
+@end deftypefn

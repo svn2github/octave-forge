@@ -1,0 +1,9 @@
+-*- texinfo -*-
+@deftypefn {Built-in Function} {} rethrow (@var{err})
+Reissues a previous error as defined by @var{err}. @var{err} is a structure
+that must contain at least the 'message' and 'identifier' fields. @var{err}
+can also contain a field 'stack' that gives information on the assumed
+location of the error. Typically @var{err} is returned from
+@code{lasterror}.
+@seealso{lasterror, lasterr, error}
+@end deftypefn

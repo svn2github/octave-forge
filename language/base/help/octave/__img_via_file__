@@ -1,11 +1,1 @@
--*- texinfo -*-
-@deftypefn {Function File} {} __img_via_file__(@var{x}, @var{y}, @var{im}, @var{zoom}, @var{command})
-Display an image by saving it to a file in PPM format and launching
-@var{command}.
-
-The @var{command} must be a format string containing @code{%s} and
-possibly @code{%f}.  The @code{%s} will be replaced by the filename
-of the image, and the @code{%f} will be replaced by @var{zoom}. The
-@var{x} and @var{y} arguments are ignored.
-@seealso{image, imshow, __img__, __img_via_file__, image_viewer}
-@end deftypefn
+Undocumented internal function.

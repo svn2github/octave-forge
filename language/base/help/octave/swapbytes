@@ -1,0 +1,14 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} swapbytes (@var{x})
+Swaps the byte order on values, converting from little endian to big 
+endian and visa-versa. For example
+
+@example
+@group
+swapbytes (uint16 (1:4))
+@result{} [   256   512   768  1024]
+@end group
+@end example
+
+@seealso{typecast, cast}
+@end deftypefn

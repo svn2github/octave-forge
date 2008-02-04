@@ -1,3 +1,1 @@
--*- texinfo -*-
-@deftypefn {Function File} {} __plr2__ (@var{h}, @var{theta}, @var{rho}, @var{fmt})
-@end deftypefn
+Undocumented internal function.

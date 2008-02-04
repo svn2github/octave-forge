@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} ismac ()
+Return 1 if Octave is running on a Mac OS X system and 0 otherwise.
+@seealso{ispc, isunix}
+@end deftypefn

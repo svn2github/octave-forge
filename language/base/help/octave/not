@@ -1,5 +1,4 @@
 -*- texinfo -*-
-@deftypefn {Function File} {} not (@var{val})
-Return the logical negation of val.  This function is equivalent to
-@code{! val}.
+@deftypefn {Built-in Function} {} not (@var{x})
+This function is equivalent to @code{! x}.
 @end deftypefn

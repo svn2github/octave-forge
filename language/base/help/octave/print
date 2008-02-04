@@ -1,6 +1,5 @@
 -*- texinfo -*-
 @deftypefn {Function File} {} print (@var{filename}, @var{options})
-
 Print a graph, or save it to a file
 
 @var{filename} defines the file name of the output file. If no
@@ -33,26 +32,41 @@ filename is specified, output is sent to the printer.
 @itemx epsc
 @itemx epsc2
     Encapsulated postscript (level 1 and 2, mono and color)
+@item tex
+@itemx epslatex
+@itemx epslatexstandalone
+@itemx pstex
+@itemx pslatex
+    Generate a LaTeX (or TeX) file for labels, and eps/ps for
+    graphics.  The file produced by @code{epslatexstandalone} can be
+    processed directly by LaTeX.  The other formats are intended to
+    be included in a LaTeX (or TeX) document.  The @code{tex} device
+    is the same as the @code{epslatex} device.
 @item ill
 @itemx aifm
     Adobe Illustrator
 @item cdr
 @itemx corel
     CorelDraw
-@item hpgl
-    HP plotter language
-@item fig
-    XFig
 @item dxf
     AutoCAD
+@item emf
+    Microsoft Enhanced Metafile
+@item fig
+    XFig.  If this format is selected the additional options
+@code{-textspecial} or @code{-textnormal} can be used to control
+    whether the special flag should be set for the text in the figure
+    (default is @code{-textnormal}). 
+@item hpgl
+    HP plotter language
 @item mf
     Metafont
 @item png
     Portable network graphics
 @item pbm
     PBMplus
-@item emf
-    Microsoft Enhanced Metafile
+@item svg
+    Scalable vector graphics
 @end table
 
   Other devices are supported by "convert" from ImageMagick.  Type
@@ -60,6 +74,11 @@ filename is specified, output is sent to the printer.
 
   If the device is omitted, it is inferred from the file extension,
   or if there is no filename it is sent to the printer as postscript.
+
+@itemx -S@var{xsize},@var{ysize}
+  Plot size in pixels for PNG and SVG.  If using the command form of
+  the print function, you must quote the @var{xsize},@var{ysize}
+  option.  For example, by writing @code{"-S640,480"}.
 
 @item -F@var{fontname}
 @itemx -F@var{fontname}:@var{size}

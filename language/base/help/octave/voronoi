@@ -1,0 +1,27 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} voronoi (@var{x}, @var{y})
+@deftypefnx {Function File} {} voronoi (@var{x}, @var{y}, "plotstyle")
+@deftypefnx {Function File} {} voronoi (@var{x}, @var{y}, "plotstyle", @var{options})
+@deftypefnx {Function File} {[@var{vx}, @var{vy}] =} voronoi (@dots{})
+plots voronoi diagram of points @code{(@var{x}, @var{y})}.
+The voronoi facets with points at infinity are not drawn.
+[@var{vx}, @var{vy}] = voronoi(...) returns the vertices instead plotting the
+diagram. plot (@var{vx}, @var{vy}) shows the voronoi diagram.
+
+A fourth optional argument, which must be a string, contains extra options
+passed to the underlying qhull command.  See the documentation for the
+Qhull library for details.
+
+@example
+@group
+  x = rand (10, 1);
+  y = rand (size (x));
+  h = convhull (x, y);
+  [vx, vy] = voronoi (x, y);
+  plot (vx, vy, "-b", x, y, "o", x(h), y(h), "-g")
+  legend ("", "points", "hull");
+@end group
+@end example
+
+@seealso{voronoin, delaunay, convhull}
+@end deftypefn

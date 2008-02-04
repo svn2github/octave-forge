@@ -3,20 +3,20 @@
 @deftypefnx {Loadable Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})
 @deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb}] =} balance (@var{a}, @var{b}, @var{opt})
 
-@code{[dd, aa] = balance (a)} returns @code{aa = dd \ a * dd}.
-@code{aa} is a matrix whose row and column norms are roughly equal in
-magnitude, and @code{dd} = @code{p * d}, where @code{p} is a permutation
+Compute @code{aa = dd \ a * dd} in which @code{aa} is a matrix whose
+row and column norms are roughly equal in magnitude, and
+@code{dd} = @code{p * d}, in which @code{p} is a permutation
 matrix and @code{d} is a diagonal matrix of powers of two.  This allows
 the equilibration to be computed without roundoff.  Results of
 eigenvalue calculation are typically improved by balancing first.
 
-@code{[cc, dd, aa, bb] = balance (a, b)} returns @code{aa = cc*a*dd} and
-@code{bb = cc*b*dd)}, where @code{aa} and @code{bb} have non-zero
+If four output values are requested, compute @code{aa = cc*a*dd} and
+@code{bb = cc*b*dd)}, in which @code{aa} and @code{bb} have non-zero
 elements of approximately the same magnitude and @code{cc} and @code{dd}
 are permuted diagonal matrices as in @code{dd} for the algebraic
 eigenvalue problem.
 
-The eigenvalue balancing option @code{opt} is selected as follows:
+The eigenvalue balancing option @code{opt} may be one of:
 
 @table @asis
 @item @code{"N"}, @code{"n"}

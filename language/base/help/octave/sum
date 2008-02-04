@@ -1,8 +1,20 @@
 -*- texinfo -*-
 @deftypefn {Built-in Function} {} sum (@var{x}, @var{dim})
+@deftypefnx {Built-in Function} {} sum (@dots{}, 'native')
 Sum of elements along dimension @var{dim}.  If @var{dim} is
 omitted, it defaults to 1 (column-wise sum).
 
 As a special case, if @var{x} is a vector and @var{dim} is omitted,
 return the sum of the elements.
+
+If the optional argument 'native' is given, then the sum is performed
+in the same type as the original argument, rather than in the default
+double type. For example
+
+@example
+sum ([true, true])
+  @result{} 2
+sum ([true, true], 'native')
+  @result{} true
+@end example
 @end deftypefn

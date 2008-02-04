@@ -1,12 +1,13 @@
 -*- texinfo -*-
-@deftypefn {Loadable Function} {rline =} dbstop (func, line)
+@deftypefn {Loadable Function} {rline =} dbstop (@var{func}, @var{line}, @dots{})
 Set a breakpoint in a function
 @table @code
 @item func
 String representing the function name.  When already in debug
 mode this should be left out and only the line should be given.
 @item line
-Line you would like the breakpoint to be set on
+Line you would like the breakpoint to be set on. Multiple
+lines might be given as separate arguments or as a vector.
 @end table
 
 The rline returned is the real line that the breakpoint was set at.

@@ -1,10 +1,1 @@
--*- texinfo -*-
-@deftypefn {Function File} {} __syschnamesl__ (@var{olist}, @var{old_names}, @var{inames}, @var{listname})
-used internally in syschnames
-item olist: index list
-old_names: original list names
-inames: new names
-listname: name of index list
-
-combines the two string lists old_names and inames
-@end deftypefn
+Undocumented internal function.

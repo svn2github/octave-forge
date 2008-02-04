@@ -3,7 +3,10 @@
 For two matched-pair sample vectors @var{x} and @var{y}, perform a
 Wilcoxon signed-rank test of the null hypothesis PROB (@var{x} >
 @var{y}) == 1/2.  Under the null, the test statistic @var{z}
-approximately follows a standard normal distribution.
+approximately follows a standard normal distribution when @var{n} > 25.
+
+@strong{Warning}: This function assumes a normal distribution for @var{z}
+and thus is invalid for @var{n} <= 25.
 
 With the optional argument string @var{alt}, the alternative of
 interest can be selected.  If @var{alt} is @code{"!="} or

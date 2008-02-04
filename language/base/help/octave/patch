@@ -1,0 +1,15 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} patch ()
+@deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c})
+@deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c}, @var{opts})
+@deftypefnx {Function File} {} patch ('Faces', @var{f}, 'Vertices', @var{v}, @dots{})
+@deftypefnx {Function File} {} patch (@dots{}, @var{prop}, @var{val})
+@deftypefnx {Function File} {} patch (@var{h}, @dots{})
+@deftypefnx {Function File} {@var{h} = } patch (@dots{})
+Create patch object from @var{x} and @var{y} with color @var{c} and
+insert in the current axes object.  Return handle to patch object.
+
+For a uniform colored patch, @var{c} can be given as an RGB vector,
+scalar value referring to the current colormap, or string value (for
+example, "r" or "red"). 
+@end deftypefn

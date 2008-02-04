@@ -1,5 +1,1 @@
--*- texinfo -*-
-@deftypefn {Function File} {} __pltopt1__ (@var{caller}, @var{opt})
-Really decode plot option strings.
-@seealso{__pltopt__}
-@end deftypefn
+Undocumented internal function.

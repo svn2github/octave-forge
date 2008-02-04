@@ -1,0 +1,4 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{vi} =} __lin_interpn__ (@var{x1}, @var{x2}, @dots{}, @var{xn}, @var{v}, @var{y1}, @var{y2}, @dots{}, @var{yn})
+Undocumented internal function.
+@end deftypefn

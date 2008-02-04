@@ -1,3 +1,4 @@
 -*- texinfo -*-
 @deftypefn {Loadable Function} {} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})
+Undocumented internal function.
 @end deftypefn

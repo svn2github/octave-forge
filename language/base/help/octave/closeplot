@@ -1,5 +1,9 @@
 -*- texinfo -*-
 @deftypefn {Loadable Function} {} closeplot
+@strong{This function is obsolete and will be removed from a future version
+of Octave.}
+
 Close stream to the @code{gnuplot} subprocess.  If you are using X11,
 this will close the plot window.
+@seealso{close}
 @end deftypefn

@@ -1,5 +1,5 @@
 -*- texinfo -*-
-@deftypefn {Function File} {[@var{total}, @var{user}, @var{system}] =} cputime ();
+@deftypefn {Built-in Function} {[@var{total}, @var{user}, @var{system}] =} cputime ();
 Return the CPU time used by your Octave session.  The first output is
 the total time spent executing your process and is equal to the sum of
 second and third outputs, which are the number of CPU seconds spent

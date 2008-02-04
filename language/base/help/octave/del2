@@ -1,0 +1,39 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{d} =} del2 (@var{m})
+@deftypefnx {Function File} {@var{d} =} del2 (@var{m}, @var{h})
+@deftypefnx {Function File} {@var{d} =} del2 (@var{m}, @var{dx}, @var{dy}, @dots{})
+
+Calculates the discrete Laplace operator. If @var{m} is a matrix this is
+defined as
+
+@iftex
+@tex
+$d = {1 \over 4} \left( {d^2 \over dx^2} M(x,y) + {d^2 \over dy^2} M(x,y) \right)$
+@end tex
+@end iftex
+@ifnottex
+@example
+@group
+      1    / d^2            d^2         \
+D  = --- * | ---  M(x,y) +  ---  M(x,y) | 
+      4    \ dx^2           dy^2        /
+@end group
+@end example
+@end ifnottex
+
+The above to continued to N-dimensional arrays calculating the second
+derivative over the higher dimensions.
+
+The spacing between evaluation points may be defined by @var{h}, which is a
+scalar defining the spacing in all dimensions. Or alternative, the spacing
+in each dimension may be defined separately by @var{dx}, @var{dy}, etc. 
+Scalar spacing values give equidistant spacing, whereas vector spacing 
+values can be used to specify variable spacing. The length of the vectors
+must match the respective dimension of @var{m}. The default spacing value
+is 1.
+
+You need at least 3 data points for each dimension. Boundary points are
+calculated as the linear extrapolation of the interior points.
+
+@seealso{gradient, diff}
+@end deftypefn

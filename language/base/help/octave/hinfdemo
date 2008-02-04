@@ -44,7 +44,7 @@ $$ G(s) = { s-2 \over (s+2) (s-1) } $$
 @end example
 @end ifinfo
 
-@example
+@smallexample
 @group
 
                               +----+
@@ -60,7 +60,7 @@ $$ G(s) = { s-2 \over (s+2) (s-1) } $$
          -----| K |<-------
               +---+
 @end group
-@end example
+@end smallexample
 
 @iftex
 @tex
@@ -89,7 +89,7 @@ H-infinity
 @end ifinfo
 norm of the
 augmented plant @var{P} (mixed-sensitivity problem):
-@example
+@smallexample
 @group
      w
       1 -----------+
@@ -106,7 +106,7 @@ augmented plant @var{P} (mixed-sensitivity problem):
             u                       y (to K)
          (from controller K)
 @end group
-@end example
+@end smallexample
 
 @iftex
 @tex
@@ -119,7 +119,7 @@ $$ \left [ \matrix{ z_1 \cr
 @end tex
 @end iftex
 @ifinfo
-@example
+@smallexample
 @group
                   +    +           +    +
                   | z  |           | w  |
@@ -129,7 +129,7 @@ $$ \left [ \matrix{ z_1 \cr
                   | y  |           | u  |
                   +    +           +    +
 @end group
-@end example
+@end smallexample
 @end ifinfo
 
 @item Discrete system:
@@ -174,7 +174,7 @@ $$ G(z) = { 0.199788z + 0.073498 \over (z - 0.36788) (z - 0.13534) } $$
 @end example
 @end ifinfo
 
-@example
+@smallexample
 @group
 
                               +----+
@@ -190,7 +190,7 @@ $$ G(z) = { 0.199788z + 0.073498 \over (z - 0.36788) (z - 0.13534) } $$
          -----| K |<-------
               +---+
 @end group
-@end example
+@end smallexample
 @iftex
 @tex
 $$ { \rm min } \Vert T_{vz} \Vert _\infty $$

@@ -15,4 +15,8 @@ diag ([1, 2, 3], 1)
          0  0  0  0
 @end group
 @end example
+
+@noindent
+Given a matrix argument, instead of a vector, @code{diag} extracts the
+@var{k}-th diagonal of the matrix.
 @end deftypefn

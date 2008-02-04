@@ -1,5 +1,5 @@
 -*- texinfo -*-
-@deftypefn {Loadable Function} {lst =} dbstatus ([func])
+@deftypefn {Loadable Function} {lst =} dbstatus (@var{func})
 Return a vector containing the lines on which a function has 
 breakpoints set.
 @table @code

@@ -1,6 +1,6 @@
 -*- texinfo -*-
-@deftypefn {Function File} {} bitshift (@var{a}, @var{k})
-@deftypefnx {Function File} {} bitshift (@var{a}, @var{k}, @var{n})
+@deftypefn {Built-in Function} {} bitshift (@var{a}, @var{k})
+@deftypefnx {Built-in Function} {} bitshift (@var{a}, @var{k}, @var{n})
 Return a @var{k} bit shift of @var{n}- digit unsigned
 integers in @var{a}.  A positive @var{k} leads to a left shift.
 A negative value to a right shift.  If @var{n} is omitted it defaults
@@ -8,7 +8,7 @@ to log2(bitmax)+1.
 @var{n} must be in range [1,log2(bitmax)+1] usually [1,33]
 
 @example
-bitshift (eye (3), 1))
+bitshift (eye (3), 1)
 @result{}
 @group
 2 0 0
@@ -18,9 +18,11 @@ bitshift (eye (3), 1))
 
 bitshift (10, [-2, -1, 0, 1, 2])
 @result{} 2   5  10  20  40
-
-bitshift ([1, 10], 2, [3,4])
-@result{} 4  8
+@c FIXME -- restore this example when third arg is allowed to be an array.
+@c 
+@c 
+@c bitshift ([1, 10], 2, [3,4])
+@c @result{} 4  8
 @end example
 @seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitmax}
 @end deftypefn

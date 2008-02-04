@@ -1,0 +1,13 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{H} =} convhulln (@var{p})
+@deftypefnx {Loadable Function} {@var{H} =} convhulln (@var{p}, @var{opt})
+Returns an index vector to the points of the enclosing convex hull.
+The input matrix of size [n, dim] contains n points of dimension dim.
+
+If a second optional argument is given, it must be a string or cell array
+of strings containing options for the underlying qhull command.  (See
+the Qhull documentation for the available options.)  The default options
+are "s Qci Tcv".
+
+@seealso{convhull, delaunayn}
+@end deftypefn

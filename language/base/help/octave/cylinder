@@ -1,0 +1,26 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} cylinder
+@deftypefnx {Function File} {} cylinder (@var{r})
+@deftypefnx {Function File} {} cylinder (@var{r}, @var{n})
+@deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} cylinder (@dots{})
+@deftypefnx {Function File} {} cylinder (@var{ax}, @dots{})
+Generates three matrices in @code{meshgrid} format, such that
+@code{surf (@var{x}, @var{y}, @var{z})} generates a unit cylinder.
+The matrices are of size @code{@var{n}+1}-by-@code{@var{n}+1}. 
+@var{r} is a vector containing the radius along the z-axis.
+If @var{n} or @var{r} are omitted then default values of 20 or [1 1]
+are assumed.
+
+Called with no return arguments, @code{cylinder} calls directly
+@code{surf (@var{x}, @var{y}, @var{z})}. If an axes handle @var{ax}
+is passed as the first argument, the surface is plotted to this set
+of axes.
+
+Examples:
+@example
+disp ("plotting a cone")
+[x, y, z] = cylinder (10:-1:0,50);
+surf (x, y, z);
+@end example
+@seealso{sphere}
+@end deftypefn

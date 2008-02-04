@@ -1,4 +1,6 @@
 -*- texinfo -*-
 @deftypefn {Loadable Function} {@var{val} = } gnuplot_command_plot ()
 @deftypefnx {Loadable Function} {@var{old_val} = } gnuplot_command_plot (@var{new_val})
+@strong{This function is obsolete and will be removed from a future version
+of Octave.}
 @end deftypefn

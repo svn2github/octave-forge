@@ -1,0 +1,5 @@
+-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{tri} =} __voronoi__ (@var{point})
+@deftypefnx {Loadable Function} {@var{tri} =} __voronoi__ (@var{point}, @var{options})
+Undocumented internal function.
+@end deftypefn

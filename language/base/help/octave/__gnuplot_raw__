@@ -1,4 +1,7 @@
 -*- texinfo -*-
 @deftypefn {Loadable Function} {} __gnuplot_raw__ (@var{string})
 Send @var{string} directly to gnuplot subprocess.
+
+@strong{This function is obsolete and will be removed from a future version
+of Octave.}
 @end deftypefn

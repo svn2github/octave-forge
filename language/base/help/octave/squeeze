@@ -1,4 +1,6 @@
 -*- texinfo -*-
 @deftypefn {Built-in Function} {} squeeze (@var{x})
 Remove singleton dimensions from @var{x} and return the result.
+Note that for compatibility with @sc{Matlab}, all objects have
+a minimum of two dimensions and row vectors are left unchanged.
 @end deftypefn

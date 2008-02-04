@@ -1,6 +1,6 @@
 -*- texinfo -*-
 @deftypefn {Function File} {@var{outsys} =} ss (@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist})
-Create system structure from state-space data.   May be continous,
+Create system structure from state-space data.   May be continuous,
 discrete, or mixed (sampled data)
 
 @strong{Inputs}
@@ -52,7 +52,7 @@ If @var{tsam} is 0, @math{outlist = []}.
 If @var{tsam} is greater than 0, @math{outlist = 1:@code{rows}(@var{c})}.
 @end table
 
-Unlike states, discrete/continous outputs may appear in any order.
+Unlike states, discrete/continuous outputs may appear in any order.
 
 @code{sys2ss} returns a vector @var{yd} where
 @var{yd}(@var{outlist}) = 1; all other entries of @var{yd} are 0.
@@ -125,7 +125,8 @@ may be entered in any order desired by the user.)
 octave:1> a = [1 2 3; 4 5 6; 7 8 10];
 octave:2> b = [0 0 ; 0 1 ; 1 0];
 octave:3> c = eye (3);
-octave:4> sys = ss (a, b, c, [], 0, 3, 0, @{"volts", "amps", "joules"@});
+octave:4> sys = ss (a, b, c, [], 0, 3, 0, ...
+>                   @{"volts", "amps", "joules"@});
 octave:5> sysout(sys);
 Input(s)
         1: u_1

@@ -4,4 +4,7 @@
 If enabled, append @samp{-title "Figure NN"} to the gnuplot command.
 By default, this feature is enabled if the @code{DISPLAY} environment
 variable is set when Octave starts.
+
+@strong{This function is obsolete and will be removed from a future version
+of Octave.}
 @end deftypefn

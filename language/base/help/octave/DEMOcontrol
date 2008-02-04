@@ -5,7 +5,6 @@ allows the user to select among several categories of @acronym{OCST} function:
 @example
 @group
 octave:1> DEMOcontrol
-O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X
 Octave Controls System Toolbox Demo
 
   [ 1] System representation

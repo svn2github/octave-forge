@@ -1,0 +1,25 @@
+-*- texinfo -*-
+@deftypefn {Function File} {@var{tri}=} delaunay (@var{x}, @var{y})
+@deftypefnx {Function File} {@var{tri}=} delaunay (@var{x}, @var{y}, @var{opt})
+The return matrix of size [n, 3] contains a set triangles which are
+described by the indices to the data point x and y vector.
+The triangulation satisfies the Delaunay circumcircle criterion.
+No other data point is in the circumcircle of the defining triangle.
+
+A third optional argument, which must be a string, contains extra options
+passed to the underlying qhull command.  See the documentation for the 
+Qhull library for details.
+
+@example
+@group
+x = rand (1, 10);
+y = rand (size (x));
+T = delaunay (x, y);
+X = [x(T(:,1)); x(T(:,2)); x(T(:,3)); x(T(:,1))];
+Y = [y(T(:,1)); y(T(:,2)); y(T(:,3)); y(T(:,1))];
+axis ([0,1,0,1]);
+plot (X, Y, "b", x, y, "r*");
+@end group
+@end example
+@seealso{voronoi, delaunay3, delaunayn}
+@end deftypefn

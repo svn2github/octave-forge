@@ -8,7 +8,7 @@ character strings.  Otherwise, @var{status} is 0, @var{msg} contains a
 system-dependent error message, and @var{msgid} contains a unique
 message identifier.
 
-If the optional second parameter is suplied with value @code{"s"},
+If the optional second parameter is supplied with value @code{"s"},
 recursively remove all subdirectories as well.
 @seealso{mkdir, confirm_recursive_rmdir}
 @end deftypefn

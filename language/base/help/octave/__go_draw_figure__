@@ -1,4 +1,1 @@
--*- texinfo -*-
-@deftypefn {Function File} {} __go_draw_figure__ (f)
-Display the figure @var{f}.
-@end deftypefn
+Undocumented internal function.

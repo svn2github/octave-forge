@@ -1,0 +1,32 @@
+-*- texinfo -*-
+@deftypefn {Function File} {} contour3 (@var{z})
+@deftypefnx {Function File} {} contour3 (@var{z}, @var{vn})
+@deftypefnx {Function File} {} contour3 (@var{x}, @var{y}, @var{z})
+@deftypefnx {Function File} {} contour3 (@var{x}, @var{y}, @var{z}, @var{vn})
+@deftypefnx {Function File} {} contour3 (@dots{}, @var{style})
+@deftypefnx {Function File} {} contour3 (@var{h}, @dots{})
+@deftypefnx {Function File} {[@var{c}, @var{h}] =} contour3 (@dots{})
+Plot level curves (contour lines) of the matrix @var{z}, using the
+contour matrix @var{c} computed by @code{contourc} from the same
+arguments; see the latter for their interpretation.  The contours are
+ploted at the Z level corresponding to their contour. The set of
+contour levels, @var{c}, is only returned if requested.  For example:
+
+@example
+@group
+contour3 (peaks (19));
+hold on
+surface (peaks (19), 'FaceColor', 'none', 'EdgeColor', 'black')
+colormap hot
+@end group
+@end example
+
+The style to use for the plot can be defined with a line style @var{style}
+in a similar manner to the line styles used with the @code{plot} command.
+Any markers defined by @var{style} are ignored.
+
+The optional input and output argument @var{h} allows an axis handle to 
+be passed to @code{contour} and the handles to the contour objects to be
+returned.
+@seealso{contourc, patch, plot}
+@end deftypefn

@@ -4,15 +4,26 @@ FIXEDVERTARGET = fixedversion.h
 FIXEDTARGET = fixed.oct 
 
 LIBPRE = lib
-LIBEXT = a
+LIBEXT = dll
 LIBIMPEXT = dll.a
 DLLDEF =
-
-ifeq (,$(findstring msdosmsvc,$(canonical_host_type)))
-  LIBPRE =
-  LIBEXT = lib
-  LIBIMPEXT = lib
-  DLLDEF =
+ifneq (,$(findstring cygwin,$(canonical_host_type)))
+   OCT_INCLUDES_LIB = 1
+   DLLDEF = -DFIXED_DLL
+   FIXEDIMPTARGET = $(LIBPRE)octave_fixed.$(LIBIMPEXT)
+   ADD_FLAGS = -Wl,--out-implib=$(FIXEDIMPTARGET)
+endif
+ifneq (,$(findstring mingw,$(canonical_host_type)))
+   OCT_INCLUDES_LIB = 1
+   DLLDEF = -DFIXED_DLL
+   FIXEDIMPTARGET = $(LIBPRE)octave_fixed.$(LIBIMPEXT)
+   ADD_FLAGS = -Wl,--out-implib=$(FIXEDIMPTARGET)
+endif
+ifneq (,$(findstring msdosmsvc,$(canonical_host_type)))
+   OCT_INCLUDES_LIB = 1
+   LIBPRE =
+   LIBIMPEXT = lib
+   DLLDEF = -DFIXED_DLL
 endif
 
 ifeq (1,$(OCT_INCLUDES_LIB))
@@ -130,7 +141,7 @@ endif
 
 $(FIXEDTARGET) : $(DEPENDS) $(FIXEDOBJECTS) 
 	@echo "Linking $@"; \
-	$(MKOCTFILE) $(MOFLAGS) $(FIXEDOBJECTS) $(EXTRALIBS) -o $@
+	$(MKOCTFILE) $(ADD_FLAGS) $(MOFLAGS) $(FIXEDOBJECTS) $(EXTRALIBS) -o $@
 
 $(FIXEDVERTARGET) :
 	@echo "Creating $@"; $(RM) -f $@; \

@@ -2659,11 +2659,28 @@ isolated_sizes=
 function get_nsi_additional_files()
 {
   packname=$1
+  packinstdir=$2
   case "$packname" in
     image)
       echo "  SetOutPath \"\$INSTDIR\\bin\""
       echo "  File \"\${VCLIBS_ROOT}\\bin\\libjpeg-62.dll\""
       echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng13.dll\""
+      found=`find "$octave_prefix/libexec/octave/packages/$packinstdir/" -name "__magick_read__.oct" 2> /dev/null`
+      if test -n "$found"
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libMagick-10.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libMagick++-10.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libtiff.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libjasper-1.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libwmflite-0-2-7.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libbz2.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libxml2-2.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libfreetype-6.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\zlib1.dll\""
+        echo "  SetOutPath \"\$INSTDIR\\lib\\ImageMagick-6.3.8\""
+        echo "  File /r \"\${VCLIBS_ROOT}\\lib\\ImageMagick-6.3.8\\*.*\""
+        echo "  SetOutPath \"\$INSTDIR\\share\\ImageMagick-6.3.8\""
+        echo "  File /r \"\${VCLIBS_ROOT}\\share\\ImageMagick-6.3.8\\*.*\""
+      fi
       ;;
     octcdf)
       echo "  SetOutPath \"\$INSTDIR\\bin\""
@@ -2774,7 +2791,7 @@ function create_nsi_entries()
           else
             echo "Section $flag_ \"$packdesc\" SEC_$packname"
             echo "  SetOverwrite try"
-            get_nsi_additional_files $packname
+            get_nsi_additional_files $packname $packinstdir
             echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
             echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
             if test -d "$octave_prefix/libexec/octave/packages/$packinstdir"; then

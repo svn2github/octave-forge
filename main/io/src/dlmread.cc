@@ -1,4 +1,6 @@
-/* Copyright (C) 2003  Kai Habel
+/* Copyright (C) 2008 Jonathan Stickel
+** Adapted from previous version of dlmread.oct as authored by Kai Habel,
+** but core code has been completely re-written.
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -14,79 +16,14 @@
 ** along with this program; If not, see <http://www.gnu.org/licenses/>. 
 */
 
+
 #include "config.h"
 #include <fstream>
-#include <algorithm>
-#include <queue>
-#include <climits>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 #include <octave/oct.h>
 #include <octave/lo-ieee.h>
-
-using namespace std;
-
-void
-strip_cr (char *line)
-{
-  while (*line++ != '\0');
-  if (*--line = '\r')
-    *line = '\0';
-}
-
-bool sep_is_next(istringstream *linestrm, string sep) {
-
-  bool ret = true;
-  char c;
-  
-  *linestrm >> c;
-  if (c != sep[0]) {
-    ret = false;
-    linestrm->putback(c);
-  }
-  return ret;
-}
-
-queue<Complex> read_textline(istringstream *linestrm, string sep) {
-
-  queue<Complex> line;
-  Complex cv = 0.0;
-  unsigned long nchr = 0;
-
-  while (!linestrm->eof() ) {
-  
-    nchr++;    
-    if (sep_is_next(linestrm,sep)) {
-    
-      if (nchr == 1) line.push(0);
-        // first line character is separator
-
-      if (sep_is_next(linestrm,sep)) line.push(0);
-        // double occurance of separator  
-
-      if (linestrm->eof()) line.push(0);
-        // last line character is sparator
-      
-    } else {
-      linestrm->clear();
-      cv = octave_read_double(*linestrm);
-      if (linestrm->fail()) {
-        // invalid charcter(s), try to find next separator
-        linestrm->clear();
-        while ( !(sep_is_next(linestrm, sep) || linestrm->eof()) )
-	  linestrm->get(); 
-	line.push(0);
-      } else {
-        while ( !(sep_is_next(linestrm, sep) || linestrm->eof()) )
-	  linestrm->get(); 
-        line.push(cv);
-      }    
-    }
-  }
-  return line;
-}
-
 
 DEFUN_DLD (dlmread, args, ,
         "-*- texinfo -*-\n\
@@ -102,115 +39,151 @@ The lowest index value is zero.\n\
 
 {
   octave_value_list retval;
-  queue<ComplexColumnVector> lines;  
   int nargin = args.length();
-  if (nargin < 1 || nargin > 4) {
-    print_usage ();
-    return retval;
-  }
-
-  if ( !args (0).is_string() ) {
-    error ("dlmread: 1st argument must be a string");
-    return retval;
-  }
-  
-    // set default values
-  string sep(",");
-  unsigned long r0 = 0,c0 = 0,r1 = ULONG_MAX-1,c1 = ULONG_MAX-1;
-  
-  if (nargin > 1) {
-    sep = args(1).string_value();
-    if (sep.length() != 1) error("separator must be a single character");
-  }
-    
-  if (nargin == 3) {
-    ColumnVector range(args(2).vector_value());
-    if (range.length() == 4) {
-        // double --> unsigned int     
-      r0 = static_cast<unsigned long> (range(0));
-      c0 = static_cast<unsigned long> (range(1));
-      r1 = static_cast<unsigned long> (range(2));
-      c1 = static_cast<unsigned long> (range(3));
-      if (lo_ieee_isinf(range(2))) r1 = ULONG_MAX-1;
-      if (lo_ieee_isinf(range(3))) c1 = ULONG_MAX-1;
-      
-    } else {
-      error("range must include [R1 C1 R2 C2]");
+  bool sepflag = 0;
+  if (nargin < 1 || nargin > 4) 
+    {
+      print_usage ();
+      return retval;
     }
-    
-  } else if (nargin == 4) {
-    r0 = args(2).ulong_value();
-    c0 = args(3).ulong_value();
-  }
-  
-  unsigned long dr = r1 - r0 + 1;
-  unsigned long dc = c1 - c0 + 1;
-  
-  string fname(args(0).string_value());
-  ifstream file(fname.c_str());
-  if (!file) {
-    error("could not open file");
-    return retval;
-  }
 
-    // find file length 
-  file.seekg(0, ios::end);
-  ifstream::pos_type flen = file.tellg();
-  file.seekg(0, ios::beg);
-
-  OCTAVE_LOCAL_BUFFER(char,line,(long int)flen);
-  
-  unsigned long nr = 0, nc = 0, curr_len = 0,colIdx;
-  queue<Complex> lineq;
-  
-    //skip first r0 - 1 lines
-  for (unsigned long i=0;i<r0;i++) {
-    file.getline(line,flen,'\n');
-  }
-  
-    // get first line
-  file.getline(line,flen,'\n');
-  do {
-    strip_cr (line);
-    istringstream lstrm(line); 
-    lineq = read_textline(&lstrm,sep);
-    
-    curr_len = min(static_cast<unsigned long> (lineq.size()), dc);
-    ComplexColumnVector col2(curr_len);
-    
-    for (colIdx = 0;colIdx < curr_len;colIdx++) {
-      col2(colIdx) = lineq.front();
-      lineq.pop();
+  if ( !args (0).is_string() ) 
+    {
+      error ("dlmread: 1st argument must be a string");
+      return retval;
     }
-      // save current ColumnVector (current line) in queue
-    lines.push(col2);
-    
-      // save maximum number of columns and number of rows
-    nc = max(nc,curr_len);
-    
-     // early break when user limit R2 is reached, increase row counter
-    if (nr++ > dr) break;
-    
-      // get next line
-    file.getline(line,flen,'\n');
-  } while(!file.eof());
   
-  unsigned long cend, r, c;
-
-  if (c0 <= nc) {
-    ComplexMatrix cm(nr,nc-c0);
-    ComplexColumnVector cv;
-    
-      // write all ColumnVecotors into Matrix 
-    for (r = 0; r < nr;r++) {
-      cv = lines.front();
-      lines.pop();
-      cend = min(dc, cv.length() - c0);
-      for (c = 0; c < cend; c++)
-        cm(r,c) = cv(c + c0);
+  std::string fname (args(0).string_value());
+  std::ifstream file (fname.c_str());
+  if (!file)
+    {
+      error("dlmread: could not open file");
+      return retval;
     }
-    retval(0) = cm;
-  }
   
+  // set default separator
+  std::string sep(",");
+  if (nargin > 1)
+    {
+      sep = args(1).string_value();
+      //to be compatible with matlab, blank separator should correspond
+      //to whitespace as delimter;
+      if (!sep.length())
+	{
+	  sep = " \t";
+	  sepflag = 1;
+	}
+    }
+  
+  int i = 0, j = 0, r = 1, c = 1, rmax = 0, cmax = 0;
+  std::string line;
+  std::string str;
+  ComplexMatrix data;
+  size_t pos1, pos2;
+
+  // take a subset if a range was given
+  unsigned long r0 = 0, c0 = 0, r1 = ULONG_MAX-1, c1 = ULONG_MAX-1;
+  if (nargin > 2)
+    {
+      if (nargin == 3)
+	{
+	  ColumnVector range(args(2).vector_value());
+	  if (range.length() == 4)
+	    {
+	      // double --> unsigned int     
+	      r0 = static_cast<unsigned long> (range(0));
+	      c0 = static_cast<unsigned long> (range(1));
+	      r1 = static_cast<unsigned long> (range(2));
+	      c1 = static_cast<unsigned long> (range(3));
+	    } 
+	  else 
+	    {
+	      error("dlmread: range must include [R0 C0 R1 C1]");
+	    }
+	} 
+      else if (nargin == 4) 
+	{
+	  r0 = args(2).ulong_value();
+	  c0 = args(3).ulong_value();
+	  // if r1 and c1 are not given, use what was found to be the maximum
+	  r1 = r - 1;
+	  c1 = c - 1;
+	}
+    }
+
+  // Skip tge r0 leading lines as these might be a header
+  for (unsigned long i = 0; i < r0; i++)
+    getline (file, line);
+
+  // read in the data one field at a time, growing the data matrix as needed
+  while (getline (file, line))
+    {
+      // skip blank lines for compatibility
+      if (line.find_first_not_of (" \t") == NPOS)
+	continue;
+
+      r = (r > i + 1 ? r : i + 1);
+      j = 0;
+      pos1 = 0;
+      do {
+	pos2 = line.find_first_of (sep, pos1);
+	str = line.substr (pos1, pos2 - pos1);
+
+	if (sepflag && pos2 != NPOS)
+	  // treat consecutive separators as one
+	  pos2 = line.find_first_not_of (sep, pos2 + 1);
+
+	c = (c > j + 1 ? c : j + 1);
+	if (r > rmax || c > rmax)
+	  { 
+	    // use resize_and_fill for the case of not-equal length rows
+	    data.resize_and_fill (r, c, 0);
+	    rmax = r;
+	    cmax = c;
+	  }
+
+	std::istringstream tmp_stream (str);
+	double x = octave_read_double (tmp_stream);
+	if (tmp_stream)
+	  {
+	    if (tmp_stream.eof())
+	      data (i, j++) = x;
+	    else
+	      data (i, j++) = Complex (x, octave_read_double (tmp_stream));
+	  }
+	else
+	  data (i, j++) = 0.;
+
+	if (pos2 != NPOS)
+	  pos1 = pos2 + 1;
+	else
+	  pos1 = NPOS;
+
+      } while ( pos1 != NPOS );
+      i++;
+    }
+ 
+  if (nargin > 2)
+    {
+      if (nargin == 3)
+	{
+	  if (r1 >= r)
+	    r1 = r - 1;
+	  if (c1 >= c)
+	    c1 = c - 1;
+	}
+      else if (nargin == 4) 
+	{
+	  // if r1 and c1 are not given, use what was found to be the maximum
+	  r1 = r - 1;
+	  c1 = c - 1;
+	}
+
+      // now take the subset of the matrix
+      data = data.extract (0, c0, r1, c1);
+      data.resize (r1 - r0 + 1, c1 - c0 + 1);
+    }
+  
+  retval(0) = octave_value(data);
   return retval;
 }

@@ -2379,9 +2379,10 @@ if check_package ImageMagick; then
       "ImageMagick - Image Processing Library" "`grep -e '^Copyright ' LICENSE | sed -e 's/,.*$//'`" > wand/magickwand.rc &&
     CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__ -D_VISUALC_" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --without-perl --with-xml --without-modules &&
+      ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --without-perl --with-xml --without-modules \
+      --with-wmf &&
     post_process_libtool &&
-    read "WARNING: libtool needs manual post-processing; press <ENTER> when done " &&
+    read -p "WARNING: libtool needs manual post-processing; press <ENTER> when done " &&
     for f in coders/msl.c coders/url.c coders/svg.c; do
       sed -e "s/^# *include <win32config\.h>//g" $f > ttt &&
         mv ttt $f
@@ -2394,6 +2395,9 @@ if check_package ImageMagick; then
 #ifndef __cplusplus
 #define inline __inline
 #endif
+#ifdef MAGICKCORE_WMFLITE_DELEGATE 
+#define MAGICKCORE_WMF_DELEGATElite  1 
+#endif
 EOF
       ) &&
     sed -e "s/^wand_libWand_la_LDFLAGS =/& -Wl,wand\/magickwand.res/" \
@@ -2401,13 +2405,17 @@ EOF
         -e "s/^magick_libMagick_la_LDFLAGS =/& -Wl,magick\/magick.res/" \
         -e "s/^LTCXXLIBOPTS =.*$/LTCXXLIBOPTS =/" \
         -e "/^MAGICK_DEP_LIBS =/ {s/^.*$/& -luser32 -lkernel32 -ladvapi32/;}" \
+        -e "s/^LIBWAND =.$/LIBWAND =/" \
+        -e "s/magick_libMagick_la-\([^ 	]*\)\.lo/\1.lo/g" \
+        -e "s/wand_libWand_la-\([^ 	]*\)\.lo/\1.lo/g" \
+        -e 's/^magick_libMagick_la_OBJECTS =.*$/& $(am_wand_libWand_la_OBJECTS)/' \
         -e "s/-export-symbols-regex \"[^\"]*\"//g" \
         Makefile > ttt &&
       mv ttt Makefile &&
     for f in wand/Wand.pc wand/Wand-config magick/ImageMagick.pc \
              magick/Magick-config Magick++/bin/Magick++-config \
              Magick++/lib/ImageMagick++.pc; do
-      sed -e "s,/\([a-z]\)/,\1:/,g" $f > ttt &&
+      sed -e "s,/\([a-z]\)/,\1:/,g" -e "s/-lWand//g" $f > ttt &&
         mv ttt $f
     done &&
     (cd magick && rc -fo magick.res magick.rc) &&
@@ -2417,7 +2425,7 @@ EOF
     make install
     rm -f $tlibdir_quoted/libWand*.la &&
     rm -f $tlibdir_quoted/libMagick*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/ImageMagick-$imagickver"
+  #rm -rf "$DOWNLOAD_DIR/ImageMagick-$imagickver"
   if ! test -f "$tlibdir/Magick.lib"; then
     echo "failed"
     exit -1

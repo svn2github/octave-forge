@@ -11,7 +11,8 @@ function X = selmo2(y,Pmax);
 % 
 % see also: SELMO, MVAR, 
 
-%	$Id$%	Copyright (C) 2007 by Alois Schloegl <a.schloegl@ieee.org>		
+%	$Id$
+%	Copyright (C) 2007 by Alois Schloegl <a.schloegl@ieee.org>		
 %       This is part of the TSA-toolbox. See also 
 %       http://hci.tugraz.at/schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
@@ -27,10 +28,8 @@ function X = selmo2(y,Pmax);
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 % Library General Public License for more details.
 %
-% You should have received a copy of the GNU Library General Public
-% License along with this library; if not, write to the
-% Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-% Boston, MA  02111-1307, USA.
+% You should have received a copy of the GNU General Public License
+% along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 
 [M,N]=size(y); 

@@ -62,17 +62,21 @@ The lowest index value is zero.\n\
     }
   
   // set default separator
-  std::string sep(",");
+  std::string sep;
   if (nargin > 1)
     {
-      sep = args(1).string_value();
-      //to be compatible with matlab, blank separator should correspond
-      //to whitespace as delimter;
-      if (!sep.length())
-	{
-	  sep = " \t";
-	  sepflag = 1;
-	}
+      if (args(1).is_sq_string ())
+	sep = do_string_escapes (args(1).string_value());
+      else
+	sep = args(1).string_value();
+    }
+
+  //to be compatible with matlab, blank separator should correspond
+  //to whitespace as delimter;
+  if (!sep.length())
+    {
+      sep = " \t";
+      sepflag = 1;
     }
   
   int i = 0, j = 0, r = 1, c = 1, rmax = 0, cmax = 0;
@@ -131,7 +135,7 @@ The lowest index value is zero.\n\
 
 	if (sepflag && pos2 != NPOS)
 	  // treat consecutive separators as one
-	  pos2 = line.find_first_not_of (sep, pos2 + 1);
+	  pos2 = line.find_first_not_of (sep, pos2) - 1;
 
 	c = (c > j + 1 ? c : j + 1);
 	if (r > rmax || c > rmax)
@@ -181,7 +185,7 @@ The lowest index value is zero.\n\
 
       // now take the subset of the matrix
       data = data.extract (0, c0, r1, c1);
-      data.resize (r1 - r0 + 1, c1 - c0 + 1);
+      data.resize (r1 + 1, c1 - c0 + 1);
     }
   
   retval(0) = octave_value(data);

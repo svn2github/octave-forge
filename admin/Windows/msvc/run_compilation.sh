@@ -2425,7 +2425,7 @@ EOF
     make install
     rm -f $tlibdir_quoted/libWand*.la &&
     rm -f $tlibdir_quoted/libMagick*.la) >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/ImageMagick-$imagickver"
+  rm -rf "$DOWNLOAD_DIR/ImageMagick-$imagickver"
   if ! test -f "$tlibdir/Magick.lib"; then
     echo "failed"
     exit -1

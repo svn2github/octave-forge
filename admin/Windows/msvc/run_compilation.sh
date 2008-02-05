@@ -2405,7 +2405,7 @@ EOF
         -e "s/^magick_libMagick_la_LDFLAGS =/& -Wl,magick\/magick.res/" \
         -e "s/^LTCXXLIBOPTS =.*$/LTCXXLIBOPTS =/" \
         -e "/^MAGICK_DEP_LIBS =/ {s/^.*$/& -luser32 -lkernel32 -ladvapi32/;}" \
-        -e "s/^LIBWAND =.$/LIBWAND =/" \
+        -e "s/^LIBWAND =.*$/LIBWAND =/" \
         -e "s/magick_libMagick_la-\([^ 	]*\)\.lo/\1.lo/g" \
         -e "s/wand_libWand_la-\([^ 	]*\)\.lo/\1.lo/g" \
         -e 's/^magick_libMagick_la_OBJECTS =.*$/& $(am_wand_libWand_la_OBJECTS)/' \

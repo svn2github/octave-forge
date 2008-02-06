@@ -138,7 +138,7 @@ The lowest index value is zero.\n\
 	  pos2 = line.find_first_not_of (sep, pos2) - 1;
 
 	c = (c > j + 1 ? c : j + 1);
-	if (r > rmax || c > rmax)
+	if (r > rmax || c > cmax)
 	  { 
 	    // use resize_and_fill for the case of not-equal length rows
 	    data.resize_and_fill (r, c, 0);

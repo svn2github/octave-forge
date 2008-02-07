@@ -1,0 +1,6 @@
+octgpr >> OctGPR
+OctGPR
+ gpr_train
+ gpr_predict
+Examples
+ demo_gpr

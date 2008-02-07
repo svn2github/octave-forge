@@ -1,0 +1,51 @@
+## Copyright (C) 2008  Jaroslav Hajek   <highegg@gmail.com>
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  
+## 02110-1301  USA 
+
+F77=@F77@
+MKOCTFILE=@MKOCTFILE@
+FFLAGS=@FFLAGS@
+CC=@CC@
+CFLAGS=@CFLAGS@ -I.
+LIBS=@LIBS@
+
+OBJS_GPR_TRAIN=dsdacc.o dwdis2.o dtr2tp.o \
+	       nllgpr.o nldgpr.o nl0gpr.o corrf.o stheta.o \
+	       dscrot.o dscsev.o dspmid.o dxnrm2.o \
+	       trstp.o sr1upd.o optdrv.o \
+	       get_corrf.o train.o setup.o 
+	       
+OBJS_GPR_PRED=dsdacc.o dwdis2.o infgpr.o corrf.o \
+	      get_corrf.o predict.o 
+	      
+all: gpr_train.oct gpr_predict.oct
+
+%.o: %.f
+	$(F77) $(FFLAGS) -c $<
+%.o: %.c forsubs.h gprmod.h
+	$(CC) $(CFLAGS) -c $<
+
+# C++ files are preferably compiled with mkoctfile directly
+gpr_train.o: gpr_train.cc gprmod.h forsubs.h
+	$(MKOCTFILE) -c $<
+gpr_predict.o: gpr_predict.cc gprmod.h forsubs.h
+	$(MKOCTFILE) -c $<
+gpr_train.oct: gpr_train.o $(OBJS_GPR_TRAIN)
+	$(MKOCTFILE) -o $@ gpr_train.o $(OBJS_GPR_TRAIN) $(LIBS)
+gpr_predict.oct: gpr_predict.o $(OBJS_GPR_PRED) 
+	$(MKOCTFILE) -o $@ gpr_predict.o $(OBJS_GPR_PRED) $(LIBS)
+clean:
+	rm -f *.o *.oct

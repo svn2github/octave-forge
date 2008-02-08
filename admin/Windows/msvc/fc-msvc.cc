@@ -25,6 +25,7 @@
 #include <pcre.h>
 #include <list>
 #include <string>
+#include <algorithm>
 #include <stdarg.h>
 #ifdef _MSC_VER
 #include <io.h>
@@ -96,12 +97,12 @@ string get_basename(const string& filename)
 	int p1 = filename.rfind('.');
 	int p2 = filename.rfind('/'), p3 = filename.rfind('\\');
 
-	if (p3 < p2)
+	if (p2 == string::npos || (p3 != string::npos && p3 < p2))
 		p2 = p3;
 	if (p2 == string::npos)
 		return filename.substr(0, p1);
 	else
-		return filename.substr(p2, p1-p2-1);
+		return filename.substr(p2+1, p1-p2-1);
 }
 
 string quote(const string& s)
@@ -379,6 +380,7 @@ int main (int argc, char **_argv)
 		if (!ffile.empty())
 		{
 			check_file_read(ffile);
+			replace(ffile.begin(), ffile.end(), '/', '\\');
 			if (keep_c)
 				cfile = get_basename(ffile) + ".c";
 			else

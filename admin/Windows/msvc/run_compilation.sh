@@ -2666,7 +2666,7 @@ function get_nsi_additional_files()
       echo "  File \"\${VCLIBS_ROOT}\\bin\\libjpeg-62.dll\""
       echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng13.dll\""
       found=`find "$octave_prefix/libexec/octave/packages/$packinstdir/" -name "__magick_read__.oct" 2> /dev/null`
-      if test -n "$found"
+      if test -n "$found"; then
         echo "  File \"\${VCLIBS_ROOT}\\bin\\libMagick-10.dll\""
         echo "  File \"\${VCLIBS_ROOT}\\bin\\libMagick++-10.dll\""
         echo "  File \"\${VCLIBS_ROOT}\\bin\\libtiff.dll\""

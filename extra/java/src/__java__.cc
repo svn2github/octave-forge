@@ -1468,6 +1468,16 @@ JNIEnv* octave_java::jni_env (void)
   return current_env;
 }
 
+JNIEnv* octave_java::thread_jni_env (void)
+{
+  JNIEnv *env = NULL;
+
+  if (jvm)
+    jvm->GetEnv ((void**)&env, JNI_VERSION_1_2);
+
+  return env;
+}
+
 octave_value_list octave_java::subsref(const std::string& type, const std::list<octave_value_list>& idx, int nargout)
 {
   octave_value_list retval;

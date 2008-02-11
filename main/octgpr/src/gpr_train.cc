@@ -66,7 +66,7 @@ underlying trend. If not supplied, it defaults to 0 (constant trend). \n\
 @item imq: @code{f(t) = 1/sqrt(1+t^2)} \n\
 @end enumerate \n\
 \n\
-@var{opts} is a cell array in the form {\"option name\",option value,...}. \n\
+@var{opts} is a cell array in the form @{\"option name\",option value,...@}. \n\
 Possible options: \n\
 maxev: maximum number of factorizations to be used during training. default 500.\n\
 tol: stopping tolerance (minimum trust-region radius). default 1e-6. \n\

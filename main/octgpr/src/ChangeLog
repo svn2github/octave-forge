@@ -1,0 +1,13 @@
+2008-02-07  Jaroslav Hajek <highegg@gmail.com>
+
+	* gpr_train.cc: corrected inline Texinfo documentation 
+	* ChangeLog: added this file
+
+2008-02-08  Jaroslav Hajek <highegg@gmail.com>
+
+	* train.c: corrected C->Fortran calls in to use proper #defines from forsubs.h
+	* vmfac.f vmcmp.f trstep.f: deleted (no use)
+	* optdrv.f: cosmetic changes 
+	* ../inst/demo_octgpr.m: added copyright 
+	* ../TODO: modified
+

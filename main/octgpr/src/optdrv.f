@@ -196,8 +196,8 @@ c setup new trial point
       do i = 1,ndim
         theta(i) = theta0(i) + stp(i)
       end do
-c normal return - ready for next evaluation
       nu = nu0 + stp(ndim+1)
+c normal return - ready for next evaluation
       info = 0
       end subroutine
 

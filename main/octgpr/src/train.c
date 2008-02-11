@@ -50,7 +50,7 @@ int GPR_train(int ndim,int nx,double *X,double *y,
   int i,code,info,l2nu = 1;
 
   /* setup scale factors */
-  stheta_(&ndim,&nx,X,scal);
+  F77_stheta(&ndim,&nx,X,scal);
 
   info = 0;
 
@@ -63,7 +63,7 @@ int GPR_train(int ndim,int nx,double *X,double *y,
 
   while(1) {
     /* call the optimization driver */
-    optdrv_(&ndim,theta,nu,nll,dtheta,dnu,
+    F77_optdrv(&ndim,theta,nu,nll,dtheta,dnu,
                      theta0,nu0,nll0,dtheta0,dnu0,
                &info,scal,&l2nu,VM,CP,IC);
     if (info == 1) {
@@ -75,7 +75,7 @@ int GPR_train(int ndim,int nx,double *X,double *y,
     }
 
     /* evaluate objective */
-    nllgpr_(&ndim,&nx,X,y,theta,nu,var,&nlin,
+    F77_nllgpr(&ndim,&nx,X,y,theta,nu,var,&nlin,
         mu,R,nll,corf,&info);
 
     if (IC[0] > opts->maxev || (opts->monitor &&
@@ -86,7 +86,7 @@ int GPR_train(int ndim,int nx,double *X,double *y,
 
     if (!info)
       /* evaluate gradient */
-      nldgpr_(&ndim,&nx,X,theta,nu,var,R,dtheta,dnu,&info);
+      F77_nldgpr(&ndim,&nx,X,theta,nu,var,R,dtheta,dnu,&info);
     /* mark whether the step was successful */
     if (info) 
       info = 2;

@@ -65,6 +65,7 @@ public class LineObject extends GraphicObject
 
 	public void validate()
 	{
+		ZLimInclude.reset(ZData.isEmpty() ? "off" : "on");
 		updateMinMax();
 		super.validate();
 	}

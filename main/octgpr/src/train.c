@@ -35,7 +35,7 @@ int GPR_train(int ndim,int nx,double *X,double *y,
          *nu0 = theta0 + ndim,
          *nll0 = nu0 + 1,
          *var = nll0 + 1,
-         *dtheta = nll0 + 1,
+         *dtheta = var + 1,
          *dnu = dtheta + ndim,
          *dtheta0 = dnu + 2,
          *dnu0 = dtheta0 + ndim;
@@ -95,7 +95,7 @@ int GPR_train(int ndim,int nx,double *X,double *y,
     
   }
   /* use last value. Change theta to have positive sign. */
-  for(i = 0; i < ndim; i++) theta0[i] = fabs(theta[i]);
+  for(i = 0; i < ndim; i++) theta[i] = fabs(theta0[i]);
   *nu = *nu0;
   *nll = *nll0;
   

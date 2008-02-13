@@ -1,3 +1,7 @@
+2008-02-13  Jaroslav Hajek <highegg@gmail.com>
+
+	* train.c: correct allocation and copying result values.
+
 2008-02-12  Jaroslav Hajek <highegg@gmail.com>
 
 	* dscrot.f: correct the W*D*x and W'*D*x sequence.

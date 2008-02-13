@@ -35,16 +35,18 @@ octave_value getfield(const Octave_map& map,const char *field,bool& err) {
 
 DEFUN_DLD(gpr_predict,args,nargout,	
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {y}= gpr_predict (@var{GPM},@var{X})\n\
-@deftypefnx {Loadable Function} {[y,sig]}= gpr_predict (@var{GPM},@var{X})\n\
-@deftypefnx {Loadable Function} {[y,sig,dy]}= gpr_predict (@var{GPM},@var{X})\n\
+@deftypefn  {Loadable Function} {@var{y}}= gpr_predict (@var{GPM},@var{X})\n\
+@deftypefnx {Loadable Function} {[@var{y},@var{sig}]}= gpr_predict (@var{GPM},@var{X})\n\
+@deftypefnx {Loadable Function} {[@var{y},@var{sig},@var{dy}]}= gpr_predict (@var{GPM},@var{X})\n\
 @cindex Gaussian Process Regression inference \n\
 Uses the model @var{GPM} to predict values, standard deviations and model\n\
 derivatives in spatial points. @var{X} is the matrix of independent variables. \n\
 (The organization is determined by GPM.theta, as in @code{gpr_train}). \n\
 \n\
 @var{y} is set to the predicted dependent variable values. \n\
-If @var{sig} is requested, it is set to the estimated prediction deviations \n\
+\n\
+If @var{sig} is requested, it is set to the estimated prediction deviations. \n\
+\n\
 If @var{dy} is requested, it is populated with the prediction gradients. \n\
 \n\
 @seealso{gpr_train, gpr_setup}\n\

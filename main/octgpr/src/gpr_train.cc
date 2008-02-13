@@ -68,9 +68,13 @@ underlying trend. If not supplied, it defaults to 0 (constant trend). \n\
 \n\
 @var{opts} is a cell array in the form @{\"option name\",option value,...@}. \n\
 Possible options: \n\
-maxev: maximum number of factorizations to be used during training. default 500.\n\
-tol: stopping tolerance (minimum trust-region radius). default 1e-6. \n\
-numin: minimum allowable noise. Default is @code{sqrt(1e1*eps)}. \n\
+\n\
+  maxev: maximum number of factorizations to be used during training. default 500.\n\
+\n\
+  tol: stopping tolerance (minimum trust-region radius). default 1e-6. \n\
+\n\
+  numin: minimum allowable noise. Default is @code{sqrt(1e1*eps)}. \n\
+\n\
 Training cell array @var{opts} is recognized even if other arguments are omitted. \n\
 If it is not supplied (the last argument is not a cell array), training is skipped. \n\
 \n\

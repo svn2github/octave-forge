@@ -44,7 +44,7 @@ c                        failure)
       real*8 R(nx,0:nx),dtheta(ndim),dnu(2)
       external dtrsv,dtrtri,dsyr,xerbla
       integer i,j,k
-      real*8 tmp
+      real*8 tmp,tmp2,m2
 
 c argument checks
       info = 0
@@ -65,6 +65,29 @@ c invert the triangular factor
       call dpotri('L',nx,R(1,1),nx,info)
       if (info /= 0) goto 501
 
+c compute sumsq(m)
+      m2 = 0.d0
+      do i = 1,nx
+        m2 = m2 + R(i,0)**2
+      end do      
+c accumulate nu derivatives information      
+      dnu(1) = 0.d0
+      dnu(2) = 0
+      do j = 1,nx
+        call dsdacc(nx-j,R(j+1,j),R(j+1,0),tmp2,tmp)
+        tmp = 2*tmp + R(j,j)*R(j,0)
+        tmp2 = tmp2 + 0.5d0*R(j,j)**2
+        dnu(1) = dnu(1) + R(j,j)
+        dnu(2) = dnu(2) - tmp2 + R(j,0)*tmp/var
+      end do
+c compute derivative w.r.t. nu**2
+c compute second derivative w.r.t. nu**2/2
+      dnu(1) = 0.5d0*(dnu(1) - m2/var)
+      dnu(2) = dnu(2) - m2**2 / var**2 * 0.5d0/nx
+c update to derivatives w.r.t. nu
+      dnu(2) = 4*dnu(2)*nu**2 + 2*dnu(1)
+      dnu(1) = 2*dnu(1)*nu
+
 c update to get element-wise sensitivities
       call dsyr('L',nx,-1.d0/var,R(1,0),1,R(1,1),nx)
 
@@ -83,31 +106,6 @@ c compute derivatives w.r.t. length scales
       do k = 1,ndim
         dtheta(k) = 2*dtheta(k)*theta(k)
       end do
-c compute derivative w.r.t. nu**2
-      tmp = 0.d0
-      do i = 1,nx
-        tmp = tmp + R(i,i)
-      end do
-      dnu(1) = 0.5d0*tmp
-c compute second derivative w.r.t. nu**2/2
-      tmp = 0
-      do j = 1,nx
-        tmp = tmp + 0.5d0*R(j,j)**2
-        do i = j+1,nx
-          tmp = tmp + R(i,j)**2
-        end do
-      end do
-      dnu(2) = -tmp 
-c correction by m'*m
-      tmp = 0
-      do i = 1,nx
-        tmp = tmp + R(i,0)**2
-      end do
-      dnu(2) = dnu(2) + (tmp/var)**2 * (0.5d0-0.5d0/nx)
-c update to derivatives w.r.t. nu
-      dnu(2) = 4*dnu(2)*nu**2 + 2*dnu(1)
-      dnu(1) = 2*dnu(1)*nu
-
 c normal return
       info = 0
       return

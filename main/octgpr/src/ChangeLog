@@ -1,6 +1,9 @@
 2008-02-13  Jaroslav Hajek <highegg@gmail.com>
 
 	* train.c: correct allocation and copying result values.
+	* nldgpr.f: compute 2nd derivative by a better formula.
+	* gpr_train.cc: improved documentation
+	* gpr_predict.cc: improved documentation
 
 2008-02-12  Jaroslav Hajek <highegg@gmail.com>
 

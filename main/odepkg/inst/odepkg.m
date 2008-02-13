@@ -163,8 +163,8 @@ function [] = odepkg_performance_mathires ()
   odepkg_testsuite_write (vsol);
 
 function [] = odepkg_performance_octavehires ()
-  vfun = {@ode23, @ode45, @ode54, @ode78};
-%#          @ode2r, @ode5r, @oders, @odesx, @odebda};
+  vfun = {@ode23, @ode45, @ode54, @ode78, ...
+          @ode2r, @ode5r, @oders, @odesx, @odebda};
   for vcnt=1:length(vfun)
     vsol{vcnt, 1} = odepkg_testsuite_hires (vfun{vcnt}, 1e-7);
   end
@@ -179,7 +179,8 @@ function [] = odepkg_performance_matchemakzo ()
   odepkg_testsuite_write (vsol);
 
 function [] = odepkg_performance_octavechemakzo ()
-  vfun = {@ode23, @ode45, @ode54, @ode78};
+  vfun = {@ode23, @ode45, @ode54, @ode78, ...
+          @ode2r, @ode5r, @oders, @odesx, @odebda};
   for vcnt=1:length(vfun)
     vsol{vcnt, 1} = odepkg_testsuite_chemakzo (vfun{vcnt}, 1e-7);
   end

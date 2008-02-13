@@ -171,9 +171,9 @@ c TODO: what to do if dscsev fails?
 c GENERATE NEW TRIAL POINT
 c unscale and rotate
       call dcopy(ndim,dtheta0,1,Zg,1)
-      call dscrot('T',ndim,scal,VM(iZ),Zg)
+      call dscrot('N',ndim,scal,VM(iZ),Zg)
       call dcopy(ndim,VM(iba),1,Zba,1)
-      call dscrot('T',ndim,scal,VM(iZ),Zba)
+      call dscrot('N',ndim,scal,VM(iZ),Zba)
 c compute a trust-region step
       snup = CP(7)*CP(2)
       snlo = max(-snup,CP(1)-nu0)
@@ -183,7 +183,7 @@ c if nu is constrained from below, but forced by numin, indicate this
 c as unconstrained step.
       if (mod(IC(3),10) == 1 .and. -snlo < snup) IC(3) = IC(3)-1
 c scale & rotate
-      call dscrot('N',ndim,scal,VM(iZ),stp)
+      call dscrot('T',ndim,scal,VM(iZ),stp)
 c update step sizes
       CP(8) = dxnrm2(ndim,scal,stp)
       CP(9) = abs(stp(ndim+1)/CP(2))

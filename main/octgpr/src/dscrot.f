@@ -37,8 +37,18 @@ c
       double precision D(n),Z(n,n),x(n)
       double precision wrk(n)
       integer i
-      do i = 1,n
-        wrk(i) = x(i)*D(i)
-      end do
-      call dgemv(trans,n,n,1d0,Z,n,wrk,1,0d0,x,1)
+      logical lsame
+      external lsame
+      if (lsame(trans,'T')) then
+        call dgemv(trans,n,n,1d0,Z,n,x,1,0d0,wrk,1)
+        do i = 1,n
+          x(i) = wrk(i)*D(i)
+        end do
+      else
+        do i = 1,n
+          wrk(i) = x(i)*D(i)
+        end do
+        call dgemv(trans,n,n,1d0,Z,n,wrk,1,0d0,x,1)
+      end if
+
       end subroutine

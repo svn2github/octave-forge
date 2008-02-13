@@ -1,7 +1,7 @@
-2008-02-07  Jaroslav Hajek <highegg@gmail.com>
+2008-02-12  Jaroslav Hajek <highegg@gmail.com>
 
-	* gpr_train.cc: corrected inline Texinfo documentation 
-	* ChangeLog: added this file
+	* dscrot.f: correct the W*D*x and W'*D*x sequence.
+	* optdrv.f: correct calls to dscrot.f
 
 2008-02-08  Jaroslav Hajek <highegg@gmail.com>
 
@@ -10,4 +10,9 @@
 	* optdrv.f: cosmetic changes 
 	* ../inst/demo_octgpr.m: added copyright 
 	* ../TODO: modified
+
+2008-02-07  Jaroslav Hajek <highegg@gmail.com>
+
+	* gpr_train.cc: corrected inline Texinfo documentation 
+	* ChangeLog: added this file
 

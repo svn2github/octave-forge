@@ -45,7 +45,7 @@ DEFUN_DLD(gpr_train,args,nargout,
 If requested, estimates the hyperparameters for Gaussian Process Regression (inverse\n\
 length scales and relative noise) via reduced maximum likelihood, and then \n\
 sets up the model for inference (prediction), storing necessary information in \n\
-the structure @var{GPM}, intended for use with gpr_train. \n\
+the structure @var{GPM}, intended for use with @code{gpr_predict}. \n\
 \n\
 @var{X} is the matrix of independent variables of the observations, \n\
 @var{y} is a vector containing the dependent variables, \n\
@@ -60,20 +60,27 @@ underlying trend. If not supplied, it defaults to 0 (constant trend). \n\
 \n\
 @var{corf} specifies the decreasing function type for correlation function:\n\
 @code{corr(x,y) = f((x-y).^2 * theta\')} (x,y,theta row vectors). Possible values:\n\
-@enumerate \n\
-@item gau: @code{f(t) = exp(-t)} \n\
-@item exp: @code{f(t) = exp(-sqrt(t))} \n\
-@item imq: @code{f(t) = 1/sqrt(1+t^2)} \n\
-@end enumerate \n\
 \n\
-@var{opts} is a cell array in the form @{\"option name\",option value,...@}. \n\
-Possible options: \n\
+@table @option\n\
+@item gau\n\
+@code{f(t) = exp(-t)} \n\
+@item exp\n\
+@code{f(t) = exp(-sqrt(t))} \n\
+@item imq\n\
+@code{f(t) = 1/sqrt(1+t^2)} \n\
+@end table \n\
 \n\
-  maxev: maximum number of factorizations to be used during training. default 500.\n\
+@var{opts} is a cell array in the form @{\"option name\",option value,...@}.\n\
+Possible options:\n\
 \n\
-  tol: stopping tolerance (minimum trust-region radius). default 1e-6. \n\
-\n\
-  numin: minimum allowable noise. Default is @code{sqrt(1e1*eps)}. \n\
+@table @option\n\
+@item maxev\n\
+maximum number of factorizations to be used during training. default 500.\n\
+@item tol\n\
+stopping tolerance (minimum trust-region radius). default 1e-6.\n\
+@item numin\n\
+minimum allowable noise. Default is @code{sqrt(1e1*eps)}.\n\
+@end table\n\
 \n\
 Training cell array @var{opts} is recognized even if other arguments are omitted. \n\
 If it is not supplied (the last argument is not a cell array), training is skipped. \n\

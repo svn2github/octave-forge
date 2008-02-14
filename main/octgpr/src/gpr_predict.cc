@@ -44,9 +44,7 @@ derivatives in spatial points. @var{X} is the matrix of independent variables. \
 (The organization is determined by GPM.theta, as in @code{gpr_train}). \n\
 \n\
 @var{y} is set to the predicted dependent variable values. \n\
-\n\
 If @var{sig} is requested, it is set to the estimated prediction deviations. \n\
-\n\
 If @var{dy} is requested, it is populated with the prediction gradients. \n\
 \n\
 @seealso{gpr_train, gpr_setup}\n\

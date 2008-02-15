@@ -75,7 +75,7 @@ FFLAGS="-Wc,-arch -Wc,i386 -Wc,-isysroot -Wc,/Developer/SDKs/MacOSX10.4u.sdk ${O
 
 # If you are running a Mac OS X 10.3 on the PPC platform then change to 
 # EXTRACONF="--host=powerpc-apple-darwin7.9.1"
-EXTRACONF="--host=powerpc-apple-darwin8.9.1"
+EXTRACONF="--host=powerpc-apple-darwin8.9.1 --prefix=${PRFPATH} --enable-shared"
 
 # I have installed the GNU tools in /usr/local/bin, that's why I need
 # to use this path. We use f2c from the current Octave.app, that's why
@@ -105,8 +105,8 @@ MSGFILE=/dev/stdout # /tmp/messages.log # /dev/stdout
 evalfailexit "./configure CC=\"${GCC}\" CPP=\"${CPP}\" CXX=\"${CXX}\" \
   F77=\"${F77}\" FLIBS=\"${FLIBS}\" FFLAGS=\"${FFLAGS}\" \
   CFLAGS=\"${CFLAGS}\" CPPFLAGS=\"${CPPFLAGS}\" CXXFLAGS=\"${CXXFLAGS}\" \
-  LDFLAGS=\"${LDFLAGS}\" --prefix=${PRFPATH} --enable-shared"
-evalfailexit "make -j 2"
+  LDFLAGS=\"${LDFLAGS}\" ${EXTRACONF}"
+evalfailexit "make"
 
 # This is the point of *no return*: If something goes wrong in the
 # following six lines then your new Octave.app may be definitely be

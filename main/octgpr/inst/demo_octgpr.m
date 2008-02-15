@@ -19,9 +19,9 @@
 % <http://www.gnu.org/licenses/>.
 % 
 % demo of Gaussian Process Regression package
-1;
-
 disp("2-dimensional GPR demo");
+disp("(set global variable nsamp to the number of random samples)");
+
 % define the test function (the well-known matlab "peaks")
 function z = testfun(x,y)
   z = 4 + 3 * (1-x).^2 .* exp(-(x.^2) - (y+1).^2) - ...
@@ -30,7 +30,8 @@ function z = testfun(x,y)
 
 end
 
-disp("matlab peaks surface...");
+tit = "matlab ""peaks"" surface";
+disp(tit);
 % create the mesh onto which to interpolate
 t = linspace(-3,3,50);
 [xi,yi] = meshgrid(t,t);
@@ -40,11 +41,16 @@ zi = testfun(xi,yi);
 zimax = max(vec(zi)); zimin = min(vec(zi));
 subplot(1,2,1);
 mesh(xi,yi,zi);
+title(tit);
 pause;
 
-disp("sampled at 400 random points");
-% create 400 random samples
-xs = rand(400,1); ys = rand(400,1);
+if (!exist("nsamp","var") || !isnumeric(nsamp))
+  nsamp = 150
+end
+tit = sprintf("sampled at %d random points",nsamp);
+disp(tit);
+% create random samples
+xs = rand(nsamp,1); ys = rand(nsamp,1);
 xs = 6*xs-3; ys = 6*ys - 3;
 % evaluate at random samples
 zs = testfun(xs,ys);
@@ -52,19 +58,23 @@ xys = [xs ys];
 
 subplot(1,2,2);
 plot3(xs,ys,zs,".+");
+title(tit);
 pause;
 
-disp("GPR model with heuristic hypers");
-ths = 0.3 ./ std(xys);
+tit = "GPR model with heuristic hypers";
+disp(tit);
+ths = 1 ./ std(xys);
 GPM = gpr_train(xys,zs,ths,1e-5);
 zm = gpr_predict(GPM,[vec(xi) vec(yi)]);
 zm = reshape(zm,size(zi));
 zm = min(zm,zimax); zm = max(zm,zimin);
 subplot(1,2,2);
 mesh(xi,yi,zm);
+title(tit);
 pause;
 
-disp("GPR model with MLE training");
+tit = "GPR model with MLE training";
+disp(tit);
 fflush(stdout);
 GPM = gpr_train(xys,zs,ths,1e-5,{"tol",1e-5,"maxev",400,"numin",1e-8});
 zm = gpr_predict(GPM,[vec(xi) vec(yi)]);
@@ -72,6 +82,7 @@ zm = reshape(zm,size(zi));
 zm = min(zm,zimax); zm = max(zm,zimin);
 subplot(1,2,2);
 mesh(xi,yi,zm);
+title(tit);
 pause;
 
 close

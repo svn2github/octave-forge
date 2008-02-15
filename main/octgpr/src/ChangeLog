@@ -1,3 +1,7 @@
+2008-02-15  Jaroslav Hajek <highegg@gmail.com>
+
+	* octgpr.m: improved demo.
+
 2008-02-13  Jaroslav Hajek <highegg@gmail.com>
 
 	* train.c: correct allocation and copying result values.

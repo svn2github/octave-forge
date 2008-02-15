@@ -1,5 +1,5 @@
 \input texinfo @c -*-texinfo-*-
-@c Copyright (c)  2007  Thomas Treichl and Paul Kienzle
+@c Copyright (c)  2007-2008 Thomas Treichl and Paul Kienzle
 @c octaveapp.texi - A ready--to--run binary version of GNU Octave for Mac OS X
 @c
 @c Permission is granted to copy, distribute and/or modify this document
@@ -11,7 +11,7 @@
 
 @c %*** Start of HEADER
 @setfilename octaveapp.texi
-@settitle Octave.app - A ready--to--run binary version of GNU Octave for Mac OS X
+@settitle Octave.app - A ready-to-run binary version of GNU Octave for Mac OS X
 @afourpaper
 @c @afourwide
 @c %*** End of the HEADER
@@ -20,7 +20,7 @@
 @copying
 This document is for the program Octave.app (version %VERSION%), which is a ready--to--run binary version of GNU Octave for Mac OS X.
 
-Copyright @copyright{} 2007 Thomas Treichl and Paul Kienzle
+Copyright @copyright{} 2007--2008 Thomas Treichl and Paul Kienzle
 
 Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front--Cover Texts, and no Back--Cover Texts. A copy of the license is available at the GNU website @uref{http://www.gnu.org/licenses/fdl.txt}.
 @end copying
@@ -30,11 +30,6 @@ Permission is granted to copy, distribute and/or modify this document under the 
 @titlepage
 @title Octave.app
 @subtitle A ready--to--run binary version of GNU Octave for Mac OS X 
-@author by Thomas Treichl and Paul Kienzle
-@subtitle @b{This document currently is under development}
-@page
-@vskip 0pt plus 1filll
-@insertcopying
 @end titlepage
 @c %*** End of TITLEPAGE
 
@@ -373,16 +368,16 @@ octave-2.9.16:1> pkg install arpack-1.0.2.tar.gz
 @unnumberedsec Developer FAQ
 
 @menu
-* How can I build my own Octave.app from scratch?::  
+* How can I build my own Octave from scratch?::  
 * Can I upgrade Octave.app with binaries of the current CVS?::  
 * Are there any other Mac OS X Octave topics were I could help?::  
 @end menu
 
-@node How can I build my own Octave.app from scratch?, Can I upgrade Octave.app with binaries of the current CVS?, Developer FAQ, Developer FAQ
-@unnumberedsubsec How can I build my own Octave.app from scratch?
-A good starting point for building your own version of Octave.app is @url{http://wiki.octave.org/wiki.pl?OctaveForMac}. Please consider adapting the Octave.app build scripts at @url{http://octave.sourceforge.net} in the directory @file{admin/MacOSX}.
+@node How can I build my own Octave from scratch?, Can I upgrade Octave.app with binaries of the current CVS?, Developer FAQ, Developer FAQ
+@unnumberedsubsec How can I build my own Octave from scratch?
+A good starting point for building your own version of Octave is @url{http://wiki.octave.org/wiki.pl?OctaveForMac}. Please consider adapting the Octave.app build scripts at @url{http://octave.sourceforge.net} in the directory @file{admin/MacOSX}.
 
-@node Can I upgrade Octave.app with binaries of the current CVS?, Are there any other Mac OS X Octave topics were I could help?, How can I build my own Octave.app from scratch?, Developer FAQ
+@node Can I upgrade Octave.app with binaries of the current CVS?, Are there any other Mac OS X Octave topics were I could help?, How can I build my own Octave from scratch?, Developer FAQ
 @unnumberedsubsec Can I upgrade Octave.app with binaries of the current Octave CVS?
 Yes, the idea was to create a script file for Octave developers that compiles the current CVS sources of Octave and overwrites all binaries within Octave.app (eg. this way you can create a gdb--version of Octave). Carefully read the developer comments in the file @file{selfupdate.sh} from the Octave--Forge SVN before you try to update your Octave.app and also please keep the email traffic on the mailing--list @email{octave-dev@@lists.sourceforge.net} about "it doesn't work" small.
 
@@ -392,8 +387,6 @@ Yes, in general the most Octave developers are subscribed to all of the Octave a
 
 @itemize
 @item The Octave--Forge packages @file{Optiminterp} and @file{Spline-gcvspl} cannot be installed with Octave.app because of the Fortran90 code files. If you want to help making these packages available then maybe it would be an idea to talk to the maintainers of these two packages if it would be possible in general to backport the F90 code files into F77 code files though that these packages can also be installed on even more platforms like Octave.app.@* @*
-
-@item The Octave--Forge package @file{MacOSX} needs a maintainer. The documentation that comes with that package is very "out--of--date" and maybe the one or the other function could need an update (or also even not). The install scripts could be improved, eg. if a GNU/Linux user tries to install this package then@dots{} @b{Note:} we got the ismac() function with Octave 2.9.16.@* @*
 
 @item Help is needed to port the Octave--Forge package @file{Java} and the package @file{JHandles} to Mac OS X (they currently don't work with any of Mac OS X's binary versions of Octave). Read about some started discussions here@*
 @url{http://www.nabble.com/Need-for-JHandles-Linux-tester-tf4017520.html#a11480385}@*
@@ -407,7 +400,7 @@ and also talk to the maintainer of these packages about "what tests should be do
 @html
 <hr>
 @end html
-File created from @file{admin/MacOSX/createapp/octaveapp.texi} with makeinfo at %DATE%.
+File created from source file @file{admin/MacOSX/createapp/octaveapp.texi} with makeinfo at %DATE%.
 @end ifhtml
 @c %*** End of BODY
 

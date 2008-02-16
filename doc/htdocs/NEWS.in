@@ -7,6 +7,25 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
+<dt>Febrary 16, 2008</dt>
+<dd>
+<p>Release of Octave-forge tested against Octave 3.0. Many packages
+ will also function function with earlier versions of Octave 2.9.
+ Notable changes in this release include:</p>
+<ul>
+   <li>jhandles: More graphics properties.</li>
+   <li>ad: New package for Automatic Forward Differentiation.</li>
+   <li>financial: New package.</li>
+   <li>odepkg: Improvements in speed and compatibility.</li>
+   <li>image: New functions: 'imfilter', and 'imsmooth'.</li>
+   <li>comm: New functions: 'genqamdemod', 'deintrlv', 'randintrlv',
+      'randdeintrlv', 'matdeintrlv', and 'matintrlv'.</li>
+   <li>signal: New functions: 'bitrevorder'.</li>
+   <li>statistics: New functions: 'random'.</li>
+   <li>audio: Added audio speaker output support for MacOS X.</li>
+   <li>general bug fixes and improvements.</li>
+</ul>
+</dd>
 <dt>December 14, 2007</dt>
 <dd>Updated Windows installer to Octave 2.9.19.
 </dd>

@@ -2579,7 +2579,7 @@ function install_forge_packages
 }
 
 extra_pkgs="fpl msh ad bim civil-engineering integration java mapping nan secs1d secs2d symband triangular tsa windows jhandles"
-main_pkgs="signal audio combinatorics communications control econometrics fixed general gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp optim outliers physicalconstants plot specfun special-matrix sockets splines statistics strings struct symbolic time odepkg"
+main_pkgs="signal audio combinatorics communications control econometrics fixed general gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp optim outliers physicalconstants plot specfun special-matrix sockets splines statistics strings struct symbolic time odepkg financial octgpr"
 lang_pkgs="pt_br"
 nonfree_pkgs="arpack"
 

@@ -8,7 +8,7 @@ case `hostname` in
   ;;
   *)
     echo -n ""
-    #echo -n `pwd`
+    #echo -n `pwd`/htdocs
   ;;
 esac
 

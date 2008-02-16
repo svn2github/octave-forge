@@ -39,8 +39,8 @@
 ##
 ## 4) svn2cl -f changes
 ##
-##    Generate a list of changes.  Use it to update www/NEWS.in and
-##    www/index.in with a summary of changes.
+##    Generate a list of changes.  Use it to update doc/htdocs/NEWS.in and
+##    doc/htdocs/index.in with a summary of changes.
 ##
 ## 5) make clean; make all; make www
 ##
@@ -51,7 +51,7 @@
 ##    Verify copyrights.  Look at the AUTHORS file to see which names
 ##    have been butcherd and update the corresponding sources.
 ##
-## 7) svn commit AUTHORS, README, www/htdocs/index.in and www/htdocs/NEWS.in
+## 7) svn commit AUTHORS, README, doc/htdocs/htdocs/index.in and doc/htdocs/htdocs/NEWS.in
 ##
 ## 8) svn status -u
 ##

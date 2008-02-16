@@ -43,6 +43,9 @@ Block Interleavers
  helscanintrlv
  matintrlv
  randintrlv
+ deintrlv
+ matdeintrlv
+ randdeintrlv
 Block Coding
  bchdeco	
  bchenco

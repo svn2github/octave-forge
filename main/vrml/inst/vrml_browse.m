@@ -47,11 +47,13 @@ best_option = " ";
 				# browser's output goes 
 ##out_option = "--ps --psout /tmp/octave_browser_out.txt " ;
 out_option = " " ;
+geo_option = " " ;
 global vrml_b_pid = 0;
 global vrml_b_name = [];
 
 p = vrml_b_pid ;
 bop = "";
+go_to_bg = 0;
 
 if nargin<1
   s = "";
@@ -63,6 +65,16 @@ else
       vrml_kill(); return;
     elseif strcmp (o, "-bop")	# Browser options
       bop = [bop," ",varargin{i++}," "];
+    elseif strcmp (o, "-bg")	# Browser options
+      go_to_bg = 1;
+    elseif strcmp (o, "-geometry") # Browser options
+      geo_option = varargin{i++};
+      if !ischar (geo_option)
+	assert (length (geo_option) == 2)
+	geo_option = sprintf ("--geometry %ix%i",geo_option);
+      else
+	geo_option = sprintf ("--geometry %s",geo_option);
+      end
     end
   end
   s = varargin{length (varargin)};
@@ -72,10 +84,13 @@ end
 
 
 vrml_b_name = "freewrl" ;
+##vrml_b_name = "/home/etienne/bin/my_freewrl.sh";
 
-##b_opt = [out_option," ",bop," ",best_option," --server --snapb octave.snap "] ;
+##b_opt = [out_option," ",bop," ",best_option," --server --snapb octave.snap "]
+##;
+##b_opt = [out_option," ",bop," ",best_option," --server  "] ;
 ##b_opt = [out_option," ",bop," ",best_option," --snapb octave_freewrl_snapshots "] ;
-b_opt = [out_option," ",bop," ",best_option] ;
+b_opt = [out_option," ",bop," ",best_option, " ",geo_option] ;
 
 
 b_temp = "/tmp/octave_vrml_output.wrl" ;
@@ -169,19 +184,22 @@ if vrml_b_pid <= 0
 				# and exits. Octave reads the output of the
 				# system call, which is the browser's pid.
 				# Phew!  
+  if 1
+    cmd = [vrml_b_name," ",b_opt," ",b_temp," "]
 ##  [status, out] = system (cmd = [vrml_b_name," ",b_opt," \"file:",b_temp,"\""], 1);
-  [status, out] = system (cmd = [vrml_b_name," ",b_opt," ",b_temp], 1);
-##  cmd
-  if status,
+    [status, out] = system (cmd = [vrml_b_name," ",b_opt," ",b_temp], 1);
+    ##  cmd
+    if status,
     
-    printf("vrml_browse : Can't start browser '%s'. Is it installed?\n",\
-	   vrml_b_name);
+      printf("vrml_browse : Can't start browser '%s'. Is it installed?\n",\
+	     vrml_b_name);
       p = vrml_b_pid ;
-    return ;
-  else
+      return ;
+    else
 
-    vrml_b_pid = -1;
-    server_works = 0;
+      vrml_b_pid = -1;
+      server_works = 0;
+    end
     if server_works
       vrml_b_pid = str2num (out);
     end

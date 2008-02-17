@@ -70,6 +70,14 @@ function s = vrml_faces (x,f,varargin)
 
   ## mytic; starttime = cputime();
 
+  if rows (x) != 3
+    if columns (x) != 3
+      error ("x is %i x %i, has neither 3 rows nor 3 columns.", size (f));
+    else
+      x = x';
+    end
+  end
+
   tran = 0 ;
   col = [0.3, 0.4, 0.9] ;
   convex = emit = 0;
@@ -119,7 +127,6 @@ function s = vrml_faces (x,f,varargin)
   end
 
 
-
   if ! isnan (smooth), creaseAngle = pi ; end
 
   ## printf ("creaseAngle = %8.3f\n",creaseAngle);
@@ -129,6 +136,16 @@ function s = vrml_faces (x,f,varargin)
   ## if is_list (f), nfaces = length (f); else nfaces = columns (f); end
 
   if is_list (f), nfaces = length (f); else nfaces = columns (f); end
+  if ismatrix(f)
+    if rows (f) < 3
+      error ("Faces matrix 'f' has %i < 3 rows, so it does not define faces",
+	     rows (f));
+    end
+    if any (f > columns (x))
+      error ("Faces matrix 'f' has value %i greater than number of points %i",
+	     max (f(:)), columns (x));
+    end
+  end
 
   if ! isnan (tcoord)
 

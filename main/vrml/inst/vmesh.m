@@ -61,15 +61,18 @@
 ## "lcol", lc   : Nx3 : Color of the plane(s).          Default = [.7 .7 .7]
 ## "ltran",lt   : Nx1 : Transparency of the plane(s).   Default =        0.3
 ##
+## "normalize"  :       Normalize z to [-1,1]
+##
 ## See also: vrml_surf(), vrml_faces(), demo("vmesh")
 
 ## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 
 function s = vmesh (x, y, z, varargin)
 
-level = [];
-lcol = [7 7 7]/10;
-ltran = 0.3;
+level =     [];
+lcol =      [7 7 7]/10;
+ltran =     0.3;
+normalize = 0;
 
 if (nargin <= 1) || ischar(y),	# Cruft to allow not passing x and y
   zz = x ;
@@ -96,7 +99,7 @@ if nargin > 3,
 
   op1 = [" tran col checker creaseAngle emit colorPerVertex tex zcol",\
 	 " level lcol ltran "];
-  op0 = " smooth zgrey zrb ";
+  op0 = " smooth zgrey zrb normalize ";
 
   df = tars (level, lcol, ltran);
 
@@ -122,9 +125,26 @@ if nargin > 3,
       end
     end
   end
-  level = opts.level;
-  ltran = opts.ltran;
-  lcol  = opts.lcol;
+  level =     opts.level;
+  ltran =     opts.ltran;
+  lcol  =     opts.lcol;
+  normalize = opts.normalize;
+end
+
+if normalize
+  x -= nanmean (x(:));
+  y -= nanmean (y(:));
+  z -= nanmean (z(:));
+
+  datascl = nanmax (abs([z(:);y(:);x(:)]));
+
+  x /= datascl;
+  y /= datascl;
+  z /= datascl;
+				# Put back z in surf_args
+  surf_args{1} = x;
+  surf_args{2} = y;
+  surf_args{3} = z;
 end
 
 ## s = leval ("vrml_surf", surf_args);
@@ -133,7 +153,8 @@ s = feval ("vrml_surf", surf_args{:});
 pts = [x(:)';y(:)';z(:)'];
 ii = find (all (isfinite (pts)));
 pt2 = pts(:,ii); x2 = x(:)(ii); y2 = y(:)(ii); z2 = z(:)(ii);
-## Addd a point light
+
+## Add a point light
 scl = nanstd ((pt2-mean (pt2')'*ones(1,columns (pt2)))(:));
 
 lpos = [(min(x2) - 1.1*scl* max(max(x2)-min(x2), 1)),

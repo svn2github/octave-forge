@@ -37,7 +37,7 @@
 ##           (shows the contents of the topmost window above it). Use
 ##           "-kill".
 ##
-## Author  : Etienne Grossmann <etienne@cs.uky.edu>
+## Author  : Etienne Grossmann <etienne@isr.ist.utl.pt>
 function p = vrml_browse (varargin)
 
 verbose = 0;

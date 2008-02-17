@@ -47,7 +47,7 @@
 ## "hide"       : The points will be defined, but not showed.
 ##
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 

@@ -28,7 +28,7 @@
 ## "hcol", hcol            : Set color of the head of the arrow.
 ##                                                       default = col
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 

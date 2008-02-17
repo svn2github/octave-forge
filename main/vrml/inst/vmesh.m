@@ -65,7 +65,7 @@
 ##
 ## See also: vrml_surf(), vrml_faces(), demo("vmesh")
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 
 function s = vmesh (x, y, z, varargin)
 

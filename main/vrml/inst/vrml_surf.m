@@ -62,7 +62,7 @@
 ##
 ## See also: vmesh(), vrml_faces(), test_moving_surf()
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 

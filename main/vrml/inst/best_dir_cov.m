@@ -23,7 +23,7 @@
 ## wx (W+D)x(P*D) : derivatives of ML estimate wrt to observations
 ##
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 function  [cv,wx] = best_dir_cov(x,a,sx,wd)

@@ -16,7 +16,7 @@
 ##            in the plane d*y == v. The corners are sorted.
 ##
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 
 function y = bound_convex(d,h,x,pad) 
 

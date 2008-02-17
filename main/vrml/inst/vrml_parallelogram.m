@@ -31,7 +31,7 @@
 ## bemit, e : 1   :
 ## brad,  r : 1   :
 
-## Author: Etienne Grossmann <etienne@cs.uky.edu>
+## Author: Etienne Grossmann <etienne@isr.ist.utl.pt>
 
 function s = vrml_parallelogram (x, varargin)
 

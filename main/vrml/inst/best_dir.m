@@ -64,7 +64,7 @@
 ## wx : (D+W)x(D*P)
 ##               Derivatives of [w;d] wrt to x.
 ##
-## Author  : Etienne Grossmann <etienne@cs.uky.edu>
+## Author  : Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Created : March 2000
 ##
 function [d,w,rx,cv,wx] = best_dir( x, a, sx )

@@ -65,7 +65,7 @@
 
 
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 function s = vrml_faces (x,f,varargin)
 
   ## mytic; starttime = cputime();

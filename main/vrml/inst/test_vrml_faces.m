@@ -12,7 +12,7 @@
 
 ## Test that vrml_faces works with "tex" option
 
-## Author:  Etienne Grossmann <etienne@cs.uky.edu>
+## Author:  Etienne Grossmann <etienne@isr.ist.utl.pt>
 1;
 
 ## Tetrahedron : Vertices

@@ -33,7 +33,7 @@
 ##
 ## See also : vrml_DirectionalLight
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 
 function s = vrml_PointLight (varargin)
 

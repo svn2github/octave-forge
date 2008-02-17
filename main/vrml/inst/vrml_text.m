@@ -26,7 +26,7 @@
 ## "justify", justify      : default = "MIDDLE"
 ##                           (could also be "FIRST", "BEGIN", "END")
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 

@@ -23,7 +23,7 @@
 ## 
 ## See  select_3D_points()  for complete 3D point selection interface.
 
-## Author : Etienne Grossmann <etienne@cs.uky.edu>
+## Author : Etienne Grossmann <etienne@isr.ist.utl.pt>
 function s = vrml_select_points (x, state, sphere)
 
 printf("vrml_select_points does not work any more. Sorry\n");

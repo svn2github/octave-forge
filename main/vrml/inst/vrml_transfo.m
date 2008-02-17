@@ -23,7 +23,7 @@
 ##     rotation, translation and scale params given by r, t and c.
 ##
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 function v = vrml_transfo(s,t,r,c,DEF)

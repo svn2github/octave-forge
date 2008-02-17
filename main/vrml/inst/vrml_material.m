@@ -18,7 +18,7 @@
 ##   or 1x1 : use dc as emissiveColor if ec is true.             Default = 0
 ## tr : 1x1 : transparency                                       Default = 0
 ##
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 function s = vrml_material (dc, ec, tran,DEF)

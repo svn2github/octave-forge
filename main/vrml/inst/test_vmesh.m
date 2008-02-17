@@ -15,7 +15,7 @@
 ##
 ## Test vmesh.m
 
-## Author:  Etienne Grossmann <etienne@cs.uky.edu>
+## Author:  Etienne Grossmann <etienne@isr.ist.utl.pt>
 
 printf ("test_vmesh : \nDisplay a surface.\n");
 

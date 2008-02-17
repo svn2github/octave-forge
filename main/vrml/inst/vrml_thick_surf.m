@@ -41,7 +41,7 @@
 ##                                                              default = 0
 ## "smooth"           : same as "creaseAngle",pi.
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 

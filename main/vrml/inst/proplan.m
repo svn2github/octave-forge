@@ -14,7 +14,7 @@
 ##
 ## orthogonally project x to the affine plane d*x == v
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 function x = proplan(x,d,v)

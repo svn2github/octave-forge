@@ -24,7 +24,7 @@
 ## "hcol"  : 3 or 3x3 : Color of head     (may be stacked vertically) <col>
 ##                                                  
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 

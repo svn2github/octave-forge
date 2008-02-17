@@ -26,7 +26,7 @@
 ##   beginning , to indicate append rather than overwriting the
 ##   file.
 
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
+## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
 ## Last modified: Setembro 2002
 
 

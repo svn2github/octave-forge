@@ -496,11 +496,25 @@ int main(int argc, char **argv)
 
 			if (_access((exefile + ".manifest").c_str(), 00) == 0)
 			{
-				cmd = "mt -nologo -outputresource:" + exefile + " -manifest " + exefile + ".manifest";
+				// Do not auto-embed for conftest.exe (temporary executable generated
+				// by configure scripts): this avoids wrong test results when an AV
+				// software is scanning the executable while mt.exe tries to update it
+				// (results in "mt.exe:general error c101008d:..."
+				//
+				// This should be harmless for common situations (can only be a problem
+				// if the target application uses conftest.exe as executable name; but
+				// I don't know any).
 
-				if (debug)
-					cout << cmd << endl;
-				cmdresult = system(cmd.c_str());
+				if (exefile != "conftest.exe")
+				{
+					cmd = "mt -nologo -outputresource:" + exefile + " -manifest " + exefile + ".manifest";
+
+					if (debug)
+						cout << cmd << endl;
+
+					cmdresult = system(cmd.c_str());
+				}
+
 				if (cmdresult == 0)
 					_unlink((exefile + ".manifest").c_str());
 			}

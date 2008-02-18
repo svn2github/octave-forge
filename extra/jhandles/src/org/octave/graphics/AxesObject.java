@@ -624,6 +624,11 @@ public class AxesObject extends HandleObject
 		}
 	}
 
+	public LegendObject getLegend()
+	{
+	    return legend;
+	}
+
 	public LegendObject makeLegend(String names[])
 	{
 		if (names == null || names.length == 0)

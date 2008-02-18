@@ -38,7 +38,40 @@ function [ h ] = legend (varargin)
     ca = gca;
   endif
 
-  legend_obj = __get_object__ (ca).makeLegend (names);
+  if (length (names) == 0)
+    legend_obj = __get_object__ (ca).getLegend ();
+  elseif (length (names) == 1 &&
+      any (strcmp (names{1}, {"hide", "show", "boxoff", "boxon", "off"})))
+    ax_obj = __get_object__ (ca);
+    legend_obj = ax_obj.getLegend ();
+    op = names{1};
+    if (! isempty (legend_obj))
+      hl = legend_obj.getHandle ();
+      if (strcmp (op, "off"))
+        ax_obj.makeLegend ([]);
+      elseif (strcmp (op, "boxoff"))
+        set (hl, "visible", "off");
+      elseif (strcmp (op, "boxon"))
+        set (hl, "visible", "on");
+      elseif (strcmp (op, "hide"))
+        set (hl, "visible", "off");
+        set (get (hl, "children"), "visible", "off");
+      elseif (strcmp (op, "show"))
+        set (hl, "visible", "on");
+        set (get (hl, "children"), "visible", "on");
+      endif
+    else
+      if (strcmp (op, "show"))
+        hh = get (ca, "children");
+        for k = 1:length(hh)
+          names{k} = ["data ", num2str(k)];
+        endfor
+        legend_obj = ax_obj.makeLegend (names);
+      endif
+    endif
+  else
+    legend_obj = __get_object__ (ca).makeLegend (names);
+  endif
 
   if (nargout > 0)
     if (! isempty (legend_obj))

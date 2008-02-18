@@ -44,11 +44,17 @@ public class LegendObject extends AxesObject
 			item.text = new TextObject(this, name, new double[] {0, 0, 0});
 			item.text.VAlign.reset("middle");
 			item.text.TextColor.reset(TextColor.get());
+			item.text.FontName.reset(this.get("FontName"));
+			item.text.FontSize.reset(this.get("FontSize"));
+			item.text.FontUnits.reset(this.get("FontUnits"));
+			item.text.FontWeight.reset(this.get("FontWeight"));
+			item.text.FontAngle.reset(this.get("FontAngle"));
 			item.text.validate();
 
 			item.line = new LineObject(this);
 			item.line.LineColor.reset(line.get("Color"));
 			item.line.LineStyle.reset(line.get("LineStyle"));
+			item.line.LineWidth.reset(line.get("LineWidth"));
 			item.line.validate();
 
 			item.marker = new LineObject(this);
@@ -116,6 +122,11 @@ public class LegendObject extends AxesObject
 		YColor.reset(EdgeColor.get());
 		ZColor.reset(EdgeColor.get());
 		Tag.reset("legend");
+		FontName.reset(axes.FontName.toString());
+		FontSize.reset(new Double(axes.FontSize.doubleValue()));
+		FontUnits.reset(axes.FontUnits.getValue());
+		FontWeight.reset(axes.FontWeight.getValue());
+		FontAngle.reset(axes.FontAngle.getValue());
 
 		listen(axes.Position);
 		listen(axes.OuterPosition);

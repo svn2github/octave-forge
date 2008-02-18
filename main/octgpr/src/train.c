@@ -25,7 +25,7 @@
 #include "gprmod.h"
 
 
-int GPR_train(int ndim,int nx,double *X,double *y,
+int GPR_train(int ndim,int nx,const double *X,const double *y,
     double *theta,double *nu,double *nll,
     int nlin,corfptr corf,struct GPR_train_opts *opts)
 {

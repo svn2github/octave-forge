@@ -24,11 +24,11 @@
 
 #define DSIZE sizeof(double)
 
-void GPR_predict(int ndim,int nx,double *X,
-    double *theta,double *nu,
+void GPR_predict(int ndim,int nx,const double *X,
+    const double *theta,const double *nu,
     int nlin,corfptr corf,
-    double *var,double *mu,double *RP,
-    int nx0,double *X0,double *y0,double *sig0,double *yd0)
+    const double *var,const double *mu,const double *RP,
+    int nx0,const double *X0,double *y0,double *sig0,double *yd0)
 {
   int nder = (yd0) ? ndim : 0;
   double *work = malloc(nx*(1+(nder)?1:0)*DSIZE);

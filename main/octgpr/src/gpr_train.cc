@@ -225,7 +225,7 @@ If @var{nll} is present, it is set to the resulting negative log likelihood.\n\
     if (topts.maxev > 0) {
 
       // run training 
-      int ierr = GPR_train(ndim,nx,X.fortran_vec(),y.fortran_vec(),
+      int ierr = GPR_train(ndim,nx,X.data(),y.data(),
           theta.fortran_vec(),&nu,&nll,nlin,corf,&topts);
       fprintf(stdout,"\n"); 
       if (octave_signal_caught) {
@@ -259,7 +259,7 @@ If @var{nll} is present, it is set to the resulting negative log likelihood.\n\
   // make mu follow the theta convention (given by trans)
   Matrix mu(trans?1:nlin+1,trans?nlin+1:1);
 
-  GPR_setup(ndim,nx,X.fortran_vec(),y.fortran_vec(),theta.fortran_vec(),&nu,
+  GPR_setup(ndim,nx,X.data(),y.data(),theta.data(),&nu,
       nlin,corf,&var,mu.fortran_vec(),RP.fortran_vec(),&nll);
 
   // construct model structure 

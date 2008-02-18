@@ -24,7 +24,7 @@
 #include "gprmod.h"
 
 octave_value getfield(const Octave_map& map,const char *field,bool& err) {
-  Cell c = map.contents(field);
+  const Cell c = map.contents(field);
   if (!c.is_empty()) 
     return c(0);
   else {
@@ -117,10 +117,10 @@ If @var{dy} is requested, it is populated with the prediction gradients. \n\
   if (nargout > 2) yd0 = Matrix(ndim,nx0);
 
   // do the predictions
-  if (nx0 > 0) GPR_predict(ndim,nx,X.fortran_vec(),
-      theta.fortran_vec(),&nu,nlin,corf,
-      &var,mu.fortran_vec(),RP.fortran_vec(),
-      nx0,X0.fortran_vec(),y0.fortran_vec(),sig0.fortran_vec(),
+  if (nx0 > 0) GPR_predict(ndim,nx,X.data(),
+      theta.data(),&nu,nlin,corf,
+      &var,mu.data(),RP.data(),
+      nx0,X0.data(),y0.fortran_vec(),sig0.fortran_vec(),
       (nargout > 2) ? yd0.fortran_vec() : 0);
 
   // build return list

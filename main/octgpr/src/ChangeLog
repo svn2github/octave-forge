@@ -1,3 +1,10 @@
+2008-02-18  Jaroslav Hajek <highegg@gmail.com>
+
+	* forsubs.h gprmod.h predict.c train.c setup.c: added const modifiers
+	where appropriate.
+	* grp_train,gpr_predict: replaced Array::fortran_vec with Array::data
+	where appropriate, to prevent unnecessary copying.
+
 2008-02-15  Jaroslav Hajek <highegg@gmail.com>
 
 	* octgpr.m: improved demo.

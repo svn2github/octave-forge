@@ -24,8 +24,8 @@
 
 #define DSIZE sizeof(double)
 
-int GPR_setup(int ndim,int nx,double *X,double *y,
-    double *theta,double *nu,
+int GPR_setup(int ndim,int nx,const double *X,const double *y,
+    const double *theta,const double *nu,
     int nlin,corfptr corf,
     double *var, double *mu,double *RP,double *nll)
 {

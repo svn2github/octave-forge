@@ -48,22 +48,22 @@ extern "C" {
 corfptr get_corrf(const char *name);
 
 /* train model hyperparameters */
-int GPR_train(int ndim,int nx,double *X,double *y,
+int GPR_train(int ndim,int nx,const double *X,const double *y,
     double *theta,double *nu,double *nll,
-    int nlin,corfptr corf,struct GPR_train_opts *opts);
+    int nlin,const corfptr corf,struct GPR_train_opts *opts);
 
 /* given hypers, setup model for predictions */
-int GPR_setup(int ndim,int nx,double *X,double *y,
-    double *theta,double *nu,
-    int nlin,corfptr corf,
+int GPR_setup(int ndim,int nx,const double *X,const double *y,
+    const double *theta,const double *nu,
+    int nlin,const corfptr corf,
     double *var, double *mu,double *RP,double *nll);
 
 /* compute predictions */
-void GPR_predict(int ndim,int nx,double *X,
-    double *theta,double *nu,
-    int nlin,corfptr corf,
-    double *var,double *mu,double *RP,
-    int nx0,double *X0,double *y0,double *sig0,double *yd0);
+void GPR_predict(int ndim,int nx,const double *X,
+    const double *theta,const double *nu,
+    int nlin,const corfptr corf,
+    const double *var,const double *mu,const double *RP,
+    int nx0,const double *X0,double *y0,double *sig0,double *yd0);
 
 #ifdef __cplusplus
 }

@@ -32,19 +32,18 @@
 ##    Make sure it builds and at least passes its own tests on your machine 
 ##    at least.
 ##
-## 3) make www; admin/make_index
-##
-##    Check the list of function that are either not found or uncategorized
-##    and fix the INDEX files accordingly.
-##
-## 4) svn2cl -f changes
+## 3) svn2cl -f changes
 ##
 ##    Generate a list of changes.  Use it to update doc/htdocs/NEWS.in and
 ##    doc/htdocs/index.in with a summary of changes.
 ##
-## 5) make clean; make all; make www
+## 4) Update doc/htdocs/packages.in to point to the latest version of the 
+##    Octave-Forge bundle.
 ##
-##    Build the web-pages and ancillary files.
+## 5) make www; admin/make_index
+##
+##    Check the list of function that are either not found or uncategorized
+##    and fix the INDEX files accordingly.
 ##
 ## 6) admin/get_authors
 ##
@@ -61,7 +60,8 @@
 ##
 ##    This is the actual release step.  It tags the SVN tree.
 ##
-## 10) Upload the webpages to sourceforge.
+## 10) Upload the webpages to sourceforge. (these steps assume that your login
+##     on your local machine is the same as your SourceForge login)
 ##
 ##        scp doc/htdocs.tar.gz $OFHOME
 ##        ssh octave.sf.net
@@ -76,8 +76,9 @@
 ##
 ##     Finish upload process in the sourceforge admin system at
 ##     https://sf.net/project/admin/qrs.php?package_id=2841&group_id=2888
+##     (This is only needed if something went wrong with releaseforge)
 ## 
-## 12) sources@octave.org, octave-dev@lists.sf.net
+## 12) help@octave.org, octave-dev@lists.sf.net
 ##
 ##    Announce the new release on the appropriate mailing lists.
 ##

@@ -56,6 +56,8 @@ see the <a href="NEWS.html">News Archive</a> or the
 <ul>
    <li>jhandles: More graphics properties.</li>
    <li>ad: New package for Automatic Forward Differentiation.</li>
+   <li>OctGPR: New package for interpolating and smoothing scattered multidimensional
+       data using Gaussian Process Regression (also known as Kriging).</li>
    <li>financial: New package.</li>
    <li>odepkg: Improvements in speed and compatibility.</li>
    <li>image: New functions: 'imfilter', and 'imsmooth'.</li>

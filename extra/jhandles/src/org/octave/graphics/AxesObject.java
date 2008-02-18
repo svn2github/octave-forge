@@ -295,8 +295,8 @@ public class AxesObject extends HandleObject
 		XMinorTick = new BooleanProperty(this, "XMinorTick", false);
 		YMinorTick = new BooleanProperty(this, "YMinorTick", false);
 		ZMinorTick = new BooleanProperty(this, "ZMinorTick", false);
-		XAxisLocation = new RadioProperty(this, "XAxisLocation", new String[] {"bottom", "top"}, "bottom");
-		YAxisLocation = new RadioProperty(this, "YAxisLocation", new String[] {"left", "right"}, "left");
+		XAxisLocation = new RadioProperty(this, "XAxisLocation", new String[] {"bottom", "top", "zero"}, "bottom");
+		YAxisLocation = new RadioProperty(this, "YAxisLocation", new String[] {"left", "right", "zero"}, "left");
 		Layer = new RadioProperty(this, "Layer", new String[] {"bottom", "top"}, "bottom");
 		Key = new BooleanProperty(this, "Key", false);
 		Key.setVisible(false);

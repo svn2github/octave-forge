@@ -513,10 +513,10 @@ int main(int argc, char **argv)
 						cout << cmd << endl;
 
 					cmdresult = system(cmd.c_str());
-				}
 
-				if (cmdresult == 0)
-					_unlink((exefile + ".manifest").c_str());
+					if (cmdresult == 0)
+						_unlink((exefile + ".manifest").c_str());
+				}
 			}
 		}
 

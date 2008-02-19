@@ -23,13 +23,13 @@
 #include "gprmod.h"
 #include "forsubs.h"
 
-corfptr get_corrf(const char *name)
+corfptr get_corrf (const char *name)
 {
-  if (!strcmp(name,"gau") || !strcmp(name,"GAU"))
+  if (!strcmp (name, "gau") || !strcmp (name, "GAU"))
     return &F77_corgau;
-  else if (!strcmp(name,"exp") || !strcmp(name,"EXP"))
+  else if (!strcmp (name, "exp") || !strcmp (name, "EXP"))
     return &F77_corexp;
-  else if (!strcmp(name,"imq") || !strcmp(name,"IMQ"))
+  else if (!strcmp (name, "imq") || !strcmp (name, "IMQ"))
     return &F77_corimq;
   else
     return NULL;

@@ -33,9 +33,9 @@ enum train_cond {
 /* training options for GPR */
 struct GPR_train_opts
 {
-  double numin,tol; 
+  double numin, tol; 
   int maxev;
-  int (*monitor)(void *instance,int num,double *nll); 
+  int (*monitor)(void *instance, int num, double *nll); 
   void *instance;
 };
 
@@ -44,26 +44,27 @@ struct GPR_train_opts
 extern "C" {
 #endif
 
-/* parse correlation type name */
-corfptr get_corrf(const char *name);
+    /* parse correlation type name */
+    corfptr get_corrf (const char *name);
 
-/* train model hyperparameters */
-int GPR_train(int ndim,int nx,const double *X,const double *y,
-    double *theta,double *nu,double *nll,
-    int nlin,const corfptr corf,struct GPR_train_opts *opts);
+    /* train model hyperparameters */
+    int GPR_train (int ndim, int nx, const double *X, const double *y,
+                   double *theta, double *nu, double *nll,
+                   int nlin, const corfptr corf, struct GPR_train_opts *opts);
 
-/* given hypers, setup model for predictions */
-int GPR_setup(int ndim,int nx,const double *X,const double *y,
-    const double *theta,const double *nu,
-    int nlin,const corfptr corf,
-    double *var, double *mu,double *RP,double *nll);
+    /* given hypers, setup model for predictions */
+    int GPR_setup (int ndim, int nx, const double *X, const double *y,
+                   const double *theta, const double *nu,
+                   int nlin, const corfptr corf,
+                   double *var, double *mu, double *RP, double *nll);
 
-/* compute predictions */
-void GPR_predict(int ndim,int nx,const double *X,
-    const double *theta,const double *nu,
-    int nlin,const corfptr corf,
-    const double *var,const double *mu,const double *RP,
-    int nx0,const double *X0,double *y0,double *sig0,double *yd0);
+    /* compute predictions */
+    void GPR_predict (int ndim, int nx, const double *X,
+                      const double *theta, const double *nu,
+                      int nlin, const corfptr corf,
+                      const double *var, const double *mu, const double *RP,
+                      int nx0, const double *X0, 
+                      double *y0, double *sig0, double *yd0);
 
 #ifdef __cplusplus
 }

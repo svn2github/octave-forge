@@ -22,27 +22,28 @@
 #include <string.h>
 #include "gprmod.h"
 
-#define DSIZE sizeof(double)
+#define DSIZE sizeof (double)
 
-void GPR_predict(int ndim,int nx,const double *X,
-    const double *theta,const double *nu,
-    int nlin,corfptr corf,
-    const double *var,const double *mu,const double *RP,
-    int nx0,const double *X0,double *y0,double *sig0,double *yd0)
+void GPR_predict (int ndim, int nx, const double *X,
+                  const double *theta, const double *nu,
+                  int nlin, corfptr corf,
+                  const double *var, const double *mu, const double *RP,
+                  int nx0, const double *X0, double *y0, double *sig0, double *yd0)
 {
   int nder = (yd0) ? ndim : 0;
-  double *work = malloc(nx*(1+(nder)?1:0)*DSIZE);
+  double *work = malloc (nx*(1+(nder)?1:0)*DSIZE);
   double dummy;
 
-  for ( ;nx0; --nx0) {
-    /* call infgpr */
-    F77_infgpr(&ndim,&nx,X,theta,nu,var,&nlin,mu,RP,corf,
-	X0,y0,sig0,&nder,yd0?yd0:&dummy,work);
-    /* increment pointers */
-    X0 += ndim;
-    y0++;
-    sig0++;
-    if (yd0) yd0 += ndim;
-  }
-  free(work);
+  for ( ;nx0; --nx0) 
+    {
+      /* call infgpr */
+      F77_infgpr (&ndim, &nx, X, theta, nu, var, &nlin, mu, RP, corf,
+                  X0, y0, sig0, &nder, yd0?yd0:&dummy, work);
+      /* increment pointers */
+      X0 += ndim;
+      y0++;
+      sig0++;
+      if (yd0) yd0 += ndim;
+    }
+  free (work);
 }

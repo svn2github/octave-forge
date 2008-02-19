@@ -22,7 +22,7 @@
 #define _FORSUBS_H
 #include <config.h>
 
-typedef void (*corfptr) (const double *t,double *f,double *d);
+typedef void (*corfptr) (const double *t, double *f, double *d);
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,95 +39,89 @@ extern "C" {
 #define F77_dtr2tp F77_FUNC(dtr2tp,DTR2TP)
 #define F77_optdrv F77_FUNC(optdrv,OPTDRV)
 
-void F77_corgau(const double *t, double *f, double *d);
+    void F77_corgau (const double *t, double *f, double *d);
 
-void F77_corexp(const double *t, double *f, double *d);
+    void F77_corexp (const double *t, double *f, double *d);
 
-void F77_corimq(const double *t, double *f, double *d);
+    void F77_corimq (const double *t, double *f, double *d);
 
-void F77_nllgpr(
-    const int *ndim, 
-    const int *nx, 
-    const double x[], 
-    const double y[], 
-    const double theta[], 
-    const double *nu,
-    double *var, 
-    const int *nlin, 
-    double mu[], 
-    double r[], 
-    double *nll, 
-    const corfptr corr, 
-    int *info);
+    void F77_nllgpr (const int *ndim, 
+                     const int *nx, 
+                     const double x[], 
+                     const double y[], 
+                     const double theta[], 
+                     const double *nu,
+                     double *var, 
+                     const int *nlin, 
+                     double mu[], 
+                     double r[], 
+                     double *nll, 
+                     const corfptr corr, 
+                     int *info );
 
-void F77_nldgpr(
-    const int *ndim, 
-    const int *nx, 
-    const double x[], 
-    const double theta[], 
-    const double *nu, 
-    double *var, 
-    double r[], 
-    double dtheta[], 
-    double dnu[], 
-    int *info);
-void F77_nl0gpr(
-    const int *nx, 
-    const double y[], 
-    const double *nu, 
-    double *nll0, 
-    double *nllinf);
+    void F77_nldgpr (const int *ndim, 
+                     const int *nx, 
+                     const double x[], 
+                     const double theta[], 
+                     const double *nu, 
+                     double *var, 
+                     double r[], 
+                     double dtheta[], 
+                     double dnu[], 
+                     int *info );
 
-void F77_infgpr(
-    const int *ndim, 
-    const int *nx, 
-    const double x[], 
-    const double theta[], 
-    const double *nu, 
-    const double *var, 
-    const int *nlin, 
-    const double mu[], 
-    const double rp[], 
-    const corfptr corr, 
-    const double x0[],
-    double *y0, 
-    double *sig0, 
-    const int *nder, 
-    double yd0[], 
-    double *w);
+    void F77_nl0gpr (const int *nx, 
+                     const double y[], 
+                     const double *nu, 
+                     double *nll0, 
+                     double *nllinf );
 
-void F77_stheta(
-    const int *ndim, 
-    const int *nx, 
-    const double x[], 
-    double theta[]);
+    void F77_infgpr (const int *ndim, 
+                     const int *nx, 
+                     const double x[], 
+                     const double theta[], 
+                     const double *nu, 
+                     const double *var, 
+                     const int *nlin, 
+                     const double mu[], 
+                     const double rp[], 
+                     const corfptr corr, 
+                     const double x0[],
+                     double *y0, 
+                     double *sig0, 
+                     const int *nder, 
+                     double yd0[], 
+                     double *w );
 
-void F77_dtr2tp(
-    const char *uplo, 
-    const char *diag, 
-    const int *n, 
-    const double a[], 
-    const int *lda, 
-    double ap[]);
+    void F77_stheta (const int *ndim, 
+                     const int *nx, 
+                     const double x[], 
+                     double theta[] );
 
-void F77_optdrv(
-    const int *ndim,
-    double theta[],
-    double *nu,
-    double *nll,
-    double dtheta[],
-    double dnu[],
-    double theta0[],
-    double *nu0,
-    double *nll0,
-    double dtheta0[],
-    double dnu0[],
-    int *info,
-    double scal[],
-    const int *l2nu,
-    double vm[],
-    double cp[],
-    int ic[]);
+    void F77_dtr2tp (const char *uplo, 
+                     const char *diag, 
+                     const int *n, 
+                     const double a[], 
+                     const int *lda, 
+                     double ap[] );
+
+    void F77_optdrv (const int *ndim,
+                     double theta[],
+                     double *nu,
+                     double *nll,
+                     double dtheta[],
+                     double dnu[],
+                     double theta0[],
+                     double *nu0,
+                     double *nll0,
+                     double dtheta0[],
+                     double dnu0[],
+                     int *info,
+                     double scal[],
+                     const int *l2nu,
+                     double vm[],
+                     double cp[],
+                     int ic[] );
 
 #ifdef __cplusplus
 }

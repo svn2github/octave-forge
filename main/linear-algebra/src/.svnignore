@@ -1,2 +1,5 @@
 configure
 autom4te.cache
+*.d
+*.o
+*.oct

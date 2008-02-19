@@ -7,20 +7,27 @@ endif
 DEFINES = -DHAVE_CONFIG_H
 GSVD_OBJECTS = gsvd.o dbleGSVD.o CmplxGSVD.o 
 GSVD_TARGET = gsvd.oct
+GSVD_DEPENDS = gsvd.d dbleGSVD.d CmplxGSVD.d
+QRUPDATE_OBJECTS = qrupdate.o dqr1up.o zqr1up.o
+QRUPDATE_TARGET = qrupdate.oct
+QRUPDATE_DEPENDS = qrupdate.d
+QRINSERT_OBJECTS = qrinsert.o dqrinc.o zqrinc.o
+QRINSERT_TARGET = qrinsert.oct
+QRINSERT_DEPENDS = qrinsert.d
+QRDELETE_OBJECTS = qrdelete.o dqrdec.o zqrdec.o
+QRDELETE_TARGET = qrdelete.oct
+QRDELETE_DEPENDS = qrdelete.d
+
 OTHER_OBJECTS = outer.o GramSchmidt.o
 OTHER_TARGETS = $(patsubst %.o,%.oct,$(OTHER_OBJECTS))
+OTHER_DEPENDS = $(patsubst %.o,%.d,$(OTHER_OBJECTS))
 
-OBJECTS = $(OTHER_OBJECTS) $(GSVD_OBJECTS)
-TARGETS = $(OTHER_TARGETS) $(GSVD_TARGET) 
-
-MYDEPENDS = $(patsubst %.o,%.d,$(OBJECTS))
-
-ifeq ($(MAKECMDGOALS),all)
-  DEPENDS = $(MYDEPENDS)
-endif
-ifeq ($(MAKECMDGOALS),)
-  DEPENDS = $(MYDEPENDS)
-endif
+OBJECTS = $(OTHER_OBJECTS) $(GSVD_OBJECTS) \
+	  $(QRUPDATE_OBJECTS) $(QRINSERT_TARGET) $(QRDELETE_OBJECTS)
+TARGETS = $(OTHER_TARGETS) $(GSVD_TARGET) \
+	  $(QRUPDATE_TARGET) $(QRINSERT_TARGET) $(QRDELETE_TARGET)
+DEPENDS = $(OTHER_DEPENDS) $(GSVD_DEPENDS) \
+	  $(QRUPDATE_DEPENDS) $(QRINSERT_DEPENDS) $(QRDELETE_DEPENDS)
 
 .PHONY: all clean count
 
@@ -30,8 +37,17 @@ endif
 
 all : $(TARGETS)
 
-$(GSVD_TARGET) : $(DEPENDS) $(GSVD_OBJECTS)
+$(GSVD_TARGET) : $(GSVD_DEPENDS) $(GSVD_OBJECTS)
 	$(MKOCTFILE) $(DEFINES) $(GSVD_OBJECTS) -o $@
+
+$(QRUPDATE_TARGET) : $(QRUPDATE_DEPENDS) $(QRUPDATE_OBJECTS)
+	$(MKOCTFILE) $(DEFINES) $(QRUPDATE_OBJECTS) -o $@
+
+$(QRINSERT_TARGET) : $(QRINSERT_DEPENDS) $(QRINSERT_OBJECTS)
+	$(MKOCTFILE) $(DEFINES) $(QRINSERT_OBJECTS) -o $@
+
+$(QRDELETE_TARGET) : $(QRDELETE_DEPENDS) $(QRDELETE_OBJECTS)
+	$(MKOCTFILE) $(DEFINES) $(QRDELETE_OBJECTS) -o $@
 
 ifneq (,$(DEPENDS))
   sinclude $(DEPENDS)
@@ -44,8 +60,13 @@ endif
 %.o:%.cc %.d
 	$(MKOCTFILE) $(DEFINES) -c $<
 
+%.o:%.f
+	$(MKOCTFILE) $(DEFINES) -c $<
+%.oct:%.o
+	$(MKOCTFILE) $(DEFINES) $< -o $@
+
 clean: 
-	rm -f $(TARGETS) $(MYDEPENDS) $(OBJECTS) *~ $(MYDEPENDS) octave-core
+	rm -f $(TARGETS) $(DEPENDS) $(OBJECTS) octave-core
 
 count:
-	wc *{.cc,.h}
+	wc *{.cc,.h,.f}

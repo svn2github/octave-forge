@@ -160,6 +160,7 @@ int main(int argc, char **argv)
 {
 	string clopt, linkopt, cllinkopt, sourcefile, objectfile, optarg, prog, exefile;
 	bool gotparam, dodepend, exeoutput, doshared, debug = false, read_from_stdin;
+	bool mt_embed = true;
 
 	prog = "cl";
 	clopt = "-nologo";
@@ -288,6 +289,10 @@ int main(int argc, char **argv)
 			 arg == "-fPIC")
 		{
 			// ignore
+		}
+		else if (arg == "-noembed")
+		{
+			mt_embed = false;
 		}
 		else if (arg == "-o")
 		{
@@ -505,7 +510,7 @@ int main(int argc, char **argv)
 				// if the target application uses conftest.exe as executable name; but
 				// I don't know any).
 
-				if (exefile != "conftest.exe")
+				if (mt_embed && exefile != "conftest.exe")
 				{
 					cmd = "mt -nologo -outputresource:" + exefile + " -manifest " + exefile + ".manifest";
 

@@ -32,7 +32,7 @@ function vret = odepkg_testsuite_transistor (vhandle, vrtol)
   if (nargin ~= 2) %# Check number and types of all input arguments
     help  ('odepkg_testsuite_transistor');
     error ('OdePkg:InvalidArgument', ...
-	   'Number of input arguments must be exactly two');
+           'Number of input arguments must be exactly two');
   elseif (~isa (vhandle, 'function_handle') || ~isscalar (vrtol))
     print_usage;
   end
@@ -62,8 +62,10 @@ function vret = odepkg_testsuite_transistor (vhandle, vrtol)
     [vstart, vstop], vinit, vopt);
   vret{12} = toc;                    %# The value for the elapsed time
   vref = odepkg_testsuite_transistorref; %# Get the reference solution vector
-  if (size (vsol.y(end,:)) == size (vref)), vlst = vsol.y(end,:);
-  elseif (size (vsol.y(:,end)) == size (vref)), vlst = vsol.y(:,end);
+  if (exist ('OCTAVE_VERSION') ~= 0)
+    vlst = vsol.y(end,:);
+  else
+    vlst = vsol.y(:,end);
   end
   vret{5}  = odepkg_testsuite_calcmescd (vlst, vref, vret{3}, vret{2});
   vret{6}  = odepkg_testsuite_calcscd (vlst, vref, vret{3}, vret{2});
@@ -73,7 +75,7 @@ function vret = odepkg_testsuite_transistor (vhandle, vrtol)
   vret{10} = vsol.stats.npds;     %# The value for partial derivations
   vret{11} = vsol.stats.ndecomps; %# The value for LU decompositions
 
-%# Returns the results for the for the TRANSISTOR problem
+%# Returns the results for the TRANSISTOR problem
 function f = odepkg_testsuite_transistorfun (t, y, varargin)
   ub = 6; uf = 0.026; alpha = 0.99; beta = 1d-6;
   r0 = 1000; r1 = 9000; r2 = 9000; r3 = 9000;
@@ -104,8 +106,8 @@ function dfdy = odepkg_testsuite_transistorjac (t, y, varargin)
   r4 = 9000; r5 = 9000; r6 = 9000; r7 = 9000;
   r8 = 9000; r9 = 9000;
 
-  fac1p = beta * exp ((y(2) - y(3)) / uf);
-  fac2p = beta * exp ((y(5) - y(6)) / uf);
+  fac1p = beta * exp ((y(2) - y(3)) / uf) / uf;
+  fac2p = beta * exp ((y(5) - y(6)) / uf) / uf;
 
   dfdy(1,1) =   1 / r0;
   dfdy(2,2) =   1 / r1 + 1 / r2 + (1 - alpha) * fac1p;
@@ -126,32 +128,28 @@ function dfdy = odepkg_testsuite_transistorjac (t, y, varargin)
 
 %# Returns the MASS matrix for the TRANSISTOR problem
 function mass = odepkg_testsuite_transistormass (t, y, varargin)
-  mass =  [-1e-6,  1e-6,     0,     0,     0,     0,     0,     0; ...
-            1e-6, -1e-6,     0,     0,     0,     0,     0,     0; ...
-               0,     0, -2e-6,     0,     0,     0,     0,     0; ...
-               0,     0,     0, -3e-6,  3e-6,     0,     0,     0; ...
-               0,     0,     0,  3e-6, -3e-6,     0,     0,     0; ...
-               0,     0,     0,     0,     0, -4e-6,     0,     0; ...
-               0,     0,     0,     0,     0,     0, -5e-6,  5e-6; ...
-               0,     0,     0,     0,     0,     0,  5e-6,  5e-6];
+  mass =  [-1e-6,  1e-6,     0,     0,     0,     0,     0,      0; ...
+            1e-6, -1e-6,     0,     0,     0,     0,     0,      0; ...
+               0,     0, -2e-6,     0,     0,     0,     0,      0; ...
+               0,     0,     0, -3e-6,  3e-6,     0,     0,      0; ...
+               0,     0,     0,  3e-6, -3e-6,     0,     0,      0; ...
+               0,     0,     0,     0,     0, -4e-6,     0,      0; ...
+               0,     0,     0,     0,     0,     0, -5e-6,   5e-6; ...
+               0,     0,     0,     0,     0,     0,  5e-6,  -5e-6];
 
 %# Returns the REFERENCE values for the TRANSISTOR problem
 function y = odepkg_testsuite_transistorref ()
-  y(1) = -0.55621450122627e-2;
-  y(2) =  0.30065224719030e+1;
-  y(3) =  0.28499587886081e+1;
-  y(4) =  0.29264225362062e+1;
-  y(5) =  0.27046178650105e+1;
-  y(6) =  0.27618377783931e+1;
-  y(7) =  0.47709276316167e+1;
-  y(8) =  0.12369958680915e+1;
+  y(1,1) = -0.55621450122627e-2;
+  y(2,1) =  0.30065224719030e+1;
+  y(3,1) =  0.28499587886081e+1;
+  y(4,1) =  0.29264225362062e+1;
+  y(5,1) =  0.27046178650105e+1;
+  y(6,1) =  0.27618377783931e+1;
+  y(7,1) =  0.47709276316167e+1;
+  y(8,1) =  0.12369958680915e+1;
 
 %!demo
-%! vsolver = {@ode23, @ode45, @ode54, @ode78, ...
-%!   @odepkg_mexsolver_dopri5, @odepkg_mexsolver_dop853, ...
-%!   @odepkg_mexsolver_odex, @odepkg_mexsolver_radau, ...
-%!   @odepkg_mexsolver_radau5, @odepkg_mexsolver_rodas, ...
-%!   @odepkg_mexsolver_seulex};
+%! vsolver = {@odebda, @oders, @ode2r, @ode5r, @odesx};
 %! for vcnt=1:length (vsolver)
 %!   vtrans{vcnt,1} = odepkg_testsuite_transistor (vsolver{vcnt}, 1e-7);
 %! end

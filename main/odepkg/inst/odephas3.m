@@ -54,7 +54,7 @@ function [varargout] = odephas3 (vt, vy, vflag)
     %# the integration' or true for 'stopping the integration'
     vcounter = vcounter + 1; figure (vfigure);
     vyold(:,vcounter) = vy(:,1);
-    plot3 (vyold(1,:), vyold(2,:), vyold (3,:), '-o');
+    plot3 (vyold(1,:), vyold(2,:), vyold (3,:), '-o', 'markersize', 1);
     drawnow; varargout{1} = false;
 
   elseif (strcmp (vflag, 'done'))

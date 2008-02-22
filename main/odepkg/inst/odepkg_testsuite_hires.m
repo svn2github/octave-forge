@@ -32,7 +32,7 @@ function vret = odepkg_testsuite_hires (vhandle, vrtol)
   if (nargin ~= 2) %# Check number and types of all input arguments
     help  ('odepkg_testsuite_hires');
     error ('OdePkg:InvalidArgument', ...
-	   'Number of input arguments must be exactly two');
+      'Number of input arguments must be exactly two');
   elseif (~isa (vhandle, 'function_handle') || ~isscalar (vrtol))
     print_usage;
   end
@@ -60,8 +60,10 @@ function vret = odepkg_testsuite_hires (vhandle, vrtol)
     [vstart, vstop], vinit, vopt);
   vret{12} = toc;                   %# The value for the elapsed time
   vref = odepkg_testsuite_hiresref; %# Get the reference solution vector
-  if (max (size (vsol.y(end,:))) == max (size (vref))), vlst = vsol.y(end,:);
-  elseif (max (size (vsol.y(:,end))) == max (size (vref))), vlst = vsol.y(:,end);
+  if (exist ('OCTAVE_VERSION') ~= 0)
+    vlst = vsol.y(end,:);
+  else
+    vlst = vsol.y(:,end);
   end
   vret{5}  = odepkg_testsuite_calcmescd (vlst, vref, vret{3}, vret{2});
   vret{6}  = odepkg_testsuite_calcscd (vlst, vref, vret{3}, vret{2});
@@ -127,10 +129,7 @@ function y = odepkg_testsuite_hiresref ()
 
 %!demo
 %! vsolver = {@ode23, @ode45, @ode54, @ode78, ...
-%!   @odepkg_mexsolver_dopri5, @odepkg_mexsolver_dop853, ...
-%!   @odepkg_mexsolver_odex, @odepkg_mexsolver_radau, ...
-%!   @odepkg_mexsolver_radau5, @odepkg_mexsolver_rodas, ...
-%!   @odepkg_mexsolver_seulex};
+%!   @odebda, @oders, @ode2r, @ode5r, @odesx};
 %! for vcnt=1:length (vsolver)
 %!   vhires{vcnt,1} = odepkg_testsuite_hires (vsolver{vcnt}, 1e-7);
 %! end

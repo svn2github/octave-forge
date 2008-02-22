@@ -32,7 +32,7 @@ function vret = odepkg_testsuite_oregonator (vhandle, vrtol)
   if (nargin ~= 2) %# Check number and types of all input arguments
     help  ('odepkg_testsuite_oregonator');
     error ('OdePkg:InvalidArgument', ...
-	   'Number of input arguments must be exactly two');
+      'Number of input arguments must be exactly two');
   elseif (~isa (vhandle, 'function_handle') || ~isscalar (vrtol))
     usage ('odepkg_testsuite_oregonator (@solver, reltol)');
   end
@@ -47,29 +47,31 @@ function vret = odepkg_testsuite_oregonator (vhandle, vrtol)
     ' tolerance %2.0e\n'], func2str (vret{1}), vrtol); fflush (1);
 
   %# Setting the integration algorithms option values
-  vstart = 0.0;      %# The point of time when solving is started
-  vstop  = 360.0;    %# The point of time when solving is stoped
+  vstart = 0.0;   %# The point of time when solving is started
+  vstop  = 360.0; %# The point of time when solving is stoped
   vinit  = odepkg_testsuite_oregonatorinit; %# The initial values
 
   vopt = odeset ('Refine', 0, 'RelTol', vret{2}, 'AbsTol', vret{3}, ...
     'InitialStep', vret{4}, 'Stats', 'on', 'NormControl', 'off', ...
-    'Jacobian', @odepkg_testsuite_oregonatorjac, 'MaxStep', vstop-vstart)
+    'Jacobian', @odepkg_testsuite_oregonatorjac, 'MaxStep', vstop-vstart);
 
   %# Calculate the algorithm, start timer and do solving
   tic; vsol = feval (vhandle, @odepkg_testsuite_oregonatorfun, ...
     [vstart, vstop], vinit, vopt);
-  vret{12} = toc;                    %# The value for the elapsed time
+  vret{12} = toc;                        %# The value for the elapsed time
   vref = odepkg_testsuite_oregonatorref; %# Get the reference solution vector
-  if (max (size (vsol.y(end,:))) == max (size (vref))), vlst = vsol.y(end,:);
-  elseif (max (size (vsol.y(:,end))) == max (size (vref))), vlst = vsol.y(:,end);
+  if (exist ('OCTAVE_VERSION') ~= 0)
+    vlst = vsol.y(end,:);
+  else
+    vlst = vsol.y(:,end);
   end
   vret{5}  = odepkg_testsuite_calcmescd (vlst, vref, vret{3}, vret{2});
   vret{6}  = odepkg_testsuite_calcscd (vlst, vref, vret{3}, vret{2});
-  vret{7}  = vsol.stats.success + vsol.stats.failed; %# The value for all evals
-  vret{8}  = vsol.stats.success;  %# The value for success evals
-  vret{9}  = vsol.stats.fevals;   %# The value for fun calls
-  vret{10} = vsol.stats.partial;  %# The value for partial derivations
-  vret{11} = vsol.stats.ludecom;  %# The value for LU decompositions
+  vret{7}  = vsol.stats.nsteps + vsol.stats.nfailed; %# The value for all evals
+  vret{8}  = vsol.stats.nsteps;   %# The value for success evals
+  vret{9}  = vsol.stats.nfevals;  %# The value for fun calls
+  vret{10} = vsol.stats.npds;     %# The value for partial derivations
+  vret{11} = vsol.stats.ndecomps; %# The value for LU decompositions
 
 %# Returns the results for the OREGONATOR problem
 function f = odepkg_testsuite_oregonatorfun (t, y, varargin)
@@ -101,10 +103,7 @@ function y = odepkg_testsuite_oregonatorref ()
 
 %!demo
 %! vsolver = {@ode23, @ode45, @ode54, @ode78, ...
-%!   @odepkg_mexsolver_dopri5, @odepkg_mexsolver_dop853, ...
-%!   @odepkg_mexsolver_odex, @odepkg_mexsolver_radau, ...
-%!   @odepkg_mexsolver_radau5, @odepkg_mexsolver_rodas, ...
-%!   @odepkg_mexsolver_seulex};
+%!   @odebda, @oders, @ode2r, @ode5r, @odesx};
 %! for vcnt=1:length (vsolver)
 %!   voreg{vcnt,1} = odepkg_testsuite_oregonator (vsolver{vcnt}, 1e-7);
 %! end

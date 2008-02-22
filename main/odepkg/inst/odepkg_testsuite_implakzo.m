@@ -54,15 +54,17 @@ function vret = odepkg_testsuite_implakzo (vhandle, vrtol)
   vopt = odeset ('Refine', 0, 'RelTol', vret{2}, 'AbsTol', vret{3}, ...
     'InitialStep', vret{4}, 'Stats', 'on', 'NormControl', 'off', ...
     'Jacobian', @odepkg_testsuite_implakzojac, 'MaxStep', vstop-vstart);
-    %# 'OutputFcn', @odeplot);
+    %# ,'OutputFcn', @odeplot, 'MaxStep', 1);
 
   %# Calculate the algorithm, start timer and do solving
   tic; vsol = feval (vhandle, @odepkg_testsuite_implakzofun, ...
     [vstart, vstop], vinity, vinityd', vopt);
   vret{12} = toc;                      %# The value for the elapsed time
   vref = odepkg_testsuite_implakzoref; %# Get the reference solution vector
-  if (max (size (vsol.y(end,:))) == max (size (vref))), vlst = vsol.y(end,:);
-  elseif (max (size (vsol.y(:,end))) == max (size (vref))), vlst = vsol.y(:,end);
+  if (exist ('OCTAVE_VERSION') ~= 0)
+    vlst = vsol.y(end,:);
+  else
+    vlst = vsol.y(:,end);
   end
   vret{5}  = odepkg_testsuite_calcmescd (vlst, vref, vret{3}, vret{2});
   vret{6}  = odepkg_testsuite_calcscd (vlst, vref, vret{3}, vret{2});

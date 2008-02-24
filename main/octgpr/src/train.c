@@ -44,7 +44,7 @@ int GPR_train (int ndim, int nx, const double *X, const double *y,
   /* workspace for nllgpr, nldgpr */
   double *R = malloc (nx*(nx+2+nlin)*sizeof (double));
   double *mu = malloc ((nlin+1)*(nlin+2)*sizeof (double));
-  double CP[10];
+  double CP[20];
   double dummy;
   int IC[3];
 
@@ -56,7 +56,7 @@ int GPR_train (int ndim, int nx, const double *X, const double *y,
   info = 0;
 
   /* request default values */
-  for (i = 1; i < 11; i++) CP[i] = 0;
+  for (i = 1; i < 20; i++) CP[i] = 0;
   CP[0] = opts->numin;
   CP[1] = 1e-4; /* noise scale factor */
   CP[2] = opts->tol;

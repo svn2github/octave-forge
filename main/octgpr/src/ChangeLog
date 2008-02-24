@@ -3,6 +3,7 @@
 	* optdrv.f: implement objective reduction stopping criterion
 	* gprmod.h, train.c, gpr_train.cc: add support for the new feature
 	* forsubs.h nl0gpr.f: correct subroutine name
+	* train.c: correct CP array size
 
 2008-02-19  Jaroslav Hajek <highegg@gmail.com>
 

@@ -1,3 +1,9 @@
+2008-02-24  Jaroslav Hajek <highegg@gmail.com>
+
+	* optdrv.f: implement objective reduction stopping criterion
+	* gprmod.h, train.c, gpr_train.cc: add support for the new feature
+	* forsubs.h nl0gpr.f: correct subroutine name
+
 2008-02-19  Jaroslav Hajek <highegg@gmail.com>
 
 	* *.h *c *.cc: adjusted C/C++ sources to meet GNU coding standards
@@ -6,7 +12,7 @@
 
 	* forsubs.h gprmod.h predict.c train.c setup.c: added const modifiers
 	where appropriate.
-	* grp_train,gpr_predict: replaced Array::fortran_vec with Array::data
+	* grp_train, gpr_predict: replaced Array::fortran_vec with Array::data
 	where appropriate, to prevent unnecessary copying.
 
 2008-02-15  Jaroslav Hajek <highegg@gmail.com>

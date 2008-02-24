@@ -18,7 +18,7 @@ c You should have received a copy of the GNU General Public License
 c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c 
-      subroutine nllbnd(nx,y,nu,nll0,nllinf)
+      subroutine nl0gpr(nx,y,nu,nll0,nllinf)
 c purpose:      this function evaluates the negative log likelihood
 c               of a GPR process regressor at boundaries:
 c               nll0 is a common value for theta = 0 and

@@ -33,6 +33,7 @@ extern "C" {
 #define F77_corimq F77_FUNC(corimq,CORIMQ)
 #define F77_nllgpr F77_FUNC(nllgpr,NLLGPR)
 #define F77_nldgpr F77_FUNC(nldgpr,NLDGPR)
+#define F77_nl0gpr F77_FUNC(nl0gpr,NL0GPR)
 #define F77_nllbnd F77_FUNC(nllbnd,NLLBND)
 #define F77_infgpr F77_FUNC(infgpr,INFGPR)
 #define F77_stheta F77_FUNC(stheta,STHETA)

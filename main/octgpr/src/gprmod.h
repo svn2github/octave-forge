@@ -33,7 +33,7 @@ enum train_cond {
 /* training options for GPR */
 struct GPR_train_opts
 {
-  double numin, tol; 
+  double numin, tol, ftol; 
   int maxev;
   int (*monitor)(void *instance, int num, double *nll); 
   void *instance;

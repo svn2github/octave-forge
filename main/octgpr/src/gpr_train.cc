@@ -43,32 +43,32 @@ DEFUN_DLD (gpr_train, args, nargout,
  @var{nu}, @var{nlin}, @var{corf}, @var{opts})\n\
 @cindex Gaussian Process Regression model training.\n\
 If requested, estimates the hyperparameters for Gaussian Process Regression (inverse\n\
-length scales and relative noise) via reduced maximum likelihood, and then \n\
-sets up the model for inference (prediction), storing necessary information in \n\
-the structure @var{GPM}, intended for use with @code{gpr_predict}. \n\
+length scales and relative noise) via reduced maximum likelihood, and then\n\
+sets up the model for inference (prediction), storing necessary information in\n\
+the structure @var{GPM}, intended for use with @code{gpr_predict}.\n\
 \n\
-@var{X} is the matrix of independent variables of the observations, \n\
-@var{y} is a vector containing the dependent variables, \n\
-@var{theta} contains the (initial) inverse length scales for the regression model. \n\
-If @var{theta} is a row vector, rows of @var{X} correspond to observations, columns to \n\
-variables. Otherwise, it is the other way around. \n\
+@var{X} is the matrix of independent variables of the observations,\n\
+@var{y} is a vector containing the dependent variables,\n\
+@var{theta} contains the (initial) inverse length scales for the regression model.\n\
+If @var{theta} is a row vector, rows of @var{X} correspond to observations, columns to\n\
+variables. Otherwise, it is the other way around.\n\
 \n\
-@var{nu} specifies the (initial) relative noise level. If not supplied, it defaults \n\
-to 1e-5. \n\
-@var{nlin} specifies the number of leading variables to include in linear \n\
-underlying trend. If not supplied, it defaults to 0 (constant trend). \n\
+@var{nu} specifies the (initial) relative noise level. If not supplied, it defaults\n\
+to 1e-5.\n\
+@var{nlin} specifies the number of leading variables to include in linear\n\
+underlying trend. If not supplied, it defaults to 0 (constant trend).\n\
 \n\
 @var{corf} specifies the decreasing function type for correlation function:\n\
 @code{corr(x,y) = f((x-y).^2 * theta\')} (x,y,theta row vectors). Possible values:\n\
 \n\
 @table @option\n\
 @item gau\n\
-@code{f(t) = exp(-t)} \n\
+@code{f(t) = exp(-t)}\n\
 @item exp\n\
-@code{f(t) = exp(-sqrt(t))} \n\
+@code{f(t) = exp(-sqrt(t))}\n\
 @item imq\n\
-@code{f(t) = 1/sqrt(1+t^2)} \n\
-@end table \n\
+@code{f(t) = 1/sqrt(1+t^2)}\n\
+@end table\n\
 \n\
 @var{opts} is a cell array in the form @{\"option name\",option value,...@}.\n\
 Possible options:\n\
@@ -78,15 +78,20 @@ Possible options:\n\
 maximum number of factorizations to be used during training. default 500.\n\
 @item tol\n\
 stopping tolerance (minimum trust-region radius). default 1e-6.\n\
+the iteration terminates if the trust region gets below tol.\n\
+@item ftol\n\
+stopping tolerance (minimum objective reduction). default 1e-4.\n\
+the iteration terminates if the relative reduction of two successive\n\
+downhill steps gets below ftol and the second one is smaller.\n\
 @item numin\n\
 minimum allowable noise. Default is @code{sqrt(1e1*eps)}.\n\
 @end table\n\
 \n\
-Training cell array @var{opts} is recognized even if other arguments are omitted. \n\
-If it is not supplied (the last argument is not a cell array), training is skipped. \n\
+Training cell array @var{opts} is recognized even if other arguments are omitted.\n\
+If it is not supplied (the last argument is not a cell array), training is skipped.\n\
 \n\
-On return the function creates the @var{GPM} structure, \n\
-which can subsequently be used for predictions with @code{gpr_predict}. \n\
+On return the function creates the @var{GPM} structure,\n\
+which can subsequently be used for predictions with @code{gpr_predict}.\n\
 If @var{nll} is present, it is set to the resulting negative log likelihood.\n\
 @seealso{gpr_predict}\n\
 @end deftypefn")
@@ -213,7 +218,8 @@ If @var{nll} is present, it is set to the resulting negative log likelihood.\n\
       struct GPR_train_opts topts;
       // setup initial values 
       topts.maxev = 500;
-      topts.tol= 1e-5;
+      topts.tol= 1e-6;
+      topts.ftol= 1e-4;
       topts.numin = 5e-8;
       topts.monitor = &progress_monitor;
       topts.instance = 0;
@@ -238,6 +244,10 @@ If @var{nll} is present, it is set to the resulting negative log likelihood.\n\
           else if (oname == "tol") 
             {
               topts.tol = opts (++iopt).scalar_value ();
+            } 
+          else if (oname == "ftol") 
+            {
+              topts.ftol = opts (++iopt).scalar_value ();
             } 
           else if (oname == "numin") 
             {

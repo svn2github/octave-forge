@@ -56,6 +56,9 @@ c                CP(7) current TR radius (set on initial entry)
 c                CP(8) last spatial step size
 c                CP(9) last noise step size
 c                CP(10) model-predicted reduction in last step
+c                CP(11) the objective upper limit
+c                CP(12) the objective reduction tolerance
+c                CP(13) last relative reduction of objective
 c
 c IC (in)       integer counters
 c                IC(1) number of evaluations
@@ -69,7 +72,7 @@ c                IC(3) last flags from trstp
       logical l2nu
       double precision VM(*),CP(13)
       double precision stp(ndim+1),grd(ndim+1),Zg(ndim),Zba(ndim),
-     +snlo,snup,eps,ss
+     +snlo,snup,eps,ss,relr
       double precision dlamch,dnrm2,ddot
       external dlamch,dspmid,dtrstp,dnrm2,ddot
       integer iB,iba,iW,iZ,i
@@ -81,7 +84,12 @@ c setup pointers into VM
 
       if (info == 1) then
 c go directly to downhill if there is no last step
-        if (IC(1) == 0) goto 150
+        if (IC(1) == 0) then
+c if the first objective is better than the limit value,
+c replace the limit value.           
+          CP(11) = min(CP(11),nll)
+          goto 150
+        end if
 c compute the reduction success ratio
         CP(10) = (nll - nll0) / CP(10)
         if (CP(10) < 0.1d0) then
@@ -117,11 +125,13 @@ c supply default values if necessary
       eps = sqrt(dlamch('E'))
       if (CP(1) < eps) CP(1) = eps
       if (CP(2) == 0d0) CP(2) = 1d-4
-      if (CP(3) == 0d0) CP(3) = 1d-5
+      if (CP(3) <  0d0) CP(3) = 1d-6
       if (CP(4) == 0d0) CP(4) = 1d+2
       if (CP(5) == 0d0) CP(5) = 0.6d0
       if (CP(6) == 0d0) CP(6) = 1.5d0
       if (CP(7) == 0d0) CP(7) = max(dxnrm2(ndim,scal,theta),nu/CP(2))
+      if (CP(12) < 0d0) CP(12) = 1d-6
+      CP(13) = CP(12)
 c set VM matrix to a multiple of identity
       call dspmid('U',ndim+1,1d-2,VM(iB))
       nll0 = dlamch('O')
@@ -149,8 +159,15 @@ c of the known dnu(2)?
   150 continue
 c HANDLE SUCCESSFUL STEP      
       IC(1) = IC(1) + 1
-c if the step was downhill, replace stored values
+c check downhill step
       if (nll < nll0) then
+c compute the relative progress
+        if (nll0 < CP(11)) then
+          relr = (nll - nll0) / (nll0 - CP(11))
+        else
+          relr = 0d0
+        end if
+c process downhill step        
         IC(2) = IC(2) + 1
         do i = 1,ndim
           theta0(i) = theta(i)
@@ -160,6 +177,13 @@ c if the step was downhill, replace stored values
         dnu0(1) = dnu(1)
         if (l2nu) dnu0(2) = dnu(2)
         nll0 = nll
+c check second termination criterion
+        if (IC(2) > 1 .and. relr < CP(13) .and. CP(13) < CP(12)) then
+c indicate termination          
+          info = 2
+          return
+        end if
+        CP(13) = relr
       end if
 c overwrite the second derivative with the exact value
       VM(iba+ndim) = dnu0(2)

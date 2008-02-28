@@ -31,6 +31,10 @@ corfptr get_corrf (const char *name)
     return &F77_corexp;
   else if (!strcmp (name, "imq") || !strcmp (name, "IMQ"))
     return &F77_corimq;
+  else if (!strcmp (name, "mt3") || !strcmp (name, "MT3"))
+    return &F77_cormt3;
+  else if (!strcmp (name, "mt5") || !strcmp (name, "MT5"))
+    return &F77_cormt5;
   else
     return NULL;
 }

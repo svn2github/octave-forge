@@ -59,15 +59,19 @@ to 1e-5.\n\
 underlying trend. If not supplied, it defaults to 0 (constant trend).\n\
 \n\
 @var{corf} specifies the decreasing function type for correlation function:\n\
-@code{corr(x,y) = f((x-y).^2 * theta\')} (x,y,theta row vectors). Possible values:\n\
+@code{corr(x,y) = f(norm(theta.*(x-y)))}. Possible values:\n\
 \n\
 @table @option\n\
 @item gau\n\
-@code{f(t) = exp(-t)}\n\
+@code{f(t) = exp(-t^2)} (gaussian)\n\
 @item exp\n\
-@code{f(t) = exp(-sqrt(t))}\n\
+@code{f(t) = exp(-t)} (exponential)\n\
 @item imq\n\
-@code{f(t) = 1/sqrt(1+t^2)}\n\
+@code{f(t) = 1/sqrt(1+t^2)} (inverse multiquadric)\n\
+@item mt3\n\
+@code{f(t) = (1+sqrt(6*t))*exp(-sqrt(6*t))} (Matern-3/2 covariance)\n\
+@item mt5\n\
+@code{f(t) = (1+sqrt(10*t)+10*t^2/3)*exp(-sqrt(10*t))} (Matern-5/2 covariance)\n\
 @end table\n\
 \n\
 @var{opts} is a cell array in the form @{\"option name\",option value,...@}.\n\

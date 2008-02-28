@@ -28,8 +28,10 @@ c the gaussian correlation exp(-x^2)
       subroutine corexp(t,f,d)
 c the exponential correlation exp(-x)
       double precision t,f,d
-      f = exp(-sqrt(t))
-      d = -f / (2*sqrt(t))
+      double precision r
+      r = sqrt(t)
+      f = exp(-r)
+      d = -f / (2*r)
       end subroutine
 
 c inverse multiquadric
@@ -39,7 +41,23 @@ c inverse multiquadric
       d = -2*t / f**3
       end subroutine
 
+c Matern-3 covariance      
+      subroutine cormt3(t,f,d)
+      double precision t,f,d
+      double precision er,r
+      r = sqrt(6d0*t)
+      er = exp(-r)
+      f = (1d0 + r) * er
+      d = -3d0 * er
+      end subroutine
 
-
-
+c Matern-5 covariance      
+      subroutine cormt5(t,f,d)
+      double precision t,f,d
+      double precision er,r,r53
+      r = sqrt(1d1*t)
+      er = exp(-r)
+      f = (1d0 + r + r**2/3d0) * er
+      d = -(5d0/3d0) * (1d0 + r) * er
+      end subroutine
 

@@ -31,6 +31,8 @@ extern "C" {
 #define F77_corgau F77_FUNC(corgau,CORGAU)
 #define F77_corexp F77_FUNC(corexp,COREXP)
 #define F77_corimq F77_FUNC(corimq,CORIMQ)
+#define F77_cormt3 F77_FUNC(cormt3,CORMT3)
+#define F77_cormt5 F77_FUNC(cormt5,CORMT5)
 #define F77_nllgpr F77_FUNC(nllgpr,NLLGPR)
 #define F77_nldgpr F77_FUNC(nldgpr,NLDGPR)
 #define F77_nl0gpr F77_FUNC(nl0gpr,NL0GPR)
@@ -45,6 +47,10 @@ extern "C" {
     void F77_corexp (const double *t, double *f, double *d);
 
     void F77_corimq (const double *t, double *f, double *d);
+
+    void F77_cormt3 (const double *t, double *f, double *d);
+
+    void F77_cormt5 (const double *t, double *f, double *d);
 
     void F77_nllgpr (const int *ndim, 
                      const int *nx, 

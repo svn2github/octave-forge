@@ -63,9 +63,9 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
     error ('OdePkg:InvalidArgument', ...
       'Second input argument must be a valid vector');
 
-  elseif (~isvector (vinit) || ~isnumeric (vinit))
+  elseif (~isnumeric (vinit))
     error ('OdePkg:InvalidArgument', ...
-      'Third input argument must be a valid vector');
+      'Third input argument must be a valid numerical value');
 
   elseif (nargin >= 4)
 

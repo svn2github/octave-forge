@@ -62,9 +62,9 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     error ('OdePkg:InvalidArgument', ...
       'Second input argument must be a valid vector');
 
-  elseif (~isvector (vinit) || ~isnumeric (vinit))
+  elseif (~isnumeric (vinit))
     error ('OdePkg:InvalidArgument', ...
-      'Third input argument must be a valid vector');
+      'Third input argument must be a valid numerical value');
 
   elseif (nargin >= 4)
 
@@ -531,23 +531,6 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
 %!  A = odeset ('MaxStep', 0.1, 'RelTol', 1e-2, 'AbsTol', 1e-3);
 %!  [vx, vy, va, vb, vc] = ode23 (@odepkg_equations_vanderpol, [0 2], [2 0], A, 1.2);
 %!  warning ("on", "OdePkg:InvalidOption");
-
-%!demo
-%!
-%! A = odeset ('RelTol', 1e-1, 'AbsTol', 1e-2);
-%! [vx, vy] = ode23 (@odepkg_equations_secondorderlag, [0 2.5], [0 0], ...
-%!    A, 5, 2, 0.02, 0.1);
-%!
-%! plot (vx, vy(:,1), '-ob;y, x2;', vx, vy(:,2), '-or;x1;', ...
-%!    vx, ones(length(vx),1)*5, '-og;u;');
-%!
-%! % ---------------------------------------------------------------------
-%! % The figure window shows the state variables x1, x2 as well as the 
-%! % input signal u and the output signal y(=x2) of a second order lag 
-%! % implementation (cf. the control theory). The function ode23 was
-%! % called with an option argument A that has been set before with the
-%! % command "odeset" and with further parameters "5, 2, 0.02, 0.1" that
-%! % are passed to the set of ordinary differential equations.
 
 %# Local Variables: ***
 %# mode: octave ***

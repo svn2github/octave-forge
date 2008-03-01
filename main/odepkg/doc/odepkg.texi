@@ -75,7 +75,7 @@ OdePkg is part of the @b{Octave Repository} (resp. the Octave--Forge project) th
 @c The email from Matthew W. Roberts about Octave--forge can be found here:
 @c http://velveeta.che.wisc.edu/octave/lists/archive/octave-sources.2000/msg00110.html
 
-OdePkg includes commands for setting up various options, output functions etc. before solving a set of differential equations with the solver functions that are included. The package formerly was initiated in autumn 2006 to solve ordinary differential equations (ODEs) only but there are already improvements so that differential algebraic equations (DAEs) in explicit form and in implicit form (IDEs) can also be solved. At this time OdePkg is under development with the goal to make a package that is mostly compatible to proprietary solver products.
+OdePkg includes commands for setting up various options, output functions etc. before solving a set of differential equations with the solver functions that are included. The package formerly was initiated in autumn 2006 to solve ordinary differential equations (ODEs) only but there are already improvements so that differential algebraic equations (DAEs) in explicit form and in implicit form (IDEs) and delay differential equations (DDEs) can also be solved. The goal of OdePkg is to have a package for solving differential equations that is mostly compatible to proprietary solver products.
 
 @node OdePkg history and roadmap, Installation and deinstallation, About OdePkg, Beginner's Guide
 @section OdePkg history and roadmap
@@ -84,7 +84,7 @@ OdePkg includes commands for setting up various options, output functions etc. b
 
 @multitable @columnfractions .25 .75
 @item OdePkg Version 0.0.1
-@tab The initial release was a modification of the old ``ode package'' that is hosted at Octave--Forge and that was written by Marc Compere somewhen between 2000 and 2001. The four variable step--size Runge--Kutta algorithms in three solver files and the three fixed step--size solvers have been merged. It was possible to set some options for these solvers. The four output--functions (@command{odeprint}, @command{odeplot}, @command{odephas2} and @command{odephas3}) have been added along with other examples that initially have not been there.
+@tab The initial release was a modification of the old ``ode'' package that is hosted at Octave--Forge and that was written by Marc Compere somewhen between 2000 and 2001. The four variable step--size Runge--Kutta algorithms in three solver files and the three fixed step--size solvers have been merged. It was possible to set some options for these solvers. The four output--functions (@command{odeprint}, @command{odeplot}, @command{odephas2} and @command{odephas3}) have been added along with other examples that initially have not been there.
 @item OdePkg Version 0.1.x
 @tab The major milestone along versions 0.1.x was that four stable solvers have been implemented (ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}) supporting all options that can be set for these kind of solvers and also all necessary functions for setting their options (eg. @command{odeset}, @command{odepkg_structure_check, odepkg_event_handle}). Since version 0.1.3 there is also source code available that interfaces the Fortran solver @file{dopri5.f} (that is written by Ernst Hairer and Gerhard Wanner, cf. @file{odepkg_mexsolver_dopri5.c} and the helper files @file{odepkgext.c} and @file{odepkgmex.c}).
 @item OdePkg Version 0.2.x
@@ -92,13 +92,11 @@ OdePkg includes commands for setting up various options, output functions etc. b
 @item OdePkg Version 0.3.x
 @tab Fixed some minor bugs along version 0.3.x. Thanks to Jeff Cash, who released his Fortran @command{mebdfX} solvers under the GNU GPL V2 after some discussion. The first IDE solver @command{odebdi} appeared that is an interface function for Cash's @command{mebdfi} Fortran core solver. With version 0.3.5 of OdePkg a first new interface function was created based on Octave's C++ @code{DEFUN_DLD} interface to achieve the highest performance available. Added more examples and testsuite functions (eg. @command{odepkg_equations_ilorenz}, @command{odepkg_testsuite_implrober}). Porting all at this time present Mex--file solvers to Octave's C++ @code{DEFUN_DLD} interface. Ongoing work with this manual. 
 @item @b{(current)} Version 0.4.x
-@tab Added a solver function @command{odekr} for the @file{daskr.f} solver of the authors Peter N. Brown, Alan C. Hindmarsh and Linda R. Petzold that is available under a modified BSD license (without advertising clause). Ongoing work with this manual.
+@tab Added a solver function @command{odekdi} for the direct method (not the Krylov method) of the @file{daskr.f} solver from the authors Peter N. Brown, Alan C. Hindmarsh, Linda R. Petzold and Clement W. Ulrich that is available under a modified BSD license (without advertising clause). First test with a modified Runge--Kutta solver to solve DDEs. Ongoing work with this manual.
 @item @b{(future)} Version 0.5.x
 @tab (Maybe) Adding a last type of solvers (DDE) to OdePkg.
 @item @b{(future)} Version 0.6.x
-@tab (Maybe) A lot of compatibility tests.
-@item @b{(future)} Version 0.7.x
-@tab (Maybe) Final release before version 1.0.0.
+@tab (Maybe) A lot of compatibility tests. Final release before version 1.0.0.
 @item @b{(future)} Version 1.0.0
 @tab Completed OdePkg release 1.0.0 with M--solvers and DLD--solvers.
 @end multitable
@@ -249,11 +247,9 @@ A = odeset ('OutputFcn', @@odeprint, 'AbsTol', 1e-5, \
             'RelTol', 1e-5, 'NormControl', 'on');
 ode45 (@@newfoo, [0 5], [0 0], A, 2.0, 5.0, 10.0);
 @end example
-The options structure @command{A} that can be set up with with the command @command{odeset} must always be the fourth input argument when using the ODE solvers and the DAE solvers but if you are using an IDE solver then @command{A} must be the fifth input argument (cf. @ref{Solver families}). The various options that can be set with the command @command{odeset} are described in @ref{ODE/DAE/IDE options}.
+The options structure @command{A} that can be set up with with the command @command{odeset} must always be the fourth input argument when using the ODE solvers and the DAE solvers but if you are using an IDE solver then @command{A} must be the fifth input argument (cf. @ref{Solver families}). The various options that can be set with the command @command{odeset} are described in @ref{ODE/DAE/IDE/DDE options}.
 
-Further examples have also been implemented within OdePkg. These example files and functions are of the form @command{odepkg_equations_*}. Different testsuite examples have been added that are stored in files with filenames @command{odepkg_testsuite_*}.
-
-Before reading the next chapter note that nearly every function that comes with OdePkg has its own help text and its own demos. Look for yourself how the different functions, options and combinations can be used. If you want to have a look at the help description of a special function then type
+Further examples have also been implemented. These example files and functions are of the form @command{odepkg_examples_*}. Different testsuite examples have been added that are stored in files with filenames @command{odepkg_testsuite_*}. Before reading the next chapter note that nearly every function that comes with OdePkg has its own help text and its own examples. Look for yourself how the different functions, options and combinations can be used. If you want to have a look at the help description of a special function then type
 @example
 help fcnname
 @end example
@@ -261,7 +257,7 @@ in the Octave window where @command{fcnname} is the name of the function for the
 @example
 demo fcnname
 @end example
-in the Octave window where @command{fcnname} is the name of the function of the demo to run. Least but not last write 
+in the Octave window where @command{fcnname} is the name of the function for the demo to run. Finally write 
 @example
 doc odepkg
 @end example
@@ -272,12 +268,12 @@ for opening this manual in the texinfo reader of the Octave window.
 @node User's Guide, Programmer's Guide, Beginner's Guide, Top
 @chapter User's Guide
 @cindex user's guide
-The ``User's Guide'' is intended for trained users who already know in principal how to solve differential equations with the Octave language and OdePkg. In this chapter it will be explained which problems can be solved with OdePkg in @ref{Differential Equation Problems}. It will be explained which solvers can be used for the different kind of problems in @ref{Solver families} and which options can be set for the optimization of the solving process in @ref{ODE/DAE/IDE options}. The help text of all M--file functions and all Oct--file functions have been extracted and are displayed in the sections @ref{M-File Function Reference} and @ref{Oct-File Function Reference}.
+The ``User's Guide'' is intended for trained users who already know in principal how to solve differential equations with the Octave language and OdePkg. In this chapter it will be explained which problems can be solved with OdePkg in @ref{Differential Equation Problems}. It will be explained which solvers can be used for the different kind of problems in @ref{Solver families} and which options can be set for the optimization of the solving process in @ref{ODE/DAE/IDE/DDE options}. The help text of all M--file functions and all Oct--file functions have been extracted and are displayed in the sections @ref{M-File Function Reference} and @ref{Oct-File Function Reference}.
 
 @menu
 * Differential Equation Problems::  The different kind of problems that can be solved with OdePkg
 * Solver families::             The different kind of solvers within OdePkg
-* ODE/DAE/IDE options::         The options that can be set for a solving process
+* ODE/DAE/IDE/DDE options::     The options that can be set for a solving process
 * M-File Function Reference::   The description about all @file{*.m}-file functions
 * Oct-File Function Reference::  The description about all DLD-functions from @file{*.oct}-files
 @end menu
@@ -285,12 +281,13 @@ The ``User's Guide'' is intended for trained users who already know in principal
 @node Differential Equation Problems, Solver families, User's Guide, User's Guide
 @section Differential Equation Problems
 @cindex problems
-In this section the different kind of differential equation problems that can be solved with OdePkg are explained. The formulation of ordinary differential equations is described in section @ref{ODE problems} followed by the description of explicetly formulated differential algebraic equations in section @ref{DAE problems} and implicetely formulated differential algebraic equations @ref{IDE problems}.
+In this section the different kind of differential equation problems that can be solved with OdePkg are explained. The formulation of ordinary differential equations is described in section @ref{ODE problems} followed by the description of explicetly formulated differential algebraic equations in section @ref{DAE problems}, implicetely formulated differential algebraic equations in section @ref{IDE problems} and delay differential algebraic equations in section @ref{DDE problems}.
 
 @menu
 * ODE problems::                Ordinary differential equations
-* DAE problems::                Explicitely formulated differential algebraic equations
-* IDE problems::                Implecitely formulated differential algebraic equations
+* DAE problems::                Differential algebraic equations in explicit form
+* IDE problems::                Differential algebraic equations in implicit form
+* DDE problems::                Delay differential equations
 @end menu
 
 @node ODE problems, DAE problems, Differential Equation Problems, Differential Equation Problems
@@ -320,13 +317,13 @@ DAE problems in general are of the form
 @ifnothtml
 @math{M(t,y) \cdot y'(t) = f(t,y)}
 @end ifnothtml
-where @math{y'(t)} may be a scalar or vector of derivatives. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the set of differential algebraic equations. The variable @math{M(t,y)} is the squared @i{singular} mass matrix that may depend on @math{y} and @math{t}. If @math{M(t,y)} is not @i{singular} then the set of equations from above can normally also be written as an ODE problem. If it does not depend on time then it can be defined as a constant matrix or a function. If it does depend on time then it must be defined as a function. Use the command @command{odeset} to pass the mass matrix information to the solver function (cf. @ref{ODE/DAE/IDE options}). If the problem is non--stiff then the @ref{Runge-Kutta solvers} can be used to solve such kind of differential equation problems but if the problem is stiff then it is recommended to use the @ref{Hairer-Wanner solvers}. A DAE problem definition in Octave must look like
+where @math{y'(t)} may be a scalar or vector of derivatives. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the set of differential algebraic equations. The variable @math{M(t,y)} is the squared @i{singular} mass matrix that may depend on @math{y} and @math{t}. If @math{M(t,y)} is not @i{singular} then the set of equations from above can normally also be written as an ODE problem. If it does not depend on time then it can be defined as a constant matrix or a function. If it does depend on time then it must be defined as a function. Use the command @command{odeset} to pass the mass matrix information to the solver function (cf. @ref{ODE/DAE/IDE/DDE options}). If the problem is non--stiff then the @ref{Runge-Kutta solvers} can be used to solve such kind of differential equation problems but if the problem is stiff then it is recommended to use the @ref{Hairer-Wanner solvers}. A DAE problem definition in Octave must look like
 @example
 function [dy] = DAEproblem (t, y, varargin)
 @end example
-and the mass matrix definition can either be a constant mass matrix or a valid function handle to a mass matrix calculation function that can be set with the command @command{odeset} (cf. option @code{Mass} of section @ref{ODE/DAE/IDE options}).
+and the mass matrix definition can either be a constant mass matrix or a valid function handle to a mass matrix calculation function that can be set with the command @command{odeset} (cf. option @code{Mass} of section @ref{ODE/DAE/IDE/DDE options}).
 
-@node IDE problems,  , DAE problems, Differential Equation Problems
+@node IDE problems, DDE problems, DAE problems, Differential Equation Problems
 @subsection IDE problems
 IDE problems in general are of the form
 @ifhtml
@@ -337,12 +334,35 @@ IDE problems in general are of the form
 @ifnothtml
 @math{y'(t) + f(t,y) = 0}
 @end ifnothtml
-where @math{y'(t)} may be a scalar or vector of derivatives. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the set of implicit differential equations. Only IDE solvers can be used to solve such kind of differential equation problems. A DAE problem definition in Octave must look like
+where @math{y'(t)} may be a scalar or vector of derivatives. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the set of implicit differential equations. Only IDE solvers from section @ref{Cash's BDF solvers} or section @ref{DDaskr direct method solver} can be used to solve such kind of differential equation problems. A DAE problem definition in Octave must look like
 @example
 function [residual] = IDEproblem (t, y, dy, varargin)
 @end example
 
-@node Solver families, ODE/DAE/IDE options, Differential Equation Problems, User's Guide
+@node DDE problems,  , IDE problems, Differential Equation Problems
+@subsection DDE problems
+DDE problems in general are of the form
+@ifhtml
+@example
+@math{y'(t) = f(t,y(t),y(t-tau_1),...,y(t-tau_n))}
+@end example
+@end ifhtml
+@ifnothtml
+@math{y'(t) = f(t,y(t),y(t-\tau_1),...,y(t-\tau_n))}
+@end ifnothtml
+where @math{y'(t)} may be a scalar or vector of derivatives. The variable @math{t} always is a scalar describing one point of time and the variables
+@ifhtml
+@math{y(t-tau_i)}
+@end ifhtml
+@ifnothtml
+@math{y(t-\tau_i)}
+@end ifnothtml
+are scalars or vectors from past solutions from the set of delay differential equations. Only DDE solvers from section @ref{Modified Runge-Kutta solvers} can be used to solve such kind of differential equation problems. A DDE problem definition in Octave must look like
+@example
+function [dy] = IDEproblem (t, y, z, varargin)
+@end example
+
+@node Solver families, ODE/DAE/IDE/DDE options, Differential Equation Problems, User's Guide
 @section Solver families
 @cindex solver families
 In this section the different kind of solvers are introduced that have been implemented in OdePkg. This section starts with the basic Runge--Kutta solvers in section @ref{Runge-Kutta solvers} and is continued with the Mex--file Hairer--Wanner solvers in section @ref{Hairer-Wanner solvers}. @c Other solvers are described in section @ref{Other solvers}.
@@ -352,12 +372,14 @@ Performance tests have also been added to the OdePkg. Some of these performance 
 * Runge-Kutta solvers::         ODE solvers written as @file{*.m} files
 * Hairer-Wanner solvers::       DAE solvers interfaced by @file{*.cc} files
 * Cash's BDF solvers::          A DAE and an IDE solver interfaced by @file{*.cc} files
-* ODE solver performances::     Cross math--engine performance tests
+* DDaskr direct method solver::  An IDE solver interfaced by a @file{*.cc} file
+* Modified Runge-Kutta solvers::  DDE solvers written as @file{*.m} files
+* ODE solver performances::     Cross math-engine performance tests
 @end menu
 
 @node Runge-Kutta solvers, Hairer-Wanner solvers, Solver families, Solver families
 @subsection Runge--Kutta solvers
-The Runge--Kutta solvers are written in the Octave interpreter language and that are saved as @file{m}--files. There have been implemented four different solvers with a very similiar structure, ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}@footnote{The descriptions for these Runge--Kutta solvers have been taken from the help texts of the initial Runge--Kutta solvers that were written by Marc Compere, he also pointed out that ''a relevant discussion on step size choice can be found on page 90ff in U.M. Ascher, L.R. Petzold, Computer Methods for  Ordinary Differential Equations and Differential--Agebraic Equations, Society for Industrial and Applied Mathematics (SIAM), Philadelphia, 1998''.}. The Runge--Kutta solvers have been added to the OdePkg to solve non--stiff ODEs and DAEs, stiff problems of that form cannot be solved with these solvers.
+The Runge--Kutta solvers are written in the Octave language and that are saved as @file{m}--files. There have been implemented four different solvers with a very similiar structure, ie. @command{ode23}, @command{ode45}, @command{ode54} and @command{ode78}@footnote{The descriptions for these Runge--Kutta solvers have been taken from the help texts of the initial Runge--Kutta solvers that were written by Marc Compere, he also pointed out that ''a relevant discussion on step size choice can be found on page 90ff in U.M. Ascher, L.R. Petzold, Computer Methods for  Ordinary Differential Equations and Differential--Agebraic Equations, Society for Industrial and Applied Mathematics (SIAM), Philadelphia, 1998''.}. The Runge--Kutta solvers have been added to the OdePkg to solve non--stiff ODEs and DAEs, stiff problems of that form cannot be solved with these solvers.
 
 The order of all of the following Runge--Kutta methods is the order of the local truncation error, which is the principle error term in the portion of the Taylor series expansion that gets dropped, or intentionally truncated. This is different from the local error which is the difference between the estimated solution and the actual, or true solution. The local error is used in stepsize selection and may be approximated by the difference between two estimates of different order,
 @ifhtml
@@ -388,45 +410,70 @@ since the local truncation error shows up in the solution as
 @end ifnothtml
 which is @math{h}--times an @math{O(h^p)}--term, or rather @math{O(h^{(p+1)})}.
 
-@table @code
-@item ode23
-Integrates a system of non--stiff ordinary differential equations (non--stiff ODEs and DAEs) using second and third order Runge--Kutta formulas. This particular third order method reduces to Simpson's @math{1/3} rule and uses the third order estimation for the output solutions. Third order accurate Runge--Kutta methods have local and global errors of @math{O(h^4)} and @math{O(h^3)} respectively and yield exact results when the solution is a cubic (the variable @math{h} is the step size from one integration step to another integration step). This solver requires three function evaluations per integration step.@*
+@multitable @columnfractions .075 .925
+@item @command{ode23}
+@tab Integrates a system of non--stiff ordinary differential equations (non--stiff ODEs and DAEs) using second and third order Runge--Kutta formulas. This particular third order method reduces to Simpson's @math{1/3} rule and uses the third order estimation for the output solutions. Third order accurate Runge--Kutta methods have local and global errors of @math{O(h^4)} and @math{O(h^3)} respectively and yield exact results when the solution is a cubic (the variable @math{h} is the step size from one integration step to another integration step). This solver requires three function evaluations per integration step.@*
 
-@item ode45
-Integrates a system of non--stiff ordinary differential equations (non--stiff ODEs and DAEs) using fourth and fifth order embedded formulas from Fehlberg. This is a fourth--order accurate integrator therefore the local error normally expected is @math{O(h^5)}. However, because this particular implementation uses the fifth--order estimate for @math{x_{out}} (ie. local extrapolation) moving forward with the fifth--order estimate should yield local error of @math{O(h^6)}. This solver requires six function evaluations per integration step.@*
+@item  @command{ode45}
+@tab Integrates a system of non--stiff ordinary differential equations (non--stiff ODEs and DAEs) using fourth and fifth order embedded formulas from Fehlberg. This is a fourth--order accurate integrator therefore the local error normally expected is @math{O(h^5)}. However, because this particular implementation uses the fifth--order estimate for @math{x_{out}} (ie. local extrapolation) moving forward with the fifth--order estimate should yield local error of @math{O(h^6)}. This solver requires six function evaluations per integration step.@*
 
-@item ode54
-Integrates a system of non--stiff ordinary differential equations (non--stiff ODEs and DAEs) using fifth and fourth order Runge--Kutta formulas. The Fehlberg @math{4(5)} of the @command{ode45} pair is established and works well, however, the Dormand--Prince @math{5(4)} pair minimizes the local truncation error in the fifth--order estimate which is what is used to step forward (local extrapolation). Generally it produces more accurate results and costs roughly the same computationally. This solver requires seven function evaluations per integration step.@*
+@item @command{ode54}
+@tab Integrates a system of non--stiff ordinary differential equations (non--stiff ODEs and DAEs) using fifth and fourth order Runge--Kutta formulas. The Fehlberg @math{4(5)} of the @command{ode45} pair is established and works well, however, the Dormand--Prince @math{5(4)} pair minimizes the local truncation error in the fifth--order estimate which is what is used to step forward (local extrapolation). Generally it produces more accurate results and costs roughly the same computationally. This solver requires seven function evaluations per integration step.@*
 
-@item ode78
-Integrates a system of non--stiff ordinary differential equations (non--stiff ODEs and DAEs) using seventh and eighth order Runge--Kutta formulas. This is a seventh--order accurate integrator therefore the local error normally expected is @math{O(h^8)}. However, because this particular implementation uses the eighth--order estimate for @math{x_{out}} moving forward with the eighth--order estimate will yield errors on the order of @math{O(h^9)}. This solver requires thirteen function evaluations per integration step.
-@end table
+@item @command{ode78}
+@tab Integrates a system of non--stiff ordinary differential equations (non--stiff ODEs and DAEs) using seventh and eighth order Runge--Kutta formulas. This is a seventh--order accurate integrator therefore the local error normally expected is @math{O(h^8)}. However, because this particular implementation uses the eighth--order estimate for @math{x_{out}} moving forward with the eighth--order estimate will yield errors on the order of @math{O(h^9)}. This solver requires thirteen function evaluations per integration step.
+@end multitable
 
 @node Hairer-Wanner solvers, Cash's BDF solvers, Runge-Kutta solvers, Solver families
 @subsection Hairer--Wanner solvers
 The Hairer--Wanner solvers have been written by Ernst Hairer and Gerhard Wanner. They are written in the Fortran language (hosted at @url{http://www.unige.ch/~hairer}) and that have been added to the OdePkg as a compressed file with the name @file{hairer.tgz}. Papers and other details about these solvers can be found at the adress given before. The licence of these solvers is a modified BSD license (without advertising clause and therefore are GPL compatible) and can be found as @file{licence.txt} file in the @file{hairer.tgz} package. The Hairer--Wanner solvers have been added to the OdePkg to solve non--stiff and stiff ODEs and DAEs that cannot be solved with any of the Runge--Kutta solvers.
 
-Interface functions for these solvers have been created and have been added to the OdePkg. Their names are @file{odepkg_octsolver_xxx.cc} where @file{xxx} is the name of the Fortran file that is interfaced. The file @file{dldsolver.oct} is created automatically when installing OdePkg with the command @command{pkg}, but developers can also build each solver manually with the instructions given as a preamble of every @file{odepkg_octsolver_xxx.cc} file.
+Interface functions for these solvers have been created and have been added to the OdePkg. Their names are @file{odepkg_octsolver_XXX.cc} where @file{XXX} is the name of the Fortran file that is interfaced. The file @file{dldsolver.oct} is created automatically when installing OdePkg with the command @command{pkg}, but developers can also build each solver manually with the instructions given as a preamble of every @file{odepkg_octsolver_XXX.cc} file.
 
 To provide a short name and to circumvent from the syntax of the original solver function wrapper functions have been added, eg. the command @command{ode2r} calls the solver @command{radau} from the Fortran file @file{radau.f}. The other wrapper functions for the Hairer--Wanner solvers are @command{ode5r} for the @command{radau5} solver, @command{oders} for the @command{rodas} solver and @command{odesx} for the @command{seulex} solver. The help text of all these solver functions can be diaplyed by calling @command{help wrapper} where wrapper is one of @command{ode2r}, @command{ode5r}, @command{oders} or @command{odesx}.
 
-@node Cash's BDF solvers, ODE solver performances, Hairer-Wanner solvers, Solver families
+@node Cash's BDF solvers, DDaskr direct method solver, Hairer-Wanner solvers, Solver families
 @subsection Cash BDF solvers
 The backward differentiation algorithm solvers have been written by Jeff Cash in the Fortran language and that are hosted at @url{http://pitagora.dm.uniba.it/~testset}. They have been added to the OdePkg as a compressed file with the name @file{cash.tgz}. The license of these solvers is a General Public License V2 that can be found as a preamble of each Fortran solver source file. Papers and other details about these solvers can be found at the host adress given before and also at Jeff Cash's homepage at @url{http://www.ma.ic.ac.uk/~jcash}. Jeff Cash's BDF solvers have been added to the OdePkg to solve non--stiff and stiff ODEs and DAEs and also IDEs that cannot be solved with any of the Runge--Kutta solvers. 
 
-Interface functions for these solvers have been created and have been added to the OdePkg. Their names are @file{odepkg_octsolver_xxx.cc} where @file{xxx} is the name of the Fortran file that is interfaced. The file @file{dldsolver.oct} is created automatically when installing OdePkg with the command @command{pkg}, but developers can also build each solver manually with the instructions given as a preamble of every @file{odepkg_octsolver_xxx.cc} file.
+Interface functions for these solvers have been created and have been added to the OdePkg. Their names are @file{odepkg_octsolver_XXX.cc} where @file{XXX} is the name of the Fortran file that is interfaced. The file @file{dldsolver.oct} is created automatically when installing OdePkg with the command @command{pkg}, but developers can also build each solver manually with the instructions given as a preamble of every @file{odepkg_octsolver_XXX.cc} file.
 
 To provide a short name and to circumvent from the syntax of the original solver function wrapper functions have been added. The command @command{odebda} calls the solver @command{mebdfdae} from the Fortran file @file{mebdf.f} and the @command{odebdi} calls the solver @command{mebdfi} from the Fortran file @file{mebdfi.f}.
 
-@c @node Other solvers, ODE solver performances, Oct-File backward differentiation algorithm solvers, Solver families
-@c @subsection Other solvers
+@node DDaskr direct method solver, Modified Runge-Kutta solvers, Cash's BDF solvers, Solver families
+@subsection DDaskr direct method solver
+The direct method from the Krylov solver file @file{ddaskr.f} has been written by Peter N. Brown, Alan C. Hindmarsh, Linda R. Petzold and Clement W. Ulrich in the Fortran language and that is hosted at @url{http://www.netlib.org}. @b{The Krylov method has not been implemented within OdePkg, only the direct method has been implemented.} The solver and further files for the interface have been added to the OdePkg as a compressed package with the name @file{ddaskr.tgz}. The license of these solvers is a modfied BSD license (without advertising clause) that can be found inside of the compressed package. Other details about this solver can be found as a preamble in the source file @file{ddaskr.f}. The direct method solver of the file @file{ddaskr.f} has been added to the OdePkg to solve non--stiff and stiff IDEs.
 
-@c The OdePack solvers from http://www.netlib.org/odepack have not been added to OdePkg, because the question is not answered if they are really needed from somebody. Other solvers from http://www.netlib.org/ode have not been added because of the same reason.
+An interface function for this solver has been created and has been added to the OdePkg. The source file name is @file{odepkg_octsolver_ddaskr.cc}. The binary function can be found in the file @file{dldsolver.oct} that is created automatically when installing OdePkg with the command @command{pkg}, but developers can also build the solver wrapper manually with the instructions given as a preamble of the @file{odepkg_octsolver_ddaskr.cc} file.
 
-@node ODE solver performances,  , Cash's BDF solvers, Solver families
+To provide a short name and to circumvent from the syntax of the original solver function a wrapper function has been added. The command @command{odekdi} calls the direct method of the solver @command{ddaskr} from the Fortran file @file{ddaskr.f}.
+
+@node Modified Runge-Kutta solvers, ODE solver performances, DDaskr direct method solver, Solver families
+@subsection Modified Runge--Kutta solvers
+The modified Runge--Kutta solvers are written in the Octave language and that are saved as m--files. There have been implemented four different solvers that do have a very similiar structure to that solvers found in section @ref{Runge-Kutta solvers}. Their names are @command{ode23d}, @command{ode45d}, @command{ode54d} and @command{ode78d}. The modified Runge--Kutta solvers have been added to the OdePkg to solve non--stiff DDEs only, stiff problems of that form cannot be solved with these solvers. For further information about the error estimation of these solvers cf. section @ref{Runge-Kutta solvers}.
+
+@b{Note: The four DDE solvers of OdePkg are not syntax compatible to propietary solvers.} The reason is that the input arguments of the propietary DDE--solvers are completely mixed up in comparison to ODE, DAE and IDE propietary solvers. The DDE solvers of OdePkg have been implemented in form of a syntax compatible way to the other family solvers, eg. propietary solver calls look like
+
+@example
+ode23  (@@fode, vt, vy)          %# for solving an ODE
+ode23  (@@fdae, vt, vy, vopt)    %# for solving a  DAE
+ode15i (@@fide, vt, vy, vdy)     %# for solving an IDE
+dde23  (@@fdde, vlag, vhist, vt) %# for solving a  DDE
+@end example
+whereas in OdePkg the same examples would look like
+@example
+ode23  (@@fode, vt, vy)              %# for solving an ODE
+ode23  (@@fdae, vt, vy, vopt)        %# for solving a  DAE
+odebdi (@@fide, vt, vy, vdy)         %# for solving an IDE
+ode23d (@@fdde, vt, vy, vlag, vhist) %# for solving a  DDE
+@end example
+
+Further, the commands @command{ddeset} and @command{ddeget} have not been implemented in OdePkg. Use the functions @command{odeset} and @command{odeget} for setting and returning DDE options instead.
+
+@node ODE solver performances,  , Modified Runge-Kutta solvers, Solver families
 @subsection ODE solver performances
 
-The following tables give an overview about the performance of the OdePkg ODE/DAE solvers in comparison to propietary solvers when running the HIRES non--stiff ODE test function from the OdePkg testsuite.
+The following tables give an overview about the performance of the OdePkg ODE/DAE solvers in comparison to propietary solvers when running the HIRES function from the OdePkg testsuite (non--stiff ODE test).
 
 @smallexample
 >> odepkg ('odepkg_performance_mathires');
@@ -460,7 +507,7 @@ octave:1> odepkg ('odepkg_performance_octavehires');
 -----------------------------------------------------------------------------------------
 @end smallexample
 
-The following tables give an overview about the performance of the OdePkg ODE/DAE solvers in comparison to propietary solvers when running the chemical AKZO--NOBEL non--stiff ODE test function from the OdePkg testsuite.
+The following tables give an overview about the performance of the OdePkg ODE/DAE solvers in comparison to propietary solvers when running the chemical AKZO--NOBEL function from the OdePkg testsuite (non--stiff ODE test).
 
 @smallexample
 >> odepkg ('odepkg_performance_matchemakzo');
@@ -494,10 +541,10 @@ octave:1> odepkg ('odepkg_performance_octavechemakzo');
 -----------------------------------------------------------------------------------------
 @end smallexample
 
-Other testsuite functions have been added to the OdePkg that can be taken for further performance tests and syntax checks. These functions all have a name @file{odepkg_testsuite_xxx.m} with @file{xxx} being the name of the testsuite problem that has been implemented.
+Other testsuite functions have been added to the OdePkg that can be taken for further performance tests and syntax checks on your own hardware. These functions all have a name @file{odepkg_testsuite_XXX.m} with @file{XXX} being the name of the testsuite problem that has been implemented.
 
-@node ODE/DAE/IDE options, M-File Function Reference, Solver families, User's Guide
-@section ODE/DAE/IDE options
+@node ODE/DAE/IDE/DDE options, M-File Function Reference, Solver families, User's Guide
+@section ODE/DAE/IDE/DDE options
 @cindex ode options
 @cindex dae options
 @cindex ide options
@@ -807,7 +854,7 @@ plot (C.x, C.y, "bo-", D.x, D.y, "rx:");
 The option @option{BDF} is only supported by the @command{odebdi} and @command{odebda} solvers. Using these solvers the option @option{BDF} will automatically be set @command{"on"} (even if it was set @command{"off"} before) because the @command{odebdi} and @command{odebda} solvers all use the backward differentiation algorithm to solve the different kind of problems.
 @end table
 
-@node M-File Function Reference, Oct-File Function Reference, ODE/DAE/IDE options, User's Guide
+@node M-File Function Reference, Oct-File Function Reference, ODE/DAE/IDE/DDE options, User's Guide
 @section M--File Function Reference
 @cindex m--file function reference
 @include mfunref.texi
@@ -815,8 +862,8 @@ The option @option{BDF} is only supported by the @command{odebdi} and @command{o
 @node Oct-File Function Reference,  , M-File Function Reference, User's Guide
 @section Oct--File Function Reference
 @cindex oct--file function reference
-TODO
-@c @include dldfunref.texi
+The help texts of this section are autogenerated and refer to commands that all can be found in the file @file{dldsolver.oct}. The file @file{dldsolver.oct} is generated automatically if you install OdePkg with the command @command{pkg}. All commands that are listed below are loaded automatically everytime you launch Octave.@*@*
+@include dldfunref.texi
 
 @c %*** End of second chapter: User's Guide
 
@@ -833,7 +880,7 @@ TODO
 TODO and if you want to help improving OdePkg then read about TODO
 
 @node General description, Missing features, Programmer's Guide, Programmer's Guide
-@section General description
+@section General implementation
 TODO
 
 @node Missing features,  , General description, Programmer's Guide
@@ -853,21 +900,22 @@ or send an email to
 @email{treichl (at> users.sourceforge.net} (replace (at> with @@)
 @end ifhtml
 . Here is a TODO--list about missing features:
+@c The OdePack solvers from http://www.netlib.org/odepack have not been added to OdePkg, because the question is not answered if they are really needed from somebody. Other solvers from http://www.netlib.org/ode have not been added because of the same reason.
 @itemize
-@item Partial Derivative Equation problems (PDEs) and Boundary Value Problems (BVPs) cannot be solved with the solvers of the OdePkg. It would make sense to write another package (maybe you'd like to call that package PdePkg --- that is just an idea) which makes it possible to solve PDEs and BVPs.@*@*
+@item Partial Derivative Equation problems (PDEs) and Boundary Value Problems (BVPs) cannot be solved with the solvers of the OdePkg. The need for solving PDEs and BVPs definitely is there (maybe you'd like to create another package and call that package PdePkg --- just an idea).
 
-@item Some options that can be set with propietary solver products are not available within OdePkg. Have a look at section @ref{ODE/DAE/IDE options} about which options can be set and which options are not supported and help improving the command @command{odeset} and the solvers.@*@*
+@item Some options that can be set with propietary solver products are not available within OdePkg. Have a look at section @ref{ODE/DAE/IDE/DDE options} about which options can be set and which options are not supported and help improving the command @command{odeset} and the solvers that have to deal with these options.
 
-@item OdePkg is missing the command @command{decic} which computes an initial constraint for IDEs before solving.  The command @command{deval} also is missing that interpolates the results that can be obtained from the solvers after solving and then plots the results in a new figure.@*@*
+@item OdePkg is missing the command @command{decic} which computes an initial constraint for IDEs before solving. The command @command{deval} also is missing that interpolates the results that can be obtained from the solvers after solving and then plots the results in a new figure.
 
-@item Before interfacing other solvers make sure that the core solver file is available under a GPL--compatible license. There can be found a lot of solver files at @url{http://www.netlib.org} but most of them are not GPL--compatible. Here is a list about authors and their solvers that do have a GPL compatible license so that their codes can be redistributed with OdePkg:@*@*
+@item Before interfacing other solvers make sure that the core solver file is available under a GPL--compatible license (if you'd like to redistribute your wrapper with OdePkg). There can be found a lot of solver files at @url{http://www.netlib.org} but most of them are not GPL--compatible. Here is a list about authors and their solvers that do have a GPL compatible license so that their codes can be redistributed with OdePkg:
 
 @itemize
-@item Cecilia Magherini and Luigi Brugnano from the University of Bari created the BIMD solver that is available at @url{http://pitagora.dm.uniba.it/~testset/solvers/bimd.php}. This solver can be used to solve stiff DAE problems. The Fortran77 file has been released under the GNU GPL V2.@*@*
+@item Cecilia Magherini and Luigi Brugnano from the University of Bari created the BIMD solver that is available at @url{http://pitagora.dm.uniba.it/~testset/solvers/bimd.php}. This solver can be used to solve stiff DAE problems. The Fortran77 file has been released under the GNU GPL V2.
 
-@item Francesca Mazzia and Felice Iavernaro from the University of Bari created the BIMD solver that is available at @url{http://pitagora.dm.uniba.it/~testset/solvers/gamd.php} created the GAMD solver. This solver can be used to solve stiff DAE problems. The Fortran90 file has been released under the GNU GPL V2 but for OdePkg a Fortran77 implementation would be preferred.@*@*
+@item Francesca Mazzia and Felice Iavernaro from the University of Bari created the BIMD solver that is available at @url{http://pitagora.dm.uniba.it/~testset/solvers/gamd.php} created the GAMD solver. This solver can be used to solve stiff DAE problems. The Fortran90 file has been released under the GNU GPL V2 but for OdePkg a Fortran77 implementation would be preferred.
 
-@item Ernst Hairer and Gerhard Wanner have been written more solvers that are released under a modified BSD license than have been interfaced by OdePkg. Notable solvers that can be found at @url{http://www.unige.ch/~hairer/software.html} are explicit Runge-Kutta methods @command{dopri5} and @command{dop853} and extrapolation methods @command{odex} and @command{odex2} for solving ODEs, @command{retard} and @command{radar5} for solving DDEs.@*@*
+@item Ernst Hairer and Gerhard Wanner have been written more solvers that are released under a modified BSD license than have been interfaced by OdePkg. Notable solvers that can be found at @url{http://www.unige.ch/~hairer/software.html} are explicit Runge-Kutta methods @command{dopri5} and @command{dop853} and extrapolation methods @command{odex} and @command{odex2} for solving ODEs, @command{retard} and @command{radar5} for solving DDEs.
 @end itemize
 
 @end itemize

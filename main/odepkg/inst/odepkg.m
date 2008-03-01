@@ -45,13 +45,9 @@ function [] = odepkg_validate_mfiles ()
   %#   octave --quiet --eval "odepkg ('odepkg_validate_mfiles')"
 
   vfun = {'ode23', 'ode45', 'ode54', 'ode78', ...
-          'ode2r', 'ode5r', 'oders', 'odesx', ...
           'odeget', 'odeset', ...
-          'odepkg_structure_check', ... %# 'odepkg_event_handle', ...
+          'odepkg_structure_check', 'odepkg_event_handle', ...
           'odeplot', 'odephas2', 'odephas3', 'odeprint', ...
-          'odepkg_equations_lorenz', 'odepkg_equations_ilorenz', ...
-          'odepkg_equations_pendulous', 'odepkg_equations_roessler', ...
-          'odepkg_equations_secondorderlag', 'odepkg_equations_vanderpol', ...
           'odepkg_testsuite_calcscd', 'odepkg_testsuite_calcmescd'};
 
   for vcnt=1:length(vfun)
@@ -65,11 +61,11 @@ function [] = odepkg_validate_ccfiles ()
   %#   octave --quiet --eval "odepkg ('odepkg_validate_ccfiles')"
 
   vfile = {'odepkg_octsolver_mebdfdae.cc', 'odepkg_octsolver_mebdfi.cc', ...
+	   'odepkg_octsolver_ddaskr.cc', ...
            'odepkg_octsolver_radau.cc', 'odepkg_octsolver_radau5.cc', ...
            'odepkg_octsolver_rodas.cc', 'odepkg_octsolver_seulex.cc'};
-  vsolv = {'odebda', 'odebdi', ...
-           'ode2r', 'ode5r', ...
-           'oders', 'odesx'};
+  vsolv = {'odebda', 'odebdi', 'odekdi', ...
+           'ode2r', 'ode5r', 'oders', 'odesx'};
 
   for vcnt=1:length(vfile)
     printf ('Testing function %s ... ', vsolv{vcnt});
@@ -77,16 +73,13 @@ function [] = odepkg_validate_ccfiles ()
     test (vfile{vcnt}, 'quiet'); fflush (1);
   end
 
-function [] = odepkg_mfunctions_helpextract ()
+function [] = odepkg_internal_mhelpextract ()
 
-  vfun = {'odepkg', ...
+  vfun = {'odepkg', 'ode23d', 'ode45d', 'ode54d', 'ode78d', ...
           'ode23', 'ode45', 'ode54', 'ode78', ...
           'odeget', 'odeset', ...
           'odeplot', 'odephas2', 'odephas3', 'odeprint', ...
           'odepkg_structure_check', 'odepkg_event_handle', ...
-          'odepkg_equations_lorenz', 'odepkg_equations_ilorenz', ...
-          'odepkg_equations_pendulous', 'odepkg_equations_roessler', ...
-          'odepkg_equations_secondorderlag', 'odepkg_equations_vanderpol', ...
           'odepkg_testsuite_calcscd', 'odepkg_testsuite_calcmescd', ...
           'odepkg_testsuite_chemakzo', 'odepkg_testsuite_hires', ...
           'odepkg_testsuite_implrober', 'odepkg_testsuite_implakzo', ...
@@ -120,15 +113,19 @@ function [] = odepkg_mfunctions_helpextract ()
   end
   fclose (vout);
 
-function [] = odepkg_internal_ccrefextract ()
+function [] = odepkg_internal_octhelpextract ()
 
-  vfiles = {'../src/odepkg_octsolver_mebdfi.cc', ...
+  vfiles = {'../src/odepkg_octsolver_mebdfdae.cc', ...
+	    '../src/odepkg_octsolver_mebdfi.cc', ...
+            '../src/odepkg_octsolver_ddaskr.cc', ...
+	    '../src/odepkg_octsolver_radau.cc', ...
+            '../src/odepkg_octsolver_radau5.cc', ...
             '../src/odepkg_octsolver_rodas.cc', ...
-            '../src/odepkg_auxiliary_functions.cc', ...
-            };
-  vfiles = sort (vfiles);
+            '../src/odepkg_octsolver_seulex.cc', ...
+           };
+  %# vfiles = sort (vfiles); Don't sort these files
 
-  [vout, vmsg] = fopen ('../doc/ccfunref.texi', 'w');
+  [vout, vmsg] = fopen ('../doc/dldfunref.texi', 'w');
   if ~(isempty (vmsg)), error (vmsg); end
   for vcnt = 1:length (vfiles)
     if (exist (vfiles{vcnt}, 'file'))
@@ -137,14 +134,11 @@ function [] = odepkg_internal_ccrefextract ()
       while (true)
         vlin = fgets (vfid);
         if ~(ischar (vlin)), break; end
-        if (regexp (vlin, '^(/\* -\*- texinfo -\*-)'))
+          if (regexp (vlin, '^("-\*- texinfo -\*-\\n\\)')) %#"
           vlin = ' * '; %# Needed for the first call of while()
-          while (~isempty (regexp (vlin, '^( \*)')) && ...
-                  isempty (regexp (vlin, '^( \*/)')))
+          while (isempty (regexp (vlin, '^(@end deftypefn)')) && ischar (vlin))
             vlin = fgets (vfid);
-            if (length (vlin) > 3), fprintf (vout, '%s', vlin(4:end));
-            else fprintf (vout, '%s', vlin(3:end));
-            end
+            fprintf (vout, '%s', sprintf (regexprep (vlin, '\\n\\', '')));
           end
           fprintf (vout, '\n');
         end
@@ -227,142 +221,6 @@ function [] = demos ()
   demo ('odepkg_equations_roessler'); clear ('all');
   demo ('odepkg_equations_secondorderlag'); clear ('all');
   demo ('odepkg_equations_vanderpol'); clear ('all');
-
-
-  %# This part of the function is used to check the solver functions
-  %# with the options RelTol and AbsTol (AbsTol as scalars and vectors).
-  %# Also the option value Stats == 'on' is checked with this function
-  %# calls.
-function [] = odepkg_tolerances_check ()
-  figure; subplot (2,2,1); hold ('on');
-  A = odeset ('RelTol', 1e-6, 'AbsTol', 1e-2, 'Stats', 'on');
-  [x, y] = ode78 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-b');
-  A = odeset ('RelTol', 1e-6, 'AbsTol', [1e-2; 1e-3], 'Stats', 'on');
-  [x, y] = ode78 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-g');
-  A = odeset ('RelTol', 1e-5, 'AbsTol', 1e-2, 'NormControl', 'on', 'Stats', 'on');
-  [x, y] = ode78 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-r');
-  A = odeset ('RelTol', 1e-5, 'AbsTol', [1e-2; 1e-3], 'NormControl', 'on', 'Stats', 'on');
-  [x, y] = ode78 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-c');
-  grid ('on'); hold ('off');
-
-  subplot (2,2,2); hold ('on');
-  A = odeset ('RelTol', 1e-6, 'AbsTol', 1e-2, 'Stats', 'on');
-  [x, y] = ode54 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-b');
-  A = odeset ('RelTol', 1e-6, 'AbsTol', [1e-2; 1e-3], 'Stats', 'on');
-  [x, y] = ode54 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-g');
-  A = odeset ('RelTol', 1e-5, 'AbsTol', 1e-2, 'NormControl', 'on', 'Stats', 'on');
-  [x, y] = ode54 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-r');
-  A = odeset ('RelTol', 1e-5, 'AbsTol', [1e-2; 1e-3], 'NormControl', 'on', 'Stats', 'on');
-  [x, y] = ode54 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-c');
-  grid ('on'); hold ('off');
-
-  subplot (2,2,3); hold ('on');
-  A = odeset ('RelTol', 1e-6, 'AbsTol', 1e-2, 'Stats', 'on');
-  [x, y] = ode45 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-b');
-  A = odeset ('RelTol', 1e-6, 'AbsTol', [1e-2; 1e-3], 'Stats', 'on');
-  [x, y] = ode45 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-g');
-  A = odeset ('RelTol', 1e-5, 'AbsTol', 1e-2, 'NormControl', 'on', 'Stats', 'on');
-  [x, y] = ode45 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-r');
-  A = odeset ('RelTol', 1e-5, 'AbsTol', [1e-2; 1e-3], 'NormControl', 'on', 'Stats', 'on');
-  [x, y] = ode45 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-c');
-  grid ('on'); hold ('off');
-
-  subplot (2,2,4); hold ('on');
-  A = odeset ('RelTol', 1e-6, 'AbsTol', 1e-2, 'Stats', 'on');
-  [x, y] = ode23 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-b');
-  A = odeset ('RelTol', 1e-6, 'AbsTol', [1e-2; 1e-3], 'Stats', 'on');
-  [x, y] = ode23 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-g');
-  A = odeset ('RelTol', 1e-5, 'AbsTol', 1e-2, 'NormControl', 'on', 'Stats', 'on');
-  [x, y] = ode23 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-r');
-  A = odeset ('RelTol', 1e-5, 'AbsTol', [1e-2; 1e-3], 'NormControl', 'on', 'Stats', 'on');
-  [x, y] = ode23 (@odepkg_equations_vanderpol, [0 30], [2 0], A, 1); plot (x, y, '-c');
-  grid ('on'); hold ('off');
-
-%# This function is used to check the ode78 function with option
-%# OutputSel. The other solvers should have the same behavior.
-function [] = odepkg_outputselection_check ()
-  A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1, 'OutputSel', 1);
-  [x, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
-  subplot(2, 2, 1); plot (x, y, '-b');
-  A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1, 'OutputSel', 2);
-  [x, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
-  subplot(2, 2, 2); plot (x, y, '-g');
-  A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1, 'OutputSel', 3);
-  [x, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
-  subplot(2, 2, 3); plot (x, y, '-r');
-  A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1, 'OutputSel', [1 2 3]);
-  [x, y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
-  subplot(2, 2, 4); plot (x, y);
-
-%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
-%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 25), [0 0]);
-%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 22), [0 0]);
-%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 26), [0 0]);
-%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 30), [0 0]);
-%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, linspace (0, 2.5, 13), [0 0]);
-%#[vx, vy, va, vb, vc] = ode78 (@odepkg_equations_secondorderlag, logspace (-1, 0, 13), [0 0]);
-%#[vx, vy, va, vb, vc] = ode23 (@odepkg_equations_secondorderlag, logspace (-1, 0, 31), [0 0]);
-
-%# File will be cleaned up in the future
-function [] = odepkg_versus_lsode ()
-
-  %# The options of octave's lsode are displayed
-  AbsTol = lsode_options ('absolute tolerance')
-  RelTol = lsode_options ('relative tolerance')
-  Solver = lsode_options ('integration method') %# "adams", "non-stiff", "bdf", "stiff"
-  InitStep = lsode_options ('initial step size')
-  MaxOrder = lsode_options ('maximum order')
-  MaxStepSize = lsode_options ('maximum step size')
-  MinStepSize = lsode_options ('minimum step size')
-  StepLimit = lsode_options ('step limit') %# default value is 100000
-
-%#  lsode_options ("integration method", "non-stiff");
-%#  [a, b, c] = lsode (@vanderpol, [2 0], [0 20])
-
-  %# Solve octave's example from the documentation
-  x0 = [4; 1.1; 4]; t = linspace (0, 500, 100);
-  [a, b, c] = lsode (@lsode_example_dococtave, x0, t);
-  c, plot (t, a, '-o');
-
-  t = [0, ...
-       (logspace (-1, log10(303), 150)), ...
-       (logspace (log10(304), log10(500), 150))];
-  [a, b, c] = lsode (@lsode_example_dococtave, x0, t);
-  c, plot (t, a, '-o');
-
-%#  size (a)
-%#  t = [0, (logspace (-1, log10(303), 150)), (logspace (log10(304), log10(500), 150))];
-
-endfunction
-%# File will be cleaned up in the future
-function vydot = lsode_example_vanderpol (vy, vt)
-  mu = 100;
-  vydot = [vy(2); mu * (1 - vy(1)^2) * vy(2) - vy(1)];
-endfunction
-
-function vydot = odepkg_example_vanderpol (vt, vy)
-  mu = 100;
-  vydot = [vy(2); mu * (1 - vy(1)^2) * vy(2) - vy(1)];
-endfunction
-
-function xdot = lsode_example_dococtave (x, t)
-  xdot = zeros (3,1);
-  xdot(1) = 77.27 * (x(2) - x(1)*x(2) + x(1) - 8.375e-06*x(1)^2);
-  xdot(2) = (x(3) - x(1)*x(2) - x(2)) / 77.27;
-  xdot(3) = 0.161*(x(1) - x(3));
-endfunction
-
-function xdot = odepkg_example_dococtave (t, x)
-  xdot = zeros (3,1);
-  xdot(1) = 77.27 * (x(2) - x(1)*x(2) + x(1) - 8.375e-06*x(1)^2);
-  xdot(2) = (x(3) - x(1)*x(2) - x(2)) / 77.27;
-  xdot(3) = 0.161*(x(1) - x(3));
-endfunction
-
-function xdot = odepkg_example_stiffnonnegative (x, t)
-  epsilon = 1e-2;
-  xdot = ((1 - x) * t - t^2) / epsilon;
-endfunction
 
 %# Local Variables: ***
 %# mode: octave ***

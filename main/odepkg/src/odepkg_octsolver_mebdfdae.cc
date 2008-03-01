@@ -246,11 +246,11 @@ error number \"%d\")", verr);
 
 DEFUN_DLD (odebda, args, nargout,
 "-*- texinfo -*-\n\
-@deftypefn  {Function File} {[@var{}] =} odebda (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
+@deftypefn  {Command} {[@var{}] =} odebda (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
 @deftypefnx {Command} {[@var{sol}] =} odebda (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
 @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} odebda (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
 \n\
-This function file can be used to solve a set of stiff ordinary differential equations (stiff ODEs) and stiff differential algebraic equations (stiff DAEs). This function file is a wrapper file that uses Jeff Cash's Fortran solver @file{mebdfdae.f}.\n\
+This function file can be used to solve a set of non--stiff or stiff ordinary differential equations (ODEs) and non--stiff or stiff differential algebraic equations (DAEs). This function file is a wrapper file that uses Jeff Cash's Fortran solver @file{mebdfdae.f}.\n\
 \n\
 If this function is called with no return argument then plot the solution over time in a figure window while solving the set of ODEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.\n\
 \n\

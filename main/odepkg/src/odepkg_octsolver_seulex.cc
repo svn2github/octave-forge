@@ -257,11 +257,11 @@ octave_idx_type odepkg_seulex_solfcn
 
 DEFUN_DLD (odesx, args, nargout, 
 "-*- texinfo -*-\n\
-@deftypefn  {Function File} {[@var{}] =} odesx (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
+@deftypefn  {Command} {[@var{}] =} odesx (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
 @deftypefnx {Command} {[@var{sol}] =} odesx (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
 @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} odesx (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
 \n\
-This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) and non-stiff differential algebraic equations (non-stiff DAEs). This function file is a wrapper to @file{odepkg_mexsolver_seulex.c} that uses Hairer's and Wanner's Fortran solver @file{seulex.f}.\n\
+This function file can be used to solve a set of stiff or non--stiff ordinary differential equations (ODEs) and non--stiff or stiff differential algebraic equations (DAEs). This function file is a wrapper to Hairer's and Wanner's Fortran solver @file{seulex.f}.\n\
 \n\
 If this function is called with no return argument then plot the solution over time in a figure window while solving the set of ODEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.\n\
 \n\
@@ -269,9 +269,17 @@ If this function is called with one return argument then return the solution @va
 \n\
 If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.\n\
 \n\
-Run examples with the command\n\
+For example,\n\
 @example\n\
-demo odesx\n\
+function y = odepkg_equations_lorenz (t, x)\n\
+  y = [10 * (x(2) - x(1));\n\
+       x(1) * (28 - x(3));\n\
+       x(1) * x(2) - 8/3 * x(3)];\n\
+endfunction\n\
+\n\
+vopt = odeset (\"InitialStep\", 1e-3, \"MaxStep\", 1e-1, \\\n\
+               \"OutputFcn\", @@odephas3, \"Refine\", 5);\n\
+odesx (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 @end example\n\
 @end deftypefn\n\
 \n\

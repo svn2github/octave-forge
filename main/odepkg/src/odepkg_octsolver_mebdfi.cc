@@ -317,9 +317,9 @@ error number \"%d\")", verr);
  */
 DEFUN_DLD (odebdi, args, nargout,
 "-*- texinfo -*-\n\
-@deftypefn  {Function File} odebdi (@var{@@fun, slot, y0, dy0, [opt], [P1, P2, @dots{}]})\n\
-@deftypefnx {Function} {@var{sol} =} odebdi (@var{@@fun, slot, y0, dy0, [opt], [P1, P2, @dots{}]})\n\
-@deftypefnx {Function} {@var{[t, y, [xe, ye, ie]]} =} odebdi (@var{@@fun, slot, y0, dy0, [opt], [P1, P2, @dots{}]})\n\
+@deftypefn  {Command} {[@var{}] =} odebdi (@var{@@fun}, @var{slot}, @var{y0}, @var{dy0}, [@var{opt}], [@var{P1}, @var{P2}, @dots{}])\n\
+@deftypefnx {Command} {[@var{sol}] =} odebdi (@var{@@fun}, @var{slot}, @var{y0}, @var{dy0}, [@var{opt}], [@var{P1}, @var{P2}, @dots{}])\n\
+@deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} odebdi (@var{@@fun}, @var{slot}, @var{y0}, @var{dy0}, [@var{opt}], [@var{P1}, @var{P2}, @dots{}])\n\
 \n\
 This function file can be used to solve a set of non--stiff and stiff implicit differential equations (IDEs). This function file is a wrapper file that uses Jeff Cash's Fortran solver @file{mebdfi.f}.\n\
 \n\
@@ -887,7 +887,8 @@ odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
 %!error 
 %!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], 1);
 %!test
-%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1]);
+%!  A = odeset ('OutputFcn', @odeplot)
+%!  B = odebdi (@fimprob, [1e-9, 1e9], [1, 1e-10, 1e-10], [0, 0, 1], A);
 %!  assert (B.x(end), 1e9, 1e-3);
 %!  assert (B.y(end,:), [0, 0, 1], 1e-3);
 %!test

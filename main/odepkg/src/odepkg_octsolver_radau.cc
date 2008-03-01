@@ -247,11 +247,11 @@ octave_idx_type odepkg_radau_solfcn
 
 DEFUN_DLD (ode2r, args, nargout, 
 "-*- texinfo -*-\n\
-@deftypefn  {Function File} {[@var{}] =} ode2r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
+@deftypefn  {Command} {[@var{}] =} ode2r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
 @deftypefnx {Command} {[@var{sol}] =} ode2r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
 @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode2r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\
 \n\
-This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) and non-stiff differential algebraic equations (non-stiff DAEs). This function file is a wrapper to @file{odepkg_mexsolver_radau.c} that uses Hairer's and Wanner's Fortran solver @file{radau.f}.\n\
+This function file can be used to solve a set of non--stiff or stiff ordinary differential equations (ODEs) and non--stiff or stiff differential algebraic equations (DAEs). This function file is a wrapper to Hairer's and Wanner's Fortran solver @file{radau.f}.\n\
 \n\
 If this function is called with no return argument then plot the solution over time in a figure window while solving the set of ODEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.\n\
 \n\
@@ -259,9 +259,17 @@ If this function is called with one return argument then return the solution @va
 \n\
 If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.\n\
 \n\
-Run examples with the command\n\
+For example,\n\
 @example\n\
-demo ode2r\n\
+function y = odepkg_equations_lorenz (t, x)\n\
+  y = [10 * (x(2) - x(1));\n\
+       x(1) * (28 - x(3));\n\
+       x(1) * x(2) - 8/3 * x(3)];\n\
+endfunction\n\
+\n\
+vopt = odeset (\"InitialStep\", 1e-3, \"MaxStep\", 1e-1, \\\n\
+               \"OutputFcn\", @@odephas3, \"Refine\", 5);\n\
+ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 @end example\n\
 @end deftypefn\n\
 \n\
@@ -754,7 +762,7 @@ demo ode2r\n\
 %!  assert (B.x(end), 0.2, 1e-12);
 %!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
 %!test
-%!  A = odeset ('Events', @feve, 'AbsTol', 1e-10);
+%!  A = odeset ('Events', @feve, 'AbsTol', 1e-10, 'OutputFcn', @odeplot);
 %!  B = ode2r (@fbal, [0 3], [1 3], A);
 %!  assert (B.ie, 1, 0);
 %!  assert (B.xe, B.x(end), 0);

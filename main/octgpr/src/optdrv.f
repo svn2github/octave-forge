@@ -74,7 +74,7 @@ c                IC(3) last flags from trstp
       double precision stp(ndim+1),grd(ndim+1),Zg(ndim),Zba(ndim),
      +snlo,snup,eps,ss,relr
       double precision dlamch,dnrm2,ddot
-      external dlamch,dspmid,dtrstp,dnrm2,ddot
+      external dlamch,dspmid,trstp,dnrm2,ddot
       integer iB,iba,iW,iZ,i
 c setup pointers into VM
       iB = 1     

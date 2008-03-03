@@ -5,3 +5,5 @@ Spline functions
  fnplt 
  fnder
  fnval
+ catmullrom
+

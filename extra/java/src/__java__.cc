@@ -816,7 +816,7 @@ octave_value box (JNIEnv* jni_env, jobject jobj, jclass jcls)
   return retval;
 }
 
-static octave_value box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
+octave_value box_more (JNIEnv* jni_env, jobject jobj, jclass jcls)
 {
   octave_value retval = box (jni_env, jobj, jcls);
 

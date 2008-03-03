@@ -87,6 +87,7 @@ typedef java_local_ref<jthrowable> jthrowable_ref;
 extern JAVAPKG_API std::string jstring_to_string (JNIEnv* jni_env, jstring s);
 extern JAVAPKG_API std::string jstring_to_string (JNIEnv* jni_env, jobject obj);
 extern JAVAPKG_API octave_value box (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
+extern JAVAPKG_API octave_value box_more (JNIEnv* jni_env, jobject jobj, jclass jcls = 0);
 extern JAVAPKG_API int unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj, jclass_ref& jcls);
 extern JAVAPKG_API int unbox (JNIEnv* jni_env, const octave_value_list& args, jobjectArray_ref& jobjs, jobjectArray_ref& jclss);
 

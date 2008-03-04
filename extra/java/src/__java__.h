@@ -153,7 +153,7 @@ public:
 
   bool is_string (void) const
     {
-      JNIEnv *current_env = jni_env ();
+      JNIEnv *current_env = thread_jni_env ();
 
       if (current_env && java_object)
         {
@@ -162,8 +162,6 @@ public:
         }
       return false;
     }
-
-  static JNIEnv* jni_env (void);
 
   static JNIEnv* thread_jni_env (void);
 
@@ -212,7 +210,7 @@ public:
 private:
   void init (jobject jobj, jclass jcls)
     {
-      JNIEnv *current_env = jni_env ();
+      JNIEnv *current_env = thread_jni_env ();
 
       if (current_env)
         {
@@ -238,7 +236,7 @@ private:
 
   void release ()
     {
-      JNIEnv *current_env = jni_env ();
+      JNIEnv *current_env = thread_jni_env ();
 
       if (current_env)
         {

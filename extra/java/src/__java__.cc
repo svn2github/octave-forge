@@ -47,7 +47,6 @@ extern "C" JNIEXPORT jboolean JNICALL Java_org_octave_Octave_needThreadedInvokat
   (JNIEnv *, jclass);
 
 static JavaVM *jvm = 0;
-static JNIEnv *current_env = 0;
 static bool jvm_attached = false;
 
 // Need to keep hold of the shared library handle until exit.
@@ -258,6 +257,8 @@ static std::string initial_class_path ()
 
 static void initialize_jvm ()
 {
+  JNIEnv *current_env;
+
   if (jvm) return;
 
 #if defined (__WIN32__)
@@ -391,7 +392,6 @@ static void terminate_jvm(void)
       else
         jvm->DestroyJavaVM ();
       jvm = 0;
-      current_env = 0;
       jvm_attached = false;
 
       if (jvm_lib)
@@ -1063,6 +1063,8 @@ static long get_current_thread_ID(JNIEnv *jni_env)
 
 static int java_event_hook (void)
 {
+  JNIEnv *current_env = octave_java::thread_jni_env ();
+
   if (current_env)
     {
       jclass_ref cls (current_env, find_octave_class (current_env, "org/octave/Octave"));
@@ -1079,6 +1081,9 @@ static void initialize_java (void)
       try
         {
           initialize_jvm ();
+  
+	  JNIEnv *current_env = octave_java::thread_jni_env ();
+
           octave_java::register_type ();
           command_editor::add_event_hook (java_event_hook);
           octave_thread_ID = get_current_thread_ID (current_env);
@@ -1131,6 +1136,8 @@ arguments @var{arg1}, ...\n\
   initialize_java ();
   if (! error_state)
     {
+      JNIEnv *current_env = octave_java::thread_jni_env ();
+
       if (args.length () > 0)
         {
           std::string name = args(0).string_value ();
@@ -1175,6 +1182,8 @@ as a shortcut syntax. For instance, the two following statements are equivalent\
   initialize_java ();
   if (! error_state)
     {
+      JNIEnv *current_env = octave_java::thread_jni_env ();
+
       if (args.length() > 1)
         {
           std::string name = args(1).string_value ();
@@ -1230,6 +1239,8 @@ as a shortcut syntax. For instance, the two following statements are equivalent\
   initialize_java ();
   if (! error_state)
     {
+      JNIEnv *current_env = octave_java::thread_jni_env ();
+
       if (args.length () == 2)
         {
           std::string name = args(1).string_value ();
@@ -1281,6 +1292,8 @@ a shortcut syntax. For instance, the two following statements are equivalent\n\
   initialize_java ();
   if (! error_state)
     {
+      JNIEnv *current_env = octave_java::thread_jni_env ();
+
       if (args.length () == 3)
         {
           std::string name = args(1).string_value ();
@@ -1316,6 +1329,8 @@ DEFUN_DLD (java2mat, args, , "")
   initialize_java ();
   if (! error_state)
     {
+      JNIEnv *current_env = octave_java::thread_jni_env ();
+
       if (args.length () == 1)
         {
           if (args(0).class_name () == "octave_java")
@@ -1457,15 +1472,12 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_java,
 
 dim_vector octave_java::dims(void) const
 {
+  JNIEnv *current_env = thread_jni_env ();
+
   if (current_env && java_object)
     return compute_array_dimensions (current_env, java_object);
   else
     return dim_vector (1, 1);
-}
-
-JNIEnv* octave_java::jni_env (void)
-{
-  return current_env;
 }
 
 JNIEnv* octave_java::thread_jni_env (void)
@@ -1482,6 +1494,8 @@ octave_value_list octave_java::subsref(const std::string& type, const std::list<
 {
   octave_value_list retval;
   int skip = 1;
+
+  JNIEnv *current_env = thread_jni_env ();
 
   switch (type[0])
     {
@@ -1524,6 +1538,8 @@ octave_value_list octave_java::subsref(const std::string& type, const std::list<
 octave_value octave_java::subsasgn (const std::string& type, const std::list<octave_value_list>&idx, const octave_value &rhs)
 {
   octave_value retval;
+
+  JNIEnv *current_env = thread_jni_env ();
 
   switch (type[0])
     {
@@ -1602,6 +1618,8 @@ octave_value octave_java::subsasgn (const std::string& type, const std::list<oct
 
 string_vector octave_java::map_keys (void) const
 {
+  JNIEnv *current_env = thread_jni_env ();
+
   if (current_env)
     return get_invoke_list (current_env, to_java ());
   else
@@ -1610,6 +1628,8 @@ string_vector octave_java::map_keys (void) const
 
 octave_value octave_java::convert_to_str_internal (bool, bool force, char type) const
 {
+  JNIEnv *current_env = thread_jni_env ();
+
   if (current_env)
     return convert_to_string (current_env, to_java (), force, type);
   else

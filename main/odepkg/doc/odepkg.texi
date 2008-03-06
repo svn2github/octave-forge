@@ -456,14 +456,12 @@ The modified Runge--Kutta solvers are written in the Octave language and that ar
 
 @example
 ode23  (@@fode, vt, vy)          %# for solving an ODE
-ode23  (@@fdae, vt, vy, vopt)    %# for solving a  DAE
 ode15i (@@fide, vt, vy, vdy)     %# for solving an IDE
 dde23  (@@fdde, vlag, vhist, vt) %# for solving a  DDE
 @end example
 whereas in OdePkg the same examples would look like
 @example
 ode23  (@@fode, vt, vy)              %# for solving an ODE
-ode23  (@@fdae, vt, vy, vopt)        %# for solving a  DAE
 odebdi (@@fide, vt, vy, vdy)         %# for solving an IDE
 ode23d (@@fdde, vt, vy, vlag, vhist) %# for solving a  DDE
 @end example
@@ -591,7 +589,7 @@ The option @option{AbsTol} is used to set the absolute error tolerance for the e
 @end ifnothtml
 Run the following example to illustrate the effect if this option is used
 @example
-## An anonymous implementation of the Vanderpol equation
+## An anonymous implementation of the Van der Pol equation
 fvdb = @@(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
 
 A = odeset ("AbsTol", 1e-3, "OutputFcn", @@odeplot);
@@ -680,7 +678,7 @@ endfunction
 @end example
 The output function @command{odeplot} is also set automatically if the solver calculation routine is called without any output argument. Run the following example to illustrate the effect if this option is not used and no output argument is given
 @example
-## An anonymous implementation of the Vanderpol equation
+## An anonymous implementation of the Van der Pol equation
 fvdb = @@(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
 
 ode78 (fvdb, [0 20], [2 0]);

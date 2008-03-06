@@ -34,7 +34,7 @@
 %#
 %# vopt = odeset ("RelTol", 1e-3, "AbsTol", 1e-3, \
 %#          "NormControl", "on", "OutputFcn", @@odeplot);
-%# ode23 (fvdb, [0 20], [2 0], vopt);
+%# ode54 (fvdb, [0 20], [2 0], vopt);
 %# @end example
 %# @end deftypefn
 %#
@@ -52,7 +52,7 @@
 function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 
   if (nargin == 0) %# Check number and types of all input arguments
-    help ('ode23');
+    help ('ode54');
     error ('OdePkg:InvalidArgument', ...
       'Number of input arguments must be greater than zero');
 
@@ -546,93 +546,93 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 %! %# again if the last test is called
 %!error %# input argument number one
 %!  warning ('off', 'OdePkg:InvalidOption');
-%!  B = ode23 (1, [0 25], [3 15 1]);
+%!  B = ode54 (1, [0 25], [3 15 1]);
 %!error %# input argument number two
-%!  B = ode23 (@fpol, 1, [3 15 1]);
+%!  B = ode54 (@fpol, 1, [3 15 1]);
 %!error %# input argument number three
 %!  B = ode2r (@flor, [0 25], 1);
 %!test %# one output argument
-%!  vsol = ode23 (@fpol, [0 2], [2 0]);
+%!  vsol = ode54 (@fpol, [0 2], [2 0]);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!  assert (isfield (vsol, 'solver'));
-%!  assert (vsol.solver, 'ode23');
+%!  assert (vsol.solver, 'ode54');
 %!test %# two output arguments
-%!  [vt, vy] = ode23 (@fpol, [0 2], [2 0]);
+%!  [vt, vy] = ode54 (@fpol, [0 2], [2 0]);
 %!  assert ([vt(end), vy(end,:)], [2, fref], 1e-3);
 %!test %# five output arguments and no Events
-%!  [vt, vy, vxe, vye, vie] = ode23 (@fpol, [0 2], [2 0]);
+%!  [vt, vy, vxe, vye, vie] = ode54 (@fpol, [0 2], [2 0]);
 %!  assert ([vt(end), vy(end,:)], [2, fref], 1e-3);
 %!  assert ([vie, vxe, vye], []);
 %!test %# anonymous function instead of real function
 %!  fvdb = @(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
-%!  vsol = ode23 (@fpol, [0 2], [2 0]);
+%!  vsol = ode54 (@fpol, [0 2], [2 0]);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# extra input arguments passed trhough
-%!  vsol = ode23 (@fpol, [0 2], [2 0], 12, 13, 'KL');
+%!  vsol = ode54 (@fpol, [0 2], [2 0], 12, 13, 'KL');
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# empty OdePkg structure *but* extra input arguments
 %!  vopt = odeset;
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt, 12, 13, 'KL');
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt, 12, 13, 'KL');
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!error %# strange OdePkg structure
 %!  vopt = struct ('foo', 1);
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!test %# AbsTol option
 %!  vopt = odeset ('AbsTol', 1e-5);
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# AbsTol and RelTol option
 %!  vopt = odeset ('AbsTol', 1e-8, 'RelTol', 1e-8);
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# RelTol and NormControl option -- higher accuracy
 %!  vopt = odeset ('RelTol', 1e-8, 'NormControl', 'on');
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
-%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-6);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-4);
 %!test %# Keeps initial values while integrating
 %!  vopt = odeset ('NonNegative', 2);
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, 2, 0], 1e-1);
 %!test %# Details of OutputSel and Refine can't be tested
 %!  vopt = odeset ('OutputFcn', @fout, 'OutputSel', 1, 'Refine', 5);
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!test %# Stats must add further elements in vsol
 %!  vopt = odeset ('Stats', 'on');
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert (isfield (vsol, 'stats'));
 %!  assert (isfield (vsol.stats, 'nsteps'));
 %!test %# InitialStep option
 %!  vopt = odeset ('InitialStep', 1e-8);
-%!  vsol = ode23 (@fpol, [0 0.2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 0.2], [2 0], vopt);
 %!  assert ([vsol.x(2)-vsol.x(1)], [1e-8], 1e-9);
 %!test %# MaxStep option
 %!  vopt = odeset ('MaxStep', 1e-2);
-%!  vsol = ode23 (@fpol, [0 0.2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 0.2], [2 0], vopt);
 %!  assert ([vsol.x(5)-vsol.x(4)], [1e-2], 1e-3);
 %!test %# Events option add further elements in vsol
 %!  vopt = odeset ('Events', @feve);
-%!  vsol = ode23 (@fpol, [0 10], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 10], [2 0], vopt);
 %!  assert (isfield (vsol, 'ie'));
-%!  assert (vsol.ie, [2; 1; 2]);
+%!  assert (vsol.ie(1), 2);
 %!  assert (isfield (vsol, 'xe'));
 %!  assert (isfield (vsol, 'ye'));
 %!test %# Events option, now stop integration
 %!  vopt = odeset ('Events', @fevn, 'NormControl', 'on');
-%!  vsol = ode23 (@fpol, [0 10], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 10], [2 0], vopt);
 %!  assert ([vsol.ie, vsol.xe, vsol.ye], ...
-%!    [2.0, 2.496110, -0.830550, -2.677589], 1e-3);
+%!    [2.0, 2.496110, -0.830550, -2.677589], .5e-1);
 %!test %# Events option, five output arguments
 %!  vopt = odeset ('Events', @fevn, 'NormControl', 'on');
-%!  [vt, vy, vxe, vye, vie] = ode23 (@fpol, [0 10], [2 0], vopt);
+%!  [vt, vy, vxe, vye, vie] = ode54 (@fpol, [0 10], [2 0], vopt);
 %!  assert ([vie, vxe, vye], ...
-%!    [2.0, 2.496110, -0.830550, -2.677589], 1e-3);
+%!    [2.0, 2.496110, -0.830550, -2.677589], .5e-1);
 %!test %# Jacobian option
 %!  vopt = odeset ('Jacobian', @fjac);
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# Jacobian option and sparse return value
 %!  vopt = odeset ('Jacobian', @fjcc);
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %! %# test for JPattern option is missing
@@ -640,23 +640,23 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 %!
 %!test %# Mass option as function
 %!  vopt = odeset ('Mass', @fmas);
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# Mass option as matrix
 %!  vopt = odeset ('Mass', eye (2,2));
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# Mass option as sparse matrix
 %!  vopt = odeset ('Mass', sparse (eye (2,2)));
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# Mass option as function and sparse matrix
 %!  vopt = odeset ('Mass', @fmsa);
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# Mass option as function and MStateDependence
 %!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
-%!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
+%!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  warning ('on', 'OdePkg:InvalidOption');
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!

@@ -76,8 +76,15 @@ Sums of squares (optional)\n\
   int DIM = 0;
   if (nargin > 1)
     {
-      DIM = (int)args(1).scalar_value();
-      if (error_state)
+      if (args(1).is_real_scalar())
+        {
+          DIM = (int)args(1).scalar_value();
+        }
+      else if (args(1).is_zero_by_zero())
+        {
+          DIM = 1;
+        }
+      else
         {
           error("sumskipnan: second input argument must be an integer");
           return retval;

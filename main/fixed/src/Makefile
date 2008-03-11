@@ -7,20 +7,24 @@ LIBPRE = lib
 LIBEXT = dll
 LIBIMPEXT = dll.a
 DLLDEF =
+ISMS =
 ifneq (,$(findstring cygwin,$(canonical_host_type)))
    OCT_INCLUDES_LIB = 1
+   ISMS = 1
    DLLDEF = -DFIXED_DLL
    FIXEDIMPTARGET = $(LIBPRE)octave_fixed.$(LIBIMPEXT)
    ADD_FLAGS = -Wl,--out-implib=$(FIXEDIMPTARGET)
 endif
 ifneq (,$(findstring mingw,$(canonical_host_type)))
    OCT_INCLUDES_LIB = 1
+   ISMS = 1
    DLLDEF = -DFIXED_DLL
    FIXEDIMPTARGET = $(LIBPRE)octave_fixed.$(LIBIMPEXT)
    ADD_FLAGS = -Wl,--out-implib=$(FIXEDIMPTARGET)
 endif
 ifneq (,$(findstring msdosmsvc,$(canonical_host_type)))
    OCT_INCLUDES_LIB = 1
+   ISMS = 1
    LIBPRE =
    LIBIMPEXT = lib
    DLLDEF = -DFIXED_DLL
@@ -68,12 +72,14 @@ else
 
   EXTRALIBS = -L./ -loctave_fixed
 
-  # The name of this flag changed in version 2.1.54. Use both versions
-  # so that one of them will work.
-  MY_SH_LDFLAGS = $(shell $(MKOCTFILE) -p SH_LDFLAGS) \
-	-Wl,--out-implib=$(FIXEDIMPTARGET)
-  MY_DL_LDFLAGS = $(shell $(MKOCTFILE) -p DL_LDFLAGS) \
-	-Wl,--out-implib=$(FIXEDIMPTARGET)
+  ifeq (1,$(ISMS))
+    # The name of this flag changed in version 2.1.54. Use both versions
+    # so that one of them will work.
+    MY_SH_LDFLAGS = $(shell $(MKOCTFILE) -p SH_LDFLAGS) \
+	  -Wl,--out-implib=$(FIXEDIMPTARGET)
+    MY_DL_LDFLAGS = $(shell $(MKOCTFILE) -p DL_LDFLAGS) \
+	  -Wl,--out-implib=$(FIXEDIMPTARGET)
+  endif
 endif
 
 ifeq ($(MAKECMDGOALS),all)

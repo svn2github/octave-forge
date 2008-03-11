@@ -19,11 +19,131 @@
 
 #include "config.h"
 #include <fstream>
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 #include <octave/oct.h>
 #include <octave/lo-ieee.h>
+
+static bool
+isletter (char c)
+{
+  return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
+}
+
+static bool
+read_cell_spec(std::istream& is, unsigned long& row, unsigned long& col)
+{
+
+  bool stat = false;
+
+  if (is.peek () == std::istream::traits_type::eof())
+    stat = true;
+  else
+    {
+      if (isletter (is.peek ()))
+	{
+
+	  col = 0;
+	  while (is && isletter (is.peek ()))
+	    {
+	      char ch = is.get ();
+	      col *= 26; 
+	      if (ch >= 'a')
+		col += ch - 'a';
+	      else
+		col += ch - 'A';
+	    }
+
+	  if (is)
+	    {
+	      is >> row;
+	      row --;
+	      if (is)
+		stat = true;
+	    }
+	}
+    }
+
+  return stat;
+}
+
+static bool
+parse_range_spec(const octave_value& range_spec,
+                 unsigned long& rlo, unsigned long& clo,
+                 unsigned long& rup, unsigned long& cup)
+{
+  bool stat = true;
+
+  if (range_spec.is_string ())
+    {
+      std::istringstream is (range_spec.string_value ());
+      char ch = is.peek ();
+
+      if (ch == '.' || ch == ':')
+	{
+	  rlo = 0;
+	  clo = 0;
+	  ch = is.get ();
+	  if (ch == '.')
+	    {
+	      ch = is.get ();
+	      if (ch != '.')
+		stat = false;
+	    }
+	}
+      else
+	{
+	  stat = read_cell_spec (is, rlo, clo);
+
+	  if (stat)
+	    {
+	      char ch = is.peek ();
+	  
+	      if (ch == '.' || ch == ':')
+		{
+		  ch = is.get ();
+		  if (ch == '.')
+		    {
+		      ch = is.get ();
+		      if (!is || ch != '.')
+			stat = false;
+		    }
+
+		  rup = ULONG_MAX - 1;
+		  cup = ULONG_MAX - 1;
+		}
+	      else
+		{
+		  rup = rlo;
+		  cup = clo;
+		  if (!is || !is.eof ())
+		    stat = false;
+		}
+	    }
+	}
+
+      if (stat && is && !is.eof ())
+	stat = read_cell_spec (is, rup, cup);
+
+      if (! is || !is.eof ())
+	stat = false;
+    }
+  else if (range_spec.is_real_matrix () && range_spec.numel () == 4)
+    {
+      ColumnVector range(range_spec.vector_value());
+      // double --> unsigned int     
+      rlo = static_cast<unsigned long> (range(0));
+      clo = static_cast<unsigned long> (range(1));
+      rup = static_cast<unsigned long> (range(2));
+      cup = static_cast<unsigned long> (range(3));
+    }
+  else 
+    stat = false;
+
+  return stat;
+}
 
 DEFUN_DLD (dlmread, args, ,
         "-*- texinfo -*-\n\
@@ -99,90 +219,24 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
     {
       if (nargin == 3)
 	{
-	  if (args(2).is_string ())
-	    {
-	      std::string str = args(2).string_value ();
-	      size_t n = str.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-	      size_t m = 0;
-	      if (n == NPOS)
-		error ("dlmread: error parsing range");
-	      else
-		{
-		  c0 = 0;
-		  while (m < n)
-		    {
-		      c0 = c0 * 26;
-		      char ch = str.at (m++);
-		      if (ch >= 'a')
-			ch -= 'a';
-		      else
-			ch -= 'A';
-		      c0 += ch;
-		    }
-
-		  str = str.substr (n);
-		  std::istringstream tmp_stream (str);
-		  r0 = static_cast <unsigned long> 
-		    (octave_read_double (tmp_stream)) - 1;
-
-		  str = str.substr (str.find_first_not_of("0123456789."));
-		  n = str.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-		  m = 0;
-		  if (n == NPOS)
-		    error ("dlmread: error parsing range");
-		  else
-		    {
-		      c1 = 0;
-		      while (m < n)
-			{
-			  c1 = c1 * 26;
-			  char ch = str.at (m++);
-			  if (ch >= 'a')
-			    ch -= 'a';
-			  else
-			    ch -= 'A';
-			  c1 += ch;
-			}
-
-		      str = str.substr (n);
-		      std::istringstream tmp_stream2 (str);
-		      r1 = static_cast <unsigned long> 
-			(octave_read_double (tmp_stream2)) - 1;
-		    }
-		}
-	    }
-	  else
-	    {
-	      ColumnVector range(args(2).vector_value());
-	      if (range.length() == 4)
-		{
-		  // double --> unsigned int     
-		  r0 = static_cast<unsigned long> (range(0));
-		  c0 = static_cast<unsigned long> (range(1));
-		  r1 = static_cast<unsigned long> (range(2));
-		  c1 = static_cast<unsigned long> (range(3));
-		} 
-	      else 
-		{
-		  error("dlmread: range must include [R0 C0 R1 C1]");
-		}
-	    }
+	  if (! parse_range_spec(args (2), r0, c0, r1, c1))
+	    error ("dlmread: error parsing range");
 	} 
       else if (nargin == 4) 
 	{
 	  r0 = args(2).ulong_value();
 	  c0 = args(3).ulong_value();
-	  // if r1 and c1 are not given, use what was found to be the maximum
-	  r1 = r - 1;
-	  c1 = c - 1;
 	}
     }
 
   if (!error_state)
     {
-      // Skip tge r0 leading lines as these might be a header
+      unsigned long maxrows = r1 - r0;
+
+      // Skip the r0 leading lines as these might be a header
       for (unsigned long m = 0; m < r0; m++)
 	getline (file, line);
+      r1 -= r0;
 
       // read in the data one field at a time, growing the data matrix as needed
       while (getline (file, line))
@@ -250,6 +304,8 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 	      pos1 = NPOS;
 
 	  } while ( pos1 != NPOS );
+	  if (nargin == 3 && i == maxrows)
+	    break;
 	  i++;
 	}
  
@@ -296,26 +352,38 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 %!shared file
 %! file = tmpnam (); 
 %! fid = fopen (file, "wt");
-%! fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9");
+%! fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);
 
-%!assert (dlmread (file), [1, 2, 3; 4, 5, 6; 7, 8, 9]);
-%!assert (dlmread (file, ","), [1, 2, 3; 4, 5, 6; 7, 8, 9]);
+%!assert (dlmread (file), [1, 2, 3; 4, 5, 6; 7, 8, 9;10, 11, 12]);
+%!assert (dlmread (file, ","), [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12]);
 %!assert (dlmread (file, ",", [1, 0, 2, 1]), [4, 5; 7, 8]);
 %!assert (dlmread (file, ",", "B1..C2"), [2, 3; 5, 6]);
+%!assert (dlmread (file, ",", "B1:C2"), [2, 3; 5, 6]);
+%!assert (dlmread (file, ",", "..C2"), [1, 2, 3; 4, 5, 6]);
+%!assert (dlmread (file, ",", 0, 1), [2, 3; 5, 6; 8, 9; 11, 12]);
+%!assert (dlmread (file, ",", "B1.."), [2, 3; 5, 6; 8, 9; 11, 12]);
+%!error (dlmread (file, ",", [0 1]))
+
 %!test
 %! unlink (file);
 
 %!shared file
 %! file = tmpnam (); 
 %! fid = fopen (file, "wt");
-%! fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9");
+%! fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);
 
-%!assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9]);
-%!assert (dlmread (file, ","), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9]);
+%!assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!assert (dlmread (file, ","), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
 %!assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8]);
 %!assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8]);
+%!assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8]);
+%!assert (dlmread (file, ",", "..B3"), [1, 2; 4 + 4i, 5; 7, 8]);
+%!assert (dlmread (file, ",", 1, 0), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!assert (dlmread (file, ",", "A2.."), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!error (dlmread (file, ",", [0 1]))
+
 %!test
 %! unlink (file);
 

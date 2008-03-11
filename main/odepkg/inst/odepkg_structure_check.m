@@ -64,16 +64,17 @@ function [vret] = odepkg_structure_check (varargin)
             vfld{vcntarg});
         end
 
-	switch (vsol)
-	  case {'ode23', 'ode45', 'ode54', 'ode78'}
-	    if (~isscalar (vret.(vfld{vcntarg})) && ...
-		~isempty (vret.(vfld{vcntarg})))
+        switch (vsol)
+          case {'ode23', 'ode45', 'ode54', 'ode78', ...
+                'ode23d', 'ode45d', 'ode54d', 'ode78d',}
+            if (~isscalar (vret.(vfld{vcntarg})) && ...
+                ~isempty (vret.(vfld{vcntarg})))
               error ('OdePkg:InvalidParameter', ...
-                'Value of option "RelTol" must be a scalar for solver "ode23"');
-	    end
-	  otherwise
+                'Value of option "RelTol" must be a scalar');
+            end
+          otherwise
 
-	  end
+          end
 
       case 'AbsTol'
         if (isnumeric (vret.(vfld{vcntarg})) && ...
@@ -124,7 +125,7 @@ function [vret] = odepkg_structure_check (varargin)
 
       case 'Refine'
         if (isscalar (vret.(vfld{vcntarg})) && ...
-	    mod (vret.(vfld{vcntarg}), 1) == 0 && ...
+            mod (vret.(vfld{vcntarg}), 1) == 0 && ...
             vret.(vfld{vcntarg}) >= 0 && ...
             vret.(vfld{vcntarg}) <= 5)
         else
@@ -145,7 +146,7 @@ function [vret] = odepkg_structure_check (varargin)
       case 'InitialStep'
         if (isempty (vret.(vfld{vcntarg})) || ...
             (isscalar (vret.(vfld{vcntarg})) && ...
-	     isreal (vret.(vfld{vcntarg})) && ...
+             isreal (vret.(vfld{vcntarg})) && ...
              vret.(vfld{vcntarg}) > 0) )
         else
           error ('OdePkg:InvalidParameter', ...
@@ -174,18 +175,19 @@ function [vret] = odepkg_structure_check (varargin)
 
       case 'Jacobian'
         if (isempty (vret.(vfld{vcntarg})) || ...
-	    ismatrix (vret.(vfld{vcntarg})) || ...
-	    isa (vret.(vfld{vcntarg}), 'function_handle') || ...
-	    iscell (vret.(vfld{vcntarg})))
+            ismatrix (vret.(vfld{vcntarg})) || ...
+            isa (vret.(vfld{vcntarg}), 'function_handle') || ...
+            iscell (vret.(vfld{vcntarg})))
         else
           error ('OdePkg:InvalidParameter', ...
-		 'Unknown parameter name "%s" or not valid parameter value', ...
-		 vfld{vcntarg});
+                 'Unknown parameter name "%s" or not valid parameter value', ...
+                 vfld{vcntarg});
         end
 
       case 'JPattern'
         if (isempty (vret.(vfld{vcntarg})) || ...
-            issparse (vret.(vfld{vcntarg})))
+            isvector (vret.(vfld{vcntarg}) || ...
+            ismatrix (vret.(vfld{vcntarg}))))
         else
           error ('OdePkg:InvalidParameter', ...
             'Unknown parameter name "%s" or not valid parameter value', ...
@@ -223,7 +225,8 @@ function [vret] = odepkg_structure_check (varargin)
 
       case 'MvPattern'
         if (isempty (vret.(vfld{vcntarg})) || ...
-            issparse (vret.(vfld{vcntarg})))
+            isvector (vret.(vfld{vcntarg}) || ...
+            ismatrix (vret.(vfld{vcntarg}))))
         else
           error ('OdePkg:InvalidParameter', ...
             'Unknown parameter name "%s" or not valid parameter value', ...
@@ -333,10 +336,10 @@ function [vret] = odepkg_structure_check (varargin)
 %!test  A = odeset ('Jacobian', [1, 2; 3, 4]);
 %!test  A = odeset ('Jacobian', []);
 %!error A = odeset ('Jacobian', '12');
-%#!test  A = odeset ('JPattern', );
-%#!test  A = odeset ('JPattern', );
-%#!error A = odeset ('JPattern', );
-%#!error A = odeset ('JPattern', );
+%!test  A = odeset ('JPattern', []);
+%!test  A = odeset ('JPattern', [1, 2, 4]);
+%!test  A = odeset ('JPattern', [1, 2; 3, 4]);
+%!error A = odeset ('JPattern', 12);
 %!test  A = odeset ('Vectorized', 'on');
 %!test  A = odeset ('Vectorized', 'off');
 %!error A = odeset ('Vectorized', []);
@@ -351,10 +354,10 @@ function [vret] = odepkg_structure_check (varargin)
 %!error A = odeset ('MStateDependence', [1, 2; 3, 4]);
 %!error A = odeset ('MStateDependence', []);
 %!error A = odeset ('MStateDependence', '12');
-%#!test  A = odeset ('MvPattern', );
-%#!test  A = odeset ('MvPattern', );
-%#!error A = odeset ('MvPattern', );
-%#!error A = odeset ('MvPattern', );
+%!test  A = odeset ('MvPattern', []);
+%!test  A = odeset ('MvPattern', [1, 2, 3 ]);
+%!test  A = odeset ('MvPattern', [1, 2; 3, 4]);
+%!error A = odeset ('MvPattern', 12);
 %!test  A = odeset ('MassSingular', 'yes');
 %!test  A = odeset ('MassSingular', 'no');
 %!test  A = odeset ('MassSingular', 'maybe');
@@ -375,18 +378,18 @@ function [vret] = odepkg_structure_check (varargin)
 %!error A = odeset ('BDF', []);
 
 %!demo
+%! # Return the checked OdePkg options structure that is created by
+%! # the command odeset.
 %!
 %! odepkg_structure_check (odeset);
 %!
-%! %----------------------------------------------------------------
-%! % Returns the checked OdePkg options structure created by odeset.
 %!demo
+%! # Create the OdePkg options structure A with odeset and check it 
+%! # with odepkg_structure_check. This actually is unnecessary
+%! # because odeset automtically calls odepkg_structure_check before
+%! # returning.
 %!
 %! A = odeset (); odepkg_structure_check (A);
-%!
-%! %----------------------------------------------------------------
-%! % Create the OdePkg options structure A with odeset and check it 
-%! % with odepkg_structure_check.
 
 %# Local Variables: ***
 %# mode: octave ***

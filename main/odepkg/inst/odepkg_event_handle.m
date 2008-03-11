@@ -17,7 +17,7 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{sol}] =} odepkg_event_handle (@var{@@fun}, @var{time}, @var{y}, @var{flag}, [@var{par1}, @var{par2}, @dots{}])
 %#
-%# Return the solution of the event function that is specified as the first input argument @var{@@fun} in form of a function handle. The second input argument @var{time} is of type double scalar and specifies the time of the event evaluation, the third input argument @var{y} is of type double column vector and specifies the solutions, the third input argument @var{flag} is of type string and can be of the form 
+%# Return the solution of the event function that is specified as the first input argument @var{@@fun} in form of a function handle. The second input argument @var{time} is of type double scalar and specifies the time of the event evaluation, the third input argument @var{y} either is of type double column vector (for ODEs and DAEs) and specifies the solutions or is of type cell array (for IDEs and DDEs) and specifies the derivatives or the history values, the third input argument @var{flag} is of type string and can be of the form 
 %# @table @option
 %# @item  @code{"init"}
 %# then initialize internal persistent variables of the function @command{odepkg_event_handle} and return an empty cell array of size 4,
@@ -58,89 +58,106 @@ function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
   %# a value for veveold
   if (strcmp (vflag, 'init'))
 
-    if (isempty (varargin))
-      [veveold, vterm, vdir] = feval (vevefun, vt, vy);
+    if (~iscell (vy))
+      vinpargs = {vevefun, vt, vy};
     else
-      [veveold, vterm, vdir] = feval (vevefun, vt, vy, varargin);
+      vinpargs = {vevefun, vt, vy{1}, vy{2}};
+      vy = vy{1}; %# Delete cell element 2
     end
+    if (nargin > 4)
+      vinpargs = {vinpargs{:}, varargin{:}};
+    end
+    [veveold, vterm, vdir] = feval (vinpargs{:});
 
-    %# My first implementation was to return row vectors from the event
-    %# functions but this is faulty if we use LabMat events. So this has
-    %# changed 20060928 and by now these return vectors must be column
-    %# vectors. The not so nice implementation then is:
+    %# We assume that all return values must be column vectors
     veveold = veveold(:)'; vterm = vterm(:)'; vdir = vdir(:)';
-
-    vtold = vt; %# veveold has been set in the code lines before
-    for vcnt = 1:4, vretcell{vcnt} = []; end
-    vyold = vy; vevecnt = 1;
+    vtold = vt; vyold = vy; vevecnt = 1; vretcell = cell (1,4);
 
   %# Process the event, find the zero crossings either for a rising
   %# or for a falling edge
   elseif (isempty (vflag))
 
-    %# Call the event function if an event function has been defined to
-    %# to get the value(s) veve
-    if (isempty (varargin))
-      [veve, vterm, vdir] = feval (vevefun, vt, vy);
+    if (~iscell (vy))
+      vinpargs = {vevefun, vt, vy};
     else
-      [veve, vterm, vdir] = feval (vevefun, vt, vy, varargin);
+      vinpargs = {vevefun, vt, vy{1}, vy{2}};
+      vy = vy{1}; %# Delete cell element 2
     end
+    if (nargin > 4)
+      vinpargs = {vinpargs{:}, varargin{:}};
+    end
+    [veve, vterm, vdir] = feval (vinpargs{:});
+
+    %# We assume that all return values must be column vectors
     veve = veve(:)'; vterm = vterm(:)'; vdir = vdir(:)';
 
-    %# Check if one or more signs of the event function results changed
+    %# Check if one or more signs of the event has changed
     vsignum = (sign (veveold) ~= sign (veve));
     if (any (vsignum))         %# One or more values have changed
       vindex = find (vsignum); %# Get the index of the changed values
 
-      if (any (vdir(vindex) == 0)) %# Rising or falling (both are possible)
+      if (any (vdir(vindex) == 0))
+        %# Rising or falling (both are possible)
         %# Don't change anything, keep the index
       elseif (any (vdir(vindex) == sign (veve(vindex))))
         %# Detected rising or falling, need a new index
         vindex = find (vdir == sign (veve));
       else
-        %# Found a zero crossing that will not be notified
+        %# Found a zero crossing but must not be notified
         vindex = [];
       end
 
-      %# We create a new output values if we found a valid index 
+      %# Create new output values if a valid index has been found
       if (~isempty (vindex))
         %# Change the persistent result cell array
         vretcell{1} = any (vterm(vindex));    %# Stop integration or not
-        vretcell{2}(vevecnt,1) = vindex(1,1); %# Take first event that occurs
+        vretcell{2}(vevecnt,1) = vindex(1,1); %# Take first event found
         %# Calculate the time stamp when the event function returned 0 and
         %# calculate new values for the integration results, we do both by
         %# a linear interpolation
         vtnew = vt - veve(1,vindex) * (vt - vtold) / (veve(1,vindex) - veveold(1,vindex));
-        vynew = (vy - (vt - vtnew) * (vy - vyold) / (vt - vtold));
+        vynew = (vy - (vt - vtnew) * (vy - vyold) / (vt - vtold))';
         vretcell{3}(vevecnt,1) = vtnew;
-        vretcell{4}(vevecnt,:) = vynew';
+        vretcell{4}(vevecnt,:) = vynew;
         vevecnt = vevecnt + 1;
-      end
+      end %# if (~isempty (vindex))
 
-    end %# Check if one or more signs ...
-    veveold = veve; vtold = vt;
-    vretval = vretcell; vyold = vy;
+    end %# Check for one or more signs ...
+    veveold = veve; vtold = vt; vretval = vretcell; vyold = vy;
 
-  %# Reset this event handling function
-  elseif (strcmp (vflag, 'done'))
+  elseif (strcmp (vflag, 'done')) %# Clear this event handling function
     clear ('veveold', 'vtold', 'vretcell', 'vyold', 'vevecnt');
-    for vcnt = 1:4, vretcell{vcnt} = []; end
+    vretcell = cell (1,4);
 
-  end %# if (strcmp (vflag, ...) == true)
+  end
 
-%!function [veve, vterm, vdir] = feve (vt, vy, varargin)
-%!  veve  = vy(1); %# Which event component should be tread
+%!function [veve, vterm, vdir] = feveode (vt, vy, varargin)
+%!  veve  = vy(1); %# Which event component should be treaded
 %!  vterm =     1; %# Terminate if an event is found
 %!  vdir  =    -1; %# In which direction, -1 for falling
-%!test 
-%!  odepkg_event_handle (@feve, 0.0, [0 1 2 3], 'init', 123, 456);
-%!test
-%!  A = odepkg_event_handle (@feve, 2.0, [0 0 3 2], '', 123, 456);
-%!  if ~(iscell (A) && isempty (A{1})), error; end
-%!  A = odepkg_event_handle (@feve, 3.0, [-1 0 3 2], '', 123, 456);
-%!  if ~(iscell (A) && A{1} == 1), error; end
-%!test
-%!  odepkg_event_handle (@feve, 4.0, [0 1 2 3], 'done', 123, 456);
+%!function [veve, vterm, vdir] = feveide (vt, vy, vyd, varargin)
+%!  veve  = vy(1); %# Which event component should be treaded
+%!  vterm =     1; %# Terminate if an event is found
+%!  vdir  =    -1; %# In which direction, -1 for falling
+%!
+%!test %# First call to initialize the odepkg_event_handle function
+%!  odepkg_event_handle (@feveode, 0.0, [0 1 2 3], 'init', 123, 456);
+%!test %# Two calls to find the event that may occur with ODE/DAE syntax
+%!  A = odepkg_event_handle (@feveode, 2.0, [ 0 0 3 2], '', 123, 456);
+%!  B = odepkg_event_handle (@feveode, 3.0, [-1 0 3 2], '', 123, 456);
+%!  assert (A{:}, {[], [], [], []});
+%!  assert (B{:}, {1, 1, 2, [0 0 3 2]});
+%!test %# Last call to cleanup the odepkg_event_handle function
+%!  odepkg_event_handle (@feveode, 4.0, [0 1 2 3], 'done', 123, 456);
+%!test %# First call to initialize the odepkg_event_handle function
+%!  odepkg_event_handle (@feveide, 0.0, {[0 1 2 3], [0 1 2 3]}, 'init', 123, 456);
+%!test %# Two calls to find the event that may occur with IDE/DDE syntax
+%!  A = odepkg_event_handle (@feveide, 2.0, {[0 0 3 2], [0 0 3 2]}, '', 123, 456);
+%!  B = odepkg_event_handle (@feveide, 3.0, {[-1 0 3 2], [0 0 3 2]}, '', 123, 456);
+%!  assert (A{:}, {[], [], [], []});
+%!  assert (B{:}, {1, 1, 2, [0 0 3 2]});
+%!test %# Last call to cleanup the odepkg_event_handle function
+%!  odepkg_event_handle (@feveide, 4.0, {[0 1 2 3], [0 1 2 3]}, 'done', 123, 456);
 
 %# Local Variables: ***
 %# mode: octave ***

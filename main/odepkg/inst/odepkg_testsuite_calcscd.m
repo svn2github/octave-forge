@@ -33,19 +33,19 @@ function vscd = odepkg_testsuite_calcscd (vsol, vref, vatol, vrtol)
   vscd = -log10 (norm (vrel, inf));
 
 %!demo
+%! # Displays the value for the mimum number of correct digits in 
+%! # the vector sol = [1, 2, 2.9] compared to the reference vector 
+%! # ref = [1, 2, 3].
 %!
 %! odepkg_testsuite_calcscd ([1, 2, 2.9], [1, 2, 3], NaN, NaN)
 %! 
-%! % ---------------------------------------------------------------------------
-%! % Displays the value for the mimum number of correct digits in the
-%! % vector sol = [1, 2, 2.9] compared to the reference vector ref = [1, 2, 3].
 %!demo
+%! # Displays the value for the mimum number of correct digits in
+%! # the vector sol = [1, 2, 2.9] compared to the reference vector
+%! # ref = [1, 2, 3].
 %!
-%! odepkg_testsuite_calcscd ([1 + 1e10, 2 + 1e10, 3 + 1e10], [1, 2, 3], NaN, NaN)
-%! 
-%! % ---------------------------------------------------------------------------
-%! % Displays the value for the mimum number of correct digits in the
-%! % vector sol = [1, 2, 2.9] compared to the reference vector ref = [1, 2, 3].
+%! odepkg_testsuite_calcscd ([1 + 1e10, 2 + 1e10, 3 + 1e10], ...
+%!                           [1, 2, 3], NaN, NaN)
 
 %!assert (odepkg_testsuite_calcscd ([1, 2, 3], [1, 2, 3], NaN, NaN), Inf);
 %!assert (odepkg_testsuite_calcscd ([1, 2, 3], [1, 2.1, 3], 1, 1), 1.5, 0.2);

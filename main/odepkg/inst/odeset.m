@@ -28,7 +28,7 @@
 %#
 %# If this function is called with two input argumnets @var{oldstruct} and @var{newstruct} of type structure array then overwrite all values in the fields from the structure @var{oldstruct} with new values of the fields from the structure @var{newstruct}. Empty values of @var{newstruct} will not overwrite values in @var{oldstruct}.
 %#
-%# For a detailed explanation about valid fields and field values in an OdePkg structure aaray have a look at the @file{odepkg.pdf}, Section 'ODE/DAE/IDE options' or run the command @command{doc odepkg} to open the tutorial.
+%# For a detailed explanation about valid fields and field values in an OdePkg structure aaray have a look at the @file{odepkg.pdf}, Section 'ODE/DAE/IDE/DDE options' or run the command @command{doc odepkg} to open the tutorial.
 %#
 %# Run examples with the command
 %# @example
@@ -37,32 +37,6 @@
 %# @end deftypefn
 %#
 %# @seealso{odepkg}
-
-%# The OdePkg options structure may contain the following fields and default values if calling @command{odeset}
-%#
-%# @itemize @var
-%# @item "RelTol" must be a positive scalar (default 1e-3)
-%# @item "AbsTol" must be a positive scalar (default 1e-6)
-%# @item "NormControl" must be "on" or "off" (default "off")
-%# @item "NonNegative" must be a vector of integers (default [])
-%# @item "OutputFcn" must be a function handle (default [])
-%# @item "OutputSel" must be a vector of integers (default [])
-%# @item "Refine" must be a positive integer (default 0)
-%# @item "Stats" must be "on" or "off" (default "off")
-%# @item "InitialStep" must be a positive scalar (default [])
-%# @item "MaxStep" must be a positive scalar (default [])
-%# @item "Events" must be a function handle (default [])
-%# @item "Jacobian" must be a function handle or a matrix (default [])
-%# @item "JPattern" must be a sparse matrix (default [])
-%# @item "Vectorized" must be "on" or "off" (default "off")
-%# @item "Mass" must be a function handle or a matrix (default [])
-%# @item "MStateDependence" must be "none", "weak" or "strong" (default "weak")
-%# @item "MvPattern" must be a sparse matrix (default [])
-%# @item "MassSingular" must be "yes", "no" or "maybe" (default "maybe")
-%# @item "InitialSlope" must be a vector (default [])
-%# @item "MaxOrder" must be an integer between 1 and 5 (default 5)
-%# @item "BDF" must be "on" or "off" (default "off")
-%# @end itemize
 
 function [vret] = odeset (varargin)
 
@@ -186,35 +160,22 @@ function [vret] = odeset (varargin)
 %!     odeoptD = odeset (odeoptC, odeoptB);
 
 %!demo
+%! # A new OdePkg options structure with default values is created.
 %!
 %! odeoptA = odeset ();
 %!
-%! %------------------------------------------------------------------
-%! % a new ode options structure has been created and saved in odeoptA
 %!demo
+%! # A new OdePkg options structure with manually set options 
+%! # "AbsTol" and "RelTol" is created.
 %!
 %! odeoptB = odeset ('AbsTol', 1e-2, 'RelTol', 1e-1);
 %!
-%! %-------------------------------------------------------------------
-%! % a new ode options structure with new Options "AbsTol" and "RelTol" 
-%! % has been created and saved in odeoptB
 %!demo
-%!
-%! odeoptB = odeset ('AbsTol', 1e-2, 'RelTol', 1e-1);
-%! odeoptC = odeset (odeoptB, 'NormControl', 'on');
-%!
-%! %-------------------------------------------------------------------
-%! % a new ode options structure from odeoptB has been created with new
-%! % Option "NormControl" and saved in odeoptC
-%!demo
+%! # A new OdePkg options structure from odeoptB is created with
+%! # a modified value for option "NormControl".
 %!
 %! odeoptB = odeset ('AbsTol', 1e-2, 'RelTol', 1e-1);
 %! odeoptC = odeset (odeoptB, 'NormControl', 'on');
-%! odeoptD = odeset (odeoptC, odeoptB);
-%!
-%! %-------------------------------------------------------------------
-%! % a new ode options structure from odeoptB has been created with new
-%! % Option "NormControl" and saved in odeoptC
 
 %# Local Variables: ***
 %# mode: octave ***

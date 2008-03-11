@@ -93,21 +93,19 @@ function [vret] = odeget (varargin)
 %!test odeget (odeset, {'RelTol', 'AbsTol'}, {10 20});
 
 %!demo
+%! # Return the manually changed value RelTol of the OdePkg options
+%! # strutcure A. If RelTol wouldn't have been changed then an
+%! # empty matrix value would have been returned.
 %!
 %! A = odeset ('RelTol', 1e-1, 'AbsTol', 1e-2);
 %! odeget (A, 'RelTol', [])
-%! %----------------------------------------------------------------
-%! % Returns the manually changed value RelTol of the odepkg options
-%! % strutcure A. If RelTol wouldn't have been changed then [] would
-%! % be returned.
 
 %!demo
+%! # Return the manually changed value of RelTol and the value 1e-4
+%! # for AbsTol of the OdePkg options structure A.
 %!
 %! A = odeset ('RelTol', 1e-1);
-%! odeget (A, {'RelTol', 'AbsTol'}, {1e-2 1e-4})
-%! %----------------------------------------------------------------
-%! % Returns the manually changed value of RelTol and the value 1e-4
-%! % for AbsTol of the odepkg options strutcure A.
+%! odeget (A, {'RelTol', 'AbsTol'}, {1e-2, 1e-4})
 
 %# Local Variables: ***
 %# mode: octave ***

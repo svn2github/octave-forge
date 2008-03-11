@@ -145,8 +145,8 @@ function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
 %!test %# Two calls to find the event that may occur with ODE/DAE syntax
 %!  A = odepkg_event_handle (@feveode, 2.0, [ 0 0 3 2], '', 123, 456);
 %!  B = odepkg_event_handle (@feveode, 3.0, [-1 0 3 2], '', 123, 456);
-%!  assert (A{:}, {[], [], [], []});
-%!  assert (B{:}, {1, 1, 2, [0 0 3 2]});
+%!  assert (A, {[], [], [], []});
+%!  assert (B{4}, [0 0 3 2]);
 %!test %# Last call to cleanup the odepkg_event_handle function
 %!  odepkg_event_handle (@feveode, 4.0, [0 1 2 3], 'done', 123, 456);
 %!test %# First call to initialize the odepkg_event_handle function
@@ -154,8 +154,8 @@ function [vretval] = odepkg_event_handle (vevefun, vt, vy, vflag, varargin)
 %!test %# Two calls to find the event that may occur with IDE/DDE syntax
 %!  A = odepkg_event_handle (@feveide, 2.0, {[0 0 3 2], [0 0 3 2]}, '', 123, 456);
 %!  B = odepkg_event_handle (@feveide, 3.0, {[-1 0 3 2], [0 0 3 2]}, '', 123, 456);
-%!  assert (A{:}, {[], [], [], []});
-%!  assert (B{:}, {1, 1, 2, [0 0 3 2]});
+%!  assert (A, {[], [], [], []});
+%!  assert (B{4}, [0 0 3 2]);
 %!test %# Last call to cleanup the odepkg_event_handle function
 %!  odepkg_event_handle (@feveide, 4.0, {[0 1 2 3], [0 1 2 3]}, 'done', 123, 456);
 

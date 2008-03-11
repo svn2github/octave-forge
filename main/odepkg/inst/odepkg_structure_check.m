@@ -186,8 +186,8 @@ function [vret] = odepkg_structure_check (varargin)
 
       case 'JPattern'
         if (isempty (vret.(vfld{vcntarg})) || ...
-            isvector (vret.(vfld{vcntarg}) || ...
-            ismatrix (vret.(vfld{vcntarg}))))
+            isvector (vret.(vfld{vcntarg})) || ...
+            ismatrix (vret.(vfld{vcntarg})))
         else
           error ('OdePkg:InvalidParameter', ...
             'Unknown parameter name "%s" or not valid parameter value', ...
@@ -225,8 +225,8 @@ function [vret] = odepkg_structure_check (varargin)
 
       case 'MvPattern'
         if (isempty (vret.(vfld{vcntarg})) || ...
-            isvector (vret.(vfld{vcntarg}) || ...
-            ismatrix (vret.(vfld{vcntarg}))))
+            isvector (vret.(vfld{vcntarg})) || ...
+            ismatrix (vret.(vfld{vcntarg})))
         else
           error ('OdePkg:InvalidParameter', ...
             'Unknown parameter name "%s" or not valid parameter value', ...
@@ -339,7 +339,7 @@ function [vret] = odepkg_structure_check (varargin)
 %!test  A = odeset ('JPattern', []);
 %!test  A = odeset ('JPattern', [1, 2, 4]);
 %!test  A = odeset ('JPattern', [1, 2; 3, 4]);
-%!error A = odeset ('JPattern', 12);
+%!test  A = odeset ('JPattern', 1);
 %!test  A = odeset ('Vectorized', 'on');
 %!test  A = odeset ('Vectorized', 'off');
 %!error A = odeset ('Vectorized', []);
@@ -357,7 +357,7 @@ function [vret] = odepkg_structure_check (varargin)
 %!test  A = odeset ('MvPattern', []);
 %!test  A = odeset ('MvPattern', [1, 2, 3 ]);
 %!test  A = odeset ('MvPattern', [1, 2; 3, 4]);
-%!error A = odeset ('MvPattern', 12);
+%!test  A = odeset ('MvPattern', 1);
 %!test  A = odeset ('MassSingular', 'yes');
 %!test  A = odeset ('MassSingular', 'no');
 %!test  A = odeset ('MassSingular', 'maybe');

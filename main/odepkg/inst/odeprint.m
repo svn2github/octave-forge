@@ -29,9 +29,12 @@
 %#
 %# This function is called by a OdePkg solver function if it was specified in an OdePkg options structure with the @command{odeset}. This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
 %#
-%# Run examples with the command
+%# For example, solve an anonymous implementation of the "Van der Pol" equation and print the results while solving
 %# @example
-%# demo odeprint
+%# fvdb = @@(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
+%# 
+%# vopt = odeset ('OutputFcn', @@odeprint, 'RelTol', 1e-6);
+%# vsol = ode45 (fvdb, [0 20], [2 0], vopt);
 %# @end example
 %# @end deftypefn
 %#
@@ -56,15 +59,6 @@ function [varargout] = odeprint (vt, vy, vflag, varargin)
     %# Cleanup could be done, but nothing to do in this function
 
   end
-
-%!demo
-%!
-%! A = odeset ('OutputFcn', @odeprint);
-%! [vx, vy] = ode78 (@odepkg_equations_secondorderlag, [0 1.5], [0 0], A);
-%!
-%! % ---------------------------------------------------------------------
-%! % The output of the integration is ploted with odeprint because the
-%! % OuputFcn property has been set with odeset.
 
 %# Local Variables: ***
 %# mode: octave ***

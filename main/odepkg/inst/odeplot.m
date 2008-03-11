@@ -29,9 +29,12 @@
 %#
 %# This function is called by a OdePkg solver function if it was specified in an OdePkg options structure with the @command{odeset}. This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
 %#
-%# Run examples with the command
+%# For example, solve an anonymous implementation of the "Van der Pol" equation and display the results while solving
 %# @example
-%# demo odeplot
+%# fvdb = @@(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
+%# 
+%# vopt = odeset ('OutputFcn', @@odeplot, 'RelTol', 1e-6);
+%# vsol = ode45 (fvdb, [0 20], [2 0], vopt);
 %# @end example
 %# @end deftypefn
 %#
@@ -64,23 +67,6 @@ function [varargout] = odeplot (vt, vy, vflag, varargin)
     clear ('vfigure', 'vtold', 'vyold', 'vcounter');
 
   end
-
-%!demo
-%!
-%! A = odeset ('MaxStep', 1.5/30, 'Refine', 3);
-%! ode45 (@odepkg_equations_secondorderlag, [0 1.5], [0 0], A);
-%!
-%! % ----------------------------------------------------------------
-%! % The output of the integration is ploted automatically with
-%! % odeplot because nargout == 0 when calling ode2f.
-%!demo
-%!
-%! A = odeset ('OutputFcn', @odeplot, 'Refine', 0);
-%! [vx, vy] = ode45 (@odepkg_equations_secondorderlag, [0 1.5], [0 0], A);
-%!
-%! % ---------------------------------------------------------------------------
-%! % The output of the integration is ploted with odeplot because the OuputFcn
-%! % property has been set with odeset.
 
 %# Local Variables: ***
 %# mode: octave ***

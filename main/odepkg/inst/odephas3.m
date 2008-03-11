@@ -29,9 +29,16 @@
 %#
 %# This function is called by a OdePkg solver function if it was specified in an OdePkg options structure with the @command{odeset}. This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
 %#
-%# Run examples with the command
+%# For example, solve the "Lorenz attractor" and display the results while solving in a 3D plane
 %# @example
-%# demo odephas3
+%# function vyd = florenz (vt, vx)
+%#   vyd = [10 * (vx(2) - vx(1));
+%#          vx(1) * (28 - vx(3));
+%#          vx(1) * vx(2) - 8/3 * vx(3)];
+%# endfunction
+%#
+%# vopt = odeset ('OutputFcn', @@odephas3); 
+%# vsol = ode23 (@@florenz, [0:0.01:7.5], [3 15 1], vopt);
 %# @end example
 %# @end deftypefn
 %#
@@ -63,16 +70,6 @@ function [varargout] = odephas3 (vt, vy, vflag)
     clear ('vfigure', 'vyold', 'vcounter');
 
   end
-
-%!demo
-%!
-%! A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1, 'OutputFcn', @odephas3); 
-%! [t,y] = ode78 (@odepkg_equations_lorenz, [0 25], [3 15 1], A);
-%!
-%! % --------------------------------------------------------------------------
-%! % The output of the integration is ploted with odephas3 because the OuputFcn
-%! % property has been set with odeset. The figure shows the state x1 as a 
-%! % function of the state x2 from the Van der Pol implementation.
 
 %# Local Variables: ***
 %# mode: octave ***

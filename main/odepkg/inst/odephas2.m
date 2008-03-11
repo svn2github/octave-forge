@@ -29,9 +29,12 @@
 %#
 %# This function is called by a OdePkg solver function if it was specified in an OdePkg options structure with the @command{odeset}. This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
 %#
-%# Run examples with the command
+%# For example, solve an anonymous implementation of the "Van der Pol" equation and display the results while solving in a 2D plane
 %# @example
-%# demo odephas2
+%# fvdb = @@(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
+%# 
+%# vopt = odeset ('OutputFcn', @@odephas2, 'RelTol', 1e-6);
+%# vsol = ode45 (fvdb, [0 20], [2 0], vopt);
 %# @end example
 %# @end deftypefn
 %#
@@ -61,25 +64,6 @@ function [varargout] = odephas2 (vt, vy, vflag)
     clear ('vfigure', 'vyold', 'vcounter');
 
   end
-
-%!demo
-%!
-%! A = odeset ('OutputFcn', @odephas2, 'RelTol', 1e-3);
-%! [vx, vy] = ode54 (@odepkg_equations_vanderpol, [0 20], [2 0], A);
-%!
-%! % --------------------------------------------------------------------------
-%! % The output of the integration is ploted with odephas2 because the OuputFcn
-%! % property has been set with odeset. The figure shows the state x1 as a 
-%! % function of the state x2 from the Van der Pol implementation.
-%!demo
-%!
-%! A = odeset ('OutputFcn', @odephas2, 'RelTol', 1e-7);
-%! [vx, vy] = ode45 (@odepkg_equations_secondorderlag, [0 1.5], [0 0], A);
-%!
-%! % --------------------------------------------------------------------------
-%! % The output of the integration is ploted with odephas2 because the OuputFcn
-%! % property has been set with odeset. The figure shows the state x1 as a 
-%! % function of the state x2 from the second order lag implementation.
 
 %# Local Variables: ***
 %# mode: octave ***

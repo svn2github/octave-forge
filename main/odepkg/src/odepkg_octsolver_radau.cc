@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2007, Thomas Treichl <treichl@users.sourceforge.net>
+Copyright (C) 2007-2008, Thomas Treichl <treichl@users.sourceforge.net>
 OdePkg - Package for solving ordinary differential equations with this software
 
 This program is free software; you can redistribute it and/or modify
@@ -319,7 +319,6 @@ ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
     // Fourth input argument != OdePkg option, need a default structure
     if (!args(3).is_map ()) {
       octave_value_list tmp = feval ("odeset", tmp, 1);
-//      tmp = feval ("odepkg_structure_check", tmp, 1);
       vodeopt = tmp(0).map_value ();       // Create a default structure
       for (octave_idx_type vcnt = 3; vcnt < nargin; vcnt++)
         vradauextarg(vcnt-3) = args(vcnt); // Save arguments in vradauextarg
@@ -330,6 +329,7 @@ ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
       octave_value_list varin;
       varin(0) = args(3); varin(1) = "ode2r";
       octave_value_list tmp = feval ("odepkg_structure_check", varin, 1);
+      if (error_state) return (vretval);
       vodeopt = tmp(0).map_value ();       // Create structure from args(4)
       for (octave_idx_type vcnt = 4; vcnt < nargin; vcnt++)
         vradauextarg(vcnt-4) = args(vcnt); // Save extra arguments
@@ -340,6 +340,7 @@ ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
       octave_value_list varin;
       varin(0) = args(3); varin(1) = "ode2r"; // Check structure
       octave_value_list tmp = feval ("odepkg_structure_check", varin, 1);
+      if (error_state) return (vretval);
       vodeopt = tmp(0).map_value (); // Create a default structure
     }
 
@@ -594,13 +595,9 @@ ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 	     WORK, LWORK, IWORK, LIWORK, RPAR,
 	     IPAR, IDID));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) 
-      ("Unrecoverable error in \"radau\" core solver function");
-
   if (IDID < 0) {
     // odepkg_auxiliary_mebdfanalysis (IDID);
-    error_with_id ("hugh:hugh", "error after solving");
+    error_with_id ("hugh:hugh", "missing implementation");
     vretval(0) = 0.0;
     return (vretval);
   }
@@ -681,148 +678,167 @@ ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 }
 
 /*
-%!function vdy = flor (t, y, varargin)
-%!  vdy = [10 * (y(2) - y(1));
-%!         y(1) * (28 - y(3));
-%!         y(1) * y(2) - 8/3 * y(3)];
-%!function vjc = fljc (t, y, varargin)
-%!  vjc(1,:) = [10, -10, 0];
-%!  vjc(2,:) = [28 - y(3), 0, -y(1)];
-%!  vjc(3,:) = [y(2), y(1), -8/3];
-%!function vdy = frob (vt, vy, varargin)
-%!  vdy(1,1) = -0.04 * vy(1) + 1e4 * vy(2) * vy(3);
-%!  vdy(2,1) =  0.04 * vy(1) - 1e4 * vy(2) * vy(3) - 3e7 * vy(2)^2;
-%!  vdy(3,1) =  vy(1) + vy(2) + vy(3) - 1;
-%!function vjc = fjac (vt, vy, varargin)
-%!  vjc(1,:) = [-0.04, 1e4 * vy(3), 1e4 * vy(2)];
-%!  vjc(2,:) = [ 0.04, - 1e4 * vy(3) - 6e7 * vy(2), - 1e4 * vy(2)];
-%!  vjc(3,:) = [ 1, 1, 1];
-%!function vmas = fmas (vt, vy, varargin)
-%!  vmas =  [1, 0, 0; 0, 1, 0; 0, 0, 0];
-%!function vdy = fbal (vt, vy, varargin)
-%!  vdy(1,1) = vy(2) + 3;
-%!  vdy(2,1) =     -9.81; %# m/s^2
-%!function [veve, vterm, vdir] = feve (vt, vy, varargin)
-%!  veve  = vy(1); %# The event component that should be treaded
-%!  vterm =     1; %# Terminate solving if an event is found, 1
-%!  vdir  =    -1; %# Direction at zero-crossing, -1 for falling
+%! # We are using the "Van der Pol" implementation for all tests that
+%! # are done for this function. We also define a Jacobian, Events,
+%! # pseudo-Mass implementation. For further tests we also define a
+%! # reference solution (computed at high accuracy) and an OutputFcn
+%!function [ydot] = fpol (vt, vy, varargin) %# The Van der Pol
+%!  ydot = [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
+%!function [vjac] = fjac (vt, vy, varargin) %# its Jacobian
+%!  vjac = [0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2];
+%!function [vjac] = fjcc (vt, vy, varargin) %# sparse type
+%!  vjac = [0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2];
+%!function [vval, vtrm, vdir] = feve (vt, vy, varargin)
+%!  vval = fpol (vt, vy, varargin); %# We use the derivatives
+%!  vtrm = zeros (2,1);             %# that's why component 2
+%!  vdir = ones (2,1);              %# seems to not be exact
+%!function [vval, vtrm, vdir] = fevn (vt, vy, varargin)
+%!  vval = fpol (vt, vy, varargin); %# We use the derivatives
+%!  vtrm = ones (2,1);              %# that's why component 2
+%!  vdir = ones (2,1);              %# seems to not be exact
+%!function [vmas] = fmas (vt, vy)
+%!  vmas =  [1, 0; 0, 1];     %# Dummy mass matrix for tests
+%!function [vmas] = fmsa (vt, vy)
+%!  vmas = sparse ([1, 0; 0, 1]); %# A sparse dummy matrix
+%!function [vref] = fref ()   %# The computed reference solut
+%!  vref = [0.32331666704577, -1.83297456798624];
+%!function [vout] = fout (vt, vy, vflag, varargin)
+%!  if (regexp (char (vflag), 'init') == 1)
+%!    if (size (vt) != [2, 1] && size (vt) != [1, 2])
+%!      error ('"fout" step "init"');
+%!    end
+%!  elseif (isempty (vflag))
+%!    if (size (vt) ~= [1, 1]) error ('"fout" step "calc"'); end
+%!    vout = false;
+%!  elseif (regexp (char (vflag), 'done') == 1)
+%!    if (size (vt) ~= [1, 1]) error ('"fout" step "done"'); end
+%!  else error ('"fout" invalid vflag');
+%!  end
 %!
-%!error
-%!  warning ("off", "OdePkg:InvalidOption");
+%! %# Turn off output of warning messages for all tests, turn them on
+%! %# again if the last test is called
+%!error %# input argument number one
+%!  warning ('off', 'OdePkg:InvalidOption');
 %!  B = ode2r (1, [0 25], [3 15 1]);
-%!error
-%!  B = ode2r (@flor, 1, [3 15 1]);
-%!error
+%!error %# input argument number two
+%!  B = ode2r (@fpol, 1, [3 15 1]);
+%!error %# input argument number three
 %!  B = ode2r (@flor, [0 25], 1);
-%!test
-%!  B = ode2r (@flor, [0 0.2], [3 15 1]);
-%!  assert (B.x(end), 0.2, 1e-12);
-%!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%!test
-%!  A = odeset ();
-%!  [t, y] = ode2r (@flor, [0 0.2], [3 15 1], A);
-%!  assert (t(end), 0.2, 1e-12);
-%!  assert (y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%!test
-%!  [t, y] = ode2r (@flor, [0 0.2], [3 15 1], 12, 13, 'KL');
-%!  assert (t(end), 0.2, 1e-12);
-%!  assert (y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%!test
-%!  A = odeset ();
-%!  [t, y] = ode2r (@flor, [0 0.2], [3 15 1], A, 12, 13, 'KL');
-%!  assert (t(end), 0.2, 1e-12);
-%!  assert (y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%!error
-%!  A = odeset ('AbsTol', 1e-7, 'RelTol', [1e-7, 1e-7, 1e-7]);
-%!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
-%!test
-%!  A = odeset ('AbsTol', [1e-7, 1e-7, 1e-7], 'RelTol', [1e-7, 1e-7, 1e-7]);
-%!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
-%!  assert (B.x(end), 0.2, 1e-12);
-%!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%!test ## These options are ignored by this solver
-%!  A = odeset ('NormControl', 'on', 'NonNegative', [12 34 56]);
-%!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
-%!  assert (B.x(end), 0.2, 1e-12);
-%!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%+!test
-%+!  A = odeset ('OutputFcn', @odeplot, 'OutputSel', [1 2], 'Refine', 5);
-%+!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
-%+!  assert (B.x(end), 0.2, 1e-12);
-%+!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%+!  assert (B.y(end,:), [17.536442, -0.160655], 1e-3);
-%!test
-%!  A = odeset ('Stats', 'on');
-%!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
-%!  assert (B.x(end), 0.2, 1e-12);
-%!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%!test
-%!  A = odeset ('InitialStep', 1e-10, 'MaxStep', 1e-4);
-%!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
-%!  assert (B.x(end), 0.2, 1e-12);
-%!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-3);
-%!test
-%!  A = odeset ('Events', @feve, 'AbsTol', 1e-10, 'OutputFcn', @odeplot);
-%!  B = ode2r (@fbal, [0 3], [1 3], A);
-%!  assert (B.ie, 1, 0);
-%!  assert (B.xe, B.x(end), 0);
-%!  assert (B.ye, B.y(end,:), 0);
-%!test
-%!  A = odeset ('Events', @feve, 'AbsTol', 1e-10);
-%!  B = ode2r (@fbal, [0 3], [1 3], A, 12, 13, 'KL');
-%!  assert (B.ie, 1, 0);
-%!  assert (B.xe, B.x(end), 0);
-%!  assert (B.ye, B.y(end,:), 0);
-%!test
-%!  A = odeset ('Events', @feve, 'AbsTol', 1e-10);
-%!  [t, y, xe, ye, ie] = ode2r (@fbal, [0 3], [1 3], A);
-%!  assert (ie, 1, 0);
-%!  assert (xe, t(end), 0);
-%!  assert (ye, y(end,:), 0);
-%!test
-%!  A = odeset ('Events', @feve, 'AbsTol', 1e-10);
-%!  [t, y, xe, ye, ie] = ode2r (@fbal, [0 3], [1 3], A, 12, 13, 'KL');
-%!  assert (ie, 1, 0);
-%!  assert (xe, t(end), 0);
-%!  assert (ye, y(end,:), 0);
-%!test
-%!  A = odeset ('Stats', 'on');
-%!  B = ode2r (@flor, [0 0.2], [3 15 1], A);
-%!  assert (B.x(end), 0.2, 1e-12);
-%!  assert (B.y(end,:), [17.536442, -0.160655, 52.696175], 1e-2);
-%+!function vdy = fvdp (t, y, varargin)
-%+!  vdy = [y(2);
-%+!         ((1-y(1)^2)*y(2)-y(1))/1e-6];
-%+!  endfunction
-%+!function vdy = fvdj (t, y, varargin)
-%+!  vdy = [0, 1;
-%+!         (-2*y(1)*y(2)-1)/1e-6, (1-y(1)^2)/1e-6];
-%+!  endfunction
-%+!test
-%+!  A = odeset ('Stats', 'on', 'RelTol', 1e-8, 
-%+!    'AbsTol', 1e-10, 'InitialStep', 1e-6);
-%+!  B = ode2r (@fvdp, [0 2], [2 0], A);
-%+!  B.stats
-%+!test
-%+!  C = odeset ('Jacobian', @fvdj, 'Stats', 'on', 'RelTol', 1e-8,
-%+!    'AbsTol', 1e-10, 'InitialStep', 1e-6);
-%+!  D = ode2r (@fvdp, [0 2], [2 0], C);
-%+!  D.stats
-%!test
-%!  A = odeset ('Mass', @fmas, 'AbsTol', 1e-6);
-%!  B = ode2r (@frob, [0 1e9], [1, 0, 0], A);
-%!  assert (B.x(end), 1e9, 1e-10);
-%!  assert (B.y(end,:), [0.20833e-7, 0.83333e-13, 0.99999e0], 1e-3);
-%!test
-%!  A = odeset ('Mass', [1, 0, 0; 0, 1, 0; 0, 0, 0]);
-%!  B = ode2r (@frob, [0 1e9], [1, 0, 0], A);
-%!  assert (B.x(end), 1e9, 1e-10);
-%!  assert (B.y(end,:), [0.20833e-7, 0.83333e-13, 0.99999e0], 1e-3);
-%!test
-%!  A = odeset ('Mass', [1, 0, 0; 0, 1, 0; 0, 0, 0], 'Jacobian', @fjac);
-%!  B = ode2r (@frob, [0 1e11], [1, 0, 0], A);
-%!  assert (B.x(end), 1e11, 1e-10);
-%!  assert (B.y(end,:), [0.20833e-7, 0.83333e-13, 0.99999e0], 1e-3);
+%!test %# one output argument
+%!  vsol = ode2r (@fpol, [0 2], [2 0]);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!  assert (isfield (vsol, 'solver'));
+%!  assert (vsol.solver, 'ode2r');
+%!test %# two output arguments
+%!  [vt, vy] = ode2r (@fpol, [0 2], [2 0]);
+%!  assert ([vt(end), vy(end,:)], [2, fref], 1e-3);
+%!test %# five output arguments and no Events
+%!  [vt, vy, vxe, vye, vie] = ode2r (@fpol, [0 2], [2 0]);
+%!  assert ([vt(end), vy(end,:)], [2, fref], 1e-3);
+%!  assert ([vie, vxe, vye], []);
+%!test %# anonymous function instead of real function
+%!  fvdb = @(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
+%!  vsol = ode2r (@fpol, [0 2], [2 0]);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# extra input arguments passed trhough
+%!  vsol = ode2r (@fpol, [0 2], [2 0], 12, 13, 'KL');
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# empty OdePkg structure *but* extra input arguments
+%!  vopt = odeset;
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt, 12, 13, 'KL');
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!error %# strange OdePkg structure
+%!  vopt = struct ('foo', 1);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!test %# AbsTol option
+%!  vopt = odeset ('AbsTol', 1e-5);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# AbsTol and RelTol option
+%!  vopt = odeset ('AbsTol', 1e-8, 'RelTol', 1e-8);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# RelTol and NormControl option -- higher accuracy
+%!  vopt = odeset ('RelTol', 1e-8, 'NormControl', 'on');
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-6);
+%!test %# Keeps initial values while integrating
+%!  vopt = odeset ('NonNegative', 2);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-6);
+%!test %# Details of OutputSel and Refine can't be tested
+%!  vopt = odeset ('OutputFcn', @fout, 'OutputSel', 1, 'Refine', 5);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!test %# Stats must add further elements in vsol
+%!  vopt = odeset ('Stats', 'on');
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert (isfield (vsol, 'stats'));
+%!  assert (isfield (vsol.stats, 'nsteps'));
+%!test %# InitialStep option
+%!  vopt = odeset ('InitialStep', 1e-8);
+%!  vsol = ode2r (@fpol, [0 0.2], [2 0], vopt);
+%!  assert ([vsol.x(2)-vsol.x(1)], [1e-8], 1e-9);
+%!test %# MaxStep option
+%!  vopt = odeset ('MaxStep', 1e-2);
+%!  vsol = ode2r (@fpol, [0 0.2], [2 0], vopt);
+%!  assert ([vsol.x(5)-vsol.x(4)], [1e-2], 1e-2);
+%!test %# Events option add further elements in vsol
+%!  vopt = odeset ('Events', @feve);
+%!  vsol = ode2r (@fpol, [0 10], [2 0], vopt);
+%!  assert (isfield (vsol, 'ie'));
+%!  assert (vsol.ie(1), 2);
+%!  assert (isfield (vsol, 'xe'));
+%!  assert (isfield (vsol, 'ye'));
+%!test %# Events option, now stop integration
+%!  warning ('off', 'OdePkg:HideWarning');
+%!  vopt = odeset ('Events', @fevn, 'NormControl', 'on');
+%!  vsol = ode2r (@fpol, [0 10], [2 0], vopt);
+%!  assert ([vsol.ie, vsol.xe, vsol.ye], ...
+%!    [2.0, 2.496110, -0.830550, -2.677589], 1e-1);
+%!test %# Events option, five output arguments
+%!  vopt = odeset ('Events', @fevn, 'NormControl', 'on');
+%!  [vt, vy, vxe, vye, vie] = ode2r (@fpol, [0 10], [2 0], vopt);
+%!  assert ([vie, vxe, vye], ...
+%!    [2.0, 2.496110, -0.830550, -2.677589], 1e-1);
+%!  warning ('on', 'OdePkg:HideWarning');
+%!test %# Jacobian option
+%!  vopt = odeset ('Jacobian', @fjac);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Jacobian option and sparse return value
+%!  vopt = odeset ('Jacobian', @fjcc);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!
+%! %# test for JPattern option is missing
+%! %# test for Vectorized option is missing
+%!
+%!test %# Mass option as function
+%!  vopt = odeset ('Mass', @fmas);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Mass option as matrix
+%!  vopt = odeset ('Mass', eye (2,2));
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Mass option as sparse matrix
+%!  vopt = odeset ('Mass', sparse (eye (2,2)));
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Mass option as function and sparse matrix
+%!  vopt = odeset ('Mass', @fmsa);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Mass option as function and MStateDependence
+%!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  warning ('on', 'OdePkg:InvalidOption');
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!
+%! %# test for MvPattern option is missing
+%! %# test for InitialSlope option is missing
+%! %# test for MaxOrder option is missing
+%! %# test for BDF option is missing
 */
 
 /*

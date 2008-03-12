@@ -551,7 +551,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 %!error %# input argument number two
 %!  B = ode54 (@fpol, 1, [3 15 1]);
 %!error %# input argument number three
-%!  B = ode2r (@flor, [0 25], 1);
+%!  B = ode54 (@flor, [0 25], 1);
 %!test %# one output argument
 %!  vsol = ode54 (@fpol, [0 2], [2 0]);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);

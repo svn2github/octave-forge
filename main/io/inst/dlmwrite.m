@@ -1,10 +1,26 @@
-## -*- texinfo -*-
-## @deftypefn {Function File} {} dlmwrite(@var{file}, @var{A})
-## @deftypefnx {Function File} {} dmlwrite(@var{file}, @var{A}, @var{delim}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} dmlwrite(@var{file}, @var{A}, @code{"attrib1"}, @var{value1}, @code{"attrib2"}, @var{value2}, ...)
-## @deftypefnx {Function File} {} dmlwrite(@var{file}, @var{A}, @code{"-append"}, ...)
+## Copyright (C) 2002, 2008 Paul Kienzle
 ##
-## Write the matrix @var{A} to the text @var{file} using delimiters.
+## This program is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## This program is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {} dlmwrite (@var{file}, @var{a})
+## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, @var{delim}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, "attrib1", @var{value1}, "attrib2", @var{value2}, @dots{})
+## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, "-append", @dots{})
+##
+## Write the matrix @var{a} to the text @var{file} using delimiters.
 ##
 ## @table @var
 ## @item delim
@@ -16,28 +32,28 @@
 ## @item c
 ## the number of delimiters to prepend to each line of data.
 ##
-## @item '-append'
+## @item "-append"
 ## append to the end of the @var{file}.
 ##
-## @item 'append', state
-## Either @samp{'on'} or @samp{'off'}.  See @samp{'-append'} above.
+## @item "append", state
+## Either @samp{"on"} or @samp{"off"}.  See @samp{"-append"} above.
 ##
-## @item 'delimiter', d
-## See @code{"delim"} above.
+## @item "delimiter", d
+## See @var{delim} above.
 ##
-## @item 'newline', os
+## @item "newline", os
 ## The character(s) to use to separate each row.  Three special cases
-## exist for this option.  @samp{'unix'} is changed into "\n", @samp{'pc'} is
-## changed into "\r\n", and @samp{'mac'} is changed into "\r".  Other
-## values for this option are kept as is.
+## exist for this option.  @samp{"unix"} is changed into '\n',
+## @samp{"pc"} is changed into '\r\n', and @samp{"mac"} is changed
+## into '\r'.  Other values for this option are kept as is.
 ##
-## @item 'roffset', r
+## @item "roffset", r
 ## See @var{r} above.
 ##
-## @item 'coffset', c
+## @item "coffset", c
 ## See @var{c} above.
 ##
-## @item 'precision', p
+## @item "precision", p
 ## The precision to use when writing the file.  It can either be a
 ## format string (as used by fprintf) or a number of significant digits.
 ## @end table
@@ -47,20 +63,16 @@
 ## dlmwrite(@code{"file.csv"}, @var{A})
 ## @end example
 ##
-## Note the extra escaping of the backslashes necessary in using the
-## latex delimiter of "\\" with a unix style newline.
-##
 ## @example
-## dlmwrite(@code{"file.tex"}, @var{A}, @code{"delimiter"}, @code{"&"}, @code{"newline"}, @code{"\\\\\n"})
+## dlmwrite (@code{"file.tex"}, @var{a}, "delimiter", "&", "newline", "\\n")
 ## @end example
 ##
-## TODO: proper handling of complex data
-## @seealso{dlmread, csvread, csvwrite, csv2cell, cell2csv}
+## @seealso{dlmread, csvread, csvwrite}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 ## 
-## This program is granted to the public domain
+## This program was originally granted to the public domain
 ## 
 ## 2002-03-08 Paul Kienzle <pkienzle@users.sf.net>
 ## * Initial revision
@@ -68,9 +80,10 @@
 ## * Significant modifications of the input arguements for additional
 ## functionality.
 
-function dlmwrite (file, A, varargin)
-  if (nargin < 2 || !ischar(file))
-    usage("dlmwrite(file, A, delim, r, c)");
+function dlmwrite (file, a, varargin)
+
+  if (nargin < 2 || ! ischar (file))
+    ptint_usage ();
   endif
 
   ## set defaults
@@ -83,43 +96,43 @@ function dlmwrite (file, A, varargin)
 
   ## process the input arguements
   i = 0;
-  while (i < length(varargin))
+  while (i < length (varargin))
     i = i + 1;
-    if strcmpi(varargin{i}, "delimiter")
+    if (strcmpi (varargin{i}, "delimiter"))
       i = i + 1;
       delim = varargin{i};
-    elseif strcmpi(varargin{i}, "newline")
+    elseif (strcmpi (varargin{i}, "newline"))
       i = i + 1;
       newline = varargin{i};
-      if strcmpi(newline, "unix")
+      if (strcmpi (newline, "unix"))
 	newline = "\n";
-      elseif strcmpi(newline, "pc")
+      elseif (strcmpi (newline, "pc"))
 	newline = "\r\n";
-      elseif strcmpi(newline, "mac")
+      elseif (strcmpi (newline, "mac"))
 	newline = "\r";
       endif
-    elseif strcmpi(varargin{i}, "roffset")
+    elseif (strcmpi (varargin{i}, "roffset"))
       i = i + 1;
       r = varargin{i};
-    elseif strcmpi(varargin{i}, "coffset")
+    elseif (strcmpi (varargin{i}, "coffset"))
       i = i + 1;
       c = varargin{i};
-    elseif strcmpi(varargin{i}, "precision")
+    elseif (strcmpi (varargin{i}, "precision"))
       i = i + 1;
       precision = varargin{i};
-      if (~ strcmpi(class(precision), "char"))
-	precision = sprintf("%.%gg", precision);
+      if (! strcmpi (class (precision), "char"))
+	precision = sprintf ("%.%gg", precision);
       endif
-    elseif strcmpi(varargin{i}, "-append")
+    elseif (strcmpi (varargin{i}, "-append"))
       opentype = "at";
-    elseif strcmpi(varargin{i}, "append")
+    elseif (strcmpi (varargin{i}, "append"))
       i = i + 1;
-      if strcmpi(varargin{i}, "on")
+      if (strcmpi (varargin{i}, "on"))
 	opentype = "at";
-      elseif strcmpi(varargin{i}, "off")
+      elseif (strcmpi (varargin{i}, "off"))
 	opentype = "wt";
       else
-	error("dlmwrite: append must be \"on\" or \"off\".");
+	error ("dlmwrite: append must be \"on\" or \"off\".");
       endif
     else
       if (i == 1)
@@ -129,24 +142,41 @@ function dlmwrite (file, A, varargin)
       elseif (i == 3)
 	c = varargin{i};
       else
-	usage("dlmwrite(file, A, delim, r, c)");
+	print_usage();
       endif
     endif
   endwhile
 
-  [fid,msg] = fopen(file,opentype);
+  [fid, msg] = fopen (file, opentype);
   if (fid < 0)
-    error(msg);
+    error (msg);
   else
     if (r > 0)
-      fprintf(fid,"%s",repmat([repmat(delim,1,c+columns(A)-1),newline],1,r));
+      fprintf (fid, "%s",
+	       repmat ([repmat(delim, 1, c + columns(a)-1), newline], 1, r));
     endif
-    template = [ precision, repmat([delim,precision],1,columns(A)-1), newline ];
+    if (iscomplex (a))
+      cprecision = regexprep (precision, '^%([-\d.])','%+$1');
+      template = [precision, cprecision, "i", ...
+		  repmat([delim, precision, cprecision, "i"], 1, ...
+		  columns(a) - 1), newline ];
+    else
+      template = [precision, repmat([delim, precision], 1, columns(a)-1),...
+		  newline];
+    endif
     if (c > 0)
-      template = [ repmat(delim,1,c), template ];
+      template = [repmat(delim, 1, c), template];
     endif
-    fprintf(fid,template,A.');
-    fclose(fid);
+    if (iscomplex (a))
+      a = a.';
+      b = zeros (2*rows(a), columns (a));
+      b(1: 2 : end, :) = real (a);
+      b(2: 2 : end, :) = imag (a);
+      fprintf (fid, template, b);
+    else
+      fprintf (fid, template, a.');
+    endif
+    fclose (fid);
   endif
 endfunction
 

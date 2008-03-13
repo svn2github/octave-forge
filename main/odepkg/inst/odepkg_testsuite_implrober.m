@@ -33,7 +33,7 @@ function vret = odepkg_testsuite_implrober (vhandle, vrtol)
   if (nargin ~= 2)
     help  ('odepkg_testsuite_implrober');
     error ('OdePkg:InvalidArgument', ...
-	   'Number of input arguments must be exactly two');
+           'Number of input arguments must be exactly two');
   elseif (~isa (vhandle, 'function_handle') || ~isscalar (vrtol))
     print_usage;
   end

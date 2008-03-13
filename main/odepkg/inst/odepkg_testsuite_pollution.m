@@ -32,7 +32,7 @@ function vret = odepkg_testsuite_pollution (vhandle, vrtol)
   if (nargin ~= 2) %# Check number and types of all input arguments
     help  ('odepkg_testsuite_pollution');
     error ('OdePkg:InvalidArgument', ...
-	   'Number of input arguments must be exactly two');
+           'Number of input arguments must be exactly two');
   elseif (~isa (vhandle, 'function_handle') || ~isscalar (vrtol))
     print_usage;
   end

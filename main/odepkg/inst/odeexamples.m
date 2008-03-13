@@ -16,8 +16,8 @@
 %# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 %# -*- texinfo -*-
-%# @deftypefn {Function File} {[@var{}] =} odepkg_examples_dde (@var{})
-%# Open the differential equations examples menu and allow the user to select a submenu of ODE, DAE, IDE or DDE.
+%# @deftypefn {Function File} {[@var{}] =} odeexamples (@var{})
+%# Open the differential equations examples menu and allow the user to select a submenu of ODE, DAE, IDE or DDE examples.
 %# @end deftypefn
 
 function [] = odeexamples (varargin)
@@ -36,15 +36,15 @@ function [] = odeexamples (varargin)
     vfam = input ('Please choose a number from above or press <Enter> to return: ');
     switch (vfam)
       case 1
-	odepkg_examples_ode;
+        odepkg_examples_ode;
       case 2
-	odepkg_examples_dae;
+        odepkg_examples_dae;
       case 3
-	odepkg_examples_ide;
+        odepkg_examples_ide;
       case 4
-	odepkg_examples_dde;
+        odepkg_examples_dde;
       otherwise
-	%# have nothing to do
+        %# have nothing to do
     end
   end
 

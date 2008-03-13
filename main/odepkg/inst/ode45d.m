@@ -712,6 +712,8 @@ function [varargout] = ode45d (vfun, vslot, vinit, vlags, vhist, varargin)
 %! %# test for InitialSlope option is missing
 %! %# test for MaxOrder option is missing
 %! %# test for BDF option is missing
+%!
+%!  warning ('on', 'OdePkg:InvalidOption');
 
 %# Local Variables: ***
 %# mode: octave ***

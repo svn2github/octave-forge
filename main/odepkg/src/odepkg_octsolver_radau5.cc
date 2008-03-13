@@ -203,11 +203,11 @@ octave_idx_type odepkg_radau5_solfcn
       (vradau5evefun, vt, vy, vradau5extarg, 1);
     if (!vradau5evesol(0).cell_value ()(0).is_empty ())
       if (vradau5evesol(0).cell_value ()(0).int_value () == 1) {
-	ColumnVector vttmp = vradau5evesol(0).cell_value ()(2).column_vector_value ();
-	Matrix vrtmp = vradau5evesol(0).cell_value ()(3).matrix_value ();
-	vt = vttmp.extract (vttmp.length () - 1, vttmp.length () - 1);
-	vy = vrtmp.extract (vrtmp.rows () - 1, 0, vrtmp.rows () - 1, vrtmp.cols () - 1);
-	IRTRN = (vradau5evesol(0).cell_value ()(0).int_value () ? -1 : 0);
+        ColumnVector vttmp = vradau5evesol(0).cell_value ()(2).column_vector_value ();
+        Matrix vrtmp = vradau5evesol(0).cell_value ()(3).matrix_value ();
+        vt = vttmp.extract (vttmp.length () - 1, vttmp.length () - 1);
+        vy = vrtmp.extract (vrtmp.rows () - 1, 0, vrtmp.rows () - 1, vrtmp.cols () - 1);
+        IRTRN = (vradau5evesol(0).cell_value ()(0).int_value () ? -1 : 0);
       }
   }
 
@@ -222,18 +222,18 @@ octave_idx_type odepkg_radau5_solfcn
       ColumnVector B(N); double vtb = 0.0;
       for (octave_idx_type vcnt = 1; vcnt < vradau5refine.int_value (); vcnt++) {
 
-	// Calculate time stamps between XOLD and X and get the
-	// results at these time stamps
-	vtb = (X - XOLD) * vcnt / vradau5refine.int_value () + XOLD;
-	for (octave_idx_type vcou = 0; vcou < N; vcou++)
-	  B(vcou) = F77_FUNC (contr5, CONTR5) (vcou+1, vtb, CONT, LRC);
+        // Calculate time stamps between XOLD and X and get the
+        // results at these time stamps
+        vtb = (X - XOLD) * vcnt / vradau5refine.int_value () + XOLD;
+        for (octave_idx_type vcou = 0; vcou < N; vcou++)
+          B(vcou) = F77_FUNC (contr5, CONTR5) (vcou+1, vtb, CONT, LRC);
 
-	// Evaluate the 'OutputFcn' with the approximated values from
-	// the F77_FUNC before the output of the results is done
-	octave_value vyr = octave_value (B);
-	octave_value vtr = octave_value (vtb);
-	odepkg_auxiliary_evalplotfun
-	  (vradau5pltfun, vradau5outsel, vtr, vyr, vradau5extarg, 1);
+        // Evaluate the 'OutputFcn' with the approximated values from
+        // the F77_FUNC before the output of the results is done
+        octave_value vyr = octave_value (B);
+        octave_value vtr = octave_value (vtb);
+        odepkg_auxiliary_evalplotfun
+          (vradau5pltfun, vradau5outsel, vtr, vyr, vradau5extarg, 1);
       }
     }
     // Evaluate the 'OutputFcn' with the results from the solver, if
@@ -589,11 +589,11 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // We are calling the core solver and solve the set of ODEs or DAEs
   F77_XFCN (radau5, RADAU5, // Keep 5 arguments per line here
             (N, odepkg_radau5_usrfcn, X, Y,
-	     XEND, H, RTOL, ATOL, ITOL,
-	     odepkg_radau5_jacfcn, IJAC, MLJAC, MUJAC, odepkg_radau5_massfcn,
-	     IMAS, MLMAS, MUMAS, odepkg_radau5_solfcn, IOUT,
-	     WORK, LWORK, IWORK, LIWORK, RPAR,
-	     IPAR, IDID));
+             XEND, H, RTOL, ATOL, ITOL,
+             odepkg_radau5_jacfcn, IJAC, MLJAC, MUJAC, odepkg_radau5_massfcn,
+             IMAS, MLMAS, MUMAS, odepkg_radau5_solfcn, IOUT,
+             WORK, LWORK, IWORK, LIWORK, RPAR,
+             IPAR, IDID));
 
   if (IDID < 0) {
     // odepkg_auxiliary_mebdfanalysis (IDID);
@@ -687,7 +687,7 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!function [vjac] = fjac (vt, vy, varargin) %# its Jacobian
 %!  vjac = [0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2];
 %!function [vjac] = fjcc (vt, vy, varargin) %# sparse type
-%!  vjac = [0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2];
+%!  vjac = sparse ([0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2]);
 %!function [vval, vtrm, vdir] = feve (vt, vy, varargin)
 %!  vval = fpol (vt, vy, varargin); %# We use the derivatives
 %!  vtrm = zeros (2,1);             %# that's why component 2
@@ -738,7 +738,7 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!  assert ([vie, vxe, vye], []);
 %!test %# anonymous function instead of real function
 %!  fvdb = @(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
-%!  vsol = ode5r (@fpol, [0 2], [2 0]);
+%!  vsol = ode5r (fvdb, [0 2], [2 0]);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# extra input arguments passed trhough
 %!  vsol = ode5r (@fpol, [0 2], [2 0], 12, 13, 'KL');
@@ -832,13 +832,14 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!test %# Mass option as function and MStateDependence
 %!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
 %!  vsol = ode5r (@fpol, [0 2], [2 0], vopt);
-%!  warning ('on', 'OdePkg:InvalidOption');
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %! %# test for MvPattern option is missing
 %! %# test for InitialSlope option is missing
 %! %# test for MaxOrder option is missing
 %! %# test for BDF option is missing
+%!
+%!  warning ('on', 'OdePkg:InvalidOption');
 */
 
 /*

@@ -82,7 +82,8 @@ octave_value_list odepkg_auxiliary_evaleventfun
   octave_value_list varin;
   varin(0) = veve;
   varin(1) = vt;
-  varin(2) = vy;
+  varin(2) = vy; // vy.print_with_name (octave_stdout, "vy", true);
+
   for (octave_idx_type vcnt = 0; vcnt < vextarg.length (); vcnt++)
     varin(vcnt+4) = vextarg(vcnt);
 
@@ -95,7 +96,6 @@ octave_value_list odepkg_auxiliary_evaleventfun
 
     case 1:
       varin(3) = "";
-      // varout = feval ("odepkg_event_handle", varin, 1);
       varout = feval ("odepkg_event_handle", varin, 1);
       break;
 
@@ -325,14 +325,14 @@ octave_value odepkg_auxiliary_evalmassode
     else if (vstate.string_value ().compare ("none") == 0) {
       varin(0) = vt;
       for (octave_idx_type vcnt = 0; vcnt < vextarg.length (); vcnt++)
-	varin(vcnt+1) = vextarg(vcnt);
+        varin(vcnt+1) = vextarg(vcnt);
     }
 
     else { // If "MStateDependence" is "weak" or "strong"
       varin(0) = vt; varin(1) = vy;
       // Fill up RHS arguments with extra arguments that are given
       for (octave_idx_type vcnt = 0; vcnt < vextarg.length (); vcnt++)
-	varin(vcnt+2) = vextarg(vcnt);
+        varin(vcnt+2) = vextarg(vcnt);
     }
 
     // Evaluate the Mass function and return results

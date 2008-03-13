@@ -8,3 +8,4 @@ autoload ("__grinit__", fullfile (fileparts (mfilename ("fullpath")), "__grcmd__
 autoload ("__grishold__", fullfile (fileparts (mfilename ("fullpath")), "__grcmd__.oct"));
 autoload ("__grnewset__", fullfile (fileparts (mfilename ("fullpath")), "__grcmd__.oct"));
 autoload ("__grsetgraph__", fullfile (fileparts (mfilename ("fullpath")), "__grcmd__.oct"));
+toggle_grace_use

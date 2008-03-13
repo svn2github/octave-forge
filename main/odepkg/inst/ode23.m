@@ -511,7 +511,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
 %!function [vjac] = fjac (vt, vy, varargin) %# its Jacobian
 %!  vjac = [0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2];
 %!function [vjac] = fjcc (vt, vy, varargin) %# sparse type
-%!  vjac = [0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2];
+%!  vjac = sparse ([0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2]);
 %!function [vval, vtrm, vdir] = feve (vt, vy, varargin)
 %!  vval = fpol (vt, vy, varargin); %# We use the derivatives
 %!  vtrm = zeros (2,1);             %# that's why component 2
@@ -521,7 +521,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
 %!  vtrm = ones (2,1);              %# that's why component 2
 %!  vdir = ones (2,1);              %# seems to not be exact
 %!function [vmas] = fmas (vt, vy)
-%!  vmas =  [1, 0; 0, 1];     %# Dummy mass matrix for tests
+%!  vmas = [1, 0; 0, 1];     %# Dummy mass matrix for tests
 %!function [vmas] = fmsa (vt, vy)
 %!  vmas = sparse ([1, 0; 0, 1]); %# A sparse dummy matrix
 %!function [vref] = fref ()   %# The computed reference solut
@@ -560,7 +560,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
 %!  assert ([vie, vxe, vye], []);
 %!test %# anonymous function instead of real function
 %!  fvdb = @(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
-%!  vsol = ode23 (@fpol, [0 2], [2 0]);
+%!  vsol = ode23 (fvdb, [0 2], [2 0]);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# extra input arguments passed trhough
 %!  vsol = ode23 (@fpol, [0 2], [2 0], 12, 13, 'KL');
@@ -654,13 +654,14 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
 %!test %# Mass option as function and MStateDependence
 %!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
 %!  vsol = ode23 (@fpol, [0 2], [2 0], vopt);
-%!  warning ('on', 'OdePkg:InvalidOption');
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %! %# test for MvPattern option is missing
 %! %# test for InitialSlope option is missing
 %! %# test for MaxOrder option is missing
 %! %# test for BDF option is missing
+%!
+%!  warning ('on', 'OdePkg:InvalidOption');
 
 %# Local Variables: ***
 %# mode: octave ***

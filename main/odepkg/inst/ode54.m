@@ -517,7 +517,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 %!function [vjac] = fjac (vt, vy, varargin) %# its Jacobian
 %!  vjac = [0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2];
 %!function [vjac] = fjcc (vt, vy, varargin) %# sparse type
-%!  vjac = [0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2];
+%!  vjac = sparse ([0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2]);
 %!function [vval, vtrm, vdir] = feve (vt, vy, varargin)
 %!  vval = fpol (vt, vy, varargin); %# We use the derivatives
 %!  vtrm = zeros (2,1);             %# that's why component 2
@@ -566,7 +566,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 %!  assert ([vie, vxe, vye], []);
 %!test %# anonymous function instead of real function
 %!  fvdb = @(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
-%!  vsol = ode54 (@fpol, [0 2], [2 0]);
+%!  vsol = ode54 (fvdb, [0 2], [2 0]);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# extra input arguments passed trhough
 %!  vsol = ode54 (@fpol, [0 2], [2 0], 12, 13, 'KL');
@@ -660,13 +660,14 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 %!test %# Mass option as function and MStateDependence
 %!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
 %!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
-%!  warning ('on', 'OdePkg:InvalidOption');
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %! %# test for MvPattern option is missing
 %! %# test for InitialSlope option is missing
 %! %# test for MaxOrder option is missing
 %! %# test for BDF option is missing
+%!
+%!  warning ('on', 'OdePkg:InvalidOption');
 
 %# Local Variables: ***
 %# mode: octave ***

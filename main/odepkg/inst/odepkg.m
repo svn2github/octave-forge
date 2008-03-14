@@ -61,11 +61,14 @@ function [] = odepkg_validate_ccfiles ()
   %# From command line in the 'src' directory do something like this: 
   %#   octave --quiet --eval "odepkg ('odepkg_validate_ccfiles')"
 
-  vfile = {'odepkg_octsolver_mebdfdae.cc', 'odepkg_octsolver_mebdfi.cc', ... %#'odepkg_octsolver_ddaskr.cc', ...
+  vfile = {'odepkg_octsolver_mebdfdae.cc', 'odepkg_octsolver_mebdfi.cc', ... 
+           'odepkg_octsolver_ddaskr.cc', ...
            'odepkg_octsolver_radau.cc', 'odepkg_octsolver_radau5.cc', ...
            'odepkg_octsolver_rodas.cc', 'odepkg_octsolver_seulex.cc'};
-  vsolv = {'odebda', 'odebdi', ...#'odekdi', ...
+  vsolv = {'odebda', 'odebdi', 'odekdi', ...
            'ode2r', 'ode5r', 'oders', 'odesx'};
+  %# vfile = {'odepkg_octsolver_ddaskr.cc'};
+  %# vsolv = {'odekdi'};
 
   for vcnt=1:length(vfile)
     printf ('Testing function %s ... ', vsolv{vcnt});
@@ -74,6 +77,9 @@ function [] = odepkg_validate_ccfiles ()
   end
 
 function [] = odepkg_internal_mhelpextract ()
+
+  %# In the inst directory do
+  %#   octave --quiet --eval "odepkg ('odepkg_internal_mhelpextract')"
 
   vfun = {'odepkg', 'odeget', 'odeset', ...
           'ode23', 'ode45', 'ode54', 'ode78', ...
@@ -117,6 +123,9 @@ function [] = odepkg_internal_mhelpextract ()
   fclose (vout);
 
 function [] = odepkg_internal_octhelpextract ()
+
+  %# In the src directory do
+  %#   octave --quiet --eval "odepkg ('odepkg_internal_octhelpextract')"
 
   vfiles = {'../src/odepkg_octsolver_mebdfdae.cc', ...
             '../src/odepkg_octsolver_mebdfi.cc', ...
@@ -204,28 +213,16 @@ function [] = odepkg_testsuite_write (vsol)
   end
   fprintf (1, ['-----------------------------------------------------------------------------------------\n']);
 
-function [] = demos ()
+function [] = odepkg_internal_demos ()
 
-%  test ('ode78', 'verbose'); clear ('all');
-%  test ('ode54', 'verbose'); clear ('all');
-%  test ('ode45', 'verbose'); clear ('all');
-%  test ('ode23', 'verbose'); clear ('all');
+  vfun = {'odepkg', 'odeget', 'odeset', ...
+          'ode23', 'ode45', 'ode54', 'ode78', ...
+          'ode23d', 'ode45d', 'ode54d', 'ode78d', ...
+          'odeplot', 'odephas2', 'odephas3', 'odeprint', ...
+          'odepkg_structure_check', 'odepkg_event_handle'};
+  vfun = sort (vfun);
 
-  demo ('odeget.m'); clear ('all');
-  demo ('odeset.m'); clear ('all');
-  demo ('odepkg_structure_check.m'); clear ('all');
-  demo ('odepkg_event_handle.m', 'verbose'); clear ('all');
-
-  demo('odeplot.m', 'verbose'); clear ('all');
-  demo('odephas2.m', 'verbose'); clear ('all');
-  demo('odephas3.m', 'verbose'); clear ('all');
-  demo('odeprint.m'); clear ('all');
-
-  demo ('odepkg_equations_lorenz'); clear ('all');
-  demo ('odepkg_equations_pendulous'); clear ('all');
-  demo ('odepkg_equations_roessler'); clear ('all');
-  demo ('odepkg_equations_secondorderlag'); clear ('all');
-  demo ('odepkg_equations_vanderpol'); clear ('all');
+  for vcnt = 1:length (vfun), demo (vfun{vcnt}); end
 
 %# Local Variables: ***
 %# mode: octave ***

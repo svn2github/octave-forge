@@ -29,7 +29,8 @@ function [] = odepkg_examples_ide ()
        '\n', ...
        '   (1) Solve the "Robertson problem" with solver "odebdi"\n', ...
        '   (2) Solve another "Robertson implementation" with solver "odekdi"\n', ...
-       '   (3) Solve an "Van der Pol" implementation with solver "odebdi"\n', ...
+       '   (3) Solve a stiff "Van der Pol" implementation with solver "odebdi"\n', ...
+       '   (4) Solve a stiff "Van der Pol" implementation with solver "odekdi"\n', ...
        '\n', ...
        '   Note: There are further IDE examples available with the OdePkg\n', ...
        '         testsuite functions.\n', ...
@@ -39,7 +40,7 @@ function [] = odepkg_examples_ide ()
        '   your patch to the OdePkg developer team.\n', ...
        '\n' ]);
     vode = input ('Please choose a number from above or press <Enter> to return: ');
-    clc; if (vode > 0 && vode < 4)
+    clc; if (vode > 0 && vode < 5)
       %# We can't use the function 'demo' directly here because it does
       %# not allow to run other functions within a demo.
       vexa = example (mfilename (), vode);
@@ -59,7 +60,7 @@ function [] = odepkg_examples_ide ()
 %! endfunction
 %!
 %! vopt = odeset ("NormControl", "on");
-%! vsol = odebdi (@firobertson, [0, 1e11], [1, 0, 0], [-4e-2, 4e-2, 0], vopt);
+%! vsol = odebdi (@firobertson, [0, 1e5], [1, 0, 0], [-4e-2, 4e-2, 0], vopt);
 %! plot (vsol.x, vsol.y);
 
 %!demo
@@ -73,7 +74,7 @@ function [] = odepkg_examples_ide ()
 %! endfunction
 %!
 %! vopt = odeset ("NormControl", "on");
-%! vsol = odekdi (@firobertson, [0, 1e11], [1, 0, 0], [-4e-2, 4e-2, 0], vopt);
+%! vsol = odekdi (@firobertson, [0, 1e5], [1, 0, 0], [-4e-2, 4e-2, 0], vopt);
 %! plot (vsol.x, vsol.y);
 
 %!demo
@@ -86,8 +87,21 @@ function [] = odepkg_examples_ide ()
 %!           mu * (1 - vy(1)^2) * vy(2) - vy(1) - vyd(2)];
 %! endfunction
 %!
-%! vopt = odeset ("NormControl", "on", "RelTol", 1e-8);
+%! vopt = odeset ("NormControl", "on", "RelTol", 1e-8, "MaxStep", 1e-2);
 %! vsol = odebdi (@fvanderpol, [0, 20], [2; 0], [0; -2], vopt, 10);
+%! plot (vsol.x, vsol.y);
+
+%!demo
+%! # Solve the "Van der Pol" problem that is given as a function
+%! # handle to an implicite differential equation implementation.
+%!
+%! function [vres] = fvanderpol (vt, vy, vyd, varargin)
+%!   mu = varargin{1};
+%!   vres = [vy(2) - vyd(1); 
+%!           mu * (1 - vy(1)^2) * vy(2) - vy(1) - vyd(2)];
+%! endfunction
+%!
+%! vsol = odekdi (@fvanderpol, [0, 1000], [2; 0], [0; -2], 500);
 %! plot (vsol.x, vsol.y);
 
 %# Local Variables: ***

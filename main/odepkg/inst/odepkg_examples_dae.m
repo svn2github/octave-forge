@@ -62,7 +62,7 @@ function [] = odepkg_examples_dae ()
 %! endfunction
 %!
 %! vopt = odeset ('Mass', @fmass, 'NormControl', 'on');
-%! vsol = ode2r (@frobertson, [0, 1e11], [1, 0, 0], vopt);
+%! vsol = ode2r (@frobertson, [0, 1e5], [1, 0, 0], vopt);
 %! plot (vsol.x, vsol.y);
 
 %!demo
@@ -77,7 +77,7 @@ function [] = odepkg_examples_dae ()
 %!
 %! vopt = odeset ('Mass', [1, 0, 0; 0, 1, 0; 0, 0, 0], ...
 %!                'NormControl', 'on');
-%! vsol = ode5r (@frobertson, [0, 1e11], [1, 0, 0], vopt);
+%! vsol = ode5r (@frobertson, [0, 1e5], [1, 0, 0], vopt);
 %! plot (vsol.x, vsol.y);
 
 %# Local Variables: ***

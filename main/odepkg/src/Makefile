@@ -15,15 +15,17 @@ else
   MKF77FILE = FFLAGS="-fno-automatic $(FFLAGS)" $(MKOCTFILE)
 endif
 
-EXTERNALDIRS  = hairer cash
+EXTERNALDIRS  = hairer cash daskr
 EXTERNALPACKS = $(patsubst %, %.tgz,  $(EXTERNALDIRS))
 EXTERNALDIFFS = $(patsubst %, %.diff, $(EXTERNALDIRS))
 
 SOLVERSOURCES = odepkg_octsolver_mebdfdae.cc odepkg_octsolver_mebdfi.cc \
+		odepkg_octsolver_ddaskr.cc \
 		odepkg_octsolver_radau.cc odepkg_octsolver_radau5.cc \
 		odepkg_octsolver_rodas.cc odepkg_octsolver_seulex.cc
 SOLVERDEPENDS = odepkg_auxiliary_functions.cc
 SOLVEREXTERNS = cash/mebdfdae.f cash/mebdfi.f \
+		daskr/ddaskr.f daskr/dlinpk.f \
 		hairer/decsol.f hairer/dc_decsol.f \
 		hairer/radau.f hairer/radau5.f hairer/rodas.f hairer/seulex.f
 SOLVEROBJECTS = $(patsubst %.cc, %.o, $(SOLVERSOURCES)) \
@@ -58,6 +60,7 @@ clean :
 
 distclean realclean : clean
 	@echo "Really Cleaning..."; \
-	$(RM) -rf configure config.status config.log autom4te.cache Makeconf
+	$(RM) -rf *.oct *~ configure config.status config.log \
+	  autom4te.cache octave-core Makeconf
 
 dist : all

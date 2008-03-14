@@ -35,7 +35,7 @@ into another language, under the same conditions as for modified versions.
 @titlepage
 @title OdePkg @value{VERSION}
 @subtitle A package for solving differential equations with GNU Octave
-@subtitle @b{OdePkg and this document currently are under development}
+@c @subtitle @b{OdePkg and this document currently are under development}
 @author by Thomas Treichl
 @page
 @vskip 0pt plus 1filll

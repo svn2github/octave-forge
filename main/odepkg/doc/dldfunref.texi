@@ -18,8 +18,8 @@ function y = odepkg_equations_lorenz (t, x)
        x(1) * x(2) - 8/3 * x(3)];
 endfunction
 
-vopt = odeset (\"InitialStep\", 1e-3, \"MaxStep\", 1e-1, \\
-               \"OutputFcn\", @@odephas3, \"Refine\", 5);
+vopt = odeset ("InitialStep", 1e-3, "MaxStep", 1e-1, \\
+               "OutputFcn", @@odephas3, "Refine", 5);
 odebda (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);
 @end example
 @end deftypefn
@@ -44,8 +44,8 @@ function res = odepkg_equations_ilorenz (t, y, yd)
          y(1) * y(2) - 8/3 * y(3) - yd(3)];
 endfunction
 
-vopt = odeset (\"InitialStep\", 1e-3, \"MaxStep\", 1e-1, \\
-               \"OutputFcn\", @@odephas3, \"Refine\", 5);
+vopt = odeset ("InitialStep", 1e-3, "MaxStep", 1e-1, \\
+               "OutputFcn", @@odephas3, "Refine", 5);
 odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\
         [120 81 42.333333], vopt);
 @end example
@@ -71,8 +71,8 @@ function res = odepkg_equations_ilorenz (t, y, yd)
          y(1) * y(2) - 8/3 * y(3) - yd(3)];
 endfunction
 
-vopt = odeset (\"InitialStep\", 1e-3, \"MaxStep\", 1e-1, \\
-               \"OutputFcn\", @@odephas3, \"Refine\", 5);
+vopt = odeset ("InitialStep", 1e-3, "MaxStep", 1e-1, \\
+               "OutputFcn", @@odephas3, "Refine", 5);
 odekdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\
         [120 81 42.333333], vopt);
 @end example
@@ -98,8 +98,8 @@ function y = odepkg_equations_lorenz (t, x)
        x(1) * x(2) - 8/3 * x(3)];
 endfunction
 
-vopt = odeset (\"InitialStep\", 1e-3, \"MaxStep\", 1e-1, \\
-               \"OutputFcn\", @@odephas3, \"Refine\", 5);
+vopt = odeset ("InitialStep", 1e-3, "MaxStep", 1e-1, \\
+               "OutputFcn", @@odephas3, "Refine", 5);
 ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);
 @end example
 @end deftypefn
@@ -124,8 +124,8 @@ function y = odepkg_equations_lorenz (t, x)
        x(1) * x(2) - 8/3 * x(3)];
 endfunction
 
-vopt = odeset (\"InitialStep\", 1e-3, \"MaxStep\", 1e-1, \\
-               \"OutputFcn\", @@odephas3, \"Refine\", 5);
+vopt = odeset ("InitialStep", 1e-3, "MaxStep", 1e-1, \\
+               "OutputFcn", @@odephas3, "Refine", 5);
 ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);
 @end example
 @end deftypefn
@@ -150,8 +150,8 @@ function y = odepkg_equations_lorenz (t, x)
        x(1) * x(2) - 8/3 * x(3)];
 endfunction
 
-vopt = odeset (\"InitialStep\", 1e-3, \"MaxStep\", 1e-1, \\
-               \"OutputFcn\", @@odephas3, \"Refine\", 5);
+vopt = odeset ("InitialStep", 1e-3, "MaxStep", 1e-1, \\
+               "OutputFcn", @@odephas3, "Refine", 5);
 oders (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);
 @end example
 @end deftypefn
@@ -176,8 +176,8 @@ function y = odepkg_equations_lorenz (t, x)
        x(1) * x(2) - 8/3 * x(3)];
 endfunction
 
-vopt = odeset (\"InitialStep\", 1e-3, \"MaxStep\", 1e-1, \\
-               \"OutputFcn\", @@odephas3, \"Refine\", 5);
+vopt = odeset ("InitialStep", 1e-3, "MaxStep", 1e-1, \\
+               "OutputFcn", @@odephas3, "Refine", 5);
 odesx (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);
 @end example
 @end deftypefn

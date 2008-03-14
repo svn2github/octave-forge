@@ -780,7 +780,7 @@ odesx (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!  vsol = odesx (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-6);
 %!test %# Details of OutputSel and Refine can't be tested
-%!  vopt = odeset ('OutputFcn', @fout, 'OutputSel', 1, 'Refine', 5);
+%!  vopt = odeset ('OutputFcn', @fout, 'OutputSel', 1);
 %!  vsol = odesx (@fpol, [0 2], [2 0], vopt);
 %!test %# Stats must add further elements in vsol
 %!  vopt = odeset ('Stats', 'on');

@@ -719,6 +719,7 @@ odebda (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 
   // Get the stats information as an Octave_map if the option 'Stats'
   // has been set with odeset
+  // "nsteps", "nfailed", "nfevals", "npds", "ndecomps", "nlinsols"
   octave_value_list vstatinput;
   vstatinput(0) = IWORK[4];
   vstatinput(1) = IWORK[5];
@@ -731,7 +732,6 @@ odebda (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
     vstatinfo = odepkg_auxiliary_makestats (vstatinput, false);
   else if (vstats.string_value () == "on" && (nargout != 1))
     vstatinfo = odepkg_auxiliary_makestats (vstatinput, true);
-
 
   // Set up output arguments that depends on how many output arguments
   // are desired by the caller

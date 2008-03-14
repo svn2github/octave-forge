@@ -627,6 +627,7 @@ ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   
   // Get the stats information as an Octave_map if the option 'Stats'
   // has been set with odeset
+  // "nsteps", "nfailed", "nfevals", "npds", "ndecomps", "nlinsols"
   octave_value_list vstatinput;
   vstatinput(0) = IWORK[16];
   vstatinput(1) = IWORK[17];

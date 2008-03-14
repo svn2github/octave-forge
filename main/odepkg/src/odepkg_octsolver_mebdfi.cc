@@ -1,6 +1,6 @@
 /*
-Copyright (C) 2007-208, Thomas Treichl <treichl@users.sourceforge.net>
-OdePkg - Package for solving ordinary differential equations with this software
+Copyright (C) 2007-2008, Thomas Treichl <treichl@users.sourceforge.net>
+OdePkg - A package for solving differential equations with GNU Octave
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -660,14 +660,14 @@ odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
 
   // Check if the user has set some of the options "OutputFcn", "Events"
   // etc. and initialize the plot, events and the solstore functions
-  octave_value vtim (T0); octave_value vsol (vY0); octave_value vysol (vYPRIME);
+  octave_value vtim (T0); octave_value vsol (vY0); octave_value vyds (vYPRIME);
   odepkg_auxiliary_solstore (vtim, vsol, voutsel, 0);
   if (!vplot.is_empty ()) odepkg_auxiliary_evalplotfun 
     (vplot, voutsel, args(1), args(2), vmebdfiextarg, 0);
 
   octave_value_list veveideargs;
-  veveideargs(0) = vsol;
-  veveideargs(1) = vysol;
+  veveideargs(0) = vsol; 
+  veveideargs(1) = vyds;
   Cell veveidearg (veveideargs);
   if (!vevents.is_empty ()) odepkg_auxiliary_evaleventfun 
     (vevents, vtim, veveidearg, vmebdfiextarg, 0);
@@ -721,11 +721,11 @@ odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
       for (octave_idx_type vcnt = 0; vcnt < N; vcnt++) {
         vcres(vcnt) = Y0[vcnt]; vydrs(vcnt) = YPRIME[vcnt]; 
       }
-      vsol = vcres; vysol = vydrs; vtim = TOUT;
+      vsol = vcres; vyds = vydrs; vtim = TOUT;
       if (!vevents.is_empty ()) {
         veveideargs(0) = vsol;
-        veveideargs(1) = vysol;
-        veveidearg = veveideargs;
+        veveideargs(1) = vyds;
+	veveidearg = veveideargs;
         veveres = odepkg_auxiliary_evaleventfun (vevents, vtim, veveidearg, vmebdfiextarg, 1);
         if (!veveres(0).cell_value ()(0).is_empty ())
           if (veveres(0).cell_value ()(0).int_value () == 1) {
@@ -772,11 +772,11 @@ odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
       for (octave_idx_type vcnt = 0; vcnt < N; vcnt++) {
         vcres(vcnt) = Y0[vcnt]; vydrs(vcnt) = YPRIME[vcnt];
       }
-      vsol = vcres; vysol = vydrs; vtim = TOUT;
+      vsol = vcres; vyds = vydrs; vtim = TOUT;
       if (!vevents.is_empty ()) {
         veveideargs(0) = vsol;
-        veveideargs(1) = vysol;
-        veveidearg = veveideargs;
+        veveideargs(1) = vyds;
+	veveidearg = veveideargs;
         veveres = odepkg_auxiliary_evaleventfun (vevents, vtim, veveidearg, vmebdfiextarg, 1);
         if (!veveres(0).cell_value ()(0).is_empty ())
           if (veveres(0).cell_value ()(0).int_value () == 1) {
@@ -806,9 +806,9 @@ odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
   for (octave_idx_type vcnt = 0; vcnt < N; vcnt++) {
     vcres(vcnt) = Y0[vcnt]; vydrs(vcnt) = YPRIME[vcnt];
   }
-  vsol = vcres; vysol = vydrs; vtim = TOUT;
+  vsol = vcres; vyds = vydrs; vtim = TOUT;
   veveideargs(0) = vsol;
-  veveideargs(1) = vysol;
+  veveideargs(1) = vyds;
   veveidearg = veveideargs;
   if (!vevents.is_empty ())
     odepkg_auxiliary_evaleventfun (vevents, vtim, veveidearg, vmebdfiextarg, 2);
@@ -889,13 +889,13 @@ odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
 %!  vjac = sparse ([0, 1; -1 - 2 * vy(1) * vy(2), 1 - vy(1)^2]);
 %!  vyjc = sparse ([-1, 0; 0, -1]);
 %!function [vval, vtrm, vdir] = feve (vt, vy, vyd, varargin)
-%!  vval = fpol (vt, vy, vyd, varargin); %# We use the derivatives
-%!  vtrm = zeros (2,1);                  %# that's why component 2
-%!  vdir = ones (2,1);                   %# seems to not be exact
+%!  vval = vyd;         %# We use the derivatives
+%!  vtrm = zeros (2,1); %# that's why component 2
+%!  vdir = ones (2,1);  %# seems to not be exact
 %!function [vval, vtrm, vdir] = fevn (vt, vy, vyd, varargin)
-%!  vval = fpol (vt, vy, vyd, varargin); %# We use the derivatives
-%!  vtrm = ones (2,1);                   %# that's why component 2
-%!  vdir = ones (2,1);                   %# seems to not be exact
+%!  vval = vyd;         %# We use the derivatives
+%!  vtrm = ones (2,1); %# that's why component 2
+%!  vdir = ones (2,1);  %# seems to not be exact
 %!function [vref] = fref () %# The computed reference solut
 %!  vref = [0.32331666704577, -1.83297456798624];
 %!function [vout] = fout (vt, vy, vflag, varargin)
@@ -992,12 +992,12 @@ odebdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
 %!  vopt = odeset ('Events', @fevn, 'MaxStep', 0.1);
 %!  vsol = odebdi (@fpol, [0, 10], [2; 0], [0; -2], vopt);
 %!  assert ([vsol.ie, vsol.xe, vsol.ye], ...
-%!    [1.0, 0.24755, 1.93183, -0.39740], 1e-1);
+%!    [2.0, 2.49537, -0.82867, -2.67469], 1e-1);
 %!test %# Events option, five output arguments
 %!  vopt = odeset ('Events', @fevn, 'MaxStep', 0.1);
 %!  [vt, vy, vxe, vye, vie] = odebdi (@fpol, [0, 10], [2; 0], [0; -2], vopt);
 %!  assert ([vie, vxe, vye], ...
-%!    [1.0, 0.24755, 1.93183, -0.39740], 1e-1);
+%!    [2.0, 2.49537, -0.82867, -2.67469], 1e-1);
 %!  warning ('on', 'OdePkg:HideWarning');
 %!test %# Jacobian option
 %!  vopt = odeset ('Jacobian', @fjac);

@@ -50,7 +50,7 @@ domd5/%:
 	md5=`cd $$dir; md5sum "$$file"`; \
 	echo "$$name $$ver $$md5" | sed -e "s|$$file|__PACKAGE__/$$file?download|" >> $(MD5FILE)
 
-md5bundle:
+md5bundle: mkbundle
 	@bundle=$(wildcard octave-forge-bundle-*.tar.gz); \
 	ver=`echo $$bundle | sed -e "s/.tar.gz$$//" | sed -e "s/^.*-//"`; \
 	name=`echo $$bundle | sed -e "s|^.*/||" | sed -e "s/^\(.*\)-.*.tar.gz$$/\1/"`; \

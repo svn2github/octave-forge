@@ -10,7 +10,7 @@ else
 	LISTEN=
 endif
 
-TARGETS=waitbar.oct $(LISTEN) xmlread.oct \
+TARGETS=waitbar.oct $(LISTEN) xmlread.oct  hex2num.cc \
 	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct
 
 all:	$(TARGETS)
@@ -64,6 +64,9 @@ csvconcat.oct: csvconcat.cc
 	$(MKOCTFILE) $(MISCDEFS) $<
 
 cell2csv.oct: cell2csv.cc
+	$(MKOCTFILE) $(MISCDEFS) $<
+
+hex2num.oct: hex2num.cc
 	$(MKOCTFILE) $(MISCDEFS) $<
 
 clean: ; -$(RM) *.o octave-core core *.oct *~ $(t2.1.58)

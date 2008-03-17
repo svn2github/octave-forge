@@ -6,7 +6,7 @@ Maintainer: Luca Favatella <slackydeb@gmail.com>
 Title: Genetic Algorithm and Direct Search
 Description: Genetic optimization code
 Categories: Optimization
-Depends: octave (>= 2.9.7), miscellaneous
+Depends: octave (>= 2.9.7), miscellaneous (>= 1.0.5)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

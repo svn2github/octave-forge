@@ -1,0 +1,12 @@
+ga >> Genetic Algorithm
+Genetic Algorithm
+ ga
+ gaoptimget
+ gaoptimset
+
+Utility
+ crossoverscattered
+ crossoversinglepoint
+ gacreationuniform
+ mutationsinglepoint
+ selectionroulette

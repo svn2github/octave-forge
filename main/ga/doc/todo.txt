@@ -1,0 +1,28 @@
+#####
+fare gacreationuniform come matlab, ma non fare generalizzazione in gaoptimset e get perché octave non sa passare handle di funzione a funzione caricata con handle
+
+ricontrollare
+#####
+
+#####
+gaoptimset:
+
+StallGenLimit?
+StallTimeLimit?
+TimeLimit?	//tic toc utile ma non nested
+
+NO	InitialPopulation?	//no, consentire solo intervallo
+NO	PopulationType?	//no, solo vettori di double
+NO	PlotFcns?	//no, plot non sono priorita'
+NO	PlotInterval?	//no, solo alla fine
+#####
+
+
+#####
+eventuale uscita con x,fval oltre che solo x?
+#####
+
+
+#####
+forse matlab fissa pure la frazione di crossover e mutazione, cioè non sceglie l'operatore con probabilità
+#####

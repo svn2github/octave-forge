@@ -1,3 +1,8 @@
+When transitioning to Octave 3.1
+================================
+* Remove the functions hex2num, num2hex, dlmread, dlmwrite, csvread, csvwrite
+* Remove dependency of ga on miscellaneous
+
 Packages
 ========
 * GPC package needs conversion to package manager
@@ -42,9 +47,6 @@ Specific functions
 ==================
 
 * Use newer version of QHull.
-
-* merge plot/dhbar with Octave's bar; add preference variable for 'filled';
-add control for bar width
 
 * Give ginput a "number of inputs" parameter.  Redefine gtext as an
 m-file which calls ginput(1) to get the text location.

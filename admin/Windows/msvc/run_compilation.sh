@@ -41,7 +41,7 @@ available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline 
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
-ImageMagick libtiff libwmf jasper"
+ImageMagick libtiff libwmf jasper GTK ATK"
 octave_version=
 of_version=
 do_nsi=false
@@ -75,6 +75,8 @@ imagickver=6.3.8
 tiffver=3.8.2
 wmfver=0.2.8.4
 jasperver=1.900.1
+gtkver=2.12.9
+atkver=1.22.0
 
 ###################################################################################
 
@@ -276,7 +278,14 @@ function post_process_libtool
       -e 's/^reload_flag=.*$/reload_flag=""/' \
       -e 's/^reload_cmds=.*$/reload_cmds="lib -OUT:\\$output\\$reload_objs"/' \
       -e 's/^old_archive_from_new_cmds=.*$/old_archive_from_new_cmds=""/' \
-      -e "s,^postinstall_cmds=.*$,postinstall_cmds='name=\`echo \\\\\$file | sed -e \"s/.*\\\\///\" -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`~implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`~\$install_prog \$dir/\$implibname \$destdir/\$name.lib~test -d \$destdir/../bin || mkdir -p \$destdir/../bin~mv -f \$destdir/\$dlname \$destdir/../bin'," "$ltfile" > ttt &&
+      -e '/testbindir=.*/ {a\
+case $host in\
+    *-*-mingw*)\
+    	dir=`cd "$dir" && pwd`\
+	;;\
+esac
+;}' \
+-e "s,^postinstall_cmds=.*$,postinstall_cmds='if echo \"\$destdir\" | grep -e \\\\\"/lib/\\\\\\\\?\$\\\\\" >\& /dev/null; then name=\`echo \\\\\$file | sed -e \"s/.*\\\\///\" -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`; implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`; \$install_prog \$dir/\$implibname \$destdir/\$name.lib; test -d \$destdir/../bin || mkdir -p \$destdir/../bin; mv -f \$destdir/\$dlname \$destdir/../bin; fi'," "$ltfile" > ttt &&
       mv ttt "$ltfile"
 }
 
@@ -491,6 +500,8 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/tiff.lib" libtiff
     todo_check "$tlibdir/wmf.lib" libwmf
     todo_check "$tlibdir/jasper.lib" jasper
+    todo_check "$tbindir/libatk-1.0-0.dll" ATK
+    todo_check "$tbindir/libgtk-win32-2.0-0.dll" GTK
   fi
 else
   packages="$todo_packages"
@@ -2997,5 +3008,79 @@ if $do_nsi; then
     if $do_nsiclean; then
       rm -f octave_main.nsi octave_forge*.nsi README.txt
     fi
+  fi
+fi
+
+#######
+# ATK #
+#######
+
+if check_package ATK; then
+  atkroot=`echo $atkver | sed -e 's/\.[0-9]\+$//'`
+  download_file atk-$atkver.tar.bz2 "ftp://ftp.gnome.org/pub/gnome/sources/atk/$atkroot/atk-$atkver.tar.bz2"
+  echo -n "decompressing ATK... "
+  unpack_file atk-$atkver.tar.bz2
+  echo "done"
+  echo "compiling ATK... "
+  (cd "$DOWNLOAD_DIR/atk-$atkver" &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libatk*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/atk-$atkver"
+  if test ! -f "$tbindir/libatk-1.0-0.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+#######
+# GTK #
+#######
+
+if check_package GTK; then
+  gtkroot=`echo $gtkver | sed -e 's/\.[0-9]\+$//'`
+  download_file gtk+-$gtkver.tar.bz2 "ftp://ftp.gnome.org/pub/gnome/sources/gtk+/$gtkroot/gtk+-$gtkver.tar.bz2"
+  echo -n "decompressing GTK... "
+  unpack_file gtk+-$gtkver.tar.bz2
+  echo "done"
+  echo "compiling GTK... "
+  (cd "$DOWNLOAD_DIR/gtk+-$gtkver" &&
+    sed -e "s/use_x86_asm=yes/use_x86_asm=no/" \
+        -e "s/-limm32/-luser32 -ladvapi32 -lkernel32 -limm32/" \
+        -e "s/-ltiff -lm/-ltiff/" \
+        configure > ttt &&
+      mv ttt configure &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-cups \
+      --with-included-loaders &&
+    sed -e 's///g' config.status > ttt &&
+      mv ttt config.status &&
+    ./config.status &&
+    post_process_libtool &&
+    sed -e "s/input//" modules/Makefile > ttt &&
+      mv ttt modules/Makefile &&
+    sed -e "s/snprintf/_snprintf/" gdk-pixbuf/io-tiff.c > ttt &&
+      mv ttt gdk-pixbuf/io-tiff.c &&
+    sed -e "s/^[ 	]*notebook = /GtkNotebook* notebook = /" modules/engines/ms-windows/msw_style.c > ttt &&
+      mv ttt modules/engines/ms-windows/msw_style.c &&
+    sed -e "s/tests//" Makefile > ttt &&
+      mv ttt Makefile &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libgtk*.la $tlibdir_quoted/libgdk*.la &&
+    find "$tlibdir/gtk-2.0" -name "lib*.la" | xargs rm -f) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/gtk+-$gtkver"
+  if test ! -f "$tbindir/libgtk-win32-2.0-0.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
   fi
 fi

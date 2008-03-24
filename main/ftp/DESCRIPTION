@@ -1,0 +1,12 @@
+Name: ftp
+Version: 1.0
+Date: 2008-03-23
+Author: Xavier Delacour
+Maintainer: Xavier Delacour
+Title: Bindings for ftplib.
+Description: These are bindings for ftplib, and MATLAB compatible APIs.
+Depends: octave (>= 2.9.12)
+Autoload: yes
+SystemRequirements: swig, ftplib-dev.
+License: BSD
+Url: http://octave.sf.net

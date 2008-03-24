@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{val} =} gaoptimget (@var{options}, '@var{name}'}
+## @deftypefn{Function File} {@var{val} =} gaoptimget (@var{options}, '@var{name}')
 ## Return the value of the parameter @var{name} from the genetic algorithm options structure.
 ##
 ## @seealso{gaoptimset}

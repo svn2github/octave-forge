@@ -30,10 +30,10 @@ OdePkg Output Functions
  odephas3
 OdePkg Example Functions
  odeexamples
- odepkg_examples_dae.m
- odepkg_examples_dde.m
- odepkg_examples_ide.m
- odepkg_examples_ode.m
+ odepkg_examples_dae
+ odepkg_examples_dde
+ odepkg_examples_ide
+ odepkg_examples_ode
 OdePkg Testsuite Functions
  odepkg_testsuite_calcscd
  odepkg_testsuite_calcmescd

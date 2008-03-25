@@ -1,6 +1,8 @@
 mapping >> Mapping Functions
 Mapping Functions
   azimuth
-  deg2rad
   distance
+  reckon
   rad2deg
+  deg2rad
+  km2deg

@@ -3081,7 +3081,7 @@ if check_package GTK; then
       mv ttt gdk-pixbuf/io-tiff.c &&
     sed -e "s/^[ 	]*notebook = /GtkNotebook* notebook = /" modules/engines/ms-windows/msw_style.c > ttt &&
       mv ttt modules/engines/ms-windows/msw_style.c &&
-    sed -e "/^SRC_SUBDIRS =/ {s/tests//;s/demos//;}" \
+    sed -e "/^SRC_SUBDIRS =/ {s/tests//;}" \
         -e "/^SUBDIRS =/ {s/docs//;}" \
         Makefile > ttt &&
       mv ttt Makefile &&
@@ -3255,9 +3255,9 @@ if check_package Gtkmm; then
     CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
       ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-docs \
-      --disable-examples --disable-doc &&
+      --disable-examples --disable-demos &&
     post_process_libtool &&
-    sed -e "/^SUBDIRS =/ {s/tools//;}" Makefile > ttt &&
+    sed -e "/^SUBDIRS =/ {s/tools//;s/tests//;}" Makefile > ttt &&
       mv ttt Makefile &&
     for module in atk pango gdk gtk; do
       modulemm="${module}mm" &&

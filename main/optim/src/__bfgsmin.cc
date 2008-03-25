@@ -29,13 +29,13 @@
 #include "error.h"
 
 
-int __bfgsmin_obj(double &obj, const std::string f, octave_value_list f_args, const ColumnVector theta, const int minarg)
+int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_args, const ColumnVector theta, const int minarg)
 {
-	octave_value_list f_return;
+	octave_value_list f_return, f_args_new;
 	int success = 1;
-
-	f_args(minarg - 1) = theta;
-	f_return = feval(f, f_args);
+	f_args_new = f_args;
+	f_args_new(minarg - 1) = theta;
+	f_return = feval(f, f_args_new);
 	obj = f_return(0).double_value();
 	// bullet-proof the objective function
 	if (error_state)
@@ -55,18 +55,15 @@ int __numgradient(ColumnVector &derivative, const std::string f, const octave_va
 {
 	double SQRT_EPS, diff, delta, obj_left, obj_right, p;
 	int j, test, success;
-
 	ColumnVector parameter = f_args(minarg - 1).column_vector_value();
-
 	int k = parameter.rows();
 	ColumnVector g(k);
-
 	for (j=0; j<k; j++) // get 1st derivative by central difference
 	{
 		p = parameter(j);
 		// determine delta for finite differencing
 		SQRT_EPS = sqrt(DBL_EPSILON);
-		diff = exp(log(DBL_EPSILON)/3);
+		diff = exp(log(DBL_EPSILON)/3.0);
 		test = (fabs(p) + SQRT_EPS) * SQRT_EPS > diff;
 		if (test) delta = (fabs(p) + SQRT_EPS) * SQRT_EPS;
 		else delta = diff;
@@ -78,12 +75,11 @@ int __numgradient(ColumnVector &derivative, const std::string f, const octave_va
 		parameter(j) = p - delta;
 		success = __bfgsmin_obj(obj_left, f, f_args, parameter, minarg);
 		if (!success) error("__numgradient: objective function failed, can't compute numeric gradient");		parameter(j) = p;  // restore original parameter for next round
-		g(j) = (obj_right - obj_left) / (2*delta);
+		g(j) = (obj_right - obj_left) / (2.0*delta);
 	}
 	derivative = g;
 	return success;
 }
-
 
 int __bfgsmin_gradient(ColumnVector &derivative, const std::string f, octave_value_list f_args, const ColumnVector theta, const int minarg, int try_analytic_gradient, int &have_analytic_gradient) {
 	octave_value_list f_return;
@@ -91,13 +87,11 @@ int __bfgsmin_gradient(ColumnVector &derivative, const std::string f, octave_val
 	int success;
 	ColumnVector g(k);
 	Matrix check_gradient(k,1);
-
 	if (have_analytic_gradient) {
 		f_args(minarg - 1) = theta;
 		f_return = feval(f, f_args);
 		g = f_return(1).column_vector_value();
 	}
-
 	else if (try_analytic_gradient) {
 		f_args(minarg - 1) = theta;
 		f_return = feval(f, f_args);
@@ -115,7 +109,6 @@ int __bfgsmin_gradient(ColumnVector &derivative, const std::string f, octave_val
 		if (!have_analytic_gradient) __numgradient(g, f, f_args, minarg);
 	}
 	else __numgradient(g, f, f_args, minarg);
-
 	// check that gradient is ok
 	check_gradient.column(0) = g;
 	if (check_gradient.any_element_is_inf_or_nan()) {
@@ -123,7 +116,6 @@ int __bfgsmin_gradient(ColumnVector &derivative, const std::string f, octave_val
 		success = 0;
 	}
 	else success = 1;
-
 	derivative = g;
 	return success;
 }
@@ -132,8 +124,7 @@ int __bfgsmin_gradient(ColumnVector &derivative, const std::string f, octave_val
 // this is the lbfgs direction, used if control has 5 elements
 ColumnVector lbfgs_recursion(const int memory, const Matrix sigmas, const Matrix gammas, ColumnVector d)
 {
-	if (memory == 0)
-  	{
+	if (memory == 0) {
     		const int n = sigmas.columns();
     		ColumnVector sig = sigmas.column(n-1);
     		ColumnVector gam = gammas.column(n-1);
@@ -146,8 +137,7 @@ ColumnVector lbfgs_recursion(const int memory, const Matrix sigmas, const Matrix
 		}
    		 return d;
   	}
-  	else
-  	{
+  	else {
     		const int k = d.rows();
     		const int n = sigmas.columns();
     		int i, j;
@@ -165,116 +155,98 @@ ColumnVector lbfgs_recursion(const int memory, const Matrix sigmas, const Matrix
 }
 
 // __bisectionstep: fallback stepsize method if __newtonstep fails
-int __bisectionstep(double &step, double &obj, const std::string f, const octave_value_list f_args, const ColumnVector dx, const int minarg, const int verbose)
+int __bisectionstep(double &step, double &obj, const std::string f, const octave_value_list f_args, const ColumnVector x, const ColumnVector dx, const int minarg, const int verbose)
 {
-	double obj_0, improvement, improvement_0, a;
+	double best_obj, improvement, improvement_0;
 	int found_improvement;
-
-	ColumnVector x (f_args(minarg - 1).column_vector_value());
-
+	ColumnVector trial;
 	// initial values
-	improvement_0 = 0;
-	found_improvement = 0;
-	a = 1.0;
-	__bfgsmin_obj(obj_0, f, f_args, x, minarg);
-
+	best_obj = obj;
+	improvement_0 = 0.0;
+	step = 1.0;
+	trial = x + step*dx;
+	__bfgsmin_obj(obj, f, f_args, trial, minarg);
+	if (verbose) printf("bisectionstep: trial step: %g  obj value: %g\n", step, obj);
 	// this first loop goes until an improvement is found
-	while (a > 2*DBL_EPSILON) {
-		a = 0.5*a;
-		__bfgsmin_obj(obj, f, f_args, x + a*dx, minarg);
-		// reduce stepsize if worse, or if function can't be evaluated
-		if (obj <= obj_0) {
-			obj_0 = obj;
-			found_improvement = 1;
-			break;
+	while (obj > best_obj) {
+		if (step < 2.0*DBL_EPSILON) {
+			if (verbose) warning("bisectionstep: unable to find improvement, setting step to zero");
+			step = 0.0;
+			return 0;
 		}
-	}
-	// If unable to find any improvement break out with stepsize zero
-	if (!found_improvement) {
-		if (verbose) warning("bisectionstep: unable to find improvement, setting step to zero");
-		step = 0.0;
-		obj = obj_0;
-		return found_improvement;
+		step = 0.5*step;
+		trial = x + step*dx;
+		__bfgsmin_obj(obj, f, f_args, trial, minarg);
+		if (verbose) printf("bisectionstep: trial step: %g  obj value: %g  best_value: %g\n", step, obj, best_obj);
 	}
 	// now keep going until rate of improvement is too low, or reach max trials
-	while (a > 2*DBL_EPSILON) {
-		a = 0.5*a;
-		__bfgsmin_obj(obj, f, f_args, x + a*dx, minarg);
+	best_obj = obj;
+	while (step > 2.0*DBL_EPSILON) {
+		step = 0.5*step;
+		trial = x + step*dx;
+		__bfgsmin_obj(obj, f, f_args, trial, minarg);
+		if (verbose) printf("bisectionstep: trial step: %g  obj value: %g\n", step, obj);
 		// if improved, record new best and try another step
-		if (obj < obj_0) {
-			improvement = obj_0 - obj;
-			obj_0 = obj;
+		if (obj < best_obj) {
+			improvement = best_obj - obj;
+			best_obj = obj;
 			if (improvement > 0.5*improvement_0) {
 				improvement_0 = improvement;
 			}
 			else break;
 		}
 		else {
-			a = 2.0*a; // put it back to best found
+			step = 2.0*step; // put it back to best found
+			obj = best_obj;
 			break;
 		}
 	}
-	step = a;
-	obj = obj_0;
-	return found_improvement;
+	return 1;
 }
 
 // __newtonstep: default stepsize algorithm
-int __newtonstep(double &a, double &obj, const std::string f, const octave_value_list f_args, const ColumnVector dx, const int minarg, const int verbose)
+int __newtonstep(double &step, double &obj, const std::string f, const octave_value_list f_args, const ColumnVector x, const ColumnVector dx, const int minarg, const int verbose)
 {
 	double obj_0, obj_left, obj_right, delta, inv_delta_sq, gradient, hessian;
 	int found_improvement = 0;
-
-	ColumnVector x (f_args(minarg - 1).column_vector_value());
-
-	// initial value without step
-	__bfgsmin_obj(obj_0, f, f_args, x, minarg);
-
+	obj_0 = obj;
 	delta = 0.001; // experimentation show that this is a good choice
 	inv_delta_sq = 1.0 / (delta*delta);
 	ColumnVector x_right = x + delta*dx;
 	ColumnVector x_left = x  - delta*dx;
-
 	// right
 	__bfgsmin_obj(obj_right, f, f_args, x_right, minarg);
 	// left
 	__bfgsmin_obj(obj_left, f, f_args, x_left, minarg);
-
-	gradient = (obj_right - obj_left) / (2*delta);  // take central difference
-	hessian =  inv_delta_sq*(obj_right - 2*obj_0 + obj_left);
+	gradient = (obj_right - obj_left) / (2.0*delta);  // take central difference
+	hessian =  inv_delta_sq*(obj_right - 2.0*obj_0 + obj_left);
 	hessian = fabs(hessian); // ensures we're going in a decreasing direction
-	if (hessian < 2*DBL_EPSILON) hessian = 1.0; // avoid div by zero
-	a = - gradient / hessian;  // hessian inverse gradient: the Newton step
-	if (a < 0) 	// since direction is descending, a must be positive
-	{ 		// if it is not, go to bisection step
+	if (hessian < 2.0*DBL_EPSILON) hessian = 1.0; // avoid div by zero
+	step = - gradient / hessian;  // hessian inverse gradient: the Newton step
+	if (step < 0.0) {	// step should be positive. If it is not, go to bisection step
 		if (verbose) warning("__stepsize: no improvement with Newton step, falling back to bisection");
-		found_improvement = __bisectionstep(a, obj_0, f, f_args, dx, minarg, verbose);
+		obj = obj_0;
+		found_improvement = __bisectionstep(step, obj, f, f_args, x, dx, minarg, verbose);
 		return 0;
 	}
-
-	a = (a < 1.0)*a + 1.0*(a>=1.0); // maximum stepsize is 1.0 - conservative
-
-	// ensure that this is improvement
-	__bfgsmin_obj(obj, f, f_args, x + a*dx, minarg);
-
-	// if not, fall back to bisection
+	step = (step < 1.0)*step + 1.0*(step >= 1.0); // maximum stepsize is 1.0 - conservative
+	// ensure that this is improvement, and if not, fall back to bisection
+	__bfgsmin_obj(obj, f, f_args, x + step*dx, minarg);
+	if (verbose) printf("newtonstep: trial step: %g  obj value: %g\n", step, obj);
 	if (obj >= obj_0) {
+		obj = obj_0;
 		if (verbose) warning("__stepsize: no improvement with Newton step, falling back to bisection");
-		found_improvement = __bisectionstep(a, obj, f, f_args, dx, minarg, verbose);
+		found_improvement = __bisectionstep(step, obj, f, f_args, x, dx, minarg, verbose);
 	}
 	else found_improvement = 1;
-
 	if (lo_ieee_isnan(obj)) {
+		obj = obj_0;
 		if (verbose) warning("__stepsize: objective function crash in Newton step, falling back to bisection");
-		found_improvement = __bisectionstep(a, obj_0, f, f_args, dx, minarg, verbose);
+		found_improvement = __bisectionstep(step, obj, f, f_args, x, dx, minarg, verbose);
 	}
 	else found_improvement = 1;
-
 	return found_improvement;
 }
-
-
-
 
 DEFUN_DLD(__bfgsmin, args, ,"__bfgsmin: backend for bfgs minimization\n\
 Users should not use this directly. Use bfgsmin.m instead") {
@@ -285,7 +257,8 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	int max_iters, verbosity, criterion, minarg, convergence, iter, memory, \
 		gradient_ok, i, j, k, conv_fun, conv_param, conv_grad, have_gradient, \
 		try_gradient, warnings;
-	double func_tol, param_tol, gradient_tol, stepsize, obj_value, obj_in, last_obj_value, denominator, test;
+	double func_tol, param_tol, gradient_tol, stepsize, obj_value, obj_in, \
+		last_obj_value, denominator, test;
 	Matrix H, H1, H2;
 	ColumnVector thetain, d, g, g_new, p, q, sig, gam;
 
@@ -327,6 +300,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 
 	// Initial obj_value
 	__bfgsmin_obj(obj_in, f, f_args, theta, minarg);
+	if (warnings) printf("initial obj_value %g\n", obj_in);
 
 	// Initial gradient (try analytic, and use it if it's close enough to numeric)
 	__bfgsmin_gradient(g, f, f_args, theta, minarg, 1, have_gradient);	// try analytic
@@ -338,28 +312,29 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	}
 
 	last_obj_value = obj_in; // initialize, is updated after each iteration
+	obj_value = obj_in;
 	// MAIN LOOP STARTS HERE
 	for (iter = 0; iter < max_iters; iter++) {
-  		// make sure the messages aren't stale
+		obj_in = obj_value;
+		// make sure the messages aren't stale
 		conv_fun = -1;
 		conv_param = -1;
 		conv_grad = -1;
-
     		if(memory > 0) {  // lbfgs
 			if (iter < memory) d = lbfgs_recursion(iter, sigmas, gammas, g);
 			else d = lbfgs_recursion(memory, sigmas, gammas, g);
 			d = -d;
 		}
 		else d = -H*g; // ordinary bfgs
-
 		// stepsize: try (l)bfgs direction, then steepest descent if it fails
 		f_args(minarg - 1) = theta;
-		__newtonstep(stepsize, obj_value, f, f_args, d, minarg, warnings);
+		__newtonstep(stepsize, obj_value, f, f_args, theta, d, minarg, warnings);
 		if (stepsize == 0.0) {  // fall back to steepest descent
 			if (warnings) warning("bfgsmin: BFGS direction fails, switch to steepest descent");
 			d = -g; // try steepest descent
 			H = identity_matrix(k,k); // accompany with Hessian reset, for good measure
-			__newtonstep(stepsize, obj_value, f, f_args, d, minarg, warnings);
+			obj_value = obj_in;
+			__newtonstep(stepsize, obj_value, f, f_args, theta, d, minarg, warnings);
 			if (stepsize == 0.0) {  // if true, exit, we can't find a direction of descent
 				warning("bfgsmin: failure, exiting. Try different start values?");
 				f_return(0) = theta;
@@ -370,7 +345,6 @@ Users should not use this directly. Use bfgsmin.m instead") {
 			}
 		}
 		p = stepsize*d;
-
 		// check normal convergence: all 3 must be satisfied
 		// function convergence
 		if (fabs(last_obj_value) > 1.0)	{
@@ -385,25 +359,17 @@ Users should not use this directly. Use bfgsmin.m instead") {
 		else conv_param = sqrt(p.transpose() * p) < param_tol;		// Want intermediate results?
 		// gradient convergence
 		conv_grad = sqrt(g.transpose() * g) < gradient_tol;
-
 		// Want intermediate results?
 		if (verbosity > 1) {
-			printf("\n======================================================\n");
-			printf("BFGSMIN intermediate results\n");
-			printf("\n");
-			if (memory > 0) printf("Using LBFGS, memory is last %d iterations\n",memory);
-			if (have_gradient) printf("Using analytic gradient\n");
-			else printf("Using numeric gradient\n");
-			printf("\n");
-			printf("------------------------------------------------------\n");
-			printf("Function conv %d  Param conv %d  Gradient conv %d\n", conv_fun, conv_param, conv_grad);
-			printf("------------------------------------------------------\n");
-			printf("Objective function value %g\n", last_obj_value);
-			printf("Stepsize %g\n", stepsize);
-			printf("%d iterations\n", iter);
-			printf("------------------------------------------------------\n");
-			printf("\n param	gradient  change\n");
-			for (j = 0; j<k; j++) printf("%8.4f %8.4f %8.4f\n",theta(j),g(j),p(j));
+			printf("------------------------------------------------\n");
+			printf("bfgsmin iteration %d  convergence (f g p): %d %d %d\n", iter, conv_fun, conv_grad, conv_param);
+			if (warnings) {
+				if (memory > 0) printf("Using LBFGS, memory is last %d iterations\n",memory);
+			}
+			printf("\nfunction value: %g  stepsize: %g  \n\n", obj_value, stepsize);
+			if (have_gradient) printf("          param    gradient (n)          change\n");
+			else printf("          param    gradient (n)          change\n");
+			for (j = 0; j<k; j++) printf("%15.5f %15.5f %15.5f\n",theta(j), g(j), p(j));
 		}
 		// Are we done?
 		if (criterion == 1) {
@@ -418,10 +384,8 @@ Users should not use this directly. Use bfgsmin.m instead") {
 		}
 		last_obj_value = obj_value;
 		theta = theta + p;
-
 		// new gradient
 		gradient_ok = __bfgsmin_gradient(g_new, f, f_args, theta, minarg, try_gradient, have_gradient);
-
 		if (memory == 0) {  //bfgs?
 			// Hessian update if gradient ok
 			if (gradient_ok) {
@@ -469,29 +433,22 @@ Users should not use this directly. Use bfgsmin.m instead") {
 			}
 		}
 	}
-
 	// Want last iteration results?
 	if (verbosity > 0) {
-		printf("\n======================================================\n");
-		printf("BFGSMIN final results\n");
-		printf("\n");
-		if (memory > 0) printf("Used LBFGS, memory is last %d iterations\n",memory);
-		if (have_gradient) printf("Used analytic gradient\n");
-		else printf("Used numeric gradient\n");
-		printf("\n");
-		printf("------------------------------------------------------\n");
+		printf("------------------------------------------------\n");
+		printf("bfgsmin final results: %d iterations\n", iter);
+		if (warnings) {
+			if (memory > 0) printf("Used LBFGS, memory is last %d iterations\n",memory);
+		}
+		printf("\nfunction value: %g\n\n", obj_value);
 		if (convergence == -1)                      printf("NO CONVERGENCE: max iters exceeded\n");
 		if ((convergence == 1) & (criterion == 1))  printf("STRONG CONVERGENCE\n");
 		if ((convergence == 1) & !(criterion == 1)) printf("WEAK CONVERGENCE\n");
 		if (convergence == 2)                       printf("NO CONVERGENCE: algorithm failed\n");
-		printf("Function conv %d  Param conv %d  Gradient conv %d\n", conv_fun, conv_param, conv_grad);
-		printf("------------------------------------------------------\n");
-		printf("Objective function value %g\n", last_obj_value);
-		printf("Stepsize %g\n", stepsize);
-		printf("%d iterations\n", iter);
-		printf("------------------------------------------------------\n");
-		printf("\n param    gradient  change\n");
-		for (j = 0; j<k; j++) printf("%8.4f %8.4f %8.4f\n",theta(j),g(j),p(j));
+		printf("Function conv %d  Param conv %d  Gradient conv %d\n\n", conv_fun, conv_param, conv_grad);
+		if (have_gradient) printf("          param    gradient (n)          change\n");
+		else printf("          param    gradient (n)          change\n");
+		for (j = 0; j<k; j++) printf("%15.5f %15.5f %15.5f\n",theta(j), g(j), p(j));
 	}
 	f_return(3) = iter;
 	f_return(2) = convergence;

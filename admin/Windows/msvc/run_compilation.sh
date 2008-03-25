@@ -41,7 +41,7 @@ available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline 
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
-ImageMagick libtiff libwmf jasper GTK ATK"
+ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++"
 octave_version=
 of_version=
 do_nsi=false
@@ -77,6 +77,10 @@ wmfver=0.2.8.4
 jasperver=1.900.1
 gtkver=2.12.9
 atkver=1.22.0
+glibmmver=2.14.2
+cairommver=1.4.8
+gtkmmver=2.12.5
+libsigcver=2.0.18
 
 ###################################################################################
 
@@ -264,7 +268,8 @@ function post_process_libtool
   else
     ltfile="$1"
   fi
-  sed -e 's,/OUT:,-OUT:,g' \
+  sed -e '/#.*BEGIN LIBTOOL TAG CONFIG: CXX/,/#.*END LIBTOOL TAG CONFIG: CXX/ {/^archive_cmds=.*/,/^postinstall_cmds=.*/ {/^postinstall_cmds=.*/!d;};}' \
+      -e 's,/OUT:,-OUT:,g' \
       -e 's,^\([^=]*\)=.*cygpath.*$,\1="",g' \
       -e 's,-link -dll,-shared,g' \
       -e 's/^wl=.*$/wl="-Wl,"/' \
@@ -285,7 +290,7 @@ case $host in\
 	;;\
 esac
 ;}' \
--e "s,^postinstall_cmds=.*$,postinstall_cmds='if echo \"\$destdir\" | grep -e \\\\\"/lib/\\\\\\\\?\$\\\\\" >\& /dev/null; then name=\`echo \\\\\$file | sed -e \"s/.*\\\\///\" -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`; implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`; \$install_prog \$dir/\$implibname \$destdir/\$name.lib; test -d \$destdir/../bin || mkdir -p \$destdir/../bin; mv -f \$destdir/\$dlname \$destdir/../bin; fi'," "$ltfile" > ttt &&
+-e "s,^postinstall_cmds=.*$,postinstall_cmds='if echo \"\$destdir\" | grep -e \\\\\"/lib/\\\\\\\\?\$\\\\\" >\& /dev/null; then name=\`echo \\\\\$file | sed -e \"s/.*\\\\///\" -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`; implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`; \$install_prog \$dir/\\\\\$implibname \$destdir/\\\\\$name.lib; test -d \$destdir/../bin || mkdir -p \$destdir/../bin; mv -f \$destdir/\$dlname \$destdir/../bin; fi'," "$ltfile" > ttt &&
       mv ttt "$ltfile"
 }
 
@@ -502,6 +507,10 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/jasper.lib" jasper
     todo_check "$tbindir/libatk-1.0-0.dll" ATK
     todo_check "$tbindir/libgtk-win32-2.0-0.dll" GTK
+    todo_check "$tlibdir/glibmm-2.4.lib" Glibmm
+    todo_check "$tlibdir/cairomm-1.0.lib" Cairomm
+    todo_check "$tlibdir/gtkmm-2.0.lib" Gtkmm
+    todo_check "$tlibdir/sigc-2.0.lib" libsigc++
   fi
 else
   packages="$todo_packages"
@@ -1352,7 +1361,7 @@ if check_package gettext; then
     for lt in `find . -name libtool`; do
       post_process_libtool $lt
     done &&
-    read "WARNING: gettext-runtime/libasprintf/libtool and gettext-tools/libtool needs manual post-processing; press <ENTER> when done " &&
+    read -p "WARNING: gettext-runtime/libasprintf/libtool and gettext-tools/libtool needs manual post-processing; press <ENTER> when done " &&
     for cs in gettext-runtime/config.status gettext-tools/config.status; do
       sed -e '/@USE_INCLUDED_LIBINTL@/ {s/no/yes/;}' "$cs" > ttt &&
         mv ttt "$cs" &&
@@ -3027,6 +3036,8 @@ if check_package ATK; then
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
       ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
     post_process_libtool &&
+    sed -e "s/^SUBDIRS =.*/SUBDIRS = atk/" Makefile > ttt &&
+      mv ttt Makefile &&
     make &&
     make install &&
     rm -f $tlibdir_quoted/libatk*.la) >&5 2>&1
@@ -3070,7 +3081,9 @@ if check_package GTK; then
       mv ttt gdk-pixbuf/io-tiff.c &&
     sed -e "s/^[ 	]*notebook = /GtkNotebook* notebook = /" modules/engines/ms-windows/msw_style.c > ttt &&
       mv ttt modules/engines/ms-windows/msw_style.c &&
-    sed -e "s/tests//" Makefile > ttt &&
+    sed -e "/^SRC_SUBDIRS =/ {s/tests//;s/demos//;}" \
+        -e "/^SUBDIRS =/ {s/docs//;}" \
+        Makefile > ttt &&
       mv ttt Makefile &&
     make &&
     make install &&
@@ -3078,6 +3091,202 @@ if check_package GTK; then
     find "$tlibdir/gtk-2.0" -name "lib*.la" | xargs rm -f) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/gtk+-$gtkver"
   if test ! -f "$tbindir/libgtk-win32-2.0-0.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+#############
+# libsigc++ #
+#############
+
+if check_package libsigc++; then
+  libsigcroot=`echo $libsigcver | sed -e 's/\.[0-9]\+$//'`
+  download_file libsigc++-$libsigcver.tar.bz2 "http://ftp.gnome.org/pub/GNOME/sources/libsigc++/$libsigcroot/libsigc++-$libsigcver.tar.bz2"
+  echo -n "decompressing libsigc++... "
+  unpack_file libsigc++-$libsigcver.tar.bz2
+  echo "done"
+  echo "compiling libsigc++... "
+  (cd "$DOWNLOAD_DIR/libsigc++-$libsigcver" &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "s/^SUBDIRS =.*/SUBDIRS = sigc++/" Makefile > ttt &&
+      mv ttt Makefile &&
+    (cat >> sigc++/Makefile <<\EOF
+sigc-2.0.res: ../MSVC_Net2003/sigc-2.0.rc
+	rc -fo $@ ../MSVC_Net2003/sigc-2.0.rc
+EOF
+      ) &&
+    sed -e "s/^DEFS =.*/& -DSIGC_BUILD -D_WINDLL/" \
+        -e "s/libsigc-2\.0\.la:.*/& sigc-2.0.res/" \
+        -e "s/-Wl,--export-all-symbols/-Wl,sigc-2.0.res/" \
+        sigc++/Makefile > ttt &&
+      mv ttt sigc++/Makefile &&
+    sed -e 's/^#include "resource.h"/#include <windows.h>/' \
+        -e '/^#include "afxres.h".*/d' \
+        MSVC_Net2003/sigc-2.0.rc > ttt &&
+      mv ttt MSVC_Net2003/sigc-2.0.rc &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libsigc*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/libsigc++-$libsigcver"
+  if test ! -f "$tlibdir/sigc-2.0.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##########
+# glibmm #
+##########
+
+if check_package Glibmm; then
+  glibmmroot=`echo $glibmmver | sed -e 's/\.[0-9]\+$//'`
+  download_file glibmm-$glibmmver.tar.bz2 "http://ftp.gnome.org/pub/GNOME/sources/glibmm/$glibmmroot/glibmm-$glibmmver.tar.bz2"
+  echo -n "decompressing glibmm... "
+  unpack_file glibmm-$glibmmver.tar.bz2
+  echo "done"
+  echo "compiling glibmm... "
+  (cd "$DOWNLOAD_DIR/glibmm-$glibmmver" &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "s/^SUBDIRS =.*/SUBDIRS = glib/" Makefile > ttt &&
+      mv ttt Makefile &&
+    (cat >> glib/glibmm/Makefile <<\EOF
+glibmm.def: ../../MSVC_Net2003/gendef/Release/gendef.exe
+	../../MSVC_Net2003/gendef/Release/gendef.exe glibmm.def glibmm.dll .libs/*.o
+	sed -e "s/^LIBRARY .*//" $@ > ttt && mv ttt $@
+
+glibmm.res: ../../MSVC_Net2003/glibmm/glibmm.rc
+	rc -fo $@ ../../MSVC_Net2003/glibmm/glibmm.rc
+
+../../MSVC_Net2003/gendef/Release/gendef.exe:
+	(cd ../../MSVC_Net2003/gendef && vcbuild -u gendef.vcproj)
+EOF
+      ) &&
+    sed -e "s/^libglibmm-2\.4\.la:.*/& glibmm.def glibmm.res/" \
+        -e "s/-Wl,--export-all-symbols/-Wl,-def:glibmm.def -Wl,glibmm.res/" \
+        glib/glibmm/Makefile > ttt &&
+      mv ttt glib/glibmm/Makefile &&
+    sed -e 's/^#include "resource.h"/#include <windows.h>/' \
+        -e '/^#include "afxres.h".*/d' \
+        MSVC_Net2003/glibmm/glibmm.rc > ttt &&
+      mv ttt MSVC_Net2003/glibmm/glibmm.rc &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libglibmm*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/glibmm-$glibmmver"
+  if test ! -f "$tlibdir/glibmm-2.4.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# cairomm #
+###########
+
+if check_package Cairomm; then
+  cairommroot=`echo $cairommver | sed -e 's/\.[0-9]\+$//'`
+  download_file cairomm-$cairommver.tar.gz "http://cairographics.org/releases/cairomm-$cairommver.tar.gz"
+  echo -n "decompressing cairomm... "
+  unpack_file cairomm-$cairommver.tar.gz
+  echo "done"
+  echo "compiling cairomm... "
+  (cd "$DOWNLOAD_DIR/cairomm-$cairommver" &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-docs &&
+    post_process_libtool &&
+    (cat >> cairomm/Makefile <<\EOF
+cairomm.def: ../MSVC/gendef/Release/gendef.exe
+	../MSVC/gendef/Release/gendef.exe cairomm.def cairomm.dll .libs/*.o
+	sed -e "s/^LIBRARY .*//" $@ > ttt && mv ttt $@
+
+cairomm.res: ../MSVC/cairomm/cairomm.rc
+	rc -fo $@ ../MSVC/cairomm/cairomm.rc
+
+../MSVC/gendef/Release/gendef.exe:
+	(cd ../MSVC/gendef && vcbuild -u gendef.vcproj)
+EOF
+      ) &&
+    sed -e "s/^libcairomm-1\.0\.la:.*/& cairomm.def cairomm.res/" \
+        -e "s/-Wl,--export-all-symbols/-Wl,-def:cairomm.def -Wl,cairomm.res/" \
+        cairomm/Makefile > ttt &&
+      mv ttt cairomm/Makefile &&
+    sed -e 's/^#include "resource.h"/#include <windows.h>/' \
+        -e '/^#include "afxres.h".*/d' \
+        MSVC/cairomm/cairomm.rc > ttt &&
+      mv ttt MSVC/cairomm/cairomm.rc &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libcairomm*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/cairomm-$cairommver"
+  if test ! -f "$tlibdir/cairomm-1.0.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+#########
+# gtkmm #
+#########
+
+if check_package Gtkmm; then
+  gtkmmroot=`echo $gtkmmver | sed -e 's/\.[0-9]\+$//'`
+  download_file gtkmm-$gtkmmver.tar.bz2 "http://ftp.gnome.org/pub/GNOME/sources/gtkmm/$gtkmmroot/gtkmm-$gtkmmver.tar.bz2"
+  echo -n "decompressing gtkmm... "
+  unpack_file gtkmm-$gtkmmver.tar.bz2
+  echo "done"
+  echo "compiling gtkmm... "
+  (cd "$DOWNLOAD_DIR/gtkmm-$gtkmmver" &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-docs \
+      --disable-examples --disable-doc &&
+    post_process_libtool &&
+    sed -e "/^SUBDIRS =/ {s/tools//;}" Makefile > ttt &&
+      mv ttt Makefile &&
+    for module in atk pango gdk gtk; do
+      modulemm="${module}mm" &&
+      (cat >> $module/$modulemm/Makefile <<EOF
+$modulemm.def: ../../MSVC_Net2003/gendef/Release/gendef.exe
+	../../MSVC_Net2003/gendef/Release/gendef.exe $modulemm.def $modulemm.dll .libs/*.o
+	sed -e "s/^LIBRARY .*//" \$@ > ttt && mv ttt \$@
+
+$modulemm.res: ../../MSVC_Net2003/$modulemm/$modulemm.rc
+	rc -fo \$@ ../../MSVC_Net2003/$modulemm/$modulemm.rc
+
+../../MSVC_Net2003/gendef/Release/gendef.exe:
+	(cd ../../MSVC_Net2003/gendef && vcbuild -u gendef.vcproj)
+EOF
+        ) &&
+      sed -e "s/^lib$modulemm-.*\.la:.*/& $modulemm.def $modulemm.res/" \
+          -e "s/-Wl,--export-all-symbols/-Wl,-def:$modulemm.def -Wl,$modulemm.res/" \
+          $module/$modulemm/Makefile > ttt &&
+        mv ttt $module/$modulemm/Makefile &&
+      sed -e 's/^#include "resource.h"/#include <windows.h>/' \
+          -e '/^#include "afxres.h".*/d' \
+          MSVC_Net2003/$modulemm/$modulemm.rc > ttt &&
+        mv ttt MSVC_Net2003/$modulemm/$modulemm.rc
+    done &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/lib*mm*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/gtkmm-$gtkmmver"
+  if test ! -f "$tlibdir/gtkmm-2.0.lib"; then
     echo "failed"
     exit -1
   else

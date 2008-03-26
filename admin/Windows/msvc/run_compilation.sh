@@ -477,7 +477,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/libglib-2.0-0.dll" glib
     todo_check "$tbindir/libpango-1.0-0.dll" pango
     todo_check "$tlibdir/xml2.lib" libxml2
-    #todo_check "$tlibdir/fontconfig.lib" fontconfig
+    todo_check "$tlibdir/fontconfig.lib" fontconfig
     todo_check "$tlibdir/freetype.lib" freetype
     todo_check "$tlibdir/gd.lib" libgd
     todo_check "$tlibdir/gsl.lib" libgsl
@@ -1547,31 +1547,24 @@ fi
 # fontconfig #
 ##############
 
-# TODO
-#  - src/fcint.h: add #elif defined (_MSC_VER)~typedef __int32 int32_t;~typedef __int16 int16_t;
-#  - src/fccache.c: fix dirent stuffs
-#  - src/fccfg.c: comment "#include <dirent.h>"
-#  - src/fcdir.c: fix dirent + S_ISDIR
-#  - src/fcxml.c: idem
-#  - fc-cache/fc-cache.c: idem
-#  - src/Makefile: install-data-local: => remove dependencies
-
 if check_package fontconfig; then
   download_file fontconfig-$fontconfigver.tar.gz http://fontconfig.org/release/fontconfig-$fontconfigver.tar.gz
   echo -n "decompressing fontconfig... "
   unpack_file fontconfig-$fontconfigver.tar.gz
+  cp libs/fontconfig-$fontconfigver.diff "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
   echo "done"
   echo "compiling fontconfig... "
   (cd "$DOWNLOAD_DIR/fontconfig-$fontconfigver" &&
-    create_module_rc FontConfig $fontconfigver "libfontconfig-2.dll" "Freedesktop (www.freedesktop.org)" \
-      "Font Configuration Library" "`grep -e '^ *Copyright' COPYING | head -n 1 | sed -e 's/^ *//'`" > fontconfig.rc &&
+    patch -p1 < fontconfig-$fontconfigver.diff &&
+    create_module_rc FontConfig $fontconfigver "libfontconfig-1.dll" "Freedesktop (www.freedesktop.org)" \
+      "Font Configuration Library" "`grep -e '^ *Copyright' COPYING | head -n 1 | sed -e 's/^ *//'`" > src/fontconfig.rc &&
     CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
       ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-docs --enable-xlm2 &&
     post_process_libtool &&
-    sed -e "s/^libfontconfig_la_LDFLAGS =/libfontconfig_la_LDFLAGS = -Wl,fontconfig.res/" Makefile > ttt &&
-      mv ttt Makefile &&
-    rc -fo fontconfig.res fontconfig.rc &&
+    sed -e "s/^libfontconfig_la_LDFLAGS =/libfontconfig_la_LDFLAGS = -Wl,fontconfig.res/" src/Makefile > ttt &&
+      mv ttt src/Makefile &&
+    (cd src && rc -fo fontconfig.res fontconfig.rc) &&
     make &&
     make install &&
     rm -f "$tlibdir/libfontconfig.la" &&

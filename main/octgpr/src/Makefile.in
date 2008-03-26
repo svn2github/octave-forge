@@ -53,3 +53,6 @@ gpr_predict.oct: gpr_predict.o $(OBJS_GPR_PRED)
 	$(MKOCTFILE) -o $@ gpr_predict.o $(OBJS_GPR_PRED) $(LIBS)
 clean:
 	rm -f *.o *.oct
+distclean: clean
+	rm -f config.h Makefile config.log config.status 
+

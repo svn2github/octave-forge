@@ -3,6 +3,7 @@
 	* config.log, config.status, config.h, Makefile: remove.
 	* configure.in: add support for -fPIC flags.
 	* configure, config.h.in: regenerate.
+	* Makefile.in: add distclean target
 
 2008-02-28  Jaroslav Hajek <highegg@gmail.com>
 

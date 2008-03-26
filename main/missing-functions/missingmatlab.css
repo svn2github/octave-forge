@@ -1,0 +1,12 @@
+.Present {
+    display: none;
+}
+
+.NotChecked {
+    background-color: yellow;
+}
+
+.Missing {
+    background-color: red;
+    text-color: white;
+}

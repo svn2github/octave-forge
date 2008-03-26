@@ -1,12 +1,12 @@
 Name: financial
-Version: 0.1.0
+Version: 0.2.0
 Date: 2007-02-02
 Author: Bill Denney <bill@denney.ws>
 Maintainer: Bill Denney <bill@denney.ws>
 Title: Financial
 Description: Financial manipulation and plotting functions
 Categories: Financial
-Depends: octave (>= 3.0.0)
+Depends: octave (>= 3.0.0), time (>= 1.0.5)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

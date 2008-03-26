@@ -41,7 +41,8 @@ available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline 
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
-ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++"
+ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++ libglade
+gtksourceview gdl"
 octave_version=
 of_version=
 do_nsi=false
@@ -81,6 +82,9 @@ glibmmver=2.14.2
 cairommver=1.4.8
 gtkmmver=2.12.5
 libsigcver=2.0.18
+libgladever=2.6.2
+gtksourceviewver=2.2.0
+gdlver=0.7.11
 
 ###################################################################################
 
@@ -270,6 +274,8 @@ function post_process_libtool
   fi
   sed -e '/#.*BEGIN LIBTOOL TAG CONFIG: CXX/,/#.*END LIBTOOL TAG CONFIG: CXX/ {/^archive_cmds=.*/,/^postinstall_cmds=.*/ {/^postinstall_cmds=.*/!d;};}' \
       -e 's,/OUT:,-OUT:,g' \
+      -e 's/\$EGREP -e "\$export_symbols_regex"/$EGREP -e EXPORTS -e "$export_symbols_regex"/' \
+      -e 's/^export_symbols_cmds="\(.*\) > \\\$export_symbols"/export_symbols_cmds="(echo EXPORTS; \1) > \\$export_symbols"/' \
       -e 's,^\([^=]*\)=.*cygpath.*$,\1="",g' \
       -e 's,-link -dll,-shared,g' \
       -e 's/^wl=.*$/wl="-Wl,"/' \
@@ -511,6 +517,9 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/cairomm-1.0.lib" Cairomm
     todo_check "$tlibdir/gtkmm-2.0.lib" Gtkmm
     todo_check "$tlibdir/sigc-2.0.lib" libsigc++
+    todo_check "$tlibdir/glade-2.0.lib" libglade
+    todo_check "$tlibdir/gtksourceview-2.0.lib" gtksourceview
+    todo_check "$tlibdir/gdl-1.lib" gdl
   fi
 else
   packages="$todo_packages"
@@ -1538,6 +1547,15 @@ fi
 # fontconfig #
 ##############
 
+# TODO
+#  - src/fcint.h: add #elif defined (_MSC_VER)~typedef __int32 int32_t;~typedef __int16 int16_t;
+#  - src/fccache.c: fix dirent stuffs
+#  - src/fccfg.c: comment "#include <dirent.h>"
+#  - src/fcdir.c: fix dirent + S_ISDIR
+#  - src/fcxml.c: idem
+#  - fc-cache/fc-cache.c: idem
+#  - src/Makefile: install-data-local: => remove dependencies
+
 if check_package fontconfig; then
   download_file fontconfig-$fontconfigver.tar.gz http://fontconfig.org/release/fontconfig-$fontconfigver.tar.gz
   echo -n "decompressing fontconfig... "
@@ -1547,9 +1565,9 @@ if check_package fontconfig; then
   (cd "$DOWNLOAD_DIR/fontconfig-$fontconfigver" &&
     create_module_rc FontConfig $fontconfigver "libfontconfig-2.dll" "Freedesktop (www.freedesktop.org)" \
       "Font Configuration Library" "`grep -e '^ *Copyright' COPYING | head -n 1 | sed -e 's/^ *//'`" > fontconfig.rc &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-docs --enable-xlm2 &&
     post_process_libtool &&
     sed -e "s/^libfontconfig_la_LDFLAGS =/libfontconfig_la_LDFLAGS = -Wl,fontconfig.res/" Makefile > ttt &&
       mv ttt Makefile &&
@@ -3293,3 +3311,144 @@ EOF
     echo "done"
   fi
 fi
+
+############
+# libglade #
+############
+
+if check_package libglade; then
+  libgladeroot=`echo $libgladever | sed -e 's/\.[0-9]\+$//'`
+  download_file libglade-$libgladever.tar.bz2 "http://ftp.gnome.org/pub/GNOME/sources/libglade/$libgladeroot/libglade-$libgladever.tar.bz2"
+  echo -n "decompressing libglade... "
+  unpack_file libglade-$libgladever.tar.bz2
+  echo "done"
+  echo "compiling libglade... "
+  (cd "$DOWNLOAD_DIR/libglade-$libgladever" &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "/^SUBDIRS =/ {s/doc//;}" Makefile > ttt &&
+      mv ttt Makefile &&
+    sed -e "/^install-data-local:/ {s/install-libtool-import-lib//;}" glade/Makefile > ttt &&
+      mv ttt glade/Makefile &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libglade*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/libglade-$libgladever"
+  if test ! -f "$tlibdir/glade-2.0.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+#######
+# gdl #
+#######
+
+if check_package gdl; then
+  gdlroot=`echo $gdlver | sed -e 's/\.[0-9]\+$//'`
+  download_file gdl-$gdlver.tar.bz2 "http://ftp.gnome.org/pub/GNOME/sources/gdl/$gdlroot/gdl-$gdlver.tar.bz2"
+  echo -n "decompressing gdl... "
+  unpack_file gdl-$gdlver.tar.bz2
+  echo "done"
+  echo "compiling gdl... "
+  (cd "$DOWNLOAD_DIR/gdl-$gdlver" &&
+    sed -e "s/^IT_PROG_INTLTOOL/#&/" configure.in > ttt &&
+      mv ttt configure.in &&
+    autoconf &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-gnome &&
+    post_process_libtool &&
+    sed -e "/^SUBDIRS =/ {s/docs//;s/po//;}" Makefile > ttt &&
+      mv ttt Makefile &&
+    for f in gdl/gdl-tools.h gdl/gdl-dock-object.h; do
+      sed -e "s/\.\.\.//" -e "s/##args/args/" $f > ttt &&
+        mv ttt $f
+    done &&
+    sed -e "s/-Wl,--export-all-symbols/-export-symbols-regex '^gdl.*'/" gdl/Makefile > ttt &&
+      mv ttt gdl/Makefile &&
+    sed -e "s/snprintf/_snprintf/" gdl/test-dock.c > ttt &&
+      mv ttt gdl/test-dock.c &&
+    sed -e '/^gdl_dock_item_hide_item/,/^}/ {s/gboolean//;s/gint//;s/^{/&gboolean isFloating; gint width,height,x,y;/;}' \
+        gdl/gdl-dock-item.c > ttt &&
+      mv ttt gdl/gdl-dock-item.c &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libgdl*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/gdl-$gdlver"
+  if test ! -f "$tlibdir/gdl-1.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+#################
+# gtksourceview #
+#################
+
+if check_package gtksourceview; then
+  gtksourceviewroot=`echo $gtksourceviewver | sed -e 's/\.[0-9]\+$//'`
+  download_file gtksourceview-$gtksourceviewver.tar.bz2 "http://ftp.gnome.org/pub/GNOME/sources/gtksourceview/$gtksourceviewroot/gtksourceview-$gtksourceviewver.tar.bz2"
+  echo -n "decompressing gtksourceview... "
+  unpack_file gtksourceview-$gtksourceviewver.tar.bz2
+  echo "done"
+  echo "compiling gtksourceview... "
+  (cd "$DOWNLOAD_DIR/gtksourceview-$gtksourceviewver" &&
+    sed -e "s/^IT_PROG_INTLTOOL/#&/" configure.ac > ttt &&
+      mv ttt configure.ac &&
+    autoconf &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "/^SUBDIRS =/ {s/docs//;s/po//;}" Makefile > ttt &&
+      mv ttt Makefile &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libgtksourceview*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/gtksourceview-$gtksourceviewver"
+  if test ! -f "$tlibdir/gtksourceview-2.0.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+#######
+# VTE #
+#######
+
+# TODO
+#  - configure.in: comment IT_PROG_INTLTOOL
+#  - run autoconf
+#  - src/Makefile:
+#	remove reaper from sources
+#	Add -lpcre to VTE_LIBS
+#  - config.h:
+#	typedef int pid_t
+#	#define LINE_MAX 8192
+#	define USE_PCRE 1
+#  - vte-private.h: comment included filed:
+#	sys/ioctl.h
+#	sys/time.h
+#	sys/param.h
+#	pwd.h
+#  - vte.c: comment various parts
+#  - vteft2.c: comment <sys/param.h> inclusion
+#  - vteglyph.c: comment <sys/param.h> inclusion
+#  - vtepango.c: comment <sys/param.h> inclusion
+#  - vteskel.c: comment <sys/param.h> inclusion
+#  - pty.c: comment various parts
+#  - trie.c: s/snprint/_snprintf/
+#  - vteglyph.c, vtepango.c: copy howmany macro from vte.c
+#  - install:
+#	. : make install-pkgconfigDATA
+#	./src : make install-libLTLIBRARIES install-pkgincludeHEADERS
+#	./termcaps : make install

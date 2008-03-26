@@ -1741,7 +1741,10 @@ CC=`$MKOCTFILE -p CC`
 # get preferred flags
 FFLAGS=`$MKOCTFILE -p FFLAGS`
 CFLAGS=`$MKOCTFILE -p CFLAGS`
-
+# add -fPIC or equivalent flags
+FPICFLAGS=`$KOCTFILE -p FPICFLAGS`
+FFLAGS="$FFLAGS $FPICFLAGS"
+CFLAGS="$CFLAGS $FPICFLAGS"
 
 # Checks for compilers.
 ac_ext=f

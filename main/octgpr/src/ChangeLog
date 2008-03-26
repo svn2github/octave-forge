@@ -1,3 +1,9 @@
+2008-03-26  Jaroslav Hajek <highegg@gmail.com>
+
+	* config.log, config.status, config.h, Makefile: remove.
+	* configure.in: add support for -fPIC flags.
+	* configure, config.h.in: regenerate.
+
 2008-02-28  Jaroslav Hajek <highegg@gmail.com>
 
 	* corrf.f: added Matern-3/2 and Matern-5/2 correlation funcs

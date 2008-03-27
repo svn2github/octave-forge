@@ -14,8 +14,9 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{y}] =} bsc(@var{data},@var{p})
-##	Send DATA into a binary symetric channel with probability P of error one each symbol.
+## @deftypefn {Function File} {@var{y} =} bsc (@var{data}, @var{p})
+## Send @var{data} into a binary symetric channel with probability
+## @var{p} of error one each symbol.
 ## @end deftypefn
 
 function [ndata] = bsc(data,p)

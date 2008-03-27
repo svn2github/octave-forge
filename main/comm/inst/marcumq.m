@@ -14,8 +14,8 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{Q}] =} marcumq(@var{a,b,m})
-##	Compute the Marcum Q function.
+## @deftypefn {Function File} {[@var{Q}] =} marcumq (@var{a}, @var{b}, @var{m})
+## Compute the Marcum Q function.
 ## @end deftypefn
 
 function Q = marcumq(a,b,m)

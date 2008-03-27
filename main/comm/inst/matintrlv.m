@@ -15,8 +15,9 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{intrlvd} =} matintrlv(@var{data},@var{Nrows},@var{Ncols})
-##	Interleaved elements of @var{data} with a tempory matrix of size Nrows by Ncols.
+## @deftypefn {Function File} {@var{intrlvd} =} matintrlv (@var{data}, @var{nrows}, @var{ncols})
+## Interleaved elements of @var{data} with a tempory matrix of size 
+## @var{nrows}-by-@var{ncols}.
 ## @seealso{matdeintrlv}
 ## @end deftypefn
 

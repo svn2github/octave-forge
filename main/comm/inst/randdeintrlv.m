@@ -14,8 +14,8 @@
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{intrlvd} =} randdeintrlv(@var{data},@var{state})
-##	Restore elements of @var{data} with a random permutation.
+## @deftypefn {Function File} {@var{intrlvd} =} randdeintrlv (@var{data}, @var{state})
+## Restore elements of @var{data} with a random permutation.
 ## @seealso{randintrlv,intrlv,deintrlv}
 ## @end deftypefn
 

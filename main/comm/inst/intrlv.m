@@ -14,8 +14,8 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{intrlvd} =} intrlv(@var{data},@var{elements})
-##	Interleaved elements of @var{data} according to @var{elements}.
+## @deftypefn {Function File} {@var{intrlvd} =} intrlv (@var{data}, @var{elements})
+## Interleaved elements of @var{data} according to @var{elements}.
 ## @seealso{deintrlv}
 ## @end deftypefn
 

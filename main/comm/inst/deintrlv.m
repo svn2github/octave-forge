@@ -14,8 +14,8 @@
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{deintrlvd} =} deintrlv(@var{data},@var{elements})
-##	Restore elements of @var{data} according to @var{elements}.
+## @deftypefn {Function File} {@var{deintrlvd} =} deintrlv (@var{data}, @var{elements})
+## Restore elements of @var{data} according to @var{elements}.
 ## @seealso{intrlv}
 ## @end deftypefn
 

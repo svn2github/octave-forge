@@ -22,7 +22,7 @@
 ## returns the generator matrix for the said order RM code.
 ## 
 ## RM(r,m) codes are characterized by codewords,
-## @math{\sum{ (m,0) + (m,1) + ... (m,r) }}.
+## @code{sum ( (m,0) + (m,1) + @dots{} + (m,r)}.
 ## Each of the codeword is got through spanning the
 ## space, using the finite set of m-basis codewords.
 ## Each codeword is @math{2^M} elements long.

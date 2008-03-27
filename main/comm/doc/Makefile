@@ -29,7 +29,7 @@ all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 %.dvi : %.texi
 	@if test "x$(TEXI2DVI)" != "x"; then \
 	  echo "Making dvi $@"; \
-	  TEXINPUTS="./:$../../..:$(TEXINPUTS):"; \
+	  TEXINPUTS="./:../../..:$(TEXINPUTS):"; \
           export TEXINPUTS; \
 	  $(TEXI2DVI) $< ; \
 	fi
@@ -40,11 +40,21 @@ all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 	  $(DVIPS) -o $@ $< ; \
 	fi
 
+ifeq (,$(TEXI2PDF))
 %.pdf : %.dvi
 	@if test "x$(TEXI2DVI)" != "x" && test "x$(DVIPDF)" != "x"; then \
 	  echo "Making pdf $@"; \
 	  $(DVIPDF) $< ; \
 	fi
+else
+%.pdf : %.texi
+	@if test "x$(TEXI2PDF)" != "x"; then \
+	  echo "Making pdf $@"; \
+	  TEXINPUTS="./:../../..:$(TEXINPUTS):"; \
+          export TEXINPUTS; \
+	  $(TEXI2PDF) $< ; \
+	fi
+endif
 
 %.info : %.texi
 	@if test "x$(MAKEINFO)" != "x"; then \

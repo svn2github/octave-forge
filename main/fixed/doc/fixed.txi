@@ -2938,13 +2938,13 @@ backoff of the RMS power in the frequency domain signal relative to the
 fixed point representation for several different fixed point
 representations.
 
-@center @image{ofdmber, , }
+@center @image{ofdmber}
 
 @center Figure 1: Bit-error rate due to fixed point representation for various
 @center backoffs of the RMS power in frequency domain signal. Fixed point 
 @center representation of @var{n} bits plus 1 bit for the sign
 
-@center @image{ofdmsnr, , }
+@center @image{ofdmsnr}
 
 @center Figure 2: The signal-to-noise ratio as measured by comparing a fixed
 @center to a floating point representation for various backoffs of the RMS 

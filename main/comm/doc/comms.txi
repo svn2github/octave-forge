@@ -298,7 +298,7 @@ octave:3> noisy = awgn(y, 10, "measured")
 @iftex
 which produces a sine-wave with noise added as seen in Figure 1.
 
-@center @image{awgn, , }
+@center @image{awgn}
 
 @center Figure 1: Sine-wave with 10dB signal-to-noise ratio
 @end iftex
@@ -427,7 +427,7 @@ octave:8> eyediagram(noisy,ovsp);
 which produces a eye-diagram of a noisy signal as seen in Figure 2. Similarly
 an example of the use of the function @dfn{scatterplot} is
 
-@center @image{eyediagram, , }
+@center @image{eyediagram}
 
 @center Figure 2: Eye-diagram of a QPSK like signal with 15dB signal-to-noise ratio
 @end iftex
@@ -452,7 +452,7 @@ octave:11> scatterplot(noisy,ovsp,0,"r+");
 @iftex
 which produces a scatterplot of a noisy signal as seen in Figure 3.
 
-@center @image{scatterplot, , }
+@center @image{scatterplot}
 
 @center Figure 3: Scatterplot of a QPSK like signal with 15dB signal-to-noise ratio
 @end iftex

@@ -5,7 +5,7 @@ ifeq ($(MKDOC),)
 MKDOC = ../../../admin/mkdoc
 MKTEXI = ../../../admin/mktexi
 MAKEINFO = makeinfo --no-split
-TEXI2DVI = texi2dvi --clean
+TEXI2PDF = texi2ppf --clean
 DVIPS = dvips
 LN_S = ln -s
 endif
@@ -20,7 +20,7 @@ DOCS = $(INFODOC) $(PDFDOC)
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
 TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(FIXEDVERTARGET) $(TEXIDOC) *~
-DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html fixed/ html/
+DELETES = $(TMPDELETES) *.ps fixed.pdf *.info $(DOCS) *.html fixed/ html/
 
 all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 
@@ -34,7 +34,7 @@ $(FIXEDVERTARGET) :
 %.dvi : %.texi
 	@if test "x$(TEXI2DVI)" != "x"; then \
 	  echo "Making dvi $@"; \
-	  TEXINPUTS="./:$../../..:$(TEXINPUTS):"; \
+	  TEXINPUTS="./:../../..:$(TEXINPUTS):"; \
           export TEXINPUTS; \
 	  $(TEXI2DVI) $< ; \
 	fi
@@ -45,11 +45,21 @@ $(FIXEDVERTARGET) :
 	  $(DVIPS) -o $@ $< ; \
 	fi
 
+ifeq (,$(TEXI2PDF))
 %.pdf : %.dvi
 	@if test "x$(TEXI2DVI)" != "x" && test "x$(DVIPDF)" != "x"; then \
 	  echo "Making pdf $@"; \
 	  $(DVIPDF) $< ; \
 	fi
+else
+%.pdf : %.texi
+	@if test "x$(TEXI2PDF)" != "x"; then \
+	  echo "Making pdf $@"; \
+	  TEXINPUTS="./:../../..:$(TEXINPUTS):"; \
+          export TEXINPUTS; \
+	  $(TEXI2PDF) $< ; \
+	fi
+endif
 
 %.info : %.texi
 	@if test "x$(MAKEINFO)" != "x"; then \

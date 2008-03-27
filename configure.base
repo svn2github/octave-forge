@@ -348,6 +348,39 @@ EOF
 	rm -f conftest.*
 fi
 
+dnl Test for the texi2pdf program
+AC_CHECK_PROG(TEXI2PDF,texi2pdf,texi2pdf)
+if [ test -n "$TEXI2PDF" ]; then
+	if test -n "$COMSPEC"; then
+		TEXI2PDF="COMSPEC= $TEXI2PDF"
+	fi
+	dnl Check whether the texi2pdf command accepts the 
+	dnl "--clean" option
+	cat > conftest.texi <<EOF
+\input texinfo
+@bye
+EOF
+	AC_MSG_CHECKING([that texi2pdf runs])
+	ac_try="$TEXI2PDF conftest.texi > /dev/null"
+	if AC_TRY_EVAL(ac_try) ; then
+	    AC_MSG_RESULT(yes)
+		if test -z "$COMSPEC"; then
+		    AC_MSG_CHECKING([for texi2pdf --clean])
+		    ac_try="$TEXI2PDF --clean conftest.texi > /dev/null"
+		    if AC_TRY_EVAL(ac_try) ; then
+				TEXI2PDF="$TEXI2PDF --clean"
+				AC_MSG_RESULT(yes)
+		    else
+			AC_MSG_RESULT(no)
+			fi
+		fi
+	else
+	    TEXI2PDF=""
+	    AC_MSG_RESULT(no)
+	fi
+	rm -f conftest.*
+fi
+
 dnl Test for the texi2html program
 AC_CHECK_PROG(TEXI2HTML,texi2html,texi2html)
 if [ test -n "$TEXI2HTML" ]; then
@@ -406,6 +439,7 @@ octave-forge is configured with
    octave:      $OCTAVE (version $OCTAVE_VERSION)
    mkoctfile:	$MKOCTFILE for Octave $subver
    makeinfo:    $MAKEINFO
+   texi2pdf:    $TEXI2PDF
    texi2dvi:    $TEXI2DVI
    texi2html:   $TEXI2HTML
    mkdoc:       $MKDOC

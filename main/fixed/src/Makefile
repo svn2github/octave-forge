@@ -109,7 +109,7 @@ clean:
 
 realclean:
 	@echo "Cleaning..."; \
-	$(RM) -f $(DELETES)
+	$(RM) -f $(DELETES) Makeconf config.log config.status
 
 dist:
 

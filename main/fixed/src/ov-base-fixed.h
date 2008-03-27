@@ -66,12 +66,8 @@ public:
 			const std::list<octave_value_list>& idx);
 
   octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx,
-    			     int nargout)
-    {
-      panic_impossible ();
-      return octave_value_list ();
-    }
+			     const std::list<octave_value_list>& idx, int)
+    { return subsref (type, idx); }
 
   octave_value_list dotref (const octave_value_list& idx);
 

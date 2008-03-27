@@ -58,6 +58,11 @@ public:
 	void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 	octave_value_list dotref (const octave_value_list& idx);
 	octave_value subsref (const std::string& type, const std::list<octave_value_list>& idx);
+
+	octave_value_list subsref (const std::string& type,
+				   const std::list<octave_value_list>& idx, int)
+	  { return subsref (type, idx); }
+
 	octave_value subsasgn (const std::string& type, const std::list<octave_value_list>& idx, const octave_value& rhs);
 	octave_value do_index_op (const octave_value_list& idx, bool resize_ok);
 	octave_value resize (const dim_vector& dv, bool fill = 0) const;

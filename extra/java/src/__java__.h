@@ -147,6 +147,10 @@ public:
 
   octave_value_list subsref (const std::string& type, const std::list<octave_value_list>& idx, int nargout);
 	
+  octave_value_list subsref (const std::string& type,
+			     const std::list<octave_value_list>& idx, int)
+    { return subsref (type, idx); }
+
   octave_value subsasgn (const std::string& type, const std::list<octave_value_list>& idx, const octave_value& rhs);
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;

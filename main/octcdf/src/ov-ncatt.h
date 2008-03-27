@@ -57,6 +57,10 @@ public:
   octave_value subsref(const std::string & type,
 		       const std::list < octave_value_list > &idx);
 
+  octave_value_list subsref (const std::string& type,
+			     const std::list<octave_value_list>& idx, int)
+    { return subsref (type, idx); }
+
   octave_value_list do_multi_index_op(int, const octave_value_list &)
   {
     error("octave_object: do_multi_index_op(nargout,args)");

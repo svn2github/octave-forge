@@ -9,18 +9,6 @@ DEPENDS = $(patsubst %.cc,%.d,$(SOURCES))
 INCLUDES = -I../src
 DEFINES = 
 
-ifeq (,$(findstring cygwin,$(canonical_host_type)))
- ifeq (,$(findstring mingw,$(canonical_host_type)))
-   ifneq (,$(findstring msdosmsvc,$(canonical_host_type)))
-    MOFLAGS = $(INCLUDES) -L../src -lfixed
-   else
-    MOFLAGS = $(INCLUDES)
-   endif
- else
-   MOFLAGS = $(INCLUDES) -L../ -loctave_fixed
- endif
-endif
-
 .PHONY: all clean count
 %.oct : %.cc 
 .SUFFIXES:
@@ -45,15 +33,15 @@ $(LINKTARGETS) :
 
 %.oct: %.d %.o
 	@echo "Linking $@"; \
-	$(MKOCTFILE) $(MOFLAGS) $(@:.oct=.o) -o $@
+	$(MKOCTFILE) $(@:.oct=.o) -o $@
 
 %.d: %.cc
 	@echo "Depending $<"; \
-	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -M $<
+	$(MKOCTFILE) $(INCLUDES) $(DEFINES) -M $<
 
 %.o: %.cc
 	@echo "Compiling $@"; \
-	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 
+	$(MKOCTFILE) $(INCLUDES) $(DEFINES) -c $< 
 
 clean:
 	@echo "Cleaning..."; \

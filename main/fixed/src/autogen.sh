@@ -9,12 +9,8 @@ cat <<EOF >> configure.in
   dnl XXX FIXME XXX chmod is not in autoconf's list of portable functions
 
   echo " "
-  echo "  \"\\\$prefix\" is \$prefix"
-  echo "  \"\\\$exec_prefix\" is \$exec_prefix"
-  AC_MSG_RESULT([\$STATUS_MSG
-
-find . -name NOINSTALL -print    # shows which toolboxes won't be installed
-])
+  AC_MSG_RESULT([\$STATUS_MSG])
+  echo " "
 EOF
 
 autoconf configure.in > configure.tmp

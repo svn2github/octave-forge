@@ -1569,7 +1569,7 @@ if check_package fontconfig; then
     make install &&
     rm -f "$tlibdir/libfontconfig.la" &&
     true) >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
+  rm -rf "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
   if test ! -f "$tlibdir/fontconfig.lib"; then
     echo "failed"
     exit -1

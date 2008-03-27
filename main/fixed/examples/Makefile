@@ -9,6 +9,16 @@ DEPENDS = $(patsubst %.cc,%.d,$(SOURCES))
 INCLUDES = -I../src
 DEFINES = 
 
+ifneq (,$(findstring cygwin,$(canonical_host_type)))
+   MOFLAGS = -L../src -lfixed
+endif
+ifneq (,$(findstring mingw,$(canonical_host_type)))
+   MOFLAGS = -L../src -lfixed
+endif
+ifneq (,$(findstring msdosmsvc,$(canonical_host_type)))
+   MOFLAGS = -L../src -lfixed
+endif
+
 .PHONY: all clean count
 %.oct : %.cc 
 .SUFFIXES:
@@ -33,7 +43,7 @@ $(LINKTARGETS) :
 
 %.oct: %.d %.o
 	@echo "Linking $@"; \
-	$(MKOCTFILE) $(@:.oct=.o) -o $@
+	$(MKOCTFILE) $(MOFLAGS) $(@:.oct=.o) -o $@
 
 %.d: %.cc
 	@echo "Depending $<"; \

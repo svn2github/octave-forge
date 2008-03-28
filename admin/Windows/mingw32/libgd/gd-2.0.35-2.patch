@@ -1,0 +1,73 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gd-2.0.35-orig/Makefile.in gd-2.0.35/Makefile.in
+--- gd-2.0.35-orig/Makefile.in	Mon Apr 23 16:57:51 2007
++++ gd-2.0.35/Makefile.in	Fri Mar 28 21:39:30 2008
+@@ -343,11 +343,13 @@
+ bin_SCRIPTS = bdftogd config/gdlib-config
+ EXTRA_DIST = README-JPEG.TXT README.TXT configure.pl bdftogd demoin.png err.out index.html install-item makefile.sample readme.jpn entities.html entities.tcl
+ include_HEADERS = gd.h gdfx.h gd_io.h gdcache.h gdfontg.h gdfontl.h gdfontmb.h gdfonts.h gdfontt.h entities.h
+-lib_LTLIBRARIES = libgd.la
++lib_LTLIBRARIES = libgd.la gd.dll
+ libgd_la_SOURCES = gd.c gdfx.c gd_security.c gd_gd.c gd_gd2.c gd_io.c gd_io_dp.c gd_gif_in.c gd_gif_out.c gd_io_file.c gd_io_ss.c gd_jpeg.c gd_png.c gd_ss.c gd_topal.c gd_wbmp.c gdcache.c gdfontg.c gdfontl.c gdfontmb.c gdfonts.c gdfontt.c gdft.c gdhelpers.c gdhelpers.h gdkanji.c gdtables.c gdxpm.c jisx0208.h wbmp.c wbmp.h
+ libgd_la_LDFLAGS = -version-info 2:0:0 $(XTRA_LDFLAGS)
+ libgd_la_LIBADD = $(LTLIBICONV)
+ LDADD = ./libgd.la $(LIBICONV)
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
++
+ all: config.h
+ 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+ 
+@@ -432,6 +434,15 @@
+ 	done
+ libgd.la: $(libgd_la_OBJECTS) $(libgd_la_DEPENDENCIES) 
+ 	$(LINK) -rpath $(libdir) $(libgd_la_LDFLAGS) $(libgd_la_OBJECTS) $(libgd_la_LIBADD) $(LIBS)
++
++gd.dll : libgd.la
++	$(CC) -shared $(LDFLAGS) -o $@ \
++	-Wl,--export-all-symbols \
++	-Wl,--out-implib=libgd.dll.a \
++	-Wl,--whole-archive ./.libs/libgd.a \
++	-Wl,--no-whole-archive $(LIBS)
++	strip $(STRIP_FLAGS) $@
++
+ install-binPROGRAMS: $(bin_PROGRAMS)
+ 	@$(NORMAL_INSTALL)
+ 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
+@@ -612,7 +623,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@@ -626,7 +637,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gd-2.0.35-orig/gd.h gd-2.0.35/gd.h
+--- gd-2.0.35-orig/gd.h	Sun May  6 22:38:20 2007
++++ gd-2.0.35/gd.h	Fri Mar 28 21:39:30 2008
+@@ -30,7 +30,7 @@
+ #define NONDLL 1
+ #endif /* WIN32 */
+ 
+-#ifdef NONDLL
++#if defined NONDLL || defined __MINGW32__
+ #define BGD_DECLARE(rt) extern rt
+ #else
+ #ifdef BGDWIN32
+@@ -42,7 +42,7 @@
+ 
+ /* 2.0.20: for actual storage of exported data, functions don't need this,
+   currently needed only for font pointers */
+-#ifdef NONDLL
++#if defined NONDLL || defined __MINGW32__
+ /* 2.0.25: bring back extern */
+ #define BGD_EXPORT_DATA_PROT extern
+ #define BGD_EXPORT_DATA_IMPL

@@ -1,0 +1,42 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak libxml2-2.6.30-orig/Makefile.in libxml2-2.6.30/Makefile.in
+--- libxml2-2.6.30-orig/Makefile.in	Thu Aug 23 17:01:45 2007
++++ libxml2-2.6.30/Makefile.in	Tue Feb  5 16:29:41 2008
+@@ -550,6 +550,8 @@
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = libxml-2.0.pc
+ 
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
++
+ #
+ # Install the tests program sources as examples 
+ #
+@@ -837,7 +839,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@@ -851,7 +853,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak libxml2-2.6.30-orig/configure libxml2-2.6.30/configure
+--- libxml2-2.6.30-orig/configure	Thu Aug 23 16:54:01 2007
++++ libxml2-2.6.30/configure	Tue Feb  5 16:29:41 2008
+@@ -8779,7 +8779,7 @@
+       ;;
+     mingw*)
+       # MinGW DLLs use traditional 'lib' prefix
+-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib//'`${shared_ext}'
+       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
+         # It is most probably a Windows format PATH printed by

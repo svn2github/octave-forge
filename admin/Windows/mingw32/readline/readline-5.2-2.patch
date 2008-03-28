@@ -2211,7 +2211,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/shlib/Makef
  SHLIB_LIBPREF = @SHLIB_LIBPREF@
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/support/shobj-conf readline-5.2/support/shobj-conf
 --- readline-5.2-orig/support/shobj-conf	Tue Apr 11 15:15:43 2006
-+++ readline-5.2/support/shobj-conf	Mon Feb  4 15:47:09 2008
++++ readline-5.2/support/shobj-conf	Mon Feb  4 16:06:56 2008
 @@ -482,6 +482,17 @@
  	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
  	;;
@@ -2239,7 +2239,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak readline-5.2-orig/support/sho
 +mingw*)
 +	SHOBJ_LD='$(CC)'
 +	SHOBJ_CFLAGS='-DREADLINE_DLL'
-+        SHOBJ_LDFLAGS='-shared -Wl,--enable-auto-import -Wl,--enable-auto-image-base -Wl,--export-all -Wl,--out-implib=$(@:.dll=.a)'
++        SHOBJ_LDFLAGS='-shared -Wl,--enable-auto-import -Wl,--enable-auto-image-base -Wl,--export-all -Wl,--out-implib=lib$(@:.dll=.dll.a)'
 +        SHLIB_LIBPREF=''
 +        SHLIB_LIBSUFF='dll'
 +        SHLIB_LIBVERSION='.$(SHLIB_LIBSUFF)'

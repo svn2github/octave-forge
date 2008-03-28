@@ -7,16 +7,17 @@ f.ls()
 f.cd("gnu")
 f.ls()
 
-
 f.cd("gcc/gcc-4.0.4")
+f.cd("../..");
+f.cd("..");
 
-mget(f,"gcc-objc-4.0.4.tar.bz2","gcc-g++-4.0.4.tar.gz.sig",".")
+mget(f,"MISSING-FILES","MISSING-FILES.README",".")
 
-assert(stat("gcc-objc-4.0.4.tar.bz2").size==242757);
-assert(stat("gcc-g++-4.0.4.tar.gz.sig").size==65);
+assert(stat("MISSING-FILES").size==17864);
+assert(stat("MISSING-FILES.README").size==4178);
 
-unlink("gcc-objc-4.0.4.tar.bz2");
-unlink("gcc-g++-4.0.4.tar.gz.sig");
+unlink("MISSING-FILES");
+unlink("MISSING-FILES.README");
 
 
 

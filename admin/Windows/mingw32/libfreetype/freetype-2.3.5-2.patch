@@ -1,0 +1,12 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak freetype-2.3.5-orig/builds/unix/configure freetype-2.3.5/builds/unix/configure
+--- freetype-2.3.5-orig/builds/unix/configure	Mon Jul  2 21:41:45 2007
++++ freetype-2.3.5/builds/unix/configure	Tue Feb  5 13:27:52 2008
+@@ -10898,7 +10898,7 @@
+       ;;
+     mingw*)
+       # MinGW DLLs use traditional 'lib' prefix
+-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib//'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
+         # It is most probably a Windows format PATH printed by

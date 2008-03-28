@@ -18,6 +18,7 @@ VER_BLAS=2
 VER_CBLAS=2
 VER_LAPACK=3.1.1-2
 VER_GLOB=1.0-2
+VER_NCURSES=5.6-2
 VER_READLINE=5.2-2
 VER_REGEX=2.5.1-2
 VER_SUITESPARSE=3.0.0-2
@@ -43,6 +44,7 @@ VER_QHULL=2003.1-2
 # GSL depends on BLAS
 # SED depends on REGEX
 # LESS depends on PCRE
+# READLINE depends on NCURSES
 # many packages depend on ZLIB
 
 ( cd zlib && build-${VER_ZLIB}.sh ${ACTION} );
@@ -50,6 +52,7 @@ VER_QHULL=2003.1-2
 ( cd cblas && build-${VER_CBLAS}.sh ${ACTION} );
 ( cd lapack && build-${VER_LAPACK}.sh ${ACTION} );
 ( cd glob && build-${VER_GLOB}.sh ${ACTION} );
+( cd libncurses && build-${VER_NCURSES}.sh ${ACTION} );
 ( cd readline && build-${VER_READLINE}.sh ${ACTION} );
 ( cd regex && build-${VER_REGEX}.sh ${ACTION} );
 ( cd suitesparse && build-${VER_SUITESPARSE}.sh ${ACTION} );

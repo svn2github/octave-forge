@@ -1,0 +1,308 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/configure fontconfig-2.4.92/configure
+--- fontconfig-2.4.92-orig/configure	Sun Nov  4 20:49:25 2007
++++ fontconfig-2.4.92/configure	Tue Feb  5 16:59:42 2008
+@@ -9182,7 +9182,7 @@
+       ;;
+     mingw*)
+       # MinGW DLLs use traditional 'lib' prefix
+-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib//'`${shared_ext}'
+       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
+         # It is most probably a Windows format PATH printed by
+@@ -22489,7 +22489,7 @@
+ fi
+ 
+ 
+-
++if test "1" = "0"; then
+ 
+ if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+ 	if test -n "$ac_tool_prefix"; then
+@@ -22608,6 +22608,10 @@
+ 		PKG_CONFIG=""
+ 	fi
+ 
++fi
++
++else
++   PKG_CONFIG="echo"
+ fi
+ 
+ if test "$enable_libxml2" = "yes" -o "$expat" = "no"; then
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/configure.in fontconfig-2.4.92/configure.in
+--- fontconfig-2.4.92-orig/configure.in	Sun Nov  4 20:49:16 2007
++++ fontconfig-2.4.92/configure.in	Tue Feb  5 16:59:42 2008
+@@ -365,7 +365,7 @@
+ PKG_PROG_PKG_CONFIG
+ 
+ if test "$enable_libxml2" = "yes" -o "$expat" = "no"; then
+-    PKG_CHECK_MODULES([LIBXML2], [libxml-2.0 >= 2.6])
++#    PKG_CHECK_MODULES([LIBXML2], [libxml-2.0 >= 2.6])
+     AC_DEFINE_UNQUOTED(ENABLE_LIBXML2,1,[Use libxml2 instead of Expat])
+ 
+     AC_SUBST(LIBXML2_CFLAGS)
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/fc-arch/Makefile.in fontconfig-2.4.92/fc-arch/Makefile.in
+--- fontconfig-2.4.92-orig/fc-arch/Makefile.in	Tue Nov  6 00:52:58 2007
++++ fontconfig-2.4.92/fc-arch/Makefile.in	Tue Feb  5 16:59:42 2008
+@@ -249,6 +249,7 @@
+ ALIAS_FILES = fcalias.h fcaliastail.h
+ BUILT_SOURCES = $(ALIAS_FILES) $(TARG)
+ CLEANFILES = $(TARG) $(ALIAS_FILES)
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
+ all: $(BUILT_SOURCES)
+ 	$(MAKE) $(AM_MAKEFLAGS) all-am
+ 
+@@ -303,7 +304,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@@ -317,7 +318,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/fc-cache/Makefile.in fontconfig-2.4.92/fc-cache/Makefile.in
+--- fontconfig-2.4.92-orig/fc-cache/Makefile.in	Tue Nov  6 00:52:58 2007
++++ fontconfig-2.4.92/fc-cache/Makefile.in	Tue Feb  5 16:59:42 2008
+@@ -254,6 +254,7 @@
+ man_MANS = fc-cache.1
+ EXTRA_DIST = fc-cache.sgml $(man_MANS)
+ fc_cache_LDADD = $(FREETYPE_LIBS) $(LIBXML2_LIBS) $(EXPAT_LIBS) ${top_builddir}/src/libfontconfig.la
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
+ all: all-am
+ 
+ .SUFFIXES:
+@@ -329,8 +330,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+ 
+@@ -343,8 +343,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/fc-case/Makefile.in fontconfig-2.4.92/fc-case/Makefile.in
+--- fontconfig-2.4.92-orig/fc-case/Makefile.in	Tue Nov  6 00:52:58 2007
++++ fontconfig-2.4.92/fc-case/Makefile.in	Tue Feb  5 16:59:42 2008
+@@ -256,6 +256,7 @@
+ ALIAS_FILES = fcalias.h fcaliastail.h
+ BUILT_SOURCES = $(ALIAS_FILES) $(TARG)
+ CLEANFILES = $(TARG) $(ALIAS_FILES)
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
+ all: $(BUILT_SOURCES)
+ 	$(MAKE) $(AM_MAKEFLAGS) all-am
+ 
+@@ -311,7 +312,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@@ -325,7 +326,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/fc-cat/Makefile.in fontconfig-2.4.92/fc-cat/Makefile.in
+--- fontconfig-2.4.92-orig/fc-cat/Makefile.in	Tue Nov  6 00:52:58 2007
++++ fontconfig-2.4.92/fc-cat/Makefile.in	Tue Feb  5 16:59:42 2008
+@@ -254,6 +254,7 @@
+ man_MANS = fc-cat.1
+ EXTRA_DIST = fc-cat.sgml fc-cat.1
+ fc_cat_LDADD = $(FREETYPE_LIBS) $(LIBXML2_LIBS) $(EXPAT_LIBS) ${top_builddir}/src/libfontconfig.la
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
+ all: all-am
+ 
+ .SUFFIXES:
+@@ -329,7 +330,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@@ -343,7 +344,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/fc-glyphname/Makefile.in fontconfig-2.4.92/fc-glyphname/Makefile.in
+--- fontconfig-2.4.92-orig/fc-glyphname/Makefile.in	Tue Nov  6 00:52:58 2007
++++ fontconfig-2.4.92/fc-glyphname/Makefile.in	Tue Feb  5 16:59:42 2008
+@@ -251,6 +251,7 @@
+ ALIAS_FILES = fcalias.h fcaliastail.h
+ BUILT_SOURCES = $(ALIAS_FILES) $(TARG)
+ CLEANFILES = $(TARG) $(ALIAS_FILES)
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
+ all: $(BUILT_SOURCES)
+ 	$(MAKE) $(AM_MAKEFLAGS) all-am
+ 
+@@ -306,7 +307,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@@ -320,7 +321,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/fc-lang/Makefile.in fontconfig-2.4.92/fc-lang/Makefile.in
+--- fontconfig-2.4.92-orig/fc-lang/Makefile.in	Tue Nov  6 00:52:59 2007
++++ fontconfig-2.4.92/fc-lang/Makefile.in	Tue Feb  5 16:59:42 2008
+@@ -250,6 +250,7 @@
+ ALIAS_FILES = fcalias.h fcaliastail.h
+ BUILT_SOURCES = $(ALIAS_FILES) $(TARG)
+ CLEANFILES = $(TARG) $(ALIAS_FILES)
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
+ all: $(BUILT_SOURCES)
+ 	$(MAKE) $(AM_MAKEFLAGS) all-am
+ 
+@@ -305,7 +306,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@@ -319,7 +320,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/fc-list/Makefile.in fontconfig-2.4.92/fc-list/Makefile.in
+--- fontconfig-2.4.92-orig/fc-list/Makefile.in	Tue Nov  6 00:52:59 2007
++++ fontconfig-2.4.92/fc-list/Makefile.in	Tue Feb  5 16:59:42 2008
+@@ -254,6 +254,7 @@
+ man_MANS = fc-list.1
+ EXTRA_DIST = fc-list.sgml $(man_MANS)
+ fc_list_LDADD = $(FREETYPE_LIBS) $(LIBXML2_LIBS) $(EXPAT_LIBS) ${top_builddir}/src/libfontconfig.la
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
+ all: all-am
+ 
+ .SUFFIXES:
+@@ -329,7 +330,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@@ -343,7 +344,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/fc-match/Makefile.in fontconfig-2.4.92/fc-match/Makefile.in
+--- fontconfig-2.4.92-orig/fc-match/Makefile.in	Tue Nov  6 00:52:59 2007
++++ fontconfig-2.4.92/fc-match/Makefile.in	Tue Feb  5 16:59:42 2008
+@@ -254,6 +254,7 @@
+ man_MANS = fc-match.1
+ EXTRA_DIST = fc-match.sgml $(man_MANS)
+ fc_match_LDADD = $(FREETYPE_LIBS) $(LIBXML2_LIBS) $(EXPAT_LIBS) ${top_builddir}/src/libfontconfig.la
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
+ all: all-am
+ 
+ .SUFFIXES:
+@@ -329,7 +330,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@@ -343,7 +344,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/src/Makefile.in fontconfig-2.4.92/src/Makefile.in
+--- fontconfig-2.4.92-orig/src/Makefile.in	Tue Nov  6 00:52:59 2007
++++ fontconfig-2.4.92/src/Makefile.in	Tue Feb  5 16:59:42 2008
+@@ -311,6 +311,8 @@
+ 	$(top_srcdir)/fontconfig/fcfreetype.h \
+ 	$(top_srcdir)/src/fcdeprecate.h
+ 
++DEPSMOD=sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g'
++
+ CLEANFILES := $(ALIAS_FILES)
+ all: $(BUILT_SOURCES)
+ 	$(MAKE) $(AM_MAKEFLAGS) all-am
+@@ -406,7 +408,7 @@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@@ -420,7 +422,7 @@
+ 
+ .c.lo:
+ @am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
++@am__fastdepCC_TRUE@	then $(DEPSMOD) "$(DEPDIR)/$*.Tpo" > "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<

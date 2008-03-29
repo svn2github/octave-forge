@@ -1,15 +1,15 @@
-ftpobj
+source("../PKG_ADD");
 
 f=ftp("ftp.gnu.org")
 
-f.dir()
-f.ls()
-f.cd("gnu")
-f.ls()
+dir(f)
+ls(f)
+cd(f,"gnu")
+ls(f)
 
-f.cd("gcc/gcc-4.0.4")
-f.cd("../..");
-f.cd("..");
+cd(f,"gcc/gcc-4.0.4")
+cd(f,"../..");
+cd(f,"..");
 
 mget(f,"MISSING-FILES","MISSING-FILES.README",".")
 
@@ -18,7 +18,3 @@ assert(stat("MISSING-FILES.README").size==4178);
 
 unlink("MISSING-FILES");
 unlink("MISSING-FILES.README");
-
-
-
-

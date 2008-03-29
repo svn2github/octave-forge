@@ -1939,13 +1939,11 @@ octave_value_typeinfo::register_binary_op(octave_value::op_##name,tid1,tid2,swig
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_NetBuf swig_types[0]
-#define SWIGTYPE_p_char swig_types[1]
-#define SWIGTYPE_p_ftp swig_types[2]
-#define SWIGTYPE_p_int swig_types[3]
-#define SWIGTYPE_p_p_NetBuf swig_types[4]
-static swig_type_info *swig_types[6];
-static swig_module_info swig_module = {swig_types, 5, 0, 0, 0, 0};
+#define SWIGTYPE_p_char swig_types[0]
+#define SWIGTYPE_p_ftp swig_types[1]
+#define SWIGTYPE_p_netbuf swig_types[2]
+static swig_type_info *swig_types[4];
+static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1971,162 +1969,6 @@ static swig_module_info swig_module = {swig_types, 5, 0, 0, 0, 0};
 #include <sstream>
 
 
-  SWIGINTERNINLINE octave_value SWIG_From_long    (long value)
-    {    
-      return octave_value(value);
-    }
-
-
-SWIGINTERNINLINE octave_value
-SWIG_From_int  (int value)
-{    
-  return SWIG_From_long  (value);
-}
-
-
-SWIGINTERN swig_type_info*
-SWIG_pchar_descriptor(void)
-{
-  static int init = 0;
-  static swig_type_info* info = 0;
-  if (!init) {
-    info = SWIG_TypeQuery("_p_char");
-    init = 1;
-  }
-  return info;
-}
-
-
-SWIGINTERNINLINE octave_value
-SWIG_FromCharPtrAndSize(const char* carray, size_t size)
-{
-  return std::string(carray,carray+size);
-}
-
-
-SWIGINTERNINLINE octave_value
-SWIG_From_char  (char c) 
-{ 
-  return SWIG_FromCharPtrAndSize(&c,1);
-}
-
-
-#include <limits.h>
-#if !defined(SWIG_NO_LLONG_MAX)
-# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
-#   define LLONG_MAX __LONG_LONG_MAX__
-#   define LLONG_MIN (-LLONG_MAX - 1LL)
-#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
-# endif
-#endif
-
-
-  SWIGINTERN int SWIG_AsVal_long (const octave_value& ov, long* val)
-    {
-      if (!ov.is_scalar_type())
-	return SWIG_TypeError;
-      if (ov.is_complex_scalar())
-	return SWIG_TypeError;
-      if (ov.is_double_type()||ov.is_single_type()) {
-	double v=ov.double_value();
-	if (v!=floor(v))
-	  return SWIG_TypeError;
-      }
-      if (val)
-	*val = ov.long_value();
-      return SWIG_OK;
-    }
-
-
-SWIGINTERN int
-SWIG_AsVal_int (octave_value obj, int *val)
-{
-  long v;
-  int res = SWIG_AsVal_long (obj, &v);
-  if (SWIG_IsOK(res)) {
-    if ((v < INT_MIN || v > INT_MAX)) {
-      return SWIG_OverflowError;
-    } else {
-      if (val) *val = (int)(v);
-    }
-  }  
-  return res;
-}
-
-
-SWIGINTERNINLINE octave_value 
-SWIG_FromCharPtr(const char *cptr)
-{ 
-  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
-}
-
-
-SWIGINTERN int
-SWIG_AsCharPtrAndSize(const octave_value& ov, char** cptr, size_t* psize, int *alloc)
-{
-  if (!ov.is_string())
-    return SWIG_TypeError;
-  
-  std::string str=ov.string_value();
-  size_t len=str.size();
-  char* cstr=(char*)str.c_str();
-  if (alloc) {
-    *cptr = (char*)(memcpy((new char[len + 1]), cstr, sizeof(char)*(len + 1)));
-    *alloc = SWIG_NEWOBJ;
-  } else if (cptr)
-    *cptr = cstr;
-  if (psize)
-    *psize = len + 1;
-  return SWIG_OK;
-}
-
-
-
-
-
-SWIGINTERN int
-SWIG_AsCharArray(octave_value obj, char *val, size_t size)
-{ 
-  char* cptr = 0; size_t csize = 0; int alloc = SWIG_OLDOBJ;
-  int res = SWIG_AsCharPtrAndSize(obj, &cptr, &csize, &alloc);
-  if (SWIG_IsOK(res)) {
-    if ((csize == size + 1) && cptr && !(cptr[csize-1])) --csize;
-    if (csize <= size) {
-      if (val) {
-	if (csize) memcpy(val, cptr, csize*sizeof(char));
-	if (csize < size) memset(val + csize, 0, (size - csize)*sizeof(char));
-      }
-      if (alloc == SWIG_NEWOBJ) {
-	delete[] cptr;
-	res = SWIG_DelNewMask(res);
-      }      
-      return res;
-    }
-    if (alloc == SWIG_NEWOBJ) delete[] cptr;
-  }
-  return SWIG_TypeError;
-}
-
-
-SWIGINTERN int
-SWIG_AsVal_char (octave_value obj, char *val)
-{    
-  int res = SWIG_AsCharArray(obj, val, 1);
-  if (!SWIG_IsOK(res)) {
-    long v;
-    res = SWIG_AddCast(SWIG_AsVal_long (obj, &v));
-    if (SWIG_IsOK(res)) {
-      if ((CHAR_MIN <= v) && (v <= CHAR_MAX)) {
-	if (val) *val = (char)(v);
-      } else {
-	res = SWIG_OverflowError;
-      }
-    }
-  }
-  return res;
-}
-
-
   class ftp {
     std::string read_entire(const char* path,int type,int mode) {
       netbuf *read_obj;
@@ -2147,7 +1989,7 @@ SWIG_AsVal_char (octave_value obj, char *val)
       return ret;
     }
     Cell read_dir(const char* path,int type) {
-      std::string s=read_entire(path,type,'A');
+      std::string s=read_entire(path,type,FTPLIB_ASCII);
       std::stringstream sin(s);
       std::vector<std::string> tmp;
       std::string line;
@@ -2172,7 +2014,7 @@ SWIG_AsVal_char (octave_value obj, char *val)
 
 
     ftp(const char* _host,const char* _user="anonymous",const char* pass="")
-      : obj(0),host(_host),user(_user),mode('A') {
+      : obj(0),host(_host),user(_user),mode(FTPLIB_ASCII) {
       FtpInit();
       if (!FtpConnect(host.c_str(),&obj))
 	error("connection to %s failed",host.c_str());
@@ -2210,12 +2052,12 @@ SWIG_AsVal_char (octave_value obj, char *val)
 
     Cell nlst(const char* path=".") {
          if (!obj) {      error("not connected");      return Cell();    };
-      return read_dir(path,1);
+      return read_dir(path,FTPLIB_DIR);
     }
 
     Cell dir(const char* path=".") {
          if (!obj) {      error("not connected");      return Cell();    };
-      return read_dir(path,2);
+      return read_dir(path,FTPLIB_DIR_VERBOSE);
     }
 
     int rmdir(const char* path) {
@@ -2286,7 +2128,7 @@ SWIG_AsVal_char (octave_value obj, char *val)
       sout<<" host: "<<host<<std::endl;
       sout<<" user: "<<user<<std::endl;
       sout<<" dir: "<<pwd()<<std::endl;
-      sout<<" mode: "<<(mode=='I'?"binary":"ascii")<<std::endl;
+      sout<<" mode: "<<(mode==FTPLIB_BINARY?"binary":"ascii")<<std::endl;
       return sout.str();
     }
   };
@@ -2295,11 +2137,11 @@ SWIG_AsVal_char (octave_value obj, char *val)
   // MATLAB compatiable interface
 
   void ascii(ftp* f) {
-    f->mode='A';
+    f->mode=FTPLIB_ASCII;
   }
 
   void binary(ftp* f) {
-    f->mode='I';
+    f->mode=FTPLIB_BINARY;
   }
 
   void mget(ftp* f,const char* fn) {
@@ -2314,6 +2156,26 @@ SWIG_AsVal_char (octave_value obj, char *val)
     f->mput(fn);
   }
 
+
+
+SWIGINTERN int
+SWIG_AsCharPtrAndSize(const octave_value& ov, char** cptr, size_t* psize, int *alloc)
+{
+  if (!ov.is_string())
+    return SWIG_TypeError;
+  
+  std::string str=ov.string_value();
+  size_t len=str.size();
+  char* cstr=(char*)str.c_str();
+  if (alloc) {
+    *cptr = (char*)(memcpy((new char[len + 1]), cstr, sizeof(char)*(len + 1)));
+    *alloc = SWIG_NEWOBJ;
+  } else if (cptr)
+    *cptr = cstr;
+  if (psize)
+    *psize = len + 1;
+  return SWIG_OK;
+}
 
 
 SWIGINTERN int
@@ -2347,6 +2209,26 @@ SWIG_AsPtr_std_string (octave_value obj, std::string **val)
 }
 
 
+SWIGINTERN swig_type_info*
+SWIG_pchar_descriptor(void)
+{
+  static int init = 0;
+  static swig_type_info* info = 0;
+  if (!init) {
+    info = SWIG_TypeQuery("_p_char");
+    init = 1;
+  }
+  return info;
+}
+
+
+SWIGINTERNINLINE octave_value
+SWIG_FromCharPtrAndSize(const char* carray, size_t size)
+{
+  return std::string(carray,carray+size);
+}
+
+
 SWIGINTERNINLINE octave_value
 SWIG_From_std_string  (const std::string& s)
 {
@@ -2357,990 +2239,98 @@ SWIG_From_std_string  (const std::string& s)
   }
 }
 
-static octave_value_list _wrap_ftplib_debug_set(const octave_value_list& args,int nargout) {
-  if (!SWIG_check_num_args("ftplib_debug_set",args.length(),1,1,0)) return octave_value_list();
-  
-  {
-    int val;
-    int res = SWIG_AsVal_int(args(0), &val);
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""ftplib_debug""' of type '""int""'");
+
+SWIGINTERN int
+SWIG_AsCharArray(octave_value obj, char *val, size_t size)
+{ 
+  char* cptr = 0; size_t csize = 0; int alloc = SWIG_OLDOBJ;
+  int res = SWIG_AsCharPtrAndSize(obj, &cptr, &csize, &alloc);
+  if (SWIG_IsOK(res)) {
+    if ((csize == size + 1) && cptr && !(cptr[csize-1])) --csize;
+    if (csize <= size) {
+      if (val) {
+	if (csize) memcpy(val, cptr, csize*sizeof(char));
+	if (csize < size) memset(val + csize, 0, (size - csize)*sizeof(char));
+      }
+      if (alloc == SWIG_NEWOBJ) {
+	delete[] cptr;
+	res = SWIG_DelNewMask(res);
+      }      
+      return res;
     }
-    ftplib_debug = (int)(val);
+    if (alloc == SWIG_NEWOBJ) delete[] cptr;
   }
-fail:
-  return octave_value_list();
+  return SWIG_TypeError;
 }
 
 
-static octave_value_list _wrap_ftplib_debug_get(const octave_value_list& args,int nargout) {
-  octave_value obj;
-  
-  obj = SWIG_From_int((int)(ftplib_debug));
-  return obj;
+#include <limits.h>
+#if !defined(SWIG_NO_LLONG_MAX)
+# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
+#   define LLONG_MAX __LONG_LONG_MAX__
+#   define LLONG_MIN (-LLONG_MAX - 1LL)
+#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
+# endif
+#endif
+
+
+  SWIGINTERN int SWIG_AsVal_long (const octave_value& ov, long* val)
+    {
+      if (!ov.is_scalar_type())
+	return SWIG_TypeError;
+      if (ov.is_complex_scalar())
+	return SWIG_TypeError;
+      if (ov.is_double_type()||ov.is_single_type()) {
+	double v=ov.double_value();
+	if (v!=floor(v))
+	  return SWIG_TypeError;
+      }
+      if (val)
+	*val = ov.long_value();
+      return SWIG_OK;
+    }
+
+
+SWIGINTERN int
+SWIG_AsVal_char (octave_value obj, char *val)
+{    
+  int res = SWIG_AsCharArray(obj, val, 1);
+  if (!SWIG_IsOK(res)) {
+    long v;
+    res = SWIG_AddCast(SWIG_AsVal_long (obj, &v));
+    if (SWIG_IsOK(res)) {
+      if ((CHAR_MIN <= v) && (v <= CHAR_MAX)) {
+	if (val) *val = (char)(v);
+      } else {
+	res = SWIG_OverflowError;
+      }
+    }
+  }
+  return res;
 }
 
 
-static octave_value_list _wrap_FtpInit (const octave_value_list& args, int nargout) {
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpInit",args.length(),0,0,0)) {
-    SWIG_fail;
-  }
-  FtpInit();
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
+SWIGINTERNINLINE octave_value
+SWIG_From_char  (char c) 
+{ 
+  return SWIG_FromCharPtrAndSize(&c,1);
 }
 
 
-static octave_value_list _wrap_FtpLastResponse (const octave_value_list& args, int nargout) {
-  netbuf *arg1 = (netbuf *) 0 ;
-  char *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpLastResponse",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpLastResponse" "', argument " "1"" of type '" "netbuf *""'"); 
-  }
-  arg1 = (netbuf *)(argp1);
-  result = (char *)FtpLastResponse(arg1);
-  _outv = SWIG_FromCharPtr((const char *)result);
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
+
+
+
+  SWIGINTERNINLINE octave_value SWIG_From_long    (long value)
+    {    
+      return octave_value(value);
+    }
+
+
+SWIGINTERNINLINE octave_value
+SWIG_From_int  (int value)
+{    
+  return SWIG_From_long  (value);
 }
-
-
-static octave_value_list _wrap_FtpConnect (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  netbuf **arg2 = (netbuf **) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  netbuf *tmp2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  arg2=&tmp2;
-  if (!SWIG_check_num_args("FtpConnect",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpConnect" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  result = (int)FtpConnect((char const *)arg1,arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  _outp = SWIG_Octave_AppendOutput(_outp, SWIG_NewPointerObj(SWIG_as_voidptr(*arg2), SWIGTYPE_p_NetBuf, 1));
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpOptions (const octave_value_list& args, int nargout) {
-  int arg1 ;
-  long arg2 ;
-  netbuf *arg3 = (netbuf *) 0 ;
-  int result;
-  int val1 ;
-  int ecode1 = 0 ;
-  long val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpOptions",args.length(),3,3,0)) {
-    SWIG_fail;
-  }
-  ecode1 = SWIG_AsVal_int(args(0), &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "FtpOptions" "', argument " "1"" of type '" "int""'");
-  } 
-  arg1 = (int)(val1);
-  ecode2 = SWIG_AsVal_long(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FtpOptions" "', argument " "2"" of type '" "long""'");
-  } 
-  arg2 = (long)(val2);
-  res3 = SWIG_ConvertPtr(args(2), &argp3,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FtpOptions" "', argument " "3"" of type '" "netbuf *""'"); 
-  }
-  arg3 = (netbuf *)(argp3);
-  result = (int)FtpOptions(arg1,arg2,arg3);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpLogin (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  char *arg2 = (char *) 0 ;
-  netbuf *arg3 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpLogin",args.length(),3,3,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpLogin" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpLogin" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  res3 = SWIG_ConvertPtr(args(2), &argp3,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FtpLogin" "', argument " "3"" of type '" "netbuf *""'"); 
-  }
-  arg3 = (netbuf *)(argp3);
-  result = (int)FtpLogin((char const *)arg1,(char const *)arg2,arg3);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpAccess (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  netbuf *arg4 = (netbuf *) 0 ;
-  netbuf **arg5 = (netbuf **) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  void *argp5 = 0 ;
-  int res5 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpAccess",args.length(),5,5,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpAccess" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  ecode2 = SWIG_AsVal_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FtpAccess" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = (int)(val2);
-  ecode3 = SWIG_AsVal_int(args(2), &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FtpAccess" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = (int)(val3);
-  res4 = SWIG_ConvertPtr(args(3), &argp4,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "FtpAccess" "', argument " "4"" of type '" "netbuf *""'"); 
-  }
-  arg4 = (netbuf *)(argp4);
-  res5 = SWIG_ConvertPtr(args(4), &argp5,SWIGTYPE_p_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res5)) {
-    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "FtpAccess" "', argument " "5"" of type '" "netbuf **""'"); 
-  }
-  arg5 = (netbuf **)(argp5);
-  result = (int)FtpAccess((char const *)arg1,arg2,arg3,arg4,arg5);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpRead (const octave_value_list& args, int nargout) {
-  void *arg1 = (void *) 0 ;
-  int arg2 ;
-  netbuf *arg3 = (netbuf *) 0 ;
-  int result;
-  charMatrix tmp1 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpRead",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  if (!args(0).is_integer_type()) {
-    error("max must be integer type");
-    SWIG_fail;
-  }
-  arg2=(int)args(0).scalar_value();;
-  tmp1=charMatrix(1,arg2,0);
-  arg1=&tmp1(0);
-  res3 = SWIG_ConvertPtr(args(1), &argp3,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FtpRead" "', argument " "3"" of type '" "netbuf *""'"); 
-  }
-  arg3 = (netbuf *)(argp3);
-  result = (int)FtpRead(arg1,arg2,arg3);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  {
-    _outp = SWIG_Octave_AppendOutput(_outp, tmp1);
-  }
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpWrite (const octave_value_list& args, int nargout) {
-  void *arg1 = (void *) 0 ;
-  int arg2 ;
-  netbuf *arg3 = (netbuf *) 0 ;
-  int result;
-  charMatrix tmp1 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpWrite",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  if (!args(0).is_matrix_type()) {
-    error("buffer must be vector type");
-    SWIG_fail;
-  }
-  tmp1=args(0).char_matrix_value();
-  arg1=&tmp1(0);
-  arg2=tmp1.numel();
-  res3 = SWIG_ConvertPtr(args(1), &argp3,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FtpWrite" "', argument " "3"" of type '" "netbuf *""'"); 
-  }
-  arg3 = (netbuf *)(argp3);
-  result = (int)FtpWrite(arg1,arg2,arg3);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpClose (const octave_value_list& args, int nargout) {
-  netbuf *arg1 = (netbuf *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpClose",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpClose" "', argument " "1"" of type '" "netbuf *""'"); 
-  }
-  arg1 = (netbuf *)(argp1);
-  result = (int)FtpClose(arg1);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpSite (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  netbuf *arg2 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpSite",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpSite" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_ConvertPtr(args(1), &argp2,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpSite" "', argument " "2"" of type '" "netbuf *""'"); 
-  }
-  arg2 = (netbuf *)(argp2);
-  result = (int)FtpSite((char const *)arg1,arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpSysType (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  int arg2 ;
-  netbuf *arg3 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpSysType",args.length(),3,3,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpSysType" "', argument " "1"" of type '" "char *""'");
-  }
-  arg1 = (char *)(buf1);
-  ecode2 = SWIG_AsVal_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FtpSysType" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = (int)(val2);
-  res3 = SWIG_ConvertPtr(args(2), &argp3,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FtpSysType" "', argument " "3"" of type '" "netbuf *""'"); 
-  }
-  arg3 = (netbuf *)(argp3);
-  result = (int)FtpSysType(arg1,arg2,arg3);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpMkdir (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  netbuf *arg2 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpMkdir",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpMkdir" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_ConvertPtr(args(1), &argp2,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpMkdir" "', argument " "2"" of type '" "netbuf *""'"); 
-  }
-  arg2 = (netbuf *)(argp2);
-  result = (int)FtpMkdir((char const *)arg1,arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpChdir (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  netbuf *arg2 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpChdir",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpChdir" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_ConvertPtr(args(1), &argp2,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpChdir" "', argument " "2"" of type '" "netbuf *""'"); 
-  }
-  arg2 = (netbuf *)(argp2);
-  result = (int)FtpChdir((char const *)arg1,arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpCDUp (const octave_value_list& args, int nargout) {
-  netbuf *arg1 = (netbuf *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpCDUp",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpCDUp" "', argument " "1"" of type '" "netbuf *""'"); 
-  }
-  arg1 = (netbuf *)(argp1);
-  result = (int)FtpCDUp(arg1);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpRmdir (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  netbuf *arg2 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpRmdir",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpRmdir" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_ConvertPtr(args(1), &argp2,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpRmdir" "', argument " "2"" of type '" "netbuf *""'"); 
-  }
-  arg2 = (netbuf *)(argp2);
-  result = (int)FtpRmdir((char const *)arg1,arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpPwd (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  int arg2 ;
-  netbuf *arg3 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpPwd",args.length(),3,3,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpPwd" "', argument " "1"" of type '" "char *""'");
-  }
-  arg1 = (char *)(buf1);
-  ecode2 = SWIG_AsVal_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FtpPwd" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = (int)(val2);
-  res3 = SWIG_ConvertPtr(args(2), &argp3,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FtpPwd" "', argument " "3"" of type '" "netbuf *""'"); 
-  }
-  arg3 = (netbuf *)(argp3);
-  result = (int)FtpPwd(arg1,arg2,arg3);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpNlst (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  char *arg2 = (char *) 0 ;
-  netbuf *arg3 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpNlst",args.length(),3,3,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpNlst" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpNlst" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  res3 = SWIG_ConvertPtr(args(2), &argp3,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FtpNlst" "', argument " "3"" of type '" "netbuf *""'"); 
-  }
-  arg3 = (netbuf *)(argp3);
-  result = (int)FtpNlst((char const *)arg1,(char const *)arg2,arg3);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpDir (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  char *arg2 = (char *) 0 ;
-  netbuf *arg3 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpDir",args.length(),3,3,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpDir" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpDir" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  res3 = SWIG_ConvertPtr(args(2), &argp3,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FtpDir" "', argument " "3"" of type '" "netbuf *""'"); 
-  }
-  arg3 = (netbuf *)(argp3);
-  result = (int)FtpDir((char const *)arg1,(char const *)arg2,arg3);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpSize (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  int *arg2 = (int *) 0 ;
-  char arg3 ;
-  netbuf *arg4 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int tmp2 ;
-  char val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  arg2=&tmp2;
-  if (!SWIG_check_num_args("FtpSize",args.length(),3,3,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpSize" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  ecode3 = SWIG_AsVal_char(args(1), &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FtpSize" "', argument " "3"" of type '" "char""'");
-  } 
-  arg3 = (char)(val3);
-  res4 = SWIG_ConvertPtr(args(2), &argp4,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "FtpSize" "', argument " "4"" of type '" "netbuf *""'"); 
-  }
-  arg4 = (netbuf *)(argp4);
-  result = (int)FtpSize((char const *)arg1,arg2,arg3,arg4);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  _outp = SWIG_Octave_AppendOutput(_outp, arg2);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpModDate (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  char *arg2 = (char *) 0 ;
-  int arg3 ;
-  netbuf *arg4 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  char tmp2[32] ;
-  int val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  arg2=tmp2;
-  if (!SWIG_check_num_args("FtpModDate",args.length(),3,3,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpModDate" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  ecode3 = SWIG_AsVal_int(args(1), &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FtpModDate" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = (int)(val3);
-  res4 = SWIG_ConvertPtr(args(2), &argp4,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "FtpModDate" "', argument " "4"" of type '" "netbuf *""'"); 
-  }
-  arg4 = (netbuf *)(argp4);
-  result = (int)FtpModDate((char const *)arg1,arg2,arg3,arg4);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  tmp2[strlen("YYYYMMDDHHMMSS")]=0;
-  _outp = SWIG_Octave_AppendOutput(_outp, std::string(tmp2));
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpGet (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  char *arg2 = (char *) 0 ;
-  char arg3 ;
-  netbuf *arg4 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  char val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpGet",args.length(),4,4,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpGet" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpGet" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  ecode3 = SWIG_AsVal_char(args(2), &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FtpGet" "', argument " "3"" of type '" "char""'");
-  } 
-  arg3 = (char)(val3);
-  res4 = SWIG_ConvertPtr(args(3), &argp4,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "FtpGet" "', argument " "4"" of type '" "netbuf *""'"); 
-  }
-  arg4 = (netbuf *)(argp4);
-  result = (int)FtpGet((char const *)arg1,(char const *)arg2,arg3,arg4);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpPut (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  char *arg2 = (char *) 0 ;
-  char arg3 ;
-  netbuf *arg4 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  char val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpPut",args.length(),4,4,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpPut" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpPut" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  ecode3 = SWIG_AsVal_char(args(2), &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FtpPut" "', argument " "3"" of type '" "char""'");
-  } 
-  arg3 = (char)(val3);
-  res4 = SWIG_ConvertPtr(args(3), &argp4,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "FtpPut" "', argument " "4"" of type '" "netbuf *""'"); 
-  }
-  arg4 = (netbuf *)(argp4);
-  result = (int)FtpPut((char const *)arg1,(char const *)arg2,arg3,arg4);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpRename (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  char *arg2 = (char *) 0 ;
-  netbuf *arg3 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpRename",args.length(),3,3,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpRename" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpRename" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  res3 = SWIG_ConvertPtr(args(2), &argp3,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FtpRename" "', argument " "3"" of type '" "netbuf *""'"); 
-  }
-  arg3 = (netbuf *)(argp3);
-  result = (int)FtpRename((char const *)arg1,(char const *)arg2,arg3);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpDelete (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  netbuf *arg2 = (netbuf *) 0 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpDelete",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpDelete" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_ConvertPtr(args(1), &argp2,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FtpDelete" "', argument " "2"" of type '" "netbuf *""'"); 
-  }
-  arg2 = (netbuf *)(argp2);
-  result = (int)FtpDelete((char const *)arg1,arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_FtpQuit (const octave_value_list& args, int nargout) {
-  netbuf *arg1 = (netbuf *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("FtpQuit",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_NetBuf, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FtpQuit" "', argument " "1"" of type '" "netbuf *""'"); 
-  }
-  arg1 = (netbuf *)(argp1);
-  FtpQuit(arg1);
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
 
 static octave_value_list _wrap_ftp_obj_set (const octave_value_list& args, int nargout) {
   ftp *arg1 = (ftp *) 0 ;
@@ -3361,7 +2351,7 @@ static octave_value_list _wrap_ftp_obj_set (const octave_value_list& args, int n
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_obj_set" "', argument " "1"" of type '" "ftp *""'"); 
   }
   arg1 = (ftp *)(argp1);
-  res2 = SWIG_ConvertPtr(args(1), &argp2,SWIGTYPE_p_NetBuf, SWIG_POINTER_DISOWN |  0 );
+  res2 = SWIG_ConvertPtr(args(1), &argp2,SWIGTYPE_p_netbuf, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res2)) {
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ftp_obj_set" "', argument " "2"" of type '" "netbuf *""'"); 
   }
@@ -3393,7 +2383,7 @@ static octave_value_list _wrap_ftp_obj_get (const octave_value_list& args, int n
   }
   arg1 = (ftp *)(argp1);
   result = (netbuf *) ((arg1)->obj);
-  _outv = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_NetBuf, 0 |  0 );
+  _outv = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_netbuf, 0 |  0 );
   if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
 fail:
   return _out;
@@ -4767,32 +3757,6 @@ fail:
 
 
 static const struct swig_octave_member swig_globals[] = {
-{"ftplib_debug",0,_wrap_ftplib_debug_get,_wrap_ftplib_debug_set,2,0},
-{"FtpInit",_wrap_FtpInit,0,0,2,0},
-{"FtpLastResponse",_wrap_FtpLastResponse,0,0,2,0},
-{"FtpConnect",_wrap_FtpConnect,0,0,2,0},
-{"FtpOptions",_wrap_FtpOptions,0,0,2,0},
-{"FtpLogin",_wrap_FtpLogin,0,0,2,0},
-{"FtpAccess",_wrap_FtpAccess,0,0,2,0},
-{"FtpRead",_wrap_FtpRead,0,0,2,0},
-{"FtpWrite",_wrap_FtpWrite,0,0,2,0},
-{"FtpClose",_wrap_FtpClose,0,0,2,0},
-{"FtpSite",_wrap_FtpSite,0,0,2,0},
-{"FtpSysType",_wrap_FtpSysType,0,0,2,0},
-{"FtpMkdir",_wrap_FtpMkdir,0,0,2,0},
-{"FtpChdir",_wrap_FtpChdir,0,0,2,0},
-{"FtpCDUp",_wrap_FtpCDUp,0,0,2,0},
-{"FtpRmdir",_wrap_FtpRmdir,0,0,2,0},
-{"FtpPwd",_wrap_FtpPwd,0,0,2,0},
-{"FtpNlst",_wrap_FtpNlst,0,0,2,0},
-{"FtpDir",_wrap_FtpDir,0,0,2,0},
-{"FtpSize",_wrap_FtpSize,0,0,2,0},
-{"FtpModDate",_wrap_FtpModDate,0,0,2,0},
-{"FtpGet",_wrap_FtpGet,0,0,2,0},
-{"FtpPut",_wrap_FtpPut,0,0,2,0},
-{"FtpRename",_wrap_FtpRename,0,0,2,0},
-{"FtpDelete",_wrap_FtpDelete,0,0,2,0},
-{"FtpQuit",_wrap_FtpQuit,0,0,2,0},
 {"ftp_obj_set",_wrap_ftp_obj_set,0,0,2,0},
 {"ftp_obj_get",_wrap_ftp_obj_get,0,0,2,0},
 {"ftp_host_set",_wrap_ftp_host_set,0,0,2,0},
@@ -4827,32 +3791,24 @@ static const struct swig_octave_member swig_globals[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static swig_type_info _swigt__p_NetBuf = {"_p_NetBuf", "NetBuf *|netbuf *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ftp = {"_p_ftp", "ftp *", 0, 0, (void*)&_wrap_class_ftp, 0};
-static swig_type_info _swigt__p_int = {"_p_int", "int *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_p_NetBuf = {"_p_p_NetBuf", "NetBuf **|netbuf **", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_netbuf = {"_p_netbuf", "netbuf *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
-  &_swigt__p_NetBuf,
   &_swigt__p_char,
   &_swigt__p_ftp,
-  &_swigt__p_int,
-  &_swigt__p_p_NetBuf,
+  &_swigt__p_netbuf,
 };
 
-static swig_cast_info _swigc__p_NetBuf[] = {  {&_swigt__p_NetBuf, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ftp[] = {  {&_swigt__p_ftp, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_p_NetBuf[] = {  {&_swigt__p_p_NetBuf, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_netbuf[] = {  {&_swigt__p_netbuf, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
-  _swigc__p_NetBuf,
   _swigc__p_char,
   _swigc__p_ftp,
-  _swigc__p_int,
-  _swigc__p_p_NetBuf,
+  _swigc__p_netbuf,
 };
 
 
@@ -5160,20 +4116,6 @@ DEFUN_DLD (SWIG_name,args,nargout,SWIG_name_d) {
 
 void SWIG_init_user(octave_swig_type* module_ns)
 {
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_DIR",SWIG_From_int((int)(1)));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_DIR_VERBOSE",SWIG_From_int((int)(2)));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_FILE_READ",SWIG_From_int((int)(3)));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_FILE_WRITE",SWIG_From_int((int)(4)));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_ASCII",SWIG_From_char((char)('A')));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_IMAGE",SWIG_From_char((char)('I')));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_TEXT",SWIG_From_char((char)('A')));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_BINARY",SWIG_From_char((char)('I')));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_PASSIVE",SWIG_From_int((int)(1)));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_PORT",SWIG_From_int((int)(2)));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_CONNMODE",SWIG_From_int((int)(1)));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_CALLBACK",SWIG_From_int((int)(2)));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_IDLETIME",SWIG_From_int((int)(3)));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_CALLBACKARG",SWIG_From_int((int)(4)));
-  SWIG_Octave_SetConstant(module_ns,"FTPLIB_CALLBACKBYTES",SWIG_From_int((int)(5)));
+  
 }
 

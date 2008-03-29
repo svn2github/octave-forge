@@ -33,67 +33,6 @@
 
 // * mput: doesn't handle wildcard or recursive directory uploading
 
-// * how to get docstring to not need to specify the function name?
-
-// **********************************************************************
-// C interface
-
-// return [netbuf *] in place of netbuf **
-%typemap(in,numinputs=0,noblock=1) netbuf **nControl (netbuf *tmp=0) {
-  $1=&tmp;
-}
-%typemap(argout,noblock=1) netbuf **nControl {
-  %append_output(SWIG_NewPointerObj(%as_voidptr(*$1), $descriptor(netbuf *), 1));
-}
-
-// take max and return a charMatrix in place of (void *buf, int max)
-%typemap(in,numinputs=1,noblock=1) (void *buf, int max) (charMatrix tmp) {
-  if (!$input.is_integer_type()) {
-    error("max must be integer type");
-    SWIG_fail;
-  }
-  $2=(int)$input.scalar_value();;
-  tmp=charMatrix(1,$2,0);
-  $1=&tmp(0);
-}
-%typemap(argout) (void *buf, int max) {
-  %append_output(tmp$argnum);
-}
-
-// take a charMatrix in place of (void *buf, int len)
-%typemap(in,numinputs=1,noblock=1) (void *buf, int len) (charMatrix tmp) {
-  if (!$input.is_matrix_type()) {
-    error("buffer must be vector type");
-    SWIG_fail;
-  }
-  tmp=$input.char_matrix_value();
-  $1=&tmp(0);
-  $2=tmp.numel();
-}
-
-// return [size] in place of (int *size)
-%typemap(in,numinputs=0,noblock=1) int *size (int tmp) {
-  $1=&tmp;
-}
-%typemap(argout,noblock=1) int *size {
-  %append_output($1);
-}
-
-// return a string 'YYYYMMDDHHMMSS' in place of (char *dt)
-%typemap(in,numinputs=0,noblock=1) char *dt (char tmp[32]) {
-  $1=tmp;
-}
-%typemap(argout,noblock=1) char *dt {
-  tmp$argnum[strlen("YYYYMMDDHHMMSS")]=0;
-  %append_output(std::string(tmp$argnum));
-}
-
-// include the filtered header
-#define _FTPLIB_NO_COMPAT
-#define GLOBALREF
-
-%include "ftplib_filtered.h"
-
 // **********************************************************************
 // ftp object
 

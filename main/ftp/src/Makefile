@@ -4,7 +4,7 @@ sinclude Makeconf
 
 all: ftpobj.oct
 
-ftpobj.oct: ftp_wrap.cpp ftplib_filtered.h
+ftpobj.oct: ftp_wrap.cpp
 	$(MKOCTFILE) -o ftpobj.oct ftp_wrap.cpp -lftp
 
 ifdef SWIG

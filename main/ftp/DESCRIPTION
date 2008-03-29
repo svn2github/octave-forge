@@ -1,9 +1,9 @@
 Name: ftp
 Version: 1.0
-Date: 2008-03-23
+Date: 2008-03-29
 Author: Xavier Delacour
 Maintainer: Xavier Delacour
-Title: Bindings for ftplib.
+Title: FTP functions
 Description: These are bindings for ftplib, and MATLAB compatible APIs.
 Depends: octave (>= 2.9.12)
 Autoload: yes

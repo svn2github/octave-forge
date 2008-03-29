@@ -80,6 +80,10 @@ AC_ARG_WITH(altmpath,
 AC_ARG_WITH(altopath,
 	[  --with-altopath         override path for alternative oct-files],
 	[altopath=$withval])	
+AC_ARG_WITH([swig], 
+            [AS_HELP_STRING([--with-swig],[use swig wrapper generator [no]])],
+            [with_swig=$withval],
+            [with_swig=no])
 
 if test -n "$path" ; then
    test -z "$mpath" && mpath=$path 
@@ -327,13 +331,17 @@ case "$canonical_host_type" in
 esac
 
 dnl check for swig and test that it supports octave
-AC_PATH_PROG(swigpath,swig)
-test -z "$swigpath" && AC_MSG_ERROR(swig not found on path)
-cat > conftest.i <<EOF
+SWIG=""
+if test x"$with_swig" = "xyes"; then
+   AC_PATH_PROG(SWIG,swig)
+   test -z "$SWIG" && AC_MSG_ERROR(swig not found on path)
+   cat > conftest.i <<EOF
 %module conftest
 EOF
-$swigpath -c++ -octave conftest.i || AC_MSG_ERROR(swig doesn't support octave modules)
-rm -f conftest.*
+   $SWIG -c++ -octave conftest.i || AC_MSG_ERROR(swig doesn't support octave modules)
+   rm -f conftest.*
+fi
+
 
 CONFIGURE_OUTPUTS="Makeconf"
 STATUS_MSG="
@@ -354,4 +362,4 @@ shell commands will install into the following directories:
 octave-forge is configured with
    octave:      $OCTAVE (version $OCTAVE_VERSION)
    mkoctfile:	$MKOCTFILE for Octave $subver
-   swig:        $swigpath"
+   swig:        $SWIG"

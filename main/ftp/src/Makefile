@@ -1,22 +1,19 @@
 sinclude Makeconf
 
-ifndef SWIG
-SWIG=~/swig/preinst-swig
-endif
-ifndef MKOCTFILE
-MKOCTFILE=g++ -g -shared
-endif
-
 .PHONY: clean check
 
 all: ftpobj.oct
 
-ftpobj.oct: ftp.i ftplib_filtered.h
-	$(SWIG) -octave -c++ -o ftp_wrap.cpp ftp.i
+ftpobj.oct: ftp_wrap.cpp ftplib_filtered.h
 	$(MKOCTFILE) -o ftpobj.oct ftp_wrap.cpp -lftp
 
+ifdef SWIG
+ftp_wrap.cpp: ftp.i
+	$(SWIG) -octave -c++ -o ftp_wrap.cpp ftp.i
+endif
+
 clean:
-	-$(RM) *.o octave-core core *.oct *~ *_wrap.cpp
+	-$(RM) *.o octave-core core *.oct *~
 
 TEST_CASES =  \
 	basic \

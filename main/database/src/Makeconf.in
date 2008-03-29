@@ -61,7 +61,7 @@ XPATH = @xpath@
 ALTMPATH = @altmpath@
 ALTOPATH = @altopath@
 
-SWIG = @swigpath@
+SWIG = @SWIG@
 
 %.o: %.c ; $(MKOCTFILE) -c $<
 %.o: %.f ; $(MKOCTFILE) -c $<

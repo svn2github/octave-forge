@@ -1,12 +1,15 @@
-#SWIG=~/swig/preinst-swig
 
 bindings-octave: ann.oct
-ann.oct: ann.i ../include/ANN/ANN.h ../include/ANN/ANNperf.h ../include/ANN/ANNx.h
-	$(SWIG) -c++ -octave -o ann_wrap.cpp ann.i
+ann.oct: ann_wrap.cpp ../include/ANN/ANN.h ../include/ANN/ANNperf.h ../include/ANN/ANNx.h
 	$(MKOCTFILE) -o ann.oct -I../include -L../lib -lANN ann_wrap.cpp
 
+ifdef SWIG
+ann_wrap.cpp: ann.i
+	$(SWIG) -c++ -octave -o ann_wrap.cpp ann.i
+endif
+
 clean:
-	rm -f *.oct *.o *_wrap* *~ octave-core 
+	rm -f *.oct *.o *~ octave-core 
 
 
 OCTAVE_TEST_CASES =   \

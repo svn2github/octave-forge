@@ -1,3 +1,41 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak jpeg-6b-orig/jmorecfg.h jpeg-6b/jmorecfg.h
+--- jpeg-6b-orig/jmorecfg.h	Sun Aug 10 01:58:56 1997
++++ jpeg-6b/jmorecfg.h	Sun Mar 30 12:38:02 2008
+@@ -150,16 +150,18 @@
+ #endif /* HAVE_UNSIGNED_SHORT */
+ 
+ /* INT16 must hold at least the values -32768..32767. */
+-
+ #ifndef XMD_H			/* X11/xmd.h correctly defines INT16 */
+ typedef short INT16;
+ #endif
+ 
+ /* INT32 must hold at least signed 32-bit values. */
+-
++#ifdef __MINGW32__
++  #include <basetsd.h>
++#else
+ #ifndef XMD_H			/* X11/xmd.h correctly defines INT32 */
+ typedef long INT32;
+ #endif
++#endif
+ 
+ /* Datatype used for image dimensions.  The JPEG standard only supports
+  * images up to 64K*64K due to 16-bit fields in SOF markers.  Therefore
+@@ -222,9 +224,12 @@
+  * specific header files that you want to include together with these files.
+  * Defining HAVE_BOOLEAN before including jpeglib.h should make it work.
+  */
+-
++#ifdef __MINGW32__
++typedef unsigned char boolean;
++#else
+ #ifndef HAVE_BOOLEAN
+ typedef int boolean;
++#endif
+ #endif
+ #ifndef FALSE			/* in case these macros already exist */
+ #define FALSE	0		/* values of boolean */
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak jpeg-6b-orig/makefile.cfg jpeg-6b/makefile.cfg
 --- jpeg-6b-orig/makefile.cfg	Sat Mar 21 20:08:57 1998
 +++ jpeg-6b/makefile.cfg	Tue Jan  1 16:34:29 2008

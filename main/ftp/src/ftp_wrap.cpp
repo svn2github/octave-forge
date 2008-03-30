@@ -901,6 +901,7 @@ namespace {
     swig_type_info **type;
     int director;
     octave_func constructor;
+    const char *constructor_doc;
     octave_func destructor;
     const swig_octave_member *members;
     const char **base_names;
@@ -1114,6 +1115,14 @@ namespace {
 	return (long) this;
       return (long) types[0].second.ptr;
     }
+    const char* help_text() const {
+      if (!types.size())
+	return 0;
+      if (!types[0].first->clientdata)
+	return 0;
+      swig_octave_class *c = (swig_octave_class *) types[0].first->clientdata;
+      return c->constructor_doc;
+    }
 
     std::string swig_type_name() const {
       // * need some way to manually name subclasses.
@@ -1149,10 +1158,19 @@ namespace {
       for (member_map::const_iterator it = members.begin(); it != members.end(); ++it) {
 	if (it->second.first && it->second.first->method)
 	  install_builtin_function(it->second.first->method, it->first,
-				   /*it->second.first->doc?it->second.first->doc:*/std::string());
+				   it->second.first->doc?it->second.first->doc:std::string());
 	else if (it->second.second.is_defined()) {
 	  link_to_global_variable(curr_sym_tab->lookup(it->first, true));
 	  set_global_value(it->first, it->second.second);
+	  
+	  octave_swig_type *ost = Swig::swig_value_deref(it->second.second);
+	  if (ost) {
+	    const char* h = ost->help_text();
+	    if (h) {
+	      symbol_record *sr = global_sym_tab->lookup (it->first, true);
+	      sr->document(h);
+	    }
+	  }
 	}
       }
     }
@@ -1941,9 +1959,8 @@ octave_value_typeinfo::register_binary_op(octave_value::op_##name,tid1,tid2,swig
 
 #define SWIGTYPE_p_char swig_types[0]
 #define SWIGTYPE_p_ftp swig_types[1]
-#define SWIGTYPE_p_netbuf swig_types[2]
-static swig_type_info *swig_types[4];
-static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
+static swig_type_info *swig_types[3];
+static swig_module_info swig_module = {swig_types, 2, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2001,11 +2018,11 @@ static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
       return c;
     }
 
-  public:
     netbuf *obj;
     std::string host;
     std::string user;
     char mode;
+  public:
 
 
 
@@ -2121,6 +2138,14 @@ static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
 	error("ftp mput failed");
     }
 
+    void ascii() {
+      mode=FTPLIB_ASCII;
+    }
+
+    void binary() {
+      mode=FTPLIB_BINARY;
+    }
+
     std::string __str() {
          if (!obj) {      error("not connected");      return 0;    };
       std::stringstream sout;
@@ -2132,29 +2157,6 @@ static swig_module_info swig_module = {swig_types, 3, 0, 0, 0, 0};
       return sout.str();
     }
   };
-
-  // **********************************************************************
-  // MATLAB compatiable interface
-
-  void ascii(ftp* f) {
-    f->mode=FTPLIB_ASCII;
-  }
-
-  void binary(ftp* f) {
-    f->mode=FTPLIB_BINARY;
-  }
-
-  void mget(ftp* f,const char* fn) {
-    f->mget(fn);
-  }
-
-  void mget(ftp *f,const octave_value_list& varargs,...) {
-    f->mget(varargs);
-  }
-
-  void mput(ftp* f,const char* fn) {
-    f->mput(fn);
-  }
 
 
 
@@ -2178,34 +2180,19 @@ SWIG_AsCharPtrAndSize(const octave_value& ov, char** cptr, size_t* psize, int *a
 }
 
 
-SWIGINTERN int
-SWIG_AsPtr_std_string (octave_value obj, std::string **val) 
-{
-  char* buf = 0 ; size_t size = 0; int alloc = SWIG_OLDOBJ;
-  if (SWIG_IsOK((SWIG_AsCharPtrAndSize(obj, &buf, &size, &alloc)))) {
-    if (buf) {
-      if (val) *val = new std::string(buf, size - 1);
-      if (alloc == SWIG_NEWOBJ) delete[] buf;
-      return SWIG_NEWOBJ;
-    } else {
-      if (val) *val = 0;
-      return SWIG_OLDOBJ;
+
+
+
+  SWIGINTERNINLINE octave_value SWIG_From_long    (long value)
+    {    
+      return octave_value(value);
     }
-  } else {
-    static int init = 0;
-    static swig_type_info* descriptor = 0;
-    if (!init) {
-      descriptor = SWIG_TypeQuery("std::string" " *");
-      init = 1;
-    }
-    if (descriptor) {
-      std::string *vptr;
-      int res = SWIG_ConvertPtr(obj, (void**)&vptr, descriptor, 0);
-      if (SWIG_IsOK(res) && val) *val = vptr;
-      return res;
-    }
-  }
-  return SWIG_ERROR;
+
+
+SWIGINTERNINLINE octave_value
+SWIG_From_int  (int value)
+{    
+  return SWIG_From_long  (value);
 }
 
 
@@ -2239,348 +2226,109 @@ SWIG_From_std_string  (const std::string& s)
   }
 }
 
-
-SWIGINTERN int
-SWIG_AsCharArray(octave_value obj, char *val, size_t size)
-{ 
-  char* cptr = 0; size_t csize = 0; int alloc = SWIG_OLDOBJ;
-  int res = SWIG_AsCharPtrAndSize(obj, &cptr, &csize, &alloc);
-  if (SWIG_IsOK(res)) {
-    if ((csize == size + 1) && cptr && !(cptr[csize-1])) --csize;
-    if (csize <= size) {
-      if (val) {
-	if (csize) memcpy(val, cptr, csize*sizeof(char));
-	if (csize < size) memset(val + csize, 0, (size - csize)*sizeof(char));
-      }
-      if (alloc == SWIG_NEWOBJ) {
-	delete[] cptr;
-	res = SWIG_DelNewMask(res);
-      }      
-      return res;
-    }
-    if (alloc == SWIG_NEWOBJ) delete[] cptr;
-  }
-  return SWIG_TypeError;
-}
-
-
-#include <limits.h>
-#if !defined(SWIG_NO_LLONG_MAX)
-# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
-#   define LLONG_MAX __LONG_LONG_MAX__
-#   define LLONG_MIN (-LLONG_MAX - 1LL)
-#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
-# endif
-#endif
-
-
-  SWIGINTERN int SWIG_AsVal_long (const octave_value& ov, long* val)
-    {
-      if (!ov.is_scalar_type())
-	return SWIG_TypeError;
-      if (ov.is_complex_scalar())
-	return SWIG_TypeError;
-      if (ov.is_double_type()||ov.is_single_type()) {
-	double v=ov.double_value();
-	if (v!=floor(v))
-	  return SWIG_TypeError;
-      }
-      if (val)
-	*val = ov.long_value();
-      return SWIG_OK;
-    }
-
-
-SWIGINTERN int
-SWIG_AsVal_char (octave_value obj, char *val)
-{    
-  int res = SWIG_AsCharArray(obj, val, 1);
-  if (!SWIG_IsOK(res)) {
-    long v;
-    res = SWIG_AddCast(SWIG_AsVal_long (obj, &v));
-    if (SWIG_IsOK(res)) {
-      if ((CHAR_MIN <= v) && (v <= CHAR_MAX)) {
-	if (val) *val = (char)(v);
-      } else {
-	res = SWIG_OverflowError;
-      }
-    }
-  }
-  return res;
-}
-
-
-SWIGINTERNINLINE octave_value
-SWIG_From_char  (char c) 
-{ 
-  return SWIG_FromCharPtrAndSize(&c,1);
-}
-
-
-
-
-
-  SWIGINTERNINLINE octave_value SWIG_From_long    (long value)
-    {    
-      return octave_value(value);
-    }
-
-
-SWIGINTERNINLINE octave_value
-SWIG_From_int  (int value)
-{    
-  return SWIG_From_long  (value);
-}
-
-static octave_value_list _wrap_ftp_obj_set (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  netbuf *arg2 = (netbuf *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("ftp_obj_set",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_obj_set" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  res2 = SWIG_ConvertPtr(args(1), &argp2,SWIGTYPE_p_netbuf, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ftp_obj_set" "', argument " "2"" of type '" "netbuf *""'"); 
-  }
-  arg2 = (netbuf *)(argp2);
-  if (arg1) (arg1)->obj = arg2;
-  
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_ftp_obj_get (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  netbuf *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("ftp_obj_get",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_obj_get" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  result = (netbuf *) ((arg1)->obj);
-  _outv = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_netbuf, 0 |  0 );
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_ftp_host_set (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("ftp_host_set",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_host_set" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(args(1), &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ftp_host_set" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ftp_host_set" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  if (arg1) (arg1)->host = *arg2;
-  
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (SWIG_IsNewObj(res2)) delete arg2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_ftp_host_get (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  std::string *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("ftp_host_get",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_host_get" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  {
-    std::string const &_result_ref =  ((arg1)->host);
-    result = (std::string *) &_result_ref;
-  }
-  _outv = SWIG_From_std_string((std::string)(*result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_ftp_user_set (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("ftp_user_set",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_user_set" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(args(1), &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ftp_user_set" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ftp_user_set" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  if (arg1) (arg1)->user = *arg2;
-  
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (SWIG_IsNewObj(res2)) delete arg2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_ftp_user_get (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  std::string *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("ftp_user_get",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_user_get" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  {
-    std::string const &_result_ref =  ((arg1)->user);
-    result = (std::string *) &_result_ref;
-  }
-  _outv = SWIG_From_std_string((std::string)(*result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_ftp_mode_set (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  char arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  char val2 ;
-  int ecode2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("ftp_mode_set",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_mode_set" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  ecode2 = SWIG_AsVal_char(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ftp_mode_set" "', argument " "2"" of type '" "char""'");
-  } 
-  arg2 = (char)(val2);
-  if (arg1) (arg1)->mode = arg2;
-  
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_ftp_mode_get (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  char result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("ftp_mode_get",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_mode_get" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  result = (char) ((arg1)->mode);
-  _outv = SWIG_From_char((char)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
+const char* _wrap_delete_ftp_texinfo = 0;
+const char* _wrap_ftp___str_texinfo = 0;
+const char* _wrap_ftp_ascii_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} ascii (@var{f})\n\
+Put the FTP connection @var{f} into ascii mode.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_binary_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} binary (@var{f})\n\
+Put the FTP connection @var{f} into binary mode.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_cd_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} cd (@var{f},@var{path})\n\
+Set the remote directory to @var{path} on the FTP connection @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_close_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} ftp (@var{f})\n\
+Close the FTP connection represented by given FTP object @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_dir_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{dirlist}} dir (@var{f})\n\
+List the current directory in verbose form for the FTP connection @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_get_texinfo = 0;
+const char* _wrap_ftp_ls_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{dirlist}} ls (@var{f})\n\
+List the current directory for the FTP connection @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_mget_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} mget (@var{f},@var{path})\n\
+@deftypefnx {Loadable Function} mget (@var{f},@var{path},@dots{},@var{target})\n\
+The first form downloads a remote file @var{path} to the current local directory.\n\
+The second form downloads a series of files given by @var{path} and subsequent \n\
+string parameters into the local directory @var{target}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_mkdir_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} mkdir (@var{f},@var{path})\n\
+Create the remote directory @var{path}, over the FTP connection @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_mput_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} mput (@var{f},@var{path})\n\
+Upload the local file @var{path} into the current remote directory on the \n\
+FTP connection @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_nlst_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{dirlist}} nlst (@var{f})\n\
+List the current directory for the FTP connection @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_put_texinfo = 0;
+const char* _wrap_ftp_pwd_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{path}} pwd (@var{f})\n\
+Returns the current remote directory of the FTP connection @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_remove_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} delete (@var{f},@var{path})\n\
+Delete the remote file or directory @var{path}, over the FTP connection @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_rename_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} rename (@var{f},@var{oldname},@var{newname})\n\
+Rename/move the remote file or directory @var{oldname} to @var{newname}, \n\
+over the FTP connection @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_ftp_rmdir_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} rmdir (@var{f},@var{path})\n\
+Remove the remote directory @var{path}, over the FTP connection @var{f}.\n\
+@var{f} is an FTP object returned by the ftp function.\n\
+@end deftypefn\n\
+";
+const char* _wrap_new_ftp_texinfo = "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{f}} ftp (@var{host})\n\
+@deftypefnx {Loadable Function} {@var{f}} ftp (@var{host}, @var{username}, @var{password})\n\
+Connect to the FTP server @var{host} with @var{username} and @var{password}.\n\
+If @var{username} and @var{password} are not specified, user \"\
+anonymous\"\
+ with no password is used.\n\
+The returned FTP object @var{f} represents the established FTP connection.\n\
+@end deftypefn\n\
+";
 
 static octave_value_list _wrap_new_ftp__SWIG_0 (const octave_value_list& args, int nargout) {
   char *arg1 = (char *) 0 ;
@@ -3514,6 +3262,54 @@ fail:
 }
 
 
+static octave_value_list _wrap_ftp_ascii (const octave_value_list& args, int nargout) {
+  ftp *arg1 = (ftp *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  octave_value_list _out;
+  octave_value_list *_outp=&_out;
+  octave_value _outv;
+  
+  if (!SWIG_check_num_args("ftp_ascii",args.length(),1,1,0)) {
+    SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_ascii" "', argument " "1"" of type '" "ftp *""'"); 
+  }
+  arg1 = (ftp *)(argp1);
+  (arg1)->ascii();
+  _outv = octave_value();
+  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
+fail:
+  return _out;
+}
+
+
+static octave_value_list _wrap_ftp_binary (const octave_value_list& args, int nargout) {
+  ftp *arg1 = (ftp *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  octave_value_list _out;
+  octave_value_list *_outp=&_out;
+  octave_value _outv;
+  
+  if (!SWIG_check_num_args("ftp_binary",args.length(),1,1,0)) {
+    SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ftp_binary" "', argument " "1"" of type '" "ftp *""'"); 
+  }
+  arg1 = (ftp *)(argp1);
+  (arg1)->binary();
+  _outv = octave_value();
+  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
+fail:
+  return _out;
+}
+
+
 static octave_value_list _wrap_ftp___str (const octave_value_list& args, int nargout) {
   ftp *arg1 = (ftp *) 0 ;
   std::string result;
@@ -3540,252 +3336,50 @@ fail:
 
 
 static swig_octave_member swig_ftp_members[] = {
-{"obj",0,_wrap_ftp_obj_get,_wrap_ftp_obj_set,0,0},
-{"host",0,_wrap_ftp_host_get,_wrap_ftp_host_set,0,0},
-{"user",0,_wrap_ftp_user_get,_wrap_ftp_user_set,0,0},
-{"mode",0,_wrap_ftp_mode_get,_wrap_ftp_mode_set,0,0},
-{"close",_wrap_ftp_close,0,0,0,0},
-{"cd",_wrap_ftp_cd,0,0,0,0},
-{"pwd",_wrap_ftp_pwd,0,0,0,0},
-{"ls",_wrap_ftp_ls,0,0,0,0},
-{"nlst",_wrap_ftp_nlst,0,0,0,0},
-{"dir",_wrap_ftp_dir,0,0,0,0},
-{"rmdir",_wrap_ftp_rmdir,0,0,0,0},
-{"mkdir",_wrap_ftp_mkdir,0,0,0,0},
-{"get",_wrap_ftp_get,0,0,0,0},
-{"put",_wrap_ftp_put,0,0,0,0},
-{"rename",_wrap_ftp_rename,0,0,0,0},
-{"remove",_wrap_ftp_remove,0,0,0,0},
-{"mget",_wrap_ftp_mget,0,0,0,0},
-{"mput",_wrap_ftp_mput,0,0,0,0},
-{"__str",_wrap_ftp___str,0,0,0,0},
+{"close",_wrap_ftp_close,0,0,0,_wrap_ftp_close_texinfo},
+{"cd",_wrap_ftp_cd,0,0,0,_wrap_ftp_cd_texinfo},
+{"pwd",_wrap_ftp_pwd,0,0,0,_wrap_ftp_pwd_texinfo},
+{"ls",_wrap_ftp_ls,0,0,0,_wrap_ftp_ls_texinfo},
+{"nlst",_wrap_ftp_nlst,0,0,0,_wrap_ftp_nlst_texinfo},
+{"dir",_wrap_ftp_dir,0,0,0,_wrap_ftp_dir_texinfo},
+{"rmdir",_wrap_ftp_rmdir,0,0,0,_wrap_ftp_rmdir_texinfo},
+{"mkdir",_wrap_ftp_mkdir,0,0,0,_wrap_ftp_mkdir_texinfo},
+{"get",_wrap_ftp_get,0,0,0,_wrap_ftp_get_texinfo},
+{"put",_wrap_ftp_put,0,0,0,_wrap_ftp_put_texinfo},
+{"rename",_wrap_ftp_rename,0,0,0,_wrap_ftp_rename_texinfo},
+{"remove",_wrap_ftp_remove,0,0,0,_wrap_ftp_remove_texinfo},
+{"mget",_wrap_ftp_mget,0,0,0,_wrap_ftp_mget_texinfo},
+{"mput",_wrap_ftp_mput,0,0,0,_wrap_ftp_mput_texinfo},
+{"ascii",_wrap_ftp_ascii,0,0,0,_wrap_ftp_ascii_texinfo},
+{"binary",_wrap_ftp_binary,0,0,0,_wrap_ftp_binary_texinfo},
+{"__str",_wrap_ftp___str,0,0,0,_wrap_ftp___str_texinfo},
 {0,0,0,0}
 };
 static const char *swig_ftp_base_names[] = {0};
 static const swig_type_info *swig_ftp_base[] = {0};
-static swig_octave_class _wrap_class_ftp = {"ftp", &SWIGTYPE_p_ftp,0,_wrap_new_ftp,_wrap_delete_ftp,swig_ftp_members,swig_ftp_base_names,swig_ftp_base };
-
-static octave_value_list _wrap_ascii (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("ascii",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ascii" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  ascii(arg1);
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_binary (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("binary",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "binary" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  binary(arg1);
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_mget__SWIG_0 (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  char *arg2 = (char *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("mget",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "mget" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "mget" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  mget(arg1,(char const *)arg2);
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_mget__SWIG_1 (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  octave_value_list *arg2 = 0 ;
-  void *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list tmp2 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("mget",args.length(),2,2,1)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "mget" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  {
-    for (int j=2-1;j<args.length();++j)
-    tmp2.append(args(j));
-    arg2=&tmp2;
-  }
-  mget(arg1,(octave_value_list const &)*arg2,arg3);
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_mget (const octave_value_list& args, int nargout) {
-  int argc = args.length();
-  octave_value_ref argv[2]={
-    octave_value_ref(args,0),octave_value_ref(args,1)
-  };
-  
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ftp, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_mget__SWIG_0(args, nargout);
-      }
-    }
-  }
-  if (argc >= 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ftp, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v=1;
-      }
-      if (_v) {
-        if (argc <= 2) {
-          return _wrap_mget__SWIG_1(args, nargout);
-        }
-        return _wrap_mget__SWIG_1(args, nargout);
-      }
-    }
-  }
-  
-  error("No matching function for overload");
-  return octave_value_list();
-}
-
-
-static octave_value_list _wrap_mput (const octave_value_list& args, int nargout) {
-  ftp *arg1 = (ftp *) 0 ;
-  char *arg2 = (char *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("mput",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_ftp, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "mput" "', argument " "1"" of type '" "ftp *""'"); 
-  }
-  arg1 = (ftp *)(argp1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "mput" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  mput(arg1,(char const *)arg2);
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
+static swig_octave_class _wrap_class_ftp = {"ftp", &SWIGTYPE_p_ftp,0,_wrap_new_ftp,_wrap_new_ftp_texinfo,_wrap_delete_ftp,swig_ftp_members,swig_ftp_base_names,swig_ftp_base };
 
 
 static const struct swig_octave_member swig_globals[] = {
-{"ftp_obj_set",_wrap_ftp_obj_set,0,0,2,0},
-{"ftp_obj_get",_wrap_ftp_obj_get,0,0,2,0},
-{"ftp_host_set",_wrap_ftp_host_set,0,0,2,0},
-{"ftp_host_get",_wrap_ftp_host_get,0,0,2,0},
-{"ftp_user_set",_wrap_ftp_user_set,0,0,2,0},
-{"ftp_user_get",_wrap_ftp_user_get,0,0,2,0},
-{"ftp_mode_set",_wrap_ftp_mode_set,0,0,2,0},
-{"ftp_mode_get",_wrap_ftp_mode_get,0,0,2,0},
-{"new_ftp",_wrap_new_ftp,0,0,2,0},
-{"delete_ftp",_wrap_delete_ftp,0,0,2,0},
-{"ftp_close",_wrap_ftp_close,0,0,2,0},
-{"ftp_cd",_wrap_ftp_cd,0,0,2,0},
-{"ftp_pwd",_wrap_ftp_pwd,0,0,2,0},
-{"ftp_ls",_wrap_ftp_ls,0,0,2,0},
-{"ftp_nlst",_wrap_ftp_nlst,0,0,2,0},
-{"ftp_dir",_wrap_ftp_dir,0,0,2,0},
-{"ftp_rmdir",_wrap_ftp_rmdir,0,0,2,0},
-{"ftp_mkdir",_wrap_ftp_mkdir,0,0,2,0},
-{"ftp_get",_wrap_ftp_get,0,0,2,0},
-{"ftp_put",_wrap_ftp_put,0,0,2,0},
-{"ftp_rename",_wrap_ftp_rename,0,0,2,0},
-{"ftp_remove",_wrap_ftp_remove,0,0,2,0},
-{"ftp_mget",_wrap_ftp_mget,0,0,2,0},
-{"ftp_mput",_wrap_ftp_mput,0,0,2,0},
-{"ftp___str",_wrap_ftp___str,0,0,2,0},
-{"ascii",_wrap_ascii,0,0,2,0},
-{"binary",_wrap_binary,0,0,2,0},
-{"mget",_wrap_mget,0,0,2,0},
-{"mput",_wrap_mput,0,0,2,0},
+{"new_ftp",_wrap_new_ftp,0,0,2,_wrap_new_ftp_texinfo},
+{"delete_ftp",_wrap_delete_ftp,0,0,2,_wrap_delete_ftp_texinfo},
+{"ftp_close",_wrap_ftp_close,0,0,2,_wrap_ftp_close_texinfo},
+{"ftp_cd",_wrap_ftp_cd,0,0,2,_wrap_ftp_cd_texinfo},
+{"ftp_pwd",_wrap_ftp_pwd,0,0,2,_wrap_ftp_pwd_texinfo},
+{"ftp_ls",_wrap_ftp_ls,0,0,2,_wrap_ftp_ls_texinfo},
+{"ftp_nlst",_wrap_ftp_nlst,0,0,2,_wrap_ftp_nlst_texinfo},
+{"ftp_dir",_wrap_ftp_dir,0,0,2,_wrap_ftp_dir_texinfo},
+{"ftp_rmdir",_wrap_ftp_rmdir,0,0,2,_wrap_ftp_rmdir_texinfo},
+{"ftp_mkdir",_wrap_ftp_mkdir,0,0,2,_wrap_ftp_mkdir_texinfo},
+{"ftp_get",_wrap_ftp_get,0,0,2,_wrap_ftp_get_texinfo},
+{"ftp_put",_wrap_ftp_put,0,0,2,_wrap_ftp_put_texinfo},
+{"ftp_rename",_wrap_ftp_rename,0,0,2,_wrap_ftp_rename_texinfo},
+{"ftp_remove",_wrap_ftp_remove,0,0,2,_wrap_ftp_remove_texinfo},
+{"ftp_mget",_wrap_ftp_mget,0,0,2,_wrap_ftp_mget_texinfo},
+{"ftp_mput",_wrap_ftp_mput,0,0,2,_wrap_ftp_mput_texinfo},
+{"ftp_ascii",_wrap_ftp_ascii,0,0,2,_wrap_ftp_ascii_texinfo},
+{"ftp_binary",_wrap_ftp_binary,0,0,2,_wrap_ftp_binary_texinfo},
+{"ftp___str",_wrap_ftp___str,0,0,2,_wrap_ftp___str_texinfo},
 {0,0,0,0,0}
 };
 
@@ -3793,22 +3387,18 @@ static const struct swig_octave_member swig_globals[] = {
 
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ftp = {"_p_ftp", "ftp *", 0, 0, (void*)&_wrap_class_ftp, 0};
-static swig_type_info _swigt__p_netbuf = {"_p_netbuf", "netbuf *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_char,
   &_swigt__p_ftp,
-  &_swigt__p_netbuf,
 };
 
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ftp[] = {  {&_swigt__p_ftp, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_netbuf[] = {  {&_swigt__p_netbuf, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_char,
   _swigc__p_ftp,
-  _swigc__p_netbuf,
 };
 
 

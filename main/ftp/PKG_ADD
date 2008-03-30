@@ -15,4 +15,8 @@ dispatch("rmdir","ftp_rmdir","swig_ref");
 dispatch("mkdir","ftp_mkdir","swig_ref");
 dispatch("rename","ftp_rename","swig_ref");
 dispatch("delete","ftp_remove","swig_ref");
+dispatch("mput","ftp_mput","swig_ref");
+dispatch("mget","ftp_mget","swig_ref");
+dispatch("ascii","ftp_ascii","swig_ref");
+dispatch("binary","ftp_binary","swig_ref");
 

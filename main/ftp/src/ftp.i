@@ -33,6 +33,8 @@
 
 // * mput: doesn't handle wildcard or recursive directory uploading
 
+%include "docs.i"
+
 // **********************************************************************
 // ftp object
 
@@ -69,11 +71,11 @@
       return c;
     }
 
-  public:
     netbuf *obj;
     std::string host;
     std::string user;
     char mode;
+  public:
 
 #define check_connected(ret) \
   if (!obj) { \
@@ -189,6 +191,14 @@
 	error("ftp mput failed");
     }
 
+    void ascii() {
+      mode=FTPLIB_ASCII;
+    }
+
+    void binary() {
+      mode=FTPLIB_BINARY;
+    }
+
     std::string __str() {
       check_connected(0);
       std::stringstream sout;
@@ -200,28 +210,5 @@
       return sout.str();
     }
   };
-
-  // **********************************************************************
-  // MATLAB compatiable interface
-
-  void ascii(ftp* f) {
-    f->mode=FTPLIB_ASCII;
-  }
-
-  void binary(ftp* f) {
-    f->mode=FTPLIB_BINARY;
-  }
-
-  void mget(ftp* f,const char* fn) {
-    f->mget(fn);
-  }
-
-  void mget(ftp *f,const octave_value_list& varargs,...) {
-    f->mget(varargs);
-  }
-
-  void mput(ftp* f,const char* fn) {
-    f->mput(fn);
-  }
 
 }

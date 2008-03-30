@@ -8,7 +8,7 @@ ftpobj.oct: ftp_wrap.cpp
 	$(MKOCTFILE) -o ftpobj.oct ftp_wrap.cpp -lftp
 
 ifdef SWIG
-ftp_wrap.cpp: ftp.i
+ftp_wrap.cpp: ftp.i docs.i
 	$(SWIG) -octave -c++ -o ftp_wrap.cpp ftp.i
 endif
 

@@ -31,7 +31,7 @@ SRCDIR_ORIG=${SRCDIR}-orig
 MAKEFILE=""
 
 # Additional DIFF Flags for generating diff file
-#DIFF_FLAGS="-x *.def"
+DIFF_FLAGS="-x autom4te.cache -x configure"
 
 # header files to be installed
 INSTALL_HEADERS="gd.h gdfx.h gd_io.h gdcache.h gdfontg.h gdfontl.h gdfontmb.h gdfonts.h gdfontt.h"
@@ -54,7 +54,6 @@ conf()
      F77=${F77} \
      CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
      CXXFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
-     CPPFLAGS="-DDEFAULT_FONTPATH=\"C:\\\\WINDOWS\\\\FONTS;C:\\\\WINNT\\\\FONTS\" -DPATHSEPARATOR=\";\"" \
      LDFLAGS="${LDFLAGS}" \
      --prefix="${PREFIX}" \
      --enable-static \

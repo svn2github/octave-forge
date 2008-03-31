@@ -49,60 +49,63 @@
 
 function result = aminolookup (varargin)
 
-  persistent code num abbr name seq
+  persistent data
 
-  if isempty (code)
-    code = "ARNDCQEGHILKMFPSTWYVBZX*-";
-    num = 1:25;
-    abbr = {"Ala" "Arg" "Asn" "Asp" "Cys" "Gln" "Glu" "Gly" "His" "Ile" \
-            "Leu" "Lys" "Met" "Phe" "Pro" "Ser" "Thr" "Trp" "Tyr" "Val" \
-            "Asx" "Glx" "Xaa" "END" "GAP"};
+  if isempty (data)
+    data.code = "ARNDCQEGHILKMFPSTWYVBZX*-";
+    data.num = 1:25;
 
-    name = cell (numel (code), 3);
-    name = {"Alanine" "Arginine" "Asparagine" "Aspartic acid" "Cysteine" \
-            "Glutamine" "Glutamic acid" "Glycine" "Histidine" \
-            "Isoleucine" "Leucine" "Lysine" "Methionine" "Phenylalanine" \
-            "Proline" "Serine" "Threonine" "Tryptophan" "Tyrosine" \
-            "Valine" "Asparagine" "Glutamine" "Any amino acid" \
-            "Termination codon (translation stop)" \
-            "Gap of unknown length"}';
+    data.abbr = {"Ala" "Arg" "Asn" "Asp" "Cys" "Gln" "Glu" "Gly" "His" \
+                 "Ile" "Leu" "Lys" "Met" "Phe" "Pro" "Ser" "Thr" "Trp" \
+                 "Tyr" "Val" "Asx" "Glx" "Xaa" "END" "GAP"};
+
+    data.name = cell (numel (data.code), 3);
+    data.name(:,1) = {"Alanine" "Arginine" "Asparagine" "Aspartic acid" \
+                      "Cysteine" "Glutamine" "Glutamic acid" "Glycine" \
+                      "Histidine" "Isoleucine" "Leucine" "Lysine" \
+                      "Methionine" "Phenylalanine" "Proline" "Serine" \
+                      "Threonine" "Tryptophan" "Tyrosine" "Valine" \
+                      "Asparagine" "Glutamine" "Any amino acid" \
+                      "Termination codon (translation stop)" \
+                      "Gap of unknown length"}';
     ## Alternate names
-    name{4,2} = "Aspartate";
-    name{7,2} = "Glutamate";
-    name{21,2} = "Aspartic acid";
-    name{22,2} = "Glutamic acid";
-    name{21,3} = "Aspartate";
-    name{22,3} = "Glutamate";
-    for i = 1:numel (name)
-      if isempty (name{i})
-        name{i} = "";
+    data.name{4,2} = "Aspartate";
+    data.name{7,2} = "Glutamate";
+    data.name{21,2} = "Aspartic acid";
+    data.name{22,2} = "Glutamic acid";
+    data.name{21,3} = "Aspartate";
+    data.name{22,3} = "Glutamate";
+    for i = 1:numel (data.name)
+      if isempty (data.name{i})
+        data.name{i} = "";
       endif
     endfor
 
-    seq = {"GCU GCC GCA GCG" "CGU CGC CGA CGG AGA AGG" "AAU AAC" "GAU GAC" \
-           "UGU UGC" "CAA CAG" "GAA GAG" "GGU GGC GGA GGG" "CAU CAC" \
-           "AUU AUC AUA" "UUA UUG CUU CUC CUA CUG" "AAA AAG" "AUG" \
-           "UUU UUC" "CCU CCC CCA CCG" "UCU UCC UCA UCG AGU AGC" \
-           "ACU ACC ACA ACG" "UGG" "UAU UAC" "GUU GUC GUA GUG" \
-           "AAU AAC GAU GAC" "CAA CAG GAA GAG" "All codons" "UAA UAG UGA" \
-           "NA"};
+    data.seq = {"GCU GCC GCA GCG" "CGU CGC CGA CGG AGA AGG" "AAU AAC" \
+                "GAU GAC" "UGU UGC" "CAA CAG" "GAA GAG" \
+                "GGU GGC GGA GGG" "CAU CAC" "AUU AUC AUA" \
+                "UUA UUG CUU CUC CUA CUG" "AAA AAG" "AUG" "UUU UUC" \
+                "CCU CCC CCA CCG" "UCU UCC UCA UCG AGU AGC" \
+                "ACU ACC ACA ACG" "UGG" "UAU UAC" "GUU GUC GUA GUG" \
+                "AAU AAC GAU GAC" "CAA CAG GAA GAG" "All codons" \
+                "UAA UAG UGA" "NA"};
   endif
 
   searchtype = "";
   value = "";
 
   if (nargin == 0)
-    n = cell (rows (name), 4);
-    n(:,1) = name(:,1);
-    for i = 1:rows (name)
-      for j = 2:columns (name)
-        if (! isempty (name{i,j}))
-          n{i,1} = sprintf ("%s or %s", n{i,1}, name{i,j});
+    n = cell (rows (data.name), 4);
+    n(:,1) = data.name(:,1);
+    for i = 1:rows (data.name)
+      for j = 2:columns (data.name)
+        if (! isempty (data.name{i,j}))
+          n{i,1} = sprintf ("%s or %s", n{i,1}, data.name{i,j});
         endif
       endfor
       n{i,2} = num2str (i);
-      n{i,3} = code(i);
-      n{i,4} = seq{i};
+      n{i,3} = data.code(i);
+      n{i,4} = data.seq{i};
     endfor
     s = max (cellfun (@numel, n));
     fmt = sprintf ("%%-%ds ", s(1), s(2), s(3), s(4));
@@ -142,14 +145,14 @@ function result = aminolookup (varargin)
       case "code"
         value = upper (value);
         newvalue = -ones (size (value));
-        for i = 1:numel (code)
-          newvalue(value(:) == code(i)) = i;
+        for i = 1:numel (data.code)
+          newvalue(value(:) == data.code(i)) = i;
         endfor
         outtype = "abbreviation";
       case "abbreviation"
         newvalue = -ones (1, numel (value)/3);
         for i = 1:3:numel (value)
-          newvalue((i-1)/3+1) = find (strcmp (value(i:i+2), abbr), 1);
+          newvalue((i-1)/3+1) = find (strcmp (value(i:i+2), data.abbr), 1);
         endfor
         outtype = "code";
       case "integer"
@@ -160,15 +163,15 @@ function result = aminolookup (varargin)
                 "but code, abbreviation, or integer"]);
     endswitch
     if (any (newvalue(:)) < 0)
-      idx = find ((newvalue < 0) | (newvalue > numel (num)), 1);
+      idx = find ((newvalue < 0) | (newvalue > numel (data.num)), 1);
       error ("aminolookup: unrecognised symbol in input at position %d", idx);
     endif
 
     switch outtype
       case "code"
-        result = code(newvalue);
+        result = data.code(newvalue);
       case "abbreviation"
-        result = strcat(abbr{newvalue});
+        result = strcat(data.abbr{newvalue});
       otherwise
         error ("aminolookup: invalid output type")
     endswitch
@@ -179,28 +182,28 @@ function result = aminolookup (varargin)
         if isempty (value)
           result = ints;
         else
-          result = sprintf ("%s %s %s", code(value), abbr(value), name(value));
+          result = sprintf ("%s %s %s", data.code(value), data.abbr(value), data.name(value));
         endif
       case "code"
         if isempty (value)
-          result = code;
+          result = data.code;
         else
-          idx = find (lower (value) == lower(code), 1);
-          result = sprintf ("%s %s", abbr{idx}, name{idx});
+          idx = find (lower (value) == lower(data.code), 1);
+          result = sprintf ("%s %s", data.abbr{idx}, data.name{idx});
         endif
       case "abbreviation"
         if isempty (value)
-          result = abbr;
+          result = data.abbr;
         else
-          idx = find (strcmpi (value, abbr));
-          result = sprintf ("%s %s", code(idx), name{idx});
+          idx = find (strcmpi (value, data.abbr));
+          result = sprintf ("%s %s", data.code(idx), data.name{idx});
         endif
       case "name"
         if isempty (value)
-          result = name;
+          result = data.name;
         else
-          [idx whocares] = find (strcmpi (value, name), 1);
-          result = sprintf ("%s %s", code(idx), abbr{idx});
+          [idx whocares] = find (strcmpi (value, data.name), 1);
+          result = sprintf ("%s %s", data.code(idx), data.abbr{idx});
         endif
       otherwise
         error ("aminolookup: invalid search type, %s", searchtype)

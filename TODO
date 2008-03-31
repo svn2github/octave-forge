@@ -1,6 +1,7 @@
 When transitioning to Octave 3.1
 ================================
-* Remove the functions hex2num, num2hex, dlmread, dlmwrite, csvread, csvwrite
+* Remove the functions gtext, ginput, waitforbuttonpress, hex2num, num2hex, 
+  dlmread, dlmwrite, csvread, csvwrite
 * Remove dependency of ga on miscellaneous
 
 Packages

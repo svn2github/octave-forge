@@ -62,6 +62,10 @@ ALTMPATH = @altmpath@
 ALTOPATH = @altopath@
 
 SWIG = @SWIG@
+@DEFHAVE_POSTGRES@
+@DEFHAVE_MYSQL@
+@DEFHAVE_SQLITE3@
+@DEFHAVE_ODBC@
 
 %.o: %.c ; $(MKOCTFILE) -c $<
 %.o: %.f ; $(MKOCTFILE) -c $<

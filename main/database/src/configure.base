@@ -340,7 +340,55 @@ if test x"$with_swig" = "xyes"; then
 EOF
    $SWIG -c++ -octave conftest.i || AC_MSG_ERROR(swig doesn't support octave modules)
    rm -f conftest.*
+   SWIG_STATUS="$SWIG"
+else
+   SWIG_STATUS="pre-generated"
 fi
+
+# check for postgres
+AC_DEFINE(have_postgres)
+AC_CHECK_HEADER(postgresql/libpq-fe.h, have_postgres=yes, have_postgres=no)
+if test $have_postgres = yes ; then
+    POSTGRES_STATUS="yes"
+    AC_SUBST(DEFHAVE_POSTGRES)
+    DEFHAVE_POSTGRES="HAVE_POSTGRES=1"
+else
+    POSTGRES_STATUS="postgresql/libpq-fe.h not found"
+fi
+
+# check for mysql
+AC_DEFINE(have_mysql)
+AC_CHECK_HEADER(mysql/mysql.h, have_mysql=yes, have_mysql=no)
+if test $have_mysql = yes ; then
+    MYSQL_STATUS="yes"
+    AC_SUBST(DEFHAVE_MYSQL)
+    DEFHAVE_MYSQL="HAVE_MYSQL=1"
+else
+    MYSQL_STATUS="mysql/mysql.h not found"
+fi
+
+# check for sqlite3
+AC_DEFINE(have_sqlite3)
+AC_CHECK_HEADER(sqlite3.h, have_sqlite3=yes, have_sqlite3=no)
+if test $have_sqlite3 = yes ; then
+    SQLITE3_STATUS="yes"
+    AC_SUBST(DEFHAVE_SQLITE3)
+    DEFHAVE_SQLITE3="HAVE_SQLITE3=1"
+else
+    SQLITE3_STATUS="sqlite3.h not found"
+fi
+
+# check for odbc
+AC_DEFINE(have_odbc)
+AC_CHECK_HEADER(sql.h, have_odbc=yes, have_odbc=no)
+if test $have_odbc = yes ; then
+    ODBC_STATUS="yes"
+    AC_SUBST(DEFHAVE_ODBC)
+    DEFHAVE_ODBC="HAVE_ODBC=1"
+else
+    ODBC_STATUS="sql.h not found"
+fi
+
 
 CONFIGURE_OUTPUTS="Makeconf"
 STATUS_MSG="
@@ -361,4 +409,8 @@ shell commands will install into the following directories:
 octave-forge is configured with
    octave:      $OCTAVE (version $OCTAVE_VERSION)
    mkoctfile:	$MKOCTFILE for Octave $subver
-   swig:        $SWIG"
+   swig:        $SWIG_STATUS
+   postgres:    $POSTGRES_STATUS
+   mysql:       $MYSQL_STATUS
+   sqlite3:     $SQLITE3_STATUS
+   odbc:        $ODBC_STATUS"

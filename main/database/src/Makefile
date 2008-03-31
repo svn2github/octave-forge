@@ -6,7 +6,21 @@ MKOCTFILE:=CXXFLAGS=-O0 $(MKOCTFILE)
 
 .PHONY: clean check
 
-all: sqlite3.oct postgres.oct mysql.oct odbc.oct
+OCTFILES=
+ifdef HAVE_POSTGRES
+OCTFILES+=postgres.oct
+endif
+ifdef HAVE_MYSQL
+OCTFILES+=mysql.oct
+endif
+ifdef HAVE_SQLITE3
+OCTFILES+=sqlite3.oct
+endif
+ifdef HAVE_ODBC
+OCTFILES+=odbc.oct
+endif
+
+all: $(OCTFILES)
 
 sqlite3.oct: sqlite3_wrap.cpp sqlite3_filtered.h
 	$(MKOCTFILE) -o sqlite3.oct -lsqlite3 sqlite3_wrap.cpp

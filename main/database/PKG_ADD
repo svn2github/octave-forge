@@ -1,8 +1,13 @@
-try
-  postgres
-  mysql
-  sqlite3
-  odbc
-catch
-end_try_catch
+if (exist("postgres") == 3)
+  postgres;
+endif
+if (exist("mysql") == 3)
+  mysql;
+endif
+if (exist("sqlite3") == 3)
+  sqlite3;
+endif
+if (exist("odbc") == 3)
+  odbc;
+endif
 

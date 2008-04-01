@@ -52,6 +52,8 @@ website http://www.eccpage.com for more details.
 
 static bool galois_type_loaded = false;
 
+// PKG_ADD: autoload ("isgalois", "gf.oct");
+
 DEFUN_DLD (isgalois, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} isgalois (@var{expr})\n"
@@ -193,6 +195,7 @@ make_gdiag (const octave_value& a, const octave_value& b)
   return retval;
 }
 
+// PKG_ADD: autoload ("gdiag", "gf.oct");
 // PKG_ADD: dispatch ("diag", "gdiag", "galois");
 DEFUN_DLD (gdiag, args, ,
   "-*- texinfo -*-\n"
@@ -232,6 +235,7 @@ DEFUN_DLD (gdiag, args, ,
   return retval;
 }
 
+// PKG_ADD: autoload ("greshape", "gf.oct");
 // PKG_ADD: dispatch ("reshape", "greshape", "galois");
 DEFUN_DLD (greshape, args, ,
   "-*- texinfo -*-\n"
@@ -353,6 +357,7 @@ DEFUN_DLD (greshape, args, ,
  \
   return retval
 
+// PKG_ADD: autoload ("gprod", "gf.oct");
 // PKG_ADD: dispatch ("prod", "gprod", "galois");
 DEFUN_DLD (gprod, args, ,
   "-*- texinfo -*-\n"
@@ -365,6 +370,7 @@ DEFUN_DLD (gprod, args, ,
   DATA_REDUCTION (prod);
 }
 
+// PKG_ADD: autoload ("gsum", "gf.oct");
 // PKG_ADD: dispatch ("sum", "gsum", "galois");
 DEFUN_DLD (gsum, args, ,
   "-*- texinfo -*-\n"
@@ -377,6 +383,7 @@ DEFUN_DLD (gsum, args, ,
   DATA_REDUCTION (sum);
 }
 
+// PKG_ADD: autoload ("gsumsq", "gf.oct");
 // PKG_ADD: dispatch ("sumsq", "gsumsq", "galois");
 DEFUN_DLD (gsumsq, args, ,
   "-*- texinfo -*-\n"
@@ -395,6 +402,7 @@ DEFUN_DLD (gsumsq, args, ,
   DATA_REDUCTION (sumsq);
 }
 
+// PKG_ADD: autoload ("gsqrt", "gf.oct");
 // PKG_ADD: dispatch ("sqrt", "gsqrt", "galois");
 DEFUN_DLD (gsqrt, args, ,
     "-*- texinfo -*-\n"
@@ -424,6 +432,7 @@ DEFUN_DLD (gsqrt, args, ,
   return retval;
 }
 
+// PKG_ADD: autoload ("glog", "gf.oct");
 // PKG_ADD: dispatch ("log", "glog", "galois");
 DEFUN_DLD (glog, args, ,
     "-*- texinfo -*-\n"
@@ -455,6 +464,7 @@ DEFUN_DLD (glog, args, ,
 }
 
 
+// PKG_ADD: autoload ("gexp", "gf.oct");
 // PKG_ADD: dispatch ("exp", "gexp", "galois");
 DEFUN_DLD (gexp, args, ,
     "-*- texinfo -*-\n"
@@ -595,6 +605,7 @@ galois filter(galois& b, galois& a, galois& x, galois& si) {
 }
 
 
+// PKG_ADD: autoload ("gfilter", "gf.oct");
 // PKG_ADD: dispatch ("filter", "gfilter", "galois");
 DEFUN_DLD (gfilter, args, nargout,
   "-*- texinfo -*-\n"
@@ -774,6 +785,7 @@ DEFUN_DLD (gfilter, args, nargout,
   return retval;
 }
 
+// PKG_ADD: autoload ("glu", "gf.oct");
 // PKG_ADD: dispatch ("lu", "glu", "galois");
 DEFUN_DLD (glu, args, nargout,
   "-*- texinfo -*-\n"
@@ -883,6 +895,7 @@ DEFUN_DLD (glu, args, nargout,
   return retval;
 }
 
+// PKG_ADD: autoload ("ginv", "gf.oct");
 // PKG_ADD: dispatch ("inv", "ginv", "galois");
 DEFUN_DLD (ginv, args, nargout,
   "-*- texinfo -*-\n"
@@ -953,6 +966,7 @@ DEFUN_DLD (ginv, args, nargout,
 // alias_builtin() won't do the right thing if we are actually using
 // dynamic linking.
 
+// PKG_ADD: autoload ("ginverse", "gf.oct");
 // PKG_ADD: dispatch ("inverse", "ginverse", "galois");
 DEFUN_DLD (ginverse, args, nargout,
   "-*- texinfo -*-\n"
@@ -963,6 +977,7 @@ DEFUN_DLD (ginverse, args, nargout,
   return Fginv (args, nargout);
 }
 
+// PKG_ADD: autoload ("gdet", "gf.oct");
 // PKG_ADD: dispatch ("det", "gdet", "galois");
 DEFUN_DLD (gdet, args, nargout,
   "-*- texinfo -*-\n"
@@ -1011,6 +1026,7 @@ DEFUN_DLD (gdet, args, nargout,
   return retval;
 }
 
+// PKG_ADD: autoload ("grank", "gf.oct");
 // PKG_ADD: dispatch ("rank", "grank", "galois");
 DEFUN_DLD (grank, args, nargout,
   "-*- texinfo -*-\n"
@@ -1088,6 +1104,7 @@ DEFUN_DLD (grank, args, nargout,
   return retval;
 }
 
+// PKG_ADD: autoload ("rsenc", "gf.oct");
 DEFUN_DLD (rsenc, args, nargout,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{code} = } rsenc (@var{msg},@var{n},@var{k})\n"
@@ -1567,6 +1584,7 @@ int decode_rs(galois& data, const int prim, const int iprim, const int nroots,
   return count;
 }
 
+// PKG_ADD: autoload ("rsdec", "gf.oct");
 DEFUN_DLD (rsdec, args, nargout,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{msg} = } rsdec (@var{code},@var{n},@var{k})\n"
@@ -1833,6 +1851,7 @@ DEFUN_DLD (rsdec, args, nargout,
   return retval;
 }
 
+// PKG_ADD: autoload ("bchenco", "gf.oct");
 DEFUN_DLD (bchenco, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{code} = } bchenco (@var{msg},@var{n},@var{k})\n"
@@ -2084,6 +2103,7 @@ DEFUN_DLD (bchenco, args, ,
   return retval;
 }
 
+// PKG_ADD: autoload ("bchdeco", "gf.oct");
 DEFUN_DLD (bchdeco, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{msg} = } bchdeco (@var{code},@var{k},@var{t})\n"

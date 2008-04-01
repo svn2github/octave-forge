@@ -36,6 +36,8 @@ Open Source Initiative (www.opensource.org)
 #include <octave/utils.h>
 #include <octave/defun-dld.h>
 
+// PKG_ADD: autoload ("fixed_point_warn_overflow", "fixed.oct");
+
 DEFUN_DLD (fixed_point_warn_overflow, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} fixed_point_warn_overflow ()\n\
@@ -48,6 +50,8 @@ By default, these warnings are disabled.\n\
   return set_internal_variable (Fixed::FP_Overflow, args, nargout,
 				"fixed_point_warn_overflow");
 }
+
+// PKG_ADD: autoload ("fixed_point_debug", "fixed.oct");
 
 DEFUN_DLD (fixed_point_debug, args, nargout,
   "-*- texinfo -*-\n\
@@ -62,6 +66,8 @@ to the variables value.  By default this feature is disabled.\n\
   return set_internal_variable (Fixed::FP_Debug, args, nargout,
 				"fixed_point_debug");
 }
+
+// PKG_ADD: autoload ("fixed_point_count_operations", "fixed.oct");
 
 DEFUN_DLD (fixed_point_count_operations, args, nargout,
   "-*- texinfo -*-\n\
@@ -79,6 +85,8 @@ disabled.\n\
 				"fixed_point_count_operations");
 }
 
+// PKG_ADD: autoload ("fixed_point_version", "fixed.oct");
+
 DEFUN_DLD (fixed_point_version, args, ,
     "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} fixed_point_version ()\n\
@@ -95,6 +103,8 @@ A function returning the version number of the fixed point package used.\n\
   return retval;
 }
 
+// PKG_ADD: autoload ("fixed_point_library_version", "fixed.oct");
+
 DEFUN_DLD (fixed_point_library_version, args, ,
     "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} fixed_point_library_version ()\n\
@@ -110,7 +120,6 @@ A function returning the version number of the fixed point library used.\n\
   	 
   return retval;
 }
-
 
 #endif
 

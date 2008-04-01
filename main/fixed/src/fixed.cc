@@ -93,6 +93,7 @@ void load_fixed_type (void)
   fbi_sym_tab->lookup("fixed")->mark_as_static ();
 }
 
+// PKG_ADD: autoload ("display_fixed_operations", "fixed.oct");
 DEFUN_DLD (display_fixed_operations, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} display_fixed_operations ( )\n"
@@ -113,6 +114,7 @@ DEFUN_DLD (display_fixed_operations, args, ,
   return retval;
 }
 
+// PKG_ADD: autoload ("reset_fixed_operations", "fixed.oct");
 DEFUN_DLD (reset_fixed_operations, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} reset_fixed_operations ( )\n"
@@ -129,6 +131,7 @@ DEFUN_DLD (reset_fixed_operations, args, ,
   return retval;
 }
 
+// PKG_ADD: autoload ("isfixed", "fixed.oct");
 DEFUN_DLD (isfixed, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} isfixed (@var{expr})\n"
@@ -453,6 +456,7 @@ DEFUN_DLD (fixed, args, nargout,
     return retval; \
   }
 
+// PKG_ADD: autoload ("freal", "fixed.oct");
 // PKG_ADD: dispatch ("real", "freal", "fixed scalar")
 // PKG_ADD: dispatch ("real", "freal", "fixed matrix")
 // PKG_ADD: dispatch ("real", "freal", "fixed complex")
@@ -462,6 +466,7 @@ DEFUN_DLD_FIXED_SNGL_ARG (freal, "-*- texinfo -*-\n\
 Returns the real part of the fixed point value @var{x}.\n\
 @end deftypefn", ::real, 0, 0, 0, 0)
 
+// PKG_ADD: autoload ("fimag", "fixed.oct");
 // PKG_ADD: dispatch ("imag", "fimag", "fixed scalar")
 // PKG_ADD: dispatch ("imag", "fimag", "fixed matrix")
 // PKG_ADD: dispatch ("imag", "fimag", "fixed complex")
@@ -471,6 +476,7 @@ DEFUN_DLD_FIXED_SNGL_ARG (fimag, "-*- texinfo -*-\n\
 Returns the imaginary part of the fixed point value @var{x}.\n\
 @end deftypefn", ::imag, 0, 0, 0, 0)
 
+// PKG_ADD: autoload ("fconj", "fixed.oct");
 // PKG_ADD: dispatch ("conj", "fconj", "fixed scalar")
 // PKG_ADD: dispatch ("conj", "fconj", "fixed matrix")
 // PKG_ADD: dispatch ("conj", "fconj", "fixed complex")
@@ -480,6 +486,7 @@ DEFUN_DLD_FIXED_SNGL_ARG (fconj, "-*- texinfo -*-\n\
 Returns the conjuate of the fixed point value @var{x}.\n\
 @end deftypefn", ::conj, 0, 0, 0, 0)
 
+// PKG_ADD: autoload ("fabs", "fixed.oct");
 // PKG_ADD: dispatch ("abs", "fabs", "fixed scalar")
 // PKG_ADD: dispatch ("abs", "fabs", "fixed matrix")
 // PKG_ADD: dispatch ("abs", "fabs", "fixed complex")
@@ -489,6 +496,7 @@ DEFUN_DLD_FIXED_SNGL_ARG (fabs, "-*- texinfo -*-\n\
 Compute the magnitude of the fixed point value @var{x}.\n\
 @end deftypefn", ::abs, 0, 0, 0, 0)
 
+// PKG_ADD: autoload ("farg", "fixed.oct");
 // PKG_ADD: dispatch ("arg", "farg", "fixed scalar")
 // PKG_ADD: dispatch ("arg", "farg", "fixed matrix")
 // PKG_ADD: dispatch ("arg", "farg", "fixed complex")
@@ -514,6 +522,7 @@ farg (fixed (3,5,3+4i))\n\
 @end example\n\
 @end deftypefn", ::arg, 1, FixedPoint(1,0,1,0), 1, FixedPoint())
 
+// PKG_ADD: autoload ("fangle", "fixed.oct");
 // PKG_ADD: dispatch ("angle", "fangle", "fixed scalar")
 // PKG_ADD: dispatch ("angle", "fangle", "fixed matrix")
 // PKG_ADD: dispatch ("angle", "fangle", "fixed complex")
@@ -523,6 +532,7 @@ DEFUN_DLD_FIXED_SNGL_ARG (fangle, "-*- texinfo -*-\n\
 See @dfn{farg}.\n\
 @end deftypefn", ::arg, 1, FixedPoint(1,0,1,0), 1, FixedPoint())
 
+// PKG_ADD: autoload ("fcos", "fixed.oct");
 // PKG_ADD: dispatch ("cos", "fcos", "fixed scalar")
 // PKG_ADD: dispatch ("cos", "fcos", "fixed matrix")
 // PKG_ADD: dispatch ("cos", "fcos", "fixed complex")
@@ -533,6 +543,7 @@ Compute the cosine of the fixed point value @var{x}.\n\
 @end deftypefn\n\
 @seealso{fcosh, fsin, fsinh, ftan, ftanh}", ::cos, 0, 0, 0, 0)
 
+// PKG_ADD: autoload ("fcosh", "fixed.oct");
 // PKG_ADD: dispatch ("cosh", "fcosh", "fixed scalar")
 // PKG_ADD: dispatch ("cosh", "fcosh", "fixed matrix")
 // PKG_ADD: dispatch ("cosh", "fcosh", "fixed complex")
@@ -543,6 +554,7 @@ Compute the hyperbolic cosine of the fixed point value @var{x}.\n\
 @end deftypefn\n\
 @seealso{fcos, fsin, fsinh, ftan, ftanh}", ::cosh, 0, 0, 0, 0)
 
+// PKG_ADD: autoload ("fsin", "fixed.oct");
 // PKG_ADD: dispatch ("sin", "fsin", "fixed scalar")
 // PKG_ADD: dispatch ("sin", "fsin", "fixed matrix")
 // PKG_ADD: dispatch ("sin", "fsin", "fixed complex")
@@ -553,6 +565,7 @@ Compute the sine of the fixed point value @var{x}.\n\
 @end deftypefn\n\
 @seealso{fcos, fcosh, fsinh, ftan, ftanh}", ::sin, 0, 0, 0, 0)
 
+// PKG_ADD: autoload ("fsinh", "fixed.oct");
 // PKG_ADD: dispatch ("sinh", "fsinh", "fixed scalar")
 // PKG_ADD: dispatch ("sinh", "fsinh", "fixed matrix")
 // PKG_ADD: dispatch ("sinh", "fsinh", "fixed complex")
@@ -563,6 +576,7 @@ Compute the hyperbolic sine of the fixed point value @var{x}.\n\
 @end deftypefn\n\
 @seealso{fcos, fcosh, fsin, ftan, ftanh}", ::sinh, 0, 0, 0, 0)
 
+// PKG_ADD: autoload ("ftan", "fixed.oct");
 // PKG_ADD: dispatch ("tan", "ftan", "fixed scalar")
 // PKG_ADD: dispatch ("tan", "ftan", "fixed matrix")
 // PKG_ADD: dispatch ("tan", "ftan", "fixed complex")
@@ -573,6 +587,7 @@ Compute the tan of the fixed point value @var{x}.\n\
 @end deftypefn\n\
 @seealso{fcos, fcosh, fsinh, ftan, ftanh}", ::tan, 0, 0, 0, 0)
 
+// PKG_ADD: autoload ("ftanh", "fixed.oct");
 // PKG_ADD: dispatch ("tanh", "ftanh", "fixed scalar")
 // PKG_ADD: dispatch ("tanh", "ftanh", "fixed matrix")
 // PKG_ADD: dispatch ("tanh", "ftanh", "fixed complex")
@@ -583,6 +598,7 @@ Compute the hyperbolic tan of the fixed point value @var{x}.\n\
 @end deftypefn\n\
 @seealso{fcos, fcosh, fsin, fsinh, ftan}", ::tanh, 0, 0, 0, 0)
 
+// PKG_ADD: autoload ("fsqrt", "fixed.oct");
 // PKG_ADD: dispatch ("sqrt", "fsqrt", "fixed scalar")
 // PKG_ADD: dispatch ("sqrt", "fsqrt", "fixed matrix")
 // PKG_ADD: dispatch ("sqrt", "fsqrt", "fixed complex")
@@ -592,6 +608,7 @@ DEFUN_DLD_FIXED_SNGL_ARG (fsqrt, "-*- texinfo -*-\n\
 Compute the square-root of the fixed point value @var{x}.\n\
 @end deftypefn", ::sqrt, 0, 0, 1, FixedPoint());
 
+// PKG_ADD: autoload ("fexp", "fixed.oct");
 // PKG_ADD: dispatch ("exp", "fexp", "fixed scalar")
 // PKG_ADD: dispatch ("exp", "fexp", "fixed matrix")
 // PKG_ADD: dispatch ("exp", "fexp", "fixed complex")
@@ -602,6 +619,7 @@ Compute the exponential of the fixed point value @var{x}.\n\
 @end deftypefn\n\
 @seealso{log, log10, pow}", ::exp, 0, 0, 0, 0);
 
+// PKG_ADD: autoload ("flog", "fixed.oct");
 // PKG_ADD: dispatch ("log", "flog", "fixed scalar")
 // PKG_ADD: dispatch ("log", "flog", "fixed matrix")
 // PKG_ADD: dispatch ("log", "flog", "fixed complex")
@@ -612,6 +630,7 @@ Compute the natural logarithm of the fixed point value @var{x}.\n\
 @end deftypefn\n\
 @seealso{fexp, flog10, fpow}", ::log, 0, 0, 1, FixedPoint());
 
+// PKG_ADD: autoload ("flog10", "fixed.oct");
 // PKG_ADD: dispatch ("log10", "flog10", "fixed scalar")
 // PKG_ADD: dispatch ("log10", "flog10", "fixed matrix")
 // PKG_ADD: dispatch ("log10", "flog10", "fixed complex")
@@ -622,6 +641,7 @@ Compute the base-10 logarithm of the fixed point value @var{x}.\n\
 @end deftypefn\n\
 @seealso{fexp, flog, fpow}", ::log10, 0, 0, 1, FixedPoint());
 
+// PKG_ADD: autoload ("fround", "fixed.oct");
 // PKG_ADD: dispatch ("round", "fround", "fixed scalar")
 // PKG_ADD: dispatch ("round", "fround", "fixed matrix")
 // PKG_ADD: dispatch ("round", "fround", "fixed complex")
@@ -632,6 +652,7 @@ Return the rounded value to the nearest integer of @var{x}.\n\
 @end deftypefn\n\
 @seealso{ffloor, fceil}", ::round, 0, 0, 0, 0);
 
+// PKG_ADD: autoload ("ffloor", "fixed.oct");
 // PKG_ADD: dispatch ("floor", "ffloor", "fixed scalar")
 // PKG_ADD: dispatch ("floor", "ffloor", "fixed matrix")
 // PKG_ADD: dispatch ("floor", "ffloor", "fixed complex")
@@ -642,6 +663,7 @@ Return the largest integer not greater than @var{x}.\n\
 @end deftypefn\n\
 @seealso{fround, fceil}", ::floor, 0, 0, 0, 0);
 
+// PKG_ADD: autoload ("fceil", "fixed.oct");
 // PKG_ADD: dispatch ("ceil", "fceil", "fixed scalar")
 // PKG_ADD: dispatch ("ceil", "fceil", "fixed matrix")
 // PKG_ADD: dispatch ("ceil", "fceil", "fixed complex")
@@ -697,6 +719,7 @@ Return the smallest integer not less than @var{x}.\n\
     return retval; \
   }
 
+// PKG_ADD: autoload ("fprod", "fixed.oct");
 // PKG_ADD: dispatch ("prod", "fprod", "fixed scalar");
 // PKG_ADD: dispatch ("prod", "fprod", "fixed matrix");
 // PKG_ADD: dispatch ("prod", "fprod", "fixed complex");
@@ -708,6 +731,7 @@ it defaults to 1 (column-wise products).\n\
 @end deftypefn\n\
 @seealso{fsum, fsumsq}", prod)
 
+// PKG_ADD: autoload ("fcumprod", "fixed.oct");
 // PKG_ADD: dispatch ("cumprod", "fcumprod", "fixed scalar");
 // PKG_ADD: dispatch ("cumprod", "fcumprod", "fixed matrix");
 // PKG_ADD: dispatch ("cumprod", "fcumprod", "fixed complex");
@@ -719,6 +743,7 @@ is omitted, it defaults to 1 (column-wise cumulative products).\n\
 @end deftypefn\n\
 @seealso{fcumsum}", cumprod)
 
+// PKG_ADD: autoload ("fsum", "fixed.oct");
 // PKG_ADD: dispatch ("sum", "fsum", "fixed scalar");
 // PKG_ADD: dispatch ("sum", "fsum", "fixed matrix");
 // PKG_ADD: dispatch ("sum", "fsum", "fixed complex");
@@ -730,6 +755,7 @@ defaults to 1 (column-wise sum).\n\
 @end deftypefn\n\
 @seealso{fprod, fsumsq}", sum)
 
+// PKG_ADD: autoload ("fcumsum", "fixed.oct");
 // PKG_ADD: dispatch ("cumsum", "fcumsum", "fixed scalar");
 // PKG_ADD: dispatch ("cumsum", "fcumsum", "fixed matrix");
 // PKG_ADD: dispatch ("cumsum", "fcumsum", "fixed complex");
@@ -741,6 +767,7 @@ is omitted, it defaults to 1 (column-wise cumulative sums).\n\
 @end deftypefn\n\
 @seealso{fcumprod}", cumsum)
 
+// PKG_ADD: autoload ("fsumsq", "fixed.oct");
 // PKG_ADD: dispatch ("sumsq", "fsumsq", "fixed scalar");
 // PKG_ADD: dispatch ("sumsq", "fsumsq", "fixed matrix");
 // PKG_ADD: dispatch ("sumsq", "fsumsq", "fixed complex");
@@ -757,6 +784,7 @@ but it uses less memory and avoids calling @code{fconj} if @var{x} is real.\n\
 @end deftypefn\n\
 @seealso{fprod, fsum}", sumsq)
 
+// PKG_ADD: autoload ("freshape", "fixed.oct");
 // PKG_ADD: dispatch ("reshape", "freshape", "fixed scalar");
 // PKG_ADD: dispatch ("reshape", "freshape", "fixed matrix");
 // PKG_ADD: dispatch ("reshape", "freshape", "fixed complex");
@@ -1031,6 +1059,7 @@ make_fdiag (const octave_value& a, const octave_value& b)
   return retval;
 }
 
+// PKG_ADD: autoload ("fdiag", "fixed.oct");
 // PKG_ADD: dispatch ("diag", "fdiag", "fixed scalar");
 // PKG_ADD: dispatch ("diag", "fdiag", "fixed matrix");
 // PKG_ADD: dispatch ("diag", "fdiag", "fixed complex");
@@ -1075,6 +1104,7 @@ DEFUN_DLD (fdiag, args, ,
   return retval;
 }
 
+// PKG_ADD: autoload ("fatan2", "fixed.oct");
 // PKG_ADD: dispatch ("atan2", "fatan2", "fixed scalar");
 // PKG_ADD: dispatch ("atan2", "fatan2", "fixed matrix");
 // PKG_ADD: dispatch ("atan2", "fatan2", "fixed complex");

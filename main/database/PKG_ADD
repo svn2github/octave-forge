@@ -1,5 +1,8 @@
-postgres
-mysql
-sqlite3
-odbc
+try
+  postgres
+  mysql
+  sqlite3
+  odbc
+catch
+end_try_catch
 

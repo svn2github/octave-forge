@@ -346,8 +346,8 @@ package contains subdirectories.  In this case, you should not put
 your directory into the octave-forge tree.  Instead, change to the
 root of your package tree and enter the following:</p>
 <pre>
-   $ cd <span style="color: #800000;"><i>package</i></span>
-   $ svn import <span style="color: #800000;"><i>package name</i></span> 
+   $ cd <span style="color: #800000;"><i>path/below/package</i></span>
+   $ svn import <span style="color: #800000;"><i>package</i></span> \
      https://octave.svn.sourceforge.net/svnroot/octave/trunk/octave-forge/main/package
 </pre>
 

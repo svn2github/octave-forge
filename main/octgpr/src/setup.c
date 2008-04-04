@@ -31,7 +31,7 @@ int GPR_setup (int ndim, int nx, const double *X, const double *y,
 {
   /* allocate workspace */
   double *R = malloc (nx*(nx+2+nlin)*DSIZE);
-  double *mmu = malloc ((nlin+1)*(nlin+2)*DSIZE);
+  double *mmu = malloc ((nlin+1)*3*DSIZE);
 
   int ierr;
 

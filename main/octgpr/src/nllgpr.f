@@ -36,9 +36,9 @@ c nu (in)       relative white noise. nu = sqrt(var_white/var)
 c var (out)     MLE estimated global variance
 c nlin (in)     number of leading input variables to include in linear
 c               mean trend. Set nlin = 0 to use a constant mean.
-c mu (out)      at least (nlin+1)*(nlin+2). The first nlin+1 components
+c mu (out)      at least (nlin+1)*3. The first nlin+1 components
 c               contain the components of the linear trend (constant
-c               first). Rest is factorized matrix - see code.
+c               first). 
 c R (out)       at least (nx)*(nx+2+nlin). The first nx*(nx+1) components
 c               contain useful factorization details and are reused in 
 c               nldgpr
@@ -61,10 +61,10 @@ c               info = 2 singular normal matrix (decrease nlin or
 c               increase nx.
       integer ndim,nx,nlin,info
       real*8 X(ndim,nx),y(nx),theta(ndim),nu,var
-      real*8 mu(0:nlin,0:nlin+1),R(nx,0:nx+1+nlin),nll
+      real*8 mu(0:nlin,0:2),R(nx,0:nx+1+nlin),nll
       external corr
-      external dwdis2,dpotrf,dcopy,dtrsv,dtrsm,dsyrk,dgemv,dpotrs,
-     +daxpy,xerbla
+      external dwdis2,dcopy,daxpy,dscal,dtrsv,dtrsm,xerbla,
+     +dpotrf,dtrtrs,dgeqr2,dorm2r
       integer i,j,k,nl1
       real*8 sums,sum,dwdis2
 
@@ -117,28 +117,27 @@ c form m = L \ y
       
       if (nlin > 0) then
         nl1 = nlin + 1
-c fit a linear model using normal equations. Using QR decomposition can
-c also be considered, but it's slower and uses more workspace. I believe
-c that precision is not an issue here, as typically nx >> ndim
+c fit a linear model using QR decomposition
 
 c form L \ M
         call dtrsm('L','L','N','N',nx,nl1,
      +             1.d0,R(1,1),nx,R(1,nx+1),nx)
-c form MM = (M'*inv(R)*M)
-        call dsyrk('U','T',nl1,nx,
-     +             1.d0,R(1,nx+1),nx,0.d0,mu(0,1),nl1)
-c factorize MM
-        call dpotrf('U',nl1,mu(0,1),nl1,info)
+c factorize (unblocked code) Q*R = L \ M
+        call dgeqr2(nx,nl1,R(1,nx+1),nx,mu(0,1),mu(0,2),info) 
+c form yy = Q' * (L \ y)
+        call dorm2r('L','T',nx,1,nl1,R(1,nx+1),nx,mu(0,1),
+     +              R(1,0),nx,mu(0,2),info)
+c copy yy(1:nlin+1)
+        call dcopy(nl1,R(1,0),1,mu(0,0),1)
+c set to zero to get residual yy(1:nlin+1) = 0 
+        call dscal(nl1,0d0,R(1,0),1)
+c project to residual space: Q*Q' * yy
+        call dorm2r('L','N',nx,1,nl1,R(1,nx+1),nx,mu(0,1),
+     +              R(1,0),nx,mu(0,2),info)
+c solve R \ yy(1:nlin+1) for linear trend
+        call dtrtrs('U','N','N',nl1,1,R(1,nx+1),nx,mu(0,0),
+     +              nl1,info)
         if (info /= 0) goto 502
-c form rhs = (L \ M)' * (L \ y)
-        call dgemv('T',nx,nl1,
-     +             1.d0,R(1,nx+1),nx,R(1,0),1,0.d0,mu(0,0),1)
-c solve MM \ rhs
-        call dpotrs('U',nl1,1,mu(0,1),nl1,mu(0,0),nl1,info)
-        if (info /= 0) goto 502
-c remove the linear trend from L \ y
-        call dgemv('N',nx,nl1,-1.d0,R(1,nx+1),nx,
-     +             mu(0,0),1,1.d0,R(1,0),1)
       else
 c specialized for constant fitting - for speed (and clarity, as this was
 c the initial version
@@ -146,6 +145,7 @@ c form L \ m
         call dtrsv('L','N','N',nx,R(1,1),nx,R(1,nx+1),1)
 c accumulate (m'*inv(R)*m) and (y'*inv(R)*m)
         call dsdacc(nx,R(1,nx+1),R(1,0),sums,sum)
+        if (sums == 0d0) goto 502
 c store the mean and matrix (1x1)
         mu(0,1) = sums
         mu(0,0) = sum / sums

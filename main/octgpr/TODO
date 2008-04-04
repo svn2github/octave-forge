@@ -3,6 +3,4 @@ TODO list for OctGPR
 o	add documentation where missing
 o	add more demos
 o	add RBF models with GCV training (in progress)
-o	improve trust-region training optimizer - stopping criterion 
-	basen on objective decrease
 

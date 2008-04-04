@@ -86,7 +86,9 @@ AC_SEARCH_LIBS(dspr,goto atlas blas)
 # NOTE: BLAS should go first, so that it gets listed earlier. 
 # many optimized blas libraries offer optimized xPOTRF
 AC_SEARCH_LIBS(dpotrf,goto atlas lapack)
-AC_SEARCH_LIBS(dpotrs,goto atlas lapack)
+AC_SEARCH_LIBS(dgeqr2,goto atlas lapack)
+AC_SEARCH_LIBS(dorm2r,goto atlas lapack)
+AC_SEARCH_LIBS(dtrtrs,goto atlas lapack)
 AC_SEARCH_LIBS(dpotri,goto atlas lapack)
 AC_SEARCH_LIBS(dsyev,goto atlas lapack)
 

@@ -24,12 +24,13 @@
 
 #include "gprmod.h"
 
+#define DSIZE sizeof (double)
 
 int GPR_train (int ndim, int nx, const double *X, const double *y,
                double *theta, double *nu, double *nll,
                int nlin, corfptr corf, struct GPR_train_opts *opts)
 {
-  double *wrk = malloc ((4*ndim+7)*sizeof (double)); 
+  double *wrk = malloc ((4*ndim+7)*DSIZE); 
   double *scal = wrk;
   double *theta0 = scal + ndim;
   double *nu0 = theta0 + ndim;
@@ -39,11 +40,11 @@ int GPR_train (int ndim, int nx, const double *X, const double *y,
   double *dnu = dtheta + ndim;
   double *dtheta0 = dnu + 2;
   double *dnu0 = dtheta0 + ndim;
-  double *VM = malloc ((ndim+1)*(3*ndim+2)/2*sizeof (double));
+  double *VM = malloc ((ndim+1)*(3*ndim+2)/2*DSIZE);
 
   /* workspace for nllgpr, nldgpr */
-  double *R = malloc (nx*(nx+2+nlin)*sizeof (double));
-  double *mu = malloc ((nlin+1)*(nlin+2)*sizeof (double));
+  double *R = malloc (nx*(nx+2+nlin)*DSIZE);
+  double *mu = malloc ((nlin+1)*3*DSIZE);
   double CP[20];
   double dummy;
   int IC[3];

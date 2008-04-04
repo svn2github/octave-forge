@@ -1,3 +1,11 @@
+2008-04-04  Jaroslav Hajek <highegg@gmail.com>
+
+	* nllgpr.f: use QR decomposition instead of normal equations 
+	for mean fitting.
+	* train.c, setup.c: change workspace size for nllgpr
+	* configure.in: update the LAPACK routines checked
+	* configure: regenerate
+
 2008-03-26  Jaroslav Hajek <highegg@gmail.com>
 
 	* config.log, config.status, config.h, Makefile: remove.

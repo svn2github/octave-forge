@@ -55,7 +55,7 @@ conf()
 
 build() 
 {
-   ( cd ${BUILDDIR} && make lapacklib )
+   ( cd ${BUILDDIR} && make lapacklib shlib )
 }
 
 install()

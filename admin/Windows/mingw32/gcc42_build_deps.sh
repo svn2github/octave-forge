@@ -35,6 +35,10 @@ VER_LESS=406-2
 VER_SED=4.1.5-2
 VER_CURL=7.17.1-2
 VER_QHULL=2003.1-2
+VER_LIBXML2=2.6.30-2
+VER_LIBFREETYPE=2.3.5-2
+VER_LIBFONTCONFIG=2.4.92-2
+VER_LIBGD=2.0.35-2
 
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
@@ -46,6 +50,8 @@ VER_QHULL=2003.1-2
 # LESS depends on PCRE
 # READLINE depends on NCURSES
 # many packages depend on ZLIB
+# LIBFONTCONFIG depends on LIBXML2
+# LIBGD depends on LIBFREETYPE, LIBFONTCONFIG, LIBJPEG, LIBPNG
 
 ( cd zlib && build-${VER_ZLIB}.sh ${ACTION} );
 ( cd blas && build-${VER_BLAS}.sh ${ACTION} );
@@ -69,3 +75,7 @@ VER_QHULL=2003.1-2
 ( cd sed && build-${VER_SED}.sh ${ACTION} );
 ( cd curl && build-${VER_CURL}.sh ${ACTION} );
 ( cd qhull && build-${VER_QHULL}.sh ${ACTION} );
+( cd libxml2 && build-${VER_LIBXML2}.sh ${ACTION} );
+( cd libfreetype && build-${VER_LIBFREETYPE}.sh ${ACTION} );
+( cd libfontconfig && build-${VER_LIBFONTCONFIG}.sh ${ACTION} );
+( cd libgd && build-${VER_LIBGD}.sh ${ACTION} );

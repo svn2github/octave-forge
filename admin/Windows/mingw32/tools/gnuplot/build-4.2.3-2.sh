@@ -96,7 +96,7 @@ all() {
   mkdirs
   conf
   build
-  install_pkg
+  install
 }
 
 main $*

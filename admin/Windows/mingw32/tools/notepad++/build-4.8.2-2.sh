@@ -177,7 +177,7 @@ install_with_built_npp()
    ${CP} ${CP_FLAGS} ${SRCDIR}/PowerEditor/bin/readme.txt ${TARGET_PATH}
    remove_comic_font
    install_scilexerdll;
-   install_libgcc;
+   # install_libgcc;
    touch ${TARGET_PATH}/doLocalConf.xml
    
    mkdir -p ${TARGET_PATH}/plugins
@@ -247,7 +247,7 @@ all()
    mkdirs
    conf
    build
-   install_pkg
+   install
 }
 
 main $*

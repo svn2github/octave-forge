@@ -48,6 +48,42 @@ recent versions of octave-forge. For a full list of changes please
 see the <a href="NEWS.html">News Archive</a> or the
 <a href="ChangeLog">ChangeLog</a>.</p>
 <dl>
+<dt>April ??, 2008</dt>
+<dd>
+<p>Release of Octave-forge tested against Octave 3.0.1. Many packages
+ will also function function with earlier versions of Octave 2.9.
+ Notable changes in this release include:</p>
+<ul>
+   <li>ann: New package for Octaev bindings to teh ANN library for
+   nearest neighbor calculation.</li>
+   <li>database; New package to allow postgres, mysql, sqlite, and
+   standard ODBC databases commands from within Octave.</li>
+   <li>video: New package with bindings to ffmpeg to add the handle of
+   video coding from within Octave.</li>
+   <li>bioinfo: New package for Bioinformatics manipulation.</li> 
+   <li>data-smoothing: New package with algorithms for smoothing noisy
+   data.</li>
+   <li>ga: New package with basic genetic algorithm optimization
+   functions.</li> 
+   <li>missing-functions: New package to identify functions that are
+   missing from Octaev relative to the latest verson of Matlab.</li>
+   <li>fto: New package to ftp from within Octave</li>
+   <li>fixed: Build fix for Unix, cygwin and mingw platforms.</li>
+   <li>plot: Remove old plot code based on Xlib and replace with
+   gtext, ginput and waitforbuttonpress functions that use gnuplot
+   directly to obtan the required information.</li>
+   <li>signal: Add the window function.</li>
+   <li>mapping: Add the km2deg and reckon functions.</li>
+   <li>image: Add the imcomplement and rgbplot functions. Support for
+   bilateral filtering. Build fixes for new versions of ImageMagick.</li>
+   <li>miscellaneous: Add the hex2num and num2hex functions.</li>
+   <li>odepkg: Added ddaskr based solver.</li>
+   <li>splines: Add the catmullrom interpolation function.</li>
+   <li>financial: Add the rsindex function.</li>
+   <li>time: Add the thirdwednesday function.
+   <li>general bug fixes and improvements.</li>
+</ul>
+</dd>
 <dt>Febrary 16, 2008</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 3.0. Many packages
@@ -100,43 +136,6 @@ see the <a href="NEWS.html">News Archive</a> or the
 </dd>
 <dt>November 2, 2007</dt>
 <dd>Updated the OS X binary release to use Octave 2.9.16.
-</dd>
-<dt>October 16, 2007</dt>
-<dd>Updated Windows installer to Octave 2.9.15.
-</dd>
-<dt>October 14, 2007</dt>
-<dd>Updated the OS X binary release to use Octave 2.9.15.
-</dd>
-<dt>October 14, 2007</dt>
-<dd>
-<p>Release of Octave-forge tested against Octave 2.9.15. Many packages
- will also function function with earlier versions of Octave 2.9.
- Notable changes in this release include:</p>
-<ul>
-   <li>jhandles: Significant improvement in the GUI functions and
-   graphics handles compatibility, including stemseries, barseries,
-   GUI callbacks, postscript output, etc.</li>
-   <li>java: Allow for waitfor functions in Octave. Use dlopen/dlsym
-   rather than symbolic linking to the JVM in linux and OS X
-   platforms.</li>
-   <li>signal: New functions welchwin, blackmannutall, shanwavf, mexihat
-   meyeraux and morlet. Bug fix in specgram for window with an odd
-   number of elements.</li>
-   <li>info-theory: New functions condentr_seq, hartley_entropy,
-   infoentr_seq, infogain_seq, kullback_leibler_distance,
-   mutualinfo_seq, narysource, renyi_entropy and shannon_entropy.</li>
-   <li>comm: New function ammod, amdemod, fmmod, fmdemod, systematize, 
-   reedmullergen, reedmullerenc, reedmullerdec, egolaydec, egolayenc
-   and egolaygen.</li>
-   <li>geometry: Remove the geometry package that is migrate dto the
-   Octave core.</li>
-   <li>polynomial: Remove polyint function, migrated to the Octave core.</li>
-   <li>statistics: Aligned function names and arguments for matlab
-   compatibility, removing the function pascal_stat and weibstat and
-   replacing them with nbinstat and wblstat.</li>
-   <li>arpack: Bug fix to allow non convergence to be correctly flagged.</li>
-   <li>general bug fixes and improvements.</li>
-</ul>
 </dd>
 
 </dl>

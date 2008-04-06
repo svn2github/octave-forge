@@ -32,10 +32,10 @@ gcc-g++-4.2.1-${SYS}-${REL}.tar.gz
 gcc-gfortran-4.2.1-${SYS}-${REL}.tar.gz
 "
 
-URLS_BINUTILS="binutils-2.17.50-20060824-1.tar.gz"
-URLS_W32API="w32api-3.10.tar.gz"
-URLS_MINGWRUNTIME="mingw-runtime-3.13.tar.gz"
-URLS_MINGWMAKE="mingw32-make-3.81-2.tar.gz"
+URLS_BINUTILS="binutils-2.18.50-20080109-2.tar.gz"
+URLS_W32API="w32api-3.11.tar.gz"
+URLS_MINGWRUNTIME="mingw-runtime-3.14.tar.gz"
+URLS_MINGWMAKE="mingw32-make-3.81-20080326.tar.gz"
 URLS_MINGWUTILS="mingw-utils-0.3.tar.gz"
  
 URLS_MINGW_TOOLS="${URLS_BINUTILS} ${URLS_W32API} ${URLS_MINGWRUNTIME} ${URLS_MINGWMAKE} ${URLS_MINGWUTILS}"
@@ -117,6 +117,9 @@ install_pkg() {
    install_msys
 }
 
+mkdirs() { echo $0: mkdirs not required; }
+applypatch() { echo $0: applypatch not required; }
+conf() { echo $0: conf not required; }
 build() { echo $0: build not required; }
 install() { echo $0: install not required; }
 

@@ -121,15 +121,3 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/ls
  #include <direct.h>
  #define setdisk(n) _chdrive((n)+1)
  #else
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x defines.h less-406-orig/search.c less-406/search.c
---- less-406-orig/search.c	Sun Jun 17 18:56:04 2007
-+++ less-406/search.c	Tue Nov 20 21:22:21 2007
-@@ -28,7 +28,7 @@
- #endif
- #endif
- #if HAVE_PCRE
--#include <pcre.h>
-+#include <pcre/pcre.h>
- #endif
- #if HAVE_RE_COMP
- char *re_comp();

@@ -19,7 +19,7 @@ DOCS = $(INFODOC) $(PDFDOC)
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
 TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(TEXIDOC) *~
-DELETES = $(TMPDELETES) *.ps *.pdf *.info $(DOCS) *.html comms/ html/
+DELETES = $(TMPDELETES) *.ps comms.pdf *.info $(DOCS) *.html comms/ html/
 
 all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 

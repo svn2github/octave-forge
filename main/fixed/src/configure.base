@@ -51,7 +51,7 @@ case "$canonical_host_type" in
 esac
 
 dnl version of the fixed point code
-OCTAVEFIXEDVERSION="0.7.4"
+OCTAVEFIXEDVERSION="0.7.6"
 AC_SUBST(OCTAVEFIXEDVERSION)
 
 CONFIGURE_OUTPUTS="Makeconf"

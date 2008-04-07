@@ -13,20 +13,20 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
  will also function function with earlier versions of Octave 2.9.
  Notable changes in this release include:</p>
 <ul>
-   <li>ann: New package for Octaev bindings to teh ANN library for
+   <li>ann: New package for Octave bindings to the ANN library for
    nearest neighbor calculation.</li>
-   <li>database; New package to allow postgres, mysql, sqlite, and
-   standard ODBC databases commands from within Octave.</li>
-   <li>video: New package with bindings to ffmpeg to add the handle of
-   video coding from within Octave.</li>
+   <li>database: New package to allow postgres, mysql, sqlite, and
+   standard ODBC database commands from within Octave.</li>
+   <li>video: New package with bindings to ffmpeg to add handling of
+   video files from within Octave.</li>
    <li>bioinfo: New package for Bioinformatics manipulation.</li> 
    <li>data-smoothing: New package with algorithms for smoothing noisy
    data.</li>
    <li>ga: New package with basic genetic algorithm optimization
    functions.</li> 
    <li>missing-functions: New package to identify functions that are
-   missing from Octaev relative to the latest verson of Matlab.</li>
-   <li>fto: New package to ftp from within Octave</li>
+   missing from Octave relative to the latest verson of Matlab.</li>
+   <li>ftp: New package to ftp from within Octave</li>
    <li>fixed: Build fix for Unix, cygwin and mingw platforms.</li>
    <li>plot: Remove old plot code based on Xlib and replace with
    gtext, ginput and waitforbuttonpress functions that use gnuplot

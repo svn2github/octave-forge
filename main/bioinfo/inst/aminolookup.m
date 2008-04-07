@@ -38,10 +38,8 @@
 ## To see the full list of each of the above, run this function without
 ## any arguments or outputs.
 ##
-
 ## If called without zero inputs, this will display the mapping between
-## the above types.  If called with one input, it will convert to code by default or 
-
+## the above types.  If called with one input, it will convert to code by default.
 ## @seealso{aa2int,int2aa,int2nt,nt2int}
 ## @end deftypefn
 

@@ -29,14 +29,12 @@
 ##
 ## @multitable
 ## @item Protease @tab Peptide Pattern @tab Position
-## @item Trypsin @tab [KR](?!P) @tab 1
-## @item Chymotrypsin @tab [WYF](?!P) @tab 1
-## @item Glutamine C @tab [ED](?!P)  @tab 1
-## @item Lysine C @tab [K](?!P)  @tab 1
+## @item Trypsin @tab [KR](\?\!P) @tab 1
+## @item Chymotrypsin @tab [WYF](\?\!P) @tab 1
+## @item Glutamine C @tab [ED](\?\!P)  @tab 1
+## @item Lysine C @tab [K](\?\!P)  @tab 1
 ## @item Aspartic acid N @tab D @tab 1
 ## @end multitable
-##
-## @example
 ##
 ## @seealso{rebasecuts, restrict, seqshowwords, regexp}
 ## @end deftypefn

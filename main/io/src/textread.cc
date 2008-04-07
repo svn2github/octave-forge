@@ -271,7 +271,7 @@ Currently implemented @var{prop} arguments are:\n\
     long unsigned int nr_rows = input.lines();
 
     if (nr_rows == 0) {
-       return Matrix ();
+        return octave_value (Matrix ());
     }
 
     // nr_rows represents the number of lines in the file minus the ignored 

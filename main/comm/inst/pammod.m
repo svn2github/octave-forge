@@ -68,6 +68,10 @@ else
     usage("y = pammod (x, M, [phi, [type]])");
 endif
 
+if (iscomplex(y) && all (imag(y(:)) == 0))
+  y = real (y);
+endif
+
 
 %!assert(round(pammod([0:7],8,0,'Bin')),[-7:2:7])
 %!assert(round(pammod([0:7],8,0,'Gray')),[-7 -5 -1 -3 7 5 1 3])

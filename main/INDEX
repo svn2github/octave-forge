@@ -705,6 +705,7 @@ Conversion
  sprintf 
  sscanf 
  hex2num 
+ num2hex
  hex2dec 
  bin2dec 
  base2dec 
@@ -953,6 +954,8 @@ Line plots
  semilogx 
  semilogy 
  polar 
+ compass
+ rose
  plotyy
  errorbar semilogxerr semilogyerr loglogerr
  scatter 
@@ -984,6 +987,7 @@ Contour plots
  clabel 
  pcolor 
 Surface plots
+ ellipsoid
  mesh 
  surf 
  comet3 
@@ -1254,6 +1258,7 @@ Descriptive statistics
  range	
  skewness	
  spearman
+ runlength
  run_count
  statistics
  studentize

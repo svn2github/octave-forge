@@ -19,7 +19,7 @@
 ## @deftypefnx {Function File} {[@var{fragments}, @var{cuttingsites}] =} cleave (@dots{})
 ## @deftypefnx {Function File} {[@var{fragments}, @var{cuttingsites}, @var{lengths}] =} cleave (@dots{})
 ## @deftypefnx {Function File} {[@dots{}] =} cleave (@dots{}, "PartialDigest", @var{prob})
-## Celave a peptide @var{sequence} using the @var{pattern} at the
+## Cleave a peptide @var{sequence} using the @var{pattern} at the
 ## @var{position} relative to the pattern.  The @var{sequence} is a
 ## sequence of amino acids; the @var{pattern} is a regular expression to
 ## find the location of the cleavage; and the @var{position} is the
@@ -27,12 +27,15 @@
 ## left of the first character, 1 is immediately to the right of the
 ## first character, @dots{}).
 ##
-## @multitable
+## Example regular expressions for some commone proteases are given
+## below.
+##
+## @multitable @columnfractions .5 .3 .2
 ## @item Protease @tab Peptide Pattern @tab Position
-## @item Trypsin @tab [KR](\?\!P) @tab 1
-## @item Chymotrypsin @tab [WYF](\?\!P) @tab 1
-## @item Glutamine C @tab [ED](\?\!P)  @tab 1
-## @item Lysine C @tab [K](\?\!P)  @tab 1
+## @item Trypsin @tab [KR](?!P) @tab 1
+## @item Chymotrypsin @tab [WYF](?!P) @tab 1
+## @item Glutamine C @tab [ED](?!P)  @tab 1
+## @item Lysine C @tab [K](?!P)  @tab 1
 ## @item Aspartic acid N @tab D @tab 1
 ## @end multitable
 ##

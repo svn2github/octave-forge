@@ -73,12 +73,14 @@ if (args(0).is_real_type() && args(1).is_real_type())
 		}
 	}
 } 
-else if (args(0).is_complex_type() && args(1).is_complex_type())
+else if (args(0).is_complex_type() || args(1).is_complex_type())
 { // Complex-valued input & constellation
 	ComplexMatrix x (args(0).complex_matrix_value());
 	ComplexColumnVector constellation(args(1).complex_vector_value());
-	for (i=0;i<nr1;i++)
-	{
+	if (!error_state)
+	  {
+	    for (i=0;i<nr1;i++)
+	      {
 		for (j=0;j<nc1;j++)	
 		{
 			tmp1=abs(x(i,j)-constellation(0));
@@ -94,7 +96,10 @@ else if (args(0).is_complex_type() && args(1).is_complex_type())
 					
 			}
 		}
-	}
+	      }
+	  }
+	else
+	  print_usage ();
 }
 else 
 {

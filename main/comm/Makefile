@@ -1,7 +1,7 @@
 sinclude ../../Makeconf
 
 
-PKG_FILES = COPYING DESCRIPTION INDEX PKG_ADD $(wildcard src/*) \
+PKG_FILES = COPYING DESCRIPTION INDEX $(wildcard src/*) \
 	$(wildcard inst/*) doc/comms.pdf
 SUBDIRS = doc/
 

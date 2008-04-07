@@ -1,3 +1,4 @@
+addpath("../inst");
 try
   sql("select 2;");
   error

@@ -1,3 +1,4 @@
+addpath("../inst");
 odbc
 
 default_db(odbc_db("testdb","testuser","secret"));

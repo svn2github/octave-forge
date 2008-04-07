@@ -1,3 +1,4 @@
+addpath("../inst");
 postgres
 
 default_db(postgres_db("host=localhost dbname=testdb user=testuser password='secret' "));

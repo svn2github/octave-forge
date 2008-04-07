@@ -1,3 +1,4 @@
+addpath("../inst");
 sqlite3
 
 default_db(sqlite3_db("data.db"));

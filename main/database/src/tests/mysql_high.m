@@ -1,3 +1,4 @@
+addpath("../inst");
 mysql
 
 default_db(mysql_db("localhost","root","secret","testdb"));

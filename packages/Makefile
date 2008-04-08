@@ -169,7 +169,7 @@ checkpkg/%: cleancheck/% mkpkg/%
 	if [ ! -d code ]; then mkdir code; fi; \
 	cd code; tar xzf ../../$(opkg); cd ..; \
 	$(TOPDIR)/admin/mktests.sh code; \
-	$(RUN_OCTAVE) --eval "pkg('unload','all');addpath(genpath([pwd(),'/code']),'-end');pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('load','all');fntests" ; \
+	$(RUN_OCTAVE) --eval "pkg('unload','all');addpath(genpath(fullfile(pwd(),'code')),'-end');pkg('prefix',fullfile(pwd(),'install'),fullfile(pwd(),'install'));pkg('local_list',fullfile(pwd(),'install','.octave_packages'));pkg('global_list',fullfile(pwd(),'install','.octave_packages'));pkg('load','all');fntests" ; \
 	if [ ! -e $(TESTLOG) ]; then touch $(TESTLOG); fi ; \
 	cat fntests.log >> $(TESTLOG); \
 	cd ..
@@ -195,7 +195,7 @@ mkpkg/%:
 	cd sandbox; \
 	if [ ! -d install ]; then mkdir install; fi ; \
 	pkgs="'../$(opkg)'"; \
-	until $(RUN_OCTAVE) --eval "pkg('unload','all');pkg('prefix',[pwd(),'/install']);pkg('local_list',[pwd(),'/install/.octave_packages']);pkg('global_list',[pwd(),'/install/.octave_packages']);pkg('install',$$pkgs)" 2> baddeps; do \
+	until $(RUN_OCTAVE) --eval "pkg('unload','all');pkg('prefix',fullfile(pwd(),'install'),fullfile(pwd(),'install'));pkg('local_list',fullfile(pwd(),'install','.octave_packages'));pkg('global_list',fullfile(pwd(),'install/.octave_packages'));pkg('install',$$pkgs)" 2> baddeps; do \
 	  deps=`cat baddeps | grep " needs " | sed -e 's/^.*needs\s\+\(\S*\).*$$/\1/'`; \
 	  ops=`cat  baddeps | grep " needs " | sed -e 's/^.*needs\s\+\S*\s\+\(\S*\).*$$/\1/'`; \
 	  vers=`cat  baddeps | grep " needs " | sed -e 's/^.*\s\+\(\S*\)\s*$$/\1/'`; \

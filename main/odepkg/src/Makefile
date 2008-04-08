@@ -58,9 +58,12 @@ clean :
 	@echo "Cleaning..."; \
 	$(RM) -rf $(EXTERNALDIRS) $(SOLVEROBJECTS) $(SOLVEROCTFILE)
 
-distclean realclean : clean
+distclean : clean
+	@echo "Dist Cleaning..."; \
+	$(RM) -rf *.oct *~ config.status config.log autom4te.cache Makeconf
+
+realclean : distclean
 	@echo "Really Cleaning..."; \
-	$(RM) -rf *.oct *~ configure config.status config.log \
-	  autom4te.cache octave-core Makeconf
+	$(RM) -rf configure
 
 dist : all

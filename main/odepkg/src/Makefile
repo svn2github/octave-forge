@@ -60,7 +60,7 @@ clean :
 
 distclean : clean
 	@echo "Dist Cleaning..."; \
-	$(RM) -rf *.oct *~ config.status config.log autom4te.cache Makeconf
+	$(RM) -rf *~ config.status config.log autom4te.cache Makeconf
 
 realclean : distclean
 	@echo "Really Cleaning..."; \

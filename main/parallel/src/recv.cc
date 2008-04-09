@@ -41,7 +41,8 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include "swab.h"
 
-#define BUFF_SIZE SSIZE_MAX
+// SSIZE_MAX might be for 64-bit. Limit to 2^31-1
+#define BUFF_SIZE 2147483647
 
 // COMM
 
@@ -131,7 +132,7 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	  errno=0;
 	  r_len=BUFF_SIZE;
 	  while(count <length){
-	    p=(double *)((int)tmp+count);
+	    p=tmp+(count/sizeof(double));
 	    if((length-count) < BUFF_SIZE)
 	      r_len=length-count;
 	    count +=read(sock,p,r_len);
@@ -142,7 +143,7 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 #else
 #  error "can not determine the byte order"
 #endif
-	      conv=(unsigned long long int *)((u_int32_t)p&0xfffffff8);
+	      conv=(unsigned long long int *)((unsigned long long int)p & 0xfffffff8ULL);
 	      for(int i=0;i<count/8;i++)
 		*conv++=swab64(conv);
 	    }
@@ -181,7 +182,7 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	  errno=0;
 	  r_len=BUFF_SIZE;
 	  while(count <length){
-	    p=(Complex  *)((int)tmp+count);
+	    p=tmp+(count/sizeof(Complex));
 	    if((length-count) < BUFF_SIZE)
 	      r_len=length-count;
 	    count +=read(sock,p,r_len);
@@ -192,7 +193,7 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 #else
 #  error "can not determine the byte order"
 #endif
-	      conv=(unsigned long long int *)((u_int32_t)p&0xfffffff8);
+	    conv=(unsigned long long int *)((unsigned long long int)p & 0xfffffff8ULL);
 	      for(int i=0;i<count/8;i++){
 		*conv++=swab64(conv);
 	      }
@@ -237,7 +238,7 @@ Receive a variable from the computer specified by the row vector 'socket'.")
 	  while(count <length){
 	    if((length-count) < BUFF_SIZE)
 	      r_len=length-count;
-	    count +=read(sock,(char *)((int)str+count),r_len);
+	    count +=read(sock,(str+count),r_len);
 	  }
 	  retval= octave_value(cmx,1);
 	  

@@ -58,7 +58,8 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <setjmp.h>
 #include <netinet/in.h>
 
-#define BUFF_SIZE SSIZE_MAX
+// SSIZE_MAX might be for 64-bit. Limit to 2^31-1
+#define BUFF_SIZE 2147483647
 
 static bool quitting_gracefully = false;
 
@@ -206,7 +207,7 @@ reval_loop (int sock)
       while(count <len){
 	if((len-count) < BUFF_SIZE)
 	  r_len=len-count;
-	count +=read(sock,(char *)((int)ev_str+count),r_len);
+	count +=read(sock,(ev_str+count),r_len);
       }
       //      read(sock,ev_str,len);
       ev_str[len]='\0';

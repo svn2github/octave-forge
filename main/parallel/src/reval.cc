@@ -40,7 +40,8 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <netdb.h>
 #include <unistd.h>
 
-#define BUFF_SIZE SSIZE_MAX
+// SSIZE_MAX might be for 64-bit. Limit to 2^31-1
+#define BUFF_SIZE 2147483647
 
 // COMM
 
@@ -118,7 +119,7 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
 	    while(count <col){
 	      if((col-count) < BUFF_SIZE)
 		r_len=col-count;
-	      count +=write(sock,(char *)((int)comm+count),r_len);
+	      count +=write(sock,(comm+count),r_len);
 	    }
 
 	    // Blocking Execution

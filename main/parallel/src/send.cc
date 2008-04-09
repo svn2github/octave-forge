@@ -40,7 +40,8 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <netdb.h>
 #include <unistd.h>
 
-#define BUFF_SIZE SSIZE_MAX
+// SSIZE_MAX might be for 64-bit. Limit to 2^31-1
+#define BUFF_SIZE 2147483647
 
 // COMM
 
@@ -126,7 +127,7 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	      while(count <length){
 		if((length-count) < BUFF_SIZE)
 		  r_len=length-count;
-		count +=write(sock,(double *)((int)tmp+count),r_len);
+		count +=write(sock,(tmp+(count/sizeof(double))),r_len);
 	      }
 
 	    //	      write(sock,m.data(),length);
@@ -173,7 +174,7 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	      while(count <length){
 		if((length-count) < BUFF_SIZE)
 		  r_len=length-count;
-		count +=write(sock,(Complex *)((int)tmp+count),r_len);
+		count +=write(sock,(tmp+(count/sizeof(Complex))),r_len);
 	      }
 	      //	      write(sock,m.data(),length);
 	    }
@@ -217,7 +218,7 @@ Send the variable 'x' to the computers specified by matrix 'sockets'.")
 	      while(count <length){
 		if((length-count) < BUFF_SIZE)
 		  r_len=length-count;
-		count +=write(sock,(char *)((int)tmp+count),r_len);
+		count +=write(sock,(tmp+(count/sizeof(char))),r_len);
 	      }
 	      //	      write(sock,cmx.data(),length);
 	    }

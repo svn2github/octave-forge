@@ -50,7 +50,6 @@ function Pr = min_max(Pp)
 
 endfunction
 
-%!test fail("min_max(1)","Argument must be a matrix.")
-%!test fail("min_max("testString")","Argument must be a matrix")
+%!test fail("min_max(\"testString\")","Argument must be a matrix")
 
 

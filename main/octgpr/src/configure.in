@@ -1,4 +1,4 @@
-# Copyright (C) 2008  VZLU Prague, a.s., Czech Republic
+s# Copyright (C) 2008  VZLU Prague, a.s., Czech Republic
 # 
 # Author: Jaroslav Hajek <highegg@gmail.com>
 # 
@@ -38,10 +38,10 @@ CC=`$MKOCTFILE -p CC`
 FFLAGS=`$MKOCTFILE -p FFLAGS`
 CFLAGS=`$MKOCTFILE -p CFLAGS`
 # add -fPIC or equivalent flags
-FPICFLAGS=`$MKOCTFILE -p FPICFLAGS`
-CPICFLAGS=`$MKOCTFILE -p CPICFLAGS`
-FFLAGS="$FFLAGS $FPICFLAGS"
-CFLAGS="$CFLAGS $CPICFLAGS"
+FPICFLAG=`$MKOCTFILE -p FPICFLAG`
+CPICFLAG=`$MKOCTFILE -p CPICFLAG`
+FFLAGS="$FFLAGS $FPICFLAG"
+CFLAGS="$CFLAGS $CPICFLAG"
 
 # Checks for compilers.
 AC_PROG_F77([$F77 gfortran g77])

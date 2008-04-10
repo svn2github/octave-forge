@@ -1,4 +1,6 @@
-% Copyright (C) 1992-1994 Richard Shrager, Arthur Jutan, Ray Muzic
+% Copyright (C) 1992-1994 Richard Shrager
+% Copyright (C) 1992-1994 Arthur Jutan
+% Copyright (C) 1992-1994 Ray Muzic
 %
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

@@ -43,6 +43,8 @@ BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
 #check_pre() { MAKEFILE=""; }
 
+CP=cp
+
 echo ${PREFIX}
 
 mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }

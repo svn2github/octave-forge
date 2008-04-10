@@ -316,7 +316,7 @@ error number \"%d\")", verr);
  * @end deftp
  */
 
-// PKG_ADD: autoload ("odedbi", "dldsolver.oct");
+// PKG_ADD: autoload ("odebdi", "dldsolver.oct");
 DEFUN_DLD (odebdi, args, nargout,
 "-*- texinfo -*-\n\
 @deftypefn  {Command} {[@var{}] =} odebdi (@var{@@fun}, @var{slot}, @var{y0}, @var{dy0}, [@var{opt}], [@var{P1}, @var{P2}, @dots{}])\n\

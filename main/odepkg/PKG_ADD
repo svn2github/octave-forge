@@ -1,7 +1,0 @@
-autoload ("odebdi", fullfile (fileparts (mfilename ("fullpath")), "dldsolver.oct"));
-autoload ("odebda", fullfile (fileparts (mfilename ("fullpath")), "dldsolver.oct"));
-autoload ("odekdi", fullfile (fileparts (mfilename ("fullpath")), "dldsolver.oct"));
-autoload ("oders",  fullfile (fileparts (mfilename ("fullpath")), "dldsolver.oct"));
-autoload ("ode2r",  fullfile (fileparts (mfilename ("fullpath")), "dldsolver.oct"));
-autoload ("ode5r",  fullfile (fileparts (mfilename ("fullpath")), "dldsolver.oct"));
-autoload ("odesx",  fullfile (fileparts (mfilename ("fullpath")), "dldsolver.oct"));

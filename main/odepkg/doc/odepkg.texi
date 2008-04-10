@@ -13,8 +13,14 @@
 @c @afourwide
 @c %*** End of the HEADER
 
-@c %*** Start of COPYRIGHT
-@copying
+@c %*** Start of TITLEPAGE
+@titlepage
+@title OdePkg @value{VERSION}
+@subtitle A package for solving differential equations with GNU Octave
+@c @subtitle @b{OdePkg and this document currently are under development}
+@author by Thomas Treichl
+@page
+@vskip 0pt plus 1filll
 Copyright @copyright{} 2008 
 
 Permission is granted to make and distribute verbatim copies of
@@ -28,52 +34,54 @@ notice identical to this one.
 
 Permission is granted to copy and distribute translations of this manual
 into another language, under the same conditions as for modified versions.
-@end copying
-@c %*** End of COPYRIGHT
-
-@c %*** Start of TITLEPAGE
-@titlepage
-@title OdePkg @value{VERSION}
-@subtitle A package for solving differential equations with GNU Octave
-@c @subtitle @b{OdePkg and this document currently are under development}
-@author by Thomas Treichl
-@page
-@vskip 0pt plus 1filll
-@insertcopying
 @end titlepage
 @c %*** End of TITLEPAGE
 
 @c %*** Start of BODY
 @contents
 @ifnottex
-@node Top, Beginner's Guide, (dir), (dir)
+@node Top, Beginners Guide, (dir), (dir)
 @top Copyright
-@insertcopying
+
+
+Copyright @copyright{} 2008 
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the same conditions as for modified versions.
 @end ifnottex
 
 @menu
-* Beginner's Guide::            Manual for users who are completely new to OdePkg
-* User's Guide::                Manual for users who are already familiar with OdePkg
-* Programmer's Guide::          Manual for users who want to make changes to OdePkg
-* Function Index::              Reference about all functions from this package
-* Index::                       OdePkg Reference
+* Beginners Guide::            Manual for users who are completely new to OdePkg
+* Users Guide::               Manual for users who are already familiar with OdePkg
+* Programmers Guide::          Manual for users who want to make changes to OdePkg
+* Function Index::             Reference about all functions from this package
+* Index::                      OdePkg Reference
 @end menu
 
-@c %*** Start of first chapter: Beginner's Guide
-@node Beginner's Guide, User's Guide, Top, Top
-@chapter Beginner's Guide
-@cindex Beginner's guide
-The ``Beginner's Guide'' is intended for users who are new to OdePkg and who want to solve differential equations with the Octave language and the package OdePkg. In this section it will be explained what OdePkg is about in @ref{About OdePkg} and how OdePkg grew up from the beginning in @ref{OdePkg history and roadmap}. In @ref{Installation and deinstallation} it is explained how OdePkg can be installed in Octave and how it can later be removed from Octave if it is not needed anymore. If you encounter problems while using OdePkg then have a look at @ref{Reporting Bugs} how these bugs can be reported. In the @ref{The ''foo'' example} a first example is explained.
+@c %*** Start of first chapter: Beginners Guide
+@node Beginners Guide, Users Guide, Top, Top
+@chapter Beginners Guide
+@cindex Beginners guide
+The ``Beginners Guide'' is intended for users who are new to OdePkg and who want to solve differential equations with the Octave language and the package OdePkg. In this section it will be explained what OdePkg is about in @ref{About OdePkg} and how OdePkg grew up from the beginning in @ref{OdePkg history and roadmap}. In @ref{Installation and deinstallation} it is explained how OdePkg can be installed in Octave and how it can later be removed from Octave if it is not needed anymore. If you encounter problems while using OdePkg then have a look at @ref{Reporting Bugs} how these bugs can be reported. In the @ref{The "foo" example} a first example is explained.
 
 @menu
 * About OdePkg::                An introduction about OdePkg
 * OdePkg history and roadmap::  From the first OdePkg release to the future
 * Installation and deinstallation::  Setting up OdePkg on your system
 * Reporting Bugs::              Writing comments and bugs to the help list
-* The ''foo'' example::         A first example and where to go from here
+* The "foo" example::         A first example and where to go from here
 @end menu
 
-@node About OdePkg, OdePkg history and roadmap, Beginner's Guide, Beginner's Guide
+@node About OdePkg, OdePkg history and roadmap, Beginners Guide, Beginners Guide
 @section About OdePkg
 @cindex About OdePkg
 OdePkg is part of the @b{Octave Repository} (resp. the Octave--Forge project) that was initiated by Matthew W. Roberts in the year 2000 and that is hosted at @url{http://octave.sourceforge.net}. Since then a lot of contributors joined this project and added a lot more packages and functions to further extend the capabilities of GNU Octave.
@@ -82,7 +90,7 @@ OdePkg is part of the @b{Octave Repository} (resp. the Octave--Forge project) th
 
 OdePkg includes commands for setting up various options, output functions etc. before solving a set of differential equations with the solver functions that are included. The package formerly was initiated in autumn 2006 to solve ordinary differential equations (ODEs) only but there are already improvements so that differential algebraic equations (DAEs) in explicit form and in implicit form (IDEs) and delay differential equations (DDEs) can also be solved. The goal of OdePkg is to have a package for solving differential equations that is mostly compatible to proprietary solver products.
 
-@node OdePkg history and roadmap, Installation and deinstallation, About OdePkg, Beginner's Guide
+@node OdePkg history and roadmap, Installation and deinstallation, About OdePkg, Beginners Guide
 @section OdePkg history and roadmap
 @cindex history
 @cindex roadmap
@@ -106,7 +114,7 @@ OdePkg includes commands for setting up various options, output functions etc. b
 @tab Completed OdePkg release 1.0.0 with M--solvers and DLD--solvers.
 @end multitable
 
-@node Installation and deinstallation, Reporting Bugs, OdePkg history and roadmap, Beginner's Guide
+@node Installation and deinstallation, Reporting Bugs, OdePkg history and roadmap, Beginners Guide
 @section Installation and deinstallation
 @cindex installation
 @cindex deinstallation
@@ -124,7 +132,7 @@ and make sure that OdePkg has been removed completely and does not appear in the
 pkg list
 @end example
 
-@node Reporting Bugs, The ''foo'' example, Installation and deinstallation, Beginner's Guide
+@node Reporting Bugs, The "foo" example, Installation and deinstallation, Beginners Guide
 @section Reporting Bugs
 @cindex bugs
 If you encounter problems during the installation process of OdePkg with the @command{pkg} command or if you have an OdePkg that seems to be broken or if you encounter problems while using OdePkg or if you find bugs in the source codes then please report all of that via email at the Octave--Forge mailing--list using the email address 
@@ -143,8 +151,8 @@ and directly send a copy to the email address
 @end ifhtml
 . Not only bugs are welcome but also any kind of comments are welcome (eg. if you think that OdePkg is absolutely useful or even unnecessary).
 
-@node The ''foo'' example,  , Reporting Bugs, Beginner's Guide
-@section The ''foo'' example
+@node The "foo" example,  , Reporting Bugs, Beginners Guide
+@section The "foo" example
 @cindex foo example
 Have a look at the first ordinary differential equation with the name ``@command{foo}''. The @command{foo} equation of second order may be of the form 
 @ifhtml
@@ -267,13 +275,13 @@ in the Octave window where @command{fcnname} is the name of the function for the
 doc odepkg
 @end example
 for opening this manual in the texinfo reader of the Octave window.
-@c %*** End of first chapter: Beginner's Guide
+@c %*** End of first chapter: Beginners Guide
 
-@c %*** Start of second chapter: User's Guide
-@node User's Guide, Programmer's Guide, Beginner's Guide, Top
-@chapter User's Guide
-@cindex User's guide
-The ``User's Guide'' is intended for trained users who already know in principal how to solve differential equations with the Octave language and OdePkg. In this chapter it will be explained which equations can be solved with OdePkg in @ref{Differential Equations}. It will be explained which solvers can be used for the different kind of equations in @ref{Solver families} and which options can be set for the optimization of the solving process in @ref{ODE/DAE/IDE/DDE options}. The help text of all M--file functions and all Oct--file functions have been extracted and are displayed in the sections @ref{M-File Function Reference} and @ref{Oct-File Function Reference}.
+@c %*** Start of second chapter: Users Guide
+@node Users Guide, Programmers Guide, Beginners Guide, Top
+@chapter Users Guide
+@cindex Users guide
+The ``Users Guide'' is intended for trained users who already know in principal how to solve differential equations with the Octave language and OdePkg. In this chapter it will be explained which equations can be solved with OdePkg in @ref{Differential Equations}. It will be explained which solvers can be used for the different kind of equations in @ref{Solver families} and which options can be set for the optimization of the solving process in @ref{ODE/DAE/IDE/DDE options}. The help text of all M--file functions and all Oct--file functions have been extracted and are displayed in the sections @ref{M-File Function Reference} and @ref{Oct-File Function Reference}.
 
 @menu
 * Differential Equations::      The different kind of problems that can be solved with OdePkg
@@ -283,7 +291,7 @@ The ``User's Guide'' is intended for trained users who already know in principal
 * Oct-File Function Reference::  The description about all DLD-functions from @file{*.oct}-files
 @end menu
 
-@node Differential Equations, Solver families, User's Guide, User's Guide
+@node Differential Equations, Solver families, Users Guide, Users Guide
 @section Differential Equations
 @cindex differential equations
 In this section the different kind of differential equations that can be solved with OdePkg are explained. The formulation of ordinary differential equations is described in section @ref{ODE equations} followed by the description of explicetly formulated differential algebraic equations in section @ref{DAE equations}, implicetely formulated differential algebraic equations in section @ref{IDE equations} and delay differential algebraic equations in section @ref{DDE equations}.
@@ -342,7 +350,7 @@ IDE equations in general are of the form
 @ifnothtml
 @math{y'(t) + f(t,y) = 0}
 @end ifnothtml
-where @math{y'(t)} may be a scalar or vector of derivatives. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the set of implicit differential equations. Only IDE solvers from section @ref{Cash's BDF solvers} or section @ref{DDaskr direct method solver} can be used to solve such kind of differential equations. A DAE equation definition in Octave must look like
+where @math{y'(t)} may be a scalar or vector of derivatives. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the set of implicit differential equations. Only IDE solvers from section @ref{Cashs BDF solvers} or section @ref{DDaskr direct method solver} can be used to solve such kind of differential equations. A DAE equation definition in Octave must look like
 @example
 function [residual] = IDEequation (t, y, dy, varargin)
 @end example
@@ -379,7 +387,7 @@ function [dy] = DDEequation (t, y, z, varargin)
 @end ifnothtml
 can be solved with OdePkg.
 
-@node Solver families, ODE/DAE/IDE/DDE options, Differential Equations, User's Guide
+@node Solver families, ODE/DAE/IDE/DDE options, Differential Equations, Users Guide
 @section Solver families
 @cindex solver families
 In this section the different kind of solvers are introduced that have been implemented in OdePkg. This section starts with the basic Runge--Kutta solvers in section @ref{Runge-Kutta solvers} and is continued with the Mex--file Hairer--Wanner solvers in section @ref{Hairer-Wanner solvers}. @c Other solvers are described in section @ref{Other solvers}.
@@ -388,7 +396,7 @@ Performance tests have also been added to the OdePkg. Some of these performance 
 @menu
 * Runge-Kutta solvers::         ODE solvers written as @file{*.m} files
 * Hairer-Wanner solvers::       DAE solvers interfaced by @file{*.cc} files
-* Cash's BDF solvers::          A DAE and an IDE solver interfaced by @file{*.cc} files
+* Cashs BDF solvers::          A DAE and an IDE solver interfaced by @file{*.cc} files
 * DDaskr direct method solver::  An IDE solver interfaced by a @file{*.cc} file
 * Modified Runge-Kutta solvers::  DDE solvers written as @file{*.m} files
 * ODE solver performances::     Cross math-engine performance tests
@@ -442,7 +450,7 @@ which is @math{h}--times an @math{O(h^p)}--term, or rather @math{O(h^{(p+1)})}.
 @tab Integrates a system of non--stiff ordinary differential equations (non--stiff ODEs and DAEs) using seventh and eighth order Runge--Kutta formulas. This is a seventh--order accurate integrator therefore the local error normally expected is @math{O(h^8)}. However, because this particular implementation uses the eighth--order estimate for @math{x_{out}} moving forward with the eighth--order estimate will yield errors on the order of @math{O(h^9)}. This solver requires thirteen function evaluations per integration step.
 @end multitable
 
-@node Hairer-Wanner solvers, Cash's BDF solvers, Runge-Kutta solvers, Solver families
+@node Hairer-Wanner solvers, Cashs BDF solvers, Runge-Kutta solvers, Solver families
 @subsection Hairer--Wanner solvers
 @cindex Hairer--Wanner
 The Hairer--Wanner solvers have been written by Ernst Hairer and Gerhard Wanner. They are written in the Fortran language (hosted at @url{http://www.unige.ch/~hairer}) and that have been added to the OdePkg as a compressed file with the name @file{hairer.tgz}. Papers and other details about these solvers can be found at the adress given before. The licence of these solvers is a modified BSD license (without advertising clause and therefore are GPL compatible) and can be found as @file{licence.txt} file in the @file{hairer.tgz} package. The Hairer--Wanner solvers have been added to the OdePkg to solve non--stiff and stiff ODEs and DAEs that cannot be solved with any of the Runge--Kutta solvers.
@@ -451,7 +459,7 @@ Interface functions for these solvers have been created and have been added to t
 
 To provide a short name and to circumvent from the syntax of the original solver function wrapper functions have been added, eg. the command @command{ode2r} calls the solver @command{radau} from the Fortran file @file{radau.f}. The other wrapper functions for the Hairer--Wanner solvers are @command{ode5r} for the @command{radau5} solver, @command{oders} for the @command{rodas} solver and @command{odesx} for the @command{seulex} solver. The help text of all these solver functions can be diaplyed by calling @command{help wrapper} where wrapper is one of @command{ode2r}, @command{ode5r}, @command{oders} or @command{odesx}.
 
-@node Cash's BDF solvers, DDaskr direct method solver, Hairer-Wanner solvers, Solver families
+@node Cashs BDF solvers, DDaskr direct method solver, Hairer-Wanner solvers, Solver families
 @subsection Cash BDF solvers
 @cindex BDF solver
 @cindex Cash BDF
@@ -461,7 +469,7 @@ Interface functions for these solvers have been created and have been added to t
 
 To provide a short name and to circumvent from the syntax of the original solver function wrapper functions have been added. The command @command{odebda} calls the solver @command{mebdfdae} from the Fortran file @file{mebdf.f} and the @command{odebdi} calls the solver @command{mebdfi} from the Fortran file @file{mebdfi.f}.
 
-@node DDaskr direct method solver, Modified Runge-Kutta solvers, Cash's BDF solvers, Solver families
+@node DDaskr direct method solver, Modified Runge-Kutta solvers, Cashs BDF solvers, Solver families
 @subsection DDaskr direct method solver
 @cindex ddaskr solver
 The direct method from the Krylov solver file @file{ddaskr.f} has been written by Peter N. Brown, Alan C. Hindmarsh, Linda R. Petzold and Clement W. Ulrich in the Fortran language and that is hosted at @url{http://www.netlib.org}. @b{The Krylov method has not been implemented within OdePkg, only the direct method has been implemented.} The solver and further files for the interface have been added to the OdePkg as a compressed package with the name @file{ddaskr.tgz}. The license of these solvers is a modfied BSD license (without advertising clause) that can be found inside of the compressed package. Other details about this solver can be found as a preamble in the source file @file{ddaskr.f}. The direct method solver of the file @file{ddaskr.f} has been added to the OdePkg to solve non--stiff and stiff IDEs.
@@ -565,7 +573,7 @@ octave:1> odepkg ('odepkg_performance_octavechemakzo');
 
 Other testsuite functions have been added to the OdePkg that can be taken for further performance tests and syntax checks on your own hardware. These functions all have a name @file{odepkg_testsuite_XXX.m} with @file{XXX} being the name of the testsuite equation that has been implemented.
 
-@node ODE/DAE/IDE/DDE options, M-File Function Reference, Solver families, User's Guide
+@node ODE/DAE/IDE/DDE options, M-File Function Reference, Solver families, Users Guide
 @section ODE/DAE/IDE/DDE options
 @cindex ode options
 @cindex dae options
@@ -915,30 +923,30 @@ plot (C.x, C.y, "bo-", D.x, D.y, "rx:");
 The option @option{BDF} is only supported by the @command{odebdi} and @command{odebda} solvers. Using these solvers the option @option{BDF} will automatically be set @command{"on"} (even if it was set @command{"off"} before) because the @command{odebdi} and @command{odebda} solvers all use the backward differentiation algorithm to solve the different kind of equations.
 @end table
 
-@node M-File Function Reference, Oct-File Function Reference, ODE/DAE/IDE/DDE options, User's Guide
+@node M-File Function Reference, Oct-File Function Reference, ODE/DAE/IDE/DDE options, Users Guide
 @section M--File Function Reference
 @cindex m--file reference
 The help texts of this section are autogenerated and refer to commands that all can be found in the files @file{*.m}. All commands that are listed below are loaded automatically everytime you launch Octave.@*@*
 @include mfunref.texi
 
-@node Oct-File Function Reference,  , M-File Function Reference, User's Guide
+@node Oct-File Function Reference,  , M-File Function Reference, Users Guide
 @section Oct--File Function Reference
 @cindex oct--file reference
 The help texts of this section are autogenerated and refer to commands that all can be found in the file @file{dldsolver.oct}. The file @file{dldsolver.oct} is generated automatically if you install OdePkg with the command @command{pkg}. All commands that are listed below are loaded automatically everytime you launch Octave.@*@*
 @include dldfunref.texi
 
-@c %*** End of second chapter: User's Guide
+@c %*** End of second chapter: Users Guide
 
-@c %*** Start of third chapter: Programmer's Guide
-@node Programmer's Guide, Function Index, User's Guide, Top
-@chapter Programmer's Guide
-@cindex Programmer's guide
+@c %*** Start of third chapter: Programmers Guide
+@node Programmers Guide, Function Index, Users Guide, Top
+@chapter Programmers Guide
+@cindex Programmers guide
 
 @menu
 * Missing features::            The TODO-list for missing features
 @end menu
 
-@node Missing features,  , Programmer's Guide, Programmer's Guide
+@node Missing features,  , Programmers Guide, Programmers Guide
 @section Missing features
 @cindex missing features
 If somebody want to help improving OdePkg then please contact the Octave--Forge developer team sending your modifications via the mailing--list
@@ -979,9 +987,9 @@ or send an email to
 @end itemize
 
 @end itemize
-@c %*** End of third chapter: Programmer's Guide
+@c %*** End of third chapter: Programmers Guide
 
-@node Function Index, Index, Programmer's Guide, Top
+@node Function Index, Index, Programmers Guide, Top
 @unnumbered Function Index
 @printindex fn
 

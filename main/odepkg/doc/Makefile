@@ -33,6 +33,13 @@ all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 ../inst/doc.info : $(INFODOC)
 	cp -f $(INFODOC) ../inst/doc.info
 
+ifeq (,$(TEXI2PDF))
+%.pdf : %.dvi
+	@if test "x$(TEXI2DVI)" != "x" && test "x$(DVIPDF)" != "x"; then \
+	  echo "Making pdf $@"; \
+	  $(DVIPDF) $< ; \
+	fi
+
 %.dvi : %.texi
 	@if test "x$(TEXI2DVI)" != "x"; then \
 	  echo "Making dvi $@"; \
@@ -46,12 +53,17 @@ all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 	  echo "Making postscript $@"; \
 	  $(DVIPS) -o $@ $< ; \
 	fi
-
-%.pdf : %.dvi
-	@if test "x$(TEXI2DVI)" != "x" && test "x$(DVIPDF)" != "x"; then \
+else
+%.pdf : %.texi
+	@if test "x$(TEXI2PDF)" != "x"; then \
 	  echo "Making pdf $@"; \
-	  $(DVIPDF) $< ; \
+	  TEXINPUTS="./:../../..:$(TEXINPUTS):"; \
+          export TEXINPUTS; \
+	  echo "************** HERE **************"; \
+	  $(TEXI2PDF) $< ; \
+	  echo "************** THERE **************"; \
 	fi
+endif
 
 %.info : %.texi
 	@if test "x$(MAKEINFO)" != "x"; then \

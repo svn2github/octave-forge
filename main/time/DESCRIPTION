@@ -6,7 +6,7 @@ Maintainer: Bill Denney <bill@denney.ws>
 Title: Time and Dates
 Description: Additional date manipulation tools.
 Categories: Time
-Depends: octave (>= 2.9.7)
+Depends: octave (>= 3.0.1)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

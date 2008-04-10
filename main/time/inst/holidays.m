@@ -73,10 +73,10 @@ function hol = holidays (sd, ed)
   ## Adjust for Saturdays and Sundays
   wd = weekday (hol);
   if any (wd == 1)
-	hol(wd == 1) = hol(wd == 1) + 1;
+    hol(wd == 1) = hol(wd == 1) + 1;
   endif
   if any (wd == 7)
-	hol(wd == 7) = hol(wd == 7) - 1;
+    hol(wd == 7) = hol(wd == 7) - 1;
   endif
 
   ## Trim out the days that are not in the date range

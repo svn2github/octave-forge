@@ -392,6 +392,7 @@ typedef struct tagSQL_INTERVAL_STRUCT
 /*
  * may fail in some cases, but what else can we do ?
  */
+#ifndef SWIG
 struct __bigint_struct
 {
     int             hiword;
@@ -404,6 +405,7 @@ struct __bigint_struct_u
 };
 #  define ODBCINT64	    struct __bigint_struct
 #  define UODBCINT64	struct __bigint_struct_u
+#endif // SWIG
 # endif
 #endif
 #ifdef ODBCINT64

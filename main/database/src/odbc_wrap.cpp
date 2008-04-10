@@ -851,7 +851,7 @@ namespace {
 
     struct hash_voidptr {
       int operator() (void *p) const {
-	return (int) p;
+	return (long) p;
       }
     };
     typedef __gnu_cxx::hash_map < void *, Director *, hash_voidptr > rtdir_map;
@@ -1959,33 +1959,31 @@ octave_value_typeinfo::register_binary_op(octave_value::op_##name,tid1,tid2,swig
 
 #define SWIGTYPE_p_SQLINTERVAL swig_types[0]
 #define SWIGTYPE_p_SQL_INTERVAL_STRUCT_intval swig_types[1]
-#define SWIGTYPE_p___bigint_struct swig_types[2]
-#define SWIGTYPE_p___bigint_struct_u swig_types[3]
-#define SWIGTYPE_p_char swig_types[4]
-#define SWIGTYPE_p_double swig_types[5]
-#define SWIGTYPE_p_float swig_types[6]
-#define SWIGTYPE_p_generic_db swig_types[7]
-#define SWIGTYPE_p_long swig_types[8]
-#define SWIGTYPE_p_odbc_db swig_types[9]
-#define SWIGTYPE_p_p_void swig_types[10]
-#define SWIGTYPE_p_short swig_types[11]
-#define SWIGTYPE_p_signed_char swig_types[12]
-#define SWIGTYPE_p_std__string swig_types[13]
-#define SWIGTYPE_p_tagDATE_STRUCT swig_types[14]
-#define SWIGTYPE_p_tagSQLGUID swig_types[15]
-#define SWIGTYPE_p_tagSQL_DAY_SECOND swig_types[16]
-#define SWIGTYPE_p_tagSQL_INTERVAL_STRUCT swig_types[17]
-#define SWIGTYPE_p_tagSQL_NUMERIC_STRUCT swig_types[18]
-#define SWIGTYPE_p_tagSQL_YEAR_MONTH swig_types[19]
-#define SWIGTYPE_p_tagTIMESTAMP_STRUCT swig_types[20]
-#define SWIGTYPE_p_tagTIME_STRUCT swig_types[21]
-#define SWIGTYPE_p_unsigned_char swig_types[22]
-#define SWIGTYPE_p_unsigned_int swig_types[23]
-#define SWIGTYPE_p_unsigned_long swig_types[24]
-#define SWIGTYPE_p_unsigned_short swig_types[25]
-#define SWIGTYPE_p_void swig_types[26]
-static swig_type_info *swig_types[28];
-static swig_module_info swig_module = {swig_types, 27, 0, 0, 0, 0};
+#define SWIGTYPE_p_char swig_types[2]
+#define SWIGTYPE_p_double swig_types[3]
+#define SWIGTYPE_p_float swig_types[4]
+#define SWIGTYPE_p_generic_db swig_types[5]
+#define SWIGTYPE_p_long swig_types[6]
+#define SWIGTYPE_p_odbc_db swig_types[7]
+#define SWIGTYPE_p_p_void swig_types[8]
+#define SWIGTYPE_p_short swig_types[9]
+#define SWIGTYPE_p_signed_char swig_types[10]
+#define SWIGTYPE_p_std__string swig_types[11]
+#define SWIGTYPE_p_tagDATE_STRUCT swig_types[12]
+#define SWIGTYPE_p_tagSQLGUID swig_types[13]
+#define SWIGTYPE_p_tagSQL_DAY_SECOND swig_types[14]
+#define SWIGTYPE_p_tagSQL_INTERVAL_STRUCT swig_types[15]
+#define SWIGTYPE_p_tagSQL_NUMERIC_STRUCT swig_types[16]
+#define SWIGTYPE_p_tagSQL_YEAR_MONTH swig_types[17]
+#define SWIGTYPE_p_tagTIMESTAMP_STRUCT swig_types[18]
+#define SWIGTYPE_p_tagTIME_STRUCT swig_types[19]
+#define SWIGTYPE_p_unsigned_char swig_types[20]
+#define SWIGTYPE_p_unsigned_int swig_types[21]
+#define SWIGTYPE_p_unsigned_long swig_types[22]
+#define SWIGTYPE_p_unsigned_short swig_types[23]
+#define SWIGTYPE_p_void swig_types[24]
+static swig_type_info *swig_types[26];
+static swig_module_info swig_module = {swig_types, 25, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2151,29 +2149,6 @@ typedef union {
 		SQL_DAY_SECOND_STRUCT		day_second;
 	} SQL_INTERVAL_STRUCT_intval;
 
-
-
-SWIGINTERN int
-SWIG_AsVal_unsigned_SS_int (octave_value obj, unsigned int *val)
-{
-  unsigned long v;
-  int res = SWIG_AsVal_unsigned_SS_long (obj, &v);
-  if (SWIG_IsOK(res)) {
-    if ((v > UINT_MAX)) {
-      return SWIG_OverflowError;
-    } else {
-      if (val) *val = (unsigned int)(v);
-    }
-  }  
-  return res;
-}
-
-
-SWIGINTERNINLINE octave_value
-SWIG_From_unsigned_SS_int  (unsigned int value)
-{    
-  return SWIG_From_unsigned_SS_long  (value);
-}
 
 
 SWIGINTERN int
@@ -4205,340 +4180,6 @@ static swig_octave_member swig_SQL_INTERVAL_STRUCT_intval_members[] = {
 static const char *swig_SQL_INTERVAL_STRUCT_intval_base_names[] = {0};
 static const swig_type_info *swig_SQL_INTERVAL_STRUCT_intval_base[] = {0};
 static swig_octave_class _wrap_class_SQL_INTERVAL_STRUCT_intval = {"SQL_INTERVAL_STRUCT_intval", &SWIGTYPE_p_SQL_INTERVAL_STRUCT_intval,0,_wrap_new_SQL_INTERVAL_STRUCT_intval,0,_wrap_delete_SQL_INTERVAL_STRUCT_intval,swig_SQL_INTERVAL_STRUCT_intval_members,swig_SQL_INTERVAL_STRUCT_intval_base_names,swig_SQL_INTERVAL_STRUCT_intval_base };
-
-static octave_value_list _wrap___bigint_struct_hiword_set (const octave_value_list& args, int nargout) {
-  __bigint_struct *arg1 = (__bigint_struct *) 0 ;
-  int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("__bigint_struct_hiword_set",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p___bigint_struct, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "__bigint_struct_hiword_set" "', argument " "1"" of type '" "__bigint_struct *""'"); 
-  }
-  arg1 = (__bigint_struct *)(argp1);
-  ecode2 = SWIG_AsVal_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "__bigint_struct_hiword_set" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = (int)(val2);
-  if (arg1) (arg1)->hiword = arg2;
-  
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap___bigint_struct_hiword_get (const octave_value_list& args, int nargout) {
-  __bigint_struct *arg1 = (__bigint_struct *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("__bigint_struct_hiword_get",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p___bigint_struct, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "__bigint_struct_hiword_get" "', argument " "1"" of type '" "__bigint_struct *""'"); 
-  }
-  arg1 = (__bigint_struct *)(argp1);
-  result = (int) ((arg1)->hiword);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap___bigint_struct_loword_set (const octave_value_list& args, int nargout) {
-  __bigint_struct *arg1 = (__bigint_struct *) 0 ;
-  unsigned int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int val2 ;
-  int ecode2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("__bigint_struct_loword_set",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p___bigint_struct, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "__bigint_struct_loword_set" "', argument " "1"" of type '" "__bigint_struct *""'"); 
-  }
-  arg1 = (__bigint_struct *)(argp1);
-  ecode2 = SWIG_AsVal_unsigned_SS_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "__bigint_struct_loword_set" "', argument " "2"" of type '" "unsigned int""'");
-  } 
-  arg2 = (unsigned int)(val2);
-  if (arg1) (arg1)->loword = arg2;
-  
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap___bigint_struct_loword_get (const octave_value_list& args, int nargout) {
-  __bigint_struct *arg1 = (__bigint_struct *) 0 ;
-  unsigned int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("__bigint_struct_loword_get",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p___bigint_struct, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "__bigint_struct_loword_get" "', argument " "1"" of type '" "__bigint_struct *""'"); 
-  }
-  arg1 = (__bigint_struct *)(argp1);
-  result = (unsigned int) ((arg1)->loword);
-  _outv = SWIG_From_unsigned_SS_int((unsigned int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_new___bigint_struct (const octave_value_list& args, int nargout) {
-  __bigint_struct *result = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("new___bigint_struct",args.length(),0,0,0)) {
-    SWIG_fail;
-  }
-  result = (__bigint_struct *)new __bigint_struct();
-  _outv = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p___bigint_struct, 1 |  0 );
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_delete___bigint_struct (const octave_value_list& args, int nargout) {
-  __bigint_struct *arg1 = (__bigint_struct *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("delete___bigint_struct",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p___bigint_struct, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete___bigint_struct" "', argument " "1"" of type '" "__bigint_struct *""'"); 
-  }
-  arg1 = (__bigint_struct *)(argp1);
-  delete arg1;
-  
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static swig_octave_member swig___bigint_struct_members[] = {
-{"hiword",0,_wrap___bigint_struct_hiword_get,_wrap___bigint_struct_hiword_set,0,0},
-{"loword",0,_wrap___bigint_struct_loword_get,_wrap___bigint_struct_loword_set,0,0},
-{0,0,0,0}
-};
-static const char *swig___bigint_struct_base_names[] = {0};
-static const swig_type_info *swig___bigint_struct_base[] = {0};
-static swig_octave_class _wrap_class___bigint_struct = {"__bigint_struct", &SWIGTYPE_p___bigint_struct,0,_wrap_new___bigint_struct,0,_wrap_delete___bigint_struct,swig___bigint_struct_members,swig___bigint_struct_base_names,swig___bigint_struct_base };
-
-static octave_value_list _wrap___bigint_struct_u_hiword_set (const octave_value_list& args, int nargout) {
-  __bigint_struct_u *arg1 = (__bigint_struct_u *) 0 ;
-  unsigned int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int val2 ;
-  int ecode2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("__bigint_struct_u_hiword_set",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p___bigint_struct_u, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "__bigint_struct_u_hiword_set" "', argument " "1"" of type '" "__bigint_struct_u *""'"); 
-  }
-  arg1 = (__bigint_struct_u *)(argp1);
-  ecode2 = SWIG_AsVal_unsigned_SS_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "__bigint_struct_u_hiword_set" "', argument " "2"" of type '" "unsigned int""'");
-  } 
-  arg2 = (unsigned int)(val2);
-  if (arg1) (arg1)->hiword = arg2;
-  
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap___bigint_struct_u_hiword_get (const octave_value_list& args, int nargout) {
-  __bigint_struct_u *arg1 = (__bigint_struct_u *) 0 ;
-  unsigned int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("__bigint_struct_u_hiword_get",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p___bigint_struct_u, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "__bigint_struct_u_hiword_get" "', argument " "1"" of type '" "__bigint_struct_u *""'"); 
-  }
-  arg1 = (__bigint_struct_u *)(argp1);
-  result = (unsigned int) ((arg1)->hiword);
-  _outv = SWIG_From_unsigned_SS_int((unsigned int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap___bigint_struct_u_loword_set (const octave_value_list& args, int nargout) {
-  __bigint_struct_u *arg1 = (__bigint_struct_u *) 0 ;
-  unsigned int arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int val2 ;
-  int ecode2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("__bigint_struct_u_loword_set",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p___bigint_struct_u, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "__bigint_struct_u_loword_set" "', argument " "1"" of type '" "__bigint_struct_u *""'"); 
-  }
-  arg1 = (__bigint_struct_u *)(argp1);
-  ecode2 = SWIG_AsVal_unsigned_SS_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "__bigint_struct_u_loword_set" "', argument " "2"" of type '" "unsigned int""'");
-  } 
-  arg2 = (unsigned int)(val2);
-  if (arg1) (arg1)->loword = arg2;
-  
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap___bigint_struct_u_loword_get (const octave_value_list& args, int nargout) {
-  __bigint_struct_u *arg1 = (__bigint_struct_u *) 0 ;
-  unsigned int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("__bigint_struct_u_loword_get",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p___bigint_struct_u, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "__bigint_struct_u_loword_get" "', argument " "1"" of type '" "__bigint_struct_u *""'"); 
-  }
-  arg1 = (__bigint_struct_u *)(argp1);
-  result = (unsigned int) ((arg1)->loword);
-  _outv = SWIG_From_unsigned_SS_int((unsigned int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_new___bigint_struct_u (const octave_value_list& args, int nargout) {
-  __bigint_struct_u *result = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("new___bigint_struct_u",args.length(),0,0,0)) {
-    SWIG_fail;
-  }
-  result = (__bigint_struct_u *)new __bigint_struct_u();
-  _outv = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p___bigint_struct_u, 1 |  0 );
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_delete___bigint_struct_u (const octave_value_list& args, int nargout) {
-  __bigint_struct_u *arg1 = (__bigint_struct_u *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("delete___bigint_struct_u",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p___bigint_struct_u, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete___bigint_struct_u" "', argument " "1"" of type '" "__bigint_struct_u *""'"); 
-  }
-  arg1 = (__bigint_struct_u *)(argp1);
-  delete arg1;
-  
-  _outv = octave_value();
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static swig_octave_member swig___bigint_struct_u_members[] = {
-{"hiword",0,_wrap___bigint_struct_u_hiword_get,_wrap___bigint_struct_u_hiword_set,0,0},
-{"loword",0,_wrap___bigint_struct_u_loword_get,_wrap___bigint_struct_u_loword_set,0,0},
-{0,0,0,0}
-};
-static const char *swig___bigint_struct_u_base_names[] = {0};
-static const swig_type_info *swig___bigint_struct_u_base[] = {0};
-static swig_octave_class _wrap_class___bigint_struct_u = {"__bigint_struct_u", &SWIGTYPE_p___bigint_struct_u,0,_wrap_new___bigint_struct_u,0,_wrap_delete___bigint_struct_u,swig___bigint_struct_u_members,swig___bigint_struct_u_base_names,swig___bigint_struct_u_base };
 
 static octave_value_list _wrap_SQL_NUMERIC_STRUCT_precision_set (const octave_value_list& args, int nargout) {
   SQL_NUMERIC_STRUCT *arg1 = (SQL_NUMERIC_STRUCT *) 0 ;
@@ -9537,18 +9178,6 @@ static const struct swig_octave_member swig_globals[] = {
 {"SQL_INTERVAL_STRUCT_intval_day_second_get",_wrap_SQL_INTERVAL_STRUCT_intval_day_second_get,0,0,2,0},
 {"new_SQL_INTERVAL_STRUCT_intval",_wrap_new_SQL_INTERVAL_STRUCT_intval,0,0,2,0},
 {"delete_SQL_INTERVAL_STRUCT_intval",_wrap_delete_SQL_INTERVAL_STRUCT_intval,0,0,2,0},
-{"__bigint_struct_hiword_set",_wrap___bigint_struct_hiword_set,0,0,2,0},
-{"__bigint_struct_hiword_get",_wrap___bigint_struct_hiword_get,0,0,2,0},
-{"__bigint_struct_loword_set",_wrap___bigint_struct_loword_set,0,0,2,0},
-{"__bigint_struct_loword_get",_wrap___bigint_struct_loword_get,0,0,2,0},
-{"new___bigint_struct",_wrap_new___bigint_struct,0,0,2,0},
-{"delete___bigint_struct",_wrap_delete___bigint_struct,0,0,2,0},
-{"__bigint_struct_u_hiword_set",_wrap___bigint_struct_u_hiword_set,0,0,2,0},
-{"__bigint_struct_u_hiword_get",_wrap___bigint_struct_u_hiword_get,0,0,2,0},
-{"__bigint_struct_u_loword_set",_wrap___bigint_struct_u_loword_set,0,0,2,0},
-{"__bigint_struct_u_loword_get",_wrap___bigint_struct_u_loword_get,0,0,2,0},
-{"new___bigint_struct_u",_wrap_new___bigint_struct_u,0,0,2,0},
-{"delete___bigint_struct_u",_wrap_delete___bigint_struct_u,0,0,2,0},
 {"SQL_NUMERIC_STRUCT_precision_set",_wrap_SQL_NUMERIC_STRUCT_precision_set,0,0,2,0},
 {"SQL_NUMERIC_STRUCT_precision_get",_wrap_SQL_NUMERIC_STRUCT_precision_get,0,0,2,0},
 {"SQL_NUMERIC_STRUCT_scale_set",_wrap_SQL_NUMERIC_STRUCT_scale_set,0,0,2,0},
@@ -9665,8 +9294,6 @@ static void *_p_odbc_dbTo_p_generic_db(void *x, int *newmemory) {
 }
 static swig_type_info _swigt__p_SQLINTERVAL = {"_p_SQLINTERVAL", "enum SQLINTERVAL *|SQLINTERVAL *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SQL_INTERVAL_STRUCT_intval = {"_p_SQL_INTERVAL_STRUCT_intval", "SQL_INTERVAL_STRUCT_intval *", 0, 0, (void*)&_wrap_class_SQL_INTERVAL_STRUCT_intval, 0};
-static swig_type_info _swigt__p___bigint_struct = {"_p___bigint_struct", "SQLBIGINT *|__bigint_struct *", 0, 0, (void*)&_wrap_class___bigint_struct, 0};
-static swig_type_info _swigt__p___bigint_struct_u = {"_p___bigint_struct_u", "SQLUBIGINT *|__bigint_struct_u *", 0, 0, (void*)&_wrap_class___bigint_struct_u, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "CHAR *|TCHAR *|char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_double = {"_p_double", "SQLFLOAT *|double *|SQLDOUBLE *|LDOUBLE *|SDOUBLE *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_float = {"_p_float", "SFLOAT *|float *|SQLREAL *", 0, 0, (void*)0, 0};
@@ -9694,8 +9321,6 @@ static swig_type_info _swigt__p_void = {"_p_void", "SQLHENV|SQLHDBC|VOID *|void 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_SQLINTERVAL,
   &_swigt__p_SQL_INTERVAL_STRUCT_intval,
-  &_swigt__p___bigint_struct,
-  &_swigt__p___bigint_struct_u,
   &_swigt__p_char,
   &_swigt__p_double,
   &_swigt__p_float,
@@ -9723,8 +9348,6 @@ static swig_type_info *swig_type_initial[] = {
 
 static swig_cast_info _swigc__p_SQLINTERVAL[] = {  {&_swigt__p_SQLINTERVAL, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SQL_INTERVAL_STRUCT_intval[] = {  {&_swigt__p_SQL_INTERVAL_STRUCT_intval, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p___bigint_struct[] = {  {&_swigt__p___bigint_struct, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p___bigint_struct_u[] = {  {&_swigt__p___bigint_struct_u, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_double[] = {  {&_swigt__p_double, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_float[] = {  {&_swigt__p_float, 0, 0, 0},{0, 0, 0, 0}};
@@ -9752,8 +9375,6 @@ static swig_cast_info _swigc__p_void[] = {  {&_swigt__p_void, 0, 0, 0},{0, 0, 0,
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_SQLINTERVAL,
   _swigc__p_SQL_INTERVAL_STRUCT_intval,
-  _swigc__p___bigint_struct,
-  _swigc__p___bigint_struct_u,
   _swigc__p_char,
   _swigc__p_double,
   _swigc__p_float,

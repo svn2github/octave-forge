@@ -382,13 +382,13 @@ OCTAVE_EVAL(pathsep, OCTAVE_PATHSEP)
 
 if test "$HAVE_JAVA" = "yes"; then
    AC_MSG_CHECKING([for java package in Octave])
-   HAVE_OCTAVE_JAVA=[`echo "pkg('load','java');disp('yes');" | octave -qf`]
+   HAVE_OCTAVE_JAVA=[`unset TERM; echo "pkg('load','java');disp('yes');" | octave -qf`]
    if test "$HAVE_OCTAVE_JAVA" = "yes"; then
-     OCTAVE_JAVA_DIR=[`echo "pkg('load','java');disp(fileparts(file_in_loadpath('javaclasspath.m')))" | octave -qf`]
+     OCTAVE_JAVA_DIR=[`unset TERM; echo "pkg('load','java');disp(fileparts(file_in_loadpath('javaclasspath.m')))" | octave -qf`]
      AC_MSG_RESULT($OCTAVE_JAVA_DIR)
      OCTAVE_JAR="${OCTAVE_JAVA_DIR}${OCTAVE_FILESEP}octave.jar"
-     OCTAVE_JAVAOCT_DIR=[`echo "pkg('load','java');disp(fileparts(file_in_loadpath('__java__.oct')))" | octave -qf`]
-     JOGL_JAR=[`echo 'jogl=file_in_path(EXEC_PATH,"jogl.jar");if (!isempty(jogl)), disp(jogl);, endif' | octave -qf`]
+     OCTAVE_JAVAOCT_DIR=[`unset TERM; echo "pkg('load','java');disp(fileparts(file_in_loadpath('javaaddpath.m')))" | octave -qf`]
+     JOGL_JAR=[`unset TERM; echo 'jogl=file_in_path(EXEC_PATH,"jogl.jar");if (!isempty(jogl)), disp(jogl);, endif' | octave -qf`]
      if test "x$JOGL_JAR" = "x"; then
        JOGL_JAR=jogl.jar
        HAVE_JAVA="Can not find jogl.jar"

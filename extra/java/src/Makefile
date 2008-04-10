@@ -1,7 +1,9 @@
 sinclude ./Makeconf
 export LFLAGS
 
-PROGS = __java__.oct __java__.lib __java__.h octave.jar
+LIBS = __java__.lib
+PROGS = __java__.oct __java__.h octave.jar
+
 
 JAVASRC = ClassHelper.java OctClassLoader.java Octave.java OctaveReference.java Matrix.java
 JAVADIR = org/octave
@@ -17,6 +19,11 @@ all: $(PROGS)
 	touch FILES; \
 	for _f in $(PROGS); do \
 	  echo $$_f >> FILES; \
+	done; \
+	for _f in $(LIBS); do \
+	  if [ -e $$_f ]; then \
+	    echo $$_f >> FILES; \
+	  fi; \
 	done
 else
 all:

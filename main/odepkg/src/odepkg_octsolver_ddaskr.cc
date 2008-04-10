@@ -194,6 +194,7 @@ octave_idx_type odepkg_ddaskr_error (octave_idx_type verr) {
   return (true);
 }
 
+// PKG_ADD: autoload ("odekdi", "dldsolver.oct");
 DEFUN_DLD (odekdi, args, nargout,
 "-*- texinfo -*-\n\
 @deftypefn  {Command} {[@var{}] =} odekdi (@var{@@fun}, @var{slot}, @var{y0}, @var{dy0}, [@var{opt}], [@var{P1}, @var{P2}, @dots{}])\n\

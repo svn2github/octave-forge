@@ -245,6 +245,7 @@ octave_idx_type odepkg_radau_solfcn
   return (true);
 }
 
+// PKG_ADD: autoload ("ode2r",  "dldsolver.oct");
 DEFUN_DLD (ode2r, args, nargout, 
 "-*- texinfo -*-\n\
 @deftypefn  {Command} {[@var{}] =} ode2r (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\

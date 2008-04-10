@@ -459,6 +459,7 @@ octave_idx_type odepkg_rodas_dfxfcn
    return (true);
 }
 
+// PKG_ADD: autoload ("oders",  "dldsolver.oct");
 DEFUN_DLD (oders, args, nargout, 
 "-*- texinfo -*-\n\
 @deftypefn  {Function File} {[@var{}] =} oders (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])\n\

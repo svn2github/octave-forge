@@ -1,6 +1,6 @@
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/config/makefile.mgw gnuplot-4.3.0-2008-03-24/config/makefile.mgw
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/config/makefile.mgw gnuplot-4.3.0-2008-03-24/config/makefile.mgw
 --- gnuplot-4.3.0-2008-03-24-orig/config/makefile.mgw	Sat Feb 23 11:03:35 2008
-+++ gnuplot-4.3.0-2008-03-24/config/makefile.mgw	Sat Apr  5 18:56:39 2008
++++ gnuplot-4.3.0-2008-03-24/config/makefile.mgw	Thu Apr 10 20:35:02 2008
 @@ -15,6 +15,8 @@
  # Workshop 4.03.
  #
@@ -15,7 +15,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  # Where to install the PostScript prologue files, relatively to the executable
  # wgnuplot.exe
 -GNUPLOT_PS_DIR = share/PostScript
-+GNUPLOT_PS_DIR = ..\\\\share\\\\gnuplot\\\\PostScript
++GNUPLOT_PS_DIR = share\\\\gnuplot\\\\PostScript
  
  # Destination directory, used in 'make install':
  DESTDIR = /c/Progra~1/Gnuplot4.3
@@ -24,7 +24,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  # -mpentium means optimise for Pentium processor
  # -mpentiumpro means optimize for Pentium II and Pro procesors
 -CFLAGS =
-+CFLAGS += -O2 -DVOLATILE_REFRESH
++CFLAGS += $(GCC_ARCH_FLAGS) -O2 -DVOLATILE_REFRESH
  
  
  # To compile the .hlp file you need hcw either out of Microsoft SDK or MS Help
@@ -292,30 +292,47 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
 +	cp pgnuplot_win.exe $(DESTDIR)/pgnuplot_win.exe
  	mkdir -p $(DESTDIR)/share/PostScript
  	cp ../term/PostScript/*.ps $(DESTDIR)/$(GNUPLOT_PS_DIR)
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/src/command.c gnuplot-4.3.0-2008-03-24/src/command.c
+Binary files gnuplot-4.3.0-2008-03-24-orig/demo/binary1 and gnuplot-4.3.0-2008-03-24/demo/binary1 differ
+Binary files gnuplot-4.3.0-2008-03-24-orig/demo/binary2 and gnuplot-4.3.0-2008-03-24/demo/binary2 differ
+Binary files gnuplot-4.3.0-2008-03-24-orig/demo/binary3 and gnuplot-4.3.0-2008-03-24/demo/binary3 differ
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/command.c gnuplot-4.3.0-2008-03-24/src/command.c
 --- gnuplot-4.3.0-2008-03-24-orig/src/command.c	Sun Mar 23 22:39:30 2008
-+++ gnuplot-4.3.0-2008-03-24/src/command.c	Sat Apr  5 18:57:15 2008
-@@ -2659,6 +2659,8 @@
- 		dest[i] = '\n';
- 		i++;
- 		break;
-+		} else if ('\r' == c) {
-+			dest[i] = '\0';
- 	    } else if (EOF == c) {
- 		dest[i] = '\0';
- 		return (char*) 0;
-@@ -2721,7 +2723,7 @@
- 	     * the bounds of this array */
- 	    last = strlen(gp_input_line) - 1;
++++ gnuplot-4.3.0-2008-03-24/src/command.c	Thu Apr 10 20:12:52 2008
+@@ -1103,7 +1103,7 @@
+     }
+ 
+     if (sleep_time < 0) {
+-#ifdef _Windows
++#if defined(_Windows) && !defined(CONSOLE)
+     if (paused_for_mouse && !graphwin.hWndGraph) {
+ 	if (interactive) { /* cannot wait for Enter in a non-interactive session without the graph window */
+ 	    char tmp[512];
+@@ -2723,6 +2723,9 @@
  	    if (last >= 0) {
--		if (gp_input_line[last] == '\n') {	/* remove any newline */
-+		if (gp_input_line[last] == '\n' || gp_input_line[last] == '\r') {	/* remove any newline */
+ 		if (gp_input_line[last] == '\n') {	/* remove any newline */
  		    gp_input_line[last] = NUL;
++		    if (last > 0 && gp_input_line[last-1] == '\r') {
++		        gp_input_line[--last] = NUL;
++		    }
  		    /* Watch out that we don't backup beyond 0 (1-1-1) */
  		    if (last > 0)
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/src/plot.c gnuplot-4.3.0-2008-03-24/src/plot.c
+ 			--last;
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/mouse.c gnuplot-4.3.0-2008-03-24/src/mouse.c
+--- gnuplot-4.3.0-2008-03-24-orig/src/mouse.c	Thu Mar 13 21:02:12 2008
++++ gnuplot-4.3.0-2008-03-24/src/mouse.c	Thu Apr 10 20:12:52 2008
+@@ -1653,7 +1653,9 @@
+ #ifdef _Windows
+     if (paused_for_mouse & PAUSE_CLICK) {
+ 	/* remove pause message box after 'pause mouse' */
++#ifndef CONSOLE
+ 	paused_for_mouse = 0;
++#endif
+ 	kill_pending_Pause_dialog();
+     }
+ #endif
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/plot.c gnuplot-4.3.0-2008-03-24/src/plot.c
 --- gnuplot-4.3.0-2008-03-24-orig/src/plot.c	Sun Mar 16 21:03:50 2008
-+++ gnuplot-4.3.0-2008-03-24/src/plot.c	Sat Apr  5 18:57:15 2008
++++ gnuplot-4.3.0-2008-03-24/src/plot.c	Thu Apr 10 20:12:52 2008
 @@ -480,7 +480,7 @@
      else
  	interactive = FALSE;
@@ -325,9 +342,9 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
      interactive = TRUE;
  # else
      interactive = isatty(fileno(stdin));
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/src/readline.c gnuplot-4.3.0-2008-03-24/src/readline.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/readline.c gnuplot-4.3.0-2008-03-24/src/readline.c
 --- gnuplot-4.3.0-2008-03-24-orig/src/readline.c	Thu Jun 21 11:02:57 2007
-+++ gnuplot-4.3.0-2008-03-24/src/readline.c	Sat Apr  5 18:57:15 2008
++++ gnuplot-4.3.0-2008-03-24/src/readline.c	Thu Apr 10 21:26:31 2008
 @@ -228,7 +228,12 @@
  #  include "win/winmain.h"
  #  define TEXTUSER 0xf1
@@ -359,9 +376,9 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  
  /* Convert Arrow keystrokes to Control characters: */
  static char
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/src/term.c gnuplot-4.3.0-2008-03-24/src/term.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/term.c gnuplot-4.3.0-2008-03-24/src/term.c
 --- gnuplot-4.3.0-2008-03-24-orig/src/term.c	Sun Feb 24 20:49:37 2008
-+++ gnuplot-4.3.0-2008-03-24/src/term.c	Sat Apr  5 18:57:15 2008
++++ gnuplot-4.3.0-2008-03-24/src/term.c	Thu Apr 10 20:12:52 2008
 @@ -101,6 +101,7 @@
  void close_printer __PROTO((FILE * outfile));
  # ifdef __MSC__
@@ -370,9 +387,21 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  # else
  #  include <alloc.h>
  # endif                         /* MSC */
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/src/win/wgnuplib.h gnuplot-4.3.0-2008-03-24/src/win/wgnuplib.h
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/version.c gnuplot-4.3.0-2008-03-24/src/version.c
+--- gnuplot-4.3.0-2008-03-24-orig/src/version.c	Sat Mar 22 19:04:19 2008
++++ gnuplot-4.3.0-2008-03-24/src/version.c	Thu Apr 10 20:07:55 2008
+@@ -40,7 +40,7 @@
+ 
+ 
+ const char gnuplot_version[] = "4.3";
+-const char gnuplot_patchlevel[] = "0";
++const char gnuplot_patchlevel[] = "0-octave-mingw32";
+ const char gnuplot_date[] = "March 2008";
+ const char gnuplot_copyright[] = "Copyright (C) 1986 - 1993, 1998, 2004, 2007, 2008";
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/win/wgnuplib.h gnuplot-4.3.0-2008-03-24/src/win/wgnuplib.h
 --- gnuplot-4.3.0-2008-03-24-orig/src/win/wgnuplib.h	Sun Mar  5 02:15:56 2006
-+++ gnuplot-4.3.0-2008-03-24/src/win/wgnuplib.h	Sat Apr  5 18:57:15 2008
++++ gnuplot-4.3.0-2008-03-24/src/win/wgnuplib.h	Thu Apr 10 20:12:52 2008
 @@ -45,7 +45,9 @@
  #include <windows.h>
  
@@ -384,10 +413,26 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  #endif
  
  /* HBB 19990506: The following used to be #ifdef __DLL__.
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/src/win/winmain.c gnuplot-4.3.0-2008-03-24/src/win/winmain.c
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/win/winmain.c gnuplot-4.3.0-2008-03-24/src/win/winmain.c
 --- gnuplot-4.3.0-2008-03-24-orig/src/win/winmain.c	Sun Mar 18 04:18:49 2007
-+++ gnuplot-4.3.0-2008-03-24/src/win/winmain.c	Sat Apr  5 18:57:15 2008
-@@ -251,12 +251,22 @@
++++ gnuplot-4.3.0-2008-03-24/src/win/winmain.c	Thu Apr 10 20:12:52 2008
+@@ -62,6 +62,7 @@
+ #include <string.h>
+ #include <stdarg.h>
+ #include <ctype.h>
++#include <fcntl.h>
+ #ifdef __MSC__
+ # include <malloc.h>
+ #endif
+@@ -101,6 +102,7 @@
+ PW pausewin;
+ MW menuwin;
+ LPSTR szModuleName;
++LPSTR szPackageDir;
+ LPSTR winhelpname;
+ LPSTR szMenuName;
+ #define MENUNAME "wgnuplot.mnu"
+@@ -251,12 +253,22 @@
  
  #endif /* WIN32 */
  
@@ -410,7 +455,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  #ifdef __MSC__  /* MSC doesn't give us _argc and _argv[] so ...   */
  # ifdef WIN32    /* WIN32 has __argc and __argv */
  #  define _argv __argv
-@@ -271,6 +281,7 @@
+@@ -271,6 +283,7 @@
  		_argv[++_argc] = _fstrtok( NULL, " ");
  # endif /* WIN32 */
  #endif /* __MSC__ */
@@ -418,7 +463,25 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  
  #ifdef	__WATCOMC__
  # define _argv __argv
-@@ -352,6 +363,7 @@
+@@ -296,6 +309,17 @@
+ 	szModuleName = (LPSTR)farrealloc(szModuleName, _fstrlen(szModuleName)+1);
+ 	CheckMemory(szModuleName);
+ 
++	if (_fstrlen(szModuleName) >= 5 && _fstrnicmp(&szModuleName[_fstrlen(szModuleName)-5], "\\bin\\", 5) == 0)
++	{
++		int len = _fstrlen(szModuleName)-4;
++		szPackageDir = (LPSTR)farmalloc(len+1);
++		CheckMemory(szPackageDir);
++		_fstrncpy(szPackageDir, szModuleName, len);
++		szPackageDir[len] = '\0';
++	}
++	else
++		szPackageDir = szModuleName;
++
+ 	winhelpname = (LPSTR)farmalloc(_fstrlen(szModuleName)+_fstrlen(HELPFILE)+1);
+ 	CheckMemory(winhelpname);
+ 	_fstrcpy(winhelpname,szModuleName);
+@@ -352,6 +376,7 @@
  	graphwin.color=TRUE;
  	graphwin.fontsize = WINFONTSIZE;
  
@@ -426,7 +489,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  	if (TextInit(&textwin))
  		exit(1);
  	textwin.hIcon = LoadIcon(hInstance, "TEXTICON");
-@@ -377,6 +389,7 @@
+@@ -377,16 +402,22 @@
  		InvalidateRect(textwin.hWndParent, (LPRECT) &rect, 1);
  		UpdateWindow(textwin.hWndParent);
  	}
@@ -434,15 +497,22 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  
  
  	atexit(WinExit);
-@@ -386,6 +399,7 @@
+ 
++	if (!isatty(fileno(stdin)))
++		setmode(fileno(stdin), O_BINARY);
++
+ 	gnu_main(_argc, _argv, environ);
+ 
  	return 0;
  }
  
-+#ifndef CONSOLE
  
++#ifndef CONSOLE
++
  /* replacement stdio routines that use Text Window for stdin/stdout */
  /* WARNING: Do not write to stdout/stderr with functions not listed
-@@ -583,6 +597,85 @@
+    in win/wtext.h */
+@@ -583,6 +614,91 @@
      }
      return fread(ptr, size, n, file);
  }
@@ -451,12 +521,19 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
 +
 +DWORD WINAPI stdin_pipe_reader(LPVOID param)
 +{
++#if 0
 +    HANDLE h = (HANDLE)_get_osfhandle(fileno(stdin));
 +    char c;
 +    DWORD cRead;
 +
 +    if (ReadFile(h, &c, 1, &cRead, NULL))
 +        return c;
++#else
++    unsigned char c;
++    if (fread(&c, 1, 1, stdin) == 1)
++        return (DWORD)c;
++    return EOF;
++#endif
 +}
 +
 +int ConsoleGetch()
@@ -521,16 +598,26 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
 +        else
 +            break;
 +    } while (1);
-+    
 +}
 +
 +#endif /* CONSOLE */
  
  /* public interface to printer routines : Windows PRN emulation
   * (formerly in win.trm)
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/src/win/wtext.h gnuplot-4.3.0-2008-03-24/src/win/wtext.h
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/win/winmain.h gnuplot-4.3.0-2008-03-24/src/win/winmain.h
+--- gnuplot-4.3.0-2008-03-24-orig/src/win/winmain.h	Sun Jul 16 04:50:56 2006
++++ gnuplot-4.3.0-2008-03-24/src/win/winmain.h	Thu Apr 10 20:12:52 2008
+@@ -55,6 +55,7 @@
+ 
+ extern LPSTR winhelpname;
+ extern LPSTR szModuleName;
++extern LPSTR szPackageDir;
+ 
+ int Pause __PROTO((LPSTR str));
+ void screen_dump __PROTO((void));
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/win/wtext.h gnuplot-4.3.0-2008-03-24/src/win/wtext.h
 --- gnuplot-4.3.0-2008-03-24-orig/src/win/wtext.h	Thu Jul  1 19:10:11 2004
-+++ gnuplot-4.3.0-2008-03-24/src/win/wtext.h	Sat Apr  5 18:57:15 2008
++++ gnuplot-4.3.0-2008-03-24/src/win/wtext.h	Thu Apr 10 20:12:52 2008
 @@ -40,6 +40,8 @@
  /* redefine functions that can talk to tty devices, to use
   * implementation in winmain.c/wgnuplot.dll */
@@ -550,9 +637,9 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
 +int ConsoleGetch();
 +
 +#endif /* CONSOLE */
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/term/emf.trm gnuplot-4.3.0-2008-03-24/term/emf.trm
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/term/emf.trm gnuplot-4.3.0-2008-03-24/term/emf.trm
 --- gnuplot-4.3.0-2008-03-24-orig/term/emf.trm	Mon Jan 14 07:38:25 2008
-+++ gnuplot-4.3.0-2008-03-24/term/emf.trm	Sat Apr  5 18:56:39 2008
++++ gnuplot-4.3.0-2008-03-24/term/emf.trm	Thu Apr 10 20:17:28 2008
 @@ -276,7 +276,7 @@
  static unsigned int emf_posy;
  static unsigned int emf_record_count = 0;
@@ -562,9 +649,9 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  static unsigned int emf_dashtype = 0;
  static unsigned long emf_color = 0L;
  static unsigned int emf_colors = EMF_COLORS;
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/term/gd.trm gnuplot-4.3.0-2008-03-24/term/gd.trm
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/term/gd.trm gnuplot-4.3.0-2008-03-24/term/gd.trm
 --- gnuplot-4.3.0-2008-03-24-orig/term/gd.trm	Sun Feb 24 20:49:38 2008
-+++ gnuplot-4.3.0-2008-03-24/term/gd.trm	Sat Apr  5 18:56:39 2008
++++ gnuplot-4.3.0-2008-03-24/term/gd.trm	Thu Apr 10 20:17:38 2008
 @@ -152,6 +152,10 @@
  # endif
  #endif
@@ -576,9 +663,24 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
  #ifdef GD_NEED_LOCAL_FONT_POINTERS
  # include "gdfonts.h"
  # include "gdfontl.h"
-diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig/term/win.trm gnuplot-4.3.0-2008-03-24/term/win.trm
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/term/post.trm gnuplot-4.3.0-2008-03-24/term/post.trm
+--- gnuplot-4.3.0-2008-03-24-orig/term/post.trm	Thu Mar 13 19:01:27 2008
++++ gnuplot-4.3.0-2008-03-24/term/post.trm	Thu Apr 10 20:12:53 2008
+@@ -3341,9 +3341,9 @@
+ # if defined(_Windows)
+ 	/* retrieve prologues path relatively to gnuplot executable,
+ 	 * whose path is in szModuleName (winmain.c) */
+-	ps_prologue_dir = gp_alloc(strlen((char*) szModuleName)
++	ps_prologue_dir = gp_alloc(strlen((char*) szPackageDir)
+ 			+ strlen(GNUPLOT_PS_DIR) + 2, "Prolog path");
+-	strcpy(ps_prologue_dir, (char*) szModuleName);
++	strcpy(ps_prologue_dir, (char*) szPackageDir);
+ 	strcat(ps_prologue_dir, "\\");
+ 	/* GNUPLOT_PS_DIR is _relative_ path */
+ 	strcat(ps_prologue_dir, GNUPLOT_PS_DIR);
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/term/win.trm gnuplot-4.3.0-2008-03-24/term/win.trm
 --- gnuplot-4.3.0-2008-03-24-orig/term/win.trm	Fri Jul 27 08:55:53 2007
-+++ gnuplot-4.3.0-2008-03-24/term/win.trm	Sat Apr  5 18:57:15 2008
++++ gnuplot-4.3.0-2008-03-24/term/win.trm	Thu Apr 10 20:12:53 2008
 @@ -86,6 +86,7 @@
  TERM_PUBLIC void WIN_set_cursor __PROTO((int, int, int));
  TERM_PUBLIC void WIN_put_tmptext __PROTO((int, const char str[]));
@@ -612,7 +714,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak gnuplot-4.3.0-2008-03-24-orig
 +    , WIN_waitforinput , 
 +# else
      , 0 /* WIN_waitforinput */,
-+#endif
++# endif /* CONSOLE */
      WIN_put_tmptext, WIN_set_ruler, WIN_set_cursor, WIN_set_clipboard
  #endif
      , WIN_make_palette, 0 /* previous_palette */,

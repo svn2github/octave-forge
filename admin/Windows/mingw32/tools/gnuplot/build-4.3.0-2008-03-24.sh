@@ -34,6 +34,8 @@ MAKEFILE=config/Makefile.mgw
 PATH_MIKTEX=/c/Programs/MiKTeX24/miktex/bin/
 PATH_HCW=/c/Programs/HelpWorkshop/
 
+DIFF_FLAGS="-x *.orig"
+
 # --- load common functions ---
 source ../../gcc42_common.sh
 source ../../gcc42_pkg_version.sh

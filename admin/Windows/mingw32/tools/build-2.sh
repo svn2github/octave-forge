@@ -7,4 +7,7 @@ echo $0: ACTION = "${ACTION}";
 ( cd gcc-4.2.1 && ./build-4.2.1-2.sh ${ACTION} )
 
 # install Notepad++
-( cd notepad++ && ./build-4.7.5-2.sh ${ACTION} )
+( cd notepad++ && ./build-4.8.2-2.sh ${ACTION} )
+
+# install gnuplot
+( cd gnuplot && ./build-4.3.0-2008-03-24.sh ${ACTION} )

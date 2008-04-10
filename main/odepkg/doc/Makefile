@@ -59,9 +59,7 @@ else
 	  echo "Making pdf $@"; \
 	  TEXINPUTS="./:../../..:$(TEXINPUTS):"; \
           export TEXINPUTS; \
-	  echo "************** HERE **************"; \
 	  $(TEXI2PDF) $< ; \
-	  echo "************** THERE **************"; \
 	fi
 endif
 

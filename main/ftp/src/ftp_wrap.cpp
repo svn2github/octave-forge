@@ -851,7 +851,7 @@ namespace {
 
     struct hash_voidptr {
       int operator() (void *p) const {
-	return (int) p;
+	return (long) p;
       }
     };
     typedef __gnu_cxx::hash_map < void *, Director *, hash_voidptr > rtdir_map;
@@ -2271,8 +2271,8 @@ Remove the remote directory @var{path}, over the FTP connection @var{f}.\n\
 @end deftypefn\n\
 ";
 const char* _wrap_new_ftp_texinfo = "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{f}} ftp (@var{host})\n\
-@deftypefnx {Loadable Function} {@var{f}} ftp (@var{host}, @var{username}, @var{password})\n\
+@deftypefn {Loadable Function} {@var{f}} = ftp (@var{host})\n\
+@deftypefnx {Loadable Function} {@var{f}} = ftp (@var{host}, @var{username}, @var{password})\n\
 Connect to the FTP server @var{host} with @var{username} and @var{password}.\n\
 If @var{username} and @var{password} are not specified, user \"anonymous\" with no password is used.\n\
 The returned FTP object @var{f} represents the established FTP connection.\n\

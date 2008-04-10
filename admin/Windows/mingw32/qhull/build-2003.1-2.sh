@@ -56,7 +56,7 @@ conf()
 
 build() 
 {
-   ( cd ${BUILDDIR}/src && make lib )
+   ( cd ${BUILDDIR}/src && make all lib )
 }
 
 clean() 

@@ -1,6 +1,6 @@
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak qhull-2003.1-orig/src/Makefile qhull-2003.1/src/Makefile
 --- qhull-2003.1-orig/src/Makefile	Wed Dec 31 04:20:50 2003
-+++ qhull-2003.1/src/Makefile	Sun Dec  9 11:18:02 2007
++++ qhull-2003.1/src/Makefile	Thu Apr 10 18:54:48 2008
 @@ -32,6 +32,11 @@
  #       FILES -- all other files
  #       OBJS -- specifies the object files of libqhull.a
@@ -20,7 +20,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak qhull-2003.1-orig/src/Makefil
 -CC     = gcc
 -CCOPTS1 = -O2 -ansi 
 +#CC     = gcc
-+CCOPTS1 = $(GCC_ARCH_FLAGS) $(GCC_OPT_FLAGS)
++CCOPTS1 = $(GCC_ARCH_FLAGS) -O0
  
  # for Sun's cc compiler, -fast or O2 for optimization, -g for debugging, -Xc for ANSI
  #CC = cc

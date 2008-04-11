@@ -29,6 +29,7 @@
 #include <octave/oct-syscalls.h>
 #include <octave/oct-time.h>
 #include <octave/lo-mappers.h>
+#include <octave/symtab.h>
 
 static bool debug = false;
 static char* context = NULL;
@@ -150,8 +151,12 @@ static octave_value get_octave_value(char *name)
   octave_value def;
 
   // Copy variable from octave
+#if HAVE_OCTAVE_30
   symbol_record *sr = top_level_sym_tab->lookup (name);
   if (sr) def = sr->def();
+#else
+  def = symbol_table::varref (std::string (name), symbol_table::top_scope ());
+#endif
 
   return def;
 }

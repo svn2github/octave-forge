@@ -151,7 +151,7 @@ static octave_value get_octave_value(char *name)
   octave_value def;
 
   // Copy variable from octave
-#if HAVE_OCTAVE_30
+#ifdef HAVE_OCTAVE_30
   symbol_record *sr = top_level_sym_tab->lookup (name);
   if (sr) def = sr->def();
 #else

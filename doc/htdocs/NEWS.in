@@ -31,7 +31,7 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
    <li>plot: Remove old plot code based on Xlib and replace with
    gtext, ginput and waitforbuttonpress functions that use gnuplot
    directly to obtan the required information.</li>
-   <li>signal: Add the window function.</li>
+   <li>signal: Add the window and buffer functions.</li>
    <li>mapping: Add the km2deg and reckon functions.</li>
    <li>image: Add the imcomplement and rgbplot functions. Support for
    bilateral filtering. Build fixes for new versions of ImageMagick.</li>

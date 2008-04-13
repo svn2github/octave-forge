@@ -72,6 +72,9 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/shlib/{readline,history}.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/shlib/{libreadline,libhistory}.dll.a ${LIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}; done
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
+   
    install_post
 }
 

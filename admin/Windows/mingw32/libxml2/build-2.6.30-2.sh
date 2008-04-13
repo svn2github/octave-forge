@@ -70,6 +70,9 @@ install()
 
    ${CP} ${CP_FLAGS} ${SRCDIR}/include/libxml/*.h            ${INCLUDE_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/include/libxml/xmlversion.h ${INCLUDE_PATH}
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING   ${LICENSE_PATH}/${PKG}
+   ${CP} ${CP_FLAGS} ${SRCDIR}/Copyright ${LICENSE_PATH}/${PKG}
 
    install_post
 }

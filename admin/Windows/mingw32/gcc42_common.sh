@@ -42,6 +42,7 @@ LIBRARY_BASE=${PREFIX}
 SHAREDLIB_BASE=${PREFIX}
 BINARY_BASE=${PREFIX}
 STATICLIBRARY_BASE=${PREFIX}
+LICENSE_BASE=${PREFIX}
 
 # default subdirectories
 INCLUDE_DEFAULT=include
@@ -49,6 +50,7 @@ BINARY_DEFAULT=bin
 SHAREDLIB_DEFAULT=bin
 LIBRARY_DEFAULT=lib
 STATICLIBRARY_DEFAULT=staticlib
+LICENSE_DEFAULT=license
 
 # subdirs for above components, can be overridden locally
 # (e.g. for GSL: ${INCLUDE} = include/gsl )
@@ -57,6 +59,7 @@ if [ -z ${BINARY_DIR} ]; then BINARY_DIR=${BINARY_DEFAULT}; fi
 if [ -z ${SHAREDLIB_DIR} ]; then SHAREDLIB_DIR=${SHAREDLIB_DEFAULT}; fi
 if [ -z ${LIBRARY_DIR} ]; then LIBRARY_DIR=${LIBRARY_DEFAULT}; fi
 if [ -z ${STATICLIBRARY_DIR} ]; then STATICLIBRARY_DIR=${STATICLIBRARY_DEFAULT}; fi
+if [ -z ${LICENSE_DIR} ]; then LICENSE_DIR=${LICENSE_DEFAULT}; fi
 
 # create full paths for component directories
 BINARY_PATH=${BINARY_BASE}/${BINARY_DIR}
@@ -64,6 +67,7 @@ INCLUDE_PATH=${INCLUDE_BASE}/${INCLUDE_DIR}
 SHAREDLIB_PATH=${SHAREDLIB_BASE}/${SHAREDLIB_DIR}
 LIBRARY_PATH=${LIBRARY_BASE}/${LIBRARY_DIR}
 STATICLIBRARY_PATH=${STATICLIBRARY_BASE}/${STATICLIBRARY_DIR}
+LICENSE_PATH=${LICENSE_BASE}/${LICENSE_DIR}
 
 PATH=${PATH}:${BINARY_PATH}
 
@@ -148,6 +152,8 @@ install_pre()
   if [ ! -e ${LIBRARY_PATH} ]; then mkdir -vp ${LIBRARY_PATH}; fi
   if [ ! -e ${INCLUDE_PATH} ]; then mkdir -vp ${INCLUDE_PATH}; fi
   if [ ! -e ${STATICLIBRARY_PATH} ]; then mkdir -vp ${STATICLIBRARY_PATH}; fi
+  if [ ! -e ${LICENSE_PATH} ];        then mkdir -vp ${LICENSE_PATH}; fi
+  if [ ! -e ${LICENSE_PATH}/${PKG} ]; then mkdir -vp ${LICENSE_PATH}/${PKG}; fi
  }
 install()
 {

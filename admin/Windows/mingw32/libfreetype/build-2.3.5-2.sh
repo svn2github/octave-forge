@@ -57,23 +57,24 @@ conf()
    )
 }
 
-install_pre()
-{
-   mkdir -v ${INCLUDE_PATH}/freetype
-}
-
 install()
 {
-   install_pre
+   install_pre;
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/freetype-6.dll    ${BINARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libfreetype.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libfreetype.a     ${STATICLIBRARY_PATH}
 
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/include/$a ${INCLUDE_PATH}; done
+   
+   mkdir -v ${INCLUDE_PATH}/freetype
    cp ${CP_FLAGS} -r ${SRCDIR}/include/freetype       ${INCLUDE_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/{ftconfig.h,ftmodule.h} ${INCLUDE_PATH}/freetype/config
 
    ${CP} ${CP_FLAGS} ${BUILDDIR}/freetype-config         ${BINARY_PATH}
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/GPL.TXT ${LICENSE_PATH}/${PKG}
+   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/LICENSE.TXT ${LICENSE_PATH}/${PKG}
+   ${CP} ${CP_FLAGS} ${SRCDIR}/src/pcf/README ${LICENSE_PATH}/${PKG}/README.PCF
    
    install_post
 }

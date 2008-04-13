@@ -61,7 +61,11 @@ conf()
 
 install()
 {
+   install_pre;
    ${CP} ${CP_FLAGS} ${BUILDDIR}/sed/sed.exe ${BINARY_PATH}
+
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
+   install_post;
 }
 
 uninstall()

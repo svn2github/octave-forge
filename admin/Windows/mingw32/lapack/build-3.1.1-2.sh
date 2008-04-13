@@ -60,9 +60,12 @@ build()
 
 install()
 {
+   install_pre;
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.dll   ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.dll.a ${LIBRARY_PATH}/liblapack.dll.a
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.a     ${STATICLIBRARY_PATH}/liblapack.a
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
 }
 
 uninstall()

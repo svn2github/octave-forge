@@ -71,6 +71,8 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/libqhull.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/libqhull.a     ${STATICLIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/src/$a ${INCLUDE_PATH}; done
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING.txt ${LICENSE_PATH}/${PKG}
    install_post
 }
 

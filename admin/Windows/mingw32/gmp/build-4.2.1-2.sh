@@ -62,9 +62,15 @@ conf()
 
 install()
 {
+   install_pre;
+   
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/gmp.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgmp.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/gmp.h ${INCLUDE_PATH}
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING     ${LICENSE_PATH}/${PKG}
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING.lib ${LICENSE_PATH}/${PKG}
+   
 }
 
 uninstall()

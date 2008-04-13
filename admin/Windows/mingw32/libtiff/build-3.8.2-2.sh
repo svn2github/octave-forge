@@ -61,12 +61,15 @@ conf()
 
 install()
 {
+   install_pre;
    ${CP} ${CP_FLAGS} ${BUILDDIR}/libtiff/libtiff.dll      ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/libtiff/libtiff.dll.a    ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/libtiff/.libs/libtiff.a  ${STATICLIBRARY_PATH}
 
    for a in ${INSTALL_HEADERS};       do ${CP} ${CP_FLAGS} ${SRCDIR}/libtiff/$a ${INCLUDE_PATH}; done
    for a in ${INSTALL_HEADERS_BUILD}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/libtiff/$a ${INCLUDE_PATH}; done
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYRIGHT ${LICENSE_PATH}/${PKG}
 }
    
 uninstall()

@@ -86,6 +86,7 @@ conf()
 
 install()
 {
+   install_pre;
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/hdf5.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libhdf5.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libhdf5.a ${STATICLIBRARY_PATH}
@@ -93,6 +94,8 @@ install()
    for a in ${INSTALL_HEADERS};       do ${CP} ${CP_FLAGS} ${SRCDIR}/src/$a ${INCLUDE_PATH}; done
    for a in ${INSTALL_HEADERS_HL};    do ${CP} ${CP_FLAGS} ${SRCDIR}/hl/src/$a ${INCLUDE_PATH}; done
    for a in ${INSTALL_HEADERS_BUILD}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/src/$a ${INCLUDE_PATH}; done
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
 }
 
 uninstall()

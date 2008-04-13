@@ -280,11 +280,14 @@ install_pre() { if [ ! -e ${INCLUDE_PATH} ]; then mkdir -p ${INCLUDE_PATH}; fi; 
 
 install()
 {
-  install_pre
+   install_pre;
+   
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/gsl.dll      ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgsl.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgsl.a     ${STATICLIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/gsl/$a ${INCLUDE_PATH}; done
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
   install_post
 }
 

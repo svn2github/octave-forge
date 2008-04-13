@@ -91,6 +91,7 @@ install_pkg()
 {
 
    mkdir -vp ${PACKAGE_ROOT}/share/gnuplot/Postscript
+   mkdir -vp ${PACKAGE_ROOT}/license/gnuplot
    
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/wgnuplot.exe ${PACKAGE_ROOT}/bin
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/pgnuplot.exe ${PACKAGE_ROOT}/bin
@@ -100,6 +101,8 @@ install_pkg()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/gnuplot.pdf ${PACKAGE_ROOT}/doc
    
    ${CP} ${CP_FLAGS} ${SRCDIR}/term/Postscript/* ${PACKAGE_ROOT}/share/gnuplot/Postscript
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/copyright ${PACKAGE_ROOT}/license/gnuplot
 }
 
 uninstall()

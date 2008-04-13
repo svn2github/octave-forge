@@ -144,7 +144,7 @@ uninstall_header_core() {
 )
 }
 
-install_pre() { if [ ! -e ${INCLUDE_PATH} ]; then mkdir -p ${INCLUDE_PATH}; fi; }
+#install_pre() { if [ ! -e ${INCLUDE_PATH} ]; then mkdir -p ${INCLUDE_PATH}; fi; }
 
 install()
 {
@@ -169,6 +169,26 @@ install()
    install_header_core CCOLAMD "${CCOLAMD_INCLUDES}"
    install_header_core CXSPARSE "${CXSPARSE_INCLUDES}"
    ${CP} ${CP_FLAGS} ${SRCDIR}/UFconfig/UFconfig.h ${INCLUDE_PATH}
+   
+   # install the licenses
+   ${CP} ${CP_FLAGS} ${SRCDIR}/AMD/doc/lesser.txt ${LICENSE_PATH}/${PKG}/LGPL.txt
+   ${CP} ${CP_FLAGS} ${SRCDIR}/AMD/doc/License ${LICENSE_PATH}/${PKG}/LICENSE.AMD
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CAMD/doc/License ${LICENSE_PATH}/${PKG}/LICENSE.CAMD
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CCOLAMD/Readme.txt ${LICENSE_PATH}/${PKG}/Readme.CCOLAMD
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/Check/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CHOLMOD.Check
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/Cholesky/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CHOLMOD.Cholesky
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/Core/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CHOLMOD.Core
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/Demo/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CHOLMOD.Demo
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/MatrixOps/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CHOLMOD.MatrixOps
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/Modify/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CHOLMOD.Modify
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/Partition/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CHOLMOD.Partition
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/Supernodal/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CHOLMOD.Supernodal
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/Tcov/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CHOLMOD.Tcov
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CHOLMOD/Valgrind/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CHOLMOD.Valgrind
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COLAMD/Readme.txt ${LICENSE_PATH}/${PKG}/Readme.COLAMD
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CSparse/doc/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CSparse
+   ${CP} ${CP_FLAGS} ${SRCDIR}/CXSparse/doc/License.txt ${LICENSE_PATH}/${PKG}/LICENSE.CXSparse
+   ${CP} ${CP_FLAGS} ${SRCDIR}/UMFPACK/doc/License ${LICENSE_PATH}/${PKG}/LICENSE.UMFPACK
    
 }
 

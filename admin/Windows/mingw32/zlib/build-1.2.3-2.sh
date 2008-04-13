@@ -51,6 +51,11 @@ conf()
    substvars ${SRCDIR}/${MAKEFILE} ${BUILDDIR}/${MAKEFILE}
 }
 
+install_post()
+{
+   ${CP} ${CP_FLAGS} ${SRCDIR}/README ${LICENSE_PATH}/${PKG}
+}
+
 all() {
   download
   unpack

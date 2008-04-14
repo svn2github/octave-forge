@@ -39,6 +39,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <algorithm>
 #include <io.h>
 #include <stdio.h>
 
@@ -133,8 +134,16 @@ static string quote_quotes(const string& s)
 	else
 		result = s;
 
-	if (result.find_first_of("&<>()@^|") != string::npos)
+	if (result.find_first_of("&<>()@^| ") != string::npos)
 		result = "\"" + result + "\"";
+
+	if (result.find_first_of("<>") != string::npos)
+	{
+		/* Could not find a better way to avoid the problem
+		 * with those characters. */
+		replace(result.begin(), result.end(), '<', '[');
+		replace(result.begin(), result.end(), '>', ']');
+	}
 
 	return result;
 }

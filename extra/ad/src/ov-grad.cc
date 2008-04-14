@@ -492,6 +492,7 @@ DEFUN_DLD (gradinit, args, nargout,
 	return retval;
 }
 
+// PKG_ADD: autoload ("isgradient", "gradinit.oct");
 DEFUN_DLD (isgradient, args, nargout,
 "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} isgradient (@var{x})\n"
@@ -505,6 +506,7 @@ DEFUN_DLD (isgradient, args, nargout,
 	return retval;
 }
 
+// PKG_ADD: autoload ("use_sparse_jacobians", "gradinit.oct");
 DEFUN_DLD (use_sparse_jacobians, args, nargout,
 "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{val} =} use_sparse_jacobians ()\n"

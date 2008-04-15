@@ -515,7 +515,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/libgtk-win32-2.0-0.dll" GTK
     todo_check "$tlibdir/glibmm-2.4.lib" Glibmm
     todo_check "$tlibdir/cairomm-1.0.lib" Cairomm
-    todo_check "$tlibdir/gtkmm-2.0.lib" Gtkmm
+    todo_check "$tlibdir/gtkmm-2.4.lib" Gtkmm
     todo_check "$tlibdir/sigc-2.0.lib" libsigc++
     todo_check "$tlibdir/glade-2.0.lib" libglade
     todo_check "$tlibdir/gtksourceview-2.0.lib" gtksourceview

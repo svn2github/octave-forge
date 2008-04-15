@@ -1,14 +1,10 @@
 ad >> Automatic Differentiation
 Overloaded operators
- +
- -
- *
- /
- \
+ + - = Addition and subtraction for a Gradient.
+ * / \ = Matrix multiplication and division for a Gradient.
+ .* ./ .\ = Element by element multiplication and division for a Gradient.
+ .** .^ = Element by element matrix exponentiation for a Gradient.
  pow
- .*
- ./
- .^
 Utility functions
  __ga__
  D

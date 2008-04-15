@@ -1,4 +1,4 @@
-function [w, MAR, C, sbc, fpe, th]=arfit2(Y, pmin, pmax, selector, no_const)
+function [w, MAR, C, sbc, fpe, th] = arfit2(Y, pmin, pmax, selector, no_const)
 % ARFIT2 estimates multivariate autoregressive parameters
 % of the MVAR process Y
 %
@@ -27,15 +27,15 @@ function [w, MAR, C, sbc, fpe, th]=arfit2(Y, pmin, pmax, selector, no_const)
 % see also: ARFIT, MVAR
 %
 % REFERENCES:
-%  [1] A. Schloegl, Comparison of Multivariate Autoregressive Estimators.
-%       Signal processing, Elsevier B.V. (in press).
-%  [2] T. Schneider and A. Neumaier, A. 2001. 
+%  [1] A. Schloegl, 2006, Comparison of Multivariate Autoregressive Estimators.
+%       Signal processing, p. 2426-9.
+%  [2] T. Schneider and A. Neumaier, 2001. 
 %	Algorithm 808: ARFIT-a Matlab package for the estimation of parameters and eigenmodes 
 %	of multivariate autoregressive models. ACM-Transactions on Mathematical Software. 27, (Mar.), 58-65.
 
 %       $Revision$
 %       $Id$
-%	Copyright (C) 1996-2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2005,2008 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %%%%% checking of the input arguments was done the same way as ARFIT
 if (pmin ~= round(pmin) | pmax ~= round(pmax))

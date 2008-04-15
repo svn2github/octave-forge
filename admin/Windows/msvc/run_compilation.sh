@@ -1487,10 +1487,9 @@ if check_package pango; then
     post_process_libtool &&
     sed -e 's/-lgdi32/-luser32 -lgdi32/' \
         -e 's/^\(libpangocairo.*_la_LDFLAGS =\)/\1 -Wl,pangocairo-win32-res.o/' \
-        -e '/^noinst_DATA/ {s/pangoft2[^ ]*\.lib//;}' \
-        -e '/^install-ms-lib/ {s/pangoft2[^ ]*\.lib//;}' pango/Makefile > ttt &&
+	-e '/^install-data-local:/ {s/install-ms-lib//;s/install-def-files//;}' pango/Makefile > ttt &&
       mv ttt pango/Makefile &&
-    sed -e 's,/pango/pango-querymodules,/pango/.libs/pango-querymodules,' modules/Makefile > ttt &&
+    sed -e 's,/pango/pango-querymodules\$(EXEEXT),/pango/pango-querymodules,' modules/Makefile > ttt &&
       mv ttt modules/Makefile &&
     sed -e 's/PangoFT2/PangoCairo/g' \
         -e 's/pangoft2/pangocairo/g' pango/pangoft2.rc > pango/pangocairo.rc &&

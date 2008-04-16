@@ -42,7 +42,7 @@ HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
 ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++ libglade
-gtksourceview gdl"
+gtksourceview gdl VTE GtkGlArea"
 octave_version=
 of_version=
 do_nsi=false
@@ -85,6 +85,8 @@ libsigcver=2.0.18
 libgladever=2.6.2
 gtksourceviewver=2.2.0
 gdlver=0.7.11
+vtever=0.16.13
+gtkglareaver=1.99.0
 
 ###################################################################################
 
@@ -275,6 +277,7 @@ function post_process_libtool
   sed -e '/#.*BEGIN LIBTOOL TAG CONFIG: CXX/,/#.*END LIBTOOL TAG CONFIG: CXX/ {/^archive_cmds=.*/,/^postinstall_cmds=.*/ {/^postinstall_cmds=.*/!d;};}' \
       -e 's,/OUT:,-OUT:,g' \
       -e 's/\$EGREP -e "\$export_symbols_regex"/$EGREP -e EXPORTS -e "$export_symbols_regex"/' \
+      -e 's/egrep -e "\$export_symbols_regex"/egrep -e EXPORTS -e "$export_symbols_regex"/' \
       -e 's/^export_symbols_cmds="\(.*\) > \\\$export_symbols"/export_symbols_cmds="(echo EXPORTS; \1) > \\$export_symbols"/' \
       -e 's,^\([^=]*\)=.*cygpath.*$,\1="",g' \
       -e 's,-link -dll,-shared,g' \
@@ -520,6 +523,8 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/glade-2.0.lib" libglade
     todo_check "$tlibdir/gtksourceview-2.0.lib" gtksourceview
     todo_check "$tlibdir/gdl-1.lib" gdl
+    todo_check "$tlibdir/vte.lib" VTE
+    todo_check "$tlibdir/gtkgl-2.0.lib" GtkGlArea
   fi
 else
   packages="$todo_packages"
@@ -3417,30 +3422,82 @@ fi
 # VTE #
 #######
 
-# TODO
-#  - configure.in: comment IT_PROG_INTLTOOL
-#  - run autoconf
-#  - src/Makefile:
-#	remove reaper from sources
-#	Add -lpcre to VTE_LIBS
-#  - config.h:
-#	typedef int pid_t
-#	#define LINE_MAX 8192
-#	define USE_PCRE 1
-#  - vte-private.h: comment included filed:
-#	sys/ioctl.h
-#	sys/time.h
-#	sys/param.h
-#	pwd.h
-#  - vte.c: comment various parts
-#  - vteft2.c: comment <sys/param.h> inclusion
-#  - vteglyph.c: comment <sys/param.h> inclusion
-#  - vtepango.c: comment <sys/param.h> inclusion
-#  - vteskel.c: comment <sys/param.h> inclusion
-#  - pty.c: comment various parts
-#  - trie.c: s/snprint/_snprintf/
-#  - vteglyph.c, vtepango.c: copy howmany macro from vte.c
-#  - install:
-#	. : make install-pkgconfigDATA
-#	./src : make install-libLTLIBRARIES install-pkgincludeHEADERS
-#	./termcaps : make install
+if check_package VTE; then
+  vteroot=`echo $vtever | sed -e 's/\.[0-9]\+$//'`
+  download_file vte-$vtever.tar.bz2 "http://ftp.gnome.org/pub/GNOME/sources/vte/$vteroot/vte-$vtever.tar.bz2"
+  echo -n "decompressing VTE... "
+  unpack_file vte-$vtever.tar.bz2
+  cp libs/vte-$vtever.diff "$DOWNLOAD_DIR/vte-$vtever"
+  echo "done"
+  echo "compiling VTE... "
+  (cd "$DOWNLOAD_DIR/vte-$vtever" &&
+    patch -p1 < vte-$vtever.diff &&
+    sed -e "s/^IT_PROG_INTLTOOL/#&/" configure.in > ttt &&
+      mv ttt configure.in &&
+    autoconf &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-python \
+      --disable-gnome-pty-helper &&
+    post_process_libtool &&
+    make -C src libvte.la &&
+    make -C src install-libLTLIBRARIES install-pkgincludeHEADERS &&
+    make install-pkgconfigDATA &&
+    make -C termcaps install
+    rm -f $tlibdir_quoted/libvte*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/vte-$vte"
+  if test ! -f "$tlibdir/vte.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+#############
+# GtkGlArea #
+#############
+
+if check_package GtkGlArea; then
+  gtkglarearoot=`echo $gtkglareaver | sed -e 's/\.[0-9]\+$//'`
+  download_file gtkglarea-$gtkglareaver.tar.gz "http://ftp.gnome.org/pub/GNOME/sources/gtkglarea/$gtkglarearoot/gtkglarea-$gtkglareaver.tar.gz"
+  echo -n "decompressing GtkGlArea... "
+  unpack_file gtkglarea-$gtkglareaver.tar.gz
+  echo "done"
+  echo "compiling GtkGlArea... "
+  (cd "$DOWNLOAD_DIR/gtkglarea-$gtkglareaver" &&
+    sed -e "s/-lGLU/-lglu32/g" \
+        -e "s/-lGL/-lopengl32/g" \
+        -e "/^ *char glBegin()/ {s/glBegin()/__stdcall glBegin(int)/;s/glBegin()/glBegin(0)/;}" \
+        configure > ttt &&
+      mv ttt configure &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "s/gdkgl\.lo/gdkgl-win32.lo/" \
+        -e 's/^libgtkgl.*_LDFLAGS =/& -no-undefined -export-symbols-regex "^gtk_gl_area_.*|^gdk_gl_.*"/' \
+        gtkgl/Makefile > ttt &&
+      mv ttt gtkgl/Makefile &&
+    sed -e "/#include/ {s,gdk/win32,gdk,;}" \
+        -e "s/GDK_DRAWABLE_XID/GDK_WINDOW_HWND/g" \
+	-e "s/\(HFONT old_font =\).*/\1 SelectObject (dc, GetStockObject (SYSTEM_FONT));/" \
+        gtkgl/gdkgl-win32.c > ttt &&
+      mv ttt gtkgl/gdkgl-win32.c &&
+    for f in examples/gtkglarea_demo.c examples/glpixmap.c; do
+      sed -e '/#include <GL\/gl.h>/ {i\
+#include <windows.h>
+;}' $f > ttt
+        mv ttt $f
+    done &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libgtkgl*.la) >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/gtkglarea-$gtkglarea"
+  if test ! -f "$tlibdir/gtkgl-2.0.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi

@@ -1,0 +1,1984 @@
+diff -urN vte-0.16.13/config.h.in vte-0.16.13-new/config.h.in
+--- vte-0.16.13/config.h.in	Mon Mar 10 21:24:02 2008
++++ vte-0.16.13-new/config.h.in	Wed Apr 16 14:43:48 2008
+@@ -282,3 +282,7 @@
+ 
+ /* Needed to get declarations for msg_control and msg_controllen on Solaris */
+ #undef __EXTENSIONS__
++
++typedef int pid_t;
++#define LINE_MAX 8192
++#define USE_PCRE 1
+diff -urN vte-0.16.13/configure.in vte-0.16.13-new/configure.in
+--- vte-0.16.13/configure.in	Mon Mar 10 21:22:37 2008
++++ vte-0.16.13-new/configure.in	Wed Mar 26 11:12:00 2008
+@@ -29,7 +29,7 @@
+ AM_MAINTAINER_MODE
+ 
+ AM_PROG_LIBTOOL
+-IT_PROG_INTLTOOL([0.35.0])
++#IT_PROG_INTLTOOL([0.35.0])
+ 
+ GETTEXT_PACKAGE=vte
+ AC_SUBST(GETTEXT_PACKAGE)
+diff -urN vte-0.16.13/src/Makefile.in vte-0.16.13-new/src/Makefile.in
+--- vte-0.16.13/src/Makefile.in	Mon Mar 10 21:23:42 2008
++++ vte-0.16.13-new/src/Makefile.in	Wed Apr 16 14:45:00 2008
+@@ -91,7 +91,7 @@
+ @BUILD_XFT_TRUE@am__objects_1 = vtexft.lo
+ @BUILD_PANGOX_TRUE@am__objects_2 = vtepangox.lo
+ am_libvte_la_OBJECTS = buffer.lo caps.lo debug.lo iso2022.lo keymap.lo \
+-	marshal.lo matcher.lo pty.lo reaper.lo ring.lo table.lo \
++	marshal.lo matcher.lo pty.lo ptywin.lo reaper.lo ring.lo table.lo \
+ 	trie.lo vte.lo vteaccess.lo vtebg.lo vteconv.lo vtedraw.lo \
+ 	vtefc.lo vteft2.lo vtegl.lo vteglyph.lo vtepango.lo vterdb.lo \
+ 	vteregex.lo vtergb.lo vteseq.lo vteskel.lo vtetc.lo vtetree.lo \
+@@ -334,6 +334,7 @@
+ FT2_CFLAGS = @FT2_CFLAGS@
+ FT2_CONFIG = @FT2_CONFIG@
+ FT2_LIBS = @FT2_LIBS@
++PCRE_LIBS = -lpcre
+ GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+ GLIB_CFLAGS = @GLIB_CFLAGS@
+ GLIB_LIBS = @GLIB_LIBS@
+@@ -494,7 +495,7 @@
+ target_alias = @target_alias@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-pkginclude_HEADERS = pty.h reaper.h vte.h vteaccess.h
++pkginclude_HEADERS = pty.h reaper.h vte.h vteaccess.h ptywin.h
+ lib_LTLIBRARIES = libvte.la
+ pkglib_SCRIPTS = decset osc window
+ EXTRA_DIST = \
+@@ -535,7 +536,7 @@
+ EXTRA_libvte_la_SOURCES = keysyms.c
+ libvte_la_SOURCES = buffer.c buffer.h caps.c caps.h debug.c debug.h \
+ 	iso2022.c iso2022.h keymap.c keymap.h marshal.c marshal.h \
+-	matcher.c matcher.h pty.c pty.h reaper.c reaper.h ring.c \
++	matcher.c matcher.h pty.c pty.h ptywin.c ptywin.h reaper.c reaper.h ring.c \
+ 	ring.h table.c table.h trie.c trie.h vte.c vte.h vte-private.h \
+ 	vteaccess.c vteaccess.h vtebg.c vtebg.h vteconv.c vteconv.h \
+ 	vtedraw.c vtedraw.h vtefc.c vtefc.h vteft2.c vteft2.h vtegl.c \
+@@ -546,7 +547,7 @@
+ 	$(am__append_2)
+ libvte_la_LDFLAGS = $(LDFLAGS) \
+ 	-version-info $(LIBVTE_LTVERSION) \
+-	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^vte_reaper_.*|_vte_debug_.*" \
++	-export-symbols-regex "^vte_terminal_.*|^_vte_pty_.*|^_vte_ptywin_.*|^vte_reaper_.*|_vte_debug_.*" \
+ 	@LIBTOOL_EXPORT_OPTIONS@ @LIBTOOL_FLAGS@
+ 
+ libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS) $(PCRE_LIBS) $(FT2_LIBS)
+diff -urN vte-0.16.13/src/keymap.c vte-0.16.13-new/src/keymap.c
+--- vte-0.16.13/src/keymap.c	Mon Dec  3 19:22:30 2007
++++ vte-0.16.13-new/src/keymap.c	Tue Apr 15 14:59:25 2008
+@@ -199,7 +199,11 @@
+ 	{cursor_all, keypad_all, fkey_all,
+ 	 VTE_META_MASK, _VTE_CAP_ESC "\n", 2, X_NULL},
+ 	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\n", 1, X_NULL},
++#ifndef _MSC_VER
+ 	{cursor_all, keypad_all, fkey_all, 0, "\r", 1, X_NULL},
++#else
++	{cursor_all, keypad_all, fkey_all, 0, "\n", 1, X_NULL},
++#endif
+ 	{cursor_all, keypad_all, fkey_all, 0, X_NULL, 0, X_NULL},
+ };
+ 
+diff -urN vte-0.16.13/src/pty.c vte-0.16.13-new/src/pty.c
+--- vte-0.16.13/src/pty.c	Wed Feb 20 19:37:56 2008
++++ vte-0.16.13-new/src/pty.c	Wed Apr 16 15:03:50 2008
+@@ -18,7 +18,9 @@
+ 
+ #include "../config.h"
+ #include <sys/types.h>
++#ifndef _MSC_VER
+ #include <sys/ioctl.h>
++#endif
+ #ifdef HAVE_SYS_TERMIOS_H
+ #include <sys/termios.h>
+ #endif
+@@ -64,29 +66,53 @@
+ static GTree *_vte_pty_helper_map = NULL;
+ #endif
+ 
++#ifndef _MSC_VER
+ extern char **environ;
++#else
++#include "ptywin.h"
++#endif
+ 
+ /* Reset the handlers for all known signals to their defaults.  The parent
+  * (or one of the libraries it links to) may have changed one to be ignored. */
+ static void
+ _vte_pty_reset_signal_handlers(void)
+ {
++#ifdef SIGHUP
+ 	signal(SIGHUP,  SIG_DFL);
++#endif
+ 	signal(SIGINT,  SIG_DFL);
+ 	signal(SIGILL,  SIG_DFL);
+ 	signal(SIGABRT, SIG_DFL);
+ 	signal(SIGFPE,  SIG_DFL);
++#ifdef SIGKILL
+ 	signal(SIGKILL, SIG_DFL);
++#endif
+ 	signal(SIGSEGV, SIG_DFL);
++#ifdef SIGPIPE
+ 	signal(SIGPIPE, SIG_DFL);
++#endif
++#ifdef SIGALRM
+ 	signal(SIGALRM, SIG_DFL);
++#endif
+ 	signal(SIGTERM, SIG_DFL);
++#ifdef SIGCHLD
+ 	signal(SIGCHLD, SIG_DFL);
++#endif
++#ifdef SIGCONT
+ 	signal(SIGCONT, SIG_DFL);
++#endif
++#ifdef SIGSTOP
+ 	signal(SIGSTOP, SIG_DFL);
++#endif
++#ifdef SIGTSTP
+ 	signal(SIGTSTP, SIG_DFL);
++#endif
++#ifdef SIGTTIN
+ 	signal(SIGTTIN, SIG_DFL);
++#endif
++#ifdef SIGTTOU
+ 	signal(SIGTTOU, SIG_DFL);
++#endif
+ #ifdef SIGBUS
+ 	signal(SIGBUS,  SIG_DFL);
+ #endif
+@@ -159,6 +185,7 @@
+ static void
+ vte_pty_child_setup (gpointer arg)
+ {
++#ifndef _MSC_VER
+ 	struct vte_pty_child_setup_data *data = arg;
+ 	int fd = -1;
+ 	const char *tty = NULL;
+@@ -252,6 +279,7 @@
+ 	/* Reset our signals -- our parent may have done any number of
+ 	 * weird things to them. */
+ 	_vte_pty_reset_signal_handlers();
++#endif
+ }
+ 
+ /* TODO: clean up the spawning
+@@ -341,6 +369,7 @@
+ 					directory ? directory : "(none)");
+ 		}
+ 
++#ifndef _MSC_VER
+ 		ret = g_spawn_async_with_pipes (directory,
+ 				arg2, envp2,
+ 				G_SPAWN_CHILD_INHERITS_STDIN |
+@@ -351,6 +380,10 @@
+ 				pid,
+ 				NULL, NULL, NULL,
+ 				&local_error);
++#else
++		ret = _vte_ptywin_spawn(arg2, envp2, directory,
++				(VtePtyWin32*)data->tty.fd, pid);
++#endif
+ 		if (ret == FALSE) {
+ 			if (g_error_matches (local_error,
+ 						G_SPAWN_ERROR,
+@@ -464,6 +497,7 @@
+ int
+ _vte_pty_set_size(int master, int columns, int rows)
+ {
++#ifndef _MSC_VER
+ 	struct winsize size;
+ 	int ret;
+ 	memset(&size, 0, sizeof(size));
+@@ -479,6 +513,14 @@
+ 				master, strerror(errno));
+ 	}
+ 	return ret;
++#else
++	char buf[16] = {0};
++	_snprintf(buf, 15, "%d", rows);
++	g_setenv("LINES", buf, TRUE);
++	_snprintf(buf, 15, "%d", columns);
++	g_setenv("COLUMNS", buf, TRUE);
++	return 0;
++#endif
+ }
+ 
+ /**
+@@ -494,6 +536,7 @@
+ int
+ _vte_pty_get_size(int master, int *columns, int *rows)
+ {
++#ifndef _MSC_VER
+ 	struct winsize size;
+ 	int ret;
+ 	memset(&size, 0, sizeof(size));
+@@ -514,6 +557,19 @@
+ 				master);
+ 	}
+ 	return ret;
++#else
++	const gchar *renv = g_getenv("LINES");
++	const gchar *cenv = g_getenv("COLUMNS");
++
++	if (renv && cenv)
++	{
++		*rows = atoi(renv);
++		*columns = atoi(cenv);
++		return 0;
++	}
++
++	return -1;
++#endif
+ }
+ 
+ static char *
+@@ -560,6 +616,7 @@
+ static int
+ _vte_pty_getpt(void)
+ {
++#ifndef _MSC_VER
+ 	int fd, flags;
+ #ifdef HAVE_GETPT
+ 	/* Call the system's function for allocating a pty. */
+@@ -576,6 +633,9 @@
+ 	flags &= ~(O_NONBLOCK);
+ 	fcntl(fd, F_SETFL, flags);
+ 	return fd;
++#else
++	return -1;
++#endif
+ }
+ 
+ static int
+@@ -596,11 +656,38 @@
+ #elif defined(TIOCSPTLCK)
+ 	int zero = 0;
+ 	return ioctl(fd, TIOCSPTLCK, &zero);
++#elif defined(_MSC_VER)
++	return (fd != 0 && fd != -1 ? 0 : -1);
+ #else
+ 	return -1;
+ #endif
+ }
+ 
++#ifdef _MSC_VER
++static int
++_vte_pty_open_win32(GPid *child, char **env_add,
++		    const char *command, char **argv,
++		    const char *directory, int columns, int rows)
++{
++	VtePtyWin32 *ptyw = _vte_ptywin_new();
++	int fd = (int)ptyw;
++
++	/* Attempt to open the master. */
++	_vte_debug_print(VTE_DEBUG_PTY, "Allocated pty on fd %p.\n", ptyw);
++	if (fd != 0) {
++		if (!_vte_pty_fork_on_pty_fd(fd,
++					     env_add, command,
++					     argv, directory,
++					     columns, rows,
++					     child)) {
++			g_free(ptyw);
++			fd = -1;
++		}
++	}
++	return fd;
++}
++#endif
++
+ static int
+ _vte_pty_open_unix98(GPid *child, char **env_add,
+ 		     const char *command, char **argv,
+@@ -823,6 +910,7 @@
+ static gboolean
+ _vte_pty_start_helper(void)
+ {
++#ifndef _MSC_VER
+ 	int i, tmp[2], tunnel;
+ 	/* Sanity check. */
+ 	if (access(LIBEXECDIR "/gnome-pty-helper", X_OK) != 0) {
+@@ -873,6 +961,9 @@
+ 	_vte_pty_helper_map = g_tree_new(_vte_direct_compare);
+ 	atexit(_vte_pty_stop_helper);
+ 	return TRUE;
++#else
++	return FALSE;
++#endif
+ }
+ 
+ static int
+@@ -1006,8 +1097,13 @@
+ 	}
+ #endif
+ 	if (ret == -1) {
++#ifndef _MSC_VER
+ 		ret = _vte_pty_open_unix98(&child, env_add, command, argv,
+ 					   directory, columns, rows);
++#else
++		ret = _vte_pty_open_win32(&child, env_add, command, argv,
++					  directory, columns, rows);
++#endif
+ 	}
+ 	if (ret != -1) {
+ 		*child_pid = (pid_t) child;
+diff -urN vte-0.16.13/src/ptywin.c vte-0.16.13-new/src/ptywin.c
+--- vte-0.16.13/src/ptywin.c	Thu Jan  1 01:00:00 1970
++++ vte-0.16.13-new/src/ptywin.c	Tue Apr 15 15:19:29 2008
+@@ -0,0 +1,509 @@
++/*
++ * Copyright (C) 2008 Michael Goffioul.
++ *
++ * This is free software; you can redistribute it and/or modify it under
++ * the terms of the GNU Library General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#include "../config.h"
++#include "ptywin.h"
++#include <fcntl.h>
++#include <errno.h>
++
++#undef DATADIR
++#include <windows.h>
++
++#define LOCK(x) EnterCriticalSection(&(x))
++#define UNLOCK(x) LeaveCriticalSection(&(x))
++
++typedef struct __VtePtyWin32Watch VtePtyWin32Watch;
++typedef struct __VtePtyWin32IOChannel VtePtyWin32IOChannel;
++typedef struct __VtePtyWin32Chunk VtePtyWin32Chunk;
++
++DWORD WINAPI _vte_ptywin_io_read_thread(LPVOID data);
++
++struct __VtePtyWin32 {
++	int read_fd;
++	int write_fd;
++};
++
++struct __VtePtyWin32Watch {
++	GSource source;
++	GPollFD poll;
++	VtePtyWin32IOChannel *pty;
++};
++
++struct __VtePtyWin32Chunk {
++	int len;
++	char *data;
++};
++
++struct __VtePtyWin32IOChannel {
++	GIOChannel channel;
++	int fd;
++	HANDLE read_thread;
++	HANDLE data_event;
++	CRITICAL_SECTION mutex;
++	GQueue *data;
++	guint revents;
++};
++
++static gboolean
++_vte_ptywin_prepare(GSource *source, gint *timeout)
++{
++	VtePtyWin32Watch *pty_watch;
++	gboolean result;
++
++	pty_watch = (VtePtyWin32Watch *)source;
++	*timeout = -1;
++	result = FALSE;
++
++	LOCK(pty_watch->pty->mutex);
++	if (g_queue_is_empty(pty_watch->pty->data)
++	    && !(pty_watch->pty->revents & (G_IO_HUP|G_IO_ERR)))
++		pty_watch->pty->revents = 0;
++	UNLOCK(pty_watch->pty->mutex);
++
++	return result;
++}
++
++static gboolean
++_vte_ptywin_check(GSource *source)
++{
++	VtePtyWin32Watch *pty_watch;
++	gboolean result;
++
++	pty_watch = (VtePtyWin32Watch *)source;
++	result = FALSE;
++
++	LOCK(pty_watch->pty->mutex);
++	result = pty_watch->poll.revents = pty_watch->pty->revents;
++	/*
++	if (!g_queue_is_empty(pty_watch->pty->data))
++		result = TRUE;
++		*/
++	UNLOCK(pty_watch->pty->mutex);
++
++	return result;
++}
++
++static gboolean
++_vte_ptywin_dispatch(GSource *source, GSourceFunc callback, gpointer data)
++{
++	VtePtyWin32Watch *pty_watch;
++	GIOFunc func = (GIOFunc)callback;
++	
++	pty_watch = (VtePtyWin32Watch *)source;
++
++	return (*func)(&pty_watch->pty->channel,
++			pty_watch->poll.revents,
++			data);
++}
++
++static void
++_vte_ptywin_finalize(GSource *source)
++{
++	VtePtyWin32Watch *pty_watch = (VtePtyWin32Watch *)source;
++	g_io_channel_unref(&pty_watch->pty->channel);
++}
++
++static GSourceFuncs _vte_ptywin_funcs = {
++	_vte_ptywin_prepare,
++	_vte_ptywin_check,
++	_vte_ptywin_dispatch,
++	_vte_ptywin_finalize
++};
++
++static GSource*
++_vte_ptywin_io_create_watch(GIOChannel *channel, GIOCondition condition)
++{
++	VtePtyWin32IOChannel *pty_channel = (VtePtyWin32IOChannel *)channel;
++	GSource *source;
++	VtePtyWin32Watch *pty_watch;
++
++	source = g_source_new(&_vte_ptywin_funcs, sizeof(VtePtyWin32Watch));
++	pty_watch = (VtePtyWin32Watch *)source;
++	
++	pty_watch->pty = pty_channel;
++	g_io_channel_ref(channel);
++
++	pty_watch->poll.fd = (int)pty_channel->data_event;
++	pty_watch->poll.events = condition;
++
++	LOCK(pty_channel->mutex);
++
++	if ((condition & G_IO_IN) && (pty_channel->read_thread == NULL))
++	{
++		pty_channel->read_thread = 
++			CreateThread(NULL, 0, _vte_ptywin_io_read_thread,
++					pty_channel, 0, NULL);
++
++		if (pty_channel->read_thread == NULL)
++			g_warning(G_STRLOC ": Error creating read thread (%x)",
++					GetLastError());
++	}
++
++	g_source_add_poll(source, &pty_watch->poll);
++
++	UNLOCK (pty_channel->mutex);
++
++	return source;
++}
++
++static VtePtyWin32Chunk*
++_vte_ptywin_io_chunk_new(char *data, int len)
++{
++	VtePtyWin32Chunk *chunk = g_new(VtePtyWin32Chunk, 1);
++	chunk->len = len;
++	chunk->data = g_memdup(data, len);
++	return chunk;
++}
++
++static void
++_vte_ptywin_io_free_queue_elem(gpointer data, gpointer user_data)
++{
++	VtePtyWin32Chunk *chunk = (VtePtyWin32Chunk *)data;
++	g_free(chunk->data);
++	g_free(data);
++}
++
++static void
++_vte_ptywin_io_free(GIOChannel *channel)
++{
++	VtePtyWin32IOChannel *pty_channel = (VtePtyWin32IOChannel *)channel;
++
++	/* should stop polling */
++
++	LOCK(pty_channel->mutex);
++
++	g_queue_foreach(pty_channel->data,
++			_vte_ptywin_io_free_queue_elem, NULL);
++	g_queue_clear(pty_channel->data);
++	g_queue_free(pty_channel->data);
++
++	UNLOCK(pty_channel->mutex);
++
++	DeleteCriticalSection(&pty_channel->mutex);
++	CloseHandle(pty_channel->data_event);
++}
++
++static GIOFuncs _vte_ptywin_io_funcs = {
++	NULL /* io_read  */,
++	NULL /* io_write */,
++	NULL /* io_seek  */,
++	NULL /* io_close */,
++	_vte_ptywin_io_create_watch,
++	_vte_ptywin_io_free,
++	NULL /* io_set_flags */,
++	NULL /* io_get_flags */
++};
++
++GIOChannel*
++_vte_ptywin_io_new(int fd)
++{
++	VtePtyWin32IOChannel *pty_channel = g_new(VtePtyWin32IOChannel, 1);
++	GIOChannel *channel = (GIOChannel *)pty_channel;
++
++	g_io_channel_init(channel);
++
++	pty_channel->fd = fd;
++	pty_channel->read_thread = NULL;
++	InitializeCriticalSection(&pty_channel->mutex);
++	pty_channel->data_event = CreateEvent(NULL, TRUE, FALSE, NULL);
++	pty_channel->data = g_queue_new();
++
++	channel->funcs = &_vte_ptywin_io_funcs;
++	channel->is_seekable = FALSE;
++	channel->is_readable = TRUE;
++	channel->is_writeable = FALSE;
++
++	return channel;
++}
++
++#define IO_BUF_SIZE 8192
++
++DWORD WINAPI
++_vte_ptywin_io_read_thread(LPVOID data)
++{
++	VtePtyWin32IOChannel *pty_channel;
++	char buffer[IO_BUF_SIZE] = {0};
++	int n;
++
++	pty_channel = (VtePtyWin32IOChannel *)data;
++	g_io_channel_ref(&pty_channel->channel);
++
++	LOCK(pty_channel->mutex);
++
++	while (TRUE)
++	{
++		UNLOCK(pty_channel->mutex);
++
++#if 1
++		n = read(pty_channel->fd, buffer, IO_BUF_SIZE-1);
++#else
++		if (!ReadFile(_get_osfhandle(pty_channel->fd),
++				buffer, IO_BUF_SIZE-1, (LPDWORD)&n, NULL))
++		{
++			DWORD werr = GetLastError();
++		}
++#endif
++
++		LOCK(pty_channel->mutex);
++
++		pty_channel->revents = G_IO_IN;
++
++		if (n > 0)
++		{
++			VtePtyWin32Chunk *chunk = _vte_ptywin_io_chunk_new(buffer, n);
++			g_queue_push_tail(pty_channel->data, chunk);
++			SetEvent(pty_channel->data_event);
++		}
++		else
++		{
++			if (n == 0)
++				pty_channel->revents |= G_IO_HUP;
++			else
++			{
++				int err = errno, derr = _doserrno;
++				pty_channel->revents |= G_IO_ERR;
++			}
++			break;
++		}
++	}
++	
++	SetEvent(pty_channel->data_event);
++
++	UNLOCK(pty_channel->mutex);
++
++	g_io_channel_unref(&pty_channel->channel);
++
++	return 0;
++}
++
++int
++_vte_ptywin_io_read(GIOChannel *channel, guchar *buf, int len)
++{
++	VtePtyWin32IOChannel *pty_channel;
++	VtePtyWin32Chunk *chunk;
++	int result = 0;
++
++	pty_channel = (VtePtyWin32IOChannel *)channel;
++	errno = 0;
++
++	LOCK(pty_channel->mutex);
++
++	if (g_queue_is_empty(pty_channel->data))
++		if (pty_channel->revents & G_IO_HUP)
++			result = 0;
++		else
++		{
++			errno = EAGAIN;
++			result = -1;
++		}
++
++	while ((len > 0) && (!g_queue_is_empty(pty_channel->data)))
++	{
++		chunk = g_queue_pop_head(pty_channel->data);
++		if (chunk->len <= len)
++		{
++			memcpy(buf+result, chunk->data, chunk->len);
++			len -= chunk->len;
++			result += chunk->len;
++		}
++		else
++		{
++			VtePtyWin32Chunk *new_chunk;
++
++			memcpy(buf+result, chunk->data, len);
++			new_chunk = _vte_ptywin_io_chunk_new(chunk->data+len, chunk->len-len);
++			g_queue_push_head(pty_channel->data, new_chunk);
++			result += len;
++			len = 0;
++		}
++		_vte_ptywin_io_free_queue_elem(chunk, NULL);
++	}
++
++	if (g_queue_is_empty(pty_channel->data))
++		ResetEvent(pty_channel->data_event);
++
++	if (result == 0)
++	{
++		int x = result;
++	}
++
++	UNLOCK(pty_channel->mutex);
++
++	return result;
++}
++
++VtePtyWin32*
++_vte_ptywin_new(void)
++{
++	return (VtePtyWin32*)g_malloc0(sizeof(VtePtyWin32));
++}
++
++int
++_vte_ptywin_get_read(int fd)
++{
++	return ((VtePtyWin32*)fd)->read_fd;
++}
++
++int
++_vte_ptywin_get_write(int fd)
++{
++	return ((VtePtyWin32*)fd)->write_fd;
++}
++
++int
++_vte_ptywin_spawn(char **argv, char **envp, const char *directory,
++		  VtePtyWin32 *ptyw, GPid *pid)
++{
++	HANDLE childRd, childWr, parentRd, parentWr;
++	HANDLE hProcess;
++	DWORD pipeMode;
++	PROCESS_INFORMATION pi;
++	STARTUPINFO si;
++	char buf[4096*8] = {0}, *envbuf;
++	int i, len;
++
++	hProcess = GetCurrentProcess();
++	if (CreatePipe(&childRd, &parentWr, 0, 0) == 0 
++	    || DuplicateHandle(hProcess, childRd, hProcess, &childRd, 0, TRUE,
++		    DUPLICATE_SAME_ACCESS|DUPLICATE_CLOSE_SOURCE) == 0)
++	{
++		pipeMode = GetLastError();
++		return -1;
++	}
++	if (CreatePipe(&parentRd, &childWr, 0, 0) == 0 
++	    || DuplicateHandle(hProcess, childWr, hProcess, &childWr, 0, TRUE,
++		    DUPLICATE_SAME_ACCESS|DUPLICATE_CLOSE_SOURCE) == 0)
++	{
++		pipeMode = GetLastError();
++		CloseHandle(parentWr);
++		CloseHandle(childRd);
++		return -1;
++	}
++
++#if 0
++	pipeMode = PIPE_NOWAIT;
++	SetNamedPipeHandleState(parentRd, &pipeMode, 0, 0);
++	SetNamedPipeHandleState(parentWr, &pipeMode, 0, 0);
++#endif
++
++	ptyw->read_fd = _open_osfhandle(parentRd, _O_RDONLY|_O_BINARY);
++	ptyw->write_fd = _open_osfhandle(parentWr, _O_WRONLY|_O_BINARY);
++
++	ZeroMemory(&pi, sizeof(pi));
++	ZeroMemory(&si, sizeof(si));
++	si.cb = sizeof(si);
++	si.dwFlags |= STARTF_USESTDHANDLES;
++	si.hStdInput = childRd;
++	si.hStdOutput = childWr;
++	si.hStdError = childWr;
++
++	for (i=0; argv[i] != NULL; i++)
++	{
++		if (i > 0)
++			strcat(buf, " ");
++		strcat(buf, argv[i]);
++	}
++
++	len = 0;
++	for (i=0; (envp != NULL && envp[i] != NULL); i++)
++		len += (strlen(envp[i]) + 1);
++	if (len > 0)
++	{
++		int idx = 0;
++
++		len++;
++		envbuf = (char*)g_malloc0(len);
++		for (i=0; envp[i] != NULL; i++)
++		{
++			int n = strlen(envp[i]);
++
++			memcpy(envbuf+idx, envp[i], n);
++			idx += (n+1);
++		}
++	}
++	else
++		envbuf = NULL;
++
++	if (CreateProcess(NULL, buf, NULL, NULL, TRUE, 0, envbuf, directory, &si, &pi) != 0)
++	{
++		CloseHandle(childRd);
++		CloseHandle(childWr);
++		CloseHandle(pi.hProcess);
++		CloseHandle(pi.hThread);
++		*pid = pi.dwProcessId;
++
++		if (envbuf)
++			g_free(envbuf);
++
++		return TRUE;
++	}
++
++	pipeMode = GetLastError();
++
++	if (envbuf)
++		g_free(envbuf);
++
++	return FALSE;
++}
++
++void
++_vte_ptywin_close(int fd)
++{
++	VtePtyWin32 *ptyw = (VtePtyWin32*)fd;
++	close(ptyw->write_fd);
++	close(ptyw->read_fd);
++	g_free(ptyw);
++}
++
++int
++_vte_ptywin_openpty(int *fdm, int *fds)
++{
++	VtePtyWin32 *ptywm, *ptyws;
++	DWORD pipeMode;
++	HANDLE childRd, childWr, parentRd, parentWr;
++	HANDLE hProcess;
++
++	hProcess = GetCurrentProcess();
++	if (CreatePipe(&childRd, &parentWr, 0, 0) == 0 
++	    || DuplicateHandle(hProcess, childRd, hProcess, &childRd, 0, TRUE,
++		    DUPLICATE_SAME_ACCESS|DUPLICATE_CLOSE_SOURCE) == 0)
++	{
++		pipeMode = GetLastError();
++		return -1;
++	}
++	if (CreatePipe(&parentRd, &childWr, 0, 0) == 0 
++	    || DuplicateHandle(hProcess, childWr, hProcess, &childWr, 0, TRUE,
++		    DUPLICATE_SAME_ACCESS|DUPLICATE_CLOSE_SOURCE) == 0)
++	{
++		pipeMode = GetLastError();
++		CloseHandle(parentWr);
++		CloseHandle(childRd);
++		return -1;
++	}
++
++	ptywm = g_new(VtePtyWin32, 1);
++	ptyws = g_new(VtePtyWin32, 1);
++
++	ptywm->read_fd = _open_osfhandle(parentRd, _O_RDONLY|_O_BINARY);
++	ptywm->write_fd = _open_osfhandle(parentWr, _O_WRONLY|_O_BINARY);
++	ptyws->read_fd = _open_osfhandle(childRd, _O_RDONLY|_O_BINARY);
++	ptyws->write_fd = _open_osfhandle(childWr, _O_WRONLY|_O_BINARY);
++
++	*fdm = (int)ptywm;
++	*fds = (int)ptyws;
++}
+diff -urN vte-0.16.13/src/ptywin.h vte-0.16.13-new/src/ptywin.h
+--- vte-0.16.13/src/ptywin.h	Thu Jan  1 01:00:00 1970
++++ vte-0.16.13-new/src/ptywin.h	Mon Apr 14 16:44:36 2008
+@@ -0,0 +1,40 @@
++/*
++ * Copyright (C) 2008 Michael Goffioul.
++ *
++ * This is free software; you can redistribute it and/or modify it under
++ * the terms of the GNU Library General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#ifndef vte_ptywin_h_included
++#define vte_ptywin_h_included
++
++#include <glib.h>
++
++G_BEGIN_DECLS
++
++typedef struct __VtePtyWin32 VtePtyWin32;
++
++VtePtyWin32* _vte_ptywin_new(void);
++GIOChannel* _vte_ptywin_io_new(int fd);
++int _vte_ptywin_spawn(char **argv, char **envp, const char *directory,
++		      VtePtyWin32 *ptyw, GPid *pid);
++int _vte_ptywin_get_read(int fd);
++int _vte_ptywin_get_write(int fd);
++void _vte_ptywin_close(int fd);
++int _vte_ptywin_io_read(GIOChannel *channel, guchar *buffer, int len);
++int _vte_ptywin_openpty(int *fdm, int *fds);
++
++G_END_DECLS
++
++#endif
+diff -urN vte-0.16.13/src/reaper.c vte-0.16.13-new/src/reaper.c
+--- vte-0.16.13/src/reaper.c	Wed Jan  9 21:34:36 2008
++++ vte-0.16.13-new/src/reaper.c	Wed Apr 16 14:47:59 2008
+@@ -18,7 +18,9 @@
+ 
+ #include "../config.h"
+ #include <sys/types.h>
++#ifdef HAVE_SYS_WAIT_H
+ #include <sys/wait.h>
++#endif
+ #include <signal.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -48,6 +50,7 @@
+ static void
+ vte_reaper_signal_handler(int signum)
+ {
++#ifdef SIGCHLD
+ 	struct reaper_info info;
+ 	int status;
+ 
+@@ -68,12 +71,14 @@
+ 			}
+ 		}
+ 	}
++#endif
+ }
+ 
+ static gboolean
+ vte_reaper_emit_signal(GIOChannel *channel, GIOCondition condition,
+ 		       gpointer data)
+ {
++#ifdef SIGCHLD
+ 	struct reaper_info info;
+ 	if (condition != G_IO_IN) {
+ 		return FALSE;
+@@ -87,6 +92,9 @@
+ 				      info.pid, info.status);
+ 	}
+ 	return TRUE;
++#else
++	return FALSE;
++#endif
+ }
+ 
+ #if GLIB_CHECK_VERSION(2,4,0)
+@@ -114,7 +122,7 @@
+ int
+ vte_reaper_add_child(GPid pid)
+ {
+-#if GLIB_CHECK_VERSION(2,4,0)
++#if GLIB_CHECK_VERSION(2,4,0) && ! defined (_MSC_VER)
+ 	return g_child_watch_add_full(G_PRIORITY_HIGH,
+ 				      pid,
+ 				      vte_reaper_child_watch_cb,
+@@ -127,6 +135,7 @@
+ static void
+ vte_reaper_init(VteReaper *reaper)
+ {
++#ifdef SIGCHLD
+ 	struct sigaction action;
+ 	int ret;
+ 
+@@ -161,6 +170,10 @@
+ 	sigaction(SIGCHLD, &action, NULL);
+ 	_vte_debug_print(VTE_DEBUG_SIGNALS,
+ 			"Hooked SIGCHLD signal in reaper.\n");
++#else
++	_vte_debug_print(VTE_DEBUG_SIGNALS,
++			"SIGCHLD signal not supported.\n");
++#endif
+ }
+ 
+ static GObject*
+@@ -182,6 +195,7 @@
+ static void
+ vte_reaper_finalize(GObject *reaper)
+ {
++#ifdef SIGCHLD
+ 	struct sigaction action, old_action;
+ 
+ 	/* Reset the signal handler if we still have it hooked. */
+@@ -207,6 +221,7 @@
+ 
+ 	G_OBJECT_CLASS(vte_reaper_parent_class)->finalize(reaper);
+ 	singleton_reaper = NULL;
++#endif
+ }
+ 
+ static void
+diff -urN vte-0.16.13/src/reaper.h vte-0.16.13-new/src/reaper.h
+--- vte-0.16.13/src/reaper.h	Mon Feb 26 22:05:13 2007
++++ vte-0.16.13-new/src/reaper.h	Wed Apr 16 14:47:29 2008
+@@ -19,8 +19,9 @@
+ #ifndef vte_reaper_h_included
+ #define vte_reaper_h_included
+ 
+-
++#ifdef HAVE_SYS_WAIT_H
+ #include <sys/wait.h>
++#endif
+ #include <signal.h>
+ #include <glib.h>
+ #include <glib-object.h>
+diff -urN vte-0.16.13/src/trie.c vte-0.16.13-new/src/trie.c
+--- vte-0.16.13/src/trie.c	Wed Jan  9 21:32:44 2008
++++ vte-0.16.13-new/src/trie.c	Wed Apr 16 14:48:51 2008
+@@ -47,6 +47,10 @@
+ #define TRIE_MAYBE_STATIC
+ #endif
+ 
++#ifdef _MSC_VER
++#define snprintf _snprintf
++#endif
++
+ /* Structures and whatnot for tracking character classes. */
+ struct char_class_data {
+ 	gunichar c;			/* A character. */
+diff -urN vte-0.16.13/src/vte-private.h vte-0.16.13-new/src/vte-private.h
+--- vte-0.16.13/src/vte-private.h	Tue Nov 27 11:29:32 2007
++++ vte-0.16.13-new/src/vte-private.h	Wed Apr 16 14:50:03 2008
+@@ -19,18 +19,26 @@
+ #ifndef vte_vte_private_h_included
+ #define vte_vte_private_h_included
+ 
++#ifndef _MSC_VER
+ #include <sys/ioctl.h>
++#endif
+ #include <sys/types.h>
++#ifndef _MSC_VER
+ #include <sys/param.h>
++#endif
+ #include <sys/stat.h>
+ #ifdef HAVE_SYS_TERMIOS_H
+ #include <sys/termios.h>
+ #endif
++#ifndef _MSC_VER
+ #include <sys/time.h>
++#endif
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <math.h>
++#ifndef _MSC_VER
+ #include <pwd.h>
++#endif
+ #include <signal.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff -urN vte-0.16.13/src/vte.c vte-0.16.13-new/src/vte.c
+--- vte-0.16.13/src/vte.c	Fri Feb  8 20:46:11 2008
++++ vte-0.16.13-new/src/vte.c	Wed Apr 16 14:51:14 2008
+@@ -62,6 +62,11 @@
+ #define howmany(x, y) (((x) + ((y) - 1)) / (y))
+ #endif
+ 
++#ifdef _MSC_VER
++#include "ptywin.h"
++#define close(x) _vte_ptywin_close(x)
++#endif
++
+ #if !GTK_CHECK_VERSION(2,2,0)
+ #define gdk_keymap_get_for_display(dpy) gdk_keymap_get_default()
+ #endif
+@@ -2733,6 +2738,7 @@
+ vte_terminal_catch_child_exited(VteReaper *reaper, int pid, int status,
+ 				VteTerminal *terminal)
+ {
++#ifndef _MSC_VER
+ 	if (pid == terminal->pvt->pty_pid) {
+ 		_VTE_DEBUG_IF (VTE_DEBUG_LIFECYCLE) {
+ 			g_printerr ("Child[%d] exited with status %d\n",
+@@ -2784,6 +2790,7 @@
+ 		/* Tell observers what's happened. */
+ 		vte_terminal_emit_child_exited(terminal);
+ 	}
++#endif
+ }
+ 
+ static void mark_input_source_invalid(VteTerminal *terminal)
+@@ -2798,7 +2805,13 @@
+ 	}
+ 	if (terminal->pvt->pty_input == NULL) {
+ 		terminal->pvt->pty_input =
++#ifndef _MSC_VER
+ 			g_io_channel_unix_new(terminal->pvt->pty_master);
++#else
++			_vte_ptywin_io_new(
++				_vte_ptywin_get_read(terminal->pvt->pty_master));
++			/*g_io_channel_win32_set_debug(terminal->pvt->pty_input, TRUE);*/
++#endif
+ 	}
+ 	if (terminal->pvt->pty_input_source == VTE_INVALID_SOURCE) {
+ 		terminal->pvt->pty_input_source =
+@@ -2823,7 +2836,13 @@
+ 	}
+ 	if (terminal->pvt->pty_output == NULL) {
+ 		terminal->pvt->pty_output =
++#ifndef _MSC_VER
+ 			g_io_channel_unix_new(terminal->pvt->pty_master);
++#else
++			g_io_channel_win32_new_fd(
++				_vte_ptywin_get_write(terminal->pvt->pty_master));
++			/*g_io_channel_win32_set_debug(terminal->pvt->pty_output, TRUE);*/
++#endif
+ 	}
+ 	if (terminal->pvt->pty_output_source == VTE_INVALID_SOURCE) {
+ 		terminal->pvt->pty_output_source =
+@@ -2936,11 +2955,13 @@
+ 		} else
+ 			g_object_unref(reaper);
+ 
++#ifndef _MSC_VER
+ 		/* Set the pty to be non-blocking. */
+ 		i = fcntl(terminal->pvt->pty_master, F_GETFL);
+ 		if ((i & O_NONBLOCK) == 0) {
+ 			fcntl(terminal->pvt->pty_master, F_SETFL, i | O_NONBLOCK);
+ 		}
++#endif
+ 
+ 		/* Set the PTY size. */
+ 		vte_terminal_set_size(terminal,
+@@ -2992,6 +3013,7 @@
+ 
+ 	/* Make the user's shell the default command. */
+ 	if (command == NULL) {
++#ifndef _MSC_VER
+ 		if (terminal->pvt->shell == NULL) {
+ 			struct passwd *pwd;
+ 
+@@ -3003,6 +3025,7 @@
+ 						terminal->pvt->shell);
+ 			}
+ 		}
++#endif
+ 		if (terminal->pvt->shell == NULL) {
+ 			if (getenv ("SHELL")) {
+ 				terminal->pvt->shell = getenv ("SHELL");
+@@ -3651,7 +3674,11 @@
+ 			bp = chunk->data + chunk->len;
+ 			len = 0;
+ 			do {
++#ifndef _MSC_VER
+ 				int ret = read (fd, bp, rem);
++#else
++				int ret = _vte_ptywin_io_read (channel, bp, rem);
++#endif
+ 				switch (ret){
+ 					case -1:
+ 						err = errno;
+@@ -4184,7 +4211,9 @@
+ 	gssize normal_length = 0;
+ 	int i;
+ 	const char *special = NULL;
++#ifndef _MSC_VER
+ 	struct termios tio;
++#endif
+ 	gboolean scrolled = FALSE, steal = FALSE, modifier = FALSE, handled,
+ 		 suppress_meta_esc = FALSE;
+ 	guint keyval = 0;
+@@ -4330,12 +4359,14 @@
+ 			case VTE_ERASE_AUTO:
+ 			default:
+ 				if (terminal->pvt->pty_master != -1) {
++#ifndef _MSC_VER
+ 					if (tcgetattr(terminal->pvt->pty_master,
+ 						      &tio) != -1) {
+ 						normal = g_strdup_printf("%c",
+ 									 tio.c_cc[VERASE]);
+ 						normal_length = 1;
+ 					}
++#endif
+ 				}
+ 				suppress_meta_esc = FALSE;
+ 				break;
+@@ -5698,7 +5729,10 @@
+ 	vte_terminal_emit_selection_changed(terminal);
+ 
+ 	/* Temporarily stop caring about input from the child. */
++#ifndef _MSC_VER
++	/* TODO: channel should be disabled temporarily */
+ 	_vte_terminal_disconnect_pty_read(terminal);
++#endif
+ }
+ 
+ /* Extend selection to include the given event coordinates. */
+@@ -7052,6 +7086,13 @@
+ 			g_warning(_("Error setting PTY size: %s."),
+ 				    strerror(errno));
+ 		}
++#ifdef _MSC_VER
++		{
++			char buf[128] = {0};
++			_snprintf(buf, 127, "\033[X%dx%d", columns, rows);
++			vte_terminal_feed_child_binary(terminal, buf, strlen(buf)+1);
++		}
++#endif
+ 		/* Read the terminal size, in case something went awry. */
+ 		vte_terminal_refresh_size(terminal);
+ 	} else {
+@@ -7489,7 +7530,11 @@
+ 	vte_terminal_set_word_chars(terminal, NULL);
+ 
+ 	/* Miscellaneous options. */
++#ifndef _MSC_VER
+ 	vte_terminal_set_backspace_binding(terminal, VTE_ERASE_AUTO);
++#else
++	vte_terminal_set_backspace_binding(terminal, VTE_ERASE_ASCII_BACKSPACE);
++#endif
+ 	vte_terminal_set_delete_binding(terminal, VTE_ERASE_AUTO);
+ 	pvt->meta_sends_escape = TRUE;
+ 	pvt->audible_bell = TRUE;
+@@ -7910,8 +7955,9 @@
+ 		if (pgrp != -1) {
+ 			kill(-pgrp, SIGHUP);
+ 		}
+-#endif
++#elif ! defined(_MSC_VER)
+ 		kill(terminal->pvt->pty_pid, SIGHUP);
++#endif
+ 	}
+ 	_vte_terminal_disconnect_pty_read(terminal);
+ 	_vte_terminal_disconnect_pty_write(terminal);
+@@ -12018,10 +12064,12 @@
+ 
+ 
+        /* Set the pty to be non-blocking. */
++#ifndef _MSC_VER
+        i = fcntl(terminal->pvt->pty_master, F_GETFL);
+        if ((i & O_NONBLOCK) == 0) {
+ 	       fcntl(terminal->pvt->pty_master, F_SETFL, i | O_NONBLOCK);
+        }
++#endif
+ 
+        vte_terminal_set_size(terminal,
+                              terminal->column_count,
+diff -urN vte-0.16.13/src/vteapp.c vte-0.16.13-new/src/vteapp.c
+--- vte-0.16.13/src/vteapp.c	Fri Feb  8 20:48:57 2008
++++ vte-0.16.13-new/src/vteapp.c	Wed Apr 16 14:52:12 2008
+@@ -20,7 +20,9 @@
+ #include "../config.h"
+ 
+ #include <stdlib.h>
++#ifndef _MSC_VER
+ #include <sys/ioctl.h>
++#endif
+ #include <sys/stat.h>
+ #include <errno.h>
+ #include <fcntl.h>
+@@ -36,6 +38,12 @@
+ #define DINGUS1 "(((news|telnet|nntp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?"
+ #define DINGUS2 "(((news|telnet|nntp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?/[-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]*[^]'\\.}>\\) ,\\\"]"
+ 
++#ifdef _MSC_VER
++#undef DATADIR
++#include <windows.h>
++#define sleep(x) Sleep((x)*1000)
++#endif
++
+ static void
+ window_title_changed(GtkWidget *widget, gpointer win)
+ {
+@@ -145,6 +153,7 @@
+ destroy_and_quit_eof(GtkWidget *widget, gpointer data)
+ {
+ 	_vte_debug_print(VTE_DEBUG_MISC, "Detected EOF.\n");
++	destroy_and_quit(widget, data);
+ }
+ static void
+ destroy_and_quit_exited(GtkWidget *widget, gpointer data)
+@@ -737,7 +746,9 @@
+ 		/* Open a "console" connection. */
+ 		int consolefd = -1, yes = 1, watch;
+ 		GIOChannel *channel;
++#ifndef _MSC_VER
+ 		consolefd = open("/dev/console", O_RDONLY | O_NOCTTY);
++#endif
+ 		if (consolefd != -1) {
+ 			/* Assume failure. */
+ 			console = FALSE;
+@@ -780,11 +791,12 @@
+ 
+ 	if (!console) {
+ 		if (shell) {
++			char *argv[] = {"-i", NULL};
+ 			/* Launch a shell. */
+ 			_VTE_DEBUG_IF(VTE_DEBUG_MISC)
+ 				vte_terminal_feed(terminal, message, -1);
+ 			vte_terminal_fork_command(terminal,
+-						  command, NULL, env_add,
++						  command, (command?NULL:argv), env_add,
+ 						  working_directory,
+ 						  TRUE, TRUE, TRUE);
+ 	#ifdef VTE_DEBUG
+@@ -844,7 +856,7 @@
+ 
+ 
+ 	gtk_main();
+-
++ 
+ 	g_assert(widget == NULL);
+ 	g_assert(window == NULL);
+ 
+diff -urN vte-0.16.13/src/vtedraw.c vte-0.16.13-new/src/vtedraw.c
+--- vte-0.16.13/src/vtedraw.c	Tue Nov 27 09:41:31 2007
++++ vte-0.16.13-new/src/vtedraw.c	Wed Apr 16 11:58:19 2008
+@@ -32,6 +32,7 @@
+ #include "vtegl.h"
+ #include "vtepango.h"
+ #include "vtepangox.h"
++#include "vtepangowin.h"
+ #include "vteskel.h"
+ #include "vtexft.h"
+ 
+@@ -54,6 +55,9 @@
+ 	&_vte_draw_pango_x,
+ #endif /* HAVE_PANGOX */
+ #endif /* !X_DISPLAY_MISSING */
++#ifdef HAVE_PANGOWIN
++	&_vte_draw_pango_win,
++#endif /* HAVE_PANGOWIN */
+ };
+ 
+ static gboolean
+diff -urN vte-0.16.13/src/vteft2.c vte-0.16.13-new/src/vteft2.c
+--- vte-0.16.13/src/vteft2.c	Wed Nov 28 14:44:48 2007
++++ vte-0.16.13-new/src/vteft2.c	Wed Apr 16 14:52:57 2008
+@@ -19,7 +19,9 @@
+ 
+ #include "../config.h"
+ 
++#ifndef _MSC_VER
+ #include <sys/param.h>
++#endif
+ #include <string.h>
+ #include <gtk/gtk.h>
+ #include <glib.h>
+diff -urN vte-0.16.13/src/vteglyph.c vte-0.16.13-new/src/vteglyph.c
+--- vte-0.16.13/src/vteglyph.c	Wed Jan  9 21:32:53 2008
++++ vte-0.16.13-new/src/vteglyph.c	Wed Apr 16 14:53:15 2008
+@@ -19,7 +19,9 @@
+ 
+ #include "../config.h"
+ 
++#ifndef _MSC_VER
+ #include <sys/param.h>
++#endif
+ #include <math.h>
+ #include <gdk/gdk.h>
+ #include <glib.h>
+@@ -33,6 +35,10 @@
+ #define FONT_INDEX_FUDGE 10
+ #define CHAR_WIDTH_FUDGE 10
+ #define INVALID_GLYPH    GINT_TO_POINTER(-1)
++
++#ifndef howmany
++#define howmany(x, y) (((x) + ((y) - 1)) / (y))
++#endif
+ 
+ static FT_Face _vte_glyph_cache_face_for_char(struct _vte_glyph_cache *cache,
+ 					      gunichar c);
+diff -urN vte-0.16.13/src/vtepango.c vte-0.16.13-new/src/vtepango.c
+--- vte-0.16.13/src/vtepango.c	Wed Nov 28 14:55:04 2007
++++ vte-0.16.13-new/src/vtepango.c	Wed Apr 16 14:53:48 2008
+@@ -19,7 +19,9 @@
+ 
+ #include "../config.h"
+ 
++#ifndef _MSC_VER
+ #include <sys/param.h>
++#endif
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -29,6 +31,10 @@
+ #include "vtebg.h"
+ #include "vtedraw.h"
+ #include "vtepango.h"
++
++#ifndef howmany
++#define howmany(x, y) (((x) + ((y) - 1)) / (y))
++#endif
+ 
+ struct _vte_pango_data
+ {
+diff -urN vte-0.16.13/src/vtepangowin.c vte-0.16.13-new/src/vtepangowin.c
+--- vte-0.16.13/src/vtepangowin.c	Thu Jan  1 01:00:00 1970
++++ vte-0.16.13-new/src/vtepangowin.c	Wed Apr 16 12:14:31 2008
+@@ -0,0 +1,499 @@
++/*
++ * Copyright (C) 2008 Red Hat, Inc.
++ *
++ * This is free software; you can redistribute it and/or modify it under
++ * the terms of the GNU Library General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++
++#include "../config.h"
++
++#ifdef HAVE_PANGOWIN
++
++#undef DATADIR
++#include <stdio.h>
++#include <string.h>
++#include <gtk/gtk.h>
++#include <gdk/gdkwin32.h>
++#include <pango/pango.h>
++#include <pango/pangowin32.h>
++#include "debug.h"
++#include "vtebg.h"
++#include "vtedraw.h"
++#include "vtepangowin.h"
++
++#ifndef howmany
++#define howmany(x, y) (((x) + ((y) - 1)) / (y))
++#endif
++
++struct _vte_pango_win_data
++{
++	GdkColor color;
++	GdkPixmap *pixmap;
++	gint pixmapw, pixmaph;
++	gint scrollx, scrolly;
++	PangoFontDescription *font;
++	PangoLayout *layout;
++	GdkGC *gc;
++	PangoContext *ctx;
++	int x_offs, y_offs;
++};
++
++static gboolean
++_vte_pango_win_check(struct _vte_draw *draw, GtkWidget *widget)
++{
++	/* We can draw onto any widget. */
++	return TRUE;
++}
++
++static void
++_vte_pango_win_create(struct _vte_draw *draw, GtkWidget *widget)
++{
++	struct _vte_pango_win_data *data;
++
++	draw->impl_data = g_slice_new(struct _vte_pango_win_data);
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++
++	data->color.red = 0;
++	data->color.green = 0;
++	data->color.blue = 0;
++	data->pixmap = NULL;
++	data->pixmapw = data->pixmaph = 0;
++	data->scrollx = data->scrolly = 0;
++	data->font = NULL;
++	data->layout = NULL;
++	data->gc = NULL;
++	data->ctx = NULL;
++}
++
++static void
++_vte_pango_win_destroy(struct _vte_draw *draw)
++{
++	struct _vte_pango_win_data *data;
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++
++	if (data->pixmap != NULL) {
++		g_object_unref(data->pixmap);
++	}
++	if (data->font != NULL) {
++		pango_font_description_free(data->font);
++	}
++	if (data->layout != NULL) {
++		g_object_unref(data->layout);
++	}
++	if (data->gc != NULL) {
++		g_object_unref(data->gc);
++	}
++	if (data->ctx != NULL) {
++		g_object_unref(data->ctx);
++	}
++
++	g_slice_free(struct _vte_pango_win_data, draw->impl_data);
++}
++
++static GdkVisual *
++_vte_pango_win_get_visual(struct _vte_draw *draw)
++{
++	return gtk_widget_get_visual(draw->widget);
++}
++
++static GdkColormap *
++_vte_pango_win_get_colormap(struct _vte_draw *draw)
++{
++	return gtk_widget_get_colormap(draw->widget);
++}
++
++static void
++_vte_pango_win_start(struct _vte_draw *draw)
++{
++	struct _vte_pango_win_data *data;
++	GdkDrawable *drawable;
++	int x_offs, y_offs;
++
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++
++	if (data->ctx != NULL) {
++		g_object_unref(data->ctx);
++	}
++	data->ctx = pango_win32_get_context();
++
++	if (data->layout != NULL) {
++		g_object_unref(data->layout);
++	}
++	data->layout = pango_layout_new(data->ctx);
++
++	if (data->font != NULL) {
++		pango_layout_set_font_description(data->layout, data->font);
++	}
++
++	if (data->gc != NULL) {
++		g_object_unref(data->gc);
++	}
++	data->gc = gdk_gc_new(draw->widget->window);
++
++	gdk_rgb_find_color(gdk_drawable_get_colormap(draw->widget->window),
++			   &data->color);
++
++	gdk_window_get_internal_paint_info(draw->widget->window, &drawable,
++					&x_offs, &y_offs);
++	data->x_offs = x_offs;
++	data->y_offs = y_offs;
++}
++
++static void
++_vte_pango_win_end(struct _vte_draw *draw)
++{
++	struct _vte_pango_win_data *data;
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++
++	data->x_offs = 0;
++	data->y_offs = 0;
++
++	if (data->layout != NULL) {
++		g_object_unref(data->layout);
++	}
++	data->layout = NULL;
++
++	if (data->gc != NULL) {
++		g_object_unref(data->gc);
++	}
++	data->gc = NULL;
++
++	if (data->ctx != NULL) {
++		g_object_unref(data->ctx);
++	}
++	data->ctx = NULL;
++}
++
++static void
++_vte_pango_win_set_background_color(struct _vte_draw *draw, GdkColor *color, guint16 opacity)
++{
++	struct _vte_pango_win_data *data;
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++	data->color = *color;
++}
++
++static void
++_vte_pango_win_set_background_image(struct _vte_draw *draw,
++				  enum VteBgSourceType type,
++				  GdkPixbuf *pixbuf,
++				  const char *file,
++				  const GdkColor *color,
++				  double saturation)
++{
++	GdkPixmap *pixmap;
++	struct _vte_pango_win_data *data;
++	GdkScreen *screen;
++
++	screen = gtk_widget_get_screen (draw->widget);
++
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++	pixmap = vte_bg_get_pixmap(vte_bg_get_for_screen(screen),
++				   type, pixbuf, file,
++				   color, saturation,
++				   _vte_draw_get_colormap(draw, TRUE));
++	if (data->pixmap != NULL) {
++		g_object_unref(data->pixmap);
++	}
++	draw->requires_clear = FALSE;
++	data->pixmap = NULL;
++	data->pixmapw = data->pixmaph = 0;
++	if (pixmap != NULL) {
++		data->pixmap = pixmap;
++		gdk_drawable_get_size(pixmap, &data->pixmapw, &data->pixmaph);
++		draw->requires_clear =
++			data->pixmapw > 0 && data->pixmaph > 0;
++	}
++}
++
++static void
++_vte_pango_win_clip(struct _vte_draw *draw, GdkRegion *region)
++{
++	struct _vte_pango_win_data *data = draw->impl_data;
++	gdk_gc_set_clip_region(data->gc, region);
++}
++
++static void
++_vte_pango_win_clear(struct _vte_draw *draw,
++		   gint x, gint y, gint width, gint height)
++{
++	struct _vte_pango_win_data *data;
++	gint i, j, h, w, xstop, ystop;
++
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++
++	if ((data->pixmap == NULL) ||
++	    (data->pixmapw == 0) ||
++	    (data->pixmaph == 0)) {
++		gdk_gc_set_foreground(data->gc, &data->color);
++		gdk_draw_rectangle(draw->widget->window,
++				   data->gc,
++				   TRUE,
++				   x, y, width, height);
++		return;
++	}
++
++	/* Flood fill. */
++	xstop = x + width;
++	ystop = y + height;
++
++	y = ystop - height;
++	j = (data->scrolly + y) % data->pixmaph;
++	while (y < ystop) {
++		x = xstop - width;
++		i = (data->scrollx + x) % data->pixmapw;
++		h = MIN(data->pixmaph - (j % data->pixmaph), ystop - y);
++		while (x < xstop) {
++			w = MIN(data->pixmapw - (i % data->pixmapw), xstop - x);
++			gdk_draw_drawable(draw->widget->window,
++					  data->gc,
++					  data->pixmap,
++					  i, j,
++					  x, y,
++					  w, h);
++			x += w;
++			i = 0;
++		}
++		y += h;
++		j = 0;
++	}
++}
++
++static void
++_vte_pango_win_set_text_font(struct _vte_draw *draw,
++			   const PangoFontDescription *fontdesc,
++			   VteTerminalAntiAlias antialias)
++{
++	PangoContext *ctx;
++	PangoLayout *layout;
++	PangoLayoutIter *iter;
++	PangoRectangle ink, logical;
++	gunichar full_codepoints[] = {VTE_DRAW_DOUBLE_WIDE_IDEOGRAPHS};
++	GString *full_string;
++	gint full_width;
++	guint i;
++	struct _vte_pango_win_data *data;
++
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++
++	if (data->ctx != NULL) {
++		g_object_unref(data->ctx);
++	}
++	ctx = pango_win32_get_context();
++
++	layout = pango_layout_new(ctx);
++	if (data->font != NULL) {
++		pango_font_description_free(data->font);
++	}
++	data->font = pango_font_description_copy(fontdesc);
++	pango_layout_set_font_description(layout, data->font);
++
++	/* Estimate for ASCII characters. */
++	pango_layout_set_text(layout,
++			      VTE_DRAW_SINGLE_WIDE_CHARACTERS,
++			      strlen(VTE_DRAW_SINGLE_WIDE_CHARACTERS));
++	pango_layout_get_extents(layout, &ink, &logical);
++	draw->width = logical.width;
++	draw->width = howmany(draw->width,
++			      strlen(VTE_DRAW_SINGLE_WIDE_CHARACTERS));
++	iter = pango_layout_get_iter(layout);
++	draw->height = PANGO_PIXELS(logical.height);
++	draw->ascent = PANGO_PIXELS(pango_layout_iter_get_baseline(iter));
++	pango_layout_iter_free(iter);
++
++	/* Estimate for CJK characters. */
++	full_string = g_string_new(NULL);
++	for (i = 0; i < G_N_ELEMENTS(full_codepoints); i++) {
++		g_string_append_unichar(full_string, full_codepoints[i]);
++	}
++	pango_layout_set_text(layout, full_string->str, full_string->len);
++	pango_layout_get_extents(layout, &ink, &logical);
++	full_width = howmany(logical.width, G_N_ELEMENTS(full_codepoints));
++	g_string_free(full_string, TRUE);
++
++	/* If they're the same, then we have a screwy font. */
++	if (full_width == draw->width) {
++		/* add 1 to round up when dividing by 2 */
++		draw->width = (draw->width + 1) / 2;
++	}
++
++	draw->width = PANGO_PIXELS(draw->width);
++	iter = pango_layout_get_iter(layout);
++	if (draw->height == 0) {
++		draw->height = PANGO_PIXELS(logical.height);
++	}
++	if (draw->ascent == 0) {
++		draw->ascent = PANGO_PIXELS(pango_layout_iter_get_baseline(iter));
++	}
++	pango_layout_iter_free(iter);
++
++	_vte_debug_print(VTE_DEBUG_MISC,
++			"VtePangoWin font metrics = %dx%d (%d).\n",
++			draw->width, draw->height, draw->ascent);
++	g_object_unref(layout);
++	g_object_unref(ctx);
++}
++
++static int
++_vte_pango_win_get_text_width(struct _vte_draw *draw)
++{
++	return draw->width;
++}
++
++static int
++_vte_pango_win_get_text_height(struct _vte_draw *draw)
++{
++	return draw->height;
++}
++
++static int
++_vte_pango_win_get_text_ascent(struct _vte_draw *draw)
++{
++	return draw->ascent;
++}
++
++static int
++_vte_pango_win_get_char_width(struct _vte_draw *draw, gunichar c, int columns)
++{
++	return _vte_pango_win_get_text_width(draw) * columns;
++}
++
++static gboolean
++_vte_pango_win_get_using_fontconfig(struct _vte_draw *draw)
++{
++	return FALSE;
++}
++
++static void
++_vte_pango_win_draw_text(struct _vte_draw *draw,
++		       struct _vte_draw_text_request *requests,
++		       gsize n_requests,
++		       GdkColor *color, guchar alpha)
++{
++	HDC hdc;
++	struct _vte_pango_win_data *data;
++	char buf[VTE_UTF8_BPC];
++	gsize i, length;
++	GdkColor wcolor;
++
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++
++	wcolor = *color;
++	gdk_rgb_find_color(gdk_drawable_get_colormap(draw->widget->window),
++			   &wcolor);
++	gdk_gc_set_foreground(data->gc, &wcolor);
++	hdc = gdk_win32_hdc_get(draw->widget->window, data->gc, GDK_GC_FOREGROUND|GDK_GC_CLIP_MASK);
++
++	for (i = 0; i < n_requests; i++) {
++		length = g_unichar_to_utf8(requests[i].c, buf);
++		pango_layout_set_text(data->layout, buf, length);
++		pango_win32_render_layout(hdc,
++				      data->layout,
++				      requests[i].x - data->x_offs,
++				      requests[i].y - data->y_offs);
++	}
++	
++	gdk_win32_hdc_release(draw->widget->window, data->gc, GDK_GC_FOREGROUND|GDK_GC_CLIP_MASK);
++}
++
++static gboolean
++_vte_pango_win_draw_char(struct _vte_draw *draw,
++		       struct _vte_draw_text_request *request,
++		       GdkColor *color, guchar alpha)
++{
++	_vte_pango_win_draw_text(draw, request, 1, color, alpha);
++	return TRUE;
++}
++
++static gboolean
++_vte_pango_win_draw_has_char(struct _vte_draw *draw, gunichar c)
++{
++	return FALSE;
++}
++
++
++static void
++_vte_pango_win_draw_rectangle(struct _vte_draw *draw,
++			  gint x, gint y, gint width, gint height,
++			  GdkColor *color, guchar alpha)
++{
++	struct _vte_pango_win_data *data;
++	GdkColor wcolor;
++
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++
++	wcolor = *color;
++	gdk_rgb_find_color(gdk_drawable_get_colormap(draw->widget->window),
++			   &wcolor);
++	gdk_gc_set_foreground(data->gc, &wcolor);
++
++	gdk_draw_rectangle(draw->widget->window, data->gc, FALSE,
++			   x, y, width-1, height-1);
++}
++
++static void
++_vte_pango_win_fill_rectangle(struct _vte_draw *draw,
++			  gint x, gint y, gint width, gint height,
++			  GdkColor *color, guchar alpha)
++{
++	struct _vte_pango_win_data *data;
++	GdkColor wcolor;
++
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++	wcolor = *color;
++	gdk_rgb_find_color(gdk_drawable_get_colormap(draw->widget->window),
++			   &wcolor);
++	gdk_gc_set_foreground(data->gc, &wcolor);
++	gdk_draw_rectangle(draw->widget->window, data->gc, TRUE,
++			   x, y, width, height);
++}
++
++static void
++_vte_pango_win_set_scroll(struct _vte_draw *draw, gint x, gint y)
++{
++	struct _vte_pango_win_data *data;
++	data = (struct _vte_pango_win_data*) draw->impl_data;
++	data->scrollx = x;
++	data->scrolly = y;
++}
++
++const struct _vte_draw_impl _vte_draw_pango_win = {
++	"pangowin",
++	_vte_pango_win_check,
++	_vte_pango_win_create,
++	_vte_pango_win_destroy,
++	_vte_pango_win_get_visual,
++	_vte_pango_win_get_colormap,
++	_vte_pango_win_start,
++	_vte_pango_win_end,
++	_vte_pango_win_set_background_color,
++	_vte_pango_win_set_background_image,
++	FALSE,
++	_vte_pango_win_clip,
++	_vte_pango_win_clear,
++	_vte_pango_win_set_text_font,
++	_vte_pango_win_get_text_width,
++	_vte_pango_win_get_text_height,
++	_vte_pango_win_get_text_ascent,
++	_vte_pango_win_get_char_width,
++	_vte_pango_win_get_using_fontconfig,
++	_vte_pango_win_draw_text,
++	_vte_pango_win_draw_char,
++	_vte_pango_win_draw_has_char,
++	_vte_pango_win_draw_rectangle,
++	_vte_pango_win_fill_rectangle,
++	_vte_pango_win_set_scroll,
++};
++
++#endif
+diff -urN vte-0.16.13/src/vtepangowin.h vte-0.16.13-new/src/vtepangowin.h
+--- vte-0.16.13/src/vtepangowin.h	Thu Jan  1 01:00:00 1970
++++ vte-0.16.13-new/src/vtepangowin.h	Wed Apr 16 11:21:07 2008
+@@ -0,0 +1,33 @@
++/*
++ * Copyright (C) 2008 Red Hat, Inc.
++ *
++ * This is free software; you can redistribute it and/or modify it under
++ * the terms of the GNU Library General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU Library General Public
++ * License along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#ifndef vte_vtepangowin_h_included
++#define vte_vtepangowin_h_included
++
++/* The interfaces in this file are subject to change at any time. */
++
++
++#include "vtedraw.h"
++
++G_BEGIN_DECLS
++
++extern const struct _vte_draw_impl _vte_draw_pango_win;
++
++G_END_DECLS
++
++#endif
+diff -urN vte-0.16.13/src/vterdb.c vte-0.16.13-new/src/vterdb.c
+--- vte-0.16.13/src/vterdb.c	Sat Nov 24 02:24:40 2007
++++ vte-0.16.13-new/src/vterdb.c	Wed Apr 16 12:39:52 2008
+@@ -27,6 +27,11 @@
+ #endif
+ #include "vterdb.h"
+ 
++#ifdef _MSC_VER
++#undef DATADIR
++#include <windows.h>
++#endif
++
+ #define DEFAULT_ANTIALIAS	TRUE
+ #define DEFAULT_DPI		-1
+ #define DEFAULT_RGBA		"none"
+@@ -38,11 +43,15 @@
+ 			 GdkAtom *type, int *size,
+ 			 char **retval)
+ {
++#ifndef _MSC_VER
+ 	return gdk_property_get(window, atom, GDK_TARGET_STRING,
+ 				0, INT_MAX - 3,
+ 				FALSE,
+ 				type, NULL, size,
+ 				(guchar**) retval);
++#else
++	return FALSE;
++#endif
+ }
+ 
+ static gchar **
+@@ -204,7 +213,18 @@
+ double
+ _vte_rdb_get_dpi(GtkWidget *widget)
+ {
++#ifdef _MSC_VER
++	HDC hdc;
++	double ret;
++
++	hdc = CreateDC("DISPLAY", NULL, NULL, NULL);
++	ret = GetDeviceCaps(hdc, LOGPIXELSY);
++	DeleteDC(hdc);
++
++	return ret;
++#else
+ 	return _vte_rdb_double(widget, "Xft.dpi", DEFAULT_DPI);
++#endif
+ }
+ 
+ gboolean
+diff -urN vte-0.16.13/src/vteseq.c vte-0.16.13-new/src/vteseq.c
+--- vte-0.16.13/src/vteseq.c	Tue Nov 27 14:25:37 2007
++++ vte-0.16.13-new/src/vteseq.c	Tue Apr 15 15:20:42 2008
+@@ -2185,6 +2185,9 @@
+ 	long start, end;
+ 	VteScreen *screen;
+ 
++#ifdef _MSC_VER
++	terminal->pvt->screen->cursor_current.col = 0;
++#endif
+ 	screen = terminal->pvt->screen;
+ 
+ 	if (screen->scrolling_restricted) {
+diff -urN vte-0.16.13/src/vteskel.c vte-0.16.13-new/src/vteskel.c
+--- vte-0.16.13/src/vteskel.c	Mon Feb 26 22:05:13 2007
++++ vte-0.16.13-new/src/vteskel.c	Wed Apr 16 14:54:19 2008
+@@ -19,7 +19,9 @@
+ 
+ #include "../config.h"
+ 
++#ifndef _MSC_VER
+ #include <sys/param.h>
++#endif
+ #include <stdio.h>
+ #include <string.h>
+ #include <gtk/gtk.h>

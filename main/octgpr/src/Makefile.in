@@ -35,7 +35,7 @@ OBJS_GPR_TRAIN=dsdacc.o dwdis2.o dtr2tp.o \
 OBJS_GPR_PRED=dsdacc.o dwdis2.o infgpr.o corrf.o \
 	      get_corrf.o predict.o 
 	      
-all: gpr_train.oct gpr_predict.oct
+all: gpr_train.oct gpr_predict.oct pdist2_mw.oct
 
 %.o: %.f
 	$(F77) $(FFLAGS) -c $<
@@ -51,6 +51,10 @@ gpr_train.oct: gpr_train.o $(OBJS_GPR_TRAIN)
 	$(MKOCTFILE) -o $@ gpr_train.o $(OBJS_GPR_TRAIN) $(LIBS)
 gpr_predict.oct: gpr_predict.o $(OBJS_GPR_PRED) 
 	$(MKOCTFILE) -o $@ gpr_predict.o $(OBJS_GPR_PRED) $(LIBS)
+
+pdist2_mw.oct: pdist2_mw.cc
+	$(MKOCTFILE) -o $@ $<
+
 clean:
 	rm -f *.o *.oct
 distclean: clean

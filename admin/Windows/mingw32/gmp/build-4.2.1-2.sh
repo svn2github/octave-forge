@@ -68,8 +68,11 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgmp.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/gmp.h ${INCLUDE_PATH}
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING     ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING.lib ${LICENSE_PATH}/${PKG}
+   
+   install_post;
    
 }
 

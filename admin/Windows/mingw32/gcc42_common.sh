@@ -153,7 +153,6 @@ install_pre()
   if [ ! -e ${INCLUDE_PATH} ]; then mkdir -vp ${INCLUDE_PATH}; fi
   if [ ! -e ${STATICLIBRARY_PATH} ]; then mkdir -vp ${STATICLIBRARY_PATH}; fi
   if [ ! -e ${LICENSE_PATH} ];        then mkdir -vp ${LICENSE_PATH}; fi
-  if [ ! -e ${LICENSE_PATH}/${PKG} ]; then mkdir -vp ${LICENSE_PATH}/${PKG}; fi
  }
 install()
 {

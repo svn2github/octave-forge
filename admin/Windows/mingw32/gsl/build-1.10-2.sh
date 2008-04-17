@@ -287,6 +287,7 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgsl.a     ${STATICLIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/gsl/$a ${INCLUDE_PATH}; done
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
   install_post
 }

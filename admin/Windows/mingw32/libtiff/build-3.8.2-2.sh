@@ -69,7 +69,9 @@ install()
    for a in ${INSTALL_HEADERS};       do ${CP} ${CP_FLAGS} ${SRCDIR}/libtiff/$a ${INCLUDE_PATH}; done
    for a in ${INSTALL_HEADERS_BUILD}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/libtiff/$a ${INCLUDE_PATH}; done
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYRIGHT ${LICENSE_PATH}/${PKG}
+   install_post
 }
    
 uninstall()

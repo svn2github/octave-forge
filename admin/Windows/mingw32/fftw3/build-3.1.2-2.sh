@@ -73,6 +73,7 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/tools/.libs/fftw-wisdom.exe ${BINARY_PATH}
    ${CP} ${CP_FLAGS} ${SRCDIR}/api/fftw3.h ${INCLUDE_PATH}
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
    install_post;
 }

@@ -65,7 +65,9 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.dll.a ${LIBRARY_PATH}/liblapack.dll.a
    ${CP} ${CP_FLAGS} ${BUILDDIR}/lapack.a     ${STATICLIBRARY_PATH}/liblapack.a
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
+   install_post
 }
 
 uninstall()

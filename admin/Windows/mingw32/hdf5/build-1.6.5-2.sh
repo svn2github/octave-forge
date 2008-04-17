@@ -95,7 +95,10 @@ install()
    for a in ${INSTALL_HEADERS_HL};    do ${CP} ${CP_FLAGS} ${SRCDIR}/hl/src/$a ${INCLUDE_PATH}; done
    for a in ${INSTALL_HEADERS_BUILD}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/src/$a ${INCLUDE_PATH}; done
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
+   
+   install_post;
 }
 
 uninstall()

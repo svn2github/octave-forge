@@ -53,9 +53,10 @@ install()
    install_pre;
    ${CP} ${CP_FLAGS} ${BUILDDIR}/less.exe ${BINARY_PATH}
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/LICENSE ${LICENSE_PATH}/${PKG}
-   
+   install_post;
 }
 
 uninstall()

@@ -73,6 +73,7 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/shlib/{libreadline,libhistory}.dll.a ${LIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}; done
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
    
    install_post

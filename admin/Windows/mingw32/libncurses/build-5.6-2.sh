@@ -74,6 +74,7 @@ install()
    ( cd ${BUILDDIR}/misc && make install )
    ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/ncurses5-config
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/AUTHORS ${LICENSE_PATH}/${PKG}
    install_post;
 }

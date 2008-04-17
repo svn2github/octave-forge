@@ -72,6 +72,7 @@ install()
 
    ${CP} ${CP_FLAGS} ${BUILDDIR}/freetype-config         ${BINARY_PATH}
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/docs/GPL.TXT ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/docs/LICENSE.TXT ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/src/pcf/README ${LICENSE_PATH}/${PKG}/README.PCF

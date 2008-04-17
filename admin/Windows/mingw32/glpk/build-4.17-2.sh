@@ -65,6 +65,7 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/libglpk.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${SRCDIR}/include/glpk.h ${INCLUDE_PATH}
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
    
    install_post

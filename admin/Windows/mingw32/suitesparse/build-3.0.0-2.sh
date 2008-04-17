@@ -171,6 +171,7 @@ install()
    ${CP} ${CP_FLAGS} ${SRCDIR}/UFconfig/UFconfig.h ${INCLUDE_PATH}
    
    # install the licenses
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/AMD/doc/lesser.txt ${LICENSE_PATH}/${PKG}/LGPL.txt
    ${CP} ${CP_FLAGS} ${SRCDIR}/AMD/doc/License ${LICENSE_PATH}/${PKG}/LICENSE.AMD
    ${CP} ${CP_FLAGS} ${SRCDIR}/CAMD/doc/License ${LICENSE_PATH}/${PKG}/LICENSE.CAMD

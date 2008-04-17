@@ -53,6 +53,7 @@ conf()
 
 install_post()
 {
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/README ${LICENSE_PATH}/${PKG}
 }
 

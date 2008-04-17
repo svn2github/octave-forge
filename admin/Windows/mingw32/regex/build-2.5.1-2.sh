@@ -66,10 +66,11 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/libregex.a ${STATICLIBRARY_PATH}
    for a in ${INSTALL_HEADERS};       do ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}; done
    
+   mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING.LIB ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/README      ${LICENSE_PATH}/${PKG}
    
-
+   install_post
 }
 
 uninstall()

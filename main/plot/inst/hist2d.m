@@ -9,9 +9,9 @@
 % Author: Paul Kienzle
 % This code is public domain.
 
-function [ret_counts, xmid, ymid] = hist2d(M,xbins,ybins)
+function [ret_counts, xbins, ybins] = hist2d(M,xbins,ybins)
 
-  if nargin < 1 && nargin > 3, usage("[nn,xx] = hist2d (M,x,y)"); end
+  if nargin < 1 && nargin > 3, usage("[nn,xx,yy] = hist2d (M,x,y)"); end
 
   lo = min(M);
   hi = max(M);
@@ -38,8 +38,8 @@ function [ret_counts, xmid, ymid] = hist2d(M,xbins,ybins)
   counts = sparse(xidx,yidx,1,length(xbins),length(ybins),'sum');
 
   if nargout
-    ret_counts = full(counts);
+    ret_counts = full(counts');
   else
-    mesh(xbins,ybins,full(counts));
+    mesh(xbins,ybins,full(counts'));
   end
 end

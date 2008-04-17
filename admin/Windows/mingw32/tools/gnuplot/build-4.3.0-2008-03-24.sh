@@ -92,6 +92,7 @@ install_pkg()
 
    mkdir -vp ${PACKAGE_ROOT}/share/gnuplot/Postscript
    mkdir -vp ${PACKAGE_ROOT}/license/gnuplot
+   mkdir -vp ${PACKAGE_ROOT}/doc
    
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/wgnuplot.exe ${PACKAGE_ROOT}/bin
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/pgnuplot.exe ${PACKAGE_ROOT}/bin

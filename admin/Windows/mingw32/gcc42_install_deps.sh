@@ -36,8 +36,15 @@ install_include() {
  )
 }
 
+install_license() {
+  ( mkdir -p ${PACKAGE_ROOT}/${LICENSE_DIR}
+    cp -vR ${LICENSE_PATH} ${PACKAGE_ROOT}
+  )
+}
+
 install_bin;
 install_lib;
 install_sharedlib;
 install_staticlib;
 install_include;
+install_license;

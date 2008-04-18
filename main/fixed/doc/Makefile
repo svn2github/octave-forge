@@ -20,7 +20,7 @@ DOCS = $(INFODOC) $(PDFDOC)
 DOCSTRINGS = DOCSTRINGS
 INDEX = ../INDEX
 TMPDELETES = *.log *.dvi $(DOCSTRINGS) $(FIXEDVERTARGET) $(TEXIDOC) *~
-DELETES = $(TMPDELETES) *.ps fixed.pdf *.info $(DOCS) *.html fixed/ html/
+DELETES = $(TMPDELETES) *.ps *.texi *.info $(DOCS) *.html fixed/ html/
 
 all : $(PDFDOC) $(HTMLDOC) ../inst/doc.info
 
@@ -92,6 +92,7 @@ endif
 	  fi \
 	fi
 
+.PRECIOUS: %.texi
 %.texi : %.txi $(FIXEDVERTARGET) 
 	@echo "Making texinfo $@"; \
 	$(RM) -f $(DOCSTRINGS); \

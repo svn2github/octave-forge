@@ -73,10 +73,6 @@ function demo_octgpr1 (nsamp = 150)
   contourf (xi, yi, zi, 20);
   pause;
 
-  if (!exist ("nsamp", "var") || !isnumeric (nsamp))
-    nsamp = 150;
-  endif
-
   tit = sprintf ("sampled at %d random points", nsamp);
   disp (tit);
   % create random samples

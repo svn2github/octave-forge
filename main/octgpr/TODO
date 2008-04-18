@@ -2,5 +2,5 @@ TODO list for OctGPR
 
 o	add documentation where missing
 o	add more demos
-o	add RBF models with GCV training (in progress)
+o	add sparse gaussian process regression
 

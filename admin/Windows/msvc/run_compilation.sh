@@ -48,6 +48,7 @@ of_version=
 do_nsi=false
 do_nsiclean=true
 do_octplot=false
+do_debug=false
 download_root="http://downloads.sourceforge.net/octave/@@?download"
 #download_root="http://www.dbateman.org/octave/hidden/@@"
 
@@ -135,7 +136,10 @@ while test $# -gt 0; do
       DOATLAS=true
       ;;
     -f | --force)
-	  todo_packages="$available_packages"
+      todo_packages="$available_packages"
+      ;;
+    -g)
+      do_debug=true;
       ;;
     --release=*)
       octave_version=`echo $1 | sed -e 's/--release=//'`
@@ -186,6 +190,35 @@ else
   WGET_FLAGS="$WGET_FLAGS -q"
   exec 5>/dev/null
 fi
+
+W_CFLAGS="-O2 -MD"
+W_CXXFLAGS="-O2 -MD -EHsc"
+W_FCFLAGS="-O2 -MD"
+W_FFLAGS="-O2 -MD"
+W_LDFLAGS=
+W_CPPFLAGS="-DWIN32 -D_WIN32"
+if $do_debug; then
+  W_CFLAGS="-g -MD"
+  W_CXXFLAGS="-g -MD -EHsc"
+  W_FCFLAGS="-g -MD"
+  W_FFLAGS="-g -MD"
+  W_LDFLAGS="-Wl,-debug"
+fi
+
+function remove_package
+{
+  packdir="$1"
+  if ! $do_debug; then
+    rm -f "$packdir"
+  fi
+}
+
+function configure_package
+{
+  CC=cc-msvc CFLAGS="$W_CFLAGS" CXX=cc-msvc CXXFLAGS="$W_CXXFLAGS" FC=fc-msvc FCFLAGS="$W_FCFLAGS" \
+    F77=fc-msvc FFLAGS="$W_FFLAGS" CPPFLAGS="$W_CPPFLAGS" AR=ar-msvc RANLIB=ranlib-msvc \
+    LDFLAGS="$W_LDFLAGS" ./configure --prefix="$tdir_w32_forward" $*
+}
 
 function check_package
 {
@@ -1443,10 +1476,7 @@ if check_package glib; then
   (cd "$DOWNLOAD_DIR/glib-$glibver" &&
     sed -e 's/extern int _nl_msg_cat_cntr/extern __declspec(dllimport) int _nl_msg_cat_cntr/' configure > ttt &&
       mv ttt configure &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
-      --with-threads=win32 --with-pcre=system &&
+    configure_package --enable-shared --disable-static --with-threads=win32 --with-pcre=system &&
     post_process_libtool &&
     echo "#define HAVE_DIRENT_H 1" >> config.h &&
     sed -e "s/-lws2_32/-luser32 -ladvapi32 -lshell32 -L. -ldirent -lws2_32/" glib/Makefile > ttt &&
@@ -1464,7 +1494,7 @@ if check_package glib; then
     make install &&
 	rm -f $tlibdir_quoted/libglib*.la $tlibdir_quoted/libgmodule*.la \
       $tlibdir_quoted/libgthread*.la $tlibdir_quoted/libgobject*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/glib-$glibver"
+  remove_package "$DOWNLOAD_DIR/glib-$glibver"
   if test ! -f "$tbindir/libglib-2.0-0.dll"; then
     echo "failed"
     exit -1
@@ -1485,10 +1515,8 @@ if check_package pango; then
   echo "done"
   echo "compiling pango... "
   (cd "$DOWNLOAD_DIR/pango-$pangover" &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
-      --with-included-modules=basic-win32 --with-dynamic-modules=no --enable-explicit-deps=no &&
+    configure_package --enable-shared --disable-static --with-included-modules=basic-win32 \
+      --with-dynamic-modules=no --enable-explicit-deps=no &&
     post_process_libtool &&
     sed -e 's/-lgdi32/-luser32 -lgdi32/' \
         -e 's/^\(libpangocairo.*_la_LDFLAGS =\)/\1 -Wl,pangocairo-win32-res.o/' \
@@ -1502,7 +1530,7 @@ if check_package pango; then
     make &&
     make install &&
     rm -f $tlibdir_quoted/libpango*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/pango-$pangover"
+  remove_package "$DOWNLOAD_DIR/pango-$pangover"
   if test ! -f "$tbindir/libpango-1.0-0.dll"; then
     echo "failed"
     exit -1
@@ -3082,10 +3110,7 @@ if check_package GTK; then
         -e "s/-ltiff -lm/-ltiff/" \
         configure > ttt &&
       mv ttt configure &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-cups \
-      --with-included-loaders &&
+    configure_package --enable-shared --disable-static --disable-cups --with-included-loaders &&
     sed -e 's///g' config.status > ttt &&
       mv ttt config.status &&
     ./config.status &&
@@ -3104,7 +3129,7 @@ if check_package GTK; then
     make install &&
     rm -f $tlibdir_quoted/libgtk*.la $tlibdir_quoted/libgdk*.la &&
     find "$tlibdir/gtk-2.0" -name "lib*.la" | xargs rm -f) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gtk+-$gtkver"
+  remove_package "$DOWNLOAD_DIR/gtk+-$gtkver"
   if test ! -f "$tbindir/libgtk-win32-2.0-0.dll"; then
     echo "failed"
     exit -1
@@ -3267,10 +3292,7 @@ if check_package Gtkmm; then
   echo "done"
   echo "compiling gtkmm... "
   (cd "$DOWNLOAD_DIR/gtkmm-$gtkmmver" &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-docs \
-      --disable-examples --disable-demos &&
+    configure_package --enable-shared --disable-static --disable-docs --disable-examples --disable-demos &&
     post_process_libtool &&
     sed -e "/^SUBDIRS =/ {s/tools//;s/tests//;}" Makefile > ttt &&
       mv ttt Makefile &&
@@ -3300,7 +3322,7 @@ EOF
     make &&
     make install &&
     rm -f $tlibdir_quoted/lib*mm*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gtkmm-$gtkmmver"
+  remove_package "$DOWNLOAD_DIR/gtkmm-$gtkmmver"
   if test ! -f "$tlibdir/gtkmm-2.0.lib"; then
     echo "failed"
     exit -1
@@ -3471,9 +3493,7 @@ if check_package GtkGlArea; then
         -e "/^ *char glBegin()/ {s/glBegin()/__stdcall glBegin(int)/;s/glBegin()/glBegin(0)/;}" \
         configure > ttt &&
       mv ttt configure &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    configure_package --enable-shared --disable-static &&
     post_process_libtool &&
     sed -e "s/gdkgl\.lo/gdkgl-win32.lo/" \
         -e 's/^libgtkgl.*_LDFLAGS =/& -no-undefined -export-symbols-regex "^gtk_gl_area_.*|^gdk_gl_.*"/' \
@@ -3484,6 +3504,9 @@ if check_package GtkGlArea; then
 	-e "s/\(HFONT old_font =\).*/\1 SelectObject (dc, GetStockObject (SYSTEM_FONT));/" \
         gtkgl/gdkgl-win32.c > ttt &&
       mv ttt gtkgl/gdkgl-win32.c &&
+    sed -e "s/^ *gdk_gl_context_unref.*$/if (gl_area->glcontext != NULL) { &; gl_area->glcontext = NULL; }/" \
+        gtkgl/gtkglarea.c > ttt &&
+      mv ttt gtkgl/gtkglarea.c &&
     for f in examples/gtkglarea_demo.c examples/glpixmap.c; do
       sed -e '/#include <GL\/gl.h>/ {i\
 #include <windows.h>
@@ -3493,7 +3516,7 @@ if check_package GtkGlArea; then
     make &&
     make install &&
     rm -f $tlibdir_quoted/libgtkgl*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gtkglarea-$gtkglarea"
+  remove_package "$DOWNLOAD_DIR/gtkglarea-$gtkglarea"
   if test ! -f "$tlibdir/gtkgl-2.0.lib"; then
     echo "failed"
     exit -1

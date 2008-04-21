@@ -3,7 +3,7 @@ sinclude ../../Makeconf
 
 PKG_FILES = COPYING DESCRIPTION INDEX $(wildcard src/*) \
 	$(wildcard inst/*) $(wilcard data/*) doc/*.pdf doc/*.tex \
-	doc/*.lyx $(wildcard doc/figures/*)
+	doc/*.lyx doc/Makefile $(wildcard doc/figures/*)
 SUBDIRS = doc/
 
 .PHONY: $(SUBDIRS)

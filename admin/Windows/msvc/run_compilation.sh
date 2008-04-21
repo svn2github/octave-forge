@@ -3467,7 +3467,7 @@ if check_package VTE; then
     make install-pkgconfigDATA &&
     make -C termcaps install
     rm -f $tlibdir_quoted/libvte*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/vte-$vte"
+  rm -rf "$DOWNLOAD_DIR/vte-$vtever"
   if test ! -f "$tlibdir/vte.lib"; then
     echo "failed"
     exit -1

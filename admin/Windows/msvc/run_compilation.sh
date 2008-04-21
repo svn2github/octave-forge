@@ -42,7 +42,7 @@ HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
 ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++ libglade
-gtksourceview gdl VTE GtkGlArea"
+gtksourceview gdl VTE GtkGlArea PortAudio playrec"
 octave_version=
 of_version=
 do_nsi=false
@@ -209,7 +209,7 @@ function remove_package
 {
   packdir="$1"
   if ! $do_debug; then
-    rm -f "$packdir"
+    rm -rf "$packdir"
   fi
 }
 
@@ -3522,5 +3522,74 @@ if check_package GtkGlArea; then
     exit -1
   else
     echo "done"
+  fi
+fi
+
+#############
+# PortAudio #
+#############
+
+if check_package PortAudio; then
+  download_file pa_stable_v19_20071207.tar.gz http://www.portaudio.com/archives/pa_stable_v19_20071207.tar.gz
+  echo -n "decompressing PortAudio... "
+  unpack_file pa_stable_v19_20071207.tar.gz
+  echo "done"
+  echo "compiling PortAudio... "
+  (cd "$DOWNLOAD_DIR/portaudio" &&
+    sed -e "s/-lm//g" \
+        -e "s/-ldsound//g" \
+        -e "s/-lole32/-lole32 -luser32 -lkernel32/" \
+        -e "s/-mthreads//" \
+        -e "s/-L[^ ]*dx7sdk[^ ]*//" \
+        -e 's/" -DPA_NO_WDMKS;/ -DPA_NO_WDMKS";/' \
+        -e 's/OTHER_OBJS="\(.*\)"/OTHER_OBJS="\1 src\/os\/win\/pa_win_waveformat.o"/' \
+        configure > ttt &&
+      mv ttt configure &&
+    sed -e "s,src/os/unix,src/os/win," \
+        -e "s/	\$(MAKE) install-recursive//" \
+        Makefile.in > ttt &&
+      mv ttt Makefile.in
+    configure_package --enable-shared --disable-static --with-winapi=directx &&
+    sed -e "s/-lportaudio .*/-lportaudio/" portaudio-2.0.pc > ttt &&
+      mv ttt portaudio-2.0.pc &&
+    post_process_libtool &&
+    make lib/libportaudio.la &&
+    make install
+    rm -f $tlibdir_quoted/libportaudio*.la) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/portaudio"
+  if test ! -f "$tlibdir/portaudio.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# playrec #
+###########
+
+if check_package playrec; then
+  download_file playrec_2_1_0.zip http://www.playrec.co.uk/download/playrec_2_1_0.zip
+  if test -n "`which mkoctfile.exe`"; then
+    echo -n "decompressing playrec... "
+    (cd "$DOWNLOAD_DIR" && unzip -q playrec_2_1_0.zip)
+    echo "done"
+    target="`octave-config -p OCTFILEDIR | sed -e 's,\\\\,/,g'`/playrec.mex"
+    echo "compiling playrec... "
+    (cd "$DOWNLOAD_DIR/playrec_2_1_0/src" &&
+      mkoctfile -c `pkg-config --cflags portaudio-2.0` pa_dll_playrec.c &&
+      mkoctfile -c `pkg-config --cflags portaudio-2.0` mex_dll_core.c &&
+      mkoctfile --mex -o playrec.mex `pkg-config --libs portaudio-2.0` *.o &&
+      cp playrec.mex "$target") >&5 2>&1
+    rm -rf "$DOWNLOAD_DIR/playrec_2_1_0"
+    if test ! -f "$target"; then
+      echo "failed"
+      exit -1
+    else
+      echo "done"
+    fi
+  else
+    echo "octave must be in your PATH in order to compile playrec"
   fi
 fi

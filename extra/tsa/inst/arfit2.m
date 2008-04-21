@@ -83,7 +83,7 @@ N = min(N);
 ne = N-mcor-(pmin:pmax);
 for p=pmin:pmax, 
         % Get downdated logarithm of determinant
-        logdp(p-pmin+1) = log(det(PE(:,p+(1:M))*(N-p-mcor))); 
+        logdp(p-pmin+1) = log(det(PE(:,p*M+(1:M))*(N-p-mcor))); 
 end;
 
 % Schwarz's Bayesian Criterion

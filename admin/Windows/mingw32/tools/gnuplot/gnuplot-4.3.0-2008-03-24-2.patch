@@ -415,7 +415,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-
  /* HBB 19990506: The following used to be #ifdef __DLL__.
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/src/win/winmain.c gnuplot-4.3.0-2008-03-24/src/win/winmain.c
 --- gnuplot-4.3.0-2008-03-24-orig/src/win/winmain.c	Sun Mar 18 04:18:49 2007
-+++ gnuplot-4.3.0-2008-03-24/src/win/winmain.c	Fri Apr 11 13:57:08 2008
++++ gnuplot-4.3.0-2008-03-24/src/win/winmain.c	Sun Apr 13 14:24:46 2008
 @@ -62,6 +62,7 @@
  #include <string.h>
  #include <stdarg.h>
@@ -639,7 +639,16 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-
 +#endif /* CONSOLE */
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/term/emf.trm gnuplot-4.3.0-2008-03-24/term/emf.trm
 --- gnuplot-4.3.0-2008-03-24-orig/term/emf.trm	Mon Jan 14 07:38:25 2008
-+++ gnuplot-4.3.0-2008-03-24/term/emf.trm	Thu Apr 10 20:17:28 2008
++++ gnuplot-4.3.0-2008-03-24/term/emf.trm	Tue Apr 22 19:13:54 2008
+@@ -149,7 +149,7 @@
+ #define EMF_10THDEG2RAD (3.14159265359/1800)
+ #define EMF_XMAX (1024 * EMF_PX2HM)
+ #define EMF_YMAX (768 * EMF_PX2HM)
+-#define EMF_HTIC (EMF_XMAX / 160)
++#define EMF_HTIC (EMF_XMAX / 320)
+ #define EMF_VTIC EMF_HTIC
+ #define EMF_FONTNAME "Arial"
+ #define EMF_FONTSIZE 12
 @@ -276,7 +276,7 @@
  static unsigned int emf_posy;
  static unsigned int emf_record_count = 0;
@@ -649,6 +658,42 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-
  static unsigned int emf_dashtype = 0;
  static unsigned long emf_color = 0L;
  static unsigned int emf_colors = EMF_COLORS;
+@@ -584,8 +584,6 @@
+ 		term->xmax = tempxmax * EMF_PX2HM;
+ 	    if (tempymax > 0)
+ 		term->ymax = tempymax * EMF_PX2HM;
+-	    term->h_tic = term->xmax / 160;
+-	    term->v_tic = term->h_tic;
+ 	    break;
+ 	}
+ 	if (equals(c_token, "font"))
+@@ -772,6 +770,7 @@
+     if (linecolor == LT_BACKGROUND)
+ 	emf_color = RGB(255, 255, 255);	/* white (background) */
+     else {
++	if( linecolor == -1 ) linecolor = 12;  /* set grid default linetype to light gray color */
+ 	linecolor = (linecolor < 0 || emf_monochrome) ? 7 : (linecolor % EMF_COLORS);
+ 	emf_color = color_table_data[linecolor];
+     }
+@@ -912,9 +911,6 @@
+ 	4, 9, 4, 2, 4, 2, 0, 0,	/* 4 - dash-dot-dot      */
+     };
+ 
+-    if (dashtype < 0)
+-	dashtype = 0;
+-
+     emf_dashtype = dashtype;
+ 
+     EMF_flush_polyline();
+@@ -925,7 +921,7 @@
+     if (dashtype == LT_AXIS)
+ 	dashtype = 2;
+ 
+-    if (dashtype < 1 || !emf_dashed) {	/* solid mode */
++    if (dashtype < 0 || !emf_dashed) {	/* solid mode */
+ 	EMF_SelectObject(EMF_STOCK_OBJECT_BLACK_PEN);
+ 	EMF_DeleteObject(EMF_HANDLE_PEN);
+ 	EMF_CreatePen(EMF_HANDLE_PEN, 0, emf_linewidth * EMF_PX2HM, emf_color);
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/term/gd.trm gnuplot-4.3.0-2008-03-24/term/gd.trm
 --- gnuplot-4.3.0-2008-03-24-orig/term/gd.trm	Sun Feb 24 20:49:38 2008
 +++ gnuplot-4.3.0-2008-03-24/term/gd.trm	Thu Apr 10 20:17:38 2008
@@ -680,7 +725,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-
  	strcat(ps_prologue_dir, GNUPLOT_PS_DIR);
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/term/win.trm gnuplot-4.3.0-2008-03-24/term/win.trm
 --- gnuplot-4.3.0-2008-03-24-orig/term/win.trm	Fri Jul 27 08:55:53 2007
-+++ gnuplot-4.3.0-2008-03-24/term/win.trm	Fri Apr 11 13:24:37 2008
++++ gnuplot-4.3.0-2008-03-24/term/win.trm	Fri Apr 11 14:56:35 2008
 @@ -86,6 +86,7 @@
  TERM_PUBLIC void WIN_set_cursor __PROTO((int, int, int));
  TERM_PUBLIC void WIN_put_tmptext __PROTO((int, const char str[]));

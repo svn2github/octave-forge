@@ -33,6 +33,7 @@ else
   NSI_DIR=/d/Software/NSIS
 fi
 DOWNLOAD_DIR=downloaded_packages
+OCTAVEDE_DIR=../../../../octavede-svn
 DOATLAS=false
 
 verbose=false
@@ -42,12 +43,13 @@ HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
 ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++ libglade
-gtksourceview gdl VTE GtkGlArea PortAudio playrec"
+gtksourceview gdl VTE GtkGlArea PortAudio playrec OctaveDE"
 octave_version=
 of_version=
 do_nsi=false
 do_nsiclean=true
 do_octplot=false
+do_gui=false
 do_debug=false
 download_root="http://downloads.sourceforge.net/octave/@@?download"
 #download_root="http://www.dbateman.org/octave/hidden/@@"
@@ -143,6 +145,9 @@ while test $# -gt 0; do
       ;;
     --release=*)
       octave_version=`echo $1 | sed -e 's/--release=//'`
+      if test "$octave_version" = devel; then
+        octave_version="vc8-debug"
+      fi
       ;;
     --forge=*)
       of_version=`echo $1 | sed -e 's/--forge=//'`
@@ -162,7 +167,10 @@ while test $# -gt 0; do
     --octplot)
       do_octplot=true
       ;;
-	--prefix=*)
+    --gui)
+      do_gui=true
+      ;;
+    --prefix=*)
       INSTALL_DIR=`echo $1 | sed -e 's/--prefix=//'`
       ;;
     -*)
@@ -2577,6 +2585,25 @@ if check_package octave; then
   fi
 fi
 
+# Add octave to the PATH (if needed) and make sure octave_prefix is defined
+
+if test -n "$octave_version"; then
+  if test -z "$octave_prefix"; then
+    octave_prefix="$INSTALL_DIR/local/octave-$octave_version"
+  fi
+  if test -n "`which octave.exe`"; then
+    echo "WARNING: octave is already in your PATH."
+    echo "WARNING: overridding with $octave_prefix."
+  fi
+  export PATH="$octave_prefix/bin:$PATH"
+elif test -n "`which octave-config.exe`"; then
+  octave_prefix="`octave-config -p PREFIX | sed -e 's,\\,/,g'`"
+  octave_prefix="`cd $octave_prefix && pwd`"
+else
+  echo "WARNING: octave is not in your PATH."
+  echo "WARNING: some packages might not compile properly."
+fi
+
 ########
 # JOGL #
 ########
@@ -3000,13 +3027,19 @@ if $do_nsi; then
     fi
     if test ! -f "octave_main.nsi"; then
       octplot_prefix="#"
+      gui_prefix="#"
       if $do_octplot; then
         octplot_prefix=
+      fi
+      if $do_gui; then
+        gui_prefix=
       fi
       echo -n "creating octave_main.nsi... "
       sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
         -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
-        -e "s/@SOFTWARE_ROOT@/$software_root/" -e "s/@HAVE_OCTPLOT@/$octplot_prefix/" octave.nsi.in > octave_main.nsi
+        -e "s/@SOFTWARE_ROOT@/$software_root/" -e "s/@HAVE_OCTPLOT@/$octplot_prefix/" \
+        -e "s/@HAVE_GUI@/$gui_prefix/" \
+        octave.nsi.in > octave_main.nsi
       echo "done"
     fi
     if test ! -f "octave_forge.nsi"; then
@@ -3591,5 +3624,33 @@ if check_package playrec; then
     fi
   else
     echo "octave must be in your PATH in order to compile playrec"
+  fi
+fi
+
+############
+# OctaveDE #
+############
+
+if check_package OctaveDE; then
+  if test -n "`which mkoctfile.exe`"; then
+    (cd "$OCTAVEDE_DIR" || exit -1
+      if test -f "ui/octaveui.exe"; then
+        echo -n "clearing octavede..."
+        make clean >&5 2>&1
+        echo "done"
+      fi
+      echo -n "compiling octavede..."
+      (configure_package --prefix="$octave_prefix" &&
+        make &&
+        make install) >&5 2>&1
+      if test ! -f "$octave_prefix/bin/octaveui.exe"; then
+        echo "failed"
+        exit -1
+      else
+        echo "done"
+      fi
+      )
+  else
+    echo "octave must be in your PATH in order to compile octavede"
   fi
 fi

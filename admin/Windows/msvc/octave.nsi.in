@@ -11,12 +11,16 @@
 @HAVE_OCTPLOT@!define USE_OCTPLOT
 !define USE_OCTAVE_FORGE
 !define USE_MSYS
+#!define USE_CONSOLE
+@HAVE_GUI@!define USE_OCTAVEDE
 
 !define OCTAVE_BASE "octave-${OCTAVE_VERSION}"
 
 ; Location of various components
 !define OCTAVE_ROOT "${VCLIBS_ROOT}\local\${OCTAVE_BASE}"
+!ifdef USE_CONSOLE
 !define CONSOLE_ROOT "${SOFTWARE_ROOT}\Console2"
+!endif
 !define SCITE_ROOT "${SOFTWARE_ROOT}\wscite"
 !define GMSH_ROOT "${SOFTWARE_ROOT}\Gmsh"
 
@@ -431,6 +435,7 @@ Section "SciTE editor" SEC_SCITE
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
+!ifdef USE_CONSOLE
 Section /o "Console" SEC_CONSOLE
   SetOutPath "$INSTDIR\tools\console"
   SetOverwrite try
@@ -452,6 +457,54 @@ no_runtime_71:
     "$INSTDIR\bin\octave.ico" 0
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
+!endif
+
+!ifdef USE_OCTAVEDE
+Section /o "Graphical User-Interface" SEC_OCTAVEDE
+  SetOutPath "$INSTDIR\bin"
+  SetOverwrite try
+  File "${OCTAVE_ROOT}\bin\octaveui.exe"
+  File "${VCLIBS_ROOT}\bin\libatk-1.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libatkmm-1.6-1.dll"
+  File "${VCLIBS_ROOT}\bin\libcairo-2.dll"
+  File "${VCLIBS_ROOT}\bin\libcairomm-1.0-1.dll"
+  File "${VCLIBS_ROOT}\bin\libfontconfig-1.dll"
+  File "${VCLIBS_ROOT}\bin\libfreetype-6.dll"
+  File "${VCLIBS_ROOT}\bin\libgdk-win32-2.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libgdk_pixbuf-2.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libgdkmm-2.4-1.dll"
+  File "${VCLIBS_ROOT}\bin\libgdl-1-0.dll"
+  File "${VCLIBS_ROOT}\bin\libglade-2.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libglib-2.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libglibmm-2.4-1.dll"
+  File "${VCLIBS_ROOT}\bin\libgmodule-2.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libgobject-2.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libgtk-win32-2.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libgtkmm-2.4-1.dll"
+  File "${VCLIBS_ROOT}\bin\libgthread-2.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libiconv-2.dll"
+  File "${VCLIBS_ROOT}\bin\libintl-8.dll"
+  File "${VCLIBS_ROOT}\bin\libjpeg-62.dll"
+  File "${VCLIBS_ROOT}\bin\libncurses-5.dll"
+  File "${VCLIBS_ROOT}\bin\libpango-1.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libpangocairo-1.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libpangowin32-1.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libpangomm-1.4-1.dll"
+  File "${VCLIBS_ROOT}\bin\libpcre-0.dll"
+  File "${VCLIBS_ROOT}\bin\libpng13.dll"
+  File "${VCLIBS_ROOT}\bin\libsigc-2.0-0.dll"
+  File "${VCLIBS_ROOT}\bin\libtiff.dll"
+  File "${VCLIBS_ROOT}\bin\libvte-9.dll"
+  File "${VCLIBS_ROOT}\bin\libxml2-2.dll"
+  File "${VCLIBS_ROOT}\bin\zlib1.dll"
+
+; Shortcuts
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Octave UI.lnk" "$INSTDIR\bin\octaveui.exe" \
+	"" "$INSTDIR\bin\octave.ico"
+  !insertmacro MUI_STARTMENU_WRITE_END
+SectionEnd
+!endif
 
 SectionGroupEnd
 
@@ -507,7 +560,12 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_TOOLS} "Additional GNU tools required (less, makeinfo, sed...). If not selected, those tools must be available in your PATH."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_VC} "Microsoft C/C++ runtime libraries required by Octave. It is STRONGLY recommended to use the default setting."
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SCITE} "Powerful code editor with syntax highlighting, directly accessible from the octave prompt (http://www.scintilla.org)"
+!ifdef USE_CONSOLE
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CONSOLE} "Advanced console for Windows, with multi-tab and editing capabilities (http://sourceforge.net/projects/console)"
+!endif
+!ifdef USE_OCTAVEDE
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_OCTAVEDE} "Octave GTK-based graphical user-interface. WARNING: this software is in alpha stage and only provided as a technology preview"
+!endif
   
   !insertmacro MUI_DESCRIPTION_TEXT ${GRP_CORE} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${GRP_GRAPHICS} ""

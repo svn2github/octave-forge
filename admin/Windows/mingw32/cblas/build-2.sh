@@ -70,6 +70,11 @@ uninstall()
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libcblas.a
 }
 
+srcpkg()
+{
+   "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${FULLPKG}-src.7z ${SRCFILE} ${PATCHFILE} build-${REL}.sh
+}
+
 all() {
   download
   unpack

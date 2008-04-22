@@ -113,6 +113,11 @@ uninstall()
    ${RM} ${RM_FLAGS} ${PACKAGE_ROOT}/share/gnuplot
 }
 
+srcpkg()
+{
+   "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${PKG}-${VER}-${REL}-src.7z ${SRCFILE} gnuplot-4.2.3.tar.gz ${PATCHFILE} ${FULLPKG}_vs_4.2.3.patch build-${VER}.sh
+}
+
 all() {
   download
   unpack

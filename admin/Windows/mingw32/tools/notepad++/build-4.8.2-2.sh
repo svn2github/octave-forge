@@ -238,6 +238,16 @@ install_pkg()
    #install_with_npp_bin
    install_with_built_npp
 }
+
+srcpkg()
+{
+   PI="";
+   F="";
+   for a in ${PLUGINS}; do PI="${PI} $a.zip"; done
+   for a in ${FONTS}; do F="${F} $a.zip"; done
+   
+   "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${PKG}-${VER}-${REL}-src.7z ${SRCFILE} ${SRCBINFILE} ${PATCHFILE} $PI $F build-${VER}-${REL}.sh
+}
    
 all() 
 {

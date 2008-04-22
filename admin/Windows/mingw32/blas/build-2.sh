@@ -51,6 +51,11 @@ conf()
    substvars ${SRCDIR}/${MAKEFILE} ${BUILDDIR}/${MAKEFILE}
 }
 
+srcpkg()
+{
+   "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${FULLPKG}-src.7z ${SRCFILE} ${PATCHFILE} build-${REL}.sh
+}
+
 all() {
   download
   unpack

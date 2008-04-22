@@ -24,6 +24,9 @@ MV_FLAGS=-v
 
 SED=sed
 
+SEVENZIP="/c/Program Files/7-Zip/7z.exe"
+SEVENZIP_FLAGS="a -t7z -mx7"
+
 export STRIP STRIP_FLAGS
 
 # GCC compilers used
@@ -236,6 +239,11 @@ substvars()
 }
 substvars_post() { echo ; }
 
+srcpkg()
+{
+   "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${FULLPKG}-src.7z ${SRCFILE} ${PATCHFILE} build-${VER}-${REL}.sh
+}
+
 main() {
 (
    echo "$1" "$2" "$3" "$4" "$5"
@@ -246,7 +254,7 @@ main() {
      arg=$1;
      
       case $arg in
-       mkpatch|build|install|clean|uninstall|check|unpack|unpack_orig|conf|mkdirs|all|applypatch|install_pkg)
+       mkpatch|build|install|clean|uninstall|check|unpack|unpack_orig|conf|mkdirs|all|applypatch|install_pkg|srcpkg)
          $arg
          export STATUS=$?
        ;;

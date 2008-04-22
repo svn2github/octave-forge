@@ -117,6 +117,11 @@ install_pkg() {
    install_msys
 }
 
+srcpkg()
+{
+   "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${PKG}-${VER}-${REL}-src.7z ${URLS_MINGW_TOOLS} ${URLS_MSYS_CORE} build-${VER}-${REL}.sh
+}
+
 mkdirs() { echo $0: mkdirs not required; }
 applypatch() { echo $0: applypatch not required; }
 conf() { echo $0: conf not required; }

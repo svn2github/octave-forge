@@ -113,6 +113,14 @@ uninstall()
    ${RM} ${RM_FLAGS} ${PACKAGE_ROOT}/share/gnuplot
 }
 
+mkpatch()
+{
+   # Patch against CVS source
+   ( cd ${TOPDIR} && diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ${DIFF_FLAGS} `basename ${SRCDIR_ORIG}` `basename ${SRCDIR}` > ${PATCHFILE} )
+   # Patch against latest released sources (LICENSING!)
+   ( cd ${TOPDIR} && diff -urN -x '*.bak' -x '.cvsignore' -x 'aclocal.m4' -x 'Makefile.am' -x 'Makefile.in' -x 'configure' -x '*.ja' -x 'faq-ja.tex' -x '*-ja.*' ${DIFF_FLAGS} gnuplot-4.2.3-orig `basename ${SRCDIR}` > ${FULLPKG}_vs_4.2.3.patch )
+}
+
 srcpkg()
 {
    "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${PKG}-${VER}-${REL}-src.7z ${SRCFILE} gnuplot-4.2.3.tar.gz ${PATCHFILE} ${FULLPKG}_vs_4.2.3.patch build-${VER}.sh

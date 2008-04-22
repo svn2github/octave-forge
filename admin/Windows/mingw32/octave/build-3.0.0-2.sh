@@ -104,6 +104,9 @@ install_pkg() {
    cp -vR ${BUILDDIR}/doc/faq/*.html ${PACKAGE_ROOT}/doc/html/faq
    cp -vR ${BUILDDIR}/doc/interpreter/html/*.html ${PACKAGE_ROOT}/doc/html/interpreter
    cp -vR ${BUILDDIR}/doc/liboctave/html/*.html ${PACKAGE_ROOT}/doc/html/liboctave
+   # Install Licensing information
+   mkdir -vp ${PACKAGE_ROOT}/license/octave
+   cp -vp ${SRCDIR}/COPYING ${PACKAGE_ROOT}/license/octave
  )
 }
 

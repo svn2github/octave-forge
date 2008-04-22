@@ -66,8 +66,9 @@ install()
 
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/include/$a ${INCLUDE_PATH}; done
    
-   mkdir -v ${INCLUDE_PATH}/freetype
-   cp ${CP_FLAGS} -r ${SRCDIR}/include/freetype       ${INCLUDE_PATH}
+   if ! [ -e ${INCLUDE_PATH}/freetype ]; then mkdir -v ${INCLUDE_PATH}/freetype; fi
+   
+   cp ${CP_FLAGS} -vpr ${SRCDIR}/include/freetype       ${INCLUDE_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/{ftconfig.h,ftmodule.h} ${INCLUDE_PATH}/freetype/config
 
    ${CP} ${CP_FLAGS} ${BUILDDIR}/freetype-config         ${BINARY_PATH}

@@ -96,6 +96,7 @@ install_pkg()
    
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/wgnuplot.exe ${PACKAGE_ROOT}/bin
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/pgnuplot.exe ${PACKAGE_ROOT}/bin
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/wgnuplot.mnu ${PACKAGE_ROOT}/bin
 #   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/pgnuplot_win.exe ${PACKAGE_ROOT}/bin
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/wgnuplot.hlp ${PACKAGE_ROOT}/bin
 

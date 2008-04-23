@@ -68,6 +68,7 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>missing-functions: New package to identify functions that are
    missing from Octave relative to the latest verson of Matlab.</li>
    <li>ftp: New package to ftp from within Octave</li>
+   <li>ocs: A new package for circuit simulation.</li>
    <li>fixed: Build fix for Unix, cygwin and mingw platforms.</li>
    <li>plot: Remove old plot code based on Xlib and replace with
    gtext, ginput and waitforbuttonpress functions that use gnuplot
@@ -80,7 +81,8 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>odepkg: Added ddaskr based solver.</li>
    <li>splines: Add the catmullrom interpolation function.</li>
    <li>financial: Add the rsindex function.</li>
-   <li>time: Add the thirdwednesday function.
+   <li>time: Add the thirdwednesday function.</li>
+   <li>general: Add the saveprod function.</li>
    <li>general bug fixes and improvements.</li>
 </ul>
 </dd>

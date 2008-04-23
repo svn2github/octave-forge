@@ -4,11 +4,14 @@ FIXEDVERTARGET = fixedversion.h
 FIXEDTARGET = fixed.oct 
 
 DLLDEF =
+ADD_FLAGS =
 ifneq (,$(findstring cygwin,$(canonical_host_type)))
    DLLDEF = -DFIXED_DLL
+   ADD_FLAGS = -Wl,--out-implib=libfixed.a
 endif
 ifneq (,$(findstring mingw,$(canonical_host_type)))
    DLLDEF = -DFIXED_DLL
+   ADD_FLAGS = -Wl,--out-implib=libfixed.a
 endif
 ifneq (,$(findstring msdosmsvc,$(canonical_host_type)))
    DLLDEF = -DFIXED_DLL

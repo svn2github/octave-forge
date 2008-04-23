@@ -278,7 +278,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/fc-mat
  @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/src/Makefile.in fontconfig-2.4.92/src/Makefile.in
 --- fontconfig-2.4.92-orig/src/Makefile.in	Tue Nov  6 00:52:59 2007
-+++ fontconfig-2.4.92/src/Makefile.in	Tue Feb  5 16:59:42 2008
++++ fontconfig-2.4.92/src/Makefile.in	Wed Apr 23 19:20:37 2008
 @@ -311,6 +311,8 @@
  	$(top_srcdir)/fontconfig/fcfreetype.h \
  	$(top_srcdir)/src/fcdeprecate.h
@@ -306,3 +306,12 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak fontconfig-2.4.92-orig/src/Ma
  @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
  @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
  @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+@@ -650,7 +652,7 @@
+ 	(cat $(PUBLIC_FILES) || echo 'FcERROR ()' ) | \
+  	grep '^Fc[^ ]* *(' | sed -e 's/ *(.*$$//' -e 's/^/	/' | \
+ 	sort; \
+-	echo LIBRARY libfontconfig-@LT_CURRENT_MINUS_AGE@.dll; \
++	echo LIBRARY fontconfig.dll; \
+ 	echo VERSION @LT_CURRENT@.@LT_REVISION@) >$@
+ 	@ ! grep -q FcERROR $@ || ($(RM) $@; false)
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -21,7 +21,7 @@
 TARGETPLATFORM=ppc # can either be 'i386' or 'ppc'
 
 # This is the Octave version number of the Octave.app that is created.
-OCTAVEVERSION=3.0.0 # must be the version number of Octave
+OCTAVEVERSION=3.0.1 # must be the version number of Octave
 
 # This is the directory where all the dependencies are installed. Make
 # sure that there are no other files in this directory that are not
@@ -45,7 +45,7 @@ OCDOCS=~/tmp/oct-${TARGETPLATFORM}/solvedeps/octave-${OCTAVEVERSION}/doc/{faq/Oc
 
 # These are extras (of which kind they may ever be) that are copied
 # into the Extras directory of the octave-VERSION-ARCH.dmg image.
-OCEXTRAS=~/Savings/gnuplot-4.2.2-${TARGETPLATFORM}.dmg
+OCEXTRAS=~/Savings/gnuplot-4.2.3-${TARGETPLATFORM}.dmg
 
 # This is the temporary directory that is used for installing all
 # files and libraries that are then packed into the
@@ -123,7 +123,7 @@ else
   evalfailexit "rm -rf ${TEMPDIR}/*"
 
   echo "makeoctaveapp.sh: Creating Readme.html.in file from octaveapp.texi ..."
-  evalfailexit "export LANG=en; makeinfo --html --no-split octaveapp.texi -o Readme.html.in"
+  evalfailexit "LANG=en makeinfo --html --no-split --css-include=octaveapp.css octaveapp.texi -o Readme.html.in"
 
   echo "makeoctaveapp.sh: Collecting Octave files ..."
   evalfailexit "install -d ${TEMPDIR}{,/bin,/include,/info,/lib,/libexec,/man,/man/man1,/share}"

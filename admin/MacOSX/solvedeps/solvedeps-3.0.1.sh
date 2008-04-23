@@ -16,7 +16,7 @@
 # You're not free in choosing another compiler than XCode's - so this
 # is set up automatically. By default we use f2c that is compiled as
 # the first program if used input argument '--all'.
-THISSCRIPT=solvedeps-3.0.0.sh
+THISSCRIPT=solvedeps-3.0.1.sh
 
 # This is the name of the file that is used for displaying outputs
 # while configuring, compiling and installing. Use /dev/stdout to
@@ -47,7 +47,7 @@ READLINEPACK=http://ftp.gnu.org/pub/gnu/readline/readline-5.2.tar.gz
 
 PCREPACK=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-7.4.tar.gz
 
-LIBZPACK=http://dfn.dl.sourceforge.net/sourceforge/libpng/zlib-1.2.3.tar.gz
+LIBZPACK=http://mesh.dl.sourceforge.net/sourceforge/libpng/zlib-1.2.3.tar.gz
 
 HDF5PACK=http://ftp.debian.org/debian/pool/main/h/hdf5/hdf5_1.6.5.orig.tar.gz
 HDF5DIFF=http://ftp.debian.org/debian/pool/main/h/hdf5/hdf5_1.6.5-5.diff.gz
@@ -66,9 +66,9 @@ QHULLPACK=http://www.qhull.org/download/qhull-2003.1.tar.gz
 SPARSEPACK=http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-3.0.0.tar.gz
 SPARSEDIFF=./SuiteSparse-3.0.0.diff
 
-#OCTAVEPACK=ftp://ftp.octave.org/pub/octave/octave-3.0.0.tar.gz
-OCTAVEPACK=./octave-3.0.0.tar.gz
-OCTAVEDIFF=./octave-3.0.0.diff
+#OCTAVEPACK=ftp://ftp.octave.org/pub/octave/octave-3.0.1.tar.gz
+OCTAVEPACK=./octave-3.0.1.tar.gz
+OCTAVEDIFF=./octave-3.0.1.diff
 
 ##########################################################################
 #####                Don't modify anything downwards here            #####

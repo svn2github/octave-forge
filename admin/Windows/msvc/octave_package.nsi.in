@@ -79,7 +79,8 @@ Section "${PACKAGE_LONG_NAME}" SEC_@PACKAGE_NAME@
   FileWrite $0 " "
   FileClose $0
 rebuild:
-  IfSilent +2
+  IfSilent +3
+  SetOutPath "$INSTDIR"
   ExecWait '"$OCTAVE_EXEC" -qf --eval "pkg rebuild ${PACKAGE_NAME}"'
 SectionEnd
 

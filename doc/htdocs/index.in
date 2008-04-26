@@ -72,7 +72,7 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>fixed: Build fix for Unix, cygwin and mingw platforms.</li>
    <li>plot: Remove old plot code based on Xlib and replace with
    gtext, ginput and waitforbuttonpress functions that use gnuplot
-   directly to obtan the required information.</li>
+   directly to obtan the required information. Add colstyle function.</li>
    <li>signal: Add the window and buffer functions.</li>
    <li>mapping: Add the km2deg and reckon functions.</li>
    <li>image: Add the imcomplement and rgbplot functions. Support for
@@ -85,6 +85,9 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>general: Add the saveprod function.</li>
    <li>general bug fixes and improvements.</li>
 </ul>
+</dd>
+<dt>April 26, 2008</dt>
+<dd>Updated the OS X binary release to Octave.app 3.0.1.
 </dd>
 <dt>Febrary 16, 2008</dt>
 <dd>
@@ -107,6 +110,15 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>general bug fixes and improvements.</li>
 </ul>
 </dd>
+<dt>December 28, 2007</dt>
+<dd>Updated Windows installer to Octave 3.0.0.
+</dd>
+<dt>December 23, 2007</dt>
+<dd>Updated the OS X binary release to Octave.app 3.0.0.
+</dd>
+<dt>December 14, 2007</dt>
+<dd>Updated Windows installer to Octave 2.9.19.
+</dd>
 <dt>December 12, 2007</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 2.9.18. Many packages
@@ -124,22 +136,6 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>general bug fixes and improvements.</li>
 </ul>
 </dd>
-<dt>December 14, 2007</dt>
-<dd>Updated Windows installer to Octave 2.9.19.
-</dd>
-<dt>December 08, 2007</dt>
-<dd>Updated the OS X binary release to Octave.app 2.9.18.
-</dd>
-<dt>November 11, 2007</dt>
-<dd>Updated the OS X binary release to Octave.app 2.9.17.
-</dd>
-<dt>November 06, 2007</dt>
-<dd>Updated Windows installer to Octave 2.9.16.
-</dd>
-<dt>November 2, 2007</dt>
-<dd>Updated the OS X binary release to use Octave 2.9.16.
-</dd>
-
 </dl>
 </div>
 __TRAILER__([[[home]]])

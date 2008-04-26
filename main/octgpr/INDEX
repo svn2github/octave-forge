@@ -2,5 +2,7 @@ octgpr >> OctGPR
 OctGPR
  gpr_train
  gpr_predict
+ pdist2_mw
 Examples
  demo_octgpr
+ rbf_centers

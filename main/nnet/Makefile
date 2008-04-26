@@ -1,7 +1,7 @@
 sinclude ../../Makeconf
 
 PKG_FILES = COPYING DESCRIPTION INDEX $(wildcard inst/*) \
-	 doc/pdf/neuralNetworkToolboxForOctaveUsersGuide.pdf
+	 doc/pdf/neuralNetworkToolboxForOctaveUsersGuide.pdf \
 	$(wildcard doc/latex/user/*.tex) \
 	$(wildcard doc/latex/user/examples/*.tex) \
 	$(wildcard doc/latex/user/examples/1/*.tex) \

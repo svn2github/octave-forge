@@ -26,16 +26,23 @@
 ## Author: Bill Denney <bill@denney.ws>
 ## Created: 21 Jan 2008
 
-function idx = datefind (subset, superset, tol)
+function idx = datefind (subset, superset, tol=0)
 
-  if nargin == 2
-	tol = 0;
-  end
+  if (nargin < 2 || nargin > 3)
+    print_usage ();
+  elseif ! isscalar (tol)
+    error ("datefind: tol must be a scalar")
+  endif
+
   idx = [];
-  for i = 1:numel (subset)
-	newidx = find (superset(:) >= subset(i)-tol & superset(:) <= subset(i)+tol);
-	idx = [idx;newidx(:)];
-  end
+  for i = 1:numel (superset)
+    if any (subset(:) - tol <= superset(i) & superset(i) <= subset(:) + tol)
+      idx(end+1, 1) = i;
+    endif
+  endfor
 
 endfunction
 
+## Tests
+%!assert (datefind (datenum (1999, 7, [10;20]), datenum (1999, 7, 1:31)), [10;20])
+%!assert (datefind (datenum (1999, 7, [10;20]), datenum (1999, 7, 1:31), 1), [9;10;11;19;20;21])

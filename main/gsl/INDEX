@@ -80,6 +80,8 @@ Special functions
  gammastar
  hazard
  hyperg_0F1
+ hyperg_1F1
+ hyperg_U
  hzeta
  lambert_W0
  lambert_Wm1

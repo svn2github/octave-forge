@@ -1,6 +1,6 @@
 Name: GSL
-Version: 1.0.5
-Date: 2008-04-06
+Version: 1.0.6
+Date: 2008-04-29
 Author: Teemu Ikonen   <tpikonen@pcu.helsinki.fi>
 Maintainer: Teemu Ikonen   <tpikonen@pcu.helsinki.fi>
 Title: GNU Scientific Library.
@@ -10,3 +10,4 @@ Autoload: yes
 BuildRequires: gsl-devel
 License: GPL version 2 or later
 Url: http://octave.sf.net
+# Version 1.0.5 -> Version 1.0.6 Ray Rogers rrogers@@plaidheron.com

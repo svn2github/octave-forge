@@ -39,10 +39,10 @@ c info          error code. Possible values are:
 c               info = 0 no problem
 c               info = 1 invalid correlation matrix from nllgpr (dtrtri
 c                        failure)
-      integer ndim,nx,nlin,info
+      integer ndim,nx,info
       real*8 X(ndim,nx),theta(ndim),nu,var
       real*8 R(nx,0:nx),dtheta(ndim),dnu(2)
-      external dtrsv,dtrtri,dsyr,xerbla
+      external dtrsv,dpotri,dsyr,xerbla
       integer i,j,k
       real*8 tmp,tmp2,m2
 
@@ -61,7 +61,7 @@ c argument checks
 c form L' \ m = R \ ones(nx,1)
       call dtrsv('L','T','N',nx,R(1,1),nx,R(1,0),1)
 
-c invert the triangular factor
+c turn the factorization into inversion
       call dpotri('L',nx,R(1,1),nx,info)
       if (info /= 0) goto 501
 

@@ -35,7 +35,7 @@ c
       integer ndim,nx
       real*8 X(ndim,nx),theta(ndim)
       real*8 mX(ndim)
-      integer i,j,k
+      integer i,k
       do k = 1,ndim
         mX(k) = 0
       end do

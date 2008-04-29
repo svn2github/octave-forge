@@ -65,7 +65,7 @@ c               increase nx.
       external corr
       external dwdis2,dcopy,daxpy,dscal,dtrsv,dtrsm,xerbla,
      +dpotrf,dtrtrs,dgeqr2,dorm2r
-      integer i,j,k,nl1
+      integer i,j,nl1
       real*8 sums,sum,dwdis2
 
 c argument checks

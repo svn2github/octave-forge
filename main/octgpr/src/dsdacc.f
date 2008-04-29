@@ -30,7 +30,6 @@ c
       integer n
       double precision x(*),y(*),x2,xy
       integer i
-      external xerbla
       xy = 0
       x2 = 0
       do i = 1,n

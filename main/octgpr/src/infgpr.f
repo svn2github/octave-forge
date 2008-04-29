@@ -67,7 +67,7 @@ c
       external corr
       external dwdis2,dsdacc,dtpsv,dcopy,xerbla
       real*8 tmp,dwdis2
-      integer i,j,k,info
+      integer i,k,info
 c argument checks
       info = 0
       if (ndim < 0) then

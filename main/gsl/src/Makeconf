@@ -6,9 +6,9 @@
 
 OCTAVE_FORGE = 1
 
-SHELL = /bin/sh
+SHELL = /bin/bash
 
-canonical_host_type = [?1034hi386-redhat-linux-gnu
+canonical_host_type = i686-pc-linux-gnu
 prefix = /usr/local
 exec_prefix = ${prefix}
 bindir = ${exec_prefix}/bin
@@ -39,27 +39,27 @@ AWK = @AWK@
 # The following flags are for compiling programs that are independent
 # of Octave.  How confusing.
 CC = gcc
-CFLAGS = -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i386 -mtune=generic -fasynchronous-unwind-tables
+CFLAGS = -g -O2
 CPPFLAGS = 
 CPICFLAG = -fPIC
 CXX = g++
-CXXFLAGS = -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i386 -mtune=generic -fasynchronous-unwind-tables
+CXXFLAGS = -g -O2
 CXXPICFLAG = -fPIC
 F77 = gfortran
-FFLAGS = -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i386 -mtune=generic -fasynchronous-unwind-tables -mieee-fp
+FFLAGS = -O -mieee-fp
 FPICFLAG = -fPIC
 
 OCTAVE = octave
-OCTAVE_VERSION = [?1034h3.0.0
+OCTAVE_VERSION = 3.0.1
 MKOCTFILE = mkoctfile -DHAVE_OCTAVE_$(ver) -v
-SHLEXT = [?1034hso
+SHLEXT = so
 
 ver = 30
-MPATH = /usr/share/octave/3.0.0/site/m/octave-forge
-OPATH = /usr/libexec/octave/3.0.0/site/oct/i386-redhat-linux-gnu/octave-forge
-XPATH = /usr/libexec/octave/3.0.0/site/exec/i386-redhat-linux-gnu
-ALTMPATH = /usr/share/octave/3.0.0/site/octave-forge-alternatives/m
-ALTOPATH = /usr/libexec/octave/3.0.0/site/octave-forge-alternatives/oct/i386-redhat-linux-gnu
+MPATH = /home/sh/Programmer/share/octave/3.0.1/site/m/octave-forge
+OPATH = /home/sh/Programmer/libexec/octave/3.0.1/site/oct/i686-pc-linux-gnu/octave-forge
+XPATH = /home/sh/Programmer/libexec/octave/3.0.1/site/exec/i686-pc-linux-gnu
+ALTMPATH = /home/sh/Programmer/share/octave/3.0.1/site/octave-forge-alternatives/m
+ALTOPATH = /home/sh/Programmer/libexec/octave/3.0.1/site/octave-forge-alternatives/oct/i686-pc-linux-gnu
 
 HAVE_GSL=yes
 GSL_MISSING=

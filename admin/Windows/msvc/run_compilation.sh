@@ -43,7 +43,7 @@ HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
 ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++ libglade
-gtksourceview gdl VTE GtkGlArea PortAudio playrec OctaveDE"
+gtksourceview gdl VTE GtkGlArea PortAudio playrec OctaveDE Gtksourceview1"
 octave_version=
 of_version=
 do_nsi=false
@@ -87,6 +87,7 @@ gtkmmver=2.12.5
 libsigcver=2.0.18
 libgladever=2.6.2
 gtksourceviewver=2.2.0
+gtksourceview1ver=1.8.5
 gdlver=0.7.11
 vtever=0.16.13
 gtkglareaver=1.99.0
@@ -3466,6 +3467,46 @@ if check_package gtksourceview; then
     rm -f $tlibdir_quoted/libgtksourceview*.la) >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/gtksourceview-$gtksourceviewver"
   if test ! -f "$tlibdir/gtksourceview-2.0.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+if check_package Gtksourceview1; then
+  gtksourceview1root=`echo $gtksourceview1ver | sed -e 's/\.[0-9]\+$//'`
+  download_file gtksourceview-$gtksourceview1ver.tar.bz2 "http://ftp.gnome.org/pub/GNOME/sources/gtksourceview/$gtksourceview1root/gtksourceview-$gtksourceview1ver.tar.bz2"
+  echo -n "decompressing gtksourceview1... "
+  unpack_file gtksourceview-$gtksourceview1ver.tar.bz2
+  echo "done"
+  echo "compiling gtksourceview1... "
+  (cd "$DOWNLOAD_DIR/gtksourceview-$gtksourceview1ver" &&
+    sed -e "s/^IT_PROG_INTLTOOL/#&/" configure.in > ttt &&
+      mv ttt configure.in &&
+    autoconf &&
+    configure_package --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "/^SUBDIRS =/ {s/docs//;s/po//;}" Makefile > ttt &&
+      mv ttt Makefile &&
+    sed -e '/^prefix/ {s,/\([a-z]\)/,\1:/,;}' gtksourceview-1.0.pc > ttt &&
+      mv ttt gtksourceview-1.0.pc &&
+    sed -e 's/-no-undefined/& -export-symbols-regex "^gtk_source_*|^gtk_text_region_*"/' \
+        gtksourceview/Makefile > ttt &&
+      mv ttt gtksourceview/Makefile &&
+    sed -e '/#include <sys\/types.h>/ {a \
+#include <io.h>
+;}'
+        gtksourceview/gnu-regex/regex.c > ttt &&
+      mv ttt gtksourceview/gnu-regex/regex.c &&
+    sed -e '/^regerror/,/^{/ {s/^regerror.*/regerror(int errcode,const regex_t *preg,char *errbuf,size_t errbuf_size)/;s/^.*;//;}' \
+        gtksourceview/gnu-regex/regcomp.c > ttt &&
+      mv ttt gtksourceview/gnu-regex/regcomp.c &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libgtksourceview-1.0*.la) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/gtksourceview-$gtksourceview1ver"
+  if test ! -f "$tlibdir/gtksourceview-1.0.lib"; then
     echo "failed"
     exit -1
   else

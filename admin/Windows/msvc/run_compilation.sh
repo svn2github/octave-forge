@@ -1909,7 +1909,7 @@ if check_package less; then
     patch -p1 < less-394.diff && 
     nmake -f Makefile.wnm &&
     cp less.exe lesskey.exe "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/less-394"
+  remove_package "$DOWNLOAD_DIR/less-394"
   if test ! -f "$tbindir/less.exe"; then
     echo "failed"
     exit -1

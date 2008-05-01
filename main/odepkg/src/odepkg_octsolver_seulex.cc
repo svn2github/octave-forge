@@ -573,10 +573,10 @@ odesx (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   octave_idx_type MUMAS=N;
   octave_idx_type IOUT = 1; // The SOLOUT function will always be called
   octave_idx_type LWORK = N*(N+N+N+12+8)+4*12+20+(2+12*(12+3)/2)*N;
-  double WORK[LWORK];
+  OCTAVE_LOCAL_BUFFER (double, WORK, LWORK);
   for (octave_idx_type vcnt = 0; vcnt < LWORK; vcnt++) WORK[vcnt] = 0.0;
   octave_idx_type LIWORK = 2*N+12+20+N;
-  octave_idx_type IWORK[LIWORK];
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, IWORK, LIWORK);
   for (octave_idx_type vcnt = 0; vcnt < LIWORK; vcnt++) IWORK[vcnt] = 0;
   double RPAR[1] = {0.0};
   octave_idx_type IPAR[1] = {0};

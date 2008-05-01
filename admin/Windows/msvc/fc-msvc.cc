@@ -460,6 +460,11 @@ int main (int argc, char **_argv)
 		list<string> command;
 
 		command.push_back(cc);
+		if (output.empty() && lfiles.size() == 1)
+		  {
+		    string lfile = get_basename(lfiles.front());
+		    output = (lfile + ".exe");
+		  }
 		if (!output.empty())
 		{
 			command.push_back("-o");

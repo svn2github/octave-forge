@@ -21,10 +21,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <octave/utils.h>
 #include <variables.h>
 #include <octave/ls-oct-ascii.h>
-#if !defined(_MSC_VER)
-//currently these symbols are not exported in the MSVC-build (2.9.19)
 #include <octave/ls-oct-binary.h>
-#endif
 
 #define GRAD_X_STR "x"
 #define GRAD_J_STR "J"
@@ -406,30 +403,20 @@ bool octave_gradient::load_ascii (std::istream& is)
 
 bool octave_gradient::save_binary (std::ostream& os, bool& save_as_floats)
 {
-#if !defined(_MSC_VER)
-  return (save_binary_data (os, xval, GRAD_X_STR, std::string (),
+  	return (save_binary_data (os, xval, GRAD_X_STR, std::string (),
 				false, save_as_floats) &&
 		    save_binary_data (os, dval, GRAD_J_STR, std::string (), 
 				false, save_as_floats));
-#else
-	error ("cannot save variables of type <gradient> in binary format");
-	return false;
-#endif
 }
 
 bool octave_gradient::load_binary (std::istream& is, bool swap, oct_mach_info::float_format fmt)
 {
-#if !defined(_MSC_VER)
 	bool global;
 	std::string doc;
 	return ((read_binary_data (is, swap, fmt, std::string (), global, xval, doc)
 				== GRAD_X_STR) && 
 		    (read_binary_data( is, swap, fmt, std::string (), global, dval, doc)
 				== GRAD_J_STR));
-#else
-	error ("cannot load variables of type <gradient> in binary format");
-	return false;
-#endif	
 }
 
 void install_gradient_ops (void);

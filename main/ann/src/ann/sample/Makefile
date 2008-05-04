@@ -37,6 +37,8 @@
 #		ANNLIBS		libraries
 #-----------------------------------------------------------------------------
 
+sinclude ../../Makeconf
+
 BASEDIR	= ..
 INCDIR	= $(BASEDIR)/include
 LIBDIR	= $(BASEDIR)/lib
@@ -68,17 +70,11 @@ $(BINDIR)/$(ANNSAMP): $(SAMPOBJECTS) $(LIBDIR)/$(ANNLIB)
 	mv $(ANNSAMP) $(BINDIR)
 
 #-----------------------------------------------------------------------------
-# configuration definitions
-#-----------------------------------------------------------------------------
-
-include ../Make-config
-
-#-----------------------------------------------------------------------------
 # Objects
 #-----------------------------------------------------------------------------
 
 ann_sample.o: ann_sample.cpp
-	$(C++) -c -I$(INCDIR) $(CFLAGS) ann_sample.cpp
+	$(C++) -c -I$(INCDIR) $(CXXFLAGS) ann_sample.cpp
 
 #-----------------------------------------------------------------------------
 # Cleaning

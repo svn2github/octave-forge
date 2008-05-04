@@ -42,7 +42,8 @@
 
 #include <cstdio>						// C standard I/O
 #include <fstream>						// file I/O
-#include <string>						// string manipulation
+#include <cstring>						// string manipulation
+#include <cstdlib>
 #include <ANN/ANNx.h>					// all ANN includes
 
 using namespace std;					// make std:: accessible

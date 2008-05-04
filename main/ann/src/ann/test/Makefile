@@ -38,6 +38,8 @@
 #		OTHERLIBS	other libraries
 #-----------------------------------------------------------------------------
 
+sinclude ../../Makeconf
+
 BASEDIR	= ..
 INCDIR	= $(BASEDIR)/include
 LIBDIR	= $(BASEDIR)/lib
@@ -71,20 +73,14 @@ $(BINDIR)/$(ANNTEST): $(TESTOBJECTS) $(LIBDIR)/$(ANNLIB)
 	mv $(ANNTEST) $(BINDIR)
 
 #-----------------------------------------------------------------------------
-# configuration definitions
-#-----------------------------------------------------------------------------
-
-include ../Make-config
-
-#-----------------------------------------------------------------------------
 # Objects
 #-----------------------------------------------------------------------------
 
 ann_test.o: ann_test.cpp
-	$(C++) -c -I$(INCDIR) $(CFLAGS) ann_test.cpp
+	$(C++) -c -I$(INCDIR) $(CXXFLAGS) ann_test.cpp
 
 rand.o: rand.cpp
-	$(C++) -c -I$(INCDIR) $(CFLAGS) rand.cpp
+	$(C++) -c -I$(INCDIR) $(CXXFLAGS) rand.cpp
 
 #-----------------------------------------------------------------------------
 # Cleaning

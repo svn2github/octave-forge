@@ -29,38 +29,13 @@
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
-# default: list the options
-# The following legacy targets are also available.
-#	make sunos4		for Sun with SunOS 4.x
-#	make sunos4-g++		for Sun with SunOS 4.x and g++
-#	make alpha-g++		for DEC Alpha and g++
-# The following targets are used for internal development only
-#	make authors-debug	author's debugging
-#	make authors-perf	author's performance evaluations
-#	make distribution	author's generation of distribution file
-#-----------------------------------------------------------------------------
-default:
-	@echo "Enter one of the following:"
-	@echo "  make linux-g++            for Linux and g++"
-	@echo "  make macosx-g++           for Mac OS X and g++"
-	@echo "  make sunos5               for Sun with SunOS 5.x"
-	@echo "  make sunos5-sl            for Sun with SunOS 5.x, make shared libs"
-	@echo "  make sunos5-g++           for Sun with SunOS 5.x and g++"
-	@echo "  make sunos5-g++-sl        for Sun with SunOS 5.x, g++, make shared libs"
-	@echo "  make clean                remove .o files"
-	@echo "  make realclean            remove .o, library and executable files"
-	@echo " "
-	@echo "See file Makefile for other compilation options, such as disabling"
-	@echo "performance measurement code."
-
-#-----------------------------------------------------------------------------
 # main make entry point
 #-----------------------------------------------------------------------------
-alpha-g++ macosx-g++ linux-g++ sgi sunos4 sunos4-g++ sunos5 sunos5-g++ sunos5-g++-sl authors-debug authors-perf:
-	cd src ; $(MAKE) $@
-	cd test ; $(MAKE) $@
-	cd sample ; $(MAKE) $@
-	cd ann2fig ; $(MAKE) $@
+all:
+	$(MAKE) -C src targets
+	$(MAKE) -C test targets
+	$(MAKE) -C sample targets
+	$(MAKE) -C ann2fig targets
 
 #-----------------------------------------------------------------------------
 # generate SWIG bindings
@@ -74,51 +49,7 @@ bindings-octave:
 # Remove .o files and core files
 #-----------------------------------------------------------------------------
 clean:
-	cd src ; $(MAKE) clean
-	cd test ; $(MAKE) clean
-	cd sample ; $(MAKE) clean
-	cd ann2fig ; $(MAKE) clean
-	cd bindings ; $(MAKE) clean
-#	cd doc && $(MAKE) clean
-#	cd MS_Win32 && $(MAKE) clean
-#	cd validate && $(MAKE) clean
-
-#-----------------------------------------------------------------------------
-# Remove everthing that can be remade
-#-----------------------------------------------------------------------------
-realclean: 
-	-rm -f lib/*
-	-rm -f bin/*
-	cd src ; $(MAKE) realclean
-	cd test ; $(MAKE) realclean
-	cd sample ; $(MAKE) realclean
-	cd ann2fig ; $(MAKE) realclean
-	cd doc ; $(MAKE) realclean
-	cd MS_Win32; $(MAKE) realclean
-	cd validate ; $(MAKE) realclean
-
-#-----------------------------------------------------------------------------
-# Make distribution package (for use by authors only)
-#-----------------------------------------------------------------------------
-DISTR = ann_1.1.1
-
-distribution: realclean 
-	cd .. ; mv -f $(DISTR) $(DISTR)-old; mkdir $(DISTR)
-	cp Copyright.txt ../$(DISTR)
-	cp License.txt ../$(DISTR)
-	cp Make-config ../$(DISTR)
-	cp Makefile ../$(DISTR)
-	cp ReadMe.txt ../$(DISTR)
-	cp -r MS_Win32 ../$(DISTR)
-#	cd ..; mv -f $(DISTR)_MS_Win32_bin $(DISTR)_MS_Win32_bin-old
-	cp -r MS_Win32_bin ../$(DISTR)_MS_Win32_bin
-	cp -r bin ../$(DISTR)
-	cp -r include ../$(DISTR)
-	cp -r lib ../$(DISTR)
-	cp -r src ../$(DISTR)
-	cp -r test ../$(DISTR)
-	cp -r sample ../$(DISTR)
-	cp -r ann2fig ../$(DISTR)
-	cd ../$(DISTR); mkdir doc
-	cp doc/*.pdf ../$(DISTR)/doc
-#	cd .. ; tar -cfv $(DISTR).tar $(DISTR) ; gzip $(DISTR).tar
+	$(MAKE) -C src clean
+	$(MAKE) -C test clean
+	$(MAKE) -C sample clean
+	$(MAKE) -C ann2fig clean

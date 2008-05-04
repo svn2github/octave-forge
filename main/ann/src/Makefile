@@ -3,11 +3,11 @@ sinclude Makeconf
 .PHONY: all check
 
 all:
-	$(MAKE) -C ann linux-g++
-	$(MAKE) -C ann/bindings bindings-octave SWIG="$(SWIG)" MKOCTFILE="$(MKOCTFILE)"
+	$(MAKE) -C ann all
+	$(MAKE) -C ann/bindings bindings-octave
 	cp ann/bindings/ann.oct .
 
-check:
+check: all
 	$(MAKE) -C ann/bindings check
 
 clean:

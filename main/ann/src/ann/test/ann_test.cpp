@@ -36,8 +36,9 @@
 
 #include <ctime>						// clock
 #include <cmath>						// math routines
-#include <string>						// C string ops
+#include <cstring>						// C string ops
 #include <fstream>						// file I/O
+#include <cstdlib>
 
 #include <ANN/ANN.h>					// ANN declarations
 #include <ANN/ANNx.h>					// more ANN declarations

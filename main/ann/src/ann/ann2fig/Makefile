@@ -34,6 +34,8 @@
 #		OTHERLIB	other libraries
 #-----------------------------------------------------------------------------
 
+sinclude ../../Makeconf
+
 BASEDIR	= ..
 INCDIR	= $(BASEDIR)/include
 LIBDIR	= $(BASEDIR)/lib
@@ -63,12 +65,6 @@ targets: $(BINDIR)/$(ANN2FIG)
 $(BINDIR)/$(ANN2FIG): $(OBJECTS)
 	$(C++) $(OBJECTS) -o $(ANN2FIG) $(LDFLAGS) $(ANNLIBS) $(OTHERLIBS)
 	mv $(ANN2FIG) $(BINDIR)
-
-#-----------------------------------------------------------------------------
-# configuration definitions
-#-----------------------------------------------------------------------------
-
-include ../Make-config
 
 #-----------------------------------------------------------------------------
 # Objects

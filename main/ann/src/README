@@ -1,12 +1,10 @@
 
-As of this writing, the version of SWIG supporting Octave hasn't yet 
-been released. You'll need to go download and build it yourself from 
-SWIG's SVN repository. See 
-http://sourceforge.net/svn/?group_id=1645
-http://octave-swig.sourceforge.net/
-
 To build the bindings, run:
 make
 
 To run the tests, run:
 make check
+
+To regenerate the bindings, run:
+PATH=~/path/to/swig/bin:$PATH ./configure --with-swig && make
+

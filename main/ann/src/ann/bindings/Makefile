@@ -1,3 +1,4 @@
+sinclude ../../Makeconf
 
 bindings-octave: ann.oct
 ann.oct: ann_wrap.cpp ../include/ANN/ANN.h ../include/ANN/ANNperf.h ../include/ANN/ANNx.h
@@ -10,6 +11,9 @@ endif
 
 clean:
 	rm -f *.oct *.o *~ octave-core 
+ifdef SWIG
+	rm -f ann_wrap.cpp
+endif
 
 
 OCTAVE_TEST_CASES =   \

@@ -538,6 +538,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/fltkdll.dll" FLTK
     if test ! -z "$octave_version"; then
       todo_check "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe" octave
+      todo_check "$INSTALL_DIR/local/octave-$octave_version/libexec/octave/$octave_version/oct/i686-pc-msdosmsvc/playrec.mex" playrec
       if $do_octplot; then
         todo_check "$INSTALL_DIR/local/octave-$octave_version/share/octplot/oct/octplot.exe" octplot
       fi
@@ -1023,7 +1024,7 @@ if check_package readline; then
     cp shlib/*readline*.lib "$tlibdir/readline.lib" &&
     cp shlib/*history*.lib "$tlibdir/history.lib"&&
     mv $tlibdir_quoted/*readline*.dll $tlibdir_quoted/*history*.dll "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/readline-5.2"
+  remove_package "$DOWNLOAD_DIR/readline-5.2"
   if ! test -f "$tlibdir/readline.lib"; then
     echo "failed"
     exit -1
@@ -1499,6 +1500,8 @@ if check_package glib; then
     make glibconfig.h &&
     sed -e "s/^.*G_ATOMIC_OP_MEMORY_BARRIER_NEEDED.*$//" glibconfig.h > ttt &&
       mv ttt glibconfig.h &&
+      sed -e "/SUBDIR =/ {s/tests//;s/docs//;}" Makefile > ttt &&
+      mv ttt Makefile &&
     make &&
     make install &&
 	rm -f $tlibdir_quoted/libglib*.la $tlibdir_quoted/libgmodule*.la \
@@ -2605,6 +2608,75 @@ else
   echo "WARNING: some packages might not compile properly."
 fi
 
+#############
+# PortAudio #
+#############
+
+if check_package PortAudio; then
+  download_file pa_stable_v19_20071207.tar.gz http://www.portaudio.com/archives/pa_stable_v19_20071207.tar.gz
+  echo -n "decompressing PortAudio... "
+  unpack_file pa_stable_v19_20071207.tar.gz
+  echo "done"
+  echo "compiling PortAudio... "
+  (cd "$DOWNLOAD_DIR/portaudio" &&
+    sed -e "s/-lm//g" \
+        -e "s/-ldsound//g" \
+        -e "s/-lole32/-lole32 -luser32 -lkernel32/" \
+        -e "s/-mthreads//" \
+        -e "s/-L[^ ]*dx7sdk[^ ]*//" \
+        -e 's/" -DPA_NO_WDMKS;/ -DPA_NO_WDMKS";/' \
+        -e 's/OTHER_OBJS="\(.*\)"/OTHER_OBJS="\1 src\/os\/win\/pa_win_waveformat.o"/' \
+        configure > ttt &&
+      mv ttt configure &&
+    sed -e "s,src/os/unix,src/os/win," \
+        -e "s/	\$(MAKE) install-recursive//" \
+        Makefile.in > ttt &&
+      mv ttt Makefile.in
+    configure_package --enable-shared --disable-static --with-winapi=directx &&
+    sed -e "s/-lportaudio .*/-lportaudio/" portaudio-2.0.pc > ttt &&
+      mv ttt portaudio-2.0.pc &&
+    post_process_libtool &&
+    make lib/libportaudio.la &&
+    make install
+    rm -f $tlibdir_quoted/libportaudio*.la) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/portaudio"
+  if test ! -f "$tlibdir/portaudio.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# playrec #
+###########
+
+if check_package playrec; then
+  download_file playrec_2_1_0.zip http://www.playrec.co.uk/download/playrec_2_1_0.zip
+  if test -n "`which mkoctfile.exe`"; then
+    echo -n "decompressing playrec... "
+    (cd "$DOWNLOAD_DIR" && unzip -q playrec_2_1_0.zip)
+    echo "done"
+    target="`octave-config -p OCTFILEDIR | sed -e 's,\\\\,/,g'`/playrec.mex"
+    echo "compiling playrec... "
+    (cd "$DOWNLOAD_DIR/playrec_2_1_0/src" &&
+      mkoctfile -c `pkg-config --cflags portaudio-2.0` pa_dll_playrec.c &&
+      mkoctfile -c `pkg-config --cflags portaudio-2.0` mex_dll_core.c &&
+      mkoctfile --mex -o playrec.mex `pkg-config --libs portaudio-2.0` *.o &&
+      cp playrec.mex "$target") >&5 2>&1
+    rm -rf "$DOWNLOAD_DIR/playrec_2_1_0"
+    if test ! -f "$target"; then
+      echo "failed"
+      exit -1
+    else
+      echo "done"
+    fi
+  else
+    echo "octave must be in your PATH in order to compile playrec"
+  fi
+fi
+
 ########
 # JOGL #
 ########
@@ -2669,8 +2741,14 @@ function install_forge_packages
   return 0
 }
 
-extra_pkgs="fpl msh ad bim civil-engineering integration java mapping nan secs1d secs2d symband triangular tsa windows jhandles"
-main_pkgs="signal audio combinatorics communications control econometrics fixed general gsl ident image informationtheory io irsa linear-algebra miscellaneous nnet octcdf odebvp optim outliers physicalconstants plot specfun special-matrix sockets splines statistics strings struct symbolic time odepkg financial octgpr"
+extra_pkgs="fpl msh ad bim civil-engineering integration java jhandles mapping nan ocs secs1d secs2d symband triangular tsa windows"
+# packages to fix:
+# new packages:
+# unsupported packages: engine graceplot multicore pdb tcl-octave xraylib
+main_pkgs="signal audio bioinfo combinatorics communications control data-smoothing econometrics financial fixed ga general gsl ident image informationtheory io irsa linear-algebra miscellaneous missing-functions nnet octcdf odebvp odepkg optim outliers physicalconstants plot sockets specfun special-matrix splines statistics strings struct symbolic time"
+# packages to fix: octgpr
+# new packages: ann database ftp video
+# unsupported packages: optiminterp parallel vrml zenity
 lang_pkgs="pt_br"
 nonfree_pkgs="arpack"
 
@@ -2737,363 +2815,6 @@ if check_package octplot; then
     exit -1
   else
     echo "done"
-  fi
-fi
-
-##########################
-# NSI package generation #
-##########################
-
-isolated_packages="fpl msh bim civil-engineering integration mapping nan secs1d secs2d symband triangular tsa pt_br nnet ad"
-isolated_sizes=
-
-function get_nsi_additional_files()
-{
-  packname=$1
-  packinstdir=$2
-  case "$packname" in
-    image)
-      echo "  SetOutPath \"\$INSTDIR\\bin\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\libjpeg-62.dll\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng13.dll\""
-      found=`find "$octave_prefix/libexec/octave/packages/$packinstdir/" -name "__magick_read__.oct" 2> /dev/null`
-      if test -n "$found"; then
-        echo "  File \"\${VCLIBS_ROOT}\\bin\\libMagick-10.dll\""
-        echo "  File \"\${VCLIBS_ROOT}\\bin\\libMagick++-10.dll\""
-        echo "  File \"\${VCLIBS_ROOT}\\bin\\libtiff.dll\""
-        echo "  File \"\${VCLIBS_ROOT}\\bin\\libjasper-1.dll\""
-        echo "  File \"\${VCLIBS_ROOT}\\bin\\libwmflite-0-2-7.dll\""
-        echo "  File \"\${VCLIBS_ROOT}\\bin\\libbz2.dll\""
-        echo "  File \"\${VCLIBS_ROOT}\\bin\\libxml2-2.dll\""
-        echo "  File \"\${VCLIBS_ROOT}\\bin\\libfreetype-6.dll\""
-        echo "  File \"\${VCLIBS_ROOT}\\bin\\zlib1.dll\""
-        echo "  SetOutPath \"\$INSTDIR\\lib\\ImageMagick-6.3.8\""
-        echo "  File /r \"\${VCLIBS_ROOT}\\lib\\ImageMagick-6.3.8\\*.*\""
-        echo "  SetOutPath \"\$INSTDIR\\share\\ImageMagick-6.3.8\""
-        echo "  File /r \"\${VCLIBS_ROOT}\\share\\ImageMagick-6.3.8\\*.*\""
-      fi
-      ;;
-    octcdf)
-      echo "  SetOutPath \"\$INSTDIR\\bin\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\libnetcdf-4.dll\""
-      echo "  SetOutPath \"\$INSTDIR\\license\""
-      echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.NETCDF\""
-      ;;
-    gsl)
-      echo "  SetOutPath \"\$INSTDIR\\bin\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\libgsl-0.dll\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\libgslcblas-0.dll\""
-      ;;
-    arpack)
-      echo "  SetOutPath \"\$INSTDIR\\bin\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\libarpack.dll\""
-      echo "  SetOutPath \"\$INSTDIR\\license\""
-      echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.ARPACK.doc\""
-      ;;
-    miscellaneous)
-      echo "  SetOutPath \"\$INSTDIR\\bin\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\units.exe\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\units.dat\""
-      ;;
-    msh)
-      echo "  SetOutPath \"\$INSTDIR\\bin\""
-      echo "  File \"\${SOFTWARE_ROOT}\\Gmsh\\gmsh.exe\""
-      echo "  SetOutPath \"\$INSTDIR\\license\""
-      echo "  File /oname=COPYING.GMSH \"\${SOFTWARE_ROOT}\\Gmsh\\LICENSE.txt\""
-      echo "  SetOutPath \"\$INSTDIR\\tools\\gmsh\""
-      echo "  File /r /x gmsh.exe \"\${SOFTWARE_ROOT}\\Gmsh\\*.*\""
-      ;;
-  esac
-}
-
-function get_nsi_dependencies()
-{
-  packname=$1
-  descfile="$2"
-  sed -n -e 's/ *$//' \
-         -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
-         -e 's/^depends: *//p' "$descfile" | \
-    awk -F ', ' '{c=split($0, s); for(n=1; n<=c; ++n) printf("%s\n", s[n]) }' | \
-      sed -n -e 's/^octave.*$//' \
-             -e 's/\([a-zA-Z0-9_]\+\) *\(( *\([<>]=\?\) *\([0-9]\+\.[0-9]\+\.[0-9]\+\) *) *\)\?/  !insertmacro CheckDependency "\1" "\4" "\3"/p'
-}
-
-function is_isolated
-{
-  pack=$1
-  for ipack in $isolated_packages; do
-    if test "$pack" = "$ipack"; then
-      return 0
-    fi
-  done
-  return -1
-}
-
-function create_nsi_entries()
-{
-  pkgs=`for d in $1; do echo $d; done | sort - | sed -e ':a;N;$!ba;s/\n/\ /g'`
-  flag=$2
-  op=$3
-  for packname in $pkgs; do
-    if test "$packname" = "jhandles"; then
-      continue
-    fi
-    if is_isolated $packname; then
-      isolated=true
-    else
-      isolated=false
-    fi
-    found=`find "$octave_prefix/share/octave/packages" -type d -a -name "$packname-*" -maxdepth 1`
-    if test ! -z "$found"; then
-      case $op in
-        0)
-          packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
-          packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
-          packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
-          packinstdir=$packdesc_low-$packver
-	  if $isolated; then
-            flag_="/o"
-          elif test "$packdesc_low" = "windows" -o "$packdesc_low" = "java" -o "$packdesc_low" = "arpack"; then
-            flag_=
-          else
-            flag_=$flag
-          fi
-          if $isolated; then
-            packfile="octave-$octave_version-$packname-$packver-setup.exe"
-            packsize=`echo "$isolated_sizes" | sed -n -e "s/.*\\$$packname:\\([0-9]\\+\\)\\$.*/\\1/p"`
-            echo "Section $flag_ \"$packdesc *\" SEC_$packname"
-            echo "  AddSize $packsize"
-            echo "  ClearErrors"
-            echo "  IfFileExists \"\$EXEDIR\\$packfile\" local inet"
-            echo "local:"
-            echo "  ExecWait '\"\$EXEDIR\\$packfile\" /S /D=\$INSTDIR'"
-            echo "  Goto done"
-            echo "inet:"
-            echo "  InitPluginsDir"
-            echo "  InetLoad::load \"`echo $download_root | sed -e "s/@@/$packfile/"`\" \$PLUGINSDIR\\$packfile"
-            echo "  Pop \$0"
-            echo "  StrCmp \$0 \"OK\" +3 0"
-            echo "  SetErrors"
-            echo "  Goto done"
-            echo "  ExecWait '\"\$PLUGINSDIR\\$packfile\" /S /D=\$INSTDIR'"
-            echo "done:"
-            echo "  IfErrors 0 +2"
-            echo "  MessageBox MB_ICONSTOP|MB_OK \"Installation of package $packdesc failed\""
-          else
-            echo "Section $flag_ \"$packdesc\" SEC_$packname"
-            echo "  SetOverwrite try"
-            get_nsi_additional_files $packname $packinstdir
-            echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
-            echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
-            if test -d "$octave_prefix/libexec/octave/packages/$packinstdir"; then
-              echo "  SetOutPath \"\$INSTDIR\\libexec\\octave\\packages\\$packinstdir\""
-              echo "  File /r \"\${OCTAVE_ROOT}\\libexec\\octave\\packages\\$packinstdir\\*\""
-            fi
-          fi
-          echo "SectionEnd"
-          ;;
-        1)
-          packinfo=`sed -e '/^ /{H;$!d;}' -e 'x;/^Description: /!d;' "$found/packinfo/DESCRIPTION" | \
-            sed -e ':a;N;$!ba;s/\n */\ /g' | sed -e 's/^Description: //'`
-          echo "  !insertmacro MUI_DESCRIPTION_TEXT \${SEC_$packname} \"$packinfo\""
-          ;;
-        2)
-          sed -n -e 's/ *$//' \
-                 -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
-                 -e 's/^depends: *//p' \
-              "$found/packinfo/DESCRIPTION" | \
-            awk -F ', ' '{c=split($0, s); for(n=1; n<=c; ++n) printf("%s\n", s[n]) }' | \
-            sed -n -e 's/^octave.*$//' \
-                   -e "s/\([a-zA-Z0-9_]\+\) *\(( *\([<>]=\?\) *\([0-9]\+\.[0-9]\+\.[0-9]\+\) *) *\)\?/  !insertmacro CheckDependency \${SEC_$packname} \${SEC_\1}/p"
-          ;;
-      esac
-    fi
-  done
-}
-
-function create_nsi_package_file()
-{
-  packname=$1
-  found=`find "$octave_prefix/share/octave/packages" -type d -a -name "$packname-*" -maxdepth 1`
-  if test ! -z "$found"; then
-    packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
-    packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
-    packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
-    if test -f "release-$octave_version/octave-$octave_version-$packname-$packver-setup.exe"; then
-      return 0
-    fi
-    echo -n "creating installer for $packname... "
-    mkdir -p "release-$octave_version"
-    packinstdir=$packdesc_low-$packver
-    packinfo=`sed -e '/^ /{H;$!d;}' -e 'x;/^Description: /!d;' "$found/packinfo/DESCRIPTION" | sed -e ':a;N;$!ba;s/\n */\ /g' | sed -e 's/^Description: //'`
-    packfiles=`get_nsi_additional_files $packname`
-    if test ! -z "$packfiles"; then
-      echo "$packfiles" > octave_pkg_${packname}_files.nsi
-      packfiles="!include \\\"octave_pkg_${packname}_files.nsi\\\""
-    fi
-    packdeps=`get_nsi_dependencies $packname "$found/packinfo/DESCRIPTION"`
-    if test ! -z "$packdeps"; then
-      echo "$packdeps" > octave_pkg_${packname}_deps.nsi
-      packdeps="!include \\\"octave_pkg_${packname}_deps.nsi\\\""
-    fi
-	if test -f "$found/packinfo/.autoload"; then
-      packautoload=1
-    else
-      packautoload=0
-    fi
-	have_arch_files="#"
-	if test -d "$octave_prefix/libexec/octave/packages/$packinstdir"; then
-      have_arch_files=
-    fi
-    sed -e "s/@PACKAGE_NAME@/$packname/" \
-        -e "s/@PACKAGE_LONG_NAME@/$packdesc/" \
-        -e "s/@PACKAGE_VERSION@/$packver/" \
-        -e "s/@PACKAGE_INFO@/$packinfo/" \
-        -e "s/@OCTAVE_VERSION@/$octave_version/" \
-        -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
-        -e "s/@PACKAGE_FILES@/$packfiles/" \
-        -e "s/@PACKAGE_DEPENDENCY@/$packdeps/" \
-        -e "s/@PACKAGE_AUTOLOAD@/$packautoload/" \
-        -e "s/@HAVE_ARCH_FILES@/$have_arch_files/" \
-        -e "s/@SOFTWARE_ROOT@/$software_root/" octave_package.nsi.in > octave_pkg_$packname.nsi
-    $NSI_DIR/makensis.exe octave_pkg_$packname.nsi | tee nsi.tmp >&5 2>&1
-	packsize=`sed -n -e 's,^Install data: *[0-9]\+ / \([0-9]\+\) bytes$,\1,p' nsi.tmp`
-	let "packsize = packsize / 1024"
-	rm -f nsi.tmp
-    if $do_nsiclean; then
-      rm -f octave_pkg_$packname*.nsi
-    fi
-    if test ! -f "octave-$octave_version-$packname-$packver-setup.exe"; then
-      echo "failed"
-      return -1
-    else
-      mv -f "octave-$octave_version-$packname-$packver-setup.exe" "release-$octave_version"
-	  if test -z "$isolated_sizes"; then
-        isolated_sizes="\$$packname:$packsize\$"
-      else
-        isolated_sizes="$isolated_sizes$packname:$packsize\$"
-      fi
-      echo "done"
-      return 0
-    fi
-  fi
-}
-
-if $do_nsi; then
-  if test -z "$octave_version" || test ! -d "$INSTALL_DIR/local/octave-$octave_version"; then
-    echo "no octave or octave-forge installed, cannot create installer"
-    exit -1
-  fi
-  if test ! -f "/c/WINDOWS/MSYS.INI"; then
-    echo "MSYS not found"
-    exit -1
-  else
-    msys_root=`sed -n -e '/^InstallPath=/ {s/InstallPath=//;s/\\\\/\\\\\\\\/g;p;}' /c/WINDOWS/MSYS.INI`
-    if test ! -d "$msys_root"; then
-      echo "MSYS not found"
-      exit -1
-    fi
-  fi
-  jhandles_version=`find "$INSTALL_DIR/local/octave-$octave_version/share/octave/packages" -type d -a -name "jhandles-*" -maxdepth 1`
-  if test -d "$jhandles_version"; then
-    jhandles_version=`echo "$jhandles_version" | sed -e 's/.*-\([0-9]\+\.[0-9]\+\.[0-9]\+\)$/\1/'`
-  else
-    echo "JHandles not found"
-    exit -1
-  fi
-  software_root=
-  for drive in c d; do
-    if test -d "/$drive/Software"; then
-      software_root="$drive:\\\\Software"
-    fi
-  done
-  if test ! -d "$software_root"; then
-    echo "Software directory not found"
-    exit -1
-  fi
-  release_dir="release-$octave_version"
-  mkdir -p "$release_dir"
-  for pack in $isolated_packages; do
-    if ! create_nsi_package_file $pack; then
-      exit -1
-    fi
-  done
-  if test ! -f "$release_dir/octave-$octave_version-setup.exe"; then
-    if test ! -f "README.txt"; then
-      echo -n "creating README.txt... "
-      sed -e "s/@OCTAVE_VERSION@/$octave_version/" README.txt.in > README.txt
-      sed -e '$d' "$INSTALL_DIR/local/octave-$octave_version/doc/NEWS" >> README.txt
-      unix2dos README.txt
-      echo "done"
-    fi
-    if test ! -f "octave_main.nsi"; then
-      octplot_prefix="#"
-      gui_prefix="#"
-      if $do_octplot; then
-        octplot_prefix=
-      fi
-      if $do_gui; then
-        gui_prefix=
-      fi
-      echo -n "creating octave_main.nsi... "
-      sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
-        -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
-        -e "s/@SOFTWARE_ROOT@/$software_root/" -e "s/@HAVE_OCTPLOT@/$octplot_prefix/" \
-        -e "s/@HAVE_GUI@/$gui_prefix/" \
-        octave.nsi.in > octave_main.nsi
-      echo "done"
-    fi
-    if test ! -f "octave_forge.nsi"; then
-      echo -n "creating octave_forge.nsi... "
-      echo "SectionGroup \"Main\" GRP_forge_main" > octave_forge.nsi
-      create_nsi_entries "$main_pkgs" "" 0 >> octave_forge.nsi
-      echo "SectionGroupEnd" >> octave_forge.nsi
-      echo "SectionGroup \"Extra\" GRP_forge_extra" >> octave_forge.nsi
-      create_nsi_entries "$extra_pkgs" "/o" 0 >> octave_forge.nsi
-      echo "SectionGroupEnd" >> octave_forge.nsi
-      echo "SectionGroup \"Language\" GRP_forge_lang" >> octave_forge.nsi
-      create_nsi_entries "$lang_pkgs" "/o" 0 >> octave_forge.nsi
-      echo "SectionGroupEnd" >> octave_forge.nsi
-      echo "SectionGroup \"Others\" GRP_forge_others" >> octave_forge.nsi
-      create_nsi_entries "$nonfree_pkgs" "" 0 >> octave_forge.nsi
-      echo "SectionGroupEnd" >> octave_forge.nsi
-      echo "done"
-    fi
-    if test ! -f "octave_forge_deps.nsi"; then
-      echo -n "creating octave_forge_deps.nsi... "
-      echo "# Dependency checking" > octave_forge_deps.nsi
-      create_nsi_entries "$main_pkgs" "" 2 >> octave_forge_deps.nsi
-      create_nsi_entries "$extra_pkgs" "" 2 >> octave_forge_deps.nsi
-      create_nsi_entries "$lang_pkgs" "" 2 >> octave_forge_deps.nsi
-      create_nsi_entries "$nonfree_pkgs" "" 2 >> octave_forge_deps.nsi
-      echo "done"
-    fi
-    if test ! -f "octave_forge_desc.nsi"; then
-      echo -n "creating octave_forge_desc.nsi... "
-      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_main} \"\"" > octave_forge_desc.nsi
-      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_extra} \"\"" >> octave_forge_desc.nsi
-      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_lang} \"\"" >> octave_forge_desc.nsi
-      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_others} \"\"" >> octave_forge_desc.nsi
-      create_nsi_entries "$main_pkgs" "" 1 >> octave_forge_desc.nsi
-      create_nsi_entries "$extra_pkgs" "" 1 >> octave_forge_desc.nsi
-      create_nsi_entries "$lang_pkgs" "" 1 >> octave_forge_desc.nsi
-      create_nsi_entries "$nonfree_pkgs" "" 1 >> octave_forge_desc.nsi
-      echo "done"
-    fi
-    if test ! -f "$release_dir/octave-$octave_version-setup.exe"; then
-      echo -n "creating installer for octave... "
-      $NSI_DIR/makensis.exe octave_main.nsi
-      if test ! -f "octave-$octave_version-setup.exe"; then
-        echo "failed"
-        exit -1
-      else
-        mv -f "octave-$octave_version-setup.exe" "$release_dir"
-        echo "done"
-      fi
-    fi
-    if $do_nsiclean; then
-      rm -f octave_main.nsi octave_forge*.nsi README.txt
-    fi
   fi
 fi
 
@@ -3531,17 +3252,14 @@ if check_package VTE; then
     sed -e "s/^IT_PROG_INTLTOOL/#&/" configure.in > ttt &&
       mv ttt configure.in &&
     autoconf &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-python \
-      --disable-gnome-pty-helper &&
+    configure_package --enable-shared --disable-static --disable-python --disable-gnome-pty-helper &&
     post_process_libtool &&
     make -C src libvte.la &&
     make -C src install-libLTLIBRARIES install-pkgincludeHEADERS &&
     make install-pkgconfigDATA &&
     make -C termcaps install
     rm -f $tlibdir_quoted/libvte*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/vte-$vtever"
+  remove_package "$DOWNLOAD_DIR/vte-$vtever"
   if test ! -f "$tlibdir/vte.lib"; then
     echo "failed"
     exit -1
@@ -3599,75 +3317,6 @@ if check_package GtkGlArea; then
   fi
 fi
 
-#############
-# PortAudio #
-#############
-
-if check_package PortAudio; then
-  download_file pa_stable_v19_20071207.tar.gz http://www.portaudio.com/archives/pa_stable_v19_20071207.tar.gz
-  echo -n "decompressing PortAudio... "
-  unpack_file pa_stable_v19_20071207.tar.gz
-  echo "done"
-  echo "compiling PortAudio... "
-  (cd "$DOWNLOAD_DIR/portaudio" &&
-    sed -e "s/-lm//g" \
-        -e "s/-ldsound//g" \
-        -e "s/-lole32/-lole32 -luser32 -lkernel32/" \
-        -e "s/-mthreads//" \
-        -e "s/-L[^ ]*dx7sdk[^ ]*//" \
-        -e 's/" -DPA_NO_WDMKS;/ -DPA_NO_WDMKS";/' \
-        -e 's/OTHER_OBJS="\(.*\)"/OTHER_OBJS="\1 src\/os\/win\/pa_win_waveformat.o"/' \
-        configure > ttt &&
-      mv ttt configure &&
-    sed -e "s,src/os/unix,src/os/win," \
-        -e "s/	\$(MAKE) install-recursive//" \
-        Makefile.in > ttt &&
-      mv ttt Makefile.in
-    configure_package --enable-shared --disable-static --with-winapi=directx &&
-    sed -e "s/-lportaudio .*/-lportaudio/" portaudio-2.0.pc > ttt &&
-      mv ttt portaudio-2.0.pc &&
-    post_process_libtool &&
-    make lib/libportaudio.la &&
-    make install
-    rm -f $tlibdir_quoted/libportaudio*.la) >&5 2>&1
-  remove_package "$DOWNLOAD_DIR/portaudio"
-  if test ! -f "$tlibdir/portaudio.lib"; then
-    echo "failed"
-    exit -1
-  else
-    echo "done"
-  fi
-fi
-
-###########
-# playrec #
-###########
-
-if check_package playrec; then
-  download_file playrec_2_1_0.zip http://www.playrec.co.uk/download/playrec_2_1_0.zip
-  if test -n "`which mkoctfile.exe`"; then
-    echo -n "decompressing playrec... "
-    (cd "$DOWNLOAD_DIR" && unzip -q playrec_2_1_0.zip)
-    echo "done"
-    target="`octave-config -p OCTFILEDIR | sed -e 's,\\\\,/,g'`/playrec.mex"
-    echo "compiling playrec... "
-    (cd "$DOWNLOAD_DIR/playrec_2_1_0/src" &&
-      mkoctfile -c `pkg-config --cflags portaudio-2.0` pa_dll_playrec.c &&
-      mkoctfile -c `pkg-config --cflags portaudio-2.0` mex_dll_core.c &&
-      mkoctfile --mex -o playrec.mex `pkg-config --libs portaudio-2.0` *.o &&
-      cp playrec.mex "$target") >&5 2>&1
-    rm -rf "$DOWNLOAD_DIR/playrec_2_1_0"
-    if test ! -f "$target"; then
-      echo "failed"
-      exit -1
-    else
-      echo "done"
-    fi
-  else
-    echo "octave must be in your PATH in order to compile playrec"
-  fi
-fi
-
 ############
 # OctaveDE #
 ############
@@ -3681,7 +3330,7 @@ if check_package OctaveDE; then
         echo "done"
       fi
       echo -n "compiling octavede..."
-      (configure_package --prefix="$octave_prefix" &&
+      (W_CPPFLAGS="$W_CPPFLAGS -DHAVE_OCTAVE_300" configure_package --prefix="$octave_prefix" &&
         make &&
         make install) >&5 2>&1
       if test ! -f "$octave_prefix/bin/octaveui.exe"; then
@@ -3693,5 +3342,367 @@ if check_package OctaveDE; then
       )
   else
     echo "octave must be in your PATH in order to compile octavede"
+  fi
+fi
+
+##########################
+# NSI package generation #
+##########################
+
+#isolated_packages="fpl msh bim civil-engineering integration mapping nan secs1d secs2d symband triangular tsa pt_br nnet ad"
+isolated_packages=
+isolated_sizes=
+
+function get_nsi_additional_files()
+{
+  packname=$1
+  packinstdir=$2
+  case "$packname" in
+    image)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libjpeg-62.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng13.dll\""
+      found=`find "$octave_prefix/libexec/octave/packages/$packinstdir/" -name "__magick_read__.oct" 2> /dev/null`
+      if test -n "$found"; then
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libMagick-10.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libMagick++-10.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libtiff.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libjasper-1.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libwmflite-0-2-7.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libbz2.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libxml2-2.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\libfreetype-6.dll\""
+        echo "  File \"\${VCLIBS_ROOT}\\bin\\zlib1.dll\""
+        echo "  SetOutPath \"\$INSTDIR\\lib\\ImageMagick-6.3.8\""
+        echo "  File /r \"\${VCLIBS_ROOT}\\lib\\ImageMagick-6.3.8\\*.*\""
+        echo "  SetOutPath \"\$INSTDIR\\share\\ImageMagick-6.3.8\""
+        echo "  File /r \"\${VCLIBS_ROOT}\\share\\ImageMagick-6.3.8\\*.*\""
+      fi
+      ;;
+    octcdf)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libnetcdf-4.dll\""
+      echo "  SetOutPath \"\$INSTDIR\\license\""
+      echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.NETCDF\""
+      ;;
+    gsl)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libgsl-0.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libgslcblas-0.dll\""
+      ;;
+    arpack)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libarpack.dll\""
+      echo "  SetOutPath \"\$INSTDIR\\license\""
+      echo "  File \"\${VCLIBS_ROOT}\\license\\COPYING.ARPACK.doc\""
+      ;;
+    miscellaneous)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\units.exe\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\units.dat\""
+      ;;
+    msh)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${SOFTWARE_ROOT}\\Gmsh\\gmsh.exe\""
+      echo "  SetOutPath \"\$INSTDIR\\license\""
+      echo "  File /oname=COPYING.GMSH \"\${SOFTWARE_ROOT}\\Gmsh\\LICENSE.txt\""
+      echo "  SetOutPath \"\$INSTDIR\\tools\\gmsh\""
+      echo "  File /r /x gmsh.exe \"\${SOFTWARE_ROOT}\\Gmsh\\*.*\""
+      ;;
+  esac
+}
+
+function get_nsi_dependencies()
+{
+  packname=$1
+  descfile="$2"
+  sed -n -e 's/ *$//' \
+         -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
+         -e 's/^depends: *//p' "$descfile" | \
+    awk -F ', ' '{c=split($0, s); for(n=1; n<=c; ++n) printf("%s\n", s[n]) }' | \
+      sed -n -e 's/^octave.*$//' \
+             -e 's/\([a-zA-Z0-9_]\+\) *\(( *\([<>]=\?\) *\([0-9]\+\.[0-9]\+\.[0-9]\+\) *) *\)\?/  !insertmacro CheckDependency "\1" "\4" "\3"/p'
+}
+
+function is_isolated
+{
+  pack=$1
+  for ipack in $isolated_packages; do
+    if test "$pack" = "$ipack"; then
+      return 0
+    fi
+  done
+  return -1
+}
+
+function create_nsi_entries()
+{
+  pkgs=`for d in $1; do echo $d; done | sort - | sed -e ':a;N;$!ba;s/\n/\ /g'`
+  flag=$2
+  op=$3
+  for packname in $pkgs; do
+    if test "$packname" = "jhandles"; then
+      continue
+    fi
+    if is_isolated $packname; then
+      isolated=true
+    else
+      isolated=false
+    fi
+    found=`find "$octave_prefix/share/octave/packages" -type d -a -name "$packname-*" -maxdepth 1`
+    if test ! -z "$found"; then
+      case $op in
+        0)
+          packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
+          packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+          packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+          packinstdir=$packdesc_low-$packver
+	  if $isolated; then
+            flag_="/o"
+          elif test "$packdesc_low" = "windows" -o "$packdesc_low" = "java" -o "$packdesc_low" = "arpack"; then
+            flag_=
+          else
+            flag_=$flag
+          fi
+          if $isolated; then
+            packfile="octave-$octave_version-$packname-$packver-setup.exe"
+            packsize=`echo "$isolated_sizes" | sed -n -e "s/.*\\$$packname:\\([0-9]\\+\\)\\$.*/\\1/p"`
+            echo "Section $flag_ \"$packdesc *\" SEC_$packname"
+            echo "  AddSize $packsize"
+            echo "  ClearErrors"
+            echo "  IfFileExists \"\$EXEDIR\\$packfile\" local inet"
+            echo "local:"
+            echo "  ExecWait '\"\$EXEDIR\\$packfile\" /S /D=\$INSTDIR'"
+            echo "  Goto done"
+            echo "inet:"
+            echo "  InitPluginsDir"
+            echo "  InetLoad::load \"`echo $download_root | sed -e "s/@@/$packfile/"`\" \$PLUGINSDIR\\$packfile"
+            echo "  Pop \$0"
+            echo "  StrCmp \$0 \"OK\" +3 0"
+            echo "  SetErrors"
+            echo "  Goto done"
+            echo "  ExecWait '\"\$PLUGINSDIR\\$packfile\" /S /D=\$INSTDIR'"
+            echo "done:"
+            echo "  IfErrors 0 +2"
+            echo "  MessageBox MB_ICONSTOP|MB_OK \"Installation of package $packdesc failed\""
+          else
+            echo "Section $flag_ \"$packdesc\" SEC_$packname"
+            echo "  SetOverwrite try"
+            get_nsi_additional_files $packname $packinstdir
+            echo "  SetOutPath \"\$INSTDIR\\share\\octave\\packages\\$packinstdir\""
+            echo "  File /r \"\${OCTAVE_ROOT}\\share\\octave\\packages\\$packinstdir\\*\""
+            if test -d "$octave_prefix/libexec/octave/packages/$packinstdir"; then
+              echo "  SetOutPath \"\$INSTDIR\\libexec\\octave\\packages\\$packinstdir\""
+              echo "  File /r \"\${OCTAVE_ROOT}\\libexec\\octave\\packages\\$packinstdir\\*\""
+            fi
+          fi
+          echo "SectionEnd"
+          ;;
+        1)
+          packinfo=`sed -e '/^ /{H;$!d;}' -e 'x;/^Description: /!d;' "$found/packinfo/DESCRIPTION" | \
+            sed -e ':a;N;$!ba;s/\n */\ /g' | sed -e 's/^Description: //'`
+          echo "  !insertmacro MUI_DESCRIPTION_TEXT \${SEC_$packname} \"$packinfo\""
+          ;;
+        2)
+          sed -n -e 's/ *$//' \
+                 -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
+                 -e 's/^depends: *//p' \
+              "$found/packinfo/DESCRIPTION" | \
+            awk -F ', ' '{c=split($0, s); for(n=1; n<=c; ++n) printf("%s\n", s[n]) }' | \
+            sed -n -e 's/^octave.*$//' \
+                   -e "s/\([a-zA-Z0-9_]\+\) *\(( *\([<>]=\?\) *\([0-9]\+\.[0-9]\+\.[0-9]\+\) *) *\)\?/  !insertmacro CheckDependency \${SEC_$packname} \${SEC_\1}/p"
+          ;;
+      esac
+    fi
+  done
+}
+
+function create_nsi_package_file()
+{
+  packname=$1
+  found=`find "$octave_prefix/share/octave/packages" -type d -a -name "$packname-*" -maxdepth 1`
+  if test ! -z "$found"; then
+    packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
+    packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+    packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+    if test -f "release-$octave_version/octave-$octave_version-$packname-$packver-setup.exe"; then
+      return 0
+    fi
+    echo -n "creating installer for $packname... "
+    mkdir -p "release-$octave_version"
+    packinstdir=$packdesc_low-$packver
+    packinfo=`sed -e '/^ /{H;$!d;}' -e 'x;/^Description: /!d;' "$found/packinfo/DESCRIPTION" | sed -e ':a;N;$!ba;s/\n */\ /g' | sed -e 's/^Description: //'`
+    packfiles=`get_nsi_additional_files $packname`
+    if test ! -z "$packfiles"; then
+      echo "$packfiles" > octave_pkg_${packname}_files.nsi
+      packfiles="!include \\\"octave_pkg_${packname}_files.nsi\\\""
+    fi
+    packdeps=`get_nsi_dependencies $packname "$found/packinfo/DESCRIPTION"`
+    if test ! -z "$packdeps"; then
+      echo "$packdeps" > octave_pkg_${packname}_deps.nsi
+      packdeps="!include \\\"octave_pkg_${packname}_deps.nsi\\\""
+    fi
+	if test -f "$found/packinfo/.autoload"; then
+      packautoload=1
+    else
+      packautoload=0
+    fi
+    have_arch_files="#"
+    if test -d "$octave_prefix/libexec/octave/packages/$packinstdir"; then
+      have_arch_files=
+    fi
+    sed -e "s/@PACKAGE_NAME@/$packname/" \
+        -e "s/@PACKAGE_LONG_NAME@/$packdesc/" \
+        -e "s/@PACKAGE_VERSION@/$packver/" \
+        -e "s/@PACKAGE_INFO@/$packinfo/" \
+        -e "s/@OCTAVE_VERSION@/$octave_version/" \
+        -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
+        -e "s/@PACKAGE_FILES@/$packfiles/" \
+        -e "s/@PACKAGE_DEPENDENCY@/$packdeps/" \
+        -e "s/@PACKAGE_AUTOLOAD@/$packautoload/" \
+        -e "s/@HAVE_ARCH_FILES@/$have_arch_files/" \
+        -e "s/@SOFTWARE_ROOT@/$software_root/" octave_package.nsi.in > octave_pkg_$packname.nsi
+    $NSI_DIR/makensis.exe octave_pkg_$packname.nsi | tee nsi.tmp >&5 2>&1
+	packsize=`sed -n -e 's,^Install data: *[0-9]\+ / \([0-9]\+\) bytes$,\1,p' nsi.tmp`
+	let "packsize = packsize / 1024"
+	rm -f nsi.tmp
+    if $do_nsiclean; then
+      rm -f octave_pkg_$packname*.nsi
+    fi
+    if test ! -f "octave-$octave_version-$packname-$packver-setup.exe"; then
+      echo "failed"
+      return -1
+    else
+      mv -f "octave-$octave_version-$packname-$packver-setup.exe" "release-$octave_version"
+	  if test -z "$isolated_sizes"; then
+        isolated_sizes="\$$packname:$packsize\$"
+      else
+        isolated_sizes="$isolated_sizes$packname:$packsize\$"
+      fi
+      echo "done"
+      return 0
+    fi
+  fi
+}
+
+if $do_nsi; then
+  if test -z "$octave_version" || test ! -d "$INSTALL_DIR/local/octave-$octave_version"; then
+    echo "no octave or octave-forge installed, cannot create installer"
+    exit -1
+  fi
+  if test ! -f "/c/WINDOWS/MSYS.INI"; then
+    echo "MSYS not found"
+    exit -1
+  else
+    msys_root=`sed -n -e '/^InstallPath=/ {s/InstallPath=//;s/\\\\/\\\\\\\\/g;p;}' /c/WINDOWS/MSYS.INI`
+    if test ! -d "$msys_root"; then
+      echo "MSYS not found"
+      exit -1
+    fi
+  fi
+  jhandles_version=`find "$INSTALL_DIR/local/octave-$octave_version/share/octave/packages" -type d -a -name "jhandles-*" -maxdepth 1`
+  if test -d "$jhandles_version"; then
+    jhandles_version=`echo "$jhandles_version" | sed -e 's/.*-\([0-9]\+\.[0-9]\+\.[0-9]\+\)$/\1/'`
+  else
+    echo "JHandles not found"
+    exit -1
+  fi
+  software_root=
+  for drive in c d; do
+    if test -d "/$drive/Software"; then
+      software_root="$drive:\\\\Software"
+    fi
+  done
+  if test ! -d "$software_root"; then
+    echo "Software directory not found"
+    exit -1
+  fi
+  release_dir="release-$octave_version"
+  mkdir -p "$release_dir"
+  for pack in $isolated_packages; do
+    if ! create_nsi_package_file $pack; then
+      exit -1
+    fi
+  done
+  if test ! -f "$release_dir/octave-$octave_version-setup.exe"; then
+    if test ! -f "README.txt"; then
+      echo -n "creating README.txt... "
+      sed -e "s/@OCTAVE_VERSION@/$octave_version/" README.txt.in > README.txt
+      sed -e '$d' "$INSTALL_DIR/local/octave-$octave_version/doc/NEWS" >> README.txt
+      unix2dos README.txt
+      echo "done"
+    fi
+    if test ! -f "octave_main.nsi"; then
+      octplot_prefix="#"
+      gui_prefix="#"
+      playrec_prefix="#"
+      if $do_octplot; then
+        octplot_prefix=
+      fi
+      if $do_gui; then
+        gui_prefix=
+      fi
+      if test -f "`octave-config -p OCTFILEDIR | sed -e 's,\\\\,/,g'`/playrec.mex"; then
+        playrec_prefix=
+      fi
+      echo -n "creating octave_main.nsi... "
+      sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
+        -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
+        -e "s/@SOFTWARE_ROOT@/$software_root/" -e "s/@HAVE_OCTPLOT@/$octplot_prefix/" \
+        -e "s/@HAVE_GUI@/$gui_prefix/" -e "s/@HAVE_PLAYREC@/$playrec_prefix/" \
+        octave.nsi.in > octave_main.nsi
+      echo "done"
+    fi
+    if test ! -f "octave_forge.nsi"; then
+      echo -n "creating octave_forge.nsi... "
+      echo "SectionGroup \"Main\" GRP_forge_main" > octave_forge.nsi
+      create_nsi_entries "$main_pkgs" "" 0 >> octave_forge.nsi
+      echo "SectionGroupEnd" >> octave_forge.nsi
+      echo "SectionGroup \"Extra\" GRP_forge_extra" >> octave_forge.nsi
+      create_nsi_entries "$extra_pkgs" "/o" 0 >> octave_forge.nsi
+      echo "SectionGroupEnd" >> octave_forge.nsi
+      echo "SectionGroup \"Language\" GRP_forge_lang" >> octave_forge.nsi
+      create_nsi_entries "$lang_pkgs" "/o" 0 >> octave_forge.nsi
+      echo "SectionGroupEnd" >> octave_forge.nsi
+      echo "SectionGroup \"Others\" GRP_forge_others" >> octave_forge.nsi
+      create_nsi_entries "$nonfree_pkgs" "" 0 >> octave_forge.nsi
+      echo "SectionGroupEnd" >> octave_forge.nsi
+      echo "done"
+    fi
+    if test ! -f "octave_forge_deps.nsi"; then
+      echo -n "creating octave_forge_deps.nsi... "
+      echo "# Dependency checking" > octave_forge_deps.nsi
+      create_nsi_entries "$main_pkgs" "" 2 >> octave_forge_deps.nsi
+      create_nsi_entries "$extra_pkgs" "" 2 >> octave_forge_deps.nsi
+      create_nsi_entries "$lang_pkgs" "" 2 >> octave_forge_deps.nsi
+      create_nsi_entries "$nonfree_pkgs" "" 2 >> octave_forge_deps.nsi
+      echo "done"
+    fi
+    if test ! -f "octave_forge_desc.nsi"; then
+      echo -n "creating octave_forge_desc.nsi... "
+      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_main} \"\"" > octave_forge_desc.nsi
+      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_extra} \"\"" >> octave_forge_desc.nsi
+      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_lang} \"\"" >> octave_forge_desc.nsi
+      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_others} \"\"" >> octave_forge_desc.nsi
+      create_nsi_entries "$main_pkgs" "" 1 >> octave_forge_desc.nsi
+      create_nsi_entries "$extra_pkgs" "" 1 >> octave_forge_desc.nsi
+      create_nsi_entries "$lang_pkgs" "" 1 >> octave_forge_desc.nsi
+      create_nsi_entries "$nonfree_pkgs" "" 1 >> octave_forge_desc.nsi
+      echo "done"
+    fi
+    if test ! -f "$release_dir/octave-$octave_version-setup.exe"; then
+      echo -n "creating installer for octave... "
+      $NSI_DIR/makensis.exe octave_main.nsi
+      if test ! -f "octave-$octave_version-setup.exe"; then
+        echo "failed"
+        exit -1
+      else
+        mv -f "octave-$octave_version-setup.exe" "$release_dir"
+        echo "done"
+      fi
+    fi
+    if $do_nsiclean; then
+      rm -f octave_main.nsi octave_forge*.nsi README.txt
+    fi
   fi
 fi

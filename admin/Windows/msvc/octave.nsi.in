@@ -13,6 +13,7 @@
 !define USE_MSYS
 #!define USE_CONSOLE
 @HAVE_GUI@!define USE_OCTAVEDE
+@HAVE_PLAYREC@!define USE_PLAYREC
 
 !define OCTAVE_BASE "octave-${OCTAVE_VERSION}"
 
@@ -139,6 +140,9 @@ Section "Core" SEC_CORE
   File "${VCLIBS_ROOT}\bin\fftw-wisdom.exe"
   File "${VCLIBS_ROOT}\bin\zlib1.dll"
   File "${VCLIBS_ROOT}\bin\libcurl.dll"
+!ifdef USE_PLAYREC
+  File "${VCLIBS_ROOT}\bin\libportaudio-2.dll"
+!endif
   ; licenses
   SetOutPath "$INSTDIR\license"
   File "${VCLIBS_ROOT}\license\COPYING.GPL"
@@ -165,6 +169,7 @@ Section "Core" SEC_CORE
   File "README.txt"
 
 ; Shortcuts
+  SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Octave.lnk" "$INSTDIR\bin\octave-${OCTAVE_VERSION}.exe" "" \
@@ -334,6 +339,10 @@ Section "Gnuplot" SEC_GNUPLOT
   File /r "${VCLIBS_ROOT}\share\gnuplot\*.*"
   SetOutPath "$INSTDIR\doc\gnuplot"
   File /r "${VCLIBS_ROOT}\doc\gnuplot*.*"
+  SetOutPath "$INSTDIR\etc\pango"
+  File /r "${VCLIBS_ROOT}\etc\pango\*.*"
+  #SetOutPath "$INSTDIR\lib\pango"
+  #File /r "${VCLIBS_ROOT}\lib\pango\*.*"
   SetOutPath "$INSTDIR\license"
   File "${VCLIBS_ROOT}\license\COPYING.LIBGD"
   File "${VCLIBS_ROOT}\license\COPYING.GNUPLOT"
@@ -463,7 +472,7 @@ SectionEnd
 Section /o "Graphical User-Interface" SEC_OCTAVEDE
   SetOutPath "$INSTDIR\bin"
   SetOverwrite try
-  File "${OCTAVE_ROOT}\bin\octaveui.exe"
+  File "${OCTAVE_ROOT}\bin\octavede.exe"
   File "${VCLIBS_ROOT}\bin\libatk-1.0-0.dll"
   File "${VCLIBS_ROOT}\bin\libatkmm-1.6-1.dll"
   File "${VCLIBS_ROOT}\bin\libcairo-2.dll"
@@ -481,6 +490,7 @@ Section /o "Graphical User-Interface" SEC_OCTAVEDE
   File "${VCLIBS_ROOT}\bin\libgobject-2.0-0.dll"
   File "${VCLIBS_ROOT}\bin\libgtk-win32-2.0-0.dll"
   File "${VCLIBS_ROOT}\bin\libgtkmm-2.4-1.dll"
+  File "${VCLIBS_ROOT}\bin\libgtksourceview-2.0-0.dll"
   File "${VCLIBS_ROOT}\bin\libgthread-2.0-0.dll"
   File "${VCLIBS_ROOT}\bin\libiconv-2.dll"
   File "${VCLIBS_ROOT}\bin\libintl-8.dll"
@@ -497,10 +507,29 @@ Section /o "Graphical User-Interface" SEC_OCTAVEDE
   File "${VCLIBS_ROOT}\bin\libvte-9.dll"
   File "${VCLIBS_ROOT}\bin\libxml2-2.dll"
   File "${VCLIBS_ROOT}\bin\zlib1.dll"
+  SetOutPath "$INSTDIR\lib\gtk-2.0"
+  File /r "${VCLIBS_ROOT}\lib\gtk-2.0\*.*"
+  #SetOutPath "$INSTDIR\lib\pango"
+  #File /r "${VCLIBS_ROOT}\lib\pango\*.*"
+  SetOutPath "$INSTDIR\etc\gtk-2.0"
+  File /r "${VCLIBS_ROOT}\etc\gtk-2.0\*.*"
+  SetOutPath "$INSTDIR\etc\pango"
+  File /r "${VCLIBS_ROOT}\etc\pango\*.*"
+  SetOutPath "$INSTDIR\etc\fonts"
+  File /r "${VCLIBS_ROOT}\etc\fonts\*.*"
+  SetOutPath "$INSTDIR\share\gdl"
+  File /r "${VCLIBS_ROOT}\share\gdl\*.*"
+  SetOutPath "$INSTDIR\share\gtksourceview-2.0"
+  File /r "${VCLIBS_ROOT}\share\gtksourceview-2.0\*.*"
+  SetOutPath "$INSTDIR\share\vte"
+  File /r "${VCLIBS_ROOT}\share\vte\*.*"
+  SetOutPath "$INSTDIR\share\xml"
+  File /r "${VCLIBS_ROOT}\share\xml\*.*"
 
 ; Shortcuts
+  SetOutPath "$INSTDIR"
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Octave UI.lnk" "$INSTDIR\bin\octaveui.exe" \
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Octave UI.lnk" "$INSTDIR\bin\octavede.exe" \
 	"" "$INSTDIR\bin\octave.ico"
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd

@@ -1,6 +1,6 @@
 diff -urN vte-0.16.13/config.h.in vte-0.16.13-new/config.h.in
---- vte-0.16.13/config.h.in	Mon Mar 10 21:24:02 2008
-+++ vte-0.16.13-new/config.h.in	Wed Apr 16 14:43:48 2008
+--- vte-0.16.13/config.h.in	Mon Mar 10 20:24:02 2008
++++ vte-0.16.13-new/config.h.in	Mon May  5 19:37:54 2008
 @@ -282,3 +282,7 @@
  
  /* Needed to get declarations for msg_control and msg_controllen on Solaris */
@@ -10,8 +10,8 @@ diff -urN vte-0.16.13/config.h.in vte-0.16.13-new/config.h.in
 +#define LINE_MAX 8192
 +#define USE_PCRE 1
 diff -urN vte-0.16.13/configure.in vte-0.16.13-new/configure.in
---- vte-0.16.13/configure.in	Mon Mar 10 21:22:37 2008
-+++ vte-0.16.13-new/configure.in	Wed Mar 26 11:12:00 2008
+--- vte-0.16.13/configure.in	Mon Mar 10 20:22:37 2008
++++ vte-0.16.13-new/configure.in	Mon May  5 19:37:54 2008
 @@ -29,7 +29,7 @@
  AM_MAINTAINER_MODE
  
@@ -22,8 +22,8 @@ diff -urN vte-0.16.13/configure.in vte-0.16.13-new/configure.in
  GETTEXT_PACKAGE=vte
  AC_SUBST(GETTEXT_PACKAGE)
 diff -urN vte-0.16.13/src/Makefile.in vte-0.16.13-new/src/Makefile.in
---- vte-0.16.13/src/Makefile.in	Mon Mar 10 21:23:42 2008
-+++ vte-0.16.13-new/src/Makefile.in	Wed Apr 16 14:45:00 2008
+--- vte-0.16.13/src/Makefile.in	Mon Mar 10 20:23:42 2008
++++ vte-0.16.13-new/src/Makefile.in	Mon May  5 19:37:54 2008
 @@ -91,7 +91,7 @@
  @BUILD_XFT_TRUE@am__objects_1 = vtexft.lo
  @BUILD_PANGOX_TRUE@am__objects_2 = vtepangox.lo
@@ -69,8 +69,8 @@ diff -urN vte-0.16.13/src/Makefile.in vte-0.16.13-new/src/Makefile.in
  
  libvte_la_LIBADD = $(LIBS) $(VTE_LIBS) $(X_LIBS) $(PCRE_LIBS) $(FT2_LIBS)
 diff -urN vte-0.16.13/src/keymap.c vte-0.16.13-new/src/keymap.c
---- vte-0.16.13/src/keymap.c	Mon Dec  3 19:22:30 2007
-+++ vte-0.16.13-new/src/keymap.c	Tue Apr 15 14:59:25 2008
+--- vte-0.16.13/src/keymap.c	Mon Dec  3 18:22:30 2007
++++ vte-0.16.13-new/src/keymap.c	Mon May  5 19:37:54 2008
 @@ -199,7 +199,11 @@
  	{cursor_all, keypad_all, fkey_all,
  	 VTE_META_MASK, _VTE_CAP_ESC "\n", 2, X_NULL},
@@ -84,8 +84,8 @@ diff -urN vte-0.16.13/src/keymap.c vte-0.16.13-new/src/keymap.c
  };
  
 diff -urN vte-0.16.13/src/pty.c vte-0.16.13-new/src/pty.c
---- vte-0.16.13/src/pty.c	Wed Feb 20 19:37:56 2008
-+++ vte-0.16.13-new/src/pty.c	Wed Apr 16 15:03:50 2008
+--- vte-0.16.13/src/pty.c	Wed Feb 20 18:37:56 2008
++++ vte-0.16.13-new/src/pty.c	Mon May  5 19:37:54 2008
 @@ -18,7 +18,9 @@
  
  #include "../config.h"
@@ -326,8 +326,8 @@ diff -urN vte-0.16.13/src/pty.c vte-0.16.13-new/src/pty.c
  	if (ret != -1) {
  		*child_pid = (pid_t) child;
 diff -urN vte-0.16.13/src/ptywin.c vte-0.16.13-new/src/ptywin.c
---- vte-0.16.13/src/ptywin.c	Thu Jan  1 01:00:00 1970
-+++ vte-0.16.13-new/src/ptywin.c	Tue Apr 15 15:19:29 2008
+--- vte-0.16.13/src/ptywin.c	Thu Jan  1 00:00:00 1970
++++ vte-0.16.13-new/src/ptywin.c	Mon May  5 19:37:54 2008
 @@ -0,0 +1,509 @@
 +/*
 + * Copyright (C) 2008 Michael Goffioul.
@@ -839,8 +839,8 @@ diff -urN vte-0.16.13/src/ptywin.c vte-0.16.13-new/src/ptywin.c
 +	*fds = (int)ptyws;
 +}
 diff -urN vte-0.16.13/src/ptywin.h vte-0.16.13-new/src/ptywin.h
---- vte-0.16.13/src/ptywin.h	Thu Jan  1 01:00:00 1970
-+++ vte-0.16.13-new/src/ptywin.h	Mon Apr 14 16:44:36 2008
+--- vte-0.16.13/src/ptywin.h	Thu Jan  1 00:00:00 1970
++++ vte-0.16.13-new/src/ptywin.h	Mon May  5 19:37:54 2008
 @@ -0,0 +1,40 @@
 +/*
 + * Copyright (C) 2008 Michael Goffioul.
@@ -883,8 +883,8 @@ diff -urN vte-0.16.13/src/ptywin.h vte-0.16.13-new/src/ptywin.h
 +
 +#endif
 diff -urN vte-0.16.13/src/reaper.c vte-0.16.13-new/src/reaper.c
---- vte-0.16.13/src/reaper.c	Wed Jan  9 21:34:36 2008
-+++ vte-0.16.13-new/src/reaper.c	Wed Apr 16 14:47:59 2008
+--- vte-0.16.13/src/reaper.c	Wed Jan  9 20:34:36 2008
++++ vte-0.16.13-new/src/reaper.c	Mon May  5 19:37:54 2008
 @@ -18,7 +18,9 @@
  
  #include "../config.h"
@@ -973,8 +973,8 @@ diff -urN vte-0.16.13/src/reaper.c vte-0.16.13-new/src/reaper.c
  
  static void
 diff -urN vte-0.16.13/src/reaper.h vte-0.16.13-new/src/reaper.h
---- vte-0.16.13/src/reaper.h	Mon Feb 26 22:05:13 2007
-+++ vte-0.16.13-new/src/reaper.h	Wed Apr 16 14:47:29 2008
+--- vte-0.16.13/src/reaper.h	Mon Feb 26 21:05:13 2007
++++ vte-0.16.13-new/src/reaper.h	Mon May  5 19:37:54 2008
 @@ -19,8 +19,9 @@
  #ifndef vte_reaper_h_included
  #define vte_reaper_h_included
@@ -987,8 +987,8 @@ diff -urN vte-0.16.13/src/reaper.h vte-0.16.13-new/src/reaper.h
  #include <glib.h>
  #include <glib-object.h>
 diff -urN vte-0.16.13/src/trie.c vte-0.16.13-new/src/trie.c
---- vte-0.16.13/src/trie.c	Wed Jan  9 21:32:44 2008
-+++ vte-0.16.13-new/src/trie.c	Wed Apr 16 14:48:51 2008
+--- vte-0.16.13/src/trie.c	Wed Jan  9 20:32:44 2008
++++ vte-0.16.13-new/src/trie.c	Mon May  5 19:37:54 2008
 @@ -47,6 +47,10 @@
  #define TRIE_MAYBE_STATIC
  #endif
@@ -1001,8 +1001,8 @@ diff -urN vte-0.16.13/src/trie.c vte-0.16.13-new/src/trie.c
  struct char_class_data {
  	gunichar c;			/* A character. */
 diff -urN vte-0.16.13/src/vte-private.h vte-0.16.13-new/src/vte-private.h
---- vte-0.16.13/src/vte-private.h	Tue Nov 27 11:29:32 2007
-+++ vte-0.16.13-new/src/vte-private.h	Wed Apr 16 14:50:03 2008
+--- vte-0.16.13/src/vte-private.h	Tue Nov 27 10:29:32 2007
++++ vte-0.16.13-new/src/vte-private.h	Mon May  5 19:37:54 2008
 @@ -19,18 +19,26 @@
  #ifndef vte_vte_private_h_included
  #define vte_vte_private_h_included
@@ -1031,8 +1031,8 @@ diff -urN vte-0.16.13/src/vte-private.h vte-0.16.13-new/src/vte-private.h
  #include <stdio.h>
  #include <stdlib.h>
 diff -urN vte-0.16.13/src/vte.c vte-0.16.13-new/src/vte.c
---- vte-0.16.13/src/vte.c	Fri Feb  8 20:46:11 2008
-+++ vte-0.16.13-new/src/vte.c	Wed Apr 16 14:51:14 2008
+--- vte-0.16.13/src/vte.c	Fri Feb  8 19:46:11 2008
++++ vte-0.16.13-new/src/vte.c	Mon May  5 19:52:09 2008
 @@ -62,6 +62,11 @@
  #define howmany(x, y) (((x) + ((y) - 1)) / (y))
  #endif
@@ -1181,7 +1181,38 @@ diff -urN vte-0.16.13/src/vte.c vte-0.16.13-new/src/vte.c
  		/* Read the terminal size, in case something went awry. */
  		vte_terminal_refresh_size(terminal);
  	} else {
-@@ -7489,7 +7530,11 @@
+@@ -7149,6 +7190,7 @@
+ 	terminal->pvt->emulation = g_intern_string(emulation);
+ 	_vte_debug_print(VTE_DEBUG_MISC,
+ 			"Setting emulation to `%s'...\n", emulation);
++	g_setenv("TERM", emulation, TRUE);
+ 	/* Find and read the right termcap file. */
+ 	vte_terminal_set_termcap(terminal, NULL, FALSE);
+ 
+@@ -7256,10 +7298,22 @@
+ 	char *wpath;
+ 
+ 	if (path == NULL) {
++#ifdef G_OS_WIN32
++		char *winpath;
++		
++		winpath = g_win32_get_package_installation_directory(NULL, "libvte-9");
++		wpath = g_strdup_printf("%s/share/" PACKAGE "/termcap/%s",
++					winpath,
++					terminal->pvt->emulation ?
++					terminal->pvt->emulation :
++					vte_terminal_get_default_emulation(terminal));
++		g_free(winpath);
++#else
+ 		wpath = g_strdup_printf(DATADIR "/" PACKAGE "/termcap/%s",
+ 					terminal->pvt->emulation ?
+ 					terminal->pvt->emulation :
+ 					vte_terminal_get_default_emulation(terminal));
++#endif
+ 		if (g_stat(wpath, &st) != 0) {
+ 			g_free(wpath);
+ 			wpath = g_strdup("/etc/termcap");
+@@ -7489,7 +7543,11 @@
  	vte_terminal_set_word_chars(terminal, NULL);
  
  	/* Miscellaneous options. */
@@ -1193,7 +1224,7 @@ diff -urN vte-0.16.13/src/vte.c vte-0.16.13-new/src/vte.c
  	vte_terminal_set_delete_binding(terminal, VTE_ERASE_AUTO);
  	pvt->meta_sends_escape = TRUE;
  	pvt->audible_bell = TRUE;
-@@ -7910,8 +7955,9 @@
+@@ -7910,8 +7968,9 @@
  		if (pgrp != -1) {
  			kill(-pgrp, SIGHUP);
  		}
@@ -1204,7 +1235,7 @@ diff -urN vte-0.16.13/src/vte.c vte-0.16.13-new/src/vte.c
  	}
  	_vte_terminal_disconnect_pty_read(terminal);
  	_vte_terminal_disconnect_pty_write(terminal);
-@@ -12018,10 +12064,12 @@
+@@ -12018,10 +12077,12 @@
  
  
         /* Set the pty to be non-blocking. */
@@ -1218,8 +1249,8 @@ diff -urN vte-0.16.13/src/vte.c vte-0.16.13-new/src/vte.c
         vte_terminal_set_size(terminal,
                               terminal->column_count,
 diff -urN vte-0.16.13/src/vteapp.c vte-0.16.13-new/src/vteapp.c
---- vte-0.16.13/src/vteapp.c	Fri Feb  8 20:48:57 2008
-+++ vte-0.16.13-new/src/vteapp.c	Wed Apr 16 14:52:12 2008
+--- vte-0.16.13/src/vteapp.c	Fri Feb  8 19:48:57 2008
++++ vte-0.16.13-new/src/vteapp.c	Mon May  5 19:37:54 2008
 @@ -20,7 +20,9 @@
  #include "../config.h"
  
@@ -1285,8 +1316,8 @@ diff -urN vte-0.16.13/src/vteapp.c vte-0.16.13-new/src/vteapp.c
  	g_assert(window == NULL);
  
 diff -urN vte-0.16.13/src/vtedraw.c vte-0.16.13-new/src/vtedraw.c
---- vte-0.16.13/src/vtedraw.c	Tue Nov 27 09:41:31 2007
-+++ vte-0.16.13-new/src/vtedraw.c	Wed Apr 16 11:58:19 2008
+--- vte-0.16.13/src/vtedraw.c	Tue Nov 27 08:41:31 2007
++++ vte-0.16.13-new/src/vtedraw.c	Mon May  5 19:37:54 2008
 @@ -32,6 +32,7 @@
  #include "vtegl.h"
  #include "vtepango.h"
@@ -1306,8 +1337,8 @@ diff -urN vte-0.16.13/src/vtedraw.c vte-0.16.13-new/src/vtedraw.c
  
  static gboolean
 diff -urN vte-0.16.13/src/vteft2.c vte-0.16.13-new/src/vteft2.c
---- vte-0.16.13/src/vteft2.c	Wed Nov 28 14:44:48 2007
-+++ vte-0.16.13-new/src/vteft2.c	Wed Apr 16 14:52:57 2008
+--- vte-0.16.13/src/vteft2.c	Wed Nov 28 13:44:48 2007
++++ vte-0.16.13-new/src/vteft2.c	Mon May  5 19:37:54 2008
 @@ -19,7 +19,9 @@
  
  #include "../config.h"
@@ -1319,8 +1350,8 @@ diff -urN vte-0.16.13/src/vteft2.c vte-0.16.13-new/src/vteft2.c
  #include <gtk/gtk.h>
  #include <glib.h>
 diff -urN vte-0.16.13/src/vteglyph.c vte-0.16.13-new/src/vteglyph.c
---- vte-0.16.13/src/vteglyph.c	Wed Jan  9 21:32:53 2008
-+++ vte-0.16.13-new/src/vteglyph.c	Wed Apr 16 14:53:15 2008
+--- vte-0.16.13/src/vteglyph.c	Wed Jan  9 20:32:53 2008
++++ vte-0.16.13-new/src/vteglyph.c	Mon May  5 19:37:54 2008
 @@ -19,7 +19,9 @@
  
  #include "../config.h"
@@ -1343,8 +1374,8 @@ diff -urN vte-0.16.13/src/vteglyph.c vte-0.16.13-new/src/vteglyph.c
  static FT_Face _vte_glyph_cache_face_for_char(struct _vte_glyph_cache *cache,
  					      gunichar c);
 diff -urN vte-0.16.13/src/vtepango.c vte-0.16.13-new/src/vtepango.c
---- vte-0.16.13/src/vtepango.c	Wed Nov 28 14:55:04 2007
-+++ vte-0.16.13-new/src/vtepango.c	Wed Apr 16 14:53:48 2008
+--- vte-0.16.13/src/vtepango.c	Wed Nov 28 13:55:04 2007
++++ vte-0.16.13-new/src/vtepango.c	Mon May  5 19:37:54 2008
 @@ -19,7 +19,9 @@
  
  #include "../config.h"
@@ -1367,8 +1398,8 @@ diff -urN vte-0.16.13/src/vtepango.c vte-0.16.13-new/src/vtepango.c
  struct _vte_pango_data
  {
 diff -urN vte-0.16.13/src/vtepangowin.c vte-0.16.13-new/src/vtepangowin.c
---- vte-0.16.13/src/vtepangowin.c	Thu Jan  1 01:00:00 1970
-+++ vte-0.16.13-new/src/vtepangowin.c	Wed Apr 16 12:14:31 2008
+--- vte-0.16.13/src/vtepangowin.c	Thu Jan  1 00:00:00 1970
++++ vte-0.16.13-new/src/vtepangowin.c	Mon May  5 19:37:54 2008
 @@ -0,0 +1,499 @@
 +/*
 + * Copyright (C) 2008 Red Hat, Inc.
@@ -1870,8 +1901,8 @@ diff -urN vte-0.16.13/src/vtepangowin.c vte-0.16.13-new/src/vtepangowin.c
 +
 +#endif
 diff -urN vte-0.16.13/src/vtepangowin.h vte-0.16.13-new/src/vtepangowin.h
---- vte-0.16.13/src/vtepangowin.h	Thu Jan  1 01:00:00 1970
-+++ vte-0.16.13-new/src/vtepangowin.h	Wed Apr 16 11:21:07 2008
+--- vte-0.16.13/src/vtepangowin.h	Thu Jan  1 00:00:00 1970
++++ vte-0.16.13-new/src/vtepangowin.h	Mon May  5 19:37:54 2008
 @@ -0,0 +1,33 @@
 +/*
 + * Copyright (C) 2008 Red Hat, Inc.
@@ -1907,8 +1938,8 @@ diff -urN vte-0.16.13/src/vtepangowin.h vte-0.16.13-new/src/vtepangowin.h
 +
 +#endif
 diff -urN vte-0.16.13/src/vterdb.c vte-0.16.13-new/src/vterdb.c
---- vte-0.16.13/src/vterdb.c	Sat Nov 24 02:24:40 2007
-+++ vte-0.16.13-new/src/vterdb.c	Wed Apr 16 12:39:52 2008
+--- vte-0.16.13/src/vterdb.c	Sat Nov 24 01:24:40 2007
++++ vte-0.16.13-new/src/vterdb.c	Mon May  5 19:37:54 2008
 @@ -27,6 +27,11 @@
  #endif
  #include "vterdb.h"
@@ -1957,8 +1988,8 @@ diff -urN vte-0.16.13/src/vterdb.c vte-0.16.13-new/src/vterdb.c
  
  gboolean
 diff -urN vte-0.16.13/src/vteseq.c vte-0.16.13-new/src/vteseq.c
---- vte-0.16.13/src/vteseq.c	Tue Nov 27 14:25:37 2007
-+++ vte-0.16.13-new/src/vteseq.c	Tue Apr 15 15:20:42 2008
+--- vte-0.16.13/src/vteseq.c	Tue Nov 27 13:25:37 2007
++++ vte-0.16.13-new/src/vteseq.c	Mon May  5 19:37:54 2008
 @@ -2185,6 +2185,9 @@
  	long start, end;
  	VteScreen *screen;
@@ -1970,8 +2001,8 @@ diff -urN vte-0.16.13/src/vteseq.c vte-0.16.13-new/src/vteseq.c
  
  	if (screen->scrolling_restricted) {
 diff -urN vte-0.16.13/src/vteskel.c vte-0.16.13-new/src/vteskel.c
---- vte-0.16.13/src/vteskel.c	Mon Feb 26 22:05:13 2007
-+++ vte-0.16.13-new/src/vteskel.c	Wed Apr 16 14:54:19 2008
+--- vte-0.16.13/src/vteskel.c	Mon Feb 26 21:05:13 2007
++++ vte-0.16.13-new/src/vteskel.c	Mon May  5 19:37:54 2008
 @@ -19,7 +19,9 @@
  
  #include "../config.h"

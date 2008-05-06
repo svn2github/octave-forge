@@ -27,6 +27,7 @@
 #include <octave/load-path.h>
 #include <octave/oct-env.h>
 #include <octave/oct-shlib.h>
+#include <octave/oct-env.h>
 
 #include <algorithm>
 #include <map>
@@ -161,6 +162,8 @@ static std::string read_registry_string (const std::string& key, const std::stri
           retval.resize (len);
           if (RegQueryValueEx (hkey, value.c_str (), 0, 0, (LPBYTE)&retval[0], &len))
             retval = "";
+	  else if (retval[len-1] == '\0')
+	    retval.resize (--len);
         }
       RegCloseKey (hkey);
     }
@@ -190,6 +193,24 @@ static std::string get_module_filename (HMODULE hMod)
         }
     }
   return (found ? retval : "");
+}
+
+static void set_dll_directory (const std::string& dir = "")
+{
+  typedef BOOL (WINAPI *dllfcn_t) (LPCTSTR path);
+
+  static dllfcn_t dllfcn = NULL;
+  static bool first = true;
+
+  if (! dllfcn && first)
+    {
+      HINSTANCE hKernel32 = GetModuleHandle ("kernel32");
+      dllfcn = reinterpret_cast<dllfcn_t> (GetProcAddress (hKernel32, "SetDllDirectoryA"));
+      first = false;
+    }
+
+  if (dllfcn)
+    dllfcn (dir.empty () ? NULL : dir.c_str ());
 }
 #endif
 
@@ -265,6 +286,7 @@ static void initialize_jvm ()
 
   HMODULE hMod = GetModuleHandle("jvm.dll");
   std::string jvm_lib_path;
+  std::string old_cwd;
 
   if (hMod == NULL)
   {
@@ -283,6 +305,18 @@ static void initialize_jvm ()
     jvm_lib_path = read_registry_string (key,value);
     if (jvm_lib_path.empty())
       throw std::string ("unable to find Java Runtime Environment: ")+key+"."+value;
+
+    std::string jvm_bin_path;
+
+    value = "JavaHome";
+    jvm_bin_path = read_registry_string (key, value);
+    if (! jvm_bin_path.empty ())
+      {
+	jvm_bin_path = (jvm_bin_path + std::string ("\\bin"));
+	old_cwd = octave_env::getcwd ();
+	set_dll_directory (jvm_bin_path);
+	octave_env::chdir (jvm_bin_path);
+      }
   }
   else
   {
@@ -306,6 +340,12 @@ static void initialize_jvm ()
   octave_shlib lib (jvm_lib_path);
   if (!lib) 
     throw std::string("unable to load Java Runtime Environment from ")+jvm_lib_path;
+
+#if defined (__WIN32__)
+  set_dll_directory ();
+  if (! old_cwd.empty ())
+    octave_env::chdir (old_cwd);
+#endif
 
   JNI_CreateJavaVM_t create_vm = (JNI_CreateJavaVM_t)lib.search("JNI_CreateJavaVM");
   JNI_GetCreatedJavaVMs_t get_vm = (JNI_GetCreatedJavaVMs_t)lib.search("JNI_GetCreatedJavaVMs");

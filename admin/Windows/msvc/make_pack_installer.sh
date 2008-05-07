@@ -69,7 +69,8 @@ function create_nsi_package_file()
   if test ! -z "$found"; then
     packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
     packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
-    packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+    #packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+    packver=`basename "$found" | sed -e "s/$packname-//"`
     if test -f "release-$octave_version/octave-$octave_version-$packname-$packver-setup.exe"; then
       return 0
     fi

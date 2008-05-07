@@ -43,7 +43,8 @@ HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
 ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++ libglade
-gtksourceview gdl VTE GtkGlArea PortAudio playrec OctaveDE Gtksourceview1 FTPlib"
+gtksourceview gdl VTE GtkGlArea PortAudio playrec OctaveDE Gtksourceview1 FTPlib
+SQLite3"
 octave_version=
 of_version=
 do_nsi=false
@@ -91,6 +92,7 @@ gtksourceview1ver=1.8.5
 gdlver=0.7.11
 vtever=0.16.13
 gtkglareaver=1.99.0
+sqlite3ver=3.5.8
 
 ###################################################################################
 
@@ -569,6 +571,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/vte.lib" VTE
     todo_check "$tlibdir/gtkgl-2.0.lib" GtkGlArea
     todo_check "$tlibdir/ftp.lib" FTPlib
+    todo_check "$tlibdir/sqlite3.lib" SQLite3
   fi
 else
   packages="$todo_packages"
@@ -2723,6 +2726,39 @@ if check_package FTPlib; then
     cp ftp.lib "$tlibdir") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/ftplib-3.1-1"
   if test ! -f "$tlibdir/ftp.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# SQLite3 #
+###########
+
+if check_package SQLite3; then
+  download_file sqlite-amalgamation-$sqlite3ver.tar.gz "http://www.sqlite.org/sqlite-amalgamation-$sqlite3ver.tar.gz"
+  echo -n "decompressing SQLite3... "
+  unpack_file sqlite-amalgamation-$sqlite3ver.tar.gz
+  echo "done"
+  echo "compiling SQLite3... "
+  (cd "$DOWNLOAD_DIR/sqlite-$sqlite3ver" &&
+    W_CPPFLAGS="$W_CPPFLAGS -DSQLITE_ENABLE_COLUMN_METADATA" configure_package --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e 's/libsqlite3_la_LDFLAGS =/& -export-symbols-regex "^sqlite3_.*"/' Makefile > ttt &&
+      mv ttt Makefile &&
+    make libsqlite3.la &&
+    sed -e '/^#ifndef SQLITE_EXTERN$/ {i \
+#ifdef WIN32\
+#define SQLITE_EXTERN extern __declspec(dllimport)\
+#endif
+;}' sqlite3.h > ttt &&
+      mv ttt sqlite3.h &&
+    make install-libLTLIBRARIES install-includeHEADERS &&
+    rm -f $tlibdir_quoted/libsqlite3*.la) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/sqlite-$sqlite3ver"
+  if test ! -f "$tlibdir/sqlite3.lib"; then
     echo "failed"
     exit -1
   else

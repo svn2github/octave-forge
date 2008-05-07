@@ -72,6 +72,11 @@ function get_nsi_additional_files()
       echo "  SetOutPath \"\$INSTDIR\\bin\""
       echo "  File \"\${VCLIBS_ROOT}\\bin\\libftp-3.dll\""
       ;;
+    database)
+      check_exec_prefix
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libsqlite3-0.dll\""
+      ;;
   esac
   return 0
 }

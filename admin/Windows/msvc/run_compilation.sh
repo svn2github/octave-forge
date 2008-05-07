@@ -43,7 +43,7 @@ HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
 ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++ libglade
-gtksourceview gdl VTE GtkGlArea PortAudio playrec OctaveDE Gtksourceview1"
+gtksourceview gdl VTE GtkGlArea PortAudio playrec OctaveDE Gtksourceview1 FTPlib"
 octave_version=
 of_version=
 do_nsi=false
@@ -568,6 +568,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/gdl-1.lib" gdl
     todo_check "$tlibdir/vte.lib" VTE
     todo_check "$tlibdir/gtkgl-2.0.lib" GtkGlArea
+    todo_check "$tlibdir/ftp.lib" FTPlib
   fi
 else
   packages="$todo_packages"
@@ -2542,7 +2543,7 @@ if check_package octave; then
     #mv ttt octMakefile.in &&
     if test ! -f "config.log"; then
       CC=cc-msvc CXX=cc-msvc CFLAGS=-O2 CXXFLAGS=-O2 NM="dumpbin -symbols" \
-        F77=fc-msvc FFLAGS="-O2" \
+        F77=fc-msvc FFLAGS="-O2" FC=fc-msvc FCFLAGS="-O2" AR=ar-msvc RANLIB=ranlib-msvc \
         ./configure --build=i686-pc-msdosmsvc --prefix="$octave_prefix" \
         --with-zlib=zlib --with-curl=libcurl &&
         (cd doc &&
@@ -2693,6 +2694,35 @@ if check_package JOGL; then
     cat LICENSE-JOGL-1.1.0.txt >> "$tlicdir/COPYING.JOGL") >&5 2>&1
   rm -rf "$DOWNLOAD_DIR/jogl-1.1.0-windows-i586"
   if test ! -f "$tbindir/jogl.jar"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##########
+# FTPlib #
+##########
+
+if check_package FTPlib; then
+  download_file ftplib-3.1-1.zip 'http://www.nbpfaus.net/~pfau/ftplib/ftplib-3.1-1.zip'
+  echo -n "decompressing FTPlib... "
+  (cd "$DOWNLOAD_DIR" && unzip -q ftplib-3.1-1.zip)
+  echo "done"
+  echo -n "installing FTPlib... "
+  (cd "$DOWNLOAD_DIR/ftplib-3.1-1" &&
+    cd winnt &&
+    create_module_rc FTPlib 3.1 libftp-3.dll "Thomas Pfau <pfau@eclipse.net>" \
+      "FTP Protocol Library" "Copyright © 1996-`date +%Y` Thomas Pfau <pfau@eclipse.net>" > ftplib.rc &&
+    cc-msvc -O2 -MD -c ftplib.c &&
+    rc -fo ftplib.res ftplib.rc &&
+    cc-msvc -shared -o libftp-3.dll -Wl,-implib:ftp.lib ftplib.o ftplib.res -lws2_32 &&
+    cp libftp-3.dll "$tbindir" &&
+    cp ftplib.h "$tincludedir" &&
+    cp ftp.lib "$tlibdir") >&5 2>&1
+  rm -rf "$DOWNLOAD_DIR/ftplib-3.1-1"
+  if test ! -f "$tlibdir/ftp.lib"; then
     echo "failed"
     exit -1
   else
@@ -3524,7 +3554,8 @@ function create_nsi_package_file()
   if test ! -z "$found"; then
     packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
     packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
-    packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+    #packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+    packver=`basename "$found" | sed -e "s/$packname-//"`
     if test -f "release-$octave_version/octave-$octave_version-$packname-$packver-setup.exe"; then
       return 0
     fi

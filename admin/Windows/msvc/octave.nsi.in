@@ -212,6 +212,8 @@ Section "Development files" SEC_DEV
   File "${VCLIBS_ROOT}\bin\cc-msvc.exe"
   File "${VCLIBS_ROOT}\bin\fc-msvc.exe"
   File "${VCLIBS_ROOT}\bin\f2c.exe"
+  File "${VCLIBS_ROOT}\bin\ar-msvc"
+  File "${VCLIBS_ROOT}\bin\ranlib-msvc"
   ; Additional dependent library files (required by mkoctfile, although not really used)
   SetOutPath "$INSTDIR\lib"
   File "${VCLIBS_ROOT}\lib\blas.lib"

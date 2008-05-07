@@ -7,7 +7,11 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
-<dt>April ??, 2008</dt>
+<<dt>May 7, 2008</dt>
+<dd>
+<p>The optim package has been updated to version 1.0.3, and a new version of the bundle has been released to reflect this change. This change was needed due to an error by the release manager.</p>
+</dd>
+dt>April 29, 2008</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 3.0.1. Many packages
  will also function function with earlier versions of Octave 2.9.

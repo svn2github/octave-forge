@@ -1,4 +1,5 @@
 octave_prefix=
+exec_prefix=
 packages=
 do_nsiclean=true
 NSI_DIR=
@@ -8,6 +9,9 @@ while test $# -gt 0; do
   case "$1" in
     --prefix=*)
       octave_prefix=`echo $1 | sed -e 's/--prefix=//'` 
+      ;;
+    --exec-prefix=*)
+      exec_prefix=`echo $1 | sed -e 's/--exec-prefix=//'`
       ;;
     --keep)
       do_nsiclean=false
@@ -34,6 +38,11 @@ octave_version=`octave-config -p VERSION`
 octave_prefix_w32=`cd $octave_prefix && pwd -W`
 octave_prefix_w32=`echo $octave_prefix_w32 | sed -e 's,/,\\\\\\\\,g'`
 
+if test -n "$exec_prefix"; then
+  exec_prefix_w32=`cd $exec_prefix && pwd -W`
+  exec_prefix_w32=`echo $exec_prefix_w32 | sed -e 's,/,\\\\\\\\,g'`
+fi
+
 if test -d "/c/Software/NSIS"; then
   NSI_DIR=/c/Software/NSIS
 elif test -d "/d/Software/NSIS"; then
@@ -45,8 +54,25 @@ fi
 
 ##############################################################################
 
+function check_exec_prefix()
+{
+  if test -z "$exec_prefix"; then
+    echo "WARNING: no --exec-prefix argument given"
+    echo "WARNING: package creation might fail"
+  fi
+}
+
 function get_nsi_additional_files()
 {
+  packname=$1
+  packinstdir=$2
+  case "$packname" in
+    ftp)
+      check_exec_prefix
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libftp-3.dll\""
+      ;;
+  esac
   return 0
 }
 
@@ -102,7 +128,7 @@ function create_nsi_package_file()
         -e "s/@PACKAGE_VERSION@/$packver/" \
         -e "s/@PACKAGE_INFO@/$packinfo/" \
         -e "s/@OCTAVE_VERSION@/$octave_version/" \
-        -e "s/@VCLIBS_ROOT@/$octave_prefix_w32/" \
+        -e "s/@VCLIBS_ROOT@/$exec_prefix_w32/" \
 	-e 's/!define OCTAVE_ROOT .*/!define OCTAVE_ROOT "${VCLIBS_ROOT}"/' \
         -e "s/@PACKAGE_FILES@/$packfiles/" \
         -e "s/@PACKAGE_DEPENDENCY@/$packdeps/" \

@@ -3439,6 +3439,10 @@ function get_nsi_additional_files()
       echo "  SetOutPath \"\$INSTDIR\\tools\\gmsh\""
       echo "  File /r /x gmsh.exe \"\${SOFTWARE_ROOT}\\Gmsh\\*.*\""
       ;;
+    ftp)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libftp-3.dll\""
+      ;;
   esac
 }
 

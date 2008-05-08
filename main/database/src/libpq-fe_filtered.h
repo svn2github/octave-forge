@@ -367,10 +367,12 @@ extern int	PQgetlineAsync(PGconn *conn, char *buffer, int bufsize);
 extern int	PQputnbytes(PGconn *conn, const char *buffer, int nbytes);
 extern int	PQendcopy(PGconn *conn);
 
+#ifndef SWIG
 /* Set blocking/nonblocking connection to the backend */
 extern int	PQsetnonblocking(PGconn *conn, int arg);
 extern int	PQisnonblocking(const PGconn *conn);
 extern int	PQisthreadsafe(void);
+#endif // SWIG
 
 /* Force the write buffer to be written (or at least try) */
 extern int	PQflush(PGconn *conn);
@@ -410,14 +412,18 @@ extern char *PQcmdTuples(PGresult *res);
 extern char *PQgetvalue(const PGresult *res, int tup_num, int field_num);
 extern int	PQgetlength(const PGresult *res, int tup_num, int field_num);
 extern int	PQgetisnull(const PGresult *res, int tup_num, int field_num);
+#ifndef SWIG
 extern int	PQnparams(const PGresult *res);
 extern Oid	PQparamtype(const PGresult *res, int param_num);
+#endif // SWIG
 
+#ifndef SWIG
 /* Describe prepared statements and portals */
 extern PGresult *PQdescribePrepared(PGconn *conn, const char *stmt);
 extern PGresult *PQdescribePortal(PGconn *conn, const char *portal);
 extern int	PQsendDescribePrepared(PGconn *conn, const char *stmt);
 extern int	PQsendDescribePortal(PGconn *conn, const char *portal);
+#endif // SWIG
 
 /* Delete a PGresult */
 extern void PQclear(PGresult *res);
@@ -439,6 +445,7 @@ extern void PQfreemem(void *ptr);
 extern PGresult *PQmakeEmptyPGresult(PGconn *conn, ExecStatusType status);
 
 
+#ifndef SWIG
 /* Quoting strings before inclusion in queries. */
 extern size_t PQescapeStringConn(PGconn *conn,
 				   char *to, const char *from, size_t length,
@@ -448,6 +455,7 @@ extern unsigned char *PQescapeByteaConn(PGconn *conn,
 				  size_t *to_length);
 extern unsigned char *PQunescapeBytea(const unsigned char *strtext,
 				size_t *retbuflen);
+#endif // SWIG
 
 /* These forms are deprecated! */
 extern size_t PQescapeString(char *to, const char *from, size_t length);
@@ -488,10 +496,12 @@ PQprintTuples(const PGresult *res,
 extern int	lo_open(PGconn *conn, Oid lobjId, int mode);
 extern int	lo_close(PGconn *conn, int fd);
 extern int	lo_read(PGconn *conn, int fd, char *buf, size_t len);
-extern int	lo_write(PGconn *conn, int fd, const char *buf, size_t len);
+extern int	lo_write(PGconn *conn, int fd, char *buf, size_t len);
 extern int	lo_lseek(PGconn *conn, int fd, int offset, int whence);
 extern Oid	lo_creat(PGconn *conn, int mode);
+#ifndef SWIG
 extern Oid	lo_create(PGconn *conn, Oid lobjId);
+#endif // SWIG
 extern int	lo_tell(PGconn *conn, int fd);
 extern int	lo_unlink(PGconn *conn, Oid lobjId);
 extern Oid	lo_import(PGconn *conn, const char *filename);
@@ -500,17 +510,23 @@ extern int	lo_export(PGconn *conn, Oid lobjId, const char *filename);
 /* === in fe-misc.c === */
 
 /* Determine length of multibyte encoded char at *s */
+#ifndef SWIG
 extern int	PQmblen(const char *s, int encoding);
+#endif // SWIG
 
 /* Determine display length of multibyte encoded char at *s */
+#ifndef SWIG
 extern int	PQdsplen(const char *s, int encoding);
+#endif // SWIG
 
 /* Get encoding id from environment variable PGCLIENTENCODING */
 extern int	PQenv2encoding(void);
 
 /* === in fe-auth.c === */
 
+#ifndef SWIG
 extern char *PQencryptPassword(const char *passwd, const char *user);
+#endif // SWIG
 
 #ifdef __cplusplus
 }

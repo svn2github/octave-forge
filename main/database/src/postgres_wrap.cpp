@@ -6216,81 +6216,6 @@ fail:
 }
 
 
-static octave_value_list _wrap_PQsetnonblocking (const octave_value_list& args, int nargout) {
-  PGconn *arg1 = (PGconn *) 0 ;
-  int arg2 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQsetnonblocking",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_conn, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQsetnonblocking" "', argument " "1"" of type '" "PGconn *""'"); 
-  }
-  arg1 = (PGconn *)(argp1);
-  ecode2 = SWIG_AsVal_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "PQsetnonblocking" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = (int)(val2);
-  result = (int)PQsetnonblocking(arg1,arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQisnonblocking (const octave_value_list& args, int nargout) {
-  PGconn *arg1 = (PGconn *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQisnonblocking",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_conn, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQisnonblocking" "', argument " "1"" of type '" "PGconn const *""'"); 
-  }
-  arg1 = (PGconn *)(argp1);
-  result = (int)PQisnonblocking((pg_conn const *)arg1);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQisthreadsafe (const octave_value_list& args, int nargout) {
-  int result;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQisthreadsafe",args.length(),0,0,0)) {
-    SWIG_fail;
-  }
-  result = (int)PQisthreadsafe();
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
 static octave_value_list _wrap_PQflush (const octave_value_list& args, int nargout) {
   PGconn *arg1 = (PGconn *) 0 ;
   int result;
@@ -7061,204 +6986,6 @@ fail:
 }
 
 
-static octave_value_list _wrap_PQnparams (const octave_value_list& args, int nargout) {
-  PGresult *arg1 = (PGresult *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQnparams",args.length(),1,1,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_result, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQnparams" "', argument " "1"" of type '" "PGresult const *""'"); 
-  }
-  arg1 = (PGresult *)(argp1);
-  result = (int)PQnparams((pg_result const *)arg1);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQparamtype (const octave_value_list& args, int nargout) {
-  PGresult *arg1 = (PGresult *) 0 ;
-  int arg2 ;
-  Oid result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQparamtype",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_result, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQparamtype" "', argument " "1"" of type '" "PGresult const *""'"); 
-  }
-  arg1 = (PGresult *)(argp1);
-  ecode2 = SWIG_AsVal_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "PQparamtype" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = (int)(val2);
-  result = (Oid)PQparamtype((pg_result const *)arg1,arg2);
-  _outv = SWIG_From_unsigned_SS_int((unsigned int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQdescribePrepared (const octave_value_list& args, int nargout) {
-  PGconn *arg1 = (PGconn *) 0 ;
-  char *arg2 = (char *) 0 ;
-  PGresult *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQdescribePrepared",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_conn, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQdescribePrepared" "', argument " "1"" of type '" "PGconn *""'"); 
-  }
-  arg1 = (PGconn *)(argp1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PQdescribePrepared" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  result = (PGresult *)PQdescribePrepared(arg1,(char const *)arg2);
-  _outv = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_pg_result, 0 |  0 );
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQdescribePortal (const octave_value_list& args, int nargout) {
-  PGconn *arg1 = (PGconn *) 0 ;
-  char *arg2 = (char *) 0 ;
-  PGresult *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQdescribePortal",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_conn, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQdescribePortal" "', argument " "1"" of type '" "PGconn *""'"); 
-  }
-  arg1 = (PGconn *)(argp1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PQdescribePortal" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  result = (PGresult *)PQdescribePortal(arg1,(char const *)arg2);
-  _outv = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_pg_result, 0 |  0 );
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQsendDescribePrepared (const octave_value_list& args, int nargout) {
-  PGconn *arg1 = (PGconn *) 0 ;
-  char *arg2 = (char *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQsendDescribePrepared",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_conn, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQsendDescribePrepared" "', argument " "1"" of type '" "PGconn *""'"); 
-  }
-  arg1 = (PGconn *)(argp1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PQsendDescribePrepared" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  result = (int)PQsendDescribePrepared(arg1,(char const *)arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQsendDescribePortal (const octave_value_list& args, int nargout) {
-  PGconn *arg1 = (PGconn *) 0 ;
-  char *arg2 = (char *) 0 ;
-  int result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQsendDescribePortal",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_conn, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQsendDescribePortal" "', argument " "1"" of type '" "PGconn *""'"); 
-  }
-  arg1 = (PGconn *)(argp1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PQsendDescribePortal" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  result = (int)PQsendDescribePortal(arg1,(char const *)arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-fail:
-  return _out;
-}
-
-
 static octave_value_list _wrap_PQclear (const octave_value_list& args, int nargout) {
   PGresult *arg1 = (PGresult *) 0 ;
   void *argp1 = 0 ;
@@ -7332,149 +7059,6 @@ static octave_value_list _wrap_PQmakeEmptyPGresult (const octave_value_list& arg
   arg2 = (ExecStatusType)(val2);
   result = (PGresult *)PQmakeEmptyPGresult(arg1,arg2);
   _outv = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_pg_result, 0 |  0 );
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQescapeStringConn (const octave_value_list& args, int nargout) {
-  PGconn *arg1 = (PGconn *) 0 ;
-  char *arg2 = (char *) 0 ;
-  char *arg3 = (char *) 0 ;
-  size_t arg4 ;
-  int *arg5 = (int *) 0 ;
-  size_t result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  int res3 ;
-  char *buf3 = 0 ;
-  int alloc3 = 0 ;
-  size_t val4 ;
-  int ecode4 = 0 ;
-  void *argp5 = 0 ;
-  int res5 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQescapeStringConn",args.length(),5,5,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_conn, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQescapeStringConn" "', argument " "1"" of type '" "PGconn *""'"); 
-  }
-  arg1 = (PGconn *)(argp1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PQescapeStringConn" "', argument " "2"" of type '" "char *""'");
-  }
-  arg2 = (char *)(buf2);
-  res3 = SWIG_AsCharPtrAndSize(args(2), &buf3, NULL, &alloc3);
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PQescapeStringConn" "', argument " "3"" of type '" "char const *""'");
-  }
-  arg3 = (char *)(buf3);
-  ecode4 = SWIG_AsVal_size_t(args(3), &val4);
-  if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "PQescapeStringConn" "', argument " "4"" of type '" "size_t""'");
-  } 
-  arg4 = (size_t)(val4);
-  res5 = SWIG_ConvertPtr(args(4), &argp5,SWIGTYPE_p_int, 0 |  0 );
-  if (!SWIG_IsOK(res5)) {
-    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "PQescapeStringConn" "', argument " "5"" of type '" "int *""'"); 
-  }
-  arg5 = (int *)(argp5);
-  result = PQescapeStringConn(arg1,arg2,(char const *)arg3,arg4,arg5);
-  _outv = SWIG_From_size_t((size_t)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQescapeByteaConn (const octave_value_list& args, int nargout) {
-  PGconn *arg1 = (PGconn *) 0 ;
-  unsigned char *arg2 = (unsigned char *) 0 ;
-  size_t arg3 ;
-  size_t *arg4 = (size_t *) 0 ;
-  unsigned char *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  size_t val3 ;
-  int ecode3 = 0 ;
-  void *argp4 = 0 ;
-  int res4 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQescapeByteaConn",args.length(),4,4,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_conn, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQescapeByteaConn" "', argument " "1"" of type '" "PGconn *""'"); 
-  }
-  arg1 = (PGconn *)(argp1);
-  res2 = SWIG_ConvertPtr(args(1), &argp2,SWIGTYPE_p_unsigned_char, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PQescapeByteaConn" "', argument " "2"" of type '" "unsigned char const *""'"); 
-  }
-  arg2 = (unsigned char *)(argp2);
-  ecode3 = SWIG_AsVal_size_t(args(2), &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "PQescapeByteaConn" "', argument " "3"" of type '" "size_t""'");
-  } 
-  arg3 = (size_t)(val3);
-  res4 = SWIG_ConvertPtr(args(3), &argp4,SWIGTYPE_p_size_t, 0 |  0 );
-  if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "PQescapeByteaConn" "', argument " "4"" of type '" "size_t *""'"); 
-  }
-  arg4 = (size_t *)(argp4);
-  result = (unsigned char *)PQescapeByteaConn(arg1,(unsigned char const *)arg2,arg3,arg4);
-  _outv = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQunescapeBytea (const octave_value_list& args, int nargout) {
-  unsigned char *arg1 = (unsigned char *) 0 ;
-  size_t *arg2 = (size_t *) 0 ;
-  unsigned char *result = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQunescapeBytea",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_unsigned_char, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQunescapeBytea" "', argument " "1"" of type '" "unsigned char const *""'"); 
-  }
-  arg1 = (unsigned char *)(argp1);
-  res2 = SWIG_ConvertPtr(args(1), &argp2,SWIGTYPE_p_size_t, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PQunescapeBytea" "', argument " "2"" of type '" "size_t *""'"); 
-  }
-  arg2 = (size_t *)(argp2);
-  result = (unsigned char *)PQunescapeBytea((unsigned char const *)arg1,arg2);
-  _outv = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
   if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
 fail:
   return _out;
@@ -7888,7 +7472,7 @@ static octave_value_list _wrap_lo_write (const octave_value_list& args, int narg
   arg2 = (int)(val2);
   res3 = SWIG_AsCharPtrAndSize(args(2), &buf3, NULL, &alloc3);
   if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "lo_write" "', argument " "3"" of type '" "char const *""'");
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "lo_write" "', argument " "3"" of type '" "char *""'");
   }
   arg3 = (char *)(buf3);
   ecode4 = SWIG_AsVal_size_t(args(3), &val4);
@@ -7896,7 +7480,7 @@ static octave_value_list _wrap_lo_write (const octave_value_list& args, int narg
     SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "lo_write" "', argument " "4"" of type '" "size_t""'");
   } 
   arg4 = (size_t)(val4);
-  result = (int)lo_write(arg1,arg2,(char const *)arg3,arg4);
+  result = (int)lo_write(arg1,arg2,arg3,arg4);
   _outv = SWIG_From_int((int)(result));
   if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
@@ -7980,39 +7564,6 @@ static octave_value_list _wrap_lo_creat (const octave_value_list& args, int narg
   } 
   arg2 = (int)(val2);
   result = (Oid)lo_creat(arg1,arg2);
-  _outv = SWIG_From_unsigned_SS_int((unsigned int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_lo_create (const octave_value_list& args, int nargout) {
-  PGconn *arg1 = (PGconn *) 0 ;
-  Oid arg2 ;
-  Oid result;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  unsigned int val2 ;
-  int ecode2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("lo_create",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_ConvertPtr(args(0), &argp1,SWIGTYPE_p_pg_conn, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "lo_create" "', argument " "1"" of type '" "PGconn *""'"); 
-  }
-  arg1 = (PGconn *)(argp1);
-  ecode2 = SWIG_AsVal_unsigned_SS_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "lo_create" "', argument " "2"" of type '" "Oid""'");
-  } 
-  arg2 = (Oid)(val2);
-  result = (Oid)lo_create(arg1,arg2);
   _outv = SWIG_From_unsigned_SS_int((unsigned int)(result));
   if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
 fail:
@@ -8164,76 +7715,6 @@ fail:
 }
 
 
-static octave_value_list _wrap_PQmblen (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  int arg2 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQmblen",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQmblen" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  ecode2 = SWIG_AsVal_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "PQmblen" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = (int)(val2);
-  result = (int)PQmblen((char const *)arg1,arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQdsplen (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  int arg2 ;
-  int result;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQdsplen",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQdsplen" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  ecode2 = SWIG_AsVal_int(args(1), &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "PQdsplen" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = (int)(val2);
-  result = (int)PQdsplen((char const *)arg1,arg2);
-  _outv = SWIG_From_int((int)(result));
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-fail:
-  return _out;
-}
-
-
 static octave_value_list _wrap_PQenv2encoding (const octave_value_list& args, int nargout) {
   int result;
   octave_value_list _out;
@@ -8246,43 +7727,6 @@ static octave_value_list _wrap_PQenv2encoding (const octave_value_list& args, in
   result = (int)PQenv2encoding();
   _outv = SWIG_From_int((int)(result));
   if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-fail:
-  return _out;
-}
-
-
-static octave_value_list _wrap_PQencryptPassword (const octave_value_list& args, int nargout) {
-  char *arg1 = (char *) 0 ;
-  char *arg2 = (char *) 0 ;
-  char *result = 0 ;
-  int res1 ;
-  char *buf1 = 0 ;
-  int alloc1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  octave_value_list _out;
-  octave_value_list *_outp=&_out;
-  octave_value _outv;
-  
-  if (!SWIG_check_num_args("PQencryptPassword",args.length(),2,2,0)) {
-    SWIG_fail;
-  }
-  res1 = SWIG_AsCharPtrAndSize(args(0), &buf1, NULL, &alloc1);
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PQencryptPassword" "', argument " "1"" of type '" "char const *""'");
-  }
-  arg1 = (char *)(buf1);
-  res2 = SWIG_AsCharPtrAndSize(args(1), &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PQencryptPassword" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = (char *)(buf2);
-  result = (char *)PQencryptPassword((char const *)arg1,(char const *)arg2);
-  _outv = SWIG_FromCharPtr((const char *)result);
-  if (_outv.is_defined()) _outp = SWIG_Octave_AppendOutput(_outp, _outv);
-  if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
 fail:
   return _out;
 }
@@ -8632,9 +8076,6 @@ static const struct swig_octave_member swig_globals[] = {
 {"PQgetlineAsync",_wrap_PQgetlineAsync,0,0,2,0},
 {"PQputnbytes",_wrap_PQputnbytes,0,0,2,0},
 {"PQendcopy",_wrap_PQendcopy,0,0,2,0},
-{"PQsetnonblocking",_wrap_PQsetnonblocking,0,0,2,0},
-{"PQisnonblocking",_wrap_PQisnonblocking,0,0,2,0},
-{"PQisthreadsafe",_wrap_PQisthreadsafe,0,0,2,0},
 {"PQflush",_wrap_PQflush,0,0,2,0},
 {"PQfn",_wrap_PQfn,0,0,2,0},
 {"PQresultStatus",_wrap_PQresultStatus,0,0,2,0},
@@ -8659,18 +8100,9 @@ static const struct swig_octave_member swig_globals[] = {
 {"PQgetvalue",_wrap_PQgetvalue,0,0,2,0},
 {"PQgetlength",_wrap_PQgetlength,0,0,2,0},
 {"PQgetisnull",_wrap_PQgetisnull,0,0,2,0},
-{"PQnparams",_wrap_PQnparams,0,0,2,0},
-{"PQparamtype",_wrap_PQparamtype,0,0,2,0},
-{"PQdescribePrepared",_wrap_PQdescribePrepared,0,0,2,0},
-{"PQdescribePortal",_wrap_PQdescribePortal,0,0,2,0},
-{"PQsendDescribePrepared",_wrap_PQsendDescribePrepared,0,0,2,0},
-{"PQsendDescribePortal",_wrap_PQsendDescribePortal,0,0,2,0},
 {"PQclear",_wrap_PQclear,0,0,2,0},
 {"PQfreemem",_wrap_PQfreemem,0,0,2,0},
 {"PQmakeEmptyPGresult",_wrap_PQmakeEmptyPGresult,0,0,2,0},
-{"PQescapeStringConn",_wrap_PQescapeStringConn,0,0,2,0},
-{"PQescapeByteaConn",_wrap_PQescapeByteaConn,0,0,2,0},
-{"PQunescapeBytea",_wrap_PQunescapeBytea,0,0,2,0},
 {"PQescapeString",_wrap_PQescapeString,0,0,2,0},
 {"PQescapeBytea",_wrap_PQescapeBytea,0,0,2,0},
 {"PQprint",_wrap_PQprint,0,0,2,0},
@@ -8682,15 +8114,11 @@ static const struct swig_octave_member swig_globals[] = {
 {"lo_write",_wrap_lo_write,0,0,2,0},
 {"lo_lseek",_wrap_lo_lseek,0,0,2,0},
 {"lo_creat",_wrap_lo_creat,0,0,2,0},
-{"lo_create",_wrap_lo_create,0,0,2,0},
 {"lo_tell",_wrap_lo_tell,0,0,2,0},
 {"lo_unlink",_wrap_lo_unlink,0,0,2,0},
 {"lo_import",_wrap_lo_import,0,0,2,0},
 {"lo_export",_wrap_lo_export,0,0,2,0},
-{"PQmblen",_wrap_PQmblen,0,0,2,0},
-{"PQdsplen",_wrap_PQdsplen,0,0,2,0},
 {"PQenv2encoding",_wrap_PQenv2encoding,0,0,2,0},
-{"PQencryptPassword",_wrap_PQencryptPassword,0,0,2,0},
 {"delete_generic_db",_wrap_delete_generic_db,0,0,2,0},
 {"generic_db_sql",_wrap_generic_db_sql,0,0,2,0},
 {"postgres_db_conn_set",_wrap_postgres_db_conn_set,0,0,2,0},

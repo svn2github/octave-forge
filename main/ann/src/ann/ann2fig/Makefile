@@ -42,14 +42,13 @@ LIBDIR	= $(BASEDIR)/lib
 BINDIR	= $(BASEDIR)/bin
 LDFLAGS	= -L$(LIBDIR)
 ANNLIBS	= -lANN
-OTHERLIBS = -lm
 
 #-----------------------------------------------------------------------------
 # Some more definitions
 #	ANN2FIG		name of executable
 #-----------------------------------------------------------------------------
 
-ANN2FIG = ann2fig
+ANN2FIG = ann2fig$(EXEEXT)
 SOURCES = ann2fig.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 
@@ -71,7 +70,7 @@ $(BINDIR)/$(ANN2FIG): $(OBJECTS)
 #-----------------------------------------------------------------------------
 
 ann2fig.o: ann2fig.cpp
-	$(C++) -c -I$(INCDIR) ann2fig.cpp
+	$(C++) -c -I$(INCDIR) $(CPPFLAGS) $(CXXFLAGS) ann2fig.cpp
 
 #-----------------------------------------------------------------------------
 # Cleaning

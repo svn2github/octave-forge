@@ -62,47 +62,8 @@ $(LIBDIR)/$(ANNLIB): $(OBJECTS)
 # Make object files
 #-----------------------------------------------------------------------------
 
-ANN.o: ANN.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) ANN.cpp
-
-brute.o: brute.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) brute.cpp
-
-kd_tree.o: kd_tree.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) kd_tree.cpp
-
-kd_util.o: kd_util.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) kd_util.cpp
-
-kd_split.o: kd_split.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) kd_split.cpp
-
-kd_search.o: kd_search.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) kd_search.cpp
-
-kd_pr_search.o: kd_pr_search.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) kd_pr_search.cpp
-
-kd_fix_rad_search.o: kd_fix_rad_search.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) kd_fix_rad_search.cpp
-
-kd_dump.o: kd_dump.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) kd_dump.cpp
-
-bd_tree.o: bd_tree.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) bd_tree.cpp
-
-bd_search.o: bd_search.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) bd_search.cpp
-
-bd_pr_search.o: bd_pr_search.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) bd_pr_search.cpp
-
-bd_fix_rad_search.o: bd_fix_rad_search.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) bd_fix_rad_search.cpp
-
-perf.o: perf.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) perf.cpp
+%.o : %.cpp
+	$(C++) -c -I$(INCDIR) $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
 
 #-----------------------------------------------------------------------------
 # Cleaning

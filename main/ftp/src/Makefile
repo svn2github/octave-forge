@@ -14,6 +14,9 @@ endif
 
 clean:
 	-$(RM) *.o octave-core core *.oct *~
+ifdef SWIG
+	rm -f ftp_wrap.cpp
+endif
 
 TEST_CASES =  \
 	basic \

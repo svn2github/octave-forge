@@ -38,6 +38,8 @@ AWK = @AWK@
 #    FLAG = $(shell $(MKOCTFILE) -p FLAG)
 # The following flags are for compiling programs that are independent
 # of Octave.  How confusing.
+AR = @AR@
+ARFLAGS = @ARFLAGS@
 CC = @CC@
 CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
@@ -49,9 +51,11 @@ CXXPICFLAG = @CXXPICFLAG@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 FPICFLAG = @FPICFLAG@
+EXEEXT = @EXEEXT@
+OTHERLIBS = @OTHERLIBS@
 
-ANNLIB = libANN.a
-MAKELIB = ar ruv
+ANNLIB = @ANNLIB@
+MAKELIB = $(AR) $(ARFLAGS)
 
 OCTAVE = @OCTAVE@
 OCTAVE_VERSION = @OCTAVE_VERSION@

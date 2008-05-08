@@ -44,14 +44,14 @@ INCDIR	= $(BASEDIR)/include
 LIBDIR	= $(BASEDIR)/lib
 BINDIR	= $(BASEDIR)/bin
 LDFLAGS	= -L$(LIBDIR)
-ANNLIBS	= -lANN -lm
+ANNLIBS	= -lANN $(OTHERLIBS)
 
 #-----------------------------------------------------------------------------
 # Some more definitions
 #		ANNSAMP		name of sample program
 #-----------------------------------------------------------------------------
 
-ANNSAMP = ann_sample
+ANNSAMP = ann_sample$(EXEEXT)
 
 SAMPSOURCES = ann_sample.cpp
 SAMPOBJECTS = $(SAMPSOURCES:.cpp=.o)
@@ -74,7 +74,7 @@ $(BINDIR)/$(ANNSAMP): $(SAMPOBJECTS) $(LIBDIR)/$(ANNLIB)
 #-----------------------------------------------------------------------------
 
 ann_sample.o: ann_sample.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) ann_sample.cpp
+	$(C++) -c -I$(INCDIR) $(CPPFLAGS) $(CXXFLAGS) ann_sample.cpp
 
 #-----------------------------------------------------------------------------
 # Cleaning

@@ -46,14 +46,13 @@ LIBDIR	= $(BASEDIR)/lib
 BINDIR	= $(BASEDIR)/bin
 LDFLAGS	= -L$(LIBDIR)
 ANNLIBS	= -lANN
-OTHERLIBS = -lm
 
 #-----------------------------------------------------------------------------
 # Some more definitions
 #		ANNTEST		name of test program
 #-----------------------------------------------------------------------------
 
-ANNTEST = ann_test
+ANNTEST = ann_test$(EXEEXT)
 
 HEADERS = rand.h
 TESTSOURCES = ann_test.cpp rand.cpp
@@ -77,10 +76,10 @@ $(BINDIR)/$(ANNTEST): $(TESTOBJECTS) $(LIBDIR)/$(ANNLIB)
 #-----------------------------------------------------------------------------
 
 ann_test.o: ann_test.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) ann_test.cpp
+	$(C++) -c -I$(INCDIR) $(CPPFLAGS) $(CXXFLAGS) ann_test.cpp
 
 rand.o: rand.cpp
-	$(C++) -c -I$(INCDIR) $(CXXFLAGS) rand.cpp
+	$(C++) -c -I$(INCDIR) $(CPPFLAGS) $(CXXFLAGS) rand.cpp
 
 #-----------------------------------------------------------------------------
 # Cleaning

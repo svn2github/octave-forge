@@ -1637,7 +1637,7 @@ namespace Swig {
       if (outtype && outtype != type)
 	return false;
       assert(sz <= buf.size());
-      std::copy(&buf[0], &buf[sz], (char*)ptr);
+      std::copy(buf.begin(), buf.begin()+sz, (char*)ptr);
       return true;
     }
 
@@ -1654,7 +1654,7 @@ namespace Swig {
     }
 
     void print(std::ostream &os, bool pr_as_read_syntax = false) const {
-      os << "swig packed type: name = " << type->name << ", len = " << buf.size() << std::endl;
+      os << "swig packed type: name = " << (type ? type->name : std::string()) << ", len = " << buf.size() << std::endl;
     }
   private:
     DECLARE_OCTAVE_ALLOCATOR;

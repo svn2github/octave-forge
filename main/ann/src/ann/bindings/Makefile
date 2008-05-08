@@ -2,7 +2,7 @@ sinclude ../../Makeconf
 
 bindings-octave: ann.oct
 ann.oct: ann_wrap.cpp ../include/ANN/ANN.h ../include/ANN/ANNperf.h ../include/ANN/ANNx.h
-	$(MKOCTFILE) -o ann.oct -I../include -L../lib -lANN ann_wrap.cpp
+	$(MKOCTFILE) -DSTATIC_LINKED -o ann.oct -I../include -L../lib -lANN ann_wrap.cpp
 
 ifdef SWIG
 ann_wrap.cpp: ann.i

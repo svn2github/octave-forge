@@ -318,6 +318,24 @@ case "$canonical_host_type" in
 esac
 AC_SUBST(COPY_FLAGS)
 
+ANNLIB=libANN.a
+case "$canonical_host_type" in
+    *-*-msdosmsvc*)
+        ANNLIB=ANN.lib
+    ;;
+esac
+AC_SUBST(ANNLIB)
+
+OTHERLIBS=
+OF_CHECK_LIB(m,sin,[OTHERLIBS=-lm])
+AC_SUBST(OTHERLIBS)
+
+OCTAVE_EVAL(octave_config_info('AR'),AR)
+OCTAVE_EVAL(octave_config_info('ARFLAGS'),ARFLAGS)
+
+CPPFLAGS="$CPPFLAGS -DSTATIC_LINKED"
+OF_CHECK_LIB(m,random,[],[CPPFLAGS="$CPPFLAGS -DANN_NO_RANDOM"])
+
 dnl Use $(STRIP) in the makefile to strip executables.  If not found, 
 dnl STRIP expands to ':', which in the makefile does nothing.
 dnl Don't need this for .oct files since mkoctfile handles them directly

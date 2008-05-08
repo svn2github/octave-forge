@@ -50,6 +50,9 @@ endif
 
 clean:
 	-$(RM) *.o octave-core core *.oct *~
+ifdef SWIG
+	rm -f sqlite3_wrap.cpp postgres_wrap.cpp mysql_wrap.cpp odbc_wrap.cpp
+endif
 
 TEST_CASES =   \
 	helpers \

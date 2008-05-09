@@ -66,6 +66,7 @@ SWIG = @SWIG@
 @DEFHAVE_MYSQL@
 @DEFHAVE_SQLITE3@
 @DEFHAVE_ODBC@
+ODBCLIB = @ODBCLIB@
 
 %.o: %.c ; $(MKOCTFILE) -c $<
 %.o: %.f ; $(MKOCTFILE) -c $<

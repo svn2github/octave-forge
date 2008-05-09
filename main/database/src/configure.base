@@ -385,7 +385,23 @@ fi
 
 # check for odbc
 AC_DEFINE(have_odbc)
-AC_CHECK_HEADER(sql.h, have_odbc=yes, have_odbc=no)
+AC_SUBST(ODBCLIB)
+ODBCLIB="-lodbc"
+case "$canonical_host_type" in
+  *-*-mingw* | *-*-msdosmsvc*)
+    AC_MSG_CHECKING([for sql.h])
+    AC_LANG_PUSH(C)
+    AC_TRY_COMPILE([
+#include <windows.h>
+#include <sql.h>], [], have_odbc=yes, have_odbc=no)
+    AC_LANG_POP(C)
+    AC_MSG_RESULT($have_odbc)
+    ODBCLIB="-lodbc32"
+    ;;
+  *)
+    AC_CHECK_HEADER(sql.h, have_odbc=yes, have_odbc=no)
+    ;;
+esac
 if test $have_odbc = yes ; then
     ODBC_STATUS="yes"
     AC_SUBST(DEFHAVE_ODBC)

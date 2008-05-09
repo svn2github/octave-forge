@@ -149,12 +149,12 @@
 	return true;
 
       char state[32]={0};
-      SQLINTEGER errno=0;
+      SQLINTEGER __errno=0;
       char errmsg[256]={0};
       SQLSMALLINT tmp=0;
-      SQLGetDiagRec(htype,h,1,(SQLCHAR*)&state,&errno,(SQLCHAR*)errmsg,
+      SQLGetDiagRec(htype,h,1,(SQLCHAR*)&state,&__errno,(SQLCHAR*)errmsg,
 		    sizeof(errmsg),&tmp);
-      error("odbc error %i: %s",errno,errmsg);
+      error("odbc error %i: %s",__errno,errmsg);
       return false;
     }
   public:

@@ -2,7 +2,8 @@ sinclude Makeconf
 
 # disable optimizations since gcc consumes too much memory
 # this line can be removed
-MKOCTFILE:=CXXFLAGS=-O0 $(MKOCTFILE)
+CXXFLAGS_NO_OPT := $(filter-out -O2, $(CXXFLAGS))
+MKOCTFILE:=CXXFLAGS="$(CXXFLAGS_NO_OPT)" $(MKOCTFILE)
 
 .PHONY: clean check
 
@@ -32,7 +33,7 @@ mysql.oct: mysql_wrap.cpp mysql_filtered.h
 	$(MKOCTFILE) -o mysql.oct -lmysqlclient mysql_wrap.cpp
 
 odbc.oct: odbc_wrap.cpp sql_filtered.h sqltypes_filtered.h sqlext_filtered.h
-	$(MKOCTFILE) -o odbc.oct -lodbc odbc_wrap.cpp
+	$(MKOCTFILE) -o odbc.oct $(ODBCLIB) odbc_wrap.cpp
 
 ifdef SWIG
 sqlite3_wrap.cpp: sqlite3.i

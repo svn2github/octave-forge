@@ -77,6 +77,13 @@ function get_nsi_additional_files()
       echo "  SetOutPath \"\$INSTDIR\\bin\""
       echo "  File \"\${VCLIBS_ROOT}\\bin\\libsqlite3-0.dll\""
       ;;
+    video)
+      check_exec_prefix
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libavformat-*.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libavcodec-*.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libavutil-*.dll\""
+      ;;
   esac
   return 0
 }
@@ -134,7 +141,7 @@ function create_nsi_package_file()
         -e "s/@PACKAGE_INFO@/$packinfo/" \
         -e "s/@OCTAVE_VERSION@/$octave_version/" \
         -e "s/@VCLIBS_ROOT@/$exec_prefix_w32/" \
-	-e 's/!define OCTAVE_ROOT .*/!define OCTAVE_ROOT "${VCLIBS_ROOT}"/' \
+	-e "s/!define OCTAVE_ROOT .*/!define OCTAVE_ROOT "$octave_prefix_w32"/" \
         -e "s/@PACKAGE_FILES@/$packfiles/" \
         -e "s/@PACKAGE_DEPENDENCY@/$packdeps/" \
         -e "s/@PACKAGE_AUTOLOAD@/$packautoload/" \

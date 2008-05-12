@@ -44,7 +44,7 @@ netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forg
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
 ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++ libglade
 gtksourceview gdl VTE GtkGlArea PortAudio playrec OctaveDE Gtksourceview1 FTPlib
-SQLite3"
+SQLite3 FFMpeg"
 octave_version=
 of_version=
 do_nsi=false
@@ -572,6 +572,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/gtkgl-2.0.lib" GtkGlArea
     todo_check "$tlibdir/ftp.lib" FTPlib
     todo_check "$tlibdir/sqlite3.lib" SQLite3
+    todo_check "$tlibdir/avcodec.lib" FFMpeg
   fi
 else
   packages="$todo_packages"
@@ -2766,6 +2767,45 @@ if check_package SQLite3; then
   fi
 fi
 
+##########
+# FFMpeg #
+##########
+
+if check_package FFMpeg; then
+  download_file ffmpeg-export-snapshot.tar.bz2 "http://ffmpeg.mplayerhq.hu/ffmpeg-export-snapshot.tar.bz2"
+  echo -n "decompressing FFMpeg..."
+  unpack_file ffmpeg-export-snapshot.tar.bz2
+  #ffmpegdir=`find "$DOWNLOAD_DIR" -type d -a -name "ffmpeg-export-*" | sed -e "s,.*/,,"`
+  ffmpegdir="ffmpeg-export-2008-05-01"
+  cp libs/ffmpeg.diff "$DOWNLOAD_DIR/$ffmpegdir"
+  echo "done"
+  echo -n "compiling FFMpeg..."
+  (cd "$DOWNLOAD_DIR/$ffmpegdir" &&
+    patch -p1 < ffmpeg.diff &&
+	  start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W` && ./configure --prefix=\"$tdir_w32_forward\" --enable-avisynth --enable-gpl --enable-shared --disable-static --enable-w32threads --enable-avfilter --enable-swscale --extra-cflags=\"-mno-cygwin -mms-bitfields\" --extra-ldflags=\"-mno-cygwin -mms-bitfields\" --target-os=mingw32 --enable-memalign-hack --disable-mmx --disable-vhook --disable-debug --disable-ffmpeg --disable-ffserver --disable-ffplay" &&
+    sed -e "s/^EXTRALIBS =/& -lmsvcr80/" config.mak > ttt &&
+      mv ttt config.mak &&
+    start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
+      -c "cd `pwd -W` && for lib in avutil avcodec avformat swscale avfilter avdevice; do make -C lib\$lib; done" &&
+    for lib in avutil avcodec avformat swscale avfilter avdevice; do
+      (cd lib$lib &&
+        deffile=`find -name "lib$lib-*.def"` &&
+        sed -e "s/@[0-9]\+//" $deffile > ttt &&
+          mv ttt $deffile &&
+        lib -machine:i386 -def:$deffile)
+    done &&
+    start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
+      -c "cd `pwd -W` && for lib in avutil avcodec avformat swscale avfilter avdevice; do make -C lib\$lib install; done" &&
+    true) >&5 2>&1
+  #remove_package "$DOWNLOAD_DIR/$ffmpegdir"
+  if test ! -f "$tlibdir/avcodec.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
 ################
 # octave-forge #
 ################
@@ -2811,9 +2851,9 @@ extra_pkgs="fpl msh ad bim civil-engineering integration java jhandles mapping n
 # packages to fix:
 # new packages:
 # unsupported packages: engine graceplot multicore pdb tcl-octave xraylib
-main_pkgs="signal audio bioinfo combinatorics communications control data-smoothing econometrics financial fixed ga general gsl ident image informationtheory io irsa linear-algebra miscellaneous missing-functions nnet octcdf odebvp odepkg optim outliers physicalconstants plot sockets specfun special-matrix splines statistics strings struct symbolic time"
+main_pkgs="signal ann audio bioinfo combinatorics communications control database data-smoothing econometrics financial fixed ftp ga general gsl ident image informationtheory io irsa linear-algebra miscellaneous missing-functions nnet octcdf odebvp odepkg optim outliers physicalconstants plot sockets specfun special-matrix splines statistics strings struct symbolic time video"
 # packages to fix: octgpr
-# new packages: ann database ftp video
+# new packages:
 # unsupported packages: optiminterp parallel vrml zenity
 lang_pkgs="pt_br"
 nonfree_pkgs="arpack"
@@ -3482,6 +3522,12 @@ function get_nsi_additional_files()
     database)
       echo "  SetOutPath \"\$INSTDIR\\bin\""
       echo "  File \"\${VCLIBS_ROOT}\\bin\\libsqlite3-0.dll\""
+      ;;
+    video)
+      echo "  SetOutPath \"\$INSTDIR\\bin\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libavformat-*.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libavcodec-*.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libavutil-*.dll\""
       ;;
   esac
 }

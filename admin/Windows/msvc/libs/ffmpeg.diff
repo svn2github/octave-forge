@@ -1,0 +1,455 @@
+diff -ur ffmpeg-export-2008-05-01-old/configure ffmpeg-export-2008-05-01/configure
+--- ffmpeg-export-2008-05-01-old/configure	2008-04-27 18:12:24.000000000 +0200
++++ ffmpeg-export-2008-05-01/configure	2008-05-12 15:56:42.875000000 +0200
+@@ -1122,15 +1122,15 @@
+             VHOOKLIBS="$VHOOKLIBS -lswscale\$(BUILDSUF)"
+         fi
+         disable ffserver
+-        SLIBPREF=""
++        SLIBPREF="lib"
+         SLIBSUF=".dll"
+         EXESUF=".exe"
+-        SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
++        SLIBNAME_WITH_VERSION='$(SLIBNAME_WITH_MAJOR)'
+         SLIBNAME_WITH_MAJOR='$(SLIBPREF)$(FULLNAME)-$(LIBMAJOR)$(SLIBSUF)'
+         SLIB_EXTRA_CMD='-lib /machine:i386 /def:$$(@:$(SLIBSUF)=.def)'
+-        SLIB_INSTALL_EXTRA_CMD='-install -m 644 $(SUBDIR)$(SLIBNAME_WITH_MAJOR:$(SLIBSUF)=.lib) "$(SHLIBDIR)/$(SLIBNAME:$(SLIBSUF)=.lib)"'
+-        SLIB_UNINSTALL_EXTRA_CMD='rm -f "$(SHLIBDIR)/$(SLIBNAME:$(SLIBSUF)=.lib)"'
+-        SHFLAGS='-shared -Wl,--output-def,$$(@:$(SLIBSUF)=.def) -Wl,--enable-runtime-pseudo-reloc -Wl,--enable-auto-image-base'
++        SLIB_INSTALL_EXTRA_CMD='-install -m 644 $(SUBDIR)$(SLIBNAME_WITH_MAJOR:$(SLIBSUF)=.lib) "$(LIBDIR)/$(NAME).lib"'
++        SLIB_UNINSTALL_EXTRA_CMD='rm -f "$(LIBDIR)/$(NAME).lib"'
++        SHFLAGS='-shared -Wl,--output-def,$$(@:$(SLIBSUF)=.def) -Wl,--enable-runtime-pseudo-reloc -Wl,--enable-auto-image-base -Wl,--export-all-symbols'
+         ;;
+     cygwin*)
+         target_os=cygwin
+@@ -2113,13 +2113,13 @@
+ name=$1
+ comment=$2
+ version=$3
+-libs=$4
++libs=`echo $4 | sed -e "s/-lm//" -e "s/-ldl//"`
+ requires=$5
+ cat <<EOF >$name.pc
+ prefix=$prefix
+ exec_prefix=\${prefix}
+-libdir=$libdir
+-includedir=$incdir
++libdir=\${prefix}/lib
++includedir=\${prefix}/include
+ 
+ Name: $name
+ Description: $comment
+diff -ur ffmpeg-export-2008-05-01-old/libavcodec/Makefile ffmpeg-export-2008-05-01/libavcodec/Makefile
+--- ffmpeg-export-2008-05-01-old/libavcodec/Makefile	2008-04-26 18:02:22.000000000 +0200
++++ ffmpeg-export-2008-05-01/libavcodec/Makefile	2008-05-12 15:38:14.968750000 +0200
+@@ -476,3 +476,5 @@
+ include $(SUBDIR)../subdir.mak
+ 
+ $(SUBDIR)dct-test$(EXESUF): $(SUBDIR)fdctref.o
++
++CFLAGS-yes += -DBUILD_AVCODEC
+diff -ur ffmpeg-export-2008-05-01-old/libavcodec/avcodec.h ffmpeg-export-2008-05-01/libavcodec/avcodec.h
+--- ffmpeg-export-2008-05-01-old/libavcodec/avcodec.h	2008-04-29 16:08:01.000000000 +0200
++++ ffmpeg-export-2008-05-01/libavcodec/avcodec.h	2008-05-12 15:38:15.031250000 +0200
+@@ -2499,7 +2499,7 @@
+ /* external high level API */
+ 
+ #if LIBAVCODEC_VERSION_INT < ((52<<16)+(0<<8)+0)
+-extern AVCodec *first_avcodec;
++extern AVCODEC_API AVCodec *first_avcodec;
+ #endif
+ AVCodec *av_codec_next(AVCodec *c);
+ 
+diff -ur ffmpeg-export-2008-05-01-old/libavcodec/dsputil.h ffmpeg-export-2008-05-01/libavcodec/dsputil.h
+--- ffmpeg-export-2008-05-01-old/libavcodec/dsputil.h	2008-04-16 03:34:55.000000000 +0200
++++ ffmpeg-export-2008-05-01/libavcodec/dsputil.h	2008-05-12 15:38:15.046875000 +0200
+@@ -66,17 +66,17 @@
+ void ff_float_to_int16_c(int16_t *dst, const float *src, int len);
+ 
+ /* encoding scans */
+-extern const uint8_t ff_alternate_horizontal_scan[64];
+-extern const uint8_t ff_alternate_vertical_scan[64];
+-extern const uint8_t ff_zigzag_direct[64];
+-extern const uint8_t ff_zigzag248_direct[64];
++extern AVCODEC_API const uint8_t ff_alternate_horizontal_scan[64];
++extern AVCODEC_API const uint8_t ff_alternate_vertical_scan[64];
++extern AVCODEC_API const uint8_t ff_zigzag_direct[64];
++extern AVCODEC_API const uint8_t ff_zigzag248_direct[64];
+ 
+ /* pixel operations */
+ #define MAX_NEG_CROP 1024
+ 
+ /* temporary */
+-extern uint32_t ff_squareTbl[512];
+-extern uint8_t ff_cropTbl[256 + 2 * MAX_NEG_CROP];
++extern AVCODEC_API uint32_t ff_squareTbl[512];
++extern AVCODEC_API uint8_t ff_cropTbl[256 + 2 * MAX_NEG_CROP];
+ 
+ /* VP3 DSP functions */
+ void ff_vp3_idct_c(DCTELEM *block/* align 16*/);
+diff -ur ffmpeg-export-2008-05-01-old/libavcodec/imgconvert.c ffmpeg-export-2008-05-01/libavcodec/imgconvert.c
+--- ffmpeg-export-2008-05-01-old/libavcodec/imgconvert.c	2008-03-16 18:34:31.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavcodec/imgconvert.c	2008-05-12 15:38:15.093750000 +0200
+@@ -2107,7 +2107,6 @@
+ }
+ #endif
+ 
+-#ifndef CONFIG_SWSCALE
+ static uint8_t y_ccir_to_jpeg[256];
+ static uint8_t y_jpeg_to_ccir[256];
+ static uint8_t c_ccir_to_jpeg[256];
+@@ -2627,7 +2626,6 @@
+     avpicture_free(tmp);
+     return ret;
+ }
+-#endif
+ 
+ /* NOTE: we scan all the pixels to have an exact information */
+ static int get_alpha_info_pal8(const AVPicture *src, int width, int height)
+diff -ur ffmpeg-export-2008-05-01-old/libavcodec/mpeg12data.h ffmpeg-export-2008-05-01/libavcodec/mpeg12data.h
+--- ffmpeg-export-2008-05-01-old/libavcodec/mpeg12data.h	2008-03-05 01:06:09.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavcodec/mpeg12data.h	2008-05-12 15:38:15.125000000 +0200
+@@ -48,7 +48,7 @@
+ 
+ extern const uint8_t ff_mpeg12_mbMotionVectorTable[17][2];
+ 
+-extern const AVRational ff_frame_rate_tab[];
++extern AVCODEC_API const AVRational ff_frame_rate_tab[];
+ 
+ extern const float ff_mpeg1_aspect[16];
+ extern const AVRational ff_mpeg2_aspect[16];
+diff -ur ffmpeg-export-2008-05-01-old/libavcodec/mpeg4audio.h ffmpeg-export-2008-05-01/libavcodec/mpeg4audio.h
+--- ffmpeg-export-2008-05-01-old/libavcodec/mpeg4audio.h	2008-04-01 14:01:40.000000000 +0200
++++ ffmpeg-export-2008-05-01/libavcodec/mpeg4audio.h	2008-05-12 15:38:15.140625000 +0200
+@@ -35,8 +35,8 @@
+     int ext_sample_rate;
+ } MPEG4AudioConfig;
+ 
+-extern const int ff_mpeg4audio_sample_rates[16];
+-extern const uint8_t ff_mpeg4audio_channels[8];
++extern AVCODEC_API const int ff_mpeg4audio_sample_rates[16];
++extern AVCODEC_API const uint8_t ff_mpeg4audio_channels[8];
+ /**
+  * Parse MPEG-4 systems extradata to retrieve audio configuration.
+  * @param[in] c        MPEG4AudioConfig structure to fill.
+diff -ur ffmpeg-export-2008-05-01-old/libavcodec/mpegaudiodata.h ffmpeg-export-2008-05-01/libavcodec/mpegaudiodata.h
+--- ffmpeg-export-2008-05-01-old/libavcodec/mpegaudiodata.h	2007-11-08 11:53:32.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavcodec/mpegaudiodata.h	2008-05-12 15:38:15.156250000 +0200
+@@ -32,12 +32,12 @@
+ #define MODE_EXT_MS_STEREO 2
+ #define MODE_EXT_I_STEREO  1
+ 
+-extern const uint16_t ff_mpa_bitrate_tab[2][3][15];
+-extern const uint16_t ff_mpa_freq_tab[3];
+-extern const int32_t ff_mpa_enwindow[257];
+-extern const int ff_mpa_sblimit_table[5];
+-extern const int ff_mpa_quant_steps[17];
+-extern const int ff_mpa_quant_bits[17];
+-extern const unsigned char *ff_mpa_alloc_tables[5];
++extern AVCODEC_API const uint16_t ff_mpa_bitrate_tab[2][3][15];
++extern AVCODEC_API const uint16_t ff_mpa_freq_tab[3];
++extern AVCODEC_API const int32_t ff_mpa_enwindow[257];
++extern AVCODEC_API const int ff_mpa_sblimit_table[5];
++extern AVCODEC_API const int ff_mpa_quant_steps[17];
++extern AVCODEC_API const int ff_mpa_quant_bits[17];
++extern AVCODEC_API const unsigned char *ff_mpa_alloc_tables[5];
+ 
+ #endif /* FFMPEG_MPEGAUDIODATA_H */
+diff -ur ffmpeg-export-2008-05-01-old/libavcodec/utils.c ffmpeg-export-2008-05-01/libavcodec/utils.c
+--- ffmpeg-export-2008-05-01-old/libavcodec/utils.c	2008-03-29 23:27:25.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavcodec/utils.c	2008-05-12 15:38:15.171875000 +0200
+@@ -38,6 +38,11 @@
+ #include <fcntl.h>
+ #endif
+ 
++#ifdef __MINGW32__
++# define open _open
++# define tempnam _tempnam
++#endif
++
+ const uint8_t ff_reverse[256]={
+ 0x00,0x80,0x40,0xC0,0x20,0xA0,0x60,0xE0,0x10,0x90,0x50,0xD0,0x30,0xB0,0x70,0xF0,
+ 0x08,0x88,0x48,0xC8,0x28,0xA8,0x68,0xE8,0x18,0x98,0x58,0xD8,0x38,0xB8,0x78,0xF8,
+diff -ur ffmpeg-export-2008-05-01-old/libavformat/avformat.h ffmpeg-export-2008-05-01/libavformat/avformat.h
+--- ffmpeg-export-2008-05-01-old/libavformat/avformat.h	2008-04-25 01:21:58.000000000 +0200
++++ ffmpeg-export-2008-05-01/libavformat/avformat.h	2008-05-12 15:38:15.203125000 +0200
+@@ -522,8 +522,8 @@
+ } AVPacketList;
+ 
+ #if LIBAVFORMAT_VERSION_INT < (53<<16)
+-extern AVInputFormat *first_iformat;
+-extern AVOutputFormat *first_oformat;
++extern AVFORMAT_API AVInputFormat *first_iformat;
++extern AVFORMAT_API AVOutputFormat *first_oformat;
+ #endif
+ 
+ AVInputFormat  *av_iformat_next(AVInputFormat  *f);
+diff -ur ffmpeg-export-2008-05-01-old/libavformat/file.c ffmpeg-export-2008-05-01/libavformat/file.c
+--- ffmpeg-export-2008-05-01-old/libavformat/file.c	2007-11-22 03:27:39.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavformat/file.c	2008-05-12 15:38:15.203125000 +0200
+@@ -26,6 +26,14 @@
+ #include <stdlib.h>
+ #include "os_support.h"
+ 
++#ifdef __MINGW32__
++# define open _open
++# define read _read
++# define write _write
++# define close _close
++# define setmode _setmode
++#endif
++
+ 
+ /* standard file protocol */
+ 
+diff -ur ffmpeg-export-2008-05-01-old/libavformat/framehook.c ffmpeg-export-2008-05-01/libavformat/framehook.c
+--- ffmpeg-export-2008-05-01-old/libavformat/framehook.c	2008-01-06 17:02:55.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavformat/framehook.c	2008-05-12 15:38:15.234375000 +0200
+@@ -25,6 +25,8 @@
+ 
+ #ifdef HAVE_DLFCN_H
+ #include <dlfcn.h>
++#elif defined(WIN32)
++#include <windows.h>
+ #endif
+ 
+ 
+@@ -49,20 +51,34 @@
+         return ENOENT;
+     }
+ 
++#ifdef HAVE_DLFCN_H
+     loaded = dlopen(argv[0], RTLD_NOW);
+     if (!loaded) {
+         av_log(NULL, AV_LOG_ERROR, "%s\n", dlerror());
+         return -1;
+     }
++#elif defined(WIN32)
++    loaded = LoadLibrary(argv[0]);
++    if (!loaded) {
++        av_log(NULL, AV_LOG_ERROR, "Win32 error: %d\n", GetLastError());
++        return -1;
++    }
++#endif
+ 
+     fhe = av_mallocz(sizeof(*fhe));
+     if (!fhe) {
+         return AVERROR(ENOMEM);
+     }
+ 
++#ifdef HAVE_DLFCN_H
+     fhe->Configure = dlsym(loaded, "Configure");
+     fhe->Process = dlsym(loaded, "Process");
+     fhe->Release = dlsym(loaded, "Release");    /* Optional */
++#elif defined(WIN32)
++    fhe->Configure = GetProcAddress(loaded, "Configure");
++    fhe->Process = GetProcAddress(loaded, "Process");
++    fhe->Release = GetProcAddress(loaded, "Release");    /* Optional */
++#endif
+ 
+     if (!fhe->Process) {
+         av_log(NULL, AV_LOG_ERROR, "Failed to find Process entrypoint in %s\n", argv[0]);
+diff -ur ffmpeg-export-2008-05-01-old/libavformat/gxf.c ffmpeg-export-2008-05-01/libavformat/gxf.c
+--- ffmpeg-export-2008-05-01-old/libavformat/gxf.c	2007-11-21 08:41:00.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavformat/gxf.c	2008-05-12 15:38:15.250000000 +0200
+@@ -181,7 +181,7 @@
+  * \return fps as AVRational, or 0 / 0 if unknown
+  */
+ static AVRational fps_tag2avr(int32_t fps) {
+-    extern const AVRational ff_frame_rate_tab[];
++    extern AVCODEC_API const AVRational ff_frame_rate_tab[];
+     if (fps < 1 || fps > 9) fps = 9;
+     return ff_frame_rate_tab[9 - fps]; // values have opposite order
+ }
+diff -ur ffmpeg-export-2008-05-01-old/libavformat/nutdec.c ffmpeg-export-2008-05-01/libavformat/nutdec.c
+--- ffmpeg-export-2008-05-01-old/libavformat/nutdec.c	2008-03-15 17:15:47.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavformat/nutdec.c	2008-05-12 15:38:15.265625000 +0200
+@@ -20,6 +20,7 @@
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
++#include "common.h"
+ #include "tree.h"
+ #include "nut.h"
+ #include "avstring.h"
+diff -ur ffmpeg-export-2008-05-01-old/libavformat/utils.c ffmpeg-export-2008-05-01/libavformat/utils.c
+--- ffmpeg-export-2008-05-01-old/libavformat/utils.c	2008-04-25 01:09:28.000000000 +0200
++++ ffmpeg-export-2008-05-01/libavformat/utils.c	2008-05-12 15:38:15.281250000 +0200
+@@ -25,6 +25,32 @@
+ #include <sys/time.h>
+ #include <time.h>
+ 
++static struct tm* dolocaltime (const time_t* t)
++{
++  int64_t t64 = *t;
++  return _localtime64 (&t64);
++}
++
++static struct tm* dogmtime (const time_t* t)
++{
++  int64_t t64 = *t;
++  return _gmtime64 (&t64);
++}
++
++static time_t domktime (struct tm* t)
++{
++  int64_t t64 = _mktime64 (t);
++  return (time_t)(t64 & 0x00000000FFFFFFFFLL);
++}
++
++static time_t dotime (time_t* t)
++{
++  int64_t t64 = _time64 (NULL);
++  if (t != NULL)
++    *t = (time_t)(t64 & 0x00000000FFFFFFFFLL);
++  return (time_t)(t64 & 0x00000000FFFFFFFFLL);
++}
++
+ #undef NDEBUG
+ #include <assert.h>
+ 
+@@ -2713,7 +2739,7 @@
+     int negative = 0;
+ 
+ #undef time
+-    time_t now = time(0);
++    time_t now = dotime(0);
+ 
+     len = strlen(datestr);
+     if (len > 0)
+@@ -2739,9 +2765,9 @@
+          * current year-month-day time */
+         if (!q) {
+             if (is_utc) {
+-                dt = *gmtime(&now);
++                dt = *dogmtime(&now);
+             } else {
+-                dt = *localtime(&now);
++                dt = *dolocaltime(&now);
+             }
+             dt.tm_hour = dt.tm_min = dt.tm_sec = 0;
+         } else {
+@@ -2789,7 +2815,7 @@
+         if (is_utc) {
+             t = mktimegm(&dt);
+         } else {
+-            t = mktime(&dt);
++            t = domktime(&dt);
+         }
+     }
+ 
+diff -ur ffmpeg-export-2008-05-01-old/libavutil/Makefile ffmpeg-export-2008-05-01/libavutil/Makefile
+--- ffmpeg-export-2008-05-01-old/libavutil/Makefile	2008-04-07 23:16:31.000000000 +0200
++++ ffmpeg-export-2008-05-01/libavutil/Makefile	2008-05-12 15:38:15.312500000 +0200
+@@ -46,3 +46,5 @@
+ $(SUBDIR)lzo-test$(EXESUF): EXTRALIBS += -llzo2
+ 
+ CLEANFILES = lzo-test$(EXESUF)
++
++CFLAGS-yes += -DBUILD_AVUTIL
+diff -ur ffmpeg-export-2008-05-01-old/libavutil/aes.h ffmpeg-export-2008-05-01/libavutil/aes.h
+--- ffmpeg-export-2008-05-01-old/libavutil/aes.h	2008-03-10 19:42:09.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavutil/aes.h	2008-05-12 15:38:15.328125000 +0200
+@@ -23,7 +23,7 @@
+ 
+ #include <stdint.h>
+ 
+-extern const int av_aes_size;
++extern AVUTIL_API const int av_aes_size;
+ 
+ struct AVAES;
+ 
+diff -ur ffmpeg-export-2008-05-01-old/libavutil/common.h ffmpeg-export-2008-05-01/libavutil/common.h
+--- ffmpeg-export-2008-05-01-old/libavutil/common.h	2008-04-26 14:47:02.000000000 +0200
++++ ffmpeg-export-2008-05-01/libavutil/common.h	2008-05-12 15:38:15.328125000 +0200
+@@ -28,6 +28,31 @@
+ 
+ #include <inttypes.h>
+ 
++#if defined (WIN32) || defined (_MSC_VER)
++# ifdef BUILD_AVUTIL
++#  define AVUTIL_API __declspec(dllexport)
++# else
++#  define AVUTIL_API __declspec(dllimport)
++# endif
++# ifdef BUILD_AVCODEC
++#  define AVCODEC_API __declspec(dllexport)
++# else
++#  define AVCODEC_API __declspec(dllimport)
++# endif
++# ifdef BUILD_AVFORMAT
++#  define AVFORMAT_API __declspec(dllexport)
++# else
++#  define AVFORMAT_API __declspec(dllimport)
++# endif
++# ifdef _MSC_VER
++#  define inline __inline
++# endif
++#else
++# define AVUTIL_API
++# define AVCODEC_API
++# define AVFORMAT_API
++#endif
++
+ #ifdef HAVE_AV_CONFIG_H
+ /* only include the following when compiling package */
+ #    include "config.h"
+@@ -118,7 +143,7 @@
+ #define FFSWAP(type,a,b) do{type SWAP_tmp= b; b= a; a= SWAP_tmp;}while(0)
+ 
+ /* misc math functions */
+-extern const uint8_t ff_log2_tab[256];
++extern AVUTIL_API const uint8_t ff_log2_tab[256];
+ 
+ static inline av_const int av_log2(unsigned int v)
+ {
+diff -ur ffmpeg-export-2008-05-01-old/libavutil/internal.h ffmpeg-export-2008-05-01/libavutil/internal.h
+--- ffmpeg-export-2008-05-01-old/libavutil/internal.h	2008-03-22 19:15:12.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavutil/internal.h	2008-05-12 15:38:15.359375000 +0200
+@@ -170,7 +170,7 @@
+ #    define FASTDIV(a,b)   ((a)/(b))
+ #endif
+ 
+-extern const uint8_t ff_sqrt_tab[256];
++extern AVUTIL_API const uint8_t ff_sqrt_tab[256];
+ 
+ static inline int av_log2_16bit(unsigned int v);
+ 
+diff -ur ffmpeg-export-2008-05-01-old/libavutil/md5.h ffmpeg-export-2008-05-01/libavutil/md5.h
+--- ffmpeg-export-2008-05-01-old/libavutil/md5.h	2007-10-17 11:37:46.000000000 +0200
++++ ffmpeg-export-2008-05-01/libavutil/md5.h	2008-05-12 15:38:15.375000000 +0200
+@@ -23,7 +23,7 @@
+ 
+ #include <stdint.h>
+ 
+-extern const int av_md5_size;
++extern AVUTIL_API const int av_md5_size;
+ 
+ struct AVMD5;
+ 
+diff -ur ffmpeg-export-2008-05-01-old/libavutil/tree.h ffmpeg-export-2008-05-01/libavutil/tree.h
+--- ffmpeg-export-2008-05-01-old/libavutil/tree.h	2008-01-04 19:55:14.000000000 +0100
++++ ffmpeg-export-2008-05-01/libavutil/tree.h	2008-05-12 15:38:15.390625000 +0200
+@@ -30,7 +30,7 @@
+ #define FFMPEG_TREE_H
+ 
+ struct AVTreeNode;
+-extern const int av_tree_node_size;
++extern AVUTIL_API const int av_tree_node_size;
+ 
+ /**
+  * Finds an element.
+diff -ur ffmpeg-export-2008-05-01-old/subdir.mak ffmpeg-export-2008-05-01/subdir.mak
+--- ffmpeg-export-2008-05-01-old/subdir.mak	2008-04-09 23:11:39.000000000 +0200
++++ ffmpeg-export-2008-05-01/subdir.mak	2008-05-12 15:38:15.406250000 +0200
+@@ -41,10 +41,6 @@
+ 	install -d "$(SHLIBDIR)"
+ 	install -m 755 $(SUBDIR)$(SLIBNAME) "$(SHLIBDIR)/$(SLIBNAME_WITH_VERSION)"
+ 	$(STRIP) "$(SHLIBDIR)/$(SLIBNAME_WITH_VERSION)"
+-	cd "$(SHLIBDIR)" && \
+-		$(LN_S) $(SLIBNAME_WITH_VERSION) $(SLIBNAME_WITH_MAJOR)
+-	cd "$(SHLIBDIR)" && \
+-		$(LN_S) $(SLIBNAME_WITH_VERSION) $(SLIBNAME)
+ 	$(SLIB_INSTALL_EXTRA_CMD)
+ 
+ install-lib$(NAME)-static: $(SUBDIR)$(LIBNAME)

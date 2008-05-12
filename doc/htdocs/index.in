@@ -52,6 +52,9 @@ see the <a href="NEWS.html">News Archive</a> or the
 <dd>
 <p>The optim package has been updated to version 1.0.3, and a new version of the bundle has been released to reflect this change. This change was needed due to an error by the release manager.</p>
 </dd>
+<dt>May 5, 2008</dt>
+<dd>Updated Windows installer to Octave 3.0.1.
+</dd>
 <dt>April 29, 2008</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 3.0.1. Many packages
@@ -76,7 +79,7 @@ see the <a href="NEWS.html">News Archive</a> or the
    <li>fixed: Build fix for Unix, cygwin and mingw platforms.</li>
    <li>plot: Remove old plot code based on Xlib and replace with
    gtext, ginput and waitforbuttonpress functions that use gnuplot
-   directly to obtan the required information. Add colstyle function.</li>
+   directly to obtain the required information. Add colstyle function.</li>
    <li>signal: Add the window and buffer functions.</li>
    <li>mapping: Add the km2deg and reckon functions.</li>
    <li>image: Add the imcomplement and rgbplot functions. Support for

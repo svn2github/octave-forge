@@ -1134,7 +1134,7 @@ View control
  viewmtx 
  rotate3d 
 User input
- ginput gget grab gzoom gpick
+ ginput grab
  dragrect 
  rbbox 
 Gnuplot Interface

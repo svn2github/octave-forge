@@ -59,7 +59,7 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 <dt>Febrary 16, 2008</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 3.0. Many packages
- will also function function with earlier versions of Octave 2.9.
+ will also function with earlier versions of Octave 2.9.
  Notable changes in this release include:</p>
 <ul>
    <li>jhandles: More graphics properties.</li>

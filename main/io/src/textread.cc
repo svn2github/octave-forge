@@ -80,7 +80,7 @@ public:
     }
 
     long unsigned int
-    lines()
+    lines(int headerlines)
     {
 	if (_lines == 0) {
 
@@ -93,7 +93,7 @@ public:
 	    char buf[BUFFER_SIZE];
 	    while (!tmpdata.eof()) {
 		tmpdata.getline(buf, BUFFER_SIZE);
-		if (std::string(buf).length() != 0) {
+		if (_lines < headerlines || std::string(buf).length() != 0) {
 		    _lines++;
 		}
 	    }
@@ -252,8 +252,6 @@ Currently implemented @var{prop} arguments are:\n\
 	return retval;
     }
 
-
-
     TextFile input(filename.c_str());
     if (!input.is_valid()) {
 	return retval;
@@ -268,7 +266,7 @@ Currently implemented @var{prop} arguments are:\n\
     input.set_format(repeated_fmt);    
     input.ignore_whitespace();
 
-    long unsigned int nr_rows = input.lines();
+    long unsigned int nr_rows = input.lines(headerlines);
 
     if (nr_rows == 0) {
         return octave_value (Matrix ());

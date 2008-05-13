@@ -2775,15 +2775,17 @@ if check_package FFMpeg; then
   download_file ffmpeg-export-snapshot.tar.bz2 "http://ffmpeg.mplayerhq.hu/ffmpeg-export-snapshot.tar.bz2"
   echo -n "decompressing FFMpeg..."
   unpack_file ffmpeg-export-snapshot.tar.bz2
-  #ffmpegdir=`find "$DOWNLOAD_DIR" -type d -a -name "ffmpeg-export-*" | sed -e "s,.*/,,"`
-  ffmpegdir="ffmpeg-export-2008-05-01"
-  cp libs/ffmpeg.diff "$DOWNLOAD_DIR/$ffmpegdir"
+  ffmpegdir=`find "$DOWNLOAD_DIR" -maxdepth 1 -type d -a -name "ffmpeg-export-*" -printf '%f\n' | sed -e "1q"`
+  cp libs/ffmpeg.diff "$DOWNLOAD_DIR/$ffmpegdir/ffmpeg.diff"
   echo "done"
   echo -n "compiling FFMpeg..."
   (cd "$DOWNLOAD_DIR/$ffmpegdir" &&
     patch -p1 < ffmpeg.diff &&
 	  start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W` && ./configure --prefix=\"$tdir_w32_forward\" --enable-avisynth --enable-gpl --enable-shared --disable-static --enable-w32threads --enable-avfilter --enable-swscale --extra-cflags=\"-mno-cygwin -mms-bitfields\" --extra-ldflags=\"-mno-cygwin -mms-bitfields\" --target-os=mingw32 --enable-memalign-hack --disable-mmx --disable-vhook --disable-debug --disable-ffmpeg --disable-ffserver --disable-ffplay" &&
-    sed -e "s/^EXTRALIBS =/& -lmsvcr80/" config.mak > ttt &&
+    # some tricks to allow MinGW to link against MSVCR80.DLL instead of MSVCRT.DLL
+    sed -e "s/^EXTRALIBS *=/& -nostdlib -lmingwex -lgcc -lmsvcr80/" \
+        -e "s/^EXTRALIBS *=.*$/& -luser32 -lkernel32/" \
+        config.mak > ttt &&
       mv ttt config.mak &&
     start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
       -c "cd `pwd -W` && for lib in avutil avcodec avformat swscale avfilter avdevice; do make -C lib\$lib; done" &&

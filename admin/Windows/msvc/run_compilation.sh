@@ -2802,7 +2802,7 @@ if check_package FFMpeg; then
     start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
       -c "cd `pwd -W` && for lib in avutil avcodec avformat swscale avfilter avdevice; do make -C lib\$lib install; done" &&
     true) >&5 2>&1
-  #remove_package "$DOWNLOAD_DIR/$ffmpegdir"
+  remove_package "$DOWNLOAD_DIR/$ffmpegdir"
   if test ! -f "$tlibdir/avcodec.lib"; then
     echo "failed"
     exit -1

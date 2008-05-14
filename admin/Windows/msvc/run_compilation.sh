@@ -2783,8 +2783,11 @@ if check_package FFMpeg; then
     patch -p1 < ffmpeg.diff &&
 	  start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W` && ./configure --prefix=\"$tdir_w32_forward\" --enable-avisynth --enable-gpl --enable-shared --disable-static --enable-w32threads --enable-avfilter --enable-swscale --extra-cflags=\"-mno-cygwin -mms-bitfields\" --extra-ldflags=\"-mno-cygwin -mms-bitfields\" --target-os=mingw32 --enable-memalign-hack --disable-mmx --disable-vhook --disable-debug --disable-ffmpeg --disable-ffserver --disable-ffplay" &&
     # some tricks to allow MinGW to link against MSVCR80.DLL instead of MSVCRT.DLL
-    sed -e "s/^EXTRALIBS *=/& -nostdlib -lmingwex -lgcc -lmsvcr80/" \
-        -e "s/^EXTRALIBS *=.*$/& -luser32 -lkernel32/" \
+    #sed -e "s/^EXTRALIBS *=/& -nostdlib -lmingwex -lgcc -lmsvcr80/" \
+    #    -e "s/^EXTRALIBS *=.*$/& -luser32 -lkernel32/" \
+    #    config.mak > ttt &&
+    #  mv ttt config.mak &&
+    sed -e "s/^EXTRALIBS *=/& -lmsvcr80/" \
         config.mak > ttt &&
       mv ttt config.mak &&
     start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \

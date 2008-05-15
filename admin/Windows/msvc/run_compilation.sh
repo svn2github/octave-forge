@@ -359,6 +359,24 @@ if test "x$cl_path" = "x"; then
 else
   echo "yes"
 fi
+echo -n "checking for Visual Studio version... "
+clver=`cl -? 2>&1 | sed -n -e 's/.*Compiler Version \([0-9]\+\).*/\1/p'`
+crtver=
+case $clver in
+  14)
+    crtver=80
+    echo "2005"
+    ;;
+  15)
+    crtver=90
+    echo "2008"
+    ;;
+  *)
+    echo "unknown"
+    echo "ERROR: unsupported Visual C++ compiler version: $clver"
+    exit -1
+    ;;
+esac
 echo -n "checking for Platform SDK... "
 cat <<EOF > conftest.c
 #include <windows.h>
@@ -490,7 +508,7 @@ function todo_check
 
 if test -z "$todo_packages"; then
   if test -z "$packages"; then
-    todo_check "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest" VC
+    todo_check "$tbindir/Microsoft.VC$crtver.CRT/Microsoft.VC$crtver.CRT.manifest" VC
     todo_check "$tbindir/f2c.exe" f2c
     todo_check "$tlibdir/f2c.lib" libf2c
     todo_check "$tbindir/fort77" fort77
@@ -608,18 +626,18 @@ fi
 ######
 
 if check_package VC; then
-  msvc=`ls /c/WINDOWS/WinSxS/*/msvcr80.dll 2> /dev/null | tail -n 1`
+  msvc=`ls /c/WINDOWS/WinSxS/*/msvcr$crtver.dll 2> /dev/null | tail -n 1`
   if test -z "$msvc"; then
     echo "cannot find VC++ runtime libraries"
     exit -1
   fi
-  msvc_path=`echo $msvc | sed -e 's,/msvcr80.dll$,,'`
+  msvc_path=`echo $msvc | sed -e "s,/msvcr$crtver.dll$,,"`
   msvc_name=`echo $msvc_path | sed -e 's,.*/,,'`
-  mkdir -p "$tbindir/Microsoft.VC80.CRT"
-  cp $msvc_path/*.dll "$tbindir/Microsoft.VC80.CRT"
+  mkdir -p "$tbindir/Microsoft.VC$crtver.CRT"
+  cp $msvc_path/*.dll "$tbindir/Microsoft.VC$crtver.CRT"
   if true; then
-    cp "/c/WINDOWS/WinSxS/Manifests/$msvc_name.manifest" "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest"
-  else
+    cp "/c/WINDOWS/WinSxS/Manifests/$msvc_name.manifest" "$tbindir/Microsoft.VC$crtver.CRT/Microsoft.VC$crtver.CRT.manifest"
+  elif "$crtver" == "80"; then
     cat > "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest" << EOF
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!-- Copyright © 1981-2001 Microsoft Corporation -->
@@ -637,12 +655,15 @@ if check_package VC; then
     <file name="msvcm80.dll"/>
 </assembly>
 EOF
+  else
+    echo "ERROR: don't have built-in manifest for CRT version $crtver"
+    exit -1
   fi
-  if test ! -f "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest"; then
+  if test ! -f "$tbindir/Microsoft.VC$crtver.CRT/Microsoft.VC$crtver.CRT.manifest"; then
     echo "failed"
     exit -1
   else
-    msvc_ver=`grep "version=" "$tbindir/Microsoft.VC80.CRT/Microsoft.VC80.CRT.manifest" | tail -n 1 | sed -e "s/.*version=\"\([^ ]*\)\".*/\1/"`
+    msvc_ver=`grep "version=" "$tbindir/Microsoft.VC$crtver.CRT/Microsoft.VC$crtver.CRT.manifest" | tail -n 1 | sed -e "s/.*version=\"\([^ ]*\)\".*/\1/"`
     echo "done (using version $msvc_ver)"
   fi
 fi
@@ -1415,24 +1436,42 @@ if check_package gettext; then
   echo -n "compiling gettext... "
   (cd "$DOWNLOAD_DIR/gettext-$gettextver" &&
     patch -p1 < gettext-$gettextver.diff &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 `pkg-config --cflags glib-2.0 libxml-2.0`" \
-      AR=ar-msvc RANLIB=ranlib-msvc ac_cv_func_memset=yes \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static  --disable-nls \
-      --disable-java --disable-native-java --enable-relocatable --with-included-gettext &&
+    use_glib_libxml=no &&
+    if test -f "`which pkg-config`"; then
+      if pkg-config --exists glib-2.0 libxml-2.0; then
+        use_glib_libxml=yes
+      fi
+    fi &&
+    echo "using GLib and libxml support: $use_glib_libxml" &&
+    if test "x$use_glib_libxml" = "xyes"; then
+      W_CPPFLAGS="$W_CPPFLAGS `pkg-config --cflags glib-2.0 libxml-2.0`" ac_cv_func_memset=yes \
+        configure_package --enable-shared --disable-static  --disable-nls \
+        --disable-java --disable-native-java --enable-relocatable --with-included-gettext
+    else
+      ac_cv_func_memset=yes \
+        configure_package --enable-shared --disable-static  --disable-nls \
+        --disable-java --disable-native-java --enable-relocatable --with-included-gettext
+    fi &&
     for lt in `find . -name libtool`; do
       post_process_libtool $lt
     done &&
-    read -p "WARNING: gettext-runtime/libasprintf/libtool and gettext-tools/libtool needs manual post-processing; press <ENTER> when done " &&
+    #read -p "WARNING: gettext-runtime/libasprintf/libtool and gettext-tools/libtool needs manual post-processing; press <ENTER> when done " &&
     for cs in gettext-runtime/config.status gettext-tools/config.status; do
       sed -e '/@USE_INCLUDED_LIBINTL@/ {s/no/yes/;}' "$cs" > ttt &&
         mv ttt "$cs" &&
       (cd `dirname "$cs"` && ./config.status)
     done &&
+    if test "$crtver" = "90"; then
+      sed -e 's/^[ 	]*case SUBLANG_SINDHI_AFGHANISTAN:.*$//' gettext-runtime/intl/localename.c > ttt &&
+        mv ttt gettext-runtime/intl/localename.c
+      sed -e 's/^[ 	]*case SUBLANG_SINDHI_AFGHANISTAN:.*$//' gettext-tools/gnulib-lib/localename.c > ttt &&
+        mv ttt gettext-tools/gnulib-lib/localename.c
+    fi &&
+    (cd gettext-tools/src && make gettext.res && cp gettext.res ../gnulib-lib/gettextlib.res) &&
     make &&
     make install &&
     rm $tlibdir_quoted/lib*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gettext-$gettextver"
+  #remove_package "$DOWNLOAD_DIR/gettext-$gettextver"
   if test ! -f "$tlibdir/intl.lib"; then
     echo "failed"
     exit -1
@@ -1932,6 +1971,32 @@ fi
 ##############
 
 if check_package pkg-config; then
+  use_support_glib=false
+  if test ! -f "`which libglib-2.0.dll`"; then
+    echo "compiling support GLib... " &&
+    glibroot=`echo $glibver | sed -e 's/\.[0-9]\+$//'`
+    download_file glib-$glibver.tar.gz ftp://ftp.gtk.org/pub/glib/$glibroot/glib-$glibver.tar.gz
+    echo -n "decompressing glib... "
+    unpack_file glib-$glibver.tar.gz
+    mv "$DOWNLOAD_DIR/glib-$glibver" "$DOWNLOAD_DIR/glib"
+    echo "done"
+    echo -n "compiling glib... "
+    (cd "$DOWNLOAD_DIR/glib" &&
+      sed -e '/^INTL_LIBS =/ {s/intl\.lib/lib\\intl.lib/;}' build/win32/make.msc > ttt &&
+        mv ttt build/win32/make.msc &&
+      sed -e 's/-DEBCDIC=0//' \
+          -e 's/\\\.obj//' \
+          -e 's/pcre_internal\.obj/pcre_chartables.obj/' \
+          -e 's/	ucp.*\.obj *\\//' \
+          glib/pcre/makefile.msc > ttt &&
+        mv ttt glib/pcre/makefile.msc &&
+      sed -e '/^PARTS/ {s/tests//;}' makefile.msc > ttt &&
+        mv ttt makefile.msc &&
+      (cd build/win32/dirent && nmake -f makefile.msc INTL=D:/Software/VCLibs LIBICONV=D:/Software/VCLibs) &&
+      nmake -f makefile.msc "INTL=D:/Software/VCLibs" "LIBICONV=D:/Software/VCLibs" &&
+      echo "done")
+    use_support_glib=true
+  fi
   download_file pkg-config-0.22.tar.gz http://pkgconfig.freedesktop.org/releases/pkg-config-0.22.tar.gz
   echo -n "decompressing pkg-config... "
   (cd "$DOWNLOAD_DIR" && tar xfz pkg-config-0.22.tar.gz)
@@ -1940,12 +2005,20 @@ if check_package pkg-config; then
   echo -n "compiling pkg-config... "
   (cd "$DOWNLOAD_DIR/pkg-config-0.22" &&
     patch -p1 < pkg-config-0.22.diff &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHs -MD" \
-         CPPFLAGS="-D_CRT_SECURE_NO_DEPRECATE" AR=ar-msvc ./configure --prefix=$tdir_w32_forward --disable-shared &&
-    make &&
+    if $use_support_glib; then
+      sed -e 's/GLIB_CFLAGS=".*/GLIB_CFLAGS="-I..\/glib -I..\/glib\/glib"/' \
+          -e "s/GLIB_LIBS=\".*/GLIB_LIBS=\"-L..\/glib\/glib -lglib-${glibver}s -liconv -lintl -luser32 -lole32 -lshell32/" \
+          configure > ttt &&
+        mv ttt configure
+    fi &&
+    configure_package --disable-shared &&
+    make
     make install &&
-	mkdir -p "$tlibdir/pkgconfig") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/pkg-config-0.22"
+    mkdir -p "$tlibdir/pkgconfig") >&5 2>&1
+  #remove_package "$DOWNLOAD_DIR/pkg-config-0.22"
+  #if $use_support_glib; then
+  #  remove_package "$DOWNLOAD_DIR/glib"
+  #fi
   if test ! -f "$tbindir/pkg-config.exe"; then
     echo "failed"
     exit -1

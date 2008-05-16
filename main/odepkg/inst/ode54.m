@@ -1,5 +1,5 @@
 %# Copyright (C) 2006-2008, Thomas Treichl <treichl@users.sourceforge.net>
-%# OdePkg - A package for solving differential equations with GNU Octave
+%# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
 %# it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
   elseif (nargin < 3)
     print_usage;
 
-  elseif (~isa (vfun, 'function_handle'))
+  elseif ~(isa (vfun, 'function_handle') || isa (vfun, 'inline'))
     error ('OdePkg:InvalidArgument', ...
       'First input argument must be a valid function handle');
 
@@ -97,8 +97,8 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
   %# Start preprocessing, have a look which options have been set in
   %# vodeoptions. Check if an invalid or unused option has been set and
   %# print warnings.
-  vslot = vslot(:)';                              %# Create a row vector
-  vinit = vinit(:)';                              %# Create a row vector
+  vslot = vslot(:).';                             %# Create a row vector
+  vinit = vinit(:).';                             %# Create a row vector
   if (length (vslot) > 2), vstepsizegiven = true; %# Step size checking
   else vstepsizegiven = false; end  
 
@@ -274,14 +274,14 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 
   %# Initialize the OutputFcn
   if (vhaveoutputfunction)
-    feval (vodeoptions.OutputFcn, vslot', ...
-      vretvalresult', 'init', vfunarguments{:});
+    feval (vodeoptions.OutputFcn, vslot.', ...
+      vretvalresult.', 'init', vfunarguments{:});
   end
 
   %# Initialize the EventFcn
   if (vhaveeventfunction)
     odepkg_event_handle (vodeoptions.Events, vtimestamp, ...
-      vretvalresult', 'init', vfunarguments{:});
+      vretvalresult.', 'init', vfunarguments{:});
   end
 
   vpow = 1/5;                   %# 20071016, reported by Luis Randez
@@ -293,12 +293,12 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
         9017/3168, -355/33, 46732/5247, 49/176, -5103/18656, 0;
         35/384, 0, 500/1113, 125/192, -2187/6784, 11/84];
   %# 4th and 5th order b-coefficients
-  vb4 = [35/384; 0; 500/1113; 125/192; -2187/6784; 11/84; 0];
-  vb5 = [5179/57600; 0; 7571/16695; 393/640; -92097/339200; 187/2100; 1/40];
+  vb4 = [5179/57600; 0; 7571/16695; 393/640; -92097/339200; 187/2100; 1/40];
+  vb5 = [35/384; 0; 500/1113; 125/192; -2187/6784; 11/84; 0];
   vc = sum (va, 2);
 
   %# The solver main loop - stop if the endpoint has been reached
-  vcntloop = 2; vcntcycles = 1; vu = vinit; vk = vu' * zeros(1,7);
+  vcntloop = 2; vcntcycles = 1; vu = vinit; vk = vu.' * zeros(1,7);
   vcntiter = 0; vunhandledtermination = true;
   while ((vtimestamp < vtimestop && vstepsize >= vminstepsize))
 
@@ -309,7 +309,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
     %# Estimate the seven results when using this solver
     for j = 1:7
       vthetime  = vtimestamp + vc(j,1) * vstepsize;
-      vtheinput = vu' + vstepsize * vk(:,1:j-1) * va(j,1:j-1)';
+      vtheinput = vu.' + vstepsize * vk(:,1:j-1) * va(j,1:j-1).';
       if (vhavemasshandle)   %# Handle only the dynamic mass matrix,
         if (vmassdependence) %# constant mass matrices have already
           vmass = feval ...  %# been set before (if any)
@@ -327,8 +327,8 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
     end
 
     %# Compute the 4th and the 5th order estimation
-    y4 = vu' + vstepsize * (vk * vb4);
-    y5 = vu' + vstepsize * (vk * vb5);
+    y4 = vu.' + vstepsize * (vk * vb4);
+    y5 = vu.' + vstepsize * (vk * vb5);
     if (vhavenonnegative)
       vu(vodeoptions.NonNegative) = abs (vu(vodeoptions.NonNegative));
       y4(vodeoptions.NonNegative) = abs (y4(vodeoptions.NonNegative));
@@ -339,11 +339,11 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
     %# Calculate the absolute local truncation error and the acceptable error
     if (~vstepsizegiven)
       if (~vnormcontrol)
-        vdelta = y5 - y4;
-        vtau = max (vodeoptions.RelTol * vu', vodeoptions.AbsTol);
+        vdelta =  abs (y5 - y4);
+        vtau = max (vodeoptions.RelTol * abs (vu.'), vodeoptions.AbsTol);
       else
         vdelta = norm (y5 - y4, Inf);
-        vtau = max (vodeoptions.RelTol * max (norm (vu', Inf), 1.0), ...
+        vtau = max (vodeoptions.RelTol * max (norm (vu.', Inf), 1.0), ...
                     vodeoptions.AbsTol);
       end
     else %# if (vstepsizegiven == true)
@@ -353,7 +353,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
     %# If the error is acceptable then update the vretval variables
     if (all (vdelta <= vtau))
       vtimestamp = vtimestamp + vstepsize;
-      vu = y5'; %# MC2001: the higher order estimation as "local extrapolation"
+      vu = y5.'; %# MC2001: the higher order estimation as "local extrapolation"
       vretvaltime(vcntloop,:) = vtimestamp;
       if (vhaveoutputselection)
         vretvalresult(vcntloop,:) = vu(vodeoptions.OutputSel);
@@ -369,7 +369,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
         if (vhaverefine)                  %# Do interpolation
           for vcnt = 0:vodeoptions.Refine %# Approximation between told and t
             vapproxtime = (vcnt + 1) * vstepsize / (vodeoptions.Refine + 2);
-            vapproxvals = vSaveVUForRefine' + vapproxtime * (vk * vb5);
+            vapproxvals = vSaveVUForRefine.' + vapproxtime * (vk * vb5);
             if (vhaveoutputselection)
               vapproxvals = vapproxvals(vodeoptions.OutputSel);
             end
@@ -378,7 +378,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
           end
         end
         vpltret = feval (vodeoptions.OutputFcn, vtimestamp, ...
-          vretvalresult(vcntloop-1,:)', [], vfunarguments{:});
+          vretvalresult(vcntloop-1,:).', [], vfunarguments{:});
         if (vpltret), vunhandledtermination = false; break; end
       end
 
@@ -400,7 +400,17 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
     %# Update the step size for the next integration step
     if (~vstepsizegiven)
       %# vdelta may be 0 or even negative - could be an iteration problem
-      vdelta = max (vdelta, eps); 
+      %# vdelta = max (vdelta, eps); 
+
+      %# 20080425, reported by Marco Caliari
+      %# vdelta cannot be negative (because of the absolute value that
+      %# has been introduced) but it could be 0, then replace the zeros 
+      %# with the maximum value of vdelta
+      vdelta(find (vdelta == 0)) = max (vdelta);
+      %# It could happen that max (vdelta) == 0 (ie. that the original
+      %# vdelta was 0), in that case we double the previous vstepsize
+      vdelta(find (vdelta == 0)) = max (vtau) .* (0.4 ^ (1 / vpow));
+
       vstepsize = min (vodeoptions.MaxStep, ...
         min (0.8 * vstepsize * (vtau ./ vdelta) .^ vpow));
     elseif (vstepsizegiven)
@@ -448,7 +458,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
   %# Postprocessing, do whatever when terminating integration algorithm
   if (vhaveoutputfunction) %# Cleanup plotter
     feval (vodeoptions.OutputFcn, vtimestamp, ...
-      vretvalresult(vcntloop-1,:)', 'done', vfunarguments{:});
+      vretvalresult(vcntloop-1,:).', 'done', vfunarguments{:});
   end
   if (vhaveeventfunction)  %# Cleanup event function handling
     odepkg_event_handle (vodeoptions.Events, vtimestamp, ...

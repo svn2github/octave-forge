@@ -511,7 +511,7 @@ if test -z "$todo_packages"; then
     todo_check "$tbindir/Microsoft.VC$crtver.CRT/Microsoft.VC$crtver.CRT.manifest" VC
     todo_check "$tbindir/f2c.exe" f2c
     todo_check "$tlibdir/f2c.lib" libf2c
-    todo_check "$tbindir/fort77" fort77
+    #todo_check "$tbindir/fort77" fort77
     todo_check "$tlibdir/blas.lib" BLAS
     todo_check "$tlibdir/lapack.lib" LAPACK
     if $DOATLAS; then
@@ -1521,6 +1521,15 @@ fi
 ########
 
 if check_package glib; then
+  if test ! -f "`which pkg-config`"; then
+    echo ""
+    echo "need to compile pkg-config first, restarting..."
+    if $do_debug; then
+      $0 -v --prefix="$INSTALL_DIR" pkg-config || exit -1
+    else
+      $0 --prefix="$INSTALL_DIR" pkg-config || exit -1
+    fi
+  fi
   glibroot=`echo $glibver | sed -e 's/\.[0-9]\+$//'`
   download_file glib-$glibver.tar.gz ftp://ftp.gtk.org/pub/glib/$glibroot/glib-$glibver.tar.gz
   echo -n "decompressing glib... "
@@ -1972,7 +1981,7 @@ fi
 
 if check_package pkg-config; then
   use_support_glib=false
-  if test ! -f "`which libglib-2.0.dll`"; then
+  if test ! -f "`which libglib-2.0-0.dll`"; then
     echo "compiling support GLib... " &&
     glibroot=`echo $glibver | sed -e 's/\.[0-9]\+$//'`
     download_file glib-$glibver.tar.gz ftp://ftp.gtk.org/pub/glib/$glibroot/glib-$glibver.tar.gz
@@ -1993,7 +2002,7 @@ if check_package pkg-config; then
       sed -e '/^PARTS/ {s/tests//;}' makefile.msc > ttt &&
         mv ttt makefile.msc &&
       (cd build/win32/dirent && nmake -f makefile.msc INTL=D:/Software/VCLibs LIBICONV=D:/Software/VCLibs) &&
-      nmake -f makefile.msc "INTL=D:/Software/VCLibs" "LIBICONV=D:/Software/VCLibs" &&
+      (cd glib && nmake -f makefile.msc "INTL=D:/Software/VCLibs" "LIBICONV=D:/Software/VCLibs") &&
       echo "done")
     use_support_glib=true
   fi
@@ -2007,18 +2016,19 @@ if check_package pkg-config; then
     patch -p1 < pkg-config-0.22.diff &&
     if $use_support_glib; then
       sed -e 's/GLIB_CFLAGS=".*/GLIB_CFLAGS="-I..\/glib -I..\/glib\/glib"/' \
-          -e "s/GLIB_LIBS=\".*/GLIB_LIBS=\"-L..\/glib\/glib -lglib-${glibver}s -liconv -lintl -luser32 -lole32 -lshell32/" \
+          -e "s/GLIB_LIBS=\".*/GLIB_LIBS=\"-L..\/glib\/glib -lglib-${glibroot}s -liconv -lintl -luser32 -lole32 -lshell32\"/" \
           configure > ttt &&
         mv ttt configure
     fi &&
     configure_package --disable-shared &&
+    post_process_libtool &&
     make
     make install &&
     mkdir -p "$tlibdir/pkgconfig") >&5 2>&1
-  #remove_package "$DOWNLOAD_DIR/pkg-config-0.22"
-  #if $use_support_glib; then
-  #  remove_package "$DOWNLOAD_DIR/glib"
-  #fi
+  remove_package "$DOWNLOAD_DIR/pkg-config-0.22"
+  if $use_support_glib; then
+    remove_package "$DOWNLOAD_DIR/glib"
+  fi
   if test ! -f "$tbindir/pkg-config.exe"; then
     echo "failed"
     exit -1

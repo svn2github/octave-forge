@@ -1,3 +1,7 @@
+2008-05-15  Jaroslav Hajek <highegg@gmail.com>
+
+	* inst/demo_octgpr.m: add support for non-interactive running.
+
 2008-04-17  Jaroslav Hajek <highegg@gmail.com>
 
 	* inst/demo_octgpr.m: refactor demo

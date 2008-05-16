@@ -37,14 +37,41 @@
 % @end itemize
 % @end deftypefn
 function demo_octgpr (number, varargin)
-  switch (number)
-  case 1
-    demo_octgpr1 (varargin{:})
-  case 2
-    demo_octgpr2 (varargin{:})
-  otherwise
-    error ("demo_octgpr: invalid demo number")
-  endswitch
+  
+  global prntfmt = '';
+
+  if (nargin < 1)
+    print_usage ();
+  elseif (ischar (number))
+    prntfmt = number;
+  elseif (isscalar (number))
+    figure ();
+    if (! isempty (prntfmt))
+      figure (gcf, "visible", "off");
+    endif
+
+    switch (number)
+    case 1
+      demo_octgpr1 (varargin{:})
+    case 2
+      demo_octgpr2 (varargin{:})
+    otherwise
+      error ("demo_octgpr: invalid demo number")
+    endswitch
+  else
+    print_usage ();
+  endif
+
+endfunction
+
+function demo_octgpr_pause (idemo, iplot)
+  global prntfmt;
+  if (isempty (prntfmt))
+    pause;
+  else
+    print (sprintf (prntfmt, idemo, iplot));
+    fflush (stdout);
+  endif
 endfunction
 
 % define the test function (the well-known matlab "peaks" plus some sines)
@@ -56,6 +83,7 @@ function z = testfun1 (x, y)
 endfunction
 
 function demo_octgpr1 (nsamp = 150)
+  global prntfmt;
   tit = "a peaked surface";
   disp (tit);
 
@@ -71,7 +99,7 @@ function demo_octgpr1 (nsamp = 150)
   title (tit);
   subplot (2, 2, 3);
   contourf (xi, yi, zi, 20);
-  pause;
+  demo_octgpr_pause (1, 1);
 
   tit = sprintf ("sampled at %d random points", nsamp);
   disp (tit);
@@ -87,7 +115,7 @@ function demo_octgpr1 (nsamp = 150)
   title (tit);
   subplot (2, 2, 4);
   plot (xs, ys, ".+");
-  pause
+  demo_octgpr_pause (1, 2);
 
   tit = "GPR model with heuristic hypers";
   disp (tit);
@@ -104,7 +132,7 @@ function demo_octgpr1 (nsamp = 150)
   contourf (xi, yi, zm, 20);
   plot (xs, ys, "+6");
   hold off
-  pause
+  demo_octgpr_pause (1, 3);
 
   tit = "GPR model with MLE training";
   disp (tit);
@@ -121,20 +149,21 @@ function demo_octgpr1 (nsamp = 150)
   contourf (xi, yi, zm, 20);
   plot (xs, ys, "+6");
   hold off
-  pause
-
+  demo_octgpr_pause (1, 4);
   close
+
 endfunction
 
 function demo_octgpr2 (ncnt = 50, npt = 500)
 
+  global prntfmt;
   npt = ncnt*ceil (npt/ncnt);
   U = rand (ncnt, 2);
   cs = min (pdist2_mw (U, 2) + diag (Inf (ncnt, 1)));
   X = repmat (U, npt/ncnt, 1) + repmat (cs', npt/ncnt, 2) .* randn (npt, 2);
   disp ("slightly clustered random points")
   plot (X(:,1), X(:,2), "+");
-  pause
+  demo_octgpr_pause (2, 1);
 
   [U, ur] = rbf_centers(X, ncnt);
 
@@ -147,7 +176,7 @@ function demo_octgpr2 (ncnt = 50, npt = 500)
     line (xc, yc);
   endfor
   hold off
-  pause
+  demo_octgpr_pause (2, 2);
   close
 
 endfunction

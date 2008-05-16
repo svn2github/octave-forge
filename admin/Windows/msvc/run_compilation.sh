@@ -93,6 +93,7 @@ gdlver=0.7.11
 vtever=0.16.13
 gtkglareaver=1.99.0
 sqlite3ver=3.5.8
+atlver=3.8.1
 
 ###################################################################################
 
@@ -139,6 +140,10 @@ while test $# -gt 0; do
       ;;
     -a | --atlas)
       DOATLAS=true
+      ;;
+    --atlas=*)
+      DOATLAS=true
+      atlver=`echo $1 | sed -e 's/--atlas=//'`
       ;;
     -f | --force)
       todo_packages="$available_packages"
@@ -194,6 +199,8 @@ while test $# -gt 0; do
   esac
   shift
 done
+
+atlnum=`echo $atlver | sed -e 's/\.//g'`
 
 if $verbose; then
   exec 5>&1
@@ -516,7 +523,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/lapack.lib" LAPACK
     if $DOATLAS; then
       echo -n "checking for ATLAS... "
-      atl_dlls=`find "$tbindir" -name "blas_atl_*.dll"`
+      atl_dlls=`find "$tbindir" -name "libblas_atl$atlnum_*.dll"`
       if test -z "$atl_dlls"; then
         echo "no"
         packages="$packages ATLAS"
@@ -791,24 +798,47 @@ fi
 #########
 
 if $DOATLAS && check_package ATLAS; then
-  download_file atlas-3.6.0.tar.gz 'http://downloads.sourceforge.net/math-atlas/atlas3.6.0.tar.gz?modtime=1072051200&big_mirror=0'
-  echo -n "decompressing ATLAS... "
-  (cd "$DOWNLOAD_DIR" && tar xfz atlas-3.6.0.tar.gz)
-  cp libs/atlas-3.6.0.diff "$DOWNLOAD_DIR/ATLAS"
-  echo "done"
-  echo -n "compiling ATLAS... "
-  (cd "$DOWNLOAD_DIR/ATLAS" &&
-    patch -p1 < atlas-3.6.0.diff &&
-#    start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -i &&
-#	exit -1 &&
-    start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make xconfig && echo -n '' | ./xconfig -c mvc" &&
-	arch=`ls Make.*_* | sed -e 's/Make\.//'` &&
-	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make install arch=$arch" &&
-	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && cd lib/$arch && build_atlas_dll" &&
-	cp lib/$arch/libblas.dll "$tbindir/libblas_atl_$arch.dll" &&
-	cp lib/$arch/liblapack.dll "$tbindir/liblapack_atl_$arch.dll") >&5 2>&1
+  if test $atlnum -ge 380; then
+    download_file atlas$atlver.tar.bz2 "http://downloads.sourceforge.net/math-atlas/atlas$atlver.tar.bz2?big_mirror=0"
+    echo -n "decompressing ATLAS... "
+    unpack_file atlas$atlver.tar.bz2
+    echo "done"
+    echo -n "compiling ATLAS... (version $atlver)"
+    (cd "$DOWNLOAD_DIR/ATLAS" &&
+      mkdir atlbuild && cd atlbuild &&
+      start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
+        -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && ../configure -Si nocygwin 1" &&
+      atlarch=`sed -n -e 's/ *ARCH = \(.*\)$/\1/p' Make.inc` &&
+      start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
+        -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make build" &&
+      cd lib &&
+      cc-msvc -shared -o libblas.dll -Wl,-def:$tdir_w32_forward/lib/atl_blas.def \
+        -Wl,-implib:blas.lib libatlas.a libcblas.a libf77blas.a -lf2c &&
+      cc-msvc -shared -o liblapack.dll -Wl,-def:$tdir_w32_forward/lib/lapack.def \
+        -Wl,-implib:lapack.lib liblapack.a -lliblapack_f77 -L. -lblas -lf2c &&
+      cp libblas.dll "$tbindir/libblas_atl$atlnum_$atlarch.dll" &&
+      cp liblapack.dll "$tbindir/liblapack_atl$atlnum_$atlarch.dll") >&5 2>&1
+  else
+    download_file atlas-3.6.0.tar.gz 'http://downloads.sourceforge.net/math-atlas/atlas3.6.0.tar.gz?modtime=1072051200&big_mirror=0'
+    echo -n "decompressing ATLAS... "
+    (cd "$DOWNLOAD_DIR" && tar xfz atlas-3.6.0.tar.gz)
+    cp libs/atlas-3.6.0.diff "$DOWNLOAD_DIR/ATLAS"
+    echo "done"
+    echo -n "compiling ATLAS... "
+    (cd "$DOWNLOAD_DIR/ATLAS" &&
+      patch -p1 < atlas-3.6.0.diff &&
+      start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
+        -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make xconfig && echo -n '' | ./xconfig -c mvc" &&
+    	arch=`ls Make.*_* | sed -e 's/Make\.//'` &&
+    	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
+        -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make install arch=$arch" &&
+    	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
+        -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && cd lib/$arch && build_atlas_dll" &&
+    	cp lib/$arch/libblas.dll "$tbindir/libblas_atl$atlnum_$arch.dll" &&
+    	cp lib/$arch/liblapack.dll "$tbindir/liblapack_atl$atlnum_$arch.dll") >&5 2>&1
+    fi
   #rm -rf "$DOWNLOAD_DIR/ATLAS"
-  atl_dlls=`find "$tbindir" -name "blas_atl_*.dll"`
+  atl_dlls=`find "$tbindir" -name "libblas_atl$atlnum_*.dll"`
   if test -z "$atl_dlls"; then
     echo "failed"
     exit -1

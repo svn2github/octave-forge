@@ -4,7 +4,7 @@ Date: 2008-05-16
 Author: Thomas Treichl
 Maintainer: Thomas Treichl
 Title: OdePkg.
-Description: A package for solving differential equations with GNU Octave.
+Description: A package for solving ordinary differential equations and more. 
 Categories: Differential Equations
 Depends: octave (>= 3.0.0)
 Autoload: yes

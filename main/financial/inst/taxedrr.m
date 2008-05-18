@@ -38,3 +38,5 @@ endfunction
 
 ## Tests
 %!assert (taxedrr (0.12, 0.30), 0.084, 10*eps)
+%!assert (taxedrr (0.12, 0), 0.12, 10*eps)
+%!assert (taxedrr (0.12, 1), 0, 10*eps)

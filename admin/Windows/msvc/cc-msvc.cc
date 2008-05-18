@@ -137,6 +137,7 @@ static string quote_quotes(const string& s)
 	if (result.find_first_of("&<>()@^| ") != string::npos)
 		result = "\"" + result + "\"";
 
+#if 0
 	if (result.find_first_of("<>") != string::npos)
 	{
 		/* Could not find a better way to avoid the problem
@@ -144,6 +145,7 @@ static string quote_quotes(const string& s)
 		replace(result.begin(), result.end(), '<', '[');
 		replace(result.begin(), result.end(), '>', ']');
 	}
+#endif
 
 	return result;
 }

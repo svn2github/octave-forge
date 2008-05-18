@@ -60,7 +60,7 @@ download_root="http://downloads.sourceforge.net/octave/@@?download"
 lapackver=3.1.1
 pcrever=7.4
 curlver=7.16.4
-libpngver=1.2.23
+libpngver=1.2.29
 glpkver=4.23
 gslver=1.10
 netcdfver=3.6.2
@@ -201,6 +201,7 @@ while test $# -gt 0; do
 done
 
 atlnum=`echo $atlver | sed -e 's/\.//g'`
+build_flag=false
 
 if $verbose; then
   exec 5>&1
@@ -226,8 +227,10 @@ fi
 function remove_package
 {
   packdir="$1"
-  if ! $do_debug; then
-    rm -rf "$packdir"
+  if $build_flag; then
+    if ! $do_debug; then
+      rm -rf "$packdir"
+    fi
   fi
 }
 
@@ -249,11 +252,17 @@ function check_package
     found=`echo "$packages" | grep -e $pack`
     if test ! -z "$found"; then
       echo "processing $pack... "
+      build_flag=false
       return 0
     fi
   fi
   echo "skipping $pack... "
   return -1
+}
+
+function end_package
+{
+  build_flag=true
 }
 
 function check_cmake
@@ -1124,9 +1133,9 @@ fi
 ###############
 
 if check_package SuiteSparse; then
-  download_file SuiteSparse-3.0.0.tar http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-3.0.0.tar.gz
+  download_file SuiteSparse-3.0.0.tar.gz http://www.cise.ufl.edu/research/sparse/SuiteSparse/SuiteSparse-3.0.0.tar.gz
   echo -n "decompressing SuiteSparse... "
-  unpack_file SuiteSparse-3.0.0.tar
+  unpack_file SuiteSparse-3.0.0.tar.gz
   cp libs/suitesparse-3.0.0.diff "$DOWNLOAD_DIR/SuiteSparse"
   echo "done"
   echo "compiling SuiteSpase... "
@@ -1173,15 +1182,16 @@ if check_package HDF5; then
       create_module_rc HDF5 $hdf5ver libhdf5-0.dll "University of Illinois" \
         "NCSA Hierarchical Data Format (HDF) Library" \
         "Copyright by the Board of Trustees of the University of Illinois." > src/hdf5.rc &&
-      CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-EHsc -O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
         F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D_HDF5DLL_" AR=ar-msvc RANLIB=ranlib-msvc \
         ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
       post_process_libtool &&
-      sed -e '/^postinstall_cmds=/ {s/\$name/\\$name/; s/\$implibname/\\$implibname/;}' libtool > ttt
-        mv ttt libtool &&
+      #sed -e '/^postinstall_cmds=/ {s/\$name/\\$name/; s/\$implibname/\\$implibname/;}' libtool > ttt
+      #  mv ttt libtool &&
       sed -e 's/\$(LIB)/$(HLIB)/g' \
           -e 's/^LIB=/HLIB=/g' \
           -e 's/^LIBS=.*$/& -lws2_32/' \
+          -e 's,\$(libdir)/\.,$(libdir),' \
           -e 's/^LDFLAGS=/LDFLAGS= -no-undefined -Wl,hdf5.res/' src/Makefile > ttt &&
         mv ttt src/Makefile &&
       sed -e '/^#ifdef \+H5_HAVE_STREAM.*$/ {p; c\
@@ -1238,36 +1248,57 @@ fi
 ##########
 
 if check_package libpng; then
-  pngver=`echo $libpngver | sed -e "s/\.//g"`
-  download_file lpng$pngver.zip ftp://ftp.simplesystems.org/pub/libpng/png/src/lpng$pngver.zip
-  echo -n "decompressing libpng... "
-  (cd "$DOWNLOAD_DIR" && unzip -q lpng$pngver.zip)
-  echo "done"
-  echo -n "compiling libpng... "
-  (cd "$DOWNLOAD_DIR/lpng$pngver/projects/visualc71" &&
-    sed -e 's/{2D4F8105-7D21-454C-9932-B47CAB71A5C0} = {2D4F8105-7D21-454C-9932-B47CAB71A5C0}//' libpng.sln > ttt &&
-    mv ttt libpng.sln &&
-    sed -e "s/\([  ]*\)AdditionalIncludeDirectories=\".*\"$/\1AdditionalIncludeDirectories=\"..\\\\..;$tdir_w32\\\\include\"/" \
-      -e "s/\([  ]*\)Name=\"VCLinkerTool\".*$/\1Name=\"VCLinkerTool\"\\
+  if false; then
+    pngver=`echo $libpngver | sed -e "s/\.//g"`
+    download_file lpng$pngver.zip ftp://ftp.simplesystems.org/pub/libpng/png/src/lpng$pngver.zip
+    echo -n "decompressing libpng... "
+    (cd "$DOWNLOAD_DIR" && unzip -q lpng$pngver.zip)
+    echo "done"
+    echo -n "compiling libpng... "
+    (cd "$DOWNLOAD_DIR/lpng$pngver/projects/visualc71" &&
+      sed -e 's/{2D4F8105-7D21-454C-9932-B47CAB71A5C0} = {2D4F8105-7D21-454C-9932-B47CAB71A5C0}//' libpng.sln > ttt &&
+      mv ttt libpng.sln &&
+      sed -e "s/\([  ]*\)AdditionalIncludeDirectories=\".*\"$/\1AdditionalIncludeDirectories=\"..\\\\..;$tdir_w32\\\\include\"/" \
+        -e "s/\([  ]*\)Name=\"VCLinkerTool\".*$/\1Name=\"VCLinkerTool\"\\
 AdditionalDependencies=\"zlib.lib\"\\
 ImportLibrary=\"\$(TargetDir)png.lib\"\\
 AdditionalLibraryDirectories=\"$tdir_w32\\\\lib\"/" libpng.vcproj > ttt &&
-    mv ttt libpng.vcproj &&
-    sed -e "s/^ *; *png_get_libpng_ver/  png_get_libpng_ver/" ../../scripts/pngw32.def > ttt &&
-      mv ttt ../../scripts/pngw32.def &&
-    vcbuild -u libpng.vcproj 'DLL Release|Win32' &&
-	sed -e "s,^prefix=.*$,prefix=$tdir_w32_forward," \
-        -e "s,@exec_prefix@,\${prefix}," \
-        -e "s,@libdir@,\${exec_prefix}/lib," \
-        -e "s,^includedir=.*$,includedir=\${prefix}/include," \
-        -e "s,-lpng[0-9]\+,-lpng," ../../scripts/libpng.pc.in > libpng.pc &&
-    cp Win32_DLL_Release/libpng*.dll "$tbindir" &&
-    cp Win32_DLL_Release/png.lib "$tlibdir" &&
-    cp ../../png.h ../../pngconf.h "$tincludedir" &&
-    mkdir -p "$tlibdir/pkgconfig" &&
-    cp libpng.pc "$tlibdir/pkgconfig" &&
-    cp libpng.pc "$tlibdir/pkgconfig/libpng12.pc") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/lpng$pngver"
+      mv ttt libpng.vcproj &&
+      sed -e "s/^ *; *png_get_libpng_ver/  png_get_libpng_ver/" ../../scripts/pngw32.def > ttt &&
+        mv ttt ../../scripts/pngw32.def &&
+      vcbuild -upgrade libpng.vcproj &&
+      vcbuild -u libpng.vcproj 'DLL Release|Win32' &&
+  	sed -e "s,^prefix=.*$,prefix=$tdir_w32_forward," \
+          -e "s,@exec_prefix@,\${prefix}," \
+          -e "s,@libdir@,\${exec_prefix}/lib," \
+          -e "s,^includedir=.*$,includedir=\${prefix}/include," \
+          -e "s,-lpng[0-9]\+,-lpng," ../../scripts/libpng.pc.in > libpng.pc &&
+      cp Win32_DLL_Release/libpng*.dll "$tbindir" &&
+      cp Win32_DLL_Release/png.lib "$tlibdir" &&
+      cp ../../png.h ../../pngconf.h "$tincludedir" &&
+      mkdir -p "$tlibdir/pkgconfig" &&
+      cp libpng.pc "$tlibdir/pkgconfig" &&
+      cp libpng.pc "$tlibdir/pkgconfig/libpng12.pc") >&5 2>&1
+    rm -rf "$DOWNLOAD_DIR/lpng$pngver"
+  else
+    download_file libpng-$libpngver.tar.bz2 ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-$libpngver.tar.bz2
+    echo -n "decompressing libpng... "
+    unpack_file libpng-$libpngver.tar.bz2
+    echo "done"
+    echo -n "compiling libpng... "
+    (cd "$DOWNLOAD_DIR/libpng-$libpngver" &&
+      ac_cv_func_memset=yes ac_cv_func_pow=yes \
+        configure_package --disable-static --enable-shared --without-libpng-compat &&
+      post_process_libtool &&
+      sed -e 's/^libpng12_la_LDFLAGS =/& -export-symbols-regex "^png_.*" -Wl,scripts\/pngw32.res/' Makefile > ttt &&
+        mv ttt Makefile &&
+      (cd scripts && rc -fo pngw32.res pngw32.rc) &&
+      make &&
+      make install &&
+      rm -rf $tlibdir_quoted/libpng*.la &&
+      cp "$tlibdir/png12.lib" "$tlibdir/png.lib") >&5 2>&1
+    remove_package "$DOWNLOAD_DIR/libpng-$libpngver"
+  fi
   if test ! -f "$tlibdir/png.lib"; then
     echo "failed"
     exit -1
@@ -1407,9 +1438,7 @@ if check_package libiconv; then
   echo "done"
   echo -n "compiling libiconv... "
   (cd "$DOWNLOAD_DIR/libiconv-$libiconvver" &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static  --disable-nls &&
+    configure_package --enable-shared --disable-static  --disable-nls &&
     post_process_libtool &&
     post_process_libtool libcharset/libtool &&
     sed -e '/^#define LIBCHARSET_DLL_EXPORTED *$/ {c\
@@ -1443,8 +1472,8 @@ if check_package libiconv; then
     make &&
     make install &&
     rm -f $tlibdir_quoted/libiconv.la $tlibdir_quoted/libcharset.la &&
-    true) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/libiconv-$libiconvver"
+    end_package) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/libiconv-$libiconvver"
   if test ! -f "$tlibdir/iconv.lib"; then
     echo "failed"
     exit -1
@@ -1497,11 +1526,12 @@ if check_package gettext; then
       sed -e 's/^[ 	]*case SUBLANG_SINDHI_AFGHANISTAN:.*$//' gettext-tools/gnulib-lib/localename.c > ttt &&
         mv ttt gettext-tools/gnulib-lib/localename.c
     fi &&
-    (cd gettext-tools/src && make gettext.res && cp gettext.res ../gnulib-lib/gettextlib.res) &&
+    (cd gettext-tools/src && make gettext.res && cp gettext.res ../gnulib-lib/gettext.res) &&
     make &&
     make install &&
-    rm $tlibdir_quoted/lib*.la) >&5 2>&1
-  #remove_package "$DOWNLOAD_DIR/gettext-$gettextver"
+    rm $tlibdir_quoted/lib*.la &&
+    end_package) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/gettext-$gettextver"
   if test ! -f "$tlibdir/intl.lib"; then
     echo "failed"
     exit -1
@@ -1521,10 +1551,7 @@ if check_package cairo; then
   echo "done"
   echo "compiling cairo... "
   (cd "$DOWNLOAD_DIR/cairo-$cairover" &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ax_cv_c_float_words_bigendian=no \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    configure_package --enable-shared --disable-static &&
     post_process_libtool &&
     sed -e "s|^libcairo_la_LDFLAGS =|libcairo_la_LDFLAGS = -Wl,cairo.res|" \
         -e "s|^libcairo_la_OBJECTS =|libcairo_la_OBJECTS = cairo.res|" \
@@ -1536,8 +1563,9 @@ if check_package cairo; then
       "`grep -e '^Cairo -' README | head -n 1`" "Copyright © `date +%Y` Freedesktop.org" > src/cairo.rc &&
     make &&
     make install &&
-	rm -f $tlibdir_quoted/libcairo*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/cairo-$cairover"
+  	rm -f $tlibdir_quoted/libcairo*.la &&
+    end_package) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/cairo-$cairover"
   if test ! -f "$tbindir/libcairo-2.dll"; then
     echo "failed"
     exit -1
@@ -1587,10 +1615,129 @@ if check_package glib; then
       mv ttt Makefile &&
     make &&
     make install &&
-	rm -f $tlibdir_quoted/libglib*.la $tlibdir_quoted/libgmodule*.la \
-      $tlibdir_quoted/libgthread*.la $tlibdir_quoted/libgobject*.la) >&5 2>&1
+    rm -f $tlibdir_quoted/libglib*.la $tlibdir_quoted/libgmodule*.la \
+          $tlibdir_quoted/libgthread*.la $tlibdir_quoted/libgobject*.la &&
+    end_package) >&5 2>&1
   remove_package "$DOWNLOAD_DIR/glib-$glibver"
   if test ! -f "$tbindir/libglib-2.0-0.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# libxml2 #
+###########
+
+if check_package libxml2; then
+  download_file libxml2-$libxml2ver.tar.gz ftp://xmlsoft.org/libxml2/libxml2-$libxml2ver.tar.gz
+  echo -n "decompressing libxml2... "
+  unpack_file libxml2-$libxml2ver.tar.gz
+  echo "done"
+  echo "compiling libxml2... "
+  (cd "$DOWNLOAD_DIR/libxml2-$libxml2ver" &&
+    create_module_rc libxml2 $libxml2ver "libxml2-2.dll" "XmlSoft (www.xmlsoft.org)" \
+      "XML Parser and Toolkit Library" "`grep -e '^ *Copyright' Copyright | head -n 1 | sed -e 's/^ *//'`" > xml2.rc &&
+    sed -e '/#undef vsnprintf/ {i \
+#ifndef HAVE_VSNPRINTF\
+#undef vsnprintf\
+#endif
+;d;}'
+        config.h.in > ttt &&
+      mv ttt config.h.in &&
+    configure_package --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "s/^libxml2_la_LDFLAGS =/libxml2_la_LDFLAGS = -Wl,-export:trio_snprintf -Wl,xml2.res/" Makefile > ttt &&
+      mv ttt Makefile &&
+    sed -e 's/\(^.*defined *(__MINGW32__).*$\)/\1 || defined(_MSC_VER)/' nanoftp.c > ttt &&
+      mv ttt nanoftp.c &&
+    sed -e 's/\(^.*defined *(__MINGW32__).*$\)/\1 || defined(_MSC_VER)/' nanohttp.c > ttt &&
+      mv ttt nanohttp.c &&
+    rc -fo xml2.res xml2.rc &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libxml2.la &&
+    end_package) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/libxml2-$libxml2ver"
+  if test ! -f "$tlibdir/xml2.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+############
+# freetype #
+############
+
+if check_package freetype; then
+  download_file freetype-$ftver.tar.bz2 http://download.savannah.gnu.org/releases/freetype/freetype-$ftver.tar.bz2
+  echo -n "decompressing freetype... "
+  unpack_file freetype-$ftver.tar.bz2
+  echo "done"
+  echo -n "compiling freetype... "
+  (cd "$DOWNLOAD_DIR/freetype-$ftver" &&
+    create_module_rc FreeType $ftver libfreetype-6.dll "Freetype.org <www.freetype.org>" \
+      "FreeType 2 Font Engine Library" "`grep -A 2 -e '^Copyright' README | tr \\\\n ' '`" > freetype.rc &&
+    configure_package --enable-shared --disable-static &&
+  	post_process_libtool builds/unix/libtool &&
+    sed -e "/^TOP_DIR/ {s/pwd/pwd -W/;}" builds/unix/unix-def.mk > ttt &&
+      mv ttt builds/unix/unix-def.mk &&
+  	sed -e 's/^LDFLAGS \+:=/LDFLAGS := -Wl,freetype.res/' builds/unix/unix-cc.mk > ttt &&
+      mv ttt builds/unix/unix-cc.mk &&
+    sed -e '/define \+FT_EXPORT/ {p; c\
+\#ifdef FT2_BUILD_LIBRARY\
+\# define FT_EXPORT(x)     __declspec(dllexport) x\
+\# define FT_EXPORT_VAR(x) __declspec(dllexport) x\
+\#else\
+\# define FT_EXPORT(x)     __declspec(dllimport) x\
+\# define FT_EXPORT_VAR(x) __declspec(dllimport) x\
+\#endif
+;}' include/freetype/config/ftoption.h > ttt &&
+      mv ttt include/freetype/config/ftoption.h &&
+    rc -fo freetype.res freetype.rc &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libfreetype*.la &&
+    end_package) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/freetype-$ftver"
+  if test ! -f "$tlibdir/freetype.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##############
+# fontconfig #
+##############
+
+if check_package fontconfig; then
+  download_file fontconfig-$fontconfigver.tar.gz http://fontconfig.org/release/fontconfig-$fontconfigver.tar.gz
+  echo -n "decompressing fontconfig... "
+  unpack_file fontconfig-$fontconfigver.tar.gz
+  cp libs/fontconfig-$fontconfigver.diff "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
+  echo "done"
+  echo "compiling fontconfig... "
+  (cd "$DOWNLOAD_DIR/fontconfig-$fontconfigver" &&
+    patch -p1 < fontconfig-$fontconfigver.diff &&
+    create_module_rc FontConfig $fontconfigver "libfontconfig-1.dll" "Freedesktop (www.freedesktop.org)" \
+      "Font Configuration Library" "`grep -e '^ *Copyright' COPYING | head -n 1 | sed -e 's/^ *//'`" > src/fontconfig.rc &&
+    configure_package --enable-shared --disable-static --disable-docs --enable-xml2 &&
+    post_process_libtool &&
+    sed -e "s/^libfontconfig_la_LDFLAGS =/libfontconfig_la_LDFLAGS = -Wl,fontconfig.res/" src/Makefile > ttt &&
+      mv ttt src/Makefile &&
+    (cd src && rc -fo fontconfig.res fontconfig.rc) &&
+    make &&
+    make install &&
+    rm -f "$tlibdir/libfontconfig.la" &&
+    end_package) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
+  if test ! -f "$tlibdir/fontconfig.lib"; then
     echo "failed"
     exit -1
   else
@@ -1624,124 +1771,10 @@ if check_package pango; then
     rc -fo pango/pangocairo-win32-res.o pango/pangocairo.rc &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libpango*.la) >&5 2>&1
+    rm -f $tlibdir_quoted/libpango*.la &&
+    end_package) >&5 2>&1
   remove_package "$DOWNLOAD_DIR/pango-$pangover"
   if test ! -f "$tbindir/libpango-1.0-0.dll"; then
-    echo "failed"
-    exit -1
-  else
-    echo "done"
-  fi
-fi
-
-###########
-# libxml2 #
-###########
-
-if check_package libxml2; then
-  download_file libxml2-$libxml2ver.tar.gz ftp://xmlsoft.org/libxml2/libxml2-$libxml2ver.tar.gz
-  echo -n "decompressing libxml2... "
-  unpack_file libxml2-$libxml2ver.tar.gz
-  echo "done"
-  echo "compiling libxml2... "
-  (cd "$DOWNLOAD_DIR/libxml2-$libxml2ver" &&
-    create_module_rc libxml2 $libxml2ver "libxml2-2.dll" "XmlSoft (www.xmlsoft.org)" \
-      "XML Parser and Toolkit Library" "`grep -e '^ *Copyright' Copyright | head -n 1 | sed -e 's/^ *//'`" > xml2.rc &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
-    post_process_libtool &&
-    sed -e "s/^libxml2_la_LDFLAGS =/libxml2_la_LDFLAGS = -Wl,-export:trio_snprintf -Wl,xml2.res/" Makefile > ttt &&
-      mv ttt Makefile &&
-    sed -e 's/\(^.*defined *(__MINGW32__).*$\)/\1 || defined(_MSC_VER)/' nanoftp.c > ttt &&
-      mv ttt nanoftp.c &&
-    sed -e 's/\(^.*defined *(__MINGW32__).*$\)/\1 || defined(_MSC_VER)/' nanohttp.c > ttt &&
-      mv ttt nanohttp.c &&
-    rc -fo xml2.res xml2.rc &&
-    make &&
-    make install &&
-    rm -f $tlibdir_quoted/libxml2.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/libxml2-$libxml2ver"
-  if test ! -f "$tlibdir/xml2.lib"; then
-    echo "failed"
-    exit -1
-  else
-    echo "done"
-  fi
-fi
-
-##############
-# fontconfig #
-##############
-
-if check_package fontconfig; then
-  download_file fontconfig-$fontconfigver.tar.gz http://fontconfig.org/release/fontconfig-$fontconfigver.tar.gz
-  echo -n "decompressing fontconfig... "
-  unpack_file fontconfig-$fontconfigver.tar.gz
-  cp libs/fontconfig-$fontconfigver.diff "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
-  echo "done"
-  echo "compiling fontconfig... "
-  (cd "$DOWNLOAD_DIR/fontconfig-$fontconfigver" &&
-    patch -p1 < fontconfig-$fontconfigver.diff &&
-    create_module_rc FontConfig $fontconfigver "libfontconfig-1.dll" "Freedesktop (www.freedesktop.org)" \
-      "Font Configuration Library" "`grep -e '^ *Copyright' COPYING | head -n 1 | sed -e 's/^ *//'`" > src/fontconfig.rc &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-docs --enable-xlm2 &&
-    post_process_libtool &&
-    sed -e "s/^libfontconfig_la_LDFLAGS =/libfontconfig_la_LDFLAGS = -Wl,fontconfig.res/" src/Makefile > ttt &&
-      mv ttt src/Makefile &&
-    (cd src && rc -fo fontconfig.res fontconfig.rc) &&
-    make &&
-    make install &&
-    rm -f "$tlibdir/libfontconfig.la" &&
-    true) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
-  if test ! -f "$tlibdir/fontconfig.lib"; then
-    echo "failed"
-    exit -1
-  else
-    echo "done"
-  fi
-fi
-
-############
-# freetype #
-############
-
-if check_package freetype; then
-  download_file freetype-$ftver.tar.bz2 http://download.savannah.gnu.org/releases/freetype/freetype-$ftver.tar.bz2
-  echo -n "decompressing freetype... "
-  unpack_file freetype-$ftver.tar.bz2
-  echo "done"
-  echo -n "compiling freetype... "
-  (cd "$DOWNLOAD_DIR/freetype-$ftver" &&
-    create_module_rc FreeType $ftver libfreetype-6.dll "Freetype.org <www.freetype.org>" \
-      "FreeType 2 Font Engine Library" "`grep -A 2 -e '^Copyright' README | tr \\\\n ' '`" > freetype.rc &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
-	post_process_libtool builds/unix/libtool &&
-    sed -e "/^TOP_DIR/ {s/pwd/pwd -W/;}" builds/unix/unix-def.mk > ttt &&
-      mv ttt builds/unix/unix-def.mk &&
-	sed -e 's/^LDFLAGS \+:=/LDFLAGS := -Wl,freetype.res/' builds/unix/unix-cc.mk > ttt &&
-      mv ttt builds/unix/unix-cc.mk &&
-    sed -e '/define \+FT_EXPORT/ {p; c\
-\#ifdef FT2_BUILD_LIBRARY\
-\# define FT_EXPORT(x)     __declspec(dllexport) x\
-\# define FT_EXPORT_VAR(x) __declspec(dllexport) x\
-\#else\
-\# define FT_EXPORT(x)     __declspec(dllimport) x\
-\# define FT_EXPORT_VAR(x) __declspec(dllimport) x\
-\#endif
-;}' include/freetype/config/ftoption.h > ttt &&
-      mv ttt include/freetype/config/ftoption.h &&
-    rc -fo freetype.res freetype.rc &&
-    make &&
-    make install &&
-    rm -f $tlibdir_quoted/libfreetype*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/freetype-$ftver"
-  if test ! -f "$tlibdir/freetype.lib"; then
     echo "failed"
     exit -1
   else
@@ -2011,7 +2044,7 @@ fi
 
 if check_package pkg-config; then
   use_support_glib=false
-  if test ! -f "`which libglib-2.0-0.dll`"; then
+  if test ! -f "$tdir_w32_forward/bin/libglib-2.0-0.dll"; then
     echo "compiling support GLib... " &&
     glibroot=`echo $glibver | sed -e 's/\.[0-9]\+$//'`
     download_file glib-$glibver.tar.gz ftp://ftp.gtk.org/pub/glib/$glibroot/glib-$glibver.tar.gz
@@ -2031,8 +2064,8 @@ if check_package pkg-config; then
         mv ttt glib/pcre/makefile.msc &&
       sed -e '/^PARTS/ {s/tests//;}' makefile.msc > ttt &&
         mv ttt makefile.msc &&
-      (cd build/win32/dirent && nmake -f makefile.msc INTL=D:/Software/VCLibs LIBICONV=D:/Software/VCLibs) &&
-      (cd glib && nmake -f makefile.msc "INTL=D:/Software/VCLibs" "LIBICONV=D:/Software/VCLibs") &&
+      (cd build/win32/dirent && nmake -f makefile.msc INTL=$tdir_w32_forward LIBICONV=$tdir_w32_forward) &&
+      (cd glib && nmake -f makefile.msc "INTL=$tdir_w32_forward" "LIBICONV=$tdir_w32_forward") &&
       echo "done")
     use_support_glib=true
   fi

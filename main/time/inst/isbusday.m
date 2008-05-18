@@ -32,27 +32,27 @@
 ## Author: Bill Denney <bill@denney.ws>
 ## Created: 1 Feb 2008
 
-function mask = isbusday (rd, hol, wkend)
+function mask = isbusday (rd, hol=[], wkend=[])
 
   if ~ isnumeric (rd)
 	rd = datenum (rd);
   endif
-  if nargin < 2 || isempty (hol)
-	## Get all possible holidays that could affect the output.
-	hol = holidays (min(rd), max(rd));
+  if isempty (hol)
+    ## Get all possible holidays that could affect the output.
+    hol = holidays (min(rd), max(rd));
   end
-  if nargin < 3 || isempty (wkend)
-	wkend = [1 0 0 0 0 0 1];
+  if isempty (wkend)
+    wkend = [1 0 0 0 0 0 1];
   elseif numel (wkend) ~= 7
-	error ("wkend must have 7 elements")
+    error ("wkend must have 7 elements")
   elseif nargin > 3
-	print_usage ();
+    print_usage ();
   endif
 
   mask = reshape (wkend (weekday (rd)), size (rd));
   if ~ isempty (hol)
-	## Is it a holiday?
-	mask = mask | ismember(rd, hol);
+    ## Is it a holiday?
+    mask = mask | ismember(rd, hol);
   endif
   mask = ~mask;
 endfunction

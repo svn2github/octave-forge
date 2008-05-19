@@ -11,7 +11,8 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 ## bfgsmin: bfgs or limited memory bfgs minimization of function
 ##
@@ -62,7 +63,7 @@ function [parameter, obj, convergence, iters] = bfgsmin(f, f_args, control)
  	if ((nargin < 2) || (nargin > 3))
     		usage("bfgsmin: you must supply 2 or 3 arguments");
     	endif
-	if (!isstr(f)) usage("bfgsmin: first argument must be string holding objective function name"); endif
+	if (!ischar(f)) usage("bfgsmin: first argument must be string holding objective function name"); endif
 	if (!iscell(f_args)) usage("bfgsmin: second argument must cell array of function arguments"); endif
 	if (nargin > 2)
 		if (!iscell(control))
@@ -122,7 +123,7 @@ function [parameter, obj, convergence, iters] = bfgsmin(f, f_args, control)
 	minarg = control{4};
 	theta = f_args{minarg};
 	theta = theta(:);
-	if (!is_vector(theta)) usage("bfgsmin: minimization must be done with respect to a vector of parameters"); endif
+	if (!isvector(theta)) usage("bfgsmin: minimization must be done with respect to a vector of parameters"); endif
 	f_args{minarg} = theta;
 
 	# now go ahead and do the minimization

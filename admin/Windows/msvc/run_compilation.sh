@@ -1801,7 +1801,7 @@ if check_package libgd; then
       F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__STDC__ -DMSWIN32 -DBGDWIN32" \
 	  AR=ar-msvc RANLIB=ranlib-msvc \
 	  ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
-	post_process_libtool &&
+    post_process_libtool &&
     sed -e 's/^libgd_la_LDFLAGS =/libgd_la_LDFLAGS = -Wl,libgd.res -no-undefined/' \
         -e 's/^libgd\.la:/libgd.la: libgd.res/' Makefile > ttt &&
       mv ttt Makefile &&
@@ -1810,11 +1810,12 @@ libgd.res: libgd.rc
 	rc -fo $@ $<
 EOF
       ) &&
-	touch -r aclocal.m4 configure.ac &&
+    touch -r aclocal.m4 configure.ac &&
     make &&
     make install &&
-    cp COPYING "$tlicdir/COPYING.LIBGD") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gd-$gdver"
+    cp COPYING "$tlicdir/COPYING.LIBGD" &&
+    end_package) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/gd-$gdver"
   if test ! -f "$tlibdir/gd.lib"; then
     echo "failed"
     exit -1
@@ -1838,9 +1839,7 @@ if check_package libgsl; then
       "GNU Scientific Library" "Copyright (C) 2000, 2007 Free Software Foundation" > gsl.rc
     create_module_rc GSLCBLAS $gslver libgslcblas-0.dll "Free Software Foundation (http://www.fsf.org)" \
       "GSL CBLAS Implementation" "Copyright (C) 2000, 2007 Free Software Foundation" > cblas/gslcblas.rc
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -DGSL_DLL -D__STDC__" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    W_CPPFLAGS="$W_CPPFLAGS -DGSL_DLL -D__STDC__" configure_package --enable-shared --disable-static &&
     post_process_libtool &&
     sed -e 's/^libgsl_la_LDFLAGS =/libgsl_la_LDFLAGS = -Wl,gsl.res -Wl,-def:gsl.def/' \
         -e 's/^libgsl\.la:/libgsl.la: gsl.res gsl.def/' Makefile > ttt &&
@@ -1876,8 +1875,9 @@ EOF
       mv ttt utils/Makefile &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libgsl*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gsl-$gslver"
+    rm -f $tlibdir_quoted/libgsl*.la &&
+    end_package) >&5 2>&1
+  remove_package "$DOWNLOAD_DIR/gsl-$gslver"
   if test ! -f "$tlibdir/gsl.lib"; then
     echo "failed"
     exit -1

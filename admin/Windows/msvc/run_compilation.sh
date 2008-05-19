@@ -215,7 +215,7 @@ W_CXXFLAGS="-O2 -MD -EHsc"
 W_FCFLAGS="-O2 -MD"
 W_FFLAGS="-O2 -MD"
 W_LDFLAGS=
-W_CPPFLAGS="-DWIN32 -D_WIN32"
+W_CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__"
 if $do_debug; then
   W_CFLAGS="-g -MD"
   W_CXXFLAGS="-g -MD -EHsc"
@@ -263,6 +263,11 @@ function check_package
 function end_package
 {
   build_flag=true
+}
+
+function failed_package
+{
+  ! $build_flag
 }
 
 function check_cmake
@@ -386,6 +391,9 @@ case $clver in
   15)
     crtver=90
     echo "2008"
+    echo -n "registering vcprojectengine.dll... "
+    regsvr32 -s "`which vcprojectengine.dll`"
+    echo "done"
     ;;
   *)
     echo "unknown"
@@ -532,7 +540,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/lapack.lib" LAPACK
     if $DOATLAS; then
       echo -n "checking for ATLAS... "
-      atl_dlls=`find "$tbindir" -name "libblas_atl$atlnum_*.dll"`
+      atl_dlls=`find "$tbindir" -name "libblas_atl${atlnum}_*.dll"`
       if test -z "$atl_dlls"; then
         echo "no"
         packages="$packages ATLAS"
@@ -710,9 +718,9 @@ if check_package libf2c; then
     mv ttt fio.h &&
     nmake -f makefile.vc &&
     cp -f f2c.h "$tincludedir" &&
-    cp -f vcf2c.lib "$tlibdir/f2c.lib") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/libf2c"
-  if ! test -f "$tlibdir/f2c.lib"; then
+    cp -f vcf2c.lib "$tlibdir/f2c.lib") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/libf2c"
+  if failed_package || test ! -f "$tlibdir/f2c.lib"; then
     echo "failed"
     exit -1
   else
@@ -734,9 +742,9 @@ if check_package fort77; then
     sed -e "s/, *\"-lm\" *//" -e "s/\/lib\/cpp/\$cc -E/" -e "s/\$verbose > 1/1/" \
       -e "s/|| 'cc'/|| 'cc-msvc'/" fort77 > ttt &&
     mv ttt fort77 &&
-    cp fort77 "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/fort77-1.18"
-  if ! test -f "$tbindir/fort77"; then
+    cp fort77 "$tbindir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/fort77-1.18"
+  if failed_package || test ! -f "$tbindir/fort77"; then
     echo "failed"
     exit -1
   else
@@ -763,9 +771,9 @@ if check_package BLAS; then
       "BLAS F77 Reference Implementation" "Public Domain" > blas.rc &&
     make -f blas.makefile && 
     cp libblas.dll "$tbindir" &&
-    cp blas.lib "$tlibdir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/BLAS"
-  if ! test -f "$tlibdir/blas.lib"; then
+    cp blas.lib "$tlibdir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/BLAS"
+  if failed_package || test ! -f "$tlibdir/blas.lib"; then
     echo "failed"
     exit -1
   else
@@ -792,9 +800,9 @@ if check_package LAPACK; then
     make -f lapack.makefile &&
     cp liblapack.dll "$tbindir" &&
     cp lapack.lib liblapack_f77.lib "$tlibdir" &&
-    cp ../COPYING "$tlicdir/COPYING.LAPACK") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/lapack-lite-$lapackver"
-  if ! test -f "$tlibdir/lapack.lib"; then
+    cp ../COPYING "$tlicdir/COPYING.LAPACK") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/lapack-lite-$lapackver"
+  if failed_package || test ! -f "$tlibdir/lapack.lib"; then
     echo "failed"
     exit -1
   else
@@ -825,8 +833,8 @@ if $DOATLAS && check_package ATLAS; then
         -Wl,-implib:blas.lib libatlas.a libcblas.a libf77blas.a -lf2c &&
       cc-msvc -shared -o liblapack.dll -Wl,-def:$tdir_w32_forward/lib/lapack.def \
         -Wl,-implib:lapack.lib liblapack.a -lliblapack_f77 -L. -lblas -lf2c &&
-      cp libblas.dll "$tbindir/libblas_atl$atlnum_$atlarch.dll" &&
-      cp liblapack.dll "$tbindir/liblapack_atl$atlnum_$atlarch.dll") >&5 2>&1
+      cp libblas.dll "$tbindir/libblas_atl${atlnum}_$atlarch.dll" &&
+      cp liblapack.dll "$tbindir/liblapack_atl${atlnum}_$atlarch.dll") >&5 2>&1
   else
     download_file atlas-3.6.0.tar.gz 'http://downloads.sourceforge.net/math-atlas/atlas3.6.0.tar.gz?modtime=1072051200&big_mirror=0'
     echo -n "decompressing ATLAS... "
@@ -843,12 +851,12 @@ if $DOATLAS && check_package ATLAS; then
         -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make install arch=$arch" &&
     	start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
         -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && cd lib/$arch && build_atlas_dll" &&
-    	cp lib/$arch/libblas.dll "$tbindir/libblas_atl$atlnum_$arch.dll" &&
-    	cp lib/$arch/liblapack.dll "$tbindir/liblapack_atl$atlnum_$arch.dll") >&5 2>&1
+    	cp lib/$arch/libblas.dll "$tbindir/libblas_atl${atlnum}_$arch.dll" &&
+    	cp lib/$arch/liblapack.dll "$tbindir/liblapack_atl${atlnum}_$arch.dll") >&5 2>&1 && end_package
     fi
-  #rm -rf "$DOWNLOAD_DIR/ATLAS"
-  atl_dlls=`find "$tbindir" -name "libblas_atl$atlnum_*.dll"`
-  if test -z "$atl_dlls"; then
+  remove_package "$DOWNLOAD_DIR/ATLAS"
+  atl_dlls=`find "$tbindir" -name "libblas_atl${atlnum}_*.dll"`
+  if failed_package || test -z "$atl_dlls"; then
     echo "failed"
     exit -1
   else
@@ -883,9 +891,7 @@ if check_package PCRE; then
       nmake &&
       nmake install
     else
-      CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" \
-        CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-        ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
+      configure_package --enable-shared --disable-static \
         --disable-cpp --enable-unicode-properties --enable-newline-is-anycrlf &&
       post_process_libtool &&
       sed -e 's/^return !isdirectory(filename) *$/\0;/' pcregrep.c > ttt &&
@@ -897,10 +903,10 @@ if check_package PCRE; then
       echo "	rc -fo \$@ \$<" >> Makefile &&
       make &&
       make install &&
-	  rm -f $tlibdir_quoted/libpcre*.la
-    fi) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/pcre-$pcrever"
-  if ! test -f "$tlibdir/pcre.lib"; then
+	    rm -f $tlibdir_quoted/libpcre*.la
+    fi) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/pcre-$pcrever"
+  if failed_package || test ! -f "$tlibdir/pcre.lib"; then
     echo "failed"
     exit -1
   else
@@ -971,10 +977,9 @@ EOF
       mv ttt libbench2/Makefile &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libfftw3.la &&
-    true) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/fftw-3.1.2"
-  if ! test -f "$tbindir/libfftw3-3.dll"; then
+    rm -f $tlibdir_quoted/libfftw3.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/fftw-3.1.2"
+  if failed_package|| test ! -f "$tbindir/libfftw3-3.dll"; then
     echo "failed"
     exit -1
   else
@@ -1017,9 +1022,9 @@ EOF
       ) &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libglpk.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/glpk-$glpkver"
-  if ! test -f "$tlibdir/glpk.lib"; then
+    rm -f $tlibdir_quoted/libglpk.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/glpk-$glpkver"
+  if failed_package || test ! -f "$tlibdir/glpk.lib"; then
     echo "failed"
     exit -1
   else
@@ -1053,9 +1058,9 @@ if check_package ncurses; then
     echo "	rc -fo \$@ \$<" >> ncurses/Makefile &&
     make -C include && make -C ncurses && make -C progs && make -C tack && make -C misc &&
     make -C include install && make -C ncurses install && make -C progs install &&
-    make -C tack install && make -C misc install) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/ncurses-5.6"
-  if ! test -f "$tlibdir/ncurses.lib"; then
+    make -C tack install && make -C misc install) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/ncurses-5.6"
+  if failed_package || test ! -f "$tlibdir/ncurses.lib"; then
     echo "failed"
     exit -1
   else
@@ -1088,9 +1093,9 @@ if check_package readline; then
     make install-shared DESTDIR=$INSTALL_DIR &&
     cp shlib/*readline*.lib "$tlibdir/readline.lib" &&
     cp shlib/*history*.lib "$tlibdir/history.lib"&&
-    mv $tlibdir_quoted/*readline*.dll $tlibdir_quoted/*history*.dll "$tbindir") >&5 2>&1
+    mv $tlibdir_quoted/*readline*.dll $tlibdir_quoted/*history*.dll "$tbindir") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/readline-5.2"
-  if ! test -f "$tlibdir/readline.lib"; then
+  if failed_package || test ! -f "$tlibdir/readline.lib"; then
     echo "failed"
     exit -1
   else
@@ -1118,9 +1123,9 @@ if check_package zlib; then
     cp zlib1.dll "$tbindir" &&
     cp zlib.lib "$tlibdir" &&
     cp zlib.lib "$tlibdir/z.lib" &&
-    cp zlib.h zconf.h "$tincludedir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/zlib"
-  if ! test -f "$tbindir/zlib1.dll"; then
+    cp zlib.h zconf.h "$tincludedir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/zlib"
+  if failed_package || test ! -f "$tbindir/zlib1.dll"; then
     echo "failed"
     exit -1
   else
@@ -1142,9 +1147,9 @@ if check_package SuiteSparse; then
   (cd "$DOWNLOAD_DIR/SuiteSparse" &&
     patch -p1 < suitesparse-3.0.0.diff &&
     make &&
-    make install INSTDIR="$INSTALL_DIR") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/SuiteSparse"
-  if test ! -f "$tlibdir/cxsparse.lib" -o ! -d "$tincludedir/suitesparse"; then
+    make install INSTDIR="$INSTALL_DIR") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/SuiteSparse"
+  if failed_package || test ! -f "$tlibdir/cxsparse.lib" -o ! -d "$tincludedir/suitesparse"; then
     echo "failed"
     exit -1
   else
@@ -1166,6 +1171,7 @@ if check_package HDF5; then
     if false; then
       patch -p1 < hdf5.diff &&
       cd proj/hdf5dll &&
+      vcbuild -upgrade hdf5dll.vcproj &&
       vcbuild -u hdf5dll.vcproj "Release|Win32" &&
       cp Release/hdf5.lib "$tlibdir" &&
       cp Release/hdf5.dll "$tbindir" &&
@@ -1182,9 +1188,8 @@ if check_package HDF5; then
       create_module_rc HDF5 $hdf5ver libhdf5-0.dll "University of Illinois" \
         "NCSA Hierarchical Data Format (HDF) Library" \
         "Copyright by the Board of Trustees of the University of Illinois." > src/hdf5.rc &&
-      CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-EHsc -O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-        F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D_HDF5DLL_" AR=ar-msvc RANLIB=ranlib-msvc \
-        ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+      W_CPPFLAGS="$W_CPPFLAGS -D_HDF5DLL_" \
+        configure_package --enable-shared --disable-static &&
       post_process_libtool &&
       #sed -e '/^postinstall_cmds=/ {s/\$name/\\$name/; s/\$implibname/\\$implibname/;}' libtool > ttt
       #  mv ttt libtool &&
@@ -1205,9 +1210,9 @@ if check_package HDF5; then
       make &&
       make install &&
       rm -f $tlibdir_quoted/libhdf5.la
-    fi) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/hdf5-$hdf5ver"
-  if test ! -f "$tlibdir/hdf5.lib"; then
+    fi) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/hdf5-$hdf5ver"
+  if failed_package || test ! -f "$tlibdir/hdf5.lib"; then
     echo "failed"
     exit -1
   else
@@ -1233,9 +1238,9 @@ if check_package glob; then
     ./configure.vc &&
     make &&
     cp glob.lib "$tlibdir" &&
-    cp fnmatch.h glob.h "$tincludedir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/glob"
-  if test ! -f "$tlibdir/glob.lib"; then
+    cp fnmatch.h glob.h "$tincludedir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/glob"
+  if failed_package || test ! -f "$tlibdir/glob.lib"; then
     echo "failed"
     exit -1
   else
@@ -1278,8 +1283,8 @@ AdditionalLibraryDirectories=\"$tdir_w32\\\\lib\"/" libpng.vcproj > ttt &&
       cp ../../png.h ../../pngconf.h "$tincludedir" &&
       mkdir -p "$tlibdir/pkgconfig" &&
       cp libpng.pc "$tlibdir/pkgconfig" &&
-      cp libpng.pc "$tlibdir/pkgconfig/libpng12.pc") >&5 2>&1
-    rm -rf "$DOWNLOAD_DIR/lpng$pngver"
+      cp libpng.pc "$tlibdir/pkgconfig/libpng12.pc") >&5 2>&1 && end_package
+    remove_package "$DOWNLOAD_DIR/lpng$pngver"
   else
     download_file libpng-$libpngver.tar.bz2 ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-$libpngver.tar.bz2
     echo -n "decompressing libpng... "
@@ -1296,10 +1301,10 @@ AdditionalLibraryDirectories=\"$tdir_w32\\\\lib\"/" libpng.vcproj > ttt &&
       make &&
       make install &&
       rm -rf $tlibdir_quoted/libpng*.la &&
-      cp "$tlibdir/png12.lib" "$tlibdir/png.lib") >&5 2>&1
+      cp "$tlibdir/png12.lib" "$tlibdir/png.lib") >&5 2>&1 && end_package
     remove_package "$DOWNLOAD_DIR/libpng-$libpngver"
   fi
-  if test ! -f "$tlibdir/png.lib"; then
+  if failed_package || test ! -f "$tlibdir/png.lib"; then
     echo "failed"
     exit -1
   else
@@ -1329,10 +1334,10 @@ if check_package ARPACK; then
       "ARPACK Library for Large-Scale Eigenvalues Problems" "Copyright (©) 2001, Rice University" > arpack.rc &&
     make -f arpack.makefile && 
     cp libarpack.dll "$tbindir" &&
-    cp arpack.lib "$tlibdir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/ARPACK"
+    cp arpack.lib "$tlibdir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/ARPACK"
   wget $WGET_FLAGS -O "$tlicdir/COPYING.ARPACK.doc" http://www.caam.rice.edu/software/ARPACK/RiceBSD.doc
-  if ! test -f "$tlibdir/arpack.lib"; then
+  if failed_package || test ! -f "$tlibdir/arpack.lib"; then
     echo "failed"
     exit -1
   else
@@ -1374,10 +1379,8 @@ if check_package libjpeg; then
   (cd "$DOWNLOAD_DIR/jpeg-6b" &&
     create_module_rc Libjpeg 6.2 libjpeg-62.dll "Independent JPEG Group <www.ijg.org>" \
       "Libjpeg - Library and Tools for JPEG Images" "© `date +%Y` Independent JPEG Group <www.ijg.org>" > jpeg.rc &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      CPP="/mingw/bin/cpp" \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    CPP="/mingw/bin/cpp" \
+      ./configure_package --enable-shared --disable-static &&
     sed -e 's/libjpeg\.la:.*$/& jpeg.def jpeg.res/' Makefile > ttt &&
       mv ttt Makefile &&
     (cat >> Makefile <<\EOF
@@ -1417,9 +1420,9 @@ EOF
     make libjpeg.la &&
     cp jconfig.h jpeglib.h jmorecfg.h jerror.h "$tincludedir" &&
     cp .libs/libjpeg*.dll "$tbindir" &&
-    cp .libs/libjpeg*.lib "$tlibdir/jpeg.lib") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/jpeg-6b"
-  if test ! -f "$tlibdir/jpeg.lib"; then
+    cp .libs/libjpeg*.lib "$tlibdir/jpeg.lib") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/jpeg-6b"
+  if failed_package || test ! -f "$tlibdir/jpeg.lib"; then
     echo "failed"
     exit -1
   else
@@ -1471,10 +1474,9 @@ if check_package libiconv; then
       mv ttt src/Makefile &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libiconv.la $tlibdir_quoted/libcharset.la &&
-    end_package) >&5 2>&1
+    rm -f $tlibdir_quoted/libiconv.la $tlibdir_quoted/libcharset.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/libiconv-$libiconvver"
-  if test ! -f "$tlibdir/iconv.lib"; then
+  if failed_package || test ! -f "$tlibdir/iconv.lib"; then
     echo "failed"
     exit -1
   else
@@ -1529,10 +1531,9 @@ if check_package gettext; then
     (cd gettext-tools/src && make gettext.res && cp gettext.res ../gnulib-lib/gettext.res) &&
     make &&
     make install &&
-    rm $tlibdir_quoted/lib*.la &&
-    end_package) >&5 2>&1
+    rm $tlibdir_quoted/lib*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/gettext-$gettextver"
-  if test ! -f "$tlibdir/intl.lib"; then
+  if failed_package || test ! -f "$tlibdir/intl.lib"; then
     echo "failed"
     exit -1
   else
@@ -1551,7 +1552,7 @@ if check_package cairo; then
   echo "done"
   echo "compiling cairo... "
   (cd "$DOWNLOAD_DIR/cairo-$cairover" &&
-    configure_package --enable-shared --disable-static &&
+    ax_cv_c_float_words_bigendian=no configure_package --enable-shared --disable-static &&
     post_process_libtool &&
     sed -e "s|^libcairo_la_LDFLAGS =|libcairo_la_LDFLAGS = -Wl,cairo.res|" \
         -e "s|^libcairo_la_OBJECTS =|libcairo_la_OBJECTS = cairo.res|" \
@@ -1563,10 +1564,9 @@ if check_package cairo; then
       "`grep -e '^Cairo -' README | head -n 1`" "Copyright © `date +%Y` Freedesktop.org" > src/cairo.rc &&
     make &&
     make install &&
-  	rm -f $tlibdir_quoted/libcairo*.la &&
-    end_package) >&5 2>&1
+  	rm -f $tlibdir_quoted/libcairo*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/cairo-$cairover"
-  if test ! -f "$tbindir/libcairo-2.dll"; then
+  if failed_package || test ! -f "$tbindir/libcairo-2.dll"; then
     echo "failed"
     exit -1
   else
@@ -1616,10 +1616,9 @@ if check_package glib; then
     make &&
     make install &&
     rm -f $tlibdir_quoted/libglib*.la $tlibdir_quoted/libgmodule*.la \
-          $tlibdir_quoted/libgthread*.la $tlibdir_quoted/libgobject*.la &&
-    end_package) >&5 2>&1
+          $tlibdir_quoted/libgthread*.la $tlibdir_quoted/libgobject*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/glib-$glibver"
-  if test ! -f "$tbindir/libglib-2.0-0.dll"; then
+  if failed_package || test ! -f "$tbindir/libglib-2.0-0.dll"; then
     echo "failed"
     exit -1
   else
@@ -1644,7 +1643,7 @@ if check_package libxml2; then
 #ifndef HAVE_VSNPRINTF\
 #undef vsnprintf\
 #endif
-;d;}'
+;d;}' \
         config.h.in > ttt &&
       mv ttt config.h.in &&
     configure_package --enable-shared --disable-static &&
@@ -1658,10 +1657,9 @@ if check_package libxml2; then
     rc -fo xml2.res xml2.rc &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libxml2.la &&
-    end_package) >&5 2>&1
+    rm -f $tlibdir_quoted/libxml2.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/libxml2-$libxml2ver"
-  if test ! -f "$tlibdir/xml2.lib"; then
+  if failed_package || test ! -f "$tlibdir/xml2.lib"; then
     echo "failed"
     exit -1
   else
@@ -1701,10 +1699,9 @@ if check_package freetype; then
     rc -fo freetype.res freetype.rc &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libfreetype*.la &&
-    end_package) >&5 2>&1
+    rm -f $tlibdir_quoted/libfreetype*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/freetype-$ftver"
-  if test ! -f "$tlibdir/freetype.lib"; then
+  if failed_package || test ! -f "$tlibdir/freetype.lib"; then
     echo "failed"
     exit -1
   else
@@ -1734,10 +1731,9 @@ if check_package fontconfig; then
     (cd src && rc -fo fontconfig.res fontconfig.rc) &&
     make &&
     make install &&
-    rm -f "$tlibdir/libfontconfig.la" &&
-    end_package) >&5 2>&1
+    rm -f "$tlibdir/libfontconfig.la") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
-  if test ! -f "$tlibdir/fontconfig.lib"; then
+  if failed_package || test ! -f "$tlibdir/fontconfig.lib"; then
     echo "failed"
     exit -1
   else
@@ -1771,10 +1767,9 @@ if check_package pango; then
     rc -fo pango/pangocairo-win32-res.o pango/pangocairo.rc &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libpango*.la &&
-    end_package) >&5 2>&1
+    rm -f $tlibdir_quoted/libpango*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/pango-$pangover"
-  if test ! -f "$tbindir/libpango-1.0-0.dll"; then
+  if failed_package || test ! -f "$tbindir/libpango-1.0-0.dll"; then
     echo "failed"
     exit -1
   else
@@ -1797,10 +1792,8 @@ if check_package libgd; then
     gd_copyright="`sed -n -e 's/^ *VALUE \+"LegalCopyright" *, *"\([^"\\]*\)\\\\0".*$/\1/p' windows/libgd.rc`" &&
     create_module_rc LIBGD $gdver libgd-2.dll "$gd_company" \
       "GD - Graphics Creation Library" "$gd_copyright" > libgd.rc &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__STDC__ -DMSWIN32 -DBGDWIN32" \
-	  AR=ar-msvc RANLIB=ranlib-msvc \
-	  ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    W_CPPFLAGS="$W_CPPFLAGS -D__STDC__ -DMSWIN32 -DBGDWIN32" \
+      configure_package --enable-shared --disable-static &&
     post_process_libtool &&
     sed -e 's/^libgd_la_LDFLAGS =/libgd_la_LDFLAGS = -Wl,libgd.res -no-undefined/' \
         -e 's/^libgd\.la:/libgd.la: libgd.res/' Makefile > ttt &&
@@ -1813,10 +1806,9 @@ EOF
     touch -r aclocal.m4 configure.ac &&
     make &&
     make install &&
-    cp COPYING "$tlicdir/COPYING.LIBGD" &&
-    end_package) >&5 2>&1
+    cp COPYING "$tlicdir/COPYING.LIBGD") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/gd-$gdver"
-  if test ! -f "$tlibdir/gd.lib"; then
+  if failed_package || test ! -f "$tlibdir/gd.lib"; then
     echo "failed"
     exit -1
   else
@@ -1875,10 +1867,9 @@ EOF
       mv ttt utils/Makefile &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libgsl*.la &&
-    end_package) >&5 2>&1
+    rm -f $tlibdir_quoted/libgsl*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/gsl-$gslver"
-  if test ! -f "$tlibdir/gsl.lib"; then
+  if failed_package || test ! -f "$tlibdir/gsl.lib"; then
     echo "failed"
     exit -1
   else
@@ -1902,16 +1893,14 @@ if check_package netcdf; then
       sed -e 's/RuntimeLibrary=.*/RuntimeLibrary="2"/' libsrc/netcdf.vcproj > ttt &&
       mv ttt libsrc/netcdf.vcproj &&
       cd libsrc &&
+      vcbuild -upgrade netcdf.vcproj &&
       vcbuild -u netcdf.vcproj "Release|Win32" &&
       cp ../../../COPYRIGHT "$tlicdir/COPYING.NETCDF" &&
       cp Release/netcdf.lib "$tlibdir" &&
       cp ../../../libsrc/netcdf.h "$tincludedir" &&
       cp Release/netcdf.dll "$tbindir"
     else
-      CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-        F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-        ./configure --prefix="$tdir_w32_forward" --enable-c-only --enable-dll --enable-shared \
-        --disable-static &&
+      configure_package --enable-c-only --enable-dll --enable-shared --disable-static &&
       post_process_libtool &&
       sed -e 's/-Wl,--output-def,.*$//' \
           -e 's/^libnetcdf_la_LDFLAGS =/libnetcdf_la_LDFLAGS = -Wl,netcdf.res/' \
@@ -1928,10 +1917,10 @@ if check_package netcdf; then
       make &&
       make install &&
       cp ../COPYRIGHT "$tlicdir/COPYING.NETCDF" &&
-	  rm -f $tlibdir_quoted/libnetcdf*.la
-    fi) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/netcdf-$netcdfver"
-  if test ! -f "$tlibdir/netcdf.lib"; then
+      rm -f $tlibdir_quoted/libnetcdf*.la
+    fi) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/netcdf-$netcdfver"
+  if failed_package || test ! -f "$tlibdir/netcdf.lib"; then
     echo "failed"
     exit -1
   else
@@ -1954,9 +1943,9 @@ if check_package sed; then
     patch -p1 < sed-4.1.5.diff &&
     CC=cc-msvc CFLAGS="-O2 -MD -DWIN32 -D_WIN32 -DHAVE_FCNTL_H" ./configure --without-included-gettext &&
     make &&
-    cp sed/sed.exe "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/sed-4.1.5"
-  if test ! -f "$tbindir/sed.exe"; then
+    cp sed/sed.exe "$tbindir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/sed-4.1.5"
+  if failed_package || test ! -f "$tbindir/sed.exe"; then
     echo "failed"
     exit -1
   else
@@ -1980,9 +1969,9 @@ if check_package makeinfo; then
     CC=cc-msvc CFLAGS="-O2 -MD -DWIN32 -D_WIN32" ./configure --without-included-gettext &&
     make -C lib &&
     make -C makeinfo &&
-    cp makeinfo/makeinfo.exe "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/texinfo-4.8"
-  if test ! -f "$tbindir/makeinfo.exe"; then
+    cp makeinfo/makeinfo.exe "$tbindir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/texinfo-4.8"
+  if failed_package || test ! -f "$tbindir/makeinfo.exe"; then
     echo "failed"
     exit -1
   else
@@ -2004,9 +1993,9 @@ if check_package units; then
   (cd "$DOWNLOAD_DIR/units-1.86" &&
     patch -p1 < units-1.86.diff
     nmake -f Makefile.dos
-    cp units.exe units.dat "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/units-1.86"
-  if test ! -f "$tbindir/units.exe"; then
+    cp units.exe units.dat "$tbindir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/units-1.86"
+  if failed_package || test ! -f "$tbindir/units.exe"; then
     echo "failed"
     exit -1
   else
@@ -2028,9 +2017,9 @@ if check_package less; then
   (cd "$DOWNLOAD_DIR/less-394" &&
     patch -p1 < less-394.diff && 
     nmake -f Makefile.wnm &&
-    cp less.exe lesskey.exe "$tbindir") >&5 2>&1
+    cp less.exe lesskey.exe "$tbindir") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/less-394"
-  if test ! -f "$tbindir/less.exe"; then
+  if failed_package || test ! -f "$tbindir/less.exe"; then
     echo "failed"
     exit -1
   else
@@ -2087,12 +2076,12 @@ if check_package pkg-config; then
     post_process_libtool &&
     make
     make install &&
-    mkdir -p "$tlibdir/pkgconfig") >&5 2>&1
+    mkdir -p "$tlibdir/pkgconfig") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/pkg-config-0.22"
   if $use_support_glib; then
     remove_package "$DOWNLOAD_DIR/glib"
   fi
-  if test ! -f "$tbindir/pkg-config.exe"; then
+  if failed_package || test ! -f "$tbindir/pkg-config.exe"; then
     echo "failed"
     exit -1
   else
@@ -2113,13 +2102,12 @@ if check_package CLN; then
   echo -n "compiling CLN... "
   (cd "$DOWNLOAD_DIR/cln-1.1.13" &&
     patch -p1 < cln-1.1.13.diff &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHs -MD" \
-         CPPFLAGS="-DWIN32 -D_WIN32 -DASM_UNDERSCORE" AR=ar-msvc ./configure --prefix=$tdir_w32_forward &&
+    W_CPPFLAGS="$W_CPPFLAGS -DASM_UNDERSCORE" configure_package &&
     make -C src &&
     make -C src install &&
-	cp cln.pc "$tlibdir/pkgconfig/cln.pc") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/cln-1.1.13"
-  if test ! -f "$tlibdir/cln.lib"; then
+    cp cln.pc "$tlibdir/pkgconfig/cln.pc") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/cln-1.1.13"
+  if failed_package || test ! -f "$tlibdir/cln.lib"; then
     echo "failed"
     exit -1
   else
@@ -2142,15 +2130,13 @@ if check_package GiNaC; then
     patch -p1 < ginac-1.3.6.diff &&
     sed -e '/^Libs:/ { s/-lginac//; s/.*/& -lginac/; }' ginac.pc.in > ttt &&
       mv ttt ginac.pc.in &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHs -MD" \
-      CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc ./configure --disable-shared \
-      --prefix=$tdir_w32_forward &&
+    configure_package --disable-shared &&
     make -C ginac &&
     make -C ginsh &&
     make -C ginac install &&
-	make install-pkgconfigDATA) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/ginac-1.3.6"
-  if test ! -f "$tlibdir/ginac.lib"; then
+    make install-pkgconfigDATA) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/ginac-1.3.6"
+  if failed_package || test ! -f "$tlibdir/ginac.lib"; then
     echo "failed"
     exit -1
   else
@@ -2176,9 +2162,9 @@ if check_package wxWidgets; then
     cd ../.. &&
     cp -r include/wx "$tincludedir" &&
     cp lib/vc_lib/*.lib "$tlibdir" &&
-    cp lib/vc_lib/msw/wx/setup.h "$tincludedir/wx") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/wxMSW-2.8.4"
-  if test ! -f "$tlibdir/wxmsw28.lib"; then
+    cp lib/vc_lib/msw/wx/setup.h "$tincludedir/wx") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/wxMSW-2.8.4"
+  if failed_package || test ! -f "$tlibdir/wxmsw28.lib"; then
     echo "failed"
     exit -1
   else
@@ -2208,15 +2194,15 @@ if check_package gnuplot; then
     mkdir -p "$INSTALL_DIR/doc/gnuplot" &&
 	cp "$INSTALL_DIR/Copyright" "$tlicdir/COPYING.GNUPLOT" &&
     mv "$INSTALL_DIR/BUGS" "$INSTALL_DIR/Copyright" "$INSTALL_DIR/FAQ" "$INSTALL_DIR/NEWS" "$INSTALL_DIR/README" \
-      "$INSTALL_DIR/doc/gnuplot") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gnuplot-4.2.2"
+      "$INSTALL_DIR/doc/gnuplot") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/gnuplot-4.2.2"
   download_file gp422win32.zip 'http://downloads.sourceforge.net/gnuplot/gp422win32.zip?modtime=1173777723&big_mirror=0'
   if test -f "$DOWNLOAD_DIR/gp422win32.zip"; then
     (cd "$DOWNLOAD_DIR" && unzip -o -q -j -d "$tbindir" gp422win32.zip gnuplot/bin/wgnuplot.hlp)
   else
     echo "WARNING: could not get wgnuplot.hlp"
   fi
-  if test ! -f "$tbindir/pgnuplot.exe"; then
+  if failed_package || test ! -f "$tbindir/pgnuplot.exe"; then
     echo "failed"
     exit -1
   else
@@ -2260,6 +2246,11 @@ if check_package FLTK; then
 	-e 's/^ *LIBS=/#&/' \
 	-e 's/-lfltk_gl\$SHAREDSUFFIX @GLLIB@/-lopengl32 -lglu32/' \
 	-e 's/^ *LDSTATIC=/#&/' ../fltk-config.in > "$tbindir/fltk-config" &&
+    vcbuild -upgrade fltkdll.vcproj &&
+    vcbuild -upgrade fltk.lib.vcproj &&
+    vcbuild -upgrade fltkforms.vcproj &&
+    vcbuild -upgrade fltkimages.vcproj &&
+    vcbuild -upgrade fluid.vcproj &&
     vcbuild -u fltkdll.vcproj "Release|Win32" &&
     vcbuild -u fltk.lib.vcproj "Release|Win32" &&
     vcbuild -u fltkforms.vcproj "Release|Win32" &&
@@ -2270,9 +2261,9 @@ if check_package FLTK; then
     cp ../fluid/fluid.exe "$tbindir" &&
     mkdir -p "$tincludedir/FL" &&
     cp ../FL/*.h ../FL/*.H "$tincludedir/FL" &&
-    cp fltkdll.dll "$tbindir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/fltk-1.1.7"
-  if test ! -f "$tbindir/fltkdll.dll"; then
+    cp fltkdll.dll "$tbindir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/fltk-1.1.7"
+  if failed_package || test ! -f "$tbindir/fltkdll.dll"; then
     echo "failed"
     exit -1
   else
@@ -2297,9 +2288,9 @@ if check_package qhull; then
     make qhull.lib &&
     mkdir -p "$tincludedir/qhull" &&
     cp *.h "$tincludedir/qhull" &&
-    cp qhull.lib "$tlibdir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/qhull-2003.1"
-  if test ! -f "$tlibdir/qhull.lib"; then
+    cp qhull.lib "$tlibdir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/qhull-2003.1"
+  if failed_package || test ! -f "$tlibdir/qhull.lib"; then
     echo "failed"
     exit -1
   else
@@ -2326,9 +2317,9 @@ if check_package libcurl; then
     cp lib/libcurl.dll "$tbindir" &&
     cp lib/libcurl.lib "$tlibdir" &&
 	cp COPYING "$tlicdir/COPYING.CURL" &&
-    mkdir "$tincludedir/curl" && cp include/curl/*.h "$tincludedir/curl") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/curl-$curlver"
-  if test ! -f "$tbindir/libcurl.dll"; then
+    mkdir "$tincludedir/curl" && cp include/curl/*.h "$tincludedir/curl") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/curl-$curlver"
+  if failed_package || test ! -f "$tbindir/libcurl.dll"; then
     echo "failed"
     exit -1
   else
@@ -2369,9 +2360,9 @@ EOF
     cp bzip2.exe "$tbindir/bunzip2.exe" &&
     cp bzip2.exe "$tbindir/bzcat.exe" &&
     cp bz2.lib "$tlibdir" &&
-    cp bzlib.h "$tincludedir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/bzip2-$bzip2ver"
-  if test ! -f "$tlibdir/bz2.lib"; then
+    cp bzlib.h "$tincludedir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/bzip2-$bzip2ver"
+  if failed_package || test ! -f "$tlibdir/bz2.lib"; then
     echo "failed"
     exit -1
   else
@@ -2407,10 +2398,9 @@ if check_package libtiff; then
     cp libtiff/libtiff.dll "$tbindir" &&
     cp libtiff/libtiff_i.lib "$tlibdir/tiff.lib" &&
     cp tools/*.exe "$tbindir" &&
-    cp libtiff/tiff.h libtiff/tiffconf.h libtiff/tiffio.h libtiff/tiffvers.h "$tincludedir" &&
-    true) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/tiff-$tiffver"
-  if test ! -f "$tlibdir/tiff.lib"; then
+    cp libtiff/tiff.h libtiff/tiffconf.h libtiff/tiffio.h libtiff/tiffvers.h "$tincludedir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/tiff-$tiffver"
+  if failed_package || test ! -f "$tlibdir/tiff.lib"; then
     echo "failed"
     exit -1
   else
@@ -2435,9 +2425,7 @@ if check_package libwmf; then
       "LibWMF - Library for converting WMF" "Copyright (C) wvWare projects" > src/wmflite.rc &&
     sed -e "/^LIBS=\"-lpng/ {s/-lm//;}" configure > ttt &&
       mv ttt configure &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --disable-gd &&
+    configure_package --enable-shared --disable-static --disable-gd &&
     post_process_libtool &&
     sed -e "s,/\([a-z]\)/,\1:/,g" libwmf-config > ttt &&
       mv ttt libwmf-config &&
@@ -2466,9 +2454,9 @@ EOF
       ) &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libwmf*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/libwmf-$wmfver"
-  if test ! -f "$tlibdir/wmf.lib"; then
+    rm -f $tlibdir_quoted/libwmf*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/libwmf-$wmfver"
+  if failed_package || test ! -f "$tlibdir/wmf.lib"; then
     echo "failed"
     exit -1
   else
@@ -2489,9 +2477,7 @@ if check_package jasper; then
   (cd "$DOWNLOAD_DIR/jasper-$jasperver" &&
     create_module_rc libjasper $jasperver libjasper.dll "The JasPer Project (http://www.ece.uvic.ca/~mdadams/jasper)" \
       "JasPer - JPEG-2000 Library" "Copyright (C) 1999-`date +%Y` Michael D. Adams" > src/libjasper/jasper.rc &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --disable-opengl &&
+    configure_package --enable-shared --disable-static --disable-opengl &&
     post_process_libtool &&
     sed -e "s/^libjasper_la_LDFLAGS =/& -Wl,-def:jasper.def -Wl,jasper.res -no-undefined/" \
         -e "s/^libjasper\.la:.*$/& jasper.def jasper.res/" \
@@ -2513,9 +2499,9 @@ jasper.def: $(libjasper_la_OBJECTS) $(libjasper_la_LIBADD)
 EOF
       ) &&
     (cd src/libjasper && make && make install) &&
-    rm -f $tlibdir_quoted/libjasper*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/jasper-$jasperver"
-  if test ! -f "$tlibdir/jasper.lib"; then
+    rm -f $tlibdir_quoted/libjasper*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/jasper-$jasperver"
+  if failed_package || test ! -f "$tlibdir/jasper.lib"; then
     echo "failed"
     exit -1
   else
@@ -2540,9 +2526,8 @@ if check_package GraphicsMagick; then
       "GraphicsMagick++ - Image Processing Library" "Copyright (C) 2002-`date +%Y` GraphicsMagick Group" > Magick++/lib/magick++.rc &&
     create_module_rc GraphicsMagick $gmagickver libGraphicsMagickWand-1.dll "http://www.graphicsmagick.org" \
       "GraphicsMagickWand - Image Processing Library" "Copyright (C) 2002-`date +%Y` GraphicsMagick Group" > wand/magickwand.rc &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__ -D_VISUALC_" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --without-perl &&
+    W_CPPFLAGS="$W_CPPFLAGS -D_VISUALC_" \
+      configure_package --enable-shared --disable-static --without-perl &&
     post_process_libtool &&
     for f in coders/msl.c coders/url.c coders/svg.c; do
       sed -e "s/^# *include <win32config\.h>//g" $f > ttt &&
@@ -2576,9 +2561,9 @@ if check_package GraphicsMagick; then
     (cd Magick++/lib && rc -fo magick++.res magick++.rc) &&
     make &&
     make install
-    rm -f $tlibdir_quoted/libGraphicsMagicks*.la) >&5 2>&1
-  #rm -rf "$DOWNLOAD_DIR/GraphicsMagick-$gmagickver"
-  if ! test -f "$tlibdir/GraphicsMagick.lib"; then
+    rm -f $tlibdir_quoted/libGraphicsMagicks*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/GraphicsMagick-$gmagickver"
+  if failed_package || test ! -f "$tlibdir/GraphicsMagick.lib"; then
     echo "failed"
     exit -1
   else
@@ -2603,12 +2588,11 @@ if check_package ImageMagick; then
       "ImageMagick - Image Processing Library" "`grep -e '^Copyright ' LICENSE | sed -e 's/,.*$//'`" > Magick++/lib/magick++.rc &&
     create_module_rc ImageMagick $imagickver libWand-10.dll "http://www.imagemagick.org" \
       "ImageMagick - Image Processing Library" "`grep -e '^Copyright ' LICENSE | sed -e 's/,.*$//'`" > wand/magickwand.rc &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD -EHs" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32 -D__WIN32__ -D_VISUALC_" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$INSTALL_DIR" --enable-shared --disable-static --without-perl --with-xml --without-modules \
-      --with-wmf &&
+    W_CPPFLAGS="$W_CPPFLAGS -D_VISUALC_" \
+      configure_package --enable-shared --disable-static --without-perl \
+      --with-xml --without-modules --with-wmf &&
     post_process_libtool &&
-    read -p "WARNING: libtool needs manual post-processing; press <ENTER> when done " &&
+    #read -p "WARNING: libtool needs manual post-processing; press <ENTER> when done " &&
     for f in coders/msl.c coders/url.c coders/svg.c; do
       sed -e "s/^# *include <win32config\.h>//g" $f > ttt &&
         mv ttt $f
@@ -2650,9 +2634,9 @@ EOF
     make &&
     make install
     rm -f $tlibdir_quoted/libWand*.la &&
-    rm -f $tlibdir_quoted/libMagick*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/ImageMagick-$imagickver"
-  if ! test -f "$tlibdir/Magick.lib"; then
+    rm -f $tlibdir_quoted/libMagick*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/ImageMagick-$imagickver"
+  if failed_package || test ! -f "$tlibdir/Magick.lib"; then
     echo "failed"
     exit -1
   else
@@ -2731,8 +2715,8 @@ if check_package octave; then
     cp octave-config.exe "$octave_prefix/bin/octave-config.exe" &&
     cp octave-config.exe "$octave_prefix/bin/octave-config-$octave_version.exe" &&
     cp octaverc.win "$octave_prefix/share/octave/$octave_version/m/startup/octaverc"
-    ) >&5 2>&1
-  if test ! -f "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe"; then
+    ) >&5 2>&1 && end_package
+  if failed_package || test ! -f "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe"; then
     echo "failed"
     exit -1
   else
@@ -2789,9 +2773,9 @@ if check_package PortAudio; then
     post_process_libtool &&
     make lib/libportaudio.la &&
     make install
-    rm -f $tlibdir_quoted/libportaudio*.la) >&5 2>&1
+    rm -f $tlibdir_quoted/libportaudio*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/portaudio"
-  if test ! -f "$tlibdir/portaudio.lib"; then
+  if failed_package || test ! -f "$tlibdir/portaudio.lib"; then
     echo "failed"
     exit -1
   else
@@ -2815,9 +2799,9 @@ if check_package playrec; then
       mkoctfile -c `pkg-config --cflags portaudio-2.0` pa_dll_playrec.c &&
       mkoctfile -c `pkg-config --cflags portaudio-2.0` mex_dll_core.c &&
       mkoctfile --mex -o playrec.mex `pkg-config --libs portaudio-2.0` *.o &&
-      cp playrec.mex "$target") >&5 2>&1
-    rm -rf "$DOWNLOAD_DIR/playrec_2_1_0"
-    if test ! -f "$target"; then
+      cp playrec.mex "$target") >&5 2>&1 && end_package
+    remove_package "$DOWNLOAD_DIR/playrec_2_1_0"
+    if failed_package || test ! -f "$target"; then
       echo "failed"
       exit -1
     else
@@ -2841,9 +2825,9 @@ if check_package JOGL; then
   (cd "$DOWNLOAD_DIR/jogl-1.1.0-windows-i586" &&
     cp lib/*.dll lib/*.jar "$tbindir" &&
     cp COPYRIGHT.txt "$tlicdir/COPYING.JOGL" &&
-    cat LICENSE-JOGL-1.1.0.txt >> "$tlicdir/COPYING.JOGL") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/jogl-1.1.0-windows-i586"
-  if test ! -f "$tbindir/jogl.jar"; then
+    cat LICENSE-JOGL-1.1.0.txt >> "$tlicdir/COPYING.JOGL") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/jogl-1.1.0-windows-i586"
+  if failed_package || test ! -f "$tbindir/jogl.jar"; then
     echo "failed"
     exit -1
   else
@@ -2870,9 +2854,9 @@ if check_package FTPlib; then
     cc-msvc -shared -o libftp-3.dll -Wl,-implib:ftp.lib ftplib.o ftplib.res -lws2_32 &&
     cp libftp-3.dll "$tbindir" &&
     cp ftplib.h "$tincludedir" &&
-    cp ftp.lib "$tlibdir") >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/ftplib-3.1-1"
-  if test ! -f "$tlibdir/ftp.lib"; then
+    cp ftp.lib "$tlibdir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/ftplib-3.1-1"
+  if failed_package || test ! -f "$tlibdir/ftp.lib"; then
     echo "failed"
     exit -1
   else
@@ -2903,9 +2887,9 @@ if check_package SQLite3; then
 ;}' sqlite3.h > ttt &&
       mv ttt sqlite3.h &&
     make install-libLTLIBRARIES install-includeHEADERS &&
-    rm -f $tlibdir_quoted/libsqlite3*.la) >&5 2>&1
+    rm -f $tlibdir_quoted/libsqlite3*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/sqlite-$sqlite3ver"
-  if test ! -f "$tlibdir/sqlite3.lib"; then
+  if failed_package || test ! -f "$tlibdir/sqlite3.lib"; then
     echo "failed"
     exit -1
   else
@@ -2933,7 +2917,7 @@ if check_package FFMpeg; then
     #    -e "s/^EXTRALIBS *=.*$/& -luser32 -lkernel32/" \
     #    config.mak > ttt &&
     #  mv ttt config.mak &&
-    sed -e "s/^EXTRALIBS *=/& -lmsvcr80/" \
+    sed -e "s/^EXTRALIBS *=/& -lmsvcr$crtver/" \
         config.mak > ttt &&
       mv ttt config.mak &&
     start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
@@ -2947,9 +2931,9 @@ if check_package FFMpeg; then
     done &&
     start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
       -c "cd `pwd -W` && for lib in avutil avcodec avformat swscale avfilter avdevice; do make -C lib\$lib install; done" &&
-    true) >&5 2>&1
+    true) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/$ffmpegdir"
-  if test ! -f "$tlibdir/avcodec.lib"; then
+  if failed_package || test ! -f "$tlibdir/avcodec.lib"; then
     echo "failed"
     exit -1
   else
@@ -3065,9 +3049,9 @@ if check_package octplot; then
       --with-octplotmpath=$octave_prefix/share/octplot/m \
       --with-fontpath=$octave_prefix/share/octplot/fonts &&
     PATH=$octave_prefix/bin:$PATH make &&
-    make install) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/octplot-0.4.0"
-  if test ! -f "$INSTALL_DIR/local/octave-$octave_version/share/octplot/oct/octplot.exe"; then
+    make install) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/octplot-0.4.0"
+  if failed_package || test ! -f "$INSTALL_DIR/local/octave-$octave_version/share/octplot/oct/octplot.exe"; then
     echo "failed"
     exit -1
   else
@@ -3087,17 +3071,15 @@ if check_package ATK; then
   echo "done"
   echo "compiling ATK... "
   (cd "$DOWNLOAD_DIR/atk-$atkver" &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    configure_package --enable-shared --disable-static &&
     post_process_libtool &&
     sed -e "s/^SUBDIRS =.*/SUBDIRS = atk/" Makefile > ttt &&
       mv ttt Makefile &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libatk*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/atk-$atkver"
-  if test ! -f "$tbindir/libatk-1.0-0.dll"; then
+    rm -f $tlibdir_quoted/libatk*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/atk-$atkver"
+  if failed_package || test ! -f "$tbindir/libatk-1.0-0.dll"; then
     echo "failed"
     exit -1
   else
@@ -3140,9 +3122,9 @@ if check_package GTK; then
     make &&
     make install &&
     rm -f $tlibdir_quoted/libgtk*.la $tlibdir_quoted/libgdk*.la &&
-    find "$tlibdir/gtk-2.0" -name "lib*.la" | xargs rm -f) >&5 2>&1
+    find "$tlibdir/gtk-2.0" -name "lib*.la" | xargs rm -f) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/gtk+-$gtkver"
-  if test ! -f "$tbindir/libgtk-win32-2.0-0.dll"; then
+  if failed_package || test ! -f "$tbindir/libgtk-win32-2.0-0.dll"; then
     echo "failed"
     exit -1
   else
@@ -3162,9 +3144,7 @@ if check_package libsigc++; then
   echo "done"
   echo "compiling libsigc++... "
   (cd "$DOWNLOAD_DIR/libsigc++-$libsigcver" &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    configure_package --enable-shared --disable-static &&
     post_process_libtool &&
     sed -e "s/^SUBDIRS =.*/SUBDIRS = sigc++/" Makefile > ttt &&
       mv ttt Makefile &&
@@ -3184,9 +3164,9 @@ EOF
       mv ttt MSVC_Net2003/sigc-2.0.rc &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libsigc*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/libsigc++-$libsigcver"
-  if test ! -f "$tlibdir/sigc-2.0.lib"; then
+    rm -f $tlibdir_quoted/libsigc*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/libsigc++-$libsigcver"
+  if failed_package || test ! -f "$tlibdir/sigc-2.0.lib"; then
     echo "failed"
     exit -1
   else
@@ -3206,9 +3186,7 @@ if check_package Glibmm; then
   echo "done"
   echo "compiling glibmm... "
   (cd "$DOWNLOAD_DIR/glibmm-$glibmmver" &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    configure_package --enable-shared --disable-static &&
     post_process_libtool &&
     sed -e "s/^SUBDIRS =.*/SUBDIRS = glib/" Makefile > ttt &&
       mv ttt Makefile &&
@@ -3232,11 +3210,12 @@ EOF
         -e '/^#include "afxres.h".*/d' \
         MSVC_Net2003/glibmm/glibmm.rc > ttt &&
       mv ttt MSVC_Net2003/glibmm/glibmm.rc &&
+    vcbuild -upgrade MSVC_Net2003\\gendef\\gendef.vcproj &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libglibmm*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/glibmm-$glibmmver"
-  if test ! -f "$tlibdir/glibmm-2.4.lib"; then
+    rm -f $tlibdir_quoted/libglibmm*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/glibmm-$glibmmver"
+  if failed_package || test ! -f "$tlibdir/glibmm-2.4.lib"; then
     echo "failed"
     exit -1
   else
@@ -3256,9 +3235,7 @@ if check_package Cairomm; then
   echo "done"
   echo "compiling cairomm... "
   (cd "$DOWNLOAD_DIR/cairomm-$cairommver" &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-docs &&
+    configure_package --enable-shared --disable-static --disable-docs &&
     post_process_libtool &&
     (cat >> cairomm/Makefile <<\EOF
 cairomm.def: ../MSVC/gendef/Release/gendef.exe
@@ -3280,11 +3257,12 @@ EOF
         -e '/^#include "afxres.h".*/d' \
         MSVC/cairomm/cairomm.rc > ttt &&
       mv ttt MSVC/cairomm/cairomm.rc &&
+    vcbuild -upgrade MSVC\\gendef\\gendef.vcproj &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libcairomm*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/cairomm-$cairommver"
-  if test ! -f "$tlibdir/cairomm-1.0.lib"; then
+    rm -f $tlibdir_quoted/libcairomm*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/cairomm-$cairommver"
+  if failed_package || test ! -f "$tlibdir/cairomm-1.0.lib"; then
     echo "failed"
     exit -1
   else
@@ -3331,11 +3309,12 @@ EOF
           MSVC_Net2003/$modulemm/$modulemm.rc > ttt &&
         mv ttt MSVC_Net2003/$modulemm/$modulemm.rc
     done &&
+    vcbuild -upgrade MSVC_Net2003\\gendef\\gendef.vcproj &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/lib*mm*.la) >&5 2>&1
+    rm -f $tlibdir_quoted/lib*mm*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/gtkmm-$gtkmmver"
-  if test ! -f "$tlibdir/gtkmm-2.0.lib"; then
+  if failed_package || test ! -f "$tlibdir/gtkmm-2.0.lib"; then
     echo "failed"
     exit -1
   else
@@ -3355,9 +3334,7 @@ if check_package libglade; then
   echo "done"
   echo "compiling libglade... "
   (cd "$DOWNLOAD_DIR/libglade-$libgladever" &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    configure_package --enable-shared --disable-static &&
     post_process_libtool &&
     sed -e "/^SUBDIRS =/ {s/doc//;}" Makefile > ttt &&
       mv ttt Makefile &&
@@ -3365,9 +3342,9 @@ if check_package libglade; then
       mv ttt glade/Makefile &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libglade*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/libglade-$libgladever"
-  if test ! -f "$tlibdir/glade-2.0.lib"; then
+    rm -f $tlibdir_quoted/libglade*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/libglade-$libgladever"
+  if failed_package || test ! -f "$tlibdir/glade-2.0.lib"; then
     echo "failed"
     exit -1
   else
@@ -3390,9 +3367,7 @@ if check_package gdl; then
     sed -e "s/^IT_PROG_INTLTOOL/#&/" configure.in > ttt &&
       mv ttt configure.in &&
     autoconf &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static --disable-gnome &&
+    configure_package --enable-shared --disable-static --disable-gnome &&
     post_process_libtool &&
     sed -e "/^SUBDIRS =/ {s/docs//;s/po//;}" Makefile > ttt &&
       mv ttt Makefile &&
@@ -3409,9 +3384,9 @@ if check_package gdl; then
       mv ttt gdl/gdl-dock-item.c &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libgdl*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gdl-$gdlver"
-  if test ! -f "$tlibdir/gdl-1.lib"; then
+    rm -f $tlibdir_quoted/libgdl*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/gdl-$gdlver"
+  if failed_package || test ! -f "$tlibdir/gdl-1.lib"; then
     echo "failed"
     exit -1
   else
@@ -3434,17 +3409,15 @@ if check_package gtksourceview; then
     sed -e "s/^IT_PROG_INTLTOOL/#&/" configure.ac > ttt &&
       mv ttt configure.ac &&
     autoconf &&
-    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -EHsc -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
-      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
-      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static &&
+    configure_package --enable-shared --disable-static &&
     post_process_libtool &&
     sed -e "/^SUBDIRS =/ {s/docs//;s/po//;}" Makefile > ttt &&
       mv ttt Makefile &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libgtksourceview*.la) >&5 2>&1
-  rm -rf "$DOWNLOAD_DIR/gtksourceview-$gtksourceviewver"
-  if test ! -f "$tlibdir/gtksourceview-2.0.lib"; then
+    rm -f $tlibdir_quoted/libgtksourceview*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/gtksourceview-$gtksourceviewver"
+  if failed_package || test ! -f "$tlibdir/gtksourceview-2.0.lib"; then
     echo "failed"
     exit -1
   else
@@ -3482,9 +3455,9 @@ if check_package Gtksourceview1; then
       mv ttt gtksourceview/gnu-regex/regcomp.c &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libgtksourceview-1.0*.la) >&5 2>&1
+    rm -f $tlibdir_quoted/libgtksourceview-1.0*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/gtksourceview-$gtksourceview1ver"
-  if test ! -f "$tlibdir/gtksourceview-1.0.lib"; then
+  if failed_package || test ! -f "$tlibdir/gtksourceview-1.0.lib"; then
     echo "failed"
     exit -1
   else
@@ -3515,9 +3488,9 @@ if check_package VTE; then
     make -C src install-libLTLIBRARIES install-pkgincludeHEADERS &&
     make install-pkgconfigDATA &&
     make -C termcaps install
-    rm -f $tlibdir_quoted/libvte*.la) >&5 2>&1
+    rm -f $tlibdir_quoted/libvte*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/vte-$vtever"
-  if test ! -f "$tlibdir/vte.lib"; then
+  if failed_package || test ! -f "$tlibdir/vte.lib"; then
     echo "failed"
     exit -1
   else
@@ -3564,9 +3537,9 @@ if check_package GtkGlArea; then
     done &&
     make &&
     make install &&
-    rm -f $tlibdir_quoted/libgtkgl*.la) >&5 2>&1
+    rm -f $tlibdir_quoted/libgtkgl*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/gtkglarea-$gtkglarea"
-  if test ! -f "$tlibdir/gtkgl-2.0.lib"; then
+  if failed_package || test ! -f "$tlibdir/gtkgl-2.0.lib"; then
     echo "failed"
     exit -1
   else
@@ -3589,8 +3562,8 @@ if check_package OctaveDE; then
       echo -n "compiling octavede..."
       (W_CPPFLAGS="$W_CPPFLAGS -DHAVE_OCTAVE_300" configure_package --prefix="$octave_prefix" &&
         make &&
-        make install) >&5 2>&1
-      if test ! -f "$octave_prefix/bin/octaveui.exe"; then
+        make install) >&5 2>&1 && end_package
+      if failed_package || test ! -f "$octave_prefix/bin/octaveui.exe"; then
         echo "failed"
         exit -1
       else

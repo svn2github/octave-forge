@@ -2311,13 +2311,20 @@ if check_package libcurl; then
   (cd "$DOWNLOAD_DIR/curl-$curlver" &&
     for mf in lib/Makefile.vc8 src/Makefile.vc8; do
       sed -e "s/libcurl_imp/libcurl/g" -e "s/zdll\.lib/zlib.lib/g" $mf > ttt &&
-      mv ttt $mf
+      	mv ttt $mf
+      if test $crtver -ge 90; then
+        sed -e "s/bufferoverflowu\.lib//g" \
+            -e "s,/DBUILDING_LIBCURL,& /D_WIN32_WINNT=0x0501," \
+            $mf > ttt &&
+          mv ttt $mf
+      fi
     done
     nmake VC=vc8 vc-dll-zlib-dll &&
+    mt -outputresource:lib\\libcurl.dll -manifest lib\\release-dll-zlib-dll\\libcurl.dll.manifest &&
     cp lib/libcurl.dll "$tbindir" &&
     cp lib/libcurl.lib "$tlibdir" &&
-	cp COPYING "$tlicdir/COPYING.CURL" &&
-    mkdir "$tincludedir/curl" && cp include/curl/*.h "$tincludedir/curl") >&5 2>&1 && end_package
+    cp COPYING "$tlicdir/COPYING.CURL" &&
+    mkdir -p "$tincludedir/curl" && cp include/curl/*.h "$tincludedir/curl") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/curl-$curlver"
   if failed_package || test ! -f "$tbindir/libcurl.dll"; then
     echo "failed"

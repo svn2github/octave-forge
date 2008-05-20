@@ -30,9 +30,10 @@ function [A] = lpc(Y,P,mode);
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%	Version 2.91
-%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>
-%
+%	$Id$
+%	Copyright (C) 1996-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%       This is part of the TSA-toolbox. See also 
+%       http://hci.tugraz.at/schloegl/matlab/tsa/
 
 % This library is free software; you can redistribute it and/or
 % modify it under the terms of the GNU Library General Public
@@ -60,9 +61,10 @@ end;
 % you can use any of the following routines. 
 % I've selected the Burg method, because it provides the most accurate estimates
 
-[AR,RC,PE] = lattice(Y.',P);		% Burg method
-% [AR,RC,PE] = lattice(Y.',P,'GEOL');	% geomatric lattice
-% [AR,RC,PE] = durlev(acovf(Y.',P));  	% Yule-Walker
+
+% [AR,RC,PE] = lattice(Y.',P);		% Burg method
+% [AR,RC,PE] = lattice(Y.',P,'GEOL');	% geometric lattice
+[AR,RC,PE] = durlev(acovf(Y.',P));  	% Yule-Walker
 
 A = ar2poly(AR);
 

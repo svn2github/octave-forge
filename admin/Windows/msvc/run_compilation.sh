@@ -2596,7 +2596,7 @@ if check_package ImageMagick; then
     create_module_rc ImageMagick $imagickver libWand-10.dll "http://www.imagemagick.org" \
       "ImageMagick - Image Processing Library" "`grep -e '^Copyright ' LICENSE | sed -e 's/,.*$//'`" > wand/magickwand.rc &&
     W_CPPFLAGS="$W_CPPFLAGS -D_VISUALC_" \
-      configure_package --enable-shared --disable-static --without-perl \
+      configure_package --prefix="$INSTALL_DIR" --enable-shared --disable-static --without-perl \
       --with-xml --without-modules --with-wmf &&
     post_process_libtool &&
     #read -p "WARNING: libtool needs manual post-processing; press <ENTER> when done " &&
@@ -3321,7 +3321,7 @@ EOF
     make install &&
     rm -f $tlibdir_quoted/lib*mm*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/gtkmm-$gtkmmver"
-  if failed_package || test ! -f "$tlibdir/gtkmm-2.0.lib"; then
+  if failed_package || test ! -f "$tlibdir/gtkmm-2.4.lib"; then
     echo "failed"
     exit -1
   else

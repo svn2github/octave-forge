@@ -59,8 +59,9 @@ if nargin < 2,
 end;
 
 % you can use any of the following routines. 
-% I've selected the Burg method, because it provides the most accurate estimates
-
+% the lattice methods are preferable for stochastic time series. 
+% but can fail for deterministic signals see: 
+% http://sourceforge.net/mailarchive/message.php?msg_name=20080516115110.GB20642%40localhost
 
 % [AR,RC,PE] = lattice(Y.',P);		% Burg method
 % [AR,RC,PE] = lattice(Y.',P,'GEOL');	% geometric lattice

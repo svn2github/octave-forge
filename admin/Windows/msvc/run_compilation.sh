@@ -1088,9 +1088,9 @@ if check_package readline; then
     mv ttt shlib/Makefile.in &&
     echo "readline.res: readline.rc" >> shlib/Makefile.in &&
     echo "	rc -fo \$@ \$<" >> shlib/Makefile.in &&
-    CC=cc-msvc CXX=cc-msvc ./configure --build=i686-pc-msdosmsvc --prefix=$INSTALLDIR &&
+    configure_package --build=i686-pc-msdosmsvc &&
     make shared &&
-    make install-shared DESTDIR=$INSTALL_DIR &&
+    make install-shared &&
     cp shlib/*readline*.lib "$tlibdir/readline.lib" &&
     cp shlib/*history*.lib "$tlibdir/history.lib"&&
     mv $tlibdir_quoted/*readline*.dll $tlibdir_quoted/*history*.dll "$tbindir") >&5 2>&1 && end_package
@@ -2639,7 +2639,7 @@ EOF
     (cd wand && rc -fo magickwand.res magickwand.rc) &&
     (cd Magick++/lib && rc -fo magick++.res magick++.rc) &&
     make &&
-    make install
+    make install &&
     rm -f $tlibdir_quoted/libWand*.la &&
     rm -f $tlibdir_quoted/libMagick*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/ImageMagick-$imagickver"
@@ -2779,7 +2779,7 @@ if check_package PortAudio; then
       mv ttt portaudio-2.0.pc &&
     post_process_libtool &&
     make lib/libportaudio.la &&
-    make install
+    make install &&
     rm -f $tlibdir_quoted/libportaudio*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/portaudio"
   if failed_package || test ! -f "$tlibdir/portaudio.lib"; then
@@ -3598,7 +3598,7 @@ function get_nsi_additional_files()
     image)
       echo "  SetOutPath \"\$INSTDIR\\bin\""
       echo "  File \"\${VCLIBS_ROOT}\\bin\\libjpeg-62.dll\""
-      echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng13.dll\""
+      echo "  File \"\${VCLIBS_ROOT}\\bin\\libpng12-0.dll\""
       found=`find "$octave_prefix/libexec/octave/packages/$packinstdir/" -name "__magick_read__.oct" 2> /dev/null`
       if test -n "$found"; then
         echo "  File \"\${VCLIBS_ROOT}\\bin\\libMagick-10.dll\""
@@ -3610,10 +3610,10 @@ function get_nsi_additional_files()
         echo "  File \"\${VCLIBS_ROOT}\\bin\\libxml2-2.dll\""
         echo "  File \"\${VCLIBS_ROOT}\\bin\\libfreetype-6.dll\""
         echo "  File \"\${VCLIBS_ROOT}\\bin\\zlib1.dll\""
-        echo "  SetOutPath \"\$INSTDIR\\lib\\ImageMagick-6.3.8\""
-        echo "  File /r \"\${VCLIBS_ROOT}\\lib\\ImageMagick-6.3.8\\*.*\""
-        echo "  SetOutPath \"\$INSTDIR\\share\\ImageMagick-6.3.8\""
-        echo "  File /r \"\${VCLIBS_ROOT}\\share\\ImageMagick-6.3.8\\*.*\""
+        echo "  SetOutPath \"\$INSTDIR\\lib\\ImageMagick-$imagickver\""
+        echo "  File /r \"\${VCLIBS_ROOT}\\lib\\ImageMagick-$imagickver\\*.*\""
+        echo "  SetOutPath \"\$INSTDIR\\share\\ImageMagick-$imagickver\""
+        echo "  File /r \"\${VCLIBS_ROOT}\\share\\ImageMagick-$imagickver\\*.*\""
       fi
       ;;
     octcdf)

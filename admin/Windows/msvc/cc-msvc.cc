@@ -119,6 +119,42 @@ static string quote_path(const string& s)
 	return s;
 }
 
+static string quote_define(const string& name, const string& value)
+{
+	if (value[0] == '"')
+	{
+		string result;
+
+		for (int i=0; i<value.length(); i++)
+			switch (value[i])
+			{
+			case '"':
+				result += "\\\"";
+				break;
+			case '&':
+			case '<':
+			case '>':
+			case '(':
+			case ')':
+			case '|':
+			case '^':
+			case '@':
+				result.push_back('^');
+			default:
+				result.push_back(value[i]);
+				break;
+			}
+		return ("\"" + name + "=" + result + "\"");
+	}
+	else
+	{
+		if (value.find_first_of("&<>()@^| ") != string::npos)
+			return ("\"" + name + "=" + value + "\"");
+		else
+			return (name + "=" + value);
+	}
+}
+
 static string quote_quotes(const string& s)
 {
 	string result;
@@ -203,6 +239,18 @@ int main(int argc, char **argv)
 		if (!starts_with(arg, "-D") && (pos=arg.find('=')) != string::npos)
 		{
 			optarg = arg.substr(pos+1);
+		}
+
+		if (starts_with(arg, "-D"))
+		{
+			if ((pos=arg.find('=')) != string::npos)
+			{
+				optarg = arg.substr(pos+1);
+				arg.resize(pos);
+				arg = quote_define(arg, optarg);
+			}
+			clopt += " " + arg;
+			continue;
 		}
 
 		if (arg == "--version" || arg == "-V")

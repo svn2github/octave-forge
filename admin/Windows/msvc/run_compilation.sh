@@ -2993,7 +2993,7 @@ extra_pkgs="fpl msh ad bim civil-engineering integration java jhandles mapping n
 # packages to fix:
 # new packages:
 # unsupported packages: engine graceplot multicore pdb tcl-octave xraylib
-main_pkgs="signal ann audio bioinfo combinatorics communications control database data-smoothing econometrics financial fixed ftp ga general gsl ident image informationtheory io irsa linear-algebra miscellaneous missing-functions nnet octcdf odebvp odepkg optim outliers physicalconstants plot sockets specfun special-matrix splines statistics strings struct symbolic time video"
+main_pkgs="signal ann audio bioinfo combinatorics communications control database data-smoothing econometrics time financial fixed ftp miscellaneous ga general gsl ident image informationtheory io irsa linear-algebra missing-functions nnet octcdf odebvp odepkg optim outliers physicalconstants plot sockets specfun special-matrix splines statistics strings struct symbolic video"
 # packages to fix: octgpr
 # new packages:
 # unsupported packages: optiminterp parallel vrml zenity
@@ -3561,7 +3561,7 @@ fi
 if check_package OctaveDE; then
   if test -n "`which mkoctfile.exe`"; then
     (cd "$OCTAVEDE_DIR" || exit -1
-      if test -f "ui/octaveui.exe"; then
+      if test -f "ui/octavede.exe"; then
         echo -n "clearing octavede..."
         make clean >&5 2>&1
         echo "done"
@@ -3570,7 +3570,7 @@ if check_package OctaveDE; then
       (W_CPPFLAGS="$W_CPPFLAGS -DHAVE_OCTAVE_300" configure_package --prefix="$octave_prefix" &&
         make &&
         make install) >&5 2>&1 && end_package
-      if failed_package || test ! -f "$octave_prefix/bin/octaveui.exe"; then
+      if failed_package || test ! -f "$octave_prefix/bin/octavede.exe"; then
         echo "failed"
         exit -1
       else

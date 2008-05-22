@@ -295,16 +295,22 @@ static void initialize_jvm ()
     std::string key, value;
 
     key = "software\\javasoft\\java runtime environment";
-    value = "Currentversion";
-    std::string regval = read_registry_string (key,value);
-    if (regval.empty ())
-      throw std::string ("unable to find Java Runtime Environment: ")+key+"."+value;
 
-    key = key + "\\" + regval;
+    value = octave_env::getenv ("JAVA_VERSION");
+    if (value.empty ())
+    {
+      value = "Currentversion";
+      std::string regval = read_registry_string (key,value);
+      if (regval.empty ())
+        throw std::string ("unable to find Java Runtime Environment: ")+key+"::"+value;
+      value = regval;
+    }
+
+    key = key + "\\" + value;
     value = "RuntimeLib";
     jvm_lib_path = read_registry_string (key,value);
     if (jvm_lib_path.empty())
-      throw std::string ("unable to find Java Runtime Environment: ")+key+"."+value;
+      throw std::string ("unable to find Java Runtime Environment: ")+key+"::"+value;
 
     std::string jvm_bin_path;
 

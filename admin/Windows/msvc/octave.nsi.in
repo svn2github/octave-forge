@@ -5,6 +5,7 @@
 !define MSYS_ROOT "@MSYS_ROOT@"
 !define JHANDLES_VERSION "@JHANDLES_VERSION@"
 !define SOFTWARE_ROOT "@SOFTWARE_ROOT@"
+!define MSVC_CRT "@MSVC_CRT@"
 
 ; Determine which configuration to use
 #!define ATLAS_PM
@@ -45,7 +46,7 @@
 !insertmacro WordReplace
 
 !define LA_GEN "Generic (works on all systems)"
-!define LA_P4 "Intel Pentium 4 with SSE2"
+!define LA_P4 "Intel Pentium 4 with SSE3"
 !ifdef ATLAS_PM
 !define LA_PM "Intel Pentium M with SSE2"
 !define LA_COUNT 3
@@ -253,11 +254,11 @@ Section "Generic" SEC_LA_GEN
   File "${VCLIBS_ROOT}\license\COPYING.LAPACK"
 SectionEnd
 
-Section /o "P4/SSE2" SEC_LA_P4SSE2
+Section /o "P4/SSE3" SEC_LA_P4SSE3
   SetOutPath "$INSTDIR\bin"
   SetOverwrite try
-  File /oname=libblas.dll "${VCLIBS_ROOT}\bin\libblas_atl_WinNT_P4SSE2.dll"
-  File /oname=liblapack.dll "${VCLIBS_ROOT}\bin\liblapack_atl_WinNT_P4SSE2.dll"
+  File /oname=libblas.dll "${VCLIBS_ROOT}\bin\libblas_atl381_P4E32SSE3.dll"
+  File /oname=liblapack.dll "${VCLIBS_ROOT}\bin\liblapack_atl381_P4E32SSE3.dll"
 SectionEnd
 
 !ifdef ATLAS_PM
@@ -276,12 +277,12 @@ Section /o "C/C++ Runtime Libraries" SEC_VC
   SetOverwrite try
   StrCmp $IS_WIN2K 1 is_win2k is_winxp
 is_winxp:
-  SetOutPath "$INSTDIR\bin\Microsoft.VC80.CRT"
-  File "${VCLIBS_ROOT}\bin\Microsoft.VC80.CRT\*.*"
+  SetOutPath "$INSTDIR\bin\Microsoft.VC${MSVC_CRT}.CRT"
+  File "${VCLIBS_ROOT}\bin\Microsoft.VC${MSVC_CRT}.CRT\*.*"
   Goto done
 is_win2k:
   SetOutPath "$INSTDIR\bin"
-  File "${VCLIBS_ROOT}\bin\Microsoft.VC80.CRT\*.dll"
+  File "${VCLIBS_ROOT}\bin\Microsoft.VC${MSVC_CRT}.CRT\*.dll"
   Goto done
 done:
 SectionEnd
@@ -549,9 +550,11 @@ Section -AdditionalIcons
   SetOutPath $INSTDIR
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Octave Home Page.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+  #CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Octave Home Page.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+  WriteIniStr "$SMPROGRAMS\$ICONS_GROUP\Octave Home Page.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   WriteIniStr "$INSTDIR\Octave-Forge.url" "InternetShortcut" "URL" "${OCTAVE_FORGE_WEB_SITE}"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Octave-Forge Home Page.lnk" "$INSTDIR\Octave-Forge.url"
+  #CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Octave-Forge Home Page.lnk" "$INSTDIR\Octave-Forge.url"
+  WriteIniStr "$SMPROGRAMS\$ICONS_GROUP\Octave-Forge Home Page.url" "InternetShortcut" "URL" "${OCTAVE_FORGE_WEB_SITE}"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk" "$INSTDIR\uninst.exe"
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP\Documentation"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Documentation\README.lnk" "$INSTDIR\README.txt"
@@ -613,7 +616,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${DOC_HTML} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${DOC_PDF} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_GEN} ""
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_P4SSE2} ""
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_P4SSE3} ""
 !ifdef ATLAS_PM
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_PMSSE2} ""
 !endif
@@ -636,18 +639,19 @@ endadmin:
 FunctionEnd
 
 Function .onInit
+  Call CheckPrevVersion
   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "atlascpu.ini"
   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "graphics.ini"
   !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Field 3" "ListItems" "${LA_ALL}"
   !insertmacro SetSectionFlag ${SEC_CORE} ${SF_RO}
   ;!insertmacro SetSectionFlag ${SEC_VC} ${SF_RO}
   !insertmacro SetSectionFlag ${SEC_LA_GEN} ${SF_RO}
-  !insertmacro SetSectionFlag ${SEC_LA_P4SSE2} ${SF_RO}
+  !insertmacro SetSectionFlag ${SEC_LA_P4SSE3} ${SF_RO}
 !ifdef ATLAS_PM
   !insertmacro SetSectionFlag ${SEC_LA_PMSSE2} ${SF_RO}
 !endif
   Call DetectWinVer
-  Call CheckMSVCR80
+  Call CheckMSVCRT
   Pop $0
   StrCmp $0 1 noruntime
   !insertmacro SetSectionFlag ${SEC_VC} ${SF_SELECTED}
@@ -684,13 +688,13 @@ FunctionEnd
 Function AtlasCpu
   !insertmacro MUI_HEADER_TEXT "CPU selection" "Choose the CPU type corresponding to your system."
   ReadRegStr $0 HKLM HARDWARE\DESCRIPTION\System\CentralProcessor\0 "ProcessorNameString"
-  StrCpy $1 10
+  StrCpy $1 13
   System::Call "kernel32::IsProcessorFeaturePresent(i) &i1 (r1) .r1"
   StrCmp $1 1 0 +4
-  StrCpy $1 " (SSE2 detected)"
+  StrCpy $1 " (SSE3 detected)"
   !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Field 3" "State" "${LA_P4}"
   Goto +2
-  StrCpy $1 " (SSE2 not detected)"
+  StrCpy $1 " (SSE3 not detected)"
   !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Field 2" "Text" "$0$1"
   !insertmacro MUI_INSTALLOPTIONS_DISPLAY "atlascpu.ini"
 FunctionEnd
@@ -698,13 +702,13 @@ FunctionEnd
 Function AtlasCpuEnd
 validate:
   !insertmacro ClearSectionFlag ${SEC_LA_GEN} ${SF_SELECTED}
-  !insertmacro ClearSectionFlag ${SEC_LA_P4SSE2} ${SF_SELECTED}
+  !insertmacro ClearSectionFlag ${SEC_LA_P4SSE3} ${SF_SELECTED}
 !ifdef ATLAS_PM
   !insertmacro ClearSectionFlag ${SEC_LA_PMSSE2} ${SF_SELECTED}
 !endif
   !insertmacro MUI_INSTALLOPTIONS_READ $0 "atlascpu.ini" "Field 3" "State"
   StrCmp $0 "${LA_GEN}" generic0
-  StrCmp $0 "${LA_P4}" p4sse20
+  StrCmp $0 "${LA_P4}" p4sse30
 !ifdef ATLAS_PM
   StrCmp $0 "${LA_PM}" pmsse20
 !endif
@@ -712,8 +716,8 @@ validate:
 generic0:
   !insertmacro SetSectionFlag ${SEC_LA_GEN} ${SF_SELECTED}
   Goto atlasend
-p4sse20:
-  !insertmacro SetSectionFlag ${SEC_LA_P4SSE2} ${SF_SELECTED}
+p4sse30:
+  !insertmacro SetSectionFlag ${SEC_LA_P4SSE3} ${SF_SELECTED}
   Goto atlasend
 !ifdef ATLAS_PM
 pmsse20:
@@ -793,6 +797,8 @@ Section Uninstall
   Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Octave Home Page.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Octave-Forge Home Page.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\Octave Home Page.url"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\Octave-Forge Home Page.url"
 ;  Delete "$SMPROGRAMS\$ICONS_GROUP\Help.lnk"
   Delete "$DESKTOP\Octave.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Octave.lnk"
@@ -807,7 +813,7 @@ Section Uninstall
   SetAutoClose true
 SectionEnd
 
-Function CheckMSVCR80
+Function CheckMSVCRT
   Push $0
   Push $1
   Push $2
@@ -819,7 +825,7 @@ Function CheckMSVCR80
   StrCmp $IS_WIN2K 1 done 0
   loop:
     StrCmp $2 "" done
-    FindFirst $3 $4 "$WINDIR\WinSxS\$2\msvcr80.dll"
+    FindFirst $3 $4 "$WINDIR\WinSxS\$2\msvcr${MSVC_CRT}.dll"
     FindClose $3
     StrCmp $4 "" 0 found
     FindNext $1 $2
@@ -834,6 +840,20 @@ Function CheckMSVCR80
   Pop $1
 ;  Pop $0
   Exch $0
+FunctionEnd
+
+Function CheckPrevVersion
+  Push $0
+  IfFileExists "$INSTDIR\bin\octave-${OCTAVE_VERSION}.exe" 0 otherver
+  MessageBox MB_OK|MB_ICONSTOP "Another Octave installation (with the same version) has been detected.$\r$\nPlease uninstall it first."
+  Abort
+otherver:
+  ReadRegStr $0 ${PRODUCT_ROOT_KEY} "${PRODUCT_KEY}" "Version"
+  IfErrors done
+  MessageBox MB_YESNO|MB_ICONEXCLAMATION "Another Octave installation (version $0) has been detected.$\r$\nIt is recommended to uninstall it if you intend to use the same installation directory.$\r$\nDo you want to proceed with the installation anyway?" IDYES done IDNO 0
+  Abort
+done:
+  Pop $0
 FunctionEnd
 
 Function DetectAdmin

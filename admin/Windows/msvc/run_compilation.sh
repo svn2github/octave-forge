@@ -383,13 +383,16 @@ fi
 echo -n "checking for Visual Studio version... "
 clver=`cl -? 2>&1 | sed -n -e 's/.*Compiler Version \([0-9]\+\).*/\1/p'`
 crtver=
+msvcver=
 case $clver in
   14)
     crtver=80
+    msvcver=2005
     echo "2005"
     ;;
   15)
     crtver=90
+    msvcver=2008
     echo "2008"
     echo -n "registering vcprojectengine.dll... "
     regsvr32 -s "`which vcprojectengine.dll`"
@@ -585,6 +588,9 @@ if test -z "$todo_packages"; then
       todo_check "$INSTALL_DIR/local/octave-$octave_version/libexec/octave/$octave_version/oct/i686-pc-msdosmsvc/playrec.mex" playrec
       if $do_octplot; then
         todo_check "$INSTALL_DIR/local/octave-$octave_version/share/octplot/oct/octplot.exe" octplot
+      fi
+      if $do_gui; then
+        todo_check "$INSTALL_DIR/local/octave-$octave_version/bin/octavede.exe" OctaveDE
       fi
     fi
     if test ! -z "$of_version"; then
@@ -1209,6 +1215,7 @@ if check_package HDF5; then
       rc -fo hdf5.res hdf5.rc &&
       make &&
       make install &&
+      cp ../COPYING "$tlicdir/COPYING.HDF5" &&
       rm -f $tlibdir_quoted/libhdf5.la
     fi) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/hdf5-$hdf5ver"
@@ -3706,7 +3713,8 @@ function create_nsi_entries()
         0)
           packdesc=`grep -e '^Name:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Name *: *//'`
           packdesc_low=`echo $packdesc | sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
-          packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+          #packver=`grep -e '^Version:' "$found/packinfo/DESCRIPTION" | sed -e 's/^Version *: *//'`
+	  packver=`basename "$found" | sed -e "s/$packname-//"`
           packinstdir=$packdesc_low-$packver
 	  if $isolated; then
             flag_="/o"
@@ -3879,7 +3887,9 @@ if $do_nsi; then
   if test ! -f "$release_dir/octave-$octave_version-setup.exe"; then
     if test ! -f "README.txt"; then
       echo -n "creating README.txt... "
-      sed -e "s/@OCTAVE_VERSION@/$octave_version/" README.txt.in > README.txt
+      sed -e "s/@OCTAVE_VERSION@/$octave_version/" \
+          -e "s/@MSVC_VER@/$msvcver/" \
+          README.txt.in > README.txt
       sed -e '$d' "$INSTALL_DIR/local/octave-$octave_version/doc/NEWS" >> README.txt
       unix2dos README.txt
       echo "done"
@@ -3902,6 +3912,7 @@ if $do_nsi; then
         -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
         -e "s/@SOFTWARE_ROOT@/$software_root/" -e "s/@HAVE_OCTPLOT@/$octplot_prefix/" \
         -e "s/@HAVE_GUI@/$gui_prefix/" -e "s/@HAVE_PLAYREC@/$playrec_prefix/" \
+        -e "s/@MSVC_CRT@/$crtver/" \
         octave.nsi.in > octave_main.nsi
       echo "done"
     fi

@@ -18,19 +18,14 @@ Using this package for the development of OCT and MEX files:
 To build OCT or MEX files from their sources requires that a compiler
 is installed. Ideally this should be the same compiler version as has
 been used to compile this package. This version of Octave has been
-compiled with Microsoft Visual C++ 8.0 (aka 2005), which is available
+compiled with Microsoft Visual C++ @MSVC_VER@, which is available
 for free download from
 
-http://msdn.microsoft.com/vstudio/express/visualc/
-
-Note: The current Visual C++ version is 9.0 (aka 2008), but this version
-cannot be used with the octave package. However, the previous version of
-the compiler can still be downloaded from
-
-http://www.microsoft.com/downloads/details.aspx?FamilyId=7B0B0339-613A-46E6-AB4D-080D4D4A8C4E&displaylang=en
+http://www.microsoft.com/express/vc/
 
 Please be sure to use the same compiler version as the one used to
-create the binary package.
+create the binary package. If the link above does not work, go to
+http://msdn.microsoft.com and look for Visual Studio Express Edition.
 
 Visual C++ can not be distributed with Octave due to licensing
 restrictions on redistribution. Once Visual C++ is installed, then

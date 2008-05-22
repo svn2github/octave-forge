@@ -3953,6 +3953,10 @@ if $do_nsi; then
       create_nsi_entries "$nonfree_pkgs" "" 1 >> octave_forge_desc.nsi
       echo "done"
     fi
+    if test ! -f "check_cpu_flag.exe"; then
+      echo -n "creating CPU feature helper program... "
+      cc-msvc -O2 -MT check_cpu_flag.c -luser32 -lshell32
+    fi
     if test ! -f "$release_dir/octave-$octave_version-setup.exe"; then
       echo -n "creating installer for octave... "
       $NSI_DIR/makensis.exe octave_main.nsi
@@ -3965,7 +3969,7 @@ if $do_nsi; then
       fi
     fi
     if $do_nsiclean; then
-      rm -f octave_main.nsi octave_forge*.nsi README.txt
+      rm -f octave_main.nsi octave_forge*.nsi README.txt check_cpu_flag.exe check_cpu_flag.obj
     fi
   fi
 fi

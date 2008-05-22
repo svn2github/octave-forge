@@ -640,6 +640,8 @@ FunctionEnd
 
 Function .onInit
   Call CheckPrevVersion
+  InitPluginsDir 
+  File "/oname=$PLUGINSDIR\check_cpu_flag.exe" "check_cpu_flag.exe"
   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "atlascpu.ini"
   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "graphics.ini"
   !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Field 3" "ListItems" "${LA_ALL}"
@@ -685,12 +687,36 @@ endmsys:
 endadmin:
 FunctionEnd
 
+!macro CheckCPUFlag flag
+  Push ${flag}
+  Call CheckCPUFlag
+!macroend
+
+Function CheckCPUFlag
+  Exch $0
+  ExecWait "$PLUGINSDIR\check_cpu_flag.exe $0" $0
+  IntOp $0 $0 !
+  Exch $0
+FunctionEnd
+
+!macro CheckCPUFeature flag
+  Push ${flag}
+  Call CheckCPUFeature
+!macroend
+
+Function CheckCPUFeature
+  Exch $1
+  System::Call "kernel32::IsProcessorFeaturePresent(i) &i1 (r1) .r1"
+  Exch $1
+FunctionEnd
+
 Function AtlasCpu
   !insertmacro MUI_HEADER_TEXT "CPU selection" "Choose the CPU type corresponding to your system."
   ReadRegStr $0 HKLM HARDWARE\DESCRIPTION\System\CentralProcessor\0 "ProcessorNameString"
-  StrCpy $1 13
-  System::Call "kernel32::IsProcessorFeaturePresent(i) &i1 (r1) .r1"
-  StrCmp $1 1 0 +4
+  #!insertmacro CheckCPUFeature 13
+  !insertmacro CheckCPUFlag "sse3"
+  Pop $1
+  StrCmp $1 0 +4 0
   StrCpy $1 " (SSE3 detected)"
   !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Field 3" "State" "${LA_P4}"
   Goto +2
@@ -853,6 +879,7 @@ otherver:
   MessageBox MB_YESNO|MB_ICONEXCLAMATION "Another Octave installation (version $0) has been detected.$\r$\nIt is recommended to uninstall it if you intend to use the same installation directory.$\r$\nDo you want to proceed with the installation anyway?" IDYES done IDNO 0
   Abort
 done:
+  ClearErrors
   Pop $0
 FunctionEnd
 

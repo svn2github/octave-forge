@@ -32,13 +32,14 @@ int WinMain (HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR cmdLine, int nShow)
   dm = cm = 0;
 
   for (i = 1; i < argc; i++)
-    if (wcscmp (argv[i], L"mmx") == 0)
+    if (wcsicmp (argv[i], L"mmx") == 0)
       dm |= (1 << 23);
-    else if (wcscmp (argv[i], L"sse") == 0)
+    else if (wcsicmp (argv[i], L"sse") == 0
+	     || wcsicmp (argv[i], L"sse1") == 0)
       dm |= (1 << 25);
-    else if (wcscmp (argv[i], L"sse2") == 0)
+    else if (wcsicmp (argv[i], L"sse2") == 0)
       dm |= (1 << 26);
-    else if (wcscmp (argv[i], L"sse3") == 0)
+    else if (wcsicmp (argv[i], L"sse3") == 0)
       cm |= (1 << 0);
     else if (wcscmp (argv[i], L"-v") == 0)
       verbose = 1;

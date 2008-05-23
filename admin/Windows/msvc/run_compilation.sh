@@ -825,22 +825,30 @@ if $DOATLAS && check_package ATLAS; then
     download_file atlas$atlver.tar.bz2 "http://downloads.sourceforge.net/math-atlas/atlas$atlver.tar.bz2?big_mirror=0"
     echo -n "decompressing ATLAS... "
     unpack_file atlas$atlver.tar.bz2
+    cp check_cpu_flag.c "$DOWNLOAD_DIR/ATLAS"
     echo "done"
-    echo -n "compiling ATLAS... (version $atlver)"
+    echo "compiling ATLAS... (version $atlver)"
     (cd "$DOWNLOAD_DIR/ATLAS" &&
-      mkdir atlbuild && cd atlbuild &&
-      start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
-        -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && ../configure -Si nocygwin 1" &&
-      atlarch=`sed -n -e 's/ *ARCH = \(.*\)$/\1/p' Make.inc` &&
-      start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
-        -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make build" &&
-      cd lib &&
-      cc-msvc -shared -o libblas.dll -Wl,-def:$tdir_w32_forward/lib/atl_blas.def \
-        -Wl,-implib:blas.lib libatlas.a libcblas.a libf77blas.a -lf2c &&
-      cc-msvc -shared -o liblapack.dll -Wl,-def:$tdir_w32_forward/lib/lapack.def \
-        -Wl,-implib:lapack.lib liblapack.a -lliblapack_f77 -L. -lblas -lf2c &&
-      cp libblas.dll "$tbindir/libblas_atl${atlnum}_$atlarch.dll" &&
-      cp liblapack.dll "$tbindir/liblapack_atl${atlnum}_$atlarch.dll") >&5 2>&1
+      cc-msvc -O2 -MT check_cpu_flag.c -luser32 -lshell32 &&
+      SSE1=16 && SSE2=24 && SSE3=28 &&
+      for arch in SSE1 SSE2 SSE3; do
+        if check_cpu_flag $arch; then
+          echo "compiling ATLAS for $arch..."
+          (mkdir -p build_$arch && cd build_$arch &&
+            start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
+              -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && ../configure -V ${!arch} -Si nocygwin 1" &&
+            atlarch=`sed -n -e 's/ *ARCH = \(.*\)$/\1/p' Make.inc` &&
+            start "//wait" "$CYGWIN_DIR/bin/bash.exe" --login \
+              -c "cd `pwd -W | sed -e 's,/,\\\\\\\\\\\\\\\\,g'` && make build" &&
+            cd lib &&
+            cc-msvc -shared -o libblas.dll -Wl,-def:$tdir_w32_forward/lib/atl_blas.def \
+              -Wl,-implib:blas.lib libatlas.a libcblas.a libf77blas.a -lf2c &&
+            cc-msvc -shared -o liblapack.dll -Wl,-def:$tdir_w32_forward/lib/lapack.def \
+              -Wl,-implib:lapack.lib liblapack.a -lliblapack_f77 -L. -lblas -lf2c &&
+            cp libblas.dll "$tbindir/libblas_atl${atlnum}_$atlarch.dll" &&
+            cp liblapack.dll "$tbindir/liblapack_atl${atlnum}_$atlarch.dll") || break
+        fi
+      done) >&5 2>&1
   else
     download_file atlas-3.6.0.tar.gz 'http://downloads.sourceforge.net/math-atlas/atlas3.6.0.tar.gz?modtime=1072051200&big_mirror=0'
     echo -n "decompressing ATLAS... "

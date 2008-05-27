@@ -8,5 +8,5 @@ Description: 3D graphics using VRML
 Depends: octave (>= 2.9.7)
 Autoload: yes
 SystemRequirements: freewrl
-License: GPL version 2 or later
+License: GPL version 2 or later and GFDL
 Url: http://octave.sf.net

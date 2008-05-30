@@ -66,7 +66,9 @@ c               increase nx.
       external dwdis2,dcopy,daxpy,dscal,dtrsv,dtrsm,xerbla,
      +dpotrf,dtrtrs,dgeqr2,dorm2r
       integer i,j,nl1
-      real*8 sums,sum,dwdis2
+      real*8 sums,sum,dwdis2,l2pi2
+      parameter (l2pi = 1.83787706640935d0) 
+
 
 c argument checks
       info = 0
@@ -166,7 +168,7 @@ c form trace
       end do
 
 c final negative log likelihood
-      nll = sum + 0.5d0 * nx*log(var)
+      nll = sum + 0.5d0 * nx*(log(var) + l2pi)
 c normal return
       info = 0
       return

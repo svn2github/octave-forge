@@ -32,6 +32,7 @@ c
       integer nx
       double precision y(nx),nu,nll0,nllinf
       double precision mu,ssq
+      parameter (l2pi = 1.83787706640935d0) 
       integer i
       
       mu = 0
@@ -47,7 +48,7 @@ c calculate sigma estimate
       end do
 c set values
       ssq = ssq / nx
-      nllinf = 0.5d0 * nx * log(ssq)
+      nllinf = 0.5d0 * nx * (log(ssq) + l2pi)
       nll0 = nllinf + 0.5d0 * log(1 + nx/nu**2)
       end subroutine
 

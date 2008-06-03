@@ -113,6 +113,10 @@ function demo_octgpr1 (nsamp = 150)
   subplot (2, 2, 2);
   plot3 (xs, ys, zs, ".+");
   title (tit);
+  subplot (2, 2, 3);
+  hold on
+  plot (xs, ys, "+6");
+  hold off
   subplot (2, 2, 4);
   plot (xs, ys, ".+");
   demo_octgpr_pause (1, 2);
@@ -127,7 +131,7 @@ function demo_octgpr1 (nsamp = 150)
   subplot (2, 2, 2);
   mesh (xi, yi, zm);
   title (tit);
-  subplot(2, 2, 4)
+  subplot(2, 2, 4);
   hold on
   contourf (xi, yi, zm, 20);
   plot (xs, ys, "+6");
@@ -144,7 +148,7 @@ function demo_octgpr1 (nsamp = 150)
   subplot (2, 2, 2);
   mesh (xi, yi, zm);
   title (tit);
-  subplot(2, 2, 4)
+  subplot(2, 2, 4);
   hold on
   contourf (xi, yi, zm, 20);
   plot (xs, ys, "+6");

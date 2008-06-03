@@ -1,3 +1,8 @@
+2008-06-03  Jaroslav Hajek <highegg@gmail.com>
+
+	* inst/demo_octgpr.m: display points also on bottom left subplot,
+	cosmetic fixes.
+
 2008-05-30  Jaroslav Hajek <highegg@gmail.com>
 
 	* src/nllgpr.f, src/nl0gpr.f: add normalizing constant to obtain the

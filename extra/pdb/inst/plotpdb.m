@@ -49,7 +49,7 @@ fclose(ptyfid);
 #++plotpdb_static_ptynum;
 #ptyname = sprintf("%s%c", ptybase, plotpdb_static_ptynum)
 
-if(isstr(pdb))
+if(ischar (pdb))
     fname = pdb;
     [forkstat, fmsg] = fork();
     if(forkstat == 0),

@@ -28,7 +28,7 @@ function path = grace_octave_path(path)
 
   if (nargin == 0)
     path = __pl_grace_octave_path;
-  elseif (nargin == 1 && isstr(path))
+  elseif (nargin == 1 && ischar (path))
     if (path(length (path)) != '/')
       path = [path "//"];
     elseif (path(length (path)-1) != '/')

@@ -147,7 +147,7 @@ function [u, s, v, flag] = svds (a, k, sigma, opts)
     endif
     s = diag(s);
 
-    if (isstr(sigma))
+    if (ischar(sigma))
       norma = max(s);
     else
       norma = normest(a);

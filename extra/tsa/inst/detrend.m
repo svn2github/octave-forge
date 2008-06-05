@@ -31,9 +31,16 @@ function [X,T]=detrend(t,X,p)
 % 
 % see also: SUMSKIPNAN, ZSCORE		
 
-%    This program is free software; you can redistribute it and/or modify
+% Copyright (C) 1995, 1996 Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+%       $Id$
+%       Copyright (C) 2001,2007 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the TSA-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
+%	Copyright (C) 1997, 1998, 2008 by Alois Schloegl <a.schloegl@ieee.org>
+%
+%    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation, either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -42,14 +49,7 @@ function [X,T]=detrend(t,X,p)
 %    GNU General Public License for more details.
 %
 %    You should have received a copy of the GNU General Public License
-%    along with this program; If not, see <http://www.gnu.org/licenses/>.
-
-
-% Copyright (C) 1995, 1996 Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-%       $Id$
-%       Copyright (C) 2001,2007 by Alois Schloegl <a.schloegl@ieee.org>	
-%       This function is part of the TSA-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/tsa/
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 if (nargin == 1)

@@ -26,29 +26,22 @@ function [x,e,Kalman,Q2] = mvaar(y,p,UC,mode,Kalman)
 %		Q2			measurement noise covariance matrix of dimension s x s
 %
 
-% Copyright (C) 2001-2002 Christian Kasess  
-%       $Revision$ 
 %       $Id$
-% Modifications (C) 2003 Alois Schloegl <a.schloegl@ieee.org>
-%	docu improved
-%	check for isnan(ERR) included
-%	code straightened
-
-
+% 	Copyright (C) 2001-2002 Christian Kasess  
+% 	Copyright (C) 2003, 2008 Alois Schloegl    
 %
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% version 2 of the License, or (at your option) any later version.
-% 
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
 %
-% You should have received a copy of the GNU Library General Public
-% License along with this library; If not, see <http://www.gnu.org/licenses/>.
-
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 if nargin<4,

@@ -29,24 +29,25 @@ function [AUTOCOV,stderr,lpq,qpval] = acorf(Z,N);
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 %  J.S. Bendat and A.G.Persol "Random Data: Analysis and Measurement procedures", Wiley, 1986.
 
-%       Version 2.99a       Date: 13 Jul 2002
-%	Copyright (C) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>		
-
 % calculating lpq, stderr, qpval from 
 % suggested by Philip Gray, University of New South Wales, 
 
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% version 2 of the License, or (at your option) any later version.
-% 
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
+%       $Id$
+%       Copyright (C) 1998-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
 %
-% You should have received a copy of the GNU Library General Public
-% License along with this library; If not, see <http://www.gnu.org/licenses/>.
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 [nr,nc] = size(Z);
 NC = sum(~isnan(Z),2); % missing values

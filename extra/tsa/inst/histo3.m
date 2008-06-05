@@ -25,39 +25,26 @@ function [R,tix]=histo3(Y)
 % REFERENCE(S):
 %  C.E. Shannon and W. Weaver "The mathematical theory of communication" University of Illinois Press, Urbana 1949 (reprint 1963).
 
-%  V 3.00   9.11.2002   compression included
-%           5.04.2002   docu modified
-%  	   21.02.2002	major changes, single X for all channels
-%  V 2.84  16.02.2002	minor bug fixed	
-%  V 2.83  06.02.2002	
-%  V 2.82  31.01.2002	AUTO changed to non-equidistant bins
-%  V 2.75  30.08.2001	semicolon 
-%          10.07.2001   Entropy of multiple channels fixed
-%          04.05.2001   display improved
-%  V 2.74  20.04.2001   bug fixed for case N==1, x =minY;
-%          13.03.2001	scaling of x corrected
-%  V 2.72  08.03.2001   third argin, specifies the number of bins
-%          26.11.2000 	bug fixed (entropy calculation)
-%  V 2.69  25.10.2000   revised (nan's are considered)
-%  V 2.68  28.07.2000   revised
-%  V 2.63  18.10.1999   multiple rows implemented
-%          26.11.1999   bug fixed (size of H corrected);
 
-%	Version 3.00  Date: 09 Nov 2002
-%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>	
-
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% Version 2 of the License, or (at your option) any later version.
+%	$Id$
+%	Copyright (C) 1996-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This is part of the TSA-toolbox. See also 
+%       http://hci.tugraz.at/schloegl/matlab/tsa/
+%       http://octave.sourceforge.net/
+%       http://biosig.sourceforge.net/
 %
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
 %
-% You should have received a copy of the GNU Library General Public
-% License along with this library; If not, see <http://www.gnu.org/licenses/>.
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 [yr,yc]=size(Y);
@@ -120,7 +107,7 @@ if yc>1,	% a few more steps are necessary
                 else
                         tmp = R.N(k);
                 end;
-                
+
                 t = 0;
                 j = 1;
                 for x = tmp',

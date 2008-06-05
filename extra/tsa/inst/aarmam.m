@@ -39,28 +39,21 @@ function [z,e,REV,ESU,V,Z,SPUR] = aarmam(y, Mode, MOP, UC, z0, Z0, V0, W);
 % More references can be found at 
 %     http://www.dpmi.tu-graz.ac.at/~schloegl/publications/
 
-%       Version 2.99     07 Aug 2002
-%       Copyright (C) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>
+%       $Id$
+%       Copyright (C) 1998-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
 %
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% version 2 of the License, or (at your option) any later version.
-% 
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
 %
-% You should have received a copy of the GNU Library General Public
-% License along with this library; If not, see <http://www.gnu.org/licenses/>.
-
-% 12.04.1999 ESU included
-% 19.10.2000 aMode 13,14 included
-%            NaN handling 
-% 06.07.2002 Docu improved, included into TSA
-% 11.07.2002 nanmean replaced by mean
-% 07.08.2002 cosmetic changes
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 %#realonly 
 %#inbounds

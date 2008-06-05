@@ -35,39 +35,21 @@
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%	Version 2.90
-%	last revision 06.04.2002
-%	Copyright (C) 1996-2002 by Alois Schloegl <a.schloegl@ieee.org>
+%	$Id$%	Copyright (C) 1996-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
 %
-% .changelog TSA-toolbox
-%  06.04.02 LATTICE.M	V2.90 
-%  27.02.02 LATTICE.M	minor bug fix 
-%  08.02.02 LATTICE.M	bootstrap shows that V2.83 is preferable
-%  08.02.02 LATTICE.M	V2.83 saved as lattice283
-%  08.02.02 LATTICE.M	V2.82 saved as lattice282
-%  04.02.02 LATTICE.M	V2.83
-%		normalization changed from 1 (mean) to (k-1)/k (sum)
-%  08.11.01 LATTICE.M	V2.75
-%		help improved
-%  11.04.01 LATTICE.M	V2.73
-%		1)	sum (and sumskipnan's) were replaced by mean, this has the effect of
-%			normalizing with actual number of elements. This seem to improve the estimates
-% 		2)	residual tested, seem to be smaller than for estimates with AR.M
-%	 	3) 	handling of NaN (i.e. Missing values) is hidden in NaN/mean
-%                       in other words, if NaN/mean is used this algorithm can be used for data with missing values, too. 
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% Version 2 of the License, or (at your option) any later version.
-%
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
-%
-% You should have received a copy of the GNU Library General Public
-% License along with this library; If not, see <http://www.gnu.org/licenses/>.
 
 if nargin<3, Mode='BURG'; 
 else Mode=upper(Mode(1:4));end;

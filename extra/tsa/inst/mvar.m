@@ -51,32 +51,25 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %  
 % see also: MVFILTER, MVFREQZ, COVM, SUMSKIPNAN, ARFIT2
 
-%	$Revision$
 %	$Id$
 %	Copyright (C) 1996-2006 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the TSA-toolbox. See also 
 %       http://hci.tugraz.at/schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
 %       http://biosig.sourceforge.net/
-
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% Version 2 of the License, or (at your option) any later version.
 %
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
 %
-% You should have received a copy of the GNU Library General Public
-% License along with this library; If not, see <http://www.gnu.org/licenses/>.
-
-% CHANGELOG:
-% - SUPPORT for ARFIT, BURGV added
-% - imputation methods added
-% - Correct scaling of PE and covariance matrices. 
-% - some experimental versions added. 
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 % Inititialization

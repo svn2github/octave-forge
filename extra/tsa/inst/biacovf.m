@@ -7,22 +7,21 @@ function [BIACF,ACF,M1] = biacovf(Z,N);
 % Output:	BIACF bi-autocorrelation function (joint cumulant 3rd order
 % Output:	ACF   covariance function (joint cumulant 2nd order)
 
-%	Version 2.30
-%	last revision 21.03.1998
-%	Copyright (C) 1997, 1998 by Alois Schloegl <a.schloegl@ieee.org>
-
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% version 2 of the License, or (at your option) any later version.
-% 
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
+%       $Id$
+%	Copyright (C) 1997, 1998, 2008 by Alois Schloegl <a.schloegl@ieee.org>
 %
-% You should have received a copy of the GNU Library General Public
-% License along with this library; If not, see <http://www.gnu.org/licenses/>.
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ACF=zeros(1,N+1);
 BIACF=zeros(N+1,N+1);

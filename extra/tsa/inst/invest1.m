@@ -39,21 +39,20 @@ function [AutoCov,AutoCorr,ARPMX,E,C,s]=invest1(Y,Pmax,D);
 % optPHI 	order where PHI is minimal
 % optRC2        max reflection coefficient larger than std-error
 
-%       Version 2.99        23.05.2002
-%	Copyright (C) 1998-2002 by Alois Schloegl <a.schloegl@ieee.org>		
-
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% Version 2 of the License, or (at your option) any later version.
+%	$Id$%	Copyright (C) 1998-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>	
 %
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
 %
-% You should have received a copy of the GNU Library General Public
-% License along with this library; If not, see <http://www.gnu.org/licenses/>.
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 N=length(Y); 
 [nr,nc]=size(Y);

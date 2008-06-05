@@ -37,25 +37,22 @@ function [FPE,AIC,BIC,SBC,MDL,CATcrit,PHI,optFPE,optAIC,optBIC,optSBC,optMDL,opt
 %  G. Haring  "Über die Wahl der optimalen Modellordnung bei der Darstellung von stationären Zeitreihen mittels Autoregressivmodell als Basis der Analyse von EEG - Biosignalen mit Hilfe eines Digitalrechners", Habilitationschrift - Technische Universität Graz, Austria, 1975.
 %                  (1)"About selecting the optimal model at the representation of stationary time series by means of an autoregressive model as basis of the analysis of EEG - biosignals by means of a digital computer)"
 %
-%
-% (1) engl. translation of the titel by A. Schloegl
 
-%	Version 2.99b
-%	last revision 01.10.2002
-%	Copyright (C) 1997-2002 by Alois Schloegl <a.schloegl@ieee.org>
-
-% This library is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Library General Public
-% License as published by the Free Software Foundation; either
-% Version 2 of the License, or (at your option) any later version.
+%       $Id$
+%       Copyright (C) 1997-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
 %
-% This library is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% Library General Public License for more details.
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
 %
-% You should have received a copy of the GNU Library General Public
-% License along with this library; If not, see <http://www.gnu.org/licenses/>.
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 [lr,lc]=size(e);
 if (lr>1) & (lc>1), 

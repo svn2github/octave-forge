@@ -33,9 +33,10 @@ function [w, MAR, C, sbc, fpe, th] = arfit2(Y, pmin, pmax, selector, no_const)
 %	Algorithm 808: ARFIT-a Matlab package for the estimation of parameters and eigenmodes 
 %	of multivariate autoregressive models. ACM-Transactions on Mathematical Software. 27, (Mar.), 58-65.
 
-%       $Revision$
 %       $Id$
 %	Copyright (C) 1996-2005,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+
+
 
 %%%%% checking of the input arguments was done the same way as ARFIT
 if (pmin ~= round(pmin) | pmax ~= round(pmax))

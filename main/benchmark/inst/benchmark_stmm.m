@@ -53,26 +53,26 @@ function results = benchmark_stmm (n, nvec)
   A = A + sparse (1:m, sub2ind ([n, n], IX+1, JY+1), (X - IX).*(Y - JY), m, n^2);
   
   v = ones (m, nvec);
-  tic; u = A'*v; time_tmm = toc;
+  benchutil_tic; u = A'*v; time_tmm = benchutil_toc;
   benchutil_set_result ('time_tmm')
   
   v = ones (m, 1);
-  tic; 
+  benchutil_tic; 
   for i=1:nvec
     u = A'*v; 
   end
-  time_tmv = toc;
+  time_tmv = benchutil_toc;
   benchutil_set_result ('time_tmv')
   
   v = ones (nvec, m);
-  tic; u = v*A'; time_mtm = toc;
+  benchutil_tic; u = v*A'; time_mtm = benchutil_toc;
   benchutil_set_result ('time_mtm')
   
   v = ones (1, m);
-  tic; 
+  benchutil_tic; 
   for i=1:nvec
     u = v*A'; 
   end
-  time_mtv = toc;
+  time_mtv = benchutil_toc;
   benchutil_set_result ('time_mtv')
   

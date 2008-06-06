@@ -47,36 +47,36 @@ function results = benchmark_dtmm (m, n, nvec)
   A = rand (m, n);
   B = rand (m, n);
 
-  tic; C = A'*B; time_tmm = toc;
+  benchutil_tic; C = A'*B; time_tmm = benchutil_toc;
   benchutil_set_result ('time_tmm')
 
-  tic; C = A'*A; time_smm = toc;
+  benchutil_tic; C = A'*A; time_smm = benchutil_toc;
   benchutil_set_result ('time_smm')
 
   A = A';
   B = B';
 
-  tic; C = A*B'; time_mtm = toc;
+  benchutil_tic; C = A*B'; time_mtm = benchutil_toc;
   benchutil_set_result ('time_mtm')
 
-  tic; C = A*A'; time_msm = toc;
+  benchutil_tic; C = A*A'; time_msm = benchutil_toc;
   benchutil_set_result ('time_msm')
 
   A = A';
 
   v = rand (m, 1);
-  tic;
+  benchutil_tic;
   for i=1:nvec
     c = A'*v;
   end
-  time_tmv = toc;
+  time_tmv = benchutil_toc;
   benchutil_set_result ('time_tmv')
 
   v = rand (1, n);
-  tic;
+  benchutil_tic;
   for i=1:nvec
     c = v*A';
   end
-  time_mtv = toc;
+  time_mtv = benchutil_toc;
   benchutil_set_result ('time_mtv')
 

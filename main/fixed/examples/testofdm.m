@@ -154,60 +154,39 @@ for i=1:length(Backoffs)
   endif
 endfor
 
+clrs = {"r","g","b","c","m","y"};
 figure(1);
-hold off;
-__gnuplot_set__ xlabel "Backoff (dB)";
-__gnuplot_set__ ylabel "SNR (dB)";
-__gnuplot_set__ yrange [0:50];
-dat =[0, 10; -10, -10]';
+clf;
+hold on;
+lgnd = {};
 for i=1:length(Nbits)
-  tit = sprintf("Rep: %d+1", Nbits(i));
-  eval(["__gnuplot_plot__ dat title '" tit "' with linespoints " num2str(i) ";"]);
-  hold on;
+  lgnd{end+1} = sprintf("Rep: %d+1", Nbits(i));
+  plot (Backoffs', SNR(:,i),clrs{i});
 endfor
 for i=1:length(Nbits)
-  dat = [Backoffs', SNR(:,i)];
-  eval(["__gnuplot_plot__ dat title '' with lines " num2str(i) ";"]);
+  plot (Backoffs'(idxbac), SNR(idxbac,i),[clrs{i},"+"]);
 endfor
-for i=1:length(Nbits)
-  dat = [Backoffs'(idxbac), SNR(idxbac,i)];
-  eval(["__gnuplot_plot__ dat title '' with points " num2str(i) ";"]);
-endfor
+legend (lgnd);
+xlabel ("Backoff (dB)");
+ylabel ("SNR (dB)");
+ylim ([0, 50]);
+print -deps ofdm_snr.ps
 
-__gnuplot_set__ term postscript eps mono 'Times-Roman' 18;
-__gnuplot_set__ output "ofdm_snr.ps"
-replot
-__gnuplot_set__ term x11
-__gnuplot_set__ output
 
 figure(2);
-hold off;
-__gnuplot_set__ xlabel "Backoff (dB)";
-__gnuplot_set__ ylabel "BER";
-__gnuplot_set__ yrange [1e-6:1];
-__gnuplot_set__ logscale y
-__gnuplot_set__ key 10.0,0.5
+clf;
+hold on;
 dat =[5, 10; 10, 10]';
+lgnd = {};
 for i=1:length(Nbits)
-  tit = sprintf("Rep: %d+1", Nbits(i));
-  eval(["__gnuplot_plot__ dat title '" tit "' with linespoints " num2str(i) ";"]);
-  hold on;
+  lgnd{end+1} = sprintf("Rep: %d+1", Nbits(i));
+  semilogy (Backoffs', BER(:,i),clrs{i});
 endfor
 for i=1:length(Nbits)
-  dat = [Backoffs', BER(:,i)];
-  eval(["__gnuplot_plot__ dat title '' with lines " num2str(i) ";"]);
+  semilogy (Backoffs'(idxbac), BER(idxbac,i), [clrs{i}, "+"]);
 endfor
-
-for i=1:length(Nbits)
-  dat = [Backoffs'(idxbac), BER(idxbac,i)];
-  eval(["__gnuplot_plot__ dat title '' with points " num2str(i) ";"]);
-endfor
-
-__gnuplot_set__ term postscript eps mono 'Times-Roman' 18;
-__gnuplot_set__ output "ofdm_ber.ps"
-replot
-__gnuplot_set__ nologscale y
-__gnuplot_set__ term x11
-__gnuplot_set__ output
-__gnuplot_set__ key
-
+legend (lgnd);
+xlabel ("Backoff (dB)");
+ylabel ("BER");
+ylim ([1e-6, 1]);
+print -deps ofdm_ber.ps

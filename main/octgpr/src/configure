@@ -1736,7 +1736,7 @@ echo "$as_me: error: \"mkoctfile not found. Perhaps you do not have octave insta
 fi
 
 # get preferred compilers
-F77=`$MKOCTFILE -p FC`
+F77=`$MKOCTFILE -p F77`
 CC=`$MKOCTFILE -p CC`
 # get preferred flags
 FFLAGS=`$MKOCTFILE -p FFLAGS`

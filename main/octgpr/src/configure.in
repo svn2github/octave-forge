@@ -32,7 +32,7 @@ if test -z $MKOCTFILE ; then
 fi
 
 # get preferred compilers
-F77=`$MKOCTFILE -p FC`
+F77=`$MKOCTFILE -p F77`
 CC=`$MKOCTFILE -p CC`
 # get preferred flags
 FFLAGS=`$MKOCTFILE -p FFLAGS`

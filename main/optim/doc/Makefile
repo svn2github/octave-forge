@@ -1,6 +1,6 @@
 sinclude ../../../Makeconf
 
-TEX = mintoolkit.tex  optim-mini-howto-2.tex
+TEX = optim-mini-howto-2.tex
 PDF = $(patsubst %.tex,%.pdf,$(TEX))
 HTML = $(patsubst %.tex,html/%/index.html,$(TEX))
 
@@ -9,7 +9,6 @@ all : $(PDF) html
 .PHONY: html
 html : $(HTML)
 	echo '<html><body>' > html/index.html; \
-	echo '<p><a href="mintoolkit/index.html">mintoolkit</a></p>' >> html/index.html; \
 	echo '<p><a href="optim-mini-howto-2/index.html">optim-mini-howto-2</a></p>' >> html/index.html; \
 	echo '</body></html>' >> html/index.html
 

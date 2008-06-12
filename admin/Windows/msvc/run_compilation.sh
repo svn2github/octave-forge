@@ -44,7 +44,7 @@ netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forg
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
 ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++ libglade
 gtksourceview gdl VTE GtkGlArea PortAudio playrec OctaveDE Gtksourceview1 FTPlib
-SQLite3 FFMpeg"
+SQLite3 FFMpeg FTGL"
 octave_version=
 of_version=
 do_nsi=false
@@ -94,6 +94,7 @@ vtever=0.16.13
 gtkglareaver=1.99.0
 sqlite3ver=3.5.8
 atlver=3.8.1
+ftglver=2.1.2
 
 ###################################################################################
 
@@ -622,6 +623,7 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/ftp.lib" FTPlib
     todo_check "$tlibdir/sqlite3.lib" SQLite3
     todo_check "$tlibdir/avcodec.lib" FFMpeg
+    todo_check "$tlibdir/ftgl.lib" FTGL
   fi
 else
   packages="$todo_packages"
@@ -1045,7 +1047,7 @@ EOF
     make &&
     make install &&
     rm -f $tlibdir_quoted/libfftw3f.la) >&5 2>&1 && end_package
-  #remove_package "$DOWNLOAD_DIR/fftw-3.1.2"
+  remove_package "$DOWNLOAD_DIR/fftw-3.1.2"
   if failed_package|| test ! -f "$tbindir/libfftw3f-3.dll"; then
     echo "failed"
     exit -1
@@ -1770,6 +1772,68 @@ if check_package freetype; then
     rm -f $tlibdir_quoted/libfreetype*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/freetype-$ftver"
   if failed_package || test ! -f "$tlibdir/freetype.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+########
+# FTGL #
+########
+
+if check_package FTGL; then
+  download_file ftgl-$ftglver.tar.bz2 "http://downloads.sourceforge.net/ftgl/ftgl-$ftglver.tar.bz2?big_mirror=0"
+  echo -n "decompressing FTGL... "
+  unpack_file ftgl-$ftglver.tar.bz2
+  echo "done"
+  echo -n "compiling FTGL... "
+  (cd "$DOWNLOAD_DIR/FTGL/unix" &&
+    create_module_rc FTGL $ftglver libftgl-0.dll "FTGL <http://ftgl.wiki.sourceforge.net>" \
+      "Font Library for OpenGL" "Copyright (C) 2001-`date +%Y` Henry Maddocks" > src/ftgl.rc &&
+    sed -e '/^ac_includes_default=.*$/ {p; c\
+#include <windows.h>
+;}' \
+        -e '/^char glBegin ();$/ {c\
+#include <windows.h>\
+#include <GL/gl.h>
+;}' \
+        -e 's/^glBegin ();/glBegin (0);/' \
+        -e 's/-lGLU/-lglu32/g' \
+        -e '/^char gluNewTess ();$/ {c\
+#include <windows.h>\
+#include <GL/glu.h>
+;}' \
+        -e '/#include <GL\/glu\.h>/ {c\
+#include <windows.h>\
+#include <GL/glu.h>
+;}' \
+        configure > ttt &&
+      mv ttt configure &&
+    W_CPPFLAGS="$W_CPPFLAGS -DFTGL_LIBRARY -DFTGL_DLL_EXPORTS" \
+      configure_package --enable-shared --disable-static --with-gl-lib=-lopengl32 &&
+    post_process_libtool libtool &&
+    (cd docs && tar xvfz ../../docs/html.tar.gz) &&
+    sed -e '/^LIBS +=.*$/ {p; c\
+LDFLAGS += -no-undefined -Wl,ftgl.res
+;}' \
+        -e 's/^libftgl\.la:/& ftgl.res/' \
+        src/Makefile > ttt &&
+      mv ttt src/Makefile &&
+    (cat >> src/Makefile <<\EOF
+
+ftgl.res: ftgl.rc
+	rc -fo $@ $<
+EOF
+) &&
+    sed -e 's/^#ifdef WIN32$/#if defined (WIN32) || defined (_MSC_VER)/' include/FTGL.h > ttt &&
+      mv ttt include/FTGL.h &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libftgl*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/FTGL"
+  if failed_package || test ! -f "$tlibdir/ftgl.lib"; then
     echo "failed"
     exit -1
   else

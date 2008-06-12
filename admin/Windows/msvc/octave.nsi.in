@@ -143,8 +143,11 @@ Section "Core" SEC_CORE
   File "${VCLIBS_ROOT}\bin\libhdf5-0.dll"
   File "${VCLIBS_ROOT}\bin\libglpk-0.dll"
   File "${VCLIBS_ROOT}\bin\fftw-wisdom.exe"
+  File "${VCLIBS_ROOT}\bin\fftwf-wisdom.exe"
   File "${VCLIBS_ROOT}\bin\zlib1.dll"
   File "${VCLIBS_ROOT}\bin\libcurl.dll"
+  File "${VCLIBS_ROOT}\bin\libftgl-0.dll"
+  File "${VCLIBS_ROOT}\bin\libfreetype-6.dll"
 !ifdef USE_PLAYREC
   File "${VCLIBS_ROOT}\bin\libportaudio-2.dll"
 !endif

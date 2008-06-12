@@ -38,7 +38,7 @@ DOATLAS=false
 
 verbose=false
 packages=
-available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW PCRE GLPK readline zlib SuiteSparse
+available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW fftwf PCRE GLPK readline zlib SuiteSparse
 HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
 netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
 VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
@@ -552,6 +552,7 @@ if test -z "$todo_packages"; then
       fi
     fi
     todo_check "$tbindir/libfftw3-3.dll" FFTW
+    todo_check "$tbindir/libfftw3f-3.dll" fftwf
     todo_check "$tlibdir/pcre.lib" PCRE
     todo_check "$tlibdir/glpk.lib" GLPK
     todo_check "$tlibdir/ncurses.lib" ncurses
@@ -994,6 +995,58 @@ EOF
     rm -f $tlibdir_quoted/libfftw3.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/fftw-3.1.2"
   if failed_package|| test ! -f "$tbindir/libfftw3-3.dll"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+if check_package fftwf; then
+  download_file fftw-3.1.2.tar.gz ftp://ftp.fftw.org/pub/fftw/fftw-3.1.2.tar.gz
+  echo -n "decompressing FFTW... "
+  unpack_file fftw-3.1.2.tar.gz
+  echo "done"
+  echo -n "compiling FFTW (float)..."
+  (cd "$DOWNLOAD_DIR/fftw-3.1.2" &&
+    create_module_rc FFTW 3.1.2 libfftw3f-3.dll "FFTW (www.fftw.org)" \
+      "FFTW - Discrete Fourier Transform Computation Library (float precision)" \
+      "Copyright (c) 2003, 2006 Massachusetts Institute of Technology" > fftwf.rc &&
+    CC=cc-msvc CFLAGS="-O2 -MD" CXX=cc-msvc CXXFLAGS="-O2 -MD" FC=fc-msvc FCFLAGS="-O2 -MD" \
+      F77=fc-msvc FFLAGS="-O2 -MD" CPPFLAGS="-DWIN32 -D_WIN32" AR=ar-msvc RANLIB=ranlib-msvc \
+      ./configure --prefix="$tdir_w32_forward" --enable-shared --disable-static \
+      --enable-sse --enable-float &&
+    post_process_libtool &&
+    sed -e 's/^libfftw3f_la_LDFLAGS =/libfftw3f_la_LDFLAGS = -Wl,fftwf.res -Wl,-def:fftwf.def/' \
+        -e 's/^libfftw3f\.la:/libfftw3f.la: fftwf.res fftwf.def/' Makefile > ttt &&
+      mv ttt Makefile &&
+    (cat >> Makefile <<\EOF
+fftwf.res: fftwf.rc
+	rc -fo $@ $<
+fftwf.def: $(libfftw3f_la_OBJECTS) $(libfftw3f_la_LIBADD)
+	@echo "Generating $@..."
+	@echo "EXPORTS" > $@
+	@sublibs=; for lib in $(libfftw3f_la_LIBADD); do \
+	    sublibs="$$sublibs `dirname $$lib`/.libs/`sed -n -e "s/old_library='\(.*\)'/\1/p" $$lib`"; \
+	  done;\
+	nm $(addprefix .libs/, $(libfftw3f_la_OBJECTS:.lo=.o)) $$sublibs | \
+          grep -v -e ' R __real@[0-9a-fA-F]\+' | \
+	  sed -n -e 's/^[0-9a-fA-F]\+ T _\([^         ]*\).*$$/\1/p' \
+	         -e 's/^[0-9a-fA-F]\+ [BDGSR] _\([^         ]*\).*$$/\1 DATA/p' >> $@
+EOF
+      ) &&
+    sed -e 's/^LDFLAGS =/LDFLAGS = -Wl,-subsystem:console/' tools/Makefile > ttt &&
+      mv ttt tools/Makefile &&
+    sed -e 's/^LDFLAGS =/LDFLAGS = -Wl,-subsystem:console/' \
+        -e 's/^DEFS =/DEFS = -DFFTW_DLL/' tests/Makefile > ttt &&
+      mv ttt tests/Makefile &&
+    sed -e 's/^AR =.*$/AR = ar/' libbench2/Makefile > ttt &&
+      mv ttt libbench2/Makefile &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libfftw3f.la) >&5 2>&1 && end_package
+  #remove_package "$DOWNLOAD_DIR/fftw-3.1.2"
+  if failed_package|| test ! -f "$tbindir/libfftw3f-3.dll"; then
     echo "failed"
     exit -1
   else

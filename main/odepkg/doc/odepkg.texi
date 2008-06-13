@@ -1,13 +1,13 @@
 \input texinfo @c -*-texinfo-*-
 @c Copyright (c) 2006-2008, Thomas Treichl <treichl@users.sourceforge.net>
-@c OdePkg - A package for solving differential equations with GNU Octave
+@c OdePkg - A package for solving ordinary differential equations and more
 
 @c For manually generating the documentation use
 @c   LANGUAGE=en makeinfo --html --no-split odepkg.texi
-@c
+
 @c %*** Start of HEADER
 @setfilename odepkg.info
-@settitle OdePkg - A package for solving differential equations with GNU Octave
+@settitle OdePkg - A package for solving ordinary differential equations and more
 @afourpaper
 @set VERSION 0.6.0
 @c @afourwide
@@ -16,7 +16,7 @@
 @c %*** Start of TITLEPAGE
 @titlepage
 @title OdePkg @value{VERSION}
-@subtitle A package for solving differential equations with GNU Octave
+@subtitle A package for solving ordinary differential equations and more
 @c @subtitle @b{OdePkg and this document currently are under development}
 @author by Thomas Treichl
 @page
@@ -42,7 +42,6 @@ into another language, under the same conditions as for modified versions.
 @ifnottex
 @node Top, Beginners Guide, (dir), (dir)
 @top Copyright
-
 
 Copyright @copyright{} 2008 
 

@@ -323,7 +323,7 @@ DEFUN_DLD (odebdi, args, nargout,
 @deftypefnx {Command} {[@var{sol}] =} odebdi (@var{@@fun}, @var{slot}, @var{y0}, @var{dy0}, [@var{opt}], [@var{P1}, @var{P2}, @dots{}])\n\
 @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} odebdi (@var{@@fun}, @var{slot}, @var{y0}, @var{dy0}, [@var{opt}], [@var{P1}, @var{P2}, @dots{}])\n\
 \n\
-This function file can be used to solve a set of non--stiff and stiff implicit differential equations (IDEs). This function file is a wrapper file that uses Jeff Cash's Fortran solver @file{mebdfi.f}.\n\
+This function file can be used to solve a set of stiff implicit differential equations (IDEs). This function file is a wrapper file that uses Jeff Cash's Fortran solver @file{mebdfi.f}.\n\
 \n\
 If this function is called with no return argument then plot the solution over time in a figure window while solving the set of IDEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{y0} is a double vector that defines the initial values of the states, @var{dy0} is a double vector that defines the initial values of the derivatives, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.\n\
 \n\

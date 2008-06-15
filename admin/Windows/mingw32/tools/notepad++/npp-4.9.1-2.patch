@@ -1,0 +1,825 @@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/gcc/makefile npp-4.9.1/PowerEditor/gcc/makefile
+--- npp-4.9.1-orig/PowerEditor/gcc/makefile	Tue Aug  7 00:55:52 2007
++++ npp-4.9.1/PowerEditor/gcc/makefile	Wed May  7 06:35:54 2008
+@@ -16,28 +16,30 @@
+ # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+ .SUFFIXES: .cpp
+-CPP = g++
+-CC=gcc
++CPP = $(CXX)
+ RC = windres
+ 
+ #UserDefineDialog_res.o
+-MAINOBJS = winmain.o Parameters.o Notepad_plus.o Notepad_plus_res.o Utf8_16.o PluginsManager.o
++MAINOBJS = winmain.o Parameters.o Notepad_plus.o Notepad_plus_res.o Utf8_16.o UniConversion.o PluginsManager.o
+ 
+-SCINTILLAOBJS = ScintillaEditView.o DocTabView.o FindReplaceDlg.o UserDefineDialog.o Printer.o UserDefineDialog_res.o GoToLineDlg.o
++SCINTILLAOBJS = ScintillaEditView.o DocTabView.o FindReplaceDlg.o UserDefineDialog.o Printer.o  GoToLineDlg.o Buffer.o ColumnEditor.o
+ 
+ WINCTRLOBJS = TabBar.o ControlsTab.o ToolBar.o StatusBar.o ImageListSet.o FileDialog.o Splitter.o SplitterContainer.o StaticDialog.o \
+-URLCtrl.o AboutDlg.o RunDlg.o trayIconControler.o shortcut.o ShortcutMapper.o BabyGridWrapper.o BabyGrid.o ShortcutMapper_rc.o \
+-regExtDlg_res.o regExtDlg.o preference_rc.o preferenceDlg.o WindowsDlg_rc.o SizeableDlg.o WinMgr.o WinRect.o WindowsDlg.o
++URLCtrl.o AboutDlg.o RunDlg.o trayIconControler.o shortcut.o ShortcutMapper.o BabyGridWrapper.o BabyGrid.o \
++regExtDlg.o preferenceDlg.o SizeableDlg.o WinMgr.o WinRect.o WindowsDlg.o \
++common_func.o DockingCont.o DockingManager.o DockingSplitter.o Gripper.o RunMacroDlg.o TaskList.o \
++ToolTip.o
+ 
+-WORDSTYLESDLG = WordStyleDlg_rc.o WordStyleDlg.o ColourPicker.o ColourPopup_rc.o ColourPopup.o
++WORDSTYLESDLG = WordStyleDlg.o ColourPicker.o ColourPopup.o
+ MISCOBJS = SysMsg.o Process.o
+-TINYXMLOBJS = tinystr.o tinyxml.o tinyxmlerror.o tinyxmlparser.o
++#TINYXMLOBJS = tinystr.o tinyxml.o tinyxmlerror.o tinyxmlparser.o
++TINYXMLOBJS = tinyxml.o tinyxmlerror.o tinyxmlparser.o
+ 
+ OBJS = $(MAINOBJS) $(SCINTILLAOBJS) $(WINCTRLOBJS) $(MISCOBJS) $(TINYXMLOBJS) $(WORDSTYLESDLG)
+ #
+ # the paths
+-INCLUDEDIR = ../../scintilla/include
+-SRCDIR = ../src
++INCLUDEDIR = @SRCDIR@/src/../../scintilla/include
++SRCDIR = @SRCDIR@/src
+ TARGETDIR=../bin
+ 
+ WINCTRLDIR = $(SRCDIR)/WinControls
+@@ -46,29 +48,33 @@
+ 
+ TINYXMLDIR = $(SRCDIR)/TinyXml
+ 
+-TABBARDIR =   $(WINCTRLDIR)/TabBar
+-TOOLBARDIR = $(WINCTRLDIR)/ToolBar
+-STATUSBARDIR = $(WINCTRLDIR)/StatusBar
+-IMGLSTSETDIR = $(WINCTRLDIR)/ImageListSet
+-FILEDIALOGDIR = $(WINCTRLDIR)/OpenSaveFileDialog
+-SPLITTERDIR = $(WINCTRLDIR)/SplitterContainer
+-STATICDLGDIR = $(WINCTRLDIR)/StaticDialog
+-ABOUTDLGDIR = $(WINCTRLDIR)/AboutDlg
+-RUNDLGDIR = $(STATICDLGDIR)/RunDlg
+-SHORTCUTDIR = $(WINCTRLDIR)/shortcut
+-MISCDIR = $(SRCDIR)/MISC
+-SYSMSGDIR = $(MISCDIR)/SysMsg
+-PROCESSDIR = $(MISCDIR)/Process
+-REGEXTDIR = $(MISCDIR)/RegExt
+-PLUGINSMANAGERDIR = $(MISCDIR)/PluginsManager
+-WORDSTYLESDLGDIR = $(WINCTRLDIR)/ColourPicker
+-SYSTRAYDIR =   $(WINCTRLDIR)/TrayIcon
+-CONTEXTMENUDIR =   $(WINCTRLDIR)/ContextMenu
++TABBARDIR         = $(WINCTRLDIR)/TabBar
++TASKLISTDIR       = $(WINCTRLDIR)/TaskList
++TOOLBARDIR        = $(WINCTRLDIR)/ToolBar
++STATUSBARDIR      = $(WINCTRLDIR)/StatusBar
++IMGLSTSETDIR      = $(WINCTRLDIR)/ImageListSet
++FILEDIALOGDIR     = $(WINCTRLDIR)/OpenSaveFileDialog
++SPLITTERDIR       = $(WINCTRLDIR)/SplitterContainer
++STATICDLGDIR      = $(WINCTRLDIR)/StaticDialog
++RUNDLGDIR           = $(STATICDLGDIR)/RunDlg
++ABOUTDLGDIR       = $(WINCTRLDIR)/AboutDlg
++SHORTCUTDIR       = $(WINCTRLDIR)/shortcut
++WORDSTYLESDLGDIR  = $(WINCTRLDIR)/ColourPicker
++SYSTRAYDIR        = $(WINCTRLDIR)/TrayIcon
++CONTEXTMENUDIR    = $(WINCTRLDIR)/ContextMenu
+ SHORTCUTMAPPERDIR = $(WINCTRLDIR)/Grid
+-PREFERENCEDLGDIR = $(WINCTRLDIR)/Preference
+-WINDOWSDLGDIR = $(WINCTRLDIR)/WindowsDlg
++PREFERENCEDLGDIR  = $(WINCTRLDIR)/Preference
++WINDOWSDLGDIR     = $(WINCTRLDIR)/WindowsDlg
++DOCKINGDLGDIR     = $(WINCTRLDIR)/DockingWnd
++TOOLTIPDIR        = $(WINCTRLDIR)/ToolTip
++
++MISCDIR   = $(SRCDIR)/MISC
++SYSMSGDIR         = $(MISCDIR)/SysMsg
++PROCESSDIR        = $(MISCDIR)/Process
++REGEXTDIR         = $(MISCDIR)/RegExt
++PLUGINSMANAGERDIR = $(MISCDIR)/PluginsManager
+ 
+-PROG = $(TARGETDIR)/npp.exe
++PROG = $(TARGETDIR)/notepad++.exe
+ FONT_SRC=$(SRCDIR)/font/LINEDRAW.TTF
+ FONT_TARGET=$(TARGETDIR)/LINEDRAW.TTF
+ 
+@@ -83,22 +89,42 @@
+ -I$(SYSMSGDIR) -I$(PROCESSDIR) -I$(MISCDIR) -I$(RUNDLGDIR) -I$(SRCDIR) \
+ -I$(TINYXMLDIR) -I$(WORDSTYLESDLGDIR) -I$(REGEXTDIR) -I$(PLUGINSMANAGERDIR) \
+ -I$(SYSTRAYDIR) -I$(SHORTCUTDIR) -I$(CONTEXTMENUDIR) -I$(SHORTCUTMAPPERDIR) \
+--I$(PREFERENCEDLGDIR) -I$(WINDOWSDLGDIR)
++-I$(PREFERENCEDLGDIR) -I$(WINDOWSDLGDIR) -I$(TASKLISTDIR) -I$(DOCKINGDLGDIR) \
++-I$(TOOLTIPDIR)
++
++DEFINEFLAGS = -D_WIN32_IE=0x0600 -D_WIN32_WINNT=0x501
++WINVERFLAGS= -DWINVER=0x501
+ 
+-DEFINEFLAGS = -D_WIN32_IE=0x0600
+ CFLAGS = -Wall -Os -DNDEBUG
+ #CFLAGS = -Wall -Os -DDEBUG
+-LDFLAGS = -mwindows -Wl,-s -Wl,--gc-sections -lcomctl32 -lshlwapi -lodbc32 -lodbccp32 -Os -s
++#LDFLAGS = -mwindows -Wl,-s -Wl,--gc-sections -lcomctl32 -lshlwapi -lodbc32 -lodbccp32 -Os -s
++LDLIBS=-mwindows -lcomctl32 -lshlwapi -lshell32 -lodbccp32 -lole32 -loleacc
+ #LDFLAGS = -mwindows -lcomctl32 -lshlwapi -llibshell32
+ 
+-ALL: $(PROG) $(FONT_TARGET) $(XMLLANGFILE_TARGET)
++RESFILES = $(SRCDIR)/Notepad_plus.rc \
++$(REGEXTDIR)/regExtDlg.rc \
++$(SCINTILLADIR)/columnEditor.rc \
++$(SCINTILLADIR)/FindReplaceDlg.rc \
++$(SCINTILLADIR)/UserDefineDialog.rc \
++$(WORDSTYLESDLGDIR)/ColourPopup.rc \
++$(WORDSTYLESDLGDIR)/WordStyleDlg.rc \
++$(DOCKINGDLGDIR)/DockingGUIWidget.rc \
++$(SHORTCUTMAPPERDIR)/ShortcutMapper.rc \
++$(PREFERENCEDLGDIR)/preference.rc \
++$(SHORTCUTDIR)/RunMacroDlg.rc \
++$(SHORTCUTDIR)/shortcut.rc \
++$(RUNDLGDIR)/RunDlg.rc \
++$(TASKLISTDIR)/TaskListDlg.rc \
++$(WINDOWSDLGDIR)/WindowsDlg.rc
++
++ALL: $(PROG)
+ 
+ $(PROG):	$(OBJS)
+-	$(CPP) -Xlinker --subsystem -Xlinker windows -o $@ $(OBJS) $(LDFLAGS)
++	$(CXX) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS)
+ 
+ 
+ winmain.o : $(SRCDIR)/winmain.cpp $(SRCDIR)/Notepad_plus.h $(SYSMSGDIR)/SysMsg.h $(CONTEXTMENUDIR)/ContextMenu.h
+-	$(CPP) $(CFLAGS) -c $(SRCDIR)/winmain.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SRCDIR)/winmain.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ Notepad_plus.o : $(SRCDIR)/Notepad_plus.h $(SRCDIR)/Notepad_plus.cpp $(SRCDIR)/Parameters.h \
+ $(SCINTILLADIR)/ScintillaEditView.h $(SCINTILLADIR)/DocTabView.h $(SCINTILLADIR)/FindReplaceDlg.h \
+@@ -110,19 +136,18 @@
+ 	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SRCDIR)/Notepad_plus.cpp -o $@ $(INCLUDEFLAGS)
+ #$(PROCESSDIR)/Process.h
+ Parameters.o : $(SRCDIR)/Parameters.h $(SRCDIR)/Parameters.cpp $(CONTEXTMENUDIR)/ContextMenu.h
+-	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SRCDIR)/Parameters.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) -c $(SRCDIR)/Parameters.cpp -o $@ $(INCLUDEFLAGS)
+ 
+-Notepad_plus_res.o : $(SRCDIR)/resource.h $(SRCDIR)/Notepad_plus.rc $(SCINTILLADIR)/UserDefineDialog.rc \
+-$(RUNDLGDIR)/RunDlg.rc $(SHORTCUTDIR)/shortcut.rc
+-	$(RC)  --include-dir=$(SRCDIR) -o $@ $(SRCDIR)/Notepad_plus.rc
++Notepad_plus_res.o : $(SRCDIR)/resource.h $(RESFILES) 
++	$(RC)  -v $(DEFINEFLAGS) --include-dir=$(SRCDIR) --include-dir=$(DOCKINGDLGDIR) -o $@ $(SRCDIR)/Notepad_plus.rc
+ 
+ Utf8_16.o : $(SRCDIR)/Utf8_16.h $(SRCDIR)/Utf8_16.cpp
+-	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SRCDIR)/Utf8_16.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) -c $(SRCDIR)/Utf8_16.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ ScintillaEditView.o : $(SCINTILLADIR)/ScintillaEditView.h $(SCINTILLADIR)/ScintillaEditView.cpp $(SRCDIR)/Parameters.h \
+ $(WINCTRLDIR)/Window.h $(INCLUDEDIR)/Scintilla.h $(INCLUDEDIR)/SciLexer.h $(SCINTILLADIR)/Buffer.h  \
+ $(SCINTILLADIR)/colors.h $(SYSMSGDIR)/SysMsg.h $(STATICDLGDIR)/StaticDialog.h
+-	$(CPP) $(CFLAGS) -c $(SCINTILLADIR)/ScintillaEditView.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SCINTILLADIR)/ScintillaEditView.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ DocTabView.o : $(SCINTILLADIR)/DocTabView.h $(SCINTILLADIR)/DocTabView.cpp \
+ $(TABBARDIR)/TabBar.h $(IMGLSTSETDIR)/ImageListSet.h $(SCINTILLADIR)/ScintillaEditView.cpp
+@@ -130,27 +155,27 @@
+ 
+ FindReplaceDlg.o : $(STATICDLGDIR)/StaticDialog.h $(SRCDIR)/resource.h \
+ $(SCINTILLADIR)/FindReplaceDlg.h $(SCINTILLADIR)/FindReplaceDlg.cpp
+-	$(CPP) $(CFLAGS) -c $(SCINTILLADIR)/FindReplaceDlg.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SCINTILLADIR)/FindReplaceDlg.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ UserDefineDialog.o : $(STATICDLGDIR)/StaticDialog.h $(SCINTILLADIR)/ScintillaEditView.h \
+ $(SCINTILLADIR)/UserDefineResource.h  $(SCINTILLADIR)/UserDefineDialog.h \
+ $(SCINTILLADIR)/UserDefineDialog.cpp
+-	$(CPP) $(CFLAGS) -c $(SCINTILLADIR)/UserDefineDialog.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SCINTILLADIR)/UserDefineDialog.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ Printer.o : $(SCINTILLADIR)/Printer.h $(SCINTILLADIR)/Printer.cpp $(SCINTILLADIR)/ScintillaEditView.h
+-	$(CPP) $(CFLAGS) -c $(SCINTILLADIR)/Printer.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SCINTILLADIR)/Printer.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ UserDefineDialog_res.o : $(SCINTILLADIR)/UserDefineDialog.rc $(SCINTILLADIR)/UserDefineResource.h
+ 	$(RC) -o $@ $(SCINTILLADIR)/UserDefineDialog.rc
+ 
+ GoToLineDlg.o : $(SCINTILLADIR)/GoToLineDlg.h
+-	$(CPP) $(CFLAGS) -c $(SCINTILLADIR)/GoToLineDlg.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SCINTILLADIR)/GoToLineDlg.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ TabBar.o : $(WINCTRLDIR)/Window.h $(TABBARDIR)/TabBar.h $(TABBARDIR)/TabBar.cpp $(SYSMSGDIR)/SysMsg.h
+ 	$(CPP) $(CFLAGS) -c $(TABBARDIR)/TabBar.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ ControlsTab.o : $(TABBARDIR)/ControlsTab.h $(TABBARDIR)/ControlsTab.cpp
+-	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(TABBARDIR)/ControlsTab.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) -c $(TABBARDIR)/ControlsTab.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ ToolBar.o: $(WINCTRLDIR)/Window.h $(TOOLBARDIR)/ToolBar.h $(TOOLBARDIR)/ToolBar.cpp \
+ $(IMGLSTSETDIR)/ImageListSet.h $(SYSMSGDIR)/SysMsg.h
+@@ -163,7 +188,7 @@
+ 	$(CPP) $(CFLAGS) -c $(IMGLSTSETDIR)/ImageListSet.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ FileDialog.o: $(FILEDIALOGDIR)/FileDialog.h  $(FILEDIALOGDIR)/FileDialog.cpp
+-	$(CPP) $(CFLAGS) -c $(FILEDIALOGDIR)/FileDialog.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(FILEDIALOGDIR)/FileDialog.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ Splitter.o: $(WINCTRLDIR)/Window.h $(SPLITTERDIR)/Splitter.h $(SPLITTERDIR)/Splitter.cpp $(SYSMSGDIR)/SysMsg.h
+ 	$(CPP) $(CFLAGS) -c $(SPLITTERDIR)/Splitter.cpp -o $@ $(INCLUDEFLAGS)
+@@ -178,13 +203,13 @@
+ 	$(CPP) $(CFLAGS) -c $(ABOUTDLGDIR)/URLCtrl.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ AboutDlg.o: $(WINCTRLDIR)/Window.h $(ABOUTDLGDIR)/AboutDlg.h $(ABOUTDLGDIR)/AboutDlg.cpp URLCtrl.o
+-	$(CPP) $(CFLAGS) -c $(ABOUTDLGDIR)/AboutDlg.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(ABOUTDLGDIR)/AboutDlg.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ RunDlg.o: $(WINCTRLDIR)/Window.h $(RUNDLGDIR)/RunDlg.h $(RUNDLGDIR)/RunDlg.cpp $(RUNDLGDIR)/RunDlg.rc
+-	$(CPP) $(CFLAGS) -c $(RUNDLGDIR)/RunDlg.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(RUNDLGDIR)/RunDlg.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ shortcut.o: $(WINCTRLDIR)/Window.h $(SHORTCUTDIR)/shortcut.h $(SHORTCUTDIR)/shortcut.rc
+-	$(CPP) $(CFLAGS) -c $(SHORTCUTDIR)/shortcut.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SHORTCUTDIR)/shortcut.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ trayIconControler.o: $(SYSTRAYDIR)/trayIconControler.h
+ 	$(CPP) $(CFLAGS) -c $(SYSTRAYDIR)/trayIconControler.cpp -o $@ $(INCLUDEFLAGS)
+@@ -215,7 +240,7 @@
+ 	$(RC)  --include-dir=$(SRCDIR) -o $@ $(WORDSTYLESDLGDIR)/WordStyleDlg.rc
+ 
+ WordStyleDlg.o : $(WORDSTYLESDLGDIR)/WordStyleDlg.h $(SYSMSGDIR)/SysMsg.h
+-	$(CPP) $(CFLAGS) -c $(WORDSTYLESDLGDIR)/WordStyleDlg.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(WORDSTYLESDLGDIR)/WordStyleDlg.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ ColourPicker.o : $(WORDSTYLESDLGDIR)/ColourPicker.h $(SYSMSGDIR)/SysMsg.h
+ 	$(CPP) $(CFLAGS) -c $(WORDSTYLESDLGDIR)/ColourPicker.cpp -o $@ $(INCLUDEFLAGS)
+@@ -233,7 +258,7 @@
+ 	$(CPP) $(CFLAGS) -c $(REGEXTDIR)/regExtDlg.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ PluginsManager.o : $(PLUGINSMANAGERDIR)/PluginsManager.h $(PLUGINSMANAGERDIR)/PluginInterface.h
+-	$(CPP) $(CFLAGS) -c $(PLUGINSMANAGERDIR)/PluginsManager.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(PLUGINSMANAGERDIR)/PluginsManager.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ BabyGrid.o : $(SHORTCUTMAPPERDIR)/BabyGrid.h
+ 	$(CPP) $(CFLAGS) -c $(SHORTCUTMAPPERDIR)/BabyGrid.cpp -o $@ $(INCLUDEFLAGS)
+@@ -245,19 +270,19 @@
+ 	$(RC) -o $@ $(SHORTCUTMAPPERDIR)/ShortcutMapper.rc
+ 
+ ShortcutMapper.o : $(SHORTCUTMAPPERDIR)/ShortcutMapper.h
+-	$(CPP) $(CFLAGS) -c $(SHORTCUTMAPPERDIR)/ShortcutMapper.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(SHORTCUTMAPPERDIR)/ShortcutMapper.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ preference_rc.o : $(PREFERENCEDLGDIR)/preference_rc.h $(PREFERENCEDLGDIR)/preference.rc
+ 	$(RC) -o $@ $(PREFERENCEDLGDIR)/preference.rc
+ 
+-preferenceDlg.o : $(PREFERENCEDLGDIR)/preferenceDlg.h
+-	$(CPP) $(CFLAGS) -c $(PREFERENCEDLGDIR)/preferenceDlg.cpp -o $@ $(INCLUDEFLAGS)
++preferenceDlg.o : $(PREFERENCEDLGDIR)/preferenceDlg.h $(PREFERENCEDLGDIR)/preferenceDlg.cpp
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(PREFERENCEDLGDIR)/preferenceDlg.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ WindowsDlg_rc.o : $(WINDOWSDLGDIR)/WindowsDlgRc.h $(WINDOWSDLGDIR)/WindowsDlg.rc
+ 	$(RC) -o $@ $(WINDOWSDLGDIR)/WindowsDlg.rc
+ 
+ SizeableDlg.o : $(WINDOWSDLGDIR)/SizeableDlg.h
+-	$(CPP) $(CFLAGS) -c $(WINDOWSDLGDIR)/SizeableDlg.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(WINDOWSDLGDIR)/SizeableDlg.cpp -o $@ $(INCLUDEFLAGS)
+ 	
+ WinMgr.o : $(WINDOWSDLGDIR)/WinMgr.h
+ 	$(CPP) $(CFLAGS) -c $(WINDOWSDLGDIR)/WinMgr.cpp -o $@ $(INCLUDEFLAGS)
+@@ -266,7 +291,41 @@
+ 	$(CPP) $(CFLAGS) -c $(WINDOWSDLGDIR)/WinRect.cpp -o $@ $(INCLUDEFLAGS)
+ 
+ WindowsDlg.o : $(WINDOWSDLGDIR)/WindowsDlg.h
+-	$(CPP) $(CFLAGS) -c $(WINDOWSDLGDIR)/WindowsDlg.cpp -o $@ $(INCLUDEFLAGS)
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) -c $(WINDOWSDLGDIR)/WindowsDlg.cpp -o $@ $(INCLUDEFLAGS)
++
++UniConversion.o : $(SRCDIR)/UniConversion.cpp $(SRCDIR)/UniConversion.h
++	$(CPP) $(CFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
++Buffer.o : $(SCINTILLADIR)/Buffer.cpp $(SCINTILLADIR)/Buffer.h
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
++common_func.o : $(DOCKINGDLGDIR)/common_func.cpp $(DOCKINGDLGDIR)/common_func.h
++	$(CPP) $(CFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
++DockingCont.o : $(DOCKINGDLGDIR)/DockingCont.cpp $(DOCKINGDLGDIR)/DockingCont.h $(DOCKINGDLGDIR)/dockingResource.h
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
++DockingManager.o : $(DOCKINGDLGDIR)/DockingManager.cpp $(DOCKINGDLGDIR)/DockingManager.h $(DOCKINGDLGDIR)/dockingResource.h
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) $(WINVERFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
++DockingSplitter.o : $(DOCKINGDLGDIR)/DockingSplitter.cpp $(DOCKINGDLGDIR)/DockingSplitter.h $(DOCKINGDLGDIR)/dockingResource.h
++	$(CPP) $(CFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
++Gripper.o : $(DOCKINGDLGDIR)/Gripper.cpp $(DOCKINGDLGDIR)/Gripper.h
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
++RunMacroDlg.o : $(SHORTCUTDIR)/RunMacroDlg.cpp $(SHORTCUTDIR)/RunMacroDlg.h
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
++TaskList.o : $(TASKLISTDIR)/TaskList.cpp $(TASKLISTDIR)/TaskList.h
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
++ColumnEditor.o : $(SCINTILLADIR)/ColumnEditor.cpp $(SCINTILLADIR)/ColumnEditor.h
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
++ToolTip.o : $(TOOLTIPDIR)/ToolTip.cpp $(TOOLTIPDIR)/ToolTip.h
++	$(CPP) $(CFLAGS) $(DEFINEFLAGS) $(INCLUDEFLAGS) -o $@ -c $<
++
+ 
+ $(FONT_TARGET): $(FONT_SRC)
+ 	cp $^ $@
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/Notepad_plus.cpp npp-4.9.1/PowerEditor/src/Notepad_plus.cpp
+--- npp-4.9.1-orig/PowerEditor/src/Notepad_plus.cpp	Fri May  2 14:35:12 2008
++++ npp-4.9.1/PowerEditor/src/Notepad_plus.cpp	Wed May  7 04:58:49 2008
+@@ -2267,6 +2267,7 @@
+ 		SendMessage(_hSelf, WM_SIZE, 0, 0);
+ 		break;
+ 	}
++#if !defined(__MINGW32__)
+ 	case RBN_CHEVRONPUSHED:
+ 	{
+ 		NMREBARCHEVRON * lpnm = (NMREBARCHEVRON*) notification;
+@@ -2292,7 +2293,7 @@
+ 		::SendMessage(rbBand.hwndChild, WM_NOTIFY, 0, (LPARAM)lpnm);
+ 		break;
+ 	}
+-
++#endif
+ 	default :
+ 		break;
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/Notepad_plus.h npp-4.9.1/PowerEditor/src/Notepad_plus.h
+--- npp-4.9.1-orig/PowerEditor/src/Notepad_plus.h	Sat May  3 22:08:54 2008
++++ npp-4.9.1/PowerEditor/src/Notepad_plus.h	Wed May  7 05:33:13 2008
+@@ -46,6 +46,7 @@
+ #include "RunMacroDlg.h"
+ #include "DockingManager.h"
+ #include "Process.h"
++#include "shortcutmapper.h"
+ 
+ #define NOTEPAD_PP_CLASS_NAME	"Notepad++"
+ 
+@@ -86,7 +87,7 @@
+ 	inline void killAllChildren();
+ 	virtual inline void destroy();
+ 
+-    static const char * Notepad_plus::getClassName() {
++    static const char * getClassName() {
+ 		return _className;
+ 	};
+ 	
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/Notepad_plus.rc npp-4.9.1/PowerEditor/src/Notepad_plus.rc
+--- npp-4.9.1-orig/PowerEditor/src/Notepad_plus.rc	Wed May  7 05:33:54 2008
++++ npp-4.9.1/PowerEditor/src/Notepad_plus.rc	Wed May  7 06:56:22 2008
+@@ -49,7 +49,7 @@
+         END
+     END
+ END
+-/*
++
+ // The GCC resouce compiler has different behavior the M$ resource compiler
+ #ifdef __GNUC__
+ #include ".\\ScitillaComponent\\UserDefineDialog.rc"
+@@ -62,6 +62,10 @@
+ #include ".\\WinControls\\Grid\\ShortcutMapper.rc"
+ #include ".\\WinControls\\Preference\\preference.rc"
+ #include ".\\WinControls\\WindowsDlg\\WindowsDlg.rc"
++#include ".\\ScitillaComponent\\ColumnEditor.rc"
++#include ".\\WinControls\\shortcut\\RunMacroDlg.rc"
++#include ".\\WinControls\\TaskList\\TaskListDlg.rc"
++#include ".\\WinControls\\DockingWnd\\DockingGUIWidget.rc"
+ 
+ #else
+ 
+@@ -116,7 +120,6 @@
+ END
+ 
+ #endif //__GNUC__
+-*/
+ 
+ // Icon with lowest ID value placed first to ensure application icon
+ // remains consistent on all systems.
+@@ -546,6 +549,3 @@
+ // xp style
+ 1 RT_MANIFEST "notepad++.exe.manifest"
+     
+-END
+-
+-
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/Parameters.cpp npp-4.9.1/PowerEditor/src/Parameters.cpp
+--- npp-4.9.1-orig/PowerEditor/src/Parameters.cpp	Thu Apr 24 22:21:50 2008
++++ npp-4.9.1/PowerEditor/src/Parameters.cpp	Wed May  7 05:34:23 2008
+@@ -430,6 +430,7 @@
+ 	_asNotepadStyle = (PathFileExists(notepadStylePath) == TRUE);
+ 
+ 	::AddFontResource(LINEDRAW_FONT);
++	::AddFontResource(OPTI_FONT);
+ 
+ 	//Load initial accelerator key definitions
+ 	initMenuKeys();
+@@ -449,6 +450,7 @@
+ 	if (_hUXTheme)
+ 		FreeLibrary(_hUXTheme);
+ 
++	::RemoveFontResource(OPTI_FONT);
+ 	::RemoveFontResource(LINEDRAW_FONT);
+ }
+ void cutString(const char *str2cut, vector<string> & patternVect)
+@@ -818,6 +820,7 @@
+ void NppParameters::setFontList(HWND hWnd)
+ {
+ 	::AddFontResource(LINEDRAW_FONT); 
++	::AddFontResource(OPTI_FONT); 
+ 
+ 	//---------------//
+ 	// Sys font list //
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/Parameters.h npp-4.9.1/PowerEditor/src/Parameters.h
+--- npp-4.9.1-orig/PowerEditor/src/Parameters.h	Wed Apr 23 20:04:52 2008
++++ npp-4.9.1/PowerEditor/src/Parameters.h	Wed May  7 05:35:41 2008
+@@ -76,9 +76,11 @@
+ const bool SCIV_PRIMARY = false;
+ const bool SCIV_SECOND = true;
+ 
+-const char fontSizeStrs[][3] = {"", "8", "9", "10", "11", "12", "14", "16", "18", "20", "22", "24", "26", "28"};
++const char fontSizeStrs[][3] = {"", "7", "8", "9", "10", "11", "12", "14", "16", "18", "20", "22", "24", "26", "28"};
+ 
+ #define LINEDRAW_FONT  "LINEDRAW.TTF"
++#define OPTI_FONT "Opti.fon"
++
+ const char localConfFile[] = "doLocalConf.xml";
+ const char notepadStyleFile[] = "asNotepad.xml";
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/ScitillaComponent/Printer.h npp-4.9.1/PowerEditor/src/ScitillaComponent/Printer.h
+--- npp-4.9.1-orig/PowerEditor/src/ScitillaComponent/Printer.h	Tue Aug  7 00:55:52 2007
++++ npp-4.9.1/PowerEditor/src/ScitillaComponent/Printer.h	Wed May  7 05:36:02 2008
+@@ -36,7 +36,7 @@
+ public :
+ 	Printer(){};
+ 	void init(HINSTANCE hInst, HWND hwnd, ScintillaEditView *pSEView, bool showDialog, int startPos, int endPos);
+-	size_t Printer::doPrint() {
++	size_t doPrint() {
+ 		if (!::PrintDlg(&_pdlg))
+ 				return 0;
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp npp-4.9.1/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
+--- npp-4.9.1-orig/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	Thu May  1 17:15:16 2008
++++ npp-4.9.1/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	Wed May  7 05:36:29 2008
+@@ -1467,9 +1467,9 @@
+ 			for (int j = 0 ; j < nbChar ; j++)
+ 			{
+ 				if (Case == UPPERCASE)
+-					destStr[j] = (wchar_t)::CharUpperW((LPWSTR)destStr[j]);
++					destStr[j] = (wchar_t)*::CharUpperW((LPWSTR)destStr[j]);
+ 				else
+-					destStr[j] = (wchar_t)::CharLowerW((LPWSTR)destStr[j]);
++					destStr[j] = (wchar_t)*::CharLowerW((LPWSTR)destStr[j]);
+ 			}
+ 			::WideCharToMultiByte(codepage, 0, destStr, len, srcStr, len, NULL, NULL);
+ 
+@@ -1503,9 +1503,9 @@
+ 		for (int i = 0 ; i < nbChar ; i++)
+ 		{
+ 			if (Case == UPPERCASE)
+-				selectedStrW[i] = (WCHAR)::CharUpperW((LPWSTR)selectedStrW[i]);
++				selectedStrW[i] = (WCHAR)*::CharUpperW((LPWSTR)selectedStrW[i]);
+ 			else
+-				selectedStrW[i] = (WCHAR)::CharLowerW((LPWSTR)selectedStrW[i]);
++				selectedStrW[i] = (WCHAR)*::CharLowerW((LPWSTR)selectedStrW[i]);
+ 		}
+ 		::WideCharToMultiByte(codepage, 0, selectedStrW, strWSize, selectedStr, strSize, NULL, NULL);
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/TinyXml/tinystr.h npp-4.9.1/PowerEditor/src/TinyXml/tinystr.h
+--- npp-4.9.1-orig/PowerEditor/src/TinyXml/tinystr.h	Tue Aug  7 00:55:52 2007
++++ npp-4.9.1/PowerEditor/src/TinyXml/tinystr.h	Wed May  7 04:45:11 2008
+@@ -30,7 +30,9 @@
+ #ifndef TIXML_STRING_INCLUDED
+ #define TIXML_STRING_INCLUDED
+ 
++#ifndef __MINGW32__
+ #pragma warning( disable : 4514 )
++#endif
+ 
+ #include <assert.h>
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/TinyXml/tinyxml.h npp-4.9.1/PowerEditor/src/TinyXml/tinyxml.h
+--- npp-4.9.1-orig/PowerEditor/src/TinyXml/tinyxml.h	Tue Aug  7 00:55:52 2007
++++ npp-4.9.1/PowerEditor/src/TinyXml/tinyxml.h	Wed May  7 04:45:11 2008
+@@ -31,6 +31,10 @@
+ #pragma warning( disable : 4786 )
+ #endif
+ 
++#ifdef __MINGW32__
++#define TIXML_USE_STL
++#endif
++
+ #include <ctype.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/WinControls/DockingWnd/DockingCont.cpp npp-4.9.1/PowerEditor/src/WinControls/DockingWnd/DockingCont.cpp
+--- npp-4.9.1-orig/PowerEditor/src/WinControls/DockingWnd/DockingCont.cpp	Wed Apr 23 17:23:26 2008
++++ npp-4.9.1/PowerEditor/src/WinControls/DockingWnd/DockingCont.cpp	Wed May  7 05:36:55 2008
+@@ -32,6 +32,10 @@
+ #define WH_MOUSE_LL 14
+ #endif
+ 
++#ifdef __MINGW32__
++#define TCN_GETOBJECT (TCN_FIRST-3)
++#endif
++
+ static HWND		hWndServer		= NULL;
+ static HHOOK	hookMouse		= NULL;
+ 
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/WinControls/DockingWnd/DockingManager.cpp npp-4.9.1/PowerEditor/src/WinControls/DockingWnd/DockingManager.cpp
+--- npp-4.9.1-orig/PowerEditor/src/WinControls/DockingWnd/DockingManager.cpp	Wed Apr 23 17:23:26 2008
++++ npp-4.9.1/PowerEditor/src/WinControls/DockingWnd/DockingManager.cpp	Wed May  7 05:33:07 2008
+@@ -36,7 +36,7 @@
+ 	if (nCode == HC_ACTION && hWndServer) {
+ 		DockingManager *pDockingManager = (DockingManager *)::GetWindowLong(hWndServer, GWL_USERDATA);
+ 		if (pDockingManager) {
+-			vector<DockingCont*> & vcontainer = pDockingManager->getContainerInfo();
++			vector<DockingCont*> vcontainer = pDockingManager->getContainerInfo();
+ 			CWPSTRUCT * pCwp = (CWPSTRUCT*)lParam;
+ 			if (pCwp->message == WM_KILLFOCUS) {
+ 				for (int i = 0; i < DOCKCONT_MAX; i++)
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/WinControls/DockingWnd/DropData.h npp-4.9.1/PowerEditor/src/WinControls/DockingWnd/DropData.h
+--- npp-4.9.1-orig/PowerEditor/src/WinControls/DockingWnd/DropData.h	Tue Aug  7 00:55:52 2007
++++ npp-4.9.1/PowerEditor/src/WinControls/DockingWnd/DropData.h	Wed May  7 05:37:13 2008
+@@ -71,4 +71,4 @@
+ };
+ 
+ 
+-#endif	// DROP_TARGET_H
+\ No newline at end of file
++#endif	// DROP_TARGET_H
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/WinControls/Preference/preferenceDlg.h npp-4.9.1/PowerEditor/src/WinControls/Preference/preferenceDlg.h
+--- npp-4.9.1-orig/PowerEditor/src/WinControls/Preference/preferenceDlg.h	Fri Feb 22 22:55:58 2008
++++ npp-4.9.1/PowerEditor/src/WinControls/Preference/preferenceDlg.h	Wed May  7 05:37:35 2008
+@@ -179,4 +179,4 @@
+ 
+ 
+ 
+-#endif //PREFERENCE_DLG_H
+\ No newline at end of file
++#endif //PREFERENCE_DLG_H
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/WinControls/TabBar/ControlsTab.h npp-4.9.1/PowerEditor/src/WinControls/TabBar/ControlsTab.h
+--- npp-4.9.1-orig/PowerEditor/src/WinControls/TabBar/ControlsTab.h	Tue Aug  7 00:55:52 2007
++++ npp-4.9.1/PowerEditor/src/WinControls/TabBar/ControlsTab.h	Wed May  7 05:37:52 2008
+@@ -52,7 +52,7 @@
+ 		//TabBar::init(hInst, hwnd, false, true);
+ 		TabBar::init(hInst, hwnd, false, isTraditional, isMultiLine);
+ 	};
+-	void ControlsTab::createTabs(WindowVector & winVector);
++	void createTabs(WindowVector & winVector);
+ 
+ 	void destroy() {
+ 		TabBar::destroy();
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/WinControls/WindowsDlg/WinMgr.h npp-4.9.1/PowerEditor/src/WinControls/WindowsDlg/WinMgr.h
+--- npp-4.9.1-orig/PowerEditor/src/WinControls/WindowsDlg/WinMgr.h	Tue Aug  7 00:55:52 2007
++++ npp-4.9.1/PowerEditor/src/WinControls/WindowsDlg/WinMgr.h	Wed May  7 06:41:19 2008
+@@ -19,6 +19,11 @@
+ 
+ #pragma once
+ 
++// mingw's <math.h> defines INFINITY...
++#ifdef __MINGW32__
++#undef INFINITY
++#endif
++
+ // when using screen dimensions, this is infinite
+ const LONG INFINITY=0x7fff; // max short
+ 
+@@ -298,4 +303,4 @@
+ };
+ 
+ // Theo - Removed CSizerBar and CSizeableDlg
+-#endif
+\ No newline at end of file
++#endif
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/WinControls/shortcut/shortcut.h npp-4.9.1/PowerEditor/src/WinControls/shortcut/shortcut.h
+--- npp-4.9.1-orig/PowerEditor/src/WinControls/shortcut/shortcut.h	Sun Mar  9 18:10:48 2008
++++ npp-4.9.1/PowerEditor/src/WinControls/shortcut/shortcut.h	Wed May  7 05:38:37 2008
+@@ -203,7 +203,7 @@
+ 	};
+ 
+ 	KeyCombo getKeyComboByIndex(int index) const;
+-	void ScintillaKeyMap::setKeyComboByIndex(int index, KeyCombo combo);
++	void setKeyComboByIndex(int index, KeyCombo combo);
+ 	void removeKeyComboByIndex(int index);
+ 	void clearDups() {
+ 		if (size > 1)
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/config.model.xml npp-4.9.1/PowerEditor/src/config.model.xml
+--- npp-4.9.1-orig/PowerEditor/src/config.model.xml	Sun Mar  9 18:10:48 2008
++++ npp-4.9.1/PowerEditor/src/config.model.xml	Wed May  7 05:39:08 2008
+@@ -55,7 +55,7 @@
+                                 2 : verbose backup
+                       -->
+         <GUIConfig name="Backup" action="0" useCustumDir="no" dir="" />
+-        <GUIConfig name="TaskList">yes</GUIConfig>
++        <GUIConfig name="TaskList">no</GUIConfig>
+         <GUIConfig name="SaveOpenFileInSameDir">no</GUIConfig>
+         <!--
+ 			value 0 for the folloing parameters means invisible :
+@@ -71,7 +71,7 @@
+ 			-->
+         <GUIConfig name="noUpdate">no</GUIConfig>
+         <GUIConfig name="MaitainIndent">yes</GUIConfig>
+-        <GUIConfig name="MRU">yes</GUIConfig>
++        <GUIConfig name="MRU">no</GUIConfig>
+         <GUIConfig name="URL">0</GUIConfig>
+         <GUIConfig name="globalOverride" fg="no" bg="no" font="no" fontSize="no" bold="no" italic="no" underline="no" />
+         <GUIConfig name="auto-completion" autoCAction="0" triggerFromNbChar="1" />
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/langs.model.xml npp-4.9.1/PowerEditor/src/langs.model.xml
+--- npp-4.9.1-orig/PowerEditor/src/langs.model.xml	Sun Mar  2 23:27:46 2008
++++ npp-4.9.1/PowerEditor/src/langs.model.xml	Wed May  7 05:39:04 2008
+@@ -111,7 +111,7 @@
+         <Language name="makefile" ext="mak" commentLine="#">
+         </Language>
+         <Language name="matlab" ext="m" commentLine="%" commentStart="" commentEnd="">
+-            <Keywords name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while</Keywords>
++            <Keywords name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while do endfor endfunction endif endswitch endwhile end_unwind_protect unwind_protect unwind_protect_cleanup</Keywords>
+         </Language>
+         <Language name="nfo" ext="nfo">
+         </Language>
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/shortcuts.xml npp-4.9.1/PowerEditor/src/shortcuts.xml
+--- npp-4.9.1-orig/PowerEditor/src/shortcuts.xml	Mon Apr  7 23:57:56 2008
++++ npp-4.9.1/PowerEditor/src/shortcuts.xml	Wed May  7 05:39:01 2008
+@@ -1,5 +1,8 @@
+ <NotepadPlus>
+-    <InternalCommands />
++    <InternalCommands>
++        <Shortcut name="Go to next document" id="50003" Ctrl="no" Alt="yes" Shift="no" Key="38" />
++        <Shortcut name="Go to previous document" id="50004" Ctrl="no" Alt="yes" Shift="no" Key="40" />
++    </InternalCommands>
+     <Macros>
+         <Macro name="Trim Trailing and save" Ctrl="no" Alt="yes" Shift="yes" Key="83">
+             <Action type="1" message="2170" wParam="0" lParam="0" sParam=" " />
+@@ -15,7 +18,7 @@
+         <Command name="launch in Firefox" Ctrl="yes" Alt="yes" Shift="yes" Key="88">firefox &quot;$(FULL_CURRENT_PATH)&quot;</Command>
+         <Command name="launch in IE" Ctrl="yes" Alt="yes" Shift="yes" Key="73">iexplore &quot;$(FULL_CURRENT_PATH)&quot;</Command>
+         <Command name="Get php help" Ctrl="no" Alt="yes" Shift="no" Key="112">http://www.php.net/%20$(CURRENT_WORD)</Command>
+-        <Command name="Google Search" Ctrl="no" Alt="yes" Shift="no" Key="113">http://www.google.com/search?q=$(CURRENT_WORD)</Command>
++        <Command name="Google Search" Ctrl="no" Alt="yes" Shift="no" Key="113">http://www.google.at/search?q=$(CURRENT_WORD)</Command>
+         <Command name="Wikipedia Search" Ctrl="no" Alt="yes" Shift="no" Key="114">http://en.wikipedia.org/wiki/Special:Search?search=$(CURRENT_WORD)</Command>
+         <Command name="open file" Ctrl="no" Alt="yes" Shift="no" Key="116">$(NPP_DIRECTORY)\notepad++.exe $(CURRENT_WORD)</Command>
+         <Command name="open in another instance" Ctrl="no" Alt="yes" Shift="no" Key="117">$(NPP_DIRECTORY)\notepad++.exe $(CURRENT_WORD) -nosession -multiInst</Command>
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/PowerEditor/src/userDefineLang.xml npp-4.9.1/PowerEditor/src/userDefineLang.xml
+--- npp-4.9.1-orig/PowerEditor/src/userDefineLang.xml	Tue Aug  7 00:55:52 2007
++++ npp-4.9.1/PowerEditor/src/userDefineLang.xml	Wed May  7 05:39:12 2008
+@@ -59,4 +59,38 @@
+             <WordsStyle name="OPERATOR" styleID="10" fgColor="804000" bgColor="FFFFFF" fontName="" fontStyle="1" fontSize="" />
+         </Styles>
+     </UserLang>
++    <UserLang name="gnuplot" ext="gp">
++        <Settings>
++            <Global caseIgnored="no" />
++            <TreatAsSymbol comment="no" commentLine="no" />
++            <Prefix words1="no" words2="no" words3="no" words4="no" />
++        </Settings>
++        <KeywordLists>
++            <Keywords name="Delimiters">&quot;00&quot;00</Keywords>
++            <Keywords name="Folder+"></Keywords>
++            <Keywords name="Folder-"></Keywords>
++            <Keywords name="Operators">$ ( ) , . @ =</Keywords>
++            <Keywords name="Comment">1 1 2 2 0#</Keywords>
++            <Keywords name="Words1">call cd clear exit fit help history if load lower pause plot print pwd quit raise replot reread reset save set shell show splot system test unset update</Keywords>
++            <Keywords name="Words2">angles arrow autoscale bars bmargin border boxwidth cbdata cbdtics cblabel cbmtics cbrange cbtics clabel clip cntrparam colorbox contour datafile decimalsign dgrid3d dummy encoding fontpath format functions grid hidden3d historysize isosamples key label lmargin loadpath locale logscale macros mapping margin mouse multiplot mx2tics mxtics my2tics mytics mztics nomxtics nomytics nomztics noxtics noytics noztics offsets origin output palette parametric pm3d pointsize polar print object rmargin rrange samples size style surface table term terminal termoption tics ticslevel ticscale timestamp timefmt title tmargin trange urange variables version view vrange x2data x2dtics x2label x2mtics x2range x2tics x2zeroaxis xdata xdtics xlabel xmtics xrange xtics xyplane xzeroaxis y2data y2dtics y2label y2mtics y2range y2tics y2zeroaxis ydata ydtics ylabel ymtics yrange ytics yyplane yzeroaxis zdata zdtics zero zeroaxis zlabel zmtics zrange ztics zzeroaxis</Keywords>
++            <Keywords name="Words3">every index lc linecolor lines linestyle linetype linewidth linespoints ls lt lw pointsize pointtype ps pt rgb using with</Keywords>
++            <Keywords name="Words4"></Keywords>
++        </KeywordLists>
++        <Styles>
++            <WordsStyle name="DEFAULT" styleID="11" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="FOLDEROPEN" styleID="12" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="FOLDERCLOSE" styleID="13" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD1" styleID="5" fgColor="FF0000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD2" styleID="6" fgColor="0000FF" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD3" styleID="7" fgColor="FF8000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD4" styleID="8" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="COMMENT" styleID="1" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="COMMENT LINE" styleID="2" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="NUMBER" styleID="4" fgColor="0080C0" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="OPERATOR" styleID="10" fgColor="FF8040" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER1" styleID="14" fgColor="808080" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER2" styleID="15" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER3" styleID="16" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++        </Styles>
++    </UserLang>
+ </NotepadPlus>
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/scintilla/src/LexMatlab.cxx npp-4.9.1/scintilla/src/LexMatlab.cxx
+--- npp-4.9.1-orig/scintilla/src/LexMatlab.cxx	Sat Feb  9 23:08:36 2008
++++ npp-4.9.1/scintilla/src/LexMatlab.cxx	Wed May  7 05:39:47 2008
+@@ -159,7 +159,7 @@
+ 
+ static void ColouriseMatlabDoc(unsigned int startPos, int length, int initStyle,
+                                WordList *keywordlists[], Accessor &styler) {
+-	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabCommentChar);
++	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveCommentChar);
+ }
+ 
+ static void ColouriseOctaveDoc(unsigned int startPos, int length, int initStyle,
+@@ -213,7 +213,7 @@
+ 
+ static void FoldMatlabDoc(unsigned int startPos, int length, int initStyle,
+                           WordList *keywordlists[], Accessor &styler) {
+-	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabComment);
++	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveComment);
+ }
+ 
+ static void FoldOctaveDoc(unsigned int startPos, int length, int initStyle,
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/scintilla/src/LexSearchResult.cxx npp-4.9.1/scintilla/src/LexSearchResult.cxx
+--- npp-4.9.1-orig/scintilla/src/LexSearchResult.cxx	Tue Dec 25 16:20:06 2007
++++ npp-4.9.1/scintilla/src/LexSearchResult.cxx	Wed May  7 05:39:50 2008
+@@ -48,7 +48,7 @@
+ 
+ inline bool isSpaceChar(char ch) {
+ 	return ((ch == ' ')  || (ch == '	'));
+-};
++}
+ 
+ // return value : false if the end of line is reached, otherwise true
+ inline bool eatWhiteSpaces(const char *line, unsigned int & pos) {
+@@ -58,7 +58,7 @@
+ 	for ( ; line[pos] && isSpaceChar(line[pos]) ; pos++);
+ 
+ 	return (pos < strlen(line));
+-};
++}
+ 
+ static void ColouriseSearchResultLine(WordList *keywordlists[], char *lineBuffer, unsigned int lengthLine, unsigned int startLine, unsigned int endPos, Accessor &styler) 
+ {
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak npp-4.9.1-orig/scintilla/win32/makefile npp-4.9.1/scintilla/win32/makefile
+--- npp-4.9.1-orig/scintilla/win32/makefile	Sat Feb  9 23:08:36 2008
++++ npp-4.9.1/scintilla/win32/makefile	Wed May  7 06:24:28 2008
+@@ -7,29 +7,26 @@
+ # safely if using a newer version which may display warning messages.
+ 
+ .SUFFIXES: .cxx
+-CC = g++
++CC = $(CXX)
+ DLLWRAP = dllwrap
+-DEL = del /q
++DEL = rm -rf
+ 
+ COMPONENT = ../bin/Scintilla.dll
+ LEXCOMPONENT = ../bin/SciLexer.dll
+-LEXLIB = Lexers.a
++LEXLIB = ../lib/Lexers.a
+ 
+-ifndef NOTHUNKS
+-gversion = $(word 1,$(subst ., ,$(shell g++ --version)))
+-ifeq ($(gversion),2)
+-THUNKFLAGS=-fvtable-thunks
+-endif
+-endif
++SRCDIR = @SRCDIR@
+ 
+-vpath %.h ../src ../include
+-vpath %.cxx ../src
++vpath %.h   $(SRCDIR)/src   $(SRCDIR)/include $(SRCDIR)/win32
++vpath %.cxx $(SRCDIR)/src   $(SRCDIR)/win32
++vpath %.rc  $(SRCDIR)/src   $(SRCDIR)/win32
++vpath %.def $(SRCDIR)/win32
+ 
+-LDFLAGS=-mwindows -lstdc++ -limm32 -lole32 -luuid -mno-cygwin
++LDLIBS=-Wl,--no-whole-archive -mwindows -limm32 -lole32 -luuid 
+ # Add -MMD to get dependencies
+ #CXXFLAGS = -g -pg -pedantic -Os -fno-exceptions -fvtable-thunks -fno-rtti
+-INCLUDEDIRS=-I ../include -I ../src
+-CXXBASEFLAGS=-Wall -Wno-missing-braces -Wno-char-subscripts -pedantic $(INCLUDEDIRS) -Os -fno-exceptions $(THUNKFLAGS) -fno-rtti -mno-cygwin
++INCLUDEDIRS=-I $(SRCDIR)/include -I $(SRCDIR)/src
++CXXBASEFLAGS=-Wall -Wno-missing-braces -Wno-char-subscripts -pedantic $(INCLUDEDIRS) -Os -fno-exceptions $(THUNKFLAGS) -fno-rtti
+ 
+ ifdef DEBUG
+ CXXFLAGS=-DDEBUG $(CXXBASEFLAGS)
+@@ -40,13 +37,17 @@
+ .cxx.o:
+ 	$(CC) $(CXXFLAGS) -c $<
+ 
+-ALL:	$(COMPONENT) $(LEXCOMPONENT) $(LEXLIB) ScintillaWinS.o WindowAccessor.o
++ALL:	deps $(COMPONENT) $(LEXCOMPONENT) $(LEXLIB) ScintillaWinS.o WindowAccessor.o
+ 
+ clean:
+ 	$(DEL) *.exe *.o *.obj *.dll *.res *.map
++	$(DEL) $(COMPONENT)
++	$(DEL) $(LEXCOMPONENT)
++	$(DEL) $(LEXLIB)
+ 
+ deps:
+-	$(CC) -MM $(CXXFLAGS) *.cxx ../src/*.cxx >deps.mak
++	$(CC) -MM $(CXXFLAGS) $(SRCDIR)/win32/*.cxx $(SRCDIR)/src/*.cxx | sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g' > deps.mak
++	touch deps
+ 
+ #++Autogenerated -- run src/LexGen.py to regenerate
+ #**LEXOBJS=\\\n\(\*.o \)
+@@ -69,7 +70,7 @@
+ 	ScintRes.o PlatWin.o PositionCache.o KeyMap.o Indicator.o LineMarker.o RESearch.o RunStyles.o \
+ 	Style.o ViewStyle.o AutoComplete.o UniConversion.o PropSet.o XPM.o
+ $(COMPONENT): $(SOBJS) Scintilla.def
+-	$(DLLWRAP) --add-stdcall-alias --target i386-mingw32 -o $@ $(SOBJS) $(LDFLAGS) -s --relocatable
++	$(CC) -shared $(LDFLAGS) -o $@ $(SOBJS) -Wl,--no-whole-archive $(LDLIBS)
+ 
+ LOBJS	= ScintillaWinL.o ScintillaBaseL.o Editor.o CharClassify.o Decoration.o \
+ 	Document.o ContractionState.o CellBuffer.o CallTip.o \
+@@ -77,7 +78,7 @@
+ 	Style.o ViewStyle.o AutoComplete.o UniConversion.o KeyWords.o \
+ 	DocumentAccessor.o PropSet.o ExternalLexer.o StyleContext.o XPM.o $(LEXOBJS)
+ $(LEXCOMPONENT): $(LOBJS) Scintilla.def
+-	$(DLLWRAP) --add-stdcall-alias --target i386-mingw32 -o $@ $(LOBJS) $(LDFLAGS) -s --relocatable
++	$(CC) -shared $(LDFLAGS) -o $@ $(LOBJS) -Wl,--no-whole-archive $(LDLIBS)
+ 
+ $(LEXLIB): $(LEXOBJS)
+ 	$(AR) rc $@ $^
+@@ -112,6 +113,6 @@
+ 	$(CC) $(CXXFLAGS) -D SCI_LEXER -c $< -o $@
+ 
+ ScintRes.o:	ScintRes.rc PlatformRes.h
+-	windres ScintRes.rc $@
++	windres -I $(SRCDIR)/win32 $< $@
+ 
+ 

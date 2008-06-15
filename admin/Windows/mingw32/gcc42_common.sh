@@ -11,7 +11,7 @@ STRIP=strip
 STRIP_FLAGS=--strip-unneeded
 
 CP=${TOPDIR}/../copy-if-changed.sh
-CP_FLAGS=-v
+CP_FLAGS=-vp
 
 WGET=wget
 WGET_FLAGS=-N

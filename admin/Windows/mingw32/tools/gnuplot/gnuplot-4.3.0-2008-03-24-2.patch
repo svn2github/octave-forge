@@ -758,7 +758,25 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-
  # include "gdfontl.h"
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.orig gnuplot-4.3.0-2008-03-24-orig/term/post.trm gnuplot-4.3.0-2008-03-24/term/post.trm
 --- gnuplot-4.3.0-2008-03-24-orig/term/post.trm	Thu Mar 13 19:01:27 2008
-+++ gnuplot-4.3.0-2008-03-24/term/post.trm	Thu Apr 10 20:12:53 2008
++++ gnuplot-4.3.0-2008-03-24/term/post.trm	Sun Jun 15 10:34:10 2008
+@@ -193,7 +193,7 @@
+ } ps_params_t;
+ 
+ #define POST_PARAMS_DEFAULT { \
+-    PSTERM_POSTSCRIPT, 50, 50, \
++    PSTERM_POSTSCRIPT, 0, 0, \
+     PSTERM_LANDSCAPE, FALSE, FALSE, FALSE, FALSE, 1.0, 1.0, FALSE, \
+     FALSE, FALSE, NULL, "Helvetica", 14, FALSE, FALSE, 2000, 0.003, \
+     FALSE, TRUE \
+@@ -203,7 +203,7 @@
+ static const ps_params_t post_params_default = POST_PARAMS_DEFAULT;
+ 
+ #define EPSLATEX_PARAMS_DEFAULT { \
+-    PSTERM_EPSLATEX, 50, 50, \
++    PSTERM_EPSLATEX, 0, 0, \
+     PSTERM_EPS, FALSE, FALSE, TRUE, FALSE, 1.0, 1.0, FALSE, \
+     FALSE, FALSE, NULL, "", 11, TRUE, FALSE, 2000, 0.003, \
+     FALSE, FALSE \
 @@ -3341,9 +3341,9 @@
  # if defined(_Windows)
  	/* retrieve prologues path relatively to gnuplot executable,

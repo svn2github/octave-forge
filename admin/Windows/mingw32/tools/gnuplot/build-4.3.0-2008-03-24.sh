@@ -93,7 +93,7 @@ install() { echo $0: install not required; }
 
 install_pkg()
 {
-#   install_pkg_octave
+   install_pkg_octave
    install_pkg_standalone
 }
 

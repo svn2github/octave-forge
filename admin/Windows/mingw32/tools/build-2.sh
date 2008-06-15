@@ -11,3 +11,6 @@ echo $0: ACTION = "${ACTION}";
 
 # install gnuplot
 ( cd gnuplot && ./build-4.3.0-2008-03-24.sh ${ACTION} )
+
+# install ATLAS
+( cd atlas && ./build-3.8.1-2.sh ${ACTION} )

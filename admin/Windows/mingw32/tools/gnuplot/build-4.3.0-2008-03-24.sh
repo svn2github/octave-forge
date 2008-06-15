@@ -55,6 +55,8 @@ mkdirs_post()
 { 
    mkdir -vp ${BUILDDIR}/config
    mkdir -vp ${BUILDDIR}/src
+   mkdir -vp ${BUILDDIR}/docs
+#   mkdir -vp ${BUILDDIR}/tutorial
 }
 
 unpack_pre()
@@ -76,23 +78,51 @@ unpack_orig()
 conf()
 {
    substvars ${SRCDIR}/${MAKEFILE} ${BUILDDIR}/${MAKEFILE}
+   substvars ${SRCDIR}/docs/psdoc/makefile ${BUILDDIR}/docs/makefile
+#   substvars ${SRCDIR}/tutorial/makefile.dst ${BUILDDIR}/tutorial/makefile.dst
 }
 
 build() {
-(
   export PATH=${PATH_MIKTEX}:${PATH_HCW}:${PATH}
-  cd ${BUILDDIR} && make -C src -f ../config/makefile.mgw
-)
+  ( cd ${BUILDDIR} && make -C src -f ../config/makefile.mgw )
+  ( cd ${BUILDDIR}/docs && make pdf )
+#  ( cd ${BUILDDIR}/tutorial && make -f makefile.dst )
 }
 
 install() { echo $0: install not required; }
 
 install_pkg()
 {
+#   install_pkg_octave
+   install_pkg_standalone
+}
 
+install_pkg_standalone()
+{
+   SADIR=".standalonebin_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+   GCCLIBS="libgcc_sjlj_1 libstdc++_sjlj_6"
+   for a in $GCCLIBS; do ${CP} ${CP_FLAGS} ${PACKAGE_ROOT}/bin/$a.dll ${SADIR}/bin; done
+
+   PACKAGE_ROOT=$SADIR
+   install_pkg_octave
+   
+   LIBS="fontconfig freetype-6 gd libtiff libjpeg libpng zlib1 xml2"
+   for a in $LIBS; do ${CP} ${CP_FLAGS} ${BINARY_PATH}/$a.dll ${PACKAGE_ROOT}/bin; done
+   
+   
+}
+
+install_pkg_octave()
+{
+
+   mkdir -vp ${PACKAGE_ROOT}/bin
    mkdir -vp ${PACKAGE_ROOT}/share/gnuplot/Postscript
+   mkdir -vp ${PACKAGE_ROOT}/share/gnuplot/contrib/pm3d
+   mkdir -vp ${PACKAGE_ROOT}/share/gnuplot/demo
    mkdir -vp ${PACKAGE_ROOT}/license/gnuplot
-   mkdir -vp ${PACKAGE_ROOT}/doc
+   mkdir -vp ${PACKAGE_ROOT}/doc/gnuplot
+   mkdir -vp ${PACKAGE_ROOT}/doc/gnuplot/postscript-terminal
    
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/wgnuplot.exe ${PACKAGE_ROOT}/bin
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/pgnuplot.exe ${PACKAGE_ROOT}/bin
@@ -100,11 +130,23 @@ install_pkg()
 #   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/pgnuplot_win.exe ${PACKAGE_ROOT}/bin
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/wgnuplot.hlp ${PACKAGE_ROOT}/bin
 
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/gnuplot.pdf ${PACKAGE_ROOT}/doc
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/gnuplot.pdf      ${PACKAGE_ROOT}/doc/gnuplot
+   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/ps_file.doc ${PACKAGE_ROOT}/doc/gnuplot/postscript-terminal
+   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/ps_guide.ps ${PACKAGE_ROOT}/doc/gnuplot/postscript-terminal
+   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/README      ${PACKAGE_ROOT}/doc/gnuplot/postscript-terminal
+   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/ps_symbols.gpi      ${PACKAGE_ROOT}/doc/gnuplot/postscript-terminal/ps_symbols.gp
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/docs/ps_fontfile_doc.pdf     ${PACKAGE_ROOT}/doc/gnuplot/postscript-terminal
    
    ${CP} ${CP_FLAGS} ${SRCDIR}/term/Postscript/* ${PACKAGE_ROOT}/share/gnuplot/Postscript
    
    ${CP} ${CP_FLAGS} ${SRCDIR}/copyright ${PACKAGE_ROOT}/license/gnuplot
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/pm3d/contrib/* ${PACKAGE_ROOT}/share/gnuplot/contrib/pm3d
+   ${CP} ${CP_FLAGS} ${SRCDIR}/pm3d/README    ${PACKAGE_ROOT}/share/gnuplot/contrib
+   
+   ${CP} ${CP_FLAGS} ${SRCDIR}/demo/*               ${PACKAGE_ROOT}/share/gnuplot/demo
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/binary{1,2,3} ${PACKAGE_ROOT}/share/gnuplot/demo
+   
 }
 
 uninstall()

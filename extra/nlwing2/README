@@ -1,0 +1,42 @@
+coordinate system
+x : streamwise 
+y : vertical 
+z : spanwise left
+                           
+                         ^ ____                                                            
+                       y |/   /            
+                         |   /             
+                        /|  /     __       
+                  _____/ | /_____/ _/     x
+                 /       |      /__/ ------------->
+                 \_____    _______/        
+                       \   \               
+                        \ \ \              
+                         \ \ \             
+                          \_\_\            
+                             \  z           
+                              \| 
+                           
+
+Flow control spanwise quantity is g_i, defined as gamma_i/c_i,
+i.e. local circulation divided by local chord length (= approximately local cl).
+
+An inner product is defined on the linear space of all g_i vectors, defined as
+g*g' = sum g_i*g'_i * dz_i
+
+The equation to be satisfied locally is 
++-------------------------------------------------------+
+|       rho * v * gamma = 1/2 * rho * v^2 * cl * c      |
++-------------------------------------------------------+
+
+giving
++----------------------------+
+|       g = v * cl / 2       |
++----------------------------+
+
+cl = cl(alfa)
+alfa = atan(vy/vx)
+v = sqrt(vx^2 + vy^2)
+
+
+

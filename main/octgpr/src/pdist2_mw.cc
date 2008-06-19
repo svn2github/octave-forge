@@ -284,4 +284,5 @@ If @var{Y} is not given, a symmetric distance matrix is calculated efficiently.\
   else
     error ("pmwdmat: X and Y should be matrices, p a real scalar");
 
+  return retval;
 }

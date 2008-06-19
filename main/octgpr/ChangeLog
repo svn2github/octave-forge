@@ -1,3 +1,7 @@
+2008-06-19  Jaroslav Hajek <highegg@gmail.com>
+
+	* src/pdist2_mw.cc: add missing return statement.
+
 2008-06-10  Jaroslav Hajek <highegg@gmail.com>
 
 	* src/configure.in: correct FC to F77 (inferred variable from

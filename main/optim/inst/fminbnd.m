@@ -37,13 +37,15 @@
 ## * modified for use with functions of more than one parameter
 ## 2007-08-09 Marco Caliari <mcaliari@math.unipd.it>
 ## * modified in order to get optionally the value of the function
-
+## 2008-06-16 Florent Angly <florent.angly@gmail.com>
+## * modified to accept an initial lower bound equal to the initial upper bound
+##   (like in Matlab)
 function [min,val] = fminbnd(_func,lb,ub, options, varargin)
 
   delta = 1e-17;
   gr = (sqrt(5)-1)/2;
   width = (ub-lb);
-  out = [ lb:(width/3):ub ];
+  out = linspace(lb, ub, 4);
   out(2) = out(4)-gr*width;
   out(3) = out(1)+gr*width;
   upper = feval(_func,out(3), varargin{:});

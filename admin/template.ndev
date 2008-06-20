@@ -28,8 +28,17 @@ If you don't already have one, request a SourceForge (SF) account
 To register as a developer send a request 
 to the octave-forge mailing list 
 <a href="mailto:octave-dev@lists.sf.net">octave-dev@lists.sf.net</a>.
-Include a bit of information about the code
-you plan to submit. 
+Include your SourceForge username. Include a bit of information about the code
+you plan to submit and also a first code contribution under the form of a patch.
+Use
+<pre>
+   $ svn diff
+</pre>
+to create this patch if you are using the SVN tree, or just
+<pre>
+   $ diff -u original_file.m updated_file.m
+</pre>
+with a local of the original function if you aren't.
 Finally, if your computer runs linux or
 FreeBSD, chances are good that both <tt>ssh</tt> and SVN are already 
 installed on your system. 

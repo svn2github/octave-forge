@@ -16,9 +16,10 @@
 # list of missing functions surrounded by spaces
 #
 #
-# R. Rogers 4/23/2008  Added Confluent hypergeometric entries, Removed "'"  
-#       here and there.
-# 	.  If you have problems	with this blame the klutz (me).
+# R. Rogers 4/23/2008  Added Confluent hypergeometric entries replace "'s" 
+# 	"\'s" for descriptions; in other cases removed.  If you have 
+#	with this blame the klutz (me).
+# R. Rogers 6/18/2008   Added some ellint documentation.
 #
 missing=" $* "
 cat <<EOF >gsl_sf.cc
@@ -45,7 +46,7 @@ export octave_name=dawson
 export    funcname=gsl_sf_dawson
 cat << \EOF > docstring.txt
 The Dawson integral is defined by \exp(-x^2) \int_0^x dt \exp(t^2).
-A table of Dawson's integral can be found in Abramowitz & Stegun, Table 7.5. 
+A table of Dawson integral can be found in Abramowitz & Stegun, Table 7.5. 
 EOF
 ./replace_template.sh double_to_double.cc.template >> gsl_sf.cc
 
@@ -144,7 +145,7 @@ export octave_name=hazard
 export    funcname=gsl_sf_hazard
 cat << \EOF > docstring.txt
 The hazard function for the normal distrbution, also known as the 
-inverse Mill's ratio, is defined as 
+inverse Mill\'s ratio, is defined as 
 h(x) = Z(x)/Q(x) = \sqrt@{2/\pi \exp(-x^2 / 2) / \erfc(x/\sqrt 2)@}. 
 It decreases rapidly as x approaches -\infty and asymptotes to 
 h(x) \sim x as x approaches +\infty.
@@ -344,7 +345,7 @@ export    funcname=gsl_sf_lambert_W0
 cat << \EOF > docstring.txt
 These compute the principal branch of the Lambert W function, W_0(x).
 
-Lambert's W functions, W(x), are defined to be solutions of the
+Lambert\'s W functions, W(x), are defined to be solutions of the
 equation W(x) \exp(W(x)) = x. This function has multiple branches 
 for x < 0; however, it has only two real-valued branches. 
 We define W_0(x) to be the principal branch, where W > -1 for x < 0, 
@@ -359,7 +360,7 @@ cat << \EOF > docstring.txt
 These compute the secondary real-valued branch of the Lambert 
 W function, W_@{-1@}(x).
 
-Lambert's W functions, W(x), are defined to be solutions of the
+Lambert\'s W functions, W(x), are defined to be solutions of the
 equation W(x) \exp(W(x)) = x. This function has multiple branches 
 for x < 0; however, it has only two real-valued branches. 
 We define W_0(x) to be the principal branch, where W > -1 for x < 0, 
@@ -925,7 +926,7 @@ EOF
 export octave_name=airy_Ai_deriv
 export    funcname=gsl_sf_airy_Ai_deriv
 cat << \EOF > docstring.txt
-These routines compute the Airy function derivative Ai(x) with an
+These routines compute the Airy function derivative Ai'(x) with an
 accuracy specified by mode.
 EOF
 ./replace_template.sh double_mode_to_double.cc.template >> gsl_sf.cc
@@ -934,7 +935,7 @@ EOF
 export octave_name=airy_Bi_deriv
 export    funcname=gsl_sf_airy_Bi_deriv
 cat << \EOF > docstring.txt
-These routines compute the Airy function derivative Bi(x) with an
+These routines compute the Airy function derivative Bi'(x) with an
 accuracy specified by mode.
 EOF
 ./replace_template.sh double_mode_to_double.cc.template >> gsl_sf.cc
@@ -961,8 +962,57 @@ EOF
 export octave_name=ellint_Kcomp
 export    funcname=gsl_sf_ellint_Kcomp
 cat << \EOF > docstring.txt
-These routines compute the complete elliptic integral K(k) to the
-accuracy specified by the mode variable mode.
+These routines compute the complete elliptic integral K(k) 
+@tex
+\beforedisplay
+$$
+\eqalign{
+K(k)   &= \int_0^{\pi/2}  {dt \over \sqrt{(1 - k^2 \sin^2(t))}}  \cr
+}
+$$
+\afterdisplay
+See also:
+@end tex
+@ifinfo
+@group
+@example
+                              pi
+                              ---
+                               2
+                             /
+                             |             1
+          ellint_Kcomp(k)  = |    ------------------- dt
+                             |              2   2
+                             /    sqrt(1 - k sin (t))
+                              0
+
+@end example
+@end group
+@end ifinfo
+@ifhtml
+@group
+@example
+                              pi
+                              ---
+                               2
+                             /
+                             |             1
+          ellint_Kcomp(k)  = |    ------------------- dt
+                             |              2   2
+                             /    sqrt(1 - k sin (t))
+                              0
+
+@end example
+@end group
+@end ifhtml
+
+@seealso{ellipj, ellipke}
+
+The notation used here is based on Carlson, @cite{Numerische
+Mathematik} 33 (1979) and differs slightly from that used by
+Abramowitz & Stegun, where the functions are given in terms of the
+parameter @math{m = k^2}.
+
 EOF
 ./replace_template.sh double_mode_to_double.cc.template >> gsl_sf.cc
 
@@ -972,6 +1022,57 @@ export    funcname=gsl_sf_ellint_Ecomp
 cat << \EOF > docstring.txt
 These routines compute the complete elliptic integral E(k) to the
 accuracy specified by the mode variable mode.
+
+@tex
+\beforedisplay
+$$
+\eqalign{
+E(k)   &= \int_0^{\pi/2}    \sqrt{(1 - k^2 \sin^2(t))} dt \cr
+}
+$$
+\afterdisplay
+See also: 
+
+@end tex
+@ifinfo
+@group
+@example
+                               pi
+                              ---
+                               2
+                             /
+                             |              2    2
+         ellint_Ecomp(k)  =  |    sqrt(1 - k sin (t)) dt
+                             |
+                             /
+                              0
+
+@end example
+@end group
+@end ifinfo
+@ifhtml
+@group
+@example
+                               pi
+                              ---
+                               2
+                             /
+                             |              2    2
+         ellint_Ecomp(k)  =  |    sqrt(1 - k sin (t)) dt
+                             |
+                             /
+                              0
+
+@end example
+@end group
+@end ifhtml
+
+@seealso{ellipj, ellipke}
+
+The notation used here is based on Carlson, @cite{Numerische
+Mathematik} 33 (1979) and differs slightly from that used by
+Abramowitz & Stegun, where the functions are given in terms of the
+parameter @math{m = k^2}.
 EOF
 ./replace_template.sh double_mode_to_double.cc.template >> gsl_sf.cc
 
@@ -1081,18 +1182,20 @@ standard normalization of P_l^m(x).
 EOF
 ./replace_template.sh int_int_double_to_double.cc.template >> gsl_sf.cc
 
+
 export octave_name=hyperg_U
 export    funcname=gsl_sf_hyperg_U
 cat << \EOF > docstring.txt
-Secondary Confluent Hypergoemetric U function A&S 13.1.3 
-All input are double as is the output.
+Secondary Confluent Hypergoemetric U function A&E 13.1.3 
+All inputs are double as is the output.
 EOF
 ./replace_template.sh DDD_to_D.cc.template >> gsl_sf.cc
+
 
 export octave_name=hyperg_1F1
 export    funcname=gsl_sf_hyperg_1F1
 cat << \EOF > docstring.txt
-Primary Confluent Hypergoemetric U function A&S 13.1.3 
+Primary Confluent Hypergoemetric U function A&E 13.1.3 
 All inputs are double as is the output.
 EOF
 ./replace_template.sh DDD_to_D.cc.template >> gsl_sf.cc

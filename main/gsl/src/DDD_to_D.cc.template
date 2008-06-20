@@ -2,6 +2,8 @@ DEFUN_DLD(GSL_OCTAVE_NAME, args, nargout, "  -*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{out} =} GSL_OCTAVE_NAME (@var{x0}, @var{x1}, @var{x2})\n\
 @deftypefnx {Loadable Function} {[@var{out}, @var{err}] =} GSL_OCTAVE_NAME (@dots{})\n\
 \n\
+GSL_FUNC_DOCSTRING
+\n\
 @var{err} contains an estimate of the absolute error in the value @var{out}.a.\n\
 \n\
 This function is from the GNU Scientific Library,\n\

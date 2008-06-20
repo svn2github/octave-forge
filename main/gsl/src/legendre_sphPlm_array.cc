@@ -13,6 +13,8 @@
 
  You should have received a copy of the GNU General Public License
  along with this program; If not, see <http://www.gnu.org/licenses/>.
+ Changes:
+ 6/18/2008  R. Rogers  Removed unsed variable i
 */
  
 #include <octave/oct.h>
@@ -46,7 +48,6 @@ This function is from the GNU Scientific Library,\n\
 see @url{http://www.gnu.org/software/gsl/} for documentation.\n\
 @end deftypefn")
 {
-    int i;
     
     gsl_set_error_handler (octave_gsl_errorhandler);
     

@@ -98,7 +98,7 @@ function dlmwrite (file, a, varargin)
   i = 0;
   while (i < length (varargin))
     i = i + 1;
-    if (strcmpi (varargin{i}, "delimiter"))
+    if (strcmpi (varargin{i}, "delimiter") || strcmpi(varargin{i}, "delim"))
       i = i + 1;
       delim = varargin{i};
     elseif (strcmpi (varargin{i}, "newline"))
@@ -187,6 +187,7 @@ endfunction
 %! f1 = char(fread(fid,Inf,'char')');
 %! fclose(fid);
 %! dlmwrite(f,[5,6],'precision','%5.2f','newline','unix','coffset',1,'delimiter',',','-append');
+%! dlmwrite(f,[5,6],'precision','%5.2f','delim','\t','-append');
 %! fid = fopen(f,"rt");
 %! f2 = char(fread(fid,Inf,'char')');
 %! fclose(fid);

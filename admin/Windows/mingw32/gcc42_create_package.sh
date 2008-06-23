@@ -32,19 +32,28 @@ FULLPKG=${PKGNAME}
 #SRCDIR=${TOPDIR}/${PKGNAME}
 PKGFILE=${FULLPKG}
 
-SEVENZIP="/c/Program Files/7-Zip/7z.exe"
+SRCES="${PACKAGE_ROOT}/bin \
+${PACKAGE_ROOT}/doc \
+${PACKAGE_ROOT}/include \
+${PACKAGE_ROOT}/info \
+${PACKAGE_ROOT}/lib \
+${PACKAGE_ROOT}/libexec \
+${PACKAGE_ROOT}/man \
+${PACKAGE_ROOT}/share \
+${PACKAGE_ROOT}/mingw32 \
+${PACKAGE_ROOT}/msys \
+${PACKAGE_ROOT}/tools \
+${PACKAGE_ROOT}/license"
 
-# Create archive package
-#( cd ${PACKAGE_ROOT} && ${TAR} cjvf ${TOPDIR}/${PKGFILE}.tar.bz2 bin doc include info lib libexec man share mingw32 msys );
-#( cd ${PACKAGE_ROOT} && ${TAR} cjv --exclude=mingw32 --exclude=MSYS -f ${TOPDIR}/${PKGFILE}_wo-compiler.tar.bz2 . );
-#( cd ${PACKAGE_ROOT} && ${TAR} cjvf ${TOPDIR}/${PKGFILE}_mingw32-msys.tar.bz2 mingw32 msys );
+"${SEVENZIP}" $SEVENZIP_FLAGS ${TOPDIR}/${PKGFILE}.7z $SRCES 
 
-CF=7
-"${SEVENZIP}" a -t7z ${TOPDIR}/${PKGFILE}.exe ${PACKAGE_ROOT}{/bin,/doc,/include,/info,/lib,/libexec,/man,/share,/mingw32,/msys,/tools} -mx${CF} -sfx7z.sfx
-#"${SEVENZIP}" a -t7z ${TOPDIR}/${PKGFILE}_mingw32-msys.exe ${PACKAGE_ROOT}{/mingw32,/msys} -mx${CF} -sfx7z.sfx
-#"${SEVENZIP}" a -t7z ${TOPDIR}/${PKGFILE}_wo-compiler.exe ${PACKAGE_ROOT}{/bin,/doc,/include,/info,/lib,/libexec,/man,/share} -mx${CF} -sfx7z.sfx
 
-#CF=9
-#"${SEVENZIP}" a -t7z ${TOPDIR}/${PKGFILE}-CF${CF}.exe ${PACKAGE_ROOT} -mx${CF} -sfx7z.sfx
-#"${SEVENZIP}" a -t7z ${TOPDIR}/${PKGFILE}_mingw32-msys-CF${CF}.exe ${PACKAGE_ROOT}{/mingw32,/msys} -mx${CF} -sfx7z.sfx
-#"${SEVENZIP}" a -t7z ${TOPDIR}/${PKGFILE}_wo-compliler-CF${CF}.exe ${PACKAGE_ROOT}{/bin,/doc,/include,/info,/lib,/libexec,/man,/share} -mx${CF} -sfx7z.sfx
+DIRS=`ls -1 ${PACKAGE_ROOT}/ATLAS | sed -ne "/ARCH_\([A-Za-z0-9]\)/p"`
+
+for a in $DIRS; do
+   SRCES="${PACKAGE_ROOT}/ATLAS/$a/bin \
+   ${PACKAGE_ROOT}/ATLAS/$a/lib \
+   ${PACKAGE_ROOT}/ATLAS/$a/staticlib"
+
+   "${SEVENZIP}" $SEVENZIP_FLAGS ATLAS_$a.7z $SRCES
+done

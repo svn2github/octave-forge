@@ -86,8 +86,8 @@ function clq = calcwing (wing, varargin)
       flw = flw1;
       ns++;
       als{ns} = flw.alfad;
-      [cls{ns}, cdis{ns}, cds{ns}, cms{ns}, alcs{ns}] = qcalc (flw);
-      zsep{ns} = max (wing.zc (alcs{ns} > wing.amax));
+      [cls{ns}, cdis{ns}, cds{ns}, cms{ns}, ads{ns}] = qcalc (flw);
+      zsep{ns} = max (wing.zc ((wing.alfa + ads{ns}) > wing.amax));
       if (isempty (zsep{ns}))
 	zsep{ns} = NaN;
       elseif (! wassep)
@@ -125,14 +125,22 @@ function clq = calcwing (wing, varargin)
   clq.cdi = cell2mat (cdis);
   clq.cd = cell2mat (cds);
   clq.cm = cell2mat (cms);
-  clq.aloc = cell2mat (alcs);
+  clq.ad = cell2mat (ads);
   clq.zsep = cell2mat (zsep);
 
   # integral quantities
   dS = wing.ch .* diff (wing.zac);
-  clq.clw = dS.' * clq.cl / wing.area;
-  clq.cdw = dS.' * clq.cd / wing.area;
-  clq.cdiw = dS.' * clq.cdi / wing.area;
+  area = wing.area;
+  if (wing.sym)
+    area /= 2;
+  endif
+  cad = cos (clq.ad); sad = sin (clq.ad);
+  clq.clw = dS.' * (clq.cl .* cad) / area;
+  clq.cdiw = dS.' * (clq.cdi .* sad) / area;
+  clq.cdw = dS.' * (clq.cd .* cad)/ area;
+  if (wing.sym)
+    clq.bmw = (dS .* wing.zc).' * (clq.cl .* cad);
+  endif
 
   # TODO: moment calculation
 

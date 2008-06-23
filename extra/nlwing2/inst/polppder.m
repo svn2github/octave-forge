@@ -19,31 +19,19 @@
 % <http://www.gnu.org/licenses/>.
 % 
 
-% -*- texinfo -*-
-% @deftypefn{Function File} {[cl, cd, cm, ad] =} qcalc (flow)
-% Calculates local spanwise quantities for a given flow state.
-% @table @var
-% @item cl
-% local lift coefficient
-% @item cd
-% local viscous drag coefficient
-% @item cl
-% local moment coefficient
-% @item cm
-% local flow twist (difference of local induced angle of attack and global angle of attack)
-% @item alc
+% @deftypefn{Function File} {ppd =} polppder (pp)
+% Differentiates a piecewise polynomial structure.
 % @end deftypefn
+function ppd = polppder (pp)
+  ppd.x = pp.x;
+  ppd.n = pp.n;
+  ppd.d = pp.d;
 
-function [cl, cdi, cd, cm, alc] = qcalc (flow)
-  % calc local velocities
-  vx = flow.vxg*flow.g + flow.vx0; 
-  vy = flow.vyg*flow.g + flow.vy0;
-  % local angles of attack
-  alfa = atan2 (vy, vx); 
-  alc = alfa - flow.alfa;
-  % interpolate local lifts
-  wing = flow.wing;
-  cl = spwinterp (alfa, wing, [wing.pol.cl]);
-  cd = cdi + spwinterp (alfa, wing, [wing.pol.cd]);
-  cm = spwinterp (alfa, wing, [wing.pol.cm]);
+  if (pp.k <= 1)
+    ppd.k = 1;
+    pp.P = zeros (size (pp.P, 1), 1);
+  else
+    k = ppd.k = pp.k - 1;
+    ppd.P = dmult (pp.P(:,1:k), k:-1:1);
+  endif
 endfunction

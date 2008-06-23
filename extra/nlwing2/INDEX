@@ -1,6 +1,7 @@
 nlwing2 >> NLWing2
 NLWing2
   calcwing
+  combinepolars
   corrector
   floweqj
   floweq
@@ -9,7 +10,7 @@ NLWing2
   loadwing
   makeflow
   makewing
-  ppder
+  polppder
   predictor
   qcalc
   setalfa

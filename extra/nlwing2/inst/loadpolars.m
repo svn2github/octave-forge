@@ -44,7 +44,7 @@ function pol = loadpolars (pn)
     pol.a0 = a0; pol.amax = amax;
     alpha = (alpha - a0) ./ (amax - a0);
     pol.cl = pchip (alpha, dat(:,2));
-    pol.cld = ppder (pol.cl);
+    pol.cld = polppder (pol.cl);
     pol.cd = pchip (alpha, dat(:,3));
     pol.cm = pchip (alpha, dat(:,4));
   elseif (iscellstr (pn))
@@ -57,19 +57,4 @@ function pol = loadpolars (pn)
     [pol.z] = pn.z;
   endif
 
-endfunction
-
-% assistant function
-function ppd = ppder (pp)
-  ppd.x = pp.x;
-  ppd.n = pp.n;
-  ppd.d = pp.d;
-
-  if (pp.k <= 1)
-    ppd.k = 1;
-    pp.P = zeros (size (pp.P, 1), 1);
-  else
-    k = ppd.k = pp.k - 1;
-    ppd.P = dmult (pp.P(:,1:k), k:-1:1);
-  endif
 endfunction

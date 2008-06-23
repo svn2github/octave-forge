@@ -146,11 +146,18 @@ DEFUN_DLD(waitbar, args, nargout,
 	  char* buf_ptr	= term_buffer;
 	  begin_rv	= tgetstr("so", &buf_ptr);
 	  end_rv	= tgetstr("se", &buf_ptr);
-	  brvlen = 0;	buf_ptr = begin_rv;
-	  while(buf_ptr[++brvlen]);
-	  ervlen = 0;	buf_ptr = end_rv;
-	  while(buf_ptr[++ervlen]);
 	  
+	  // Display a progress bar, but only if the current terminal has a
+	  // standout mode
+	  if (begin_rv && end_rv)
+	    {
+	      brvlen = 0;	
+	      buf_ptr = begin_rv;
+	      while(buf_ptr[++brvlen]);
+	      ervlen = 0;	buf_ptr = end_rv;
+	      while(buf_ptr[++ervlen]);
+	    }
+	 	  
 	  // initialize print buffer
 	  for(i=0; i<BUF_SIZE; ++i)
 	    print_buf[i]	= ' ';

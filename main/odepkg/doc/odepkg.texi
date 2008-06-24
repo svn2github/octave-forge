@@ -349,7 +349,7 @@ IDE equations in general are of the form
 @ifnothtml
 @math{y'(t) + f(t,y) = 0}
 @end ifnothtml
-where @math{y'(t)} may be a scalar or vector of derivatives. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the set of implicit differential equations. Only IDE solvers from section @ref{Cashs BDF solvers} or section @ref{DDaskr direct method solver} can be used to solve such kind of differential equations. A DAE equation definition in Octave must look like
+where @math{y'(t)} may be a scalar or vector of derivatives. The variable @math{t} always is a scalar describing one point of time and the variable @math{y(t)} is a scalar or vector of solutions from the set of implicit differential equations. Only IDE solvers from section @ref{Cash modified BDF solvers} or section @ref{DDaskr direct method solver} can be used to solve such kind of differential equations. A DAE equation definition in Octave must look like
 @example
 function [residual] = IDEequation (t, y, dy, varargin)
 @end example
@@ -395,7 +395,7 @@ Performance tests have also been added to the OdePkg. Some of these performance 
 @menu
 * Runge-Kutta solvers::         ODE solvers written as @file{*.m} files
 * Hairer-Wanner solvers::       DAE solvers interfaced by @file{*.cc} files
-* Cashs BDF solvers::          A DAE and an IDE solver interfaced by @file{*.cc} files
+* Cash modified BDF solvers::  A DAE and an IDE solver interfaced by @file{*.cc} files
 * DDaskr direct method solver::  An IDE solver interfaced by a @file{*.cc} file
 * Modified Runge-Kutta solvers::  DDE solvers written as @file{*.m} files
 * ODE solver performances::     Cross math-engine performance tests
@@ -449,7 +449,7 @@ which is @math{h}--times an @math{O(h^p)}--term, or rather @math{O(h^{(p+1)})}.
 @tab Integrates a system of non--stiff ordinary differential equations (non--stiff ODEs and DAEs) using seventh and eighth order Runge--Kutta formulas. This is a seventh--order accurate integrator therefore the local error normally expected is @math{O(h^8)}. However, because this particular implementation uses the eighth--order estimate for @math{x_{out}} moving forward with the eighth--order estimate will yield errors on the order of @math{O(h^9)}. This solver requires thirteen function evaluations per integration step.
 @end multitable
 
-@node Hairer-Wanner solvers, Cashs BDF solvers, Runge-Kutta solvers, Solver families
+@node Hairer-Wanner solvers, Cash modified BDF solvers, Runge-Kutta solvers, Solver families
 @subsection Hairer--Wanner solvers
 @cindex Hairer--Wanner
 The Hairer--Wanner solvers have been written by Ernst Hairer and Gerhard Wanner. They are written in the Fortran language (hosted at @url{http://www.unige.ch/~hairer}) and that have been added to the OdePkg as a compressed file with the name @file{hairer.tgz}. Papers and other details about these solvers can be found at the adress given before. The licence of these solvers is a modified BSD license (without advertising clause and therefore are GPL compatible) and can be found as @file{licence.txt} file in the @file{hairer.tgz} package. The Hairer--Wanner solvers have been added to the OdePkg to solve non--stiff and stiff ODEs and DAEs that cannot be solved with any of the Runge--Kutta solvers.
@@ -458,17 +458,17 @@ Interface functions for these solvers have been created and have been added to t
 
 To provide a short name and to circumvent from the syntax of the original solver function wrapper functions have been added, eg. the command @command{ode2r} calls the solver @command{radau} from the Fortran file @file{radau.f}. The other wrapper functions for the Hairer--Wanner solvers are @command{ode5r} for the @command{radau5} solver, @command{oders} for the @command{rodas} solver and @command{odesx} for the @command{seulex} solver. The help text of all these solver functions can be diaplyed by calling @command{help wrapper} where wrapper is one of @command{ode2r}, @command{ode5r}, @command{oders} or @command{odesx}.
 
-@node Cashs BDF solvers, DDaskr direct method solver, Hairer-Wanner solvers, Solver families
-@subsection Cash BDF solvers
+@node Cash modified BDF solvers, DDaskr direct method solver, Hairer-Wanner solvers, Solver families
+@subsection Cash modified BDF solvers
 @cindex BDF solver
-@cindex Cash BDF
-The backward differentiation algorithm solvers have been written by Jeff Cash in the Fortran language and that are hosted at @url{http://pitagora.dm.uniba.it/~testset}. They have been added to the OdePkg as a compressed file with the name @file{cash.tgz}. The license of these solvers is a General Public License V2 that can be found as a preamble of each Fortran solver source file. Papers and other details about these solvers can be found at the host adress given before and also at Jeff Cash's homepage at @url{http://www.ma.ic.ac.uk/~jcash}. Jeff Cash's BDF solvers have been added to the OdePkg to solve non--stiff and stiff ODEs and DAEs and also IDEs that cannot be solved with any of the Runge--Kutta solvers. 
+@cindex Cash modified BDF
+The backward differentiation algorithm solvers have been written by Jeff Cash in the Fortran language and that are hosted at @url{http://pitagora.dm.uniba.it/~testset}. They have been added to the OdePkg as a compressed file with the name @file{cash.tgz}. The license of these solvers is a General Public License V2 that can be found as a preamble of each Fortran solver source file. Papers and other details about these solvers can be found at the host adress given before and also at Jeff Cash's homepage at @url{http://www.ma.ic.ac.uk/~jcash}. Jeff Cash's modified BDF solvers have been added to the OdePkg to solve non--stiff and stiff ODEs and DAEs and also IDEs that cannot be solved with any of the Runge--Kutta solvers. 
 
 Interface functions for these solvers have been created and have been added to the OdePkg. Their names are @file{odepkg_octsolver_XXX.cc} where @file{XXX} is the name of the Fortran file that is interfaced. The file @file{dldsolver.oct} is created automatically when installing OdePkg with the command @command{pkg}, but developers can also build each solver manually with the instructions given as a preamble of every @file{odepkg_octsolver_XXX.cc} file.
 
 To provide a short name and to circumvent from the syntax of the original solver function wrapper functions have been added. The command @command{odebda} calls the solver @command{mebdfdae} from the Fortran file @file{mebdf.f} and the @command{odebdi} calls the solver @command{mebdfi} from the Fortran file @file{mebdfi.f}.
 
-@node DDaskr direct method solver, Modified Runge-Kutta solvers, Cashs BDF solvers, Solver families
+@node DDaskr direct method solver, Modified Runge-Kutta solvers, Cash modified BDF solvers, Solver families
 @subsection DDaskr direct method solver
 @cindex ddaskr solver
 The direct method from the Krylov solver file @file{ddaskr.f} has been written by Peter N. Brown, Alan C. Hindmarsh, Linda R. Petzold and Clement W. Ulrich in the Fortran language and that is hosted at @url{http://www.netlib.org}. @b{The Krylov method has not been implemented within OdePkg, only the direct method has been implemented.} The solver and further files for the interface have been added to the OdePkg as a compressed package with the name @file{ddaskr.tgz}. The license of these solvers is a modfied BSD license (without advertising clause) that can be found inside of the compressed package. Other details about this solver can be found as a preamble in the source file @file{ddaskr.f}. The direct method solver of the file @file{ddaskr.f} has been added to the OdePkg to solve non--stiff and stiff IDEs.

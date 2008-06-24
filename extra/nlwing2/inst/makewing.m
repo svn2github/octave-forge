@@ -93,4 +93,14 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
   if (! isfield (wing, 'area'))
     wing.area = sum (wing.ch .* diff (wing.zac));
   endif
+  if (! isfield (wing, 'span'))
+    wing.span = wing.zac(end) - wing.zac(1);
+  endif
+  if (! isfield (wing, 'sym'))
+    wing.sym = true;
+  endif
+  if (wing.sym)
+    wing.area *= 2;
+    wing.span *= 2;
+  endif
 endfunction

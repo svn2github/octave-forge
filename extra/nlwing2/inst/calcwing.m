@@ -86,8 +86,8 @@ function clq = calcwing (wing, varargin)
       flw = flw1;
       ns++;
       als{ns} = flw.alfad;
-      [cls{ns}, cdis{ns}, cds{ns}, cms{ns}, ads{ns}] = qcalc (flw);
-      zsep{ns} = max (wing.zc ((wing.alfa + ads{ns}) > wing.amax));
+      [cls{ns}, cds{ns}, cms{ns}, ads{ns}] = qcalc (flw);
+      zsep{ns} = max (wing.zc ((flw.alfa + ads{ns}) > wing.amax));
       if (isempty (zsep{ns}))
 	zsep{ns} = NaN;
       elseif (! wassep)
@@ -122,7 +122,6 @@ function clq = calcwing (wing, varargin)
 
   clq.alfa = cell2mat (als);
   clq.cl = cell2mat (cls);
-  clq.cdi = cell2mat (cdis);
   clq.cd = cell2mat (cds);
   clq.cm = cell2mat (cms);
   clq.ad = cell2mat (ads);
@@ -136,7 +135,7 @@ function clq = calcwing (wing, varargin)
   endif
   cad = cos (clq.ad); sad = sin (clq.ad);
   clq.clw = dS.' * (clq.cl .* cad) / area;
-  clq.cdiw = dS.' * (clq.cdi .* sad) / area;
+  clq.cdiw = -dS.' * (clq.cl .* sad) / area;
   clq.cdw = dS.' * (clq.cd .* cad)/ area;
   if (wing.sym)
     clq.bmw = (dS .* wing.zc).' * (clq.cl .* cad);

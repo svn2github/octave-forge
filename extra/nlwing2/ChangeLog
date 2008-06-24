@@ -1,0 +1,5 @@
+2008-06-24  Jaroslav Hajek <highegg@gmail.com>
+
+	* inst/qcalc.m: Remove cdi.
+	* inst/makewing.m: Automatic span and sym properties.
+	* inst/calcwing: Revamp cdi calculation.

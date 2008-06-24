@@ -34,7 +34,7 @@
 % @item alc
 % @end deftypefn
 
-function [cl, cdi, cd, cm, alc] = qcalc (flow)
+function [cl, cd, cm, alc] = qcalc (flow)
   % calc local velocities
   vx = flow.vxg*flow.g + flow.vx0; 
   vy = flow.vyg*flow.g + flow.vy0;
@@ -44,6 +44,6 @@ function [cl, cdi, cd, cm, alc] = qcalc (flow)
   % interpolate local lifts
   wing = flow.wing;
   cl = spwinterp (alfa, wing, [wing.pol.cl]);
-  cd = cdi + spwinterp (alfa, wing, [wing.pol.cd]);
+  cd = spwinterp (alfa, wing, [wing.pol.cd]);
   cm = spwinterp (alfa, wing, [wing.pol.cm]);
 endfunction

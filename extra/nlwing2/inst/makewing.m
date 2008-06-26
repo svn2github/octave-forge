@@ -90,17 +90,19 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
   for [val,key] = ref
     wing.(key) = val;
   endfor
-  if (! isfield (wing, 'area'))
-    wing.area = sum (wing.ch .* diff (wing.zac));
-  endif
-  if (! isfield (wing, 'span'))
-    wing.span = wing.zac(end) - wing.zac(1);
-  endif
   if (! isfield (wing, 'sym'))
     wing.sym = true;
   endif
-  if (wing.sym)
-    wing.area *= 2;
-    wing.span *= 2;
+  if (! isfield (wing, 'area'))
+    wing.area = sum (wing.ch .* diff (wing.zac));
+    if (wing.sym)
+      wing.area *= 2;
+    endif
+  endif
+  if (! isfield (wing, 'span'))
+    wing.span = wing.zac(end) - wing.zac(1);
+    if (wing.sym)
+      wing.span *= 2;
+    endif
   endif
 endfunction

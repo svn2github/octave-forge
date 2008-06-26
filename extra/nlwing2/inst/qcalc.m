@@ -34,13 +34,13 @@
 % @item alc
 % @end deftypefn
 
-function [cl, cd, cm, alc] = qcalc (flow)
+function [cl, cd, cm, ad] = qcalc (flow)
   % calc local velocities
   vx = flow.vxg*flow.g + flow.vx0; 
   vy = flow.vyg*flow.g + flow.vy0;
   % local angles of attack
   alfa = atan2 (vy, vx); 
-  alc = alfa - flow.alfa;
+  ad = alfa - flow.alfa;
   % interpolate local lifts
   wing = flow.wing;
   cl = spwinterp (alfa, wing, [wing.pol.cl]);

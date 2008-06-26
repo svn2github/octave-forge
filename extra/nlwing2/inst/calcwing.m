@@ -85,16 +85,21 @@ function clq = calcwing (wing, varargin)
       printf_flush (" good.\n");
       flw = flw1;
       ns++;
-      als{ns} = flw.alfad;
+      alfas{ns} = flw.alfad;
+      als{ns} = flw.alfa;
       [cls{ns}, cds{ns}, cms{ns}, ads{ns}] = qcalc (flw);
-      zsep{ns} = max (wing.zc ((flw.alfa + ads{ns}) > wing.amax));
-      if (isempty (zsep{ns}))
+      isep = find (flw.alfa + ads{ns} >= wing.amax);
+      if (isempty (isep))
 	zsep{ns} = NaN;
-      elseif (! wassep)
-	wassep = true;
-	opts.limit = min (opts.limit, als{ns} + max (opts.psep, step));
+      else
+	[mad, imad] = max (ads{ns}(isep));
+	zsep{ns} = wing.zc (isep(imad));
+	if (! wassep)
+	  wassep = true;
+	  opts.limit = min (opts.limit, als{ns} + max (opts.psep, step));
+	endif
       endif
-      step = max (step, min (step * 1.4, 1e1*opts.mstep));
+      step = max (step, min (step * 1.4, 5*opts.mstep));
     endif
 
     printf_flush ("predictor step: ");
@@ -120,7 +125,8 @@ function clq = calcwing (wing, varargin)
 
   endwhile
 
-  clq.alfa = cell2mat (als);
+  clq.alfa = cell2mat (alfas);
+  clq.al = cell2mat (als);
   clq.cl = cell2mat (cls);
   clq.cd = cell2mat (cds);
   clq.cm = cell2mat (cms);
@@ -134,9 +140,9 @@ function clq = calcwing (wing, varargin)
     area /= 2;
   endif
   cad = cos (clq.ad); sad = sin (clq.ad);
-  clq.clw = dS.' * (clq.cl .* cad) / area;
-  clq.cdiw = -dS.' * (clq.cl .* sad) / area;
-  clq.cdw = dS.' * (clq.cd .* cad)/ area;
+  clq.clw = (dS.*wing.lcd).' * (clq.cl .* cad) / area;
+  clq.cdiw = -(dS.*wing.lcd).' * (clq.cl .* sad) / area;
+  clq.cdw = (dS.*wing.lcd).' * (clq.cd .* cad)/ area;
   if (wing.sym)
     clq.bmw = (dS .* wing.zc).' * (clq.cl .* cad);
   endif

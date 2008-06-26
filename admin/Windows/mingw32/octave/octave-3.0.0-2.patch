@@ -285,6 +285,27 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -
  	$(INSTALL_DATA) config.h $(DESTDIR)$(octincludedir)/octave/config.h
  	$(INSTALL_DATA) $(srcdir)/NEWS $(DESTDIR)$(datadir)/octave/$(version)/NEWS
  
+diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-3.0.0-orig/scripts/miscellaneous/copyfile.m octave-3.0.0/scripts/miscellaneous/copyfile.m
+--- octave-3.0.0-orig/scripts/miscellaneous/copyfile.m	Fri Oct 12 23:27:23 2007
++++ octave-3.0.0/scripts/miscellaneous/copyfile.m	Thu Jun 26 18:50:13 2008
+@@ -96,7 +96,7 @@
+ 	endif
+ 
+ 	## Copy the files.
+-	[err, msg] = system (sprintf ("%s %s\"%s\"", cmd, p1, p2));
++	[err, msg] = system (sprintf ("%s %s \"%s\"", cmd, p1, p2));
+ 	if (err < 0)
+ 	  status = false;
+ 	  msgid = "copyfile";
+@@ -110,7 +110,7 @@
+       endif
+ 
+       ## Copy the files.
+-      [err, msg] = system (sprintf ("%s %s\"%s\"", cmd, p1, p2));
++      [err, msg] = system (sprintf ("%s %s \"%s\"", cmd, p1, p2));
+       if (err < 0)
+ 	status = false;
+ 	msgid = "copyfile";
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-3.0.0-orig/scripts/miscellaneous/edit.m octave-3.0.0/scripts/miscellaneous/edit.m
 --- octave-3.0.0-orig/scripts/miscellaneous/edit.m	Thu Dec 20 18:53:36 2007
 +++ octave-3.0.0/scripts/miscellaneous/edit.m	Tue Jan 29 22:20:33 2008
@@ -302,16 +323,45 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -
    endif
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-3.0.0-orig/scripts/pkg/pkg.m octave-3.0.0/scripts/pkg/pkg.m
 --- octave-3.0.0-orig/scripts/pkg/pkg.m	Thu Dec 20 17:55:26 2007
-+++ octave-3.0.0/scripts/pkg/pkg.m	Tue Jan 15 20:48:37 2008
-@@ -1038,6 +1038,8 @@
++++ octave-3.0.0/scripts/pkg/pkg.m	Thu Jun 26 18:49:12 2008
+@@ -1038,7 +1038,9 @@
        if (isempty (getenv ("RANLIB")))
          flags = strcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
        endif
+-      [status, output] = shell (strcat ("cd ", src, "; ./configure --prefix=\"",
 +      flags = strcat( flags, " LDFLAGS=-L\"", fullfile(OCTAVE_HOME,"lib"), "\"" );
 +      flags = strcat( flags, " CPPFLAGS=-I\"", fullfile(OCTAVE_HOME,"include"), "\"" );
-       [status, output] = shell (strcat ("cd ", src, "; ./configure --prefix=\"",
++      [status, output] = shell (strcat ("cd '", src, "'; ./configure --prefix=\"",
                                          desc.dir, "\"", flags));
        if (status != 0)
+ 	rm_rf (desc.dir);
+@@ -1052,7 +1054,7 @@
+     ## make
+     if (exist (fullfile (src, "Makefile"), "file"))
+       [status, output] = shell (strcat ("export INSTALLDIR=\"", desc.dir,
+-					 "\"; make -C ", src));
++					 "\"; make -C '", src,"'"));
+       if (status != 0)
+ 	rm_rf (desc.dir);
+ 	error ("'make' returned the following error: %s", output);
+@@ -1098,14 +1100,14 @@
+ 	filenames = sprintf (fullfile (src, "%s "), m.name);
+       endif
+       if (length (oct) > 0)
+-	filenames = strcat (filenames, " ", sprintf(fullfile(src, "%s "), ...
++	filenames = strcat (filenames, ";", sprintf(fullfile(src, "%s;"), ...
+ 						    oct.name));
+       endif
+       if (length (mex) > 0)
+-	filenames = strcat (filenames, " ", sprintf(fullfile(src, "%s "), ...
++	filenames = strcat (filenames, ";", sprintf(fullfile(src, "%s;"), ...
+ 						    mex.name));
+       endif
+-      filenames = split_by (filenames, " ");
++      filenames = split_by (filenames, ";");
+     endif
+ 
+     ## Split into architecture dependent and independent files
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x configure -x config.h.in -x *~ octave-3.0.0-orig/scripts/startup/inputrc octave-3.0.0/scripts/startup/inputrc
 --- octave-3.0.0-orig/scripts/startup/inputrc	Tue Nov  6 19:03:08 2007
 +++ octave-3.0.0/scripts/startup/inputrc	Wed Jan 30 19:37:05 2008

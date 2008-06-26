@@ -10,7 +10,7 @@ sinclude ../../../Makeconf
 ifeq ($(MKDOC),)
 MKDOC = ../../../admin/mkdoc
 MKTEXI = ../../../admin/mktexi
-MAKEINFO = makeinfo --no-split
+MAKEINFO = makeinfo --no-split --document-language=en_us
 TEXI2DVI = texi2dvi --clean
 DVIPS = dvips
 LN_S = ln -s

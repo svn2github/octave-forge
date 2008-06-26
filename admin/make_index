@@ -428,7 +428,7 @@ sub first_sentence { # {{{1
 	# help text contains texinfo.  Strip the indicator and run it
 	# through makeinfo. (XXX FIXME XXX this needs to be a function)
 	$desc =~ s/^\s*-[*]- texinfo -[*]-\s*//;
-	my $cmd = "makeinfo --fill-column 1600 --no-warn --no-validate --no-headers --force --ifinfo";
+	my $cmd = "makeinfo  --document-language=en_us --fill-column 1600 --no-warn --no-validate --no-headers --force --ifinfo";
 	open3(*Writer, *Reader, *Errer, $cmd) or die "Could not run info";
 	print Writer "\@macro seealso {args}\n\n\@noindent\nSee also: \\args\\.\n\@end macro\n";
 	print Writer "$desc"; close(Writer);

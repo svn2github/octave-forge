@@ -63,25 +63,38 @@ makeshlibs()
 {
   FLDFLAGS="-Wl,-s"
   
+  cp $1/liblapack.a .
+  mkdir tmp && cd tmp
+  ar x $1/libf77blas.a lsame.o
+  ar r ../liblapack.a lsame.o
+  cd ..
+  
   $F77 $FLDFLAGS -shared -o atlas.dll \
 	-Wl,--out-implib=libatlas.dll.a \
 	-Wl,--whole-archive $1/libatlas.a \
+	-Wl,--output-def=libatlas.def \
 	-Wl,--no-whole-archive
 
   $F77 $FLDFLAGS -shared -o blas.dll \
 	-Wl,--out-implib=libblas.dll.a \
 	-Wl,--whole-archive $1/libf77blas.a \
+	-Wl,--output-def=libblas.def \
 	-Wl,--no-whole-archive libatlas.dll.a
 
   $F77 $FLDFLAGS -shared -o cblas.dll \
 	-Wl,--out-implib=libcblas.dll.a \
 	-Wl,--whole-archive $1/libcblas.a \
+	-Wl,--output-def=libcblas.def \
 	-Wl,--no-whole-archive libatlas.dll.a
 
   $F77 $FLDFLAGS -shared -o lapack.dll \
 	-Wl,--out-implib=liblapack.dll.a \
-	-Wl,--whole-archive $1/liblapack.a \
+	-Wl,--whole-archive liblapack.a \
+	-Wl,--output-def=liblapack.def \
+	-Wl,--export-all-symbols \
 	-Wl,--no-whole-archive libblas.dll.a libcblas.dll.a libatlas.dll.a
+
+  rm -rf tmp
 }
 
 install() { echo; }
@@ -108,7 +121,7 @@ install_pkg()
       cp ${CP_FLAGS} .build_${a}/libblas.dll.a   $TDLIB
       cp ${CP_FLAGS} .build_${a}/libcblas.dll.a  $TDLIB
 
-      cp ${CP_FLAGS} ${a}/liblapack.a $TDSLB
+      cp ${CP_FLAGS} .build_${a}/liblapack.a $TDSLB
       cp ${CP_FLAGS} ${a}/libatlas.a  $TDSLB
       cp ${CP_FLAGS} ${a}/libf77blas.a   $TDSLB
       cp ${CP_FLAGS} ${a}/libcblas.a  $TDSLB

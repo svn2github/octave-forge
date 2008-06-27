@@ -36,6 +36,18 @@ function [w, MAR, C, sbc, fpe, th] = arfit2(Y, pmin, pmax, selector, no_const)
 %       $Id$
 %	Copyright (C) 1996-2005,2008 by Alois Schloegl <a.schloegl@ieee.org>	
 
+%    This program is free software: you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation, either version 3 of the License, or
+%    (at your option) any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 %%%%% checking of the input arguments was done the same way as ARFIT
@@ -123,9 +135,5 @@ if mcor,
 else
         w = zeros(M,1);
 end;
-
-if nargout>3, 
-	warning('model order criteria SBC and FPE are presumably incorrect and must not be trusted.')
-end;	
 
 if nargout>5,	th=[];	fprintf(2,'Warning ARFIT2: output TH not defined\n'); end;

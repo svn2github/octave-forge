@@ -11,7 +11,7 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
+## along with this program; if not, see <http://www.gnu.org/licenses/>.
 ##
 ## This code was adapted from, Paul Kienzle <pkienzle@users.sf.net>
 ##
@@ -90,30 +90,25 @@ function z = base64decode(X,as_string)
   Y=zeros(S);
 
   ## decode the incoming matrix & 
-  ## write the values into Xa matrix.
-  ##
-  for idx_r = 1:SRows
-	for idx_c=1:SCols
-		v=Xa(idx_r,idx_c);
-		w=-1;
-		if (v >= 'A' && v <= 'Z')
-			w=v-'A';
-		elseif (v >= 'a' && v<='z')
-			w=v-'a'+26;
-		elseif (v >= '0' && v<= '9')
-			w=v-'0'+52;
-		elseif (v == '+')
-                        w=62;
-                elseif (v == '/')
-                        w=63;
-                elseif (v == '=')
-                        w=0;%ignore me
-		end
-		Xa(idx_r,idx_c)=w;
-	end
-  end
+  ## write the values into Va matrix.
+  Va = -1*ones(size(Xa));
 
-  Y=Xa;
+  iAZ = (Xa >= 'A').*(Xa <= 'Z') > 0; 
+  Va(iAZ)=Xa(iAZ)-'A';
+
+  iaz = (Xa >= 'a').*(Xa <= 'z') > 0;
+  Va(iaz)=Xa(iaz)-'a'+26;
+
+  i09 = (Xa >= '0').*(Xa <= '9') > 0; 
+  Va(i09)=Xa(i09)-'0'+52;
+
+  is = (Xa == '/') ;  Va(is) = 63;
+  ip = (Xa == '+') ;  Va(ip) = 62;
+  ieq = (Xa == '=') ;  Va(ieq) = 0;
+  clear is; clear ieq; clear ip; clear i09; 
+  clear iaz; clear iAZ;  clear Xa; clear X;
+
+  Y=Va; clear Va;
   Y1=Y(1,:);
   if (SRows > 1) 
      Y2=Y(2,:);

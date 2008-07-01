@@ -28,7 +28,7 @@
 % @itemize
 % @item "start" Initial angle of attack (0)
 % @item "limit" Maximum angle of attack (22)
-% @item "psep"  How far to go past separation (0)
+% @item "psep"  The minimum past-separation local angle to terminate (0)
 % @item "sstep" Initial angle step (0.5)
 % @item "mstep" Minimum angle step (1e-2)
 % @item "maxit" Maximum number of corrector iterations (250)
@@ -88,18 +88,20 @@ function clq = calcwing (wing, varargin)
       alfas{ns} = flw.alfad;
       als{ns} = flw.alfa;
       [cls{ns}, cds{ns}, cms{ns}, ads{ns}] = qcalc (flw);
-      isep = find (flw.alfa + ads{ns} >= wing.amax);
-      if (isempty (isep))
+      amaxd = flw.alfa + ads{ns} - wing.amax;
+      [mad, imad] = max (amaxd);
+      step = max (step, min (step * 1.4, 5*opts.mstep));
+      if (mad < 0)
 	zsep{ns} = NaN;
+	% update step
+	step = max (min (step, -90/pi*mad), 2*opts.mstep);
       else
-	[mad, imad] = max (ads{ns}(isep));
-	zsep{ns} = wing.zc (isep(imad));
-	if (! wassep)
-	  wassep = true;
-	  opts.limit = min (opts.limit, als{ns} + max (opts.psep, step));
+	zsep{ns} = wing.zc (imad);
+	if (mad > opts.psep)
+	  printf_flush ("separation condition reached.\n")
+	  break;
 	endif
       endif
-      step = max (step, min (step * 1.4, 5*opts.mstep));
     endif
 
     printf_flush ("predictor step: ");

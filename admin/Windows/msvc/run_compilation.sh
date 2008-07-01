@@ -1450,7 +1450,7 @@ if check_package libjpeg; then
     create_module_rc Libjpeg 6.2 libjpeg-62.dll "Independent JPEG Group <www.ijg.org>" \
       "Libjpeg - Library and Tools for JPEG Images" "© `date +%Y` Independent JPEG Group <www.ijg.org>" > jpeg.rc &&
     CPP="/mingw/bin/cpp" \
-      ./configure_package --enable-shared --disable-static &&
+      configure_package --enable-shared --disable-static &&
     sed -e 's/libjpeg\.la:.*$/& jpeg.def jpeg.res/' Makefile > ttt &&
       mv ttt Makefile &&
     (cat >> Makefile <<\EOF

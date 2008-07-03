@@ -1,3 +1,7 @@
+2008-07-03  Jaroslav Hajek <highegg@gmail.com>
+
+	* src/nllgpr.f: fix invalid parameter declaration
+
 2008-06-19  Jaroslav Hajek <highegg@gmail.com>
 
 	* src/pdist2_mw.cc: add missing return statement.

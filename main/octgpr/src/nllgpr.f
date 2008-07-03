@@ -66,7 +66,7 @@ c               increase nx.
       external dwdis2,dcopy,daxpy,dscal,dtrsv,dtrsm,xerbla,
      +dpotrf,dtrtrs,dgeqr2,dorm2r
       integer i,j,nl1
-      real*8 sums,sum,dwdis2,l2pi2
+      real*8 sums,sum,dwdis2,l2pi
       parameter (l2pi = 1.83787706640935d0) 
 
 

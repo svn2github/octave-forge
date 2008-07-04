@@ -1,0 +1,14 @@
+
+
+SRCDIR=@SRCDIR@
+
+TARGET=cpufeature.exe
+
+all : $(TARGET)
+
+
+$(TARGET) : $(SRCDIR)/cpufeature.c $(SRCDIR)/cpuid.S
+	$(CC) -Wl,-s -Wl,-Bstatic -o $@ $^
+
+clean :
+	rm -f $(TARGET)

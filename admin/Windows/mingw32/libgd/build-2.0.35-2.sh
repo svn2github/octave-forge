@@ -61,6 +61,11 @@ conf()
    )
 }
 
+build_pre()
+{
+   ( cd ${SRCDIR} && touch -r configure aclocal.m4 configure.ac Makefile.in config.hin )
+}
+
 install()
 {
    install_pre

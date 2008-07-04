@@ -1,7 +1,7 @@
 diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def blas-orig/makefile.mingw32 blas/makefile.mingw32
 --- blas-orig/makefile.mingw32	Thu Jan  1 01:00:00 1970
-+++ blas/makefile.mingw32	Sat Dec  8 15:40:20 2007
-@@ -0,0 +1,103 @@
++++ blas/makefile.mingw32	Sun Jun 29 15:51:08 2008
+@@ -0,0 +1,104 @@
 +SRCDIR = @SRCDIR@
 +
 +vpath %.f $(SRCDIR)
@@ -102,6 +102,7 @@ diff -urN -x *.exe -x *.dll -x *.o -x *.a -x *.bak -x *.def blas-orig/makefile.m
 +	$(RM) $(DEF_FILES) $(LIB_DEFFILE)
 +	$(RM) $(LIBTARGET) $(OTHER_CLEANFILES)
 +
-+install: blas.dll
-+	cp blas.dll $(SHAREDLIB_PATH)
-+	cp libblas.dll.a $(LIBRARY_PATH)
++install: $(LIBTARGET) $(STATICLIB)
++	cp -uvp libblas.a $(STATICLIBRARY_PATH)
++	cp -uvp blas.dll $(SHAREDLIB_PATH)
++	cp -uvp libblas.dll.a $(LIBRARY_PATH)

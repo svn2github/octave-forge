@@ -41,7 +41,13 @@ source ../gcc42_common.sh
 BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
 # BLAS is packed NOT in a subdirectory, so we must manually create one...
-unpack_pre() { mkdir ${SRCDIR} && cd ${SRCDIR}; }
+unpack_pre()
+{ 
+   if [ -e ${BUILDDIR} ]; 
+      then rm -rf ${BUILDDIR}; 
+   fi;  
+   mkdir ${SRCDIR} && cd ${SRCDIR}; 
+}
 unpack_post() { cd ..; }
 
 mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }

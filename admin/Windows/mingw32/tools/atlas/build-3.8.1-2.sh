@@ -40,7 +40,7 @@ echo ${PREFIX}
 
 MSG="Building ATLAS libraries must be done using CYGWIN!";
 
-DIRS=`ls -1 | sed -ne "/ARCH_\([A-Za-z0-9]\)/p"`
+DIRS=`ls -1 | sed -ne "/^ARCH_\([A-Za-z0-9]\)/p"`
 
 unpack() { echo $MSG; }
 
@@ -125,6 +125,9 @@ install_pkg()
       cp ${CP_FLAGS} ${a}/libatlas.a  $TDSLB
       cp ${CP_FLAGS} ${a}/libf77blas.a   $TDSLB
       cp ${CP_FLAGS} ${a}/libcblas.a  $TDSLB
+      
+      "${SEVENZIP}" $SEVENZIP_FLAGS ATLAS-${VER}-${REL}_$a.7z $TDBIN $TDLIB $TDSLB
+
    done
 }
 

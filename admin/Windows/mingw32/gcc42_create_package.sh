@@ -45,15 +45,8 @@ ${PACKAGE_ROOT}/msys \
 ${PACKAGE_ROOT}/tools \
 ${PACKAGE_ROOT}/license"
 
+# create zip package
 "${SEVENZIP}" $SEVENZIP_FLAGS ${TOPDIR}/${PKGFILE}.7z $SRCES 
 
-
-DIRS=`ls -1 ${PACKAGE_ROOT}/ATLAS | sed -ne "/ARCH_\([A-Za-z0-9]\)/p"`
-
-for a in $DIRS; do
-   SRCES="${PACKAGE_ROOT}/ATLAS/$a/bin \
-   ${PACKAGE_ROOT}/ATLAS/$a/lib \
-   ${PACKAGE_ROOT}/ATLAS/$a/staticlib"
-
-   "${SEVENZIP}" $SEVENZIP_FLAGS ATLAS_$a.7z $SRCES
-done
+# create installer package
+${MAKENSIS} octave.nsi

@@ -107,6 +107,8 @@ install_pkg() {
    # Install Licensing information
    mkdir -vp ${PACKAGE_ROOT}/license/octave
    cp -vp ${SRCDIR}/COPYING ${PACKAGE_ROOT}/license/octave
+   # Install ICO file
+   cp -vp ${TOPDIR}/octave.ico ${PACKAGE_ROOT}/bin
  )
 }
 

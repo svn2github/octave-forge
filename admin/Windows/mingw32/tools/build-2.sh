@@ -14,3 +14,6 @@ echo $0: ACTION = "${ACTION}";
 
 # install ATLAS
 ( cd atlas && ./build-3.8.1-2.sh ${ACTION} )
+
+# install CPUFEATURE
+( cd cpufeature && ./build-1.0.0-2.sh ${ACTION} )

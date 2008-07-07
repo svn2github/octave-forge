@@ -51,6 +51,11 @@ install_pkg()
    cp -uvp ${BUILDDIR}/cpufeature.exe ${PACKAGE_ROOT}/bin
 }
 
+srcpkg()
+{
+   "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${PKG}-${VER}-${REL}-src.7z ${SRCDIR}/cpufeature.c ${SRCDIR}/cpuid.s ${SRCDIR}/makefile.in build-${VER}-${REL}.sh 
+}
+
 all() {
   #download
   #unpack

@@ -52,49 +52,17 @@ conf() { echo $MSG; }
 
 build()
 {
+   FLDFLAGS="-Wl,-s"
+   export FLDFLAGS
+   
    for a in $DIRS; do
-      if [ -e ".build_$a" ]; then rm -rf ".build_$a"; fi
       echo "Entering directory .build_$a ..."
-      mkdir ".build_$a" && cd ".build_$a" && makeshlibs ${TOPDIR}/$a && cd ..
+      mkdir -pv ".build_$a"
+      sed \
+		-e "s+@SRCDIR@+${TOPDIR}/$a+" \
+		${TOPDIR}/makefile.in > ".build_$a/makefile" 
+      make -C ".build_$a" shlibs
    done
-}
-
-makeshlibs()
-{
-  FLDFLAGS="-Wl,-s"
-  
-  cp $1/liblapack.a .
-  mkdir tmp && cd tmp
-  ar x $1/libf77blas.a lsame.o
-  ar r ../liblapack.a lsame.o
-  cd ..
-  
-  $F77 $FLDFLAGS -shared -o atlas.dll \
-	-Wl,--out-implib=libatlas.dll.a \
-	-Wl,--whole-archive $1/libatlas.a \
-	-Wl,--output-def=libatlas.def \
-	-Wl,--no-whole-archive
-
-  $F77 $FLDFLAGS -shared -o blas.dll \
-	-Wl,--out-implib=libblas.dll.a \
-	-Wl,--whole-archive $1/libf77blas.a \
-	-Wl,--output-def=libblas.def \
-	-Wl,--no-whole-archive libatlas.dll.a
-
-  $F77 $FLDFLAGS -shared -o cblas.dll \
-	-Wl,--out-implib=libcblas.dll.a \
-	-Wl,--whole-archive $1/libcblas.a \
-	-Wl,--output-def=libcblas.def \
-	-Wl,--no-whole-archive libatlas.dll.a
-
-  $F77 $FLDFLAGS -shared -o lapack.dll \
-	-Wl,--out-implib=liblapack.dll.a \
-	-Wl,--whole-archive liblapack.a \
-	-Wl,--output-def=liblapack.def \
-	-Wl,--export-all-symbols \
-	-Wl,--no-whole-archive libblas.dll.a libcblas.dll.a libatlas.dll.a
-
-  rm -rf tmp
 }
 
 install() { echo; }

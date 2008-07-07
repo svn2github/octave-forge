@@ -1,0 +1,50 @@
+
+
+
+SRCDIR=@SRCDIR@
+
+SHLIBEXT=.dll
+
+all : shlibs 
+
+shlibs : atlas blas cblas lapack
+
+atlas  : atlas.dll libatlas.dll.a libatlas.def
+blas   : blas.dll libblas.dll.a libblas.def
+cblas  : cblas.dll libcblas.dll.a libcblas.def
+lapack : lapack.dll liblapack.dll.a liblapack.def
+
+
+atlas.dll : $(SRCDIR)/libatlas.a
+	$(F77) $(FLDFLAGS) -shared -o $@ \
+		-Wl,--out-implib=libatlas.dll.a \
+		-Wl,--whole-archive $< \
+		-Wl,--output-def=libatlas.def \
+		-Wl,--no-whole-archive
+
+blas.dll : $(SRCDIR)/libf77blas.a atlas.dll
+	$(F77) $(FLDFLAGS) -shared -o $@ \
+		-Wl,--out-implib=libblas.dll.a \
+		-Wl,--whole-archive $< \
+		-Wl,--output-def=libblas.def \
+		-Wl,--no-whole-archive libatlas.dll.a
+
+cblas.dll : $(SRCDIR)/libcblas.a atlas.dll
+	$(F77) $(FLDFLAGS) -shared -o $@ \
+		-Wl,--out-implib=libcblas.dll.a \
+		-Wl,--whole-archive $< \
+		-Wl,--output-def=libcblas.def \
+		-Wl,--no-whole-archive libatlas.dll.a
+
+lapack.dll : liblapack.a blas.dll cblas.dll atlas.dll
+	$(F77) $(FLDFLAGS) -shared -o $@ \
+		-Wl,--out-implib=liblapack.dll.a \
+		-Wl,--whole-archive $< \
+		-Wl,--output-def=liblapack.def \
+		-Wl,--no-whole-archive libblas.dll.a libcblas.dll.a libatlas.dll.a
+
+
+liblapack.a : $(SRCDIR)/liblapack.a $(SRCDIR)/libf77blas.a
+	cp -av $(SRCDIR)/liblapack.a .
+	mkdir tmp && cd tmp && ar x $(SRCDIR)/libf77blas.a lsame.o && ar r ../liblapack.a lsame.o
+	rm -rf tmp

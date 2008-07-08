@@ -1,0 +1,807 @@
+diff -ur gnuplot-4.2.3-orig/config/config.nt gnuplot-4.2.3/config/config.nt
+--- gnuplot-4.2.3-orig/config/config.nt	Sat Feb 23 20:31:25 2008
++++ gnuplot-4.2.3/config/config.nt	Tue Jul  8 12:18:27 2008
+@@ -532,7 +532,7 @@
+ #define GP_EXCEPTION_NAME _exception
+ #define GP_MATHERR _matherr
+ #define snprintf _snprintf
+-#define vsnprintf _vsnprintf
++/*#define vsnprintf _vsnprintf*/
+ 
+ /* gnuplot.gih is not used by wgnuplot */
+ #define NO_GIH 1
+diff -ur gnuplot-4.2.3-orig/config/makefile.nt gnuplot-4.2.3/config/makefile.nt
+--- gnuplot-4.2.3-orig/config/makefile.nt	Sat Feb 23 20:31:25 2008
++++ gnuplot-4.2.3/config/makefile.nt	Tue Jul  8 12:18:13 2008
+@@ -31,8 +31,17 @@
+ # where to place gnuplot.gih helpfile
+ HELPFILE = wgnuplot.hlp
+ 
++# installation directory
++DESTDIR = d:\Software\VCLibs
++
++# wxWidgets source tree location
++WXLOCATION = d:\Software\VCLibs
++
++# Support libraries location (cairo, pango...)
++VCLIBS_ROOT = d:\Software\VCLibs
++
+ # directory for PostScript prolog and associated files
+-GNUPLOT_PS_DIR = share\\PostScript
++GNUPLOT_PS_DIR = share\gnuplot\PostScript
+ 
+ TOP = .
+ 
+@@ -55,10 +64,15 @@
+ # compiler flags
+ OPTIONS = /DUSE_MOUSE
+ OPTIONS = $(OPTIONS) /DHAVE_LIBGD /DHAVE_GD_GIF /DGIF_ANIMATION /DHAVE_GD_PNG /DHAVE_GD_JPEG /DHAVE_GD_TTF
+-OPTIONS = $(OPTIONS) /DHAVE_LIBPDF
++#OPTIONS = $(OPTIONS) /DHAVE_LIBPDF
+ OPTIONS = $(OPTIONS) /DGNUPLOT_HISTORY
+-CBASEFLAGS = /G5 /GX /GR /MD /O2 /nologo
++OPTIONS = $(OPTIONS) /DWXWIDGETS
++CBASEFLAGS = /EHsc /GR /MD /O2 /nologo /D_CRT_SECURE_NO_DEPRECATE
+ CFLAGS = $(CBASEFLAGS) /I$(TOP) /D_Windows /DWIN32 /DHAVE_CONFIG_H /D__MSC__ /DHELPFILE=\"$(HELPFILE)\" $(OPTIONS)
++CXXFLAGS = /D_WINDOWS /D__WXMSW__ /DNOPCH /I$(WXLOCATION)\include /I$(WXLOCATION)\lib\vc_lib\msw
++CAIRO_CFLAGS = /I$(VCLIBS_ROOT)\include\cairo
++PANGO_CFLAGS = /I$(VCLIBS_ROOT)\include\pango-1.0 /I$(VCLIBS_ROOT)\include\glib-2.0 /I$(VCLIBS_ROOT)\lib\glib-2.0\include
++CONSOLE_CFLAGS = /DCONSOLE /DOCTAVE_BUILD
+ 
+ !IF "$(PROCESSOR_ARCHITECTURE)" == "ALPHA"
+ MACHINE = $(PROCESSOR_ARCHITECTURE)
+@@ -67,11 +81,13 @@
+ !ENDIF
+ 
+ # paths for external libs added here... 
+-LDFLAGS = /subsystem:windows /nologo /MACHINE:$(MACHINE) /MAP:GNUPLOT /libpath:..\src\pdflib\pdflib /libpath:..\src\gdwin32 
++#LDFLAGS = /subsystem:windows /nologo /MACHINE:$(MACHINE) /MAP:GNUPLOT /libpath:..\src\pdflib\pdflib /libpath:..\src\gdwin32 
++LDFLAGS = /nologo /MACHINE:$(MACHINE) /MAP:GNUPLOT /LIBPATH:$(WXLOCATION)\lib\vc_lib
+ 
+ # ...and here.
+ # see other terminal defines in term.h
+-TERMFLAGS = /I..\\term /I..\\src\\pdflib\\pdflib /I..\\src\\gdwin32 /DGNUPLOT_PS_DIR=\"$(GNUPLOT_PS_DIR)\"
++#TERMFLAGS = /I..\\term /I..\\src\\pdflib\\pdflib /I..\\src\\gdwin32 /DGNUPLOT_PS_DIR=\"$(GNUPLOT_PS_DIR)\"
++TERMFLAGS = /I..\\term /DGNUPLOT_PS_DIR=\"$(GNUPLOT_PS_DIR:\=\\)\"
+ 
+ # macros for makefile.all
+ O=obj
+@@ -79,7 +95,7 @@
+ D=..\\docs\\
+ M=..\\demo\\
+ 
+-default: wgnuplot.exe $(HELPFILE) wgnuplot.mnu $(M)bf_test.exe pgnuplot.exe
++default: wgnuplot.exe wgnuplot.mnu $(M)bf_test.exe pgnuplot.exe pgnuplot_win.exe # $(HELPFILE) 
+ 
+ !INCLUDE makefile.all
+ 
+@@ -88,6 +104,8 @@
+ WINOBJS = winmain.obj wgnuplib.obj wgraph.obj wprinter.obj wtext.obj \
+ 	wpause.obj wmenu.obj gpexecute.obj
+ 
++WXOBJS = wxt_gui.obj gp_cairo.obj
++
+ WINDOWS = makefile.win makefile.nt README.win win\wcommon.h \
+ 	win\wgnuplib.c win\wgnuplib.def win\wgnuplib.h win\wgnuplib.rc \
+ 	win\wgnuplot.def win\wgnuplot.hpj win\wgnuplot.mnu win\wgraph.c \
+@@ -95,10 +113,15 @@
+ 	win\wresourc.h win\wtext.c win\wtext.h win\geticon.c \
+ 	$(D)doc2rtf.c $(T)win.trm win\grpicon.ico win\texticon.ico
+ 
++ALL_CONSOLE_OBJS = $(OBJS:.obj=.cobj) $(WINOBJS:.obj=.cobj) $(WXOBJS:.obj=.cobj)
++
+ # default rules
+ .c.obj:
+ 	$(CC) $(CFLAGS) $*.c
+ 
++.c.cobj:
++	$(CC) $(CFLAGS) $(CONSOLE_CFLAGS) $*.c /Fo$@
++
+ $(OBJS): config.h
+ 
+ linkopt1.msw: makefile.nt
+@@ -112,6 +135,8 @@
+ 	echo wpause >> linkopt1.msw
+ 	echo wgraph >> linkopt1.msw
+ 	echo wprinter >> linkopt1.msw
++	echo wxt_gui >> linkopt1.msw
++	echo gp_cairo >> linkopt1.msw
+ 	echo kernel32.lib >> linkopt1.msw
+ 	echo user32.lib >> linkopt1.msw
+ 	echo gdi32.lib >> linkopt1.msw
+@@ -119,8 +144,21 @@
+ 	echo comdlg32.lib >> linkopt1.msw
+ 	echo advapi32.lib >> linkopt1.msw
+ 	echo shell32.lib >> linkopt1.msw
+-	echo pdflib.lib >> linkopt1.msw
+-	echo bgd.lib >> linkopt1.msw
++	echo ole32.lib >> linkopt1.msw
++	echo oleaut32.lib >> linkopt1.msw
++	echo comctl32.lib >> linkopt1.msw
++#	echo pdflib.lib >> linkopt1.msw
++	echo gd.lib >> linkopt1.msw
++	echo wxmsw28.lib >> linkopt1.msw
++	echo wxtiff.lib >> linkopt1.msw
++	echo jpeg.lib >> linkopt1.msw
++	echo png.lib >> linkopt1.msw
++	echo glib-2.0.lib >> linkopt1.msw
++	echo gobject-2.0.lib >> linkopt1.msw
++	echo gmodule-2.0.lib >> linkopt1.msw
++	echo cairo.lib >> linkopt1.msw
++	echo pango-1.0.lib >> linkopt1.msw
++	echo pangocairo-1.0.lib >> linkopt1.msw
+ 	echo wgnuplot.res >> linkopt1.msw
+ 
+ makefile.nt: ..\config\makefile.nt
+@@ -129,45 +167,96 @@
+ config.h: ..\config\config.nt
+ 	copy ..\config\config.nt config.h
+ 
+-wgnuplot.exe: $(OBJS) $(WINOBJS) win\wgnuplot.def wgnuplot.res linkopt1.msw texticon.ico grpicon.ico
+-	$(LD) $(LDFLAGS) /out:wgnuplot.exe @linkopt1.msw
++wgnuplot.exe: $(OBJS) $(WINOBJS) $(WXOBJS) win\wgnuplot.def wgnuplot.res linkopt1.msw texticon.ico grpicon.ico
++	$(LD) /subsystem:windows $(LDFLAGS) /out:wgnuplot.exe @linkopt1.msw
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ # rules
+ 
+ wgnuplot.res :  win\wgnuplot.rc win\wgnuplib.rc win\wresourc.h texticon.ico grpicon.ico
+-	rc /l 0x409 /fowgnuplot.res /i "win" /d "NDEBUG" /d WIN32 /d MSRC win\wgnuplot.rc
++	rc /l 0x409 /fowgnuplot.res /i "win" /i "$(WXLOCATION)\include" /d "NDEBUG" /d WIN32 /d MSRC /d WXWIDGETS win\wgnuplot.rc
+ 
+ term.obj: term.c term.h plot.h setshow.h bitmap.h $(CORETERM)
+-	$(CC) $(CFLAGS) $(TERMFLAGS) term.c
++	$(CC) $(CFLAGS) $(TERMFLAGS) term.c /Fo$@
++
++term.cobj: term.c term.h plot.h setshow.h bitmap.h $(CORETERM)
++	$(CC) $(CFLAGS) $(CONSOLE_CFLAGS) $(TERMFLAGS) term.c /Fo$@
+ 
+ winmain.obj: win\winmain.c win\wgnuplib.h win\wtext.h plot.h
+-	$(CC) $(CFLAGS) win\winmain.c
++	$(CC) $(CFLAGS) win\winmain.c /Fo$@
++
++winmain.cobj: win\winmain.c win\wgnuplib.h win\wtext.h plot.h
++	$(CC) $(CFLAGS) $(CONSOLE_CFLAGS) win\winmain.c /Fo$@
+ 
+ WINDEPS = win\wgnuplib.h win\wcommon.h win\wresourc.h
+ 
+ wgnuplib.obj: win\wgnuplib.c $(WINDEPS)
+-	$(CC) $(CFLAGS) win\wgnuplib.c
++	$(CC) $(CFLAGS) win\wgnuplib.c /Fo$@
++
++wgnuplib.cobj: win\wgnuplib.c $(WINDEPS)
++	$(CC) $(CFLAGS) $(CONSOLE_CFLAGS) win\wgnuplib.c /Fo$@
+ 
+ wmenu.obj: win\wmenu.c $(WINDEPS)
+-	$(CC) $(CFLAGS) win\wmenu.c
++	$(CC) $(CFLAGS) win\wmenu.c /Fo$@
++
++wmenu.cobj: win\wmenu.c $(WINDEPS)
++	$(CC) $(CFLAGS) $(CONSOLE_CFLAGS) win\wmenu.c /Fo$@
+ 
+ wtext.obj: win\wtext.c $(WINDEPS)
+-	$(CC) $(CFLAGS) win\wtext.c
++	$(CC) $(CFLAGS) win\wtext.c /Fo$@
++
++wtext.cobj: win\wtext.c $(WINDEPS)
++	$(CC) $(CFLAGS) $(CONSOLE_CFLAGS) win\wtext.c /Fo$@
+ 
+ wpause.obj: win\wpause.c $(WINDEPS)
+-	$(CC) $(CFLAGS) win\wpause.c
++	$(CC) $(CFLAGS) win\wpause.c /Fo$@
++
++wpause.cobj: win\wpause.c $(WINDEPS)
++	$(CC) $(CFLAGS) $(CONSOLE_CFLAGS) win\wpause.c /Fo$@
+ 
+ wprinter.obj: win\wprinter.c $(WINDEPS)
+-	$(CC) $(CFLAGS) win\wprinter.c
++	$(CC) $(CFLAGS) win\wprinter.c /Fo$@
++
++wprinter.cobj: win\wprinter.c $(WINDEPS)
++	$(CC) $(CFLAGS) $(CONSOLE_CFLAGS) win\wprinter.c /Fo$@
+ 
+ wgraph.obj: win\wgraph.c $(WINDEPS)
+-	$(CC) $(CFLAGS) win\wgraph.c
++	$(CC) $(CFLAGS) win\wgraph.c /Fo$@
++
++wgraph.cobj: win\wgraph.c $(WINDEPS)
++	$(CC) $(CFLAGS) $(CONSOLE_CFLAGS) win\wgraph.c /Fo$@
++
++wxt_gui.obj: wxterminal\wxt_gui.cpp wxterminal\wxt_gui.h $(WXLOCATION)
++	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CAIRO_CFLAGS) wxterminal\wxt_gui.cpp /Fo$@
++
++wxt_gui.cobj: wxterminal\wxt_gui.cpp wxterminal\wxt_gui.h $(WXLOCATION)
++	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CAIRO_CFLAGS) $(CONSOLE_CFLAGS) wxterminal\wxt_gui.cpp /Fo$@
++
++gp_cairo.obj: wxterminal\gp_cairo.c wxterminal\gp_cairo.h
++	$(CC) -c $(CFLAGS) $(CXXFLAGS) $(CAIRO_CFLAGS) $(PANGO_CFLAGS) wxterminal\gp_cairo.c /Fo$@
++
++gp_cairo.cobj: wxterminal\gp_cairo.c wxterminal\gp_cairo.h
++	$(CC) -c $(CFLAGS) $(CXXFLAGS) $(CAIRO_CFLAGS) $(PANGO_CFLAGS) $(CONSOLE_CFLAGS) wxterminal\gp_cairo.c /Fo$@
+ 
+ wgnuplot.mnu: win\wgnuplot.mnu
+ 	copy win\wgnuplot.mnu wgnuplot.mnu
+ 
+-pgnuplot.exe: win\pgnuplot.c
+-	cl $(CBASEFLAGS) /I$(TOP) win\pgnuplot.c /link version.obj user32.lib
++pgnuplot_win.exe: win\pgnuplot.c
++	cl $(CBASEFLAGS) /I$(TOP) win\pgnuplot.c /Fe$@ /link version.obj user32.lib
++	mt -outputresource:$@ -manifest $@.manifest
++
++pgnuplot.exe: $(ALL_CONSOLE_OBJS) win\wgnuplot.def wgnuplot.res texticon.ico grpicon.ico
++	$(LD) /subsystem:console $(LDFLAGS) /out:$@ @<<
++$(ALL_CONSOLE_OBJS)
++kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib
++advapi32.lib shell32.lib ole32.lib oleaut32.lib comctl32.lib
++gd.lib wxmsw28.lib wxtiff.lib
++jpeg.lib png.lib
++glib-2.0.lib gobject-2.0.lib gmodule-2.0.lib
++cairo.lib pango-1.0.lib pangocairo-1.0.lib
++wgnuplot.res
++<<
++	mt -outputresource:$@ -manifest $@.manifest
+ 
+ # extract icons from wgnuplot.rc
+ texticon.ico: grpicon.ico
+@@ -201,6 +290,7 @@
+ # clean up temporary files
+ clean:
+ 	if exist *.obj del *.obj
++	if exist *.cobj del *.cobj
+ 	if exist *.ico del *.ico
+ 	if exist wgnuplot.res del wgnuplot.res
+ 	if exist win\gnuplot.rtf del win\gnuplot.rtf
+@@ -216,6 +306,7 @@
+ 	if exist wgnuplot.hlp del wgnuplot.hlp
+ 	if exist wgnuplot.mnu del wgnuplot.mnu
+ 	if exist pgnuplot.exe del pgnuplot.exe
++	if exist pgnuplot_win.exe del pgnuplot_win.exe
+ 	if exist ..\demo\binary1 del ..\demo\binary1
+ 	if exist ..\demo\binary2 del ..\demo\binary2
+ 	if exist ..\demo\binary3 del ..\demo\binary3
+@@ -223,3 +314,18 @@
+ 	if exist ..\demo\soundfit.par del ..\demo\soundfit.par
+ 	if exist config.h del config.h
+ 	if exist makefile.nt del makefile.nt
++	if exist *.manifest del *.manifest
++
++install: default
++	if not exist $(DESTDIR) mkdir $(DESTDIR)\bin
++	copy /Y wgnuplot.exe $(DESTDIR)\bin\wgnuplot.exe
++	copy /Y win\wgnuplot.mnu $(DESTDIR)\bin\wgnuplot.mnu
++#	copy /Y wgnuplot.hlp $(DESTDIR)\bin\wgnuplot.hlp
++	copy /Y pgnuplot.exe $(DESTDIR)\bin\pgnuplot.exe
++	copy /Y pgnuplot_win.exe $(DESTDIR)\bin\pgnuplot_win.exe
++	if not exist $(DESTDIR)\$(GNUPLOT_PS_DIR) mkdir $(DESTDIR)\$(GNUPLOT_PS_DIR)
++	xcopy /Y ..\term\PostScript\*.ps $(DESTDIR)\$(GNUPLOT_PS_DIR)
++	if not exist $(DESTDIR) mkdir $(DESTDIR)
++	for %f in (BUGS README FAQ Copyright NEWS) do copy ..\%f $(DESTDIR)\%f
++	if not exist $(DESTDIR)\share\gnuplot\demo mkdir $(DESTDIR)\share\gnuplot\demo
++	xcopy /Y ..\demo $(DESTDIR)\share\gnuplot\demo
+diff -ur gnuplot-4.2.3-orig/src/command.c gnuplot-4.2.3/src/command.c
+--- gnuplot-4.2.3-orig/src/command.c	Fri Jan 11 05:45:38 2008
++++ gnuplot-4.2.3/src/command.c	Tue Jul  8 12:18:13 2008
+@@ -1093,7 +1093,7 @@
+ 	}
+     }
+     if (sleep_time < 0) {
+-#ifdef _Windows
++#if defined(_Windows) && !defined(CONSOLE)
+     if (paused_for_mouse && !graphwin.hWndGraph) {
+ 	if (interactive) { /* cannot wait for Enter in a non-interactive session without the graph window */
+ 	    char tmp[512];
+@@ -2689,6 +2689,9 @@
+ 	    if (last >= 0) {
+ 		if (gp_input_line[last] == '\n') {	/* remove any newline */
+ 		    gp_input_line[last] = NUL;
++		    if (last > 0 && gp_input_line[last-1] == '\r') {
++		        gp_input_line[--last] = NUL;
++		    }
+ 		    /* Watch out that we don't backup beyond 0 (1-1-1) */
+ 		    if (last > 0)
+ 			--last;
+diff -ur gnuplot-4.2.3-orig/src/mouse.c gnuplot-4.2.3/src/mouse.c
+--- gnuplot-4.2.3-orig/src/mouse.c	Thu Feb 28 23:58:25 2008
++++ gnuplot-4.2.3/src/mouse.c	Tue Jul  8 12:18:13 2008
+@@ -1675,7 +1675,9 @@
+ #ifdef _Windows
+     if (paused_for_mouse & PAUSE_CLICK) {
+ 	/* remove pause message box after 'pause mouse' */
++#ifndef CONSOLE
+ 	paused_for_mouse = 0;
++#endif
+ 	kill_pending_Pause_dialog();
+     }
+ #endif
+diff -ur gnuplot-4.2.3-orig/src/plot.c gnuplot-4.2.3/src/plot.c
+--- gnuplot-4.2.3-orig/src/plot.c	Thu Jun  7 18:26:32 2007
++++ gnuplot-4.2.3/src/plot.c	Tue Jul  8 12:18:13 2008
+@@ -480,7 +480,7 @@
+     else
+ 	interactive = FALSE;
+ #else
+-# if (defined(__MSC__) && defined(_Windows)) || defined(__WIN32__)
++# if ((defined(__MSC__) && defined(_Windows)) || defined(__WIN32__)) && ! defined(CONSOLE)
+     interactive = TRUE;
+ # else
+     interactive = isatty(fileno(stdin));
+diff -ur gnuplot-4.2.3-orig/src/readline.c gnuplot-4.2.3/src/readline.c
+--- gnuplot-4.2.3-orig/src/readline.c	Fri Apr 28 18:54:03 2006
++++ gnuplot-4.2.3/src/readline.c	Tue Jul  8 12:18:13 2008
+@@ -259,7 +259,12 @@
+ #  include "win/winmain.h"
+ #  define TEXTUSER 0xf1
+ #  define TEXTGNUPLOT 0xf0
++#  ifdef CONSOLE
++#   define special_getc() win_getch()
++static char win_getch __PROTO((void));
++#  else
+ #  define special_getc() msdos_getch()
++#  endif /* CONSOLE */
+ static char msdos_getch __PROTO((void));	/* HBB 980308: PROTO'ed it */
+ # endif				/* _Windows */
+ 
+@@ -757,6 +762,7 @@
+ }
+ 
+ #if !defined(MSDOS) && !defined(ATARI) && !defined(MTOS) && !defined(_Windows) && !defined(DOS386) && !defined(OSK)
++
+ /* Convert ANSI arrow keys to control characters */
+ static int
+ ansi_getc()
+@@ -795,6 +801,17 @@
+ #endif
+ 
+ #if defined(MSDOS) || defined(_Windows) || defined(DOS386) || defined(OS2)
++
++#ifdef CONSOLE
++static char
++win_getch()
++{
++    if (term && term->waitforinput)
++        return term->waitforinput();
++    else
++        return ConsoleGetch();
++}
++#endif
+ 
+ /* Convert Arrow keystrokes to Control characters: */
+ static char
+diff -ur gnuplot-4.2.3-orig/src/term.c gnuplot-4.2.3/src/term.c
+--- gnuplot-4.2.3-orig/src/term.c	Tue Feb  5 07:14:55 2008
++++ gnuplot-4.2.3/src/term.c	Tue Jul  8 12:18:13 2008
+@@ -101,6 +101,7 @@
+ void close_printer __PROTO((FILE * outfile));
+ # ifdef __MSC__
+ #  include <malloc.h>
++#  include <io.h>
+ # else
+ #  include <alloc.h>
+ # endif                         /* MSC */
+diff -ur gnuplot-4.2.3-orig/src/version.c gnuplot-4.2.3/src/version.c
+--- gnuplot-4.2.3-orig/src/version.c	Tue Mar  4 19:36:55 2008
++++ gnuplot-4.2.3/src/version.c	Tue Jul  8 12:18:13 2008
+@@ -40,7 +40,7 @@
+ 
+ 
+ const char gnuplot_version[] = "4.2";
+-const char gnuplot_patchlevel[] = "3 ";
++const char gnuplot_patchlevel[] = "3-octave";
+ const char gnuplot_date[] = "Mar 2008";
+ const char gnuplot_copyright[] = "Copyright (C) 1986 - 1993, 1998, 2004, 2007, 2008";
+ 
+diff -ur gnuplot-4.2.3-orig/src/win/wgnuplib.h gnuplot-4.2.3/src/win/wgnuplib.h
+--- gnuplot-4.2.3-orig/src/win/wgnuplib.h	Sun Mar  5 02:15:56 2006
++++ gnuplot-4.2.3/src/win/wgnuplib.h	Tue Jul  8 12:18:13 2008
+@@ -45,7 +45,9 @@
+ #include <windows.h>
+ 
+ #ifdef _WINDOWS
+-#define _Windows
++# ifndef _Windows
++#  define _Windows
++# endif
+ #endif
+ 
+ /* HBB 19990506: The following used to be #ifdef __DLL__.
+diff -ur gnuplot-4.2.3-orig/src/win/winmain.c gnuplot-4.2.3/src/win/winmain.c
+--- gnuplot-4.2.3-orig/src/win/winmain.c	Thu Mar 29 00:23:13 2007
++++ gnuplot-4.2.3/src/win/winmain.c	Tue Jul  8 12:18:13 2008
+@@ -62,6 +62,7 @@
+ #include <string.h>
+ #include <stdarg.h>
+ #include <ctype.h>
++#include <fcntl.h>
+ #ifdef __MSC__
+ # include <malloc.h>
+ #endif
+@@ -101,6 +102,7 @@
+ PW pausewin;
+ MW menuwin;
+ LPSTR szModuleName;
++LPSTR szPackageDir;
+ LPSTR winhelpname;
+ LPSTR szMenuName;
+ #define MENUNAME "wgnuplot.mnu"
+@@ -251,12 +253,22 @@
+ 
+ #endif /* WIN32 */
+ 
++#ifndef CONSOLE
+ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+ 		LPSTR lpszCmdLine, int nCmdShow)
++#else
++int main(int argc, char **argv)
++#endif
+ {
+ 	/*WNDCLASS wndclass;*/
+ 	LPSTR tail;
+ 
++#ifdef CONSOLE
++# define _argv argv
++# define _argc argc
++	HINSTANCE hInstance = NULL, hPrevInstance = NULL;
++	int nCmdShow = 0;
++#else	 
+ #ifdef __MSC__  /* MSC doesn't give us _argc and _argv[] so ...   */
+ # ifdef WIN32    /* WIN32 has __argc and __argv */
+ #  define _argv __argv
+@@ -271,6 +283,7 @@
+ 		_argv[++_argc] = _fstrtok( NULL, " ");
+ # endif /* WIN32 */
+ #endif /* __MSC__ */
++#endif /* CONSOLE */
+ 
+ #ifdef	__WATCOMC__
+ # define _argv __argv
+@@ -296,6 +309,17 @@
+ 	szModuleName = (LPSTR)farrealloc(szModuleName, _fstrlen(szModuleName)+1);
+ 	CheckMemory(szModuleName);
+ 
++	if (_fstrlen(szModuleName) >= 5 && _fstrnicmp(&szModuleName[_fstrlen(szModuleName)-5], "\\bin\\", 5) == 0)
++	{
++		int len = _fstrlen(szModuleName)-4;
++		szPackageDir = (LPSTR)farmalloc(len+1);
++		CheckMemory(szPackageDir);
++		_fstrncpy(szPackageDir, szModuleName, len);
++		szPackageDir[len] = '\0';
++	}
++	else
++		szPackageDir = szModuleName;
++
+ 	winhelpname = (LPSTR)farmalloc(_fstrlen(szModuleName)+_fstrlen(HELPFILE)+1);
+ 	CheckMemory(winhelpname);
+ 	_fstrcpy(winhelpname,szModuleName);
+@@ -352,6 +376,7 @@
+ 	graphwin.color=TRUE;
+ 	graphwin.fontsize = WINFONTSIZE;
+ 
++#ifndef CONSOLE
+ 	if (TextInit(&textwin))
+ 		exit(1);
+ 	textwin.hIcon = LoadIcon(hInstance, "TEXTICON");
+@@ -377,16 +402,22 @@
+ 		InvalidateRect(textwin.hWndParent, (LPRECT) &rect, 1);
+ 		UpdateWindow(textwin.hWndParent);
+ 	}
++#endif
+ 
+ 
+ 	atexit(WinExit);
+ 
++	if (!isatty(fileno(stdin)))
++		setmode(fileno(stdin), O_BINARY);
++
+ 	gnu_main(_argc, _argv, environ);
+ 
+ 	return 0;
+ }
+ 
+ 
++#ifndef CONSOLE
++
+ /* replacement stdio routines that use Text Window for stdin/stdout */
+ /* WARNING: Do not write to stdout/stderr with functions not listed
+    in win/wtext.h */
+@@ -583,6 +614,91 @@
+     }
+     return fread(ptr, size, n, file);
+ }
++
++#else
++
++DWORD WINAPI stdin_pipe_reader(LPVOID param)
++{
++#if 0
++    HANDLE h = (HANDLE)_get_osfhandle(fileno(stdin));
++    char c;
++    DWORD cRead;
++
++    if (ReadFile(h, &c, 1, &cRead, NULL))
++        return c;
++#else
++    unsigned char c;
++    if (fread(&c, 1, 1, stdin) == 1)
++        return (DWORD)c;
++    return EOF;
++#endif
++}
++
++int ConsoleGetch()
++{
++    int fd = fileno(stdin);
++    HANDLE h;
++    DWORD waitResult;
++
++    if (!isatty(fd))
++        h = CreateThread(NULL, 0, stdin_pipe_reader, NULL, 0, NULL);
++    else
++        h = (HANDLE)_get_osfhandle(fd);
++
++    do
++    {
++        waitResult = MsgWaitForMultipleObjects(1, &h, FALSE, INFINITE, QS_ALLINPUT);
++        if (waitResult == WAIT_OBJECT_0)
++        {
++            if (isatty(fd))
++            {
++                INPUT_RECORD rec;
++                DWORD recRead;
++
++                ReadConsoleInput(h, &rec, 1, &recRead);
++                if (recRead == 1 && rec.EventType == KEY_EVENT && rec.Event.KeyEvent.bKeyDown &&
++                        (rec.Event.KeyEvent.wVirtualKeyCode < VK_SHIFT || 
++                         rec.Event.KeyEvent.wVirtualKeyCode > VK_MENU))
++                {
++                    if (rec.Event.KeyEvent.uChar.AsciiChar)
++                        return rec.Event.KeyEvent.uChar.AsciiChar;
++                    else
++                        switch (rec.Event.KeyEvent.wVirtualKeyCode)
++                        {
++                            case VK_UP: return 020;
++                            case VK_DOWN: return 016;
++                            case VK_LEFT: return 002;
++                            case VK_RIGHT: return 006;
++                            case VK_HOME: return 001;
++                            case VK_END: return 005;
++                            case VK_DELETE: return 004;
++                        }
++                }
++            }
++            else
++            {
++                DWORD c;
++                GetExitCodeThread(h, &c);
++		CloseHandle(h);
++                return c;
++            }
++        }
++        else if (waitResult == WAIT_OBJECT_0+1)
++        {
++            MSG msg;
++
++            while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
++            {
++                TranslateMessage(&msg);
++                DispatchMessage(&msg);
++            }
++        }
++        else
++            break;
++    } while (1);
++}
++
++#endif /* CONSOLE */
+ 
+ /* public interface to printer routines : Windows PRN emulation
+  * (formerly in win.trm)
+diff -ur gnuplot-4.2.3-orig/src/win/winmain.h gnuplot-4.2.3/src/win/winmain.h
+--- gnuplot-4.2.3-orig/src/win/winmain.h	Sun Jul 16 04:50:56 2006
++++ gnuplot-4.2.3/src/win/winmain.h	Tue Jul  8 12:18:13 2008
+@@ -55,6 +55,7 @@
+ 
+ extern LPSTR winhelpname;
+ extern LPSTR szModuleName;
++extern LPSTR szPackageDir;
+ 
+ int Pause __PROTO((LPSTR str));
+ void screen_dump __PROTO((void));
+diff -ur gnuplot-4.2.3-orig/src/win/wtext.h gnuplot-4.2.3/src/win/wtext.h
+--- gnuplot-4.2.3-orig/src/win/wtext.h	Thu Jul  1 19:10:11 2004
++++ gnuplot-4.2.3/src/win/wtext.h	Tue Jul  8 12:18:13 2008
+@@ -40,6 +40,8 @@
+ /* redefine functions that can talk to tty devices, to use
+  * implementation in winmain.c/wgnuplot.dll */
+ 
++#ifndef CONSOLE
++
+ #define kbhit()  MyKBHit()
+ #define getche() MyGetChE()
+ #define getch()  MyGetCh()
+@@ -102,3 +104,9 @@
+ size_t MyFWrite(const void *ptr, size_t size, size_t n, FILE *stream);
+ size_t MyFRead(void *ptr, size_t size, size_t n, FILE *stream);
+ 
++#else /* CONSOLE */
++
++#define getch ConsoleGetch
++int ConsoleGetch();
++
++#endif /* CONSOLE */
+diff -ur gnuplot-4.2.3-orig/src/wxterminal/gp_cairo.c gnuplot-4.2.3/src/wxterminal/gp_cairo.c
+--- gnuplot-4.2.3-orig/src/wxterminal/gp_cairo.c	Sun Aug 26 19:50:41 2007
++++ gnuplot-4.2.3/src/wxterminal/gp_cairo.c	Tue Jul  8 12:18:13 2008
+@@ -78,6 +78,10 @@
+ #include <pango/pangocairo.h>
+ #include <glib.h>
+ 
++#ifdef _MSC_VER
++#define rint(x) floor((x)+0.5L)
++#endif
++
+ /* undef this to see what happens without the Symbol-to-unicode processing */
+ #define MAP_SYMBOL
+ 
+@@ -703,6 +707,7 @@
+ 	cairo_translate(plot->cr, x, y);
+ 	cairo_rotate(plot->cr, -arg);
+ 
++	{
+ 	PangoRectangle ink, logical;
+ 	double lw = cairo_get_line_width (plot->cr);
+ 	pango_layout_get_extents (layout, &ink, &logical);
+@@ -722,6 +727,7 @@
+ 			(double)ink.width / PANGO_SCALE + lw,
+ 			(double)ink.height / PANGO_SCALE + lw);
+ 	cairo_stroke (plot->cr);
++	}
+ #endif /* helper boxes to understand how text is positionned */
+ 
+ 	/* free the layout object */
+diff -ur gnuplot-4.2.3-orig/src/wxterminal/wxt_gui.cpp gnuplot-4.2.3/src/wxterminal/wxt_gui.cpp
+--- gnuplot-4.2.3-orig/src/wxterminal/wxt_gui.cpp	Tue May 22 23:12:08 2007
++++ gnuplot-4.2.3/src/wxterminal/wxt_gui.cpp	Tue Jul  8 12:18:13 2008
+@@ -327,7 +327,7 @@
+ 	/* set up the toolbar */
+ 	wxToolBar * toolbar = CreateToolBar();
+ 	/* With wxMSW, default toolbar size is only 16x15. */
+-	toolbar->SetToolBitmapSize(wxSize(16,16));
++//	toolbar->SetToolBitmapSize(wxSize(16,16));
+ 
+ 	toolbar->AddTool(Toolbar_CopyToClipboard, wxT("Copy"),
+ 				*(toolBarBitmaps[0]), wxT("Copy the plot to clipboard"));
+@@ -358,6 +358,7 @@
+ 
+ 	/* setting minimum height and width for the window */
+ 	SetSizeHints(100, 100);
++	OnSize( wxSizeEvent( this->GetSize() ) );
+ 
+ 	FPRINTF((stderr,"wxtFrame constructor 3\n"));
+ }
+@@ -488,7 +489,7 @@
+ /* panel constructor
+  * Note : under Windows, wxDefaultPosition makes the panel hide the toolbar */
+ wxtPanel::wxtPanel( wxWindow *parent, wxWindowID id, const wxSize& size )
+-	: wxPanel( parent,  id,  wxPoint(0,0) /*wxDefaultPosition*/, size, wxWANTS_CHARS )
++	: wxPanel( parent,  id,  wxPoint(0,0) /* wxDefaultPosition */, size, wxWANTS_CHARS )
+ {
+ 	FPRINTF((stderr,"panel constructor\n"));
+ 
+@@ -1340,6 +1341,7 @@
+ 
+ #ifdef __WXMSW__
+ 		/* the following is done in wxEntry() with wxMSW only */
++		WXDLLIMPEXP_BASE void wxSetInstance(HINSTANCE hInst);
+ 		wxSetInstance(GetModuleHandle(NULL));
+ 		wxApp::m_nCmdShow = SW_SHOW;
+ #endif
+@@ -2830,7 +2832,29 @@
+  * the terminal events are directly processed when they are received */
+ int wxt_waitforinput()
+ {
+-	return getch();
++#ifdef CONSOLE
++	if (paused_for_mouse)
++	{
++		MSG msg;
++		BOOL ret;
++
++		while ((ret = GetMessage(&msg, NULL, 0, 0)) != 0)
++		{
++			if (ret == -1)
++				break;
++
++			TranslateMessage(&msg);
++			DispatchMessage(&msg);
++
++			if (!paused_for_mouse)
++				break;
++		}
++		
++		return '\0';
++	}
++	else
++#endif
++		return getch();
+ }
+ 
+ #elif defined(__WXGTK__)||defined(__WXMAC__)
+diff -ur gnuplot-4.2.3-orig/term/post.trm gnuplot-4.2.3/term/post.trm
+--- gnuplot-4.2.3-orig/term/post.trm	Fri Jan 11 05:45:40 2008
++++ gnuplot-4.2.3/term/post.trm	Tue Jul  8 12:18:14 2008
+@@ -3122,9 +3122,9 @@
+ # if defined(_Windows)
+ 	/* retrieve prologues path relatively to gnuplot executable,
+ 	 * whose path is in szModuleName (winmain.c) */
+-	ps_prologue_dir = gp_alloc(strlen((char*) szModuleName)
++	ps_prologue_dir = gp_alloc(strlen((char*) szPackageDir)
+ 			+ strlen(GNUPLOT_PS_DIR) + 2, "Prolog path");
+-	strcpy(ps_prologue_dir, (char*) szModuleName);
++	strcpy(ps_prologue_dir, (char*) szPackageDir);
+ 	strcat(ps_prologue_dir, "\\");
+ 	/* GNUPLOT_PS_DIR is _relative_ path */
+ 	strcat(ps_prologue_dir, GNUPLOT_PS_DIR);
+diff -ur gnuplot-4.2.3-orig/term/win.trm gnuplot-4.2.3/term/win.trm
+--- gnuplot-4.2.3-orig/term/win.trm	Sat Aug  4 20:10:37 2007
++++ gnuplot-4.2.3/term/win.trm	Tue Jul  8 12:18:14 2008
+@@ -86,6 +86,7 @@
+ TERM_PUBLIC void WIN_set_cursor __PROTO((int, int, int));
+ TERM_PUBLIC void WIN_put_tmptext __PROTO((int, const char str[]));
+ TERM_PUBLIC void WIN_set_clipboard __PROTO((const char[]));
++TERM_PUBLIC int WIN_waitforinput __PROTO((void));
+ #endif
+ TERM_PUBLIC int WIN_make_palette __PROTO((t_sm_palette *palette));
+ TERM_PUBLIC void WIN_set_color __PROTO((t_colorspec *));
+@@ -454,6 +455,16 @@
+     Graph_set_clipboard(&graphwin, s);
+ }
+ 
++#ifdef CONSOLE
++
++TERM_PUBLIC int
++WIN_waitforinput  ()
++{
++    return ConsoleGetch();
++}
++
++#endif /* CONSOLE */
++
+ #endif /* USE_MOUSE */
+ 
+ 
+@@ -861,7 +872,11 @@
+     WIN_text /* suspend */ , WIN_resume,
+     WIN_boxfill, WIN_linewidth
+ #ifdef USE_MOUSE
++# ifdef CONSOLE
++    , WIN_waitforinput , 
++# else
+     , 0 /* WIN_waitforinput */,
++# endif /* CONSOLE */
+     WIN_put_tmptext, WIN_set_ruler, WIN_set_cursor, WIN_set_clipboard
+ #endif
+     , WIN_make_palette, 0 /* previous_palette */,
+diff -ur gnuplot-4.2.3-orig/term/wxt.trm gnuplot-4.2.3/term/wxt.trm
+--- gnuplot-4.2.3-orig/term/wxt.trm	Fri Sep 15 16:09:36 2006
++++ gnuplot-4.2.3/term/wxt.trm	Tue Jul  8 12:18:14 2008
+@@ -59,12 +59,20 @@
+ 
+ /* terminal state, defined extern in wxt_term.h */
+ int wxt_window_number = 0;
++#ifdef OCTAVE_BUILD
++TBOOLEAN wxt_enhanced_enabled = TRUE;
++#else
+ TBOOLEAN wxt_enhanced_enabled = FALSE;
++#endif
+ int wxt_persist = UNSET;
+ int wxt_raise = UNSET;
+ int wxt_ctrl = UNSET;
+ /* default text font family: */
++#ifdef OCTAVE_BUILD
++char wxt_set_fontname[MAX_ID_LEN + 1] = "courier";
++#else
+ char wxt_set_fontname[MAX_ID_LEN + 1] = "";
++#endif
+ /* default text size*/
+ int wxt_set_fontsize = 0;
+ /* window title */

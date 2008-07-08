@@ -52,6 +52,7 @@ do_nsiclean=true
 do_octplot=false
 do_gui=false
 do_debug=false
+do_keep=false
 download_root="http://downloads.sourceforge.net/octave/@@?download"
 #download_root="http://www.dbateman.org/octave/hidden/@@"
 
@@ -149,6 +150,9 @@ while test $# -gt 0; do
     -f | --force)
       todo_packages="$available_packages"
       ;;
+    -k | --keep)
+      do_keep=true
+      ;;
     -g)
       do_debug=true;
       ;;
@@ -230,7 +234,9 @@ function remove_package
   packdir="$1"
   if $build_flag; then
     if ! $do_debug; then
-      rm -rf "$packdir"
+      if ! $do_keep; then
+        rm -rf "$packdir"
+      fi
     fi
   fi
 }
@@ -2309,14 +2315,14 @@ fi
 ###########
 
 if check_package gnuplot; then
-  download_file gnuplot-4.2.2.tar.gz 'http://downloads.sourceforge.net/gnuplot/gnuplot-4.2.2.tar.gz?modtime=1173003818&big_mirror=0'
+  download_file gnuplot-4.2.3.tar.gz 'http://downloads.sourceforge.net/gnuplot/gnuplot-4.2.3.tar.gz?big_mirror=0'
   echo -n "decompressing gnuplot... "
-  (cd "$DOWNLOAD_DIR" && tar xfz gnuplot-4.2.2.tar.gz)
-  cp libs/gnuplot-4.2.2.diff "$DOWNLOAD_DIR/gnuplot-4.2.2"
+  (cd "$DOWNLOAD_DIR" && tar xfz gnuplot-4.2.3.tar.gz)
+  cp libs/gnuplot-4.2.3.diff "$DOWNLOAD_DIR/gnuplot-4.2.3"
   echo "done"
   echo -n "compiling gnuplot... "
-  (cd "$DOWNLOAD_DIR/gnuplot-4.2.2" &&
-    patch -p1 < gnuplot-4.2.2.diff &&
+  (cd "$DOWNLOAD_DIR/gnuplot-4.2.3" &&
+    patch -p1 < gnuplot-4.2.3.diff &&
     sed -e "s,^DESTDIR =.*,DESTDIR = $tdir_w32," -e "s,^WXLOCATION =.*,WXLOCATION = $tdir_w32," \
       -e "s,^VCLIBS_ROOT =.*,VCLIBS_ROOT = $tdir_w32," config/makefile.nt > ttt &&
     mv ttt config/makefile.nt &&
@@ -2327,10 +2333,10 @@ if check_package gnuplot; then
 	cp "$INSTALL_DIR/Copyright" "$tlicdir/COPYING.GNUPLOT" &&
     mv "$INSTALL_DIR/BUGS" "$INSTALL_DIR/Copyright" "$INSTALL_DIR/FAQ" "$INSTALL_DIR/NEWS" "$INSTALL_DIR/README" \
       "$INSTALL_DIR/doc/gnuplot") >&5 2>&1 && end_package
-  remove_package "$DOWNLOAD_DIR/gnuplot-4.2.2"
-  download_file gp422win32.zip 'http://downloads.sourceforge.net/gnuplot/gp422win32.zip?modtime=1173777723&big_mirror=0'
-  if test -f "$DOWNLOAD_DIR/gp422win32.zip"; then
-    (cd "$DOWNLOAD_DIR" && unzip -o -q -j -d "$tbindir" gp422win32.zip gnuplot/bin/wgnuplot.hlp)
+  remove_package "$DOWNLOAD_DIR/gnuplot-4.2.3"
+  download_file gp423win32.zip 'http://downloads.sourceforge.net/gnuplot/gp423win32.zip?big_mirror=0'
+  if test -f "$DOWNLOAD_DIR/gp423win32.zip"; then
+    (cd "$DOWNLOAD_DIR" && unzip -o -q -j -d "$tbindir" gp423win32.zip gnuplot/bin/wgnuplot.hlp)
   else
     echo "WARNING: could not get wgnuplot.hlp"
   fi

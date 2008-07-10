@@ -724,7 +724,7 @@ fi
 
 if check_package libf2c; then
   download_file libf2c.zip http://www.netlib.org/f2c/libf2c.zip
-  (cd "$DOWNLOAD_DIR" && unzip -q libf2c.zip)
+  (cd "$DOWNLOAD_DIR" && mkdir libf2c && cd libf2c && unzip -q ../libf2c.zip)
   echo -n "compiling libf2c... "
   (cd "$DOWNLOAD_DIR/libf2c";
     sed -e 's/^CFLAGS = /CFLAGS = -MD -DIEEE_COMPLEX_DIVIDE /' makefile.vc > ttt &&

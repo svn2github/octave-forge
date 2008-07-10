@@ -1,7 +1,7 @@
 #!/bin/sh
 
 dodebug=true
-OCTAVE_ROOT=/usr/local/octave-vc8-debug
+OCTAVE_ROOT=/d/Software/VCLibs/local/octave-vc9-debug
 
 case $1 in
   release=*)
@@ -11,7 +11,7 @@ case $1 in
     ;;
   release)
     dodebug=false
-    OCTAVE_ROOT=/usr/local/octave-vc8
+    OCTAVE_ROOT=/usr/local/octave-vc9
     ;;
   clean)
     find -name "*.pdb" | xargs rm

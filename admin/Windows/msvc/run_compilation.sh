@@ -38,13 +38,7 @@ DOATLAS=false
 
 verbose=false
 packages=
-available_packages="f2c libf2c fort77 BLAS LAPACK ATLAS FFTW fftwf PCRE GLPK readline zlib SuiteSparse
-HDF5 glob libpng ARPACK libjpeg libiconv gettext cairo glib pango freetype libgd libgsl
-netcdf sed makeinfo units less CLN GiNaC wxWidgets gnuplot FLTK octave JOGL forge qhull
-VC octplot ncurses pkg-config fc-msvc libcurl libxml2 fontconfig GraphicsMagick bzip2
-ImageMagick libtiff libwmf jasper GTK ATK Glibmm Cairomm Gtkmm libsigc++ libglade
-gtksourceview gdl VTE GtkGlArea PortAudio playrec OctaveDE Gtksourceview1 FTPlib
-SQLite3 FFMpeg FTGL"
+available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:"
 octave_version=
 of_version=
 do_nsi=false
@@ -96,6 +90,8 @@ gtkglareaver=1.99.0
 sqlite3ver=3.5.8
 atlver=3.8.1
 ftglver=2.1.2
+gtkglextver=1.2.0
+gtkglextmmver=1.2.0
 
 ###################################################################################
 
@@ -156,6 +152,15 @@ while test $# -gt 0; do
     -g)
       do_debug=true;
       ;;
+    --list)
+      IFS=:
+      for pack in $available_packages; do
+	  if test -n "$pack"; then
+	      echo $pack
+	  fi
+      done
+      exit 0
+      ;;
     --release=*)
       octave_version=`echo $1 | sed -e 's/--release=//'`
       if test "$octave_version" = devel; then
@@ -191,14 +196,14 @@ while test $# -gt 0; do
       exit -1
       ;;
     *)
-      if ! `echo $available_packages | grep -e $1 > /dev/null`; then
+      if ! `echo $available_packages | grep -i -e ":$1:" > /dev/null`; then
         echo "unknown package: $1"
         exit -1
       fi
       if test -z "$packages"; then
-        packages="$1"
+        packages=":$1:"
       else
-        packages="$packages $1"
+        packages="$packages:$1:"
       fi
       ;;
   esac
@@ -251,12 +256,12 @@ function configure_package
 function check_package
 {
   pack=$1
-  if ! `echo $available_packages | grep -e $pack > /dev/null`; then
+  if ! `echo $available_packages | grep -e ":$pack:" > /dev/null`; then
     echo "check_package: unknown package: $pack"
     exit -1
   fi
   if test ! -z "$packages"; then
-    found=`echo "$packages" | grep -e $pack`
+    found=`echo "$packages" | grep -i -e ":$pack:"`
     if test ! -z "$found"; then
       echo "processing $pack... "
       build_flag=false
@@ -527,14 +532,14 @@ function todo_check
 {
   path=$1
   name=$2
-  if ! `echo $available_packages | grep -e $name > /dev/null`; then
+  if ! `echo $available_packages | grep -i -e ":$name:" > /dev/null`; then
     echo "todo_check: unknown package: $name"
     exit -1
   fi
   echo -n "checking for $name... "
   if test ! -f "$path"; then
     echo "no";
-    packages="$packages $name"
+    packages="$packages:$name:"
   else
     echo "installed"
   fi
@@ -630,6 +635,8 @@ if test -z "$todo_packages"; then
     todo_check "$tlibdir/sqlite3.lib" SQLite3
     todo_check "$tlibdir/avcodec.lib" FFMpeg
     todo_check "$tlibdir/ftgl.lib" FTGL
+    todo_check "$tlibdir/gtkglext-win32-1.0.lib" gtkglext
+    todo_check "$tlibdir/gtkglextmm-win32-1.2-0.lib" gtkglextmm
   fi
 else
   packages="$todo_packages"
@@ -3685,6 +3692,90 @@ if check_package GtkGlArea; then
     rm -f $tlibdir_quoted/libgtkgl*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/gtkglarea-$gtkglarea"
   if failed_package || test ! -f "$tlibdir/gtkgl-2.0.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+############
+# GtkGLExt #
+############
+
+if check_package gtkglext; then
+  gtkglextroot=`echo $gtkglextver | sed -e 's/\.[0-9]\+$//'`
+  download_file gtkglext-$gtkglextver.tar.bz2 "http://downloads.sourceforge.net/gtkglext/gtkglext-$gtkglextver.tar.bz2?big_mirror=0"
+  echo -n "decompressing gtkglext... "
+  unpack_file gtkglext-$gtkglextver.tar.bz2
+  echo "done"
+  echo "compiling gtkglext... "
+  (cd "$DOWNLOAD_DIR/gtkglext-$gtkglextver" &&
+    sed -e "s/pangox/pangowin32/g" configure.in > ttt &&
+      mv ttt configure.in &&
+    autoconf &&
+    configure_package --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "/^SUBDIRS =/ {s/docs//;}" Makefile > ttt &&
+      mv ttt Makefile &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libgtkglext*.la $tlibdir_quoted/libgdkglext*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/gtkglext-$gtkglextver"
+  if failed_package || test ! -f "$tlibdir/gtkglext-win32-1.0.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##############
+# gtkglextmm #
+##############
+
+if check_package gtkglextmm; then
+  gtkglextmmroot=`echo $gtkglextmmver | sed -e 's/\.[0-9]\+$//'`
+  download_file gtkglextmm-$gtkglextmmver.tar.bz2 "http://downloads.sourceforge.net/gtkglext/gtkglextmm-$gtkglextmmver.tar.bz2?big_mirror=0"
+  echo -n "decompressing gtkglextmm... "
+  unpack_file gtkglextmm-$gtkglextmmver.tar.bz2
+  echo "done"
+  echo "compiling gtkglextmm... "
+  (cd "$DOWNLOAD_DIR/gtkglextmm-$gtkglextmmver" &&
+    sed -e "s/-lstdc++//" configure > ttt &&
+      mv ttt configure &&
+    configure_package --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "/^SUBDIRS =/ {s/docs//;s/tools//;}" Makefile > ttt &&
+      mv ttt Makefile &&
+    for f in gdkglext/gdkmm/gl/drawable.h gdkglext/gdkmm/gl/context.h; do
+      sed -e '/#include <GL\/gl\.h>/ {i \
+#ifdef G_OS_WIN32\
+#define WINDOWS_LEAN_AND_MEAN 1\
+#include <windows.h>\
+#undef max\
+#endif\
+
+;}' $f > ttt &&
+        mv ttt $f
+    done &&
+    for f in gdk gtk; do
+      (cat >> ${f}glext/${f}mm/gl/Makefile <<EOF
+${f}glextmm.def: \$(lib${f}glextmm_win32_1_2_la_OBJECTS)
+	@echo EXPORTS > \$@
+	@nm .libs/*.o | grep -e ' T ' | sed -e 's/.* T //' | grep -v -e '^??_[DEG]' >> \$@
+EOF
+) &&
+      sed -e "s/^lib${f}glextmm_win32_1_2_la_LDFLAGS =/& -Wl,-def:${f}glextmm.def/" \
+          -e "s/^lib${f}glextmm-win32-1\.2\.la:/& ${f}glextmm.def/" \
+          ${f}glext/${f}mm/gl/Makefile > ttt &&
+        mv ttt ${f}glext/${f}mm/gl/Makefile
+    done
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libgtkglextmm*.la $tlibdir_quoted/libgdkglextmm*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/gtkglextmm-$gtkglextmmver"
+  if failed_package || test ! -f "$tlibdir/gtkglextmm-win32-1.2-0.lib"; then
     echo "failed"
     exit -1
   else

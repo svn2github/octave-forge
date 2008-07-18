@@ -3718,6 +3718,19 @@ if check_package gtkglext; then
     post_process_libtool &&
     sed -e "/^SUBDIRS =/ {s/docs//;}" Makefile > ttt &&
       mv ttt Makefile &&
+    for f in gdk gtk; do
+      create_module_rc GtkGLExt $gtkglextver lib${f}glext-win32-0.dll "Naofumi Yasufuk <naofumi@users.sourceforge.net>" \
+        "GtkGLExt - OpenGL Extension to Gtk" "Copyright © 2002-`date +%Y` Naofumi Yasufuk" > ${f}/${f}glext.rc &&
+      (cat >> ${f}/Makefile <<EOF
+${f}glext.res: ${f}glext.rc
+	rc -fo \$@ \$<
+EOF
+) &&
+      sed -e "s/^lib${f}glext_win32_[0-9]\+_[0-9]\+_la_LDFLAGS =/& -Wl,${f}glext.res/" \
+          -e "s/^lib${f}glext-win32-[0-9]\+\.[0-9]\+\.la:/& ${f}glext.res/" \
+          ${f}/Makefile > ttt &&
+        mv ttt ${f}/Makefile
+    done
     make &&
     make install &&
     rm -f $tlibdir_quoted/libgtkglext*.la $tlibdir_quoted/libgdkglext*.la) >&5 2>&1 && end_package
@@ -3760,14 +3773,19 @@ if check_package gtkglextmm; then
         mv ttt $f
     done &&
     for f in gdk gtk; do
+      create_module_rc GtkGLExtmm $gtkglextmmver lib${f}glextmm-win32-0.dll "Naofumi Yasufuk <naofumi@users.sourceforge.net>" \
+        "C++ Wrapper for GtkGLExt" "Copyright © 2002-`date +%Y` Naofumi Yasufuk" > ${f}glext/${f}mm/gl/${f}glextmm.rc &&
       (cat >> ${f}glext/${f}mm/gl/Makefile <<EOF
 ${f}glextmm.def: \$(lib${f}glextmm_win32_1_2_la_OBJECTS)
 	@echo EXPORTS > \$@
 	@nm .libs/*.o | grep -e ' T ' | sed -e 's/.* T //' | grep -v -e '^??_[DEG]' >> \$@
+
+${f}glextmm.res: ${f}glextmm.rc
+	rc -fo \$@ \$<
 EOF
 ) &&
-      sed -e "s/^lib${f}glextmm_win32_1_2_la_LDFLAGS =/& -Wl,-def:${f}glextmm.def/" \
-          -e "s/^lib${f}glextmm-win32-1\.2\.la:/& ${f}glextmm.def/" \
+      sed -e "s/^lib${f}glextmm_win32_1_2_la_LDFLAGS =/& -Wl,-def:${f}glextmm.def -Wl,${f}glextmm.res/" \
+          -e "s/^lib${f}glextmm-win32-1\.2\.la:/& ${f}glextmm.def ${f}glextmm.res/" \
           ${f}glext/${f}mm/gl/Makefile > ttt &&
         mv ttt ${f}glext/${f}mm/gl/Makefile
     done

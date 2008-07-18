@@ -23,7 +23,7 @@ z : spanwise left (horizontal)
 x-y is the wing symmetry plane, while the wing lies along z axis. The origin is 
 the center of the wing.                           
 
-Physics
+Maths & Physics
 --------------------------------------------------------------------------------
 The method is based on approximation the flowfield around the wing by the 
 potential flow induced by an ensemble of horseshoe vortices, with bound 
@@ -74,5 +74,10 @@ In this fashion, for any global angle of attack we obtain a system of nonlinear
 equations. This parametric system is solved by starting at a low angle of attack
 and tracking the nonlinear solution to higher angles while possible, using a
 predictor-corrector strategy.
-
+The 2D section lifts are interpolated in two dimensions: by spanwise coordinate
+(combining different datasets) and by angle of attack. Instead of a naive
+interpolation, a "feature" interpolation is done: at first, each lifting line is
+analyzed for a zero-lift and maximum-lift angle. The lifting line is then scaled
+to 0,1, and these three features (zero-lift angle, max-lift angle, and scaled
+lifting line) are interpolated spanwise by linear interpolation.
 

@@ -17,6 +17,7 @@ if (file_in_path (EXEC_PATH, "jogl.jar"))
   dispatch ("__go_image__", "__jhandles_go_image", "any");
   dispatch ("__go_patch__", "__jhandles_go_patch", "any");
   dispatch ("__go_line__", "__jhandles_go_line", "any");
+  dispatch ("__go_execute_callback__", "__jhandles_go_execute_callback", "any");
 
   atexit ("__jhandles_exit");
 

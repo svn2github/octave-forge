@@ -1840,8 +1840,8 @@ ftgl.res: ftgl.rc
 	rc -fo $@ $<
 EOF
 ) &&
-    sed -e 's/^#ifdef WIN32$/#if defined (WIN32) || defined (_MSC_VER)/' include/FTGL.h > ttt &&
-      mv ttt include/FTGL.h &&
+    sed -e 's/^#ifdef WIN32$/#if defined (WIN32) || defined (_MSC_VER)/' ../include/FTGL.h > ttt &&
+      mv ttt ../include/FTGL.h &&
     make &&
     make install &&
     rm -f $tlibdir_quoted/libftgl*.la) >&5 2>&1 && end_package

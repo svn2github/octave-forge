@@ -97,7 +97,7 @@ c compute derivatives w.r.t. length scales
       end do
       do j=1,nx-1
         do i=j+1,nx
-          tmp = R(i,j)*R(j,i)
+          tmp = R(i,j)*R(i-j,nx+1-j)
           do k = 1,ndim
             dtheta(k) = dtheta(k) + tmp*(X(k,i)-X(k,j))**2
           end do

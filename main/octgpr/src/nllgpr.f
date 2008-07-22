@@ -95,7 +95,7 @@ c accumulate theta-weighted distance
           sums = dwdis2(ndim,theta,X(1,i),X(1,j))
 c call the supplied subroutine to calculate correlation and its
 c derivative. Note that the derivatives are stored.
-          call corr(sums,R(i,j),R(j,i))
+          call corr(sums,R(i,j),R(i-j,nx+1-j))
         end do
       end do
 

@@ -1,3 +1,8 @@
+2008-07-22  Jaroslav Hajek <highegg@gmail.com>
+
+	* src/nllgpr.f src/nldgpr.f: Modify the derivative info storage	(upper 
+	R triangle) to operate on contiguous columns (for cache-coherency).
+
 2008-07-21  Jaroslav Hajek <highegg@gmail.com>
 
 	* src/pakgpr.f: New subroutine.

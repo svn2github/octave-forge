@@ -40,7 +40,7 @@ c nu (in)       relative white noise. nu = sqrt(var_white/var)
 c var (in)      MLE estimated global variance from nllgpr
 c nlin (in)     number of linear trend variables
 c mu (in)       at least nlin+1. Linear trend from nllgpr
-c RP (in)       size at least nx+nx*(nx+1)/2. Contains the factorization 
+c RP (in)       size at least 2*nx+nx*(nx+1)/2. Contains the factorization 
 c               details as computed by nllgpr, after packing the
 c               triangular matrix L.
 c corr          subroutine to calculate correlation value and its
@@ -55,7 +55,7 @@ c               t >= 0 is the scaled squared norm of input vectors
 c               difference, i.e. sum(theta*(X(:,i)-X(:,j))**2)
 c x0 (in)       the spatial point to predict in
 c y0 (out)      the prediction values.
-c sig0 (out)    the prediction sigmas (noise *not* included).
+c sig0 (out)    the prediction sigmas (noise included).
 c nder(in)      number of derivatives requested. 0 to omit derivatives.
 c yd0 (out)     the prediction derivatives. if nder <= 0, yd0 is not
 c               referenced.
@@ -88,7 +88,7 @@ c only use last part of workspace if derivatives requested
         if (nder > 0) work(i,2) = tmp
       end do
 c form L \ r
-      call dtpsv('L','N','N',nx,RP(nx+1),work(1,1),1)
+      call dtpsv('L','N','N',nx,RP(2*nx+1),work(1,1),1)
 c accumulate sum((L\r).^2) and (L\y)'*(L\r)
       call dsdacc(nx,work(1,1),RP,sig0,tmp)
 c add linear trend
@@ -98,18 +98,15 @@ c add linear trend
       end do
       y0 = tmp
 c get deviation
-      sig0 = sqrt((1-sig0) * var)
+      sig0 = sqrt((1+nu**2-sig0) * var)
 c calc derivatives only if necessary
       if (nder == 0) return
       do k = 1,nder
         yd0(k) = 0
       end do
-c get full solution L \ y~
-      call dcopy(nx,RP,1,work(1,1),1)    
-      call dtpsv('L','T','N',nx,RP(nx+1),work(1,1),1)
       do i = 1,nx
 c calculate the primary part
-        tmp = work(i,1)*work(i,2)
+        tmp = RP(nx+i)*work(i,2)
 c apply chain rule
         do k = 1,nder
           yd0(k) = yd0(k) + tmp*(x0(k) - X(k,i))

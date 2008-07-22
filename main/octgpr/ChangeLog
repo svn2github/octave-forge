@@ -1,3 +1,16 @@
+2008-07-21  Jaroslav Hajek <highegg@gmail.com>
+
+	* src/pakgpr.f: New subroutine.
+	* src/forsubs.h: Declare its prototype.
+	* src/infgpr.f: Omit work moved to pakgpr.
+	* src/setup.c: Call pakgpr to pack data.
+	* src/gpr_train.cc: Increase RP size.
+
+2008-07-20  Jaroslav Hajek <highegg@gmail.com>
+
+	* src/optdrv.f: Only overwrite 2nd deriv w.r.t. nu in VM if l2nu =
+	.true.
+
 2008-07-03  Jaroslav Hajek <highegg@gmail.com>
 
 	* src/nllgpr.f: fix invalid parameter declaration

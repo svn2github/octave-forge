@@ -186,7 +186,7 @@ c indicate termination
         CP(13) = relr
       end if
 c overwrite the second derivative with the exact value
-      VM(iba+ndim) = dnu0(2)
+      if (l2nu) VM(iba+ndim) = dnu0(2)
 c scale and factorize the VM matrix
       call dscsev(ndim,VM(iB),scal,VM(iW),VM(iZ),i)
 c TODO: what to do if dscsev fails?

@@ -301,7 +301,7 @@ If @var{nll} is present, it is set to the resulting negative log likelihood.\n\
   // setup model for predictions 
 
   double var;
-  ColumnVector RP (nx+nx*(nx+1)/2);
+  ColumnVector RP (2*nx+nx*(nx+1)/2);
   // make mu follow the theta convention (given by trans)
   Matrix mu (trans?1:nlin+1, trans?nlin+1:1);
 

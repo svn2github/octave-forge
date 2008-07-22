@@ -39,6 +39,7 @@ extern "C" {
 #define F77_nllbnd F77_FUNC(nllbnd,NLLBND)
 #define F77_infgpr F77_FUNC(infgpr,INFGPR)
 #define F77_stheta F77_FUNC(stheta,STHETA)
+#define F77_pakgpr F77_FUNC(pakgpr,PAKGPR)
 #define F77_dtr2tp F77_FUNC(dtr2tp,DTR2TP)
 #define F77_optdrv F77_FUNC(optdrv,OPTDRV)
 
@@ -104,6 +105,13 @@ extern "C" {
                      const int *nx, 
                      const double x[], 
                      double theta[] );
+
+    void F77_pakgpr (const int *nx, 
+                     const int *nlin, 
+                     const double mu[], 
+                     const double r[], 
+                     double mup[],
+                     double rp[] );
 
     void F77_dtr2tp (const char *uplo, 
                      const char *diag, 

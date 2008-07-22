@@ -40,9 +40,7 @@ int GPR_setup (int ndim, int nx, const double *X, const double *y,
               mmu, R, nll, corf, &ierr);
 
   /* pack model data */
-  memcpy (RP, R, nx*DSIZE);
-  memcpy (mu, mmu, (nlin+1)*DSIZE);
-  F77_dtr2tp ("L", "N", &nx, R+nx, &nx, RP+nx);
+  F77_pakgpr (&nx, &nlin, mmu, R, mu, RP);
 
   /* free workspace */
   free (R); free (mmu);

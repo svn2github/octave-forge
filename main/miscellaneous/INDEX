@@ -1,6 +1,7 @@
 miscellaneous >> Miscellaneous functions
 miscellaneous
  apply
+ asci
  csv2latex
  grep
  infoskeleton

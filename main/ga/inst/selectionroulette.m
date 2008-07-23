@@ -30,36 +30,38 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.1
+## Version: 3.2
 
 function parents = selectionroulette (fitnessfcn, popolazione)
 
-	%una variabile d'appoggio
-	n_individui = rows (popolazione);
+  %% aux variable
+  n_individui = rows (popolazione);
 
-	%assegno le "probabilita'" linearmente e decrescenti; ad esempio, se gli individui sono 3 le "probabilita'" saranno, da quello a fitnessfcn minore (cioe' migliore), rispettivamente 3, 2 e 1
-	probabilita = zeros (n_individui, 1);
-	for i = 1:n_individui;
-		probabilita(i) = n_individui + 1 - i;
-	endfor
+  %% assegno le "probabilita'" linearmente e decrescenti; ad esempio, se
+  %% gli individui sono 3 le "probabilita'" saranno, da quello a
+  %% fitnessfcn minore (cioe' migliore), rispettivamente 3, 2 e 1
+  probabilita = zeros (n_individui, 1);
+  for i = 1:n_individui;
+    probabilita(i) = n_individui + 1 - i;
+  endfor
 
-	%maggiore probabilita' per i primi elementi
-	probabilita_cumulative = cumsum (probabilita);
+  %% greater probability for the first elements
+  probabilita_cumulative = cumsum (probabilita);
 
-	%applico la roulette
-	aux_roulette = probabilita_cumulative(n_individui) * rand (1, 2);
-	index_individui_scelti = zeros (1, 2);
-	for i = 1:n_individui
-		if ((aux_roulette(1) <= probabilita_cumulative(i)) && (index_individui_scelti(1) == 0))
-			index_individui_scelti(1) = i;
-		endif
-		if ((aux_roulette(2) <= probabilita_cumulative(i)) && (index_individui_scelti(2) == 0))
-			index_individui_scelti(2) = i;
-		endif
-	endfor
+  %% appling roulette
+  aux_roulette = probabilita_cumulative(n_individui) * rand (1, 2);
+  index_individui_scelti = zeros (1, 2);
+  for i = 1:n_individui
+    if ((aux_roulette(1) <= probabilita_cumulative(i)) && (index_individui_scelti(1) == 0))
+      index_individui_scelti(1) = i;
+    endif
+    if ((aux_roulette(2) <= probabilita_cumulative(i)) && (index_individui_scelti(2) == 0))
+      index_individui_scelti(2) = i;
+    endif
+  endfor
 
-	%le immagini di fitnessfcn sulla popolazione ordinate in ordine crescente
-	[trash index_img_fitnessfcn] = sort (__ga_calcola_img_fitnessfcn__ (fitnessfcn, popolazione));
+  %% ordered images of fitnessfcn on population
+  [trash index_img_fitnessfcn] = sort (__ga_calcola_img_fitnessfcn__ (fitnessfcn, popolazione));
 
-	parents = [index_img_fitnessfcn(index_individui_scelti(1)), index_img_fitnessfcn(index_individui_scelti(2))];
+  parents = [index_img_fitnessfcn(index_individui_scelti(1)), index_img_fitnessfcn(index_individui_scelti(2))];
 endfunction

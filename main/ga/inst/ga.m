@@ -44,27 +44,27 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.1
+## Version: 3.2
 
 function x = ga (varargin)
-	if ((nargout > 1) || (length (varargin) <1) || (length (varargin) > 3))
-		print_usage ();
-	else
-		switch (length (varargin))
-			case (1)
-				problem = varargin{1};
-			case (2)
-				problem.fitnessfcn = varargin{1};
-				problem.nvars = varargin{2};
-				problem.options = gaoptimset;
-			case (3)
-				problem.fitnessfcn = varargin{1};
-				problem.nvars = varargin{2};
-				problem.options = varargin{3};
-		endswitch
+  if ((nargout > 1) || (length (varargin) <1) || (length (varargin) > 3))
+    print_usage ();
+  else
+    switch (length (varargin))
+      case (1)
+	problem = varargin{1};
+      case (2)
+	problem.fitnessfcn = varargin{1};
+	problem.nvars = varargin{2};
+	problem.options = gaoptimset;
+      case (3)
+	problem.fitnessfcn = varargin{1};
+	problem.nvars = varargin{2};
+	problem.options = varargin{3};
+    endswitch
 
-		x = __ga_problem__ (problem);
-	endif
+    x = __ga_problem__ (problem);
+  endif
 endfunction
 
 %!function retval = test_4_variabili (x)

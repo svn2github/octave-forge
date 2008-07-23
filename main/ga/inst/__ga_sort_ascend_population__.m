@@ -17,12 +17,14 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.1
+## Version: 3.2
 
-function sorted_population = __ga_sort_ascend_population__ (fitnessfcn, popolazione)
+function sorted_population = __ga_sort_ascend_population__ (fitnessfcn,
+                                                            popolazione)
 
-	%le immagini di fitnessfcn sulla popolazione ordinate in ordine crescente
-	[trash index] = sort (__ga_calcola_img_fitnessfcn__ (fitnessfcn, popolazione));
+  %% ordered images of the fitnessfcn on the population
+  [trash index] = sort (__ga_calcola_img_fitnessfcn__ (fitnessfcn,
+                                                       popolazione));
 
-	sorted_population = popolazione(index, :);
+  sorted_population = popolazione(index, :);
 endfunction

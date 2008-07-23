@@ -24,25 +24,32 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.1
+## Version: 3.2
 
-%signature diversa da matlab per problema handle funzioni (comunque se piu' tempo da riprovare)
+                                % different signature from MATLAB
+                                % because of a problem of function
+                                % handle (retry if more spare time)
 function xoverKids = crossoversinglepoint (parents)
 
-	%costanti
-	N_BIT_DOUBLE = 64;
+  %% constants
+  N_BIT_DOUBLE = 64;
 
-	%una variabile d'appoggio
-	nvars = columns (parents);
+  %% aux variable
+  nvars = columns (parents);
 
-	concatenated_parents = [(__ga_doubles2concatenated_bitstring__ (parents(1, :))); (__ga_doubles2concatenated_bitstring__ (parents(2, :)))];
+  concatenated_parents = [(__ga_doubles2concatenated_bitstring__ (parents(1, :)));
+                          (__ga_doubles2concatenated_bitstring__ (parents(2, :)))];
 
-	%n e' il singolo punto del crossover
-	%n potra' andare da 1 a ((N_BIT_DOUBLE * nvars) - 1)
-	n = double (uint64 ((((nvars * N_BIT_DOUBLE) - 2) * rand ()) + 1));
+  %% n is the single point of the crossover
+  %%
+  %% n can be from 1 to ((N_BIT_DOUBLE * nvars) - 1)
+  n = double (uint64 ((((nvars * N_BIT_DOUBLE) - 2) * rand ()) + 1));
 
-	%crossover a singolo punto
-	concatenated_xoverKids = strcat (substr (concatenated_parents (1, :), 1, n), substr (concatenated_parents (2, :), (n + 1)));
+  %% single point crossover
+  concatenated_xoverKids = strcat (substr (concatenated_parents (1, :),
+                                           1, n),
+                                   substr (concatenated_parents (2, :),
+                                           (n + 1)));
 
-	xoverKids = __ga_concatenated_bitstring2doubles__ (concatenated_xoverKids);
+  xoverKids = __ga_concatenated_bitstring2doubles__ (concatenated_xoverKids);
 endfunction

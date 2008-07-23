@@ -24,20 +24,25 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.1
+## Version: 3.2
 
-%signature diversa da matlab per problema handle funzioni (comunque se piu' tempo da riprovare)
+                                % different signature from MATLAB
+                                % because of a problem of function
+                                % handle (retry if more spare time)
 function xoverKids = crossoverscattered (parents)
-	concatenated_parents = [(__ga_doubles2concatenated_bitstring__ (parents(1, :))); (__ga_doubles2concatenated_bitstring__ (parents(2, :)))];
+  concatenated_parents = [(__ga_doubles2concatenated_bitstring__ \
+                           (parents(1, :))); \
+                          (__ga_doubles2concatenated_bitstring__ \
+                           (parents(2, :)))];
 
-	%crossover scattered
-	tmp = concatenated_parents(1, :);
-	for i = 1:length (tmp)
-		if (rand () < 0.5)
-			tmp(1, i) = concatenated_parents(2, i);
-		endif
-	endfor
-	concatenated_xoverKids = tmp;
+  %% crossover scattered
+  tmp = concatenated_parents(1, :);
+  for i = 1:length (tmp)
+    if (rand () < 0.5)
+      tmp(1, i) = concatenated_parents(2, i);
+    endif
+  endfor
+  concatenated_xoverKids = tmp;
 
-	xoverKids = __ga_concatenated_bitstring2doubles__ (concatenated_xoverKids);
+  xoverKids = __ga_concatenated_bitstring2doubles__ (concatenated_xoverKids);
 endfunction

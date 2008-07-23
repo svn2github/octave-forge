@@ -24,33 +24,33 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.0
+## Version: 3.2
 
 function val = gaoptimget (options, name)
-	if (nargin != 2)
-		print_usage ();
-	else
-		switch (name)
-			case 'CreationFcn'
-				val = options.CreationFcn;
-			case 'CrossoverFcn'
-				val = options.CrossoverFcn;
-			case 'CrossoverFraction'
-				val = options.CrossoverFraction;
-			case 'EliteCount'
-				val = options.EliteCount;
-			case 'FitnessLimit'
-				val = options.FitnessLimit;
-			case 'Generations'
-				val = options.Generations;
-			case 'MutationFcn'
-				val = options.MutationFcn;
-			case 'PopInitRange'
-				val = options.PopInitRange;
-			case 'PopulationSize'
-				val = options.PopulationSize;
-			case 'SelectionFcn'
-				val = options.SelectionFcn;
-		endswitch
-	endif
+  if (nargin != 2)
+    print_usage ();
+  else
+    switch (name)
+      case 'CreationFcn'
+	val = options.CreationFcn;
+      case 'CrossoverFcn'
+	val = options.CrossoverFcn;
+      case 'CrossoverFraction'
+	val = options.CrossoverFraction;
+      case 'EliteCount'
+	val = options.EliteCount;
+      case 'FitnessLimit'
+	val = options.FitnessLimit;
+      case 'Generations'
+	val = options.Generations;
+      case 'MutationFcn'
+	val = options.MutationFcn;
+      case 'PopInitRange'
+	val = options.PopInitRange;
+      case 'PopulationSize'
+	val = options.PopulationSize;
+      case 'SelectionFcn'
+	val = options.SelectionFcn;
+    endswitch
+  endif
 endfunction

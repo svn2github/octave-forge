@@ -17,15 +17,15 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2
+## Version: 3.3
 
 function concatenated_bitstring = __ga_doubles2concatenated_bitstring__ (doubles)
 
-	%stringhe di bit ottenuta concatenando le stringhe di bit delle singole variabili
-	tmp1 = __num2bin__ (doubles(1));
-	for i = 2:length(doubles)	%2:1 e' una matrice vuota in octave
-		tmp1 = strcat (tmp1, __num2bin__ (doubles(i)));
-	endfor
+  %% bitstring obtained concating the bitstrings of the single variables
+  tmp1 = __num2bin__ (doubles(1));
+  for i = 2:length(doubles) %% 2:1 is an empty matrix
+    tmp1 = strcat (tmp1, __num2bin__ (doubles(i)));
+  endfor
 
-	concatenated_bitstring = tmp1;
+  concatenated_bitstring = tmp1;
 endfunction

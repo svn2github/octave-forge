@@ -24,27 +24,28 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.1
+## Version: 3.2
 
 function mutationChildren = mutationsinglepoint (parent)
 
-	%costanti
-	N_BIT_DOUBLE = 64;
+  %% constants
+  N_BIT_DOUBLE = 64;
 
-	%n e' il singolo punto della mutazione
-	%n potra' andare da 1 a (N_BIT_DOUBLE * length (parent))
-	n = double (uint64 (1 + (((N_BIT_DOUBLE * length (parent)) - 1) * rand())));
+  %% n is the single point of the mutation
+  %%
+  %% n can go from 1 to (N_BIT_DOUBLE * length (parent))
+  n = double (uint64 (1 + (((N_BIT_DOUBLE * length (parent)) - 1) * rand())));
 
-	%mutazione a singolo punto
-	concatenated_mutationChildren = __ga_doubles2concatenated_bitstring__ (parent);
-	switch (concatenated_mutationChildren (n))
-		case '0'
-			concatenated_mutationChildren (n) = '1';
-		case '1'
-			concatenated_mutationChildren (n) = '0';
-		otherwise
-			error ("Una bitstring deve essere composta da soli caratteri 0 e 1.");
-	endswitch
+  %% mutation in a single point
+  concatenated_mutationChildren = __ga_doubles2concatenated_bitstring__ (parent);
+  switch (concatenated_mutationChildren (n))
+    case '0'
+      concatenated_mutationChildren (n) = '1';
+    case '1'
+      concatenated_mutationChildren (n) = '0';
+    otherwise
+      error ("A bitstring must have only characters 0 and 1.");
+  endswitch
 
-	mutationChildren = __ga_concatenated_bitstring2doubles__ (concatenated_mutationChildren);
+  mutationChildren = __ga_concatenated_bitstring2doubles__ (concatenated_mutationChildren);
 endfunction

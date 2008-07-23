@@ -17,22 +17,23 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2
+## Version: 3.3
 
 function doubles = __ga_concatenated_bitstring2doubles__ (concatenated_bitstring)
 
-	%costanti
-	N_BIT_DOUBLE = 64;
+  %% constants
+  N_BIT_DOUBLE = 64;
 
-	%una variabile d'appoggio
-	nvars = length (concatenated_bitstring) / N_BIT_DOUBLE;
+  %% aux variable
+  nvars = length (concatenated_bitstring) / N_BIT_DOUBLE;
 
-	%ottengo il figlio dalla sua stringa di bit
-	tmp1 = zeros (1, nvars);
-	for i = 1:nvars
-		tmp_aux = (i - 1) * N_BIT_DOUBLE;
-		tmp1(i) = __bin2num__ (concatenated_bitstring((tmp_aux + 1):(tmp_aux + N_BIT_DOUBLE)));
-	endfor
+  %% obtaining the son of the bitstring
+  tmp1 = zeros (1, nvars);
+  for i = 1:nvars
+    tmp_aux = (i - 1) * N_BIT_DOUBLE;
+    tmp1(i) = __bin2num__ (concatenated_bitstring((tmp_aux + 1):
+                                                  (tmp_aux + N_BIT_DOUBLE)));
+  endfor
 
-	doubles = tmp1;
+  doubles = tmp1;
 endfunction

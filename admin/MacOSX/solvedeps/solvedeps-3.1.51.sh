@@ -16,7 +16,7 @@
 # You're not free in choosing another compiler than XCode's - so this
 # is set up automatically. By default we use f2c that is compiled as
 # the first program if used input argument '--all'.
-THISSCRIPT=solvedeps-3.0.2.sh
+THISSCRIPT=solvedeps-3.1.51.sh
 
 # This is the name of the file that is used for displaying outputs
 # while configuring, compiling and installing. Use /dev/stdout to
@@ -69,12 +69,23 @@ SPARSEDIFF=./SuiteSparse-3.0.0.diff
 FREETYPEPACK=http://download.savannah.gnu.org/releases/freetype/freetype-2.3.5.tar.gz
 FLTKPACK=http://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/1.1.9/fltk-1.1.9-source.tar.gz
 #FLTKPACK=http://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/snapshots/fltk-1.3.x-r6131.tar.gz
-FTGLPACK=http://kent.dl.sourceforge.net/sourceforge/ftgl/ftgl-2.1.2.tar.gz
+FTGLPACK=http://switch.dl.sourceforge.net/sourceforge/ftgl/ftgl-2.1.3-rc5.tar.gz
 #FTGLPACK=./ftgl-2.1.2.tar.gz
 
-#OCTAVEPACK=ftp://ftp.octave.org/pub/octave/octave-3.0.1.tar.gz
-OCTAVEPACK=./octave-3.0.1.tar.gz
-OCTAVEDIFF=./octave-3.0.1.diff
+#http://www.graphicsmagick.org/www/README.html
+#http://www.cl.cam.ac.uk/~mgk25/download/jbigkit-1.6.tar.gz
+#http://www.openjpeg.org/openjpeg_v1_3.tar.gz
+#http://www.de-mirrors.de/gnuftp/hp2xx/hp2xx-3.4.4.tar.gz
+LIBTIFFPACK=ftp://ftp.remotesensing.org/libtiff/tiff-3.8.2.tar.gz
+LIBPNGPACK=http://switch.dl.sourceforge.net/sourceforge/libpng/libpng-1.2.29.tar.gz
+LIBJPEGPACK=http://ftp.debian.org/debian/pool/main/libj/libjpeg6b/libjpeg6b_6b.orig.tar.gz
+LIBJPEGDIFF=http://ftp.debian.org/debian/pool/main/libj/libjpeg6b/libjpeg6b_6b-13.diff.gz
+GRAPHPACK=http://switch.dl.sourceforge.net/sourceforge/graphicsmagick/GraphicsMagick-1.2.4.tar.gz
+
+OCTAVEPACK=ftp://ftp.octave.org/pub/octave/bleeding-edge/octave-3.1.51.tar.gz
+OCTAVEDIFF=./octave-3.1.51.diff
+#OCTAVEPACK=./octave-3.0.1.tar.gz
+#OCTAVEDIFF=./octave-3.1.50.diff
 
 ##########################################################################
 #####                Don't modify anything downwards here            #####
@@ -431,22 +442,91 @@ create_fltk () {
 
 create_ftgl () {
   local vftglpack=${FTGLPACK##*/}       # echo ${vftglpack}
-  local vftglfile=${vftglpack%-source.tar.gz*} # echo ${vftglfile}
+  local vftglfile=${vftglpack%.tar.gz*} # echo ${vftglfile}
 
   getsource ${FTGLPACK}
   unpack ${vftglpack}
 
-  cd FTGL/unix/docs
-  evalfailexit "tar -xzf ../../docs/html.tar.gz"
-  cd ..
-
+  cd ftgl-2.1.3~rc5
   export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} 
-  CFLAGS="${CFLAGS} -I/usr/X11R6/include"
-  CXXFLAGS="${CXXFLAGS} -I/usr/X11R6/include"
-  CPPFLAGS="${CPPFLAGS} -I/usr/X11R6/include"
-  LDFLAGS="${LDFLAGS} -framework OpenGL"
-  evalfailexit "autoreconf"
-  confmakeinst "${vftglfile}" "${1} CFLAGS=\"${CFLAGS}\" CXXFLAGS=\"${CXXFLAGS}\" CPPFLAGS=\"${CPPFLAGS}\" LDFLAGS=\"${LDFLAGS}\""
+  confmakeinst "${vftglfile}" "${1}"
+
+#The following code was for 2.1.2
+#  cd FTGL/unix/docs
+#  evalfailexit "tar -xzf ../../docs/html.tar.gz"
+#  cd ..
+  
+#  export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} 
+#  CFLAGS="${CFLAGS} -I/usr/X11R6/include"
+#  CXXFLAGS="${CXXFLAGS} -I/usr/X11R6/include"
+#  CPPFLAGS="${CPPFLAGS} -I/usr/X11R6/include"
+#  LDFLAGS="${LDFLAGS} -framework OpenGL"
+#  evalfailexit "autoreconf"
+#  confmakeinst "${vftglfile}" "${1} CFLAGS=\"${CFLAGS}\" CXXFLAGS=\"${CXXFLAGS}\" CPPFLAGS=\"${CPPFLAGS}\" LDFLAGS=\"${LDFLAGS}\""
+}
+
+create_libtiff () {
+  local vtiffpack=${LIBTIFFPACK##*/}    # echo ${vtiffpack}
+  local vtifffile=${vtiffpack%.tar.gz*} # echo ${vtifffile}
+
+  getsource ${LIBTIFFPACK}
+  unpack ${vtiffpack}
+  cd ${vtifffile}
+  export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET}
+  confmakeinst "${vtifffile}" "${1} --enable-static --enable-shared --with-binconfigs"
+}
+
+create_libpng () {
+  local vpngpack=${LIBPNGPACK##*/}    # echo ${vpngpack}
+  local vpngfile=${vpngpack%.tar.gz*} # echo ${vpngfile}
+
+  getsource ${LIBPNGPACK}
+  unpack ${vpngpack}
+  cd ${vpngfile}
+  export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET}
+  confmakeinst "${vpngfile}" "${1} --enable-static --enable-shared --with-binconfigs"
+}
+
+create_libjpeg () {
+  local vjpegpack=${LIBJPEGPACK##*/}    # echo ${vjpegpack}
+  local vjpegfile=${vjpegpack%.tar.gz*} # echo ${vjpegfile}
+  local vjpegdiff=${LIBJPEGDIFF##*/}    # echo ${vjpegdiff}
+  local vjpegdnam=${vjpegdiff%.gz*}     # echo ${vjpegdiff}
+
+  getsource ${LIBJPEGPACK}
+  getsource ${LIBJPEGDIFF}
+
+  unpack ${vjpegpack};
+  evalfailexit "mv jpeg-6b libjpeg6b-6b"
+
+  if ! [ -s ${vjpegdnam} ]; then
+    echo "makegnuplotapp.sh: Extracting ${vjpegdiff} ..."
+    evalfailexit "gunzip ${vjpegdiff}"
+    echo "makegnuplotapp.sh: Applying patch ${vjpegdnam} ..."
+    evalfailexit "patch -p0 < ${vjpegdnam}"
+  fi
+
+  cd libjpeg6b-6b # WATCH OUT cd MAY FAIL
+  echo "makegnuplotapp.sh: Creating install directories ..."
+  evalfailexit "install -d ${TEMPDIR}/{bin,man,man/man1,lib,include}"
+  echo "makegnuplotapp.sh: Calling ./configure ..."
+  export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET}
+  evalfailexit "./configure ${1}"
+  echo "makegnuplotapp.sh: Making \"${vjpegfile}\" ..."
+  evalfailexit "make"
+  echo "makegnuplotapp.sh: Installing \"${vjpegfile}\" ..."
+  evalfailexit "make install-lib"
+}
+
+create_graphicsmagick () {
+  local vgraphpack=${GRAPHPACK##*/}   # echo ${vgraphpack}
+  local vgraphfile=${vgraphpack%.tar.gz*} # echo ${vfilename}
+
+  getsource ${GRAPHPACK}
+  unpack ${vgraphpack}
+  cd ${vgraphfile}
+  export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET}
+  confmakeinst "${vgraphfile}" "${1} --enable-shared"
 }
 
 create_octave() {
@@ -499,6 +579,8 @@ else
     --ppc)
       INSTDIR=${INSTDIR}-ppc
       INCPATH=${INSTDIR}/include
+      X11PATH=/usr/X11R6/include
+      FT2PATH=${INCPATH}/freetype2
       LIBPATH=${INSTDIR}/lib
       BINPATH=${INSTDIR}/bin:${PATH}
 
@@ -510,7 +592,7 @@ else
       CPP="${GCC} -E"
       CXX="g++ ${ARCH} ${OPTFLAGS}"
 
-      GCCFLAGS="-isysroot /Developer/SDKs/MacOSX10.3.9.sdk -I${INCPATH}"
+      GCCFLAGS="-isysroot /Developer/SDKs/MacOSX10.3.9.sdk -I${INCPATH} -I${X11PATH} -I${FT2PATH}"
       CPPFLAGS="${GCCFLAGS}"
       CXXFLAGS="${GCCFLAGS}"
       LDFLAGS="-L${LIBPATH} -Wl,-headerpad_max_install_names -Wl,-syslibroot -Wl,/Developer/SDKs/MacOSX10.3.9.sdk"
@@ -525,6 +607,8 @@ else
     --i386)
       INSTDIR=${INSTDIR}-i386
       INCPATH=${INSTDIR}/include
+      X11PATH=/usr/X11R6/include
+      FT2PATH=${INCPATH}/freetype2
       LIBPATH=${INSTDIR}/lib
       BINPATH=${INSTDIR}/bin:${PATH}
 
@@ -536,7 +620,7 @@ else
       CPP="${GCC} -E"
       CXX="g++ ${ARCH} ${OPTFLAGS}"
 
-      GCCFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -I${INCPATH}"
+      GCCFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -I${INCPATH} -I${X11PATH} -I${FT2PATH}"
       CPPFLAGS="${GCCFLAGS}"
       CXXFLAGS="${GCCFLAGS}"
       LDFLAGS="-L${LIBPATH} -Wl,-headerpad_max_install_names -Wl,-syslibroot -Wl,/Developer/SDKs/MacOSX10.4u.sdk"
@@ -619,6 +703,22 @@ else
 
     --ftgl)
       create_ftgl "${CONFFLAGS}"
+      ;;
+
+    --tiff)
+      create_libtiff "${CONFFLAGS}"
+      ;;
+
+    --png)
+      create_libpng "${CONFFLAGS}"
+      ;;
+
+    --jpeg)
+      create_libjpeg "${CONFFLAGS}"
+      ;;
+
+    --graphicsmagick)
+      create_graphicsmagick "${CONFFLAGS}"
       ;;
 
     --octave)

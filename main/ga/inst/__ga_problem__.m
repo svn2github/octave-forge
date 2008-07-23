@@ -57,20 +57,14 @@ function x = __ga_problem__ (problem)
                                                        popolazione);
 	parents = [popolazione(index_parents(1), :);
                    popolazione(index_parents(2), :)];
-        aux_debug = (gaoptimget (problem.options, 'CrossoverFcn') (parents)) (1, :);
-        size (aux_debug) %%debug
-        size (popolazione_futura(i, :)) %%debug
-	popolazione_futura(i, :) = aux_debug;
+        popolazione_futura(i, :) = gaoptimget (problem.options, 'CrossoverFcn') (parents);
 
 	%% mutation
       else
 	index_parent = (gaoptimget (problem.options,
                                     'SelectionFcn')) (problem.fitnessfcn,
                                                       popolazione);
-        aux_debug2 = (gaoptimget (problem.options, 'MutationFcn')) (popolazione(index_parent(1), :));
-        size (aux_debug2) %%debug
-        size (popolazione_futura(i, :)) %%debug
-	popolazione_futura(i, :) = aux_debug2;
+        popolazione_futura(i, :) = (gaoptimget (problem.options, 'MutationFcn')) (popolazione(index_parent(1), :));
       endif
     endfor
 

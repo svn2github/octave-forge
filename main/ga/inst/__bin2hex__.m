@@ -35,10 +35,8 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2
+## Version: 1.3
 
 function h = __bin2hex__ (b)
-
   h = dec2hex (bin2dec (b));
-
 endfunction

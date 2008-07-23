@@ -177,7 +177,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
   %# Implementation of the option InitialStep has been finished. This
   %# option can be set by the user to another value than default value.
   if (isempty (vodeoptions.InitialStep) && ~vstepsizefixed)
-    vodeoptions.InitialStep = vslot(1,2) - vslot(1,1) / 10;
+    vodeoptions.InitialStep = (vslot(1,2) - vslot(1,1)) / 10;
     vodeoptions.InitialStep = vodeoptions.InitialStep / 10^vodeoptions.Refine;
     warning ('OdePkg:InvalidArgument', ...
       'Option "InitialStep" not set, new value %f is used', vodeoptions.InitialStep);
@@ -186,7 +186,7 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
   %# Implementation of the option MaxStep has been finished. This option
   %# can be set by the user to another value than default value.
   if (isempty (vodeoptions.MaxStep) && ~vstepsizefixed)
-    vodeoptions.MaxStep = vslot(1,2) - vslot(1,1) / 10;
+    vodeoptions.MaxStep = (vslot(1,2) - vslot(1,1)) / 10;
     warning ('OdePkg:InvalidArgument', ...
       'Option "MaxStep" not set, new value %f is used', vodeoptions.MaxStep);
   end

@@ -28,9 +28,10 @@ function [] = odepkg_examples_ode ()
        '==================\n', ...
        '\n', ...
        '   (1) Solve a non-stiff "Van der Pol" example with solver "ode78"\n', ...
-       '   (2) Solve a "Pendulous" example with solver "ode45"\n', ...
-       '   (3) Solve the "Lorenz attractor" with solver "ode54"\n', ...
-       '   (4) Solve the "Roessler equation" with solver "ode78"\n', ...
+       '   (2) Solve a "Van der Pol" example backward with solver "ode23"\n', ...
+       '   (3) Solve a "Pendulous" example with solver "ode45"\n', ...
+       '   (4) Solve the "Lorenz attractor" with solver "ode54"\n', ...
+       '   (5) Solve the "Roessler equation" with solver "ode78"\n', ...
        '\n', ...
        '   Note: There are further ODE examples available with the OdePkg\n', ...
        '         testsuite functions.\n', ...
@@ -62,6 +63,32 @@ function [] = odepkg_examples_ode ()
 %!
 %! vopt = odeset ('RelTol', 1e-8);
 %! ode78 (@fvanderpol, [0 20], [2 0], vopt, 1);
+
+%!demo
+%! # In this example the non-stiff "Van der Pol" equation (mu = 1) is
+%! # solved in forward and backward direction and the results are 
+%! # displayed in a figure after solving. Read about the Van der Pol
+%! # oscillator at http://en.wikipedia.org/wiki/Van_der_Pol_oscillator.
+%!
+%! function [ydot] = fpol (vt, vy, varargin)
+%!   ydot = [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
+%! endfunction
+%!
+%! vopt = odeset ('NormControl', 'on');
+%! vsol = ode23 (@fpol, [0, 20], [2, 0], vopt);
+%! subplot (2, 3, 1); plot (vsol.x, vsol.y);
+%! vsol = ode23 (@fpol, [0:0.1:20], [2, 0], vopt);
+%! subplot (2, 3, 2); plot (vsol.x, vsol.y);
+%! vsol = ode23 (@fpol, [-20, 20], [-1.1222e-3, -0.2305e-3], vopt);
+%! subplot (2, 3, 3); plot (vsol.x, vsol.y);
+%!
+%! vopt = odeset ('NormControl', 'on');
+%! vsol = ode23 (@fpol, [0:-0.1:-20], [2, 0], vopt);
+%! subplot (2, 3, 4); plot (vsol.x, vsol.y);
+%! vsol = ode23 (@fpol, [0, -20], [2, 0], vopt);
+%! subplot (2, 3, 5); plot (vsol.x, vsol.y);
+%! vsol = ode23 (@fpol, [20:-0.1:-20], [-2.0080, 0.0462], vopt);
+%! subplot (2, 3, 6); plot (vsol.x, vsol.y);
 
 %!demo
 %! # In this example a simple "pendulum with damping" is solved and the

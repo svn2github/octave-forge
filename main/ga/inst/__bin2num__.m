@@ -35,8 +35,12 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2
+## Version: 1.3
 
 function n = __bin2num__ (b)
   n = hex2num (__bin2hex__ (b));
 endfunction
+
+%!assert (__bin2num__ ("0011111111110000000000000000000000000000000000000000000000000000"), 1)
+
+%!assert (__bin2num__ (["0011111111110000000000000000000000000000000000000000000000000000"; "1100000000001000000000000000000000000000000000000000000000000000"]), [1; -3])

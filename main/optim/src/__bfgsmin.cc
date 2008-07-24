@@ -11,7 +11,8 @@
 //  GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU General Public License
-//  along with this program; If not, see <http://www.gnu.org/licenses/>.
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 // the functions defined in this file are:
 // __bfgsmin_obj: bulletproofed objective function that allows checking for availability of analytic gradient
@@ -38,8 +39,7 @@ int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_ar
 	f_return = feval(f, f_args_new);
 	obj = f_return(0).double_value();
 	// bullet-proof the objective function
-	if (error_state)
-	{
+	if (error_state) {
 		warning("__bfgsmin_obj: objective function could not be evaluated - setting to DBL_MAX");
 		obj = DBL_MAX;
 		success = 0;
@@ -58,12 +58,12 @@ int __numgradient(ColumnVector &derivative, const std::string f, const octave_va
 	ColumnVector parameter = f_args(minarg - 1).column_vector_value();
 	int k = parameter.rows();
 	ColumnVector g(k);
-	for (j=0; j<k; j++) // get 1st derivative by central difference
-	{
+	SQRT_EPS = sqrt(DBL_EPSILON);
+	diff = exp(log(DBL_EPSILON)/3.0);
+	 // get 1st derivative by central difference
+	for (j=0; j<k; j++) {
 		p = parameter(j);
 		// determine delta for finite differencing
-		SQRT_EPS = sqrt(DBL_EPSILON);
-		diff = exp(log(DBL_EPSILON)/3.0);
 		test = (fabs(p) + SQRT_EPS) * SQRT_EPS > diff;
 		if (test) delta = (fabs(p) + SQRT_EPS) * SQRT_EPS;
 		else delta = diff;
@@ -168,7 +168,7 @@ int __bisectionstep(double &step, double &obj, const std::string f, const octave
 	__bfgsmin_obj(obj, f, f_args, trial, minarg);
 	if (verbose) printf("bisectionstep: trial step: %g  obj value: %g\n", step, obj);
 	// this first loop goes until an improvement is found
-	while (obj > best_obj) {
+	while (obj >= best_obj) {
 		if (step < 2.0*DBL_EPSILON) {
 			if (verbose) warning("bisectionstep: unable to find improvement, setting step to zero");
 			step = 0.0;
@@ -288,8 +288,10 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	k = theta.rows();
 
 	// containers for items in limited memory version
-	Matrix sigmas(k,memory);
-	Matrix gammas(k,memory);
+	Matrix sigmas(k, memory);
+	Matrix gammas(k, memory);
+	sigmas.fill(0.0);
+	gammas.fill(0.0);
 
 	// initialize things
 	have_gradient = 0; // have analytic gradient
@@ -329,7 +331,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 		// stepsize: try (l)bfgs direction, then steepest descent if it fails
 		f_args(minarg - 1) = theta;
 		__newtonstep(stepsize, obj_value, f, f_args, theta, d, minarg, warnings);
-		if (stepsize == 0.0) {  // fall back to steepest descent
+		if ((stepsize == 0.0) && (sqrt(d.transpose() * d) > param_tol)) {  // fall back to steepest descent
 			if (warnings) warning("bfgsmin: BFGS direction fails, switch to steepest descent");
 			d = -g; // try steepest descent
 			H = identity_matrix(k,k); // accompany with Hessian reset, for good measure
@@ -355,7 +357,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 		}
 		// parameter change convergence
 		test = sqrt(theta.transpose() * theta);
-		if (test > 1) conv_param = sqrt(p.transpose() * p) / test < param_tol ;
+		if (test > 1.0) conv_param = sqrt(p.transpose() * p) / test < param_tol ;
 		else conv_param = sqrt(p.transpose() * p) < param_tol;		// Want intermediate results?
 		// gradient convergence
 		conv_grad = sqrt(g.transpose() * g) < gradient_tol;

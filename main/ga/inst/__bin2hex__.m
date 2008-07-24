@@ -35,8 +35,12 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.3
+## Version: 1.4
 
 function h = __bin2hex__ (b)
   h = dec2hex (bin2dec (b));
 endfunction
+
+%!assert (__bin2hex__ ("1101110"), "6E")
+
+%!assert (__bin2hex__ (["1101110"; "1110"]), ["6E"; "0E"])

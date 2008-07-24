@@ -43,7 +43,7 @@ function obj_value = objective2(theta, location)
 endfunction
 
 # initial values
-dim = 10; # dimension of Rosenbrock function
+dim = 20; # dimension of Rosenbrock function
 theta0 = zeros(dim+1,1);  # starting values
 location = (0:dim)/dim; # true values
 location = location';

@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __hex2bin__ (@var{s})
+## @deftypefn {Function File} {} __hex2bin__ (@var{s}, @var{len})
 ## Return the binary number corresponding to the hexadecimal number stored in the string @var{s}.  For example,
 ##
 ## @example
@@ -25,18 +25,33 @@
 ##      @result{} 1101110
 ## @end example
 ##
-## If @var{s} is a string matrix, returns a column vector of converted numbers, one per row of @var{s}.
+## If @var{s} is a string matrix, returns a column vector of converted numbers, one per row of @var{s}, padded with leading zeros to the width of the largest value.
 ##
 ## @example
 ## __hex2bin__ (["6E"; "E"])
 ##      @result{} [1101110; 0001110]
 ## @end example
+##
+## The optional third argument, @var{len}, specifies the minimum
+## number of digits in the result.
+
 ## @seealso{__bin2hex__, hex2dec, dec2bin}
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.3
+## Version: 1.7
 
-function b = __hex2bin__ (h)
-  b = dec2bin (hex2dec (h));
+function b = __hex2bin__ (h, len)
+  d = hex2dec (h);
+
+  switch nargin
+    case {1}
+      b = dec2bin (d);
+    case {2}
+      b = dec2bin (d, len);
+  endswitch
 endfunction
+
+%!assert (__hex2bin__ ("6E"), "1101110")
+
+%!assert (__hex2bin__ (["6E"; "0E"]), ["1101110"; "0001110"])

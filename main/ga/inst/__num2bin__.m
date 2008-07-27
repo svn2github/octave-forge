@@ -35,8 +35,13 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2
+## Version: 1.4
 
 function b = __num2bin__ (n)
-  b = __hex2bin__ (num2hex (n));
+  ## a double precision number is always 64 bits long
+  b = __hex2bin__ (num2hex (n), 64);
 endfunction
+
+%!assert (__num2bin__ (1), "0011111111110000000000000000000000000000000000000000000000000000")
+
+%!assert (__num2bin__ ([1; -3]), ["0011111111110000000000000000000000000000000000000000000000000000"; "1100000000001000000000000000000000000000000000000000000000000000"])

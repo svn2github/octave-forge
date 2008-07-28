@@ -43,17 +43,3 @@ Remove unwind_protect blocks for do_fortran_indexing, since most
 instances will be covered by this.
 
 * Replace max(max(x)) with max(x(:)), and so on for min, sum, etc.
-
-Specific functions
-==================
-
-* Use newer version of QHull.
-
-* Give ginput a "number of inputs" parameter.  Redefine gtext as an
-m-file which calls ginput(1) to get the text location.
-
-* Give ginput a rubber-banding facility, maybe with number of inputs =
--1 ?  Redefine gzoom as an m-file which calls ginput(-1) to get the
-region.
-
-* Have ginput return the key/mouse button used to exit.

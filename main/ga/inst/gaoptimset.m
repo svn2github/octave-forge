@@ -32,7 +32,8 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item options
-## The options structure.
+## Structure that contains the options, or parameters, for the generic
+## algorithm.
 ## @end table
 ##
 ## @strong{Options}
@@ -53,97 +54,85 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.6
+## Version: 4.0
 
 function options = gaoptimset (varargin)
-  if (nargout != 1)
+  if ((nargout != 1) ||
+      (mod (length (varargin), 2) == 1))
     print_usage ();
   else
-    if (mod (length (varargin), 2) == 1)
-      print_usage ();
-    else
-      %% defining a default_options structure with all default fields
-      default_options.CreationFcn = @gacreationuniform;
-      default_options.CrossoverFcn = @crossoverscattered;
-      default_options.CrossoverFraction = 0.8;
-      default_options.EliteCount = 2;
-      default_options.FitnessLimit = -Inf;
-      default_options.Generations = 100;
-      default_options.MutationFcn = @mutationsinglepoint; %% TODO: gaussian
-      default_options.PopInitRange = [0; 1];
-      default_options.PopulationSize = 20;
-      default_options.SelectionFcn = @selectionroulette; %% TODO: stochunif
 
-      %% setting the return variable options as the parameters specified in
-      %% the input of the function
-      i = 1;
-      while (length (varargin) >= (i + 1))
-        switch (varargin{i})
-          case 'CreationFcn'
-            options.CreationFcn = varargin{i + 1};
-          case 'CrossoverFcn'
-            options.CrossoverFcn = varargin{i + 1};
-          case 'CrossoverFraction'
-            options.CrossoverFraction = varargin{i + 1};
-          case 'EliteCount'
-            options.EliteCount = varargin{i + 1};
-          case 'FitnessLimit'
-            options.FitnessLimit = varargin{i + 1};
-          case 'Generations'
-            options.Generations = varargin{i + 1};
-          case 'MutationFcn'
-            options.MutationFcn = varargin{i + 1};
-          case 'PopInitRange'
-            options.PopInitRange = varargin{i + 1};
-          case 'PopulationSize'
-            options.PopulationSize = varargin{i + 1};
-          case 'SelectionFcn'
-            options.SelectionFcn = varargin{i + 1};
-        endswitch
-        i = i + 2;
-      endwhile
+    ## structure with all default fields
+    default_options = __gaoptimset_default_options__ ();
 
-      %% setting default parameters that are not set
-      if ((! exist ('options', 'var')) ||
-          (! isfield (options, 'CreationFcn')))
-        options.CreationFcn = default_options.CreationFcn;
-      endif
-      if ((! exist ('options', 'var')) ||
-          (! isfield (options, 'CrossoverFcn')))
-        options.CrossoverFcn = default_options.CrossoverFcn;
-      endif
-      if ((! exist ('options', 'var')) ||
-          (! isfield (options, 'CrossoverFraction')))
-        options.CrossoverFraction = default_options.CrossoverFraction;
-      endif
-      if ((! exist ('options', 'var')) ||
-          (! isfield (options, 'EliteCount')))
-        options.EliteCount = default_options.EliteCount;
-      endif
-      if ((! exist ('options', 'var')) ||
-          (! isfield (options, 'FitnessLimit')))
-        options.FitnessLimit = default_options.FitnessLimit;
-      endif
-      if ((! exist ('options', 'var')) ||
-          (! isfield (options, 'Generations')))
-        options.Generations = default_options.Generations;
-      endif
-      if ((! exist ('options', 'var')) ||
-          (! isfield (options, 'MutationFcn')))
-        options.MutationFcn = default_options.MutationFcn;
-      endif
-      if ((! exist ('options', 'var')) ||
-          (! isfield (options, 'PopInitRange')))
-        options.PopInitRange = default_options.PopInitRange;
-      endif
-      if ((! exist ('options', 'var')) ||
-          (! isfield (options, 'PopulationSize')))
-        options.PopulationSize = default_options.PopulationSize;
-      endif
-      if ((! exist ('options', 'var')) ||
-          (! isfield (options, 'SelectionFcn')))
-        options.SelectionFcn = default_options.SelectionFcn;
-      endif
+    ## set options as specified
+    i = 1;
+    while (length (varargin) >= (i + 1))
+      switch (varargin{i})
+        case "CreationFcn"
+          options.CreationFcn = varargin{i + 1};
+        case "CrossoverFcn"
+          options.CrossoverFcn = varargin{i + 1};
+        case "CrossoverFraction"
+          options.CrossoverFraction = varargin{i + 1};
+        case "EliteCount"
+          options.EliteCount = varargin{i + 1};
+        case "FitnessLimit"
+          options.FitnessLimit = varargin{i + 1};
+        case "Generations"
+          options.Generations = varargin{i + 1};
+        case "MutationFcn"
+          options.MutationFcn = varargin{i + 1};
+        case "PopInitRange"
+          options.PopInitRange = varargin{i + 1};
+        case "PopulationSize"
+          options.PopulationSize = varargin{i + 1};
+        case "SelectionFcn"
+          options.SelectionFcn = varargin{i + 1};
+      endswitch
+      i = i + 2;
+    endwhile
+
+    ## set not specified options at default values
+    if ((! exist ("options", "var")) ||
+        (! isfield (options, 'CreationFcn')))
+      options.CreationFcn = default_options.CreationFcn;
+    endif
+    if ((! exist ("options", "var")) ||
+        (! isfield (options, 'CrossoverFcn')))
+      options.CrossoverFcn = default_options.CrossoverFcn;
+    endif
+    if ((! exist ("options", "var")) ||
+        (! isfield (options, 'CrossoverFraction')))
+      options.CrossoverFraction = default_options.CrossoverFraction;
+    endif
+    if ((! exist ("options", "var")) ||
+        (! isfield (options, 'EliteCount')))
+      options.EliteCount = default_options.EliteCount;
+    endif
+    if ((! exist ("options", "var")) ||
+        (! isfield (options, 'FitnessLimit')))
+      options.FitnessLimit = default_options.FitnessLimit;
+    endif
+    if ((! exist ("options", "var")) ||
+        (! isfield (options, 'Generations')))
+      options.Generations = default_options.Generations;
+    endif
+    if ((! exist ("options", "var")) ||
+        (! isfield (options, 'MutationFcn')))
+      options.MutationFcn = default_options.MutationFcn;
+    endif
+    if ((! exist ("options", "var")) ||
+        (! isfield (options, 'PopInitRange')))
+      options.PopInitRange = default_options.PopInitRange;
+    endif
+    if ((! exist ("options", "var")) ||
+        (! isfield (options, 'PopulationSize')))
+      options.PopulationSize = default_options.PopulationSize;
+    endif
+    if ((! exist ("options", "var")) ||
+        (! isfield (options, 'SelectionFcn')))
+      options.SelectionFcn = default_options.SelectionFcn;
     endif
   endif
 endfunction

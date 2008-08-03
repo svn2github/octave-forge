@@ -18,33 +18,63 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {@var{x} =} ga (@var{fitnessfcn}, @var{nvars})
-## @deftypefnx{Function File} {@var{x} =} ga (@var{fitnessfcn}, @var{nvars}, @var{options})
+## @deftypefnx{Function File} {@var{x} =} ga (@var{fitnessfcn}, @var{nvars}, @var{A}, @var{b})
+## @deftypefnx{Function File} {@var{x} =} ga (@var{fitnessfcn}, @var{nvars}, @var{A}, @var{b}, @var{Aeq}, @var{beq})
+## @deftypefnx{Function File} {@var{x} =} ga (@var{fitnessfcn}, @var{nvars}, @var{A}, @var{b}, @var{Aeq}, @var{beq}, @var{LB}, @var{UB})
+## @deftypefnx{Function File} {@var{x} =} ga (@var{fitnessfcn}, @var{nvars}, @var{A}, @var{b}, @var{Aeq}, @var{beq}, @var{LB}, @var{UB}, @var{nonlcon})
+## @deftypefnx{Function File} {@var{x} =} ga (@var{fitnessfcn}, @var{nvars}, @var{A}, @var{b}, @var{Aeq}, @var{beq}, @var{LB}, @var{UB}, @var{nonlcon}, @var{options})
 ## @deftypefnx{Function File} {@var{x} =} ga (@var{problem})
+## @deftypefnx{Function File} {[@var{x}, @var{fval}] =} ga (@dots{})
+## @deftypefnx{Function File} {[@var{x}, @var{fval}, @var{exitflag}] =} ga (@dots{})
+## @deftypefnx{Function File} {[@var{x}, @var{fval}, @var{exitflag}, @var{output}] =} ga (@dots{})
+## @deftypefnx{Function File} {[@var{x}, @var{fval}, @var{exitflag}, @var{output}, @var{population}] =} ga (@dots{})
+## @deftypefnx{Function File} {[@var{x}, @var{fval}, @var{exitflag}, @var{output}, @var{population}, @var{scores}] =} ga (@dots{})
 ## Find minimum of function using genetic algorithm.
 ##
 ## @strong{Inputs}
 ## @table @var
 ## @item fitnessfcn
-## The objective function to minimize. It accepts a vector @var{x} of size 1-by-@var{nvars}, and returns a scalar evaluated at @var{x}.
+## The objective function to minimize. It accepts a vector @var{x} of
+## size 1-by-@var{nvars}, and returns a scalar evaluated at @var{x}.
 ## @item nvars
-## The number of variables of @var{fitnessfcn}.
+## The dimension (number of design variables) of @var{fitnessfcn}.
 ## @item options
-## The structure of the optimization parameters; can be created with using the @code{gaoptimset} function. If not specified, @code{ga} minimizes with the default optimization parameters.
+## The structure of the optimization parameters; can be created using
+## the @code{gaoptimset} function. If not specified, @code{ga} minimizes
+## with the default optimization parameters.
 ## @item problem
-## A structure containing the following fields: @var{fitnessfcn}, @var{nvars} and @var{options}.
+## A structure containing the following fields:
+## @itemize @bullet
+## @item @code{fitnessfcn}
+## @item @code{nvars}
+## @item @code{Aineq}
+## @item @code{Bineq}
+## @item @code{Aeq}
+## @item @code{Beq}
+## @item @code{lb}
+## @item @code{ub}
+## @item @code{nonlcon}
+## @item @code{randstate}
+## @item @code{randnstate}
+## @item @code{solver}
+## @item @code{options}
+## @end itemize
 ## @end table
 ##
 ## @strong{Outputs}
 ## @table @var
 ## @item x
-## The local unconstrained found minimum to the objective function.
+## The local unconstrained found minimum to the objective function,
+## @var{fitnessfcn}.
+## @item fval
+## The value of the fitness function at @var{x}.
 ## @end table
 ##
 ## @seealso{gaoptimset}
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.5
+## Version: 5.8
 
 function [x, fval, exitflag, output, population, scores] = \
       ga (fitnessfcn_or_problem,
@@ -53,7 +83,7 @@ function [x, fval, exitflag, output, population, scores] = \
           Aeq = [], beq = [],
           LB = [], UB = [],
           nonlcon = [],
-          options = gaoptimset)
+          options = gaoptimset ())
   if ((nargout > 6) ||
       (nargin < 1) ||
       (nargin == 3) ||

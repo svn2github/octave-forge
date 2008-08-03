@@ -17,9 +17,9 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.0
+## Version: 4.1
 
-function x = __ga_problem__ (problem)
+function [x fval exitflag output population scores] = __ga_problem__ (problem)
 
   individui_migliori = [];
 

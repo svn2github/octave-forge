@@ -17,8 +17,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} gaoptimset
-## @deftypefnx{Function File} {@var{options} =} gaoptimset
+## @deftypefn{Function File} {@var{options} =} gaoptimset
 ## @deftypefnx{Function File} {@var{options} =} gaoptimset ('@var{param1}', @var{value1}, '@var{param2}', @var{value2}, @dots{})
 ## Create genetic algorithm options structure.
 ##
@@ -54,13 +53,10 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.3
+## Version: 3.4
 
 function options = gaoptimset (varargin)
-  if (nargout == 0)
-    warning ("Should show a complete list of parameters with their arguments.");
-    print_usage ();
-  elseif (nargout > 1)
+  if (nargout != 1)
     print_usage ();
   else
     if (mod (length (varargin), 2) == 1)

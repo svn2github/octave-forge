@@ -44,26 +44,53 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.4
+## Version: 5.0
 
-function x = ga (varargin)
-  if ((nargout > 1) || (length (varargin) < 1) || (length (varargin) > 3))
+function [x fval exitflag output population scores] = ga (varargin)
+  if ((nargout > 6) ||
+      (length (varargin) < 1) ||
+      (length (varargin) == 3) ||
+      (length (varargin) == 5) ||
+      (length (varargin) == 7) ||
+      (length (varargin) > 10))
     print_usage ();
   else
-    switch (length (varargin))
-      case (1)
-        problem = varargin{1};
-      case (2)
-        problem.fitnessfcn = varargin{1};
-        problem.nvars = varargin{2};
-        problem.options = gaoptimset;
-      case (3)
-        problem.fitnessfcn = varargin{1};
-        problem.nvars = varargin{2};
-        problem.options = varargin{3};
-    endswitch
 
-    x = __ga_problem__ (problem);
+    ## retrieve problem structure
+    if (length (varargin) == 1)
+      problem = varargin{1};
+    else ## length (varargin) >= 2
+
+      ## set default options field
+      problem.options = gaoptimset;
+
+      ## set fields specified
+      problem.fitnessfcn = varargin{1};
+      problem.nvars = varargin{2};
+      if (length (varargin) >= 4)
+        problem.Aineq = varargin{3};
+        problem.Bineq = varargin{4};
+        if (length (varargin) >= 6)
+          problem.Aeq = varargin{5};
+          problem.Beq = varargin{6};
+          if (length (varargin) >= 8)
+            problem.lb = varargin{7};
+            problem.ub = varargin{8};
+            if (length (varargin) >= 9)
+              problem.nonlcon = varargin{9};
+
+              ## if a custom options field is specified, overwrite the
+              ## default one
+              if (length (varargin) == 10)
+                problem.options = varargin{10};
+              endif
+            endif
+          endif
+        endif
+      endif
+    endif
+
+    [x fval exitflag output population scores] = __ga_problem__ (problem);
   endif
 endfunction
 
@@ -75,21 +102,21 @@ endfunction
 %! retval += (x(3) ** 2) - (cos (2 * pi * x(3))) + 1;
 %! retval += x(4) ** 2;
 
-%!assert (ga (@test_4_variabili, 4, gaoptimset ('FitnessLimit', 0.001, 'PopInitRange', [-1; 1])), [0, 0, 0, 0], sqrt(0.001))
+%!assert (ga (@test_4_variabili, 4, [], [], [], [], [], [], [], gaoptimset ('FitnessLimit', 0.001, 'PopInitRange', [-1; 1])), [0, 0, 0, 0], sqrt(0.001))
 
 %!function retval = test_rastriginsfcn_traslato (t)
 %! min = [1, 0];
 %! x = t - min;
 %! retval = 20 + (x(1) ** 2) + (x(2) ** 2) - 10 * (cos (2 * pi * x(1)) + cos (2 * pi * x(2)));
 
-%!assert (ga (@test_rastriginsfcn_traslato, 2, gaoptimset ('FitnessLimit', 0.001, 'PopInitRange', [-2; 2], 'PopulationSize', 100)), [1, 0], sqrt(0.001))
+%!assert (ga (@test_rastriginsfcn_traslato, 2, [], [], [], [], [], [], [], gaoptimset ('FitnessLimit', 0.001, 'PopInitRange', [-2; 2], 'PopulationSize', 100)), [1, 0], sqrt(0.001))
 
 %!function retval = test_f_con_inf_minimi_locali (x)
 %! retval = (x ** 2) - (cos (2 * pi * x)) + 1;
 
-%!assert (ga (@test_f_con_inf_minimi_locali, 1, gaoptimset ('CrossoverFcn', @crossoversinglepoint, 'EliteCount', 1, 'FitnessLimit', 0.001, 'Generations', 25, 'PopInitRange', [-5; 5])), 0, sqrt(0.001)) 
+%!assert (ga (@test_f_con_inf_minimi_locali, 1, [], [], [], [], [], [], [], gaoptimset ('CrossoverFcn', @crossoversinglepoint, 'EliteCount', 1, 'FitnessLimit', 0.001, 'Generations', 25, 'PopInitRange', [-5; 5])), 0, sqrt(0.001)) 
 
 %!function retval = test_parabola (x)
 %! retval = x ** 2;
 
-%!assert (ga (@test_parabola, 1, gaoptimset ('CrossoverFcn', @crossoversinglepoint, 'EliteCount', 1, 'FitnessLimit', 0.001, 'Generations', 10, 'PopInitRange', [-1; 1])), 0, sqrt(0.001))
+%!assert (ga (@test_parabola, 1, [], [], [], [], [], [], [], gaoptimset ('CrossoverFcn', @crossoversinglepoint, 'EliteCount', 1, 'FitnessLimit', 0.001, 'Generations', 10, 'PopInitRange', [-1; 1])), 0, sqrt(0.001))

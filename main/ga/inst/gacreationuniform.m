@@ -40,15 +40,15 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2
+## Version: 4.0
 
 function Population = gacreationuniform (GenomeLength, FitnessFcn, options)
 
   %% aux variables
-  tmp_aux = gaoptimget (options, 'PopInitRange');
+  tmp_aux = options.PopInitRange;
   lb = min (tmp_aux(1, 1), tmp_aux(2, 1));
   ub = max (tmp_aux(1, 1), tmp_aux(2, 1));
 
-  n_rows_aux = gaoptimget (options, 'PopulationSize');
+  n_rows_aux = options.PopulationSize;
   Population = ((ub - lb) * rand (n_rows_aux, GenomeLength)) + (lb * ones (n_rows_aux, GenomeLength));
 endfunction

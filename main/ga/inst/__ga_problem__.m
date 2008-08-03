@@ -17,13 +17,13 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2
+## Version: 4.0
 
 function x = __ga_problem__ (problem)
 
   individui_migliori = [];
 
-  popolazione = (gaoptimget (problem.options, 'CreationFcn')) (problem.nvars, problem.fitnessfcn, problem.options);
+  popolazione = problem.options.CreationFcn (problem.nvars, problem.fitnessfcn, problem.options);
 
   %% in this while, generation is fixed
   generazione = 1;
@@ -32,39 +32,33 @@ function x = __ga_problem__ (problem)
 
     %% doing this initialization here to make the variable
     %% popolazione_futura visible at the end of the next while
-    popolazione_futura = zeros (gaoptimget (problem.options,
-                                            'PopulationSize'),
+    popolazione_futura = zeros (problem.options.PopulationSize,
                                 problem.nvars);
 
     %% elitist selection
-    for i = 1:(gaoptimget (problem.options, 'EliteCount'))
+    for i = 1:problem.options.EliteCount
       popolazione_futura(i, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, popolazione))(i, :);
     endfor
 
     %% in this while the individual of the new generation is fixed
-    for i = (1 + (gaoptimget (problem.options,
-                              'EliteCount'))):(gaoptimget (problem.options,
-                                                           'PopulationSize'))
+    for i = (1 + problem.options.EliteCount):problem.options.PopulationSize
 
       %% stochastically choosing the genetic operator to apply
       aux_operatore = rand ();
 
       %% crossover
-      if (aux_operatore < gaoptimget (problem.options,
-                                      'CrossoverFraction'))
-	index_parents = (gaoptimget (problem.options,
-                                     'SelectionFcn')) (problem.fitnessfcn,
-                                                       popolazione);
-	parents = [popolazione(index_parents(1), :);
-                   popolazione(index_parents(2), :)];
-        popolazione_futura(i, :) = gaoptimget (problem.options, 'CrossoverFcn') (parents);
-
-	%% mutation
-      else
-	index_parent = (gaoptimget (problem.options,
-                                    'SelectionFcn')) (problem.fitnessfcn,
+      if (aux_operatore < problem.options.CrossoverFraction)
+        index_parents = problem.options.SelectionFcn (problem.fitnessfcn,
                                                       popolazione);
-        popolazione_futura(i, :) = (gaoptimget (problem.options, 'MutationFcn')) (popolazione(index_parent(1), :));
+        parents = [popolazione(index_parents(1), :);
+                   popolazione(index_parents(2), :)];
+        popolazione_futura(i, :) = problem.options.CrossoverFcn (parents);
+
+      %% mutation
+      else
+        index_parent = problem.options.SelectionFcn (problem.fitnessfcn,
+                                                     popolazione);
+        popolazione_futura(i, :) = problem.options.MutationFcn (popolazione(index_parent(1), :));
       endif
     endfor
 

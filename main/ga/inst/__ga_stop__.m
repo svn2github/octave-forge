@@ -17,15 +17,14 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2
+## Version: 4.0
 
 %% return true if the stop condition is reached, false otherwise
 function retval = __ga_stop__ (problem, popolazione, generazione)
-  __ga_stop_aux1__ = (generazione >= gaoptimget (problem.options,
-                                                 'Generations'));
+  __ga_stop_aux1__ = (generazione >= problem.options.Generations);
 
   %% in doc Matlab <= and not < is supposed
-  __ga_stop_aux2__ = (problem.fitnessfcn ((__ga_sort_ascend_population__ (problem.fitnessfcn, popolazione))(1, :)) <= gaoptimget (problem.options, 'FitnessLimit'));
+  __ga_stop_aux2__ = (problem.fitnessfcn ((__ga_sort_ascend_population__ (problem.fitnessfcn, popolazione))(1, :)) <= problem.options.FitnessLimit);
 
   retval = (__ga_stop_aux1__ || __ga_stop_aux2__);
 endfunction

@@ -53,7 +53,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.4
+## Version: 3.6
 
 function options = gaoptimset (varargin)
   if (nargout != 1)

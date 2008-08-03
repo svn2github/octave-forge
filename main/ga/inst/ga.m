@@ -44,52 +44,45 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.0
+## Version: 5.5
 
-function [x fval exitflag output population scores] = ga (varargin)
+function [x, fval, exitflag, output, population, scores] = \
+      ga (fitnessfcn_or_problem,
+          nvars,
+          A = [], b = [],
+          Aeq = [], beq = [],
+          LB = [], UB = [],
+          nonlcon = [],
+          options = gaoptimset)
   if ((nargout > 6) ||
-      (length (varargin) < 1) ||
-      (length (varargin) == 3) ||
-      (length (varargin) == 5) ||
-      (length (varargin) == 7) ||
-      (length (varargin) > 10))
+      (nargin < 1) ||
+      (nargin == 3) ||
+      (nargin == 5) ||
+      (nargin == 7) ||
+      (nargin > 10))
     print_usage ();
   else
 
     ## retrieve problem structure
-    if (length (varargin) == 1)
-      problem = varargin{1};
-    else ## length (varargin) >= 2
-
-      ## set default options field
-      problem.options = gaoptimset;
-
-      ## set fields specified
-      problem.fitnessfcn = varargin{1};
-      problem.nvars = varargin{2};
-      if (length (varargin) >= 4)
-        problem.Aineq = varargin{3};
-        problem.Bineq = varargin{4};
-        if (length (varargin) >= 6)
-          problem.Aeq = varargin{5};
-          problem.Beq = varargin{6};
-          if (length (varargin) >= 8)
-            problem.lb = varargin{7};
-            problem.ub = varargin{8};
-            if (length (varargin) >= 9)
-              problem.nonlcon = varargin{9};
-
-              ## if a custom options field is specified, overwrite the
-              ## default one
-              if (length (varargin) == 10)
-                problem.options = varargin{10};
-              endif
-            endif
-          endif
-        endif
-      endif
+    if (nargin == 1)
+      problem = fitnessfcn_or_problem;
+    else
+      problem.fitnessfcn = fitnessfcn_or_problem;
+      problem.nvars = nvars;
+      problem.Aineq = A;
+      problem.Bineq = b;
+      problem.Aeq = Aeq;
+      problem.Beq = beq;
+      problem.lb = LB;
+      problem.ub = UB;
+      problem.nonlcon = nonlcon;
+      problem.randstate = rand ("state");
+      problem.randnstate = randn ("state");
+      problem.solver = "ga";
+      problem.options = options;
     endif
 
+    ## call the function that manages the problem structure
     [x fval exitflag output population scores] = __ga_problem__ (problem);
   endif
 endfunction

@@ -44,7 +44,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.3
+## Version: 3.4
 
 function x = ga (varargin)
   if ((nargout > 1) || (length (varargin) < 1) || (length (varargin) > 3))
@@ -67,6 +67,8 @@ function x = ga (varargin)
   endif
 endfunction
 
+%!assert (ga (@rastriginsfcn, 2), [0, 0], 1e-6)
+
 %!function retval = test_4_variabili (x)
 %! retval = 0;
 %! retval += 20 + (x(1) ** 2) + (x(2) ** 2) - 10 * (cos (2 * pi * x(1)) + cos (2 * pi * x(2)));
@@ -81,11 +83,6 @@ endfunction
 %! retval = 20 + (x(1) ** 2) + (x(2) ** 2) - 10 * (cos (2 * pi * x(1)) + cos (2 * pi * x(2)));
 
 %!assert (ga (@test_rastriginsfcn_traslato, 2, gaoptimset ('FitnessLimit', 0.001, 'PopInitRange', [-2; 2], 'PopulationSize', 100)), [1, 0], sqrt(0.001))
-
-%!function retval = test_rastriginsfcn (x)
-%! retval = 20 + (x(1) ** 2) + (x(2) ** 2) - 10 * (cos (2 * pi * x(1)) + cos (2 * pi * x(2)));
-
-%!assert (ga (@test_rastriginsfcn, 2), [0, 0], 1e-6)
 
 %!function retval = test_f_con_inf_minimi_locali (x)
 %! retval = (x ** 2) - (cos (2 * pi * x)) + 1;

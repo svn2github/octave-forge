@@ -9,4 +9,5 @@ Utility
  crossoversinglepoint
  gacreationuniform
  mutationsinglepoint
+ rastriginsfcn
  selectionroulette

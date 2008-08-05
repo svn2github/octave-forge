@@ -17,16 +17,20 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{mutationChildren} =} mutationsinglepoint (@var{parent})
+## @deftypefn{Function File} {@var{mutationChildren} =} mutationsinglepoint (@var{parents}, @var{options}, @var{nvars}, @var{FitnessFcn}, @var{state}, @var{thisScore}, @var{thisPopulation})
 ## Single point mutation.
 ##
 ## @seealso{ga, gaoptimset}
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2
+## Version: 4.0.1
 
-function mutationChildren = mutationsinglepoint (parent)
+function mutationChildren = \
+      mutationsinglepoint (parents,
+                           options, nvars, FitnessFcn, state,
+                           thisScore, thisPopulation)
+  parent = parents;
 
   %% constants
   N_BIT_DOUBLE = 64;

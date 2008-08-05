@@ -62,7 +62,15 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
       else
         index_parent = problem.options.SelectionFcn (problem.fitnessfcn,
                                                      popolazione);
-        popolazione_futura(i, :) = problem.options.MutationFcn (popolazione(index_parent(1), :));
+        parent = popolazione(index_parent(1), :);
+        popolazione_futura(i, :) = \ #TODO parent -> parents
+            problem.options.MutationFcn (parent,
+                                         problem.options,
+                                         problem.nvars,
+                                         problem.fitnessfcn,
+                                         false, #TODO false -> state
+                                         false, #TODO false -> thisScore
+                                         popolazione);
       endif
     endfor
 

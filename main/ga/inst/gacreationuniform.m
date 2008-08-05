@@ -40,19 +40,38 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.1.1
+## Version: 4.2.6
 
 function Population = gacreationuniform (GenomeLength, FitnessFcn, options)
-  %options.PopulationSize
-  %options.InitialPopulation
-  %%options.InitialScores
-  %options.PopInitRange
+  [nr, nc] = size (options.PopInitRange);
 
-  %% aux variables
-  tmp_aux = options.PopInitRange;
-  lb = min (tmp_aux(1, 1), tmp_aux(2, 1));
-  ub = max (tmp_aux(1, 1), tmp_aux(2, 1));
+  if ((nr != 2)
+      ((nc != 1) && (nc != GenomeLength)))
+    print_usage (); #TODO to modify
+  endif
 
-  n_rows_aux = options.PopulationSize;
-  Population = ((ub - lb) * rand (n_rows_aux, GenomeLength)) + (lb * ones (n_rows_aux, GenomeLength));
+  ## obtain a 2-by-GenomeLength LocalPopInitRange
+  LocalPopInitRange = options.PopInitRange;
+  if (nc == 1)
+    LocalPopInitRange = LocalPopInitRange * ones (1, GenomeLength);
+  endif
+
+  LB = LocalPopInitRange(1, 1:GenomeLength);
+  UB = LocalPopInitRange(2, 1:GenomeLength);
+
+  ## pseudocode
+  ##
+  ## Population = Delta * RandomPopulationBetween0And1 + Offset
+  Population = \
+      ((ones (options.PopulationSize, 1) * (UB - LB)) .* \
+       rand (options.PopulationSize, GenomeLength)) + \
+      (ones (options.PopulationSize, 1) * LB);
 endfunction
+
+%!test
+%! GenomeLength = 2;
+%! FitnessFcn = @rastriginsfcn;
+%! options = gaoptimset ();
+%! Population = gacreationuniform (GenomeLength, FitnessFcn, options);
+%! [nr, nc] = size (Population);
+%! assert (((nr == options.PopulationSize) && (nc == GenomeLength)), true);

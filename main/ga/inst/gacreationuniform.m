@@ -40,9 +40,13 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.0
+## Version: 4.1.1
 
 function Population = gacreationuniform (GenomeLength, FitnessFcn, options)
+  %options.PopulationSize
+  %options.InitialPopulation
+  %%options.InitialScores
+  %options.PopInitRange
 
   %% aux variables
   tmp_aux = options.PopInitRange;

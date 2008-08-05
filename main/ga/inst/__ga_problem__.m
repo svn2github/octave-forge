@@ -17,13 +17,14 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.1
+## Version: 4.1.1
 
 function [x fval exitflag output population scores] = __ga_problem__ (problem)
-
   individui_migliori = [];
-
-  popolazione = problem.options.CreationFcn (problem.nvars, problem.fitnessfcn, problem.options);
+  popolazione = __ga_set_initial_population__ (problem);
+  #popolazione = problem.options.CreationFcn (problem.nvars,
+  #                                           problem.fitnessfcn,
+  #                                           problem.options);
 
   %% in this while, generation is fixed
   generazione = 1;

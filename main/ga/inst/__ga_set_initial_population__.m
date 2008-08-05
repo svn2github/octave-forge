@@ -24,40 +24,48 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.0
+## Version: 1.1
 
 function Population = __ga_set_initial_population__ (problem)
-                                #TODO consider options.InitialScores
-  if (columns (problem.options.InitialPopulation) == 0)
-    Population = problem.options.CreationFcn (problem.nvars, \
-                                              problem.fitnessfcn, \
+                                #TODO
+                                #
+                                #consider InitialScores
+                                #
+                                #consider PopulationSize as a vector for
+                                #multiple subpopolations
+
+  [nr, nc] = size (problem.options.InitialPopulation);
+
+  if (nc == 0)
+    Population = problem.options.CreationFcn (problem.nvars,
+                                              problem.fitnessfcn,
                                               problem.options);
-  elseif (columns (problem.options.InitialPopulation) != problem.nvars)
-    error ("nonempty InitialPopulation must have 'number of variables' \
-        columns");
-  else ## columns (problem.options.InitialPopulation) == problem.nvars
+  elseif (nc == problem.nvars)
 
     ## it is impossible to have a matrix with 0 rows and a positive
     ## number of columns
-    if (rows (problem.options.InitialPopulation) > \
-        problem.options.PopulationSize)
+    ##
+    ## so, here nr > 0
+    if (nr < problem.options.PopulationSize)
+      OptionsWithModifiedPopulationSize = \
+          setfield (problem.options,
+                    "PopulationSize",
+                    problem.options.PopulationSize - nr);
+      CreatedPartialPopulation = \
+          problem.options.CreationFcn (problem.nvars,
+                                       problem.fitnessfcn,
+                                       OptionsWithModifiedPopulationSize);
+      Population = \
+          vertcat (problem.options.InitialPopulation,
+                   CreatedPartialPopulation);
+    elseif (nr == problem.options.PopulationSize)
+      Population = problem.options.InitialPopulation;      
+    else ## nr > problem.options.PopulationSize
       error ("nonempty InitialPopulation must have no more than \
           'PopulationSize' rows");
-    elseif (rows (problem.options.InitialPopulation) == \
-            problem.options.PopulationSize)
-      Population = InitialPopulation;
-    else
-
-      Population = \
-          vertcat (InitialPopulation,
-                   problem.options.CreationFcn (problem.nvars,
-                                                problem.fitnessfcn,
-                                                setfield (problem.options,
-                                                          "PopulationSize",
-                                                          problem.options.PopulationSize - rows (problem.options.InitialPopulation)
-                                                          )
-                                                )
-                   );
     endif
+  else
+    error ("nonempty InitialPopulation must have 'number of variables' \
+        columns");
   endif
 endfunction

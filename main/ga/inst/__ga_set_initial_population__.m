@@ -24,7 +24,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.1
+## Version: 1.1.1
 
 function Population = __ga_set_initial_population__ (problem)
                                 #TODO
@@ -59,13 +59,13 @@ function Population = __ga_set_initial_population__ (problem)
           vertcat (problem.options.InitialPopulation,
                    CreatedPartialPopulation);
     elseif (nr == problem.options.PopulationSize)
-      Population = problem.options.InitialPopulation;      
+      Population = problem.options.InitialPopulation;
     else ## nr > problem.options.PopulationSize
-      error ("nonempty InitialPopulation must have no more than \
+      error ("nonempty 'InitialPopulation' must have no more than \
           'PopulationSize' rows");
     endif
   else
-    error ("nonempty InitialPopulation must have 'number of variables' \
-        columns");
+    error ("nonempty 'InitialPopulation' must have 'number of \
+        variables' columns");
   endif
 endfunction

@@ -40,14 +40,14 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.2.6
+## Version: 4.2.8
 
 function Population = gacreationuniform (GenomeLength, FitnessFcn, options)
   [nr, nc] = size (options.PopInitRange);
 
   if ((nr != 2)
       ((nc != 1) && (nc != GenomeLength)))
-    print_usage (); #TODO to modify
+    error ("'PopInitRange' must be 2-by-1 or 2-by-GenomeLength");
   endif
 
   ## obtain a 2-by-GenomeLength LocalPopInitRange

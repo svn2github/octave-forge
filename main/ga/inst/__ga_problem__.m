@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.1.2
+## Version: 4.2
 
 function [x fval exitflag output population scores] = __ga_problem__ (problem)
   individui_migliori = [];
@@ -50,7 +50,13 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
                                                       popolazione);
         parents = [popolazione(index_parents(1), :);
                    popolazione(index_parents(2), :)];
-        popolazione_futura(i, :) = problem.options.CrossoverFcn (parents);
+        popolazione_futura(i, :) = \
+            problem.options.CrossoverFcn (parents,
+                                          problem.options,
+                                          problem.nvars,
+                                          problem.fitnessfcn,
+                                          false, ## unused
+                                          popolazione);
 
       %% mutation
       else

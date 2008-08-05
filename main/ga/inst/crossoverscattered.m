@@ -17,19 +17,18 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{xoverKids} =} crossoverscattered (@var{parents})
+## @deftypefn{Function File} {@var{xoverKids} =} crossoverscattered (@var{parents}, @var{parents}, @var{options}, @var{nvars}, @var{FitnessFcn}, @var{unused}, @var{thisPopulation})
 ## Combine two individuals, or parents, to form a crossover child.
 ##
 ## @seealso{ga, gaoptimset}
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2
+## Version: 4.0
 
-                                % different signature from MATLAB
-                                % because of a problem of function
-                                % handle (retry if more spare time)
-function xoverKids = crossoverscattered (parents)
+function xoverKids = \
+      crossoverscattered (parents,
+                          options, nvars, FitnessFcn, unused, thisPopulation)
   concatenated_parents = [(__ga_doubles2concatenated_bitstring__ \
                            (parents(1, :))); \
                           (__ga_doubles2concatenated_bitstring__ \

@@ -17,19 +17,18 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{xoverKids} =} crossoversinglepoint (@var{parents})
+## @deftypefn{Function File} {@var{xoverKids} =} crossoversinglepoint (@var{parents}, @var{parents}, @var{options}, @var{nvars}, @var{FitnessFcn}, @var{unused}, @var{thisPopulation})
 ## Combine two individuals, or parents, to form a crossover child.
 ##
 ## @seealso{ga, gaoptimset}
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2
+## Version: 4.0
 
-                                % different signature from MATLAB
-                                % because of a problem of function
-                                % handle (retry if more spare time)
-function xoverKids = crossoversinglepoint (parents)
+function xoverKids = \
+      crossoversinglepoint (parents,
+                            options, nvars, FitnessFcn, unused, thisPopulation)
 
   %% constants
   N_BIT_DOUBLE = 64;

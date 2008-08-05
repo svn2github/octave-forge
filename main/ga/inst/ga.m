@@ -74,7 +74,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.8
+## Version: 5.8.1
 
 function [x, fval, exitflag, output, population, scores] = \
       ga (fitnessfcn_or_problem,
@@ -117,15 +117,17 @@ function [x, fval, exitflag, output, population, scores] = \
   endif
 endfunction
 
+%!function retval = test_parabola (x)
+%! retval = x ** 2;
+
+%!assert (ga (@test_parabola, 1, [], [], [], [], [], [], [], gaoptimset ('CrossoverFcn', @crossoversinglepoint, 'EliteCount', 1, 'FitnessLimit', 0.001, 'Generations', 10, 'PopInitRange', [-1; 1])), 0, sqrt(0.001))
+
+%!function retval = test_f_con_inf_minimi_locali (x)
+%! retval = (x ** 2) - (cos (2 * pi * x)) + 1;
+
+%!assert (ga (@test_f_con_inf_minimi_locali, 1, [], [], [], [], [], [], [], gaoptimset ('CrossoverFcn', @crossoversinglepoint, 'EliteCount', 1, 'FitnessLimit', 0.001, 'Generations', 25, 'PopInitRange', [-5; 5])), 0, sqrt(0.001)) 
+
 %!assert (ga (@rastriginsfcn, 2), [0, 0], 1e-6)
-
-%!function retval = test_4_variabili (x)
-%! retval = 0;
-%! retval += 20 + (x(1) ** 2) + (x(2) ** 2) - 10 * (cos (2 * pi * x(1)) + cos (2 * pi * x(2)));
-%! retval += (x(3) ** 2) - (cos (2 * pi * x(3))) + 1;
-%! retval += x(4) ** 2;
-
-%!assert (ga (@test_4_variabili, 4, [], [], [], [], [], [], [], gaoptimset ('FitnessLimit', 0.001, 'PopInitRange', [-1; 1])), [0, 0, 0, 0], sqrt(0.001))
 
 %!function retval = test_rastriginsfcn_traslato (t)
 %! min = [1, 0];
@@ -134,12 +136,10 @@ endfunction
 
 %!assert (ga (@test_rastriginsfcn_traslato, 2, [], [], [], [], [], [], [], gaoptimset ('FitnessLimit', 0.001, 'PopInitRange', [-2; 2], 'PopulationSize', 100)), [1, 0], sqrt(0.001))
 
-%!function retval = test_f_con_inf_minimi_locali (x)
-%! retval = (x ** 2) - (cos (2 * pi * x)) + 1;
+%!function retval = test_4_variabili (x)
+%! retval = 0;
+%! retval += 20 + (x(1) ** 2) + (x(2) ** 2) - 10 * (cos (2 * pi * x(1)) + cos (2 * pi * x(2)));
+%! retval += (x(3) ** 2) - (cos (2 * pi * x(3))) + 1;
+%! retval += x(4) ** 2;
 
-%!assert (ga (@test_f_con_inf_minimi_locali, 1, [], [], [], [], [], [], [], gaoptimset ('CrossoverFcn', @crossoversinglepoint, 'EliteCount', 1, 'FitnessLimit', 0.001, 'Generations', 25, 'PopInitRange', [-5; 5])), 0, sqrt(0.001)) 
-
-%!function retval = test_parabola (x)
-%! retval = x ** 2;
-
-%!assert (ga (@test_parabola, 1, [], [], [], [], [], [], [], gaoptimset ('CrossoverFcn', @crossoversinglepoint, 'EliteCount', 1, 'FitnessLimit', 0.001, 'Generations', 10, 'PopInitRange', [-1; 1])), 0, sqrt(0.001))
+%!assert (ga (@test_4_variabili, 4, [], [], [], [], [], [], [], gaoptimset ('FitnessLimit', 0.001, 'PopInitRange', [-1; 1])), [0, 0, 0, 0], sqrt(0.001))

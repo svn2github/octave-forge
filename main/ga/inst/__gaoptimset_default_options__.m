@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.1
+## Version: 1.1.2
 
 function default_options = __gaoptimset_default_options__ ()
   default_options.CreationFcn = @gacreationuniform;
@@ -36,8 +36,7 @@ function default_options = __gaoptimset_default_options__ ()
                                 #default_options.MigrationDirection = "forward";
                                 #default_options.MigrationFraction = 0.2;
                                 #default_options.MigrationInterval = 20;
-  default_options.MutationFcn = {@mutationsinglepoint};
-                                #TODO write default mutationgaussian
+  default_options.MutationFcn = {@mutationgaussian, 1, 1};
                                 #TODO delete mutationsinglepoint
                                 #default_options.OutputFcns = [];
                                 #default_options.ParetoFraction = 0.35;

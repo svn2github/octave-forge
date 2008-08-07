@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.2
+## Version: 4.3
 
 function [x fval exitflag output population scores] = __ga_problem__ (problem)
   individui_migliori = [];
@@ -64,13 +64,13 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
                                                      popolazione);
         parent = popolazione(index_parent(1), :);
         popolazione_futura(i, :) = \ #TODO parent -> parents
-            problem.options.MutationFcn (parent,
-                                         problem.options,
-                                         problem.nvars,
-                                         problem.fitnessfcn,
-                                         false, #TODO false -> state
-                                         false, #TODO false -> thisScore
-                                         popolazione);
+            problem.options.MutationFcn{1, 1} (parent,
+                                               problem.options,
+                                               problem.nvars,
+                                               problem.fitnessfcn,
+                                               false, #TODO false -> state
+                                               false, #TODO false -> thisScore
+                                               popolazione);
       endif
     endfor
 

@@ -24,13 +24,33 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 0.1
+## Version: 0.2.3
 
 function mutationChildren = \
       mutationgaussian (parents,
                         options, nvars, FitnessFcn, state,
                         thisScore, thisPopulation)
-  p1 = parents(1, 1:nvars);
+  [nr, nc] = size (options.PopInitRange);
 
-  mutationChildren = p1 + randn (1, nvars);
+  if ((nr != 2)
+      ((nc != 1) && (nc != nvars)))
+    error ("'PopInitRange' must be 2-by-1 or 2-by-nvars");
+  endif
+
+  ## obtain a 2-by-nvars LocalPopInitRange
+  LocalPopInitRange = options.PopInitRange;
+  if (nc == 1)
+    LocalPopInitRange = LocalPopInitRange * ones (1, nvars);
+  endif
+
+  LB = LocalPopInitRange(1, 1:nvars);
+  UB = LocalPopInitRange(2, 1:nvars);
+
+  ## mutationgaussian
+  p1 = parents(1, 1:nvars);
+  Scale = options.MutationFcn{1, 2};
+  initial_std = Scale * (UB - LB);
+  Shrink = options.MutationFcn{1, 3};
+  current_std = initial_std * (1 - Shrink * (state.Generation / options.Generations)); ## TODO consider all generations recursively, not only one
+  mutationChildren = p1 + current_std .* randn (1, nvars);
 endfunction

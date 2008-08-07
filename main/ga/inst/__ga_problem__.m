@@ -17,14 +17,14 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.3
+## Version: 4.4
 
 function [x fval exitflag output population scores] = __ga_problem__ (problem)
   individui_migliori = [];
   popolazione = __ga_set_initial_population__ (problem);
 
   %% in this while, generation is fixed
-  generazione = 1;
+  generazione = 1; ## TODO initial generation should be 0 (for state structure)
   individui_migliori(generazione, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, popolazione))(1, :);
   while (! __ga_stop__ (problem, popolazione, generazione))
 
@@ -63,12 +63,26 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
         index_parent = problem.options.SelectionFcn (problem.fitnessfcn,
                                                      popolazione);
         parent = popolazione(index_parent(1), :);
+        ## start preparing state structure
+        state.Population = popolazione;
+                                #state.Score
+        state.Generation = generazione;
+                                #state.StartTime
+                                #state.StopFlag
+                                #state.Selection
+                                #state.Expectation
+                                #state.Best
+                                #state.LastImprovement
+                                #state.LastImprovementTime
+                                #state.NonlinIneq
+                                #state.NonlinEq
+        ## end preparing state structure
         popolazione_futura(i, :) = \ #TODO parent -> parents
             problem.options.MutationFcn{1, 1} (parent,
                                                problem.options,
                                                problem.nvars,
                                                problem.fitnessfcn,
-                                               false, #TODO false -> state
+                                               state,
                                                false, #TODO false -> thisScore
                                                popolazione);
       endif

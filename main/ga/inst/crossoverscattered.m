@@ -24,22 +24,21 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.0.1
+## Version: 5.1.1
 
 function xoverKids = \
       crossoverscattered (parents,
                           options, nvars, FitnessFcn, unused,
                           thisPopulation)
 
-  ## example
+  ## example (nvars == 4)
   ## p1 = [varA varB varC varD]
   ## p2 = [var1 var2 var3 var4]
   ## b = [1 1 0 1]
   ## child1 = [varA varB var3 varD]
-  p1 = parents (1, 1:nvars);
-  p2 = parents (2, 1:nvars);
-  b = fix (rand (1, nvars) +
-           0.5 * ones (1, nvars));
+  p1 = parents(1, 1:nvars);
+  p2 = parents(2, 1:nvars);
+  b = randint (1, nvars);
   child1 = b .* p1 + (ones (1, nvars) - b) .* p2;
 
   xoverKids = child1;
@@ -49,7 +48,7 @@ endfunction
 %! parents = [0 4.3 51 -6; 3 -34 5 64.212];
 %! options = gaoptimset ();
 %! nvars = 4;
-%! FitnessFcn = @rastriginsfcn;
+%! FitnessFcn = false; ## this parameter is unused in the current implementation
 %! unused = false;
 %! thisPopulation = false; ## this parameter is unused in the current implementation
 %! xoverKids = crossoverscattered (parents, options, nvars, FitnessFcn, unused, thisPopulation);

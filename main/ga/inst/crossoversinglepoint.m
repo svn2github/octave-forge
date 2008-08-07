@@ -24,32 +24,33 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.0.2
+## Version: 5.1.1
 
 function xoverKids = \
       crossoversinglepoint (parents,
                             options, nvars, FitnessFcn, unused,
                             thisPopulation)
 
-  %% constants
-  N_BIT_DOUBLE = 64;
+  ## example (nvars == 4)
+  ## p1 = [varA varB varC varD]
+  ## p2 = [var1 var2 var3 var4]
+  ## n = 1 ## integer between 1 and nvars
+  ## child1 = [varA var2 var3 var4]
+  p1 = parents(1, 1:nvars);
+  p2 = parents(2, 1:nvars);
+  n = randint (1, 1, [1, nvars]);
+  child1 = horzcat (p1(1, 1:n),
+                    p2(1, n+1:nvars));
 
-  %% aux variable
-  nvars = columns (parents);
-
-  concatenated_parents = [(__ga_doubles2concatenated_bitstring__ (parents(1, :)));
-                          (__ga_doubles2concatenated_bitstring__ (parents(2, :)))];
-
-  %% n is the single point of the crossover
-  %%
-  %% n can be from 1 to ((N_BIT_DOUBLE * nvars) - 1)
-  n = double (uint64 ((((nvars * N_BIT_DOUBLE) - 2) * rand ()) + 1));
-
-  %% single point crossover
-  concatenated_xoverKids = strcat (substr (concatenated_parents (1, :),
-                                           1, n),
-                                   substr (concatenated_parents (2, :),
-                                           (n + 1)));
-
-  xoverKids = __ga_concatenated_bitstring2doubles__ (concatenated_xoverKids);
+  xoverKids = child1;
 endfunction
+
+%!test
+%! parents = [0 4.3 51 -6; 3 -34 5 64.212];
+%! options = gaoptimset ();
+%! nvars = 4;
+%! FitnessFcn = false; ## this parameter is unused in the current implementation
+%! unused = false;
+%! thisPopulation = false; ## this parameter is unused in the current implementation
+%! xoverKids = crossoversinglepoint (parents, options, nvars, FitnessFcn, unused, thisPopulation);
+%! assert (size (xoverKids), [1, nvars]);

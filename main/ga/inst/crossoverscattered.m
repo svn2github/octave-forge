@@ -24,25 +24,33 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.0.2
+## Version: 5.0.1
 
 function xoverKids = \
       crossoverscattered (parents,
                           options, nvars, FitnessFcn, unused,
                           thisPopulation)
-  concatenated_parents = [(__ga_doubles2concatenated_bitstring__ \
-                           (parents(1, :))); \
-                          (__ga_doubles2concatenated_bitstring__ \
-                           (parents(2, :)))];
 
-  %% crossover scattered
-  tmp = concatenated_parents(1, :);
-  for i = 1:length (tmp)
-    if (rand () < 0.5)
-      tmp(1, i) = concatenated_parents(2, i);
-    endif
-  endfor
-  concatenated_xoverKids = tmp;
+  ## example
+  ## p1 = [varA varB varC varD]
+  ## p2 = [var1 var2 var3 var4]
+  ## b = [1 1 0 1]
+  ## child1 = [varA varB var3 varD]
+  p1 = parents (1, 1:nvars);
+  p2 = parents (2, 1:nvars);
+  b = fix (rand (1, nvars) +
+           0.5 * ones (1, nvars));
+  child1 = b .* p1 + (ones (1, nvars) - b) .* p2;
 
-  xoverKids = __ga_concatenated_bitstring2doubles__ (concatenated_xoverKids);
+  xoverKids = child1;
 endfunction
+
+%!test
+%! parents = [0 4.3 51 -6; 3 -34 5 64.212];
+%! options = gaoptimset ();
+%! nvars = 4;
+%! FitnessFcn = @rastriginsfcn;
+%! unused = false;
+%! thisPopulation = false; ## this parameter is unused in the current implementation
+%! xoverKids = crossoverscattered (parents, options, nvars, FitnessFcn, unused, thisPopulation);
+%! assert (size (xoverKids), [1, nvars]);

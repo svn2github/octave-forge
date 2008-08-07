@@ -40,7 +40,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.2.8
+## Version: 4.3
 
 function Population = gacreationuniform (GenomeLength, FitnessFcn, options)
   [nr, nc] = size (options.PopInitRange);
@@ -73,5 +73,4 @@ endfunction
 %! FitnessFcn = @rastriginsfcn;
 %! options = gaoptimset ();
 %! Population = gacreationuniform (GenomeLength, FitnessFcn, options);
-%! [nr, nc] = size (Population);
-%! assert (((nr == options.PopulationSize) && (nc == GenomeLength)), true);
+%! assert (size (Population), [options.PopulationSize, GenomeLength]);

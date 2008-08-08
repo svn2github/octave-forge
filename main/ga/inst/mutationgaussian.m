@@ -24,7 +24,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 0.2.3
+## Version: 0.3.1
 
 function mutationChildren = \
       mutationgaussian (parents,
@@ -46,11 +46,25 @@ function mutationChildren = \
   LB = LocalPopInitRange(1, 1:nvars);
   UB = LocalPopInitRange(2, 1:nvars);
 
-  ## mutationgaussian
+  ## start mutationgaussian logic
   p1 = parents(1, 1:nvars);
   Scale = options.MutationFcn{1, 2};
-  initial_std = Scale * (UB - LB);
+  assert (size (Scale), [1 1]); ## DEBUG
   Shrink = options.MutationFcn{1, 3};
-  current_std = initial_std * (1 - Shrink * (state.Generation / options.Generations)); ## TODO consider all generations recursively, not only one
+  assert (size (Shrink), [1 1]); ## DEBUG
+
+  ## initial standard deviation (i.e. when state.Generation == 0)
+  tmp_std = Scale * (UB - LB); ## vector = scalar * vector
+
+  ## recursively compute current standard deviation
+  for k = 1:state.Generation
+    tmp_std = \ ## vector = scalar * vector
+        (1 - Shrink * (k / options.Generations)) * tmp_std;
+  endfor
+
+  current_std = tmp_std;
+  assert (size (current_std), [1 nvars]); ## DEBUG
+
+  ## finally add random numbers
   mutationChildren = p1 + current_std .* randn (1, nvars);
 endfunction

@@ -24,7 +24,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.1.1
+## Version: 5.1.3
 
 function xoverKids = \
       crossoverscattered (parents,
@@ -44,12 +44,13 @@ function xoverKids = \
   xoverKids = child1;
 endfunction
 
-%!test
-%! parents = [0 4.3 51 -6; 3 -34 5 64.212];
+%!shared nvars, xoverKids
+%! parents = [3.2 -34 51 64.21; 3.2 -34 51 64.21];
 %! options = gaoptimset ();
 %! nvars = 4;
 %! FitnessFcn = false; ## this parameter is unused in the current implementation
 %! unused = false;
 %! thisPopulation = false; ## this parameter is unused in the current implementation
 %! xoverKids = crossoverscattered (parents, options, nvars, FitnessFcn, unused, thisPopulation);
-%! assert (size (xoverKids), [1, nvars]);
+%!assert (size (xoverKids), [1, nvars]);
+%!assert (xoverKids(1, 1:nvars), [3.2 -34 51 64.21]);

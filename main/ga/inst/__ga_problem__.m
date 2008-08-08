@@ -17,11 +17,15 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.4
+## Version: 4.4.2
 
 function [x fval exitflag output population scores] = __ga_problem__ (problem)
   individui_migliori = [];
-  popolazione = __ga_set_initial_population__ (problem);
+  popolazione = __ga_set_initial_population__ (problem.nvars,
+                                               problem.fitnessfcn,
+                                               problem.options);
+                                #TODO
+                                #consider InitialScores for state structure
 
   %% in this while, generation is fixed
   generazione = 1; ## TODO initial generation should be 0 (for state structure)

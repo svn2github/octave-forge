@@ -17,55 +17,63 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{Population} =} __ga_set_initial_population__ (@var{problem})
+## @deftypefn{Function File} {@var{Population} =} __ga_set_initial_population__ (@var{GenomeLength}, @var{FitnessFcn}, @var{options})
 ## Create an initial population.
 ##
 ## @seealso{__ga_problem__}
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.1.1
+## Version: 2.0.10
 
-function Population = __ga_set_initial_population__ (problem)
+function Population = \
+      __ga_set_initial_population__ (GenomeLength, FitnessFcn, options)
                                 #TODO
-                                #
-                                #consider InitialScores
-                                #
                                 #consider PopulationSize as a vector for
                                 #multiple subpopolations
-
-  [nr, nc] = size (problem.options.InitialPopulation);
-
+  [nr, nc] = size (options.InitialPopulation);
   if (nc == 0)
-    Population = problem.options.CreationFcn (problem.nvars,
-                                              problem.fitnessfcn,
-                                              problem.options);
-  elseif (nc == problem.nvars)
+    Population = options.CreationFcn (GenomeLength, FitnessFcn, options);
+  elseif (nc == GenomeLength)
 
     ## it is impossible to have a matrix with 0 rows and a positive
     ## number of columns
     ##
     ## so, here nr > 0
-    if (nr < problem.options.PopulationSize)
+    if (nr < options.PopulationSize)
       OptionsWithModifiedPopulationSize = \
-          setfield (problem.options,
+          setfield (options,
                     "PopulationSize",
-                    problem.options.PopulationSize - nr);
+                    options.PopulationSize - nr);
       CreatedPartialPopulation = \
-          problem.options.CreationFcn (problem.nvars,
-                                       problem.fitnessfcn,
-                                       OptionsWithModifiedPopulationSize);
+          options.CreationFcn (GenomeLength,
+                               FitnessFcn,
+                               OptionsWithModifiedPopulationSize);
       Population = \
-          vertcat (problem.options.InitialPopulation,
-                   CreatedPartialPopulation);
-    elseif (nr == problem.options.PopulationSize)
-      Population = problem.options.InitialPopulation;
-    else ## nr > problem.options.PopulationSize
+          vertcat (options.InitialPopulation(1:nr,
+                                             1:GenomeLength),
+                   CreatedPartialPopulation(1:(options.PopulationSize - nr),
+                                            1:GenomeLength));
+    elseif (nr == options.PopulationSize)
+      Population = options.InitialPopulation;
+    else ## nr > options.PopulationSize
       error ("nonempty 'InitialPopulation' must have no more than \
           'PopulationSize' rows");
     endif
   else
-    error ("nonempty 'InitialPopulation' must have 'number of \
-        variables' columns");
+    error ("nonempty 'InitialPopulation' must have 'GenomeLength' \
+        columns");
   endif
 endfunction
+
+%!test
+%! GenomeLength = 2;
+%! options = gaoptimset ();
+%! Population = __ga_set_initial_population__ (GenomeLength, @rastriginsfcn, options);
+%! assert (size (Population), [options.PopulationSize, GenomeLength]);
+
+%!test
+%! GenomeLength = 2;
+%! options = gaoptimset ("InitialPopulation", [1, 2; 3, 4; 5, 6]);
+%! Population = __ga_set_initial_population__ (GenomeLength, @rastriginsfcn, options);
+%! assert (size (Population), [options.PopulationSize, GenomeLength]);

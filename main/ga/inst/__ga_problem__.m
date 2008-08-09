@@ -17,20 +17,20 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.4.2
+## Version: 4.5.1
 
 function [x fval exitflag output population scores] = __ga_problem__ (problem)
   individui_migliori = [];
-  popolazione = __ga_set_initial_population__ (problem.nvars,
-                                               problem.fitnessfcn,
-                                               problem.options);
+  state.Population = __ga_set_initial_population__ (problem.nvars,
+                                                    problem.fitnessfcn,
+                                                    problem.options);
                                 #TODO
                                 #consider InitialScores for state structure
 
   %% in this while, generation is fixed
-  generazione = 1; ## TODO initial generation should be 0 (for state structure)
-  individui_migliori(generazione, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, popolazione))(1, :);
-  while (! __ga_stop__ (problem, popolazione, generazione))
+  state.Generation = 1; ## TODO initial generation should be 0 (for state structure)
+  individui_migliori(state.Generation, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, state.Population))(1, :);
+  while (! __ga_stop__ (problem, state.Population, state.Generation))
 
     %% doing this initialization here to make the variable
     %% popolazione_futura visible at the end of the next while
@@ -39,7 +39,7 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
 
     %% elitist selection
     for i = 1:problem.options.EliteCount
-      popolazione_futura(i, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, popolazione))(i, :);
+      popolazione_futura(i, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, state.Population))(i, :);
     endfor
 
     %% in this while the individual of the new generation is fixed
@@ -51,26 +51,26 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
       %% crossover
       if (aux_operatore < problem.options.CrossoverFraction)
         index_parents = problem.options.SelectionFcn (problem.fitnessfcn,
-                                                      popolazione);
-        parents = [popolazione(index_parents(1), :);
-                   popolazione(index_parents(2), :)];
+                                                      state.Population);
+        parents = [state.Population(index_parents(1), :);
+                   state.Population(index_parents(2), :)];
         popolazione_futura(i, :) = \
             problem.options.CrossoverFcn (parents,
                                           problem.options,
                                           problem.nvars,
                                           problem.fitnessfcn,
                                           false, ## unused
-                                          popolazione);
+                                          state.Population);
 
       %% mutation
       else
         index_parent = problem.options.SelectionFcn (problem.fitnessfcn,
-                                                     popolazione);
-        parent = popolazione(index_parent(1), :);
+                                                     state.Population);
+        parent = state.Population(index_parent(1), :);
         ## start preparing state structure
-        state.Population = popolazione;
+                                #DONE state.Population
                                 #state.Score
-        state.Generation = generazione;
+                                #DONE state.Generation
                                 #state.StartTime
                                 #state.StopFlag
                                 #state.Selection
@@ -88,14 +88,14 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
                                                problem.fitnessfcn,
                                                state,
                                                false, #TODO false -> thisScore
-                                               popolazione);
+                                               state.Population);
       endif
     endfor
 
-    popolazione = popolazione_futura;
-    generazione++;
-    individui_migliori(generazione, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, popolazione))(1, :);
+    state.Population = popolazione_futura;
+    state.Generation++;
+    individui_migliori(state.Generation, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, state.Population))(1, :);
   endwhile
 
-  x = individui_migliori(generazione, :);
+  x = individui_migliori(state.Generation, :);
 endfunction

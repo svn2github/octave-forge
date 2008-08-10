@@ -17,15 +17,12 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2
+## Version: 4.0
 
-function retval = __ga_calcola_img_fitnessfcn__ (fitnessfcn, population)
-  img_fitnessfcn = zeros (rows (population), 1);
+function Scores = __ga_scores__ (fitnessfcn, Population)
+  [nr nc] = size (Population);
 
-  %% inside this for the individual is fixed
-  for i = 1:rows (population)
-    img_fitnessfcn (i) = fitnessfcn (population (i, :));
+  for i = 1:nr
+    Scores(i, 1) = fitnessfcn (Population (i, 1:nc));
   endfor
-
-  retval = img_fitnessfcn;
 endfunction

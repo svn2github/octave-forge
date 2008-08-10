@@ -61,7 +61,7 @@ function parents = selectionroulette (fitnessfcn, popolazione)
   endfor
 
   %% ordered images of fitnessfcn on population
-  [trash index_img_fitnessfcn] = sort (__ga_calcola_img_fitnessfcn__ (fitnessfcn, popolazione));
+  [trash index_img_fitnessfcn] = sort (__ga_scores__ (fitnessfcn, popolazione));
 
   parents = [index_img_fitnessfcn(index_individui_scelti(1)), index_img_fitnessfcn(index_individui_scelti(2))];
 endfunction

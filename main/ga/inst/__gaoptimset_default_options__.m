@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.1.2
+## Version: 1.1.3
 
 function default_options = __gaoptimset_default_options__ ()
   default_options.CreationFcn = @gacreationuniform;
@@ -50,7 +50,7 @@ function default_options = __gaoptimset_default_options__ ()
                                 #TODO write default selectionstochunif
                                 #default_options.StallGenLimit = 50;
                                 #default_options.StallTimeLimit = Inf;
-                                #default_options.TimeLimit = Inf;
+  default_options.TimeLimit = Inf;
                                 #default_options.TolCon = 1e-6;
                                 #default_options.TolFun = 1e-6;
                                 #default_options.UseParallel = "never";

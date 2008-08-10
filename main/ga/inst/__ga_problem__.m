@@ -17,30 +17,34 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.5.1
+## Version: 4.13
 
 function [x fval exitflag output population scores] = __ga_problem__ (problem)
-  individui_migliori = [];
+  output.randstate = rand ("state");
+  output.randnstate = randn ("state");
+  state.StartTime = time ();
+
   state.Population = __ga_set_initial_population__ (problem.nvars,
                                                     problem.fitnessfcn,
                                                     problem.options);
-                                #TODO
-                                #consider InitialScores for state structure
 
-  %% in this while, generation is fixed
-  state.Generation = 1; ## TODO initial generation should be 0 (for state structure)
-  individui_migliori(state.Generation, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, state.Population))(1, :);
-  while (! __ga_stop__ (problem, state.Population, state.Generation))
+  state.Score = __ga_scores__ (problem.fitnessfcn, state.Population);
+                                #TODO consider InitialScores
+                                #TODO write __ga_set_initial_scores__
+                                #TODO delete __ga_calcola_img_fitnessfcn__
 
-    %% doing this initialization here to make the variable
-    %% popolazione_futura visible at the end of the next while
-    popolazione_futura = zeros (problem.options.PopulationSize,
-                                problem.nvars);
+  state.Generation = 0;
+  state.Best(state.Generation + 1, 1) = min (state.Score);
 
-    %% elitist selection
-    for i = 1:problem.options.EliteCount
-      popolazione_futura(i, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, state.Population))(i, :);
-    endfor
+  ## in this while, generation is fixed
+  while (! __ga_stop__ (problem, state))
+
+    ## elitist selection
+    [trash IndexSortedScores] = sort (state.Score);
+    popolazione_futura(1:problem.options.EliteCount,
+                       1:problem.nvars) = \
+        state.Population(1:problem.options.EliteCount,
+                         1:problem.nvars);
 
     %% in this while the individual of the new generation is fixed
     for i = (1 + problem.options.EliteCount):problem.options.PopulationSize
@@ -69,13 +73,13 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
         parent = state.Population(index_parent(1), :);
         ## start preparing state structure
                                 #DONE state.Population
-                                #state.Score
+                                #DONE state.Score
                                 #DONE state.Generation
-                                #state.StartTime
+                                #DONE state.StartTime
                                 #state.StopFlag
                                 #state.Selection
                                 #state.Expectation
-                                #state.Best
+                                #DONE state.Best
                                 #state.LastImprovement
                                 #state.LastImprovementTime
                                 #state.NonlinIneq
@@ -93,9 +97,27 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
     endfor
 
     state.Population = popolazione_futura;
+    state.Score = __ga_scores__ (problem.fitnessfcn, state.Population);
     state.Generation++;
-    individui_migliori(state.Generation, :) = (__ga_sort_ascend_population__ (problem.fitnessfcn, state.Population))(1, :);
+    state.Best(state.Generation + 1, 1) = min (state.Score);
   endwhile
 
-  x = individui_migliori(state.Generation, :);
+  ## return variables
+  ##
+  [trash IndexMinScore] = min (state.Score);
+  x = state.Population(IndexMinScore, 1:problem.nvars);
+
+  fval = problem.fitnessfcn (x);
+
+                                #TODO exitflag
+
+  ## output.randstate and output.randnstate must be assigned at the
+  ## start of the algorithm
+  output.generations = state.Generation;
+                                #TODO output (funccount, message,
+                                #maxconstraint)
+
+  population = state.Population;
+
+  scores = state.Score;
 endfunction

@@ -49,13 +49,14 @@
 ## @item PopInitRange
 ## @item PopulationSize
 ## @item SelectionFcn
+## @item TimeLimit
 ## @end table
 ##
 ## @seealso{ga, gaoptimget}
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.3.1
+## Version: 4.3.2
 
 function options = gaoptimset (varargin)
   if ((nargout != 1) ||

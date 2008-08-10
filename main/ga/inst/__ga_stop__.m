@@ -16,15 +16,27 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
+## -*- texinfo -*-
+## @deftypefn{Function File} {@var{x} =} __ga_stop__ (@var{problem}, @var{state})
+## Determine whether the genetic algorithm should stop.
+##
+## @seealso{__ga_problem__}
+## @end deftypefn
+
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.0
+## Version: 5.0
 
-%% return true if the stop condition is reached, false otherwise
-function retval = __ga_stop__ (problem, popolazione, generazione)
-  __ga_stop_aux1__ = (generazione >= problem.options.Generations);
+function retval = __ga_stop__ (problem, state)
+  Generations = \
+      (state.Generation >= problem.options.Generations);
 
-  %% in doc Matlab <= and not < is supposed
-  __ga_stop_aux2__ = (problem.fitnessfcn ((__ga_sort_ascend_population__ (problem.fitnessfcn, popolazione))(1, :)) <= problem.options.FitnessLimit);
+  TimeLimit = \
+      ((time () - state.StartTime) >= problem.options.TimeLimit);
 
-  retval = (__ga_stop_aux1__ || __ga_stop_aux2__);
+  FitnessLimit = \
+      (state.Best(state.Generation + 1, 1) <= problem.options.FitnessLimit);
+
+  retval = (Generations ||
+            TimeLimit ||
+            FitnessLimit);
 endfunction

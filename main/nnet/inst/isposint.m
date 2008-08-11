@@ -43,11 +43,11 @@ function f = isposint(n)
 endfunction
 
 
-%!test assert(isposint(1)) # this should pass
-%!test assert(isposint(0.5),0) # should return zero
-%!test assert(isposint(-1),0) # should return zero
-%!test assert(isposint(-1.5),0) # should return zero
-%!test assert(isposint(0),0) # should return zero
-%!test fail("isposint([0 0])","Input argument must not be a vector, only scalars are allowed!")
-%!test fail("isposint('testString')","Input argument must not be a vector, only scalars are allowed!")
+%!assert(isposint(1)) # this should pass
+%!assert(isposint(0.5),0) # should return zero
+%!assert(isposint(-1),0) # should return zero
+%!assert(isposint(-1.5),0) # should return zero
+%!assert(isposint(0),0) # should return zero
+%!fail("isposint([0 0])","Input argument must not be a vector, only scalars are allowed!")
+%!fail("isposint('testString')","Input argument must not be a vector, only scalars are allowed!")
 

@@ -28,3 +28,10 @@ function a = purelin(n)
    a = n;
 
 endfunction
+
+%!assert(purelin(2),2);
+%!assert(purelin(-2),-2);
+%!assert(purelin(0),0);
+
+%!error  # this test must throw an error!
+%! assert(purelin(2),1);

@@ -48,7 +48,7 @@ function net = __newnetwork(numInputs,numLayers,numOutputs,networkType)
   ## check input args
   if ( !isposint(numInputs) )
     error("network: at least 1 input must be defined! ")
-    # this can't happen actualy, only one is allowed and this
+    # this can't happen actually, only one is allowed and this
     # one is hard coded
   elseif ( !isposint(numLayers) )
     error("network: at least 1 hidden- and one output layer must be defined! ")

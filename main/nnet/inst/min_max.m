@@ -38,7 +38,8 @@ function Pr = min_max(Pp)
   error(nargchk(1,1,nargin))
 
   Pr = []; # returns an empty matrix
-  if ismatrix(Pp)
+  #if ismatrix(Pp)
+  if (!(size(Pp,1)==1) && !(size(Pp,2)==1)) # ismatrix(1) will return 1!!!
     if isreal(Pp) # be sure, this is no complex matrix
       Pr = [min(Pp,[],2) max(Pp,[],2)];
     else
@@ -50,6 +51,11 @@ function Pr = min_max(Pp)
 
 endfunction
 
-%!test fail("min_max(\"testString\")","Argument must be a matrix")
+
+%!test fail("min_max(1)","Argument must be a matrix.")
+%!test fail("min_max('testString')","Argument must be a matrix.")
+%!test fail("min_max(cellA{1}=1)","Argument must be a matrix.")
+%!test fail("min_max([1+1i, 2+2i])","Argument must be a matrix.")
+%!test fail("min_max([1+1i, 2+2i; 3+1i, 4+2i])","Argument has illegal type.")
 
 

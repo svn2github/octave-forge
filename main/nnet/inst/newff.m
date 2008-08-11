@@ -178,7 +178,7 @@ function net = newff(Pr,ss,transFunc,trainFunc,notUsed,performFunc)
       error("Layer sizes is not a row vector.")
     endif
     if (size(ss,2)<2)
-      error("There must be at least one hidden layer and one output layer")
+      error("There must be at least one hidden layer and one output layer!")
     endif
     for k=1:length(ss)
       sk = ss(k);
@@ -219,3 +219,48 @@ function net = newff(Pr,ss,transFunc,trainFunc,notUsed,performFunc)
 
 
 endfunction
+
+# if input range Pr has only one column
+%!test
+%! Pr = [1;2];
+%! fail("newff(Pr,[1 1],{'tansig','purelin'},'trainlm','unused','mse')","Input ranges must be a two column matrix!")
+
+# if input range Pr has two columns
+%!test
+%! Pr = [1 2 ; 4  6];
+%! assert(__checknetstruct(newff(Pr,[1 1],{'tansig','purelin'},'trainlm','unused','mse')))
+  ## __checknetstruct returns TRUE is input arg is a network structure ...
+
+# if input range Pr has three columns
+%!test
+%! Pr = [1 2 3; 4 5 6];
+%! fail("newff(Pr,[1 1],{'tansig','purelin'},'trainlm','unused','mse')","Input ranges must be a two column matrix!")
+
+# if input range has in the second col greater values as in the first col ...
+%!test
+%! Pr = [5 3; 4 5];
+%! fail("newff(Pr,[1 1],{'tansig','purelin'},'trainlm','unused','mse')",\
+%!  "Input ranges has values in the second column larger as in the same row of the first column.")
+
+# check if ss has correct format
+%!test
+%! Pr = [1 2 ; 4 6];
+%! fail("newff(Pr,[1 1; 2 3],{'tansig','purelin'},'trainlm','unused','mse')",\
+%!  "Layer sizes is not a row vector.")
+
+# check if ss has correct format
+%!test
+%! Pr = [1 2 ; 4 6];
+%! assert(__checknetstruct(newff(Pr,[ 2 3],{'tansig','purelin'},'trainlm','unused','mse')))
+
+# check if ss has correct format
+%!test
+%! Pr = [1 2 ; 4 6];
+%! fail("newff(Pr,[1],{'tansig','purelin'},'trainlm','unused','mse')",\
+%!  "There must be at least one hidden layer and one output layer!")
+
+# check if ss has correct format
+%!test
+%! Pr = [1 2 ; 4 6];
+%! fail("newff(Pr,[-1 1],{'tansig','purelin'},'trainlm','unused','mse')",\
+%!  "Layer sizes is not a row vector of positive integers.")

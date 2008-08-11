@@ -17,18 +17,20 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.13
+## Version: 4.14.2
 
 function [x fval exitflag output population scores] = __ga_problem__ (problem)
   output.randstate = rand ("state");
   output.randnstate = randn ("state");
   state.StartTime = time ();
 
-  state.Population = __ga_set_initial_population__ (problem.nvars,
-                                                    problem.fitnessfcn,
-                                                    problem.options);
+  state.Population(1:problem.options.PopulationSize, 1:problem.nvars) = \
+      __ga_set_initial_population__ (problem.nvars,
+                                     problem.fitnessfcn,
+                                     problem.options);
 
-  state.Score = __ga_scores__ (problem.fitnessfcn, state.Population);
+  state.Score(1:problem.options.PopulationSize, 1) = \
+      __ga_scores__ (problem.fitnessfcn, state.Population);
                                 #TODO consider InitialScores
                                 #TODO write __ga_set_initial_scores__
                                 #TODO delete __ga_calcola_img_fitnessfcn__
@@ -43,7 +45,7 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
     [trash IndexSortedScores] = sort (state.Score);
     popolazione_futura(1:problem.options.EliteCount,
                        1:problem.nvars) = \
-        state.Population(1:problem.options.EliteCount,
+        state.Population(IndexSortedScores(1:problem.options.EliteCount, 1),
                          1:problem.nvars);
 
     %% in this while the individual of the new generation is fixed

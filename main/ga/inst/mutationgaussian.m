@@ -24,47 +24,46 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 0.3.1
+## Version: 1.3
 
 function mutationChildren = \
       mutationgaussian (parents,
                         options, nvars, FitnessFcn, state,
                         thisScore, thisPopulation)
-  [nr, nc] = size (options.PopInitRange);
-
-  if ((nr != 2)
-      ((nc != 1) && (nc != nvars)))
-    error ("'PopInitRange' must be 2-by-1 or 2-by-nvars");
-  endif
+  [nr_parents nc_parents] = size (parents);
+  #assert (nr_parents, 1); ## DEBUG
+  [nrPopInitRange, ncPopInitRange] = size (options.PopInitRange);
+  #assert (nrPopInitRange, 2); ## DEBUG
+  #assert ((ncPopInitRange == 1) || (ncPopInitRange == nvars)); ## DEBUG
+  #assert (columns (thisPopulation), nvars); ## DEBUG
 
   ## obtain a 2-by-nvars LocalPopInitRange
   LocalPopInitRange = options.PopInitRange;
-  if (nc == 1)
-    LocalPopInitRange = LocalPopInitRange * ones (1, nvars);
+  if (ncPopInitRange == 1)
+    LocalPopInitRange(1:2, 1:nvars) = LocalPopInitRange * ones (1, nvars);
   endif
-
-  LB = LocalPopInitRange(1, 1:nvars);
-  UB = LocalPopInitRange(2, 1:nvars);
+  LB(1, 1:nvars) = LocalPopInitRange(1, 1:nvars);
+  UB(1, 1:nvars) = LocalPopInitRange(2, 1:nvars);
 
   ## start mutationgaussian logic
-  p1 = parents(1, 1:nvars);
   Scale = options.MutationFcn{1, 2};
-  assert (size (Scale), [1 1]); ## DEBUG
+  #assert (size (Scale), [1 1]); ## DEBUG
   Shrink = options.MutationFcn{1, 3};
-  assert (size (Shrink), [1 1]); ## DEBUG
+  #assert (size (Shrink), [1 1]); ## DEBUG
 
   ## initial standard deviation (i.e. when state.Generation == 0)
   tmp_std = Scale * (UB - LB); ## vector = scalar * vector
 
   ## recursively compute current standard deviation
   for k = 1:state.Generation
-    tmp_std = \ ## vector = scalar * vector
-        (1 - Shrink * (k / options.Generations)) * tmp_std;
+    tmp_std(1, 1:nvars) = (1 - Shrink * (k / options.Generations)) * tmp_std;
   endfor
-
-  current_std = tmp_std;
-  assert (size (current_std), [1 nvars]); ## DEBUG
+  current_std(1, 1:nvars) = tmp_std;
+  expanded_current_std(1:nc_parents, 1:nvars) = \
+      ones (nc_parents, 1) * current_std;
 
   ## finally add random numbers
-  mutationChildren = p1 + current_std .* randn (1, nvars);
+  mutationChildren(1:nc_parents, 1:nvars) = \
+      thisPopulation(parents(1, 1:nc_parents), 1:nvars) + \
+      expanded_current_std .* randn (nc_parents, nvars);
 endfunction

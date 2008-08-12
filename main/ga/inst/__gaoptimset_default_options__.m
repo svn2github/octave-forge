@@ -17,7 +17,7 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.1.3
+## Version: 1.1.7
 
 function default_options = __gaoptimset_default_options__ ()
   default_options.CreationFcn = @gacreationuniform;
@@ -27,12 +27,12 @@ function default_options = __gaoptimset_default_options__ ()
                                 #default_options.DistanceMeasureFcn gamultiobj
   default_options.EliteCount = 2;
   default_options.FitnessLimit = -Inf;
-                                #default_options.FitnessScalingFcn = @fitscalingrank;
+  default_options.FitnessScalingFcn = @fitscalingrank;
   default_options.Generations = 100;
                                 #default_options.HybridFcn = [];
                                 #default_options.InitialPenalty = 10;
   default_options.InitialPopulation = [];
-                                #default_options.InitialScores = [];
+  default_options.InitialScores = [];
                                 #default_options.MigrationDirection = "forward";
                                 #default_options.MigrationFraction = 0.2;
                                 #default_options.MigrationInterval = 20;
@@ -45,9 +45,8 @@ function default_options = __gaoptimset_default_options__ ()
                                 #default_options.PlotInterval = 1;
   default_options.PopInitRange = [0; 1];
   default_options.PopulationSize = 20;
-                                #default_options.PopulationType = "doubleVector";
-  default_options.SelectionFcn = @selectionroulette;
-                                #TODO write default selectionstochunif
+  default_options.PopulationType = "doubleVector";
+  default_options.SelectionFcn = @selectionstochunif;
                                 #default_options.StallGenLimit = 50;
                                 #default_options.StallTimeLimit = Inf;
   default_options.TimeLimit = Inf;

@@ -17,12 +17,18 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.0
+## Version: 5.2
 
-function Scores = __ga_scores__ (fitnessfcn, Population)
-  [nr nc] = size (Population);
-
-  for i = 1:nr
-    Scores(i, 1) = fitnessfcn (Population (i, 1:nc));
+function Scores = __ga_scores__ (fitnessfcn, Population, InitialScores = [])
+  [nrP ncP] = size (Population);
+  [nrIS ncIS] = size (InitialScores);
+  #assert ((ncIS == 0) || (ncIS == 1)); ## DEBUG
+  #assert (nrIS <= nrP); ## DEBUG
+  if (nrIS > 0)
+    Scores(1:nrIS, 1) = InitialScores(1:nrIS, 1);
+  endif
+  for index = (nrIS + 1):nrP
+    Scores(index, 1) = fitnessfcn (Population(index, 1:ncP));
   endfor
+  #assert (size (Scores), [nrP 1]); ## DEBUG
 endfunction

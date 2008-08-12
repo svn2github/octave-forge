@@ -26,15 +26,27 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.0.2
+## Version: 1.1
 
 function expectation = fitscalingrank (scores, nParents)
   [nr nc] = size (scores);
-  assert (nc, 1); ## DEBUG
+  #assert (nc, 1); ## DEBUG
   r(1, 1:nr) = ranks (scores);
+                                #TODO
+                                #ranks ([7,2,2]) == [3.0,1.5,1.5]
+                                #is [3,1,2] (or [3,2,1]) useful? 
   expectation_wo_nParents(1, 1:nr) = arrayfun (@(n) 1 / sqrt (n), r);
   expectation(1, 1:nr) = \
       (nParents / sum (expectation_wo_nParents)) * \
       expectation_wo_nParents;
-  assert (sum (expectation), nParents, 1e-9); ## DEBUG
+  #assert (sum (expectation), nParents, 1e-9); ## DEBUG
+
+  ## start DEBUG
+  #[trash index_min_scores] = min (scores);
+  #[trash index_max_expectation] = max (expectation);
+  #assert (index_min_scores, index_max_expectation);
+  #[trash index_max_scores] = max (scores);
+  #[trash index_min_expectation] = min (expectation);
+  #assert (index_max_scores, index_min_expectation);
+  ## end DEBUG
 endfunction

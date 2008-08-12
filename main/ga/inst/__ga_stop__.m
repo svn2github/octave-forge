@@ -17,16 +17,16 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{x} =} __ga_stop__ (@var{problem}, @var{state})
+## @deftypefn{Function File} {@var{stop} =} __ga_stop__ (@var{problem}, @var{state})
 ## Determine whether the genetic algorithm should stop.
 ##
 ## @seealso{__ga_problem__}
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.0
+## Version: 5.0.1
 
-function retval = __ga_stop__ (problem, state)
+function stop = __ga_stop__ (problem, state)
   Generations = \
       (state.Generation >= problem.options.Generations);
 
@@ -36,7 +36,7 @@ function retval = __ga_stop__ (problem, state)
   FitnessLimit = \
       (state.Best(state.Generation + 1, 1) <= problem.options.FitnessLimit);
 
-  retval = (Generations ||
-            TimeLimit ||
-            FitnessLimit);
+  stop = (Generations ||
+          TimeLimit ||
+          FitnessLimit);
 endfunction

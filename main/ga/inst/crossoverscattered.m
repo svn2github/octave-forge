@@ -24,33 +24,28 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.1.3
+## Version: 6.2
 
 function xoverKids = \
       crossoverscattered (parents,
                           options, nvars, FitnessFcn, unused,
                           thisPopulation)
+  [nr_parents nc_parents] = size (parents);
+  #assert (nr_parents, 1); ## DEBUG
+  #assert (rem (nc_parents, 2), 0); ## DEBUG
+  #assert (columns (thisPopulation), nvars); ## DEBUG
 
-  ## example (nvars == 4)
+  ## simplified example (nvars == 4)
   ## p1 = [varA varB varC varD]
   ## p2 = [var1 var2 var3 var4]
   ## b = [1 1 0 1]
   ## child1 = [varA varB var3 varD]
-  p1 = parents(1, 1:nvars);
-  p2 = parents(2, 1:nvars);
-  b = randint (1, nvars);
-  child1 = b .* p1 + (ones (1, nvars) - b) .* p2;
-
-  xoverKids = child1;
+  n_children = nc_parents / 2;
+  p1(1:n_children, 1:nvars) = \
+      thisPopulation(parents(1, 1:n_children), 1:nvars);
+  p2(1:n_children, 1:nvars) = \
+      thisPopulation(parents(1, n_children + (1:n_children)), 1:nvars);
+  b(1:n_children, 1:nvars) = randint (n_children, nvars);
+  xoverKids(1:n_children, 1:nvars) = \
+      b .* p1 + (ones (n_children, nvars) - b) .* p2;
 endfunction
-
-%!shared nvars, xoverKids
-%! parents = [3.2 -34 51 64.21; 3.2 -34 51 64.21];
-%! options = gaoptimset ();
-%! nvars = 4;
-%! FitnessFcn = false; ## this parameter is unused in the current implementation
-%! unused = false;
-%! thisPopulation = false; ## this parameter is unused in the current implementation
-%! xoverKids = crossoverscattered (parents, options, nvars, FitnessFcn, unused, thisPopulation);
-%!assert (size (xoverKids), [1, nvars]);
-%!assert (xoverKids(1, 1:nvars), [3.2 -34 51 64.21]);

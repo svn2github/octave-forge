@@ -17,20 +17,20 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{Population} =} __ga_set_initial_population__ (@var{GenomeLength}, @var{FitnessFcn}, @var{options})
+## @deftypefn{Function File} {@var{Population} =} __ga_initial_population__ (@var{GenomeLength}, @var{FitnessFcn}, @var{options})
 ## Create an initial population.
 ##
 ## @seealso{__ga_problem__}
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 2.0.10
+## Version: 3.0.1
+
+                                #TODO consider PopulationSize as a
+                                #vector for multiple subpopolations
 
 function Population = \
-      __ga_set_initial_population__ (GenomeLength, FitnessFcn, options)
-                                #TODO
-                                #consider PopulationSize as a vector for
-                                #multiple subpopolations
+      __ga_initial_population__ (GenomeLength, FitnessFcn, options)
   [nr, nc] = size (options.InitialPopulation);
   if (nc == 0)
     Population = options.CreationFcn (GenomeLength, FitnessFcn, options);
@@ -69,11 +69,11 @@ endfunction
 %!test
 %! GenomeLength = 2;
 %! options = gaoptimset ();
-%! Population = __ga_set_initial_population__ (GenomeLength, @rastriginsfcn, options);
+%! Population = __ga_initial_population__ (GenomeLength, @rastriginsfcn, options);
 %! assert (size (Population), [options.PopulationSize, GenomeLength]);
 
 %!test
 %! GenomeLength = 2;
 %! options = gaoptimset ("InitialPopulation", [1, 2; 3, 4; 5, 6]);
-%! Population = __ga_set_initial_population__ (GenomeLength, @rastriginsfcn, options);
+%! Population = __ga_initial_population__ (GenomeLength, @rastriginsfcn, options);
 %! assert (size (Population), [options.PopulationSize, GenomeLength]);

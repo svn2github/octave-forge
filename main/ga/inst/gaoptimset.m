@@ -43,11 +43,14 @@
 ## @item CrossoverFraction
 ## @item EliteCount
 ## @item FitnessLimit
+## @item FitnessScalingFcn
 ## @item Generations
 ## @item InitialPopulation
+## @item InitialScores
 ## @item MutationFcn
 ## @item PopInitRange
 ## @item PopulationSize
+## @item PopulationType
 ## @item SelectionFcn
 ## @item TimeLimit
 ## @end table
@@ -56,7 +59,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.3.2
+## Version: 4.3.5
 
 function options = gaoptimset (varargin)
   if ((nargout != 1) ||

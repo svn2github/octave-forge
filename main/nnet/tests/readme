@@ -1,0 +1,8 @@
+subdirectory MLP:
+=================
+
+to run some very basic tests please run
+MLPScripts. This will run all scripts
+inside the subdirectories "example1" and
+"example2".
+If no error occur, the first test is passed :-)

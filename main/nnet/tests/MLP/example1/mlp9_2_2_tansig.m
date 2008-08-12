@@ -12,24 +12,14 @@
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## along with this program; see the file COPYING.  If not, write to the Free
+## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301, USA.
 
-## This is a test to train a 9-1-1 MLP (was a real project).
-
-## author: Michel D. Schmid <michaelschmid@users.sourceforge.net> 
-
-
-## for debug purpose only
-global DEBUG = 0;
-## comments to DEBUG:
-# 0 or not exist means NO DEBUG
-# 1 means, DEBUG, write to command window
-# 2 means, DEBUG, write to files...
+## author: msd
 
 
 ## load data
-
 mData = load("mData.txt","mData");
 mData = mData.mData;
 [nRows, nColumns] = size(mData);
@@ -38,10 +28,8 @@ mData = mData.mData;
 # remove column 4, 8 and 12
 # 89 rows
 
-## first permute the whole matrix in row wise
-## this won't be used right now for debug and test purpose
-# order = randperm(nRows);
-# mData(order,:) = mData;
+## this neural network example isn't a mirror of "the real life work"
+## it will be used to compare the results with MATLAB(TM) results.
 
 mOutput = mData(:,end);
 mInput = mData(:,1:end-1);
@@ -50,10 +38,14 @@ mInput(:,[4 8 12]) = []; # delete column 4, 8 and 12
 ## now prepare data
 mInput = mInput';
 mOutput = mOutput';
-%mOutput = [mOutput; mOutput*4];
-# now split the data matrix in 3 pieces, train data, test data and validate data
-# the proportion should be about 1/2 train, 1/3 test and 1/6 validate data
-# in this neural network we have 12 weights, for each weight at least 3 train sets..
+mOutput = [mOutput; mOutput*4];
+
+# now split the data matrix in 3 pieces,
+# train data, test data and validate data
+# the proportion should be about 1/2 train,
+# 1/3 test and 1/6 validate data
+# in this neural network we have 12 weights,
+# for each weight at least 3 train sets..
 # (that's a rule of thumb like 1/2, 1/3 and 1/6)
 # 1/2 of 89 = 44.5; let's take 44 for training
 nTrainSets = floor(nRows/2);
@@ -62,14 +54,15 @@ nTrainSets = floor(nRows/2);
 nTestSets = (nRows-nTrainSets)/3*2;
 nValiSets = nRows-nTrainSets-nTestSets;
 
+# now divide mInput & mOutput in the three sets
 mValiInput = mInput(:,1:nValiSets);
 mValliOutput = mOutput(:,1:nValiSets);
-mInput(:,1:nValiSets) = [];
-mOutput(:,1:nValiSets) = [];
+mInput(:,1:nValiSets) = []; # delete validation set
+mOutput(:,1:nValiSets) = []; # delete validation set
 mTestInput = mInput(:,1:nTestSets);
 mTestOutput = mOutput(:,1:nTestSets);
-mInput(:,1:nTestSets) = [];
-mOutput(:,1:nTestSets) = [];
+mInput(:,1:nTestSets) = []; # delete test set
+mOutput(:,1:nTestSets) = []; # delete test set
 mTrainInput = mInput(:,1:nTrainSets);
 mTrainOutput = mOutput(:,1:nTrainSets);
 
@@ -79,39 +72,35 @@ mTrainOutput = mOutput(:,1:nTrainSets);
 # one output ...
 
 # define the max and min inputs for each row
-mMinMaxElements = min_max(mTrainInputN); % input matrix with (R x 2)...
+mMinMaxElements = min_max(mTrainInputN); # input matrix with (R x 2)...
 
 ## define network
-nHiddenNeurons = 1;
-nOutputNeurons = 1;
+nHiddenNeurons = 2;
+nOutputNeurons = 2;
 
 MLPnet = newff(mMinMaxElements,[nHiddenNeurons nOutputNeurons],{"tansig","purelin"},"trainlm","learngdm","mse");
 ## for test purpose, define weights by hand
-MLPnet.IW{1,1}(:) = 1.5;
-MLPnet.LW{2,1}(:) = 0.5;
-MLPnet.b{1,1}(:) = 1.5;
+MLPnet.IW{1,1}(1,:) = 1.5;
+MLPnet.IW{1,1}(2,:) = 0.5;
+MLPnet.LW{2,1}(1,:) = 1.5;
+MLPnet.LW{2,1}(2,:) = 0.5;
+MLPnet.b{1,1}(1,:) = 0.5;
+MLPnet.b{1,1}(2,:) = 1.5;
 MLPnet.b{2,1}(:) = 0.5;
 
-saveMLPStruct(MLPnet,"MLP3test.txt");
-#disp("network structure saved, press any key to continue...")
-#pause
-
-## define validation data new, for matlab compatibility
+## define validation data new, for MATLAB(TM) compatibility
 VV.P = mValiInput;
 VV.T = mValliOutput;
 
 ## standardize also the validate data
 VV.P = trastd(VV.P,cMeanInput,cStdInput);
 
-#[net,tr,out,E] = train(MLPnet,mInputN,mOutput,[],[],VV);
+## now train the network structure
 [net] = train(MLPnet,mTrainInputN,mTrainOutput,[],[],VV);
-# saveMLPStruct(net,"MLP3testNachTraining.txt");
-# disp("network structure saved, press any key to continue...")
-# pause
 
-# % make preparations for net test and test MLPnet
-#     % standardise input & output test data
+## make preparations for net test and test MLPnet
+ # standardise input & output test data
 [mTestInputN] = trastd(mTestInput,cMeanInput,cStdInput);
 
-[simOut] = sim(net,mTestInputN);%,Pi,Ai,mTestOutput);
-simOut
+# will output the network results
+[simOut] = sim(net,mTestInputN)

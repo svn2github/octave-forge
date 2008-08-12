@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2007 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -12,12 +12,11 @@
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## along with octnnettb; see the file COPYING.  If not, write to the Free
+## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301, USA.
 
-## This is a test to train a 9-1-1 MLP (was a real project).
-
-## author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## author: msd 
 
 
 ## for debug purpose only
@@ -31,6 +30,7 @@ global DEBUG = 0;
 ## load data
 
 mData = load("mData.txt","mData");
+# mData = mData.mData(1:10,:);
 mData = mData.mData;
 [nRows, nColumns] = size(mData);
 # this file contains 13 columns. The first 12 columns are the inputs
@@ -50,7 +50,7 @@ mInput(:,[4 8 12]) = []; # delete column 4, 8 and 12
 ## now prepare data
 mInput = mInput';
 mOutput = mOutput';
-%mOutput = [mOutput; mOutput*4];
+mOutput = [mOutput; mOutput*4];
 # now split the data matrix in 3 pieces, train data, test data and validate data
 # the proportion should be about 1/2 train, 1/3 test and 1/6 validate data
 # in this neural network we have 12 weights, for each weight at least 3 train sets..
@@ -83,22 +83,23 @@ mMinMaxElements = min_max(mTrainInputN); % input matrix with (R x 2)...
 
 ## define network
 nHiddenNeurons = 2;
-nOutputNeurons = 1;
+nOutputNeurons = 2;
 
-MLPnet = newff(mMinMaxElements,[nHiddenNeurons nOutputNeurons],{"tansig","purelin"},"trainlm","learngdm","mse");
+MLPnet = newff(mMinMaxElements,[nHiddenNeurons nOutputNeurons],{"logsig","purelin"},"trainlm","learngdm","mse");
 ## for test purpose, define weights by hand
-MLPnet.IW{1,1}(1,:) = 0.5;
-MLPnet.IW{1,1}(2,:) = 1.5;
-MLPnet.LW{2,1}(:) = 0.5;
+MLPnet.IW{1,1}(1,:) = 1.5;
+MLPnet.IW{1,1}(2,:) = 0.5;
+MLPnet.LW{2,1}(1,:) = 1.5;
+MLPnet.LW{2,1}(2,:) = 0.5;
 MLPnet.b{1,1}(1,:) = 0.5;
 MLPnet.b{1,1}(2,:) = 1.5;
 MLPnet.b{2,1}(:) = 0.5;
 
-saveMLPStruct(MLPnet,"MLP3test.txt");
+# saveMLPStruct(MLPnet,"MLP3test.txt");
 #disp("network structure saved, press any key to continue...")
 #pause
 
-## define validation data new, for matlab compatibility
+## define validation data new, for MATLAB(TM) compatibility
 VV.P = mValiInput;
 VV.T = mValliOutput;
 
@@ -109,17 +110,13 @@ VV.P = trastd(VV.P,cMeanInput,cStdInput);
 [net] = train(MLPnet,mTrainInputN,mTrainOutput,[],[],VV);
 # saveMLPStruct(net,"MLP3testNachTraining.txt");
 # disp("network structure saved, press any key to continue...")
+# disp("nach Training")
 # pause
-# % the names in matlab help, see "train" in help for more informations
-# tr.perf(max(tr.epoch)+1);
-# 
+
 # % make preparations for net test and test MLPnet
 #     % standardise input & output test data
 [mTestInputN] = trastd(mTestInput,cMeanInput,cStdInput);
-# % [mTestOutputN] = trastd(mTestOutput,cMeanOutput,cStdOutput);
-#     % define unused parameters to get E-variable of simulation
-# Pi = zeros(6,0);
-# Ai = zeros(6,0);
+
 #     % simulate net
 [simOut] = sim(net,mTestInputN);%,Pi,Ai,mTestOutput);
 simOut

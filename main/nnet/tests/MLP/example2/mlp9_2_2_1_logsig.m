@@ -12,12 +12,12 @@
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## along with this program; see the file COPYING.  If not, write to the Free
+## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301, USA.
 
-## This is a test to train a 9-2-2-1 MLP
 
-## author: Michel D. Schmid <michaelschmid@users.sourceforge.net>
+## author: msd
 
 mData = load("mData.txt","mData");
 mData = mData.mData;
@@ -73,7 +73,7 @@ mMinMaxElements = min_max(mTrainInputN); % input matrix with (R x 2)...
 nHiddenNeurons = [2 2];
 nOutputNeurons = 1;
 
-MLPnet = newff(mMinMaxElements,[nHiddenNeurons nOutputNeurons],{'tansig','tansig','tansig','purelin'},'trainlm','learngdm','mse');
+MLPnet = newff(mMinMaxElements,[nHiddenNeurons nOutputNeurons],{'tansig','tansig','purelin'},'trainlm','learngdm','mse');
 %% for test purpose, define weights by hand
 # MLPnet.IW{1,1}(:) = 1.5;
 # MLPnet.LW{2,1}(:) = 0.5;
@@ -96,8 +96,9 @@ VV.P = trastd(VV.P,cMeanInput,cStdInput);
 # 
 # % % make preparations for net test and test MLPnet
 # %     % standardise input & output test data
-#  [mTestInputN] = trastd(mTestInput,cMeanInput,cStdInput);
+  [mTestInputN] = trastd(mTestInput,cMeanInput,cStdInput);
 # 
-#  [simOut,Pf,Af,simE,simPerf] = sim(net,mTestInputN);
+  #[simOut,Pf,Af,simE,simPerf] = sim(net,mTestInputN);
 # 
-#  simOut
+[simOut] = sim(net,mTestInputN);
+  simOut

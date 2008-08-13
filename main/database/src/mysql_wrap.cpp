@@ -2367,7 +2367,7 @@ SWIG_From_unsigned_SS_char  (unsigned char value)
 	error("failed to create MYSQL structure");
 	return;
       }
-      if (!mysql_real_connect(db,"localhost","root","secret","testdb",0,0,0)) {
+      if (!mysql_real_connect(db,host,user,password,db_name,0,0,0)) {
 	error("connect to database failed: error %i: %s",
 	      mysql_errno(db),mysql_error(db));
 	return;

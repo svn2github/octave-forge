@@ -17,21 +17,25 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2.4
+## Version: 1.0
 
-function parents = selectionstochunif (expectation, nParents, options)
-  nc_expectation = columns (expectation);
-  line(1, 1:nc_expectation) = cumsum (expectation(1, 1:nc_expectation));
-  max_step_size = line(1, nc_expectation);
-  step_size = max_step_size * rand ();
-  steps(1, 1:nParents) = rem (step_size * ones (1, nParents), max_step_size);
-  for index_steps = 1:nParents ## fix an entry of the steps (or parents) vector
-    #assert (steps(1, index_steps) < max_step_size); ## DEBUG
-    index_line = 1;
-    while (steps(1, index_steps) >= line(1, index_line))
-      #assert ((index_line >= 1) && (index_line < nc_expectation)); ## DEBUG
-      index_line++;
-    endwhile
-    parents(1, index_steps) = index_line;
-  endfor
+function [x fval exitflag output population scores] = \
+      __ga_problem_return_variables__ (state, problem)
+  [trash IndexMinScore] = min (state.Score);
+  x = state.Population(IndexMinScore, 1:problem.nvars);
+
+  fval = problem.fitnessfcn (x);
+
+                                #TODO exitflag
+
+  ## output.randstate and output.randnstate must be assigned at the
+  ## start of the algorithm
+  output.generations = state.Generation;
+                                #TODO output.funccount
+                                #TODO output.message
+                                #TODO output.maxconstraint
+
+  population = state.Population;
+
+  scores = state.Score;
 endfunction

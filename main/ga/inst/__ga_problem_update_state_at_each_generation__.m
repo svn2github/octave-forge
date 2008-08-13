@@ -17,21 +17,20 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2.4
+## Version: 1.1
 
-function parents = selectionstochunif (expectation, nParents, options)
-  nc_expectation = columns (expectation);
-  line(1, 1:nc_expectation) = cumsum (expectation(1, 1:nc_expectation));
-  max_step_size = line(1, nc_expectation);
-  step_size = max_step_size * rand ();
-  steps(1, 1:nParents) = rem (step_size * ones (1, nParents), max_step_size);
-  for index_steps = 1:nParents ## fix an entry of the steps (or parents) vector
-    #assert (steps(1, index_steps) < max_step_size); ## DEBUG
-    index_line = 1;
-    while (steps(1, index_steps) >= line(1, index_line))
-      #assert ((index_line >= 1) && (index_line < nc_expectation)); ## DEBUG
-      index_line++;
-    endwhile
-    parents(1, index_steps) = index_line;
-  endfor
+function state = __ga_problem_update_state_at_each_generation__ (state, problem,
+                                                                 private_state)
+  if (state.Generation > 0)
+    state.Score(1:problem.options.PopulationSize, 1) = \
+        __ga_scores__ (problem.fitnessfcn, state.Population);
+  else ## state.Generation == 0
+    state.Score(1:problem.options.PopulationSize, 1) = \
+        __ga_scores__ (problem.fitnessfcn,
+                       state.Population,
+                       problem.options.InitialScores);
+  endif
+  state.Expectation(1, 1:problem.options.PopulationSize) = \
+      problem.options.FitnessScalingFcn (state.Score, private_state.nParents);
+  state.Best(state.Generation + 1, 1) = min (state.Score);
 endfunction

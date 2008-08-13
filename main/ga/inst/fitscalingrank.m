@@ -16,17 +16,8 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn{Function File} {@var{expectation} =} fitscalingrank (@var{scores}, @var{nParents})
-## Convert the raw fitness scores that are returned by the fitness
-## function to values in a range that is suitable for the selection
-## function.
-##
-## @seealso{ga, gaoptimset}
-## @end deftypefn
-
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.1
+## Version: 1.1.1
 
 function expectation = fitscalingrank (scores, nParents)
   [nr nc] = size (scores);

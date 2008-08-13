@@ -16,26 +16,15 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn{Function File} {@var{mutationChildren} =} mutationgaussian (@var{parents}, @var{options}, @var{nvars}, @var{FitnessFcn}, @var{state}, @var{thisScore}, @var{thisPopulation})
-## Single point mutation.
-##
-## @seealso{ga, gaoptimset}
-## @end deftypefn
-
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.3
+## Version: 1.4.4
 
 function mutationChildren = \
-      mutationgaussian (parents,
-                        options, nvars, FitnessFcn, state,
-                        thisScore, thisPopulation)
-  [nr_parents nc_parents] = size (parents);
-  #assert (nr_parents, 1); ## DEBUG
-  [nrPopInitRange, ncPopInitRange] = size (options.PopInitRange);
-  #assert (nrPopInitRange, 2); ## DEBUG
-  #assert ((ncPopInitRange == 1) || (ncPopInitRange == nvars)); ## DEBUG
-  #assert (columns (thisPopulation), nvars); ## DEBUG
+      mutationgaussian (parents, options, nvars, FitnessFcn,
+                        state, thisScore,
+                        thisPopulation)
+  nc_parents = columns (parents);
+  ncPopInitRange = columns (options.PopInitRange);
 
   ## obtain a 2-by-nvars LocalPopInitRange
   LocalPopInitRange = options.PopInitRange;

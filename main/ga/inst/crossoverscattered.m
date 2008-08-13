@@ -16,24 +16,13 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn{Function File} {@var{xoverKids} =} crossoverscattered (@var{parents}, @var{options}, @var{nvars}, @var{FitnessFcn}, @var{unused}, @var{thisPopulation})
-## Combine two individuals, or parents, to form a crossover child.
-##
-## @seealso{ga, gaoptimset}
-## @end deftypefn
-
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 6.2
+## Version: 6.2.5
 
-function xoverKids = \
-      crossoverscattered (parents,
-                          options, nvars, FitnessFcn, unused,
-                          thisPopulation)
-  [nr_parents nc_parents] = size (parents);
-  #assert (nr_parents, 1); ## DEBUG
-  #assert (rem (nc_parents, 2), 0); ## DEBUG
-  #assert (columns (thisPopulation), nvars); ## DEBUG
+function xoverKids = crossoverscattered (parents, options, nvars, FitnessFcn,
+                                         unused,
+                                         thisPopulation)
+  nc_parents = columns (parents);
 
   ## simplified example (nvars == 4)
   ## p1 = [varA varB varC varD]

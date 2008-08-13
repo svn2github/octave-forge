@@ -17,21 +17,22 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2.4
+## Version: 1.1.4
 
-function parents = selectionstochunif (expectation, nParents, options)
-  nc_expectation = columns (expectation);
-  line(1, 1:nc_expectation) = cumsum (expectation(1, 1:nc_expectation));
-  max_step_size = line(1, nc_expectation);
-  step_size = max_step_size * rand ();
-  steps(1, 1:nParents) = rem (step_size * ones (1, nParents), max_step_size);
-  for index_steps = 1:nParents ## fix an entry of the steps (or parents) vector
-    #assert (steps(1, index_steps) < max_step_size); ## DEBUG
-    index_line = 1;
-    while (steps(1, index_steps) >= line(1, index_line))
-      #assert ((index_line >= 1) && (index_line < nc_expectation)); ## DEBUG
-      index_line++;
-    endwhile
-    parents(1, index_steps) = index_line;
-  endfor
+function xoverKids = __ga_crossoverfcn__ (parents, options, nvars, FitnessFcn,
+                                          unused,
+                                          thisPopulation)
+
+  ## preconditions
+  [nr_parents nc_parents] = size (parents);
+  assert (nr_parents, 1); ## DEBUG
+  assert (rem (nc_parents, 2), 0); ## DEBUG
+  assert (columns (thisPopulation), nvars); ## DEBUG
+
+  xoverKids = options.CrossoverFcn (parents, options, nvars, FitnessFcn,
+                                    unused,
+                                    thisPopulation);
+
+  ## postconditions
+  assert (size (xoverKids), [(nc_parents / 2) nvars]); ## DEBUG
 endfunction

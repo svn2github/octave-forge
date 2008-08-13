@@ -17,21 +17,7 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.2
-
-                                #state structure fields
-                                #DONE state.Population
-                                #DONE state.Score
-                                #DONE state.Generation
-                                #DONE state.StartTime
-                                #state.StopFlag
-                                #DONE state.Selection
-                                #DONE state.Expectation
-                                #DONE state.Best
-                                #state.LastImprovement
-                                #state.LastImprovementTime
-                                #state.NonlinIneq
-                                #state.NonlinEq
+## Version: 5.7.1
 
 function [x fval exitflag output population scores] = __ga_problem__ (problem)
 
@@ -47,126 +33,83 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
       __ga_initial_population__ (problem.nvars,
                                  problem.fitnessfcn,
                                  problem.options);
-  state.Score(1:problem.options.PopulationSize, 1) = \
-      __ga_scores__ (problem.fitnessfcn,
-                     state.Population,
-                     problem.options.InitialScores);
   state.Generation = 0;
-
-  ReproductionCount.elite = problem.options.EliteCount;
-  ReproductionCount.crossover = \
-      fix (problem.options.CrossoverFraction *
-           (problem.options.PopulationSize - problem.options.EliteCount));
-  ReproductionCount.mutation = \
-      problem.options.PopulationSize - (ReproductionCount.elite +
-                                        ReproductionCount.crossover);
-  #assert (ReproductionCount.elite +
-  #        ReproductionCount.crossover +
-  #        ReproductionCount.mutation, problem.options.PopulationSize); ## DEBUG
-
-  state.Selection.elite = 1:ReproductionCount.elite;
-  state.Selection.crossover = \
-      ReproductionCount.elite + (1:ReproductionCount.crossover);
-  state.Selection.mutation = \
-      ReproductionCount.elite + ReproductionCount.crossover + \
-      (1:ReproductionCount.mutation);
-  #assert (length (state.Selection.elite) +
-  #        length (state.Selection.crossover) +
-  #        length (state.Selection.mutation),
-  #        problem.options.PopulationSize); ##DEBUG
-
-  parentsCount.crossover = 2 * ReproductionCount.crossover;
-  parentsCount.mutation = 1 * ReproductionCount.mutation;
-  nParents = parentsCount.crossover + parentsCount.mutation;
-
-  parentsSelection.crossover = 1:parentsCount.crossover;
-  parentsSelection.mutation = \
-      parentsCount.crossover + (1:parentsCount.mutation);
-  #assert (length (parentsSelection.crossover) +
-  #        length (parentsSelection.mutation), nParents); ## DEBUG
+  private_state = __ga_problem_private_state__ (problem.options);
+  state.Selection = __ga_problem_state_selection__ (private_state,
+                                                    problem.options);
   ## end "instructions not to be executed at each generation"
 
   ## start "instructions to be executed at each generation"
-  state.Expectation(1, 1:problem.options.PopulationSize) = \
-      problem.options.FitnessScalingFcn (state.Score, nParents);
-  state.Best(state.Generation + 1, 1) = min (state.Score);
+  state = __ga_problem_update_state_at_each_generation__ (state, problem,
+                                                          private_state);
   ## end "instructions to be executed at each generation"
 
   while (! __ga_stop__ (problem, state)) ## fix a generation
 
     ## elite
-    if (ReproductionCount.elite > 0)
+    if (private_state.ReproductionCount.elite > 0)
       [trash IndexSortedScores] = sort (state.Score);
       NextPopulation(state.Selection.elite, 1:problem.nvars) = \
-          state.Population(IndexSortedScores(1:ReproductionCount.elite, 1),
-                           1:problem.nvars);
-      #assert (size (NextPopulation),
-      #        [ReproductionCount.elite, problem.nvars]); ## DEBUG
+          state.Population \
+          (IndexSortedScores(1:private_state.ReproductionCount.elite, 1),
+           1:problem.nvars);
+      assert (size (NextPopulation),
+              [private_state.ReproductionCount.elite, problem.nvars]); ## DEBUG
     endif
 
     ## selection for crossover and mutation
-    parents = problem.options.SelectionFcn (state.Expectation,
-                                            nParents,
-                                            problem.options);
-    #assert (size (parents), [1, nParents]); ## DEBUG
+    parents = __ga_selectionfcn__ \
+        (state.Expectation, private_state.nParents, problem.options);
 
     ## crossover
-    if (ReproductionCount.crossover > 0)
+    if (private_state.ReproductionCount.crossover > 0)
       NextPopulation(state.Selection.crossover, 1:problem.nvars) = \
-          problem.options.CrossoverFcn (parents(1, parentsSelection.crossover),
-                                        problem.options,
-                                        problem.nvars,
-                                        problem.fitnessfcn,
-                                        false, ## unused
-                                        state.Population);
-      tmp = ReproductionCount.elite + ReproductionCount.crossover;
-      #assert (size (NextPopulation), [tmp, problem.nvars]); ## DEBUG
+          __ga_crossoverfcn__ \
+          (parents(1, private_state.parentsSelection.crossover),
+           problem.options, problem.nvars, problem.fitnessfcn,
+           false, ## unused
+           state.Population);
+      tmp = \
+          private_state.ReproductionCount.elite + \
+          private_state.ReproductionCount.crossover;
+      assert (size (NextPopulation), [tmp, problem.nvars]); ## DEBUG
     endif
 
     ## mutation
-    if (ReproductionCount.mutation > 0)
+    if (private_state.ReproductionCount.mutation > 0)
       NextPopulation(state.Selection.mutation, 1:problem.nvars) = \
-          problem.options.MutationFcn{1, 1} (parents(1,
-                                                     parentsSelection.mutation),
-                                             problem.options,
-                                             problem.nvars,
-                                             problem.fitnessfcn,
-                                             state,
-                                             state.Score,
-                                             state.Population);
-      #assert (size (NextPopulation),
-      #        [problem.options.PopulationSize, problem.nvars]); ## DEBUG
+          __ga_mutationfcn__ \
+          (parents(1, private_state.parentsSelection.mutation),
+           problem.options, problem.nvars, problem.fitnessfcn,
+           state, state.Score,
+           state.Population);
+      assert (size (NextPopulation),
+              [problem.options.PopulationSize, problem.nvars]); ## DEBUG
     endif
 
     ## update state structure
     state.Population(1:problem.options.PopulationSize,
                      1:problem.nvars) = NextPopulation;
     clear -v NextPopulation;
-    state.Score(1:problem.options.PopulationSize, 1) = \
-        __ga_scores__ (problem.fitnessfcn, state.Population);
     state.Generation++;
-    state.Expectation(1, 1:problem.options.PopulationSize) = \
-        problem.options.FitnessScalingFcn (state.Score, nParents);
-    state.Best(state.Generation + 1, 1) = min (state.Score);
+    state = __ga_problem_update_state_at_each_generation__ (state, problem,
+                                                            private_state);
   endwhile
 
-  ## return variables
-  ##
-  [trash IndexMinScore] = min (state.Score);
-  x = state.Population(IndexMinScore, 1:problem.nvars);
-
-  fval = problem.fitnessfcn (x);
-
-                                #TODO exitflag
-
-  ## output.randstate and output.randnstate must be assigned at the
-  ## start of the algorithm
-  output.generations = state.Generation;
-                                #TODO output.funccount
-                                #TODO output.message
-                                #TODO output.maxconstraint
-
-  population = state.Population;
-
-  scores = state.Score;
+  [x fval exitflag output population scores] = \
+      __ga_problem_return_variables__ (state, problem);
 endfunction
+
+                                #state structure fields
+                                #DONE state.Population
+                                #DONE state.Score
+                                #DONE state.Generation
+                                #DONE state.StartTime
+                                #state.StopFlag
+                                #DONE state.Selection
+                                #DONE state.Expectation
+                                #DONE state.Best
+                                #state.LastImprovement
+                                #state.LastImprovementTime
+                                #state.NonlinIneq
+                                #state.NonlinEq

@@ -17,21 +17,19 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2.4
+## Version: 1.0
 
-function parents = selectionstochunif (expectation, nParents, options)
-  nc_expectation = columns (expectation);
-  line(1, 1:nc_expectation) = cumsum (expectation(1, 1:nc_expectation));
-  max_step_size = line(1, nc_expectation);
-  step_size = max_step_size * rand ();
-  steps(1, 1:nParents) = rem (step_size * ones (1, nParents), max_step_size);
-  for index_steps = 1:nParents ## fix an entry of the steps (or parents) vector
-    #assert (steps(1, index_steps) < max_step_size); ## DEBUG
-    index_line = 1;
-    while (steps(1, index_steps) >= line(1, index_line))
-      #assert ((index_line >= 1) && (index_line < nc_expectation)); ## DEBUG
-      index_line++;
-    endwhile
-    parents(1, index_steps) = index_line;
-  endfor
+function Selection = __ga_problem_state_selection__ (private_state, options)
+  Selection.elite = 1:private_state.ReproductionCount.elite;
+  Selection.crossover = \
+      private_state.ReproductionCount.elite + \
+      (1:private_state.ReproductionCount.crossover);
+  Selection.mutation = \
+      private_state.ReproductionCount.elite + \
+      private_state.ReproductionCount.crossover + \
+      (1:private_state.ReproductionCount.mutation);
+  assert (length (Selection.elite) +
+          length (Selection.crossover) +
+          length (Selection.mutation),
+          options.PopulationSize); ##DEBUG
 endfunction

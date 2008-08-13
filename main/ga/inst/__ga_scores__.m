@@ -17,18 +17,18 @@
 ## 02110-1301, USA.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.2
+## Version: 5.2.1
 
 function Scores = __ga_scores__ (fitnessfcn, Population, InitialScores = [])
-  [nrP ncP] = size (Population);
-  [nrIS ncIS] = size (InitialScores);
-  #assert ((ncIS == 0) || (ncIS == 1)); ## DEBUG
-  #assert (nrIS <= nrP); ## DEBUG
-  if (nrIS > 0)
-    Scores(1:nrIS, 1) = InitialScores(1:nrIS, 1);
+  [nrPopulation ncPopulation] = size (Population);
+  [nrInitialScores ncInitialScores] = size (InitialScores);
+  #assert ((ncInitialScores == 0) || (ncInitialScores == 1)); ## DEBUG
+  #assert (nrInitialScores <= nrPopulation); ## DEBUG
+  if (nrInitialScores > 0)
+    Scores(1:nrInitialScores, 1) = InitialScores(1:nrInitialScores, 1);
   endif
-  for index = (nrIS + 1):nrP
-    Scores(index, 1) = fitnessfcn (Population(index, 1:ncP));
+  for index = (nrInitialScores + 1):nrPopulation
+    Scores(index, 1) = fitnessfcn (Population(index, 1:ncPopulation));
   endfor
-  #assert (size (Scores), [nrP 1]); ## DEBUG
+  #assert (size (Scores), [nrPopulation 1]); ## DEBUG
 endfunction

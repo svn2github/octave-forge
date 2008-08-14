@@ -3,10 +3,20 @@ Genetic Algorithm
  ga
  gaoptimset
 
-Utility
- crossoverscattered
- fitscalingrank
+Creation
  gacreationuniform
- mutationgaussian
- rastriginsfcn
+
+Fitness Scaling
+ fitscalingrank
+
+Selection
  selectionstochunif
+
+Crossover
+ crossoverscattered
+
+Mutation
+ mutationgaussian
+
+Utility
+ rastriginsfcn

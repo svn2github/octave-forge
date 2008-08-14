@@ -30,8 +30,15 @@ function [pn,meanp,stdp,tn,meant,stdt] = prestd(Pp,Tt)
   ## prestd(p,t)
   ##  * p are the general descriptions for the inputs of
   ##    neural networks
-  ##  * t is written for "targets" and this are the outputs
+  ##  * t is written for "targets" and these are the outputs
   ##    of a neural network
+  
+  ## some more detailed description:
+  ## for more informations about this
+  ## formula programmed in this file, see:
+  ## 1. http://en.wikipedia.org/wiki/Standard_score
+  ## 2. http://www.statsoft.com/textbook/stathome.html
+  ##    choose "statistical glossary", choose "standardization"
 
   ## check range of input arguments
   error(nargchk(1,2,nargin))
@@ -44,20 +51,19 @@ function [pn,meanp,stdp,tn,meant,stdt] = prestd(Pp,Tt)
 
   ## now set all standard deviations which are zero to 1
   [nRowsII, nColumnsII] = size(stdp);
-  rowZeros = zeros(nRowsII,1);
-  findZeros = find(stdp==0);
-  rowZeros(findZeros)=1;
-  equal = rowZeros;
-  nequal = !equal;
-  if (sum(equal) != 0)
+  rowZeros = zeros(nRowsII,1); # returning a row containing only zeros
+  findZeros = find(stdp==0); # returning a vector containing index where zeros are
+  rowZeros(findZeros)=1; #
+  nequal = !rowZeros;
+  if (sum(rowZeros) != 0)
     warning("Some standard deviations are zero. Those inputs won't be transformed.");
     meanpZero = meanp.*nequal;
-    stdpZero = stdp.*nequal + 1*equal;
+    stdpZero = stdp.*nequal + 1*rowZeros;
   else
     meanpZero = meanp;
     stdpZero = stdp;
   endif
-  
+
   ## calculate the standardized inputs
   pn = (Pp-meanpZero*rowOnes)./(stdpZero*rowOnes);
 
@@ -71,12 +77,11 @@ function [pn,meanp,stdp,tn,meant,stdt] = prestd(Pp,Tt)
     rowZeros = zeros(nRowsIII,1);
     findZeros = find(stdt==0);
     rowZeros(findZeros)=1;
-    equal = rowZeros;
-    nequal = !equal;
-    if (sum(equal) != 0)
+    nequal = !rowZeros;
+    if (sum(rowZeros) != 0)
       warning("Some standard deviations are zero. Those targets won't be transformed.");
       meantZero = meant.*nequal;
-      stdtZero = stdt.*nequal + 1*equal;
+      stdtZero = stdt.*nequal + 1*rowZeros;
     else
       meantZero = meant;
       stdtZero = stdt;
@@ -85,5 +90,11 @@ function [pn,meanp,stdp,tn,meant,stdt] = prestd(Pp,Tt)
     ## calculate the standardized targets
     tn = (Tt-meantZero*rowOnes)./(stdtZero*rowOnes);
   endif
-  
 endfunction
+
+
+%!shared Pp, Tt, pn
+%!  Pp = [1 2 3 4; -1 3 2 -1];
+%!  Tt = [3 4 5 6];
+%!  [pn,meanp,stdp] = prestd(Pp);
+%!assert(pn,[-1.16190 -0.38730 0.38730 1.16190; -0.84887 1.09141 0.60634 -0.84887],0.00001);

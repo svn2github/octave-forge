@@ -1,4 +1,4 @@
-## Copyright (C) 2005 Michel D. Schmid   <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2005 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it

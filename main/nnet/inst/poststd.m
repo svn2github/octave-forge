@@ -27,20 +27,26 @@
 function [Pp,Tt] = poststd(Pn,meanp,stdp,Tn,meant,stdt)
 
   ## check range of input arguments
-  error(nargchk(3,3,nargin)) | error(nargchk(6,6,nargin))
+  error(nargchk(3,6,nargin))
+  if (nargin==4)
+    error("4 input arguments are not allowed!");
+  endif
+  if (nargin==5)
+    error("5 input arguments are not allowed!");
+  endif
 
   ## do first inputs
   ## set all standard deviations which are zero to 1
-  [nRowsII, nColumnsII] = size(stdp);
+  [nRowsII, nColumnsII] = size(Pn);
   rowZeros = zeros(nRowsII,1);
   findZeros = find(stdp==0);
   rowZeros(findZeros)=1;
-  equal = rowZeros;
-  nequal = !equal;
-  if (sum(equal) != 0)
+#  equal = rowZeros;
+  nequal = !rowZeros;
+  if (sum(rowZeros) != 0)
     warning("Some standard deviations are zero. Those inputs won't be transformed.");
     meanpZero = meanp.*nequal;
-    stdpZero = stdp.*nequal + 1*equal;
+    stdpZero = stdp.*nequal + 1*rowZeros;
   else
     meanpZero = meanp;
     stdpZero = stdp;

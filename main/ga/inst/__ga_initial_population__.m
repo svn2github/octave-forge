@@ -21,43 +21,38 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.1
+## Version: 3.2
 
                                 #TODO consider PopulationSize as a
                                 #vector for multiple subpopolations
 
 function Population = \
       __ga_initial_population__ (GenomeLength, FitnessFcn, options)
-  [nr, nc] = size (options.InitialPopulation);
-  if (nc == 0)
-    Population = options.CreationFcn (GenomeLength, FitnessFcn, options);
+  [nr nc] = size (options.InitialPopulation);
+  if ((nr == 0) || (nc == 0))
+    Population(1:options.PopulationSize, 1:GenomeLength) = \
+        options.CreationFcn (GenomeLength, FitnessFcn, options);
   elseif (nc == GenomeLength)
 
-    ## it is impossible to have a matrix with 0 rows and a positive
-    ## number of columns
-    ##
-    ## so, here nr > 0
+    ## nr > 0
     if (nr < options.PopulationSize)
-      OptionsWithModifiedPopulationSize = \
-          setfield (options,
-                    "PopulationSize",
-                    options.PopulationSize - nr);
-      CreatedPartialPopulation = \
-          options.CreationFcn (GenomeLength,
-                               FitnessFcn,
-                               OptionsWithModifiedPopulationSize);
-      Population = \
-          vertcat (options.InitialPopulation(1:nr,
-                                             1:GenomeLength),
-                   CreatedPartialPopulation(1:(options.PopulationSize - nr),
-                                            1:GenomeLength));
+
+      ## create a complete new population, and then select only needed
+      ## individuals (creating only a partial population is difficult)
+      CreatedPopulation(1:options.PopulationSize, 1:GenomeLength) = \
+          options.CreationFcn (GenomeLength, FitnessFcn, options);
+      Population(1:options.PopulationSize, 1:GenomeLength) = \
+          vertcat (options.InitialPopulation(1:nr, 1:GenomeLength),
+                   CreatedPopulation(1:(options.PopulationSize - nr),
+                                     1:GenomeLength));
     elseif (nr == options.PopulationSize)
-      Population = options.InitialPopulation;
+      Population(1:options.PopulationSize, 1:GenomeLength) = \
+          options.InitialPopulation;
     else ## nr > options.PopulationSize
       error ("nonempty 'InitialPopulation' must have no more than \
           'PopulationSize' rows");
     endif
-  else
+  else ## (nc != 0) && (nc != GenomeLength)
     error ("nonempty 'InitialPopulation' must have 'GenomeLength' \
         columns");
   endif

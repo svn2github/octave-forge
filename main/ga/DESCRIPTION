@@ -1,12 +1,12 @@
 Name: ga
-Version: 0.9.0
-Date: 2008-08-14
+Version: 0.9.1
+Date: 2008-08-16
 Author: Luca Favatella <slackydeb@gmail.com>
 Maintainer: Luca Favatella <slackydeb@gmail.com>
 Title: Genetic Algorithm and Direct Search
 Description: Genetic optimization code
 Categories: Optimization
-Depends: octave (>= 2.9.7), miscellaneous (>= 1.0.6), communications (>= 1.0.0)
+Depends: octave (>= 2.9.7), communications (>= 1.0.0)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

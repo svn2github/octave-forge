@@ -71,7 +71,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.10
+## Version: 5.19.1
 
 function [x fval exitflag output population scores] = \
       ga (fitnessfcn_or_problem,
@@ -114,26 +114,33 @@ function [x fval exitflag output population scores] = \
   endif
 endfunction
 
-%!xtest assert (ga (@(x) x ** 2, 1, [], [], [], [], [], [], [], gaoptimset ('EliteCount', 1, 'FitnessLimit', 0.001, 'Generations', 10, 'PopInitRange', [-1; 1])), 0, sqrt(0.001))
+%!# nvars == 2
+%!# min != zeros (1, nvars)
 
-%!function retval = test_pseudo_rastriginsfcn (x)
-%! retval = (x ** 2) - (cos (2 * pi * x)) + 1;
+%!xtest
+%! min = [-1, 2];
+%! assert (ga (struct ("fitnessfcn", @(x) rastriginsfcn (x - min), "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 1000, "PopInitRange", [-5; 5], "PopulationSize", 200))), min, 1e-6)
 
-%!xtest assert (ga (@test_pseudo_rastriginsfcn, 1, [], [], [], [], [], [], [], gaoptimset ('EliteCount', 1, 'FitnessLimit', 0.001, 'Generations', 25, 'PopInitRange', [-5; 5])), 0, sqrt(0.001)) 
 
-%!xtest assert (ga (@rastriginsfcn, 2), [0, 0], 1e-6)
+%!# nvars == 1
+%!# min == zeros (1, nvars)
 
-%!function retval = test_bias_rastriginsfcn (t)
-%! min = [1, 0];
-%! x = t - min;
-%! retval = 20 + (x(1) ** 2) + (x(2) ** 2) - 10 * (cos (2 * pi * x(1)) + cos (2 * pi * x(2)));
+%!test assert (ga (@(x) x ** 2, 1), 0, 1e-3)
 
-%!xtest assert (ga (@test_bias_rastriginsfcn, 2, [], [], [], [], [], [], [], gaoptimset ('FitnessLimit', 0.001, 'PopInitRange', [-2; 2], 'PopulationSize', 100)), [1, 0], sqrt(0.001))
+%!test assert (ga (@(x) (x ** 2) - (cos (2 * pi * x)) + 1, 1), 0, 1e-3)
 
-%!function retval = test_4_variables (x)
-%! retval = 0;
-%! retval += 20 + (x(1) ** 2) + (x(2) ** 2) - 10 * (cos (2 * pi * x(1)) + cos (2 * pi * x(2)));
-%! retval += (x(3) ** 2) - (cos (2 * pi * x(3))) + 1;
-%! retval += x(4) ** 2;
 
-%!xtest assert (ga (@test_4_variables, 4, [], [], [], [], [], [], [], gaoptimset ('FitnessLimit', 0.001, 'PopInitRange', [-1; 1])), [0, 0, 0, 0], sqrt(0.001))
+%!# nvars == 2
+%!# min == zeros (1, nvars)
+
+%!xtest assert (ga (@rastriginsfcn, 2), [0, 0], 1e-3)
+
+%!xtest assert (ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 1000))), zeros (1, 2), 1e-6)
+
+%!xtest assert (ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "PopulationSize", 200))), zeros (1, 2), 1e-6)
+
+
+%!# nvars == 4
+%!# min == zeros (1, nvars)
+
+%!xtest assert (ga (struct ("fitnessfcn", @(x) rastriginsfcn (x(1:2)) + ((x(3) ** 2) - (cos (2 * pi * x(3))) + 1) + (x(4) ** 2), "nvars", 4, "options", gaoptimset ("EliteCount", 5, "FitnessLimit", 1e-7, "PopInitRange", [-2; 2], "PopulationSize", 200))), zeros (1, 4), 1e-6)

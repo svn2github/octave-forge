@@ -14,21 +14,12 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2.1
+## Version: 1.3
 
 function mutationChildren = \
       __ga_mutationfcn__ (parents, options, nvars, FitnessFcn,
                           state, thisScore,
                           thisPopulation)
-
-  ## preconditions
-                                #TODO move controls on
-                                #options.PopInitRange in a more general
-                                #function
-  [nrPopInitRange, ncPopInitRange] = size (options.PopInitRange);
-  assert (nrPopInitRange, 2); ## DEBUG
-  assert ((ncPopInitRange == 1) || (ncPopInitRange == nvars)); ## DEBUG
-
   mutationChildren(1:(columns (parents)), 1:nvars) = \
       options.MutationFcn{1, 1} (parents(1, :), options, nvars, FitnessFcn,
                                  state, thisScore,

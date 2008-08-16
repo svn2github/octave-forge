@@ -37,22 +37,11 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.7.2
+## Version: 4.9
 
 function Population = gacreationuniform (GenomeLength, FitnessFcn, options)
-
-  ## obtain a 2-by-GenomeLength LocalPopInitRange
-  switch (columns (options.PopInitRange))
-      case 1
-        LocalPopInitRange(1:2, 1:GenomeLength) = \
-            options.PopInitRange(1:2, 1) * ones (1, GenomeLength);
-      case GenomeLength
-        LocalPopInitRange(1:2, 1:GenomeLength) = \
-            options.PopInitRange(1:2, 1:GenomeLength);
-  endswitch
-
-  LB(1, 1:GenomeLength) = LocalPopInitRange(1, 1:GenomeLength);
-  UB(1, 1:GenomeLength) = LocalPopInitRange(2, 1:GenomeLength);
+  [LB(1, 1:GenomeLength) UB(1, 1:GenomeLength)] = \
+      __ga_popinitrange__ (options.PopInitRange, GenomeLength);
 
   ## pseudocode
   ##

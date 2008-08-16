@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.1
+## Version: 1.1.1
 
 function Selection = __ga_problem_state_selection__ (private_state, options)
   Selection.elite = 1:private_state.ReproductionCount.elite;
@@ -25,8 +25,8 @@ function Selection = __ga_problem_state_selection__ (private_state, options)
       private_state.ReproductionCount.elite + \
       private_state.ReproductionCount.crossover + \
       (1:private_state.ReproductionCount.mutation);
-  assert (length (Selection.elite) +
-          length (Selection.crossover) +
-          length (Selection.mutation),
-          options.PopulationSize); ##DEBUG
+  #assert (length (Selection.elite) +
+  #        length (Selection.crossover) +
+  #        length (Selection.mutation),
+  #        options.PopulationSize); ##DEBUG
 endfunction

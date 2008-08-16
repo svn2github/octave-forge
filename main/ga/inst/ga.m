@@ -71,7 +71,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.19.1
+## Version: 5.19.2
 
 function [x fval exitflag output population scores] = \
       ga (fitnessfcn_or_problem,
@@ -90,7 +90,7 @@ function [x fval exitflag output population scores] = \
     print_usage ();
   else
 
-    ## retrieve problem structure
+    ## retrieve the problem structure
     if (nargin == 1)
       problem = fitnessfcn_or_problem;
     else

@@ -14,18 +14,18 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.3
+## Version: 5.3.1
 
 function Scores = __ga_scores__ (fitnessfcn, Population, InitialScores = [])
   [nrPopulation ncPopulation] = size (Population);
   [nrInitialScores ncInitialScores] = size (InitialScores);
   #assert ((ncInitialScores == 0) || (ncInitialScores == 1)); ## DEBUG
   #assert (nrInitialScores <= nrPopulation); ## DEBUG
-  if (nrInitialScores > 0)
-    Scores(1:nrInitialScores, 1) = InitialScores(1:nrInitialScores, 1);
+  if (! isempty (InitialScores))
+    Scores(1:nrInitialScores, 1) = InitialScores;
   endif
   for index = (nrInitialScores + 1):nrPopulation
     Scores(index, 1) = fitnessfcn (Population(index, 1:ncPopulation));
   endfor
-  #assert (size (Scores), [nrPopulation 1]); ## DEBUG
+  Scores(1:nrPopulation, 1) = Scores;
 endfunction

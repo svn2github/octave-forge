@@ -14,27 +14,30 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2
+## Version: 1.3.2
 
 function expectation = fitscalingrank (scores, nParents)
-  [nr nc] = size (scores);
-  #assert (nc, 1); ## DEBUG
-  r(1, 1:nr) = ranks (scores);
+  nr_scores = rows (scores);
+  r(1, 1:nr_scores) = ranks (scores(1:nr_scores, 1));
                                 #TODO
                                 #ranks ([7,2,2]) == [3.0,1.5,1.5]
                                 #is [3,1,2] (or [3,2,1]) useful? 
-  expectation_wo_nParents(1, 1:nr) = arrayfun (@(n) 1 / sqrt (n), r);
-  expectation(1, 1:nr) = \
+  expectation_wo_nParents(1, 1:nr_scores) = arrayfun (@(n) 1 / sqrt (n), r);
+  expectation(1, 1:nr_scores) = \
       (nParents / sum (expectation_wo_nParents)) * \
       expectation_wo_nParents;
-  #assert (sum (expectation), nParents, 1e-9); ## DEBUG
-
-  ## start DEBUG
-  #[trash index_min_scores] = min (scores);
-  #[trash index_max_expectation] = max (expectation);
-  #assert (index_min_scores, index_max_expectation);
-  #[trash index_max_scores] = max (scores);
-  #[trash index_min_expectation] = min (expectation);
-  #assert (index_max_scores, index_min_expectation);
-  ## end DEBUG
 endfunction
+
+%!shared scores, nParents, expectation
+%! scores = rand (20, 1);
+%! nParents = 32;
+%! expectation = fitscalingrank (scores, nParents);
+%!assert (sum (expectation), nParents, 1e-9);
+%!test
+%! [trash index_min_scores] = min (scores);
+%! [trash index_max_expectation] = max (expectation);
+%! assert (index_min_scores, index_max_expectation);
+%!test
+%! [trash index_max_scores] = max (scores);
+%! [trash index_min_expectation] = min (expectation);
+%! assert (index_max_scores, index_min_expectation);

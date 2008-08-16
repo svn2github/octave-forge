@@ -47,7 +47,6 @@
 ## @item MutationFcn
 ## @item PopInitRange
 ## @item PopulationSize
-## @item PopulationType
 ## @item SelectionFcn
 ## @item TimeLimit
 ## @end table
@@ -56,7 +55,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.4
+## Version: 4.4.1
 
 function options = gaoptimset (varargin)
   if ((nargout != 1) ||

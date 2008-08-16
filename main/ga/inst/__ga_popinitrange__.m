@@ -14,20 +14,15 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.3.3
+## Version: 2.1
 
-function xoverKids = __ga_crossoverfcn__ (parents, options, nvars, FitnessFcn,
-                                          unused,
-                                          thisPopulation)
-
-  ## preconditions
-  nc_parents = columns (parents);
-  if (rem (nc_parents, 2) != 0)
-    error ("'parents' must have an even number of columns");
-  endif
-
-  xoverKids(1:(nc_parents / 2), 1:nvars) = options.CrossoverFcn \
-      (parents(1, 1:nc_parents), options, nvars, FitnessFcn,
-       unused,
-       thisPopulation(:, 1:nvars));
+function [LB UB] = __ga_popinitrange__ (PopInitRange, nvars)
+  switch (columns (PopInitRange))
+    case 1
+      tmpPIR(1:2, 1:nvars) = PopInitRange(1:2, 1) * ones (1, nvars);
+    case nvars
+      tmpPIR(1:2, 1:nvars) = PopInitRange(1:2, 1:nvars);
+  endswitch
+  LB(1, 1:nvars) = tmpPIR(1, 1:nvars);
+  UB(1, 1:nvars) = tmpPIR(2, 1:nvars);
 endfunction

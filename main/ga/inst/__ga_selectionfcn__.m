@@ -14,15 +14,9 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.1
+## Version: 1.2
 
 function parents = __ga_selectionfcn__ (expectation, nParents, options)
-
-  ## preconditions
-  assert (rows (expectation), 1); ## DEBUG
-
-  parents = options.SelectionFcn (expectation, nParents, options);
-
-  ## postconditions
-  assert (size (parents), [1 nParents]); ## DEBUG
+  parents(1, 1:nParents) = \
+      options.SelectionFcn (expectation(1, :), nParents, options);
 endfunction

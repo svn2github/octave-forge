@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2
+## Version: 1.2.1
 
 function default_options = __gaoptimset_default_options__ ()
   default_options.CreationFcn = @gacreationuniform;
@@ -42,7 +42,7 @@ function default_options = __gaoptimset_default_options__ ()
                                 #default_options.PlotInterval = 1;
   default_options.PopInitRange = [0; 1];
   default_options.PopulationSize = 20;
-  default_options.PopulationType = "doubleVector";
+                                #default_options.PopulationType = "doubleVector";
   default_options.SelectionFcn = @selectionstochunif;
                                 #default_options.StallGenLimit = 50;
                                 #default_options.StallTimeLimit = Inf;

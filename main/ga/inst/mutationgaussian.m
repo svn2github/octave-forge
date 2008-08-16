@@ -14,22 +14,14 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.5
+## Version: 1.7.1
 
 function mutationChildren = \
       mutationgaussian (parents, options, nvars, FitnessFcn,
                         state, thisScore,
                         thisPopulation)
-  nc_parents = columns (parents);
-  ncPopInitRange = columns (options.PopInitRange);
-
-  ## obtain a 2-by-nvars LocalPopInitRange
-  LocalPopInitRange = options.PopInitRange;
-  if (ncPopInitRange == 1)
-    LocalPopInitRange(1:2, 1:nvars) = LocalPopInitRange * ones (1, nvars);
-  endif
-  LB(1, 1:nvars) = LocalPopInitRange(1, 1:nvars);
-  UB(1, 1:nvars) = LocalPopInitRange(2, 1:nvars);
+  [LB(1, 1:nvars) UB(1, 1:nvars)] = \
+      __ga_popinitrange__ (options.PopInitRange, nvars);
 
   ## start mutationgaussian logic
   Scale = options.MutationFcn{1, 2};
@@ -45,6 +37,7 @@ function mutationChildren = \
     tmp_std(1, 1:nvars) = (1 - Shrink * (k / options.Generations)) * tmp_std;
   endfor
   current_std(1, 1:nvars) = tmp_std;
+  nc_parents = columns (parents);
   expanded_current_std(1:nc_parents, 1:nvars) = \
       ones (nc_parents, 1) * current_std;
 

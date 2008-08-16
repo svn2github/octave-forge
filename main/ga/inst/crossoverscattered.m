@@ -14,18 +14,18 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 6.3
+## Version: 6.3.1
 
 function xoverKids = crossoverscattered (parents, options, nvars, FitnessFcn,
                                          unused,
                                          thisPopulation)
-  nc_parents = columns (parents);
 
   ## simplified example (nvars == 4)
   ## p1 = [varA varB varC varD]
   ## p2 = [var1 var2 var3 var4]
   ## b = [1 1 0 1]
   ## child1 = [varA varB var3 varD]
+  nc_parents = columns (parents);
   n_children = nc_parents / 2;
   p1(1:n_children, 1:nvars) = \
       thisPopulation(parents(1, 1:n_children), 1:nvars);

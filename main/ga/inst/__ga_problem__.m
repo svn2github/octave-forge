@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.8
+## Version: 5.9
 
 function [x fval exitflag output population scores] = __ga_problem__ (problem)
 
@@ -25,7 +25,7 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
   output = struct ("randstate", rand ("state"),
                    "randnstate", randn ("state"));
 
-  ## start "instructions not to be executed at each generation"
+  ## instructions not to be executed at each generation
   state.Population(1:problem.options.PopulationSize, 1:problem.nvars) = \
       __ga_initial_population__ (problem.nvars,
                                  problem.fitnessfcn,
@@ -34,13 +34,12 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
   private_state = __ga_problem_private_state__ (problem.options);
   state.Selection = __ga_problem_state_selection__ (private_state,
                                                     problem.options);
-  ## end "instructions not to be executed at each generation"
 
-  ## start "instructions to be executed at each generation"
+  ## instructions to be executed at each generation
   state = __ga_problem_update_state_at_each_generation__ (state, problem,
                                                           private_state);
-  ## end "instructions to be executed at each generation"
 
+  NextPopulation = zeros (problem.options.PopulationSize, problem.nvars);
   while (! __ga_stop__ (problem, state)) ## fix a generation
 
     ## elite
@@ -50,8 +49,6 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
           state.Population \
           (IndexSortedScores(1:private_state.ReproductionCount.elite, 1),
            1:problem.nvars);
-      assert (size (NextPopulation),
-              [private_state.ReproductionCount.elite, problem.nvars]); ## DEBUG
     endif
 
     ## selection for crossover and mutation
@@ -66,10 +63,6 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
            problem.options, problem.nvars, problem.fitnessfcn,
            false, ## unused
            state.Population);
-      tmp = \
-          private_state.ReproductionCount.elite + \
-          private_state.ReproductionCount.crossover;
-      assert (size (NextPopulation), [tmp, problem.nvars]); ## DEBUG
     endif
 
     ## mutation
@@ -80,14 +73,11 @@ function [x fval exitflag output population scores] = __ga_problem__ (problem)
            problem.options, problem.nvars, problem.fitnessfcn,
            state, state.Score,
            state.Population);
-      assert (size (NextPopulation),
-              [problem.options.PopulationSize, problem.nvars]); ## DEBUG
     endif
 
     ## update state structure
     state.Population(1:problem.options.PopulationSize,
                      1:problem.nvars) = NextPopulation;
-    clear -v NextPopulation;
     state.Generation++;
     state = __ga_problem_update_state_at_each_generation__ (state, problem,
                                                             private_state);

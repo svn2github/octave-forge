@@ -14,10 +14,9 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.1
+## Version: 1.1.1
 
 function private_state = __ga_problem_private_state__ (options)
-                                #start private_state
   private_state.ReproductionCount.elite = options.EliteCount;
   private_state.ReproductionCount.crossover = \
       fix (options.CrossoverFraction *

@@ -545,7 +545,7 @@ function todo_check
   fi
 }
 
-if test -z "$todo_packages"; then
+if ! $do_nsi && test -z "$todo_packages"; then
   if test -z "$packages"; then
     todo_check "$tbindir/Microsoft.VC$crtver.CRT/Microsoft.VC$crtver.CRT.manifest" VC
     todo_check "$tbindir/f2c.exe" f2c
@@ -2679,7 +2679,7 @@ if check_package GraphicsMagick; then
     create_module_rc GraphicsMagick $gmagickver libGraphicsMagickWand-1.dll "http://www.graphicsmagick.org" \
       "GraphicsMagickWand - Image Processing Library" "Copyright (C) 2002-`date +%Y` GraphicsMagick Group" > wand/magickwand.rc &&
     W_CPPFLAGS="$W_CPPFLAGS -D_VISUALC_" \
-      configure_package --enable-shared --disable-static --without-perl &&
+      configure_package --enable-shared --disable-static --without-perl --disable-installed &&
     post_process_libtool &&
     for f in coders/msl.c coders/url.c coders/svg.c; do
       sed -e "s/^# *include <win32config\.h>//g" $f > ttt &&
@@ -2712,7 +2712,7 @@ if check_package GraphicsMagick; then
     (cd wand && rc -fo magickwand.res magickwand.rc) &&
     (cd Magick++/lib && rc -fo magick++.res magick++.rc) &&
     make &&
-    make install
+    make install &&
     rm -f $tlibdir_quoted/libGraphicsMagicks*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/GraphicsMagick-$gmagickver"
   if failed_package || test ! -f "$tlibdir/GraphicsMagick.lib"; then
@@ -2811,22 +2811,10 @@ if check_package octave; then
       (cd "$DOWNLOAD_DIR/octave-$octave_version" && patch -p1 < octave.diff)
     fi
     cp mkoctfile.cc.in octave-config.cc.in "$DOWNLOAD_DIR/octave-$octave_version"
-    config_script="$DOWNLOAD_DIR/octave-$octave_version/configure"
-    if grep 'extern "C" void exit (int);' "$config_script" 2>&1 > /dev/null; then
-      echo "Pre-processing configure script..."
-      sed -e "s/'extern \"C\" void exit (int);'/'extern \"C\" __declspec(noreturn dllimport) void exit (int);' 'extern \"C\" void exit (int);'/g" "$config_script" > configure.tmp
-      mv configure.tmp "$config_script"
-    fi
-    #FIXME: remove this - specific to 2.9.19 version
-    (cd "$DOWNLOAD_DIR/octave-$octave_version" &&
-      sed -e 's/trunc/ceil/' src/graphics.cc > ttt &&
-        mv ttt src/graphics.cc)
     echo "done"
   fi
   echo -n "compiling octave... "
   (cd "$DOWNLOAD_DIR/octave-$octave_version" &&
-    #sed -e 's/\(^.*SUBDIRS = .*\)doc examples$/\1 examples/' octMakefile.in > ttt &&
-    #mv ttt octMakefile.in &&
     if test ! -f "config.log"; then
       CC=cc-msvc CXX=cc-msvc CFLAGS=-O2 CXXFLAGS=-O2 NM="dumpbin -symbols" \
         F77=fc-msvc FFLAGS="-O2" FC=fc-msvc FCFLAGS="-O2" AR=ar-msvc RANLIB=ranlib-msvc \
@@ -2859,13 +2847,15 @@ if check_package octave; then
     cp NEWS THANKS README "$octave_prefix/doc" &&
     mkdir -p "$octave_prefix/share/info" &&
     cp doc/interpreter/octave.info* "$octave_prefix/share/info" &&
-    make -f octMakefile mkoctfile.exe octave-config.exe &&
-    rm -f "$octave_prefix/bin/mkoctfile" "$octave_prefix/bin/mkoctfile-$octave_version" &&
-    rm -f "$octave_prefix/bin/octave-config" "$octave_prefix/bin/octave-config-$octave_version" &&
-    cp mkoctfile.exe "$octave_prefix/bin/mkoctfile.exe" &&
-    cp mkoctfile.exe "$octave_prefix/bin/mkoctfile-$octave_version.exe" &&
-    cp octave-config.exe "$octave_prefix/bin/octave-config.exe" &&
-    cp octave-config.exe "$octave_prefix/bin/octave-config-$octave_version.exe" &&
+    if test ! -f "$octave_prefix/bin/mkoctfile.exe"; then
+      make -f octMakefile mkoctfile.exe octave-config.exe &&
+      rm -f "$octave_prefix/bin/mkoctfile" "$octave_prefix/bin/mkoctfile-$octave_version" &&
+      rm -f "$octave_prefix/bin/octave-config" "$octave_prefix/bin/octave-config-$octave_version" &&
+      cp mkoctfile.exe "$octave_prefix/bin/mkoctfile.exe" &&
+      cp mkoctfile.exe "$octave_prefix/bin/mkoctfile-$octave_version.exe" &&
+      cp octave-config.exe "$octave_prefix/bin/octave-config.exe" &&
+      cp octave-config.exe "$octave_prefix/bin/octave-config-$octave_version.exe"
+    fi &&
     cp octaverc.win "$octave_prefix/share/octave/$octave_version/m/startup/octaverc"
     ) >&5 2>&1 && end_package
   if failed_package || test ! -f "$INSTALL_DIR/local/octave-$octave_version/bin/octave.exe"; then
@@ -4105,7 +4095,7 @@ if $do_nsi; then
     jhandles_version=`echo "$jhandles_version" | sed -e 's/.*-\([0-9]\+\.[0-9]\+\.[0-9]\+\)$/\1/'`
   else
     echo "JHandles not found"
-    exit -1
+    jhandles_version=
   fi
   software_root=
   for drive in c d; do
@@ -4138,6 +4128,13 @@ if $do_nsi; then
       octplot_prefix="#"
       gui_prefix="#"
       playrec_prefix="#"
+      of_prefix="#"
+      jhandles_prefix="#"
+      gm_prefix="#"
+      sse1_prefix="#"
+      sse2_prefix="#"
+      sse3_prefix="#"
+      fltk_prefix="#"
       if $do_octplot; then
         octplot_prefix=
       fi
@@ -4147,51 +4144,78 @@ if $do_nsi; then
       if test -f "`octave-config -p OCTFILEDIR | sed -e 's,\\\\,/,g'`/playrec.mex"; then
         playrec_prefix=
       fi
+      if test -n "$of_version"; then
+        of_prefix=
+      fi
+      if test -n "$jhandles_version"; then
+        jhandles_prefix=
+      fi
+      if test -f "$INSTALL_DIR/local/octave-$octave_version/libexec/octave/$octave_version/oct/i686-pc-msdosmsvc/__magick_read__.oct"; then
+        gm_prefix=
+      fi
+      if test -f "$INSTALL_DIR/bin/libblas_atl${atlnum}_PIIISSE1.dll"; then
+        sse1_prefix=
+      fi
+      if test -f "$INSTALL_DIR/bin/libblas_atl${atlnum}_P4SSE2.dll"; then
+        sse2_prefix=
+      fi
+      if test -f "$INSTALL_DIR/bin/libblas_atl${atlnum}_P4E32SSE3.dll"; then
+        sse3_prefix=
+      fi
+      if test -f "$INSTALL_DIR/local/octave-$octave_version/libexec/octave/$octave_version/oct/i686-pc-msdosmsvc/fltk_backend.oct"; then
+        fltk_prefix=
+      fi
       echo -n "creating octave_main.nsi... "
       sed -e "s/@OCTAVE_VERSION@/$octave_version/" -e "s/@VCLIBS_ROOT@/$tdir_w32/" \
         -e "s/@MSYS_ROOT@/$msys_root/" -e "s/@JHANDLES_VERSION@/$jhandles_version/" \
         -e "s/@SOFTWARE_ROOT@/$software_root/" -e "s/@HAVE_OCTPLOT@/$octplot_prefix/" \
         -e "s/@HAVE_GUI@/$gui_prefix/" -e "s/@HAVE_PLAYREC@/$playrec_prefix/" \
-        -e "s/@MSVC_CRT@/$crtver/" \
+        -e "s/@MSVC_CRT@/$crtver/" -e "s/@HAVE_OCTAVE_FORGE@/$of_prefix/" \
+        -e "s/@HAVE_JHANDLES@/$jhandles_prefix/" -e "s/@HAVE_OCTAVE_GRAPHICSMAGICK@/$gm_prefix/" \
+        -e "s/@GMAGICKVER@/$gmagickver/g" -e "s/@HAVE_SSE1@/$sse1_prefix/" \
+        -e "s/@HAVE_SSE2@/$sse2_prefix/" -e "s/@HAVE_SSE3@/$sse3_prefix/" \
+        -e "s/@HAVE_FLTK_BACKEND@/$fltk_prefix/" \
         octave.nsi.in > octave_main.nsi
       echo "done"
     fi
-    if test ! -f "octave_forge.nsi"; then
-      echo -n "creating octave_forge.nsi... "
-      echo "SectionGroup \"Main\" GRP_forge_main" > octave_forge.nsi
-      create_nsi_entries "$main_pkgs" "" 0 >> octave_forge.nsi
-      echo "SectionGroupEnd" >> octave_forge.nsi
-      echo "SectionGroup \"Extra\" GRP_forge_extra" >> octave_forge.nsi
-      create_nsi_entries "$extra_pkgs" "/o" 0 >> octave_forge.nsi
-      echo "SectionGroupEnd" >> octave_forge.nsi
-      echo "SectionGroup \"Language\" GRP_forge_lang" >> octave_forge.nsi
-      create_nsi_entries "$lang_pkgs" "/o" 0 >> octave_forge.nsi
-      echo "SectionGroupEnd" >> octave_forge.nsi
-      echo "SectionGroup \"Others\" GRP_forge_others" >> octave_forge.nsi
-      create_nsi_entries "$nonfree_pkgs" "" 0 >> octave_forge.nsi
-      echo "SectionGroupEnd" >> octave_forge.nsi
-      echo "done"
-    fi
-    if test ! -f "octave_forge_deps.nsi"; then
-      echo -n "creating octave_forge_deps.nsi... "
-      echo "# Dependency checking" > octave_forge_deps.nsi
-      create_nsi_entries "$main_pkgs" "" 2 >> octave_forge_deps.nsi
-      create_nsi_entries "$extra_pkgs" "" 2 >> octave_forge_deps.nsi
-      create_nsi_entries "$lang_pkgs" "" 2 >> octave_forge_deps.nsi
-      create_nsi_entries "$nonfree_pkgs" "" 2 >> octave_forge_deps.nsi
-      echo "done"
-    fi
-    if test ! -f "octave_forge_desc.nsi"; then
-      echo -n "creating octave_forge_desc.nsi... "
-      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_main} \"\"" > octave_forge_desc.nsi
-      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_extra} \"\"" >> octave_forge_desc.nsi
-      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_lang} \"\"" >> octave_forge_desc.nsi
-      echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_others} \"\"" >> octave_forge_desc.nsi
-      create_nsi_entries "$main_pkgs" "" 1 >> octave_forge_desc.nsi
-      create_nsi_entries "$extra_pkgs" "" 1 >> octave_forge_desc.nsi
-      create_nsi_entries "$lang_pkgs" "" 1 >> octave_forge_desc.nsi
-      create_nsi_entries "$nonfree_pkgs" "" 1 >> octave_forge_desc.nsi
-      echo "done"
+    if test -n "$of_version"; then
+      if test ! -f "octave_forge.nsi"; then
+        echo -n "creating octave_forge.nsi... "
+        echo "SectionGroup \"Main\" GRP_forge_main" > octave_forge.nsi
+        create_nsi_entries "$main_pkgs" "" 0 >> octave_forge.nsi
+        echo "SectionGroupEnd" >> octave_forge.nsi
+        echo "SectionGroup \"Extra\" GRP_forge_extra" >> octave_forge.nsi
+        create_nsi_entries "$extra_pkgs" "/o" 0 >> octave_forge.nsi
+        echo "SectionGroupEnd" >> octave_forge.nsi
+        echo "SectionGroup \"Language\" GRP_forge_lang" >> octave_forge.nsi
+        create_nsi_entries "$lang_pkgs" "/o" 0 >> octave_forge.nsi
+        echo "SectionGroupEnd" >> octave_forge.nsi
+        echo "SectionGroup \"Others\" GRP_forge_others" >> octave_forge.nsi
+        create_nsi_entries "$nonfree_pkgs" "" 0 >> octave_forge.nsi
+        echo "SectionGroupEnd" >> octave_forge.nsi
+        echo "done"
+      fi
+      if test ! -f "octave_forge_deps.nsi"; then
+        echo -n "creating octave_forge_deps.nsi... "
+        echo "# Dependency checking" > octave_forge_deps.nsi
+        create_nsi_entries "$main_pkgs" "" 2 >> octave_forge_deps.nsi
+        create_nsi_entries "$extra_pkgs" "" 2 >> octave_forge_deps.nsi
+        create_nsi_entries "$lang_pkgs" "" 2 >> octave_forge_deps.nsi
+        create_nsi_entries "$nonfree_pkgs" "" 2 >> octave_forge_deps.nsi
+        echo "done"
+      fi
+      if test ! -f "octave_forge_desc.nsi"; then
+        echo -n "creating octave_forge_desc.nsi... "
+        echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_main} \"\"" > octave_forge_desc.nsi
+        echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_extra} \"\"" >> octave_forge_desc.nsi
+        echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_lang} \"\"" >> octave_forge_desc.nsi
+        echo "  !insertmacro MUI_DESCRIPTION_TEXT \${GRP_forge_others} \"\"" >> octave_forge_desc.nsi
+        create_nsi_entries "$main_pkgs" "" 1 >> octave_forge_desc.nsi
+        create_nsi_entries "$extra_pkgs" "" 1 >> octave_forge_desc.nsi
+        create_nsi_entries "$lang_pkgs" "" 1 >> octave_forge_desc.nsi
+        create_nsi_entries "$nonfree_pkgs" "" 1 >> octave_forge_desc.nsi
+        echo "done"
+      fi
     fi
     if test ! -f "check_cpu_flag.exe"; then
       echo -n "creating CPU feature helper program... "

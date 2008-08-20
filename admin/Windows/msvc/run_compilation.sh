@@ -38,7 +38,7 @@ DOATLAS=false
 
 verbose=false
 packages=
-available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:"
+available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:"
 octave_version=
 of_version=
 do_nsi=false
@@ -64,6 +64,7 @@ glibver=2.14.3
 pangover=1.19.0
 ftver=2.3.5
 libxml2ver=2.6.30
+libxsltver=1.1.24
 fontconfigver=2.5.0
 gdver=2.0.35
 hdf5ver=1.6.6
@@ -582,6 +583,8 @@ if ! $do_nsi && test -z "$todo_packages"; then
     todo_check "$tbindir/libglib-2.0-0.dll" glib
     todo_check "$tbindir/libpango-1.0-0.dll" pango
     todo_check "$tlibdir/xml2.lib" libxml2
+    todo_check "$tlibdir/xslt.lib" libxslt
+    todo_check "$tlibdir/icu.lib" ICU
     todo_check "$tlibdir/fontconfig.lib" fontconfig
     todo_check "$tlibdir/freetype.lib" freetype
     todo_check "$tlibdir/gd.lib" libgd
@@ -1750,6 +1753,98 @@ if check_package libxml2; then
   fi
 fi
 
+###########
+# libxslt #
+###########
+
+if check_package libxslt; then
+  download_file libxslt-$libxsltver.tar.gz ftp://xmlsoft.org/libxslt/libxslt-$libxsltver.tar.gz
+  echo -n "decompressing libxslt... "
+  unpack_file libxslt-$libxsltver.tar.gz
+  echo "done"
+  echo "compiling libxslt... "
+  (cd "$DOWNLOAD_DIR/libxslt-$libxsltver" &&
+    create_module_rc libxslt $libxsltver "libxslt-1.dll" "XmlSoft (www.xmlsoft.org)" \
+      "XSL Transformation Library" "`grep -e '^ *Copyright' Copyright | head -n 1 | sed -e 's/^ *//'`" > xslt.rc &&
+    sed -e '/#undef vsnprintf/ {i \
+#ifndef HAVE_VSNPRINTF\
+#undef vsnprintf\
+#endif
+;d;}' \
+        config.h.in > ttt &&
+      mv ttt config.h.in &&
+    configure_package --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "s/^libxslt_la_LDFLAGS =/& -no-undefined -Wl,../xslt.res/" libxslt/Makefile > ttt &&
+      mv ttt libxslt/Makefile &&
+    sed -e "s/^libexslt_la_LDFLAGS =/& -no-undefined -Wl,../xslt.res/" libexslt/Makefile > ttt &&
+      mv ttt libexslt/Makefile &&
+    sed -e 's/doc \\/ \\/' Makefile > ttt &&
+      mv ttt Makefile &&
+    rc -fo xslt.res xslt.rc &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libxslt.la $tlibdir_quoted/libexslt.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/libxslt-$libxsltver"
+  if failed_package || test ! -f "$tlibdir/xslt.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+#######
+# ICU #
+#######
+
+if check_package ICU; then
+    download_file icu4c-4_0-src.tgz http://download.icu-project.org/files/icu4c/4.0/icu4c-4_0-src.tgz
+  echo -n "decompressing ICU... "
+  unpack_file icu4c-4_0-src.tgz
+  echo "done"
+  echo "compiling ICU... "
+  (cd "$DOWNLOAD_DIR/icu/source" &&
+    sed -e 's,/MD,-MD,g' configure > ttt &&
+      mv ttt configure &&
+    sed -e 's,/O2,-O2,g' \
+        -e 's,/Ob2,-Ob2,g' \
+        -e 's,/Zi,-Zi,g' \
+        -e 's,/DEBUG,-DEBUG,g' \
+        runConfigureICU > ttt &&
+      mv ttt runConfigureICU &&
+    sed -e 's/^LIBICU =/#&/' -e 's,/GF,-GF,' -e 's,/nologo,-nologo,' \
+        -e 's,/EHsc,-EHsc,' -e 's,/Zc,-Zc,' -e 's,/subsystem,-subsystem,' \
+        -e 's,/DLL,-DLL,' -e 's,/IMPLIB,-IMPLIB,' -e 's,/out,-out,' \
+        -e 's,/OUT,-OUT,' -e 's,/base,-base,' -e 's,/Fo,-Fo,' -e 's,/fo,-fo,' \
+        -e 's,/c$,-c,' -e 's/^LIBPREFIX=$/& lib/' \
+        -e 's/cygpath -[a-z]* \./cd . && pwd -W/' \
+        -e 's/cygpath -[a-z]* \(.*\))#M#/cd \1 && pwd -W/' \
+        config/mh-cygwin-msvc > ttt &&
+      mv ttt config/mh-cygwin-msvc &&
+    sed -e 's/LIB_PREFIX ""/LIB_PREFIX "lib"/' tools/pkgdata/pkgtypes.h > ttt &&
+      mv ttt tools/pkgdata/pkgtypes.h &&
+    sed -e 's/\$(LIBNAME)/" LIB_PREFIX "&/' tools/pkgdata/winmode.c > ttt &&
+      mv ttt tools/pkgdata/winmode.c &&
+    ./runConfigureICU Cygwin/MSVC2005 --prefix=$tdir_w32_forward --includedir=$tdir_w32_forward/include/icu \
+      --disable-static --enable-shared &&
+    make &&
+    make install &&
+    for f in find $tdir_w32_forward/lib/libicu*40.dll; do
+      mv $f $tdir_w32_forward/bin
+    done &&
+    rm -f $tdir_w32_forward/lib/libicu*.dll &&
+    for f in find $tdir_w32_forward/lib/libicu*.lib; do
+      mv $f $tdir_w32_forward/lib/`basename $f | sed -e 's/^lib//'`
+    done) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/icu"
+  if failed_package || test ! -f "$tlibdir/icuuc.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
 ############
 # freetype #
 ############
@@ -2466,8 +2561,19 @@ if check_package libcurl; then
     done
     nmake VC=vc8 vc-dll-zlib-dll &&
     mt -outputresource:lib\\libcurl.dll -manifest lib\\release-dll-zlib-dll\\libcurl.dll.manifest &&
+    sed -e "s,@prefix@,$tdir_w32_forward," \
+        -e 's,@exec_prefix@,${prefix},' \
+        -e 's,@includedir@,${prefix}/include,' \
+        -e 's,@libdir@,${prefix}/lib,' \
+        -e "s,@VERSION@,$curlver," \
+        -e "s,@LDFLAGS@,," \
+        -e "s,@LIBS@,-lz," \
+        -e "s,@LIBCURL_LIBS@,," \
+        -e 's,-lcurl,-llibcurl,' \
+        libcurl.pc.in > libcurl.pc &&
     cp lib/libcurl.dll "$tbindir" &&
     cp lib/libcurl.lib "$tlibdir" &&
+    cp libcurl.pc "$tlibdir/pkgconfig/libcurl.pc" &&
     cp COPYING "$tlicdir/COPYING.CURL" &&
     mkdir -p "$tincludedir/curl" && cp include/curl/*.h "$tincludedir/curl") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/curl-$curlver"

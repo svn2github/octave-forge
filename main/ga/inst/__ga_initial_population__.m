@@ -21,7 +21,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2.4
+## Version: 3.2.5
 
                                 #TODO consider PopulationSize as a
                                 #vector for multiple subpopolations
@@ -41,7 +41,7 @@ function Population = \
       CreatedPopulation(1:options.PopulationSize, 1:GenomeLength) = \
           options.CreationFcn (GenomeLength, FitnessFcn, options);
       Population(1:options.PopulationSize, 1:GenomeLength) = vertcat \
-          (options.InitialPopulation(1:nr, 1:GenomeLength),
+          (options.InitialPopulation(1:nrInitialPopulation, 1:GenomeLength),
            CreatedPopulation(1:(options.PopulationSize - nrInitialPopulation),
                              1:GenomeLength));
     elseif (nrInitialPopulation == options.PopulationSize)

@@ -1,12 +1,12 @@
 Name: data-smoothing
-Version: 1.0.0
-Date: 2008-04-29
+Version: 1.1.0
+Date: 2008-08-21
 Author: Jonathan Stickel
 Maintainer: The Octave Community
 Title: Data smoothing
 Description: Algorithms for smoothing noisy data
 Categories: Data-smoothing
-Depends: octave (>= 2.9.7)
+Depends: octave (>= 2.9.7), optim (>=1.0.3)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

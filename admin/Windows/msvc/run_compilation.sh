@@ -1775,9 +1775,9 @@ if check_package libxslt; then
       mv ttt config.h.in &&
     configure_package --enable-shared --disable-static &&
     post_process_libtool &&
-    sed -e "s/^libxslt_la_LDFLAGS =/& -no-undefined -Wl,../xslt.res/" libxslt/Makefile > ttt &&
+    sed -e 's,^libxslt_la_LDFLAGS =,& -no-undefined -Wl\,../xslt.res,' libxslt/Makefile > ttt &&
       mv ttt libxslt/Makefile &&
-    sed -e "s/^libexslt_la_LDFLAGS =/& -no-undefined -Wl,../xslt.res/" libexslt/Makefile > ttt &&
+    sed -e 's,^libexslt_la_LDFLAGS =,& -no-undefined -Wl\,../xslt.res,' libexslt/Makefile > ttt &&
       mv ttt libexslt/Makefile &&
     sed -e 's/doc \\/ \\/' Makefile > ttt &&
       mv ttt Makefile &&
@@ -1817,16 +1817,18 @@ if check_package ICU; then
         -e 's,/EHsc,-EHsc,' -e 's,/Zc,-Zc,' -e 's,/subsystem,-subsystem,' \
         -e 's,/DLL,-DLL,' -e 's,/IMPLIB,-IMPLIB,' -e 's,/out,-out,' \
         -e 's,/OUT,-OUT,' -e 's,/base,-base,' -e 's,/Fo,-Fo,' -e 's,/fo,-fo,' \
-        -e 's,/c$,-c,' -e 's/^LIBPREFIX=$/& lib/' \
-        -e 's/cygpath -[a-z]* \./cd . && pwd -W/' \
-        -e 's/cygpath -[a-z]* \(.*\))#M#/cd \1 && pwd -W/' \
+        -e 's,/c$,-c,' -e 's,/NOENTRY,-NOENTRY,' -e 's/^LIBPREFIX=$/& lib/' \
+        -e 's/cygpath -[a-z]* \./cd . \&\& pwd -W/' \
+        -e 's/cygpath -[a-z]* \(.*\))#M#/cd \1 \&\& pwd -W)#M#/' \
         config/mh-cygwin-msvc > ttt &&
       mv ttt config/mh-cygwin-msvc &&
     sed -e 's/LIB_PREFIX ""/LIB_PREFIX "lib"/' tools/pkgdata/pkgtypes.h > ttt &&
       mv ttt tools/pkgdata/pkgtypes.h &&
     sed -e 's/\$(LIBNAME)/" LIB_PREFIX "&/' tools/pkgdata/winmode.c > ttt &&
       mv ttt tools/pkgdata/winmode.c &&
-    ./runConfigureICU Cygwin/MSVC2005 --prefix=$tdir_w32_forward --includedir=$tdir_w32_forward/include/icu \
+    sed -e '/rc\.exe/ {s,/i,-i,; s,/fo,-fo,;}' data/Makefile.in > ttt &&
+      mv ttt data/Makefile.in &&
+    ./runConfigureICU Cygwin/MSVC2005 --prefix=$tdir_w32_forward \
       --disable-static --enable-shared &&
     make &&
     make install &&

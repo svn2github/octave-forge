@@ -1,0 +1,24 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' fontconfig-2.6.0-orig/configure fontconfig-2.6.0/configure
+--- fontconfig-2.6.0-orig/configure	2008-06-01 04:31:02 +0200
++++ fontconfig-2.6.0/configure	2008-08-03 21:07:27 +0200
+@@ -9502,7 +9502,7 @@
+       ;;
+     mingw*)
+       # MinGW DLLs use traditional 'lib' prefix
+-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib//'`${shared_ext}'
+       sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+       if echo "$sys_lib_search_path_spec" | grep ';[c-zC-Z]:/' >/dev/null; then
+         # It is most probably a Windows format PATH printed by
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' fontconfig-2.6.0-orig/src/Makefile.in fontconfig-2.6.0/src/Makefile.in
+--- fontconfig-2.6.0-orig/src/Makefile.in	2008-06-01 04:31:00 +0200
++++ fontconfig-2.6.0/src/Makefile.in	2008-08-17 19:19:44 +0200
+@@ -661,7 +661,7 @@
+ 	(cat $(PUBLIC_FILES) $(PUBLIC_FT_FILES) || echo 'FcERROR ()' ) | \
+  	grep '^Fc[^ ]* *(' | sed -e 's/ *(.*$$//' -e 's/^/	/' | \
+ 	sort; \
+-	echo LIBRARY libfontconfig-@LIBT_CURRENT_MINUS_AGE@.dll; \
++	echo LIBRARY fontconfig.dll; \
+ 	echo VERSION @LIBT_CURRENT@.@LIBT_REVISION@) >$@
+ 	@ ! grep -q FcERROR $@ || ($(RM) $@; false)
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.

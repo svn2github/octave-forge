@@ -1,0 +1,50 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x autom4te.cache -x configure gd-2.0.35-orig/Makefile.in gd-2.0.35/Makefile.in
+--- gd-2.0.35-orig/Makefile.in	2007-04-23 16:57:51 +0200
++++ gd-2.0.35/Makefile.in	2007-04-23 16:57:52 +0200
+@@ -343,7 +343,7 @@
+ bin_SCRIPTS = bdftogd config/gdlib-config
+ EXTRA_DIST = README-JPEG.TXT README.TXT configure.pl bdftogd demoin.png err.out index.html install-item makefile.sample readme.jpn entities.html entities.tcl
+ include_HEADERS = gd.h gdfx.h gd_io.h gdcache.h gdfontg.h gdfontl.h gdfontmb.h gdfonts.h gdfontt.h entities.h
+-lib_LTLIBRARIES = libgd.la
++lib_LTLIBRARIES = libgd.la gd.dll
+ libgd_la_SOURCES = gd.c gdfx.c gd_security.c gd_gd.c gd_gd2.c gd_io.c gd_io_dp.c gd_gif_in.c gd_gif_out.c gd_io_file.c gd_io_ss.c gd_jpeg.c gd_png.c gd_ss.c gd_topal.c gd_wbmp.c gdcache.c gdfontg.c gdfontl.c gdfontmb.c gdfonts.c gdfontt.c gdft.c gdhelpers.c gdhelpers.h gdkanji.c gdtables.c gdxpm.c jisx0208.h wbmp.c wbmp.h
+ libgd_la_LDFLAGS = -version-info 2:0:0 $(XTRA_LDFLAGS)
+ libgd_la_LIBADD = $(LTLIBICONV)
+@@ -432,6 +432,13 @@
+ 	done
+ libgd.la: $(libgd_la_OBJECTS) $(libgd_la_DEPENDENCIES) 
+ 	$(LINK) -rpath $(libdir) $(libgd_la_LDFLAGS) $(libgd_la_OBJECTS) $(libgd_la_LIBADD) $(LIBS)
++
++gd.dll : libgd.la
++	$(CC) -shared $(LDFLAGS) -o $@ \
++	-Wl,--out-implib=libgd.dll.a \
++	-Wl,--whole-archive ./.libs/libgd.a \
++	-Wl,--no-whole-archive $(LIBS)
++
+ install-binPROGRAMS: $(bin_PROGRAMS)
+ 	@$(NORMAL_INSTALL)
+ 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x autom4te.cache -x configure gd-2.0.35-orig/gd.h gd-2.0.35/gd.h
+--- gd-2.0.35-orig/gd.h	2007-05-06 22:38:20 +0200
++++ gd-2.0.35/gd.h	2008-08-06 14:51:45 +0200
+@@ -70,12 +70,20 @@
+ 
+ /* 2.0.23: more Type 1 fonts */
+ #ifndef DEFAULT_FONTPATH
++#ifdef WIN32
++#define DEFAULT_FONTPATH "C:\\WINDOWS\\FONTS;C:\\WINNT\\FONTS"
++#else
+ /* default fontpath for unix systems  - whatever happened to standards ! */
+ #define DEFAULT_FONTPATH "/usr/X11R6/lib/X11/fonts/TrueType:/usr/X11R6/lib/X11/fonts/truetype:/usr/X11R6/lib/X11/fonts/TTF:/usr/share/fonts/TrueType:/usr/share/fonts/truetype:/usr/openwin/lib/X11/fonts/TrueType:/usr/X11R6/lib/X11/fonts/Type1:/usr/lib/X11/fonts/Type1:/usr/openwin/lib/X11/fonts/Type1"
+ #endif
++#endif
+ #ifndef PATHSEPARATOR
++#ifdef WIN32
++#define PATHSEPARATOR ";"
++#else
+ #define PATHSEPARATOR ":"
+ #endif
++#endif
+ 
+ /* gd.h: declarations file for the graphic-draw module.
+  * Permission to use, copy, modify, and distribute this software and its

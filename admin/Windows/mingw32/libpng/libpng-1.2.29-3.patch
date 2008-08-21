@@ -1,0 +1,74 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libpng-1.2.29-orig/scripts/makefile.mingw libpng-1.2.29/scripts/makefile.mingw
+--- libpng-1.2.29-orig/scripts/makefile.mingw	2008-05-08 13:58:10 +0200
++++ libpng-1.2.29/scripts/makefile.mingw	2008-07-25 19:09:43 +0200
+@@ -10,6 +10,7 @@
+ # Copyright (C) 1996, 1997 Andreas Dilger
+ # For conditions of distribution and use, see copyright notice in png.h
+ 
++SRCDIR=@SRCDIR@
+ 
+ # This makefile intends to support building outside the src directory
+ # if desired. When invoking it, specify an argument to SRCDIR on the
+@@ -33,7 +34,7 @@
+ 
+ # If you're using a cross-compiler, add the appropriate prefix (e.g.,
+ # "i386-mingw32msvc-") to the following three commands:
+-CC=gcc
++#CC=gcc
+ AR=ar
+ RANLIB=ranlib
+ 
+@@ -67,9 +68,9 @@
+ #	-Wall -O $(ALIGN) -funroll-loops \
+ #	-fomit-frame-pointer)  # $(WARNMORE) -g -DPNG_DEBUG=5
+ ### Normal (non-asm) compilation
+-CFLAGS= $(strip $(MINGW_CCFLAGS) $(addprefix -I,$(ZLIBINC)) \
++CFLAGS += \
+         -Wall -O3 $(ALIGN) -funroll-loops -DPNG_NO_MMX_CODE \
+-	-fomit-frame-pointer) # $(WARNMORE) -g -DPNG_DEBUG=5
++	-fomit-frame-pointer # $(WARNMORE) -g -DPNG_DEBUG=5
+ 
+ LIBNAME = libpng12
+ PNGMAJ = 0
+@@ -77,16 +78,17 @@
+ PNGMIN = 1.2.29
+ PNGVER = $(PNGMAJ).$(PNGMIN)
+ 
+-SHAREDLIB=libpng$(MINGDLL).dll
++SHAREDLIB=png$(MINGDLL).dll
+ STATLIB=libpng.a
+ IMPLIB=libpng.dll.a
+ SHAREDDEF=libpng.def
+ LIBS=$(SHAREDLIB) $(STATLIB)
+ EXE=.exe
+ 
+-LDFLAGS=$(strip -L. $(MINGW_LDFLAGS) -lpng $(addprefix -L,$(ZLIBLIB)) -lz)
+-LDSFLAGS=$(strip -shared -L.  $(MINGW_LDFLAGS))
+-LDEXTRA=-Wl,--out-implib=$(IMPLIB) $(addprefix -L,$(ZLIBLIB)) -lz
++#LDFLAGS=$(strip -L. $(MINGW_LDFLAGS) -lpng $(addprefix -L,$(ZLIBLIB)) -lz)
++#LDSFLAGS=$(strip -shared -L.  $(MINGW_LDFLAGS))
++LDSFLAGS=$(LDFLAGS)
++LDEXTRA=-Wl,--out-implib=$(IMPLIB) -lz
+ 
+ INCPATH=$(prefix)/include
+ LIBPATH=$(exec_prefix)/lib
+@@ -150,8 +152,8 @@
+ 
+ static: all-static
+ shared: all-shared
+-all-static: $(STATLIB) pngtest-stat$(EXE)
+-all-shared: $(SHAREDLIB) pngtest$(EXE)
++all-static: $(STATLIB) 
++all-shared: $(SHAREDLIB) 
+ 
+ $(STATLIB): $(OBJS)
+ 	$(AR) rc $@ $(OBJS)
+@@ -162,7 +164,7 @@
+ 	sed -e 's/\([^;]*\);/;/' > $@
+ 
+ $(SHAREDLIB): $(OBJSDLL) $(SHAREDDEF)
+-	$(CC) $(LDSFLAGS) -o $@ $(OBJSDLL) -L. $(LDEXTRA)
++	$(CC) -shared $(LDSFLAGS) -o $@ $(OBJSDLL) $(SHAREDDEF) -L. $(LDEXTRA)
+ 
+ pngtest$(EXE): pngtest.pic.o $(SHAREDLIB)
+ 	$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@

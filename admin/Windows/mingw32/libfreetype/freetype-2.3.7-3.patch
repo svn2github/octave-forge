@@ -1,0 +1,22 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' freetype-2.3.7-orig/builds/unix/configure freetype-2.3.7/builds/unix/configure
+--- freetype-2.3.7-orig/builds/unix/configure	2008-06-29 09:46:32 +0200
++++ freetype-2.3.7/builds/unix/configure	2008-08-03 19:27:38 +0200
+@@ -12126,7 +12126,7 @@
+       ;;
+     mingw*)
+       # MinGW DLLs use traditional 'lib' prefix
+-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='`echo ${libname} | sed -e 's/^lib//'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
+       sys_lib_search_path_spec=`$CC -print-search-dirs | $GREP "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+       if $ECHO "$sys_lib_search_path_spec" | $GREP ';[c-zC-Z]:/' >/dev/null; then
+         # It is most probably a Windows format PATH printed by
+@@ -14621,7 +14621,8 @@
+ if test -n "$CONFIG_FILES"; then
+ 
+ 
+-ac_cr=''
++ac_cr='
++'
+ ac_cs_awk_cr=`$AWK 'BEGIN { print "a\rb" }' </dev/null 2>/dev/null`
+ if test "$ac_cs_awk_cr" = "a${ac_cr}b"; then
+   ac_cs_awk_cr='\\r'

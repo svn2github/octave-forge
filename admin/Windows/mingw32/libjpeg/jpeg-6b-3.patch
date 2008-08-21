@@ -1,0 +1,58 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' jpeg-6b-orig/jmorecfg.h jpeg-6b/jmorecfg.h
+--- jpeg-6b-orig/jmorecfg.h	1997-08-10 01:58:56 +0200
++++ jpeg-6b/jmorecfg.h	2008-03-30 12:38:02 +0200
+@@ -150,16 +150,18 @@
+ #endif /* HAVE_UNSIGNED_SHORT */
+ 
+ /* INT16 must hold at least the values -32768..32767. */
+-
+ #ifndef XMD_H			/* X11/xmd.h correctly defines INT16 */
+ typedef short INT16;
+ #endif
+ 
+ /* INT32 must hold at least signed 32-bit values. */
+-
++#ifdef __MINGW32__
++  #include <basetsd.h>
++#else
+ #ifndef XMD_H			/* X11/xmd.h correctly defines INT32 */
+ typedef long INT32;
+ #endif
++#endif
+ 
+ /* Datatype used for image dimensions.  The JPEG standard only supports
+  * images up to 64K*64K due to 16-bit fields in SOF markers.  Therefore
+@@ -222,10 +224,13 @@
+  * specific header files that you want to include together with these files.
+  * Defining HAVE_BOOLEAN before including jpeglib.h should make it work.
+  */
+-
++#ifdef __MINGW32__
++typedef unsigned char boolean;
++#else
+ #ifndef HAVE_BOOLEAN
+ typedef int boolean;
+ #endif
++#endif
+ #ifndef FALSE			/* in case these macros already exist */
+ #define FALSE	0		/* values of boolean */
+ #endif
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' jpeg-6b-orig/makefile.cfg jpeg-6b/makefile.cfg
+--- jpeg-6b-orig/makefile.cfg	1998-03-21 20:08:57 +0100
++++ jpeg-6b/makefile.cfg	2008-07-25 18:51:51 +0200
+@@ -133,7 +133,14 @@
+ TROBJECTS= jpegtran.$(O) rdswitch.$(O) cdjpeg.$(O) transupp.$(O)
+ 
+ 
+-all: @A2K_DEPS@ libjpeg.$(A) cjpeg djpeg jpegtran rdjpgcom wrjpgcom
++all: @A2K_DEPS@ libjpeg.$(A) cjpeg djpeg jpegtran rdjpgcom wrjpgcom jpeg.dll
++
++jpeg.dll : libjpeg.a
++	$(CC) -shared $(LDFLAGS) -o $@ \
++	-Wl,--export-all-symbols \
++	-Wl,--whole-archive $< \
++	-Wl,--out-implib=$(basename $<).dll.a \
++	-Wl,--no-whole-archive
+ 
+ # Special compilation rules to support ansi2knr and libtool.
+ .SUFFIXES: .lo .la

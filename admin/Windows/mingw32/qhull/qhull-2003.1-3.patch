@@ -1,0 +1,41 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' qhull-2003.1-orig/src/Makefile qhull-2003.1/src/Makefile
+--- qhull-2003.1-orig/src/Makefile	2003-12-31 04:20:50 +0100
++++ qhull-2003.1/src/Makefile	2008-07-24 21:58:59 +0200
+@@ -32,6 +32,11 @@
+ #       FILES -- all other files
+ #       OBJS -- specifies the object files of libqhull.a
+ #
++SRCDIR = @SRCDIR@/src
++
++vpath %.c $(SRCDIR)
++vpath %.h $(SRCDIR)
++
+ BINDIR  = /usr/local/bin
+ MANDIR  = /usr/local/man/man1
+ 
+@@ -43,8 +48,8 @@
+ 
+ #for Gnu's gcc compiler -O2 for optimization, -g for debugging, -Wall for check
+ #
+-CC     = gcc
+-CCOPTS1 = -O2 -ansi 
++#CC     = gcc
++CCOPTS1 = $(GCC_ARCH_FLAGS) -O0
+ 
+ # for Sun's cc compiler, -fast or O2 for optimization, -g for debugging, -Xc for ANSI
+ #CC = cc
+@@ -81,6 +86,14 @@
+ 
+ all: rbox qconvex qdelaunay qhalf qvoronoi qhull
+ 
++lib: libqhull.a qhull.dll
++
++qhull.dll : libqhull.a
++	$(CC) -shared $(LDFLAGS) -o $@ \
++	-Wl,--out-implib=$(<:.a=.dll.a) \
++	-Wl,--whole-archive $< \
++	-Wl,--no-whole-archive
++
+ unix.o:   qhull.h user.h mem.h
+ qconvex.o:   qhull.h user.h mem.h
+ qdelaun.o:   qhull.h user.h mem.h

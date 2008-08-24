@@ -6,7 +6,7 @@ Maintainer: The Octave Community
 Title: Data smoothing
 Description: Algorithms for smoothing noisy data
 Categories: Data-smoothing
-Depends: octave (>= 2.9.7), optim (>=1.0.3)
+Depends: octave (>= 2.9.7), optim (>= 1.0.3)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

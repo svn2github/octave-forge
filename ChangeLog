@@ -1,4 +1,1854 @@
 # Automatically generated file --- DO NOT EDIT
+2008-08-24 16:19  hauberg
+
+	* language/pt_BR/DESCRIPTION: Bumped version number
+
+2008-08-24 16:19  hauberg
+
+	* extra/NaN/DESCRIPTION, extra/Windows/DESCRIPTION,
+	  extra/ad/DESCRIPTION, extra/bim/DESCRIPTION,
+	  extra/civil/DESCRIPTION, extra/engine/DESCRIPTION,
+	  extra/fpl/DESCRIPTION, extra/graceplot/DESCRIPTION,
+	  extra/integration/DESCRIPTION, extra/java/DESCRIPTION,
+	  extra/jhandles/DESCRIPTION, extra/mapping/DESCRIPTION,
+	  extra/msh/DESCRIPTION, extra/multicore/DESCRIPTION,
+	  extra/nlwing2/INDEX, extra/ocs/DESCRIPTION,
+	  extra/pdb/DESCRIPTION, extra/secs1d/DESCRIPTION,
+	  extra/secs1d/INDEX, extra/secs2d/DESCRIPTION, extra/secs2d/INDEX,
+	  extra/soctcl/DESCRIPTION, extra/symband/DESCRIPTION,
+	  extra/tsa/DESCRIPTION, extra/xraylib/DESCRIPTION: Bumped version
+	  number
+
+2008-08-24 16:17  hauberg
+
+	* main/ann/DESCRIPTION, main/audio/DESCRIPTION,
+	  main/benchmark/INDEX, main/bioinfo/DESCRIPTION,
+	  main/combinatorics/DESCRIPTION, main/comm/DESCRIPTION,
+	  main/control/DESCRIPTION, main/database/DESCRIPTION,
+	  main/econometrics/DESCRIPTION, main/fixed/DESCRIPTION,
+	  main/ftp/DESCRIPTION, main/ga/DESCRIPTION,
+	  main/general/DESCRIPTION, main/ident/DESCRIPTION,
+	  main/image/DESCRIPTION, main/info-theory/DESCRIPTION,
+	  main/io/DESCRIPTION, main/irsa/DESCRIPTION,
+	  main/linear-algebra/DESCRIPTION, main/miscellaneous/DESCRIPTION,
+	  main/missing-functions/DESCRIPTION, main/nnet/DESCRIPTION,
+	  main/octcdf/DESCRIPTION, main/odebvp/DESCRIPTION,
+	  main/odepkg/DESCRIPTION, main/optim/DESCRIPTION,
+	  main/outliers/DESCRIPTION, main/parallel/DESCRIPTION,
+	  main/physical-constants/DESCRIPTION, main/plot/DESCRIPTION,
+	  main/signal/DESCRIPTION, main/signal/INDEX,
+	  main/sockets/DESCRIPTION, main/specfun/DESCRIPTION,
+	  main/special-matrix/DESCRIPTION, main/splines/DESCRIPTION,
+	  main/statistics/DESCRIPTION, main/statistics/INDEX,
+	  main/strings/DESCRIPTION, main/struct/DESCRIPTION,
+	  main/symbolic/DESCRIPTION, main/time/DESCRIPTION,
+	  main/video/DESCRIPTION, main/vrml/DESCRIPTION,
+	  main/zenity/DESCRIPTION: Bumped version number
+
+2008-08-24 16:15  hauberg
+
+	* nonfree/arpack/DESCRIPTION, nonfree/spline-gsvspl/DESCRIPTION:
+	  Bumped version number
+
+2008-08-24 06:35  highegg
+
+	* main/benchmark/inst/benchmark_dtmm.m,
+	  main/benchmark/inst/benchmark_intmath.m,
+	  main/benchmark/inst/benchmark_stmm.m,
+	  main/benchmark/inst/benchutil_is_octave.m,
+	  main/benchmark/inst/benchutil_stopwatch.m,
+	  main/benchmark/inst/benchutil_tic.m,
+	  main/benchmark/inst/benchutil_toc.m: contribute intmath bechmark,
+	  remove benchutil_tic, benchutil_toc and benchutil_stopwatch
+
+2008-08-23 20:40  treichl
+
+	* admin/MacOSX/solvedeps/octave-3.0.2.diff,
+	  admin/MacOSX/solvedeps/solvedeps-3.0.2.sh: Build scripts for
+	  Octave.app 3.0.2 for MacOSX.
+
+2008-08-21 20:20  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: compilation fixes for
+	  libxslt and ICU
+
+2008-08-21 17:36  lindnerb
+
+	* admin/Windows/mingw32/blas/blas-3.patch,
+	  admin/Windows/mingw32/blas/build-3.sh,
+	  admin/Windows/mingw32/cblas/build-3.sh,
+	  admin/Windows/mingw32/cblas/cblas-3.patch,
+	  admin/Windows/mingw32/curl/build-7.18.2-3.sh,
+	  admin/Windows/mingw32/curl/curl-7.18.2-3.patch,
+	  admin/Windows/mingw32/expat/build-2.0.1-3.sh,
+	  admin/Windows/mingw32/expat/expat-2.0.1-3.patch,
+	  admin/Windows/mingw32/fftw3/build-3.1.2-3.sh,
+	  admin/Windows/mingw32/fftw3/fftw-3.1.2-3.patch,
+	  admin/Windows/mingw32/gcc43_build_deps.sh,
+	  admin/Windows/mingw32/gcc43_build_octave.sh,
+	  admin/Windows/mingw32/gcc43_build_tools.sh,
+	  admin/Windows/mingw32/gcc43_common.sh,
+	  admin/Windows/mingw32/gcc43_install_deps.sh,
+	  admin/Windows/mingw32/gcc43_install_octave.sh,
+	  admin/Windows/mingw32/gcc43_install_tools.sh,
+	  admin/Windows/mingw32/gcc43_pkg_version.sh,
+	  admin/Windows/mingw32/gcc43_version.sh,
+	  admin/Windows/mingw32/glob/build-1.0-3.sh,
+	  admin/Windows/mingw32/glob/glob-1.0-3.patch,
+	  admin/Windows/mingw32/glpk/build-4.29-3.sh,
+	  admin/Windows/mingw32/glpk/glpk-4.29-3.patch,
+	  admin/Windows/mingw32/gmp/build-4.2.2-3.sh,
+	  admin/Windows/mingw32/gmp/gmp-4.2.2-3.patch,
+	  admin/Windows/mingw32/gsl/build-1.11-3.sh,
+	  admin/Windows/mingw32/gsl/gsl-1.11-3.patch,
+	  admin/Windows/mingw32/hdf5/build-1.6.7-3.sh,
+	  admin/Windows/mingw32/hdf5/hdf5-1.6.7-3.patch,
+	  admin/Windows/mingw32/lapack/build-3.1.1-3.sh,
+	  admin/Windows/mingw32/lapack/lapack-lite-3.1.1-3.patch,
+	  admin/Windows/mingw32/less/build-418-3.sh,
+	  admin/Windows/mingw32/less/less-418-3.patch,
+	  admin/Windows/mingw32/libfontconfig/build-2.6.0-3.sh,
+	  admin/Windows/mingw32/libfontconfig/fontconfig-2.6.0-3.patch,
+	  admin/Windows/mingw32/libfreetype/build-2.3.7-3.sh,
+	  admin/Windows/mingw32/libfreetype/freetype-2.3.7-3.patch,
+	  admin/Windows/mingw32/libgd/build-2.0.35-3.sh,
+	  admin/Windows/mingw32/libgd/gd-2.0.35-3.patch,
+	  admin/Windows/mingw32/libjpeg/build-6b-3.sh,
+	  admin/Windows/mingw32/libjpeg/jpeg-6b-3.patch,
+	  admin/Windows/mingw32/libncurses/build-5.6-3.sh,
+	  admin/Windows/mingw32/libncurses/ncurses-5.6-3.patch,
+	  admin/Windows/mingw32/libpng/build-1.2.29-3.sh,
+	  admin/Windows/mingw32/libpng/libpng-1.2.29-3.patch,
+	  admin/Windows/mingw32/libtiff/build-3.8.2-3.sh,
+	  admin/Windows/mingw32/libtiff/tiff-3.8.2-3.patch,
+	  admin/Windows/mingw32/octave/build-3.0.1-3.sh,
+	  admin/Windows/mingw32/octave/octave-3.0.1-3.patch,
+	  admin/Windows/mingw32/pcre/build-7.7-3.sh,
+	  admin/Windows/mingw32/pcre/pcre-7.7-3.patch,
+	  admin/Windows/mingw32/qhull/build-2003.1-3.sh,
+	  admin/Windows/mingw32/qhull/qhull-2003.1-3.patch,
+	  admin/Windows/mingw32/readline/build-5.2-3.sh,
+	  admin/Windows/mingw32/readline/readline-5.2-3.patch,
+	  admin/Windows/mingw32/regex/build-2.5.1-3.sh,
+	  admin/Windows/mingw32/regex/mingw-libgnurx-2.5.1-3.patch,
+	  admin/Windows/mingw32/sed/build-4.1.5-3.sh,
+	  admin/Windows/mingw32/sed/sed-4.1.5-3.patch,
+	  admin/Windows/mingw32/suitesparse/build-3.1.0-3.sh,
+	  admin/Windows/mingw32/suitesparse/suitesparse-3.1.0-3.patch,
+	  admin/Windows/mingw32/tools/atlas/build-3.8.2-3.sh,
+	  admin/Windows/mingw32/tools/build-3.sh,
+	  admin/Windows/mingw32/tools/cpufeature/build-1.0.0-3.sh,
+	  admin/Windows/mingw32/tools/gcc-tdm-4.3.0,
+	  admin/Windows/mingw32/tools/gcc-tdm-4.3.0/build-4.3.0-3.sh,
+	  admin/Windows/mingw32/tools/gnuplot/build-4.3.0-2008-08-08-3.sh,
+	  admin/Windows/mingw32/tools/gnuplot/gnuplot-4.3.0-2008-08-08-3.patch,
+	  admin/Windows/mingw32/tools/msys,
+	  admin/Windows/mingw32/tools/msys/build-1.0.11-3.sh,
+	  admin/Windows/mingw32/tools/notepad++/build-5.0.3-3.sh,
+	  admin/Windows/mingw32/tools/notepad++/npp-5.0.3-3.patch,
+	  admin/Windows/mingw32/zlib/build-1.2.3-3.sh,
+	  admin/Windows/mingw32/zlib/zlib-1.2.3-3.patch: add build scripts
+	  and patches or dependencies and octave 3.0.1 using TDM's
+	  gcc-4.3.0-2
+
+2008-08-21 14:24  jjstickel
+
+	* main/data-smoothing/inst/regdatasmooth.m,
+	  main/data-smoothing/inst/rgdtsmcore.m,
+	  main/data-smoothing/inst/rgdtsmcorewrap.m,
+	  main/data-smoothing/inst/tkrgdatasmdd.m,
+	  main/data-smoothing/inst/tkrgdatasmddwrap.m,
+	  main/data-smoothing/inst/tkrgdatasmooth.m,
+	  main/data-smoothing/inst/tkrgdatasmscat.m,
+	  main/data-smoothing/inst/tkrgdatasmscatwrap.m,
+	  main/data-smoothing/inst/tkrgscatdatasmooth.m: rewritten
+	  regularization smoothing functions
+
+2008-08-21 14:20  jjstickel
+
+	* main/data-smoothing/DESCRIPTION: rewritten regularization
+	  smoothing functions
+
+2008-08-21 10:59  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_initial_population__.m:
+	  fix a bug in __ga_initial_population__ when an InitialPopulation
+	  is specified, thanks to Thomas Weber (see
+	  http://lists.alioth.debian.org/pipermail/pkg-octave-devel/2008-August/004787.html)
+
+2008-08-20 14:51  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Add libxslt and ICU
+	  compilation + libcurl pkg-config support
+
+2008-08-19 15:54  hauberg
+
+	* main/signal/src/upfirdn.cc: Simplify template code
+
+2008-08-19 09:08  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: update
+
+2008-08-18 18:20  hauberg
+
+	* main/signal/src/upfirdn.cc: Also handle complex input
+
+2008-08-17 16:58  wsloand
+
+	* main/financial/DESCRIPTION, main/financial/inst/fetch.m,
+	  main/financial/inst/yahoo.m: added fetch and yahoo commands (like
+	  in Matlab datafeed toolbox)
+
+2008-08-16 18:14  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_crossoverfcn__.m,
+	  main/ga/inst/__ga_initial_population__.m,
+	  main/ga/inst/__ga_mutationfcn__.m,
+	  main/ga/inst/__ga_popinitrange__.m,
+	  main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/__ga_problem_private_state__.m,
+	  main/ga/inst/__ga_problem_state_selection__.m,
+	  main/ga/inst/__ga_scores__.m, main/ga/inst/__ga_selectionfcn__.m,
+	  main/ga/inst/__gaoptimset_default_options__.m,
+	  main/ga/inst/crossoverscattered.m, main/ga/inst/fitscalingrank.m,
+	  main/ga/inst/ga.m, main/ga/inst/gacreationuniform.m,
+	  main/ga/inst/gaoptimset.m, main/ga/inst/mutationgaussian.m:
+	  integrate most debug asserts as matrix indices or tests; clean
+	  and modularize code; little performance improvement in
+	  __ga_problem__ function; little fixes
+
+2008-08-15 22:47  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_initial_population__.m,
+	  main/ga/inst/__ga_mutationfcn__.m, main/ga/inst/ga.m,
+	  main/ga/inst/gacreationuniform.m: cleaned ga function tests;
+	  modified the invocation of the creation function in the
+	  __ga_initial_population__ function to prevent bugs (a modified
+	  PopulationSize can be misunderstood by the creation function);
+	  hardcode some expectations removing asserts
+
+2008-08-15 12:54  michaelschmid
+
+	* main/nnet/inst/poststd.m: removed bug in poststd.m
+
+2008-08-14 15:06  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/INDEX, main/ga/doc/todo.txt,
+	  main/ga/inst/__ga_crossoverfcn__.m,
+	  main/ga/inst/__ga_initial_population__.m,
+	  main/ga/inst/__ga_mutationfcn__.m, main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/__ga_problem_private_state__.m,
+	  main/ga/inst/__ga_problem_return_variables__.m,
+	  main/ga/inst/__ga_problem_state_selection__.m,
+	  main/ga/inst/__ga_problem_update_state_at_each_generation__.m,
+	  main/ga/inst/__ga_scores__.m, main/ga/inst/__ga_selectionfcn__.m,
+	  main/ga/inst/__ga_stop__.m,
+	  main/ga/inst/__gaoptimset_default_options__.m,
+	  main/ga/inst/crossoverscattered.m, main/ga/inst/fitscalingrank.m,
+	  main/ga/inst/ga.m, main/ga/inst/gacreationuniform.m,
+	  main/ga/inst/gaoptimset.m, main/ga/inst/mutationgaussian.m,
+	  main/ga/inst/rastriginsfcn.m, main/ga/inst/selectionstochunif.m:
+	  performance gain; fix a bug in selectionstochunif function; clean
+	  license; clean ga function tests
+
+2008-08-14 14:23  michaelschmid
+
+	* main/nnet/inst/__init.m, main/nnet/inst/prestd.m: minor change in
+	  __init.m
+	  optimized code in prestd.m
+	  
+	  modified inst/__init.m
+	  modified inst/prestd.m
+
+2008-08-13 22:12  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_crossoverfcn__.m,
+	  main/ga/inst/__ga_mutationfcn__.m, main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/__ga_problem_private_state__.m,
+	  main/ga/inst/__ga_problem_return_variables__.m,
+	  main/ga/inst/__ga_problem_state_selection__.m,
+	  main/ga/inst/__ga_problem_update_state_at_each_generation__.m,
+	  main/ga/inst/__ga_scores__.m, main/ga/inst/__ga_selectionfcn__.m,
+	  main/ga/inst/crossoverscattered.m, main/ga/inst/fitscalingrank.m,
+	  main/ga/inst/mutationgaussian.m,
+	  main/ga/inst/selectionstochunif.m: modularize to semplify debug
+
+2008-08-13 14:03  xavier98
+
+	* main/database/src/mysql.i, main/database/src/mysql_wrap.cpp: Fix
+	  bug where mysql_db login parameters aren't propagated to lower
+	  level interface.
+
+2008-08-12 21:37  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/INDEX,
+	  main/ga/doc/old_stuff/__bin2hex__.m,
+	  main/ga/doc/old_stuff/__bin2num__.m,
+	  main/ga/doc/old_stuff/__ga_concatenated_bitstring2doubles__.m,
+	  main/ga/doc/old_stuff/__ga_doubles2concatenated_bitstring__.m,
+	  main/ga/doc/old_stuff/__hex2bin__.m,
+	  main/ga/doc/old_stuff/__num2bin__.m,
+	  main/ga/doc/old_stuff/crossoversinglepoint.m,
+	  main/ga/doc/old_stuff/mutationsinglepoint.m,
+	  main/ga/doc/old_stuff/selectionroulette.m,
+	  main/ga/inst/__bin2hex__.m, main/ga/inst/__bin2num__.m,
+	  main/ga/inst/__ga_concatenated_bitstring2doubles__.m,
+	  main/ga/inst/__ga_doubles2concatenated_bitstring__.m,
+	  main/ga/inst/__ga_initial_population__.m,
+	  main/ga/inst/__ga_problem__.m, main/ga/inst/__ga_scores__.m,
+	  main/ga/inst/__ga_set_initial_population__.m,
+	  main/ga/inst/__ga_stop__.m,
+	  main/ga/inst/__gaoptimset_default_options__.m,
+	  main/ga/inst/__hex2bin__.m, main/ga/inst/__num2bin__.m,
+	  main/ga/inst/crossoverscattered.m,
+	  main/ga/inst/crossoversinglepoint.m,
+	  main/ga/inst/fitscalingrank.m, main/ga/inst/gacreationuniform.m,
+	  main/ga/inst/gaoptimset.m, main/ga/inst/mutationgaussian.m,
+	  main/ga/inst/mutationsinglepoint.m,
+	  main/ga/inst/selectionroulette.m,
+	  main/ga/inst/selectionstochunif.m: worse performance; total
+	  restructure; move unmantained files to old_stuff/; add standard
+	  functions
+
+2008-08-12 13:39  michaelschmid
+
+	* main/nnet/tests/MLP/MLP9_1_1.m, main/nnet/tests/MLP/MLP9_2_1.m,
+	  main/nnet/tests/MLP/MLP9_2_2.m, main/nnet/tests/MLP/MLP9_2_2_1.m,
+	  main/nnet/tests/MLP/MLP9_2_3.m, main/nnet/tests/MLP/MLP9_5_3.m,
+	  main/nnet/tests/MLP/MLPScripts.m, main/nnet/tests/MLP/example1,
+	  main/nnet/tests/MLP/example1/mData.txt,
+	  main/nnet/tests/MLP/example1/mlp9_1_1_tansig.dat,
+	  main/nnet/tests/MLP/example1/mlp9_1_1_tansig.dat_orig,
+	  main/nnet/tests/MLP/example1/mlp9_1_1_tansig.m,
+	  main/nnet/tests/MLP/example1/mlp9_2_1_tansig.dat,
+	  main/nnet/tests/MLP/example1/mlp9_2_1_tansig.m,
+	  main/nnet/tests/MLP/example1/mlp9_2_2_1_tansig.dat,
+	  main/nnet/tests/MLP/example1/mlp9_2_2_1_tansig.m,
+	  main/nnet/tests/MLP/example1/mlp9_2_2_tansig.dat,
+	  main/nnet/tests/MLP/example1/mlp9_2_2_tansig.m,
+	  main/nnet/tests/MLP/example1/mlp9_2_3_tansig.dat,
+	  main/nnet/tests/MLP/example1/mlp9_2_3_tansig.m,
+	  main/nnet/tests/MLP/example1/mlp9_5_3_tansig.dat,
+	  main/nnet/tests/MLP/example1/mlp9_5_3_tansig.m,
+	  main/nnet/tests/MLP/example1/orig,
+	  main/nnet/tests/MLP/example1/orig/mData.txt,
+	  main/nnet/tests/MLP/example2,
+	  main/nnet/tests/MLP/example2/mData.txt,
+	  main/nnet/tests/MLP/example2/mlp9_1_1_logsig.dat,
+	  main/nnet/tests/MLP/example2/mlp9_1_1_logsig.m,
+	  main/nnet/tests/MLP/example2/mlp9_2_1_logsig.dat,
+	  main/nnet/tests/MLP/example2/mlp9_2_1_logsig.m,
+	  main/nnet/tests/MLP/example2/mlp9_2_2_1_logsig.m,
+	  main/nnet/tests/MLP/example2/mlp9_2_2_3_logsig.dat,
+	  main/nnet/tests/MLP/example2/mlp9_2_2_logsig.dat,
+	  main/nnet/tests/MLP/example2/mlp9_2_2_logsig.m,
+	  main/nnet/tests/MLP/example2/mlp9_2_3_logsig.dat,
+	  main/nnet/tests/MLP/example2/mlp9_2_3_logsig.m,
+	  main/nnet/tests/MLP/example2/mlp9_5_3_logsig.dat,
+	  main/nnet/tests/MLP/example2/mlp9_5_3_logsig.m,
+	  main/nnet/tests/MLP/example2/orig,
+	  main/nnet/tests/MLP/example2/orig/mData.txt,
+	  main/nnet/tests/MLP/mData.txt,
+	  main/nnet/tests/MLP/mData_original.txt, main/nnet/tests/readme: *
+	  add a lot of tests
+	  * removed old tests
+	  * add a readme file in tests directory
+
+2008-08-11 16:44  slackydeb
+
+	* main/ga/inst/rastriginsfcn.m: fix a previous commit: add
+	  rastriginsfcn function
+
+2008-08-11 16:15  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/fitscalingrank.m: add fitscalingrank (but not using
+	  it); fix a serious bug in elitism in __ga_problem__ function
+	  caused by a previous commit; little improvements in
+	  __ga_problem__ function
+
+2008-08-11 06:20  michaelschmid
+
+	* main/nnet/inst/__newnetwork.m, main/nnet/inst/isposint.m,
+	  main/nnet/inst/min_max.m, main/nnet/inst/newff.m,
+	  main/nnet/inst/purelin.m: * some minor code changes
+	  * add some tests to min_max.m / isposint.m / newff.m / purelin.m
+	  
+	  modified inst/__newnetwork.m
+	  modified inst/isposint.m
+	  modified inst/min_max.m
+	  modified inst/newff.m
+	  modified inst/purelin.m
+
+2008-08-10 17:40  slackydeb
+
+	* main/ga/DESCRIPTION,
+	  main/ga/doc/old_stuff/__ga_sort_ascend_population__.m,
+	  main/ga/inst/__ga_calcola_img_fitnessfcn__.m,
+	  main/ga/inst/__ga_problem__.m, main/ga/inst/__ga_scores__.m,
+	  main/ga/inst/__ga_sort_ascend_population__.m,
+	  main/ga/inst/__ga_stop__.m,
+	  main/ga/inst/__gaoptimset_default_options__.m,
+	  main/ga/inst/gaoptimset.m, main/ga/inst/selectionroulette.m: add
+	  TimeLimit option; clean __ga_stop__ function; clean
+	  __ga_calcola_img_fitnessfcn__ function and rename it to
+	  __ga_scores__; heavily modify __ga_problem__ function; move
+	  __ga_sort_ascend_population__.m script to doc/old_stuff/ folder
+
+2008-08-09 18:57  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_problem__.m: better use of
+	  the state structure
+
+2008-08-08 16:10  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/__ga_set_initial_population__.m,
+	  main/ga/inst/crossoverscattered.m,
+	  main/ga/inst/crossoversinglepoint.m: improve creation functions
+	  and tests
+
+2008-08-08 11:56  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/mutationgaussian.m: improve
+	  mutationscattered
+
+2008-08-07 22:12  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/mutationgaussian.m: improve mutationscattered
+
+2008-08-07 13:21  slackydeb
+
+	* main/ga/DESCRIPTION,
+	  main/ga/inst/__gaoptimset_default_options__.m, main/ga/inst/ga.m,
+	  main/ga/inst/mutationgaussian.m: initial version of
+	  mutationgaussian; switch default MutationFcn from
+	  mutationsinglepoint to mutationgaussian; performance loss because
+	  mutationgaussian is unoptimized
+
+2008-08-07 11:26  slackydeb
+
+	* main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/__gaoptimset_default_options__.m: start using cell
+	  for mutation functions
+
+2008-08-07 08:36  slackydeb
+
+	* main/ga/DESCRIPTION,
+	  main/ga/inst/__ga_concatenated_bitstring2doubles__.m,
+	  main/ga/inst/__ga_doubles2concatenated_bitstring__.m,
+	  main/ga/inst/crossoverscattered.m,
+	  main/ga/inst/crossoversinglepoint.m: clean crossover functions;
+	  bumped version because of new dependency on communications
+	  package, to use the randint function
+
+2008-08-07 07:39  slackydeb
+
+	* main/ga/doc/old_stuff, main/ga/doc/old_stuff/__gaoptimget__.m,
+	  main/ga/inst/__gaoptimget__.m: move gaoptimget function outside
+	  the inst directory because at the moment it is not mantained
+
+2008-08-07 07:34  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/crossoverscattered.m,
+	  main/ga/inst/gacreationuniform.m: changed meaning of
+	  crossoverscattered
+
+2008-08-05 21:14  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/crossoverscattered.m,
+	  main/ga/inst/crossoversinglepoint.m,
+	  main/ga/inst/mutationsinglepoint.m: fix interface in MutationFcn
+	  call and function
+
+2008-08-05 20:48  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/crossoverscattered.m,
+	  main/ga/inst/crossoversinglepoint.m: fix interface in
+	  Crossoverfcn calls and functions
+
+2008-08-05 19:03  slackydeb
+
+	* main/ga/inst/__ga_problem__.m: remove dead code
+
+2008-08-05 18:59  slackydeb
+
+	* main/ga/inst/__ga_set_initial_population__.m,
+	  main/ga/inst/gacreationuniform.m: little fixes
+
+2008-08-05 18:48  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/gacreationuniform.m: clean
+	  gacreationuniform
+
+2008-08-05 14:58  slackydeb
+
+	* main/ga/inst/__ga_set_initial_population__.m: clean the
+	  initialization of the population
+
+2008-08-05 14:17  slackydeb
+
+	* main/ga/inst/__gaoptimset_default_options__.m: add
+	  __gaoptimset_default_options__.m (to fix a previous commit)
+
+2008-08-05 14:08  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/__ga_set_initial_population__.m,
+	  main/ga/inst/gacreationuniform.m, main/ga/inst/gaoptimset.m:
+	  clean the initialization of the population; initial support for
+	  the option InitialPopulation
+
+2008-08-05 12:24  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/ga.m,
+	  main/ga/inst/gaoptimset.m: semplified the code
+
+2008-08-05 10:23  slackydeb
+
+	* main/ga/inst/__gaoptimget__.m, main/ga/inst/gaoptimget.m: renamed
+	  gaoptimget.m to __gaoptimget__.m (to fix a previous commit)
+
+2008-08-03 22:15  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/ga.m,
+	  main/ga/inst/gaoptimset.m: doc of functions ga and gaoptimset
+	  improved; gaoptimset reviewed and splitted in 2 functions
+
+2008-08-03 20:22  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/ga.m,
+	  main/ga/inst/gaoptimset.m: rewrote the ga function to be simpler;
+	  more fields added to the problem structure in the function ga
+
+2008-08-03 19:04  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/ga.m, main/ga/inst/gaoptimset.m: modifying interface
+	  of the ga function; it is no more possible to invoke something as
+	  ga (fitnessfcn, nvars, options)
+
+2008-08-03 16:19  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/__ga_stop__.m, main/ga/inst/gacreationuniform.m:
+	  removed gaoptimget function because it is almost unuseful and too
+	  difficult to mantain; modified all code not to use the removed
+	  function; bump version because of these changes
+
+2008-08-03 15:00  slackydeb
+
+	* main/ga/DESCRIPTION: bumped version
+
+2008-08-03 14:59  slackydeb
+
+	* main/ga/INDEX, main/ga/inst/ga.m: moved the definition of a
+	  common function to test ga algorithms in a script file; modified
+	  ga.m to take advantage of it
+
+2008-07-30 12:38  ecm0
+
+	* main/specfun/inst/laguerre.m: first import
+
+2008-07-30 08:47  adb014
+
+	* main/signal/inst/downsample.m, main/signal/inst/upsample.m: Add 1
+	  to phase in upsample/downsample for matlab compatiblity (For
+	  Jonathan Coker)
+
+2008-07-30 07:59  adb014
+
+	* main/statistics/inst/random.m: Missing semicolon (For Blair
+	  Sutton)
+
+2008-07-30 07:55  adb014
+
+	* main/image/src/__magick_read__.cc: Fix for depth not equal to
+	  1,2,4,8, or 16 with ImageMagick 6.4.0 (For Valmor de Almeida)
+
+2008-07-28 13:56  adb014
+
+	* TODO: Remove points that no longer need addressing from the TODO
+
+2008-07-27 12:41  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/inst/__bin2hex__.m,
+	  main/ga/inst/__hex2bin__.m, main/ga/inst/__num2bin__.m: made ga
+	  tests working again; bug solved observing that a double precision
+	  number is always 64 bit long (not less)
+
+2008-07-27 01:03  adb014
+
+	* extra/graceplot/inst/alternatives/ancestor.m,
+	  extra/graceplot/inst/alternatives/area.m,
+	  extra/graceplot/inst/alternatives/axes.m,
+	  extra/graceplot/inst/alternatives/barh.m,
+	  extra/graceplot/inst/alternatives/box.m,
+	  extra/graceplot/inst/alternatives/caxis.m,
+	  extra/graceplot/inst/alternatives/close.m,
+	  extra/graceplot/inst/alternatives/closereq.m,
+	  extra/graceplot/inst/alternatives/colorbar.m,
+	  extra/graceplot/inst/alternatives/compass.m,
+	  extra/graceplot/inst/alternatives/contour.m,
+	  extra/graceplot/inst/alternatives/contour3.m,
+	  extra/graceplot/inst/alternatives/contourc.m,
+	  extra/graceplot/inst/alternatives/contourf.m,
+	  extra/graceplot/inst/alternatives/cylinder.m,
+	  extra/graceplot/inst/alternatives/drawnow.m,
+	  extra/graceplot/inst/alternatives/ellipsoid.m,
+	  extra/graceplot/inst/alternatives/feather.m,
+	  extra/graceplot/inst/alternatives/fill.m,
+	  extra/graceplot/inst/alternatives/findobj.m,
+	  extra/graceplot/inst/alternatives/fplot.m,
+	  extra/graceplot/inst/alternatives/gca.m,
+	  extra/graceplot/inst/alternatives/gcf.m,
+	  extra/graceplot/inst/alternatives/grid.m,
+	  extra/graceplot/inst/alternatives/hidden.m,
+	  extra/graceplot/inst/alternatives/hist.m,
+	  extra/graceplot/inst/alternatives/isfigure.m,
+	  extra/graceplot/inst/alternatives/line.m,
+	  extra/graceplot/inst/alternatives/loglog.m,
+	  extra/graceplot/inst/alternatives/loglogerr.m,
+	  extra/graceplot/inst/alternatives/mesh.m,
+	  extra/graceplot/inst/alternatives/meshc.m,
+	  extra/graceplot/inst/alternatives/meshgrid.m,
+	  extra/graceplot/inst/alternatives/meshz.m,
+	  extra/graceplot/inst/alternatives/ndgrid.m,
+	  extra/graceplot/inst/alternatives/newplot.m,
+	  extra/graceplot/inst/alternatives/orient.m,
+	  extra/graceplot/inst/alternatives/pareto.m,
+	  extra/graceplot/inst/alternatives/patch.m,
+	  extra/graceplot/inst/alternatives/pcolor.m,
+	  extra/graceplot/inst/alternatives/peaks.m,
+	  extra/graceplot/inst/alternatives/pie.m,
+	  extra/graceplot/inst/alternatives/plot3.m,
+	  extra/graceplot/inst/alternatives/plotyy.m,
+	  extra/graceplot/inst/alternatives/quiver.m,
+	  extra/graceplot/inst/alternatives/quiver3.m,
+	  extra/graceplot/inst/alternatives/replot.m,
+	  extra/graceplot/inst/alternatives/ribbon.m,
+	  extra/graceplot/inst/alternatives/rose.m,
+	  extra/graceplot/inst/alternatives/scatter.m,
+	  extra/graceplot/inst/alternatives/scatter3.m,
+	  extra/graceplot/inst/alternatives/shading.m,
+	  extra/graceplot/inst/alternatives/shg.m,
+	  extra/graceplot/inst/alternatives/slice.m,
+	  extra/graceplot/inst/alternatives/sombrero.m,
+	  extra/graceplot/inst/alternatives/sphere.m,
+	  extra/graceplot/inst/alternatives/spinmap.m,
+	  extra/graceplot/inst/alternatives/stairs.m,
+	  extra/graceplot/inst/alternatives/stem.m,
+	  extra/graceplot/inst/alternatives/stem3.m,
+	  extra/graceplot/inst/alternatives/surf.m,
+	  extra/graceplot/inst/alternatives/surface.m,
+	  extra/graceplot/inst/alternatives/surfc.m,
+	  extra/graceplot/inst/alternatives/surfnorm.m,
+	  extra/graceplot/inst/alternatives/text.m,
+	  extra/graceplot/inst/alternatives/view.m,
+	  extra/graceplot/inst/alternatives/xlim.m,
+	  extra/graceplot/inst/alternatives/ylim.m,
+	  extra/graceplot/inst/alternatives/zlabel.m,
+	  extra/graceplot/inst/alternatives/zlim.m: Add dummy functions to
+	  graceplot for missing functionality (For Raphael Laboissiere)
+
+2008-07-26 21:12  treichl
+
+	* main/odepkg/src/daskr.diff: Marco Caliari: Prevent warnings when
+	  compiling daskr.f with gfortran
+
+2008-07-26 21:03  treichl
+
+	* main/odepkg/inst/odepkg_structure_check.m: Minor changes
+
+2008-07-26 07:03  hauberg
+
+	* main/image/inst/rgbplot.m: rgbplot wasn't functional due to bad
+	  indexing
+
+2008-07-24 14:15  mcreel
+
+	* main/optim/src/__bfgsmin.cc: fix bug that caused lbfgs to fail
+	  occasionally
+
+2008-07-24 14:14  mcreel
+
+	* main/optim/inst/bfgsmin_example.m: minor changes
+
+2008-07-24 11:43  slackydeb
+
+	* main/ga/inst/__bin2num__.m: added tests
+
+2008-07-24 08:52  slackydeb
+
+	* main/ga/inst/__bin2hex__.m: added tests
+
+2008-07-23 21:48  slackydeb
+
+	* main/ga/inst/__bin2hex__.m, main/ga/inst/__bin2num__.m,
+	  main/ga/inst/__ga_problem__.m, main/ga/inst/__hex2bin__.m,
+	  main/ga/inst/__num2bin__.m, main/ga/inst/ga.m,
+	  main/ga/inst/gaoptimget.m, main/ga/inst/gaoptimset.m: cleaning
+	  code
+
+2008-07-23 21:16  treichl
+
+	* admin/MacOSX/solvedeps/octave-3.1.51.diff,
+	  admin/MacOSX/solvedeps/solvedeps-3.1.51.sh,
+	  admin/MacOSX/solvedeps/solvedeps-3.x.x-rc1.sh: Added build script
+	  for building Octave.app 3.1.51
+
+2008-07-23 21:04  treichl
+
+	* main/odepkg/DESCRIPTION: Version number update
+
+2008-07-23 20:59  treichl
+
+	* main/odepkg/inst/odepkg_examples_ode.m: Minor changes
+
+2008-07-23 20:56  treichl
+
+	* main/odepkg/inst/ode23.m, main/odepkg/inst/ode45.m,
+	  main/odepkg/inst/ode54.m, main/odepkg/inst/ode78.m,
+	  main/odepkg/inst/odepkg_examples_ode.m: Minor changes to
+	  ode23.m..ode78.m, added example for solving in backward direction
+	  to odepkg_examples_ode.m
+
+2008-07-23 20:29  treichl
+
+	* main/odepkg/inst/ode23.m, main/odepkg/inst/ode45.m,
+	  main/odepkg/inst/ode54.m, main/odepkg/inst/ode78.m,
+	  main/odepkg/inst/odepkg_structure_check.m,
+	  main/odepkg/inst/odeset.m: ode23.m..ode78.m can now solve in
+	  backward direction, too
+
+2008-07-23 19:30  treichl
+
+	* main/miscellaneous/INDEX, main/miscellaneous/inst/asci.m: Added
+	  asci.m
+
+2008-07-23 13:10  slackydeb
+
+	* main/ga/DESCRIPTION: update version
+
+2008-07-23 13:09  slackydeb
+
+	* main/ga/inst/__bin2hex__.m, main/ga/inst/__bin2num__.m,
+	  main/ga/inst/__ga_calcola_img_fitnessfcn__.m,
+	  main/ga/inst/__ga_concatenated_bitstring2doubles__.m,
+	  main/ga/inst/__ga_doubles2concatenated_bitstring__.m,
+	  main/ga/inst/__ga_problem__.m,
+	  main/ga/inst/__ga_sort_ascend_population__.m,
+	  main/ga/inst/__ga_stop__.m, main/ga/inst/__hex2bin__.m,
+	  main/ga/inst/__num2bin__.m, main/ga/inst/crossoverscattered.m,
+	  main/ga/inst/crossoversinglepoint.m, main/ga/inst/ga.m,
+	  main/ga/inst/gacreationuniform.m, main/ga/inst/gaoptimget.m,
+	  main/ga/inst/gaoptimset.m, main/ga/inst/mutationsinglepoint.m,
+	  main/ga/inst/selectionroulette.m: translation and indentation
+	  fixes
+
+2008-07-22 12:28  highegg
+
+	* main/octgpr/ChangeLog, main/octgpr/src/nldgpr.f,
+	  main/octgpr/src/nllgpr.f: store derivatives in a more
+	  cache-coherent way
+
+2008-07-22 11:21  highegg
+
+	* main/octgpr/ChangeLog, main/octgpr/src/forsubs.h,
+	  main/octgpr/src/gpr_train.cc, main/octgpr/src/infgpr.f,
+	  main/octgpr/src/optdrv.f, main/octgpr/src/pakgpr.f,
+	  main/octgpr/src/setup.c: hoist repeated calculations out of
+	  infgpr
+
+2008-07-18 15:07  goffioul
+
+	* extra/jhandles/PKG_ADD, extra/jhandles/PKG_DEL,
+	  extra/jhandles/inst/__jhandles_go_execute_callback.m: overload
+	  __go_execute_callback__
+
+2008-07-18 09:17  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Add version info to
+	  GtkGLExt/GtkGLExtmm
+
+2008-07-18 06:59  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Fix FTGL compilation
+
+2008-07-18 06:44  highegg
+
+	* extra/nlwing2/README, extra/nlwing2/src/Makefile,
+	  extra/nlwing2/src/vitens.f, extra/nlwing2/src/vitensor.cc: update
+	  GPL2 files to GPL3
+
+2008-07-17 11:59  ecm0
+
+	* main/signal/inst/fracshift.m: first import
+
+2008-07-13 11:35  cdf
+
+	* extra/bim/doc/tutorial.html: tutorial
+
+2008-07-12 11:54  cdf
+
+	* extra/fpl/inst/FPL2vtkoutputdata.m: vtk file support
+
+2008-07-12 11:54  cdf
+
+	* extra/fpl/INDEX, extra/fpl/inst/FPL2dxappenddata.m,
+	  extra/fpl/inst/FPL2dxoutputdata.m,
+	  extra/fpl/inst/FPL2dxoutputtimeseries.m,
+	  extra/fpl/inst/FPL2pdequiver.m, extra/fpl/inst/FPL2pdeshowmesh.m,
+	  extra/fpl/inst/FPL2pdesurf.m, extra/fpl/inst/FPL2ptcquiver.m,
+	  extra/fpl/inst/FPL2ptcshowmesh.m, extra/fpl/inst/FPL2ptcsurf.m,
+	  extra/fpl/inst/FPL2trspdesurf.m, extra/fpl/inst/FPL2trsptcsurf.m:
+	  cleanup
+
+2008-07-11 15:39  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Add compilation of
+	  GtkGLExt and GtkGLExtmm
+
+2008-07-10 14:15  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Fix libf2c decompression
+	  with newer package which does not contain libf2c subdir anymore
+
+2008-07-10 10:10  goffioul
+
+	* admin/Windows/msvc/configure.vc: Change octave installation path
+
+2008-07-09 09:01  goffioul
+
+	* extra/jhandles/src/Makefile: Do not compile __jhandles__.oct (not
+	  needed)
+
+2008-07-08 12:08  hauberg
+
+	* main/image/inst/ordfiltn.m: Put license information in one
+	  comment block, such that the documentation is presented online
+
+2008-07-08 10:34  cdf
+
+	* extra/bim/inst/BIM2Aadvdiff.m: help
+
+2008-07-08 10:27  goffioul
+
+	* admin/Windows/msvc/libs/gnuplot-4.2.3.diff,
+	  admin/Windows/msvc/run_compilation.sh: switch to gnuplot-4.2.3
+
+2008-07-08 07:55  adb014
+
+	* main/signal/DESCRIPTION: Add dependency on the optim package
+
+2008-07-07 18:17  lindnerb
+
+	* admin/Windows/mingw32/tools/cpufeature/build-1.0.0-2.sh: add
+	  srcpkg() for cpufeature
+
+2008-07-07 18:16  lindnerb
+
+	* admin/Windows/mingw32/tools/atlas/build-3.8.1-2.sh,
+	  admin/Windows/mingw32/tools/atlas/makefile.in: add a makefile for
+	  creation of shared libs from static, use in building script
+
+2008-07-06 18:13  lindnerb
+
+	* admin/Windows/mingw32/gcc42_common.sh,
+	  admin/Windows/mingw32/gcc42_create_package.sh,
+	  admin/Windows/mingw32/gcc42_create_src_packages.sh,
+	  admin/Windows/mingw32/octave.nsi: add .nsi script file, add
+	  makensis.exe location, add creation of installer to building
+	  procedure
+
+2008-07-06 18:12  lindnerb
+
+	* admin/Windows/mingw32/tools/build-2.sh: add cpufeature to build
+	  script
+
+2008-07-06 18:10  lindnerb
+
+	* admin/Windows/mingw32/octave/build-3.0.0-2.sh,
+	  admin/Windows/mingw32/octave/octave.ico: add .ico file and add in
+	  installation script
+
+2008-07-05 06:03  hauberg
+
+	* main/image/inst/edge.m: Changed 'len' to 'length' as that is what
+	  the function is called
+
+2008-07-04 18:01  lindnerb
+
+	* admin/Windows/mingw32/blas/blas-2.patch,
+	  admin/Windows/mingw32/blas/build-2.sh: also install static
+	  library, small fix in unpack code
+
+2008-07-04 17:59  lindnerb
+
+	* admin/Windows/mingw32/libgd/build-2.0.35-2.sh: avoid invocation
+	  of aclocal, automake and autoconf in building process
+
+2008-07-04 17:59  lindnerb
+
+	* admin/Windows/mingw32/tools/atlas/build-3.8.1-2.sh: bugfix in
+	  detection of available architecture libraries, move creation of
+	  binary packages here
+
+2008-07-04 17:56  lindnerb
+
+	* admin/Windows/mingw32/tools/cpufeature,
+	  admin/Windows/mingw32/tools/cpufeature/build-1.0.0-2.sh,
+	  admin/Windows/mingw32/tools/cpufeature/cpufeature-1.0.0,
+	  admin/Windows/mingw32/tools/cpufeature/cpufeature-1.0.0/cpufeature.c,
+	  admin/Windows/mingw32/tools/cpufeature/cpufeature-1.0.0/cpuid.S,
+	  admin/Windows/mingw32/tools/cpufeature/cpufeature-1.0.0/makefile.in:
+	  add CPUFEATURE, a tool checking the precence of MMX, SSE, SSE2 or
+	  SSE3 extension.
+	  
+	  Used by the installer to choose the appropriate ATLAS binaries
+
+2008-07-03 11:43  highegg
+
+	* main/octgpr/ChangeLog, main/octgpr/DESCRIPTION,
+	  main/octgpr/src/nllgpr.f: fix invalid parameter declaration
+	  (corrects the nll normalization)
+
+2008-07-02 19:02  treichl
+
+	* admin/MacOSX/solvedeps/solvedeps-3.x.x-rc1.sh: Initially added,
+	  rules for building FREETYPE, FLTK and FTGL included
+
+2008-07-01 13:19  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Fix libjpeg compilation
+
+2008-07-01 06:31  highegg
+
+	* extra/nlwing2/inst/calcwing.m: simplify separation stopping
+	  criterion
+
+2008-06-30 17:51  gnumuthu
+
+	* main/signal/inst/fht.m, main/signal/inst/ifht.m: Fast & Inverse
+	  Hartley transform calculated using the FFT & IFFT
+
+2008-06-30 07:21  schloegl
+
+	* extra/NaN/inst/corrcoef.m: fix problem computing nan_sig; improve
+	  docu; fixed problem with confidence intervals
+
+2008-06-28 17:14  gnumuthu
+
+	* main/strings/inst/base64decode.m: remove looping checks to matrix
+	  oriented checks to speedup base64decoding
+
+2008-06-27 11:05  schloegl
+
+	* extra/tsa/inst/arfit2.m: remove unspecific warning
+
+2008-06-27 10:36  schloegl
+
+	* extra/tsa/inst/histo.m: upgrade license to GPLv3
+
+2008-06-26 18:26  hauberg
+
+	* admin/make_index: Always build the documentation in English
+
+2008-06-26 18:25  hauberg
+
+	* main/odepkg/doc/Makefile: Always build the documentation in
+	  English
+
+2008-06-26 17:22  lindnerb
+
+	* admin/Windows/mingw32/octave/octave-3.0.0-2.patch: fix PKG.M and
+	  COPYFILE.M to allow spaces in the tempory directory (which is the
+	  default on win32) when installing toolbox packages
+
+2008-06-26 17:20  lindnerb
+
+	* admin/Windows/mingw32/tools/atlas/build-3.8.1-2.sh: fix: move
+	  optimized LSAME from libblas to liblapack
+
+2008-06-26 13:58  highegg
+
+	* extra/nlwing2/inst/calcwing.m, extra/nlwing2/inst/makewing.m,
+	  extra/nlwing2/inst/qcalc.m: correct some computations, include
+	  local dihedral angle in integral quantities
+
+2008-06-26 06:45  highegg
+
+	* extra/nlwing2/DESCRIPTION, extra/nlwing2/inst/makewing.m: fix
+	  area and span in makewing
+
+2008-06-24 20:15  treichl
+
+	* main/odepkg/src/odepkg_octsolver_ddaskr.cc,
+	  main/odepkg/src/odepkg_octsolver_mebdfi.cc: Removed mistakes in
+	  preface of copyright title
+
+2008-06-24 19:46  treichl
+
+	* main/odepkg/doc/odepkg.texi: Changed 'BDF solvers' into 'modified
+	  BDF solvers' because of a wish from the 'modified BDF solvers'
+	  author Jeff Cash
+
+2008-06-24 12:19  highegg
+
+	* extra/nlwing2/ChangeLog, extra/nlwing2/inst/calcwing.m,
+	  extra/nlwing2/inst/makewing.m, extra/nlwing2/inst/qcalc.m: revamp
+	  induced drag computation
+
+2008-06-23 18:32  sis-sou
+
+	* main/signal/inst/dwt.m: Initial commit into SVN.
+
+2008-06-23 16:51  highegg
+
+	* extra/nlwing2/INDEX, extra/nlwing2/inst/calcwing.m,
+	  extra/nlwing2/inst/combinepolars.m,
+	  extra/nlwing2/inst/loadpolars.m, extra/nlwing2/inst/polppder.m,
+	  extra/nlwing2/inst/qcalc.m, extra/nlwing2/inst/testit.m:
+	  implement stand-alone polar 'feature interpolation'
+
+2008-06-23 16:25  lindnerb
+
+	* admin/Windows/mingw32/gcc42_common.sh,
+	  admin/Windows/mingw32/gcc42_create_package.sh,
+	  admin/Windows/mingw32/gcc42_create_src_packages.sh: fix building
+	  of octave-mingw32 package, fix building source packages for
+	  release
+
+2008-06-23 10:53  highegg
+
+	* main/io/inst/dlmwrite.m: add delim option to dlmwrite
+
+2008-06-23 10:00  adb014
+
+	* main/miscellaneous/src/waitbar.cc: Protect against null pointer
+	  dereferencing (For Thomas Weber)
+
+2008-06-22 21:00  highegg
+
+	* extra/nlwing2/README, extra/nlwing2/inst/ppder.m: update README,
+	  delete redundant file
+
+2008-06-22 13:40  cdf
+
+	* extra/bim/inst/BIM1Alaplacian.m, extra/bim/inst/BIM1Areaction.m,
+	  extra/bim/inst/BIM1Arhs.m, extra/bim/inst/BIM2Aadvdiff.m,
+	  extra/bim/inst/BIM2Aboundarymass.m,
+	  extra/bim/inst/BIM2Areaction.m, extra/bim/inst/BIM2Arhs.m,
+	  extra/bim/inst/BIM2Cglobalflux.m,
+	  extra/bim/inst/BIM2Cmeshproperties.m,
+	  extra/bim/inst/BIM2Cpdegrad.m,
+	  extra/bim/inst/BIM2Cunknowncoord.m,
+	  extra/bim/inst/BIM2Cunknownsonside.m, extra/bim/inst/BIMUbern.m,
+	  extra/bim/inst/BIMUlogm.m: in sync
+
+2008-06-21 09:02  sis-sou
+
+	* main/signal/inst/wkeep.m: Initial commit into SVN.
+
+2008-06-21 08:17  sis-sou
+
+	* main/signal/inst/wrev.m: Initial commit into SVN.
+
+2008-06-20 22:29  floflooo
+
+	* admin/template.ndev: Added details on the webpage 'Contributing
+	  Code to the Gnu Octave Repository'
+
+2008-06-20 22:00  floflooo
+
+	* main/optim/inst/fminbnd.m:
+
+2008-06-20 21:10  rrogers
+
+	* main/gsl/doc, main/gsl/doc/.cc, main/gsl/doc/.doc,
+	  main/gsl/doc/.dvi, main/gsl/doc/.log, main/gsl/doc/.ps,
+	  main/gsl/doc/.texi, main/gsl/doc/DOSCSTRINGS.old,
+	  main/gsl/doc/RCS, main/gsl/doc/RCS/#mktexi#,v,
+	  main/gsl/doc/RCS/DOSCSTRINGS.old,v, main/gsl/doc/RCS/README,v,
+	  main/gsl/doc/RCS/README~,v, main/gsl/doc/RCS/gsl.cc,v,
+	  main/gsl/doc/RCS/gsl.doc,v, main/gsl/doc/RCS/gsl.dvi,v,
+	  main/gsl/doc/RCS/gsl.info,v, main/gsl/doc/RCS/gsl.log,v,
+	  main/gsl/doc/RCS/gsl.pdf,v, main/gsl/doc/RCS/gsl.ps,v,
+	  main/gsl/doc/RCS/gsl.texi,v, main/gsl/doc/RCS/make.lst,v,
+	  main/gsl/doc/RCS/make_index,v, main/gsl/doc/RCS/mk.tgz,v,
+	  main/gsl/doc/RCS/mk_pdf_dvi,v, main/gsl/doc/RCS/mk_pdf_dvi~,v,
+	  main/gsl/doc/RCS/mkdoc,v, main/gsl/doc/RCS/mktexi,v,
+	  main/gsl/doc/RCS/mktexi_inc,v, main/gsl/doc/RCS/mktexi_inc~,v,
+	  main/gsl/doc/RCS/mktexi~,v, main/gsl/doc/RCS/texinfo.tex,v,
+	  main/gsl/doc/RCS/texinfo.tex.max,v,
+	  main/gsl/doc/RCS/texput.log,v, main/gsl/doc/RCS/txt2latex,v,
+	  main/gsl/doc/README, main/gsl/doc/gsl_sf.cc,
+	  main/gsl/doc/gsl_sf.doc, main/gsl/doc/gsl_sf.dvi,
+	  main/gsl/doc/gsl_sf.log, main/gsl/doc/gsl_sf.pdf,
+	  main/gsl/doc/gsl_sf.ps, main/gsl/doc/gsl_sf.texi,
+	  main/gsl/doc/gsl_sf_a.ps, main/gsl/doc/make.lst,
+	  main/gsl/doc/mk.tgz, main/gsl/doc/mk_pdf_dvi, main/gsl/doc/mkdoc,
+	  main/gsl/doc/mktexi, main/gsl/doc/mktexi_inc,
+	  main/gsl/doc/texinfo.tex, main/gsl/doc/texinfo.tex.max,
+	  main/gsl/doc/txt2latex, main/gsl/inst,
+	  main/gsl/inst/test_ellint.m, main/gsl/inst/test_hyperg.m,
+	  main/gsl/inst/test_hyperg_corr.c, main/gsl/inst/test_sf.c,
+	  main/gsl/svn-commit.tmp:
+
+2008-06-20 21:07  rrogers
+
+	* main/gsl/DESCRIPTION, main/gsl/Makefile,
+	  main/gsl/src/DDD_to_D.cc.template, main/gsl/src/buildgsl_sf.sh,
+	  main/gsl/src/legendre_sphPlm_array.cc:
+
+2008-06-20 08:07  highegg
+
+	* extra/nlwing2/inst/vitensor.oct: delete oct file
+
+2008-06-19 14:11  abarth93
+
+	* main/optiminterp/INDEX: add optiminterpn to INDEX
+
+2008-06-19 14:05  abarth93
+
+	* main/optiminterp/DESCRIPTION: improve description tag
+
+2008-06-19 08:51  abarth93
+
+	* main/optiminterp/DESCRIPTION,
+	  main/optiminterp/inst/example_optiminterp.m: add licence for
+	  example
+
+2008-06-19 08:48  abarth93
+
+	* main/octcdf/DESCRIPTION, main/octcdf/inst/example_netcdf.m,
+	  main/octcdf/inst/example_opendap.m: add licence for examples
+
+2008-06-19 06:16  highegg
+
+	* main/octgpr/ChangeLog, main/octgpr/src/pdist2_mw.cc: add missing
+	  return
+
+2008-06-18 08:33  highegg
+
+	* extra/nlwing2, extra/nlwing2/COPYING, extra/nlwing2/DESCRIPTION,
+	  extra/nlwing2/INDEX, extra/nlwing2/README, extra/nlwing2/TODO,
+	  extra/nlwing2/inst, extra/nlwing2/inst/calcwing.m,
+	  extra/nlwing2/inst/corrector.m, extra/nlwing2/inst/floweq.m,
+	  extra/nlwing2/inst/floweqj.m, extra/nlwing2/inst/liftanalyze.m,
+	  extra/nlwing2/inst/loadpolars.m, extra/nlwing2/inst/loadwing.m,
+	  extra/nlwing2/inst/makeflow.m, extra/nlwing2/inst/makewing.m,
+	  extra/nlwing2/inst/ppder.m, extra/nlwing2/inst/predictor.m,
+	  extra/nlwing2/inst/qcalc.m, extra/nlwing2/inst/setalfa.m,
+	  extra/nlwing2/inst/spwinterp.m, extra/nlwing2/inst/testit.m,
+	  extra/nlwing2/inst/vitensor.oct, extra/nlwing2/src,
+	  extra/nlwing2/src/Makefile, extra/nlwing2/src/vitens.f,
+	  extra/nlwing2/src/vitensor.cc: NLWing2: initial commit
+
+2008-06-15 09:31  lindnerb
+
+	* admin/Windows/mingw32/tools/build-2.sh: add atlas libraries to
+	  tools' build script
+
+2008-06-15 09:30  lindnerb
+
+	* admin/Windows/mingw32/tools/gnuplot/build-4.3.0-2008-03-24.sh:
+	  fix: install to octave-mingw32 package directory
+
+2008-06-15 09:29  lindnerb
+
+	* admin/Windows/mingw32/tools/atlas/build-3.8.1-2.sh: fix
+	  installation directory for atlas libs
+
+2008-06-15 08:47  lindnerb
+
+	* admin/Windows/mingw32/gcc42_common.sh,
+	  admin/Windows/mingw32/gcc42_install_deps.sh: update copying flags
+
+2008-06-15 08:44  lindnerb
+
+	* admin/Windows/mingw32/tools/gnuplot/gnuplot-4.3.0-2008-03-24-2.patch:
+	  remove page offset for postscript ouput
+
+2008-06-15 08:33  lindnerb
+
+	* admin/Windows/mingw32/tools/gnuplot/build-4.3.0-2008-03-24.sh,
+	  admin/Windows/mingw32/tools/gnuplot/gnuplot-4.3.0-2008-03-24-2.patch:
+	  add documentation build, install documentation, demo and contrib
+	  files
+
+2008-06-15 08:25  lindnerb
+
+	* admin/Windows/mingw32/tools/notepad++/build-4.9.1-2.sh,
+	  admin/Windows/mingw32/tools/notepad++/npp-4.9.1-2.patch: add
+	  build script & patch for notepad++ version 4.9.1
+
+2008-06-15 08:24  lindnerb
+
+	* admin/Windows/mingw32/tools/atlas,
+	  admin/Windows/mingw32/tools/atlas/build-3.8.1-2.sh: add atlas
+	  installation script (building requires cygwin)
+
+2008-06-15 08:23  lindnerb
+
+	* admin/Windows/mingw32/expat,
+	  admin/Windows/mingw32/expat/build-2.0.1-2.sh,
+	  admin/Windows/mingw32/expat/expat-2.0.1-2.patch: add expat-2.0.1
+	  patch & build script
+
+2008-06-13 13:02  treichl
+
+	* main/odepkg/src/odepkg_octsolver_ddaskr.cc,
+	  main/odepkg/src/odepkg_octsolver_mebdfdae.cc,
+	  main/odepkg/src/odepkg_octsolver_mebdfi.cc,
+	  main/odepkg/src/odepkg_octsolver_radau.cc,
+	  main/odepkg/src/odepkg_octsolver_radau5.cc,
+	  main/odepkg/src/odepkg_octsolver_rodas.cc,
+	  main/odepkg/src/odepkg_octsolver_seulex.cc: Removed all
+	  occurences of 'non-stiff'
+
+2008-06-13 12:49  treichl
+
+	* main/odepkg/doc/odepkg.texi: Minor changes.
+
+2008-06-12 13:44  goffioul
+
+	* admin/Windows/msvc/octave.nsi.in,
+	  admin/Windows/msvc/run_compilation.sh: Add FTGL compilation
+
+2008-06-12 10:48  goffioul
+
+	* admin/Windows/msvc/octave.nsi.in,
+	  admin/Windows/msvc/run_compilation.sh: Add FFTW (float precision)
+	  compilation
+
+2008-06-12 07:55  abarth93
+
+	* main/optiminterp/inst/optiminterp4.m: fix help text
+
+2008-06-11 14:09  asnelt
+
+	* main/statistics/inst/copulapdf.m: Fixed Clayton pdf for theta <
+	  0.
+
+2008-06-11 13:47  mcreel
+
+	* main/optim/doc/mintoolkit.tex: remove mintoolkit
+
+2008-06-11 13:46  mcreel
+
+	* main/optim/doc/mintoolkit.lyx: remove mintoolkit
+
+2008-06-11 13:46  mcreel
+
+	* main/optim/doc/Makefile: remove mintoolkit
+
+2008-06-11 13:42  mcreel
+
+	* main/econometrics/DESCRIPTION: note dependency on optim
+
+2008-06-10 13:24  highegg
+
+	* main/octgpr/ChangeLog, main/octgpr/src/configure,
+	  main/octgpr/src/configure.in: fix invalid flag in configure.in
+
+2008-06-10 07:16  tkasper
+
+	* extra/ad/Makefile: Include source for documentation
+
+2008-06-10 06:31  schloegl
+
+	* extra/tsa/DESCRIPTION: update license to GPL v3
+
+2008-06-09 10:45  adb014
+
+	* main/fixed/examples/testofdm.m: Use new plotting interface for
+	  fixed point OFDM example
+
+2008-06-07 02:14  asnelt
+
+	* main/statistics/inst/copulacdf.m: Fixed Clayton copula for
+	  negative thetas.
+
+2008-06-06 08:49  highegg
+
+	* main/benchmark/inst/benchmark_dtmm.m,
+	  main/benchmark/inst/benchmark_stmm.m,
+	  main/benchmark/inst/benchutil_stopwatch.m,
+	  main/benchmark/inst/benchutil_tic.m,
+	  main/benchmark/inst/benchutil_toc.m: allow custom tic/toc timing
+	  in benchmark
+
+2008-06-05 09:51  adb014
+
+	* extra/graceplot/inst/grace_octave_path.m,
+	  extra/pdb/inst/plotpdb.m, main/image/inst/imread.m,
+	  nonfree/arpack/inst/svds.m: Replace isstr with ischar everywhere
+
+2008-06-05 09:50  adb014
+
+	* extra/triangular/doc/Makefile: texinfo to pdf build fix
+
+2008-06-05 09:09  abarth93
+
+	* main/optiminterp/DESCRIPTION,
+	  main/optiminterp/inst/optiminterp1.m,
+	  main/optiminterp/inst/optiminterp2.m,
+	  main/optiminterp/inst/optiminterp3.m,
+	  main/optiminterp/inst/optiminterp4.m,
+	  main/optiminterp/inst/optiminterpn.m: all high-level routines
+	  call now optiminterpn
+
+2008-06-05 08:12  schloegl
+
+	* extra/tsa/inst/aar.m, extra/tsa/inst/aarmam.m,
+	  extra/tsa/inst/ac2poly.m, extra/tsa/inst/ac2rc.m,
+	  extra/tsa/inst/acorf.m, extra/tsa/inst/acovf.m,
+	  extra/tsa/inst/adim.m, extra/tsa/inst/amarma.m,
+	  extra/tsa/inst/ar2poly.m, extra/tsa/inst/ar2rc.m,
+	  extra/tsa/inst/ar_spa.m, extra/tsa/inst/arcext.m,
+	  extra/tsa/inst/arfit2.m, extra/tsa/inst/biacovf.m,
+	  extra/tsa/inst/bisdemo.m, extra/tsa/inst/bispec.m,
+	  extra/tsa/inst/content.m, extra/tsa/inst/contents.m,
+	  extra/tsa/inst/detrend.m, extra/tsa/inst/durlev.m,
+	  extra/tsa/inst/flag_implicit_samplerate.m, extra/tsa/inst/flix.m,
+	  extra/tsa/inst/histo2.m, extra/tsa/inst/histo3.m,
+	  extra/tsa/inst/histo4.m, extra/tsa/inst/hup.m,
+	  extra/tsa/inst/invest0.m, extra/tsa/inst/invest1.m,
+	  extra/tsa/inst/invfdemo.m, extra/tsa/inst/lattice.m,
+	  extra/tsa/inst/lpc.m, extra/tsa/inst/mvaar.m,
+	  extra/tsa/inst/mvar.m, extra/tsa/inst/mvfilter.m,
+	  extra/tsa/inst/mvfreqz.m, extra/tsa/inst/pacf.m,
+	  extra/tsa/inst/parcor.m, extra/tsa/inst/poly2ac.m,
+	  extra/tsa/inst/poly2ar.m, extra/tsa/inst/poly2rc.m,
+	  extra/tsa/inst/rc2ac.m, extra/tsa/inst/rc2ar.m,
+	  extra/tsa/inst/rc2poly.m, extra/tsa/inst/rmle.m,
+	  extra/tsa/inst/sbispec.m, extra/tsa/inst/selmo.m,
+	  extra/tsa/inst/selmo2.m, extra/tsa/inst/sinvest1.m,
+	  extra/tsa/inst/tsademo.m, extra/tsa/inst/ucp.m,
+	  extra/tsa/inst/y2res.m: update license of TSA toolbox to GPLv3
+
+2008-06-05 07:05  highegg
+
+	* main/benchmark, main/benchmark/COPYING,
+	  main/benchmark/DESCRIPTION, main/benchmark/INDEX,
+	  main/benchmark/README, main/benchmark/inst,
+	  main/benchmark/inst/benchmark_dtmm.m,
+	  main/benchmark/inst/benchmark_stmm.m,
+	  main/benchmark/inst/benchutil_default_arg.m,
+	  main/benchmark/inst/benchutil_initialize.m,
+	  main/benchmark/inst/benchutil_is_octave.m,
+	  main/benchmark/inst/benchutil_parse_desc.m,
+	  main/benchmark/inst/benchutil_set_result.m,
+	  main/benchmark/inst/benchutil_verbose.m: benchmark: initial
+	  commit
+
+2008-06-04 10:37  goffioul
+
+	* main/signal/src/upfirdn.cc: Add missing return statement + fix
+	  typo
+
+2008-06-04 10:12  adb014
+
+	* main/signal/src/upfirdn.cc: 64bit fixes for upfirdn
+
+2008-06-03 06:51  highegg
+
+	* main/octgpr/ChangeLog, main/octgpr/inst/demo_octgpr.m: improve
+	  demo
+
+2008-05-30 06:07  highegg
+
+	* main/octgpr/ChangeLog, main/octgpr/src/nl0gpr.f,
+	  main/octgpr/src/nllgpr.f: add normalizing constant to likelihoods
+
+2008-05-27 16:23  adb014
+
+	* main/optim/DESCRIPTION, main/vrml/DESCRIPTION: Add GFDL to optim
+	  and vrml DESCRIPTION files (for Thomas Weber)
+
+2008-05-23 14:17  goffioul
+
+	* admin/Windows/msvc/check_cpu_flag.c,
+	  admin/Windows/msvc/run_compilation.sh: Compile SSE1 and SSE2
+	  versions of ATLAS
+
+2008-05-22 15:01  goffioul
+
+	* admin/Windows/msvc/check_cpu_flag.c,
+	  admin/Windows/msvc/octave.nsi.in,
+	  admin/Windows/msvc/run_compilation.sh: Add helper program to
+	  detect SSE3 on Windows XP
+
+2008-05-22 13:16  goffioul
+
+	* admin/Windows/msvc/README.txt.in,
+	  admin/Windows/msvc/atlascpu.ini,
+	  admin/Windows/msvc/octave.nsi.in,
+	  admin/Windows/msvc/run_compilation.sh: Changes for VS2008-based
+	  NSI installer generation
+
+2008-05-22 09:25  goffioul
+
+	* extra/java/src/__java__.cc: Allow to specify different java
+	  version through JAVA_VERSION avriable
+
+2008-05-21 15:26  goffioul
+
+	* admin/Windows/msvc/cc-msvc.cc: Do really tricky thing to escape
+	  special characters in quoted strings
+
+2008-05-21 15:25  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Re-order octave-forge
+	  packages to meet dependency requirements + Fix OctaveDE
+	  executable name
+
+2008-05-21 08:11  goffioul
+
+	* admin/Windows/msvc/octave.nsi.in,
+	  admin/Windows/msvc/run_compilation.sh: - Minor fix to readline
+	  compilation
+	  - Add some missing "&&"
+	  - Use correct libpng filename
+	  - Use defined ImageMagick version
+	  - libgd now depends on fontconfig
+
+2008-05-20 20:23  goffioul
+
+	* main/signal/src/upfirdn.cc: Fix MSVC compilation problem
+
+2008-05-20 20:20  goffioul
+
+	* main/symbolic/src/Makeconf.in, main/symbolic/src/Makefile,
+	  main/symbolic/src/configure.base: Fix compilation problems
+
+2008-05-20 19:57  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Fix compilation of
+	  ImageMagick and gtkmm
+
+2008-05-20 08:38  schloegl
+
+	* extra/tsa/inst/lpc.m: correct comments
+
+2008-05-20 08:19  schloegl
+
+	* extra/tsa/inst/lpc.m: lattice method fails for (some?)
+	  deterministic signals; make Levinson-Durbin the default method
+	  (thanks to Rafael Laboissiere for pointing this out
+
+2008-05-20 04:45  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Fix libcurl compilation
+
+2008-05-19 15:47  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Further support for
+	  MSVC2008
+
+2008-05-19 14:08  mcreel
+
+	* main/optim/inst/bfgsmin.m, main/optim/inst/bfgsmin_example.m:
+	  clean up isstr and is_vector warnings, simplify examples
+
+2008-05-19 05:53  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Additional fixes
+
+2008-05-18 20:27  goffioul
+
+	* admin/Windows/msvc/cc-msvc.cc,
+	  admin/Windows/msvc/run_compilation.sh: Various MSVC2008
+	  compilation fixes
+
+2008-05-18 15:36  wsloand
+
+	* main/statistics/inst/caseread.m,
+	  main/statistics/inst/casewrite.m,
+	  main/statistics/test/caseread.dat: caseread.m, casewrite.m: new
+	  functions
+	  caseread.dat: test file for caseread
+
+2008-05-18 14:48  wsloand
+
+	* main/statistics/inst/__tbl_delim__.m,
+	  main/statistics/inst/tblread.m, main/statistics/inst/tblwrite.m,
+	  main/statistics/test, main/statistics/test/tblread-space.dat,
+	  main/statistics/test/tblread-tab.dat: tblread.m, tblwrite.m: new
+	  functions
+	  __tbl_delim__.m: helper to tblread and tblwrite
+	  test/tblread-tab.dat, test/tblread-space.dat: test files
+	  
+	  These functions do not work at this time due to what appears to
+	  be a bug
+	  in csv2cell, but they should work upon fixing that bug.
+
+2008-05-18 04:43  wsloand
+
+	* main/financial/inst/taxedrr.m: taxedrr: added tests
+
+2008-05-18 04:41  wsloand
+
+	* main/time/inst/busdays.m, main/time/inst/isbusday.m: busdays: new
+	  function
+	  isbusday: use default arguments and untabify
+
+2008-05-16 20:39  treichl
+
+	* main/odepkg/DESCRIPTION: Changed title
+
+2008-05-16 20:38  treichl
+
+	* main/odepkg/DESCRIPTION: Update of version number
+
+2008-05-16 20:35  treichl
+
+	* main/odepkg/inst/ode23.m, main/odepkg/inst/ode23d.m,
+	  main/odepkg/inst/ode45.m, main/odepkg/inst/ode45d.m,
+	  main/odepkg/inst/ode54.m, main/odepkg/inst/ode54d.m,
+	  main/odepkg/inst/ode78.m, main/odepkg/inst/ode78d.m,
+	  main/odepkg/inst/odeexamples.m, main/odepkg/inst/odeget.m,
+	  main/odepkg/inst/odephas2.m, main/odepkg/inst/odephas3.m,
+	  main/odepkg/inst/odepkg.m,
+	  main/odepkg/inst/odepkg_event_handle.m,
+	  main/odepkg/inst/odepkg_examples_dae.m,
+	  main/odepkg/inst/odepkg_examples_dde.m,
+	  main/odepkg/inst/odepkg_examples_ide.m,
+	  main/odepkg/inst/odepkg_examples_ode.m,
+	  main/odepkg/inst/odepkg_structure_check.m,
+	  main/odepkg/inst/odepkg_testsuite_calcmescd.m,
+	  main/odepkg/inst/odepkg_testsuite_calcscd.m,
+	  main/odepkg/inst/odepkg_testsuite_chemakzo.m,
+	  main/odepkg/inst/odepkg_testsuite_hires.m,
+	  main/odepkg/inst/odepkg_testsuite_implakzo.m,
+	  main/odepkg/inst/odepkg_testsuite_implrober.m,
+	  main/odepkg/inst/odepkg_testsuite_impltrans.m,
+	  main/odepkg/inst/odepkg_testsuite_oregonator.m,
+	  main/odepkg/inst/odepkg_testsuite_pollution.m,
+	  main/odepkg/inst/odepkg_testsuite_robertson.m,
+	  main/odepkg/inst/odepkg_testsuite_transistor.m,
+	  main/odepkg/inst/odeplot.m, main/odepkg/inst/odeprint.m,
+	  main/odepkg/inst/odeset.m: Copyright updates.
+
+2008-05-16 20:33  treichl
+
+	* main/odepkg/inst/ode23.m, main/odepkg/inst/ode45.m,
+	  main/odepkg/inst/ode54.m, main/odepkg/inst/ode78.m: Marco
+	  Caliari: change transpose character with ".'" to solve complex
+	  problems, further changes to vdelta calculation
+
+2008-05-16 20:30  treichl
+
+	* main/odepkg/src/odepkg_octsolver_mebdfdae.cc: Copyright updates.
+
+2008-05-16 20:28  treichl
+
+	* main/odepkg/src/odepkg_auxiliary_functions.cc,
+	  main/odepkg/src/odepkg_auxiliary_functions.h,
+	  main/odepkg/src/odepkg_octsolver_radau.cc,
+	  main/odepkg/src/odepkg_octsolver_radau5.cc,
+	  main/odepkg/src/odepkg_octsolver_rodas.cc,
+	  main/odepkg/src/odepkg_octsolver_seulex.cc: Copyright updates.
+
+2008-05-16 14:36  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Switch to ATLAS-3.8.1
+
+2008-05-16 11:09  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Resolve circular
+	  dependency between pkg-config and glib
+
+2008-05-16 04:54  highegg
+
+	* main/octgpr/ChangeLog, main/octgpr/inst/demo_octgpr.m: allow
+	  non-interactive demo
+
+2008-05-15 15:34  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Various compilation fixes
+	  to prepare switch to MSVC9
+
+2008-05-15 12:19  adb014
+
+	* main/sockets/src/sockets.cc: Typo
+
+2008-05-15 12:17  adb014
+
+	* main/sockets/src/sockets.cc: Some arg checking for gethostbyname
+	  and listen
+
+2008-05-15 07:56  goffioul
+
+	* main/image/src/__bilateral__.cc: Fix typo
+
+2008-05-14 16:59  cdf
+
+	* extra/secs2d/inst/secs2d.m: pkg_add and pkg_del
+
+2008-05-14 16:54  cdf
+
+	* extra/secs1d/PKG_ADD, extra/secs1d/PKG_DEL,
+	  extra/secs1d/inst/secs1d.m, extra/secs2d/PKG_ADD,
+	  extra/secs2d/PKG_DEL, extra/secs2d/inst/secs2d.m: pkg_add and
+	  pkg_del
+
+2008-05-14 14:09  goffioul
+
+	* admin/Windows/msvc/octave-hdr.bmp,
+	  admin/Windows/msvc/octave-hdr.xcf, admin/Windows/msvc/octave.bmp,
+	  admin/Windows/msvc/octave.nsi.in, admin/Windows/msvc/octave.xcf:
+	  Add some fancy images in the installer
+
+2008-05-14 14:06  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Clean-up FFMpeg source
+	  tree after compilation
+
+2008-05-14 04:52  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Re-fix FFMpeg compilation
+
+2008-05-13 20:57  adb014
+
+	* main/io/src/textread.cc: Don't ignore blank lines in the header
+	  when counting the number of lines
+
+2008-05-13 14:13  xavier98
+
+	* main/video/src/AVHandler.cc, main/video/src/AVHandler.h,
+	  main/video/src/Makeconf.in, main/video/src/Makefile.in,
+	  main/video/src/configure.base: Patch to bring ffmpeg usage up to
+	  date (from Michael Goffioul).
+
+2008-05-13 10:42  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Some runtime fix for
+	  FFMpeg compilation
+
+2008-05-12 19:40  goffioul
+
+	* admin/Windows/msvc/libs/ffmpeg.diff,
+	  admin/Windows/msvc/make_pack_installer.sh,
+	  admin/Windows/msvc/run_compilation.sh: Add FFMpeg compilation +
+	  support for video package
+
+2008-05-12 08:32  adb014
+
+	* doc/htdocs/NEWS.in, doc/htdocs/index.in: Opps
+
+2008-05-12 08:31  adb014
+
+	* main/INDEX, main/plot/inst/colstyle.m: Remove gget, gpick, gzoom
+	  from INDEX as these functions are obsoleted and removed
+
+2008-05-12 08:21  adb014
+
+	* doc/htdocs/NEWS.in, doc/htdocs/index.in, doc/htdocs/packages.in:
+	  Document the 3.0.1 Windows release
+
+2008-05-09 21:40  xavier98
+
+	* main/database/src/Makeconf.in, main/database/src/Makefile,
+	  main/database/src/configure.base, main/database/src/odbc.i,
+	  main/database/src/odbc_wrap.cpp: Fixes for build under Windows
+	  (from Michael Goffioul).
+
+2008-05-08 23:37  xavier98
+
+	* main/database/src/libpq-fe_filtered.h,
+	  main/database/src/postgres_wrap.cpp: Remove wrappers for some
+	  functions not present in postgres 8.1.4.
+
+2008-05-08 23:16  xavier98
+
+	* main/ann/src/Makeconf.in, main/ann/src/ann/ann2fig/Makefile,
+	  main/ann/src/ann/ann2fig/ann2fig.cpp,
+	  main/ann/src/ann/bindings/Makefile,
+	  main/ann/src/ann/bindings/ann_wrap.cpp,
+	  main/ann/src/ann/include/ANN/ANN.h,
+	  main/ann/src/ann/sample/Makefile, main/ann/src/ann/src/Makefile,
+	  main/ann/src/ann/test/Makefile, main/ann/src/configure.base,
+	  main/database/src/Makefile, main/database/src/mysql_wrap.cpp,
+	  main/database/src/odbc_wrap.cpp,
+	  main/database/src/postgres_wrap.cpp,
+	  main/database/src/sqlite3_wrap.cpp, main/ftp/src/Makefile,
+	  main/ftp/src/ftp_wrap.cpp: Various fixes for ann, ftp, and
+	  database packages (from Michael Goffioul).
+
+2008-05-08 03:13  wsloand
+
+	* main/statistics/inst/nanvar.m: nanvar.m: closed if statement,
+	  changed tabs to spaces
+
+2008-05-07 18:26  hauberg
+
+	* doc/htdocs/ChangeLog, doc/htdocs/NEWS.in, doc/htdocs/index.in:
+	  Updated to reflect the new release of optim
+
+2008-05-07 17:32  hauberg
+
+	* main/optim/DESCRIPTION: updated version number
+
+2008-05-07 13:34  goffioul
+
+	* admin/Windows/msvc/make_pack_installer.sh,
+	  admin/Windows/msvc/run_compilation.sh: Include SQLite3 into
+	  database package
+
+2008-05-07 13:32  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Add SQLite3 compilation
+
+2008-05-07 11:35  goffioul
+
+	* admin/Windows/msvc/make_pack_installer.sh,
+	  admin/Windows/msvc/run_compilation.sh: Include FTPlib in ftp
+	  package
+
+2008-05-07 11:03  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Add FTPlib compilation +
+	  fix octave-forge package version + define AR and RANLIB when
+	  compiling octave
+
+2008-05-07 11:02  goffioul
+
+	* admin/Windows/msvc/octave.nsi.in: Include ar-msvc and ranlib-msvc
+	  into the binary package
+
+2008-05-07 11:01  goffioul
+
+	* admin/Windows/msvc/make_pack_installer.sh: Get package version
+	  from installation dir
+
+2008-05-07 07:39  slackydeb
+
+	* main/ga/DESCRIPTION: Depends on the right version of
+	  miscellaneous.
+
+2008-05-06 17:03  hauberg
+
+	* main/image/src/__bilateral__.cc: 64bit fix
+
+2008-05-06 10:04  goffioul
+
+	* extra/java/src/__java__.cc: Work around JRE loading problems due
+	  to MSVC runtime dependency
+
+2008-05-06 10:02  goffioul
+
+	* extra/java/src/__java__.h: Fix subsref bug
+
+2008-05-05 20:03  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Re-order things and
+	  prepare 3.0.1 release
+
+2008-05-05 20:02  goffioul
+
+	* admin/Windows/msvc/libs/vte-0.16.13.diff: Fix termcap file
+	  location and TERM variable setting
+
+2008-05-05 20:01  goffioul
+
+	* admin/Windows/msvc/octave.nsi.in: fix OctaveDE and playrec
+	  related stuff.
+
+2008-05-04 19:58  xavier98
+
+	* main/ann/src/Makeconf.in, main/ann/src/Makefile,
+	  main/ann/src/README, main/ann/src/ann/Make-config,
+	  main/ann/src/ann/Makefile, main/ann/src/ann/ann2fig/Makefile,
+	  main/ann/src/ann/ann2fig/ann2fig.cpp, main/ann/src/ann/bin,
+	  main/ann/src/ann/bin/.empty_file,
+	  main/ann/src/ann/bindings/Makefile,
+	  main/ann/src/ann/sample/Makefile, main/ann/src/ann/src/Makefile,
+	  main/ann/src/ann/src/kd_dump.cpp, main/ann/src/ann/test/Makefile,
+	  main/ann/src/ann/test/ann_test.cpp, main/ann/src/configure.base:
+	  Use mkoctfile to locate compiler etc.
+	  
+	  Fix PIC flag usage.
+	  
+	  Add missing header decls needed to build on gcc 4.3/Fedora 9
+	  (thanks to Quentin Spencer).
+
+2008-05-02 17:44  tkasper
+
+	* extra/ad/src/ov-grad.cc: Load/save_binary: remove peprocessor
+	  condition for msvc
+
+2008-05-02 10:46  asnelt
+
+	* main/statistics/inst/copulapdf.m: Corrected formula for AMH PDF.
+
+2008-05-01 08:25  goffioul
+
+	* admin/Windows/msvc/fc-msvc.cc: Allow to compile simple fortran
+	  programs with: fc-msvc file.f
+
+2008-05-01 08:24  goffioul
+
+	* main/odepkg/src/odepkg_octsolver_mebdfdae.cc,
+	  main/odepkg/src/odepkg_octsolver_radau.cc,
+	  main/odepkg/src/odepkg_octsolver_radau5.cc,
+	  main/odepkg/src/odepkg_octsolver_rodas.cc,
+	  main/odepkg/src/odepkg_octsolver_seulex.cc: Use
+	  OCTAVE_LOCAL_BUFFER instead of non-constant array size
+
+2008-04-30 18:14  asnelt
+
+	* main/statistics/inst/copulacdf.m,
+	  main/statistics/inst/copulapdf.m: Added the Ali-Mikhail-Haq
+	  copula family.
+
+2008-04-30 15:00  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: Add gtksourceview-1.0
+	  compilation
+
+2008-04-30 14:37  goffioul
+
+	* admin/Windows/msvc/run_compilation.sh: [less]: s/rm
+	  -rf/remove_package/
+
+2008-04-30 14:19  jjstickel
+
+	* main/data-smoothing/inst/ddmat.m,
+	  main/data-smoothing/inst/tkrgdatasmdd.m,
+	  main/data-smoothing/inst/tkrgdatasmddwrap.m,
+	  main/data-smoothing/inst/tkrgdatasmooth.m,
+	  main/data-smoothing/inst/tkrgdatasmscat.m,
+	  main/data-smoothing/inst/tkrgdatasmscatwrap.m,
+	  main/data-smoothing/inst/tkrgscatdatasmooth.m: format help text
+	  as texinfo
+
+2008-04-29 23:53  asnelt
+
+	* main/statistics/INDEX, main/statistics/inst/copulacdf.m,
+	  main/statistics/inst/copulapdf.m: Initial commit.
+
+2008-04-29 21:45  xavier98
+
+	* main/ann/src/ann/bindings/ann_wrap.cpp,
+	  main/database/src/mysql_wrap.cpp,
+	  main/database/src/odbc_wrap.cpp,
+	  main/database/src/postgres_wrap.cpp,
+	  main/database/src/sqlite3_wrap.cpp, main/ftp/src/ftp_wrap.cpp:
+	  Update SWIG wrappers.
+
+2008-04-29 19:44  hauberg
+
+	* ChangeLog: R2008-04-29 release
+
+2008-04-29 19:41  hauberg
+
+	* AUTHORS, ChangeLog: Updated to match release
+
 2008-04-29 18:02  hauberg
 
 	* main/gsl/src/Makeconf: remove autogenerated file from SVN

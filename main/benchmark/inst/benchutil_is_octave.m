@@ -24,7 +24,7 @@
 function answer = benchutil_is_octave ()
   persistent isoctave;
   if (isempty (isoctave))
-    isoctave = ~ isempty (ver ('Octave'));
+    isoctave = exist ('printf') > 0;
   end
   answer = isoctave;
 

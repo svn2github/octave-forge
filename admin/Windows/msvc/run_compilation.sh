@@ -38,7 +38,7 @@ DOATLAS=false
 
 verbose=false
 packages=
-available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:"
+available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:pthreads:inttypes:webkit:"
 octave_version=
 of_version=
 do_nsi=false
@@ -93,6 +93,7 @@ atlver=3.8.1
 ftglver=2.1.2
 gtkglextver=1.2.0
 gtkglextmmver=1.2.0
+pthreadsver=2.8.0
 
 ###################################################################################
 
@@ -579,8 +580,8 @@ if ! $do_nsi && test -z "$todo_packages"; then
     todo_check "$tlibdir/jpeg.lib" libjpeg
     todo_check "$tlibdir/iconv.lib" libiconv
     todo_check "$tlibdir/intl.lib" gettext
-    todo_check "$tbindir/libcairo-2.dll" cairo
     todo_check "$tbindir/libglib-2.0-0.dll" glib
+    todo_check "$tbindir/libcairo-2.dll" cairo
     todo_check "$tbindir/libpango-1.0-0.dll" pango
     todo_check "$tlibdir/xml2.lib" libxml2
     todo_check "$tlibdir/xslt.lib" libxslt
@@ -640,6 +641,11 @@ if ! $do_nsi && test -z "$todo_packages"; then
     todo_check "$tlibdir/ftgl.lib" FTGL
     todo_check "$tlibdir/gtkglext-win32-1.0.lib" gtkglext
     todo_check "$tlibdir/gtkglextmm-win32-1.2-0.lib" gtkglextmm
+    todo_check "$tlibdir/pthread.lib" pthreads
+    todo_check "$tincludedir/stdint.h" inttypes
+    todo_check "$tincludedir/inttypes.h" inttypes
+    todo_check "$tincludedir/stdbool.h" inttypes
+    todo_check "$tlibdir/webkit.lib" webkit
   fi
 else
   packages="$todo_packages"
@@ -714,6 +720,48 @@ EOF
   else
     msvc_ver=`grep "version=" "$tbindir/Microsoft.VC$crtver.CRT/Microsoft.VC$crtver.CRT.manifest" | tail -n 1 | sed -e "s/.*version=\"\([^ ]*\)\".*/\1/"`
     echo "done (using version $msvc_ver)"
+  fi
+fi
+
+############
+# inttypes #
+############
+
+if check_package inttypes; then
+  download_file inttypes.h http://msinttypes.googlecode.com/svn/trunk/inttypes.h
+  download_file stdint.h http://msinttypes.googlecode.com/svn/trunk/stdint.h
+  if test ! -f "$DOWNLOAD_DIR/stdbool.h"; then
+    echo -n "creating stdbool.h..."
+    (cat > "$DOWNLOAD_DIR/stdbool.h" <<EOF
+#ifndef __stdbool_h__
+#define __stdbool_h__ 1
+
+#ifndef __cplusplus
+
+#define __bool_true_false_are_defined 1
+
+#define false 0
+#define true 1
+
+#define bool _Bool
+typedef unsigned char _Bool;
+
+#endif /* __cplusplus */
+
+#endif /* __stdbool_h__ */
+EOF
+)
+    echo "done"
+  fi
+  (cd "$DOWNLOAD_DIR" &&
+    cp inttypes.h "$tincludedir/inttypes.h"
+    cp stdint.h "$tincludedir/stdint.h"
+    cp stdbool.h "$tincludedir/stdbool.h") >&5 2>&1 && end_package
+  if failed_package || test ! -f "$tincludedir/inttypes.h"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
   fi
 fi
 
@@ -890,6 +938,33 @@ if $DOATLAS && check_package ATLAS; then
   remove_package "$DOWNLOAD_DIR/ATLAS"
   atl_dlls=`find "$tbindir" -name "libblas_atl${atlnum}_*.dll"`
   if failed_package || test -z "$atl_dlls"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+###########
+# pthread #
+###########
+
+if check_package pthreads; then
+  ptwver=`echo $pthreadsver | sed -e 's,\.,-,g'`
+  download_file pthreads-w32-$ptwver-release.tar.gz ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-$ptwver-release.tar.gz
+  echo -n "decompressing pthreads... "
+  unpack_file pthreads-w32-$ptwver-release.tar.gz
+  echo "done"
+  echo -n "compiling pthreads... "
+  (cd "$DOWNLOAD_DIR/pthreads-w32-$ptwver-release" &&
+    sed -e 's/pthreadVC\$(DLL_VER)\.stamp/libpthread-$(DLL_VER)\.stamp/g' Makefile > ttt &&
+      mv ttt Makefile &&
+    nmake clean VC-inlined &&
+    cp libpthread-*.dll "$tbindir" &&
+    cp libpthread-*.lib "$tlibdir/pthread.lib" &&
+    cp pthread.h sched.h semaphore.h "$tincludedir") >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/pthreads-w32-$ptwver-release"
+  if failed_package || test ! -f "$tlibdir/pthread.lib"; then
     echo "failed"
     exit -1
   else
@@ -1627,39 +1702,6 @@ if check_package gettext; then
   fi
 fi
 
-#########
-# cairo #
-#########
-
-if check_package cairo; then
-  download_file cairo-$cairover.tar.gz http://cairographics.org/releases/cairo-$cairover.tar.gz
-  echo -n "decompressing cairo... "
-  (cd "$DOWNLOAD_DIR" && if ! tar xfz cairo-$cairover.tar.gz; then tar xf cairo-$cairover.tar.gz; fi)
-  echo "done"
-  echo "compiling cairo... "
-  (cd "$DOWNLOAD_DIR/cairo-$cairover" &&
-    ax_cv_c_float_words_bigendian=no configure_package --enable-shared --disable-static &&
-    post_process_libtool &&
-    sed -e "s|^libcairo_la_LDFLAGS =|libcairo_la_LDFLAGS = -Wl,cairo.res|" \
-        -e "s|^libcairo_la_OBJECTS =|libcairo_la_OBJECTS = cairo.res|" \
-        -e "s|-lgdi32|-luser32 -lgdi32|" src/Makefile > ttt &&
-      mv ttt src/Makefile &&
-    echo "cairo.res: cairo.rc" >> src/Makefile &&
-    echo "	rc -fo \$@ \$<"    >> src/Makefile &&
-    create_module_rc Cairo $cairover libcairo-2.dll "Freedesktop.org <www.freedesktop.org>" \
-      "`grep -e '^Cairo -' README | head -n 1`" "Copyright © `date +%Y` Freedesktop.org" > src/cairo.rc &&
-    make &&
-    make install &&
-  	rm -f $tlibdir_quoted/libcairo*.la) >&5 2>&1 && end_package
-  remove_package "$DOWNLOAD_DIR/cairo-$cairover"
-  if failed_package || test ! -f "$tbindir/libcairo-2.dll"; then
-    echo "failed"
-    exit -1
-  else
-    echo "done"
-  fi
-fi
-
 ########
 # glib #
 ########
@@ -1976,6 +2018,39 @@ if check_package fontconfig; then
     rm -f "$tlibdir/libfontconfig.la") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
   if failed_package || test ! -f "$tlibdir/fontconfig.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+#########
+# cairo #
+#########
+
+if check_package cairo; then
+  download_file cairo-$cairover.tar.gz http://cairographics.org/releases/cairo-$cairover.tar.gz
+  echo -n "decompressing cairo... "
+  (cd "$DOWNLOAD_DIR" && if ! tar xfz cairo-$cairover.tar.gz; then tar xf cairo-$cairover.tar.gz; fi)
+  echo "done"
+  echo "compiling cairo... "
+  (cd "$DOWNLOAD_DIR/cairo-$cairover" &&
+    ax_cv_c_float_words_bigendian=no configure_package --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e "s|^libcairo_la_LDFLAGS =|libcairo_la_LDFLAGS = -Wl,cairo.res|" \
+        -e "s|^libcairo_la_OBJECTS =|libcairo_la_OBJECTS = cairo.res|" \
+        -e "s|-lgdi32|-luser32 -lgdi32|" src/Makefile > ttt &&
+      mv ttt src/Makefile &&
+    echo "cairo.res: cairo.rc" >> src/Makefile &&
+    echo "	rc -fo \$@ \$<"    >> src/Makefile &&
+    create_module_rc Cairo $cairover libcairo-2.dll "Freedesktop.org <www.freedesktop.org>" \
+      "`grep -e '^Cairo -' README | head -n 1`" "Copyright © `date +%Y` Freedesktop.org" > src/cairo.rc &&
+    make &&
+    make install &&
+  	rm -f $tlibdir_quoted/libcairo*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/cairo-$cairover"
+  if failed_package || test ! -f "$tbindir/libcairo-2.dll"; then
     echo "failed"
     exit -1
   else
@@ -3905,6 +3980,33 @@ EOF
     rm -f $tlibdir_quoted/libgtkglextmm*.la $tlibdir_quoted/libgdkglextmm*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/gtkglextmm-$gtkglextmmver"
   if failed_package || test ! -f "$tlibdir/gtkglextmm-win32-1.2-0.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##########
+# webkit #
+##########
+
+if check_package webkit; then
+  download_file webkit-1.0.1.tar.gz http://people.freedesktop.org/~alp/webkit/gtk/webkit-1.0.1.tar.gz
+  download_file "webkit-cairo-canvas-r34625-for-1.0.1.patch" "http://people.freedesktop.org/~alp/webkit/gtk/webkit-cairo-canvas-r34625-for-1.0.1.patch"
+  echo -n "decompressing webkit... "
+  unpack_file webkit-1.0.1.tar.gz
+  cp "$DOWNLOAD_DIR/webkit-cairo-canvas-r34625-for-1.0.1.patch" "$DOWNLOAD_DIR/webkit-1.0.1/webkit-cairo-canvas-r34625-for-1.0.1.patch"
+  echo "done"
+  echo -n "compiling webkit... "
+  (cd "$DOWNLOAD_DIR/webkit-1.0.1" &&
+    patch -p1 < "webkit-cairo-canvas-r34625-for-1.0.1.patch" &&
+    W_CPPFLAGS="$W_CPPFLAGS -D_WINDOWS -D__PRODUCTION__=0 -D_UNICODE -DUNICODE -D__STD_C" \
+      configure_package --build=i686-pc-mingw32 --with-target=win32 &&
+    false
+    ) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/webkit-1.0.1"
+  if failed_package || test ! -f "$tlibdir/webkit.lib"; then
     echo "failed"
     exit -1
   else

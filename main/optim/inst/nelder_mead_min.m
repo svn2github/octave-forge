@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
+## Copyright (C) 2002-2008 Etienne Grossmann.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
@@ -129,11 +129,15 @@ elseif crit == 3, vtol = tol;
 elseif crit, error ("crit is %i. Should be 1,2 or 3.\n");
 end
 
-if is_list (args),		# List of arguments 
-  x = nth (args, narg);
+if iscell (args)
+  x = args{1};
+
+##if is_list (args),		# List of arguments 
+##  x = nth (args, narg);
 else				# Single argument
   x = args;
-  args = list (args); 
+  #### args = list (args); 
+  args = {args};
 end
 ## args
 
@@ -148,9 +152,11 @@ x = x(:);
 				# Initial simplex
 u = isz * eye (N+1,N) + ones(N+1,1)*x';
 
+y = zeros (N+1,1);
 
 for i = 1:N+1,
-  y(i) = leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));
+  ##y(i) = leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));
+  y(i) = feval (f, {args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)}}{:});
 end ;
 nev = N+1;
 
@@ -211,7 +217,8 @@ while nev <= maxev,
       
       u += jumplen * randn (size (u));
       for i = 1:N+1, y(i) = \
-	    leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));
+	    feval (f, {args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)}}{:});
+	## leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));	
       end
       nev += N+1;
       [ymin,imin] = min(y);  [ymax,imax] = max(y);
@@ -243,7 +250,8 @@ while nev <= maxev,
   ## f2 = f1 - (-1)  = 2/N + 1 = (N+2)/N
   xnew = (2*xsum - (N+2)*u(imax,:)) / N;
   ## xnew = (2*xsum - N*u(imax,:)) / N;
-  ynew = leval (f, splice (args, narg, 1, list ( reshape (xnew, R,C))));
+  ## ynew = leval (f, splice (args, narg, 1, list ( reshape (xnew, R,C))));
+  ynew = feval (f, {args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)}}{:});
   nev++;
   
   if ynew <= ymin ,		# Reflection is good
@@ -260,7 +268,8 @@ while nev <= maxev,
     ## f1 = (1-2)/N = -1/N
     ## f2 = f1 - 2  = -1/N - 2 = -(2*N+1)/N
     xnew = ( -xsum + (2*N+1)*u(imax,:) ) / N;
-    ynew = leval (f, splice (args, narg, 1, list ( reshape (xnew, R,C))));
+    ##ynew = leval (f, splice (args, narg, 1, list ( reshape (xnew, R,C))));
+    ynew = feval (f, {args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)}}{:});
     nev++;
       
     if ynew <= ymin ,		# expansion improves
@@ -291,7 +300,8 @@ while nev <= maxev,
     ## f1 = (1-0.5)/N = 0.5/N
     ## f2 = f1 - 0.5  = 0.5*(1 - N)/N
     xnew = 0.5*(xsum + (N-1)*u(imax,:)) / N;
-    ynew = leval (f, splice (args, narg, 1, list (reshape (xnew, R,C))));
+    ##ynew = leval (f, splice (args, narg, 1, list (reshape (xnew, R,C))));
+    ynew = feval (f, {args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)}}{:});
     nev++;
 
     if ynew >= ymax ,		# New point is even worse. Contract whole
@@ -308,7 +318,8 @@ while nev <= maxev,
       else                ii = [1:imin-1,imin+1:N+1]; end
       for i = ii
 	y(i) = \
-	    leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));
+	    ynew = feval (f, {args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)}}{:});
+	    ##leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));
       end
       ##      'contraction'
       tra += 16 ;

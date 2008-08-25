@@ -17,7 +17,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} @var{f} = isposint(@var{n})
-## @code{isposint} True for positive integer values.
+## @code{isposint} returns true for positive integer values.
+## 
+## @example
+##   isposint(1)   # this returns TRUE
+##   isposint(0.5) # this returns FALSE
+##   isposint(0)   # this also return FALSE
+##   isposint(-1)  # this also returns FALSE
+## @end example
 ##
 ## 
 ## @end deftypefn

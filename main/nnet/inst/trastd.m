@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {}@var{pn} = trastd (@var{p},@var{meanp},@var{stdp})
-## @code{trastd} preprcess additional data for neural network simulation.
+## @code{trastd} preprocess additional data for neural network simulation.
 ##
 ## @example
 ##   @code{p}    : test input data

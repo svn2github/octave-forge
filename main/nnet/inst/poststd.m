@@ -41,7 +41,6 @@ function [Pp,Tt] = poststd(Pn,meanp,stdp,Tn,meant,stdt)
   rowZeros = zeros(nRowsII,1);
   findZeros = find(stdp==0);
   rowZeros(findZeros)=1;
-#  equal = rowZeros;
   nequal = !rowZeros;
   if (sum(rowZeros) != 0)
     warning("Some standard deviations are zero. Those inputs won't be transformed.");
@@ -63,12 +62,11 @@ function [Pp,Tt] = poststd(Pn,meanp,stdp,Tn,meant,stdt)
     rowZeros = zeros(nRowsIII,1);
     findZeros = find(stdt==0);
     rowZeros(findZeros)=1;
-    equal = rowZeros;
-    nequal = !equal;
-    if (sum(equal) != 0)
+    nequal = !rowZeros;
+    if (sum(rowZeros) != 0)
       warning("Some standard deviations are zero. Those targets won't be transformed.");
       meantZero = meant.*nequal;
-      stdtZero = stdt.*nequal + 1*equal;
+      stdtZero = stdt.*nequal + 1*rowZeros;
     else
       meantZero = meant;
       stdtZero = stdt;

@@ -16,12 +16,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}[@var{a} = tansig (@var{n})
-## A neural feed-forward network will be trained with @code{trainlm}
+## @deftypefn {Function File} {}@var{a} = tansig (@var{n})
+## @code{tansig} is a non-linear transfer function used to train
+## neural networks.
+## This function can be used in newff(...) to create a new feed forward
+## multi-layer neural network.
 ##
 ## @end deftypefn
 
-## @seealso{purelin}
+## @seealso{purelin, logsig}
 
 ## Author: Michel D. Schmid
 

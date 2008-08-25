@@ -3137,6 +3137,19 @@ if check_package SQLite3; then
 ;}' sqlite3.h > ttt &&
       mv ttt sqlite3.h &&
     make install-libLTLIBRARIES install-includeHEADERS &&
+    (cat > "$tlibdir/pkgconfig/sqlite3.pc" << EOF
+prefix=$tdir_w32_forward
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib
+includedir=\${prefix}/include
+
+Name: sqlite3
+Description: SQLite3 - Lightweight SQL Library
+Version: $sqlite3ver
+Libs: -L\${libdir} -lsqlite3
+Cflags: -I\${includedir}
+EOF
+) &&
     rm -f $tlibdir_quoted/libsqlite3*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/sqlite-$sqlite3ver"
   if failed_package || test ! -f "$tlibdir/sqlite3.lib"; then

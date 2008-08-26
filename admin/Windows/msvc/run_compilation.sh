@@ -1880,7 +1880,9 @@ if check_package ICU; then
     rm -f $tdir_w32_forward/lib/libicu*.dll &&
     for f in find $tdir_w32_forward/lib/libicu*.lib; do
       mv $f $tdir_w32_forward/lib/`basename $f | sed -e 's/^lib//'`
-    done) >&5 2>&1 && end_package
+    done &&
+    sed -e 's,unicode/pwin32\.h,unicode/platform.h,' "$tincludedir/unicode/umachine.h" > ttt &&
+      mv ttt "$tincludedir/unicode/umachine.h") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/icu"
   if failed_package || test ! -f "$tlibdir/icuuc.lib"; then
     echo "failed"
@@ -3992,25 +3994,36 @@ fi
 ##########
 
 if check_package webkit; then
-  download_file webkit-1.0.1.tar.gz http://people.freedesktop.org/~alp/webkit/gtk/webkit-1.0.1.tar.gz
-  download_file "webkit-cairo-canvas-r34625-for-1.0.1.patch" "http://people.freedesktop.org/~alp/webkit/gtk/webkit-cairo-canvas-r34625-for-1.0.1.patch"
-  echo -n "decompressing webkit... "
-  unpack_file webkit-1.0.1.tar.gz
-  cp "$DOWNLOAD_DIR/webkit-cairo-canvas-r34625-for-1.0.1.patch" "$DOWNLOAD_DIR/webkit-1.0.1/webkit-cairo-canvas-r34625-for-1.0.1.patch"
-  echo "done"
-  echo -n "compiling webkit... "
-  (cd "$DOWNLOAD_DIR/webkit-1.0.1" &&
-    patch -p1 < "webkit-cairo-canvas-r34625-for-1.0.1.patch" &&
-    W_CPPFLAGS="$W_CPPFLAGS -D_WINDOWS -D__PRODUCTION__=0 -D_UNICODE -DUNICODE -D__STD_C" \
-      configure_package --build=i686-pc-mingw32 --with-target=win32 &&
-    false
-    ) >&5 2>&1 && end_package
-  remove_package "$DOWNLOAD_DIR/webkit-1.0.1"
-  if failed_package || test ! -f "$tlibdir/webkit.lib"; then
-    echo "failed"
-    exit -1
-  else
+  if perl -e "use 5.8.0;" >& /dev/null; then
+    download_file webkit-1.0.1.tar.gz http://people.freedesktop.org/~alp/webkit/gtk/webkit-1.0.1.tar.gz
+    download_file "webkit-cairo-canvas-r34625-for-1.0.1.patch" "http://people.freedesktop.org/~alp/webkit/gtk/webkit-cairo-canvas-r34625-for-1.0.1.patch"
+    echo -n "decompressing webkit... "
+    unpack_file webkit-1.0.1.tar.gz
+    cp "$DOWNLOAD_DIR/webkit-cairo-canvas-r34625-for-1.0.1.patch" "$DOWNLOAD_DIR/webkit-1.0.1/webkit-cairo-canvas-r34625-for-1.0.1.patch"
+    cp libs/webkit-1.0.1.diff "$DOWNLOAD_DIR/webkit-1.0.1/webkit-1.0.1.diff"
     echo "done"
+    echo -n "compiling webkit... "
+    (cd "$DOWNLOAD_DIR/webkit-1.0.1" &&
+      patch -p1 < "webkit-cairo-canvas-r34625-for-1.0.1.patch" &&
+      patch -p1 < webkit-1.0.1.diff &&
+      ./autogen.sh &&
+      W_CPPFLAGS="$W_CPPFLAGS -D_WINDOWS -D__PRODUCTION__=0 -D_UNICODE -DUNICODE -D__STD_C" \
+        configure_package --build=i686-pc-mingw32 --with-target=win32 &&
+      post_process_libtool &&
+      read -p "WARNING: libtool needs manual post-processing; press <ENTER> when done " &&
+      make libwebkit-1.0.al &&
+      make install-libLTLIBRARIES install-data-am &&
+      rm -f $tlibdir_quoted/libwebkit-*.la) >&5 2>&1 && end_package
+    remove_package "$DOWNLOAD_DIR/webkit-1.0.1"
+    if failed_package || test ! -f "$tlibdir/webkit.lib"; then
+      echo "failed"
+      exit -1
+    else
+      echo "done"
+    fi
+  else
+    echo "ERROR: perl >= 5.8.0 is needed to compile webkit"
+    exit -1
   fi
 fi
 

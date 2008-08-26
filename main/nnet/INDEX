@@ -1,14 +1,25 @@
 nnet >> Neural Networks
-Feed forward multi-layer neural networks
- isposint
- logsig
- min_max
+
+Creation
  newff
- poststd
+
+Data pre- & postprocessing
  prestd
- purelin
- saveMLPStruct
- sim
- tansig
- train
+ poststd
  trastd
+
+Simulation
+ sim
+
+Training
+ train
+
+Transfer functions
+ logsig
+ purelin
+ tansig
+
+Utility
+ isposint
+ min_max
+ saveMLPStruct

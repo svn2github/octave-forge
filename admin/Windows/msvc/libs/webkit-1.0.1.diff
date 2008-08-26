@@ -1,0 +1,528 @@
+diff -ur webkit-1.0.1/GNUmakefile.am webkit-1.0.1-new/GNUmakefile.am
+--- webkit-1.0.1/GNUmakefile.am	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/GNUmakefile.am	Tue Aug 26 11:13:39 2008
+@@ -138,7 +138,7 @@
+ 	$(GLOBALDEPS_CFLAGS) \
+ 	$(UNICODE_CFLAGS)
+ 
+-libJavaScriptCore_la_CPPFLAGS = \
++libJavaScriptCore_la_CPPFLAGS = -DJS_INTERNAL \
+ 	$(global_cppflags) \
+ 	$(javascriptcore_cppflags)
+ 
+@@ -196,7 +196,7 @@
+ 	$(COVERAGE_CFLAGS) \
+ 	$(HILDON_CFLAGS)
+ 
+-libWebCore_la_CPPFLAGS = \
++libWebCore_la_CPPFLAGS = -DJS_INTERNAL \
+ 	$(global_cppflags) \
+ 	$(webcore_cppflags) \
+ 	$(javascriptcore_cppflags) \
+@@ -244,7 +244,7 @@
+ libwebkit_1_0_la_CFLAGS = \
+ 	$(libWebCore_la_CFLAGS)
+ 
+-libwebkit_1_0_la_CPPFLAGS = \
++libwebkit_1_0_la_CPPFLAGS = -DJS_INTERNAL \
+ 	$(libWebCore_la_CPPFLAGS) \
+ 	$(webkitgtk_cppflags)
+ 
+@@ -253,7 +253,7 @@
+ 	-version-info @LIBWEBKITGTK_VERSION@ \
+ 	$(no_undefined)
+ 
+-libwebkit_1_0_la_LIBADD = \
++libwebkit_1_0_la_LIBADD = -lwinmm \
+ 	libWebCore.la
+ 
+ #
+diff -ur webkit-1.0.1/JavaScriptCore/API/JSBase.h webkit-1.0.1-new/JavaScriptCore/API/JSBase.h
+--- webkit-1.0.1/JavaScriptCore/API/JSBase.h	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/JavaScriptCore/API/JSBase.h	Mon Aug 25 13:36:30 2008
+@@ -68,7 +68,11 @@
+      * TODO: Export symbols with JS_EXPORT when using MSVC.
+      * See http://bugs.webkit.org/show_bug.cgi?id=16227
+      */
+-    #define JS_EXPORT
++    #if defined(JS_INTERNAL)
++        #define JS_EXPORT __declspec(dllexport)
++    #else
++        #define JS_EXPORT __declspec(dllimport)
++    #endif
+ #else
+     #define JS_EXPORT
+ #endif
+diff -ur webkit-1.0.1/JavaScriptCore/API/JSNode.c webkit-1.0.1-new/JavaScriptCore/API/JSNode.c
+--- webkit-1.0.1/JavaScriptCore/API/JSNode.c	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/JavaScriptCore/API/JSNode.c	Mon Aug 25 13:36:30 2008
+@@ -106,10 +106,12 @@
+ 
+ static JSValueRef JSNode_getNodeType(JSContextRef context, JSObjectRef object, JSStringRef propertyName, JSValueRef* exception)
+ {
++    Node *node;
++
+     UNUSED_PARAM(propertyName);
+     UNUSED_PARAM(exception);
+ 
+-    Node* node = JSObjectGetPrivate(object);
++    node = JSObjectGetPrivate(object);
+     if (node) {
+         JSStringRef nodeType = JSStringCreateWithUTF8CString(node->nodeType);
+         JSValueRef value = JSValueMakeString(context, nodeType);
+@@ -122,10 +124,12 @@
+ 
+ static JSValueRef JSNode_getChildNodes(JSContextRef context, JSObjectRef thisObject, JSStringRef propertyName, JSValueRef* exception)
+ {
++    Node* node;
++
+     UNUSED_PARAM(propertyName);
+     UNUSED_PARAM(exception);
+ 
+-    Node* node = JSObjectGetPrivate(thisObject);
++    node = JSObjectGetPrivate(thisObject);
+     ASSERT(node);
+     return JSNodeList_new(context, NodeList_new(node));
+ }
+@@ -148,9 +152,11 @@
+ 
+ static void JSNode_initialize(JSContextRef context, JSObjectRef object)
+ {
++    Node* node;
++
+     UNUSED_PARAM(context);
+ 
+-    Node* node = JSObjectGetPrivate(object);
++    node = JSObjectGetPrivate(object);
+     ASSERT(node);
+ 
+     Node_ref(node);
+@@ -166,9 +172,10 @@
+ 
+ JSClassRef JSNode_class(JSContextRef context)
+ {
++    static JSClassRef jsClass;
++
+     UNUSED_PARAM(context);
+ 
+-    static JSClassRef jsClass;
+     if (!jsClass) {
+         JSClassDefinition definition = kJSClassDefinitionEmpty;
+         definition.staticValues = JSNode_staticValues;
+diff -ur webkit-1.0.1/JavaScriptCore/API/JSNodeList.c webkit-1.0.1-new/JavaScriptCore/API/JSNodeList.c
+--- webkit-1.0.1/JavaScriptCore/API/JSNodeList.c	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/JavaScriptCore/API/JSNodeList.c	Mon Aug 25 13:36:30 2008
+@@ -37,8 +37,9 @@
+ 
+     if (argumentCount > 0) {
+         NodeList* nodeList = JSObjectGetPrivate(thisObject);
++	Node* node;
+         ASSERT(nodeList);
+-        Node* node = NodeList_item(nodeList, (unsigned)JSValueToNumber(context, arguments[0], exception));
++        node = NodeList_item(nodeList, (unsigned)JSValueToNumber(context, arguments[0], exception));
+         if (node)
+             return JSNode_new(context, node);
+     }
+@@ -53,10 +54,12 @@
+ 
+ static JSValueRef JSNodeList_length(JSContextRef context, JSObjectRef thisObject, JSStringRef propertyName, JSValueRef* exception)
+ {
++    NodeList* nodeList;
++
+     UNUSED_PARAM(propertyName);
+     UNUSED_PARAM(exception);
+     
+-    NodeList* nodeList = JSObjectGetPrivate(thisObject);
++    nodeList = JSObjectGetPrivate(thisObject);
+     ASSERT(nodeList);
+     return JSValueMakeNumber(context, NodeList_length(nodeList));
+ }
+@@ -69,9 +72,12 @@
+ static JSValueRef JSNodeList_getProperty(JSContextRef context, JSObjectRef thisObject, JSStringRef propertyName, JSValueRef* exception)
+ {
+     NodeList* nodeList = JSObjectGetPrivate(thisObject);
++    double index;
++    double uindex;
++
+     ASSERT(nodeList);
+-    double index = JSValueToNumber(context, JSValueMakeString(context, propertyName), exception);
+-    unsigned uindex = (unsigned)index;
++    index = JSValueToNumber(context, JSValueMakeString(context, propertyName), exception);
++    uindex = (unsigned)index;
+     if (uindex == index) { // false for NaN
+         Node* node = NodeList_item(nodeList, uindex);
+         if (node)
+@@ -83,9 +89,11 @@
+ 
+ static void JSNodeList_initialize(JSContextRef context, JSObjectRef thisObject)
+ {
++    NodeList* nodeList;
++
+     UNUSED_PARAM(context);
+ 
+-    NodeList* nodeList = JSObjectGetPrivate(thisObject);
++    nodeList = JSObjectGetPrivate(thisObject);
+     ASSERT(nodeList);
+     
+     NodeList_ref(nodeList);
+@@ -101,9 +109,10 @@
+ 
+ static JSClassRef JSNodeList_class(JSContextRef context)
+ {
++    static JSClassRef jsClass;
++
+     UNUSED_PARAM(context);
+ 
+-    static JSClassRef jsClass;
+     if (!jsClass) {
+         JSClassDefinition definition = kJSClassDefinitionEmpty;
+         definition.staticValues = JSNodeList_staticValues;
+diff -ur webkit-1.0.1/JavaScriptCore/API/Node.c webkit-1.0.1-new/JavaScriptCore/API/Node.c
+--- webkit-1.0.1/JavaScriptCore/API/Node.c	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/JavaScriptCore/API/Node.c	Mon Aug 25 13:36:30 2008
+@@ -40,8 +40,10 @@
+ 
+ void Node_appendChild(Node* node, Node* child)
+ {
++    NodeLink* nodeLink;
++
+     Node_ref(child);
+-    NodeLink* nodeLink = (NodeLink*)malloc(sizeof(NodeLink));
++    nodeLink = (NodeLink*)malloc(sizeof(NodeLink));
+     nodeLink->node = child;
+     nodeLink->prev = node->childNodesTail;
+     node->childNodesTail = nodeLink;
+diff -ur webkit-1.0.1/JavaScriptCore/API/NodeList.c webkit-1.0.1-new/JavaScriptCore/API/NodeList.c
+--- webkit-1.0.1/JavaScriptCore/API/NodeList.c	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/JavaScriptCore/API/NodeList.c	Mon Aug 25 13:36:30 2008
+@@ -30,9 +30,11 @@
+ 
+ extern NodeList* NodeList_new(Node* parentNode)
+ {
++    NodeList* nodeList;
++
+     Node_ref(parentNode);
+     
+-    NodeList* nodeList = (NodeList*)malloc(sizeof(NodeList));
++    nodeList = (NodeList*)malloc(sizeof(NodeList));
+     nodeList->parentNode = parentNode;
+     nodeList->refCount = 0;
+     return nodeList;
+@@ -54,13 +56,17 @@
+ extern Node* NodeList_item(NodeList* nodeList, unsigned index)
+ {
+     unsigned length = NodeList_length(nodeList);
++    NodeLink* n;
++    unsigned i;
++    unsigned count;
++
+     if (index >= length)
+         return NULL;
+     
+     // Linear search from tail -- good enough for our purposes here
+-    NodeLink* n = nodeList->parentNode->childNodesTail;
+-    unsigned i = 0;
+-    unsigned count = length - 1 - index;
++    n = nodeList->parentNode->childNodesTail;
++    i = 0;
++    count = length - 1 - index;
+     while (i < count) {
+         ++i;
+         n = n->prev;
+diff -ur webkit-1.0.1/JavaScriptCore/API/minidom.c webkit-1.0.1-new/JavaScriptCore/API/minidom.c
+--- webkit-1.0.1/JavaScriptCore/API/minidom.c	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/JavaScriptCore/API/minidom.c	Mon Aug 25 13:36:30 2008
+@@ -39,33 +39,45 @@
+ 
+ int main(int argc, char* argv[])
+ {
++    JSGlobalContextRef context;
++    JSObjectRef globalObject;
++    JSStringRef printIString;
++    JSStringRef node;
++    char* scriptUTF8;
++    JSStringRef script;
++    JSValueRef exception;
++    JSValueRef result;
++
+     const char *scriptPath = "minidom.js";
+     if (argc > 1) {
+         scriptPath = argv[1];
+     }
+     
+-    JSGlobalContextRef context = JSGlobalContextCreate(NULL);
+-    JSObjectRef globalObject = JSContextGetGlobalObject(context);
++    context = JSGlobalContextCreate(NULL);
++    globalObject = JSContextGetGlobalObject(context);
+     
+-    JSStringRef printIString = JSStringCreateWithUTF8CString("print");
++    printIString = JSStringCreateWithUTF8CString("print");
+     JSObjectSetProperty(context, globalObject, printIString, JSObjectMakeFunctionWithCallback(context, printIString, print), kJSPropertyAttributeNone, NULL);
+     JSStringRelease(printIString);
+     
+-    JSStringRef node = JSStringCreateWithUTF8CString("Node");
++    node = JSStringCreateWithUTF8CString("Node");
+     JSObjectSetProperty(context, globalObject, node, JSObjectMakeConstructor(context, JSNode_class(context), JSNode_construct), kJSPropertyAttributeNone, NULL);
+     JSStringRelease(node);
+     
+-    char* scriptUTF8 = createStringWithContentsOfFile(scriptPath);
+-    JSStringRef script = JSStringCreateWithUTF8CString(scriptUTF8);
+-    JSValueRef exception;
+-    JSValueRef result = JSEvaluateScript(context, script, NULL, NULL, 1, &exception);
++    scriptUTF8 = createStringWithContentsOfFile(scriptPath);
++    script = JSStringCreateWithUTF8CString(scriptUTF8);
++    result = JSEvaluateScript(context, script, NULL, NULL, 1, &exception);
+     if (result)
+         printf("PASS: Test script executed successfully.\n");
+     else {
++	JSStringRef exceptionIString;
++	size_t exceptionUTF8Size;
++	char* exceptionUTF8;
++
+         printf("FAIL: Test script threw exception:\n");
+-        JSStringRef exceptionIString = JSValueToStringCopy(context, exception, NULL);
+-        size_t exceptionUTF8Size = JSStringGetMaximumUTF8CStringSize(exceptionIString);
+-        char* exceptionUTF8 = (char*)malloc(exceptionUTF8Size);
++        exceptionIString = JSValueToStringCopy(context, exception, NULL);
++        exceptionUTF8Size = JSStringGetMaximumUTF8CStringSize(exceptionIString);
++        exceptionUTF8 = (char*)malloc(exceptionUTF8Size);
+         JSStringGetUTF8CString(exceptionIString, exceptionUTF8, exceptionUTF8Size);
+         printf("%s\n", exceptionUTF8);
+         free(exceptionUTF8);
+@@ -89,9 +101,10 @@
+     if (argumentCount > 0) {
+         JSStringRef string = JSValueToStringCopy(context, arguments[0], exception);
+         size_t numChars = JSStringGetMaximumUTF8CStringSize(string);
+-        char stringUTF8[numChars];
++        char* stringUTF8 = malloc(sizeof(char)*numChars);
+         JSStringGetUTF8CString(string, stringUTF8, numChars);
+         printf("%s\n", stringUTF8);
++	free(stringUTF8);
+     }
+     
+     return JSValueMakeUndefined(context);
+@@ -100,12 +113,13 @@
+ static char* createStringWithContentsOfFile(const char* fileName)
+ {
+     char* buffer;
++    FILE *f;
+     
+     size_t buffer_size = 0;
+     size_t buffer_capacity = 1024;
+     buffer = (char*)malloc(buffer_capacity);
+     
+-    FILE* f = fopen(fileName, "r");
++    f = fopen(fileName, "r");
+     if (!f) {
+         fprintf(stderr, "Could not open file: %s\n", fileName);
+         return 0;
+diff -ur webkit-1.0.1/JavaScriptCore/GNUmakefile.am webkit-1.0.1-new/JavaScriptCore/GNUmakefile.am
+--- webkit-1.0.1/JavaScriptCore/GNUmakefile.am	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/JavaScriptCore/GNUmakefile.am	Mon Aug 25 16:27:54 2008
+@@ -143,7 +143,7 @@
+ 	$(PERL) $^ > $@
+ 
+ %_object.lut.h: $(CREATE_HASH_TABLE) %_object.cpp
+-	$^ -i > $@
++	$(PERL) $^ -i > $@
+ 
+ JavaScriptCore/pcre/chartables.c: $(srcdir)/JavaScriptCore/pcre/dftables
+ 	$^ $@
+@@ -162,7 +162,7 @@
+ 	JavaScriptCore/API/NodeList.c \
+ 	JavaScriptCore/API/minidom.c
+ 
+-Programs_minidom_CPPFLAGS = \
++Programs_minidom_CPPFLAGS = -DJS_INTERNAL \
+ 	$(global_cppflags) \
+ 	$(javascriptcore_cppflags)
+ 
+@@ -180,13 +180,12 @@
+ 	$(GLOBALDEPS_CFLAGS)
+ 
+ Programs_minidom_LDADD = \
+-	 libJavaScriptCore.la \
+-	 -lstdc++
++	 libJavaScriptCore.la
+ 
+ # jsc
+ Programs_jsc_SOURCES = JavaScriptCore/kjs/Shell.cpp
+ 
+-Programs_jsc_CPPFLAGS = \
++Programs_jsc_CPPFLAGS = -DJS_INTERNAL \
+ 	$(global_cppflags) \
+ 	$(javascriptcore_cppflags)
+ 
+diff -ur webkit-1.0.1/WebCore/GNUmakefile.am webkit-1.0.1-new/WebCore/GNUmakefile.am
+--- webkit-1.0.1/WebCore/GNUmakefile.am	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/WebCore/GNUmakefile.am	Mon Aug 25 16:59:28 2008
+@@ -2188,10 +2188,10 @@
+ 
+ # lookup tables for old-style JavaScript bindings
+ %.lut.h: %.cpp $(CREATE_HASH_TABLE)
+-	$(CREATE_HASH_TABLE) $< > $@
++	$(PERL) $(CREATE_HASH_TABLE) $< > $@
+ 
+ WebCore/bindings/js/%Table.cpp: $(srcdir)/WebCore/bindings/js/JSHTMLInputElementBase.cpp $(CREATE_HASH_TABLE)
+-	$(CREATE_HASH_TABLE) $< > $@
++	$(PERL) $(CREATE_HASH_TABLE) $< > $@
+ 
+ # HTML tag and attribute names
+ DerivedSources/HTMLNames.h: DerivedSources/HTMLNames.cpp;
+diff -ur webkit-1.0.1/WebCore/bindings/scripts/IDLParser.pm webkit-1.0.1-new/WebCore/bindings/scripts/IDLParser.pm
+--- webkit-1.0.1/WebCore/bindings/scripts/IDLParser.pm	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/WebCore/bindings/scripts/IDLParser.pm	Mon Aug 25 16:56:39 2008
+@@ -64,7 +64,7 @@
+     my $preprocessor = shift;
+ 
+     if (!$preprocessor) {
+-        $preprocessor = "/usr/bin/gcc -E -P -x c++";
++        $preprocessor = "gcc -E -P -x c++";
+     }
+ 
+     if (!$defines) {
+diff -ur webkit-1.0.1/WebCore/css/make-css-file-arrays.pl webkit-1.0.1-new/WebCore/css/make-css-file-arrays.pl
+--- webkit-1.0.1/WebCore/css/make-css-file-arrays.pl	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/WebCore/css/make-css-file-arrays.pl	Mon Aug 25 17:05:39 2008
+@@ -28,7 +28,7 @@
+ GetOptions('preprocessor=s' => \$preprocessor);
+ 
+ if (!$preprocessor) {
+-    $preprocessor = "/usr/bin/gcc -E -P -x c++";
++    $preprocessor = "gcc -E -P -x c++";
+ }
+ 
+ my $header = $ARGV[0];
+diff -ur webkit-1.0.1/WebCore/dom/make_names.pl webkit-1.0.1-new/WebCore/dom/make_names.pl
+--- webkit-1.0.1/WebCore/dom/make_names.pl	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/WebCore/dom/make_names.pl	Mon Aug 25 16:20:45 2008
+@@ -42,7 +42,7 @@
+ my %attrs = ();
+ my %parameters = ();
+ my $extraDefines = 0;
+-my $preprocessor = "/usr/bin/gcc -E -P -x c++";
++my $preprocessor = "gcc -E -P -x c++";
+ my %svgCustomMappings = ();
+ my %htmlCustomMappings = ();
+ 
+diff -ur webkit-1.0.1/WebCore/loader/FTPDirectoryDocument.cpp webkit-1.0.1-new/WebCore/loader/FTPDirectoryDocument.cpp
+--- webkit-1.0.1/WebCore/loader/FTPDirectoryDocument.cpp	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/WebCore/loader/FTPDirectoryDocument.cpp	Mon Aug 25 13:36:30 2008
+@@ -235,7 +235,7 @@
+ }
+ 
+ #define localtime_r(x, y) localTimeQt(x, y)
+-#elif PLATFORM(WIN)
++#elif PLATFORM(WIN) || PLATFORM(GTK)
+ #define localtime_r(x, y) localtime_s((y), (x))
+ #endif
+ 
+diff -ur webkit-1.0.1/WebCore/loader/FTPDirectoryParser.cpp webkit-1.0.1-new/WebCore/loader/FTPDirectoryParser.cpp
+--- webkit-1.0.1/WebCore/loader/FTPDirectoryParser.cpp	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/WebCore/loader/FTPDirectoryParser.cpp	Mon Aug 25 13:36:30 2008
+@@ -51,7 +51,7 @@
+ }
+ 
+ #define gmtime_r(x, y) gmtimeQt(x, y)
+-#elif PLATFORM(WIN)
++#elif PLATFORM(WIN) || PLATFORM(GTK)
+ #define gmtime_r(x, y) gmtime_s((y), (x))
+ #endif
+ 
+diff -ur webkit-1.0.1/WebCore/platform/gtk/FileSystemGtk.cpp webkit-1.0.1-new/WebCore/platform/gtk/FileSystemGtk.cpp
+--- webkit-1.0.1/WebCore/platform/gtk/FileSystemGtk.cpp	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/WebCore/platform/gtk/FileSystemGtk.cpp	Mon Aug 25 13:36:30 2008
+@@ -120,7 +120,7 @@
+     if (!filename)
+         return false;
+ 
+-    gint result = g_mkdir_with_parents(filename, S_IRWXU);
++    gint result = g_mkdir_with_parents(filename, 0700);
+     g_free(filename);
+ 
+     return result == 0;
+diff -ur webkit-1.0.1/WebCore/platform/gtk/PasteboardGtk.cpp webkit-1.0.1-new/WebCore/platform/gtk/PasteboardGtk.cpp
+--- webkit-1.0.1/WebCore/platform/gtk/PasteboardGtk.cpp	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/WebCore/platform/gtk/PasteboardGtk.cpp	Mon Aug 25 13:36:30 2008
+@@ -29,6 +29,7 @@
+ #include "RenderImage.h"
+ #include "KURL.h"
+ #include "markup.h"
++#include "Range.h"
+ 
+ #include <gtk/gtk.h>
+ 
+diff -ur webkit-1.0.1/WebCore/plugins/gtk/PluginViewGtk.cpp webkit-1.0.1-new/WebCore/plugins/gtk/PluginViewGtk.cpp
+--- webkit-1.0.1/WebCore/plugins/gtk/PluginViewGtk.cpp	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/WebCore/plugins/gtk/PluginViewGtk.cpp	Mon Aug 25 13:36:30 2008
+@@ -447,7 +447,7 @@
+             *((XID *)w) = GDK_WINDOW_XWINDOW(containingWindow()->window);
+ #endif
+ #ifdef GDK_WINDOWING_WIN32
+-            *((HWND *)w) = GDK_WINDOWING_HWND(containingWindow()->window);
++            *((HWND *)w) = (HWND)GDK_WINDOW_HWND(containingWindow()->window);
+ #endif
+             return NPERR_NO_ERROR;
+         }
+diff -ur webkit-1.0.1/WebKitTools/GtkLauncher/main.c webkit-1.0.1-new/WebKitTools/GtkLauncher/main.c
+--- webkit-1.0.1/WebKitTools/GtkLauncher/main.c	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/WebKitTools/GtkLauncher/main.c	Mon Aug 25 13:36:30 2008
+@@ -47,10 +47,11 @@
+ update_title (GtkWindow* window)
+ {
+     GString* string = g_string_new (main_title);
++    gchar* title;
+     g_string_append (string, " - WebKit Launcher");
+     if (load_progress < 100)
+         g_string_append_printf (string, " (%d%%)", load_progress);
+-    gchar* title = g_string_free (string, FALSE);
++    title = g_string_free (string, FALSE);
+     gtk_window_set_title (window, title);
+     g_free (title);
+ }
+@@ -137,11 +138,11 @@
+ {
+     GtkWidget* toolbar = gtk_toolbar_new ();
+ 
++    GtkToolItem* item;
++
+     gtk_toolbar_set_orientation (GTK_TOOLBAR (toolbar), GTK_ORIENTATION_HORIZONTAL);
+     gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), GTK_TOOLBAR_BOTH_HORIZ);
+ 
+-    GtkToolItem* item;
+-
+     /* the back button */
+     item = gtk_tool_button_new_from_stock (GTK_STOCK_GO_BACK);
+     g_signal_connect (G_OBJECT (item), "clicked", G_CALLBACK (go_back_cb), NULL);
+@@ -182,9 +183,12 @@
+ int
+ main (int argc, char* argv[])
+ {
++    GtkWidget* vbox;
++    gchar* uri;
++
+     gtk_init (&argc, &argv);
+ 
+-    GtkWidget* vbox = gtk_vbox_new (FALSE, 0);
++    vbox = gtk_vbox_new (FALSE, 0);
+     gtk_box_pack_start (GTK_BOX (vbox), create_toolbar (), FALSE, FALSE, 0);
+     gtk_box_pack_start (GTK_BOX (vbox), create_browser (), TRUE, TRUE, 0);
+     gtk_box_pack_start (GTK_BOX (vbox), create_statusbar (), FALSE, FALSE, 0);
+@@ -192,7 +196,7 @@
+     main_window = create_window ();
+     gtk_container_add (GTK_CONTAINER (main_window), vbox);
+ 
+-    gchar* uri = (gchar*) (argc > 1 ? argv[1] : "http://www.google.com/");
++    uri = (gchar*) (argc > 1 ? argv[1] : "http://www.google.com/");
+     webkit_web_view_open (web_view, uri);
+ 
+     gtk_widget_grab_focus (GTK_WIDGET (web_view));
+diff -ur webkit-1.0.1/autogen.sh webkit-1.0.1-new/autogen.sh
+--- webkit-1.0.1/autogen.sh	Mon Jun 16 01:40:06 2008
++++ webkit-1.0.1-new/autogen.sh	Mon Aug 25 13:36:30 2008
+@@ -54,4 +54,4 @@
+ 
+ cd $ORIGDIR || exit 1
+ 
+-$srcdir/configure $AUTOGEN_CONFIGURE_ARGS "$@" || exit $?
++#$srcdir/configure $AUTOGEN_CONFIGURE_ARGS "$@" || exit $?

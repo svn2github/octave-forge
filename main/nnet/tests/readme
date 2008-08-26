@@ -1,8 +1,16 @@
 subdirectory MLP:
 =================
 
+MLPScripts.m:
+-------------
 to run some very basic tests please run
 MLPScripts. This will run all scripts
 inside the subdirectories "example1" and
 "example2".
 If no error occur, the first test is passed :-)
+
+nnetTest.m
+----------
+these tests don't run on the windows version of octave-forge.
+Please use a linux/unix version. I tested it on octave-3.0.0
+compiled on ubuntu.

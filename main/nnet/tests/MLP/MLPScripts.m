@@ -24,7 +24,9 @@
 ## This is only a very basic test which should be run
 ## from this directory
 
+tic
 cd example1;
+
 
 mlp9_1_1_tansig
 mlp9_2_1_tansig
@@ -34,6 +36,8 @@ mlp9_2_3_tansig
 mlp9_5_3_tansig
 
 cd ..
+
+
 cd example2
 
 mlp9_1_1_logsig
@@ -44,5 +48,10 @@ mlp9_2_3_logsig
 mlp9_5_3_logsig
 
 cd ..
+elapsed_time = toc;
+
+disp("Running 12 very basic tests successfully!")
+disp("Secondes needed to running all the tests: ");
+disp(elapsed_time);
 
 

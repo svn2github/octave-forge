@@ -12,19 +12,10 @@
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with octnnettb; see the file COPYING.  If not, write to the Free
-## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-## 02110-1301, USA.
+## along with this program; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## author: msd 
-
-
-## for debug purpose only
-global DEBUG = 0;
-## comments to DEBUG:
-# 0 or not exist means NO DEBUG
-# 1 means, DEBUG, write to command window
-# 2 means, DEBUG, write to files...
 
 
 ## load data
@@ -107,6 +98,7 @@ VV.T = mValliOutput;
 VV.P = trastd(VV.P,cMeanInput,cStdInput);
 
 #[net,tr,out,E] = train(MLPnet,mInputN,mOutput,[],[],VV);
+MLPnet.trainParam.show = NaN;
 [net] = train(MLPnet,mTrainInputN,mTrainOutput,[],[],VV);
 # saveMLPStruct(net,"MLP3testNachTraining.txt");
 # disp("network structure saved, press any key to continue...")
@@ -119,4 +111,3 @@ VV.P = trastd(VV.P,cMeanInput,cStdInput);
 
 #     % simulate net
 [simOut] = sim(net,mTestInputN);%,Pi,Ai,mTestOutput);
-simOut

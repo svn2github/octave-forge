@@ -95,6 +95,7 @@ VV.T = mValliOutput;
 VV.P = trastd(VV.P,cMeanInput,cStdInput);
 
 ## now train the network structure
+MLPnet.trainParam.show = NaN;
 [net] = train(MLPnet,mTrainInputN,mTrainOutput,[],[],VV);
 
 ## make preparations for net test and test MLPnet
@@ -102,4 +103,4 @@ VV.P = trastd(VV.P,cMeanInput,cStdInput);
 [mTestInputN] = trastd(mTestInput,cMeanInput,cStdInput);
 
 # will output the network results
-[simOut] = sim(net,mTestInputN)
+[simOut] = sim(net,mTestInputN);

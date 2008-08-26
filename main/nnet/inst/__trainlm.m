@@ -274,8 +274,10 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
     end
 
     ## check if show is activated
-    if (!isnan(show) & !isposint(show))
-      error(["Show is not " "NaN" " or a positive integer."])
+    if (!isnan(show))
+	  if (!isposint(show))
+        error(["Show is not " "NaN" " or a positive integer."])
+      endif
     endif
 
     ## check at last the time argument, must be zero or a positive real value
@@ -298,15 +300,15 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
 
     ## show progress
     if isfinite(show) & (!rem(iEpochs,show) | length(stop))
-      fprintf(shortStr);
+      fprintf(shortStr);   # outputs the training algorithm
       if isfinite(epochs)
         fprintf(", Epoch %g/%g",iEpochs, epochs);
 	  endif
 	  if isfinite(time)
-        fprintf(", Time %4.1f%%",currentTime/time*100);
+        fprintf(", Time %4.1f%%",currentTime/time*100);   # \todo: Time wird nicht ausgegeben
 	  endif
 	  if isfinite(goal)
-	    fprintf(", %s %g/%g",upper(net.performFcn),perf,goal);
+	    fprintf(", %s %g/%g",upper(net.performFcn),perf,goal); # outputs the performance function
 	  endif
 	  if isfinite(minGrad)
         fprintf(", Gradient %g/%g",normGradX,minGrad);

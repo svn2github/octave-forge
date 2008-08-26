@@ -12,9 +12,8 @@
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; see the file COPYING.  If not, write to the Free
-## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-## 02110-1301, USA.
+## along with this program; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 
 ## author: msd
@@ -92,6 +91,7 @@ VV.T = mValliOutput;
 VV.P = trastd(VV.P,cMeanInput,cStdInput);
 
  %[net,tr,out,E] = train(MLPnet,mInputN,mOutput,[],[],VV);
+ MLPnet.trainParam.show = NaN;
 [net] = train(MLPnet,mTrainInputN,mTrainOutput,[],[],VV);
 # 
 # % % make preparations for net test and test MLPnet
@@ -101,4 +101,3 @@ VV.P = trastd(VV.P,cMeanInput,cStdInput);
   #[simOut,Pf,Af,simE,simPerf] = sim(net,mTestInputN);
 # 
 [simOut] = sim(net,mTestInputN);
-  simOut

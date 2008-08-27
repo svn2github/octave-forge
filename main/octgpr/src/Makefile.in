@@ -26,8 +26,8 @@ CC=@CC@
 CFLAGS=@CFLAGS@ -I.
 LIBS=@LIBS@
 
-OBJS_GPR_TRAIN=dsdacc.o dwdis2.o dtr2tp.o \
-	       nllgpr.o nldgpr.o nl0gpr.o corrf.o stheta.o \
+OBJS_GPR_TRAIN=dsdacc.o dwdis2.o dtr2tp.o corrf.o stheta.o \
+	       nllgpr.o nldgpr.o nl0gpr.o pakgpr.o \
 	       dscrot.o dscsev.o dspmid.o dxnrm2.o \
 	       trstp.o sr1upd.o optdrv.o \
 	       get_corrf.o train.o setup.o 

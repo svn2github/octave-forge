@@ -1,3 +1,7 @@
+2008-08-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* src/Makefile.in: Add pakgpr into the buil process.
+
 2008-07-22  Jaroslav Hajek <highegg@gmail.com>
 
 	* src/nllgpr.f src/nldgpr.f: Modify the derivative info storage	(upper 

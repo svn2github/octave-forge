@@ -2,6 +2,19 @@
 
 
 SRCDIR=@SRCDIR@
+TOPDIR=@TOPDIR@
+REL=@REL@
+GCC_VER=@GCC_VER@
+GCC_SYS=@GCC_SYS@
+
+
+BLASBUILDDIR=.build_mingw32_-${REL}_gcc${GCC_VER}${GCC_SYS}
+CBLASBUILDDIR=.build_mingw32_-${REL}_gcc${GCC_VER}${GCC_SYS}
+LAPACKBUILDDIR=.build_mingw32_3.1.1-${REL}_gcc${GCC_VER}${GCC_SYS}
+
+BLASDEF=${TOPDIR}/../../blas/${BLASBUILDDIR}/blas.def
+CBLASDEF=${TOPDIR}/../../cblas/${CBLASBUILDDIR}/lib/libcblas.def
+LAPACKDEF=${TOPDIR}/../../lapack/${LAPACKBUILDDIR}/lapack.def
 
 SHLIBEXT=.dll
 
@@ -9,38 +22,44 @@ all : shlibs
 
 shlibs : atlas blas cblas lapack
 
-atlas  : atlas.dll libatlas.dll.a libatlas.def
-blas   : blas.dll libblas.dll.a libblas.def
-cblas  : cblas.dll libcblas.dll.a libcblas.def
-lapack : lapack.dll liblapack.dll.a liblapack.def
+atlas  : atlas.dll libatlas.dll.a 
+blas   : libblas.def blas.dll libblas.dll.a 
+cblas  : libcblas.def cblas.dll libcblas.dll.a libcblas.def
+lapack : liblapack.def lapack.dll liblapack.dll.a 
 
+libblas.def : ${BLASDEF}
+libcblas.def : ${CBLASDEF}
+liblapack.def : ${LAPACKDEF}
+
+libblas.def libcblas.def liblapack.def :
+	cp -av $< $@
 
 atlas.dll : $(SRCDIR)/libatlas.a
 	$(F77) $(FLDFLAGS) -shared -o $@ \
 		-Wl,--out-implib=libatlas.dll.a \
 		-Wl,--whole-archive $< \
-		-Wl,--output-def=libatlas.def \
+		-Wl,--output-def=libatlas_out.def \
 		-Wl,--no-whole-archive
 
 blas.dll : $(SRCDIR)/libf77blas.a atlas.dll
-	$(F77) $(FLDFLAGS) -shared -o $@ \
+	$(F77) $(FLDFLAGS) -shared -o $@ libblas.def \
 		-Wl,--out-implib=libblas.dll.a \
 		-Wl,--whole-archive $< \
-		-Wl,--output-def=libblas.def \
+		-Wl,--output-def=libblas_out.def \
 		-Wl,--no-whole-archive libatlas.dll.a
 
 cblas.dll : $(SRCDIR)/libcblas.a atlas.dll
-	$(F77) $(FLDFLAGS) -shared -o $@ \
+	$(F77) $(FLDFLAGS) -shared -o $@ libcblas.def \
 		-Wl,--out-implib=libcblas.dll.a \
 		-Wl,--whole-archive $< \
-		-Wl,--output-def=libcblas.def \
+		-Wl,--output-def=libcblas_out.def \
 		-Wl,--no-whole-archive libatlas.dll.a
 
 lapack.dll : liblapack.a blas.dll cblas.dll atlas.dll
-	$(F77) $(FLDFLAGS) -shared -o $@ \
+	$(F77) $(FLDFLAGS) -shared -o $@ liblapack.def \
 		-Wl,--out-implib=liblapack.dll.a \
 		-Wl,--whole-archive $< \
-		-Wl,--output-def=liblapack.def \
+		-Wl,--output-def=liblapack_out.def \
 		-Wl,--no-whole-archive libblas.dll.a libcblas.dll.a libatlas.dll.a
 
 

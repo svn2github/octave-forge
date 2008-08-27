@@ -61,8 +61,12 @@ build()
       echo "Entering directory $BDIR ..."
       mkdir -pv $BDIR
       sed \
-		-e "s+@SRCDIR@+${TOPDIR}/$a+" \
-		${TOPDIR}/makefile.in > "${BDIR}/makefile" 
+	-e "s+@SRCDIR@+${TOPDIR}/$a+" \
+	-e "s+@TOPDIR@+${TOPDIR}+" \
+	-e "s+@GCC_VER@+${GCC_VER}+" \
+	-e "s+@GCC_SYS@+${GCC_SYS}+" \
+	-e "s+@REL@+${REL}+" \
+	${TOPDIR}/makefile.in > "${BDIR}/makefile" 
       make -C $BDIR shlibs
    done
 }

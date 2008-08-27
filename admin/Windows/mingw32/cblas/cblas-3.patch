@@ -9,8 +9,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' cblas-or
  	@ echo "Make sure you are using correct Makefile.in for your system."
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' cblas-orig/makefile.in cblas/makefile.in
 --- cblas-orig/makefile.in	1970-01-01 01:00:00 +0100
-+++ cblas/makefile.in	2007-12-08 21:49:10 +0100
-@@ -0,0 +1,53 @@
++++ cblas/makefile.in	2008-08-24 14:29:00 +0200
+@@ -0,0 +1,54 @@
 +#
 +# Makefile.LINUX
 +#
@@ -41,6 +41,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' cblas-or
 +CBLIB = $(CBLIBDIR)/libcblas.a
 +CBLIBDLL=$(CBLIBDIR)/cblas.dll
 +IMPLIB=$(CBLIBDIR)/libcblas.dll.a
++DEFFILE=$(CBLIB:.a=.def)
 +
 +#-----------------------------------------------------------------------------
 +# Compilers
@@ -66,7 +67,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' cblas-or
 +RANLIB = echo
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' cblas-orig/src/Makefile cblas/src/Makefile
 --- cblas-orig/src/Makefile	1999-03-15 21:11:03 +0100
-+++ cblas/src/Makefile	2008-07-24 21:20:27 +0200
++++ cblas/src/Makefile	2008-08-24 14:45:36 +0200
 @@ -1,9 +1,12 @@
  # This Makefile compiles the CBLAS routines
  #
@@ -81,14 +82,23 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' cblas-or
  #
  # Erase all object and archive files
  #
-@@ -234,11 +237,16 @@
- all: $(alev)  
+@@ -230,15 +233,24 @@
+ 	$(ARCH) $(ARCHFLAGS) $(CBLIB) $(alev3) 
+ 	$(RANLIB) $(CBLIB)
+ 
++$(DEFFILE):
++	echo EXPORTS>$@
++	sed -ne "s/^\(void\|float\|CBLAS_INDEX\)[ \t]*\(cblas_[^(]\+\)(.*$$/\2/p" $(dlvl)/src/cblas_*.c >> $@
++
+ # All levels and precisions
+-all: $(alev)  
++all: $(alev) $(DEFFILE) 
  	$(ARCH) $(ARCHFLAGS)  $(CBLIB) $(alev) 
  	$(RANLIB) $(CBLIB)
-+	$(F77) -shared $(FLDFLAGS) -o $(CBLIBDLL) \
-+	  -Wl,--allow-multiple-definition \
++	$(F77) -shared $(FLDFLAGS) -o $(CBLIBDLL) $(alev) $(DEFFILE)\
 +	  -Wl,--out-implib=$(IMPLIB) \
-+	  -Wl,--whole-archive $(CBLIB) \
++	  -Wl,--allow-multiple-definition \
++	  -Wl,--output-def=cblas_out.def \
 +	  -Wl,--no-whole-archive $(BLLIB)
  
  

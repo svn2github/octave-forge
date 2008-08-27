@@ -13,7 +13,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' lapack-l
  
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' lapack-lite-3.1.1-orig/Makefile lapack-lite-3.1.1/Makefile
 --- lapack-lite-3.1.1-orig/Makefile	2007-02-26 19:20:49 +0100
-+++ lapack-lite-3.1.1/Makefile	2008-07-24 21:32:30 +0200
++++ lapack-lite-3.1.1/Makefile	2008-08-21 21:49:38 +0200
 @@ -6,7 +6,7 @@
  
  include make.inc
@@ -23,15 +23,16 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' lapack-l
  
  lib: lapacklib tmglib
  #lib: blaslib lapacklib tmglib
-@@ -23,6 +23,14 @@
+@@ -23,6 +23,15 @@
  lapacklib:	lapack_install
  	( cd SRC; $(MAKE) )
  
 +shlib : lapack.dll
 +
 +lapack.dll : lapack.a
-+	$(F77) -shared $(FLDFLAGS) -o lapack.dll \
++	$(F77) -shared $(FLDFLAGS) -o lapack.dll $(LIB_DEFFILE) \
 +	  -Wl,--out-implib=lapack.dll.a \
++	  -Wl,--output-def=lapack_out.def \
 +	  -Wl,--whole-archive lapack.a \
 +	  -Wl,--no-whole-archive -lblas
 +
@@ -40,7 +41,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' lapack-l
  
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' lapack-lite-3.1.1-orig/SRC/Makefile lapack-lite-3.1.1/SRC/Makefile
 --- lapack-lite-3.1.1-orig/SRC/Makefile	2007-02-26 19:20:07 +0100
-+++ lapack-lite-3.1.1/SRC/Makefile	2007-12-08 22:02:55 +0100
++++ lapack-lite-3.1.1/SRC/Makefile	2008-08-21 21:48:01 +0200
 @@ -1,5 +1,9 @@
  include ../make.inc
  
@@ -51,10 +52,33 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' lapack-l
  #######################################################################
  #  This is the makefile to create a library for LAPACK.
  #  The files are organized as follows:
+@@ -293,7 +297,21 @@
+ ALLOBJ=$(SLASRC) $(DLASRC) $(CLASRC) $(ZLASRC) $(SCLAUX) $(DZLAUX)	\
+ 	$(ALLAUX)
+ 
+-../$(LAPACKLIB): $(ALLOBJ)
++FSOURCES = $(wildcard $(SRCDIR)/*.f) $(SRCDIR)/../INSTALL/dlamch.f $(SRCDIR)/../INSTALL/slamch.f
++
++ALLDEF=$(patsubst %.o,%.def, $(ALLOBJ))
++
++%.def : %.f
++	@echo "Making $@"
++	@sed -n \
++	     -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
++	     -e 's/^\(      \|	\)\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$$/\3_/p' < $< > $@
++
++../$(LIB_DEFFILE): $(ALLDEF)
++	echo "EXPORTS" > $@
++	cat $^ >> $@
++
++../$(LAPACKLIB): $(ALLOBJ) ../$(LIB_DEFFILE)
+ 	$(ARCH) $(ARCHFLAGS) $@ $(ALLOBJ)
+ 	$(RANLIB) $@
+ 
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' lapack-lite-3.1.1-orig/make.inc lapack-lite-3.1.1/make.inc
 --- lapack-lite-3.1.1-orig/make.inc	1970-01-01 01:00:00 +0100
-+++ lapack-lite-3.1.1/make.inc	2007-12-08 22:22:44 +0100
-@@ -0,0 +1,59 @@
++++ lapack-lite-3.1.1/make.inc	2008-08-21 21:48:10 +0200
+@@ -0,0 +1,61 @@
 +####################################################################
 +#  LAPACK make include file.                                       #
 +#  LAPACK, Version 3.1.1                                           #
@@ -114,3 +138,5 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.def' lapack-l
 +LINSRCLIB    = linsrc$(PLAT).a
 +
 +SRCTOP = @SRCDIR@
++
++LIB_DEFFILE = $(patsubst %.a,%.def, $(LAPACKLIB))

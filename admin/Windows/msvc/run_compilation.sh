@@ -38,7 +38,7 @@ DOATLAS=false
 
 verbose=false
 packages=
-available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:pthreads:inttypes:webkit:"
+available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:pthreads:inttypes:webkit:xapian:"
 octave_version=
 of_version=
 do_nsi=false
@@ -94,6 +94,7 @@ ftglver=2.1.2
 gtkglextver=1.2.0
 gtkglextmmver=1.2.0
 pthreadsver=2.8.0
+xapianver=1.0.7
 
 ###################################################################################
 
@@ -646,6 +647,7 @@ if ! $do_nsi && test -z "$todo_packages"; then
     todo_check "$tincludedir/inttypes.h" inttypes
     todo_check "$tincludedir/stdbool.h" inttypes
     todo_check "$tlibdir/webkit.lib" webkit
+    todo_check "$tlibdir/xapian.lib" xapian
   fi
 else
   packages="$todo_packages"
@@ -4008,10 +4010,10 @@ if check_package webkit; then
       patch -p1 < webkit-1.0.1.diff &&
       ./autogen.sh &&
       W_CPPFLAGS="$W_CPPFLAGS -D_WINDOWS -D__PRODUCTION__=0 -D_UNICODE -DUNICODE -D__STD_C" \
-        configure_package --build=i686-pc-mingw32 --with-target=win32 &&
+        configure_package --build=i686-pc-mingw32 --with-target=win32 --with-font-backend=pango &&
       post_process_libtool &&
       read -p "WARNING: libtool needs manual post-processing; press <ENTER> when done " &&
-      make libwebkit-1.0.al &&
+      make libwebkit-1.0.la &&
       make install-libLTLIBRARIES install-data-am &&
       rm -f $tlibdir_quoted/libwebkit-*.la) >&5 2>&1 && end_package
     remove_package "$DOWNLOAD_DIR/webkit-1.0.1"
@@ -4024,6 +4026,61 @@ if check_package webkit; then
   else
     echo "ERROR: perl >= 5.8.0 is needed to compile webkit"
     exit -1
+  fi
+fi
+
+##########
+# xapian #
+##########
+
+if check_package xapian; then
+  download_file xapian-core-$xapianver.tar.gz http://oligarchy.co.uk/xapian/$xapianver/xapian-core-$xapianver.tar.gz
+  echo -n "decompression xapian... "
+  unpack_file xapian-core-$xapianver.tar.gz
+  echo "done"
+  echo "compiling xapian... "
+  (cd "$DOWNLOAD_DIR/xapian-core-$xapianver" &&
+    create_module_rc Xapian $xapianver libxapian.dll "http://xapian.org" \
+      "Xapian - Search Engine Library" "Copyright (c) `date +%Y` http://xapian.org" > xapian.rc &&
+    configure_package --disable-static &&
+    post_process_libtool &&
+    sed -e '/^#else/ {i \
+#elif defined (_MSC_VER)\
+# if defined (XAPIAN_INTERNAL)\
+#  define XAPIAN_VISIBILITY_DEFAULT __declspec(dllexport)\
+# else\
+#  define XAPIAN_VISIBILITY_DEFAULT __declspec(dllimport)\
+# endif
+}' \
+        include/xapian/visibility.h > ttt &&
+      mv ttt include/xapian/visibility.h &&
+    sed -e 's/libxapian_la_LDFLAGS =/& -Wl,xapian.res/' \
+        -e '/^libxapian_la_OBJECTS =.*$/ {a \
+\
+$(libxapian_la_OBJECTS): AM_CPPFLAGS += -DXAPIAN_INTERNAL\
+
+}' \
+        Makefile > ttt &&
+      mv ttt Makefile &&
+    sed -e 's/string om_tostring(__int64 .*);/XAPIAN_VISIBILITY_DEFAULT &/' common/utils.h > ttt &&
+      mv ttt common/utils.h &&
+    sed -e 's/class \(.*::Internal\) :/class XAPIAN_VISIBILITY_DEFAULT \1 :/' common/database.h > ttt &&
+      mv ttt common/database.h &&
+    sed -e '/^namespace Xapian {.*$/ {a \
+Weight::Weight (const Weight&) { }
+}' \
+        matcher/weight.cc > ttt &&
+      mv ttt matcher/weight.cc &&
+    rc -fo xapian.res xapian.rc &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libxapian*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/xapian-core-$xapianver"
+  if failed_package || test ! -f "$tlibdir/xapian.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
   fi
 fi
 

@@ -285,6 +285,11 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/gsl.dll      ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgsl.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libgsl.a     ${STATICLIBRARY_PATH}
+
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/cblas/.libs/gslcblas.dll      ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/cblas/.libs/libgslcblas.dll.a    ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/cblas/.libs/libgslcblas.a        ${STATICLIBRARY_PATH}
+   
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/gsl/$a ${INCLUDE_PATH}; done
    
    mkdir -vp ${LICENSE_PATH}/${PKG}
@@ -297,6 +302,10 @@ uninstall()
    ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/gsl.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libgsl.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libgsl.a
+   
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/gslcblas.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libgslcblas.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libgslcblas.a
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
 }
 

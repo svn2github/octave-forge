@@ -86,7 +86,7 @@ libgladever=2.6.2
 gtksourceviewver=2.2.0
 gtksourceview1ver=1.8.5
 gdlver=0.7.11
-vtever=0.16.13
+vtever=0.17.2
 gtkglareaver=1.99.0
 sqlite3ver=3.5.8
 atlver=3.8.1
@@ -3821,11 +3821,16 @@ if check_package VTE; then
   echo "compiling VTE... "
   (cd "$DOWNLOAD_DIR/vte-$vtever" &&
     patch -p1 < vte-$vtever.diff &&
+    create_module_rc VTE $vtever libvte-9.dll "RedHat Inc. <http://www.redhat.com>" \
+      "VTE - Virtual Terminal Emulation for GTK+" "Copyright © 2001-`date +%Y` RedHat Inc." > src/vte.rc &&
     sed -e "s/^IT_PROG_INTLTOOL/#&/" configure.in > ttt &&
       mv ttt configure.in &&
+    sed -e "s/^libvte_la_LDFLAGS =/& -Wl,vte.res/" src/Makefile.in > ttt &&
+      mv ttt src/Makefile.in &&
     autoconf &&
     configure_package --enable-shared --disable-static --disable-python --disable-gnome-pty-helper &&
     post_process_libtool &&
+    (cd src && rc -fo vte.res vte.rc) &&
     make -C src libvte.la &&
     make -C src install-libLTLIBRARIES install-pkgincludeHEADERS &&
     make install-pkgconfigDATA &&

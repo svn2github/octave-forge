@@ -980,9 +980,11 @@ or send an email to
 @itemize
 @item Cecilia Magherini and Luigi Brugnano from the University of Bari created the BIMD solver that is available at @url{http://pitagora.dm.uniba.it/~testset/solvers/bimd.php}. This solver can be used to solve stiff DAE equations. The Fortran77 file has been released under the GNU GPL V2.
 
-@item Francesca Mazzia and Felice Iavernaro from the University of Bari created the BIMD solver that is available at @url{http://pitagora.dm.uniba.it/~testset/solvers/gamd.php} created the GAMD solver. This solver can be used to solve stiff DAE equations. The Fortran90 file has been released under the GNU GPL V2 but for OdePkg a Fortran77 implementation would be preferred.
+@item Francesca Mazzia and Felice Iavernaro from the University of Bari created the GAMD solver that is available at @url{http://pitagora.dm.uniba.it/~testset/solvers/gamd.php}. This solver can be used to solve stiff DAE equations. The Fortran90 file has been released under the GNU GPL V2 but for OdePkg a Fortran77 implementation would be preferred.
 
 @item Ernst Hairer and Gerhard Wanner have been written more solvers that are released under a modified BSD license than have been interfaced by OdePkg. Notable solvers that can be found at @url{http://www.unige.ch/~hairer/software.html} are explicit Runge-Kutta methods @command{dopri5} and @command{dop853} and extrapolation methods @command{odex} and @command{odex2} for solving ODEs, @command{retard} and @command{radar5} for solving DDEs.
+
+@item Jeff Cash has released some more Fortran77 solvers for different kinds of differential equation problems than are interfaced by OdePkg, check his website at @url{http://www.ma.ic.ac.uk/~jcash}.
 @end itemize
 
 @end itemize

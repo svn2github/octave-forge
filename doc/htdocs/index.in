@@ -48,6 +48,14 @@ recent versions of octave-forge. For a full list of changes please
 see the <a href="NEWS.html">News Archive</a> or the
 <a href="ChangeLog">ChangeLog</a>.</p>
 <dl>
+<dt>August, 31, 2008</dt>
+<dd>
+<p>Some of the packages in the latest release had build issues, and has been
+updated. A new bundle was released to reflect this change. The following packages
+were affected: ad, symband, vrml, communications, odepkg, data-smoothing,
+image, and fixed. If you did not have problems installing the previous releases
+of these packages, there is no reason to update.
+</dd>
 <dt>August, 23, 2008</dt>
 <dd>
 <p>Release of Octave-forge tested against Octave 3.0.2. Many packages

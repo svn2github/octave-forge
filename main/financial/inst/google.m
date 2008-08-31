@@ -15,28 +15,28 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{conn} =} yahoo ()
-## @deftypefnx {Function File} {@var{conn} =} yahoo (@var{URL}, @var{ipaddress}, @var{port})
+## @deftypefn {Function File} {@var{conn} =} google ()
+## @deftypefnx {Function File} {@var{conn} =} google (@var{URL}, @var{ipaddress}, @var{port})
 ##
-## Prepare a Yahoo connection for the fetch command to get Yahoo
+## Prepare a Google connection for the fetch command to get Google
 ## historical quote data.
 ##
-## If given, the @var{URL} must be "http://quote.yahoo.com".  The
+## If given, the @var{URL} must be "http://finance.google.com".  The
 ## @var{ipaddress} and @var{port} is the proxy ipaddress and port. These
 ## parameters are currently ignored (with a warning if given).
 ##
-## @seealso{fetch, google}
+## @seealso{fetch, yahoo}
 ## @end deftypefn
 
 ## FIXME: Actually use the proxy info if given.
 
 ## Author: Bill Denney <bill@denney.ws>
-## Created: 17 Aug 2008
+## Created: 31 Aug 2008
 
-function conn = yahoo (url="http://quote.yahoo.com", ipaddr="", port=[])
+function conn = google (url="http://finance.google.com", ipaddr="", port=[])
 
-  if ! strcmpi (url, "http://quote.yahoo.com")
-    error ("url must be 'http://quote.yahoo.com'")
+  if ! strcmpi (url, "http://finance.google.com")
+    error ("url must be 'http://finance.google.com'")
   elseif ! (isempty (ipaddr) && isempty (port))
     warning ("Proxy information is currently ignored")
   endif

@@ -124,30 +124,7 @@ function [data fields] = fetch (conn=[], symbol="", varargin)
   endif
 
   if strcmpi (conn.url, "http://quote.yahoo.com")
-    fromdate = datevec (fromdate);
-    todate = datevec (todate);
-    geturl = sprintf (["http://ichart.finance.yahoo.com/table.csv" ...
-                       "?s=%s&d=%d&e=%d&f=%d&g=%s&a=%d&b=%d&c=%d&" ...
-                       "ignore=.csv"],
-                      symbol, todate(2)-1, todate(3), todate(1),
-                      period,
-                      fromdate(2)-1, fromdate(3), fromdate(1));
-    ## FIXME: This would be more efficient if csv2cell could work on
-    ## strings instead of files.
-    [f, success, msg] = urlwrite (geturl, tmpnam ());
-    if ! success
-      error ("Could not write Yahoo data to tmp file:\n%s", msg)
-    endif
-    d = csv2cell (f);
-    unlink(f);
-    ## Pull off the header
-    fields = d(1,:);
-    d(1,:) = [];
-    dates = strvcat (d(:,1));
-    dates = datenum(str2num(dates(:,1:4)),
-                    str2num(dates(:,6:7)),
-                    str2num(dates(:,9:10)));
-    data = [dates, cell2mat(d(:,2:end))];
+    [data fields] = __fetch_yahoo__ (conn, symbol, fromdate, todate, period);
   else
     error ("Unrecgonized connection type")
   endif

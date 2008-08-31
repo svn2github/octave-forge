@@ -48,15 +48,16 @@
 ## and @var{todate} allow you to specify a date range for the data.
 ##
 ## @var{period} (default: "d") allows you to select the period for the
-## data which can be any of
+## data which can be any of the below as long as they are supported by
+## the associated backend.
 ## @itemize @bullet
 ## @item 'd': daily
 ## @item 'w': weekly
-## @item 'm': monthly
-## @item 'v': dividends
+## @item 'm': monthly (Yahoo only)
+## @item 'v': dividends (Yahoo only)
 ## @end itemize
 ##
-## @seealso{yahoo}
+## @seealso{yahoo, google}
 ## @end deftypefn
 
 ## FIXME: Actually use the proxy info if given in the connection.
@@ -125,6 +126,8 @@ function [data fields] = fetch (conn=[], symbol="", varargin)
 
   if strcmpi (conn.url, "http://quote.yahoo.com")
     [data fields] = __fetch_yahoo__ (conn, symbol, fromdate, todate, period);
+  elseif strcmpi (conn.url, "http://finance.google.com")
+    [data fields] = __fetch_google__ (conn, symbol, fromdate, todate, period);
   else
     error ("Unrecgonized connection type")
   endif

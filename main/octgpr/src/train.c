@@ -40,7 +40,7 @@ int GPR_train (int ndim, int nx, const double *X, const double *y,
   double *dnu = dtheta + ndim;
   double *dtheta0 = dnu + 2;
   double *dnu0 = dtheta0 + ndim;
-  double *VM = malloc ((ndim+1)*(3*ndim+2)/2*DSIZE);
+  double *VM = malloc (1+(ndim+1)*(3*ndim+2)/2*DSIZE);
 
   /* workspace for nllgpr, nldgpr */
   double *R = malloc (nx*(nx+2+nlin)*DSIZE);

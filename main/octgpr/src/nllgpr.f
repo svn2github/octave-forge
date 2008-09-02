@@ -110,7 +110,7 @@ c form M = ones(nx,1)
       end do
       if (nlin > 0) then
 c form M = [ones(nx,1) X']
-        do j = 1,ndim
+        do j = 1,nlin
           call dcopy(nx,X(j,1),ndim,R(1,nx+1+j),1)
         end do
       end if

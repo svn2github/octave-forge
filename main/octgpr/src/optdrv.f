@@ -44,7 +44,7 @@ c               and stored in dnu(2) and dnu0(2).
 c
 c scal (in)     length scales
 c VM (in)       stores the variable metric information. must be sized
-c               at least (ndim+1)*(3*ndim+2)/2
+c               at least 1+(ndim+1)*(3*ndim+2)/2
 c CP (in)       control parameters.
 c                CP(1) minimum noise. at least sqrt(1d1*macheps)
 c                CP(2) noise scale factor. default 1d-4

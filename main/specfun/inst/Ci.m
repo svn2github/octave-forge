@@ -31,6 +31,6 @@ function y = Ci(z)
 	y(z == 0) = -Inf; 
 	y(real(z) == 0 & imag(z) >0)  = 0.5*(expint_Ei(i.*y(real(z) == 0 & imag(z) >0))+expint_Ei(-i.*y(real(z) == 0 & imag(z) >0)))+ i.*pi./2;
 	y(real(z) == 0 & imag(z) <0) = 0.5*(expint_Ei(i.*y(real(z) == 0 & imag(z) <0))+expint_Ei(-i.*y(real(z) == 0 & imag(z) <0)))-i*pi./2;
-	y(real(z)>0) = -0.5.*(expint_E1(i.*y(real(z)>=0) )+expint_E1(-i.*y(real(z)>=0) ));
+	y(real(z)>=0) = -0.5.*(expint_E1(i.*y(real(z)>=0) )+expint_E1(-i.*y(real(z)>=0) ));
 	y(real(z)<0) = -0.5.*(expint_E1(-i.*y(real(z)<0))+expint_E1(i.*y(real(z)<0)))+i*pi;
 endfunction;

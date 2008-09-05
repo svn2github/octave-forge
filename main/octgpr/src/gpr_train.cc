@@ -222,8 +222,8 @@ If @var{nll} is present, it is set to the resulting negative log likelihood.\n\
       struct GPR_train_opts topts;
       // setup initial values 
       topts.maxev = 500;
-      topts.tol= 1e-6;
-      topts.ftol= 1e-4;
+      topts.tol= 1e-5;
+      topts.ftol= 1e-3;
       topts.numin = 5e-8;
       topts.monitor = &progress_monitor;
       topts.instance = 0;
@@ -286,6 +286,9 @@ If @var{nll} is present, it is set to the resulting negative log likelihood.\n\
             {
             case TRAIN_CONV:
               std::cout << "converged." << '\n';
+              break;
+            case TRAIN_PREM:
+              std::cout << "terminated." << '\n';
               break;
             case TRAIN_STOP:
               std::cout << "stopped." << '\n';

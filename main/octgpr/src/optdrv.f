@@ -64,7 +64,8 @@ c IC (in)       integer counters
 c                IC(1) number of evaluations
 c                IC(2) number of downhill steps
 c                IC(3) last flags from trstp
-      integer ndim,info,IC(3)
+c                IC(4) number of successive unsuccessful steps
+      integer ndim,info,IC(5)
       double precision scal(ndim),theta(ndim),nu,nll,
      +                 dtheta(ndim),dnu(*),
      +                 theta0(ndim),nu0,nll0,
@@ -81,6 +82,14 @@ c setup pointers into VM
       iba = iB + ndim*(ndim+1)/2
       iW = iba + ndim+1
       iZ = iW + ndim
+
+      if (info /= 0) then
+c count unsuccessful (non-downhill) steps, exit if too many
+c TODO: it would be best if this check was never used, but it's
+c here just to prevent infinite loops.
+        IC(4) = IC(4) + 1
+        if (IC(4) > 10) goto 97
+      end if
 
       if (info == 1) then
 c go directly to downhill if there is no last step
@@ -121,6 +130,7 @@ c initial guess failed. This is really bad.
 c THE INITIAL ITERATION
       IC(1) = 0
       IC(2) = 0
+      IC(4) = 0
 c supply default values if necessary
       eps = sqrt(dlamch('E'))
       if (CP(1) < eps) CP(1) = eps
@@ -137,9 +147,17 @@ c set VM matrix to a multiple of identity
       nll0 = dlamch('O')
       info = 0
       return
-c SUCCESSFUL TERMINATION
+c SUCCESSFUL TERMINATION (step sizes)
    95 continue
       info = 1
+      return
+c SUCCESSFUL TERMINATION (objective red)      
+   96 continue
+      info = 2
+      return
+c PREMATURE TERMINATION
+   97 continue
+      info = 3      
       return
 
   100 continue
@@ -169,6 +187,7 @@ c compute the relative progress
         end if
 c process downhill step        
         IC(2) = IC(2) + 1
+        IC(4) = 0
         do i = 1,ndim
           theta0(i) = theta(i)
           dtheta0(i) = dtheta(i)
@@ -178,11 +197,7 @@ c process downhill step
         if (l2nu) dnu0(2) = dnu(2)
         nll0 = nll
 c check second termination criterion
-        if (IC(2) > 1 .and. relr < CP(13) .and. CP(13) < CP(12)) then
-c indicate termination          
-          info = 2
-          return
-        end if
+        if (IC(2) > 1 .and. relr < CP(13) .and. CP(13) < CP(12)) goto 96
         CP(13) = relr
       end if
 c overwrite the second derivative with the exact value

@@ -47,7 +47,7 @@ int GPR_train (int ndim, int nx, const double *X, const double *y,
   double *mu = malloc ((nlin+1)*3*DSIZE);
   double CP[20];
   double dummy;
-  int IC[3];
+  int IC[4];
 
   int i, code, info, l2nu = 1;
 
@@ -59,9 +59,8 @@ int GPR_train (int ndim, int nx, const double *X, const double *y,
   /* request default values */
   for (i = 1; i < 20; i++) CP[i] = 0;
   CP[0] = opts->numin;
-  CP[1] = 1e-4; /* noise scale factor */
+  CP[1] = (*nu > 1e-6) ? (*nu < 1e-1) ? *nu : 1e-1 : 1e-6; /* noise scale factor */
   CP[2] = opts->tol;
-  CP[3] = 1e+2; /* initial step size */
   CP[11] = opts->ftol;
   /* setup the reference objective value */
   F77_nl0gpr(&nx,y,nu,&dummy,&CP[10]);
@@ -78,6 +77,11 @@ int GPR_train (int ndim, int nx, const double *X, const double *y,
           code = TRAIN_CONV;
           break;
         } 
+      else if (info == 3)
+        {
+          code = TRAIN_PREM;
+          break;
+        }
       else if (info == -1) 
         {
           code = TRAIN_FAIL;

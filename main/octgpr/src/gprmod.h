@@ -27,6 +27,7 @@
 enum train_cond { 
   TRAIN_CONV, 
   TRAIN_STOP, 
+  TRAIN_PREM,
   TRAIN_FAIL 
 };
 

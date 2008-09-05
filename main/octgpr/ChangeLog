@@ -1,3 +1,10 @@
+2008-09-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* src/gprmod.h: add TRAIN_PREM
+	* src/train.c: map info == 3 to TRAIN_PERM
+	* src/gpr_train.c: indicate "terminated" state.
+	* src/optdrv.f: tweak some values, check for too many unsuccesful steps.
+
 2008-09-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* src/nllgpr.f: Fix invalid upper loop bound.

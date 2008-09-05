@@ -72,19 +72,67 @@ function sol = bvp4c(odefun,bcfun,solinit,options)
   s    = 3;
   h    = diff(t);
 
-  x    = [ u_0(:); zeros(Nvar*Nint*s,1) ];
-  x    = __bvp4c_solve__ (t, x, h, odefun, bcfun, Nvar, Nint, s);
-  u    = reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1);
-   
+  AbsErr  = inf;
+  RelErr  = inf;
+  MaxIt   = 10;
+
+  for iter = 1:MaxIt
+
+    x       = [ u_0(:); zeros(Nvar*Nint*s,1) ];
+    x       = __bvp4c_solve__ (t, x, h, odefun, bcfun, Nvar, Nint, s);
+    u       = reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1);
+
+    for kk=1:Nint+1
+      du(:,kk) = odefun(t(kk), u(:,kk));
+    end
+
+    tm = (t(1:end-1)+t(2:end))/2;
+    um = [];
+    for nn=1:Nvar
+      um(nn,:) = interp1(t,u(nn,:),tm);
+    endfor
+
+    f_est = [];
+    for kk=1:Nint
+      f_est(:,kk) = odefun(tm(kk), um(:,kk));
+    end
+
+    du_est = [];
+    for nn=1:Nvar
+      du_est(nn,:) = diff(u(nn,:))./h;
+    end
+
+    err    = max(abs(f_est-du_est)); semilogy(tm,err), pause(.1)
+    AbsErr = max(err)
+    RelErr = AbsErr/norm(du,inf)
+
+    if    ( (AbsErr >= AbsTol) && (RelErr >= RelTol) )
+      ref_int = find( (err >= AbsTol) & (err./max(max(abs(du))) >= RelTol) );
+      
+      t_add = tm(ref_int);
+      t_old = t;
+      
+      t     = sort([t, t_add]);
+      h     = diff(t);
+      
+      u_0 = [];
+      for nn=1:Nvar
+	u_0(nn,:) = interp1(t_old, u(nn,:), t);
+      end
+      Nvar = rows(u_0);
+      Nint = length(t)-1
+    else
+      break
+    end
+
+  endfor
   
   ## K    = reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s);
   ## K1 = reshape(K(:,:,1), Nvar, Nint);
   ## K2 = reshape(K(:,:,2), Nvar, Nint);
   ## K3 = reshape(K(:,:,3), Nvar, Nint);
 
-  for kk=1:Nint+1
-    du(:,kk) = odefun(t(kk), u(:,kk));
-  end
+ 
 
   sol.x = t;
   sol.y = u;
@@ -155,17 +203,33 @@ endfunction
 %!demo
 %! a            = 0; 
 %! b            = 4;
-%! Nint         = 50;
+%! Nint         = 3;
 %! Nvar         = 2;
 %! s            = 3;
 %! t            = linspace(a,b,Nint+1);
 %! h            = diff(t);
 %! u_1          = ones(1, Nint+1); 
-%! u_1(1,Nint+1)= -2;
-%! u_1(1,1)     =  0;
 %! u_2          = 0*u_1;
 %! u_0          = [u_1 ; u_2];
 %! f            = @(t,u) [ u(2); -abs(u(1)) ];
 %! g            = @(ya,yb) [ya(1); yb(1)+2];
 %! solinit.x = t; solinit.y=u_0;
-%! bvp4c(f,g,solinit);
+%! sol = bvp4c(f,g,solinit);
+%! plot (sol.x,sol.y,'x-')
+
+%!demo
+%! a            = 0; 
+%! b            = 4;
+%! Nint         = 2;
+%! Nvar         = 2;
+%! s            = 3;
+%! t            = linspace(a,b,Nint+1);
+%! h            = diff(t);
+%! u_1          = -ones(1, Nint+1); 
+%! u_2          = 0*u_1;
+%! u_0          = [u_1 ; u_2];
+%! f            = @(t,u) [ u(2); -abs(u(1)) ];
+%! g            = @(ya,yb) [ya(1); yb(1)+2];
+%! solinit.x = t; solinit.y=u_0;
+%! sol = bvp4c(f,g,solinit);
+%! plot (sol.x,sol.y,'x-')

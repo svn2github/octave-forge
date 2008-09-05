@@ -11,8 +11,8 @@
 ## GNU General Public License for more details.
 ## 
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+## along with this program; if not, see <http://www.gnu.org/licenses/>.
+
 
 ## -*- texinfo -*-
 ##
@@ -38,63 +38,60 @@
 ## Created: 2008-09-05
 
 
-function sol = bvp4c(odefun,bcfun,solinit)
+function sol = bvp4c(odefun,bcfun,solinit,options)
 
-  if (isfield("solinit","x"))
+  if (isfield(solinit,"x"))
     t = solinit.x;
   else
     error("bvp4c: missing initial mesh solinit.x");
   end
 
-  if (isfield("solinit","y"))
+  if (isfield(solinit,"y"))
     u_0 = solinit.y;
   else
     error("bvp4c: missing initial guess");
   end
 
-  if (isfield("solinit","parameters"))
+  if (isfield(solinit,"parameters"))
     error("bvp4c: solving for unknown parameters is not yet supported");
   end
 
+  RelTol = 1e-3;
+  AbsTol = 1e-6;
+  if ( nargin > 3 )
+    if (isfield(options,"RelTol"))
+      RelTol = options.RelTol;
+    endif
+    if (isfield(options,"RelTol"))
+      AbsTol = options.AbsTol;
+    endif
+  endif
   
-  fun = @( x ) ( [__bvp4c_fun_u__(t, 
-				  reshape(x(1:Nvar*(Nint+1)),Nvar,(Nint+1)), 
-				  reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s),
-				  h,
-				  s,
-				  Nint,
-				  Nvar)(:) ;
-		  __bvp4c_fun_K__(t, 
-				  reshape(x(1:Nvar*(Nint+1)),Nvar,(Nint+1)), 
-				  reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s),
-				  odefun,
-				  h,
-				  s,
-				  Nint,
-				  Nvar)(:);
-		  bcfun(reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1)(:,1),
-		    reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1)(:,end));
-		  ] );
-  
+  Nvar = rows(u_0);
+  Nint = length(t)-1;
+  s    = 3;
+  h    = diff(t);
+
   x    = [ u_0(:); zeros(Nvar*Nint*s,1) ];
-  x    = fsolve ( fun, x );
+  x    = __bvp4c_solve__ (t, x, h, odefun, bcfun, Nvar, Nint, s);
   u    = reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1);
+   
   
   ## K    = reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s);
   ## K1 = reshape(K(:,:,1), Nvar, Nint);
   ## K2 = reshape(K(:,:,2), Nvar, Nint);
   ## K3 = reshape(K(:,:,3), Nvar, Nint);
 
-for kk=1:Nint+1
-  du(:,kk) = f(t(kk), u(:,kk));
-end
+  for kk=1:Nint+1
+    du(:,kk) = odefun(t(kk), u(:,kk));
+  end
 
-sol.x = t;
-sol.y = u;
-sol.yp= du;
-sol.parameters = [];
-sol.solver = 'bvp4c';
-
+  sol.x = t;
+  sol.y = u;
+  sol.yp= du;
+  sol.parameters = [];
+  sol.solver = 'bvp4c';
+  
 endfunction
 
 function diff_K = __bvp4c_fun_K__ (t, u, Kin, f, h, s, Nint, Nvar)
@@ -130,21 +127,45 @@ function diff_u = __bvp4c_fun_u__ (t, u, K, h, s, Nint, Nvar)
 
 endfunction
 
+function x = __bvp4c_solve__ (t, x, h, odefun, bcfun, Nvar, Nint, s)
+  fun = @( x ) ( [__bvp4c_fun_u__(t, 
+				  reshape(x(1:Nvar*(Nint+1)),Nvar,(Nint+1)), 
+				  reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s),
+				  h,
+				  s,
+				  Nint,
+				  Nvar)(:) ;
+		  __bvp4c_fun_K__(t, 
+				  reshape(x(1:Nvar*(Nint+1)),Nvar,(Nint+1)), 
+				  reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s),
+				  odefun,
+				  h,
+				  s,
+				  Nint,
+				  Nvar)(:);
+		  bcfun(reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1)(:,1),
+			reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1)(:,end));
+		  ] );
+  
+  x    = fsolve ( fun, x );
+endfunction
 
 
-#!demo
-# a            = 0; 
-# b            = 4;
-# Nint         = 50;
-# Nvar         = 2;
-# s            = 3;
-# t            = linspace(a,b,Nint+1);
-# h            = diff(t);
-# u_1          = ones(1, Nint+1); 
-# u_1(1,Nint+1)= -2;
-# u_1(1,1)     =  0;
-# u_2          = 0*u_1;
-# u_0          = [u_1 ; u_2];
-# f            = @(t,u) [ u(2); -abs(u(1)) ];
-# g            = @(ya,yb) [ya(1); yb(1)+2];
-# plot(t,u), pause
+
+%!demo
+%! a            = 0; 
+%! b            = 4;
+%! Nint         = 50;
+%! Nvar         = 2;
+%! s            = 3;
+%! t            = linspace(a,b,Nint+1);
+%! h            = diff(t);
+%! u_1          = ones(1, Nint+1); 
+%! u_1(1,Nint+1)= -2;
+%! u_1(1,1)     =  0;
+%! u_2          = 0*u_1;
+%! u_0          = [u_1 ; u_2];
+%! f            = @(t,u) [ u(2); -abs(u(1)) ];
+%! g            = @(ya,yb) [ya(1); yb(1)+2];
+%! solinit.x = t; solinit.y=u_0;
+%! bvp4c(f,g,solinit);

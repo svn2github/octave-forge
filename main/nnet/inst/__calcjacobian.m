@@ -117,7 +117,7 @@ function [Jj] = __calcjacobian(net,Im,Nn,Aa,vE)
 
   ## calculate the sensitivity matrix tildeS
   ## start at the end layer, this means of course the output layer,
-  ## the transfer function is chosable
+  ## the transfer function is selectable
   
   ## for calculating the last layer
   ## this should happen like following:

@@ -24,7 +24,7 @@
 % Loads the basic wing geometry from file @var{filename}.
 % The geometry should be described in the file as follows:
 % @verbatim
-% mcamber <reference mean aerodynamic camber>
+% mchord <reference mean aerodynamic chord>
 % area <reference wing area>
 % mcenter <reference mean aerodynamic center>
 % 

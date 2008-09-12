@@ -1,5 +1,11 @@
+2008-09-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/loadwing.m: fix camber -> chord
+	* inst/makewing.m: calculate mcenter and mchord if not supplied
+	* inst/calcwing.m: calculate integral moment
+
 2008-06-24  Jaroslav Hajek <highegg@gmail.com>
 
 	* inst/qcalc.m: Remove cdi.
 	* inst/makewing.m: Automatic span and sym properties.
-	* inst/calcwing: Revamp cdi calculation.
+	* inst/calcwing.m: Revamp cdi calculation.

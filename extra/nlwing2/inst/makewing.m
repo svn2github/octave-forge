@@ -91,14 +91,18 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
   for [val,key] = ref
     wing.(key) = val;
   endfor
+  dS = wing.ch .* diff (wing.zac);
   if (! isfield (wing, 'sym'))
     wing.sym = true;
   endif
   if (! isfield (wing, 'area'))
-    wing.area = sum (wing.ch .* diff (wing.zac));
+    wing.area = sum (dS);
     if (wing.sym)
       wing.area *= 2;
     endif
+  endif
+  if (! isfield (wing, 'cmac'))
+    wing.cmac = sum (dS .* wing.ch) / wing.area;
   endif
   if (! isfield (wing, 'span'))
     wing.span = wing.zac(end) - wing.zac(1);
@@ -106,4 +110,12 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
       wing.span *= 2;
     endif
   endif
+  if (! isfield (wing, 'xmac'))
+    wing.xmac = dot (dS, wing.xac) / wing.area;
+    wing.ymac = dot (dS, wing.yac) / wing.area;
+  endif
+  dxmac = wing.xac - wing.xmac;
+  dymac = wing.yac - wing.ymac;
+  wing.rmac = hypot (dymac, dxmac);
+  wing.amac = atan2 (dymac, dxmac);
 endfunction

@@ -7,17 +7,18 @@ function p = tcdf(x,n);
 %    with DF degrees of freedom 
 % x,DF must be matrices of same size, or any one can be a scalar. 
 %
-% see also: NORMCDF, NORMPDF, NORMINV 
+% see also: NORMCDF, TPDF, TINV 
 
 % Reference(s):
 
-%	$Revision$
 %	$Id$
 %	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%    	This is part of the NaN-toolbox. For more details see
+%    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,

@@ -108,7 +108,7 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % + compatible with Octave and Matlab
 
 
-NARG = nargout;	% needed because nargout is not reentrant in Octave
+NARG = nargout;	% needed because nargout is not reentrant in Octave, and corrcoef is recursive
 
 if nargin==1
         Y = [];

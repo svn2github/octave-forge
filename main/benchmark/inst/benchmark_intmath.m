@@ -17,7 +17,7 @@
 % <http://www.gnu.org/licenses/>.
 % 
 
-% function benchmark_intmath (m, n, nvec)
+% function benchmark_intmath (n, ratio)
 % description:
 % Test speed of integer math & conversions.
 %

@@ -38,7 +38,7 @@ DOATLAS=false
 
 verbose=false
 packages=
-available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:pthreads:inttypes:webkit:xapian:"
+available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:pthreads:inttypes:webkit:xapian:libgpg-error:libgcrypt:"
 octave_version=
 of_version=
 do_nsi=false
@@ -95,6 +95,8 @@ gtkglextver=1.2.0
 gtkglextmmver=1.2.0
 pthreadsver=2.8.0
 xapianver=1.0.7
+libgpgerrver=1.6
+libgcryptver=1.4.3
 
 ###################################################################################
 
@@ -618,7 +620,7 @@ if ! $do_nsi && test -z "$todo_packages"; then
     todo_check "$tlibdir/qhull.lib" qhull
     todo_check "$tbindir/pkg-config.exe" pkg-config
     todo_check "$tbindir/fc-msvc.exe" fc-msvc
-    todo_check "$tbindir/libcurl.dll" libcurl
+    todo_check "$tlibdir/curl.lib" libcurl
     todo_check "$tlibdir/bz2.lib" bzip2
     #todo_check "$tlibdir/GraphicsMagick.lib" GraphicsMagick
     todo_check "$tlibdir/Magick.lib" ImageMagick
@@ -648,6 +650,8 @@ if ! $do_nsi && test -z "$todo_packages"; then
     todo_check "$tincludedir/stdbool.h" inttypes
     todo_check "$tlibdir/webkit.lib" webkit
     todo_check "$tlibdir/xapian.lib" xapian
+    todo_check "$tlibdir/gpg-error.lib" libgpg-error
+    todo_check "$tlibdir/gcrypt.lib" libgcrypt
   fi
 else
   packages="$todo_packages"
@@ -2619,6 +2623,128 @@ if check_package qhull; then
   fi
 fi
 
+################
+# libgpg-error #
+################
+
+if check_package libgpg-error; then
+  download_file libgpg-error-$libgpgerrver.tar.bz2 "ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-$libgpgerrver.tar.bz2"
+  echo -n "decompressing libgpg-error... "
+  unpack_file libgpg-error-$libgpgerrver.tar.bz2
+  echo "done"
+  echo -n "compiling libgpg-error... "
+  (cd "$DOWNLOAD_DIR/libgpg-error-$libgpgerrver" &&
+    configure_package --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e 's/__inline__/__inline/g' src/w32-gettext.c > ttt &&
+      mv ttt src/w32-gettext.c &&
+    sed -e 's/-Wl,\$(gpg_error_res)/-Wl,.libs\/$(gpg_error_res)/' \
+        -e 's/^LIBS =/& -ladvapi32/' \
+        src/Makefile > ttt &&
+      mv ttt src/Makefile &&
+    sed -e 's/snprintf/_snprintf/' src/strerror.c > ttt &&
+      mv ttt src/strerror.c &&
+    sed -e 's/strcasecmp/stricmp/' \
+        -e 's/strncasecmp/strnicmp/' \
+        src/gpg-error.c > ttt &&
+      mv ttt src/gpg-error.c &&
+    make &&
+    make install) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/libgpg-error-$libgpgerrver"
+  if failed_package || test ! -f "$tlibdir/gpg-error.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+#############
+# libgcrypt #
+#############
+
+if check_package libgcrypt; then
+  download_file libgcrypt-$libgcryptver.tar.bz2 "ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-$libgcryptver.tar.bz2"
+  echo -n "decompressing libgcrypt... "
+  unpack_file libgcrypt-$libgcryptver.tar.bz2
+  echo "done"
+  echo -n "compiling libgcrypt... "
+  (cd "$DOWNLOAD_DIR/libgcrypt-$libgcryptver" &&
+    sed -e '/^.*# *include <ws2tcpip.h>.*$/ {i \
+#include <winsock2.h>
+}' \
+        configure > ttt &&
+      mv ttt configure &&
+    configure_package --enable-shared --disable-static --disable-asm &&
+    post_process_libtool &&
+    sed -e '/#include <sys\/time\.h>/ {i \
+#ifndef _WIN32
+p;i \
+#else \
+#ifndef HAVE_SSIZE_T \
+typedef int ssize_t; \
+#define HAVE_SSIZE_T 1 \
+#endif \
+#ifndef HAVE_PID_T \
+typedef int pid_t; \
+#define HAVE_PID_T 1 \
+#endif \
+#endif
+}' \
+        src/gcrypt.h > ttt &&
+      mv ttt src/gcrypt.h &&
+    sed -e 's/S_IRUSR/S_IREAD/' \
+        -e 's/S_IWUSR/S_IWRITE/' \
+        -e 's/#include <sys\/time\.h>/ {i \
+#ifndef _WIN32
+p;i \
+#endif
+}' \
+        random/random-csprng.c > ttt &&
+      mv ttt random/random-csprng.c &&
+    sed -e '/#include <windows\.h>/ {i \
+#include <winsock2.h>
+}' \
+        src/rndw32.c > ttt &&
+      mv ttt src/rndw32.c &&
+    sed -e '/#include <windows\.h>/ {i \
+#include <winsock2.h>
+}' \
+        tests/benchmark.c > ttt &&
+      mv ttt tests/benchmark.c &&
+    sed -e '/#include "ath\.h"/ {i \
+#include "g10lib.h"
+}' \
+        -e '/#include "g10lib.h"/q' \
+        src/secmem.c > ttt &&
+      mv ttt src/secmem.c &&
+    sed -e 's/F_OK/0/' src/fips.c > ttt &&
+      mv ttt src/fips.c &&
+    sed -e '/# *include <sys\/time\.h>/d' \
+        -e '/#include "ath\.h"/ {i \
+#include "g10lib.h"
+}' \
+        src/ath.c > ttt &&
+      mv ttt src/ath.c &&
+    sed -e 's/^LIBS =/& -ladvapi32 -luser32 -lkernel32/' src/Makefile > ttt &&
+      mv ttt src/Makefile &&
+    sed -e '/^#endif *\/\*_GCRYPT_CONFIG_H_INCLUDED\*\// {i \
+#define snprintf _snprintf \
+#define S_ISREG(x) ((x)&S_IFREG)
+}' \
+        config.h > ttt &&
+      mv ttt config.h &&
+    make &&
+    make install) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/libgcrypt-$libgcryptver"
+  if failed_package || test ! -f "$tlibdir/gcrypt.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
 ###########
 # libcurl #
 ###########
@@ -2658,7 +2784,7 @@ if check_package libcurl; then
     cp COPYING "$tlicdir/COPYING.CURL" &&
     mkdir -p "$tincludedir/curl" && cp include/curl/*.h "$tincludedir/curl") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/curl-$curlver"
-  if failed_package || test ! -f "$tbindir/libcurl.dll"; then
+  if failed_package || test ! -f "$tlibdir/curl.lib"; then
     echo "failed"
     exit -1
   else

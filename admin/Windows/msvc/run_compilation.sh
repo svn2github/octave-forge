@@ -38,7 +38,7 @@ DOATLAS=false
 
 verbose=false
 packages=
-available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:pthreads:inttypes:webkit:xapian:libgpg-error:libgcrypt:"
+available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:pthreads:inttypes:webkit:xapian:libgpg-error:libgcrypt:libtasn1:gnutls:"
 octave_version=
 of_version=
 do_nsi=false
@@ -54,7 +54,7 @@ download_root="http://downloads.sourceforge.net/octave/@@?download"
 # packages are version-independent)
 lapackver=3.1.1
 pcrever=7.4
-curlver=7.16.4
+curlver=7.19.0
 libpngver=1.2.29
 glpkver=4.23
 gslver=1.10
@@ -97,6 +97,8 @@ pthreadsver=2.8.0
 xapianver=1.0.7
 libgpgerrver=1.6
 libgcryptver=1.4.3
+libtasn1ver=1.5
+gnutlsver=2.5.8
 
 ###################################################################################
 
@@ -652,6 +654,8 @@ if ! $do_nsi && test -z "$todo_packages"; then
     todo_check "$tlibdir/xapian.lib" xapian
     todo_check "$tlibdir/gpg-error.lib" libgpg-error
     todo_check "$tlibdir/gcrypt.lib" libgcrypt
+    todo_check "$tlibdir/tasn1.lib" libtasn1
+    todo_check "$tlibdir/gnutls.lib" gnutls
   fi
 else
   packages="$todo_packages"
@@ -2649,7 +2653,8 @@ if check_package libgpg-error; then
         src/gpg-error.c > ttt &&
       mv ttt src/gpg-error.c &&
     make &&
-    make install) >&5 2>&1 && end_package
+    make install &&
+    rm -f $tlibdir_quoted/libgpg-error*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/libgpg-error-$libgpgerrver"
   if failed_package || test ! -f "$tlibdir/gpg-error.lib"; then
     echo "failed"
@@ -2675,69 +2680,105 @@ if check_package libgcrypt; then
 }' \
         configure > ttt &&
       mv ttt configure &&
-    configure_package --enable-shared --disable-static --disable-asm &&
+    W_CPPFLAGS="$W_CPPFLAGS -DWIN32_LEAN_AND_MEAN" LIBS="-ladvapi32 -luser32 -lkernel32" \
+      configure_package --enable-shared --disable-static --disable-asm &&
     post_process_libtool &&
-    sed -e '/#include <sys\/time\.h>/ {i \
-#ifndef _WIN32
-p;i \
-#else \
-#ifndef HAVE_SSIZE_T \
-typedef int ssize_t; \
-#define HAVE_SSIZE_T 1 \
-#endif \
-#ifndef HAVE_PID_T \
-typedef int pid_t; \
-#define HAVE_PID_T 1 \
-#endif \
-#endif
-}' \
-        src/gcrypt.h > ttt &&
-      mv ttt src/gcrypt.h &&
-    sed -e 's/S_IRUSR/S_IREAD/' \
-        -e 's/S_IWUSR/S_IWRITE/' \
-        -e 's/#include <sys\/time\.h>/ {i \
-#ifndef _WIN32
-p;i \
-#endif
-}' \
-        random/random-csprng.c > ttt &&
-      mv ttt random/random-csprng.c &&
-    sed -e '/#include <windows\.h>/ {i \
-#include <winsock2.h>
-}' \
-        src/rndw32.c > ttt &&
-      mv ttt src/rndw32.c &&
-    sed -e '/#include <windows\.h>/ {i \
-#include <winsock2.h>
-}' \
-        tests/benchmark.c > ttt &&
-      mv ttt tests/benchmark.c &&
-    sed -e '/#include "ath\.h"/ {i \
-#include "g10lib.h"
-}' \
-        -e '/#include "g10lib.h"/q' \
-        src/secmem.c > ttt &&
-      mv ttt src/secmem.c &&
-    sed -e 's/F_OK/0/' src/fips.c > ttt &&
-      mv ttt src/fips.c &&
-    sed -e '/# *include <sys\/time\.h>/d' \
-        -e '/#include "ath\.h"/ {i \
-#include "g10lib.h"
-}' \
-        src/ath.c > ttt &&
-      mv ttt src/ath.c &&
-    sed -e 's/^LIBS =/& -ladvapi32 -luser32 -lkernel32/' src/Makefile > ttt &&
-      mv ttt src/Makefile &&
+    for f in src/gcrypt.h random/random-csprng.c src/ath.c; do
+      sed -e 's,# *include <sys/time\.h>,/*&*/,' $f > ttt &&
+        mv ttt $f
+    done &&
     sed -e '/^#endif *\/\*_GCRYPT_CONFIG_H_INCLUDED\*\// {i \
-#define snprintf _snprintf \
-#define S_ISREG(x) ((x)&S_IFREG)
+typedef int ssize_t; \
+typedef int pid_t; \
+#define S_IRUSR S_IREAD \
+#define S_IWUSR S_IWRITE \
+#define S_ISREG(x) ((x)&S_IFREG) \
+#define F_OK 0 \
+#define snprintf _snprintf
 }' \
         config.h > ttt &&
       mv ttt config.h &&
+    sed -e '/#include <windows\.h>/ {a \
+#include <winperf.h>
+}' \
+        random/rndw32.c > ttt &&
+      mv ttt random/rndw32.c &&
     make &&
-    make install) >&5 2>&1 && end_package
+    make install &&
+    rm -f $tlibdir_quoted/libgcrypt*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/libgcrypt-$libgcryptver"
   if failed_package || test ! -f "$tlibdir/gcrypt.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+############
+# libtasn1 #
+############
+
+if check_package libtasn1; then
+  download_file libtasn1-$libtasn1ver.tar.gz "http://ftp.gnu.org/gnu/gnutls/libtasn1-$libtasn1ver.tar.gz"
+  echo -n "decompressing libtasn1... "
+  unpack_file libtasn1-$libtasn1ver.tar.gz
+  echo "done"
+  echo -n "compiling libtasn1... "
+  (cd "$DOWNLOAD_DIR/libtasn1-$libtasn1ver" &&
+    create_module_rc libtasn1 $libtasn1ver libtasn1-3.dll "http://josefsson.org/libtasn1/" \
+      "Libtasn1 - ASN.1 Library" "Copyright (C) 2002-`date +%Y` Free Software Foundation" > lib/libtasn1.rc &&
+    sed -e 's,\\#/,\\#[/\\\\],' \
+        -e 's,\\(\.\*/,\\(.*[/\\\\],' \
+        configure > ttt &&
+      mv ttt configure &&
+    configure_package --enable-shared --disable-static &&
+    post_process_libtool &&
+    sed -e 's/^libtasn1_la_LDFLAGS =/& -Wl,libtasn1.res -export-symbols-regex "^(libt)?asn1_.*"/' lib/Makefile > ttt &&
+      mv ttt lib/Makefile &&
+    (cd lib && rc -fo libtasn1.res libtasn1.rc) &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libtasn1*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/libtasn1-$libtasn1ver"
+  if failed_package || test ! -f "$tlibdir/tasn1.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##########
+# gnutls #
+##########
+
+if check_package gnutls; then
+  download_file gnutls-$gnutlsver.tar.bz2 "ftp://ftp.gnutls.org/pub/gnutls/devel/gnutls-$gnutlsver.tar.bz2"
+  echo -n "decompressing gnutls... "
+  unpack_file gnutls-$gnutlsver.tar.bz2
+  if test -f libs/gnutls-$gnutlsver.diff; then
+    cp libs/gnutls-$gnutlsver.diff $DOWNLOAD_DIR/gnutls-$gnutlsver/gnutls-$gnutlsver.diff
+  fi
+  echo "done"
+  echo -n "compiling gnutls... "
+  (cd "$DOWNLOAD_DIR/gnutls-$gnutlsver" &&
+    if test -f gnutls-$gnutlsver.diff; then
+      patch -p1 < gnutls-$gnutlsver.diff
+    fi &&
+    create_module_rc gnutls $gnutlsver libgnutls-26.dll "http://www.gnu.org" \
+      "GnuTLS - TLS/SSL Library" "Copyright (C) 2000-`date +%Y` Free Software Foundation" > lib/gnutls.rc &&
+    ac_cv_c_bigendian=no LIBS="-luser32" \
+      configure_package --enable-shared --disable-static --disable-cxx --disable-openssl-compatibility &&
+    post_process_libtool &&
+    sed -e 's/^libgnutls_la_LDFLAGS =/& -Wl,gnutls.res/' lib/Makefile > ttt &&
+      mv ttt lib/Makefile &&
+    (cd lib && rc -fo gnutls.res gnutls.rc) &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libgnutls*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/gnutls-$gnutlsver"
+  if failed_package || test ! -f "$tlibdir/gnutls.lib"; then
     echo "failed"
     exit -1
   else
@@ -2756,33 +2797,79 @@ if check_package libcurl; then
   echo "done"
   echo -n "compiling libcurl... "
   (cd "$DOWNLOAD_DIR/curl-$curlver" &&
-    for mf in lib/Makefile.vc8 src/Makefile.vc8; do
-      sed -e "s/libcurl_imp/libcurl/g" -e "s/zdll\.lib/zlib.lib/g" $mf > ttt &&
-      	mv ttt $mf
-      if test $crtver -ge 90; then
-        sed -e "s/bufferoverflowu\.lib//g" \
-            -e "s,/DBUILDING_LIBCURL,& /D_WIN32_WINNT=0x0501," \
-            $mf > ttt &&
-          mv ttt $mf
-      fi
-    done
-    nmake VC=vc8 vc-dll-zlib-dll &&
-    mt -outputresource:lib\\libcurl.dll -manifest lib\\release-dll-zlib-dll\\libcurl.dll.manifest &&
-    sed -e "s,@prefix@,$tdir_w32_forward," \
-        -e 's,@exec_prefix@,${prefix},' \
-        -e 's,@includedir@,${prefix}/include,' \
-        -e 's,@libdir@,${prefix}/lib,' \
-        -e "s,@VERSION@,$curlver," \
-        -e "s,@LDFLAGS@,," \
-        -e "s,@LIBS@,-lz," \
-        -e "s,@LIBCURL_LIBS@,," \
-        -e 's,-lcurl,-llibcurl,' \
-        libcurl.pc.in > libcurl.pc &&
-    cp lib/libcurl.dll "$tbindir" &&
-    cp lib/libcurl.lib "$tlibdir" &&
-    cp libcurl.pc "$tlibdir/pkgconfig/libcurl.pc" &&
+    configure_package --enable-shared --disable-static --with-gnutls="$tdir_w32" --enable-sspi &&
+    post_process_libtool &&
+    (cat >> lib/config.h <<EOF
+#define HAVE_SSIZE_T
+EOF
+) &&
+    sed -e 's/#elif defined(HAVE_STRCMPI)/& \&\& !defined(_MSC_VER)/' lib/strequal.c > ttt &&
+      mv ttt lib/strequal.c &&
+    sed -e 's/^libcurl_la_LDFLAGS =/& -Wl,libcurl.res/' lib/Makefile > ttt &&
+      mv ttt lib/Makefile &&
+    sed -e '/^.*my \$ua.*$/ {a \
+$ua->env_proxy;
+}' \
+        lib/mk-ca-bundle.pl > ttt &&
+      mv ttt lib/mk-ca-bundle.pl &&
+    sed -e 's,gnutls_transport_set_.*_function(.*);,/*&*/,' lib/gtls.c > ttt &&
+      mv ttt lib/gtls.c &&
+    sed -e '/res = setstropt(.*STRING_SSL_CAPATH.*/ {a \
+#else \
+if (win32_cafile()) \
+    res = setstropt(&data->set.str[STRING_SSL_CAFILE], win32_cafile());
+}' \
+        -e "/^static CURLcode setstropt(.*/ {i \\
+static char* win32_cafile(void) \\
+{ \\
+  static char *local_cafile = NULL; \\
+\\
+  if (local_cafile == NULL) { \\
+    int n = 1024; \\
+    HMODULE hMod = GetModuleHandle(\"libcurl-4\"); \\
+\\
+    if (hMod == NULL) \\
+      return local_cafile; \\
+\\
+    local_cafile = malloc(n); \\
+    local_cafile[0] = '\\\\0'; \\
+\\
+    while (1) { \\
+      int status = GetModuleFileName(hMod, local_cafile, n); \\
+\\
+      if (status < n) \\
+	break; \\
+      else { \\
+	n *= 2; \\
+	local_cafile = realloc(local_cafile, n); \\
+      } \\
+    } \\
+\\
+    if (local_cafile[0] != '\\\\0') { \\
+      char *c = strrchr(local_cafile, '\\\\\\\\'); \\
+\\
+      if (c != NULL) { \\
+	c[1] = '\\\\0'; \\
+	strcat(c, \"ca-bundle.crt\"); \\
+      } \\
+    } else { \\
+      free(local_cafile); \\
+      local_cafile = NULL; \\
+    } \\
+  } \\
+\\
+  return local_cafile; \\
+}
+}" \
+        lib/url.c > ttt &&
+      mv ttt lib/url.c &&
+    (cd lib && rc -fo libcurl.res libcurl.rc) &&
+    make &&
+    make install &&
+    PATH=$CYGWIN_DIR/bin:$PATH make ca-bundle &&
+    cp lib/ca-bundle.crt "$tbindir" &&
     cp COPYING "$tlicdir/COPYING.CURL" &&
-    mkdir -p "$tincludedir/curl" && cp include/curl/*.h "$tincludedir/curl") >&5 2>&1 && end_package
+    rm -f $tlibdir_quoted/libcurl*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/curl-$curlver"
   if failed_package || test ! -f "$tlibdir/curl.lib"; then
     echo "failed"

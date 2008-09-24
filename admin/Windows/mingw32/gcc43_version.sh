@@ -1,4 +1,4 @@
 #!/usr/bin/sh
 
 # The version of Octave currently under build
-VER_OCTAVE=3.0.1-3
+VER_OCTAVE=3.0.2-3

@@ -257,7 +257,12 @@ substvars_pre() { echo ; }
 substvars()
 {
    echo Making $2 from $1 ...
-   ${SED} -e "s+@SRCDIR@+${TOPDIR}/${SRCDIR}+" \
+   ${SED} \
+	-e "s+@SRCDIR@+${TOPDIR}/${SRCDIR}+" \
+	-e "s+@TOPDIR@+${TOPDIR}+" \
+	-e "s+@GCC_VER@+${GCC_VER}+" \
+	-e "s+@GCC_SYS@+${GCC_SYS}+" \
+	-e "s+@REL@+${REL}+" \
    $1 > $2
 }
 substvars_post() { echo ; }

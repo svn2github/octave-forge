@@ -87,7 +87,7 @@ build_pre()
 install_pkg() {
  echo ${PREFIX_OCT}/${VER}-${REL}
  mkdir -vp ${PACKAGE_ROOT}
- ( cp -vr ${PREFIX_OCT}/${VER}-${REL}{/bin,/lib,/include,/info,/libexec,/man,/share} ${PACKAGE_ROOT};
+ ( cp -vr ${PREFIX_OCT}/${VER}-${REL}{/bin,/lib,/include,/libexec,/share} ${PACKAGE_ROOT};
    rm ${RM_FLAGS} ${PACKAGE_ROOT}/lib/octave-${VER}/*.${VER}
    strip ${STRIP_FLAGS} ${PACKAGE_ROOT}/bin/*.exe;
    strip ${STRIP_FLAGS} ${PACKAGE_ROOT}/bin/{liboctinterp,liboctave,libcruft}.dll;

@@ -1,0 +1,487 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/Makeconf.in octave-3.0.2/Makeconf.in
+--- octave-3.0.2-orig/Makeconf.in	2008-08-05 09:48:21 +0200
++++ octave-3.0.2/Makeconf.in	2008-08-25 09:22:50 +0200
+@@ -569,9 +569,9 @@
+ define do-subst-texinfo-vals
+ echo "making $@ from $<"
+ $(SED) < $< \
+-  -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
+-  -e "s|%top_srcdir%|${top_srcdir}|" \
+-  -e "s|%OCTAVE_HOME%|${prefix}|" \
++  -e "s|%abs_top_srcdir%|`cd ${abs_top_srcdir} && pwd -W`|" \
++  -e "s|%top_srcdir%|`cd ${top_srcdir} && pwd -W`|" \
++  -e "s|%OCTAVE_HOME%|`cd ${prefix} && pwd -W`|" \
+   -e "s|%OCTAVE_VERSION%|${version}|" \
+   -e "s|%TEXINFO_COLAMD%|${TEXINFO_COLAMD}|" \
+   -e "s|%TEXINFO_CHOLMOD%|${TEXINFO_CHOLMOD}|" \
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/aclocal.m4 octave-3.0.2/aclocal.m4
+--- octave-3.0.2-orig/aclocal.m4	2008-08-05 09:46:03 +0200
++++ octave-3.0.2/aclocal.m4	2008-08-25 09:23:08 +0200
+@@ -562,7 +562,7 @@
+ AC_DEFUN(OCTAVE_PROG_GHOSTSCRIPT, [
+   case "$canonical_host_type" in
+     *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
+-      gs_names="gs gswin32"
++      gs_names="gs gswin32c gswin32"
+     ;;
+     *)
+       gs_names=gs
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/configure.in octave-3.0.2/configure.in
+--- octave-3.0.2-orig/configure.in	2008-08-01 08:50:55 +0200
++++ octave-3.0.2/configure.in	2008-08-29 09:28:57 +0200
+@@ -702,13 +702,18 @@
+ fi
+ 
+ XTRA_CRUFT_SH_LDFLAGS=
++XTRA_OCTINTERP_SH_LDFLAGS=
+ case "$canonical_host_type" in
+   *-*-msdosmsvc)
+     FLIBS="$FLIBS -lkernel32"
+     XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft.def"
+   ;;
++  *-*-mingw*)
++    XTRA_CRUFT_SH_LDFLAGS="-Wl,--exclude-libs=libgfortran.a"
++    XTRA_OCTINTERP_SH_LDFLAGS="-Wl,--exclude-libs=libgfortran.a"
+ esac
+ AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
++AC_SUBST(XTRA_OCTINTERP_SH_LDFLAGS)
+ 
+ FC=$F77
+ AC_SUBST(FC)
+@@ -964,6 +969,8 @@
+ OCTAVE_DLL_DEFS=
+ OCTINTERP_DLL_DEFS=
+ library_path_var=LD_LIBRARY_PATH
++SCRIPTS_EXE_SUFFIX=
++SCRIPTS_SRC_SUFFIX=
+ case "$canonical_host_type" in
+   *-*-386bsd* | *-*-netbsd*)
+     SH_LD=ld
+@@ -1003,17 +1010,19 @@
+     library_path_var=DYLD_LIBRARY_PATH	
+   ;;
+   *-*-cygwin* | *-*-mingw*)
+-    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
++    DL_LDFLAGS="-shared \$(LDFLAGS) -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+     CXXPICFLAG=
+     CPICFLAG=
+     FPICFLAG=
+     SHLEXT=dll
+     SHLLIB=dll.a
+     SHLBIN=dll
+-    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
++    SH_LDFLAGS="-shared \$(LDFLAGS) -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
+     SHLLINKEXT=.dll
+     SONAME_FLAGS='-Wl,--out-implib=$@.a'
+     library_path_var=PATH
++    SCRIPTS_EXE_SUFFIX=.exe
++    SCRIPTS_SRC_SUFFIX=.cc
+   ;;
+   *-*-msdosmsvc)
+     DL_LDFLAGS="-shared"
+@@ -1165,6 +1174,8 @@
+ AC_SUBST(OCTAVE_DLL_DEFS)
+ AC_SUBST(OCTINTERP_DLL_DEFS)
+ AC_SUBST(library_path_var)
++AC_SUBST(SCRIPTS_EXE_SUFFIX)
++AC_SUBST(SCRIPTS_SRC_SUFFIX)
+ 
+ ### special checks for odd OS specific things.
+ ###
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/doc/faq/Makefile.in octave-3.0.2/doc/faq/Makefile.in
+--- octave-3.0.2-orig/doc/faq/Makefile.in	2008-08-01 08:32:26 +0200
++++ octave-3.0.2/doc/faq/Makefile.in	2008-08-25 09:25:17 +0200
+@@ -54,14 +54,14 @@
+ 
+ Octave-FAQ.dvi: $(TEXINFO)
+ 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+-	  $(TEXI2DVI) $<
++	  $(TEXI2DVI) -I.. $<
+ 
+ Octave-FAQ.ps: Octave-FAQ.dvi
+ 	-dvips -o $@ $<
+ 
+ Octave-FAQ.pdf: $(TEXINFO)
+ 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+-	  $(TEXI2PDF) $<
++	  $(TEXI2PDF) -I.. $<
+ 
+ Octave-FAQ.html: $(TEXINFO)
+ 	-$(MAKEINFO) --html --ifinfo --no-split --output=$@ -I.. -I$(srcdir) -I$(srcdir)/.. $<
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/doc/interpreter/Makefile.in octave-3.0.2/doc/interpreter/Makefile.in
+--- octave-3.0.2-orig/doc/interpreter/Makefile.in	2008-08-01 08:32:26 +0200
++++ octave-3.0.2/doc/interpreter/Makefile.in	2008-08-25 10:17:22 +0200
+@@ -121,10 +121,10 @@
+ # targeted file name (e.g. to generate octave-a4.pdf, copy to
+ # octave-a4.texi) and call texi2[dvi|pdf] on it.
+ 
+-TEXI2DVICOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
++TEXI2DVICOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+ 	  $(TEXI2DVI)
+ 
+-TEXI2PDFCOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
++TEXI2PDFCOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+ 	  $(TEXI2PDF)
+ 
+ FORMATTED = octave.info octave.pdf octave-a4.pdf octave.info-[0-9]*
+@@ -161,7 +161,7 @@
+ $(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi$(BUILD_EXEEXT)
+ 
+ munge-texi$(BUILD_EXEEXT): munge-texi.cc
+-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
++	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS) $(LIBS)
+ 
+ src-DOCSTRINGS:
+ 	$(MAKE) -C ../../src DOCSTRINGS
+@@ -192,14 +192,14 @@
+ 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
+ 
+ octave.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES)
+-	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+-	  $(TEXI2DVI) $(MAIN_TEXINFO)
++	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
++	  $(TEXI2DVI) -I.. $(MAIN_TEXINFO)
+ 
+ octave-a4.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES) octave-a4.texi
+-	-$(TEXI2DVICOMMAND) octave-a4.texi -t @afourpaper
++	-$(TEXI2DVICOMMAND) -I.. octave-a4.texi -t @afourpaper
+ 
+ octave-smallbook.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES) octave-smallbook.texi
+-	-$(TEXI2DVICOMMAND) octave-smallbook.texi -t @smallbook
++	-$(TEXI2DVICOMMAND) -I.. octave-smallbook.texi -t @smallbook
+ 
+ octave.ps: octave.dvi
+ 	-dvips -o $@ $<
+@@ -211,13 +211,13 @@
+ 	-dvips -o $@ $<
+ 
+ octave.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES)
+-	-$(TEXI2PDFCOMMAND) $(MAIN_TEXINFO)
++	-$(TEXI2PDFCOMMAND) -I.. $(MAIN_TEXINFO)
+ 
+ octave-a4.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES) octave-a4.texi
+-	-$(TEXI2PDFCOMMAND) octave-a4.texi -t @afourpaper
++	-$(TEXI2PDFCOMMAND) -I.. octave-a4.texi -t @afourpaper
+ 
+ octave-smallbook.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES) octave-smallbook.texi
+-	-$(TEXI2PDFCOMMAND) octave-smallbook.texi -t @smallbook
++	-$(TEXI2PDFCOMMAND) -I.. octave-smallbook.texi -t @smallbook
+ 
+ ../../INSTALL.OCTAVE: install.texi
+ 	rm -f INSTALL
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/doc/liboctave/Makefile.in octave-3.0.2/doc/liboctave/Makefile.in
+--- octave-3.0.2-orig/doc/liboctave/Makefile.in	2008-08-01 08:32:26 +0200
++++ octave-3.0.2/doc/liboctave/Makefile.in	2008-08-25 09:27:55 +0200
+@@ -66,15 +66,15 @@
+ 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $<
+ 
+ liboctave.dvi: $(TEXINFO)
+-	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+-	  $(TEXI2DVI) $<
++	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
++	  $(TEXI2DVI) -I.. $<
+ 
+ liboctave.ps: liboctave.dvi
+ 	-dvips -o $@ $<
+ 
+ liboctave.pdf: $(TEXINFO)
+-	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+-	  $(TEXI2PDF) $<
++	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
++	  $(TEXI2PDF) -I.. $<
+ 
+ HTML/index.html: $(TEXINFO)
+ 	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. $<
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/doc/refcard/Makefile.in octave-3.0.2/doc/refcard/Makefile.in
+--- octave-3.0.2-orig/doc/refcard/Makefile.in	2008-08-01 08:32:26 +0200
++++ octave-3.0.2/doc/refcard/Makefile.in	2008-08-25 09:28:41 +0200
+@@ -41,31 +41,31 @@
+ all: $(FORMATTED)
+ 
+ refcard-a4.dvi: refcard-a4.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex -I.. $<
+ 
+ refcard-a4.ps: refcard-a4.dvi
+ 	-dvips -T 297mm,210mm -o $@ $<
+ 
+ refcard-a4.pdf: refcard-a4.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex -I.. $<
+ 
+ refcard-legal.dvi: refcard-legal.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex -I.. $<
+ 
+ refcard-legal.ps: refcard-legal.dvi
+ 	-dvips -T 14in,8.5in -o $@ $<
+ 
+ refcard-legal.pdf: refcard-legal.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex -I.. $<
+ 
+ refcard-letter.dvi: refcard-letter.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" tex -I.. $<
+ 
+ refcard-letter.ps: refcard-letter.dvi
+ 	-dvips -T 11in,8.5in -o $@ $<
+ 
+ refcard-letter.pdf: refcard-letter.tex refcard.tex
+-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex $<
++	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" pdftex -I.. $<
+ 
+ check install install-strip uninstall:
+ .PHONY: check install install-strip uninstall
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/octMakefile.in octave-3.0.2/octMakefile.in
+--- octave-3.0.2-orig/octMakefile.in	2008-08-01 08:50:56 +0200
++++ octave-3.0.2/octMakefile.in	2008-08-29 09:17:06 +0200
+@@ -26,6 +26,9 @@
+ abs_top_srcdir = @abs_top_srcdir@
+ VPATH = @srcdir@
+ 
++SCRIPTS_EXE_SUFFIX=@SCRIPTS_EXE_SUFFIX@
++SCRIPTS_SRC_SUFFIX=@SCRIPTS_SRC_SUFFIX@
++
+ include $(TOPDIR)/Makeconf
+ 
+ INSTALL = @INSTALL@
+@@ -46,8 +49,8 @@
+ 	NEWS.[0-9] PROJECTS README README.Linux README.Windows \
+ 	README.Cygwin README.MSVC README.kpathsea ROADMAP SENDING-PATCHES \
+ 	THANKS move-if-change octave-sh octave-bug.in \
+-	octave-config.in missing mk-opts.pl mkinstalldirs \
+-	mkoctfile.in run-octave.in ChangeLog ChangeLog.[0-9]
++	octave-config$(SCRIPTS_SRC_SUFFIX).in mk-opts.pl mkinstalldirs \
++	mkoctfile$(SCRIPTS_SRC_SUFFIX).in run-octave.in ChangeLog ChangeLog.[0-9]
+ 
+ # Subdirectories in which to run `make all'.
+ SUBDIRS = libcruft liboctave src scripts doc examples
+@@ -70,7 +73,7 @@
+   $(localapioctfiledir) $(localveroctfiledir) $(imagedir) $(archlibdir) \
+   $(localarchlibdir) $(localapiarchlibdir) $(localverarchlibdir)
+ 
+-SHELL_SCRIPTS = octave-bug octave-config mkoctfile run-octave
++SHELL_SCRIPTS = octave-bug octave-config$(SCRIPTS_EXE_SUFFIX) mkoctfile$(SCRIPTS_EXE_SUFFIX) run-octave
+ 
+ all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS)) dist-info-files
+ 	@echo ""
+@@ -94,18 +97,22 @@
+ 	@$(do-subst-config-vals)
+ 	chmod a+rx $@
+ 
+-octave-config: octave-config.in Makeconf octMakefile $(top_srcdir)/src/version.h
++octave-config$(SCRIPTS_SRC_SUFFIX): octave-config$(SCRIPTS_SRC_SUFFIX).in Makeconf octMakefile $(top_srcdir)/src/version.h
+ 	@$(do-subst-default-vals)
+-	chmod a+rx $@
+ 
+-mkoctfile: mkoctfile.in Makeconf octMakefile $(top_srcdir)/src/version.h
++mkoctfile$(SCRIPTS_SRC_SUFFIX): mkoctfile$(SCRIPTS_SRC_SUFFIX).in Makeconf octMakefile $(top_srcdir)/src/version.h
+ 	@$(do-subst-config-vals)
+-	chmod a+rx $@
+ 
+ run-octave: run-octave.in Makeconf octMakefile
+ 	@$(do-subst-script-vals)
+ 	chmod a+rx "$@"
+ 
++mkoctfile.exe : mkoctfile.cc
++octave-config.exe : octave-config.cc
++
++mkoctfile.exe octave-config.exe: %.exe : %.cc
++	$(CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(LDFLAGS) -o $@ $< $(LIBS)
++
+ check:
+ 	$(MAKE) -C test $@
+ .PHONY: check
+@@ -123,13 +130,13 @@
+ 	rm -f $(DESTDIR)$(bindir)/octave-bug
+ 	$(INSTALL_SCRIPT) octave-bug $(DESTDIR)$(bindir)/octave-bug-$(version)
+ 	(cd $(DESTDIR)$(bindir); $(LN_S) octave-bug-$(version) $(DESTDIR)$(bindir)/octave-bug)
+-	rm -f $(DESTDIR)$(bindir)/octave-config
++	rm -f $(DESTDIR)$(bindir)/octave-config$(SCRIPTS_EXE_SUFFIX)
+ 	$(INSTALL_SCRIPT) \
+-	  octave-config $(DESTDIR)$(bindir)/octave-config-$(version)
+-	(cd $(DESTDIR)$(bindir); $(LN_S) octave-config-$(version) $(DESTDIR)$(bindir)/octave-config)
+-	rm -f $(DESTDIR)$(bindir)/mkoctfile
+-	$(INSTALL_SCRIPT) mkoctfile $(DESTDIR)$(bindir)/mkoctfile-$(version)
+-	(cd $(DESTDIR)$(bindir); $(LN_S) mkoctfile-$(version) $(DESTDIR)$(bindir)/mkoctfile)
++	  octave-config$(SCRIPTS_EXE_SUFFIX) $(DESTDIR)$(bindir)/octave-config-$(version)$(SCRIPTS_EXE_SUFFIX)
++	(cd $(DESTDIR)$(bindir); $(LN_S) octave-config-$(version)$(SCRIPTS_EXE_SUFFIX) $(DESTDIR)$(bindir)/octave-config$(SCRIPTS_EXE_SUFFIX))
++	rm -f $(DESTDIR)$(bindir)/mkoctfile$(SCRIPTS_EXE_SUFFIX)
++	$(INSTALL_SCRIPT) mkoctfile$(SCRIPTS_EXE_SUFFIX) $(DESTDIR)$(bindir)/mkoctfile-$(version)$(SCRIPTS_EXE_SUFFIX)
++	(cd $(DESTDIR)$(bindir); $(LN_S) mkoctfile-$(version)$(SCRIPTS_EXE_SUFFIX) $(DESTDIR)$(bindir)/mkoctfile$(SCRIPTS_EXE_SUFFIX))
+ 	$(INSTALL_DATA) config.h $(DESTDIR)$(octincludedir)/octave/config.h
+ 	$(INSTALL_DATA) $(srcdir)/NEWS $(DESTDIR)$(datadir)/octave/$(version)/NEWS
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/scripts/Makefile.in octave-3.0.2/scripts/Makefile.in
+--- octave-3.0.2-orig/scripts/Makefile.in	2008-08-01 08:32:27 +0200
++++ octave-3.0.2/scripts/Makefile.in	2008-08-25 10:18:14 +0200
+@@ -64,7 +64,7 @@
+ 	mv $@.t $@
+ 
+ gethelp$(BUILD_EXEEXT): gethelp.cc
+-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
++	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS) $(LIBS)
+ 
+ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
+ 	@$(subdir-for-command)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/scripts/pkg/pkg.m octave-3.0.2/scripts/pkg/pkg.m
+--- octave-3.0.2-orig/scripts/pkg/pkg.m	2008-08-01 08:50:56 +0200
++++ octave-3.0.2/scripts/pkg/pkg.m	2008-08-27 10:00:17 +0200
+@@ -1228,7 +1228,9 @@
+       if (isempty (getenv ("RANLIB")))
+         flags = strcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
+       endif
+-      [status, output] = shell (strcat ("cd ", src, "; ./configure --prefix=\"",
++      flags = strcat( flags, " LDFLAGS=-L\"", fullfile(OCTAVE_HOME,"lib"), "\"" );
++      flags = strcat( flags, " CPPFLAGS=-I\"", fullfile(OCTAVE_HOME,"include"), "\"" );
++      [status, output] = shell (strcat ("cd '", src, "'; ./configure --prefix=\"",
+                                         desc.dir, "\"", flags));
+       if (status != 0)
+ 	rm_rf (desc.dir);
+@@ -1242,7 +1244,7 @@
+     ## make
+     if (exist (fullfile (src, "Makefile"), "file"))
+       [status, output] = shell (strcat ("export INSTALLDIR=\"", desc.dir,
+-					 "\"; make -C ", src));
++					 "\"; make -C '", src, "'"));
+       if (status != 0)
+ 	rm_rf (desc.dir);
+ 	error ("'make' returned the following error: %s", output);
+@@ -1288,14 +1290,14 @@
+ 	filenames = sprintf (fullfile (src, "%s "), m.name);
+       endif
+       if (length (oct) > 0)
+-	filenames = strcat (filenames, " ",
+-			    sprintf (fullfile (src, "%s "), oct.name));
++	filenames = strcat (filenames, pathsep,
++			    sprintf (fullfile (src, ["%s",pathsep]), oct.name));
+       endif
+       if (length (mex) > 0)
+-	filenames = strcat (filenames, " ",
+-			    sprintf (fullfile (src, "%s "), mex.name));
++	filenames = strcat (filenames, pathsep,
++			    sprintf (fullfile (src, ["%s",pathsep]), mex.name));
+       endif
+-      filenames = split_by (filenames, " ");
++      filenames = split_by (filenames, pathsep);
+     endif
+ 
+     ## Split into architecture dependent and independent files
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/scripts/plot/drawnow.m octave-3.0.2/scripts/plot/drawnow.m
+--- octave-3.0.2-orig/scripts/plot/drawnow.m	2008-08-01 08:50:56 +0200
++++ octave-3.0.2/scripts/plot/drawnow.m	2008-08-25 16:20:21 +0200
+@@ -190,9 +190,9 @@
+       ## gnuplot 4.2 documentation says.
+       fprintf (plot_stream, "set terminal aqua %d %s\n", h, enh_str);
+     elseif (strcmp (term, "wxt"))
+-      fprintf (plot_stream, "set terminal wxt %s title \"Figure %d\"\n", 
+-	       enh_str, h);
+-
++      fprintf (plot_stream, "set terminal wxt %s title \"Figure %d\"\n", enh_str, h);
++    elseif (strcmp (term, "windows"))
++      fprintf (plot_stream, "set terminal windows %s title \"Figure %d\"\n", enh_str, h);
+     elseif (enhanced)
+       fprintf (plot_stream, "set terminal %s %s\n", term, enh_str);
+     endif
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/scripts/startup/main-rcfile octave-3.0.2/scripts/startup/main-rcfile
+--- octave-3.0.2-orig/scripts/startup/main-rcfile	2008-08-01 08:32:28 +0200
++++ octave-3.0.2/scripts/startup/main-rcfile	2008-08-29 14:03:50 +0200
+@@ -10,6 +10,17 @@
+ 				  octave_config_info ("startupfiledir"),
+ 				  filesep, "inputrc"));
+ 
++## Check for PAGER in distribution tree
++if( exist( fullfile( octave_config_info("bindir"), "less.exe") ) )
++  PAGER( fullfile( octave_config_info("bindir"), "less.exe") );
++  
++  if( isempty(getenv("LESS")) )
++     PAGER_FLAGS ("-P\"?ltlines %lt-%lb?L/%L. ?e(END). -- (f)orward, (b)ack, (q)uit$\"");
++  endif
++  
++  page_screen_output(1);
++endif
++
+ if (strcmp (PAGER (), "less") && isempty (getenv ("LESS")))
+   PAGER_FLAGS ('-e -X -P"-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$"');
+ endif
+@@ -18,3 +29,45 @@
+ ## will also skip automatic loading of packages.
+ 
+ pkg ("load", "auto");
++
++## check for notepad++ editor
++
++npp_path = fullfile( octave_config_info("prefix"), "tools", "notepad++" );
++if( exist(npp_path,"dir") )
++   EDITOR( fullfile( npp_path, "notepad++.exe" ) );
++   edit("mode","async");
++endif
++
++## check for MSYS environment
++
++msys_path = fullfile( octave_config_info("prefix"), "MSYS" );
++if( exist( msys_path, "dir" ) )
++   msys_path = cat(2, msys_path, filesep, "bin", ";", EXEC_PATH );
++   EXEC_PATH( msys_path );
++endif
++
++## check for mingw32
++
++mingw_path = fullfile( octave_config_info("prefix"), "MINGW32" );
++if( exist(mingw_path, "dir") )
++   mingw_path = cat(2, mingw_path, filesep, "bin", ";", EXEC_PATH );
++   EXEC_PATH( mingw_path );
++endif
++ 
++## check for pgnuplot in bundle
++
++if( exist( fullfile( octave_config_info("bindir"),"pgnuplot.exe") ) )
++   gnuplot_binary( fullfile( octave_config_info("bindir"),"pgnuplot.exe") );
++endif
++ 
++## set warning state less intrusive
++
++warning("off","Octave:string-concat");
++warning("off","Octave:single-quote-string");
++warning("off","Octave:resize-on-range-error");
++
++## set default prompt
++
++PS1("\\s:\\#:\\w\n> ");
++
++clear mingw_path npp_path msys_path;
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/src/DLD-FUNCTIONS/rand.cc octave-3.0.2/src/DLD-FUNCTIONS/rand.cc
+--- octave-3.0.2-orig/src/DLD-FUNCTIONS/rand.cc	2008-08-20 07:28:21 +0200
++++ octave-3.0.2/src/DLD-FUNCTIONS/rand.cc	2008-08-25 15:57:47 +0200
+@@ -950,7 +950,7 @@
+ %!test
+ %! % Test fixed state
+ %! randp("seed",1);
+-%! assert(randp(1e9,1,6),[1000006208 1000012224 999981120 999963520 999963072 999981440],1e-6))
++%! assert(randp(1e9,1,6),[1000006208 1000012224 999981120 999963520 999963072 999981440],1e-6)
+ %!test
+ %! if (__random_statistical_tests__)
+ %!   % statistical tests may fail occasionally.
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/src/Makefile.in octave-3.0.2/src/Makefile.in
+--- octave-3.0.2-orig/src/Makefile.in	2008-08-01 08:50:56 +0200
++++ octave-3.0.2/src/Makefile.in	2008-08-29 09:28:16 +0200
+@@ -313,6 +313,9 @@
+   endif
+ endif
+ 
++XTRA_OCTINTERP_SH_LDFLAGS = @XTRA_OCTINTERP_SH_LDFLAGS@
++SH_LDFLAGS += $(XTRA_OCTINTERP_SH_LDFLAGS)
++
+ libraries: $(LIBRARIES)
+ .PHONY: libraries
+ 
+@@ -393,7 +396,7 @@
+ 	@$(simple-move-if-change-rule)
+ 
+ gendoc$(BUILD_EXEEXT): gendoc.cc
+-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
++	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS) $(LIBS)
+ 
+ ops.cc: $(OP_SRC) mkops
+ 	@echo making $@ from $(OP_SRC)

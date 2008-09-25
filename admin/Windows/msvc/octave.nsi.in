@@ -3,14 +3,19 @@
 !define OCTAVE_VERSION "@OCTAVE_VERSION@"
 !define VCLIBS_ROOT "@VCLIBS_ROOT@"
 !define MSYS_ROOT "@MSYS_ROOT@"
-!define JHANDLES_VERSION "@JHANDLES_VERSION@"
+@HAVE_JHANDLES@!define JHANDLES_VERSION "@JHANDLES_VERSION@"
 !define SOFTWARE_ROOT "@SOFTWARE_ROOT@"
 !define MSVC_CRT "@MSVC_CRT@"
+@HAVE_OCTAVE_GRAPHICSMAGICK@!define USE_OCTAVE_GRAPHICSMAGICK
+@HAVE_OCTAVE_GRAPHICSMAGICK@!define GMAGICKVER "@GMAGICKVER@"
+@HAVE_SSE1@!define USE_SSE1
+@HAVE_SSE2@!define USE_SSE2
+@HAVE_SSE3@!define USE_SSE3
+@HAVE_FLTK_BACKEND@!define USE_FLTK_BACKEND
 
 ; Determine which configuration to use
-#!define ATLAS_PM
 @HAVE_OCTPLOT@!define USE_OCTPLOT
-!define USE_OCTAVE_FORGE
+@HAVE_OCTAVE_FORGE@!define USE_OCTAVE_FORGE
 !define USE_MSYS
 #!define USE_CONSOLE
 @HAVE_GUI@!define USE_OCTAVEDE
@@ -46,15 +51,9 @@
 !insertmacro WordReplace
 
 !define LA_GEN "Generic (works on all systems)"
-!define LA_P4 "Intel Pentium 4 with SSE3"
-!ifdef ATLAS_PM
-!define LA_PM "Intel Pentium M with SSE2"
-!define LA_COUNT 3
-!define LA_ALL "${LA_GEN}|${LA_P4}|${LA_PM}"
-!else
-!define LA_COUNT 2
-!define LA_ALL "${LA_GEN}|${LA_P4}"
-!endif
+!define LA_SSE1 "Intel Pentium with SSE"
+!define LA_SSE2 "Intel Pentium with SSE2"
+!define LA_SSE3 "Intel Pentium with SSE3"
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -121,8 +120,8 @@ Section "Core" SEC_CORE
   ; octave executables
   File "${OCTAVE_ROOT}\bin\cruft.dll"
   File "${OCTAVE_ROOT}\bin\octave-${OCTAVE_VERSION}.exe"
-  File "${OCTAVE_ROOT}\bin\octave-bug"
-  File "${OCTAVE_ROOT}\bin\octave-bug-${OCTAVE_VERSION}"
+  File "${OCTAVE_ROOT}\bin\octave-bug.exe"
+  File "${OCTAVE_ROOT}\bin\octave-bug-${OCTAVE_VERSION}.exe"
   File "${OCTAVE_ROOT}\bin\octave.dll"
   File "${OCTAVE_ROOT}\bin\octave.exe"
   File "${OCTAVE_ROOT}\bin\octinterp.dll"
@@ -154,6 +153,27 @@ Section "Core" SEC_CORE
   File "${VCLIBS_ROOT}\bin\libfreetype-6.dll"
 !ifdef USE_PLAYREC
   File "${VCLIBS_ROOT}\bin\libportaudio-2.dll"
+!endif
+!ifdef USE_FLTK_BACKEND
+  File "${VCLIBS_ROOT}\bin\fltkdll.dll"
+  File "${VCLIBS_ROOT}\bin\libjpeg-62.dll"
+  File "${VCLIBS_ROOT}\bin\libpng12-0.dll"
+!endif
+!ifdef USE_OCTAVE_GRAPHICSMAGICK
+  File "${VCLIBS_ROOT}\bin\libjpeg-62.dll"
+  File "${VCLIBS_ROOT}\bin\libpng12-0.dll"
+  File "${VCLIBS_ROOT}\bin\libGraphicsMagick-1.dll"
+  File "${VCLIBS_ROOT}\bin\libGraphicsMagick++-1.dll"
+  File "${VCLIBS_ROOT}\bin\libtiff.dll"
+  File "${VCLIBS_ROOT}\bin\libjasper-1.dll"
+  File "${VCLIBS_ROOT}\bin\libwmflite-0-2-7.dll"
+  File "${VCLIBS_ROOT}\bin\libbz2.dll"
+  File "${VCLIBS_ROOT}\bin\libxml2-2.dll"
+  File "${VCLIBS_ROOT}\bin\libiconv-2.dll"
+  SetOutPath "$INSTDIR\lib\GraphicsMagick-${GMAGICKVER}"
+  File /r "${VCLIBS_ROOT}\lib\GraphicsMagick-${GMAGICKVER}\*.*"
+  SetOutPath "$INSTDIR\share\GraphicsMagick-${GMAGICKVER}"
+  File /r "${VCLIBS_ROOT}\share\GraphicsMagick-${GMAGICKVER}\*.*"
 !endif
   ; licenses
   SetOutPath "$INSTDIR\license"
@@ -263,19 +283,30 @@ Section "Generic" SEC_LA_GEN
   File "${VCLIBS_ROOT}\license\COPYING.LAPACK"
 SectionEnd
 
-Section /o "P4/SSE3" SEC_LA_P4SSE3
+!ifdef USE_SSE1
+Section /o "Pentium/SSE1" SEC_LA_SSE1
+  SetOutPath "$INSTDIR\bin"
+  SetOverwrite try
+  File /oname=libblas.dll "${VCLIBS_ROOT}\bin\libblas_atl381_PIIISSE1.dll"
+  File /oname=liblapack.dll "${VCLIBS_ROOT}\bin\liblapack_atl381_PIIISSE1.dll"
+SectionEnd
+!endif
+
+!ifdef USE_SSE2
+Section /o "Pentium/SSE2" SEC_LA_SSE2
+  SetOutPath "$INSTDIR\bin"
+  SetOverwrite try
+  File /oname=libblas.dll "${VCLIBS_ROOT}\bin\libblas_atl381_P4SSE2.dll"
+  File /oname=liblapack.dll "${VCLIBS_ROOT}\bin\liblapack_atl381_P4SSE2.dll"
+SectionEnd
+!endif
+
+!ifdef USE_SSE3
+Section /o "Pentium/SSE3" SEC_LA_SSE3
   SetOutPath "$INSTDIR\bin"
   SetOverwrite try
   File /oname=libblas.dll "${VCLIBS_ROOT}\bin\libblas_atl381_P4E32SSE3.dll"
   File /oname=liblapack.dll "${VCLIBS_ROOT}\bin\liblapack_atl381_P4E32SSE3.dll"
-SectionEnd
-
-!ifdef ATLAS_PM
-Section /o "PM/SSE2" SEC_LA_PMSSE2
-  SetOutPath "$INSTDIR\bin"
-  SetOverwrite try
-  File /oname=libblas.dll "${VCLIBS_ROOT}\bin\libblas_atl_PMSSE2.dll"
-  File /oname=liblapack.dll "${VCLIBS_ROOT}\bin\liblapack_atl_PMSSE2.dll"
 SectionEnd
 !endif
 
@@ -580,8 +611,8 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
-  WriteRegStr ${PRODUCT_ROOT_KEY} "${PRODUCT_KEY}" "InstallPath" "$INSTDIR"
-  WriteRegStr ${PRODUCT_ROOT_KEY} "${PRODUCT_KEY}" "Version" "${OCTAVE_VERSION}"
+  WriteRegStr ${PRODUCT_ROOT_KEY} "${PRODUCT_KEY}\${OCTAVE_VERSION}" "InstallPath" "$INSTDIR"
+  WriteRegStr ${PRODUCT_ROOT_KEY} "${PRODUCT_KEY}\${OCTAVE_VERSION}" "Version" "${OCTAVE_VERSION}"
 
   InitPluginsDir
   File "/oname=$PLUGINSDIR\do_pkg_init.m" "do_pkg_init.m"
@@ -625,9 +656,14 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${DOC_HTML} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${DOC_PDF} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_GEN} ""
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_P4SSE3} ""
-!ifdef ATLAS_PM
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_PMSSE2} ""
+!ifdef USE_SSE3
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_SSE3} ""
+!endif
+!ifdef USE_SSE2
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_SSE2} ""
+!endif
+!ifdef USE_SSE1
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LA_SSE1} ""
 !endif
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -653,13 +689,28 @@ Function .onInit
   File "/oname=$PLUGINSDIR\check_cpu_flag.exe" "check_cpu_flag.exe"
   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "atlascpu.ini"
   !insertmacro MUI_INSTALLOPTIONS_EXTRACT "graphics.ini"
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Field 3" "ListItems" "${LA_ALL}"
+  StrCpy $0 "${LA_GEN}"
+!ifdef USE_SSE1
+  StrCpy $0 "$0|${LA_SSE1}"
+!endif
+!ifdef USE_SSE2
+  StrCpy $0 "$0|${LA_SSE2}"
+!endif
+!ifdef USE_SSE3
+  StrCpy $0 "$0|${LA_SSE3}"
+!endif
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Field 3" "ListItems" "$0"
   !insertmacro SetSectionFlag ${SEC_CORE} ${SF_RO}
   ;!insertmacro SetSectionFlag ${SEC_VC} ${SF_RO}
   !insertmacro SetSectionFlag ${SEC_LA_GEN} ${SF_RO}
-  !insertmacro SetSectionFlag ${SEC_LA_P4SSE3} ${SF_RO}
-!ifdef ATLAS_PM
-  !insertmacro SetSectionFlag ${SEC_LA_PMSSE2} ${SF_RO}
+!ifdef USE_SSE1
+  !insertmacro SetSectionFlag ${SEC_LA_SSE1} ${SF_RO}
+!endif
+!ifdef USE_SSE2
+  !insertmacro SetSectionFlag ${SEC_LA_SSE2} ${SF_RO}
+!endif
+!ifdef USE_SSE3
+  !insertmacro SetSectionFlag ${SEC_LA_SSE3} ${SF_RO}
 !endif
   Call DetectWinVer
   Call CheckMSVCRT
@@ -671,12 +722,16 @@ noruntime:
   Pop $0
   StrCmp "" "$0" nojvm jvm
 jvm:
+!ifdef JHANDLES_VERSION
   !insertmacro SetSectionFlag ${SEC_java} ${SF_SELECTED}
   !insertmacro SetSectionFlag ${SEC_JHANDLES} ${SF_SELECTED}
+!endif
   Goto endjvm
 nojvm:
+!ifdef JHANDLES_VERSION
   !insertmacro ClearSectionFlag ${SEC_java} ${SF_SELECTED}
   !insertmacro ClearSectionFlag ${SEC_JHANDLES} ${SF_SELECTED}
+!endif
 endjvm:
 !ifdef USE_MSYS
   Call DetectMSYS
@@ -725,11 +780,15 @@ Function AtlasCpu
   #!insertmacro CheckCPUFeature 13
   !insertmacro CheckCPUFlag "sse3"
   Pop $1
-  StrCmp $1 0 +4 0
+  StrCmp $1 0 nosse3 0
   StrCpy $1 " (SSE3 detected)"
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Field 3" "State" "${LA_P4}"
-  Goto +2
+!ifdef USE_SSE3
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Field 3" "State" "${LA_SSE3}"
+!endif
+  Goto atlasend
+nosse3:
   StrCpy $1 " (SSE3 not detected)"
+atlasend:
   !insertmacro MUI_INSTALLOPTIONS_WRITE "atlascpu.ini" "Field 2" "Text" "$0$1"
   !insertmacro MUI_INSTALLOPTIONS_DISPLAY "atlascpu.ini"
 FunctionEnd
@@ -737,26 +796,43 @@ FunctionEnd
 Function AtlasCpuEnd
 validate:
   !insertmacro ClearSectionFlag ${SEC_LA_GEN} ${SF_SELECTED}
-  !insertmacro ClearSectionFlag ${SEC_LA_P4SSE3} ${SF_SELECTED}
-!ifdef ATLAS_PM
-  !insertmacro ClearSectionFlag ${SEC_LA_PMSSE2} ${SF_SELECTED}
+!ifdef USE_SSE1
+  !insertmacro ClearSectionFlag ${SEC_LA_SSE1} ${SF_SELECTED}
+!endif
+!ifdef USE_SSE2
+  !insertmacro ClearSectionFlag ${SEC_LA_SSE2} ${SF_SELECTED}
+!endif
+!ifdef USE_SSE3
+  !insertmacro ClearSectionFlag ${SEC_LA_SSE3} ${SF_SELECTED}
 !endif
   !insertmacro MUI_INSTALLOPTIONS_READ $0 "atlascpu.ini" "Field 3" "State"
   StrCmp $0 "${LA_GEN}" generic0
-  StrCmp $0 "${LA_P4}" p4sse30
-!ifdef ATLAS_PM
-  StrCmp $0 "${LA_PM}" pmsse20
+!ifdef USE_SSE3
+  StrCmp $0 "${LA_SSE3}" p4sse30
+!endif
+!ifdef USE_SSE2
+  StrCmp $0 "${LA_SSE2}" p4sse20
+!endif
+!ifdef USE_SSE1
+  StrCmp $0 "${LA_SSE1}" p4sse10
 !endif
   Abort "Internal error: unexpected CPU type"
 generic0:
   !insertmacro SetSectionFlag ${SEC_LA_GEN} ${SF_SELECTED}
   Goto atlasend
+!ifdef USE_SSE3
 p4sse30:
-  !insertmacro SetSectionFlag ${SEC_LA_P4SSE3} ${SF_SELECTED}
+  !insertmacro SetSectionFlag ${SEC_LA_SSE3} ${SF_SELECTED}
   Goto atlasend
-!ifdef ATLAS_PM
-pmsse20:
-  !insertmacro SetSectionFlag ${SEC_LA_PMSSE2} ${SF_SELECTED}
+!endif
+!ifdef USE_SSE2
+p4sse20:
+  !insertmacro SetSectionFlag ${SEC_LA_SSE2} ${SF_SELECTED}
+  Goto atlasend
+!endif
+!ifdef USE_SSE1
+p4sse10:
+  !insertmacro SetSectionFlag ${SEC_LA_SSE1} ${SF_SELECTED}
   Goto atlasend
 !endif
 atlasend:
@@ -782,6 +858,7 @@ end_octplot:
 !else
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Settings" "NumFields" "4"
 !endif
+!ifdef JHANDLES_VERSION
   !insertmacro SectionFlagIsSet ${SEC_JHANDLES} ${SF_SELECTED} jhandles no_jhandles
 jhandles:
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 3" "Flags" ""
@@ -798,6 +875,9 @@ no_jhandles:
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 1" "State" 1
   !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Field 3" "State" 0
 end_jhandles:
+!else
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "graphics.ini" "Settings" "NumFields" "2"
+!endif
   !insertmacro MUI_INSTALLOPTIONS_DISPLAY "graphics.ini"
   Pop $0
 FunctionEnd
@@ -837,6 +917,7 @@ Section Uninstall
 ;  Delete "$SMPROGRAMS\$ICONS_GROUP\Help.lnk"
   Delete "$DESKTOP\Octave.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\Octave.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\Octave UI.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\SciTE editor.lnk"
   RMDir /r "$SMPROGRAMS\$ICONS_GROUP\Documentation"
 
@@ -844,7 +925,7 @@ Section Uninstall
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
-  DeleteRegKey ${PRODUCT_ROOT_KEY} "${PRODUCT_KEY}"
+  DeleteRegKey ${PRODUCT_ROOT_KEY} "${PRODUCT_KEY}\${OCTAVE_VERSION}"
   SetAutoClose true
 SectionEnd
 
@@ -879,16 +960,36 @@ FunctionEnd
 
 Function CheckPrevVersion
   Push $0
+  Push $1
+  Push $2
   IfFileExists "$INSTDIR\bin\octave-${OCTAVE_VERSION}.exe" 0 otherver
   MessageBox MB_OK|MB_ICONSTOP "Another Octave installation (with the same version) has been detected.$\r$\nPlease uninstall it first."
   Abort
 otherver:
-  ReadRegStr $0 ${PRODUCT_ROOT_KEY} "${PRODUCT_KEY}" "Version"
-  IfErrors done
-  MessageBox MB_YESNO|MB_ICONEXCLAMATION "Another Octave installation (version $0) has been detected.$\r$\nIt is recommended to uninstall it if you intend to use the same installation directory.$\r$\nDo you want to proceed with the installation anyway?" IDYES done IDNO 0
+  StrCpy $0 0
+  StrCpy $2 ""
+loop:
+  EnumRegKey $1 ${PRODUCT_ROOT_KEY} "${PRODUCT_KEY}" $0
+  StrCmp $1 "" loopend
+  IntOp $0 $0 + 1
+  StrCmp $2 "" 0 +2
+  StrCpy $2 "$1"
+  StrCpy $2 "$2, $1"
+  Goto loop
+loopend:
+  ReadRegStr $1 ${PRODUCT_ROOT_KEY} "${PRODUCT_KEY}" "Version"
+  IfErrors finalcheck
+  StrCmp $2 "" 0 +2
+  StrCpy $2 "$1"
+  StrCpy $2 "$2, $1"
+finalcheck:
+  StrCmp $2 "" done
+  MessageBox MB_YESNO|MB_ICONEXCLAMATION "Another Octave installation (version $2) has been detected.$\r$\nIt is recommended to uninstall it if you intend to use the same installation directory.$\r$\nDo you want to proceed with the installation anyway?" IDYES done IDNO 0
   Abort
 done:
   ClearErrors
+  Pop $2
+  Pop $1
   Pop $0
 FunctionEnd
 
@@ -1032,7 +1133,9 @@ FunctionEnd
 Function componentsLeave
   StrCpy $DEP_FLAG 0
 !ifdef USE_OCTAVE_FORGE
+!ifdef JHANDLES_VERSION
   !insertmacro CheckDependency ${SEC_JHANDLES} ${SEC_java}
+!endif
   !include "octave_forge_deps.nsi"
 !endif
   StrCmp $DEP_FLAG 0 +2
@@ -1040,7 +1143,9 @@ Function componentsLeave
 !ifdef JHANDLES_VERSION
   !insertmacro SectionFlagIsSet ${SEC_JHANDLES} ${SF_SELECTED} check_jvm ""
 !endif
+!ifdef USE_OCTAVE_FORGE
   !insertmacro SectionFlagIsSet ${SEC_java} ${SF_SELECTED} check_jvm done
+!endif
 check_jvm:
   Call DetectJVM
   Pop $0

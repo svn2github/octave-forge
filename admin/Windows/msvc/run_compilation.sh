@@ -2768,7 +2768,7 @@ if check_package gnutls; then
     fi &&
     create_module_rc gnutls $gnutlsver libgnutls-26.dll "http://www.gnu.org" \
       "GnuTLS - TLS/SSL Library" "Copyright (C) 2000-`date +%Y` Free Software Foundation" > lib/gnutls.rc &&
-    ac_cv_c_bigendian=no LIBS="-luser32" \
+    ac_cv_c_bigendian=no LIBS="-luser32" W_CPPFLAGS="$W_CPPFLAGS -D_WIN32_WINNT=0x0501" \
       configure_package --enable-shared --disable-static --disable-cxx --disable-openssl-compatibility &&
     post_process_libtool &&
     sed -e 's/^libgnutls_la_LDFLAGS =/& -Wl,gnutls.res/' lib/Makefile > ttt &&
@@ -3219,7 +3219,7 @@ if check_package octave; then
       CC=cc-msvc CXX=cc-msvc CFLAGS=-O2 CXXFLAGS=-O2 NM="dumpbin -symbols" \
         F77=fc-msvc FFLAGS="-O2" FC=fc-msvc FCFLAGS="-O2" AR=ar-msvc RANLIB=ranlib-msvc \
         ./configure --build=i686-pc-msdosmsvc --prefix="$octave_prefix" \
-        --with-zlib=zlib --with-curl=libcurl &&
+        --with-zlib=zlib &&
         (cd doc &&
           make conf.texi &&
           sed -e 's,/\([a-z]\)/,\1:/,' conf.texi > ttt &&

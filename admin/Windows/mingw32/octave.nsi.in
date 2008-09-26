@@ -151,8 +151,8 @@ Section "Octave" SEC_OCTAVE
   File /r "${PACKAGE_ROOT}\MSYS\*.*"
   SetOutPath "$INSTDIR\share"
   File /r /x packages /x octave_packages "${PACKAGE_ROOT}\share\*.*"
-  SetOutPath "$INSTDIR\staticlib"
-  File /r /x libblas.a /x libcblas.a /x liblapack.a "${PACKAGE_ROOT}\staticlib\*.*"
+#  SetOutPath "$INSTDIR\staticlib"
+#  File /r /x libblas.a /x libcblas.a /x liblapack.a "${PACKAGE_ROOT}\staticlib\*.*"
   SetOutPath "$INSTDIR\tools"
   File /r "${PACKAGE_ROOT}\tools\*.*"
    
@@ -234,10 +234,10 @@ Section /o "Generic" SEC_ATLAS_GENERIC
    File "${PACKAGE_ROOT}\lib\libblas.dll.a"
    File "${PACKAGE_ROOT}\lib\libcblas.dll.a"
    File "${PACKAGE_ROOT}\lib\liblapack.dll.a"
-   SetOutPath "$INSTDIR\staticlib"
-   File "${PACKAGE_ROOT}\staticlib\libblas.a"
-   File "${PACKAGE_ROOT}\staticlib\libcblas.a"
-   File "${PACKAGE_ROOT}\staticlib\liblapack.a"
+#   SetOutPath "$INSTDIR\staticlib"
+#   File "${PACKAGE_ROOT}\staticlib\libblas.a"
+#   File "${PACKAGE_ROOT}\staticlib\libcblas.a"
+#   File "${PACKAGE_ROOT}\staticlib\liblapack.a"
    
 SectionEnd
 
@@ -247,8 +247,8 @@ Section /o "MMX (PII)" SEC_ATLAS_P2
    File "${PACKAGE_ROOT}\ATLAS\ARCH_P2\bin\*.*"
    SetOutPath "$INSTDIR\lib"
    File "${PACKAGE_ROOT}\ATLAS\ARCH_P2\lib\*.*"
-   SetOutPath "$INSTDIR\staticlib"
-   File "${PACKAGE_ROOT}\ATLAS\ARCH_P2\staticlib\*.*"
+#   SetOutPath "$INSTDIR\staticlib"
+#   File "${PACKAGE_ROOT}\ATLAS\ARCH_P2\staticlib\*.*"
    
 SectionEnd
 
@@ -258,8 +258,8 @@ Section /o "SSE (PIII)" SEC_ATLAS_P3
    File "${PACKAGE_ROOT}\ATLAS\ARCH_P3\bin\*.*"
    SetOutPath "$INSTDIR\lib"
    File "${PACKAGE_ROOT}\ATLAS\ARCH_P3\lib\*.*"
-   SetOutPath "$INSTDIR\staticlib"
-   File "${PACKAGE_ROOT}\ATLAS\ARCH_P3\staticlib\*.*"
+#   SetOutPath "$INSTDIR\staticlib"
+#   File "${PACKAGE_ROOT}\ATLAS\ARCH_P3\staticlib\*.*"
    
 SectionEnd
 
@@ -269,8 +269,8 @@ Section /o "SSE2 (P4)" SEC_ATLAS_P4
    File "${PACKAGE_ROOT}\ATLAS\ARCH_P4SSE2\bin\*.*"
    SetOutPath "$INSTDIR\lib"
    File "${PACKAGE_ROOT}\ATLAS\ARCH_P4SSE2\lib\*.*"
-   SetOutPath "$INSTDIR\staticlib"
-   File "${PACKAGE_ROOT}\ATLAS\ARCH_P4SSE2\staticlib\*.*"
+#   SetOutPath "$INSTDIR\staticlib"
+#   File "${PACKAGE_ROOT}\ATLAS\ARCH_P4SSE2\staticlib\*.*"
    
 SectionEnd
 
@@ -280,8 +280,8 @@ Section /o "SSE3 (Core2Duo)" SEC_ATLAS_CORE2DUO
    File "${PACKAGE_ROOT}\ATLAS\ARCH_Core2Duo\bin\*.*"
    SetOutPath "$INSTDIR\lib"
    File "${PACKAGE_ROOT}\ATLAS\ARCH_Core2Duo\lib\*.*"
-   SetOutPath "$INSTDIR\staticlib"
-   File "${PACKAGE_ROOT}\ATLAS\ARCH_Core2Duo\staticlib\*.*"
+#   SetOutPath "$INSTDIR\staticlib"
+#   File "${PACKAGE_ROOT}\ATLAS\ARCH_Core2Duo\staticlib\*.*"
    
 SectionEnd
 

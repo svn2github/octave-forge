@@ -60,10 +60,10 @@ create_octave_forge_deps_nsi()
    DF=`find ${PACKAGE_ROOT}/share/octave/packages/ -name DESCRIPTION`
 
    for a in $DF; do
-      PACK=`echo $a | sed -e "s/^.*packages\/\([a-zA-Z]\+\)-.*$/\1/"`
+      PACK=`echo $a | sed -e "s/^.*packages\/\([a-zA-Z-]\+\)-.*$/\1/"`
       sed -ne "s/^[dD]epends: *//p" $a | \
         awk -F ', ' '{c=split($0, s); for(n=1; n<=c; ++n) printf("%s\n", s[n]) }' | \
-        sed -n -e "s/^octave.*$//" -e "s/^\([a-zA-Z0-9_]\+\).*$/\!insertmacro CheckDependency \${SEC_FORGE_${PACK}} \${SEC_FORGE_\1}/p"
+        sed -n -e "s/^octave.*$//" -e "s/^\([a-zA-Z0-9_-]\+\).*$/\!insertmacro CheckDependency \${SEC_FORGE_${PACK}} \${SEC_FORGE_\1}/p"
    done
 }
 

@@ -111,6 +111,8 @@ install_pkg() {
    cp -vp ${SRCDIR}/COPYING ${PACKAGE_ROOT}/license/octave
    # Install ICO file
    cp -vp ${TOPDIR}/octave.ico ${PACKAGE_ROOT}/bin
+   # Copy NEWS, README, THANKS
+   cp -vp ${SRCDIR}{/NEWS,/README,/THANKS} ${PACKAGE_ROOT}/doc
  )
 }
 

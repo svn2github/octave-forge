@@ -79,6 +79,9 @@ FORGE_M_ROOT=${PACKAGE_ROOT}/share/octave/packages/
 FORGE_OCT_ROOT=${PACKAGE_ROOT}/libexec/octave/packages/
 
 FORGELOG=forge.log
+FORGELISTLOG=forgelist.txt
+
+rm -f ${FORGELISTLOG}
 
 echo Installing forge packages for octave ${VER_OCTAVE} > ${FORGELOG}
 echo The following packages are installed: >> ${FORGELOG}
@@ -93,6 +96,7 @@ for a in $FORGEPACK; do
    if [ -d ${FORGE_M_ROOT}/$PACK -o -d ${FORGE_OCT_ROOT}/$PACK ]; then
       echo Forge Package "${PACK}" is already installed...
       echo Forge Package "${PACK}" is already installed...>>${FORGELOG}
+      echo $PACK >> ${FORGELISTLOG}
    else
       echo installing package "${PACK}" ...
       
@@ -100,6 +104,7 @@ for a in $FORGEPACK; do
       
       if [ -d ${FORGE_M_ROOT}/$PACK ]; then
          echo Successfully installed $PACK >> ${FORGELOG}
+         echo $PACK >> ${FORGELISTLOG}
       else
          echo ERROR INSTALLING PACKAGE $PACK >> ${FORGELOG}
       fi

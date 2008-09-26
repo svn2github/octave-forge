@@ -52,6 +52,8 @@ WPACKAGE_ROOT=`cd ${PACKAGE_ROOT}; pwd -W | sed -e 's+/+\\\\\\\\+g'`
 
 echo WPACKAGE_ROOT=$WPACKAGE_ROOT
 
+SUBWCREV="C:/Program Files/TortoiseSVN/bin/subwcrev.EXE"
+
 rm -rf octave_nsi.log
 
 create_octave_forge_deps_nsi()
@@ -96,8 +98,29 @@ create_octave_forge_nsi()
    done
 }
 
+create_readme_file()
+{
+   BUILD_REVISION=`"$SUBWCREV" . | sed -ne "s/Last committed at revision \([0-9]\+\)/\1/p"`
+   GCCVER=`$CC -v 2>&1 | sed -ne "/gcc version/p"`
+   
+   # Create the readme file
+   sed \
+    -e "s/@OCTAVE_VERSION@/${PKG_VER}/" \
+    -e "s/@BUILD_REVISION@/${BUILD_REVISION}/" \
+    -e "s/@GCC_VERSION@/${GCCVER}/" \
+    README.txt.in
+   
+   cat forgelist.txt | sort | sed -e "s/^\(.*\)$/   \1/"
+   
+   echo;
+   
+   cat ${PACKAGE_ROOT}/doc/NEWS
+}
+   
 create_octave_forge_nsi > octave_forge.nsi
 create_octave_forge_deps_nsi > octave_forge_deps.nsi
+create_readme_file > README.txt
+unix2dos README.txt
 
 # create installer package
 sed \

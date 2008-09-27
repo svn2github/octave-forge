@@ -60,6 +60,7 @@ var SMFOLDERNAME
 !insertmacro MUI_PAGE_INSTFILES
 
 ; Finish Page
+!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.txt"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -156,7 +157,10 @@ Section "Octave" SEC_OCTAVE
   SetOutPath "$INSTDIR\tools"
   File /r "${PACKAGE_ROOT}\tools\*.*"
    
-   ; Shortcut's "Start In" Property ssems to be defined by the current output path...
+  SetOutPath "$INSTDIR"
+  File "README.txt"
+   
+   ; Shortcut's "Start In" Property seems to be defined by the current output path...
    SetOutPath "$INSTDIR\bin"
    
    ; Shortcuts

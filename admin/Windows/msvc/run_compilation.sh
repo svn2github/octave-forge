@@ -590,7 +590,7 @@ if ! $do_nsi && test -z "$todo_packages"; then
     todo_check "$tbindir/libpango-1.0-0.dll" pango
     todo_check "$tlibdir/xml2.lib" libxml2
     todo_check "$tlibdir/xslt.lib" libxslt
-    todo_check "$tlibdir/icu.lib" ICU
+    todo_check "$tlibdir/icuuc.lib" ICU
     todo_check "$tlibdir/fontconfig.lib" fontconfig
     todo_check "$tlibdir/freetype.lib" freetype
     todo_check "$tlibdir/gd.lib" libgd
@@ -616,7 +616,7 @@ if ! $do_nsi && test -z "$todo_packages"; then
       fi
     fi
     if test ! -z "$of_version"; then
-      packages="$packages forge"
+      packages="$packages:forge:"
     fi
     todo_check "$tbindir/jogl.jar" JOGL
     todo_check "$tlibdir/qhull.lib" qhull
@@ -645,12 +645,14 @@ if ! $do_nsi && test -z "$todo_packages"; then
     todo_check "$tlibdir/avcodec.lib" FFMpeg
     todo_check "$tlibdir/ftgl.lib" FTGL
     todo_check "$tlibdir/gtkglext-win32-1.0.lib" gtkglext
-    todo_check "$tlibdir/gtkglextmm-win32-1.2-0.lib" gtkglextmm
+    todo_check "$tlibdir/gtkglextmm-win32-1.2.lib" gtkglextmm
     todo_check "$tlibdir/pthread.lib" pthreads
     todo_check "$tincludedir/stdint.h" inttypes
     todo_check "$tincludedir/inttypes.h" inttypes
     todo_check "$tincludedir/stdbool.h" inttypes
-    todo_check "$tlibdir/webkit.lib" webkit
+    if $do_gui; then
+      todo_check "$tlibdir/webkit.lib" webkit
+    fi
     todo_check "$tlibdir/xapian.lib" xapian
     todo_check "$tlibdir/gpg-error.lib" libgpg-error
     todo_check "$tlibdir/gcrypt.lib" libgcrypt
@@ -3272,7 +3274,7 @@ if test -n "$octave_version"; then
   if test -z "$octave_prefix"; then
     octave_prefix="$INSTALL_DIR/local/octave-$octave_version"
   fi
-  if test -n "`which octave.exe`"; then
+  if test -n "`which octave.exe 2> /dev/null`"; then
     echo "WARNING: octave is already in your PATH."
     echo "WARNING: overridding with $octave_prefix."
   fi
@@ -3507,7 +3509,7 @@ function install_forge_packages
   auto=$3
   for pack in $pkgs; do
     echo -n "checking for $pack... "
-    found=`find "$oforge_prefix" -type d -a -name "$pack-*" -maxdepth 1`
+    found=`find "$oforge_prefix" -maxdepth 1 -type d -a -name "$pack-*"`
     if test ! -z "$found"; then
       echo "installed"
     else
@@ -3525,7 +3527,7 @@ function install_forge_packages
           fi
           TERM=vt100 "$octave_prefix/bin/octave.exe" -q -f -H --eval "page_screen_output(0); pkg install $auto_ -verbose $packpack"
         fi)
-      found=`find "$oforge_prefix" -type d -a -name "$pack-*" -maxdepth 1`
+      found=`find "$oforge_prefix" -maxdepth 1 -type d -a -name "$pack-*"`
       if test ! -z "$found"; then
         echo "done"
       else
@@ -3537,11 +3539,12 @@ function install_forge_packages
   return 0
 }
 
-extra_pkgs="fpl msh ad bim civil-engineering integration java jhandles mapping nan ocs secs1d secs2d symband triangular tsa windows"
+extra_pkgs="fpl msh ad bim civil-engineering integration java jhandles mapping nan ocs secs1d secs2d symband tsa windows"
 # packages to fix:
 # new packages:
-# unsupported packages: engine graceplot multicore pdb tcl-octave xraylib
-main_pkgs="signal ann audio bioinfo combinatorics communications control database data-smoothing econometrics time financial fixed ftp miscellaneous ga general gsl ident image informationtheory io irsa linear-algebra missing-functions nnet octcdf odebvp odepkg optim outliers physicalconstants plot sockets specfun special-matrix splines statistics strings struct symbolic video"
+# unsupported packages: engine graceplot multicore nlwing2 pdb tcl-octave xraylib
+# removed packages: triangular
+main_pkgs="miscellaneous optim signal ann audio benchmark bioinfo combinatorics communications control database data-smoothing econometrics time financial fixed ftp ga general gsl ident image informationtheory io irsa linear-algebra missing-functions nnet octcdf odebvp odepkg outliers physicalconstants plot sockets specfun special-matrix splines statistics strings struct symbolic video"
 # packages to fix: octgpr
 # new packages:
 # unsupported packages: optiminterp parallel vrml zenity

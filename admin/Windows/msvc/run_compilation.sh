@@ -120,6 +120,50 @@ function download_file
   fi
 }
 
+function post_process_libtool
+{
+  if test -z "$1"; then
+    ltfile=libtool
+  else
+    ltfile="$1"
+  fi
+  sed -e '/#.*BEGIN LIBTOOL TAG CONFIG: CXX/,/#.*END LIBTOOL TAG CONFIG: CXX/ {/^archive_cmds=.*/,/^postinstall_cmds=.*/ {/^postinstall_cmds=.*/!d;};}' \
+      -e 's,/OUT:,-OUT:,g' \
+      -e 's/\$EGREP -e "\$export_symbols_regex"/$EGREP -e EXPORTS -e "$export_symbols_regex"/' \
+      -e 's/egrep -e "\$export_symbols_regex"/egrep -e EXPORTS -e "$export_symbols_regex"/' \
+      -e 's/^export_symbols_cmds="\(.*\) > \\\$export_symbols"/export_symbols_cmds="(echo EXPORTS; \1) > \\$export_symbols"/' \
+      -e 's,^\([^=]*\)=.*cygpath.*$,\1="",g' \
+      -e 's,-link -dll,-shared,g' \
+      -e 's/^wl=.*$/wl="-Wl,"/' \
+      -e 's/^deplibs_check_method=.*$/deplibs_check_method="pass_all"/' \
+      -e 's,^archive_expsym_cmds=.*$,,' \
+      -e 's,^archive_cmds=.*$,\0,p' \
+      -e 's,^archive_cmds=\(.*\)$,archive_expsym_cmds=\1,' \
+      -e '/^archive_expsym_cmds=/ {s,-shared,-shared ${wl}-def:\\$export_symbols,;}' \
+      -e '/^library_names_spec=/ {s, \\$libname\.lib,,;}' \
+      -e 's/S_IXUSR/S_IEXEC/g' \
+      -e 's/^reload_flag=.*$/reload_flag=""/' \
+      -e 's/^reload_cmds=.*$/reload_cmds="lib -OUT:\\$output\\$reload_objs"/' \
+      -e 's/^old_archive_from_new_cmds=.*$/old_archive_from_new_cmds=""/' \
+      -e 's/^file_list_spec=""/file_list_spec="@"/' \
+      -e '/testbindir=.*/ {a\
+case $host in\
+    *-*-mingw*)\
+    	dir=`cd "$dir" && pwd`\
+	;;\
+esac
+;}' \
+      -e '/cmds=\$old_archive_cmds/ {a \
+elif true; then \
+linkfile="$objdir/link.files" \
+echo "$oldobjs" > $linkfile \
+oldobjs=" @$linkfile" \
+eval cmds=\\"$old_archive_cmds~rm -fr $linkfile\\"
+}' \
+      -e "s,^postinstall_cmds=.*$,postinstall_cmds='if echo \"\$destdir\" | grep -e \\\\\"/lib/\\\\\\\\?\$\\\\\" >\& /dev/null; then name=\`echo \\\\\$file | sed -e \"s/.*\\\\///\" -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`; implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`; \$install_prog \$dir/\\\\\$implibname \$destdir/\\\\\$name.lib; test -d \$destdir/../bin || mkdir -p \$destdir/../bin; mv -f \$destdir/\$dlname \$destdir/../bin; fi'," "$ltfile" > ttt &&
+      mv ttt "$ltfile"
+}
+
 function unpack_file
 {
   filename=$1
@@ -194,6 +238,10 @@ while test $# -gt 0; do
       ;;
     --gui)
       do_gui=true
+      ;;
+    --libtool)
+      post_process_libtool
+      exit 0
       ;;
     --prefix=*)
       INSTALL_DIR=`echo $1 | sed -e 's/--prefix=//'`
@@ -349,42 +397,6 @@ BEGIN
 	END
 END
 EOF
-}
-
-function post_process_libtool
-{
-  if test -z "$1"; then
-    ltfile=libtool
-  else
-    ltfile="$1"
-  fi
-  sed -e '/#.*BEGIN LIBTOOL TAG CONFIG: CXX/,/#.*END LIBTOOL TAG CONFIG: CXX/ {/^archive_cmds=.*/,/^postinstall_cmds=.*/ {/^postinstall_cmds=.*/!d;};}' \
-      -e 's,/OUT:,-OUT:,g' \
-      -e 's/\$EGREP -e "\$export_symbols_regex"/$EGREP -e EXPORTS -e "$export_symbols_regex"/' \
-      -e 's/egrep -e "\$export_symbols_regex"/egrep -e EXPORTS -e "$export_symbols_regex"/' \
-      -e 's/^export_symbols_cmds="\(.*\) > \\\$export_symbols"/export_symbols_cmds="(echo EXPORTS; \1) > \\$export_symbols"/' \
-      -e 's,^\([^=]*\)=.*cygpath.*$,\1="",g' \
-      -e 's,-link -dll,-shared,g' \
-      -e 's/^wl=.*$/wl="-Wl,"/' \
-      -e 's/^deplibs_check_method=.*$/deplibs_check_method="pass_all"/' \
-      -e 's,^archive_expsym_cmds=.*$,,' \
-      -e 's,^archive_cmds=.*$,\0,p' \
-      -e 's,^archive_cmds=\(.*\)$,archive_expsym_cmds=\1,' \
-      -e '/^archive_expsym_cmds=/ {s,-shared,-shared ${wl}-def:\\$export_symbols,;}' \
-      -e '/^library_names_spec=/ {s, \\$libname\.lib,,;}' \
-      -e 's/S_IXUSR/S_IEXEC/g' \
-      -e 's/^reload_flag=.*$/reload_flag=""/' \
-      -e 's/^reload_cmds=.*$/reload_cmds="lib -OUT:\\$output\\$reload_objs"/' \
-      -e 's/^old_archive_from_new_cmds=.*$/old_archive_from_new_cmds=""/' \
-      -e '/testbindir=.*/ {a\
-case $host in\
-    *-*-mingw*)\
-    	dir=`cd "$dir" && pwd`\
-	;;\
-esac
-;}' \
--e "s,^postinstall_cmds=.*$,postinstall_cmds='if echo \"\$destdir\" | grep -e \\\\\"/lib/\\\\\\\\?\$\\\\\" >\& /dev/null; then name=\`echo \\\\\$file | sed -e \"s/.*\\\\///\" -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`; implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`; \$install_prog \$dir/\\\\\$implibname \$destdir/\\\\\$name.lib; test -d \$destdir/../bin || mkdir -p \$destdir/../bin; mv -f \$destdir/\$dlname \$destdir/../bin; fi'," "$ltfile" > ttt &&
-      mv ttt "$ltfile"
 }
 
 ###################################################################################

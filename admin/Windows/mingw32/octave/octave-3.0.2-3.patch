@@ -327,7 +327,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x con
  	@$(subdir-for-command)
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/scripts/pkg/pkg.m octave-3.0.2/scripts/pkg/pkg.m
 --- octave-3.0.2-orig/scripts/pkg/pkg.m	2008-08-01 08:50:56 +0200
-+++ octave-3.0.2/scripts/pkg/pkg.m	2008-08-27 10:00:17 +0200
++++ octave-3.0.2/scripts/pkg/pkg.m	2008-09-30 19:53:29 +0200
 @@ -1228,7 +1228,9 @@
        if (isempty (getenv ("RANLIB")))
          flags = strcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
@@ -368,9 +368,30 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x con
      endif
  
      ## Split into architecture dependent and independent files
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/scripts/plot/__gnuplot_version__.m octave-3.0.2/scripts/plot/__gnuplot_version__.m
+--- octave-3.0.2-orig/scripts/plot/__gnuplot_version__.m	2008-08-01 08:50:56 +0200
++++ octave-3.0.2/scripts/plot/__gnuplot_version__.m	2008-09-29 19:39:30 +0200
+@@ -27,7 +27,7 @@
+   persistent __version__ = "";
+ 
+   if (isempty (__version__))
+-    [status, output] = system (sprintf ("%s --version", gnuplot_binary ()));
++    [status, output] = system (sprintf ("\"%s\" --version", gnuplot_binary ()));
+     if (status != 0)
+       ## This message ends in a newline so that the traceback messages
+       ## are skipped and people might actually see the message, read it,
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/scripts/plot/drawnow.m octave-3.0.2/scripts/plot/drawnow.m
 --- octave-3.0.2-orig/scripts/plot/drawnow.m	2008-08-01 08:50:56 +0200
-+++ octave-3.0.2/scripts/plot/drawnow.m	2008-08-25 16:20:21 +0200
++++ octave-3.0.2/scripts/plot/drawnow.m	2008-09-29 19:39:53 +0200
+@@ -116,7 +116,7 @@
+ 
+   cmd = gnuplot_binary ();
+ 
+-  plot_stream = popen (cmd, "w");
++  plot_stream = popen (["\"",cmd,"\""], "w");
+ 
+   if (plot_stream < 0)
+     error ("drawnow: failed to open connection to gnuplot");
 @@ -190,9 +190,9 @@
        ## gnuplot 4.2 documentation says.
        fprintf (plot_stream, "set terminal aqua %d %s\n", h, enh_str);
@@ -485,3 +506,48 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x con
  
  ops.cc: $(OP_SRC) mkops
  	@echo making $@ from $(OP_SRC)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x configure -x config.h.in -x '*~' octave-3.0.2-orig/src/pager.cc octave-3.0.2/src/pager.cc
+--- octave-3.0.2-orig/src/pager.cc	2008-08-01 08:50:56 +0200
++++ octave-3.0.2/src/pager.cc	2008-09-30 19:34:52 +0200
+@@ -131,11 +131,40 @@
+ static std::string
+ pager_command (void)
+ {
+-  std::string cmd = VPAGER;
++  std::string cmd = "\"" + VPAGER + "\"";
+ 
+   if (! (cmd.empty () || VPAGER_FLAGS.empty ()))
++  {
+     cmd += " " + VPAGER_FLAGS;
+ 
++#ifdef __MINGW32__
++  // the documentation of CMD.EXE tells:
++  //
++  //  If /C or /K is specified, then the remainder of the command line after
++  //  the switch is processed as a command line, where the following logic is
++  //  used to process quote (") characters:
++  //  
++  //      1.  If all of the following conditions are met, then quote characters
++  //          on the command line are preserved:
++  //  
++  //          - no /S switch
++  //          - exactly two quote characters
++  //          - no special characters between the two quote characters,
++  //            where special is one of: &<>()@^|
++  //          - there are one or more whitespace characters between the
++  //            the two quote characters
++  //          - the string between the two quote characters is the name
++  //            of an executable file.
++  //  
++  //      2.  Otherwise, old behavior is to see if the first character is
++  //          a quote character and if so, strip the leading character and
++  //          remove the last quote character on the command line, preserving
++  //          any text after the last quote character.
++    
++    cmd = "\"" + cmd + "\"";
++#endif
++  }
++  
+   return cmd;
+ }
+ 

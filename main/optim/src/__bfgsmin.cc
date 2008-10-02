@@ -331,7 +331,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 		// stepsize: try (l)bfgs direction, then steepest descent if it fails
 		f_args(minarg - 1) = theta;
 		__newtonstep(stepsize, obj_value, f, f_args, theta, d, minarg, warnings);
-		if ((stepsize == 0.0) && (sqrt(d.transpose() * d) > param_tol)) {  // fall back to steepest descent
+		if (stepsize == 0.0)  {  // fall back to steepest descent
 			if (warnings) warning("bfgsmin: BFGS direction fails, switch to steepest descent");
 			d = -g; // try steepest descent
 			H = identity_matrix(k,k); // accompany with Hessian reset, for good measure

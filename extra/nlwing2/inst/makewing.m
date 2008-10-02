@@ -110,12 +110,14 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
       wing.span *= 2;
     endif
   endif
+  xac = wing.xac; xac = (xac(1:end-1) + xac(2:end))/2;
+  yac = wing.yac; yac = (yac(1:end-1) + yac(2:end))/2;
   if (! isfield (wing, 'xmac'))
-    wing.xmac = dot (dS, wing.xac) / wing.area;
-    wing.ymac = dot (dS, wing.yac) / wing.area;
+    wing.xmac = dot (dS, xac) / wing.area;
+    wing.ymac = dot (dS, yac) / wing.area;
   endif
-  dxmac = wing.xac - wing.xmac;
-  dymac = wing.yac - wing.ymac;
+  dxmac = xac - wing.xmac;
+  dymac = yac - wing.ymac;
   wing.rmac = hypot (dymac, dxmac);
   wing.amac = atan2 (dymac, dxmac);
 endfunction

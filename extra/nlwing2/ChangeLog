@@ -1,3 +1,8 @@
+2008-10-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/makewing.m: Fix xac&yac calculation
+	* inst/calcwing.m: Fix moment calculation
+
 2008-09-12  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/loadwing.m: fix camber -> chord

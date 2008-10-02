@@ -149,10 +149,11 @@ function clq = calcwing (wing, varargin)
     clq.bmw = (dS .* wing.zc).' * (clq.cl .* cad) / area;
   endif
   # integral moment - local moment contributions
-  clq.cmw = (dS .* wing.ch).' * clq.cm / area;
+  clq.cmw = (dS .* wing.ch).' * clq.cm;
   # local lift contributions
-  adm = repmat (wing.amac, 1, ns) + clq.al;
-  clq.cmw += (dS .* wing.rmac).' * (clq.cl .* cos (adm)) / area;
+  adm = repmat (wing.amac, 1, ns) + repmat (clq.al, length (dS), 1) + clq.ad;
+  clq.cmw += (dS .* wing.rmac).' * (clq.cl .* cos (adm));
+  clq.cmw /= (area * wing.cmac);
 
 endfunction
 

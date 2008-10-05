@@ -2405,6 +2405,8 @@ SWIG_From_unsigned_SS_char  (unsigned char value)
       for (unsigned int j=0;j<nr;++j) {
 	MYSQL_ROW row=mysql_fetch_row(res);
 	for (unsigned int k=0;k<nc;++k) {
+	  if (!row[k])
+	    continue;
 	  switch (fields[k]->type) {
 	  case MYSQL_TYPE_DECIMAL:
 	  case MYSQL_TYPE_SHORT:

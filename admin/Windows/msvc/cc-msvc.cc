@@ -203,11 +203,27 @@ static bool read_stdin(const char *filename)
 	return true;
 }
 
+static void replace_option(string& s, const string& opt, const string& val = string())
+{
+  if (starts_with(s, opt))
+    s.erase(0, opt.length()).insert(0, val);
+  if (ends_with(s, opt))
+    s.erase(s.length()-opt.length()).append(val);
+
+  string look_str = (" " + opt + " ");
+  int n = opt.length();
+  int pos;
+
+  while ((pos = s.find(look_str)) != string::npos)
+    s.replace(pos+1, n, val);
+}
+
 int main(int argc, char **argv)
 {
 	string clopt, linkopt, cllinkopt, sourcefile, objectfile, optarg, prog, exefile;
 	bool gotparam, dodepend, exeoutput, doshared, debug = false, read_from_stdin;
 	bool mt_embed = true;
+	bool no_exceptions = false;
 
 	prog = "cl";
 	clopt = "-nologo";
@@ -343,6 +359,14 @@ int main(int argc, char **argv)
 		{
 			//clopt += " -Wall";
 		}
+		else if (arg == "-fno-rtti")
+		{
+			clopt += " -GR-";
+		}
+		else if (arg == "-fno-exceptions")
+		{
+			no_exceptions = true;
+		}
 		else if (arg == "-m386" || arg == "-m486" || arg == "-mpentium" ||
 			 arg == "-mpentiumpro" || arg == "-pedantic" || starts_with(arg, "-W") ||
 			 arg == "-fPIC")
@@ -452,6 +476,17 @@ int main(int argc, char **argv)
 				linkopt += "=" + quote_quotes(optarg);
 			}
 		}
+	}
+
+	if (no_exceptions)
+	{
+		replace_option(clopt, "-EHsc");
+		replace_option(clopt, "-EHcs");
+		replace_option(clopt, "-EHs");
+		replace_option(clopt, "-EHc");
+		replace_option(clopt, "-EHa");
+		replace_option(clopt, "-GX-");
+		replace_option(clopt, "-GX");
 	}
 
 	if (dodepend && prog != "cl")

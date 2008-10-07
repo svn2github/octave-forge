@@ -1939,6 +1939,7 @@ DEFUN_DLD (bchenco, args, ,
 	return retval;
       }
     } else {
+      have_genpoly = true;
       genpoly = galois(args(i).matrix_value (), m);
       if (genpoly.cols() > genpoly.rows())
 	genpoly = genpoly.transpose();

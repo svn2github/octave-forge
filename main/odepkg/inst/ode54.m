@@ -433,7 +433,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 
     else %# if (vstepsizefixed)
       if (vcntloop <= vtimelength)
-        vstepsize = vslot(1,vcntloop-1) - vslot(1,vcntloop-2);
+        vstepsize = vslot(vcntloop) - vslot(vcntloop-1);
       else %# Get out of the main integration loop
         break;
       end
@@ -615,6 +615,10 @@ end
 %!error %# strange OdePkg structure
 %!  vopt = struct ('foo', 1);
 %!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
+%!test %# Solve vdp in fixed step sizes
+%!  vsol = ode54 (@fpol, [0:0.1:2], [2 0]);
+%!  assert (vsol.x(:), [0:0.1:2]');
+%!  assert (vsol.y(end,:), fref, 1e-3);
 %!test %# Solve in backward direction starting at t=0
 %! %# vref = [-1.2054034414, 0.9514292694];
 %!  vsol = ode54 (@fpol, [0 -2], [2 0]);

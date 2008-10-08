@@ -4,6 +4,7 @@ Matrix functions
  funm
  thfm
  outer
+ cartprod
 Matrix factorization
  gsvd 
  GramSchmidt

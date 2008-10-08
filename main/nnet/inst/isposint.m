@@ -49,7 +49,8 @@ function f = isposint(n)
 
 endfunction
 
-
+%!shared
+%! disp("testing isposint")
 %!assert(isposint(1)) # this should pass
 %!assert(isposint(0.5),0) # should return zero
 %!assert(isposint(-1),0) # should return zero

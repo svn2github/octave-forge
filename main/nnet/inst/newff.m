@@ -220,6 +220,9 @@ function net = newff(Pr,ss,transFunc,trainFunc,notUsed,performFunc)
 
 endfunction
 
+%!shared
+%! disp("testing newff")
+
 # if input range Pr has only one column
 %!test
 %! Pr = [1;2];

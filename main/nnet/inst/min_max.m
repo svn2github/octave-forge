@@ -51,7 +51,8 @@ function Pr = min_max(Pp)
 
 endfunction
 
-
+%!shared
+%! disp("testing min_max")
 %!test fail("min_max(1)","Argument must be a matrix.")
 %!test fail("min_max('testString')","Argument must be a matrix.")
 %!test fail("min_max(cellA{1}=1)","Argument must be a matrix.")

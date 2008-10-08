@@ -1,4 +1,4 @@
-## Copyright (C) 2005 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
+## Copyright (C) 2008 Michel D. Schmid  <michaelschmid@users.sourceforge.net>
 ##
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -16,38 +16,29 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}@var{perf} = __mse (@var{E})
-## @code{__mse} returns the Mean-Square-Error of a vector E
-##
-## @example
-##
-## This function is used to calculate the network performance
-## @end example
-##
+## @deftypefn {Function File} {} @var{retmatrix} = __randomisecols (@var{matrix})
+## @code{__randomisecols} takes a matrix as input argument and changes the order
+## of the columns. The rows aren't affected.
 ## @end deftypefn
 
-## @seealso{}
+## Author: mds
 
-## Author: Michel D. Schmid
-
-function perf = __mse(E)
+function [retmatrix] = __randomisecols(matrix)
 
   ## check number of inputs
   error(nargchk(1,1,nargin));
 
-  if iscell(E)
-    perf = 0;
-    elements = 0;
-    for i=1:size(E,1)
-      for j=1:size(E,2)
-        perf = perf + sum(sum(E{i,j}.^2));
-        elements = elements + prod(size(E{i,j}));
-      endfor
-    endfor
-    perf = perf / elements;
-  else
-    error("Error vector should be a cell array!")
-  endif
+  # get number of cols
+  nCols = size(matrix,2);
+  
+  # now create random column order
+  colOrder = randperm(nCols);
+  
+  # now sort the matrix new
+  retmatrix = matrix(:,[colOrder]);
 
 
 endfunction
+
+%!# no test possible, contains randperm which is using
+%!# some randome functions

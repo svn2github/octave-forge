@@ -15,9 +15,9 @@ use analyzeOctaveSource;
 
 
 #--- DEFINE VARIABLES -------------------------------
-my $Dir = "U:\\DATEN\\octave\\octnnettb\\nnet-0.1.3\\inst";
+my $Dir = "D:\\daten\\octave\\neuroPackage\\0.1.8.1\\nnet\\inst";
 my $fileExt = "m";
-my $testDir = "U:\\DATEN\\octave\\octnnettb\\documentation\\latex\\developers\\tests";
+my $testDir = "D:\\daten\\octave\\neuroPackage\\documentation\\latex\\developers\\tests";
 my $relTestDir = "tests/";
 my $testFileExt = "tex";
 my $mainLatexTestFile = "test.tex";
@@ -86,45 +86,71 @@ if ($nFiles>=1){ # if $nFiles==0 readDirTree will die
           if ($m==0){
             open(TESTFILE,">$mainTestFile") or die "Could not found file $mainTestFile!\n";
             print TESTFILE "\\chapter{$chapter}\n\n";
-            # test if back slash needed
+            
+			# test if back slash needed
+            # a back slash is needed if the sign "underscore"
+            # is used in the file name. This happens at each
+            # "sub function". There are two underscores!
             my $tempString = "";
             my $oldString = $filesName[0];
-            if ($filesName[0]=~/_/){
-            	my $pos = 0; #temp Position
-            	my $posBefore = 0;
-            	while ($pos < (length $filesName[0]) and $pos != -1){
-            		$pos = index($filesName[0], "_", $pos);
-            		if ($pos != -1 ){
-            			$tempString = substr($filesName[0],$posBefore,$pos) . "\\" . substr($filesName[0],$pos,length $filesName[0]);
-            			$posBefore = $pos;
-            			$pos++;
-            	    }
-            	}# END while ($pos < ...)
-            	$filesName[0] = $tempString;
-            }
-            
-            print TESTFILE "\\section{$filesName[0]}\n";
+			$_ = $filesName[0];
+			s/_/\\_/g; # s/ : search & replace pattern (everything between / /)
+					   # here: search underscore
+					   # if found, replace with \_ (two back slashes are needed
+					   # to get \_ as sign)
+					   # /g means: each occurence of pattern, otherwise, only one _
+					   # will be replaced
+
+
+           #  if ($filesName[0]=~/_/){
+#             	my $pos = 0; #temp Position
+#             	my $posBefore = 0;
+#             	while ($pos < (length $filesName[0]) and $pos != -1){
+#             		$pos = index($filesName[0], "_", $pos);
+#             		if ($pos != -1 ){
+#             			$tempString = substr($filesName[0],$posBefore,$pos) . "\\" . substr($filesName[0],$pos,length $filesName[0]);
+#             			$posBefore = $pos;
+#             			$pos++;
+#             	    }
+#             	}# END while ($pos < ...)
+#             	$filesName[0] = $tempString;
+#             }
+			print "test file name: $_\n";
+            print TESTFILE "\\section{$_}\n";
             $tempString = $relTestDir . $oldString;
-            print TESTFILE "\\input{$tempString}\n";          
+            print TESTFILE "\\input{$tempString}\n";
           }else{
             open(TESTFILE,">>$mainTestFile") or die "Could not found file $mainTestFile!\n";
             # test if back slash needed
             my $tempString = "";
             my $oldString = $filesName[0];
-            if ($filesName[0]=~/_/){
-            	my $pos = 0; #temp Position
-            	my $posBefore = 0;
-            	while ($pos < (length $filesName[0]) and $pos != -1){
-            		$pos = index($filesName[0], "_", $pos);
-            		if ($pos != -1 ){
-            			$tempString = substr($filesName[0],$posBefore,$pos) . "\\" . substr($filesName[0],$pos,length $filesName[0]);
-            			$pos++;
-            	    }
-            	}# END while ($pos < ...)
-            	$filesName[0] = $tempString;
-            }
+            # test if back slash needed
+            # a back slash is needed if the sign "underscore"
+            # is used in the file name. This happens at each
+            # "sub function". There are two underscores!
+            my $tempString = "";
+            my $oldString = $filesName[0];
+			$_ = $filesName[0];
+			s/_/\\_/g; # s/ : search & replace pattern (everything between / /)
+					   # here: search underscore
+					   # if found, replace with \_ (two back slashes are needed
+					   # to get \_ as sign)
+					   # /g means: each occurence of pattern, otherwise, only one _
+					   # will be replaced
+            # if ($filesName[0]=~/_/){
+#             	my $pos = 0; #temp Position
+#             	my $posBefore = 0;
+#             	while ($pos < (length $filesName[0]) and $pos != -1){
+#             		$pos = index($filesName[0], "_", $pos);
+#             		if ($pos != -1 ){
+#             			$tempString = substr($filesName[0],$posBefore,$pos) . "\\" . substr($filesName[0],$pos,length $filesName[0]);
+#             			$pos++;
+#             	    }
+#             	}# END while ($pos < ...)
+#             	$filesName[0] = $tempString;
+#             }
             
-            print TESTFILE "\\section{$filesName[0]}\n";
+            print TESTFILE "\\section{$_}\n";
             $tempString = $relTestDir . $oldString;
             print TESTFILE "\\input{$tempString}\n";
           }

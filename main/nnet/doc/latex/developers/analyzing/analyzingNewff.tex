@@ -1,7 +1,6 @@
 \section{analyzing newff}
 First, \textit{newff} will be analyzed for a X-X-X mlp. This means, maximum 3 layers, including the input layer. Or in words, one input- one hidden- and one output-layer. The number of neurons are choosable.
 
-\subsection{A general net description in matlab}
 Following command will be used, to create a new feed-forward neural network:\\
 \noindent MLPnet = newff(mMinMaxElements,[nHiddenNeurons nOutputNeurons],...\newline
 \{'tansig','purelin'\},'trainlm','learngdm','mse');\\

@@ -16,7 +16,7 @@ The directory nnet/doc contains two subdirectories.
           completly written ... :-(
           
           perl:  Contains two files. The first one is a "modul" to put somewhere
-          in a lib directory in the perl installation. This file end with .pm.
+          in a lib directory in the perl installation. This file ends with .pm.
           The second file (createTestDocu.pl) is a short perl script to generate
 		  some .tex files for the developer guide which contains all the test
 		  cases programmed in the function files. In the file createTestDocu.pl

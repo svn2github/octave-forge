@@ -19,7 +19,7 @@ Line 0063 is the first special command from this toolbox. This command will be u
 
 On line 0069 the next toolbox command will be used. This command \textit{min\_max} creates a $Rx2$ matrix of the complete input matrix. Don't ask me for what MATLAB(TM) this is using. I couldn't figure out it. One part is the number of input neurons, but for this, the range would not be needed. Who cares ;-)\\
 
-Now it's time to create a structure which holds the informations about the neural network. The command \textbf{newff} can do it for us. See the complete line and actually, please use it only on this way, each other try will fail! This means, you can change the number of input neurons, the number of hidden neurons and the number of output neurons of course. But don't change the transfer functions, the train algorithm or the performance function. And don't change the number of hidden layers.\\
+Now it's time to create a structure which holds the informations about the neural network. The command \textbf{newff} can do it for us. See the complete line and actually, please use it only on this way, each other try will fail! This means, you can change the number of input neurons, the number of hidden neurons and the number of output neurons of course. But don't change the train algorithm or the performance function.\\
 
 \textbf{saveMLPStruct} on line 0083 is a command which doesn't exist in MATLAB(TM). This will save the structure with the same informations you can see in MATLAB(TM) if you try to open the net-type.\\
 

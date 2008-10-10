@@ -223,9 +223,9 @@ static std::string get_module_path(const std::string& name, bool strip_name = tr
 
   if (! retval.empty () && strip_name)
     {
-      size_t pos = retval.rfind (file_ops::dir_sep_str + name);
+      size_t pos = retval.rfind (file_ops::dir_sep_str () + name);
 
-      if (pos != NPOS)
+      if (pos != std::string::npos)
         retval.resize (pos);
       else
         throw std::string("No module path in ")+retval;
@@ -262,7 +262,7 @@ static std::string initial_class_path ()
   // check for octave.jar file
   if (! retval.empty ())
     {
-      std::string jar_file = retval + file_ops::dir_sep_str + "octave.jar";
+      std::string jar_file = retval + file_ops::dir_sep_str () + "octave.jar";
       file_stat st (jar_file);
 
       if (st)
@@ -407,7 +407,7 @@ static void initialize_jvm ()
     vm_args.add ("-Doctave.java.path=" + initial_java_dir (true));
     vm_args.add ("-Xrs");
     vm_args.add ("-Djava.system.class.loader=org.octave.OctClassLoader");
-    vm_args.read_java_opts (initial_java_dir (false) + file_ops::dir_sep_str + "java.opts");
+    vm_args.read_java_opts (initial_java_dir (false) + file_ops::dir_sep_str () + "java.opts");
 
 # if !defined (__APPLE__) && !defined (__MACH__)
 

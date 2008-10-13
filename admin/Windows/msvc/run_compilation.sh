@@ -38,7 +38,7 @@ DOATLAS=false
 
 verbose=false
 packages=
-available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:pthreads:inttypes:webkit:xapian:libgpg-error:libgcrypt:libtasn1:gnutls:"
+available_packages=":f2c:libf2c:fort77:BLAS:LAPACK:ATLAS:FFTW:fftwf:PCRE:GLPK:readline:zlib:SuiteSparse:HDF5:glob:libpng:ARPACK:libjpeg:libiconv:gettext:cairo:glib:pango:freetype:libgd:libgsl:netcdf:sed:makeinfo:units:less:CLN:GiNaC:wxWidgets:gnuplot:FLTK:octave:JOGL:forge:qhull:VC:octplot:ncurses:pkg-config:fc-msvc:libcurl:libxml2:fontconfig:GraphicsMagick:bzip2:ImageMagick:libtiff:libwmf:jasper:GTK:ATK:Glibmm:Cairomm:Gtkmm:libsigc++:libglade:gtksourceview:gdl:VTE:GtkGlArea:PortAudio:playrec:OctaveDE:Gtksourceview1:FTPlib:SQLite3:FFMpeg:FTGL:gtkglext:gtkglextmm:libxslt:ICU:pthreads:inttypes:webkit:xapian:libgpg-error:libgcrypt:libtasn1:gnutls:pixman:"
 octave_version=
 of_version=
 do_nsi=false
@@ -59,8 +59,9 @@ libpngver=1.2.29
 glpkver=4.23
 gslver=1.10
 netcdfver=3.6.2
-cairover=1.4.10
-glibver=2.14.3
+pixmanver=0.12.0
+cairover=1.8.0
+glibver=2.18.1
 pangover=1.19.0
 ftver=2.3.5
 libxml2ver=2.6.30
@@ -160,7 +161,8 @@ echo "$oldobjs" > $linkfile \
 oldobjs=" @$linkfile" \
 eval cmds=\\"$old_archive_cmds~rm -fr $linkfile\\"
 }' \
-      -e "s,^postinstall_cmds=.*$,postinstall_cmds='if echo \"\$destdir\" | grep -e \\\\\"/lib/\\\\\\\\?\$\\\\\" >\& /dev/null; then name=\`echo \\\\\$file | sed -e \"s/.*\\\\///\" -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`; implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`; \$install_prog \$dir/\\\\\$implibname \$destdir/\\\\\$name.lib; test -d \$destdir/../bin || mkdir -p \$destdir/../bin; mv -f \$destdir/\$dlname \$destdir/../bin; fi'," "$ltfile" > ttt &&
+      -e "s,^postinstall_cmds=.*$,postinstall_cmds='if echo \"\$destdir\" | grep -e \\\\\"/lib/\\\\\\\\?\$\\\\\" >\& /dev/null; then name=\`echo \\\\\$file | sed -e \"s/.*\\\\///\" -e \"s/^lib//\" -e \"s/\\\\.la\$//\"\`; implibname=\`echo \\\\\$dlname | sed -e \"s/\\\\.dll/.lib/\"\`; \$install_prog \$dir/\\\\\$implibname \$destdir/\\\\\$name.lib; test -d \$destdir/../bin || mkdir -p \$destdir/../bin; mv -f \$destdir/\$dlname \$destdir/../bin; fi'," \
+      -e "s,^old_postinstall_cmds=.*,old_postinstall_cmds='chmod 644 \$oldlib~\$RANLIB \$oldlib~mv \$oldlib \`dirname \$oldlib\`/\`basename \$oldlib | sed -e \"s/^lib//\"\`'," "$ltfile" > ttt &&
       mv ttt "$ltfile"
 }
 
@@ -1752,10 +1754,16 @@ if check_package glib; then
     configure_package --enable-shared --disable-static --with-threads=win32 --with-pcre=system &&
     post_process_libtool &&
     echo "#define HAVE_DIRENT_H 1" >> config.h &&
-    sed -e "s/-lws2_32/-luser32 -ladvapi32 -lshell32 -L. -ldirent -lws2_32/" glib/Makefile > ttt &&
+    sed -e "s/-lws2_32/-luser32 -ladvapi32 -lshell32 -L. -ldirent -lws2_32/" \
+        -e "s/-DPCRE_STATIC//" \
+        glib/Makefile > ttt &&
       mv ttt glib/Makefile &&
+    sed -e "s/strfuncs\$(EXEEXT)//" glib/tests/Makefile > ttt &&
+      mv ttt glib/tests/Makefile &&
     sed -e "s/G_THREAD_LIBS_EXTRA =/G_THREAD_LIBS_EXTRA = -luser32/" gthread/Makefile > ttt &&
       mv ttt gthread/Makefile &&
+    sed -e "s/-lshlwapi/& -lshell32 -ladvapi32/" gio/Makefile > ttt &&
+      mv ttt gio/Makefile &&
     (cd build/win32/dirent &&
       cl -O2 -MD -I. -c *.c &&
       lib -out:dirent.lib *.obj &&
@@ -1768,7 +1776,8 @@ if check_package glib; then
     make &&
     make install &&
     rm -f $tlibdir_quoted/libglib*.la $tlibdir_quoted/libgmodule*.la \
-          $tlibdir_quoted/libgthread*.la $tlibdir_quoted/libgobject*.la) >&5 2>&1 && end_package
+          $tlibdir_quoted/libgthread*.la $tlibdir_quoted/libgobject*.la \
+          $tlibdir_quoted/libgio*.la) >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/glib-$glibver"
   if failed_package || test ! -f "$tbindir/libglib-2.0-0.dll"; then
     echo "failed"
@@ -2044,6 +2053,33 @@ if check_package fontconfig; then
     rm -f "$tlibdir/libfontconfig.la") >&5 2>&1 && end_package
   remove_package "$DOWNLOAD_DIR/fontconfig-$fontconfigver"
   if failed_package || test ! -f "$tlibdir/fontconfig.lib"; then
+    echo "failed"
+    exit -1
+  else
+    echo "done"
+  fi
+fi
+
+##########
+# pixman #
+##########
+
+if check_package pixman; then
+  download_file pixman-$pixmanver.tar.gz http://cairographics.org/releases/pixman-$pixmanver.tar.gz
+  echo -n "decompressing pixman... "
+  (cd "$DOWNLOAD_DIR" && if ! tar xfz pixman-$pixmanver.tar.gz; then tar xf pixman-$pixmanver.tar.gz; fi)
+  echo "done"
+  echo "compiling pixman... "
+  (cd "$DOWNLOAD_DIR/pixman-$pixmanver" &&
+    ax_cv_c_float_words_bigendian=no configure_package --enable-static --disable-shared &&
+    post_process_libtool &&
+    sed -e "/^SUBDIRS =/ {s/test//;}" Makefile > ttt &&
+      mv ttt Makefile &&
+    make &&
+    make install &&
+    rm -f $tlibdir_quoted/libpixman*.la) >&5 2>&1 && end_package
+  remove_package "$DOWNLOAD_DIR/pixman-$pixmanver"
+  if failed_package || test ! -f "$tlibdir/pixman.lib"; then
     echo "failed"
     exit -1
   else

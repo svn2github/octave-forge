@@ -4,7 +4,7 @@ RCS file: /cvsroot/gnuplot/gnuplot/config/config.nt,v
 retrieving revision 1.18
 diff -c -p -u -r1.18 config.nt
 --- config/config.nt	24 Apr 2008 16:45:59 -0000	1.18
-+++ config/config.nt	6 Oct 2008 14:52:08 -0000
++++ config/config.nt	13 Oct 2008 08:50:45 -0000
 @@ -28,7 +28,7 @@
  /* #undef DOS32 */
  
@@ -30,7 +30,7 @@ RCS file: /cvsroot/gnuplot/gnuplot/config/makefile.nt,v
 retrieving revision 1.21
 diff -c -p -u -r1.21 makefile.nt
 --- config/makefile.nt	23 Feb 2008 10:04:33 -0000	1.21
-+++ config/makefile.nt	6 Oct 2008 14:52:08 -0000
++++ config/makefile.nt	13 Oct 2008 08:50:45 -0000
 @@ -31,8 +31,17 @@
  # where to place gnuplot.gih helpfile
  HELPFILE = wgnuplot.hlp
@@ -302,7 +302,7 @@ RCS file: /cvsroot/gnuplot/gnuplot/src/command.c,v
 retrieving revision 1.176
 diff -c -p -u -r1.176 command.c
 --- src/command.c	15 Aug 2008 00:45:34 -0000	1.176
-+++ src/command.c	6 Oct 2008 14:52:09 -0000
++++ src/command.c	13 Oct 2008 08:50:45 -0000
 @@ -1148,7 +1148,7 @@ pause_command()
      }
  
@@ -328,7 +328,7 @@ RCS file: /cvsroot/gnuplot/gnuplot/src/mouse.c,v
 retrieving revision 1.110
 diff -c -p -u -r1.110 mouse.c
 --- src/mouse.c	2 Oct 2008 21:30:16 -0000	1.110
-+++ src/mouse.c	6 Oct 2008 14:52:09 -0000
++++ src/mouse.c	13 Oct 2008 08:50:45 -0000
 @@ -1656,7 +1656,9 @@ event_buttonrelease(struct gp_event_t *g
  #ifdef _Windows
      if (paused_for_mouse & PAUSE_CLICK) {
@@ -342,11 +342,11 @@ diff -c -p -u -r1.110 mouse.c
 Index: src/plot.c
 ===================================================================
 RCS file: /cvsroot/gnuplot/gnuplot/src/plot.c,v
-retrieving revision 1.100
-diff -c -p -u -r1.100 plot.c
---- src/plot.c	13 Aug 2008 02:43:09 -0000	1.100
-+++ src/plot.c	6 Oct 2008 14:52:09 -0000
-@@ -458,7 +458,7 @@ main(int argc, char **argv)
+retrieving revision 1.102
+diff -c -p -u -r1.102 plot.c
+--- src/plot.c	7 Oct 2008 21:01:20 -0000	1.102
++++ src/plot.c	13 Oct 2008 08:50:45 -0000
+@@ -443,7 +443,7 @@ main(int argc, char **argv)
      else
  	interactive = FALSE;
  #else
@@ -361,7 +361,7 @@ RCS file: /cvsroot/gnuplot/gnuplot/src/readline.c,v
 retrieving revision 1.44
 diff -c -p -u -r1.44 readline.c
 --- src/readline.c	10 Aug 2008 00:52:20 -0000	1.44
-+++ src/readline.c	6 Oct 2008 14:52:09 -0000
++++ src/readline.c	13 Oct 2008 08:50:45 -0000
 @@ -228,7 +228,12 @@ static int ansi_getc __PROTO((void));
  #  include "win/winmain.h"
  #  define TEXTUSER 0xf1
@@ -399,7 +399,7 @@ RCS file: /cvsroot/gnuplot/gnuplot/src/term.c,v
 retrieving revision 1.180
 diff -c -p -u -r1.180 term.c
 --- src/term.c	16 Sep 2008 05:35:25 -0000	1.180
-+++ src/term.c	6 Oct 2008 14:52:09 -0000
++++ src/term.c	13 Oct 2008 08:50:45 -0000
 @@ -101,6 +101,7 @@ FILE *open_printer __PROTO((void));     
  void close_printer __PROTO((FILE * outfile));
  # ifdef __MSC__
@@ -411,17 +411,17 @@ diff -c -p -u -r1.180 term.c
 Index: src/version.c
 ===================================================================
 RCS file: /cvsroot/gnuplot/gnuplot/src/version.c,v
-retrieving revision 1.83
-diff -c -p -u -r1.83 version.c
---- src/version.c	4 Sep 2008 16:34:15 -0000	1.83
-+++ src/version.c	6 Oct 2008 14:52:09 -0000
+retrieving revision 1.84
+diff -c -p -u -r1.84 version.c
+--- src/version.c	6 Oct 2008 16:51:42 -0000	1.84
++++ src/version.c	13 Oct 2008 08:50:45 -0000
 @@ -40,7 +40,7 @@ static char *RCSid() { return RCSid("$Id
  
  
  const char gnuplot_version[] = "4.3";
 -const char gnuplot_patchlevel[] = "0";
 +const char gnuplot_patchlevel[] = "0-octave";
- const char gnuplot_date[] = "September 2008";
+ const char gnuplot_date[] = "October 2008";
  const char gnuplot_copyright[] = "Copyright (C) 1986 - 1993, 1998, 2004, 2007, 2008";
  
 Index: src/win/wgnuplib.h
@@ -430,7 +430,7 @@ RCS file: /cvsroot/gnuplot/gnuplot/src/win/wgnuplib.h,v
 retrieving revision 1.27
 diff -c -p -u -r1.27 wgnuplib.h
 --- src/win/wgnuplib.h	17 May 2008 15:37:25 -0000	1.27
-+++ src/win/wgnuplib.h	6 Oct 2008 14:52:09 -0000
++++ src/win/wgnuplib.h	13 Oct 2008 08:50:45 -0000
 @@ -45,7 +45,9 @@
  #include <windows.h>
  
@@ -445,10 +445,10 @@ diff -c -p -u -r1.27 wgnuplib.h
 Index: src/win/winmain.c
 ===================================================================
 RCS file: /cvsroot/gnuplot/gnuplot/src/win/winmain.c,v
-retrieving revision 1.24
-diff -c -p -u -r1.24 winmain.c
---- src/win/winmain.c	17 May 2008 15:37:27 -0000	1.24
-+++ src/win/winmain.c	6 Oct 2008 14:52:09 -0000
+retrieving revision 1.25
+diff -c -p -u -r1.25 winmain.c
+--- src/win/winmain.c	10 Oct 2008 22:23:20 -0000	1.25
++++ src/win/winmain.c	13 Oct 2008 08:50:45 -0000
 @@ -62,6 +62,7 @@ static char *RCSid() { return RCSid("$Id
  #include <string.h>
  #include <stdarg.h>
@@ -457,15 +457,7 @@ diff -c -p -u -r1.24 winmain.c
  #ifdef __MSC__
  # include <malloc.h>
  #endif
-@@ -101,6 +102,7 @@ GW graphwin;
- PW pausewin;
- MW menuwin;
- LPSTR szModuleName;
-+LPSTR szPackageDir;
- LPSTR winhelpname;
- LPSTR szMenuName;
- #define MENUNAME "wgnuplot.mnu"
-@@ -251,12 +253,22 @@ appdata_directory(void)
+@@ -252,12 +253,22 @@ appdata_directory(void)
  
  #endif /* WIN32 */
  
@@ -488,7 +480,7 @@ diff -c -p -u -r1.24 winmain.c
  #ifdef __MSC__  /* MSC doesn't give us _argc and _argv[] so ...   */
  # ifdef WIN32    /* WIN32 has __argc and __argv */
  #  define _argv __argv
-@@ -271,6 +283,7 @@ int PASCAL WinMain(HINSTANCE hInstance, 
+@@ -272,6 +283,7 @@ int PASCAL WinMain(HINSTANCE hInstance, 
  		_argv[++_argc] = _fstrtok( NULL, " ");
  # endif /* WIN32 */
  #endif /* __MSC__ */
@@ -496,25 +488,7 @@ diff -c -p -u -r1.24 winmain.c
  
  #ifdef	__WATCOMC__
  # define _argv __argv
-@@ -296,6 +309,17 @@ int PASCAL WinMain(HINSTANCE hInstance, 
- 	szModuleName = (LPSTR)farrealloc(szModuleName, _fstrlen(szModuleName)+1);
- 	CheckMemory(szModuleName);
- 
-+	if (_fstrlen(szModuleName) >= 5 && _fstrnicmp(&szModuleName[_fstrlen(szModuleName)-5], "\\bin\\", 5) == 0)
-+	{
-+		int len = _fstrlen(szModuleName)-4;
-+		szPackageDir = (LPSTR)farmalloc(len+1);
-+		CheckMemory(szPackageDir);
-+		_fstrncpy(szPackageDir, szModuleName, len);
-+		szPackageDir[len] = '\0';
-+	}
-+	else
-+		szPackageDir = szModuleName;
-+
- 	winhelpname = (LPSTR)farmalloc(_fstrlen(szModuleName)+_fstrlen(HELPFILE)+1);
- 	CheckMemory(winhelpname);
- 	_fstrcpy(winhelpname,szModuleName);
-@@ -352,6 +376,7 @@ int PASCAL WinMain(HINSTANCE hInstance, 
+@@ -364,6 +376,7 @@ int PASCAL WinMain(HINSTANCE hInstance, 
  	graphwin.color=TRUE;
  	graphwin.fontsize = WINFONTSIZE;
  
@@ -522,7 +496,7 @@ diff -c -p -u -r1.24 winmain.c
  	if (TextInit(&textwin))
  		exit(1);
  	textwin.hIcon = LoadIcon(hInstance, "TEXTICON");
-@@ -377,16 +402,22 @@ int PASCAL WinMain(HINSTANCE hInstance, 
+@@ -389,16 +402,22 @@ int PASCAL WinMain(HINSTANCE hInstance, 
  		InvalidateRect(textwin.hWndParent, (LPRECT) &rect, 1);
  		UpdateWindow(textwin.hWndParent);
  	}
@@ -545,7 +519,7 @@ diff -c -p -u -r1.24 winmain.c
  /* replacement stdio routines that use Text Window for stdin/stdout */
  /* WARNING: Do not write to stdout/stderr with functions not listed
     in win/wtext.h */
-@@ -584,6 +615,91 @@ MyFRead(void *ptr, size_t size, size_t n
+@@ -596,6 +615,91 @@ MyFRead(void *ptr, size_t size, size_t n
      return fread(ptr, size, n, file);
  }
  
@@ -637,28 +611,13 @@ diff -c -p -u -r1.24 winmain.c
  /* public interface to printer routines : Windows PRN emulation
   * (formerly in win.trm)
   */
-Index: src/win/winmain.h
-===================================================================
-RCS file: /cvsroot/gnuplot/gnuplot/src/win/winmain.h,v
-retrieving revision 1.6
-diff -c -p -u -r1.6 winmain.h
---- src/win/winmain.h	16 Jul 2006 02:50:56 -0000	1.6
-+++ src/win/winmain.h	6 Oct 2008 14:52:09 -0000
-@@ -55,6 +55,7 @@ extern MW menuwin;
- 
- extern LPSTR winhelpname;
- extern LPSTR szModuleName;
-+extern LPSTR szPackageDir;
- 
- int Pause __PROTO((LPSTR str));
- void screen_dump __PROTO((void));
 Index: src/win/wtext.h
 ===================================================================
 RCS file: /cvsroot/gnuplot/gnuplot/src/win/wtext.h,v
 retrieving revision 1.9
 diff -c -p -u -r1.9 wtext.h
 --- src/win/wtext.h	1 Jul 2004 17:10:11 -0000	1.9
-+++ src/win/wtext.h	6 Oct 2008 14:52:09 -0000
++++ src/win/wtext.h	13 Oct 2008 08:50:45 -0000
 @@ -40,6 +40,8 @@
  /* redefine functions that can talk to tty devices, to use
   * implementation in winmain.c/wgnuplot.dll */
@@ -678,73 +637,14 @@ diff -c -p -u -r1.9 wtext.h
 +int ConsoleGetch();
 +
 +#endif /* CONSOLE */
-Index: src/wxterminal/gp_cairo.c
-===================================================================
-RCS file: /cvsroot/gnuplot/gnuplot/src/wxterminal/gp_cairo.c,v
-retrieving revision 1.40
-diff -c -p -u -r1.40 gp_cairo.c
---- src/wxterminal/gp_cairo.c	30 Sep 2008 04:55:05 -0000	1.40
-+++ src/wxterminal/gp_cairo.c	6 Oct 2008 14:52:09 -0000
-@@ -77,6 +77,10 @@
- #include <pango/pangocairo.h>
- #include <glib.h>
- 
-+#ifdef _MSC_VER
-+#define rint(x) floor((x)+0.5L)
-+#endif
-+
- /* undef this to see what happens without the Symbol-to-unicode processing */
- #define MAP_SYMBOL
- 
-@@ -787,6 +791,7 @@ void gp_cairo_draw_text(plot_struct *plo
- 	cairo_translate(plot->cr, x, y);
- 	cairo_rotate(plot->cr, -arg);
- 
-+	{
- 	PangoRectangle ink, logical;
- 	double lw = cairo_get_line_width (plot->cr);
- 	pango_layout_get_extents (layout, &ink, &logical);
-@@ -806,6 +811,7 @@ void gp_cairo_draw_text(plot_struct *plo
- 			(double)ink.width / PANGO_SCALE + lw,
- 			(double)ink.height / PANGO_SCALE + lw);
- 	cairo_stroke (plot->cr);
-+	}
- #endif /* helper boxes to understand how text is positionned */
- 
- 	/* free the layout object */
 Index: src/wxterminal/wxt_gui.cpp
 ===================================================================
 RCS file: /cvsroot/gnuplot/gnuplot/src/wxterminal/wxt_gui.cpp,v
-retrieving revision 1.67
-diff -c -p -u -r1.67 wxt_gui.cpp
---- src/wxterminal/wxt_gui.cpp	29 Jul 2008 22:15:49 -0000	1.67
-+++ src/wxterminal/wxt_gui.cpp	6 Oct 2008 14:52:09 -0000
-@@ -365,7 +365,7 @@ wxtFrame::wxtFrame( const wxString& titl
- 	/* set up the toolbar */
- 	wxToolBar * toolbar = CreateToolBar();
- 	/* With wxMSW, default toolbar size is only 16x15. */
--	toolbar->SetToolBitmapSize(wxSize(16,16));
-+//	toolbar->SetToolBitmapSize(wxSize(16,16));
- 
- 	toolbar->AddTool(Toolbar_CopyToClipboard, wxT("Copy"),
- 				*(toolBarBitmaps[0]), wxT("Copy the plot to clipboard"));
-@@ -398,6 +398,7 @@ wxtFrame::wxtFrame( const wxString& titl
- 
- 	/* setting minimum height and width for the window */
- 	SetSizeHints(100, 100);
-+	OnSize( wxSizeEvent( this->GetSize() ) );
- 
- 	FPRINTF((stderr,"wxtFrame constructor 3\n"));
- }
-@@ -1405,6 +1406,7 @@ void wxt_init()
- 
- #ifdef __WXMSW__
- 		/* the following is done in wxEntry() with wxMSW only */
-+		WXDLLIMPEXP_BASE void wxSetInstance(HINSTANCE hInst);
- 		wxSetInstance(GetModuleHandle(NULL));
- 		wxApp::m_nCmdShow = SW_SHOW;
- #endif
-@@ -3126,7 +3128,29 @@ int wxt_waitforinput()
+retrieving revision 1.68
+diff -c -p -u -r1.68 wxt_gui.cpp
+--- src/wxterminal/wxt_gui.cpp	10 Oct 2008 22:26:21 -0000	1.68
++++ src/wxterminal/wxt_gui.cpp	13 Oct 2008 08:50:45 -0000
+@@ -3128,7 +3128,29 @@ int wxt_waitforinput()
   * the terminal events are directly processed when they are received */
  int wxt_waitforinput()
  {
@@ -775,32 +675,13 @@ diff -c -p -u -r1.67 wxt_gui.cpp
  }
  #endif /* WXT_MONOTHREADED || WXT_MULTITHREADED */
  
-Index: term/post.trm
-===================================================================
-RCS file: /cvsroot/gnuplot/gnuplot/term/post.trm,v
-retrieving revision 1.236
-diff -c -p -u -r1.236 post.trm
---- term/post.trm	6 Aug 2008 16:36:23 -0000	1.236
-+++ term/post.trm	6 Oct 2008 14:52:09 -0000
-@@ -3363,9 +3363,9 @@ PS_open_prologue_file(char *name)
- # if defined(_Windows)
- 	/* retrieve prologues path relatively to gnuplot executable,
- 	 * whose path is in szModuleName (winmain.c) */
--	ps_prologue_dir = gp_alloc(strlen((char*) szModuleName)
-+	ps_prologue_dir = gp_alloc(strlen((char*) szPackageDir)
- 			+ strlen(GNUPLOT_PS_DIR) + 2, "Prolog path");
--	strcpy(ps_prologue_dir, (char*) szModuleName);
-+	strcpy(ps_prologue_dir, (char*) szPackageDir);
- 	strcat(ps_prologue_dir, "\\");
- 	/* GNUPLOT_PS_DIR is _relative_ path */
- 	strcat(ps_prologue_dir, GNUPLOT_PS_DIR);
 Index: term/win.trm
 ===================================================================
 RCS file: /cvsroot/gnuplot/gnuplot/term/win.trm,v
 retrieving revision 1.63
 diff -c -p -u -r1.63 win.trm
 --- term/win.trm	8 Sep 2008 17:56:55 -0000	1.63
-+++ term/win.trm	6 Oct 2008 14:52:09 -0000
++++ term/win.trm	13 Oct 2008 08:50:45 -0000
 @@ -85,6 +85,7 @@ TERM_PUBLIC void WIN_set_ruler __PROTO((
  TERM_PUBLIC void WIN_set_cursor __PROTO((int, int, int));
  TERM_PUBLIC void WIN_put_tmptext __PROTO((int, const char str[]));
@@ -844,7 +725,7 @@ RCS file: /cvsroot/gnuplot/gnuplot/term/wxt.trm,v
 retrieving revision 1.23
 diff -c -p -u -r1.23 wxt.trm
 --- term/wxt.trm	2 Jun 2008 00:48:12 -0000	1.23
-+++ term/wxt.trm	6 Oct 2008 14:52:09 -0000
++++ term/wxt.trm	13 Oct 2008 08:50:45 -0000
 @@ -58,7 +58,7 @@ TERM_PUBLIC void wxt_text_wrapper __PROT
  
  /* terminal state, defined extern in wxt_term.h */

@@ -10,7 +10,7 @@ function [z,e,REV,ESU,V,Z,SPUR] = amarma(y, Mode, MOP, UC, z0, Z0, V0, W);
 %
 % G = I, 
 % z = [µ(t)/(1-sum_i(a(i,t))),a_1(t-1),..,a_p(t-p),b_1(t-1),...,b_q(t-q)];
-% H = [M0/(1-sum_i(a(i,t))),y(t-1),..,y(t-p),e(t-1),...,e(t-q)];
+% H = [1,y(t-1),..,y(t-p),e(t-1),...,e(t-q)];
 % W = E{(z(t)-G*z(t-1))*(z(t)-G*z(t-1))'}
 % V = E{(y(t)-H*z(t-1))*(y(t)-H*z(t-1))'}
 %
@@ -20,6 +20,9 @@ function [z,e,REV,ESU,V,Z,SPUR] = amarma(y, Mode, MOP, UC, z0, Z0, V0, W);
 %	    [0,0] uses V0 and W  
 %
 %       MOP     Model order [m,p,q], default [0,10,0] 
+%			m=1 includes the mean term, m=0 does not. 
+%			p and q must be positive integers
+%			it is recommended to set q=0. 
 %	UC	Update Coefficient, default 0
 %	z0	Initial state vector
 %	Z0	Initial Covariance matrix

@@ -1,6 +1,9 @@
 function [z,e,REV,ESU,V,Z,SPUR] = aarmam(y, Mode, MOP, UC, z0, Z0, V0, W); 
 % Estimating Adaptive AutoRegressive-Moving-Average-and-mean model (includes mean term) 
-% [z,E,REV,ESU,V,Z,SPUR] = amarma(y, mode, MOP, UC, z0, Z0, V0, W); 
+%
+% !! This function is obsolete and is replaced by AMARMA
+%
+% [z,E,REV,ESU,V,Z,SPUR] = aarmam(y, mode, MOP, UC, z0, Z0, V0, W); 
 % Estimates AAR parameters with Kalman filter algorithm
 % 	y(t) = sum_i(a_i(t)*y(t-i)) + m(t) + e(t) + sum_i(b_i(t)*e(t-i))
 %
@@ -58,6 +61,7 @@ function [z,e,REV,ESU,V,Z,SPUR] = aarmam(y, Mode, MOP, UC, z0, Z0, V0, W);
 %#realonly 
 %#inbounds
 
+warning('AARMAM is obsolete. Use AMARMA instead!')
 
 [nc,nr]=size(y);
 

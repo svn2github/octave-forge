@@ -15,9 +15,9 @@ use analyzeOctaveSource;
 
 
 #--- DEFINE VARIABLES -------------------------------
-my $Dir = "D:\\daten\\octave\\neuroPackage\\0.1.8.1\\nnet\\inst";
+my $Dir = "D:\\daten\\octave\\neuroPackage\\0.1.9\\nnet\\inst";
 my $fileExt = "m";
-my $testDir = "D:\\daten\\octave\\neuroPackage\\documentation\\latex\\developers\\tests";
+my $testDir = "D:\\daten\\octave\\neuroPackage\\0.1.9\\nnet/doc/latex/developers/tests";
 my $relTestDir = "tests/";
 my $testFileExt = "tex";
 my $mainLatexTestFile = "test.tex";
@@ -101,20 +101,6 @@ if ($nFiles>=1){ # if $nFiles==0 readDirTree will die
 					   # /g means: each occurence of pattern, otherwise, only one _
 					   # will be replaced
 
-
-           #  if ($filesName[0]=~/_/){
-#             	my $pos = 0; #temp Position
-#             	my $posBefore = 0;
-#             	while ($pos < (length $filesName[0]) and $pos != -1){
-#             		$pos = index($filesName[0], "_", $pos);
-#             		if ($pos != -1 ){
-#             			$tempString = substr($filesName[0],$posBefore,$pos) . "\\" . substr($filesName[0],$pos,length $filesName[0]);
-#             			$posBefore = $pos;
-#             			$pos++;
-#             	    }
-#             	}# END while ($pos < ...)
-#             	$filesName[0] = $tempString;
-#             }
 			print "test file name: $_\n";
             print TESTFILE "\\section{$_}\n";
             $tempString = $relTestDir . $oldString;
@@ -137,19 +123,7 @@ if ($nFiles>=1){ # if $nFiles==0 readDirTree will die
 					   # to get \_ as sign)
 					   # /g means: each occurence of pattern, otherwise, only one _
 					   # will be replaced
-            # if ($filesName[0]=~/_/){
-#             	my $pos = 0; #temp Position
-#             	my $posBefore = 0;
-#             	while ($pos < (length $filesName[0]) and $pos != -1){
-#             		$pos = index($filesName[0], "_", $pos);
-#             		if ($pos != -1 ){
-#             			$tempString = substr($filesName[0],$posBefore,$pos) . "\\" . substr($filesName[0],$pos,length $filesName[0]);
-#             			$pos++;
-#             	    }
-#             	}# END while ($pos < ...)
-#             	$filesName[0] = $tempString;
-#             }
-            
+
             print TESTFILE "\\section{$_}\n";
             $tempString = $relTestDir . $oldString;
             print TESTFILE "\\input{$tempString}\n";

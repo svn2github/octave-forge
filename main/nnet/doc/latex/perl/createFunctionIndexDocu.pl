@@ -17,10 +17,10 @@ use analyzeOctaveSource;
 #--- DEFINE VARIABLES -------------------------------
 my $Dir = "D:/daten/octave/neuroPackage/0.1.9/nnet/inst";
 my $fileExt = "m";
-my $funcIndDir = "D:\\daten\\octave\\neuroPackage\\documentation\\latex\\developers\\funcindex";
+my $funcIndDir = "D:/daten/octave/neuroPackage/0.1.9/nnet/doc/latex/developers/funcindex";
 my $relFuncDir = "funcindex/";
 my $funcFileExt = "tex";
-my $mainLatexFuncIndexFile = "funcindex.tex";
+my $mainLatexFuncIndexFile = "funcindexCalled.tex";
 my $chapter = "Function Index";
 #--- END DEFINE VARIABLES ---------------------------
 
@@ -40,15 +40,66 @@ my @DirArray = $obj->readDirTree($Dir,$fileExt);
 # but if there is a directory, we will remove it at
 # the next line of code
 my @FuncReferences = grep /.+\.$fileExt/ , @DirArray; #/
+my @FuncNames = @FuncReferences;
 # now I have to remove the path and file extension
-foreach (@FuncReferences)
+foreach (@FuncNames)
 {
  	s/\.m//g;
  	s/$Dir\///g;
 	print "$_\n";
-	sleep(1);
+#	sleep(1);
 }
-# 
+my @input = ();
+my @calledFunction = ();
+# now analyze functions to see which other functions are called
+foreach my $FuncRef (@FuncReferences)
+{
+
+  open(FILE,$FuncRef); # opens e.g. 'subset.m'
+  @input = <FILE>; # read the complete content of the file to @input
+  # now remove all comment and test lines ..
+  @input = grep s/^\s+//, @input; # removes white-space characters at the beginning of a line
+  @input = grep /^[^#|%]/ , @input; # removes lines starting with # or %
+
+#   foreach (@input)
+#   {
+#     print "$_";
+#     sleep(1);
+#   }
+      my $actFuncName = "";
+  foreach my $FuncName (@FuncNames)
+  {
+
+    if ($FuncRef !~/$FuncName/)   # returns true if pattern is not found
+    {
+      # now search for each $FuncName
+      # inside of the @input array
+      # if one is found, put them to a list
+	  if (grep /$FuncName/,@input)
+	  {
+        push (@calledFunction, "$FuncName");
+      }
+    }else{
+      $actFuncName = $FuncName;
+    }
+  }
+  # now remove double entries of @calledFunction
+  undef my %saw;
+  @saw{@calledFunction} = ();
+  @calledFunction = sort keys %saw;  # remove sort if undesired
+  open(DAT,">>$funcIndDir" . "/" . "$mainLatexFuncIndexFile");
+  print DAT "\\begin{verbatim}\n";
+  print DAT "Function-File: $actFuncName\n";
+  print DAT "=============================\n";
+  foreach (@calledFunction){
+	print DAT "$_\n";
+  }
+  print DAT "\\end{verbatim}\n";
+  close(DAT);
+  @calledFunction = ();
+
+}
+#
 # # analyze file structure
 # my $nFiles = @DirArray;
 # if ($nFiles>=1){ # if $nFiles==0 readDirTree will die

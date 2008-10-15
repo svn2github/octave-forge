@@ -1,6 +1,6 @@
 diff -ur pkg-config-0.22/Makefile.in pkg-config-0.22-new/Makefile.in
 --- pkg-config-0.22/Makefile.in	Mon Jun 18 23:36:04 2007
-+++ pkg-config-0.22-new/Makefile.in	Tue Oct 16 10:52:47 2007
++++ pkg-config-0.22-new/Makefile.in	Mon Oct 13 17:26:25 2008
 @@ -149,7 +149,7 @@
  @USE_INSTALLED_GLIB_FALSE@included_glib_includes = -I./glib-1.2.8
  @USE_INSTALLED_GLIB_TRUE@included_glib_includes = @GLIB_CFLAGS@
@@ -12,7 +12,7 @@ diff -ur pkg-config-0.22/Makefile.in pkg-config-0.22-new/Makefile.in
  
 diff -ur pkg-config-0.22/findme.c pkg-config-0.22-new/findme.c
 --- pkg-config-0.22/findme.c	Mon Jun 18 23:35:05 2007
-+++ pkg-config-0.22-new/findme.c	Tue Oct 16 10:52:07 2007
++++ pkg-config-0.22-new/findme.c	Mon Oct 13 17:26:25 2008
 @@ -28,6 +28,9 @@
  # ifdef _AIX
  #  pragma alloca
@@ -25,7 +25,16 @@ diff -ur pkg-config-0.22/findme.c pkg-config-0.22-new/findme.c
  #include <stdio.h>
 diff -ur pkg-config-0.22/main.c pkg-config-0.22-new/main.c
 --- pkg-config-0.22/main.c	Mon Jun 18 23:35:05 2007
-+++ pkg-config-0.22-new/main.c	Tue Oct 16 11:04:31 2007
++++ pkg-config-0.22-new/main.c	Mon Oct 13 17:26:41 2008
+@@ -40,7 +40,7 @@
+ /* No hardcoded paths in the binary, thanks */
+ #undef PKGLIBDIR
+ /* It's OK to leak this, as PKGLIBDIR is invoked only once */
+-#define PKG_CONFIG_PATH g_strconcat (g_win32_get_package_installation_directory (PACKAGE, NULL), "\\lib\\pkgconfig", NULL)
++#define PKG_CONFIG_PATH g_strconcat (g_win32_get_package_installation_directory (NULL, NULL), "\\lib\\pkgconfig", NULL)
+ #endif
+ 
+ static int want_debug_spew = 0;
 @@ -292,7 +292,11 @@
      }
    else
@@ -40,7 +49,7 @@ diff -ur pkg-config-0.22/main.c pkg-config-0.22-new/main.c
  #ifdef G_OS_WIN32
 diff -ur pkg-config-0.22/pkg.c pkg-config-0.22-new/pkg.c
 --- pkg-config-0.22/pkg.c	Mon Jun 18 23:35:05 2007
-+++ pkg-config-0.22-new/pkg.c	Tue Oct 16 10:47:15 2007
++++ pkg-config-0.22-new/pkg.c	Mon Oct 13 17:26:25 2008
 @@ -34,7 +34,9 @@
  #endif
  
@@ -142,7 +151,7 @@ diff -ur pkg-config-0.22/pkg.c pkg-config-0.22-new/pkg.c
  
 diff -ur pkg-config-0.22/popt.c pkg-config-0.22-new/popt.c
 --- pkg-config-0.22/popt.c	Mon Jun 18 23:35:05 2007
-+++ pkg-config-0.22-new/popt.c	Tue Oct 16 10:50:20 2007
++++ pkg-config-0.22-new/popt.c	Mon Oct 13 17:26:25 2008
 @@ -27,6 +27,9 @@
  # ifdef _AIX
  #  pragma alloca
@@ -155,7 +164,7 @@ diff -ur pkg-config-0.22/popt.c pkg-config-0.22-new/popt.c
  #include <errno.h>
 diff -ur pkg-config-0.22/poptconfig.c pkg-config-0.22-new/poptconfig.c
 --- pkg-config-0.22/poptconfig.c	Mon Jun 18 23:35:05 2007
-+++ pkg-config-0.22-new/poptconfig.c	Tue Oct 16 10:49:33 2007
++++ pkg-config-0.22-new/poptconfig.c	Mon Oct 13 17:26:25 2008
 @@ -33,6 +33,9 @@
  # ifdef _AIX
  #  pragma alloca
@@ -168,7 +177,7 @@ diff -ur pkg-config-0.22/poptconfig.c pkg-config-0.22-new/poptconfig.c
  #include <ctype.h>
 diff -ur pkg-config-0.22/popthelp.c pkg-config-0.22-new/popthelp.c
 --- pkg-config-0.22/popthelp.c	Mon Jun 18 23:35:05 2007
-+++ pkg-config-0.22-new/popthelp.c	Tue Oct 16 10:50:35 2007
++++ pkg-config-0.22-new/popthelp.c	Mon Oct 13 17:26:25 2008
 @@ -33,6 +33,9 @@
  # ifdef _AIX
  #  pragma alloca
@@ -181,7 +190,7 @@ diff -ur pkg-config-0.22/popthelp.c pkg-config-0.22-new/popthelp.c
  #include <ctype.h>
 diff -ur pkg-config-0.22/poptparse.c pkg-config-0.22-new/poptparse.c
 --- pkg-config-0.22/poptparse.c	Mon Jun 18 23:35:05 2007
-+++ pkg-config-0.22-new/poptparse.c	Tue Oct 16 10:49:50 2007
++++ pkg-config-0.22-new/poptparse.c	Mon Oct 13 17:26:25 2008
 @@ -33,6 +33,9 @@
  # ifdef _AIX
  #  pragma alloca

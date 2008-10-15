@@ -1,47 +1,69 @@
-diff -ur WebKit-r36766/GNUmakefile.am WebKit-r36766-new/GNUmakefile.am
---- WebKit-r36766/GNUmakefile.am	Sun Sep 21 03:12:15 2008
-+++ WebKit-r36766-new/GNUmakefile.am	Wed Sep 24 14:49:07 2008
-@@ -133,7 +133,7 @@
- 	$(GLOBALDEPS_CFLAGS) \
- 	$(UNICODE_CFLAGS)
+Index: JavaScriptCore/GNUmakefile.am
+===================================================================
+--- JavaScriptCore/GNUmakefile.am	(revision 37092)
++++ JavaScriptCore/GNUmakefile.am	(working copy)
+@@ -384,7 +384,7 @@
+ 	$(PERL) $^ > $@
  
--libJavaScriptCore_la_CPPFLAGS = \
-+libJavaScriptCore_la_CPPFLAGS = -DJS_INTERNAL \
+ JavaScriptCore/kjs/%.lut.h: $(CREATE_HASH_TABLE) $(srcdir)/JavaScriptCore/kjs/%.cpp
+-	$^ -i > $@
++	$(PERL) $^ -i > $@
+ 
+ JavaScriptCore/pcre/chartables.c: $(srcdir)/JavaScriptCore/pcre/dftables
+ 	$^ $@
+@@ -407,7 +407,7 @@
+ 	JavaScriptCore/API/tests/NodeList.h \
+ 	JavaScriptCore/API/tests/minidom.c
+ 
+-Programs_minidom_CPPFLAGS = \
++Programs_minidom_CPPFLAGS = -DJS_INTERNAL \
  	$(global_cppflags) \
  	$(javascriptcore_cppflags)
  
-@@ -179,7 +179,7 @@
- 	$(COVERAGE_CFLAGS) \
- 	$(HILDON_CFLAGS)
+@@ -418,15 +418,13 @@
+ 	$(GLOBALDEPS_CFLAGS)
  
--libWebCore_la_CPPFLAGS = \
-+libWebCore_la_CPPFLAGS = -DJS_INTERNAL \
+ Programs_minidom_LDADD = \
+-	 libJavaScriptCore.la \
+-	 -lm \
+-	 -lstdc++
++	 libJavaScriptCore.la
+ 
+ # jsc
+ Programs_jsc_SOURCES = \
+ 	JavaScriptCore/kjs/Shell.cpp
+ 
+-Programs_jsc_CPPFLAGS = \
++Programs_jsc_CPPFLAGS = -DJS_INTERNAL \
  	$(global_cppflags) \
- 	$(webcore_cppflags) \
- 	$(javascriptcore_cppflags) \
-@@ -231,17 +231,16 @@
- libwebkit_1_0_la_CFLAGS = \
- 	$(libWebCore_la_CFLAGS)
+ 	$(javascriptcore_cppflags)
  
--libwebkit_1_0_la_CPPFLAGS = \
-+libwebkit_1_0_la_CPPFLAGS = -DJS_INTERNAL \
- 	$(libWebCore_la_CPPFLAGS) \
- 	$(webkitgtk_cppflags)
+@@ -455,6 +453,12 @@
+ 	JavaScriptCore/kjs/grammar.y \
+ 	JavaScriptCore/kjs/keywords.table
  
- libwebkit_1_0_la_LDFLAGS = \
- 	$(COVERAGE_LDFLAGS) \
- 	-version-info @LIBWEBKITGTK_VERSION@ \
--	-Wl,--version-script,$(srcdir)/symbols.filter \
- 	$(no_undefined)
++if !TARGET_WIN32
++Programs_minidom_LDADD += \
++	-lm \
++	-lstdc++
++endif
++
+ # Clean rules for JavaScriptCore
+ CLEANFILES += \
+ 	JavaScriptCore/kjs/ArrayPrototype.lut.h \
+Index: JavaScriptCore/kjs/config.h
+===================================================================
+--- JavaScriptCore/kjs/config.h	(revision 37092)
++++ JavaScriptCore/kjs/config.h	(working copy)
+@@ -64,3 +64,4 @@
+ #include <wtf/DisallowCType.h>
+ #endif
  
--libwebkit_1_0_la_LIBADD = \
-+libwebkit_1_0_la_LIBADD = -lwinmm -lshlwapi \
- 	libWebCore.la
- 
- #
-diff -ur WebKit-r36766/JavaScriptCore/API/JSBase.h WebKit-r36766-new/JavaScriptCore/API/JSBase.h
---- WebKit-r36766/JavaScriptCore/API/JSBase.h	Fri Aug  8 06:50:46 2008
-+++ WebKit-r36766-new/JavaScriptCore/API/JSBase.h	Tue Sep 23 17:32:08 2008
++typedef int pid_t;
+Index: JavaScriptCore/API/JSBase.h
+===================================================================
+--- JavaScriptCore/API/JSBase.h	(revision 37092)
++++ JavaScriptCore/API/JSBase.h	(working copy)
 @@ -72,7 +72,11 @@
       * TODO: Export symbols with JS_EXPORT when using MSVC.
       * See http://bugs.webkit.org/show_bug.cgi?id=16227
@@ -55,9 +77,117 @@ diff -ur WebKit-r36766/JavaScriptCore/API/JSBase.h WebKit-r36766-new/JavaScriptC
  #else
      #define JS_EXPORT
  #endif
-diff -ur WebKit-r36766/JavaScriptCore/API/tests/JSNode.c WebKit-r36766-new/JavaScriptCore/API/tests/JSNode.c
---- WebKit-r36766/JavaScriptCore/API/tests/JSNode.c	Mon Aug 25 23:55:38 2008
-+++ WebKit-r36766-new/JavaScriptCore/API/tests/JSNode.c	Wed Sep 24 09:34:28 2008
+Index: JavaScriptCore/API/tests/JSNodeList.c
+===================================================================
+--- JavaScriptCore/API/tests/JSNodeList.c	(revision 37092)
++++ JavaScriptCore/API/tests/JSNodeList.c	(working copy)
+@@ -36,8 +36,9 @@
+ 
+     if (argumentCount > 0) {
+         NodeList* nodeList = JSObjectGetPrivate(thisObject);
++	Node* node;
+         ASSERT(nodeList);
+-        Node* node = NodeList_item(nodeList, (unsigned)JSValueToNumber(context, arguments[0], exception));
++        node = NodeList_item(nodeList, (unsigned)JSValueToNumber(context, arguments[0], exception));
+         if (node)
+             return JSNode_new(context, node);
+     }
+@@ -52,10 +53,12 @@
+ 
+ static JSValueRef JSNodeList_length(JSContextRef context, JSObjectRef thisObject, JSStringRef propertyName, JSValueRef* exception)
+ {
++    NodeList* nodeList;
++
+     UNUSED_PARAM(propertyName);
+     UNUSED_PARAM(exception);
+     
+-    NodeList* nodeList = JSObjectGetPrivate(thisObject);
++    nodeList = JSObjectGetPrivate(thisObject);
+     ASSERT(nodeList);
+     return JSValueMakeNumber(context, NodeList_length(nodeList));
+ }
+@@ -68,9 +71,12 @@
+ static JSValueRef JSNodeList_getProperty(JSContextRef context, JSObjectRef thisObject, JSStringRef propertyName, JSValueRef* exception)
+ {
+     NodeList* nodeList = JSObjectGetPrivate(thisObject);
++    double index;
++    unsigned uindex;
++
+     ASSERT(nodeList);
+-    double index = JSValueToNumber(context, JSValueMakeString(context, propertyName), exception);
+-    unsigned uindex = (unsigned)index;
++    index = JSValueToNumber(context, JSValueMakeString(context, propertyName), exception);
++    uindex = (unsigned)index;
+     if (uindex == index) { /* false for NaN */
+         Node* node = NodeList_item(nodeList, uindex);
+         if (node)
+@@ -82,9 +88,11 @@
+ 
+ static void JSNodeList_initialize(JSContextRef context, JSObjectRef thisObject)
+ {
++    NodeList* nodeList;
++
+     UNUSED_PARAM(context);
+ 
+-    NodeList* nodeList = JSObjectGetPrivate(thisObject);
++    nodeList = JSObjectGetPrivate(thisObject);
+     ASSERT(nodeList);
+     
+     NodeList_ref(nodeList);
+@@ -100,9 +108,10 @@
+ 
+ static JSClassRef JSNodeList_class(JSContextRef context)
+ {
++    static JSClassRef jsClass;
++
+     UNUSED_PARAM(context);
+ 
+-    static JSClassRef jsClass;
+     if (!jsClass) {
+         JSClassDefinition definition = kJSClassDefinitionEmpty;
+         definition.staticValues = JSNodeList_staticValues;
+Index: JavaScriptCore/API/tests/NodeList.c
+===================================================================
+--- JavaScriptCore/API/tests/NodeList.c	(revision 37092)
++++ JavaScriptCore/API/tests/NodeList.c	(working copy)
+@@ -29,9 +29,11 @@
+ 
+ extern NodeList* NodeList_new(Node* parentNode)
+ {
++    NodeList* nodeList;
++
+     Node_ref(parentNode);
+ 
+-    NodeList* nodeList = (NodeList*)malloc(sizeof(NodeList));
++    nodeList = (NodeList*)malloc(sizeof(NodeList));
+     nodeList->parentNode = parentNode;
+     nodeList->refCount = 0;
+     return nodeList;
+@@ -53,13 +55,17 @@
+ extern Node* NodeList_item(NodeList* nodeList, unsigned index)
+ {
+     unsigned length = NodeList_length(nodeList);
++    NodeLink* n;
++    unsigned i;
++    unsigned count;
++
+     if (index >= length)
+         return NULL;
+ 
+     /* Linear search from tail -- good enough for our purposes here */
+-    NodeLink* n = nodeList->parentNode->childNodesTail;
+-    unsigned i = 0;
+-    unsigned count = length - 1 - index;
++    n = nodeList->parentNode->childNodesTail;
++    i = 0;
++    count = length - 1 - index;
+     while (i < count) {
+         ++i;
+         n = n->prev;
+Index: JavaScriptCore/API/tests/JSNode.c
+===================================================================
+--- JavaScriptCore/API/tests/JSNode.c	(revision 37092)
++++ JavaScriptCore/API/tests/JSNode.c	(working copy)
 @@ -105,10 +105,12 @@
  
  static JSValueRef JSNode_getNodeType(JSContextRef context, JSObjectRef object, JSStringRef propertyName, JSValueRef* exception)
@@ -111,66 +241,10 @@ diff -ur WebKit-r36766/JavaScriptCore/API/tests/JSNode.c WebKit-r36766-new/JavaS
      if (!jsClass) {
          JSClassDefinition definition = kJSClassDefinitionEmpty;
          definition.staticValues = JSNode_staticValues;
-diff -ur WebKit-r36766/JavaScriptCore/API/tests/JSNodeList.c WebKit-r36766-new/JavaScriptCore/API/tests/JSNodeList.c
---- WebKit-r36766/JavaScriptCore/API/tests/JSNodeList.c	Mon Aug 25 23:55:38 2008
-+++ WebKit-r36766-new/JavaScriptCore/API/tests/JSNodeList.c	Wed Sep 24 09:35:44 2008
-@@ -52,10 +52,12 @@
- 
- static JSValueRef JSNodeList_length(JSContextRef context, JSObjectRef thisObject, JSStringRef propertyName, JSValueRef* exception)
- {
-+    NodeList* nodeList;
-+
-     UNUSED_PARAM(propertyName);
-     UNUSED_PARAM(exception);
-     
--    NodeList* nodeList = JSObjectGetPrivate(thisObject);
-+    nodeList = JSObjectGetPrivate(thisObject);
-     ASSERT(nodeList);
-     return JSValueMakeNumber(context, NodeList_length(nodeList));
- }
-@@ -68,9 +70,12 @@
- static JSValueRef JSNodeList_getProperty(JSContextRef context, JSObjectRef thisObject, JSStringRef propertyName, JSValueRef* exception)
- {
-     NodeList* nodeList = JSObjectGetPrivate(thisObject);
-+    double index;
-+    unsigned uindex;
-+
-     ASSERT(nodeList);
--    double index = JSValueToNumber(context, JSValueMakeString(context, propertyName), exception);
--    unsigned uindex = (unsigned)index;
-+    index = JSValueToNumber(context, JSValueMakeString(context, propertyName), exception);
-+    uindex = (unsigned)index;
-     if (uindex == index) { /* false for NaN */
-         Node* node = NodeList_item(nodeList, uindex);
-         if (node)
-@@ -82,9 +87,11 @@
- 
- static void JSNodeList_initialize(JSContextRef context, JSObjectRef thisObject)
- {
-+    NodeList* nodeList;
-+
-     UNUSED_PARAM(context);
- 
--    NodeList* nodeList = JSObjectGetPrivate(thisObject);
-+    nodeList = JSObjectGetPrivate(thisObject);
-     ASSERT(nodeList);
-     
-     NodeList_ref(nodeList);
-@@ -100,9 +107,10 @@
- 
- static JSClassRef JSNodeList_class(JSContextRef context)
- {
-+    static JSClassRef jsClass;
-+
-     UNUSED_PARAM(context);
- 
--    static JSClassRef jsClass;
-     if (!jsClass) {
-         JSClassDefinition definition = kJSClassDefinitionEmpty;
-         definition.staticValues = JSNodeList_staticValues;
-diff -ur WebKit-r36766/JavaScriptCore/API/tests/Node.c WebKit-r36766-new/JavaScriptCore/API/tests/Node.c
---- WebKit-r36766/JavaScriptCore/API/tests/Node.c	Mon Aug 25 23:55:38 2008
-+++ WebKit-r36766-new/JavaScriptCore/API/tests/Node.c	Wed Sep 24 09:36:14 2008
+Index: JavaScriptCore/API/tests/Node.c
+===================================================================
+--- JavaScriptCore/API/tests/Node.c	(revision 37092)
++++ JavaScriptCore/API/tests/Node.c	(working copy)
 @@ -39,8 +39,10 @@
  
  void Node_appendChild(Node* node, Node* child)
@@ -183,46 +257,10 @@ diff -ur WebKit-r36766/JavaScriptCore/API/tests/Node.c WebKit-r36766-new/JavaScr
      nodeLink->node = child;
      nodeLink->prev = node->childNodesTail;
      node->childNodesTail = nodeLink;
-diff -ur WebKit-r36766/JavaScriptCore/API/tests/NodeList.c WebKit-r36766-new/JavaScriptCore/API/tests/NodeList.c
---- WebKit-r36766/JavaScriptCore/API/tests/NodeList.c	Mon Aug 25 23:55:38 2008
-+++ WebKit-r36766-new/JavaScriptCore/API/tests/NodeList.c	Wed Sep 24 09:37:03 2008
-@@ -29,9 +29,11 @@
- 
- extern NodeList* NodeList_new(Node* parentNode)
- {
-+    NodeList* nodeList;
-+
-     Node_ref(parentNode);
- 
--    NodeList* nodeList = (NodeList*)malloc(sizeof(NodeList));
-+    nodeList = (NodeList*)malloc(sizeof(NodeList));
-     nodeList->parentNode = parentNode;
-     nodeList->refCount = 0;
-     return nodeList;
-@@ -53,13 +55,17 @@
- extern Node* NodeList_item(NodeList* nodeList, unsigned index)
- {
-     unsigned length = NodeList_length(nodeList);
-+    NodeLink* n;
-+    unsigned i;
-+    unsigned count;
-+
-     if (index >= length)
-         return NULL;
- 
-     /* Linear search from tail -- good enough for our purposes here */
--    NodeLink* n = nodeList->parentNode->childNodesTail;
--    unsigned i = 0;
--    unsigned count = length - 1 - index;
-+    n = nodeList->parentNode->childNodesTail;
-+    i = 0;
-+    count = length - 1 - index;
-     while (i < count) {
-         ++i;
-         n = n->prev;
-diff -ur WebKit-r36766/JavaScriptCore/API/tests/minidom.c WebKit-r36766-new/JavaScriptCore/API/tests/minidom.c
---- WebKit-r36766/JavaScriptCore/API/tests/minidom.c	Mon Aug 25 23:55:38 2008
-+++ WebKit-r36766-new/JavaScriptCore/API/tests/minidom.c	Wed Sep 24 09:39:16 2008
+Index: JavaScriptCore/API/tests/minidom.c
+===================================================================
+--- JavaScriptCore/API/tests/minidom.c	(revision 37092)
++++ JavaScriptCore/API/tests/minidom.c	(working copy)
 @@ -38,33 +38,45 @@
  
  int main(int argc, char* argv[])
@@ -292,152 +330,175 @@ diff -ur WebKit-r36766/JavaScriptCore/API/tests/minidom.c WebKit-r36766-new/Java
      }
      
      return JSValueMakeUndefined(context);
-diff -ur WebKit-r36766/JavaScriptCore/GNUmakefile.am WebKit-r36766-new/JavaScriptCore/GNUmakefile.am
---- WebKit-r36766/JavaScriptCore/GNUmakefile.am	Mon Sep 22 19:36:12 2008
-+++ WebKit-r36766-new/JavaScriptCore/GNUmakefile.am	Tue Sep 23 17:35:05 2008
-@@ -384,7 +384,7 @@
- 	$(PERL) $^ > $@
+@@ -98,12 +111,13 @@
+ static char* createStringWithContentsOfFile(const char* fileName)
+ {
+     char* buffer;
++    FILE* f;
+     
+     size_t buffer_size = 0;
+     size_t buffer_capacity = 1024;
+     buffer = (char*)malloc(buffer_capacity);
+     
+-    FILE* f = fopen(fileName, "r");
++    f = fopen(fileName, "r");
+     if (!f) {
+         fprintf(stderr, "Could not open file: %s\n", fileName);
+         return 0;
+Index: JavaScriptCore/VM/Machine.cpp
+===================================================================
+--- JavaScriptCore/VM/Machine.cpp	(revision 37092)
++++ JavaScriptCore/VM/Machine.cpp	(working copy)
+@@ -2563,13 +2563,14 @@
+                         r[dst] = baseObject->getDirectOffset(offset);
  
- %.lut.h: $(CREATE_HASH_TABLE) %.cpp
--	$^ -i > $@
-+	$(PERL) $^ -i > $@
+                         vPC += 8;
+-                        NEXT_OPCODE;
++                        goto op_get_by_id_chain_end;
+                     }
+                 }
+             }
+         }
  
- JavaScriptCore/pcre/chartables.c: $(srcdir)/JavaScriptCore/pcre/dftables
- 	$^ $@
-@@ -407,7 +407,7 @@
- 	JavaScriptCore/API/tests/NodeList.h \
- 	JavaScriptCore/API/tests/minidom.c
+         uncacheGetByID(codeBlock(r), vPC);
++op_get_by_id_chain_end:
+         NEXT_OPCODE;
+     }
+     BEGIN_OPCODE(op_get_by_id_generic) {
+@@ -2687,7 +2688,7 @@
+                 while (!proto->isNull()) {
+                     if (UNLIKELY(proto->structureID() != (*it).get())) {
+                         uncachePutByID(codeBlock(r), vPC);
+-                        NEXT_OPCODE;
++                        goto op_put_by_id_transition_end;
+                     }
+                     ++it;
+                     proto = static_cast<JSObject*>(proto->structureID()->prototypeForLookup(exec));
+@@ -2708,6 +2709,7 @@
+         }
+         
+         uncachePutByID(codeBlock(r), vPC);
++op_put_by_id_transition_end:
+         NEXT_OPCODE;
+     }
+     BEGIN_OPCODE(op_put_by_id_replace) {
+Index: GNUmakefile.am
+===================================================================
+--- GNUmakefile.am	(revision 37061)
++++ GNUmakefile.am	(working copy)
+@@ -99,6 +99,7 @@
+ javascriptcore_built_sources :=
+ javascriptcore_built_nosources :=
+ javascriptcore_dist :=
++javascriptcore_libadd :=
  
--Programs_minidom_CPPFLAGS = \
-+Programs_minidom_CPPFLAGS = -DJS_INTERNAL \
+ javascriptcore_cppflags += \
+ 	-I$(srcdir)/JavaScriptCore \
+@@ -124,6 +125,7 @@
+ libJavaScriptCore_la_LIBADD = \
+ 	$(UNICODE_LIBS) \
+ 	$(GLOBALDEPS_LIBS) \
++	$(javascriptcore_libadd) \
+ 	-lpthread
+ 
+ libJavaScriptCore_la_CXXFLAGS = \
+@@ -137,7 +139,7 @@
+ 	$(GLOBALDEPS_CFLAGS) \
+ 	$(UNICODE_CFLAGS)
+ 
+-libJavaScriptCore_la_CPPFLAGS = \
++libJavaScriptCore_la_CPPFLAGS = -DJS_INTERNAL \
  	$(global_cppflags) \
  	$(javascriptcore_cppflags)
  
-@@ -418,15 +418,13 @@
- 	$(GLOBALDEPS_CFLAGS)
+@@ -183,7 +185,7 @@
+ 	$(COVERAGE_CFLAGS) \
+ 	$(HILDON_CFLAGS)
  
- Programs_minidom_LDADD = \
--	 libJavaScriptCore.la \
--	 -lm \
--	 -lstdc++
-+	 libJavaScriptCore.la
- 
- # jsc
- Programs_jsc_SOURCES = \
- 	JavaScriptCore/kjs/Shell.cpp
- 
--Programs_jsc_CPPFLAGS = \
-+Programs_jsc_CPPFLAGS = -DJS_INTERNAL \
+-libWebCore_la_CPPFLAGS = \
++libWebCore_la_CPPFLAGS = -DJS_INTERNAL \
  	$(global_cppflags) \
- 	$(javascriptcore_cppflags)
+ 	$(webcore_cppflags) \
+ 	$(javascriptcore_cppflags) \
+@@ -217,6 +219,7 @@
+ webkitgtk_built_sources :=
+ webkitgtk_built_nosources :=
+ webkitgtk_cleanfiles :=
++webkitgtk_libadd :=
  
-diff -ur WebKit-r36766/JavaScriptCore/kjs/config.h WebKit-r36766-new/JavaScriptCore/kjs/config.h
---- WebKit-r36766/JavaScriptCore/kjs/config.h	Fri Sep 12 23:20:31 2008
-+++ WebKit-r36766-new/JavaScriptCore/kjs/config.h	Wed Sep 24 12:40:42 2008
-@@ -64,3 +64,4 @@
- #include <wtf/DisallowCType.h>
- #endif
+ nodist_libwebkit_1_0_la_SOURCES = \
+ 	$(webkitgtk_built_sources)
+@@ -235,7 +238,7 @@
+ libwebkit_1_0_la_CFLAGS = \
+ 	$(libWebCore_la_CFLAGS)
  
-+typedef int pid_t;
-diff -ur WebKit-r36766/WebCore/GNUmakefile.am WebKit-r36766-new/WebCore/GNUmakefile.am
---- WebKit-r36766/WebCore/GNUmakefile.am	Mon Sep 22 19:36:12 2008
-+++ WebKit-r36766-new/WebCore/GNUmakefile.am	Wed Sep 24 14:14:27 2008
-@@ -1722,6 +1722,7 @@
- 	WebCore/plugins/PluginArray.h \
- 	WebCore/plugins/PluginData.cpp \
- 	WebCore/plugins/PluginData.h \
-+	WebCore/plugins/win/PluginDatabaseWin.cpp \
- 	WebCore/plugins/PluginDatabase.cpp \
- 	WebCore/plugins/PluginDatabase.h \
- 	WebCore/plugins/PluginDebug.h \
-@@ -3460,10 +3461,10 @@
+-libwebkit_1_0_la_CPPFLAGS = \
++libwebkit_1_0_la_CPPFLAGS = -DJS_INTERNAL \
+ 	$(libWebCore_la_CPPFLAGS) \
+ 	$(webkitgtk_cppflags)
+ 
+@@ -246,6 +249,7 @@
+ 	$(no_undefined)
+ 
+ libwebkit_1_0_la_LIBADD = \
++	$(webkitgtk_libadd) \
+ 	libWebCore.la
+ 
+ #
+@@ -297,6 +301,11 @@
+ webcore_libadd += -lgstinterfaces-0.10 -lgstvideo-0.10
+ endif
+ 
++if TARGET_WIN32
++javascriptcore_libadd += -lwinmm
++webkitgtk_libadd += -lshlwapi
++endif
++
+ webkitgtk_h_api += \
+ 	WebKit/gtk/webkit/webkit.h \
+ 	WebKit/gtk/webkit/webkitdefines.h \
+Index: WebKit/gtk/WebCoreSupport/EditorClientGtk.cpp
+===================================================================
+--- WebKit/gtk/WebCoreSupport/EditorClientGtk.cpp	(revision 37092)
++++ WebKit/gtk/WebCoreSupport/EditorClientGtk.cpp	(working copy)
+@@ -18,6 +18,7 @@
+  */
+ 
+ #include "config.h"
++#include "KeyboardCodes.h"
+ #include "EditorClientGtk.h"
+ 
+ #include "CString.h"
+Index: WebCore/GNUmakefile.am
+===================================================================
+--- WebCore/GNUmakefile.am	(revision 37092)
++++ WebCore/GNUmakefile.am	(working copy)
+@@ -1976,7 +1976,12 @@
+ 	WebCore/plugins/gtk/xembed.h
+ endif
+ 
++if TARGET_WIN32
+ webcoregtk_sources += \
++	WebCore/plugins/win/PluginDatabaseWin.cpp
++endif
++
++webcoregtk_sources += \
+ 	WebCore/page/gtk/AXObjectCacheAtk.cpp \
+ 	WebCore/page/gtk/AccessibilityObjectAtk.cpp \
+ 	WebCore/page/gtk/AccessibilityObjectWrapperAtk.cpp \
+@@ -3484,7 +3489,7 @@
  
  # lookup tables for old-style JavaScript bindings
  %.lut.h: %.cpp $(CREATE_HASH_TABLE)
--	$(CREATE_HASH_TABLE) $< > $@
-+	$(PERL) $(CREATE_HASH_TABLE) $< > $@
- 
- WebCore/bindings/js/%Table.cpp: $(srcdir)/WebCore/bindings/js/JSHTMLInputElementBase.cpp $(CREATE_HASH_TABLE)
--	$(CREATE_HASH_TABLE) $< > $@
-+	$(PERL) $(CREATE_HASH_TABLE) $< > $@
+-	$(CREATE_HASH_TABLE) $< -n WebCore > $@
++	$(PERL) $(CREATE_HASH_TABLE) $< -n WebCore > $@
  
  # HTML tag and attribute names
  DerivedSources/HTMLNames.h: DerivedSources/HTMLNames.cpp;
-diff -ur WebKit-r36766/WebCore/bindings/scripts/IDLParser.pm WebKit-r36766-new/WebCore/bindings/scripts/IDLParser.pm
---- WebKit-r36766/WebCore/bindings/scripts/IDLParser.pm	Thu Aug  7 04:40:18 2008
-+++ WebKit-r36766-new/WebCore/bindings/scripts/IDLParser.pm	Tue Sep 23 17:35:56 2008
-@@ -64,7 +64,7 @@
-     my $preprocessor = shift;
- 
-     if (!$preprocessor) {
--        $preprocessor = "/usr/bin/gcc -E -P -x c++";
-+        $preprocessor = "gcc -E -P -x c++";
-     }
- 
-     if (!$defines) {
-diff -ur WebKit-r36766/WebCore/bindings/scripts/InFilesParser.pm WebKit-r36766-new/WebCore/bindings/scripts/InFilesParser.pm
---- WebKit-r36766/WebCore/bindings/scripts/InFilesParser.pm	Thu Aug  7 04:40:18 2008
-+++ WebKit-r36766-new/WebCore/bindings/scripts/InFilesParser.pm	Wed Sep 24 10:52:57 2008
-@@ -87,7 +87,7 @@
-     foreach (<$fileStream>) {
-         # Empty line, change from common parameter part
-         # to per tag part if we have started parsing.
--        if (/^$/) {
-+        if (/^\s*$/) {
-             if ($hasStartedParsing) {
-                 $isParsingCommonParameters = 0;
-             }
-diff -ur WebKit-r36766/WebCore/css/make-css-file-arrays.pl WebKit-r36766-new/WebCore/css/make-css-file-arrays.pl
---- WebKit-r36766/WebCore/css/make-css-file-arrays.pl	Fri May  9 07:39:57 2008
-+++ WebKit-r36766-new/WebCore/css/make-css-file-arrays.pl	Wed Sep 24 11:29:30 2008
-@@ -28,7 +28,7 @@
- GetOptions('preprocessor=s' => \$preprocessor);
- 
- if (!$preprocessor) {
--    $preprocessor = "/usr/bin/gcc -E -P -x c++";
-+    $preprocessor = "gcc -E -P -x c++";
- }
- 
- my $header = $ARGV[0];
-diff -ur WebKit-r36766/WebCore/dom/make_names.pl WebKit-r36766-new/WebCore/dom/make_names.pl
---- WebKit-r36766/WebCore/dom/make_names.pl	Sun Sep 21 03:12:16 2008
-+++ WebKit-r36766-new/WebCore/dom/make_names.pl	Wed Sep 24 10:54:00 2008
-@@ -42,7 +42,7 @@
- my %attrs = ();
- my %parameters = ();
- my $extraDefines = 0;
--my $preprocessor = "/usr/bin/gcc -E -P -x c++";
-+my $preprocessor = "gcc -E -P -x c++";
- my %svgCustomMappings = ();
- my %htmlCustomMappings = ();
- 
-diff -ur WebKit-r36766/WebCore/loader/FTPDirectoryDocument.cpp WebKit-r36766-new/WebCore/loader/FTPDirectoryDocument.cpp
---- WebKit-r36766/WebCore/loader/FTPDirectoryDocument.cpp	Tue Jul 15 08:18:47 2008
-+++ WebKit-r36766-new/WebCore/loader/FTPDirectoryDocument.cpp	Tue Sep 23 17:36:56 2008
-@@ -235,7 +235,7 @@
- }
- 
- #define localtime_r(x, y) localTimeQt(x, y)
--#elif PLATFORM(WIN) && !defined(localtime_r)
-+#elif (PLATFORM(WIN) || PLATFORM(GTK)) && !defined(localtime_r)
- #define localtime_r(x, y) localtime_s((y), (x))
- #endif
- 
-diff -ur WebKit-r36766/WebCore/loader/FTPDirectoryParser.cpp WebKit-r36766-new/WebCore/loader/FTPDirectoryParser.cpp
---- WebKit-r36766/WebCore/loader/FTPDirectoryParser.cpp	Tue Jul 15 08:18:47 2008
-+++ WebKit-r36766-new/WebCore/loader/FTPDirectoryParser.cpp	Tue Sep 23 17:37:15 2008
-@@ -51,7 +51,7 @@
- }
- 
- #define gmtime_r(x, y) gmtimeQt(x, y)
--#elif PLATFORM(WIN) && !defined(gmtime_r)
-+#elif (PLATFORM(WIN) || PLATFORM(GTK)) && !defined(gmtime_r)
- #define gmtime_r(x, y) gmtime_s((y), (x))
- #endif
- 
-diff -ur WebKit-r36766/WebCore/platform/gtk/FileSystemGtk.cpp WebKit-r36766-new/WebCore/platform/gtk/FileSystemGtk.cpp
---- WebKit-r36766/WebCore/platform/gtk/FileSystemGtk.cpp	Fri Jul 11 09:17:38 2008
-+++ WebKit-r36766-new/WebCore/platform/gtk/FileSystemGtk.cpp	Tue Sep 23 17:37:41 2008
+Index: WebCore/platform/gtk/FileSystemGtk.cpp
+===================================================================
+--- WebCore/platform/gtk/FileSystemGtk.cpp	(revision 37092)
++++ WebCore/platform/gtk/FileSystemGtk.cpp	(working copy)
 @@ -120,7 +120,7 @@
      if (!filename)
          return false;
@@ -447,9 +508,22 @@ diff -ur WebKit-r36766/WebCore/platform/gtk/FileSystemGtk.cpp WebKit-r36766-new/
      g_free(filename);
  
      return result == 0;
-diff -ur WebKit-r36766/WebCore/platform/gtk/KeyEventGtk.cpp WebKit-r36766-new/WebCore/platform/gtk/KeyEventGtk.cpp
---- WebKit-r36766/WebCore/platform/gtk/KeyEventGtk.cpp	Sat May 31 05:35:39 2008
-+++ WebKit-r36766-new/WebCore/platform/gtk/KeyEventGtk.cpp	Wed Sep 24 12:18:01 2008
+Index: WebCore/platform/gtk/PasteboardGtk.cpp
+===================================================================
+--- WebCore/platform/gtk/PasteboardGtk.cpp	(revision 37092)
++++ WebCore/platform/gtk/PasteboardGtk.cpp	(working copy)
+@@ -29,6 +29,7 @@
+ #include "RenderImage.h"
+ #include "KURL.h"
+ #include "markup.h"
++#include "Range.h"
+ 
+ #include <gtk/gtk.h>
+ 
+Index: WebCore/platform/gtk/KeyEventGtk.cpp
+===================================================================
+--- WebCore/platform/gtk/KeyEventGtk.cpp	(revision 37092)
++++ WebCore/platform/gtk/KeyEventGtk.cpp	(working copy)
 @@ -28,9 +28,9 @@
   */
  
@@ -461,41 +535,49 @@ diff -ur WebKit-r36766/WebCore/platform/gtk/KeyEventGtk.cpp WebKit-r36766-new/We
  #include "NotImplemented.h"
  #include "TextEncoding.h"
  
-diff -ur WebKit-r36766/WebCore/platform/gtk/PasteboardGtk.cpp WebKit-r36766-new/WebCore/platform/gtk/PasteboardGtk.cpp
---- WebKit-r36766/WebCore/platform/gtk/PasteboardGtk.cpp	Fri May  9 07:40:01 2008
-+++ WebKit-r36766-new/WebCore/platform/gtk/PasteboardGtk.cpp	Tue Sep 23 17:38:05 2008
-@@ -29,6 +29,7 @@
- #include "RenderImage.h"
- #include "KURL.h"
- #include "markup.h"
-+#include "Range.h"
+Index: WebCore/bindings/scripts/IDLParser.pm
+===================================================================
+--- WebCore/bindings/scripts/IDLParser.pm	(revision 37092)
++++ WebCore/bindings/scripts/IDLParser.pm	(working copy)
+@@ -64,7 +64,7 @@
+     my $preprocessor = shift;
  
- #include <gtk/gtk.h>
+     if (!$preprocessor) {
+-        $preprocessor = "/usr/bin/gcc -E -P -x c++";
++        $preprocessor = "gcc -E -P -x c++";
+     }
  
-diff -ur WebKit-r36766/WebCore/plugins/PluginView.cpp WebKit-r36766-new/WebCore/plugins/PluginView.cpp
---- WebKit-r36766/WebCore/plugins/PluginView.cpp	Sat Sep 20 04:32:01 2008
-+++ WebKit-r36766-new/WebCore/plugins/PluginView.cpp	Wed Sep 24 12:02:43 2008
-@@ -47,7 +47,7 @@
- #include "Page.h"
- #include "FocusController.h"
- #include "PlatformMouseEvent.h"
--#if PLATFORM(WIN_OS) && !PLATFORM(WX) && ENABLE(NETSCAPE_PLUGIN_API)
-+#if PLATFORM(WIN_OS) && !PLATFORM(WX) && !PLATFORM(GTK) && ENABLE(NETSCAPE_PLUGIN_API)
- #include "PluginMessageThrottlerWin.h"
- #endif
- #include "PluginPackage.h"
-@@ -548,7 +548,7 @@
- #if PLATFORM(QT)
-     , m_isNPAPIPlugin(false)
- #endif
--#if PLATFORM(WIN_OS) && !PLATFORM(WX) && ENABLE(NETSCAPE_PLUGIN_API)
-+#if PLATFORM(WIN_OS) && !PLATFORM(WX) && !PLATFORM(GTK) && ENABLE(NETSCAPE_PLUGIN_API)
-     , m_pluginWndProc(0)
-     , m_lastMessage(0)
-     , m_isCallingPluginWndProc(false)
-diff -ur WebKit-r36766/WebCore/plugins/PluginView.h WebKit-r36766-new/WebCore/plugins/PluginView.h
---- WebKit-r36766/WebCore/plugins/PluginView.h	Sat Sep 20 04:32:01 2008
-+++ WebKit-r36766-new/WebCore/plugins/PluginView.h	Wed Sep 24 12:01:53 2008
+     if (!$defines) {
+Index: WebCore/bindings/scripts/InFilesParser.pm
+===================================================================
+--- WebCore/bindings/scripts/InFilesParser.pm	(revision 37092)
++++ WebCore/bindings/scripts/InFilesParser.pm	(working copy)
+@@ -87,7 +87,7 @@
+     foreach (<$fileStream>) {
+         # Empty line, change from common parameter part
+         # to per tag part if we have started parsing.
+-        if (/^$/) {
++        if (/^\s*$/) {
+             if ($hasStartedParsing) {
+                 $isParsingCommonParameters = 0;
+             }
+Index: WebCore/dom/make_names.pl
+===================================================================
+--- WebCore/dom/make_names.pl	(revision 37092)
++++ WebCore/dom/make_names.pl	(working copy)
+@@ -42,7 +42,7 @@
+ my %attrs = ();
+ my %parameters = ();
+ my $extraDefines = 0;
+-my $preprocessor = "/usr/bin/gcc -E -P -x c++";
++my $preprocessor = "gcc -E -P -x c++";
+ my %svgCustomMappings = ();
+ my %htmlCustomMappings = ();
+ 
+Index: WebCore/plugins/PluginView.h
+===================================================================
+--- WebCore/plugins/PluginView.h	(revision 37092)
++++ WebCore/plugins/PluginView.h	(working copy)
 @@ -63,7 +63,7 @@
      class KeyboardEvent;
      class MouseEvent;
@@ -523,9 +605,10 @@ diff -ur WebKit-r36766/WebCore/plugins/PluginView.h WebKit-r36766-new/WebCore/pl
          OwnPtr<PluginMessageThrottlerWin> m_messageThrottler;
          WNDPROC m_pluginWndProc;
          unsigned m_lastMessage;
-diff -ur WebKit-r36766/WebCore/plugins/gtk/PluginViewGtk.cpp WebKit-r36766-new/WebCore/plugins/gtk/PluginViewGtk.cpp
---- WebKit-r36766/WebCore/plugins/gtk/PluginViewGtk.cpp	Sat Sep 20 04:32:01 2008
-+++ WebKit-r36766-new/WebCore/plugins/gtk/PluginViewGtk.cpp	Wed Sep 24 12:16:01 2008
+Index: WebCore/plugins/gtk/PluginViewGtk.cpp
+===================================================================
+--- WebCore/plugins/gtk/PluginViewGtk.cpp	(revision 37092)
++++ WebCore/plugins/gtk/PluginViewGtk.cpp	(working copy)
 @@ -442,7 +442,7 @@
              *((XID *)w) = GDK_WINDOW_XWINDOW(containingWindow()->window);
  #endif
@@ -535,20 +618,93 @@ diff -ur WebKit-r36766/WebCore/plugins/gtk/PluginViewGtk.cpp WebKit-r36766-new/W
  #endif
              return NPERR_NO_ERROR;
          }
-diff -ur WebKit-r36766/WebKit/gtk/WebCoreSupport/EditorClientGtk.cpp WebKit-r36766-new/WebKit/gtk/WebCoreSupport/EditorClientGtk.cpp
---- WebKit-r36766/WebKit/gtk/WebCoreSupport/EditorClientGtk.cpp	Sun Sep 14 11:52:19 2008
-+++ WebKit-r36766-new/WebKit/gtk/WebCoreSupport/EditorClientGtk.cpp	Wed Sep 24 11:11:41 2008
-@@ -18,6 +18,7 @@
-  */
+Index: WebCore/plugins/PluginView.cpp
+===================================================================
+--- WebCore/plugins/PluginView.cpp	(revision 37092)
++++ WebCore/plugins/PluginView.cpp	(working copy)
+@@ -47,7 +47,7 @@
+ #include "Page.h"
+ #include "FocusController.h"
+ #include "PlatformMouseEvent.h"
+-#if PLATFORM(WIN_OS) && !PLATFORM(WX) && ENABLE(NETSCAPE_PLUGIN_API)
++#if PLATFORM(WIN_OS) && !PLATFORM(WX) && !PLATFORM(GTK) && ENABLE(NETSCAPE_PLUGIN_API)
+ #include "PluginMessageThrottlerWin.h"
+ #endif
+ #include "PluginPackage.h"
+@@ -550,7 +550,7 @@
+ #if PLATFORM(QT)
+     , m_isNPAPIPlugin(false)
+ #endif
+-#if PLATFORM(WIN_OS) && !PLATFORM(WX) && ENABLE(NETSCAPE_PLUGIN_API)
++#if PLATFORM(WIN_OS) && !PLATFORM(WX) && !PLATFORM(GTK) && ENABLE(NETSCAPE_PLUGIN_API)
+     , m_pluginWndProc(0)
+     , m_lastMessage(0)
+     , m_isCallingPluginWndProc(false)
+Index: WebCore/css/make-css-file-arrays.pl
+===================================================================
+--- WebCore/css/make-css-file-arrays.pl	(revision 37092)
++++ WebCore/css/make-css-file-arrays.pl	(working copy)
+@@ -28,7 +28,7 @@
+ GetOptions('preprocessor=s' => \$preprocessor);
  
- #include "config.h"
-+#include "KeyboardCodes.h"
- #include "EditorClientGtk.h"
+ if (!$preprocessor) {
+-    $preprocessor = "/usr/bin/gcc -E -P -x c++";
++    $preprocessor = "gcc -E -P -x c++";
+ }
  
- #include "CString.h"
-diff -ur WebKit-r36766/WebKitTools/GtkLauncher/main.c WebKit-r36766-new/WebKitTools/GtkLauncher/main.c
---- WebKit-r36766/WebKitTools/GtkLauncher/main.c	Thu Apr 17 23:37:24 2008
-+++ WebKit-r36766-new/WebKitTools/GtkLauncher/main.c	Tue Sep 23 17:39:42 2008
+ my $header = $ARGV[0];
+Index: WebCore/loader/FTPDirectoryDocument.cpp
+===================================================================
+--- WebCore/loader/FTPDirectoryDocument.cpp	(revision 37092)
++++ WebCore/loader/FTPDirectoryDocument.cpp	(working copy)
+@@ -235,7 +235,7 @@
+ }
+ 
+ #define localtime_r(x, y) localTimeQt(x, y)
+-#elif PLATFORM(WIN) && !defined(localtime_r)
++#elif (PLATFORM(WIN) || PLATFORM(GTK)) && !defined(localtime_r)
+ #define localtime_r(x, y) localtime_s((y), (x))
+ #endif
+ 
+Index: WebCore/loader/FTPDirectoryParser.cpp
+===================================================================
+--- WebCore/loader/FTPDirectoryParser.cpp	(revision 37092)
++++ WebCore/loader/FTPDirectoryParser.cpp	(working copy)
+@@ -51,7 +51,7 @@
+ }
+ 
+ #define gmtime_r(x, y) gmtimeQt(x, y)
+-#elif PLATFORM(WIN) && !defined(gmtime_r)
++#elif (PLATFORM(WIN) || PLATFORM(GTK)) && !defined(gmtime_r)
+ #define gmtime_r(x, y) gmtime_s((y), (x))
+ #endif
+ 
+Index: WebKitTools/DumpRenderTree/gtk/DumpRenderTree.cpp
+===================================================================
+--- WebKitTools/DumpRenderTree/gtk/DumpRenderTree.cpp	(revision 37092)
++++ WebKitTools/DumpRenderTree/gtk/DumpRenderTree.cpp	(working copy)
+@@ -340,6 +340,7 @@
+     };
+ 
+     int option;
++#ifndef _MSC_VER
+     while ((option = getopt_long(argc, (char* const*)argv, "", options, NULL)) != -1)
+         switch (option) {
+             case '?':   // unknown or ambiguous option
+@@ -347,6 +348,9 @@
+                 exit(1);
+                 break;
+         }
++#else
++    int optind = 1;
++#endif
+ 
+     GtkWidget* window = gtk_window_new(GTK_WINDOW_POPUP);
+     GtkContainer* container = GTK_CONTAINER(gtk_fixed_new());
+Index: WebKitTools/GtkLauncher/main.c
+===================================================================
+--- WebKitTools/GtkLauncher/main.c	(revision 37092)
++++ WebKitTools/GtkLauncher/main.c	(working copy)
 @@ -47,10 +47,11 @@
  update_title (GtkWindow* window)
  {
@@ -599,9 +755,10 @@ diff -ur WebKit-r36766/WebKitTools/GtkLauncher/main.c WebKit-r36766-new/WebKitTo
      webkit_web_view_open (web_view, uri);
  
      gtk_widget_grab_focus (GTK_WIDGET (web_view));
-diff -ur WebKit-r36766/autogen.sh WebKit-r36766-new/autogen.sh
---- WebKit-r36766/autogen.sh	Thu Apr 17 23:37:24 2008
-+++ WebKit-r36766-new/autogen.sh	Tue Sep 23 17:40:05 2008
+Index: autogen.sh
+===================================================================
+--- autogen.sh	(revision 37061)
++++ autogen.sh	(working copy)
 @@ -54,4 +54,4 @@
  
  cd $ORIGDIR || exit 1

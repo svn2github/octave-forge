@@ -6,6 +6,8 @@ Information Theory:
  conditionalentropy_XY
  conditionalentropy_YX
  entropy
+ grayenc
+ graydec
  hartley_entropy
  infoentr_seq
  infogain_seq

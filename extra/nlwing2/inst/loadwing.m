@@ -73,7 +73,7 @@ unwind_protect
     elseif (strmatch ('area', line))
       mode = 0;
       ref.area = sscanf (line(5:end), ' %f', 'C');
-    elseif (strmatch ('mcamber', line))
+    elseif (strmatch ('mchord', line))
       mode = 0;
       ref.cmac = sscanf (line(8:end), ' %f', 'C');
     elseif (strmatch ('mcenter', line))

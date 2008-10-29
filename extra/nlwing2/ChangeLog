@@ -1,3 +1,7 @@
+2008-10-29  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/loadwing.m: keyword change: mcamber->mchord
+
 2008-10-02  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/makewing.m: Fix xac&yac calculation

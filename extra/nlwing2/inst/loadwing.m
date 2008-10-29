@@ -53,7 +53,7 @@ endif
 unwind_protect
 
   ac = [];
-  pol.z = [];
+  pol = [];
   ref.sym = true;
 
   mode = 0;
@@ -92,7 +92,7 @@ unwind_protect
       endif
       ac(end+1,:) = [z,x,y,c,a];
     elseif (mode == 2)
-      i = length (pol.z) + 1;
+      i = length (pol) + 1;
       [pol(i).z, pol(i).names] = sscanf (line, '%f %s', 'C');
     endif
   endwhile

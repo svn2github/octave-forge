@@ -1,6 +1,12 @@
 2008-10-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/loadwing.m: keyword change: mcamber->mchord
+	* inst/loadwing.m: Fix invalid expression, initialize pol properly.
+	* inst/loadpolars.m: Add error message for invalid input.
+	* inst/makewing.m: Implement simple unsymmetric case panelization,
+	improve docs.
+	* inst/liftanalyze.m: Warn if maximum lift occurs at the end of a
+	polar.
 
 2008-10-02  Jaroslav Hajek  <highegg@gmail.com>
 

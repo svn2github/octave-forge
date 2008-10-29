@@ -55,6 +55,8 @@ function pol = loadpolars (pn)
   elseif (isstruct (pn))
     pol = loadpolars ({pn.names});
     [pol.z] = pn.z;
+  else
+    error ("loadpolars: invalid input");
   endif
 
 endfunction

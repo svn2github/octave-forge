@@ -34,6 +34,9 @@ function [a0, amax, clmax] = liftanalyze (al, cl)
   if (any (cl(imin+1:imax) < cl(imin:imax-1)))
     warning ("liftanalyze: multimodal lift curve");
   endif
+  if (imax == length (cl))
+    warning ("liftanalyze: maximum lift at end of lift curve");
+  endif
   a0 = interp1 (cl(imin:imax), al(imin:imax), 0, "extrap");
   amax = al(imax);
 endfunction

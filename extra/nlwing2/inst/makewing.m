@@ -20,7 +20,7 @@
 % 
 
 % -*- texinfo -*-
-% @deftypefn{Function File} {wing =} makewing (acs, pols, ref, np, tfunc)
+% @deftypefn{Function File} {wing =} makewing (acs, pols, ref, panels)
 % Creates the wing structure necessary for further computations. 
 % @var{acs} is an N-by-5 array specifying the spanwise geometry description.
 % each row contains @code{[zac xac yac chord twist]}
@@ -28,8 +28,10 @@
 % distribution. @code{pols(i).z} is the spanwise coordinate, @code{pols(i).cl}
 % is the lift coefficient on local angle of attack dependence, etc. 
 % @var{ref} contains the reference quantities.
-% @var{np} specifies an approximate number of panels.
-% @var{tfunc} is a handle to a function mapping 
+% @var{panels} specifies either an approximate number of panels,
+% or directly the z-coordinates of panel vertices. In the latter case, 
+% @var{panels}(1) and @var{panels}(end) should match @var{acs}(1,1) and
+% @var{acs}(end,1), respectively.
 % @end deftypefn
 function wing = makewing (ac, pols, ref, np = 80, zac = [])
 
@@ -42,7 +44,9 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
       fi = linspace (0, pi/2, np+1).';
       zac = zmx * sin (fi);
     else
-      error ("panelize: unsymmetric case not implemented")
+      zmxl = ozac(1); zmxu = ozac(end);
+      fi = linspace (0, pi/2, np/2+1)';
+      zac = [zmxl * sin(fi(end:-1:2)); zmxu * sin(fi)];
     endif
   endif
 

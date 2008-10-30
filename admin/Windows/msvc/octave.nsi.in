@@ -262,6 +262,8 @@ Section "Development files" SEC_DEV
   SetOutPath "$INSTDIR\include"
   File "${VCLIBS_ROOT}\include\H5*.h"
   File "${VCLIBS_ROOT}\include\hdf5.h"
+  File "${VCLIBS_ROOT}\include\stdint.h"
+  File "${VCLIBS_ROOT}\include\inttypes.h"
 
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application

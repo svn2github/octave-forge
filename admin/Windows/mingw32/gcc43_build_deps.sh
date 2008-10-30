@@ -55,6 +55,7 @@ VER_LIBGD=2.0.35-3
 # many packages depend on ZLIB
 # LIBFONTCONFIG depends on EXPAT
 # LIBGD depends on LIBFREETYPE, LIBFONTCONFIG, LIBJPEG, LIBPNG
+# PCRE checks for BZIP2 and READLINE
 
 ( cd zlib && build-${VER_ZLIB}.sh ${ACTION} );
 ( cd blas && build-${VER_BLAS}.sh ${ACTION} );

@@ -21,7 +21,7 @@
 TARGETPLATFORM=ppc # can either be 'i386' or 'ppc'
 
 # This is the Octave version number of the Octave.app that is created.
-OCTAVEVERSION=3.0.1 # must be the version number of Octave
+OCTAVEVERSION=3.0.3 # must be the version number of Octave
 
 # This is the directory where all the dependencies are installed. Make
 # sure that there are no other files in this directory that are not
@@ -130,10 +130,10 @@ else
   evalfailexit "cp -R -P -vp ${PREFIX}/bin/{mkoctfile,octave,octave-bug,octave-config}-${VERSION} ${TEMPDIR}/bin"
   evalfailexit "cp -R -P -vp ${PREFIX}/include/octave-${VERSION} ${TEMPDIR}/include"
   evalfailexit "cp -R -P -vp ${PREFIX}/info/dir ${TEMPDIR}/info"
-  evalfailexit "cp -R -P -vp ${PREFIX}/info/octave.info{,-1,-2,-3,-4,-5} ${TEMPDIR}/info"
+  evalfailexit "cp -R -P -vp ${PREFIX}/share/info/octave.info ${TEMPDIR}/info"
   evalfailexit "cp -R -P -vp ${PREFIX}/lib/octave-${VERSION} ${TEMPDIR}/lib"
   evalfailexit "cp -R -P -vp ${PREFIX}/libexec/octave ${TEMPDIR}/libexec"
-  evalfailexit "cp -R -P -vp ${PREFIX}/man/man1/{mkoctfile,octave,octave-bug,octave-config}.1 ${TEMPDIR}/man/man1"
+  evalfailexit "cp -R -P -vp ${PREFIX}/share/man/man1/{mkoctfile,octave,octave-bug,octave-config}.1 ${TEMPDIR}/man/man1"
   evalfailexit "cp -R -P -vp ${PREFIX}/share/octave ${TEMPDIR}/share"
 
 echo "FIXME - COPYING *ALL* *a,*la LIBS AND *ALL* INCLUDES"

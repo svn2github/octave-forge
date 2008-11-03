@@ -40,7 +40,7 @@ function pol = loadpolars (pn)
   if (ischar (pn))
     dat = load ('-ascii', pn);
     alpha = dat(:,1) * pi/180;
-    [a0, amax, pol.clmax] = liftanalyze (alpha, dat(:,2));
+    [a0, amax, pol.clmax] = liftanalyze (alpha, dat(:,2), pn);
     pol.a0 = a0; pol.amax = amax;
     alpha = (alpha - a0) ./ (amax - a0);
     pol.cl = pchip (alpha, dat(:,2));

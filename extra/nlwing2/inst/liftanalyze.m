@@ -25,17 +25,25 @@
 % angle.
 % @end deftypefn
 
-function [a0, amax, clmax] = liftanalyze (al, cl)
+function [a0, amax, clmax] = liftanalyze (al, cl, pn = '')
+  if (pn)
+    wpref = strcat ("liftanalyze (", pn, "): ");
+  else
+    wpref = "liftanalyze: ";
+  endif
   if (cl(1) > 0)
-    warning ("liftanalyze: polar starts at positive lift");
+    warning ([wpref, "polar starts at positive lift"]);
+    warned = true;
   endif
   [clmin, imin] = min (cl);
   [clmax, imax] = max (cl);
   if (any (cl(imin+1:imax) < cl(imin:imax-1)))
-    warning ("liftanalyze: multimodal lift curve");
+    warning ([wpref, "multimodal lift curve"]);
+    warned = true;
   endif
   if (imax == length (cl))
-    warning ("liftanalyze: maximum lift at end of lift curve");
+    warning ([wpref, "maximum lift at end of lift curve"]);
+    warned = true;
   endif
   a0 = interp1 (cl(imin:imax), al(imin:imax), 0, "extrap");
   amax = al(imax);

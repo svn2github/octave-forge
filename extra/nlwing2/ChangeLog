@@ -1,3 +1,9 @@
+2008-11-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/liftanalyze.m: Include polar name in warning.
+	* inst/loadpolars.m: Pass polar name to liftanalyze.
+	* DESCRIPTION: Tagged version 1.0.3.
+
 2008-10-29  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/loadwing.m: keyword change: mcamber->mchord

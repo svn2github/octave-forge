@@ -275,6 +275,23 @@ srcpkg()
    "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${FULLPKG}-src.7z ${SRCFILE} ${PATCHFILE} build-${VER}-${REL}.sh
 }
 
+modify_libtool()
+{
+   if [ -f $1 ]; then
+      sed -e '/^soname_spec/ s+^.*$+soname_spec=\"\\\`echo \\\${libname} | \\\$SED -e s/^lib//\\\`\\\${versuffix}\\\${shared_ext}\"+' $1 > $1.mod
+      mv $1.mod $1
+   fi
+}
+
+modify_libtool_no_versuffix()
+{
+   modify_libtool $*
+   if [ -f $1 ]; then
+     sed -e '/^soname_spec/ s+\\\${versuffix}++' $1 > $1.mod
+     mv $1.mod $1
+   fi
+}
+
 main() {
 (
    echo "$1" "$2" "$3" "$4" "$5"

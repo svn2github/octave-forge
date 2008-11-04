@@ -38,7 +38,7 @@ GCC_PREFIX=mingw32-
 
 # Prefix for our build
 #PREFIX=`echo ${TOPDIR} | sed -e 's+\(.*\)/[^/]*$+\1+'`/usr/local
-PREFIX=/usr/local/octm32gcc${GCC_VER}${GCC_SYS}
+PREFIX=/usr/local/octave-mingw32_gcc${GCC_VER}${GCC_SYS}
 PREFIX_OCT=${PREFIX}/octave
 
 # Base paths for include files, import libraries, binaries&dlls, static libraries
@@ -97,13 +97,16 @@ export CC CXX F77 CPP
 case $GCC_VER in
    -4.3.0)
 # Architecture flags
-GCC_ARCH_FLAGS="-march=i686 -mtune=i686"
+GCC_ARCH_FLAGS="-march=i686 -mtune=generic"
 # Optimization flags
 GCC_OPT_FLAGS="-O2"
 # Linker flags
 LDFLAGS="-shared-libgcc"
+# Linker flas for Fortran
 FLDFLAGS=$LDFLAGS
+# C++ libraries
 CXXLIBS="-lstdc++_s"
+# C++ Compiler Flags
 CXXFLAGS="-D_DLL"
 ;;
 

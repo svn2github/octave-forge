@@ -1,0 +1,68 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libiconv-1.12-orig/lib/Makefile.in libiconv-1.12/lib/Makefile.in
+--- libiconv-1.12-orig/lib/Makefile.in	2007-05-28 00:15:31 +0200
++++ libiconv-1.12/lib/Makefile.in	2008-11-04 19:34:54 +0100
+@@ -112,7 +112,7 @@
+ 	$(LIBTOOL_COMPILE) $(CC) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(DEFS) -c $(srcdir)/../woe32dll/iconv-exports.c
+ 
+ libiconv.res : $(srcdir)/../windows/libiconv.rc
+-	$(WINDRES) `$(SHELL) $(srcdir)/../windows/windres-options --escape $(PACKAGE_VERSION)` -i $(srcdir)/../windows/libiconv.rc -o libiconv.res --output-format=coff
++	$(WINDRES) `$(SHELL) $(srcdir)/../windows/windres-options --escape $(PACKAGE_VERSION)` --preprocessor=$(CPP) -i $(srcdir)/../windows/libiconv.rc -o libiconv.res --output-format=coff
+ 
+ # Installs the library and include files only. Typically called with only
+ # $(libdir) and $(includedir) - don't use $(prefix) and $(exec_prefix) here.
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libiconv-1.12-orig/src/Makefile.in libiconv-1.12/src/Makefile.in
+--- libiconv-1.12-orig/src/Makefile.in	2007-05-28 00:15:52 +0200
++++ libiconv-1.12/src/Makefile.in	2008-11-04 20:04:01 +0100
+@@ -76,7 +76,7 @@
+ 	$(CC) -c $(INCLUDES) -I../lib $(CFLAGS) $(CPPFLAGS) -DINSTALLDIR=\"$(bindir)\" -DLOCALEDIR=\"$(localedir)\" $(srcdir)/iconv.c
+ 
+ iconv.res : $(srcdir)/../windows/iconv.rc
+-	$(WINDRES) `$(SHELL) $(srcdir)/../windows/windres-options --escape $(PACKAGE_VERSION)` -i $(srcdir)/../windows/iconv.rc -o iconv.res --output-format=coff
++	$(WINDRES) `$(SHELL) $(srcdir)/../windows/windres-options --escape $(PACKAGE_VERSION)` --preprocessor=$(CPP) -i $(srcdir)/../windows/iconv.rc -o iconv.res --output-format=coff
+ 
+ # The following rule is necessary to avoid a toplevel "make -n check" failure.
+ ../lib/libiconv.la :
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libiconv-1.12-orig/windows/windres-options libiconv-1.12/windows/windres-options
+--- libiconv-1.12-orig/windows/windres-options	2007-05-27 20:42:10 +0200
++++ libiconv-1.12/windows/windres-options	2008-11-04 20:00:27 +0100
+@@ -14,27 +14,22 @@
+ fi
+ version="$1" # something like 2.0 or 2.17 or 2.17.3 or 2.17.3-pre3
+ 
+-sed_extract_major='/^[0-9]/{s/^\([0-9]*\).*/\1/p;q}
+-a\
+-0
+-q
+-'
+-sed_extract_minor='/^[0-9][0-9]*[.][0-9]/{s/^[0-9]*[.]\([0-9]*\).*/\1/p;q}
+-a\
+-0
+-q
+-'
+-sed_extract_subminor='/^[0-9][0-9]*[.][0-9][0-9]*[.][0-9]/{s/^[0-9]*[.][0-9]*[.]\([0-9]*\).*/\1/p;q}
+-a\
+-0
+-q
+-'
++sed_extract_major='/^[0-9]/ s/^\([0-9]*\).*/\1/p;q'
++sed_extract_minor='/^[0-9][0-9]*[.][0-9]/ s/^[0-9]*[.]\([0-9]*\).*/\1/p;q'
++sed_extract_subminor='/^[0-9][0-9]*[.][0-9][0-9]*[.][0-9]/ s/^[0-9]*[.][0-9]*[.]\([0-9]*\).*/\1/p;q'
++
++VMAJOR=`echo "${version}" | sed -n -e "$sed_extract_major"`
++VMINOR=`echo "${version}" | sed -n -e "$sed_extract_minor"`
++VSUBMINOR=`echo "${version}" | sed -n -e "$sed_extract_subminor"`
++if test -z $VMAJOR; then VMAJOR="0"; fi
++if test -z $VMINOR; then VMINOR="0"; fi
++if test -z $VSUBMINOR; then VSUBMINOR="0"; fi
+ 
+ {
+   echo "-DPACKAGE_VERSION_STRING=\"${version}\""
+-  echo "-DPACKAGE_VERSION_MAJOR="`echo "${version}" | sed -n -e "$sed_extract_major"`
+-  echo "-DPACKAGE_VERSION_MINOR="`echo "${version}" | sed -n -e "$sed_extract_minor"`
+-  echo "-DPACKAGE_VERSION_SUBMINOR="`echo "${version}" | sed -n -e "$sed_extract_subminor"`
++  echo "-DPACKAGE_VERSION_MAJOR="$VMAJOR
++  echo "-DPACKAGE_VERSION_MINOR="$VMINOR
++  echo "-DPACKAGE_VERSION_SUBMINOR="$VSUBMINOR
+ } |
+ {
+   if test -n "$escape"; then

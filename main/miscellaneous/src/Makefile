@@ -4,12 +4,6 @@ ifdef HAVE_LIB_TERMCAP
 	TERM_LIB=-ltermcap
 endif
 
-ifdef HAVE_FORK
-	LISTEN=listen.oct
-else
-	LISTEN=
-endif
-
 TARGETS=waitbar.oct $(LISTEN) xmlread.oct  hex2num.cc \
 	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct
 
@@ -18,11 +12,11 @@ all:	$(TARGETS)
 waitbar.oct:	waitbar.cc
 	$(MKOCTFILE) $(MISCDEFS) waitbar.cc $(TERM_LIB)
 
-listen.oct: listen.o listencanfork.o stringmatch.o
-	$(MKOCTFILE) listen.o listencanfork.o stringmatch.o
+server.oct: server.o listencanfork.o stringmatch.o
+	$(MKOCTFILE) server.o listencanfork.o stringmatch.o
 
-listen.o: listen.cc
-	$(MKOCTFILE) -c $(MISCDEFS) listen.cc
+server.o: server.cc
+	$(MKOCTFILE) -c $(MISCDEFS) server.cc
 
 listencanfork.o: listencanfork.c
 	$(MKOCTFILE) -c listencanfork.c

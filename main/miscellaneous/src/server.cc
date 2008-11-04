@@ -9,16 +9,35 @@
 #include <cstdio>
 #include <cctype>
 #include <cstdlib>
-#include <unistd.h>
+//#include <unistd.h>
 //#include <stdint.h>
 #include <cerrno>
 // #include <string.h>
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/wait.h>
-#include <signal.h>
+
+#if (defined(_WIN32)||defined(_WIN64)) && !defined(__CYGWIN__)
+# define USE_WINSOCK
+# define CAN_FORK false
+# include <winsock.h>
+# include <io.h>
+  typedef int socklen_t;
+#else
+# define HAVE_FORK 1
+# define USE_SIGNALS
+# if defined(__CYGWIN__)
+#  define CAN_FORK listencanfork()
+# else
+#  define USE_DAEMONIZE
+#  define CAN_FORK true
+# endif
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <sys/wait.h>
+# include <signal.h>
+# define closesocket close
+#endif
+
 
 #include <octave/oct.h>
 #include <octave/parse.h>
@@ -69,11 +88,54 @@ get_builtin_value (const std::string& nm)
 }
 #endif
 
-// XXX FIXME XXX autoconf stuff
-#if 0 && defined(_sgi)
-typedef int socklen_t;
-#endif
+#ifdef USE_WINSOCK
+  bool init_sockets()
+  {
 
+  WSADATA wsaData;
+  WORD version;
+  int error;
+
+  version = MAKEWORD( 2, 0 );
+
+  error = WSAStartup( version, &wsaData );
+
+  /* check for error */
+  if ( error != 0 )
+  {
+    /* error occured */
+    return false;
+  }
+
+  /* check for correct version */
+  if ( LOBYTE( wsaData.wVersion ) != 2 ||
+       HIBYTE( wsaData.wVersion ) != 0 )
+  {
+      /* incorrect WinSock version */
+      WSACleanup();
+      return false;
+  }
+  return true;
+  }
+
+  inline void end_sockets() { WSACleanup(); }
+  inline int socket_errno() { return WSAGetLastError(); }
+#else // !USE_WINSOCK
+# include <cerrno>
+  inline bool init_sockets() { return true; }
+  inline void end_sockets() { }
+  inline int socket_errno() { return errno; }
+#endif // !USE_WINSOCK
+inline void socket_error(const char *context)
+{
+  int err = socket_errno();
+  char errno_str[15];
+  sprintf(" %d: ",errno_str);
+  std::string msg = std::string(context)+errno_str+strerror(err);
+  error(msg.c_str());
+}
+
+#ifdef USE_SIGNALS
 static void
 sigchld_handler(int /* sig */)
 {
@@ -113,21 +175,18 @@ static void sigchld_setup(void)
   if (sigaction(SIGCHLD, &act, NULL) < 0) 
      error("listen could not set SIGCHLD");
 }
-
-
-#if defined(__CYGWIN__)
-
-// Don't daemonize on cygwin just yet.
-inline void daemonize(void) {}
-
 #else
+inline void sigchld_setup(void) { }
+#endif
+
+
+#ifdef USE_DAEMONIZE
 
 static RETSIGTYPE
 sigterm_handler(int /* sig */)
 {
   exit(0);
 }
-
 
 static void
 daemonize(void)
@@ -142,7 +201,11 @@ daemonize(void)
   freopen("/dev/null", "w", stderr);
 }
 
-#endif
+#else
+// Don't daemonize on cygwin just yet.
+inline void daemonize(void) {}
+
+#endif // !DAEMONIZE
 
 
 
@@ -155,7 +218,7 @@ static octave_value get_octave_value(char *name)
   symbol_record *sr = top_level_sym_tab->lookup (name);
   if (sr) def = sr->def();
 #else
-  def = symbol_table::varref (std::string (name), symbol_table::top_scope ());
+  def = symbol_tabe::varref (std::string (name), symbol_table::top_scope ());
 #endif
 
   return def;
@@ -167,18 +230,18 @@ static void channel_error (const int channel, const char *str)
   STATUS("sending error !!!e (" << strlen(str) << ") " << str);
 
   uint32_t len = strlen(str);
-  write(channel,"!!!e",4);
-  uint32_t t = htonl(len); write(channel,&t,4);
-  write(channel,str,len);
+  send(channel,"!!!e",4,0);
+  uint32_t t = htonl(len); send(channel,(const char *)&t,4,0);
+  send(channel,str,len,0);
 }
 
 static bool reads (const int channel, void * buf, int n)
 {
   // STATUS("entering reads loop with size " << n); tic();
   while (1) {
-    int chunk = read(channel, buf, n);
+    int chunk = recv(channel, (char *)buf, n, 0);
     if (chunk == 0) STATUS("read socket returned 0");
-    if (chunk < 0) STATUS("read socket: " << strerror(errno));
+    if (chunk < 0) STATUS("read socket error " << socket_errno());
     if (chunk <= 0) return false;
     n -= chunk;
     // if (n == 0) STATUS("done reads loop after " << toc() << "us");
@@ -192,7 +255,7 @@ static bool writes (const int channel, const void * buf, int n)
 {
   // STATUS("entering writes loop");
   while (1) {
-    int chunk = write(channel, buf, n);
+    int chunk = send(channel, (const char *)buf, n, 0);
     if (chunk == 0) STATUS("write socket returned 0");
     if (chunk < 0) STATUS("write socket: " << strerror(errno));
     if (chunk <= 0) return false;
@@ -558,20 +621,20 @@ sprintf(addr, "%d.%d.%d.%d",
 #endif /* BROKEN_INET_NTOA */
 
 
-DEFUN_DLD(listen,args,,"\
-listen(port,host,host,...)\n\
+DEFUN_DLD(server,args,,"\
+server(port,host,host,...)\n\
    Listen for connections on the given port.  Normally only accepts\n\
    connections from localhost (127.0.0.1), but you can specify any\n\
    dot-separated host name globs.  E.g., '128.2.20.*' or '128.2.2[012].*'\n\
    Use '?' for '[0123456789]'. Use '*.*.*.*' for any host.\n\
-listen(...,'debug'|'nodebug')\n\
+server(...,'debug'|'nodebug')\n\
    If debug, echo all commands sent across the connection.  If nodebug,\n\
    detach the process and don't echo anything.  You will need to use\n\
    kill directly to end the process. Nodebug is the default.\n\
-listen(...,'fork'|'nofork')\n\
+server(...,'fork'|'nofork')\n\
    If fork, start new server for each connection.  If nofork, only allow\n\
    one connection at a time. Fork is the default (depending on system).\n\
-listen(...,'loopback')\n\
+server(...,'loopback')\n\
    Use loopback address 127.0.0.1 rather than 0.0.0.0.\n\
 ")
 {
@@ -581,11 +644,7 @@ listen(...,'loopback')\n\
 			    "senderror", "builtin senderror doc", false);
 #endif
 
-#if defined(__CYGWIN__)
-  bool canfork = listencanfork();
-#else
-  bool canfork = true;
-#endif
+  bool canfork = CAN_FORK;
 
   octave_value_list ret;
   int nargin = args.length();
@@ -594,9 +653,16 @@ listen(...,'loopback')\n\
       print_usage ();
       return ret;
     }
-
   int port = args(0).int_value();
   if (error_state) return ret;
+
+  // Winsock requires initialization
+  if (!init_sockets())
+	{
+	  socket_error("init");
+	  return ret;
+    }
+
 
   debug = false;
   uint32_t inaddr = INADDR_ANY;
@@ -629,14 +695,15 @@ listen(...,'loopback')\n\
   struct sockaddr_in their_addr; // connector's address information
   socklen_t sin_size;
   int yes=1;
-  
-  if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-    perror("socket");
+
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (sockfd == -1) {
+	socket_error("socket");
     return ret;
   }
 
-  if (setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(yes)) == -1) {
-    perror("setsockopt");
+  if (setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,(const char *)(&yes),sizeof(yes)) == -1) {
+    socket_error("setsockopt");
     return ret;
   }
 
@@ -647,15 +714,15 @@ listen(...,'loopback')\n\
   
   if (bind(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr))
       == -1) {
-    perror("bind");
-    close(sockfd);
+    socket_error("bind");
+    closesocket(sockfd);
     return ret;
   }
   
   /* listen for connections (allowing one pending connection) */
   if (listen(sockfd, canfork?1:0) == -1) { 
-    perror("listen");
-    close(sockfd);
+    socket_error("listen");
+    closesocket(sockfd);
     return ret;
   }
 
@@ -666,7 +733,6 @@ listen(...,'loopback')\n\
 #endif
 
   sigchld_setup();
-
   if (!debug && canfork) daemonize();
       
   // XXX FIXME XXX want a 'sandbox' option which disables fopen, cd, pwd,
@@ -700,33 +766,38 @@ listen(...,'loopback')\n\
     STATUS("server: got connection from " << them);
 
     if (anyhostglob(hostlist,them)) {
+#ifdef HAVE_FORK
       if (canfork) {
         int pid = fork();
-
         if (pid == -1) {
-          perror("fork ");
+          socket_error("fork");
           break;
         } else if (pid == 0) {
-          close(sockfd);            // child doesn't need listener
+          closesocket(sockfd);      // child doesn't need listener
           signal(SIGCHLD,SIG_DFL);  // child doesn't need SIGCHLD signal
           process_commands(channel);
           STATUS("child is exitting");
           exit(0);
         }
       } else {
-	process_commands(channel);
+		process_commands(channel);
         STATUS("server: connection closed");
       }
+#else // !HAVE_FORK
+      process_commands(channel);
+      STATUS("server: connection closed");
+#endif // !HAVE_FORK
     } else {
       STATUS("server: connection refused.");
     }
 
-    close(channel);
+    closesocket(channel);
     channel = -1;
   }
 
   STATUS("could not read commands; returning");
-  close(sockfd);
+  closesocket(sockfd);
+  end_sockets();
 #if 0
   unwind_protect::run_frame("Flisten");
 #endif

@@ -17,6 +17,7 @@ echo ACTION = "${ACTION}";
 
 # Version-Release of dependency 
 VER_ZLIB=1.2.3-3
+VER_BZIP2=1.0.5-3
 VER_BLAS=3
 VER_CBLAS=3
 VER_LAPACK=3.1.1-3
@@ -58,6 +59,7 @@ VER_LIBGD=2.0.35-3
 # PCRE checks for BZIP2 and READLINE
 
 ( cd zlib && build-${VER_ZLIB}.sh ${ACTION} );
+( cd bzip2 && build-${VER_BZIP2}.sh ${ACTION} );
 ( cd blas && build-${VER_BLAS}.sh ${ACTION} );
 ( cd cblas && build-${VER_CBLAS}.sh ${ACTION} );
 ( cd lapack && build-${VER_LAPACK}.sh ${ACTION} );

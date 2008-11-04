@@ -1,0 +1,113 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' bzip2-1.0.5-orig/Makefile bzip2-1.0.5/Makefile
+--- bzip2-1.0.5-orig/Makefile	2008-02-14 12:39:18 +0000
++++ bzip2-1.0.5/Makefile	2008-10-29 08:33:12 +0000
+@@ -12,13 +12,15 @@
+ # in the file LICENSE.
+ # ------------------------------------------------------------------
+ 
++SRCDIR=@SRCDIR@
++
++vpath %.c $(SRCDIR)
++
+ SHELL=/bin/sh
+ 
+ # To assist in cross-compiling
+-CC=gcc
+ AR=ar
+ RANLIB=ranlib
+-LDFLAGS=
+ 
+ BIGFILES=-D_FILE_OFFSET_BITS=64
+ CFLAGS=-Wall -Winline -O2 -g $(BIGFILES)
+@@ -35,11 +37,20 @@
+       decompress.o \
+       bzlib.o
+ 
+-all: libbz2.a bzip2 bzip2recover test
++all: libbz2.a bzip2dll bzip2 bzip2recover test 
+ 
+ bzip2: libbz2.a bzip2.o
+ 	$(CC) $(CFLAGS) $(LDFLAGS) -o bzip2 bzip2.o -L. -lbz2
+ 
++bzip2dll : bzip2.dll
++
++bzip2.dll : $(OBJS)
++	$(CC) -shared -o $@ \
++		$(LDFLAGS) \
++		-Wl,--output-def=$@.def \
++		-Wl,--out-implib=libbz2.dll.a \
++		$(OBJS)
++
+ bzip2recover: bzip2recover.o
+ 	$(CC) $(CFLAGS) $(LDFLAGS) -o bzip2recover bzip2recover.o
+ 
+@@ -54,20 +65,20 @@
+ 
+ check: test
+ test: bzip2
+-	@cat words1
+-	./bzip2 -1  < sample1.ref > sample1.rb2
+-	./bzip2 -2  < sample2.ref > sample2.rb2
+-	./bzip2 -3  < sample3.ref > sample3.rb2
+-	./bzip2 -d  < sample1.bz2 > sample1.tst
+-	./bzip2 -d  < sample2.bz2 > sample2.tst
+-	./bzip2 -ds < sample3.bz2 > sample3.tst
+-	cmp sample1.bz2 sample1.rb2 
+-	cmp sample2.bz2 sample2.rb2
+-	cmp sample3.bz2 sample3.rb2
+-	cmp sample1.tst sample1.ref
+-	cmp sample2.tst sample2.ref
+-	cmp sample3.tst sample3.ref
+-	@cat words3
++	@cat $(SRCDIR)/words1
++	./bzip2 -1  < $(SRCDIR)/sample1.ref > sample1.rb2
++	./bzip2 -2  < $(SRCDIR)/sample2.ref > sample2.rb2
++	./bzip2 -3  < $(SRCDIR)/sample3.ref > sample3.rb2
++	./bzip2 -d  < $(SRCDIR)/sample1.bz2 > sample1.tst
++	./bzip2 -d  < $(SRCDIR)/sample2.bz2 > sample2.tst
++	./bzip2 -ds < $(SRCDIR)/sample3.bz2 > sample3.tst
++	cmp $(SRCDIR)/sample1.bz2 sample1.rb2 
++	cmp $(SRCDIR)/sample2.bz2 sample2.rb2
++	cmp $(SRCDIR)/sample3.bz2 sample3.rb2
++	cmp sample1.tst $(SRCDIR)/sample1.ref
++	cmp sample2.tst $(SRCDIR)/sample2.ref
++	cmp sample3.tst $(SRCDIR)/sample3.ref
++	@cat $(SRCDIR)/words3
+ 
+ install: bzip2 bzip2recover
+ 	if ( test ! -d $(PREFIX)/bin ) ; then mkdir -p $(PREFIX)/bin ; fi
+@@ -114,24 +125,24 @@
+ 	sample1.tst sample2.tst sample3.tst
+ 
+ blocksort.o: blocksort.c
+-	@cat words0
+-	$(CC) $(CFLAGS) -c blocksort.c
++	@cat $(SRCDIR)/words0
++	$(CC) $(CFLAGS) -c $<
+ huffman.o: huffman.c
+-	$(CC) $(CFLAGS) -c huffman.c
++	$(CC) $(CFLAGS) -c $<
+ crctable.o: crctable.c
+-	$(CC) $(CFLAGS) -c crctable.c
++	$(CC) $(CFLAGS) -c $<
+ randtable.o: randtable.c
+-	$(CC) $(CFLAGS) -c randtable.c
++	$(CC) $(CFLAGS) -c $<
+ compress.o: compress.c
+-	$(CC) $(CFLAGS) -c compress.c
++	$(CC) $(CFLAGS) -c $<
+ decompress.o: decompress.c
+-	$(CC) $(CFLAGS) -c decompress.c
++	$(CC) $(CFLAGS) -c $<
+ bzlib.o: bzlib.c
+-	$(CC) $(CFLAGS) -c bzlib.c
++	$(CC) $(CFLAGS) -c $<
+ bzip2.o: bzip2.c
+-	$(CC) $(CFLAGS) -c bzip2.c
++	$(CC) $(CFLAGS) -c $<
+ bzip2recover.o: bzip2recover.c
+-	$(CC) $(CFLAGS) -c bzip2recover.c
++	$(CC) $(CFLAGS) -c $<
+ 
+ 
+ distclean: clean

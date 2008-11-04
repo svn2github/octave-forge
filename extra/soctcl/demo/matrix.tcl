@@ -8,7 +8,7 @@ exec wish "$0" "$@"
 # octave and octave-forge installed.
 #
 #	demo$ octave
-#	> listen(3132)
+#	> server(3132)
 #
 # This starts an octave listening daemon.  To remove it you will have
 # to use kill directly after using ps aux | grep octave to find its pid.

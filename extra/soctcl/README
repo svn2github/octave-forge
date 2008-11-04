@@ -30,9 +30,9 @@ Start the server:
    # At present connections can come from one host only (127.0.0.1).  I
    # don't know how easy this is to spoof by forging the IP packet header.
    octave
-   listen(3132);
+   server(3132);
    ## if want to run the client remotely, use
-   # listen(3132,'hostid')
+   # server(3132,'hostid')
    ## where hostid is the name or the four part numeric host 
    ## address of the client.
 

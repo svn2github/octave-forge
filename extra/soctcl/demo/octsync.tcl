@@ -3,7 +3,7 @@
 # usage: octsync.tcl ?port
 #
 # This is a lowlevel test of the octave server synchronization
-# response time.  It uses the octave listen() protocol directly
+# response time.  It uses the octave server() protocol directly
 # rather than going through the octcl package.  Any delays seen
 # are directly due to tcl and to octave's implementation of sockets
 # and not any special handling I'm doing in octave.tcl.

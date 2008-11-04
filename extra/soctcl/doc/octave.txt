@@ -17,14 +17,14 @@ To create a pretty console interface to octave, you also need to be
 able to capture the output of an octave command.
 
 Please read demo/matrix.tcl for a sample octave.tcl application.
-Please read octave-forge/main/miscellaneous/listen.doc for a description
+Please read octave-forge/main/miscellaneous/server.txt for a description
 of the protocol.
 
 To connect to octave, you must first start run octave as a server process 
 listening to connections on a port:
 
 	$ octave
-	> listen(3132)
+	> server(3132)
 
 When it receives a new connection, octave forks and lets the child
 process interpret the octave commands.  Only after octave is listening
@@ -226,7 +226,7 @@ octave cancel
 Octave Reference
 ----------------
 
-listen(port)
+server(port)
 	listen for connections on the given port.
 
 send('expression')
@@ -252,7 +252,7 @@ The present implementation relies on the firewall to block access
 to the port you select.
 
 There is a very simplistic host-based access scheme implemented.
-If you specify listen(port,hostid) where hostid is a string
+If you specify server(port,hostid) where hostid is a string
 containing the four part numeric host address, then only connections
 from that host are accepted.  By default hostid is 127.0.0.1, so
 only localhost connections are allowed.  I have no idea how easy

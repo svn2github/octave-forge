@@ -94,17 +94,10 @@ The @command{f2c} program is one of the smallest and oldest free Fortran convert
 
 @node Some packages from Octave-Forge's website cannot be installed., No spaces (and/or special characters) in the pathname before Octave.app are allowed., Fortran90 code files cannot be compiled., Limitations
 @unnumberedsec Some packages from Octave--Forge's website cannot be installed.
-Some of Octave--Forge's packages cannot be installed because of a missing @command{g95} or @command{gfortran} command as described in the section before or because there are some missing libraries on your Mac. Known packages that cannot be installed because they come with Fortran90 code files are
+Some of Octave--Forge's packages cannot be installed because of a missing @command{g95} or @command{gfortran} command as described in the section before. Known packages that cannot be installed because they come with Fortran90 code files are
 @itemize @minus
 @item Main repository: @file{Optiminterp}
 @item Nonfree packages: @file{Spline-gcvspl}
-@end itemize
-Known packages that cannot be installed because of missing libraries are (cf. FAQ section of this @file{Readme.html} file about manually installing additional libraries)
-@itemize @minus
-@item Main repository: @file{GSL}
-@item Main repository: @file{Symbolic}
-@item Non--free repository: @file{ARPACK}
-@item @file{Other packages} not listed here because of an increasing number of packages each day...
 @end itemize
 
 If you find other bugs or other limitations in other packages of Octave--Forge then please report them to @email{octave-dev@@lists.sourceforge.net}. If you want to find out more information why eg. the installation for a specific package fails then use the command @command{pkg install --verbose <package.tar.gz>} to build a package in verbose mode.

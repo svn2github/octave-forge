@@ -43,6 +43,7 @@ VER_EXPAT=2.0.1-3
 VER_LIBFREETYPE=2.3.7-3
 VER_LIBFONTCONFIG=2.6.0-3
 VER_LIBGD=2.0.35-3
+VER_WMF=0.2.8.4-3
 
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
@@ -57,6 +58,7 @@ VER_LIBGD=2.0.35-3
 # LIBFONTCONFIG depends on EXPAT
 # LIBGD depends on LIBFREETYPE, LIBFONTCONFIG, LIBJPEG, LIBPNG
 # PCRE checks for BZIP2 and READLINE
+# WMF depends on FREETYPE and ZLIB
 
 ( cd zlib && build-${VER_ZLIB}.sh ${ACTION} );
 ( cd bzip2 && build-${VER_BZIP2}.sh ${ACTION} );
@@ -85,3 +87,4 @@ VER_LIBGD=2.0.35-3
 ( cd libfreetype && build-${VER_LIBFREETYPE}.sh ${ACTION} );
 ( cd libfontconfig && build-${VER_LIBFONTCONFIG}.sh ${ACTION} );
 ( cd libgd && build-${VER_LIBGD}.sh ${ACTION} );
+( cd wmf && build-${VER_WMF}.sh ${ACTION} );

@@ -44,6 +44,7 @@ VER_LIBFREETYPE=2.3.7-3
 VER_LIBFONTCONFIG=2.6.0-3
 VER_LIBGD=2.0.35-3
 VER_WMF=0.2.8.4-3
+VER_IMAGEMAGICK=6.4.5-3
 
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
@@ -59,6 +60,7 @@ VER_WMF=0.2.8.4-3
 # LIBGD depends on LIBFREETYPE, LIBFONTCONFIG, LIBJPEG, LIBPNG
 # PCRE checks for BZIP2 and READLINE
 # WMF depends on FREETYPE and ZLIB
+# IMAGEMAGICK depends on BZIP, ZLIB, WMF, JPEG, PNG, FREETYPE
 
 ( cd zlib && build-${VER_ZLIB}.sh ${ACTION} );
 ( cd bzip2 && build-${VER_BZIP2}.sh ${ACTION} );
@@ -88,3 +90,4 @@ VER_WMF=0.2.8.4-3
 ( cd libfontconfig && build-${VER_LIBFONTCONFIG}.sh ${ACTION} );
 ( cd libgd && build-${VER_LIBGD}.sh ${ACTION} );
 ( cd wmf && build-${VER_WMF}.sh ${ACTION} );
+( cd imagemagick && build-${VER_IMAGEMAGICK}.sh ${ACTION} );

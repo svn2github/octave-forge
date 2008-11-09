@@ -1,0 +1,175 @@
+#! /usr/bin/sh
+
+# Name of package
+PKG=ImageMagick
+# Version of Package
+VER=6.4.5
+# Release of (this patched) package
+REL=3
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
+
+# Name of source file
+SRCFILE=${PKGVER}-0.tar.bz2
+TAR_TYPE=j
+# Name of Patch file
+PATCHFILE=${FULLPKG}.patch
+
+# URL of source code file
+URL="ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-6.4.5-0.tar.bz2"
+
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extraced to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+# MAKEFILE=win32/Makefile.gcc
+
+# header files to be installed
+#INSTALL_HEADERS="tiff.h tiffvers.h tiffio.h"
+#INSTALL_HEADERS_BUILD="tiffconf.h"
+#INCLUDE_DIR=
+
+source ../gcc43_common.sh
+
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+echo ${PREFIX}
+
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=${TOPDIR}/${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     CPP=${CPP} \
+     LDFLAGS="${LDFLAGS}" \
+     CPPFLAGS="${GCC_ARCH_FLAGS}" \
+     CFLAGS="$CFLAGS ${GCC_OPT_FLAGS} -Wall" \
+     CXXFLAGS="$CXXFLAGS ${GCC_OPT_FLAGS} -Wall" \
+     LIBS="" \
+     --prefix="${PREFIX}/imagemagick" \
+     --enable-shared \
+     --without-perl \
+     --without-x \
+     --with-quantum-depth=8 \
+     --with-fontconfig \
+     FONTCONFIG_CFLAGS="$CFLAGS ${GCC_OPT_FLAGS} -Wall" \
+     FONTCONFIG_LIBS="-lfontconfig -lexpat -lfreetype -lz" \
+     --without-threads \
+     --disable-installed
+     )
+}
+
+build()
+{
+   ( cd ${BUILDDIR} && make CXXLIBS="$CXXLIBS" )
+}
+
+TOOLS="convert.exe"
+MAGICKPP_HEADERS="Blob.h CoderInfo.h Color.h Drawable.h Exception.h Geometry.h Image.h Include.h Montage.h Pixels.h STL.h TypeMetric.h" 
+
+install()
+{
+   install_pre;
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick/.libs/libmagickcore.dll      ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick/.libs/libmagickcore.dll.a    ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick/.libs/libmagickcore.a        ${STATICLIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick/Magick-config ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick/MagickCore-config ${BINARY_PATH}
+
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick++/lib/libmagick++.dll      ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick++/lib/libmagick++.dll.a    ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick++/lib/.libs/libmagick++.a        ${STATICLIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick++/bin/Magick++-config ${BINARY_PATH}
+
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/wand/.libs/libmagickwand.dll      ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/wand/.libs/libmagickwand.dll.a    ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/wand/.libs/libmagickwand.a        ${STATICLIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/wand/Wand-config ${BINARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/wand/MagickWand-config ${BINARY_PATH}
+   
+   for a in ${TOOLS}; do
+      ${CP} ${CP_FLAGS} ${BUILDDIR}/utilities/.libs/$a ${BINARY_PATH}
+   done
+   
+   mkdir -vp ${INCLUDE_PATH}/Magick++
+   ${CP} ${CP_TOOLS} ${SRCDIR}/magick++/lib/Magick++.h ${INCLUDE_PATH}
+   for a in ${MAGICKPP_HEADERS}; do
+      ${CP} ${CP_TOOLS} ${SRCDIR}/magick++/lib/Magick++/$a ${INCLUDE_PATH}/Magick++
+   done
+   
+   mkdir -vp ${LICENSE_PATH}/${PKG}
+   ${CP} ${CP_FLAGS} ${SRCDIR}/LICENSE ${LICENSE_PATH}/${PKG}
+   mkdir -vp ${LICENSE_PATH}/${PKG}/Magick++
+   ${CP} ${CP_FLAGS} ${SRCDIR}/Magick++/LICENSE ${LICENSE_PATH}/${PKG}/Magick++
+   
+   install_post
+}
+
+#install()
+#{
+#  ( cd ${BUILDDIR} && make install )
+#}
+   
+uninstall()
+{
+   uninstall_pre;
+   
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libmagickcore.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libmagickcore.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libmagickcore.a
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/Magick-config
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/MagickCore-config
+   
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libmagick++.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libmagick++.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libmagick++.a
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/Magick++-config
+
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libmagickwand.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libmagickwand.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libmagickwand.a
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/Wand-config
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/MagickWand-config
+   
+   for a in ${TOOLS}; do
+      ${RM} ${RM_FLAGS} ${BINARY_PATH}/$a
+   done
+   
+   ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/Magick++.h
+   for a in ${MAGICKPP_HEADERS}; do
+      ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/magick++/$a
+   done
+   rmdir -v ${INCLUDE_PATH}/Magick++
+   
+   
+   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/LICENSE
+   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/Magick++/LICENSE
+   rmdir ${LICENSE_PATH}/${PKG}/Magick++
+   rmdir ${LICENSE_PATH}/${PKG}
+   
+   uninstall_post;
+}
+   
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
+}
+
+main $*

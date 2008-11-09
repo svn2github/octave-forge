@@ -1,0 +1,54 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ImageMagick-6.4.5-orig/Makefile.in ImageMagick-6.4.5/Makefile.in
+--- ImageMagick-6.4.5-orig/Makefile.in	2008-10-24 20:04:30 +0000
++++ ImageMagick-6.4.5/Makefile.in	2008-10-30 12:38:58 +0000
+@@ -4020,7 +4020,7 @@
+ 	wand/*_out.*
+ 
+ @WITH_MAGICK_PLUS_PLUS_TRUE@magickppincdir = $(topincludedir)/Magick++
+-@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_LIBS = Magick++/lib/libMagick++.la
++@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_LIBS = Magick++/lib/libMagick++.la Magick++/lib/libMagick++.dll
+ @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_SCRPTS = \
+ @WITH_MAGICK_PLUS_PLUS_TRUE@	Magick++/bin/Magick++-config
+ 
+@@ -5644,6 +5644,18 @@
+ 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
+ Magick++/lib/libMagick++.la: $(Magick___lib_libMagick___la_OBJECTS) $(Magick___lib_libMagick___la_DEPENDENCIES) Magick++/lib/$(am__dirstamp)
+ 	$(Magick___lib_libMagick___la_LINK) $(am_Magick___lib_libMagick___la_rpath) $(Magick___lib_libMagick___la_OBJECTS) $(Magick___lib_libMagick___la_LIBADD) $(LIBS)
++Magick++/lib/libMagick++.dll : Magick++/lib/.libs/libMagick++.a
++	$(CXX) -shared -o $@ \
++		$(LDFLAGS) \
++		-Wl,--out-implib=$@.a \
++		-Wl,--output-def=$@.def \
++		-Wl,--whole-archive $< \
++		-Wl,--no-whole-archive \
++		-Wl,--exclude-libs=libstdc++_s \
++		-L./magick/.libs -L./wand/.libs \
++		-lMagickCore -lMagickWand \
++		$(CXXLIBS) \
++		$(LIBS)
+ coders/$(am__dirstamp):
+ 	@$(MKDIR_P) coders
+ 	@: > coders/$(am__dirstamp)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ImageMagick-6.4.5-orig/configure ImageMagick-6.4.5/configure
+--- ImageMagick-6.4.5-orig/configure	2008-10-24 20:04:25 +0000
++++ ImageMagick-6.4.5/configure	2008-10-30 13:06:08 +0000
+@@ -16746,7 +16746,7 @@
+       ;;
+     mingw* | cegcc*)
+       # MinGW DLLs use traditional 'lib' prefix
+-      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
++      soname_spec='${libname}${shared_ext}'
+       sys_lib_search_path_spec=`$CC -print-search-dirs | $GREP "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+       if $ECHO "$sys_lib_search_path_spec" | $GREP ';[c-zC-Z]:/' >/dev/null; then
+         # It is most probably a Windows format PATH printed by
+@@ -30569,8 +30569,8 @@
+ fi
+ 
+ have_fontconfig='no'
+-FONTCONFIG_CFLAGS=""
+-FONTCONFIG_LIBS=""
++#FONTCONFIG_CFLAGS=""
++#FONTCONFIG_LIBS=""
+ FONTCONFIG_PKG=""
+ if test "x$with_fontconfig" = "xyes"; then
+     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5

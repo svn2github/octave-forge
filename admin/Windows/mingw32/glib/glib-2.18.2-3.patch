@@ -1,0 +1,48 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' glib-2.18.2-orig/glib/Makefile.in glib-2.18.2/glib/Makefile.in
+--- glib-2.18.2-orig/glib/Makefile.in	2008-10-16 14:41:09 +0000
++++ glib-2.18.2/glib/Makefile.in	2008-11-05 12:41:55 +0000
+@@ -1357,7 +1357,7 @@
+ 	echo '#include "gspawn-win32-helper.c"' >>$@
+ 
+ glib-win32-res.o: glib.rc
+-	$(WINDRES) glib.rc $@
++	$(WINDRES) --preprocessor=$(CPP) glib.rc $@
+ 
+ @OS_UNIX_TRUE@install-exec-hook:
+ @OS_UNIX_TRUE@	for sf in ${auto_config_binscripts} ; do \
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' glib-2.18.2-orig/gmodule/Makefile.in glib-2.18.2/gmodule/Makefile.in
+--- glib-2.18.2-orig/gmodule/Makefile.in	2008-10-16 14:41:10 +0000
++++ glib-2.18.2/gmodule/Makefile.in	2008-11-05 12:48:34 +0000
+@@ -716,7 +716,7 @@
+ @OS_WIN32_AND_DLL_COMPILATION_FALSE@uninstall-def-file:
+ 
+ gmodule-win32-res.o: gmodule.rc
+-	$(WINDRES) gmodule.rc $@
++	$(WINDRES) --preprocessor=$(CPP) gmodule.rc $@
+ 
+ gmodule-2.0.lib: libgmodule-2.0.la gmodule.def
+ 	lib -machine:@LIB_EXE_MACHINE_FLAG@ -name:libgmodule-2.0-$(LT_CURRENT_MINUS_AGE).dll -def:gmodule.def -out:$@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' glib-2.18.2-orig/gobject/Makefile.in glib-2.18.2/gobject/Makefile.in
+--- glib-2.18.2-orig/gobject/Makefile.in	2008-10-16 14:41:10 +0000
++++ glib-2.18.2/gobject/Makefile.in	2008-11-05 12:57:28 +0000
+@@ -1156,7 +1156,7 @@
+ gsignal.lo: gmarshal.c
+ 
+ gobject-win32-res.o: gobject.rc
+-	$(WINDRES) gobject.rc $@
++	$(WINDRES) --preprocessor=$(CPP) gobject.rc $@
+ 
+ gobject-2.0.lib: libgobject-2.0.la gobject.def
+ 	lib -machine:@LIB_EXE_MACHINE_FLAG@ -name:libgobject-2.0-$(LT_CURRENT_MINUS_AGE).dll -def:gobject.def -out:$@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' glib-2.18.2-orig/gthread/Makefile.in glib-2.18.2/gthread/Makefile.in
+--- glib-2.18.2-orig/gthread/Makefile.in	2008-10-16 14:41:10 +0000
++++ glib-2.18.2/gthread/Makefile.in	2008-11-05 12:55:13 +0000
+@@ -676,7 +676,7 @@
+ @OS_WIN32_AND_DLL_COMPILATION_FALSE@uninstall-def-file:
+ 
+ gthread-win32-res.o: gthread.rc
+-	$(WINDRES) gthread.rc $@
++	$(WINDRES) --preprocessor=$(CPP) gthread.rc $@
+ 
+ gthread-2.0.lib: libgthread-2.0.la gthread.def
+ 	lib -machine:@LIB_EXE_MACHINE_FLAG@ -name:libgthread-2.0-$(LT_CURRENT_MINUS_AGE).dll -def:$(srcdir)/gthread.def -out:$@

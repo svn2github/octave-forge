@@ -68,8 +68,8 @@ conf()
 
 build_pre()
 {
-   BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}/gettext-runtime"
-   modify_libtool_no_versuffix ${BUILDDIR}/libtool
+   modify_libtool_no_versuffix ${BUILDDIR}/gettext-runtime/libtool
+   modify_libtool_no_versuffix ${BUILDDIR}/gettext-tools/libtool
 }
 
 install()
@@ -87,6 +87,23 @@ install()
    # install license information
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/gettext-runtime/COPYING ${LICENSE_PATH}/${PKG}/COPYING.gettext-runtime
+   
+   install_devbin;
+   
+   install_post;
+}
+
+EXE_TOOLS="msgfmt.exe"
+
+install_devbin()
+{
+   mkdir -vp ${DEVBIN_PATH}
+   
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/gettext-tools/gnulib-lib/.libs/gettextlib.dll ${DEVBIN_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/gettext-tools/src/.libs/gettextsrc.dll        ${DEVBIN_PATH}
+   
+   for a in ${EXE_TOOLS}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/gettext-tools/src/.libs/$a ${DEVBIN_PATH}; done
+   
 }
 
 uninstall()
@@ -101,6 +118,8 @@ uninstall()
    
    ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING
    ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING.gettext-runtime
+   
+   rmdir -v ${LICENSE_PATH}/${PKG}
    
    uninstall_post;
 }

@@ -1,6 +1,18 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-runtime/configure gettext-0.17/gettext-runtime/configure
+--- gettext-0.17-orig/gettext-runtime/configure	2007-11-07 00:33:39 +0100
++++ gettext-0.17/gettext-runtime/configure	2008-11-05 21:19:47 +0100
+@@ -37433,7 +37433,7 @@
+     ac_ext=cpp
+ ac_cpp='$CXXCPP $CPPFLAGS'
+ ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
++ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $CXXLIBS $LIBS >&5'
+ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+ 
+     cat <<EOF > conftest.$ac_ext
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-runtime/intl/Makefile.in gettext-0.17/gettext-runtime/intl/Makefile.in
 --- gettext-0.17-orig/gettext-runtime/intl/Makefile.in	2007-11-04 22:21:12 +0100
-+++ gettext-0.17/gettext-runtime/intl/Makefile.in	2008-11-04 22:28:01 +0100
++++ gettext-0.17/gettext-runtime/intl/Makefile.in	2008-11-05 17:54:59 +0100
 @@ -85,7 +85,7 @@
  CPPFLAGS = @CPPFLAGS@
  CFLAGS = @CFLAGS@ @CFLAG_VISIBILITY@
@@ -22,15 +34,17 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/g
  all-no: all-no-@BUILD_INCLUDED_LIBINTL@
  all-no-yes: libgnuintl.$la
  all-no-no:
-@@ -194,7 +195,7 @@
+@@ -194,8 +195,8 @@
  	$(LIBTOOL) --mode=link \
  	  $(CC) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS) $(LDFLAGS) -o $@ \
  	  $(OBJECTS) @LTLIBICONV@ @INTL_MACOSX_LIBS@ $(LIBS) @LTLIBTHREAD@ @LTLIBC@ \
 -	  $(OBJECTS_RES_@WOE32@) \
+-	  -version-info $(LTV_CURRENT):$(LTV_REVISION):$(LTV_AGE) \
 +	  -Wl,$(OBJECTS_RES_@WOE32@) -Wl,$(srcdir)/intl.def \
- 	  -version-info $(LTV_CURRENT):$(LTV_REVISION):$(LTV_AGE) \
++	  -module -avoid-version \
  	  -rpath $(libdir) \
  	  -no-undefined
+ 
 @@ -284,7 +285,7 @@
  	sed_extract_major='/^[0-9]/{'$${nl}'s/^\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
  	sed_extract_minor='/^[0-9][0-9]*[.][0-9]/{'$${nl}'s/^[0-9]*[.]\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
@@ -42,7 +56,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/g
  	  "-DPACKAGE_VERSION_MINOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_minor"` \
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-runtime/intl/intl.def gettext-0.17/gettext-runtime/intl/intl.def
 --- gettext-0.17-orig/gettext-runtime/intl/intl.def	1970-01-01 01:00:00 +0100
-+++ gettext-0.17/gettext-runtime/intl/intl.def	2008-11-04 21:42:54 +0100
++++ gettext-0.17/gettext-runtime/intl/intl.def	2008-11-05 17:54:59 +0100
 @@ -0,0 +1,30 @@
 +LIBRARY intl.dll
 +EXPORTS
@@ -76,7 +90,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/g
 +textdomain
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-runtime/intl/libgnuintl.h.in gettext-0.17/gettext-runtime/intl/libgnuintl.h.in
 --- gettext-0.17-orig/gettext-runtime/intl/libgnuintl.h.in	2007-11-02 01:23:43 +0100
-+++ gettext-0.17/gettext-runtime/intl/libgnuintl.h.in	2008-11-04 21:42:54 +0100
++++ gettext-0.17/gettext-runtime/intl/libgnuintl.h.in	2008-11-05 17:54:59 +0100
 @@ -330,7 +330,7 @@
  extern int vfprintf (FILE *, const char *, va_list);
  
@@ -88,7 +102,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/g
     mingw does not have a function __printf__.  */
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-runtime/intl/printf.c gettext-0.17/gettext-runtime/intl/printf.c
 --- gettext-0.17-orig/gettext-runtime/intl/printf.c	2007-06-10 02:38:45 +0200
-+++ gettext-0.17/gettext-runtime/intl/printf.c	2008-11-04 21:42:54 +0100
++++ gettext-0.17/gettext-runtime/intl/printf.c	2008-11-05 17:54:59 +0100
 @@ -69,7 +69,7 @@
  #define STATIC static
  
@@ -98,9 +112,21 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/g
  /* Don't break __attribute__((format(printf,M,N))).
     This redefinition is only possible because the libc in NetBSD, Cygwin,
     mingw does not have a function __printf__.  */
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-runtime/libasprintf/Makefile.in gettext-0.17/gettext-runtime/libasprintf/Makefile.in
+--- gettext-0.17-orig/gettext-runtime/libasprintf/Makefile.in	2007-11-07 00:35:22 +0100
++++ gettext-0.17/gettext-runtime/libasprintf/Makefile.in	2008-11-05 22:36:59 +0100
+@@ -959,7 +959,7 @@
+ 	rm -f $(distdir)/autosprintf.h
+ lib-asprintf.lo: $(lib_asprintf_EXTRASOURCES)
+ libasprintf.la: $(libasprintf_la_OBJECTS) $(libasprintf_la_DEPENDENCIES)
+-	$(CXXLINK) -rpath $(libdir) $(libasprintf_la_LDFLAGS) $(libasprintf_la_OBJECTS) $(libasprintf_la_LIBADD) $(LIBS) || \
++	$(CXXLINK) -rpath $(libdir) $(libasprintf_la_LDFLAGS) $(libasprintf_la_OBJECTS) $(libasprintf_la_LIBADD) $(CXXLIBS) $(LIBS) || \
+ 	$(LINK) -rpath $(libdir) $(libasprintf_la_LDFLAGS) $(libasprintf_la_OBJECTS) $(libasprintf_la_LIBADD) $(LIBS)
+ 
+ # The following is needed in order to create an <alloca.h> when the system
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-runtime/src/Makefile.in gettext-0.17/gettext-runtime/src/Makefile.in
 --- gettext-0.17-orig/gettext-runtime/src/Makefile.in	2007-11-07 00:34:33 +0100
-+++ gettext-0.17/gettext-runtime/src/Makefile.in	2008-11-04 21:42:54 +0100
++++ gettext-0.17/gettext-runtime/src/Makefile.in	2008-11-05 17:54:59 +0100
 @@ -861,7 +861,7 @@
  	uninstall-binSCRIPTS
  
@@ -110,3 +136,73 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/g
  # Tell versions [3.59,3.63) of GNU make to not export all variables.
  # Otherwise a system limit (for SysV at least) may be exceeded.
  .NOEXPORT:
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-tools/configure gettext-0.17/gettext-tools/configure
+--- gettext-0.17-orig/gettext-tools/configure	2007-11-07 00:37:40 +0100
++++ gettext-0.17/gettext-tools/configure	2008-11-05 21:19:32 +0100
+@@ -65594,7 +65594,7 @@
+     ac_ext=cpp
+ ac_cpp='$CXXCPP $CPPFLAGS'
+ ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
++ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $CXXLIBS $LIBS >&5'
+ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+ 
+     cat <<EOF > conftest.$ac_ext
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-tools/gnulib-lib/Makefile.in gettext-0.17/gettext-tools/gnulib-lib/Makefile.in
+--- gettext-0.17-orig/gettext-tools/gnulib-lib/Makefile.in	2007-11-07 00:39:50 +0100
++++ gettext-0.17/gettext-tools/gnulib-lib/Makefile.in	2008-11-05 21:08:18 +0100
+@@ -1501,7 +1501,7 @@
+ libxml/xpath.lo: libxml/$(am__dirstamp)
+ libxml/xpointer.lo: libxml/$(am__dirstamp)
+ libgettextlib.la: $(libgettextlib_la_OBJECTS) $(libgettextlib_la_DEPENDENCIES) 
+-	$(libgettextlib_la_LINK) -rpath $(libdir) $(libgettextlib_la_OBJECTS) $(libgettextlib_la_LIBADD) $(LIBS)
++	$(libgettextlib_la_LINK) -rpath $(libdir) $(libgettextlib_la_OBJECTS) $(libgettextlib_la_LIBADD) $(LIBS) $(CXXLIBS)
+ glib/libglib_rpl_la-ghash.lo: glib/$(am__dirstamp)
+ glib/libglib_rpl_la-glist.lo: glib/$(am__dirstamp)
+ glib/libglib_rpl_la-gmessages.lo: glib/$(am__dirstamp)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-tools/libgettextpo/Makefile.in gettext-0.17/gettext-tools/libgettextpo/Makefile.in
+--- gettext-0.17-orig/gettext-tools/libgettextpo/Makefile.in	2007-11-07 00:39:59 +0100
++++ gettext-0.17/gettext-tools/libgettextpo/Makefile.in	2008-11-05 17:54:59 +0100
+@@ -1372,7 +1372,7 @@
+ 	uninstall-nodist_includeHEADERS
+ 
+ @WOE32_TRUE@libgettextpo.res : $(srcdir)/libgettextpo.rc
+-@WOE32_TRUE@	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` -i $(srcdir)/libgettextpo.rc -o libgettextpo.res --output-format=coff
++@WOE32_TRUE@	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` --preprocessor=$(CPP) -i $(srcdir)/libgettextpo.rc -o libgettextpo.res --output-format=coff
+ 
+ # Hide symbols that are defined by libgettextpo_la_AUXSOURCES or libgnu.la
+ # from the global namespace, by prefixing them with "libgettextpo_".
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-tools/src/Makefile.in gettext-0.17/gettext-tools/src/Makefile.in
+--- gettext-0.17-orig/gettext-tools/src/Makefile.in	2007-11-07 00:40:15 +0100
++++ gettext-0.17/gettext-tools/src/Makefile.in	2008-11-05 21:06:43 +0100
+@@ -1358,7 +1358,7 @@
+ 	  rm -f "$${dir}/so_locations"; \
+ 	done
+ libgettextsrc.la: $(libgettextsrc_la_OBJECTS) $(libgettextsrc_la_DEPENDENCIES) 
+-	$(libgettextsrc_la_LINK) -rpath $(libdir) $(libgettextsrc_la_OBJECTS) $(libgettextsrc_la_LIBADD) $(LIBS)
++	$(libgettextsrc_la_LINK) -rpath $(libdir) $(libgettextsrc_la_OBJECTS) $(libgettextsrc_la_LIBADD) $(LIBS) $(CXXLIBS)
+ install-binPROGRAMS: $(bin_PROGRAMS)
+ 	@$(NORMAL_INSTALL)
+ 	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
+@@ -2218,7 +2218,7 @@
+ uninstall-tcl:
+ 	$(RM) $(DESTDIR)$(pkgdatadir)/msgunfmt.tcl
+ @WOE32_TRUE@gettext.res : $(top_srcdir)/../windows/gettext.rc
+-@WOE32_TRUE@	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` -i $(top_srcdir)/../windows/gettext.rc -o gettext.res --output-format=coff
++@WOE32_TRUE@	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` --preprocessor=$(CPP) -i $(top_srcdir)/../windows/gettext.rc -o gettext.res --output-format=coff
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' gettext-0.17-orig/gettext-tools/woe32dll/gettextlib-exports.c gettext-0.17/gettext-tools/woe32dll/gettextlib-exports.c
+--- gettext-0.17-orig/gettext-tools/woe32dll/gettextlib-exports.c	2007-10-17 23:56:46 +0200
++++ gettext-0.17/gettext-tools/woe32dll/gettextlib-exports.c	2008-11-05 17:54:59 +0100
+@@ -26,7 +26,7 @@
+ VARIABLE(gl_array_list_implementation)
+ VARIABLE(gl_linkedhash_list_implementation)
+ VARIABLE(program_name)
+-VARIABLE(rpl_optarg)
+-VARIABLE(rpl_optind)
++/* VARIABLE(rpl_optarg) */
++/* VARIABLE(rpl_optind) */
+ VARIABLE(simple_backup_suffix)
+ VARIABLE(styled_ostream_typeinfo)

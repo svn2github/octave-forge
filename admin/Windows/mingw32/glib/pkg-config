@@ -1,0 +1,7 @@
+#!/usr/bin/sh
+
+
+# a stub script for pkg-config
+
+# do nothing
+echo;

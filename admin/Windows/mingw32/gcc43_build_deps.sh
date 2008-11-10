@@ -46,6 +46,14 @@ VER_LIBGD=2.0.35-3
 VER_WMF=0.2.8.4-3
 VER_IMAGEMAGICK=6.4.5-3
 
+VER_ICONV=1.12-3
+VER_GETTEXT=0.17-3
+VER_GLIB=2.18.2-3
+VER_PKGCONFIG=0.23-3
+VER_PIXMAN=0.12.0-3
+VER_CAIRO=1.8.2-3
+VER_PANGO=1.2.22-3
+
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
 # LAPACK depends on BLAS
@@ -91,3 +99,11 @@ VER_IMAGEMAGICK=6.4.5-3
 ( cd libgd && build-${VER_LIBGD}.sh ${ACTION} );
 ( cd wmf && build-${VER_WMF}.sh ${ACTION} );
 ( cd imagemagick && build-${VER_IMAGEMAGICK}.sh ${ACTION} );
+
+( cd iconv && build-${VER_ICONV}.sh ${ACTION} );
+( cd gettext && build-${VER_GETTEXT}.sh ${ACTION} );
+( cd glib && build-${VER_GLIB}.sh ${ACTION} );
+( cd pkg-config && build-${VER_PKGCONFIG}.sh ${ACTION} );
+( cd pixman && build-${VER_PIXMAN}.sh ${ACTION} );
+( cd cairo && build-${VER_CAIRO}.sh ${ACTION} );
+( cd pango && build-${VER_PANGO}.sh ${ACTION} );

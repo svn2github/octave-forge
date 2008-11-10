@@ -1,0 +1,140 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pixman-0.12.0-orig/pixman/Makefile.in pixman-0.12.0/pixman/Makefile.in
+--- pixman-0.12.0-orig/pixman/Makefile.in	2008-09-17 19:14:38 +0200
++++ pixman-0.12.0/pixman/Makefile.in	2008-11-09 20:19:55 +0100
+@@ -389,7 +389,7 @@
+ 	  rm -f "$${dir}/so_locations"; \
+ 	done
+ libpixman-1.la: $(libpixman_1_la_OBJECTS) $(libpixman_1_la_DEPENDENCIES) 
+-	$(libpixman_1_la_LINK) -rpath $(libdir) $(libpixman_1_la_OBJECTS) $(libpixman_1_la_LIBADD) $(LIBS)
++	$(libpixman_1_la_LINK) -rpath $(libdir) $(libpixman_1_la_OBJECTS) -Wl,$(srcdir)/libpixman.def $(libpixman_1_la_LIBADD) $(LIBS)
+ libpixman-mmx.la: $(libpixman_mmx_la_OBJECTS) $(libpixman_mmx_la_DEPENDENCIES) 
+ 	$(libpixman_mmx_la_LINK) $(am_libpixman_mmx_la_rpath) $(libpixman_mmx_la_OBJECTS) $(libpixman_mmx_la_LIBADD) $(LIBS)
+ libpixman-sse2.la: $(libpixman_sse2_la_OBJECTS) $(libpixman_sse2_la_DEPENDENCIES) 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pixman-0.12.0-orig/pixman/libpixman.def pixman-0.12.0/pixman/libpixman.def
+--- pixman-0.12.0-orig/pixman/libpixman.def	1970-01-01 01:00:00 +0100
++++ pixman-0.12.0/pixman/libpixman.def	2008-11-09 20:25:52 +0100
+@@ -0,0 +1,124 @@
++LIBRARY libpixman-1-0.dll
++EXPORTS
++pixmanFetchSourcePict
++pixmanFetchSourcePict64
++pixman_add_trapezoids
++pixman_add_traps
++pixman_addition_overflows_int
++pixman_blt
++pixman_blt_mmx
++pixman_composeFunctions DATA
++pixman_composeFunctions64 DATA
++pixman_composite_rect_general
++pixman_composite_rect_general_accessors
++pixman_compute_composite_region
++pixman_compute_composite_region32
++pixman_contract
++pixman_edge_init
++pixman_edge_step
++pixman_expand
++pixman_fetchPixelProcForPicture32
++pixman_fetchPixelProcForPicture32_accessors
++pixman_fetchPixelProcForPicture64
++pixman_fetchPixelProcForPicture64_accessors
++pixman_fetchProcForPicture32
++pixman_fetchProcForPicture32_accessors
++pixman_fetchProcForPicture64
++pixman_fetchProcForPicture64_accessors
++pixman_fill
++pixman_fill_mmx
++pixman_format_supported_destination
++pixman_format_supported_source
++pixman_have_mmx
++pixman_image_can_get_solid
++pixman_image_composite
++pixman_image_create_bits
++pixman_image_create_conical_gradient
++pixman_image_create_linear_gradient
++pixman_image_create_radial_gradient
++pixman_image_create_solid_fill
++pixman_image_fill_rectangles
++pixman_image_get_data
++pixman_image_get_depth
++pixman_image_get_height
++pixman_image_get_stride
++pixman_image_get_width
++pixman_image_is_opaque
++pixman_image_ref
++pixman_image_set_accessors
++pixman_image_set_alpha_map
++pixman_image_set_clip_region
++pixman_image_set_clip_region32
++pixman_image_set_component_alpha
++pixman_image_set_filter
++pixman_image_set_has_client_clip
++pixman_image_set_indexed
++pixman_image_set_repeat
++pixman_image_set_source_clipping
++pixman_image_set_transform
++pixman_image_unref
++pixman_line_fixed_edge_init
++pixman_malloc_ab
++pixman_malloc_abc
++pixman_multiply_overflows_int
++pixman_rasterize_edges
++pixman_rasterize_edges_accessors
++pixman_rasterize_trapezoid
++pixman_region16_copy_from_region32
++pixman_region32_contains_point
++pixman_region32_contains_rectangle
++pixman_region32_copy
++pixman_region32_copy_from_region16
++pixman_region32_equal
++pixman_region32_extents
++pixman_region32_fini
++pixman_region32_init
++pixman_region32_init_rect
++pixman_region32_init_rects
++pixman_region32_init_with_extents
++pixman_region32_internal_set_static_pointers
++pixman_region32_intersect
++pixman_region32_inverse
++pixman_region32_n_rects
++pixman_region32_not_empty
++pixman_region32_print
++pixman_region32_rectangles
++pixman_region32_reset
++pixman_region32_selfcheck
++pixman_region32_subtract
++pixman_region32_translate
++pixman_region32_union
++pixman_region32_union_rect
++pixman_region_contains_point
++pixman_region_contains_rectangle
++pixman_region_copy
++pixman_region_equal
++pixman_region_extents
++pixman_region_fini
++pixman_region_init
++pixman_region_init_rect
++pixman_region_init_rects
++pixman_region_init_with_extents
++pixman_region_internal_set_static_pointers
++pixman_region_intersect
++pixman_region_inverse
++pixman_region_n_rects
++pixman_region_not_empty
++pixman_region_print
++pixman_region_rectangles
++pixman_region_reset
++pixman_region_selfcheck
++pixman_region_set_static_pointers
++pixman_region_subtract
++pixman_region_translate
++pixman_region_union
++pixman_region_union_rect
++pixman_sample_ceil_y
++pixman_sample_floor_y
++pixman_storeProcForPicture32
++pixman_storeProcForPicture32_accessors
++pixman_storeProcForPicture64
++pixman_storeProcForPicture64_accessors
++pixman_transform_point_3d
++pixman_version
++pixman_version_string

@@ -78,6 +78,8 @@ install()
    ${CP} ${CP_FLAGS} ${SRCDIR}/docs/LICENSE.TXT ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/src/pcf/README ${LICENSE_PATH}/${PKG}/README.PCF
    
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/freetype2.pc ${PKGCONFIGDATA_PATH}
+   
    install_post
 }
 
@@ -89,6 +91,8 @@ uninstall()
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
    ${RM} ${RM_FLAGS} -r ${INCLUDE_PATH}/freetype
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/freetype-config
+   
+   ${RM} ${RM_FLAGS} ${PKGCONFIGDATA_PATH}/freetype2.pc
 }
 
 all() {

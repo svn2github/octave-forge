@@ -34,7 +34,7 @@ MAKEFILE=""
 #DIFF_FLAGS="-x *.def"
 
 # header files to be installed
-INSTALL_HEADERS="fontconfig.h"
+INSTALL_HEADERS="fontconfig.h fcfreetype.h"
 INCLUDE_DIR="include/fontconfig"
 
 source ../gcc43_common.sh
@@ -68,6 +68,9 @@ install()
    
    mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
+
+   ${CP} ${CPFLAGS} ${BUILDDIR}/fontconfig.pc ${PKGCONFIGDATA_PATH}
+   
    install_post
 }
 
@@ -78,6 +81,13 @@ uninstall()
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libfontconfig.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libfontconfig.a
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
+
+   ${RM} ${RM_FLAGS}  ${LICENSE_PATH}/${PKG}/COPYING
+   rmdir --ignore-fail-on-non-empty  ${LICENSE_PATH}/${PKG}
+   rmdir --ignore-fail-on-non-empty  ${LICENSE_PATH}
+
+   ${RM} ${RM_FLAGS} ${PKGCONFIGDATA_PATH}/fontconfig.pc
+   rmdir --ignore-fail-on-non-empty ${PKGCONFIGDATA_PATH}
 }
 
 all() {

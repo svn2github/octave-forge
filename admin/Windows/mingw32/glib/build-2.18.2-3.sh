@@ -163,6 +163,7 @@ glib-2.0.pc
 gio-2.0.pc
 gobject-2.0.pc
 gmodule-2.0.pc
+gmodule-no-export-2.0.pc
 gthread-2.0.pc"
 
 source ../gcc43_common.sh
@@ -226,6 +227,8 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/gthread/.libs/libgthread-2.0-0.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/gthread/.libs/libgthread-2.0.dll.a ${LIBRARY_PATH}
 
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/gobject/glib-mkenums ${DEVBIN_PATH}
+   
    mkdir -vp ${INCLUDE_PATH}/glib
    mkdir -vp ${INCLUDE_PATH}/gio
    mkdir -vp ${INCLUDE_PATH}/gobject

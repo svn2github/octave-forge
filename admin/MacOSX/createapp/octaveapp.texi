@@ -244,31 +244,35 @@ then there is something going wrong on your system. There may exist and old @fil
 
 @menu
 * Do I have to rebuild installed packages if I move Octave.app to another place?::  
+* Do I have to rebuild installed packages if I upgrade Octave.app?::  
 * How can I install a package that also depends further libraries?::  
 * How can I install the gsl-package from Octave-Forge that also depends further libraries?::  
 * How can I install the symbolic-package from Octave-Forge that also depends further libraries?::  
 * How can I install the Arpack-package from Octave-Forge that also depends further libraries?::  
 @end menu
 
-@node Do I have to rebuild installed packages if I move Octave.app to another place?, How can I install a package that also depends further libraries?, Packages FAQ, Packages FAQ
+@node Do I have to rebuild installed packages if I move Octave.app to another place?, Do I have to rebuild installed packages if I upgrade Octave.app?, Packages FAQ, Packages FAQ
 @unnumberedsubsec Do I have to rebuild installed packages if I move Octave.app to another place?
-We did some tests and it seems that you don't need to rebuild locally installed packages if you move Octave.app to another place. If you find out that this doesn't work then please report to @email{octave-dev@@lists.sourceforge.net}. If you install another version of Octave.app then yes, you need to rebuild all installed packages. For this have a look at the help page of the @command{pkg} command, typing
-@example
-octave-%VERSION%:1> help pkg
-@end example
-
-Another solution however is to install packages with the @option{-global} flag. Then packages are installed within Octave.app and if you decide to move Octave.app to another place then packages are moved too, typing
+We did some tests and it looks good that you don't need to rebuild locally installed packages if you move Octave.app to another place. If you find out that this doesn't work then please report to @email{octave-dev@@lists.sourceforge.net}.
+Another solution however is to install packages with the @option{-global} flag. Then packages are installed within Octave.app and if you decide to move Octave.app to another place then packages are moved too, eg.
 @example
 octave-%VERSION%:1> pkg install -global <package.tar.gz>
 @end example
 
-@node How can I install a package that also depends further libraries?, How can I install the gsl-package from Octave-Forge that also depends further libraries?, Do I have to rebuild installed packages if I move Octave.app to another place?, Packages FAQ
+@node Do I have to rebuild installed packages if I upgrade Octave.app?, How can I install a package that also depends further libraries?, Do I have to rebuild installed packages if I move Octave.app to another place?, Packages FAQ
+@unnumberedsubsec Do I have to rebuild installed packages if I upgrade Octave.app?
+If you upgrade Octave.app to a newer version and the GNU Octave API has been changed between the old and the new version then yes (eg. if you upgrade Octave.app from 2.9.18 to Octave.app 3.0.0), you need to rebuild all installed packages. For ``rebuilding'' a package please have a look at the help page of the @command{pkg} command, eg.
+@example
+octave-%VERSION%:1> help pkg
+@end example
+
+@node How can I install a package that also depends further libraries?, How can I install the gsl-package from Octave-Forge that also depends further libraries?, Do I have to rebuild installed packages if I upgrade Octave.app?, Packages FAQ
 @unnumberedsubsec How can I install another package that also depends further libraries?
 There are some packages at @uref{http://octave.sourceforge.net} available that do depend other resp. further libraries that may not already be installed on your system, eg. the ``GSL--package'', the ``octcdf--package'' and the ``Symbolic--package''. Therefore you need to download, configure, compile and install the needed library before you install the Octave package. Examples are shown in the next sections.
 
 @node How can I install the gsl-package from Octave-Forge that also depends further libraries?, How can I install the symbolic-package from Octave-Forge that also depends further libraries?, How can I install a package that also depends further libraries?, Packages FAQ
 @unnumberedsubsec How can I install the gsl--package from Octave--Forge that also depends further libraries?
-As described previously you need to download, configure, compile and install the needed library before you install the Octave--Forge package.
+As described previously you need to download, configure, compile and install the needed library before you install the Octave--Forge package. @b{Note:} this example leans against the installation of the package @file{gsl-1.0.0.tar.gz}. There may be newer versions of the GSL--sources and the Octave--Forge GSL--package available at the download sites.
 @enumerate
 @item Download a current version of the GNU scientific library from a GNU webserver, eg.
 @example
@@ -354,7 +358,7 @@ octave-2.9.12:1> pkg install symbolic-1.0.3.tar.gz
 
 @node How can I install the Arpack-package from Octave-Forge that also depends further libraries?,  , How can I install the symbolic-package from Octave-Forge that also depends further libraries?, Packages FAQ
 @unnumberedsubsec How can I install the Arpack--package from Octave--Forge that also depends further libraries?
-As described previously you need to download, configure, compile and install the needed ARPACK--software before you install the Octave--Forge package.
+As described previously you need to download, configure, compile and install the needed ARPACK--software before you install the Octave--Forge package. @b{Note:} this example leans against the installation of the package @file{arpack-1.0.2.tar.gz}. There may be newer versions of the ARPACK--sources and the Octave--Forge arpack--package available at the download sites.
 @enumerate
 @item Download a current version of the ARPACK--software and the patch that is available, eg.
 @example

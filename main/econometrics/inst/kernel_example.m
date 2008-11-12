@@ -68,7 +68,7 @@ printf("########################################################################
 printf("time for univariate kernel density example using %d data points and %d compute nodes: %f\n", n, nodes, t1);
 printf("A rough integration under the fitted univariate density is %f\n", sum(dens)*stepsize);
 figure();
-plot(grid_x, dens, ";fitted density;", grid_x, chisquare_pdf(grid_x,3), ";true density;");
+plot(grid_x, dens, ";fitted density;", grid_x, chi2pdf(grid_x,3), ";true density;");
 title("Example 2: Kernel density fit: Univariate Chi^2(3) data");
 
 ############################################################

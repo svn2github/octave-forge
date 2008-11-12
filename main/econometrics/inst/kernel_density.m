@@ -31,7 +31,8 @@
 #		makes a product kernel a reasonable choice.
 #	do_cv: bool (optional). default false. If true, calculate leave-1-out
 #		 density for cross validation
-#	computenodes: int (optional, default 0). Number of compute nodes for parallel evaluation
+#	computenodes: int (optional, default 0).
+#		Number of compute nodes for parallel evaluation
 #	debug: bool (optional, default false). show results on compute nodes if doing
 #		a parallel run
 # outputs:
@@ -43,9 +44,14 @@
 
 function z = kernel_density(eval_points, data, bandwidth, kernel, prewhiten, do_cv, computenodes, debug)
 
-	if nargin < 3; error("kernel_density: at least 3 arguments are required"); endif
+	if nargin < 2; error("kernel_density: at least 2 arguments are required"); endif
+
+	n = rows(data);
+	k = columns(data);
+
 
 	# set defaults for optional args
+	if (nargin < 3) bandwidth = (n ^ (-1/(4+k))); endif	# bandwidth - see Li and Racine pg. 26
 	if (nargin < 4) kernel = "__kernel_normal"; endif # what kernel?
 	if (nargin < 5) prewhiten = false; endif 	# automatic prewhitening?
 	if (nargin < 6)	do_cv = false; endif 		# ordinary or leave-1-out

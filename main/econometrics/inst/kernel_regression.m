@@ -20,19 +20,20 @@
 #
 # inputs:
 #	eval_points: PxK matrix of points at which to calculate the density
-#	dev_var: Nx1 vector of observations of the dependent variable
-# 	data: NxK matrix of data points
-#	bandwidth: positive scalar, the smoothing parameter. The fit
-# 		is more smooth as the bandwidth increases.
+#	depvar: Nx1 vector of observations of the dependent variable
+#	condvars: NxK matrix of data points
+#	bandwidth (optional): positive scalar, the smoothing parameter.
+#		Default is N ^ (-1/(4+K))
 #	kernel (optional): string. Name of the kernel function. Default is
 #		Gaussian kernel.
-#	prewhiten bool (optional): default false. If true, rotate data
+#	prewhiten bool (optional): default true. If true, rotate data
 # 		using Choleski decomposition of inverse of covariance,
 #		to approximate independence after the transformation, which
 #		makes a product kernel a reasonable choice.
 #	do_cv: bool (optional). default false. If true, calculate leave-1-out
-#		 density for cross validation
-#	computenodes: int (optional, default 0). Number of compute nodes for parallel evaluation
+#		 fit to calculate the cross validation score
+#	computenodes: int (optional, default 0).
+#		Number of compute nodes for parallel evaluation
 #	debug: bool (optional, default false). show results on compute nodes if doing
 #		a parallel run
 # outputs:
@@ -49,7 +50,7 @@ function z = kernel_regression(eval_points, depvar, condvars, bandwidth, kernel,
 	# set defaults for optional args
 	if (nargin < 4) bandwidth = (n ^ (-1/(4+k))); endif	# bandwidth - see Li and Racine pg. 66
 	if (nargin < 5) kernel = "__kernel_normal"; endif 	# what kernel?
-	if (nargin < 6) prewhiten = false; endif 		# automatic prewhitening?
+	if (nargin < 6) prewhiten = true; endif 		# automatic prewhitening?
 	if (nargin < 7)	do_cv = false; endif 			# ordinary or leave-1-out
 	if (nargin < 8)	computenodes = 0; endif			# parallel?
 	if (nargin < 9)	debug = false; endif;			# debug?
@@ -59,7 +60,7 @@ function z = kernel_regression(eval_points, depvar, condvars, bandwidth, kernel,
 	n = rows(depvar);
 
 	if prewhiten
-		H = bandwidth*chol(cov(convars));
+		H = bandwidth*chol(cov(condvars));
  	else
 		H = bandwidth;
 	endif

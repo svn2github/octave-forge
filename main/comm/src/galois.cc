@@ -32,6 +32,23 @@ galois_field_list stored_galois_fields;
 
 // galois class
 
+galois::galois (const Array<int>& a, const int& _m, const int& _primpoly) : MArray2<int> (a.rows(), a.cols()), field (NULL) {
+  int _n = (1<<_m) - 1;
+
+  // Check the validity of the data in the matrix
+  for (int i=0; i<rows(); i++) {
+    for (int j=0; j<columns(); j++) {
+      if ((a(i,j) < 0) || (a(i,j) > _n)) {
+	gripe_range_galois(_m);
+	return;
+      }
+      xelem(i,j) = (int)a(i,j);
+    }
+  }
+
+  field = stored_galois_fields.create_galois_field(_m, _primpoly);
+}
+
 galois::galois (const MArray2<int>& a, const int& _m, const int& _primpoly) : MArray2<int> (a.rows(), a.cols()), field (NULL) {
   int _n = (1<<_m) - 1;
 

@@ -60,6 +60,7 @@ galois : public MArray2<int>
 {
 public:
   galois (void) : field (NULL) { }
+  galois (const Array<int>& a, const int& m=1, const int& primpoly=0);
   galois (const MArray2<int>& a, const int& m=1, const int& primpoly=0);
   galois (const Matrix& a, const int& m=1, const int& primpoly=0);
   galois (int nr, int nc, const int& val=0, const int& _m=1, const int& _primpoly=0);

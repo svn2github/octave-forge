@@ -128,11 +128,7 @@ DEFUN_DLD (gf, args, nargout,
       install_s_gm_ops ();
       install_gm_s_ops ();
       galois_type_loaded = true;
-      // Lock constructor function in place, otherwise 
-      // "a=gf(1); clear functions; a" generates a seg-fault!!
-      // The below is the function "mlock", but in a way useable
-      // for older versions of octave as well.
-      fbi_sym_tab->lookup("gf")->mark_as_static ();
+      mlock ();
   }
 
   retval = new octave_galois(data, m, primpoly);

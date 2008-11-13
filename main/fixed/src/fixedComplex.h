@@ -198,6 +198,10 @@ inline Complex getnumber (const FixedPointComplex &x) {
   return (x.getnumber());
 }
 
+inline bool xisnan (const FixedPointComplex &x) {
+  return false;
+}
+  
 OCTAVE_FIXED_API FixedPointComplex operator ! (const FixedPointComplex &x);
   
 OCTAVE_FIXED_API FixedPoint real  (const FixedPointComplex &x);

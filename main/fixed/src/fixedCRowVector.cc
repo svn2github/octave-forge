@@ -647,14 +647,14 @@ operator * (const FixedComplexRowVector& v, const FixedComplexMatrix& a)
 
 // other operations
 FixedComplexRowVector
-FixedComplexRowVector::map (fc_fc_Mapper f) const
+FixedComplexRowVector::map (fpc_fpc_Mapper f) const
 {
   FixedComplexRowVector b (*this);
   return b.apply (f);
 }
 
 FixedComplexRowVector&
-FixedComplexRowVector::apply (fc_fc_Mapper f)
+FixedComplexRowVector::apply (fpc_fpc_Mapper f)
 {
   FixedPointComplex *d = fortran_vec (); // Ensures only one reference to my privates!
 

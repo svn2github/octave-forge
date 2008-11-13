@@ -651,14 +651,14 @@ operator * (const FixedComplexMatrix& m, const FixedComplexColumnVector& a)
 // other operations
 
 FixedComplexColumnVector
-FixedComplexColumnVector::map (fc_fc_Mapper f) const
+FixedComplexColumnVector::map (fpc_fpc_Mapper f) const
 {
   FixedComplexColumnVector b (*this);
   return b.apply (f);
 }
 
 FixedComplexColumnVector&
-FixedComplexColumnVector::apply (fc_fc_Mapper f)
+FixedComplexColumnVector::apply (fpc_fpc_Mapper f)
 {
   FixedPointComplex *d = fortran_vec (); // Ensures only one reference to my privates!
 

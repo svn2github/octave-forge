@@ -527,14 +527,14 @@ operator * (const FixedRowVector& v, const FixedMatrix& a)
 
 // other operations
 FixedRowVector
-FixedRowVector::map (f_f_Mapper f) const
+FixedRowVector::map (fp_fp_Mapper f) const
 {
   FixedRowVector b (*this);
   return b.apply (f);
 }
 
 FixedRowVector&
-FixedRowVector::apply (f_f_Mapper f)
+FixedRowVector::apply (fp_fp_Mapper f)
 {
   FixedPoint *d = fortran_vec (); // Ensures only one reference to my privates!
 

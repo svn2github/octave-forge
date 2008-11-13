@@ -34,6 +34,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/gripes.h>
 #include <octave/unwind-prot.h>
 #include <octave/cmd-edit.h>
+#include <octave/symtab.h>
 #include <octave/parse.h>
 #include <octave/utils.h>
 #include <octave/unwind-prot.h>
@@ -404,7 +405,7 @@ octave_fixed_matrix::print_raw (std::ostream& os,
 {
   double min_num = matrix.abs().row_min().min().fixedpoint();
   int new_prec = (int)matrix.getdecsize().row_max().max() +
-    (min_num >= 1. ? (int)log10(min_num) + 1 : 0);
+    (min_num >= 1. ? (int)::log10(min_num) + 1 : 0);
 
   octave_value_list tmp = feval ("output_precision");
   int prec = tmp(0).int_value ();

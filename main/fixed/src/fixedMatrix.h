@@ -46,7 +46,7 @@ class FixedColumnVector;
 class FixedRowVector;
 #endif
 
-typedef FixedPoint (*f_f_Mapper)(FixedPoint);
+typedef FixedPoint (*fp_fp_Mapper)(FixedPoint);
 
 class
 OCTAVE_FIXED_API
@@ -93,6 +93,7 @@ public:
 
   FixedMatrix (const FixedMatrix& a) : MArray2<FixedPoint> (a) { }
   FixedMatrix (const MArray2<FixedPoint>& a) : MArray2<FixedPoint> (a) { }
+  FixedMatrix (const Array2<FixedPoint> &a) : MArray2<FixedPoint> (a) { }
 
   explicit FixedMatrix (const FixedRowVector& rv);
 
@@ -170,8 +171,8 @@ public:
 
   // other operations
 
-  FixedMatrix map (f_f_Mapper f) const;
-  FixedMatrix& apply (f_f_Mapper f);
+  FixedMatrix map (fp_fp_Mapper f) const;
+  FixedMatrix& apply (fp_fp_Mapper f);
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;

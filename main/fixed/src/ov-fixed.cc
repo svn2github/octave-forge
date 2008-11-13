@@ -28,6 +28,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/config.h>
 #include <octave/oct-obj.h>
 #include <octave/ov.h>
+#include <octave/symtab.h>
 #include <octave/parse.h>
 #include <octave/utils.h>
 #include <octave/unwind-prot.h>
@@ -218,9 +219,9 @@ restore_precision (void *p)
 void
 octave_fixed::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
-  double min_num = abs(scalar).fixedpoint();
+  double min_num = ::abs(scalar).fixedpoint();
   int new_prec = scalar.getdecsize() +
-    (min_num >= 1. ? (int)log10(min_num) + 1 : 0);
+    (min_num >= 1. ? (int)::log10(min_num) + 1 : 0);
 
   octave_value_list tmp = feval ("output_precision");
   int prec = tmp(0).int_value ();

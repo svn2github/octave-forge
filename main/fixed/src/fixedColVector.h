@@ -40,7 +40,7 @@ class FixedRowVector;
 class FixedMatrix;
 #endif
 
-typedef FixedPoint (*f_f_Mapper)(FixedPoint);
+typedef FixedPoint (*fp_fp_Mapper)(FixedPoint);
 
 class
 OCTAVE_FIXED_API 
@@ -133,9 +133,9 @@ public:
 
   // other operations
 
-  FixedColumnVector map (f_f_Mapper f) const;
+  FixedColumnVector map (fp_fp_Mapper f) const;
 
-  FixedColumnVector& apply (f_f_Mapper f);
+  FixedColumnVector& apply (fp_fp_Mapper f);
 
   FixedPoint min (void) const;
   FixedPoint max (void) const;

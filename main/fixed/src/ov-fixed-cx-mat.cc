@@ -34,6 +34,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/gripes.h>
 #include <octave/unwind-prot.h>
 #include <octave/cmd-edit.h>
+#include <octave/symtab.h>
 #include <octave/parse.h>
 #include <octave/utils.h>
 #include <octave/unwind-prot.h>
@@ -83,7 +84,7 @@ octave_fixed_complex_matrix::array_value (bool force_conversion) const
 
   for (int i=0; i<nr; i++)
     for (int j=0; j<nc; j++)
-      retval(i + j*nr) = real (matrix(i,j).fixedpoint());
+      retval(i + j*nr) = std::real (matrix(i,j).fixedpoint());
 
   return retval;
 }
@@ -295,15 +296,15 @@ octave_fixed_complex_matrix::try_narrowing_conversion (void)
     {
       FixedPointComplex c = matrix (0, 0);
 
-      if (imag (c) == 0.0)
-	retval = new octave_fixed (real (c));
+      if (::imag (c) == 0.0)
+	retval = new octave_fixed (::real (c));
       else
 	retval = new octave_fixed_complex (c);
     }
   else if (nr == 0 || nc == 0)
     retval = new octave_fixed_matrix (FixedMatrix (nr, nc));
   else if (matrix.all_elements_are_real ())
-    retval = new octave_fixed_matrix (real (matrix));
+    retval = new octave_fixed_matrix (::real (matrix));
 
   return retval;
 }
@@ -344,7 +345,7 @@ octave_fixed_complex_matrix::fixed_value (bool force_conversion) const
       gripe_implicit_conversion ("Octave:array-as-scalar",
 				 "real matrix", "real scalar");
 
-      retval = real( matrix (0, 0));
+      retval = ::real( matrix (0, 0));
     }
   else
     gripe_invalid_conversion ("fixed complex matrix", "fixed scalar");
@@ -376,7 +377,7 @@ octave_fixed_complex_matrix::fixed_matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
 			       "fixed complex matrix", "fixed matrix");
 
-  retval = real (matrix);
+  retval = ::real (matrix);
 
   return retval;
 }
@@ -411,11 +412,11 @@ void
 octave_fixed_complex_matrix::print_raw (std::ostream& os,
 				   bool pr_as_read_syntax) const
 {
-  double min_num = std::max(abs(real(matrix)).row_min().min().fixedpoint(),
-			    abs(imag(matrix)).row_min().min().fixedpoint());
-  int new_prec = (int)std::max(real(matrix).getdecsize().row_max().max(),
-			       imag(matrix).getdecsize().row_max().max()) +
-    (min_num >= 1. ? (int)log10(min_num) + 1 : 0);
+  double min_num = std::max(::abs(::real(matrix)).row_min().min().fixedpoint(),
+			    ::abs(::imag(matrix)).row_min().min().fixedpoint());
+  int new_prec = (int)std::max(::real(matrix).getdecsize().row_max().max(),
+			       ::imag(matrix).getdecsize().row_max().max()) +
+    (min_num >= 1. ? (int)::log10(min_num) + 1 : 0);
 
   octave_value_list tmp = feval ("output_precision");
   int prec = tmp(0).int_value ();
@@ -437,8 +438,8 @@ octave_fixed_complex_matrix::save_ascii (std::ostream& os)
   for (int i=0; i < d.length (); i++)
     os << " " << d (i);
 
-  FixedMatrix re (real (matrix));
-  FixedMatrix im (imag (matrix));
+  FixedMatrix re (::real (matrix));
+  FixedMatrix im (::imag (matrix));
   os << "\n" << re.getintsize () << im.getintsize ()
      << re.getdecsize () << im.getdecsize () 
      << re.fixedpoint() << im.fixedpoint ();
@@ -518,7 +519,7 @@ octave_fixed_complex_matrix::save_binary (std::ostream& os,
   os.write (X_CAST (char *, &size), 1);
 
   // intsize and decsize are integers in the range [0:32], so store as char
-  FixedMatrix re (real (matrix)), im (imag (matrix));
+  FixedMatrix re (::real (matrix)), im (::imag (matrix));
   LS_DO_WRITE (char, re.getintsize ().fortran_vec (), 1, d.numel (), os);
   LS_DO_WRITE (char, im.getintsize ().fortran_vec (), 1, d.numel (), os);
   LS_DO_WRITE (char, re.getdecsize ().fortran_vec (), 1, d.numel (), os);
@@ -654,8 +655,8 @@ octave_fixed_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER(unsigned char, tmp, 2 * d.numel ());
   for (int i = 0; i < d.numel (); i++)
     {
-      tmp[i<<1] = (unsigned char) real (m[i]);
-      tmp[(i<<1)+1] = (unsigned char) imag (m[i]);
+      tmp[i<<1] = (unsigned char) std::real (m[i]);
+      tmp[(i<<1)+1] = (unsigned char) std::imag (m[i]);
     }
   retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
 		     (void*) tmp) >= 0;
@@ -680,8 +681,8 @@ octave_fixed_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
   m = matrix.getdecsize (). fortran_vec ();
   for (int i = 0; i < d.numel (); i++)
     {
-      tmp[i<<1] = (unsigned char) real (m[i]);
-      tmp[(i<<1)+1] = (unsigned char) imag (m[i]);
+      tmp[i<<1] = (unsigned char) std::real (m[i]);
+      tmp[(i<<1)+1] = (unsigned char) std::imag (m[i]);
     }
   retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
 		     (void*) tmp) >= 0;
@@ -717,8 +718,8 @@ octave_fixed_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER(unsigned int, num, 2*d.numel ());
   for (int i = 0; i < d.numel (); i++)
     {
-      num[i<<1] = (unsigned int) real (m[i]);
-      num[(i<<1)+1] = (unsigned int) imag (m[i]);
+      num[i<<1] = (unsigned int) std::real (m[i]);
+      num[(i<<1)+1] = (unsigned int) std::imag (m[i]);
     }
   retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
 		     (void*) num) >= 0;

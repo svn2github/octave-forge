@@ -43,7 +43,7 @@ class FixedComplexColumnVector;
 class FixedComplexMatrix;
 #endif
 
-typedef FixedPointComplex (*fc_fc_Mapper)(FixedPointComplex);
+typedef FixedPointComplex (*fpc_fpc_Mapper)(FixedPointComplex);
 
 class
 OCTAVE_FIXED_API 
@@ -193,9 +193,9 @@ public:
 
   // other operations
 
-  FixedComplexRowVector map (fc_fc_Mapper f) const;
+  FixedComplexRowVector map (fpc_fpc_Mapper f) const;
 
-  FixedComplexRowVector& apply (fc_fc_Mapper f);
+  FixedComplexRowVector& apply (fpc_fpc_Mapper f);
 
   FixedPointComplex min (void) const;
   FixedPointComplex max (void) const;

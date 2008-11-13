@@ -34,22 +34,24 @@ Open Source Initiative (www.opensource.org)
 #include <octave/MArray.h>
 #include <octave/MArray.cc>
 
+static bool
+operator < (const FixedPointComplex& a, const FixedPointComplex& b)
+{
+  return ((abs (a) < abs (b)) || ((abs (a) == abs (b)) && 
+				    (arg (a) < arg (b))));
+}
+
+static bool
+operator > (const FixedPointComplex& a, const FixedPointComplex& b)
+{
+  return ((abs (a) > abs (b)) || ((abs (a) == abs (b)) && 
+				    (arg (a) > arg (b))));
+}
+
 template class OCTAVE_FIXED_API Array<FixedPoint>;
 template class MArray<FixedPoint>;
 template class OCTAVE_FIXED_API Array<FixedPointComplex>;
 template class MArray<FixedPointComplex>;
-
-template int assign (Array<FixedPoint>&, const Array<FixedPoint>&);
-template int assign (Array<FixedPointComplex>&, const Array<FixedPoint>&);
-template int assign (Array<FixedPointComplex>&, 
-		const Array<FixedPointComplex>&);
-
-template int assign (Array<FixedPoint>&, const Array<FixedPoint>&, 
-		const FixedPoint&);
-template int assign (Array<FixedPointComplex>&, const Array<FixedPoint>&,
-		const FixedPointComplex&);
-template int assign (Array<FixedPointComplex>&, 
-		const Array<FixedPointComplex>&, const FixedPointComplex&);
 
 INSTANTIATE_MARRAY_FRIENDS (FixedPoint, )
 INSTANTIATE_MARRAY_FRIENDS (FixedPointComplex, )

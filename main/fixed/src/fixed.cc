@@ -86,11 +86,7 @@ void load_fixed_type (void)
 
   fixed_type_loaded = true;
 
-  // Lock constructor function in place, otherwise 
-  // "a=fixed(3,1); clear functions; a" generates a seg-fault!!
-  // The below is the function "mlock", but in a way useable
-  // for older versions of octave as well.
-  fbi_sym_tab->lookup("fixed")->mark_as_static ();
+  mlock ();
 }
 
 // PKG_ADD: autoload ("display_fixed_operations", "fixed.oct");

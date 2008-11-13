@@ -29,6 +29,7 @@ Open Source Initiative (www.opensource.org)
 #include <octave/oct-obj.h>
 #include <octave/ov.h>
 #include <octave/gripes.h>
+#include <octave/symtab.h>
 #include <octave/parse.h>
 #include <octave/utils.h>
 #include <octave/unwind-prot.h>
@@ -61,7 +62,7 @@ octave_fixed_complex::array_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
 			       "fixed complex", "matrix");
 
-  retval = NDArray (dim_vector (1, 1), real (scalar.fixedpoint ()));
+  retval = NDArray (dim_vector (1, 1), std::real (scalar.fixedpoint ()));
 
   return retval;
 }
@@ -181,8 +182,8 @@ octave_fixed_complex::try_narrowing_conversion (void)
 {
   OV_REP_TYPE *retval = 0;
 
-  if (imag (scalar) == FixedPoint())
-    retval = new octave_fixed (real (scalar));
+  if (::imag (scalar) == FixedPoint())
+    retval = new octave_fixed (::real (scalar));
 
   return retval;
 }
@@ -223,7 +224,7 @@ octave_fixed_complex::fixed_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
 			       "fixed complex", "fixed scalar");
 
-  retval = FixedPoint(real (scalar));
+  retval = FixedPoint(::real (scalar));
 
   return retval;
 }
@@ -237,7 +238,7 @@ octave_fixed_complex::fixed_matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("Octave:imag-to-real",
 			       "fixed complex", "fixed matrix");
     
-  retval = FixedMatrix(1,1,real (scalar));
+  retval = FixedMatrix(1,1,::real (scalar));
 
   return retval;
 }
@@ -252,11 +253,11 @@ void
 octave_fixed_complex::print_raw (std::ostream& os, 
 				 bool pr_as_read_syntax) const
 {
-  double min_num = std::max(abs(real(scalar)).fixedpoint(),
-			    abs(imag(scalar)).fixedpoint());
-  int new_prec = (int)std::max(real(scalar.getdecsize()),
-			       imag(scalar.getdecsize()))
-    + (min_num >= 1. ? (int)log10(min_num) + 1 : 0);
+  double min_num = std::max(::abs(::real(scalar)).fixedpoint(),
+			    ::abs(::imag(scalar)).fixedpoint());
+  int new_prec = (int)std::max(std::real(scalar.getdecsize()),
+			       std::imag(scalar.getdecsize()))
+    + (min_num >= 1. ? (int)::log10(min_num) + 1 : 0);
 
   octave_value_list tmp = feval ("output_precision");
   int prec = tmp(0).int_value ();

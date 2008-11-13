@@ -554,6 +554,10 @@ inline FixedPoint operator >>  (const FixedPoint &x, const int s) {
   FixedPoint n = x;
   return (n >>= s);
 }
+
+inline bool xisnan (const FixedPoint &x) {
+  return false;
+}
   
 OCTAVE_FIXED_API bool operator ==  (const FixedPoint &x, const FixedPoint &y);
 OCTAVE_FIXED_API bool operator !=  (const FixedPoint &x, const FixedPoint &y);

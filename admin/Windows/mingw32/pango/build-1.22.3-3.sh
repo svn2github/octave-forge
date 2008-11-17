@@ -31,9 +31,41 @@ SRCDIR_ORIG=${SRCDIR}-orig
 # MAKEFILE=win32/Makefile.gcc
 
 # header files to be installed
-HEADERS="cairo.h cairo-deprecated.h cairo-pdf.h cairo-ps.h cairo-svg.h cairo-version.h cairo-win32.h"
-HEADERS2="cairo-features.h"
-INCLUDE_DIR=include/cairo
+HEADERS="
+pango-attributes.h
+pango-bidi-type.h
+pango-break.h
+pango-context.h
+pango-coverage.h
+pango-engine.h
+pango-font.h
+pango-fontmap.h
+pango-fontset.h
+pango-glyph-item.h
+pango-glyph.h
+pango-gravity.h
+pango-item.h
+pango-language.h
+pango-layout.h
+pango-matrix.h
+pango-modules.h
+pango-ot.h
+pango-renderer.h
+pango-script.h
+pango-tabs.h
+pango-types.h
+pango-utils.h
+pango.h
+pangocairo.h
+pangofc-decoder.h
+pangofc-font.h
+pangofc-fontmap.h
+pangoft2.h
+pangowin32.h"
+HEADERS2="
+pango-features.h
+pango-enum-types.h"
+INCLUDE_DIR=include/pango
 
 source ../gcc43_common.sh
 
@@ -66,30 +98,37 @@ conf()
      )
 }
 
-PCFILES="cairo.pc cairo-ft.pc cairo-pdf.pc cairo-png.pc cairo-ps.pc cairo-svg.pc cairo-win32.pc cairo-win32-font.pc"
+PCFILES="pango.pc pangocairo.pc pangoft2.pc pangowin32.pc"
 
 install()
 {
    install_pre;
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libcairo-2.dll    ${SHAREDLIB_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libcairo.dll.a    ${LIBRARY_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libcairo.a        ${STATICLIBRARY_PATH}
+   
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpango-1.0-0.dll    ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpango-1.0.dll.a    ${LIBRARY_PATH}
+   
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangocairo-1.0-0.dll    ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangocairo-1.0.dll.a    ${LIBRARY_PATH}
+   
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangoft2-1.0-0.dll    ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangoft2-1.0.dll.a    ${LIBRARY_PATH}
+   
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangowin32-1.0-0.dll    ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangowin32-1.0.dll.a    ${LIBRARY_PATH}
    
    mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
-   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING-LGPL-2.1 ${LICENSE_PATH}/${PKG}
-   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING-MPL-1.1 ${LICENSE_PATH}/${PKG}
    
    for a in $HEADERS; do
-      ${CP} ${CP_FLAGS} ${SRCDIR}/src/$a ${INCLUDE_PATH}
+      ${CP} ${CP_FLAGS} ${SRCDIR}/pango/$a ${INCLUDE_PATH}
    done
    
    for a in $HEADERS2; do
-      ${CP} ${CP_FLAGS} ${BUILDDIR}/src/$a ${INCLUDE_PATH}
+      ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/$a ${INCLUDE_PATH}
    done
    
    for a in $PCFILES; do
-      ${CP} ${CP_FLAGS} ${BUILDDIR}/src/$a ${PKGCONFIGDATA_PATH}
+      ${CP} ${CP_FLAGS} ${BUILDDIR}/$a ${PKGCONFIGDATA_PATH}
    done
    
    
@@ -117,10 +156,7 @@ uninstall()
       ${RM} ${RM_FLAGS} ${PKGCONFIGDATA_PATH}/$a
    done
    
-   
    ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING
-   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING-LGPL-2.1
-   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING-MPL-1.1
    
    uninstall_post;
 }

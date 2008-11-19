@@ -55,7 +55,7 @@ function [perf,Ee,Aa,Nn] = __calcperf(net,xx,Im,Tt)
     ## this can be done with matrix calculation...
     ## called "dotprod"
     ## to do this, there must be a special matrix ...
-    ## e.g.  IW = [1 2 3 4 5; 6 7 8 910] * [ 1 2 3; 4 5 6; 7 8 9; 10 11 12; 1 2 3];
+    ## e.g.  IW = [1 2 3 4 5; 6 7 8 9 10] * [ 1 2 3; 4 5 6; 7 8 9; 10 11 12; 1 2 3];
     if (iLayers==1)
       IWtemp{iLayers,1} = IW{iLayers,1} * Im;
       onlyTempVar = [IWtemp(iLayers,1) Btemp(iLayers)];

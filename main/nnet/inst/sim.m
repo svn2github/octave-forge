@@ -16,10 +16,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}@var{netoutput} = sim (@var{net},@var{mInput})
+## @deftypefn {Function File} {@var{netoutput} =} sim (@var{net}, @var{mInput})
 ## @code{sim} is usuable to simulate a before defined neural network.
-## @code{net} is created with newff(..) and @var{mInput} should be the corresponding
-## input data set!
+## @code{net} is created with newff(@dots{}) and @var{mInput} should be the
+## corresponding input data set!
 ## @end deftypefn
 
 ## Author: Michel D. Schmid
@@ -80,4 +80,8 @@ function [netoutput] = sim(net,mInput)
 
   netoutput = Aa{i,1};
 
+<<<<<<< .mine
 endfunction
+=======
+endfunction
+>>>>>>> .r5451

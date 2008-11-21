@@ -18,7 +18,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {}@var{netoutput} = sim (@var{net},@var{mInput})
 ## @code{sim} is usuable to simulate a before defined neural network.
-## @code{net} is created with newff(..) and @{mInput} should be the corresponding
+## @code{net} is created with newff(..) and @var{mInput} should be the corresponding
 ## input data set!
 ## @end deftypefn
 

@@ -18,15 +18,15 @@
 # command.
 
 # This is the target platform for which Octave.app should be created.
-TARGETPLATFORM=ppc # can either be 'i386' or 'ppc'
+TARGETPLATFORM=i386 # can either be 'i386' or 'ppc'
 
 # This is the Octave version number of the Octave.app that is created.
-OCTAVEVERSION=3.0.3 # must be the version number of Octave
+OCTAVEVERSION=3.1.51 # must be the version number of Octave
 
 # This is the directory where all the dependencies are installed. Make
 # sure that there are no other files in this directory that are not
 # needed.
-DEPSDIR=/tmp/dependencies-${TARGETPLATFORM}
+DEPSDIR=/tmp/deps-${TARGETPLATFORM}
 
 # This is the binary of Octave that has been created. The absolute
 # path and the version number need to be given.
@@ -55,7 +55,7 @@ DMGDIR=/tmp/dmgdirectory
 # This file can be taken to redirect the output of stdout and stderr to
 # a build file. Sometimes this is wanted to not display a lot of build
 # messages.
-OUTFILE=/tmp/octaveapp.msg # /dev/stdout
+OUTFILE=/tmp/message.log # /dev/stdout
 
 ##########################################################################
 #####            Don't modify anything downwards from here           #####
@@ -122,8 +122,8 @@ else
   evalfailexit "if [ ! -d ${TEMPDIR} ]; then mkdir ${TEMPDIR}; fi"
   evalfailexit "rm -rf ${TEMPDIR}/*"
 
-  echo "makeoctaveapp.sh: Creating Readme.html.in file from octaveapp.texi ..."
-  evalfailexit "LANG=en makeinfo --html --no-split --css-include=octaveapp.css octaveapp.texi -o Readme.html.in"
+  echo "makeoctaveapp.sh: Creating Readme.html.in file from Readme.texi ..."
+  evalfailexit "LANG=en makeinfo --html --no-split --css-include=Readme.css Readme.texi -o Readme.html.in"
 
   echo "makeoctaveapp.sh: Collecting Octave files ..."
   evalfailexit "install -d ${TEMPDIR}{,/bin,/include,/info,/lib,/libexec,/man,/man/man1,/share}"
@@ -163,7 +163,7 @@ echo "FIXME - COPYING *ALL* *a,*la LIBS AND *ALL* INCLUDES"
   # Cf. http://www.sveinbjorn.org/Files/manpages/platypus.man.pdf about
   # which options are accepted by platypus and how it is working
   evalfailexit "platypus -a Octave.app -t shell -V ${VERSION} \
-    -u \"John W. Eaton\" ${PLATYFFLAG} -I \"org.octave\" -R ./applicationstartup.sh.in \
+    -u \"John W. Eaton\" ${PLATYFFLAG} -I \"org.octave\" -R ./startup.sh.in \
     ${DMGDIR}/Octave.app" # -o TextWindow"
 
   # Workaround for the missing -i option of platypus. Install icon manually

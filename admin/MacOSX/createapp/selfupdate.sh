@@ -1,5 +1,6 @@
 #!/bin/sh
-# Copyright (C) 2007-2008, Thomas Treichl and Paul Kienzle
+# Copyright (C) 2007, Thomas Treichl and Paul Kienzle
+# Copyright (C) 2008, Thomas Treichl
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -11,45 +12,50 @@
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; If not, see <http://www.gnu.org/licenses/>.
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301 USA
 
-########################################################################
-# This file is meant for developers only who know how to look at the   #
-# one or other problem that might appear when using this script. Write #
-# me an email offside any list if you think the script could be        #
-# improved in a better way than this. In any case:                     #
-# DON'T USE ANY OF THE OCTAVE AND OCTAVE-FORGE MAILING-LISTS TO REPORT #
-# ERRORS OR BUGS THAT MAY OCCUR IF THIS SCRIPT FAILS.                  #
-########################################################################
-
-# Put this script into the root directory of your Octave sources.
-# Before you start this script make sure that you don't use Apple's
-# original programs 'sed', 'awk', 'aclocal', 'automake' and 'bison'
-# anymore. Download these latest GNU tools from the GNU website and
-# install them eg. in /usr/local (make sure that you set the $PATH
-# environment variable correctly below). Change the version number in
-# the file src/version.h to the version number of the current
-# Octave.app that should be replaced. Then modify the following
-# APPPATH variable for your needs (the absolut path including
-# Octave.app that should be updated).
+# USAGE:
+#   Put this script into the root directory of your Octave sources.
+#   Before you start this script by a call of './selfupdate.sh' make
+#   sure that you don't use Apple's original programs 'sed', 'awk',
+#   'aclocal', 'automake', 'bison' and 'flex' anymore. Download these
+#   latest GNU tools from the GNU website and install them anywhere on
+#   your system where they can be found (eg. in /usr/local/bin, make
+#   sure that you set the $PATH environment variable correctly
+#   below). On my system this looks like
+#       bash ~$ which {sed,awk,aclocal,automake,bison,flex}
+#       /usr/local/bin/sed
+#       /usr/local/bin/awk
+#       /usr/local/bin/aclocal
+#       /usr/local/bin/automake
+#       /usr/local/bin/bison
+#       /usr/local/bin/flex
+#       /usr/local/bin/sed
+#   Change the version number in the file src/version.h to that
+#   version number of the current Octave.app that should be
+#   updated. Then modify the following APPPATH variable for your
+#   needs (the absolut path including Octave.app that should be
+#   updated).
 APPPATH=/Applications/Octave.app
 
-# Don't change one of the following three lines. These lines are used
+# Don't change one of the following four lines. These lines are used
 # internally here and are already set up correctly if APPPATH is set
 # up correctly.
 PRFPATH=${APPPATH}/Contents/Resources
 INCPATH=${PRFPATH}/include
 LIBPATH=${PRFPATH}/lib
+BINPATH=${PRFPATH}/bin
 
-# Add the option -gdwarf-2 to CFLAGS, CPPFLAGS and CXXFLAGS if you
-# want to create a gdb version of Octave.
+# Add the option -ggdb to CFLAGS, CPPFLAGS and CXXFLAGS if you want to
+# create a debug version of Octave by adding -ggdb to OPTFLAGS.
 ARCH="-arch i386"
+OPTFLAGS="-O3 -ftree-vectorize -march=i686 -mfpmath=sse,387 -fforce-addr -mieee-fp -msse3 -msse2 -msse -mmmx -ggdb"
 
 # Here are the optimization flags that can be used on a PPC platform
+# ARCH="-arch ppc"
 # OPTFLAGS="-O3 -ftree-vectorize -mpowerpc -faltivec -maltivec -mabi=altivec"
-
-# Here are the optimization flags that can be used on a i386 platform
-OPTFLAGS="-O3 -ftree-vectorize -march=i686 -mfpmath=sse,387 -fforce-addr -mieee-fp -msse3 -msse2 -msse -mmmx"
 
 # If you are running a Mac OS X 10.3 on the PPC platform then change to 
 # MACOSX_DEPLOYMENT_TARGET=10.3 
@@ -62,25 +68,26 @@ CXX="g++ ${ARCH} ${OPTFLAGS}"
 # If you are running a Mac OS X 10.3 on the PPC platform then change to 
 # -isysroot /Developer/SDKs/MacOSX10.3.9.sdk and in the LDFLAGS use that
 # line -Wl,-syslibroot -Wl,/Developer/SDKs/MacOSX10.3.9.sdk
-CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -I${INCPATH} -I${INCPATH}/curl -I${INCPATH}/readline" 
+CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -I/usr/X11R6/include -I${INCPATH} -I${INCPATH}/curl -I${INCPATH}/readline -I${INCPATH}/freetype -I${INCPATH}/GraphicsMagick" 
 CPPFLAGS="${CFLAGS}"
 CXXFLAGS="${CFLAGS}"
+#LDFLAGS="-L${LIBPATH} -L${LIBPATH}/pkgconfig -Wl,-headerpad_max_install_names -Wl,-syslibroot -Wl,/Developer/SDKs/MacOSX10.4u.sdk -Xlinker -m"
 LDFLAGS="-L${LIBPATH} -L${LIBPATH}/pkgconfig -Wl,-headerpad_max_install_names -Wl,-syslibroot -Wl,/Developer/SDKs/MacOSX10.4u.sdk"
 
 # Note: another architecture flag and isysroot information here, change
 # this if you are running a Mac OS X on the PPC platform
 F77="fort77 ${OPTFLAGS}"
 FLIBS="-L${LIBPATH} -lf2c"
-FFLAGS="-Wc,-arch -Wc,i386 -Wc,-isysroot -Wc,/Developer/SDKs/MacOSX10.4u.sdk ${OPTFLAGS} -I${INCPATH} -I${INCPATH}/curl -I${INCPATH}/readline"
+FFLAGS="-Wc,-arch -Wc,i386 -Wc,-isysroot -Wc,/Developer/SDKs/MacOSX10.4u.sdk ${OPTFLAGS} -I${INCPATH}"
 
 # If you are running a Mac OS X 10.3 on the PPC platform then change to 
 # EXTRACONF="--host=powerpc-apple-darwin7.9.1"
-EXTRACONF="--host=powerpc-apple-darwin8.9.1 --prefix=${PRFPATH} --enable-shared"
+EXTRACONF="--host=i386-apple-darwin8.9.1"
 
 # I have installed the GNU tools in /usr/local/bin, that's why I need
-# to use this path. We use f2c from the current Octave.app, that's why
-# we add ${PRFPATH}/bin to the current path.
-export PATH=/usr/local/bin:${PRFPATH}/bin:$PATH
+# to use this path. I use f2c from the current Octave.app, that's why
+# I add ${PRFPATH}/bin to the current path.
+export PATH=${BINPATH}:/usr/local/bin:${PATH}  
 export DYLD_LIBRARY_PATH=${LIBPATH}
 
 # Function:    evalfailexit
@@ -101,11 +108,11 @@ MSGFILE=/dev/stdout # /tmp/messages.log # /dev/stdout
 
 # Rebuild the './configure' script with './autogen.sh' to make sure
 # that we have the latest changes available.
-# evalfailexit "./autogen.sh"
+evalfailexit "./autogen.sh"
 evalfailexit "./configure CC=\"${GCC}\" CPP=\"${CPP}\" CXX=\"${CXX}\" \
   F77=\"${F77}\" FLIBS=\"${FLIBS}\" FFLAGS=\"${FFLAGS}\" \
   CFLAGS=\"${CFLAGS}\" CPPFLAGS=\"${CPPFLAGS}\" CXXFLAGS=\"${CXXFLAGS}\" \
-  LDFLAGS=\"${LDFLAGS}\" ${EXTRACONF}"
+  LDFLAGS=\"${LDFLAGS}\" --prefix=${PRFPATH} --enable-shared"
 evalfailexit "make"
 
 # This is the point of *no return*: If something goes wrong in the
@@ -121,7 +128,7 @@ evalfailexit "make uninstall"
 evalfailexit "make install"
 
 # Replace the new created startup scripts that have been installed
-# with the old startup scripts of Octave.app.
+# with the old startup scripts of Octave.app - keep the _* files.
 evalfailexit "mv ${PRFPATH}/bin/_octave ${PRFPATH}/bin/octave"
 evalfailexit "mv ${PRFPATH}/bin/_mkoctfile ${PRFPATH}/bin/mkoctfile"
 

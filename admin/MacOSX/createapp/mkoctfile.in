@@ -48,17 +48,10 @@ LDFLAGS="-L${ROOT}/lib -L${ROOT}/lib/octave-%VERSION% ${LDFLAGS}"
 DL_LDFLAGS="-bundle -bundle_loader ${ROOT}/bin/octave-%VERSION%"
 SED="/usr/bin/sed"
 
-# Export the variables that have been defined before so that the
-# mkoctfile program gets knowledge about them.
-# 20071007 removed:
-#   export OCTAVE_HOME PATH DYLD_LIBRARY_PATH
-#   export CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-#   export DL_LDFLAGS SED
-
 # Invoke mkoctfile, preserving spaces in all the input arguments.
 OCTAVE_HOME="${OCTAVE_HOME}" PATH="${PATH}" \
   DYLD_LIBRARY_PATH="${DYLD_LIBRARY_PATH}" \
   CFLAGS="${CFLAGS}" CPPFLAGS="${CPPFLAGS}" \
   CXXFLAGS="${CXXFLAGS}" FFLAGS="${FFLAGS}" LDFLAGS="${LDFLAGS}" \
-  DL_LDFLAGS="${DL_LDFLAGS}" SED="$SED" \
+  DL_LDFLAGS="${DL_LDFLAGS}" SED="$SED" MAGICK_HOME="${ROOT}" \
 "${ROOT}/bin/mkoctfile-%VERSION%" "$@"

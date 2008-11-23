@@ -80,8 +80,5 @@ function [netoutput] = sim(net,mInput)
 
   netoutput = Aa{i,1};
 
-<<<<<<< .mine
 endfunction
-=======
-endfunction
->>>>>>> .r5451
+

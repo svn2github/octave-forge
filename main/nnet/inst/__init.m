@@ -39,25 +39,35 @@ function net=__init(net)
   error(nargchk(1,1,nargin));
 
   ## check input
-  if ( !isstruct(net) )
+  if ( !__checknetstruct(net) )
     error("__init: wrong argument type, must be a structure!");
   endif
 
-  ## init with random numbers between +-1
-  ## input weight layer
-  mRand = rand(net.layers{1}.size,net.inputs{1}.size);
-  net.IW{1} = mRand*2-1;
 
-  ## hidden layers
-  nLayers = net.numLayers;
-  for i=2:nLayers
-    mRand = rand(net.layers{i}.size,net.layers{i-1}.size);
-    net.LW{i,i-1} = mRand*2-1;
-  endfor
-  for i=1:nLayers
-    mRand = rand(net.biases{i}.size,1);
-    net.b{i} = mRand*2-1;
-  endfor
+  if (strcmp(net.networkType,"newff"))
+
+    ## init with random numbers between +-1
+    ## input weight layer
+    mRand = rand(net.layers{1}.size,net.inputs{1}.size);
+    net.IW{1} = mRand*2-1;
+
+    ## hidden layers
+    nLayers = net.numLayers;
+    for i=2:nLayers
+      mRand = rand(net.layers{i}.size,net.layers{i-1}.size);
+      net.LW{i,i-1} = mRand*2-1;
+    endfor
+    for i=1:nLayers
+      mRand = rand(net.biases{i}.size,1);
+      net.b{i} = mRand*2-1;
+    endfor
+  elseif (strcmp(net.networkType,"newp"))
+
+    ## init with zeros
+    inputRows = size(net.inputs{1,1}.range,1);
+    net.IW{1} = zeros(inputRows,1);
+    net.b{1} = zeros(1,1);
+  endif
 
   ## warn user of constant inputs
   for i=1:net.numInputs

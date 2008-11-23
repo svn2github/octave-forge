@@ -129,20 +129,8 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
 
     normGradX = sqrt(Jjve'*Jjve);
 
-    ## record training for later performance plot
-    ## performance plot isn't available till now
-    ## TODO:
-      ## first sample of code to evaluate if gnuplot is installed
-      # [stat, output] = system("gnuplot --version");
-      # strMatrix = split(output," ");
-      # if (!( strcmp(deblank(strMatrix(1,:)),"gnuplot") ))
-      # falls in diesen teil der if-abfrage gekommen wird, so
-      # ist zumindest ein gnuplot installiert...
-      
-	  ## andere VERSION, es wird angenommen, dass gnuplot installiert
-	  ## ist, andernfalls ERROR-MELDUNG erstellen...
-
-      # endif
+    ## record training progress for later plotting
+    ## if requested
     trainRec.perf(iEpochs+1) = perf;
     trainRec.mu(iEpochs+1) = mu;
     if (doValidation)
@@ -157,6 +145,20 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
     ## show train progress
     showtrainprogress(show,stop,iEpochs,epochs,time,currentTime, \
 		  goal,perf,minGrad,normGradX,shortStr,net);
+
+    ## show performance plot, if needed
+    if !(strcmp(show,"NaN"))
+      ## now make it possible to define after how much loops the
+      ## performance plot should be updated
+      if (mod(iEpochs,show)==0)
+        plot(1:length(trainRec.perf),trainRec.perf);
+	if (doValidation)
+	  hold on;
+	  plot(1:length(trainRec.vperf),trainRec.vperf,"--g");
+	endif
+      endif
+    endif # if !(strcmp(show,"NaN"))
+    legend("Training","Validation");
 
     ## stop if one of the criterias is reached.
     if length(stop)

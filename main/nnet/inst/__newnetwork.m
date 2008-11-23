@@ -53,9 +53,9 @@ function net = __newnetwork(numInputs,numLayers,numOutputs,networkType)
   elseif ( !isposint(numLayers) )
     error("network: at least 1 hidden- and one output layer must be defined! ")
   endif
-  ## second check for numLayers... must be at least "2", this
-  ## means 1 hidden and 1 output layer
-  if (numLayers<2)
+  ## second check for numLayers... must be at least "2" for the
+  ## newff, this means at least 1 hidden and 1 output layer
+  if (strcmp(networkType,"newff")  && (numLayers<2))
     error("network: not enough layers are defined! ")
   endif
 
@@ -146,7 +146,7 @@ function net = __newnetwork(numInputs,numLayers,numOutputs,networkType)
     if ( !isscalar(numLayers) | !isposint(numLayers) )
       error("second argument must be a positive integer scalar value!")
     endif
-    if ( !isstruct(net) )
+    if ( !__checknetstruct(net) )
       error("first argument must be a network structure!")
     endif
 
@@ -154,7 +154,8 @@ function net = __newnetwork(numInputs,numLayers,numOutputs,networkType)
       net.layers{iRuns,1}.dimension = 0;
       net.layers{iRuns,1}.netInputFcn = "";
       net.layers{iRuns,1}.size = 0;
-      net.layers{iRuns,1}.transferFcn = "tansig";
+### TODO: test with newff      net.layers{iRuns,1}.transferFcn = "tansig";
+      net.layers{iRuns,1}.transferFcn = "";
       net.layers{iRuns,1}.userdata = "Put your custom informations here!";
     endfor
 

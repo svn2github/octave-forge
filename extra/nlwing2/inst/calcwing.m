@@ -137,17 +137,17 @@ function clq = calcwing (wing, varargin)
 
   # integral quantities
   dS = wing.ch .* diff (wing.zac);
+  dSp = wing.ch .* hypot (diff (wing.zac), diff (wing.yac));
   area = wing.area;
   if (wing.sym)
     area /= 2;
   endif
   cad = cos (clq.ad); sad = sin (clq.ad);
-  pc = cos (diff (wing.zac));
-  clq.clw = (dS .* wing.lcd).' * (clq.cl .* cad .* pc) / area;
-  clq.cdiw = -(dS .* wing.lcd).' * (clq.cl .* sad) / area;
-  clq.cdw = (dS .* wing.lcd).' * (clq.cd .* cad)/ area;
+  clq.clw = dS.' * (clq.cl .* cad) / area;
+  clq.cdiw = -dSp.' * (clq.cl .* sad) / area;
+  clq.cdw = dSp.' * (clq.cd .* cad)/ area;
   if (wing.sym)
-    clq.bmw = (dS .* wing.zc).' * (clq.cl .* cad) / area;
+    clq.bmw = dSp.' * (clq.cl .* cad) / area;
   endif
   # integral moment - local moment contributions
   clq.cmw = (dS .* wing.ch).' * clq.cm;

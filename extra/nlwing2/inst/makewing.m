@@ -59,7 +59,6 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
   wing.zc = zc = m2 (zac);
   wing.ch = m2 (aci(:,3));
   wing.twc = pi/180 * m2 (aci(:,4));
-  wing.lcd = cos (diff (wing.yac) ./ diff (zac));
 
   zpol = [pols.z];
   if (any (diff (zpol) < 0))

@@ -142,7 +142,8 @@ function clq = calcwing (wing, varargin)
     area /= 2;
   endif
   cad = cos (clq.ad); sad = sin (clq.ad);
-  clq.clw = (dS .* wing.lcd).' * (clq.cl .* cad) / area;
+  pc = cos (diff (wing.zac));
+  clq.clw = (dS .* wing.lcd).' * (clq.cl .* cad .* pc) / area;
   clq.cdiw = -(dS .* wing.lcd).' * (clq.cl .* sad) / area;
   clq.cdw = (dS .* wing.lcd).' * (clq.cd .* cad)/ area;
   if (wing.sym)

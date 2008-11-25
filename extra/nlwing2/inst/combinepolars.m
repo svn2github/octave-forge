@@ -20,15 +20,27 @@
 % 
 
 % -*- texinfo -*-
-% @deftypefn{Function File} {pol =} combinepolars (pol1, pol2)
+% @deftypefn{Function File} {pol =} combinepolars (pol1, pol2, coef)
+% @deftypefnx{Function File} {pol =} combinepolars (pol1, pol2, c1, c2, c)
 % Combines two polars to get a specific interpolation. Useful when
 % you repeatedly change the chord length at a particular section,
 % and you don't want to recalculate each time using different local
 % Reynolds number. A good streategy here is evaluate the boundary values
 % or a few more and then interpolate.
+% You can either directly specify an interpolation coefficient (pol1 is 1, pol2 is 0),
+% or a pair of chord lengths and a requested chord length.
 % @end deftypefn
 
-function pol = combinepolars (pol1, pol2, c)
+function pol = combinepolars (pol1, pol2, varargin)
+  if (nargin == 3)
+    c = varargin{1};
+  elseif (nargin == 5)
+    [c1, c2, c] = deal (varargin{1:3});
+    # interpolate according to log(Re).
+    c = (log (c) - log (c2)) / (log (c1) - log (c2));
+  else
+    print_usage ();
+  endif
   d = 1-c;
   pol.a0 = c*pol1.a0 + d*pol2.a0;
   pol.amax = c*pol1.amax + d*pol2.amax;

@@ -137,7 +137,8 @@ R.MAD = R.MAD./n1;
 R.datatype = 'STAT Level 3';
 
 tmp = version;
-if str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6))<2136,
+if 0, %str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6))<2136,
+	% ###obsolete: was needed for Octave version < 2.1.36
         if strcmp(fun(1:2),'CM') 
                 oo = str2num(fun(3:length(fun)));
                 varargout  = sumskipnan(i.^oo,DIM)./n1;

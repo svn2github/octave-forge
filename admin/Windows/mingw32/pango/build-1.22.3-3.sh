@@ -98,24 +98,30 @@ conf()
      )
 }
 
+build_pre()
+{
+   modify_libtool_nolibprefix ${BUILDDIR}/libtool
+}
+
 PCFILES="pango.pc pangocairo.pc pangoft2.pc pangowin32.pc"
 
 install()
 {
    install_pre;
-   
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpango-1.0-0.dll    ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/pango-1.0-0.dll    ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpango-1.0.dll.a    ${LIBRARY_PATH}
    
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangocairo-1.0-0.dll    ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/pangocairo-1.0-0.dll    ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangocairo-1.0.dll.a    ${LIBRARY_PATH}
-   
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangoft2-1.0-0.dll    ${SHAREDLIB_PATH}
+
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/pangoft2-1.0-0.dll    ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangoft2-1.0.dll.a    ${LIBRARY_PATH}
-   
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangowin32-1.0-0.dll    ${SHAREDLIB_PATH}
+
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/pangowin32-1.0-0.dll    ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangowin32-1.0.dll.a    ${LIBRARY_PATH}
-   
+
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/pango-querymodules.exe    ${BINARY_PATH}
+
    mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
    
@@ -140,9 +146,17 @@ uninstall()
 {
    uninstall_pre;
    
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libcairo-2.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libcairo.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libcairo.a
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pango-1.0-0.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpango-1.0.dll.a
+   
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pangocairo-1.0-0.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpangocairo-1.0.dll.a
+   
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pangoft2-1.0-0.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpangoft2-1.0.dll.a
+   
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pangowin32-1.0-0.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpangowin32-1.0.dll.a
    
    for a in $HEADERS; do
       ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a
@@ -155,6 +169,7 @@ uninstall()
    for a in $PCFILES; do
       ${RM} ${RM_FLAGS} ${PKGCONFIGDATA_PATH}/$a
    done
+   
    
    ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING
    

@@ -10,6 +10,15 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' glib-2.18.2-orig/gl
  
  @OS_UNIX_TRUE@install-exec-hook:
  @OS_UNIX_TRUE@	for sf in ${auto_config_binscripts} ; do \
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' glib-2.18.2-orig/glib-2.0.pc.in glib-2.18.2/glib-2.0.pc.in
+--- glib-2.18.2-orig/glib-2.0.pc.in	2008-10-16 14:31:59 +0000
++++ glib-2.18.2/glib-2.0.pc.in	2008-11-21 09:04:06 +0000
+@@ -12,4 +12,4 @@
+ Version: @VERSION@
+ Libs: -L${libdir} -lglib-2.0 @INTLLIBS@
+ Libs.private: @ICONV_LIBS@
+-Cflags: -I${includedir}/glib-2.0 -I${libdir}/glib-2.0/include @GLIB_EXTRA_CFLAGS@
++Cflags: -I${includedir}/glib-2.0 @GLIB_EXTRA_CFLAGS@
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' glib-2.18.2-orig/gmodule/Makefile.in glib-2.18.2/gmodule/Makefile.in
 --- glib-2.18.2-orig/gmodule/Makefile.in	2008-10-16 14:41:10 +0000
 +++ glib-2.18.2/gmodule/Makefile.in	2008-11-05 12:48:34 +0000

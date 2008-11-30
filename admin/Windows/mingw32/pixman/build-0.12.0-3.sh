@@ -31,8 +31,7 @@ SRCDIR_ORIG=${SRCDIR}-orig
 # MAKEFILE=win32/Makefile.gcc
 
 # header files to be installed
-#INSTALL_HEADERS="tiff.h tiffvers.h tiffio.h"
-#INSTALL_HEADERS_BUILD="tiffconf.h"
+#HEADERS=
 #INCLUDE_DIR=
 
 source ../gcc43_common.sh
@@ -58,15 +57,20 @@ conf()
      CXXFLAGS="$CXXFLAGS" \
      LIBS="" \
      --prefix="${PREFIX}" \
-     --enable-shared \
-     --disable-sse2
+     --enable-shared 
      )
+}
+
+build_pre()
+{
+   modify_libtool_nolibprefix ${BUILDDIR}/libtool
 }
 
 install()
 {
    install_pre;
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/pixman/.libs/libpixman-1-0.dll      ${SHAREDLIB_PATH}
+
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pixman/.libs/pixman-1-0.dll      ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/pixman/.libs/libpixman-1.dll.a    ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/pixman/.libs/libpixman-1.a        ${STATICLIBRARY_PATH}
    
@@ -77,14 +81,15 @@ install()
 #   ${CP} ${CP_FLAGS} ${SRCDIR}/LICENSE ${LICENSE_PATH}/${PKG}
    
    ${CP} ${CP_FLAGS} ${BUILDDIR}/pixman-1.pc ${PKGCONFIGDATA_PATH}
-   install_post
+
+   install_post;
 }
 
 uninstall()
 {
    uninstall_pre;
    
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libpixman-1-0.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pixman-1-0.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpixman-1.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libpixman-1.a
    
@@ -92,7 +97,6 @@ uninstall()
    ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/pixman-version.h
    
    ${RM} ${RM_FLAGS} ${PKGCONFIGDATA_PATH}/pixman-1.pc
-   rmdir --ignore-fail-on-non-empty ${PKGCONFIGDATA_PATH}
    
    uninstall_post;
 }

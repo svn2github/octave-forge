@@ -14,7 +14,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pixman-0.12.0-orig/
 --- pixman-0.12.0-orig/pixman/libpixman.def	1970-01-01 01:00:00 +0100
 +++ pixman-0.12.0/pixman/libpixman.def	2008-11-09 20:25:52 +0100
 @@ -0,0 +1,124 @@
-+LIBRARY libpixman-1-0.dll
++LIBRARY pixman-1-0.dll
 +EXPORTS
 +pixmanFetchSourcePict
 +pixmanFetchSourcePict64
@@ -138,3 +138,14 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pixman-0.12.0-orig/
 +pixman_transform_point_3d
 +pixman_version
 +pixman_version_string
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pixman-0.12.0-orig/pixman-1.pc.in pixman-0.12.0/pixman-1.pc.in
+--- pixman-0.12.0-orig/pixman-1.pc.in	2008-04-22 21:52:09 +0000
++++ pixman-0.12.0/pixman-1.pc.in	2008-11-21 09:18:15 +0000
+@@ -6,6 +6,6 @@
+ Name: Pixman
+ Description: The pixman library (version 1)
+ Version: @PACKAGE_VERSION@
+-Cflags: -I${includedir}/pixman-1 @DEP_CFLAGS@
++Cflags: -I${includedir} @DEP_CFLAGS@
+ Libs: -L${libdir} -lpixman-1 @DEP_LIBS@
+ 

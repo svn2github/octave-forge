@@ -62,8 +62,8 @@ conf()
 
 build_pre()
 {
-   modify_libtool_no_versuffix ${BUILDDIR}/libtool
-   modify_libtool_no_versuffix ${BUILDDIR}/libcharset/libtool
+   modify_libtool_all ${BUILDDIR}/libtool
+   modify_libtool_all ${BUILDDIR}/libcharset/libtool
 }
 
 install()
@@ -92,7 +92,7 @@ install()
 
 uninstall()
 {
-   uninstall_pre
+   uninstall_pre;
    
    ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/{iconv.dll, charset.dll}
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/{libiconv.dll.a, libcharset.dll.a}
@@ -102,7 +102,10 @@ uninstall()
    ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/libcharset.h
    ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/localcharset.h
    
-   uninstall_post
+   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING
+   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING.LIB
+   
+   uninstall_post;
 }
 
 all() {

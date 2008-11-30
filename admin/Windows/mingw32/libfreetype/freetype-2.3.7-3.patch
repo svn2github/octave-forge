@@ -1,22 +1,21 @@
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' freetype-2.3.7-orig/builds/unix/configure freetype-2.3.7/builds/unix/configure
---- freetype-2.3.7-orig/builds/unix/configure	2008-06-29 09:46:32 +0200
-+++ freetype-2.3.7/builds/unix/configure	2008-08-03 19:27:38 +0200
-@@ -12126,7 +12126,7 @@
-       ;;
-     mingw*)
-       # MinGW DLLs use traditional 'lib' prefix
--      soname_spec='${libname}`echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
-+      soname_spec='`echo ${libname} | sed -e 's/^lib//'``echo ${release} | $SED -e 's/[.]/-/g'`${versuffix}${shared_ext}'
-       sys_lib_search_path_spec=`$CC -print-search-dirs | $GREP "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
-       if $ECHO "$sys_lib_search_path_spec" | $GREP ';[c-zC-Z]:/' >/dev/null; then
-         # It is most probably a Windows format PATH printed by
-@@ -14621,7 +14621,8 @@
- if test -n "$CONFIG_FILES"; then
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' freetype-2.3.7-orig/builds/unix/freetype-config.in freetype-2.3.7/builds/unix/freetype-config.in
+--- freetype-2.3.7-orig/builds/unix/freetype-config.in	2008-06-09 21:25:37 +0000
++++ freetype-2.3.7/builds/unix/freetype-config.in	2008-11-21 08:52:43 +0000
+@@ -128,7 +128,7 @@
+ fi
  
- 
--ac_cr=''
-+ac_cr='
-+'
- ac_cs_awk_cr=`$AWK 'BEGIN { print "a\rb" }' </dev/null 2>/dev/null`
- if test "$ac_cs_awk_cr" = "a${ac_cr}b"; then
-   ac_cs_awk_cr='\\r'
+ if test "$echo_cflags" = "yes" ; then
+-  cflags="-I$includedir/freetype2"
++  cflags="-I$includedir"
+   if test "$includedir" != "/usr/include" ; then
+     echo $cflags -I$includedir
+   else
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' freetype-2.3.7-orig/builds/unix/freetype2.in freetype-2.3.7/builds/unix/freetype2.in
+--- freetype-2.3.7-orig/builds/unix/freetype2.in	2006-10-12 04:51:08 +0000
++++ freetype-2.3.7/builds/unix/freetype2.in	2008-11-21 08:51:15 +0000
+@@ -8,4 +8,4 @@
+ Version: @ft_version@
+ Requires:
+ Libs: -L${libdir} -lfreetype @LIBZ@ @FT2_EXTRA_LIBS@
+-Cflags: -I${includedir}/freetype2 -I${includedir}
++Cflags: -I${includedir}

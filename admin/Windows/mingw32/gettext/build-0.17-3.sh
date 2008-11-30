@@ -68,8 +68,18 @@ conf()
 
 build_pre()
 {
-   modify_libtool_no_versuffix ${BUILDDIR}/gettext-runtime/libtool
-   modify_libtool_no_versuffix ${BUILDDIR}/gettext-tools/libtool
+   modify_libtool_all ${BUILDDIR}/gettext-runtime/libtool
+   modify_libtool_all ${BUILDDIR}/gettext-tools/libtool
+}
+
+build()
+{
+   build_pre;
+   
+   ( cd ${BUILDDIR}/gettext-runtime && make all )
+#   ( cd ${BUILDDIR}/gettext-tools && make )
+   
+   build_post;
 }
 
 install()
@@ -93,16 +103,20 @@ install()
    install_post;
 }
 
-EXE_TOOLS="msgfmt.exe"
+# EXE_TOOLS="msgfmt.exe"
 
 install_devbin()
 {
    mkdir -vp ${DEVBIN_PATH}
    
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/gettext-tools/gnulib-lib/.libs/gettextlib.dll ${DEVBIN_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/gettext-tools/src/.libs/gettextsrc.dll        ${DEVBIN_PATH}
+   # Install a stub 'msgfmt' script. GLIB check for it, but obviously never
+   # uses it. So we can skip the time-consuming build of gettext-tools
+   ${CP} ${CP_FLAGS} ${TOPDIR}/msgfmt ${DEVBIN_PATH}
    
-   for a in ${EXE_TOOLS}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/gettext-tools/src/.libs/$a ${DEVBIN_PATH}; done
+#   ${CP} ${CP_FLAGS} ${BUILDDIR}/gettext-tools/gnulib-lib/.libs/gettextlib.dll ${DEVBIN_PATH}
+#   ${CP} ${CP_FLAGS} ${BUILDDIR}/gettext-tools/src/.libs/gettextsrc.dll        ${DEVBIN_PATH}
+   
+#   for a in ${EXE_TOOLS}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/gettext-tools/src/.libs/$a ${DEVBIN_PATH}; done
    
 }
 
@@ -118,8 +132,6 @@ uninstall()
    
    ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING
    ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING.gettext-runtime
-   
-   rmdir -v ${LICENSE_PATH}/${PKG}
    
    uninstall_post;
 }

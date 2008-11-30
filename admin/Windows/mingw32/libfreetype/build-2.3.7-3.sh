@@ -34,8 +34,56 @@ MAKEFILE=""
 DIFF_FLAGS=""
 
 # header files to be installed
-INSTALL_HEADERS="ft2build.h"
 INCLUDE_DIR=""
+HEADERS="ft2build.h"
+HEADERS2="
+freetype.h
+ftbbox.h
+ftbdf.h
+ftbitmap.h
+ftcache.h
+ftchapters.h
+ftcid.h
+fterrdef.h
+fterrors.h
+ftgasp.h
+ftglyph.h
+ftgxval.h
+ftgzip.h
+ftimage.h
+ftincrem.h
+ftlcdfil.h
+ftlist.h
+ftlzw.h
+ftmac.h
+ftmm.h
+ftmodapi.h
+ftmoderr.h
+ftotval.h
+ftoutln.h
+ftpfr.h
+ftrender.h
+ftsizes.h
+ftsnames.h
+ftstroke.h
+ftsynth.h
+ftsystem.h
+fttrigon.h
+fttypes.h
+ftwinfnt.h
+ftxf86.h
+t1tables.h
+ttnameid.h
+tttables.h
+tttags.h
+ttunpat.h"
+HEADERS_CONFIG="
+ftheader.h
+ftoption.h
+ftstdlib.h"
+HEADERS_CONFIG2="
+ftconfig.h
+ftmodule.h"
 
 source ../gcc43_common.sh
 
@@ -50,11 +98,18 @@ conf()
      CC=${CC} \
      CXX=${CXX} \
      F77=${F77} \
-     CFLAGS="$CFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
-     CXXFLAGS="$CXXFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     CPP=${CPP} \
+     CPPFLAGS="$CPPFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     CFLAGS="$CFLAGS" \
+     CXXFLAGS="$CXXFLAGS" \
      LDFLAGS="${LDFLAGS}" \
      --prefix="${PREFIX}"
    )
+}
+
+build_pre()
+{
+   modify_libtool_nolibprefix ${BUILDDIR}/libtool;
 }
 
 install()
@@ -67,10 +122,24 @@ install()
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${SRCDIR}/include/$a ${INCLUDE_PATH}; done
    
    if ! [ -e ${INCLUDE_PATH}/freetype ]; then mkdir -v ${INCLUDE_PATH}/freetype; fi
+   if ! [ -e ${INCLUDE_PATH}/freetype/config ]; then mkdir -v ${INCLUDE_PATH}/freetype/config; fi
    
-   cp ${CP_FLAGS} -vpr ${SRCDIR}/include/freetype       ${INCLUDE_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/{ftconfig.h,ftmodule.h} ${INCLUDE_PATH}/freetype/config
-
+   for a in $HEADERS; do 
+      ${CP} ${CP_FLAGS} ${SRCDIR}/include/$a ${INCLUDE_PATH}
+   done
+   
+   for a in $HEADERS2; do 
+      ${CP} ${CP_FLAGS} ${SRCDIR}/include/freetype/$a ${INCLUDE_PATH}/freetype
+   done
+   
+   for a in $HEADERS_CONFIG; do 
+      ${CP} ${CP_FLAGS} ${SRCDIR}/include/freetype/config/$a ${INCLUDE_PATH}/freetype/config
+   done
+   
+   for a in $HEADERS_CONFIG2; do 
+      ${CP} ${CP_FLAGS} ${BUILDDIR}/$a ${INCLUDE_PATH}/freetype/config
+   done
+   
    ${CP} ${CP_FLAGS} ${BUILDDIR}/freetype-config         ${BINARY_PATH}
    
    mkdir -vp ${LICENSE_PATH}/${PKG}
@@ -85,14 +154,38 @@ install()
 
 uninstall()
 {
+   uninstall_pre;
+   
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/freetype-6.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libfreetype.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libfreetype.a
-   for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
-   ${RM} ${RM_FLAGS} -r ${INCLUDE_PATH}/freetype
+   
+   for a in $HEADERS; do 
+      ${RM} ${RM_FLAGS} $a ${INCLUDE_PATH}/$a
+   done
+   
+   for a in $HEADERS2; do 
+      ${RM} ${RM_FLAGS} $a ${INCLUDE_PATH}/freetype/$a
+   done
+   
+   for a in $HEADERS_CONFIG; do 
+      ${RM} ${RM_FLAGS} $a ${INCLUDE_PATH}/freetype/config/$a
+   done
+   
+   for a in $HEADERS_CONFIG2; do 
+      ${RM} ${RM_FLAGS} $a ${INCLUDE_PATH}/freetype/config/$a
+   done
+   
+   rmdir --ignore-fail-on-non-empty ${INCLUDE_PATH}/freetype/config
+   rmdir --ignore-fail-on-non-empty ${INCLUDE_PATH}/freetype
+
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/freetype-config
+
+   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/{GPL.TXT LICENSE.TXT README.PCF}
    
    ${RM} ${RM_FLAGS} ${PKGCONFIGDATA_PATH}/freetype2.pc
+   
+   uninstall_post;
 }
 
 all() {

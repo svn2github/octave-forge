@@ -22,3 +22,39 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pango-1.22.2-orig/p
  
  # ------------------- win32 build stuff -------------------
  
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pango-1.22.2-orig/pango.pc.in pango-1.22.2/pango.pc.in
+--- pango-1.22.2-orig/pango.pc.in	2008-07-05 18:34:52 +0000
++++ pango-1.22.2/pango.pc.in	2008-11-21 09:06:16 +0000
+@@ -10,4 +10,4 @@
+ Version: @VERSION@
+ Requires: glib-2.0,gobject-2.0,gmodule-no-export-2.0
+ Libs: -L${libdir} -lpango-@PANGO_API_VERSION@ @PKGCONFIG_MATH_LIBS@
+-Cflags: -I${includedir}/pango-1.0
++Cflags: -I${includedir}/pango
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pango-1.22.2-orig/pangocairo.pc.in pango-1.22.2/pangocairo.pc.in
+--- pango-1.22.2-orig/pangocairo.pc.in	2008-07-05 18:34:52 +0000
++++ pango-1.22.2/pangocairo.pc.in	2008-11-21 09:06:33 +0000
+@@ -8,4 +8,4 @@
+ Version: @VERSION@
+ Requires: pango cairo @PKGCONFIG_CAIRO_REQUIRES@
+ Libs: -L${libdir} -lpangocairo-@PANGO_API_VERSION@
+-Cflags: -I${includedir}/pango-1.0
++Cflags: -I${includedir}/pango
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pango-1.22.2-orig/pangoft2.pc.in pango-1.22.2/pangoft2.pc.in
+--- pango-1.22.2-orig/pangoft2.pc.in	2008-07-05 18:34:52 +0000
++++ pango-1.22.2/pangoft2.pc.in	2008-11-21 09:06:39 +0000
+@@ -8,4 +8,4 @@
+ Version: @VERSION@
+ Requires: pango freetype2 fontconfig
+ Libs: -L${libdir} -lpangoft2-@PANGO_API_VERSION@
+-Cflags: -I${includedir}/pango-1.0
++Cflags: -I${includedir}/pango
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pango-1.22.2-orig/pangowin32.pc.in pango-1.22.2/pangowin32.pc.in
+--- pango-1.22.2-orig/pangowin32.pc.in	2008-07-05 18:34:52 +0000
++++ pango-1.22.2/pangowin32.pc.in	2008-11-21 09:06:51 +0000
+@@ -8,4 +8,4 @@
+ Version: @VERSION@
+ Requires: pango
+ Libs: -L${libdir} -lpangowin32-@PANGO_API_VERSION@ @WIN32_LIBS@
+-Cflags: -I${includedir}/pango-1.0
++Cflags: -I${includedir}/pango

@@ -186,12 +186,15 @@ conf()
     LDFLAGS="${LDFLAGS}" \
     --disable-static \
     --enable-shared \
-    --prefix=${PREFIX}/gtk \
+    --prefix=${PREFIX} \
     PKG_CONFIG=${TOPDIR}/pkg-config \
     --disable-gtk-doc \
     --with-pcre=system \
     PCRE_CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS}" \
     PCRE_LIBS="-lpcre"
+    
+    # We must manually specify PCRE_CFLAGS and PCRE_LIBS because we do not have
+    # pkg-config built yet!!
   )
 }
 
@@ -202,6 +205,8 @@ build_pre()
      make glibconfig.h && \
      mv glibconfig.h glibconfig.h.autogened && \
      cp -vp glibconfig.h.win32 glibconfig.h )
+     
+   modify_libtool_nolibprefix ${BUILDDIR}/libtool
 }   
 
 install()
@@ -210,21 +215,21 @@ install()
    
    mkdir -v ${LICENSE_PATH}/${PKG}
    
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/gio/.libs/libgio-2.0-0.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/gio/.libs/gio-2.0-0.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/gio/.libs/libgio-2.0.dll.a ${LIBRARY_PATH}
    
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/glib/.libs/libglib-2.0-0.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/glib/.libs/glib-2.0-0.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/glib/.libs/libglib-2.0.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/glib/.libs/gspawn-win32-helper.exe ${BINARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/glib/.libs/gspawn-win32-helper-console.exe ${BINARY_PATH}
    
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/gmodule/.libs/libgmodule-2.0-0.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/gmodule/.libs/gmodule-2.0-0.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/gmodule/.libs/libgmodule-2.0.dll.a ${LIBRARY_PATH}
 
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/gobject/.libs/libgobject-2.0-0.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/gobject/.libs/gobject-2.0-0.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/gobject/.libs/libgobject-2.0.dll.a ${LIBRARY_PATH}
 
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/gthread/.libs/libgthread-2.0-0.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/gthread/.libs/gthread-2.0-0.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/gthread/.libs/libgthread-2.0.dll.a ${LIBRARY_PATH}
 
    ${CP} ${CP_FLAGS} ${BUILDDIR}/gobject/glib-mkenums ${DEVBIN_PATH}
@@ -255,11 +260,11 @@ uninstall()
 {
    uninstall_pre;
    
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libgio-2.0-0.dll
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libglib-2.0-0.dll
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libgmodule-2.0-0.dll
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libgobject-2.0-0.dll
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libgthread-2.0-0.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/gio-2.0-0.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/glib-2.0-0.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/gmodule-2.0-0.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/gobject-2.0-0.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/gthread-2.0-0.dll
    
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libgio-2.0.dll.a
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libglib-2.0.dll.a

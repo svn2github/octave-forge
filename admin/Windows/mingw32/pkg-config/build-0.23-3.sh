@@ -78,7 +78,6 @@ uninstall()
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/pkg-config.exe
    
    ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING
-   rmdir -v ${LICENSE_PATH}/${PKG}
    
    uninstall_post
 }

@@ -1,3 +1,14 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' cairo-1.8.2-orig/src/Makefile.in cairo-1.8.2/src/Makefile.in
+--- cairo-1.8.2-orig/src/Makefile.in	2008-10-30 15:36:59 +0100
++++ cairo-1.8.2/src/Makefile.in	2008-11-30 13:25:42 +0100
+@@ -1396,7 +1396,6 @@
+ 	grep -E '^cairo_.* \(' | \
+ 	sed -e 's/[ 	].*//' | \
+ 	sort; \
+-	echo LIBRARY libcairo-$(CAIRO_VERSION_SONUM).dll; \
+ 	) >$@
+ 	@ ! grep -q cairo_ERROR $@ || ($(RM) $@; false)
+ 
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' cairo-1.8.2-orig/src/cairo-features.h cairo-1.8.2/src/cairo-features.h
 --- cairo-1.8.2-orig/src/cairo-features.h	2008-10-30 07:37:19 +0100
 +++ cairo-1.8.2/src/cairo-features.h	1970-01-01 01:00:00 +0100

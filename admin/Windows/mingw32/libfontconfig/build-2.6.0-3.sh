@@ -51,6 +51,7 @@ conf()
      CC=${CC} \
      CXX=${CXX} \
      F77=${F77} \
+     CPP=${CPP} \
      CPPFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
      LDFLAGS="${LDFLAGS}" \
      --prefix="${PREFIX}" \
@@ -80,14 +81,14 @@ uninstall()
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/fontconfig.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libfontconfig.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libfontconfig.a
+   
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
-
+   
    ${RM} ${RM_FLAGS}  ${LICENSE_PATH}/${PKG}/COPYING
-   rmdir --ignore-fail-on-non-empty  ${LICENSE_PATH}/${PKG}
-   rmdir --ignore-fail-on-non-empty  ${LICENSE_PATH}
-
+   
    ${RM} ${RM_FLAGS} ${PKGCONFIGDATA_PATH}/fontconfig.pc
-   rmdir --ignore-fail-on-non-empty ${PKGCONFIGDATA_PATH}
+   
+   uninstall_post;
 }
 
 all() {

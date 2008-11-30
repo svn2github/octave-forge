@@ -64,12 +64,17 @@ conf()
      )
 }
 
+build_pre()
+{
+   modify_libtool_nolibprefix ${BUILDDIR}/libtool
+}
+
 PCFILES="cairo.pc cairo-ft.pc cairo-pdf.pc cairo-png.pc cairo-ps.pc cairo-svg.pc cairo-win32.pc cairo-win32-font.pc"
 
 install()
 {
    install_pre;
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libcairo-2.dll    ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/cairo-2.dll    ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libcairo.dll.a    ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libcairo.a        ${STATICLIBRARY_PATH}
    
@@ -99,7 +104,7 @@ uninstall()
 {
    uninstall_pre;
    
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/libcairo-2.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/cairo-2.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libcairo.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libcairo.a
    

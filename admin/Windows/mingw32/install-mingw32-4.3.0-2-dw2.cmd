@@ -46,6 +46,7 @@ SET GCCSYS=-dw2
 %BSDTAR% %TAROPT% %SRC%\mingwrt-3.15.1-mingw32-dev.tar.gz
 %BSDTAR% %TAROPT% %SRC%\mingw-utils-0.3.tar.gz
 %BSDTAR% %TAROPT% %SRC%\w32api-3.12-mingw32-dev.tar.gz
+%BSDTAR% %TAROPT% %SRC%\gdb-6.8-mingw-3.tar.bz2
 
 copy "%DST%\bin\mingw32-g++%GCCSYS%.exe" "%DST%\bin\mingw32-g++%GCCVER%%GCCSYS%.exe"
 copy "%DST%\bin\mingw32-gfortran%GCCSYS%.exe" "%DST%\bin\mingw32-gfortran%GCCVER%%GCCSYS%.exe"

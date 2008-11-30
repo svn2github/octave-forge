@@ -212,7 +212,20 @@ uninstall()
   ( cd ${BUILDDIR} && make_common uninstall );
   uninstall_post
 }
-uninstall_post() { echo ; }
+uninstall_post()
+{ 
+   # Remove installation directories if empty
+   rmdir --ignore-fail-on-non-empty ${INCLUDE_PATH}
+   rmdir --ignore-fail-on-non-empty ${BINARY_PATH}
+   rmdir --ignore-fail-on-non-empty ${LIBRARY_PATH}
+   rmdir --ignore-fail-on-non-empty ${SHAREDLIB_PATH}
+   rmdir --ignore-fail-on-non-empty ${STATICLIBRARY_PATH}
+
+   # The LICENSE Directory
+   rmdir --ignore-fail-on-non-empty ${LICENSE_PATH}/${PKG}
+   rmdir --ignore-fail-on-non-empty ${LICENSE_PATH}
+   
+}
 
 check_pre() { echo ; }
 check()
@@ -280,21 +293,57 @@ srcpkg()
    "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${FULLPKG}-src.7z ${SRCFILE} ${PATCHFILE} build-${VER}-${REL}.sh
 }
 
-modify_libtool()
+modify_libtool_all()
 {
    if [ -f $1 ]; then
-      sed -e '/^soname_spec/ s+^.*$+soname_spec=\"\\\`echo \\\${libname} | \\\$SED -e s/^lib//\\\`\\\${versuffix}\\\${shared_ext}\"+' $1 > $1.mod
-      mv $1.mod $1
+      _libtool_removelibprefix $1;
+      _libtool_removerelease $1;
+      _libtool_removeversuffix $1;
    fi
 }
 
-modify_libtool_no_versuffix()
+modify_libtool_noversuffix()
 {
-   modify_libtool $*
    if [ -f $1 ]; then
-     sed -e '/^soname_spec/ s+\\\${versuffix}++' $1 > $1.mod
-     mv $1.mod $1
+      _libtool_removelibprefix $1;
+      _libtool_removeversuffix $1;
    fi
+}
+
+modify_libtool_norelease()
+{
+   if [ -f $1 ]; then
+      _libtool_removelibprefix $1;
+      _libtool_removerelease $1;
+   fi
+}
+
+modify_libtool_nolibprefix()
+{
+   if [ -f $1 ]; then
+      _libtool_removelibprefix $1;
+   fi
+}
+
+_libtool_removelibprefix()
+{
+   # remove the 'LIB' prefix of shared library names
+   echo "  Removing 'LIB' prefix of shared library names..."
+   sed -e '/^soname_spec/ s+"\\${libname}+"\\\`echo \\\${libname} | \\\$SED -e s/^lib//\\\`+' $1 > $1.mod && mv $1.mod $1
+}
+
+_libtool_removerelease()
+{
+   # remove the ${release} from shared library names
+   echo "  Removing ${release} from shared library names..."
+   sed -e '/^soname_spec/ s+\\`echo \\${release} | \\$SED -e s/\[.\]/-/g\\`++' $1 > $1.mod && mv $1.mod $1
+}
+
+_libtool_removeversuffix()
+{
+   # remove the ${versuffix} from shared library names
+   echo "  Removing ${versuffix} from shared library names..."
+   sed -e '/^soname_spec/ s+\\\${versuffix}++' $1 > $1.mod && mv $1.mod $1
 }
 
 main() {

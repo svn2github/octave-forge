@@ -24,7 +24,7 @@
 ## Author: Bill Denney <bill@denney.ws>
 ## Created: 26 Apr 2008
 
-function rate = annurate (rate, numperiods)
+function rate = effrr (rate, numperiods)
 
   if (nargin != 2)
     print_usage ();

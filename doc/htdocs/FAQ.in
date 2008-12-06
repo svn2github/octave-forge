@@ -22,7 +22,18 @@ with the answers. You'll find the following topics covered by this page
       where <em>package_file_name.tar.gz</em> is the file name of the 
       package you downloaded.
    </p>
-   
+   <h3 class="question" id="missing_mkoctfile">When I run
+       <code>pkg install xxxx </code> I get the error
+       <code>configure: WARNING: no mkoctfile found on path</code>
+       what am I doing wrong?
+   </h3>
+   <p>
+      Your Octave installation does not include the <code>mkoctfile</code>
+      script. In most Linux distributions this is provided in a separate
+      package named something like <code>octavexxx-devel</code> or
+      <code>octavexxx-headers</code>.
+   </p>
+
  <h3 class="question">What's with the dependencies?</h3>
    <p>Some packages depend on functionality provided by other packages 
      in order to function properly. So if package A depends on package

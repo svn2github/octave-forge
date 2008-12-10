@@ -1,3 +1,8 @@
+2008-12-10  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/makewing.m: Correct xmac, ymac & cmac calculation for symmetric
+	wings.
+
 2008-11-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/calcwing.m: Fix clw calculation.

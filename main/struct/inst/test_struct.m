@@ -82,9 +82,9 @@ mytest( t.bye == s.bye                , "setfields 2" ) ;
 t = rmfield( t, "foo");
 t = rmfield( t, "bye");
 t = rmfield( t, "hello");
-mytest( ! struct_contains(t,"foo")    , "rmfield 1" ) ;
-mytest( ! struct_contains(t,"bye")    , "rmfield 2" ) ;
-mytest( ! struct_contains(t,"hello")  , "rmfield 3" ) ;
+mytest( ! isfield(t,"foo")    , "rmfield 1" ) ;
+mytest( ! isfield(t,"bye")    , "rmfield 2" ) ;
+mytest( ! isfield(t,"hello")  , "rmfield 3" ) ;
 mytest( t.world ==  s.world           , "rmfield 4" ) ;
 
 

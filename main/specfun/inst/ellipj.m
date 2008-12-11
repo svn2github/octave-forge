@@ -53,12 +53,12 @@ function [sn, cn, dn] = ellipj (u, m)
   if any(size(m) != size(u))
     error("ellipj m and u must have the same shape");
   endif
-  if is_complex(m) || any(m(:) < 0.0 | m(:) > 1.0)
+  if iscomplex(m) || any(m(:) < 0.0 | m(:) > 1.0)
     error("ellipj must have m in the range [0,1]");
   endif
 
   sn=cn=dn=zeros(size(u));
-  if (is_complex(u))
+  if (iscomplex(u))
     m1 = 1.0-m;
 
     ## u is pure imaginary: Jacoby imag. transf.

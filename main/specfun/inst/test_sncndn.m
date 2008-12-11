@@ -1,28 +1,5 @@
-
-u = [0.25,0.25,0.2, 0.2, 0.672,0.5]
-m = [0.,  1.,  0.19,0.81,0.36, 0.9999999999]
-SN = [0.2474039593,0.2449186624,0.1984231101,0.1976208237,0.6095196918,0.4621171573];
-
-CN = [0.9689124217,0.9695436291,0.980116457,0.980278537,0.7927709287,0.886818884];
-
-DN = [1.,0.9695436291,0.9962526643,0.984056029,0.9307281388,0.886818884];
-
-[sn,cn,dn] = ellipj(u,m);
-sn
-SN
-cn
-CN
-dn
-DN
-abs([SN-sn;CN-cn;DN-dn])
-
-# Require ans = 0
-#ans = any( abs([S-sn;C-cn;D-dn]) > 8*eps )
-
-#ur = -1 + 0.2 * (0:10)
-#ui = 0.2*(0:10)
-k = (tan(pi/8.))^2
-m = k*k
+k = (tan(pi/8.))^2;
+m = k*k;
 
 SN = [ 
 -1. + I * 0. ,  -0.8392965923 + 0. * I
@@ -396,26 +373,16 @@ DN = [
 1. + I * 2. , 0.9020917489 - 0.1650142936 * I
 ];
 
-t0 = cputime();
+tol = 1e-9;
 for x = 0:10
   for y = 0:10
-    ur = -1 + x*0.2
-    ui =  y*0.2
-    ii = 1 + y + x*11
-    [sn,cn,dn] = ellipj(ur + I * ui,m);
-    printf("ur + i* ui = %g + i * %g\n", ur, ui); 
-    printf("   sn = %g + i * %g, cn = %g + i * %g, dn = %g + i * %g\n",
-            real(sn),  imag(sn),
-            real(cn),  imag(cn),
-            real(dn),  imag(dn) );
-    printf("  SN, CN, DN:  %g + i* %g\n", real(SN(ii,1)), imag(SN(ii,1))); 
-    printf("    SN = %g + i* %g, CN = %g + i* %g, DN = %g + i* %g\n",
-            real(SN(ii,2)),  imag(SN(ii,2)),
-            real(CN(ii,2)),  imag(CN(ii,2)),
-            real(DN(ii,2)),  imag(DN(ii,2)) );
-    printf("  errors:    %g,  %g,  %g\n",
-      abs(SN(ii,2)-sn), abs(CN(ii,2)-cn), abs(DN(ii,2)-dn) );
-
+    ur = -1 + x * 0.2;
+    ui =  y * 0.2;
+    ii = 1 + y + x*11;
+    [sn, cn, dn] = ellipj (ur + I * ui, m);
+    assert (SN (ii, 2), sn, tol);
+    assert (CN (ii, 2), cn, tol);
+    assert (DN (ii, 2), dn, tol);
   endfor
 endfor
-loop_time = cputime() - t0
+

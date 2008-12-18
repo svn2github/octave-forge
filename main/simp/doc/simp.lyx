@@ -68,7 +68,7 @@ Author and version
 \end_layout
 
 \begin_layout Standard
-I am Simone Pernice and I am the writer of the SIMP pachage.
+I am Simone Pernice and I am the writer of the SIMP package.
  If you find any bug or you want to add features, you can contact me at
  pernice@libero.it.
  You can find further details on my web site: simonepernice.freehostia.com
@@ -87,34 +87,33 @@ Preface
 \end_layout
 
 \begin_layout Standard
-I am an engineer, I worked on hardware and software fields.
- To design an electrical circuit is quite complex because the characteristics
+I am an electrical engineer, I worked both on hardware and software fields.
+ Designing an electrical circuit is quite complex because the characteristics
  of the components involved have huge tolerance some about 5%, while others
  80%.
- The engineer has the target to have the circuit working in the worst case
- of the components and of the environment.
- That involves to compute several time the same equation putting inside
- the worst or best case values.
+ The target is to have the circuit working in the worst case of the components
+ and of the environment! That involves to compute several times the same
+ equation putting inside the worst or best case values.
  Some time ago I was doing the usual design when I though, what if I use
  intervals instead of numbers: I may get the results in just one step! Then
  I went on the Internet looking for Interval Mathematics: I discovered it
  was invented in the '50s.
- Eventually I looked for a open source calculator able to manage intervals
- instead of Numbers.
+ Eventually I looked for an open source calculator able to manage intervals
+ instead of numbers.
  Unfortunately I was not able to find anything.
  There are just some libraries for C++ language and packages for proprietary
  software.
  I was thinking to develop a calculator on my own, but I was not that happy
  because it would have required a lot of effort.
  Then I discovered Octave.
- After a loot at its tutorial I decided to write a package to work on intervals
+ After a look at its tutorial I decided to write a package to work on intervals
  in Octave.
- It was the right choice, because it tooks just three days while to make
- a new program from scratch would have taken weeks.
- The package extends the basic function to single interval mathematics,
- it is called SIMP.
- Unfortunately it is not possible to overload Octave operators, therefore
- new functions working on matrix were added for that purpose.
+ It was the right choice, because it took just three days to make SIMP while
+ building a new program from scratch would have taken weeks.
+ The package extends the basic arithmetic functions to single interval mathemati
+cs, it is called SIMP.
+ Unfortunately it is not possible to overload Octave operators with m files,
+ therefore I made new functions working on matrix for that purpose.
 \end_layout
 
 \begin_layout Standard
@@ -123,7 +122,7 @@ reference "sec:Introduction"
 
 \end_inset
 
- shows why numbers are not the best tool when computing real world measures.
+ shows why numbers are not the best tool when computing real world entities.
  
 \begin_inset LatexCommand prettyref
 reference "sec:Intervals"
@@ -146,7 +145,7 @@ reference "sec:Single-Interval-Mathematics"
 
 \end_inset
 
- shows some examples to explain how the SIMP package can be used.
+ shows some example to explain how the SIMP package can be used.
  Eventually the 
 \begin_inset LatexCommand prettyref
 reference "sec:Functions"
@@ -180,16 +179,16 @@ Every day we need to compute the result of a lot of simple mathematical
 \begin_layout Standard
 When we need the result of those mathematical expressions, we put the values
  on the right side of the equation and we got its result on the left side.
- Well, we usually put wrong numbers on the right side and therefore no doubt
- we get wrong results.
- There are a lot of reason why we put wrong values, below some of them follows:
- 
+ Well, we usually put wrong numbers on the right side and therefore there
+ is no doubt we get wrong results.
+ There are a lot of reasons why we put wrong values, below some of them
+ follows: 
 \end_layout
 
 \begin_layout Enumerate
 Most of the values are measured, therefore they are known within a given
  tolerance (looking for accuracy and precision on Wikipedia will provide
- interesting information); 
+ interesting information on that matter); 
 \end_layout
 
 \begin_layout Enumerate
@@ -263,9 +262,9 @@ paintCans=\frac{2\times\left(roomWidth+roomLength\right)\times roomHeight}{paint
 \end_layout
 
 \begin_layout Standard
-where paintEfficiency is how may square meter of surface can be painted
+where paintEfficiency is how many square meters of surface can be painted
  with a liter of paint.
- The problem here is that usually we do not have a meter long enough to
+ The problem here is that usually we do not have a long enough meter to
  measure the room width and length, it is much simpler to count the number
  of steps to go through it (1 step is about 1m, let us say from 0.9 to 1.1m).
  Moreover the paint provider usually declare a paint efficiency range.
@@ -316,7 +315,7 @@ paint cans, which means two unless you are able to buy just half of a can.
 \begin_layout Standard
 Are you satisfied with that result? I am not.
  What if I have underestimated something? As every good engineer I would
- check what would happen in the worst case, which means 1.1m step and efficiency
+ check what happens in the worst case, which means 1.1m step and efficiency
  of just 0.8.
  Again just substituting those values in 
 \begin_inset LatexCommand eqref
@@ -354,8 +353,7 @@ reference "eq:paintCans"
  I am satisfied, I have to buy at least two cans, but probably I may need
  one more.
  In the next paragraph you will see how to do all this stuff in one step
- using Octave and SIMP.
- 
+ using Octave and SIMP! 
 \end_layout
 
 \begin_layout Section
@@ -371,9 +369,9 @@ name "sec:Intervals"
 \begin_layout Standard
 As you can see in the example above a lot of computations are required to
  get an idea of the result.
- To get the worst (and sometime is required also best) case, you need also
- to think carefully at the equation because some time you need to put the
- higher value (for steps) while other times the smallest (for efficiency)
+ To get the worst (and sometime it is required also the best) case, you
+ need to think carefully at the equation because some time you need to put
+ the higher value (for steps) while other times the smallest (for efficiency)
  to get the worst case and vice versa for the best.
  There is a much simpler way to work with that issue.
  You can use intervals instead of number.
@@ -433,11 +431,11 @@ Note also sometime a function may generate several intervals as result,
 \end_layout
 
 \begin_layout Standard
-Eventually note that the usually compute the interval result of a function
- applied to intervals is computationally a long task.
- In those case we are satisfied by a bigger interval containing the correct
- interval.
- However the target is always to get the smaller interval containing the
+Eventually note that usually compute the interval result of a function applied
+ to intervals is a long task.
+ Therefore sometime we are satisfied by a bigger interval containing the
+ correct interval.
+ However the target is always to get the smallest interval containing the
  solution.
  In the example above you would have:
 \end_layout
@@ -500,13 +498,13 @@ reference "eq:paintCans"
 
 \end_inset
 
-) can be written in several different ways.
- If the dimensions of the rectangle are a end b we can write:
+) can be written in several ways.
+ If the dimensions of the rectangle are b end h we can write:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula \begin{equation}
-perimeter=2(a+b)\label{eq:perimetersmall}\end{equation}
+perimeter=2(h+b)\label{eq:perimetersmall}\end{equation}
 
 \end_inset
 
@@ -515,7 +513,7 @@ perimeter=2(a+b)\label{eq:perimetersmall}\end{equation}
 
 \begin_layout Standard
 \begin_inset Formula \begin{equation}
-perimeter=a+a+b+b\label{eq:perimeterbig}\end{equation}
+perimeter=h+h+b+b\label{eq:perimeterbig}\end{equation}
 
 \end_inset
 
@@ -536,8 +534,12 @@ reference "eq:perimeterbig"
 
 \end_inset
 
- is like having four different intervals.
- What is important to remember is that: 
+ is like having four different dimensions (h, h', b and b').
+ 
+\end_layout
+
+\begin_layout Standard
+What is important to remember is that: 
 \emph on
 Every variable should appear just once in the equation if possible in order
  to get the smallest interval possible as result.
@@ -548,7 +550,11 @@ Hyper-cube Overlapping
 \end_layout
 
 \begin_layout Standard
-The result of a set of equation involving intervals is an Hyper-cube.
+The result of a set of equation involving intervals is 
+\emph on
+always
+\emph default
+ an Hyper-cube.
  For example if we have just two equations in the unknowns x and y the result
  will be a couple of intervals which draw a rectangle on the Cartesian plane.
  However in general the solution will be smaller, for example just a segment.
@@ -732,6 +738,46 @@ Eventually those functions work on vectors of intervals which may be useful
  others.
  That is really useful for the functions where a x vector can be used to
  compute a y in just one time.
+\end_layout
+
+\begin_layout Itemize
+vect1 = [1 2;3 4;5 6]
+\end_layout
+
+\begin_layout Description
+> vect1 = 
+\end_layout
+
+\begin_layout Description
+> 1 2
+\end_layout
+
+\begin_layout Description
+> 3 4
+\end_layout
+
+\begin_layout Description
+> 5 6
+\end_layout
+
+\begin_layout Itemize
+addInt (vect1, vect1, 1)
+\end_layout
+
+\begin_layout Description
+> vect1 = 
+\end_layout
+
+\begin_layout Description
+> 3 5
+\end_layout
+
+\begin_layout Description
+> 7 9
+\end_layout
+
+\begin_layout Description
+> 11 13
 \end_layout
 
 \begin_layout Standard
@@ -996,11 +1042,6 @@ valtol100ToInt produces an interval with center value given by the scalar
  v, and positive and negative tolerance express in percentage given by ptol
  and ntol.
  ntol is optional, if not present it is assumed equal to ptol.
- It returns 
-\begin_inset Formula $[v(1+\frac{100}{ntol}),v(1+\frac{100}{ptol})]$
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsection
@@ -1010,11 +1051,7 @@ intToTol (a)
 \begin_layout Standard
 intToTol produces the tolerance of the vector of interval a, in the hypothesis
  that the actual value is in the average point.
- It returns 
-\begin_inset Formula $2\frac{a_{max}-a_{min}}{a_{max}+a_{min}}$
-\end_inset
-
-.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -1025,11 +1062,6 @@ intToTol100 (a)
 intToTol100 produces the tolerance (expressed in percentage) of the vector
  of interval a, in the hypothesis that the actual value is in the average
  point.
- It returns 
-\begin_inset Formula $200\frac{a_{max}-a_{min}}{a_{max}+a_{min}}$
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Subsection
@@ -1039,11 +1071,6 @@ intToVal (a)
 \begin_layout Standard
 intToVal produces the central value of the vector of intervals a, in the
  hypothesis that the actual value is in the average point.
- It returns 
-\begin_inset Formula $\frac{a_{max}-a_{min}}{2}$
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Subsection
@@ -1080,11 +1107,6 @@ monotonicFunctionInt (f, x)
 monotonicFunctionInt produces the y interval obtained applying the monotonic
  function f to the interval x.
  If f is not monotonic, y may be wrong.
- It returns 
-\begin_inset Formula $[min(f(x_{min}),f(x_{max})),max(f(x_{min}),f(x_{max}))]$
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Subsection
@@ -1127,6 +1149,10 @@ http://en.wikipedia.org/wiki/Interval_arithmetic
 
 \begin_layout Enumerate
 http://www.cs.utep.edu/interval-comp/hayes.pdf
+\end_layout
+
+\begin_layout Enumerate
+http://www-mdp.eng.cam.ac.uk/web/CD/engapps/octave/octavetut.pdf
 \end_layout
 
 \begin_layout Enumerate

@@ -54,6 +54,8 @@ VER_PIXMAN=0.12.0-3
 VER_CAIRO=1.8.2-3
 VER_PANGO=1.2.22-3
 
+VER_TEXINFO=4.13a-3
+
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
 # LAPACK depends on BLAS
@@ -107,3 +109,5 @@ VER_PANGO=1.2.22-3
 ( cd pixman && build-${VER_PIXMAN}.sh ${ACTION} );
 ( cd cairo && build-${VER_CAIRO}.sh ${ACTION} );
 ( cd pango && build-${VER_PANGO}.sh ${ACTION} );
+
+( cd texinfo && build-${VER_TEXINFO}.sh ${ACTION} );

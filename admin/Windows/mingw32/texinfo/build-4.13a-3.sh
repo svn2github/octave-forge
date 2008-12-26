@@ -1,0 +1,100 @@
+#! /usr/bin/sh
+
+# Name of package
+PKG=texinfo
+# Version of Package
+VER=4.13
+# Release of (this patched) package
+REL=3
+# Name&Version of Package
+PKGVER=${PKG}-${VER}
+# Full name of this patched Package
+FULLPKG=${PKGVER}-${REL}
+
+# Name of source file
+SRCFILE=${PKGVER}a.tar.gz
+TAR_TYPE=z
+# Name of Patch file
+PATCHFILE=${FULLPKG}.patch
+
+# URL of source code file
+URL="http://gd.tuwien.ac.at/gnu/gnusrc/texinfo/texinfo-4.13a.tar.gz"
+
+# Top dir of this building process (i.e. where the patch file and source file(s) reside)
+TOPDIR=`pwd`
+# Directory Source code is extracted to (relative to TOPDIR)
+SRCDIR=${PKGVER}
+# Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
+SRCDIR_ORIG=${SRCDIR}-orig
+
+# Make file to use
+MAKEFILE=""
+
+# Additional DIFF Flags for generating diff file
+#DIFF_FLAGS="-x *.def"
+
+# header files to be installed
+INSTALL_HEADERS=""
+INCLUDE_DIR=
+
+source ../gcc43_common.sh
+
+# Directory the lib is built in
+BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
+
+conf()
+{
+   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
+     --srcdir=../${SRCDIR} \
+     CC=${CC} \
+     CXX=${CXX} \
+     F77=${F77} \
+     CFLAGS="$CFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     CXXFLAGS="$CXXFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
+     LDFLAGS="${LDFLAGS}" \
+     --prefix="${PREFIX}" \
+     --disable-nls
+   )
+}
+
+build()
+{
+   ( cd ${BUILDDIR}/gnulib/lib && make )
+   ( cd ${BUILDDIR}/lib && make )
+   ( cd ${BUILDDIR}/makeinfo && make )
+}
+
+install()
+{
+   install_pre;
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/makeinfo/makeinfo.exe ${BINARY_PATH}
+   
+   mkdir -vp ${LICENSE_PATH}/${PKG}
+   ${CP} ${CP_FLAGS} ${SRCDIR}/COPYING ${LICENSE_PATH}/${PKG}
+   
+   install_post
+}
+
+uninstall()
+{
+   uninstall_pre;
+   
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/makeinfo.exe
+   
+   uninstall_post;
+}
+
+all()
+{
+   download
+   unpack
+   applypatch
+   mkdirs
+   conf
+   build
+   install
+}
+
+main $*

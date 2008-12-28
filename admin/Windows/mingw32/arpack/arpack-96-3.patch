@@ -1,0 +1,62 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' arpack-96-orig/UTIL/second.f arpack-96/UTIL/second.f
+--- arpack-96-orig/UTIL/second.f	1995-10-02 20:56:44 +0200
++++ arpack-96/UTIL/second.f	2008-12-27 18:58:13 +0100
+@@ -21,7 +21,7 @@
+ *     ..
+ *     .. External Functions ..
+       REAL               ETIME
+-      EXTERNAL           ETIME
++      INTRINSIC           ETIME
+ *     ..
+ *     .. Executable Statements ..
+ *
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' arpack-96-orig/makefile.mingw32.in arpack-96/makefile.mingw32.in
+--- arpack-96-orig/makefile.mingw32.in	1970-01-01 01:00:00 +0100
++++ arpack-96/makefile.mingw32.in	2008-12-27 19:01:59 +0100
+@@ -0,0 +1,46 @@
++SRCDIR=@SRCDIR@
++
++NAME = arpack
++
++LIBTARGET = $(NAME).dll
++LIBIMPLIB  = lib$(NAME).dll.a
++
++
++FSOURCES = $(wildcard $(SRCDIR)/SRC/*.f) $(wildcard $(SRCDIR)/UTIL/*.f)
++OBJECTS = $(patsubst %.f,%.o, $(notdir $(FSOURCES)))
++
++DEF_FILES = $(patsubst %.f,%.def, $(notdir $(FSOURCES)))
++LIB_DEFFILE = $(patsubst %.dll,%.def, $(LIBTARGET))
++
++vpath %.f $(SRCDIR)/SRC
++vpath %.f $(SRCDIR)/UTIL
++
++all: $(LIBTARGET)
++
++.SUFFIXES: .f .o .def
++
++%.o : %.f
++	$(F77) $(FFLAGS) $(GCC_ARCH_FLAGS) $(GCC_OPT_FLAGS) -o $@ -c $<
++
++%.def : %.f
++	@echo "Making $@"
++	@sed -n \
++	     -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
++	     -e 's/^\(      \|	\)\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$$/\3_/p' < $< > $@
++
++$(LIB_DEFFILE): $(DEF_FILES)
++	echo "EXPORTS" > $@
++	cat $(DEF_FILES) >> $@
++
++$(LIBTARGET): $(OBJECTS) $(LIB_DEFFILE)
++	$(F77) -shared -o $@ $(LDFLAGS) $(OBJECTS) -lblas -llapack -Wl,$(LIB_DEFFILE) -Wl,--out-implib=$(LIBIMPLIB) -Wl,--output-def=$(LIBTARGET).def
++
++OTHER_CLEANFILES = $(patsubst %.dll, %.exp, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.ilk, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.lib, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.pdb, $(LIBTARGET))
++
++clean:
++	$(RM) $(OBJECTS) $(CSOURCES)
++	$(RM) $(DEF_FILES) $(LIB_DEFFILE)
++	$(RM) $(LIBTARGET) $(OTHER_CLEANFILES)

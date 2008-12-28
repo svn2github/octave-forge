@@ -35,9 +35,9 @@ gcc-${VER}-tdm-${GCC_REL}-${SYS}-fortran.tar.gz
 gcc-${VER}-tdm-${GCC_REL}-${SYS}-g++.tar.gz
 "
 
-URLS_BINUTILS="binutils-2.18.50-20080109-2.tar.gz"
-URLS_W32API="w32api-3.11.tar.gz"
-URLS_MINGWRUNTIME="mingw-runtime-3.14.tar.gz"
+URLS_BINUTILS="binutils-2.19-mingw32-bin.tar.gz"
+URLS_W32API="w32api-3.13-mingw32-dev.tar.gz"
+URLS_MINGWRUNTIME="mingwrt-3.15.1-mingw32-dev.tar.gz"
 URLS_MINGWMAKE="mingw32-make-3.81-20080326-3.tar.gz"
 URLS_MINGWUTILS="mingw-utils-0.3.tar.gz"
  
@@ -86,6 +86,9 @@ install_gcc() {
   strip ${STRIP_FLAGS} libgcc_tdm_${SYS}_1.dll
   strip ${STRIP_FLAGS} libstdc++_tdm_${SYS}_1.dll
   
+  # ensure that the "bin" directory exists...
+  mkdir -v ${PACKAGE_ROOT}/bin
+  # ... and move the shared libs there
   mv -v libgcc_tdm_${SYS}_1.dll ${PACKAGE_ROOT}/bin
   mv -v libstdc++_tdm_${SYS}_1.dll ${PACKAGE_ROOT}/bin
 )

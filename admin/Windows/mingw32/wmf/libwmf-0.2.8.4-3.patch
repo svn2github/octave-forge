@@ -1,6 +1,81 @@
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libwmf-0.2.8.4-orig/src/Makefile.in libwmf-0.2.8.4/src/Makefile.in
---- libwmf-0.2.8.4-orig/src/Makefile.in	2005-07-27 21:47:05 +0000
-+++ libwmf-0.2.8.4/src/Makefile.in	2008-10-29 15:09:10 +0000
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x autom4te.cache libwmf-0.2.8.4-orig/configure libwmf-0.2.8.4/configure
+--- libwmf-0.2.8.4-orig/configure	2005-07-27 23:47:12 +0200
++++ libwmf-0.2.8.4/configure	2009-01-02 14:59:30 +0100
+@@ -7292,7 +7292,7 @@
+       export_symbols_cmds='$NM $libobjs $convenience | $global_symbol_pipe | $SED -e '\''/^[BCDGS] /s/.* \([^ ]*\)/\1 DATA/'\'' | $SED -e '\''/^[AITW] /s/.* //'\'' | sort | uniq > $export_symbols'
+ 
+       if $LD --help 2>&1 | grep 'auto-import' > /dev/null; then
+-        archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++        archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+ 	# If the export-symbols file already is a .def file (1st line
+ 	# is EXPORTS), use it as is; otherwise, prepend...
+ 	archive_expsym_cmds='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -7301,7 +7301,7 @@
+ 	  echo EXPORTS > $output_objdir/$soname.def;
+ 	  cat $export_symbols >> $output_objdir/$soname.def;
+ 	fi~
+-	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000  ${wl}--out-implib,$lib'
++	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+       else
+ 	ld_shlibs=no
+       fi
+@@ -10628,7 +10628,7 @@
+     enable_shared_with_static_runtimes_CXX=yes
+ 
+     if $LD --help 2>&1 | grep 'auto-import' > /dev/null; then
+-      archive_cmds_CXX='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++      archive_cmds_CXX='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+       # If the export-symbols file already is a .def file (1st line
+       # is EXPORTS), use it as is; otherwise, prepend...
+       archive_expsym_cmds_CXX='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -10637,7 +10637,7 @@
+ 	echo EXPORTS > $output_objdir/$soname.def;
+ 	cat $export_symbols >> $output_objdir/$soname.def;
+       fi~
+-      $CC -shared -nostdlib $output_objdir/$soname.def $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++      $CC -shared -nostdlib $output_objdir/$soname.def $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+     else
+       ld_shlibs_CXX=no
+     fi
+@@ -14201,7 +14201,7 @@
+       export_symbols_cmds_F77='$NM $libobjs $convenience | $global_symbol_pipe | $SED -e '\''/^[BCDGS] /s/.* \([^ ]*\)/\1 DATA/'\'' | $SED -e '\''/^[AITW] /s/.* //'\'' | sort | uniq > $export_symbols'
+ 
+       if $LD --help 2>&1 | grep 'auto-import' > /dev/null; then
+-        archive_cmds_F77='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++        archive_cmds_F77='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+ 	# If the export-symbols file already is a .def file (1st line
+ 	# is EXPORTS), use it as is; otherwise, prepend...
+ 	archive_expsym_cmds_F77='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -14210,7 +14210,7 @@
+ 	  echo EXPORTS > $output_objdir/$soname.def;
+ 	  cat $export_symbols >> $output_objdir/$soname.def;
+ 	fi~
+-	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000  ${wl}--out-implib,$lib'
++	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+       else
+ 	ld_shlibs=no
+       fi
+@@ -16549,7 +16549,7 @@
+       export_symbols_cmds_GCJ='$NM $libobjs $convenience | $global_symbol_pipe | $SED -e '\''/^[BCDGS] /s/.* \([^ ]*\)/\1 DATA/'\'' | $SED -e '\''/^[AITW] /s/.* //'\'' | sort | uniq > $export_symbols'
+ 
+       if $LD --help 2>&1 | grep 'auto-import' > /dev/null; then
+-        archive_cmds_GCJ='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++        archive_cmds_GCJ='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+ 	# If the export-symbols file already is a .def file (1st line
+ 	# is EXPORTS), use it as is; otherwise, prepend...
+ 	archive_expsym_cmds_GCJ='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -16558,7 +16558,7 @@
+ 	  echo EXPORTS > $output_objdir/$soname.def;
+ 	  cat $export_symbols >> $output_objdir/$soname.def;
+ 	fi~
+-	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000  ${wl}--out-implib,$lib'
++	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+       else
+ 	ld_shlibs=no
+       fi
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x autom4te.cache libwmf-0.2.8.4-orig/src/Makefile.in libwmf-0.2.8.4/src/Makefile.in
+--- libwmf-0.2.8.4-orig/src/Makefile.in	2005-07-27 23:47:05 +0200
++++ libwmf-0.2.8.4/src/Makefile.in	2009-01-02 14:59:30 +0100
 @@ -397,9 +397,9 @@
  io-wmf.la: $(io_wmf_la_OBJECTS) $(io_wmf_la_DEPENDENCIES) 
  	$(LINK) $(am_io_wmf_la_rpath) $(io_wmf_la_LDFLAGS) $(io_wmf_la_OBJECTS) $(io_wmf_la_LIBADD) $(LIBS)
@@ -13,9 +88,9 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libwmf-0.2.8.4-orig
  
  mostlyclean-compile:
  	-rm -f *.$(OBJEXT)
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libwmf-0.2.8.4-orig/src/extra/gd/gd.h libwmf-0.2.8.4/src/extra/gd/gd.h
---- libwmf-0.2.8.4-orig/src/extra/gd/gd.h	2002-12-05 20:09:11 +0000
-+++ libwmf-0.2.8.4/src/extra/gd/gd.h	2008-10-29 15:14:24 +0000
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x autom4te.cache libwmf-0.2.8.4-orig/src/extra/gd/gd.h libwmf-0.2.8.4/src/extra/gd/gd.h
+--- libwmf-0.2.8.4-orig/src/extra/gd/gd.h	2002-12-05 21:09:11 +0100
++++ libwmf-0.2.8.4/src/extra/gd/gd.h	2009-01-02 14:59:30 +0100
 @@ -6,8 +6,8 @@
  #endif
  
@@ -27,11 +102,22 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libwmf-0.2.8.4-orig
  
  /* gd.h: declarations file for the graphic-draw module.
   * Permission to use, copy, modify, and distribute this software and its
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libwmf-0.2.8.4-orig/src/libwmf.def libwmf-0.2.8.4/src/libwmf.def
---- libwmf-0.2.8.4-orig/src/libwmf.def	1970-01-01 00:00:00 +0000
-+++ libwmf-0.2.8.4/src/libwmf.def	2008-10-29 14:57:58 +0000
-@@ -0,0 +1,49 @@
-+LIBRARY libwmflite-0-2-7.dll
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x autom4te.cache libwmf-0.2.8.4-orig/src/font.c libwmf-0.2.8.4/src/font.c
+--- libwmf-0.2.8.4-orig/src/font.c	2005-07-27 22:35:06 +0200
++++ libwmf-0.2.8.4/src/font.c	2009-01-02 15:01:03 +0100
+@@ -45,7 +45,7 @@
+ 
+ 	if (retval[0] == '\0')
+ 	{	strcpy (retval, _libwmf_get_fontdir ());
+-		strcat (retval, "\\share\\libwmf\\fonts\\fontmap");
++		strcat (retval, "\\fontmap");
+ 	}
+ 
+ 	return retval;
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x autom4te.cache libwmf-0.2.8.4-orig/src/libwmf.def libwmf-0.2.8.4/src/libwmf.def
+--- libwmf-0.2.8.4-orig/src/libwmf.def	1970-01-01 01:00:00 +0100
++++ libwmf-0.2.8.4/src/libwmf.def	2009-01-02 14:59:30 +0100
+@@ -0,0 +1,48 @@
 +EXPORTS
 +wmf_api_create
 +wmf_api_destroy
@@ -80,11 +166,10 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libwmf-0.2.8.4-orig
 +wmf_x_function
 +wmf_ztream_create
 +wmf_ztream_destroy
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' libwmf-0.2.8.4-orig/src/libwmflite.def libwmf-0.2.8.4/src/libwmflite.def
---- libwmf-0.2.8.4-orig/src/libwmflite.def	1970-01-01 00:00:00 +0000
-+++ libwmf-0.2.8.4/src/libwmflite.def	2008-10-29 14:57:54 +0000
-@@ -0,0 +1,74 @@
-+LIBRARY libwmflite-0-2-7.dll
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x autom4te.cache libwmf-0.2.8.4-orig/src/libwmflite.def libwmf-0.2.8.4/src/libwmflite.def
+--- libwmf-0.2.8.4-orig/src/libwmflite.def	1970-01-01 01:00:00 +0100
++++ libwmf-0.2.8.4/src/libwmflite.def	2009-01-02 14:59:30 +0100
+@@ -0,0 +1,73 @@
 +EXPORTS
 +wmf_aldus_checksum
 +wmf_assert

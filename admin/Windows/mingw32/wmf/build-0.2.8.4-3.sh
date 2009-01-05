@@ -30,6 +30,9 @@ SRCDIR_ORIG=${SRCDIR}-orig
 # Make file to use
 #MAKEFILE=Makefile
 
+# Patch flags
+DIFF_FLAGS="-x autom4te.cache"
+
 # Header files to install from source directory
 INCLUDE_DIR="include/libwmf"
 HEADERS="api.h color.h defs.h fund.h ipa.h types.h macro.h font.h canvas.h \
@@ -67,8 +70,7 @@ conf()
      CFLAGS="$CFLAGS ${GCC_OPT_FLAGS} -Wall" \
      --prefix="${PREFIX}" \
      --enable-shared \
-     --enable-static \
-     --disable-heavy
+     --enable-static
      )
 }
 

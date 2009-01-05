@@ -1,6 +1,6 @@
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pcre-7.8-orig/configure pcre-7.8/configure
 --- pcre-7.8-orig/configure	2008-09-05 17:58:01 +0200
-+++ pcre-7.8/configure	2008-10-06 11:32:56 +0200
++++ pcre-7.8/configure	2008-10-31 08:32:16 +0100
 @@ -9617,7 +9617,7 @@
        ;;
      mingw*)
@@ -15,15 +15,15 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pcre-7.8-orig/confi
  
  EXTRA_LIBPCRE_LDFLAGS="$EXTRA_LIBPCRE_LDFLAGS \
 -                       $NO_UNDEFINED -version-info 0:1:0"
-+                       $NO_UNDEFINED -version-info 7:7:0"
++                       $NO_UNDEFINED -version-info 7:8:0"
  
  EXTRA_LIBPCREPOSIX_LDFLAGS="$EXTRA_LIBPCREPOSIX_LDFLAGS \
 -                            $NO_UNDEFINED -version-info 0:0:0"
-+                            $NO_UNDEFINED -version-info 7:7:0"
++                            $NO_UNDEFINED -version-info 7:8:0"
  
  EXTRA_LIBPCRECPP_LDFLAGS="$EXTRA_LIBPCRECPP_LDFLAGS \
 -                          $NO_UNDEFINED -version-info 0:0:0 \
-+                          $NO_UNDEFINED -version-info 7:7:0 \
++                          $NO_UNDEFINED -version-info 7:8:0 \
                            $EXPORT_ALL_SYMBOLS"
  
  

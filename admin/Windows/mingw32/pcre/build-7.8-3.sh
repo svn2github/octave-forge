@@ -78,6 +78,7 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libpcre.a ${STATICLIBRARY_PATH}
    for a in ${INSTALL_HEADERS}; do ${CP} ${CP_FLAGS} ${BUILDDIR}/$a ${INCLUDE_PATH}; done
    for a in ${INSTALL_HEADERS2}; do ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}; done
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pcre-config ${BINARY_PATH}
    
    mkdir -vp ${LICENSE_PATH}/${PKG}
    ${CP} ${CP_FLAGS} ${SRCDIR}/LICENCE ${LICENSE_PATH}/${PKG}
@@ -91,6 +92,7 @@ uninstall()
    ${RM} ${RM_FLAGS} ${STATICLIBRARY_PATH}/libpcre.a
    for a in ${INSTALL_HEADERS}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
    for a in ${INSTALL_HEADERS2}; do ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a; done
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/pcre-config
 }
 
 all() {

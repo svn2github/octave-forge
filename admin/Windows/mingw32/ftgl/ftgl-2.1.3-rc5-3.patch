@@ -1,0 +1,103 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ftgl-2.1.3~rc5-orig/makefile.mingw32.in ftgl-2.1.3~rc5/makefile.mingw32.in
+--- ftgl-2.1.3~rc5-orig/makefile.mingw32.in	1970-01-01 01:00:00 +0100
++++ ftgl-2.1.3~rc5/makefile.mingw32.in	2009-01-05 17:30:08 +0100
+@@ -0,0 +1,73 @@
++SRCDIR=@SRCDIR@
++
++GL_LIBS=-lopengl32 -lglu32
++FT2_LIBS=-lfreetype
++
++TARGET = ftgl.dll
++
++all: $(TARGET)
++
++SRC=\
++FTBuffer.cpp \
++FTCharmap.cpp \
++FTContour.cpp \
++FTFace.cpp \
++FTGlyphContainer.cpp \
++FTLibrary.cpp \
++FTPoint.cpp \
++FTSize.cpp \
++FTVectoriser.cpp
++
++SRC_FTFONT=\
++FTBitmapFont.cpp \
++FTBufferFont.cpp \
++FTExtrudeFont.cpp \
++FTFont.cpp \
++FTFontGlue.cpp \
++FTOutlineFont.cpp \
++FTPixmapFont.cpp \
++FTPolygonFont.cpp \
++FTTextureFont.cpp
++
++SRC_FTGLYPH=\
++FTBitmapGlyph.cpp \
++FTBufferGlyph.cpp \
++FTExtrudeGlyph.cpp \
++FTGlyph.cpp \
++FTGlyphGlue.cpp \
++FTOutlineGlyph.cpp \
++FTPixmapGlyph.cpp \
++FTPolygonGlyph.cpp \
++FTTextureGlyph.cpp \
++
++SRC_FTLAYOUT=\
++FTLayout.cpp \
++FTLayoutGlue.cpp \
++FTSimpleLayout.cpp
++
++ALL_SRC=$(SRC) $(SRC_FTFONT) $(SRC_FTGLYPH) $(SRC_FTLAYOUT)
++ALL_OBJ=$(patsubst %.cpp,%.o,$(ALL_SRC))
++
++vpath %.cpp $(SRCDIR)/src
++vpath %.cpp $(SRCDIR)/src/FTGlyph
++vpath %.cpp $(SRCDIR)/src/FTLayout
++vpath %.cpp $(SRCDIR)/src/FTFont
++
++FTGLCXXFLAGS=-I. -I$(SRCDIR)/src -DFTGL_LIBRARY
++
++%.o : %.cpp
++	$(CXX) $(CXXFLAGS) $(FTGLCXXFLAGS) $(GCC_OPT_FLAGS) $(GCC_ARCH_FLAGS) -c -o $@ $<
++
++ftgl.dll : $(ALL_OBJ)
++	$(CXX) -shared -o $@ \
++		$(LDFLAGS) \
++		-Wl,--out-implib=libftgl.dll.a \
++		-Wl,--output-def=libftgl.def \
++		$^ \
++		$(CXXLIBS) $(GL_LIBS) $(FT2_LIBS) $(LIBS)
++
++clean :
++	rm -f $(ALL_OBJ)
++	rm -f $(TARGET)
++	rm -f libftgl.dll.a
++	rm -f libftgl.def
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ftgl-2.1.3~rc5-orig/src/FTGL/ftgl.h ftgl-2.1.3~rc5/src/FTGL/ftgl.h
+--- ftgl-2.1.3~rc5-orig/src/FTGL/ftgl.h	2008-06-05 15:35:19 +0200
++++ ftgl-2.1.3~rc5/src/FTGL/ftgl.h	2008-12-27 19:40:33 +0100
+@@ -101,6 +101,22 @@
+     #  define FTGL_EXPORT   __declspec(dllimport)
+     #endif
+ 
++#elif defined __MINGW32__
++
++    // The following definitions control how symbols are exported.
++    // If the target is a static library ensure that FTGL_LIBRARY_STATIC
++    // is defined. If building a dynamic library (ie DLL) ensure the
++    // FTGL_LIBRARY macro is defined, as it will mark symbols for
++    // export. If compiling a project to _use_ the _dynamic_ library
++    // version of the library, no definition is required.
++    #ifdef FTGL_LIBRARY_STATIC      // static lib - no special export required
++    #  define FTGL_EXPORT
++    #elif FTGL_LIBRARY              // dynamic lib - must export/import symbols appropriately.
++    #  define FTGL_EXPORT   __declspec(dllexport)
++    #else
++    #  define FTGL_EXPORT   __declspec(dllimport)
++    #endif
++
+ #else
+     // Compiler that is not MS Visual C++.
+     // Ensure that the export symbol is defined (and blank)

@@ -19,16 +19,11 @@
 ## Author: simone pernice
 ## Created: 2008-08-18
 
-function engFormInt (interval)
+function ret = engFormInt (interval)
   if (nargin() != 1)
      error ("Wrong number of argument passed to the function.");
   endif
-  
-  if (rows(interval) >0)
-    r = 1;
-    while r <= rows (interval)
-      __engSingleFormInt__ (interval (r,:));
-      ++r;
-    endwhile
-  endif
+		
+  ret = __intervalFunctionMultiInt__('__engSingleFormInt__', interval);
+
 endfunction

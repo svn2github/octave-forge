@@ -14,23 +14,16 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-## __engSingleFormInt__ print an interval in engineear format
+## intFormInt create an interval from a string or vector of strings in engineear format
 
 ## Author: simone pernice
-## Created: 2008-08-18
+## Created: 2008-12-31
 
-function ret = __engSingleFormInt__ (interval)
-  tol = intToTol100 (interval);
-  val = intToVal (interval);
-  coeff = 0;
-  while abs(val) < 1 && coeff > -8
-    val *= 1000;
-    coeff -= 1;
-  endwhile
-  while abs(val) >= 1000 && coeff < 8
-    val /= 1000;
-    coeff += 1;
-  endwhile
-  units = "yzafpnum KMGTPEZY";
-  ret = sprintf ("%g%c+-%g%%", val, units(coeff+9), tol);
+function ret = intFormInt (interval)
+  if (nargin() != 1)
+     error ("Wrong number of argument passed to the function.");
+  endif
+		
+  ret = __intervalFunctionMultiInt__('__intSingleFormInt__', interval);
+
 endfunction

@@ -11,6 +11,7 @@ intervals >> Basic Arithmetic
  sqrtInt
  addSqrInt
  engFormInt
+ intFormInt
  dB10ToLinInt
  linToDB10Int
  dB20ToLinInt

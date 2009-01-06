@@ -1,5 +1,6 @@
 \input texinfo @c -*-texinfo-*-
 @c Copyright (c)  2007-2008 Thomas Treichl and Paul Kienzle
+@c Copyright (c)  2009 Thomas Treichl
 @c octaveapp.texi - A ready--to--run binary version of GNU Octave for Mac OS X
 @c
 @c Permission is granted to copy, distribute and/or modify this document
@@ -21,6 +22,7 @@
 This document is for the program Octave.app version %VERSION%, which is a ready--to--run binary of GNU Octave for Mac OS X.
 
 Copyright @copyright{} 2007--2008 Thomas Treichl and Paul Kienzle
+Copyright @copyright{} 2009 Thomas Treichl
 
 Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front--Cover Texts, and no Back--Cover Texts. A copy of the license is available at the GNU website @uref{http://www.gnu.org/licenses/fdl.txt}.
 @end copying

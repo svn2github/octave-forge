@@ -24,6 +24,9 @@ struct MYSQL_ROW {};
   const char* __paren(int i) const {
     return (*$self)[i];
   }
+  const char* __paren__(int i) const {
+    return (*$self)[i];
+  }
 }
 
 // taken from mysql_com.h

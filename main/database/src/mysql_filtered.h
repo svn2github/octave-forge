@@ -561,6 +561,7 @@ unsigned long STDCALL mysql_real_escape_string(MYSQL *mysql,
 					       char *to,const char *from,
 					       unsigned long length);
 void		STDCALL mysql_debug(const char *debug);
+#ifndef SWIG
 char *		STDCALL mysql_odbc_escape_string(MYSQL *mysql,
 						 char *to,
 						 unsigned long to_length,
@@ -571,6 +572,7 @@ char *		STDCALL mysql_odbc_escape_string(MYSQL *mysql,
 						 (*extend_buffer)
 						 (void *, char *to,
 						  unsigned long *length));
+#endif // SWIG
 void 		STDCALL myodbc_remove_escape(MYSQL *mysql,char *name);
 unsigned int	STDCALL mysql_thread_safe(void);
 my_bool		STDCALL mysql_embedded(void);

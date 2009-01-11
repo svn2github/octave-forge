@@ -175,21 +175,21 @@ build_general()
 build_single()
 {
   modify_libtool_all ${BUILDDIR_SINGLE}/libtool
-  modify_libtool_add_compilerflag ${BUILDDIR}/libtool
+  modify_libtool_add_compilerflag ${BUILDDIR_SINGLE}/libtool
   ( cd ${BUILDDIR_SINGLE} && make_common )
 }
 
 build_sse()
 {
   modify_libtool_all ${BUILDDIR_SSE}/libtool
-  modify_libtool_add_compilerflag ${BUILDDIR}/libtool
+  modify_libtool_add_compilerflag ${BUILDDIR_SSE}/libtool
   ( cd ${BUILDDIR_SSE} && make_common )
 }
 
 build_sse2()
 {
   modify_libtool_all ${BUILDDIR_SSE2}/libtool
-  modify_libtool_add_compilerflag ${BUILDDIR}/libtool
+  modify_libtool_add_compilerflag ${BUILDDIR_SSE2}/libtool
   ( cd ${BUILDDIR_SSE2} && make_common )
 }
 

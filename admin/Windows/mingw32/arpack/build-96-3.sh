@@ -36,8 +36,8 @@ MAKEFILE=makefile.mingw32
 #DIFF_FLAGS="-x *.def"
 
 # header files to be installed
-INSTALL_HEADERS=""
-INCLUDE_DIR=include/glpk
+#INSTALL_HEADERS=""
+#INCLUDE_DIR=
 
 source ../gcc43_common.sh
 

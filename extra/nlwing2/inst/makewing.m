@@ -103,6 +103,8 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
     if (wing.sym)
       wing.area *= 2;
     endif
+  else
+    area = wing.area / 2;
   endif
   if (! isfield (wing, 'cmac'))
     wing.cmac = sum (dS .* wing.ch) / area;

@@ -1,3 +1,7 @@
+2009-01-12  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/makewing.m: Also assign half area if provided by user.
+
 2008-12-10  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/makewing.m: Correct xmac, ymac & cmac calculation for symmetric

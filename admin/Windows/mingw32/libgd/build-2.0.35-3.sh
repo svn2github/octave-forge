@@ -18,7 +18,7 @@ TAR_TYPE=j
 PATCHFILE=${FULLPKG}.patch
 
 # URL of source code file
-URL=""
+URL="http://www.libgd.org/releases/gd-2.0.35.tar.bz2"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`

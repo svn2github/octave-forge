@@ -18,7 +18,7 @@ TAR_TYPE=j
 PATCHFILE=${FULLPKG}.patch
 
 # URL of source code file
-URL="http://www.fltk.org/software.php?VERSION=1.3.x-r6598&FILE=fltk/1.1.9/fltk-1.1.9-source.tar.bz2"
+URL="http://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/fltk/1.1.9/fltk-1.1.9-source.tar.bz2"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`

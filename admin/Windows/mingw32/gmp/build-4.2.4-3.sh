@@ -21,7 +21,7 @@ PATCHFILE=${FULLPKG}.patch
 URL="http://gd.tuwien.ac.at/gnu/gnusrc/gmp/gmp-4.2.4.tar.bz2"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
-TOPDIR=`pwd -W | sed -e 's+\([a-z]\):/+/\1/+'`
+TOPDIR=`pwd -W | sed -e 's+\([a-zA-z]\):/+/\1/+'`
 # Directory Source code is extracted to (relative to TOPDIR)
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)

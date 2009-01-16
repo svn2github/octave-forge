@@ -18,7 +18,7 @@ TAR_TYPE=z
 PATCHFILE=${FULLPKG}.patch
 
 # URL of source code file
-URL=""
+URL="http://downloads.sourceforge.net/expat/expat-2.0.1.tar.gz"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`

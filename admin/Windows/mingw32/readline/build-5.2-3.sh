@@ -18,7 +18,7 @@ TAR_TYPE=z
 PATCHFILE=${FULLPKG}.patch
 
 # URL of source code file
-URL=""
+URL="ftp://ftp.cwru.edu/pub/bash/readline-5.2.tar.gz"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`

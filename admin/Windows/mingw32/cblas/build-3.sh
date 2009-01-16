@@ -53,7 +53,7 @@ conf()
 
 build() 
 {
-   ( cd ${BUILDDIR} && make alllib )
+   ( cd ${BUILDDIR}/src && make ${MAKE_FLAGS} all )
 }
 
 install()

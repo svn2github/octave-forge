@@ -21,7 +21,7 @@ PATCHFILE=${FULLPKG}.patch
 URL="http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/pkg-config-0.23.tar.gz"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
-TOPDIR=`pwd -W | sed -e 's+\([a-z]\):/+/\1/+'`
+TOPDIR=`pwd -W | sed -e 's+\([a-zA-Z]\):/+/\1/+'`
 # Directory Source code is extracted to (relative to TOPDIR)
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)

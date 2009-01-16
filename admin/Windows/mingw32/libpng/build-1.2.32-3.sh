@@ -21,7 +21,7 @@ PATCHFILE=${FULLPKG}.patch
 URL="http://download.sourceforge.net/libpng/libpng-1.2.32.tar.bz2"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
-TOPDIR=`pwd -W | sed -e 's+\([a-z]\):/+/\1/+'`
+TOPDIR=`pwd -W | sed -e 's+\([a-zA-Z]\):/+/\1/+'`
 # Directory Source code is extracted to (relative to TOPDIR)
 SRCDIR=${PKGVER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
@@ -50,7 +50,7 @@ conf()
 
 build()
 {
-   ( cd $BUILDDIR && make -f $MAKEFILE CFLAGS="$GCC_ARCH_FLAGS $GCC_OPT_FLAGS" prefix="${PREFIX}" all )
+   ( cd $BUILDDIR && make ${MAKE_FLAGS} -f $MAKEFILE CFLAGS="$GCC_ARCH_FLAGS $GCC_OPT_FLAGS" prefix="${PREFIX}" all )
 }
 
 check()

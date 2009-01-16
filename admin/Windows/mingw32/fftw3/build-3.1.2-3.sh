@@ -114,12 +114,12 @@ build()
 
 build_general()
 { 
-  ( cd ${BUILDDIR} && make )
+  ( cd ${BUILDDIR} && make_common )
 }
 
 build_sse2()
 { 
-  ( cd ${BUILDDIR_SSE2} && make )
+  ( cd ${BUILDDIR_SSE2} && make_common )
 }
 
 install()

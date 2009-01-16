@@ -95,14 +95,14 @@ conf()
 
 build() {
 (
-  ( cd ${BUILDDIR}/AMD/Lib      && make -f GNUmakefile );
-  ( cd ${BUILDDIR}/CAMD/Lib     && make -f GNUmakefile );
-  ( cd ${BUILDDIR}/CCOLAMD/Lib  && make );
-  ( cd ${BUILDDIR}/COLAMD/Lib   && make );
-  ( cd ${BUILDDIR}/CSparse/Lib  && make );
-  ( cd ${BUILDDIR}/CXSparse/Lib && make );
-  ( cd ${BUILDDIR}/CHOLMOD/Lib  && make );
-  ( cd ${BUILDDIR}/UMFPACK/Lib  && make -f GNUmakefile );
+  ( cd ${BUILDDIR}/AMD/Lib      && make ${MAKE_FLAGS} -f GNUmakefile );
+  ( cd ${BUILDDIR}/CAMD/Lib     && make ${MAKE_FLAGS} -f GNUmakefile );
+  ( cd ${BUILDDIR}/CCOLAMD/Lib  && make ${MAKE_FLAGS} );
+  ( cd ${BUILDDIR}/COLAMD/Lib   && make ${MAKE_FLAGS} );
+  ( cd ${BUILDDIR}/CSparse/Lib  && make ${MAKE_FLAGS} );
+  ( cd ${BUILDDIR}/CXSparse/Lib && make ${MAKE_FLAGS} );
+  ( cd ${BUILDDIR}/CHOLMOD/Lib  && make ${MAKE_FLAGS} );
+  ( cd ${BUILDDIR}/UMFPACK/Lib  && make ${MAKE_FLAGS} -f GNUmakefile );
 )
 }
 

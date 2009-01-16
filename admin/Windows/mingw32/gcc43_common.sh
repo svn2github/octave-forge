@@ -4,7 +4,7 @@ export TOPDIR SRCDIR
 
 # TOOLS USED
 TAR=tar
-TAR_FLAGS=xvf
+TAR_FLAGS=xf
 TARTYPE=
 
 STRIP=strip
@@ -161,7 +161,7 @@ applypatch_post() { echo ; }
 
 make_common_pre() 
 {
-   if [ ! -z ${MAKEFILE} ]; then MAKE_FLAGS="-f ${MAKEFILE}"; fi
+   if [ ! -z ${MAKEFILE} ]; then MAKE_FLAGS="${MAKE_FLAGS} -f ${MAKEFILE}"; fi
 }
 make_common()
 {
@@ -411,6 +411,14 @@ EOF
    gawk -f _libtool.awk $1 > $1.mod && mv $1.mod $1
 }
 
+clone()
+{
+   # new release
+   NREL=$((${REL}+1))
+   
+   sed -e "s|REL=${REL}|REL=${NREL}|" < build-${VER}-${REL}.sh > build-${VER}-${NREL}.sh
+}
+   
 main() {
 (
    echo "$1" "$2" "$3" "$4" "$5"
@@ -421,7 +429,7 @@ main() {
      arg=$1;
      
       case $arg in
-       mkpatch|build|install|clean|uninstall|check|unpack|unpack_orig|conf|mkdirs|all|applypatch|install_pkg|srcpkg)
+       download|mkpatch|build|install|clean|uninstall|check|unpack|unpack_orig|conf|mkdirs|all|applypatch|install_pkg|srcpkg|clone)
          $arg
          export STATUS=$?
        ;;
@@ -436,3 +444,13 @@ main() {
    done
 )
 }
+
+# possibly override something in here by a user
+# or machine-dependent local configuration...
+if [ -e gcc43_localconf.sh ]; then
+   source gcc43_localconf.sh
+fi
+
+if [ -e ../gcc43_localconf.sh ]; then
+   source ../gcc43_localconf.sh
+fi

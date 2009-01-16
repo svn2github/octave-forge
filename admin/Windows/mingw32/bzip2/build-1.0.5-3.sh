@@ -50,7 +50,7 @@ conf()
 
 build()
 {
-   ( cd ${BUILDDIR} && make -f ${MAKEFILE} all \
+   ( cd ${BUILDDIR} && make ${MAKE_FLAGS} -f ${MAKEFILE} all \
      CFLAGS="${CFLAGS} ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS}" \
      CPPFLAGS="${CPPFLAGS}" \
      CXXFLAGS="${CXXFLAGS}" \

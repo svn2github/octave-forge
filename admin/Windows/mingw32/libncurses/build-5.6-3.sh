@@ -18,7 +18,7 @@ TAR_TYPE=z
 PATCHFILE=${FULLPKG}.patch
 
 # URL of source code file
-URL=""
+URL="http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.6.tar.gz"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`
@@ -43,6 +43,10 @@ source ../gcc43_common.sh
 
 # Directory the lib is built in
 BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
+
+# no parallel build - ncurses makefile's structure does not 
+# support it...
+MAKE_FLAGS=""
 
 mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 

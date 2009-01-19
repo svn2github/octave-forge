@@ -56,7 +56,8 @@ conf()
      --prefix="${PREFIX}" \
      --disable-static \
      --enable-shared \
-     --enable-fat
+     --enable-fat \
+	 ABI=32
    )
    # GMP cannot build static and dynamic library simultaneously!
 }

@@ -37,7 +37,7 @@ gcc-${VER}-tdm-${GCC_REL}-${SYS}-g++.tar.gz
 
 URLS_BINUTILS="binutils-2.19-mingw32-bin.tar.gz"
 URLS_W32API="w32api-3.13-mingw32-dev.tar.gz"
-URLS_MINGWRUNTIME="mingwrt-3.15.1-mingw32-dev.tar.gz"
+URLS_MINGWRUNTIME="mingwrt-3.15.2-mingw32-dev.tar.gz"
 URLS_MINGWMAKE="mingw32-make-3.81-20080326-3.tar.gz"
 URLS_MINGWUTILS="mingw-utils-0.3.tar.gz"
  

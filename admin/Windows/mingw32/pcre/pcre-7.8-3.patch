@@ -27,3 +27,25 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pcre-7.8-orig/confi
                            $EXPORT_ALL_SYMBOLS"
  
  
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' pcre-7.8-orig/pcre-config.in pcre-7.8/pcre-config.in
+--- pcre-7.8-orig/pcre-config.in	2007-03-08 12:30:55 +0100
++++ pcre-7.8/pcre-config.in	2009-01-11 21:27:19 +0100
+@@ -49,16 +49,13 @@
+       echo @PACKAGE_VERSION@
+       ;;
+     --cflags | --cflags-posix)
+-      if test @includedir@ != /usr/include ; then
+-        includes=-I@includedir@
+-      fi
+       echo $includes
+       ;;
+     --libs-posix)
+-      echo -L@libdir@$libR -lpcreposix -lpcre
++      echo -lpcreposix -lpcre
+       ;;
+     --libs)
+-      echo -L@libdir@$libR -lpcre
++      echo -lpcre
+       ;;
+     *)
+       echo "${usage}" 1>&2

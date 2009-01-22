@@ -48,9 +48,9 @@ conf()
 {
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
      --srcdir=${TOPDIR}/${SRCDIR} \
-     CC=${CC} \
-     CXX=${CXX} \
-     F77=${F77} \
+     CC="${CC} $LIBGCCLDFLAGS" \
+     CXX="${CXX} $LIBGCCLDFLAGS" \
+     F77="${F77} $LIBGCCLDFLAGS" \
      CPP=${CPP} \
      CPPFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
      LDFLAGS="${LDFLAGS}" \

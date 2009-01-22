@@ -44,9 +44,9 @@ mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 conf()
 {
   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure --srcdir=../${SRCDIR} \
-    CC=${CC} \
-    CXX=${CXX} \
-    F77=${F77} \
+    CC="${CC} $LIBGCCLDFLAGS" \
+    CXX="${CXX} $LIBGCCLDFLAGS" \
+    F77="${F77} $LIBGCCLDFLAGS" \
     CPP=${CPP} \
     CPPFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS}" \
     LDFLAGS="${LDFLAGS}" \
@@ -76,8 +76,8 @@ build()
 {
    build_pre;
    
-   ( cd ${BUILDDIR}/gettext-runtime && make all )
-#   ( cd ${BUILDDIR}/gettext-tools && make )
+   ( cd ${BUILDDIR}/gettext-runtime && make_common )
+#   ( cd ${BUILDDIR}/gettext-tools && make_common )
    
    build_post;
 }

@@ -47,9 +47,9 @@ conf()
 {
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
      --srcdir=../${SRCDIR} \
-     CC=${CC} \
-     CXX=${CXX} \
-     F77=${F77} \
+     CC="${CC} $LIBGCCLDFLAGS" \
+     CXX="${CXX} $LIBGCCLDFLAGS" \
+     F77="${F77} $LIBGCCLDFLAGS" \
      CFLAGS="$CFLAGS -Wall" \
      CXXFLAGS="$CXXFLAGS -Wall" \
      CPPFLAGS="$CPPFLAGS -I${INCLUDE_PATH}/glib" \

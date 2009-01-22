@@ -98,14 +98,45 @@ export CC CXX F77 CPP
 
 # Common GCC FLAGS
 
+# Building with shared libgcc and shared libsdtc++ support
+#
+# According to mingw32, the way to do is:
+#  LDFLAGS="-shared-libgcc" CXXFLAGS="-D_DLL" 
+# and add "-lstdc++_s" at linking stage
+#
+#   http://garr.dl.sourceforge.net/sourceforge/mingw/gcc-4.2.1-dw2-2-release_notes.txt
+#   http://sourceforge.net/project/shownotes.php?release_id=596917
+#
+# Unfortunately, libtool does (yet?) not honour LDFLAGS, and here in our case
+# especially -shared-libgcc.
+#
+#   http://lists.gnu.org/archive/html/libtool/2006-02/msg00058.html
+#   http://lists.gnu.org/archive/html/bug-libtool/2005-10/msg00002.html
+#
+# The suggested workaround is to specify the -shared-libgcc flag as part
+# of the compiled name, e.g.
+#   CC="mingw32-gcc-4.3.0-dw2.exe -shared-libgcc"
+#
+# This works, so I'll use this for building the dependency libs, which use
+# libtool, and the former method for those without libtool
+#
+# Since LDFLAGS might containg additional flags, here I define a separate
+# variable LIBGCCLDFLAGS, which can be inserted into LDFLAGS and/or
+# CC, CXX and F77 as necessary at configure&build stage.
+#
+# MIND that you should NOT add -shared-libgcc to CPP's name, since cpp does
+# not understand this flag (why sould it, anyway)
+
 case $GCC_VER in
    -4.3.0)
+# shared libgcc link flag
+LIBGCCLDFLAGS="-shared-libgcc"
 # Architecture flags
 GCC_ARCH_FLAGS="-march=i686 -mtune=generic"
 # Optimization flags
 GCC_OPT_FLAGS="-O2"
 # Linker flags
-LDFLAGS="-shared-libgcc"
+LDFLAGS="$LIBGCCLDFLAGS"
 # Linker flas for Fortran
 FLDFLAGS=$LDFLAGS
 # C++ libraries

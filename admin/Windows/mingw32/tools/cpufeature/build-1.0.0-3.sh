@@ -48,6 +48,7 @@ install()
 
 install_pkg()
 {
+   mkdir -vp ${PACKAGE_ROOT}/bin
    cp -uvp ${BUILDDIR}/cpufeature.exe ${PACKAGE_ROOT}/bin
 }
 

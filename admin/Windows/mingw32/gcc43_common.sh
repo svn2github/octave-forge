@@ -368,21 +368,6 @@ modify_libtool_nolibprefix()
    fi
 }
 
-modify_libtool_add_compilerflag()
-{
-   if [ -f $1 ]; then
-      libtool_version=`sed -ne 's@^VERSION=\(.*\)\$@\1@p' $1`
-      case $libtool_version in
-         2.2.6)
-            _libtool_add_compilerflag $1;
-         ;;
-         *)
-            echo "Libtool version is too old (${libtool_version}) - ignored!"
-         ;;
-      esac
-   fi
-}
-
 _libtool_removelibprefix()
 {
    # remove the 'LIB' prefix of shared library names
@@ -402,56 +387,6 @@ _libtool_removeversuffix()
    # remove the ${versuffix} from shared library names
    echo "  Removing \${versuffix} from shared library names..."
    sed -e '/^soname_spec/ s+\\\${versuffix}++' $1 > $1.mod && mv $1.mod $1
-}
-
-_libtool_add_compilerflag()
-{
-   # modify libtool to recognize the -shared-libgcc option 
-   # alseo when linking a shared library
-   echo "  Adding \"	compiler_flags=\"\$compiler_flags \$arg\" to libtool..."
-cat >_libtool.awk << EOF
-BEGIN {
-   in_func_mode_link = 0;
-   in_case_arg = 0;
-   in_case = 0;
-   found_it = 0;
-}
-
-/^[ \t]*func_mode_link[ \t]*\(\)/ {
-   in_func_mode_link = 1;
-}
-
-/[ \t]*case \\\$arg in/ {
-   if( in_func_mode_link )
-      in_case_arg = 1;
-}
-
-/[ \t]*\-\*[ ]+\|[ ]+\+\*\)/ {
-   if( in_case_arg )
-      in_case = 1;
-}
-
-/arg=\"\\\$func_quote_for_eval_result\"/ {
-   if( in_case ) {
-      found_it = 1
-   }
-}
-
-/[ \t]*;;/ {
-   if( in_case )
-      in_case = 0
-}
-
-{
-   print \$0
-   if( found_it ) {
-      print "	compiler_flags=\"\$compiler_flags \$arg\""
-      found_it = 0;
-   }
-}
-EOF
-
-   gawk -f _libtool.awk $1 > $1.mod && mv $1.mod $1
 }
 
 clone()

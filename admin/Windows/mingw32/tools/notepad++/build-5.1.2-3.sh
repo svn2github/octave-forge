@@ -20,7 +20,7 @@ PATCHFILE=${FULLPKG}.patch
 
 # URL of source code file
 URL="
-http://downloads.sourceforge.net/notepad-plus/npp.5.1.2.src.zip
+http://downloads.sourceforge.net/notepad-plus/npp.5.1.2.src.zip 
 http://downloads.sourceforge.net/notepad-plus/npp.5.1.2.bin.zip"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
@@ -104,7 +104,7 @@ clean()
 
 make_common()
 {
-   make -f $MAKEFILE GCC_OPT_FLAGS="$GCC_OPT_FLAGS" GCC_ARCH_FLAGS="$GCC_ARCH_FLAGS"
+   make ${MAKE_FLAGS} -f $MAKEFILE GCC_OPT_FLAGS="$GCC_OPT_FLAGS" GCC_ARCH_FLAGS="$GCC_ARCH_FLAGS"
 }
 
 build_scintilla()
@@ -261,10 +261,7 @@ FONTS_URL="http://www.proggyfonts.com/download/download_bridge.php?get=Opti.zip"
 #FONTS="Opti OptiSmall ProggyCleanSZ ProggySquareSZ ProggyTinySZ ProggySmall"
 #FONTS_URL="http://www.proggyfonts.com/download/download_bridge.php?get=Opti.zip http://www.proggyfonts.com/download/download_bridge.php?get=OptiSmall.zip http://www.proggyfonts.com/download/download_bridge.php?get=ProggyCleanSZ.zip http://www.proggyfonts.com/download/download_bridge.php?get=ProggySquareSZ.zip http://www.proggyfonts.com/download/download_bridge.php?get=ProggyTinySZ.zip http://www.proggyfonts.com/download/download_bridge.php?get=ProggySmall.zip"
 
-download_fonts()
-{
-   for a in ${FONTS_URL}; do wget -N $a; done
-}
+download_fonts() { download_core $FONTS_URL ; }
 
 install_fonts()
 {
@@ -289,11 +286,6 @@ http://downloads.sourceforge.net/npp-plugins/HexEditor_0_9_2_dll.zip
 http://downloads.sourceforge.net/npp-plugins/Explorer_1_8_1_dll.zip
 http://downloads.sourceforge.net/npp-plugins/fallingbricks_v1.1_unicode_dll.zip"
 
-download_plugins()
-{
-   for a in $1; do wget -N $a; done
-}
-
 install_plugins()
 {
    ( cd ${TARGET_PATH}/plugins && for a in $1; do ${TOPDIR}/${BSDTAR} xv -f ${TOPDIR}/$a.zip; done )
@@ -302,8 +294,8 @@ install_plugins()
 install_plugins_ansi() { install_plugins "${PLUGINS_ANSI}"; }
 install_plugins_unicode() { install_plugins "${PLUGINS_UNICODE}"; }
 
-download_plugins_ansi() { download_plugins "${PLUGINS_ANSI_URL}"; }
-download_plugins_unicode() { download_plugins "${PLUGINS_UNICODE_URL}"; }
+download_plugins_ansi() { download_core ${PLUGINS_ANSI_URL} ;}
+download_plugins_unicode() { download_core ${PLUGINS_UNICODE_URL} ; }
 
 #install_libgcc()
 #{
@@ -336,7 +328,14 @@ srcpkg()
    
    "${SEVENZIP}" ${SEVENZIP_FLAGS} ${SRCPKG_PATH}/${PKG}-${VER}-${REL}-src.7z ${SRCFILE} ${SRCBINFILE} ${PATCHFILE} $PI $F build-${VER}-${REL}.sh
 }
-   
+
+download() {
+  ( download_core ${URL} )
+  ( download_fonts )
+  ( download_plugins_ansi )
+  ( download_plugins_unicode )
+}
+
 all() 
 {
    download

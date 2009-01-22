@@ -31,6 +31,18 @@ MAKENSIS="/c/Programs/NSIS/makensis.exe"
 
 export STRIP STRIP_FLAGS
 
+# Path to utilities required during the build process
+# Leave these empty to search for them on dfault PATH
+# If not empty, path to utilities will be added to PATH
+# where necessry
+
+# Microsoft Help Workshop (gnuplot)
+PATH_HCW=
+# MiKTeX (gnuplot, octave)
+PATH_MIKTEX=
+# Ghostscript (octave)
+PATH_GHOSTSCRIPT=
+
 # GCC compilers used
 GCC_VER=-4.3.0
 GCC_SYS=-dw2
@@ -484,4 +496,8 @@ fi
 
 if [ -e ../gcc43_localconf.sh ]; then
    source ../gcc43_localconf.sh
+fi
+
+if [ -e ../../gcc43_localconf.sh ]; then
+   source ../../gcc43_localconf.sh
 fi

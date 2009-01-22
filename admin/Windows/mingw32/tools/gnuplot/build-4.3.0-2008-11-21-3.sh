@@ -31,10 +31,6 @@ SRCDIR_ORIG=${SRCDIR}-orig
 # Make file to use
 MAKEFILE=config/Makefile.mgw
 
-# PATHS to supporting programs
-PATH_MIKTEX=/c/Program\ Files/MiKTeX\ 2.7/miktex/bin/
-PATH_HCW=/c/Programs/HelpWorkshop/
-
 DIFF_FLAGS="-x *.orig"
 
 # --- load common functions ---
@@ -102,11 +98,13 @@ conf()
 # Furthermore, -mfpmath=sse results in program crash when trying to rotate an splot
 
 build() {
-  export PATH=${PATH_MIKTEX}:${PATH_HCW}:${PATH}
+ (
+  export PATH=${BINARY_PATH}:${PATH_MIKTEX}:${PATH_HCW}:${PATH}
 
   ( cd ${BUILDDIR_GUI}     && make -C src -f ../config/makefile.mgw GCC_ARCH_FLAGS="${GCC_ARCH_FLAGS}" all )
   ( cd ${BUILDDIR_CONSOLE} && make -C src -f ../config/makefile.mgw GCC_ARCH_FLAGS="${GCC_ARCH_FLAGS}" gnuplot.exe )
   ( cd ${BUILDDIR_GUI}/docs && make pdf )
+ )
 }
 
 install() { echo $0: install not required; }

@@ -279,7 +279,13 @@ check()
 }
 check_post() { echo ; }
 
-unpack_pre() { echo ; }
+unpack_pre()
+{ 
+   if [ -d ${TOPDIR}/${SRCDIR} ]; then 
+      echo Removing ${TOPDIR}/${SRCDIR} ...
+	  rm -rf ${TOPDIR}/${SRCDIR}; 
+   fi 
+}
 unpack()
 {
 (
@@ -308,7 +314,13 @@ conf()
 }
 conf_post() { echo ; }
 
-mkdirs_pre() { echo ; }
+mkdirs_pre()
+{ 
+   if [ -d ${BUILDDIR} ]; then 
+      echo removing ${BUILDDIR} ...
+      rm -rf ${BUILDDIR}
+   fi
+}
 mkdirs()
 {
    mkdirs_pre;

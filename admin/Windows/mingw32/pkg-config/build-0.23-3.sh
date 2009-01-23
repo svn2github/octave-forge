@@ -41,8 +41,6 @@ source ../gcc43_common.sh
 # Directory the lib is built in
 BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
-
 conf()
 {
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \

@@ -44,8 +44,6 @@ BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
 check_pre() { MAKEFILE=""; }
 
-mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
-
 conf()
 {
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \

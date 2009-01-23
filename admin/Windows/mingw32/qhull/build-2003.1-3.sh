@@ -43,7 +43,6 @@ source ../gcc43_common.sh
 # Directory the lib is built in
 BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
 mkdirs_post()
 {
    mkdir -vp ${BUILDDIR}/src
@@ -56,12 +55,12 @@ conf()
 
 build() 
 {
-   ( cd ${BUILDDIR}/src && make all lib )
+   ( cd ${BUILDDIR}/src && make_common all lib )
 }
 
 clean() 
 {
-   ( cd ${BUILDDIR}/src && make clean )
+   ( cd ${BUILDDIR}/src && make_common clean )
 }
 
 install()

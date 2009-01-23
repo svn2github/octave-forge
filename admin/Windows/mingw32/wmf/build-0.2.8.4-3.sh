@@ -53,10 +53,6 @@ BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 #  echo EXPORTS>>libwmf.def
 #  pexports.exe libwmf-0-2-7.dll | grep ^wmf | grep -v DATA >> libwmf.def
 
-echo ${PREFIX}
-
-mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
-
 conf()
 {
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \

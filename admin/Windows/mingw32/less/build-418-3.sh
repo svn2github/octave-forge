@@ -41,8 +41,6 @@ source ../gcc43_common.sh
 # Directory the lib is built in
 BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-mkdirs_pre() { if [ -e ${BUILDDIR} ]; then rm -rf ${BUILDDIR}; fi; }
-
 conf()
 {
    substvars ${SRCDIR}/${MAKEFILE} ${BUILDDIR}/${MAKEFILE}
@@ -50,7 +48,7 @@ conf()
 
 build()
 {
-   ( cd $BUILDDIR && make -f $MAKEFILE CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS}" LDFLAGS="" all )
+   ( cd $BUILDDIR && make $MAKE_FLAGS -f $MAKEFILE CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS}" LDFLAGS="" all )
 }
 
 install()

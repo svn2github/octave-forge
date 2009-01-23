@@ -21,6 +21,7 @@ VER_BZIP2=1.0.5-3
 VER_BLAS=3
 VER_CBLAS=3
 VER_LAPACK=3.1.1-3
+VER_ARPACK=96-3
 VER_GLOB=1.0-3
 VER_NCURSES=5.6-3
 VER_READLINE=5.2-3
@@ -59,6 +60,7 @@ VER_TEXINFO=4.13a-3
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
 # LAPACK depends on BLAS
+# ARPACK depends on LAPACK and BLAS
 # GLPK dependes on GMP
 # SUITESPARSE depends on BLAS and LAPACK
 # GSL depends on BLAS
@@ -77,6 +79,7 @@ VER_TEXINFO=4.13a-3
 ( cd blas && build-${VER_BLAS}.sh ${ACTION} );
 ( cd cblas && build-${VER_CBLAS}.sh ${ACTION} );
 ( cd lapack && build-${VER_LAPACK}.sh ${ACTION} );
+( cd arpack && build-${VER_ARPACK}.sh ${ACTION} );
 ( cd glob && build-${VER_GLOB}.sh ${ACTION} );
 ( cd libncurses && build-${VER_NCURSES}.sh ${ACTION} );
 ( cd readline && build-${VER_READLINE}.sh ${ACTION} );

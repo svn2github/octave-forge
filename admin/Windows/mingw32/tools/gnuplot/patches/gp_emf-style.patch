@@ -1,0 +1,25 @@
+halve default pointsize in EMF terminal
+
+diff -r 8b8547cfa763 term/emf.trm
+--- a/term/emf.trm	Tue Jan 27 09:59:17 2009 +0100
++++ b/term/emf.trm	Tue Jan 27 10:00:43 2009 +0100
+@@ -165,7 +165,7 @@
+ #define EMF_10THDEG2RAD (3.14159265359/1800)
+ #define EMF_XMAX (1024 * EMF_PX2HM)
+ #define EMF_YMAX (768 * EMF_PX2HM)
+-#define EMF_HTIC (EMF_XMAX / 160)
++#define EMF_HTIC (EMF_XMAX / 320)
+ #define EMF_VTIC EMF_HTIC
+ #define EMF_FONTNAME "Arial"
+ #define EMF_FONTSIZE 12
+@@ -647,8 +647,8 @@
+ 		term->xmax = tempxmax * EMF_PX2HM;
+ 	    if (tempymax > 0)
+ 		term->ymax = tempymax * EMF_PX2HM;
+-	    term->h_tic = term->xmax / 160;
+-	    term->v_tic = term->h_tic;
++	    /*term->h_tic = term->xmax / 160;
++	    term->v_tic = term->h_tic;*/
+ 	    continue;
+ 	}
+ 	if (equals(c_token, "font"))

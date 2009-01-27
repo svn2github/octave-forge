@@ -296,6 +296,20 @@ unpack()
 }
 unpack_post() { echo ; }
 
+unpack_add_ver()
+{
+   # some packages extract into the subdirectory solely containing
+   # the package NAME, not a combination of NAME and VERSION
+   #
+   # for these, add the version specifically in here
+   unpack_pre;
+   
+   rm -rf tmp
+   ( mkdir tmp && cd tmp && ${TAR} -${TAR_TYPE} -${TAR_FLAGS} ${TOPDIR}/${SRCFILE} && mv $PKG ../$SRCDIR )
+   
+   unpack_post;
+}
+
 unpack_orig_pre() { echo ; }
 unpack_orig()
 {
@@ -306,6 +320,22 @@ unpack_orig()
 )
 }
 unpack_orig_post() { echo ; }
+
+unpack_orig_add_ver()
+{
+   # some packages extract into the subdirectory solely containing
+   # the package NAME, not a combination of NAME and VERSION
+   #
+   # for these, add the version specifically in here
+   unpack_orig_pre;
+   
+   rm -rf tmp
+   ( mkdir tmp && cd tmp && ${TAR} -${TAR_TYPE} -${TAR_FLAGS} ${TOPDIR}/${SRCFILE} && mv $PKG ../$SRCDIR_ORIG )
+   
+   rm -rf tmp
+   
+   unpack_orig_post;
+}
 
 conf_pre() { echo ; }
 conf()

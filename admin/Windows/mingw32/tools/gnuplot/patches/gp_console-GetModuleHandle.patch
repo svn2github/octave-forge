@@ -1,0 +1,14 @@
+GetModuleHandle for console binary
+
+diff -r 0581629558be src/win/winmain.c
+--- a/src/win/winmain.c	Tue Jan 27 10:20:29 2009 +0100
++++ b/src/win/winmain.c	Tue Jan 27 14:03:46 2009 +0100
+@@ -269,7 +269,7 @@
+ #ifdef WGP_CONSOLE
+ # define _argv argv
+ # define _argc argc
+-	HINSTANCE hInstance = NULL, hPrevInstance = NULL;
++	HINSTANCE hInstance = GetModuleHandle(NULL), hPrevInstance = NULL;
+ 	int nCmdShow = 0;
+ #else	 
+ #ifdef __MSC__  /* MSC doesn't give us _argc and _argv[] so ...   */

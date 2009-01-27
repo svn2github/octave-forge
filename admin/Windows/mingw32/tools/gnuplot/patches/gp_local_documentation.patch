@@ -1,0 +1,310 @@
+local changes for documentation build
+
+diff -r 2c579f7524c0 docs/gnuplot.doc
+--- a/docs/gnuplot.doc	Tue Jan 27 09:57:44 2009 +0100
++++ b/docs/gnuplot.doc	Tue Jan 27 09:59:16 2009 +0100
+@@ -2876,7 +2876,7 @@
+  assumed to form a uniformly sized parallelogram.  The paralleogram is painted
+  using the color of the corresponding pixel in the input image.
+  
+-Ffigure_rgb3D.pdf
++Ffigure_rgb3D
+  Each pixel (data point) of the input 2D image will become a rectangle or
+  parallelipiped in the plot. The coordinates of each data point will determine
+  the center of the parallelipiped.  That is, an M x N set of data will form an
+diff -r 2c579f7524c0 docs/plotstyles.gnu
+--- a/docs/plotstyles.gnu	Tue Jan 27 09:57:44 2009 +0100
++++ b/docs/plotstyles.gnu	Tue Jan 27 09:59:16 2009 +0100
+@@ -3,12 +3,13 @@
+ #  EAM - July 2007
+ #
+ #
+-set term pdfcairo mono font "Times,7" size 3.5,2.0 dashlength 0.2
++#set term pdfcairo mono font "Times,7" size 3.5,2.0 dashlength 0.2
++set term postscript eps colour dashed font "Times-Roman,14" size 3.5,2.0 dashlength 0.2
+ #
+ # Line and point type plots  (same data plotted)
+ # ==============================================
+ #
+-set output 'figure_lines.pdf'
++set output 'figure_lines.eps'
+ set xrange [270:370]
+ unset xtics
+ unset ytics
+@@ -21,37 +22,37 @@
+ 
+ plot '../demo/silver.dat' u 1:($2-10.) title 'with lines' with lines
+ #
+-set output 'figure_points.pdf'
++set output 'figure_points.eps'
+ plot '../demo/silver.dat' u 1:($2-10.):(1+rand(0)) title 'with points ps variable' \
+      with points ps variable pt 6
+ #
+-set output 'figure_linespoints.pdf'
++set output 'figure_linespoints.eps'
+ plot '../demo/silver.dat' u 1:($2-10.) title 'with linespoints' \
+      with linespoints pt 6 ps 1
+ #
+-set output 'figure_fsteps.pdf'
++set output 'figure_fsteps.eps'
+ plot '../demo/silver.dat' u 1:($2-10.) title 'with fsteps' with fsteps
+ #
+-set output 'figure_steps.pdf'
++set output 'figure_steps.eps'
+ plot '../demo/silver.dat' u 1:($2-10.) title 'with steps' with steps
+ #
+-set output 'figure_histeps.pdf'
++set output 'figure_histeps.eps'
+ plot '../demo/silver.dat' u 1:($2-10.) title 'with histeps' with histeps
+ 
+ #
+ # Simple bar charts  (same data plotted)
+ # ======================================
+ #
+-set output 'figure_boxes.pdf'
++set output 'figure_boxes.eps'
+ set xzeroaxis
+ set boxwidth 0.8 relative
+ plot '../demo/silver.dat' u 1:($2-10.) with boxes title 'with boxes' fs solid 0.5
+ #
+-set output 'figure_boxerrorbars.pdf'
++set output 'figure_boxerrorbars.eps'
+ set boxwidth 0.8 relative
+ plot '../demo/silver.dat' u 1:($2-10.):(3*rand(0)) with boxerrorbars title 'with boxerrorbars' fs empty
+ #
+-set output 'figure_impulses.pdf'
++set output 'figure_impulses.eps'
+ plot '../demo/silver.dat' u 1:($2-10.) with impulses title 'with impulses'
+ #
+ # Error bars and whisker plots
+@@ -63,44 +64,44 @@
+ unset xzeroaxis
+ unset offset
+ #
+-set output 'figure_candlesticks.pdf'
++set output 'figure_candlesticks.eps'
+ plot '../demo/candlesticks.dat' using 1:3:2:6:5 title 'with candlesticks' with candlesticks whiskerbar fs empty
+ #
+-set output 'figure_financebars.pdf'
++set output 'figure_financebars.eps'
+ set bars 4
+ plot '../demo/candlesticks.dat' using 1:3:2:6:5 title 'with financebars' with financebars
+ set bars 1
+ #
+-set output 'figure_yerrorbars.pdf'
++set output 'figure_yerrorbars.eps'
+ plot '../demo/candlesticks.dat' using 1:4:3:5 with yerrorbars title 'with yerrorbars'
+ #
+-set output 'figure_yerrorlines.pdf'
++set output 'figure_yerrorlines.eps'
+ plot '../demo/candlesticks.dat' using 1:4:3:5 with yerrorlines title 'with yerrorlines'
+ #
+-set output 'figure_boxxyerrorbars.pdf'
++set output 'figure_boxxyerrorbars.eps'
+ plot '../demo/candlesticks.dat' using 1:4:($1-sin($1)/2.):($1+sin($1)/2.):3:5 \
+      with boxxyerrorbars title 'with boxxyerrorbars' fs empty
+ #
+-set output 'figure_xyerrorbars.pdf'
++set output 'figure_xyerrorbars.eps'
+ plot '../demo/candlesticks.dat' using 1:4:($1-sin($1)/2.):($1+sin($1)/2.):3:5 \
+      with xyerrorbars title 'with xyerrorbars'
+ #
+-set output 'figure_xyerrorlines.pdf'
++set output 'figure_xyerrorlines.eps'
+ plot '../demo/candlesticks.dat' using 1:4:($1-sin($1)/2.):($1+sin($1)/2.):3:5 \
+      with xyerrorlines title 'with xyerrorlines'
+ #
+-set output 'figure_xerrorbars.pdf'
++set output 'figure_xerrorbars.eps'
+ plot '../demo/candlesticks.dat' using 1:4:($1-sin($1)/2.):($1+sin($1)/2.) \
+      with xerrorbars title 'with xerrorbars'
+ #
+-set output 'figure_xerrorlines.pdf'
++set output 'figure_xerrorlines.eps'
+ plot '../demo/candlesticks.dat' using 1:4:($1-sin($1)/2.):($1+sin($1)/2.) \
+      with xerrorlines title 'with xerrorlines'
+ #
+ # Filled curves
+ # =============
+ #
+-set output 'figure_filledcurves.pdf'
++set output 'figure_filledcurves.eps'
+ set style fill solid 1.0 border -1
+ set xrange [250:500]
+ set auto y
+@@ -113,7 +114,7 @@
+ # Dots
+ # ====
+ #
+-set output 'figure_dots.pdf'
++set output 'figure_dots.eps'
+ reset
+ set parametric
+ set samples 1000
+@@ -141,16 +142,16 @@
+ unset xtics
+ set tmargin 1
+ #
+-set output 'figure_histclust.pdf'
++set output 'figure_histclust.eps'
+ set style histogram clustered
+ plot 'histopt.dat' using 1 fs solid 0.5, '' using 2 fs empty
+ #
+-set output 'figure_histrows.pdf'
++set output 'figure_histrows.eps'
+ set style histogram rows
+ set title "Rowstacked" offset 0,-1
+ plot 'histopt.dat' using 1 fs solid 0.5, '' using 2 fs empty
+ #
+-set output 'figure_histcols.pdf'
++set output 'figure_histcols.eps'
+ set style histogram columns
+ set title "Columnstacked" offset 0,-1
+ set boxwidth 0.8 rel
+@@ -169,14 +170,14 @@
+ # Circles
+ #
+ reset
+-set output 'figure_circles.pdf'
++set output 'figure_circles.eps'
+ #set title "Circles of Uncertainty"
+ unset key
+ set size ratio -1
+ set xrange [-2.5:1.5]
+ set yrange [-1:2.5]
+-set xtics font "Times,5" format "%.1f" scale 0.5
+-set ytics font "Times,5" format "%.1f" scale 0.5
++set xtics font "Times-Roman,10" format "%.1f" scale 0.5
++set ytics font "Times-Roman,10" format "%.1f" scale 0.5
+ plot '../demo/optimize.dat' with circles lc rgb "gray" fs transparent solid 0.2 nobo,\
+      '../demo/optimize.dat' u 1:2 with linespoints lw 2 pt 7 ps 0.3 lc rgb "black"
+ #
+@@ -203,7 +204,7 @@
+ set hidden3d offset 1
+ 
+ set title "3D surface plot with hidden line removal"  offset 0,1
+-set output 'figure_surface.pdf'
++set output 'figure_surface.eps'
+ splot sin(x) * cos(y) with lines lt -1
+ 
+ set contour base
+@@ -211,7 +212,7 @@
+ unset key
+ set title "3D surface with projected contours" 
+ 
+-set output 'figure_surface+contours.pdf'
++set output 'figure_surface+contours.eps'
+ splot sin(x) * cos(y) with lines lt -1
+ 
+ unset view
+@@ -225,19 +226,19 @@
+ set lmargin
+ set title "projected contours using 'set view map'" offset 0,-1
+ 
+-set output 'figure_mapcontours.pdf'
++set output 'figure_mapcontours.eps'
+ splot sin(x) * cos(y)
+ 
+ reset
+-set output "figure_rgb3D.pdf"
++set output 'figure_rgb3D.eps'
+ set title "RGB image mapped onto a plane in 3D" offset 0,1
+ set xrange [ -10 : 137 ]
+ set yrange [ -10 : 137 ]
+ set zrange [  -1 :   1 ]
+ set xyplane at -1
+ set bmargin at screen 0.25
+-set xtics offset 0,0 font "Times,5"
+-set ytics offset 0,0 font "Times,5"
++set xtics offset 0,0 font "Times-Roman,10"
++set ytics offset 0,0 font "Times-Roman,10"
+ set view 45, 25, 1.0, 1.35
+ set grid
+ unset key
+@@ -253,7 +254,7 @@
+ CityName(String,Size) = sprintf("{/=%d %s}", Scale(Size), stringcolumn(String))
+ 
+ set termoption enhanced
+-set output 'figure_labels.pdf'
++set output 'figure_labels.eps'
+ unset xtics
+ unset ytics
+ unset key
+diff -r 2c579f7524c0 docs/psdoc/Makefile
+--- a/docs/psdoc/Makefile	Tue Jan 27 09:57:44 2009 +0100
++++ b/docs/psdoc/Makefile	Tue Jan 27 09:59:16 2009 +0100
+@@ -2,27 +2,29 @@
+ # Create ps_symbols.ps
+ #
+ 
++SRCDIR=@SRCDIR@
++
+ top_srcdir = ../..
+ 
+ all: ps_symbols.ps ps_fontfile_doc.ps
+ 
+ pdf: ps_fontfile_doc.pdf
+ 
+-ps_symbols.ps: ps_symbols.gpi
++ps_symbols.ps: $(SRCDIR)/docs/psdoc/ps_symbols.gpi
+ 	@if test -f $(top_srcdir)/src/gnuplot ; then \
+ 		$(top_srcdir)/src/gnuplot ps_symbols.gpi ; \
+ 	else \
+ 		gnuplot ps_symbols.gpi ; \
+ 	fi
+ 
+-ps_fontfile_doc.ps: ps_fontfile_doc.tex
+-	latex ps_fontfile_doc
+-	latex ps_fontfile_doc
++ps_fontfile_doc.ps: $(SRCDIR)/docs/psdoc/ps_fontfile_doc.tex
++	latex $<
++	latex $<
+ 	dvips -j0 ps_fontfile_doc
+ 
+-ps_fontfile_doc.pdf: ps_fontfile_doc.tex
+-	pdflatex ps_fontfile_doc
+-	pdflatex ps_fontfile_doc
++ps_fontfile_doc.pdf: $(SRCDIR)/docs/psdoc/ps_fontfile_doc.tex
++	pdflatex $<
++	pdflatex $<
+ 
+ clean:
+ 	-rm -f ps_symbols.ps ps_fontfile_doc.aux ps_fontfile_doc.dvi \
+diff -r 2c579f7524c0 docs/titlepag.tex
+--- a/docs/titlepag.tex	Tue Jan 27 09:57:44 2009 +0100
++++ b/docs/titlepag.tex	Tue Jan 27 09:59:16 2009 +0100
+@@ -14,7 +14,7 @@
+ % LaTeX2e version
+ % add `[a4paper]' before `{article}' to load settings for A4-paper
+ % see below if you add 11pt or 12pt
+-   \documentclass[twoside]{article}
++   \documentclass[a4paper,twoside]{article}
+    \usepackage{toc_entr}
+ 
+   \usepackage[
+@@ -24,6 +24,7 @@
+         hyperindex,
+         bookmarks,
+         bookmarksnumbered=true,
++        colorlinks=true,
+         pdftitle={gnuplot documentation},
+         pdfauthor={gnuplot},
+         pdfsubject={see www.gnuplot.info}
+@@ -52,12 +53,12 @@
+ %\addtolength{\textheight}{48pt}
+ %\addtolength{\topmargin}{-24pt}
+ 
+-\setlength{\textwidth}{6.25in}
++\setlength{\textwidth}{17cm}
+ % \setlength{\oddsidemargin}{0.5cm}
+-\setlength{\oddsidemargin}{0.0cm}
+-\setlength{\evensidemargin}{0.0cm}
+-\setlength{\topmargin}{-0.5in}
+-\setlength{\textheight}{9.5in}
++\setlength{\oddsidemargin}{-0.54cm}
++\setlength{\evensidemargin}{-0.54cm}
++\setlength{\topmargin}{-2cm}
++\setlength{\textheight}{25.7cm}
+ 
+ \setlength{\parskip}{1ex}
+ \setlength{\parindent}{0pt}

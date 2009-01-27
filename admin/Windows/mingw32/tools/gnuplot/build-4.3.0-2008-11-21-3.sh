@@ -31,7 +31,7 @@ SRCDIR_ORIG=${SRCDIR}-orig
 # Make file to use
 MAKEFILE=config/Makefile.mgw
 
-DIFF_FLAGS="-x *.orig"
+DIFF_FLAGS="-x *.orig -x *~"
 
 # --- load common functions ---
 source ../../gcc43_common.sh
@@ -68,21 +68,10 @@ mkdirs()
    mkdirs_post;
 }
 
-unpack_pre()
-{
-   mkdir tmp && cd tmp
-}
-unpack_post()
-{
-   mv gnuplot ../${SRCDIR} && cd .. && rm -rf tmp
-}
-
-unpack_orig()
-{
-   unpack_pre;
-   ${TAR} -${TAR_TYPE} -${TAR_FLAGS} ${TOPDIR}/${SRCFILE}
-   mv gnuplot ../${SRCDIR_ORIG} && cd .. && rm -rf tmp
-}
+# must add version number to source directory explicitly
+unpack() { unpack_add_ver; }
+# ditto
+unpack_orig() { unpack_orig_add_ver; }
 
 conf()
 {
@@ -182,7 +171,7 @@ mkpatch()
    # Patch against CVS source
    ( cd ${TOPDIR} && diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ${DIFF_FLAGS} `basename ${SRCDIR_ORIG}` `basename ${SRCDIR}` > ${PATCHFILE} )
    # Patch against latest released sources (LICENSING!)
-   ( cd ${TOPDIR} && diff -urN -x '*.bak' -x '.cvsignore' -x 'aclocal.m4' -x 'Makefile.am' -x 'Makefile.in' -x 'configure' -x '*.ja' -x 'faq-ja.tex' -x '*-ja.*' ${DIFF_FLAGS} gnuplot-4.2.3-orig `basename ${SRCDIR}` > ${FULLPKG}_vs_4.2.3.patch )
+   # ( cd ${TOPDIR} && diff -urN -x '*.bak' -x '.cvsignore' -x 'aclocal.m4' -x 'Makefile.am' -x 'Makefile.in' -x 'configure' -x '*.ja' -x 'faq-ja.tex' -x '*-ja.*' ${DIFF_FLAGS} gnuplot-4.2.3-orig `basename ${SRCDIR}` > ${FULLPKG}_vs_4.2.3.patch )
 }
 
 srcpkg()

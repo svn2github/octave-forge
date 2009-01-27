@@ -1,0 +1,47 @@
+add font substitution for Helvetica in png and jpeg term
+
+diff -r ce163929bb4b term/gd.trm
+--- a/term/gd.trm	Tue Jan 27 10:01:27 2009 +0100
++++ b/term/gd.trm	Tue Jan 27 10:08:11 2009 +0100
+@@ -322,6 +322,9 @@
+ static double PNG_linewidth_factor = 1.0;
+ static double PNG_dashlength_factor = 1.0;
+ 
++/* Subsitutes for Font Helvetica */
++static const char* Helvetica_Font_Substitutes = "Helvetica;n019003l;uhvr8a;Arial";
++
+ /* EAM - gdImage structure to hold brushes for linewidth */
+ /* We will allocate and initialize these on demand */
+ typedef struct {
+@@ -773,6 +776,13 @@
+ 		    c_token++;
+ 		}
+ 		free(png_state.default_ttffont);
++#ifdef _WIN32
++		if( strcmpi(png_state.ttffont,"helvetica") == 0 ) {
++		   /* supply substitution font names, if "Helvetica" is not found */
++		   free(png_state.ttffont);
++		   png_state.ttffont = gp_strdup(Helvetica_Font_Substitutes);
++		}
++#endif
+ 		png_state.default_ttffont = gp_strdup(png_state.ttffont);
+ 		err = gdImageStringFT(NULL, &brect[0], 0,
+ 			png_state.ttffont, (double)png_state.ttfsize,
+@@ -1794,8 +1804,17 @@
+     else if (*name) {
+ 	/* New ttf font */
+ 	free(png_state.ttffont);
++#ifdef _WIN32
++	if( strcmpi(name,"helvetica") == 0 ) {
++	   /* supply substitution font names, if "Helvetica" is not found */
++	   png_state.ttffont = gp_strdup(Helvetica_Font_Substitutes);
++	} else {
++#endif
+ 	png_state.ttffont = gp_strdup(name);
+ 	png_state.ttfsize = size;
++#ifdef _WIN32
++	}
++#endif
+     } else {
+ 	/* Restore initial default font */
+ 	free(png_state.ttffont);

@@ -1,0 +1,84 @@
+in makefile: local build configuration
+
+diff -r 0abc40945a68 config/config.mgw
+--- a/config/config.mgw	Tue Jan 27 10:18:59 2009 +0100
++++ b/config/config.mgw	Tue Jan 27 10:19:33 2009 +0100
+@@ -512,7 +512,7 @@
+ /* #undef VGAGL */
+ 
+ /* Define to allow zooming or refresh of volatile data. EXPERIMENTAL */
+-#define VOLATILE_REFRESH 1
++/* #define VOLATILE_REFRESH 1 */
+ 
+ /* Define if you want to have image plotting support. */
+ #define WITH_IMAGE 1
+diff -r 0abc40945a68 config/makefile.mgw
+--- a/config/makefile.mgw	Tue Jan 27 10:18:59 2009 +0100
++++ b/config/makefile.mgw	Tue Jan 27 10:19:33 2009 +0100
+@@ -19,7 +19,7 @@
+ #
+ 
+ # Specify the path to the sources (top directory)
+-SRCDIR=..
++SRCDIR=@SRCDIR@
+ 
+ # Choose target to compile:
+ # 1. wgnuplot.exe: The usual Windows GUI for input commands.
+@@ -34,7 +34,7 @@
+ # used when gnuplot.exe was not available on Windows. Nowadays, pgnuplot.exe
+ # is deprecated -- plese use gnuplot.exe instead.
+ 
+-TARGET=wgnuplot.exe
++TARGET=@TARGET@
+ #TARGET=wgnuplot_pipes.exe
+ #TARGET=gnuplot.exe
+ 
+@@ -91,7 +91,7 @@
+ 
+ # Where to install the PostScript prologue files, relatively to the executable
+ # wgnuplot.exe
+-GNUPLOT_PS_DIR = share/PostScript
++GNUPLOT_PS_DIR = share\\\\gnuplot\\\\PostScript
+ 
+ # Destination directory, used in 'make install':
+ DESTDIR = /c/Progra~1/Gnuplot4.3
+@@ -103,7 +103,7 @@
+ # Do you want some special optimization?
+ # -mpentium means optimise for Pentium processor
+ # -mpentiumpro means optimize for Pentium II and Pro procesors
+-CFLAGS =
++CFLAGS += $(GCC_ARCH_FLAGS) -Wall
+ 
+ 
+ # To compile the .hlp file you need hcw either out of Microsoft SDK or MS Help
+@@ -155,10 +155,8 @@
+ endif
+ 
+ 
+-CC = $(GCCPATH)gcc
+-LD = $(GCCPATH)gcc
+-CXX = $(GCCPATH)g++
+-LDX = $(GCCPATH)g++
++LD = $(CC)
++LDX = $(CXX)
+ 
+ RM = rm -f
+ CP = cp -p
+@@ -178,7 +176,7 @@
+ endif
+ 
+ ifdef CONSOLE
+-  OPTS += -DWGP_CONSOLE
++  OPTS += -DWGP_CONSOLE -DVOLATILE_REFRESH
+   LDFLAGS2 = -mconsole
+ endif
+ 
+@@ -268,7 +266,7 @@
+   RCFLAGS = --include-dir /mingw32/include \
+ 	--include-dir=$(TOP)/src/win \
+ 	--define __WIN32__ --define __WIN95__ --define MSRC \
+-	--define __GNUWIN32__ --use-temp-file
++	--define __GNUWIN32__ --use-temp-file --preprocessor=$(CPP)
+   ifdef WXT
+ 	RCFLAGS += --define WXWIDGETS --include-dir=$(WX_LOCATION)
+   endif

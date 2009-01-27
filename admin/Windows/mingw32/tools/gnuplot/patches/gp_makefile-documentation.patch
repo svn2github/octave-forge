@@ -1,0 +1,91 @@
+in makefile: fix for local documentation build
+
+diff -r a7c635c76175 config/makefile.mgw
+--- a/config/makefile.mgw	Tue Jan 27 10:18:04 2009 +0100
++++ b/config/makefile.mgw	Tue Jan 27 10:18:59 2009 +0100
+@@ -451,23 +451,71 @@
+ endif
+ 
+ gnuplot.tex: $(D)gnuplot.doc doc2tex.exe
+-	doc2tex $(D)gnuplot.doc gnuplot.tex
++	doc2tex -figures $(D)gnuplot.doc gnuplot.tex
++
++TEXFLAG="-include-directory=$(D)"
++
++FIGURES=\
++	figure_boxerrorbars \
++	figure_boxes \
++	figure_boxxyerrorbars \
++	figure_candlesticks \
++	figure_circles \
++	figure_dots \
++	figure_filledcurves \
++	figure_financebars \
++	figure_fsteps \
++	figure_histeps \
++	figure_histclust \
++	figure_histrows \
++	figure_histcols \
++	figure_rgb3D \
++	figure_impulses \
++	figure_labels \
++	figure_lines \
++	figure_linespoints \
++	figure_points \
++	figure_steps \
++	figure_xerrorbars \
++	figure_xyerrorbars \
++	figure_yerrorbars \
++	figure_xerrorlines \
++	figure_xyerrorlines \
++	figure_yerrorlines \
++	figure_surface \
++	figure_surface+contours \
++	figure_mapcontours
++
++# make .pdf figure from .eps
++%.pdf : %.eps
++	$$GSC -dEPSCrop -q -o $@ -sDEVICE=pdfwrite $<
++
++FIGURES_EPS=$(addsuffix .eps,$(FIGURES))
++FIGURES_PDF=$(addsuffix .pdf,$(FIGURES))
++
++$(FIGURES_EPS) : $(D)/plotstyles.gnu $(TARGET)
++	GNUPLOT_LIB=$(TOP)/demo; export GNUPLOT_LIB; \
++	GNUPLOT_PS_DIR=$(T)postscript; export GNUPLOT_PS_DIR; \
++	$(TARGET) $<
+ 
+ # Call LaTeX three times to get the toc right.
+-gnuplot.dvi: gnuplot.tex $(D)titlepag.tex
+-	cp gnuplot.tex $(D)gp_tex2.tex
+-	cp $(D)../VERSION $(D)
+-	cd $(D) && latex gp_tex2.tex && latex gp_tex2.tex && latex gp_tex2.tex
+-	mv $(D)gp_tex2.dvi gnuplot.dvi
+-	rm -f $(D)gp_tex2.*
++gnuplot.dvi: gnuplot.tex $(D)titlepag.tex $(FIGURES_EPS)
++	cp gnuplot.tex gp_tex2.tex
++	cp $(D)../VERSION .
++	latex $(TEXFLAG) gp_tex2.tex && makeindex gp_tex2 && latex $(TEXFLAG) gp_tex2.tex && latex $(TEXFLAG) gp_tex2.tex
++	mv gp_tex2.dvi gnuplot.dvi
++	rm -f gp_tex2.*
+ gnuplot.ps: gnuplot.dvi
+-	dvips -o gnuplot.ps gnuplot.dvi
+-gnuplot.pdf: gnuplot.tex $(D)titlepag.tex
+-	cp gnuplot.tex $(D)gp_tex2.tex
+-	cp $(D)../VERSION $(D)
+-	cd $(D) && pdflatex gp_tex2.tex && pdflatex gp_tex2.tex && pdflatex gp_tex2.tex
+-	mv $(D)gp_tex2.pdf gnuplot.pdf
+-	rm -f $(D)gp_tex2.*
++	dvips -o $@ -Ppdf -G0 -Ic3 $<
++
++PDFTEXFLAG="-include-directory=$(D)"
++
++gnuplot.pdf: gnuplot.tex $(D)titlepag.tex $(FIGURES_PDF)
++	cp gnuplot.tex gp_tex2.tex
++	cp $(D)../VERSION .
++	pdflatex $(PDFTEXFLAG) gp_tex2.tex && makeindex gp_tex2 && pdflatex $(PDFTEXFLAG) gp_tex2.tex && pdflatex $(PDFTEXFLAG) gp_tex2.tex
++	mv gp_tex2.pdf gnuplot.pdf
++	rm -f gp_tex2.*
+ 
+ 
+ # clean up temporary files

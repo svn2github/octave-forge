@@ -1,0 +1,14 @@
+changes to build with libgd
+
+diff -r 3b83c9a3f512 term/gd.trm
+--- a/term/gd.trm	Tue Jan 27 10:00:43 2009 +0100
++++ b/term/gd.trm	Tue Jan 27 10:01:27 2009 +0100
+@@ -154,6 +154,8 @@
+ # endif
+ #endif
+ 
++#undef GD_NEED_LOCAL_FONT_POINTERS
++
+ #ifdef GD_NEED_LOCAL_FONT_POINTERS
+ # include "gdfonts.h"
+ # include "gdfontl.h"

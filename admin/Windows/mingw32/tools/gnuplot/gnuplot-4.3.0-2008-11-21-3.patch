@@ -1,6 +1,6 @@
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/config/config.mgw gnuplot-4.3.0-2008-11-21/config/config.mgw
---- gnuplot-4.3.0-2008-11-21-orig/config/config.mgw	2008-03-22 18:54:29 +0100
-+++ gnuplot-4.3.0-2008-11-21/config/config.mgw	2008-12-26 14:50:09 +0100
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/config/config.mgw gnuplot-4.3.0-2008-11-21/config/config.mgw
+--- gnuplot-4.3.0-2008-11-21-orig/config/config.mgw	2008-03-22 17:54:29 +0000
++++ gnuplot-4.3.0-2008-11-21/config/config.mgw	2009-01-27 13:04:54 +0000
 @@ -512,7 +512,7 @@
  /* #undef VGAGL */
  
@@ -10,9 +10,9 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
  
  /* Define if you want to have image plotting support. */
  #define WITH_IMAGE 1
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/config/makefile.mgw gnuplot-4.3.0-2008-11-21/config/makefile.mgw
---- gnuplot-4.3.0-2008-11-21-orig/config/makefile.mgw	2008-11-21 23:36:04 +0100
-+++ gnuplot-4.3.0-2008-11-21/config/makefile.mgw	2008-12-26 14:50:09 +0100
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/config/makefile.mgw gnuplot-4.3.0-2008-11-21/config/makefile.mgw
+--- gnuplot-4.3.0-2008-11-21-orig/config/makefile.mgw	2008-11-21 22:36:04 +0000
++++ gnuplot-4.3.0-2008-11-21/config/makefile.mgw	2009-01-27 13:04:54 +0000
 @@ -18,6 +18,9 @@
  # ************** Begin of Configuration section ************************
  #
@@ -317,12 +317,12 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
 +
 +# make .pdf figure from .eps
 +%.pdf : %.eps
-+	$$GSC -g2520x1440 -q -o $@ -sDEVICE=pdfwrite $<
++	$$GSC -dEPSCrop -q -o $@ -sDEVICE=pdfwrite $<
 +
 +FIGURES_EPS=$(addsuffix .eps,$(FIGURES))
 +FIGURES_PDF=$(addsuffix .pdf,$(FIGURES))
 +
-+$(FIGURES_EPS) : $(D)/plotstyles.gnu
++$(FIGURES_EPS) : $(D)/plotstyles.gnu $(TARGET)
 +	GNUPLOT_LIB=$(TOP)/demo; export GNUPLOT_LIB; \
 +	GNUPLOT_PS_DIR=$(T)postscript; export GNUPLOT_PS_DIR; \
 +	$(TARGET) $<
@@ -361,9 +361,9 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
  
  
  # clean up temporary files
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/docs/gnuplot.doc gnuplot-4.3.0-2008-11-21/docs/gnuplot.doc
---- gnuplot-4.3.0-2008-11-21-orig/docs/gnuplot.doc	2008-11-16 20:16:45 +0100
-+++ gnuplot-4.3.0-2008-11-21/docs/gnuplot.doc	2008-12-26 14:48:57 +0100
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/docs/gnuplot.doc gnuplot-4.3.0-2008-11-21/docs/gnuplot.doc
+--- gnuplot-4.3.0-2008-11-21-orig/docs/gnuplot.doc	2008-11-16 19:16:45 +0000
++++ gnuplot-4.3.0-2008-11-21/docs/gnuplot.doc	2009-01-27 13:04:53 +0000
 @@ -2876,7 +2876,7 @@
   assumed to form a uniformly sized parallelogram.  The paralleogram is painted
   using the color of the corresponding pixel in the input image.
@@ -373,9 +373,9 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
   Each pixel (data point) of the input 2D image will become a rectangle or
   parallelipiped in the plot. The coordinates of each data point will determine
   the center of the parallelipiped.  That is, an M x N set of data will form an
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/docs/plotstyles.gnu gnuplot-4.3.0-2008-11-21/docs/plotstyles.gnu
---- gnuplot-4.3.0-2008-11-21-orig/docs/plotstyles.gnu	2008-08-04 09:39:12 +0200
-+++ gnuplot-4.3.0-2008-11-21/docs/plotstyles.gnu	2008-12-26 14:48:57 +0100
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/docs/plotstyles.gnu gnuplot-4.3.0-2008-11-21/docs/plotstyles.gnu
+--- gnuplot-4.3.0-2008-11-21-orig/docs/plotstyles.gnu	2008-08-04 07:39:12 +0000
++++ gnuplot-4.3.0-2008-11-21/docs/plotstyles.gnu	2009-01-27 13:04:53 +0000
 @@ -3,12 +3,13 @@
  #  EAM - July 2007
  #
@@ -591,9 +591,9 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
  unset xtics
  unset ytics
  unset key
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/docs/psdoc/Makefile gnuplot-4.3.0-2008-11-21/docs/psdoc/Makefile
---- gnuplot-4.3.0-2008-11-21-orig/docs/psdoc/Makefile	2002-12-16 15:17:52 +0100
-+++ gnuplot-4.3.0-2008-11-21/docs/psdoc/Makefile	2008-12-26 14:48:57 +0100
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/docs/psdoc/Makefile gnuplot-4.3.0-2008-11-21/docs/psdoc/Makefile
+--- gnuplot-4.3.0-2008-11-21-orig/docs/psdoc/Makefile	2002-12-16 14:17:52 +0000
++++ gnuplot-4.3.0-2008-11-21/docs/psdoc/Makefile	2009-01-27 13:04:53 +0000
 @@ -2,27 +2,29 @@
  # Create ps_symbols.ps
  #
@@ -631,9 +631,9 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
  
  clean:
  	-rm -f ps_symbols.ps ps_fontfile_doc.aux ps_fontfile_doc.dvi \
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/docs/titlepag.tex gnuplot-4.3.0-2008-11-21/docs/titlepag.tex
---- gnuplot-4.3.0-2008-11-21-orig/docs/titlepag.tex	2008-06-22 18:37:38 +0200
-+++ gnuplot-4.3.0-2008-11-21/docs/titlepag.tex	2008-12-26 14:48:57 +0100
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/docs/titlepag.tex gnuplot-4.3.0-2008-11-21/docs/titlepag.tex
+--- gnuplot-4.3.0-2008-11-21-orig/docs/titlepag.tex	2008-06-22 16:37:38 +0000
++++ gnuplot-4.3.0-2008-11-21/docs/titlepag.tex	2009-01-27 13:04:53 +0000
 @@ -14,7 +14,7 @@
  % LaTeX2e version
  % add `[a4paper]' before `{article}' to load settings for A4-paper
@@ -669,9 +669,9 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
  
  \setlength{\parskip}{1ex}
  \setlength{\parindent}{0pt}
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/src/version.c gnuplot-4.3.0-2008-11-21/src/version.c
---- gnuplot-4.3.0-2008-11-21-orig/src/version.c	2008-11-07 12:11:29 +0100
-+++ gnuplot-4.3.0-2008-11-21/src/version.c	2008-12-28 19:04:32 +0100
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/src/version.c gnuplot-4.3.0-2008-11-21/src/version.c
+--- gnuplot-4.3.0-2008-11-21-orig/src/version.c	2008-11-07 11:11:29 +0000
++++ gnuplot-4.3.0-2008-11-21/src/version.c	2009-01-27 13:04:54 +0000
 @@ -39,8 +39,8 @@
  #include "syscfg.h"		/* for FAQ_LOCATION */
  
@@ -683,9 +683,9 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
  const char gnuplot_date[] = "November 2008";
  const char gnuplot_copyright[] = "Copyright (C) 1986 - 1993, 1998, 2004, 2007, 2008";
  
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/src/win/winmain.c gnuplot-4.3.0-2008-11-21/src/win/winmain.c
---- gnuplot-4.3.0-2008-11-21-orig/src/win/winmain.c	2008-11-07 13:01:31 +0100
-+++ gnuplot-4.3.0-2008-11-21/src/win/winmain.c	2008-12-26 14:48:52 +0100
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/src/win/winmain.c gnuplot-4.3.0-2008-11-21/src/win/winmain.c
+--- gnuplot-4.3.0-2008-11-21-orig/src/win/winmain.c	2008-11-07 12:01:31 +0000
++++ gnuplot-4.3.0-2008-11-21/src/win/winmain.c	2009-01-27 13:04:53 +0000
 @@ -269,7 +269,7 @@
  #ifdef WGP_CONSOLE
  # define _argv argv
@@ -695,9 +695,9 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
  	int nCmdShow = 0;
  #else	 
  #ifdef __MSC__  /* MSC doesn't give us _argc and _argv[] so ...   */
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/term/emf.trm gnuplot-4.3.0-2008-11-21/term/emf.trm
---- gnuplot-4.3.0-2008-11-21-orig/term/emf.trm	2008-09-20 22:22:14 +0200
-+++ gnuplot-4.3.0-2008-11-21/term/emf.trm	2008-12-26 14:49:02 +0100
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/term/emf.trm gnuplot-4.3.0-2008-11-21/term/emf.trm
+--- gnuplot-4.3.0-2008-11-21-orig/term/emf.trm	2008-09-20 20:22:14 +0000
++++ gnuplot-4.3.0-2008-11-21/term/emf.trm	2009-01-27 13:04:53 +0000
 @@ -165,7 +165,7 @@
  #define EMF_10THDEG2RAD (3.14159265359/1800)
  #define EMF_XMAX (1024 * EMF_PX2HM)
@@ -718,9 +718,9 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
  	    continue;
  	}
  	if (equals(c_token, "font"))
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/term/gd.trm gnuplot-4.3.0-2008-11-21/term/gd.trm
---- gnuplot-4.3.0-2008-11-21-orig/term/gd.trm	2008-11-21 20:11:06 +0100
-+++ gnuplot-4.3.0-2008-11-21/term/gd.trm	2008-12-26 14:49:38 +0100
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/term/gd.trm gnuplot-4.3.0-2008-11-21/term/gd.trm
+--- gnuplot-4.3.0-2008-11-21-orig/term/gd.trm	2008-11-21 19:11:06 +0000
++++ gnuplot-4.3.0-2008-11-21/term/gd.trm	2009-01-27 13:04:53 +0000
 @@ -154,6 +154,8 @@
  # endif
  #endif
@@ -730,9 +730,51 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot
  #ifdef GD_NEED_LOCAL_FONT_POINTERS
  # include "gdfonts.h"
  # include "gdfontl.h"
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' gnuplot-4.3.0-2008-11-21-orig/term/post.trm gnuplot-4.3.0-2008-11-21/term/post.trm
---- gnuplot-4.3.0-2008-11-21-orig/term/post.trm	2008-10-11 00:28:02 +0200
-+++ gnuplot-4.3.0-2008-11-21/term/post.trm	2008-12-26 14:50:23 +0100
+@@ -320,6 +322,9 @@
+ static double PNG_linewidth_factor = 1.0;
+ static double PNG_dashlength_factor = 1.0;
+ 
++/* Subsitutes for Font Helvetica */
++static const char* Helvetica_Font_Substitutes = "Helvetica;n019003l;uhvr8a;Arial";
++
+ /* EAM - gdImage structure to hold brushes for linewidth */
+ /* We will allocate and initialize these on demand */
+ typedef struct {
+@@ -771,6 +776,13 @@
+ 		    c_token++;
+ 		}
+ 		free(png_state.default_ttffont);
++#ifdef _WIN32
++		if( strcmpi(png_state.ttffont,"helvetica") == 0 ) {
++		   /* supply substitution font names, if "Helvetica" is not found */
++		   free(png_state.ttffont);
++		   png_state.ttffont = gp_strdup(Helvetica_Font_Substitutes);
++		}
++#endif
+ 		png_state.default_ttffont = gp_strdup(png_state.ttffont);
+ 		err = gdImageStringFT(NULL, &brect[0], 0,
+ 			png_state.ttffont, (double)png_state.ttfsize,
+@@ -1792,8 +1804,17 @@
+     else if (*name) {
+ 	/* New ttf font */
+ 	free(png_state.ttffont);
++#ifdef _WIN32
++	if( strcmpi(name,"helvetica") == 0 ) {
++	   /* supply substitution font names, if "Helvetica" is not found */
++	   png_state.ttffont = gp_strdup(Helvetica_Font_Substitutes);
++	} else {
++#endif
+ 	png_state.ttffont = gp_strdup(name);
+ 	png_state.ttfsize = size;
++#ifdef _WIN32
++	}
++#endif
+     } else {
+ 	/* Restore initial default font */
+ 	free(png_state.ttffont);
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/term/post.trm gnuplot-4.3.0-2008-11-21/term/post.trm
+--- gnuplot-4.3.0-2008-11-21-orig/term/post.trm	2008-10-10 22:28:02 +0000
++++ gnuplot-4.3.0-2008-11-21/term/post.trm	2009-01-27 13:04:53 +0000
 @@ -193,7 +193,7 @@
  } ps_params_t;
  

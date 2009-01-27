@@ -1,0 +1,92 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' qrupdate-1.0-orig/Makeconf qrupdate-1.0/Makeconf
+--- qrupdate-1.0-orig/Makeconf	2009-01-09 11:21:34 +0000
++++ qrupdate-1.0/Makeconf	2009-01-27 08:04:13 +0000
+@@ -1,5 +1,5 @@
+ # set this to your compiler's executable name (e.g. gfortran, g77)
+-FC=gfortran
++FC=$(F77)
+ # requested flags
+ FFLAGS=-fimplicit-none -O3 -march=native -funroll-loops 
+ # set if you need shared library
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' qrupdate-1.0-orig/Makefile qrupdate-1.0/Makefile
+--- qrupdate-1.0-orig/Makefile	2009-01-09 11:21:34 +0000
++++ qrupdate-1.0/Makefile	2009-01-27 08:00:38 +0000
+@@ -19,7 +19,9 @@
+ # <http://www.gnu.org/licenses/>.
+ #
+ 
+-include Makeconf
++SRCDIR=@SRCDIR@
++
++include $(SRCDIR)/Makeconf
+ 
+ help:
+ 	@echo
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' qrupdate-1.0-orig/src/Makefile qrupdate-1.0/src/Makefile
+--- qrupdate-1.0-orig/src/Makefile	2009-01-14 11:22:50 +0000
++++ qrupdate-1.0/src/Makefile	2009-01-27 08:11:35 +0000
+@@ -18,7 +18,11 @@
+ # along with this software; see the file COPYING.  If not, see
+ # <http://www.gnu.org/licenses/>.
+ #
+-include ../Makeconf
++SRCDIR=@SRCDIR@
++
++include $(SRCDIR)/Makeconf
++
++vpath %.f $(SRCDIR)/src
+ 
+ SRC = caxcpy.f cch1dn.f cch1up.f cchdex.f cchinx.f cchshx.f cgqvec.f cqhqr.f \
+ cqr1up.f cqrdec.f cqrder.f cqrinc.f cqrinr.f cqrot.f cqrqh.f cqrshc.f cqrtv1.f \
+@@ -33,13 +37,23 @@
+ 
+ lib: ../libqrupdate.a
+ 
+-solib: ../libqrupdate.so
++solib: ../qrupdate.dll
++
++qrupdate.def : $(SRCDIR)/src/EXPORTS
++	echo EXPORTS>$@
++	cat $^ >> $@
+ 
+ ../libqrupdate.a: $(OBJS)
+ 	ar -cr $@ $(OBJS)
+ 
+-../libqrupdate.so: $(OBJS)
+-	$(FC) $(FFLAGS) -shared -o $@ $(OBJS) 
++../qrupdate.dll: $(OBJS) qrupdate.def
++	$(FC) $(FFLAGS) $(FLDFLAGS) \
++		-Wl,--out-implib=../libqrupdate.dll.a \
++		-Wl,--output-def=../qrupdate.exp \
++		-shared -o $@ \
++		-Wl,qrupdate.def \
++		$(OBJS) \
++		$(LAPACK) $(BLAS)
+ 
+ $(OBJS): %.o: %.f
+ 	$(FC) $(FFLAGS) $(FPICFLAGS) -c $<
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' qrupdate-1.0-orig/test/Makefile qrupdate-1.0/test/Makefile
+--- qrupdate-1.0-orig/test/Makefile	2009-01-13 09:37:17 +0000
++++ qrupdate-1.0/test/Makefile	2009-01-27 08:14:05 +0000
+@@ -18,7 +18,11 @@
+ # along with this software; see the file COPYING.  If not, see
+ # <http://www.gnu.org/licenses/>.
+ #
+-include ../Makeconf
++SRCDIR=@SRCDIR@
++
++include $(SRCDIR)/Makeconf
++
++vpath %.f $(SRCDIR)/test
+ 
+ LIBS= $(BLAS) $(LAPACK)
+ PROGS=tqr1up tqrinc tqrdec tqrshc tqrinr tqrder \
+@@ -26,7 +30,7 @@
+ OUTS=$(PROGS:%=%.out)
+ 
+ tests: $(OUTS)
+-	./report_results $(OUTS)
++	$(SRCDIR)/test/report_results $(OUTS)
+ 
+ $(OUTS): %.out: %
+ 	./$< | tee $@

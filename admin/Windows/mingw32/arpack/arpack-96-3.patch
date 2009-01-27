@@ -57,7 +57,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' arpack-96-orig/make
 +		-Wl,--whole-archive \
 +		$(OBJECTS) \
 +		-Wl,--no-whole-archive \
-+		-lblas -llapack 
++		-llapack -lblas
 +
 +$(LIBSTATIC): $(OBJECTS)
 +	ar cr $@ $^

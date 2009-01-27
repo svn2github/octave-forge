@@ -209,8 +209,8 @@ make_common_pre()
 make_common()
 {
   make_common_pre
-  echo make ${MAKE_FLAGS} $1 
-  make ${MAKE_FLAGS} $1 
+  echo make ${MAKE_FLAGS} $* 
+  make ${MAKE_FLAGS} $* 
 }
 
 build_pre() { echo ; }

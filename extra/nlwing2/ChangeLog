@@ -3,6 +3,7 @@
 	* inst/corrector.m: Optionally use fsolve as a corrector.
 	* inst/calcwing.m: Support the option.
 	* inst/qcalc.m: Fix docstring.
+	* inst/predictor.m: Dtto.
 
 2009-01-12  Jaroslav Hajek  <highegg@gmail.com>
 

@@ -24,6 +24,7 @@
 % Predicts a flow change when the global angle of attack is increased,
 % using a Euler finite-difference method. @var{dalfad} specifies the angle
 % step in degrees. Returns empty matrix if not successful.
+% @end deftypefn
 
 function flow1 = predictor (flow, dalfad)
 

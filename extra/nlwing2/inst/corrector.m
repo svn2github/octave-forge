@@ -27,52 +27,108 @@
 % iterations, respectively. Returns empty matrix if not successful.
 % @end deftypefn
 
-function flow = corrector (flow, tol, nitmin, nitmax)
+function flow = corrector (flow, tol, nitmin, nitmax, use_fsolve)
+  if (use_fsolve)
 
-  np = length (flow.g);
-  eqj = flow.eqj;
-  eq = flow.eq;
-  g = flow.g;
-  res = norm (eq) / sqrt(np);
-  printf ("%5.2e ", res);
+    global current_corrector_flow;
+    current_corrector_flow = flow;
 
-  lam0 = sqrt (1e-1*eps) * norm (eqj, 1);
-  lambda = lam0;
-
-  it = 1;
-  do
-    if (lambda <= lam0)
-      % newton step
-      g1 = g - eqj \ eq;
+    if (use_fsolve == 2)
+      ## turn off Broyden updates in the first iteration. This wouldn't be
+      ## necessary if fsolve was more intelligent about them.
+      updating = "off";
     else
-      % levenberg-marquardt step (ridge regression)
-      g1 = g - [eqj; lambda*eye(np)] \ [eq; zeros(np, 1)];
+      updating = "on";
     endif
-    eq1 = floweq (g1, flow);
-    res1 = norm (eq1) / sqrt (np);
-    if (res1 < res)
-      % successful step
-      lambda = max (lam0, lambda/1.4);
-      g = g1;
-      eq = eq1;
-      res = res1;
-      eqj = floweqj (g, flow);
-      printf ("%5.2e ", res);
+    np = length (flow.g);
+    [g, eq, info, out, eqj] = fsolve (@corrector_fcn, flow.g, ...
+        optimset ("MaxIter", nitmax,
+                  "TolFun", tol,
+                  "Jacobian", "on",
+                  "Updating", updating,
+                  "OutputFcn", @corrector_output_fcn));
+    printf ("i: %d ", info);
+    if (info > 0)
+      res = norm (eq) / sqrt(np);
+      flow.g = g;
+      flow.eq = eq;
+      flow.res = res;
+      flow.eqj = eqj;
     else
-      lambda *= 2;
-      printf ("+ ");
+      flow = [];
     endif
-  until ((res < tol && it >= nitmin) || it++ == nitmax )
-
-  % check if failed
-  if (it > nitmax)
-    flow = [];
   else
-    flow.g = g1;
-    flow.eq = eq1;
-    flow.res = res1;
-    flow.eqj = eqj;
+    np = length (flow.g);
+    eqj = flow.eqj;
+    eq = flow.eq;
+    g = flow.g;
+    res = norm (eq) / sqrt(np);
+    printf ("%5.2e ", res);
+
+    lam0 = sqrt (1e-1*eps) * norm (eqj, 1);
+    lambda = lam0;
+
+    it = 1;
+    do
+      if (lambda <= lam0)
+        % newton step
+        g1 = g - eqj \ eq;
+      else
+        % levenberg-marquardt step (ridge regression)
+        g1 = g - [eqj; lambda*eye(np)] \ [eq; zeros(np, 1)];
+      endif
+      eq1 = floweq (g1, flow);
+      res1 = norm (eq1) / sqrt (np);
+      if (res1 < res)
+        % successful step
+        lambda = max (lam0, lambda/1.4);
+        g = g1;
+        eq = eq1;
+        res = res1;
+        eqj = floweqj (g, flow);
+        printf ("%5.2e ", res);
+      else
+        lambda *= 2;
+        printf ("+ ");
+      endif
+    until ((res < tol && it >= nitmin) || it++ == nitmax )
+
+    % check if failed
+    if (it > nitmax)
+      flow = [];
+    else
+      flow.g = g1;
+      flow.eq = eq1;
+      flow.res = res1;
+      flow.eqj = eqj;
+    endif
   endif
 
+endfunction
+
+
+function [eq, eqj] = corrector_fcn (g)
+  global current_corrector_flow;
+  eq = floweq (g, current_corrector_flow);
+  ## FIXME: worksharing possible amongst floweq/floweqj !
+  if (nargout > 1)
+    eqj = floweqj (g, current_corrector_flow);
+  endif
+endfunction
+
+function stop = corrector_output_fcn (g, opt, state)
+  persistent lastiter = 0;
+  iter = opt.iter;
+  if (iter < lastiter)
+    lastiter = 0;
+  endif
+  if (iter > lastiter)
+    printf ("%5.2e ", opt.fval / sqrt (length (g)));
+    lastiter = iter;
+  else
+    printf ("+ ");
+  endif
+  stop = false;
+  
 endfunction
 

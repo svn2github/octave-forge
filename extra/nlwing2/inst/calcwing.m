@@ -26,14 +26,15 @@
 % from makewing), and any following arguments must be in 
 % @code{"option name", option_value} pairs. Valid options are:
 % @itemize
-% @item "start" Initial angle of attack (0)
-% @item "limit" Maximum angle of attack (22)
-% @item "psep"  The minimum past-separation local angle to terminate (0)
-% @item "sstep" Initial angle step (0.5)
-% @item "mstep" Minimum angle step (1e-2)
-% @item "maxit" Maximum number of corrector iterations (250)
-% @item "minit" Minimum number of corrector iterations (4)
-% @item "tol"   Minimum tolerance to achieve in corrector.
+% @item "start"   Initial angle of attack (0)
+% @item "limit"   Maximum angle of attack (22)
+% @item "psep"    The minimum past-separation local angle to terminate (0)
+% @item "sstep"   Initial angle step (0.5)
+% @item "mstep"   Minimum angle step (1e-2)
+% @item "maxit"   Maximum number of corrector iterations (250)
+% @item "minit"   Minimum number of corrector iterations (4)
+% @item "tol"     Minimum tolerance to achieve in corrector.
+% @item "use_fsolve"  Use fsolve as a corrector (false) (experimental).
 % @end itemize
 % @end deftypefn
 function clq = calcwing (wing, varargin)
@@ -48,7 +49,8 @@ function clq = calcwing (wing, varargin)
   opts.mstep = 1e-2;
   opts.maxit = 250;
   opts.minit = 4;
-  opts.tol = 1e-4;
+  opts.tol = [];
+  opts.use_fsolve = false;
   wassep = false;
 
   ns = 0;
@@ -56,6 +58,15 @@ function clq = calcwing (wing, varargin)
   for i = 1:2:length (varargin)-1
     opts.(varargin{i}) = varargin{i+1};
   endfor
+  ## FIXME: the following duality stems from the fact that 
+  ## fsolve uses relative tolerance. Need a better solution here.
+  if (isempty (opts.tol))
+    if (opts.use_fsolve)
+      opts.tol = 1e-12;
+    else
+      opts.tol = 1e-4;
+    endif
+  endif
 
   flw.wing = wing;
 
@@ -65,13 +76,19 @@ function clq = calcwing (wing, varargin)
 
   flw1 = flw;
 
+  first_iter = true;
   while (flw.alfad < opts.limit && step >= opts.mstep)
     % corrector
     printf_flush ("corrector loop: ");
 
-    nmaxit = max (opts.minit, floor (opts.maxit * opts.mstep / step));
+    if (opts.use_fsolve)
+      nmaxit = opts.maxit;
+    else
+      nmaxit = max (opts.minit, floor (opts.maxit * opts.mstep / step));
+    endif
     tol1 = min (1e4*flw.res, opts.tol);
-    flw1 = corrector (flw1, tol1, opts.minit, nmaxit);
+    flw1 = corrector (flw1, tol1, opts.minit, nmaxit, ...
+        opts.use_fsolve * (1 + first_iter));
 
     if (isempty (flw1))
       printf_flush (" bad.\n");
@@ -83,6 +100,7 @@ function clq = calcwing (wing, varargin)
       endif
     else
       printf_flush (" good.\n");
+      first_iter = false;
       flw = flw1;
       ns++;
       alfas{ns} = flw.alfad;

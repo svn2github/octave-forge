@@ -32,6 +32,7 @@
 % @item cm
 % local flow twist (difference of local induced angle of attack and global angle of attack)
 % @item alc
+% @end table
 % @end deftypefn
 
 function [cl, cd, cm, ad] = qcalc (flow)

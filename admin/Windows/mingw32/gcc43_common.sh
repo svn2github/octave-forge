@@ -310,12 +310,18 @@ unpack_add_ver()
    unpack_post;
 }
 
-unpack_orig_pre() { echo ; }
+unpack_orig_pre()
+{ 
+   if [ -d ${TOPDIR}/${SRCDIR_ORIG} ]; then 
+      echo Removing ${TOPDIR}/${SRCDIR_ORIG} ...
+	  rm -rf ${TOPDIR}/${SRCDIR_ORIG}; 
+   fi 
+}
 unpack_orig()
 {
 (
   unpack_orig_pre
-  ( mkdir -p ${TOPDIR}/tmp && cd ${TOPDIR}/tmp && unpack && mv `basename ${SRCDIR}` ${TOPDIR}/${SRCDIR_ORIG} && cd ${TOPDIR} && rm -rf tmp)
+  ( mkdir -p ${TOPDIR}/tmp && cd ${TOPDIR}/tmp && ${TAR} -${TAR_TYPE} -${TAR_FLAGS} ${TOPDIR}/${SRCFILE} && mv ${SRCDIR} ${TOPDIR}/${SRCDIR_ORIG} && cd ${TOPDIR} && rm -rf tmp)
   unpack_orig_post
 )
 }

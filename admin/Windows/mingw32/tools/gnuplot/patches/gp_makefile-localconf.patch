@@ -2,7 +2,7 @@ in makefile: local build configuration
 
 diff -r 0abc40945a68 config/config.mgw
 --- a/config/config.mgw	Tue Jan 27 10:18:59 2009 +0100
-+++ b/config/config.mgw	Tue Jan 27 10:19:33 2009 +0100
++++ b/config/config.mgw	Fri Jan 30 10:05:31 2009 +0100
 @@ -512,7 +512,7 @@
  /* #undef VGAGL */
  
@@ -14,7 +14,7 @@ diff -r 0abc40945a68 config/config.mgw
  #define WITH_IMAGE 1
 diff -r 0abc40945a68 config/makefile.mgw
 --- a/config/makefile.mgw	Tue Jan 27 10:18:59 2009 +0100
-+++ b/config/makefile.mgw	Tue Jan 27 10:19:33 2009 +0100
++++ b/config/makefile.mgw	Fri Jan 30 10:05:31 2009 +0100
 @@ -19,7 +19,7 @@
  #
  
@@ -51,7 +51,17 @@ diff -r 0abc40945a68 config/makefile.mgw
  
  
  # To compile the .hlp file you need hcw either out of Microsoft SDK or MS Help
-@@ -155,10 +155,8 @@
+@@ -124,6 +124,9 @@
+ # GNU sort
+ GNUSORT = /bin/sort
+ 
++# GNU sed
++SED=/usr/bin/sed
++
+ #
+ # *************** End of Configuration section *************************
+ #
+@@ -155,10 +158,8 @@
  endif
  
  
@@ -64,7 +74,7 @@ diff -r 0abc40945a68 config/makefile.mgw
  
  RM = rm -f
  CP = cp -p
-@@ -178,7 +176,7 @@
+@@ -178,7 +179,7 @@
  endif
  
  ifdef CONSOLE
@@ -73,7 +83,7 @@ diff -r 0abc40945a68 config/makefile.mgw
    LDFLAGS2 = -mconsole
  endif
  
-@@ -268,7 +266,7 @@
+@@ -268,7 +269,7 @@
    RCFLAGS = --include-dir /mingw32/include \
  	--include-dir=$(TOP)/src/win \
  	--define __WIN32__ --define __WIN95__ --define MSRC \
@@ -82,3 +92,21 @@ diff -r 0abc40945a68 config/makefile.mgw
    ifdef WXT
  	RCFLAGS += --define WXWIDGETS --include-dir=$(WX_LOCATION)
    endif
+@@ -430,7 +431,7 @@
+ 	@for e in `egrep "^[ 	]*START_HELP" $^ |\
+ 	     $(GNUSORT) -f -t':' -k2` ; do \
+ 	  f=`echo $$e |cut -d\: -f1` ; s=`echo $$e | cut -d\: -f2` ;\
+-	  sed -n "/^[ 	]*$$s/,/^[ 	]*END_HELP/p" $$f ; \
++	  $(SED) -n "/^[ 	]*$$s/,/^[ 	]*END_HELP/p" $$f ; \
+ 	done >$@
+ else
+ # sequence of terminals according to "ls term/*.trm":
+@@ -438,7 +439,7 @@
+ 	@echo "Building allterm.h"
+ 	@cat $(T)*.trm > allterm.c
+ 	$(CPP) $(CFLAGS) -I$(T:/=) -DTERM_DRIVER_H -DTERM_HELP allterm.c | \
+-	  sed '/^ *$$/d;/^#/d' > allterm.h
++	  $(SED) '/^ *$$/d;/^#/d' > allterm.h
+ 	@rm -f allterm.c
+ endif
+ doc2tex.exe: $(D)doc2tex.c $(D)termdoc.c allterm.h

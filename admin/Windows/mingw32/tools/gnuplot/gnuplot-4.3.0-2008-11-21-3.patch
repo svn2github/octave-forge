@@ -1,6 +1,6 @@
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/config/config.mgw gnuplot-4.3.0-2008-11-21/config/config.mgw
 --- gnuplot-4.3.0-2008-11-21-orig/config/config.mgw	2008-03-22 17:54:29 +0000
-+++ gnuplot-4.3.0-2008-11-21/config/config.mgw	2009-01-27 13:04:54 +0000
++++ gnuplot-4.3.0-2008-11-21/config/config.mgw	2009-01-30 09:10:06 +0000
 @@ -512,7 +512,7 @@
  /* #undef VGAGL */
  
@@ -12,7 +12,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  #define WITH_IMAGE 1
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/config/makefile.mgw gnuplot-4.3.0-2008-11-21/config/makefile.mgw
 --- gnuplot-4.3.0-2008-11-21-orig/config/makefile.mgw	2008-11-21 22:36:04 +0000
-+++ gnuplot-4.3.0-2008-11-21/config/makefile.mgw	2009-01-27 13:04:54 +0000
++++ gnuplot-4.3.0-2008-11-21/config/makefile.mgw	2009-01-30 09:10:06 +0000
 @@ -18,6 +18,9 @@
  # ************** Begin of Configuration section ************************
  #
@@ -58,7 +58,17 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  
  
  # To compile the .hlp file you need hcw either out of Microsoft SDK or MS Help
-@@ -151,10 +155,8 @@
+@@ -120,6 +124,9 @@
+ # GNU sort
+ GNUSORT = /bin/sort
+ 
++# GNU sed
++SED=/usr/bin/sed
++
+ #
+ # *************** End of Configuration section *************************
+ #
+@@ -151,10 +158,8 @@
  endif
  
  
@@ -71,7 +81,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  
  RM = rm -f
  CP = cp -p
-@@ -174,15 +176,15 @@
+@@ -174,15 +179,15 @@
  endif
  
  ifdef CONSOLE
@@ -90,7 +100,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  	$(OPTS)
  
  ifdef MOUSE
-@@ -237,6 +239,16 @@
+@@ -237,6 +242,16 @@
  endif
  endif
  
@@ -107,7 +117,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  ifdef WXT
  	CFLAGS += -DWXWIDGETS
  	CXXFLAGS += $(shell wx-config --cxxflags)
-@@ -252,9 +264,9 @@
+@@ -252,9 +267,9 @@
    # RC = d:/cygnus/cygwin-b20/H-i586-cygwin32/bin/windres
    RC  = $(GCCPATH)windres
    RCFLAGS = --include-dir /mingw32/include \
@@ -119,7 +129,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
    ifdef WXT
  	RCFLAGS += --define WXWIDGETS --include-dir=$(WX_LOCATION)
    endif
-@@ -272,19 +284,19 @@
+@@ -272,19 +287,19 @@
  
  # macros for makefile.all
  O=o
@@ -144,7 +154,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  
  OBJS = $(COREOBJS) version.$(O) gpexecute.$(O) $(WX_OBJS)
  
-@@ -302,14 +314,20 @@
+@@ -302,14 +317,20 @@
  # default rules
  .SUFFIXES: .exe .o .c
  .c.o:
@@ -167,7 +177,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  	cp $< $@
  
  $(OBJS) $(WINOBJS) dbinary.$(O): config.h
-@@ -319,75 +337,76 @@
+@@ -319,75 +340,76 @@
  	$(TERMLIBS) $(WX_LIBS) $(CAIRO_LIBS) $(PANGO_LIBS)
  
  $(PGNUPLOT): win/pgnuplot.c version.o
@@ -266,7 +276,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  #	cd ..
  
  # _Windows causes wtext.h to define fread() etc
-@@ -406,7 +425,7 @@
+@@ -406,10 +428,10 @@
  # sort alphabetically all terminals (note: req. GNU sort, not from MS)
  allterm.h: $(CORETERM)
  	@echo "Building allterm.h"
@@ -274,8 +284,21 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
 +	@for e in `egrep "^[ 	]*START_HELP" $^ |\
  	     $(GNUSORT) -f -t':' -k2` ; do \
  	  f=`echo $$e |cut -d\: -f1` ; s=`echo $$e | cut -d\: -f2` ;\
- 	  sed -n "/^[ 	]*$$s/,/^[ 	]*END_HELP/p" $$f ; \
-@@ -430,23 +449,71 @@
+-	  sed -n "/^[ 	]*$$s/,/^[ 	]*END_HELP/p" $$f ; \
++	  $(SED) -n "/^[ 	]*$$s/,/^[ 	]*END_HELP/p" $$f ; \
+ 	done >$@
+ else
+ # sequence of terminals according to "ls term/*.trm":
+@@ -417,7 +439,7 @@
+ 	@echo "Building allterm.h"
+ 	@cat $(T)*.trm > allterm.c
+ 	$(CPP) $(CFLAGS) -I$(T:/=) -DTERM_DRIVER_H -DTERM_HELP allterm.c | \
+-	  sed '/^ *$$/d;/^#/d' > allterm.h
++	  $(SED) '/^ *$$/d;/^#/d' > allterm.h
+ 	@rm -f allterm.c
+ endif
+ doc2tex.exe: $(D)doc2tex.c $(D)termdoc.c allterm.h
+@@ -430,23 +452,71 @@
  endif
  
  gnuplot.tex: $(D)gnuplot.doc doc2tex.exe
@@ -363,7 +386,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  # clean up temporary files
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/docs/gnuplot.doc gnuplot-4.3.0-2008-11-21/docs/gnuplot.doc
 --- gnuplot-4.3.0-2008-11-21-orig/docs/gnuplot.doc	2008-11-16 19:16:45 +0000
-+++ gnuplot-4.3.0-2008-11-21/docs/gnuplot.doc	2009-01-27 13:04:53 +0000
++++ gnuplot-4.3.0-2008-11-21/docs/gnuplot.doc	2009-01-30 09:10:05 +0000
 @@ -2876,7 +2876,7 @@
   assumed to form a uniformly sized parallelogram.  The paralleogram is painted
   using the color of the corresponding pixel in the input image.
@@ -375,7 +398,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
   the center of the parallelipiped.  That is, an M x N set of data will form an
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/docs/plotstyles.gnu gnuplot-4.3.0-2008-11-21/docs/plotstyles.gnu
 --- gnuplot-4.3.0-2008-11-21-orig/docs/plotstyles.gnu	2008-08-04 07:39:12 +0000
-+++ gnuplot-4.3.0-2008-11-21/docs/plotstyles.gnu	2009-01-27 13:04:53 +0000
++++ gnuplot-4.3.0-2008-11-21/docs/plotstyles.gnu	2009-01-30 09:10:05 +0000
 @@ -3,12 +3,13 @@
  #  EAM - July 2007
  #
@@ -593,7 +616,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  unset key
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/docs/psdoc/Makefile gnuplot-4.3.0-2008-11-21/docs/psdoc/Makefile
 --- gnuplot-4.3.0-2008-11-21-orig/docs/psdoc/Makefile	2002-12-16 14:17:52 +0000
-+++ gnuplot-4.3.0-2008-11-21/docs/psdoc/Makefile	2009-01-27 13:04:53 +0000
++++ gnuplot-4.3.0-2008-11-21/docs/psdoc/Makefile	2009-01-30 09:10:05 +0000
 @@ -2,27 +2,29 @@
  # Create ps_symbols.ps
  #
@@ -633,7 +656,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  	-rm -f ps_symbols.ps ps_fontfile_doc.aux ps_fontfile_doc.dvi \
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/docs/titlepag.tex gnuplot-4.3.0-2008-11-21/docs/titlepag.tex
 --- gnuplot-4.3.0-2008-11-21-orig/docs/titlepag.tex	2008-06-22 16:37:38 +0000
-+++ gnuplot-4.3.0-2008-11-21/docs/titlepag.tex	2009-01-27 13:04:53 +0000
++++ gnuplot-4.3.0-2008-11-21/docs/titlepag.tex	2009-01-30 09:10:05 +0000
 @@ -14,7 +14,7 @@
  % LaTeX2e version
  % add `[a4paper]' before `{article}' to load settings for A4-paper
@@ -671,7 +694,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  \setlength{\parindent}{0pt}
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/src/version.c gnuplot-4.3.0-2008-11-21/src/version.c
 --- gnuplot-4.3.0-2008-11-21-orig/src/version.c	2008-11-07 11:11:29 +0000
-+++ gnuplot-4.3.0-2008-11-21/src/version.c	2009-01-27 13:04:54 +0000
++++ gnuplot-4.3.0-2008-11-21/src/version.c	2009-01-30 09:10:06 +0000
 @@ -39,8 +39,8 @@
  #include "syscfg.h"		/* for FAQ_LOCATION */
  
@@ -685,7 +708,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/src/win/winmain.c gnuplot-4.3.0-2008-11-21/src/win/winmain.c
 --- gnuplot-4.3.0-2008-11-21-orig/src/win/winmain.c	2008-11-07 12:01:31 +0000
-+++ gnuplot-4.3.0-2008-11-21/src/win/winmain.c	2009-01-27 13:04:53 +0000
++++ gnuplot-4.3.0-2008-11-21/src/win/winmain.c	2009-01-30 09:10:05 +0000
 @@ -269,7 +269,7 @@
  #ifdef WGP_CONSOLE
  # define _argv argv
@@ -697,7 +720,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  #ifdef __MSC__  /* MSC doesn't give us _argc and _argv[] so ...   */
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/term/emf.trm gnuplot-4.3.0-2008-11-21/term/emf.trm
 --- gnuplot-4.3.0-2008-11-21-orig/term/emf.trm	2008-09-20 20:22:14 +0000
-+++ gnuplot-4.3.0-2008-11-21/term/emf.trm	2009-01-27 13:04:53 +0000
++++ gnuplot-4.3.0-2008-11-21/term/emf.trm	2009-01-30 09:10:05 +0000
 @@ -165,7 +165,7 @@
  #define EMF_10THDEG2RAD (3.14159265359/1800)
  #define EMF_XMAX (1024 * EMF_PX2HM)
@@ -720,7 +743,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  	if (equals(c_token, "font"))
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/term/gd.trm gnuplot-4.3.0-2008-11-21/term/gd.trm
 --- gnuplot-4.3.0-2008-11-21-orig/term/gd.trm	2008-11-21 19:11:06 +0000
-+++ gnuplot-4.3.0-2008-11-21/term/gd.trm	2009-01-27 13:04:53 +0000
++++ gnuplot-4.3.0-2008-11-21/term/gd.trm	2009-01-30 09:10:06 +0000
 @@ -154,6 +154,8 @@
  # endif
  #endif
@@ -774,7 +797,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~'
  	free(png_state.ttffont);
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2008-11-21-orig/term/post.trm gnuplot-4.3.0-2008-11-21/term/post.trm
 --- gnuplot-4.3.0-2008-11-21-orig/term/post.trm	2008-10-10 22:28:02 +0000
-+++ gnuplot-4.3.0-2008-11-21/term/post.trm	2009-01-27 13:04:53 +0000
++++ gnuplot-4.3.0-2008-11-21/term/post.trm	2009-01-30 09:10:06 +0000
 @@ -193,7 +193,7 @@
  } ps_params_t;
  

@@ -1,5 +1,0 @@
-#####
-gaoptimset:
-
-TimeLimit?	//tic toc useful but not nested?
-#####

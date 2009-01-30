@@ -1,0 +1,13 @@
+STATUS (BY EXAMPLES)
+
+see tests of the ga function
+
+
+TODO 
+
+linear constraints (needs mutationadaptfeasible and perhaps LMI)
+nonlinear constraints
+subpopulations and migrations
+bitstring support
+plot functions
+more texinfo

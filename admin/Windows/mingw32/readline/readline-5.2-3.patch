@@ -1,6 +1,6 @@
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/bind.c readline-5.2/bind.c
---- readline-5.2-orig/bind.c	2006-07-27 15:44:10 +0200
-+++ readline-5.2/bind.c	2008-02-04 15:23:55 +0100
+--- readline-5.2-orig/bind.c	2006-07-27 13:44:10 +0000
++++ readline-5.2/bind.c	2009-01-30 11:23:48 +0000
 @@ -841,7 +841,7 @@
        filename = SYS_INPUTRC;
      }
@@ -11,8 +11,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/b
      return 0;
    filename = "~/_inputrc";
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/complete.c readline-5.2/complete.c
---- readline-5.2-orig/complete.c	2006-07-28 17:35:49 +0200
-+++ readline-5.2/complete.c	2008-02-04 15:23:55 +0100
+--- readline-5.2-orig/complete.c	2006-07-28 15:35:49 +0000
++++ readline-5.2/complete.c	2009-01-30 11:23:48 +0000
 @@ -55,6 +55,66 @@
  #include "posixdir.h"
  #include "posixstat.h"
@@ -165,8 +165,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/c
        else if (ISALPHA ((unsigned char)dirname[0]) && dirname[1] == ':')
          {
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/config.h.in readline-5.2/config.h.in
---- readline-5.2-orig/config.h.in	2006-09-12 22:02:00 +0200
-+++ readline-5.2/config.h.in	2008-02-04 15:23:55 +0100
+--- readline-5.2-orig/config.h.in	2006-09-12 20:02:00 +0000
++++ readline-5.2/config.h.in	2009-01-30 11:23:48 +0000
 @@ -257,7 +257,7 @@
  #  undef HAVE_STRCOLL
  #endif
@@ -177,8 +177,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/c
  #  define USE_VARARGS
  #else
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/display.c readline-5.2/display.c
---- readline-5.2-orig/display.c	2006-09-14 20:20:12 +0200
-+++ readline-5.2/display.c	2008-02-04 15:42:55 +0100
+--- readline-5.2-orig/display.c	2006-09-14 18:20:12 +0000
++++ readline-5.2/display.c	2009-01-30 11:23:48 +0000
 @@ -55,6 +55,11 @@
  #include "rlprivate.h"
  #include "xmalloc.h"
@@ -301,8 +301,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/d
      {
        char *buffer;
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/histfile.c readline-5.2/histfile.c
---- readline-5.2-orig/histfile.c	2006-03-31 22:48:43 +0200
-+++ readline-5.2/histfile.c	2008-02-04 15:39:06 +0100
+--- readline-5.2-orig/histfile.c	2006-03-31 20:48:43 +0000
++++ readline-5.2/histfile.c	2009-01-30 11:23:48 +0000
 @@ -134,7 +134,7 @@
    return_val = (char *)xmalloc (2 + home_len + 8); /* strlen(".history") == 8 */
    strcpy (return_val, home);
@@ -313,8 +313,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/h
  #else
    strcpy (return_val + home_len + 1, ".history");
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/history.c readline-5.2/history.c
---- readline-5.2-orig/history.c	2006-05-21 19:39:41 +0200
-+++ readline-5.2/history.c	2008-02-04 15:23:56 +0100
+--- readline-5.2-orig/history.c	2006-05-21 17:39:41 +0000
++++ readline-5.2/history.c	2009-01-30 11:23:48 +0000
 @@ -49,6 +49,10 @@
  
  #include "xmalloc.h"
@@ -327,8 +327,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/h
  #define DEFAULT_HISTORY_GROW_SIZE 50
  
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/history.h readline-5.2/history.h
---- readline-5.2-orig/history.h	2003-07-31 14:38:44 +0200
-+++ readline-5.2/history.h	2008-02-04 15:23:56 +0100
+--- readline-5.2-orig/history.h	2003-07-31 12:38:44 +0000
++++ readline-5.2/history.h	2009-01-30 11:23:48 +0000
 @@ -68,93 +68,93 @@
  
  /* Begin a session in which the history functions might be used.  This
@@ -563,8 +563,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/h
  #ifdef __cplusplus
  }
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/input.c readline-5.2/input.c
---- readline-5.2-orig/input.c	2006-08-16 21:15:16 +0200
-+++ readline-5.2/input.c	2008-02-04 15:36:06 +0100
+--- readline-5.2-orig/input.c	2006-08-16 19:15:16 +0000
++++ readline-5.2/input.c	2009-01-30 11:23:53 +0000
 @@ -61,6 +61,11 @@
  #include <stdio.h>
  #include <errno.h>
@@ -769,7 +769,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/i
  /* If a character is available to be read, then read it and stuff it into
     IBUFFER.  Otherwise, just return.  Returns number of characters read
     (0 if none available) and -1 on error (EIO). */
-@@ -221,13 +404,70 @@
+@@ -221,13 +404,71 @@
      }
  #endif /* O_NDELAY */
  
@@ -823,6 +823,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/i
 +       else if (waitResult == WAIT_OBJECT_0)
 +         {
 +           GetExitCodeThread (tty_reader_thread, (LPDWORD)&k);
++           CloseHandle(tty_reader_thread);
 +           tty_reader_thread = NULL;
 +           rl_stuff_char (k);
 +           return 1;
@@ -841,7 +842,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/i
    /* If there's nothing available, don't waste time trying to read
       something. */
    if (chars_avail <= 0)
-@@ -459,9 +699,98 @@
+@@ -459,9 +700,99 @@
      {
  #if defined (__MINGW32__)
        if (isatty (fileno (stream)))
@@ -925,6 +926,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/i
 +                  int ch;
 +
 +                  GetExitCodeThread (tty_reader_thread, (LPDWORD)&ch);
++                  CloseHandle(tty_reader_thread);
 +                  tty_reader_thread = NULL;
 +                  return ch;
 +                }
@@ -944,8 +946,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/i
        if (result == sizeof (unsigned char))
  	return (c);
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/keymaps.h readline-5.2/keymaps.h
---- readline-5.2-orig/keymaps.h	2001-11-20 18:42:49 +0100
-+++ readline-5.2/keymaps.h	2008-02-04 15:23:56 +0100
+--- readline-5.2-orig/keymaps.h	2001-11-20 17:42:49 +0000
++++ readline-5.2/keymaps.h	2009-01-30 11:23:48 +0000
 @@ -66,35 +66,35 @@
  #define ISKMAP 1
  #define ISMACR 2
@@ -992,8 +994,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/k
  #ifdef __cplusplus
  }
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/nls.c readline-5.2/nls.c
---- readline-5.2-orig/nls.c	2002-10-19 04:05:50 +0200
-+++ readline-5.2/nls.c	2008-02-04 15:40:20 +0100
+--- readline-5.2-orig/nls.c	2002-10-19 02:05:50 +0000
++++ readline-5.2/nls.c	2009-01-30 11:23:48 +0000
 @@ -44,6 +44,9 @@
  #endif
  
@@ -1040,8 +1042,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/n
      }
    else
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/parens.c readline-5.2/parens.c
---- readline-5.2-orig/parens.c	2004-03-04 04:39:51 +0100
-+++ readline-5.2/parens.c	2008-02-04 15:23:56 +0100
+--- readline-5.2-orig/parens.c	2004-03-04 03:39:51 +0000
++++ readline-5.2/parens.c	2009-01-30 11:23:48 +0000
 @@ -49,6 +49,10 @@
  #  include <sys/select.h>
  #endif
@@ -1087,8 +1089,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/p
        _rl_insert_char (count, invoking_key);
  #endif /* !HAVE_SELECT */
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/readline.c readline-5.2/readline.c
---- readline-5.2-orig/readline.c	2006-08-16 21:00:36 +0200
-+++ readline-5.2/readline.c	2008-02-04 15:42:36 +0100
+--- readline-5.2-orig/readline.c	2006-08-16 19:00:36 +0000
++++ readline-5.2/readline.c	2009-01-30 11:23:48 +0000
 @@ -220,7 +220,11 @@
  
  /* The style of `bell' notification preferred.  This can be set to NO_BELL,
@@ -1151,8 +1153,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/r
  
    _rl_keymap = xkeymap;
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/readline.h readline-5.2/readline.h
---- readline-5.2-orig/readline.h	2006-08-16 21:16:59 +0200
-+++ readline-5.2/readline.h	2008-02-04 15:23:56 +0100
+--- readline-5.2-orig/readline.h	2006-08-16 19:16:59 +0000
++++ readline-5.2/readline.h	2009-01-30 11:23:48 +0000
 @@ -63,7 +63,7 @@
  } UNDO_LIST;
  
@@ -2176,8 +2178,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/r
  #ifdef __cplusplus
  }
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/rlstdc.h readline-5.2/rlstdc.h
---- readline-5.2-orig/rlstdc.h	2003-05-30 21:08:02 +0200
-+++ readline-5.2/rlstdc.h	2008-02-04 15:23:56 +0100
+--- readline-5.2-orig/rlstdc.h	2003-05-30 19:08:02 +0000
++++ readline-5.2/rlstdc.h	2009-01-30 11:23:48 +0000
 @@ -42,4 +42,14 @@
  #  endif
  #endif
@@ -2194,8 +2196,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/r
 +
  #endif /* !_RL_STDC_H_ */
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/shlib/Makefile.in readline-5.2/shlib/Makefile.in
---- readline-5.2-orig/shlib/Makefile.in	2005-08-12 05:56:10 +0200
-+++ readline-5.2/shlib/Makefile.in	2008-02-04 15:32:48 +0100
+--- readline-5.2-orig/shlib/Makefile.in	2005-08-12 03:56:10 +0000
++++ readline-5.2/shlib/Makefile.in	2009-01-30 11:23:48 +0000
 @@ -81,10 +81,10 @@
  
  SHOBJ_LDFLAGS = @SHOBJ_LDFLAGS@
@@ -2210,8 +2212,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/s
  SHLIB_DOT = @SHLIB_DOT@
  SHLIB_LIBPREF = @SHLIB_LIBPREF@
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/support/shobj-conf readline-5.2/support/shobj-conf
---- readline-5.2-orig/support/shobj-conf	2006-04-11 15:15:43 +0200
-+++ readline-5.2/support/shobj-conf	2008-02-04 16:06:56 +0100
+--- readline-5.2-orig/support/shobj-conf	2006-04-11 13:15:43 +0000
++++ readline-5.2/support/shobj-conf	2009-01-30 11:23:48 +0000
 @@ -482,6 +482,17 @@
  	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)'
  	;;
@@ -2249,8 +2251,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/s
  # Rely on correct gcc configuration for everything else
  #
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/terminal.c readline-5.2/terminal.c
---- readline-5.2-orig/terminal.c	2006-09-28 16:11:10 +0200
-+++ readline-5.2/terminal.c	2008-02-04 15:23:56 +0100
+--- readline-5.2-orig/terminal.c	2006-09-28 14:11:10 +0000
++++ readline-5.2/terminal.c	2009-01-30 11:23:48 +0000
 @@ -661,11 +661,16 @@
  	default:
  	  break;
@@ -2269,8 +2271,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/t
  	case AUDIBLE_BELL:
  	  fprintf (stderr, "\007");
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' readline-5.2-orig/tilde.c readline-5.2/tilde.c
---- readline-5.2-orig/tilde.c	2006-04-11 17:19:32 +0200
-+++ readline-5.2/tilde.c	2008-02-04 15:23:56 +0100
+--- readline-5.2-orig/tilde.c	2006-04-11 15:19:32 +0000
++++ readline-5.2/tilde.c	2009-01-30 11:23:48 +0000
 @@ -171,7 +171,7 @@
  
    for (i = 0; i < string_len; i++)

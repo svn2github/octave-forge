@@ -21,7 +21,7 @@ Compatibility
  fminunc
  optimset
  quadprog= try Yinyu Ye's <a href="http://dollar.biz.uiowa.edu/col/ye/matlab.html">code</a>
- linprog= try <f>glpk</f>
+ linprog
 Numerical derivatives
  dfdp bs_gradient cdiff deriv leval
  numgradient numhessian

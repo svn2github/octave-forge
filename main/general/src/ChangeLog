@@ -1,9 +1,0 @@
-2008-02-18  Jaroslav Hajek <highegg@gmail.com>
-
-	* lookup.cc: correct behaviour not to accept right intval boundary
-	adjust code to meet Octave style
-
-2008-02-15  Jaroslav Hajek <highegg@gmail.com>
-
-	* initiated ChangeLog
-	* lookup.cc: added

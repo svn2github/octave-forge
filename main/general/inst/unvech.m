@@ -1,4 +1,5 @@
 ## Copyright (C) 2006  Michael Creel <michael.creel@uab.es>
+## Copyright (C) 2009  Jaroslav Hajek
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -19,42 +20,31 @@
 ## triangular elements, received as a vector @var{v}.
 ## @end deftypefn
 
-# Note: this uses a double loop. A C version would be a lot faster for large matrices.
-## Adapted-By:  Ben Hall <benjamin.hall@pw.utc.com>
-
 function x = unvech (v)
 
-	if (nargin != 1)
-    		usage ("unvech (v)");
-	endif
+  if (nargin != 1)
+    usage ("unvech (v)");
+  endif
+  
+  if (! isvector(v))
+    usage ("unvech (v)");
+  endif
+  
+  # find out dimension of symmetric matrix
+  p = length (v);
+  n = -(1 - sqrt (1 + 8*p))/2;
+  
+  if (mod (n, 1) != 0)
+    error("unvech: the input vector does not generate a square matrix");
+  endif
+  
+  x = zeros (n, n);
 
-	if (! isvector(v))
-		usage ("unvech (v)");
-	endif
-
-	# find out dimension of symmetric matrix
-	p = length(v);
-	g = -(1 - sqrt(1 + 8*p))/2;
-
-	if (mod(g,1) != 0)
-		error("unvech: the input vector does not generate a square matrix");
-	endif
-
-	x = zeros(g,g);
-
-	# fill in the symmetric matrix, the obvious way
-# 	k = 1;
-# 	for i = 1:g
-# 		for j = i:g
-# 			x(i,j) = v(k);
-# 			if (i != j) x(j,i) = v(k); endif
-# 			k = k + 1;
-# 		endfor
-# 	endfor
-
-	# fill in the symmetric matrix, a more clever way
- 	ii = repmat( 1:g, [g 1] );
- 	idx= find( ii <= ii' );
- 	x(idx) = v;
- 	x = x + x' - diag(diag(x));
+  # do the reverse of vech
+  count = 0;
+  for j = 1 : n
+    i = j : n;
+    x(j,i) = x(i,j) = v(count + i);
+    count += n - j;
+  endfor
 endfunction

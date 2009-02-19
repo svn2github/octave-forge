@@ -42,13 +42,12 @@ MFILES =  ncchar.m ncfloat.m nclong.m ncbyte.m ncdouble.m ncint.m ncshort.m
 TARGETS = $(NCTARGET)
 
 MOFLAGS = $(OCTCDF_CFLAGS)
+MOLIBS = $(shell mkoctfile --print LIBS) $(OCTCDF_LIBS) 
 
 #
 # comment this line out if your octave installation does not have integer types.
 #
 MOFLAGS := $(MOFLAGS) -DHAVE_OCTAVE_INT
-
-EXTRALIBS = $(OCTCDF_LIBS) 
 
 ifeq ($(HAVE_NETCDF),yes)
 all: $(TARGETS)
@@ -62,7 +61,7 @@ mfiles: $(MFILES)
 ov-netcdf.o ov-ncfile.o ov-ncvar.o  ov-ncatt.o  ov-ncdim.o: ov-netcdf.h ov-ncfile.h ov-ncvar.h  ov-ncatt.h ov-ncdim.h
 
 $(NCTARGET) : $(OBJECTS)
-	$(MKOCTFILE)  -o $@ $(MOFLAGS) $(OBJECTS) $(EXTRALIBS)
+	LIBS="$(MOLIBS)" $(MKOCTFILE) -o $@ $(MOFLAGS) $(OBJECTS)
 
 %.o:%.cc
 	$(MKOCTFILE) -c $< $(MOFLAGS) $(DEFINES)

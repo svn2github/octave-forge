@@ -36,8 +36,11 @@
 ##  two element vector [min,max] giving the desired output range of
 ##  @var{xhat}; if not provided or if the provided range is less than
 ##  the range of the data, the default is the min and max of @var{x}
+## @item "weights", @var{vector}
+##  A vector of weighting values for fitting each point in the data.
 ## @item "relative"
-##  use relative differences for the goodnes of fit term
+##  use relative differences for the goodnes of fit term.  Conflicts
+##  with the "weights" option.
 ## @item "midpointrule"
 ##  use the midpoint rule for the integration terms rather than a direct sum
 ##@end table
@@ -54,16 +57,10 @@ function [xhat, yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
   Nhat = 100;
   range = [min(x),max(x)];
   gridx = 0;
+  weights = 0;
   relative = 0;
   midpr = 0;
   
-  ## this is a hack to allow passing varargin from another function...
-  ## is there a better way?
-  if length(varargin)
-    if iscell(varargin{1})
-      varargin = varargin{1};
-    endif
-  endif
   ## parse the provided options
   if ( length(varargin) )
     for i = 1:length(varargin)
@@ -78,6 +75,9 @@ function [xhat, yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
 	  case "range"
 	    gridx = 1;
 	    range = varargin{i+1};
+	  case "weights"
+	    weights = 1;
+	    weightv = varargin{i+1};
 	  case "relative"
 	    relative = 1;
 	  case "midpointrule"
@@ -91,6 +91,9 @@ function [xhat, yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
   if (gridx & midpr)
     warning("midpointrule is not used if mapping to regular spaced x")
     midpr = 0;
+  endif
+  if (weights & relative)
+    warning("relative differences is used if a weighting vector is provided")
   endif
   
   N = length(x);
@@ -115,8 +118,11 @@ function [xhat, yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
   endif
 
   ## construct "weighting" matrices W and U
-  ## use relative differences
-  if (relative)
+  if (weights)
+    ## use arbitrary weighting as provided
+    W = diag(weightv);
+  elseif (relative)
+    ## use relative differences
     Yinv = spdiag(1./y);
     W = Yinv^2;
   else
@@ -143,15 +149,18 @@ function [xhat, yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
   endif
   
   ## Smoothing
-  delta = trace(D'*D)/Nhat^(2+d);  # using "relative" affects this!
-  ##yhat = (M'*W*M + lambda*D'*U*D) \ M'*W*y;
-  C = chol(M'*W*M + lambda*delta^(-1)*D'*U*D);
-  yhat = C \ (C' \ M'*W*y);
+  delta = trace(D'*D)/Nhat^(2+d);  # using "relative" or other weighting affects this!
+  yhat = (M'*W*M + lambda*delta^(-1)*D'*U*D) \ M'*W*y;
+  #[R,P,S] = splchol(M'*W*M + lambda*delta^(-1)*D'*U*D);
+  #yhat = S*(R'\(R\(S'*M'*W*y)));
   
   ## Computation of hat diagonal and cross-validation
   if (nargout > 2)
     ## from AIChE J. (2006) 52, 325
-    H = M * ( C \ (C' \ M'*W) );
+    ## note: chol factorization does not help speed up the computation of H;
+    ## should implement Eiler's partial H computation if many point smoothing by GCV is needed
+    ##H = M*(S*(R'\(R\(S'*M'*W))));
+    H = M*((M'*W*M + lambda*delta^(-1)*D'*U*D)\M'*W);
     ## note: this is variance, squared of the standard error that Eilers uses
     v = (M*yhat - y)'*(M*yhat - y)/N / (1 - trace(H)/N)^2;
   endif

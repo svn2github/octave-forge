@@ -22,20 +22,20 @@
 ## @end deftypefn
 
 
-function out = rgdtsmcorewrap (log10lambda, x, y, d, mincell, options)
+function out = rgdtsmcorewrap (log10lambda, x, y, d, mincell, varargin)
 
   lambda = 10^(log10lambda);
   
   if ( length(mincell)==2 )
     stdev = mincell{2};
-    [xhat, yhat] = rgdtsmcore (x, y, d, lambda, options);
+    [xhat, yhat] = rgdtsmcore (x, y, d, lambda, varargin{:});
 
     N = length(x);
     Nhat = length(xhat);
 
     relative = 0;
-    for i = 1:length(options)
-      if strcmp(options{i},"relative")
+    for i = 1:length(varargin)
+      if strcmp(varargin{i},"relative")
 	relative = 1;
       endif
     endfor
@@ -59,7 +59,7 @@ function out = rgdtsmcorewrap (log10lambda, x, y, d, mincell, options)
     out = (stdevd - stdev)^2;
 
   else
-    [xhat, yhat, cve] = rgdtsmcore (x, y, d, lambda, options);
+    [xhat, yhat, cve] = rgdtsmcore (x, y, d, lambda, varargin{:});
     out = cve;
   endif
 

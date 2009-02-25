@@ -2,7 +2,7 @@ Name: data-smoothing
 Version: 1.1.1
 Date: 2008-08-21
 Author: Jonathan Stickel
-Maintainer: The Octave Community
+Maintainer: Jonathan Stickel
 Title: Data smoothing
 Description: Algorithms for smoothing noisy data
 Categories: Data-smoothing

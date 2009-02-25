@@ -37,7 +37,7 @@
 ## use generalized cross-validation to determine the optimal value for
 ## lambda; if neither "lambda" nor "stdev" options are given, this
 ## option is implied
-##@item "lguess"
+##@item "lguess", @var{value}
 ## the initial value for lambda to use in the iterative minimization
 ## algorithm to find the optimal value (default = 1)
 ##@item "gridx"
@@ -51,8 +51,11 @@
 ## two element vector [min,max] giving the desired output range of
 ## @var{xhat}; if not provided or if the provided range is less than
 ## the range of the data, the default is the min and max of @var{x}
-##@item "relative"
-## use relative differences for the goodnes of fit term
+## @item "weights", @var{vector}
+##  A vector of weighting values for fitting each point in the data.
+## @item "relative"
+##  use relative differences for the goodnes of fit term.  Conflicts
+##  with the "weights" option.
 ##@item "midpointrule"
 ## use the midpoint rule for the integration terms rather than a direct
 ## sum; this option conflicts with the option "gridx"
@@ -118,17 +121,17 @@ function [xhat, yhat, lambda] = regdatasmooth (x, y, varargin)
     ## do nothing and use the provided lambda
   elseif ( stdev )
     opt = optimset("TolFun",1e-6,"MaxFunEvals",20);
-    log10lambda = fminunc ("rgdtsmcorewrap", guess, opt, x, y, d, {"stdev", stdev}, options);
+    log10lambda = fminunc ("rgdtsmcorewrap", guess, opt, x, y, d, {"stdev", stdev}, options{:});
     lambda = 10^log10lambda;
   else
     ## perform cross-validation
     opt = optimset("TolFun",1e-4,"MaxFunEvals",20);
-    log10lambda = fminunc ("rgdtsmcorewrap", guess, opt, x, y, d, {"cve"}, options);
+    log10lambda = fminunc ("rgdtsmcorewrap", guess, opt, x, y, d, {"cve"}, options{:});
     lambda = 10^log10lambda;
   endif
   
   %%ys = tkrgdatasmdd(x, y, lambda, d);
-  [xhat, yhat] = rgdtsmcore (x, y, d, lambda, options);
+  [xhat, yhat] = rgdtsmcore (x, y, d, lambda, options{:});
   
 endfunction
 
@@ -148,7 +151,7 @@ endfunction
 %! yh2p = ddmat(x,2)*yh;
 %! clf
 %! subplot(221)
-%! plot(x,y,'o',x,yh,x,sin(x))
+%! plot(x,y,'o','markersize',5,x,yh,x,sin(x))
 %! title("y(x)")
 %! legend("noisy","smoothed","sin(x)","location","northeast");
 %! subplot(222)
@@ -173,7 +176,7 @@ endfunction
 %! lambda
 %! clf
 %! figure(1);
-%! plot(x,y,'o',xh,yh,xh,sin(xh))
+%! plot(x,y,'o','markersize',10,xh,yh,xh,sin(xh))
 %! title("y(x)")
 %! legend("noisy","smoothed","sin(x)","location","northeast");
 %! %--------------------------------------------------------

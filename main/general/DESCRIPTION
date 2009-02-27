@@ -2,11 +2,11 @@ Name: General
 Version: 1.0.7
 Date: 2008-08-23
 Author: Various authors
-Maintainer: The Octave Community
+Maintainer: Jaroslav Hajek
 Title: General
 Description: General tools for octave.
 Categories: General
-Depends: octave (>= 2.9.7)
+Depends: octave (>= 3.0.0)
 Autoload: yes
-License: GPL version 2 or later
+License: GPL version 3 or later
 Url: http://octave.sf.net

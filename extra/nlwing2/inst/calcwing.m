@@ -34,12 +34,11 @@
 % @item "maxit"   Maximum number of corrector iterations (250)
 % @item "minit"   Minimum number of corrector iterations (4)
 % @item "tol"     Minimum tolerance to achieve in corrector.
+% @item "silent"  Suppress verbose output (false)
 % @item "use_fsolve"  Use fsolve as a corrector (false) (experimental).
 % @end itemize
 % @end deftypefn
 function clq = calcwing (wing, varargin)
-
-  page_screen_output (0);
 
   % set default options
   opts.start = 0;
@@ -50,6 +49,7 @@ function clq = calcwing (wing, varargin)
   opts.maxit = 250;
   opts.minit = 4;
   opts.tol = [];
+  opts.silent = false;
   opts.use_fsolve = false;
   wassep = false;
 
@@ -66,6 +66,11 @@ function clq = calcwing (wing, varargin)
     else
       opts.tol = 1e-4;
     endif
+  endif
+
+  if (opts.silent)
+    % supply a dummy output function
+    printf_flush = @() [];
   endif
 
   flw.wing = wing;
@@ -177,7 +182,7 @@ function clq = calcwing (wing, varargin)
 endfunction
 
 function printf_flush (varargin)
-  printf (varargin{:});
-  fflush (stdout);
+  fprintf (stderr, varargin{:});
+  fflush (stderr);
 endfunction
 

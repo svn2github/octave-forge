@@ -20,20 +20,21 @@
 % 
 
 % -*- texinfo -*-
-% @deftypefn{Function File} {flow =} corrector (flow, tol, nitmin, nitmax)
+% @deftypefn{Function File} {flow =} corrector (flow, opts, init)
 % applies a newton/levenberg-marquardt corrector to a flow state, in order
-% to reach local lift/circulation balance. @var{tol} specifies the tolerance,
-% @var{nitmin} and @var{nitmax} are the minimum and maximum numbers of 
-% iterations, respectively. Returns empty matrix if not successful.
+% to reach local lift/circulation balance. Reads the options tol, nitmin,
+% nitmax, use_fsolve and silent from opts.
+% Returns empty matrix if not successful.
 % @end deftypefn
 
-function flow = corrector (flow, tol, nitmin, nitmax, use_fsolve)
-  if (use_fsolve)
+function flow = corrector (flow, opts, init)
+  verbose = ! opts.silent;
+  if (opts.use_fsolve)
 
     global current_corrector_flow;
     current_corrector_flow = flow;
 
-    if (use_fsolve == 2)
+    if (init)
       ## turn off Broyden updates in the first iteration. This wouldn't be
       ## necessary if fsolve was more intelligent about them.
       updating = "off";
@@ -41,13 +42,17 @@ function flow = corrector (flow, tol, nitmin, nitmax, use_fsolve)
       updating = "on";
     endif
     np = length (flow.g);
-    [g, eq, info, out, eqj] = fsolve (@corrector_fcn, flow.g, ...
-        optimset ("MaxIter", nitmax,
-                  "TolFun", tol,
-                  "Jacobian", "on",
-                  "Updating", updating,
-                  "OutputFcn", @corrector_output_fcn));
-    printf ("i: %d ", info);
+    opts = optimset ("MaxIter", nitmax,
+                     "TolFun", tol,
+                     "Jacobian", "on",
+                     "Updating", updating);
+    if (verbose)
+      opts = optimset (opts, "OutputFcn", @corrector_output_fcn));
+    endif
+    [g, eq, info, out, eqj] = fsolve (@corrector_fcn, flow.g, opts);
+    if (verbose)
+      printf ("i: %d ", info);
+    endif
     if (info > 0)
       res = norm (eq) / sqrt(np);
       flow.g = g;
@@ -63,7 +68,9 @@ function flow = corrector (flow, tol, nitmin, nitmax, use_fsolve)
     eq = flow.eq;
     g = flow.g;
     res = norm (eq) / sqrt(np);
-    printf ("%5.2e ", res);
+    if (verbose)
+      printf ("%5.2e ", res);
+    endif
 
     lam0 = sqrt (1e-1*eps) * norm (eqj, 1);
     lambda = lam0;
@@ -86,10 +93,14 @@ function flow = corrector (flow, tol, nitmin, nitmax, use_fsolve)
         eq = eq1;
         res = res1;
         eqj = floweqj (g, flow);
-        printf ("%5.2e ", res);
+        if (verbose)
+          printf ("%5.2e ", res);
+        endif
       else
         lambda *= 2;
-        printf ("+ ");
+        if (verbose)
+          printf ("+ ");
+        endif
       endif
     until ((res < tol && it >= nitmin) || it++ == nitmax )
 

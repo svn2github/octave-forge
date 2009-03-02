@@ -32,6 +32,6 @@ function ppd = polppder (pp)
     pp.P = zeros (size (pp.P, 1), 1);
   else
     k = ppd.k = pp.k - 1;
-    ppd.P = dmult (pp.P(:,1:k), k:-1:1);
+    ppd.P = pp.P(:,1:k) * diag (k:-1:1);
   endif
 endfunction

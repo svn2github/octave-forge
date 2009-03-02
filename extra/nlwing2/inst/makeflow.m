@@ -32,7 +32,7 @@ function flow = makeflow (wing, alfa)
   % create sensitivity tensor
   [vxg, vyg, flow.vx0, flow.vy0] = ...
     vitensor (alfa, wing.xac, wing.yac, wing.zac, wing.sym);
-  flow.vxg = dmult (vxg, wing.ch);
-  flow.vyg = dmult (vyg, wing.ch);
+  flow.vxg = vxg * diag (wing.ch);
+  flow.vyg = vyg * diag (wing.ch);
 
 endfunction

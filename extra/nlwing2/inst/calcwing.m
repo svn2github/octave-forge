@@ -92,8 +92,7 @@ function clq = calcwing (wing, varargin)
       nmaxit = max (opts.minit, floor (opts.maxit * opts.mstep / step));
     endif
     tol1 = min (1e4*flw.res, opts.tol);
-    flw1 = corrector (flw1, tol1, opts.minit, nmaxit, ...
-        opts.use_fsolve * (1 + first_iter));
+    flw1 = corrector (flw1, tol1, opts, first_iter);
 
     if (isempty (flw1))
       printf_flush (" bad.\n");

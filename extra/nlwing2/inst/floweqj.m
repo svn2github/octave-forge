@@ -37,6 +37,6 @@ function eqj = floweqj (g, flow)
   v = sqrt (vx.^2 + vy.^2);
   gvx = 0.5 * (vx .* cl - vy .* cld) ./ v;
   gvy = 0.5 * (vy .* cl + vx .* cld) ./ v;
-  eqj = gvx * diag (flow.vxg) + gvy * diag (flow.vyg) - eye (length (g));
+  eqj = diag (gvx) * flow.vxg + diag (gvy) * flow.vyg - eye (length (g));
 
 endfunction

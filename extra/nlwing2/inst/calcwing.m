@@ -120,7 +120,7 @@ function clq = calcwing (wing, varargin)
       else
 	zsep{ns} = wing.zc (imad);
 	if (mad > opts.psep)
-	  printf_flush ("separation condition reached.\n")
+	  printf_flush ("separation condition reached.\n");
 	  break;
 	endif
       endif

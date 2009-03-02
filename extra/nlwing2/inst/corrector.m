@@ -23,7 +23,7 @@
 % @deftypefn{Function File} {flow =} corrector (flow, tol, opts, init)
 % applies a newton/levenberg-marquardt corrector to a flow state, in order
 % to reach local lift/circulation balance. tol specifies tolerance. 
-% Reads the options nitmin, nitmax, use_fsolve and silent from opts.
+% Reads the options minit, maxit, use_fsolve and silent from opts.
 % Returns empty matrix if not successful.
 % @end deftypefn
 
@@ -42,12 +42,12 @@ function flow = corrector (flow, tol, opts, init)
       updating = "on";
     endif
     np = length (flow.g);
-    opts = optimset ("MaxIter", opts.nitmax,
+    opts = optimset ("MaxIter", opts.maxit,
                      "TolFun", tol,
                      "Jacobian", "on",
                      "Updating", updating);
     if (verbose)
-      opts = optimset (opts, "OutputFcn", @corrector_output_fcn));
+      opts = optimset (opts, "OutputFcn", @corrector_output_fcn);
     endif
     [g, eq, info, out, eqj] = fsolve (@corrector_fcn, flow.g, opts);
     if (verbose)
@@ -63,8 +63,8 @@ function flow = corrector (flow, tol, opts, init)
       flow = [];
     endif
   else
-    nitmin = opts.nitmin;
-    nitmax = opts.nitmax;
+    nitmin = opts.minit;
+    nitmax = opts.maxit;
     np = length (flow.g);
     eqj = flow.eqj;
     eq = flow.eq;

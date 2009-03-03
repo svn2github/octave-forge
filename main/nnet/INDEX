@@ -4,6 +4,7 @@ Creation
  newff
 
 Data pre- & postprocessing
+ mapstd
  prestd
  poststd
  trastd
@@ -20,7 +21,10 @@ Transfer functions
  tansig
 
 Utility
+ dividerand
+ ind2vec
  isposint
  min_max
  saveMLPStruct
  subset
+ vec2ind

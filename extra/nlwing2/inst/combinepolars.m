@@ -46,11 +46,13 @@ function pol = combinepolars (pol1, pol2, varargin)
   pol.amax = c*pol1.amax + d*pol2.amax;
   pol.clmax = c*pol1.clmax + d*pol2.clmax;
   alpha1 = pol1.cl.x; alpha2 = pol2.cl.x;
-  n = round (c*length (alpha1) + d*length (alpha2));
-  in = linspace (0, 1, n);
-  in1 = linspace (0, 1, length (alpha1));
-  in2 = linspace (0, 1, length (alpha2));
-  alpha = c*interp1 (in1, alpha1, in) + d*interp1 (in2, alpha2, in);
+  # try to honor the minimum resolution.
+  xmin = min (alpha1(1), alpha2(1));
+  xmax = max (alpha1(end), alpha2(end));
+  dx = min (min (diff (alpha1)), min (diff (alpha2)));
+  dx = max (dx, 1e-3*(xmax - xmin));
+  ialpha = unique (round (([alpha1; alpha2] - xmin) / dx));
+  alpha = xmin + ialpha * dx;
   pol.cl = pchip (alpha, c*ppval (pol1.cl, alpha) + d*ppval (pol2.cl, alpha));
   pol.cld = polppder (pol.cl);
   pol.cd = pchip (alpha, c*ppval (pol1.cd, alpha) + d*ppval (pol2.cd, alpha));

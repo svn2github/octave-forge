@@ -1,6 +1,6 @@
 NaN-Tb: A statistics toolbox 
 ------------------------------------------------------------
-Copyright (C) 2000-2005 Alois Schloegl <a.schloegl@ieee.org>
+Copyright (C) 2000-2005,2009 Alois Schloegl <a.schloegl@ieee.org>
 
 
 FEATURES of the NaN-tb:
@@ -14,7 +14,7 @@ FEATURES of the NaN-tb:
  - supports DIM argument 
  - supports unbiased estimation; 
  - The toolbox was tested with
-   Matlab 5.2, 5.3, 6.1, 6.5, 7.0 and Octave 2.1.x, 2.9.x
+   Matlab 5.2, 5.3, 6.1, 6.5, 7.0, 7.6 and Octave 2.1.x, 2.9.x, 3.0.1, 3.1.51+
  
   
 Currently are implemented:
@@ -52,7 +52,7 @@ level 2: derived functions
 	NANTEST		checks whether all functions have been replaced
 	DETREND		detrending of data with missing values and non-equidistant sampled data
 	COR		correlation matrix
-	CORRCOEF	correlation coefficient, inluding rank correlation, 
+	CORRCOEF	correlation coefficient, including rank correlation, 
 				significance test and confidence intervals 
 	SPEARMAN, RANKCORR spearman's rank correlation coefficient. They might be replaced by CORRCOEF. 
 	COV		covariance matrix
@@ -80,7 +80,7 @@ What is the difference to previous implementations?
 ===================================================
 1) The default behavior of previous implementations is that NaNs in the input 
 data results in NaNs in the output data. In many applications is this behavior 
-quite borring. In this implementation, NaNs are handled as missing values and 
+quite boring. In this implementation, NaNs are handled as missing values and 
 are skipped. 
 
 2) In previous implementations the workaround was using different functions 
@@ -162,7 +162,7 @@ A: Usually, NaN means that the value is not available. This meaning is most
 common, even many different reasons might cause NaN's. In statistics, NaN's 
 represent missing values, in biosignal processing such missing values might 
 have been caused by some recording error. Other reasons for NaN's are, 
-indetermined expressions like e.g. 0/0, data not available, unknown value, 
+undetermined expressions like e.g. 0/0, inf-inf, data not available, unknown value, 
 not a numeric value, etc. 
 
 If NaN has the meaning of a missing value, it is only consequent to say, the 
@@ -174,14 +174,13 @@ result. The variance of X is undefined if and only if X contains less than
 
 In most numerical applications, NaN's should be simply skipped. Therefore, 
 it is efficient to skip NaN's in the default case. In the other cases, the 
-NaN's can still be checked explicitely. This could eventually result in a 
+NaN's can still be checked explicitly. This could eventually result in a 
 more readable code and in improved performance, too.  
 
 
 Installing the NaN-tb with Octave:
 ----------------------------------
-a) You need repmat.m (e.g. from P.Kienzle's MATCOMPAT) 
-    If you havenot installed it yet, you should do it now. 
+a) --
 
 b) extract files from NaNnnn.tar.gz and move them into 
 .../octave/.../m/statistics/base/ 
@@ -206,7 +205,7 @@ This checks whether all previous functions have been replaced
 
 
 	$Id$
-	Copyright (C) 2000-2005 by  Alois Schloegl <a.schloegl@ieee.org>	
+	Copyright (C) 2000-2005,2009 by  Alois Schloegl <a.schloegl@ieee.org>	
 	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 

@@ -53,7 +53,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	double* 	LOutputCount;
     	double* 	LOutputSum2;
     	double* 	LOutputSum4;
-    	double  	x, x2;
+    	double  	x, x2, x2i;
     	unsigned long   LCount, LCountI;
     	double  	LSum, LSum2, LSum4;
 
@@ -77,31 +77,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	else 	
 		mexErrMsgTxt("First argument must be DOUBLE.");
 
-	if(mxIsLogical(PInputs[0]))
-		LInput  = (double*)mxGetLogicals(PInputs[0]);
-	else if(mxIsNumeric(PInputs[0]))
-		LInput  = mxGetPr(PInputs[0]);
-	else if(mxIsSparse(PInputs[0]))
-		LInput  = mxGetPr(PInputs[0]);
-	else if(mxIsInt8(PInputs[0]))
-		LInput  = (double *)mxGetData(PInputs[0]);
-	else if(mxIsUint8(PInputs[0]))
-		LInput  = (double *)mxGetData(PInputs[0]);
-	else if(mxIsInt16(PInputs[0]))
-		LInput  = (double *)mxGetData(PInputs[0]);
-	else if(mxIsUint16(PInputs[0]))
-		LInput  = (double *)mxGetData(PInputs[0]);
-	else if(mxIsInt32(PInputs[0]))
-		LInput  = (double *)mxGetData(PInputs[0]);
-	else if(mxIsUint32(PInputs[0]))
-		LInput  = (double *)mxGetData(PInputs[0]);
-	else
-		mexErrMsgTxt("First argument must be NUMERIC.");
 
 	if(mxIsComplex(PInputs[0]))
 		LInputI = mxGetPi(PInputs[0]);
-	if(mxIsComplex(PInputs[0]) & (POutputCount > 3))
-	        mexErrMsgTxt("More than 3 output arguments only supported for REAL data ");
 
     	// get 2nd argument
     	if  (PInputCount == 2){
@@ -172,61 +150,259 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	mxFree(SZ2);
 
-	// OUTER LOOP: along dimensions > DIM
-	for (l = 0; l<D3; l++) 	
-    	{
-		ix2 =   l*D1;	// index for output 
-		ix1 = ix2*D2;	// index for input 
+	if ((POutputCount == 2)	&& !mxIsComplex(PInputs[0]))
+	{
+		// OUTER LOOP: along dimensions > DIM
+		for (l = 0; l<D3; l++) 	
+	    	{
+			ix2 =   l*D1;	// index for output 
+			ix1 = ix2*D2;	// index for input 
 
-		// Inner LOOP: along dimensions < DIM
-		for (k = 0; k<D1; k++, ix1++, ix2++) 	
-		{
-		        LCount = 0;
-			LSum   = 0.0;
-			LSum2  = 0.0;
-			LSum4  = 0.0;
+			// Inner LOOP: along dimensions < DIM
+			for (k = 0; k<D1; k++, ix1++, ix2++) 	
+			{
+		        	LCount = 0;
+				LSum   = 0.0;
 	        	    		
-			// LOOP  along dimension DIM
-	    		for (j=0; j<D2; j++) 	
-			{
-				x = LInput[ix1 + j*D1];
-        	        	if (!mxIsNaN(x))
+				// LOOP  along dimension DIM
+		    		for (j=0; j<D2; j++) 	
 				{
-					LCount++; 
-					LSum += x; 
-					x2 = x*x;
-					LSum2 += x2; 
-					LSum4 += x2*x2; 
-				}
-			}
-			LOutputSum[ix2] = LSum;
-            		if (POutputCount >= 2)
-                		LOutputCount[ix2] = (double)LCount;
-            		if (POutputCount >= 3)
-                		LOutputSum2[ix2] = LSum2;
-            		if (POutputCount >= 4)
-                		LOutputSum4[ix2] = LSum4;
-
-			if(mxIsComplex(PInputs[0]))
-			{
-				LSum = 0.0;	
-	    			LCountI = 0;
-				LSum2  = 0.0;
-				for (j=0; j<D2; j++) 	
-				{
-					x = LInputI[ix1 + j*D1];
+					x = LInput[ix1 + j*D1];
         	        		if (!mxIsNaN(x))
+					{
+						LCount++; 
+						LSum += x; 
+					}
+				}
+				LOutputSum[ix2] = LSum;
+               			LOutputCount[ix2] = (double)LCount;
+               		}
+               	}		
+		return; 
+	}
+	else if ((POutputCount == 1) && !mxIsComplex(PInputs[0]))
+	{
+		// OUTER LOOP: along dimensions > DIM
+		for (l = 0; l<D3; l++) 	
+	    	{
+			ix2 =   l*D1;	// index for output 
+			ix1 = ix2*D2;	// index for input 
+
+			// Inner LOOP: along dimensions < DIM
+			for (k = 0; k<D1; k++, ix1++, ix2++) 	
+			{
+				LSum   = 0.0;
+	        	    		
+				// LOOP  along dimension DIM
+		    		for (j=0; j<D2; j++) 	
+				{
+					x = LInput[ix1 + j*D1];
+        	        		if (!mxIsNaN(x))
+					{
+						LSum += x; 
+					}
+				}
+				LOutputSum[ix2] = LSum;
+               		}
+               	}		
+		return; 
+	}
+	else if ((POutputCount == 3) && !mxIsComplex(PInputs[0]))
+	{
+		// OUTER LOOP: along dimensions > DIM
+		for (l = 0; l<D3; l++) 	
+    		{
+			ix2 =   l*D1;	// index for output 
+			ix1 = ix2*D2;	// index for input 
+
+			// Inner LOOP: along dimensions < DIM
+			for (k = 0; k<D1; k++, ix1++, ix2++) 	
+			{
+		        	LCount = 0;
+				LSum   = 0.0;
+				LSum2  = 0.0;
+	        	    		
+				// LOOP  along dimension DIM
+		    		for (j=0; j<D2; j++) 	
+				{
+					x = LInput[ix1 + j*D1];
+        	        		if (!mxIsNaN(x))
+					{
+						LCount++; 
+						LSum += x; 
+						LSum2 += x*x; 
+					}
+				}
+				LOutputSum[ix2] = LSum;
+               			LOutputCount[ix2] = (double)LCount;
+       	        		LOutputSum2[ix2] = LSum2;
+               		}
+               	}		
+	}
+	else if ((POutputCount == 4) && !mxIsComplex(PInputs[0]))
+	{
+		// OUTER LOOP: along dimensions > DIM
+		for (l = 0; l<D3; l++) 	
+    		{
+			ix2 =   l*D1;	// index for output 
+			ix1 = ix2*D2;	// index for input 
+
+			// Inner LOOP: along dimensions < DIM
+			for (k = 0; k<D1; k++, ix1++, ix2++) 	
+			{
+		        	LCount = 0;
+				LSum   = 0.0;
+				LSum2  = 0.0;
+				LSum4  = 0.0;
+	        	    		
+				// LOOP  along dimension DIM
+		    		for (j=0; j<D2; j++) 	
+				{
+					x = LInput[ix1 + j*D1];
+        	        		if (!mxIsNaN(x))
+					{
+						LCount++; 
+						LSum += x; 
+						x2 = x*x;
+						LSum2 += x2; 
+						LSum4 += x2*x2; 
+					}
+				}
+				LOutputSum[ix2] = LSum;
+               			LOutputCount[ix2] = (double)LCount;
+       	        		LOutputSum2[ix2] = LSum2;
+               			LOutputSum4[ix2] = LSum4;
+               		}
+               	}		
+	}
+	else if ((POutputCount == 2) && mxIsComplex(PInputs[0]))
+	{
+		// OUTER LOOP: along dimensions > DIM
+		for (l = 0; l<D3; l++) 	
+    		{
+			ix2 =   l*D1;	// index for output 
+			ix1 = ix2*D2;	// index for input 
+
+			// Inner LOOP: along dimensions < DIM
+			for (k = 0; k<D1; k++, ix1++, ix2++) 	
+			{
+		        	LCount = 0;
+				LSum   = 0.0;
+	        	    		
+				// LOOP  along dimension DIM
+		    		for (j=0; j<D2; j++) 	
+				{
+					x = LInput[ix1 + j*D1];
+        	        		if (!mxIsNaN(x))
+					{
+						LCount++; 
+						LSum += x; 
+					}
+					x = LInputI[ix1 + j*D1];
+       	        			if (!mxIsNaN(x))
+					{
+						LCountI++; 
+						LSum  += x; 
+					}
+				}	
+				if (LCount != LCountI)
+		            		mexErrMsgTxt("Number of NaNs is different for REAL and IMAG part");
+
+				LOutputSum[ix2] = LSum;
+               			LOutputCount[ix2] = (double)LCount;
+
+			}
+		}
+	}
+	else if ((POutputCount == 3) && mxIsComplex(PInputs[0]))
+	{
+		// OUTER LOOP: along dimensions > DIM
+		for (l = 0; l<D3; l++) 	
+    		{
+			ix2 =   l*D1;	// index for output 
+			ix1 = ix2*D2;	// index for input 
+
+			// Inner LOOP: along dimensions < DIM
+			for (k = 0; k<D1; k++, ix1++, ix2++) 	
+			{
+		        	LCount = 0;
+				LSum   = 0.0;
+				LSum2  = 0.0;
+	        	    		
+				// LOOP  along dimension DIM
+		    		for (j=0; j<D2; j++) 	
+				{
+					x = LInput[ix1 + j*D1];
+        	        		if (!mxIsNaN(x))
+					{
+						LCount++; 
+						LSum += x; 
+						LSum2 += x*x; 
+					}
+					x = LInputI[ix1 + j*D1];
+       	        			if (!mxIsNaN(x))
 					{
 						LCountI++; 
 						LSum  += x; 
 						LSum2 += x*x; 
 					}
-				}
-				LOutputSumI[ix2] = LSum;
+				}	
 				if (LCount != LCountI)
-			            	mexErrMsgTxt("Number of NaNs is different for REAL and IMAG part");
-	            		if (POutputCount >= 3)
-        	        		LOutputSum2[ix2] += LSum2;
+		            		mexErrMsgTxt("Number of NaNs is different for REAL and IMAG part");
+
+				LOutputSum[ix2] = LSum;
+               			LOutputCount[ix2] = (double)LCount;
+       	        		LOutputSum2[ix2] = LSum2;
+
+			}
+		}
+	}
+	else if ((POutputCount == 4) && mxIsComplex(PInputs[0]))
+	{
+		// OUTER LOOP: along dimensions > DIM
+		for (l = 0; l<D3; l++) 	
+    		{
+			ix2 =   l*D1;	// index for output 
+			ix1 = ix2*D2;	// index for input 
+
+			// Inner LOOP: along dimensions < DIM
+			for (k = 0; k<D1; k++, ix1++, ix2++) 	
+			{
+		        	LCount = 0;
+				LSum   = 0.0;
+				LSum2  = 0.0;
+				LSum4  = 0.0;
+	        	    		
+				// LOOP  along dimension DIM
+		    		for (j=0; j<D2; j++) 	
+				{
+					x = LInput[ix1 + j*D1];
+        	        		if (!mxIsNaN(x))
+					{
+						LCount++; 
+						LSum += x; 
+						x2 = x*x;
+						LSum2 += x2; 
+					}
+					x = LInputI[ix1 + j*D1];
+       	        			if (!mxIsNaN(x))
+					{
+						LCountI++; 
+						LSum  += x; 
+						x2i = x*x;
+						LSum2 += x2i; 
+						x2 += x2i; 
+						LSum4 += x2*x2; 
+					}
+				}	
+				if (LCount != LCountI)
+		            		mexErrMsgTxt("Number of NaNs is different for REAL and IMAG part");
+
+				LOutputSum[ix2] = LSum;
+               			LOutputCount[ix2] = (double)LCount;
+       	        		LOutputSum2[ix2] = LSum2;
+               			LOutputSum4[ix2] = LSum4;
+
 			}
 		}
 	}

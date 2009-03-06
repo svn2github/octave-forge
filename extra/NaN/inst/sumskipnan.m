@@ -13,25 +13,19 @@ function [o,count,SSQ,S4M] = sumskipnan(x,DIM)
 % [Y,N,SSQ] = sumskipnan(x [,DIM])
 % 
 % DIM	dimension
-%	1 sum of columns
-%	2 sum of rows
-%	default or []: first DIMENSION with more than 1 element
-%
 % Y	resulting sum
 % N	number of valid (not missing) elements
 % SSQ	sum of squares
 %
-% The mean & standard error of the mean and 
-%	Y./N & sqrt((SSQ-Y.*Y./N)./(N.*max(N-1,0))); 
-% the mean square & the standard error of the mean square and
-% 	SSQ./N & sqrt((S4M-SSQ.^2./N)./(N.*max(N-1,0)))
+% the function FLAG_NANS_OCCURED() returns whether any value in x
+%  is a not-a-number (NaN)
 %
 % features:
 % - can deal with NaN's (missing values)
 % - implements dimension argument. 
 % - compatible with Matlab and Octave
 %
-% see also: SUM, NANSUM, MEAN, STD, VAR, RMS, MEANSQ, 
+% see also: FLAG_NANS_OCCURED, SUM, NANSUM, MEAN, STD, VAR, RMS, MEANSQ, 
 %      SSQ, MOMENT, SKEWNESS, KURTOSIS, SEM
 
 
@@ -52,6 +46,9 @@ function [o,count,SSQ,S4M] = sumskipnan(x,DIM)
 %    	Copyright (C) 2000-2005,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+
+global FLAG_NANS_OCCURED;
+FLAG_NANS_OCCURED = logical(0);
 
 if nargin<2,
         DIM = [];
@@ -113,12 +110,15 @@ if 0,
 	%% using sumskipnan_mex.mex
 	if (nargout<3),
 		[o,count] = sumskipnan_mex(x,DIM);
+		FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 		return; 
 	elseif (nargout==3),
 		[o,count,SSQ] = sumskipnan_mex(x,DIM);
+		FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 		return; 
 	elseif (nargout==4) && isreal(i),
 		[o,count,SSQ,S4M] = sumskipnan_mex(x,DIM);
+		FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 		return; 
 	end; 	
 end; 
@@ -135,12 +135,15 @@ if 0 %%if exist('OCTAVE_VERSION','builtin'),
 		%% using sumskipnan_oct.mex
 		if (nargout<3),
 			[o,count] = sumskipnan_oct(x,DIM);
+			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 			return; 
 		elseif (nargout==3),
 			[o,count,SSQ] = sumskipnan_oct(x,DIM);
+			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 			return; 
 		elseif (nargout==4) && isreal(i),
 			[o,count,SSQ,S4M] = sumskipnan_oct(x,DIM);
+			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 			return; 
 		end; 	
 	else	%% if ~isreal(x)
@@ -151,6 +154,7 @@ if 0 %%if exist('OCTAVE_VERSION','builtin'),
 				error('number of NaN differ between real and imag part\n');
 			end;
 			o = or + i*oi;
+			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 			return; 
 		elseif (nargout<4),
 			[or,count,SSQ] = sumskipnan_oct(real(x),DIM);
@@ -160,6 +164,7 @@ if 0 %%if exist('OCTAVE_VERSION','builtin'),
 			end;
 			o = or + oi;
 			SSQ = SSQ+SSQi; 
+			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 			return; 
 		end; 	
 	end;	%% if 
@@ -183,6 +188,7 @@ if nargout>1,
         else
                 count = real(x==x)*ones(size(x,2),1);
         end;
+	FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 end;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

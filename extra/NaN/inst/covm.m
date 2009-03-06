@@ -50,6 +50,10 @@ function [CC,NN] = covm(X,Y,Mode);
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 
+global FLAG_NANS_OCCURED;
+FLAG_NANS_OCCURED = logical(0);
+
+
 if nargin<3,
         if nargin==2,
 		if isnumeric(Y),
@@ -86,6 +90,7 @@ end;
 if ~isempty(Y),
         if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
         	NN = real(X==X)'*real(Y==Y);
+		FLAG_NANS_OCCURED = any(NN(:)<r1);
 	        X(X~=X) = 0; % skip NaN's
 	        Y(Y~=Y) = 0; % skip NaN's
         	CC = X'*Y;
@@ -94,6 +99,7 @@ if ~isempty(Y),
                 [S2,N2] = sumskipnan(Y,1);
                 
                 NN = real(X==X)'*real(Y==Y);
+		FLAG_NANS_OCCURED = any(NN(:)<r1);
         
 	        if any(Mode=='D'), % detrending mode
         		X  = X - ones(r1,1)*(S1./N1);
@@ -121,10 +127,12 @@ else
 		NN  = tmp'*tmp;
 		X(X~=X) = 0; % skip NaN's
 	        CC = X'*X;
+		FLAG_NANS_OCCURED = any(NN(:)<r1);
         else  % if any(Mode=='D') | any(Mode=='E'), 
 	        [S,N] = sumskipnan(X,1);
         	tmp = real(X==X);
                 NN  = tmp'*tmp;
+		FLAG_NANS_OCCURED = any(NN(:)<r1);
                 if any(Mode=='D'), % detrending mode
 	                X  = X - ones(r1,1)*(S./N);
                         if any(Mode=='1'),  %  'D1'

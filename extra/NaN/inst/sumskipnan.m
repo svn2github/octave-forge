@@ -196,14 +196,10 @@ end;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 x(x~=x) = 0;	
 
-if ~exist('OCTAVE_VERSION','builtin'),
+if FLAG~=2, 
         o = sum(x,DIM);
-elseif FLAG == 1	
-        o = ones(1,size(x,2))*x;
-elseif FLAG == 2	
-        o = x*ones(size(x,2),1);
-else
-        o = sum(x,DIM);
+else 
+	o = x*ones(size(x,2),1);
 end;
 
 if nargout>2,

@@ -31,6 +31,12 @@ level 1: basic functions (not derived)
 	CONV2SKIPNAN (CONV2NAN)   2-dimensional convolution
 	MOD		modulus
 	REM		remainder
+	FLAG_NANS_OCCURED	returns 0 if no NaN's appeared in the input data 
+			of the last call to one of the following functions, and 1 otherwise:  
+			sumskipnan, covm, center, cor, coefficient of variation, corrcoef, geomean, harmmean, 
+			kurtosis, mad, mean, meandev, meansq, moment, nanmean, nanstd, nansum, 
+			rms, sem, skewness, statistic, std, var	
+			
 	
 level 2: derived functions
 	MEAN	 	mean (options: arithmetic, geometric, harmonic)

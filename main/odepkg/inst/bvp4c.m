@@ -13,10 +13,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-
 ## -*- texinfo -*-
-##
-## @deftypefn {Function File} {@sol{A}} = bvp4c (@var{odefun}, @var{bcfun}, @var{solinit})
+## @deftypefn {Function File} {@var{A}} = bvp4c (@var{odefun}, @var{bcfun}, @var{solinit})
 ##
 ## Solves the first order system of non-linear differential equations defined by
 ## @var{odefun} with the boundary conditions defined in @var{bcfun}.
@@ -24,7 +22,7 @@
 ## The structure @var{solinit} defines the grid on which to compute the
 ## solution (@var{solinit.x}), and an initial guess for the solution (@var{solinit.y}).
 ## The output @var{sol} is also a structure with the following fields:
-## @begin itemize
+## @itemize
 ## @item  @var{sol.x} list of points where the solution is evaluated
 ## @item  @var{sol.y} solution evaluated at the points @var{sol.x}
 ## @item  @var{sol.yp} derivative of the solution evaluated at the

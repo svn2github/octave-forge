@@ -9,10 +9,11 @@ PATCHPROG = patch -p0 # Needed to patch the Fortran codes
 
 # MKOCTFILE = $(MKOCTFILE) has already been defined in Makeconf
 # MKMEXFILE = $(MKOCTFILE) --mex
-ifeq (fort77,$(findstring fort77,$(F77)))
-  MKF77FILE = FFLAGS="$(FFLAGS)" $(MKOCTFILE)
-else
+ifeq (gfortran,$(findstring gfortran,$(F77)))
   MKF77FILE = FFLAGS="-fno-automatic $(FFLAGS)" $(MKOCTFILE)
+else
+  # eg. fort77-f2c and g95
+  MKF77FILE = FFLAGS="$(FFLAGS)" $(MKOCTFILE)
 endif
 
 EXTERNALDIRS  = hairer cash daskr

@@ -47,6 +47,7 @@ function [o,count,SSQ,S4M] = sumskipnan(x,DIM)
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
+
 global FLAG_NANS_OCCURED;
 FLAG_NANS_OCCURED = logical(0);
 
@@ -79,7 +80,7 @@ if (DIM<1) DIM = 1; end; %% Hack, because min([])=0 for FreeMat v3.5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % non-float data 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ~isa(x,'float') %%%% || flag_implicit_skip_nan, %%% skip always NaN's
+if ~isa(x,'float') %%%% || FLAG_implicit_skip_nan, %%% skip always NaN's
 	x = double(x); 
 	o = sum(x,DIM);
 	if nargin>1
@@ -104,21 +105,19 @@ x = double(x);
 % use Matlab-MEX function when available  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% it seems there is no advantage in using the mex-file, therefore this option is disabled by default.   
-if 0,	
-%%try
+%%if 0,	
+try
 	
 	%% using sumskipnan_mex.mex
+	%% !!! hack: FLAG_NANS_OCCURED is an output argument !!!
 	if (nargout<3),
-		[o,count] = sumskipnan_mex(x,DIM);
-		FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
+		[o,count] = sumskipnan_mex(x,DIM,FLAG_NANS_OCCURED);
 		return; 
 	elseif (nargout==3),
-		[o,count,SSQ] = sumskipnan_mex(x,DIM);
-		FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
+		[o,count,SSQ] = sumskipnan_mex(x,DIM,FLAG_NANS_OCCURED);
 		return; 
 	elseif (nargout==4) && isreal(i),
-		[o,count,SSQ,S4M] = sumskipnan_mex(x,DIM);
-		FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
+		[o,count,SSQ,S4M] = sumskipnan_mex(x,DIM,FLAG_NANS_OCCURED);
 		return; 
 	end; 	
 end; 
@@ -176,7 +175,7 @@ end;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% performance tweak: some tests have shown that x*ones(:,1) is faster than sum(x,2)
-FLAG = (length(size(x))<3); 
+FLAG	 = (length(size(x))<3); 
 if FLAG, FLAG = DIM; end; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

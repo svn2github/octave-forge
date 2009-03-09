@@ -26,8 +26,8 @@
 ## @var{o1}, @var{o2} etc. will be set to corresponding output arguments.
 ##
 ## NOTE: this function is implemented using "fork" and a number of pipes for IPC.
-## On system without an efficient "fork" implementation (such as GNU/Linux), 
-## it should be used with caution.
+## Suitable for systems with an efficient "fork" implementation (such as GNU/Linux), 
+## on other systems (Windows) it should be used with caution.
 ## Also, if you use a multithreaded BLAS, it may be wise to turn off multi-threading
 ## when using this function.
 ## @end deftypefn

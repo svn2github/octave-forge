@@ -1,48 +1,32 @@
 
-Installing the NaN-tb with Octave:
-----------------------------------
-a) extract files from NaNnnn.tar.gz and move them into 
-.../octave/.../m/statistics/base/ 
-
-b) Alternatively, the files can be moved into any other directory; but you 
-must remove from .../octave/.../m/statistics/base/ 
-mean.m, meansq.m, median.m, moment.m, skewness.m, kurtosis.m, std.m, var.m
-and from .../source_forge/.../statistics/*
-zscore.m, mad.m, geomean.m, harmmean.m 
-
-(Optional) You can remove nansum, nanmean, nanmedian, etc. because you do not need 
-them anymore. 
-
-c) (Re-)start Octave and run NANINSTTEST. 
-This checks whether the installation was successful. 
-
-
-Installing the NaN-tb for Matlab:
-----------------------------------
+Installing the NaN-tb for Octave and Matlab:
+--------------------------------------------
 a) Extract files and save them in /your/directory/structure/to/NaN/
 
-b) Include the following command. 
+b) Include the path with one of the following commands: 
+	addpath('/your/directory/structure/to/NaN/')
 	path('/your/directory/structure/to/NaN/',path)
-at the end of your startup.m. 
-
-c) (Re-)start Matlab and run NANINSTTEST. 
+   Make sure the functions in the NaN-toolbox are found before the default functions.  
+   	
+c) run NANINSTTEST 
 This checks whether the installation was successful. 
 
 d) [OPTIONAL]: 
-  To improve speed, you can used compiled versions of SUMSKIPNAN
-  - MATLAB: compile the C-Mex-function SUMSKIPNAN.CPP
-    mex sumskipnan.cpp
-  - OCTAVE: compile the Oct-function SUMSKIPNAN.CC
-    mkoctfile sumskipnan.cc    
+  To improve speed, you can use the MEX-version of SUMSKIPNAN. 
+  Some precompiled binaries are provided. If your platform is not supported, 
+  compile the C-Mex-function SUMSKIPNAN_MEX.CPP using
+    mex sumskipnan_mex.cpp
+  The oct-file sumskipnan_oct.cc is broken, but Octave can also use 
+  the mex-file.  
+    mkoctfile --mex sumskipnan_mex.cpp
+
   Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.  
 
-e) HINT: if the MEX/OCT-file of SUMSKIPNAN causes problems, you can remove it savely. 
+e) HINT: if SUMSKIPNAN_MEX causes problems, you can savely remove it. 
 Then the (slower) M-file is used. 
-     
 
 
 	$Id$
-	$Revision$
-	Copyright (c) 2000-2003,2005 by Alois Schloegl <a.schloegl@ieee.org>	
-	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+	Copyright (c) 2000-2003,2005,2006,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+	WWW: http://hci.tugraz.at/~schloegl/matlab/NaN/
 

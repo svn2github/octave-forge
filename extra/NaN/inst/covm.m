@@ -32,9 +32,9 @@ function [CC,NN] = covm(X,Y,Mode);
 % see also: DECOVM, XCOVF
 
 %	$Id$
-%	Copyright (C) 2000-2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2005,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://hci.tugraz.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -51,8 +51,9 @@ function [CC,NN] = covm(X,Y,Mode);
 
 
 global FLAG_NANS_OCCURED;
-FLAG_NANS_OCCURED = logical(0);
-
+if isempty(FLAG_NANS_OCCURED),
+	FLAG_NANS_OCCURED = logical(0);  % default value 
+end;
 
 if nargin<3,
         if nargin==2,

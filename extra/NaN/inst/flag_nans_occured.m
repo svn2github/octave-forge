@@ -1,12 +1,13 @@
-function FLAG_NANS_OCCURED=flag_nans_occured()
-% The use of FLAG_NANS_OCCURED is in experimental state. 
-%
-% FLAG_NANS_OCCURED checkes whether the last call to sumskipnan 
+function [flag]=flag_nans_occured()
+% FLAG_NANS_OCCURED checks whether the last call(s) to sumskipnan or covm 
 % contained any not-a-numbers in the input argument. Because many other 
 % functions like mean, std, etc. are also using sumskipnan, 
 % also these functions can be checked for NaN's in the input data. 
+% 
+% A call to FLAG_NANS_OCCURED() resets also the flag whether NaN's occured. 
+% Only sumskipnan or covm can set the flag again. 
 %
-% see also: SUMSKIPNAN
+% see also: SUMSKIPNAN, COVM
 
 %	$Id$
 %	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>	
@@ -29,11 +30,12 @@ function FLAG_NANS_OCCURED=flag_nans_occured()
 global FLAG_NANS_OCCURED;
 
 %%% check whether FLAG was already defined 
-if ~exist('FLAG_NANS_OCCURED','var'),
-	FLAG_NANS_OCCURED = 0;  % default value 
-end;
 if isempty(FLAG_NANS_OCCURED),
-	FLAG_NANS_OCCURED = 0;  % default value 
+	FLAG_NANS_OCCURED = logical(0);  % default value 
 end;
+
+flag = FLAG_NANS_OCCURED;		% return value 
+
+FLAG_NANS_OCCURED = logical(0);		% reset flag
 
 return;

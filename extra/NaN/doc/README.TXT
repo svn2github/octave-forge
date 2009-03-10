@@ -85,8 +85,8 @@ REFERENCE(S):
 What is the difference to previous implementations?
 ===================================================
 1) The default behavior of previous implementations is that NaNs in the input 
-data results in NaNs in the output data. In many applications is this behavior 
-quite boring. In this implementation, NaNs are handled as missing values and 
+data results in NaNs in the output data. In many applications this behavior 
+is not what you want. In this implementation, NaNs are handled as missing values and 
 are skipped. 
 
 2) In previous implementations the workaround was using different functions 
@@ -104,9 +104,7 @@ It implements
 (Note, NANSUM from Matlab does not support the DIM-argument, and NANSUM(NaN)
 gives NaN instead of 0);
 
-4) Defining the estimation mode (biased or unbiased) 
-This feature is removed. 
-Unbiased estimates are provided.
+4) [obsolete] 
 
 5) The DIMENSION argument is implemented in most routines. 
 These should work in all Matlab and Octave versions. A workaround for a bug in 
@@ -159,7 +157,7 @@ correctly. TINV returns 0 instead of NaN, TCDF stops with an error message.
 In Stats-tb V2.2(R11) TINV has also the same problem.
 
 For these reasons, the NaN-tb is a bug fix. Furthermore, the check of the input 
-arguments is implemented simpler. Overall, the code is cleaner and leaner. 
+arguments is implemented simpler. Overall, the code becomes cleaner and leaner. 
 
 
 Q: WHY SKIPPING NaN's?:
@@ -184,35 +182,56 @@ NaN's can still be checked explicitly. This could eventually result in a
 more readable code and in improved performance, too.  
 
 
-Installing the NaN-tb with Octave:
-----------------------------------
-a) --
+Q: What if I need to check for NaN's:
+-------------------------------------
+A: You can always check whether there were some skipped NaN's in your 
+data with the command FLAG_NANS_OCCURED().
 
-b) extract files from NaNnnn.tar.gz and move them into 
-.../octave/.../m/statistics/base/ 
+m = mean(x);
+if flag_nans_occured()
+	% do your error handling, e.g. 
+	error('there were NaN's in x, ignore m'); 
+end; 
 
-c) Alternatively, the files can be moved into any other directory; but you 
-must remove from .../octave/.../m/statistics/base/ 
-mean.m, meansq.m, median.m, moment.m, skewness.m, kurtosis.m, std.m, var.m
-and from .../source_forge/.../statistics/*
-zscore.m, mad.m, geomean.m, harmmean.m 
+Its also easy to control the granularity of the checks
 
-d) (re-)start Octave and run NANINSTTEST. 
-This checks whether all previous functions have been replaced
+flag_nans_occured(); 	% reset flag
+ % do any statistical analysis you want 
+if flag_nans_occured()
+	% check, whether some NaN's occured. 
+end; 
 
 
-Installing the NaN-tb for Matlab:
-----------------------------------
-Ensure that the NaN-directory is first in your path. This should override any 
-alternative function definition (except built-in's) with the same name. 
+Installing the NaN-tb for Octave and Matlab:
+--------------------------------------------
+a) Extract files and save them in /your/directory/structure/to/NaN/
 
-(re-)start Matlab or clear functions and run NANINSTTEST. 
-This checks whether all previous functions have been replaced
+b) Include the path with one of the following commands: 
+	addpath('/your/directory/structure/to/NaN/')
+	path('/your/directory/structure/to/NaN/',path)
+   Make sure the functions in the NaN-toolbox are found before the default functions.  
+   	
+c) run NANINSTTEST 
+This checks whether the installation was successful. 
+
+d) [OPTIONAL]: 
+  To improve speed, you can use the MEX-version of SUMSKIPNAN. 
+  Some precompiled binaries are provided. If your platform is not supported, 
+  compile the C-Mex-function SUMSKIPNAN_MEX.CPP using
+    mex sumskipnan_mex.cpp
+  The oct-file sumskipnan_oct.cc is broken, but Octave can also use 
+  the mex-file.  
+    mkoctfile --mex sumskipnan_mex.cpp
+
+  Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.  
+
+e) HINT: if SUMSKIPNAN_MEX causes problems, you can savely remove it. 
+Then the (slower) M-file is used. 
 
 
 	$Id$
 	Copyright (C) 2000-2005,2009 by  Alois Schloegl <a.schloegl@ieee.org>	
-	WWW: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+	WWW: http://hci.tugraz.at/~schloegl/matlab/NaN/
 
 
 LICENSE:
@@ -228,3 +247,4 @@ LICENSE:
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
+

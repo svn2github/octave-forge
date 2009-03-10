@@ -49,7 +49,6 @@ function [o,count,SSQ,S4M] = sumskipnan(x,DIM)
 
 
 global FLAG_NANS_OCCURED;
-FLAG_NANS_OCCURED = logical(0);
 
 if nargin<2,
         DIM = [];
@@ -80,7 +79,7 @@ if (DIM<1) DIM = 1; end; %% Hack, because min([])=0 for FreeMat v3.5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % non-float data 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ~isa(x,'float') %%%% || FLAG_implicit_skip_nan, %%% skip always NaN's
+if ~isa(x,'float') %%%% || ~flag_implicit_skip_nan(), %%% skip always NaN's
 	x = double(x); 
 	o = sum(x,DIM);
 	if nargin>1
@@ -103,12 +102,15 @@ x = double(x);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % use Matlab-MEX function when available  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% it seems there is no advantage in using the mex-file, therefore this option is disabled by default.   
 %%if 0,	
 try
 	
 	%% using sumskipnan_mex.mex
-	%% !!! hack: FLAG_NANS_OCCURED is an output argument !!!
+
+	%% !!! hack: FLAG_NANS_OCCURED is an output argument, reserve memory !!!
+	if isempty(FLAG_NANS_OCCURED),
+		FLAG_NANS_OCCURED = logical(0);  % default value 
+	end;
 	if (nargout<3),
 		[o,count] = sumskipnan_mex(x,DIM,FLAG_NANS_OCCURED);
 		return; 

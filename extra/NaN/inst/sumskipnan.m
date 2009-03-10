@@ -71,7 +71,7 @@ end;
 %       }; 
 
 if isempty(DIM),
-        DIM = min(find(size(i) > 1));
+        DIM = min(find(size(x) > 1));
         if isempty(DIM), DIM = 1; end;
 end
 if (DIM<1) DIM = 1; end; %% Hack, because min([])=0 for FreeMat v3.5
@@ -99,7 +99,6 @@ end;
 
 %% mex and oct files expect double
 x = double(x); 
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % use Matlab-MEX function when available  

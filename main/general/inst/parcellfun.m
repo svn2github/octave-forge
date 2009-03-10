@@ -17,7 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} [@var{o1}, @var{o2}, ...] = parcellfun (nproc, fun, a1, a2, ...)
+## @deftypefn{Function File} [@var{o1}, @var{o2}, @dots{}] = parcellfun (@var{nproc}, @var{fun}, @var{a1}, @var{a2}, @dots{})
+## @deftypefnx{Function File} parcellfun (nproc, fun, @dots{}, "UniformOutput", @var{val})
+## @deftypefnx{Function File} parcellfun (nproc, fun, @dots{}, "ErrorHandler", @var{errfunc})
 ## Evaluates a function for multiple argument sets using multiple processes.
 ## @var{nproc} should specify the number of processes. A maximum recommended value is
 ## equal to number of CPUs on your machine or one less. 
@@ -25,20 +27,61 @@
 ## @var{a1}, @var{a2} etc. should be cell arrays of equal size.
 ## @var{o1}, @var{o2} etc. will be set to corresponding output arguments.
 ##
+## The UniformOutput and ErrorHandler options are supported with meaning identical
+## to @dfn{cellfun}.
+##
 ## NOTE: this function is implemented using "fork" and a number of pipes for IPC.
 ## Suitable for systems with an efficient "fork" implementation (such as GNU/Linux), 
 ## on other systems (Windows) it should be used with caution.
 ## Also, if you use a multithreaded BLAS, it may be wise to turn off multi-threading
 ## when using this function.
+##
+## CAUTION: This function should be regarded as experimental. Although all subprocesses
+## should be cleared in theory, there is always a danger of a subprocess hanging up,
+## especially if unhandled errors occur. Under GNU and compatible systems, the following
+## shell command may be used to display orphaned Octave processes:
+## ps --ppid 1 | grep octave
+## 
 ## @end deftypefn
 
 function varargout = parcellfun (nproc, fun, varargin)
   
-  if (! isscalar (nproc) || nproc <= 0 || ! isa (fun, "function_handle") || nargin < 3)
+  if (nargin < 3 || ! isscalar (nproc) || nproc <= 0)
     print_usage ();
   endif
 
-  if (nargin > 3 && ! size_equal (varargin{:}))
+  if (ischar (fun))
+    fun = str2func (fun);
+  elseif (! isa (fun, "function_handle"))
+    error ("parcellfun: fun must be either a function handle or name")
+  endif
+
+  uniform_output = true;
+  error_handler = [];
+
+  args = varargin;
+  nargs = length (varargin);
+
+  ## parse options
+  do
+    if (strcmp (args{nargs-1}, "UniformOutput"))
+      uniform_output = args{nargs};
+      nargs -= 2;
+      continue;
+    endif
+    if (strcmp (args{nargs-1}, "ErrorHandler"))
+      error_handler = args{nargs};
+      nargs -= 2;
+      continue;
+    endif
+    break;
+  until (nargs < 2);
+
+  args = args(1:nargs);
+  
+  if (length (args) == 0)
+    print_usage ();
+  elseif (length (args) > 1 && ! size_equal (args{:}))
     error ("arguments size must match");
   endif
 
@@ -123,16 +166,12 @@ function varargout = parcellfun (nproc, fun, varargin)
   ## At this point, everything should be OK (?)
 
   if (iproc)
-    ## the border patrol.
+    ## the border patrol. we really don't want errors escape after the forks.
     try
 
       ## child process. indicate ready state.
       fwrite (statw, -iproc, "double");
       fflush (statw);
-
-      myres = {};
-
-      nargs = length (varargin);
 
       do
         ## get command
@@ -140,18 +179,24 @@ function varargout = parcellfun (nproc, fun, varargin)
         if (cmd)
           ## we've got a job to do. prepare argument and return lists.
           res = cell (1, nargout);
-          args = cell (1, nargs);
+          argsc = cell (1, nargs);
           for i = 1:nargs
-            args{i} = varargin{i}{cmd};
+            argsc{i} = args{i}{cmd};
           endfor
 
-          ## evaluate function, with guard.
-          try
-            [res{:}] = fun (args{:});
-          catch
-            ## FIXME: need a better indication of result.
-            res(:) = {[]};
-          end_try_catch
+          if (isempty (error_handler))
+            ## unguarded evaluation.
+            [res{:}] = fun (argsc{:});
+          else
+            ## guarded evaluation
+            try
+              [res{:}] = fun (argsc{:});
+            catch
+              errs.index = cmd;
+              [errs.message, errs.identifier] = lasterr ();
+              [res{:}] = error_handler (errs, argsc{:});
+            end_try_catch
+          endif
 
           ## indicate ready state.
           fwrite (statw, iproc, "double");
@@ -168,8 +213,13 @@ function varargout = parcellfun (nproc, fun, varargin)
     catch
 
       ## just indicate the error. don't quit this function !!!!
-      warning ("parcellfun: unexpected error in subprocess");
-      warning ("parcellfun: %s", lasterr);
+      fputs (stderr, "\n");
+      warning ("parcellfun: unhandled error in subprocess %d", iproc);
+      fputs (stderr, [lasterr, "\n"]);
+
+      ## send a termination notice.
+      fwrite (statw, -iproc, "double");
+      fflush (statw);
 
     end_try_catch
 
@@ -205,10 +255,17 @@ function varargout = parcellfun (nproc, fun, varargin)
       if (isubp > 0)
         ijob = pending(isubp);
         ## we have a result ready.
-        ## FIXME: handle failure.
         res(:, ijob) = fload (resr(isubp));
       else
         isubp = -isubp;
+        if (pending(isubp))
+          ## premature exit means an unhandled error occured in a subprocess.
+          ## the process should have griped, we just try to exit gracefully.
+          pending(isubp) = 0;
+          ## no more jobs to start.
+          njobs = pjobs;
+          continue;
+        endif
       endif
       if (pjobs < njobs)
         ijob = ++pjobs;
@@ -235,6 +292,9 @@ function varargout = parcellfun (nproc, fun, varargin)
     shape = size (varargin{1});
     for i = 1:nargout
       varargout{i} = reshape (res(i,:), shape);
+      if (uniform_output)
+        varargout{i} = cell2mat (varargout{i});
+      endif
     endfor
     
   endif

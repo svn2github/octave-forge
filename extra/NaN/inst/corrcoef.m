@@ -1,5 +1,5 @@
 function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
-% CORRCOEF calculates the correlation coefficient.
+% CORRCOEF calculates the correlation matrix from pairwise correlations.
 %   The input data can contain missing values encoded with NaN.
 %   Missing data (NaN's) are handled by pairwise deletion [15]. 
 %   In order to avoid possible pitfalls, use case-wise deletion or 

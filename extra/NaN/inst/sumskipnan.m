@@ -102,7 +102,7 @@ x = double(x);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % use Matlab-MEX function when available  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%if 0,	
+%if 1,	
 try
 	
 	%% using sumskipnan_mex.mex
@@ -112,16 +112,16 @@ try
 		FLAG_NANS_OCCURED = logical(0);  % default value 
 	end;
 	
-	if (nargout==1),
+	if (nargout<2),
 		o = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED);
-		if (iscomplex(x))
+		if (~isreal(x))
 			io = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED);
 			o  = o + i*io;
 		end; 
 		return; 
 	elseif (nargout==2),
 		[o,count] = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED);
-		if (iscomplex(x))
+		if (~isreal(x))
 			[io,icount] = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED);
 			if any(count(:)-icount(:))
 				error('Number of NaNs differ for REAL and IMAG part');
@@ -132,7 +132,7 @@ try
 		return; 
 	elseif (nargout>=3),
 		[o,count,SSQ] = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED);
-		if (iscomplex(x))
+		if (~isreal(x))
 			[io,icount,iSSQ] = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED);
 			if any(count(:)-icount(:))
 				error('Number of NaNs differ for REAL and IMAG part');
@@ -163,10 +163,6 @@ if 0 %%if exist('OCTAVE_VERSION','builtin'),
 			[o,count,SSQ] = sumskipnan_oct(x,DIM);
 			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 			return; 
-		elseif (nargout==4) && isreal(i),
-			[o,count,SSQ,S4M] = sumskipnan_oct(x,DIM);
-			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
-			return; 
 		end; 	
 	else	%% if ~isreal(x)
 		if (nargout<3),
@@ -176,16 +172,6 @@ if 0 %%if exist('OCTAVE_VERSION','builtin'),
 				error('number of NaN differ between real and imag part\n');
 			end;
 			o = or + i*oi;
-			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
-			return; 
-		elseif (nargout<4),
-			[or,count,SSQ] = sumskipnan_oct(real(x),DIM);
-			[oi,counti,SSQi] = sumskipnan_oct(imag(x),DIM);
-			if any(count(:)-counti(:))
-				error('number of NaN differ between real and imag part\n');
-			end;
-			o = or + oi;
-			SSQ = SSQ+SSQi; 
 			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 			return; 
 		end; 	
@@ -230,9 +216,6 @@ if nargout>2,
                 SSQ = sum(x,DIM);
         else
                 SSQ = x*ones(size(x,2),1);
-        end;
-        if nargout>3,
-                S4M = sumskipnan(x.^2,DIM);
         end;
 end;
 

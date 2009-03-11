@@ -1,4 +1,4 @@
-function [o,count,SSQ,S4M] = sumskipnan(x,DIM)
+function [o,count,SSQ] = sumskipnan(x,DIM)
 % SUMSKIPNAN adds all non-NaN values. 
 %
 % All NaN's are skipped; NaN's are considered as missing values. 
@@ -111,14 +111,36 @@ try
 	if isempty(FLAG_NANS_OCCURED),
 		FLAG_NANS_OCCURED = logical(0);  % default value 
 	end;
-	if (nargout<3),
-		[o,count] = sumskipnan_mex(x,DIM,FLAG_NANS_OCCURED);
+	
+	if (nargout==1),
+		o = sumskipnan_mex5(real(x),DIM,FLAG_NANS_OCCURED);
+		if (iscomplex(x))
+			io = sumskipnan_mex5(imag(x),DIM,FLAG_NANS_OCCURED);
+			o  = o + i*io;
+		end; 
 		return; 
-	elseif (nargout==3),
-		[o,count,SSQ] = sumskipnan_mex(x,DIM,FLAG_NANS_OCCURED);
+	elseif (nargout==2),
+		[o,count] = sumskipnan_mex5(real(x),DIM,FLAG_NANS_OCCURED);
+		if (iscomplex(x))
+			[io,icount] = sumskipnan_mex5(imag(x),DIM,FLAG_NANS_OCCURED);
+			if any(count(:)-icount(:))
+				error('Number of NaNs differ for REAL and IMAG part');
+			else
+				o  = o+i*io;
+			end; 
+		end; 
 		return; 
-	elseif (nargout==4) && isreal(i),
-		[o,count,SSQ,S4M] = sumskipnan_mex(x,DIM,FLAG_NANS_OCCURED);
+	elseif (nargout>=3),
+		[o,count,SSQ] = sumskipnan_mex5(real(x),DIM,FLAG_NANS_OCCURED);
+		if (iscomplex(x))
+			[io,icount,iSSQ] = sumskipnan_mex5(imag(x),DIM,FLAG_NANS_OCCURED);
+			if any(count(:)-icount(:))
+				error('Number of NaNs differ for REAL and IMAG part');
+			else
+				o  = o+i*io;
+				SSQ = SSQ+iSSQ;
+			end; 
+		end; 
 		return; 
 	end; 	
 end; 

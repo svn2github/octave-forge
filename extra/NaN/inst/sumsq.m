@@ -1,20 +1,24 @@
-function o=meansq(x,DIM)
-% MEANSQ calculates the mean of the squares
-%
-% y = meansq(x,DIM)
-%
+function [o]=sumsq(x,DIM)
+% SUMSQ calculates the sum of squares.
+% 
+% [y] = sumsq(x [,  DIM])
+% 
 % DIM	dimension
-%	1 STD of columns
-%	2 STD of rows
 % 	N STD of  N-th dimension 
 %	default or []: first DIMENSION, with more than 1 element
+%
+% y	estimated standard deviation
 %
 % features:
 % - can deal with NaN's (missing values)
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
 %
-% see also: SUMSQ, SUMSKIPNAN, MEAN, VAR, STD, RMS
+% see also: RMS, SUMSKIPNAN, MEAN, VAR, MEANSQ,
+%
+%
+% References(s):
+
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -29,19 +33,18 @@ function o=meansq(x,DIM)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-
-%	Copyright (C) 2000-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %	$Id$
+%	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the NaN-toolbox for Octave and Matlab 
 %       see also: http://hci.tugraz.at/schloegl/matlab/NaN/       
 
-
 if nargin<2,
-	[o,N,ssq] = sumskipnan(x);
-else
-	[o,N,ssq] = sumskipnan(x,DIM);
+	DIM = []; 
+end;
+if isempty(DIM), 
+        DIM = min(find(size(x)>1));
+        if isempty(DIM), DIM=1; end;
 end;
 
-o = ssq./N;
+[s,n,o] = sumskipnan(x,DIM);
 
-   

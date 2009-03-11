@@ -1,4 +1,4 @@
-function [y] = nanstd(i,FLAG,DIM)
+function [y] = nanstd(x,FLAG,DIM)
 % NANSTD same as STD but ignores NaN's. 
 % NANSTD is OBSOLETE; use NaN/STD instead. NANSTD is included 
 %    to fix a bug in alternative implementations and to 
@@ -17,8 +17,8 @@ function [y] = nanstd(i,FLAG,DIM)
 % 
 % see also: SUM, SUMSKIPNAN, NANSUM, STD
 
-%    Copyright (C) 2000-2003,2006,2008 by Alois Schloegl <a.schloegl@ieee.org>	
 %    $Id$
+%    Copyright (C) 2000-2003,2006,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %    This is part of the NaN-toolbox. For more details see
 %    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -47,7 +47,13 @@ if isempty(DIM),
         if isempty(DIM), DIM=1; end;
 end;
 
-[y,n] = sumskipnan(center(i,DIM).^2,DIM);
+[y,n,ssq] = sumskipnan(x,DIM);if all(ssq(:).*n(:) > 2*(y(:).^2))
+	%% rounding error is neglectable 
+	y = ssq - y.*y./n;
+else
+	%% rounding error is not neglectable 
+	[y,n] = sumskipnan(center(x,DIM).^2,DIM);
+end; 
 
 if (FLAG==1)
         y = sqrt(y)./n;	% normalize with N

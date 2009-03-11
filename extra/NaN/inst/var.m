@@ -33,9 +33,10 @@ function y=var(x,opt,DIM)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-%	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003,2006 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2000-2003,2006,2009 by Alois Schloegl <a.schloegl@ieee.org>
+%       This is part of the NaN-toolbox for Octave and Matlab 
+%       see also: http://hci.tugraz.at/schloegl/matlab/NaN/       
 
 if nargin>1,
         if ~isempty(opt) & opt~=0, 
@@ -53,7 +54,13 @@ if isempty(DIM),
         if isempty(DIM), DIM=1; end;
 end;
 
-[y,n] = sumskipnan(center(x,DIM).^2,DIM);
+[y,n,ssq] = sumskipnan(x,DIM);if all(ssq(:).*n(:) > 2*(y(:).^2))
+	%% rounding error is neglectable 
+	y = ssq - y.*y./n;
+else
+	%% rounding error is not neglectable 
+	[y,n] = sumskipnan(center(x,DIM).^2,DIM);
+end; 
 
 if (opt~=1)
     	n = max(n-1,0);			% in case of n=0 and n=1, the (biased) variance, STD and STE are INF

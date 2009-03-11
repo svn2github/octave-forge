@@ -113,16 +113,16 @@ try
 	end;
 	
 	if (nargout==1),
-		o = sumskipnan_mex5(real(x),DIM,FLAG_NANS_OCCURED);
+		o = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED);
 		if (iscomplex(x))
-			io = sumskipnan_mex5(imag(x),DIM,FLAG_NANS_OCCURED);
+			io = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED);
 			o  = o + i*io;
 		end; 
 		return; 
 	elseif (nargout==2),
-		[o,count] = sumskipnan_mex5(real(x),DIM,FLAG_NANS_OCCURED);
+		[o,count] = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED);
 		if (iscomplex(x))
-			[io,icount] = sumskipnan_mex5(imag(x),DIM,FLAG_NANS_OCCURED);
+			[io,icount] = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED);
 			if any(count(:)-icount(:))
 				error('Number of NaNs differ for REAL and IMAG part');
 			else
@@ -131,9 +131,9 @@ try
 		end; 
 		return; 
 	elseif (nargout>=3),
-		[o,count,SSQ] = sumskipnan_mex5(real(x),DIM,FLAG_NANS_OCCURED);
+		[o,count,SSQ] = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED);
 		if (iscomplex(x))
-			[io,icount,iSSQ] = sumskipnan_mex5(imag(x),DIM,FLAG_NANS_OCCURED);
+			[io,icount,iSSQ] = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED);
 			if any(count(:)-icount(:))
 				error('Number of NaNs differ for REAL and IMAG part');
 			else

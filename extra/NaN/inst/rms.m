@@ -1,4 +1,4 @@
-function o=rms(i,DIM)
+function o=rms(x,DIM)
 % RMS calculates the root mean square
 %   can deal with complex data. 
 %
@@ -32,19 +32,17 @@ function o=rms(i,DIM)
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
-%	$Revision$
 %	$Id$
+%	Copyright (C) 2000-2003,2008 by Alois Schloegl <a.schloegl@ieee.org>	%       This function is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
-
-i = real(i).^2 + imag(i).^2;
 
 if nargin<2,
-	[o,N] = sumskipnan(i);
+	[o,N,ssq] = sumskipnan(x);
 else
-	[o,N] = sumskipnan(i,DIM);
+	[o,N,ssq] = sumskipnan(x,DIM);
 end;
 
-o = sqrt(o./N);
+o = sqrt(ssq./N);
    
    

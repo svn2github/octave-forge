@@ -24,10 +24,12 @@ function y=trimean(x,DIM)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-%	$Revision$
 %	$Id$
-%	Copyright (C) 1996-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
 
+global FLAG_NANS_OCCURED;
 
 % check dimension
 sz=size(x);
@@ -43,7 +45,7 @@ if DIM>length(sz),
 end;
 
 D1 = prod(sz(1:DIM-1));
-%D2 = sz(DIM);
+D2 = sz(DIM);
 D3 = prod(sz(DIM+1:length(sz)));
 D0 = [sz(1:DIM-1),1,sz(DIM+1:length(sz))];
 y  = repmat(nan,D0);
@@ -56,7 +58,9 @@ for l = 0:D3-1,
         t = sort(t(~isnan(t)));
         t = t(:);
 	n = length(t); 
-	
+        if (n<D2) 
+	        FLAG_NANS_OCCURED = 1; 
+        end; 
         
         % q = flix(t,x); 	% The following find the quartiles and median.
         			% INTERP1 is not an alternative since it fails for n<2;

@@ -81,13 +81,13 @@ elseif opt==1,
 
 else
         % best unbiased estimator of the mean
-        if exist('unique')==2, 
+        if exist('unique','file'), 
 		% usually only a few n's differ
                 [N,tmp,tix] = unique(n(:));	% compress n and calculate ib(n)
         	ib = sqrt(N/2).*gamma((N-1)./2)./gamma(N./2);	%inverse b(n) [1]
 	        ib = ib(reshape(tix,size(y)));	% expand ib to correct size
                 
-        elseif exist('histo3')==2, 
+        elseif exist('histo3','file'), 
 		% usually only a few n's differ
                 [N,tix] = histo3(n(:)); N = N.X;
                 ib = sqrt(N/2).*gamma((N-1)./2)./gamma(N./2);	%inverse b(n) [1]

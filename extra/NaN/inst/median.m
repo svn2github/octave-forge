@@ -28,9 +28,12 @@ function [y]=median(x,DIM)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-%	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+
+global FLAG_NANS_OCCURED;
 
 % check dimension of x
 sz=size(x);
@@ -46,7 +49,7 @@ if DIM>length(sz),
 end;
 
 D1 = prod(sz(1:DIM-1));
-%D2 = sz(DIM);
+D2 = sz(DIM);
 D3 = prod(sz(DIM+1:length(sz)));
 D0 = [sz(1:DIM-1),1,sz(DIM+1:length(sz))];
 y  = repmat(nan,D0);
@@ -65,5 +68,8 @@ for l = 0:D3-1,
         elseif rem(n,2),
                 y(xo) = t((n+1)/2);
         end;
+        if (n<D2) 
+	        FLAG_NANS_OCCURED = 1; 
+        end; 
 end;
 end;

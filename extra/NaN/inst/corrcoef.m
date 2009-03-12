@@ -76,7 +76,7 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % [20] http://www.tufts.edu/~gdallal/corr.htm
 
 %       $Id$
-%       Copyright (C) 2000-2004,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%       Copyright (C) 2000-2004,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -107,6 +107,7 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % - rank correlation works for cell arrays, too (no check for missing values).
 % + compatible with Octave and Matlab
 
+global FLAG_NANS_OCCURED;
 
 NARG = nargout;	% needed because nargout is not reentrant in Octave, and corrcoef is recursive
 
@@ -143,6 +144,9 @@ end;
 
 %%%%% generate combinations using indices for pairwise calculation of the correlation
 YESNAN = any(isnan(X(:))) | any(isnan(Y(:)));
+if YESNAN,
+	FLAG_NANS_OCCURED=(1==1);
+end; 
 if isempty(Y),
         IX = ones(c1)-diag(ones(c1,1));
         [jx, jy ] = find(IX);

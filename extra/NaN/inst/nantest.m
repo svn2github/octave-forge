@@ -265,7 +265,7 @@ if exist('histo3','file')
 else
 	H.X = [1;2;4;10;700];
 	H.H = [2;2;2;1;1];
-	H.datatype = 'histogram'; 
+	H.datatype = 'HISTOGRAM'; 
 end; 	 
 if any( quantile(H, q)' -  r>0)
 	fprintf(1,'Quantile(2): failed\n');

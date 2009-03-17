@@ -13,7 +13,7 @@
 @rem    http://downloads.sourceforge.net/tdm-gcc/gcc-4.3.0-tdm-2-dw2-core.tar.gz
 @rem    http://downloads.sourceforge.net/tdm-gcc/gcc-4.3.0-tdm-2-dw2-fortran.tar.gz
 @rem    http://downloads.sourceforge.net/tdm-gcc/gcc-4.3.0-tdm-2-dw2-g++.tar.gz
-@rem    http://downloads.sourceforge.net/mingw/binutils-2.19-mingw32-bin.tar.gz
+@rem    http://downloads.sourceforge.net/mingw/binutils-2.19.1-mingw32-bin.tar.gz
 @rem    http://downloads.sourceforge.net/mingw/mingw32-make-3.81-20080326-3.tar.gz
 @rem    http://downloads.sourceforge.net/mingw/gdb-6.8-mingw-3.tar.bz2
 @rem    http://downloads.sourceforge.net/mingw/w32api-3.13-mingw32-dev.tar.gz
@@ -41,7 +41,7 @@ SET GCCSYS=-dw2
 %BSDTAR% %TAROPT% %SRC%\gcc%GCCVER%%GCCVEND%%GCCREL%%GCCSYS%-fortran.tar.gz
 %BSDTAR% %TAROPT% %SRC%\gcc%GCCVER%%GCCVEND%%GCCREL%%GCCSYS%-g++.tar.gz
 
-%BSDTAR% %TAROPT% %SRC%\binutils-2.19-mingw32-bin.tar.gz
+%BSDTAR% %TAROPT% %SRC%\binutils-2.19.1-mingw32-bin.tar.gz
 %BSDTAR% %TAROPT% %SRC%\mingw32-make-3.81-20080326-3.tar.gz
 %BSDTAR% %TAROPT% %SRC%\mingwrt-3.15.2-mingw32-dev.tar.gz
 %BSDTAR% %TAROPT% %SRC%\mingw-utils-0.3.tar.gz

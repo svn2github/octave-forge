@@ -21,10 +21,14 @@
 @rem   http://downloads.sourceforge.net/mingw/automake1.9-1.9.6-2-bin.tar.bz2
 @rem   http://downloads.sourceforge.net/mingw/automake-3-1-bin.tar.bz2
 @rem
+@rem   http://downloads.sourceforge.net/mingw/tar-1.19.90-MSYS-1.0.11-2-bin.tar.gz
+@rem   http://downloads.sourceforge.net/mingw/MSYS-1.0.11-20090120-dll.tar.gz
+@rem
 @rem   http://downloads.sourceforge.net/mingw/bison-2.3-MSYS-1.0.11-1.tar.bz2
 @rem   http://downloads.sourceforge.net/mingw/flex-2.5.33-MSYS-1.0.11-1.tar.bz2
 @rem   http://downloads.sourceforge.net/mingw/regex-0.12-MSYS-1.0.11-1.tar.bz2
 @rem   http://gnuwin32.sourceforge.net/downlinks/gperf-bin-zip.php
+@rem
 
 IF %1/==/ goto usage
 
@@ -45,6 +49,9 @@ SET SRC=msys-env
 %TAR% %TAROPT% -f %SRC%\flex-2.5.33-MSYS-1.0.11-1.tar.bz2
 %TAR% %TAROPT% -f %SRC%\regex-0.12-MSYS-1.0.11-1.tar.bz2 bin/*.*
 %TAR% %TAROPT% -f %SRC%\gperf-3.0.1-bin.zip bin/gperf.exe
+
+%TAR% %TAROPT% -f %SRC%\MSYS-1.0.11-20090120-dll.tar.gz
+%TAR% %TAROPT% -f %SRC%\tar-1.19.90-MSYS-1.0.11-2-bin.tar.gz
 
 move "%DST%\m.ico" "%DST%\the-m.ico"
 

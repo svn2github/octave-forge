@@ -83,9 +83,10 @@ if ~isa(x,'float') || ~flag_implicit_skip_nan(), %%% skip always NaN's
 	x = double(x); 
 	o = sum(x,DIM);
 	if nargout>1
-		sz = size(x),DIM,
-		sz2= sz; sz2(DIM)=1; 	
-		count = repmat(sz(DIM),sz2);
+		sz = size(x);
+		N  = sz(DIM); 
+		sz(DIM) = 1; 	
+		count = repmat(N,sz);
 		if nargout>2
 			x = x.*x; 
 			SSQ = sum(x,DIM);

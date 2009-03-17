@@ -79,18 +79,16 @@ if (DIM<1) DIM = 1; end; %% Hack, because min([])=0 for FreeMat v3.5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % non-float data 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ~isa(x,'float') %%%% || ~flag_implicit_skip_nan(), %%% skip always NaN's
+if ~isa(x,'float') || ~flag_implicit_skip_nan(), %%% skip always NaN's
 	x = double(x); 
 	o = sum(x,DIM);
-	if nargin>1
-		sz = size(x);	
-		count = repmat(sz(DIM),sz([1:DIM-1,DIM+1:end]));
-		if nargin>2
+	if nargout>1
+		sz = size(x),DIM,
+		sz2= sz; sz2(DIM)=1; 	
+		count = repmat(sz(DIM),sz2);
+		if nargout>2
 			x = x.*x; 
 			SSQ = sum(x,DIM);
-			if nargin>3
-				S4M = sum(x.*x,DIM);
-			end; 
 		end; 
 	end; 	
 	return; 
@@ -145,57 +143,12 @@ try
 	end; 	
 end; 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% use OCT function when available  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% no performance analysis showing a distinct advantage has been performed.  
-if 0 %%if exist('OCTAVE_VERSION','builtin'),
-
-	%% for Octave, there might be an sumskipnan_oct.oct
-	try
-	if isreal(x)
-		%% using sumskipnan_oct.mex
-		if (nargout<3),
-			[o,count] = sumskipnan_oct(x,DIM);
-			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
-			return; 
-		elseif (nargout==3),
-			[o,count,SSQ] = sumskipnan_oct(x,DIM);
-			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
-			return; 
-		end; 	
-	else	%% if ~isreal(x)
-		if (nargout<3),
-			[or,count] = sumskipnan_oct(real(x),DIM);
-			[oi,counti] = sumskipnan_oct(imag(x),DIM);
-			if any(count(:)-counti(:))
-				error('number of NaN differ between real and imag part\n');
-			end;
-			o = or + i*oi;
-			FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
-			return; 
-		end; 	
-	end;	%% if 
-	end; 	%% try
-end; 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% fall-back in case no OCT/MEX support is avialable   
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% performance tweak: some tests have shown that x*ones(:,1) is faster than sum(x,2)
-FLAG	 = (length(size(x))<3); 
-if FLAG, FLAG = DIM; end; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % count non-NaN's
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if nargout>1,
-        if FLAG~=2,
-                count = sum(x==x,DIM); 
-        else
-                count = real(x==x)*ones(size(x,2),1);
-        end;
+        count = sum(x==x,DIM); 
 	FLAG_NANS_OCCURED = any(count(:)<size(x,DIM));
 end;
 
@@ -203,19 +156,10 @@ end;
 % replace NaN's with zero 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 x(x~=x) = 0;	
-
-if FLAG~=2, 
-        o = sum(x,DIM);
-else 
-	o = x*ones(size(x,2),1);
-end;
+o = sum(x,DIM);
 
 if nargout>2,
         x = real(x).^2 + imag(x).^2;
-        if FLAG~=2,
-                SSQ = sum(x,DIM);
-        else
-                SSQ = x*ones(size(x,2),1);
-        end;
+        SSQ = sum(x,DIM);
 end;
 

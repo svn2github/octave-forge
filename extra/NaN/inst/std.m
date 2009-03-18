@@ -69,6 +69,10 @@ end;
 if nargin<2,
         opt = 0;
 end;
+if isempty(opt),
+        opt = 0;
+end;
+
 
 if opt==0, 
         % square root if the best unbiased estimator of the variance 
@@ -96,6 +100,7 @@ else
         else	% gamma is called prod(size(n)) times 
                 ib = sqrt(n/2).*gamma((n-1)./2)./gamma(n./2);	%inverse b(n) [1]
         end;	
+        ib = reshape(ib,size(y));
         o  = sqrt(y./n).*ib;
 end;
 

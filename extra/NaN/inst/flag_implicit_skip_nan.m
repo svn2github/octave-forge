@@ -22,6 +22,8 @@ function FLAG = flag_implicit_skip_nan(i)
 % The mode is stored in the global variable FLAG_implicit_skip_nan
 % It is recommended to use flag_implicit_skip_nan(1) as default and 
 % flag_implicit_skip_nan(0) should be used for exceptional cases only. 
+% This feature might disappear without further notice, so you should really not 
+% rely on it. 
 
 
 %    This program is free software; you can redistribute it and/or modify
@@ -54,5 +56,8 @@ end;
 FLAG = FLAG_implicit_skip_nan;
 if nargin>0,
 	FLAG_implicit_skip_nan = (i~=0); %logical(i); %logical.m not available in 2.0.16 
+	if (~i)
+		warning('flag_implicit_skipnan(0): You are warned!!! You have turned off skipping NaN in sumskipnan. This is not recommended. Make sure you really know what you do.')
+	end;
 end;    
 

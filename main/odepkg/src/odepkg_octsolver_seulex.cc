@@ -64,7 +64,7 @@ typedef octave_idx_type (*odepkg_seulex_soltype)
 extern "C" {
   F77_RET_T F77_FUNC (seulex, SEULEX)
     (const octave_idx_type& N, odepkg_seulex_usrtype, const octave_idx_type& IFCN,
-     const octave_idx_type& X, const double* Y, const double& XEND,
+     const double& X, const double* Y, const double& XEND,
      const double& H, const double* RTOL, const double* ATOL,
      const octave_idx_type& ITOL, odepkg_seulex_jactype, const octave_idx_type& IJAC,
      const octave_idx_type& MLJAC, const octave_idx_type& MUJAC, odepkg_seulex_masstype,
@@ -104,8 +104,8 @@ octave_idx_type odepkg_seulex_usrfcn
   ColumnVector A(N);
   for (octave_idx_type vcnt = 0; vcnt < N; vcnt++) {
     A(vcnt) = Y[vcnt];
-    //    octave_stdout << "bin hier Y[" << vcnt << "] " << Y[vcnt] << std::endl;
-    //    octave_stdout << "bin hier T " << X << std::endl;
+    //    octave_stdout << "I am here Y[" << vcnt << "] " << Y[vcnt] << std::endl;
+    //    octave_stdout << "I am here T " << X << std::endl;
   }
 
   // Fill the variable for the input arguments before evaluating the
@@ -136,7 +136,6 @@ octave_idx_type odepkg_seulex_jacfcn
   ColumnVector A(N);
   for (octave_idx_type vcnt = 0; vcnt < N; vcnt++)
     A(vcnt) = Y[vcnt];
-  // octave_stdout << "bin drinne" << std::endl;
 
   // Set the values that are needed as input arguments before calling
   // the Jacobian function and then call the Jacobian interface

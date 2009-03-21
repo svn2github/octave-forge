@@ -855,11 +855,11 @@ odebda (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!test %# RelTol and NormControl option -- higher accuracy
 %!  vopt = odeset ('RelTol', 1e-8, 'NormControl', 'on');
 %!  vsol = odebda (@fpol, [0 2], [2 0], vopt);
-%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-6);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-5);
 %!test %# Keeps initial values while integrating
 %!  vopt = odeset ('NonNegative', 2);
 %!  vsol = odebda (@fpol, [0 2], [2 0], vopt);
-%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-6);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-5);
 %!test %# Details of OutputSel and Refine can't be tested
 %!  vopt = odeset ('OutputFcn', @fout, 'OutputSel', 1, 'Refine', 5);
 %!  vsol = odebda (@fpol, [0 2], [2 0], vopt);

@@ -11,8 +11,11 @@ PATCHPROG = patch -p0 # Needed to patch the Fortran codes
 # MKMEXFILE = $(MKOCTFILE) --mex
 ifeq (gfortran,$(findstring gfortran,$(F77)))
   MKF77FILE = FFLAGS="-fno-automatic $(FFLAGS)" $(MKOCTFILE)
+endif
+ifeq (g95,$(findstring g95,$(F77)))
+  MKF77FILE = FFLAGS="-fstatic $(FFLAGS)" $(MKOCTFILE)
 else
-  # eg. fort77-f2c and g95
+  # eg. the combination f2c with fort77
   MKF77FILE = FFLAGS="$(FFLAGS)" $(MKOCTFILE)
 endif
 

@@ -64,7 +64,7 @@ typedef octave_idx_type (*odepkg_radau5_soltype)
 extern "C" {
   F77_RET_T F77_FUNC (radau5, RADAU5)
     (const octave_idx_type& N, odepkg_radau5_usrtype,
-     const octave_idx_type& X, const double* Y, const double& XEND,
+     const double& X, const double* Y, const double& XEND,
      const double& H, const double* RTOL, const double* ATOL,
      const octave_idx_type& ITOL, odepkg_radau5_jactype, const octave_idx_type& IJAC,
      const octave_idx_type& MLJAC, const octave_idx_type& MUJAC, odepkg_radau5_masstype,
@@ -101,8 +101,8 @@ octave_idx_type odepkg_radau5_usrfcn
   ColumnVector A(N);
   for (octave_idx_type vcnt = 0; vcnt < N; vcnt++) {
     A(vcnt) = Y[vcnt];
-    //    octave_stdout << "bin hier Y[" << vcnt << "] " << Y[vcnt] << std::endl;
-    //    octave_stdout << "bin hier T " << X << std::endl;
+    //    octave_stdout << "I am here Y[" << vcnt << "] " << Y[vcnt] << std::endl;
+    //    octave_stdout << "I am here T " << X << std::endl;
   }
 
   // Fill the variable for the input arguments before evaluating the
@@ -133,7 +133,6 @@ octave_idx_type odepkg_radau5_jacfcn
   ColumnVector A(N);
   for (octave_idx_type vcnt = 0; vcnt < N; vcnt++)
     A(vcnt) = Y[vcnt];
-  // octave_stdout << "bin drinne" << std::endl;
 
   // Set the values that are needed as input arguments before calling
   // the Jacobian function and then call the Jacobian interface
@@ -587,6 +586,7 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   if (!vradau5evefun.is_empty ())
     odepkg_auxiliary_evaleventfun (vradau5evefun, vtim, args(2), vradau5extarg, 0);
 
+  // octave_stdout <<  "X VALUE=" << X << XEND << std::endl;
   // We are calling the core solver and solve the set of ODEs or DAEs
   F77_XFCN (radau5, RADAU5, // Keep 5 arguments per line here
             (N, odepkg_radau5_usrfcn, X, Y,

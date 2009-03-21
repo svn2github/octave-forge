@@ -83,7 +83,7 @@ The ``Beginners Guide'' is intended for users who are new to OdePkg and who want
 @node About OdePkg, OdePkg history and roadmap, Beginners Guide, Beginners Guide
 @section About OdePkg
 @cindex About OdePkg
-OdePkg is part of the @b{Octave Repository} (resp. the Octave--Forge project) that was initiated by Matthew W. Roberts in the year 2000 and that is hosted at @url{http://octave.sourceforge.net}. Since then a lot of contributors joined this project and added a lot more packages and functions to further extend the capabilities of GNU Octave.
+OdePkg is part of the @b{Octave Repository} (resp. the Octave--Forge project) that was initiated by Matthew W. Roberts and Paul Kienzle in the year 2000 and that is hosted at @url{http://octave.sourceforge.net}. Since then a lot of contributors joined this project and added a lot more packages and functions to further extend the capabilities of GNU Octave.
 @c The email from Matthew W. Roberts about Octave--forge can be found here:
 @c http://velveeta.che.wisc.edu/octave/lists/archive/octave-sources.2000/msg00110.html
 
@@ -141,13 +141,6 @@ If you encounter problems during the installation process of OdePkg with the @co
 @ifhtml
 @email{octave-dev @{at] lists.sourceforge.net} (replace @{at] with @@)
 @end ifhtml 
-and directly send a copy to the email address 
-@ifnothtml
-@email{treichl@@users.sourceforge.net}
-@end ifnothtml 
-@ifhtml
-@email{treichl (at@} users.sourceforge.net} (replace (at@} with @@)
-@end ifhtml
 . Not only bugs are welcome but also any kind of comments are welcome (eg. if you think that OdePkg is absolutely useful or even unnecessary).
 
 @node The "foo" example,  , Reporting Bugs, Beginners Guide
@@ -955,13 +948,6 @@ If somebody want to help improving OdePkg then please contact the Octave--Forge 
 @ifhtml
 @email{octave-dev <at] lists.sourceforge.net} (replace <at] with @@)
 @end ifhtml 
-or send an email to
-@ifnothtml
-@email{treichl@@users.sourceforge.net}
-@end ifnothtml 
-@ifhtml
-@email{treichl (at> users.sourceforge.net} (replace (at> with @@)
-@end ifhtml
 . Here is a TODO--list about missing features:
 @c The OdePack solvers from http://www.netlib.org/odepack have not been added to OdePkg, because the question is not answered if they are really needed from somebody. Other solvers from http://www.netlib.org/ode have not been added because of the same reason.
 @itemize

@@ -169,7 +169,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
 
   %# Implementation of the option Refine has been finished. This option
   %# can be set by the user to another value than default value.
-  if (isequal (vodeoptions.Refine, vodetemp.Refine)), vhaverefine = true;
+  if (vodeoptions.Refine > 0), vhaverefine = true;
   else vhaverefine = false; end
 
   %# Implementation of the option Stats has been finished. This option
@@ -397,21 +397,25 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
       %# code fragment has moved here. Stop integration if plot function
       %# returns false
       if (vhaveoutputfunction)
-        if (vhaverefine)                  %# Do interpolation
-          for vcnt = 0:vodeoptions.Refine %# Approximation between told and t
+        for vcnt = 0:vodeoptions.Refine %# Approximation between told and t
+          if (vhaverefine)              %# Do interpolation
             vapproxtime = (vcnt + 1) * vstepsize / (vodeoptions.Refine + 2);
             vapproxvals = vSaveVUForRefine.' + vapproxtime * (vk * vb8);
-            if (vhaveoutputselection)
-              vapproxvals = vapproxvals(vodeoptions.OutputSel);
-            end
-            feval (vodeoptions.OutputFcn, (vtimestamp - vstepsize) + vapproxtime, ...
-              vapproxvals, [], vfunarguments{:});
+            vapproxtime = (vtimestamp - vstepsize) + vapproxtime;
+          else
+            vapproxvals = vu.';
+            vapproxtime = vtimestamp;
           end
+          if (vhaveoutputselection)
+            vapproxvals = vapproxvals(vodeoptions.OutputSel);
+          end          
+          vpltret = feval (vodeoptions.OutputFcn, vapproxtime, ...
+            vapproxvals, [], vfunarguments{:});          
+          if vpltret %# Leave refinement loop
+            break;
+          end         
         end
-
-        vpltret = feval (vodeoptions.OutputFcn, vtimestamp, ...
-          vu.', [], vfunarguments{:});
-        if (vpltret)
+        if (vpltret) %# Leave main loop
           vunhandledtermination = false;
           break;
         end

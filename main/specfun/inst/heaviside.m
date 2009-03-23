@@ -15,14 +15,27 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} heaviside(@var{x})
-## Compute the heaviside step function.
+## @deftypefnx{Function File} {} heaviside(@var{x}, @var{zero_value})
+## Compute the Heaviside step function.
+##
+## The Heaviside function is defined as
+##
+## @example
+##   Heaviside (@var{x}) = 1,   @var{x} > 0
+##   Heaviside (@var{x}) = 0,   @var{x} < 0
+## @end example
+##
+## @noindent
+## The value of the Heaviside function at @var{x} = 0 is by default 0.5,
+## but can be changed via the optional second input argument.
 ## @seealso{dirac}
 ## @end deftypefn
 
-function y = heaviside(x)
-		if (nargin != 1)
-			usage ("heaviside(x)");
-	   endif
-		y = double(x>0);
-   	y(x==0) = NaN; 
-endfunction;
+function y = heaviside (x, zero_value = 0.5)
+  if (nargin < 1)
+    print_usage ();
+  endif
+
+  y = cast (x > 0, class (x));
+  y (x == 0) = zero_value;
+endfunction

@@ -9,6 +9,7 @@ Minimization
  fmins adsmax mdsmax nmsmax
  bfgsmin samin battery
  fminsearch
+ cg_min
 Data fitting
  expfit expdemo
  wpolyfit wpolyfitdemo 
@@ -34,3 +35,4 @@ Examples
  bfgsmin_example
  rosenbrock
  samin_example
+  cg_min_test_1 cg_min_test_2 cg_min_test_3

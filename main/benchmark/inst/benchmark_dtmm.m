@@ -33,7 +33,9 @@
 % time_mtm = Time for A*B' (A,B n-by-m matrices)
 % time_msm = Time for A*A'
 % time_tmv = Time for A'*v nvec-times (A m-by-n matrix)
+% ratio_tmv = Ratio to precomputed transpose time
 % time_mtv = Time for v*A' nvec-times (A m-by-n matrix)
+% ratio_mtv = Ratio to precomputed transpose time
 %
 
 function results = benchmark_dtmm (m, n, nvec)
@@ -72,6 +74,14 @@ function results = benchmark_dtmm (m, n, nvec)
   time_tmv = toc;
   benchutil_set_result ('time_tmv')
 
+  B = A';
+  tic;
+  for i=1:nvec
+    c = B*v;
+  end
+  ratio_tmv = time_tmv / toc;
+  benchutil_set_result ('ratio_tmv')
+
   v = rand (1, n);
   tic;
   for i=1:nvec
@@ -79,4 +89,11 @@ function results = benchmark_dtmm (m, n, nvec)
   end
   time_mtv = toc;
   benchutil_set_result ('time_mtv')
+
+  tic;
+  for i=1:nvec
+    c = v*B;
+  end
+  ratio_mtv = time_mtv / toc;
+  benchutil_set_result ('ratio_mtv')
 

@@ -44,6 +44,7 @@
 inline int __sumskipnan2__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN);
 inline int __sumskipnan3__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN);
 
+//#define NO_FLAG
 
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
@@ -56,9 +57,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	unsigned long   LCount;
 
     	unsigned	DIM = 0; 
-    	unsigned long	D1, D2, D3; 	// NN; 	//  	
+    	size_t		D1, D2, D3; 	// NN; 	//  	
     	unsigned    	ND, ND2;	// number of dimensions: input, output
-    	unsigned long	ix1, ix2;	// index to input and output
+    	size_t		ix0, ix1, ix2;	// index to input and output
     	unsigned    	j, l;		// running indices 
     	int 		*SZ2;		// size of output 	    
 	char	 	flag_isNaN = 0;
@@ -123,11 +124,11 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
 	LOutputSum = mxGetPr(POutput[0]);
 
-    	if (POutputCount >= 2){
+    	if (POutputCount >= 2) {
 		POutput[1] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
 		LOutputCount = mxGetPr(POutput[1]);
     	}
-    	if (POutputCount >= 3){
+    	if (POutputCount >= 3) {
 		POutput[2] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
         	LOutputSum2  = mxGetPr(POutput[2]);
     	}
@@ -137,24 +138,26 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if ((POutputCount == 1) && !mxIsComplex(PInputs[0])) {
 		// OUTER LOOP: along dimensions > DIM
 		for (l = 0; l<D3; l++) {
-			ix1 = l*D1*D2;	// index for input 
+			ix0 = l*D1; 	// index for output
+			ix1 = ix0*D2;	// index for input 
 			if (D1==1)  	
 			{
-				ix2 =   l*D1;	// index for output 
 				double count;
-				__sumskipnan2__(LInput+ix1, D2, LOutputSum+ix2, &count, &flag_isNaN);
+				__sumskipnan2__(LInput+ix1, D2, LOutputSum+ix0, &count, &flag_isNaN);
  	       		}
 			else for (j=0; j<D2; j++) {
 				// minimize cache misses 
-				ix2 =   l*D1;	// index for output 
+				ix2 =   ix0;	// index for output 
 				// Inner LOOP: along dimensions < DIM
 				do {
 					register double x = *LInput;
-        				if (x==x) {
+        				if (!isnan(x)) {
 						LOutputSum[ix2]   += x; 
 					}
+#ifndef NO_FLAG
 					else 
 						flag_isNaN = 1; 
+#endif 
 					LInput++;
 					ix2++;
 				} while (ix2 != (l+1)*D1);
@@ -165,24 +168,26 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	else if ((POutputCount == 2) && !mxIsComplex(PInputs[0])) {
 		// OUTER LOOP: along dimensions > DIM
 		for (l = 0; l<D3; l++) {
-			ix1 = l*D1*D2;	// index for input 
+			ix0 = l*D1; 
+			ix1 = ix0*D2;	// index for input 
 			if (D1==1)  	
 			{
-				ix2 =   l*D1;	// index for output 
-				__sumskipnan2__(LInput+ix1, D2, LOutputSum+ix2, LOutputCount+ix2, &flag_isNaN);
+				__sumskipnan2__(LInput+ix1, D2, LOutputSum+ix0, LOutputCount+ix0, &flag_isNaN);
  	       		}
 			else for (j=0; j<D2; j++) {
 				// minimize cache misses 
-				ix2 =   l*D1;	// index for output 
+				ix2 =   ix0;	// index for output 
 				// Inner LOOP: along dimensions < DIM
 				do {
 					register double x = *LInput;
-        				if (x==x) {
+        				if (!isnan(x)) {
 						LOutputCount[ix2] += 1.0; 
 						LOutputSum[ix2]   += x; 
 					}
+#ifndef NO_FLAG
 					else 
 						flag_isNaN = 1; 
+#endif
 					LInput++;
 					ix2++;
 				} while (ix2 != (l+1)*D1);
@@ -193,26 +198,28 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	else if ((POutputCount == 3) && !mxIsComplex(PInputs[0])) {
 		// OUTER LOOP: along dimensions > DIM
 		for (l = 0; l<D3; l++) {
-			ix1 = l*D1*D2;	// index for input 
+			ix0 = l*D1; 
+			ix1 = ix0*D2;	// index for input 
 			if (D1==1)  	
 			{
-				ix2 =   l*D1;	// index for output 
 				size_t count;
-				__sumskipnan3__(LInput+ix1, D2, LOutputSum+ix2, LOutputSum2+ix2, LOutputCount+ix2, &flag_isNaN);
+				__sumskipnan3__(LInput+ix1, D2, LOutputSum+ix0, LOutputSum2+ix0, LOutputCount+ix0, &flag_isNaN);
  	       		}
 			else for (j=0; j<D2; j++) {
 				// minimize cache misses 
-				ix2 =   l*D1;	// index for output 
+				ix2 =   ix0;	// index for output 
 				// Inner LOOP: along dimensions < DIM
 				do {
 					register double x = *LInput;
-        				if (x==x) {
+        				if (!isnan(x)) {
 						LOutputCount[ix2] += 1.0; 
 						LOutputSum[ix2]   += x; 
 						LOutputSum2[ix2]  += x*x; 
 					}
+#ifndef NO_FLAG
 					else 
 						flag_isNaN = 1; 
+#endif
 					LInput++;
 					ix2++;	
 				} while (ix2 != (l+1)*D1);
@@ -220,6 +227,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
                	}		
 	}
 
+#ifndef NO_FLAG
 	if  (flag_isNaN && (PInputCount > 2)) {
     		// set FLAG_NANS_OCCURED 
     		switch (mxGetClassID(PInputs[2])) {
@@ -254,6 +262,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     			mexPrintf("Type of 3rd input argument not supported.");
 		}
 	}
+#endif
 }
 
 
@@ -268,19 +277,23 @@ inline int __sumskipnan2__(double *data, size_t Ni, double *s, double *No, char 
 	void *end = data + stride*Ni; 
 	do {
 		register double x = *data;
-        	if (x==x)
+        	if (!isnan(x))
 		{
 			count++; 
 			sum += x; 
 		}
+#ifndef NO_FLAG
 		else 
 			flag = 1; 
+#endif
 
 		data +=stride;	
 	}
 	while (data < end);
 	
+#ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
+#endif
 	*s  = sum;
         *No = (double)count;
 
@@ -297,19 +310,23 @@ inline int __sumskipnan3__(double *data, size_t Ni, double *s, double *s2, doubl
 	void *end = data + stride*Ni; 
 	do {
 		register double x = *data;
-        	if (x==x) {
+        	if (!isnan(x)) {
 			count++; 
 			sum += x; 
 			msq += x*x; 
 		}
+#ifndef NO_FLAG
 		else 
 			flag = 1; 
+#endif
 
 		data++;	// stride=1
 	}
 	while (data < end);
 
+#ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
+#endif
 	*s  = sum;
 	*s2 = msq; 
         *No = (double)count;

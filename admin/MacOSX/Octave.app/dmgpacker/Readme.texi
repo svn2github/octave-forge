@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c Copyright (c)  2007-2008 Thomas Treichl and Paul Kienzle
 @c Copyright (c)  2009 Thomas Treichl
-@c octaveapp.texi - A ready--to--run binary version of GNU Octave for Mac OS X
+@c Octave.app - A ready-to-run binary version of GNU Octave for Mac OS X
 @c
 @c Permission is granted to copy, distribute and/or modify this document
 @c under the terms of the GNU Free Documentation License, Version 1.2
@@ -11,28 +11,19 @@
 @c http://www.gnu.org/licenses/fdl.txt.
 
 @c %*** Start of HEADER
-@setfilename octaveapp.texi
-@settitle Octave.app - A ready-to-run binary version of GNU Octave for Mac OS X
+@setfilename Readme.texi
+@documentlanguage en
+@documentencoding ISO-8859-1
+@settitle Octave.app
 @afourpaper
 @c @afourwide
 @c %*** End of the HEADER
 
-@c %*** Start of COPYRIGHT
-@copying
-This document is for the program Octave.app version %VERSION%, which is a ready--to--run binary of GNU Octave for Mac OS X.
-
-Copyright @copyright{} 2007--2008 Thomas Treichl and Paul Kienzle
-Copyright @copyright{} 2009 Thomas Treichl
-
-Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front--Cover Texts, and no Back--Cover Texts. A copy of the license is available at the GNU website @uref{http://www.gnu.org/licenses/fdl.txt}.
-@end copying
-@c %*** End of COPYRIGHT
-
 @c %*** Start of TITLEPAGE
-@titlepage
-@title Octave.app
-@subtitle A ready--to--run binary version of GNU Octave for Mac OS X 
-@end titlepage
+@c @titlepage
+@c @title Octave.app
+@c @subtitle A ready--to--run binary version of GNU Octave for Mac OS X 
+@c @end titlepage
 @c %*** End of TITLEPAGE
 
 @c %*** Start of BODY
@@ -40,61 +31,190 @@ Permission is granted to copy, distribute and/or modify this document under the 
 
 @ifnottex
 @node Top, Introduction, (dir), (dir)
-@top Octave.app - A ready--to--run binary version of GNU Octave for Mac OS X
-@insertcopying
+@top Octave.app --- A ready--to--run binary version of GNU Octave for Mac OS X
+
+@c %*** Start of COPYRIGHT
+@copying
+This document is for the program Octave.app version %VERSION%.@*
+Copyright @copyright{} 2009 Thomas Treichl
+
+Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is available at the GNU website @uref{http://www.gnu.org/licenses/fdl.txt}.
+@end copying
+@c %*** End of COPYRIGHT
+
+@ifhtml
+@html
+<table border="0" width="100%">
+  <colgroup>
+    <col width="*">
+    <col width="1">
+  </colgroup>
+  <tr>
+    <td>
+      <a href="javascript:myfunc_show_item ('Introduction');">Introduction</a>
+      <a href="javascript:myfunc_show_item ('License');">License</a>
+      <a href="javascript:myfunc_show_item ('Requirements');">Requirements</a>
+      <a href="javascript:myfunc_show_item ('Installation');">Installation</a>
+      <a href="javascript:myfunc_show_item ('Limitations');">Limitations</a>
+      <a href="javascript:myfunc_show_item ('GeneralFAQ');">General FAQ</a>
+      <a href="javascript:myfunc_show_item ('PackagesFAQ');">Packages FAQ</a>
+      <a href="javascript:myfunc_show_item ('DeveloperFAQ');">Developer FAQ</a>
+    </td>
+    <td>
+      <a href="javascript:myfunc_show_item ('Help');">Help</a>
+    </td>
+  </tr>
+  <!-- usw. andere Zeilen der Tabelle -->
+</table>
+<hr>
+@end html
+@end ifhtml
 @end ifnottex
 
 @menu
 * Introduction::                A brief description of Octave, Octave.app @dots{}
+* License::                     The license of GNU Octave, Octave.app @dots{}
 * Requirements::                What you need to run Octave on your Mac @dots{}
 * Installation::                How to install Octave on your Mac @dots{}
 * Limitations::                 Known issues with this release @dots{}
-* FAQ::                         Some answers to frequently asked questions @dots{}
+* General FAQ::                 Frequently asked question in general @dots{}
+* Packages FAQ::                Frequently asked question about packages @dots{}
+* Developer FAQ::               If you want to help developing GNU Octave @dots{}
+* Help::                        Where you can go to get some more help @dots{}
 @end menu
 
-@contents
+@ifhtml
+@html
+<script type="text/javascript">
+function myfunc_hide_all () @{
+  vlst = new Array("Introduction", "License", "Requirements", "Installation", "Limitations", "License", "GeneralFAQ", "PackagesFAQ", "DeveloperFAQ", "Help");
+  for (var vct1 = 0; vct1 < vlst.length; vct1++) @{
+    document.getElementById(vlst[vct1]).style.visibility="hidden";
+    document.getElementById(vlst[vct1]).style.overflow="hidden";
+    document.getElementById(vlst[vct1]).style.height="1pt";
+  @}
+@}
+function myfunc_show_item (velm) @{
+  myfunc_hide_all ();
+  document.getElementById(velm).style.visibility="visible";
+  document.getElementById(velm).style.overflow="visible";
+  document.getElementById(velm).style.height="auto";
+@}
+</script>
+@end html
+@end ifhtml
 
-@node  Introduction, Requirements, Top, Top
-@chapter Introduction
+@ifhtml
+@html
+<div id="Introduction">
+@end html
+@end ifhtml
+
+@node  Introduction, License, Top, Top
+@unnumbered Introduction
 GNU Octave is a high--level language, primarily intended for numerical computations. It provides a convenient command line interface for solving linear and nonlinear problems numerically, and for performing other numerical experiments using a language that is mostly compatible with Matlab. It may also be used as a batch--oriented language. For further information visit @uref{http://www.octave.org}.
 
-Octave.app is a ready--to--run binary version of GNU Octave. It runs on most of Apple's Mac OS X computers and comes with all the free libraries that are needed to run Octave.app. The application can also be expanded by downloading and installing further packages from the Octave--Forge's website at @uref{http://octave.sourceforge.net}.
+Octave.app is a ready--to--run binary version of GNU Octave. It runs on most of Apple's Mac OS X computers and comes with all the free libraries that are needed. The application can also be expanded by downloading and installing further packages from the Octave--Forge's website at @uref{http://octave.sourceforge.net}.
 
-If you like GNU Octave resp. Octave.app then please think about of making a contribution to the Octave Core Development team. Instructions are given at @uref{http://www.gnu.org/software/octave/funding.html}.
+If you like GNU Octave resp. Octave.app then please also think about of making a contribution to the Core Octave Development team. Instructions are given at @uref{http://www.gnu.org/software/octave/funding.html}.
 
-@node Requirements, Installation, Introduction, Top
-@chapter Requirements
-If your Apple computer comes with Motorola's PowerPC processor then you need to have installed at least Mac OS X version 10.3.9. Download the file @file{octave-%VERSION%-ppc.dmg} that includes the ready--to--run binary version of GNU Octave for PPC Macs. If you have an Apple computer that comes with an Intel processor then you need to have installed at least Mac OS X version 10.4. Download the file @file{octave-%VERSION%-i386.dmg} that includes the ready--to--run binary version of GNU Octave for Intel Macs.
+@ifhtml
+@html
+</div>
+@end html
+@end ifhtml
 
-If you want to use graphical outputs from Octave that can be made with the commands @command{plot}, @command{mesh}, @command{surf} etc. then you need to have installed Gnuplot (cf. FAQ section of this @file{Readme.html} file about 'Do I have to install Gnuplot.app from the Extras directory?'). Gnuplot is not part of the Octave.app because it is an application that can be build and installed for its own (for further information visit the website @uref{http://gnuplot.sourceforge.net}).
+@ifhtml
+@html
+<div id="License">
+@end html
+@end ifhtml
 
-If you want to further install Octave packages from the Octave--Forge's website @uref{http://octave.sourceforge.net} then you must install the ``Apple's XCode Tools'' from 'DVD 1 of your Mac OS X Install Discs' before. To make sure that you have installed the latest version available visit Apple's XCode Tools website @uref{http://developer.apple.com/tools/xcode}.
+@node  License, Requirements, Introduction, Top
+@unnumbered License
+The source code for GNU Octave, the binary Octave.app and the package file @file{octave-%VERSION%-%ARCH%.dmg} are freely redistributable under the terms of the @uref{http://www.gnu.org/copyleft/gpl.html, GNU General Public License} (GPL) as published by the @uref{http://www.gnu.org, Free Software Foundation} (FSF).
 
-@node  Installation, Limitations, Requirements, Top
-@chapter Installation
-Installing Octave.app is easy. Just drag the Octave.app icon from the @file{octave-%VERSION%-%ARCH%.dmg} package to another place of your filesystem (eg. to your desktop or even better to your applications folder) and that's it, you're done. This drag'n--drop does not install any files elsewhere in your filesystem. Double--click the Octave.app icon to startup Octave.
+Simply put, the GPL says that anyone who redistributes the software, with or without changes, must pass along the freedom to further copy and change it. By distributing the complete source code for GNU Octave under the terms of the GPL, we guarantee that you and all other users will have the freedom to redistribute and change Octave.
 
-If you also want to create plots on your Desktop or if you want to create plots that are saved as an image file then it is recommended that you place Gnuplot.app into your Applications folder (cf. FAQ section of this @file{Readme.html} file about 'Do I have to install Gnuplot.app from the Extras directory?'). Gnuplot can be found as an extra binary package in the Extras directory of @file{octave-%VERSION%-%ARCH%.dmg}.
+Releasing the source code for Octave has another benefit as well. By having access to all of the source code for a mathematical system like Octave, you have the ability to see exactly how each and every computation is performed. There are no black boxes that hide the details of any calculation.
 
-To remove Octave.app completely, just drag the Octave.app icon and drop it over the Trash. If you're new to Octave then have a look at the documents that come with the application. They are available in the @file{Doc} folder of your @file{octave-%VERSION%-%ARCH%.dmg} file.
+Although enhancements to Octave that are written as function files in Octave's scripting language are not required to be redistributed under the terms of the GPL, we encourage you to release your enhancements to Octave under the same terms for the benefit of all users. We also encourage you to @uref{http://www.gnu.org/software/octave/help-wanted.html, submit your changes} for inclusion in future versions of Octave.
 
-@node  Limitations, FAQ, Installation, Top
-@chapter Limitations
-There are currently some known limitations when using Octave.app. These limitations need not to be reported on an Octave mailing list. But if you find other bugs or other limitations in the Octave.app respectively Octave then please report them to @email{octave-dev@@lists.sourceforge.net}.
+@ifhtml
+@html
+</div>
+@end html
+@end ifhtml
+
+@ifhtml
+@html
+<div id="Requirements">
+@end html
+@end ifhtml
+
+@node  Requirements, Installation, License, Top
+@unnumbered Requirements
+If your Apple computer comes with Motorola's PowerPC processor G4 or newer then you need to have installed at least Mac OS X version 10.4. Octave.app for Apple's PPC Macs has been optimized for G4 processors and newer, it doesn't work on G3 processors. Download the file @file{octave-%VERSION%-ppc.dmg} that includes the ready--to--run binary version of GNU Octave for PPC Macs.
+
+If you have an Apple computer that comes with an Intel processor then you need to have installed at least Mac OS X version 10.4. Download the file @file{octave-%VERSION%-i386.dmg} that includes the ready--to--run binary version of GNU Octave for Intel Macs.
+
+If you want to use graphical outputs from Octave that can be made with the commands @command{plot}, @command{mesh}, @command{surf} etc. then Gnuplot can be installed (cf. @uref{javascript:myfunc_show_item('GeneralFAQ'), General FAQ} about 'Do I have to install Gnuplot.app from the Extras directory?'). Since Octave.app version 3.2.0 there i sno need to install Gnuplot anymore because Octave.app comes with its first own graphical backend cf. @uref{javascript:myfunc_show_item('GeneralFAQ'), General FAQ} about 'How can I switch between different graphical backends?'). Gnuplot.app is a separate Mac application because it can be build, installed and run for its own (for further information about Gnuplot visit the @uref{http://gnuplot.sourceforge.net, Gnuplot} website).
+
+If you want to further install Octave packages from eg. the @uref{http://octave.sourceforge.net, Octave--Forge's project website} then you must install the ``Apple's XCode Tools'' from 'DVD 1 of your Mac OS X Install Discs' before. To make sure that you have installed the latest version available also visit @uref{http://developer.apple.com/tools/xcode, Apple's XCode Tools website}.
+
+@ifhtml
+@html
+</div>
+@end html
+@end ifhtml
+
+@ifhtml
+@html
+<div id="Installation">
+@end html
+@end ifhtml
+
+@node Installation, Limitations, Requirements, Top
+@unnumbered Installation
+Installing Octave.app is very easy. Just drag the Octave.app icon from the @file{octave-%VERSION%-%ARCH%.dmg} package to another place of your filesystem (eg. to your @file{Desktop} or even better to your @file{Applications} folder) and that's it, you're done. This drag'n--drop does not install any files elsewhere on your hard disk drive. Double--click the Octave.app icon to startup Octave.
+
+If you also want to create plots on your Desktop or if you want to create plots that are saved as an image file then it might be useful that you place Gnuplot.app into the same directory where Octave.app resides (eg. once again to your @file{Desktop} or even better to your @file{Applications} folder). The application Gnuplot.app can be found as an extra binary package in the @file{Extras} directory of @file{octave-%VERSION%-%ARCH%.dmg}.
+
+To remove Octave.app and/or Gnuplot.app completely, just drag the Octave.app and/or Gnuplot.app icon and drop it over the Trash.
+
+If you are looking for the GNU Octave manual as a @file{*pdf} file or other useful documents about GNU Octave then have a look at the @file{Doc} folder of your @file{octave-%VERSION%-%ARCH%.dmg} file.
+
+@ifhtml
+@html
+</div>
+@end html
+@end ifhtml
+
+@ifhtml
+@html
+<div id="Limitations">
+@end html
+@end ifhtml
+
+@node  Limitations, General FAQ, Installation, Top
+@unnumbered Limitations
+There are currently some known limitations when using Octave.app. These limitations need not to be reported on an Octave mailing list. Please consider adapting the Octave.app build scripts at @uref{http://octave.sourceforge.net} in the directory @file{admin/MacOSX/Octave.app} so that future versions of Octave.app become even better. If you find other bugs or other limitations in Octave.app respectively GNU Octave then please report them to @email{octave-dev@@lists.sourceforge.net}.
 
 @menu
-* Fortran90 code files cannot be compiled.::  
-* Some packages from Octave-Forge's website cannot be installed.::  
-* No spaces (and/or special characters) in the pathname before Octave.app are allowed.::  
+* Fortran90 problem::           
+* OctaveForge problem::         
+* Spaces problem::              
 @end menu
 
-@node Fortran90 code files cannot be compiled., Some packages from Octave-Forge's website cannot be installed., Limitations, Limitations
+@node Fortran90 problem, OctaveForge problem, Limitations, Limitations
 @unnumberedsec Fortran90 code files cannot be compiled.
 Fortran90 and Fortran95 code files etc. cannot be compiled when using the command @command{mkoctfile} on the command line or when using the commands @command{mkoctfile} or @command{mex} in Octave. The reason is that the program @command{f2c} has been set up in Octave.app that can just convert Fortran77 code files into C--files. The generated C--files are then compiled with the @command{gcc} compiler that comes with your ``Apple's XCode Tools'' (Install these tools from 'DVD 1 of your Mac OS X Install Discs'). We've also added the script @command{fort77} to Octave.app that behaves like a Fortran compiler but in the background calls @command{f2c} and @command{gcc} automatically.
 
-The @command{f2c} program is one of the smallest and oldest free Fortran converters available. Setting up another Fortran compiler that can compile Fortran90 and Fortran95 code files (eg. @command{g95 or gfortran}) for all the different versions of ``Apple's XCode Tools'' all the different versions of @command{gcc} is too difficult. We hope that @command{g95} or @command{gfortran} somewhen become part of ``Apple's XCode Tools'' so that we do not need to set up @command{f2c} and @command{fort77} anymore. @* @*
+The @command{f2c} program is one of the smallest and oldest free Fortran converters available. Setting up another Fortran compiler that can compile Fortran90 and Fortran95 code files (eg. @command{g95 or gfortran}) for all the different versions of ``Apple's XCode Tools'' all the different versions of @command{gcc} is too difficult. We hope that @command{g95} or @command{gfortran} somewhen become part of ``Apple's XCode Tools'' so that we do not need to set up @command{f2c} and @command{fort77} anymore.
 
-@node Some packages from Octave-Forge's website cannot be installed., No spaces (and/or special characters) in the pathname before Octave.app are allowed., Fortran90 code files cannot be compiled., Limitations
+@b{Note:} Octave.app versions 3.2.0 or newer are bundled with a @command{g95} Fortran compiler instead of @command{fort77} and @command{f2c}. This problem only exists for Octave.app versions 3.0.x or older.
+
+@node OctaveForge problem, Spaces problem, Fortran90 problem, Limitations
 @unnumberedsec Some packages from Octave--Forge's website cannot be installed.
 Some of Octave--Forge's packages cannot be installed because of a missing @command{g95} or @command{gfortran} command as described in the section before. Known packages that cannot be installed because they come with Fortran90 code files are
 @itemize @minus
@@ -104,34 +224,38 @@ Some of Octave--Forge's packages cannot be installed because of a missing @comma
 
 If you find other bugs or other limitations in other packages of Octave--Forge then please report them to @email{octave-dev@@lists.sourceforge.net}. If you want to find out more information why eg. the installation for a specific package fails then use the command @command{pkg install --verbose <package.tar.gz>} to build a package in verbose mode.
 
-@node No spaces (and/or special characters) in the pathname before Octave.app are allowed.,  , Some packages from Octave-Forge's website cannot be installed., Limitations
+@b{Note:} Octave.app versions 3.2.0 or newer are bundled with a @command{g95} Fortran compiler instead of @command{fort77} and @command{f2c}. This problem only exists for Octave.app versions 3.0.x or older.
+
+@node Spaces problem,  , OctaveForge problem, Limitations
 @unnumberedsec No spaces (and/or special characters) in the pathname before Octave.app are allowed.
-Do not install Octave.app in a place of your filesystem including spaces (and/or special characters, eg. '§&^|°?@dots{}') in the pathname before Octave.app. Valid destinations eg. are 
+Do not install Octave.app in a place of your filesystem including spaces (and/or special characters, eg. any of '@verb{|?!'()@...|}' and more) in the pathname before Octave.app. Valid destinations eg. are 
 @example
 /Application/Octave.app
 /Users/Me/Desktop/Octave.app
 @end example
-Not valid destinations including spaces and/or special character in the pathname eg. are
+Not valid destinations including spaces and/or special characters in the pathname eg. are
 @example
 /Applications/Other Apps/Octave.app
-/Users/My^Home/Desktop/Octave.app
+/Users/Me@@Home/Desktop/Octave.app
 /Users/Me&Others/Applications/Octave.app
-/Users/Foo§13/Applications/Octave.app
+/Users/Foo^13/Applications/Octave.app
 @end example
 If you set up Octave.app with a not valid pathname then this might result in different errors at startup (or when already running Octave.app) that normally cannot be reproduced.
 
-@node  FAQ,  , Limitations, Top
-@chapter FAQ
+@ifhtml
+@html
+</div>
+@end html
+@end ifhtml
 
-@menu
-* General FAQ::                 
-* Packages FAQ::                
-* Developer FAQ::               
-@end menu
+@ifhtml
+@html
+<div id="GeneralFAQ">
+@end html
+@end ifhtml
 
-@node General FAQ, Packages FAQ, FAQ, FAQ
-@unnumberedsec General FAQ
-
+@node General FAQ, Packages FAQ, Limitations, Top
+@unnumbered General FAQ
 @menu
 * Octave took over my Terminal.app - what can I do?::  
 * Is there a 64-bit version of Octave.app available?::  
@@ -145,82 +269,88 @@ If you set up Octave.app with a not valid pathname then this might result in dif
 @end menu
 
 @node Octave took over my Terminal.app - what can I do?, Is there a 64-bit version of Octave.app available?, General FAQ, General FAQ
-@unnumberedsubsec Octave took over my Terminal.app - what can I do?
+@unnumberedsec Octave took over my Terminal.app - what can I do?
 
-There is a bug in Terminal.app if you press the ``Apply All'' menu in the menubar while running Octave.app (or while running @command{Perl} or @command{Python} or @command{Tcl} or any other interactive command line tool). A description about what is going can be found at @uref{http://www.macusenet.com/archive/index-t-36473.html}. However, the problem can be solved by starting a @command{bash} session from Octave and remove the Terminal.app preferences file (this will reset Terminal.app to default values), eg.
+There is a bug in Terminal.app if you press the ``Apply All'' menu in the menubar while running Octave.app (or while running @command{Perl} or @command{Python} or @command{Tcl} or any other interactive command line tool). A description about ``What is going on here?'' can be found at @uref{http://www.macusenet.com/archive/index-t-36473.html}. However, the problem can be solved by starting a @command{bash} session from Octave and remove the Terminal.app preferences file (this will reset Terminal.app to default), eg.
 @example
-octave-3.0.0:1> system ("exec bash") 
+octave-%VERSION%:1> system ("exec bash") 
 bash ~$ rm ~/Library/Preferences/com.apple.terminal.plist 
 @end example
-Then close all your Terminal.app sessions and restart your programs again. The best solution to avoid this bug is to never press this ``Apply All'' menu button in Terminal.app.
+Then close all your Terminal.app windows (further, close Terminal.app in your @file{Dock}) and then restart Terminal.app again. The best solution to avoid this bug is to never press the ``Apply All'' menu button in Terminal.app.
 
 @node Is there a 64-bit version of Octave.app available?, How can I startup Octave.app?, Octave took over my Terminal.app - what can I do?, General FAQ
-@unnumberedsubsec Is there a 64--bit version of Octave.app available?
-There is no 64--bit version of Octave.app available.  A good starting point for building your own 64--bit version of Octave.app is @uref{http://wiki.octave.org/wiki.pl?OctaveForMac}. Please consider adapting the Octave.app build scripts at @uref{http://octave.sourceforge.net} in the @file{admin/MacOSX} directory so that we can easily build an release for 64--bit platforms as well. @* @*
+@unnumberedsec Is there a 64--bit version of Octave.app available?
+There is no 64--bit version of Octave.app available. Please consider adapting the Octave.app build scripts at @uref{http://octave.sourceforge.net} in the @file{admin/MacOSX} directory so that we can easily build an release for 64--bit platforms as well. @* @*
 
 @node How can I startup Octave.app?, How can I startup Octave.app with a XTerm window?, Is there a 64-bit version of Octave.app available?, General FAQ
-@unnumberedsubsec How can I startup Octave.app?
-After Octave.app has been placed to your @file{~/Desktop} or to your @file{/Applications} folder or anywhere else in your filesystem tree you can double--click the Octave.app icon. This opens a new Terminal.app window and executes Octave in this Terminal.app. Another way to open Octave.app is to use the command @command{open} from the command line. If you have installed Octave.app in your applications folder then a one time startup might look like eg.
+@unnumberedsec How can I startup Octave.app?
+After Octave.app has been placed to your @file{~/Desktop} or to your @file{/Applications} folder or anywhere else on your hard disk drive you can double--click the Octave.app icon. This opens a new Terminal.app window and executes Octave.
+
+Another way to open Octave.app is to use the command @command{open} from Terminal.app's command line. If you have installed Octave.app in your @file{Applications} folder then a one time startup might look like eg.
 @example
 bash ~$ open /Applications/Octave.app
 @end example
 
 @node How can I startup Octave.app with a XTerm window?, How can I startup Octave in a Terminal.app or a XTerm that is already running? , How can I startup Octave.app?, General FAQ
-@unnumberedsubsec How can I startup Octave.app with a XTerm window?
-If you prefer using a XTerm that comes with your ``X11 runtime environment'' (Install the ``X11 runtime environment'' from 'DVD 1 of your Mac OS X Install Discs') instead of the Terminal.app then you can set up the environment variable @var{OCTAVE_TERMINAL=x11} before starting the Octave.app. A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}. If you installed Octave.app in your applications folder then a one time startup might look like eg.
+@unnumberedsec How can I startup Octave.app with a XTerm window?
+If you prefer using a XTerm that comes with your ``X11 runtime environment'' instead of Terminal.app (Install the ``X11 runtime environment'' from 'DVD 1 of your Mac OS X Install Discs') then set up the environment variable @var{OCTAVE_TERMINAL=x11} before starting Octave.app. A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}. If you installed Octave.app in your @file{Applications} folder then a one time startup might look like eg.
 @example
 bash ~$ export OCTAVE_TERMINAL=x11    # Note: lower case letter 'x'
 bash ~$ open /Applications/Octave.app
 @end example 
+or even better
+@example
+bash ~$ OCTAVE_TERMINAL=x11 open /Applications/Octave.app
+@end example 
 
 @node How can I startup Octave in a Terminal.app or a XTerm that is already running? , How can I use mkoctfile in a Terminal.app or a XTerm that is already running?, How can I startup Octave.app with a XTerm window?, General FAQ
-@unnumberedsubsec How can I startup Octave in a Terminal.app or a XTerm that is already running?
-A modified startup script has been placed into the Octave.app that can be used to startup Octave in an already running Terminal.app or a XTerm. The place of this startup script is @file{<Octave.app>/Contents/Resources/bin/octave}. If you have installed Octave.app in your applications folder then a startup in your already running Terminal.app or XTerm application might look like eg.
+@unnumberedsec How can I startup Octave in a Terminal.app or a XTerm that is already running?
+A modified startup script has been placed into Octave.app that can be used to startup Octave in an already running Terminal.app or a XTerm window. The place of this startup script is @file{<Octave.app>/Contents/Resources/bin/octave}. If you have installed Octave.app in your @file{Applications} folder then a startup in your already running Terminal.app or XTerm application might look like eg.
 @example
 bash ~$ /Applications/Octave.app/Contents/Resources/bin/octave
 @end example
-Another way to use Octave from the command line is to set up a link to the Octave startup script of Octave.app that is placed somewhere in your system's @var{PATH}. If you have installed Octave.app in your applications folder then setting up a link and starting up Octave might look like eg.
+Another way to use GNU Octave from the command line is to set up a link to the Octave startup script of Octave.app that is placed somewhere in your system's search @file{PATH}. If you have installed Octave.app in your @file{Applications} folder then setting up a link and starting up Octave might look like eg.
 @example
 bash ~$ sudo ln -sfv /Applications/Octave.app/Contents/Resources/bin/octave /usr/bin/octave
 bash ~$ octave
 @end example
 
 @node How can I use mkoctfile in a Terminal.app or a XTerm that is already running?, Can I add Octave.app's bin-path to my local search path?, How can I startup Octave in a Terminal.app or a XTerm that is already running? , General FAQ
-@unnumberedsubsec How can I use mkoctfile in a Terminal.app or a XTerm that is already running?
-A modified startup script has been placed into the Octave.app that can be used to run mkoctfile in an already running Terminal.app or a XTerm application. The place of this startup script is @file{<Octave.app>/Contents/Resources/bin/mkoctfile}. If you have installed Octave.app in your applications folder then the use of the command @command{mkoctfile} might look like eg.
+@unnumberedsec How can I use mkoctfile in a Terminal.app or a XTerm that is already running?
+A modified @command{mkoctfile} script has been placed into Octave.app that can be used to run @command{mkoctfile} in an already running Terminal.app or a XTerm window. The place of this startup script is @file{<Octave.app>/Contents/Resources/bin/mkoctfile}. If you have installed Octave.app in your @file{Applications} folder then the usage of the command @command{mkoctfile} might look like eg.
 @example
 bash ~$ /Applications/Octave.app/Contents/Resources/bin/mkoctfile <file.cc>
 @end example
-Another way to use the command @command{mkoctfile} from the command line is to set up a link to the @command{mkoctfile} startup script of Octave.app that is placed somewhere in your system's @var{PATH}. If you have installed Octave.app in your applications folder then setting up a link and starting up Octave might look like eg.
+Another way to use the command @command{mkoctfile} from the command line is to set up a link to the modified @command{mkoctfile} startup script of Octave.app that is placed somewhere in your system's search @var{PATH}. If you have installed Octave.app in your @file{Applications} folder then setting up a link and using @command{mkoctfile} might look like eg.
 @example
 bash ~$ sudo ln -sfv /Applications/Octave.app/Contents/Resources/bin/mkoctfile /usr/bin/mkoctfile
 bash ~$ mkoctfile <file.cc>
 @end example
 
 @node Can I add Octave.app's bin-path to my local search path?, Do I have to install Gnuplot.app from the Extras directory?, How can I use mkoctfile in a Terminal.app or a XTerm that is already running?, General FAQ
-@unnumberedsubsec Can I add Octave.app's bin--path to my local search path?
-@b{Never, really never, add the @file{<Octave.app>/Octave.app/Contents/Resources/bin} to your local search path!} Octave.app comes with some more binaries that should not be found from any other program or application of your system. Instead, create links as described before or create aliases by putting the following lines into your @file{~/.bashrc} file and/or your @file{~/.profile} file
+@unnumberedsec Can I add Octave.app's bin--path to my local search path?
+@b{Never, really never, add the} @file{<Octave.app>/Octave.app/Contents/Resources/bin} @b{to your local search path!} Octave.app comes with some more binaries that should not be found from any other program or application of your system. Instead, create links to the modified startup scripts like described before or create aliases by putting the following lines into your @file{~/.bashrc} file and/or your @file{~/.profile} file
 @example
 alias octave="/Applications/Octave.app/Contents/Resources/bin/octave"
 alias mkoctfile="/Applications/Octave.app/Contents/Resources/bin/mkoctfile"
 @end example
 
 @node Do I have to install Gnuplot.app from the Extras directory?, I set up Gnuplot.app but it doesn't interact with Octave.app, Can I add Octave.app's bin-path to my local search path?, General FAQ
-@unnumberedsubsec Do I have to install Gnuplot.app from the Extras directory?
-If you have a working Gnuplot program (at least version 4.2.3 or higher) already installed on your system and if this Gnuplot program is found from any place on the command line then there is no reason to install Gnuplot.app. Try the following example in your Terminal.app or XTerm program to test if either a Gnuplot application is already found on your system or if Gnuplot.app should be installed
+@unnumberedsec Do I have to install Gnuplot.app from the Extras directory?
+If you have a working Gnuplot program (at least version 4.2.2 or higher) already installed on your system and if this Gnuplot program is found from any place of Terminal.app's command line interface then there is no reason to install Gnuplot.app. Try the following example in your Terminal.app or XTerm window to test if either a Gnuplot application is already found on your system or if Gnuplot.app should be installed
 @example
 bash ~$ gnuplot
 @end example
 If you need to install Gnuplot.app then there are two ways to set this up: @* @*
 
 @enumerate a
-@item Drag the Gnuplot.app icon from the compressed disc image to your main Applications folder. Octave.app then automatically finds everything needed and starts Gnuplot.app if desired. @* @*
+@item Drag the Gnuplot.app icon from the compressed disc image to the same directory where Octave.app resides (eg. both applications Octave.app/Gnuplot.app are put to the @file{Desktop} or even better to your @file{Applications} folder). Octave.app then automatically finds everything needed and starts Gnuplot.app automatically if desired. @* @*
 
-@item Drag the Gnuplot.app icon from the compressed disc image to another place of your filesystem. After you did that you need to create a link to the Gnuplot startup file to tell Octave.app where Gnuplot.app can be found eg.
+@item Drag the Gnuplot.app icon from the compressed disc image to another place of your filesystem. After you did that you need to create a link to the modified Gnuplot startup script to tell Octave.app where Gnuplot.app can be found, eg.
 @example
 bash ~$ ln -sfv <Gnuplot.app>/Contents/Resources/bin/gnuplot /usr/bin/gnuplot
 @end example
-After that try from any place of your filesystem if Gnuplot can be started and also if Gnuplot displays correct plots eg.
+After that try from any place of your filesystem if Gnuplot can be started and further if Gnuplot displays plots correctly, eg.
 @example
 bash ~$ gnuplot        # Gnuplot.app is started
 gnuplot> plot sin(x)/x # A figure window shows a nice sine wave
@@ -228,22 +358,33 @@ gnuplot> plot sin(x)/x # A figure window shows a nice sine wave
 @end enumerate
 
 @node I set up Gnuplot.app but it doesn't interact with Octave.app,  , Do I have to install Gnuplot.app from the Extras directory?, General FAQ
-@unnumberedsubsec I set up Gnuplot.app but it doesn't interact with Octave.app, what can I do?
+@unnumberedsec I set up Gnuplot.app but it doesn't interact with Octave.app, what can I do?
 If you see an Octave output of the form
 @example
-octave-2.9.14:1> x = [-pi:0.1:pi];
-octave-2.9.14:2> plot (x, sin (x))
+octave-%VERSION%:1> x = [-pi:0.1:pi];
+octave-%VERSION%:2> plot (x, sin (x))
 Expected X11 driver: /tmp/gnuplot-i386/libexec/gnuplot/4.2/gnuplot_x11
 Exec failed: No such file or directory
 See 'help x11' for more details
 @end example
-then there is something going wrong on your system. There may exist and old @file{~/.gnuplotrc} file in your home directory or anything else on your system tells Gnuplot.app to open with the X11 backend. A solution to solve this problem is that you set up an environment variable @var{GNUTERM=aqua} or @var{GNUTERM=x11}. A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}.
+then there is something going wrong on your system. There may exist and old @file{~/.gnuplotrc} file in your @file{home} directory or anything else on your system tells Gnuplot.app to open with the X11 backend. A solution to solve this problem is that you set up an environment variable @var{GNUTERM=aqua} or @var{GNUTERM=x11}. A description about how to set up environment variables for all processes launched by a specific user can be found at @uref{http://developer.apple.com/qa/qa2001/qa1067.html}.
 
-@b{Note: Also read the @file{README.html} file of the Gnuplot.app compressed disc image for setting up Gnuplot.app correctly.}
+@b{Note:} Also read the @file{README.html} file of the Gnuplot.app compressed disc image for setting up Gnuplot.app correctly.
 
-@node Packages FAQ, Developer FAQ, General FAQ, FAQ
-@unnumberedsec Packages FAQ
+@ifhtml
+@html
+</div>
+@end html
+@end ifhtml
 
+@ifhtml
+@html
+<div id="PackagesFAQ">
+@end html
+@end ifhtml
+
+@node Packages FAQ, Developer FAQ, General FAQ, Top
+@unnumbered Packages FAQ
 @menu
 * Do I have to rebuild installed packages if I move Octave.app to another place?::  
 * Do I have to rebuild installed packages if I upgrade Octave.app?::  
@@ -254,27 +395,30 @@ then there is something going wrong on your system. There may exist and old @fil
 @end menu
 
 @node Do I have to rebuild installed packages if I move Octave.app to another place?, Do I have to rebuild installed packages if I upgrade Octave.app?, Packages FAQ, Packages FAQ
-@unnumberedsubsec Do I have to rebuild installed packages if I move Octave.app to another place?
-We did some tests and it looks good that you don't need to rebuild locally installed packages if you move Octave.app to another place. If you find out that this doesn't work then please report to @email{octave-dev@@lists.sourceforge.net}.
-Another solution however is to install packages with the @option{-global} flag. Then packages are installed within Octave.app and if you decide to move Octave.app to another place then packages are moved too, eg.
+@unnumberedsec Do I have to rebuild installed packages if I move Octave.app to another place?
+We did some tests and it looks good that you don't need to rebuild @b{locally} installed packages if you move Octave.app to another place. If you find out that this doesn't work then please report to @email{octave-dev@@lists.sourceforge.net}.
+
+Another solution however is to install packages generally with the @option{-global} flag. Then packages are installed inside of Octave.app and if you decide to move Octave.app to another place then packages are moved too, eg.
 @example
 octave-%VERSION%:1> pkg install -global <package.tar.gz>
 @end example
 
 @node Do I have to rebuild installed packages if I upgrade Octave.app?, How can I install a package that also depends further libraries?, Do I have to rebuild installed packages if I move Octave.app to another place?, Packages FAQ
-@unnumberedsubsec Do I have to rebuild installed packages if I upgrade Octave.app?
-If you upgrade Octave.app to a newer version and the GNU Octave API has been changed between the old and the new version then yes (eg. if you upgrade Octave.app from 2.9.18 to Octave.app 3.0.0), you need to rebuild all installed packages. For ``rebuilding'' a package please have a look at the help page of the @command{pkg} command, eg.
+@unnumberedsec Do I have to rebuild installed packages if I upgrade Octave.app?
+If you upgrade Octave.app to a newer version and the GNU Octave API version number has been changed between the old and the new version then yes, you need to rebuild all installed packages (eg. if you upgrade Octave.app from 2.9.18 to Octave.app 3.0.0). About ``rebuilding a package'' please have a look at the help page of the @command{pkg} command, eg.
 @example
 octave-%VERSION%:1> help pkg
 @end example
 
 @node How can I install a package that also depends further libraries?, How can I install the gsl-package from Octave-Forge that also depends further libraries?, Do I have to rebuild installed packages if I upgrade Octave.app?, Packages FAQ
-@unnumberedsubsec How can I install another package that also depends further libraries?
-There are some packages at @uref{http://octave.sourceforge.net} available that do depend other resp. further libraries that may not already be installed on your system, eg. the ``GSL--package'', the ``octcdf--package'' and the ``Symbolic--package''. Therefore you need to download, configure, compile and install the needed library before you install the Octave package. Examples are shown in the next sections.
+@unnumberedsec How can I install another package that also depends further libraries?
+There are some packages at @uref{http://octave.sourceforge.net} available that do depend other resp. further libraries that may not already have been installed on your Mac system, eg. the ``GSL--package'', the ``octcdf--package'' and the ``Symbolic--package'' and others. Therefore you need to download, configure, compile and install the needed libraries before. Examples are shown in the next sections.
 
 @node How can I install the gsl-package from Octave-Forge that also depends further libraries?, How can I install the symbolic-package from Octave-Forge that also depends further libraries?, How can I install a package that also depends further libraries?, Packages FAQ
-@unnumberedsubsec How can I install the gsl--package from Octave--Forge that also depends further libraries?
-As described previously you need to download, configure, compile and install the needed library before you install the Octave--Forge package. @b{Note:} this example leans against the installation of the package @file{gsl-1.0.0.tar.gz}. There may be newer versions of the GSL--sources and the Octave--Forge GSL--package available at the download sites.
+@unnumberedsec How can I install the gsl--package from Octave--Forge that also depends further libraries?
+@b{Note:} this example leans against the installation of the package @file{gsl-1.0.0.tar.gz} and an Octave.app version 2.9.12. There may be newer versions of the GSL--sources, the Octave.app application and the Octave--Forge GSL--package available at the download sites.
+
+As described previously you need to download, configure, compile and install the needed library before you install the Octave--Forge package. 
 @enumerate
 @item Download a current version of the GNU scientific library from a GNU webserver, eg.
 @example
@@ -297,8 +441,8 @@ octave-2.9.12:1> pkg install gsl-1.0.0.tar.gz
 @end enumerate
 
 @node How can I install the symbolic-package from Octave-Forge that also depends further libraries?, How can I install the Arpack-package from Octave-Forge that also depends further libraries?, How can I install the gsl-package from Octave-Forge that also depends further libraries?, Packages FAQ
-@unnumberedsubsec How can I install the symbolic--package from Octave--Forge that also depends further libraries?
-@b{Note:} First you should know here that you need very new versions of the developer programs 'flex', 'bison', 'gawk' and 'automake' to be able to install all the dependencies of this package (the versions that come with your Mac won't be working). Let's also say that you have set up these programs in the directory /usr/local/bin then you need to download, configure, compile and install the needed library before you install the Octave--Forge package.
+@unnumberedsec How can I install the symbolic--package from Octave--Forge that also depends further libraries?
+@b{Note:} First you should know here that you need very new versions of the developer programs @command{flex}, @command{bison}, @command{gawk} and @command{automake} to be able to install all the dependencies of this package (the versions that come with your Mac maybe don't work). Let's also say that you have set up these programs in the directory @file{/usr/local/bin}. This example leans against the installation of the package @file{symbolic-1.0.3.tar.gz} and an Octave.app version 2.9.12. There may be newer versions of the PKG-CONFIG-, CLN- and GiNaC--sources, the Octave.app application and the Octave--Forge GSL--package available at the download sites. Finally you need to download, configure, compile and install the needed libraries before you install the Octave--Forge package, eg.
 @enumerate
 @item Download a current version of the pkg--config software, eg.
 @example
@@ -359,8 +503,12 @@ octave-2.9.12:1> pkg install symbolic-1.0.3.tar.gz
 @end enumerate
 
 @node How can I install the Arpack-package from Octave-Forge that also depends further libraries?,  , How can I install the symbolic-package from Octave-Forge that also depends further libraries?, Packages FAQ
-@unnumberedsubsec How can I install the Arpack--package from Octave--Forge that also depends further libraries?
-As described previously you need to download, configure, compile and install the needed ARPACK--software before you install the Octave--Forge package. @b{Note:} this example leans against the installation of the package @file{arpack-1.0.2.tar.gz}. There may be newer versions of the ARPACK--sources and the Octave--Forge arpack--package available at the download sites.
+@unnumberedsec How can I install the Arpack--package from Octave--Forge that also depends further libraries?
+@b{Note:} Octave.app version 3.2.0 or newer are bundled with the Arpack library and the Arpack package. The Octave command @command{eigs} and others are directly included within Octave.app, therefore there is no need to install the Arpack--package from Octave--Forge anymore.
+
+@b{Note:} this example leans against the installation of the package @file{arpack-1.0.2.tar.gz} and an Octave.app version 2.9.16. There may be newer versions of the ARPACK--sources, Octave.app and the Octave--Forge arpack--package available at the download sites.
+
+As described previously you need to download, configure, compile and install the needed ARPACK--software before you install the Octave--Forge package.
 @enumerate
 @item Download a current version of the ARPACK--software and the patch that is available, eg.
 @example
@@ -407,43 +555,88 @@ octave-2.9.16:1> pkg install arpack-1.0.2.tar.gz
 @end example
 @end enumerate
 
-@node Developer FAQ,  , Packages FAQ, FAQ
-@unnumberedsec Developer FAQ
+@ifhtml
+@html
+</div>
+@end html
+@end ifhtml
 
+@ifhtml
+@html
+<div id="DeveloperFAQ">
+@end html
+@end ifhtml
+
+@node Developer FAQ, Help, Packages FAQ, Top
+@unnumbered Developer FAQ
 @menu
-* How can I build my own Octave from scratch?::  
+* How can I build my own Octave.app from scratch?::  
 * Can I upgrade Octave.app from sources of the current development?::  
 * Are there any other Mac OS X Octave topics were I could help?::  
 @end menu
 
-@node How can I build my own Octave from scratch?, Can I upgrade Octave.app from sources of the current development?, Developer FAQ, Developer FAQ
-@unnumberedsubsec How can I build my own Octave from scratch?
-A good starting point for building your own version of Octave is @url{http://wiki.octave.org/wiki.pl?OctaveForMac}. Please consider adapting the Octave.app build scripts at @url{http://octave.sourceforge.net} in the directory @file{admin/MacOSX}.
+@node How can I build my own Octave.app from scratch?, Can I upgrade Octave.app from sources of the current development?, Developer FAQ, Developer FAQ
+@unnumberedsec How can I build my own Octave.app from scratch?
+Please consider adapting the Octave.app build scripts at @url{http://octave.sourceforge.net} in the directory @file{admin/MacOSX/Octave.app}.
 
-@node Can I upgrade Octave.app from sources of the current development?, Are there any other Mac OS X Octave topics were I could help?, How can I build my own Octave from scratch?, Developer FAQ
-@unnumberedsubsec Can I upgrade Octave.app from sources of the current development?
-Yes, the idea was to create a script file for Octave developers that compiles the current sources of Octave and overwrites all binaries within Octave.app (eg. this way you can create a gdb--version of Octave). Carefully read the comments in the file @file{selfupdate.sh} from the Octave--Forge SVN before you try to update your Octave.app and also please keep the email traffic on the mailing--list @email{octave-dev@@lists.sourceforge.net} about "it doesn't work" small.
+@node Can I upgrade Octave.app from sources of the current development?, Are there any other Mac OS X Octave topics were I could help?, How can I build my own Octave.app from scratch?, Developer FAQ
+@unnumberedsec Can I upgrade Octave.app from sources of the current development snapshot?
+Yes, the idea was to create a script file for Octave developers that compiles the current sources of Octave and overwrites all binaries within Octave.app (eg. this way you can create a gdb--version of Octave). Carefully read the comments in the file @file{selfupdate.sh} from the Octave--Forge SVN before you try to update your Octave.app and also please keep the email traffic on the mailing--list @email{octave-dev@@lists.sourceforge.net} about ``it doesn't work'' small.
 
 @node Are there any other Mac OS X Octave topics were I could help?,  , Can I upgrade Octave.app from sources of the current development?, Developer FAQ
-@unnumberedsubsec Are there any other Octave Mac OS X open topics where I could help?
-Yes, in general the most Octave developers are subscribed to all of the Octave and Octave--Forge mailing--lists. You'll find there open threads and discussions about the ongoing work of Octave. Currently there are the following open topics:
+@unnumberedsec Are there any other Octave Mac OS X open topics where I could help?
+Yes, in general most Octave developers are subscribed to all of the Octave and Octave--Forge mailing--lists. You'll find open threads there and discussions about the ongoing work of GNU Octave. Currently there are the following open topics:
 
 @itemize
-@item Help is needed to port the Octave--Forge package @file{Java} and the package @file{JHandles} to Mac OS X (they currently don't work with any of Mac OS X's binary versions of Octave). Read about some started discussions here@*
+@item Help is needed to port the Octave--Forge package @file{Java} and the package @file{JHandles} to Mac OS X (they currently don't work with any of Mac's binary versions of Octave). Read about some started discussions here@*
 @url{http://www.nabble.com/Need-for-JHandles-Linux-tester-tf4017520.html#a11480385}@*
-and also talk to the maintainer of these packages about "what tests should be done" and "how you can help".@* @*
+and also talk to the maintainer of these packages about ``what tests should be done'' and ``how you can help porting the codes''.@* @*
 
-@item Other packages from the Octave--Forge project can not be installed because of reason <XYZ>. You must understand that it is quite a lot of work to pack Octave.app and to keep every new version of Octave.app up--to--date and running for the various Mac OS X platforms. Building and installing packages from the Octave--Forge website is independent from building Octave.app, ie. if you have the time to answer Mac OS X dependent questions about Octave--Forge packages then please join the @email{octave-dev@@lists.sourceforge.net} mailing--list. Further, if you actively want to help keeping the packages installable and running with Octave.app then please join the Octave--Forge Development team. Thanks in advance!@* @*
+@item Other packages from the Octave--Forge project can not be installed because of reason <XYZ>. You must understand that it is quite a lot of work to pack Octave.app and to keep every new version of Octave.app up--to--date and keep it running for the various Mac OS X platforms. Building and installing packages from the Octave--Forge website is independent from building Octave.app, ie. if you have the time to answer Mac OS X dependent questions about Octave--Forge packages then please join the @email{octave-dev@@lists.sourceforge.net} mailing--list. Further, if you actively want to help keeping the packages installable and running with Octave.app then please join the Octave--Forge Development team. Thanks in advance!@* @*
 
-@item The Octave--Forge packages @file{Optiminterp} and @file{Spline-gcvspl} cannot be installed with Octave.app because of the Fortran90 code files. If you want to help making these packages available then maybe it would be an idea to talk to the maintainers of these two packages if it would be possible in general to backport the F90 code files into F77 code files though that these packages can also be installed on even more platforms like Octave.app.
+@item The Octave--Forge packages @file{Optiminterp} and @file{Spline-gcvspl} cannot be installed with Octave.app because of the Fortran90 code files. If you want to help making these packages available then maybe it would be an idea to talk to the maintainers of these two packages if it would be possible in general to backport the F90 code files into F77 code files though that these packages can also be installed on even more platforms like Octave.app. The other idea might be to set up a Fortran compiler for Octave.app that can handle F90 code files.@* @*
+@b{Note:} Octave.app versions 3.2.0 or newer are bundled with a @command{g95} Fortran compiler instead of @command{fort77} and @command{f2c}. This problem only exists for Octave.app versions 3.0.x or older.
 @end itemize
 
 @ifhtml
 @html
+</div>
+@end html
+@end ifhtml
+
+@ifhtml
+@html
+<div id="Help">
+@end html
+@end ifhtml
+
+@node Help,  , Developer FAQ, Top
+@unnumbered Help
+Bugs, enhancements, help and other stuff about the binary Octave.app are debated on the Octave-Forge mailing list. It's a fairly low-trafic list, and you are most welcome to join. You can subscribe to the list by going to the @uref{https://lists.sourceforge.net/lists/listinfo/octave-dev, listinfo page}. You can also access the archives for this list at the @uref{http://sourceforge.net/mailarchive/forum.php?forum_name=octave-dev, mail archive}.
+
+A lot of the people on the Octave-Forge mailing list are also subscribed to the @uref{http://www.octave.org/archive.html, GNU Octave mailing lists}, so you might want to joing those lists as well. You can access a searchable archive for these lists at @uref{http://www.nabble.com/Octave-f1895.html, Nabble}.
+
+If you find out that a specific function of GNU Octave is not doing the right thing then please file a bug report by calling the command @command{bug_report} in GNU Octave and send that bug report to @uref{mailto:bug-octave@@octave.org, bug-octave@@octave.org}.
+
+@ifhtml
+@html
+</div>
+@end html
+@end ifhtml
+
+@ifhtml
+@html
+<div id="Footer">
 <hr>
 @end html
-File created from @file{admin/MacOSX/createapp/octaveapp.texi} with @command{makeinfo} at %DATE%.
 @end ifhtml
+@insertcopying
+@ifhtml
+@html
+</div>
+@end html
+@end ifhtml
+
 @c %*** End of BODY
 
 @bye

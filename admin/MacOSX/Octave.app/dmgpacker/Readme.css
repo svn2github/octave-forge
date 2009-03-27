@@ -5,8 +5,54 @@
 /* with no Invariant Sections, no Front-Cover Texts, and no Back-Cover */
 /* Texts. A copy of the license is available at the GNU website */
 /* http://www.gnu.org/licenses/fdl.txt. */
-body      { font-family:Comic Sans MS; margin:50px; }
-h1        { font-size:16pt; }
-h2        { font-size:14pt; }
+
+:link    { color:blue; }
 :visited { color:blue; }
-.example  { background-color:#EAEAEA; }
+
+body                { font-family:Comic Sans MS, sans-serif; margin:50px; }
+h1                  { font-size:16pt; }
+h2                  { font-size:14pt; }
+h2.unnumbered       { font-size:14pt; color:blue; }
+h3.unnumberedsec    { font-size:13pt; color:blue; }
+h4.unnumberedsubsec { font-size:12pt; color:blue; }
+.example            { margin-left:3em; background-color:#EAEAEA; }
+/* span.command        { font-weight:bold; font-style:oblique; } */
+
+/*
+#Introduction { position:relative; top:   0pt; visibility:visible; overflow:visible; height:auto; }
+#License      { position:relative; top: -16pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+#Requirements { position:relative; top: -32pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+#Installation { position:relative; top: -48pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+#Limitations  { position:relative; top: -62pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+#GeneralFAQ   { position:relative; top: -78pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+#PackagesFAQ  { position:relative; top: -94pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+#DeveloperFAQ { position:relative; top:-110pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+#Help         { position:relative; top:-126pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+#Footer       { position:relative; top:-110pt;  font-size:10pt; height:1pt; }
+*/
+
+@media screen, handheld {
+  #Introduction { position:relative; top:   0pt; visibility:visible; overflow:visible; height:auto; }
+  #License      { position:relative; top: -13pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+  #Requirements { position:relative; top: -26pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+  #Installation { position:relative; top: -39pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+  #Limitations  { position:relative; top: -52pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+  #GeneralFAQ   { position:relative; top: -65pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+  #PackagesFAQ  { position:relative; top: -78pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+  #DeveloperFAQ { position:relative; top: -91pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+  #Help         { position:relative; top:-104pt; visibility:hidden;  overflow:hidden;  height:1pt;  }
+  #Footer       { position:relative; top: -91pt; font-size:10pt; height:1pt; }
+}
+
+@media print {
+  #Introduction { visibility:visible; overflow:visible; height:auto; }
+  #License      { visibility:visible; overflow:visible; height:auto; }
+  #Requirements { visibility:visible; overflow:visible; height:auto; }
+  #Installation { visibility:visible; overflow:visible; height:auto; }
+  #Limitations  { visibility:visible; overflow:visible; height:auto; }
+  #GeneralFAQ   { visibility:visible; overflow:visible; height:auto; }
+  #PackagesFAQ  { visibility:visible; overflow:visible; height:auto; }
+  #DeveloperFAQ { visibility:visible; overflow:visible; height:auto; }
+  #Help         { visibility:visible; overflow:visible; height:auto; }
+  #Footer       { font-size:10pt; height:auto; }
+}

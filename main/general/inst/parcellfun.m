@@ -223,17 +223,10 @@ function varargout = parcellfun (nproc, fun, varargin)
 
     end_try_catch
 
-    ## no more work for us. It's not a good idea to call exit (), however,
-    ## because all that clean-up code would be run. 
-    ## let's just pass control to a dummy sh process.
-    exec ("sh", {"-c", "exit"});
+    ## no more work for us. We call __exit__, which bypasses termination sequences.
+    __exit__ ();
 
     ## we should never get here.
-    ## FIXME: but if we do (exec failed), what next?
-    ## a good place to call abort, except that it's not available in Octave.
-    warning ("parcellfun: impossible state reached in child process");
-
-    ## anything is better than a hanging process.
     exit ();
 
   else

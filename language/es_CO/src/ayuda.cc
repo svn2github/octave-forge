@@ -65,7 +65,7 @@ help@octave.org.\n"
 @macro seealso {args}\n\
 @sp 1\n\
 @noindent\n\
-Ver tambi@'en: \\args\\.\n\
+Ve@'ase tambi@'en: \\args\\.\n\
 @end macro\n"
 
 // Below is a bit of magic that allows the indexing script to correctly

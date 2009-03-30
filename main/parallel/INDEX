@@ -2,5 +2,23 @@ parallel >> Parallel Computing
 Parallel
  send recv reval
  server getid pserver
+ connect
  sclose
  scloseall
+Internal
+ __bw_lock_file__
+ __bw_is_locked__
+ __bw_unlock_file__
+ __bw_load_variable__
+ __bw_secure_save__
+ __bw_psend__
+ __bw_prcv__
+ __bw_scheduler__
+ __bw_computing_machine__
+General
+ select
+User
+ bw_start
+ bw_list
+ bw_retrieve
+ bw_clear

@@ -108,8 +108,10 @@ function varargout = parcellfun (nproc, fun, varargin)
     error ("failed to open pipe: %s", msg);
   endif
 
-  iproc = 0; ## the parent process
-  nsuc = 0; ## number of processes succesfully forked.
+  iproc = 0; # the parent process
+  nsuc = 0; # number of processes succesfully forked.
+
+  fflush (stdout); # prevent subprocesses from inheriting buffered output
 
   ## fork subprocesses
   for i = 1:nproc
@@ -167,67 +169,71 @@ function varargout = parcellfun (nproc, fun, varargin)
 
   if (iproc)
     ## the border patrol. we really don't want errors escape after the forks.
-    try
+    unwind_protect
+      try
 
-      ## child process. indicate ready state.
-      fwrite (statw, -iproc, "double");
-      fflush (statw);
+        ## child process. indicate ready state.
+        fwrite (statw, -iproc, "double");
+        fflush (statw);
 
-      do
-        ## get command
-        cmd = fread (cmdr(iproc), 1, "double");
-        if (cmd)
-          ## we've got a job to do. prepare argument and return lists.
-          res = cell (1, nargout);
-          argsc = cell (1, nargs);
-          for i = 1:nargs
-            argsc{i} = args{i}{cmd};
-          endfor
+        do
+          ## get command
+          cmd = fread (cmdr(iproc), 1, "double");
+          if (cmd)
+            ## we've got a job to do. prepare argument and return lists.
+            res = cell (1, nargout);
+            argsc = cell (1, nargs);
+            for i = 1:nargs
+              argsc{i} = args{i}{cmd};
+            endfor
 
-          if (isempty (error_handler))
-            ## unguarded evaluation.
-            [res{:}] = fun (argsc{:});
-          else
-            ## guarded evaluation
-            try
+            if (isempty (error_handler))
+              ## unguarded evaluation.
               [res{:}] = fun (argsc{:});
-            catch
-              errs.index = cmd;
-              [errs.message, errs.identifier] = lasterr ();
-              [res{:}] = error_handler (errs, argsc{:});
-            end_try_catch
+            else
+              ## guarded evaluation
+              try
+                [res{:}] = fun (argsc{:});
+              catch
+                errs.index = cmd;
+                [errs.message, errs.identifier] = lasterr ();
+                [res{:}] = error_handler (errs, argsc{:});
+              end_try_catch
+            endif
+
+            ## indicate ready state.
+            fwrite (statw, iproc, "double");
+            fflush (statw);
+
+            ## write the result.
+            ## FIXME: this can fail.
+            fsave (resw(iproc), res);
+            fflush (resw(iproc));
+
           endif
+        until (cmd == 0)
 
-          ## indicate ready state.
-          fwrite (statw, iproc, "double");
-          fflush (statw);
+      catch
 
-          ## write the result.
-          ## FIXME: this can fail.
-          fsave (resw(iproc), res);
-          fflush (resw(iproc));
+        ## just indicate the error. don't quit this function !!!!
+        fputs (stderr, "\n");
+        warning ("parcellfun: unhandled error in subprocess %d", iproc);
 
-        endif
-      until (cmd == 0)
+        ## send a termination notice.
+        fwrite (statw, -iproc, "double");
+        fflush (statw);
 
-    catch
+      end_try_catch
 
-      ## just indicate the error. don't quit this function !!!!
-      fputs (stderr, "\n");
-      warning ("parcellfun: unhandled error in subprocess %d", iproc);
-      fputs (stderr, [lasterr, "\n"]);
+    unwind_protect_cleanup
 
-      ## send a termination notice.
-      fwrite (statw, -iproc, "double");
-      fflush (statw);
+      ## no more work for us. We call __exit__, which bypasses termination sequences.
+      __exit__ ();
 
-    end_try_catch
+      ## we should never get here.
+      exit ();
 
-    ## no more work for us. We call __exit__, which bypasses termination sequences.
-    __exit__ ();
-
-    ## we should never get here.
-    exit ();
+    end_unwind_protect
 
   else
     ## parent process. 
@@ -237,48 +243,68 @@ function varargout = parcellfun (nproc, fun, varargin)
     pjobs = 0;
     pending = zeros (1, nproc);
 
-    while (pjobs < njobs || any (pending))
-      ## if pipe contains no more data, that's bad
-      if (feof (statr))
-        warning ("parcellfun: premature exit due to closed pipe");
-        break;
-      endif
-      ## wait for a process state.
-      isubp = fread (statr, 1, "double");
-      if (isubp > 0)
-        ijob = pending(isubp);
-        ## we have a result ready.
-        res(:, ijob) = fload (resr(isubp));
-      else
-        isubp = -isubp;
-        if (pending(isubp))
-          ## premature exit means an unhandled error occured in a subprocess.
-          ## the process should have griped, we just try to exit gracefully.
-          pending(isubp) = 0;
-          ## no more jobs to start.
-          njobs = pjobs;
-          continue;
+    unwind_protect
+
+      while (pjobs < njobs || any (pending))
+        ## if pipe contains no more data, that's bad
+        if (feof (statr))
+          warning ("parcellfun: premature exit due to closed pipe");
+          break;
         endif
-      endif
-      if (pjobs < njobs)
-        ijob = ++pjobs;
-        ## send the next job to the process.
-        fwrite (cmdw(isubp), ijob, "double");
-        fflush (cmdw(isubp));
-        ## set pending state
-        pending(isubp) = ijob;
-      else
+        ## wait for a process state.
+        isubp = fread (statr, 1, "double");
+        if (isubp > 0)
+          ijob = pending(isubp);
+          ## we have a result ready.
+          res(:, ijob) = fload (resr(isubp));
+        else
+          isubp = -isubp;
+          if (pending(isubp))
+            ## premature exit means an unhandled error occured in a subprocess.
+            ## the process should have griped, we just try to exit gracefully.
+            pending(isubp) = 0;
+            ## no more jobs to start.
+            njobs = pjobs;
+            continue;
+          endif
+        endif
+        if (pjobs < njobs)
+          ijob = ++pjobs;
+          ## send the next job to the process.
+          fwrite (cmdw(isubp), ijob, "double");
+          fflush (cmdw(isubp));
+          ## set pending state
+          pending(isubp) = ijob;
+        else
+          ## send terminating signal
+          fwrite (cmdw(isubp), 0, "double");
+          fflush (cmdw(isubp));
+          ## clear pending state
+          pending(isubp) = 0;
+        endif
+        fprintf (stderr, "\rparcellfun: %d/%d jobs done", pjobs - sum (pending != 0), njobs);
+        fflush (stderr);
+      endwhile
+      fputs (stderr, "\n");
+      fflush (stderr);
+
+    unwind_protect_cleanup
+
+      ## send termination signals to active processes.
+      for isubp = find (pending)
         ## send terminating signal
         fwrite (cmdw(isubp), 0, "double");
         fflush (cmdw(isubp));
-        ## clear pending state
-        pending(isubp) = 0;
-      endif
-      fprintf (stderr, "\rparcellfun: %d/%d jobs done", pjobs - sum (pending != 0), njobs);
-      fflush (stderr);
-    endwhile
-    fputs (stderr, "\n");
-    fflush (stderr);
+      endfor
+
+      ## close all pipe ends
+      fclose (statr);
+      for i = 1:nproc
+        fclose (cmdw(i));
+        fclose (resr(i));
+      endfor
+
+    end_unwind_protect
 
     ## we're finished. transform the result.
     varargout = cell (1, nargout);

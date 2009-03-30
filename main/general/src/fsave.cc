@@ -25,7 +25,7 @@
 
 DEFUN_DLD (fsave, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} fsave (fid, var)\n\
+@deftypefn {Loadable Function} {} fsave (@var{fid}, @var{var})\n\
 Save a single variable to a binary stream, to be subsequently loaded with\n\
 fload. Returns true if successful.\n\
 @end deftypefn")

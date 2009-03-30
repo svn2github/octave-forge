@@ -281,19 +281,22 @@ function __bw_scheduler__ (f, argfile)
 	  __bw_secure_save__ (stfn, state, "state");
 	  return;
       endswitch
-      ## update statefile, but not if last update was a short time ago
-      if ((tp = time) - last_saved >= min_save_interv)
-	state.machines.active = m_active;
-	state.machines.unresponsive = m_unresponsive;
-	state.machines.njobs = m_njobs;
-	__bw_secure_save__ (stfn, state, "state");
-	last_saved = tp;
-      endif
     endfor
+    ## update statefile, but not if last update was a short time ago
+    state.machines.active = m_active;
+    state.machines.unresponsive = m_unresponsive;
+    state.machines.njobs = m_njobs;
+    if ((tp = time) - last_saved >= min_save_interv)
+      __bw_secure_save__ (stfn, state, "state");
+      last_saved = tp;
+    endif
     if (all ((m_just_tried | ! m_unresponsive)(! m_active)))
       m_just_tried = zeros (m_n, 1);
     endif
   endwhile
+
+  ## final update of statefile
+  __bw_secure_save__ (stfn, state, "state");
 
   ## terminate child processes, no coredump
   for pid = pids'
@@ -305,9 +308,7 @@ function __bw_scheduler__ (f, argfile)
   __bw_unlock_file__ (lfd);
 
   ## if all is ready, unlink lockfile; earlier unlinking breaks locking
-  if (all (state.ready))
-    unlink (lfn);
-  endif
+  unlink (lfn);
 
   ## unlink pidfile
   unlink (pidfn);

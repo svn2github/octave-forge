@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Luca Favatella <slackydeb@gmail.com>
+## Copyright (C) 2008, 2009 Luca Favatella <slackydeb@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -19,11 +19,12 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2
+## Version: 1.2.1
 
 function retval = rastriginsfcn (x)
   retval = 20 + (x(1) ** 2) + (x(2) ** 2) - 10 * (cos (2 * pi * x(1)) + 
                                                   cos (2 * pi * x(2)));
 endfunction
+
 
 %!assert (rastriginsfcn ([0, 0]), 0)

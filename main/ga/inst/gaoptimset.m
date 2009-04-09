@@ -54,7 +54,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.4.3
+## Version: 4.4.4
 
 function options = gaoptimset (varargin)
   if ((nargout != 1) ||
@@ -84,4 +84,6 @@ endfunction
 
 %!test
 %! options = gaoptimset ("EliteCount", 1, "FitnessLimit", 1e-7, "Generations", 1000, "PopInitRange", [-5; 5], "PopulationSize", 200);
-%! assert ([(getfield (options, "EliteCount")); (getfield (options, "FitnessLimit")); (getfield (options, "Generations")); (getfield (options, "PopInitRange")); (getfield (options, "PopulationSize"))], [1; 1e-7; 1000; [-5; 5]; 200])
+%!
+%! ## "CrossoverFraction" is not specified, so gaoptimset should put the default value: test this too
+%! assert ([(getfield (options, "CrossoverFraction")); (getfield (options, "EliteCount")); (getfield (options, "FitnessLimit")); (getfield (options, "Generations")); (getfield (options, "PopInitRange")); (getfield (options, "PopulationSize"))], [0.8; 1; 1e-7; 1000; [-5; 5]; 200])

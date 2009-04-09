@@ -54,7 +54,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.4.2
+## Version: 4.4.3
 
 function options = gaoptimset (varargin)
   if ((nargout != 1) ||
@@ -75,11 +75,13 @@ function options = gaoptimset (varargin)
       else
         options = setfield (options, param, value);
       endif
-      i = i + 2;
     endfor
   endif
 endfunction
 
 
-%!assert (getfield (gaoptimset ('Generations', 123), "Generations"), 123)
-%!assert (isfield (gaoptimset ('PopulationSize', 456), 'PopulationSize')) 
+%!assert (getfield (gaoptimset ("Generations", 123), "Generations"), 123)
+
+%!test
+%! options = gaoptimset ("EliteCount", 1, "FitnessLimit", 1e-7, "Generations", 1000, "PopInitRange", [-5; 5], "PopulationSize", 200);
+%! assert ([(getfield (options, "EliteCount")); (getfield (options, "FitnessLimit")); (getfield (options, "Generations")); (getfield (options, "PopInitRange")); (getfield (options, "PopulationSize"))], [1; 1e-7; 1000; [-5; 5]; 200])

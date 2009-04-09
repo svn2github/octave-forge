@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2.1
+## Version: 1.2.2
 
 function default_options = __gaoptimset_default_options__ ()
   default_options.CreationFcn = @gacreationuniform;
@@ -34,7 +34,6 @@ function default_options = __gaoptimset_default_options__ ()
                                 #default_options.MigrationFraction = 0.2;
                                 #default_options.MigrationInterval = 20;
   default_options.MutationFcn = {@mutationgaussian, 1, 1};
-                                #TODO delete mutationsinglepoint
                                 #default_options.OutputFcns = [];
                                 #default_options.ParetoFraction = 0.35;
                                 #default_options.PenaltyFactor = 100;

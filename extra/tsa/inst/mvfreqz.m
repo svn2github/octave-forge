@@ -1,7 +1,8 @@
 function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]=mvfreqz(B,A,C,N,Fs)
 % MVFREQZ multivariate frequency response
-% [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF,coh,GGC,Af,GPDC] = mvfreqz(B,A,C,N,Fs)
-%
+% [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF,pCOH2,PDCF,coh,GGC,Af,GPDC] = mvfreqz(B,A,C,f,Fs)
+% [...]  = mvfreqz(B,A,C,N,Fs)
+%  
 % INPUT: 
 % ======= 
 % A, B	multivariate polynomials defining the transfer function
@@ -25,10 +26,15 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 %       B = eye(M); 
 %       C = PE(:,M*P+1:M*(P+1)); 
 %
+% Fs 	sampling rate in [Hz]
+% (N 	number of frequencies for computing the spectrum, this will become OBSOLETE),  
+% f	vector of frequencies (in [Hz])  
+%
+%
 % OUTPUT: 
 % ======= 
 % S   	power spectrum
-% h	transfer functions, abs(h.^2) is the non-normalized DTF
+% h	transfer functions, abs(h.^2) is the non-normalized DTF [11]
 % PDC 	partial directed coherence [2]
 % DC  	directed coupling	
 % COH 	coherency (complex coherence) [5]
@@ -40,12 +46,11 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 % GGC	a modified version of Geweke's Granger Causality [Geweke 1982]
 %	   !!! it uses a Multivariate AR model, and computes the bivariate GGC as in [Bressler et al 2007]. 
 %	   This is not the same as using bivariate AR models and GGC as in [Bressler et al 2007]
-% Af	Frequency transform of A(z) 
+% Af	Frequency transform of A(z), abs(Af.^2) is the non-normalized PDC [11]
 % PDCF 	Partial Directed Coherence Factor [2]
 % GPDC 	Generalized Partial Directed Coherence [9,10]
 %
 % see also: FREQZ, MVFILTER, MVAR
-%
 % 
 % REFERENCE(S):
 % [1] H. Liang et al. Neurocomputing, 32-33, pp.891-896, 2000. 
@@ -108,18 +113,22 @@ q = K2/K1-1;
 if nargin<3
         C = eye(K1,K1);
 end;
-if nargin<4,
-        N = 512;
-end;
 if nargin<5,
         Fs= 1;        
 end;
+if nargin<4,
+        N = 512;
+        f = (0:N-1)*(Fs/(2*N));
+end;
 if all(size(N)==1),	
+	fprintf(1,'Warning MVFREQZ: The forth input argument N is a scalar, this is ambigous.\n');
+	fprintf(1,'   In the past, N was used to indicate the number of spectral lines. This might change.\n');
+	fprintf(1,'   In future versions, it will indicate the spectral line.\n');
         f = (0:N-1)*(Fs/(2*N));
 else
         f = N;
-        N = length(N);
 end;
+N = length(f);
 s = exp(i*2*pi*f/Fs);
 z = i*2*pi/Fs;
 
@@ -177,8 +186,8 @@ for n=1:N,
                 tmp3(k1) = sqrt(tmp'*tmp);
         end;
         
-        PDCF(:,:,n) = abs(atmp)./tmp2(ones(1,K1),:);
-        PDC(:,:,n)  = abs(atmp)./tmp1(ones(1,K1),:);
+        PDCF(:,:,n)  = abs(atmp)./tmp2(ones(1,K1),:);
+        PDC(:,:,n)   = abs(atmp)./tmp1(ones(1,K1),:);
         GPDC(:,:,n)  = abs(ctmp)./tmp3(ones(1,K1),:);
         %PDC3(:,:,n) = abs(atmp)./tmp3(:,ones(1,K1));
         

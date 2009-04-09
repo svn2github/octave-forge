@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Luca Favatella <slackydeb@gmail.com>
+## Copyright (C) 2008, 2009 Luca Favatella <slackydeb@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 ## @strong{Inputs}
 ## @table @var
 ## @item param
-## Parameter to set. Any unspecified parameters are set to their default values.
+## Parameter to set. Unspecified parameters are set to their default values.
 ## @item value
 ## Value of @var{param}.
 ## @end table
@@ -29,8 +29,7 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item options
-## Structure that contains the options, or parameters, for the generic
-## algorithm.
+## Structure containing the options, or parameters, for the genetic algorithm.
 ## @end table
 ##
 ## @strong{Options}
@@ -55,7 +54,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.4.1
+## Version: 4.4.2
 
 function options = gaoptimset (varargin)
   if ((nargout != 1) ||
@@ -80,3 +79,7 @@ function options = gaoptimset (varargin)
     endfor
   endif
 endfunction
+
+
+%!assert (getfield (gaoptimset ('Generations', 123), "Generations"), 123)
+%!assert (isfield (gaoptimset ('PopulationSize', 456), 'PopulationSize')) 

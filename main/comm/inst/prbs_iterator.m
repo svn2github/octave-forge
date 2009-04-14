@@ -8,6 +8,13 @@
 ## PRBS iterations is specified in the second argument.
 ## PRBS start state is taken from the prbs.sregs.
 ##
+## Second argument of the output is PRBS structure with a new
+## state. This allows usage like: 
+## 
+## [ seq, prbs ] =  prbs_iterator( prbs, niterations );
+## 
+## while the state of the PRBS is updated.
+## 
 ## Example: If you had a PRBS shift register like the diagram
 ## below with 4 registers we use representation by polynomial
 ## of [ 1 2 3 4], and feedback connections between [ 1 3 4 ].
@@ -28,7 +35,7 @@
 ## See Also: This function is to be used along with functions 
 ## prbs_iterator, prbs_generator and prbs_sequence.
 ## 
-function outputseq=prbs_iterator(prbs,iterations)
+function [outputseq,prbs]=prbs_iterator(prbs,iterations)
   if ( nargin < 2 )
     iterations=2^(prbs.reglen)-1;
   end

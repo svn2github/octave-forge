@@ -7,6 +7,18 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
+<dt>April, 14, 2009</dt>
+<dd>
+<p>Updated the OS X binary release to Octave.app 3.0.5.
+</dd>
+<dt>November, 22, 2008</dt>
+<dd>
+<p>Updated Windows installer to Octave 3.0.3.
+</dd>
+<dt>November, 2, 2008</dt>
+<dd>
+<p>Updated the OS X binary release to Octave.app 3.0.3.
+</dd>
 <dt>August, 31, 2008</dt>
 <dd>
 <p>Some of the packages in the latest release had build issues, and has been

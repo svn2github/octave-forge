@@ -12,7 +12,7 @@ function p = tcdf(x,n);
 % Reference(s):
 
 %	$Id$
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %    	This is part of the NaN-toolbox. For more details see
 %    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -31,23 +31,31 @@ function p = tcdf(x,n);
 
 
 % check size of arguments
-n = x+n-x;	  % if this line causes an error, size of input arguments do not fit. 
-z = n ./ (n + x.^2);
-
+if all(size(x)==1)
+	x = repmat(x,size(n));
+elseif all(size(n)==1)
+	n = repmat(n,size(x));
+elseif all(size(x)==size(n))
+	;	%% OK, do nothing
+else
+	error('size of input arguments must be equal or scalar')
+end; 	
+		
 % allocate memory
-p = z;
-p(x==Inf) = 1;
+p = zeros(size(x));
+p((x==Inf) & (n>0)) = 1;
 
 % workaround for invalid arguments in BETAINC
-tmp   = isnan(z) | ~(n>0);
-p(tmp)= NaN;
-ix    = (~tmp);
-p(ix) = betainc (z(ix), n(ix)/2, 1/2) / 2;
+ix   = isnan(x) | ~(n>0);
+p(ix)= NaN;
+
+ix    = (x > -Inf) & (x < Inf) & (n > 0);
+p(ix) = betainc (n(ix) ./ (n(ix) + x(ix).^2), n(ix)/2, 1/2) / 2;
 
 ix    = find(x>0);
 p(ix) = 1 - p(ix);
 
 % shape output
-p = reshape(p,size(z));
+p = reshape(p,size(x));
 
 

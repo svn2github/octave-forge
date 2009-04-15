@@ -1,3 +1,7 @@
+2009-04-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* src/Makefile.in: Add FPICFLAG/CPICFLAG to Fortran/C flags.
+
 2008-09-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* src/gprmod.h: add TRAIN_PREM

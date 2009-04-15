@@ -652,6 +652,7 @@ build_alias
 host_alias
 target_alias
 MKOCTFILE
+FPICFLAG CPICFLAG
 F77
 FFLAGS
 LDFLAGS
@@ -1746,6 +1747,7 @@ FPICFLAG=`$MKOCTFILE -p FPICFLAG`
 CPICFLAG=`$MKOCTFILE -p CPICFLAG`
 FFLAGS="$FFLAGS $FPICFLAG"
 CFLAGS="$CFLAGS $CPICFLAG"
+
 
 # Checks for compilers.
 ac_ext=f
@@ -6217,6 +6219,8 @@ build_alias!$build_alias$ac_delim
 host_alias!$host_alias$ac_delim
 target_alias!$target_alias$ac_delim
 MKOCTFILE!$MKOCTFILE$ac_delim
+FPICFLAG!$FPICFLAG$ac_delim
+CPICFLAG!$CPICFLAG$ac_delim
 F77!$F77$ac_delim
 FFLAGS!$FFLAGS$ac_delim
 LDFLAGS!$LDFLAGS$ac_delim
@@ -6235,7 +6239,7 @@ FLIBS!$FLIBS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 54; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 56; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

@@ -41,20 +41,21 @@ along with this software; see the file COPYING.  If not, see
   Funci@'on de ayuda en Espa@~nol.\n"
 
 // Some additional non texinfo formatted message 
-#define NOT_FOUND "no encontrado" 
+#define NOT_FOUND "no se encuentra"
 #define NOT_DOCUMENTED "no está documentado"
-#define MD5_MISMATCH "MD5 no coincide con el texto traducido.\nUse `ayuda' para ver el texto de ayuda original"
-#define TEXINFO_ERROR_1 "El filtro de formato de Texinfo ha terminado en forma inesperada"
-#define TEXINFO_ERROR_2 "Fuente de Texinfo sin formato del texto de ayuda a continuación..."
+#define MD5_MISMATCH "La firma MD5 no coincide con el texto traducido.\n\
+Use `help' para ver el texto de ayuda original"
+#define TEXINFO_ERROR_1 "El filtro de formato de TeXinfo ha terminado en forma inesperada"
+#define TEXINFO_ERROR_2 "C@'odigo fuente sin formato a continuación..."
 
 // Additional help message.
 #define ADDITIONAL_HELP \
-"Información adicional acerca de las funciones incorporadas y\n\
-operadores se encuentra disponible en la versión en línea del manual.\n\
-Use el comando `doc <tema>' para buscar en el índice del manual.\n\
+"Informaci@'on adicional acerca de las funciones incorporadas y de los\n\
+operadores se encuentra disponible en la versión en l@'inea del manual.\n\
+Use el comando `doc <tema>' para buscar en el @'indice del manual.\n\
 \n\
-Para ayuda e información adicional acerca de Octave visite\n\
-el sitio http://www.octave.org o a través de la lista de correos\n\
+Para ayuda e informaci@'on adicional acerca de Octave visite\n\
+el sitio web http://www.octave.org o a trav@'es de la lista de correo\n\
 help@octave.org.\n"
 
 // Language specific macros and seealso macro

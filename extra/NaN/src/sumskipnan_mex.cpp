@@ -135,7 +135,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	mxFree(SZ2);
 
-	if ((POutputCount == 1) && !mxIsComplex(PInputs[0])) {
+	if ((POutputCount <= 1) && !mxIsComplex(PInputs[0])) {
 		// OUTER LOOP: along dimensions > DIM
 		for (l = 0; l<D3; l++) {
 			ix0 = l*D1; 	// index for output

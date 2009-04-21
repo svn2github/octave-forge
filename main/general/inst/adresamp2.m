@@ -45,8 +45,8 @@ function [xs, ys] = adresamp2 (x, y, n, eps)
   dx = dx ./ ds;
   dy = dy ./ ds;
   # second derivatives
-  d2x = gradient (dx, ds);
-  d2y = gradient (dy, ds);
+  d2x = deriv2 (dx, ds);
+  d2y = deriv2 (dy, ds);
   # curvature
   k = abs (d2x .* dy - d2y .* dx);
   # curvature cut-off
@@ -64,6 +64,18 @@ function [xs, ys] = adresamp2 (x, y, n, eps)
   # and resample
   xs = interp1 (t, x, i);
   ys = interp1 (t, y, i);
+endfunction
+
+# calculates second derivatives from first (non-uniform intervals), using local
+# quadratic approximations.
+function d2x = deriv2 (dx, dt)
+  n = length (dt);
+  if (n >= 2)
+    d2x = diff (dx) ./ (dt(1:n-1) + dt(2:n));
+    d2x = [2*d2x(1); d2x(1:n-2) + d2x(2:n-1); 2*d2x(n-1)];
+  else
+    d2x = zeros (n, 1);
+  endif
 endfunction
 
 %!demo

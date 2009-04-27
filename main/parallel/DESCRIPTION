@@ -8,7 +8,7 @@ Description: Parallel execution package for cluster computers. For
  parallel execution on a single machine see e.g. function parcellfun
  (author: Jaroslav Hajek) in package general.
 Depends: octave (>= 3.0.0)
-Depends: general (>= 1.0.7)
+Depends: general (>= 1.1.0)
 Autoload: yes
 License: GPL, see individual files for GPL version
 Url: http://octave.sf.net

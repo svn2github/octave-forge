@@ -139,7 +139,7 @@ function clq = calcwing (wing, varargin)
     endwhile
 
     if (step <= opts.mstep)
-      printf_flush ("unpredicted.\n")
+      printf_flush ("unpredicted.\n");
       step = opts.mstep;
       flw1 = setalfa (flw, flw.alfad + step);
     else

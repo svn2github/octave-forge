@@ -1,3 +1,15 @@
+2009-04-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/calcwing.m: Add missing semicolon.
+
+2009-03-02  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/calcwing.m: Make verbose output optional.
+	* inst/corrector.m: Ditto. 
+	* inst/floweqj.m: Replace dmult.
+	* inst/makeflow.m: Ditto.
+	* inst/polppder.m: Ditto.
+
 2009-01-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/corrector.m: Optionally use fsolve as a corrector.

@@ -1,0 +1,199 @@
+#!/usr/bin/awk -f
+
+# Usage: change to the directory which has the files you want to convert
+# then type oct2mat files.  This will convert all files in that directory,
+# storing the output in $HOME/matlab., auplot_points=1000; endif
+#
+# Goal: automatically convert most octave code so that it will run on matlab.
+#    * Preferably, the code should run on matlab4, but the lack of varargin
+#    support makes this awkward for some functions.
+#    * Code that isn't convertible automatically, should be marked as octave
+#    specific or matlab specific.  Note that system specific code can be
+#    selected at the time of preprocessing.
+#    * I'm assuming primary development is done in octave, so it will not
+#    need preprocessing.  Similarly, octave coding style and octave
+#    features should not be compromised for the sake of translation.
+#    * Translation should be possible on a machine without octave installed,
+#    so no cheating and using the parse tree from within octave.
+# Matlab specific and octave specific code
+#    #<mat line -> line %<mat
+#    line #<oct -> %<oct line
+#    * So if something is specific to matlab, prefix the line with #<mat
+#    and if it is specific to octave, postfix the line with #<oct.  This
+#    can be used to replace ... with varargin, but it will not work for
+#    very well for things like legend text in which only a bit of the
+#    line needs to be changed.  This would require a proper preprocessor,
+#    and would mean that all files would have to be preprocessed before
+#    submitting them to either octave or matlab.
+#    * Consider adding version specific flags: #<oct20 #<oct21 #<mat4 #<mat5
+# Handles
+#    ! -> ~
+#    "str" -> 'str'
+#    "s'r" -> 's''r'
+#    endfunction ->
+#    endblah -> end
+#    # -> %
+#    blah() -> blah
+#    && -> &
+#    || -> |
+#    gset blah -> 
+#    blah \<nl> -> blah ...<nl>
+#    SEEK_SET, SEEK_CUR, SEEK_END -> -1, 0, 1
+#    __error_text__ -> lasterr
+# Support functions:
+#    octave2matlab/*.m and octave2matlab/borrow/*.m 
+#    Note: these routines should be run through octave2matlab
+#    striplegend removes ;blah; from string
+# Does not yet handle:
+#    _y -> y_
+#    x=y=blah;   ->  y=blah; x=y;
+#    function [x y]=blah -> function [x, y]=blah
+#    global y=blah; -> global y; if isempty(y), y=blah; end
+#    error(x,y,z) -> error(sprintf(x,y,z))
+#    end -> <nl>   if 'end' happens to be the end for the function def.
+#    unwind_protect doblah unwind_protect_cleanup cleanblah end_unwind_protect
+#        -> try doblah cleanblah catch cleanblah end
+#        instead sends them all to null
+# Does not handle octave's builtin variables
+#    Ideally, references to globals would be eliminated entirely but that is
+#    of course impossible (the halting problem and all that), so instead
+#    any octave builtin variable that is referred to in the function must
+#    be declared global at the start of the function.  This is tricky without
+#    a parser.
+# Does not handle plotting:
+#    * In octave, title, xlabel, ylabel, grid, axis, etc. come before plot
+#    but in matlab they come after.  This can be handled automatically
+#    with a few functions:
+#       octave_decorate to be called before title, xlabel, etc.:
+#          if ishold and __octave_hold, hold('off') and clear __octave_hold
+#          if ~ishold, axes;
+#          set __octave_decorate
+#       octave_plot to be called before plot:
+#          if __octave_decorate and ~ishold 
+#             hold('on'); set __octave_hold
+#          clear __octave_decorate
+#       octave_hold to be called before hold:
+#          if __octave_hold, hold('off') and clear __octave_hold
+#       octave_subplot to be called before subplot
+#          clear __octave_decorate, __octave_hold
+#    * Legends will be a problem.  Will have to strip them out of calls
+#    to plot and add them back in calls to legend. This will need
+#    a modified version of plot since it may be receiving its format
+#    string as a variable.
+#    * Matlab5 does not accept numbers in lieu of colours or symbols.  Could
+#    be folded into the legend fixes if so inclined.
+#    * matlab restores graph state automatically on the next plot, octave
+#    generally does it manually while the plot is still displayed.  The
+#    manual state restoration must not be executed under matlab, since it 
+#    will modify the existing graph.  This is a prime candidate for #<oct
+#    tags.
+#    * figure(0) is not valid in matlab
+# Variable argument/return lists:
+#    Only possible in Matlab 5
+#    Problems with va_arg() used as a parameter to a function call, since
+#       cannot increment __idx until after the function call. Subsequent
+#       va_arg() within the same function call will need __idx+1,__idx+2,...
+#    function [...] = blah -> function [varargout] = blah
+#    vrval(i)=blah -> varargout(i) = { blah }
+#    function blah(blah,...) -> function blah(blah,varargin)
+#    va_start() -> __idx = 1;
+#    blah(va_arg()) -> blah(varargin(__idx))<nl> __idx = __idx+1;
+# Comments and strings
+#    * don't convert text therein, except of course for examples and text
+#    destined for eval.  May need home-brew eval which does all the
+#    translations herein.
+#    * gets confused with transpose operator (which looks very much like a
+#    string delimiter, so it isn't surprising).  Make sure transpose and
+#    and strings don't appear on the same line of code or there may be
+#    confusion
+
+function fixquotes(x)
+{
+  inquote=incomment=0;
+  y="";
+  for (i=1; i <= length(x); i++) {
+    ch = substr(x,i,1);
+## test scripts are in comment blocks, so process them anyway
+#    if (incomment) 
+#      y = y ch;
+#    else 
+    if (inquote)
+      if (ch==quote_ch) {
+	inquote=0;
+	y = y "'";
+      }
+      else if (ch=="'") y = y ch ch;
+      else y = y ch;
+    else if (ch == "'") {
+      inquote = 1;
+      quote_ch = ch;
+      y = y ch;
+    }
+    else if (ch == "\"") {
+      inquote = 1;
+      quote_ch = ch;
+      y = y "'";
+    }
+    else if (ch == "%") {
+      incomment = 1;
+      y = y ch;
+    }
+    else y = y ch;
+  }
+  return y;
+}
+
+
+#BEGIN { target=ENVIRON["HOME"] "/matlab/"; }
+BEGIN { target="/tmp/oct2mat/"; }
+
+FNR==1 {
+  if (file) { 
+    if (file=="-") print body "\n" copyright;
+    else print body "\n" copyright > file;
+  }
+  body=copyright="";
+  if (FILENAME=="-") file="-"; else file=target FILENAME; 
+  incopyright=0;
+  print "Converting " FILENAME;
+}
+
+/^## Copyright/ { incopyright=1; }
+/^$/ { incopyright=0; }
+/^[^#]/ {incopyright=0; }
+
+{
+    if (sub("#<oct","")) $0 = "#<oct" $0;
+    if (sub("#<mat","")) $0 = sprintf("%-73s#<mat",$0);
+    gsub("#" , "%");
+    gsub("[(][)]","");
+    gsub("gset[^;%]*;","");
+    gsub("gset[^;]*%","%");
+    gsub("gset[^;]*$","");
+    gsub("endfunction","");
+    gsub("endif","end");
+    gsub("endwhile","end");
+    gsub("endfor","end");
+    gsub("end_try_catch","end");
+    gsub(/&&/,"\\&");
+    gsub("SEEK_CUR",0);
+    gsub("SEEK_END",1);
+    gsub("SEEK_SET",-1);
+    gsub("usage","error");
+    gsub("__error_text__","lasterr");
+    gsub("unwind_protect_cleanup","");
+    gsub("end_unwind_protect","");
+    gsub("unwind_protect","");
+    gsub(/\|\|/,"|");
+    gsub("!","~");
+    gsub("[\\\\]$","...");
+    if (incopyright) copyright = copyright "\n" fixquotes($0); 
+    else body = body "\n" fixquotes($0);
+}
+    
+END  {
+  if (file) { 
+    if (file=="-") print body "\n" copyright;
+    else print body "\n" copyright > file;
+  }
+}

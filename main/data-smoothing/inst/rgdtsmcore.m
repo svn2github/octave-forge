@@ -13,50 +13,42 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>. 
 
 ## -*- texinfo -*-
-##@deftypefn {Function File} {[@var{xhat}, @var{yhat}] =} rgdtsmcore (@var{x}, @var{y}, @var{d}, @var{lambda}, [@var{options}])
+##@deftypefn {Function File} {[@var{yhat}, @var{v}] =} rgdtsmcore (@var{x}, @var{y}, @var{d}, @var{lambda}, [@var{options}])
 ##
 ## Smooths @var{y} vs. @var{x} values by Tikhonov regularization.
 ## Although this function can be used directly, the more feature rich
 ## function "regdatasmooth" should be used instead.  In addition to
 ## @var{x} and @var{y}, required input includes the smoothing derivative
 ## @var{d} and the regularization parameter @var{lambda}.  The smooth
-## curve is returned as @var{xhat}, @var{yhat}.  The generalized cross
+## y-values are returned as @var{yhat}.  The generalized cross
 ## validation variance @var{v} may also be returned.
 ##
+## Note:  the options have changed!
 ## Currently supported input options are (multiple options are allowed):
 ##
 ##@table @code
-## @item "gridx"
-##  use an equally spaced @var{xhat} vector for the smooth curve rather
-##  than @var{x}; this option is implied if either the "Nhat" or "range"
-##  options are used
-## @item "Nhat", @var{value}
-##  number of equally spaced smoothed points (default = 100)
-## @item "range", @var{value}
-##  two element vector [min,max] giving the desired output range of
-##  @var{xhat}; if not provided or if the provided range is less than
-##  the range of the data, the default is the min and max of @var{x}
-## @item "weights", @var{vector}
-##  A vector of weighting values for fitting each point in the data.
-## @item "relative"
-##  use relative differences for the goodnes of fit term.  Conflicts
-##  with the "weights" option.
-## @item "midpointrule"
-##  use the midpoint rule for the integration terms rather than a direct sum
+##@item "xhat", @var{vector}
+## A vector of x-values to use for the smooth curve; must be
+## monotonically increasing and must at least span the data
+##@item "weights", @var{vector}
+## A vector of weighting values for fitting each point in the data.
+##@item "relative"
+## use relative differences for the goodnes of fit term.  Conflicts
+## with the "weights" option.
+##@item "midpointrule"
+## use the midpoint rule for the integration terms rather than a direct
+## sum; this option conflicts with the option "xhat"
 ##@end table
 ##
 ## References:  Anal. Chem. (2003) 75, 3631; AIChE J. (2006) 52, 325
 ##@end deftypefn
 
 
-function [xhat, yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
+function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
 
-  ## options:  gridx, Nhat, range, relative, midpointrule
-  ## add an option to allow an arbitrary, monotonic xhat to be provided?
   ## Defaults if not provided
-  Nhat = 100;
-  range = [min(x),max(x)];
-  gridx = 0;
+  xhatprov = 0;
+  xhat = x;
   weights = 0;
   relative = 0;
   midpr = 0;
@@ -67,14 +59,9 @@ function [xhat, yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
       arg = varargin{i};
       if ischar(arg)
 	switch arg
-	  case "gridx"
-	    gridx = 1;
-	  case "Nhat"
-	    gridx = 1;
-	    Nhat = varargin{i+1};
-	  case "range"
-	    gridx = 1;
-	    range = varargin{i+1};
+	  case "xhat"
+	    xhatprov = 1;
+	    xhat = varargin{i+1};
 	  case "weights"
 	    weights = 1;
 	    weightv = varargin{i+1};
@@ -88,34 +75,35 @@ function [xhat, yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
       endif
     endfor
   endif
-  if (gridx & midpr)
-    warning("midpointrule is not used if mapping to regular spaced x")
+  if (xhatprov & midpr)
+    warning("midpointrule is currently not used if xhat is provided (since x,y may be scattered)")
     midpr = 0;
   endif
   if (weights & relative)
-    warning("relative differences is used if a weighting vector is provided")
+    warning("relative differences is not used if a weighting vector is provided")
   endif
   
   N = length(x);
+  Nhat = length(xhat);
   
-  ## construct xhat, M, D
-  if (gridx)
-    xmin = min(range(1),min(x));
-    xmax = max(range(2),max(x));
-    dx = (xmax-xmin)/(Nhat-1);
-    xhat = (xmin:dx:xmax)';
-    ## M is the mapping matrix yhat -> y
-    M = speye(Nhat);
-    idx = round((x - xmin) / dx) + 1;
-    M = M(idx,:);
-    ## note: this D does not include dx^(-d), but scaled by delta below
-    D = diff(speye(Nhat),d);
-  else
-    Nhat = N;
-    xhat = x;
-    M = speye(N);
-    D = ddmat(x,d);
+  ## test that xhat is increasing
+  if !all(diff(xhat)>0)
+    if xhatprov
+      error("xhat must be monotonically increasing")
+    else
+      error("x must be monotonically increasing if xhat is not provided")
+    endif
   endif
+  ## test that xhat spans x
+  if ( min(x) < min(xhat) | max(xhat) < max(x) )
+    error("xhat must at least span the data")
+  endif
+
+  ## construct M, D
+  M = speye(Nhat);
+  idx = interp1(xhat,1:Nhat,x,"nearest"); # works for unequal spaced xhat
+  M = M(idx,:);
+  D = ddmat(xhat,d);
 
   ## construct "weighting" matrices W and U
   if (weights)
@@ -155,7 +143,7 @@ function [xhat, yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
   #yhat = S*(R'\(R\(S'*M'*W*y)));
   
   ## Computation of hat diagonal and cross-validation
-  if (nargout > 2)
+  if (nargout > 1)
     ## from AIChE J. (2006) 52, 325
     ## note: chol factorization does not help speed up the computation of H;
     ## should implement Eiler's partial H computation if many point smoothing by GCV is needed

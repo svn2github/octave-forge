@@ -13,13 +13,14 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>. 
 
 ## -*- texinfo -*-
-##@deftypefn {Function File} {[@var{xhat}, @var{yhat}, @var{lambda}] =} regdatasmooth (@var{x}, @var{y}, [@var{options}])
+##@deftypefn {Function File} {[@var{yhat}, @var{lambda}] =} regdatasmooth (@var{x}, @var{y}, [@var{options}])
 ##
 ## Smooths the @var{y} vs. @var{x} values of 1D data by Tikhonov
-## regularization. The smooth curve is returned as @var{xhat},
-## @var{yhat}. The regularization parameter @var{lambda} that was used
-## for the smoothing may also be returned.
+## regularization. The smooth y-values are returned as @var{yhat}. The
+## regularization parameter @var{lambda} that was used for the smoothing
+## may also be returned.
 ##
+## Note:  the options have changed!
 ## Currently supported input options are (multiple options are allowed):
 ##
 ##@table @code
@@ -40,17 +41,9 @@
 ##@item "lguess", @var{value}
 ## the initial value for lambda to use in the iterative minimization
 ## algorithm to find the optimal value (default = 1)
-##@item "gridx"
-## use an equally spaced @var{xhat} vector for the smooth curve rather
-## than @var{x}; if "gridx" is NOT used, @var{x} must be ordered and
-## non-overlapping; this option is implied if either the "Nhat" or
-## "range" options are used
-##@item "Nhat", @var{value}
-## number of equally spaced smoothed points (default = 100)
-##@item "range", @var{value}
-## two element vector [min,max] giving the desired output range of
-## @var{xhat}; if not provided or if the provided range is less than
-## the range of the data, the default is the min and max of @var{x}
+## @item "xhat", @var{vector}
+##  A vector of x-values to use for the smooth curve; must be
+##  monotonically increasing and must at least span the data
 ## @item "weights", @var{vector}
 ##  A vector of weighting values for fitting each point in the data.
 ## @item "relative"
@@ -58,7 +51,7 @@
 ##  with the "weights" option.
 ##@item "midpointrule"
 ## use the midpoint rule for the integration terms rather than a direct
-## sum; this option conflicts with the option "gridx"
+## sum; this option conflicts with the option "xhat"
 ##@end table
 ##
 ## Please run the demos for example usage.
@@ -67,7 +60,7 @@
 ## @seealso{rgdtsmcore}
 ## @end deftypefn
 
-function [xhat, yhat, lambda] = regdatasmooth (x, y, varargin)
+function [yhat, lambda] = regdatasmooth (x, y, varargin)
 
   ## defaults
   d = 2;
@@ -131,7 +124,7 @@ function [xhat, yhat, lambda] = regdatasmooth (x, y, varargin)
   endif
   
   %%ys = tkrgdatasmdd(x, y, lambda, d);
-  [xhat, yhat] = rgdtsmcore (x, y, d, lambda, options{:});
+  yhat = rgdtsmcore (x, y, d, lambda, options{:});
   
 endfunction
 
@@ -145,7 +138,7 @@ endfunction
 %! y = y + 1e-1*randn(npts,1);
 %! yp = ddmat(x,1)*y;
 %! y2p = ddmat(x,2)*y;
-%! [xh, yh, lambda] = regdatasmooth (x, y, "d",4,"stdev",1e-1,"midpointrule");
+%! [yh, lambda] = regdatasmooth (x, y, "d",4,"stdev",1e-1,"midpointrule");
 %! lambda
 %! yhp = ddmat(x,1)*yh;  
 %! yh2p = ddmat(x,2)*yh;
@@ -172,7 +165,8 @@ endfunction
 %! x = rand(npts,1)*2*pi;
 %! y = sin(x);
 %! y = y + 1e-1*randn(npts,1);
-%! [xh, yh, lambda] = regdatasmooth (x, y, "d", 3, "Nhat", 200, "range", [0,2*pi]);
+%! xh = linspace(0,2*pi,200)';
+%! [yh, lambda] = regdatasmooth (x, y, "d", 3, "xhat", xh);
 %! lambda
 %! clf
 %! figure(1);

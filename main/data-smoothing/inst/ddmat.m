@@ -33,10 +33,13 @@
 ## @end deftypefn
 
 ## corrected the recursion multiplier; JJS 2/25/08
-
+## added error check that x is a column vector; JJS 4/13/09
 
 
 function D = ddmat(x, d)
+  if ( size(x)(2) != 1 )
+    error("x should be a column vector")
+  endif
   m = length(x);
   if d == 0
     D = speye(m);

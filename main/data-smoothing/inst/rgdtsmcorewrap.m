@@ -25,31 +25,31 @@
 function out = rgdtsmcorewrap (log10lambda, x, y, d, mincell, varargin)
 
   lambda = 10^(log10lambda);
-  
-  if ( length(mincell)==2 )
+
+   if ( length(mincell)==2 ) # using stdev to find optimal lambda
     stdev = mincell{2};
-    [xhat, yhat] = rgdtsmcore (x, y, d, lambda, varargin{:});
+    yhat = rgdtsmcore (x, y, d, lambda, varargin{:});
 
-    N = length(x);
-    Nhat = length(xhat);
-
+    xhatprov = 0;
     relative = 0;
     for i = 1:length(varargin)
       if strcmp(varargin{i},"relative")
 	relative = 1;
+      elseif strcmp(varargin{i},"xhat")
+	xhatprov = 1;
+	xhat = varargin{i+1};
       endif
     endfor
 
-    if (Nhat!=N)
-      dx = (max(xhat)-min(xhat))/(Nhat-1);
-      idx = round((x - min(xhat)) / dx) + 1;
+    if (xhatprov)
+      idx = interp1(xhat,1:length(xhat),x,"nearest");
       if relative
 	stdevd = std((y-yhat(idx))./y);
       else
 	stdevd = std(y-yhat(idx));
       endif
     else
-      if relative
+      if (relative)
 	stdevd = std((y-yhat)./y);
       else
 	stdevd = std(y-yhat);
@@ -58,8 +58,8 @@ function out = rgdtsmcorewrap (log10lambda, x, y, d, mincell, varargin)
     
     out = (stdevd - stdev)^2;
 
-  else
-    [xhat, yhat, cve] = rgdtsmcore (x, y, d, lambda, varargin{:});
+  else # use gcv to find optimal lambda
+    [yhat, cve] = rgdtsmcore (x, y, d, lambda, varargin{:});
     out = cve;
   endif
 

@@ -45,19 +45,28 @@ function __bw_scheduler__ (f, argfile)
     source (userrc);
   endif
 
-  ## some preparation of configuration
-  ssh_opt_str = sprintf ("-o ConnectTimeout=%i", \
-			 max (round (connect_timeout), 0));
+  ## filenames
+  stfn = fullfile (state_dir, sprintf ("%s-%s.state", f, argfile));
+  pidfn = fullfile (state_dir, sprintf ("%s-%s.pid", f, argfile));
+  lfn = fullfile (state_dir, sprintf ("%s-%s.lock", f, argfile));
 
   ## read arguments
-  args = __bw_load_variable__ (fullfile (data_dir, argfile));
+  try
+    args = __bw_load_variable__ (fullfile (data_dir, argfile));
+  catch
+    state.scheduler_msg = lasterr;
+    __bw_secure_save__ (stfn, state, "state");
+    return;    
+  end_try_catch
+  if (! iscell (args) || (rows (args) > 1 && columns (args) > 1))
+    state.scheduler_msg = "arguments no one-dimensional array\n";
+    __bw_secure_save__ (stfn, state, "state");
+    return;    
+  endif
   n_args = length (args);
 
   ## racing condition, but might avoid some blocked schedulers
-  if (__bw_is_locked__ (lfn = \
-			fullfile \
-			(state_dir, \
-			 sprintf ("%s-%s.lock", f, argfile))))
+  if (__bw_is_locked__ (lfn))
     return;
   endif
 
@@ -65,7 +74,6 @@ function __bw_scheduler__ (f, argfile)
   lfd = __bw_lock_file__ (lfn);
 
   ## note pid in an extra file
-  pidfn = fullfile (state_dir, sprintf ("%s-%s.pid", f, argfile));
   if ((pidfd = fopen (pidfn, "w")) < 0)
     return;
   endif
@@ -73,9 +81,7 @@ function __bw_scheduler__ (f, argfile)
   fclose (pidfd);
 
   ## initialize state
-  if (isempty (stat (stfn = \
-		     fullfile (state_dir, \
-			       sprintf ("%s-%s.state", f, argfile)))))
+  if (isempty (stat (stfn)))
     state.results = state.msg = cell (n_args, 1);
     state.active = state.ready = state.error = zeros (n_args, 1);
     state.scheduler_msg = "";
@@ -99,11 +105,13 @@ function __bw_scheduler__ (f, argfile)
 
   ## initialize machine information
   m_n = length (computing_machines);
-  m_njobs = m_unresponsive = m_active = pids = pipesr = \
+  m_njobs = m_irresponsive = m_active = pids = pipesr = \
       pipesw = m_just_tried = zeros (m_n, 1);
 
   ## fork one permanent subprocess per machine
   cmd = "ssh";
+  ssh_timeout_opt_str = sprintf ("-o ConnectTimeout=%i", \
+				 max (round (connect_timeout), 0));
   for id = 1:m_n
     [pdrp, pdwc, err, msg] = pipe ();
     if (err)
@@ -125,7 +133,8 @@ function __bw_scheduler__ (f, argfile)
       pclose (pdwp);
       fcntl (pdrc, F_SETFL, O_SYNC);
       while (true) # no break, process killed from parent process
-	cmd_args = {ssh_opt_str, \
+	cmd_args = {"-o PasswordAuthentication=no", \
+		    ssh_timeout_opt_str, \
 		    computing_machines{id}, \
 		    "octave", \
 		    "-q", \
@@ -188,7 +197,7 @@ function __bw_scheduler__ (f, argfile)
       ## not reached, but left here lest they are needed sometime
       pclose (pdrc);
       pclose (pdwc);
-      __exit__ (0);
+      __internal_exit__ (0);
     elseif (pids(id) > 0) # parent process
       pclose (pdwc);
       pclose (pdrc);
@@ -209,10 +218,10 @@ function __bw_scheduler__ (f, argfile)
   while (! all (state.ready))
     args_unused = find (! (state.ready | state.active));
     m_free = cat (1, \
-		  find (! (m_active | m_unresponsive)), \
+		  find (! (m_active | m_irresponsive)), \
 		  find ((! (m_active | m_just_tried)) & \
-			m_unresponsive), \
-		  find ((! m_active) & m_just_tried & m_unresponsive));
+			m_irresponsive), \
+		  find ((! m_active) & m_just_tried & m_irresponsive));
     ## there should always be free childs here, give them a task
     for id = 1:min (length (m_free), length (args_unused))
       ## tell child to use this argument
@@ -238,7 +247,7 @@ function __bw_scheduler__ (f, argfile)
       end_try_catch
       switch res
 	case 0 # success
-	  m_unresponsive(id) = false;
+	  m_irresponsive(id) = false;
 	  m_just_tried(id) = false;
 	  m_njobs(id)++;
 	  state.active(m_active(id)) = false;
@@ -255,11 +264,11 @@ function __bw_scheduler__ (f, argfile)
 	  m_active(id) = 0;
 	case 1 # computing machine (got) unreachable
 	  state.active(m_active(id)) = false;
-	  m_unresponsive(id) = true;
+	  m_irresponsive(id) = true;
 	  m_just_tried(id) = true;
 	  m_active(id) = 0;
 	case 2 # computing function returned error
-	  m_unresponsive(id) = false;
+	  m_irresponsive(id) = false;
 	  m_just_tried(id) = false;
 	  m_njobs(id)++;
 	  state.active(m_active(id)) = false;
@@ -284,13 +293,13 @@ function __bw_scheduler__ (f, argfile)
     endfor
     ## update statefile, but not if last update was a short time ago
     state.machines.active = m_active;
-    state.machines.unresponsive = m_unresponsive;
+    state.machines.irresponsive = m_irresponsive;
     state.machines.njobs = m_njobs;
     if ((tp = time) - last_saved >= min_save_interv)
       __bw_secure_save__ (stfn, state, "state");
       last_saved = tp;
     endif
-    if (all ((m_just_tried | ! m_unresponsive)(! m_active)))
+    if (all ((m_just_tried | ! m_irresponsive)(! m_active)))
       m_just_tried = zeros (m_n, 1);
     endif
   endwhile

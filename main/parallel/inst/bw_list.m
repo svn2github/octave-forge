@@ -57,7 +57,7 @@ function bw_list ()
     nr = length (find (state.ready));
     printf ("%i/%i,   ", nr, n);
     if (isfield (state, "machines"))
-      printf ("%i", length (find (! state.machines.unresponsive)))
+      printf ("%i", length (find (! state.machines.irresponsive)))
     else
       printf ("0");
     endif

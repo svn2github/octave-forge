@@ -36,12 +36,12 @@ which is the index of "args" within all its possible values (given in
 a cell-array, see below). "results" of course may be a structure or
 cell array too to accomodate more than one value.
 
-For each set of arguments, the function is run at a different one of
-the currently available machines. The user supplies a one-dimensional
-cell-array with one set of arguments (i.e. the value of "args") in
-each entry. The cell-array must be stored in a file under the data
-directory (see below) and remain there until computation is finished
-(for the case the scheduler needs restarting).
+For each set of arguments, execution of the function will be scheduled
+to one of the currently available machines.  The user supplies a
+one-dimensional cell-array with one set of arguments (i.e. the value
+of "args") in each entry. The cell-array must be stored in a file
+under the data directory (see below) and remain there until
+computation is finished (for the case the scheduler needs restarting).
 
 The current state is kept in a variable "state" saved to a file whose
 name is sprintf("%s-%s.state", functionname, argumentsfilename) within

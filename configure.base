@@ -419,7 +419,7 @@ AC_SUBST(MKTEXI)
 dnl Test for the svn2cl program
 AC_CHECK_PROGS(SVN2CL,svn2cl svn2cl.pl)
 
-CONFIGURE_OUTPUTS="doc/macros.m4 Makeconf octinst.sh admin/Windows/msvc/makeall.sh"
+CONFIGURE_OUTPUTS="doc/macros.m4 Makeconf octinst.sh"
 STATUS_MSG="
 octave commands will install into the following directories:
    m-files:   $mpath

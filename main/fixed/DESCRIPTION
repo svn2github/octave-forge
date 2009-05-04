@@ -1,9 +1,9 @@
 Name: Fixed
-Version: 0.7.8
-Date: 2008-08-23
+Version: 0.7.9
+Date: 2009-05-03
 Author: David Bateman
 Maintainer: David Bateman
-Title: Fixed Point Computations.
+Title: Fixed Point Computations
 Description: Fixed point real and complex matrix toolbox
 Depends: octave (> 2.9.14)
 Autoload: yes

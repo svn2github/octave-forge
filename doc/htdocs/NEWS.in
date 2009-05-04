@@ -7,6 +7,22 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
+<dt>May, 4, 2009</dt>
+<dd>
+<p>New release of Octave-forge
+ Notable changes in this release include:</p>
+<ul>
+   <li>image: removel of imread and imwrite as they have been moved to core Octave.
+     New functions: entropyfilt, ordfiltn, rangefilt, stdfilt</li>
+   <li>control: include functions previously shipped with core Octave.</li>
+   <li>finance: include functions previously shipped with core Octave.</li>
+   <li>general: include a parallel version of cellfun: parcellfun.</li>
+   <li>nnet: new functions: dividerand, ind2vec, mapstd, vec2ind.</li>
+   <li>nan: support complex data.</li>
+   <li>new packages: nurbs, oct2mat, bugfix, simp, quaternion.</li>
+   <li>general bug fixes and improvements all over the place.</li>
+</ul>
+</dd>
 <dt>April, 14, 2009</dt>
 <dd>
 <p>Updated the OS X binary release to Octave.app 3.0.5.

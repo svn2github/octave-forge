@@ -71,7 +71,7 @@ function flow = corrector (flow, tol, opts, init)
     g = flow.g;
     res = norm (eq) / sqrt(np);
     if (verbose)
-      printf ("%5.2e ", res);
+      fprintf (stderr, "%5.2e ", res);
     endif
 
     lam0 = sqrt (1e-1*eps) * norm (eqj, 1);
@@ -96,12 +96,12 @@ function flow = corrector (flow, tol, opts, init)
         res = res1;
         eqj = floweqj (g, flow);
         if (verbose)
-          printf ("%5.2e ", res);
+          fprintf (stderr, "%5.2e ", res);
         endif
       else
         lambda *= 2;
         if (verbose)
-          printf ("+ ");
+          fprintf (stderr, "+ ");
         endif
       endif
     until ((res < tol && it >= nitmin) || it++ == nitmax )
@@ -136,10 +136,10 @@ function stop = corrector_output_fcn (g, opt, state)
     lastiter = 0;
   endif
   if (iter > lastiter)
-    printf ("%5.2e ", opt.fval / sqrt (length (g)));
+    fprintf (stderr, "%5.2e ", opt.fval / sqrt (length (g)));
     lastiter = iter;
   else
-    printf ("+ ");
+    fprintf (stderr, "+ ");
   endif
   stop = false;
   

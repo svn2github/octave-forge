@@ -48,22 +48,21 @@ inline int __sumskipnan3__(double *data, size_t Ni, double *s, double *s2, doubl
 
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
-    	const int	*SZ;	    
+    	const mwSize	*SZ;	    
     	double* 	LInput;
     	double* 	LOutputSum;
     	double* 	LOutputCount;
     	double* 	LOutputSum2;
     	double  	x;
-    	unsigned long   LCount;
+    	//unsigned long   LCount;
 
-    	unsigned	DIM = 0; 
-    	size_t		D1, D2, D3; 	// NN; 	//  	
-    	unsigned    	ND, ND2;	// number of dimensions: input, output
-    	size_t		ix0, ix1, ix2;	// index to input and output
-    	unsigned    	j, l;		// running indices 
-    	int 		*SZ2;		// size of output 	    
+    	mwSize		DIM = 0; 
+    	mwSize		D1, D2, D3; 	// NN; 	//  	
+    	mwSize    	ND, ND2;	// number of dimensions: input, output
+    	mwSize		ix0, ix1, ix2;	// index to input and output
+    	mwSize    	j, l;		// running indices 
+    	mwSize 		*SZ2;		// size of output 	    
 	char	 	flag_isNaN = 0;
-
 
 	// check for proper number of input and output arguments
 	if ((PInputCount <= 0) || (PInputCount > 3))
@@ -105,7 +104,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	ND2 = (ND>DIM ? ND : DIM);	// number of dimensions of output 
 
-	SZ2 = (int*)mxCalloc(ND2, sizeof(int)); // allocate memory for output size
+	SZ2 = (mwSize*)mxCalloc(ND2, sizeof(int)); // allocate memory for output size
 
 	for (j=0; j<ND; j++)		// copy size of input;  
 		SZ2[j] = SZ[j]; 	

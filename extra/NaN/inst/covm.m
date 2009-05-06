@@ -76,7 +76,7 @@ if nargin<3,
 elseif (nargin==3) && isnumeric(Mode) && ~isnumeric(Y);
 	W = Mode; 
 	Mode = Y;
-	Y = 0;
+	Y = [];
 
 elseif (nargin==4) && ~isnumeric(Mode) && isnumeric(Y);
 	; %% ok 
@@ -91,7 +91,6 @@ if ~isempty(Y)
         [r2,c2]=size(Y);
         if r1~=r2,
                 error('X and Y must have the same number of observations (rows).');
-                return;
         end;
 else
         [r2,c2]=size(X);

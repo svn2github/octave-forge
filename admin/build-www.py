@@ -90,6 +90,7 @@ def local_documentation(outdir, packdir):
 
 def create_INDEX(desc, packdir, p):
     try:
+        print (desc ['name']);
         wd = os.getcwd() + "/tmp/";
         name_version = desc['name'].lower() + "-" + desc['version'];
         

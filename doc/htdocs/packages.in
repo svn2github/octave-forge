@@ -11,10 +11,10 @@ translations of the help strings of octave.</li>
 <li><a href="#nonfree">Non-free packages</a> contains packages
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
-<p>For convenience, all of the packages below are available 	 
-	 as a <a href="__PACKAGE__/octave-forge-bundle-20090506.tar.gz?download">single file</a>. 	 
-	 This file is not however an octave package and the individual 	 
-	 packages it contains must be installed separately</p>
+<p>For convenience, all of the packages below are available
+as a <a href="__PACKAGE__/octave-forge-bundle-20090506.tar.gz?download">single file</a>.
+This file is not however an octave package and the individual
+packages it contains must be installed separately</p>
 <p>These packages are meant for versions of Octave later than version
 2.9.12. For earlier versions of Octave, please use the older
 <a href="__MONOLITHIC__">monolithic releases</a> of Octave-Forge.</p>
@@ -61,7 +61,7 @@ The package contains code used to benchmark speed of Octave.  </p>
    <b><a href="javascript:unfold('bioinfo');" class="package_head_link">   <img src="show.png" id="bioinfo_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 bioinfo</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./bioinfo/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/bioinfo-0.1.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/bioinfo-0.1.2.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="bioinfo_detailed" style="display: none;">
@@ -73,7 +73,7 @@ Bioinformatics manipulation  </p>
    <b><a href="javascript:unfold('combinatorics');" class="package_head_link">   <img src="show.png" id="combinatorics_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Combinatorics</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./combinatorics/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/combinatorics-1.0.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/combinatorics-1.0.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="combinatorics_detailed" style="display: none;">
@@ -217,7 +217,7 @@ Octave bindings to the GNU Scientific Library  </p>
    <b><a href="javascript:unfold('ident');" class="package_head_link">   <img src="show.png" id="ident_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Ident</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./ident/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/ident-1.0.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/ident-1.0.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="ident_detailed" style="display: none;">
@@ -269,7 +269,7 @@ Input/Output in external formats.  </p>
    <b><a href="javascript:unfold('irsa');" class="package_head_link">   <img src="show.png" id="irsa_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 IRSA</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./irsa/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/irsa-1.0.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/irsa-1.0.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="irsa_detailed" style="display: none;">
@@ -305,7 +305,7 @@ Miscellaneous tools including waitbar, xml tools, etc  </p>
    <b><a href="javascript:unfold('missing-functions');" class="package_head_link">   <img src="show.png" id="missing-functions_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 missing-functions</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./missing-functions/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/missing-functions-1.0.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/missing-functions-1.0.2.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="missing-functions_detailed" style="display: none;">
@@ -355,7 +355,7 @@ The package allows interpolating and smoothing scattered  multidimensional data 
    <b><a href="javascript:unfold('odebvp');" class="package_head_link">   <img src="show.png" id="odebvp_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 odebvp</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./odebvp/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/odebvp-1.0.5.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/odebvp-1.0.6.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="odebvp_detailed" style="display: none;">
@@ -403,7 +403,7 @@ An optimal interpolation toolbox for octave. This package provides functions to 
    <b><a href="javascript:unfold('outliers');" class="package_head_link">   <img src="show.png" id="outliers_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Outliers</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./outliers/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/outliers-0.13.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/outliers-0.13.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="outliers_detailed" style="display: none;">
@@ -430,7 +430,7 @@ Parallel execution package for cluster computers. For parallel execution on a si
    <b><a href="javascript:unfold('physicalconstants');" class="package_head_link">   <img src="show.png" id="physicalconstants_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 PhysicalConstants</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./physical-constants/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/physicalconstants-0.1.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/physicalconstants-0.1.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="physicalconstants_detailed" style="display: none;">
@@ -442,7 +442,7 @@ Physical Constants from Atomic & Molecular Physics, taken from NIST database  </
    <b><a href="javascript:unfold('plot');" class="package_head_link">   <img src="show.png" id="plot_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Plot</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./plot/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/plot-1.0.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/plot-1.0.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="plot_detailed" style="display: none;">
@@ -515,7 +515,7 @@ Special functions including ellipitic functions, etc  </p>
    <b><a href="javascript:unfold('special-matrix');" class="package_head_link">   <img src="show.png" id="special-matrix_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 special-matrix</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./special-matrix/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/special-matrix-1.0.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/special-matrix-1.0.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="special-matrix_detailed" style="display: none;">
@@ -527,7 +527,7 @@ Additional Special Matrices for Octave.  </p>
    <b><a href="javascript:unfold('splines');" class="package_head_link">   <img src="show.png" id="splines_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 splines</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./splines/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/splines-1.0.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/splines-1.0.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="splines_detailed" style="display: none;">
@@ -623,7 +623,7 @@ Vrml</a></b></td>
    <b><a href="javascript:unfold('zenity');" class="package_head_link">   <img src="show.png" id="zenity_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Zenity</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./zenity/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/zenity-0.5.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/zenity-0.5.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="zenity_detailed" style="display: none;">
@@ -712,7 +712,7 @@ Collection of routines to plot data on unstructured triangular and tetrahedral m
    <b><a href="javascript:unfold('graceplot');" class="package_head_link">   <img src="show.png" id="graceplot_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Graceplot</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./graceplot/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/graceplot-1.0.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/graceplot-1.0.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="graceplot_detailed" style="display: none;">
@@ -761,7 +761,7 @@ JHandles is a java- and openGL-based alternative graphics package for octave, pr
    <b><a href="javascript:unfold('mapping');" class="package_head_link">   <img src="show.png" id="mapping_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Mapping</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./mapping/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/mapping-1.0.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/mapping-1.0.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="mapping_detailed" style="display: none;">
@@ -785,7 +785,7 @@ Package for creating and managing triangular and tetrahedral meshes for Finite E
    <b><a href="javascript:unfold('multicore');" class="package_head_link">   <img src="show.png" id="multicore_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Multicore</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./multicore/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/multicore-0.2.13.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/multicore-0.2.14.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="multicore_detailed" style="display: none;">
@@ -846,7 +846,7 @@ Package for solving DC and transient electrical circuit equations  </p>
    <b><a href="javascript:unfold('pdb');" class="package_head_link">   <img src="show.png" id="pdb_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 PDB</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./pdb/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/pdb-1.0.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/pdb-1.0.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="pdb_detailed" style="display: none;">
@@ -870,7 +870,7 @@ A Drift-Diffusion simulator for 1d semiconductor devices  </p>
    <b><a href="javascript:unfold('secs2d');" class="package_head_link">   <img src="show.png" id="secs2d_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 SECS2D</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./secs2d/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/secs2d-0.0.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/secs2d-0.0.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="secs2d_detailed" style="display: none;">
@@ -942,7 +942,7 @@ Provides COM interface and additional functionality on Windows  </p>
    <b><a href="javascript:unfold('xraylib');" class="package_head_link">   <img src="show.png" id="xraylib_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Xraylib</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./xraylib/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/xraylib-1.0.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/xraylib-1.0.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="xraylib_detailed" style="display: none;">

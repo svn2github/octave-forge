@@ -110,7 +110,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	ND2 = (ND>DIM ? ND : DIM);	// number of dimensions of output 
 
-	SZ2 = (mwSize*)mxCalloc(ND2, sizeof(int)); // allocate memory for output size
+	SZ2 = (mwSize*)mxCalloc(ND2, sizeof(mwSize)); // allocate memory for output size
 
 	for (j=0; j<ND; j++)		// copy size of input;  
 		SZ2[j] = SZ[j]; 	
@@ -150,7 +150,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	mxFree(SZ2);
 
-	if ((POutputCount <= 1) && !mxIsComplex(PInputs[0])) {
+	if (D2<1) 
+		; 	// do nothing 
+	else if ((POutputCount <= 1) && !mxIsComplex(PInputs[0])) {
 		// OUTER LOOP: along dimensions > DIM
 		for (l = 0; l<D3; l++) {
 			ix0 = l*D1; 	// index for output
@@ -292,7 +294,11 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	}
 
 #ifndef NO_FLAG
-	if  (flag_isNaN && (PInputCount > 2)) {
+	//mexPrintf("Third argument must be not empty - otherwise status whether a NaN occured or not cannot be returned.");
+	/* this is a hack, the third input argument is used to return whether a NaN occured or not. 
+		this requires that the input argument is a non-empty variable
+	*/	
+	if  (flag_isNaN && (PInputCount > 2) && mxGetNumberOfElements(PInputs[2])) {
     		// set FLAG_NANS_OCCURED 
     		switch (mxGetClassID(PInputs[2])) {
     		case mxLOGICAL_CLASS:

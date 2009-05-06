@@ -5,6 +5,7 @@ Author: The Community
 Maintainer: The Community
 Title: Minor Bug Fixes for the 3.0.5 release.
 Description: This package overrides some functions included with the 3.0.5 release that contain minor bugs.
+Categories: stable
 Depends: octave (= 3.0.5)
 Autoload: yes
 License: GPL version 2 or later

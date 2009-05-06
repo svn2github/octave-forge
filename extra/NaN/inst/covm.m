@@ -1,4 +1,4 @@
-function [CC,NN] = covm(X,Y,Mode);
+function [CC,NN] = covm(X,Y,Mode,W);
 % COVM generates covariance matrix
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
@@ -8,6 +8,8 @@ function [CC,NN] = covm(X,Y,Mode);
 %      calculates the (auto-)correlation matrix of X
 % COVM(X,Y,Mode);
 %      calculates the crosscorrelation between X and Y
+% COVM(...,W);
+%	weighted crosscorrelation 
 %
 % Mode = 'M' minimum or standard mode [default]
 % 	C = X'*X; or X'*Y correlation matrix
@@ -55,6 +57,7 @@ if isempty(FLAG_NANS_OCCURED),
 	FLAG_NANS_OCCURED = logical(0);  % default value 
 end;
 
+W = []; 
 if nargin<3,
         if nargin==2,
 		if isnumeric(Y),
@@ -69,6 +72,16 @@ if nargin<3,
         elseif nargin==0,
                 error('Missing argument(s)');
         end;
+
+elseif (nargin==3) && isnumeric(Mode) && ~isnumeric(Y);
+	W = Mode; 
+	Mode = Y;
+	Y = 0;
+
+elseif (nargin==4) && ~isnumeric(Mode) && isnumeric(Y);
+	; %% ok 
+else 
+	error('invalid input arguments');	
 end;        
 
 Mode = upper(Mode);
@@ -88,19 +101,35 @@ if (c1>r1) | (c2>r2),
         warning('Covariance is ill-defined, because of too few observations (rows)');
 end;
 
+if ~isempty(W)
+	W = W(:);
+	if (r1~=numel(W))
+		error('Error COVM: size of weight vector does not fit number of rows');
+	end; 	
+	w = spdiags(W(:),0,numel(W),numel(W));
+	nn = sum(W(:)); 
+else
+	w = 1;
+	nn = r1;
+end; 
+	
 if ~isempty(Y),
         if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
-        	NN = real(X==X)'*real(Y==Y);
+        	NN = (w*real(X==X))'*(w*real(Y==Y));
 		FLAG_NANS_OCCURED = any(NN(:)<r1);
 	        X(X~=X) = 0; % skip NaN's
 	        Y(Y~=Y) = 0; % skip NaN's
-        	CC = X'*Y;
+        	CC = (w*X)'*(w*Y);
         else  % if any(Mode=='D') | any(Mode=='E'), 
-	        [S1,N1] = sumskipnan(X,1);
-                [S2,N2] = sumskipnan(Y,1);
+	        %[S1,N1] = sumskipnan(X,1,W);
+                %[S2,N2] = sumskipnan(Y,1,W);
+	        S1 = sumskipnan(w*X,1);
+                S2 = sumskipnan(w*Y,1);
+	        N1 = sum(w*(~isnan(X)),1);
+                N2 = sum(w*(~isnan(Y)),1);
                 
-                NN = real(X==X)'*real(Y==Y);
-		FLAG_NANS_OCCURED = any(NN(:)<r1);
+                NN = (w*real(X==X))'*(w*real(Y==Y));
+		FLAG_NANS_OCCURED = any(NN(:)~=nn);
         
 	        if any(Mode=='D'), % detrending mode
         		X  = X - ones(r1,1)*(S1./N1);
@@ -124,16 +153,19 @@ if ~isempty(Y),
         
 else        
         if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
-        	tmp = real(X==X);
+        	tmp = w*real(X==X);
 		NN  = tmp'*tmp;
 		X(X~=X) = 0; % skip NaN's
-	        CC = X'*X;
+		tmp = w*X; 
+	        CC = tmp'*tmp;
 		FLAG_NANS_OCCURED = any(NN(:)<r1);
         else  % if any(Mode=='D') | any(Mode=='E'), 
-	        [S,N] = sumskipnan(X,1);
-        	tmp = real(X==X);
+	        %[S,N] = sumskipnan(X,1,W);
+	        S = sumskipnan(w*X,1);
+	        N = sum(w*real(~isnan(X)),1);
+        	tmp = w*real(X==X);
                 NN  = tmp'*tmp;
-		FLAG_NANS_OCCURED = any(NN(:)<r1);
+		FLAG_NANS_OCCURED = any(NN(:)~=nn);
                 if any(Mode=='D'), % detrending mode
 	                X  = X - ones(r1,1)*(S./N);
                         if any(Mode=='1'),  %  'D1'
@@ -144,7 +176,8 @@ else
                 end;
                 
                 X(X~=X) = 0; % skip NaN's
-                CC = X'*X;
+                tmp = w*X;
+                CC = tmp'*tmp;
                 
                 if any(Mode=='E'), % extended mode
                         NN = [r1, N; N', NN];

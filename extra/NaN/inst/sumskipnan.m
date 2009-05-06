@@ -1,4 +1,4 @@
-function [o,count,SSQ] = sumskipnan(x,DIM)
+function [o,count,SSQ] = sumskipnan(x, DIM, W)
 % SUMSKIPNAN adds all non-NaN values. 
 %
 % All NaN's are skipped; NaN's are considered as missing values. 
@@ -11,8 +11,12 @@ function [o,count,SSQ] = sumskipnan(x,DIM)
 % 
 % Y = sumskipnan(x [,DIM])
 % [Y,N,SSQ] = sumskipnan(x [,DIM])
+% [...] = sumskipnan(x, DIM, W)
 % 
-% DIM	dimension
+% x	input data 	
+% DIM	dimension (default: [])
+%	empty DIM sets DIM to first non singleton dimension	
+% W	weight vector for weighted sum, numel(W) must fit size(x,DIM)
 % Y	resulting sum
 % N	number of valid (not missing) elements
 % SSQ	sum of squares
@@ -23,6 +27,7 @@ function [o,count,SSQ] = sumskipnan(x,DIM)
 % features:
 % - can deal with NaN's (missing values)
 % - implements dimension argument. 
+% - computes weighted sum 
 % - compatible with Matlab and Octave
 %
 % see also: FLAG_NANS_OCCURED, SUM, NANSUM, MEAN, STD, VAR, RMS, MEANSQ, 
@@ -31,7 +36,7 @@ function [o,count,SSQ] = sumskipnan(x,DIM)
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -52,6 +57,9 @@ global FLAG_NANS_OCCURED;
 
 if nargin<2,
         DIM = [];
+end;
+if nargin<3,
+        W = [];
 end;
 
 % an efficient implementation in C of the following lines 
@@ -75,11 +83,13 @@ if isempty(DIM),
 end
 if (DIM<1) DIM = 1; end; %% Hack, because min([])=0 for FreeMat v3.5
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % non-float data 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ~isa(x,'float') || ~flag_implicit_skip_nan(), %%% skip always NaN's
+if  (isempty(W) && (~(isa(x,'float') || isa(x,'double')))) || ~flag_implicit_skip_nan(), %%% skip always NaN's
+	if ~isempty(W)
+		error('SUMSKIPNAN: weighted sum of integers not supported, yet');
+	end; 
 	x = double(x); 
 	o = sum(x,DIM);
 	if nargout>1
@@ -94,6 +104,10 @@ if ~isa(x,'float') || ~flag_implicit_skip_nan(), %%% skip always NaN's
 	end; 	
 	return; 
 end; 	
+
+if ~isempty(W) && (size(x,DIM)~=numel(W))
+	error('SUMSKIPNAN: size of weight vector does not match size(x,DIM)');
+end; 
 
 %% mex and oct files expect double
 x = double(x); 
@@ -112,16 +126,16 @@ try
 	end;
 	
 	if (nargout<2),
-		o = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED);
+		o = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED,W);
 		if (~isreal(x))
-			io = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED);
+			io = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED,W);
 			o  = o + i*io;
 		end; 
 		return; 
 	elseif (nargout==2),
-		[o,count] = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED);
+		[o,count] = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED,W);
 		if (~isreal(x))
-			[io,icount] = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED);
+			[io,icount] = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED,W);
 			if any(count(:)-icount(:))
 				error('Number of NaNs differ for REAL and IMAG part');
 			else
@@ -130,9 +144,9 @@ try
 		end; 
 		return; 
 	elseif (nargout>=3),
-		[o,count,SSQ] = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED);
+		[o,count,SSQ] = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED,W);
 		if (~isreal(x))
-			[io,icount,iSSQ] = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED);
+			[io,icount,iSSQ] = sumskipnan_mex(imag(x),DIM,FLAG_NANS_OCCURED,W);
 			if any(count(:)-icount(:))
 				error('Number of NaNs differ for REAL and IMAG part');
 			else
@@ -144,6 +158,10 @@ try
 	end; 	
 end; 
 
+
+if ~isempty(W) 
+	error('weighted sumskipnan requires sumskipnan_mex');
+end; 	
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % count non-NaN's

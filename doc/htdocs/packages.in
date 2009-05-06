@@ -11,6 +11,10 @@ translations of the help strings of octave.</li>
 <li><a href="#nonfree">Non-free packages</a> contains packages
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
+<p>For convenience, all of the packages below are available 	 
+	 as a <a href="__PACKAGE__/octave-forge-bundle-20090506.tar.gz?download">single file</a>. 	 
+	 This file is not however an octave package and the individual 	 
+	 packages it contains must be installed separately</p>
 <p>These packages are meant for versions of Octave later than version
 2.9.12. For earlier versions of Octave, please use the older
 <a href="__MONOLITHIC__">monolithic releases</a> of Octave-Forge.</p>

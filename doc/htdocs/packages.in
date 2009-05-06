@@ -11,10 +11,6 @@ translations of the help strings of octave.</li>
 <li><a href="#nonfree">Non-free packages</a> contains packages
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
-<p>For convenience, all of the packages below are available
-as a <a href="__PACKAGE__/octave-forge-bundle-20080831.tar.gz?download">single file</a>.
-This file is not however an octave package and the individual
-packages it contains must be installed separately</p>
 <p>These packages are meant for versions of Octave later than version
 2.9.12. For earlier versions of Octave, please use the older
 <a href="__MONOLITHIC__">monolithic releases</a> of Octave-Forge.</p>
@@ -199,18 +195,6 @@ ga</a></b></td>
   <p id="ga_detailed" style="display: none;">
 Genetic optimization code  </p>
 </div>
-<div class="package" id="general">
-  <table class="package"><tr>
-    <td>
-   <b><a href="javascript:unfold('general');" class="package_head_link">   <img src="show.png" id="general_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
-General</a></b></td>
-    <td style="text-align: right;">&raquo; <a href="./general/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/general-1.1.2.tar.gz?download">download</a>
-    </td>
-  </tr></table>
-  <p id="general_detailed" style="display: none;">
-General tools for octave.  </p>
-</div>
 <div class="package" id="gsl">
   <table class="package"><tr>
     <td>
@@ -262,6 +246,18 @@ InformationTheory</a></b></td>
   </tr></table>
   <p id="informationtheory_detailed" style="display: none;">
 Functions and routines for basic Information Theory definitions, and source coding.  </p>
+</div>
+<div class="package" id="io">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('io');" class="package_head_link">   <img src="show.png" id="io_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+io</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./io/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/io-1.0.7.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="io_detailed" style="display: none;">
+Input/Output in external formats.  </p>
 </div>
 <div class="package" id="irsa">
   <table class="package"><tr>
@@ -497,6 +493,18 @@ sockets</a></b></td>
   <p id="sockets_detailed" style="display: none;">
 Socket functions  </p>
 </div>
+<div class="package" id="specfun">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('specfun');" class="package_head_link">   <img src="show.png" id="specfun_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Specfun</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./specfun/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/specfun-1.0.8.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="specfun_detailed" style="display: none;">
+Special functions including ellipitic functions, etc  </p>
+</div>
 <div class="package" id="special-matrix">
   <table class="package"><tr>
     <td>
@@ -568,6 +576,18 @@ Symbolic</a></b></td>
   </tr></table>
   <p id="symbolic_detailed" style="display: none;">
 Symbolic toolbox based on GiNaC and CLN.  </p>
+</div>
+<div class="package" id="time">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('time');" class="package_head_link">   <img src="show.png" id="time_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+time</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./time/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/time-1.0.9.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="time_detailed" style="display: none;">
+Additional date manipulation tools.  </p>
 </div>
 <div class="package" id="video">
   <table class="package"><tr>
@@ -755,6 +775,19 @@ MSH</a></b></td>
   <p id="msh_detailed" style="display: none;">
 Package for creating and managing triangular and tetrahedral meshes for Finite Element or Finite Volume PDE solvers. Uses a mesh data structure compatible with pdetool. Relies on gmsh for unstructured mesh generation.  </p>
 </div>
+<div class="package" id="multicore">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('multicore');" class="package_head_link">   <img src="show.png" id="multicore_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Multicore</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./multicore/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/multicore-0.2.13.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="multicore_detailed" style="display: none;">
+An Octave-forge package providing functions for parallel processing on multiple cores.
+  </p>
+</div>
 <div class="package" id="nan">
   <table class="package"><tr>
     <td>
@@ -767,3 +800,187 @@ NaN</a></b></td>
   <p id="nan_detailed" style="display: none;">
 Missing value statistical toolbox  </p>
 </div>
+<div class="package" id="nlwing2">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('nlwing2');" class="package_head_link">   <img src="show.png" id="nlwing2_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+NLWing2</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./nlwing2/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/nlwing2-1.1.1.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="nlwing2_detailed" style="display: none;">
+This package allows efficient computation of nonlinear aerodynamic  </p>
+</div>
+<div class="package" id="nurbs">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('nurbs');" class="package_head_link">   <img src="show.png" id="nurbs_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Nurbs</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./nurbs/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/nurbs-1.0.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="nurbs_detailed" style="display: none;">
+Collection of routines for the creation, and manipulation of Non-Uniform Rational B-Splines (NURBS).  </p>
+</div>
+<div class="package" id="ocs">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('ocs');" class="package_head_link">   <img src="show.png" id="ocs_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+OCS</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./ocs/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/ocs-0.0.3.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="ocs_detailed" style="display: none;">
+Package for solving DC and transient electrical circuit equations  </p>
+</div>
+<div class="package" id="pdb">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('pdb');" class="package_head_link">   <img src="show.png" id="pdb_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+PDB</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./pdb/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/pdb-1.0.6.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="pdb_detailed" style="display: none;">
+Reads and display PDB-files from the Brookhaven protein databank  </p>
+</div>
+<div class="package" id="secs1d">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('secs1d');" class="package_head_link">   <img src="show.png" id="secs1d_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+SECS1D</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./secs1d/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/secs1d-0.0.8.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="secs1d_detailed" style="display: none;">
+A Drift-Diffusion simulator for 1d semiconductor devices  </p>
+</div>
+<div class="package" id="secs2d">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('secs2d');" class="package_head_link">   <img src="show.png" id="secs2d_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+SECS2D</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./secs2d/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/secs2d-0.0.7.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="secs2d_detailed" style="display: none;">
+A Drift-Diffusion simulator for 2d semiconductor devices  </p>
+</div>
+<div class="package" id="tcl-octave">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('tcl-octave');" class="package_head_link">   <img src="show.png" id="tcl-octave_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Tcl-Octave</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./soctcl/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/tcl-octave-0.1.8.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="tcl-octave_detailed" style="display: none;">
+socket implementation of a tcl-octave connection  </p>
+</div>
+<div class="package" id="symband">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('symband');" class="package_head_link">   <img src="show.png" id="symband_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+SymBand</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./symband/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/symband-1.0.8.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="symband_detailed" style="display: none;">
+Linear Algebra for Symmetric Banded Matrices.  </p>
+</div>
+<div class="package" id="triangular">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('triangular');" class="package_head_link">   <img src="show.png" id="triangular_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Triangular</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./triangular/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/triangular-1.0.4.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="triangular_detailed" style="display: none;">
+Simple example of a user type implementing a simple matrix type for triangular matrices.  </p>
+</div>
+<div class="package" id="tsa">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('tsa');" class="package_head_link">   <img src="show.png" id="tsa_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+TSA</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./tsa/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/tsa-4.0.1.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="tsa_detailed" style="display: none;">
+Stochastic concepts and maximum entropy methods for time series analysis  </p>
+</div>
+<div class="package" id="windows">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('windows');" class="package_head_link">   <img src="show.png" id="windows_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Windows</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./Windows/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/windows-1.0.7.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="windows_detailed" style="display: none;">
+Provides COM interface and additional functionality on Windows  </p>
+</div>
+<div class="package" id="xraylib">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('xraylib');" class="package_head_link">   <img src="show.png" id="xraylib_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Xraylib</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./xraylib/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/xraylib-1.0.7.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="xraylib_detailed" style="display: none;">
+Bindings to the Xraylib functions  </p>
+</div>
+<h2 id="language">Native Translations</h2>
+<div class="package" id="pt_br">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('pt_br');" class="package_head_link">   <img src="show.png" id="pt_br_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+pt_BR</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./pt_BR/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/pt_br-1.0.7.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="pt_br_detailed" style="display: none;">
+Brazilian Portuguese translations of the help strings of the Octave functions. 
+  </p>
+</div>
+<h2 id="nonfree">Non-free packages</h2>
+<div class="package" id="arpack">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('arpack');" class="package_head_link">   <img src="show.png" id="arpack_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Arpack</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./arpack/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/arpack-1.0.7.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="arpack_detailed" style="display: none;">
+Octave bindings to ARPACK, including the eigs and svds function.  </p>
+</div>
+<div class="package" id="spline-gcvspl">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('spline-gcvspl');" class="package_head_link">   <img src="show.png" id="spline-gcvspl_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+spline-gcvspl</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./spline-gsvspl/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/spline-gcvspl-1.0.7.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="spline-gcvspl_detailed" style="display: none;">
+B-spline data smoothing using generalized cross-validation and mean squared prediction or explicit user smoothing  </p>
+</div>
+__TRAILER__

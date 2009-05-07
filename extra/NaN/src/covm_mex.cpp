@@ -21,15 +21,14 @@
 // sumskipnan: sums all non-NaN values
 //
 // Input:
-// - X
-// - Y [optional]
-// - flag (is actually an output argument telling whether some NaN was observed)
-// - weight vector to compute weighted correlation 
+// - X:
+// - Y: [optional], if empty, Y=X; 
+// - flag: if not empty, it is set to 1 if some NaN was observed
+// - W: weight vector to compute weighted correlation 
 //
 // Output:
-// - crosscorrelation
-// - count of valid elements (optional)
-//
+// - CC = X' * Y while NaN's are skipped
+// - NN count of valid (non-NaN) elements
 //
 //    $Id$
 //    Copyright (C) 2009 Alois Schloegl <a.schloegl@ieee.org>
@@ -46,27 +45,35 @@
 
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
-    	const mwSize	*SZ;	    
-    	double 		*X0,*Y0,*X,*Y,*W=NULL;
+    	double 		*X0,*Y0=NULL,*X,*Y,*W=NULL;
     	double	 	*CC;
-    	double 		*NN;
-    	double* 	LOutputSum2;
-    	double  	x;
-    	//unsigned long   LCount;
+    	double 		*NN=NULL;
 
     	mwSize		rX,cX,rY,cY,nW=0;
-    	mwSize    	i,j,k,l;	// running indices 
+    	mwSize    	i,j,k;	// running indices 
 	char	 	flag_isNaN = 0;
 
+
+	/*********** check input arguments *****************/
+
 	// check for proper number of input and output arguments
-	if ((PInputCount <= 0) || (PInputCount > 4))
-	        mexErrMsgTxt("covm.MEX requires between 1 and 4 arguments.");
+	if ((PInputCount <= 0) || (PInputCount > 4)) {
+	        mexPrintf("usage: [CC,NN] = covm_mex(X [,Y [,flag [,W]]])\n\n");
+	        mexPrintf("Donot use COVM_MEX directly, use COVM instead. \n");
+/*
+	        mexPrintf("COVM_MEX computes the covariance matrix of real matrices and skips NaN's\n");
+	        mexPrintf("\t[CC,NN] = covm_mex(...)\n\t\t computes CC=X'*Y, NN contains the number of not-NaN elements\n");
+	        mexPrintf("\t\t CC./NN is the covariance matrix\n");
+	        mexPrintf("\t... = covm_mex(X,Y,...)\n\t\t computes CC=X'*Y, number of rows of X and Y must match\n");
+	        mexPrintf("\t... = covm_mex(X,[], ...)\n\t\t computes CC=X'*X\n");
+	        mexPrintf("\t... = covm_mex(...,flag,...)\n\t\t if flag is not empty, it is set to 1 if some NaN occured in X or Y\n");
+	        mexPrintf("\t... = covm_mex(...,W)\n\t\t W to compute weighted covariance, number of elements must match the number of rows of X\n");
+	        mexPrintf("\t\t if isempty(W), all rows get an equal weight of 1\n");
+	        mexPrintf("\t[CC,NN]=covm_mex(X,Y,flag,W)\n");
+*/	        return;
+	}
 	if (POutputCount > 2)
 	        mexErrMsgTxt("covm.MEX has 1 to 2 output arguments.");
-
-/*	TODO:
-	support for complex matrices 
-*/
 
 
 	// get 1st argument
@@ -80,7 +87,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	// get 2nd argument
        	if  (PInputCount > 1)	{
 		if (!mxGetNumberOfElements(PInputs[1]))
-			Y0 = NULL; 		
+			; // Y0 = NULL; 		
 
 		else if (mxIsDouble(PInputs[1]) && !mxIsComplex(PInputs[1]))
 			Y0  = mxGetPr(PInputs[1]);
@@ -88,8 +95,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		else 	
 			mexErrMsgTxt("Second argument must be REAL/DOUBLE.");
 	}
-	else 
-		Y0 = NULL; 
 	
 
     	// get weight vector for weighted sumskipnan 
@@ -105,7 +110,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	}
 
-	if (!Y0) {
+	if (Y0==NULL) {
 		Y0 = X0; 
 		rY = rX;
 		cY = cX; 		
@@ -117,7 +122,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if (rX != rY)
 		mexErrMsgTxt("number of rows in X and Y do not match");
 
-	    // create outputs
+	/*********** create output arguments *****************/
 
 	POutput[0] = mxCreateDoubleMatrix(cX, cY, mxREAL);
 	CC = mxGetPr(POutput[0]);
@@ -127,8 +132,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		NN = mxGetPr(POutput[1]);
     	}
 
+
+	/*********** compute covariance *****************/
+
 #if 0
-	/*	this solution is slower than the alternative solution below 
+	/*------ version 1 --------------------- 
+		this solution is slower than the alternative solution below 
 		for transposed matrices, this might be faster. 
 	*/	
 	for (k=0; k<rX; k++) {
@@ -152,17 +161,21 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					continue;
 				}
 				CC[i+j*cX] += x*y*w; 
-	    			if (POutputCount > 1) 
+	    			if (NN != NULL) 
 					NN[i+j*cX] += w; 
 			}
 		}
 	}
 	
 #else 
-	// this version is faster than the one above. 
-	if (W) /* weighted version */
-	for (i=0; i<cX; i++)
-	for (j=0; j<cY; j++) {
+	/*------ version 2 --------------------- 
+		 this version seems to be faster than the one above. 
+	*/
+	if (X0 != Y0)
+		/******** X!=Y, output is not symetric *******/	
+	    if (W) /* weighted version */
+	    for (i=0; i<cX; i++)
+	    for (j=0; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
 		register double cc=0.0;
@@ -182,12 +195,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 #endif 
 		}	
 		CC[i+j*cX] = cc; 
-	    	if (POutputCount > 1) 
+		if (NN != NULL) 
 			NN[i+j*cX] = nn; 
-	}
-	else /* no weights, all weights are 1 */
-	for (i=0; i<cX; i++)
-	for (j=0; j<cY; j++) {
+	    }
+	    else /* no weights, all weights are 1 */
+  	    for (i=0; i<cX; i++)
+	    for (j=0; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
 		register double cc=0.0;
@@ -207,10 +220,68 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 #endif 
 		}	
 		CC[i+j*cX] = cc; 
-	    	if (POutputCount > 1) 
+		if (NN != NULL) 
 			NN[i+j*cX] = (double)nn; 
-	}
-	
+	    }
+	else // if (X0==Y0)
+		/******** X==Y, output is symetric *******/	
+	    if (W) /* weighted version */
+	    for (i=0; i<cX; i++)
+	    for (j=i; j<cY; j++) {
+		X = X0+i*rX;
+		Y = Y0+j*rY;
+		register double cc=0.0;
+		register double nn=0.0;
+		for (k=0; k<rX; k++) {
+			double x = X[k];
+			double y = Y[k];
+
+			if (!isnan(x) && !isnan(y)) 
+			{
+				cc += x*y*W[k];
+				nn += W[k];
+			}
+#ifndef NO_FLAG
+			else 
+				flag_isNaN = 1; 
+#endif 
+		}	
+		CC[i+j*cX] = cc; 
+		CC[j+i*cX] = cc; 
+		if (NN != NULL) {
+			NN[i+j*cX] = nn; 
+			NN[j+i*cX] = nn; 
+		}	
+	    }
+	    else /* no weights, all weights are 1 */
+	    for (i=0; i<cX; i++)
+	    for (j=i; j<cY; j++) {
+		X = X0+i*rX;
+		Y = Y0+j*rY;
+		register double cc=0.0;
+		register mwSize nn=0.0;
+		for (k=0; k<rX; k++) {
+			double x = X[k];
+			double y = Y[k];
+			
+			if (!isnan(x) && !isnan(y)) 
+			{
+				cc += x*y;
+				nn++;
+			}
+#ifndef NO_FLAG
+			else 
+				flag_isNaN = 1; 
+#endif 
+		}	
+		CC[i+j*cX] = cc; 
+		CC[j+i*cX] = cc; 
+		if (NN != NULL) {
+			NN[i+j*cX] = (double)nn; 
+			NN[j+i*cX] = (double)nn; 
+		}	
+	    }
+
 
 #ifndef NO_FLAG
 	//mexPrintf("Third argument must be not empty - otherwise status whether a NaN occured or not cannot be returned.");

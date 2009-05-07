@@ -64,6 +64,11 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if (POutputCount > 2)
 	        mexErrMsgTxt("covm.MEX has 1 to 2 output arguments.");
 
+/*	TODO:
+	support for complex matrices 
+*/
+
+
 	// get 1st argument
 	if(mxIsDouble(PInputs[0]) && !mxIsComplex(PInputs[0]))
 		X0  = mxGetPr(PInputs[0]);
@@ -109,6 +114,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		rY = mxGetM(PInputs[1]);		
 		cY = mxGetN(PInputs[1]);		
 	}
+	if (rX != rY)
+		mexErrMsgTxt("number of rows in X and Y do not match");
 
 	    // create outputs
 
@@ -120,12 +127,40 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		NN = mxGetPr(POutput[1]);
     	}
 
-	/* TODO: 
-		this is a very basic algorithm, 
-		it's likely it can be improved for speed by a different memory access sequence
-	*/
-
-	if (W) 
+#if 0
+	/*	this solution is slower than the alternative solution below 
+		for transposed matrices, this might be faster. 
+	*/	
+	for (k=0; k<rX; k++) {
+		double w;
+		if (W) w = W[k];
+		else   w = 1.0;
+		for (i=0; i<cX; i++) {
+			double x = X0[k+i*rX];
+			if (isnan(x)) {
+#ifndef NO_FLAG
+				flag_isNaN = 1;
+#endif 
+				continue;
+			}
+			for (j=0; j<cY; j++) {
+				double y = Y0[k+j*rY];
+				if (isnan(y)) {
+#ifndef NO_FLAG
+					flag_isNaN = 1;
+#endif 
+					continue;
+				}
+				CC[i+j*cX] += x*y*w; 
+	    			if (POutputCount > 1) 
+					NN[i+j*cX] += w; 
+			}
+		}
+	}
+	
+#else 
+	// this version is faster than the one above. 
+	if (W) /* weighted version */
 	for (i=0; i<cX; i++)
 	for (j=0; j<cY; j++) {
 		X = X0+i*rX;
@@ -150,7 +185,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    	if (POutputCount > 1) 
 			NN[i+j*cX] = nn; 
 	}
-	else for (i=0; i<cX; i++)
+	else /* no weights, all weights are 1 */
+	for (i=0; i<cX; i++)
 	for (j=0; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
@@ -159,7 +195,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		for (k=0; k<rX; k++) {
 			double x = X[k];
 			double y = Y[k];
-			
 			
 			if (!isnan(x) && !isnan(y)) 
 			{
@@ -213,9 +248,10 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     		case mxUNKNOWN_CLASS:
     		case mxCELL_CLASS:
     		case mxSTRUCT_CLASS:
-    			mexPrintf("Type of 3rd input argument not supported.");
+    			mexPrintf("Type of 3rd input argument cannot be used to return status of NaN occurence.");
 		}
 	}
+#endif
 #endif
 }
 

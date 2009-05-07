@@ -53,9 +53,6 @@ function [CC,NN] = covm(X,Y,Mode,W);
 
 
 global FLAG_NANS_OCCURED;
-if isempty(FLAG_NANS_OCCURED),
-	FLAG_NANS_OCCURED = logical(0);  % default value 
-end;
 
 W = []; 
 if nargin<3,
@@ -104,7 +101,7 @@ if (c1>r1) | (c2>r2),
 end;
 
 mexFLAG2 = exist('covm_mex','file');	
-mexFLAG = exist('sumskipnan_mex','file');	
+mexFLAG  = exist('sumskipnan_mex','file');	
 if ~isempty(W)
 	W = W(:);
 	if (r1~=numel(W))
@@ -112,72 +109,111 @@ if ~isempty(W)
 	end; 	
 	%w = spdiags(W(:),0,numel(W),numel(W));
 	%nn = sum(W(:)); 
-	if ~mexFLAG &&  ~mexFLAG2
-		error('Error COVM: weighted COVM requires sumskipnan_mex but it is not available');
-	end;
 	nn = sum(W);
 else
 	nn = r1;
 end; 
 	
-	
-if ~isempty(Y),
+
+if mexFLAG2 && mexFLAG && ~isempty(W),	
+	%% the mex-functions here are much slower than the m-scripts below 
+	%% however, the mex-functions support weighting of samples. 
+	if isempty(FLAG_NANS_OCCURED),
+		%% mex-files require that FLAG_NANS_OCCURED is not empty, 
+		%% otherwise, the status of NAN occurence can not be returned. 
+		FLAG_NANS_OCCURED = logical(0);  % default value 
+	end;
+
         if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
-        	if mexFLAG2, 
-        		[CC,NN] = covm_mex(X,Y,FLAG_NANS_OCCURED,W);
-        	elseif mexFLAG, 
-        		[ix,iy] = meshgrid(1:c2,1:c1);
-			[CC,NN] = sumskipnan_mex(X(:,iy).*Y(:,ix),1,FLAG_NANS_OCCURED,W);
-			CC = reshape(CC,c1,c2);
-			NN = reshape(NN,c1,c2);
-	        else
-	        	NN = real(X==X)'*real(Y==Y);
-			FLAG_NANS_OCCURED = any(NN(:)<nn);
-		        X(X~=X) = 0; % skip NaN's
-		        Y(Y~=Y) = 0; % skip NaN's
-	        	CC = X'*Y;
-		end; 	        	
+       		[CC,NN] = covm_mex(real(X),real(Y),FLAG_NANS_OCCURED,W);
+		%% complex matrices 
+		if ~isreal(X) && ~isreal(Y)
+			[iCC,inn] = covm_mex(imag(X),imag(Y),FLAG_NANS_OCCURED,W);
+			CC = CC + iCC;
+		end; 
+		if isempty(Y) Y = X; end;   
+		if ~isreal(X)
+			[iCC,inn] = covm_mex(imag(X),real(Y),FLAG_NANS_OCCURED,W);
+			CC = CC - i*iCC;
+		end;
+		if ~isreal(Y)
+			[iCC,inn] = covm_mex(real(X),imag(Y),FLAG_NANS_OCCURED,W);
+			CC = CC + i*iCC;
+		end; 	
+
+       	else  % if any(Mode=='D') | any(Mode=='E'), 
+	        [S1,N1] = sumskipnan(X,1,W);
+	        if ~isempty(Y)
+	               	[S2,N2] = sumskipnan(Y,1,W);
+	        else 
+	        	S2 = S1; N2 = N1;        	
+		end; 
+	        if any(Mode=='D'), % detrending mode
+       			X  = X - ones(r1,1)*(S1./N1);
+		        if ~isempty(Y)
+	               	        Y  = Y - ones(r1,1)*(S2./N2);
+			end; 
+		end; 
+       		[CC,NN] = covm_mex(real(X), real(Y), FLAG_NANS_OCCURED, W);
+		%% complex matrices 
+		if ~isreal(X) && ~isreal(Y)
+			[iCC,inn] = covm_mex(imag(X),imag(Y),FLAG_NANS_OCCURED,W);
+			CC = CC + iCC;
+		end; 
+		if isempty(Y) Y = X; end;   
+		if ~isreal(X)
+			[iCC,inn] = covm_mex(imag(X),real(Y),FLAG_NANS_OCCURED,W);
+			CC = CC - i*iCC;
+		end;
+		if ~isreal(Y)
+			[iCC,inn] = covm_mex(real(X),imag(Y),FLAG_NANS_OCCURED,W);
+			CC = CC + i*iCC;
+		end; 	
+	
+	        if any(Mode=='1'),  %  'D1'
+                        NN = NN;
+                else   %  'D0'       
+                        NN = max(NN-1,0);
+                end;
+                if any(Mode=='E'), % extended mode
+                        NN = [nn, N2; N1', NN];
+                        CC = [nn, S2; S1', CC];
+                end;
+	end; 
+	
+
+elseif ~isempty(W),
+
+	error('Error COVM: weighted COVM requires sumskipnan_mex and covm_mex but it is not available');
+
+	%% weighted covm without mex-file support
+	%% this part is not working.
+
+elseif ~isempty(Y),
+        if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
+        	NN = real(X==X)'*real(Y==Y);
+		FLAG_NANS_OCCURED = any(NN(:)<nn);
+	        X(X~=X) = 0; % skip NaN's
+	        Y(Y~=Y) = 0; % skip NaN's
+        	CC = X'*Y;
 
         else  % if any(Mode=='D') | any(Mode=='E'), 
-        	if mexFLAG,
-		        [S1,N1] = sumskipnan_mex(X,1,FLAG_NANS_OCCURED,W);
-                	[S2,N2] = sumskipnan_mex(Y,1,FLAG_NANS_OCCURED,W);
-
-		        if any(Mode=='D'), % detrending mode
-        			X  = X - ones(r1,1)*(S1./N1);
-                	        Y  = Y - ones(r1,1)*(S2./N2);
-			end; 
-			if mexFLAG2,
-	        		[CC,NN] = covm_mex(X,Y,FLAG_NANS_OCCURED,W);
-			else
-	        		[ix,iy] = meshgrid(1:c1,1:c1);
-				[CC,NN] = sumskipnan_mex(X(:,iy).*X(:,ix),1,FLAG_NANS_OCCURED,W);
-				CC = reshape(CC,c1,c1);
-				NN = reshape(NN,c1,c1);
-			end; 	
-                        if any(Mode=='1'),  %  'D1'
-                                NN = NN;
-                        else   %  'D0'       
-                                NN = max(NN-1,0);
-                        end;
-	        else
-	        	[S1,N1] = sumskipnan(X,1);
-                	[S2,N2] = sumskipnan(Y,1);
-                	NN = real(X==X)'*real(Y==Y);
+        	[S1,N1] = sumskipnan(X,1);
+               	[S2,N2] = sumskipnan(Y,1);
+               	NN = real(X==X)'*real(Y==Y);
                 
-		        if any(Mode=='D'), % detrending mode
-        			X  = X - ones(r1,1)*(S1./N1);
-                	        Y  = Y - ones(r1,1)*(S2./N2);
-                        	if any(Mode=='1'),  %  'D1'
-                                	NN = NN;
-                        	else   %  'D0'       
-                                	NN = max(NN-1,0);
-	                        end;
-	                end;         
-	                X(X~=X) = 0; % skip NaN's
-        		Y(Y~=Y) = 0; % skip NaN's
-                	CC = X'*Y;
-                end; 
+	        if any(Mode=='D'), % detrending mode
+       			X  = X - ones(r1,1)*(S1./N1);
+               	        Y  = Y - ones(r1,1)*(S2./N2);
+                       	if any(Mode=='1'),  %  'D1'
+                               	NN = NN;
+                       	else   %  'D0'       
+                               	NN = max(NN-1,0);
+                        end;
+                end;         
+                X(X~=X) = 0; % skip NaN's
+       		Y(Y~=Y) = 0; % skip NaN's
+               	CC = X'*Y;
                 
                 if any(Mode=='E'), % extended mode
                         NN = [nn, N2; N1', NN];
@@ -187,64 +223,38 @@ if ~isempty(Y),
         
 else        
         if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
-        	if mexFLAG2, 
-        		[CC,NN] = covm_mex(X,[],1,FLAG_NANS_OCCURED,W);
-        	elseif mexFLAG, 
-        		[ix,iy] = meshgrid(1:c1,1:c1);
-			[CC,NN] = sumskipnan_mex(X(:,iy).*X(:,ix),1,FLAG_NANS_OCCURED,W);
-			CC = reshape(CC,c1,c1);
-			NN = reshape(NN,c1,c1);
-        	else
-	        	tmp = real(X==X);
-			NN  = tmp'*tmp;
-			X(X~=X) = 0; % skip NaN's
-		        CC = X'*X;
-			FLAG_NANS_OCCURED = any(NN(:)<nn);
-		end; 	
-        else  % if any(Mode=='D') | any(Mode=='E'), 
-        	if mexFLAG, 
-	        	[S,N] = sumskipnan_mex(X,1,FLAG_NANS_OCCURED,W);
+        	tmp = real(X==X);
+		NN  = tmp'*tmp;
+		X(X~=X) = 0; % skip NaN's
+	        CC = X'*X;
+		FLAG_NANS_OCCURED = any(NN(:)<nn);
 
-        	        if any(Mode=='D'), % detrending mode
-	        	        X  = X - ones(r1,1)*(S./N);
-	                end;
-			if mexFLAG2
-	        		[CC,NN] = covm_mex(X,[],FLAG_NANS_OCCURED,W);
-			else
-	        		[ix,iy] = meshgrid(1:c1,1:c1);
-				[CC,NN] = sumskipnan_mex(X(:,iy).*X(:,ix),1,FLAG_NANS_OCCURED,W);
-				CC = reshape(CC,c1,c1);
-				NN = reshape(NN,c1,c1);
-			end; 
+        else  % if any(Mode=='D') | any(Mode=='E'), 
+	        [S,N] = sumskipnan(X,1);
+       		tmp = real(X==X);
+               	NN  = tmp'*tmp;
+       	        if any(Mode=='D'), % detrending mode
+        	        X  = X - ones(r1,1)*(S./N);
                        	if any(Mode=='1'),  %  'D1'
                                	NN = NN;
                         else  %  'D0'      
        	                        NN = max(NN-1,0);
                	        end;
-		else
-		        [S,N] = sumskipnan(X,1);
-        		tmp = real(X==X);
-                	NN  = tmp'*tmp;
-        	        if any(Mode=='D'), % detrending mode
-	        	        X  = X - ones(r1,1)*(S./N);
-                        	if any(Mode=='1'),  %  'D1'
-                                	NN = NN;
-	                        else  %  'D0'      
-        	                        NN = max(NN-1,0);
-                	        end;
-	                end;
+                end;
                 
-        	        X(X~=X) = 0; % skip NaN's
-                        CC = X'*X;
-        	end;         
+       	        X(X~=X) = 0; % skip NaN's
+		CC = X'*X;
                 if any(Mode=='E'), % extended mode
                         NN = [nn, N; N', NN];
                         CC = [nn, S; S', CC];
                 end;
 	end
+
 end;
+
 
 if nargout<2
         CC = CC./NN; % unbiased
 end;
+
 return; 

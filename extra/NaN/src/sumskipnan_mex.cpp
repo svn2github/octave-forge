@@ -266,7 +266,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 						LOutputCount[ix2] += W[j]; 
 						double t = W[j]*x;
 						LOutputSum[ix2]   += t; 
-						LOutputSum2[ix2]  += t*t; 
+						LOutputSum2[ix2]  += x*t; 
 					}
 #ifndef NO_FLAG
 					else 
@@ -451,7 +451,7 @@ inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, doub
 			count += *W;
 			double t = *W*x; 
 			sum += t; 
-			msq += t*t; 
+			msq += x*t; 
 		}
 #ifndef NO_FLAG
 		else 

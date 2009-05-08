@@ -46,12 +46,12 @@ local_looks_like_texinfo (const std::string& msg, size_t& p1)
 
   std::string t = msg.substr (0, p1);
 
-  if (p1 == std::npos)
+  if (p1 == std::string::npos)
     p1 = 0;
 
   size_t p2 = t.find ("-*- texinfo -*-");
 
-  return (p2 != std::npos);
+  return (p2 != std::string::npos);
 }
 
 static void
@@ -154,10 +154,10 @@ local_help_from_file (const std::string& nm, std::string &md5)
       // Extract MD5
       size_t pos = 0;
       md5 = std::string();
-      while (pos != std::npos)
+      while (pos != std::string::npos)
 	{
 	  pos = first_line.find_first_of ("\"", pos);
-	  if (pos == std::npos)
+	  if (pos == std::string::npos)
 	    break;
 
 	  if (pos > 3 && first_line.substr(pos - 4, 4) == "md5=")

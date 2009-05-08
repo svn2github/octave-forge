@@ -7,6 +7,5 @@ Title: Oct2Mat
 Description: convert m-file into matlab-compatible coding style
 Categories: graphics
 Depends: octave (>= 2.9.7), io (>= 1.0.0)
-BuildRequires: 
 License: GPL version 2 or later
 Url: http://octave.sf.net

@@ -63,8 +63,10 @@
 ## 10) Upload the webpages to sourceforge. (these steps assume that your login
 ##     on your local machine is the same as your SourceForge login)
 ##
-##        scp doc/htdocs.tar.gz $OFHOME
-##        ssh octave.sf.net
+##        sftp $USER,octave@web.sourceforge.net
+##        put doc/htdocs.tar.gz
+##        exit
+##        ssh -t $USER,octave@shell.sourceforge.net create
 ##        cd /home/groups/o/oc/octave/
 ##        rm -rf htdocs
 ##        tar xzf htdocs.tar.gz

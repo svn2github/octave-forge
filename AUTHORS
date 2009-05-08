@@ -1,10 +1,15 @@
+2005,                       
+2006,                       
+2007                        
 A. S. Hodel                 <a.s.hodel@eng.auburn.edu>
 Aida Alvera-AzcÃ¡rate       <aalvera@marine.usf.edu>
 Alberto Pose                <apose@alu.itba.edu.ar>
 Alberto Terruzzi            <t-albert@libero.it>
 Alexander Barth             <abarth@marine.usf.edu>
 Alois Schloegl              <a.schloegl@ieee.org>
-Alois Schloegl <a.schloegl@ieee.org>	Alois Schloegl <a.schloegl@ieee.org>Andreas Stahel              <Andreas.Stahel@bfh.ch>
+Alois Schloegl <a.schloegl@ieee.org>	%       This function is part of the NaN-toolbox
+Alois Schloegl <a.schloegl@ieee.org>% WWW: http://hci.tugraz.at/~schloegl/matlab/tsa/
+Andreas Stahel              <Andreas.Stahel@bfh.ch>
 Andreas Weingessel          <Andreas.Weingessel@ci.tuwien.ac.at>
 Andrew Collier              <abcollier@users.sourceforge.net>
 Andrew Gierth               
@@ -20,8 +25,10 @@ Berge-Gladel
 Bill Denney                 <bill@denney.ws>
 Bruce T. Lowerre            
 Carl Osterwisch             <osterwischc@asme.org>
-Carlo de Falco
-Massimiliano Culpo
+Carlo de Falco              <carlo.defalco@gmail.com>
+Carlo de Falco <cdf _AT_ users.sourceforge.net>, culpo@math.uni-wuppertal.de
+Carlo de Falco, Culpo Massimiliano
+Carlo de Falco, Massimiliano Culpo
 Carvalho-Mariel             
 Charalampos C. Tsimenidis   
 Chee Kiang Goh              
@@ -34,10 +41,12 @@ David Bateman
 David Billinghurst          <David.Billinghurst@riotinto.com>
 David Clem                  
 Dept of Probability Theory and Statistics TU Wien
+Eric Chassande-Mottin       
 Eric Chassande-Mottin, CNRS (France)
 Etienne Grossmann           <etienne@isr.ist.utl.pt>
 FL                          <Friedrich.Leisch@ci.tuwien.ac.at>
 Fabrice Bellard             
+Francesco PotortÃ¬          
 Francesco Potortì           <pot@gnu.org>
 Frederick (Rick) A Niles    <niles@rickniles.com>
 Fredrik Bulow               <fredrik.bulow@gmail.com>
@@ -71,6 +80,7 @@ Joseph Wakeling             <joseph.wakeling@webdrake.net>
 Juan Aguado                 
 Julius O. Smith III         
 Justus H. Piater            <Justus.Piater@ULg.ac.be>
+KH                          <Kurt.Hornik@wu-wien.ac.at>
 Kai Habel                   <kai.habel@gmx.de>
 Kai P. Mueller              <mueller@ifr.ing.tu-bs.de>
 Kurt Hornik                 <Kurt.Hornik@wu-wien.ac.at>
@@ -122,9 +132,12 @@ Rick Niles                  <niles@axp745.gsfc.nasa.gov>
 Rick Richardson             
 Rolf Fabian                 <fabian@tu-cottbus.de>
 Sergey Kirgizov             
+Soren Hauberg               
+Stefan Gustavson            
 Stefan Gustavson (stefan.gustavson@gmail.com)
 Stefan van der Walt         <stefan@sun.ac.za>
 Sylvain Pelissier           <sylvain.pelissier@gmail.com>
+SÃ¸ren Hauberg              
 Søren Hauberg               <hauberg at gmail dot com>
 Teemu Ikonen                <tpikonen@pcu.helsinki.fi>
 Thomas Kasper,              <thomaskasper@gmx.net>
@@ -132,6 +145,7 @@ Thomas Treichl              <treichl@users.sourceforge.net>
 Tiago Charters de Azevedo   <tca@diale.org>
 Tomer Altman                <taltman@lbl.gov>
 Torsten Finke               <fi@igh-essen.com>
+VZLU Prague                 
 VZLU Prague, a.s., Czech Republic
 Vinayak Dutt                <Dutt.Vinayak@mayo.EDU>
 Willem J. Atsma             <watsma(at)users.sf.net>
@@ -139,4 +153,8 @@ William Poetra Yoga Hadisoeseno
 Xavier Delacour             <xavier.delacour@gmail.com>
 ZYED ben Mohamed EL HIDRI   
 Zyed El Hidri               <zyedm79@yahoo.com>
+culpo@math.uni-wuppertal.de 
+culpo@math.uni-wuppertal.de, Carlo de Falco<cdf _AT_ users.sourceforge.net>
+mds                         
+msd                         
 simone pernice              

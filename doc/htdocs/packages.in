@@ -12,7 +12,7 @@ translations of the help strings of octave.</li>
 that have license issues. Usually the packages themselves are
 Free Software that depend on non-free libraries.</li></ul>
 <p>For convenience, all of the packages below are available
-as a <a href="__PACKAGE__/octave-forge-bundle-20090506.tar.gz?download">single file</a>.
+as a <a href="__PACKAGE__/octave-forge-bundle-20090508.tar.gz?download">single file</a>.
 This file is not however an octave package and the individual
 packages it contains must be installed separately</p>
 <p>These packages are meant for versions of Octave later than version
@@ -199,6 +199,18 @@ ga</a></b></td>
   <p id="ga_detailed" style="display: none;">
 Genetic optimization code  </p>
 </div>
+<div class="package" id="general">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('general');" class="package_head_link">   <img src="show.png" id="general_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+General</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./general/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/general-1.1.2.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="general_detailed" style="display: none;">
+General tools for octave.  </p>
+</div>
 <div class="package" id="gsl">
   <table class="package"><tr>
     <td>
@@ -257,7 +269,7 @@ Functions and routines for basic Information Theory definitions, and source codi
    <b><a href="javascript:unfold('io');" class="package_head_link">   <img src="show.png" id="io_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 io</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./io/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/io-1.0.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/io-1.0.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="io_detailed" style="display: none;">
@@ -473,16 +485,16 @@ Signal</a></b></td>
   <p id="signal_detailed" style="display: none;">
 Signal processing tools, including filtering, windowing and display functions.  </p>
 </div>
-<div class="package" id="simp.tar">
+<div class="package" id="simp">
   <table class="package"><tr>
     <td>
-   <b><a href="javascript:unfold('simp.tar');" class="package_head_link">   <img src="show.png" id="simp.tar_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
-simp.tar</a></b></td>
+   <b><a href="javascript:unfold('simp');" class="package_head_link">   <img src="show.png" id="simp_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+simp</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./simp/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/simp.tar-1.1.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/simp-1.1.0.tar.gz?download">download</a>
     </td>
   </tr></table>
-  <p id="simp.tar_detailed" style="display: none;">
+  <p id="simp_detailed" style="display: none;">
 This package define the basic operations on intervals. It is useful when some values for a computation are incerte.  </p>
 </div>
 <div class="package" id="sockets">
@@ -611,7 +623,7 @@ Implements addframe, avifile, aviinfo, and aviread, using ffmpeg. (and approxima
    <b><a href="javascript:unfold('vrml');" class="package_head_link">   <img src="show.png" id="vrml_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Vrml</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./vrml/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/vrml-1.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/vrml-1.0.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="vrml_detailed" style="display: none;">
@@ -840,6 +852,18 @@ OCS</a></b></td>
   <p id="ocs_detailed" style="display: none;">
 Package for solving DC and transient electrical circuit equations  </p>
 </div>
+<div class="package" id="oct2mat">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('oct2mat');" class="package_head_link">   <img src="show.png" id="oct2mat_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Oct2Mat</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./oct2mat/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/oct2mat-1.0.6.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="oct2mat_detailed" style="display: none;">
+convert m-file into matlab-compatible coding style  </p>
+</div>
 <div class="package" id="pdb">
   <table class="package"><tr>
     <td>
@@ -894,7 +918,7 @@ socket implementation of a tcl-octave connection  </p>
    <b><a href="javascript:unfold('symband');" class="package_head_link">   <img src="show.png" id="symband_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 SymBand</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./symband/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/symband-1.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/symband-1.0.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="symband_detailed" style="display: none;">
@@ -949,13 +973,26 @@ Xraylib</a></b></td>
 Bindings to the Xraylib functions  </p>
 </div>
 <h2 id="language">Native Translations</h2>
+<div class="package" id="spanish">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('spanish');" class="package_head_link">   <img src="show.png" id="spanish_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+Spanish</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./es_CO/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/spanish-1.0.0.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="spanish_detailed" style="display: none;">
+Spanish package for the construction of native language translations of Octave functions.
+  </p>
+</div>
 <div class="package" id="pt_br">
   <table class="package"><tr>
     <td>
    <b><a href="javascript:unfold('pt_br');" class="package_head_link">   <img src="show.png" id="pt_br_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 pt_BR</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./pt_BR/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/pt_br-1.0.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/pt_br-1.0.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="pt_br_detailed" style="display: none;">

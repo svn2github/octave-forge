@@ -1,6 +1,6 @@
 int flushprompt( int outkey );
 int flushjunk( void );
-int getline( char* buf );
+int local_getline( char* buf );
 int putline( char* buf );
 int openpipes( void );
 int closepipes( void );

@@ -78,7 +78,7 @@ void cleanhouse( void )
 }
 
 
-int getline( char* buf )
+int local_getline( char* buf )
 {
   int i;
 
@@ -95,7 +95,7 @@ int getline( char* buf )
   buf[i] = '\0';
 
 #ifdef DEBUGAPI
-  printf( "getline: %s", buf );
+  printf( "local_getline: %s", buf );
 #endif
 
   return 0;

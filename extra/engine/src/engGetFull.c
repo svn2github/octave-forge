@@ -30,7 +30,7 @@ int engGetFull( Engine *ep, char *name, int *m, int *n,
     flushjunk();
     sprintf( buf, "exist(\"%s\")\n", name );
     putline( buf );
-    getline( buf );
+    local_getline( buf );
     flushprompt( 0 );
     sscanf( buf, " ans = %d", &i );
 
@@ -39,20 +39,20 @@ int engGetFull( Engine *ep, char *name, int *m, int *n,
       sprintf( buf, "save -ascii \"-\" %s\n", name );
       putline( buf );
 
-      getline( buf );
+      local_getline( buf );
       sscanf( buf, "%c %s %s", &comm, str1, str2 );
       if( comm != '#' )
 	return retval;
       if( !strcmp( "Created", str1 ) )  /* New in Octave 2.0.14 */
       {
-	getline( buf );
+	local_getline( buf );
 	sscanf( buf, "%c %s %s", &comm, str1, str2 );
       }
       if( strcmp( "name:", str1 ) )
  	return retval;
       if( strcmp( name, str2 ) )
  	return retval;
-      getline( buf );
+      local_getline( buf );
       sscanf( buf, "%c %s %s %s", &comm, str1, str2, str3 );
       if( comm != '#' )
 	return retval;
@@ -66,18 +66,18 @@ int engGetFull( Engine *ep, char *name, int *m, int *n,
 	  *n = 1;
 	  *pr = mxCalloc( 1, sizeof( **pr ) );
 	  *pi = mxCalloc( 1, sizeof( **pi ) );
-	  getline( buf );
+	  local_getline( buf );
 	  sscanf( buf, "(%lf,%lf)", &pr[0][0], &pi[0][0] );
 	}
 	else
 	{
 	  if( !strcmp( "matrix", str3 ) )
 	  {
-	    getline( buf );
+	    local_getline( buf );
 	    sscanf( buf, "%c %s %d", &comm, str1, m );
 	    if( strcmp( "rows:", str1 ) )
 	      return retval;
-	    getline( buf );
+	    local_getline( buf );
 	    sscanf( buf, "%c %s %d", &comm, str1, n );
 	    if( strcmp( "columns:", str1 ) )
 	      return retval;
@@ -85,7 +85,7 @@ int engGetFull( Engine *ep, char *name, int *m, int *n,
 	    *pi = mxCalloc( (*m)*(*n), sizeof( **pi ) );
 	    for( i=0; i<*m; i++ )
 	    {
-	      getline( buf );
+	      local_getline( buf );
 	      ptr = strtok( buf, " " );
 	      for( j=0; j<*n; j++ )
 	      {
@@ -106,18 +106,18 @@ int engGetFull( Engine *ep, char *name, int *m, int *n,
 	  *n = 1;
 	  *pr = mxCalloc( 1, sizeof( **pr ) );
 	  *pi = NULL;
-	  getline( buf );
+	  local_getline( buf );
 	  sscanf( buf, "%lf", &pr[0][0] );
 	}
 	else
 	{
 	  if( !strcmp( "matrix", str2 ) )
 	  {
-	    getline( buf );
+	    local_getline( buf );
 	    sscanf( buf, "%c %s %d", &comm, str1, m );
 	    if( strcmp( "rows:", str1 ) )
 	      return retval;
-	    getline( buf );
+	    local_getline( buf );
 	    sscanf( buf, "%c %s %d", &comm, str1, n );
 	    if( strcmp( "columns:", str1 ) )
 	      return retval;
@@ -125,7 +125,7 @@ int engGetFull( Engine *ep, char *name, int *m, int *n,
 	    *pi = NULL;
 	    for( i=0; i<*m; i++ )
 	    {
-	      getline( buf );
+	      local_getline( buf );
 	      ptr = strtok( buf, " " );
 	      for( j=0; j<*n; j++ )
 	      {

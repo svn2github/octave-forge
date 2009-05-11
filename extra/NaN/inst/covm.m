@@ -124,7 +124,7 @@ if mexFLAG2 && mexFLAG && ~isempty(W),
 		FLAG_NANS_OCCURED = logical(0);  % default value 
 	end;
 
-        if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
+        if (~any(Mode=='D') && ~any(Mode=='E')), % if Mode == M
        		[CC,NN] = covm_mex(real(X),real(Y),FLAG_NANS_OCCURED,W);
 		%% complex matrices 
 		if ~isreal(X) && ~isreal(Y)
@@ -141,7 +141,7 @@ if mexFLAG2 && mexFLAG && ~isempty(W),
 			CC = CC + i*iCC;
 		end; 	
 
-       	else  % if any(Mode=='D') | any(Mode=='E'), 
+       	else  % if any(Mode=='D') || any(Mode=='E'), 
 	        [S1,N1] = sumskipnan(X,1,W);
 	        if ~isempty(Y)
 	               	[S2,N2] = sumskipnan(Y,1,W);
@@ -170,9 +170,7 @@ if mexFLAG2 && mexFLAG && ~isempty(W),
 			CC = CC + i*iCC;
 		end; 	
 	
-	        if any(Mode=='1'),  %  'D1'
-                        NN = NN;
-                else   %  'D0'       
+	        if any(Mode=='D') && ~any(Mode=='1'),  %  'D1'
                         NN = max(NN-1,0);
                 end;
                 if any(Mode=='E'), % extended mode
@@ -190,7 +188,7 @@ elseif ~isempty(W),
 	%% this part is not working.
 
 elseif ~isempty(Y),
-        if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
+        if (~any(Mode=='D') && ~any(Mode=='E')), % if Mode == M
         	NN = real(X==X)'*real(Y==Y);
 		FLAG_NANS_OCCURED = any(NN(:)<nn);
 	        X(X~=X) = 0; % skip NaN's

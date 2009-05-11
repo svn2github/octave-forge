@@ -2,16 +2,20 @@ function [y] = harmmean(x,DIM)
 % HARMMEAN calculates the harmonic mean of data elements. 
 % The harmonic mean is the inverse of the mean of the inverse elements.
 % 
-% 	y = harmmean(x [,DIM]) is the same as 
-% 	y = mean(x,'H' [,DIM]) 
+% 	y = harmmean(x [,DIM [,W]]) is the same as 
+% 	y = mean(x,'H' [,DIM [,W]]) 
 %
 % DIM	dimension
 %	1 STD of columns
 %	2 STD of rows
 %	default or []: first DIMENSION, with more than 1 element
+% W	weights to compute weighted mean (default: [])
+%	if W=[], all weights are 1. 
+%	number of elements in W must match size(x,DIM) 
 %
 % features:
 % - can deal with NaN's (missing values)
+% - weighting of data 
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
 %
@@ -32,10 +36,10 @@ function [y] = harmmean(x,DIM)
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 
-% original Copyright by:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-
-%	Version 1.23;	07 Jun 2002
-%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>
+%	$Id$ 
+%	Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>
+%    	This is part of the NaN-toolbox. For more details see
+%    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 
 

@@ -1,16 +1,20 @@
 function [y] = geomean(x,DIM)
 % GEOMEAN calculates the geomentric mean of data elements. 
 % 
-% 	y = geomean(x [,DIM])   is the same as 
+% 	y = geomean(x [,DIM [,W]])   is the same as 
 % 	y = mean(x,'G' [,DIM]) 
 %
 % DIM	dimension
 %	1 STD of columns
 %	2 STD of rows
 %	default or []: first DIMENSION, with more than 1 element
+% W	weights to compute weighted mean (default: [])
+%	if W=[], all weights are 1. 
+%	number of elements in W must match size(x,DIM) 
 %
 % features:
 % - can deal with NaN's (missing values)
+% - weighting of data 
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
 %
@@ -30,8 +34,10 @@ function [y] = geomean(x,DIM)
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 
-%	Version 1.23;	07 Jun 2002
-%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>
+%	$Id$ 
+%	Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>
+%    	This is part of the NaN-toolbox. For more details see
+%    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 
 if nargin<2

@@ -1,16 +1,20 @@
-function [i,S] = center(i,DIM)
+function [i,S] = center(i,DIM,W)
 % CENTER removes the mean 
 %
-% [z,mu] = center(x,DIM)
+% [z,mu] = center(x,DIM,W)
 %   removes mean x along dimension DIM
 %
+% x	input data 
 % DIM	dimension
 %	1: column
 %	2: row
 %	default or []: first DIMENSION, with more than 1 element
+% W	weights to computed weighted mean (default: [], all weights = 1)
+%	numel(W) must be equal to size(x,DIM)
 %
 % features:
 % - can deal with NaN's (missing values)
+% - weighting of data 
 % - dimension argument 
 % - compatible to Matlab and Octave
 %
@@ -33,17 +37,20 @@ function [i,S] = center(i,DIM)
 
 
 %	$Id$
-%	Copyright (C) 2000-2003,2005 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2000-2003,2005,2009 by Alois Schloegl <a.schloegl@ieee.org>
 %    	This is part of the NaN-toolbox. For more details see
 %    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 	
 
 if any(size(i)==0); return; end;
 
+if nargin<3,
+	W = [];
+end; 
 if nargin>1,
-        [S,N] = sumskipnan(i,DIM);
+        [S,N] = sumskipnan(i,DIM,W);
 else
-        [S,N] = sumskipnan(i);
+        [S,N] = sumskipnan(i,[],W);
 end;
 
 S     = S./N;

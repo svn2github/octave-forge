@@ -45,6 +45,9 @@ if any(size(i)==0); return; end;
 if nargin<2
         DIM=[]; 
 end
+if nargin<3
+        w = []; 
+end
 if isempty(DIM), 
         DIM=min(find(size(i)>1));
         if isempty(DIM), DIM=1; end;
@@ -52,9 +55,9 @@ end;
 
 
 % pre-whitening
-m = mean(i,DIM);
+m = mean(i,DIM,W);
 i = i-repmat(m,size(i)./size(m));  % remove mean
-v = 1./sqrt(mean(i.^2,DIM));
+v = 1./sqrt(mean(i.^2,DIM,W));
 i = i.*repmat(v,size(i)./size(v)); % scale to var=1
 
         

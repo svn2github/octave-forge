@@ -1,16 +1,20 @@
-function o=meansq(x,DIM)
+function o=meansq(x,DIM,W)
 % MEANSQ calculates the mean of the squares
 %
-% y = meansq(x,DIM)
+% y = meansq(x,DIM,W)
 %
 % DIM	dimension
 %	1 STD of columns
 %	2 STD of rows
 % 	N STD of  N-th dimension 
 %	default or []: first DIMENSION, with more than 1 element
+% W	weights to compute weighted mean (default: [])
+%	if W=[], all weights are 1. 
+%	number of elements in W must match size(x,DIM) 
 %
 % features:
 % - can deal with NaN's (missing values)
+% - weighting of data  
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
 %
@@ -36,10 +40,13 @@ function o=meansq(x,DIM)
 %       see also: http://hci.tugraz.at/schloegl/matlab/NaN/       
 
 
+if nargin<3,
+	W = [];
+end; 	
 if nargin<2,
-	[o,N,ssq] = sumskipnan(x);
+	[o,N,ssq] = sumskipnan(x,[],W);
 else
-	[o,N,ssq] = sumskipnan(x,DIM);
+	[o,N,ssq] = sumskipnan(x,DIM,W);
 end;
 
 o = ssq./N;

@@ -1,7 +1,7 @@
-function [y]=mean(x,DIM,opt)
+function [y]=mean(x,DIM,opt,W)
 % MEAN calculates the mean of data elements. 
 % 
-%  y = mean(x [,DIM] [,opt])
+%  y = mean(x [,DIM] [,opt] [, W])
 %
 % DIM	dimension
 %	1 MEAN of columns
@@ -14,12 +14,22 @@ function [y]=mean(x,DIM,opt)
 %	'G' geometric mean
 %	'H' harmonic mean
 %
-% Any combination between opt and DIM is possible. e.g. 
-%   y = mean(x,2,'G')
-%   calculates the geometric mean of each row in x. 
+% W	weights to compute weighted mean (default: [])
+%	if W=[], all weights are 1. 
+%	number of elements in W must match size(x,DIM) 
+%
+% usage: 
+%	mean(x)
+%	mean(x,DIM)
+%	mean(x,opt)
+%	mean(x,opt,DIM)
+%	mean(x,DIM,opt)
+%	mean(x,DIM,W)
+%	mean(x,DIM,opt,W); '
 %
 % features:
 % - can deal with NaN's (missing values)
+% - weighting of data 
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
 %
@@ -27,7 +37,7 @@ function [y]=mean(x,DIM,opt)
 %
 
 %	$Id$
-%	Copyright (C) 2000-2004,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2004,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %    	This is part of the NaN-toolbox. For more details see
 %    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 %
@@ -44,37 +54,60 @@ function [y]=mean(x,DIM,opt)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-if nargin<2
+if nargin==1,
+	%------ case:  mean(x)
+	W = []; 
         DIM=[]; 
         opt='a';
-end
-if (nargin<3)
+elseif (nargin==2)
+	W = []; 
         %if ~isnumeric(DIM), %>=65;%abs('A'), 
         if (DIM>64) %abs('A'), 
+		%------ case:  mean(x,opt)
                 opt=DIM;
                 DIM=[]; 
         else
+		%------ case:  mean(x,DIM)
                 opt='a';
         end;	
-else 
-        %if ~isnumeric(DIM), %>=65;%abs('A'), 
-        if (DIM>64) %abs('A'), 
+elseif (nargin == 3), 
+	if isnumeric(DIM) && isnumeric(opt)
+		%------ case:  mean(x,DIM,W)
+		W = opt; 
+		opt='a';
+	elseif (DIM>64) %abs('A'), 
+		%------ case:  mean(x,opt,DIM)
+        	%if ~isnumeric(DIM), %>=65;%abs('A'), 
                 tmp=opt;
                 opt=DIM;
                 DIM=tmp;
+                W = []; 
+        else 
+        	%------ case:  mean(x,DIM,opt)
+        	W = [];
         end;
-end;	
+elseif nargin==4; 
+		%------ case: mean(x,DIM,opt,W);
+	; 
+else
+	help mean 
+%	fprintf(1,'usage: mean(x) or mean(x,DIM) or mean(x,opt,DIM) or mean(x,DIM,opt) or mean(x,DIM,W) or mean(x,DIM,opt,W); '
+end;
 
-opt = upper(opt); % eliminate old version 
+if any(opt=='aAgGhH')
+	opt = upper(opt); % eliminate old version 
+else 
+	error('Error MEAN: invalid opt argument');
+end; 
 
 if  (opt == 'A')
-	[y, n] = sumskipnan(x,DIM);
+	[y, n] = sumskipnan(x,DIM,W);
         y = y./n;
 elseif (opt == 'G')
-	[y, n] = sumskipnan(log(x),DIM);
+	[y, n] = sumskipnan(log(x),DIM,W);
     	y = exp (y./n);
 elseif (opt == 'H')
-	[y, n] = sumskipnan(1./x,DIM);
+	[y, n] = sumskipnan(1./x,DIM,W);
     	y = n./y;
 else
     	fprintf (2,'mean:  option `%s` not recognized', opt);

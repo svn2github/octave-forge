@@ -10,7 +10,7 @@ echo $0: ACTION = "${ACTION}";
 ( cd msys && ./build-1.0.11-3.sh ${ACTION} )
 
 # install Notepad++
-( cd notepad++ && ./build-5.1.2-3.sh ${ACTION} )
+( cd notepad++ && ./build-5.3.1-3.sh ${ACTION} )
 
 # install gnuplot
 ( cd gnuplot && ./build-4.3.0-2008-11-21-3.sh ${ACTION} )

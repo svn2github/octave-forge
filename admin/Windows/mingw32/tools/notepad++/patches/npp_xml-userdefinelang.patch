@@ -1,0 +1,42 @@
+diff -r a4556fdf45df PowerEditor/src/userDefineLang.xml
+--- a/PowerEditor/src/userDefineLang.xml	Mon Feb 09 10:10:17 2009 +0100
++++ b/PowerEditor/src/userDefineLang.xml	Mon Feb 09 10:11:07 2009 +0100
+@@ -59,4 +59,38 @@
+             <WordsStyle name="OPERATOR" styleID="10" fgColor="804000" bgColor="FFFFFF" fontName="" fontStyle="1" fontSize="" />
+         </Styles>
+     </UserLang>
++    <UserLang name="gnuplot" ext="gp">
++        <Settings>
++            <Global caseIgnored="no" />
++            <TreatAsSymbol comment="no" commentLine="no" />
++            <Prefix words1="no" words2="no" words3="no" words4="no" />
++        </Settings>
++        <KeywordLists>
++            <Keywords name="Delimiters">&quot;00&quot;00</Keywords>
++            <Keywords name="Folder+"></Keywords>
++            <Keywords name="Folder-"></Keywords>
++            <Keywords name="Operators">$ ( ) , . @ =</Keywords>
++            <Keywords name="Comment">1 1 2 2 0#</Keywords>
++            <Keywords name="Words1">call cd clear exit fit help history if load lower pause plot print pwd quit raise replot reread reset save set shell show splot system test unset update</Keywords>
++            <Keywords name="Words2">angles arrow autoscale bars bmargin border boxwidth cbdata cbdtics cblabel cbmtics cbrange cbtics clabel clip cntrparam colorbox contour datafile decimalsign dgrid3d dummy encoding fontpath format functions grid hidden3d historysize isosamples key label lmargin loadpath locale logscale macros mapping margin mouse multiplot mx2tics mxtics my2tics mytics mztics nomxtics nomytics nomztics noxtics noytics noztics offsets origin output palette parametric pm3d pointsize polar print object rmargin rrange samples size style surface table term terminal termoption tics ticslevel ticscale timestamp timefmt title tmargin trange urange variables version view vrange x2data x2dtics x2label x2mtics x2range x2tics x2zeroaxis xdata xdtics xlabel xmtics xrange xtics xyplane xzeroaxis y2data y2dtics y2label y2mtics y2range y2tics y2zeroaxis ydata ydtics ylabel ymtics yrange ytics yyplane yzeroaxis zdata zdtics zero zeroaxis zlabel zmtics zrange ztics zzeroaxis</Keywords>
++            <Keywords name="Words3">every index lc linecolor lines linestyle linetype linewidth linespoints ls lt lw pointsize pointtype ps pt rgb using with</Keywords>
++            <Keywords name="Words4"></Keywords>
++        </KeywordLists>
++        <Styles>
++            <WordsStyle name="DEFAULT" styleID="11" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="FOLDEROPEN" styleID="12" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="FOLDERCLOSE" styleID="13" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD1" styleID="5" fgColor="FF0000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD2" styleID="6" fgColor="0000FF" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD3" styleID="7" fgColor="FF8000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD4" styleID="8" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="COMMENT" styleID="1" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="COMMENT LINE" styleID="2" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="NUMBER" styleID="4" fgColor="0080C0" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="OPERATOR" styleID="10" fgColor="FF8040" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER1" styleID="14" fgColor="808080" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER2" styleID="15" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER3" styleID="16" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++        </Styles>
++    </UserLang>
+ </NotepadPlus>

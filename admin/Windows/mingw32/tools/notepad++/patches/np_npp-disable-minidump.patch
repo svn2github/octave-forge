@@ -1,0 +1,58 @@
+diff -r 8b92a01d0990 PowerEditor/src/MISC/Exception/MiniDumper.cpp
+--- a/PowerEditor/src/MISC/Exception/MiniDumper.cpp	Mon Feb 09 11:18:59 2009 +0100
++++ b/PowerEditor/src/MISC/Exception/MiniDumper.cpp	Mon Feb 09 13:07:04 2009 +0100
+@@ -1,3 +1,5 @@
++#ifndef __MINGW32__
++
+ #include "MiniDumper.h"
+ //#include "Common.h"
+ #include <shlwapi.h>
+@@ -80,3 +82,5 @@
+ 
+ 	return retval;
+ }
++
++#endif // __MINGW32__
+diff -r 8b92a01d0990 PowerEditor/src/MISC/Exception/MiniDumper.h
+--- a/PowerEditor/src/MISC/Exception/MiniDumper.h	Mon Feb 09 11:18:59 2009 +0100
++++ b/PowerEditor/src/MISC/Exception/MiniDumper.h	Mon Feb 09 13:07:04 2009 +0100
+@@ -3,6 +3,8 @@
+ #ifndef MDUMP_H
+ #define MDUMP_H
+ 
++#ifndef __MINGW32__
++
+ #include <windows.h>
+ #include "dbghelp.h"
+ 
+@@ -19,4 +21,5 @@
+ 	bool writeDump(EXCEPTION_POINTERS * pExceptionInfo);
+ };
+ 
+-#endif //MDUMP_H
+\ No newline at end of file
++#endif
++#endif //MDUMP_H
+diff -r 8b92a01d0990 PowerEditor/src/winmain.cpp
+--- a/PowerEditor/src/winmain.cpp	Mon Feb 09 11:18:59 2009 +0100
++++ b/PowerEditor/src/winmain.cpp	Mon Feb 09 13:07:04 2009 +0100
+@@ -149,7 +149,9 @@
+ 	ParamVector params;
+ 	parseCommandLine(cmdLine, params);
+ 
++#ifndef __MINGW32__
+ 	MiniDumper mdump;	//for debugging purposes.
++#endif
+ 
+ 	bool TheFirstOne = true;
+ 	::SetLastError(NO_ERROR);
+@@ -321,7 +323,9 @@
+ #endif
+ 			ex.code(), ex.what(), ex.where());
+ 		::MessageBox(Notepad_plus::gNppHWND, message, TEXT("Win32Exception"), MB_OK | MB_ICONERROR);
++#ifndef __MINGW32__
+ 		mdump.writeDump(ex.info());
++#endif
+ 		doException(notepad_plus_plus);
+ 	} catch(std::exception ex) {
+ #ifdef UNICODE

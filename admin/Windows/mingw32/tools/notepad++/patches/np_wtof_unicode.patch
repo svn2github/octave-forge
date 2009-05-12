@@ -1,0 +1,29 @@
+diff -r 07374c570b1e PowerEditor/gcc/include/wtof.cpp
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/PowerEditor/gcc/include/wtof.cpp	Mon Feb 09 09:39:09 2009 +0100
+@@ -0,0 +1,25 @@
++//
++// This file contains a stub replacement for _wtof, whcih is not available 
++// with MSVCRT 6
++//
++// I use this to build Notepad++ 5.1.1 using mingw32 with default msvcrt 
++// libraries.
++//
++// 17-nov-2008 lindnerb@users.sourceforge.net
++
++
++// do this only for mingw32...
++#ifdef __MINGW32__
++
++#include <stdio.h>
++
++double _wtof(const wchar_t * string) {
++   double dret = 0.0;
++   int iret = 0;
++   
++   iret = wscanf( string, &dret );
++   
++   return dret;
++}
++
++#endif  // __MINGW32__

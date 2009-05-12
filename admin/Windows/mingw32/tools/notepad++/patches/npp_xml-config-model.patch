@@ -1,0 +1,21 @@
+diff -r 82ee6fb76535 PowerEditor/src/config.model.xml
+--- a/PowerEditor/src/config.model.xml	Mon Feb 09 10:06:38 2009 +0100
++++ b/PowerEditor/src/config.model.xml	Mon Feb 09 10:07:57 2009 +0100
+@@ -55,7 +55,7 @@
+                                 2 : verbose backup
+                       -->
+         <GUIConfig name="Backup" action="0" useCustumDir="no" dir="" />
+-        <GUIConfig name="TaskList">yes</GUIConfig>
++        <GUIConfig name="TaskList">no</GUIConfig>
+         <GUIConfig name="SaveOpenFileInSameDir">no</GUIConfig>
+         <!--
+ 			value 0 for the folloing parameters means invisible :
+@@ -71,7 +71,7 @@
+ 			-->
+         <GUIConfig name="noUpdate">no</GUIConfig>
+         <GUIConfig name="MaitainIndent">yes</GUIConfig>
+-        <GUIConfig name="MRU">yes</GUIConfig>
++        <GUIConfig name="MRU">no</GUIConfig>
+         <GUIConfig name="URL">0</GUIConfig>
+         <GUIConfig name="globalOverride" fg="no" bg="no" font="no" fontSize="no" bold="no" italic="no" underline="no" />
+         <GUIConfig name="auto-completion" autoCAction="0" triggerFromNbChar="1" />

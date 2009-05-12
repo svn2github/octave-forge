@@ -1,0 +1,14 @@
+catch by reference-to-const
+
+diff -r 9ee514ec084b PowerEditor/src/winmain.cpp
+--- a/PowerEditor/src/winmain.cpp	Mon Mar 23 10:29:53 2009 +0100
++++ b/PowerEditor/src/winmain.cpp	Mon Mar 23 10:31:29 2009 +0100
+@@ -330,7 +330,7 @@
+ 		mdump.writeDump(ex.info());
+ #endif
+ 		doException(notepad_plus_plus);
+-	} catch(std::exception ex) {
++	} catch(const std::exception & ex) {
+ #ifdef UNICODE
+ 		const wchar_t * text = WcharMbcsConvertor::getInstance()->char2wchar(ex.what(), CP_ACP);
+ 		::MessageBox(Notepad_plus::gNppHWND, text, TEXT("C++ Exception"), MB_OK);

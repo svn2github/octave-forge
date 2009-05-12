@@ -1,0 +1,1470 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/gcc/include/wtof.cpp npp-5.3.1/PowerEditor/gcc/include/wtof.cpp
+--- npp-5.3.1-orig/PowerEditor/gcc/include/wtof.cpp	1970-01-01 00:00:00 +0000
++++ npp-5.3.1/PowerEditor/gcc/include/wtof.cpp	2009-05-12 07:25:05 +0000
+@@ -0,0 +1,25 @@
++//
++// This file contains a stub replacement for _wtof, whcih is not available 
++// with MSVCRT 6
++//
++// I use this to build Notepad++ 5.1.1 using mingw32 with default msvcrt 
++// libraries.
++//
++// 17-nov-2008 lindnerb@users.sourceforge.net
++
++
++// do this only for mingw32...
++#ifdef __MINGW32__
++
++#include <stdio.h>
++
++double _wtof(const wchar_t * string) {
++   double dret = 0.0;
++   int iret = 0;
++   
++   iret = wscanf( string, &dret );
++   
++   return dret;
++}
++
++#endif  // __MINGW32__
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/gcc/makefile npp-5.3.1/PowerEditor/gcc/makefile
+--- npp-5.3.1-orig/PowerEditor/gcc/makefile	2008-09-09 22:35:20 +0000
++++ npp-5.3.1/PowerEditor/gcc/makefile	2009-05-12 07:25:05 +0000
+@@ -16,9 +16,9 @@
+ # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+ # Directories:
+-NPP_DIR			= ../src
+-SCI_DIR			= ../../scintilla/include
+-GCC_DIR			= .
++NPP_DIR			= @SRCDIR@/src
++SCI_DIR			= @SRCDIR@/../scintilla/include
++GCC_DIR			= @SRCDIR@/gcc
+ GCCINCLUDE_DIR  = $(GCC_DIR)/include
+ 
+ #MISC:
+@@ -34,6 +34,7 @@
+ 
+ #TinyXml
+ TIXML_DIR		= $(NPP_DIR)/TinyXml
++TIXMLA_DIR		= $(NPP_DIR)/TinyXml/tinyXmlA
+ 
+ #WinControls
+ WIN_DIR			= $(NPP_DIR)/WinControls
+@@ -77,6 +78,7 @@
+ 
+ #TinyXml
+ SRC_TIXML		= $(wildcard $(TIXML_DIR)/*.cpp)
++SRC_TIXMLA		= $(wildcard $(TIXMLA_DIR)/*.cpp)
+ 
+ #WinControls
+ SRC_WIN			= $(wildcard $(WIN_DIR)/*.cpp)
+@@ -102,52 +104,53 @@
+  SRC_WINDOWSDLG	= $(wildcard $(WINDOWSDLG_DIR)/*.cpp)
+ 
+ # Objects:
+-OBJ_NPP			= $(patsubst %.cpp,%.o,$(SRC_NPP))
+-OBJ_GCCINCLUDE  = $(patsubst %.cpp,%.o,$(SRC_GCCINCLUDE))
++OBJ_NPP			= $(notdir $(patsubst %.cpp,%.o,$(SRC_NPP)))
++OBJ_GCCINCLUDE  = $(notdir $(patsubst %.cpp,%.o,$(SRC_GCCINCLUDE)))
+ 
+ #MISC
+-OBJ_MISC		= $(patsubst %.cpp,%.o,$(SRC_MISC))
+- OBJ_COMMON		= $(patsubst %.cpp,%.o,$(SRC_COMMON))
+- OBJ_EXCEPTION	= $(patsubst %.cpp,%.o,$(SRC_EXCEPTION))
+- OBJ_PLUGINS	= $(patsubst %.cpp,%.o,$(SRC_PLUGINS))
+- OBJ_PROCESS	= $(patsubst %.cpp,%.o,$(SRC_PROCESS))
+- OBJ_REGEXT		= $(patsubst %.cpp,%.o,$(SRC_REGEXT))
++OBJ_MISC		= $(notdir $(patsubst %.cpp,%.o,$(SRC_MISC)))
++ OBJ_COMMON		= $(notdir $(patsubst %.cpp,%.o,$(SRC_COMMON)))
++ OBJ_EXCEPTION	= $(notdir $(patsubst %.cpp,%.o,$(SRC_EXCEPTION)))
++ OBJ_PLUGINS	= $(notdir $(patsubst %.cpp,%.o,$(SRC_PLUGINS)))
++ OBJ_PROCESS	= $(notdir $(patsubst %.cpp,%.o,$(SRC_PROCESS)))
++ OBJ_REGEXT		= $(notdir $(patsubst %.cpp,%.o,$(SRC_REGEXT)))
+ 
+ #ScintillaComponent
+-OBJ_SCINT		= $(patsubst %.cpp,%.o,$(SRC_SCINT))
++OBJ_SCINT		= $(notdir $(patsubst %.cpp,%.o,$(SRC_SCINT)))
+ 
+ #TinyXml
+-OBJ_TIXML		= $(patsubst %.cpp,%.o,$(SRC_TIXML))
++OBJ_TIXML		= $(notdir $(patsubst %.cpp,%.o,$(SRC_TIXML)))
++OBJ_TIXMLA		= $(notdir $(patsubst %.cpp,%.o,$(SRC_TIXMLA)))
+ 
+ #WinControls
+-OBJ_WIN			= $(patsubst %.cpp,%.o,$(SRC_WIN))
+- OBJ_ABOUT		= $(patsubst %.cpp,%.o,$(SRC_ABOUT))
+- OBJ_CONTEXT	= $(patsubst %.cpp,%.o,$(SRC_CONTEXT))
+- OBJ_COLOUR		= $(patsubst %.cpp,%.o,$(SRC_COLOUR))
+- OBJ_DOCKING	= $(patsubst %.cpp,%.o,$(SRC_DOCKING))
+- OBJ_GRID		= $(patsubst %.cpp,%.o,$(SRC_GRID))
+- OBJ_IMLIST		= $(patsubst %.cpp,%.o,$(SRC_IMLIST))
+- OBJ_OPENSAVE	= $(patsubst %.cpp,%.o,$(SRC_OPENSAVE))
+- OBJ_PREFERENCE	= $(patsubst %.cpp,%.o,$(SRC_PREFERENCE))
+- OBJ_SHORTCUT	= $(patsubst %.cpp,%.o,$(SRC_SHORTCUT))
+- OBJ_SPLITTER	= $(patsubst %.cpp,%.o,$(SRC_SPLITTER))
+- OBJ_STATICDLG	= $(patsubst %.cpp,%.o,$(SRC_STATICDLG))
+-  OBJ_RUNDLG	= $(patsubst %.cpp,%.o,$(SRC_RUNDLG))
+- OBJ_STATUSBAR	= $(patsubst %.cpp,%.o,$(SRC_STATUSBAR))
+- OBJ_TABBAR		= $(patsubst %.cpp,%.o,$(SRC_TABBAR))
+- OBJ_TASKLIST	= $(patsubst %.cpp,%.o,$(SRC_TASKLIST))
+- OBJ_TOOLBAR	= $(patsubst %.cpp,%.o,$(SRC_TOOLBAR))
+- OBJ_TOOLTIP	= $(patsubst %.cpp,%.o,$(SRC_TOOLTIP))
+- OBJ_TRAYICON	= $(patsubst %.cpp,%.o,$(SRC_TRAYICON))
+- OBJ_TREEVIEW	= $(patsubst %.cpp,%.o,$(SRC_TREEVIEW))
+- OBJ_WINDOWSDLG	= $(patsubst %.cpp,%.o,$(SRC_WINDOWSDLG))
++OBJ_WIN			= $(notdir $(patsubst %.cpp,%.o,$(SRC_WIN)))
++ OBJ_ABOUT		= $(notdir $(patsubst %.cpp,%.o,$(SRC_ABOUT)) )
++ OBJ_CONTEXT	= $(notdir $(patsubst %.cpp,%.o,$(SRC_CONTEXT)))
++ OBJ_COLOUR		= $(notdir $(patsubst %.cpp,%.o,$(SRC_COLOUR)))
++ OBJ_DOCKING	= $(notdir $(patsubst %.cpp,%.o,$(SRC_DOCKING)))
++ OBJ_GRID		= $(notdir $(patsubst %.cpp,%.o,$(SRC_GRID)))
++ OBJ_IMLIST		= $(notdir $(patsubst %.cpp,%.o,$(SRC_IMLIST)))
++ OBJ_OPENSAVE	= $(notdir $(patsubst %.cpp,%.o,$(SRC_OPENSAVE)))
++ OBJ_PREFERENCE	= $(notdir $(patsubst %.cpp,%.o,$(SRC_PREFERENCE)))
++ OBJ_SHORTCUT	= $(notdir $(patsubst %.cpp,%.o,$(SRC_SHORTCUT)))
++ OBJ_SPLITTER	= $(notdir $(patsubst %.cpp,%.o,$(SRC_SPLITTER)))
++ OBJ_STATICDLG	= $(notdir $(patsubst %.cpp,%.o,$(SRC_STATICDLG)))
++  OBJ_RUNDLG	= $(notdir $(patsubst %.cpp,%.o,$(SRC_RUNDLG)))
++ OBJ_STATUSBAR	= $(notdir $(patsubst %.cpp,%.o,$(SRC_STATUSBAR)))
++ OBJ_TABBAR		= $(notdir $(patsubst %.cpp,%.o,$(SRC_TABBAR)))
++ OBJ_TASKLIST	= $(notdir $(patsubst %.cpp,%.o,$(SRC_TASKLIST)))
++ OBJ_TOOLBAR	= $(notdir $(patsubst %.cpp,%.o,$(SRC_TOOLBAR)))
++ OBJ_TOOLTIP	= $(notdir $(patsubst %.cpp,%.o,$(SRC_TOOLTIP)))
++ OBJ_TRAYICON	= $(notdir $(patsubst %.cpp,%.o,$(SRC_TRAYICON)))
++ OBJ_TREEVIEW	= $(notdir $(patsubst %.cpp,%.o,$(SRC_TREEVIEW)))
++ OBJ_WINDOWSDLG	= $(notdir $(patsubst %.cpp,%.o,$(SRC_WINDOWSDLG)))
+ 
+ # Collections
+ DIRS_WIN		= $(WIN_DIR) $(ABOUT_DIR) $(CONTEXT_DIR) $(COLOUR_DIR) $(DOCKING_DIR) $(GRID_DIR) $(IMLIST_DIR) $(OPENSAVE_DIR) $(PREFERENCE_DIR) $(SHORTCUT_DIR) $(SPLITTER_DIR) $(STATICDLG_DIR) $(RUNDLG_DIR) $(STATUSBAR_DIR) $(TABBAR_DIR) $(TASKLIST_DIR) $(TOOLBAR_DIR) $(TOOLTIP_DIR) $(TRAYICON_DIR) $(TREEVIEW_DIR) $(WINDOWSDLG_DIR)
+-DIRS_TIXML		= $(TIXML_DIR)
++DIRS_TIXML		= $(TIXML_DIR) $(TIXMLA_DIR)
+ DIRS_SCINT		= $(SCINT_DIR)
+ DIRS_MISC		= $(MISC_DIR) $(COMMON_DIR) $(EXCEPTION_DIR) $(PLUGINS_DIR) $(PROCESS_DIR) $(REGEXT_DIR)
+-DIRS			= $(NPP_DIR) $(DIRS_WIN) $(DIRS_TIXML) $(DIRS_SCINT) $(DIRS_MISC) $(SCI_DIR)
++DIRS			= $(NPP_DIR) $(DIRS_WIN) $(DIRS_TIXML) $(DIRS_SCINT) $(DIRS_MISC) $(SCI_DIR) $(GCCINCLUDE_DIR)
+ 
+ SRCS_WIN		= $(SRC_WIN) $(SRC_ABOUT) $(SRC_CONTEXT) $(SRC_COLOUR) $(SRC_DOCKING) $(SRC_GRID) $(SRC_IMLIST) $(SRC_OPENSAVE) $(SRC_PREFERENCE) $(SRC_SHORTCUT) $(SRC_SPLITTER) $(SRC_STATICDLG) $(SRC_RUNDLG) $(SRC_STATUSBAR) $(SRC_TABBAR) $(SRC_TASKLIST) $(SRC_TOOLBAR) $(SRC_TOOLTIP) $(SRC_TRAYICON) $(SRC_TREEVIEW) $(SRC_WINDOWSDLG)
+ SRCS_TIXML		= $(SRC_TIXML)
+@@ -156,47 +159,64 @@
+ SRCS			= $(SRC_NPP) $(SRCS_WIN) $(SRCS_TIXML) $(SRCS_SCINT) $(SRCS_MISC) $(SRC_GCCINCLUDE)
+ 
+ OBJS_WIN		= $(OBJ_WIN) $(OBJ_ABOUT) $(OBJ_CONTEXT) $(OBJ_COLOUR) $(OBJ_DOCKING) $(OBJ_GRID) $(OBJ_IMLIST) $(OBJ_OPENSAVE) $(OBJ_PREFERENCE) $(OBJ_SHORTCUT) $(OBJ_SPLITTER) $(OBJ_STATICDLG) $(OBJ_RUNDLG) $(OBJ_STATUSBAR) $(OBJ_TABBAR) $(OBJ_TASKLIST) $(OBJ_TOOLBAR) $(OBJ_TOOLTIP) $(OBJ_TRAYICON) $(OBJ_TREEVIEW) $(OBJ_WINDOWSDLG)
+-OBJS_TIXML		= $(OBJ_TIXML)
++OBJS_TIXML		= $(OBJ_TIXML) $(OBJ_TIXMLA)
+ OBJS_SCINT		= $(OBJ_SCINT)
+ OBJS_MISC		= $(OBJ_MISC) $(OBJ_COMMON) $(OBJ_EXCEPTION) $(OBJ_PLUGINS) $(OBJ_PROCESS) $(OBJ_REGEXT)
+-OBJS			= $(OBJ_NPP) $(OBJS_WIN) $(OBJS_TIXML) $(OBJS_SCINT) $(OBJS_MISC) $(OBJ_GCCINCLUDE)
++OBJS			= $(OBJS_SCINT) $(OBJS_TIXML) $(OBJS_WIN) $(OBJS_MISC) $(OBJ_GCCINCLUDE) $(OBJ_NPP) 
++
++OBJS_UNICODE=$(patsubst %.o,%.uco,$(OBJS))
+ 
+ # Main resource file
+-SRC_RES			= ./resources.rc
+-OBJ_RES			= $(patsubst %.rc,%.res,$(SRC_RES))
++SRC_RES			= $(GCC_DIR)/resources.rc
++OBJ_RES			= $(notdir $(patsubst %.rc,%.res,$(SRC_RES)))
++
++OBJ_RES_UNICODE = $(patsubst %.res,%.ucres,$(OBJ_RES))
+ 
+ # Parameters
+-INCLUDESPECIAL	= -include./include/various.h -includeCommon.h
++INCLUDESPECIAL	= -include $(GCC_DIR)/include/various.h
+ #    Comment this out for ANSI build
+ UNICODE         = -DUNICODE -D_UNICODE
+ 
+-CXX				= g++
+ #CXXFLAGS		= -O2 $(INCLUDESPECIAL)
+-CXXFLAGS		= $(INCLUDESPECIAL) -DTIXML_USE_STL $(UNICODE)
+-INCLUDES		= $(patsubst %,-I%,$(DIRS)) -I./include
+-LDFLAGS			= -Wl,--subsystem,windows
+-LIBS			= -lcomdlg32 -lcomctl32 -lgdi32 -lole32 -loleacc -lshell32 -lshlwapi
++CXXFLAGS		+= -Wall -fexceptions -O2 $(INCLUDESPECIAL) -DTIXML_USE_STL -DTIXMLA_USE_STL 
++INCLUDES		= $(patsubst %,-I%,$(DIRS)) -I$(GCC_DIR)/include
++#LDFLAGS			= -Wl,--subsystem,windows
++LDFLAGS = 
++LIBS			= -lcomdlg32 -lcomctl32 -lgdi32 -lole32 -loleacc -lshell32 -lshlwapi -mwindows
+ 
+ RC				= windres
+ 
+-OUT_NPP			= NotepadPP.exe
++RC_INCLUDES = -I$(NPP_DIR) -I$(DOCKING_DIR)
++
++OUT_NPP			= Notepad++.exe
++OUT_NPP_UNICODE			= Notepad++U.exe
+ 
+ EXEC			= ../bin/$(OUT_NPP)
++EXEC_UNICODE			= ../bin/$(OUT_NPP_UNICODE)
+ 
+-all: NotepadPP
++vpath %.cpp $(DIRS)
++vpath %.rc $(GCC_DIR)
++
++all: NotepadPP NotepadPPUnicode
+ 
+ # Main Notepad++ rule
+ NotepadPP: $(OBJS) $(OBJ_RES)
+-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LDFLAGS) $(OBJS) $(OBJ_RES) -o $(EXEC) $(LIBS)
++	$(CXX) $(LDFLAGS) $^ -o $(EXEC) -s $(CXXLIBS) $(LIBS)
+ 
+-NotepadPPUnicode: $(OBJS) $(OBJ_RES)
+-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LDFLAGS) $(OBJS) $(OBJ_RES) -o $(EXEC) $(LIBS)
++NotepadPPUnicode: $(OBJS_UNICODE) $(OBJ_RES_UNICODE)
++	$(CXX) $(LDFLAGS) $^ -o $(EXEC_UNICODE) -s $(CXXLIBS) $(LIBS)
+ 	
+ %.o: %.cpp
+ 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+ 
+ %.res: %.rc
+-	$(RC) $(INCLUDES) $(UNICODE) --input=$< --output=$@ --input-format=rc --output-format=coff
++	$(RC) --preprocessor=$(CPP) $(RC_INCLUDES) --input=$< --output=$@ --input-format=rc --output-format=coff
++
++%.uco: %.cpp
++	$(CXX) $(CXXFLAGS) $(INCLUDES) $(UNICODE) -c $< -o $@
++
++%.ucres: %.rc
++	$(RC) --preprocessor=$(CPP) $(RC_INCLUDES) $(UNICODE) --input=$< --output=$@ --input-format=rc --output-format=coff
+ 
+ # Cleanup
+ clean:
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/installer/localization/english.xml npp-5.3.1/PowerEditor/installer/localization/english.xml
+--- npp-5.3.1-orig/PowerEditor/installer/localization/english.xml	1970-01-01 00:00:00 +0000
++++ npp-5.3.1/PowerEditor/installer/localization/english.xml	2009-05-12 07:25:07 +0000
+@@ -0,0 +1,513 @@
++<?xml version="1.0" encoding="Windows-1252" ?>
++<NotepadPlus>
++	<Native-Langue name = "English">
++		<Menu>
++			<Main>
++                <!-- Main Menu Entries -->
++				<Entries>
++					<Item id = "0" name = "&amp;File"/>
++					<Item id = "1" name = "&amp;Edit"/>
++					<Item id = "2" name = "&amp;Search"/>
++					<Item id = "3" name = "&amp;View"/>
++					<Item id = "4" name = "For&amp;mat"/>
++					<Item id = "5" name = "&amp;Language"/>
++					<Item id = "6" name = "Se&amp;ttings"/>
++					<Item id = "7" name = "Macro"/>
++					<Item id = "8" name = "Run"/>
++					<Item idName = "Plugins" name = "Plugins"/>
++					<Item idName = "Window" name = "Window"/>
++				</Entries>
++             
++                <!-- Sub Menu Entries -->
++                <SubEntries>
++                    <Item posX = "3" posY = "20" name = "Collapse the level"/>
++                    <Item posX = "3" posY = "21" name = "Uncollapse the level"/>
++                </SubEntries>
++                
++                <!-- all menu item -->
++                <Commands>
++                    <Item id = "41001" name = "&amp;New"/>
++                    <Item id = "41002" name = "&amp;Open"/>
++                    <Item id = "41003" name = "Close"/>
++                    <Item id = "41004" name = "C&amp;lose All"/>
++                    <Item id = "41005" name = "Close All BUT Current Document"/>
++                    <Item id = "41006" name = "&amp;Save"/>
++                    <Item id = "41007" name = "Sav&amp;e All"/>
++                    <Item id = "41008" name = "Save &amp;As..."/>
++                    <Item id = "41010" name = "Print..."/>
++                    <Item id = "1001"  name = "Print Now!"/>
++                    <Item id = "41011" name = "E&amp;xit"/>
++					<Item id = "41012" name = "Load Session..."/>
++                    <Item id = "41013" name = "Save Session..."/>
++                    <Item id = "41014" name = "Reload from Disk"/>
++                    <Item id = "41015" name = "Save a Copy As..."/>
++                    <Item id = "41016" name = "Delete from Disk"/>
++                    <Item id = "41017" name = "Rename..."/>
++					
++                    <Item id = "42001" name = "Cu&amp;t"/>
++                    <Item id = "42002" name = "&amp;Copy"/>
++                    <Item id = "42003" name = "&amp;Undo"/>
++                    <Item id = "42004" name = "&amp;Redo"/>
++                    <Item id = "42005" name = "&amp;Paste"/>
++                    <Item id = "42006" name = "&amp;Delete"/>
++                    <Item id = "42007" name = "Select A&amp;ll"/>
++                    <Item id = "42008" name = "Insert TAB (Indent)"/>
++                    <Item id = "42009" name = "Remove TAB (Outdent)"/>
++                    <Item id = "42010" name = "Duplicate current line"/>
++                    <Item id = "42012" name = "Split lines"/>
++                    <Item id = "42013" name = "Join lines"/>
++                    <Item id = "42014" name = "Move Up current line"/>   
++                    <Item id = "42015" name = "Move Down current line"/>   
++                    <Item id = "42016" name = "to Upper case"/>
++                    <Item id = "42017" name = "to Lower case"/>
++                    <Item id = "42018" name = "&amp;Start Recording"/>
++                    <Item id = "42019" name = "&amp;Stop Recording"/>
++                    <Item id = "42021" name = "&amp;Playback"/>
++                    <Item id = "42022" name = "Block comment/uncomment"/>
++                    <Item id = "42023" name = "Stream comment"/>
++                    <Item id = "42024" name = "Trim Trailing Space"/>
++                    <Item id = "42025" name = "Save current recorded macro"/>
++                    <Item id = "42026" name = "Text Direction RTL"/>
++                    <Item id = "42027" name = "Text Direction LTR"/>
++                    <Item id = "42028" name = "Set Read Only"/>
++                    <Item id = "42029" name = "Current full file path to Clipboard"/>
++                    <Item id = "42030" name = "Current file name to Clipboard"/>
++                    <Item id = "42031" name = "Current dir path to Clipboard"/>
++                    <Item id = "42032" name = "Run a macro multiple times..."/>
++                    <Item id = "42033" name = "Clear read only flag"/>
++					<Item id = "42035" name = "Block comment"/>
++					<Item id = "42036" name = "Block uncomment"/>
++					
++                    <Item id = "43001" name = "&amp;Find..."/>
++                    <Item id = "43002" name = "Find &amp;Next"/>
++                    <Item id = "43003" name = "Replace..."/>
++                    <Item id = "43004" name = "Go to line..."/>
++                    <Item id = "43005" name = "Toggle Bookmark"/>
++                    <Item id = "43006" name = "Next Bookmark"/>
++                    <Item id = "43007" name = "Previous Bookmark"/>
++                    <Item id = "43008" name = "Clear all Bookmarks"/>
++                    <Item id = "43009" name = "Go to matching brace"/>
++                    <Item id = "43010" name = "Find Previous"/>
++                    <Item id = "43011" name = "&amp;Incremental Search..."/>
++                    <Item id = "43013" name = "Find in files"/>
++                    <Item id = "43014" name = "Find (volatile) Next"/>
++                    <Item id = "43015" name = "Find (volatile) Previous"/>
++                    <Item id = "43016" name = "Mark all"/>
++                    <Item id = "43017" name = "Unmark all"/>
++                    <Item id = "43018" name = "Cut bookmarked lines"/>
++                    <Item id = "43019" name = "Copy bookmarked lines"/>
++                    <Item id = "43020" name = "Paste to (Replace) bookmarked lines"/>
++                    <Item id = "43021" name = "Delete bookmarked lines"/>
++					<Item id = "44009" name = "Post-it"/>
++                    <Item id = "44010" name = "Fold all"/>
++                    <Item id = "44011" name = "User Define Dialog"/>
++                    <Item id = "44019" name = "Show all characters"/>
++                    <Item id = "44020" name = "Show Indent guide"/>
++                    <Item id = "44022" name = "Wrap"/>
++                    <Item id = "44023" name = "Zoom &amp;in	Ctrl-Mouse Wheel Up"/>
++                    <Item id = "44024" name = "Zoom &amp;out	Ctrl-Mouse Wheel Down"/>
++                    <Item id = "44025" name = "Show White Space and TAB"/>
++                    <Item id = "44026" name = "Show End Of Line"/>
++                    <Item id = "44029" name = "Unfold all"/>
++                    <Item id = "44030" name = "Collapse the current level"/>
++                    <Item id = "44031" name = "Uncollapse the current level"/>
++                    <Item id = "44032" name = "Toggle Full Screen Mode"/>
++                    <Item id = "44033" name = "Restore default zoom setting	Ctrl+/(keypad)"/>
++                    <Item id = "44034" name = "Always on top"/>
++                    <Item id = "44035" name = "Synchronize Vertical Scrolling"/>
++                    <Item id = "44036" name = "Synchronize Horizontal Scrolling"/>
++                    <Item id = "44041" name = "Show wrap symbol"/>
++                    <Item id = "44072" name = "Activate main view"/>
++                    
++                    <Item id = "45001" name = "Convert to Windows Format"/>
++                    <Item id = "45002" name = "Convert to UNIX Format"/>
++                    <Item id = "45003" name = "Convert to MAC Format"/>
++                    <Item id = "45004" name = "Encode in ANSI"/>
++                    <Item id = "45005" name = "Encode in UTF-8"/>
++                    <Item id = "45006" name = "Encode in UCS-2 Big Endian"/>
++                    <Item id = "45007" name = "Encode in UCS-2 Little Endian"/>
++                    <Item id = "45008" name = "Encode in UTF-8 without BOM"/>
++			<Item id = "45009" name = "Convert to ANSI"/>
++			<Item id = "45010" name = "Convert to UTF-8 without BOM"/>
++			<Item id = "45011" name = "Convert to UTF-8"/>
++			<Item id = "45012" name = "Convert to UCS-2 Big Endian"/>
++			<Item id = "45013" name = "Convert to UCS-2 Little Endian"/>
++					
++                    <Item id = "10001" name = "Go to another View"/>
++                    <Item id = "10002" name = "Clone to another View"/>
++                    <Item id = "10003" name = "Go to new instance"/>
++                    <Item id = "10004" name = "Open in new instance"/>
++
++                    
++                    <Item id = "46001" name = "Styler Configurator..."/>
++                    <Item id = "47000" name = "About..."/>
++                    <Item id = "47001" name = "Notepad++ Home"/>
++                    <Item id = "47002" name = "Notepad++ Project Page"/>
++                    <Item id = "47003" name = "Online help"/>
++                    <Item id = "47004" name = "Forum"/>
++                    <Item id = "47005" name = "Get more plugins"/>
++					
++                    <Item id = "48009" name = "Shortcut mapper..."/>
++                    <Item id = "48011" name = "Preference..."/>
++                    <Item id = "49000" name = "&amp;Run..."/>
++					
++					<Item id = "50000" name = "Function completion"/>
++                    <Item id = "50001" name = "Word completion"/>
++                    <Item id = "50002" name = "Function parameters hint"/>
++                    <Item id = "42034" name = "Column Editor..."/>
++                    <Item id = "44042" name = "Hide lines"/>
++                    <Item id = "42040" name = "Open All Recent Files"/>
++                    <Item id = "42041" name = "Clean Recent Files List"/>
++					
++                </Commands>
++            </Main>
++            <Splitter>
++            </Splitter>
++            <TabBar>
++                    <Item order = "0" name = "Close me"/>
++                    <Item order = "1" name = "Close all but me"/>
++                    <Item order = "2" name = "Save me"/>
++                    <Item order = "3" name = "Save me As..."/>
++                    <Item order = "4" name = "Print me"/>
++                    <Item order = "5" name = "Go to another View"/>
++                    <Item order = "6" name = "Clone to another View"/>
++					<Item order = "7" name = "Full file path to Clipboard"/>
++					<Item order = "8" name = "File name to Clipboard"/>
++					<Item order = "9" name = "Current dir path to Clipboard"/>
++					<Item order = "10" name = "Rename me"/>
++					<Item order = "11" name = "Delete me"/>
++					<Item order = "12" name = "Read only"/>
++					<Item order = "13" name = "Clear read only flag"/>
++					<Item order = "14" name = "Go to new instance"/>
++					<Item order = "15" name = "Open in new instance"/>
++            </TabBar>
++        </Menu>
++        
++        <Dialog>
++            <Find title = "" titleFind = "Find" titleReplace = "Replace" titleFindInFiles = "Find in files">
++                <Item id = "1" name = "Find Next"/>
++                <Item id = "2" name = "Close"/>
++                <Item id = "1620" name = "Find what :"/>
++                <Item id = "1603" name = "Match &amp;whole word only"/>
++                <Item id = "1604" name = "Match &amp;case"/>
++                <Item id = "1605" name = "Regular &amp;expression"/>
++                <Item id = "1606" name = "Wrap aroun&amp;d"/>
++                <Item id = "1612" name = "&amp;Up"/>
++                <Item id = "1613" name = "&amp;Down"/>
++                <Item id = "1614" name = "Count"/>
++                <Item id = "1615" name = "Find All"/>
++                <Item id = "1616" name = "Mark Line"/>
++                <Item id = "1617" name = "Style found token"/>
++                <Item id = "1618" name = "Purge for each search"/>
++                <Item id = "1621" name = "Direction"/>
++                <Item id = "1611" name = "Re&amp;place with :"/>
++                <Item id = "1608" name = "&amp;Replace"/>
++                <Item id = "1609" name = "Replace &amp;All"/>
++			 	<Item id = "1623" name = "Transparency"/>
++			 	<Item id = "1687" name = "On lose focus"/>
++			 	<Item id = "1688" name = "Always"/>
++			 	<Item id = "1632" name = "In selection"/>
++			 	<Item id = "1633" name = "Clear"/>
++			 	<Item id = "1635" name = "Replace all in all opened documents"/>
++			 	<Item id = "1636" name = "Find all in all opened documents"/>
++			 	<Item id = "1637" name = "Find in files"/>
++			 	<Item id = "1640" name = "Switch dialog"/>
++			 	<Item id = "1654" name = "Filters :"/>
++			 	<Item id = "1655" name = "Directory :"/>
++			 	<Item id = "1656" name = "Find them all"/>
++			 	<Item id = "1658" name = "In all sub-folders"/>
++			 	<Item id = "1659" name = "In hidden folders"/>
++			 	<Item id = "1624" name = "Search mode"/>
++			 	<Item id = "1625" name = "Normal"/>
++			 	<Item id = "1626" name = "Extended (\n, \r, \t, \0, \x...)"/>
++            </Find>
++            <GoToLine title = "Go To Line #">
++                <Item id = "2007" name = "Line"/>
++                <Item id = "2008" name = "Offset"/>
++                <Item id = "1" name = "&amp;Go !"/>
++                <Item id = "2" name = "I'm going nowhere"/>
++                <Item id = "2004" name = "You are here :"/>
++                <Item id = "2005" name = "You want to go :"/>
++                <Item id = "2006" name = "You can't go further than :"/>
++            </GoToLine>
++
++            <Run title = "Run...">
++                <Item id = "1903" name = "Type your program to run here"/>
++                <Item id = "1" name = "Run!"/>
++                <Item id = "2" name = "Cancel"/>
++                <Item id = "1904" name = "Save..."/>
++            </Run>
++            
++            <StyleConfig title = "Style Configurator">
++				<Item id = "1" name = "Try it!"/>
++				<Item id = "2" name = "Cancel"/>
++				<Item id = "2301" name = "Save &amp;&amp; Close"/>
++				<Item id = "2303" name = "Transparency"/>		
++				
++                <SubDialog>
++                	<Item id = "2204" name = "Bold"/>
++                    <Item id = "2205" name = "Italic"/>
++                    <Item id = "2206" name = "Foreground color"/>
++                    <Item id = "2207" name = "Background color"/>
++                    <Item id = "2208" name = "Font Name :"/>
++                    <Item id = "2209" name = "Font size :"/>
++					<!--
++                    <Item id = "2210" name = "Attention : The definition of this style will be the default definition for all non defined styles"/>\
++					-->
++                    <Item id = "2211" name = "Style Description :"/>
++                    <Item id = "2212" name = "Colour style"/>
++                    <Item id = "2213" name = "Font style"/>
++                    <Item id = "2214" name = "Default ext :"/>
++                    <Item id = "2216" name = "User ext :"/>
++                    <Item id = "2218" name = "Underline"/>
++                    <Item id = "2219" name = "Default keywords"/>
++                    <Item id = "2221" name = "User Define keywords"/>
++                    <Item id = "2225" name = "Language :"/>
++                    <Item id = "2226" name = "Enable global foreground color"/>
++                    <Item id = "2227" name = "Enable global background color"/>
++                    <Item id = "2228" name = "Enable global font"/>
++                    <Item id = "2229" name = "Enable global font size"/>
++                    <Item id = "2230" name = "Enable global bold font style"/>
++                    <Item id = "2231" name = "Enable global Italic font style"/>
++                    <Item id = "2232" name = "Enable global underline font style"/>
++                </SubDialog>                
++				
++            </StyleConfig>
++            
++            <UserDefine title = "User Define">
++				<Item id = "20002" name = "Rename"/>
++				<Item id = "20003" name = "Create New..."/>
++				<Item id = "20004" name = "Remove"/>
++				<Item id = "20005" name = "Save As..."/>
++				<Item id = "20007" name = "User Language : "/>
++				<Item id = "20009" name = "Ext :"/>
++				<Item id = "20012" name = "Ignore case"/>
++				<Item id = "20011" name = "Transparency"/>
++				<Item id = "0" name = "Colour style"/>
++				<Item id = "1" name = "Foreground color"/>
++				<Item id = "2" name = "Background color"/>
++				<Item id = "3" name = "Font style"/>
++				<Item id = "4" name = "Font Name :"/>
++				<Item id = "5" name = "Font size :"/>
++				<Item id = "6" name = "Bold"/>
++				<Item id = "7" name = "Italic"/>
++				<Item id = "8" name = "Underline"/>
++                <Folder title = "Folder &amp;&amp; Default">
++					<Item id = "21101" name = "Default Style Setting"/>
++					<Item id = "21201" name = "Folder Open Keywords Setting"/>
++					<Item id = "21301" name = "Folder Close Keywords Setting"/>
++                </Folder>
++                <Keywords title = "Keywords Lists">
++					<Item id = "22101" name = "1st Group"/>
++					<Item id = "22201" name = "2nd Group"/>
++					<Item id = "22301" name = "3th Group"/>
++					<Item id = "22401" name = "4th Group"/>
++					<Item id = "22113" name = "Prefix mode"/>
++					<Item id = "22213" name = "Prefix mode"/>
++					<Item id = "22313" name = "Prefix mode"/>
++					<Item id = "22413" name = "Prefix mode"/>
++                </Keywords>
++                <Comment title = "Comment &amp;&amp; Number">
++					<Item id = "23301" name = "Comment Line"/>
++					<Item id = "23101" name = "Comment Block"/>
++					<Item id = "23113" name = "Comment Open :"/>
++					<Item id = "23115" name = "Comment Close :"/>
++					<Item id = "23116" name = "Treat keyword as symbol"/>
++					<Item id = "23117" name = "Treat keywords as symbols"/>
++					<Item id = "23201" name = "Number"/>
++                </Comment>
++                <Operator title = "Operators">
++					<Item id = "24107" name = "Operator"/>
++					<Item id = "24103" name = "Available Symbols"/>
++					<Item id = "24101" name = "Activated Operators"/>
++					<Item id = "24201" name = "Delimiter 1"/>
++					<Item id = "24211" name = "Boundary open :"/>
++					<Item id = "24214" name = "Boundary close :"/>
++					<Item id = "24301" name = "Delimiter 2"/>
++					<Item id = "24311" name = "Boundary open :"/>
++					<Item id = "24314" name = "Boundary close :"/>
++                </Operator>
++            </UserDefine>
++			<Preference title = "Preference">
++                <Item id = "6001" name = "Close"/>
++				<Global title = "Global">
++					<Item id = "6101" name = "Tool bar"/>
++					<Item id = "6102" name = "Hide"/>
++					<Item id = "6103" name = "Small icons"/>
++	                <Item id = "6104" name = "Big icons"/>
++					<Item id = "6105" name = "Small standard icons"/>
++					
++					<Item id = "6106" name = "Tab bar"/>
++					<Item id = "6107" name = "Reduce"/>
++					<Item id = "6108" name = "Lock (No Drag N Drop)"/>
++					<Item id = "6109" name = "Draw the inactive tabs"/>
++					<Item id = "6110" name = "Draw the orange top bar"/>
++					
++					<Item id = "6111" name = "Show Status Bar"/>
++					<Item id = "6112" name = "Enable close button on each tab"/>
++					<Item id = "6113" name = "Double click to close document"/>
++					<Item id = "6118" name = "Hide"/>
++					<Item id = "6119" name = "Multi-Line"/>
++					<Item id = "6120" name = "Vertical"/>
++					
++					<Item id = "6121" name = "Menu bar"/>
++					<Item id = "6122" name = "Hide (Use Alt or F10 key to toggle it)"/>
++				</Global>
++                <Scintillas title = "Edit Components">
++					<Item id = "6216" name = "Caret settings"/>
++					<Item id = "6217" name = "Width :"/>
++					<Item id = "6219" name = "Blink Rate :"/>
++					<Item id = "6221" name = "F"/>
++					<Item id = "6222" name = "S"/>
++					
++					<Item id = "6301" name = "Tab Setting"/>
++					<Item id = "6302" name = "Replace by space"/>
++					<Item id = "6303" name = "Tab size : "/>
++					
++					<Item id = "6201" name = "Folder margin style"/>
++					<Item id = "6202" name = "Simple"/>
++					<Item id = "6203" name = "Arrow"/>
++	                <Item id = "6204" name = "Circle tree"/>
++					<Item id = "6205" name = "Box tree"/>
++					
++					<Item id = "6206" name = "Display Line number margin"/>
++					<Item id = "6207" name = "Display Bookmark margin"/>
++					<Item id = "6208" name = "Show Vertical Edge"/>
++					<Item id = "6209" name = "Number of column : "/>
++					
++					<Item id = "6211" name = "Vertical Edge Setting"/>
++					<Item id = "6212" name = "Line mode"/>
++					<Item id = "6213" name = "background mode"/>
++					<Item id = "6214" name = "Active current line highlight"/>
++                </Scintillas>
++				<NewDoc title = "New Document/Open Save Directory">
++					<Item id = "6419" name = "New Document"/>
++					<Item id = "6401" name = "Format"/>
++					<Item id = "6402" name = "Windows"/>
++					<Item id = "6403" name = "Unix"/>
++	                <Item id = "6404" name = "Mac"/>
++					<Item id = "6405" name = "Encoding"/>
++					<Item id = "6406" name = "ANSI"/>
++					<Item id = "6407" name = "UTF-8 without BOM"/>
++					<Item id = "6408" name = "UTF-8"/>
++					<Item id = "6409" name = "UCS-2 Big endian"/>
++					<Item id = "6410" name = "UCS-2 small endian"/>
++					<Item id = "6411" name = "Default Language :"/>
++					<Item id = "6413" name = "File Open/Save Directory"/>
++					<Item id = "6414" name = "Follow the current document"/>
++					<Item id = "6415" name = "Remember the last operation directory"/>
++                </NewDoc>
++				<FileAssoc title = "File Association">
++					<Item id = "4009" name = "Supported exts :"/>
++					<Item id = "4010" name = "Registered exts :"/>
++                </FileAssoc>
++				<LangMenu title = "Language Menu">
++					<Item id = "6505" name = "Available items"/>
++					<Item id = "6506" name = "Disabled items"/>
++                </LangMenu>
++				<Print1 title = "Print - Colour and Marge">
++					<Item id = "6601" name = "Print Line Number"/>
++					<Item id = "6602" name = "Colour Option"/>
++					<Item id = "6603" name = "WYSIWYG"/>
++					<Item id = "6604" name = "Invert"/>
++	                <Item id = "6605" name = "Black on white"/>
++					<Item id = "6606" name = "No background colour"/>
++					<Item id = "6607" name = "Marge Setting (Unit:mm)"/>
++					<Item id = "6612" name = "Left"/>
++					<Item id = "6613" name = "Top"/>
++					<Item id = "6614" name = "Right"/>
++					<Item id = "6615" name = "Bottom"/>
++                </Print1>
++				<Print2 title = "Print - Header and Footer">
++					<Item id = "6706" name = "Bold"/>
++					<Item id = "6707" name = "Italic"/>
++					<Item id = "6708" name = "Header"/>
++					<Item id = "6709" name = "Left part"/>
++	                <Item id = "6710" name = "Middle part"/>
++					<Item id = "6711" name = "Right part"/>
++					<Item id = "6717" name = "Bold"/>
++					<Item id = "6718" name = "Italic"/>
++					<Item id = "6719" name = "Footer"/>
++					<Item id = "6720" name = "Left part"/>
++	                <Item id = "6721" name = "Middle part"/>
++					<Item id = "6722" name = "Right part"/>
++	                <Item id = "6723" name = "Add"/>
++					<Item id = "6725" name = "Variable :"/>
++                </Print2>
++				<MISC title = "MISC">
++					<Item id = "6304" name = "History File Setting"/>
++	                <Item id = "6305" name = "Don't check at launch time"/>
++					<Item id = "6306" name = "Max number history file :"/>
++					<Item id = "6307" name = "Enable"/>
++					<Item id = "6308" name = "Minimize to sys tray"/>
++					<Item id = "6309" name = "Remember the current session for next launch"/>
++					<Item id = "6312" name = "File Status Auto-detection"/>
++					<Item id = "6313" name = "Update silently"/>
++					<Item id = "6318" name = "Clickable link setting"/>
++					<Item id = "6325" name = "Scroll to the last line after update"/>
++					<Item id = "6319" name = "Enable"/>
++					<Item id = "6320" name = "Don't draw underline"/>
++					<Item id = "6322" name = "Session file ext:"/>
++					<Item id = "6323" name = "Enable Notepad++ auto-updater"/>
++					<Item id = "6324" name = "Document switcher (Ctrl+TAB)"/>
++					<Item id = "6326" name = "Enable smart highlighting"/>
++					<Item id="6329" name="Highlight matching tags"/>
++					<Item id="6327" name="Enable"/>
++					<Item id="6328" name="Highlight tag attributes"/>
++					<Item id="6330" name="Highlight php/asp zone"/>
++					
++					<Item id = "6331" name = "Show only filename in titlebar"/>
++					<Item id = "6114" name = "Enable document switcher (Ctrl+Tab)"/>
++					<Item id = "6115" name = "Auto-indent"/>
++					<Item id = "6117" name = "Enable MRU behaviour for document switcher"/>
++					
++                </MISC>
++				<Backup title = "Backup/Auto-completion">
++					<Item id = "6801" name = "Backup"/>
++					<Item id = "6315" name = "None"/>
++					<Item id = "6316" name = "Simple Backup"/>
++					<Item id = "6317" name = "Verbose Backup"/>
++					<Item id = "6804" name = "User custom backup directory"/>
++					<Item id = "6803" name = "Directory :"/>
++					<Item id = "6807" name = "Auto-completion"/>
++	                <Item id = "6808" name = "Enable Auto-completion on each input"/>
++					<Item id = "6809" name = "Function completion"/>
++					<Item id = "6810" name = "Word completion"/>
++					<Item id = "6811" name = "From"/>
++					<Item id = "6813" name = "th characters"/>
++					<Item id = "6814" name = "Valid value : 1 - 9"/>
++					<Item id = "6815" name = "Function parameters hint on input"/>
++                </Backup>
++            </Preference>
++			<MultiMacro title = "Run Macro Multiple Times">
++                <Item id = "1" name = "Run"/>
++                <Item id = "2" name = "Cancel"/>
++                <Item id = "8006" name = "Macro to run :"/>
++                <Item id = "8001" name = "Run"/>
++                <Item id = "8005" name = "times"/>
++                <Item id = "8002" name = "Run until end of file"/>
++            </MultiMacro>
++			<Window title = "Windows">
++                <Item id = "1" name = "Activate"/>
++                <Item id = "2" name = "OK"/>
++                <Item id = "7002" name = "Save"/>
++                <Item id = "7003" name = "Close Window(s)"/>
++                <Item id = "7004" name = "Sort Tabs"/>
++            </Window>
++			<ColumnEditor title = "Column Editor">
++                <Item id = "2023" name = "Text to insert"/>
++                <Item id = "2033" name = "Number to insert"/>
++                <Item id = "2030" name = "Initial number :"/>
++                <Item id = "2031" name = "Increase by :"/>
++                <Item id = "2035" name = "Leadng zeros"/>
++                <Item id = "2032" name = "Format"/>
++                <Item id = "2024" name = "Dec"/>
++                <Item id = "2025" name = "Oct"/>
++                <Item id = "2026" name = "Hex"/>
++                <Item id = "2027" name = "Bin"/>
++				<Item id = "1" name = "OK"/>
++				<Item id = "2" name = "Cancel"/>
++            </ColumnEditor>
++		</Dialog>
++    </Native-Langue>
++</NotepadPlus>
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/MISC/Exception/MiniDumper.cpp npp-5.3.1/PowerEditor/src/MISC/Exception/MiniDumper.cpp
+--- npp-5.3.1-orig/PowerEditor/src/MISC/Exception/MiniDumper.cpp	2009-02-07 00:52:14 +0000
++++ npp-5.3.1/PowerEditor/src/MISC/Exception/MiniDumper.cpp	2009-05-12 07:25:06 +0000
+@@ -1,3 +1,5 @@
++#ifndef __MINGW32__
++
+ #include "MiniDumper.h"
+ //#include "Common.h"
+ #include <shlwapi.h>
+@@ -80,3 +82,5 @@
+ 
+ 	return retval;
+ }
++
++#endif // __MINGW32__
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/MISC/Exception/MiniDumper.h npp-5.3.1/PowerEditor/src/MISC/Exception/MiniDumper.h
+--- npp-5.3.1-orig/PowerEditor/src/MISC/Exception/MiniDumper.h	2009-01-29 15:30:56 +0000
++++ npp-5.3.1/PowerEditor/src/MISC/Exception/MiniDumper.h	2009-05-12 07:25:06 +0000
+@@ -3,6 +3,8 @@
+ #ifndef MDUMP_H
+ #define MDUMP_H
+ 
++#ifndef __MINGW32__
++
+ #include <windows.h>
+ #include "dbghelp.h"
+ 
+@@ -19,4 +21,5 @@
+ 	bool writeDump(EXCEPTION_POINTERS * pExceptionInfo);
+ };
+ 
+-#endif //MDUMP_H
+\ No newline at end of file
++#endif
++#endif //MDUMP_H
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/Notepad_plus.h npp-5.3.1/PowerEditor/src/Notepad_plus.h
+--- npp-5.3.1-orig/PowerEditor/src/Notepad_plus.h	2009-02-21 14:13:54 +0000
++++ npp-5.3.1/PowerEditor/src/Notepad_plus.h	2009-05-12 07:25:05 +0000
+@@ -49,6 +49,7 @@
+ #include "AutoCompletion.h"
+ #include "Buffer.h"
+ #include "SmartHighlighter.h"
++#include "shortcutmapper.h"
+ 
+ #define MENU 0x01
+ #define TOOLBAR 0x02
+@@ -122,7 +123,7 @@
+ 	inline void killAllChildren();
+ 	virtual inline void destroy();
+ 
+-    static const TCHAR * Notepad_plus::getClassName() {
++    static const TCHAR * getClassName() {
+ 		return _className;
+ 	};
+ 	
+@@ -428,15 +429,15 @@
+ //END: Document management
+ 
+ 	int doSaveOrNot(const TCHAR *fn) {
+-		TCHAR pattern[64] = TEXT("Save file \"%s\" ?");
++		const TCHAR* pattern = TEXT("Save file \"%s\" ?");
+ 		TCHAR phrase[512];
+ 		wsprintf(phrase, pattern, fn);
+ 		return doActionOrNot(TEXT("Save"), phrase, MB_YESNOCANCEL | MB_ICONQUESTION | MB_APPLMODAL);
+ 	};
+ 
+ 	int doReloadOrNot(const TCHAR *fn, bool dirty) {
+-		TCHAR* pattern = TEXT("%s\r\rThis file has been modified by another program.\rDo you want to reload it%s?");
+-		TCHAR* lose_info_str = dirty ? TEXT(" and lose the changes made in Notepad++") : TEXT("");
++		const TCHAR* pattern = TEXT("%s\r\rThis file has been modified by another program.\rDo you want to reload it%s?");
++		const TCHAR* lose_info_str = dirty ? TEXT(" and lose the changes made in Notepad++") : TEXT("");
+ 		TCHAR phrase[512];
+ 		wsprintf(phrase, pattern, fn, lose_info_str);
+ 		int icon = dirty ? MB_ICONEXCLAMATION : MB_ICONQUESTION;
+@@ -444,14 +445,14 @@
+ 	};
+ 
+ 	int doCloseOrNot(const TCHAR *fn) {
+-		TCHAR pattern[128] = TEXT("The file \"%s\" doesn't exist anymore.\rKeep this file in editor?");
++		const TCHAR* pattern = TEXT("The file \"%s\" doesn't exist anymore.\rKeep this file in editor?");
+ 		TCHAR phrase[512];
+ 		wsprintf(phrase, pattern, fn);
+ 		return doActionOrNot(TEXT("Keep non existing file"), phrase, MB_YESNO | MB_ICONQUESTION | MB_APPLMODAL);
+ 	};
+ 	
+ 	int doDeleteOrNot(const TCHAR *fn) {
+-		TCHAR pattern[128] = TEXT("The file \"%s\"\rwill be deleted from your disk and this document will be closed.\rContinue?");
++		const TCHAR* pattern = TEXT("The file \"%s\"\rwill be deleted from your disk and this document will be closed.\rContinue?");
+ 		TCHAR phrase[512];
+ 		wsprintf(phrase, pattern, fn);
+ 		return doActionOrNot(TEXT("Delete file"), phrase, MB_YESNO | MB_ICONQUESTION | MB_APPLMODAL);
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/Notepad_plus.rc npp-5.3.1/PowerEditor/src/Notepad_plus.rc
+--- npp-5.3.1-orig/PowerEditor/src/Notepad_plus.rc	2009-02-07 16:26:34 +0000
++++ npp-5.3.1/PowerEditor/src/Notepad_plus.rc	2009-05-12 07:25:05 +0000
+@@ -488,4 +488,4 @@
+ END
+ 
+ // xp style
+-1 RT_MANIFEST "notepad++.exe.manifest"
++// 1 RT_MANIFEST "notepad++.exe.manifest"
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/Parameters.cpp npp-5.3.1/PowerEditor/src/Parameters.cpp
+--- npp-5.3.1-orig/PowerEditor/src/Parameters.cpp	2009-03-28 15:41:04 +0000
++++ npp-5.3.1/PowerEditor/src/Parameters.cpp	2009-05-12 07:25:07 +0000
+@@ -331,7 +331,7 @@
+ 	//
+ };
+ #ifdef UNICODE
+-#include "localizationString.h"
++#include "mingw-localizationString.h"
+ 
+ LocalizationSwicher::LocalizationSwicher() 
+ {
+@@ -533,6 +533,7 @@
+ 		
+ 	_asNotepadStyle = (PathFileExists(notepadStylePath) == TRUE);
+ 	::AddFontResource(LINEDRAW_FONT);
++	::AddFontResource(OPTI_FONT);
+ 
+ 	//Load initial accelerator key definitions
+ 	initMenuKeys();
+@@ -552,6 +553,7 @@
+ 	if (_hUXTheme)
+ 		FreeLibrary(_hUXTheme);
+ 
++	::RemoveFontResource(OPTI_FONT);
+ 	::RemoveFontResource(LINEDRAW_FONT);
+ }
+ void cutString(const TCHAR *str2cut, vector<generic_string> & patternVect)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/Parameters.h npp-5.3.1/PowerEditor/src/Parameters.h
+--- npp-5.3.1-orig/PowerEditor/src/Parameters.h	2009-03-28 15:41:04 +0000
++++ npp-5.3.1/PowerEditor/src/Parameters.h	2009-05-12 07:25:05 +0000
+@@ -77,9 +77,10 @@
+ const bool SCIV_PRIMARY = false;
+ const bool SCIV_SECOND = true;
+ 
+-const TCHAR fontSizeStrs[][3] = {TEXT(""), TEXT("8"), TEXT("9"), TEXT("10"), TEXT("11"), TEXT("12"), TEXT("14"), TEXT("16"), TEXT("18"), TEXT("20"), TEXT("22"), TEXT("24"), TEXT("26"), TEXT("28")};
++const TCHAR fontSizeStrs[][3] = {TEXT(""), TEXT("7"), TEXT("8"), TEXT("9"), TEXT("10"), TEXT("11"), TEXT("12"), TEXT("14"), TEXT("16"), TEXT("18"), TEXT("20"), TEXT("22"), TEXT("24"), TEXT("26"), TEXT("28")};
+ 
+ const TCHAR LINEDRAW_FONT[] =  TEXT("LINEDRAW.TTF");
++const TCHAR OPTI_FONT[] =  TEXT("LINEDRAW.TTF");
+ const TCHAR localConfFile[] = TEXT("doLocalConf.xml");
+ const TCHAR notepadStyleFile[] = TEXT("asNotepad.xml");
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/ScitillaComponent/Buffer.h npp-5.3.1/PowerEditor/src/ScitillaComponent/Buffer.h
+--- npp-5.3.1-orig/PowerEditor/src/ScitillaComponent/Buffer.h	2009-02-21 10:08:40 +0000
++++ npp-5.3.1/PowerEditor/src/ScitillaComponent/Buffer.h	2009-05-12 07:25:05 +0000
+@@ -58,6 +58,7 @@
+ 
+ //File manager class maintains all buffers
+ class Buffer;
++class Notepad_plus;
+ class FileManager {
+ public:
+ 	void init(Notepad_plus * pNotepadPlus, ScintillaEditView * pscratchTilla);
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc npp-5.3.1/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc
+--- npp-5.3.1-orig/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	2009-03-03 23:09:48 +0000
++++ npp-5.3.1/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	2009-05-12 07:25:05 +0000
+@@ -20,6 +20,7 @@
+ #ifndef FIND_REPLACE_DLG_RC
+ #define FIND_REPLACE_DLG_RC
+ #include <windows.h>
++#include <commctrl.h>
+ #include "FindReplaceDlg_rc.h"
+ 
+ IDD_FIND_REPLACE_DLG DIALOGEX 36, 44, 317, 182
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/ScitillaComponent/Printer.h npp-5.3.1/PowerEditor/src/ScitillaComponent/Printer.h
+--- npp-5.3.1-orig/PowerEditor/src/ScitillaComponent/Printer.h	2008-09-06 00:53:54 +0000
++++ npp-5.3.1/PowerEditor/src/ScitillaComponent/Printer.h	2009-05-12 07:25:05 +0000
+@@ -36,7 +36,7 @@
+ public :
+ 	Printer(){};
+ 	void init(HINSTANCE hInst, HWND hwnd, ScintillaEditView *pSEView, bool showDialog, int startPos, int endPos);
+-	size_t Printer::doPrint() {
++	size_t doPrint() {
+ 		if (!::PrintDlg(&_pdlg))
+ 				return 0;
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp npp-5.3.1/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
+--- npp-5.3.1-orig/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	2009-03-18 00:10:44 +0000
++++ npp-5.3.1/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	2009-05-12 07:25:05 +0000
+@@ -1939,9 +1939,9 @@
+ 			for (int j = 0 ; j < nbChar ; j++)
+ 			{
+ 				if (Case == UPPERCASE)
+-					destStr[j] = (wchar_t)::CharUpperW((LPWSTR)destStr[j]);
++					destStr[j] = (wchar_t)*::CharUpperW((LPWSTR)destStr[j]);
+ 				else
+-					destStr[j] = (wchar_t)::CharLowerW((LPWSTR)destStr[j]);
++					destStr[j] = (wchar_t)*::CharLowerW((LPWSTR)destStr[j]);
+ 			}
+ 			::WideCharToMultiByte(codepage, 0, destStr, len, srcStr, len, NULL, NULL);
+ 
+@@ -1975,9 +1975,9 @@
+ 		for (int i = 0 ; i < nbChar ; i++)
+ 		{
+ 			if (Case == UPPERCASE)
+-				selectedStrW[i] = (WCHAR)::CharUpperW((LPWSTR)selectedStrW[i]);
++				selectedStrW[i] = (WCHAR)*::CharUpperW((LPWSTR)selectedStrW[i]);
+ 			else
+-				selectedStrW[i] = (WCHAR)::CharLowerW((LPWSTR)selectedStrW[i]);
++				selectedStrW[i] = (WCHAR)*::CharLowerW((LPWSTR)selectedStrW[i]);
+ 		}
+ 		::WideCharToMultiByte(codepage, 0, selectedStrW, strWSize, selectedStr, strSize, NULL, NULL);
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/ScitillaComponent/ScintillaEditView.h npp-5.3.1/PowerEditor/src/ScitillaComponent/ScintillaEditView.h
+--- npp-5.3.1-orig/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	2009-03-18 00:10:44 +0000
++++ npp-5.3.1/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	2009-05-12 07:25:05 +0000
+@@ -474,7 +474,7 @@
+ 		execute(SCI_INDICATORCLEARRANGE, docStart, docEnd-docStart);
+ 	};
+ 
+-	static LanguageName ScintillaEditView::langNames[L_EXTERNAL+1];
++	static LanguageName langNames[L_EXTERNAL+1];
+ 
+ 	void bufferUpdated(Buffer * buffer, int mask);
+ 	BufferID getCurrentBufferID() { return _currentBufferID; };
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/WinControls/TabBar/ControlsTab.h npp-5.3.1/PowerEditor/src/WinControls/TabBar/ControlsTab.h
+--- npp-5.3.1-orig/PowerEditor/src/WinControls/TabBar/ControlsTab.h	2009-01-03 20:55:38 +0000
++++ npp-5.3.1/PowerEditor/src/WinControls/TabBar/ControlsTab.h	2009-05-12 07:25:05 +0000
+@@ -52,7 +52,7 @@
+ 		//TabBar::init(hInst, hwnd, false, true);
+ 		TabBar::init(hInst, hwnd, false, isTraditional, isMultiLine);
+ 	};
+-	void ControlsTab::createTabs(WindowVector & winVector);
++	void createTabs(WindowVector & winVector);
+ 
+ 	void destroy() {
+ 		TabBar::destroy();
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/WinControls/shortcut/shortcut.h npp-5.3.1/PowerEditor/src/WinControls/shortcut/shortcut.h
+--- npp-5.3.1-orig/PowerEditor/src/WinControls/shortcut/shortcut.h	2009-01-04 22:35:52 +0000
++++ npp-5.3.1/PowerEditor/src/WinControls/shortcut/shortcut.h	2009-05-12 07:25:05 +0000
+@@ -204,7 +204,7 @@
+ 	};
+ 
+ 	KeyCombo getKeyComboByIndex(int index) const;
+-	void ScintillaKeyMap::setKeyComboByIndex(int index, KeyCombo combo);
++	void setKeyComboByIndex(int index, KeyCombo combo);
+ 	void removeKeyComboByIndex(int index);
+ 	void clearDups() {
+ 		if (size > 1)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/config.model.xml npp-5.3.1/PowerEditor/src/config.model.xml
+--- npp-5.3.1-orig/PowerEditor/src/config.model.xml	2008-03-09 18:10:48 +0000
++++ npp-5.3.1/PowerEditor/src/config.model.xml	2009-05-12 07:25:05 +0000
+@@ -55,7 +55,7 @@
+                                 2 : verbose backup
+                       -->
+         <GUIConfig name="Backup" action="0" useCustumDir="no" dir="" />
+-        <GUIConfig name="TaskList">yes</GUIConfig>
++        <GUIConfig name="TaskList">no</GUIConfig>
+         <GUIConfig name="SaveOpenFileInSameDir">no</GUIConfig>
+         <!--
+ 			value 0 for the folloing parameters means invisible :
+@@ -71,7 +71,7 @@
+ 			-->
+         <GUIConfig name="noUpdate">no</GUIConfig>
+         <GUIConfig name="MaitainIndent">yes</GUIConfig>
+-        <GUIConfig name="MRU">yes</GUIConfig>
++        <GUIConfig name="MRU">no</GUIConfig>
+         <GUIConfig name="URL">0</GUIConfig>
+         <GUIConfig name="globalOverride" fg="no" bg="no" font="no" fontSize="no" bold="no" italic="no" underline="no" />
+         <GUIConfig name="auto-completion" autoCAction="0" triggerFromNbChar="1" />
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/langs.model.xml npp-5.3.1/PowerEditor/src/langs.model.xml
+--- npp-5.3.1-orig/PowerEditor/src/langs.model.xml	2009-03-28 15:41:04 +0000
++++ npp-5.3.1/PowerEditor/src/langs.model.xml	2009-05-12 07:25:05 +0000
+@@ -111,7 +111,7 @@
+         <Language name="makefile" ext="mak" commentLine="#">
+         </Language>
+         <Language name="matlab" ext="m" commentLine="%" commentStart="" commentEnd="">
+-            <Keywords name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while</Keywords>
++            <Keywords name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while do endfor endfunction endif endswitch endwhile end_unwind_protect until unwind_protect unwind_protect_cleanup</Keywords>
+         </Language>
+         <Language name="nfo" ext="nfo">
+         </Language>
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/mingw-localizationString.h npp-5.3.1/PowerEditor/src/mingw-localizationString.h
+--- npp-5.3.1-orig/PowerEditor/src/mingw-localizationString.h	1970-01-01 00:00:00 +0000
++++ npp-5.3.1/PowerEditor/src/mingw-localizationString.h	2009-05-12 07:25:07 +0000
+@@ -0,0 +1,23 @@
++//this file is part of notepad++
++//Copyright (C)2003 Don HO <donho@altern.org>
++//
++//This program is free software; you can redistribute it and/or
++//modify it under the terms of the GNU General Public License
++//as published by the Free Software Foundation; either
++//version 2 of the License, or (at your option) any later version.
++//
++//This program is distributed in the hope that it will be useful,
++//but WITHOUT ANY WARRANTY; without even the implied warranty of
++//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++//GNU General Public License for more details.
++//
++//You should have received a copy of the GNU General Public License
++//along with this program; if not, write to the Free Software
++//Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++
++#ifndef LOCALIZATIONSTRING_H
++#define LOCALIZATIONSTRING_H
++LocalizationSwicher::LocalizationDefinition localizationDefs[] = {
++	{TEXT("English"), TEXT("english.xml")},
++};
++#endif LOCALIZATIONSTRING_H
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/shortcuts.xml npp-5.3.1/PowerEditor/src/shortcuts.xml
+--- npp-5.3.1-orig/PowerEditor/src/shortcuts.xml	2009-02-04 01:06:40 +0000
++++ npp-5.3.1/PowerEditor/src/shortcuts.xml	2009-05-12 07:25:06 +0000
+@@ -1,5 +1,8 @@
+ <NotepadPlus>
+-    <InternalCommands />
++    <InternalCommands>
++        <Shortcut name="Go to next document" id="50003" Ctrl="no" Alt="yes" Shift="no" Key="38" />
++        <Shortcut name="Go to previous document" id="50004" Ctrl="no" Alt="yes" Shift="no" Key="40" />
++    </InternalCommands>
+     <Macros>
+         <Macro name="Trim Trailing and save" Ctrl="no" Alt="yes" Shift="yes" Key="83">
+             <Action type="2" message="0" wParam="42024" lParam="0" sParam="" />
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/userDefineLang.xml npp-5.3.1/PowerEditor/src/userDefineLang.xml
+--- npp-5.3.1-orig/PowerEditor/src/userDefineLang.xml	2007-08-07 00:55:52 +0000
++++ npp-5.3.1/PowerEditor/src/userDefineLang.xml	2009-05-12 07:25:06 +0000
+@@ -59,4 +59,38 @@
+             <WordsStyle name="OPERATOR" styleID="10" fgColor="804000" bgColor="FFFFFF" fontName="" fontStyle="1" fontSize="" />
+         </Styles>
+     </UserLang>
++    <UserLang name="gnuplot" ext="gp">
++        <Settings>
++            <Global caseIgnored="no" />
++            <TreatAsSymbol comment="no" commentLine="no" />
++            <Prefix words1="no" words2="no" words3="no" words4="no" />
++        </Settings>
++        <KeywordLists>
++            <Keywords name="Delimiters">&quot;00&quot;00</Keywords>
++            <Keywords name="Folder+"></Keywords>
++            <Keywords name="Folder-"></Keywords>
++            <Keywords name="Operators">$ ( ) , . @ =</Keywords>
++            <Keywords name="Comment">1 1 2 2 0#</Keywords>
++            <Keywords name="Words1">call cd clear exit fit help history if load lower pause plot print pwd quit raise replot reread reset save set shell show splot system test unset update</Keywords>
++            <Keywords name="Words2">angles arrow autoscale bars bmargin border boxwidth cbdata cbdtics cblabel cbmtics cbrange cbtics clabel clip cntrparam colorbox contour datafile decimalsign dgrid3d dummy encoding fontpath format functions grid hidden3d historysize isosamples key label lmargin loadpath locale logscale macros mapping margin mouse multiplot mx2tics mxtics my2tics mytics mztics nomxtics nomytics nomztics noxtics noytics noztics offsets origin output palette parametric pm3d pointsize polar print object rmargin rrange samples size style surface table term terminal termoption tics ticslevel ticscale timestamp timefmt title tmargin trange urange variables version view vrange x2data x2dtics x2label x2mtics x2range x2tics x2zeroaxis xdata xdtics xlabel xmtics xrange xtics xyplane xzeroaxis y2data y2dtics y2label y2mtics y2range y2tics y2zeroaxis ydata ydtics ylabel ymtics yrange ytics yyplane yzeroaxis zdata zdtics zero zeroaxis zlabel zmtics zrange ztics zzeroaxis</Keywords>
++            <Keywords name="Words3">every index lc linecolor lines linestyle linetype linewidth linespoints ls lt lw pointsize pointtype ps pt rgb using with</Keywords>
++            <Keywords name="Words4"></Keywords>
++        </KeywordLists>
++        <Styles>
++            <WordsStyle name="DEFAULT" styleID="11" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="FOLDEROPEN" styleID="12" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="FOLDERCLOSE" styleID="13" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD1" styleID="5" fgColor="FF0000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD2" styleID="6" fgColor="0000FF" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD3" styleID="7" fgColor="FF8000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD4" styleID="8" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="COMMENT" styleID="1" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="COMMENT LINE" styleID="2" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="NUMBER" styleID="4" fgColor="0080C0" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="OPERATOR" styleID="10" fgColor="FF8040" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER1" styleID="14" fgColor="808080" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER2" styleID="15" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER3" styleID="16" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++        </Styles>
++    </UserLang>
+ </NotepadPlus>
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/PowerEditor/src/winmain.cpp npp-5.3.1/PowerEditor/src/winmain.cpp
+--- npp-5.3.1-orig/PowerEditor/src/winmain.cpp	2009-03-18 00:10:44 +0000
++++ npp-5.3.1/PowerEditor/src/winmain.cpp	2009-05-12 07:25:07 +0000
+@@ -149,7 +149,9 @@
+ 	ParamVector params;
+ 	parseCommandLine(cmdLine, params);
+ 
++#ifndef __MINGW32__
+ 	MiniDumper mdump;	//for debugging purposes.
++#endif
+ 
+ 	bool TheFirstOne = true;
+ 	::SetLastError(NO_ERROR);
+@@ -324,9 +326,11 @@
+ #endif
+ 			ex.code(), ex.what(), ex.where());
+ 		::MessageBox(Notepad_plus::gNppHWND, message, TEXT("Win32Exception"), MB_OK | MB_ICONERROR);
++#ifndef __MINGW32__
+ 		mdump.writeDump(ex.info());
++#endif
+ 		doException(notepad_plus_plus);
+-	} catch(std::exception ex) {
++	} catch(const std::exception & ex) {
+ #ifdef UNICODE
+ 		const wchar_t * text = WcharMbcsConvertor::getInstance()->char2wchar(ex.what(), CP_ACP);
+ 		::MessageBox(Notepad_plus::gNppHWND, text, TEXT("C++ Exception"), MB_OK);
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/Document.cxx npp-5.3.1/scintilla/src/Document.cxx
+--- npp-5.3.1-orig/scintilla/src/Document.cxx	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/src/Document.cxx	2009-05-12 07:25:06 +0000
+@@ -1282,8 +1282,8 @@
+ 					}
+ 					if (found) {
+ 						if ((!word && !wordStart) ||
+-						        word && IsWordAt(pos, pos + lengthFind) ||
+-						        wordStart && IsWordStartAt(pos))
++						        (word && IsWordAt(pos, pos + lengthFind)) ||
++						        (wordStart && IsWordStartAt(pos)))
+ 							return pos;
+ 					}
+ 				}
+@@ -1372,8 +1372,8 @@
+ 					}
+ 					if (found) {
+ 						if ((!word && !wordStart) ||
+-						    word && IsWordAt(pos, pos + lengthFind) ||
+-						    wordStart && IsWordStartAt(pos)) {
++						    (word && IsWordAt(pos, pos + lengthFind)) ||
++						    (wordStart && IsWordStartAt(pos))) {
+ 						        if (ws_upr != NULL) {
+ 								delete [] ws_upr;
+ 								ws_upr = NULL;
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/Editor.cxx npp-5.3.1/scintilla/src/Editor.cxx
+--- npp-5.3.1-orig/scintilla/src/Editor.cxx	2009-01-03 18:57:52 +0000
++++ npp-5.3.1/scintilla/src/Editor.cxx	2009-05-12 07:25:06 +0000
+@@ -1876,13 +1876,13 @@
+ 							ll->positions[charInLine + 1] = ((((startsegx + 2) /
+ 							        tabWidth) + 1) * tabWidth) - startsegx;
+ 						} else if (controlCharSymbol < 32) {
+-							if (ctrlCharWidth[ll->chars[charInLine]] == 0) {
++							if (ctrlCharWidth[static_cast<int>(ll->chars[charInLine])] == 0) {
+ 								const char *ctrlChar = ControlCharacterString(ll->chars[charInLine]);
+ 								// +3 For a blank on front and rounded edge each side:
+-								ctrlCharWidth[ll->chars[charInLine]] =
++								ctrlCharWidth[static_cast<int>(ll->chars[charInLine])] =
+ 								    surface->WidthText(ctrlCharsFont, ctrlChar, istrlen(ctrlChar)) + 3;
+ 							}
+-							ll->positions[charInLine + 1] = ctrlCharWidth[ll->chars[charInLine]];
++							ll->positions[charInLine + 1] = ctrlCharWidth[static_cast<int>(ll->chars[charInLine])];
+ 						} else {
+ 							char cc[2] = { static_cast<char>(controlCharSymbol), '\0' };
+ 							surface->MeasureWidths(ctrlCharsFont, cc, 1,
+@@ -2007,7 +2007,7 @@
+ 		if (inHotspot && vsDraw.hotspotBackgroundSet)
+ 			return vsDraw.hotspotBackground.allocated;
+ 		if (overrideBackground && (((styleMain != STYLE_BRACELIGHT) && (styleMain != STYLE_BRACEBAD)) ||
+-			(vsDraw.styles[styleMain].back.allocated.AsLong() == vsDraw.styles[ll->bracePreviousStyles[0]].back.allocated.AsLong())))
++			(vsDraw.styles[styleMain].back.allocated.AsLong() == vsDraw.styles[static_cast<int>(ll->bracePreviousStyles[0])].back.allocated.AsLong())))
+ 			return background;
+ 	}
+ 	return vsDraw.styles[styleMain].back.allocated;
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/LexAU3.cxx npp-5.3.1/scintilla/src/LexAU3.cxx
+--- npp-5.3.1-orig/scintilla/src/LexAU3.cxx	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/src/LexAU3.cxx	2009-05-12 07:25:06 +0000
+@@ -253,11 +253,12 @@
+ 				//Reset at line end
+ 				if (sc.atLineEnd) {
+ 					ci=0;
+-					if ((strcmp(s, "#ce")== 0 || strcmp(s, "#comments-end")== 0))
++					if ((strcmp(s, "#ce")== 0 || strcmp(s, "#comments-end")== 0)) {
+ 						if (sc.atLineEnd) 
+ 							sc.SetState(SCE_AU3_DEFAULT);
+ 						else	
+ 							sc.SetState(SCE_AU3_COMMENTBLOCK);
++					}
+ 					break;
+ 				}
+ 				//skip rest of line when a ; is encountered
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/LexFortran.cxx npp-5.3.1/scintilla/src/LexFortran.cxx
+--- npp-5.3.1-orig/scintilla/src/LexFortran.cxx	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/src/LexFortran.cxx	2009-05-12 07:25:06 +0000
+@@ -83,7 +83,7 @@
+ 		// Handle the fix format generically
+ 		int toLineStart = sc.currentPos - posLineStart;
+ 		if (isFixFormat && (toLineStart < 6 || toLineStart > 72)) {
+-			if (toLineStart == 0 && (tolower(sc.ch) == 'c' || sc.ch == '*') || sc.ch == '!') {
++			if (toLineStart == 0 && ((tolower(sc.ch) == 'c' || sc.ch == '*') || sc.ch == '!')) {
+ 				sc.SetState(SCE_F_COMMENT);
+ 				while (!sc.atLineEnd && sc.More()) sc.Forward(); // Until line end
+ 			} else if (toLineStart > 72) {
+@@ -243,7 +243,7 @@
+ 				lev = 0;
+ 			else
+ 				lev = 1;
+-	} else if (strcmp(s, "end") == 0 && chNextNonBlank != '='
++	} else if (strcmp(s, "end") == 0 && (chNextNonBlank != '='
+ 		|| strcmp(s, "endassociate") == 0 || strcmp(s, "endblock") == 0
+ 		|| strcmp(s, "endblockdata") == 0 || strcmp(s, "endselect") == 0
+ 		|| strcmp(s, "enddo") == 0 || strcmp(s, "endenum") ==0
+@@ -252,7 +252,7 @@
+ 		|| strcmp(s, "endmodule") == 0 || strcmp(s, "endprogram") == 0
+ 		|| strcmp(s, "endsubroutine") == 0 || strcmp(s, "endtype") == 0
+ 		|| strcmp(s, "endwhere") == 0
+-		|| strcmp(s, "procedure") == 0 ) { // Take care of the module procedure statement
++		|| strcmp(s, "procedure") == 0 )) { // Take care of the module procedure statement
+ 			lev = -1;
+ 	} else if (strcmp(prevWord, "end") == 0 && strcmp(s, "if") == 0){ // end if
+ 			lev = 0;
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/LexInno.cxx npp-5.3.1/scintilla/src/LexInno.cxx
+--- npp-5.3.1-orig/scintilla/src/LexInno.cxx	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/src/LexInno.cxx	2009-05-12 07:25:06 +0000
+@@ -288,7 +288,7 @@
+ 		lev = SC_FOLDLEVELBASE;
+ 	}
+ 	int flagsNext = styler.LevelAt(lineCurrent);
+-	styler.SetLevel(lineCurrent, lev | flagsNext & ~SC_FOLDLEVELNUMBERMASK);
++	styler.SetLevel(lineCurrent, lev | (flagsNext & ~SC_FOLDLEVELNUMBERMASK));
+ }
+ 
+ LexerModule lmInno(SCLEX_INNOSETUP, ColouriseInnoDoc, "inno", FoldInnoDoc, innoWordListDesc);
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/LexMatlab.cxx npp-5.3.1/scintilla/src/LexMatlab.cxx
+--- npp-5.3.1-orig/scintilla/src/LexMatlab.cxx	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/src/LexMatlab.cxx	2009-05-12 07:25:04 +0000
+@@ -159,7 +159,7 @@
+ 
+ static void ColouriseMatlabDoc(unsigned int startPos, int length, int initStyle,
+                                WordList *keywordlists[], Accessor &styler) {
+-	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabCommentChar);
++	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveCommentChar);
+ }
+ 
+ static void ColouriseOctaveDoc(unsigned int startPos, int length, int initStyle,
+@@ -213,7 +213,7 @@
+ 
+ static void FoldMatlabDoc(unsigned int startPos, int length, int initStyle,
+                           WordList *keywordlists[], Accessor &styler) {
+-	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabComment);
++	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveComment);
+ }
+ 
+ static void FoldOctaveDoc(unsigned int startPos, int length, int initStyle,
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/LexProgress.cxx npp-5.3.1/scintilla/src/LexProgress.cxx
+--- npp-5.3.1-orig/scintilla/src/LexProgress.cxx	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/src/LexProgress.cxx	2009-05-12 07:25:07 +0000
+@@ -97,7 +97,7 @@
+ 				if (!IsAWordChar(sc.ch) && sc.ch != '-') {
+ 					char s[1000];
+ 					sc.GetCurrentLowered(s, sizeof(s));
+-					if (((sc.state & 0x10) == 0) && keywords2.InList(s) || keywords3.InList(s)) {
++					if (((sc.state & 0x10) == 0) && (keywords2.InList(s) || keywords3.InList(s))) {
+ 						sc.ChangeState(SCE_4GL_BLOCK | ResetSentenceStart);
+ 					}
+ 					else if (keywords1.InList(s)) {
+@@ -268,4 +268,4 @@
+             0,
+         };
+ 
+-LexerModule lmProgress(SCLEX_PS, Colourise4glDoc, "progress", Fold4glDoc, FglWordLists);
++LexerModule lmProgress(SCLEX_PROGRESS, Colourise4glDoc, "progress", Fold4glDoc, FglWordLists);
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/LexPython.cxx npp-5.3.1/scintilla/src/LexPython.cxx
+--- npp-5.3.1-orig/scintilla/src/LexPython.cxx	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/src/LexPython.cxx	2009-05-12 07:25:06 +0000
+@@ -276,7 +276,7 @@
+ 					hexadecimal = false;
+ 				}
+ 				sc.SetState(SCE_P_NUMBER);
+-			} else if (isascii(sc.ch) && isoperator(static_cast<char>(sc.ch)) || sc.ch == '`') {
++			} else if (isascii(sc.ch) && (isoperator(static_cast<char>(sc.ch)) || sc.ch == '`')) {
+ 				sc.SetState(SCE_P_OPERATOR);
+ 			} else if (sc.ch == '#') {
+ 				sc.SetState(sc.chNext == '#' ? SCE_P_COMMENTBLOCK : SCE_P_COMMENTLINE);
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/LexRuby.cxx npp-5.3.1/scintilla/src/LexRuby.cxx
+--- npp-5.3.1-orig/scintilla/src/LexRuby.cxx	2007-08-07 00:55:52 +0000
++++ npp-5.3.1/scintilla/src/LexRuby.cxx	2009-05-12 07:25:06 +0000
+@@ -784,13 +784,13 @@
+ 				state = SCE_RB_COMMENTLINE;
+ 			} else if (ch == '=') {
+ 				// =begin indicates the start of a comment (doc) block
+-                if (i == 0 || isEOLChar(chPrev)
++                if (i == 0 || (isEOLChar(chPrev)
+                     && chNext == 'b'
+                     && styler.SafeGetCharAt(i + 2) == 'e'
+                     && styler.SafeGetCharAt(i + 3) == 'g'
+                     && styler.SafeGetCharAt(i + 4) == 'i'
+                     && styler.SafeGetCharAt(i + 5) == 'n'
+-                    && !isSafeWordcharOrHigh(styler.SafeGetCharAt(i + 6))) {
++                    && !isSafeWordcharOrHigh(styler.SafeGetCharAt(i + 6)))) {
+                     styler.ColourTo(i - 1, state);
+                     state = SCE_RB_POD;
+ 				} else {
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/LexSearchResult.cxx npp-5.3.1/scintilla/src/LexSearchResult.cxx
+--- npp-5.3.1-orig/scintilla/src/LexSearchResult.cxx	2009-02-04 01:06:40 +0000
++++ npp-5.3.1/scintilla/src/LexSearchResult.cxx	2009-05-12 07:25:04 +0000
+@@ -35,7 +35,7 @@
+ #include "SciLexer.h"
+ 
+ // The following definitions are a copy of the ones in FindReplaceDlg.h
+-static enum { searchHeaderLevel = SC_FOLDLEVELBASE + 1, fileHeaderLevel, resultLevel };
++enum { searchHeaderLevel = SC_FOLDLEVELBASE + 1, fileHeaderLevel, resultLevel };
+ 
+ 
+ static inline bool AtEOL(Accessor &styler, unsigned int i) {
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/RESearch.cxx npp-5.3.1/scintilla/src/RESearch.cxx
+--- npp-5.3.1-orig/scintilla/src/RESearch.cxx	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/src/RESearch.cxx	2009-05-12 07:25:06 +0000
+@@ -449,11 +449,12 @@
+ 	char mask;             /* xor mask -CCL/NCL */
+ 	int c1, c2, prevChar;
+ 
+-	if (!pat || !length)
++	if (!pat || !length) {
+ 		if (sta)
+ 			return 0;
+ 		else
+ 			return badpat("No previous regular expression");
++	}
+ 	sta = NOP;
+ 
+ 	const char *p=pat;     /* pattern pointer   */
+@@ -867,10 +868,10 @@
+ 				return NOTFOUND;
+ 			break;
+ 		case BOT:
+-			bopat[*ap++] = lp;
++			bopat[static_cast<int>(*ap++)] = lp;
+ 			break;
+ 		case EOT:
+-			eopat[*ap++] = lp;
++			eopat[static_cast<int>(*ap++)] = lp;
+ 			break;
+  		case BOW:
+ 			if (lp!=bol && iswordc(ci.CharAt(lp-1)) || !iswordc(ci.CharAt(lp)))
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/src/UniConversion.cxx npp-5.3.1/scintilla/src/UniConversion.cxx
+--- npp-5.3.1-orig/scintilla/src/UniConversion.cxx	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/src/UniConversion.cxx	2009-05-12 07:25:06 +0000
+@@ -48,7 +48,7 @@
+ 			i++;
+ 			unsigned int xch = 0x10000 + ((uch & 0x3ff) << 10) + (uptr[i] & 0x3ff);
+ 			putf[k++] = static_cast<char>(0xF0 | (xch >> 18));
+-			putf[k++] = static_cast<char>(0x80 | (xch >> 12) & 0x3f);
++			putf[k++] = static_cast<char>(0x80 | ((xch >> 12) & 0x3f));
+ 			putf[k++] = static_cast<char>(0x80 | ((xch >> 6) & 0x3f));
+ 			putf[k++] = static_cast<char>(0x80 | (xch & 0x3f));
+ 		} else {
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/win32/ScintillaWin.cxx npp-5.3.1/scintilla/win32/ScintillaWin.cxx
+--- npp-5.3.1-orig/scintilla/win32/ScintillaWin.cxx	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/win32/ScintillaWin.cxx	2009-05-12 07:25:06 +0000
+@@ -2308,7 +2308,8 @@
+ bool ScintillaWin::HasCaretSizeChanged() {
+ 	if (
+ 		( (0 != vs.caretWidth) && (sysCaretWidth != vs.caretWidth) )
+-		|| (0 != vs.lineHeight) && (sysCaretHeight != vs.lineHeight)
++		|| 
++		( (0 != vs.lineHeight) && (sysCaretHeight != vs.lineHeight) )
+ 		) {
+ 		return true;
+ 	}
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.svn' -x '*.hg' -x '*.rej' -x '*~' npp-5.3.1-orig/scintilla/win32/makefile npp-5.3.1/scintilla/win32/makefile
+--- npp-5.3.1-orig/scintilla/win32/makefile	2008-02-09 23:08:36 +0000
++++ npp-5.3.1/scintilla/win32/makefile	2009-05-12 07:25:05 +0000
+@@ -6,47 +6,44 @@
+ # The -fvtable-thunks option is required for older (2.9*) versions of gcc but can be removed
+ # safely if using a newer version which may display warning messages.
+ 
++SRCDIR=@SRCDIR@
++
+ .SUFFIXES: .cxx
+-CC = g++
+ DLLWRAP = dllwrap
+-DEL = del /q
++DEL = rm -rf
+ 
+ COMPONENT = ../bin/Scintilla.dll
+ LEXCOMPONENT = ../bin/SciLexer.dll
+-LEXLIB = Lexers.a
+-
+-ifndef NOTHUNKS
+-gversion = $(word 1,$(subst ., ,$(shell g++ --version)))
+-ifeq ($(gversion),2)
+-THUNKFLAGS=-fvtable-thunks
+-endif
+-endif
++LEXLIB = ../lib/Lexers.a
+ 
+-vpath %.h ../src ../include
+-vpath %.cxx ../src
++vpath %.h $(SRCDIR)/src $(SRCDIR)/include $(SRCDIR)/win32
++vpath %.cxx $(SRCDIR)/src $(SRCDIR)/win32
++vpath %.rc  $(SRCDIR)/src $(SRCDIR)/win32
++vpath %.def $(SRCDIR)/win32
+ 
+-LDFLAGS=-mwindows -lstdc++ -limm32 -lole32 -luuid -mno-cygwin
++LDFLAGS=-mwindows -limm32 -lole32 -luuid 
+ # Add -MMD to get dependencies
+ #CXXFLAGS = -g -pg -pedantic -Os -fno-exceptions -fvtable-thunks -fno-rtti
+-INCLUDEDIRS=-I ../include -I ../src
+-CXXBASEFLAGS=-Wall -Wno-missing-braces -Wno-char-subscripts -pedantic $(INCLUDEDIRS) -Os -fno-exceptions $(THUNKFLAGS) -fno-rtti -mno-cygwin
++INCLUDEDIRS=-I $(SRCDIR)/include -I $(SRCDIR)/src
++CXXBASEFLAGS=-Wall $(INCLUDEDIRS) -O3
+ 
+ ifdef DEBUG
+-CXXFLAGS=-DDEBUG $(CXXBASEFLAGS)
++CXXFLAGS+=-DDEBUG $(CXXBASEFLAGS)
+ else
+-CXXFLAGS=-DNDEBUG $(CXXBASEFLAGS)
++CXXFLAGS+=-DNDEBUG $(CXXBASEFLAGS)
+ endif
+ 
+ .cxx.o:
+ 	$(CC) $(CXXFLAGS) -c $<
+ 
+-ALL:	$(COMPONENT) $(LEXCOMPONENT) $(LEXLIB) ScintillaWinS.o WindowAccessor.o
++ALL:	deps $(COMPONENT) $(LEXCOMPONENT) $(LEXLIB) ScintillaWinS.o WindowAccessor.o
+ 
+ clean:
+ 	$(DEL) *.exe *.o *.obj *.dll *.res *.map
+ 
+ deps:
+-	$(CC) -MM $(CXXFLAGS) *.cxx ../src/*.cxx >deps.mak
++	$(CC) -MM $(CXXFLAGS) $(SRCDIR)/win32/*.cxx $(SRCDIR)/src/*.cxx | sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g' > deps.mak
++	touch deps
+ 
+ #++Autogenerated -- run src/LexGen.py to regenerate
+ #**LEXOBJS=\\\n\(\*.o \)
+@@ -69,7 +66,7 @@
+ 	ScintRes.o PlatWin.o PositionCache.o KeyMap.o Indicator.o LineMarker.o RESearch.o RunStyles.o \
+ 	Style.o ViewStyle.o AutoComplete.o UniConversion.o PropSet.o XPM.o
+ $(COMPONENT): $(SOBJS) Scintilla.def
+-	$(DLLWRAP) --add-stdcall-alias --target i386-mingw32 -o $@ $(SOBJS) $(LDFLAGS) -s --relocatable
++	$(DLLWRAP) --driver-name=$(CXX) -def $(SRCDIR)/win32/Scintilla.def --add-stdcall-alias --target i386-mingw32 -o $@ $(SOBJS) $(CXXLIBS) $(LDFLAGS) -s --relocatable
+ 
+ LOBJS	= ScintillaWinL.o ScintillaBaseL.o Editor.o CharClassify.o Decoration.o \
+ 	Document.o ContractionState.o CellBuffer.o CallTip.o \
+@@ -77,7 +74,7 @@
+ 	Style.o ViewStyle.o AutoComplete.o UniConversion.o KeyWords.o \
+ 	DocumentAccessor.o PropSet.o ExternalLexer.o StyleContext.o XPM.o $(LEXOBJS)
+ $(LEXCOMPONENT): $(LOBJS) Scintilla.def
+-	$(DLLWRAP) --add-stdcall-alias --target i386-mingw32 -o $@ $(LOBJS) $(LDFLAGS) -s --relocatable
++	$(DLLWRAP) --driver-name=$(CXX) -def $(SRCDIR)/win32/Scintilla.def --add-stdcall-alias --target i386-mingw32 -o $@ $(LOBJS) $(CXXLIBS) $(LDFLAGS) -s --relocatable
+ 
+ $(LEXLIB): $(LEXOBJS)
+ 	$(AR) rc $@ $^
+@@ -112,6 +109,6 @@
+ 	$(CC) $(CXXFLAGS) -D SCI_LEXER -c $< -o $@
+ 
+ ScintRes.o:	ScintRes.rc PlatformRes.h
+-	windres ScintRes.rc $@
++	windres --preprocessor=$(CPP) $< $@
+ 
+ 

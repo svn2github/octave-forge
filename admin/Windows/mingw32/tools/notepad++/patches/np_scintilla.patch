@@ -1,0 +1,21 @@
+diff -r aa791b4a4728 scintilla/src/LexMatlab.cxx
+--- a/scintilla/src/LexMatlab.cxx	Mon Feb 09 09:20:24 2009 +0100
++++ b/scintilla/src/LexMatlab.cxx	Mon Feb 09 09:28:09 2009 +0100
+@@ -159,7 +159,7 @@
+ 
+ static void ColouriseMatlabDoc(unsigned int startPos, int length, int initStyle,
+                                WordList *keywordlists[], Accessor &styler) {
+-	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabCommentChar);
++	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveCommentChar);
+ }
+ 
+ static void ColouriseOctaveDoc(unsigned int startPos, int length, int initStyle,
+@@ -213,7 +213,7 @@
+ 
+ static void FoldMatlabDoc(unsigned int startPos, int length, int initStyle,
+                           WordList *keywordlists[], Accessor &styler) {
+-	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabComment);
++	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveComment);
+ }
+ 
+ static void FoldOctaveDoc(unsigned int startPos, int length, int initStyle,

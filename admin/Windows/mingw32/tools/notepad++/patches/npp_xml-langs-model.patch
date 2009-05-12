@@ -1,0 +1,12 @@
+diff -r 74dd96a127c3 PowerEditor/src/langs.model.xml
+--- a/PowerEditor/src/langs.model.xml	Mon Feb 09 10:07:57 2009 +0100
++++ b/PowerEditor/src/langs.model.xml	Mon Feb 09 10:08:59 2009 +0100
+@@ -111,7 +111,7 @@
+         <Language name="makefile" ext="mak" commentLine="#">
+         </Language>
+         <Language name="matlab" ext="m" commentLine="%" commentStart="" commentEnd="">
+-            <Keywords name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while</Keywords>
++            <Keywords name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while do endfor endfunction endif endswitch endwhile end_unwind_protect until unwind_protect unwind_protect_cleanup</Keywords>
+         </Language>
+         <Language name="nfo" ext="nfo">
+         </Language>

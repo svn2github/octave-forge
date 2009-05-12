@@ -1,0 +1,13 @@
+diff -r f54ea509d59c PowerEditor/src/shortcuts.xml
+--- a/PowerEditor/src/shortcuts.xml	Mon Feb 09 10:08:59 2009 +0100
++++ b/PowerEditor/src/shortcuts.xml	Mon Feb 09 10:10:17 2009 +0100
+@@ -1,5 +1,8 @@
+ <NotepadPlus>
+-    <InternalCommands />
++    <InternalCommands>
++        <Shortcut name="Go to next document" id="50003" Ctrl="no" Alt="yes" Shift="no" Key="38" />
++        <Shortcut name="Go to previous document" id="50004" Ctrl="no" Alt="yes" Shift="no" Key="40" />
++    </InternalCommands>
+     <Macros>
+         <Macro name="Trim Trailing and save" Ctrl="no" Alt="yes" Shift="yes" Key="83">
+             <Action type="2" message="0" wParam="42024" lParam="0" sParam="" />

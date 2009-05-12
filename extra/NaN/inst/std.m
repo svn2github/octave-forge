@@ -1,7 +1,7 @@
-function [o,v]=std(x,opt,DIM)
+function [o,v]=std(x,opt,DIM,W)
 % STD calculates the standard deviation.
 % 
-% [y,v] = std(x [, opt[, DIM]])
+% [y,v] = std(x [, opt[, DIM [, W]]])
 % 
 % opt   option 
 %	0:  normalizes with N-1 [default]
@@ -14,12 +14,16 @@ function [o,v]=std(x,opt,DIM)
 % DIM	dimension
 % 	N STD of  N-th dimension 
 %	default or []: first DIMENSION, with more than 1 element
+% W	weights to compute weighted s.d. (default: [])
+%	if W=[], all weights are 1. 
+%	number of elements in W must match size(x,DIM) 
 %
 % y	estimated standard deviation
 %
 % features:
 % - provides an unbiased estimation of the S.D. 
 % - can deal with NaN's (missing values)
+% - weighting of data 
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
 %
@@ -32,7 +36,7 @@ function [o,v]=std(x,opt,DIM)
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -44,10 +48,13 @@ function [o,v]=std(x,opt,DIM)
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 %	$Id$
-%	Copyright (C) 2000-2003, 2006,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003,2006,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the NaN-toolbox for Octave and Matlab 
 %       see also: http://hci.tugraz.at/schloegl/matlab/NaN/       
 
+if nargin<4,
+	W = []; 
+end;
 if nargin<3,
 	DIM = []; 
 end;
@@ -57,12 +64,12 @@ if isempty(DIM),
 end;
 
 
-[y,n,ssq] = sumskipnan(x,DIM);if all(ssq(:).*n(:) > 2*(y(:).^2))
+[y,n,ssq] = sumskipnan(x,DIM,W);if all(ssq(:).*n(:) > 2*(y(:).^2))
 	%% rounding error is neglectable 
 	y = ssq - y.*y./n;
 else
 	%% rounding error is not neglectable 
-	[y,n] = sumskipnan(center(x,DIM).^2,DIM);
+	[y,n] = sumskipnan(center(x,DIM).^2,DIM,W);
 end; 
 
 

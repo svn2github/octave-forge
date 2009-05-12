@@ -1,17 +1,23 @@
-function o=rms(x,DIM)
+function o=rms(x,DIM,W)
 % RMS calculates the root mean square
 %   can deal with complex data. 
 %
-% y = rms(x,DIM)
+% y = rms(x,DIM,W)
 %
 % DIM	dimension
 %	1 STD of columns
 %	2 STD of rows
 % 	N STD of  N-th dimension 
 %	default or []: first DIMENSION, with more than 1 element
+% W	weights to compute weighted s.d. (default: [])
+%	if W=[], all weights are 1. 
+%	number of elements in W must match size(x,DIM) 
+%
+% y	estimated standard deviation
 %
 % features:
 % - can deal with NaN's (missing values)
+% - weighting of data 
 % - dimension argument also in Octave
 % - compatible to Matlab and Octave
 %
@@ -33,14 +39,16 @@ function o=rms(x,DIM)
 
 
 %	$Id$
-%	Copyright (C) 2000-2003,2008 by Alois Schloegl <a.schloegl@ieee.org>	%       This function is part of the NaN-toolbox
+%	Copyright (C) 2000-2003,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	%       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 
 if nargin<2,
 	[o,N,ssq] = sumskipnan(x);
-else
+elseif nargin<3
 	[o,N,ssq] = sumskipnan(x,DIM);
+else
+	[o,N,ssq] = sumskipnan(x,DIM,W);
 end;
 
 o = sqrt(ssq./N);

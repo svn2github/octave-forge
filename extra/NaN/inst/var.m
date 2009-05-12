@@ -1,20 +1,31 @@
-function y=var(x,opt,DIM)
+function y=var(x,opt,DIM,W)
 % VAR calculates the variance.
 % 
 % y = var(x [, opt[, DIM]])
 %   calculates the variance in dimension DIM
 %   the default DIM is the first non-single dimension
 %
-% opt   0: normalizes with N-1 [default}
+% opt   0: normalizes with N-1 [default]
 %	1: normalizes with N 
 % DIM	dimension
 %	1: VAR of columns
 %	2: VAR of rows
 % 	N: VAR of  N-th dimension 
 %	default or []: first DIMENSION, with more than 1 element
+% W	weights to compute weighted variance (default: [])
+%	if W=[], all weights are 1. 
+%	number of elements in W must match size(x,DIM) 
+% 
+% usage: 
+%	var(x)	
+%	var(x, opt, DIM)	
+%	var(x, [], DIM)	
+%	var(x, W, DIM)
+%	var(x, opt, DIM, W)	
 %
 % features:
 % - can deal with NaN's (missing values)
+% - weighting of data 
 % - dimension argument 
 % - compatible to Matlab and Octave
 %
@@ -22,7 +33,7 @@ function y=var(x,opt,DIM)
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -38,28 +49,40 @@ function y=var(x,opt,DIM)
 %       This is part of the NaN-toolbox for Octave and Matlab 
 %       see also: http://hci.tugraz.at/schloegl/matlab/NaN/       
 
-if nargin>1,
-        if ~isempty(opt) & opt~=0, 
-                fprintf(2,'Warning STD: OPTION not supported.\n');
-        end;
-else 
-        opt = 0; 
-end;
-
 if nargin<3,
 	DIM = []; 
-end;
+end; 
+
+if nargin==1,
+	W = [];
+	opt = [];
+
+elseif any(nargin==[2,3]) 
+	if (numel(opt)<2),
+		W = [];
+	else
+		W = opt;
+		opt = []; 
+	end;
+elseif (nargin==4) && (numel(opt)<2) && (numel(DIM)<2),
+	;
+else 
+	fprintf(1,'Error VAR: incorrect usage\n');	
+	help var; 
+	return;
+end; 	
+
 if isempty(DIM), 
         DIM=min(find(size(x)>1));
         if isempty(DIM), DIM=1; end;
 end;
 
-[y,n,ssq] = sumskipnan(x,DIM);if all(ssq(:).*n(:) > 2*(y(:).^2))
+[y,n,ssq] = sumskipnan(x,DIM,W);if all(ssq(:).*n(:) > 2*(y(:).^2))
 	%% rounding error is neglectable 
 	y = ssq - y.*y./n;
 else
 	%% rounding error is not neglectable 
-	[y,n] = sumskipnan(center(x,DIM).^2,DIM);
+	[y,n] = sumskipnan(center(x,DIM).^2,DIM,W);
 end; 
 
 if (opt~=1)

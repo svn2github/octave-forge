@@ -5,16 +5,16 @@ Copyright (C) 2000-2005,2009 Alois Schloegl <a.schloegl@ieee.org>
 
 FEATURES of the NaN-tb:
 -----------------------
- - implements statistical tools
+ - statistical toolbox
  - NaN's are treated as missing values 
+ - supports DIM argument 
+ - supports unbiased estimation 
+ - supports weightening of data   
  - less but more powerful functions (no nan-FUN needed)
  - fixes known bugs 
  - compatible to Matlab and Octave
  - easy to use
- - supports DIM argument 
- - supports unbiased estimation; 
- - The toolbox was tested with
-   Matlab 5.2, 5.3, 6.1, 6.5, 7.0, 7.6 and Octave 2.1.x, 2.9.x, 3.0.1, 3.1.51+
+ - The toolbox is tested with Octave 3.x and Matlab 7.x, FreeMat v3.6
  
   
 Currently are implemented:
@@ -144,7 +144,7 @@ version is included for backward compatibility.
 Permits to implement useful modifications. 
 
 12) NORMPDF, NORMCDF, NORMINV
-In the Matlab statistics toolbox V 3.0, NORMPDF, NORMCDF and NORMINV give 
+In the Matlab statistics toolbox V 3.0, NORMPDF, NORMCDF and NORMINV gave 
 incorrect results for SIGMA=0; A Similar problem was observed in Octave 
 with NORMAL_INV, NORMAL_PDF, and NORMALCDF. 
 
@@ -237,7 +237,7 @@ Then the (slower) M-file is used.
 LICENSE:
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
+    the Free Software Foundation; either version 3 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,

@@ -1,4 +1,4 @@
-function [y] = geomean(x,DIM)
+function [y] = geomean(x,DIM,W)
 % GEOMEAN calculates the geomentric mean of data elements. 
 % 
 % 	y = geomean(x [,DIM [,W]])   is the same as 
@@ -22,7 +22,7 @@ function [y] = geomean(x,DIM)
 %
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -43,8 +43,11 @@ function [y] = geomean(x,DIM)
 if nargin<2
         DIM=min(find(size(x)>1));
         if isempty(DIM), DIM=1; end;
+end
+if nargin<3
+	W = [];
 end;
 
-[y, n] = sumskipnan(log(x),DIM);
+[y, n] = sumskipnan(log(x),DIM,W);
 y = exp (y./n);
 

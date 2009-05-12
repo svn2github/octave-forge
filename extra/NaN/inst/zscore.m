@@ -35,9 +35,10 @@ function [i,v,m] = zscore(i,DIM)
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
-%	$Revision$
 %	$Id$
+%	Copyright (C) 2000-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This is part of the NaN-toolbox for Octave and Matlab 
+%       see also: http://hci.tugraz.at/schloegl/matlab/NaN/       
 
 
 if any(size(i)==0); return; end;
@@ -46,7 +47,7 @@ if nargin<2
         DIM=[]; 
 end
 if nargin<3
-        w = []; 
+        W = []; 
 end
 if isempty(DIM), 
         DIM=min(find(size(i)>1));

@@ -1,4 +1,4 @@
-function [y] = harmmean(x,DIM)
+function [y] = harmmean(x,DIM,W)
 % HARMMEAN calculates the harmonic mean of data elements. 
 % The harmonic mean is the inverse of the mean of the inverse elements.
 % 
@@ -47,7 +47,10 @@ if nargin<2
         DIM=min(find(size(x)>1));
         if isempty(DIM), DIM=1; end;
 end;
+if nargin<3
+	W = [];
+end;
 
-[y, n] = sumskipnan(1./x,DIM);
+[y, n] = sumskipnan(1./x,DIM,W);
 y = n./y;
 

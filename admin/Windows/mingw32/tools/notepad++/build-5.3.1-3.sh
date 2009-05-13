@@ -20,8 +20,8 @@ PATCHFILE=${FULLPKG}.patch
 
 # URL of source code file
 URL="
-http://downloads.sourceforge.net/notepad-plus/npp.5.3.1.bin.zip
-http://downloads.sourceforge.net/notepad-plus/npp.5.3.1.src.zip"
+http://prdownloads.sourceforge.net/notepad-plus/npp.5.3.1.bin.zip
+http://prdownloads.sourceforge.net/notepad-plus/npp.5.3.1.src.zip"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`

@@ -24,9 +24,9 @@
 ## $H(\frac{Y}{X_i}) = \sum_k{-P(\frac{Y_k}{X_i}) \log(P(\frac{Y_k}{X_i}))$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## H(Y/X) = SUM( P(Xi)*H(Y/Xi) ), where H(Y/Xi) = SUM( -P(Yk/Xi)log(P(Yk/Xi)))
-## @end ifinfo
+## @end ifnottex
 ## The matrix @var{xy} must have @var{y} along rows and @var{x} along columns.
 ## @iftex
 ## @tex
@@ -35,11 +35,11 @@
 ## $H(Y|X) = H(X,Y) - H(X)$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## Xi = SUM( COLi ) 
 ## Yi = SUM( ROWi )
 ## H(Y|X) = H(X,Y) - H(X)
-## @end ifinfo
+## @end ifnottex
 ## @end deftypefn
 ## @seealso{entropy, conditionalentropy_XY}
 

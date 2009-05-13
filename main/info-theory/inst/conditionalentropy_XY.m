@@ -25,11 +25,11 @@
 ## where $P(\frac{X_k}{Y_i} = \frac{P(X_k,Y_i)}{P(Y_i)}$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## H(X/Y) = SUM( P(Yi)*H(X/Yi) ) , where 
 ## H(X/Yi) = SUM( -P(Xk/Yi)log(P(Xk/Yi))), where
 ## P(Xk/Yi) = P(Xk,Yi)/P(Yi).
-## @end ifinfo
+## @end ifnottex
 ## The matrix @var{xy} must have @var{y} along rows and @var{x} along columns.
 ## @iftex
 ## @tex
@@ -38,13 +38,13 @@
 ## $H(X|Y) = H(X,Y) - H(Y)$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ## Xi = SUM( COLi ) 
 ## Yi = SUM( ROWi )
 ## H(X|Y) = H(X,Y) - H(Y)
-## @end ifinfo
-## @end deftypefn
+## @end ifnottex
 ## @seealso{entropy, conditionalentropy}
+## @end deftypefn
 
 function val=conditionalentropy_XY(XY)
   val=0.0;

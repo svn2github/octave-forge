@@ -29,6 +29,48 @@
 #include <float.h>
 #include "error.h"
 
+// the compares two octave_values (thanks to jwe)
+bool isequal (const octave_value& a, const octave_value& b,
+           bool nans_compare_equal = false)
+{
+    octave_value_list args;
+
+    args(2) = b;
+    args(1) = a;
+    args(0) = nans_compare_equal;
+
+    octave_value_list tmp = feval ("__isequal__", args, 1);
+
+    // We expect __isequal__ to always return a single logical scalar.
+    return tmp(0).bool_value ();
+}
+
+// this is cache on feval to prevent the extra evaluation of the
+// objective function when subsequent calls with exactly the same arguments would take place
+
+octave_value_list _feval( const std::string f, const octave_value_list f_args )
+{
+    static octave_value_list f_args_prev;
+    static octave_value_list ret;
+
+    // check if ( f_args_prev == f_args )
+    bool same = true;
+    for( int i=0; i < f_args.length(); i++)
+    {
+        if (!isequal( f_args(i),f_args_prev(i)))
+        {
+            same = false;
+            break;
+        }
+    }
+    if (same)
+        return ret;
+    
+    f_args_prev = f_args;
+    ret = feval( f, f_args );
+
+    return ret;
+}
 
 int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_args, const ColumnVector theta, const int minarg)
 {
@@ -36,7 +78,7 @@ int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_ar
 	int success = 1;
 	f_args_new = f_args;
 	f_args_new(minarg - 1) = theta;
-	f_return = feval(f, f_args_new);
+	f_return = _feval(f, f_args_new);
 	obj = f_return(0).double_value();
 	// bullet-proof the objective function
 	if (error_state) {
@@ -89,12 +131,12 @@ int __bfgsmin_gradient(ColumnVector &derivative, const std::string f, octave_val
 	Matrix check_gradient(k,1);
 	if (have_analytic_gradient) {
 		f_args(minarg - 1) = theta;
-		f_return = feval(f, f_args);
+		f_return = _feval(f, f_args);
 		g = f_return(1).column_vector_value();
 	}
 	else if (try_analytic_gradient) {
 		f_args(minarg - 1) = theta;
-		f_return = feval(f, f_args);
+		f_return = _feval(f, f_args);
 		if (f_return.length() > 1) {
 			if (f_return(1).is_real_matrix()) {
         			if ((f_return(1).rows() == k) & (f_return(1).columns() == 1)) {
@@ -278,7 +320,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	warnings = 0;
 	if (verbosity == 3) warnings = 1;
 
-	// copy cell contents over to octave_value_list to use feval()
+	// copy cell contents over to octave_value_list to use _feval()
 	k = f_args_cell.length();
 	f_args(k); // resize only once
 	for (i = 0; i<k; i++) f_args(i) = f_args_cell(i);

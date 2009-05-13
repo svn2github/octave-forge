@@ -1,0 +1,158 @@
+function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode);
+% PARTCORRCOEF calculates the partial correlation coefficient.
+% X and Y can contain missing values encoded with NaN.
+% NaN's are skipped, NaN do not result in a NaN output. 
+% (Its assumed that the occurence of NaN's is uncorrelated) 
+% The output gives NaN, only if there are insufficient input data.
+%
+%  The partial correlation  is defined as 
+%  pcc(xy|z)=(cc(x,y)-cc(x,z)*cc(y,z))/sqrt((1-cc(x,y)²)*((1-cc(x,z)²)))
+%
+%
+% PARTCORRCOEF(X [,Mode]);
+%      calculates the (auto-)correlation matrix of X
+% PARTCORRCOEF(X,Y,Z [,Mode]);
+%      calculates the crosscorrelation between X and Y
+%
+% Mode='Pearson' or 'parametric' [default]
+%	gives the correlation coefficient  
+%	also known as the "product-moment coefficient of correlation" or "Pearson's correlation" [1]
+% Mode='Spearman' 	gives "Spearman's Rank Correlation Coefficient"
+%	This replaces SPEARMAN.M
+% Mode='Rank' 		gives a nonparametric Rank Correlation Coefficient
+%	This replaces RANKCORR.M
+%
+% [R,p,ci1,ci2] = PARTCORRCOEF(...);
+%  r is the partialcorrelation matrix
+%	r(i,j) is the partial correlation coefficient r between X(:,i) and Y(:,j) 
+%	when influence of Z is removed. 
+%  p    gives the significance of PCC
+%	It tests the null hypothesis that the product moment correlation coefficient is zero 
+%       using Student's t-test on the statistic t = r sqrt(N-Nz-2)/sqrt(1-r^2) 
+%       where N is the number of samples (Statistics, M. Spiegel, Schaum series).
+%  p > alpha: do not reject the Null hypothesis: "R is zero".
+%  p < alpha: The alternative hypothesis "R2 is larger than zero" is true with probability (1-alpha).
+%  ci1	lower 0.95 confidence interval 
+%  ci2	upper 0.95 confidence interval 
+%
+% Further recommandation related to the correlation coefficient 
+% + LOOK AT THE SCATTERPLOTS!
+% + Correlation is not causation. The observed correlation between two variables 
+%	might be due to the action of other, unobserved variables.
+%
+% see also: SUMSKIPNAN, COVM, COV, COR, SPEARMAN, RANKCORR, RANKS, CORRCOEF
+%
+% REFERENCES:
+% on the partial correlation coefficient 
+% [1] http://www.tufts.edu/~gdallal/partial.htm
+% [2] http://www.nag.co.uk/numeric/fl/manual/pdf/G02/g02byf.pdf
+
+%       $Id: corrcoef.m 5608 2009-03-12 16:46:34Z schloegl $
+%       Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+
+%    This program is free software; you can redistribute it and/or modify
+%    it under the terms of the GNU General Public License as published by
+%    the Free Software Foundation; either version 3 of the License, or
+%    (at your option) any later version.
+%
+%    This program is distributed in the hope that it will be useful,
+%    but WITHOUT ANY WARRANTY; without even the implied warranty of
+%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%    GNU General Public License for more details.
+%
+%    You should have received a copy of the GNU General Public License
+%    along with this program; if not, write to the Free Software
+%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+% Features:
+% + interprets NaN's as missing value
+% + Pearson's correlation
+% + Spearman's rank correlation
+% + Rank correlation (non-parametric, non-Spearman)
+% + is fast, using an efficient algorithm O(n.log(n)) for calculating the ranks
+% + significance test for null-hypthesis: r=0 
+% + confidence interval (0.99) included
+% - rank correlation works for cell arrays, too (no check for missing values).
+% + compatible with Octave and Matlab
+
+
+if nargin==3
+        Mode='Pearson';
+elseif nargin==4,
+else
+        error('Error CORRCOEF: Missing argument(s)\n');
+end;        
+
+if size(Z,1)~=1,
+        warning('PARTCORRCOEF: Z has more than 1 dimension');
+end;
+
+rxy=corrcoef(X,Y,Mode);
+rxz=corrcoef(X,Z,Mode);
+if isempty(Y),
+        ryz = rxz;
+else
+        ryz = corrcoef(Y,Z,Mode);
+end;
+
+%rxy,rxz,ryz 
+R = (rxy-rxz*ryz')./sqrt((1-rxz.^2)*(1-ryz.^2)');
+
+if nargout<2, 
+        return, 
+end;
+
+% SIGNIFICANCE TEST
+%warning off; 	% prevent division-by-zero warnings in Matlab.
+NN=size(X,1)-size(Z,2);
+
+tmp = 1 - R.*R;
+tmp(tmp<0) = 0;		% prevent tmp<0 i.e. imag(t)~=0 
+t   = R.*sqrt(max(NN-2,0)./tmp);
+
+if exist('t_cdf')>1;
+        sig = t_cdf(t,NN-2);
+elseif exist('tcdf')>1;
+        sig = tcdf(t,NN-2);
+else
+        fprintf('Warning CORRCOEF: significance test not completed because of missing TCDF-function\n')
+        sig = repmat(nan,size(R));
+end;
+sig  = 2 * min(sig,1 - sig);
+
+if nargout<3, 
+        return, 
+end;
+
+
+% CONFIDENCE INTERVAL
+if exist('flag_implicit_significance')==2,
+        alpha = flag_implicit_significance;
+else
+	alpha = 0.01;        
+end;
+
+fprintf(1,'CORRCOEF: confidence interval is based on alpha=%f\n',alpha);
+
+tmp = R;
+%tmp(ix1 | ix2) = nan;		% avoid division-by-zero warning
+z   = log((1+tmp)./(1-tmp))/2; 	% Fisher's z-transform; 
+%sz  = 1./sqrt(NN-3);		% standard error of z
+sz  = sqrt(2)*erfinv(1-2*alpha)./sqrt(NN-3);		% confidence interval for alpha of z
+
+ci1 = tanh(z-sz);
+ci2 = tanh(z+sz);
+
+return;
+
+
+
+%test signals
+X=randn(100,3)+[1:100]'*[1,1,3];
+Y=randn(100,2);
+Z1=randn(100,1);
+Z2=[1:100]';
+
+

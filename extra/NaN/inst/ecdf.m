@@ -1,12 +1,15 @@
-function [F,X,FLO,FUP]=ecdf(h,Y)
+function [F,X]=ecdf(h,Y)
 % ECDF empirical cumulative function  
-%  Missing values (encoded as NaN) are ignored. 
+%  NaN's are considered Missing values and are ignored. 
 %
 %  [F,X] = ecdf(Y)
 %	calculates empirical cumulative distribution functions (i.e Kaplan-Meier estimate)
 %  ecdf(Y)
 %  ecdf(gca,Y)
 %	without output arguments plots the empirical cdf, in axis gca. 
+%
+% Y 	input data
+%	must be a vector or matrix, in case Y is a matrix, the ecdf for every column is computed. 
 %
 % see also: HISTO2, HISTO3, PERCENTILE, QUANTILE
 
@@ -44,32 +47,33 @@ DIM = [];
                 if ~isfield(Y,'N');
                         Y.N = sum(Y.H,1);
                 end;
-                
-                for k1 = 1:yc,
-                        tmp = Y.H(:,k1)>0;
-                        f = [0;cumsum(full(Y.H(tmp,k1)))];
-                        t = Y.X(tmp,min(size(Y.X,2),k1));
-
-			N = Y.N(k1);  
-		end; 	
+		f = [zeros(1,yc);cumsum(Y.H,1)];
+		for k=1:yc,
+			f(:,k)=f(:,k)/Y.N(k); 
+		end; 		
+		t = [Y.X(1,:);Y.X]; 
 
         elseif isnumeric(Y),
 		sz = size(Y);
-		if sum(sz>1)>1
-			error('input argument is not a vector')
-		end; 
-
-	        t  = sort(Y(~isnan(Y)));
-	        N  = length(t); 
-		f  = [0:N]'/N;
+		if isempty(DIM),
+		        DIM = min(find(sz>1));
+		        if isempty(DIM), DIM = 1; end;
+		end;
+		if DIM==2, Y=Y.'; DIM = 1; end;		
+		
+		t = sort(Y,1); 
+		t = [t(1,:);t]; 	
+		N = sum(~isnan(Y),1); 
+		for k=1:size(Y,2),
+			f(:,k)=[0:size(Y,1)]'/N(k); 
+		end; 		
 	end; 
-	
 	
 	if nargout<1, 
 		if  ~isempty(h), axes(h); end; 
-		%plot(t2,x);
-		stairs([t(1);t(:)],f)
+		stairs(t,f);
 	else 
 		F = f;
-		X = [t(1),t]'; 	
+		X = t; 	
 	end; 			
+

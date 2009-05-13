@@ -18,15 +18,15 @@
 ## @deftypefn {Function File} {} mutualinformation (@var{xy})
 ##
 ## Computes the mutual information of the given channel transition matrix.
-## By definition we have @code{I(@var{x}, @var{y}) given as
+## By definition we have @code{I(@var{x}, @var{y})} given as
 ## @code{I(@var{x}:@var{y}) = SUM(P(@var{x},@var{y}) * log2(p(@var{x},@var{y})
 ## / p(@var{x})/p(@var{y}))) = relative_entropy(P(@var{x},@var{y}) ||
 ## P(@var{x}),P(@var{y}))}
 ## Mutual Information, is amount of information, one variable
 ## has, about the other. It is the reduction of uncertainity.
 ## This is a symmetric function.
-## @end deftypefn
 ## @seealso{entropy, conditionalentropy}
+## @end deftypefn
 
 function val=mutualinformation(XY)
   if nargin < 1 || ~ismatrix(XY)

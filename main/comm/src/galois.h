@@ -131,7 +131,7 @@ public:
 };
 
 class
-LU : public base_lu <galois, int, Matrix, double>
+LU : public base_lu <galois>
 {
   friend class galois;
 public:
@@ -141,18 +141,18 @@ public:
     COL
   };
 
-  LU (void) : base_lu <galois, int, Matrix, double> () { }
+  LU (void) : base_lu <galois> () { }
 
   LU (const galois& a, const pivot_type& typ) { factor (a, typ); }
 
   LU (const galois& a) { factor (a, LU::ROW); }
 
-  LU (const LU& a) : base_lu <galois, int, Matrix, double> (a) { }
+  LU (const LU& a) : base_lu <galois> (a) { }
 
   LU& operator = (const LU& a)
     {
       if (this != &a)
-	base_lu <galois, int, Matrix, double> :: operator = (a);
+	base_lu <galois> :: operator = (a);
 
       return *this;
     }
@@ -163,17 +163,11 @@ public:
 
   galois U (void) const;
 
-  Matrix P (void) const;
-
-  bool singular (void) const { return info != 0; }
+  bool singular (void) const { return info != 0; } 
 
   pivot_type type (void) const { return ptype; }
 private:
   void factor (const galois& a, const pivot_type& typ);
-
-  Array<int> IP (void) const;
-
-  galois A (void) const;
 
   int info;
 

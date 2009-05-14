@@ -872,7 +872,9 @@ DEFUN_DLD (glu, args, nargout,
     case 1:
     case 2:
       {
-	Matrix P = fact.P ();
+	// While we don't have sparse galois matrices converting the
+	// permutation matrix to a full matrix is the best we can do.
+	Matrix P = Matrix (fact.P ());
 	galois L = P.transpose () * fact.L ();
 	retval(1) = new octave_galois (fact.U ());
 	retval(0) = new octave_galois (L);

@@ -369,12 +369,14 @@ octave_galois::assign (const octave_value_list& idx,
     case 2:
       {
 	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
 
-	gval.set_index (i);
-	gval.set_index (j);
+        if (! error_state)
+          {
+            idx_vector j = idx (1).index_vector ();
 
-	::assign (gval, rhs);
+            if (! error_state)
+              gval.assign (i, j, rhs);
+          }
       }
       break;
 
@@ -382,9 +384,8 @@ octave_galois::assign (const octave_value_list& idx,
       {
 	idx_vector i = idx (0).index_vector ();
 
-	gval.set_index (i);
-
-	::assign (gval, rhs);
+	if (! error_state)
+	  gval.assign (i, rhs);
       }
       break;
 

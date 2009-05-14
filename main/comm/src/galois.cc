@@ -28,6 +28,8 @@ Open Source Initiative (www.opensource.org)
 #include "galoisfield.h"
 #include "galois-def.h"
 
+#include <octave/base-lu.cc>
+
 galois_field_list stored_galois_fields;
 
 // galois class
@@ -709,13 +711,13 @@ operator * (const galois& a, const galois& b)
 boolMatrix
 galois::all (int dim) const
 {
-  MX_ALL_OP (dim);
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 galois::any (int dim) const
 {
-  MX_ANY_OP (dim);
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
 }
 
 galois
@@ -877,7 +879,7 @@ galois::exp (void) const
   return retval;
 }
 
-template class base_lu <galois, int, Matrix, double>;
+template class base_lu <galois>;
 
 void
 LU::factor (const galois& a, const pivot_type& typ)
@@ -993,50 +995,6 @@ LU::U (void) const
   return u;
 }
 
-Matrix
-LU::P (void) const
-{
-  int a_nr = a_fact.rows ();
-  int a_nc = a_fact.cols ();
-  int n = (ptype == LU::ROW ? a_nr : a_nc);
-
-  Array<int> pvt (n);
-  
-  for (int i = 0; i < n; i++)
-    pvt (i) = i;
-
-  for (int i = 0; i < ipvt.length(); i++)
-    {
-      int k = ipvt (i);
-
-      if (k != i)
-	{
-	  int tmp = pvt (k);
-	  pvt (k) = pvt (i);
-	  pvt (i) = tmp;
-	}
-    }
-
-  Matrix p(n, n, 0.0);
-
-  for (int i = 0; i < n; i++)
-    p (i, pvt (i)) = 1.0;
-
-  return p;
-}
-
-Array<int>
-LU::IP (void) const
-{
-  return Array<int> (ipvt);
-}
-
-galois
-LU::A (void) const
-{
-  return galois (a_fact);
-}
-
 galois
 galois::inverse (void) const
 {
@@ -1094,7 +1052,7 @@ galois::determinant (int& info) const
     LU fact (*this);
 
     if ( ! fact.singular()) {
-      galois A (fact.A());
+      galois A (fact.a_fact);
       info = 0;
 
       retval(0,0) = A(0,0);
@@ -1163,8 +1121,8 @@ galois::solve (const galois& b, int& info,
 
       return galois();
     } else {
-      galois A (fact.A());
-      Array<int> IP (fact.IP());
+      galois A (fact.a_fact);
+      Array<int> IP (fact.ipvt);
 
       // Resize the number of solution rows if needed
       if (nc > nr)
@@ -1226,8 +1184,8 @@ galois::solve (const galois& b, int& info,
 
       return galois();
     } else {
-      galois A (fact.A());
-      Array<int> IP (fact.IP());
+      galois A (fact.a_fact);
+      Array<int> IP (fact.ipvt);
 
       // Apply row interchanges to the right hand sides.
       for (int j=0; j<IP.length(); j++) {

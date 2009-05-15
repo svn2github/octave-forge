@@ -322,7 +322,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 
 	// copy cell contents over to octave_value_list to use _feval()
 	k = f_args_cell.length();
-	f_args(k); // resize only once
+	f_args(k-1); // resize only once
 	for (i = 0; i<k; i++) f_args(i) = f_args_cell(i);
 
 	// get the minimization argument

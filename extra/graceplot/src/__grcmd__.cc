@@ -164,14 +164,14 @@ static int gr_write(int left)
     return (left);
 }
 
-int gr_open_pipe(int fig, char *exe, int bs, ...)
+int gr_open_pipe(int fig, const char *exe, int bs, ...)
 {
     int i, fd[2];
     int retval;
     char fd_number[4];
     va_list ap;
-    char **arglist;
-    char *s;
+    const char ** arglist;
+    const char *s;
     int numarg;
 
     Gracedata & g = graces[fig];
@@ -221,23 +221,21 @@ int gr_open_pipe(int fig, char *exe, int bs, ...)
         /* build the argument list */
         va_start(ap, bs);
         numarg = 3;
-        arglist = (char **) malloc((numarg + 1) * sizeof(char *));
+        arglist = (const char **) malloc((numarg + 1) * sizeof(char *));
         arglist[0] = exe;
         arglist[1] = "-dpipe";
         sprintf(fd_number, "%d", fd[0]);
         arglist[2] = fd_number;
-        while ((s = va_arg(ap, char *)) != NULL) {
+        while ((s = va_arg(ap, const char *)) != NULL) {
             numarg++;
             arglist =
-                (char **) realloc(arglist, (numarg + 1) * sizeof(char *));
-            arglist[numarg - 1] =
-                (char *) malloc((strlen(s) + 1) * SIZEOF_CHAR);
-            strcpy(arglist[numarg - 1], s);
+                (const char **) realloc(arglist, (numarg + 1) * sizeof(char *));
+            arglist [numarg - 1] = s;
         }
         arglist[numarg] = NULL;
         va_end(ap);
         
-        retval = execvp(exe, arglist);
+        retval = execvp(exe, (char * const *) arglist);
         
         if (retval == -1) {
             printf("grplot: Cannot start %s\n", exe);
@@ -271,7 +269,7 @@ int gr_open_pipe(int fig, char *exe, int bs, ...)
 bool gr_is_open(int fig)
 {
     Gracedata & g = graces[fig];
-    char *teststr = " ";
+    const char *teststr = " ";
     int written;
 
     if (g.fd_pipe < 0)

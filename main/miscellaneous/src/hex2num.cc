@@ -112,7 +112,7 @@ hex2num ([\"4005bf0a8b145769\";\"4024000000000000\"])\n\
  */
 
 
-
+// PKG_ADD: autoload ("num2hex", "hex2num.oct");
 DEFUN_DLD (num2hex, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} num2hex (@var{n})\n\

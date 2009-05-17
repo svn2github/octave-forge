@@ -4,7 +4,7 @@ ifdef HAVE_LIB_TERMCAP
 	TERM_LIB=-ltermcap
 endif
 
-TARGETS=waitbar.oct $(LISTEN) xmlread.oct  hex2num.cc \
+TARGETS=waitbar.oct $(LISTEN) xmlread.oct  hex2num.oct \
 	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct
 
 all:	$(TARGETS)

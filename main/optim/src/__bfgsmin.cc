@@ -26,6 +26,7 @@
 #include <oct.h>
 #include <octave/parse.h>
 #include <octave/Cell.h>
+#include <octave/lo-ieee.h>
 #include <float.h>
 #include "error.h"
 

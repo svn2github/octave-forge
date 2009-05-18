@@ -274,16 +274,16 @@ ComplexGSVD::init (const ComplexMatrix& a, const ComplexMatrix& b,
 	sigmaA.resize (l, l);
 	sigmaB.resize (l, l);
 	for (i = 0; i < l; i++) {
-	  sigmaA.xelem(i, i) = alpha.elem(k+i);
-	  sigmaB.xelem(i, i) = beta.elem(k+i);
+	  sigmaA.dgxelem(i) = alpha.elem(k+i);
+	  sigmaB.dgxelem(i) = beta.elem(k+i);
 	} 
       } else {
 	// Fills in C and S
 	sigmaA.resize (m-k, m-k);
 	sigmaB.resize (m-k, m-k);
 	for (i = 0; i < m-k; i++) {
-	  sigmaA.xelem(i, i) = alpha.elem(k+i);
-	  sigmaB.xelem(i, i) = beta.elem(k+i);
+	  sigmaA.dgxelem(i) = alpha.elem(k+i);
+	  sigmaB.dgxelem(i) = beta.elem(k+i);
 	}
       }
     }

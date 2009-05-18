@@ -245,7 +245,7 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.\n\
 		  DiagMatrix sigA =  result.singular_values_A ();
 		  DiagMatrix sigB =  result.singular_values_B ();
 		  for (int i = sigA.rows() - 1; i >=0; i--)
-		    sigA.xelem(i, i) /= sigB.xelem(i, i);
+		    sigA.dgxelem(i) /= sigB.dgxelem(i);
 		  retval(0) = sigA.diag();
 		}
 	      else
@@ -286,7 +286,7 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.\n\
 		  DiagMatrix sigA =  result.singular_values_A ();
 		  DiagMatrix sigB =  result.singular_values_B ();
 		  for (int i = sigA.rows() - 1; i >=0; i--)
-		    sigA.xelem(i, i) /= sigB.xelem(i, i);
+		    sigA.dgxelem(i) /= sigB.dgxelem(i);
 		  retval(0) = sigA.diag();
 		}
 	      else

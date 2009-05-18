@@ -36,6 +36,52 @@ Open Source Initiative (www.opensource.org)
 
 #include <octave/mx-inlines.cc>
 
+inline FixedPoint 
+mx_inline_sumsq (const FixedPointComplex* v, octave_idx_type n)
+{
+  FixedPoint ac = FixedPoint ();
+  for (octave_idx_type i = 0; i < n; i++)
+    OP_RED_SUMSQC(ac, v[i]);
+  return ac;
+}
+
+inline void
+mx_inline_sumsq (const FixedPointComplex* v, FixedPoint *r, 
+		 octave_idx_type m, octave_idx_type n)
+{
+  for (octave_idx_type i = 0; i < m; i++)
+    r[i] = FixedPoint ();
+  for (octave_idx_type j = 0; j < n; j++)
+    {
+      for (octave_idx_type i = 0; i < m; i++)
+        OP_RED_SUMSQC(r[i], v[i]);
+      v += m;
+    }
+}
+
+inline void
+mx_inline_sumsq (const FixedPointComplex *v, FixedPoint *r, octave_idx_type l,
+   octave_idx_type n, octave_idx_type u)
+{
+  if (l == 1)
+    {
+      for (octave_idx_type i = 0; i < u; i++)
+        {
+          r[i] = mx_inline_sumsq (v, n);
+          v += n;
+        }
+    }
+  else
+    {
+      for (octave_idx_type i = 0; i < u; i++)
+        {
+          mx_inline_sumsq (v, r, l, n);
+          v += l*n;
+          r += l;
+        }
+    }
+}
+
 inline bool xis_true (FixedPoint x) {return x != FixedPoint(); }
 inline bool xis_false (FixedPoint x) {return x == FixedPoint(); }
 

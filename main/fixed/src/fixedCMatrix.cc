@@ -1077,7 +1077,7 @@ FixedComplexMatrix::sum (int dim) const
 FixedComplexMatrix
 FixedComplexMatrix::sumsq (int dim) const
 {
-  return do_mx_red_op<FixedComplexMatrix> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<FixedMatrix> (*this, dim, mx_inline_sumsq);
 }
 
 FixedComplexMatrix

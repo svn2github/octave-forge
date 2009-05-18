@@ -48,7 +48,7 @@ conf()
      CXX="${CXX} $LIBGCCLDFLAGS" \
      F77="${F77} $LIBGCCLDFLAGS" \
      CPP=${CPP} \
-     LDFLAGS="${LDFLAGS}" \
+     LDFLAGS="${LDFLAGS} -L${LIBRARY_PATH}" \
      CPPFLAGS="${GCC_ARCH_FLAGS}" \
      CFLAGS="$CFLAGS ${GCC_OPT_FLAGS} -Wall" \
      CXXFLAGS="$CXXFLAGS ${GCC_OPT_FLAGS} -Wall" \

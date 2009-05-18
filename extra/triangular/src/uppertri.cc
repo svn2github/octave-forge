@@ -194,9 +194,12 @@ public:
     return retval;
   }
 
-  type_conv_fcn numeric_conversion_function (void) const
+  octave_base_value::type_conv_info
+  numeric_conversion_function (void) const
   {
-    return default_numeric_conversion_function;
+    return octave_base_value::type_conv_info 
+      (default_numeric_conversion_function,
+       octave_matrix::static_type_id ());
   }
 
   bool isupper (void) const { return (tri == Upper); }
@@ -251,7 +254,6 @@ DEFCONV (octave_triangular_conv, octave_triangular_matrix, matrix)
 DEFUNOP (uplus, triangular_matrix)
 {
   CAST_UNOP_ARG (const octave_triangular_matrix&);
-  std::cerr << "here\n"; 
   return new octave_triangular_matrix (v);
 }
 
@@ -368,8 +370,7 @@ install_triangular (void)
       octave_triangular_matrix::register_type ();
       install_tri_ops ();
       triangular_type_loaded = true;
-      mlock ("uppertri");
-      mlock ("lowertri");
+      mlock ();
     }
 }
 

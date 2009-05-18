@@ -57,6 +57,8 @@ public:
 
   FixedComplexMatrix (void) : MArray2<FixedPointComplex> () { }
 
+  FixedComplexMatrix (const dim_vector& dv) : MArray2<FixedPointComplex> (dv) { }
+
   FixedComplexMatrix (int r, int c) : MArray2<FixedPointComplex> (r, c) { }
 
   FixedComplexMatrix (int r, int c, const FixedPointComplex val) :

@@ -34,6 +34,8 @@ Open Source Initiative (www.opensource.org)
 #include <octave/MArray.h>
 #include <octave/MArray.cc>
 
+#include <octave/oct-sort.cc>
+
 static bool
 operator < (const FixedPointComplex& a, const FixedPointComplex& b)
 {

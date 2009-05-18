@@ -42,6 +42,8 @@ Open Source Initiative (www.opensource.org)
 #include "fixedCRowVector.h"
 #include "fixedCMatrix.h"
 
+#include "fixed-inline.cc"
+
 // Fixed Point Complex Matrix class.
 
 FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is, 
@@ -1039,89 +1041,43 @@ FixedComplexMatrix::apply (fpc_fpc_Mapper f)
 boolMatrix
 FixedComplexMatrix::all (int dim) const
 {
-#define ROW_EXPR \
-  if (elem (i, j) .fixedpoint () == 0.0) \
-    { \
-      retval.elem (i, 0) = false; \
-      break; \
-    }
-#define COL_EXPR \
-  if (elem (i, j) .fixedpoint () == 0.0) \
-    { \
-      retval.elem (0, j) = false; \
-      break; \
-    }
-
-  MX_BASE_REDUCTION_OP (boolMatrix, ROW_EXPR, COL_EXPR, true, true);
-
-#undef ROW_EXPR
-#undef COL_EXPR
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 FixedComplexMatrix::any (int dim) const
 {
-#define ROW_EXPR \
-  if (elem (i, j) .fixedpoint () != 0.0) \
-    { \
-      retval.elem (i, 0) = true; \
-      break; \
-    }
-#define COL_EXPR \
-  if (elem (i, j) .fixedpoint () != 0.0) \
-    { \
-      retval.elem (0, j) = true; \
-      break; \
-    }
-
-  MX_BASE_REDUCTION_OP (boolMatrix, ROW_EXPR, COL_EXPR, false, false);
-
-#undef ROW_EXPR
-#undef COL_EXPR
+  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
 }
 
 FixedComplexMatrix
 FixedComplexMatrix::cumprod (int dim) const
 {
-  MX_CUMULATIVE_OP (FixedComplexMatrix, FixedPointComplex, *=);
+  return do_mx_cum_op<FixedComplexMatrix> (*this, dim, mx_inline_cumprod);
 }
 
 FixedComplexMatrix
 FixedComplexMatrix::cumsum (int dim) const
 {
-  MX_CUMULATIVE_OP (FixedComplexMatrix, FixedPointComplex, +=);
+  return do_mx_cum_op<FixedComplexMatrix> (*this, dim, mx_inline_cumsum);
 }
 
 FixedComplexMatrix
 FixedComplexMatrix::prod (int dim) const
 {
-  FixedPointComplex one(1, 0, 1, 0);
-  MX_REDUCTION_OP (FixedComplexMatrix, *=, one, one);
+  return do_mx_red_op<FixedComplexMatrix> (*this, dim, mx_inline_prod);
 }
 
 FixedComplexMatrix
 FixedComplexMatrix::sum (int dim) const
 {
-  FixedPointComplex zero;
-  MX_REDUCTION_OP (FixedComplexMatrix, +=, zero, zero);
+  return do_mx_red_op<FixedComplexMatrix> (*this, dim, mx_inline_sum);
 }
 
 FixedComplexMatrix
 FixedComplexMatrix::sumsq (int dim) const
 {
-  FixedPointComplex zero;
-#define ROW_EXPR \
-  FixedPointComplex d = elem (i, j); \
-  retval.elem (i, 0) += d * conj(d)
-
-#define COL_EXPR \
-  FixedPointComplex d = elem (i, j); \
-  retval.elem (0, j) += d * conj(d)
-
-  MX_BASE_REDUCTION_OP (FixedComplexMatrix, ROW_EXPR, COL_EXPR, zero, zero);
-
-#undef ROW_EXPR
-#undef COL_EXPR
+  return do_mx_red_op<FixedComplexMatrix> (*this, dim, mx_inline_sumsq);
 }
 
 FixedComplexMatrix

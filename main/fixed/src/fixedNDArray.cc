@@ -41,6 +41,8 @@ Open Source Initiative (www.opensource.org)
 #include "fixedNDArray.h"
 #include "fixedCNDArray.h"
 
+#include "fixed-inline.cc"
+
 // Fixed Point NDArray class.
 
 FixedNDArray::FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds)
@@ -357,181 +359,67 @@ FixedNDArray::operator ! (void) const
 boolNDArray
 FixedNDArray::all (octave_idx_type dim) const
 {
-#define FMX_ND_ALL_EXPR  elem (iter_idx) .fixedpoint () == 0.0
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (FMX_ND_ALL_EXPR), true);
-#undef FMX_ND_ALL_EXPR
+  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 FixedNDArray::any (octave_idx_type dim) const
 {
-#define FMX_ND_ANY_EXPR  elem (iter_idx) .fixedpoint () != 0.0
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (FMX_ND_ANY_EXPR), false);
-#undef FMX_ND_ANY_EXPR
+  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
 }
 
 FixedNDArray
 FixedNDArray::cumprod (octave_idx_type dim) const
 {
-  FixedPoint one(1,0,1,0);
-  MX_ND_CUMULATIVE_OP (FixedNDArray, FixedPoint, one, *);
+  return do_mx_cum_op<FixedNDArray> (*this, dim, mx_inline_cumprod);
 }
 
 FixedNDArray
 FixedNDArray::cumsum (octave_idx_type dim) const
 {
-  FixedPoint zero;
-  MX_ND_CUMULATIVE_OP (FixedNDArray, FixedPoint, zero, +);
+  return do_mx_cum_op<FixedNDArray> (*this, dim, mx_inline_cumsum);
 }
 
 FixedNDArray
 FixedNDArray::prod (octave_idx_type dim) const
 {
-  FixedPoint one(1,0,1,0);
-  MX_ND_REDUCTION (retval(result_idx) *= elem (iter_idx), one, FixedNDArray);
+  return do_mx_red_op<FixedNDArray> (*this, dim, mx_inline_prod);
 }
 
 FixedNDArray
 FixedNDArray::sum (octave_idx_type dim) const
 {
-  FixedPoint zero;
-  MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx), zero, FixedNDArray);
+  return do_mx_red_op<FixedNDArray> (*this, dim, mx_inline_sum);
 }
 
 FixedNDArray
 FixedNDArray::sumsq (octave_idx_type dim) const
 {
-  FixedPoint zero;
-  MX_ND_REDUCTION (retval(result_idx) += pow (elem (iter_idx), 2), zero, 
-		   FixedNDArray);
+  return do_mx_red_op<FixedNDArray> (*this, dim, mx_inline_sumsq);
 }
 
 FixedNDArray
 FixedNDArray::max (octave_idx_type dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
-  return max (dummy_idx, dim);
+  return do_mx_minmax_op<FixedNDArray> (*this, dim, mx_inline_max);
 }
 
 FixedNDArray
 FixedNDArray::max (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim) const
 {
-  dim_vector dv = dims ();
-  dim_vector dr = dims ();
-
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
-    return FixedNDArray ();
-  
-  dr(dim) = 1;
-
-  FixedNDArray result (dr);
-  idx_arg.resize (dr);
-
-  octave_idx_type x_stride = 1;
-  octave_idx_type x_len = dv(dim);
-  for (octave_idx_type i = 0; i < dim; i++)
-    x_stride *= dv(i);
-
-  for (octave_idx_type i = 0; i < dr.numel (); i++)
-    {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-	x_offset = i * x_len;
-      else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = i;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
-
-      octave_idx_type idx_j = 0;
-      FixedPoint tmp_max = elem (x_offset);;
-
-      for (octave_idx_type j = 1; j < x_len; j++)
-	{
-	  FixedPoint tmp = elem (j * x_stride + x_offset);
-
-	  if (tmp > tmp_max)
-	    {
-	      idx_j = j;
-	      tmp_max = tmp;
-	    }
-	}
-      
-      result.elem (i) = tmp_max;
-      idx_arg.elem (i) = idx_j;
-    }
-
-  return result;
+  return do_mx_minmax_op<FixedNDArray> (*this, idx_arg, dim, mx_inline_max);
 }
 
 FixedNDArray
 FixedNDArray::min (octave_idx_type dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
-  return min (dummy_idx, dim);
+  return do_mx_minmax_op<FixedNDArray> (*this, dim, mx_inline_min);
 }
 
 FixedNDArray
 FixedNDArray::min (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim) const
 {
-  dim_vector dv = dims ();
-  dim_vector dr = dims ();
-
-  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
-    return FixedNDArray ();
-  
-  dr(dim) = 1;
-
-  FixedNDArray result (dr);
-  idx_arg.resize (dr);
-
-  octave_idx_type x_stride = 1;
-  octave_idx_type x_len = dv(dim);
-  for (octave_idx_type i = 0; i < dim; i++)
-    x_stride *= dv(i);
-
-  for (octave_idx_type i = 0; i < dr.numel (); i++)
-    {
-      octave_idx_type x_offset;
-      if (x_stride == 1)
-	x_offset = i * x_len;
-      else
-	{
-	  octave_idx_type x_offset2 = 0;
-	  x_offset = i;
-	  while (x_offset >= x_stride)
-	    {
-	      x_offset -= x_stride;
-	      x_offset2++;
-	    }
-	  x_offset += x_offset2 * x_stride * x_len;
-	}
-
-      octave_idx_type idx_j = 0;
-      FixedPoint tmp_min = elem (x_offset);
-
-      for (octave_idx_type j = 1; j < x_len; j++)
-	{
-	  FixedPoint tmp = elem (j * x_stride + x_offset);
-
-	  if (tmp < tmp_min)
-	    {
-	      idx_j = j;
-	      tmp_min = tmp;
-	    }
-	}
-      
-      result.elem (i) = tmp_min;
-      idx_arg.elem (i) = idx_j;
-    }
-
-  return result;
+  return do_mx_minmax_op<FixedNDArray> (*this, idx_arg, dim, mx_inline_min);
 }
 
 FixedNDArray

@@ -41,6 +41,8 @@ Open Source Initiative (www.opensource.org)
 #include "fixedCMatrix.h"
 #include "fixedCNDArray.h"
 
+#include "fixed-inline.cc"
+
 // Fixed Point Complex Matrix class.
 
 FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is, 
@@ -574,55 +576,43 @@ FixedComplexNDArray::operator ! (void) const
 boolNDArray
 FixedComplexNDArray::all (octave_idx_type dim) const
 {
-#define FMX_ND_ALL_EXPR  elem (iter_idx) .fixedpoint () == Complex (0, 0)
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (FMX_ND_ALL_EXPR), true);
-#undef FMX_ND_ALL_EXPR
+  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 FixedComplexNDArray::any (octave_idx_type dim) const
 {
-#define FMX_ND_ANY_EXPR  elem (iter_idx) .fixedpoint () != Complex (0, 0)
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (FMX_ND_ANY_EXPR), false);
-#undef FMX_ND_ANY_EXPR
+  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::cumprod (octave_idx_type dim) const
 {
-  FixedPointComplex one (1, 0, 1, 0);
-  MX_ND_CUMULATIVE_OP (FixedComplexNDArray, FixedPointComplex, one, *);
+  return do_mx_cum_op<FixedComplexNDArray> (*this, dim, mx_inline_cumprod);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::cumsum (octave_idx_type dim) const
 {
-  FixedPointComplex zero;
-  MX_ND_CUMULATIVE_OP (FixedComplexNDArray, FixedPointComplex, zero, +);
+  return do_mx_cum_op<FixedComplexNDArray> (*this, dim, mx_inline_cumsum);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::prod (octave_idx_type dim) const
 {
-  FixedPointComplex one(1, 0, 1, 0);
-  MX_ND_REDUCTION (retval(result_idx) *= elem (iter_idx), one,
-		   FixedComplexNDArray);
+  return do_mx_red_op<FixedComplexNDArray> (*this, dim, mx_inline_prod);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::sum (octave_idx_type dim) const
 {
-  FixedPointComplex zero;
-  MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx), zero,
-		   FixedComplexNDArray);
+  return do_mx_red_op<FixedComplexNDArray> (*this, dim, mx_inline_sum);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::sumsq (octave_idx_type dim) const
 {
-  FixedPointComplex zero;
-  MX_ND_REDUCTION (retval(result_idx) += elem (iter_idx) * 
-		   conj (elem (iter_idx)), zero, FixedComplexNDArray);
+  return do_mx_red_op<FixedComplexNDArray> (*this, dim, mx_inline_sumsq);
 }
 
 FixedNDArray

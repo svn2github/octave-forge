@@ -88,16 +88,9 @@ octave_fixed::subsasgn (const std::string& type,
     case '(':
       {
 	if (type.length () == 1)
-	  {
-	    if (idx.front().valid_scalar_indices ()
-		&& rhs.is_scalar_type ()
-		&& rhs.is_numeric_type ())
-	      retval = rhs;
-	    else
-	      retval = numeric_assign (type, idx, rhs);
-	  }
-	else if ((type.length () == 2) && idx.front().valid_scalar_indices ()
-		 && rhs.is_scalar_type () && rhs.is_numeric_type ())
+	  retval = numeric_assign (type, idx, rhs);
+	else if ((type.length () == 2) && rhs.is_scalar_type () && 
+		 rhs.is_numeric_type ())
 	  {
 	    std::list<octave_value_list>::const_iterator p = idx.begin ();
 	    octave_value_list key_idx = *++p;
@@ -165,28 +158,19 @@ octave_fixed::subsasgn (const std::string& type,
 octave_value
 octave_fixed::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
-  octave_value retval;
+  // XXX FIXME XXX -- this doesn't solve the problem of
+  //
+  //   a = 1; a([1,1], [1,1], [1,1])
+  //
+  // and similar constructions.  Hmm...
 
-  if (idx.valid_scalar_indices ())
-    retval = new octave_fixed (scalar);
-  else
-    {
-      // XXX FIXME XXX -- this doesn't solve the problem of
-      //
-      //   a = 1; a([1,1], [1,1], [1,1])
-      //
-      // and similar constructions.  Hmm...
+  // XXX FIXME XXX -- using this constructor avoids narrowing the
+  // 1x1 matrix back to a scalar value.  Need a better solution
+  // to this problem.
 
-      // XXX FIXME XXX -- using this constructor avoids narrowing the
-      // 1x1 matrix back to a scalar value.  Need a better solution
-      // to this problem.
+  octave_value tmp (new octave_fixed_matrix (fixed_matrix_value ()));
 
-      octave_value tmp (new octave_fixed_matrix (fixed_matrix_value ()));
-
-      retval = tmp.do_index_op (idx, resize_ok);
-    }
-
-  return retval;
+  return tmp.do_index_op (idx, resize_ok);
 }
 
 octave_value

@@ -56,6 +56,8 @@ public:
 
   FixedMatrix (void) : MArray2<FixedPoint> () { }
 
+  FixedMatrix (const dim_vector& dv) : MArray2<FixedPoint> (dv) { }
+
   FixedMatrix (int r, int c) : MArray2<FixedPoint> (r, c) { }
 
   FixedMatrix (int r, int c, const FixedPoint val) : MArray2<FixedPoint> (r, c, val) { }

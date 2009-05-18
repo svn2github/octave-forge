@@ -22,6 +22,7 @@ $RCSfile$
 
 
 #include <octave/oct.h>
+#include <octave/lo-ieee.h>
 
 #include "partint.h"
 

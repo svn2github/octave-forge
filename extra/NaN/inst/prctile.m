@@ -1,6 +1,6 @@
 function Q=prctile(Y,q,DIM)
 % PRCTILE calculates the percentiles of histograms and sample arrays.  
-& (its the same than PERCENTILE.M)
+% (its the same than PERCENTILE.M)
 %
 %  Q = prctile(Y,q)      
 %  Q = prctile(Y,q,DIM)      

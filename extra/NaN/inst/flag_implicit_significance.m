@@ -1,4 +1,4 @@
-function DIM=flag_implicit_significance(i)
+function alpha=flag_implicit_significance(i)
 % The use of FLAG_IMPLICIT_SIGNIFICANCE is in experimental state. 
 % flag_implicit_significance might even become obsolete.
 %
@@ -14,7 +14,7 @@ function DIM=flag_implicit_significance(i)
 %   flag_implicit_significance(0.01) 
 %	sets the alpha-level for the significance test
 % 
-% DIM = flag_implicit_significance()
+% alpha = flag_implicit_significance()
 % 	gets default alpha
 %
 % flag_implicit_significance(alpha)
@@ -26,11 +26,16 @@ function DIM=flag_implicit_significance(i)
 % features:
 % - compatible to Matlab and Octave
 %
-% see also: CORRCOEF
+% see also: CORRCOEF, PARTCORRCOEF
 
+%	$Id$
+%	Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -41,10 +46,8 @@ function DIM=flag_implicit_significance(i)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-%	Version 2.99;	24 Aug 2002
-%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
-global FLAG_implicit_significance;
+persistent FLAG_implicit_significance;
 DEFAULT_ALPHA = 0.01;
 
 %%% check whether FLAG was already defined 
@@ -59,6 +62,6 @@ if nargin>0,
         fprintf(2,'Warning: flag_implicit_significance is in an experimental state\n');
         fprintf(2,'It might become obsolete.\n');
         FLAG_implicit_significance = i; 
-end;    
+end;
 
-DIM = FLAG_implicit_significance;
+alpha = FLAG_implicit_significance;

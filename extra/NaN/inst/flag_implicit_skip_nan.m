@@ -20,9 +20,9 @@ function FLAG = flag_implicit_skip_nan(i)
 %	STATISTIC, STD, VAR, ZSCORE etc. 
 %
 % The mode is stored in the global variable FLAG_implicit_skip_nan
-% It is recommended to use flag_implicit_skip_nan(1) as default and 
-% flag_implicit_skip_nan(0) should be used for exceptional cases only. 
-% This feature might disappear without further notice, so you should really not 
+% It is recommended to use flag_implicit_skip_nan(1) as default and
+% flag_implicit_skip_nan(0) should be used for exceptional cases only.
+% This feature might disappear without further notice, so you should really not
 % rely on it. 
 
 
@@ -41,12 +41,12 @@ function FLAG = flag_implicit_skip_nan(i)
 %    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 %	$Id$
-% 	Copyright (C) 2001-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+% 	Copyright (C) 2001-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
 %       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 
-global FLAG_implicit_skip_nan; 
+persistent FLAG_implicit_skip_nan;
 
 if strcmp(version,'3.6'), FLAG_implicit_skip_nan=(1==1); end;	%% hack for the use with Freemat3.6
 

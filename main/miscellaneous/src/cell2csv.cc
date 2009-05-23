@@ -92,7 +92,7 @@ DEFUN_DLD (cell2csv, args, nargout,
 	/* Output string value */
 	std::string str = c(i, j).string_value();
 	if (str.find(sep) != str.npos) {
-	  unsigned int pos = 0;
+	  size_t pos = 0;
 	  while ((pos=str.find(prot, pos)) != str.npos) {
 	    str.replace(pos, 1, prot+prot);
 	    pos += 2;

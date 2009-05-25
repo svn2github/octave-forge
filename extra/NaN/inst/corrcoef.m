@@ -1,26 +1,38 @@
-function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
+function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,varargin);
 % CORRCOEF calculates the correlation matrix from pairwise correlations.
 %   The input data can contain missing values encoded with NaN.
 %   Missing data (NaN's) are handled by pairwise deletion [15]. 
 %   In order to avoid possible pitfalls, use case-wise deletion or 
 %   or check the correlation of NaN's with your data (see below). 
 %   A significance test for testing the Hypothesis  
-%   "correlation coefficient R is significantly different to zero" 
+%   'correlation coefficient R is significantly different to zero' 
 %   is included. 
 %
-% [...] = CORRCOEF(X [,Mode]);
+% [...] = CORRCOEF(X);
 %      calculates the (auto-)correlation matrix of X
-% [...] = CORRCOEF(X,Y [,Mode]);
+% [...] = CORRCOEF(X,Y);
 %      calculates the crosscorrelation between X and Y
 %
+% [...] = CORRCOEF(..., Mode);
 %       Mode='Pearson' or 'parametric' [default]
 %       	gives the correlation coefficient  
-%       	also known as the "product-moment coefficient of correlation" 
-%               or "Pearson's correlation" [1]
-%       Mode='Spearman' 	gives "Spearman's Rank Correlation Coefficient"
+%       	also known as the 'product-moment coefficient of correlation' 
+%               or 'Pearson''s correlation' [1]
+%       Mode='Spearman' 	gives 'Spearman''s Rank Correlation Coefficient'
 %	        This replaces SPEARMAN.M
 %       Mode='Rank' 		gives a nonparametric Rank Correlation Coefficient
 %	        This replaces RANKCORR.M
+%
+% [...] = CORRCOEF(..., param1, value1, param2, value2, ... );
+%	param 		value
+%	'Mode'		type of correlation 
+%		'Pearson','parametric'
+%		'Spearman'
+%		'rank'
+%	'rows'		how do deal with missing values encoded as NaN's. 	
+%		'complete': remove all rows with at least one NaN
+%		'pairwise': [default]
+%	'alpha'		0.01	: significance level to compute confidence interval
 %
 % [R,p,ci1,ci2,nansig] = CORRCOEF(...);
 % 	R is the correlation matrix
@@ -29,13 +41,13 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 %	It tests the null hypothesis that the product moment correlation coefficient is zero 
 %       using Student's t-test on the statistic t = r*sqrt(N-2)/sqrt(1-r^2) 
 %       where N is the number of samples (Statistics, M. Spiegel, Schaum series).
-%  p > alpha: do not reject the Null hypothesis: "R is zero".
-%  p < alpha: The alternative hypothesis "R is larger than zero" is true with probability (1-alpha).
+%  p > alpha: do not reject the Null hypothesis: 'R is zero'.
+%  p < alpha: The alternative hypothesis 'R is larger than zero' is true with probability (1-alpha).
 %  ci1	lower (1-alpha) confidence interval 
 %  ci2	upper (1-alpha) confidence interval
-%	The default alpha is 0.01, and can be changed with function flag_implicit_significance. 
-%  nan_sig 	p-value whether H0: "NaN's are not correlated" could be correct
-%       if nan_sig < alpha, H1 ("NaNs are correlated") is very likely. 
+%	If no alpha is provided, the default alpha is 0.01. This can be changed with function flag_implicit_significance. 
+%  nan_sig 	p-value whether H0: 'NaN''s are not correlated' could be correct
+%       if nan_sig < alpha, H1 ('NaNs are correlated') is very likely. 
 % 
 % The result is only valid if the occurence of NaN's is uncorrelated. In
 % order to avoid this pitfall, the correlation of NaN's should be checked 
@@ -52,7 +64,7 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % Further recommandation related to the correlation coefficient: 
 % + LOOK AT THE SCATTERPLOTS to make sure that the relationship is linear
 % + Correlation is not causation because 
-%	it is not clear which parameter is "cause" and which is "effect" and
+%	it is not clear which parameter is 'cause' and which is 'effect' and
 %       the observed correlation between two variables might be due to the action of other, unobserved variables.
 %
 % see also: SUMSKIPNAN, COVM, COV, COR, SPEARMAN, RANKCORR, RANKS,
@@ -71,7 +83,7 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 % [12] http://www.janda.org/c10/Lectures/topic06/L24-significanceR.htm
 % [13] http://faculty.vassar.edu/lowry/ch4apx.html
 % [14] http://davidmlane.com/hyperstat/B134689.html
-% [15] http://www.statsoft.com/textbook/stbasic.html#Correlations
+% [15] http://www.statsoft.com/textbook/stbasic.html%Correlations
 % others
 % [20] http://www.tufts.edu/~gdallal/corr.htm
 
@@ -110,23 +122,41 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,Mode);
 global FLAG_NANS_OCCURED;
 
 NARG = nargout;	% needed because nargout is not reentrant in Octave, and corrcoef is recursive
+mode = [];
 
 if nargin==1
         Y = [];
         Mode='Pearson';
 elseif nargin==0
         fprintf(2,'Error CORRCOEF: Missing argument(s)\n');
-elseif nargin==2
+elseif nargin>1
         if ischar(Y)
-                Mode=Y;
+		varg = [Y,varargin];
                 Y=[];
-        else
-                Mode='Pearson';
+        else 
+        	varg = varargin;         
+        end; 
+                
+	if length(varg)<1, 
+                Mode = 'Pearson';
+        elseif length(varg)==1, 
+		Mode = varg{1};
         end;
+
+	for k=2:2:length(varg),
+		mode=setfield(mode,lower(varg{k-1}),varg{k});
+	end;
+	if isfield(mode,'mode')
+		Mode = mode.mode; 
+        else
+                Mode = 'Pearson';
+	end;
 end;        
 Mode=[Mode,'        '];
 
-FLAG_WARNING = warning;		% save warning status
+
+
+%FLAG_WARNING = warning;		% save warning status
 warning('off');
 
 [r1,c1]=size(X);
@@ -146,6 +176,22 @@ end;
 YESNAN = any(isnan(X(:))) | any(isnan(Y(:)));
 if YESNAN,
 	FLAG_NANS_OCCURED=(1==1);
+	if isfield(mode,'rows')
+		if strcmp(mode.rows,'complete')
+			ix = ~any([X,Y],2);
+			X = X(ix,:); 
+			if ~isempty(Y) 
+				Y = Y(ix,:); 
+			end; 	
+			YESNAN = 0; 
+			NN = size(X,1); 
+		elseif strcmp(mode.rows,'all')
+			fprintf(1,'Warning: data contains NaNs, rows=pairwise is used.');  
+			%%NN(NN < size(X,1)) = NaN; 
+		elseif strcmp(mode.rows,'pairwise')
+			%%% default
+		end; 
+	end; 
 end; 
 if isempty(Y),
         IX = ones(c1)-diag(ones(c1,1));
@@ -257,13 +303,15 @@ else
 end;
 
 if (NARG<2), 
-	warning(FLAG_WARNING); 	% restore warning status
+%    warning(FLAG_WARNING); 	% restore warning status
         return;
 end;
 
 
 % CONFIDENCE INTERVAL
-if exist('flag_implicit_significance')==2,
+if isfield(mode,'alpha')
+	alpha = mode.alpha; 
+elseif exist('flag_implicit_significance')==2,
         alpha = flag_implicit_significance;
 else
 	alpha = 0.01;        
@@ -304,7 +352,7 @@ ci2 = tanh(z+sz);
 %ci1(isnan(ci1))=R(isnan(ci1));	% in case of isnan(ci), the interval limits are exactly the R value 
 %ci2(isnan(ci2))=R(isnan(ci2));
 
-if (NARG<5) || ~YESNAN, 
+if (NARG<5) | ~YESNAN, 
 	nan_sig = repmat(NaN,size(R));
 	warning(FLAG_WARNING); 	% restore warning status
         return;
@@ -329,5 +377,6 @@ end;
 
 %%%%% ----- end of independence check ------
 
-warning(FLAG_WARNING); 	% restore warning status
+%warning(FLAG_WARNING); 	% restore warning status
 return;
+

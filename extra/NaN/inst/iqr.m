@@ -40,7 +40,7 @@ if isempty(DIM),
 end;
 
 
-if nargin<2,
+if nargin<1,
 	help iqr
         
 else

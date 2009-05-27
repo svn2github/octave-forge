@@ -49,8 +49,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	double	 	*CC;
     	double 		*NN=NULL;
 
-    	mwSize		rX,cX,rY,cY,nW=0;
-    	mwSize    	i,j,k;	// running indices 
+    	size_t		rX,cX,rY,cY,nW = 0;
+    	size_t    	i,j,k;	// running indices 
 	char	 	flag_isNaN = 0;
 
 
@@ -204,7 +204,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		X = X0+i*rX;
 		Y = Y0+j*rY;
 		register double cc=0.0;
-		register mwSize nn=0.0;
+		register size_t nn=0;
 		for (k=0; k<rX; k++) {
 			double x = X[k];
 			double y = Y[k];
@@ -259,7 +259,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		X = X0+i*rX;
 		Y = Y0+j*rY;
 		register double cc=0.0;
-		register mwSize nn=0.0;
+		register size_t nn=0;
 		for (k=0; k<rX; k++) {
 			double x = X[k];
 			double y = Y[k];

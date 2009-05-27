@@ -51,6 +51,14 @@ inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, doub
 
 //#define NO_FLAG
 
+
+#ifdef tmwtypes_h
+  #if (MX_API_VER<0x07020000)
+    typedef int mwSize;
+  #endif 
+#endif 
+
+
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
     	const mwSize	*SZ;	    
@@ -60,7 +68,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	double* 	LOutputSum2;
     	double  	x;
     	double*		W = NULL;		// weight vector 
-    	//unsigned long   LCount;
 
     	mwSize		DIM = 0; 
     	mwSize		D1, D2, D3; 	// NN; 	//  	

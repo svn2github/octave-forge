@@ -227,6 +227,15 @@ function varargout = parcellfun (nproc, fun, varargin)
 
     unwind_protect_cleanup
 
+      ## This is enclosed in another handler to prevent errors from escaping.
+      ## If something goes wrong, we'll get a broken pipe signal, but anything
+      ## is better than skipping the following __exit__.
+      try
+        fclose (statw);
+        fclose (resw(iproc));
+        fclose (cmdr(iproc));
+      end_try_catch
+
       ## no more work for us. We call __exit__, which bypasses termination sequences.
       __exit__ ();
 
@@ -275,10 +284,10 @@ function varargout = parcellfun (nproc, fun, varargin)
           fflush (cmdw(isubp));
           ## set pending state
           pending(isubp) = ijob;
-        else
+        elseif (pending(isubp))
           ## send terminating signal
           fwrite (cmdw(isubp), 0, "double");
-          fflush (cmdw(isubp));
+          fclose (cmdw(isubp));
           ## clear pending state
           pending(isubp) = 0;
         endif
@@ -294,13 +303,12 @@ function varargout = parcellfun (nproc, fun, varargin)
       for isubp = find (pending)
         ## send terminating signal
         fwrite (cmdw(isubp), 0, "double");
-        fflush (cmdw(isubp));
+        fclose (cmdw(isubp));
       endfor
 
       ## close all pipe ends
       fclose (statr);
       for i = 1:nproc
-        fclose (cmdw(i));
         fclose (resr(i));
       endfor
 

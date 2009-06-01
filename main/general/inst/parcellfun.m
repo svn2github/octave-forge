@@ -113,12 +113,15 @@ function varargout = parcellfun (nproc, fun, varargin)
 
   fflush (stdout); # prevent subprocesses from inheriting buffered output
 
+  pids = zeros (nproc, 1);
+
   ## fork subprocesses
   for i = 1:nproc
     [pid, msg] = fork ();
     if (pid > 0)
       ## parent process. fork succeded.
       nsuc ++;
+      pids(i) = pid;
     elseif (pid == 0)
       ## child process.
       iproc = i;
@@ -310,6 +313,11 @@ function varargout = parcellfun (nproc, fun, varargin)
       fclose (statr);
       for i = 1:nproc
         fclose (resr(i));
+      endfor
+
+      ## explicitly recognize all terminated processes.
+      for i = 1:nproc
+        [pid, status] = waitpid (pids(i));
       endfor
 
     end_unwind_protect

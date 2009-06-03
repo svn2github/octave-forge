@@ -27,8 +27,8 @@
 // - W: weight vector to compute weighted correlation 
 //
 // Output:
-// - CC = X' * Y while NaN's are skipped
-// - NN count of valid (non-NaN) elements
+// - CC = X' * diag(W) * Y 	while NaN's are skipped
+// - NN = real(~isnan(X))*diag(W)*real(~isnan(Y))   count of valid (non-NaN) elements
 //
 //    $Id$
 //    Copyright (C) 2009 Alois Schloegl <a.schloegl@ieee.org>
@@ -142,8 +142,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	*/	
 	for (k=0; k<rX; k++) {
 		double w;
-		if (W) w = W[k];
-		else   w = 1.0;
+		if (W) {
+		w = W[k];
 		for (i=0; i<cX; i++) {
 			double x = X0[k+i*rX];
 			if (isnan(x)) {
@@ -165,6 +165,28 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					NN[i+j*cX] += w; 
 			}
 		}
+		}
+		else for (i=0; i<cX; i++) {
+			double x = X0[k+i*rX];
+			if (isnan(x)) {
+#ifndef NO_FLAG
+				flag_isNaN = 1;
+#endif 
+				continue;
+			}
+			for (j=0; j<cY; j++) {
+				double y = Y0[k+j*rY];
+				if (isnan(y)) {
+#ifndef NO_FLAG
+					flag_isNaN = 1;
+#endif 
+					continue;
+				}
+				CC[i+j*cX] += x*y; 
+	    			if (NN != NULL) 
+					NN[i+j*cX] += 1.0; 
+			}
+		}
 	}
 	
 #else 
@@ -178,21 +200,18 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=0; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		register double cc=0.0;
-		register double nn=0.0;
+		double cc=0.0;
+		double nn=0.0;
 		for (k=0; k<rX; k++) {
-			double x = X[k];
-			double y = Y[k];
-
-			if (!isnan(x) && !isnan(y)) 
-			{
-				cc += x*y*W[k];
-				nn += W[k];
-			}
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
 #ifndef NO_FLAG
-			else 
-				flag_isNaN = 1; 
+				flag_isNaN = 1;
 #endif 
+				continue;
+			}
+			cc += z*W[k];
+			nn += W[k];
 		}	
 		CC[i+j*cX] = cc; 
 		if (NN != NULL) 
@@ -203,21 +222,18 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=0; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		register double cc=0.0;
-		register size_t nn=0;
+		double cc=0.0;
+		size_t nn=0;
 		for (k=0; k<rX; k++) {
-			double x = X[k];
-			double y = Y[k];
-			
-			if (!isnan(x) && !isnan(y)) 
-			{
-				cc += x*y;
-				nn++;
-			}
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
 #ifndef NO_FLAG
-			else 
-				flag_isNaN = 1; 
+				flag_isNaN = 1;
 #endif 
+				continue;
+			}
+			cc += z;
+			nn++;
 		}	
 		CC[i+j*cX] = cc; 
 		if (NN != NULL) 
@@ -230,21 +246,18 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=i; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		register double cc=0.0;
-		register double nn=0.0;
+		double cc=0.0;
+		double nn=0.0;
 		for (k=0; k<rX; k++) {
-			double x = X[k];
-			double y = Y[k];
-
-			if (!isnan(x) && !isnan(y)) 
-			{
-				cc += x*y*W[k];
-				nn += W[k];
-			}
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
 #ifndef NO_FLAG
-			else 
-				flag_isNaN = 1; 
+				flag_isNaN = 1;
 #endif 
+				continue;
+			}
+			cc += z*W[k];
+			nn += W[k];
 		}	
 		CC[i+j*cX] = cc; 
 		CC[j+i*cX] = cc; 
@@ -258,21 +271,18 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=i; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		register double cc=0.0;
-		register size_t nn=0;
+		double cc=0.0;
+		size_t nn=0;
 		for (k=0; k<rX; k++) {
-			double x = X[k];
-			double y = Y[k];
-			
-			if (!isnan(x) && !isnan(y)) 
-			{
-				cc += x*y;
-				nn++;
-			}
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
 #ifndef NO_FLAG
-			else 
-				flag_isNaN = 1; 
+				flag_isNaN = 1;
 #endif 
+				continue;
+			}
+			cc += z;
+			nn++;
 		}	
 		CC[i+j*cX] = cc; 
 		CC[j+i*cX] = cc; 

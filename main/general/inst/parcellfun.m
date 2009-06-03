@@ -63,19 +63,21 @@ function varargout = parcellfun (nproc, fun, varargin)
   nargs = length (varargin);
 
   ## parse options
-  do
-    if (strcmp (args{nargs-1}, "UniformOutput"))
-      uniform_output = args{nargs};
-      nargs -= 2;
-      continue;
-    endif
-    if (strcmp (args{nargs-1}, "ErrorHandler"))
-      error_handler = args{nargs};
-      nargs -= 2;
-      continue;
-    endif
-    break;
-  until (nargs < 2);
+  if (nargs > 1)
+    do
+      if (strcmp (args{nargs-1}, "UniformOutput"))
+        uniform_output = args{nargs};
+        nargs -= 2;
+        continue;
+      endif
+      if (strcmp (args{nargs-1}, "ErrorHandler"))
+        error_handler = args{nargs};
+        nargs -= 2;
+        continue;
+      endif
+      break;
+    until (nargs < 2);
+  endif
 
   args = args(1:nargs);
   

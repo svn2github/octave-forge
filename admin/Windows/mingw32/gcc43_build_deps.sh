@@ -63,6 +63,8 @@ VER_FTGL=2.1.3-rc5-3
 VER_FLTK=1.1.9-3
 
 VER_NETCDF=4.0-3
+VER_CLN=1.2.2-3
+VER_GINAC=1.5.1-3
 
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
@@ -80,6 +82,7 @@ VER_NETCDF=4.0-3
 # PCRE checks for BZIP2 and READLINE
 # WMF depends on FREETYPE and ZLIB
 # IMAGEMAGICK depends on BZIP, ZLIB, WMF, JPEG, PNG, FREETYPE
+# GINAC depends on CLN and GMP and uses pkg-config
 
 ( cd zlib && build-${VER_ZLIB}.sh ${ACTION} );
 ( cd bzip2 && build-${VER_BZIP2}.sh ${ACTION} );
@@ -127,3 +130,5 @@ VER_NETCDF=4.0-3
 ( cd fltk && build-${VER_FLTK}.sh ${ACTION} );
 
 ( cd netcdf && build-${VER_NETCDF}.sh ${ACTION} );
+( cd CLN && build-${VER_CLN}.sh ${ACTION} );
+( cd ginac && build-${VER_GINAC}.sh ${ACTION} );

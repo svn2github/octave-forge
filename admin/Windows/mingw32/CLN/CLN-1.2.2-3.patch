@@ -1,0 +1,66 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/benchmarks/Makefile.in CLN-1.2.2/benchmarks/Makefile.in
+--- CLN-1.2.2-orig/benchmarks/Makefile.in	2007-01-17 21:34:35 +0100
++++ CLN-1.2.2/benchmarks/Makefile.in	2009-06-05 10:43:43 +0200
+@@ -89,7 +89,7 @@
+ timebench2ap${EXEEXT} : $(patsubst %,%.o,${MODULES_timebench2ap})
+ timebench2b${EXEEXT} : $(patsubst %,%.o,${MODULES_timebench2b})
+ ${PROGRAMS} : %${EXEEXT} : ${LIBDEPS}
+-	${LIBTOOL_LINK} ${CXX} ${CXXFLAGS} ${TARGET_ARCH} $(patsubst %,%.o,$(MODULES_$(*F))) ${LDFLAGS} ${LIBS} -o $@
++	${LIBTOOL_LINK} ${CXX} ${CXXFLAGS} ${TARGET_ARCH} $(patsubst %,%.o,$(MODULES_$(*F))) ${LDFLAGS} ${LIBS} ${CXXLIBS} -o $@
+ 
+ 
+ install : all
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/examples/Makefile.in CLN-1.2.2/examples/Makefile.in
+--- CLN-1.2.2-orig/examples/Makefile.in	2006-09-06 22:09:08 +0200
++++ CLN-1.2.2/examples/Makefile.in	2009-06-05 11:06:48 +0200
+@@ -91,7 +91,7 @@
+ perfnum${EXEEXT} : $(patsubst %,%.o,${MODULES_perfnum})
+ pi${EXEEXT} : $(patsubst %,%.o,${MODULES_pi})
+ ${PROGRAMS} : %${EXEEXT} : ${LIBDEPS}
+-	${LIBTOOL_LINK} ${CXX} ${CXXFLAGS} ${TARGET_ARCH} $(patsubst %,%.o,$(MODULES_$(*F))) ${LDFLAGS} ${LIBS} -o $@
++	${LIBTOOL_LINK} ${CXX} ${CXXFLAGS} ${TARGET_ARCH} $(patsubst %,%.o,$(MODULES_$(*F))) ${LDFLAGS} ${LIBS} ${CXXLIBS} -o $@
+ 
+ 
+ install : all
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/src/Makefile.in CLN-1.2.2/src/Makefile.in
+--- CLN-1.2.2-orig/src/Makefile.in	2008-03-24 12:01:35 +0100
++++ CLN-1.2.2/src/Makefile.in	2009-06-05 12:52:42 +0200
+@@ -131,7 +131,7 @@
+ ALLASMFILES_LO := $(patsubst %.cc,%.lo,${ALLASMFILES_CC})
+ ALLOBJECTS_LO = ${ALLFILES_LO} ${ALLASMFILES_LO}
+ 
+-_all_ : allo-local ${SUBDIRS_TARGET_ALL} libcln.la
++_all_ : allo-local ${SUBDIRS_TARGET_ALL} libcln.la cln.dll
+ else
+ _all_ : allo-local ${SUBDIRS_TARGET_ALL}
+ endif
+@@ -237,6 +237,17 @@
+ 	echo ${ALLOBJECTS_LO} | tr ' ' '\n' > libcln.objectlist
+ 	${LIBTOOL_LINK} ${CXX} -o libcln.la -rpath ${libdir} -version-info ${CL_CURRENT}:${CL_REVISION}:${CL_AGE} ${LDFLAGS} ${LIBS} -objectlist libcln.objectlist
+ 
++cln.dll : .libs/libcln.a
++	$(CXX) -shared -o $@ \
++	$(LDFLAGS) \
++	-Wl,--out-implib=libcln.dll.a \
++	-Wl,--output-def=libcln.def \
++	-Wl,--whole-archive $< \
++	-Wl,--exclude-libs=libstdc++_s.a \
++	-Wl,--no-whole-archive \
++	$(CXXLIBS) \
++	$(LIBS)
++
+ install : all force
+ 	${MKDIR} ${DESTDIR}${libdir}
+ 	${LIBTOOL_INSTALL} ${INSTALL_PROGRAM} libcln.la ${DESTDIR}${libdir}/libcln.la
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/tests/Makefile.in CLN-1.2.2/tests/Makefile.in
+--- CLN-1.2.2-orig/tests/Makefile.in	2006-10-11 21:08:32 +0200
++++ CLN-1.2.2/tests/Makefile.in	2009-06-04 21:03:54 +0200
+@@ -162,7 +162,7 @@
+ timesqrtmodp${EXEEXT} : $(patsubst %,%.o,$(MODULES_timesqrtmodp))
+ main${EXEEXT} : $(patsubst %,%.o,$(MODULES_main))
+ ${PROGRAMS} : %${EXEEXT} : ${LIBDEPS}
+-	${LIBTOOL_LINK} ${CXX} ${CXXFLAGS} ${TARGET_ARCH} $(patsubst %,%.o,$(MODULES_$(*F))) ${LDFLAGS} ${LIBS} -o $@
++	${LIBTOOL_LINK} ${CXX} ${CXXFLAGS} ${TARGET_ARCH} $(patsubst %,%.o,$(MODULES_$(*F))) ${LDFLAGS} ${LIBS} ${CXXLIBS} -o $@
+ 
+ 
+ install : all

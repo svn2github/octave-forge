@@ -62,6 +62,8 @@ VER_TEXINFO=4.13a-3
 VER_FTGL=2.1.3-rc5-3
 VER_FLTK=1.1.9-3
 
+VER_NETCDF=4.0-3
+
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
 # LAPACK depends on BLAS
@@ -123,3 +125,5 @@ VER_FLTK=1.1.9-3
 
 ( cd ftgl && build-${VER_FTGL}.sh ${ACTION} );
 ( cd fltk && build-${VER_FLTK}.sh ${ACTION} );
+
+( cd netcdf && build-${VER_NETCDF}.sh ${ACTION} );

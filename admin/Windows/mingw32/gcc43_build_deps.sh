@@ -1,15 +1,16 @@
 #!/usr/bin/sh
 
-#  BUILD DEPENDENCIES FOR OCTAVE 3/MINGW32
+#  BUILD DEPENDENCIES FOR OCTAVE/MINGW32
 #
 #  This script successivly builds the dependencies 
-#  required for a Octave 3.x build
+#  required for a Octave 3.2.x build
 #
 #  This script requires a MSYS 1.0.11 environment
 #
 #  It uses TDM's mingw/GCC port, using GCC-TDM-4.3.0-2
 #  see http://www.tdragon.net/recentgcc
 #
+#  04-jun-2009 lindnerb@users.sourceforge.net - add dependencies for octave 3.2
 #  08-aug-2008 lindnerb@users.sourceforge.net - creation
 
 if [ -z "$1" ]; then ACTION=all; else ACTION="$*"; fi
@@ -27,8 +28,9 @@ VER_NCURSES=5.6-3
 VER_READLINE=5.2-3
 VER_REGEX=2.5.1-3
 VER_SUITESPARSE=3.2.0-3
+VER_QRUPDATE=1.0-3
 VER_PCRE=7.8-3
-VER_FFTW3=3.1.2-3
+VER_FFTW3=3.2-3
 VER_GMP=4.2.4-3
 VER_GLPK=4.31-3
 VER_GSL=1.11-3
@@ -45,7 +47,7 @@ VER_LIBFREETYPE=2.3.7-3
 VER_LIBFONTCONFIG=2.6.0-3
 VER_LIBGD=2.0.35-3
 VER_WMF=0.2.8.4-3
-VER_IMAGEMAGICK=6.4.5-3
+VER_GRAPHICSMAGICK=1.3.3-3
 
 VER_ICONV=1.12-3
 VER_GETTEXT=0.17-3
@@ -56,6 +58,9 @@ VER_CAIRO=1.8.2-3
 VER_PANGO=1.22.2-3
 
 VER_TEXINFO=4.13a-3
+
+VER_FTGL=2.1.3-rc5-3
+VER_FLTK=1.1.9-3
 
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
@@ -85,6 +90,7 @@ VER_TEXINFO=4.13a-3
 ( cd readline && build-${VER_READLINE}.sh ${ACTION} );
 ( cd regex && build-${VER_REGEX}.sh ${ACTION} );
 ( cd suitesparse && build-${VER_SUITESPARSE}.sh ${ACTION} );
+( cd qrupdate && build-${VER_QRUPDATE}.sh ${ACTION} );
 ( cd pcre && build-${VER_PCRE}.sh ${ACTION} );
 ( cd fftw3 && build-${VER_FFTW3}.sh ${ACTION} );
 ( cd gmp && build-${VER_GMP}.sh ${ACTION} );
@@ -103,7 +109,7 @@ VER_TEXINFO=4.13a-3
 ( cd libfontconfig && build-${VER_LIBFONTCONFIG}.sh ${ACTION} );
 ( cd libgd && build-${VER_LIBGD}.sh ${ACTION} );
 ( cd wmf && build-${VER_WMF}.sh ${ACTION} );
-( cd imagemagick && build-${VER_IMAGEMAGICK}.sh ${ACTION} );
+( cd graphicsmagick && build-${VER_GRAPHICSMAGICK}.sh ${ACTION} );
 
 ( cd iconv && build-${VER_ICONV}.sh ${ACTION} );
 ( cd gettext && build-${VER_GETTEXT}.sh ${ACTION} );
@@ -114,3 +120,6 @@ VER_TEXINFO=4.13a-3
 ( cd pango && build-${VER_PANGO}.sh ${ACTION} );
 
 ( cd texinfo && build-${VER_TEXINFO}.sh ${ACTION} );
+
+( cd ftgl && build-${VER_FTGL}.sh ${ACTION} );
+( cd fltk && build-${VER_FLTK}.sh ${ACTION} );

@@ -420,21 +420,21 @@ _libtool_removelibprefix()
 {
    # remove the 'LIB' prefix of shared library names
    echo "  Removing 'LIB' prefix of shared library names..."
-   sed -e '/^soname_spec/ s+"\\${libname}+"\\\`echo \\\${libname} | \\\$SED -e s/^lib//\\\`+' $1 > $1.mod && mv $1.mod $1
+   sed -e '/^soname_spec/ s+"\\${libname}+"\\\`echo \\\${libname} | \\\$SED -e s/^lib//\\\`+' $1 > $1.mod && ${CP} ${CP_FLAGS} $1.mod $1
 }
 
 _libtool_removerelease()
 {
    # remove the ${release} from shared library names
    echo "  Removing \${release} from shared library names..."
-   sed -e '/^soname_spec/ s+\\`echo \\${release} | \\$SED -e s/\[.\]/-/g\\`++' $1 > $1.mod && mv $1.mod $1
+   sed -e '/^soname_spec/ s+\\`echo \\${release} | \\$SED -e s/\[.\]/-/g\\`++' $1 > $1.mod && ${CP} ${CP_FLAGS} $1.mod $1
 }
 
 _libtool_removeversuffix()
 {
    # remove the ${versuffix} from shared library names
    echo "  Removing \${versuffix} from shared library names..."
-   sed -e '/^soname_spec/ s+\\\${versuffix}++' $1 > $1.mod && mv $1.mod $1
+   sed -e '/^soname_spec/ s+\\\${versuffix}++' $1 > $1.mod && ${CP} ${CP_FLAGS} $1.mod $1
 }
 
 clone()

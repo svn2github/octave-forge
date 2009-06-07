@@ -1,4 +1,853 @@
 # Automatically generated file --- DO NOT EDIT
+2009-06-07 13:39  hauberg
+
+	* doc/Makefile: Don't abort because a single doesn't build
+
+2009-06-07 13:39  hauberg
+
+	* doc/htdocs/packages.in: Point to latest bundle
+
+2009-06-07 13:38  hauberg
+
+	* AUTHORS, README, doc/htdocs/NEWS.in, doc/htdocs/index.in: Updated
+	  for the new release
+
+2009-06-07 12:19  hauberg
+
+	* doc/Doxyfile: Update to work with more recent versions of Doxygen
+	  (using 'doxygen -u')
+
+2009-06-07 11:38  hauberg
+
+	* doc/htdocs/packages.in: Point to latest bundle
+
+2009-06-07 11:21  hauberg
+
+	* nonfree/arpack/DESCRIPTION, nonfree/spline-gsvspl/DESCRIPTION:
+	  Update version
+
+2009-06-07 10:48  hauberg
+
+	* main/database/DESCRIPTION, main/octcdf/DESCRIPTION: Update
+	  version
+
+2009-06-07 10:43  hauberg
+
+	* doc/htdocs/FAQ.in: Add headline to page
+
+2009-06-07 10:39  hauberg
+
+	* extra/oct2mat/CONTENTS: CONTENTS files should only be used first
+	  levels of the directory hierachy, hence the file was removed
+
+2009-06-07 10:16  hauberg
+
+	* main/octcdf/DESCRIPTION, main/octcdf/src/ov-netcdf.cc: Allow
+	  compilation with Octave 3.2
+
+2009-06-07 10:08  hauberg
+
+	* main/symbolic/DESCRIPTION: Update requirements due to mlock API
+	  change
+
+2009-06-07 10:08  hauberg
+
+	* main/symbolic/src/sym-create.cc, main/symbolic/src/symbols.cc:
+	  Allow compilation with Octave 3.2
+
+2009-06-07 09:53  hauberg
+
+	* extra/NaN/DESCRIPTION, extra/Windows/DESCRIPTION,
+	  extra/ad/DESCRIPTION, extra/bim/DESCRIPTION,
+	  extra/bugfix-3.0.5/DESCRIPTION, extra/engine/DESCRIPTION,
+	  extra/fpl/DESCRIPTION,
+	  extra/generate_html/inst/generate_package_html.m,
+	  extra/generate_html/inst/private/mk_function_dir.m,
+	  extra/graceplot/DESCRIPTION, extra/msh/DESCRIPTION,
+	  extra/multicore/DESCRIPTION, extra/nurbs/DESCRIPTION,
+	  extra/ocs/DESCRIPTION, extra/oct2mat/DESCRIPTION,
+	  extra/symband/DESCRIPTION, language/es_CO/DESCRIPTION,
+	  main/audio/DESCRIPTION, main/control/DESCRIPTION,
+	  main/financial/DESCRIPTION, main/general/DESCRIPTION,
+	  main/image/DESCRIPTION, main/info-theory/DESCRIPTION,
+	  main/io/DESCRIPTION, main/miscellaneous/DESCRIPTION,
+	  main/odepkg/DESCRIPTION, main/signal/DESCRIPTION,
+	  main/statistics/DESCRIPTION, main/symbolic/DESCRIPTION,
+	  main/vrml/DESCRIPTION: Update version numbers
+
+2009-06-06 15:26  lindnerb
+
+	* extra/Windows/src/Makefile, extra/Windows/src/__COM__.cc: fix
+	  building windows toolbox for octave 3.2.0 on mingw32
+	  
+	  add -luuid when building __COM__.oct as mingw does not include it
+	  by default
+	  use "sort" method instead of "qosrt" for string_vector object in
+	  __COM__.cc
+
+2009-06-06 14:09  treichl
+
+	* admin/MacOSX/Octave.app/patches/libf2c2-20061008.macosx.diff.gz:
+	  Restore file.
+
+2009-06-06 14:08  treichl
+
+	* admin/MacOSX/Octave.app/backup/create-3.1.55.sh,
+	  admin/MacOSX/Octave.app/backup/libf2c2-20061008.macosx.diff.gz,
+	  admin/MacOSX/Octave.app/backup/octave-3.1.55.diff.gz,
+	  admin/MacOSX/Octave.app/create-3.1.55.sh,
+	  admin/MacOSX/Octave.app/create-3.2.0.sh,
+	  admin/MacOSX/Octave.app/dmgpacker/makeoctaveapp.sh,
+	  admin/MacOSX/Octave.app/patches/fort77-1.15.diff.gz,
+	  admin/MacOSX/Octave.app/patches/fort77-1.15.macosx.diff.gz,
+	  admin/MacOSX/Octave.app/patches/libf2c2-20061008.macosx.diff.gz,
+	  admin/MacOSX/Octave.app/patches/octave-3.1.55.diff.gz,
+	  admin/MacOSX/Octave.app/patches/octave-3.2.0.macosx.diff.gz:
+	  Build scripts for Octave.app 3.2.0 and cleanup.
+
+2009-06-05 20:42  lindnerb
+
+	* admin/Windows/mingw32/CLN,
+	  admin/Windows/mingw32/CLN/CLN-1.2.2-3.patch,
+	  admin/Windows/mingw32/CLN/build-1.2.2-3.sh,
+	  admin/Windows/mingw32/gcc43_build_deps.sh,
+	  admin/Windows/mingw32/ginac,
+	  admin/Windows/mingw32/ginac/build-1.5.1-3.sh,
+	  admin/Windows/mingw32/ginac/ginac-1.5.1-3.patch: add CLN and
+	  ginac build scripts and patches, add them as dependencies to
+	  gcc43_build_deps.sh
+
+2009-06-05 20:36  lindnerb
+
+	* admin/Windows/mingw32/gcc43_build_deps.sh,
+	  admin/Windows/mingw32/netcdf,
+	  admin/Windows/mingw32/netcdf/build-4.0-3.sh,
+	  admin/Windows/mingw32/netcdf/netcdf-4.0-3.patch: add netcdf-4.0
+	  build script and patch, add as dependency to gcc43_build_deps.sh
+
+2009-06-05 20:32  lindnerb
+
+	* admin/Windows/mingw32/gcc43_build_deps.sh: add build dependencies
+	  for octave 3.2 to gcc43_build_deps.sh
+	  
+	  add the following dependencies:
+	  qrupdate-1.0
+	  fftw-3.2
+	  graphicsmagick-1.3.3
+	  ftgl-2.1.3-rc5
+	  fltk-1.1.9
+
+2009-06-05 20:30  lindnerb
+
+	* admin/Windows/mingw32/gcc43_common.sh: modify libtool only if
+	  necessary to avoid timestamp changes
+	  
+	  Use copy-if-moved.sh instead of a simple mv when fixing up
+	  libtool to avoid its timestamp being changed causing an
+	  unnecessary rebuild of the source code
+
+2009-06-03 20:28  schloegl
+
+	* extra/NaN/src/covm_mex.cpp: some cleanup, and minor improvement
+
+2009-06-03 08:00  highegg
+
+	* main/general/inst/parcellfun.m: fix option handling in parcellfun
+
+2009-06-02 10:05  fpoto
+
+	* main/statistics/inst/pdist.m: Now it works with scalar
+	  observations, too.
+
+2009-06-01 07:54  highegg
+
+	* main/general/inst/parcellfun.m: reap children using waitpid,
+	  suggested by Travis Collier <travcollier@gmail.com>
+
+2009-06-01 07:52  highegg
+
+	* main/general/inst/parcellfun.m: fix & improve pipe handling in
+	  parcellfun
+
+2009-05-31 23:27  fpoto
+
+	* main/statistics/inst/pdist.m: Apparently an old version was
+	  committed.
+	  
+	  Now useless ", 1" strings are removed from var, cor, sum, abs,
+	  Errors for 1-D vectors are not called any more.
+
+2009-05-31 22:32  hauberg
+
+	* doc/htdocs/links.in: Add header
+
+2009-05-31 22:30  hauberg
+
+	* doc/htdocs/links.in: Remove link to OctaveWorkshop as that
+	  project is dead
+
+2009-05-31 20:23  hauberg
+
+	* extra/generate_html/inst/generate_package_html.m,
+	  extra/generate_html/inst/get_html_options.m: Generate license
+
+2009-05-31 15:17  hauberg
+
+	* extra/generate_html/inst/generate_html_manual.m,
+	  extra/generate_html/inst/generate_package_html.m,
+	  extra/generate_html/inst/get_html_options.m: Improve package
+	  index page
+
+2009-05-30 09:53  hauberg
+
+	* extra/generate_html/inst/generate_package_html.m: Improve package
+	  index page
+
+2009-05-29 08:24  hauberg
+
+	* extra/generate_html/inst/generate_html_manual.m,
+	  extra/generate_html/inst/generate_package_html.m,
+	  extra/generate_html/inst/get_html_options.m: Allow the manual to
+	  be generated
+
+2009-05-29 07:19  hauberg
+
+	* extra/generate_html/inst/private/find_package.m: New function for
+	  determining which package a function belongs to
+
+2009-05-28 19:38  jmencisom
+
+	* language/es_CO/help/octave/circshift.es_CO,
+	  language/es_CO/help/octave/class.es_CO,
+	  language/es_CO/help/octave/clc.es_CO,
+	  language/es_CO/help/octave/clear.es_CO,
+	  language/es_CO/help/octave/clearplot.es_CO,
+	  language/es_CO/help/octave/clf.es_CO,
+	  language/es_CO/help/octave/clg.es_CO,
+	  language/es_CO/help/octave/clock.es_CO,
+	  language/es_CO/help/octave/cloglog.es_CO,
+	  language/es_CO/help/octave/close.es_CO,
+	  language/es_CO/help/octave/closeplot.es_CO,
+	  language/es_CO/help/octave/closereq.es_CO: Spanish translation
+	  ci*, cl*
+
+2009-05-27 21:51  schloegl
+
+	* extra/NaN/src/covm_mex.cpp, extra/NaN/src/sumskipnan_mex.cpp:
+	  support ml72 and earlier
+
+2009-05-26 22:48  cdf
+
+	* extra/generate_html/inst/generate_package_html.m,
+	  extra/generate_html/inst/get_html_options.m,
+	  extra/generate_html/inst/private/get_pkg_list_item_filename.m:
+	  save pkg descriptions in separate files
+
+2009-05-26 19:05  hauberg
+
+	* extra/generate_html/inst/generate_package_html.m,
+	  extra/generate_html/inst/get_html_options.m,
+	  extra/generate_html/inst/private/get_index_header_title_and_footer.m:
+	  Generate a basic index.html for each package
+
+2009-05-26 13:28  jmencisom
+
+	* language/es_CO/help/octave/char.es_CO,
+	  language/es_CO/help/octave/chi2cdf.es_CO,
+	  language/es_CO/help/octave/chi2inv.es_CO,
+	  language/es_CO/help/octave/chi2pdf.es_CO,
+	  language/es_CO/help/octave/chi2rnd.es_CO,
+	  language/es_CO/help/octave/chisquare_cdf.es_CO,
+	  language/es_CO/help/octave/chisquare_inv.es_CO,
+	  language/es_CO/help/octave/chisquare_pdf.es_CO,
+	  language/es_CO/help/octave/chisquare_rnd.es_CO,
+	  language/es_CO/help/octave/chisquare_test_homogeneity.es_CO,
+	  language/es_CO/help/octave/chisquare_test_independence.es_CO,
+	  language/es_CO/help/octave/chol.es_CO,
+	  language/es_CO/help/octave/chol2inv.es_CO,
+	  language/es_CO/help/octave/cholinv.es_CO: Spanish translation ch*
+	  commands.
+
+2009-05-26 13:04  hauberg
+
+	* main/image/inst/imdither.m: Make help text readable
+
+2009-05-26 13:00  hauberg
+
+	* main/image/src/pngread.cc: Remove compiler warning
+
+2009-05-25 13:46  schloegl
+
+	* extra/NaN/inst/corrcoef.m, extra/NaN/inst/iqr.m: extended input
+	  arguments
+
+2009-05-25 08:04  cdf
+
+	* extra/nurbs/src/Makefile, extra/nurbs/src/basisfun.cc,
+	  extra/nurbs/src/basisfunder.cc, extra/nurbs/src/bspderiv.cc,
+	  extra/nurbs/src/bspeval.cc, extra/nurbs/src/findspan.cc,
+	  extra/nurbs/src/low_level_functions.cc,
+	  extra/nurbs/src/low_level_functions.h,
+	  extra/nurbs/src/nrb_srf_basisfun__.cc,
+	  extra/nurbs/src/nrb_srf_basisfun_der__.cc: separate oct files for
+	  low level functions
+
+2009-05-24 11:17  rlaboiss
+
+	* main/financial/inst/__fetch_google__.m: Fix the expected data for
+	  the Google stock fetch
+
+2009-05-23 23:52  rlaboiss
+
+	* main/miscellaneous/src/cell2csv.cc: Fix bug related to the return
+	  type of str.find() function
+	  
+	  The str.find() function returns a size_t type. On 64-bits
+	  systems, like
+	  amd64, storing the result of str.find() in an unsigned int
+	  variable is
+	  bound to give problems.
+
+2009-05-23 20:10  asnelt
+
+	* main/statistics/inst/copulapdf.m: Replaced expm1.
+
+2009-05-23 13:32  rlaboiss
+
+	* main/symbolic/inst/poly2sym.m, main/symbolic/inst/sym2poly.m,
+	  main/symbolic/inst/symfsolve.m: Use cell() instead of the
+	  deprecated list()
+	  
+	  The list() function has been deprecated in Octave. The patch
+	  below
+	  replaces all calls to list() in the scripts poly2sym.m,
+	  sym2poly.m,
+	  and symfsolve.m by calls to cell().
+	  
+	  Also, add a new test using cell in function sym2poly.
+
+2009-05-23 13:31  rlaboiss
+
+	* main/symbolic/inst/symfsolve.m: Add tests to the symfsolve
+	  function (inspired on the examples in doc)
+
+2009-05-23 12:00  rlaboiss
+
+	* main/signal/inst/upfirdn.m: Remove the obsolete file upfirdn.m
+	  
+	  This file is now superseeded by src/upfirdn.cc. In normal
+	  situations,
+	  keeping both upfird.m and upfirdn.oct in the package will not
+	  hurt.
+	  However, there may be cases where the former takes preference on
+	  the later
+	  in the path. In this case, tests of resample and fracshift will
+	  fail.
+
+2009-05-23 04:36  cdf
+
+	* extra/nurbs/src/low_level_functions.cc: fix for basisfunder
+
+2009-05-22 22:38  rlaboiss
+
+	* extra/nurbs/inst/numbasisfun.m: Transpose reference matrix in
+	  test of numbasisfun
+
+2009-05-22 19:43  jmencisom
+
+	* language/es_CO/help/octave/ccolamd.es_CO,
+	  language/es_CO/help/octave/cd.es_CO,
+	  language/es_CO/help/octave/ceil.es_CO,
+	  language/es_CO/help/octave/cell.es_CO,
+	  language/es_CO/help/octave/cell2mat.es_CO,
+	  language/es_CO/help/octave/cell2struct.es_CO,
+	  language/es_CO/help/octave/celldisp.es_CO,
+	  language/es_CO/help/octave/cellfun.es_CO,
+	  language/es_CO/help/octave/cellidx.es_CO,
+	  language/es_CO/help/octave/cellstr.es_CO,
+	  language/es_CO/help/octave/center.es_CO: Spanish translation ce*
+	  commands.
+
+2009-05-22 19:36  rlaboiss
+
+	* main/io/inst/dlmwrite.m: Use the correct comparison string for
+	  the second assert in dlmwrite test
+
+2009-05-22 13:58  slackydeb
+
+	* main/control/inst/acker.m, main/control/inst/place.m: Get around
+	  system-dependent precision problems when testing functions acker
+	  and place. Thanks to Rafael Laboissiere <rafael@debian.org> for
+	  the report and the patch.
+
+2009-05-22 12:53  schloegl
+
+	* extra/NaN/inst/flag_implicit_significance.m,
+	  extra/NaN/inst/flag_implicit_skip_nan.m: replace global with
+	  persistent variable
+
+2009-05-22 12:48  rlaboiss
+
+	* main/comm/inst/prbs_generator.m, main/comm/inst/prbs_iterator.m,
+	  main/comm/inst/prbs_sequence.m: Fix permission of prbs_*.m
+	  scripts
+
+2009-05-21 09:12  rlaboiss
+
+	* main/signal/inst/sampled2continuous.m: Fix permission of script
+	  sampled2continuous.m
+
+2009-05-21 08:35  lindnerb
+
+	* admin/Windows/mingw32/octave/build-3.0.5-3.sh,
+	  admin/Windows/mingw32/octave/octave-3.0.5-3.patch: add octave
+	  version 3.0.5 build script and patch file
+
+2009-05-21 08:33  lindnerb
+
+	* admin/Windows/mingw32/gcc43_version.sh: update octave version to
+	  3.0.5
+
+2009-05-19 23:39  schloegl
+
+	* extra/NaN/inst/prctile.m: fix typo
+
+2009-05-19 23:30  schloegl
+
+	* extra/NaN/inst/iqr.m, extra/NaN/inst/prctile.m,
+	  extra/NaN/inst/quantile.m, extra/NaN/inst/trimmean.m: add iqr,
+	  trimmean prctile
+
+2009-05-19 03:58  cdf
+
+	* extra/nurbs/inst/bspderiv.m, extra/nurbs/inst/bspeval.m,
+	  extra/nurbs/inst/deg2rad.m, extra/nurbs/inst/demosurf.m,
+	  extra/nurbs/inst/demotorus.m, extra/nurbs/inst/findspan.m,
+	  extra/nurbs/inst/nrbbasisfun.m,
+	  extra/nurbs/inst/nrbbasisfungradient.m,
+	  extra/nurbs/inst/nrbeval.m, extra/nurbs/inst/nrbnumbasisfun.m,
+	  extra/nurbs/inst/nrbreverse.m, extra/nurbs/inst/nrbsrfgradient.m,
+	  extra/nurbs/inst/nrbtestcrv.m, extra/nurbs/inst/nrbtestsrf.m,
+	  extra/nurbs/inst/nrbtform.m, extra/nurbs/inst/numbasisfun.m,
+	  extra/nurbs/inst/vecmag.m, extra/nurbs/inst/vecmag2.m: improved
+	  help text
+
+2009-05-18 20:18  adb014
+
+	* main/optim/DESCRIPTION, main/optim/src/__bfgsmin.cc: explicit
+	  inclusion of lo-ieee.h is needed in 3.1.x
+
+2009-05-18 20:13  adb014
+
+	* main/combinatorics/DESCRIPTION,
+	  main/combinatorics/src/partint.cc: explicit inclusion of
+	  lo-ieee.h is needed in 3.1.x
+
+2009-05-18 20:05  adb014
+
+	* main/linear-algebra/DESCRIPTION,
+	  main/linear-algebra/src/CmplxGSVD.cc,
+	  main/linear-algebra/src/dbleGSVD.cc,
+	  main/linear-algebra/src/gsvd.cc: Update for 3.1.x
+
+2009-05-18 19:48  adb014
+
+	* main/fixed/src/fixed-inline.cc, main/fixed/src/fixedCMatrix.cc:
+	  explicit sumsq templates to get the right fixedpoint behavior
+
+2009-05-18 18:54  lindnerb
+
+	* admin/Windows/mingw32/imagemagick/build-6.4.5-3.sh: add magick
+	  and wand headers to installed include/ directory, remove
+	  "-shared-libgcc" and all -I and -L flags from the *-config
+	  scripts, as compile-time paths have no meaning on the installed
+	  system, and -shared-libgcc is not recognized my mkoctfile.exe
+	  (but added implicitly)
+
+2009-05-18 17:06  lindnerb
+
+	* admin/Windows/mingw32/imagemagick/build-6.4.5-3.sh: explicitly
+	  add $LIBRARY_PATH to LDFLAGS, since imagemagick's configure
+	  procedure overwrites the variable $LIBRARY_PATH
+
+2009-05-18 15:42  rlaboiss
+
+	* extra/nurbs/inst/basisfun.m, extra/nurbs/inst/bspdegelev.m,
+	  extra/nurbs/inst/bspderiv.m, extra/nurbs/inst/bspeval.m,
+	  extra/nurbs/inst/bspkntins.m, extra/nurbs/inst/deg2rad.m,
+	  extra/nurbs/inst/demo4surf.m, extra/nurbs/inst/democirc.m,
+	  extra/nurbs/inst/democoons.m, extra/nurbs/inst/democurve.m,
+	  extra/nurbs/inst/democylind.m, extra/nurbs/inst/demodegelev.m,
+	  extra/nurbs/inst/demodercrv.m, extra/nurbs/inst/demodersrf.m,
+	  extra/nurbs/inst/demoellip.m, extra/nurbs/inst/demoextrude.m,
+	  extra/nurbs/inst/demogeom.m, extra/nurbs/inst/demohelix.m,
+	  extra/nurbs/inst/demokntins.m, extra/nurbs/inst/demoline.m,
+	  extra/nurbs/inst/demorect.m, extra/nurbs/inst/demorevolve.m,
+	  extra/nurbs/inst/demoruled.m, extra/nurbs/inst/demos.m,
+	  extra/nurbs/inst/demosurf.m, extra/nurbs/inst/demotorus.m,
+	  extra/nurbs/inst/findspan.m, extra/nurbs/inst/nrb4surf.m,
+	  extra/nurbs/inst/nrbcirc.m, extra/nurbs/inst/nrbcoons.m,
+	  extra/nurbs/inst/nrbcylind.m, extra/nurbs/inst/nrbdegelev.m,
+	  extra/nurbs/inst/nrbderiv.m, extra/nurbs/inst/nrbdeval.m,
+	  extra/nurbs/inst/nrbeval.m, extra/nurbs/inst/nrbextrude.m,
+	  extra/nurbs/inst/nrbkntins.m, extra/nurbs/inst/nrbline.m,
+	  extra/nurbs/inst/nrbmak.m, extra/nurbs/inst/nrbplot.m,
+	  extra/nurbs/inst/nrbrect.m, extra/nurbs/inst/nrbreverse.m,
+	  extra/nurbs/inst/nrbrevolve.m, extra/nurbs/inst/nrbruled.m,
+	  extra/nurbs/inst/nrbtestcrv.m, extra/nurbs/inst/nrbtestsrf.m,
+	  extra/nurbs/inst/nrbtform.m, extra/nurbs/inst/nrbtransp.m,
+	  extra/nurbs/inst/rad2deg.m, extra/nurbs/inst/vecangle.m,
+	  extra/nurbs/inst/veccross.m, extra/nurbs/inst/vecdot.m,
+	  extra/nurbs/inst/vecmag.m, extra/nurbs/inst/vecmag2.m,
+	  extra/nurbs/inst/vecnorm.m, extra/nurbs/inst/vecrotx.m,
+	  extra/nurbs/inst/vecroty.m, extra/nurbs/inst/vecrotz.m,
+	  extra/nurbs/inst/vecscale.m, extra/nurbs/inst/vectrans.m: Fix
+	  permission of .* scripts
+
+2009-05-18 03:32  adb014
+
+	* extra/triangular/DESCRIPTION, extra/triangular/src/uppertri.cc:
+	  Update for 3.1.x
+
+2009-05-18 03:18  adb014
+
+	* main/fixed/DESCRIPTION, main/fixed/src/Array-f.cc,
+	  main/fixed/src/configure.base, main/fixed/src/fixed-inline.cc,
+	  main/fixed/src/fixedCMatrix.cc, main/fixed/src/fixedCMatrix.h,
+	  main/fixed/src/fixedCNDArray.cc, main/fixed/src/fixedMatrix.cc,
+	  main/fixed/src/fixedMatrix.h, main/fixed/src/fixedNDArray.cc,
+	  main/fixed/src/ov-fixed-complex.cc, main/fixed/src/ov-fixed.cc:
+	  Update fixed point code for 3.1.x. Minor bug in test code still
+	  present though code seems to work fine
+
+2009-05-17 20:06  rlaboiss
+
+	* main/miscellaneous/src/hex2num.cc: Autoload num2hex function in
+	  hex2num.cc
+
+2009-05-17 20:05  rlaboiss
+
+	* main/miscellaneous/src/Makefile: Typo in TARGETS list prevented
+	  hex2num.oct from being built
+
+2009-05-17 19:45  rlaboiss
+
+	* main/linear-algebra/inst/cartprod.m: Remove executable property
+
+2009-05-17 18:22  jmencisom
+
+	* language/es_CO/help/octave/c2d.es_CO,
+	  language/es_CO/help/octave/calendar.es_CO,
+	  language/es_CO/help/octave/canonicalize_file_name.es_CO,
+	  language/es_CO/help/octave/cart2pol.es_CO,
+	  language/es_CO/help/octave/cart2sph.es_CO,
+	  language/es_CO/help/octave/casesen.es_CO,
+	  language/es_CO/help/octave/cast.es_CO,
+	  language/es_CO/help/octave/cat.es_CO,
+	  language/es_CO/help/octave/cauchy_cdf.es_CO,
+	  language/es_CO/help/octave/cauchy_inv.es_CO,
+	  language/es_CO/help/octave/cauchy_pdf.es_CO,
+	  language/es_CO/help/octave/cauchy_rnd.es_CO,
+	  language/es_CO/help/octave/caxis.es_CO: Spanish translation c2d,
+	  ca* commands.
+
+2009-05-17 15:16  rlaboiss
+
+	* extra/graceplot/src/__grcmd__.cc: Avoid warnings "deprecated
+	  conversion from string constant to 'char *'"
+
+2009-05-17 15:04  rlaboiss
+
+	* extra/graceplot/DESCRIPTION: Add general to the list of
+	  dependencies
+	  
+	  This is need because the function mark_for_deletion is called
+	  from
+	  __grpltfmt__.m.
+
+2009-05-17 13:21  rlaboiss
+
+	* extra/bugfix-3.0.5/DESCRIPTION: Use the correct "==" operator in
+	  the Depends field
+
+2009-05-16 13:43  hauberg
+
+	* main/statistics/inst/mvnpdf.m: Style changes, texinfo help text
+	  and a new demo
+
+2009-05-16 09:11  rlaboiss
+
+	* extra/fpl/inst/FPL2pdesurf.m: Avoid echoing of eval statement
+
+2009-05-15 21:35  rlaboiss
+
+	* main/audio/src/aurecord.cc: Avoid warning about conversion from
+	  string const to char*
+
+2009-05-15 09:55  highegg
+
+	* main/optim/src/__bfgsmin.cc: again, but more robust
+
+2009-05-15 09:53  highegg
+
+	* main/optim/src/__bfgsmin.cc: fix off-by-one error in __bfgsmin.cc
+
+2009-05-15 08:17  schloegl
+
+	* extra/oct2mat/inst/oct2mat: conversion of endswitch statement
+	  added
+
+2009-05-14 22:03  adb014
+
+	* main/comm/DESCRIPTION, main/comm/src/galois.cc,
+	  main/comm/src/galois.h, main/comm/src/gf.cc,
+	  main/comm/src/ov-galois.cc: Update the comms package for 3.1.55
+
+2009-05-14 20:47  hauberg
+
+	* extra/generate_html/inst/generate_operators.m,
+	  extra/generate_html/inst/generate_package_html.m,
+	  extra/generate_html/inst/private/mk_various_dir.m: Support
+	  generation of operator index
+
+2009-05-14 17:48  hauberg
+
+	* main/image/inst/poly2mask.m: Remove a warning and add a bunch of
+	  spaces to the code
+
+2009-05-14 17:19  hauberg
+
+	* main/image/inst/applylut.m, main/image/inst/bestblk.m: Minor demo
+	  improvements
+
+2009-05-14 17:09  hauberg
+
+	* main/image/inst/imsmooth.m: Fix texinfo bug
+
+2009-05-14 13:40  hauberg
+
+	* doc/macros.m4.in: Point to MinGW rather than MSVC
+
+2009-05-13 21:52  hauberg
+
+	* extra/generate_html/inst/generate_html_manual.m,
+	  extra/generate_html/inst/generate_package_html.m: Simplify API
+
+2009-05-13 19:31  cdf
+
+	* extra/bim/DESCRIPTION, extra/bim/inst/BIM1Aadvdiff.m,
+	  extra/bim/inst/BIM1Alaplacian.m, extra/bim/inst/BIM1Areaction.m,
+	  extra/bim/inst/BIM1Arhs.m, extra/bim/inst/BIM2Aadvdiff.m,
+	  extra/bim/inst/BIM2Alaplacian.m, extra/bim/inst/BIM2Areaction.m,
+	  extra/bim/inst/BIM2Arhs.m, extra/bim/inst/BIM2Cglobalflux.m,
+	  extra/bim/inst/BIM3Alaplacian.m, extra/bim/inst/BIM3Areaction.m,
+	  extra/bim/inst/BIM3Arhs.m: doc improvements
+
+2009-05-13 18:57  tealev
+
+	* main/optim/src/__bfgsmin.cc: Caching feval calls in order to
+	  prevent it from doing double calls with exactly the same
+	  parameters.
+
+2009-05-13 18:45  hauberg
+
+	* main/info-theory/inst/conditionalentropy_XY.m,
+	  main/info-theory/inst/conditionalentropy_YX.m: Fix texinfo bugs
+
+2009-05-13 18:26  hauberg
+
+	* main/info-theory/inst/mutualinformation.m: Add missing } in
+	  texinfo
+
+2009-05-13 17:59  lindnerb
+
+	* admin/Windows/mingw32/tools/notepad++/build-5.3.1-3.sh: fix
+	  download sourceforge URL for notepad++ 5.3.1
+
+2009-05-13 16:38  schloegl
+
+	* extra/NaN/inst/ecdf.m, extra/NaN/inst/medAbsDev.m,
+	  extra/NaN/inst/zScoreMedian.m: add zScoreMedian medAbsDev; ecdf
+	  support for matrices added
+
+2009-05-13 15:47  schloegl
+
+	* extra/NaN/inst/partcorrcoef.m: partial correlation coefficient
+	  added
+
+2009-05-13 14:43  schloegl
+
+	* extra/NaN/inst/ecdf.m, extra/NaN/inst/tiedrank.m: add ECDF and
+	  TIEDRANK
+
+2009-05-13 13:48  hauberg
+
+	* extra/generate_html/inst/generate_html_manual.m,
+	  extra/generate_html/inst/generate_package_html.m: Change order of
+	  input arguments (from Carlo de Falco)
+
+2009-05-12 17:29  hauberg
+
+	* extra/generate_html, extra/generate_html/COPYING,
+	  extra/generate_html/DESCRIPTION, extra/generate_html/INDEX,
+	  extra/generate_html/inst,
+	  extra/generate_html/inst/generate_alphabet.m,
+	  extra/generate_html/inst/generate_html_manual.m,
+	  extra/generate_html/inst/generate_operators.m,
+	  extra/generate_html/inst/generate_package_html.m,
+	  extra/generate_html/inst/get_html_options.m,
+	  extra/generate_html/inst/html_help_text.m,
+	  extra/generate_html/inst/private,
+	  extra/generate_html/inst/private/get_header_title_and_footer.m,
+	  extra/generate_html/inst/private/get_overview_filename.m,
+	  extra/generate_html/inst/private/get_overview_header_title_and_footer.m,
+	  extra/generate_html/inst/private/get_root.m,
+	  extra/generate_html/inst/private/get_texi_conf.m,
+	  extra/generate_html/inst/private/get_txi_files.m,
+	  extra/generate_html/inst/private/mk_chapter_dir.m,
+	  extra/generate_html/inst/private/mk_function_dir.m,
+	  extra/generate_html/inst/texi2html.m,
+	  extra/generate_html/inst/txi2index.m,
+	  extra/generate_html/inst/txi2reference.m: Add first revision of
+	  generate_html package
+
+2009-05-12 16:13  schloegl
+
+	* extra/NaN/doc/INSTALL, extra/NaN/inst/geomean.m,
+	  extra/NaN/inst/harmmean.m, extra/NaN/inst/zscore.m: NaN:
+	  weightening of data; fix support for FreeMat v3.6
+
+2009-05-12 12:51  lindnerb
+
+	* admin/Windows/mingw32/tools/build-3.sh,
+	  admin/Windows/mingw32/tools/notepad++/build-5.3.1-3.sh,
+	  admin/Windows/mingw32/tools/notepad++/npp-5.3.1-3.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches,
+	  admin/Windows/mingw32/tools/notepad++/patches/np_npp-disable-minidump.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/np_npp-localizationString.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/np_npp.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/np_nppmakefile.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/np_optifon.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/np_scimakefile.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/np_scintilla.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/np_wtof_unicode.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/np_xml-localization.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/npp_catch-refrerence-to-const.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/npp_sci-bugfixes.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/npp_sci-lexprogress.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/npp_sci-sloppy-code.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/npp_xml-config-model.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/npp_xml-langs-model.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/npp_xml-shortcut.patch,
+	  admin/Windows/mingw32/tools/notepad++/patches/npp_xml-userdefinelang.patch,
+	  admin/Windows/mingw32/tools/notepad++/patchqueue.sh: add
+	  patchqueue subdirectory for notepad++, upgrade to notepad++ 5.3.1
+	  (Unicode)
+
+2009-05-12 11:32  schloegl
+
+	* extra/NaN/doc/README.TXT,
+	  extra/NaN/inst/flag_implicit_skip_nan.m, extra/NaN/inst/rms.m,
+	  extra/NaN/inst/sem.m, extra/NaN/inst/std.m, extra/NaN/inst/var.m:
+	  NaN: weightening of data; fix support for FreeMat v3.6
+
+2009-05-12 10:55  cdf
+
+	* extra/nurbs/inst/nrb_srf_basisfun_der__.m,
+	  extra/nurbs/src/low_level_functions.cc: fix bug for one-element
+	  mesh
+
+2009-05-11 23:25  slackydeb
+
+	* main/ga/DESCRIPTION, main/ga/doc/EXAMPLES, main/ga/doc/README:
+	  Improve doc/examples from user feedback. Bump version.
+
+2009-05-11 13:31  cdf
+
+	* extra/nurbs/inst/nrb_srf_basisfun_der__.m: consistent numbering
+
+2009-05-11 12:48  cdf
+
+	* extra/nurbs/INDEX, extra/nurbs/src/low_level_functions.cc: index
+	  new functions
+
+2009-05-11 12:45  cdf
+
+	* extra/nurbs/inst/__nrb_srf_basisfun__.m,
+	  extra/nurbs/inst/__nrb_srf_basisfun_der__.m,
+	  extra/nurbs/inst/nrb_srf_basisfun__.m,
+	  extra/nurbs/inst/nrb_srf_basisfun_der__.m,
+	  extra/nurbs/inst/nrbbasisfun.m,
+	  extra/nurbs/inst/nrbbasisfunder.m,
+	  extra/nurbs/inst/nrbbasisfungradient.m,
+	  extra/nurbs/inst/nrbnumbasisfun.m: removed incompatibilities
+
+2009-05-11 12:11  cdf
+
+	* extra/nurbs/inst/bspeval.m, extra/nurbs/inst/nrbsrfgradient.m:
+	  removed incompatible commands
+
+2009-05-11 12:08  cdf
+
+	* extra/nurbs/inst/nrbbasisfungradient.m,
+	  extra/nurbs/src/low_level_functions.cc: different algorithm for
+	  gradients
+
+2009-05-11 08:48  schloegl
+
+	* extra/NaN/inst/covm.m: bug fix normalization of Mode='E' in case
+	  mexFLAG
+
+2009-05-11 07:09  schloegl
+
+	* extra/NaN/inst/center.m, extra/NaN/inst/geomean.m,
+	  extra/NaN/inst/harmmean.m, extra/NaN/inst/mean.m,
+	  extra/NaN/inst/meansq.m, extra/NaN/inst/zscore.m: NaN-tb: support
+	  weighting of data
+
+2009-05-10 12:33  hauberg
+
+	* main/nnet/DESCRIPTION: Change version number into a valid one
+
+2009-05-10 12:29  hauberg
+
+	* extra/engine/src/engGetFull.c, extra/engine/src/engif.c,
+	  extra/engine/src/engif.h: Rename getline to local_getline for BSD
+	  compat. (from Stephen Montgomery-Smith)
+
+2009-05-10 07:26  culpo
+
+	* extra/bim/inst/BIM1Aadvdiff.m, extra/bim/inst/BIM1Alaplacian.m,
+	  extra/bim/inst/BIM2Aadvdiff.m, extra/bim/inst/BIM2Alaplacian.m,
+	  extra/bim/inst/BIM2Cmeshproperties.m,
+	  extra/bim/inst/BIM3Alaplacian.m, extra/bim/inst/BIM3Areaction.m,
+	  extra/bim/inst/BIM3Cmeshproperties.m,
+	  extra/ocs/inst/TST/TSTbweuler.m: Fixed a few typos plus minor
+	  errors.
+
+2009-05-10 07:23  cdf
+
+	* extra/nurbs/inst/__nrb_srf_basisfun__.m,
+	  extra/nurbs/inst/nrbnumbasisfun.m: nrbnumbasisfun added
+
+2009-05-09 14:27  culpo
+
+	* extra/msh/INDEX: Fixed INDEX
+
+2009-05-09 09:12  cdf
+
+	* extra/msh/inst/MSH2Mgmsh.m, extra/msh/inst/MSH3Mgmsh.m: removed
+	  calls to strcat which now is as dumb as in Matlab
+
+2009-05-08 21:46  hauberg
+
+	* admin/release.sh: Update release instructions in case we need
+	  them in the future
+
+2009-05-08 20:57  hauberg
+
+	* AUTHORS, ChangeLog: R2009-05-08 release
+
 2009-05-08 20:45  hauberg
 
 	* AUTHORS, README, doc/htdocs/NEWS.in, doc/htdocs/index.in,

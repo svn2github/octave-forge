@@ -37,7 +37,7 @@ The Octave-forge ANN package wraps the ANN library, which provides data structur
    <b><a href="javascript:unfold('audio');" class="package_head_link">   <img src="show.png" id="audio_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Audio</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./audio/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/audio-1.1.3.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/audio-1.1.4.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="audio_detailed" style="display: none;">
@@ -73,7 +73,7 @@ Bioinformatics manipulation  </p>
    <b><a href="javascript:unfold('combinatorics');" class="package_head_link">   <img src="show.png" id="combinatorics_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Combinatorics</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./combinatorics/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/combinatorics-1.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/combinatorics-1.0.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="combinatorics_detailed" style="display: none;">
@@ -85,7 +85,7 @@ Combinatorics functions, incuding partitioning.  </p>
    <b><a href="javascript:unfold('communications');" class="package_head_link">   <img src="show.png" id="communications_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Communications</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./comm/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/communications-1.0.9.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/communications-1.0.10.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="communications_detailed" style="display: none;">
@@ -97,7 +97,7 @@ Digital Communications, Error Correcting Codes (Channel Code), Source Code funct
    <b><a href="javascript:unfold('control');" class="package_head_link">   <img src="show.png" id="control_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Control</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./control/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/control-1.0.10.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/control-1.0.11.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="control_detailed" style="display: none;">
@@ -121,7 +121,7 @@ Algorithms for smoothing noisy data  </p>
    <b><a href="javascript:unfold('database');" class="package_head_link">   <img src="show.png" id="database_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 database</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./database/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/database-1.0.3.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/database-1.0.4.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="database_detailed" style="display: none;">
@@ -157,7 +157,7 @@ On supported architectures, change the rounding mode of the floating point arith
    <b><a href="javascript:unfold('financial');" class="package_head_link">   <img src="show.png" id="financial_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 financial</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./financial/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/financial-0.3.1.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/financial-0.3.2.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="financial_detailed" style="display: none;">
@@ -169,7 +169,7 @@ Financial manipulation and plotting functions  </p>
    <b><a href="javascript:unfold('fixed');" class="package_head_link">   <img src="show.png" id="fixed_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Fixed</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./fixed/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/fixed-0.7.9.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/fixed-0.7.10.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="fixed_detailed" style="display: none;">
@@ -193,7 +193,7 @@ These are bindings for ftplib, and MATLAB compatible APIs.  </p>
    <b><a href="javascript:unfold('ga');" class="package_head_link">   <img src="show.png" id="ga_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 ga</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./ga/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/ga-0.9.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/ga-0.9.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="ga_detailed" style="display: none;">
@@ -205,7 +205,7 @@ Genetic optimization code  </p>
    <b><a href="javascript:unfold('general');" class="package_head_link">   <img src="show.png" id="general_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 General</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./general/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/general-1.1.2.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/general-1.1.3.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="general_detailed" style="display: none;">
@@ -241,7 +241,7 @@ Addition System Indentification Control functions.  </p>
    <b><a href="javascript:unfold('image');" class="package_head_link">   <img src="show.png" id="image_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Image</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./image/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/image-1.0.9.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/image-1.0.10.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="image_detailed" style="display: none;">
@@ -257,7 +257,7 @@ The Octave-forge Image package provides functions for processing images.
    <b><a href="javascript:unfold('informationtheory');" class="package_head_link">   <img src="show.png" id="informationtheory_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 InformationTheory</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./info-theory/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/informationtheory-0.1.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/informationtheory-0.1.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="informationtheory_detailed" style="display: none;">
@@ -269,7 +269,7 @@ Functions and routines for basic Information Theory definitions, and source codi
    <b><a href="javascript:unfold('io');" class="package_head_link">   <img src="show.png" id="io_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 io</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./io/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/io-1.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/io-1.0.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="io_detailed" style="display: none;">
@@ -293,7 +293,7 @@ Irregular sampling analysis.  </p>
    <b><a href="javascript:unfold('linear-algebra');" class="package_head_link">   <img src="show.png" id="linear-algebra_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Linear-Algebra</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./linear-algebra/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/linear-algebra-1.0.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/linear-algebra-1.0.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="linear-algebra_detailed" style="display: none;">
@@ -305,7 +305,7 @@ Additional linear algebra code, including general SVD and matrix functions.  </p
    <b><a href="javascript:unfold('miscellaneous');" class="package_head_link">   <img src="show.png" id="miscellaneous_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Miscellaneous</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./miscellaneous/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/miscellaneous-1.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/miscellaneous-1.0.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="miscellaneous_detailed" style="display: none;">
@@ -329,7 +329,7 @@ Find functions that are in Matlab but not in Octave.  </p>
    <b><a href="javascript:unfold('nnet');" class="package_head_link">   <img src="show.png" id="nnet_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 nnet</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./nnet/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/nnet-0.1.10.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/nnet-0.1.10.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="nnet_detailed" style="display: none;">
@@ -341,7 +341,7 @@ A feed forward multi-layer neural network.  </p>
    <b><a href="javascript:unfold('octcdf');" class="package_head_link">   <img src="show.png" id="octcdf_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 octcdf</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./octcdf/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/octcdf-1.0.12.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/octcdf-1.0.13.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="octcdf_detailed" style="display: none;">
@@ -379,7 +379,7 @@ To approximate the solution of the boundary-value problem  y''=p(x)*y' + q(x)*y 
    <b><a href="javascript:unfold('odepkg');" class="package_head_link">   <img src="show.png" id="odepkg_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 OdePkg</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./odepkg/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/odepkg-0.6.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/odepkg-0.6.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="odepkg_detailed" style="display: none;">
@@ -391,7 +391,7 @@ A package for solving ordinary differential equations and more.  </p>
    <b><a href="javascript:unfold('optim');" class="package_head_link">   <img src="show.png" id="optim_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Optim</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./optim/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/optim-1.0.5.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/optim-1.0.6.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="optim_detailed" style="display: none;">
@@ -479,7 +479,7 @@ Package for the manipulation of Quaternion's used for frame transformation
    <b><a href="javascript:unfold('signal');" class="package_head_link">   <img src="show.png" id="signal_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Signal</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./signal/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/signal-1.0.9.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/signal-1.0.10.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="signal_detailed" style="display: none;">
@@ -551,7 +551,7 @@ Additional Cubic spline functions.  </p>
    <b><a href="javascript:unfold('statistics');" class="package_head_link">   <img src="show.png" id="statistics_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Statistics</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./statistics/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/statistics-1.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/statistics-1.0.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="statistics_detailed" style="display: none;">
@@ -587,7 +587,7 @@ Additional Structure manipulations functions.  </p>
    <b><a href="javascript:unfold('symbolic');" class="package_head_link">   <img src="show.png" id="symbolic_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Symbolic</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./symbolic/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/symbolic-1.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/symbolic-1.0.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="symbolic_detailed" style="display: none;">
@@ -623,7 +623,7 @@ Implements addframe, avifile, aviinfo, and aviread, using ffmpeg. (and approxima
    <b><a href="javascript:unfold('vrml');" class="package_head_link">   <img src="show.png" id="vrml_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Vrml</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./vrml/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/vrml-1.0.9.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/vrml-1.0.10.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="vrml_detailed" style="display: none;">
@@ -652,7 +652,7 @@ A set of functions for creating simple graphical user interfaces. It is currentl
    <b><a href="javascript:unfold('ad');" class="package_head_link">   <img src="show.png" id="ad_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 AD</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./ad/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/ad-1.0.5.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/ad-1.0.6.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="ad_detailed" style="display: none;">
@@ -664,22 +664,22 @@ Automatic Forward Differentiation  </p>
    <b><a href="javascript:unfold('bim');" class="package_head_link">   <img src="show.png" id="bim_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 BIM</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./bim/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/bim-0.1.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/bim-0.1.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="bim_detailed" style="display: none;">
 Package for solving Diffusion Advection Reaction (DAR) Partial Differential Equaltions based on the Finite Volume Scharfetter-Gummel (FVSG) method a.k.a Box Integration Method (BIM)  </p>
 </div>
-<div class="package" id="bugfix-3.0.5">
+<div class="package" id="bugfix-3.0.6">
   <table class="package"><tr>
     <td>
-   <b><a href="javascript:unfold('bugfix-3.0.5');" class="package_head_link">   <img src="show.png" id="bugfix-3.0.5_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
-bugfix-3.0.5</a></b></td>
+   <b><a href="javascript:unfold('bugfix-3.0.6');" class="package_head_link">   <img src="show.png" id="bugfix-3.0.6_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+bugfix-3.0.6</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./bugfix-3.0.5/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/bugfix-3.0.5-1.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/bugfix-3.0.6-1.0.tar.gz?download">download</a>
     </td>
   </tr></table>
-  <p id="bugfix-3.0.5_detailed" style="display: none;">
+  <p id="bugfix-3.0.6_detailed" style="display: none;">
 This package overrides some functions included with the 3.0.5 release that contain minor bugs.  </p>
 </div>
 <div class="package" id="civil-engineering">
@@ -700,7 +700,7 @@ Functions to solution some ODE's in Civil Engineering.  </p>
    <b><a href="javascript:unfold('engine');" class="package_head_link">   <img src="show.png" id="engine_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Engine</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./engine/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/engine-1.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/engine-1.0.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="engine_detailed" style="display: none;">
@@ -712,11 +712,26 @@ An external interface library for Octave  </p>
    <b><a href="javascript:unfold('fpl');" class="package_head_link">   <img src="show.png" id="fpl_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 FPL</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./fpl/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/fpl-0.1.5.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/fpl-0.1.6.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="fpl_detailed" style="display: none;">
 Collection of routines to plot data on unstructured triangular and tetrahedral meshes  </p>
+</div>
+<div class="package" id="generate_html">
+  <table class="package"><tr>
+    <td>
+   <b><a href="javascript:unfold('generate_html');" class="package_head_link">   <img src="show.png" id="generate_html_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
+generate_html</a></b></td>
+    <td style="text-align: right;">&raquo; <a href="./generate_html/index.html" class="package_link">details</a> |
+    <a class="package_link" href="__PACKAGE__/generate_html-0.0.9.tar.gz?download">download</a>
+    </td>
+  </tr></table>
+  <p id="generate_html_detailed" style="display: none;">
+This package provides functions for generating HTML pages that contain the help texts for a set of functions. The package is designed to be
+ as general as possible, but also contains convenience functions for generating
+ a set of pages for entire packages.
+  </p>
 </div>
 <div class="package" id="graceplot">
   <table class="package"><tr>
@@ -724,7 +739,7 @@ Collection of routines to plot data on unstructured triangular and tetrahedral m
    <b><a href="javascript:unfold('graceplot');" class="package_head_link">   <img src="show.png" id="graceplot_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Graceplot</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./graceplot/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/graceplot-1.0.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/graceplot-1.0.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="graceplot_detailed" style="display: none;">
@@ -785,7 +800,7 @@ Simple Mapping functions.  </p>
    <b><a href="javascript:unfold('msh');" class="package_head_link">   <img src="show.png" id="msh_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 MSH</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./msh/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/msh-0.1.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/msh-0.1.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="msh_detailed" style="display: none;">
@@ -797,7 +812,7 @@ Package for creating and managing triangular and tetrahedral meshes for Finite E
    <b><a href="javascript:unfold('multicore');" class="package_head_link">   <img src="show.png" id="multicore_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Multicore</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./multicore/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/multicore-0.2.14.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/multicore-0.2.15.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="multicore_detailed" style="display: none;">
@@ -810,7 +825,7 @@ An Octave-forge package providing functions for parallel processing on multiple 
    <b><a href="javascript:unfold('nan');" class="package_head_link">   <img src="show.png" id="nan_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 NaN</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./NaN/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/nan-1.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/nan-1.0.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="nan_detailed" style="display: none;">
@@ -834,7 +849,7 @@ This package allows efficient computation of nonlinear aerodynamic  </p>
    <b><a href="javascript:unfold('nurbs');" class="package_head_link">   <img src="show.png" id="nurbs_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Nurbs</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./nurbs/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/nurbs-1.0.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/nurbs-1.0.1.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="nurbs_detailed" style="display: none;">
@@ -846,7 +861,7 @@ Collection of routines for the creation, and manipulation of Non-Uniform Rationa
    <b><a href="javascript:unfold('ocs');" class="package_head_link">   <img src="show.png" id="ocs_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 OCS</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./ocs/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/ocs-0.0.3.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/ocs-0.0.4.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="ocs_detailed" style="display: none;">
@@ -858,7 +873,7 @@ Package for solving DC and transient electrical circuit equations  </p>
    <b><a href="javascript:unfold('oct2mat');" class="package_head_link">   <img src="show.png" id="oct2mat_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Oct2Mat</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./oct2mat/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/oct2mat-1.0.6.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/oct2mat-1.0.7.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="oct2mat_detailed" style="display: none;">
@@ -918,7 +933,7 @@ socket implementation of a tcl-octave connection  </p>
    <b><a href="javascript:unfold('symband');" class="package_head_link">   <img src="show.png" id="symband_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 SymBand</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./symband/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/symband-1.0.9.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/symband-1.0.10.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="symband_detailed" style="display: none;">
@@ -930,7 +945,7 @@ Linear Algebra for Symmetric Banded Matrices.  </p>
    <b><a href="javascript:unfold('triangular');" class="package_head_link">   <img src="show.png" id="triangular_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Triangular</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./triangular/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/triangular-1.0.4.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/triangular-1.0.5.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="triangular_detailed" style="display: none;">
@@ -954,7 +969,7 @@ Stochastic concepts and maximum entropy methods for time series analysis  </p>
    <b><a href="javascript:unfold('windows');" class="package_head_link">   <img src="show.png" id="windows_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Windows</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./Windows/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/windows-1.0.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/windows-1.0.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="windows_detailed" style="display: none;">
@@ -973,19 +988,6 @@ Xraylib</a></b></td>
 Bindings to the Xraylib functions  </p>
 </div>
 <h2 id="language">Native Translations</h2>
-<div class="package" id="spanish">
-  <table class="package"><tr>
-    <td>
-   <b><a href="javascript:unfold('spanish');" class="package_head_link">   <img src="show.png" id="spanish_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
-Spanish</a></b></td>
-    <td style="text-align: right;">&raquo; <a href="./es_CO/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/spanish-1.0.0.tar.gz?download">download</a>
-    </td>
-  </tr></table>
-  <p id="spanish_detailed" style="display: none;">
-Spanish package for the construction of native language translations of Octave functions.
-  </p>
-</div>
 <div class="package" id="pt_br">
   <table class="package"><tr>
     <td>
@@ -1006,7 +1008,7 @@ Brazilian Portuguese translations of the help strings of the Octave functions.
    <b><a href="javascript:unfold('arpack');" class="package_head_link">   <img src="show.png" id="arpack_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 Arpack</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./arpack/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/arpack-1.0.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/arpack-1.0.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="arpack_detailed" style="display: none;">
@@ -1018,7 +1020,7 @@ Octave bindings to ARPACK, including the eigs and svds function.  </p>
    <b><a href="javascript:unfold('spline-gcvspl');" class="package_head_link">   <img src="show.png" id="spline-gcvspl_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 spline-gcvspl</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./spline-gsvspl/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/spline-gcvspl-1.0.7.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/spline-gcvspl-1.0.8.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="spline-gcvspl_detailed" style="display: none;">

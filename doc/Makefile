@@ -6,7 +6,8 @@ HTML_SRC = $(shell find $(HTDOCS) | grep "\.in")
 IMG_HTML = $(HTML_SRC:.in=.html)
 HTDOCS_PKG = htdocs.tar.gz
 
-all: build-www doc $(HTDOCS)developers.html doxygen $(HTDOCS)javascript.js
+#all: build-www doc $(HTDOCS)developers.html doxygen $(HTDOCS)javascript.js
+all: build-www doc $(HTDOCS)developers.html $(HTDOCS)javascript.js
 	$(MAKE) $(IMG_HTML)
 	$(MAKE) -k -C coda www-dist
 	if [ ! -e $(HTDOCS)coda ]; then rm -rf $(HTDOCS)coda; fi
@@ -34,7 +35,7 @@ doc:
 html: $(IMG_HTML)
 
 %.html : %.in
-	$(M4) $(M4_OPTIONS) $(MACRO_FILE) $< > $@
+	-$(M4) $(M4_OPTIONS) $(MACRO_FILE) $< > $@;
 
 $(HTDOCS)javascript.js: javascript.jsin
 	$(M4) $(M4_OPTIONS) $(MACRO_FILE) $< > $@

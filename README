@@ -53,14 +53,6 @@ extra/
 	   * are designed for older versions of Octave, or
 	   * haven't been tested enough.
 
-extra/oct2mat/
-	This contains scripts for converting m-files into a matlab compatible
-	style. The scripts will be also used to generate the releases of 
-	"Free toolboxes from Octave for Matlab" (freetb4matlab). 
-	
-	
-	
-
 language/
 	Packages that supply translations of core Octave functions and 
 	Octave-Forge packages. The directory base/template/ contains example

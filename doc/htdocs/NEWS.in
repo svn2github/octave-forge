@@ -7,6 +7,12 @@ see the <a href="ChangeLog">ChangeLog</a>.</p>
 </div>
 <div class="section">
 <dl>
+<dt>June 7, 2009</dt>
+<dd>
+<p>New release of Octave-forge
+ To celebrate the release of Octave 3.2, a new release of the package have been
+ made. This should be compatible with the latest version of Octave.</p>
+</dd>
 <dt>May 8, 2009</dt>
 <dd>
 <p>New release of Octave-forge

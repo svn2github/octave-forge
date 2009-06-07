@@ -50,14 +50,6 @@ void load_netcdf_type () {
   octave_ncdim::register_type ();
 
   netcdf_type_loaded = true;
-
-  // Lock constructor function in place, otherwise
-  // "nc=netcdf("file.nc","r"); clear functions; nc" generates a seg-fault!!
-
-  mlock("netcdf");
-  mlock("ncvar");
-  mlock("ncatt");
-  mlock("ncdim");
 }
 
 
@@ -99,6 +91,7 @@ For large file and data sets. This format was introduced in NetCDF 3.6.0. \n\
 @end deftypefn\n\
 @seealso{ncclose}\n")
 {
+  mlock ();
   string format;
   //
 
@@ -244,7 +237,7 @@ myvar = nv(:);     % copies the content of this NetCDF variable is myvar. \n\
 @end example \n\
 @seealso{ncatt,ncdim,ncname,ncdatatype}\n")
 {
-
+  mlock ();
   if (args.length() != 1) {
       print_usage ();
       return octave_value();
@@ -285,7 +278,7 @@ myvar = na(:);     % copies the content of this NetCDF attribute is myvar. \n\
 @end example \n\
 @seealso{ncvar,ncdim,ncname,ncdatatype}\n")
 {
-
+  mlock ();
   if (args.length() != 1) {
       print_usage ();
       return octave_value();
@@ -330,7 +323,7 @@ Creates a cell array of all dimenstion in a NetCDF file. The length of the NetCD
 @end deftypefn\n\
 @seealso{ncvar}\n")
 {
-
+  mlock ();
   if (args.length() != 1) {
       print_usage ();
       return octave_value();

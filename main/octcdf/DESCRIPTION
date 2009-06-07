@@ -5,7 +5,7 @@ Author: Alexander Barth <barth.alexander@gmail.com>
 Maintainer: Alexander Barth <barth.alexander@gmail.com>
 Title: octcdf
 Description: A NetCDF interface for octave
-Depends: octave (>= 2.9.7)
+Depends: octave (>= 3.1.55)
 Autoload: yes
 BuildRequires: netcdf-devel
 License: GPL version 2 or later

@@ -51,55 +51,115 @@
   #endif 
 #endif 
 
-inline int uint8cmp(const uint8_t *a, const uint8_t *b) {
-	return((int)*(uint8_t*)a - (int)*(uint8_t*)b);
-}
-inline int int8cmp(const int8_t *a, const int8_t *b) {
-	return((int)*(int8_t*)a - (int)*(int8_t*)b);
-}
-inline int uint16cmp(const void *a, const void *b) {
-	return((int)*(uint16_t*)a - (int)*(uint16_t*)b);
-}
-inline int int16cmp(const void *a, const void *b) {
-	return((int)*(int16_t*)a - (int)*(int16_t*)b);
-}
-inline int uint32cmp(const void *a, const void *b) {
-	return(memcmp(a,b,4));
-}
-inline int int32cmp(const void *a, const void *b) {
-	return((int64_t)*(int32_t*)a - *(int32_t*)b);
-}
-inline int uint64cmp(const void *a, const void *b) {
-	return(memcmp(a,b,8));
-}
-inline int int64cmp(const void *a, const void *b) {
-	return(*(int64_t*)a - *(int64_t*)b);
+struct sort_t {
+	uint8_t *Table;
+	size_t Size;
+	size_t Stride; 
+	size_t N; 
+	mxClassID Type;  
+} Sort; 	
+
+//inline int compare(const sqize_t *a, const size_t *b) {
+inline int compare(const void *a, const void *b) {
+	int z = 0; 
+	size_t i = 0;
+//	mexPrintf("cmp: %u %u\n",*(size_t*)a,*(size_t*)b);
+//	mexPrintf("%i: %i %i %i %i %i %i \n",Sort.Type,mxINT32_CLASS,mxUINT32_CLASS,mxINT64_CLASS,mxUINT64_CLASS,mxSINGLE_CLASS,mxDOUBLE_CLASS);
+	while ((i<Sort.N) && !z) {
+
+		switch (Sort.Type) {
+		case mxCHAR_CLASS:
+			z = memcmp(Sort.Table+((*(size_t*)a + Sort.Stride*i)*Sort.Size),Sort.Table+((*(size_t*)b + Sort.Stride*i)*Sort.Size),Sort.Size); 
+			break;
+		case mxINT32_CLASS: {
+			int32_t f1,f2;
+			f1 = ((int32_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
+			f2 = ((int32_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			if (f1<f2) z = -1; 
+			else if (f1>f2) z = 1; 
+			break;
+			}
+		case mxUINT32_CLASS: {
+			uint32_t f1,f2;
+			f1 = ((uint32_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
+			f2 = ((uint32_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			if (f1<f2) z = -1; 
+			else if (f1>f2) z = 1; 
+			break;
+			}
+		case mxINT64_CLASS: {
+			int64_t f1,f2;
+			f1 = ((int64_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
+			f2 = ((int64_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			if (f1<f2) z = -1; 
+			else if (f1>f2) z = 1; 
+			break;
+			}
+		case mxUINT64_CLASS: {
+			uint64_t f1,f2; 
+			f1 = ((uint64_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
+			f2 = ((uint64_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			if (f1<f2) z = -1; 
+			else if (f1>f2) z = 1; 
+			break;
+			}
+		case mxSINGLE_CLASS: {
+			float f1,f2;
+			f1 = ((float*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
+			f2 = ((float*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			if (f1<f2) z = -1; 
+			else if (f1>f2) z = 1; 
+			break;
+			}
+		case mxDOUBLE_CLASS: {
+			double f1,f2;
+			f1 = ((double*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
+			f2 = ((double*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			if (f1<f2) z = -1; 
+			else if (f1>f2) z = 1; 
+			break;
+			}
+		case mxINT16_CLASS: {
+			int16_t f1,f2;
+			f1 = ((int16_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
+			f2 = ((int16_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			if (f1<f2) z = -1; 
+			else if (f1>f2) z = 1; 
+			break;
+			}
+		case mxUINT16_CLASS: {
+			uint16_t f1,f2;
+			f1 = ((uint16_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
+			f2 = ((uint16_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			if (f1<f2) z = -1; 
+			else if (f1>f2) z = 1; 
+			break;
+			}
+		case mxINT8_CLASS: {
+			int8_t f1,f2;
+			f1 = ((int8_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
+			f2 = ((int8_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			if (f1<f2) z = -1; 
+			else if (f1>f2) z = 1; 
+			break;
+			}
+		case mxUINT8_CLASS: {
+			uint8_t f1,f2;
+			f1 = ((uint8_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
+			f2 = ((uint8_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			if (f1<f2) z = -1; 
+			else if (f1>f2) z = 1; 
+			break;
+			}
+		}
+		i++;	
+	}	
+	return(z);
 }
 
-inline int float32cmp(const void *a, const void *b) {
-	return(memcmp(a,b,4));
-}
-inline int float64cmp(const void *a, const void *b) {
-	return(memcmp(a,b,8));
-}
-inline int float128cmp(const void *a, const void *b) {
-	return(memcmp(a,b,16));
-}
-
-
-
-void histo(void *x, size_t sz, size_t stride, size_t n) 
-{
-	if (stride==1)
-		qsort(x,n,sz,uint32cmp);	
-
-}
 
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
-
-
-
 
     	const mwSize	*SZ;	    
 	char flag_rows = 0; 
@@ -143,194 +203,183 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	mxArray	*HIS = mxCreateStructMatrix(1, 1, 3, fnames);
 	mxSetField(HIS,0,"datatype",mxCreateString("HISTOGRAM"));
 	
-	if (!flag_rows || (SZ[1]==1)) 
-	switch (mxGetClassID(PInputs[0])) {
-/*
-	case mxCHAR_CLASS: {
-		mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxUINT64_CLASS,mxREAL);
-		mxArray *X = mxCreateNumericMatrix(256, 1, mxINT8_CLASS,mxREAL); 
-		mxSetField(HIS,0,"H",H);
-		mxSetField(HIS,0,"X",X);
-
-		char *x;
-		x = (char*)mxGetData(X);
-		qsort(x,n,sz,strcpy);	
-		break;
+	size_t *idx = NULL;
+	if (flag_rows) { 
+//	if (SZ[1]==1) { 
+		int (*compar)(const void*, const void*);
+		size_t n; 
+		idx = (size_t*) mxMalloc(SZ[0]*sizeof(size_t));
+		for (size_t n=0; n<SZ[0]; n++) {
+			idx[n]=n;			
 		}
-*/
-	case mxINT8_CLASS: { 	
-		mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxUINT64_CLASS,mxREAL);
-		mxArray *X = mxCreateNumericMatrix(256, 1, mxINT8_CLASS,mxREAL); 
+		Sort.Type = mxGetClassID(PInputs[0]); 
+		Sort.Table = (uint8_t*) mxGetData(PInputs[0]);
+		switch (mxGetClassID(PInputs[0])) {
+		case mxINT8_CLASS: 
+		case mxUINT8_CLASS: 
+			Sort.Size = 1;
+			break; 
+		case mxINT16_CLASS: 
+		case mxUINT16_CLASS: 
+			Sort.Size = 2;
+			break; 
+		case mxINT32_CLASS: 
+		case mxUINT32_CLASS: 
+		case mxSINGLE_CLASS:
+			Sort.Size = 4;
+			break; 
+		case mxINT64_CLASS: 
+		case mxUINT64_CLASS: 
+		case mxDOUBLE_CLASS: 
+			Sort.Size = 8;
+			break;
+		default:
+			mexErrMsgTxt("unsupported input type"); 
+		}	
+		Sort.N = flag_rows ? SZ[1] : 1; 
+
+		qsort(idx,SZ[0],sizeof(*idx),compare);
+		n = SZ[0] ? 1 : 0; 
+		for (size_t k=1; k<SZ[0]; k++) {
+			if (compare(idx+k-1,idx+k)) n++;
+		}
+		mxArray *H = mxCreateNumericMatrix(n, 1, mxUINT64_CLASS,mxREAL);
+		mxArray *X = mxCreateNumericMatrix(n, SZ[1], mxGetClassID(PInputs[0]),mxREAL); 
 		mxSetField(HIS,0,"H",H);
 		mxSetField(HIS,0,"X",X);
-
-		int8_t *x;
-		x = (int8_t*)mxGetData(X);
-		for (k=0; k<=255; k++)
-			x[k]=k-128;
-
-		x = (int8_t*)mxGetData(PInputs[0]);
 		uint64_t *h = (uint64_t*)mxGetData(H);
-		for (k=0; k<SZ[0]*SZ[1]; k++)
-			h[x[k]+128+256*(k/SZ[0])]++;
-		
-		done = 1; 	
-		break;
-	}
-	case mxUINT8_CLASS: { 	
-		mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxUINT64_CLASS,mxREAL);
-		mxArray *X = mxCreateNumericMatrix(256, 1, mxUINT8_CLASS,mxREAL); 
-		mxSetField(HIS,0,"H",H);
-		mxSetField(HIS,0,"X",X);
-
 		uint8_t *x = (uint8_t*)mxGetData(X);
-		for (k=0; k<255; k++)
-			x[k]=k;
-
-		x = (uint8_t*)mxGetData(PInputs[0]);
-		uint64_t *h = (uint64_t*)mxGetData(H);
-		for (k=0; k<SZ[0]*SZ[1]; k++)
-			h[x[k]+256*(k/SZ[0])]++;
-			
-		done = 1; 	
-		break;
-	}
-	case mxINT16_CLASS: {	
-		mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxUINT64_CLASS,mxREAL);
-		mxArray *X = mxCreateNumericMatrix(0x10000, 1, mxINT16_CLASS,mxREAL); 
-		mxSetField(HIS,0,"H",H);
-		mxSetField(HIS,0,"X",X);
-
-		uint64_t *h = (uint64_t*)mxGetData(H);
-		int16_t *x = (int16_t*)mxGetData(X);
-		for (k=0; k<0x10000; k++)
-			x[k]=k-0x8000;
-
-		x = (int16_t*)mxGetData(PInputs[0]);
-		for (k=0; k<SZ[0]*SZ[1]; k++)
-			h[x[k]+0x8000+0x10000*(k/SZ[0])]++;
-			
-		done = 1; 	
-		break;
-	}
-
-	case mxUINT16_CLASS: {	
-		mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxUINT64_CLASS,mxREAL);
-		mxArray *X = mxCreateNumericMatrix(0x10000, 1, mxINT16_CLASS,mxREAL); 
-		mxSetField(HIS,0,"H",H);
-		mxSetField(HIS,0,"X",X);
-
-		uint64_t *h = (uint64_t*)mxGetData(H);
-		int16_t *x = (int16_t*)mxGetData(X);
-		for (k=0; k<0x10000; k++)
-			x[k]=k-0x8000;
-
-		uint16_t *x16 = (uint16_t*)mxGetData(PInputs[0]);
-		for (k=0; k<SZ[0]*SZ[1]; k++)
-			h[x16[k]+0x10000*(k/SZ[0])]++;
-		done = 1; 	
-		break;	
-	}
-	} // end switch 	
-	
-
-	POutput[0] = HIS; 
-
-	if (done) return; 
-
-	/* FIXME */
-
-	if (!flag_rows) { 
-		for (size_t n=0; n<SZ[1]; n++) {
-			
-		}
-	}
-	else
-	
-
-	if (!done) 
-	switch (mxGetClassID(PInputs[0])) {
-	case mxINT32_CLASS: {	
-		int32_t *x = (int32_t*)mxGetData(PInputs[0]);
-		qsort(x,n,sz*4,int32cmp);	
-			/* FIXME */
-		break;
-	}
-	case mxUINT32_CLASS: {	
-		uint32_t *x = (uint32_t*)mxGetData(PInputs[0]);
-		qsort(x,n,sz*4,uint32cmp);	
-			/* FIXME */
-		break;
-	}
-	case mxINT64_CLASS: { 	
-		uint64_t *x = (uint64_t*)mxGetData(PInputs[0]);
-		qsort(x,n,sz*8,int64cmp);	
-			/* FIXME */
-		break;
-	}
-	case mxUINT64_CLASS: {	
-		uint64_t *x = (uint64_t*)mxGetData(PInputs[0]);
-		qsort(x,n,sz*8,uint64cmp);	
-			/* FIXME */
-		break;
-	}
-	case mxSINGLE_CLASS: {
-		mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxUINT64_CLASS,mxREAL);
-		mxArray *X = mxCreateNumericMatrix(0x10000, 1, mxSINGLE_CLASS,mxREAL); 
-		mxSetField(HIS,0,"H",H);
-		mxSetField(HIS,0,"X",X);
-
-		uint64_t *h = (uint64_t*)mxGetData(H);
-		float *x = (float*)mxGetData(X);
-		x = (float*)mxGetData(PInputs[0]);
-
-		flag = 0; 
-		for (k=0; (k<SZ[0]) && !flag; k++) {
-			if (x[k] == ceil(x[k])) 
-				h[(size_t)x[k]+0x8000]++;
-			else 
-				flag = 1; 	
-		}
-		if (!flag) {
-			for (k=0; k<0x10000; )
-				x[k++]=k-0x8000;
-		}
-		else {
-			qsort(x,n,sz*4,float32cmp);	
-			/* FIXME */
-		}	
-		break;
-	}
-	case mxDOUBLE_CLASS: { 	
-		mxArray *H = mxCreateNumericMatrix(0x18000, SZ[1], mxUINT64_CLASS,mxREAL);
-		mxArray *X = mxCreateNumericMatrix(0x18000, 1, mxDOUBLE_CLASS,mxREAL); 
-		mxSetField(HIS,0,"H",H);
-		mxSetField(HIS,0,"X",X);
-
-		uint64_t *h = (uint64_t*)mxGetData(H);
-		double *x = (double*)mxGetData(X);
-		x = (double*)mxGetData(PInputs[0]);
-		flag = 0; 
-		for (k=0; (k<SZ[0]) && !flag; k++) {
-			if ((x[k] == ceil(x[k])) && (x[k]<0x10000) && (x[k]>-32769)) 
-				h[(int)x[k]+0x8000]++;
-			else 
-				flag = 1; 	
-		}
-		if (!flag) 
-			for (k=0; k<0x18000; k++)
-				x[k++] = k-0x8000;
-		else {
-			qsort(x, n, sz*8, float64cmp);	
-			
-			/* FIXME */
-		}	
-		break;
-	}
-	}	// end switch 
-
 		
-	/*******  output    *******/
-	POutput[0] = HIS; 
+		for (j=0; j<SZ[1]; j++) {
+			memcpy(x+j*n*Sort.Size,Sort.Table+(idx[0]+j*Sort.Stride)*Sort.Size,Sort.Size);
+		}
+		h[0] = 1; 
+		l = 0;
+		for (size_t k=1; k<SZ[0]; k++) {
+			if (compare(&idx[k-1], &idx[k])) {
+				l++;
+				for (j=0; j<SZ[1]; j++) {
+					memcpy(x + (l+j*n)*Sort.Size, Sort.Table+(idx[k] + j*Sort.Stride)*Sort.Size, Sort.Size);
+				}
+			}
+			h[l]++;	
+		}
+		mxFree(idx); 
+		done = 1;
+	}
 
+	else { 
+		switch (mxGetClassID(PInputs[0])) {
+/*
+		case mxCHAR_CLASS: {
+			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *X = mxCreateNumericMatrix(256, 1, mxINT8_CLASS,mxREAL); 
+			mxSetField(HIS,0,"H",H);
+			mxSetField(HIS,0,"X",X);
+
+			char *x;
+			x = (char*)mxGetData(X);
+			qsort(x,n,sz,strcpy);	
+			break;
+			}
+*/
+		case mxINT8_CLASS: { 	
+			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *X = mxCreateNumericMatrix(256, 1, mxINT8_CLASS,mxREAL); 
+			mxSetField(HIS,0,"H",H);
+			mxSetField(HIS,0,"X",X);
+
+			int8_t *x;
+			x = (int8_t*)mxGetData(X);
+			for (k=0; k<=255; k++)
+				x[k]=k-128;
+
+			x = (int8_t*)mxGetData(PInputs[0]);
+			uint64_t *h = (uint64_t*)mxGetData(H);
+			for (k=0; k<SZ[0]*SZ[1]; k++)
+				h[x[k]+128+256*(k/SZ[0])]++;
+		
+			done = 1; 	
+			break;
+			}
+
+		case mxUINT8_CLASS: { 	
+			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *X = mxCreateNumericMatrix(256, 1, mxUINT8_CLASS,mxREAL); 
+			mxSetField(HIS,0,"H",H);
+			mxSetField(HIS,0,"X",X);
+
+			uint8_t *x = (uint8_t*)mxGetData(X);
+			for (k=0; k<255; k++)
+				x[k]=k;
+
+			x = (uint8_t*)mxGetData(PInputs[0]);
+			uint64_t *h = (uint64_t*)mxGetData(H);
+			for (k=0; k<SZ[0]*SZ[1]; k++)
+				h[x[k]+256*(k/SZ[0])]++;
+				
+			done = 1; 	
+			break;
+			}
+
+		case mxINT16_CLASS: {	
+			mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *X = mxCreateNumericMatrix(0x10000, 1, mxINT16_CLASS,mxREAL); 
+			mxSetField(HIS,0,"H",H);
+			mxSetField(HIS,0,"X",X);
+
+			uint64_t *h = (uint64_t*)mxGetData(H);
+			int16_t *x = (int16_t*)mxGetData(X);
+			for (k=0; k<0x10000; k++)
+				x[k]=k-0x8000;
+
+			x = (int16_t*)mxGetData(PInputs[0]);
+			for (k=0; k<SZ[0]*SZ[1]; k++)
+				h[x[k]+0x8000+0x10000*(k/SZ[0])]++;
+			
+			done = 1; 	
+			break;
+			}
+
+		case mxUINT16_CLASS: {	
+			mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *X = mxCreateNumericMatrix(0x10000, 1, mxINT16_CLASS,mxREAL); 
+			mxSetField(HIS,0,"H",H);
+			mxSetField(HIS,0,"X",X);
+	
+			uint64_t *h = (uint64_t*)mxGetData(H);
+			int16_t *x = (int16_t*)mxGetData(X);
+			for (k=0; k<0x10000; k++)
+				x[k]=k-0x8000;
+
+			uint16_t *x16 = (uint16_t*)mxGetData(PInputs[0]);
+			for (k=0; k<SZ[0]*SZ[1]; k++)
+				h[x16[k]+0x10000*(k/SZ[0])]++;
+			done = 1; 	
+			break;	
+			}
+
+		default: {
+			/* FIXME */
+			mexErrMsgTxt("multicolumns with int32 or larger not supported!"); 
+
+			mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *X = mxCreateNumericMatrix(0x10000, SZ[1], mxGetClassID(PInputs[0]),mxREAL); 
+			mxSetField(HIS,0,"H",H);
+			mxSetField(HIS,0,"X",X);
+
+			uint64_t *h = (uint64_t*)mxGetData(H);
+			int16_t *x = (int16_t*)mxGetData(X);
+
+			for (size_t n=0; n<SZ[1]; n++) {
+			}	
+			}
+		} // end switch 	
+	}
+	
+
+	/*******  output    *******/
+	if (done) POutput[0] = HIS; 
+	
+	return; 
 }

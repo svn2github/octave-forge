@@ -18,19 +18,16 @@
 //   along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 //
-// sumskipnan: sums all non-NaN values
+// histo_mex: computes histogram 
 //
 // Input:
-// - array to sum
-// - dimension to sum
-// - flag (is actually an output argument telling whether some NaN was observed)
-// - weight vector to compute weighted sum 
+// - data matrix 
+// - flag for row-wise histogram
 //
 // Output:
-// - sums
-// - count of valid elements (optional)
-// - sums of squares (optional)
-//
+// - histogram 
+//     HIS.X
+//     HIS.H
 //
 //    $Id$
 //    Copyright (C) 2009 Alois Schloegl <a.schloegl@ieee.org>
@@ -38,6 +35,12 @@
 //    http://hci.tugraz.at/~schloegl/matlab/NaN/
 //
 //-------------------------------------------------------------------
+
+/* TODO: 
+	speed: its slower than the m-functions histo2/3/4
+		|-> use a more efficient sorting function 
+	resembling of histo3 for multicolumn data. 
+*/
 
 #include <inttypes.h>
 #include <math.h>
@@ -52,107 +55,123 @@
 #endif 
 
 struct sort_t {
-	uint8_t *Table;
-	size_t Size;
-	size_t Stride; 
-	size_t N; 
-	mxClassID Type;  
+	uint8_t *Table;	// data table
+	size_t Size;	// sizeof elements e.g. 4 for single
+	size_t Stride; 	// for multicolumn data 
+	size_t N; 	// number of rows
+	mxClassID Type;	// data type  
 } Sort; 	
 
 //inline int compare(const sqize_t *a, const size_t *b) {
-inline int compare(const void *a, const void *b) {
+int compare(const void *a, const void *b) {
 	int z = 0; 
 	size_t i = 0;
-//	mexPrintf("cmp: %u %u\n",*(size_t*)a,*(size_t*)b);
-//	mexPrintf("%i: %i %i %i %i %i %i \n",Sort.Type,mxINT32_CLASS,mxUINT32_CLASS,mxINT64_CLASS,mxUINT64_CLASS,mxSINGLE_CLASS,mxDOUBLE_CLASS);
+	size_t ix1 = *(size_t*)a;
+	size_t ix2 = *(size_t*)b;
+	
 	while ((i<Sort.N) && !z) {
-
 		switch (Sort.Type) {
 		case mxCHAR_CLASS:
-			z = memcmp(Sort.Table+((*(size_t*)a + Sort.Stride*i)*Sort.Size),Sort.Table+((*(size_t*)b + Sort.Stride*i)*Sort.Size),Sort.Size); 
+			z = memcmp(Sort.Table+ix1*Sort.Size,Sort.Table+ix2*Sort.Size,Sort.Size); 
 			break;
 		case mxINT32_CLASS: {
 			int32_t f1,f2;
-			f1 = ((int32_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
-			f2 = ((int32_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			f1 = ((int32_t*)Sort.Table)[ix1];
+			f2 = ((int32_t*)Sort.Table)[ix2];
 			if (f1<f2) z = -1; 
 			else if (f1>f2) z = 1; 
 			break;
 			}
 		case mxUINT32_CLASS: {
 			uint32_t f1,f2;
-			f1 = ((uint32_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
-			f2 = ((uint32_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			f1 = ((uint32_t*)Sort.Table)[ix1];
+			f2 = ((uint32_t*)Sort.Table)[ix2];
 			if (f1<f2) z = -1; 
 			else if (f1>f2) z = 1; 
 			break;
 			}
 		case mxINT64_CLASS: {
 			int64_t f1,f2;
-			f1 = ((int64_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
-			f2 = ((int64_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			f1 = ((int64_t*)Sort.Table)[ix1];
+			f2 = ((int64_t*)Sort.Table)[ix2];
 			if (f1<f2) z = -1; 
 			else if (f1>f2) z = 1; 
 			break;
 			}
 		case mxUINT64_CLASS: {
 			uint64_t f1,f2; 
-			f1 = ((uint64_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
-			f2 = ((uint64_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			f1 = ((uint64_t*)Sort.Table)[ix1];
+			f2 = ((uint64_t*)Sort.Table)[ix2];
 			if (f1<f2) z = -1; 
 			else if (f1>f2) z = 1; 
 			break;
 			}
 		case mxSINGLE_CLASS: {
 			float f1,f2;
-			f1 = ((float*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
-			f2 = ((float*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
-			if (f1<f2) z = -1; 
-			else if (f1>f2) z = 1; 
+			f1 = ((float*)Sort.Table)[ix1];
+			f2 = ((float*)Sort.Table)[ix2];
+			switch (isnan(f1) + 2*isnan(f2)) {
+				case 0:
+					if (f1<f2) z = -1; 
+					else if (f1>f2) z = 1; 
+				case 3:
+					break;
+				case 1: z = 1; break; 
+				case 2: z = -1; break; 
+				} 
 			break;
 			}
 		case mxDOUBLE_CLASS: {
 			double f1,f2;
-			f1 = ((double*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
-			f2 = ((double*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
-			if (f1<f2) z = -1; 
-			else if (f1>f2) z = 1; 
+			f1 = ((double*)Sort.Table)[ix1];
+			f2 = ((double*)Sort.Table)[ix2];
+			switch (isnan(f1) + 2*isnan(f2)) {
+				case 0:
+					if (f1<f2) z = -1; 
+					else if (f1>f2) z = 1; 
+				case 3:
+					break;
+				case 1: z = 1; break; 
+				case 2: z = -1; break; 
+				} 
 			break;
 			}
 		case mxINT16_CLASS: {
 			int16_t f1,f2;
-			f1 = ((int16_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
-			f2 = ((int16_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			f1 = ((int16_t*)Sort.Table)[ix1];
+			f2 = ((int16_t*)Sort.Table)[ix2];
 			if (f1<f2) z = -1; 
 			else if (f1>f2) z = 1; 
 			break;
 			}
 		case mxUINT16_CLASS: {
 			uint16_t f1,f2;
-			f1 = ((uint16_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
-			f2 = ((uint16_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			f1 = ((uint16_t*)Sort.Table)[ix1];
+			f2 = ((uint16_t*)Sort.Table)[ix2];
 			if (f1<f2) z = -1; 
 			else if (f1>f2) z = 1; 
 			break;
 			}
 		case mxINT8_CLASS: {
 			int8_t f1,f2;
-			f1 = ((int8_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
-			f2 = ((int8_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			f1 = ((int8_t*)Sort.Table)[ix1];
+			f2 = ((int8_t*)Sort.Table)[ix2];
 			if (f1<f2) z = -1; 
 			else if (f1>f2) z = 1; 
 			break;
 			}
 		case mxUINT8_CLASS: {
 			uint8_t f1,f2;
-			f1 = ((uint8_t*)Sort.Table)[(*(size_t*)a + Sort.Stride*i)];
-			f2 = ((uint8_t*)Sort.Table)[(*(size_t*)b + Sort.Stride*i)];
+			f1 = ((uint8_t*)Sort.Table)[ix1];
+			f2 = ((uint8_t*)Sort.Table)[ix2];
 			if (f1<f2) z = -1; 
 			else if (f1>f2) z = 1; 
 			break;
 			}
 		}
 		i++;	
+		ix1 += Sort.Stride;
+		ix2 += Sort.Stride;
 	}	
 	return(z);
 }
@@ -164,16 +183,19 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	const mwSize	*SZ;	    
 	char flag_rows = 0; 
 	char done = 0; 
-	
-    	mwSize		DIM = 0; 
-    	mwSize    	ND, ND2;	// number of dimensions: input, output
     	mwSize    	j, k, l;		// running indices 
 
 	// check for proper number of input and output arguments
-	if ((PInputCount <= 0) || (PInputCount > 2))
-	        mexErrMsgTxt("histo.MEX requires between 1 and 4 arguments.");
-	if (POutputCount > 4)
-	        mexErrMsgTxt("histo.MEX has 1 to 3 output arguments.");
+	if ((PInputCount <= 0) || (PInputCount > 2)) {
+		mexPrintf("HISTO_MEX computes histogram from vector or column matrices\n\n");
+		mexPrintf("usage:\tHIS = histo_mex(Y)\n\t\tComputes histogram from each column\n");
+		mexPrintf("\t[HIS,tix] = histo_mex(Y,'rows')\n\t\tComputes row-wise histogram, tix is useful for data compression.\n\t\t Y = HIS.X(tix,:); \n\n");
+		
+	    	mexPrintf("see also: HISTO2, HISTO3, HISTO4\n\n");
+	        mexErrMsgTxt("HISTO_MEX requires 1 or 2 input arguments\n");
+	}        
+	if (POutputCount > 2)
+	        mexErrMsgTxt("histo.MEX has 1 output arguments.");
 
 	// get 1st argument
 	if (mxIsComplex(PInputs[0]))
@@ -185,29 +207,27 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		mxFree(t); 
 	} 
 		
-
 	// get size 
-    	ND = mxGetNumberOfDimensions(PInputs[0]);	
+    	mwSize ND = mxGetNumberOfDimensions(PInputs[0]);	
     	// NN = mxGetNumberOfElements(PInputs[0]);
     	SZ = mxGetDimensions(PInputs[0]);		
 
 	if (ND>2) 
 		mexErrMsgTxt("Error HISTO.MEX: input must be vector or matrix (no more than two dimensions)");
 
-	size_t n = SZ[0];
+	size_t n  = SZ[0];
 	size_t sz = 1;
-	//size_t sz = SZ[1]; /* row sorting */	
 	char flag = 0; 
 	
 	const char *fnames[] = {"datatype","X","H"};
 	mxArray	*HIS = mxCreateStructMatrix(1, 1, 3, fnames);
 	mxSetField(HIS,0,"datatype",mxCreateString("HISTOGRAM"));
 	
-	size_t *idx = NULL;
-	if (flag_rows) { 
-//	if (SZ[1]==1) { 
+	if (flag_rows || (SZ[1]==1)) { 
+
 		int (*compar)(const void*, const void*);
 		size_t n; 
+		size_t *idx = NULL;
 		idx = (size_t*) mxMalloc(SZ[0]*sizeof(size_t));
 		for (size_t n=0; n<SZ[0]; n++) {
 			idx[n]=n;			
@@ -243,6 +263,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		for (size_t k=1; k<SZ[0]; k++) {
 			if (compare(idx+k-1,idx+k)) n++;
 		}
+		uint64_t *tix = NULL; 
+		if (POutputCount>1) {
+			POutput[1] = mxCreateNumericMatrix(SZ[0], 1, mxUINT64_CLASS,mxREAL);
+			tix = (uint64_t*)mxGetData(POutput[1]);
+		}	
+
 		mxArray *H = mxCreateNumericMatrix(n, 1, mxUINT64_CLASS,mxREAL);
 		mxArray *X = mxCreateNumericMatrix(n, SZ[1], mxGetClassID(PInputs[0]),mxREAL); 
 		mxSetField(HIS,0,"H",H);
@@ -255,6 +281,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		}
 		h[0] = 1; 
 		l = 0;
+		if (tix) tix[idx[0]] = 1; 
 		for (size_t k=1; k<SZ[0]; k++) {
 			if (compare(&idx[k-1], &idx[k])) {
 				l++;
@@ -262,6 +289,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					memcpy(x + (l+j*n)*Sort.Size, Sort.Table+(idx[k] + j*Sort.Stride)*Sort.Size, Sort.Size);
 				}
 			}
+			if (tix) tix[idx[k]] = l+1; 
 			h[l]++;	
 		}
 		mxFree(idx); 

@@ -30,9 +30,8 @@
 @rem   http://gnuwin32.sourceforge.net/downlinks/gperf-bin-zip.php
 @rem
 
-IF %1/==/ goto usage
 
-SET DST=%~1
+if %1/==/ (call :askuser) else SET DST=%~1
 
 IF NOT EXIST "%DST%" goto notexist
 
@@ -86,4 +85,14 @@ goto :EOF
 @echo ERROR: The target directory ^<%DST%^> does not exist!
 @echo.
 
+:askuser
+set /P DST="Directory to install MSYS to: "
+if "%DST%/"=="/" goto emptydst
+IF NOT EXIST "%DST%" mkdir "%DST%"
 goto :EOF
+
+:emptydst
+@echo You did not specify an installation directory!
+goto :EOF
+
+:end

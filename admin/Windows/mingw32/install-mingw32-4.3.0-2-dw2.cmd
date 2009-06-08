@@ -21,9 +21,7 @@
 @rem    http://downloads.sourceforge.net/mingw/mingw-utils-0.3.tar.gz
 
 
-if %1/==/ goto usage
-
-SET DST=%~1
+if %1/==/ (call :askuser) else SET DST=%~1
 
 IF NOT EXIST "%DST%" goto notexist
 
@@ -74,6 +72,16 @@ goto :end
 :notexist
 @echo ERROR Target Directory "%DST%" dows not exist!
 @echo.
+goto :END
+
+:askuser
+set /P DST="Directory to install MINGW32 to: "
+if "%DST%/"=="/" goto emptydst
+IF NOT EXIST "%DST%" mkdir "%DST%"
+goto :EOF
+
+:emptydst
+@echo You did not specify an installation directory!
 goto :END
 
 :end

@@ -45,7 +45,7 @@ BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 # disable built-in rules, since make fails when restarting an 
 # interrupted build process trying to call "m2c", and the same
 # when doing make check ??
-MAKE_FLAGS="-r"
+MAKE_FLAGS="$MAKE_FLAGS -r"
 
 # == make check ==
 #

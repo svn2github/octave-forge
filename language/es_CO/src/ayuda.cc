@@ -42,7 +42,7 @@ along with this software; see the file COPYING.  If not, see
 
 // Some additional non texinfo formatted message 
 #define NOT_FOUND "no se encuentra"
-#define NOT_DOCUMENTED "no está documentado"
+#define NOT_DOCUMENTED "no est@'a documentado"
 #define MD5_MISMATCH "La firma MD5 no coincide con el texto traducido.\n\
 Use `help' para ver el texto de ayuda original"
 #define TEXINFO_ERROR_1 "El filtro de formato de TeXinfo ha terminado en forma inesperada"

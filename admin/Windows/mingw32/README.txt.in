@@ -1,20 +1,32 @@
-This package has been built against the @OCTAVE_VERSION@ version of Octave. 
+This package has been built against the @OCTAVE_VERSION@ version of Octave 
+available from http://www.octave.org.
 It has been built using revision @BUILD_REVISION@ of the building scripts 
 hosted at http://octave.sourceforge.net.
 
 This version of Octave has many new features relative to previous versions, 
-including
+including:
 
-* integer types
-* fixed point arithmetic
-* sparse matrices
-* Linear programming code based on GLPK
-* 64-bit compilation support
-* gzipped files and stream and consequently support of Matlab v7 files
-* Matlab compatiable graphic handles
-* better support for both msvc and mingw
-* fully compatiable MEX interface
-* many many other minor features and compatibility changes
+  * Compatibility with Matlab graphics has been improved.
+  * New experimental OpenGL/FLTK based plotting system.
+  * Improvements to the debugger.
+  * Improved traceback error messages.
+  * Object Oriented Programming.
+  * Block comments.
+  * Single Precision data type.
+  * 64-bit integer arithmetic.
+  * New functions for reading and writing images.
+  
+For an exhausive list of changes and news see the end of this file.
+
+Installing Octave:
+------------------
+
+It is higly recommended to install Octave to a path WITHOUT spaces. 
+Octave will work if installed to a path including spaces, and all packages 
+added at the installation will work if installed into a path containing spaces,
+HOWEVER you will currently NOT be able to install packages using octave's
+package manager at a later time if Octave was installed to a directory 
+containing spaces.
 
 Using this package for the development of OCT and MEX files:
 -----------------------------------------------------------
@@ -65,6 +77,9 @@ Octave-Forge Packages
 This package is also bundled with a minimum MSYS environment required for
 octave's package manager. Provided that the dependencies are met, octave-forge
 packages can be installed from the octave prompt with the "pkg" command.
+
+MIND that package installation is currently only possible if Octave is 
+installed to a directory WITHOUT spaces!
 
 This package is bundled with the binaries & development files of external
 libraries allowing the build of the following octave-forge packages:

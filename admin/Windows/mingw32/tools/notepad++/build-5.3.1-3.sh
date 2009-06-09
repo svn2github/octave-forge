@@ -289,12 +289,12 @@ http://downloads.sourceforge.net/npp-plugins/HexEditor_0_9_3_dll_ANSI.zip"
 
 PLUGINS_UNICODE="
 WindowManager_1_2_1_dll
-HexEditor_0_9_3_dll_UNI
+HexEditor_0_9_4_UNI_dll
 Explorer_1_8_1_dll
 fallingbricks_v1.1_unicode_dll"
 PLUGINS_UNICODE_URL="
 http://downloads.sourceforge.net/npp-plugins/WindowManager_1_2_1_dll.zip
-http://downloads.sourceforge.net/npp-plugins/HexEditor_0_9_3_dll_UNI.zip
+http://downloads.sourceforge.net/npp-plugins/HexEditor_0_9_4_UNI_dll.zip
 http://downloads.sourceforge.net/npp-plugins/Explorer_1_8_1_dll.zip
 http://downloads.sourceforge.net/npp-plugins/fallingbricks_v1.1_unicode_dll.zip"
 

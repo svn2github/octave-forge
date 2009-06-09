@@ -114,7 +114,7 @@ create_readme_file()
    
    echo;
    
-   cat ${PACKAGE_ROOT}/doc/NEWS
+   cat ${PACKAGE_ROOT}/share/octave/${PKG_VER}/etc/NEWS
 }
    
 create_octave_forge_nsi > octave_forge.nsi

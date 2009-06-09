@@ -40,7 +40,6 @@ Utilities
   Usubdomains2
   Usubmesh
   Utemplogm
-  secs2d
 Finite Element matrix assembly functions
   Udriftdiffusion
   Ucomplap
@@ -49,7 +48,6 @@ Finite Element matrix assembly functions
   Uscharfettergummel3
 Physical constants and material properties  
   constants
-
 DDGOX
   DDGOXddcurrent
   DDGOXelectron_driftdiffusion

@@ -1,109 +1,101 @@
+## Copyright (C) 2004-2008  Carlo de Falco
+##
+## SECS2D - A 2-D Drift--Diffusion Semiconductor Device Simulator
+##
+## SECS2D is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## SECS2D is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with SECS2D; If not, see <http://www.gnu.org/licenses/>.
+##
+## AUTHOR: Carlo de Falco <cdf _AT_ users.sourceforge.net>
+
+## -*- texinfo -*-
+##
+## @deftypefn {Function File} @
+## {@var{S}} = Uscharfettergummel3 (@var{mesh}, @var{alpha}, @
+## @var{gamma}, @var{eta}, @var{beta})
+##
+##
+## Builds the Scharfetter-Gummel matrix for the 
+## discretization of the LHS
+## of the equation:
+## 
+## @iftex 
+## @tex
+## $ -div ( \alpha  \gamma  ( \eta \vect{\nabla} u - \vect{beta} u )) = f $
+## @end tex 
+## @end iftex 
+## @ifinfo
+## -div (@var{alpha} * @var{gamma} (@var{eta} grad u - @var{beta} u )) = f
+## @end ifinfo
+## 
+## where: 
+## @itemize @minus
+## @item @var{alpha} is an element-wise constant scalar function
+## @item @var{eta}, @var{gamma} are piecewise linear conforming 
+## scalar functions
+## @item @var{beta}  is an element-wise constant vector function
+## @end itemize
+##
+## Instead of passing the vector field @var{beta} directly
+## one can pass a piecewise linear conforming scalar function
+## @var{phi} as the last input.  In such case @var{beta} = grad @var{phi}
+## is assumed.  If @var{phi} is a single scalar value @var{beta}
+## is assumed to be 0 in the whole domain.
+## 
+## Example:
+## @example
+## [mesh.p,mesh.e,mesh.t] = Ustructmesh([0:1/3:1],[0:1/3:1],1,1:4);
+## mesh = Umeshproperties(mesh);
+## x = mesh.p(1,:)';
+## Dnodes = Unodesonside(mesh,[2,4]);
+## Nnodes = columns(mesh.p); Nelements = columns(mesh.t);
+## Varnodes = setdiff(1:Nnodes,Dnodes);
+## alpha  = ones(Nelements,1); eta = .1*ones(Nnodes,1);
+## beta   = [ones(1,Nelements);zeros(1,Nelements)];
+## gamma  = ones(Nnodes,1);
+## f      = Ucompconst(mesh,ones(Nnodes,1),ones(Nelements,1));
+## S = Uscharfettergummel3(mesh,alpha,gamma,eta,beta);
+## u = zeros(Nnodes,1);
+## u(Varnodes) = S(Varnodes,Varnodes)\f(Varnodes);
+## uex = x - (exp(10*x)-1)/(exp(10)-1);
+## assert(u,uex,1e-7)
+## @end example
+##
+## @seealso{Ucomplap, Ucompconst, Ucompmass2, Uscharfettergummel}
+## @end deftypefn
+
 function S = Uscharfettergummel3(mesh,alpha,gamma,eta,beta)
 
-  ## -*- texinfo -*-
-  ##
-  ## @deftypefn {Function File} @
-  ## {@var{S}} = Uscharfettergummel3 (@var{mesh}, @var{alpha}, @
-  ## @var{gamma}, @var{eta}, @var{beta})
-  ##
-  ##
-  ## Builds the Scharfetter-Gummel matrix for the 
-  ## discretization of the LHS
-  ## of the equation:
-  ## 
-  ## @iftex 
-  ## @tex
-  ## $ -div ( \alpha  \gamma  ( \eta \vect{\nabla} u - \vect{beta} u )) = f $
-  ## @end tex 
-  ## @end iftex 
-  ## @ifinfo
-  ## -div (@var{alpha} * @var{gamma} (@var{eta} grad u - @var{beta} u )) = f
-  ## @end ifinfo
-  ## 
-  ## where: 
-  ## @itemize @minus
-  ## @item @var{alpha} is an element-wise constant scalar function
-  ## @item @var{eta}, @var{gamma} are piecewise linear conforming 
-  ## scalar functions
-  ## @item @var{beta}  is an element-wise constant vector function
-  ## @end itemize
-  ##
-  ## Instead of passing the vector field @var{beta} directly
-  ## one can pass a piecewise linear conforming scalar function
-  ## @var{phi} as the last input.  In such case @var{beta} = grad @var{phi}
-  ## is assumed.  If @var{phi} is a single scalar value @var{beta}
-  ## is assumed to be 0 in the whole domain.
-  ## 
-  ## Example:
-  ## @example
-  ## [mesh.p,mesh.e,mesh.t] = Ustructmesh([0:1/3:1],[0:1/3:1],1,1:4);
-  ## mesh = Umeshproperties(mesh);
-  ## x = mesh.p(1,:)';
-  ## Dnodes = Unodesonside(mesh,[2,4]);
-  ## Nnodes = columns(mesh.p); Nelements = columns(mesh.t);
-  ## Varnodes = setdiff(1:Nnodes,Dnodes);
-  ## alpha  = ones(Nelements,1); eta = .1*ones(Nnodes,1);
-  ## beta   = [ones(1,Nelements);zeros(1,Nelements)];
-  ## gamma  = ones(Nnodes,1);
-  ## f      = Ucompconst(mesh,ones(Nnodes,1),ones(Nelements,1));
-  ## S = Uscharfettergummel3(mesh,alpha,gamma,eta,beta);
-  ## u = zeros(Nnodes,1);
-  ## u(Varnodes) = S(Varnodes,Varnodes)\f(Varnodes);
-  ## uex = x - (exp(10*x)-1)/(exp(10)-1);
-  ## assert(u,uex,1e-7)
-  ## @end example
-  ##
-  ## @seealso{Ucomplap, Ucompconst, Ucompmass2, Uscharfettergummel}
-  ## @end deftypefn
-
-
-  %% This file is part of 
-  %%
-  %%            SECS2D - A 2-D Drift--Diffusion Semiconductor Device Simulator
-  %%         -------------------------------------------------------------------
-  %%            Copyright (C) 2004-2006  Carlo de Falco
-  %%
-  %%
-  %%
-  %%  SECS2D is free software; you can redistribute it and/or modify
-  %%  it under the terms of the GNU General Public License as published by
-  %%  the Free Software Foundation; either version 2 of the License, or
-  %%  (at your option) any later version.
-  %%
-  %%  SECS2D is distributed in the hope that it will be useful,
-  %%  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  %%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  %%  GNU General Public License for more details.
-  %%
-  %%  You should have received a copy of the GNU General Public License
-  %%  along with SECS2D; If not, see <http://www.gnu.org/licenses/>.
-
-
-  Nnodes = columns(mesh.p);
+  Nnodes    = columns(mesh.p);
   Nelements = columns(mesh.t);
   
-  alphaareak   = reshape (alpha.*sum( mesh.wjacdet,1)',1,1,Nelements);
-  shg     = mesh.shg(:,:,:);
+  alphaareak = reshape (alpha.*sum( mesh.wjacdet,1)',1,1,Nelements);
+  shg        = mesh.shg(:,:,:);
   
   
-				% build local Laplacian matrix	
-  
-  Lloc=zeros(3,3,Nelements);	
+  ## Build local Laplacian matrix	
+  Lloc = zeros(3,3,Nelements);	
   
   for inode=1:3
     for jnode=1:3
       ginode(inode,jnode,:)=mesh.t(inode,:);
       gjnode(inode,jnode,:)=mesh.t(jnode,:);
-      Lloc(inode,jnode,:)  = sum( shg(:,inode,:) .* shg(:,jnode,:),1)...
-	  .* alphaareak;
-    end
-  end		
-  
-  
-  x      = mesh.p(1,:);
-  x      = x(mesh.t(1:3,:));
-  y      = mesh.p(2,:);
-  y      = y(mesh.t(1:3,:));
+      Lloc(inode,jnode,:)  = sum( shg(:,inode,:) .* shg(:,jnode,:),1).* alphaareak;
+    endfor
+  endfor
+  x = mesh.p(1,:);
+  x = x(mesh.t(1:3,:));
+  y = mesh.p(2,:);
+  y = y(mesh.t(1:3,:));
   
   if all(size(beta)==1)
     v12=0;v23=0;v31=0;
@@ -116,9 +108,9 @@ function S = Uscharfettergummel3(mesh,alpha,gamma,eta,beta)
     v12    = betaloc(2,:)-betaloc(1,:);
     v23    = betaloc(3,:)-betaloc(2,:);
     v31    = betaloc(1,:)-betaloc(3,:);
-  end
+  endif
   
-  etaloc = eta(mesh.t(1:3,:));
+  etaloc   = eta(mesh.t(1:3,:));
   
   eta12    = etaloc(2,:)-etaloc(1,:);
   eta23    = etaloc(3,:)-etaloc(2,:);
@@ -129,11 +121,11 @@ function S = Uscharfettergummel3(mesh,alpha,gamma,eta,beta)
   etalocm3 = Utemplogm(etaloc(1,:),etaloc(2,:));
   
   gammaloc = gamma(mesh.t(1:3,:));
-  geloc      = gammaloc.*etaloc;
+  geloc    = gammaloc.*etaloc;
   
-  gelocm1 = Utemplogm(geloc(2,:),geloc(3,:));
-  gelocm2 = Utemplogm(geloc(3,:),geloc(1,:));
-  gelocm3 = Utemplogm(geloc(1,:),geloc(2,:));
+  gelocm1  = Utemplogm(geloc(2,:),geloc(3,:));
+  gelocm2  = Utemplogm(geloc(3,:),geloc(1,:));
+  gelocm3  = Utemplogm(geloc(1,:),geloc(2,:));
   
   [bp12,bm12] = Ubern( (v12 - eta12)./etalocm3);
   [bp23,bm23] = Ubern( (v23 - eta23)./etalocm1);
@@ -161,7 +153,7 @@ function S = Uscharfettergummel3(mesh,alpha,gamma,eta,beta)
   S = sparse(ginode(:),gjnode(:),Sloc(:));
 
 endfunction
-  
+
 %!test 
 %! [mesh.p,mesh.e,mesh.t] = Ustructmesh([0:1/3:1],[0:1/3:1],1,1:4);
 %! mesh = Umeshproperties(mesh);

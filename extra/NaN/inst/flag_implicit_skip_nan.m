@@ -48,7 +48,7 @@ function FLAG = flag_implicit_skip_nan(i)
 
 persistent FLAG_implicit_skip_nan;
 
-if strcmp(version,'3.6'), FLAG_implicit_skip_nan=(1==1); end;	%% hack for the use with Freemat3.6
+%% if strcmp(version,'3.6'), FLAG_implicit_skip_nan=(1==1); end;	%% hack for the use with Freemat3.6
 
 %%% set DEFAULT value of FLAG
 if isempty(FLAG_implicit_skip_nan),

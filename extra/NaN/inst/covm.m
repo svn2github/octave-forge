@@ -58,11 +58,11 @@ W = [];
 if nargin<3,
         if nargin==2,
 		if isnumeric(Y),
-                        Mode='M';
-                else
-		        Mode=Y;
-                        Y=[];
-                end;
+			Mode='M';
+		else
+			Mode=Y;
+			Y=[];
+		end;
         elseif nargin==1,
                 Mode = 'M';
                 Y = [];
@@ -124,7 +124,7 @@ else
 end; 
 	
 
-if mexFLAG2 && mexFLAG && ~isempty(W),	
+if mexFLAG2 && mexFLAG && ~isempty(W),
 	%% the mex-functions here are much slower than the m-scripts below 
 	%% however, the mex-functions support weighting of samples. 
 	if isempty(FLAG_NANS_OCCURED),
@@ -133,8 +133,8 @@ if mexFLAG2 && mexFLAG && ~isempty(W),
 		FLAG_NANS_OCCURED = logical(0);  % default value 
 	end;
 
-        if (~any(Mode=='D') && ~any(Mode=='E')), % if Mode == M
-       		[CC,NN] = covm_mex(real(X),real(Y),FLAG_NANS_OCCURED,W);
+	if (~any(Mode=='D') && ~any(Mode=='E')), % if Mode == M
+		[CC,NN] = covm_mex(real(X),real(Y),FLAG_NANS_OCCURED,W);
 		%% complex matrices 
 		if ~isreal(X) && ~isreal(Y)
 			[iCC,inn] = covm_mex(imag(X),imag(Y),FLAG_NANS_OCCURED,W);
@@ -151,9 +151,9 @@ if mexFLAG2 && mexFLAG && ~isempty(W),
 		end; 	
 
        	else  % if any(Mode=='D') || any(Mode=='E'), 
-	        [S1,N1] = sumskipnan(X,1,W);
-	        if ~isempty(Y)
-	               	[S2,N2] = sumskipnan(Y,1,W);
+		[S1,N1] = sumskipnan_mex(X,1,W);
+		if ~isempty(Y)
+	               	[S2,N2] = sumskipnan_mex(Y,1,W);
 	        else 
 	        	S2 = S1; N2 = N1;        	
 		end; 
@@ -208,29 +208,29 @@ elseif ~isempty(Y),
         	[S1,N1] = sumskipnan(X,1);
                	[S2,N2] = sumskipnan(Y,1);
                	NN = real(X==X)'*real(Y==Y);
-                
-	        if any(Mode=='D'), % detrending mode
-       			X  = X - ones(r1,1)*(S1./N1);
-               	        Y  = Y - ones(r1,1)*(S2./N2);
-                       	if any(Mode=='1'),  %  'D1'
-                               	NN = NN;
-                       	else   %  'D0'       
-                               	NN = max(NN-1,0);
-                        end;
-                end;         
-                X(X~=X) = 0; % skip NaN's
-       		Y(Y~=Y) = 0; % skip NaN's
+
+		if any(Mode=='D'), % detrending mode
+			X  = X - ones(r1,1)*(S1./N1);
+			Y  = Y - ones(r1,1)*(S2./N2);
+			if any(Mode=='1'),  %  'D1'
+				NN = NN;
+			else	%  'D0'       
+				NN = max(NN-1,0);
+			end;
+                end;
+		X(X~=X) = 0; % skip NaN's
+		Y(Y~=Y) = 0; % skip NaN's
                	CC = X'*Y;
-                
+
                 if any(Mode=='E'), % extended mode
                         NN = [nn, N2; N1', NN];
                         CC = [nn, S2; S1', CC];
                 end;
 	end;
-        
-else        
-        if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
-        	tmp = real(X==X);
+
+else
+	if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
+		tmp = real(X==X);
 		NN  = tmp'*tmp;
 		X(X~=X) = 0; % skip NaN's
 	        CC = X'*X;

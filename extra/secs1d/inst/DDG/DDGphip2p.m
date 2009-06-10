@@ -1,16 +1,6 @@
-function p = DDGphip2p (V,phip);
-
-% p = DDGphip2p (V,phip);
-%         computes the hole density using Maxwell-Boltzmann
-%         statistics.
-
-## This file is part of 
+## Copyright (C) 2004-2008  Carlo de Falco
 ##
 ## SECS1D - A 1-D Drift--Diffusion Semiconductor Device Simulator
-## -------------------------------------------------------------------
-## Copyright (C) 2004-2007  Carlo de Falco
-##
-##
 ##
 ##  SECS1D is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -24,16 +14,23 @@ function p = DDGphip2p (V,phip);
 ##
 ##  You should have received a copy of the GNU General Public License
 ##  along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
+##
+## author: Carlo de Falco <cdf _AT_ users.sourceforge.net>
   
+## -*- texinfo -*-
+##
+## @deftypefn {Function File}@
+## {@var{p}} = DDGphip2p(@var{V},@var{phip})
+##
+## Compute the hole density using Maxwell-Boltzmann statistic
+##
+## @end deftypefn
   
-%  load constants
+function p = DDGphip2p (V,phip);
 
-
+## Load constants
 pmin = 0;
-
 p = exp ((phip-V));
 p = p .* (p>pmin) + pmin * (p<=pmin);
 
-% Last Revision:
-% $Author$
-% $Date$
+endfunction

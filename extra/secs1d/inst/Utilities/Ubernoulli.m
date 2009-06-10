@@ -1,21 +1,6 @@
-
-function b=Ubernoulli(x,sg)
-
-%
-%   b=Ubernoulli(x,sg)
-%   
-%   Bernoulli function
-%   b = B(x)=x/(exp(x)-1) if sg==1
-%   b = B(-x)=x+B(x)      if sg==0
-%   also works if x is a vector
-  
- ## This file is part of 
+## Copyright (C) 2004-2008  Carlo de Falco
   ##
   ## SECS1D - A 1-D Drift--Diffusion Semiconductor Device Simulator
-  ## -------------------------------------------------------------------
-  ## Copyright (C) 2004-2007  Carlo de Falco
-  ##
-  ##
   ##
   ##  SECS1D is free software; you can redistribute it and/or modify
   ##  it under the terms of the GNU General Public License as published by
@@ -29,21 +14,34 @@ function b=Ubernoulli(x,sg)
   ##
   ##  You should have received a copy of the GNU General Public License
   ##  along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
+##
+## author: Carlo de Falco <cdf _AT_ users.sourceforge.net>
+
+## -*- texinfo -*-
+##
+## @deftypefn {Function File} {@var{b}} = Ubernoulli(@var{x},@var{sg})
+##
+## Compute Bernoulli function for vector x:
+##
+## @itemize @minus
+## @item @var{b} = @var{x}/(exp(@var{x})-1) if @var{sg} == 1
+## @item @var{b} = @var{x} + B( @var{x} ) if @var{sg} == 0
+## @end itemize
+##
+## @end deftypefn
+
+function b=Ubernoulli(x,sg)
   
   for count=1:length(x)
     [bp,bn] = Ubern(x(count));
     bernp(count,1)=bp;
     bernn(count,1)=bn;
-  end
+  endfor
   
   if (sg ==1)
     b=bernp;
   elseif (sg ==0)
     b=bernn;
-  end
+  endif
   
-  
-  % Last Revision:
-  % $Author$
-  % $Date$
-  
+endfunction

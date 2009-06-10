@@ -1,20 +1,6 @@
-function n=DDGelectron_driftdiffusion(psi,x,ng,p,ni,tn,tp,un)
-  
-% n=DDGelectron_driftdiffusion(psi,x,ng,p)
-%     Solves the continuity equation for electrons
-%     input:  psi   electric potential
-% 	        x     integration domain
-%             ng    initial guess and BCs for electron density
-%             p     hole density (for SRH recombination)
-%     output: n     updated electron density
-  
-## This file is part of 
+## Copyright (C) 2004-2008  Carlo de Falco
 ##
 ## SECS1D - A 1-D Drift--Diffusion Semiconductor Device Simulator
-## -------------------------------------------------------------------
-## Copyright (C) 2004-2007  Carlo de Falco
-##
-##
 ##
 ##  SECS1D is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -28,7 +14,32 @@ function n=DDGelectron_driftdiffusion(psi,x,ng,p,ni,tn,tp,un)
 ##
 ##  You should have received a copy of the GNU General Public License
 ##  along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
+##
+## author: Carlo de Falco <cdf _AT_ users.sourceforge.net>
 
+## -*- texinfo -*-
+##
+## @deftypefn {Function File}@
+## {@var{n}} = DDGelectron_driftdiffusion(@var{psi},@var{x},@var{ng},@var{p},@var{ni},@var{tn},@var{tp},@var{un})
+##
+## Solve the continuity equation for electrons
+##
+## Input:
+## @itemize @minus
+## @item psi: electric potential
+## @item x: integration domain
+## @item ng: initial guess and BCs for electron density
+## @item p: hole density (for SRH recombination)
+## @end itemize
+##
+## Output:
+## @itemize @minus
+## @item n: updated electron density
+## @end itemize
+##
+## @end deftypefn
+
+function n = DDGelectron_driftdiffusion(psi,x,ng,p,ni,tn,tp,un)
 
 nodes        = x;
 Nnodes     =length(nodes);
@@ -40,7 +51,6 @@ Bcnodes = [1;Nnodes];
 
 nl = ng(1);
 nr = ng(Nnodes);
-
 h=nodes(elements(:,2))-nodes(elements(:,1));
 
 c=1./h;
@@ -55,7 +65,7 @@ dm1   = [-c.* Bneg;1000];
 A = spdiags([dm1 d0 d1],-1:1,Nnodes,Nnodes);
 b = zeros(Nnodes,1);%- A * ng;
 
-% SRH Recombination term
+  ## SRH Recombination term
 SRHD = tp * (ng + ni) + tn * (p + ni);
 SRHL = p ./ SRHD;
 SRHR = ni.^2 ./ SRHD;
@@ -66,7 +76,7 @@ bSRH = Ucompconst (nodes,Nnodes,elements,Nelements,SRHR,ones(Nelements,1));
 A = A + ASRH;
 b = b + bSRH;
 
-% Boundary conditions
+  ## Boundary conditions
 b(Bcnodes)   = [];
 b(1)         = - A(2,1) * nl;
 b(end)       = - A(end-1,end) * nr;
@@ -75,8 +85,5 @@ A(:,Bcnodes) = [];
 
 n = [nl; A\b ;nr];
 
-
-% Last Revision:
-% $Author$
-% $Date$
+endfunction
 

@@ -1,16 +1,6 @@
-function m = Umediaarmonica(w);
-  
-% m = mediaarmonica(w,x);
-% returns the harmonic mean value of w in each of the intervals x_i , x_i+1
-%
-  
-  ## This file is part of 
+## Copyright (C) 2004-2008  Carlo de Falco
   ##
   ## SECS1D - A 1-D Drift--Diffusion Semiconductor Device Simulator
-  ## -------------------------------------------------------------------
-  ## Copyright (C) 2004-2007  Carlo de Falco
-  ##
-  ##
   ##
   ##  SECS1D is free software; you can redistribute it and/or modify
   ##  it under the terms of the GNU General Public License as published by
@@ -24,12 +14,21 @@ function m = Umediaarmonica(w);
   ##
   ##  You should have received a copy of the GNU General Public License
   ##  along with SECS1D; If not, see <http://www.gnu.org/licenses/>.     
+##
+## author: Carlo de Falco <cdf _AT_ users.sourceforge.net>
     
-  dw 	   = (1./w(1:end-1))+(1./w(2:end));
-     m 	   = 2 ./ dw; 
+## -*- texinfo -*-
+##
+## @deftypefn {Function File}@
+## {@var{m}} = Umediarmonica(@var{w})
+##
+## Return the harmonic mean value of @var{w}
+##
+## @end deftypefn
      
+function m = Umediaarmonica(w);
      
-     % Last Revision:
-     % $Author$
-     % $Date$
+  dw = (1./w(1:end-1))+(1./w(2:end));
+  m  = 2 ./ dw; 
      
+endfunction     

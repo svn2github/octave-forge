@@ -1,18 +1,6 @@
-function A=Udriftdiffusion(x,psi,coeff)  
-  
-%A=Udriftdiffusion(x,psi,coeff)
-%
-% Builds the Scharfetter-Gummel approximation
-% of the differential operator - (coeff (n' - n psi'))' 
-%
-
- ## This file is part of 
+## Copyright (C) 2004-2008  Carlo de Falco
   ##
   ## SECS1D - A 1-D Drift--Diffusion Semiconductor Device Simulator
-  ## -------------------------------------------------------------------
-  ## Copyright (C) 2004-2007  Carlo de Falco
-  ##
-  ##
   ##
   ##  SECS1D is free software; you can redistribute it and/or modify
   ##  it under the terms of the GNU General Public License as published by
@@ -26,6 +14,28 @@ function A=Udriftdiffusion(x,psi,coeff)
   ##
   ##  You should have received a copy of the GNU General Public License
   ##  along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
+##
+## author: Carlo de Falco <cdf _AT_ users.sourceforge.net>
+
+## -*- texinfo -*-
+##
+## @deftypefn {Function File}@
+## {@var{A}} = Udriftdiffusion(@var{x},@var{psi},@var{coeff})
+##
+## Builds the Scharfetter-Gummel approximation of the differential
+## operator
+##
+## - (coeff (n' - n psi'))'
+##
+## @itemize @minus
+## @item @var{x}: list of mesh nodes
+## @item @var{psi}: piecewise linear potential values
+## @item @var{coeff}: piecewise linear diffusion coefficient
+## @end itemize
+##
+## @end deftypefn
+
+function A = Udriftdiffusion(x,psi,coeff)  
   
   nodes        = x;
   Nnodes     =length(nodes);
@@ -48,7 +58,4 @@ function A=Udriftdiffusion(x,psi,coeff)
   
   A = spdiags([dm1 d0 d1],-1:1,Nnodes,Nnodes);
   
-  % Last Revision:
-  % $Author$
-  % $Date$
-  
+endfunction

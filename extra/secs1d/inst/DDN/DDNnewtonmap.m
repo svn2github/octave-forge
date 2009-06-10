@@ -1,43 +1,6 @@
-function [odata,it,res] = DDNnewtonmap (x,idata,toll,maxit,verbose)
-
-%
-% [odata,it,res] = DDNnewtonmap (x,idata,toll,maxit,verbose)
-%
-%     Solves the scaled stationary bipolar DD equation system
-%     using a coupled Newton algorithm
-%
-%     input: x              spatial grid
-%            idata.D        doping profile
-%            idata.p        initial guess for hole concentration
-%            idata.n        initial guess for electron concentration
-%            idata.V        initial guess for electrostatic potential
-%            idata.Fn       initial guess for electron Fermi potential
-%            idata.Fp       initial guess for hole Fermi potential
-%            idata.l2       scaled electric permittivity (diffusion coefficient in Poisson equation)
-%            idata.un       scaled electron mobility
-%            idata.up       scaled electron mobility
-%            idata.nis      scaled intrinsic carrier density
-%            idata.tn       scaled electron lifetime
-%            idata.tp       scaled hole lifetime
-%            toll           tolerance for Newton iterarion convergence test
-%            maxit          maximum number of Newton iterarions
-%            verbose        verbosity level: 0,1,2
-%
-%     output: odata.n     electron concentration
-%             odata.p     hole concentration
-%             odata.V     electrostatic potential
-%             odata.Fn    electron Fermi potential
-%             odata.Fp    hole Fermi potential
-%             it          number of Newton iterations performed
-%             res         residual at each step         
-    
-## This file is part of 
+## Copyright (C) 2004-2008  Carlo de Falco
 ##
 ## SECS1D - A 1-D Drift--Diffusion Semiconductor Device Simulator
-## -------------------------------------------------------------------
-## Copyright (C) 2004-2007  Carlo de Falco
-##
-##
 ##
 ##  SECS1D is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -51,11 +14,54 @@ function [odata,it,res] = DDNnewtonmap (x,idata,toll,maxit,verbose)
 ##
 ##  You should have received a copy of the GNU General Public License
 ##  along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
+##
+## author: Carlo de Falco <cdf _AT_ users.sourceforge.net>
 
-odata = idata;
+## -*- texinfo -*-
+##
+## @deftypefn {Function File}@
+## {@var{odata},@var{it},@var{res}} = DDNnewtonmap(@var{x},@var{idata},@var{toll},@var{maxit},@var{verbose})
+##
+## Solve the scaled stationary bipolar DD equation system using a
+## coupled Newton algorithm
+##
+## Input:
+## @itemize @minus
+## @item x: spatial grid
+## @item idata.D: doping profile
+## @item idata.p: initial guess for hole concentration
+## @item idata.n: initial guess for electron concentration
+## @item idata.V: initial guess for electrostatic potential
+## @item idata.Fn: initial guess for electron Fermi potential
+## @item idata.Fp: initial guess for hole Fermi potential
+## @item idata.l2: scaled electric permittivity (diffusion coefficient in Poisson equation)
+## @item idata.un: scaled electron mobility
+## @item idata.up: scaled electron mobility
+## @item idata.nis: scaled intrinsic carrier density
+## @item idata.tn: scaled electron lifetime
+## @item idata.tp: scaled hole lifetime
+## @item toll: tolerance for Newton iterarion convergence test
+## @item maxit: maximum number of Newton iterarions
+## @item verbose: verbosity level: 0,1,2
+## @end itemize
+##
+## Output:
+## @itemize @minus
+## @item odata.n: electron concentration
+## @item odata.p: hole concentration
+## @item odata.V: electrostatic potential
+## @item odata.Fn: electron Fermi potential
+## @item odata.Fp: hole Fermi potential
+## @item it: number of Newton iterations performed
+## @item res: residual at each step
+## @end itemize
+##
+## @end deftypefn
 
-Nnodes=rows(x);
+function [odata,it,res] = DDNnewtonmap (x,idata,toll,maxit,verbose)
 
+  odata     = idata;
+  Nnodes    = rows(x);
 Nelements=Nnodes-1;
 elements=[1:Nnodes-1;2:Nnodes]';
 BCnodesp = [1,Nnodes];
@@ -69,48 +75,31 @@ n = idata.n;
 p = idata.p;
 D = idata.D;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% create the complete unknown vector
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## Create the complete unknown vector
 u = [V; n; p];
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% build fem matrices
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+  ## Build fem matrices
 L = Ucomplap (x,Nnodes,elements,Nelements,idata.l2*ones(Nelements,1));
 M = Ucompmass (x,Nnodes,elements,Nelements,ones(Nnodes,1),ones(Nelements,1));
 DDn = Uscharfettergummel(x,Nnodes,elements,Nelements,idata.un,1,V);
 DDp = Uscharfettergummel(x,Nnodes,elements,Nelements,idata.up,1,-V);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Initialise RHS 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ## Initialise RHS 
 r1  = L * V + M * (n - p - D); 
 r2  = DDn * n;
 r3  = DDp * p;
+  RHS = - [ r1; r2; r3 ];
 
-RHS =- [...
-r1;
-r2;
-r3
-];
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  Apply BCs
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ##  Apply BCs
 RHS(BCnodes,:)= [];
-
 nrm = norm(RHS,inf);
 res(1) = nrm;
 
-%%%%%%%%%%%%%%%%%%%%%%%
-%% Begin Newton Cycle
-%%%%%%%%%%%%%%%%%%%%%%%
+  ## Begin Newton Cycle
 for count = 1: maxit
   if verbose
-    fprintf (1,'\n\n\nNewton Iteration Number:%d\n',count);	
-  end
+      fprintf (1,"\n\n\nNewton Iteration Number:%d\n",count);	
+    endif
     Ln = Ucomplap (x,Nnodes,elements,Nelements,Umediaarmonica(idata.un*n));
     Lp = Ucomplap (x,Nnodes,elements,Nelements,Umediaarmonica(idata.up*p));
     Z  = sparse(zeros(Nnodes));    
@@ -127,40 +116,32 @@ for count = 1: maxit
     H	= Z;
     I	= DDp;
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Build LHS
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    ## Build LHS
     LHS =sparse([
 	[A	B C];
 	[DDD    E F];
 	[G      H I];
     ]);
     
-    %Apply BCs
+    ## Apply BCs
     LHS(BCnodes,:)=[];    
     LHS(:,BCnodes)=[];
     
-    %%%%%%%%%%%%%%%%%%%%%%%
-    % Solve the linearised system
-    %%%%%%%%%%%%%%%%%%%%%%%
+    ## Solve the linearised system
     dutmp = (LHS) \ (RHS);
     dv    = dutmp(1:totaldofs);
     dn    = dutmp(totaldofs+1:2*totaldofs);
     dp    = dutmp(2*totaldofs+1:3*totaldofs);
     du    = [0;dv;0;0;dn;0;0;dp;0];
     
-    %%%%%%%%%%%%%%%%%%%%%%%
-    %% Check Convergence
-    %%%%%%%%%%%%%%%%%%%%%%%
-    
+    ## Check Convergence
     nrm_u = norm(u,inf);
-	
     nrm_du = norm(du,inf);
 	
     ratio = nrm_du/nrm_u; 
     if verbose
-      fprintf (1,'ratio = %e\n', ratio);		
-    end
+      fprintf (1,"ratio = %e\n", ratio);		
+    endif
     
     if (ratio <= toll)
         V 	    = u(1:Nnodes);
@@ -168,31 +149,22 @@ for count = 1: maxit
         p	    = u(2*Nnodes+1:end);
         res(count)  = nrm;
         break;
-    end
+    endif
 
-
-    %%%%%%%%%%%%%%%%%%%%%%
-    %% begin damping cycle
-    %%%%%%%%%%%%%%%%%%%%%%
+    ## Begin damping cycle
     tj = 1;
     
-	
     for cc = 1:maxdamp
       if verbose
-        fprintf (1,'\ndamping iteration number:%d\n',cc);
-        fprintf (1,'reference residual norm:%e\n',nrm);
-      end
-        %%%%%%%%%%%%%%%%%%%%%%%%%
-        %	Update the unknown vector		
-        %%%%%%%%%%%%%%%%%%%%%%%%%
+        fprintf (1,"\ndamping iteration number:%d\n",cc);
+        fprintf (1,"reference residual norm:%e\n",nrm);
+      endif
+      ## Update the unknown vector		
         utmp    = u + tj*du;
         Vnew 	    = utmp(1:Nnodes);
         nnew	    = utmp(Nnodes+1:2*Nnodes);
         pnew	    = utmp(2*Nnodes+1:end);
-        
-        %%%%%%%%%%%%%%%%%
-        %% try a new RHS
-        %%%%%%%%%%%%%%%%
+      ## Try a new RHS
         DDn = Uscharfettergummel(x,Nnodes,elements,Nelements,idata.un,1,Vnew);
         DDp = Uscharfettergummel(x,Nnodes,elements,Nelements,idata.up,1,-Vnew);
         
@@ -200,38 +172,28 @@ for count = 1: maxit
         r2  = DDn * nnew;
         r3  = DDp * pnew;
         
-        RHS =- [...
-        r1;
-        r2;
-        r3
-        ];
+      RHS =- [r1;r2;r3];
         
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %  Apply BCs
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        RHS(BCnodes,:)= [];
-        
+      ## Apply BCs
+      RHS(BCnodes,:) = [];
         nrmtmp=norm(RHS,inf);
         
-        %%%%%%%%%%%%%%%%%%%%%%%%%
-        %% Update the damping coefficient
-        %%%%%%%%%%%%%%%%%%%%%%%%
+      ## Update the damping coefficient
         if verbose
-	  fprintf(1,'residual norm:%e\n\n', nrmtmp);
-        end
+	fprintf(1,"residual norm:%e\n\n", nrmtmp);
+      endif
         
 		if (nrmtmp>nrm)
 			tj = tj/(dampcoef*cc);
 			if verbose
-			  fprintf (1,'\ndamping coefficients = %e',tj);    
-			end
+	  fprintf (1,"\ndamping coefficients = %e",tj);    
+	endif
         else
 			break;
-        end
-    end
+      endif
+    endfor
 
     nrm_du = norm(tj*du,inf);
-	
     u 	= utmp;
     
     if (count>1)
@@ -242,30 +204,26 @@ for count = 1: maxit
             p	    = u(2*Nnodes+1:end);            
             res(count)  = nrm;
             break;           
-        end
-    end
-
+      endif
+    endif
     nrm = nrmtmp;
-    
     res(count)  = nrm;
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% convert result vector into distinct output vectors 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
+    ## Convert result vector into distinct output vectors 
     V 	    = u(1:Nnodes);
     n	    = u(Nnodes+1:2*Nnodes);
     p	    = u(2*Nnodes+1:end);    
-    
     nrm_du_old = nrm_du;
-end
+  endfor
 
 odata.V = V;
 odata.n = n;
 odata.p = p;
 Fn   = V - log(n);
 Fp   = V + log(p);
-
 it   = count; 
+
+endfunction
 
 
 

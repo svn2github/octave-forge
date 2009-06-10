@@ -1,19 +1,6 @@
-function [bp,bn]=Ubern(x)
-
-% [bp,bn]=Ubern(x)
-%
-% Bernoulli function
-% bp = B(x)=x/(exp(x)-1)
-% bn = B(-x)=x+B(x)
-
-
- ## This file is part of 
+## Copyright (C) 2004-2008  Carlo de Falco
   ##
   ## SECS1D - A 1-D Drift--Diffusion Semiconductor Device Simulator
-  ## -------------------------------------------------------------------
-  ## Copyright (C) 2004-2007  Carlo de Falco
-  ##
-  ##
   ##
   ##  SECS1D is free software; you can redistribute it and/or modify
   ##  it under the terms of the GNU General Public License as published by
@@ -27,28 +14,39 @@ function [bp,bn]=Ubern(x)
   ##
   ##  You should have received a copy of the GNU General Public License
   ##  along with SECS1D; If not, see <http://www.gnu.org/licenses/>.
+##
+## author: Carlo de Falco <cdf _AT_ users.sourceforge.net>
 
+## -*- texinfo -*-
+##
+## @deftypefn {Function File} {@var{bp},@var{bn}} = Ubern(@var{x})
+##
+## Compute Bernoulli function for scalar x:
+##
+## @itemize @minus
+## @item @var{bp} = @var{x}/(exp(@var{x})-1)
+## @item @var{bn} = @var{x} + B( @var{x} )
+## @end itemize
+##
+## @end deftypefn
+
+function [bp,bn] = Ubern(x)
      
 xlim=1e-2;
 ax=abs(x);
 
-%
-% Calcola la funz. di Bernoulli per x=0
-%
+  ## Compute Bernoulli function for x = 0
 
 if (ax == 0)
    bp=1.;
    bn=1.;
    return
-end;
+  endif
 
-%
-% Calcola la funz. di Bernoulli per valori
-% asintotici dell'argomento
-%
+  ## Compute Bernoulli function for asymptotic values
 
-if (ax > 80),
-   if (x >0),
+  if (ax > 80)
+    if (x > 0)
       bp=0.;
       bn=x;
       return
@@ -56,25 +54,19 @@ if (ax > 80),
       bp=-x;
       bn=0.;
       return
-   end;
-end;
+    endif
+  endif
 
-%
-% Calcola la funz. di Bernoulli per valori
-% intermedi dell'argomento
-%
+  ## Compute Bernoulli function for intermediate values
 
-if (ax > xlim),
+  if (ax > xlim)
    bp=x/(exp(x)-1);
    bn=x+bp;
    return
 else
+    ## Compute Bernoulli function for small x
+    ## via Taylor expansion
 
-%
-% Calcola la funz. di Bernoulli per valori
-% piccoli dell'argomento mediante sviluppo
-% di Taylor troncato dell'esponenziale
-%
    ii=1;
    fp=1.;
    fn=1.;
@@ -88,11 +80,8 @@ else
      fn=fn+segno*df;
      bp=1./fp;
      bn=1./fn;
-   end;
+    endwhile
    return
-end
+  endif
 
-
-% Last Revision:
-% $Author$
-% $Date$
+endfunction

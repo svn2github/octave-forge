@@ -66,7 +66,7 @@ conf()
      CXX=${CXX} \
      F77=${F77} \
      CPP=${CPP} \
-     LDFLAGS="${LDFLAGS} -Wl,--exclude-libs=-lstdc++_s" \
+     LDFLAGS="${LDFLAGS} -Wl,--exclude-libs=-lstdc++_s -Wl,--allow-multiple-definition" \
      CPPFLAGS="$CPPFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS}" \
      CFLAGS="$CFLAGS -Wall" \
      CXXFLAGS="$CXXFLAGS -Wall" \

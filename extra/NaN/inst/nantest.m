@@ -106,6 +106,13 @@ if exist('tinv')==2,
         end;
 end;
 
+q(9) = isreal(double([2+3i]));
+if q(9)
+	printf('DOUBLE rejects imaginary part\n-> this can affect SUMSKIPNAN\n');
+end; 
+
+
+if 0,
 %%%%% MOD 
 if exist('mod')>1,
         if (mod(5,0))~=0,
@@ -130,6 +137,7 @@ if exist('rem')>1,
                 fprintf(1,'WARNING: REM(x,INF) returns NaN.\n');
         end;
 end;
+end; 
 
 %%%%% NANSUM(NAN) - this test addresses a problem in Matlab 5.3, 6.1 & 6.5
 if exist('nansum')==2,
@@ -208,7 +216,6 @@ end;
 %(roots([5,0,0])-[0;0])
 %(roots([2,-10,12])-[3;2])
 %(roots([2e-37,-2,2])-[1e37;1])
-
 %%%%% check nan/nan   %% this test addresses a problem in Matlab 5.3, 6.1 & 6.5
 p    = 4;
 tmp1 = repmat(nan,p)/repmat(nan,p);
@@ -247,6 +254,8 @@ if any(any(tmp8==inf));
 end;
 
 tmp  = [tmp1;tmp2;tmp3;tmp4;tmp5;tmp6;tmp7;tmp8];
+
+
 
 %warning(FLAG_WARNING); 
 

@@ -47,7 +47,7 @@ function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode);
 % [1] http://www.tufts.edu/~gdallal/partial.htm
 % [2] http://www.nag.co.uk/numeric/fl/manual/pdf/G02/g02byf.pdf
 
-%       $Id: corrcoef.m 5608 2009-03-12 16:46:34Z schloegl $
+%       $Id$
 %       Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
@@ -112,9 +112,9 @@ tmp = 1 - R.*R;
 tmp(tmp<0) = 0;		% prevent tmp<0 i.e. imag(t)~=0 
 t   = R.*sqrt(max(NN-2,0)./tmp);
 
-if exist('t_cdf')>1;
+if exist('t_cdf','file')
         sig = t_cdf(t,NN-2);
-elseif exist('tcdf')>1;
+elseif exist('tcdf','file')
         sig = tcdf(t,NN-2);
 else
         fprintf('Warning CORRCOEF: significance test not completed because of missing TCDF-function\n')

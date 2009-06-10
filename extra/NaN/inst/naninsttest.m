@@ -28,7 +28,7 @@ x = [5,NaN,0,1,nan];
 % run test, k=1: with NaNs, k=2: all NaN's are removed
 % the result of both should be the same. 
 
-FLAG_WARNING = warning;
+%FLAG_WARNING = warning;
 warning('off');
 
 funlist = {'sumskipnan','mean','std','var','skewness','kurtosis','sem','median','mad','zscore','coefficient_of_variation','geomean','harmmean','meansq','moment','rms','','corrcoef','rankcorr','spearman','ranks','center','trimean','min','max','tpdf','tcdf','tinv','normpdf','normcdf','norminv','nansum','nanstd','','','','','','','','','','','',''};
@@ -149,6 +149,6 @@ else
 	fprintf(1,'Its recommended to install the NaN-toolbox.\n');
 end;
 
-warning(FLAG_WARNING);
+%warning(FLAG_WARNING);
 
 

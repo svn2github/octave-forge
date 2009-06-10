@@ -311,7 +311,7 @@ end;
 % CONFIDENCE INTERVAL
 if isfield(mode,'alpha')
 	alpha = mode.alpha; 
-elseif exist('flag_implicit_significance')==2,
+elseif exist('flag_implicit_significance','file'),
         alpha = flag_implicit_significance;
 else
 	alpha = 0.01;        
@@ -324,9 +324,9 @@ tmp = 1 - R.*R;
 tmp(tmp<0) = 0;		% prevent tmp<0 i.e. imag(t)~=0 
 t   = R.*sqrt(max(NN-2,0)./tmp);
 
-if exist('t_cdf')>1;
+if exist('t_cdf','file');
         sig = t_cdf(t,NN-2);
-elseif exist('tcdf')>1;
+elseif exist('tcdf','file')>1;
         sig = tcdf(t,NN-2);
 else
         fprintf('CORRCOEF: significance test not completed because of missing TCDF-function\n')

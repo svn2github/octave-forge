@@ -100,8 +100,17 @@ if (c1>r1) | (c2>r2),
         warning('Covariance is ill-defined, because of too few observations (rows)');
 end;
 
-mexFLAG2 = exist('covm_mex','file');	
-mexFLAG  = exist('sumskipnan_mex','file');	
+
+persistent mexFLAG2; 
+persistent mexFLAG; 
+if isempty(mexFLAG2) 
+	mexFLAG2 = exist('covm_mex','file');	
+end; 
+if isempty(mexFLAG) 
+	mexFLAG = exist('sumskipnan_mex','file');	
+end; 
+
+
 if ~isempty(W)
 	W = W(:);
 	if (r1~=numel(W))

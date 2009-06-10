@@ -105,12 +105,14 @@ if  (isempty(W) && (~(isa(x,'float') || isa(x,'double')))) || ~flag_implicit_ski
 	return; 
 end; 	
 
-if ~isempty(W) && (size(x,DIM)~=numel(W))
+if (length(size(x))<DIM)
+	error('SUMSKIPNAN: DIM argument larger than number of dimensions of x');
+elseif ~isempty(W) && (size(x,DIM)~=numel(W))
 	error('SUMSKIPNAN: size of weight vector does not match size(x,DIM)');
 end; 
 
 %% mex and oct files expect double
-x = double(x); 
+x = double(x);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % use Matlab-MEX function when available  
@@ -124,7 +126,7 @@ try
 	if isempty(FLAG_NANS_OCCURED),
 		FLAG_NANS_OCCURED = logical(0);  % default value 
 	end;
-	
+
 	if (nargout<2),
 		o = sumskipnan_mex(real(x),DIM,FLAG_NANS_OCCURED,W);
 		if (~isreal(x))
@@ -157,7 +159,6 @@ try
 		return; 
 	end; 	
 end; 
-
 
 if ~isempty(W) 
 	error('weighted sumskipnan requires sumskipnan_mex');

@@ -33,6 +33,7 @@ ReserveFile "${PACKAGE_ROOT}\bin\cpufeature.exe"
 ; Page custom DetectCPUType
 
 ; Directory page
+!define MUI_DIRECTORYPAGE_TEXT_TOP  "Setup will install ${PRODUCT_NAME} ${PRODUCT_VERSION} in the following folder. To install in a different folder, click Browse and select another folder. Click Next to continue.$\r$\n$\r$\nIt is highly recommended to install Octave into a folder WITHOUT spaces. Otherwise installing packages using Octave's package manager will not be possible!"
 !insertmacro MUI_PAGE_DIRECTORY
 
 ; Components page
@@ -76,7 +77,7 @@ Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 
 OutFile "Octave-${OCTAVE_VERSION}-${OCTAVE_RELEASE}_i686-pc-mingw32_gcc${GCC_VERSION}_setup.exe"
 
-InstallDir "$PROGRAMFILES\Octave\${OCTAVE_VERSION}_gcc${GCC_VERSION}"
+InstallDir "C:\Octave\${OCTAVE_VERSION}_gcc${GCC_VERSION}"
 
 ShowInstDetails show
 

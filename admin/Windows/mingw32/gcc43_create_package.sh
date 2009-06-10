@@ -74,8 +74,8 @@ create_octave_forge_nsi()
    DF=`find ${PACKAGE_ROOT}/share/octave/packages/ -maxdepth 1 -mindepth 1`
    
    for a in $DF; do
-      PACKNAME=`echo $a | sed -ne "s+^.*/\(.\+\)-\([0-9]\.[0-9]\.[0-9]\)$+\1+p"`
-      PACKVER=`echo $a | sed -ne "s+^.*/\(.\+\)-\([0-9]\.[0-9]\.[0-9]\)$+\2+p"`
+      PACKNAME=`echo $a | sed -ne "s+^.*/\(.\+\)-\([0-9]\+\.[0-9]\+\.[0-9]\+\)$+\1+p"`
+      PACKVER=`echo $a | sed -ne "s+^.*/\(.\+\)-\([0-9]\+\.[0-9]\+\.[0-9]\+\)$+\2+p"`
       
       PACKNAMEVER=$PACKNAME-$PACKVER
       

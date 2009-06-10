@@ -83,8 +83,8 @@ function secs1d_demo_pndiode ()
     %% Solution of DD system
     
     %% Algorithm parameters
-    toll  = 1e-5;
-    maxit = 100;
+    toll  = 1e-3;
+    maxit = 20;
     ptoll  = 1e-10;
     pmaxit = 100;
     verbose = 0;
@@ -92,7 +92,7 @@ function secs1d_demo_pndiode ()
     idata.tn = inf;
     idata.tp = inf;
     
-    [odata,it,res] = DDGgummelmap (xin,idata,1e-3, 10,ptoll,pmaxit,verbose);
+    [odata,it,res] = DDGgummelmap (xin,idata,toll,maxit,ptoll,pmaxit,verbose);
     [odata,it,res] = DDNnewtonmap (xin,odata,toll, maxit,verbose);
 
     n(:,istep) = odata.n;
@@ -101,6 +101,11 @@ function secs1d_demo_pndiode ()
     
     DV(istep)  = odata.V(end) - odata.V(1);
     Emax(istep) = max(abs(diff(odata.V)./diff(xin)))
+
+    Bp = Ubernoulli(diff (V(:, istep)),1);
+    Bm = Ubernoulli(diff (V(:, istep)),0);
+    Jn(:,istep) = -odata.un * (n(2:end, istep).*Bp-n(1:end-1, istep).*Bm)./diff (xin);
+    Jp(:,istep) =  odata.up * (p(2:end, istep).*Bm-p(1:end-1, istep).*Bp)./diff (xin);
 
     va = va+vstep
     istep = istep+1;
@@ -111,23 +116,23 @@ function secs1d_demo_pndiode ()
   n     = n*ns;
   p     = p*ns;
   V     = V*Vs;
-
+  J     = abs (Jp+Jn)*Js;
 
   close all
   
-  figure(1);
-  plot(xin,n.')
+  figure();
+  plot(x, n.')
   xlabel("x")
   ylabel("n")
-  
-  figure(2);
-  plot(DV,lambda2)
+ 
+  figure();
+  plot(vvect, J)
   xlabel("V")
-  ylabel("\\lambda^2")
-  
-  figure(3);
-  plot(DV,Emax)
+  ylabel("J")
+
+  figure();
+  plot(vvect, Emax)
   xlabel("V")
-  ylabel("max(abs(\\phi^''))")
+  ylabel("max(abs(\\phi^\'))")
   
 endfunction

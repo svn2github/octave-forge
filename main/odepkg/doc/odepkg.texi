@@ -873,7 +873,7 @@ subplot (2,1,2); plot (vt2, vy2);
 The option @option{Events} can be used to set up an Event function, ie. the Event function can be used to find zero crossings in one of the results. It must either be a function handle to a valid function. Run the following example to illustrate the effect if this option is used
 @example
 function vdy = fbal (vt, vy, varargin)
-  vdy(1,1) =  vy(2)+3; 
+  vdy(1,1) =  vy(2); 
   vdy(2,1) = -9.81; ## m/s²
 endfunction
 

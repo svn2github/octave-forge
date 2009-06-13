@@ -50,9 +50,9 @@ operator > (const FixedPointComplex& a, const FixedPointComplex& b)
 				    (arg (a) > arg (b))));
 }
 
-template class OCTAVE_FIXED_API Array<FixedPoint>;
+INSTANTIATE_ARRAY(FixedPoint, OCTAVE_FIXED_API);
 template class MArray<FixedPoint>;
-template class OCTAVE_FIXED_API Array<FixedPointComplex>;
+INSTANTIATE_ARRAY(FixedPointComplex, OCTAVE_FIXED_API);
 template class MArray<FixedPointComplex>;
 
 INSTANTIATE_MARRAY_FRIENDS (FixedPoint, )

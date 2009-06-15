@@ -1,6 +1,6 @@
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ginac-1.5.1-orig/check/Makefile.in ginac-1.5.1/check/Makefile.in
---- ginac-1.5.1-orig/check/Makefile.in	2009-02-25 15:02:38 +0100
-+++ ginac-1.5.1/check/Makefile.in	2009-06-05 14:14:00 +0200
+--- ginac-1.5.1-orig/check/Makefile.in	2009-02-25 14:02:38 +0000
++++ ginac-1.5.1/check/Makefile.in	2009-06-08 08:45:12 +0000
 @@ -745,6 +745,8 @@
  $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
  	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -11,8 +11,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ginac-1.5.1-orig/ch
  	@list='$(check_PROGRAMS)'; for p in $$list; do \
  	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ginac-1.5.1-orig/ginac/Makefile.in ginac-1.5.1/ginac/Makefile.in
---- ginac-1.5.1-orig/ginac/Makefile.in	2009-02-25 15:02:39 +0100
-+++ ginac-1.5.1/ginac/Makefile.in	2009-06-05 14:01:21 +0200
+--- ginac-1.5.1-orig/ginac/Makefile.in	2009-02-25 14:02:39 +0000
++++ ginac-1.5.1/ginac/Makefile.in	2009-06-15 07:43:08 +0000
 @@ -244,7 +244,7 @@
  top_build_prefix = @top_build_prefix@
  top_builddir = @top_builddir@
@@ -26,12 +26,12 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ginac-1.5.1-orig/gi
  libginac.la: $(libginac_la_OBJECTS) $(libginac_la_DEPENDENCIES) 
  	$(libginac_la_LINK) -rpath $(libdir) $(libginac_la_OBJECTS) $(libginac_la_LIBADD) $(LIBS)
  
-+ginac.dll : .libs/libginac.a
++ginac.dll : libginac.la
 +	$(CXX) -shared -o $@ \
 +	$(LDFLAGS) \
 +	-Wl,--out-implib=libginac.dll.a \
 +	-Wl,--output-def=libginac.def \
-+	-Wl,--whole-archive $< \
++	-Wl,--whole-archive ./.libs/libginac.a \
 +	-Wl,--no-whole-archive \
 +	$(CXXLIBS) \
 +	$(LIBS)
@@ -40,8 +40,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ginac-1.5.1-orig/gi
  	-rm -f *.$(OBJEXT)
  
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ginac-1.5.1-orig/ginsh/Makefile.in ginac-1.5.1/ginsh/Makefile.in
---- ginac-1.5.1-orig/ginsh/Makefile.in	2009-02-25 15:02:39 +0100
-+++ ginac-1.5.1/ginsh/Makefile.in	2009-06-05 12:48:18 +0200
+--- ginac-1.5.1-orig/ginsh/Makefile.in	2009-02-25 14:02:39 +0000
++++ ginac-1.5.1/ginsh/Makefile.in	2009-06-08 08:45:12 +0000
 @@ -311,7 +311,7 @@
  	else :; fi
  ginsh$(EXEEXT): $(ginsh_OBJECTS) $(ginsh_DEPENDENCIES) 
@@ -52,8 +52,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ginac-1.5.1-orig/gi
  mostlyclean-compile:
  	-rm -f *.$(OBJEXT)
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' ginac-1.5.1-orig/tools/Makefile.in ginac-1.5.1/tools/Makefile.in
---- ginac-1.5.1-orig/tools/Makefile.in	2009-02-25 15:02:39 +0100
-+++ ginac-1.5.1/tools/Makefile.in	2009-06-05 14:00:37 +0200
+--- ginac-1.5.1-orig/tools/Makefile.in	2009-02-25 14:02:39 +0000
++++ ginac-1.5.1/tools/Makefile.in	2009-06-08 08:45:12 +0000
 @@ -293,7 +293,7 @@
  	done
  viewgar$(EXEEXT): $(viewgar_OBJECTS) $(viewgar_DEPENDENCIES) 

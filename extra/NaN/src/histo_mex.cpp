@@ -181,12 +181,15 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 {
 
     	const mwSize	*SZ;	    
-	char flag_rows = 0; 
-	char done = 0; 
-    	mwSize    	j, k, l;		// running indices 
+	char 		flag_rows = 0; 
+	char 		done = 0; 
+    	mwSize    	j, k;		// running indices 
+    	ssize_t		l;
+	const mxArray	*W = NULL; 
+    	double 		*w = NULL; 
 
 	// check for proper number of input and output arguments
-	if ((PInputCount <= 0) || (PInputCount > 2)) {
+	if ((PInputCount <= 0) || (PInputCount > 3)) {
 		mexPrintf("HISTO_MEX computes histogram from vector or column matrices\n\n");
 		mexPrintf("usage:\tHIS = histo_mex(Y)\n\t\tComputes histogram from each column\n");
 		mexPrintf("\t[HIS,tix] = histo_mex(Y,'rows')\n\t\tComputes row-wise histogram, tix is useful for data compression.\n\t\t Y = HIS.X(tix,:); \n\n");
@@ -199,15 +202,38 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	// get 1st argument
 	if (mxIsComplex(PInputs[0]))
-		mexErrMsgTxt("First argument must be REAL/DOUBLE.");
+		mexErrMsgTxt("complex argument not supported (yet). ");
+	// TODO: support complex argument!	
 		
-	if ((PInputCount>1) && (mxIsChar(PInputs[1]))) {
+	if (PInputCount==1) 
+		; // histo_mex(X)
+	else if (mxIsChar(PInputs[1])) {
+		// histo_mex(X,'rows')
 		char *t = mxArrayToString(PInputs[1]);
 		flag_rows = !strcmp(t,"rows");
 		mxFree(t); 
+		// histo_mex(X,'rows',W)
+		if ((PInputCount>2) && mxIsDouble(PInputs[2])) 	W = PInputs[2]; 
 	} 
+		// histo_mex(X,W)
+	else if (mxIsDouble(PInputs[1])) {	
+		W = PInputs[1]; 
+	}
+	else 
+		mexErrMsgTxt("Weight vector must be REAL/DOUBLE.");
+
+	if (W != NULL) 	{
+	 	if (mxGetM(PInputs[0])==mxGetM(W) ) 
+	 		w = (double*)mxGetData(W);
+	 	else 
+			mexErrMsgTxt("number of rows in X and W do not match.");
+
+		for (k=0; (k<mxGetM(W)) && (w[k]>=0.0); k++); 
+		if (k<mxGetM(W)) 
+			mexWarnMsgTxt("weight vector contains also non-negative numbers or NaN.");
+	} 			
 		
-	// get size 
+	// get size
     	mwSize ND = mxGetNumberOfDimensions(PInputs[0]);	
     	// NN = mxGetNumberOfElements(PInputs[0]);
     	SZ = mxGetDimensions(PInputs[0]);		
@@ -225,6 +251,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	
 	if (flag_rows || (SZ[1]==1)) { 
 
+		///***** SORT each column: initialize sorting algorithm  
 		int (*compar)(const void*, const void*);
 		size_t n; 
 		size_t *idx = NULL;
@@ -257,40 +284,42 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			mexErrMsgTxt("unsupported input type"); 
 		}	
 		Sort.N = flag_rows ? SZ[1] : 1; 
-
 		qsort(idx,SZ[0],sizeof(*idx),compare);
+
+		// count number of different elements 	
 		n = SZ[0] ? 1 : 0; 
 		for (size_t k=1; k<SZ[0]; k++) {
 			if (compare(idx+k-1,idx+k)) n++;
 		}
+
 		uint64_t *tix = NULL; 
 		if (POutputCount>1) {
 			POutput[1] = mxCreateNumericMatrix(SZ[0], 1, mxUINT64_CLASS,mxREAL);
 			tix = (uint64_t*)mxGetData(POutput[1]);
 		}	
 
-		mxArray *H = mxCreateNumericMatrix(n, 1, mxUINT64_CLASS,mxREAL);
+		// fill HIS.H and HIS.X 
+		mxArray *H = mxCreateNumericMatrix(n, 1, mxDOUBLE_CLASS,mxREAL);
 		mxArray *X = mxCreateNumericMatrix(n, SZ[1], mxGetClassID(PInputs[0]),mxREAL); 
 		mxSetField(HIS,0,"H",H);
 		mxSetField(HIS,0,"X",X);
-		uint64_t *h = (uint64_t*)mxGetData(H);
+		double  *h = (double*)mxGetData(H);
 		uint8_t *x = (uint8_t*)mxGetData(X);
 		
-		for (j=0; j<SZ[1]; j++) {
-			memcpy(x+j*n*Sort.Size,Sort.Table+(idx[0]+j*Sort.Stride)*Sort.Size,Sort.Size);
-		}
-		h[0] = 1; 
-		l = 0;
-		if (tix) tix[idx[0]] = 1; 
-		for (size_t k=1; k<SZ[0]; k++) {
-			if (compare(&idx[k-1], &idx[k])) {
+		l = -1;
+		if (tix) tix[idx[0]] = 1;
+		for (size_t k=0; k<SZ[0]; k++) {
+			if ((k==0) || compare(&idx[k-1], &idx[k])) {
 				l++;
 				for (j=0; j<SZ[1]; j++) {
 					memcpy(x + (l+j*n)*Sort.Size, Sort.Table+(idx[k] + j*Sort.Stride)*Sort.Size, Sort.Size);
 				}
 			}
-			if (tix) tix[idx[k]] = l+1; 
-			h[l]++;	
+			if (tix) tix[idx[k]] = l+1;
+			if (w != NULL) 
+				h[l]+=w[idx[k]];
+			else 
+				h[l]+=1.0;	
 		}
 		mxFree(idx); 
 		done = 1;

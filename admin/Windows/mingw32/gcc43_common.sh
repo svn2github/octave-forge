@@ -60,6 +60,7 @@ SHAREDLIB_BASE=${PREFIX}
 BINARY_BASE=${PREFIX}
 STATICLIBRARY_BASE=${PREFIX}
 LICENSE_BASE=${PREFIX}
+SHARE_BASE=${PREFIX}
 
 # default subdirectories
 INCLUDE_DEFAULT=include
@@ -68,6 +69,7 @@ SHAREDLIB_DEFAULT=bin
 LIBRARY_DEFAULT=lib
 STATICLIBRARY_DEFAULT=staticlib
 LICENSE_DEFAULT=license
+SHARE_DEFAULT=share
 
 # subdirs for above components, can be overridden locally
 # (e.g. for GSL: ${INCLUDE} = include/gsl )
@@ -77,6 +79,7 @@ if [ -z ${SHAREDLIB_DIR} ]; then SHAREDLIB_DIR=${SHAREDLIB_DEFAULT}; fi
 if [ -z ${LIBRARY_DIR} ]; then LIBRARY_DIR=${LIBRARY_DEFAULT}; fi
 if [ -z ${STATICLIBRARY_DIR} ]; then STATICLIBRARY_DIR=${STATICLIBRARY_DEFAULT}; fi
 if [ -z ${LICENSE_DIR} ]; then LICENSE_DIR=${LICENSE_DEFAULT}; fi
+if [ -z ${SHARE_DIR} ]; then SHARE_DIR=${SHARE_DEFAULT}; fi
 
 # create full paths for component directories
 BINARY_PATH=${BINARY_BASE}/${BINARY_DIR}
@@ -85,6 +88,7 @@ SHAREDLIB_PATH=${SHAREDLIB_BASE}/${SHAREDLIB_DIR}
 LIBRARY_PATH=${LIBRARY_BASE}/${LIBRARY_DIR}
 STATICLIBRARY_PATH=${STATICLIBRARY_BASE}/${STATICLIBRARY_DIR}
 LICENSE_PATH=${LICENSE_BASE}/${LICENSE_DIR}
+SHARE_PATH=${SHARE_BASE}/${SHARE_DIR}
 
 PKGCONFIGDATA_PATH=${LIBRARY_PATH}/pkgconfig
 
@@ -267,6 +271,10 @@ uninstall_post()
    # The LICENSE Directory
    rmdir --ignore-fail-on-non-empty ${LICENSE_PATH}/${PKG}
    rmdir --ignore-fail-on-non-empty ${LICENSE_PATH}
+   
+   # The SHARE Directory
+   rmdir --ignore-fail-on-non-empty ${SHARE_PATH}/${PKGVER}
+   rmdir --ignore-fail-on-non-empty ${SHARE_PATH}
    
 }
 

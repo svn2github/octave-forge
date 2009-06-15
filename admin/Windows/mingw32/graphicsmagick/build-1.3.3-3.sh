@@ -138,6 +138,10 @@ widget.h \
 xwindow.h
 "
 
+MGK_CONFIG_SRC="colors.mgk log.mgk magic.mgk modules.mgk"
+
+MGK_CONFIG_BUILD="delegates.mgk type.mgk type-ghostscript.mgk type-windows.mgk"
+
 install()
 {
    install_pre;
@@ -159,6 +163,15 @@ install()
    for a in ${TOOLS}; do
       ${CP} ${CP_FLAGS} ${BUILDDIR}/utilities/.libs/$a ${BINARY_PATH}
    done
+   
+   mkdir -vp ${SHARE_PATH}/${PKGVER}/config
+   for a in ${MGK_CONFIG_SRC}; do
+     ${CP} ${CP_FLAGS} ${SRCDIR}/config/$a ${SHARE_PATH}/${PKGVER}/config
+   done;
+   
+   for a in ${MGK_CONFIG_BUILD}; do
+     ${CP} ${CP_FLAGS} ${BUILDDIR}/config/$a ${SHARE_PATH}/${PKGVER}/config
+   done;
    
    mkdir -vp ${INCLUDE_PATH}/magick
    for a in ${MAGICK_HEADERS}; do
@@ -207,6 +220,11 @@ uninstall()
    for a in ${TOOLS}; do
       ${RM} ${RM_FLAGS} ${BINARY_PATH}/$a
    done
+   
+   for a in ${MGK_CONFIG_SRC} ${MKG_CONFIG_BUILD}; do
+      ${RM} ${RM_FLAGS} ${SHARE_PATH}/${PKGVER}/config/$a
+   done
+   rmdir --ignore-fail-on-non-empty ${SHARE_PATH}/${PKGVER}/config
    
    for a in ${MAGICK_HEADERS}; do
       ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/magick/$a

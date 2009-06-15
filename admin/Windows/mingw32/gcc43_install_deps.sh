@@ -44,9 +44,16 @@ install_license() {
   )
 }
 
+install_share() {
+  ( mkdir -p ${PACKAGE_ROOT}/${SHARE_DIR}
+    cp -pvR ${SHARE_PATH} ${PACKAGE_ROOT}
+  )
+}
+
 install_bin;
 install_lib;
 install_sharedlib;
 install_staticlib;
 install_include;
 install_license;
+install_share;

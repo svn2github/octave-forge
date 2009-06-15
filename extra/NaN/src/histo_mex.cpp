@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------
-#pragma HISstop
+#pragma hdrstop
 //-------------------------------------------------------------------
 //   C-MEX implementation of SUMSKIPNAN - this function is part of the NaN-toolbox. 
 //
@@ -341,7 +341,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			}
 */
 		case mxINT8_CLASS: { 	
-			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxDOUBLE_CLASS,mxREAL);
 			mxArray *X = mxCreateNumericMatrix(256, 1, mxINT8_CLASS,mxREAL); 
 			mxSetField(HIS,0,"H",H);
 			mxSetField(HIS,0,"X",X);
@@ -352,16 +352,16 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				x[k]=k-128;
 
 			x = (int8_t*)mxGetData(PInputs[0]);
-			uint64_t *h = (uint64_t*)mxGetData(H);
+			double *h = (double*)mxGetData(H);
 			for (k=0; k<SZ[0]*SZ[1]; k++)
-				h[x[k]+128+256*(k/SZ[0])]++;
+				h[x[k]+128+(k/SZ[0]<<8)] += (w!=NULL ? w[k%SZ[0]] : 1.0);
 		
 			done = 1; 	
 			break;
 			}
 
 		case mxUINT8_CLASS: { 	
-			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxDOUBLE_CLASS,mxREAL);
 			mxArray *X = mxCreateNumericMatrix(256, 1, mxUINT8_CLASS,mxREAL); 
 			mxSetField(HIS,0,"H",H);
 			mxSetField(HIS,0,"X",X);
@@ -371,47 +371,47 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				x[k]=k;
 
 			x = (uint8_t*)mxGetData(PInputs[0]);
-			uint64_t *h = (uint64_t*)mxGetData(H);
+			double *h = (double*)mxGetData(H);
 			for (k=0; k<SZ[0]*SZ[1]; k++)
-				h[x[k]+256*(k/SZ[0])]++;
+				h[x[k]+(k/SZ[0]<<8)] += (w!=NULL ? w[k%SZ[0]] : 1.0);
 				
 			done = 1; 	
 			break;
 			}
 
 		case mxINT16_CLASS: {	
-			mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxDOUBLE_CLASS,mxREAL);
 			mxArray *X = mxCreateNumericMatrix(0x10000, 1, mxINT16_CLASS,mxREAL); 
 			mxSetField(HIS,0,"H",H);
 			mxSetField(HIS,0,"X",X);
 
-			uint64_t *h = (uint64_t*)mxGetData(H);
+			double *h = (double*)mxGetData(H);
 			int16_t *x = (int16_t*)mxGetData(X);
 			for (k=0; k<0x10000; k++)
 				x[k]=k-0x8000;
 
 			x = (int16_t*)mxGetData(PInputs[0]);
 			for (k=0; k<SZ[0]*SZ[1]; k++)
-				h[x[k]+0x8000+0x10000*(k/SZ[0])]++;
+				h[x[k]+0x8000+(k/SZ[0]<<16)] += (w!=NULL ? w[k%SZ[0]] : 1.0);
 			
 			done = 1; 	
 			break;
 			}
 
 		case mxUINT16_CLASS: {	
-			mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxDOUBLE_CLASS,mxREAL);
 			mxArray *X = mxCreateNumericMatrix(0x10000, 1, mxINT16_CLASS,mxREAL); 
 			mxSetField(HIS,0,"H",H);
 			mxSetField(HIS,0,"X",X);
 	
-			uint64_t *h = (uint64_t*)mxGetData(H);
+			double *h = (double*)mxGetData(H);
 			int16_t *x = (int16_t*)mxGetData(X);
 			for (k=0; k<0x10000; k++)
 				x[k]=k-0x8000;
 
 			uint16_t *x16 = (uint16_t*)mxGetData(PInputs[0]);
 			for (k=0; k<SZ[0]*SZ[1]; k++)
-				h[x16[k]+0x10000*(k/SZ[0])]++;
+				h[x16[k]+(k/SZ[0]<<16)] += (w!=NULL ? w[k%SZ[0]] : 1.0);
 			done = 1; 	
 			break;	
 			}
@@ -420,16 +420,17 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			/* FIXME */
 			mexErrMsgTxt("multicolumns with int32 or larger not supported!"); 
 
-			mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxUINT64_CLASS,mxREAL);
+			mxArray *H = mxCreateNumericMatrix(0x10000, SZ[1], mxDOUBLE_CLASS,mxREAL);
 			mxArray *X = mxCreateNumericMatrix(0x10000, SZ[1], mxGetClassID(PInputs[0]),mxREAL); 
 			mxSetField(HIS,0,"H",H);
 			mxSetField(HIS,0,"X",X);
 
-			uint64_t *h = (uint64_t*)mxGetData(H);
+			double *h = (double*)mxGetData(H);
 			int16_t *x = (int16_t*)mxGetData(X);
 
 			for (size_t n=0; n<SZ[1]; n++) {
 			}	
+
 			}
 		} // end switch 	
 	}

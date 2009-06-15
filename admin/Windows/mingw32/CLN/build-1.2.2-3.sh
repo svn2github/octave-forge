@@ -66,6 +66,10 @@ conf()
    # This looks like a bug in the source to me (why are they doubly defined
    # anyway?) but I don't have the time to track it down.
    # The INSTALL file recommends to define this anyway...
+   #
+   # Also --disable-shared, because libtool completly messes up creating
+   # *both* static and shared library. Haven't figured out why.
+   # Do it on my own in src/makefile.
 
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
      --srcdir=../${SRCDIR} \
@@ -77,8 +81,7 @@ conf()
      CPPFLAGS="$CPPFLAGS -DNO_ASM" \
      CXXLIBS="$CXXLIBS" \
      LDFLAGS="${LDFLAGS}" \
-     --prefix="${PREFIX}" \
-     --enable-shared
+     --prefix="${PREFIX}" 
    )
 }
 

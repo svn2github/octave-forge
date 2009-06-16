@@ -68,6 +68,8 @@ public:
     return octave_value_list();
   }
 
+  octave_idx_type numel (const octave_value_list&) { return 1; };
+
   ~octave_ncfile();
 
   void close();

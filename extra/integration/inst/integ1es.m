@@ -37,7 +37,7 @@
 ## Demo Instructions:  
 ##
 ## To see how this works with a variety of functions, the included
-## demo may be run by entering 'test("integ1es")', without the single
+## demo may be run by entering 'demo("integ1es")', without the single
 ## quotation marks, at the command line. Several test functions are
 ## available, both with and without experimental error.  Note that
 ## when experimental error, a tolerance of 1%, is included, the error

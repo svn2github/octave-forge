@@ -53,7 +53,7 @@ endfunction
 %! assert(nc.short_att,123)
 %! assert(nc.int_att,123)
 %! assert(nc.long_att,123)
-%! assert(nc.float_att,123)
+%! assert(nc.float_att,single(123))
 %! assert(nc.double_att,123.4)
 %! assert(nc.string_att,"test string")
 
@@ -120,7 +120,7 @@ endfunction
 %! assert(nv.short_att,123)
 %! assert(nv.int_att,123)
 %! assert(nv.long_att,123)
-%! assert(nv.float_att,123)
+%! assert(nv.float_att,single(123))
 %! assert(nv.double_att,123.4)
 %! assert(nv.string_att,"test string")
 

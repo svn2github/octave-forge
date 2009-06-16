@@ -25,7 +25,7 @@ TOPDIR=`pwd`
 # Directory Source code is extracted to (relative to TOPDIR)
 SRCDIR=${PKG}-${VER}
 # Directory original source code is extracted to (for generating diffs) (relative to TOPDIR)
-SRCDIR_ORIG=${PKG}-`echo ${VER} | sed -e "s@\.@-@g"`
+SRCDIR_ORIG=${PKG}-${VER}-orig
 
 # Make file to use
 MAKEFILE=""

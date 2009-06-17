@@ -285,6 +285,8 @@ function varargout = parcellfun (nproc, fun, varargin)
           ijob = pending(isubp);
           ## we have a result ready.
           res(:, ijob) = fload (resr(isubp));
+          ## clear pending state
+          pending(isubp) = 0;
         else
           isubp = -isubp;
           if (pending(isubp))
@@ -293,6 +295,7 @@ function varargout = parcellfun (nproc, fun, varargin)
             pending(isubp) = 0;
             ## no more jobs to start.
             njobs = pjobs;
+            ## skip the rest; don't send commands to the process.
             continue;
           endif
         endif
@@ -303,12 +306,10 @@ function varargout = parcellfun (nproc, fun, varargin)
           fflush (cmdw(isubp));
           ## set pending state
           pending(isubp) = ijob;
-        elseif (pending(isubp))
+        else
           ## send terminating signal
           fwrite (cmdw(isubp), 0, "double");
           fclose (cmdw(isubp));
-          ## clear pending state
-          pending(isubp) = 0;
         endif
         if( verbose_level > 0 )
           fprintf (stderr, "\rparcellfun: %d/%d jobs done", pjobs - sum (pending != 0), njobs);

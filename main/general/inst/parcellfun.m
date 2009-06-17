@@ -97,6 +97,8 @@ function varargout = parcellfun (nproc, fun, varargin)
     error ("arguments size must match");
   endif
 
+  nproc = min (nproc, numel (args{1}));
+
   ## create communication pipes.
   cmdr = cmdw = resr = resw = zeros (nproc, 1);
   err = 0;

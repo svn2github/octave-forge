@@ -1,17 +1,18 @@
 ## Copyright (C) 2009 VZLU Prague, a.s., Czech Republic
 ##
-## Author: Jaroslav Hajek
-## 
+## Author: Jaroslav Hajek <highegg@gmail.com>
+## Several improvements thanks to: Travis Collier <travcollier@gmail.com>
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
-## 
+##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this program; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
@@ -22,16 +23,19 @@
 ## @deftypefnx{Function File} parcellfun (nproc, fun, @dots{}, "ErrorHandler", @var{errfunc})
 ## Evaluates a function for multiple argument sets using multiple processes.
 ## @var{nproc} should specify the number of processes. A maximum recommended value is
-## equal to number of CPUs on your machine or one less. 
+## equal to number of CPUs on your machine or one less.
 ## @var{fun} is a function handle pointing to the requested evaluating function.
 ## @var{a1}, @var{a2} etc. should be cell arrays of equal size.
 ## @var{o1}, @var{o2} etc. will be set to corresponding output arguments.
 ##
 ## The UniformOutput and ErrorHandler options are supported with meaning identical
 ## to @dfn{cellfun}.
+## A VerboseLevel option controlling the level output is supported.  
+## A value of 0 is quiet, 1 is normal, and 2 or more enables
+## debugging output.
 ##
 ## NOTE: this function is implemented using "fork" and a number of pipes for IPC.
-## Suitable for systems with an efficient "fork" implementation (such as GNU/Linux), 
+## Suitable for systems with an efficient "fork" implementation (such as GNU/Linux),
 ## on other systems (Windows) it should be used with caution.
 ## Also, if you use a multithreaded BLAS, it may be wise to turn off multi-threading
 ## when using this function.
@@ -41,11 +45,11 @@
 ## especially if unhandled errors occur. Under GNU and compatible systems, the following
 ## shell command may be used to display orphaned Octave processes:
 ## ps --ppid 1 | grep octave
-## 
+##
 ## @end deftypefn
 
 function varargout = parcellfun (nproc, fun, varargin)
-  
+
   if (nargin < 3 || ! isscalar (nproc) || nproc <= 0)
     print_usage ();
   endif
@@ -58,6 +62,7 @@ function varargout = parcellfun (nproc, fun, varargin)
 
   uniform_output = true;
   error_handler = [];
+  verbose_level = 1; # default to normal output level
 
   args = varargin;
   nargs = length (varargin);
@@ -75,12 +80,17 @@ function varargout = parcellfun (nproc, fun, varargin)
         nargs -= 2;
         continue;
       endif
+      if (strcmp (args{nargs-1}, "VerboseLevel"))
+        verbose_level = args{nargs};
+        nargs -= 2;
+        continue;
+      endif
       break;
     until (nargs < 2);
   endif
 
   args = args(1:nargs);
-  
+
   if (length (args) == 0)
     print_usage ();
   elseif (length (args) > 1 && ! size_equal (args{:}))
@@ -124,6 +134,10 @@ function varargout = parcellfun (nproc, fun, varargin)
       ## parent process. fork succeded.
       nsuc ++;
       pids(i) = pid;
+      if (verbose_level > 1)
+        fprintf (stderr,'parcellfun: child process %d created\n', pids(i));
+        fflush (stderr);
+      endif
     elseif (pid == 0)
       ## child process.
       iproc = i;
@@ -250,7 +264,7 @@ function varargout = parcellfun (nproc, fun, varargin)
     end_unwind_protect
 
   else
-    ## parent process. 
+    ## parent process.
     njobs = numel (varargin{1});
     res = cell (nargout, njobs);
 
@@ -296,11 +310,16 @@ function varargout = parcellfun (nproc, fun, varargin)
           ## clear pending state
           pending(isubp) = 0;
         endif
-        fprintf (stderr, "\rparcellfun: %d/%d jobs done", pjobs - sum (pending != 0), njobs);
-        fflush (stderr);
+        if( verbose_level > 0 )
+          fprintf (stderr, "\rparcellfun: %d/%d jobs done", pjobs - sum (pending != 0), njobs);
+          fflush (stderr);
+        endif
       endwhile
-      fputs (stderr, "\n");
-      fflush (stderr);
+
+      if (verbose_level > 0)
+        fputs (stderr, "\n");
+        fflush (stderr);
+      endif
 
     unwind_protect_cleanup
 
@@ -319,6 +338,10 @@ function varargout = parcellfun (nproc, fun, varargin)
 
       ## explicitly recognize all terminated processes.
       for i = 1:nproc
+        if (verbose_level > 1)
+          fprintf(stderr,'parcellfun: waiting for child process %d to close\n', pids(i));
+          fflush (stderr);
+        end
         [pid, status] = waitpid (pids(i));
       endfor
 
@@ -333,7 +356,7 @@ function varargout = parcellfun (nproc, fun, varargin)
         varargout{i} = cell2mat (varargout{i});
       endif
     endfor
-    
+
   endif
 
 endfunction

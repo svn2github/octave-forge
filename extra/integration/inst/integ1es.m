@@ -26,19 +26,17 @@
 ## are supplied, 6'th and 7'th for 7 or more, 4'th and 5'th for 5 or
 ## more, and 2'nd and 3'rd for 3 or more.  For higher orders, the
 ## result will generally become usably accurate with enough data
-## points.  To see how this works, please see the 'Demo Instructions'
-## below.
+## points.  For illustrations, please see the 'Demo Instructions'.
 ##
 ## The function need not be powers of x.  Any function that can be
 ## adequately represented by a ninth order power series will work,
-## e.g. exp(-k*x), exp(-k*x^2), sin(k*x), etc.  Again, please see the
-## 'Demo Instructions' below.
+## e.g. exp(-k*x), exp(-k*x^2), sin(k*x), etc.  See below.
 ##
-## Demo Instructions:  
-##
-## To see how this works with a variety of functions, the included
-## demo may be run by entering 'demo("integ1es")', without the single
-## quotation marks, at the command line. Several test functions are
+## Demo Instructions:      To see how this works with a variety of
+## functions, the included demo is run by entering 'demo integ1es',
+## without the single quotation marks, at the command line.  When the
+## source code display, has finished press 'q' to get out of it, and
+## then follow the on screen directions.  Several test functions are
 ## available, both with and without experimental error.  Note that
 ## when experimental error, a tolerance of 1%, is included, the error
 ## in the result, usually in the tenths of a percent, is fairly
@@ -51,10 +49,9 @@
 ## Beware of trying null value integrals since calculating the
 ## relative error results in a division by zero.  Also, the error for
 ## e^(ord*x^2) for positive 'ord' is reported as 'NaN' since there is
-## no function for comparison. Also, the 'PASSES 1 out of 1 tests'
-## that appears at the end just means that the routine ran properly.
+## no function for comparison.
 ## @end deftypefn
-##
+
 ##
 ## Author: Douglas M. Elliott, V1.0, July 1, 2009.
 ##
@@ -133,6 +130,8 @@ endfunction
 
 
 %!demo
+%!
+%!  clc; input("  Please press 'Enter' to continue. ","s"); 
 %! %
 %!  clc; disp(" ");
 %! %

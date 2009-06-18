@@ -58,12 +58,12 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' GraphicsMagick-1.3.
  	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
  Magick++/lib/libGraphicsMagick++.la: $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_DEPENDENCIES) Magick++/lib/$(am__dirstamp)
  	$(Magick___lib_libGraphicsMagick___la_LINK) $(am_Magick___lib_libGraphicsMagick___la_rpath) $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_LIBADD) $(LIBS)
-+Magick++/lib/GraphicsMagick++.dll : Magick++/lib/.libs/libGraphicsMagick++.a
++Magick++/lib/GraphicsMagick++.dll : Magick++/lib/libGraphicsMagick++.la
 +	$(CXX) -shared -o $@ \
 +		$(LDFLAGS) \
 +		-Wl,--out-implib=Magick++/lib/libGraphicsMagick++.dll.a \
 +		-Wl,--output-def=Magick++/lib/libGraphicsMagick++.def \
-+		-Wl,--whole-archive $< \
++		-Wl,--whole-archive Magick++/lib/.libs/libGraphicsMagick++.a \
 +		-Wl,--no-whole-archive \
 +		-L./magick/.libs \
 +		-lGraphicsMagick \

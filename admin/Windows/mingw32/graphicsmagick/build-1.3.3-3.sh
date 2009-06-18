@@ -62,10 +62,10 @@ conf()
 
 }
 
-build()
+build_pre()
 {
    modify_libtool_all ${BUILDDIR}/libtool
-   ( cd ${BUILDDIR} && make CXXLIBS="$CXXLIBS" )
+   MAKE_FLAGS="$MAKE_FLAGS CXXLIBS=\"$CXXLIBS\""
 }
 
 TOOLS=""

@@ -10,9 +10,9 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## test_fminunc_1              - Test that fminunc and optimset work
+## test_fminunc_compat_1              - Test that fminunc_compat and optimset work
 ##
-## A quadratic function is fminuncd. Various options are tested. Options
+## A quadratic function is fminunc_compatd. Various options are tested. Options
 ## are passed incomplete (to see if properly completed) and
 ## case-insensitive.
 
@@ -54,7 +54,7 @@ function prn (varargin), printf (varargin{:}); fflush (stdout); end
 
 
 if verbose
-  prn ("\n   Testing that fminunc() works as it should\n\n");
+  prn ("\n   Testing that fminunc_compat() works as it should\n\n");
   prn ("  Nparams = N = %i\n",N);
   fflush (stdout);
 end
@@ -62,7 +62,7 @@ end
 ## Plain run, just to make sure ######################################
 ## Minimum wrt 'x' is y0
 opt = optimset ();
-[xlev,vlev] = fminunc ("ff",x0,opt,y0,1);
+[xlev,vlev] = fminunc_compat ("ff",x0,opt,y0,1);
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -75,7 +75,7 @@ end
 
 ## See what 'backend' gives in that last case ########################
 opt = optimset ("backend","on");
-[method,ctl] = fminunc ("ff",x0, opt, y0,1);
+[method,ctl] = fminunc_compat ("ff",x0, opt, y0,1);
 
 cnt++;
 if ! ischar (method) || ! strcmp (method,"nelder_mead_min")
@@ -83,7 +83,7 @@ if ! ischar (method) || ! strcmp (method,"nelder_mead_min")
     if ischar (method)
       prn ("Wrong method '%s' != 'nelder_mead_min' was chosen\n", method);
     else
-      prn ("fminunc pretends to use a method that isn't a string\n");
+      prn ("fminunc_compat pretends to use a method that isn't a string\n");
     end
     return
   end
@@ -108,7 +108,7 @@ end
 ## Minimum wrt 'x' is y0
 
 opt = optimset ("GradO","on");
-[xlev,vlev,nlev] = fminunc ("d2ff",x0,opt,y0,1);
+[xlev,vlev,nlev] = fminunc_compat ("d2ff",x0,opt,y0,1);
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -123,7 +123,7 @@ end
 ## Use the 'hess' option, when f can return 2nd differential #########
 ## Minimum wrt 'x' is y0
 opt = optimset ("hessian","on");
-[xlev,vlev,nlev] = fminunc ("d2ff",x0,opt,y0,1);
+[xlev,vlev,nlev] = fminunc_compat ("d2ff",x0,opt,y0,1);
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)

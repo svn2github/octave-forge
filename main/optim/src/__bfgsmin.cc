@@ -29,6 +29,9 @@
 #include <octave/lo-ieee.h>
 #include <float.h>
 #include "error.h"
+#include "lo-ieee.h"
+
+#include <iostream>
 
 // the compares two octave_values (thanks to jwe)
 bool isequal (const octave_value& a, const octave_value& b,
@@ -79,7 +82,9 @@ int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_ar
 	int success = 1;
 	f_args_new = f_args;
 	f_args_new(minarg - 1) = theta;
+        std::cerr << "here\n";
 	f_return = _feval(f, f_args_new);
+        std::cerr << "here\n";
 	obj = f_return(0).double_value();
 	// bullet-proof the objective function
 	if (error_state) {
@@ -305,6 +310,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	Matrix H, H1, H2;
 	ColumnVector thetain, d, g, g_new, p, q, sig, gam;
 
+        return f_return;
 	// controls
 	Cell control (args(2).cell_value());
 	max_iters = control(0).int_value();
@@ -323,7 +329,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 
 	// copy cell contents over to octave_value_list to use _feval()
 	k = f_args_cell.length();
-	if (k) f_args(k-1); // resize only once
+	f_args(k); // resize only once
 	for (i = 0; i<k; i++) f_args(i) = f_args_cell(i);
 
 	// get the minimization argument
@@ -343,6 +349,8 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	thetain = theta;
 	H = identity_matrix(k,k);
 
+        std::cerr << "here\n";
+        return f_return;
 	// Initial obj_value
 	__bfgsmin_obj(obj_in, f, f_args, theta, minarg);
 	if (warnings) printf("initial obj_value %g\n", obj_in);

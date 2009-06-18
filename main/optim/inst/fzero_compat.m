@@ -120,7 +120,7 @@
 ## @end deftypefn
 ## @seealso{fsolve}
 
-function [Z, FZ, INFO] =fzero(Func,bracket,options,varargin)
+function [Z, FZ, INFO] =fzero_compat(Func,bracket,options,varargin)
 
 	if (nargin < 2) 
 	  usage("[x, fx, info] = fzero(@fcn, [lo,hi]|start, options)"); 
@@ -372,74 +372,74 @@ endfunction;
 %!##	the Brent's method
 %!test 
 %! options.abstol=0;
-%! assert (fzero('sin',[-1,2],options), 0)
+%! assert (fzero_compat('sin',[-1,2],options), 0)
 %!test 
 %! options.abstol=0.01;
 %! options.reltol=1e-3;
-%! assert (fzero('tan',[-0.5,1.41],options), 0, 0.01)
+%! assert (fzero_compat('tan',[-0.5,1.41],options), 0, 0.01)
 %!test 
 %! options.abstol=1e-3;
-%! assert (fzero('atan',[-(10^300),10^290],options), 0, 1e-3)
+%! assert (fzero_compat('atan',[-(10^300),10^290],options), 0, 1e-3)
 %!test
 %! testfun=inline('(x-1)^3','x');
 %! options.abstol=0;
 %! options.reltol=eps;
-%! assert (fzero(testfun,[0,3],options), 1, -eps)
+%! assert (fzero_compat(testfun,[0,3],options), 1, -eps)
 %!test
 %! testfun=inline('(x-1)^3+y+z','x','y','z');
 %! options.abstol=0;
 %! options.reltol=eps;
-%! assert (fzero(testfun,[-3,0],options,22,5), -2, eps)
+%! assert (fzero_compat(testfun,[-3,0],options,22,5), -2, eps)
 %!test
 %! testfun=inline('x.^2-100','x');
 %! options.abstol=1e-4;
-%! assert (fzero(testfun,[-9,300],options),10,1e-4)
+%! assert (fzero_compat(testfun,[-9,300],options),10,1e-4)
 %!##	`fsolve'
 %!test 
 %! options.abstol=0.01;
-%! assert (fzero('tan',-0.5,options), 0, 0.01)
+%! assert (fzero_compat('tan',-0.5,options), 0, 0.01)
 %!test 
 %! options.abstol=0;
-%! assert (fzero('sin',[0.5,1],options), 0)
+%! assert (fzero_compat('sin',[0.5,1],options), 0)
 %!
 %!demo
 %! bracket=[-1,1.2]; 
-%! [X,FX,MSG]=fzero('tan',bracket)
+%! [X,FX,MSG]=fzero_compat('tan',bracket)
 %!demo
 %! bracket=1; 	# `fsolve' will be used
-%! [X,FX,MSG]=fzero('sin',bracket)
+%! [X,FX,MSG]=fzero_compat('sin',bracket)
 %!demo
 %! bracket=[-1,2]; 
 %! options.abstol=0; options.prl=1; 
-%! X=fzero('sin',bracket,options)
+%! X=fzero_compat('sin',bracket,options)
 %!demo
 %! bracket=[0.5,1]; 
 %! options.abstol=0; options.reltol=eps; options.prl=1; 
-%! fzero('sin',bracket,options)
+%! fzero_compat('sin',bracket,options)
 %!demo
 %! demofun=inline('2*x.*exp(-4)+1 - 2*exp(-4*x)','x'); 
 %! bracket=[0, 1]; 
 %! options.abstol=1e-14; options.reltol=eps; options.prl=2;
-%! [X,FX]=fzero(demofun,bracket,options)
+%! [X,FX]=fzero_compat(demofun,bracket,options)
 %!demo
 %! demofun=inline('x^51','x');
 %! bracket=[-12,10];
 %! # too large tolerance parameters
 %! options.abstol=1; options.reltol=1; options.prl=1;
-%! [X,FX]=fzero(demofun,bracket,options)
+%! [X,FX]=fzero_compat(demofun,bracket,options)
 %!demo
 %! # points of discontinuity inside the bracket
 %! demofun=inline('0.5*(sign(x-1e-7)+sign(x+1e-7))','x');
 %! bracket=[-5,7];
 %! options.prl=1;
-%! [X,FX]=fzero(demofun,bracket,options)
+%! [X,FX]=fzero_compat(demofun,bracket,options)
 %!demo
 %! demofun=inline('2*x*exp(-x^2)','x');
 %! bracket=1;
 %! options.abstol=1e-14; options.prl=2;
-%! [X,FX]=fzero(demofun,bracket,options)
+%! [X,FX]=fzero_compat(demofun,bracket,options)
 %!demo
 %! demofun=inline('2*x.*exp(-x.^2)','x');
 %! bracket=[-10,1];
 %! options.abstol=1e-14; options.prl=2;
-%! [X,FX]=fzero(demofun,bracket,options)
+%! [X,FX]=fzero_compat(demofun,bracket,options)

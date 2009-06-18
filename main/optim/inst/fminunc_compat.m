@@ -10,7 +10,7 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## [x,v,flag,out,df,d2f] = fminunc (f,x,opt,...) - M*tlab-like optimization
+## [x,v,flag,out,df,d2f] = fminunc_compat (f,x,opt,...) - M*tlab-like optimization
 ##
 ## Imitation of m*tlab's fminunc(). The optional 'opt' argument is a struct,
 ## e.g. produced by 'optimset()'.
@@ -40,7 +40,7 @@
 ##                         the 'backend' option of minimize().
 ##
 ## This function is a front-end to minimize().
-function [x,fval,flag,out,df,d2f] = fminunc (fun,x0,opt,varargin)
+function [x,fval,flag,out,df,d2f] = fminunc_compat (fun,x0,opt,varargin)
 
 if nargin < 3, opt = struct (); end
 if nargin > 3, 

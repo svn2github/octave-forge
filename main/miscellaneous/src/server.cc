@@ -5,7 +5,7 @@
 // them by hand..
 
 #include <iomanip>
-
+#include <iostream>
 #include <cstdio>
 #include <cctype>
 #include <cstdlib>
@@ -131,7 +131,8 @@ inline void socket_error(const char *context)
   int err = socket_errno();
   char errno_str[15];
   sprintf(" %d: ",errno_str);
-  std::string msg = std::string(context)+errno_str+strerror(err);
+  std::string msg = std::string(context) + std::string(errno_str) 
+                  + std::string (strerror(err));
   error(msg.c_str());
 }
 
@@ -218,7 +219,7 @@ static octave_value get_octave_value(char *name)
   symbol_record *sr = top_level_sym_tab->lookup (name);
   if (sr) def = sr->def();
 #else
-  def = symbol_tabe::varref (std::string (name), symbol_table::top_scope ());
+  def = symbol_table::varref (std::string (name), symbol_table::top_scope ());
 #endif
 
   return def;
@@ -429,7 +430,7 @@ process_commands(int channel)
 int channel = -1;
 
 #if USE_DEFUN_INTERNAL
-DEFUN_INTERNAL(senderror,args,,false,"\
+DEFUN_INTERNAL(senderror,args,,"\
 Send the given error message across the socket.  The error context\n\
 is taken to be the last command received from the socket.")
 #else
@@ -461,7 +462,7 @@ is taken to be the last command received from the socket.")
 }
 
 #if USE_DEFUN_INTERNAL
-DEFUN_INTERNAL(send,args,,false,"\
+DEFUN_INTERNAL(send,args,,"\
 send(str)\n\
   Send a command on the current connection\n\
 send(name,value)\n\

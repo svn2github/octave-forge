@@ -31,7 +31,7 @@ function z = qamdemod(y,m)
         exit;
     end
     
-    x = my_qammod(0:(m-1),m);
+    x = qammod(0:(m-1),m);
     x = reshape(x,1,m);
     for k = 1:length(y)
         [n z(k)] = min(abs(y(k) - x));

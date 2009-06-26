@@ -214,6 +214,15 @@ function [varargout] = ode23d (vfun, vslot, vinit, vlags, vhist, varargin)
     warning ('OdePkg:InvalidOption', ...
       'Option "Vectorized" will be ignored by this solver');
   end
+  if (~isequal (vodeoptions.NewtonTol, vodetemp.NewtonTol))
+    warning ('OdePkg:InvalidArgument', ...
+      'Option "NewtonTol" will be ignored by this solver');
+  end
+  if (~isequal (vodeoptions.MaxNewtonIterations,...
+                vodetemp.MaxNewtonIterations))
+    warning ('OdePkg:InvalidArgument', ...
+      'Option "MaxNewtonIterations" will be ignored by this solver');
+  end
 
   %# Implementation of the option Mass has been finished. This option
   %# can be set by the user to another value than default value.
@@ -682,6 +691,8 @@ function [varargout] = ode23d (vfun, vslot, vinit, vlags, vhist, varargin)
 %! %# test for Jacobian (being a sparse matrix) is missing
 %! %# test for JPattern option is missing
 %! %# test for Vectorized option is missing
+%! %# test for NewtonTol option is missing
+%! %# test for MaxNewtonIterations option is missing
 %!
 %!test %# Mass option as function
 %!  vopt = odeset ('Mass', eye (2,2));

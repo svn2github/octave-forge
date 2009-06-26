@@ -284,6 +284,26 @@ function [vret] = odepkg_structure_check (varargin)
             vfld{vcntarg});
         end
 
+      case 'NewtonTol'
+        if (isnumeric (vret.(vfld{vcntarg})) && ...
+            isreal    (vret.(vfld{vcntarg})) && ...
+            all       (vret.(vfld{vcntarg}) > 0)) %# 'all' is a MatLab need
+        else
+          error ('OdePkg:InvalidParameter', ...
+            'Unknown parameter name "%s" or no valid parameter value', ...
+            vfld{vcntarg});
+        end
+
+      case 'MaxNewtonIterations'
+        if (isempty (vret.(vfld{vcntarg})) || ...
+            (mod (vret.(vfld{vcntarg}), 1) == 0 && ...
+             vret.(vfld{vcntarg}) > 0))
+        else
+          error ('OdePkg:InvalidParameter', ...
+            'Unknown parameter name "%s" or no valid parameter value', ...
+            vfld{vcntarg});
+        end
+
       otherwise
           error ('OdePkg:InvalidParameter', ...
             'Unknown parameter name "%s"', ...
@@ -388,6 +408,13 @@ function [vret] = odepkg_structure_check (varargin)
 %!test  A = odeset ('BDF', 'off');
 %!test  A = odeset ('BDF', []);
 %!error A = odeset ('BDF', [1, 2; 3, 4]);
+%!test  A = odeset ('NewtonTol', []);
+%!test  A = odeset ('NewtonTol', 1e-3);
+%!test  A = odeset ('NewtonTol', [1e-3, 1e-3, 1e-3]);
+%!error A = odeset ('NewtonTol', 'string');
+%!test  A = odeset ('MaxNewtonIterations', []);
+%!test  A = odeset ('MaxNewtonIterations', 2);
+%!error A = odeset ('MaxNewtonIterations', 'string');
 
 %!demo
 %! # Return the checked OdePkg options structure that is created by

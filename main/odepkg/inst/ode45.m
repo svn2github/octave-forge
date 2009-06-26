@@ -211,6 +211,15 @@ function [varargout] = ode45 (vfun, vslot, vinit, varargin)
     warning ('OdePkg:InvalidArgument', ...
       'Option "Vectorized" will be ignored by this solver');
   end
+  if (~isequal (vodeoptions.NewtonTol, vodetemp.NewtonTol))
+    warning ('OdePkg:InvalidArgument', ...
+      'Option "NewtonTol" will be ignored by this solver');
+  end
+  if (~isequal (vodeoptions.MaxNewtonIterations,...
+                vodetemp.MaxNewtonIterations))
+    warning ('OdePkg:InvalidArgument', ...
+      'Option "MaxNewtonIterations" will be ignored by this solver');
+  end
 
   %# Implementation of the option Mass has been finished. This option
   %# can be set by the user to another value than default value.
@@ -268,15 +277,14 @@ function [varargout] = ode45 (vfun, vslot, vinit, varargin)
   end
 
   vretvaltime = vtimestamp; %# first timestamp output
-  if (vhaveoutputselection) %# first solution output
-    vretvalresult = vinit(vodeoptions.OutputSel);
-  else vretvalresult = vinit;
-  end
+  vretvalresult = vinit;    %# first solution output
 
   %# Initialize the OutputFcn
   if (vhaveoutputfunction)
+    if (vhaveoutputselection) vretout = vretvalresult(vodeoptions.OutputSel);
+    else vretout = vretvalresult; end     
     feval (vodeoptions.OutputFcn, vslot.', ...
-      vretvalresult.', 'init', vfunarguments{:});
+      vretout.', 'init', vfunarguments{:});
   end
 
   %# Initialize the EventFcn
@@ -360,13 +368,8 @@ function [varargout] = ode45 (vfun, vslot, vinit, varargin)
       vu = y5.'; %# MC2001: the higher order estimation as "local extrapolation"
       %# Save the solution every vodeoptions.OutputSave steps             
       if (mod (vcntloop-1,vodeoptions.OutputSave) == 0)             
-        if (vhaveoutputselection)
-          vretvaltime(vcntsave,:) = vtimestamp;
-          vretvalresult(vcntsave,:) = vu(vodeoptions.OutputSel);
-        else
-          vretvaltime(vcntsave,:) = vtimestamp;
-          vretvalresult(vcntsave,:) = vu;
-        end
+        vretvaltime(vcntsave,:) = vtimestamp;
+        vretvalresult(vcntsave,:) = vu;
         vcntsave = vcntsave + 1;    
       end     
       vcntloop = vcntloop + 1; vcntiter = 0;
@@ -695,6 +698,8 @@ end
 %!
 %! %# test for JPattern option is missing
 %! %# test for Vectorized option is missing
+%! %# test for NewtonTol option is missing
+%! %# test for MaxNewtonIterations option is missing
 %!
 %!test %# Mass option as function
 %!  vopt = odeset ('Mass', @fmas);

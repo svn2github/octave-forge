@@ -533,6 +533,18 @@ odebda (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
       vbdf = "on"; warning_with_id ("OdePkg:InvalidOption", 
         "Option \"BDF\" set \"off\", new value \"on\" is used");
     }
+  // The option NewtonTol and MaxNewtonIterations will be ignored by
+  // this solver, IT NEEDS TO BE CHECKED IF THE FORTRAN CORE SOLVER
+  // CAN HANDLE THESE OPTIONS
+  octave_value vntol = odepkg_auxiliary_getmapvalue ("NewtonTol", vodeopt);
+  if (!vntol.is_empty ())
+    warning_with_id ("OdePkg:InvalidOption", 
+      "Option \"NewtonTol\" will be ignored by this solver");
+  octave_value vmaxnewton = 
+    odepkg_auxiliary_getmapvalue ("MaxNewtonIterations", vodeopt);
+  if (!vmaxnewton.is_empty ())
+    warning_with_id ("OdePkg:InvalidOption", 
+      "Option \"MaxNewtonIterations\" will be ignored by this solver");
 
 /* Start MAINPROCESSING, set up all variables that are needed by this
  * solver and then initialize the solver function and get into the
@@ -580,7 +592,7 @@ odebda (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // Check if the user has set some of the options "OutputFcn", "Events"
   // etc. and initialize the plot, events and the solstore functions
   octave_value vtim (T0); octave_value vsol (vY0);
-  odepkg_auxiliary_solstore (vtim, vsol, voutsel, 0);
+  odepkg_auxiliary_solstore (vtim, vsol, 0);
   if (!vplot.is_empty ()) odepkg_auxiliary_evalplotfun 
     (vplot, voutsel, args(1), args(2), vmebdfdaeextarg, 0);
   if (!vevents.is_empty ()) odepkg_auxiliary_evaleventfun 
@@ -651,7 +663,7 @@ odebda (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
           return (vretval);
         }
       }
-      odepkg_auxiliary_solstore (vtim, vsol, voutsel, 1);
+      odepkg_auxiliary_solstore (vtim, vsol, 1);
     }
   }
   else { // if (vTIME.length () > 2) we have all the time values needed
@@ -698,7 +710,7 @@ odebda (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
           return (vretval);
         }
       }
-     odepkg_auxiliary_solstore (vtim, vsol, voutsel, 1);
+     odepkg_auxiliary_solstore (vtim, vsol, 1);
     }
   }
 
@@ -718,7 +730,7 @@ odebda (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // Return the results that have been stored in the
   // odepkg_auxiliary_solstore function
   octave_value vtres, vyres;
-  odepkg_auxiliary_solstore (vtres, vyres, voutsel, 2);
+  odepkg_auxiliary_solstore (vtres, vyres, 2);
   // odepkg_auxiliary_solstore (vtres, vyres, voutsel, 100);
 
   // Get the stats information as an Octave_map if the option 'Stats'
@@ -930,14 +942,23 @@ odebda (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
 %!  vsol = odebda (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
-%!test %# BDF option set "off"
-%!  vopt = odeset ('BDF', 'off');
-%!  vsol = odebda (@fpol, [0 2], [2 0], vopt);
-%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %! %# test for MvPattern option is missing
 %! %# test for InitialSlope option is missing
 %! %# test for MaxOrder option is missing
+%!
+%!test %# BDF option set "off"
+%!  vopt = odeset ('BDF', 'off');
+%!  vsol = odebda (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Set NewtonTol option to something else than default
+%!  vopt = odeset ('NewtonTol', 1e-3);
+%!  vsol = odebda (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Set MaxNewtonIterations option to something else than default
+%!  vopt = odeset ('MaxNewtonIterations', 2);
+%!  vsol = odebda (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %!  warning ('on', 'OdePkg:InvalidOption');
 */

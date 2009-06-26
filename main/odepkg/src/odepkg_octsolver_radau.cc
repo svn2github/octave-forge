@@ -212,7 +212,7 @@ octave_idx_type odepkg_radau_solfcn
 
   // Save the solutions that come from the Fortran core solver if this
   // is not the initial first call to this function
-  if (NR > 1) odepkg_auxiliary_solstore (vt, vy, vradauoutsel, 1);
+  if (NR > 1) odepkg_auxiliary_solstore (vt, vy, 1);
 
   // Check if an 'OutputFcn' has been set by the user (including the
   // values of the options for 'OutputSel' and 'Refine')
@@ -543,6 +543,19 @@ ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
       warning_with_id ("OdePkg:InvalidOption", 
         "Option \"BDF\" will be ignored by this solver");
 
+  // The option NewtonTol and MaxNewtonIterations will be ignored by
+  // this solver, IT NEEDS TO BE CHECKED IF THE FORTRAN CORE SOLVER
+  // CAN HANDLE THESE OPTIONS
+  octave_value vntol = odepkg_auxiliary_getmapvalue ("NewtonTol", vodeopt);
+  if (!vntol.is_empty ())
+    warning_with_id ("OdePkg:InvalidOption", 
+      "Option \"NewtonTol\" will be ignored by this solver");
+  octave_value vmaxnewton = 
+    odepkg_auxiliary_getmapvalue ("MaxNewtonIterations", vodeopt);
+  if (!vmaxnewton.is_empty ())
+    warning_with_id ("OdePkg:InvalidOption", 
+      "Option \"MaxNewtonIterations\" will be ignored by this solver");
+
 /* Start MAINPROCESSING, set up all variables that are needed by this
  * solver and then initialize the solver function and get into the
  * main integration loop
@@ -585,7 +598,7 @@ ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // etc. and initialize the plot, events and the solstore functions
   octave_value vtim = args(1).vector_value ()(0);
   octave_value vsol = args(2);
-  odepkg_auxiliary_solstore (vtim, vsol, vradauoutsel, 0);
+  odepkg_auxiliary_solstore (vtim, vsol, 0);
   if (!vradaupltfun.is_empty ()) odepkg_auxiliary_evalplotfun 
     (vradaupltfun, vradauoutsel, args(1), args(2), vradauextarg, 0);
   if (!vradauevefun.is_empty ())
@@ -614,7 +627,7 @@ ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // Return the results that have been stored in the
   // odepkg_auxiliary_solstore function
   octave_value vtres, vyres;
-  odepkg_auxiliary_solstore (vtres, vyres, vradauoutsel, 2);
+  odepkg_auxiliary_solstore (vtres, vyres, 2);
 
   // Set up variables to make it possible to call the cleanup
   // functions of 'OutputFcn' and 'Events' if any
@@ -839,14 +852,23 @@ ode2r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
 %!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
-%!test %# Set BDF option to something else than default
-%!  vopt = odeset ('BDF', 'on');
-%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
-%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %! %# test for MvPattern option is missing
 %! %# test for InitialSlope option is missing
 %! %# test for MaxOrder option is missing
+%!
+%!test %# Set BDF option to something else than default
+%!  vopt = odeset ('BDF', 'on');
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Set NewtonTol option to something else than default
+%!  vopt = odeset ('NewtonTol', 1e-3);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Set MaxNewtonIterations option to something else than default
+%!  vopt = odeset ('MaxNewtonIterations', 2);
+%!  vsol = ode2r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %!  warning ('on', 'OdePkg:InvalidOption');
 */

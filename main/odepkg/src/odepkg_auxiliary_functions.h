@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2007, Thomas Treichl <treichl@users.sourceforge.net>
+Copyright (C) 2007-2009, Thomas Treichl <treichl@users.sourceforge.net>
 OdePkg - A package for solving ordinary differential equations and more
 
 This program is free software; you can redistribute it and/or modify
@@ -48,8 +48,7 @@ octave_value odepkg_auxiliary_makestats
   (octave_value_list vstats, octave_idx_type vprnt);
 
 octave_idx_type odepkg_auxiliary_solstore
-  (octave_value &vt, octave_value &vy, octave_value vsel, 
-   octave_idx_type vdeci);
+  (octave_value &vt, octave_value &vy, octave_idx_type vdeci);
 
 #endif /* odepkg_auxiliary_functions_h */
 

@@ -398,36 +398,26 @@ octave_value odepkg_auxiliary_makestats
 }
 
 /* -*- texinfo -*-
- * @deftypefn {Function} octave_idx_type odepkg_auxiliary_solstore (octave_value &vt, octave_value &vy, octave_value vsel, octave_idx_type vdeci)
+ * @deftypefn {Function} octave_idx_type odepkg_auxiliary_solstore (octave_value &vt, octave_value &vy, octave_idx_type vdeci)
  *
  * If @var{vdeci} is @code{0} (@var{vt} is a pointer to the initial time step and @var{vy} is a pointer to the initial values vector) then this function is initialized. Otherwise if @var{vdeci} is @code{1} (@var{vt} is a pointer to another time step and @var{vy} is a pointer to the solution vector) the values of @var{vt} and @var{vy} are added to the internal variable, if @var{vdeci} is @code{2} then the internal vectors are returned. The input arguments of this function are
  * @itemize @minus
  * @item @var{vt}: The time stamp at which the events function is called
  * @item @var{vy}: The solutions of the set of ODEs at time @var{vt}
- * @item @var{vsel}: The selection vector for which values should be treated
  * @item @var{vdeci}: A decision flag that describes what evaluation should be done
  * @end itemize
  * @end deftypefn
  */
 octave_idx_type odepkg_auxiliary_solstore 
-  (octave_value &vt, octave_value &vy, octave_value vsel, octave_idx_type vdeci) {
+  (octave_value &vt, octave_value &vy, octave_idx_type vdeci) {
 
   // If the option "OutputSel" has been set then prepare a vector with
   // a reduced number of elements. The indexes of the values are given
   // in vsel if vdeci == (0 || 1).
-  RowVector vreduced;
+  RowVector vrow;
   if (vdeci != 2) {
-    if (!vsel.is_empty ()) {
-      vreduced.resize (vsel.length ());
-      RowVector vselect (vsel.vector_value ());
-      RowVector vresult (vy.vector_value ());
-      for (octave_idx_type vcnt = 0; vcnt < vsel.length (); vcnt++)
-        vreduced(vcnt) = vresult(static_cast<int> (vselect(vcnt)-1));
-    } 
-    else {
-      vreduced.resize (vy.length ());
-      vreduced = RowVector (vy.vector_value ());
-    }
+    vrow.resize (vy.length ());
+    vrow = RowVector (vy.vector_value ());
   }
 
   // Now have a look at the vdeci variable and do 0..initialization,
@@ -442,12 +432,12 @@ octave_idx_type odepkg_auxiliary_solstore
       // new values of t even if we have already started a new call to
       // the solver
       vtstore.resize(1); vtstore(0) = vt.double_value ();
-      vystore = Matrix (vreduced);
+      vystore = Matrix (vrow);
       break;
 
     case 1:
       vtstore = vtstore.stack (vt.column_vector_value ());
-      vystore = vystore.stack (Matrix (vreduced));
+      vystore = vystore.stack (Matrix (vrow));
       break;
 
     case 2:

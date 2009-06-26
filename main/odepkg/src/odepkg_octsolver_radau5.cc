@@ -212,7 +212,7 @@ octave_idx_type odepkg_radau5_solfcn
 
   // Save the solutions that come from the Fortran core solver if this
   // is not the initial first call to this function
-  if (NR > 1) odepkg_auxiliary_solstore (vt, vy, vradau5outsel, 1);
+  if (NR > 1) odepkg_auxiliary_solstore (vt, vy, 1);
 
   // Check if an 'OutputFcn' has been set by the user (including the
   // values of the options for 'OutputSel' and 'Refine')
@@ -543,6 +543,28 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
       warning_with_id ("OdePkg:InvalidOption", 
         "Option \"BDF\" will be ignored by this solver");
 
+  // Implementation of the option NewtonTol has been finished, this
+  // option can be set by the user to another value than default value
+  octave_value vNTOL = odepkg_auxiliary_getmapvalue ("NewtonTol", vodeopt);
+  if (vNTOL.is_empty ()) {
+    vNTOL = 0;
+    warning_with_id ("OdePkg:InvalidOption", 
+      "Option \"NewtonTol\" not set, default value is used");
+  }
+
+  // Implementation of the option MaxNewtonIterations has been finished, this
+  // option can be set by the user to another value than default value
+  octave_value vmaxnit = 
+    odepkg_auxiliary_getmapvalue ("MaxNewtonIterations", vodeopt);
+  if (vmaxnit.is_empty ()) {
+    vmaxnit = 7; warning_with_id ("OdePkg:InvalidOption", 
+      "Option \"MaxNewtonIterations\" not set, default value 7 is used");
+  }
+  else if (vmaxnit.int_value () < 1) {
+    vmaxnit = 7; warning_with_id ("OdePkg:InvalidOption", 
+      "Option \"MaxNewtonIterations\" is zero, default value 7 is used");
+  }
+
 /* Start MAINPROCESSING, set up all variables that are needed by this
  * solver and then initialize the solver function and get into the
  * main integration loop
@@ -578,14 +600,16 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   octave_idx_type IDID = 0;
 
   IWORK[0] = 1;  // Switch for transformation of Jacobian into Hessenberg form
+  IWORK[2] = vmaxnit.int_value ();     // Maximum number of Newton iterations
   WORK[2]  = -1; // Recompute Jacobian after every succesful step
+  WORK[3]  = vNTOL.double_value (); // Tolerance of Newton iteration
   WORK[6]  = vmaxstep.double_value (); // Set the maximum step size
 
   // Check if the user has set some of the options "OutputFcn", "Events"
   // etc. and initialize the plot, events and the solstore functions
   octave_value vtim = args(1).vector_value ()(0);
   octave_value vsol = args(2);
-  odepkg_auxiliary_solstore (vtim, vsol, vradau5outsel, 0);
+  odepkg_auxiliary_solstore (vtim, vsol, 0);
   if (!vradau5pltfun.is_empty ()) odepkg_auxiliary_evalplotfun 
     (vradau5pltfun, vradau5outsel, args(1), args(2), vradau5extarg, 0);
   if (!vradau5evefun.is_empty ())
@@ -615,7 +639,7 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // Return the results that have been stored in the
   // odepkg_auxiliary_solstore function
   octave_value vtres, vyres;
-  odepkg_auxiliary_solstore (vtres, vyres, vradau5outsel, 2);
+  odepkg_auxiliary_solstore (vtres, vyres, 2);
 
   // Set up variables to make it possible to call the cleanup
   // functions of 'OutputFcn' and 'Events' if any

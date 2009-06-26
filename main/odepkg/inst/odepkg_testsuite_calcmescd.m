@@ -47,7 +47,7 @@ function vmescd = odepkg_testsuite_calcmescd (vsol, vref, vatol, vrtol)
 %! odepkg_testsuite_calcmescd ([1 + 1e10, 2 + 1e10, 3 + 1e10], [1, 2, 3], ...
 %!   [1e-3, 1e-4, 1e-5], [1e-6, 1e-6, 1e-6])
 
-%!assert (odepkg_testsuite_calcmescd ([1, 2, 3], [1, 2, 3], NaN, NaN), NaN);
+%!assert (odepkg_testsuite_calcmescd ([1, 2, 3], [1, 2, 3], NaN, NaN), Inf);
 %!assert (odepkg_testsuite_calcmescd ([1, 2, 3], [1, 2, 3], 1, 1), Inf);
 %!assert (odepkg_testsuite_calcmescd ([1, 2, 3], [1, 2.1, 3], 1, 1), 1.5, 0.1);
 %!assert (odepkg_testsuite_calcmescd ([1, 2, 3], [1+1e-6, 2, 3], 1, 1), 6.5, 0.2);

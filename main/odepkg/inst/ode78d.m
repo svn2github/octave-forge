@@ -728,11 +728,14 @@ function [varargout] = ode78d (vfun, vslot, vinit, vlags, vhist, varargin)
 %!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
 %!  vsol = ode78d (@fexp, [0 5], [1; 0], 1, [1; 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [5, fref], 0.2);
+%!test %# Set BDF option to something else than default
+%!  vopt = odeset ('BDF', 'on');
+%!  [vt, vy] = ode78d (@fexp, [0 5], [1; 0], 1, [1; 0], vopt);
+%!  assert ([vt(end), vy(end,:)], [5, fref], 0.5);
 %!
 %! %# test for MvPattern option is missing
 %! %# test for InitialSlope option is missing
 %! %# test for MaxOrder option is missing
-%! %# test for BDF option is missing
 %!
 %!  warning ('on', 'OdePkg:InvalidOption');
 

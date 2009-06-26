@@ -718,11 +718,14 @@ end
 %!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
 %!  vsol = ode54 (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Set BDF option to something else than default
+%!  vopt = odeset ('BDF', 'on');
+%!  [vt, vy] = ode54 (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vt(end), vy(end,:)], [2, fref], 1e-3);
 %!
 %! %# test for MvPattern option is missing
 %! %# test for InitialSlope option is missing
 %! %# test for MaxOrder option is missing
-%! %# test for BDF option is missing
 %!
 %!  warning ('on', 'OdePkg:InvalidArgument');
 

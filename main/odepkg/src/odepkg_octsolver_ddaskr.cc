@@ -369,9 +369,10 @@ odekdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
   // The option NormControl will be ignored by this solver, the core
   // Fortran solver doesn't support this option
   octave_value vnorm = odepkg_auxiliary_getmapvalue ("NormControl", vodeopt);
-  if (!vnorm.is_empty () && (vnorm.string_value ().compare ("off") != 0))
-    warning_with_id ("OdePkg:InvalidOption", 
-      "Option \"NormControl\" will be ignored by this solver");
+  if (!vnorm.is_empty ())
+    if (vnorm.string_value ().compare ("off") != 0)
+      warning_with_id ("OdePkg:InvalidOption", 
+        "Option \"NormControl\" will be ignored by this solver");
 
   // The option NonNegative will be ignored by this solver, the core
   // Fortran solver doesn't support this option
@@ -445,9 +446,10 @@ odekdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
   // The option MStateDependence will be ignored by this solver. We
   // can't handle Mass-matrix options with IDE problems
   octave_value vmst = odepkg_auxiliary_getmapvalue ("MStateDependence", vodeopt);
-  if (!vmst.is_empty () && (vmst.string_value ().compare ("weak") != 0))
-    warning_with_id ("OdePkg:InvalidOption", 
-      "Option \"MStateDependence\" will be ignored by this solver");
+  if (!vmst.is_empty ())
+    if (vmst.string_value ().compare ("weak") != 0)
+      warning_with_id ("OdePkg:InvalidOption", 
+        "Option \"MStateDependence\" will be ignored by this solver");
 
   // The option MvPattern will be ignored by this solver. We
   // can't handle Mass-matrix options with IDE problems
@@ -459,9 +461,10 @@ odekdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
   // The option MvPattern will be ignored by this solver. We
   // can't handle Mass-matrix options with IDE problems
   octave_value vmsing = odepkg_auxiliary_getmapvalue ("MassSingular", vodeopt);
-  if (!vmsing.is_empty () && (vmsing.string_value ().compare ("maybe") != 0))
-    warning_with_id ("OdePkg:InvalidOption", 
-      "Option \"MassSingular\" will be ignored by this solver");
+  if (!vmsing.is_empty ())
+    if (vmsing.string_value ().compare ("maybe") != 0)
+      warning_with_id ("OdePkg:InvalidOption", 
+        "Option \"MassSingular\" will be ignored by this solver");
 
   // The option InitialSlope will be ignored by this solver, the core
   // Fortran solver doesn't support this option
@@ -486,11 +489,11 @@ odekdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
 
   // The option BDF will be ignored because this is a BDF solver
   octave_value vbdf = odepkg_auxiliary_getmapvalue ("BDF", vodeopt);
-  if (vbdf.string_value () != "on") {
-    vbdf = "on";
-    warning_with_id ("OdePkg:InvalidOption", 
-      "Option \"BDF\" set \"off\", new value \"on\" is used");
-  }
+  if (!vbdf.is_empty ())
+    if (vbdf.string_value () != "on") {
+      vbdf = "on"; warning_with_id ("OdePkg:InvalidOption", 
+        "Option \"BDF\" set \"off\", new value \"on\" is used");
+    }
 
 /* Start MAINPROCESSING, set up all variables that are needed by this
  * solver and then initialize the solver function and get into the

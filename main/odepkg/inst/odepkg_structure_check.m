@@ -275,8 +275,9 @@ function [vret] = odepkg_structure_check (varargin)
         end
 
       case 'BDF'
-        if (strcmp (vret.(vfld{vcntarg}), 'on') || ...
-            strcmp (vret.(vfld{vcntarg}), 'off'))
+        if (isempty (vret.(vfld{vcntarg})) || ...
+	    (strcmp (vret.(vfld{vcntarg}), 'on') || ...
+             strcmp (vret.(vfld{vcntarg}), 'off')))
         else
           error ('OdePkg:InvalidParameter', ...
             'Unknown parameter name "%s" or no valid parameter value', ...
@@ -385,8 +386,8 @@ function [vret] = odepkg_structure_check (varargin)
 %!test  A = odeset ('MaxOrder', []);
 %!test  A = odeset ('BDF', 'on');
 %!test  A = odeset ('BDF', 'off');
+%!test  A = odeset ('BDF', []);
 %!error A = odeset ('BDF', [1, 2; 3, 4]);
-%!error A = odeset ('BDF', []);
 
 %!demo
 %! # Return the checked OdePkg options structure that is created by

@@ -620,9 +620,10 @@ oders (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // The option NormControl will be ignored by this solver, the core
   // Fortran solver doesn't support this option
   octave_value vnorm = odepkg_auxiliary_getmapvalue ("NormControl", vodeopt);
-  if (!vnorm.is_empty () && (vnorm.string_value ().compare ("off") != 0))
-    warning_with_id ("OdePkg:InvalidOption",
-      "Option \"NormControl\" will be ignored by this solver");
+  if (!vnorm.is_empty ())
+    if (vnorm.string_value ().compare ("off") != 0)
+      warning_with_id ("OdePkg:InvalidOption",
+        "Option \"NormControl\" will be ignored by this solver");
 
   // The option NonNegative will be ignored by this solver, the core
   // Fortran solver doesn't support this option
@@ -695,9 +696,10 @@ oders (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // The option Vectorized will be ignored by this solver, the core
   // Fortran solver doesn't support this option
   octave_value vrodasvectorize = odepkg_auxiliary_getmapvalue ("Vectorized", vodeopt);
-  if (vrodasvectorize.string_value ().compare ("off") != 0)
-    warning_with_id ("OdePkg:InvalidOption",
-      "Option \"Vectorized\" will be ignored by this solver");
+  if (!vrodasvectorize.is_empty ())
+    if (vrodasvectorize.string_value ().compare ("off") != 0)
+      warning_with_id ("OdePkg:InvalidOption",
+        "Option \"Vectorized\" will be ignored by this solver");
 
   // Implementation of the option 'Mass' has been finished, these
   // options can be set by the user to another value than default
@@ -713,9 +715,10 @@ oders (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // The option MStateDependence will be ignored by this solver, the
   // core Fortran solver doesn't support this option
   vrodasmassstate = odepkg_auxiliary_getmapvalue ("MStateDependence", vodeopt);
-  if (vrodasmassstate.string_value ().compare ("weak") != 0) // 'weak' is default
-    warning_with_id ("OdePkg:InvalidOption",
-      "Option \"MStateDependence\" will be ignored by this solver");
+  if (!vrodasmassstate.is_empty ())
+    if (vrodasmassstate.string_value ().compare ("weak") != 0) // 'weak' is default
+      warning_with_id ("OdePkg:InvalidOption",
+        "Option \"MStateDependence\" will be ignored by this solver");
 
   // The option MStateDependence will be ignored by this solver, the
   // core Fortran solver doesn't support this option
@@ -727,9 +730,10 @@ oders (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // The option MassSingular will be ignored by this solver, the
   // core Fortran solver doesn't support this option
   octave_value vmsing = odepkg_auxiliary_getmapvalue ("MassSingular", vodeopt);
-  if (!vmsing.is_empty () && (vmsing.string_value ().compare ("maybe") != 0))
-    warning_with_id ("OdePkg:InvalidOption",
-      "Option \"MassSingular\" will be ignored by this solver");
+  if (!vmsing.is_empty ())
+    if (vmsing.string_value ().compare ("maybe") != 0)
+      warning_with_id ("OdePkg:InvalidOption",
+        "Option \"MassSingular\" will be ignored by this solver");
 
   // The option InitialSlope will be ignored by this solver, the core
   // Fortran solver doesn't support this option
@@ -748,9 +752,10 @@ oders (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // The option BDF will be ignored by this solver, the core Fortran
   // solver doesn't support this option
   octave_value vbdf = odepkg_auxiliary_getmapvalue ("BDF", vodeopt);
-  if (vbdf.string_value ().compare ("off") != 0)
-    warning_with_id ("OdePkg:InvalidOption", 
-      "Option \"BDF\" will be ignored by this solver");
+  if (!vbdf.is_empty ())
+    if (vbdf.string_value ().compare ("off") != 0)
+      warning_with_id ("OdePkg:InvalidOption", 
+        "Option \"BDF\" will be ignored by this solver");
 
 /* Start MAINPROCESSING, set up all variables that are needed by this
  * solver and then initialize the solver function and get into the
@@ -1047,11 +1052,14 @@ oders (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
 %!  vsol = oders (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Set BDF option to something else than default
+%!  vopt = odeset ('BDF', 'on');
+%!  vsol = oders (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %! %# test for MvPattern option is missing
 %! %# test for InitialSlope option is missing
 %! %# test for MaxOrder option is missing
-%! %# test for BDF option is missing
 %!
 %!  warning ('on', 'OdePkg:InvalidOption');
 */

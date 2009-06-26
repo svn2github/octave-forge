@@ -915,6 +915,14 @@ plot (C.x, C.y, "bo-", D.x, D.y, "rx:");
 The option @option{BDF} is only supported by the @command{odebdi} and @command{odebda} solvers. Using these solvers the option @option{BDF} will automatically be set @command{"on"} (even if it was set @command{"off"} before) because the @command{odebdi} and @command{odebda} solvers all use the backward differentiation algorithm to solve the different kind of equations.
 @end table
 
+@item NewtonTol
+@cindex NewtonTol option
+TODO
+
+@item MaxNewtonIterations
+@cindex MaxNewtonIterations option
+TODO
+
 @node M-File Function Reference, Oct-File Function Reference, ODE/DAE/IDE/DDE options, Users Guide
 @section M--File Function Reference
 @cindex m--file reference

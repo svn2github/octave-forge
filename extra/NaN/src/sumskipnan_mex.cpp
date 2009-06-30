@@ -79,9 +79,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	// check for proper number of input and output arguments
 	if ((PInputCount <= 0) || (PInputCount > 4))
-	        mexErrMsgTxt("SumSkipNan.MEX requires between 1 and 4 arguments.");
+	        mexErrMsgTxt("SUMSKIPNAN.MEX requires between 1 and 4 arguments.");
 	if (POutputCount > 4)
-	        mexErrMsgTxt("SumSkipNan.MEX has 1 to 3 output arguments.");
+	        mexErrMsgTxt("SUMSKIPNAN.MEX has 1 to 3 output arguments.");
 
 	// get 1st argument
 	if(mxIsDouble(PInputs[0]) && !mxIsComplex(PInputs[0]))
@@ -346,7 +346,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 #define stride 1 
 inline int __sumskipnan2__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN)
 {
-	register double sum=0; 
+	register long double sum=0; 
 	register size_t count=0; 
 	register char   flag=0; 
 	// LOOP  along dimension DIM
@@ -364,7 +364,7 @@ inline int __sumskipnan2__(double *data, size_t Ni, double *s, double *No, char 
 			flag = 1; 
 #endif
 
-		data +=stride;	
+		data++;	// stride=1
 	}
 	while (data < end);
 	
@@ -378,8 +378,8 @@ inline int __sumskipnan2__(double *data, size_t Ni, double *s, double *No, char 
 
 inline int __sumskipnan3__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN)
 {
-	register double sum=0; 
-	register double msq=0; 
+	register long double sum=0; 
+	register long double msq=0; 
 	register size_t count=0; 
 	register char   flag=0; 
 	// LOOP  along dimension DIM
@@ -412,8 +412,8 @@ inline int __sumskipnan3__(double *data, size_t Ni, double *s, double *s2, doubl
 #define stride 1 
 inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
 {
-	register double sum=0; 
-	register double count=0; 
+	register long double sum=0; 
+	register long double count=0; 
 	register char   flag=0; 
 	// LOOP  along dimension DIM
 	
@@ -430,7 +430,7 @@ inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char
 			flag = 1; 
 #endif
 
-		data +=stride;	
+		data++;	// stride=1
 		W++;
 	}
 	while (data < end);
@@ -445,9 +445,9 @@ inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char
 
 inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
 {
-	register double sum=0; 
-	register double msq=0; 
-	register double count=0; 
+	register long double sum=0; 
+	register long double msq=0; 
+	register long double count=0; 
 	register char   flag=0; 
 	// LOOP  along dimension DIM
 	

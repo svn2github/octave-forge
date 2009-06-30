@@ -43,6 +43,7 @@
 
 //#define NO_FLAG
 
+
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
     	double 		*X0,*Y0=NULL,*X,*Y,*W=NULL;
@@ -200,8 +201,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=0; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		double cc=0.0;
-		double nn=0.0;
+		long double cc=0.0;
+		long double nn=0.0;
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
 			if (isnan(z)) {
@@ -222,7 +223,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=0; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		double cc=0.0;
+		long double cc=0.0;
 		size_t nn=0;
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
@@ -246,8 +247,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=i; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		double cc=0.0;
-		double nn=0.0;
+		long double cc=0.0;
+		long double nn=0.0;
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
 			if (isnan(z)) {
@@ -271,7 +272,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=i; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		double cc=0.0;
+		long double cc=0.0;
 		size_t nn=0;
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];

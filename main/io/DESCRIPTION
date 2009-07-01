@@ -6,7 +6,7 @@ Maintainer: The Octave Community
 Title: Input/Output
 Description: Input/Output in external formats.
 Categories: IO
-Depends: octave (>= 2.9.7)
+Depends: octave (>= 3.2.0)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

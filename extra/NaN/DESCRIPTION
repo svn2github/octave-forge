@@ -1,10 +1,10 @@
 Name: NaN
-Version: 1.0.9
-Date: 2009-05-03
+Version: 2.0.0
+Date: 2009-06-30
 Author: Alois Schloegl <a.schloegl@ieee.org>
-Maintainer: Matthew W. Roberts
+Maintainer: Alois Schloegl
 Title: NaN statisical toolbox
 Description: Missing value statistical toolbox
-Depends: octave (>= 2.9.7)
-License: GPL version 2 or later
-Url: http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN
+Depends: octave (>= 3.0.1)
+License: GPL version 3 or later
+Url: http://hci.tu-graz.ac.at/~schloegl/matlab/NaN

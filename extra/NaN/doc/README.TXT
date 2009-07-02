@@ -6,17 +6,19 @@ Copyright (C) 2000-2005,2009 Alois Schloegl <a.schloegl@ieee.org>
 FEATURES of the NaN-tb:
 -----------------------
  - statistical toolbox
+ - classification toolobx 
  - NaN's are treated as missing values 
- - supports DIM argument 
- - supports unbiased estimation 
- - supports weightening of data   
+ - supports DIM argument
+ - supports weightening of data
+ - less round-off errors using extended double
  - less but more powerful functions (no nan-FUN needed)
+ - supports unbiased estimation
  - fixes known bugs 
- - compatible to Matlab and Octave
+ - compatible with Matlab and Octave
  - easy to use
- - The toolbox is tested with Octave 3.x and Matlab 7.x, FreeMat v3.6
- 
-  
+ - The toolbox is tested with Octave 3.x and Matlab 7.x
+
+
 Currently are implemented:
 -------------------------- 
 level 1: basic functions (not derived)
@@ -25,6 +27,8 @@ level 1: basic functions (not derived)
 			SUMSKIPNAN is central, it implements skipping NaN's, the 
 			DIM-argument and returns the number of valid elements, too.
 	COVM		covariance estimation (several modes)
+			Round-off errors avoided by using internally extended accuracy
+	DECOVM		decomposes the extended covarianced matrix into mean and cov 
 	XCOVF		cross-correlation function
 	NANFILTER	filter function
 	CONVSKIPNAN     convolution
@@ -38,34 +42,51 @@ level 1: basic functions (not derived)
 			rms, sem, skewness, statistic, std, var	
 			
 	
-level 2: derived functions
+level 2a: derived functions
 	MEAN	 	mean (options: arithmetic, geometric, harmonic)
-	SEM		standard error of the mean (does not depend on distribution)
 	VAR 		variance
 	STD 		standard deviation
 	MEDIAN		median (currently only for 2-dim matrices)
+	SEM		standard error of the mean (does not depend on distribution)
+	TRIMMEAN 	trimmed mean 
+	medAbsDev	median absolute deviation 
+	
 	MEANSQ		mean square
 	RMS		root mean square
+
 	STATISTIC	estimates various statistics at once
 	MOMENT		moment 	
 	SKEWNESS	skewness
 	KURTOSIS	excess 
+
+*	IQR		interquartile range 	
 	MAD		mean absolute deviation
+*	RANGE		range (max-min) 
+
 	CENTER		removes mean
-	ZSCORE		normalizes x with z = (x-mean)/std 
+	ZSCORE		normalizes x to zero mean and variance 1 (z = (x-mean)/std) 
+	zScoreMedian	non-parametric z-score, normalizes is to zero median and 1/(1.483*median absolute deviation)  
+
 	HARMMEAN	harmonic mean
 	GEOMEAN		geometric mean
+
 	NANTEST		checks whether all functions have been replaced
 	DETREND		detrending of data with missing values and non-equidistant sampled data
+
 	COR		correlation matrix
+	COV		covariance matrix
 	CORRCOEF	correlation coefficient, including rank correlation, 
 				significance test and confidence intervals 
 	SPEARMAN, RANKCORR spearman's rank correlation coefficient. They might be replaced by CORRCOEF. 
-	COV		covariance matrix
+	PARTCORRCOEF	partial correlation coefficient			
 	RANKS		calculates ranks for non-parametric statistics 
-	TRIMEAN		trimean
+	TIEDRANK	similar to RANKS, used for compatibility reasons 
+
 	QUANTILE	q-th quantile 
-	PERCENTILE	p-th percentile
+	PRCTILE,PERCENTILE	p-th percentile
+	TRIMEAN		trimean
+
+	ECDF		empirical cumulative distribution function 
 	NORMPDF		normal probability distribution
 	NORMCDF		normal cumulative distribution 
 	NORMINV		inverse of the normal cumulative distribution
@@ -73,9 +94,16 @@ level 2: derived functions
 	TCDF		student cumulative distribution 
 	TINV		inverse of the student cumulative distribution
 	NANSUM, NANSTD	fixes for buggy versions included
-		
-	
-	
+
+level 2b: classification, cross-validation 
+	TRAIN_SC	train classifier
+	TEST_SC		test classifier
+	CLASSIFY	classify data (no cross validation)
+	XVAL		classify data with cross validation
+	KAPPA		performance evaluation 
+	TRAIN_LDA_SPARSE	utility function 
+
+
 REFERENCE(S):
 ----------------------------------
 [1] http://www.itl.nist.gov/
@@ -145,7 +173,7 @@ Permits to implement useful modifications.
 
 12) NORMPDF, NORMCDF, NORMINV
 In the Matlab statistics toolbox V 3.0, NORMPDF, NORMCDF and NORMINV gave 
-incorrect results for SIGMA=0; A Similar problem was observed in Octave 
+incorrect results for SIGMA=0; A similar problem was observed in Octave 
 with NORMAL_INV, NORMAL_PDF, and NORMALCDF. 
 
 The problem is fixed with this version. Furthermore, the check of the input 

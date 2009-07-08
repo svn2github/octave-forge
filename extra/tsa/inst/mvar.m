@@ -21,7 +21,7 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %
 % Mode determines estimation algorithm. 
 %  1:  Correlation Function Estimation method using biased correlation function estimation method
-%   		also called the "multichannel Yule-Walker" [1,2] 
+%   		also called the 'multichannel Yule-Walker' [1,2] 
 %  6:  Correlation Function Estimation method using unbiased correlation function estimation method
 %
 %  2:  Partial Correlation Estimation: Vieira-Morf [2] using unbiased covariance estimates.
@@ -30,17 +30,20 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %  5:  Partial Correlation Estimation: Vieira-Morf [2] using biased covariance estimates.
 %		Yields similar results than Mode=2;
 %
-%  3:  Partial Correlation Estimation: Nutall-Strand [2] (biased correlation function)
+%  3:  buggy: Partial Correlation Estimation: Nutall-Strand [2] (biased correlation function)
+%  9:  Partial Correlation Estimation: Nutall-Strand [2] (biased correlation function)
 %  7:  Partial Correlation Estimation: Nutall-Strand [2] (unbiased correlation function)
 %
 % 10:  ARFIT [3] 
 % 11:  BURGV [4] 
+% 13:  modified BURGV -  
+% 14:  modified BURGV [4] 
 %
 % REFERENCES:
-%  [1] A. Schl\"ogl, Comparison of Multivariate Autoregressive Estimators.
+%  [1] A. Schloegl, Comparison of Multivariate Autoregressive Estimators.
 %       Signal processing, Elsevier B.V. (in press). 
 %       available at http://dx.doi.org/doi:10.1016/j.sigpro.2005.11.007
-%  [2] S.L. Marple "Digital Spectral Analysis with Applications" Prentice Hall, 1987.
+%  [2] S.L. Marple 'Digital Spectral Analysis with Applications' Prentice Hall, 1987.
 %  [3] Schneider and Neumaier)
 %  [4] Stijn de Waele, 2003
 %
@@ -124,7 +127,7 @@ elseif Mode==0;  % this method is broken
 
         
 elseif Mode==1, %%%%% Levinson-Wiggens-Robinson (LWR) algorithm using biased correlation function
-	% ===== In [1,2] this algorithm is denoted "Multichannel Yule-Walker" ===== %
+	% ===== In [1,2] this algorithm is denoted 'Multichannel Yule-Walker' ===== %
         C(:,1:M) = C(:,1:M)/N;
         PEF = C(:,1:M);  
         PEB = C(:,1:M);
@@ -186,7 +189,7 @@ elseif Mode==6, %%%%% Levinson-Wiggens-Robinson (LWR) algorithm using unbiased c
         
 
 elseif Mode==2 %%%%% Partial Correlation Estimation: Vieira-Morf Method [2] with unbiased covariance estimation
-	%===== In [1] this algorithm is denoted "Nutall-Strand with unbiased covariance" =====%
+	%===== In [1] this algorithm is denoted 'Nutall-Strand with unbiased covariance' =====%
         %C(:,1:M) = C(:,1:M)/N;
         F = Y;
         B = Y;
@@ -195,7 +198,7 @@ elseif Mode==2 %%%%% Partial Correlation Estimation: Vieira-Morf Method [2] with
         PEF = PE(:,1:M);
         PEB = PE(:,1:M);
         for K = 1:Pmax,
-                [D,n]	= covm(F(K+1:N,:),B(1:N-K,:),'M');
+                [D,n] = covm(F(K+1:N,:),B(1:N-K,:),'M');
                 D = D./n;
 
 		ARF(:,K*M+(1-M:0)) = D / PEB;	
@@ -225,7 +228,7 @@ elseif Mode==2 %%%%% Partial Correlation Estimation: Vieira-Morf Method [2] with
         
 
 elseif Mode==5 %%%%% Partial Correlation Estimation: Vieira-Morf Method [2] with biased covariance estimation
-	%===== In [1] this algorithm is denoted "Nutall-Strand with biased covariance" ===== %
+	%===== In [1] this algorithm is denoted 'Nutall-Strand with biased covariance' ===== %
 
         F = Y;
         B = Y;
@@ -261,9 +264,10 @@ elseif Mode==5 %%%%% Partial Correlation Estimation: Vieira-Morf Method [2] with
                 PE(:,K*M+(1:M)) = PEF./n;
         end;
         
-        
-elseif Mode==3 %%%%% Partial Correlation Estimation: Nutall-Strand Method [2] with biased covariance estimation
-        % C(:,1:M) = C(:,1:M)/N;
+      
+elseif 0, Mode==3 %%%%% Partial Correlation Estimation: Nutall-Strand Method [2] with biased covariance estimation
+        %%% OBSOLETE because its buggy, use Mode=9 instead.  
+        % C(:,1:M) = C(:,1:M)/N; 
         F = Y;
         B = Y;
         PEF = C(:,1:M);
@@ -300,16 +304,14 @@ elseif Mode==3 %%%%% Partial Correlation Estimation: Nutall-Strand Method [2] wi
 
         
 elseif Mode==7 %%%%% Partial Correlation Estimation: Nutall-Strand Method [2] with unbiased covariance estimation 
-        %C(:,1:M) = C(:,1:M)/N;
+
         F = Y;
         B = Y;
-        %PEF = C(:,1:M);
-        %PEB = C(:,1:M);
         PEF = PE(:,1:M);
         PEB = PE(:,1:M);
         for K = 1:Pmax,
-                [D,n]  = covm(F(K+1:N,:),B(1:N-K,:),'M');
-                D = D./n;
+                [D]  = covm(F(K+1:N,:),B(1:N-K,:),'M');
+                %D = D./n;
 
                 ARF(:,K*M+(1-M:0)) = 2*D / (PEB+PEF);	
                 ARB(:,K*M+(1-M:0)) = 2*D'/ (PEF+PEB);	
@@ -327,16 +329,49 @@ elseif Mode==7 %%%%% Partial Correlation Estimation: Nutall-Strand Method [2] wi
                 %RCF{K} = ARF{K};
                 RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0));
                 
-                [PEF,n] = covm(F(K+1:N,:),F(K+1:N,:),'M');
-                PEF = PEF./n;
+                [PEF] = covm(F(K+1:N,:),F(K+1:N,:),'M');
+                %PEF = PEF./n;
 
-                [PEB,n] = covm(B(1:N-K,:),B(1:N-K,:),'M');
-                PEB = PEB./n;
+                [PEB] = covm(B(1:N-K,:),B(1:N-K,:),'M');
+                %PEB = PEB./n;
 
                 %PE{K+1} = PEF;        
                 PE(:,K*M+(1:M)) = PEF;        
         end;
 
+
+elseif any(Mode==[3,9]) %%%%% Partial Correlation Estimation: Nutall-Strand Method [2] with biased covariance estimation
+	%% same as 3 but with fixed normalization
+        F = Y;
+        B = Y;
+        PEF = C(:,1:M);
+        PEB = C(:,1:M);
+        for K=1:Pmax,
+                [D, n]  = covm(F(K+1:N,:),B(1:N-K,:),'M');
+
+                ARF(:,K*M+(1-M:0)) = 2*D / (PEB+PEF);	
+                ARB(:,K*M+(1-M:0)) = 2*D'/ (PEF+PEB);	
+                
+                tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0)).';
+                B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0)).';
+                F(K+1:N,:) = tmp;
+                
+                for L = 1:K-1,
+                        tmp      = ARF(:,L*M+(1-M:0))   - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
+                        ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
+                        ARF(:,L*M+(1-M:0))   = tmp;
+                end;
+                
+                %RCF{K} = ARF{K};
+                RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0));
+                
+                [PEF,nf] = covm(F(K+1:N,:),F(K+1:N,:),'M');
+		[PEB,nb] = covm(B(1:N-K,:),B(1:N-K,:),'M');
+
+                %PE(:,K*M+(1:M)) = PEF;        
+                PE(:,K*M+(1:M)) = PEF./nf;
+        end;
+        
         
 elseif Mode==4,  %%%%% Kay, not fixed yet. 
         fprintf('Warning MVAR: Mode=4 is broken.\n')        
@@ -390,6 +425,8 @@ elseif Mode==10,  %%%%% ARFIT
 
 
 elseif Mode==11,  %%%%% de Waele 2003
+	%%% OBSOLETE 
+	warning('MVAR: mode=11 is obsolete use Mode 13 or 14!'); 
 	[pc,R0] = burgv(reshape(Y',[M,1,N]),Pmax);
         try,
                 [ARF,ARB,Pf,Pb,RCF,RCB] = pc2parv(pc,R0);
@@ -403,6 +440,8 @@ elseif Mode==11,  %%%%% de Waele 2003
 
 
 elseif Mode==12, 
+	%%% OBSOLETE 
+	warning('MVAR: mode=12 is obsolete use Mode 13 or 14!'); 
         % this is equivalent to Mode==11        
 	[pc,R0] = burgv(reshape(Y',[M,1,N]),Pmax);
         [rcf,rcb,Pf,Pb] = pc2rcv(pc,R0);
@@ -423,79 +462,251 @@ elseif Mode==12,
 	PE  = reshape(Pf,[M,M*(Pmax+1)]);
 
 
+elseif Mode==13, 
+        % this is equivalent to Mode==11 but can deal with missing values         
+	%%%%%%%%%%% [pc,R0] = burgv_nan(reshape(Y',[M,1,N]),Pmax,1);
+	% Copyright S. de Waele, March 2003 - modified Alois Schloegl, 2009
+	I = eye(M);
+	
+	sz = [M,M,Pmax+1]; 
+	pc= zeros(sz); pc(:,:,1) =I;
+	K = zeros(sz); K(:,:,1)  =I;
+	Kb= zeros(sz); Kb(:,:,1) =I;
+	P = zeros(sz);
+	Pb= zeros(sz);
+
+	%[P(:,:,1)]= covm(Y);	
+	[P(:,:,1)]= PE(:,1:M);	% normalized 
+	Pb(:,:,1)= P(:,:,1);
+	f = Y;
+	b = Y;
+
+	%the recursive algorithm
+	for i = 1:Pmax,
+		v = f(2:end,:);
+		w = b(1:end-1,:);
+   
+		%% normalized, unbiased
+		Rvv = covm(v); %Pfhat
+		Rww = covm(w); %Pbhat
+		Rvw = covm(v,w); %Pfbhat
+		Rwv = covm(w,v); % = Rvw', written out for symmetry
+		delta = lyap(Rvv*inv(P(:,:,i)),inv(Pb(:,:,i))*Rww,-2*Rvw);
+   
+		TsqrtS = chol( P(:,:,i))'; %square root M defined by: M=Tsqrt(M)*Tsqrt(M)'
+		TsqrtSb= chol(Pb(:,:,i))'; 
+		pc(:,:,i+1) = inv(TsqrtS)*delta*inv(TsqrtSb)';
+   
+		%The forward and backward reflection coefficient
+		K(:,:,i+1) = -TsqrtS *pc(:,:,i+1) *inv(TsqrtSb);
+		Kb(:,:,i+1)= -TsqrtSb*pc(:,:,i+1)'*inv(TsqrtS);
+   
+		%filtering the reflection coefficient out:
+		f = (v'+ K(:,:,i+1)*w')';
+		b = (w'+Kb(:,:,i+1)*v')';
+   
+		%The new R and Rb:
+		%residual matrices
+		P(:,:,i+1)  = (I-TsqrtS *pc(:,:,i+1) *pc(:,:,i+1)'*inv(TsqrtS ))*P(:,:,i); 
+		Pb(:,:,i+1) = (I-TsqrtSb*pc(:,:,i+1)'*pc(:,:,i+1) *inv(TsqrtSb))*Pb(:,:,i); 
+	end %for i = 1:Pmax,
+	R0 = PE(:,1:M); 
+
+        %% [rcf,rcb,Pf,Pb] = pc2rcv(pc,R0);
+	rcf  = zeros(sz); rcf(:,:,1)  = I; 
+	Pf   = zeros(sz); Pf(:,:,1)   = R0;
+	rcb  = zeros(sz); rcb(:,:,1) = I; 
+	Pb   = zeros(sz); Pb(:,:,1)  = R0;
+
+	for p = 1:Pmax,
+		TsqrtPf = chol( Pf(:,:,p))'; %square root M defined by: M=Tsqrt(M)*Tsqrt(M)'
+		TsqrtPb= chol(Pb(:,:,p))'; 
+		%reflection coefficients
+		rcf(:,:,p+1) = -TsqrtPf *pc(:,:,p+1) *inv(TsqrtPb);
+		rcb(:,:,p+1)= -TsqrtPb*pc(:,:,p+1)'*inv(TsqrtPf );
+		%residual matrices
+		Pf(:,:,p+1)  = (I-TsqrtPf *pc(:,:,p+1) *pc(:,:,p+1)'*inv(TsqrtPf ))*Pf(:,:,p); 
+		Pb(:,:,p+1) = (I-TsqrtPb*pc(:,:,p+1)'*pc(:,:,p+1) *inv(TsqrtPb))*Pb(:,:,p); 
+	end %for p = 2:order,
+	%%%%%%%%%%%%%% end %%%%%%
+
+
+        %%%%% Convert reflection coefficients RC to autoregressive parameters
+        ARF = zeros(M,M*Pmax); 
+        ARB = zeros(M,M*Pmax); 
+        for K = 1:Pmax,
+                ARF(:,K*M+(1-M:0)) = -rcf(:,:,K+1);
+                ARB(:,K*M+(1-M:0)) = -rcb(:,:,K+1);
+                for L = 1:K-1,
+                        tmp                    = ARF(:,L*M+(1-M:0)) - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
+                        ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
+                        ARF(:,L*M+(1-M:0))     = tmp;
+                end;
+        end;
+        RCF = -reshape(rcf(:,:,2:end),[M,M*Pmax]);
+	PE  = reshape(Pf,[M,M*(Pmax+1)]);
+
+
+elseif Mode==14,
+        % this is equivalent to Mode==11 but can deal with missing values
+	%%%%%%%%%%%%%% [pc,R0] = burgv_nan(reshape(Y',[M,1,N]),Pmax,2);
+	% Copyright S. de Waele, March 2003 - modified Alois Schloegl, 2009
+	I = eye(M);
+	
+	sz = [M,M,Pmax+1]; 
+	pc= zeros(sz); pc(:,:,1) =I;
+	K = zeros(sz); K(:,:,1)  =I;
+	Kb= zeros(sz); Kb(:,:,1) =I;
+	P = zeros(sz);
+	Pb= zeros(sz);
+
+	%[P(:,:,1),nn]= covm(Y);
+	[P(:,:,1)]= C(:,1:M);	%% no normalization 
+	Pb(:,:,1)= P(:,:,1);
+	f = Y;
+	b = Y;
+
+	%the recursive algorithm
+	for i = 1:Pmax,
+		v = f(2:end,:);
+		w = b(1:end-1,:);
+
+		%% no normalization 
+		[Rvv,nn] = covm(v); %Pfhat
+		[Rww,nn] = covm(w); %Pbhat
+		[Rvw,nn] = covm(v,w); %Pfbhat
+		[Rwv,nn] = covm(w,v); % = Rvw', written out for symmetry
+		delta = lyap(Rvv*inv(P(:,:,i)),inv(Pb(:,:,i))*Rww,-2*Rvw);
+
+		TsqrtS = chol( P(:,:,i))'; %square root M defined by: M=Tsqrt(M)*Tsqrt(M)'
+		TsqrtSb= chol(Pb(:,:,i))'; 
+		pc(:,:,i+1) = inv(TsqrtS)*delta*inv(TsqrtSb)';
+
+		%The forward and backward reflection coefficient
+		K(:,:,i+1) = -TsqrtS *pc(:,:,i+1) *inv(TsqrtSb);
+		Kb(:,:,i+1)= -TsqrtSb*pc(:,:,i+1)'*inv(TsqrtS);
+
+		%filtering the reflection coefficient out:
+		f = (v'+ K(:,:,i+1)*w')';
+		b = (w'+Kb(:,:,i+1)*v')';
+
+		%The new R and Rb:
+		%residual matrices
+		P(:,:,i+1)  = (I-TsqrtS *pc(:,:,i+1) *pc(:,:,i+1)'*inv(TsqrtS ))*P(:,:,i); 
+		Pb(:,:,i+1) = (I-TsqrtSb*pc(:,:,i+1)'*pc(:,:,i+1) *inv(TsqrtSb))*Pb(:,:,i); 
+	end %for i = 1:Pmax,
+	R0 = PE(:,1:M); 
+
+        %%%%%%%%%% [rcf,rcb,Pf,Pb] = pc2rcv(pc,R0);
+	sz = [M,M,Pmax+1]; 
+	rcf  = zeros(sz); rcf(:,:,1)  = I; 
+	Pf   = zeros(sz); Pf(:,:,1)   = R0;
+	rcb  = zeros(sz); rcb(:,:,1) = I; 
+	Pb   = zeros(sz); Pb(:,:,1)  = R0;
+	for p = 1:Pmax,
+		TsqrtPf = chol( Pf(:,:,p))'; %square root M defined by: M=Tsqrt(M)*Tsqrt(M)'
+		TsqrtPb = chol(Pb(:,:,p))'; 
+		%reflection coefficients
+		rcf(:,:,p+1)= -TsqrtPf *pc(:,:,p+1) *inv(TsqrtPb);	
+		rcb(:,:,p+1)= -TsqrtPb *pc(:,:,p+1)'*inv(TsqrtPf );   
+		%residual matrices
+		Pf(:,:,p+1) = (I-TsqrtPf *pc(:,:,p+1) *pc(:,:,p+1)'*inv(TsqrtPf))*Pf(:,:,p); 
+		Pb(:,:,p+1) = (I-TsqrtPb *pc(:,:,p+1)'*pc(:,:,p+1) *inv(TsqrtPb))*Pb(:,:,p); 
+	end %for p = 2:order,
+	%%%%%%%%%%%%%% end %%%%%%
+
+        %%%%% Convert reflection coefficients RC to autoregressive parameters
+        ARF = zeros(M,M*Pmax); 
+        ARB = zeros(M,M*Pmax); 
+        for K = 1:Pmax,
+                ARF(:,K*M+(1-M:0)) = -rcf(:,:,K+1);	
+                ARB(:,K*M+(1-M:0)) = -rcb(:,:,K+1);	
+                for L = 1:K-1,
+                        tmp                    = ARF(:,L*M+(1-M:0)) - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
+                        ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
+                        ARF(:,L*M+(1-M:0))     = tmp;
+                end;
+        end;        
+        RCF = -reshape(rcf(:,:,2:end),[M,M*Pmax]);
+	PE  = reshape(Pf,[M,M*(Pmax+1)]);
+
+
+elseif Mode==15,  
+	%%% Least Squares 
+
+if 0, 
+	y = [];
+	for k = 1:Pmax, 
+		y = [y, Y(k+1:N-Pmax+k,:)]; 
+	end;
+	y(isnan(y)) = 0;
+	ARB = Y(1:N-Pmax,:)'/y';
+end;
+	y = [];
+	for k = 1:Pmax,
+		y = [y, Y(Pmax+1-k:N-k,:)];
+	end;
+	y(isnan(y)) = 0;
+	yy  = Y(Pmax+1:N,:); 
+	ix  = find(~any(isnan(yy),2));
+	ARF = yy(ix,:)'/y(ix,:)';
+	RCF = []; 
+
+
+elseif Mode==16,
+	%%% Least Squares 
+if 0,
+	y = [];
+	for k = 1:Pmax, 
+		y = [y, Y(k+1:N-Pmax+k,:)];
+	end;
+	y(isnan(y)) = 0;
+	ARB = Y(1:N-Pmax,:)'/y';
+end; 
+
+	y = [];  
+	for k = 1:Pmax, 
+		y = [y, Y(Pmax+1-k:N-k,:)]; 
+	end; 	
+	%y(isnan(y)) = 0;
+	yy  = Y(Pmax+1:N,:); 
+	ix  = find(~any(isnan([yy,y]),2));
+	ARF = yy(ix,:)'/y(ix,:)';
+	RCF = []; 
+
+
+elseif 0, 
+	%%%%% ARFIT and handling missing values 
+	% compute QR factorization for model of order pmax
+	[R, scale]   = arqr(Y, Pmax, 0);
+	 % select order of model
+  	popt         = Pmax; % estimated optimum order 
+  	np           = M*Pmax; % number of parameter vectors of length m
+  	% decompose R for the optimal model order popt according to 
+  	%
+  	%   | R11  R12 |
+  	% R=|          |
+  	%   | 0    R22 |
+  	%
+  	R11   = R(1:np, 1:np);
+  	R12   = R(1:np, Pmax+1:Pmax+M);    
+  	R22   = R(M*Pmax+1:Pmax+M, Pmax+1:Pmax+M);
+	A     = (R11\R12)';
+  	% return covariance matrix
+  	dof   = N-Pmax-M*Pmax;                % number of block degrees of freedom
+  	PE    = R22'*R22./dof;        % bias-corrected estimate of covariance matrix
+
+	try
+		RCF = [];
+		[w, ARF, PE] = arfit(Y, Pmax, Pmax, 'sbc', 'zero');
+	catch
+		ARF = zeros(M,M*Pmax); 
+		RCF = ARF;
+	end; 
+
+
         
 %%%%% EXPERIMENTAL VERSIONS %%%%%
-
-elseif Mode==83,  %%%%% de Waele 2003
-	[rcf,rcb,pc,R0] = burgv_as1(reshape(Y',[M,1,N]),Pmax);
-        %[ARF,ARB,Pf,Pb,RCF,RCB] = pc2parv(pc,R0);
- 	RCF = -reshape(rcf(:,:,2:end),[M,M*Pmax]);
-%	PE = reshape(Pf,[M,M*(Pmax+1)]);
-        ARF = zeros(M,M*Pmax); 
-        ARB = zeros(M,M*Pmax); 
-        for K = 1:Pmax,
-                ARF(:,K*M+(1-M:0)) = -rcf(:,:,K+1);	
-                ARB(:,K*M+(1-M:0)) = -rcb(:,:,K+1);	
-                for L = 1:K-1,
-                        tmp                    = ARF(:,L*M+(1-M:0)) - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
-                        ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
-                        ARF(:,L*M+(1-M:0))     = tmp;
-                end;
-        end;        
- 
-
-elseif Mode==84,  %%%%% de Waele 2003
-	[rcf,rcb,pc,R0] = burgv_as2(reshape(Y',[M,1,N]),Pmax);
-        %[ARF,ARB,Pf,Pb,RCF,RCB] = pc2parv(pc,R0);
- 	RCF = -reshape(rcf(:,:,2:end),[M,M*Pmax]);
-%	PE = reshape(Pf,[M,M*(Pmax+1)]);
-        ARF = zeros(M,M*Pmax); 
-        ARB = zeros(M,M*Pmax); 
-        for K = 1:Pmax,
-                ARF(:,K*M+(1-M:0)) = -rcf(:,:,K+1);	
-                ARB(:,K*M+(1-M:0)) = -rcb(:,:,K+1);	
-                for L = 1:K-1,
-                        tmp                    = ARF(:,L*M+(1-M:0)) - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
-                        ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
-                        ARF(:,L*M+(1-M:0))     = tmp;
-                end;
-        end;        
-
-
-elseif Mode==85,  %%%%% de Waele 2003
-	[rcf,rcb,pc,R0] = burgv_as1(reshape(Y',[M,1,N]),Pmax);
-        %[ARF,ARB,Pf,Pb,RCF,RCB] = pc2parv(pc,R0);
- 	RCF = -reshape(rcf(:,:,2:end),[M,M*Pmax]);
-%	PE = reshape(Pf,[M,M*(Pmax+1)]);
-        ARF = zeros(M,M*Pmax); 
-        ARB = zeros(M,M*Pmax); 
-        for K = 1:Pmax,
-                ARF(:,K*M+(1-M:0)) = -rcf(:,:,K+1)';	
-                ARB(:,K*M+(1-M:0)) = -rcb(:,:,K+1)';	
-                for L = 1:K-1,
-                        tmp                    = ARF(:,L*M+(1-M:0)) - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
-                        ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
-                        ARF(:,L*M+(1-M:0))     = tmp;
-                end;
-        end;        
- 
-
-elseif Mode==86,  %%%%% de Waele 2003
-	[rcf,rcb,pc,R0] = burgv_as2(reshape(Y',[M,1,N]),Pmax);
-        %[ARF,ARB,Pf,Pb,RCF,RCB] = pc2parv(pc,R0);
- 	RCF = -reshape(rcf(:,:,2:end),[M,M*Pmax]);
-%	PE = reshape(Pf,[M,M*(Pmax+1)]);
-        ARF = zeros(M,M*Pmax); 
-        ARB = zeros(M,M*Pmax); 
-        for K = 1:Pmax,
-                ARF(:,K*M+(1-M:0)) = -rcf(:,:,K+1)';	
-                ARB(:,K*M+(1-M:0)) = -rcb(:,:,K+1)';	
-                for L = 1:K-1,
-                        tmp                    = ARF(:,L*M+(1-M:0)) - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
-                        ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
-                        ARF(:,L*M+(1-M:0))     = tmp;
-                end;
-        end;        
 
 elseif Mode==90;  
 	% similar to MODE=0
@@ -508,22 +719,22 @@ elseif Mode==90;
         for K=1:Pmax,
                 [D,n] = covm(Y(K+1:N,:),Y(1:N-K,:),'M');
 	        D = D/N;
-                ARF(:,K*M+(1-M:0)) = D/PEB;	
-                ARB(:,K*M+(1-M:0)) = D'/PEF;	
-                
+                ARF(:,K*M+(1-M:0)) = D/PEB;
+                ARB(:,K*M+(1-M:0)) = D'/PEF;
+
                 tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0))';
                 B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0))';
                 F(K+1:N,:) = tmp;
-                
+
                 for L = 1:K-1,
                         tmp      = ARF(:,L*M+(1-M:0))   - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
                         ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
                         ARF(:,L*M+(1-M:0))   = tmp;
                 end;
-                
+
                 RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0));
                 RCB(:,K*M+(1-M:0)) = ARB(:,K*M+(1-M:0));
-                
+
                 PEF = [eye(M) - ARF(:,K*M+(1-M:0))*ARB(:,K*M+(1-M:0))]*PEF;
                 PEB = [eye(M) - ARB(:,K*M+(1-M:0))*ARF(:,K*M+(1-M:0))]*PEB;
                 PE(:,K*M+(1:M)) = PEF;        
@@ -531,13 +742,13 @@ elseif Mode==90;
 
         
 elseif Mode==91, %%%%% Levinson-Wiggens-Robinson (LWR) algorithm using biased correlation function
-	% ===== In [1,2] this algorithm is denoted "Multichannel Yule-Walker" ===== %
+	% ===== In [1,2] this algorithm is denoted 'Multichannel Yule-Walker' ===== %
 	% similar to MODE=1
 	%% not recommended
         C(:,1:M) = C(:,1:M)/N;
         PEF = PE(:,1:M);	%CHANGED%
         PEB = PE(:,1:M);	%CHANGED%
-        
+
         for K=1:Pmax,
                 [C(:,K*M+(1:M)),n] = covm(Y(K+1:N,:),Y(1:N-K,:),'M');
                 C(:,K*M+(1:M)) = C(:,K*M+(1:M))/N;
@@ -553,23 +764,23 @@ elseif Mode==91, %%%%% Levinson-Wiggens-Robinson (LWR) algorithm using biased co
                         ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
                         ARF(:,L*M+(1-M:0))     = tmp;
                 end;
-                
+
                 RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0));
                 RCB(:,K*M+(1-M:0)) = ARB(:,K*M+(1-M:0));
-                
+
                 PEF = [eye(M) - ARF(:,K*M+(1-M:0))*ARB(:,K*M+(1-M:0))]*PEF;
                 PEB = [eye(M) - ARB(:,K*M+(1-M:0))*ARF(:,K*M+(1-M:0))]*PEB;
-                PE(:,K*M+(1:M)) = PEF;        
+                PE(:,K*M+(1:M)) = PEF;
         end;
 
-        
+
 elseif Mode==96, %%%%% Levinson-Wiggens-Robinson (LWR) algorithm using unbiased correlation function
 	% similar to MODE=6
 	%% not recommended
         C(:,1:M) = C(:,1:M)/N;
         PEF = PE(:,1:M);	%CHANGED%
         PEB = PE(:,1:M);	%CHANGED%
-        
+
         for K = 1:Pmax,
                 [C(:,K*M+(1:M)),n] = covm(Y(K+1:N,:),Y(1:N-K,:),'M');
                 C(:,K*M+(1:M)) = C(:,K*M+(1:M))./n;
@@ -585,20 +796,18 @@ elseif Mode==96, %%%%% Levinson-Wiggens-Robinson (LWR) algorithm using unbiased 
                         ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
                         ARF(:,L*M+(1-M:0))   = tmp;
                 end;
-                
+
                 RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0));
                 RCB(:,K*M+(1-M:0)) = ARB(:,K*M+(1-M:0));
-                
+
                 PEF = [eye(M) - ARF(:,K*M+(1-M:0))*ARB(:,K*M+(1-M:0))]*PEF;
                 PEB = [eye(M) - ARB(:,K*M+(1-M:0))*ARF(:,K*M+(1-M:0))]*PEB;
-                PE(:,K*M+(1:M)) = PEF;        
+                PE(:,K*M+(1:M)) = PEF;
         end;
 
-        
 elseif Mode<100,
-       fprintf('Warning MVAR: Mode=%i not supported\n',Mode);         
+       fprintf('Warning MVAR: Mode=%i not supported\n',Mode);
 
-       
 %%%%% IMPUTATION METHODS %%%%%
 else
 
@@ -741,7 +950,7 @@ elseif Mode>=1200,  % forward predictions,
 
 
 elseif Mode>=400,  % forward and backward
-% assuming that "past" missing values are ZERO
+% assuming that 'past' missing values are ZERO
  	[ARF,RCF,PE] = mvar(Y, Pmax, Mode0);	
 	Y1 = Y; 
 	Y1(isnan(Y)) = 0; 
@@ -760,7 +969,7 @@ elseif Mode>=400,  % forward and backward
 
 
 elseif Mode>=300,  % backward prediction
-% assuming that "past" missing values are ZERO
+% assuming that 'past' missing values are ZERO
 	Y  = flipud(Y);
  	[ARB,RCF,PE] = mvar(Y, Pmax, Mode0);	
 	Y2 = Y; 
@@ -802,7 +1011,7 @@ p = 3;
 FLAG_MATRIX_DIVISION_ERROR = ~all(all(isnan(repmat(0,p)/repmat(0,p)))) | ~all(all(isnan(repmat(nan,p)/repmat(nan,p))));
 
 if FLAG_MATRIX_DIVISION_ERROR, 
-	%fprintf(2,'### Warning MVAR: Bug in Matrix-Division 0/0 and NaN/NaN yields INF instead of NAN.  Workaround is applied.\n');
+	%fprintf(2,'%%% Warning MVAR: Bug in Matrix-Division 0/0 and NaN/NaN yields INF instead of NAN.  Workaround is applied.\n');
 	warning('MVAR: bug in Matrix-Division 0/0 and NaN/NaN yields INF instead of NAN.  Workaround is applied.');
 
 	%%%%% Workaround 
@@ -817,3 +1026,4 @@ for K  = 1:Pmax,
 %       VAR{K+1} = -ARF(:,K*M+(1-M:0))';
         DC  = DC + ARF(:,K*M+(1-M:0))'.^2; %DC meausure [3]
 end;
+

@@ -30,15 +30,17 @@ SET TAROPT=-x -C "%DST%" -f
 
 SET SRC=mingw32-env
 
-SET GCCVER=-4.3.0
-SET GCCREL=-2
-SET GCCVEND=-tdm
-SET GCCSYS=-dw2
+SET GCCVER=4.3.0
+SET GCCREL=2
+SET GCCVEND=tdm
+SET GCCSYS=dw2
 
-%BSDTAR% %TAROPT% %SRC%\gcc%GCCVER%%GCCVEND%%GCCREL%%GCCSYS%-core.tar.gz
-%BSDTAR% %TAROPT% %SRC%\gcc%GCCVER%%GCCVEND%%GCCREL%%GCCSYS%-fortran.tar.gz
-%BSDTAR% %TAROPT% %SRC%\gcc%GCCVER%%GCCVEND%%GCCREL%%GCCSYS%-g++.tar.gz
+@rem extract GCC
+%BSDTAR% %TAROPT% %SRC%\gcc-%GCCVER%-%GCCVEND%-%GCCREL%-%GCCSYS%-core.tar.gz
+%BSDTAR% %TAROPT% %SRC%\gcc-%GCCVER%-%GCCVEND%-%GCCREL%-%GCCSYS%-fortran.tar.gz
+%BSDTAR% %TAROPT% %SRC%\gcc-%GCCVER%-%GCCVEND%-%GCCREL%-%GCCSYS%-g++.tar.gz
 
+@rem extract mingw utils required
 %BSDTAR% %TAROPT% %SRC%\binutils-2.19.1-mingw32-bin.tar.gz
 %BSDTAR% %TAROPT% %SRC%\mingw32-make-3.81-20080326-3.tar.gz
 %BSDTAR% %TAROPT% %SRC%\mingwrt-3.15.2-mingw32-dev.tar.gz
@@ -46,21 +48,40 @@ SET GCCSYS=-dw2
 %BSDTAR% %TAROPT% %SRC%\w32api-3.13-mingw32-dev.tar.gz
 %BSDTAR% %TAROPT% %SRC%\gdb-6.8-mingw-3.tar.bz2
 
-copy "%DST%\bin\mingw32-g++%GCCSYS%.exe" "%DST%\bin\mingw32-g++%GCCVER%%GCCSYS%.exe"
-copy "%DST%\bin\mingw32-gfortran%GCCSYS%.exe" "%DST%\bin\mingw32-gfortran%GCCVER%%GCCSYS%.exe"
-copy "%DST%\bin\mingw32-c++%GCCSYS%.exe" "%DST%\bin\mingw32-c++%GCCVER%%GCCSYS%.exe"
-copy "%DST%\bin\cpp%GCCSYS%.exe" "%DST%\bin\mingw32-cpp%GCCVER%%GCCSYS%.exe"
+@rem make sure gcc executables follow the naming convention
+@rem   mingw32-gcc-VER-SYS.exe
+@rem
+copy "%DST%\bin\mingw32-g++-%GCCSYS%.exe"      "%DST%\bin\mingw32-g++-%GCCVER%-%GCCSYS%.exe"
+copy "%DST%\bin\mingw32-gfortran-%GCCSYS%.exe" "%DST%\bin\mingw32-gfortran-%GCCVER%-%GCCSYS%.exe"
+copy "%DST%\bin\mingw32-c++-%GCCSYS%.exe"      "%DST%\bin\mingw32-c++-%GCCVER%-%GCCSYS%.exe"
+copy "%DST%\bin\cpp-%GCCSYS%.exe"              "%DST%\bin\mingw32-cpp-%GCCVER%-%GCCSYS%.exe"
 
-del /q "%DST%\bin\cpp%GCCSYS%.exe"
-del /q "%DST%\bin\gcc%GCCSYS%.exe"
-del /q "%DST%\bin\g++%GCCSYS%.exe"
-del /q "%DST%\bin\c++%GCCSYS%.exe"
-del /q "%DST%\bin\gfortran%GCCSYS%.exe"
+@rem  remove duplicate executables with short names
+del /q "%DST%\bin\cpp-%GCCSYS%.exe"
+del /q "%DST%\bin\gcc-%GCCSYS%.exe"
+del /q "%DST%\bin\g++-%GCCSYS%.exe"
+del /q "%DST%\bin\c++-%GCCSYS%.exe"
+del /q "%DST%\bin\gfortran-%GCCSYS%.exe"
 
-del /q "%DST%\bin\mingw32-g++%GCCSYS%.exe"
-del /q "%DST%\bin\mingw32-gfortran%GCCSYS%.exe"
-del /q "%DST%\bin\mingw32-c++%GCCSYS%.exe"
-del /q "%DST%\bin\mingw32-gcc%GCCSYS%.exe"
+del /q "%DST%\bin\mingw32-g++-%GCCSYS%.exe"
+del /q "%DST%\bin\mingw32-gfortran-%GCCSYS%.exe"
+del /q "%DST%\bin\mingw32-c++-%GCCSYS%.exe"
+del /q "%DST%\bin\mingw32-gcc-%GCCSYS%.exe"
+
+@rem 
+@rem remove debugging symbols from binutils executables
+@rem and GCC runtime libraries
+@rem just a matter of size...
+
+set STRIP=%DST%\bin\strip.exe
+
+"%STRIP%" "%DST%\bin\libgcc_tdm_%GCCSYS%_1.dll"
+"%STRIP%" "%DST%\bin\libstdc++_tdm_%GCCSYS%_1.dll"
+"%STRIP%" "%DST%\bin\pthreadGC2.dll"
+"%STRIP%" "%DST%\bin\pthreadGCE2_%GCCSYS%.dll"
+"%STRIP%" "%DST%\bin\exchndl.dll"
+
+for %%a in (%DST%\bin\*.exe) DO "%STRIP%" "%%a"
 
 goto :end
 

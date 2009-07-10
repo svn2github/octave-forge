@@ -11,7 +11,7 @@
 @rem This script requires LIBARCHIVE available from gnuwin32.sourceforge.net
 @rem 
 @rem Download the following files PRIOR to executing this script into the directory MSYS-ENV:
-@rem   http://downloads.sourceforge.net/mingw/msysCORE-1.0.11-20080826.tar.gz
+@rem   http://dfn.dl.sourceforge.net/sourceforge/mingw/msysCORE-1.0.11-rc-1-bin.tar.gz
 @rem   http://downloads.sourceforge.net/mingw/perl-5.6.1-MSYS-1.0.11-1.tar.bz2
 @rem   http://downloads.sourceforge.net/mingw/crypt-1.1-1-MSYS-1.0.11-1.tar.bz2
 @rem   http://downloads.sourceforge.net/mingw/autoconf2.1-2.13-3-bin.tar.bz2
@@ -20,9 +20,6 @@
 @rem   http://downloads.sourceforge.net/mingw/automake1.10-1.10-1-bin.tar.bz2
 @rem   http://downloads.sourceforge.net/mingw/automake1.9-1.9.6-2-bin.tar.bz2
 @rem   http://downloads.sourceforge.net/mingw/automake-3-1-bin.tar.bz2
-@rem
-@rem   http://downloads.sourceforge.net/mingw/tar-1.19.90-MSYS-1.0.11-2-bin.tar.gz
-@rem   http://downloads.sourceforge.net/mingw/MSYS-1.0.11-20090120-dll.tar.gz
 @rem
 @rem   http://downloads.sourceforge.net/mingw/bison-2.3-MSYS-1.0.11-1.tar.bz2
 @rem   http://downloads.sourceforge.net/mingw/flex-2.5.33-MSYS-1.0.11-1.tar.bz2
@@ -40,7 +37,7 @@ SET TAROPT=-x -C "%DST%"
 
 SET SRC=msys-env
 
-%TAR% %TAROPT% -f %SRC%\msysCORE-1.0.11-20080826.tar.gz
+%TAR% %TAROPT% -f %SRC%\msysCORE-1.0.11-rc-1-bin.tar.gz
 
 %TAR% %TAROPT% -f %SRC%\perl-5.6.1-MSYS-1.0.11-1.tar.bz2
 %TAR% %TAROPT% -f %SRC%\crypt-1.1-1-MSYS-1.0.11-1.tar.bz2 bin/*.*
@@ -48,9 +45,6 @@ SET SRC=msys-env
 %TAR% %TAROPT% -f %SRC%\flex-2.5.33-MSYS-1.0.11-1.tar.bz2
 %TAR% %TAROPT% -f %SRC%\regex-0.12-MSYS-1.0.11-1.tar.bz2 bin/*.*
 %TAR% %TAROPT% -f %SRC%\gperf-3.0.1-bin.zip bin/gperf.exe
-
-%TAR% %TAROPT% -f %SRC%\MSYS-1.0.11-20090120-dll.tar.gz
-%TAR% %TAROPT% -f %SRC%\tar-1.19.90-MSYS-1.0.11-2-bin.tar.gz
 
 move "%DST%\m.ico" "%DST%\the-m.ico"
 
@@ -65,7 +59,11 @@ mkdir "%DST%\local"
 xcopy /E /Q tmp\usr\local "%DST%\local"
 rmdir /s /q tmp
 
+@rem Switch from Courier-12 to Lucida Console-10
 sed -i -e "s/Courier-12/\"Lucida Console-10\"/" "%DST%\msys.bat"
+
+@rem remove windows' path from path in msys
+sed -i -e "/export PATH=/ s/:$PATH//" "%DST%\etc\profile"
 
 goto :EOF
 

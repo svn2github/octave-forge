@@ -66,9 +66,15 @@ install_gcc() {
 
   cd ${PACKAGE_ROOT}/${DIR_MINGW}
   # extact GCC
-  for a in ${URLS_GCC}; do ${TAR} xzvf "${TOPDIR}/$a"; done
+  for a in ${URLS_GCC}; do 
+    echo ${TAR} xzf "${TOPDIR}/$a"; 
+    ${TAR} xzf "${TOPDIR}/$a"; 
+  done
   # extract MINGW Tools
-  for a in ${URLS_MINGW_TOOLS}; do ${TAR} xzvf "${TOPDIR}/$a"; done
+  for a in ${URLS_MINGW_TOOLS}; do 
+    echo ${TAR} xzf "${TOPDIR}/$a"; 
+    ${TAR} xzf "${TOPDIR}/$a"; 
+  done
   
   # -- Post-processing --
   
@@ -83,8 +89,18 @@ install_gcc() {
   ${RM} {cpp,gcc,gfortran,g++,c++}-${SYS}.exe
   ${RM} mingw32-{gcc,g++,c++,gfortran}-${SYS}.exe  
   
+  # strip GCC runtime libraries
   strip ${STRIP_FLAGS} libgcc_tdm_${SYS}_1.dll
   strip ${STRIP_FLAGS} libstdc++_tdm_${SYS}_1.dll
+  strip ${STRIP_FLAGS} -v pthreadGC2.dll
+  strip ${STRIP_FLAGS} -v pthreadGCE2_${SYS}.dll
+  strip ${STRIP_FLAGS} -v exchndl.dll
+  
+  # strip binutils executables
+  for a in *.exe; do
+     echo strip ${STRIP_FLAGS} $a
+     strip ${STRIP_FLAGS} $a
+  done
   
   # ensure that the "bin" directory exists...
   mkdir -v ${PACKAGE_ROOT}/bin

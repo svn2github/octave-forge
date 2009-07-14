@@ -54,7 +54,6 @@ function [varargout]=statistic(i,DIM,fun)
 
 
 %	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
-%	$Revision$
 %	$Id$
 
 
@@ -97,6 +96,8 @@ R.STD  	= sqrt(R.VAR);		     	% standard deviation
 R.SEM  	= sqrt(R.SSQ0./(R.N.*n1)); 	% standard error of the mean
 R.SEV	= sqrt(n1.*(n1.*R.S4P./R.N+(R.N.^2-2*R.N+3).*(R.SSQ./R.N).^2)./(R.N.^3)); % standard error of the variance
 R.COEFFICIENT_OF_VARIATION = R.STD./R.MEAN;
+
+q = quantile(i, [1:3]/4, DIM);
 
 %sz=size(i);sz(DIM)=1;
 %Q0500=repmat(nan,sz);

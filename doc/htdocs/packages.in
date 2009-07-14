@@ -897,7 +897,7 @@ Reads and display PDB-files from the Brookhaven protein databank  </p>
    <b><a href="javascript:unfold('secs1d');" class="package_head_link">   <img src="show.png" id="secs1d_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 SECS1D</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./secs1d/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/secs1d-0.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/secs1d-0.0.6.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="secs1d_detailed" style="display: none;">
@@ -909,7 +909,7 @@ A Drift-Diffusion simulator for 1d semiconductor devices  </p>
    <b><a href="javascript:unfold('secs2d');" class="package_head_link">   <img src="show.png" id="secs2d_im"alt="show/hide" style="padding-right: 0.5em; border: none;"/>
 SECS2D</a></b></td>
     <td style="text-align: right;">&raquo; <a href="./secs2d/index.html" class="package_link">details</a> |
-    <a class="package_link" href="__PACKAGE__/secs2d-0.0.8.tar.gz?download">download</a>
+    <a class="package_link" href="__PACKAGE__/secs2d-0.0.9.tar.gz?download">download</a>
     </td>
   </tr></table>
   <p id="secs2d_detailed" style="display: none;">

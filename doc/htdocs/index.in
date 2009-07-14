@@ -29,6 +29,10 @@ __HEADER__([[[Octave-Forge]]])
   </div>
 
   <p>
+    If you have questions regarding software downloaded from Octave-Forge, send a message to the
+    <a href="http://lists.sourceforge.net/mailman/listinfo/octave-dev">repository mailing list</a>.
+  </p>
+  <p>
     If you have code to contribute, send a message to the
     <a href="http://lists.sourceforge.net/mailman/listinfo/octave-dev">repository mailing list</a>
     or <a href="developers.html">join the development team</a>.

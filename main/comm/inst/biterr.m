@@ -60,11 +60,16 @@ function [num, rate, ind] = biterr (a, b, varargin)
   if ((nargin < 2) || (nargin > 4))
     usage ("[num rate ind] = biterr (a, b [,k [,flag]])");
   endif
+  
+  if (ndims (a) > 2 || ndims (b) > 2)
+    error ("biterr: a and b must have at most two dimensions");
+  endif
+  
   if (any(any(isinf(a))) || any(any(isnan(a))) || any(any(isinf(b))) || ...
-      any(any(isnan(b))) || !real(a) || !real(b) || ...
+      any(any(isnan(b))) || !isreal(a) || !isreal(b) || ...
       any(any((floor(a)) != a)) || any(any((floor(b)) != b)) || ...
       any(any(a < 0)) || any(any(b < 0)))
-    error ("biterr: a and b must contain only postive integers");
+    error ("biterr: a and b must contain only non-negative integers");
   endif
   
   [ar,ac] = size(a);

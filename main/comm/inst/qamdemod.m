@@ -29,7 +29,6 @@ function z = qamdemod(y,m)
     c = sqrt(m);
     if(c ~= fix(c)  || log2(c) ~= fix(log2(c)))
         error('m must be a square of a power of 2');
-        exit;
     end
     
     x = qammod(0:(m-1),m);

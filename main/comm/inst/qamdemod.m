@@ -1,4 +1,5 @@
 ## Copyright (C) 2007   Sylvain Pelissier   <sylvain.pelissier@gmail.com>
+##               2009   Christian Neumair   <cneumair@gnome.org>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -33,7 +34,8 @@ function z = qamdemod(y,m)
     
     x = qammod(0:(m-1),m);
     x = reshape(x,1,m);
-    for k = 1:length(y)
+    z = zeros(size(y));
+    for k = 1:numel(y)
         [n z(k)] = min(abs(y(k) - x));
-        z(k) = z(k) - 1;
     end
+    z = z - 1;

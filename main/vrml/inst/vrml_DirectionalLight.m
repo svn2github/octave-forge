@@ -42,8 +42,8 @@ for [val,key] = hash,
     end
 
     body = [body,\
-	    sprintf ("   %-20s   %s\n",key, 
-		     sprintf (getfield (tpl,key), val))];
+	    sprintf("   %-20s   %s\n",key,
+		     sprintf(getfield (tpl,key), val))];
   end
 end
 s = sprintf ("DirectionalLight { \n%s}\n", body);

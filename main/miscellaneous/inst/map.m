@@ -105,7 +105,8 @@ function return_type = map (fun_handle,data_struct,varargin)
   endif
   
   otherdata = length(varargin);
-  val{1:otherdata+1}=0;
+  val = cell (1, otherdata+1);
+  val (:) = 0;
 
   if(typecell)
     

@@ -23,12 +23,12 @@
 ## 
 ## usage: result = map ( FUN_HANDLE, ARG1, ... )
 ##
-## map, like Lisp's ( & numerous other language's ) function for
+## @code{map}, like Lisp's ( & numerous other language's ) function for
 ## iterating the result of a function applied to each of the data
 ## structure's elements in turn. The results are stored in the
 ## corresponding input's place. For now, just will work with cells and
 ## matrices, but support for structs are intended for future versions.
-## Also, only "prefix" functions ( like "min(a,b,c,...)" ) are
+## Also, only "prefix" functions ( like @code{min (a, b, c, ...)} ) are
 ## supported. FUN_HANDLE can either be a function name string or a
 ## function handle (recommended).
 ##
@@ -60,7 +60,7 @@
 ##   [2,2] = 0.84645
 ## @}
 ## @end example
-## @seealso{ reduce, match, apply }
+## @seealso{reduce, match, apply}
 ## @end deftypefn
 
 ## Author: Tomer Altman
@@ -69,99 +69,83 @@
 ## Created: November 15, 2003
 ## Version: 0.1
 
-## Last Modified by Muthiah Annamalai
-
-function return_type = map (fun_handle,data_struct,varargin)
-  
+function return_type = map (fun_handle, data_struct, varargin)
   if (nargin >= 1)
-
     try
-      if ( ischar(fun_handle) )
-	fun_handle=eval(strcat("@",fun_handle));
+      if (ischar (fun_handle))
+	fun_handle = eval (strcat ("@", fun_handle));
       end
-      fstr=typeinfo(fun_handle);
+      fstr = typeinfo (fun_handle);
     catch
-      error('Error: Cannot find function handle, or funtion doesnt exist')
-    end
-  end
+      error ("Error: Cannot find function handle, or funtion doesnt exist");
+    end_try_catch
+  endif
 
-  if (nargin<2)
-    error("map: incorrect number of arguments; expecting at least two.");
-  elseif ( strcmp(fstr,"function handle")==0 )
-    error("map: first argument is not a valid function handle ");
-  elseif ( !( isnumeric(data_struct) || iscell(data_struct) ) )
-    error("map: second argument must be either a matrix or a cell object:");
-  end
+  if (nargin < 2)
+    error ("map: incorrect number of arguments; expecting at least two");
+  elseif (strcmp (fstr, "function handle") == 0)
+    error ("map: first argument is not a valid function handle");
+  elseif (!(isnumeric (data_struct) || iscell (data_struct)))
+    error ("map: second argument must be either a matrix or a cell object");
+  endif
 
-  [ rows, cols ] = size(data_struct);
-  typecell=0;
+  [rows, cols] = size (data_struct);
+  typecell = 0;
   
-  if ( iscell(data_struct) )
-    typecell=1;
-    return_type = cell(rows,cols);
+  if (iscell (data_struct))
+    typecell = 1;
+    return_type = cell (rows, cols);
   else
-    typecell=0;
-    return_type = zeros(rows,cols);
+    typecell = 0;
+    return_type = zeros (rows, cols);
   endif
   
-  otherdata = length(varargin);
+  otherdata = length (varargin);
   val = cell (1, otherdata+1);
   val (:) = 0;
 
-  if(typecell)
-    
-    if(otherdata >= 1)
-      
-      for i=1:rows	  
-	for j=1:cols
-	  val{1}=data_struct{i,j};
-	  for idx=2:otherdata+1
-	    val{idx}=varargin{idx-1}{i,j};
-	  end
-  	  return_type{i,j}=apply(fun_handle,val);
-	end
-      end
-      
+  if (typecell)
+    if (otherdata >= 1)
+      for i = 1:rows	  
+	for j = 1:cols
+	  val {1} = data_struct {i, j};
+	  for idx = 2:otherdata+1
+	    val {idx} = varargin {idx-1}{i,j};
+	  endfor
+  	  return_type {i,j} = apply (fun_handle, val);
+	endfor
+      endfor
     else
-      
-      for i=1:rows	  
-	for j=1:cols	    
-	  return_type{i,j}=fun_handle(data_struct{i,j});
-	end
-      end
-      
-    end
-    
+      for i = 1:rows	  
+	for j = 1:cols	    
+	  return_type {i,j} = fun_handle (data_struct {i,j});
+	endfor
+      endfor
+    endif
   else
-    
-    if(otherdata >= 1)
-      
-      for i=1:rows
-	for j=1:cols
-	  val{1}=data_struct(i,j);
-	  for idx=2:otherdata+1
-	    val{idx}=varargin{idx-1}(i,j);
-	  end
-  	  return_type(i,j)=apply(fun_handle,val);
-	end
-      end
-
+    if (otherdata >= 1)
+      for i = 1:rows
+	for j = 1:cols
+	  val {1} = data_struct (i,j);
+	  for idx = 2:otherdata+1
+	    val {idx} = varargin {idx-1}(i,j);
+	  endfor
+  	  return_type (i, j) = apply (fun_handle, val);
+	endfor
+      endfor
     else
-
-      for i=1:rows
-	for j=1:cols
-	  return_type(i,j)=fun_handle(data_struct(i,j));
-	end
-      end
-
-    end
-
-  end
+      for i = 1:rows
+	for j = 1:cols
+	  return_type (i, j) = fun_handle (data_struct (i, j));
+	endfor
+      endfor
+    endif
+  endif
 
 endfunction
-%!
-%!assert(map(@min,[1 2 3 4 5],[5 4 3 2 1]), [1 2 3 2 1])
-%!assert(map(@min,rand(1,5),[0 0 0 0 0]), [0 0 0 0 0])
-%!assert(map(@(x,y) (sin(x).^2 + cos(y).^2),-pi:0.5:+pi,-pi:0.5:+pi),ones(1,13))
-%!assert(map(@(x,y) (sin(x).^2 + cos(y).^2),-pi:0.5:+pi,-pi:0.5:+pi),ones(1,13))
-%!
+
+%!test
+%! assert(map(@min,[1 2 3 4 5],[5 4 3 2 1]), [1 2 3 2 1])
+%! assert(map(@min,rand(1,5),[0 0 0 0 0]), [0 0 0 0 0])
+%! assert(map(@(x,y) (sin(x).^2 + cos(y).^2),-pi:0.5:+pi,-pi:0.5:+pi),ones(1,13))
+

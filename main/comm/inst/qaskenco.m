@@ -64,7 +64,7 @@ function [a, b] = qaskenco(msg, M)
   if (nargin == 1)
     M = msg;
   elseif (nargin == 2)
-    if ((min(msg) < 0) || (max(msg) > M-1))
+    if ((min(msg(:)) < 0) || (max(msg(:)) > M-1))
       error ("qaskenco: message invalid");
     endif
   else

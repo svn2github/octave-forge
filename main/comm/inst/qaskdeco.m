@@ -166,10 +166,10 @@ function a = qaskdeco(varargin)
       a = a';
     endif
 
-    if (any(isnan(a)))
+    if (any(isnan(a(:))))
       ## We have a non-square constellation, with some invalid points.
       ## Map to nearest valid constellation points...
-      indx = find(isnan(a));
+      indx = find(isnan(a(:)));
       ix = ix(indx);
       qx = qx(indx);
       ang = atan2(quadr(indx),inphase(indx));
@@ -191,3 +191,25 @@ function a = qaskdeco(varargin)
   end_unwind_protect
 
 endfunction
+
+%!function dec = __fntestqask1__ (msg, m)
+%! [inp, qudr] = qaskenco (msg, m);
+%! dec = qaskdeco (inp, qudr, m);
+
+%!function __fntestqask2__ (m, dims)
+%! msg = floor( rand(dims) * m);
+%! assert (__fntestqask1__ (msg, m), msg);
+
+%!test __fntestqask2__ (2, [100,100])
+%!test __fntestqask2__ (4, [100,100])
+%!test __fntestqask2__ (8, [100,100])
+%!test __fntestqask2__ (16, [100,100])
+%!test __fntestqask2__ (32, [100,100])
+%!test __fntestqask2__ (64, [100,100])
+
+%!test __fntestqask2__ (2, [100,100,3])
+%!test __fntestqask2__ (4, [100,100,3])
+%!test __fntestqask2__ (8, [100,100,3])
+%!test __fntestqask2__ (16, [100,100,3])
+%!test __fntestqask2__ (32, [100,100,3])
+%!test __fntestqask2__ (64, [100,100,3])

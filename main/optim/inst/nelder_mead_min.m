@@ -129,17 +129,21 @@ elseif crit == 3, vtol = tol;
 elseif crit, error ("crit is %i. Should be 1,2 or 3.\n");
 end
 
-if iscell (args)
-  x = args{1};
+## this code segment seems to be broken for Octave >= 3.2, JJS 7/22/09
+# if iscell (args)
+#   x = args{1};
 
-##if is_list (args),		# List of arguments 
-##  x = nth (args, narg);
-else				# Single argument
-  x = args;
-  #### args = list (args); 
-  args = {args};
-end
-## args
+# ##if is_list (args),		# List of arguments 
+# ##  x = nth (args, narg);
+# else				# Single argument
+#   x = args;
+#   #### args = list (args); 
+#   args = {args};
+# end
+# ## args
+## convert the arg list to a cell array; does this work in general?  JJS 7/22/09
+args = {args{:}};
+x = args{1};
 
 if narg > length (args)		# Check
   error ("nelder_mead_min : narg==%i, length (args)==%i\n",

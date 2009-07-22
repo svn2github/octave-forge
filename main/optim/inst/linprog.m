@@ -19,7 +19,7 @@
 ## @deftypefnx{Function File} {@var{x} =} linprog (@var{f}, @var{A}, @var{b}, @var{Aeq}, @var{beq}, @var{LB})
 ## @deftypefnx{Function File} {@var{x} =} linprog (@var{f}, @var{A}, @var{b}, @var{Aeq}, @var{beq}, @var{LB}, @var{UB})
 ## @deftypefnx{Function File} {[@var{x}, @var{fval}] =} linprog (@dots{})
-## Solve a linear program. @code{linprog} solves the following LP:
+## Solve a linear problem. @code{linprog} solves the following LP:
 ##
 ## @example
 ## min f'*x
@@ -45,10 +45,10 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 0.3
+## Version: 0.3.1
 
-                                # TODO
-                                # write a test using Aeq and beq
+                                # TODO: write a test using not null and
+                                # not zero Aeq and beq
 
 function [x fval] = linprog (f, A, b,
                              Aeq = [], beq = [],
@@ -63,6 +63,13 @@ function [x fval] = linprog (f, A, b,
     l_f = length(f);
     nr_A = rows (A);
     nr_Aeq = rows (Aeq);
+
+    if (isempty (Aeq))
+      Aeq = zeros (0, l_f);
+    endif
+    if (isempty (beq))
+      beq = zeros (0, 1);
+    endif
 
     if (isempty (LB))
       LB = - inf (1, l_f);
@@ -85,7 +92,7 @@ function [x fval] = linprog (f, A, b,
 endfunction
 
 
-%!test
+%!shared f, A, b, LB, expected
 %! f = [21 25 31 34  23 19 32  36 27 25 19];
 %! A1 = [1 0 0 0  1 0 0  1 0 0 0; 0 1 0 0  0 1 0  0 1 0 0; 0 0 1 0  0 0 0  0 0 1 0; 0 0 0 1  0 0 1  0 0 0 1];
 %! A2 = [1 1 1 1  0 0 0  0 0 0 0; 0 0 0 0  1 1 1  0 0 0 0; 0 0 0 0  0 0 0  1 1 1 1];
@@ -93,9 +100,8 @@ endfunction
 %! b1 = [40; 50; 50; 70];
 %! b2 = [100; 60; 50];
 %! b = [-b1; b2];
-%! Aeq = zeros (1, 11);
-%! beq = 0;
 %! LB = zeros (1, 11);
-%! observed = linprog (f, A, b, Aeq, beq, LB);
-%! expected = [40; 0; 50; 10; 0; 50; 10; 0; 0; 0; 50]; 
-%! assert (observed, expected);
+%! expected = [40; 0; 50; 10; 0; 50; 10; 0; 0; 0; 50];
+%!
+%!assert (linprog (f, A, b, [], [], LB), expected);
+%!assert (linprog (f, A, b, zeros (1, 11), 0, LB), expected);

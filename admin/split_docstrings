@@ -3,10 +3,10 @@ file=$1
 cat <<EOF | octave -q
 
 fid=fopen("$file","rt");
-text=setstr(fread(fid,Inf,'uchar')');
+text=char(fread(fid,Inf,'uchar'));
 fclose(fid);
 
-section = [find(text == setstr(31)), length(text)+1];
+section = [find(text == char(31)), length(text)+1];
 line = find(text == "\n");
 for idx=1:length(section)-1
    lineend = min(line(line>section(idx)));

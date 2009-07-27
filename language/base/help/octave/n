@@ -1,0 +1,6 @@
+@c ./image/ntsc2rgb.m
+-*- texinfo -*-
+@deftypefn {Function File} {} ntsc2rgb (@var{yiq})
+Transform a colormap or image from NTSC to RGB.
+@seealso{rgb2ntsc}
+@end deftypefn

@@ -1,25 +1,7 @@
+@c ./statistics/distributions/expinv.m
 -*- texinfo -*-
-@deftypefn {Built-in Function} {} e (@var{x})
-@deftypefnx {Built-in Function} {} e (@var{n}, @var{m})
-@deftypefnx {Built-in Function} {} e (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {Built-in Function} {} e (@dots{}, @var{class})
-Return a matrix or N-dimensional array whose elements are all equal
-to the base of natural logarithms.  The constant
-@iftex
-@tex
- $e$
-@end tex
-@end iftex
-@ifinfo
- @var{e}
-@end ifinfo
- satisfies the equation
-@iftex
-@tex
- $\log (e) = 1$.
-@end tex
-@end iftex
-@ifinfo
- @code{log} (@var{e}) = 1.
-@end ifinfo
+@deftypefn {Function File} {} expinv (@var{x}, @var{lambda})
+For each element of @var{x}, compute the quantile (the inverse of the
+CDF) at @var{x} of the exponential distribution with mean
+@var{lambda}.
 @end deftypefn

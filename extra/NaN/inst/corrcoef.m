@@ -156,7 +156,7 @@ Mode=[Mode,'        '];
 
 
 
-%FLAG_WARNING = warning;		% save warning status
+FLAG_WARNING = warning;		% save warning status
 warning('off');
 
 [r1,c1]=size(X);
@@ -303,7 +303,7 @@ else
 end;
 
 if (NARG<2), 
-%    warning(FLAG_WARNING); 	% restore warning status
+        warning(FLAG_WARNING); 	% restore warning status
         return;
 end;
 
@@ -377,6 +377,6 @@ end;
 
 %%%%% ----- end of independence check ------
 
-%warning(FLAG_WARNING); 	% restore warning status
+warning(FLAG_WARNING); 	% restore warning status
 return;
 

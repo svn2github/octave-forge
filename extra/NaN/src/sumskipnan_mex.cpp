@@ -157,7 +157,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	mxFree(SZ2);
 
-	if (D2<1) 
+	if (D1*D2*D3 < 1) 
 		; 	// do nothing 
 	else if ((POutputCount <= 1) && !mxIsComplex(PInputs[0])) {
 		// OUTER LOOP: along dimensions > DIM

@@ -152,8 +152,8 @@ messages stored in the base translation tree.</p>
 <pre>
 	export OCTAVE_ROOT=~/Downloads/octave-3.0.xx
 	cd octave-forge/language/base/help/octave
-	../../../admin/split_docstrings $OCTAVE_ROOT/src/DOCSTRINGS
-	../../../admin/split_docstrings $OCTAVE_ROOT/scripts/DOCSTRINGS
+	../../../../admin/split_docstrings $OCTAVE_ROOT/src/DOCSTRINGS
+	../../../../admin/split_docstrings $OCTAVE_ROOT/scripts/DOCSTRINGS
 </pre>
 </li>
 <li>Compare new base docs to those on the server:

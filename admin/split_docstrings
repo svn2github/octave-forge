@@ -6,7 +6,7 @@ fid=fopen("$file","rt");
 text=char(fread(fid,Inf,'uchar'));
 fclose(fid);
 
-section = [find(text == char(31)), length(text)+1];
+section = [find(text == char(31))];
 line = find(text == "\n");
 for idx=1:length(section)-1
    lineend = min(line(line>section(idx)));
@@ -17,4 +17,3 @@ for idx=1:length(section)-1
    fwrite(fid, body, 'uchar');
    fclose(fid);
 end
-   

@@ -279,10 +279,10 @@ If @var{Y} is not given, a symmetric distance matrix is calculated efficiently.\
             }
         }
       else
-        error ("pmwdmat: dimension mismatch");
+        error ("pdist2_mw: dimension mismatch");
     }
   else
-    error ("pmwdmat: X and Y should be matrices, p a real scalar");
+    error ("pdist2_mw: X and Y should be matrices, p a real scalar");
 
   return retval;
 }

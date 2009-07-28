@@ -1,4 +1,4 @@
-/* Copyright (C) 2008  VZLU Prague, a.s., Czech Republic
+/* Copyright (C) 2008, 2009  VZLU Prague, a.s., Czech Republic
  * 
  * Author: Jaroslav Hajek <highegg@gmail.com>
  * 
@@ -44,6 +44,31 @@ int GPR_setup (int ndim, int nx, const double *X, const double *y,
 
   /* free workspace */
   free (R); free (mmu);
+
+  return ierr;
+}
+
+int PGP_setup (int ndim, int nx, int nf, const double *X, const double *F,
+               const double *y, const double *theta, const double *nu,
+               int nlin, corfptr corf,
+               double *var, double *mu, double *QP, double *nll)
+{
+  /* allocate workspace */
+  double *R = malloc (nx*(2*nf+1)*DSIZE);
+  double *Q = malloc (nf*(2*nf+nlin+3)*DSIZE);
+  double *mmu = malloc ((nlin+1)*3*DSIZE);
+
+  int ierr;
+
+  /* compute model via nllgpr */
+  F77_nllpgp (&ndim, &nx, &nf, X, F, y, theta, nu, var, &nlin,
+              mmu, R, Q, nll, corf, &ierr);
+
+  /* pack model data */
+  F77_pakpgp (&nf, &nlin, mmu, Q, mu, QP);
+
+  /* free workspace */
+  free (R); free (Q); free (mmu);
 
   return ierr;
 }

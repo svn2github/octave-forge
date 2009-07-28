@@ -28,14 +28,16 @@ LIBS=@LIBS@
 
 OBJS_GPR_TRAIN=dsdacc.o dwdis2.o dtr2tp.o corrf.o stheta.o \
 	       nllgpr.o nldgpr.o nl0gpr.o pakgpr.o \
+	       nllpgp.o nldpgp.o nl0pgp.o pakpgp.o \
 	       dscrot.o dscsev.o dspmid.o dxnrm2.o \
+	       dgesum.o dsumsq.o \
 	       trstp.o sr1upd.o optdrv.o \
 	       get_corrf.o train.o setup.o 
 	       
-OBJS_GPR_PRED=dsdacc.o dwdis2.o infgpr.o corrf.o \
+OBJS_GPR_PRED=dsdacc.o dwdis2.o infgpr.o infpgp.o corrf.o \
 	      get_corrf.o predict.o 
 	      
-all: gpr_train.oct gpr_predict.oct pdist2_mw.oct
+all: gpr_train.oct gpr_predict.oct pgp_train.oct pgp_predict.oct pdist2_mw.oct
 
 %.o: %.f
 	$(F77) $(FFLAGS) -c $<
@@ -45,12 +47,22 @@ all: gpr_train.oct gpr_predict.oct pdist2_mw.oct
 # C++ files are preferably compiled with mkoctfile directly
 gpr_train.o: gpr_train.cc gprmod.h forsubs.h
 	$(MKOCTFILE) -c $<
+pgp_train.o: pgp_train.cc gprmod.h forsubs.h
+	$(MKOCTFILE) -c $<
 gpr_predict.o: gpr_predict.cc gprmod.h forsubs.h
 	$(MKOCTFILE) -c $<
+pgp_predict.o: pgp_predict.cc gprmod.h forsubs.h
+	$(MKOCTFILE) -c $<
+
 gpr_train.oct: gpr_train.o $(OBJS_GPR_TRAIN)
 	$(MKOCTFILE) -o $@ gpr_train.o $(OBJS_GPR_TRAIN) $(LIBS)
 gpr_predict.oct: gpr_predict.o $(OBJS_GPR_PRED) 
 	$(MKOCTFILE) -o $@ gpr_predict.o $(OBJS_GPR_PRED) $(LIBS)
+
+pgp_train.oct: pgp_train.o $(OBJS_GPR_TRAIN)
+	$(MKOCTFILE) -o $@ pgp_train.o $(OBJS_GPR_TRAIN) $(LIBS)
+pgp_predict.oct: pgp_predict.o $(OBJS_GPR_PRED) 
+	$(MKOCTFILE) -o $@ pgp_predict.o $(OBJS_GPR_PRED) $(LIBS)
 
 pdist2_mw.oct: pdist2_mw.cc
 	$(MKOCTFILE) -o $@ $<

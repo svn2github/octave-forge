@@ -1,4 +1,4 @@
-/* Copyright (C) 2008  VZLU Prague, a.s., Czech Republic
+/* Copyright (C) 2008, 2009  VZLU Prague, a.s., Czech Republic
  * 
  * Author: Jaroslav Hajek <highegg@gmail.com>
  * 
@@ -38,6 +38,30 @@ void GPR_predict (int ndim, int nx, const double *X,
     {
       /* call infgpr */
       F77_infgpr (&ndim, &nx, X, theta, nu, var, &nlin, mu, RP, corf,
+                  X0, y0, sig0, &nder, yd0?yd0:&dummy, work);
+      /* increment pointers */
+      X0 += ndim;
+      y0++;
+      sig0++;
+      if (yd0) yd0 += ndim;
+    }
+  free (work);
+}
+
+void PGP_predict (int ndim, int nf, const double *F,
+                  const double *theta, const double *nu,
+                  int nlin, corfptr corf,
+                  const double *var, const double *mu, const double *QP,
+                  int nx0, const double *X0, double *y0, double *sig0, double *yd0)
+{
+  int nder = (yd0) ? ndim : 0;
+  double *work = malloc (nf*(2+(nder ? nder : 1))*DSIZE);
+  double dummy;
+
+  for ( ;nx0; --nx0) 
+    {
+      /* call infgpr */
+      F77_infpgp (&ndim, &nf, F, theta, nu, var, &nlin, mu, QP, corf,
                   X0, y0, sig0, &nder, yd0?yd0:&dummy, work);
       /* increment pointers */
       X0 += ndim;

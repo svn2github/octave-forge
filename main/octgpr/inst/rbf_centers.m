@@ -26,15 +26,12 @@
 % @end deftypefn
 function [U, ur, iu] = rbf_centers (X, nu, theta)
 
-  pso_old = page_screen_output (0);
-
   if (nargin == 3)
-    X = dmult (X, theta);
+    X *= diag (theta);
   elseif (nargin != 2)
     print_usage ();
   endif
 
-  disp ("initializing ...");
   % the D^2 weighting initialization
 
   D = Inf;
@@ -54,26 +51,24 @@ function [U, ur, iu] = rbf_centers (X, nu, theta)
   % now perform the k-means algorithm
 
   U = X(k,:);
-  D = pdist2_mw(U, X, 'ssq');
+  D = pdist2_mw (U, X, 'ssq');
   [xx, j] = min (D);
 
   it = 0;
   do
-    for i = 1:nu
-      ij = find(j == i);
-      if (!isempty (ij))
-        U(i,:) = mean (X(ij,:));
-      else
-        U(i,:) = X(ceil (rand () * rows (X)), :);
-      endif
+    for i = 1:columns (X)
+      U(:,i) = accumarray (j.', X(:,i), [nu, 1]);
     endfor
+    N = accumarray (j.', ones (1, length (j)), [nu, 1]);
+    U = diag (N) \ U;
+    i = find (all (U == 0, 2));
+    U(i,:) = X(ceil (rand (1, length (i)) * rows (X)), :);
     j1 = j;
     D = pdist2_mw (U, X, 'ssq');
     [xx, j] = min (D);
-    printf ("k-means iteration %d\r", ++it);
-    fflush (stdout);
+    fprintf (stderr, "k-means iteration %d\r", ++it);
   until (all (j == j1))
-  printf ("\n");
+  fprintf (stderr, "\n");
 
   if (nargout > 2)
     iu = j;

@@ -1,4 +1,4 @@
-/* Copyright (C) 2008  VZLU Prague, a.s., Czech Republic
+/* Copyright (C) 2008, 2009  VZLU Prague, a.s., Czech Republic
  * 
  * Author: Jaroslav Hajek <highegg@gmail.com>
  * 
@@ -36,10 +36,14 @@ extern "C" {
 #define F77_nllgpr F77_FUNC(nllgpr,NLLGPR)
 #define F77_nldgpr F77_FUNC(nldgpr,NLDGPR)
 #define F77_nl0gpr F77_FUNC(nl0gpr,NL0GPR)
-#define F77_nllbnd F77_FUNC(nllbnd,NLLBND)
 #define F77_infgpr F77_FUNC(infgpr,INFGPR)
-#define F77_stheta F77_FUNC(stheta,STHETA)
 #define F77_pakgpr F77_FUNC(pakgpr,PAKGPR)
+#define F77_nllpgp F77_FUNC(nllpgp,NLLPGP)
+#define F77_nldpgp F77_FUNC(nldpgp,NLDPGP)
+#define F77_nl0pgp F77_FUNC(nl0pgp,NL0PGP)
+#define F77_infpgp F77_FUNC(infpgp,INFPGP)
+#define F77_pakpgp F77_FUNC(pakpgp,PAKPGP)
+#define F77_stheta F77_FUNC(stheta,STHETA)
 #define F77_dtr2tp F77_FUNC(dtr2tp,DTR2TP)
 #define F77_optdrv F77_FUNC(optdrv,OPTDRV)
 
@@ -67,6 +71,23 @@ extern "C" {
                      const corfptr corr, 
                      int *info );
 
+    void F77_nllpgp (const int *ndim, 
+                     const int *nx, 
+                     const int *nf, 
+                     const double x[], 
+                     const double f[], 
+                     const double y[], 
+                     const double theta[], 
+                     const double *nu, 
+                     double *var, 
+                     const int *nlin, 
+                     double mu[], 
+                     double r[], 
+                     double q[], 
+                     double *nll, 
+                     const corfptr corr, 
+                     int *info);
+
     void F77_nldgpr (const int *ndim, 
                      const int *nx, 
                      const double x[], 
@@ -78,7 +99,30 @@ extern "C" {
                      double dnu[], 
                      int *info );
 
+    void F77_nldpgp (const int *ndim,
+                     const int *nx,
+                     const int *nf,
+                     const double x[],
+                     const double f[],
+                     const double theta[],
+                     const double *nu,
+                     double *var,
+                     double r[],
+                     double q[],
+                     double dtheta[],
+                     double *dnu,
+                     int *info
+                     );
+
+
     void F77_nl0gpr (const int *nx, 
+                     const double y[], 
+                     const double *nu, 
+                     double *nll0, 
+                     double *nllinf );
+
+    void F77_nl0pgp (const int *nx, 
+                     const int *nf, 
                      const double y[], 
                      const double *nu, 
                      double *nll0, 
@@ -101,12 +145,36 @@ extern "C" {
                      double yd0[], 
                      double *w );
 
+    void F77_infpgp (const int *ndim, 
+                     const int *nf, 
+                     const double f[], 
+                     const double theta[], 
+                     const double *nu, 
+                     const double *var, 
+                     const int *nlin, 
+                     const double mu[], 
+                     const double qp[], 
+                     const corfptr corr, 
+                     const double x0[],
+                     double *y0, 
+                     double *sig0, 
+                     const int *nder, 
+                     double yd0[], 
+                     double *w );
+
     void F77_stheta (const int *ndim, 
                      const int *nx, 
                      const double x[], 
                      double theta[] );
 
     void F77_pakgpr (const int *nx, 
+                     const int *nlin, 
+                     const double mu[], 
+                     const double r[], 
+                     double mup[],
+                     double rp[] );
+
+    void F77_pakpgp (const int *nf, 
                      const int *nlin, 
                      const double mu[], 
                      const double r[], 

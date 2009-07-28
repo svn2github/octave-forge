@@ -18,12 +18,13 @@ c You should have received a copy of the GNU General Public License
 c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c 
-      subroutine nl0gpr(nx,y,nu,nll0,nllinf)
+      subroutine nl0pgp(nx,nf,y,nu,nll0,nllinf)
 c purpose:      this function evaluates the negative log likelihood
-c               of a GPR process regressor at boundaries:
+c               of a PGP process regressor at boundaries:
 c               nll0 is a common value for theta = 0 and
 c               nllinf is a value for theta = infinity.
 c nx (in)       number of training points
+c nf (in)       number of inducing points
 c y (in)        array of training input values
 c nu (in)       relative white noise. nu = sqrt(var_white/var)
 c nll0 (out)    the value of nllgpr for theta = 0
@@ -51,3 +52,5 @@ c set values
       nllinf = 0.5d0 * nx * (log(ssq) + l2pi)
       nll0 = nllinf + 0.5d0 * log(1 + nx/nu**2)
       end subroutine
+
+

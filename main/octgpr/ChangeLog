@@ -1,3 +1,23 @@
+2009-07-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* src/nllpgp.f: New source.
+	* src/nldpgp.f: New source.
+	* src/nl0pgp.f: New source.
+	* src/pakpgp.f: New source.
+	* src/infpgp.f: New source.
+	* src/dgesum.f: New source.
+	* src/dsumsq.f: New source.
+	* src/pgp_train.cc: New file.
+	* src/pgp_predict.cc: New file.
+	* src/setup.c: Support PGPR.
+	* src/train.c: Ditto.
+	* src/predict.c: Ditto.
+	* src/gprmod.h: Ditto.
+	* src/forsubs.h: Ditto.
+	* src/Makefile.in: Ditto.
+	* inst/rbf_centers.m: Improve.
+	* inst/demo_octgpr.m: Add PGPR demo.
+
 2009-04-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* src/Makefile.in: Add FPICFLAG/CPICFLAG to Fortran/C flags.

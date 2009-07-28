@@ -22,6 +22,7 @@
 % -*- texinfo -*- 
 % @deftypefn {Function File} demo_octgpr (1, nsamp = 150)
 % @deftypefnx {Function File} demo_octgpr (2, ncnt = 20, npt = 500)
+% @deftypefnx {Function File} demo_octgpr (3, ncnt = 50, nsamp = 500)
 % OctGPR package demo function.
 % First argument selects available demos:
 %
@@ -33,7 +34,11 @@
 % @item 2. RBF centers selection demo @*
 % Radial basis centers are selected amongst random points.
 % @var{ncnt} specifies number of centers, @var{npt} number of points.
-% @seealso{rbf_centers}
+% @item 2. PGP regression demo @*
+% A function is densely sampled (with small noise), 
+% radial basis centers are selected, then the function is reconstructed 
+% using PGP regression.  @var{nsamp} specifies the number of samples,
+% @var{ncnt} specifies number of centers.
 % @end itemize
 % @end deftypefn
 function demo_octgpr (number, varargin)
@@ -55,6 +60,8 @@ function demo_octgpr (number, varargin)
       demo_octgpr1 (varargin{:})
     case 2
       demo_octgpr2 (varargin{:})
+    case 3
+      demo_octgpr3 (varargin{:})
     otherwise
       error ("demo_octgpr: invalid demo number")
     endswitch
@@ -181,6 +188,92 @@ function demo_octgpr2 (ncnt = 50, npt = 500)
   endfor
   hold off
   demo_octgpr_pause (2, 2);
+  close
+
+endfunction
+
+function demo_octgpr3 (ncnt = 100, nsamp = 1000)
+
+  global prntfmt;
+  tit = "a peaked surface";
+  disp (tit);
+
+  % create the mesh onto which to interpolate
+  t = linspace (-3, 3, 50);
+  [xi,yi] = meshgrid (t, t);
+
+  % evaluate
+  zi = testfun1 (xi, yi);
+  zimax = max (vec (zi)); zimin = min (vec (zi));
+  subplot (2, 2, 1);
+  mesh (xi, yi, zi);
+  title (tit);
+  subplot (2, 2, 3);
+  contourf (xi, yi, zi, 20);
+  demo_octgpr_pause (1, 1);
+
+  tit = sprintf ("sampled at %d random points, selected %d centers", nsamp, ncnt);
+  disp (tit);
+  % create random samples
+  xs = rand (nsamp,1); ys = rand (nsamp,1);
+  xs = 6*xs-3; ys = 6*ys - 3;
+  % evaluate at random samples
+  zs = testfun1 (xs, ys);
+  xys = [xs ys];
+
+  % select centers using k-means
+  xyc = rbf_centers (xys, ncnt);
+  xc = xyc(:,1); yc = xyc(:,2);
+
+  subplot (2, 2, 2);
+  plot3 (xs, ys, zs, ".+");
+  title (tit);
+  subplot (2, 2, 3);
+  hold on
+  plot (xs, ys, "+6");
+  hold off
+  subplot (2, 2, 4);
+  hold on
+  plot (xs, ys, "+");
+  plot (xc, yc, "o2");
+  hold off
+  demo_octgpr_pause (1, 2);
+
+  tit = "PGP model with heuristic hypers";
+  disp (tit);
+  ths = 1 ./ std (xyc);
+  GPM = pgp_train (xys, xyc, zs, ths, 1e-5);
+  zm = pgp_predict (GPM, [vec(xi) vec(yi)]);
+  zm = reshape (zm, size(zi));
+  zm = min (zm, zimax); zm = max (zm, zimin);
+  subplot (2, 2, 2);
+  mesh (xi, yi, zm);
+  title (tit);
+  subplot(2, 2, 4);
+  hold on
+  contourf (xi, yi, zm, 20);
+  plot (xs, ys, "+6");
+  plot (xc, yc, "o5");
+  hold off
+  demo_octgpr_pause (1, 3);
+
+  tit = "PGP model with MLE training";
+  disp (tit);
+  fflush (stdout);
+  GPM = pgp_train (xys, xyc, zs, ths, 1e-3, {"tol", 1e-5, "maxev", 400});
+  zm = pgp_predict (GPM, [vec(xi) vec(yi)]);
+  zm = reshape (zm, size (zi));
+  zm = min (zm, zimax); zm = max (zm, zimin);
+  subplot (2, 2, 2);
+  mesh (xi, yi, zm);
+  title (tit);
+  subplot(2, 2, 4);
+  hold on
+  contourf (xi, yi, zm, 20);
+  plot (xs, ys, "+6");
+  plot (xc, yc, "o5");
+  hold off
+  demo_octgpr_pause (1, 4);
   close
 
 endfunction

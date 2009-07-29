@@ -19,17 +19,19 @@
 //
 //
 // sumskipnan: sums all non-NaN values
+// usage:
+//	[o,count,SSQ] = sumskipnan_mex(x,DIM,flag,W);
 //
 // Input:
-// - array to sum
-// - dimension to sum
-// - flag (is actually an output argument telling whether some NaN was observed)
-// - weight vector to compute weighted sum 
+// - x data array
+// - DIM (optional) dimension to sum
+// - flag (optional) is actually an output argument telling whether some NaN was observed
+// - W (optional) weight vector to compute weighted sum (default 1)
 //
 // Output:
-// - sums
-// - count of valid elements (optional)
-// - sums of squares (optional)
+// - o (weighted) sum along dimension DIM
+// - count of valid elements
+// - sums of squares
 //
 //
 //    $Id$
@@ -42,9 +44,6 @@
 #include <inttypes.h>
 #include <math.h>
 #include "mex.h"
-
-inline int __sumskipnan2__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN);
-inline int __sumskipnan3__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN);
 
 inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
 inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
@@ -154,10 +153,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		POutput[2] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
         	LOutputSum2  = mxGetPr(POutput[2]);
     	}
-
 	mxFree(SZ2);
 
-	if (D1*D2*D3 < 1) 
+	if (D1*D2*D3<1) // zero size array
 		; 	// do nothing 
 	else if ((POutputCount <= 1) && !mxIsComplex(PInputs[0])) {
 		// OUTER LOOP: along dimensions > DIM
@@ -167,10 +165,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			if (D1==1)  	
 			{
 				double count;
-				if (W) 
-					__sumskipnan2w__(LInput+ix1, D2, LOutputSum+ix0, &count, &flag_isNaN, W);
-				else 	
-					__sumskipnan2__(LInput+ix1, D2, LOutputSum+ix0, &count, &flag_isNaN);
+				__sumskipnan2w__(LInput+ix1, D2, LOutputSum+ix0, &count, &flag_isNaN, W);
  	       		}
 			else for (j=0; j<D2; j++) {
 				// minimize cache misses 
@@ -211,10 +206,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			ix1 = ix0*D2;	// index for input 
 			if (D1==1)  	
 			{
-				if (W) 
-					__sumskipnan2w__(LInput+ix1, D2, LOutputSum+ix0, LOutputCount+ix0, &flag_isNaN, W);
-				else 	
-					__sumskipnan2__(LInput+ix1, D2, LOutputSum+ix0, LOutputCount+ix0, &flag_isNaN);
+				__sumskipnan2w__(LInput+ix1, D2, LOutputSum+ix0, LOutputCount+ix0, &flag_isNaN, W);
  	       		}
 			else for (j=0; j<D2; j++) {
 				// minimize cache misses 
@@ -257,11 +249,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			ix1 = ix0*D2;	// index for input 
 			if (D1==1)  	
 			{
-				size_t count;
-				if (W) 
-					__sumskipnan3w__(LInput+ix1, D2, LOutputSum+ix0, LOutputSum2+ix0, LOutputCount+ix0, &flag_isNaN, W);
-				else 	
-					__sumskipnan3__(LInput+ix1, D2, LOutputSum+ix0, LOutputSum2+ix0, LOutputCount+ix0, &flag_isNaN);
+				__sumskipnan3w__(LInput+ix1, D2, LOutputSum+ix0, LOutputSum2+ix0, LOutputCount+ix0, &flag_isNaN, W);
  	       		}
 			else for (j=0; j<D2; j++) {
 				// minimize cache misses 
@@ -344,137 +332,113 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 
 #define stride 1 
-inline int __sumskipnan2__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN)
-{
-	register long double sum=0; 
-	register size_t count=0; 
-	register char   flag=0; 
-	// LOOP  along dimension DIM
-	
-	void *end = data + stride*Ni; 
-	do {
-		register double x = *data;
-        	if (!isnan(x))
-		{
-			count++; 
-			sum += x; 
-		}
-#ifndef NO_FLAG
-		else 
-			flag = 1; 
-#endif
-
-		data++;	// stride=1
-	}
-	while (data < end);
-	
-#ifndef NO_FLAG
-	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
-#endif
-	*s  = sum;
-        *No = (double)count;
-
-}
-
-inline int __sumskipnan3__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN)
-{
-	register long double sum=0; 
-	register long double msq=0; 
-	register size_t count=0; 
-	register char   flag=0; 
-	// LOOP  along dimension DIM
-	
-	void *end = data + stride*Ni; 
-	do {
-		register double x = *data;
-        	if (!isnan(x)) {
-			count++; 
-			sum += x; 
-			msq += x*x; 
-		}
-#ifndef NO_FLAG
-		else 
-			flag = 1; 
-#endif
-
-		data++;	// stride=1
-	}
-	while (data < end);
-
-#ifndef NO_FLAG
-	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
-#endif
-	*s  = sum;
-	*s2 = msq; 
-        *No = (double)count;
-}
-
-#define stride 1 
 inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
 {
-	register long double sum=0; 
-	register long double count=0; 
-	register char   flag=0; 
+	long double sum=0; 
+	char   flag=0; 
 	// LOOP  along dimension DIM
 	
 	void *end = data + stride*Ni; 
-	do {
-		register double x = *data;
-        	if (!isnan(x))
-		{
-			count += *W; 
-			sum   += *W*x; 
-		}
+	if (W) {
+		// with weight vector 
+		register long double count = 0.0;
+		do {
+			register double x = *data;
+        		if (!isnan(x))
+			{
+				count += *W; 
+				sum   += *W*x; 
+			}
 #ifndef NO_FLAG
-		else 
-			flag = 1; 
-#endif
+			else 
+				flag = 1; 
+#endif	
 
-		data++;	// stride=1
-		W++;
-	}
-	while (data < end);
+			data++;	// stride=1
+			W++;
+		}
+		while (data < end);
+	        *No = count;
+	} else {
+		// w/o weight vector 
+		register size_t countI = 0;
+		do {
+			register double x = *data;
+        		if (!isnan(x))
+			{
+				countI++; 
+				sum += x; 
+			}
+#ifndef NO_FLAG
+			else 
+				flag = 1; 
+#endif
+			data++;	// stride=1
+		}
+		while (data < end);
+	        *No = (double)countI;
+	}	
 	
 #ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
 #endif
 	*s  = sum;
-        *No = count;
 
 }
+
 
 inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
 {
-	register long double sum=0; 
-	register long double msq=0; 
-	register long double count=0; 
-	register char   flag=0; 
+	long double sum=0; 
+	long double msq=0; 
+	char   flag=0;
 	// LOOP  along dimension DIM
 	
 	void *end = data + stride*Ni; 
-	do {
-		register double x = *data;
-        	if (!isnan(x)) {
-			count += *W;
-			double t = *W*x; 
-			sum += t; 
-			msq += x*t; 
-		}
+	if (W) {
+		// with weight vector 
+		register long double count = 0.0;
+		do {
+			register double x = *data;
+        		if (!isnan(x)) {
+				count += *W;
+				double t = *W*x; 
+				sum += t; 
+				msq += x*t; 
+			}
 #ifndef NO_FLAG
-		else 
-			flag = 1; 
+			else 
+				flag = 1; 
 #endif
-
-		data++;	// stride=1
-		W++;
+			data++;	// stride=1
+			W++;
+		}
+		while (data < end);
+	        *No = count;
+	} else {	
+		// w/o weight vector 
+		register size_t countI = 0;
+		do {
+			register double x = *data;
+        		if (!isnan(x)) {
+				countI++; 
+				sum += x; 
+				msq += x*x; 
+			}
+#ifndef NO_FLAG
+			else 
+				flag = 1; 
+#endif
+			data++;	// stride=1
+		}
+		while (data < end);
+	        *No = (double)countI;
 	}
-	while (data < end);
-
+	
 #ifndef NO_FLAG
 	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
 #endif
 	*s  = sum;
 	*s2 = msq; 
-        *No = count;
 }
 

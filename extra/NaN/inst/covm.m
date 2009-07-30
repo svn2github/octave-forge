@@ -40,7 +40,7 @@ function [CC,NN] = covm(X,Y,Mode,W);
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -133,27 +133,10 @@ if mexFLAG2 && mexFLAG && ~isempty(W),
 		FLAG_NANS_OCCURED = logical(0);  % default value 
 	end;
 
-	if (~any(Mode=='D') && ~any(Mode=='E')), % if Mode == M
-		[CC,NN] = covm_mex(real(X),real(Y),FLAG_NANS_OCCURED,W);
-		%% complex matrices 
-		if ~isreal(X) && ~isreal(Y)
-			[iCC,inn] = covm_mex(imag(X),imag(Y),FLAG_NANS_OCCURED,W);
-			CC = CC + iCC;
-		end; 
-		if isempty(Y) Y = X; end;   
-		if ~isreal(X)
-			[iCC,inn] = covm_mex(imag(X),real(Y),FLAG_NANS_OCCURED,W);
-			CC = CC - i*iCC;
-		end;
-		if ~isreal(Y)
-			[iCC,inn] = covm_mex(real(X),imag(Y),FLAG_NANS_OCCURED,W);
-			CC = CC + i*iCC;
-		end; 	
-
-       	else  % if any(Mode=='D') || any(Mode=='E'), 
-		[S1,N1] = sumskipnan_mex(X,1,W);
+       	if any(Mode=='D') || any(Mode=='E'), 
+		[S1,N1] = sumskipnan(X,1,W);
 		if ~isempty(Y)
-	               	[S2,N2] = sumskipnan_mex(Y,1,W);
+	               	[S2,N2] = sumskipnan(Y,1,W);
 	        else 
 	        	S2 = S1; N2 = N1;        	
 		end; 
@@ -163,30 +146,31 @@ if mexFLAG2 && mexFLAG && ~isempty(W),
 	               	        Y  = Y - ones(r1,1)*(S2./N2);
 			end; 
 		end; 
-       		[CC,NN] = covm_mex(real(X), real(Y), FLAG_NANS_OCCURED, W);
-		%% complex matrices 
-		if ~isreal(X) && ~isreal(Y)
-			[iCC,inn] = covm_mex(imag(X),imag(Y),FLAG_NANS_OCCURED,W);
-			CC = CC + iCC;
-		end; 
-		if isempty(Y) Y = X; end;   
-		if ~isreal(X)
-			[iCC,inn] = covm_mex(imag(X),real(Y),FLAG_NANS_OCCURED,W);
-			CC = CC - i*iCC;
-		end;
-		if ~isreal(Y)
-			[iCC,inn] = covm_mex(real(X),imag(Y),FLAG_NANS_OCCURED,W);
-			CC = CC + i*iCC;
-		end; 	
-	
-	        if any(Mode=='D') && ~any(Mode=='1'),  %  'D1'
-                        NN = max(NN-1,0);
-                end;
-                if any(Mode=='E'), % extended mode
-                        NN = [nn, N2; N1', NN];
-                        CC = [nn, S2; S1', CC];
-                end;
+	end; 	
+       	
+       	[CC,NN] = covm_mex(real(X), real(Y), FLAG_NANS_OCCURED, W);
+	%% complex matrices 
+	if ~isreal(X) && ~isreal(Y)
+		[iCC,inn] = covm_mex(imag(X), imag(Y), FLAG_NANS_OCCURED, W);
+		CC = CC + iCC;
 	end; 
+	if isempty(Y) Y = X; end;   
+	if ~isreal(X)
+		[iCC,inn] = covm_mex(imag(X), real(Y), FLAG_NANS_OCCURED, W);
+		CC = CC - i*iCC;
+	end;
+	if ~isreal(Y)
+		[iCC,inn] = covm_mex(real(X), imag(Y), FLAG_NANS_OCCURED, W);
+		CC = CC + i*iCC;
+	end; 	
+	
+	if any(Mode=='D') && ~any(Mode=='1'),  %  'D1'
+                NN = max(NN-1,0);
+        end;
+        if any(Mode=='E'), % extended mode
+                NN = [nn, N2; N1', NN];
+                CC = [nn, S2; S1', CC];
+        end;
 	
 
 elseif ~isempty(W),

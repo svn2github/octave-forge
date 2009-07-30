@@ -18,7 +18,7 @@
 //   along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 //
-// sumskipnan: sums all non-NaN values
+// covm: in-product of matrices, NaN are skipped. 
 //
 // Input:
 // - X:
@@ -27,8 +27,9 @@
 // - W: weight vector to compute weighted correlation 
 //
 // Output:
-// - CC = X' * diag(W) * Y 	while NaN's are skipped
-// - NN = real(~isnan(X))*diag(W)*real(~isnan(Y))   count of valid (non-NaN) elements
+// - CC = X' * sparse(diag(W)) * Y 	while NaN's are skipped
+// - NN = real(~isnan(X)')*sparse(diag(W))*real(~isnan(Y))   count of valid (non-NaN) elements
+//        computed more efficiently 
 //
 //    $Id$
 //    Copyright (C) 2009 Alois Schloegl <a.schloegl@ieee.org>
@@ -60,16 +61,16 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	// check for proper number of input and output arguments
 	if ((PInputCount <= 0) || (PInputCount > 4)) {
 	        mexPrintf("usage: [CC,NN] = covm_mex(X [,Y [,flag [,W]]])\n\n");
-	        mexPrintf("Donot use COVM_MEX directly, use COVM instead. \n");
+	        mexPrintf("Do not use COVM_MEX directly, use COVM instead. \n");
 /*
-	        mexPrintf("COVM_MEX computes the covariance matrix of real matrices and skips NaN's\n");
+	        mexPrintf("\nCOVM_MEX computes the covariance matrix of real matrices and skips NaN's\n");
 	        mexPrintf("\t[CC,NN] = covm_mex(...)\n\t\t computes CC=X'*Y, NN contains the number of not-NaN elements\n");
-	        mexPrintf("\t\t CC./NN is the covariance matrix\n");
-	        mexPrintf("\t... = covm_mex(X,Y,...)\n\t\t computes CC=X'*Y, number of rows of X and Y must match\n");
-	        mexPrintf("\t... = covm_mex(X,[], ...)\n\t\t computes CC=X'*X\n");
+	        mexPrintf("\t\t CC./NN is the unbiased covariance matrix\n");
+	        mexPrintf("\t... = covm_mex(X,Y,...)\n\t\t computes CC=X'*sparse(diag(W))*Y, number of rows of X and Y must match\n");
+	        mexPrintf("\t... = covm_mex(X,[], ...)\n\t\t computes CC=X'*sparse(diag(W))*X\n");
 	        mexPrintf("\t... = covm_mex(...,flag,...)\n\t\t if flag is not empty, it is set to 1 if some NaN occured in X or Y\n");
 	        mexPrintf("\t... = covm_mex(...,W)\n\t\t W to compute weighted covariance, number of elements must match the number of rows of X\n");
-	        mexPrintf("\t\t if isempty(W), all rows get an equal weight of 1\n");
+	        mexPrintf("\t\t if isempty(W), all weights are 1\n");
 	        mexPrintf("\t[CC,NN]=covm_mex(X,Y,flag,W)\n");
 */	        return;
 	}
@@ -194,7 +195,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	/*------ version 2 --------------------- 
 		 this version seems to be faster than the one above. 
 	*/
-	if (X0 != Y0)
+	if ( (X0 != Y0) || (cX != cY) )
 		/******** X!=Y, output is not symetric *******/	
 	    if (W) /* weighted version */
 	    for (i=0; i<cX; i++)
@@ -204,7 +205,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		long double cc=0.0;
 		long double nn=0.0;
 		for (k=0; k<rX; k++) {
-			double z = X[k]*Y[k];
+			long double z = ((long double)X[k])*Y[k];
 			if (isnan(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
@@ -226,7 +227,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		long double cc=0.0;
 		size_t nn=0;
 		for (k=0; k<rX; k++) {
-			double z = X[k]*Y[k];
+			long double z = ((long double)X[k])*Y[k];
 			if (isnan(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
@@ -240,7 +241,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		if (NN != NULL) 
 			NN[i+j*cX] = (double)nn; 
 	    }
-	else // if (X0==Y0)
+	else // if (X0==Y0) && (cX==cY)
 		/******** X==Y, output is symetric *******/	
 	    if (W) /* weighted version */
 	    for (i=0; i<cX; i++)
@@ -250,7 +251,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		long double cc=0.0;
 		long double nn=0.0;
 		for (k=0; k<rX; k++) {
-			double z = X[k]*Y[k];
+			long double z = ((long double)X[k])*Y[k];
 			if (isnan(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;
@@ -275,7 +276,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		long double cc=0.0;
 		size_t nn=0;
 		for (k=0; k<rX; k++) {
-			double z = X[k]*Y[k];
+			long double z = ((long double)X[k])*Y[k];
 			if (isnan(z)) {
 #ifndef NO_FLAG
 				flag_isNaN = 1;

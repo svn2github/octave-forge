@@ -113,22 +113,24 @@ function [yhat, lambda] = regdatasmooth (x, y, varargin)
   if (lambda)
     ## do nothing and use the provided lambda
   elseif ( stdev )
-    opt = optimset("TolFun",1e-6,"MaxFunEvals",20);
-    log10lambda = fminunc ("rgdtsmcorewrap", guess, opt, x, y, d, {"stdev", stdev}, options{:});
+    opt = optimset("TolX",1e-2,"MaxFunEvals",20);
+    ##log10lambda = fminunc_compat ("rgdtsmcorewrap", guess, opt, x, y, d, {"stdev", stdev}, options{:});
+    fhandle = @(log10lambda) rgdtsmcorewrap (log10lambda, x, y, d, {"stdev", stdev}, options{:});
+    log10lambda = fminunc (fhandle, guess, opt);
     lambda = 10^log10lambda;
   else
     ## perform cross-validation
-    opt = optimset("TolFun",1e-4,"MaxFunEvals",20);
-    log10lambda = fminunc ("rgdtsmcorewrap", guess, opt, x, y, d, {"cve"}, options{:});
+    opt = optimset("TolX",1e-2,"MaxFunEvals",20);
+    ##log10lambda = fminunc_compat ("rgdtsmcorewrap", guess, opt, x, y, d, {"cve"}, options{:});
+    fhandle = @(log10lambda) rgdtsmcorewrap (log10lambda, x, y, d, {"cve"}, options{:});
+    log10lambda = fminunc (fhandle, guess, opt);
     lambda = 10^log10lambda;
   endif
   
-  %%ys = tkrgdatasmdd(x, y, lambda, d);
   yhat = rgdtsmcore (x, y, d, lambda, options{:});
   
 endfunction
 
-## rewrite the demos!
 
 %!demo
 %! npts = 100;

@@ -40,8 +40,8 @@ __HEADER__([[[Octave-Forge]]])
   <p>
     For convenience Octave-Forge supplies pre-built installers for Octave:
     <ul>
-    <li><b><a href="http://sourceforge.net/projects/octave/files/Octave/Windows%20-%20MinGW/Octave-3.2.0_i686-pc-mingw32_gcc-4.3.0_setup.exe/download">Windows installer</a> (Octave and Octave-Forge)</b>
-    <li><b>Octave.app for Mac OS X (<a href="http://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/octave-3.2.0-i386.dmg/download"></a>) (<a href="http://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/octave-3.2.0-ppc.dmg/download"></a>)</b> is a ready to run binary version of GNU Octave. It runs on most of Apple's Mac OS X computers and comes with all the free libraries that are needed. The application can also be expanded by downloading and installing further packages as described before.
+      <li><b><a href="http://sourceforge.net/projects/octave/files/Octave/Windows%20-%20MinGW/Octave-3.2.0_i686-pc-mingw32_gcc-4.3.0_setup.exe/download">Windows installer</a> (Octave and Octave-Forge)</b></li><br>
+      <li><b><a href="__OSX__">Octave.app for Mac OS X</a></b> is a ready to run binary version of GNU Octave. It runs on most of Apple's Mac OS X computers and comes with all the free libraries that are needed. The application can also be expanded by downloading and installing further packages as described before.</li>
     </ul>
   </p>
 </div>
@@ -52,6 +52,10 @@ recent versions of octave-forge. For a full list of changes please
 see the <a href="NEWS.html">News Archive</a> or the
 <a href="ChangeLog">ChangeLog</a>.</p>
 <dl>
+<dt>July 29, 2009</dt>
+<dd>
+<p>Updated the OS X binary release to Octave.app 3.2.2.</p>
+</dd>
 <dt>June 7, 2009</dt>
 <dd>
 <p>New release of Octave-forge

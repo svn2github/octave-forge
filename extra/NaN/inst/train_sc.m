@@ -18,7 +18,8 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %    'QDA'      quadratic discriminant analysis    [1]
 %    'LD2'      linear discriminant analysis (see LDBC2) [1]
 %		MODE.hyperparameter.gamma: regularization parameter [default 0] 
-%    'LD3'      linear discriminant analysis (see LDBC3) [1]
+%    'LD3', 'FDA', 'LDA'
+%               linear discriminant analysis (see LDBC3) [1]
 %		MODE.hyperparameter.gamma: regularization parameter [default 0] 
 %    'LD4'      linear discriminant analysis (see LDBC4) [1]
 %		MODE.hyperparameter.gamma: regularization parameter [default 0] 
@@ -37,25 +38,42 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %    '###/GSVD'	GSVD and statistical classifier [2,3], 
 %    '###/sparse'  sparse  [5] 
 %		'###' must be 'LDA' or any other classifier 
-%    'SVM','SVM1r'  support vector machines, one-vs-rest
-%		MODE.hyperparameter.c_value = 
-%    'PSVM'	Proximal SVM [8] 
-%		MODE.hyperparameter.nu  (default: 1.0)
 %    'PLS'	(linear) partial least squares regression 
 %    'REG'      regression analysis;
 %    'WienerHopf'	Wiener-Hopf equation  
 %    'NBC'	Naive Bayesian Classifier [6]     
 %    'aNBC'	Augmented Naive Bayesian Classifier [6]
 %    'NBPW'	Naive Bayesian Parzen Window [9]     
-%    'SVM11'    support vector machines, one-vs-one + voting
-%		MODE.hyperparameter.c_value = 
-%    'RBF'      Support Vector Machines with RBF Kernel
-%		MODE.hyperparameter.c_value = 
-%		MODE.hyperparameter.gamma = 
+%    'PSVM'	Proximal SVM [8] 
+%		MODE.hyperparameter.nu  (default: 1.0)
 %    'LPM'      Linear Programming Machine
+%                 uses and requires train_LPM of the iLog CPLEX optimizer 
 %		MODE.hyperparameter.c_value = 
 %    'CSP'	CommonSpatialPattern is very experimental and just a hack
 %		uses a smoothing window of 50 samples.
+%    'SVM','SVM1r'  support vector machines, one-vs-rest
+%                 uses and requires svmtrain.mex from libSVM
+%		MODE.hyperparameter.c_value = 
+%    'SVM11'    support vector machines, one-vs-one + voting
+%                 uses and requires svmtrain.mex from libSVM
+%		MODE.hyperparameter.c_value = 
+%    'RBF'      Support Vector Machines with RBF Kernel
+%               uses and requires svmtrain.mex from libSVM
+%		MODE.hyperparameter.c_value = 
+%		MODE.hyperparameter.gamma = 
+%    'SVM:LIB'    uses and requires svmtrain.mex from libSVM
+%    'SVM:bioinfo' uses and requires svmtrain from the bioinfo toolbox        
+%    'SVM:OSU'   uses and requires mexSVMTrain from the OSU-SVM toolbox 
+%    'SVM:LOO'   uses and requires svcm_train from the LOO-SVM toolbox 
+%    'SVM:Gunn'  uses and requires svc-functios from the Gunn-SVM toolbox 
+%    'SVM:KM'    uses and requires svmclass-function from the KM-SVM toolbox 
+%    'SVM:LINz'  LibLinear [10] (requires train.mex from LibLinear somewhere in the path)
+%            z=0 (default) LibLinear with -- L2-regularized logistic regression
+%            z=1 LibLinear with -- L2-loss support vector machines (dual)
+%            z=2 LibLinear with -- L2-loss support vector machines (primal)
+%            z=3 LibLinear with -- L1-loss support vector machines (dual)
+%    'SVM:LIN4'  LibLinear with -- multi-class support vector machines by Crammer and Singer
+
 %
 %  {'MDA','MD2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','REG','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse','RDA','GDBC','SVM','RBF'} 
 % 
@@ -94,8 +112,11 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %	Filter Bank Common Spatial Pattern (FBCSP) in Brain-Computer Interface.
 %	IEEE International Joint Conference on Neural Networks, 2008. IJCNN 2008. (IEEE World Congress on Computational Intelligence). 
 %	1-8 June 2008 Page(s):2390 - 2397
+% [10] R.-E. Fan, K.-W. Chang, C.-J. Hsieh, X.-R. Wang, and C.-J. Lin. 
+%       LIBLINEAR: A Library for Large Linear Classification, Journal of Machine Learning Research 9(2008), 1871-1874. 
+%       Software available at http://www.csie.ntu.edu.tw/~cjlin/liblinear 
 
-
+ 
 %	$Id: train_sc.m 2140 2009-07-02 12:03:55Z schloegl $
 %	Copyright (C) 2005,2006,2007,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
@@ -270,33 +291,6 @@ elseif ~isempty(strfind(MODE.TYPE,'WienerHopf'))
         CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
 
 
-elseif ~isempty(strfind(MODE.TYPE,'WienerHopf'))
-        % Q: equivalent to LDA, Regression? 
-        M = length(CC.Labels);
-        %if M==2, M==1; end;
-        CC.weights = repmat(NaN,size(D,2)+1,M);
-        cc = covm(D,'E',W);
-	for k = 1:M,
-		w  = cc\covm([ones(sz(1),1),D],real(classlabel==CC.Labels(k)),'M',W);
-                CC.weights(:,k) = w;
-	end;
-        CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
-
-
-elseif ~isempty(strfind(MODE.TYPE,'WienerHopf'))
-	%% OBSOLETE ??? 
-        % Q: equivalent to LDA, Regression? 
-        M = length(CC.Labels);
-        %if M==2, M==1; end;
-        CC.weights = repmat(NaN,size(D,2)+1,M);
-	for k = 1:M,
-		ix = ~any(isnan([classlabel,D]),2);
-		w  = covm(D(ix,:),'E')\covm([ones(sum(ix),1),D(ix,:)],(classlabel(ix,:)==CC.Labels(k)),'M');
-                CC.weights(:,k) = w;
-	end;
-        CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
-
-
 elseif ~isempty(strfind(lower(MODE.TYPE),'/gsvd'))
 	if ~isempty(W) 
 		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
@@ -461,6 +455,32 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
         
 
+elseif ~isempty(strfind(lower(MODE.TYPE),'svm:lin4'))
+	if ~isempty(W) 
+		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+	end; 	
+
+        if ~isfield(MODE.hyperparameter,'c_value')
+                MODE.hyperparameter.c_value = 1; 
+        end
+        M = length(CC.Labels);
+        if M==2, M=1; end;
+        CC.weights = repmat(NaN, sz(2)+1, M);
+
+        % pre-whitening
+        [D,r,m]=zscore(D,1); 
+        s = sparse(2:sz(2)+1,1:sz(2),r,sz(2)+1,sz(2),2*sz(2)); 
+        s(1,:) = -m.*r; 
+
+        CC.options = sprintf('-s 4 -c %f ', MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
+        model = train(cl, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
+        CC.weights = model.w([end,1:end-1],:)';
+
+        CC.weights = s * CC.weights(2:end,:) + sparse(1,1:M,CC.weights(1,:),sz(2)+1,M); % include pre-whitening transformation
+        CC.hyperparameter.c_value = MODE.hyperparameter.c_value; 
+        CC.datatype = ['classifier:',lower(MODE.TYPE)];
+
+
 elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
 	if ~isempty(W) 
 		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
@@ -471,6 +491,8 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
         end
         if any(MODE.TYPE==':'),
                 % nothing to be done
+        elseif exist('train','file')==3,
+                MODE.TYPE = 'SVM:LIN';        %% liblinear 
         elseif exist('svmtrain','file')==3,
                 MODE.TYPE = 'SVM:LIB';
         elseif exist('svmtrain','file')==2,
@@ -499,7 +521,20 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
         
         for k = 1:M,
                 cl = sign((classlabel~=CC.Labels(k))-.5);
-                if strcmp(MODE.TYPE, 'SVM:LIB');
+                if strncmp(MODE.TYPE, 'SVM:LIN',7);
+                        if isfield(MODE,'options')
+                                CC.options = MODE.options;
+                        else
+                                t = 0; 
+                                if length(MODE.TYPE>7), t=MODE.TYPE(8)-'0'; end; 
+                                if (t<0 || t>4) t=0; end; 
+                                CC.options = sprintf('-s %i -c %f ',t, MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
+                        end;
+                        model = train(cl, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
+                        w = model.w(1:end-1)';
+                        Bias = model.w(end);
+
+                elseif strcmp(MODE.TYPE, 'SVM:LIB');
                         if isfield(MODE,'options')
                                 CC.options = MODE.options;
                         else
@@ -586,7 +621,7 @@ else          % Linear and Quadratic statistical classifiers
 
         ECM = CC.MD./CC.NN;
         NC  = size(ECM);
-        if strncmpi(MODE.TYPE,'LD',2);
+        if strncmpi(MODE.TYPE,'LD',2) || strncmpi(MODE.TYPE,'FDA',3),
 
                 %if NC(1)==2, NC(1)=1; end;                % linear two class problem needs only one discriminant
                 CC.weights = repmat(NaN,NC(2),NC(1));     % memory allocation
@@ -609,8 +644,8 @@ else          % Linear and Quadratic statistical classifiers
                                         cov = COV2;
                                 case 6          % LD6
                                         cov = COV1;
-                                otherwise       % LD3, LDA
-                                        cov = COV0/2; 
+                                otherwise       % LD3, LDA, FDA
+                                        cov = COV0; 
                         end
 	        	if isfield(MODE.hyperparameter,'gamma')
 	        		cov = cov + mean(diag(cov))*eye(size(cov))*MODE.hyperparameter.gamma;

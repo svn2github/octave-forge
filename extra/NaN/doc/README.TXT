@@ -6,14 +6,15 @@ Copyright (C) 2000-2005,2009 Alois Schloegl <a.schloegl@ieee.org>
 FEATURES of the NaN-tb:
 -----------------------
  - statistical toolbox
- - classification toolobx 
+ - machine learning and classification toolbox
  - NaN's are treated as missing values 
- - supports DIM argument
  - supports weightening of data
+
+ - supports DIM argument
  - less round-off errors using extended double
  - less but more powerful functions (no nan-FUN needed)
  - supports unbiased estimation
- - fixes known bugs 
+ - fixes known bugs
  - compatible with Matlab and Octave
  - easy to use
  - The toolbox is tested with Octave 3.x and Matlab 7.x
@@ -40,8 +41,7 @@ level 1: basic functions (not derived)
 			sumskipnan, covm, center, cor, coefficient of variation, corrcoef, geomean, harmmean, 
 			kurtosis, mad, mean, meandev, meansq, moment, nanmean, nanstd, nansum, 
 			rms, sem, skewness, statistic, std, var	
-			
-	
+
 level 2a: derived functions
 	MEAN	 	mean (options: arithmetic, geometric, harmonic)
 	VAR 		variance
@@ -50,7 +50,7 @@ level 2a: derived functions
 	SEM		standard error of the mean (does not depend on distribution)
 	TRIMMEAN 	trimmed mean 
 	medAbsDev	median absolute deviation 
-	
+
 	MEANSQ		mean square
 	RMS		root mean square
 
@@ -59,9 +59,9 @@ level 2a: derived functions
 	SKEWNESS	skewness
 	KURTOSIS	excess 
 
-*	IQR		interquartile range 	
+*	IQR		interquartile range
 	MAD		mean absolute deviation
-*	RANGE		range (max-min) 
+*	RANGE		range (max-min)
 
 	CENTER		removes mean
 	ZSCORE		normalizes x to zero mean and variance 1 (z = (x-mean)/std) 
@@ -242,20 +242,23 @@ b) Include the path with one of the following commands:
 c) run NANINSTTEST 
 This checks whether the installation was successful. 
 
-d) [OPTIONAL]: 
-  To improve speed, you can use the MEX-version of SUMSKIPNAN. 
-  Some precompiled binaries are provided. If your platform is not supported, 
+d) Compile mex files:  
+  This is useful to improve speed, and is required if you used weighted samples. 
+  Check if precompiled binaries are provided. If your platform is not supported, 
   compile the C-Mex-function SUMSKIPNAN_MEX.CPP using
     mex sumskipnan_mex.cpp
-  The oct-file sumskipnan_oct.cc is broken, but Octave can also use 
-  the mex-file.  
-    mkoctfile --mex sumskipnan_mex.cpp
+    mex covm_mex.cpp
+    mex histo_mex.cpp
 
   Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.  
 
-e) HINT: if SUMSKIPNAN_MEX causes problems, you can savely remove it. 
-Then the (slower) M-file is used. 
-
+e) [OPTIONAL]
+   In case you want to use SVM classifiers, you need to install additional toolboxes: 
+   libSVM: http://www.csie.ntu.edu.tw/~cjlin/libsvm/
+   LibLinear: http://www.csie.ntu.edu.tw/~cjlin/liblinear/                 
+   OSU-SVM: https://sourceforge.net/projects/svm/     
+   simpleSVM: https://sourceforge.net/projects/simplesvm/
+   
 
 	$Id$
 	Copyright (C) 2000-2005,2009 by  Alois Schloegl <a.schloegl@ieee.org>	

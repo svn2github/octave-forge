@@ -57,7 +57,7 @@ if prod(size(t)) != 3, error("t has %i elements, not 3",prod(size(t))); end
 if prod(size(c))==1, c = [c;c;c]; end
 
 if all(size(r) == 3)
-  if abs (det (r) - 1) > sqrt (eps), r2 = orthogonalize (r);
+  if abs (det (r) - 1) > sqrt (eps), r2 = orth (r);
   else                               r2 = r;
   end
   [axis,ang] = rotparams (r2);

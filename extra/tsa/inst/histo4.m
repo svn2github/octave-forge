@@ -1,3 +1,4 @@
+
 function [R,tix]=histo4(Y)
 % HISTO4 calculates histogram for rows and supports data compression
 %
@@ -19,11 +20,11 @@ function [R,tix]=histo4(Y)
 % see also: HISTO, HISTO2, HISTO3, HISTO4
 %
 % REFERENCE(S):
-%  C.E. Shannon and W. Weaver "The mathematical theory of communication" University of Illinois Press, Urbana 1949 (reprint 1963).
+%  C.E. Shannon and W. Weaver 'The mathematical theory of communication' University of Illinois Press, Urbana 1949 (reprint 1963).
 
 
 %	$Id$
-%	Copyright (C) 1996-2005,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2005,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %    	This is part of the TSA-toolbox 
 %	http://hci.tugraz.at/~schloegl/matlab/tsa/
 %
@@ -41,6 +42,12 @@ function [R,tix]=histo4(Y)
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+if 0, exist('histo_mex','file')
+	% TODO: Performance tests showing an advantage  
+	[R,tix] = histo_mex(Y,'rows');
+	return; 
+end; 	
+
 [yr, yc] = size(Y);
 if yr==1,
         % Makes sure there is a second row
@@ -50,7 +57,6 @@ if yr==1,
         Y = [Y; NaN+ones(size(Y))];  
 end;
 
-
 % identify all possible X's and overall Histogram
 [Y,   idx] = sortrows(Y);
 [tmp, idx] = sort(idx);        % inverse index
@@ -58,7 +64,9 @@ end;
 %[ix, iy] = (diff(Y,1)>0);
 ix = logical(zeros(yr-1,1));
 for k = 1:yr-1,
-        ix(k) = any(Y(k,:)~=Y(k+1,:));
+        d = Y(k,:)-Y(k+1,:);
+        d = (~isnan(d) & d~=0) | (isnan(Y(k,:)) ~= isnan(Y(k+1,:)));
+        ix(k) = any(d);
 end;
 
 tmp = [find(ix); yr];
@@ -89,3 +97,4 @@ if nargout>1,
         R.compressionratio = (prod(size(R.X)) + yr/cc) / (yr*yc);
         R.tix = tix;
 end;
+

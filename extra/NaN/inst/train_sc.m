@@ -624,7 +624,7 @@ else          % Linear and Quadratic statistical classifiers
         if strncmpi(MODE.TYPE,'LD',2) || strncmpi(MODE.TYPE,'FDA',3),
 
                 %if NC(1)==2, NC(1)=1; end;                % linear two class problem needs only one discriminant
-                CC.weights = repmat(NaN,NC(2),NC(1));     % memory allocation
+                CC.weights = repmat(NaN,NC(2),NC(3));     % memory allocation
                 type = MODE.TYPE(3)-'0';
 
                 ECM0 = squeeze(sum(ECM,3));  %decompose ECM

@@ -44,6 +44,12 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %    'NBC'	Naive Bayesian Classifier [6]     
 %    'aNBC'	Augmented Naive Bayesian Classifier [6]
 %    'NBPW'	Naive Bayesian Parzen Window [9]     
+%
+%    'PLA'	Perceptron Learning Algorithm [11]
+%		MODE.hyperparameter.alpha = 
+%		 w = w + alpha * e'*x
+%    'Winnow2'  Winnow2 algorithm [12]
+%
 %    'PSVM'	Proximal SVM [8] 
 %		MODE.hyperparameter.nu  (default: 1.0)
 %    'LPM'      Linear Programming Machine
@@ -115,7 +121,11 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 % [10] R.-E. Fan, K.-W. Chang, C.-J. Hsieh, X.-R. Wang, and C.-J. Lin. 
 %       LIBLINEAR: A Library for Large Linear Classification, Journal of Machine Learning Research 9(2008), 1871-1874. 
 %       Software available at http://www.csie.ntu.edu.tw/~cjlin/liblinear 
-
+% [11] http://en.wikipedia.org/wiki/Perceptron#Learning_algorithm
+% [12] Littlestone, N. (1988) 
+%       "Learning Quickly When Irrelevant Attributes Abound: A New Linear-threshold Algorithm" 
+%       Machine Learning 285-318(2)
+% 	http://en.wikipedia.org/wiki/Winnow_(algorithm)
  
 %	$Id: train_sc.m 2140 2009-07-02 12:03:55Z schloegl $
 %	Copyright (C) 2005,2006,2007,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>
@@ -244,7 +254,54 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'lpm'))
         CC.hyperparameter.c_value = MODE.hyperparameter.c_value; 
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
 
+
+elseif ~isempty(strfind(lower(MODE.TYPE),'pla'))
+	% Perceptron Learning Algorithm 	
+
+        M = length(CC.Labels);
+        CC.weights  = zeros(size(D,2)+1,M);
         
+        if ~isfield(MODE.hyperparameter,'alpha') && isempty(W)
+		for k = 1:size(D,1),
+			e = [1, D(k,:)] * CC.weights  - (classlabel(k)==CC.Labels(k));
+			CC.weights = CC.weights + [1,D(k,:)]' * e ;
+		end;
+
+        elseif isfield(MODE.hyperparameter,'alpha') && isempty(W)
+		a = MODE.hyperparameter.alpha;
+		for k = 1:size(D,1),
+			e = [1, D(k,:)] * CC.weights  - (classlabel(k)==CC.Labels(k));
+			CC.weights = CC.weights + a * [1,D(k,:)]' * e ;
+		end;
+		
+        elseif ~isempty(W)
+        	if isfield(MODE.hyperparameter,'alpha')
+			W = W*MODE.hyperparameter.alpha;
+		end;	
+		for k = 1:size(D,1),
+			e = [1, D(k,:)] * CC.weights  - (classlabel(k)==CC.Labels(k));
+			CC.weights = CC.weights + W(k) * [1,D(k,:)]' * e ;
+		end;
+        end
+        CC.datatype = ['classifier:',lower(MODE.TYPE)];
+
+
+elseif ~isempty(strfind(lower(MODE.TYPE),'winnow'))
+	% winnow algorithm 	
+
+        M = length(CC.Labels);
+        CC.weights  = ones(size(D,2),M);
+        theta = size(D,2)/2;
+
+	for k = 1:size(D,1),
+		e = (1 + sign(D(k,:) * CC.weights - theta))/2 - (classlabel(k)==CC.Labels(k));
+		CC.weights = CC.weights.* 2^(D(k,:)' * e);
+	end;
+
+        CC.weights  = [zeros(1,M), CC.weights];
+        CC.datatype = ['classifier:',lower(MODE.TYPE)];
+        
+
 elseif ~isempty(strfind(lower(MODE.TYPE),'pls')) || ~isempty(strfind(lower(MODE.TYPE),'reg'))
 	% 4th version: support for weighted samples - work well with unequally distributed data: 
         % regression analysis, can handle sparse data, too. 

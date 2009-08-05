@@ -85,20 +85,24 @@ else
         error('Error CORRCOEF: Missing argument(s)\n');
 end;        
 
-if size(Z,1)~=1,
+if size(Z,2)~=1,
         warning('PARTCORRCOEF: Z has more than 1 dimension');
 end;
 
 rxy=corrcoef(X,Y,Mode);
-rxz=corrcoef(X,Z,Mode);
-if isempty(Y),
-        ryz = rxz;
-else
-        ryz = corrcoef(Y,Z,Mode);
-end;
+if isempty(Z)
+	R = rxy; 
+else 
+	rxz=corrcoef(X,Z,Mode);
+	if isempty(Y),
+        	ryz = rxz;
+	else
+        	ryz = corrcoef(Y,Z,Mode);
+	end;
 
-%rxy,rxz,ryz 
-R = (rxy-rxz*ryz')./sqrt((1-rxz.^2)*(1-ryz.^2)');
+	%rxy,rxz,ryz 
+	R = (rxy-rxz*ryz')./sqrt((1-rxz.^2)*(1-ryz.^2)');
+end;
 
 if nargout<2, 
         return, 

@@ -87,6 +87,8 @@ level 2a: derived functions
 	TRIMEAN		trimean
 
 	ECDF		empirical cumulative distribution function 
+	CDFPLOT		plot empirical cumulative distribution function 
+	GSCATTER	scatter plot of grouped data 
 	NORMPDF		normal probability distribution
 	NORMCDF		normal cumulative distribution 
 	NORMINV		inverse of the normal cumulative distribution
@@ -102,6 +104,7 @@ level 2b: classification, cross-validation
 	XVAL		classify data with cross validation
 	KAPPA		performance evaluation 
 	TRAIN_LDA_SPARSE	utility function 
+	FSS		feature subset selection and feature ranking
 
 
 REFERENCE(S):

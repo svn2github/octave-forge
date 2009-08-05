@@ -6,4 +6,4 @@ Missing data statistics
  nansum nanstd normpdf normcdf norminv meandev mod rem
  percentile quantile rankcorr ranks rms sumskipnan 
  var mean sem spearman trimean tpdf tcdf tinv zscore 
- conv2nan flag_implicit_significance xcovf
+ conv2nan flag_implicit_significance xcovf fss

@@ -40,6 +40,7 @@
 	speed: its slower than the m-functions histo2/3/4
 		|-> use a more efficient sorting function 
 	resembling of histo3 for multicolumn data. 
+	support of complex data and char-strings 
 */
 
 #include <inttypes.h>
@@ -348,7 +349,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 			int8_t *x;
 			x = (int8_t*)mxGetData(X);
-			for (k=0; k<=255; k++)
+			for (k=0; k<0x0100; k++)
 				x[k]=k-128;
 
 			x = (int8_t*)mxGetData(PInputs[0]);
@@ -367,8 +368,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			mxSetField(HIS,0,"X",X);
 
 			uint8_t *x = (uint8_t*)mxGetData(X);
-			for (k=0; k<255; k++)
-				x[k]=k;
+			for (k=0; k<0x0100; k++) x[k]=k;
 
 			x = (uint8_t*)mxGetData(PInputs[0]);
 			double *h = (double*)mxGetData(H);

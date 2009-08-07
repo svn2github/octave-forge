@@ -22,7 +22,7 @@
 ## @deftypefnx{Function File} {[@dots{}] =} cod (@var{a}, '0')
 ## Computes the complete orthogonal decomposition (COD) of the matrix @var{a}:
 ## @example
-##   @var{a} = @var{q}*@var{r}*@var{z}
+##   @var{a} = @var{q}*@var{r}*@var{z}'
 ## @end example
 ## Let @var{a} be an M-by-N matrix, and let @code{K = min(M, N)}. 
 ## Then @var{q} is M-by-M orthogonal, @var{z} is N-by-N orthogonal,
@@ -31,7 +31,7 @@
 ## The additional @var{p} output argument specifies that pivoting should be used in
 ## the first step (QR decomposition). In this case,
 ## @example
-##   @var{a}*@var{p} = @var{q}*@var{r}*@var{z}
+##   @var{a}*@var{p} = @var{q}*@var{r}*@var{z}'
 ## @end example
 ## If a second argument of '0' is given, an economy-sized factorization is returned
 ## so that @var{r} is K-by-K.
@@ -60,24 +60,24 @@ function [q, r, z, p] = cod (a, varargin)
   endif
 
   if (m >= n)
-    ## In this case, we're finished.
-    z = eye (n);
+    ## In this case, Z is identity, and we're finished.
+    z = eye (n, class (a));
   else
     ## Permutation inverts row order.
     pr = eye (m) (m:-1:1, :);
     ## Permutation inverts first m columns order.
     pc = eye (n) ([m:-1:1, m+1:n], :);
     ## Make n-by-m matrix, invert first m columns
-    r = (pr * r * pc.').';
+    r = (pr * r * pc')';
     ## QR factorize again.
     [z, r] = qr (r, varargin{:});
     ## Recover final R and Z
     if (economy)
-      r = pr * r.' * pr.';
-      z = pr * z.' * pc.';
+      r = pr * r' * pr';
+      z = pc * z * pr';
     else
-      r = pr * r.' * pc.';
-      z = pc * z.' * pc.';
+      r = pr * r' * pc';
+      z = pc * z * pc';
     endif
   endif
 
@@ -86,12 +86,12 @@ endfunction
 %!test
 %! a = rand (5, 10);
 %! [q, r, z] = cod (a);
-%! assert (norm (q*r*z - a) / norm (a) < 1e-10);
+%! assert (norm (q*r*z' - a) / norm (a) < 1e-10);
 %!test
 %! a = rand (5, 10) + i * rand (5, 10);
 %! [q, r, z] = cod (a);
-%! assert (norm (q*r*z - a) / norm (a) < 1e-10);
+%! assert (norm (q*r*z' - a) / norm (a) < 1e-10);
 %!test
 %! a = rand (5, 10);
 %! [q, r, z, p] = cod (a);
-%! assert (norm (q*r*z - a*p) / norm (a) < 1e-10);
+%! assert (norm (q*r*z' - a*p) / norm (a) < 1e-10);

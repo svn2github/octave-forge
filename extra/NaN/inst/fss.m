@@ -1,15 +1,19 @@
 function [idx,score] = fss(D,cl,N,MODE)
-% FSS - feature subset selection
+% FSS - feature subset selection and feature ranking 
 %   the method is motivated by the max-relevance-min-redundancy (mRMR) 
-%   approach [1], but instead of mutual information partial correlation 
-%   is used.
+%   approach [1]. However, the default method uses partial correlation.  
+%   An alternative method based on FSDD is supported, too. 
 %    
+%  [idx,score] = fss(D,cl) 
+%  [idx,score] = fss(D,cl,MODE) 
 %  [idx,score] = fss(D,cl,MODE) 
 %    
 % D 	data - each column represents a feature 
 % cl	classlabel   
 % Mode 	'Pearson' [default] correlation
 %	'rank' correlation 
+%       'FSDD' feature selection algorithm based on a distance discriminant [2]
+%       %%% 'MRMR','MID','MIQ' max-relevance, min redundancy [1] - not supported yet. 
 %
 % score score of the feature
 % idx	ranking of the feature    
@@ -20,6 +24,10 @@ function [idx,score] = fss(D,cl,N,MODE)
 %   Feature selection based on mutual information: criteria of max-dependency, max-relevance, and min-redundancy, 
 %   IEEE Transactions on Pattern Analysis and Machine Intelligence, 
 %   Vol. 27, No. 8, pp.1226-1238, 2005.
+% [2] Jianning Liang, Su Yang, Adam Winstanley, 
+%   Invariant optimal feature selection: A distance discriminant and feature ranking based solution, 
+%   Pattern Recognition, Volume 41, Issue 5, May 2008, Pages 1429-1439.
+%   ISSN 0031-3203, DOI: 10.1016/j.patcog.2007.10.018.
 
 
 %	$Id$
@@ -55,13 +63,61 @@ end;
 if isempty(N) N = size(D,2); end
 score = repmat(NaN,1,size(D,2));
 
-for k=1:N,
-	f = isnan(score);
-	r = partcorrcoef(cl,D(:,f),D(:,~f),MODE);
-	[s,ix] = max(sumsq(r,1));
-	f = find(f);
-	idx(k) = f(ix);
-	score(idx(k)) = s;
-end; 	
+if 0, strcmpi(MODE,'MRMR') || strcmpi(MODE,'MID') || strcmpi(MODE,'MIQ'),
+        %% RMRM/MID/MIQ is not supported
+        %% TODO: FIXME 
+         
+        [tmp,t] = sort([cl,D]);
+        cl = t(:,1:size(cl,2)); 
+        D  = t(:,1:size(D,2)); 
+        for k = 1:N,
+                V(k) = mi(cl, D(:,k));
 
+                for m = 1:N, 
+                        W(k,m) = mi(D(:,m), D(:,k));
+                end;
+                MID(k) = V(k) - mean(W(k,:));
+                MIQ(k) = V(k) / mean(W(k,:));
+        end
 
+        if  strcmpi(MODE,'MIQ')
+                [score,idx] = sort(MIQ,[],'descend'); 
+        else        
+                [score,idx] = sort(MID,[],'descend'); 
+        end         
+
+elseif strcmpi(MODE,'FSDD'); 
+        [b,i,j]=unique(cl); 
+        for k=1:length(b)
+                n(k,1) = sum(j==k);
+                m(k,:) = mean(D(j==k,:),1);
+                v(k,:) = var(D(j==k,:),1);
+        end; 
+        m0 = mean(m,1,n); 
+        v0 = var(D,[],1);
+        s2 = mean(m.^2,1,n) - m0.^2;        
+        score = (s2 - 2*mean(v,1,n)) ./ v0;
+        [t,idx] = sort(-score); 
+ 
+elseif isempty(MODE) || strcmpi(MODE,'rank') || strcmpi(MODE,'Pearson')
+        cl = cat2bin(cl); 
+        for k = 1:N,
+	        f = isnan(score);
+        	r = partcorrcoef(cl, D(:,f), D(:,~f), MODE);
+	        [s,ix] = max(sumsq(r,1));
+        	f = find(f);
+        	idx(k) = f(ix);
+        	score(idx(k)) = s;
+        end
+end
+
+function I = mi(x,y)
+        ix = ~any(isnan([x,y]),2);
+        H = sparse(x(ix),y(ix)); 
+        pij = h./sum(ix); 
+        Iij = pij.*log2(pij./(sum(pij,2)*sum(pij,1)));
+        Iij(isnan(Iij)) = 0; 
+        I = sum(Iij(:));
+end
+
+end

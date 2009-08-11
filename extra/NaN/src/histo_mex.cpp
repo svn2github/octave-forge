@@ -262,7 +262,11 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		}
 		Sort.Type = mxGetClassID(PInputs[0]); 
 		Sort.Table = (uint8_t*) mxGetData(PInputs[0]);
+
 		switch (mxGetClassID(PInputs[0])) {
+		case mxLOGICAL_CLASS:
+		        Sort.Size = sizeof(mxLogical);
+		        break; 
 		case mxINT8_CLASS: 
 		case mxUINT8_CLASS: 
 			Sort.Size = 1;

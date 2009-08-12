@@ -53,8 +53,8 @@ conf()
      CXXFLAGS="$CXXFLAGS -Wall $GCC_ARCH_FLAGS $GCC_OPT_FLAGS" \
      LDFLAGS="${LDFLAGS}" \
      --prefix="${PREFIX}" \
-     --enable-static \
-     --disable-shared \
+     --enable-shared \
+     --disable-static \
      --enable-fat \
      ABI=32
    )

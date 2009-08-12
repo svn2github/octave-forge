@@ -1,8 +1,6 @@
 m4_define(`__OCTAVE_VERSION__',`@OCTAVE_VERSION@')m4_dnl
 m4_define(`__GROUP_ID__',`group_id=2888')m4_dnl
 m4_define(`__MONOLITHIC_ID__',`package_id=29785')m4_dnl
-m4_define(`__WINDOWS_ID__',`package_id=287261')m4_dnl
-m4_define(`__OSX_ID__',`package_id=237839')m4_dnl
 m4_define(`__PACKAGES_ID__',`package_id=226520')m4_dnl
 m4_define(`__SOURCEFORGE__',`http://sourceforge.net')m4_dnl
 m4_define(`__PACKAGE__',`http://downloads.sourceforge.net/octave')m4_dnl
@@ -12,8 +10,8 @@ m4_define(`__FORUMS__',`__SOURCEFORGE__/forum/?__GROUP_ID__')m4_dnl
 m4_define(`__SVN__',`__SOURCEFORGE__/svn/?__GROUP_ID__')m4_dnl
 m4_define(`__DOWNLOAD__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__')m4_dnl
 m4_define(`__MONOLITHIC__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__&__MONOLITHIC_ID__')m4_dnl
-m4_define(`__WINDOWS__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__&__WINDOWS_ID__')m4_dnl
-m4_define(`__OSX__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__&__OSX_ID__')m4_dnl
+m4_define(`__WINDOWS__',`__SOURCEFORGE__/projects/octave/files/Octave_Windows - MinGW/')m4_dnl
+m4_define(`__OSX__',`__SOURCEFORGE__/projects/octave/files/Octave MacOSX Binary/')m4_dnl
 m4_define(`__PACKAGES__',`__SOURCEFORGE__/project/showfiles.php?__GROUP_ID__&__PACKAGES_ID__')m4_dnl
 m4_dnl
 m4_dnl

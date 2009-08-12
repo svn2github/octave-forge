@@ -44,10 +44,6 @@ source ../gcc43_common.sh
 # Directory the lib is built in
 BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 
-# no parallel build - ncurses makefile's structure does not 
-# support it...
-MAKE_FLAGS=""
-
 conf()
 {
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \

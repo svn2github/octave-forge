@@ -1,7 +1,22 @@
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/benchmarks/Makefile.in CLN-1.2.2/benchmarks/Makefile.in
---- CLN-1.2.2-orig/benchmarks/Makefile.in	2007-01-17 20:34:35 +0000
-+++ CLN-1.2.2/benchmarks/Makefile.in	2009-06-08 07:54:07 +0000
-@@ -89,7 +89,7 @@
+--- CLN-1.2.2-orig/benchmarks/Makefile.in	2007-01-17 21:34:35 +0100
++++ CLN-1.2.2/benchmarks/Makefile.in	2009-08-13 10:25:39 +0200
+@@ -46,8 +46,12 @@
+ 
+ OBJECTS = ${FILES_O}
+ 
+-LIBS = ../src/libcln.la -lm
+-LIBDEPS = ../src/libcln.la
++# 2009-aug-13 <lindnerb@users.sourceforge.net>
++#  build tests with shared cln lib because libtool 
++#  completly messes with the build...
++#
++LIBS = -L../src -lcln -lm
++LIBDEPS = 
+ 
+ PROGRAMS = $(addsuffix ${EXEEXT},timebench1 timebench2a timebench2ap timebench2b)
+ MODULES_timebench1 = timebench1
+@@ -89,7 +93,7 @@
  timebench2ap${EXEEXT} : $(patsubst %,%.o,${MODULES_timebench2ap})
  timebench2b${EXEEXT} : $(patsubst %,%.o,${MODULES_timebench2b})
  ${PROGRAMS} : %${EXEEXT} : ${LIBDEPS}
@@ -11,9 +26,24 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/benc
  
  install : all
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/examples/Makefile.in CLN-1.2.2/examples/Makefile.in
---- CLN-1.2.2-orig/examples/Makefile.in	2006-09-06 20:09:08 +0000
-+++ CLN-1.2.2/examples/Makefile.in	2009-06-08 07:54:07 +0000
-@@ -91,7 +91,7 @@
+--- CLN-1.2.2-orig/examples/Makefile.in	2006-09-06 22:09:08 +0200
++++ CLN-1.2.2/examples/Makefile.in	2009-08-13 10:25:50 +0200
+@@ -49,8 +49,12 @@
+ 
+ OBJECTS = ${FILES_O}
+ 
+-LIBS = ../src/libcln.la -lm
+-LIBDEPS = ../src/libcln.la
++# 2009-aug-13 <lindnerb@users.sourceforge.net>
++#  build tests with shared cln lib because libtool 
++#  completly messes with the build...
++#
++LIBS = -L../src -lcln -lm
++LIBDEPS = 
+ 
+ PROGRAMS = $(addsuffix ${EXEEXT},contfrac e fibonacci legendre lucaslehmer nextprime perfnum pi)
+ MODULES_contfrac = contfrac
+@@ -91,7 +95,7 @@
  perfnum${EXEEXT} : $(patsubst %,%.o,${MODULES_perfnum})
  pi${EXEEXT} : $(patsubst %,%.o,${MODULES_pi})
  ${PROGRAMS} : %${EXEEXT} : ${LIBDEPS}
@@ -23,8 +53,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/exam
  
  install : all
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/src/Makefile.in CLN-1.2.2/src/Makefile.in
---- CLN-1.2.2-orig/src/Makefile.in	2008-03-24 11:01:35 +0000
-+++ CLN-1.2.2/src/Makefile.in	2009-06-15 06:53:44 +0000
+--- CLN-1.2.2-orig/src/Makefile.in	2008-03-24 12:01:35 +0100
++++ CLN-1.2.2/src/Makefile.in	2009-08-13 10:18:05 +0200
 @@ -130,8 +130,9 @@
  ALLFILES_LO := $(patsubst %.cc,%.lo,${ALLFILES_CC})
  ALLASMFILES_LO := $(patsubst %.cc,%.lo,${ALLASMFILES_CC})
@@ -36,7 +66,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/src/
  else
  _all_ : allo-local ${SUBDIRS_TARGET_ALL}
  endif
-@@ -237,6 +238,30 @@
+@@ -237,6 +238,31 @@
  	echo ${ALLOBJECTS_LO} | tr ' ' '\n' > libcln.objectlist
  	${LIBTOOL_LINK} ${CXX} -o libcln.la -rpath ${libdir} -version-info ${CL_CURRENT}:${CL_REVISION}:${CL_AGE} ${LDFLAGS} ${LIBS} -objectlist libcln.objectlist
  
@@ -50,6 +80,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/src/
 +#  files created in the build directory
 +#
 +./.libs/libcln.a : $(ALLOBJECTS_O)
++	-mkdir .libs
 +	$(AR) cru $@ $^
 +	$(RANLIB) $@
 +	
@@ -68,9 +99,24 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/src/
  	${MKDIR} ${DESTDIR}${libdir}
  	${LIBTOOL_INSTALL} ${INSTALL_PROGRAM} libcln.la ${DESTDIR}${libdir}/libcln.la
 diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' CLN-1.2.2-orig/tests/Makefile.in CLN-1.2.2/tests/Makefile.in
---- CLN-1.2.2-orig/tests/Makefile.in	2006-10-11 19:08:32 +0000
-+++ CLN-1.2.2/tests/Makefile.in	2009-06-08 07:54:07 +0000
-@@ -162,7 +162,7 @@
+--- CLN-1.2.2-orig/tests/Makefile.in	2006-10-11 21:08:32 +0200
++++ CLN-1.2.2/tests/Makefile.in	2009-08-13 10:25:29 +0200
+@@ -46,8 +46,12 @@
+ 
+ OBJECTS = ${FILES_O}
+ 
+-LIBS = ../src/libcln.la -lm
+-LIBDEPS = ../src/libcln.la
++# 2009-aug-13 <lindnerb@users.sourceforge.net>
++#  build tests with shared cln lib because libtool 
++#  completly messes with the build...
++#
++LIBS = -L../src -lcln -lm
++LIBDEPS = 
+ 
+ PROGRAMS = $(addsuffix ${EXEEXT},exam tests timemul timesquare timediv timesqrt timegcd timefact timeprint timeLFsqrt timeRAtoLF timeLFRAmul timeRALFdiv timepi timeexp1 timeeuler timecatalan timezeta3 timeLFln timeLFexp timeLFsin timeLFcos timeLFsinh timeLFcosh timeLFatan timeLFatanh timerecip2adic timediv2adic timeMIpow2recip timeMIpow2div timeMImisc5 timeUPMImul timesqrtmodp main)
+ MODULES_exam = exam exam_I exam_RA exam_SF exam_FF exam_DF exam_LF exam_I_gcd exam_I_sqrtp
+@@ -162,7 +166,7 @@
  timesqrtmodp${EXEEXT} : $(patsubst %,%.o,$(MODULES_timesqrtmodp))
  main${EXEEXT} : $(patsubst %,%.o,$(MODULES_main))
  ${PROGRAMS} : %${EXEEXT} : ${LIBDEPS}

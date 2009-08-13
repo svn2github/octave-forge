@@ -45,7 +45,9 @@ BUILDDIR=".build_mingw32_${VER}-${REL}_gcc${GCC_VER}${GCC_SYS}"
 # disable built-in rules, since make fails when restarting an 
 # interrupted build process trying to call "m2c", and the same
 # when doing make check ??
-MAKE_FLAGS="$MAKE_FLAGS -r"
+# Also issuing a parallel build with 4 threads fails with make hanging in
+# mid-build. So does -j3. Reason unknown. Building with -j2 succeeds though...
+MAKE_FLAGS="`echo $MAKE_FLAGS | sed -e s%-j[\ ]*[2-9]%-j2%` -r"
 
 # == make check ==
 #

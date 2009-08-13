@@ -59,7 +59,7 @@ build()
    export ZLIB_PATH=${INCLUDE_BASE}/${INCLUDE_DEFAULT}
    export CFLAGS="${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS}"
    export CPP="${GCC_PREFIX}cpp${GCC_VER}${GCC_SYS}"
-   ( cd ${BUILDDIR}/lib && make -f Makefile.m32 ZLIB=1 )
+   ( cd ${BUILDDIR}/lib && make $MAKE_FLAGS -f Makefile.m32 ZLIB=1 )
 }
 
 install()

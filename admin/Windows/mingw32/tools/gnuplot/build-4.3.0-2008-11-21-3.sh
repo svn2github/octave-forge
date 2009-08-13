@@ -90,8 +90,12 @@ build() {
  (
   export PATH=${BINARY_PATH}:${PATH_MIKTEX}:${PATH_HCW}:${PATH}
 
+  # build executables using parallel make (if enabled)
+  ( cd ${BUILDDIR_GUI}     && make $MAKE_FLAGS -C src -f ../config/makefile.mgw GCC_ARCH_FLAGS="${GCC_ARCH_FLAGS}" wgnuplot.exe )
+  # build documentation using non-parallel make, parallel build fails
   ( cd ${BUILDDIR_GUI}     && make -C src -f ../config/makefile.mgw GCC_ARCH_FLAGS="${GCC_ARCH_FLAGS}" all )
-  ( cd ${BUILDDIR_CONSOLE} && make -C src -f ../config/makefile.mgw GCC_ARCH_FLAGS="${GCC_ARCH_FLAGS}" gnuplot.exe )
+  # executable again using parallel make
+  ( cd ${BUILDDIR_CONSOLE} && make $MAKE_FLAGS -C src -f ../config/makefile.mgw GCC_ARCH_FLAGS="${GCC_ARCH_FLAGS}" gnuplot.exe )
   ( cd ${BUILDDIR_GUI}/docs && make pdf )
  )
 }

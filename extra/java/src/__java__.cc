@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <map>
+#include <iostream>
 #include <fstream>
 
 typedef jint (JNICALL *JNI_CreateJavaVM_t) (JavaVM **pvm, JNIEnv **penv, void *args);
@@ -584,9 +585,9 @@ static jobject make_java_index (JNIEnv* jni_env, const octave_value_list& idx)
       idx_vector v = idx(i).index_vector ();
       if (! error_state)
         {
-          jintArray_ref i_array (jni_env, jni_env->NewIntArray (v.capacity ()));
+          jintArray_ref i_array (jni_env, jni_env->NewIntArray (v.length ()));
           jint *buf = jni_env->GetIntArrayElements (i_array, 0);
-          for (int k=0; k<v.capacity (); k++)
+          for (int k=0; k<v.length (); k++)
             buf[k] = v(k);
           jni_env->ReleaseIntArrayElements (i_array, buf, 0);
           jni_env->SetObjectArrayElement (retval, i, i_array);
@@ -676,7 +677,7 @@ static string_vector get_invoke_list (JNIEnv* jni_env, jobject jobj)
   }
 
   string_vector v (name_list);
-  return v.qsort (true);
+  return v.sort (true);
 }
 
 static octave_value convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)

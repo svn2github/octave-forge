@@ -3,7 +3,7 @@ sinclude Makeconf
 # disable optimizations since gcc consumes too much memory
 # this line can be removed
 CXXFLAGS_NO_OPT := $(filter-out -O2, $(CXXFLAGS))
-MKOCTFILE:=CXXFLAGS="$(CXXFLAGS_NO_OPT)" $(MKOCTFILE)
+MKOCTFILE:=CXXFLAGS="$(CXXFLAGS_NO_OPT)" $(MKOCTFILE) $(LDFLAGS)
 
 .PHONY: clean check
 

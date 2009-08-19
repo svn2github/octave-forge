@@ -179,6 +179,7 @@ AC_SUBST(CC)
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(CPICFLAG)
+AC_SUBST(LDFLAGS)
 
 dnl Fortran compiler and flags
 F77=`$MKOCTFILE -p F77`
@@ -368,6 +369,31 @@ if test $have_mysql = yes ; then
     MYSQL_STATUS="yes"
     AC_SUBST(DEFHAVE_MYSQL)
     DEFHAVE_MYSQL="HAVE_MYSQL=1"
+
+    # check for libmysqlclient
+    AC_DEFINE(found_libmysqlclient)
+    AC_CHECK_LIB(mysqlclient, mysql_init, found_libmysqlclient=yes, found_libmysqlclient=no)
+    if test $found_libmysqlclient = no ; then
+        # check in /usr/lib/mysql
+        OLD_LDFLAGS=$LDFLAGS
+        LDFLAGS="$LDFLAGS -L/usr/lib/mysql"
+        AC_CHECK_LIB(mysqlclient, mysql_real_query, found_libmysqlclient=yes, found_libmysqlclient=no)
+        if test $found_libmysqlclient = no ; then
+            LDFLAGS=$OLD_LDFLAGS
+        fi
+    fi
+    if test $found_libmysqlclient = no ; then
+        # check in /usr/lib64/mysql
+        OLD_LDFLAGS=$LDFLAGS
+        LDFLAGS="$LDFLAGS -L/usr/lib64/mysql"
+        AC_CHECK_LIB(mysqlclient, mysql_real_connect, found_libmysqlclient=yes, found_libmysqlclient=no)
+        if test $found_libmysqlclient = no ; then
+            LDFLAGS=$OLD_LDFLAGS
+        fi
+    fi
+    if test $found_libmysqlclient = no ; then
+        AC_MSG_ERROR(libmysqlclient not found)
+    fi
 else
     MYSQL_STATUS="mysql/mysql.h not found"
 fi

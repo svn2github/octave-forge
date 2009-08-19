@@ -61,8 +61,6 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 // SSIZE_MAX might be for 64-bit. Limit to 2^31-1
 #define BUFF_SIZE 2147483647
 
-static bool quitting_gracefully = false;
-
 // Handle server SIGTERM SIGQUIT
 
 static RETSIGTYPE
@@ -99,6 +97,7 @@ void
 do_octave_atexit_server (void)
 {
   static bool deja_vu = false;
+  extern bool quitting_gracefully;
 
   while (! octave_atexit_functions.empty ())
     {

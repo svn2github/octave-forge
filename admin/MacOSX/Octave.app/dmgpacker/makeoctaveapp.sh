@@ -19,10 +19,10 @@
 # command.
 
 # This is the target platform for which Octave.app should be created.
-TARGETPLATFORM=ppc # can either be 'i386' or 'ppc'
+TARGETPLATFORM=i386 # can either be 'i386' or 'ppc'
 
 # This is the Octave version number of the Octave.app that is created.
-OCTAVEVERSION=3.2.0 # must be the version number of Octave
+OCTAVEVERSION=3.2.2 # must be the version number of Octave
 
 # This is the directory where all the dependencies are installed. Make
 # sure that there are no other files in this directory that are not
@@ -42,7 +42,7 @@ TEMPDIR=/tmp/TEMPDIR
 # octave-VERSION-ARCH.dmg image. The files that are copied here are
 # Octave-FAQ.pdf, octave.pdf, liboctave.pdf, refcard-a4.pdf,
 # refcard-legal.pdf and refcard-letter.pdf.
-OCDOCS=~/tmp/oct-ppc/work/octave-${OCTAVEVERSION}/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
+OCDOCS=~/tmp/oct-${TARGETPLATFORM}/work/octave-${OCTAVEVERSION}/doc/{faq/Octave-FAQ.pdf,interpreter/octave.pdf,liboctave/liboctave.pdf,refcard/refcard-{a4,legal,letter}.pdf}
 
 # These are extras (of which kind they may ever be) that are copied
 # into the Extras directory of the octave-VERSION-ARCH.dmg image.

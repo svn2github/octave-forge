@@ -53,7 +53,7 @@ WPACKAGE_ROOT=`cd ${PACKAGE_ROOT}; pwd -W | sed -e 's+/+\\\\\\\\+g'`
 
 echo WPACKAGE_ROOT=$WPACKAGE_ROOT
 
-SUBWCREV="subwcrev.EXE"
+SUBWCREV="/c/Programs/TortoiseSVN/bin/subwcrev.EXE"
 
 rm -rf octave_nsi.log
 

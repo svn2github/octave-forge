@@ -37,7 +37,7 @@ Changes since Octave/mingw32 3.2.0:
    Be advised that this will trigger the "clear all" segfault!
 
 
-Fixed Issues in 3.2.0:
+Fixed Issues in 3.2.2:
 ----------------------
 
 *) The command "dir" should no longer crash on Windows Vista and Windows Server

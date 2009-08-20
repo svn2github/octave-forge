@@ -1,5 +1,5 @@
 
-Known Issues with octave/mingw32 3.2.x:
+Known Issues with octave/mingw32 3.2.2:
 --------------------------------------
 
 *) The command "clear all" results in a segfault.

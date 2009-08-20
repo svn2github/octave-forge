@@ -44,6 +44,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include "input.h"
 #include "quit.h"
 
+#include <iostream>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>

@@ -20,7 +20,7 @@
 #include <octave/oct-stream.h>
 #include <octave/oct-map.h>
 
-DEFUN_DLD (__bw_prcv__, args, nargout, "prcv (pd)\n\
+DEFUN_DLD (__bw_prcv__, args, nargout, "__bw_prcv__ (pd)\n\
 Reads one variable from pipe stream 'pd'.\n\
 The variable must have been coded in Octaves binary format,\n\
 including a header. This can be done by 'psend ()'.\n\
@@ -29,8 +29,8 @@ can test if 'ismatrix (return_value)' as an alternative to\n\
 call 'feof ()' afterwards. If EOF is met later in reading,\n\
 it causes an error.\n\
 Normally, a structure is returned with the variable under its name\n\
-in a single field. With no output arguments, the variable is installed\n\
-into memory.\n\
+in a single field. Originally, with no output arguments, the variable was\n\
+installed into memory, but this has been disabled.\n\
 \n\
 This function may change and is internal to the parallel package.\n")
 {
@@ -38,10 +38,10 @@ This function may change and is internal to the parallel package.\n")
 	Octave_map retstruct;
 
 	if (args.length () != 1) {
-		error ("prcv: exactly one argument required\n");
+		error ("__bw_prcv__: exactly one argument required\n");
 		return retval;
 	}
-	octave_stream is = octave_stream_list::lookup (args(0), "prcv");
+	octave_stream is = octave_stream_list::lookup (args(0), "__bw_prcv__");
 	if (error_state) return retval;
 
 	if (is.is_open ()) {
@@ -49,7 +49,7 @@ This function may change and is internal to the parallel package.\n")
 		// 114: "r", 43: "+"
 		if (! strchr (mode.c_str (), 114) &&
 		    ! strchr (mode.c_str (), 43)) {
-			error ("prcv: stream not readable\n");
+			error ("__bw_prcv__: stream not readable\n");
 			return retval;
 		}
 #ifdef PATCHED_PIPE_CODE
@@ -59,13 +59,13 @@ This function may change and is internal to the parallel package.\n")
 
 		// 98: "b"
 		if (! strchr (mode.c_str (), 98)) {
-			error ("prcv: stream not binary\n");
+			error ("__bw_prcv__: stream not binary\n");
 			return retval;
 		}
 #endif
 	}
 	else {
-		error ("prcv: stream not open\n");
+		error ("__bw_prcv__: stream not open\n");
 		return retval;
 	}
 
@@ -100,50 +100,17 @@ This function may change and is internal to the parallel package.\n")
 	// after the header exactly one variable is expected. This
 	// is mended by asking for EOF here.
 	if (ps.eof () || error_state || name.empty ()) {
-		error ("prcv: error in reading variable data\n");
+		error ("__bw_prcv__: error in reading variable data\n");
 		return retval;
 	}
 	if  (! tc.is_defined ()) {
 		// What means this?
-		error ("prcv: error in reading variable\n");
+		error ("__bw_prcv__: error in reading variable\n");
 		return retval;
 	}
 
-	if (nargout == 1) {
-		retstruct.assign(name, tc);
-		retval = retstruct;
-	}
-	else {
-		// install_loaded_variable () is static ... here the
-		// code equivalent to
-		//
-		// install_loaded_variable (true, name, tc, global, doc);
-		//
-		// is duplicated (except one error check) ...
+	retstruct.assign(name, tc);
+	retval = retstruct;
 
-		symbol_record *lsr = curr_sym_tab->lookup (name);
-
-		bool is_undefined = true;
-		bool is_variable = false;
-
-		if (lsr) {
-			is_undefined = ! lsr->is_defined ();
-			is_variable = lsr->is_variable ();
-		}
-
-		symbol_record *sr = 0;
-
-		if (! global && (is_variable || is_undefined)) {
-			lsr = curr_sym_tab->lookup (name, true);
-			sr = lsr;
-		}
-		else {
-			lsr = curr_sym_tab->lookup (name, true);
-			link_to_global_variable (lsr);
-			sr = lsr;
-		}
-		sr->define (tc);
-		sr->document (doc);
-	}
 	return retval;
 }

@@ -147,8 +147,8 @@ function __bw_scheduler__ (f, argfile)
 	[pdw, pdr, pid] = popen2 (cmd, cmd_args, 1);
 	while (true) # break if eof on pdr
 	  arg_id = __bw_prcv__ (pdrc).psend_var;
-	  __bw_psend__ (pdw, args{arg_id}, true);
-	  __bw_psend__ (pdw, arg_id, true);
+	  __bw_psend__ (pdw, args{arg_id});
+	  __bw_psend__ (pdw, arg_id);
 	  fflush (pdw);
 	  try
 	    if (ismatrix (tp = __bw_prcv__ (pdr)))
@@ -167,8 +167,8 @@ function __bw_scheduler__ (f, argfile)
 	      break;
 	    end_try_catch
 	    tp = tp.psend_var;
-	    __bw_psend__ (pdwc, 2, true);
-	    __bw_psend__ (pdwc, tp, true);
+	    __bw_psend__ (pdwc, 2);
+	    __bw_psend__ (pdwc, tp);
 	    fflush (pdwc);
 	  else # success
 	    try
@@ -179,15 +179,15 @@ function __bw_scheduler__ (f, argfile)
 	      break;
 	    end_try_catch
 	    tp = tp.psend_var;
-	    __bw_psend__ (pdwc, 0, true);
-	    __bw_psend__ (pdwc, tp, true);
+	    __bw_psend__ (pdwc, 0);
+	    __bw_psend__ (pdwc, tp);
 	    fflush (pdwc);
 	  endif
 	endwhile
 	waitpid (pid);
 	pclose (pdr);
 	pclose (pdw);
-	__bw_psend__ (pdwc, 1, true); # computing machine (got) unreachable
+	__bw_psend__ (pdwc, 1); # computing machine (got) unreachable
 	fflush (pdwc);
 	if ((rest = connect_timeout + constart - time) > 0)
 	  pause (rest);
@@ -225,7 +225,7 @@ function __bw_scheduler__ (f, argfile)
     ## there should always be free childs here, give them a task
     for id = 1:min (length (m_free), length (args_unused))
       ## tell child to use this argument
-      __bw_psend__ (pipesw(m_free(id)), args_unused(id), true);
+      __bw_psend__ (pipesw(m_free(id)), args_unused(id));
       fflush (pipesw(m_free(id)));
       ## mark child active (busy) and note argument of machine
       m_active(m_free(id)) = args_unused(id);

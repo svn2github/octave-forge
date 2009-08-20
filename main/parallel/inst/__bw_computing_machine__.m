@@ -46,11 +46,11 @@ function __bw_computing_machine__ (f)
     end_try_catch
 
     if (err)
-      __bw_psend__ (stdout, 2, true);
-      __bw_psend__ (stdout, msg, true);
+      __bw_psend__ (stdout, 2);
+      __bw_psend__ (stdout, msg);
     else
-      __bw_psend__ (stdout, 0, true);
-      __bw_psend__ (stdout, res, true);
+      __bw_psend__ (stdout, 0);
+      __bw_psend__ (stdout, res);
     endif
     fflush (stdout);
 

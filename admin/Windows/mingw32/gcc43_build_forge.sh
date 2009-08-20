@@ -88,6 +88,10 @@ FORGE_OCT_ROOT=${PACKAGE_ROOT}/libexec/octave/packages/
 FORGELOG=forge.log
 FORGELISTLOG=forgelist.txt
 
+# octave's win32 SED and msys' sed clash, sigh...
+# so temporarily remove the win32 version for building forge packages
+mv ${PACKAGE_ROOT}/bin/sed.exe ${PACKAGE_ROOT}/bin/sed.exe.bak
+
 rm -f ${FORGELISTLOG}
 
 echo Installing forge packages for octave ${VER_OCTAVE} > ${FORGELOG}
@@ -121,3 +125,6 @@ for a in $FORGEPACK; do
       fi
    fi
 done
+
+# restore the win32 version of sed
+mv ${PACKAGE_ROOT}/bin/sed.exe.bak ${PACKAGE_ROOT}/bin/sed.exe

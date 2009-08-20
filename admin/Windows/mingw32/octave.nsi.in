@@ -27,7 +27,7 @@ ReserveFile "${PACKAGE_ROOT}\bin\cpufeature.exe"
 ; License page
 !define MUI_LICENSEPAGE_TEXT_BOTTOM "Click Next to continue."
 !define MUI_LICENSEPAGE_BUTTON "Next >"
-!insertmacro MUI_PAGE_LICENSE "..\..\..\COPYING.GPL"
+!insertmacro MUI_PAGE_LICENSE "${PACKAGE_ROOT}\license\octave\COPYING"
 
 ; Detect CPU Type
 ; Page custom DetectCPUType
@@ -160,7 +160,9 @@ Section "Octave" SEC_OCTAVE
    
   SetOutPath "$INSTDIR"
   File "README.txt"
-   
+  File "CHANGELOG.txt"
+  File "KNOWN_ISSUES.txt"
+  
    ; Shortcut's "Start In" Property seems to be defined by the current output path...
    SetOutPath "$INSTDIR\bin"
    
@@ -170,6 +172,8 @@ Section "Octave" SEC_OCTAVE
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Octave.lnk" "$INSTDIR\bin\octave-${OCTAVE_VERSION}.exe" "" "$INSTDIR\bin\octave.ico" 0
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\WGnuplot.lnk" "$INSTDIR\bin\wgnuplot.exe" 
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Notepad++.lnk" "$INSTDIR\tools\notepad++\notepad++.exe" 
+   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\CHANGELOG.lnk" "$INSTDIR\CHANGELOG.txt" 
+   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\KNOWN_ISSUES.lnk" "INSTDIR\KNOWN_ISSUES.txt" 
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Uninstall.lnk" "$INSTDIR\uninstaller.exe"
    
    CreateDirectory "$SMPROGRAMS\$SMFOLDERNAME\Documentation"
@@ -187,7 +191,7 @@ Section "Octave" SEC_OCTAVE
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\HTML\Octave C++ API.lnk" "$INSTDIR\doc\HTML\liboctave\index.html"
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\HTML\FAQ.lnk" "$INSTDIR\doc\HTML\faq\Octave-FAQ.html"
    
-   CreateShortCut "$DESKTOP\Octave.lnk" "$INSTDIR\bin\octave-${OCTAVE_VERSION}.exe" "" "$INSTDIR\bin\octave.ico" 0
+   CreateShortCut "$DESKTOP\Octave-${OCTAVE_VERSION}.lnk" "$INSTDIR\bin\octave-${OCTAVE_VERSION}.exe" "" "$INSTDIR\bin\octave.ico" 0
    
    ; write some reg settings to have nice default look-and-feel
    
@@ -313,12 +317,14 @@ Section Uninstall
 
    !insertmacro MUI_STARTMENU_GETFOLDER "Startmenu" $SMFOLDERNAME
 
-   Delete "$DESKTOP\Octave.lnk"
+   Delete "$DESKTOP\Octave-${OCTAVE_VERSION}.lnk"
 
    Delete "$SMPROGRAMS\$SMFOLDERNAME\Octave.lnk"
    Delete "$SMPROGRAMS\$SMFOLDERNAME\WGnuplot.lnk"
    Delete "$SMPROGRAMS\$SMFOLDERNAME\Notepad++.lnk"
    Delete "$SMPROGRAMS\$SMFOLDERNAME\Uninstall.lnk"
+   Delete "$SMPROGRAMS\$SMFOLDERNAME\CHANGELOG.lnk"
+   Delete "$SMPROGRAMS\$SMFOLDERNAME\KNOWN_ISSUES.lnk"
 
    Delete "$SMPROGRAMS\$SMFOLDERNAME\Documentation\Gnuplot.lnk"
    
@@ -479,6 +485,7 @@ FunctionEnd
 Section -Post
 
    ExecWait '"$INSTDIR\bin\octave.exe" -qfH --eval "pkg rebuild"'
+   ExecWait '"$INSTDIR\bin\octave.exe" -qfH --eval "pkg rebuild -noauto windows ga communications octcdf"'
 
 SectionEnd
 

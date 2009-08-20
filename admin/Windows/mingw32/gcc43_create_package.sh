@@ -46,13 +46,14 @@ ${PACKAGE_ROOT}/tools \
 ${PACKAGE_ROOT}/license"
 
 # create zip package
+# 7za.exe -m0=BCJ2 -m1=LZMA:d23 -m2=LZMA:d19 -m3=LZMA:d19 -mb0:1 -mb0s1:2 -mb0s2:3 -ms -mmt ${TOPDIR}/${PKGFILE}.7z $SRCES
 #"${SEVENZIP}" $SEVENZIP_FLAGS ${TOPDIR}/${PKGFILE}.7z $SRCES 
 
 WPACKAGE_ROOT=`cd ${PACKAGE_ROOT}; pwd -W | sed -e 's+/+\\\\\\\\+g'`
 
 echo WPACKAGE_ROOT=$WPACKAGE_ROOT
 
-SUBWCREV="C:/Program Files/TortoiseSVN/bin/subwcrev.EXE"
+SUBWCREV="subwcrev.EXE"
 
 rm -rf octave_nsi.log
 
@@ -114,6 +115,10 @@ create_readme_file()
    
    echo;
    
+   cat CHANGELOG.txt
+   echo;
+   cat KNOWN_ISSUES.txt
+   echo;
    cat ${PACKAGE_ROOT}/share/octave/${PKG_VER}/etc/NEWS
 }
    

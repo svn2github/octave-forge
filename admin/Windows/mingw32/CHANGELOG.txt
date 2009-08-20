@@ -1,0 +1,48 @@
+
+Changes since Octave/mingw32 3.2.0:
+-----------------------------------
+
+*) The 3.2.2 installer includes the following post-3.2.2 changesets in 
+   addition to the octave-3.2.2 sources
+   
+      http://hg.tw-math.de/release-3-2-x/rev/cd95695a0a89  ("dir" crashes)
+      http://hg.tw-math.de/release-3-2-x/rev/b308b2e12f04  (16bit images)
+      http://hg.tw-math.de/release-3-2-x/rev/9107c882f193  (speed up "plot")
+      
+   These adress bugfixes relevant to mingw32 platform.
+   These will be included by default in succeeding versions of octave/mingw32.
+   
+*) The installer includes a Q16 GraphicsMagick build (configured 
+   with --quantum-depth=16) to enable lossless reading/writing of
+   16bit images.
+   
+*) The following octave-forge packages have been marked as "-noauto":
+      windows-1.0.8
+      octcdf-1.0.13
+      communications-1.0.10
+      ga-0.9.7
+      
+   This is done to avoid the "clear all" crash if any of these packages
+   is selected during the installation. If you require them to be loaded 
+   automatically you have to manually set them to, by executing the 
+   command(s)
+   
+      pkg rebuild -auto windows
+      pkg rebuild -auto octcdf
+      pkg rebuild -auto communications
+      pkg rebuild -auto ga
+   
+   from the octave prompt.
+   
+   Be advised that this will trigger the "clear all" segfault!
+
+
+Fixed Issues in 3.2.0:
+----------------------
+
+*) The command "dir" should no longer crash on Windows Vista and Windows Server
+
+*) Reading/writing images using GraphicsMagick no longer fails with 
+   GraphicsMagick complaining about missing configuration files.
+
+*) Reading/writing 16bit images works without loss of precision

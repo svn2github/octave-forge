@@ -1,0 +1,41 @@
+
+Known Issues with octave/mingw32 3.2.x:
+--------------------------------------
+
+*) The command "clear all" results in a segfault.
+   This is currently triggered by the following octave-forge packages:
+      windows
+      octcdf
+      communications
+      ga (depends on communications)
+      
+   The error occurs only if any of these packages is marked "-auto" 
+   i.e. is loaded at startup.
+   
+*) The command "clear all" exits with the error message
+   
+     error: stdin is not a tty!
+   
+   in conjunction with the ARPACK package e.g. when calling eigs()
+   
+*) The fixed octave forge package currently does not compile
+
+*) Installing octave respectively running octave from a path which contains
+   spaces breaks the installation of octave-forge packages using octave's
+   package manager pkg.m.
+   It this therefore highly recommended to install octave to a path WITHOUT
+   spaces. Octave will work if installed to a path including spaces, and all 
+   packages added at the installation will work if installed into a path 
+   containing spaces, HOWEVER you will currently NOT be able to install 
+   packages using octave's package manager at a later time if Octave was 
+   installed to a directory containing spaces.
+
+*) "make check" results:
+
+   Summary:
+   
+     PASS   5730
+     FAIL     10
+     
+   octave-3.2.2\src\data.cc  PASS  500/509  FAIL 9
+   test_string.m ....................................... PASS   78/79   FAIL 1

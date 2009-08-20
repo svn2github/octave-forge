@@ -1,0 +1,20 @@
+local warning state and PS1 in main rcfile
+
+diff -r 5da64de2c479 scripts/startup/main-rcfile
+--- a/scripts/startup/main-rcfile	Thu Aug 20 20:28:44 2009 +0200
++++ b/scripts/startup/main-rcfile	Thu Aug 20 20:28:47 2009 +0200
+@@ -63,4 +63,14 @@
+    gnuplot_binary( fullfile( octave_config_info("bindir"),"gnuplot.exe") );
+ endif
+ 
++## set warning state less intrusive
++
++warning("off","Octave:string-concat");
++warning("off","Octave:single-quote-string");
++warning("off","Octave:resize-on-range-error");
++
++## set default prompt
++
++PS1("\\s:\\#:\\w\n> ");
++
+ atexit ("__finish__");

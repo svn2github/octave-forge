@@ -1,0 +1,13 @@
+set MAGICK_HOME environment variable at startup
+
+diff -r fe883921e2cb scripts/startup/main-rcfile
+--- a/scripts/startup/main-rcfile	Mon Jun 15 10:50:53 2009 +0200
++++ b/scripts/startup/main-rcfile	Mon Jun 15 16:53:14 2009 +0200
+@@ -73,4 +73,7 @@
+ 
+ PS1("\\s:\\#:\\w\n> ");
+ 
++## set MAGICK_HOME environment variable
++putenv("MAGICK_HOME", OCTAVE_HOME);
++
+ atexit ("__finish__");

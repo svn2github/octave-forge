@@ -1,0 +1,19 @@
+check for notepad++ in main rcfile
+
+diff -r e01bedb205ee scripts/startup/main-rcfile
+--- a/scripts/startup/main-rcfile	Thu Aug 20 20:28:29 2009 +0200
++++ b/scripts/startup/main-rcfile	Thu Aug 20 20:28:36 2009 +0200
+@@ -30,4 +30,13 @@
+ 
+ pkg ("load", "auto");
+ 
++## check for notepad++ editor
++
++npp_path = fullfile( octave_config_info("prefix"), "tools", "notepad++" );
++if( exist(npp_path,"dir") )
++   EDITOR( fullfile( npp_path, "notepad++.exe" ) );
++   edit("mode","async");
++endif
++clear npp_path
++
+ atexit ("__finish__");

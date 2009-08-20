@@ -1,0 +1,14 @@
+add $OCTAVE_HOME/include and $OCTAVE_HOME/lib to CPPFLAGS resp. LDFLAGS in pkg configure
+
+diff -r 19a9a78e17b0 scripts/pkg/pkg.m
+--- a/scripts/pkg/pkg.m	Thu Aug 20 20:28:47 2009 +0200
++++ b/scripts/pkg/pkg.m	Thu Aug 20 20:28:49 2009 +0200
+@@ -1233,6 +1233,8 @@
+       if (isempty (getenv ("RANLIB")))
+         flags = cstrcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
+       endif
++      flags = strcat( flags, " LDFLAGS=-L\"", fullfile(OCTAVE_HOME,"lib"), "\"" );
++      flags = strcat( flags, " CPPFLAGS=-I\"", fullfile(OCTAVE_HOME,"include"), "\"" );
+       [status, output] = shell (strcat ("cd '", src, "'; ./configure --prefix=\"",
+                                         desc.dir, "\"", flags));
+       if (status != 0)

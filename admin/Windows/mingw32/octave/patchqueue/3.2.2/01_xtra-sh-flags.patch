@@ -1,0 +1,38 @@
+XTRA_CRUFT_SH_FLAGS and XTRA_OCTINTERP_SH_FLAGS for mingw32-build
+
+diff -r 1d5a487a01cf configure.in
+--- a/configure.in	Mon Aug 10 11:14:46 2009 +0200
++++ b/configure.in	Thu Aug 20 20:25:24 2009 +0200
+@@ -870,13 +870,19 @@
+ fi
+ 
+ XTRA_CRUFT_SH_LDFLAGS=
++XTRA_OCTINTERP_SH_LDFLAGS=
+ case "$canonical_host_type" in
+   *-*-msdosmsvc)
+     FLIBS="$FLIBS -lkernel32"
+     XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft.def"
+   ;;
++  *-*-mingw*)
++    XTRA_CRUFT_SH_LDFLAGS="-Wl,--exclude-libs=libgfortran.a"
++    XTRA_OCTINTERP_SH_LDFLAGS="-Wl,--exclude-libs=libgfortran.a"
++  ;;
+ esac
+ AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
++AC_SUBST(XTRA_OCTINTERP_SH_LDFLAGS)
+ 
+ FC=$F77
+ AC_SUBST(FC)
+diff -r 1d5a487a01cf src/Makefile.in
+--- a/src/Makefile.in	Mon Aug 10 11:14:46 2009 +0200
++++ b/src/Makefile.in	Thu Aug 20 20:25:24 2009 +0200
+@@ -352,6 +352,9 @@
+   endif
+ endif
+ 
++XTRA_OCTINTERP_SH_LDFLAGS = @XTRA_OCTINTERP_SH_LDFLAGS@
++SH_LDFLAGS += $(XTRA_OCTINTERP_SH_LDFLAGS)
++
+ libraries: $(LIBRARIES)
+ .PHONY: libraries
+ 

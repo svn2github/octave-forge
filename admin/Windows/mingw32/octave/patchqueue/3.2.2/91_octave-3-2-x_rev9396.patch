@@ -1,0 +1,33 @@
+# HG changeset patch
+# User Olli Saarela <olli.saarela@gmail.com>
+# Date 1249536705 -7200
+# Node ID 9107c882f193956555d773b8f5fedb4628f5ffb5
+# Parent  54a3fa5d4376274fc6f48fb79eebeee823400012
+__gnuplot_get_var__: if read fails to return data, sleep before trying again
+
+diff -r 54a3fa5d4376 -r 9107c882f193 scripts/ChangeLog
+--- a/scripts/ChangeLog	Thu Aug 06 07:30:34 2009 +0200
++++ b/scripts/ChangeLog	Thu Aug 06 07:31:45 2009 +0200
+@@ -1,3 +1,8 @@
++2009-08-05  Olli Saarela  <olli.saarela@gmail.com>
++
++	* plot/__gnuplot_get_var__.m: If read fails to return data, sleep
++	before trying again.
++
+ 2009-08-02  Ben Abbott <bpabbott@mac.com>
+ 
+ 	* plot/gnuplot_drawnow.m: Avoid the flickering x11 window seen with
+diff -r 54a3fa5d4376 -r 9107c882f193 scripts/plot/__gnuplot_get_var__.m
+--- a/scripts/plot/__gnuplot_get_var__.m	Thu Aug 06 07:30:34 2009 +0200
++++ b/scripts/plot/__gnuplot_get_var__.m	Thu Aug 06 07:31:45 2009 +0200
+@@ -127,7 +127,9 @@
+       str = {};
+       while (isempty (str))
+         str = char (fread (istream)');
+-        if (! isempty (str))
++        if (isempty (str))
++	  sleep (0.05);
++	else
+           str = regexp (str, "OCTAVE:.*", "match");
+           str = str{end}(8:end);
+         endif

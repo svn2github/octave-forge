@@ -1,7 +1,7 @@
 sinclude ./Makeconf
 export LFLAGS
 
-LIBS = __java__.lib
+IMPORT_LIBS = __java__.lib
 PROGS = __java__.oct __java__.h octave.jar
 
 
@@ -20,7 +20,7 @@ all: $(PROGS)
 	for _f in $(PROGS); do \
 	  echo $$_f >> FILES; \
 	done; \
-	for _f in $(LIBS); do \
+	for _f in $(IMPORT_LIBS); do \
 	  if [ -e $$_f ]; then \
 	    echo $$_f >> FILES; \
 	  fi; \

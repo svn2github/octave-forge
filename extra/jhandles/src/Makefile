@@ -23,7 +23,7 @@ endif
 test:
 	@echo $(JAVA_SOURCES)
 
-%.jar: $(JAVA_SOURCES)
+jhandles.jar: $(JAVA_SOURCES)
 	-rm -f $@
 	$(JAVAC) -cp '$(CLASSPATH)' -source 1.3 -target 1.3 $(JAVA_SOURCES)
 	$(JAR) cf $@ $(JAVA_DIR)/*.class $(JAVA_DIR)/images/*
@@ -36,6 +36,18 @@ clean:
 
 %.o: %.c
 	$(MKOCTFILE) -v -I. $(JAVA_INCS) -c $<
+
+JH_DIR = org/octave/jhandles
+JH_SOURCES = $(wildcard $(addprefix $(JH_DIR)/, *.java))
+JH_OBJECTS = graphics-renderer.o gl-graphics-renderer.o glaxescanvas.o
+
+jh.jar: $(JH_SOURCES) jh.dll
+	-rm -f $@
+	$(JAVAC) -cp '$(CLASSPATH)' -source 1.3 -target 1.3 $(JH_SOURCES)
+	$(JAR) cf $@ $(JH_DIR)/*.class
+
+jh.dll: $(JH_OBJECTS)
+	$(MKOCTFILE) -o $@ $(JH_OBJECTS) $(OPENGL_LIBS)
 
 __jhandles__.oct: __jhandles__.cc
 	$(MKOCTFILE) '-I$(OCTAVE_JAVA_DIR)' $^ '-L$(OCTAVE_JAVAOCT_DIR)' -l__java__

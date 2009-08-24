@@ -1,4 +1,4 @@
-md5="d385a09dcabc09c954e784f13e31ad08";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d385a09dcabc09c954e784f13e31ad08";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})
 Calcula las funciones Airy de primera y segunda clase, y sus 

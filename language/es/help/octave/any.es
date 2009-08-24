@@ -1,4 +1,4 @@
-md5="c2463a2a49f0e68a56588d18c2f280d5";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="c2463a2a49f0e68a56588d18c2f280d5";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} any (@var{x}, @var{dim})
 Para un vector como argumento, retorna 1 si cualquier elemento del vector es 

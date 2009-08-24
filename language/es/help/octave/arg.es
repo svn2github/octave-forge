@@ -1,3 +1,4 @@
+md5="6f370f19768f5cc033d23c1843ef1ff1";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on de mapeo} {} arg (@var{z})
 @deftypefnx {Funci@'on de mapeo} {} angle (@var{z})

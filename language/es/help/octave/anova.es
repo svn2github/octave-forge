@@ -1,4 +1,4 @@
-md5="cb33f75dcf669b787c1219719936a44a";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="cb33f75dcf669b787c1219719936a44a";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{pval}, @var{f}, @var{df_b}, @var{df_w}] =} anova (@var{y}, @var{g})
 Realiza un an@'alisis unidireccional de la varianza (ANOVA). El objetivo es probar

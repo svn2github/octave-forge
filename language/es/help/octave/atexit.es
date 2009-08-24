@@ -1,3 +1,4 @@
+md5="7e029052f477865e397935c9776b66a3";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} atexit (@var{fcn})
 Registra una funci@'on para ser llamada cuando Octave finalice. Por ejemplo,

@@ -1,4 +1,4 @@
-md5="23a1234bb805dc7607765026d478888e";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="23a1234bb805dc7607765026d478888e";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{a}, @var{b}] =} arch_fit (@var{y}, @var{x}, @var{p}, @var{iter}, @var{gamma}, @var{a0}, @var{b0})
 Ajusta un modelo de regresi@'on ARCH a la serie de tiempo @var{y} usando el 

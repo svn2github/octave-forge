@@ -1,4 +1,4 @@
-md5="9d809c6b7d13c300395e9abe2eef9783";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="9d809c6b7d13c300395e9abe2eef9783";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @defvr {Variable autom@'atica} ans
 El más reciente resultado calculado que no se ha asignado 

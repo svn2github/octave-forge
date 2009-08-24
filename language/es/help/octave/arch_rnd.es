@@ -1,4 +1,4 @@
-md5="bbe8400992d788ad18503bc9eb7d21e0";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="bbe8400992d788ad18503bc9eb7d21e0";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} arch_rnd (@var{a}, @var{b}, @var{t})
 Simula una secuencia ARCH de longitud @var{t} con @var{b}

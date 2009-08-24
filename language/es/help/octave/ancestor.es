@@ -1,4 +1,4 @@
-md5="caf06de3d9e4dda178fafb84bcf4f7b9";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="caf06de3d9e4dda178fafb84bcf4f7b9";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{parent} =} ancestor (@var{h}, @var{type})
 @deftypefnx {Archivo de funci@'on} {@var{parent} =} ancestor (@var{h}, @var{type}, 'toplevel')

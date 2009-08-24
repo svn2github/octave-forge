@@ -1,4 +1,4 @@
-md5="7ac180702e7d1126ea6dbba24d981d41";rev="5693";by="Javier Enciso <encisomo@in.tum.de>"
+md5="7ac180702e7d1126ea6dbba24d981d41";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} autumn (@var{n})
 Crea un color de tipo colormap. Este colormap es leido desde naranja hasta amarillo.

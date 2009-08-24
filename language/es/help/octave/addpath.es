@@ -1,4 +1,4 @@
-md5="eb41a858ad6b637cc1c45c3fc487a0d5";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="eb41a858ad6b637cc1c45c3fc487a0d5";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} addpath (@var{dir1}, @dots{})
 @deftypefnx {Archivo de funci@'on} {} addpath (@var{dir1}, @dots{}, @var{option})

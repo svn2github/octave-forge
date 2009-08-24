@@ -1,4 +1,4 @@
-md5="1031a873aecf5a1f2da7c554d9f19014";rev="5693";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1031a873aecf5a1f2da7c554d9f19014";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} axis (@var{limits})
 Establece los l@'imites de los ejes para las gr@'aficas.

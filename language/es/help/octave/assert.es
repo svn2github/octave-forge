@@ -1,4 +1,4 @@
-md5="ab53c205e71c22d4ef76b87965442044";rev="5693";by="Javier Enciso <encisomo@in.tum.de>"
+md5="ab53c205e71c22d4ef76b87965442044";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} assert (@var{cond})
 @deftypefnx {Archivo de funci@'on} {} assert (@var{observed},@var{expected})

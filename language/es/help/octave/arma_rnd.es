@@ -1,4 +1,4 @@
-md5="8c82cc510fff5118469183db122c95a4";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="8c82cc510fff5118469183db122c95a4";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} arma_rnd (@var{a}, @var{b}, @var{v}, @var{t}, @var{n})
 Retorna una simulaci@'on del modelo ARMA

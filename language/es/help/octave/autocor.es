@@ -1,4 +1,4 @@
-md5="af8f87fea428ee26089f0897951c88c4";rev="5693";by="Javier Enciso <encisomo@in.tum.de>"
+md5="af8f87fea428ee26089f0897951c88c4";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} autocor (@var{x}, @var{h})
 Retorna las autocorrelaciones de desfase desde 0 hasta @var{h} del vector @var{x}.

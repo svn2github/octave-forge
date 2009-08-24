@@ -1,4 +1,4 @@
-md5="461be9464be7352733c9a42cff2349c5";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="461be9464be7352733c9a42cff2349c5";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} area (@var{x}, @var{y})
 @deftypefnx {Archivo de funci@'on} {} area (@var{x}, @var{y}, @var{lvl})

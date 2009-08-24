@@ -1,4 +1,4 @@
-md5="9fa0150a85d6876fa575f9d668d18401";rev="5693";by="Javier Enciso <encisomo@in.tum.de>"
+md5="9fa0150a85d6876fa575f9d668d18401";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {@var{val} =} automatic_replot ()
 @deftypefnx {Funci@'on cargable} {@var{old_val} =} automatic_replot (@var{new_val})

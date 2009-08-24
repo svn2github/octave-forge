@@ -1,4 +1,4 @@
-md5="51719ae92355b48e957adac64ab8fcc6";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="51719ae92355b48e957adac64ab8fcc6";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{pval}, @var{lm}] =} arch_test (@var{y}, @var{x}, @var{p})
 Para un modelo de regresi@'on lineal

@@ -1,4 +1,4 @@
-md5="5dcb4b0aa397a56ab64f14fc9da3e211";rev="5693";by="Javier Enciso <encisomo@in.tum.de>"
+md5="5dcb4b0aa397a56ab64f14fc9da3e211";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Arhivo de funci@'on} {} axis2dlim (@var{axdata})
 Determina el l@'imite del eje para datos 2-D (vectores columna); 

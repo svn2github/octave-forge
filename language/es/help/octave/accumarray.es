@@ -1,4 +1,4 @@
-md5="71f0c67dcebd6c9f347c2c2377671df6";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="71f0c67dcebd6c9f347c2c2377671df6";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{fun}, @var{fillval}, @var{issparse})
 @deftypefnx {Archivo de funci@'on} {} accumarray (@var{csubs}, @var{vals}, @dots{})

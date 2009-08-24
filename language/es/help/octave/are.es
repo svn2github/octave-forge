@@ -1,4 +1,4 @@
-md5="e85a4e0e2e27f5bb6ffd2d2e9c4357a0";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e85a4e0e2e27f5bb6ffd2d2e9c4357a0";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Function File} {@var{x} =} are (@var{a}, @var{b}, @var{c}, @var{opt})
 Resuelve la ecuaci@'on algebr@'aica de Riccati

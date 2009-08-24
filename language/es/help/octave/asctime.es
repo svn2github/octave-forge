@@ -1,4 +1,4 @@
-md5="bf07d928d1e762e0b1e59c0083a1f568";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="bf07d928d1e762e0b1e59c0083a1f568";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} asctime (@var{tm_struct})
 Convierte una estructura de tipo time en una cadena de caracteres 

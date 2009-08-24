@@ -1,4 +1,4 @@
-md5="3630cec0eb91d05685d2284a76299ffb";rev="5644";by="Javier Enciso <encisomo@in.tum.de>"
+md5="3630cec0eb91d05685d2284a76299ffb";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{a} =} arrayfun (@var{name}, @var{c})
 @deftypefnx {Archivo de funci@'on} {@var{a} =} arrayfun (@var{func}, @var{c})

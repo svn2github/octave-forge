@@ -1,9 +1,9 @@
 add font substitution for Helvetica in png and jpeg term
 
-diff -r ce163929bb4b term/gd.trm
---- a/term/gd.trm	Tue Jan 27 10:01:27 2009 +0100
-+++ b/term/gd.trm	Tue Jan 27 10:08:11 2009 +0100
-@@ -322,6 +322,9 @@
+diff -r 4500122f4299 term/gd.trm
+--- a/term/gd.trm	Wed Aug 26 15:43:51 2009 +0200
++++ b/term/gd.trm	Wed Aug 26 15:45:12 2009 +0200
+@@ -325,6 +325,9 @@
  static double PNG_linewidth_factor = 1.0;
  static double PNG_dashlength_factor = 1.0;
  
@@ -13,7 +13,7 @@ diff -r ce163929bb4b term/gd.trm
  /* EAM - gdImage structure to hold brushes for linewidth */
  /* We will allocate and initialize these on demand */
  typedef struct {
-@@ -773,6 +776,13 @@
+@@ -785,6 +788,13 @@
  		    c_token++;
  		}
  		free(png_state.default_ttffont);
@@ -25,9 +25,9 @@ diff -r ce163929bb4b term/gd.trm
 +		}
 +#endif
  		png_state.default_ttffont = gp_strdup(png_state.ttffont);
- 		err = gdImageStringFT(NULL, &brect[0], 0,
- 			png_state.ttffont, (double)png_state.ttfsize,
-@@ -1794,8 +1804,17 @@
+ 
+ 		/* First try the old GDFONTPATH mechanism for locating fonts */
+@@ -1839,8 +1849,17 @@
      else if (*name) {
  	/* New ttf font */
  	free(png_state.ttffont);

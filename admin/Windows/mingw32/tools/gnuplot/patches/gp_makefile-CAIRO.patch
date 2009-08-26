@@ -1,17 +1,17 @@
 enable support for CAIRO terminals without wxt term
 
-diff -r 82d535640951 config/makefile.mgw
---- a/config/makefile.mgw	Tue Jan 27 10:17:14 2009 +0100
-+++ b/config/makefile.mgw	Tue Jan 27 10:18:04 2009 +0100
-@@ -54,6 +54,7 @@
+diff -r 337757fb9f97 config/makefile.mgw
+--- a/config/makefile.mgw	Wed Aug 26 16:09:07 2009 +0200
++++ b/config/makefile.mgw	Wed Aug 26 16:09:40 2009 +0200
+@@ -57,6 +57,7 @@
  NEWGD=1
  JPEG=1
  FREETYPE=1
 +CAIRO=1
+ #GDAUTOCONFIGLIBS=1
  
  # PDF device driver
- # Requires PNG and Z libraries based on particular PDF library used, and
-@@ -240,6 +241,16 @@
+@@ -255,6 +256,16 @@
  endif
  endif
  
@@ -21,10 +21,19 @@ diff -r 82d535640951 config/makefile.mgw
 +	CAIRO_LIBS = $(shell pkg-config --libs cairo)
 +	PANGO_CFLAGS = $(shell pkg-config --cflags pangocairo)
 +	PANGO_LIBS = $(shell pkg-config --libs pangocairo)
-+	WX_OBJS =  gp_cairo.o
++	WX_OBJS =  gp_cairo.o gp_cairo_helpers.o
 +	TERMFLAGS += $(CAIRO_CFLAGS) $(PANGO_CFLAGS)
 +endif
 +
  ifdef WXT
  	CFLAGS += -DWXWIDGETS
  	CXXFLAGS += $(shell wx-config --cxxflags)
+@@ -392,7 +403,7 @@
+ 	$(CC) -c $(CFLAGS) $(CXXFLAGS) $(CAIRO_CFLAGS) $(PANGO_CFLAGS) $<
+ 
+ gp_cairo_helpers.$(O): wxterminal/gp_cairo_helpers.c wxterminal/gp_cairo_helpers.h
+-	$(CC) -c $(CFLAGS) wxterminal/gp_cairo_helpers.c
++	$(CC) -c $(CFLAGS) $<
+ 
+ # extract icons from wgnuplot.rc
+ texticon.ico: grpicon.ico

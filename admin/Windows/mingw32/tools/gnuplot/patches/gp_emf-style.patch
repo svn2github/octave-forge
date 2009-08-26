@@ -12,7 +12,7 @@ diff -r 8b8547cfa763 term/emf.trm
  #define EMF_VTIC EMF_HTIC
  #define EMF_FONTNAME "Arial"
  #define EMF_FONTSIZE 12
-@@ -647,8 +647,8 @@
+@@ -649,8 +649,8 @@
  		term->xmax = tempxmax * EMF_PX2HM;
  	    if (tempymax > 0)
  		term->ymax = tempymax * EMF_PX2HM;

@@ -3,7 +3,7 @@ in makefile: fix for local documentation build
 diff -r a7c635c76175 config/makefile.mgw
 --- a/config/makefile.mgw	Tue Jan 27 10:18:04 2009 +0100
 +++ b/config/makefile.mgw	Tue Jan 27 10:18:59 2009 +0100
-@@ -451,23 +451,71 @@
+@@ -491,23 +470,72 @@
  endif
  
  gnuplot.tex: $(D)gnuplot.doc doc2tex.exe
@@ -41,7 +41,8 @@ diff -r a7c635c76175 config/makefile.mgw
 +	figure_yerrorlines \
 +	figure_surface \
 +	figure_surface+contours \
-+	figure_mapcontours
++	figure_mapcontours \
++	figure_heatmap
 +
 +# make .pdf figure from .eps
 +%.pdf : %.eps

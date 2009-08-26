@@ -3,6 +3,10 @@
 # CHANGELOG
 # ---------
 #
+# 26-aug-2009 benjamin lindner <lindnerb@users.sourceforge.net>
+#
+#    *) update to 2009-07-08-CVS snapshot
+#
 # 27-jan-2009 benjamin lindner <lindnerb@users.sourceforge.net>
 #
 #    *) CREATION
@@ -12,7 +16,7 @@
 # subdirecory where patches reside
 PATCHDIR=patches
 # directory of gnuplot sources to patch
-GNUPLOT_DIR=gnuplot-4.3.0-2008-11-21
+GNUPLOT_DIR=gnuplot-4.3.0-2009-07-08
 
 # the patches to apply
 PATCHES="

@@ -1,20 +1,8 @@
 local changes for documentation build
 
-diff -r 2c579f7524c0 docs/gnuplot.doc
---- a/docs/gnuplot.doc	Tue Jan 27 09:57:44 2009 +0100
-+++ b/docs/gnuplot.doc	Tue Jan 27 09:59:16 2009 +0100
-@@ -2876,7 +2876,7 @@
-  assumed to form a uniformly sized parallelogram.  The paralleogram is painted
-  using the color of the corresponding pixel in the input image.
-  
--Ffigure_rgb3D.pdf
-+Ffigure_rgb3D
-  Each pixel (data point) of the input 2D image will become a rectangle or
-  parallelipiped in the plot. The coordinates of each data point will determine
-  the center of the parallelipiped.  That is, an M x N set of data will form an
-diff -r 2c579f7524c0 docs/plotstyles.gnu
---- a/docs/plotstyles.gnu	Tue Jan 27 09:57:44 2009 +0100
-+++ b/docs/plotstyles.gnu	Tue Jan 27 09:59:16 2009 +0100
+diff -r 2c3e5a7aa775 docs/plotstyles.gnu
+--- a/docs/plotstyles.gnu	Wed Aug 26 15:41:51 2009 +0200
++++ b/docs/plotstyles.gnu	Wed Aug 26 15:43:39 2009 +0200
 @@ -3,12 +3,13 @@
  #  EAM - July 2007
  #
@@ -31,7 +19,7 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  set xrange [270:370]
  unset xtics
  unset ytics
-@@ -21,37 +22,37 @@
+@@ -21,39 +22,39 @@
  
  plot '../demo/silver.dat' u 1:($2-10.) title 'with lines' with lines
  #
@@ -42,8 +30,10 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  #
 -set output 'figure_linespoints.pdf'
 +set output 'figure_linespoints.eps'
+ f(x) = 8 + 8*sin(x/20)
  plot '../demo/silver.dat' u 1:($2-10.) title 'with linespoints' \
-      with linespoints pt 6 ps 1
+      with linespoints pt 6 ps 1, \
+      '' u 1:($2) title 'pointinterval -2' with lp pt 4 ps 1 pi -2
  #
 -set output 'figure_fsteps.pdf'
 +set output 'figure_fsteps.eps'
@@ -77,7 +67,7 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  plot '../demo/silver.dat' u 1:($2-10.) with impulses title 'with impulses'
  #
  # Error bars and whisker plots
-@@ -63,44 +64,44 @@
+@@ -65,44 +66,44 @@
  unset xzeroaxis
  unset offset
  #
@@ -132,7 +122,7 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  set style fill solid 1.0 border -1
  set xrange [250:500]
  set auto y
-@@ -113,7 +114,7 @@
+@@ -115,7 +116,7 @@
  # Dots
  # ====
  #
@@ -141,7 +131,7 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  reset
  set parametric
  set samples 1000
-@@ -141,16 +142,16 @@
+@@ -143,16 +144,16 @@
  unset xtics
  set tmargin 1
  #
@@ -161,7 +151,7 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  set style histogram columns
  set title "Columnstacked" offset 0,-1
  set boxwidth 0.8 rel
-@@ -169,14 +170,14 @@
+@@ -171,21 +172,21 @@
  # Circles
  #
  reset
@@ -179,7 +169,15 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  plot '../demo/optimize.dat' with circles lc rgb "gray" fs transparent solid 0.2 nobo,\
       '../demo/optimize.dat' u 1:2 with linespoints lw 2 pt 7 ps 0.3 lc rgb "black"
  #
-@@ -203,7 +204,7 @@
+ # 2D heat map from an array of in-line data
+ #
+ reset
+-set output 'figure_heatmap.pdf'
++set output 'figure_heatmap.eps'
+ set title "2D Heat map from in-line array of values" offset 0,-1
+ unset key
+ set bmargin 1
+@@ -231,7 +232,7 @@
  set hidden3d offset 1
  
  set title "3D surface plot with hidden line removal"  offset 0,1
@@ -188,7 +186,7 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  splot sin(x) * cos(y) with lines lt -1
  
  set contour base
-@@ -211,7 +212,7 @@
+@@ -239,7 +240,7 @@
  unset key
  set title "3D surface with projected contours" 
  
@@ -197,7 +195,7 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  splot sin(x) * cos(y) with lines lt -1
  
  unset view
-@@ -225,19 +226,19 @@
+@@ -253,19 +254,19 @@
  set lmargin
  set title "projected contours using 'set view map'" offset 0,-1
  
@@ -221,7 +219,7 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  set view 45, 25, 1.0, 1.35
  set grid
  unset key
-@@ -253,7 +254,7 @@
+@@ -281,7 +282,7 @@
  CityName(String,Size) = sprintf("{/=%d %s}", Scale(Size), stringcolumn(String))
  
  set termoption enhanced
@@ -230,9 +228,9 @@ diff -r 2c579f7524c0 docs/plotstyles.gnu
  unset xtics
  unset ytics
  unset key
-diff -r 2c579f7524c0 docs/psdoc/Makefile
---- a/docs/psdoc/Makefile	Tue Jan 27 09:57:44 2009 +0100
-+++ b/docs/psdoc/Makefile	Tue Jan 27 09:59:16 2009 +0100
+diff -r 2c3e5a7aa775 docs/psdoc/Makefile
+--- a/docs/psdoc/Makefile	Wed Aug 26 15:41:51 2009 +0200
++++ b/docs/psdoc/Makefile	Wed Aug 26 15:43:39 2009 +0200
 @@ -2,27 +2,29 @@
  # Create ps_symbols.ps
  #
@@ -270,9 +268,9 @@ diff -r 2c579f7524c0 docs/psdoc/Makefile
  
  clean:
  	-rm -f ps_symbols.ps ps_fontfile_doc.aux ps_fontfile_doc.dvi \
-diff -r 2c579f7524c0 docs/titlepag.tex
---- a/docs/titlepag.tex	Tue Jan 27 09:57:44 2009 +0100
-+++ b/docs/titlepag.tex	Tue Jan 27 09:59:16 2009 +0100
+diff -r 2c3e5a7aa775 docs/titlepag.tex
+--- a/docs/titlepag.tex	Wed Aug 26 15:41:51 2009 +0200
++++ b/docs/titlepag.tex	Wed Aug 26 15:43:39 2009 +0200
 @@ -14,7 +14,7 @@
  % LaTeX2e version
  % add `[a4paper]' before `{article}' to load settings for A4-paper

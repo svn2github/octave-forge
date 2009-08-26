@@ -1,3 +1,4 @@
+md5="83af78301520a35dd8d04a4e308bcb94";rev="6137";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} hidden (@var{mode})
 @deftypefnx {Archivo de funci@'on} {} hidden ()

@@ -1,3 +1,4 @@
+md5="d7d8c3f0828801ae03034533c05d37af";rev="6137";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} hilb (@var{n})
 Retorna matriz de Hilbert de orden @var{n}. El 

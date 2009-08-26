@@ -1,4 +1,4 @@
-md5="8c74407c5a117c16330280fda3a6bea8";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="8c74407c5a117c16330280fda3a6bea8";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} binomial_rnd (@var{n}, @var{p}, @var{r}, @var{c})
 @deftypefnx {Archivo de funci@'on} {} binomial_rnd (@var{n}, @var{p}, @var{sz})

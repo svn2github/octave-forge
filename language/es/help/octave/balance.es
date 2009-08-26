@@ -1,4 +1,4 @@
-md5="a57b1701ab981cbc924409dfb550c441";rev="5693";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a57b1701ab981cbc924409dfb550c441";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {@var{aa} =} balance (@var{a}, @var{opt})
 @deftypefnx {Funci@'on cargable} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})

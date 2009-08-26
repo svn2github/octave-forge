@@ -1,4 +1,4 @@
-md5="4a3240396cd96b1f679022822304f811";rev="5701";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4a3240396cd96b1f679022822304f811";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} beta_cdf (@var{x}, @var{a}, @var{b})
 Para cada elemento de @var{x}, retorna la funci@'on de distribuci@'on en @var{x} 

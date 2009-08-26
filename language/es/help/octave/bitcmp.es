@@ -1,4 +1,4 @@
-md5="36f7776ea57902af036d64f46cff5b78";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="36f7776ea57902af036d64f46cff5b78";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} bitcmp (@var{a}, @var{k})
 Retorna el @var{k}-bit complemento de enteros en @var{a}. Si 

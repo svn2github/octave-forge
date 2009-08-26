@@ -1,4 +1,4 @@
-md5="92ee27b63691d1ef5f247275554d0d5a";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="92ee27b63691d1ef5f247275554d0d5a";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} bin2dec (@var{s})
 Retorna n@'umero decimal correspondiente al n@'umero binario almacenado

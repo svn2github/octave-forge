@@ -1,4 +1,4 @@
-md5="aa79eba4d8a497e294faf738899e35e8";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="aa79eba4d8a497e294faf738899e35e8";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} bitxor (@var{x}, @var{y})
 Retorna el XOR l@'ogico bit a bit entre los enteros no negativos @var{x} y @var{y}.

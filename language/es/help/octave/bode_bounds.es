@@ -1,4 +1,4 @@
-md5="1a474f1fffe7cc3df665009b251208b8";rev="5716";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1a474f1fffe7cc3df665009b251208b8";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{wmin}, @var{wmax}] =} bode_bounds (@var{zer}, @var{pol}, @var{dflg}, @var{tsam})
 Obtiene el rango predeterminado de frecuencias sobre la base de las 

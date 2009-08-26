@@ -1,4 +1,4 @@
-md5="fa19770ebe36f1691451481bb5c3e70b";rev="5716";by="Javier Enciso <encisomo@in.tum.de>"
+md5="fa19770ebe36f1691451481bb5c3e70b";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} box (@var{arg})
 @deftypefnx {Archivo de funci@'on} {} box (@var{h}, @dots{})

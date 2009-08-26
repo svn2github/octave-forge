@@ -1,4 +1,4 @@
-md5="b70788329a9ea6e6e4d34504d074a971";rev="5716";by="Javier Enciso <encisomo@in.tum.de>"
+md5="b70788329a9ea6e6e4d34504d074a971";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{mag}, @var{phase}, @var{w}] =} bode (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
 Si no se dan argumentos de salida: produce los diagramas de Bode de 

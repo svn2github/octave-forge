@@ -1,4 +1,4 @@
-md5="afee366501d78517bcc09c25754d7579";rev="5716";by="Javier Enciso <encisomo@in.tum.de>"
+md5="afee366501d78517bcc09c25754d7579";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} buildssic (@var{clst}, @var{ulst}, @var{olst}, @var{ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
 

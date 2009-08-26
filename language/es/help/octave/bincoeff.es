@@ -1,4 +1,4 @@
-md5="49494ecc0001bfef93827e572c1412e7";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="49494ecc0001bfef93827e572c1412e7";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on de mapeo} {} bincoeff (@var{n}, @var{k})
 Retorna el coeficiente binomial de @var{n} y @var{k}, definido como

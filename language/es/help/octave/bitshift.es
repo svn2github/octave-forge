@@ -1,4 +1,4 @@
-md5="6baf89dd63014f7b43dc3e9264e7ff13";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="6baf89dd63014f7b43dc3e9264e7ff13";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} bitshift (@var{a}, @var{k})
 @deftypefnx {Funci@'on incorporada} {} bitshift (@var{a}, @var{k}, @var{n})

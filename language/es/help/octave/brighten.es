@@ -1,4 +1,4 @@
-md5="b3baa4f298d5dafdb4999374c3330069";rev="5716";by="Javier Enciso <encisomo@in.tum.de>"
+md5="b3baa4f298d5dafdb4999374c3330069";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{map_out} =} brighten (@var{map}, @var{beta})
 @deftypefnx {Archivo de funci@'on} {@var{map_out} =} brighten (@var{h}, @var{beta})

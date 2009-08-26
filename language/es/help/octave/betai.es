@@ -1,4 +1,4 @@
-md5="30a3c2e1e3b250a49bd8299f38853c1c";rev="5701";by="Javier Enciso <encisomo@in.tum.de>"
+md5="30a3c2e1e3b250a49bd8299f38853c1c";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} betai (@var{a}, @var{b}, @var{x})
 Esta funci@'on ofrece compatibilidad con versiones anteriores de 

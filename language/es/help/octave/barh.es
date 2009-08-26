@@ -1,4 +1,4 @@
-md5="ae85a230a3e07bf490045b1964556b3e";rev="5697";by="Javier Enciso <encisomo@in.tum.de>"
+md5="ae85a230a3e07bf490045b1964556b3e";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} barh (@var{x}, @var{y})
 @deftypefnx {Archivo de funci@'on} {} barh (@var{y})

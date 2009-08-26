@@ -1,4 +1,4 @@
-md5="19e900a5ef3d221eeb7a097202550944";rev="5701";by="Javier Enciso <encisomo@in.tum.de>"
+md5="19e900a5ef3d221eeb7a097202550944";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} beta_rnd (@var{a}, @var{b}, @var{r}, @var{c})
 @deftypefnx {Archivo de funci@'on} {} beta_rnd (@var{a}, @var{b}, @var{sz})

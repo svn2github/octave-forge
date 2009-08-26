@@ -1,4 +1,4 @@
-md5="d0cdf36d975b2f71f1d3551e78445358";rev="5697";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d0cdf36d975b2f71f1d3551e78445358";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} bartlett (@var{m})
 Returna los coeficientes de un filtro de ventana de Bartlett (triangular)

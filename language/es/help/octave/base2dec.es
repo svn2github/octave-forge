@@ -1,4 +1,4 @@
-md5="5518b961e8e2778ebffcb0a12ae083bf";rev="5697";by="Javier Enciso <encisomo@in.tum.de>"
+md5="5518b961e8e2778ebffcb0a12ae083bf";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Function File} {} base2dec (@var{s}, @var{b})
 Convierte la cadena de d@'igitos @var{s} de base @var{b} en un 

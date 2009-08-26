@@ -1,4 +1,4 @@
-md5="befc9b8a96679b7e94ba18e4b65b1f00";rev="5701";by="Javier Enciso <encisomo@in.tum.de>"
+md5="befc9b8a96679b7e94ba18e4b65b1f00";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
 @deftypefnx {Funci@'on cargable} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})

@@ -1,4 +1,4 @@
-md5="1afab6b4ab9975aeebbc9e7449c1ce39";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1afab6b4ab9975aeebbc9e7449c1ce39";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} bitmax ()
 Retorna el mayor entero que puede ser representado como un valor de

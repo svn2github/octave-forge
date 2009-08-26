@@ -1,4 +1,4 @@
-md5="8f529f2d74857e9e8ecf7fa4da6b1322";rev="5701";by="Javier Enciso <encisomo@in.tum.de>"
+md5="8f529f2d74857e9e8ecf7fa4da6b1322";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} beta_inv (@var{x}, @var{a}, @var{b})
 Para cada componente de @var{x}, calcula el cuantil (el inverso de 

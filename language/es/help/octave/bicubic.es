@@ -1,4 +1,4 @@
-md5="e29ad5e4b2de3b8affa2d3b121d3c4cf";rev="5711";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e29ad5e4b2de3b8affa2d3b121d3c4cf";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{zi}=} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{extrapval})
 

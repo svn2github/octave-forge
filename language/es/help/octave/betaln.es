@@ -1,4 +1,4 @@
-md5="ae5f70a6c5661e90532890a1355cc4b0";rev="5701";by="Javier Enciso <encisomo@in.tum.de>"
+md5="ae5f70a6c5661e90532890a1355cc4b0";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on de mapeo} {} betaln (@var{a}, @var{b})
 Retorna el logaritmo natural de la funci@'on Beta,

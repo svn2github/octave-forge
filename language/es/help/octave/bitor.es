@@ -1,4 +1,4 @@
-md5="c32f2935e044a1ee0f44ab0006ac9c43";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="c32f2935e044a1ee0f44ab0006ac9c43";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} bitor (@var{x}, @var{y})
 Retorna el OR l@'ogico bit a bit entre enteros no negativos @var{x} y @var{y}.

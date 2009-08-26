@@ -1,4 +1,4 @@
-md5="a24acf65875dcbc0b262ffc7ef6dfe93";rev="5716";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a24acf65875dcbc0b262ffc7ef6dfe93";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} blackman (@var{m})
 Retorna los coeficientes del filtro para una ventana de Blackman de 

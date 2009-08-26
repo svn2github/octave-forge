@@ -1,4 +1,4 @@
-md5="64f8051129c19903dfc6bdad7eeb8b3b";rev="5701";by="Javier Enciso <encisomo@in.tum.de>"
+md5="64f8051129c19903dfc6bdad7eeb8b3b";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on de mapeo} {} beta (@var{a}, @var{b})
 Retorna la funci@'on Beta,

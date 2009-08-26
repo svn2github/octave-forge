@@ -1,4 +1,4 @@
-md5="d8eb691d2fb8af42d0f9958e66160f56";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d8eb691d2fb8af42d0f9958e66160f56";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{X} =} bitget (@var{a},@var{n})
 Retorna el estado de los @var{n} bits del entero sin signo @var{a}.

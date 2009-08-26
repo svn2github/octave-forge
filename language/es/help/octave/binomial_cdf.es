@@ -1,4 +1,4 @@
-md5="4c8fcca0e5dc9c73f5f72143e86c0485";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4c8fcca0e5dc9c73f5f72143e86c0485";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} binomial_cdf (@var{x}, @var{n}, @var{p})
 Para cada elemento de @var{x}, calcula la distribuci@'on probabilidad 

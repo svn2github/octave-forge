@@ -1,4 +1,4 @@
-md5="445ad5779f1cb1857e75f14d3aad9720";rev="5716";by="Javier Enciso <encisomo@in.tum.de>"
+md5="445ad5779f1cb1857e75f14d3aad9720";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} bone (@var{n})
 Crea un mapa de colores. Este mapa de colores es un mapa de colores gris con un 

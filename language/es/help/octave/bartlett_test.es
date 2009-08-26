@@ -1,4 +1,4 @@
-md5="4aaafb64b0943d4db855537a9ea6d21f";rev="5697";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4aaafb64b0943d4db855537a9ea6d21f";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{pval}, @var{chisq}, @var{df}] =} bartlett_test (@var{x1}, @dots{}) 
 Realiza una prueba de Bartlett para la homogeniedad de las variazas en los vectores 

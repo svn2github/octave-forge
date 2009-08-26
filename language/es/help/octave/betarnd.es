@@ -1,4 +1,4 @@
-md5="51247d99e55aa11791b96d894dfead8a";rev="5701";by="Javier Enciso <encisomo@in.tum.de>"
+md5="51247d99e55aa11791b96d894dfead8a";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} betarnd (@var{a}, @var{b}, @var{r}, @var{c})
 @deftypefnx {Archivo de funci@'on} {} betarnd (@var{a}, @var{b}, @var{sz})

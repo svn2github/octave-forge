@@ -1,4 +1,4 @@
-md5="83b6a54cd147a48da93869e2cb5dae56";rev="5715";by="Javier Enciso <encisomo@in.tum.de>"
+md5="83b6a54cd147a48da93869e2cb5dae56";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} binornd (@var{n}, @var{p}, @var{r}, @var{c})
 @deftypefnx {Archivo de funci@'on} {} binornd (@var{n}, @var{p}, @var{sz})

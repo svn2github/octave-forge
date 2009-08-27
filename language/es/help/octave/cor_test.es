@@ -1,4 +1,4 @@
-md5="b854e7ae1b356276f116df5db40e6c37";rev="5962";by="Javier Enciso <encisomo@in.tum.de>"
+md5="b854e7ae1b356276f116df5db40e6c37";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} cor_test (@var{x}, @var{y}, @var{alt}, @var{method})
 Prueba si dos muestras @var{x} y @var{y} vienen de poblaciones no correlacionadas.

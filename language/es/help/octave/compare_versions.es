@@ -1,4 +1,4 @@
-md5="0b4d23875ba51c52049ae31c588056ce";rev="5942";by="Javier Enciso <encisomo@in.tum.de>"
+md5="0b4d23875ba51c52049ae31c588056ce";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} compare_versions (@var{v1}, @var{v2}, @var{operator})
 Compara las versiones de dos cadenas usando un operador dado @var{operator}.

@@ -1,4 +1,4 @@
-md5="a05dc2614388e4b49dc88db063e376f1";rev="5962";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a05dc2614388e4b49dc88db063e376f1";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{status}, @var{msg}, @var{msgid}] =} copyfile (@var{f1}, @var{f2}, @var{force})
 Copia el archivo @var{f1} al nombre nuevo @var{f2}. El nombre @var{f1}

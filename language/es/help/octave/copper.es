@@ -1,4 +1,4 @@
-md5="2d02e63dd0dd2aae79a32a16c7733ea2";rev="5962";by="Javier Enciso <encisomo@in.tum.de>"
+md5="2d02e63dd0dd2aae79a32a16c7733ea2";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} copper (@var{n})
 Crea un color de un mapa de colores. El mapa de colores es negro a cobre claro. El 

@@ -1,4 +1,4 @@
-md5="d3fe118abaa7bf2e690fb35398d2e1fe";rev="5942";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d3fe118abaa7bf2e690fb35398d2e1fe";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} commutation_matrix (@var{m}, @var{n})
 Retorna la matriz de commutaci@'on

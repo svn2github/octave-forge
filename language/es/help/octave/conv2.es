@@ -1,4 +1,4 @@
-md5="194ff68fcf189f779cc763af49dd2f56";rev="5951";by="Javier Enciso <encisomo@in.tum.de>"
+md5="194ff68fcf189f779cc763af49dd2f56";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {y =} conv2 (@var{a}, @var{b}, @var{shape})
 @deftypefnx {Funci@'on cargable} {y =} conv2 (@var{v1}, @var{v2}, @var{M}, @var{shape})

@@ -1,4 +1,4 @@
-md5="158fbf32d5b31ee07a7ec13db1add174";rev="5942";by="Javier Enciso <encisomo@in.tum.de>"
+md5="158fbf32d5b31ee07a7ec13db1add174";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} compan (@var{c})
 Calcula la matriz compa@~{n}era correspondiente al vector de coeficientes de polinomio @var{c}.

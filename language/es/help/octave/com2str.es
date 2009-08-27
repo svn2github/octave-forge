@@ -1,4 +1,4 @@
-md5="83093db18ac0ec1c166cd95dc112b9f2";rev="5942";by="Javier Enciso <encisomo@in.tum.de>"
+md5="83093db18ac0ec1c166cd95dc112b9f2";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} com2str (@var{zz}, @var{flg})
 Esta funci@'on ha sido descartada. Use num2str en reemplazo.

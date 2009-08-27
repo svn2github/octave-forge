@@ -1,4 +1,4 @@
-md5="a4db42e2f89f1a71c495b7661aa07124";rev="5951";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a4db42e2f89f1a71c495b7661aa07124";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} conv (@var{a}, @var{b})
 Realiza la convoluci@'on sobre dos vectores.

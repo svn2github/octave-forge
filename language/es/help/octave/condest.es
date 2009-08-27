@@ -1,4 +1,4 @@
-md5="ff544b55191f98c5ca05f06e3ba06fc1";rev="5951";by="Javier Enciso <encisomo@in.tum.de>"
+md5="ff544b55191f98c5ca05f06e3ba06fc1";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{est}, @var{v}] =} condest (@var{a}, @var{t}) 
 @deftypefnx {Archivo de funci@'on} {[@var{est}, @var{v}] =} condest (@var{a}, @var{solve}, @var{solve_t}, @var{t})

@@ -1,4 +1,4 @@
-md5="cc0e46f9349460daee446b0aee7dc8c9";rev="5942";by="Javier Enciso <encisomo@in.tum.de>"
+md5="cc0e46f9349460daee446b0aee7dc8c9";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{c}, @var{maxsize}, @var{endian}] =} computer ()
 Imprime o retorna una cadena de la forma @var{cpu}-@var{vendor}-@var{os}

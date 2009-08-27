@@ -1,4 +1,4 @@
-md5="58f6101645bf73529d912274820a3aa8";rev="5942";by="Javier Enciso <encisomo@in.tum.de>"
+md5="58f6101645bf73529d912274820a3aa8";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} compass (@var{u}, @var{v})
 @deftypefnx {Archivo de funci@'on} {} compass (@var{z})

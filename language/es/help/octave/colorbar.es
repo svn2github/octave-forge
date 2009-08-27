@@ -1,4 +1,4 @@
-md5="e294dd9d61ce88cceccb7bdf40815b48";rev="5920";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e294dd9d61ce88cceccb7bdf40815b48";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} colorbar (@var{s})
 @deftypefnx {Archivo de funci@'on} {} colorbar ('peer', @var{h}, @dots{})

@@ -1,4 +1,4 @@
-md5="a3f3269d702d00b4c9780b316c5ab541";rev="5920";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a3f3269d702d00b4c9780b316c5ab541";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} colormap (@var{map})
 @deftypefnx {Archivo de funci@'on} {} colormap ("default")

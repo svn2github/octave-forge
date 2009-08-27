@@ -1,4 +1,4 @@
-md5="ebc812db2539a86d4bbe2a8da512a847";rev="5962";by="Javier Enciso <encisomo@in.tum.de>"
+md5="ebc812db2539a86d4bbe2a8da512a847";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} corrcoef (@var{x}, @var{y})
 Calcula la correlaci@'on entre @var{x} y @var{y}.

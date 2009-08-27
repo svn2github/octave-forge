@@ -1,4 +1,4 @@
-md5="241ed57431677ec5b1af366f91806186";rev="5951";by="Javier Enciso <encisomo@in.tum.de>"
+md5="241ed57431677ec5b1af366f91806186";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{H} =} convhull (@var{x}, @var{y})
 @deftypefnx {Archivo de funci@'on} {@var{H} =} convhull (@var{x}, @var{y}, @var{opt})

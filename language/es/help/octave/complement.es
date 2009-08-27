@@ -1,4 +1,4 @@
-md5="73c45236decd091d052d0f50846403cf";rev="5942";by="Javier Enciso <encisomo@in.tum.de>"
+md5="73c45236decd091d052d0f50846403cf";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} complement (@var{x}, @var{y})
 Retorna los elementos del conjunto @var{y} que no est@'an en el conjunto  @var{x}. Por ejemplo,

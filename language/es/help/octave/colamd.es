@@ -1,4 +1,4 @@
-md5="d5223776b257cd1db4ca849e16f43b74";rev="5920";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d5223776b257cd1db4ca849e16f43b74";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {@var{p} =} colamd (@var{s})
 @deftypefnx {Funci@'on cargable} {@var{p} =} colamd (@var{s}, @var{knobs})

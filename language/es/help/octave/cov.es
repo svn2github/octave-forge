@@ -1,4 +1,4 @@
-md5="230381431041ea45bff6f5d1315607db";rev="5962";by="Javier Enciso <encisomo@in.tum.de>"
+md5="230381431041ea45bff6f5d1315607db";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} cov (@var{x}, @var{y})
 Calcula la covariaza.

@@ -1,4 +1,4 @@
-md5="0f713b31204153ac9a81befbefee3ae5";rev="5942";by="Javier Enciso <encisomo@in.tum.de>"
+md5="0f713b31204153ac9a81befbefee3ae5";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {@var{val} =} completion_append_char ()
 @deftypefnx {Funci@'on incorporada} {@var{old_val} =} completion_append_char (@var{new_val})

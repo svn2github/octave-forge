@@ -1,4 +1,4 @@
-md5="cec8a26766999a1fd49b89d5682418b9";rev="5920";by="Javier Enciso <encisomo@in.tum.de>"
+md5="cec8a26766999a1fd49b89d5682418b9";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{p} =} colperm (@var{s})
 Retorna las permutaciones de columnas tales que la columna de 

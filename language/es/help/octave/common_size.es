@@ -1,4 +1,4 @@
-md5="0853a5c0c86e3daf6592b245db7523e9";rev="5942";by="Javier Enciso <encisomo@in.tum.de>"
+md5="0853a5c0c86e3daf6592b245db7523e9";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{err}, @var{y1}, @dots{}] =} common_size (@var{x1}, @dots{})
 Determina si todos los argumentos de entrada son escalares o de 

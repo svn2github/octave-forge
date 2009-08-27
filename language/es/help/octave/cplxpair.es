@@ -1,4 +1,4 @@
-md5="f2bb2403d8de959b56f1780b0167c43e";rev="5970";by="Javier Enciso <encisomo@in.tum.de>"
+md5="f2bb2403d8de959b56f1780b0167c43e";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} cplxpair (@var{z}, @var{tol}, @var{dim})
 Ordena las n@'umeros @var{z} en parejas de complejos conjugados ordenados por

@@ -1,4 +1,4 @@
-md5="9c88c237f803c851a596aba95109d560";rev="5875";by="Javier Enciso <encisomo@in.tum.de>"
+md5="9c88c237f803c851a596aba95109d560";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deffn {Comando} clear [-x] pattern @dots{}
 Elimina los nombres que coinciden con los patrones de la tabla de 

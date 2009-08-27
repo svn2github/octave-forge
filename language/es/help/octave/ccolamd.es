@@ -1,4 +1,4 @@
-md5="ee130f1a12b7c84009fee4e0370a4cb1";rev="5851";by="Javier Enciso <encisomo@in.tum.de>"
+md5="ee130f1a12b7c84009fee4e0370a4cb1";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {@var{p} =} ccolamd (@var{s})
 @deftypefnx {Funci@'on cargable} {@var{p} =} ccolamd (@var{s}, @var{knobs})

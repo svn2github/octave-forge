@@ -1,4 +1,4 @@
-md5="1959483d6739316e5de11b9799525846";rev="5835";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1959483d6739316e5de11b9799525846";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} cat (@var{dim}, @var{array1}, @var{array2}, @dots{}, @var{arrayN})
 Retorna la concatenaci@'on de N-D objetos de tipo arreglo, 

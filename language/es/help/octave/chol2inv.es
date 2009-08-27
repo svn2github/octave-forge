@@ -1,4 +1,4 @@
-md5="963de43c4fc949250e772a0cdd2c8650";rev="5869";by="Javier Enciso <encisomo@in.tum.de>"
+md5="963de43c4fc949250e772a0cdd2c8650";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {} chol2inv (@var{u})
 Invierte una matrix sim@'etrica positiva definida a partir de su 

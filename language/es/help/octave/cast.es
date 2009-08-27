@@ -1,4 +1,4 @@
-md5="a9ad5b89ed1f3d6623c7672f0485e283";rev="5835";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a9ad5b89ed1f3d6623c7672f0485e283";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} cast (@var{val}, @var{type})
 Convierte @var{val} en el tipo de dato @var{type}.

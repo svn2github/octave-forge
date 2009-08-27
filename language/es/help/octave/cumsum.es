@@ -1,4 +1,4 @@
-md5="063eb93be7aed2b62cb5bed13f93c773";rev="5971";by="Javier Enciso <encisomo@in.tum.de>"
+md5="063eb93be7aed2b62cb5bed13f93c773";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} cumsum (@var{x}, @var{dim})
 Realiza la suma acumulada de los elementos a lo largo de la dimensi@'on @var{dim}. Si se 

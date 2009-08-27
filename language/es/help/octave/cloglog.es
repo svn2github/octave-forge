@@ -1,4 +1,4 @@
-md5="e2bdbede43fc97f45bf28d7c576efec8";rev="5875";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e2bdbede43fc97f45bf28d7c576efec8";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} cloglog (@var{x})
 Retorna la funci@'on complementaria log-log de @var{x}, definida como

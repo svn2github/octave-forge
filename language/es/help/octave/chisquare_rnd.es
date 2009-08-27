@@ -1,4 +1,4 @@
-md5="a966245ea2c32a7f1169948f829a5c59";rev="5869";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a966245ea2c32a7f1169948f829a5c59";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} chisquare_rnd (@var{n}, @var{r}, @var{c})
 @deftypefnx {Archivo de funci@'on} {} chisquare_rnd (@var{n}, @var{sz})

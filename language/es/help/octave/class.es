@@ -1,4 +1,4 @@
-md5="dccabd574200d74436de252a9ded5ac8";rev="5875";by="Javier Enciso <encisomo@in.tum.de>"
+md5="dccabd574200d74436de252a9ded5ac8";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} class (@var{expr})
 

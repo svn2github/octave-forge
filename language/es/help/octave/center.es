@@ -1,4 +1,4 @@
-md5="fa441c31f1932a61bc577d29fceb0830";rev="5857";by="Javier Enciso <encisomo@in.tum.de>"
+md5="fa441c31f1932a61bc577d29fceb0830";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} center (@var{x})
 @deftypefnx {Archivo de funci@'on} {} center (@var{x}, @var{dim})

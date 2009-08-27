@@ -1,4 +1,4 @@
-md5="643c93ab4dd7427254ae51c3b95f4640";rev="5857";by="Javier Enciso <encisomo@in.tum.de>"
+md5="643c93ab4dd7427254ae51c3b95f4640";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} celldisp (@var{c}, @var{name})
 Recursivamente muestra los contenidos de las celdas de un arreglo. En 

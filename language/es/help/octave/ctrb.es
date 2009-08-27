@@ -1,4 +1,4 @@
-md5="1518a89f2c5a8446a19a47b3f21fda23";rev="5971";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1518a89f2c5a8446a19a47b3f21fda23";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} ctrb (@var{sys}, @var{b})
 @deftypefnx {Archivo de funci@'on} {} ctrb (@var{a}, @var{b})

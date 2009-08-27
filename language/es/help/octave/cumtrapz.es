@@ -1,4 +1,4 @@
-md5="489c9e6af85773da54ac7c2d491cb4e0";rev="5971";by="Javier Enciso <encisomo@in.tum.de>"
+md5="489c9e6af85773da54ac7c2d491cb4e0";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{z} =} cumtrapz (@var{y})
 @deftypefnx {Archivo de funci@'on} {@var{z} =} cumtrapz (@var{x}, @var{y})

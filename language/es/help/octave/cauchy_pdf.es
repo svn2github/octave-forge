@@ -1,4 +1,4 @@
-md5="44ec1939a6d9f2e449961ec84abe493a";rev="5835";by="Javier Enciso <encisomo@in.tum.de>"
+md5="44ec1939a6d9f2e449961ec84abe493a";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} cauchy_pdf (@var{x}, @var{lambda}, @var{sigma})
 Para cada elemento de @var{x}, calcula la funci@'on de densidad de 

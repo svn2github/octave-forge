@@ -1,4 +1,4 @@
-md5="2d4b61fd0b0e988c2c957bcdd4acb631";rev="5835";by="Javier Enciso <encisomo@in.tum.de>"
+md5="2d4b61fd0b0e988c2c957bcdd4acb631";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} cauchy_rnd (@var{lambda}, @var{sigma}, @var{r}, @var{c})
 @deftypefnx {Archivo de funci@'on} {} cauchy_rnd (@var{lambda}, @var{sigma}, @var{sz})

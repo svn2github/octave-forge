@@ -1,4 +1,4 @@
-md5="f33df5b1c68338f7d052768607a7ed1f";rev="5970";by="Javier Enciso <encisomo@in.tum.de>"
+md5="f33df5b1c68338f7d052768607a7ed1f";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} cross (@var{x}, @var{y}, @var{dim})
 Calcula el producto vectorial entre dos vectores 3-dimensionales 

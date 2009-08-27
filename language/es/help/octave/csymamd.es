@@ -1,4 +1,4 @@
-md5="28136893878334aecce26ee0112a295d";rev="5971";by="Javier Enciso <encisomo@in.tum.de>"
+md5="28136893878334aecce26ee0112a295d";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {@var{p} =} csymamd (@var{s})
 @deftypefnx {Funci@'on cargable} {@var{p} =} csymamd (@var{s}, @var{knobs})

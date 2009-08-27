@@ -1,4 +1,4 @@
-md5="7e092244ae9403f6bc2f8826ddd7dc5d";rev="5869";by="Javier Enciso <encisomo@in.tum.de>"
+md5="7e092244ae9403f6bc2f8826ddd7dc5d";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} char (@var{x})
 @deftypefnx {Funci@'on incorporada} {} char (@var{cell_array})

@@ -1,4 +1,4 @@
-md5="796a3de57014e97ce682d4628205339a";rev="5970";by="Javier Enciso <encisomo@in.tum.de>"
+md5="796a3de57014e97ce682d4628205339a";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {[@var{total}, @var{user}, @var{system}] =} cputime ();
 Retorna es tiempo de CPU usado por la sesi@'on de Octave. La primer salida es

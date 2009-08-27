@@ -1,4 +1,4 @@
-md5="4b8e6435990c2743ae22ad51cbe8f5c2";rev="5869";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4b8e6435990c2743ae22ad51cbe8f5c2";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {} chol (@var{a})
 @cindex Factorizaci@'on de Cholesky

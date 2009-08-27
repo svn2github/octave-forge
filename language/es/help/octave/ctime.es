@@ -1,4 +1,4 @@
-md5="82603d19225b09996b80a37c5e4aa230";rev="5971";by="Javier Enciso <encisomo@in.tum.de>"
+md5="82603d19225b09996b80a37c5e4aa230";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} ctime (@var{t})
 Convierte un valor retornado @code{time} (o cualquier otro entero 

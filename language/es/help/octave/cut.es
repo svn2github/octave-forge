@@ -1,4 +1,4 @@
-md5="e450ca243849b51ae6d0650f32413b5e";rev="5971";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e450ca243849b51ae6d0650f32413b5e";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} cut (@var{x}, @var{breaks})
 Crea categorias de datos a partir de datos continuos o num@'ericos 

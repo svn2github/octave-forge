@@ -1,4 +1,4 @@
-md5="c9ecbcadb72f75f3d276dd642f5a3124";rev="5857";by="Javier Enciso <encisomo@in.tum.de>"
+md5="c9ecbcadb72f75f3d276dd642f5a3124";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deffn {Comando} cd dir
 @deffnx {Comando} chdir dir

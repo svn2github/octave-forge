@@ -1,4 +1,4 @@
-md5="34cb57496d8e6cff8715c693709d44de";rev="5869";by="Javier Enciso <encisomo@in.tum.de>"
+md5="34cb57496d8e6cff8715c693709d44de";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} chi2rnd (@var{n}, @var{r}, @var{c})
 @deftypefnx {Archivo de funci@'on} {} chi2rnd (@var{n}, @var{sz})

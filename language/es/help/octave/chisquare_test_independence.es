@@ -1,4 +1,4 @@
-md5="fa53e3bb3eda8239ffae278a0c8b3c61";rev="5869";by="Javier Enciso <encisomo@in.tum.de>"
+md5="fa53e3bb3eda8239ffae278a0c8b3c61";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{pval}, @var{chisq}, @var{df}] =} chisquare_test_independence (@var{x})
 realiza una prueba de independencia chi-cuadrado basada en la tabla de 

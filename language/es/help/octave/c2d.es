@@ -1,4 +1,4 @@
-md5="f38588f0339daa44656d805318797fbe";rev="5835";by="Javier Enciso <encisomo@in.tum.de>"
+md5="f38588f0339daa44656d805318797fbe";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} c2d (@var{sys}, @var{opt}, @var{t})
 @deftypefnx {Archivo de funci@'on} {} c2d (@var{sys}, @var{t})

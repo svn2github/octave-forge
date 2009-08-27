@@ -1,4 +1,4 @@
-md5="8f5f012bc5e5da4bab23078e0eefd670";rev="5857";by="Javier Enciso <encisomo@in.tum.de>"
+md5="8f5f012bc5e5da4bab23078e0eefd670";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
  -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {} cellfun (@var{name}, @var{c})
 @deftypefnx {Funci@'on cargable} {} cellfun ("size", @var{c}, @var{k})

@@ -1,4 +1,4 @@
-md5="4b520bf27f6d147d27291d4ddafc371b";rev="5857";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4b520bf27f6d147d27291d4ddafc371b";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{m} =} cell2mat (@var{c})
 Convierte el arreglo de celdas @var{c} en una matriz concatenando todos los

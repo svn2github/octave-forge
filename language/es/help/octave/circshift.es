@@ -1,4 +1,4 @@
-md5="208126302c719b9f36f6f0375cb3be64";rev="5875";by="Javier Enciso <encisomo@in.tum.de>"
+md5="208126302c719b9f36f6f0375cb3be64";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{y} =} circshift (@var{x}, @var{n})
 Desplaza circularmente los elementos del arreglo @var{x}. @var{n} debe ser 

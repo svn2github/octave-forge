@@ -1,4 +1,4 @@
-md5="5ba7130c66e8631796f88c77343ee946";rev="5869";by="Javier Enciso <encisomo@in.tum.de>"
+md5="5ba7130c66e8631796f88c77343ee946";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{pval}, @var{chisq}, @var{df}] =} chisquare_test_homogeneity (@var{x}, @var{y}, @var{c})
 Dadas dos muestas @var{x} y @var{y}, realiza una prueba Chi cuadrado de 

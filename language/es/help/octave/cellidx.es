@@ -1,4 +1,4 @@
-md5="718fb77fb01597310c3ca3b663bfad0f";rev="5857";by="Javier Enciso <encisomo@in.tum.de>"
+md5="718fb77fb01597310c3ca3b663bfad0f";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{idxvec}, @var{errmsg}] =} cellidx (@var{listvar}, @var{strlist})
 Retorna los @'indices de las cadenas de entradas en @var{listvar} que 

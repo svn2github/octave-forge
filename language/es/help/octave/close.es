@@ -1,4 +1,4 @@
-md5="37f34774ca5ae124cfff1b0e68a79e92";rev="5875";by="Javier Enciso <encisomo@in.tum.de>"
+md5="37f34774ca5ae124cfff1b0e68a79e92";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Comando} {} close
 @deftypefnx {Comando} {} close (@var{n})

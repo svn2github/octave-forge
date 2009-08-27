@@ -1,4 +1,4 @@
-md5="61301fab7ffcc21bed6d4dbfc4bc0a3b";rev="5970";by="Javier Enciso <encisomo@in.tum.de>"
+md5="61301fab7ffcc21bed6d4dbfc4bc0a3b";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {@var{val} =} crash_dumps_octave_core ()
 @deftypefnx {Funci@'on incorporada} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})

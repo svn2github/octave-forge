@@ -491,9 +491,12 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm11'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
 	if ~isempty(W) 
-		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+		%%% error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+		warning(sprintf('Warning TRAIN_SC: Classifier (%s) in combination with weighted samples is not tested.',MODE.TYPE));
 	end; 	
-        if isfield(MODE.hyperparameters,'nu')
+        if ~isfield(MODE,'hyperparameters')
+        	nu = 1;
+        elseif isfield(MODE.hyperparameters,'nu')
 	        nu = MODE.hyperparameter.nu;
 	else 
 		nu = 1;          
@@ -503,10 +506,14 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
         for k = 1:length(CC.Labels),
 		d = sparse(1:m,1:m,(classlabel==CC.Labels(k))*2-1);
 		H = d * [-ones(m,1),D];
-		r = sum(H,1)';
-		r = (speye(n+1)/nu + H' * H)\r; %solve (I/nu+H’*H)r=H’*e
+		%%% r = sum(H,1)';
+		r = sumskipnan(H,1,W)';
+		%%% r = (speye(n+1)/nu + H' * H)\r; %solve (I/nu+H’*H)r=H’*e
+		[HTH, nn] = covm(H,H,'M',W);
+		r = (speye(n+1)/nu + HTH)\r; %solve (I/nu+H’*H)r=H’*e
 		u = nu*(1-(H*r)); 
-		CC.weights(:,k) = u'*H;
+		%%% CC.weights(:,k) = u'*H;
+		[CC.weights(:,k),nn] = covm(u,H,'M',W);
         end;
         CC.hyperparameter.nu = nu; 
         CC.datatype = ['classifier:',lower(MODE.TYPE)];

@@ -85,15 +85,11 @@ else
         error('Error CORRCOEF: Missing argument(s)\n');
 end;        
 
-if size(Z,2)~=1,
-        warning('PARTCORRCOEF: Z has more than 1 dimension');
-end;
-
 rxy=corrcoef(X,Y,Mode);
 if isempty(Z)
 	R = rxy; 
 else 
-	rxz=corrcoef(X,Z,Mode);
+	rxz = corrcoef(X,Z,Mode);
 	if isempty(Y),
         	ryz = rxz;
 	else
@@ -149,14 +145,5 @@ sz  = sqrt(2)*erfinv(1-2*alpha)./sqrt(NN-3);		% confidence interval for alpha of
 ci1 = tanh(z-sz);
 ci2 = tanh(z+sz);
 
-return;
-
-
-
-%test signals
-X=randn(100,3)+[1:100]'*[1,1,3];
-Y=randn(100,2);
-Z1=randn(100,1);
-Z2=[1:100]';
 
 

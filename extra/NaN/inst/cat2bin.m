@@ -12,6 +12,8 @@ function [B,BLab]=cat2bin(D, Label, MODE)
 %  BinLabel description of each column in B
 %  MODE     default [], ignores NaN
 %           'notIgnoreNAN' includes binary column for NaN 
+%           'IgnoreZeros'  zeros do not get a separate category 
+%           'IgnoreZeros+NaN' zeros and NaN are ignored
 %
 %  example: 
 %     cat2bin([1;2;5;1;5]) results in 
@@ -43,9 +45,6 @@ function [B,BLab]=cat2bin(D, Label, MODE)
 if nargin<3,
          MODE = []; 
 end; 
-if ~strcmpi(MODE,'notIgnoreNAN')
-         MODE = [];     
-end; 
 
 % convert data 
 B = []; 
@@ -56,16 +55,22 @@ BLab  = [];
 for m = 1:size(D,2) 
         h = histo_mex(D(:,m));    
         x = h.X(h.H>0);
-        if isempty(MODE)
+        if strcmpi(MODE,'notIgnoreNaN')
+                ;
+        elseif strcmpi(MODE,'IgnoreZeros')
+                x = x(x~=0);        
+        elseif strcmpi(MODE,'IgnoreZeros+NaN')
+                x = x((x~=0) & (x==x));        
+        else 
                 x = x(x==x);
         end; 
         for k = 1:size(D,1),
                 if ~isnan(D(k,m))
                         B(k, c + find(D(k,m)==x)) = 1;
                 elseif isnan(x(end)),
-                        B(k,c+length(x)) = 1;
+                        B(k, c + length(x)) = 1;
                 end;            
-        end;        
+        end;
 
         c = c + length(x); 
         if nargout>1,

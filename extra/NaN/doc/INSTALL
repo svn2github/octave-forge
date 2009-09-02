@@ -17,13 +17,13 @@ d) [OPTIONAL]:
   compile the C-Mex-functions SUMSKIPNAN_MEX.CPP and COVM_MEX.CPP using
     mex sumskipnan_mex.cpp
     mex covm_mex.cpp
+    mex histo_mex.cpp
   or for Octave use the mex-file.
     mkoctfile --mex sumskipnan_mex.cpp
     mkoctfile --mex covm_mex.cpp
+    mkoctfile --mex histo_mex.cpp
 
   Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.  
-
-e) HINT: if SUMSKIPNAN_MEX causes problems, you can savely remove it. 
 
 
 	$Id$

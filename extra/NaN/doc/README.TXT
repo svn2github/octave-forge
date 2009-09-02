@@ -105,6 +105,7 @@ level 2b: classification, cross-validation
 	KAPPA		performance evaluation 
 	TRAIN_LDA_SPARSE	utility function 
 	FSS		feature subset selection and feature ranking
+	CAT2BIN         converts categorial to binary data
 
 
 REFERENCE(S):

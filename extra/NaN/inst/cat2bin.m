@@ -55,13 +55,15 @@ k1    = 0;
 BLab  = [];
 for m = 1:size(D,2) 
         h = histo_mex(D(:,m));    
-        x = h.X(h.H>0); 
+        x = h.X(h.H>0);
         if isempty(MODE)
                 x = x(x==x);
         end; 
         for k = 1:size(D,1),
                 if ~isnan(D(k,m))
                         B(k, c + find(D(k,m)==x)) = 1;
+                elseif isnan(x(end)),
+                        B(k,c+length(x)) = 1;
                 end;            
         end;        
 

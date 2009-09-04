@@ -13,5 +13,6 @@ Test
 
 sparse >> Sparse matrix support
 Iterative techniques
- bicg
+ bicg pgmres
+
 

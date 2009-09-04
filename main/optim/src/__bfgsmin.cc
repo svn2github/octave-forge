@@ -82,9 +82,7 @@ int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_ar
 	int success = 1;
 	f_args_new = f_args;
 	f_args_new(minarg - 1) = theta;
-        std::cerr << "here\n";
 	f_return = _feval(f, f_args_new);
-        std::cerr << "here\n";
 	obj = f_return(0).double_value();
 	// bullet-proof the objective function
 	if (error_state) {
@@ -310,7 +308,6 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	Matrix H, H1, H2;
 	ColumnVector thetain, d, g, g_new, p, q, sig, gam;
 
-        return f_return;
 	// controls
 	Cell control (args(2).cell_value());
 	max_iters = control(0).int_value();
@@ -349,8 +346,6 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	thetain = theta;
 	H = identity_matrix(k,k);
 
-        std::cerr << "here\n";
-        return f_return;
 	// Initial obj_value
 	__bfgsmin_obj(obj_in, f, f_args, theta, minarg);
 	if (warnings) printf("initial obj_value %g\n", obj_in);

@@ -42,21 +42,37 @@ function [f,p,kvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 %   with y, x, p of the form y, x, pin as described above.
 % dFdp = name of partial derivative function in quotes; default is "dfdp", a
 %   slow but general partial derivatives function; the function shall be
-%   of the form prt=dfdp(x,f,p,dp,F) (see dfdp.m).
+%   of the form prt=dfdp(x,f,p,dp,F[,bounds]). For backwards
+%   compatibility, the function will only be called with an extra
+%   'bounds' argument if the 'bounds' option is explicitely specified
+%   to leasqr (see dfdp.m).
 % stol = scalar tolerance on fractional improvement in scalar sum of
 %   squares = sum((wt.*(y-f))^2); default stol = .0001;
 % niter = scalar maximum number of iterations; default = 20;
-% options = matrix of n rows (same number of rows as pin) containing
-%   column 1: desired fractional precision in parameter estimates.
-%     Iterations are terminated if change in parameter vector (chg) on two
-%     consecutive iterations is less than their corresponding elements
-%     in options(:,1).  [ie. all(abs(chg*current parm est) < options(:,1))
-%      on two consecutive iterations.], default = zeros().
-%   column 2: maximum fractional step change in parameter vector.
-%     Fractional change in elements of parameter vector is constrained to be 
-%     at most options(:,2) between sucessive iterations.
-%     [ie. abs(chg(i))=abs(min([chg(i) options(i,2)*current param estimate])).],
-%     default = Inf*ones().
+% options = structure, currently recognized fields are 'fract_prec',
+%   'max_fract_change', and 'bounds'. For backwards compatibility,
+%   'options' can also be a matrix whose first and second column
+%   contains the values of 'fract_prec' and 'max_fract_change',
+%   respectively.
+%   Field 'options.fract_prec': column vector (same length as 'pin') of
+%   desired fractional precisions in parameter estimates. Iterations
+%   are terminated if change in parameter vector (chg) on two
+%   consecutive iterations is less than their corresponding elements in
+%   'options.fract_prec'.  [ie. all(abs(chg*current parm est) <
+%   options.fract_prec) on two consecutive iterations.], default =
+%   zeros().
+%   Field 'options.max_fract_change': column vector (same length as
+%   'pin) of maximum fractional step changes in parameter vector.
+%   Fractional change in elements of parameter vector is constrained to
+%   be at most 'options.max_fract_change' between sucessive iterations.
+%   [ie. abs(chg(i))=abs(min([chg(i)
+%   options.max_fract_change(i)*current param estimate])).], default =
+%   Inf*ones().
+%   Field 'options.bounds': two-column-matrix, one row for each
+%   parameter in 'pin'. Each row contains a minimal and maximal value
+%   for each parameter. Default: [-Inf, Inf] in each row. If this
+%   field is used with an existing user-side function for 'dFdp'
+%   (see above) the functions interface might have to be changed.
 %
 %          OUTPUT VARIABLES
 % f = column vector of values computed: f = F(x,p).
@@ -122,6 +138,7 @@ function [f,p,kvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 %          MATLAB version >= 4.0) in computation of covp, corp, stdresid.
 % Modified by Francesco Potortì
 %       for use in Octave
+% Added bounds feature to this file and to dfdp.m, Olaf Till 4-Aug-2009
 %
 % References:
 % Bard, Nonlinear Parameter Estimation, Academic Press, 1974.
@@ -158,27 +175,66 @@ if (nargin == 4), stol=.0001; end;
 
 y=y(:); wt=wt(:); pin=pin(:); dp=dp(:); %change all vectors to columns
 % check data vectors- same length?
-m=length(y); n=length(pin); p=pin;[m1,m2]=size(x);
+m=length(y); n=length(pin); [m1,m2]=size(x);
 if m1~=m ,error('input(x)/output(y) data must have same number of rows ') ,end;
 
-if (nargin <= 9), 
-  options=[zeros(n,1), Inf*ones(n,1)];
-  nor = n; noc = 2;
-else
-  [nor, noc]=size(options);
-  if (nor ~= n),
-    error('options and parameter matrices must have same number of rows'),
-  end;
-  if (noc ~= 2),
-    options=[options(:,1), Inf*ones(nor,1)];
-  end;
-end;
-pprec=options(:,1);
-maxstep=options(:,2);
-%
+  %% processing of 'options'
+  pprec = zeros (n, 1);
+  maxstep = Inf * ones (n, 1);
+  bounds = cat (2, -Inf * ones (n, 1), Inf * ones (n, 1));
+  dfdp_cmd = "feval(dFdp,x,fbest,pprev,dp,F);"; % will possibly be redefined
+  if (nargin > 9)
+    if (ismatrix (options)) % backwards compatibility
+      tp = options;
+      options = struct ("fract_prec", tp(:, 1));
+      if (columns (tp) > 1)
+	options.max_fract_change = tp(:, 2);
+      endif
+    endif
+    if (isfield (options, "fract_prec"))
+      pprec = options.fract_prec;
+      if (rows (pprec) != n || columns (pprec) != 1)
+	error ("fractional precisions: wrong dimensions");
+      endif
+    endif
+    if (isfield (options, "max_fract_change"))
+      maxstep = options.max_fract_change;
+      if (rows (maxstep) != n || columns (maxstep) != 1)
+	error ("maximum fractional step changes: wrong dimensions");
+      endif
+    endif
+    if (isfield (options, "bounds"))
+      dfdp_cmd = "feval(dFdp,x,fbest,pprev,dp,F,bounds);";
+      bounds = options.bounds;
+      if (rows (bounds) != n || columns (bounds) != 2)
+	error ("bounds: wrong dimensions");
+      endif
+      idx = bounds(:, 1) > bounds(:, 2);
+      tp = bounds(idx, 2);
+      bounds(idx, 2) = bounds(idx, 1);
+      bounds(idx, 1) = tp;
+      if (any (idx = bounds(:, 1) == bounds(:, 2)))
+	warning ("lower and upper bounds identical for some parameters, setting the respective elements of 'dp' to zero");
+	dp(idx) = 0;
+      endif
+      if (any (idx = pin < bounds(:, 1)))
+	warning ("some initial parameters set to lower bound");
+	pin(idx) = bounds(idx, 1);
+      endif
+      if (any (idx = pin > bounds(:, 2)))
+	warning ("some initial parameters set to upper bound");
+	pin(idx) = bounds(idx, 2);
+      endif
+    endif
+  endif
+
+  if (all (dp == 0))
+    error ("no free parameters");
+  endif
 
 % set up for iterations
 %
+p = pin;
 f=feval(F,x,p); fbest=f; pbest=p;
 r=wt.*(y-f);
 ss=r'*r;
@@ -193,7 +249,7 @@ epstab=[.1, 1, 1e2, 1e4, 1e6];
 %
 for iter=1:niter,
   pprev=pbest;
-  prt=feval(dFdp,x,fbest,pprev,dp,F);
+  prt = eval (dfdp_cmd);
   r=wt.*(y-fbest);
   sprev=sbest;
   sgoal=(1-stol)*sprev;
@@ -234,6 +290,20 @@ for iter=1:niter,
 % ss=scalar sum of squares=sum((wt.*(y-f))^2).
     if (any(abs(chg) > 0.1*aprec)),%---  % only worth evaluating function if
       p=chg+pprev;                       % there is some non-miniscule change
+      %% apply bounds; preserving the direction of the attempted step
+      %% might lead to fixing _all_ parameters at their current value,
+      %% so decided not to do that and to simply reset parameters to
+      %% bounds
+      lidx = p < bounds(:, 1);
+      p(lidx) = bounds(lidx, 1);
+      uidx = p > bounds(:, 2);
+      p(uidx) = bounds(uidx, 2);
+      if (verbose && any (idx = lidx | uidx))
+	printf ("bounds apply for parameters number %s %i\n", \
+		sprintf ("%i, ", find (idx)(1:end - 1)), \
+		find (idx)(end));
+      endif
+      %%
       f=feval(F,x,p);
       r=wt.*(y-f);
       ss=r'*r;
@@ -280,7 +350,7 @@ if kvg ~= 1 , disp(' CONVERGENCE NOT ACHIEVED! '), end;
 
 % CALC VARIANCE COV MATRIX AND CORRELATION MATRIX OF PARAMETERS
 % re-evaluate the Jacobian at optimal values
-jac=feval(dFdp,x,f,p,dp,F);
+jac = eval (dfdp_cmd);
 msk = dp ~= 0;
 n = sum(msk);           % reduce n to equal number of estimated parameters
 jac = jac(:, msk);	% use only fitted parameters

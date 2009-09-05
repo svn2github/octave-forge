@@ -2,18 +2,20 @@
 file=$1
 cat <<EOF | octave -q
 
-fid=fopen("$file","rt");
-text=char(fread(fid,Inf,'uchar'));
+fid = fopen("$file","rt");
+text = char(fread(fid,Inf,'uchar'));
 fclose(fid);
 
 section = [find(text == char(31))];
 line = find(text == "\n");
+section(length(section)+1) = line(length(line)) + 1;
+
 for idx=1:length(section)-1
    lineend = min(line(line>section(idx)));
    name = text(section(idx)+1:lineend-1);
    body = text(lineend+1:section(idx+1)-1);
-
-   fid = fopen(name,"wt");
+   
+   fid = fopen(name',"wt");
    fwrite(fid, body, 'uchar');
    fclose(fid);
 end

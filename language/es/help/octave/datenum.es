@@ -1,4 +1,4 @@
-md5="a1a48f0ed2f8cea102d91e1bab1e6008";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a1a48f0ed2f8cea102d91e1bab1e6008";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} datenum (@var{year}, @var{month}, @var{day})
 @deftypefnx {Archivo de funci@'on} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour})

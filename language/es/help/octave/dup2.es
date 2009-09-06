@@ -1,4 +1,4 @@
-md5="95559d6961b8ab532f9e4dac5e72c9bd";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="95559d6961b8ab532f9e4dac5e72c9bd";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {[@var{fid}, @var{msg}] =} dup2 (@var{old}, @var{new})
 Duplica un descriptor de archivo.

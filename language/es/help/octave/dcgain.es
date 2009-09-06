@@ -1,4 +1,4 @@
-md5="ea7b38aaa21ea98dfe0018c267cd4a6d";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="ea7b38aaa21ea98dfe0018c267cd4a6d";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} dcgain (@var{sys}, @var{tol})
 Retorna la matriz de ganacia dc. Si la ganancia dc es infinita, 

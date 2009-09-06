@@ -1,4 +1,4 @@
-md5="5585c59269d823dd10c5b5023ee28a85";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="5585c59269d823dd10c5b5023ee28a85";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {@var{val} =} debug_symtab_lookups ()
 @deftypefnx {Funci@'on incorporada} {@var{old_val} =} debug_symtab_lookups (@var{new_val})

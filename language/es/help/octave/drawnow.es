@@ -1,4 +1,4 @@
-md5="512c959049b1c6bcafabfa39d4f6e46c";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="512c959049b1c6bcafabfa39d4f6e46c";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} drawnow ()
 Actualiza y muestra las gr@'aficas actuales.

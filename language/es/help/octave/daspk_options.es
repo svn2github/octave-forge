@@ -1,4 +1,4 @@
-md5="d3026b7c2dd0ab3cc9232db05ec3524d";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d3026b7c2dd0ab3cc9232db05ec3524d";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {} daspk_options (@var{opt}, @var{val})
 Cuando se invoca con dos argumentos, esta funci@'on 

@@ -1,4 +1,4 @@
-md5="4dda01351ed9d917b65d1bd24b7b4b15";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4dda01351ed9d917b65d1bd24b7b4b15";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {@var{val} =} debug_on_interrupt ()
 @deftypefnx {Funci@'on incorporada} {@var{old_val} =} debug_on_interrupt (@var{new_val})

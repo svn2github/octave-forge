@@ -1,4 +1,4 @@
-md5="80576b2135bed98cdde82f277176b2db";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="80576b2135bed98cdde82f277176b2db";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{T} =} delaunayn (@var{P})
 @deftypefnx {Archivo de funci@'on} {@var{T} =} delaunayn (@var{P}, @var{opt})

@@ -1,4 +1,4 @@
-md5="e20bc80697e66bf03f7bb594f34c12f1";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e20bc80697e66bf03f7bb594f34c12f1";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {} dbclear (@var{func}, @var{line}, @dots{})
 Elimina un punto de interrupci@'on en una funci@'on

@@ -1,4 +1,4 @@
-md5="cae532dacc2450302ed389e46c1f1527";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="cae532dacc2450302ed389e46c1f1527";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} damp (@var{p}, @var{tsam})
 Muestra los valores propios, frecuencias naturales y coeficientes de amortiguaci@'on 

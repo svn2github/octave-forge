@@ -1,4 +1,4 @@
-md5="4ef505a06bbfaaa5ecf69f0298e30c23";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4ef505a06bbfaaa5ecf69f0298e30c23";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} disp (@var{x})
 Muestra el valor de @var{x}. Por ejemplo,

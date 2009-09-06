@@ -1,4 +1,4 @@
-md5="5885703a7b94dad441b9ed50751ac3a1";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="5885703a7b94dad441b9ed50751ac3a1";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} dot (@var{x}, @var{y}, @var{dim})
 Calcula el producto punto de dos vectores. Si @var{x} y @var{y}

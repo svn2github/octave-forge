@@ -1,4 +1,4 @@
-md5="fb7776437d38ea1e2783ecb3caa84eac";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="fb7776437d38ea1e2783ecb3caa84eac";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a})
 @deftypefnx {Archivo de funci@'on} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a1}, @var{a2}, @dots{}, @var{an})

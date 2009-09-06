@@ -1,4 +1,4 @@
-md5="3a59c5a6d19f97ecf29faf4d33950a4d";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="3a59c5a6d19f97ecf29faf4d33950a4d";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {} dassl_options (@var{opt}, @var{val})
 Cuando es invocada con dos argumentos, esta funci@'on 

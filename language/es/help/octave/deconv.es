@@ -1,4 +1,4 @@
-md5="5744dc0e3afc6ff0deeed3119ba4c442";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="5744dc0e3afc6ff0deeed3119ba4c442";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} deconv (@var{y}, @var{a})
 Deconvoluciona dos vectores.

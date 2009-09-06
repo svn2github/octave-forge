@@ -1,4 +1,4 @@
-md5="9529a2df91ccd1c8fa571ec7e747e704";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="9529a2df91ccd1c8fa571ec7e747e704";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {rline =} dbstop (@var{func}, @var{line}, @dots{})
 Establece un punto de interrupci@'on en una funci@'on 

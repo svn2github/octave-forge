@@ -1,4 +1,4 @@
-md5="9b9977019680b02df74e8b0c4b4a470a";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="9b9977019680b02df74e8b0c4b4a470a";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} dec2bin (@var{n}, @var{len})
 Retorna un n@'umero binario correspondiente al n@'umeor decimal no negativo 

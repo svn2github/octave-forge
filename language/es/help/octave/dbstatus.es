@@ -1,4 +1,4 @@
-md5="49150909750002ea0c9aa69442ac2808";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="49150909750002ea0c9aa69442ac2808";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {lst =} dbstatus (@var{func})
 Retorna un vector que contiene las l@'ineas en las cuales una funci@'on contiene 

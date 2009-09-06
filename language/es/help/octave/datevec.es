@@ -1,4 +1,4 @@
-md5="80fd5034e7f9358cdfb50b4951653053";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="80fd5034e7f9358cdfb50b4951653053";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{v} =} datevec (@var{date})
 @deftypefnx {Archivo de funci@'on} {@var{v} =} datevec (@var{date}, @var{f})

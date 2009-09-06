@@ -1,4 +1,4 @@
-md5="86e98f690306d05e50e614d8bd57d15b";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="86e98f690306d05e50e614d8bd57d15b";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} discrete_cdf (@var{x}, @var{v}, @var{p})
 Para cada elemento de @var{x}, calcula la funci@'on de distribuci@'on 

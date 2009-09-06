@@ -1,4 +1,4 @@
-md5="327ddad2b90f8b1685e49b13c801b718";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="327ddad2b90f8b1685e49b13c801b718";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{str} =} datestr (@var{date}, [@var{f}, [@var{p}]])
 Cambia el formato de la fecha/hora de acuerdo con el formato @code{f} y retorna 

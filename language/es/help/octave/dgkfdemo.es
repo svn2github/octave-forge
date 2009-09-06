@@ -1,4 +1,4 @@
-md5="939a3fbe41210857b118a3e3513fb9a4";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="939a3fbe41210857b118a3e3513fb9a4";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} dgkfdemo ()
 Demostraci@'on de las herramientas de Control de Octave: 

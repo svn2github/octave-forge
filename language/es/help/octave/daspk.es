@@ -1,4 +1,4 @@
-md5="90ef11ebcf1efdf954fbbe9f607ea593";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="90ef11ebcf1efdf954fbbe9f607ea593";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} daspk (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})
 Resuelve el conjunto de ecuaciones diferencial-algebr@'aicas

@@ -1,4 +1,4 @@
-md5="1fa2b12ee5efd782fab4efdf13a5aa1d";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1fa2b12ee5efd782fab4efdf13a5aa1d";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{d} =} del2 (@var{m})
 @deftypefnx {Archivo de funci@'on} {@var{d} =} del2 (@var{m}, @var{h})

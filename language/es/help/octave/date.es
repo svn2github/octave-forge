@@ -1,4 +1,4 @@
-md5="e183a2c6dce2606cc7b13d62b9e3450d";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e183a2c6dce2606cc7b13d62b9e3450d";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} date ()
 Retorna la fecha como una cadena de caracteres en formato DD-MMM-AA. Por 

@@ -1,4 +1,4 @@
-md5="1824c04f631b2934cf9fae993e1737db";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1824c04f631b2934cf9fae993e1737db";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {@var{val} =} debug_on_error ()
 @deftypefnx {Funci@'on incorporada} {@var{old_val} =} debug_on_error (@var{new_val})

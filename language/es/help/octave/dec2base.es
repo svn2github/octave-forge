@@ -1,4 +1,4 @@
-md5="d81f0450f0cccc172e68e99a06205895";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d81f0450f0cccc172e68e99a06205895";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} dec2base (@var{n}, @var{b}, @var{len})
 Retorna una cadena de s@'imbolos en base @var{b} correspondiente al 

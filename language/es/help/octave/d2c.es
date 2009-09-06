@@ -1,4 +1,4 @@
-md5="1d9470f81cf4d75ee749469f3188ed8d";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1d9470f81cf4d75ee749469f3188ed8d";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} d2c (@var{sys}, @var{tol})
 @deftypefnx {Archivo de funci@'on} {} d2c (@var{sys}, @var{opt})

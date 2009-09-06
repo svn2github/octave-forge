@@ -1,4 +1,4 @@
-md5="68361390818b394e88d40cd5658628aa";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="68361390818b394e88d40cd5658628aa";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {@var{x} =} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{opt})
 

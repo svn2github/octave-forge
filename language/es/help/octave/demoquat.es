@@ -1,4 +1,4 @@
-md5="1f79d4f38a75298ed0e570e6dd1c3360";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1f79d4f38a75298ed0e570e6dd1c3360";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} demoquat ()
 Demuestra las funciones disponibles para la manipulaci@'on de cuaterniones.

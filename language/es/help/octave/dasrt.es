@@ -1,4 +1,4 @@
-md5="6c927b02e1193c16d6e6704c6be834b6";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="6c927b02e1193c16d6e6704c6be834b6";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on cargable} {[@var{x}, @var{xdot}, @var{t_out}, @var{istat}, @var{msg}] =} dasrt (@var{fcn} [, @var{g}], @var{x_0}, @var{xdot_0}, @var{t} [, @var{t_crit}])
 Resuelve el conjunto de ecuaciones algebraico-diferenciales

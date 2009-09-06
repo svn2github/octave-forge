@@ -1,4 +1,4 @@
-md5="0eced18eb66ca850078dd64f65dde97d";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="0eced18eb66ca850078dd64f65dde97d";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} discrete_inv (@var{x}, @var{v}, @var{p})
 Para cada componente de @var{x}, calcula el cuant@'il (el inverso de 

@@ -34,7 +34,7 @@ OBJS_GPR_TRAIN=dsdacc.o dwdis2.o dtr2tp.o corrf.o stheta.o \
 	       trstp.o sr1upd.o optdrv.o \
 	       get_corrf.o train.o setup.o 
 	       
-OBJS_GPR_PRED=dsdacc.o dwdis2.o infgpr.o infpgp.o corrf.o \
+OBJS_GPR_PRED=dsdacc.o dwdis2.o dsumsq.o infgpr.o infpgp.o corrf.o \
 	      get_corrf.o predict.o 
 	      
 all: gpr_train.oct gpr_predict.oct pgp_train.oct pgp_predict.oct pdist2_mw.oct

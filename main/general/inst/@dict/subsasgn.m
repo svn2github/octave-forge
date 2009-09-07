@@ -93,7 +93,7 @@ function d = subsasgn (d, s, val)
           else
             ## Mass assignment. Probably most of the keys are new ones, so simply
             ## melt all together.
-            [keys, i] = unique ([d.keys; ind]);
+            [d.keys, i] = unique ([d.keys; ind]);
             d.values = [d.values; val](i);
           endif
         else

@@ -10,7 +10,7 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## opt = optimset (...)         - manipulate m*tlab-style options structure
+## opt = optimset_compat (...)         - manipulate m*tlab-style options structure
 ## 
 ## This function returns a m*tlab-style options structure that can be used
 ## with the fminunc() function.
@@ -31,7 +31,7 @@
 ##                       optional arguments that will be passed to it. See
 ##                       the 'backend' option of minimize().
 ## 
-function opt = optimset (varargin)
+function opt = optimset_compat (varargin)
 
 ## Diagnostics  , ["on"|{"off"}] : 
 ## DiffMaxChange, [scalar>0]     : N/A (I don't know what it does)

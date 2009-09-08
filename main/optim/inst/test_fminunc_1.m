@@ -10,7 +10,7 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## test_fminunc_compat_1              - Test that fminunc_compat and optimset work
+## test_fminunc_compat_1              - Test that fminunc_compat and optimset_compat work
 ##
 ## A quadratic function is fminunc_compatd. Various options are tested. Options
 ## are passed incomplete (to see if properly completed) and
@@ -61,7 +61,7 @@ end
 
 ## Plain run, just to make sure ######################################
 ## Minimum wrt 'x' is y0
-opt = optimset ();
+opt = optimset_compat ();
 [xlev,vlev] = fminunc_compat ("ff",x0,opt,y0,1);
 
 cnt++;
@@ -74,7 +74,7 @@ elseif verbose,  prn ("ok %i\n",cnt);
 end
 
 ## See what 'backend' gives in that last case ########################
-opt = optimset ("backend","on");
+opt = optimset_compat ("backend","on");
 [method,ctl] = fminunc_compat ("ff",x0, opt, y0,1);
 
 cnt++;
@@ -107,7 +107,7 @@ end
 ## Run, w/ differential returned by function ('jac' option) ##########
 ## Minimum wrt 'x' is y0
 
-opt = optimset ("GradO","on");
+opt = optimset_compat ("GradO","on");
 [xlev,vlev,nlev] = fminunc_compat ("d2ff",x0,opt,y0,1);
 
 cnt++;
@@ -122,7 +122,7 @@ end
 
 ## Use the 'hess' option, when f can return 2nd differential #########
 ## Minimum wrt 'x' is y0
-opt = optimset ("hessian","on");
+opt = optimset_compat ("hessian","on");
 [xlev,vlev,nlev] = fminunc_compat ("d2ff",x0,opt,y0,1);
 
 cnt++;

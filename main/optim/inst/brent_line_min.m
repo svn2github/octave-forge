@@ -106,7 +106,6 @@ end
 
 s = 0.5*(a+b);
 args{narg} = x+ s*dx; gs = feval( f, args );
-end
 nev++;
 
 if verbose,

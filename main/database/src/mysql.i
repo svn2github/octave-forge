@@ -64,13 +64,14 @@ enum enum_field_types { MYSQL_TYPE_DECIMAL, MYSQL_TYPE_TINY,
     mysql_db(const char* host,
 	     const char* user,
 	     const char* password,
-	     const char* db_name) {
+	     const char* db_name,
+	     unsigned int port=0) {
       db=mysql_init(0);
       if (!db) {
 	error("failed to create MYSQL structure");
 	return;
       }
-      if (!mysql_real_connect(db,host,user,password,db_name,0,0,0)) {
+      if (!mysql_real_connect(db,host,user,password,db_name,port,0,0)) {
 	error("connect to database failed: error %i: %s",
 	      mysql_errno(db),mysql_error(db));
 	return;

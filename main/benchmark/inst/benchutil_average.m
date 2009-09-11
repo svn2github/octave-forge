@@ -20,7 +20,7 @@
 % function results = benchutil_average (benchmark, nruns, arg1, arg2, ...)
 % Average the benchmark results over a certain number of runs.
 
-function results = benchutil_average (benchmark, nruns, varargin)
+function [results, stddevs] = benchutil_average (benchmark, nruns, varargin)
   bfun = str2func (benchmark);
   for i = 1:nruns
     resi(i) = bfun (varargin{:});
@@ -28,13 +28,19 @@ function results = benchutil_average (benchmark, nruns, varargin)
   for f = fieldnames (resi).'
     f = f{1};
     results.(f) = mean ([resi.(f)]);
+    stddevs.(f) = std ([resi.(f)]);
   end
 
   if (benchutil_verbose)
     [bdesc, adesc, rdesc] = benchutil_parse_desc ([benchmark, '.m']);
     printf ('\n\n');
     for [desc, fn] = rdesc
-      printf ('%s (avg. over %d runs): %f\n', desc, nruns, results.(fn));
-    endfor
+      printf ('%s (avg. over %d runs): %f +/- %f%%\n', desc, nruns, 
+      results.(fn), 138.59*stddevs.(fn) / results.(fn));
+    end
   endif
+
+  if (nargout < 1)
+    clear results stddevs
+  end
   

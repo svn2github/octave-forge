@@ -1,4 +1,4 @@
-md5="4000897e345b88261475471cd2d74fd6";rev="6128";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4000897e345b88261475471cd2d74fd6";rev="6241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} empirical_inv (@var{x}, @var{data})
 Para cada elemento de @var{x}, calcula el cuantil (el inverso de la 

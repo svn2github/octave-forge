@@ -1,4 +1,4 @@
-md5="0f714227a2e76931d67b73006dae6a4c";rev="6128";by="Javier Enciso <encisomo@in.tum.de>"
+md5="0f714227a2e76931d67b73006dae6a4c";rev="6241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} eval (@var{try}, @var{catch})
 Analiza la cadena @var{try} y la evalua como si fuera un programa de 

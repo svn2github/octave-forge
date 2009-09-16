@@ -1,4 +1,4 @@
-md5="82c54181f26230767a281ab5fa697e02";rev="6137";by="Javier Enciso <encisomo@in.tum.de>"
+md5="82c54181f26230767a281ab5fa697e02";rev="6250";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} islist (@var{x})
 Retorna un n@'umero distinto de cero si @var{x} es una lista.

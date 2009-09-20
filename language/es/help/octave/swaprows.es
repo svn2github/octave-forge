@@ -1,4 +1,4 @@
-md5="a7ba2a25d3f3837481cfad0a5c413558";rev="6190";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a7ba2a25d3f3837481cfad0a5c413558";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} swaprows (inputs)
 @format

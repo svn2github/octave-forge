@@ -1,4 +1,4 @@
-md5="e42c465a8ea5ea9050718e60f591b10e";rev="6190";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e42c465a8ea5ea9050718e60f591b10e";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} sinc (@var{x})
 Retorna 

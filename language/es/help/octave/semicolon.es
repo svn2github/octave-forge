@@ -1,4 +1,4 @@
-md5="fcf3a3210131f08907f3512164d2b0c2";rev="6190";by="Javier Enciso <encisomo@in.tum.de>"
+md5="fcf3a3210131f08907f3512164d2b0c2";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deffn {Operador} ;
 Separador de comandos o filas de arreglo.

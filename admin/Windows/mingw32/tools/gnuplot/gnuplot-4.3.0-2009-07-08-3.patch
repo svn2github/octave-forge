@@ -1,0 +1,821 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2009-07-08-orig/config/config.mgw gnuplot-4.3.0-2009-07-08/config/config.mgw
+--- gnuplot-4.3.0-2009-07-08-orig/config/config.mgw	2009-03-26 01:49:12 +0100
++++ gnuplot-4.3.0-2009-07-08/config/config.mgw	2009-08-26 21:00:59 +0200
+@@ -508,7 +508,7 @@
+ /* #undef VGAGL */
+ 
+ /* Define to allow zooming or refresh of volatile data. EXPERIMENTAL */
+-#define VOLATILE_REFRESH 1
++/* #define VOLATILE_REFRESH 1 */
+ 
+ /* Define if you want the wxwidgets terminal. */
+ /* #undef WXWIDGETS */
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2009-07-08-orig/config/makefile.mgw gnuplot-4.3.0-2009-07-08/config/makefile.mgw
+--- gnuplot-4.3.0-2009-07-08-orig/config/makefile.mgw	2009-02-11 10:59:26 +0100
++++ gnuplot-4.3.0-2009-07-08/config/makefile.mgw	2009-08-26 21:00:59 +0200
+@@ -18,6 +18,9 @@
+ # ************** Begin of Configuration section ************************
+ #
+ 
++# Specify the path to the sources (top directory)
++SRCDIR=@SRCDIR@
++
+ # Choose target to compile:
+ # 1. wgnuplot.exe: The usual Windows GUI for input commands.
+ # 2. wgnuplot_pipes.exe: The usual Windows GUI with support of pipes, so
+@@ -31,7 +34,7 @@
+ # used when gnuplot.exe was not available on Windows. Nowadays, pgnuplot.exe
+ # is deprecated -- plese use gnuplot.exe instead.
+ 
+-TARGET=wgnuplot.exe
++TARGET=@TARGET@
+ #TARGET=wgnuplot_pipes.exe
+ #TARGET=gnuplot.exe
+ 
+@@ -54,6 +57,7 @@
+ NEWGD=1
+ JPEG=1
+ FREETYPE=1
++CAIRO=1
+ #GDAUTOCONFIGLIBS=1
+ 
+ # PDF device driver
+@@ -91,7 +95,7 @@
+ 
+ # Where to install the PostScript prologue files, relatively to the executable
+ # wgnuplot.exe
+-GNUPLOT_PS_DIR = share/PostScript
++GNUPLOT_PS_DIR = share\\\\gnuplot\\\\PostScript
+ 
+ # Destination directory, used in 'make install':
+ DESTDIR = /c/Progra~1/Gnuplot4.3
+@@ -103,7 +107,7 @@
+ # Do you want some special optimization?
+ # -mpentium means optimise for Pentium processor
+ # -mpentiumpro means optimize for Pentium II and Pro procesors
+-CFLAGS =
++CFLAGS += $(GCC_ARCH_FLAGS) -Wall
+ 
+ 
+ # To compile the .hlp file you need hcw either out of Microsoft SDK or MS Help
+@@ -126,6 +130,9 @@
+ # GNU sort
+ GNUSORT = /bin/sort
+ 
++# GNU sed
++SED=/usr/bin/sed
++
+ #
+ # *************** End of Configuration section *************************
+ #
+@@ -157,10 +164,8 @@
+ endif
+ 
+ 
+-CC = $(GCCPATH)gcc
+-LD = $(GCCPATH)gcc
+-CXX = $(GCCPATH)g++
+-LDX = $(GCCPATH)g++
++LD = $(CC)
++LDX = $(CXX)
+ 
+ RM = rm -f
+ CP = cp -p
+@@ -180,15 +185,15 @@
+ endif
+ 
+ ifdef CONSOLE
+-  OPTS += -DWGP_CONSOLE
++  OPTS += -DWGP_CONSOLE -DVOLATILE_REFRESH
+   LDFLAGS2 = -mconsole
+ endif
+ 
+-TOP = ..
++TOP = $(SRCDIR)
+ TERMFLAGS = -DGNUPLOT_PS_DIR=\"$(GNUPLOT_PS_DIR)\" -I$(TOP)/term
+ TERMLIBS = 
+ 
+-CFLAGS += -I$(TOP) -I. -D_Windows -DHAVE_CONFIG_H\
++CFLAGS += -I$(TOP) -I$(TOP)/src -I. -D_Windows -DHAVE_CONFIG_H\
+ 	$(OPTS)
+ 
+ ifdef MOUSE
+@@ -252,6 +257,16 @@
+ endif
+ endif
+ 
++ifdef CAIRO
++	CFLAGS += -DHAVE_CAIROPDF
++	CAIRO_CFLAGS = $(shell pkg-config --cflags cairo)
++	CAIRO_LIBS = $(shell pkg-config --libs cairo)
++	PANGO_CFLAGS = $(shell pkg-config --cflags pangocairo)
++	PANGO_LIBS = $(shell pkg-config --libs pangocairo)
++	WX_OBJS =  gp_cairo.o gp_cairo_helpers.o
++	TERMFLAGS += $(CAIRO_CFLAGS) $(PANGO_CFLAGS)
++endif
++
+ ifdef WXT
+ 	CFLAGS += -DWXWIDGETS
+ 	CXXFLAGS += $(shell wx-config --cxxflags)
+@@ -267,9 +282,9 @@
+   # RC = d:/cygnus/cygwin-b20/H-i586-cygwin32/bin/windres
+   RC  = $(GCCPATH)windres
+   RCFLAGS = --include-dir /mingw32/include \
+-	--include-dir=win \
++	--include-dir=$(TOP)/src/win \
+ 	--define __WIN32__ --define __WIN95__ --define MSRC \
+-	--define __GNUWIN32__ --use-temp-file
++	--define __GNUWIN32__ --use-temp-file --preprocessor=$(CPP)
+   ifdef WXT
+ 	RCFLAGS += --define WXWIDGETS --include-dir=$(WX_LOCATION)
+   endif
+@@ -287,19 +302,19 @@
+ 
+ # macros for makefile.all
+ O=o
+-T=../term/
+-D=../docs/
++T=$(TOP)/term/
++D=$(TOP)/docs/
+ L=docs/latex/			# HBB FIXME 20060430: what's this for?
+-M=../demo/
++M=$(TOP)/demo/
+ 
+ 
+-default: $(TARGET) $(HELPFILE) wgnuplot.mnu $(M)bf_test.exe $(PGNUPLOT)
++default: $(TARGET) $(HELPFILE) wgnuplot.mnu bf_test.exe $(PGNUPLOT)
+ 
+ all:	default gnuplot.ps gnuplot.pdf
+ 
+ 
+ # include the 'core makefile template'
+-include makefile.all
++include $(TOP)/src/makefile.all
+ 
+ OBJS = $(COREOBJS) version.$(O) gpexecute.$(O) $(WX_OBJS)
+ 
+@@ -317,14 +332,20 @@
+ # default rules
+ .SUFFIXES: .exe .o .c
+ .c.o:
+-	$(CC) -c $(CFLAGS) $*.c
++	$(CC) -c $(CFLAGS) $<
+ 
+ LDLIBS = -lkernel32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -ladvapi32
+ 
++vpath	%.c	$(TOP)/src
++vpath	%.h	$(TOP)/src
++vpath	%.def	$(TOP)/src
++vpath	%.rc	$(TOP)/src
++vpath	%.trm	$(TOP)/term
++
+ #
+ # Create config.h
+ #
+-config.h: ../config/config.mgw
++config.h: $(TOP)/config/config.mgw
+ 	cp $< $@
+ 
+ $(OBJS) $(WINOBJS) dbinary.$(O): config.h
+@@ -334,78 +355,79 @@
+ 	$(TERMLIBS) $(WX_LIBS) $(CAIRO_LIBS) $(PANGO_LIBS)
+ 
+ $(PGNUPLOT): win/pgnuplot.c version.o
+-	$(CC) -O2 -DHAVE_STDBOOL_H -s -o $@ win/pgnuplot.c version.o -I. -luser32
++	$(CC) -O2 -DHAVE_STDBOOL_H -s -o $@ $^ -I$(TOP)/src -luser32
+ 
+ # rules
+ 
+ wgplt_res.o :  win/wgnuplot.rc win/wgnuplib.rc win/wresourc.h texticon.ico grpicon.ico
+-	$(RC) $(RCFLAGS) --include-dir=win win/wgnuplot.rc $(RCOUT)
++	$(RC) $(RCFLAGS) --include-dir=win $< $(RCOUT)
+ 	$(RES2COFF)
+ 
+ show.o: show.c plot.h setshow.h
+-	$(CC) -c $(CFLAGS) -DHELPFILE=\"$(HELPFILE)\" -DBINDIR=\"$(bindir)\" -c $<
++	$(CC) -c $(CFLAGS) -DHELPFILE=\"$(HELPFILE)\" -DBINDIR=\"$(bindir)\" -DGNUPLOT_PS_DIR=\"$(GNUPLOT_PS_DIR)\" -c $<
+ 
+ term.$(O): term.c term.h plot.h setshow.h bitmap.h $(CORETERM)
+-	$(CC) -c $(CFLAGS) $(TERMFLAGS) term.c
++	$(CC) -c $(CFLAGS) $(TERMFLAGS) $<
+ 
+ version.$(O): version.c
+ 
+ WINDEPS = win/wgnuplib.h win/wcommon.h win/wresourc.h
+ 
+ winmain.$(O): win/winmain.c win/wgnuplib.h win/wtext.h plot.h
+-	$(CC) -c $(CFLAGS) -DHELPFILE=\"$(HELPFILE)\"  win/winmain.c
++	$(CC) -c $(CFLAGS) -DHELPFILE=\"$(HELPFILE)\"  $<
+ 
+ wgnuplib.$(O): win/wgnuplib.c $(WINDEPS)
+-	$(CC) -c $(CFLAGS) win/wgnuplib.c
++	$(CC) -c $(CFLAGS) $<
+ 
+ wmenu.$(O): win/wmenu.c $(WINDEPS)
+-	$(CC) -c $(CFLAGS) win/wmenu.c
++	$(CC) -c $(CFLAGS) $<
+ 
+ wtext.$(O): win/wtext.c $(WINDEPS)
+-	$(CC) -c $(CFLAGS) win/wtext.c
++	$(CC) -c $(CFLAGS) $<
+ 
+ wpause.$(O): win/wpause.c wxterminal/wxt_term.h $(WINDEPS)
+-	$(CC) -c $(CFLAGS) win/wpause.c
++	$(CC) -c $(CFLAGS) $<
+ 
+ wprinter.$(O): win/wprinter.c $(WINDEPS)
+-	$(CC) -c $(CFLAGS) win/wprinter.c
++	$(CC) -c $(CFLAGS) $<
+ 
+ wgraph.$(O): win/wgraph.c $(WINDEPS)
+-	$(CC) -c $(CFLAGS) win/wgraph.c
++	$(CC) -c $(CFLAGS) $<
+ 
+-wgnuplot.mnu: win/wgnuplot.mnu
++wgnuplot.mnu: $(TOP)/src/win/wgnuplot.mnu
+ 	$(CP) $^ $@
+ 
+ wxt_gui.$(O): wxterminal/wxt_gui.cpp wxterminal/wxt_gui.h $(WX_LOCATION)
+-	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CAIRO_CFLAGS) wxterminal/wxt_gui.cpp
++	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CAIRO_CFLAGS) $<
+ 
+ gp_cairo.$(O): wxterminal/gp_cairo.c wxterminal/gp_cairo.h
+-	$(CC) -c $(CFLAGS) $(CXXFLAGS) $(CAIRO_CFLAGS) $(PANGO_CFLAGS) wxterminal/gp_cairo.c
++	$(CC) -c $(CFLAGS) $(CXXFLAGS) $(CAIRO_CFLAGS) $(PANGO_CFLAGS) $<
+ 
+ gp_cairo_helpers.$(O): wxterminal/gp_cairo_helpers.c wxterminal/gp_cairo_helpers.h
+-	$(CC) -c $(CFLAGS) wxterminal/gp_cairo_helpers.c
++	$(CC) -c $(CFLAGS) $<
+ 
+ # extract icons from wgnuplot.rc
+ texticon.ico: grpicon.ico
+ 
+-grpicon.ico: geticon.exe win/wgnuplot.rc
+-	./geticon win/wgnuplot.rc
++grpicon.ico: win/wgnuplot.rc geticon.exe 
++	./geticon $<
+ 
+ geticon.exe: win/geticon.c
+-	$(LD) $(LDFLAGS) -o $@ win/geticon.c
++	$(LD) $(LDFLAGS) -o $@ $<
+ 
+ # convert gnuplot.doc to gnuplot.rtf
+-$(HELPFILE): doc2rtf.exe $(D)gnuplot.doc win/wgnuplot.hpj
+-	./doc2rtf $(D)gnuplot.doc win/gnuplot.rtf
+-	$(HCW) -c -e win/wgnuplot.hpj
++$(HELPFILE): doc2rtf.exe $(D)gnuplot.doc $(TOP)/src/win/wgnuplot.hpj
++	./doc2rtf $(D)gnuplot.doc gnuplot.rtf
++	$(CP) $(TOP)/src/win/wgnuplot.hpj wgnuplot.hpj
++	$(HCW) -c -e wgnuplot.hpj
+ 
+ doc2rtf.exe: $(D)doc2rtf.c $(D)termdoc.c $(D)xref.c
+ 	$(LD) $(LDFLAGS) -o $@ -DWINDOWS_NO_GUI $(CFLAGS) -I. -I$(D:/=) -I$(T:/=) $^
+ 
+ #make binary demo files
+-$(M)bf_test.exe : bf_test.c dbinary.$(O) alloc.$(O)
++bf_test.exe : bf_test.c dbinary.$(O) alloc.$(O)
+ 	$(LD) $(LDFLAGS) $(CFLAGS) -U_Windows -o $@ $^
+-	(cd $(M) ; ./bf_test.exe )
++	( $@ )
+ #	cd ..
+ 
+ # _Windows causes wtext.h to define fread() etc
+@@ -424,10 +446,10 @@
+ # sort alphabetically all terminals (note: req. GNU sort, not from MS)
+ allterm.h: $(CORETERM)
+ 	@echo "Building allterm.h"
+-	@for e in `egrep "^[ 	]*START_HELP" $(CORETERM) |\
++	@for e in `egrep "^[ 	]*START_HELP" $^ |\
+ 	     $(GNUSORT) -f -t':' -k2` ; do \
+ 	  f=`echo $$e |cut -d\: -f1` ; s=`echo $$e | cut -d\: -f2` ;\
+-	  sed -n "/^[ 	]*$$s/,/^[ 	]*END_HELP/p" $$f ; \
++	  $(SED) -n "/^[ 	]*$$s/,/^[ 	]*END_HELP/p" $$f ; \
+ 	done >$@
+ else
+ # sequence of terminals according to "ls term/*.trm":
+@@ -435,7 +457,7 @@
+ 	@echo "Building allterm.h"
+ 	@cat $(T)*.trm > allterm.c
+ 	$(CPP) $(CFLAGS) -I$(T:/=) -DTERM_DRIVER_H -DTERM_HELP allterm.c | \
+-	  sed '/^ *$$/d;/^#/d' > allterm.h
++	  $(SED) '/^ *$$/d;/^#/d' > allterm.h
+ 	@rm -f allterm.c
+ endif
+ doc2tex.exe: $(D)doc2tex.c $(D)termdoc.c allterm.h
+@@ -448,23 +470,72 @@
+ endif
+ 
+ gnuplot.tex: $(D)gnuplot.doc doc2tex.exe
+-	doc2tex $(D)gnuplot.doc gnuplot.tex
++	doc2tex -figures $(D)gnuplot.doc gnuplot.tex
++
++TEXFLAG="-include-directory=$(D)"
++
++FIGURES=\
++	figure_boxerrorbars \
++	figure_boxes \
++	figure_boxxyerrorbars \
++	figure_candlesticks \
++	figure_circles \
++	figure_dots \
++	figure_filledcurves \
++	figure_financebars \
++	figure_fsteps \
++	figure_histeps \
++	figure_histclust \
++	figure_histrows \
++	figure_histcols \
++	figure_rgb3D \
++	figure_impulses \
++	figure_labels \
++	figure_lines \
++	figure_linespoints \
++	figure_points \
++	figure_steps \
++	figure_xerrorbars \
++	figure_xyerrorbars \
++	figure_yerrorbars \
++	figure_xerrorlines \
++	figure_xyerrorlines \
++	figure_yerrorlines \
++	figure_surface \
++	figure_surface+contours \
++	figure_mapcontours \
++	figure_heatmap
++
++# make .pdf figure from .eps
++%.pdf : %.eps
++	$$GSC -dEPSCrop -q -o $@ -sDEVICE=pdfwrite $<
++
++FIGURES_EPS=$(addsuffix .eps,$(FIGURES))
++FIGURES_PDF=$(addsuffix .pdf,$(FIGURES))
++
++$(FIGURES_EPS) : $(D)/plotstyles.gnu $(TARGET)
++	GNUPLOT_LIB=$(TOP)/demo; export GNUPLOT_LIB; \
++	GNUPLOT_PS_DIR=$(T)postscript; export GNUPLOT_PS_DIR; \
++	$(TARGET) $<
+ 
+ # Call LaTeX three times to get the toc right.
+-gnuplot.dvi: gnuplot.tex $(D)titlepag.tex
+-	cp gnuplot.tex $(D)gp_tex2.tex
+-	cp $(D)../VERSION $(D)
+-	cd $(D) && latex gp_tex2.tex && latex gp_tex2.tex && latex gp_tex2.tex
+-	mv $(D)gp_tex2.dvi gnuplot.dvi
+-	rm -f $(D)gp_tex2.*
++gnuplot.dvi: gnuplot.tex $(D)titlepag.tex $(FIGURES_EPS)
++	cp gnuplot.tex gp_tex2.tex
++	cp $(D)../VERSION .
++	latex $(TEXFLAG) gp_tex2.tex && makeindex gp_tex2 && latex $(TEXFLAG) gp_tex2.tex && latex $(TEXFLAG) gp_tex2.tex
++	mv gp_tex2.dvi gnuplot.dvi
++	rm -f gp_tex2.*
+ gnuplot.ps: gnuplot.dvi
+-	dvips -o gnuplot.ps gnuplot.dvi
+-gnuplot.pdf: gnuplot.tex $(D)titlepag.tex
+-	cp gnuplot.tex $(D)gp_tex2.tex
+-	cp $(D)../VERSION $(D)
+-	cd $(D) && pdflatex gp_tex2.tex && pdflatex gp_tex2.tex && pdflatex gp_tex2.tex
+-	mv $(D)gp_tex2.pdf gnuplot.pdf
+-	rm -f $(D)gp_tex2.*
++	dvips -o $@ -Ppdf -G0 -Ic3 $<
++
++PDFTEXFLAG="-include-directory=$(D)"
++
++gnuplot.pdf: gnuplot.tex $(D)titlepag.tex $(FIGURES_PDF)
++	cp gnuplot.tex gp_tex2.tex
++	cp $(D)../VERSION .
++	pdflatex $(PDFTEXFLAG) gp_tex2.tex && makeindex gp_tex2 && pdflatex $(PDFTEXFLAG) gp_tex2.tex && pdflatex $(PDFTEXFLAG) gp_tex2.tex
++	mv gp_tex2.pdf gnuplot.pdf
++	rm -f gp_tex2.*
+ 
+ 
+ # clean up temporary files
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2009-07-08-orig/docs/plotstyles.gnu gnuplot-4.3.0-2009-07-08/docs/plotstyles.gnu
+--- gnuplot-4.3.0-2009-07-08-orig/docs/plotstyles.gnu	2009-06-06 20:28:43 +0200
++++ gnuplot-4.3.0-2009-07-08/docs/plotstyles.gnu	2009-08-26 21:00:59 +0200
+@@ -3,12 +3,13 @@
+ #  EAM - July 2007
+ #
+ #
+-set term pdfcairo mono font "Times,7" size 3.5,2.0 dashlength 0.2
++#set term pdfcairo mono font "Times,7" size 3.5,2.0 dashlength 0.2
++set term postscript eps colour dashed font "Times-Roman,14" size 3.5,2.0 dashlength 0.2
+ #
+ # Line and point type plots  (same data plotted)
+ # ==============================================
+ #
+-set output 'figure_lines.pdf'
++set output 'figure_lines.eps'
+ set xrange [270:370]
+ unset xtics
+ unset ytics
+@@ -21,39 +22,39 @@
+ 
+ plot '../demo/silver.dat' u 1:($2-10.) title 'with lines' with lines
+ #
+-set output 'figure_points.pdf'
++set output 'figure_points.eps'
+ plot '../demo/silver.dat' u 1:($2-10.):(1+rand(0)) title 'with points ps variable' \
+      with points ps variable pt 6
+ #
+-set output 'figure_linespoints.pdf'
++set output 'figure_linespoints.eps'
+ f(x) = 8 + 8*sin(x/20)
+ plot '../demo/silver.dat' u 1:($2-10.) title 'with linespoints' \
+      with linespoints pt 6 ps 1, \
+      '' u 1:($2) title 'pointinterval -2' with lp pt 4 ps 1 pi -2
+ #
+-set output 'figure_fsteps.pdf'
++set output 'figure_fsteps.eps'
+ plot '../demo/silver.dat' u 1:($2-10.) title 'with fsteps' with fsteps
+ #
+-set output 'figure_steps.pdf'
++set output 'figure_steps.eps'
+ plot '../demo/silver.dat' u 1:($2-10.) title 'with steps' with steps
+ #
+-set output 'figure_histeps.pdf'
++set output 'figure_histeps.eps'
+ plot '../demo/silver.dat' u 1:($2-10.) title 'with histeps' with histeps
+ 
+ #
+ # Simple bar charts  (same data plotted)
+ # ======================================
+ #
+-set output 'figure_boxes.pdf'
++set output 'figure_boxes.eps'
+ set xzeroaxis
+ set boxwidth 0.8 relative
+ plot '../demo/silver.dat' u 1:($2-10.) with boxes title 'with boxes' fs solid 0.5
+ #
+-set output 'figure_boxerrorbars.pdf'
++set output 'figure_boxerrorbars.eps'
+ set boxwidth 0.8 relative
+ plot '../demo/silver.dat' u 1:($2-10.):(3*rand(0)) with boxerrorbars title 'with boxerrorbars' fs empty
+ #
+-set output 'figure_impulses.pdf'
++set output 'figure_impulses.eps'
+ plot '../demo/silver.dat' u 1:($2-10.) with impulses title 'with impulses'
+ #
+ # Error bars and whisker plots
+@@ -65,44 +66,44 @@
+ unset xzeroaxis
+ unset offset
+ #
+-set output 'figure_candlesticks.pdf'
++set output 'figure_candlesticks.eps'
+ plot '../demo/candlesticks.dat' using 1:3:2:6:5 title 'with candlesticks' with candlesticks whiskerbar fs empty
+ #
+-set output 'figure_financebars.pdf'
++set output 'figure_financebars.eps'
+ set bars 4
+ plot '../demo/candlesticks.dat' using 1:3:2:6:5 title 'with financebars' with financebars
+ set bars 1
+ #
+-set output 'figure_yerrorbars.pdf'
++set output 'figure_yerrorbars.eps'
+ plot '../demo/candlesticks.dat' using 1:4:3:5 with yerrorbars title 'with yerrorbars'
+ #
+-set output 'figure_yerrorlines.pdf'
++set output 'figure_yerrorlines.eps'
+ plot '../demo/candlesticks.dat' using 1:4:3:5 with yerrorlines title 'with yerrorlines'
+ #
+-set output 'figure_boxxyerrorbars.pdf'
++set output 'figure_boxxyerrorbars.eps'
+ plot '../demo/candlesticks.dat' using 1:4:($1-sin($1)/2.):($1+sin($1)/2.):3:5 \
+      with boxxyerrorbars title 'with boxxyerrorbars' fs empty
+ #
+-set output 'figure_xyerrorbars.pdf'
++set output 'figure_xyerrorbars.eps'
+ plot '../demo/candlesticks.dat' using 1:4:($1-sin($1)/2.):($1+sin($1)/2.):3:5 \
+      with xyerrorbars title 'with xyerrorbars'
+ #
+-set output 'figure_xyerrorlines.pdf'
++set output 'figure_xyerrorlines.eps'
+ plot '../demo/candlesticks.dat' using 1:4:($1-sin($1)/2.):($1+sin($1)/2.):3:5 \
+      with xyerrorlines title 'with xyerrorlines'
+ #
+-set output 'figure_xerrorbars.pdf'
++set output 'figure_xerrorbars.eps'
+ plot '../demo/candlesticks.dat' using 1:4:($1-sin($1)/2.):($1+sin($1)/2.) \
+      with xerrorbars title 'with xerrorbars'
+ #
+-set output 'figure_xerrorlines.pdf'
++set output 'figure_xerrorlines.eps'
+ plot '../demo/candlesticks.dat' using 1:4:($1-sin($1)/2.):($1+sin($1)/2.) \
+      with xerrorlines title 'with xerrorlines'
+ #
+ # Filled curves
+ # =============
+ #
+-set output 'figure_filledcurves.pdf'
++set output 'figure_filledcurves.eps'
+ set style fill solid 1.0 border -1
+ set xrange [250:500]
+ set auto y
+@@ -115,7 +116,7 @@
+ # Dots
+ # ====
+ #
+-set output 'figure_dots.pdf'
++set output 'figure_dots.eps'
+ reset
+ set parametric
+ set samples 1000
+@@ -143,16 +144,16 @@
+ unset xtics
+ set tmargin 1
+ #
+-set output 'figure_histclust.pdf'
++set output 'figure_histclust.eps'
+ set style histogram clustered
+ plot 'histopt.dat' using 1 fs solid 0.5, '' using 2 fs empty
+ #
+-set output 'figure_histrows.pdf'
++set output 'figure_histrows.eps'
+ set style histogram rows
+ set title "Rowstacked" offset 0,-1
+ plot 'histopt.dat' using 1 fs solid 0.5, '' using 2 fs empty
+ #
+-set output 'figure_histcols.pdf'
++set output 'figure_histcols.eps'
+ set style histogram columns
+ set title "Columnstacked" offset 0,-1
+ set boxwidth 0.8 rel
+@@ -171,21 +172,21 @@
+ # Circles
+ #
+ reset
+-set output 'figure_circles.pdf'
++set output 'figure_circles.eps'
+ #set title "Circles of Uncertainty"
+ unset key
+ set size ratio -1
+ set xrange [-2.5:1.5]
+ set yrange [-1:2.5]
+-set xtics font "Times,5" format "%.1f" scale 0.5
+-set ytics font "Times,5" format "%.1f" scale 0.5
++set xtics font "Times-Roman,10" format "%.1f" scale 0.5
++set ytics font "Times-Roman,10" format "%.1f" scale 0.5
+ plot '../demo/optimize.dat' with circles lc rgb "gray" fs transparent solid 0.2 nobo,\
+      '../demo/optimize.dat' u 1:2 with linespoints lw 2 pt 7 ps 0.3 lc rgb "black"
+ #
+ # 2D heat map from an array of in-line data
+ #
+ reset
+-set output 'figure_heatmap.pdf'
++set output 'figure_heatmap.eps'
+ set title "2D Heat map from in-line array of values" offset 0,-1
+ unset key
+ set bmargin 1
+@@ -231,7 +232,7 @@
+ set hidden3d offset 1
+ 
+ set title "3D surface plot with hidden line removal"  offset 0,1
+-set output 'figure_surface.pdf'
++set output 'figure_surface.eps'
+ splot sin(x) * cos(y) with lines lt -1
+ 
+ set contour base
+@@ -239,7 +240,7 @@
+ unset key
+ set title "3D surface with projected contours" 
+ 
+-set output 'figure_surface+contours.pdf'
++set output 'figure_surface+contours.eps'
+ splot sin(x) * cos(y) with lines lt -1
+ 
+ unset view
+@@ -253,19 +254,19 @@
+ set lmargin
+ set title "projected contours using 'set view map'" offset 0,-1
+ 
+-set output 'figure_mapcontours.pdf'
++set output 'figure_mapcontours.eps'
+ splot sin(x) * cos(y)
+ 
+ reset
+-set output "figure_rgb3D.pdf"
++set output 'figure_rgb3D.eps'
+ set title "RGB image mapped onto a plane in 3D" offset 0,1
+ set xrange [ -10 : 137 ]
+ set yrange [ -10 : 137 ]
+ set zrange [  -1 :   1 ]
+ set xyplane at -1
+ set bmargin at screen 0.25
+-set xtics offset 0,0 font "Times,5"
+-set ytics offset 0,0 font "Times,5"
++set xtics offset 0,0 font "Times-Roman,10"
++set ytics offset 0,0 font "Times-Roman,10"
+ set view 45, 25, 1.0, 1.35
+ set grid
+ unset key
+@@ -281,7 +282,7 @@
+ CityName(String,Size) = sprintf("{/=%d %s}", Scale(Size), stringcolumn(String))
+ 
+ set termoption enhanced
+-set output 'figure_labels.pdf'
++set output 'figure_labels.eps'
+ unset xtics
+ unset ytics
+ unset key
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2009-07-08-orig/docs/psdoc/Makefile gnuplot-4.3.0-2009-07-08/docs/psdoc/Makefile
+--- gnuplot-4.3.0-2009-07-08-orig/docs/psdoc/Makefile	2002-12-16 15:17:52 +0100
++++ gnuplot-4.3.0-2009-07-08/docs/psdoc/Makefile	2009-08-26 21:00:59 +0200
+@@ -2,27 +2,29 @@
+ # Create ps_symbols.ps
+ #
+ 
++SRCDIR=@SRCDIR@
++
+ top_srcdir = ../..
+ 
+ all: ps_symbols.ps ps_fontfile_doc.ps
+ 
+ pdf: ps_fontfile_doc.pdf
+ 
+-ps_symbols.ps: ps_symbols.gpi
++ps_symbols.ps: $(SRCDIR)/docs/psdoc/ps_symbols.gpi
+ 	@if test -f $(top_srcdir)/src/gnuplot ; then \
+ 		$(top_srcdir)/src/gnuplot ps_symbols.gpi ; \
+ 	else \
+ 		gnuplot ps_symbols.gpi ; \
+ 	fi
+ 
+-ps_fontfile_doc.ps: ps_fontfile_doc.tex
+-	latex ps_fontfile_doc
+-	latex ps_fontfile_doc
++ps_fontfile_doc.ps: $(SRCDIR)/docs/psdoc/ps_fontfile_doc.tex
++	latex $<
++	latex $<
+ 	dvips -j0 ps_fontfile_doc
+ 
+-ps_fontfile_doc.pdf: ps_fontfile_doc.tex
+-	pdflatex ps_fontfile_doc
+-	pdflatex ps_fontfile_doc
++ps_fontfile_doc.pdf: $(SRCDIR)/docs/psdoc/ps_fontfile_doc.tex
++	pdflatex $<
++	pdflatex $<
+ 
+ clean:
+ 	-rm -f ps_symbols.ps ps_fontfile_doc.aux ps_fontfile_doc.dvi \
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2009-07-08-orig/docs/titlepag.tex gnuplot-4.3.0-2009-07-08/docs/titlepag.tex
+--- gnuplot-4.3.0-2009-07-08-orig/docs/titlepag.tex	2009-02-16 23:08:47 +0100
++++ gnuplot-4.3.0-2009-07-08/docs/titlepag.tex	2009-08-26 21:00:59 +0200
+@@ -14,7 +14,7 @@
+ % LaTeX2e version
+ % add `[a4paper]' before `{article}' to load settings for A4-paper
+ % see below if you add 11pt or 12pt
+-   \documentclass[twoside]{article}
++   \documentclass[a4paper,twoside]{article}
+    \usepackage{toc_entr}
+ 
+   \usepackage[
+@@ -24,6 +24,7 @@
+         hyperindex,
+         bookmarks,
+         bookmarksnumbered=true,
++        colorlinks=true,
+         pdftitle={gnuplot documentation},
+         pdfauthor={gnuplot},
+         pdfsubject={see www.gnuplot.info}
+@@ -52,12 +53,12 @@
+ %\addtolength{\textheight}{48pt}
+ %\addtolength{\topmargin}{-24pt}
+ 
+-\setlength{\textwidth}{6.25in}
++\setlength{\textwidth}{17cm}
+ % \setlength{\oddsidemargin}{0.5cm}
+-\setlength{\oddsidemargin}{0.0cm}
+-\setlength{\evensidemargin}{0.0cm}
+-\setlength{\topmargin}{-0.5in}
+-\setlength{\textheight}{9.5in}
++\setlength{\oddsidemargin}{-0.54cm}
++\setlength{\evensidemargin}{-0.54cm}
++\setlength{\topmargin}{-2cm}
++\setlength{\textheight}{25.7cm}
+ 
+ \setlength{\parskip}{1ex}
+ \setlength{\parindent}{0pt}
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2009-07-08-orig/src/version.c gnuplot-4.3.0-2009-07-08/src/version.c
+--- gnuplot-4.3.0-2009-07-08-orig/src/version.c	2009-07-08 08:57:13 +0200
++++ gnuplot-4.3.0-2009-07-08/src/version.c	2009-08-26 21:00:59 +0200
+@@ -39,8 +39,8 @@
+ #include "syscfg.h"		/* for FAQ_LOCATION */
+ 
+ 
+-const char gnuplot_version[] = "4.3";
+-const char gnuplot_patchlevel[] = "0";
++const char gnuplot_version[] = "4.3.0-2009-07-08 CVS";
++const char gnuplot_patchlevel[] = "0 octave-mingw32";
+ const char gnuplot_date[] = "July 2009";
+ const char gnuplot_copyright[] = "Copyright (C) 1986-1993, 1998, 2004, 2007-2009";
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2009-07-08-orig/src/win/winmain.c gnuplot-4.3.0-2009-07-08/src/win/winmain.c
+--- gnuplot-4.3.0-2009-07-08-orig/src/win/winmain.c	2008-11-07 12:55:46 +0100
++++ gnuplot-4.3.0-2009-07-08/src/win/winmain.c	2009-08-26 21:00:59 +0200
+@@ -269,7 +269,7 @@
+ #ifdef WGP_CONSOLE
+ # define _argv argv
+ # define _argc argc
+-	HINSTANCE hInstance = NULL, hPrevInstance = NULL;
++	HINSTANCE hInstance = GetModuleHandle(NULL), hPrevInstance = NULL;
+ 	int nCmdShow = 0;
+ #else	 
+ #ifdef __MSC__  /* MSC doesn't give us _argc and _argv[] so ...   */
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2009-07-08-orig/term/emf.trm gnuplot-4.3.0-2009-07-08/term/emf.trm
+--- gnuplot-4.3.0-2009-07-08-orig/term/emf.trm	2009-06-08 06:37:29 +0200
++++ gnuplot-4.3.0-2009-07-08/term/emf.trm	2009-08-26 21:00:59 +0200
+@@ -165,7 +165,7 @@
+ #define EMF_10THDEG2RAD (3.14159265359/1800)
+ #define EMF_XMAX (1024 * EMF_PX2HM)
+ #define EMF_YMAX (768 * EMF_PX2HM)
+-#define EMF_HTIC (EMF_XMAX / 160)
++#define EMF_HTIC (EMF_XMAX / 320)
+ #define EMF_VTIC EMF_HTIC
+ #define EMF_FONTNAME "Arial"
+ #define EMF_FONTSIZE 12
+@@ -649,8 +649,8 @@
+ 		term->xmax = tempxmax * EMF_PX2HM;
+ 	    if (tempymax > 0)
+ 		term->ymax = tempymax * EMF_PX2HM;
+-	    term->h_tic = term->xmax / 160;
+-	    term->v_tic = term->h_tic;
++	    /*term->h_tic = term->xmax / 160;
++	    term->v_tic = term->h_tic;*/
+ 	    continue;
+ 	}
+ 	if (equals(c_token, "font"))
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2009-07-08-orig/term/gd.trm gnuplot-4.3.0-2009-07-08/term/gd.trm
+--- gnuplot-4.3.0-2009-07-08-orig/term/gd.trm	2009-07-08 16:45:45 +0200
++++ gnuplot-4.3.0-2009-07-08/term/gd.trm	2009-08-26 21:00:59 +0200
+@@ -156,6 +156,8 @@
+ # endif
+ #endif
+ 
++#undef GD_NEED_LOCAL_FONT_POINTERS
++
+ #ifdef GD_NEED_LOCAL_FONT_POINTERS
+ # include "gdfonts.h"
+ # include "gdfontl.h"
+@@ -323,6 +325,9 @@
+ static double PNG_linewidth_factor = 1.0;
+ static double PNG_dashlength_factor = 1.0;
+ 
++/* Subsitutes for Font Helvetica */
++static const char* Helvetica_Font_Substitutes = "Helvetica;n019003l;uhvr8a;Arial";
++
+ /* EAM - gdImage structure to hold brushes for linewidth */
+ /* We will allocate and initialize these on demand */
+ typedef struct {
+@@ -783,6 +788,13 @@
+ 		    c_token++;
+ 		}
+ 		free(png_state.default_ttffont);
++#ifdef _WIN32
++		if( strcmpi(png_state.ttffont,"helvetica") == 0 ) {
++		   /* supply substitution font names, if "Helvetica" is not found */
++		   free(png_state.ttffont);
++		   png_state.ttffont = gp_strdup(Helvetica_Font_Substitutes);
++		}
++#endif
+ 		png_state.default_ttffont = gp_strdup(png_state.ttffont);
+ 
+ 		/* First try the old GDFONTPATH mechanism for locating fonts */
+@@ -1837,8 +1849,17 @@
+     else if (*name) {
+ 	/* New ttf font */
+ 	free(png_state.ttffont);
++#ifdef _WIN32
++	if( strcmpi(name,"helvetica") == 0 ) {
++	   /* supply substitution font names, if "Helvetica" is not found */
++	   png_state.ttffont = gp_strdup(Helvetica_Font_Substitutes);
++	} else {
++#endif
+ 	png_state.ttffont = gp_strdup(name);
+ 	png_state.ttfsize = size;
++#ifdef _WIN32
++	}
++#endif
+     } else {
+ 	/* Restore initial default font */
+ 	free(png_state.ttffont);
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '*.orig' -x '*~' gnuplot-4.3.0-2009-07-08-orig/term/post.trm gnuplot-4.3.0-2009-07-08/term/post.trm
+--- gnuplot-4.3.0-2009-07-08-orig/term/post.trm	2009-06-08 06:37:29 +0200
++++ gnuplot-4.3.0-2009-07-08/term/post.trm	2009-08-26 21:00:59 +0200
+@@ -192,7 +192,7 @@
+ } ps_params_t;
+ 
+ #define POST_PARAMS_DEFAULT { \
+-    PSTERM_POSTSCRIPT, 50, 50, \
++    PSTERM_POSTSCRIPT, 0, 0, \
+     PSTERM_LANDSCAPE, FALSE, FALSE, FALSE, FALSE, 1.0, 1.0, FALSE, \
+     FALSE, FALSE, FALSE, NULL, "Helvetica", 14, FALSE, FALSE, 2000, 0.003, \
+     FALSE, TRUE, FALSE \
+@@ -202,7 +202,7 @@
+ static const ps_params_t post_params_default = POST_PARAMS_DEFAULT;
+ 
+ #define EPSLATEX_PARAMS_DEFAULT { \
+-    PSTERM_EPSLATEX, 50, 50, \
++    PSTERM_EPSLATEX, 0, 0, \
+     PSTERM_EPS, FALSE, FALSE, TRUE, FALSE, 1.0, 1.0, FALSE, \
+     FALSE, FALSE, FALSE, NULL, "", 11, TRUE, FALSE, 2000, 0.003, \
+     FALSE, FALSE, FALSE \

@@ -45,22 +45,28 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 0.4
-
-                                # TODO: write a test using not null and
-                                # not zero Aeq and beq
+## Version: 0.5
 
 function [x fval] = linprog (f, A, b,
                              Aeq = [], beq = [],
                              lb = [], ub = [])
 
-  nr_f = rows(f);
-  nr_A = rows (A);
-
   if (((nargin != 3) && (nargin != 5) && (nargin != 7)) ||
       (nargout > 2))
     print_usage ();
-  elseif (columns (f) != 1)
+  endif
+
+  nr_f = rows(f);
+
+  # Sanitize A and b
+  if (isempty (A) && isempty (b))
+    A = zeros (0, nr_f);
+    b = zeros (rows (A), 1);
+  endif
+
+  nr_A = rows (A);
+
+  if (columns (f) != 1)
     error ("f must be a column vector");
   elseif (columns (A) != nr_f)
     error ("columns (A) != rows (f)");
@@ -112,6 +118,18 @@ function [x fval] = linprog (f, A, b,
 endfunction
 
 
+%!test
+%! f = [1; -1];
+%! A = [];
+%! b = [];
+%! Aeq = [1, 0];
+%! beq = [2];
+%! lb = [0; Inf];
+%! ub = [-Inf; 0];
+%! x_exp = [2; 0];
+%! assert (linprog (f, A, b, Aeq, beq, lb, ub), x_exp);
+
+
 %!shared f, A, b, lb, ub, x_exp, fval_exp
 %! f  = [21 25 31 34  23 19 32  36 27 25 19]';
 %!
@@ -143,4 +161,4 @@ endfunction
 %!test
 %! Aeq = zeros (1, rows (f));
 %! beq = 0;
-%! assert(linprog (f, A, b, Aeq, beq, lb, ub), x_exp);
+%! assert (linprog (f, A, b, Aeq, beq, lb, ub), x_exp);

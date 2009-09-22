@@ -8,8 +8,8 @@ function [R,CC]=xval(D,classlabel,MODE,arg4)
 %  .. = xval(D,{classlabel,W,NG},CLASSIFIER)
 % 
 %  example: 
-%      load fisheriris;    %builtin iris dataset      
-%      C = unique(species);
+%      load_fisheriris;    %builtin iris dataset      
+%      C = species;
 %      K = 5; NG = [1:length(C)]'*K/length(C);
 %      [R,CC] = xval(meas,{C,[],NG},'NBC');            
 %

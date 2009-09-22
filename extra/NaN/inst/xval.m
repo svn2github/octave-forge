@@ -4,8 +4,14 @@ function [R,CC]=xval(D,classlabel,MODE,arg4)
 %  [R,CC] = xval(D,classlabel)
 %  .. = xval(D,classlabel,CLASSIFIER)
 %  .. = xval(D,classlabel,CLASSIFIER,type)
-%  .. = xval(D,[classlabel,W],CLASSIFIER)
-%  .. = xval(D,[classlabel,W,NG],CLASSIFIER)
+%  .. = xval(D,{classlabel,W},CLASSIFIER)
+%  .. = xval(D,{classlabel,W,NG},CLASSIFIER)
+% 
+%  example: 
+%      load fisheriris;    %builtin iris dataset      
+%      C = unique(species);
+%      K = 5; NG = [1:length(C)]'*K/length(C);
+%      [R,CC] = xval(meas,{C,[],NG},'NBC');            
 %
 % Input:
 %    D:	data features (one feature per column, one sample per row)
@@ -73,23 +79,34 @@ elseif ~isfield(MODE,'TYPE')
 end;        
 
 sz = size(D);
-if sz(1)~=size(classlabel,1),
-        error('length of data and classlabel does not fit');
-end;
-
 NG = [];	
 W = [];
-% use only valid samples
-ix0 = find(~any(isnan(classlabel),2));
 
-if size(classlabel,2)>1,
-	%% group-wise classvalidation
-	W = classlabel(:,2);
-	if all(W==1) W = []; end; 
+if iscell(classlabel)
+        [b,i,C] = unique(classlabel{:,1});
+        if size(classlabel,2)>1,
+                W = [classlabel{:,2}]; 
+        end; 
 	if size(classlabel,2)>2,
+		[Label,tmp1,NG] = unique(classlabel{:,3});
+	end;
+elseif size(classlabel,2)>1,
+	%% group-wise classvalidation
+	C = classlabel(:,1);
+	W = classlabel(:,2);
+	if size(classlabel,2)==2,
+	        warning('This option defines W and NG in an ambigous way - use instead xval(D,{C,[],NG},...) or xval(D,{C,W},...)'); 
+	else
 		[Label,tmp1,NG] = unique(classlabel(:,3));
 	end;
 end; 
+if all(W==1) W = []; end;
+if sz(1)~=size(C,1),
+        error('length of data and classlabel does not fit');
+end;
+
+% use only valid samples
+ix0 = find(~any(isnan(C),2));
 
 if isempty(NG)
 if (nargin<4) || strcmpi(arg4,'LOOM')
@@ -99,16 +116,16 @@ if (nargin<4) || strcmpi(arg4,'LOOM')
 elseif isnumeric(arg4)
 	if isscalar(arg4)  
 	% K-fold XV
-		NG = ceil([1:length(classlabel)]'*arg4/length(classlabel));
+		NG = ceil([1:length(C)]'*arg4/length(C));
 	elseif length(arg4)==2,
-		NG = ceil([1:length(classlabel)]'*arg4(1)/length(classlabel));
+		NG = ceil([1:length(C)]'*arg4(1)/length(C));
 	end; 	
 	
 end; 
 end; 
 
 sz = size(D);
-if sz(1)~=length(classlabel),
+if sz(1)~=length(C),
         error('length of data and classlabel does not fit');
 end;
 if ~isfield(MODE,'hyperparameter')
@@ -119,17 +136,17 @@ cl = repmat(NaN,size(classlabel,1),1);
 for k = 1:max(NG),
  	ix = ix0(NG(ix0)~=k);
 	if isempty(W)	
-		CC = train_sc(D(ix,:),classlabel(ix,1),MODE);
+		CC = train_sc(D(ix,:),C(ix),MODE);
 	else
-		CC = train_sc(D(ix,:),classlabel(ix,1),MODE,W(ix));
+		CC = train_sc(D(ix,:),C(ix),MODE,W(ix));
 	end; 	
  	ix = ix0(NG(ix0)==k);
 	r  = test_sc(CC,D(ix,:));
 	cl(ix,1) = r.classlabel;
 end; 
 
-R = kappa(classlabel(:,1),cl,'notIgnoreNAN',W);
-%R1 = kappa(classlabel(:,1),cl,[],W)
+R = kappa(C,cl,'notIgnoreNAN',W);
+%R1 = kappa(C,cl,[],W)
 %R2 = kappa(R.H)
 
 R.ERR = 1-R.ACC; 
@@ -142,10 +159,10 @@ R.data = R.H;
 if nargout>1,
 	% final classifier 
 	if isempty(W), 
-		CC = train_sc(D,classlabel(:,1),MODE);
+		CC = train_sc(D,C,MODE);
 	else	
-		CC = train_sc(D,classlabel(:,1),MODE,W);
+		CC = train_sc(D,C,MODE,W);
 	end; 	
-	CC.Labels = 1:max(classlabel);
-	%CC.Labels = unique(classlabel);
+	CC.Labels = 1:max(C);
+	%CC.Labels = unique(C);
 end; 

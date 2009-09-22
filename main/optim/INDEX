@@ -10,6 +10,7 @@ Minimization
  bfgsmin samin battery
  fminsearch
  cg_min
+ de_min
 Data fitting
  expfit expdemo
  wpolyfit wpolyfitdemo 

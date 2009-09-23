@@ -25,6 +25,8 @@ function e = subsref (d, s)
     error ("dict: missing index");
   endif
 
+  lookup = __lookup_compat__; # FIXME: remove when 3.3.x is required.
+
   switch (s(1).type)
     case "()"
       ind = s(1).subs;

@@ -16,25 +16,42 @@
 ## along with this program; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## -*- texinfo -*-
-## @deftypefn{Function File} {} has (d, key)
-## Check whether the dictionary contains specified key(s). 
-## Key can be either a string or a cell array. In the first case,
-## the result is a logical scalar; otherwise, the result is a logical array
-## with the same shape as @var{key}.
-## @end deftypefn
+## This replaces the missing functionality of "lookup" if on Octave 3.2.
 
-function b = has (d, key)
-  if (nargin != 2)
-    print_usage ();
-  endif
-
-  lookup = __lookup_compat__; # FIXME: remove when 3.3.x is required.
-
-  if (ischar (key) || iscellstr (key))
-    b = lookup (d.keys, key, "b");
+function lookup_func = __lookup_compat__ ()
+  persistent octave32 = issorted ({version, "3.3.x"});
+  if (octave32)
+    lookup_func = @__my_lookup__;
   else
-    error ("invalid key value");
+    lookup_func = @lookup;
   endif
 endfunction
+
+function ind = __my_lookup__ (table, y, opt = "")
+
+  mopt = any (opt == 'm');
+  bopt = any (opt == 'b');
+
+  opt(opt == 'm' | opt == 'b') = [];
+
+  ind = lookup (table, y, opt);
+  if (numel (table) > 0)
+    if (ischar (table) || iscellstr (table))
+      match = strcmp (table(max (1, ind)), y);
+    else
+      match = table(max (1, ind)) == y;
+    endif
+  else
+    match = false (size (y));
+  endif
+
+  if (mopt)
+    ind(! match) = 0;
+  elseif (bopt)
+    ind = match;
+  endif
+endfunction
+
+
+
 

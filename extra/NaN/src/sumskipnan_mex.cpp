@@ -41,6 +41,9 @@
 //
 //-------------------------------------------------------------------
 
+
+
+
 #include <inttypes.h>
 #include <math.h>
 #include "mex.h"
@@ -65,6 +68,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	double* 	LOutputSum;
     	double* 	LOutputCount;
     	double* 	LOutputSum2;
+    	long double* 	LongOutputSum = NULL;
+    	long double* 	LongOutputCount = NULL;
+    	long double* 	LongOutputSum2 = NULL;
     	double  	x;
     	double*		W = NULL;		// weight vector 
 
@@ -89,7 +95,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		mexErrMsgTxt("First argument must be REAL/DOUBLE.");
 
     	// get 2nd argument
-    	if  (PInputCount > 1){
+    	if  (PInputCount > 1) {
  	       	switch (mxGetNumberOfElements(PInputs[1])) {
 		case 0: x = 0.0; 		// accept empty element
 			break;
@@ -144,14 +150,17 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
 	LOutputSum = mxGetPr(POutput[0]);
+	if (D1!=1 && D2>0) LongOutputSum = (long double*) mxCalloc(D1*D3,sizeof(long double));
 
     	if (POutputCount >= 2) {
 		POutput[1] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
 		LOutputCount = mxGetPr(POutput[1]);
+		if (D1!=1 && D2>0) LongOutputCount = (long double*) mxCalloc(D1*D3,sizeof(long double));
     	}
     	if (POutputCount >= 3) {
 		POutput[2] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
         	LOutputSum2  = mxGetPr(POutput[2]);
+		if (D1!=1 && D2>0) LongOutputSum2 = (long double*) mxCalloc(D1*D3,sizeof(long double));
     	}
 	mxFree(SZ2);
 
@@ -167,14 +176,15 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				double count;
 				__sumskipnan2w__(LInput+ix1, D2, LOutputSum+ix0, &count, &flag_isNaN, W);
  	       		}
-			else for (j=0; j<D2; j++) {
+			else {
+			   for (j=0; j<D2; j++) {
 				// minimize cache misses 
 				ix2 =   ix0;	// index for output 
 				// Inner LOOP: along dimensions < DIM
 				if (W) do {
-					register double x = *LInput;
+					register long double x = *LInput;
         				if (!isnan(x)) {
-						LOutputSum[ix2]   += W[j]*x; 
+						LongOutputSum[ix2]   += W[j]*x; 
 					}
 #ifndef NO_FLAG
 					else 
@@ -184,9 +194,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					ix2++;
 				} while (ix2 != (l+1)*D1);
 				else do {
-					register double x = *LInput;
+					register long double x = *LInput;
         				if (!isnan(x)) {
-						LOutputSum[ix2]   += x; 
+						LongOutputSum[ix2]   += x; 
 					}
 #ifndef NO_FLAG
 					else 
@@ -195,7 +205,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					LInput++;
 					ix2++;
 				} while (ix2 != (l+1)*D1);
-               		}
+			    }	//	end for (j=	
+
+	               		for (j=0; j<D1; j++) {
+					LOutputSum[ix0+j] = LongOutputSum[ix0+j]; 
+				}
+			}	// 	end else 
                	}		
 	}
 
@@ -208,15 +223,16 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			{
 				__sumskipnan2w__(LInput+ix1, D2, LOutputSum+ix0, LOutputCount+ix0, &flag_isNaN, W);
  	       		}
-			else for (j=0; j<D2; j++) {
+			else {
+			    for (j=0; j<D2; j++) {
 				// minimize cache misses 
 				ix2 =   ix0;	// index for output 
 				// Inner LOOP: along dimensions < DIM
 				if (W) do {
-					register double x = *LInput;
+					register long double x = *LInput;
         				if (!isnan(x)) {
-						LOutputCount[ix2] += W[j]; 
-						LOutputSum[ix2]   += W[j]*x; 
+						LongOutputCount[ix2] += W[j]; 
+						LongOutputSum[ix2]   += W[j]*x; 
 					}
 #ifndef NO_FLAG
 					else 
@@ -226,10 +242,10 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					ix2++;
 				} while (ix2 != (l+1)*D1);
 				else do {
-					register double x = *LInput;
+					register long double x = *LInput;
         				if (!isnan(x)) {
-						LOutputCount[ix2] += 1.0; 
-						LOutputSum[ix2]   += x; 
+						LongOutputCount[ix2] += 1.0; 
+						LongOutputSum[ix2]   += x; 
 					}
 #ifndef NO_FLAG
 					else 
@@ -238,7 +254,13 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					LInput++;
 					ix2++;
 				} while (ix2 != (l+1)*D1);
-               		}
+			    }	//	end for (j=	
+
+	               		for (j=0; j<D1; j++) {
+					LOutputSum[ix0+j]   = LongOutputSum[ix0+j]; 
+					LOutputCount[ix0+j] = LongOutputCount[ix0+j]; 
+				}
+               		}	// 	end else 
                	}		
 	}
 
@@ -251,17 +273,18 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			{
 				__sumskipnan3w__(LInput+ix1, D2, LOutputSum+ix0, LOutputSum2+ix0, LOutputCount+ix0, &flag_isNaN, W);
  	       		}
-			else for (j=0; j<D2; j++) {
+			else {
+			    for (j=0; j<D2; j++) {
 				// minimize cache misses 
 				ix2 =   ix0;	// index for output 
 				// Inner LOOP: along dimensions < DIM
 				if (W) do {
-					register double x = *LInput;
+					register long double x = *LInput;
         				if (!isnan(x)) {
-						LOutputCount[ix2] += W[j]; 
+						LongOutputCount[ix2] += W[j]; 
 						double t = W[j]*x;
-						LOutputSum[ix2]   += t; 
-						LOutputSum2[ix2]  += x*t; 
+						LongOutputSum[ix2]   += t; 
+						LongOutputSum2[ix2]  += x*t; 
 					}
 #ifndef NO_FLAG
 					else 
@@ -271,11 +294,11 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					ix2++;	
 				} while (ix2 != (l+1)*D1);
 				else do {
-					register double x = *LInput;
+					register long double x = *LInput;
         				if (!isnan(x)) {
-						LOutputCount[ix2] += 1.0; 
-						LOutputSum[ix2]   += x; 
-						LOutputSum2[ix2]  += x*x; 
+						LongOutputCount[ix2] += 1.0; 
+						LongOutputSum[ix2]   += x; 
+						LongOutputSum2[ix2]  += x*x; 
 					}
 #ifndef NO_FLAG
 					else 
@@ -284,9 +307,19 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					LInput++;
 					ix2++;	
 				} while (ix2 != (l+1)*D1);
-               		}
+			    }	//	end for (j=	
+
+	               		for (j=0; j<D1; j++) {
+					LOutputSum[ix0+j]   = LongOutputSum[ix0+j]; 
+					LOutputCount[ix0+j] = LongOutputCount[ix0+j]; 
+					LOutputSum2[ix0+j]  = LongOutputSum2[ix0+j]; 
+				}
+               		}	// 	end else 
                	}		
 	}
+	if (LongOutputSum) mxFree(LongOutputSum);
+	if (LongOutputCount) mxFree(LongOutputCount);
+	if (LongOutputSum2) mxFree(LongOutputSum2);
 
 #ifndef NO_FLAG
 	//mexPrintf("Third argument must be not empty - otherwise status whether a NaN occured or not cannot be returned.");

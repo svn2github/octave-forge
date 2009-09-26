@@ -349,6 +349,9 @@ if test -n "$JAVAC" -a -n "$JAR"; then
             # you need to explicitely set the include path
             JAVA_INCS="-I${JAVA_HOME}/include"
             HAVE_JAVA=yes
+          # This is the Debian default path
+          elif test -d "/usr/lib/jvm/default-java"; then
+            JAVA_HOME=/usr/lib/jvm/default-java
           else
             JAVA_HOME=/usr/lib/jvm
           fi

@@ -1,4 +1,4 @@
-md5="9131517998259972476b3d7baeb780ce";rev="6130";by="Javier Enciso <encisomo@in.tum.de>"
+md5="9131517998259972476b3d7baeb780ce";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Funci@'on incorporada} {} fputs (@var{fid}, @var{string})
 Escribe una cadena sin formato a un archivo.

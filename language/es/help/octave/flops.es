@@ -1,4 +1,4 @@
-md5="477560bf9615e143358b5c862f59065d";rev="6130";by="Javier Enciso <encisomo@in.tum.de>"
+md5="477560bf9615e143358b5c862f59065d";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} flops ()
 Esta funci@'on es suministrada para ofrecer compatibilidad con 

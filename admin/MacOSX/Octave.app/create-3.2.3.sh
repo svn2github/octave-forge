@@ -413,7 +413,7 @@ clear_dirs() {
     GraphicsMagick-1.1.11 SuiteSparse arpack-2.1+parpack96.dfsg \
     curl-7.18.2 fftw-3.1.2 fltk-1.1.9 freetype-2.3.7 \
     ftgl-2.1.3~rc5 g95-install glpk-4.29 hdf5-1.6.6 \
-    jpeg-6b libpng-1.2.33 octave-3.2.3 pcre-7.6 \
+    jpeg-6b libpng-1.2.36 octave-3.2.3 pcre-7.6 \
     qhull-2003.1 qrupdate readline-5.2 tiff-3.8.2 \
     zlib-1.2.3.3.dfsg
   cd $vpwd

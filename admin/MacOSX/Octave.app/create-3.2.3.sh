@@ -240,7 +240,7 @@ create_octave() {
 
   vsrv=ftp://ftp.octave.org/pub/octave
   voct=(octave-3.2.3.tar.gz a3805ed3838c76f4973d1ef7615d5f3c)
-  vopc=(./patches/octave-3.2.3.macosx.diff.gz 1af91ccc7ffa2774cb5f1980aa6338fb)
+  vopc=(./patches/octave-3.2.3.macosx.diff.gz 43acbd5d8d4eb8929c116b60b4f54ee3)
 
   rm -rf ./work/octave-$version
   file_curl_md5 $vsrv/${voct[0]} ./work/${voct[0]} ${voct[1]}

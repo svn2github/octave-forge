@@ -1,4 +1,4 @@
-md5="e997556dedcbd246afbdc134032f05f2";rev="6250";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="e997556dedcbd246afbdc134032f05f2";rev="6274";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} ispc ()
 Retorna 1 si Octave se est@'a ejecutando en un sistema basado en 

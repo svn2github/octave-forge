@@ -1,4 +1,4 @@
-md5="03b46686b7cc54c5e878d7c09da541ac";rev="6250";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="03b46686b7cc54c5e878d7c09da541ac";rev="6274";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Archivo de funci@'on} {} isvector (@var{a})
 Retorna 1 si @var{a} es un vector.  En otro caso, retorna 0. 

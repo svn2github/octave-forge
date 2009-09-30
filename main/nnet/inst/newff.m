@@ -64,9 +64,20 @@ function net = newff(Pr,ss,transFunc,trainFunc,notUsed,performFunc)
   ## check range of input arguments
   error(nargchk(2,6,nargin))
 
+  ## get number of layers (without input layer)
+  nLayers = length(ss);
+
   ## set defaults
   if (nargin <3)
-    transFunc={"tansig"};
+    # the number of transfer functions depends on the number of
+    # hidden layers, so we have to create a loop here 30.09.09 (dd.mm.yy)
+	for i=1:nLayers
+	  if (i==nLayers)
+	    transFunc{i,1} = "purelin";
+	  else
+        transFunc{i,1}= "tansig";
+      endif
+    endfor
   endif
   if (nargin <4)
     trainFunc = "trainlm";
@@ -86,9 +97,6 @@ function net = newff(Pr,ss,transFunc,trainFunc,notUsed,performFunc)
   ## check input args
   checkInputArgs(Pr,ss);
 
-  ## get number of layers (without input layer)
-  nLayers = length(ss);
-
   ## Standard architecture of neural network
   net = __newnetwork(1,nLayers,1,"newff");
   ## description:
@@ -97,7 +105,6 @@ function net = newff(Pr,ss,transFunc,trainFunc,notUsed,performFunc)
   ## second argument: number of layers, including output layer
   ## third argument: number of outputs, nothing else allowed till now
   ## it's not the same like the number of neurons in this output
-
 
   ## set inputs with limit of only ONE input
   net.inputs{1}.range = Pr;

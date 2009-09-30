@@ -53,10 +53,14 @@
 #include <math.h>
 #include "mex.h"
 
+inline int __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
+inline int __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
 inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
 inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
 inline int __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
 inline int __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
+inline int __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
+inline int __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
 
 //#define NO_FLAG
 
@@ -149,7 +153,20 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			W = mxGetPr(PInputs[3]);
 		else
 			mexErrMsgTxt("Error SUMSKIPNAN.MEX: length of weight vector does not match size of dimension");
-	}	
+	}
+
+	int ACC_LEVEL  = 1;
+	{
+		mxArray *LEVEL = NULL;
+		int s = mexCallMATLAB(1, &LEVEL, 0, NULL, "flag_accuracy_level");
+		if (!s) {
+			ACC_LEVEL = (int) mxGetScalar(LEVEL);
+			if ((D1>1) && (ACC_LEVEL>2))
+				mexWarnMsgTxt("Warning: Kahan summation not supported with stride > 1 !");
+		}	
+		mxDestroyArray(LEVEL);
+	}
+	mexPrintf("Accuracy Level=%i\n",ACC_LEVEL);
 
 	    // create outputs
 	#define TYP mxDOUBLE_CLASS
@@ -172,23 +189,101 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	if (D1*D2*D3<1) // zero size array
 		; 	// do nothing 
-	else if ((POutputCount <= 1) && !mxIsComplex(PInputs[0])) {
+	else if ((D1==1) && (ACC_LEVEL<1)) {
+		// extended accuray, naive summation, error = N*2^-64 
+		switch (POutputCount) {
+		case 1: 
+			for (l = 0; l<D3; l++) {
+				double count;
+				__sumskipnan2wr__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
+			} 
+			break;
+		case 2: 
+			for (l = 0; l<D3; l++) {
+				__sumskipnan2wr__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
+			} 
+			break;
+		case 3: 
+			for (l = 0; l<D3; l++) {
+				__sumskipnan3wr__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
+			} 
+			break;
+		}
+	}
+	else if ((D1==1) && (ACC_LEVEL==1)) {
+		// extended accuray, naive summation, error = N*2^-64 
+		switch (POutputCount) {
+		case 1: 
+			for (l = 0; l<D3; l++) {
+				double count;
+				__sumskipnan2w__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
+			} 
+			break;
+		case 2: 
+			for (l = 0; l<D3; l++) {
+				__sumskipnan2w__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
+			} 
+			break;
+		case 3: 
+			for (l = 0; l<D3; l++) {
+				__sumskipnan3w__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
+			} 
+			break;
+		}
+	}
+	else if ((D1==1) && (ACC_LEVEL==2)) {
+		// ACC_LEVEL==2: extended accuracy and Kahan Summation, error = 2^-64
+		switch (POutputCount) {
+		case 1: 
+			for (l = 0; l<D3; l++) {
+				double count;
+				__sumskipnan2we__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
+			} 
+			break;
+		case 2: 
+			for (l = 0; l<D3; l++) {
+				__sumskipnan2we__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
+			} 
+			break;
+		case 3: 
+			for (l = 0; l<D3; l++) {
+				__sumskipnan3we__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
+			} 
+			break;
+		}
+	}
+	else if ((D1==1) && (ACC_LEVEL==3)) {
+		// ACC_LEVEL==2: extended accuracy and Kahan Summation, error = 2^-64
+		switch (POutputCount) {
+		case 1: 
+			for (l = 0; l<D3; l++) {
+				double count;
+				__sumskipnan2wer__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
+			} 
+			break;
+		case 2: 
+			for (l = 0; l<D3; l++) {
+				__sumskipnan2wer__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
+			} 
+			break;
+		case 3: 
+			for (l = 0; l<D3; l++) {
+				__sumskipnan3wer__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
+			} 
+			break;
+		}
+	}
+	else if (POutputCount <= 1) {
 		// OUTER LOOP: along dimensions > DIM
 		for (l = 0; l<D3; l++) {
 			ix0 = l*D1; 	// index for output
 			ix1 = ix0*D2;	// index for input 
-			if (D1==1)  	
-			{
-				double count;
-				__sumskipnan2we__(LInput+ix1, D2, LOutputSum+ix0, &count, &flag_isNaN, W);
- 	       		}
-			else {
-			   for (j=0; j<D2; j++) {
+			for (j=0; j<D2; j++) {
 				// minimize cache misses 
 				ix2 =   ix0;	// index for output 
 				// Inner LOOP: along dimensions < DIM
 				if (W) do {
-					register long double x = *LInput;
+					long double x = *LInput;
         				if (!isnan(x)) {
 						LongOutputSum[ix2]   += W[j]*x; 
 					}
@@ -200,7 +295,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					ix2++;
 				} while (ix2 != (l+1)*D1);
 				else do {
-					register long double x = *LInput;
+					long double x = *LInput;
         				if (!isnan(x)) {
 						LongOutputSum[ix2]   += x; 
 					}
@@ -211,32 +306,26 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					LInput++;
 					ix2++;
 				} while (ix2 != (l+1)*D1);
-			    }	//	end for (j=	
+			}	//	end for (j=	
 
-                                /* copy to output */
-	               		for (j=0; j<D1; j++) {
-					LOutputSum[ix0+j] = LongOutputSum[ix0+j]; 
-				}
-			}	// 	end else 
+                        /* copy to output */
+               		for (j=0; j<D1; j++) {
+				LOutputSum[ix0+j] = LongOutputSum[ix0+j]; 
+			}
                	}		
 	}
 
-	else if ((POutputCount == 2) && !mxIsComplex(PInputs[0])) {
+	else if (POutputCount == 2) {
 		// OUTER LOOP: along dimensions > DIM
 		for (l = 0; l<D3; l++) {
 			ix0 = l*D1; 
 			ix1 = ix0*D2;	// index for input 
-			if (D1==1)  	
-			{
-				__sumskipnan2we__(LInput+ix1, D2, LOutputSum+ix0, LOutputCount+ix0, &flag_isNaN, W);
- 	       		}
-			else {
-			    for (j=0; j<D2; j++) {
+			for (j=0; j<D2; j++) {
 				// minimize cache misses 
 				ix2 =   ix0;	// index for output 
 				// Inner LOOP: along dimensions < DIM
 				if (W) do {
-					register long double x = *LInput;
+					long double x = *LInput;
         				if (!isnan(x)) {
 						LongOutputCount[ix2] += W[j]; 
 						LongOutputSum[ix2]   += W[j]*x; 
@@ -249,7 +338,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					ix2++;
 				} while (ix2 != (l+1)*D1);
 				else do {
-					register long double x = *LInput;
+					long double x = *LInput;
         				if (!isnan(x)) {
 						LongOutputCount[ix2] += 1.0; 
 						LongOutputSum[ix2]   += x; 
@@ -261,33 +350,27 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					LInput++;
 					ix2++;
 				} while (ix2 != (l+1)*D1);
-			    }	//	end for (j=	
+			}	//	end for (j=	
 
                                 /* copy to output */
-	               		for (j=0; j<D1; j++) {
-					LOutputSum[ix0+j]   = LongOutputSum[ix0+j]; 
-					LOutputCount[ix0+j] = LongOutputCount[ix0+j]; 
-				}
-               		}	// 	end else 
+	               	for (j=0; j<D1; j++) {
+				LOutputSum[ix0+j]   = LongOutputSum[ix0+j]; 
+				LOutputCount[ix0+j] = LongOutputCount[ix0+j]; 
+	       		}	// 	end else 
                	}		
 	}
 
-	else if ((POutputCount == 3) && !mxIsComplex(PInputs[0])) {
+	else if (POutputCount == 3) {
 		// OUTER LOOP: along dimensions > DIM
 		for (l = 0; l<D3; l++) {
 			ix0 = l*D1; 
 			ix1 = ix0*D2;	// index for input 
-			if (D1==1)  	
-			{
-				__sumskipnan3we__(LInput+ix1, D2, LOutputSum+ix0, LOutputSum2+ix0, LOutputCount+ix0, &flag_isNaN, W);
- 	       		}
-			else {
-			    for (j=0; j<D2; j++) {
+			for (j=0; j<D2; j++) {
 				// minimize cache misses 
 				ix2 =   ix0;	// index for output 
 				// Inner LOOP: along dimensions < DIM
 				if (W) do {
-					register long double x = *LInput;
+					long double x = *LInput;
         				if (!isnan(x)) {
 						LongOutputCount[ix2] += W[j]; 
 						double t = W[j]*x;
@@ -302,7 +385,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					ix2++;	
 				} while (ix2 != (l+1)*D1);
 				else do {
-					register long double x = *LInput;
+					long double x = *LInput;
         				if (!isnan(x)) {
 						LongOutputCount[ix2] += 1.0; 
 						LongOutputSum[ix2]   += x; 
@@ -315,15 +398,14 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 					LInput++;
 					ix2++;	
 				} while (ix2 != (l+1)*D1);
-			    }	//	end for (j=	
+			}	//	end for (j=	
 
-                                /* copy to output */
-	               		for (j=0; j<D1; j++) {
-					LOutputSum[ix0+j]   = LongOutputSum[ix0+j]; 
-					LOutputCount[ix0+j] = LongOutputCount[ix0+j]; 
-					LOutputSum2[ix0+j]  = LongOutputSum2[ix0+j]; 
-				}
-               		}	// 	end else 
+                       /* copy to output */
+	        	for (j=0; j<D1; j++) {
+				LOutputSum[ix0+j]   = LongOutputSum[ix0+j]; 
+				LOutputCount[ix0+j] = LongOutputCount[ix0+j]; 
+				LOutputSum2[ix0+j]  = LongOutputSum2[ix0+j]; 
+			}
                	}		
 	}
 	if (LongOutputSum) mxFree(LongOutputSum);
@@ -385,7 +467,117 @@ inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char
 		// with weight vector 
 		long double count = 0.0;
 		do {
-			register double x = *data;
+			long double x = *data;
+        		if (!isnan(x))
+			{
+				count += *W; 
+				sum   += *W*x;
+			}
+#ifndef NO_FLAG
+			else 
+				flag = 1; 
+#endif	
+
+			data++;	// stride=1
+			W++;
+		}
+		while (data < end);
+	        *No = count;
+	} else {
+		// w/o weight vector 
+		size_t countI = 0;
+		do {
+			long double x = *data;
+        		if (!isnan(x))
+			{
+				countI++; 
+				sum += x; 
+			}
+#ifndef NO_FLAG
+			else 
+				flag = 1; 
+#endif
+			data++;	// stride=1
+		}
+		while (data < end);
+	        *No = (double)countI;
+	}	
+	
+#ifndef NO_FLAG
+	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
+#endif
+	*s  = sum;
+
+}
+
+
+inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
+{
+	long double sum=0; 
+	long double msq=0; 
+	char   flag=0;
+	// LOOP  along dimension DIM
+	
+	void *end = data + stride*Ni; 
+	if (W) {
+		// with weight vector 
+		long double count = 0.0;
+		do {
+			long double x = *data;
+        		if (!isnan(x)) {
+				count += *W;
+				long double t = *W*x; 
+				sum += t; 
+				msq += x*t; 
+			}
+#ifndef NO_FLAG
+			else 
+				flag = 1; 
+#endif
+			data++;	// stride=1
+			W++;
+		}
+		while (data < end);
+	        *No = count;
+	} else {	
+		// w/o weight vector 
+		size_t countI = 0;
+		do {
+			long double x = *data;
+        		if (!isnan(x)) {
+				countI++; 
+				sum += x; 
+				msq += x*x; 
+			}
+#ifndef NO_FLAG
+			else 
+				flag = 1; 
+#endif
+			data++;	// stride=1
+		}
+		while (data < end);
+	        *No = (double)countI;
+	}
+	
+#ifndef NO_FLAG
+	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
+#endif
+	*s  = sum;
+	*s2 = msq; 
+}
+
+inline int __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
+{
+	double sum=0; 
+	char   flag=0; 
+	// LOOP  along dimension DIM
+	
+	void *end = data + stride*Ni; 
+	if (W) {
+		// with weight vector 
+		double count = 0.0;
+		do {
+			double x = *data;
         		if (!isnan(x))
 			{
 				count += *W; 
@@ -429,17 +621,17 @@ inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char
 }
 
 
-inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
+inline int __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
 {
-	long double sum=0; 
-	long double msq=0; 
+	double sum=0; 
+	double msq=0; 
 	char   flag=0;
 	// LOOP  along dimension DIM
 	
 	void *end = data + stride*Ni; 
 	if (W) {
 		// with weight vector 
-		long double count = 0.0;
+		double count = 0.0;
 		do {
 			double x = *data;
         		if (!isnan(x)) {
@@ -486,6 +678,15 @@ inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, doub
 
 
 
+/***************************************
+        using Kahan's summation formula [1] 
+        this gives more accurate results while the computational effort within the loop is about 4x as high  
+        First tests show a penalty of about 40% in terms of computational time.   
+
+        [1] David Goldberg, 
+        What Every Computer Scientist Should Know About Floating-Point Arithmetic
+        ACM Computing Surveys, Vol 23, No 1, March 1991. 
+ ****************************************/
 
 inline int __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
 {
@@ -499,7 +700,7 @@ inline int __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, cha
 		long double count = 0.0;
 		long double rc=0.0, rn=0.0;
 		do {
-			register double x = *data;
+			long double x = *data;
 		        long double t,y; 
         		if (!isnan(x))
 			{
@@ -530,7 +731,7 @@ inline int __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, cha
 		size_t countI = 0;
 		long double rc=0.0;
 		do {
-			double x = *data;
+			long double x = *data;
 		        long double t,y; 
         		if (!isnan(x))
 			{
@@ -559,17 +760,6 @@ inline int __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, cha
 }
 
 
-
-/***************************************
-        using Kahan's summation formula [1] 
-        this gives more accurate results while the computational effort within the loop is about 4x as high  
-        First tests show a penalty of about 40% in terms of computational time.   
-
-        [1] David Goldberg, 
-        What Every Computer Scientist Should Know About Floating-Point Arithmetic
-        ACM Computing Surveys, Vol 23, No 1, March 1991. 
- ****************************************/
-
 inline int __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
 {
 	long double sum=0; 
@@ -583,7 +773,7 @@ inline int __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, dou
 		long double count = 0.0;
         	long double rc=0.0, rn=0.0, rq=0.0;
 		do {
-			double x = *data;
+			long double x = *data;
 		        long double t,y; 
         		if (!isnan(x)) {
 				//count += *W; [1]
@@ -619,8 +809,162 @@ inline int __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, dou
 		size_t countI = 0;
         	long double rc=0.0, rq=0.0;
 		do {
-			double x = *data;
+			long double x = *data;
 		        long double t,y; 
+        		if (!isnan(x)) {
+				countI++; 
+				//sum   += x; [1]
+        			y = x-rc;
+        			t = sum+y;
+               			rc= (t-sum)-y;
+		        	sum= t; 
+
+				// msq += x*x; 
+        			y = x*x-rq;
+        			t = msq+y;
+               			rq= (t-msq)-y;
+		        	msq= t; 
+			}
+#ifndef NO_FLAG
+			else 
+				flag = 1; 
+#endif
+			data++;	// stride=1
+		}
+		while (data < end);
+	        *No = (double)countI;
+	}
+	
+#ifndef NO_FLAG
+	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
+#endif
+	*s  = sum;
+	*s2 = msq; 
+}
+
+inline int __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)
+{
+	double sum=0; 
+	char   flag=0; 
+	// LOOP  along dimension DIM
+	
+	void *end = data + stride*Ni; 
+	if (W) {
+		// with weight vector 
+		double count = 0.0;
+		double rc=0.0, rn=0.0;
+		do {
+			double x = *data;
+		        double t,y; 
+        		if (!isnan(x))
+			{
+				//count += *W; [1]
+        			y = *W-rn;
+        			t = count+y;
+               			rn= (t-count)-y;
+		        	count= t; 
+
+				//sum   += *W*x; [1]
+        			y = *W*x-rc;
+        			t = sum+y;
+               			rc= (t-sum)-y;
+		        	sum= t; 
+			}
+#ifndef NO_FLAG
+			else 
+				flag = 1; 
+#endif	
+
+			data++;	// stride=1
+			W++;
+		}
+		while (data < end);
+	        *No = count;
+	} else {
+		// w/o weight vector 
+		size_t countI = 0;
+		double rc=0.0;
+		do {
+			double x = *data;
+		        double t,y; 
+        		if (!isnan(x))
+			{
+				countI++; 
+				// sum += x; [1]  
+        			y = x-rc;
+        			t = sum+y;
+               			rc= (t-sum)-y;
+		        	sum= t; 
+			}
+#ifndef NO_FLAG
+			else 
+				flag = 1; 
+#endif
+			data++;	// stride=1
+		}
+		while (data < end);
+	        *No = (double)countI;
+	}	
+	
+#ifndef NO_FLAG
+	if (flag && (flag_anyISNAN != NULL)) *flag_anyISNAN = 1; 
+#endif
+	*s  = sum;
+
+}
+
+
+inline int __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W)
+{
+	double sum=0; 
+	double msq=0; 
+	char   flag=0;
+	// LOOP  along dimension DIM
+	
+	void *end = data + stride*Ni; 
+	if (W) {
+		// with weight vector 
+		double count = 0.0;
+        	double rc=0.0, rn=0.0, rq=0.0;
+		do {
+			double x = *data;
+		        double t,y; 
+        		if (!isnan(x)) {
+				//count += *W; [1]
+        			y = *W-rn;
+        			t = count+y;
+               			rn= (t-count)-y;
+		        	count= t; 
+
+				double w = *W*x; 
+				//sum   += *W*x; [1]
+        			y = *W*x-rc;
+        			t = sum+y;
+               			rc= (t-sum)-y;
+		        	sum= t; 
+
+				// msq += x*w; 
+        			y = w*x-rq;
+        			t = msq+y;
+               			rq= (t-msq)-y;
+		        	msq= t; 
+			}
+#ifndef NO_FLAG
+			else 
+				flag = 1; 
+#endif
+			data++;	// stride=1
+			W++;
+		}
+		while (data < end);
+	        *No = count;
+	} else {	
+		// w/o weight vector 
+		size_t countI = 0;
+        	double rc=0.0, rq=0.0;
+		do {
+			double x = *data;
+		        double t,y; 
         		if (!isnan(x)) {
 				countI++; 
 				//sum   += x; [1]

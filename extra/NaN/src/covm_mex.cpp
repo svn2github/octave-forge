@@ -109,18 +109,18 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			W  = mxGetPr(PInputs[3]);
 		else 	
 			mexErrMsgTxt("number of elements in W must match numbers of rows in X");
-
 	}
         
-       	if ((PInputCount > 4) && mxGetChars(PInputs[4])) {
-                switch (*mxGetChars(PInputs[4])) { 
-                case 'S': 
-                case 's': 
-                        flag_speed = 1; 
-                        break; 
-                }        
-       	}
-        //mexPrintf("Flag Speed=%i\n",flag_speed);
+	int ACC_LEVEL  = 1;
+	{
+		mxArray *LEVEL = NULL;
+		int s = mexCallMATLAB(1, &LEVEL, 0, NULL, "flag_accuracy_level");
+		if (!s) {
+			ACC_LEVEL = (int) mxGetScalar(LEVEL);
+		}	
+		mxDestroyArray(LEVEL);
+	}
+	mexPrintf("Accuracy Level=%i\n",ACC_LEVEL);
 
 	if (Y0==NULL) {
 		Y0 = X0; 
@@ -202,7 +202,112 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	}
 	
 #else
-   if (flag_speed) {
+   if (ACC_LEVEL == 0) {
+	/*------ version 2 --------------------- 
+		 this version seems to be faster than the one above. 
+		 it is also faster but less accurate than the version below
+	*/
+	if ( (X0 != Y0) || (cX != cY) )
+		/******** X!=Y, output is not symetric *******/	
+	    if (W) /* weighted version */
+	    for (i=0; i<cX; i++)
+	    for (j=0; j<cY; j++) {
+		X = X0+i*rX;
+		Y = Y0+j*rY;
+		double cc=0.0;
+		double nn=0.0;
+		for (k=0; k<rX; k++) {
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
+#ifndef NO_FLAG
+				flag_isNaN = 1;
+#endif 
+				continue;
+			}
+			cc += z*W[k];
+			nn += W[k];
+		}	
+		CC[i+j*cX] = cc; 
+		if (NN != NULL) 
+			NN[i+j*cX] = nn; 
+	    }
+	    else /* no weights, all weights are 1 */
+  	    for (i=0; i<cX; i++)
+	    for (j=0; j<cY; j++) {
+		X = X0+i*rX;
+		Y = Y0+j*rY;
+		double cc=0.0;
+		size_t nn=0;
+		for (k=0; k<rX; k++) {
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
+#ifndef NO_FLAG
+				flag_isNaN = 1;
+#endif 
+				continue;
+			}
+			cc += z;
+			nn++;
+		}	
+		CC[i+j*cX] = cc; 
+		if (NN != NULL) 
+			NN[i+j*cX] = (double)nn; 
+	    }
+	else // if (X0==Y0) && (cX==cY)
+		/******** X==Y, output is symetric *******/	
+	    if (W) /* weighted version */
+	    for (i=0; i<cX; i++)
+	    for (j=i; j<cY; j++) {
+		X = X0+i*rX;
+		Y = Y0+j*rY;
+		double cc=0.0;
+		double nn=0.0;
+		for (k=0; k<rX; k++) {
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
+#ifndef NO_FLAG
+				flag_isNaN = 1;
+#endif 
+				continue;
+			}
+			cc += z*W[k];
+			nn += W[k];
+		}	
+		CC[i+j*cX] = cc; 
+		CC[j+i*cX] = cc; 
+		if (NN != NULL) {
+			NN[i+j*cX] = nn; 
+			NN[j+i*cX] = nn; 
+		}	
+	    }
+	    else /* no weights, all weights are 1 */
+	    for (i=0; i<cX; i++)
+	    for (j=i; j<cY; j++) {
+		X = X0+i*rX;
+		Y = Y0+j*rY;
+		double cc=0.0;
+		size_t nn=0;
+		for (k=0; k<rX; k++) {
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
+#ifndef NO_FLAG
+				flag_isNaN = 1;
+#endif 
+				continue;
+			}
+			cc += z;
+			nn++;
+		}	
+		CC[i+j*cX] = cc; 
+		CC[j+i*cX] = cc; 
+		if (NN != NULL) {
+			NN[i+j*cX] = (double)nn; 
+			NN[j+i*cX] = (double)nn; 
+		}	
+	    }
+
+    }
+    else if (ACC_LEVEL == 1) {
 	/*------ version 2 --------------------- 
 		 this version seems to be faster than the one above. 
 		 it is also faster but less accurate than the version below
@@ -307,7 +412,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    }
 
     }
-    else {
+    else if (ACC_LEVEL == 2) {
 	/*------ version 3 --------------------- 
 	        using Kahan's summation formula [1] 
 	        this gives more accurate results while the computational effort within the loop is about 4x as high  
@@ -454,6 +559,154 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		}	
 	    }
     }
+    else if (ACC_LEVEL == 3) {
+	/*------ version 3 --------------------- 
+	        using Kahan's summation formula [1] 
+	        this gives more accurate results while the computational effort within the loop is about 4x as high  
+	        However, first test show an increase in computational time of only about 25 %.   
+
+                [1] David Goldberg, 
+                What Every Computer Scientist Should Know About Floating-Point Arithmetic
+                ACM Computing Surveys, Vol 23, No 1, March 1991
+	*/
+	if ( (X0 != Y0) || (cX != cY) )
+		/******** X!=Y, output is not symetric *******/	
+	    if (W) /* weighted version */
+	    for (i=0; i<cX; i++)
+	    for (j=0; j<cY; j++) {
+		X = X0+i*rX;
+		Y = Y0+j*rY;
+		double cc=0.0;
+		double nn=0.0;
+		double rc=0.0;
+		double rn=0.0;
+		for (k=0; k<rX; k++) {
+		        double t,y; 
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
+#ifndef NO_FLAG
+				flag_isNaN = 1;
+#endif 
+				continue;
+			}
+			// cc += z*W[k]; [1]
+			y = z*W[k]-rc;
+			t = cc+y;
+			rc= (t-cc)-y;
+			cc= t; 
+
+			// nn += W[k]; [1]
+			y = z*W[k]-rn;
+			t = nn+y;
+			rn= (t-nn)-y;
+			nn= t; 
+		}	
+		CC[i+j*cX] = cc; 
+		if (NN != NULL) 
+			NN[i+j*cX] = nn; 
+	    }
+	    else /* no weights, all weights are 1 */
+  	    for (i=0; i<cX; i++)
+	    for (j=0; j<cY; j++) {
+		X = X0+i*rX;
+		Y = Y0+j*rY;
+		double cc=0.0;
+		double rc=0.0;
+		size_t nn=0;
+		for (k=0; k<rX; k++) {
+		        double t,y; 
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
+#ifndef NO_FLAG
+				flag_isNaN = 1;
+#endif 
+				continue;
+			}
+			// cc += z;  [1]
+			y = z-rc;
+			t = cc+y;
+			rc= (t-cc)-y;
+			cc= t; 
+
+			nn++;
+		}	
+		CC[i+j*cX] = cc; 
+		if (NN != NULL) 
+			NN[i+j*cX] = (double)nn; 
+	    }
+	else // if (X0==Y0) && (cX==cY)
+		/******** X==Y, output is symetric *******/	
+	    if (W) /* weighted version */
+	    for (i=0; i<cX; i++)
+	    for (j=i; j<cY; j++) {
+		X = X0+i*rX;
+		Y = Y0+j*rY;
+		double cc=0.0;
+		double nn=0.0;
+		double rc=0.0;
+		double rn=0.0;
+		for (k=0; k<rX; k++) {
+		        double t,y; 
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
+#ifndef NO_FLAG
+				flag_isNaN = 1;
+#endif 
+				continue;
+			}
+			// cc += z*W[k];  [1]
+			y = z*W[k]-rc;
+			t = cc+y;
+			rc= (t-cc)-y;
+			cc= t; 
+
+			// nn += W[k];  [1]
+			y = z*W[k]-rn;
+			t = nn+y;
+			rn= (t-nn)-y;
+			nn= t; 
+		}	
+		CC[i+j*cX] = cc; 
+		CC[j+i*cX] = cc; 
+		if (NN != NULL) {
+			NN[i+j*cX] = nn; 
+			NN[j+i*cX] = nn; 
+		}	
+	    }
+	    else /* no weights, all weights are 1 */
+	    for (i=0; i<cX; i++)
+	    for (j=i; j<cY; j++) {
+		X = X0+i*rX;
+		Y = Y0+j*rY;
+		double cc=0.0;
+		double rc=0.0;
+		size_t nn=0;
+		for (k=0; k<rX; k++) {
+		        double t,y; 
+			double z = X[k]*Y[k];
+			if (isnan(z)) {
+#ifndef NO_FLAG
+				flag_isNaN = 1;
+#endif 
+				continue;
+			}
+			// cc += z; [1]
+			y = z-rc;
+			t = cc+y;
+			rc= (t-cc)-y;
+			cc= t; 
+
+			nn++;
+		}	
+		CC[i+j*cX] = cc; 
+		CC[j+i*cX] = cc; 
+		if (NN != NULL) {
+			NN[i+j*cX] = (double)nn; 
+			NN[j+i*cX] = (double)nn; 
+		}	
+	    }
+    }
+
 
 #ifndef NO_FLAG
 	//mexPrintf("Third argument must be not empty - otherwise status whether a NaN occured or not cannot be returned.");

@@ -19,6 +19,8 @@
 //
 //
 // covm: in-product of matrices, NaN are skipped. 
+// usage:
+//	[cc,nn] = covm_mex(X,Y,flag,W);
 //
 // Input:
 // - X:
@@ -120,7 +122,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		}	
 		mxDestroyArray(LEVEL);
 	}
-	mexPrintf("Accuracy Level=%i\n",ACC_LEVEL);
+	// mexPrintf("Accuracy Level=%i\n",ACC_LEVEL);
 
 	if (Y0==NULL) {
 		Y0 = X0; 
@@ -204,8 +206,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 #else
    if (ACC_LEVEL == 0) {
 	/*------ version 2 --------------------- 
-		 this version seems to be faster than the one above. 
-		 it is also faster but less accurate than the version below
+	         using naive summation with double accuracy [1] 
 	*/
 	if ( (X0 != Y0) || (cX != cY) )
 		/******** X!=Y, output is not symetric *******/	
@@ -309,8 +310,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     }
     else if (ACC_LEVEL == 1) {
 	/*------ version 2 --------------------- 
-		 this version seems to be faster than the one above. 
-		 it is also faster but less accurate than the version below
+	         using naive summation with extended accuracy [1] 
 	*/
 	if ( (X0 != Y0) || (cX != cY) )
 		/******** X!=Y, output is not symetric *******/	
@@ -412,9 +412,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    }
 
     }
-    else if (ACC_LEVEL == 2) {
+    else if (ACC_LEVEL == 3) {
 	/*------ version 3 --------------------- 
-	        using Kahan's summation formula [1] 
+	        using Kahan's summation with extended (long double) accuracy [1] 
 	        this gives more accurate results while the computational effort within the loop is about 4x as high  
 	        However, first test show an increase in computational time of only about 25 %.   
 
@@ -559,9 +559,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		}	
 	    }
     }
-    else if (ACC_LEVEL == 3) {
+    else if (ACC_LEVEL == 2) {
 	/*------ version 3 --------------------- 
-	        using Kahan's summation formula [1] 
+	        using Kahan's summation with double accuracy [1] 
 	        this gives more accurate results while the computational effort within the loop is about 4x as high  
 	        However, first test show an increase in computational time of only about 25 %.   
 

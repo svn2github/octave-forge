@@ -41,6 +41,11 @@ level 1: basic functions (not derived)
 			sumskipnan, covm, center, cor, coefficient of variation, corrcoef, geomean, harmmean, 
 			kurtosis, mad, mean, meandev, meansq, moment, nanmean, nanstd, nansum, 
 			rms, sem, skewness, statistic, std, var	
+	FLAG_IMPLICIT_SKIP_NAN  can be used to turn off and on the NaN-skipping behaviour. This can 
+	                be useful for debugging or for compatibility reasons. 
+	FLAG_ACCURACY_LEVEL can be used to increase the accuracy of summations (sumskipnan and covm) 
+	                at the cost of speed.
+	LOAD_FISHERIRIS	loads famous fisher iris data set 
 
 level 2a: derived functions
 	MEAN	 	mean (options: arithmetic, geometric, harmonic)

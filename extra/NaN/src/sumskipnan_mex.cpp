@@ -53,10 +53,10 @@
 #include <math.h>
 #include "mex.h"
 
-inline int __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
-inline int __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
 inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
 inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
+inline int __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
+inline int __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
 inline int __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
 inline int __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, double *No, char *flag_anyISNAN, double *W);
 inline int __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);
@@ -166,7 +166,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		}	
 		mxDestroyArray(LEVEL);
 	}
-	mexPrintf("Accuracy Level=%i\n",ACC_LEVEL);
+	// mexPrintf("Accuracy Level=%i\n",ACC_LEVEL);
 
 	    // create outputs
 	#define TYP mxDOUBLE_CLASS
@@ -190,7 +190,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if (D1*D2*D3<1) // zero size array
 		; 	// do nothing 
 	else if ((D1==1) && (ACC_LEVEL<1)) {
-		// extended accuray, naive summation, error = N*2^-64 
+		// double accuray, naive summation, error = N*2^-52 
 		switch (POutputCount) {
 		case 1: 
 			for (l = 0; l<D3; l++) {
@@ -231,8 +231,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			break;
 		}
 	}
-	else if ((D1==1) && (ACC_LEVEL==2)) {
-		// ACC_LEVEL==2: extended accuracy and Kahan Summation, error = 2^-64
+	else if ((D1==1) && (ACC_LEVEL==3)) {
+		// ACC_LEVEL==3: extended accuracy and Kahan Summation, error = 2^-64
 		switch (POutputCount) {
 		case 1: 
 			for (l = 0; l<D3; l++) {
@@ -252,8 +252,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			break;
 		}
 	}
-	else if ((D1==1) && (ACC_LEVEL==3)) {
-		// ACC_LEVEL==2: extended accuracy and Kahan Summation, error = 2^-64
+	else if ((D1==1) && (ACC_LEVEL==2)) {
+		// ACC_LEVEL==2: double accuracy and Kahan Summation, error = 2^-52
 		switch (POutputCount) {
 		case 1: 
 			for (l = 0; l<D3; l++) {

@@ -4,25 +4,22 @@ function FLAG = flag_accuracy_level(i)
 %   The error margin of the naive summation is N*eps (N is the number of samples),
 %   the error margin is only 2*eps if Kahan's summation is used [1].    
 %
-%	0: maximum speed and minimum accuracy (error = N*2^-52) 
-%	   of double (64bit float) without Kahan summation  
-%	1: {default] accuracy of extend double (80bit float) 
-%	   without Kahan summation (error = N*2^-64) 
-%	2: minimum speed and minimum accuracy (error = 2^-64) 
-%	   of double with Kahan summation  
-%	3: accuracy (error = 2^-52) 
-%	   of double (64bit float) with Kahan summation  
+%	0: maximum speed [default]
+%	   accuracy of double (64bit) with naive summation (error = N*2^-52) 
+%	1: accuracy of extended (80bit) with naive summation (error = N*2^-64) 
+%	2: accuracy of double (64bit) with Kahan summation (error = 2^-52) 
+%	3: accuracy of extended (80bit) with Kahan summation  (error = 2^-64)  
 %
-%   First tests suggest that 1 is a good solution
-% 
+%   Please not, that level 3 might be equally accurate but slower than 1 or 2 or
+%   on some platforms. In order to determine what is good for you, you might want
+%   to run ACCTEST. 
+%
 % FLAG = flag_accuracy_level()
 % 	gets current level
-%
-% flag_accuracy_level(FLAG)% 	sets mode 
+% flag_accuracy_level(FLAG) % 	sets accuracy level  
 % 
-% This function is experimental and might disappear without further notice, 
-% so donot rely on it.
-%
+% see also: ACCTEST
+% 
 % Reference:
 % [1] David Goldberg, 
 %       What Every Computer Scientist Should Know About Floating-Point Arithmetic
@@ -53,9 +50,15 @@ persistent FLAG_ACCURACY_LEVEL;
 
 %% if strcmp(version,'3.6'), FLAG_ACCURACY_LEVEL=1; end;	%% hack for the use with Freemat3.6
 
+%% set the default accuracy level for your platform, ACCTEST might help to determine the optimum for your platform.  
+DEFAULT_ACCURACY_LEVEL = 0;    %% maximum speed, accuracy sufficient for most needs.
+%% DEFAULT_ACCURACY_LEVEL = 1;    %% slower, but better accuracy for: Intel Atom 
+%% DEFAULT_ACCURACY_LEVEL = 2;    %% slower, but better accuracy for: AMDx64 Opteron, Phenom, Intel Pentium
+%% DEFAULT_ACCURACY_LEVEL = 3;    %% similar accuracy than 1 or 2 (depending on platform) but even slower. 
+
 %%% set DEFAULT value of FLAG
 if isempty(FLAG_ACCURACY_LEVEL),
-	FLAG_ACCURACY_LEVEL = 1; 
+	FLAG_ACCURACY_LEVEL = DEFAULT_ACCURACY_LEVEL;
 end;
 
 if nargin>0,

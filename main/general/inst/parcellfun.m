@@ -344,7 +344,7 @@ function varargout = parcellfun (nproc, fun, varargin)
         if (verbose_level > 1)
           fprintf(stderr,'parcellfun: waiting for child process %d to close\n', pids(i));
           fflush (stderr);
-        end
+        endif
         [pid, status] = waitpid (pids(i));
       endfor
 

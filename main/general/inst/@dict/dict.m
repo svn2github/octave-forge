@@ -60,7 +60,7 @@ function d = dict (keys, values)
     d = struct ("keys", {cell(0, 1)}, "values", {cell(0, 1)});
   elseif (nargin <= 2)
     if (iscellstr (keys) && isvector (keys))
-      [d.keys, ind] = sort (keys(:));
+      [d.keys, ind] = unique (keys(:));
     else
       error ("dict: keys must be a cell vector of strings");
     endif
@@ -69,7 +69,7 @@ function d = dict (keys, values)
     elseif (iscell (values) && isvector (values))
       ## Hack: we use this weird shape to let indexed values always inherit the
       ## shape of the index. This would not work if we just used values(:).
-      d.values = reshape (values (ind), 1, 1, length (values));
+      d.values = reshape (values (ind), 1, 1, length (ind));
     else
       error ("dict: values must be a cell vector");
     endif

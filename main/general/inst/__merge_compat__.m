@@ -16,42 +16,33 @@
 ## along with this program; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## This replaces the missing functionality of "lookup" if on Octave 3.2.
+## This replaces the missing functionality of "merge" if on Octave 3.2.
 
-function lookup_func = __lookup_compat__ ()
+function merge_func = __merge_compat__ ()
   persistent octave32 = issorted ({"3.0.0", version, "3.3.0"});
   if (octave32)
-    lookup_func = @__my_lookup__;
+    merge_func = @__my_merge__;
   else
-    lookup_func = @lookup;
+    merge_func = @merge;
   endif
 endfunction
 
-function ind = __my_lookup__ (table, y, opt = "")
+function ret = __my_merge__ (mask, tval, fval)
 
-  mopt = any (opt == 'm');
-  bopt = any (opt == 'b');
-
-  opt(opt == 'm' | opt == 'b') = [];
-
-  ind = lookup (table, y, opt);
-  if (numel (table) > 0)
-    if (ischar (table) || iscellstr (table))
-      match = strcmp (table(max (1, ind)), y);
+  if (isscalar (mask))
+    if (mask)
+      ret = tval;
     else
-      match = table(max (1, ind)) == y;
+      ret = fval;
     endif
   else
-    match = false (size (y));
-  endif
-
-  if (mopt)
-    ind(! match) = 0;
-  elseif (bopt)
-    ind = match;
+    if (numel (fval) == 1)
+      ret = repmat (fval, size (mask));
+    else
+      ret = fval;
+    endif
+    ret(mask) = tval(mask);
   endif
 endfunction
-
-
 
 

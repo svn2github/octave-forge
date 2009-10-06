@@ -305,28 +305,38 @@ AC_SUBST(OCTCDF_CFLAGS)
 OCTCDF_LIBS="$LDFLAGS"
 OCTCDF_CFLAGS="$CPPFLAGS"
 
-dnl first checking for opendap support
+dnl first checking for nc-config, then nc-dap 
 
-AC_MSG_CHECKING([for nc-dap])
+AC_MSG_CHECKING([for nc-config])
 
-if ncdap-config --version > /dev/null 2>&1; then
+if nc-config --version > /dev/null 2>&1; then
       AC_MSG_RESULT([yes])
-      OCTCDF_LIBS="$OCTCDF_LIBS `ncdap-config --libs`"
-      OCTCDF_CFLAGS="$OCTCDF_CFLAGS `ncdap-config --cflags`"
-
+      OCTCDF_LIBS="$OCTCDF_LIBS `nc-config --libs`"
+      OCTCDF_CFLAGS="$OCTCDF_CFLAGS `nc-config --cflags`"
       HAVE_NETCDF=yes
 else
       AC_MSG_RESULT([no])          
+      AC_MSG_CHECKING([for nc-dap])
 
-      dnl if no opendap, checking if the NetCDF library exists. 
+      if ncdap-config --version > /dev/null 2>&1; then
+            AC_MSG_RESULT([yes])
+            OCTCDF_LIBS="$OCTCDF_LIBS `ncdap-config --libs`"
+            OCTCDF_CFLAGS="$OCTCDF_CFLAGS `ncdap-config --cflags`"
 
-      AC_CHECK_LIB(netcdf,nc_open, HAVE_NETCDF=yes, HAVE_NETCDF=no,)
+            HAVE_NETCDF=yes
+      else
+            AC_MSG_RESULT([no])          
 
-      if test $HAVE_NETCDF = yes ; then
-        OCTCDF_LIBS="$OCTCDF_LIBS -lnetcdf"
+            dnl if no opendap, checking if the NetCDF library exists. 
 
-        dnl we have the libraries, no we have also the headers?
-        AC_CHECK_HEADER(netcdf.h, HAVE_NETCDF=yes, HAVE_NETCDF=no)
+            AC_CHECK_LIB(netcdf,nc_open, HAVE_NETCDF=yes, HAVE_NETCDF=no,)
+
+            if test $HAVE_NETCDF = yes ; then
+              OCTCDF_LIBS="$OCTCDF_LIBS -lnetcdf"
+
+              dnl we have the libraries, no we have also the headers?
+              AC_CHECK_HEADER(netcdf.h, HAVE_NETCDF=yes, HAVE_NETCDF=no)
+            fi
       fi
 fi
 
@@ -355,4 +365,6 @@ shell commands will install into the following directories:
 octave-forge is configured with
    octave:      $OCTAVE (version $OCTAVE_VERSION)
    mkoctfile:	$MKOCTFILE for Octave $subver
-   octcdf toolbox: $OCTCDFSTATUS"
+   octcdf toolbox: $OCTCDFSTATUS
+   netCDF compiler flags: $OCTCDF_CFLAGS
+   netCDF libraries: $OCTCDF_LIBS"

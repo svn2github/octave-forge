@@ -22,7 +22,7 @@ function s = vrml_DirectionalLight (varargin) # pos 2.1.39
 hash = struct ();		# pos 2.1.39
 
 
-if nargin, hash = setfield(varargin{:}); end # pos 2.1.39
+if nargin, hash = setfield(hash,varargin{:}); end # pos 2.1.39
 ## hash = rmfield (hash, "dummy");
 
 tpl = struct ("ambientIntensity", "%8.3f",\

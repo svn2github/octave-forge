@@ -28,10 +28,12 @@
 
 
 if exist('OCTAVE_VERSION','builtin')
-        unix('wget http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'); 
+	if ~exist('iris.data','file')
+	        unix('wget http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'); 
+	end;        
         tmp = fopen('iris.data'); species=fread(tmp,[1,inf],'uint8=>char'); fclose(tmp); 
         [meas,tmp,species]=str2double(species,',');        
-        meas = meas(:,1:4); 
+        meas = meas(:,1:4);
         species = species(:,5);        
 else 
         load fisheriris; 

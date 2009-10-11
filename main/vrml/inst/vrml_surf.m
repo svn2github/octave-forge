@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
+## Copyright (C) 2002-2009 Etienne Grossmann.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
@@ -49,8 +49,13 @@
 ## "zcol", zc   : 3xN : Specify a colormap. The color of each vertex is
 ##            interpolated according to its height (z).
 ##
-## "zgrey"      : Black-to-white colormap. Same as "zcol", [0 1;0 1;0 1].
+## "zgray"      : Black-to-white colormap. Same as "zcol", [0 1;0 1;0 1].
+##
 ## "zrb"        : Red-to-blue. Same as "zcol", [0 7 10;0 0 2;7 19 2]/10.
+##
+## "steps"      : Represent surface as a piecewise constant Z = f(X,Y) function
+##
+## "bars"       : Represent surface as a bar plot
 ##
 ## "tran", tran : 1x1    : Transparency,                        default = 0
 ##
@@ -63,11 +68,10 @@
 ## See also: vmesh(), vrml_faces(), test_moving_surf()
 
 ## Author:        Etienne Grossmann <etienne@isr.ist.utl.pt>
-## Last modified: Setembro 2002
+## Last modified: October 2009
 
 
 function s = vrml_surf (x, y, z,varargin)
-
 
 if (nargin <= 1) || ischar(y),	# Cruft to allow not passing x and y
   zz = x ;
@@ -75,13 +79,19 @@ if (nargin <= 1) || ischar(y),	# Cruft to allow not passing x and y
   [xx,yy] = meshgrid (linspace (-1,1,C), linspace (-1,1,R));
   ## ones(R,1)*[1:C] ;
   ## yy = ## [1:R]'*ones(1,C) ;
-  if     nargin >=3,
-    s = vrml_surf ( xx, yy, zz, y, z, varargin{:} );
-    return
-  elseif nargin >=2,
-    s = vrml_surf ( xx, yy, zz, y, varargin{:} );
-    return
+  ##if     nargin >=3,
+  ##  s = vrml_surf ( xx, yy, zz, y, z, varargin{:} );
+  ##  return
+  ##elseif nargin >=2,
+  ##  s = vrml_surf ( xx, yy, zz, y, varargin{:} );
+  ##  return
+  ##end
+  if nargin >= 3
+    varargin = {y, z, varargin{:}};
+  elseif nargin >= 2
+    varargin = {y, varargin{:}};
   end
+
   x = xx ; y = yy ; z = zz ;
 end
 
@@ -93,18 +103,20 @@ tran = 0 ;			# Transparency
 col = [0.3, 0.4, 0.9] ;		# Color
 checker = 0;			# Checkered coloring
 colorPerVertex = 1;		# Color vertices or faces
-zrb = zgrey = zcol = 0;		# Color by elevation
+zrb = zgray = zcol = 0;		# Color by elevation
 emit = 0;			# emissiveColor or diffuse only
 smooth = creaseAngle = nan ;
+steps = 0;
+bars = 0;
 DEFcoord = DEFcol = "";		# Give a name to VRML objects
 
-if nargin > 3,
+if numel (varargin)
 
   op1 = " tran col creaseAngle emit colorPerVertex checker DEFcoord DEFcol zcol ";
-  op0 = " smooth zgrey zrb " ;
+  op0 = " smooth zgray zrb steps bars " ;
 
-  default = tars (tran, col, creaseAngle, emit, colorPerVertex, \
-		 DEFcoord, DEFcol, zcol, smooth, checker, zgrey, zrb);
+  default = tars (tran, col, creaseAngle, emit, colorPerVertex, steps, bars, \
+		 DEFcoord, DEFcol, zcol, smooth, checker, zgray, zrb);
 
   s = read_options (varargin,"op0",op0,"op1",op1,"default",default);
   
@@ -117,17 +129,75 @@ if nargin > 3,
   DEFcol=          s.DEFcol;
   zcol=            s.zcol;
   smooth=          s.smooth;
+  steps=           s.steps;
+  bars=            s.bars;
   checker=         s.checker;
-  zgrey=           s.zgrey;
+  zgray=           s.zgray;
   zrb=             s.zrb;
 end
 ## keyboard
 if ! isnan (smooth), creaseAngle = pi ; end
 
-
 [R,C] = size(z);
 if any (size (x) == 1), x = ones(R,1)*x(:)' ; end
 if any (size (y) == 1), y = y(:)*ones(1,C)  ; end
+
+if bars
+
+  R4 = 4*R;
+  C4 = 4*C;
+  x2 = y2 = z2 = zeros (R4,C4);
+
+  x2(:,1) = x2(:,2) = kron ((4*x(:,1)-x(:,2))/3, [1;1;1;1]);
+  x2(:,C4-1) = x2(:,C4) = kron ((4*x(:,C)-x(:,C-1))/3, [1;1;1;1]);
+  x2(:,5:4:C4) =  x2(:,6:4:C4) = kron ((2*x(:,2:C)+x(:,1:C-1))/3, [1;1;1;1]);
+  x2(:,3:4:C4-4) =  x2(:,4:4:C4-4) = kron ((2*x(:,1:C-1)+x(:,2:C))/3, [1;1;1;1]);
+
+  y2(1,:) = y2(2,:) = kron ((4*y(1,:)-y(2,:))/3, [1 1 1 1]);
+  y2(R4-1,:) = y2(R4,:) = kron ((4*y(R,:)-y(R-1,:))/3, [1 1 1 1]);
+  y2(5:4:R4,:) =  y2(6:4:R4,:) = kron ((2*y(2:R,:)+y(1:R-1,:))/3, [1 1 1 1]);
+  y2(3:4:R4-4,:) =  y2(4:4:R4-4,:) = kron ((2*y(1:R-1,:)+y(2:R,:))/3, [1 1 1 1]);
+  
+  z2([2:4:R4;3:4:R4],[2:4:C4;3:4:C4]) = kron(z,ones(2));
+
+  x = x2;
+  y = y2;
+  z = z2;
+  R = R4;
+  C = C4;
+
+elseif steps			# Constant by parts
+
+				# Intermediate coordinates  (R+1) x (C+1)
+  x2 = (x([1,1:R],[1,1:C]) + x([1,1:R],[1:C,C])) / 2; 
+  y2 = (y([1,1:R],[1:C,C]) + y([1:R,R],[1:C,C])) / 2;  
+
+				# Extend extremities so all patches have same size
+  x2(1,:) = 2*x2(1,:) - x2(2,:); 
+  x2(:,1) = 2*x2(:,1) - x2(:,2); 
+  x2(R+1,:) = 2*x2(R+1,:) - x2(R,:);
+  x2(:,C+1) = 2*x2(:,C+1) - x2(:,C); 
+
+  y2(1,:) = 2*y2(1,:) - y2(2,:); 
+  y2(:,1) = 2*y2(:,1) - y2(:,2); 
+  y2(R+1,:) = 2*y2(R+1,:) - y2(R,:);
+  y2(:,C+1) = 2*y2(:,C+1) - y2(:,C); 
+
+				# Duplicate intermediate values 2R x 2C
+  ii = [1,([1;1]*(2:R))(:)',R+1];
+  jj = [1,([1;1]*(2:C))(:)',C+1];
+
+  x2 = x2(ii,jj);
+  y2 = y2(ii,jj);
+
+  z2 = z([1;1]*(1:R),[1;1]*(1:C));;
+  x = x2;
+  y = y2;
+  z = z2;
+
+  R *= 2;
+  C *= 2;
+end
 
 pts = [x(:)';y(:)';z(:)'];
 
@@ -219,10 +289,10 @@ elseif any (prod (size (col)) == [R*C,(R-1)*(C-1)])
   col = [1;1;1]*col(:)';
 end
 
-if zgrey || zrb || any (zcol(:)) # Treat zgrey zrb and zcol options
+if zgray || zrb || any (zcol(:)) # Treat zgray zrb and zcol options
   zx = max (z(keepip));
   zn = min (z(keepip));
-  if     zgrey, zcol = [0 0 0; 1 1 1]';
+  if     zgray, zcol = [0 0 0; 1 1 1]';
   elseif zrb  , zcol = [0 0 0.7; 0.5 0 0.8; 1 0 0]';
   end
 
@@ -234,7 +304,7 @@ if zgrey || zrb || any (zcol(:)) # Treat zgrey zrb and zcol options
   col(:,keepip) = \
       zcol(:,ci) .* ([1;1;1]*(1-cw)) + zcol(:,ci+1) .* ([1;1;1]*cw);
 
-end				# EOF zgrey zrb and zcol options
+end				# EOF zgray zrb and zcol options
 
 
 if checker

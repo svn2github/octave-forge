@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
+## Copyright (C) 2002-2009 Etienne Grossmann.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
@@ -38,6 +38,8 @@
 ##             or (R-1)*(C-1)
 ##                       : Reflectivity of facets.
 ##
+##        RGB and reflectivity values should be in the [0,1] interval.
+##
 ## "checker", c : 1x2 : Color as a checker. If c(1) is positive, checker has
 ##                      c(1) rows. If it is negative, each checker row is
 ##                      c(1) facets high. c(2) does the same for columns.
@@ -52,7 +54,10 @@
 ## "zcol", zcol : Mx3 : Color is linearly interpolated between the RGB
 ##                      values specified by the rows of zcol.
 ##
-##        RGB and reflectivity values should be in the [0,1] interval.
+## "steps"            : Represent surface as a piecewise constant Z = f(X,Y)
+##                      function
+##
+## "bars"             : Represent surface as a bar plot
 ##
 ## "level", l   : 1xN : Display one or more horizontal translucent plane(s)
 ##
@@ -78,28 +83,32 @@ if (nargin <= 1) || ischar(y),	# Cruft to allow not passing x and y
   zz = x ;
   [R,C] = size (zz);
   [xx,yy] = meshgrid (linspace (-1,1,C), linspace (-1,1,R)); 
-
-  if     nargin >=3,
-    s = vmesh ( xx, yy, zz, y, z, varargin{:} );
-    if ! nargout,  clear s; end;  return
-  elseif nargin >=2,
-    s = vmesh ( xx, yy, zz, y, varargin{:} );
-    if ! nargout,  clear s; end;  return
+  
+  if nargin >= 3
+    varargin = {y, z, varargin{:}};
+  elseif nargin >= 2
+    varargin = {y, varargin{:}};
   end
+##  if     nargin >=3,
+##    s = vmesh ( xx, yy, zz, y, z, varargin{:} );
+##    if ! nargout,  clear s; end;  return
+##  elseif nargin >=2,
+##    s = vmesh ( xx, yy, zz, y, varargin{:} );
+##    if ! nargout,  clear s; end;  return
+##  end
   x = xx ; y = yy ; z = zz ;
 end
-
 
 frame = 1;
 
 ## surf_args = list (x,y,z);	# Arguments that'll be passed to vrml_surf
 surf_args = {x,y,z};	# Arguments that'll be passed to vrml_surf
 
-if nargin > 3,
+if numel (varargin)
 
   op1 = [" tran col checker creaseAngle emit colorPerVertex tex zcol",\
 	 " level lcol ltran "];
-  op0 = " smooth zgrey zrb normalize ";
+  op0 = " smooth zgray zrb normalize steps bars ";
 
   df = tars (level, lcol, ltran, normalize);
 
@@ -108,10 +117,10 @@ if nargin > 3,
 				# Identify options for vrml_surf()
 #   all_surf_opts  = list ("tran", "col", "checker", "creaseAngle", "emit", \
 # 			 "colorPerVertex", "smooth", "tex",\
-# 			 "zgrey","zrb","zcol");
+# 			 "zgray","zrb","zcol");
   all_surf_opts  = {"tran", "col", "checker", "creaseAngle", "emit", \
-		    "colorPerVertex", "smooth", "tex",\
-		    "zgrey","zrb","zcol"};
+		    "colorPerVertex", "smooth", "steps", "bars", "tex",\
+		    "zgray","zrb","zcol"};
 
   for i = 1:length(all_surf_opts)
     ## optname = nth (all_surf_opts, i);
@@ -147,21 +156,28 @@ if normalize
   surf_args{3} = z;
 end
 
-## s = leval ("vrml_surf", surf_args);
-s = feval ("vrml_surf", surf_args{:});
+s = vrml_surf (surf_args{:});
 
 pts = [x(:)';y(:)';z(:)'];
 ii = find (all (isfinite (pts)));
 pt2 = pts(:,ii); x2 = x(:)(ii); y2 = y(:)(ii); z2 = z(:)(ii);
 
 ## Add a point light
-scl = nanstd ((pt2-mean (pt2')'*ones(1,columns (pt2)))(:));
 
-lpos = [(min(x2) - 1.1*scl* max(max(x2)-min(x2), 1)),
-	mean(y2),
-	max(z2)];
+# scl = max (max(pt2') - min(pt2'));
 
-pl = vrml_PointLight ("location", lpos, "intensity", 0.7);
+# lpos = [min(x2) - 0.5*scl, mean(y2), max(z2)+scl]
+# pl1 = vrml_PointLight ("location", lpos, "intensity", 0.7);
+
+# lpos = [mean(x2), min(y2) - 0.5*scl, max(z2)+scl]
+# pl2 = vrml_PointLight ("location", lpos, "intensity", 0.7);
+
+# pl = [pl1 pl2];
+
+pl = [vrml_DirectionalLight("direction",[-1,-1,-1],"intensity",0.9),\
+      vrml_DirectionalLight("direction",[-1, 1,-1],"intensity",0.7),\
+      vrml_DirectionalLight("direction",[ 1,-1,-1],"intensity",0.7),\
+      vrml_DirectionalLight("direction",[ 1, 1,-1],"intensity",0.5)];
 
 #  distance = max ([max (x(:)) - min (x(:)),\
 #  		 max (y(:)) - min (y(:)),\
@@ -239,7 +255,7 @@ if ! nargout,  clear s; end
 %! vmesh (z,"checker",-[6,5]);
 %! printf ("Press a key.\n"); pause;
 %! 
-%! ##### With z-dependent coloring - 'zrb', 'zgrey' and'zcol' options. #####
+%! ##### With z-dependent coloring - 'zrb', 'zgray' and'zcol' options. #####
 %! vmesh (z,"zrb");
 %! printf ("That's it!\n");
 
@@ -247,5 +263,8 @@ if ! nargout,  clear s; end
 
 
 ## %! test_vmesh
+
+return
+
 endfunction
 

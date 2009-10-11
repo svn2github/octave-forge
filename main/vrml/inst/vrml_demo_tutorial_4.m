@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
+## Copyright (C) 2002-2009 Etienne Grossmann.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
@@ -21,6 +21,7 @@ printf (["    Reminder of FreeWRL keystrokes and mouse actions :\n"\
 	 "      q : quit\n",\
 	 "      w : switch to walk mode\n",\
 	 "      e : switch to examine mode\n",\
+	 "      h : toggle headlights on or off\n",\
 	 "      drag left mouse : rotate (examine mode) or translate\n",\
 	 "          (walk mode).\n",\
 	 "      drag right mouse : zoom (examine mode) or translate\n",\

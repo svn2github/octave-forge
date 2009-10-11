@@ -80,7 +80,9 @@ else
   s = varargin{length (varargin)};
 end
 
-
+if ! index (s, "Background") 
+  s = [s, vrml_Background("skyColor",[.7 .7 .9])];
+end
 
 
 vrml_b_name = "freewrl" ;

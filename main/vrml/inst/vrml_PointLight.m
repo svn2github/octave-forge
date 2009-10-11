@@ -62,7 +62,7 @@ for [val,key] = h,
 
 
     body = [body,\
-	    sprintf("   %-20s   %s\n",key, 
+	    sprintf("   %-20s   %s\n",key, \
 		    sprintf (getfield (tpl,key), val))];
   end
 end

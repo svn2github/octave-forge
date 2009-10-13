@@ -113,7 +113,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			mexErrMsgTxt("number of elements in W must match numbers of rows in X");
 	}
         
-	int ACC_LEVEL  = 1;
+	int ACC_LEVEL = 0;
 	{
 		mxArray *LEVEL = NULL;
 		int s = mexCallMATLAB(1, &LEVEL, 0, NULL, "flag_accuracy_level");

@@ -65,7 +65,7 @@ inline int __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, do
 //#define NO_FLAG
 
 #ifdef tmwtypes_h
-  #if (MX_API_VER<0x07020000)
+  #if (MX_API_VER<=0x07020000)
     typedef int mwSize;
   #endif 
 #endif 
@@ -155,7 +155,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			mexErrMsgTxt("Error SUMSKIPNAN.MEX: length of weight vector does not match size of dimension");
 	}
 
-	int ACC_LEVEL  = 1;
+	int ACC_LEVEL = 0;
 	{
 		mxArray *LEVEL = NULL;
 		int s = mexCallMATLAB(1, &LEVEL, 0, NULL, "flag_accuracy_level");

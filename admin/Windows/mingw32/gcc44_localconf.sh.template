@@ -1,0 +1,11 @@
+#!/usr/bin/sh
+
+#
+# machine-dependent local configurations 
+#
+MAKE_PARALLEL="-j4"
+
+# Path to supporting programs
+PATH_MIKTEX=/C/Programs/MiKTeX-2.7/miktex/bin
+PATH_GHOSTSCRIPT=/c/Programs/gs/gs8.62/bin
+PATH_HCW=/c/Programs/HelpWorkshop

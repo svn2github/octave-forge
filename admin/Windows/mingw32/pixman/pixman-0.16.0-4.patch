@@ -1,0 +1,11 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg pixman-0.16.0-orig/pixman-1.pc.in pixman-0.16.0/pixman-1.pc.in
+--- pixman-0.16.0-orig/pixman-1.pc.in	2009-09-14 21:07:48 +0200
++++ pixman-0.16.0/pixman-1.pc.in	2009-09-14 21:08:01 +0200
+@@ -6,6 +6,6 @@
+ Name: Pixman
+ Description: The pixman library (version 1)
+ Version: @PACKAGE_VERSION@
+-Cflags: -I${includedir}/pixman-1 @DEP_CFLAGS@
++Cflags: -I${includedir} @DEP_CFLAGS@
+ Libs: -L${libdir} -lpixman-1 @DEP_LIBS@
+ 

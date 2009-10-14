@@ -1,0 +1,273 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' GraphicsMagick-1.3.7-orig/Magick++/bin/GraphicsMagick++-config.in GraphicsMagick-1.3.7/Magick++/bin/GraphicsMagick++-config.in
+--- GraphicsMagick-1.3.7-orig/Magick++/bin/GraphicsMagick++-config.in	2009-10-02 20:47:15 +0200
++++ GraphicsMagick-1.3.7/Magick++/bin/GraphicsMagick++-config.in	2009-10-13 20:28:52 +0200
+@@ -30,13 +30,13 @@
+       echo @PACKAGE_VERSION@
+       ;;
+     --cppflags)
+-      echo '@MAGICK_API_CPPFLAGS@'
++      echo '@MAGICK_API_CPPFLAGS@' | sed -e "s+-I[^ ]*++g"
+       ;;
+     --cxxflags)
+       echo '@CXXFLAGS@'
+       ;;
+     --ldflags)
+-      echo '@MAGICK_API_LDFLAGS@'
++      echo '@MAGICK_API_LDFLAGS@' | sed -e "s+-L[^ ]*++g"
+       ;;
+     --libs)
+       echo '-lGraphicsMagick++ @MAGICK_API_LIBS@'
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' GraphicsMagick-1.3.7-orig/Makefile.in GraphicsMagick-1.3.7/Makefile.in
+--- GraphicsMagick-1.3.7-orig/Makefile.in	2009-10-02 20:47:13 +0200
++++ GraphicsMagick-1.3.7/Makefile.in	2009-10-13 20:28:51 +0200
+@@ -3446,7 +3446,7 @@
+ @HasTTF_FALSE@	Magick++/demo/shapes.sh
+ 
+ @WITH_MAGICK_PLUS_PLUS_FALSE@LIBMAGICKPP = 
+-@WITH_MAGICK_PLUS_PLUS_TRUE@LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la
++@WITH_MAGICK_PLUS_PLUS_TRUE@LIBMAGICKPP = Magick++/lib/libGraphicsMagick++.la Magick++/lib/GraphicsMagick++.dll
+ @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_CHECK_PGRMS = 
+ @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_CHECK_PGRMS = $(MAGICKPP_CHECK_PGRMS_OPT)
+ @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_MANS = 
+@@ -5521,6 +5521,18 @@
+ 	Magick++/lib/$(DEPDIR)/$(am__dirstamp)
+ Magick++/lib/libGraphicsMagick++.la: $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_DEPENDENCIES) Magick++/lib/$(am__dirstamp)
+ 	$(AM_V_CXXLD)$(Magick___lib_libGraphicsMagick___la_LINK) $(am_Magick___lib_libGraphicsMagick___la_rpath) $(Magick___lib_libGraphicsMagick___la_OBJECTS) $(Magick___lib_libGraphicsMagick___la_LIBADD) $(LIBS)
++Magick++/lib/GraphicsMagick++.dll : Magick++/lib/libGraphicsMagick++.la
++	$(CXX) -shared -o $@ \
++		$(LDFLAGS) \
++		-Wl,--allow-multiple-definition \
++		-Wl,--out-implib=Magick++/lib/libGraphicsMagick++.dll.a \
++		-Wl,--output-def=Magick++/lib/libGraphicsMagick++.def \
++		-Wl,--whole-archive Magick++/lib/.libs/libGraphicsMagick++.a \
++		-Wl,--no-whole-archive \
++		-L./magick/.libs \
++		-lGraphicsMagick \
++		$(CXXLIBS) \
++		$(LIBS)
+ coders/$(am__dirstamp):
+ 	@$(MKDIR_P) coders
+ 	@: > coders/$(am__dirstamp)
+@@ -6423,47 +6435,47 @@
+ 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
+ Magick++/demo/analyze$(EXEEXT): $(Magick___demo_analyze_OBJECTS) $(Magick___demo_analyze_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
+ 	@rm -f Magick++/demo/analyze$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_analyze_OBJECTS) $(Magick___demo_analyze_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_analyze_OBJECTS) $(Magick___demo_analyze_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/demo/button.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+ 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
+ Magick++/demo/button$(EXEEXT): $(Magick___demo_button_OBJECTS) $(Magick___demo_button_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
+ 	@rm -f Magick++/demo/button$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_button_OBJECTS) $(Magick___demo_button_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_button_OBJECTS) $(Magick___demo_button_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/demo/demo.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+ 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
+ Magick++/demo/demo$(EXEEXT): $(Magick___demo_demo_OBJECTS) $(Magick___demo_demo_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
+ 	@rm -f Magick++/demo/demo$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_demo_OBJECTS) $(Magick___demo_demo_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_demo_OBJECTS) $(Magick___demo_demo_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/demo/detrans.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+ 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
+ Magick++/demo/detrans$(EXEEXT): $(Magick___demo_detrans_OBJECTS) $(Magick___demo_detrans_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
+ 	@rm -f Magick++/demo/detrans$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_detrans_OBJECTS) $(Magick___demo_detrans_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_detrans_OBJECTS) $(Magick___demo_detrans_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/demo/flip.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+ 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
+ Magick++/demo/flip$(EXEEXT): $(Magick___demo_flip_OBJECTS) $(Magick___demo_flip_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
+ 	@rm -f Magick++/demo/flip$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_flip_OBJECTS) $(Magick___demo_flip_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_flip_OBJECTS) $(Magick___demo_flip_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/demo/gravity.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+ 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
+ Magick++/demo/gravity$(EXEEXT): $(Magick___demo_gravity_OBJECTS) $(Magick___demo_gravity_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
+ 	@rm -f Magick++/demo/gravity$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_gravity_OBJECTS) $(Magick___demo_gravity_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_gravity_OBJECTS) $(Magick___demo_gravity_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/demo/piddle.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+ 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
+ Magick++/demo/piddle$(EXEEXT): $(Magick___demo_piddle_OBJECTS) $(Magick___demo_piddle_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
+ 	@rm -f Magick++/demo/piddle$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_piddle_OBJECTS) $(Magick___demo_piddle_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_piddle_OBJECTS) $(Magick___demo_piddle_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/demo/shapes.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+ 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
+ Magick++/demo/shapes$(EXEEXT): $(Magick___demo_shapes_OBJECTS) $(Magick___demo_shapes_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
+ 	@rm -f Magick++/demo/shapes$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_shapes_OBJECTS) $(Magick___demo_shapes_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_shapes_OBJECTS) $(Magick___demo_shapes_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/demo/zoom.$(OBJEXT): Magick++/demo/$(am__dirstamp) \
+ 	Magick++/demo/$(DEPDIR)/$(am__dirstamp)
+ Magick++/demo/zoom$(EXEEXT): $(Magick___demo_zoom_OBJECTS) $(Magick___demo_zoom_DEPENDENCIES) Magick++/demo/$(am__dirstamp)
+ 	@rm -f Magick++/demo/zoom$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_zoom_OBJECTS) $(Magick___demo_zoom_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___demo_zoom_OBJECTS) $(Magick___demo_zoom_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/$(am__dirstamp):
+ 	@$(MKDIR_P) Magick++/tests
+ 	@: > Magick++/tests/$(am__dirstamp)
+@@ -6474,68 +6486,68 @@
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/appendImages$(EXEEXT): $(Magick___tests_appendImages_OBJECTS) $(Magick___tests_appendImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/appendImages$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_appendImages_OBJECTS) $(Magick___tests_appendImages_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_appendImages_OBJECTS) $(Magick___tests_appendImages_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/attributes.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/attributes$(EXEEXT): $(Magick___tests_attributes_OBJECTS) $(Magick___tests_attributes_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/attributes$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_attributes_OBJECTS) $(Magick___tests_attributes_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_attributes_OBJECTS) $(Magick___tests_attributes_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/averageImages.$(OBJEXT):  \
+ 	Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/averageImages$(EXEEXT): $(Magick___tests_averageImages_OBJECTS) $(Magick___tests_averageImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/averageImages$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_averageImages_OBJECTS) $(Magick___tests_averageImages_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_averageImages_OBJECTS) $(Magick___tests_averageImages_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/coalesceImages.$(OBJEXT):  \
+ 	Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/coalesceImages$(EXEEXT): $(Magick___tests_coalesceImages_OBJECTS) $(Magick___tests_coalesceImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/coalesceImages$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_coalesceImages_OBJECTS) $(Magick___tests_coalesceImages_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_coalesceImages_OBJECTS) $(Magick___tests_coalesceImages_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/coderInfo.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/coderInfo$(EXEEXT): $(Magick___tests_coderInfo_OBJECTS) $(Magick___tests_coderInfo_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/coderInfo$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_coderInfo_OBJECTS) $(Magick___tests_coderInfo_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_coderInfo_OBJECTS) $(Magick___tests_coderInfo_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/color.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/color$(EXEEXT): $(Magick___tests_color_OBJECTS) $(Magick___tests_color_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/color$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_color_OBJECTS) $(Magick___tests_color_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_color_OBJECTS) $(Magick___tests_color_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/colorHistogram.$(OBJEXT):  \
+ 	Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/colorHistogram$(EXEEXT): $(Magick___tests_colorHistogram_OBJECTS) $(Magick___tests_colorHistogram_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/colorHistogram$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_colorHistogram_OBJECTS) $(Magick___tests_colorHistogram_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_colorHistogram_OBJECTS) $(Magick___tests_colorHistogram_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/exceptions.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/exceptions$(EXEEXT): $(Magick___tests_exceptions_OBJECTS) $(Magick___tests_exceptions_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/exceptions$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_exceptions_OBJECTS) $(Magick___tests_exceptions_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_exceptions_OBJECTS) $(Magick___tests_exceptions_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/montageImages.$(OBJEXT):  \
+ 	Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/montageImages$(EXEEXT): $(Magick___tests_montageImages_OBJECTS) $(Magick___tests_montageImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/montageImages$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_montageImages_OBJECTS) $(Magick___tests_montageImages_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_montageImages_OBJECTS) $(Magick___tests_montageImages_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/morphImages.$(OBJEXT): Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/morphImages$(EXEEXT): $(Magick___tests_morphImages_OBJECTS) $(Magick___tests_morphImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/morphImages$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_morphImages_OBJECTS) $(Magick___tests_morphImages_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_morphImages_OBJECTS) $(Magick___tests_morphImages_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/readWriteBlob.$(OBJEXT):  \
+ 	Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/readWriteBlob$(EXEEXT): $(Magick___tests_readWriteBlob_OBJECTS) $(Magick___tests_readWriteBlob_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/readWriteBlob$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_readWriteBlob_OBJECTS) $(Magick___tests_readWriteBlob_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_readWriteBlob_OBJECTS) $(Magick___tests_readWriteBlob_LDADD) $(LIBS) $(CXXLIBS)
+ Magick++/tests/readWriteImages.$(OBJEXT):  \
+ 	Magick++/tests/$(am__dirstamp) \
+ 	Magick++/tests/$(DEPDIR)/$(am__dirstamp)
+ Magick++/tests/readWriteImages$(EXEEXT): $(Magick___tests_readWriteImages_OBJECTS) $(Magick___tests_readWriteImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
+ 	@rm -f Magick++/tests/readWriteImages$(EXEEXT)
+-	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_readWriteImages_OBJECTS) $(Magick___tests_readWriteImages_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_readWriteImages_OBJECTS) $(Magick___tests_readWriteImages_LDADD) $(LIBS) $(CXXLIBS)
+ tests/$(am__dirstamp):
+ 	@$(MKDIR_P) tests
+ 	@: > tests/$(am__dirstamp)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' GraphicsMagick-1.3.7-orig/magick/GraphicsMagick-config.in GraphicsMagick-1.3.7/magick/GraphicsMagick-config.in
+--- GraphicsMagick-1.3.7-orig/magick/GraphicsMagick-config.in	2009-10-02 20:47:15 +0200
++++ GraphicsMagick-1.3.7/magick/GraphicsMagick-config.in	2009-10-13 20:28:52 +0200
+@@ -33,10 +33,10 @@
+       echo '@CFLAGS@'
+       ;;
+     --cppflags)
+-      echo '@MAGICK_API_CPPFLAGS@'
++      echo '@MAGICK_API_CPPFLAGS@' | sed -e "s+-I[^ ]*++g"
+       ;;
+     --ldflags)
+-      echo '@MAGICK_API_LDFLAGS@'
++      echo '@MAGICK_API_LDFLAGS@' | sed -e "s+-L[^ ]*++g"
+       ;;
+     --libs)
+       echo '@MAGICK_API_LIBS@'
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' GraphicsMagick-1.3.7-orig/magick/GraphicsMagick.pc.in GraphicsMagick-1.3.7/magick/GraphicsMagick.pc.in
+--- GraphicsMagick-1.3.7-orig/magick/GraphicsMagick.pc.in	2009-10-02 20:47:15 +0200
++++ GraphicsMagick-1.3.7/magick/GraphicsMagick.pc.in	2009-10-13 20:28:52 +0200
+@@ -7,5 +7,5 @@
+ Name: GraphicsMagick
+ Version: @PACKAGE_VERSION@
+ Description: GraphicsMagick image processing library
+-Libs: -L${libdir} -lGraphicsMagick
+-Cflags: -I${includedir} @MAGICK_API_PC_CPPFLAGS@
++Libs: -lGraphicsMagick
++Cflags: @MAGICK_API_PC_CPPFLAGS@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' GraphicsMagick-1.3.7-orig/magick/blob.c GraphicsMagick-1.3.7/magick/blob.c
+--- GraphicsMagick-1.3.7-orig/magick/blob.c	2009-10-02 20:47:15 +0200
++++ GraphicsMagick-1.3.7/magick/blob.c	2009-10-13 20:28:51 +0200
+@@ -1536,7 +1536,7 @@
+ %
+ */
+ 
+-#if !defined(UseInstalledMagick) && defined(POSIX)
++#if !defined(UseInstalledMagick)
+ static void ChopPathComponents(char *path,const unsigned long components)
+ {
+   long
+@@ -1684,7 +1684,7 @@
+     magick_home=getenv("MAGICK_HOME");
+     if (magick_home)
+       {
+-#if defined(POSIX)
++
+         FormatString(path,"%.1024s/share/%s/",magick_home,
+           MagickShareConfigSubDir);
+         AddConfigurePath(path_map,&path_index,path,exception);
+@@ -1692,11 +1692,11 @@
+         FormatString(path,"%.1024s/lib/%s/",magick_home,
+           MagickLibConfigSubDir);
+         AddConfigurePath(path_map,&path_index,path,exception);
+-#else
++
+         FormatString(path,"%.1024s%s",magick_home,
+           DirectorySeparator);
+         AddConfigurePath(path_map,&path_index,path,exception);
+-#endif /* defined(POSIX) */
++
+       }
+     }
+ 
+@@ -1712,7 +1712,7 @@
+ 
+   if (*SetClientPath((char *) NULL) != '\0')
+     {
+-#if defined(POSIX)
++
+       char
+         prefix[MaxTextExtent];
+ 
+@@ -1727,11 +1727,11 @@
+ 
+       FormatString(path,"%.1024s/share/%s/",prefix,MagickShareConfigSubDir);
+       AddConfigurePath(path_map,&path_index,path,exception);
+-#else /* defined(POSIX) */
++
+       FormatString(path,"%.1024s%s",SetClientPath((char *) NULL),
+         DirectorySeparator);
+       AddConfigurePath(path_map,&path_index,path,exception);
+-#endif /* !defined(POSIX) */
++
+     }
+ 
+   /*

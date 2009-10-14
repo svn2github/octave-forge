@@ -1,0 +1,140 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg less-436-orig/Makefile.mingw32 less-436/Makefile.mingw32
+--- less-436-orig/Makefile.mingw32	1970-01-01 01:00:00 +0100
++++ less-436/Makefile.mingw32	2009-08-30 12:40:05 +0200
+@@ -0,0 +1,57 @@
++# Makefile for less.
++# Windows version
++# mingw32 gcc
++
++SRCDIR = @SRCDIR@
++
++vpath %.c $(SRCDIR)
++vpath %.h $(SRCDIR)
++
++#### Start of system configuration section. ####
++# 
++# Borland's make knows its own location in the
++# filesystem.
++#
++
++override LDFLAGS += -mconsole
++LD = $(CC)
++LIBS = -lregex -lpcre
++override CFLAGS += -O3
++
++EXT=.exe
++
++#### End of system configuration section. ####
++
++# This rule allows us to supply the necessary -D options
++# in addition to whatever the user asks for.
++.c.o:
++	$(CC) -c -I. -I$(SRCDIR) $(CPPFLAGS) $(CFLAGS) $<
++
++OBJ = \
++	main.o screen.o brac.o ch.o charset.o cmdbuf.o \
++	command.o cvt.o decode.o edit.o filename.o forwback.o \
++	help.o ifile.o input.o jump.o line.o linenum.o \
++	lsystem.o mark.o optfunc.o option.o opttbl.o os.o \
++	output.o pattern.o position.o prompt.o search.o signal.o \
++	tags.o ttyin.o version.o regexp.o
++
++all: less$(EXT) lesskey$(EXT)
++
++# This is really horrible, but the command line is too long for 
++# MS-DOS if we try to link $(OBJ).
++less$(EXT): defines.h $(OBJ)
++	$(CC) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
++
++lesskey$(EXT): lesskey.o version.o
++	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
++
++defines.h: $(SRCDIR)/defines.wn
++	-rm $@
++	-cp $< $@
++
++$(OBJ): less.h defines.h
++
++clean:
++	-rm *.o 
++	-rm less$(EXT)
++	-rm lesskey$(EXT)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg less-436-orig/defines.wn less-436/defines.wn
+--- less-436-orig/defines.wn	2009-08-30 12:40:18 +0200
++++ less-436/defines.wn	2009-08-30 12:33:49 +0200
+@@ -60,7 +60,7 @@
+  * EDIT_PGM is the name of the (default) editor to be invoked.
+  */
+ #define	EDITOR		(!SECURE)
+-#define	EDIT_PGM	"edit"
++#define	EDIT_PGM	"notepad"
+ 
+ /*
+  * TAGS is 1 if you wish to support tag files.
+@@ -113,10 +113,10 @@
+  * LESSHISTFILE is the filename of the history file
+  * (in the HOME directory).
+  */
+-#define	LESSKEYFILE		"_less"
++#define	LESSKEYFILE		".less"
+ #define	LESSKEYFILE_SYS		"c:\\_sysless"
+-#define	DEF_LESSKEYINFILE	"_lesskey"
+-#define LESSHISTFILE		"_lesshst"
++#define	DEF_LESSKEYINFILE	".lesskey"
++#define LESSHISTFILE		".lesshst"
+ 
+ 
+ /* Settings always true for Windows systems.  */
+@@ -165,6 +165,15 @@
+  */
+ #define	HAVE_DUP	1
+ 
++/* Define to 1 if you have the memcpy() function. */
++#define HAVE_MEMCPY 1
++
++/* Define to 1 if you have the strchr() function. */
++#define HAVE_STRCHR 1
++
++/* Define to 1 if you have the strstr() function. */
++#define HAVE_STRSTR 1
++
+ /*
+  * Sizes of various buffers.
+  */
+@@ -200,9 +209,10 @@
+ /* #undef HAVE_POSIX_REGCOMP */
+ /* #undef HAVE_RE_COMP */
+ /* #undef HAVE_REGCMP */
+-#define HAVE_V8_REGCOMP 1
++/* #define HAVE_V8_REGCOMP 1 */
+ /* #undef NO_REGEX */
+-#define HAVE_REGEXEC2 1
++/* #define HAVE_REGEXEC2 1 */
++#define HAVE_PCRE 1
+ 
+ /* Define HAVE_VOID if your compiler supports the "void" type. */
+ #define HAVE_VOID 1
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg less-436-orig/lglob.h less-436/lglob.h
+--- less-436-orig/lglob.h	2009-08-30 12:40:18 +0200
++++ less-436/lglob.h	2009-08-30 12:33:49 +0200
+@@ -57,7 +57,7 @@
+ 					char ext[_MAX_EXT];	\
+ 					int handle;
+ #else
+-#if MSDOS_COMPILER==WIN32C && defined(_MSC_VER)
++#if MSDOS_COMPILER==WIN32C && (defined(_MSC_VER) || defined(__MINGW32__) )
+ 
+ #define	GLOB_FIRST_NAME(filename,fndp,h) h = _findfirst(filename, fndp)
+ #define	GLOB_FIRST_FAILED(handle)	((handle) == -1)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg less-436-orig/lsystem.c less-436/lsystem.c
+--- less-436-orig/lsystem.c	2009-08-30 12:40:18 +0200
++++ less-436/lsystem.c	2009-08-30 12:33:49 +0200
+@@ -20,7 +20,7 @@
+ 
+ #if MSDOS_COMPILER
+ #include <dos.h>
+-#ifdef _MSC_VER
++#if defined(_MSC_VER) || defined(__MINGW32__)
+ #include <direct.h>
+ #define setdisk(n) _chdrive((n)+1)
+ #else

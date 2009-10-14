@@ -1,0 +1,73 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.def' arpack-96-orig/UTIL/second.f arpack-96/UTIL/second.f
+--- arpack-96-orig/UTIL/second.f	2009-08-23 11:44:38 +0200
++++ arpack-96/UTIL/second.f	2009-08-23 11:46:31 +0200
+@@ -21,7 +21,7 @@
+ *     ..
+ *     .. External Functions ..
+       REAL               ETIME
+-      EXTERNAL           ETIME
++      INTRINSIC           ETIME
+ *     ..
+ *     .. Executable Statements ..
+ *
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.def' arpack-96-orig/makefile.mingw32 arpack-96/makefile.mingw32
+--- arpack-96-orig/makefile.mingw32	1970-01-01 01:00:00 +0100
++++ arpack-96/makefile.mingw32	2009-08-23 11:47:47 +0200
+@@ -0,0 +1,57 @@
++SRCDIR=@SRCDIR@
++
++NAME = arpack
++
++LIBTARGET = $(NAME).dll
++LIBIMPLIB  = lib$(NAME).dll.a
++LIBSTATIC = lib$(NAME).a
++
++FSOURCES = $(wildcard $(SRCDIR)/SRC/*.f) $(wildcard $(SRCDIR)/UTIL/*.f)
++OBJECTS = $(patsubst %.f,%.o, $(notdir $(FSOURCES)))
++
++DEF_FILES = $(patsubst %.f,%.def, $(notdir $(FSOURCES)))
++LIB_DEFFILE = $(patsubst %.dll,%.def, $(LIBTARGET))
++
++vpath %.f $(SRCDIR)/SRC
++vpath %.f $(SRCDIR)/UTIL
++
++all: $(LIBSTATIC) $(LIBTARGET) 
++
++.SUFFIXES: .f .o .def
++
++%.o : %.f
++	$(F77) $(FFLAGS) -o $@ -c $<
++
++%.def : %.f
++	@echo "Making $@"
++	@sed -n \
++	     -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
++	     -e 's/^\(      \|	\)\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$$/\3_/p' < $< > $@
++
++$(LIB_DEFFILE): $(DEF_FILES)
++	echo "EXPORTS" > $@
++	cat $(DEF_FILES) >> $@
++
++$(LIBTARGET): $(OBJECTS) $(LIB_DEFFILE)
++	$(F77) -shared -o $@ \
++		$(LDFLAGS) \
++		-Wl,$(LIB_DEFFILE) \
++		-Wl,--out-implib=$(LIBIMPLIB) \
++		-Wl,--output-def=$(LIBTARGET).def  \
++		-Wl,--whole-archive \
++		$(LIBSTATIC) \
++		-Wl,--no-whole-archive \
++		-llapack -lblas
++
++$(LIBSTATIC): $(OBJECTS)
++	ar cr $@ $^
++
++OTHER_CLEANFILES = $(patsubst %.dll, %.exp, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.ilk, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.lib, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.pdb, $(LIBTARGET))
++
++clean:
++	$(RM) $(OBJECTS) $(CSOURCES)
++	$(RM) $(DEF_FILES) $(LIB_DEFFILE)
++	$(RM) $(LIBTARGET) $(OTHER_CLEANFILES)

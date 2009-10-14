@@ -1,0 +1,77 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x ca-bundle.h -x libcurl.res curl-7.19.6-orig/lib/Makefile.m32 curl-7.19.6/lib/Makefile.m32
+--- curl-7.19.6-orig/lib/Makefile.m32	2009-08-30 12:48:17 +0200
++++ curl-7.19.6/lib/Makefile.m32	2009-08-30 12:54:34 +0200
+@@ -15,6 +15,12 @@
+ ##              Joern Hartroth <hartroth@acm.org>
+ #########################################################################
+ 
++SRCDIR = @SRCDIR@/lib
++
++vpath %.c $(SRCDIR)
++vpath %.h $(SRCDIR)
++vpath %.rc $(SRCDIR)
++
+ # Edit the path below to point to the base of your Zlib sources.
+ ifndef ZLIB_PATH
+ ZLIB_PATH = ../../zlib-1.2.3
+@@ -38,21 +44,21 @@
+ 
+ ARES_LIB = ../ares
+ 
+-CC = gcc
+-AR = ar
++CC ?= gcc
++AR ?= ar
+ # comment LDFLAGS below to keep debug info
+ LDFLAGS = -s
+-RANLIB = ranlib
+-RC = windres
+-RCFLAGS = --include-dir=../include -DDEBUGBUILD=0 -O COFF -i
++RANLIB ?= ranlib
++RC ?= windres
++RCFLAGS = --preprocessor=$(CPP) --include-dir=../include -DDEBUGBUILD=0 -O COFF -i 
+ RM = del /q /f > NUL 2>&1
+-STRIP = strip -g
++STRIP ?= strip -g
+ 
+ ########################################################
+ ## Nothing more to do below this line!
+ 
+-INCLUDES = -I. -I../include
+-CFLAGS = -g -O2 -DBUILDING_LIBCURL
++INCLUDES = -I. -I$(SRCDIR)/../include
++override CFLAGS += -g -O2 -DBUILDING_LIBCURL
+ ifdef ARES
+   INCLUDES += -I$(ARES_LIB)
+   CFLAGS += -DUSE_ARES
+@@ -109,10 +115,10 @@
+ COMPILE = $(CC) $(INCLUDES) $(CFLAGS)
+ 
+ # Makefile.inc provides the CSOURCES and HHEADERS defines
+-include Makefile.inc
++include $(SRCDIR)/Makefile.inc
+ 
+-libcurl_dll_LIBRARY = libcurl.dll
+-libcurl_dll_a_LIBRARY = libcurldll.a
++libcurl_dll_LIBRARY = curl.dll
++libcurl_dll_a_LIBRARY = libcurl.dll.a
+ libcurl_a_LIBRARY = libcurl.a
+ 
+ libcurl_a_OBJECTS := $(patsubst %.c,%.o,$(strip $(CSOURCES)))
+@@ -128,14 +134,14 @@
+ 	-$(RM) $@
+ 	$(AR) cru $@ $(libcurl_a_OBJECTS)
+ 	$(RANLIB) $@
+-	$(STRIP) $@
++#	$(STRIP) $@
+ 
+ # remove the last line above to keep debug info
+ 
+ $(libcurl_dll_LIBRARY): $(libcurl_a_OBJECTS) $(RESOURCE) $(libcurl_dll_DEPENDENCIES)
+ 	-$(RM) $@
+ 	$(CC) $(LDFLAGS) -shared -Wl,--out-implib,$(libcurl_dll_a_LIBRARY) \
+-	  -o $@ $(libcurl_a_OBJECTS) $(RESOURCE) $(DLL_LIBS)
++	  -o $@ $(libcurl_a_OBJECTS) $(RESOURCE) -Wl,--no-whole-archive $(DLL_LIBS)
+ 
+ .c.o:
+ 	$(COMPILE) -c $<

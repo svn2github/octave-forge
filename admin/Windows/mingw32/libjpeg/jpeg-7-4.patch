@@ -1,0 +1,58 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' jpeg-7-orig/jmorecfg.h jpeg-7/jmorecfg.h
+--- jpeg-7-orig/jmorecfg.h	2009-10-05 19:18:31 +0200
++++ jpeg-7/jmorecfg.h	2009-10-05 19:13:21 +0200
+@@ -11,6 +11,9 @@
+  * optimizations.  Most users will not need to touch this file.
+  */
+ 
++#ifdef __MINGW32__
++#include <stdint.h>   /* for the various intNN_t types */
++#endif
+ 
+ /*
+  * Define BITS_IN_JSAMPLE as either
+@@ -132,6 +135,9 @@
+ 
+ /* UINT8 must hold at least the values 0..255. */
+ 
++#ifdef __MINGW32__
++#define UINT8 int8_t
++#else
+ #ifdef HAVE_UNSIGNED_CHAR
+ typedef unsigned char UINT8;
+ #else /* not HAVE_UNSIGNED_CHAR */
+@@ -141,17 +147,26 @@
+ typedef short UINT8;
+ #endif /* CHAR_IS_UNSIGNED */
+ #endif /* HAVE_UNSIGNED_CHAR */
++#endif  /* __MINGW32__ */
+ 
+ /* UINT16 must hold at least the values 0..65535. */
+ 
++#ifdef __MINGW32__
++#define UINT16 uint16_t
++#else
+ #ifdef HAVE_UNSIGNED_SHORT
+ typedef unsigned short UINT16;
+ #else /* not HAVE_UNSIGNED_SHORT */
+ typedef unsigned int UINT16;
+ #endif /* HAVE_UNSIGNED_SHORT */
++#endif /* __MINGW32__ */
+ 
+ /* INT16 must hold at least the values -32768..32767. */
+ 
++#ifdef __MINGW32__
++#define INT16 int16_t
++#define INT32 int32_t
++#else
+ #ifndef XMD_H			/* X11/xmd.h correctly defines INT16 */
+ typedef short INT16;
+ #endif
+@@ -165,6 +180,7 @@
+ #endif
+ #endif
+ #endif
++#endif /* __MINGW32__ */
+ 
+ /* Datatype used for image dimensions.  The JPEG standard only supports
+  * images up to 64K*64K due to 16-bit fields in SOF markers.  Therefore

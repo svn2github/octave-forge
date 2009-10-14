@@ -1,0 +1,24 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg libiconv-1.13-orig/lib/Makefile.in libiconv-1.13/lib/Makefile.in
+--- libiconv-1.13-orig/lib/Makefile.in	2009-09-13 19:54:07 +0200
++++ libiconv-1.13/lib/Makefile.in	2009-09-13 20:06:52 +0200
+@@ -90,7 +90,7 @@
+ 	$(LIBTOOL_COMPILE) $(CC) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(DEFS) -c $(srcdir)/../woe32dll/iconv-exports.c
+ 
+ libiconv.res.lo : $(srcdir)/../windows/libiconv.rc
+-	$(LIBTOOL_COMPILE) --tag=RC $(RC) `$(SHELL) $(srcdir)/../windows/windres-options --escape $(PACKAGE_VERSION)` -i $(srcdir)/../windows/libiconv.rc -o libiconv.res.lo --output-format=coff
++	$(LIBTOOL_COMPILE) --tag=RC $(RC) --preprocessor=$(CPP) `$(SHELL) $(srcdir)/../windows/windres-options --escape $(PACKAGE_VERSION)` -i $(srcdir)/../windows/libiconv.rc -o libiconv.res.lo --output-format=coff
+ 
+ # Installs the library and include files only. Typically called with only
+ # $(libdir) and $(includedir) - don't use $(prefix) and $(exec_prefix) here.
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg libiconv-1.13-orig/src/Makefile.in libiconv-1.13/src/Makefile.in
+--- libiconv-1.13-orig/src/Makefile.in	2009-09-13 19:54:06 +0200
++++ libiconv-1.13/src/Makefile.in	2009-09-13 20:00:51 +0200
+@@ -84,7 +84,7 @@
+ 	$(CC) -c $(INCLUDES) -I../lib $(CFLAGS) $(CPPFLAGS) -DINSTALLDIR=\"$(bindir)\" -DLOCALEDIR=\"$(localedir)\" $(srcdir)/iconv.c
+ 
+ iconv.res : $(srcdir)/../windows/iconv.rc
+-	$(WINDRES) `$(SHELL) $(srcdir)/../windows/windres-options --escape $(PACKAGE_VERSION)` -i $(srcdir)/../windows/iconv.rc -o iconv.res --output-format=coff
++	$(WINDRES) --preprocessor=$(CPP) `$(SHELL) $(srcdir)/../windows/windres-options --escape $(PACKAGE_VERSION)` -i $(srcdir)/../windows/iconv.rc -o iconv.res --output-format=coff
+ 
+ # The following rule is necessary to avoid a toplevel "make -n check" failure.
+ ../lib/libiconv.la :

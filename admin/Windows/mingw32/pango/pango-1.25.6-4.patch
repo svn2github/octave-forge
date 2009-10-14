@@ -1,0 +1,78 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' pango-1.25.6-orig/pango/Makefile.in pango-1.25.6/pango/Makefile.in
+--- pango-1.25.6-orig/pango/Makefile.in	2009-09-14 21:29:50 +0200
++++ pango-1.25.6/pango/Makefile.in	2009-09-14 21:38:49 +0200
+@@ -1638,7 +1638,7 @@
+ 	uninstall-pangoincludeHEADERS uninstall-typelibsDATA
+ 
+ pango-win32-res.o: pango.rc
+-	$(AM_V_GEN) $(WINDRES) $< $@
++	$(AM_V_GEN) $(WINDRES) --preprocessor=$(CPP) $< $@
+ 
+ pango-enum-types.h: s-enum-types-h
+ 	$(AM_V_GEN) true
+@@ -1691,9 +1691,9 @@
+  	    pango-enum-types.h
+ 
+ pangox-win32-res.o: pangox.rc
+-	$(WINDRES) $< $@
++	$(WINDRES) --preprocessor=$(CPP) $< $@
+ pangoft2-win32-res.o: pangoft2.rc
+-	$(AM_V_GEN) $(WINDRES) $< $@
++	$(AM_V_GEN) $(WINDRES) --preprocessor=$(CPP) $< $@
+ 
+ PangoFT2-1.0.gir: $(pangoft2_headers)
+ PangoFT2-1.0.gir: $(libpangoft2_1_0_la_SOURCES)
+@@ -1715,7 +1715,7 @@
+             $(pangoft2_headers) \
+             $(pangoft2_public_sources)
+ pangoxft-win32-res.o: pangoxft.rc
+-	$(AM_V_GEN) $(WINDRES) $< $@
++	$(AM_V_GEN) $(WINDRES) --preprocessor=$(CPP) $< $@
+ 
+ PangoXft-1.0.gir: $(pangoxft_headers)
+ PangoXft-1.0.gir: $(libpangoxft_1_0_la_SOURCES)
+@@ -1758,7 +1758,7 @@
+             $(libpangocairo_1_0_la_SOURCES) \
+ 	    $(pangocairo_headers)
+ pangowin32-win32-res.o: pangowin32.rc
+-	$(AM_V_GEN) $(WINDRES) $< $@
++	$(AM_V_GEN) $(WINDRES) --preprocessor=$(CPP) $< $@
+ 
+ # ------------------- win32 build stuff -------------------
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' pango-1.25.6-orig/pango.pc.in pango-1.25.6/pango.pc.in
+--- pango-1.25.6-orig/pango.pc.in	2009-09-14 21:29:50 +0200
++++ pango-1.25.6/pango.pc.in	2009-09-14 21:38:49 +0200
+@@ -10,4 +10,4 @@
+ Version: @VERSION@
+ Requires: glib-2.0,gobject-2.0,gmodule-no-export-2.0
+ Libs: -L${libdir} -lpango-@PANGO_API_VERSION@ @PKGCONFIG_MATH_LIBS@
+-Cflags: -I${includedir}/pango-1.0
++Cflags: -I${includedir}/pango
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' pango-1.25.6-orig/pangocairo.pc.in pango-1.25.6/pangocairo.pc.in
+--- pango-1.25.6-orig/pangocairo.pc.in	2009-09-14 21:29:51 +0200
++++ pango-1.25.6/pangocairo.pc.in	2009-09-14 21:38:49 +0200
+@@ -8,4 +8,4 @@
+ Version: @VERSION@
+ Requires: pango cairo @PKGCONFIG_CAIRO_REQUIRES@
+ Libs: -L${libdir} -lpangocairo-@PANGO_API_VERSION@
+-Cflags: -I${includedir}/pango-1.0
++Cflags: -I${includedir}/pango
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' pango-1.25.6-orig/pangoft2.pc.in pango-1.25.6/pangoft2.pc.in
+--- pango-1.25.6-orig/pangoft2.pc.in	2009-09-14 21:29:50 +0200
++++ pango-1.25.6/pangoft2.pc.in	2009-09-14 21:38:49 +0200
+@@ -8,4 +8,4 @@
+ Version: @VERSION@
+ Requires: pango freetype2 fontconfig
+ Libs: -L${libdir} -lpangoft2-@PANGO_API_VERSION@
+-Cflags: -I${includedir}/pango-1.0
++Cflags: -I${includedir}/pango
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' pango-1.25.6-orig/pangowin32.pc.in pango-1.25.6/pangowin32.pc.in
+--- pango-1.25.6-orig/pangowin32.pc.in	2009-09-14 21:29:51 +0200
++++ pango-1.25.6/pangowin32.pc.in	2009-09-14 21:38:49 +0200
+@@ -8,4 +8,4 @@
+ Version: @VERSION@
+ Requires: pango
+ Libs: -L${libdir} -lpangowin32-@PANGO_API_VERSION@ @WIN32_LIBS@
+-Cflags: -I${includedir}/pango-1.0
++Cflags: -I${includedir}/pango

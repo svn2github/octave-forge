@@ -1,0 +1,273 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' fltk-1.1.9-orig/Makefile fltk-1.1.9/Makefile
+--- fltk-1.1.9-orig/Makefile	2009-10-05 19:30:01 +0200
++++ fltk-1.1.9/Makefile	2009-10-05 19:30:14 +0200
+@@ -27,7 +27,7 @@
+ 
+ include makeinclude
+ 
+-DIRS	=	$(IMAGEDIRS) src fluid test documentation
++DIRS	=	$(IMAGEDIRS) src
+ 
+ all: makeinclude fltk-config
+ 	for dir in $(DIRS); do\
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' fltk-1.1.9-orig/configure fltk-1.1.9/configure
+--- fltk-1.1.9-orig/configure	2009-10-05 19:30:00 +0200
++++ fltk-1.1.9/configure	2009-10-05 19:30:14 +0200
+@@ -1961,7 +1961,7 @@
+ 	    #-----------------------------------------------------------
+             LDFLAGS="$LDFLAGS -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+ 	    DSOCOMMAND="\$(CXX) \$(DSOFLAGS) -shared \
+-	    	-Wl,--whole-archive -Wl,--export-all-symbols \
++	    	-Wl,--whole-archive \
+ 		-Wl,--enable-runtime-pseudo-reloc -Wl,--enable-auto-import \
+ 		-Wl,--enable-auto-image-base -o \$@"
+ 	    ;;
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' fltk-1.1.9-orig/fltk-config.in fltk-1.1.9/fltk-config.in
+--- fltk-1.1.9-orig/fltk-config.in	2009-10-05 19:30:00 +0200
++++ fltk-1.1.9/fltk-config.in	2009-10-05 19:54:47 +0200
+@@ -211,13 +211,13 @@
+ done
+ 
+ if test "$includedir" != /usr/include; then
+-    includes=-I$includedir
++    includes=
+ else
+     includes=
+ fi
+ 
+ if test "$libdir" != /usr/lib -a "$libdir" != /usr/lib32; then
+-    libs=-L$libdir
++    libs=
+ else
+     libs=
+ fi
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' fltk-1.1.9-orig/fluid/Makefile fltk-1.1.9/fluid/Makefile
+--- fltk-1.1.9-orig/fluid/Makefile	2009-10-05 19:30:00 +0200
++++ fltk-1.1.9/fluid/Makefile	2009-10-05 19:30:14 +0200
+@@ -57,14 +57,14 @@
+ fluid$(EXEEXT):		$(OBJECTS) ../lib/$(LIBNAME) ../lib/$(FLLIBNAME) \
+ 			../lib/$(IMGLIBNAME)
+ 	echo Linking $@...
+-	$(CXX) $(ARCHFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(LINKFLTKFORMS) $(LINKFLTKIMG) $(LDLIBS)
++	$(CXX) $(ARCHFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(LINKFLTKFORMS) $(LINKFLTKIMG) $(CXXLIBS) $(LDLIBS)
+ 	$(OSX_ONLY) $(INSTALL_BIN) fluid fluid.app/Contents/MacOS
+ 	$(POSTBUILD) $@ ../FL/mac.r
+ 
+ fluid-shared$(EXEEXT):	$(OBJECTS) ../src/$(DSONAME) ../src/$(FLDSONAME) \
+ 			../src/$(IMGDSONAME)
+ 	echo Linking $@...
+-	$(CXX) $(ARCHFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(LINKSHARED) $(LDLIBS)
++	$(CXX) $(ARCHFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(LINKSHARED) $(CXXLIBS) $(LDLIBS)
+ 	$(POSTBUILD) $@ ../FL/mac.r
+ 
+ clean:
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' fltk-1.1.9-orig/makeinclude.in fltk-1.1.9/makeinclude.in
+--- fltk-1.1.9-orig/makeinclude.in	2009-10-05 19:30:01 +0200
++++ fltk-1.1.9/makeinclude.in	2009-10-05 19:41:28 +0200
+@@ -55,8 +55,8 @@
+ # flags for C++ compiler:
+ ARCHFLAGS	= @ARCHFLAGS@
+ OPTIM		= @OPTIM@
+-CFLAGS		= $(OPTIM) @LARGEFILE@ @PTHREAD_FLAGS@ @CPPFLAGS@ @CFLAGS@
+-CXXFLAGS	= $(OPTIM) @LARGEFILE@ @PTHREAD_FLAGS@ @CPPFLAGS@ @CXXFLAGS@
++CFLAGS		= $(OPTIM) @LARGEFILE@ @PTHREAD_FLAGS@ @CPPFLAGS@ @CFLAGS@ -DFL_LIBRARY
++CXXFLAGS	= $(OPTIM) @LARGEFILE@ @PTHREAD_FLAGS@ @CPPFLAGS@ @CXXFLAGS@ -DFL_LIBRARY
+ 
+ # program to make the archive:
+ LIBNAME		= @LIBNAME@
+@@ -70,13 +70,13 @@
+ FLDSONAME	= @FLDSONAME@
+ GLDSONAME	= @GLDSONAME@
+ IMGDSONAME	= @IMGDSONAME@
+-DSOCOMMAND	= @DSOCOMMAND@
++DSOCOMMAND	= @DSOCOMMAND@ $(LDFLAGS)
+ 
+ # libraries to link with:
+ AUDIOLIBS	= @AUDIOLIBS@
+ DSOFLAGS	= -L. @DSOFLAGS@
+ LDFLAGS		= $(OPTIM) @LDFLAGS@
+-LDLIBS		= @LIBS@
++LDLIBS		= $(CXXLIBS) @LIBS@
+ GLDLIBS		= @GLLIB@ @LIBS@
+ LINKFLTK	= @LINKFLTK@
+ LINKFLTKGL	= @LINKFLTKGL@
+@@ -127,7 +127,7 @@
+ UNINSTALL_DESKTOP = @UNINSTALL_DESKTOP@
+ 
+ # Be quiet when building...
+-.SILENT:
++#.SILENT:
+ 
+ # Build commands and filename extensions...
+ .SUFFIXES:	.0 .1 .3 .6 .c .cxx .h .fl .man .o .z $(EXEEXT)
+@@ -139,11 +139,11 @@
+ 
+ .c.o:
+ 	echo Compiling $<...
+-	$(CC) -I.. $(ARCHFLAGS) @PNGINC@ @JPEGINC@ @ZLIBINC@ $(CFLAGS) -c $<
++	$(CC) -I.. -I$(SRCDIR) $(ARCHFLAGS) @PNGINC@ @JPEGINC@ @ZLIBINC@ $(CFLAGS) -c $<
+ 
+ .cxx.o:
+ 	echo Compiling $<...
+-	$(CXX) -I.. $(ARCHFLAGS) @PNGINC@ @JPEGINC@ @ZLIBINC@ $(CXXFLAGS) -c $<
++	$(CXX) -I.. -I$(SRCDIR) $(ARCHFLAGS) @PNGINC@ @JPEGINC@ @ZLIBINC@ $(CXXFLAGS) -c $<
+ 
+ .man.0 .man.1 .man.3 .man.6:
+ 	echo Formatting $<...
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' fltk-1.1.9-orig/src/Makefile fltk-1.1.9/src/Makefile
+--- fltk-1.1.9-orig/src/Makefile	2009-10-05 19:30:01 +0200
++++ fltk-1.1.9/src/Makefile	2009-10-05 19:30:14 +0200
+@@ -25,6 +25,8 @@
+ #      http://www.fltk.org/str.php
+ #
+ 
++SRCDIR=@SRCDIR@
++
+ CPPFILES = \
+ 	Fl.cxx \
+ 	Fl_Adjuster.cxx \
+@@ -190,6 +192,12 @@
+ 
+ ################################################################
+ 
++vpath	%.cxx $(SRCDIR)/src
++vpath	%.c $(SRCDIR)/src
++vpath	%.h $(SRCDIR)/src
++vpath	%.H $(SRCDIR)/src
++vpath	%.xpm $(SRCDIR)/src
++
+ include ../makeinclude
+ 
+ OBJECTS = $(CPPFILES:.cxx=.o) $(CFILES:.c=.o)
+@@ -436,53 +444,53 @@
+ fl_set_fonts.o:	fl_set_fonts_mac.cxx fl_set_fonts_x.cxx \
+ 		fl_set_fonts_xft.cxx fl_set_fonts_win32.cxx
+ 
+-fl_arci.o:	../FL/mac.H ../FL/win32.H
+-Fl_arg.o:	../FL/mac.H ../FL/win32.H
+-fl_ask.o:	../FL/mac.H ../FL/win32.H
+-Fl_Bitmap.o:	../FL/mac.H ../FL/win32.H
+-fl_color.o:	../FL/mac.H ../FL/win32.H
+-fl_cursor.o:	../FL/mac.H ../FL/win32.H
+-fl_dnd.o:	../FL/mac.H ../FL/win32.H
+-Fl.o:	../FL/mac.H ../FL/win32.H Fl_win32.cxx Fl_mac.cxx
+-Fl_Double_Window.o:	../FL/mac.H ../FL/win32.H
+-fl_draw_image.o:	../FL/mac.H ../FL/win32.H
+-fl_draw_image_mac.o:	../FL/mac.H ../FL/win32.H
+-fl_draw_image_win32.o:	../FL/mac.H ../FL/win32.H
+-fl_draw_pixmap.o:	../FL/mac.H ../FL/win32.H
+-fl_encoding_latin1.o:	../FL/mac.H ../FL/win32.H
+-fl_encoding_mac_roman.o:   ../FL/mac.H ../FL/win32.H
+-Fl_File_Chooser2.o:	../FL/mac.H ../FL/win32.H
+-fl_font.o:	../FL/mac.H ../FL/win32.H
+-Fl_get_key.o:	../FL/mac.H ../FL/win32.H
+-Fl_get_system_colors.o:	../FL/mac.H ../FL/win32.H
+-Fl_Gl_Choice.o:	../FL/mac.H ../FL/win32.H
+-Fl_Gl_Overlay.o:	../FL/mac.H ../FL/win32.H
+-Fl_Gl_Window.o:	../FL/mac.H ../FL/win32.H
+-Fl_grab.o:	../FL/mac.H ../FL/win32.H
+-Fl_Image.o:	../FL/mac.H ../FL/win32.H
+-fl_line_style.o:	../FL/mac.H ../FL/win32.H
+-Fl_mac.o:	../FL/mac.H ../FL/win32.H
+-Fl_Menu_Window.o:	../FL/mac.H ../FL/win32.H
+-fl_overlay.o:	../FL/mac.H ../FL/win32.H
+-fl_overlay_visual.o:	../FL/mac.H ../FL/win32.H
+-Fl_Overlay_Window.o:	../FL/mac.H ../FL/win32.H
+-Fl_own_colormap.o:	../FL/mac.H ../FL/win32.H
+-Fl_Pixmap.o:	../FL/mac.H ../FL/win32.H
+-fl_read_image.o:	../FL/mac.H ../FL/win32.H
+-fl_read_image_mac.o:	../FL/mac.H ../FL/win32.H
+-fl_read_image_win32.o:	../FL/mac.H ../FL/win32.H
+-fl_rect.o:	../FL/mac.H ../FL/win32.H
+-fl_scroll_area.o:	../FL/mac.H ../FL/win32.H
+-fl_set_font.o:	../FL/mac.H ../FL/win32.H
+-fl_set_fonts.o:	../FL/mac.H ../FL/win32.H
+-fl_shortcut.o:	../FL/mac.H ../FL/win32.H
+-fl_vertex.o:	../FL/mac.H ../FL/win32.H
+-Fl_visual.o:	../FL/mac.H ../FL/win32.H
+-Fl_Window_fullscreen.o:	../FL/mac.H ../FL/win32.H
+-Fl_Window_iconize.o:	../FL/mac.H ../FL/win32.H
+-Fl_x.o:	../FL/mac.H ../FL/win32.H
+-gl_draw.o:	../FL/mac.H ../FL/win32.H
+-gl_start.o:	../FL/mac.H ../FL/win32.H
++fl_arci.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_arg.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_ask.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_Bitmap.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_color.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_cursor.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_dnd.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H Fl_win32.cxx Fl_mac.cxx
++Fl_Double_Window.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_draw_image.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_draw_image_mac.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_draw_image_win32.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_draw_pixmap.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_encoding_latin1.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_encoding_mac_roman.o:   $(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_File_Chooser2.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_font.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_get_key.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_get_system_colors.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_Gl_Choice.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_Gl_Overlay.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_Gl_Window.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_grab.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_Image.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_line_style.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_mac.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_Menu_Window.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_overlay.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_overlay_visual.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_Overlay_Window.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_own_colormap.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_Pixmap.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_read_image.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_read_image_mac.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_read_image_win32.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_rect.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_scroll_area.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_set_font.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_set_fonts.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_shortcut.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++fl_vertex.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_visual.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_Window_fullscreen.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_Window_iconize.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++Fl_x.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++gl_draw.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
++gl_start.o:	$(SRCDIR)/FL/mac.H $(SRCDIR)/FL/win32.H
+ 
+ ################################################################
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' fltk-1.1.9-orig/src/fl_rect.cxx fltk-1.1.9/src/fl_rect.cxx
+--- fltk-1.1.9-orig/src/fl_rect.cxx	2009-10-05 19:30:01 +0200
++++ fltk-1.1.9/src/fl_rect.cxx	2009-10-05 19:30:14 +0200
+@@ -423,7 +423,7 @@
+ #define STACK_MAX (STACK_SIZE - 1)
+ static Fl_Region rstack[STACK_SIZE];
+ static int rstackptr=0;
+-int fl_clip_state_number=0; // used by gl_begin.cxx to update GL clip
++FL_EXPORT int fl_clip_state_number=0; // used by gl_begin.cxx to update GL clip
+ 
+ #if !defined(WIN32) && !defined(__APPLE__)
+ // Missing X call: (is this the fastest way to init a 1-rectangle region?)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' fltk-1.1.9-orig/src/flstring.c fltk-1.1.9/src/flstring.c
+--- fltk-1.1.9-orig/src/flstring.c	2009-10-05 19:30:01 +0200
++++ fltk-1.1.9/src/flstring.c	2009-10-05 19:30:14 +0200
+@@ -32,6 +32,7 @@
+  * 'fl_strlcat()' - Safely concatenate two strings.
+  */
+ 
++FL_EXPORT
+ size_t				/* O - Length of string */
+ fl_strlcat(char       *dst,	/* O - Destination string */
+            const char *src,	/* I - Source string */
+@@ -72,6 +73,7 @@
+  * 'fl_strlcpy()' - Safely copy two strings.
+  */
+ 
++FL_EXPORT
+ size_t				/* O - Length of string */
+ fl_strlcpy(char       *dst,	/* O - Destination string */
+            const char *src,	/* I - Source string */

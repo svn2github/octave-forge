@@ -1,0 +1,245 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg libwmf-0.2.8.4-orig/configure libwmf-0.2.8.4/configure
+--- libwmf-0.2.8.4-orig/configure	2009-08-30 16:11:01 +0200
++++ libwmf-0.2.8.4/configure	2009-08-30 16:11:35 +0200
+@@ -7292,7 +7292,7 @@
+       export_symbols_cmds='$NM $libobjs $convenience | $global_symbol_pipe | $SED -e '\''/^[BCDGS] /s/.* \([^ ]*\)/\1 DATA/'\'' | $SED -e '\''/^[AITW] /s/.* //'\'' | sort | uniq > $export_symbols'
+ 
+       if $LD --help 2>&1 | grep 'auto-import' > /dev/null; then
+-        archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++        archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+ 	# If the export-symbols file already is a .def file (1st line
+ 	# is EXPORTS), use it as is; otherwise, prepend...
+ 	archive_expsym_cmds='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -7301,7 +7301,7 @@
+ 	  echo EXPORTS > $output_objdir/$soname.def;
+ 	  cat $export_symbols >> $output_objdir/$soname.def;
+ 	fi~
+-	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000  ${wl}--out-implib,$lib'
++	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+       else
+ 	ld_shlibs=no
+       fi
+@@ -10628,7 +10628,7 @@
+     enable_shared_with_static_runtimes_CXX=yes
+ 
+     if $LD --help 2>&1 | grep 'auto-import' > /dev/null; then
+-      archive_cmds_CXX='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++      archive_cmds_CXX='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+       # If the export-symbols file already is a .def file (1st line
+       # is EXPORTS), use it as is; otherwise, prepend...
+       archive_expsym_cmds_CXX='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -10637,7 +10637,7 @@
+ 	echo EXPORTS > $output_objdir/$soname.def;
+ 	cat $export_symbols >> $output_objdir/$soname.def;
+       fi~
+-      $CC -shared -nostdlib $output_objdir/$soname.def $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++      $CC -shared -nostdlib $output_objdir/$soname.def $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+     else
+       ld_shlibs_CXX=no
+     fi
+@@ -14201,7 +14201,7 @@
+       export_symbols_cmds_F77='$NM $libobjs $convenience | $global_symbol_pipe | $SED -e '\''/^[BCDGS] /s/.* \([^ ]*\)/\1 DATA/'\'' | $SED -e '\''/^[AITW] /s/.* //'\'' | sort | uniq > $export_symbols'
+ 
+       if $LD --help 2>&1 | grep 'auto-import' > /dev/null; then
+-        archive_cmds_F77='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++        archive_cmds_F77='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+ 	# If the export-symbols file already is a .def file (1st line
+ 	# is EXPORTS), use it as is; otherwise, prepend...
+ 	archive_expsym_cmds_F77='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -14210,7 +14210,7 @@
+ 	  echo EXPORTS > $output_objdir/$soname.def;
+ 	  cat $export_symbols >> $output_objdir/$soname.def;
+ 	fi~
+-	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000  ${wl}--out-implib,$lib'
++	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+       else
+ 	ld_shlibs=no
+       fi
+@@ -16549,7 +16549,7 @@
+       export_symbols_cmds_GCJ='$NM $libobjs $convenience | $global_symbol_pipe | $SED -e '\''/^[BCDGS] /s/.* \([^ ]*\)/\1 DATA/'\'' | $SED -e '\''/^[AITW] /s/.* //'\'' | sort | uniq > $export_symbols'
+ 
+       if $LD --help 2>&1 | grep 'auto-import' > /dev/null; then
+-        archive_cmds_GCJ='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++        archive_cmds_GCJ='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+ 	# If the export-symbols file already is a .def file (1st line
+ 	# is EXPORTS), use it as is; otherwise, prepend...
+ 	archive_expsym_cmds_GCJ='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -16558,7 +16558,7 @@
+ 	  echo EXPORTS > $output_objdir/$soname.def;
+ 	  cat $export_symbols >> $output_objdir/$soname.def;
+ 	fi~
+-	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000  ${wl}--out-implib,$lib'
++	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+       else
+ 	ld_shlibs=no
+       fi
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg libwmf-0.2.8.4-orig/src/Makefile.in libwmf-0.2.8.4/src/Makefile.in
+--- libwmf-0.2.8.4-orig/src/Makefile.in	2009-08-30 16:11:01 +0200
++++ libwmf-0.2.8.4/src/Makefile.in	2009-08-30 16:11:35 +0200
+@@ -397,9 +397,9 @@
+ io-wmf.la: $(io_wmf_la_OBJECTS) $(io_wmf_la_DEPENDENCIES) 
+ 	$(LINK) $(am_io_wmf_la_rpath) $(io_wmf_la_LDFLAGS) $(io_wmf_la_OBJECTS) $(io_wmf_la_LIBADD) $(LIBS)
+ libwmf.la: $(libwmf_la_OBJECTS) $(libwmf_la_DEPENDENCIES) 
+-	$(LINK) $(am_libwmf_la_rpath) $(libwmf_la_LDFLAGS) $(libwmf_la_OBJECTS) $(libwmf_la_LIBADD) $(LIBS)
++	$(LINK) $(am_libwmf_la_rpath) $(libwmf_la_LDFLAGS) $(srcdir)/libwmf.def $(libwmf_la_OBJECTS) $(libwmf_la_LIBADD) $(LIBS)
+ libwmflite.la: $(libwmflite_la_OBJECTS) $(libwmflite_la_DEPENDENCIES) 
+-	$(LINK) -rpath $(libdir) $(libwmflite_la_LDFLAGS) $(libwmflite_la_OBJECTS) $(libwmflite_la_LIBADD) $(LIBS)
++	$(LINK) -rpath $(libdir) $(libwmflite_la_LDFLAGS)  $(srcdir)/libwmflite.def $(libwmflite_la_OBJECTS) $(libwmflite_la_LIBADD) $(LIBS)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg libwmf-0.2.8.4-orig/src/extra/gd/gd.h libwmf-0.2.8.4/src/extra/gd/gd.h
+--- libwmf-0.2.8.4-orig/src/extra/gd/gd.h	2009-08-30 16:11:01 +0200
++++ libwmf-0.2.8.4/src/extra/gd/gd.h	2009-08-30 16:11:35 +0200
+@@ -6,8 +6,8 @@
+ #endif
+ 
+ /* default fontpath for unix systems */
+-#define DEFAULT_FONTPATH "/usr/share/fonts/truetype"
+-#define PATHSEPARATOR ":"
++#define DEFAULT_FONTPATH "C:\\WINDOWS\\FONTS;C:\\WINNT\\FONTS"
++#define PATHSEPARATOR ";"
+ 
+ /* gd.h: declarations file for the graphic-draw module.
+  * Permission to use, copy, modify, and distribute this software and its
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg libwmf-0.2.8.4-orig/src/font.c libwmf-0.2.8.4/src/font.c
+--- libwmf-0.2.8.4-orig/src/font.c	2009-08-30 16:11:01 +0200
++++ libwmf-0.2.8.4/src/font.c	2009-08-30 16:11:35 +0200
+@@ -45,7 +45,7 @@
+ 
+ 	if (retval[0] == '\0')
+ 	{	strcpy (retval, _libwmf_get_fontdir ());
+-		strcat (retval, "\\share\\libwmf\\fonts\\fontmap");
++		strcat (retval, "\\fontmap");
+ 	}
+ 
+ 	return retval;
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg libwmf-0.2.8.4-orig/src/libwmf.def libwmf-0.2.8.4/src/libwmf.def
+--- libwmf-0.2.8.4-orig/src/libwmf.def	1970-01-01 01:00:00 +0100
++++ libwmf-0.2.8.4/src/libwmf.def	2009-08-30 16:11:35 +0200
+@@ -0,0 +1,48 @@
++EXPORTS
++wmf_api_create
++wmf_api_destroy
++wmf_eps_function
++wmf_fig_function
++wmf_foreign_function
++wmf_gd_function
++wmf_gd_image_pixels
++wmf_help
++wmf_image_free
++wmf_image_load_jpg
++wmf_image_load_png
++wmf_image_save_eps
++wmf_ipa_bmp_b64
++wmf_ipa_bmp_color
++wmf_ipa_bmp_copy
++wmf_ipa_bmp_eps
++wmf_ipa_bmp_free
++wmf_ipa_bmp_interpolate
++wmf_ipa_bmp_jpg
++wmf_ipa_bmp_png
++wmf_ipa_bmp_read
++wmf_ipa_bmp_setcolor
++wmf_ipa_draw_text
++wmf_ipa_font_dir
++wmf_ipa_font_init
++wmf_ipa_font_lookup
++wmf_ipa_font_map
++wmf_ipa_font_map_gs
++wmf_ipa_font_map_set
++wmf_ipa_font_map_xml
++wmf_ipa_font_stringwidth
++wmf_ipa_page_format
++wmf_ipa_page_height
++wmf_ipa_page_width
++wmf_plot_function
++wmf_stream_create
++wmf_stream_destroy
++wmf_stream_printf
++wmf_stream_reset
++wmf_stream_rezet
++wmf_stream_sputs
++wmf_stream_zputs
++wmf_svg_function
++wmf_wmfxml_import
++wmf_x_function
++wmf_ztream_create
++wmf_ztream_destroy
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg libwmf-0.2.8.4-orig/src/libwmflite.def libwmf-0.2.8.4/src/libwmflite.def
+--- libwmf-0.2.8.4-orig/src/libwmflite.def	1970-01-01 01:00:00 +0100
++++ libwmf-0.2.8.4/src/libwmflite.def	2009-08-30 16:11:35 +0200
+@@ -0,0 +1,73 @@
++EXPORTS
++wmf_aldus_checksum
++wmf_assert
++wmf_attr_add
++wmf_attr_clear
++wmf_attr_free
++wmf_attr_new
++wmf_attr_query
++wmf_bbuf_input
++wmf_calloc
++wmf_canvas
++wmf_canvas_arc
++wmf_canvas_bitmap
++wmf_canvas_done
++wmf_canvas_ellipse
++wmf_canvas_line
++wmf_canvas_polygon
++wmf_canvas_polygons
++wmf_canvas_polyline
++wmf_canvas_rect
++wmf_canvas_roundrect
++wmf_canvas_set_background
++wmf_canvas_set_bgcolor
++wmf_canvas_set_brush
++wmf_canvas_set_font
++wmf_canvas_set_pen
++wmf_canvas_set_polyfill
++wmf_canvas_set_textcolor
++wmf_canvas_text
++wmf_debug
++wmf_detach
++wmf_display_size
++wmf_error
++wmf_file_close
++wmf_file_open
++wmf_file_read
++wmf_file_seek
++wmf_file_tell
++wmf_free
++wmf_header_read
++wmf_ipa_color
++wmf_ipa_color_add
++wmf_ipa_color_count
++wmf_ipa_color_index
++wmf_ipa_color_init
++wmf_lite_create
++wmf_lite_destroy
++wmf_malloc
++wmf_mem_close
++wmf_mem_open
++wmf_mem_read
++wmf_mem_seek
++wmf_mem_tell
++wmf_play
++wmf_player_init
++wmf_printf
++wmf_read_16
++wmf_read_32
++wmf_realloc
++wmf_rgb_black
++wmf_rgb_color
++wmf_rgb_white
++wmf_scan
++wmf_set_viewport_origin
++wmf_size
++wmf_status_function
++wmf_str_append
++wmf_strbuf_grow
++wmf_strdup
++wmf_strstr
++wmf_write
++wmf_write_begin
++wmf_write_end

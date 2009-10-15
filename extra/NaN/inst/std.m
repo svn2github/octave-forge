@@ -69,7 +69,12 @@ end;
 	y = ssq - y.*y./n;
 else
 	%% rounding error is not neglectable 
-	[y,n] = sumskipnan(center(x,DIM).^2,DIM,W);
+	szx = size(x)
+	szy = size(y)
+	if length(szy)<length(szx);
+        	szy(length(szy)+1:length(szx)) = 1;
+	end;
+	[y,n] = sumskipnan((x-repmat(y./n,szx./szy)).^2,DIM,W);
 end; 
 
 

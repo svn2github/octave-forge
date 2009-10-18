@@ -24,6 +24,6 @@
 
 function [zer, gain] = __zero__ (sys)
 
-  [zer, gain] = tzero (sys.a, sys.b, sys.c, sys.d);
+  [zer, gain] = __tzero__ (sys.a, sys.b, sys.c, sys.d);
 
 endfunction

@@ -16,7 +16,6 @@ System Interconnections
  blkdiag
  connect
  feedback
- mconnect
  parallel
  series
  strseq
@@ -41,3 +40,7 @@ Overloaded and Arithmetic Operators
 ^
 [..]
 inv
+Octave-only
+ isctrb
+ isobsv
+ mconnect

@@ -28,6 +28,7 @@ Model Simplification
 Compensator Design
   place
 LQR/LQG Design
+  lqr
 State-Space Models
   ctrb
   obsv
@@ -46,6 +47,8 @@ Overloaded and Arithmetic Operators
   ^
   [..]
   inv
+Matrix Equation Solvers
+  are
 Octave-only
   isctrb
   isobsv

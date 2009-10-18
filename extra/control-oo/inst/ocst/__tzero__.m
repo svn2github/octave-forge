@@ -154,5 +154,7 @@ function [zer, gain] = __tzero__ (A, B, C, D)
     gain = [];
   endif
 
+  zer = sort (zer);
+
 endfunction
 

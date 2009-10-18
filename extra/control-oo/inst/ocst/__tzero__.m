@@ -110,12 +110,13 @@ function [zer, gain] = __tzero__ (A, B, C, D)
 
   if (! isempty (A))
     ## repeat with dual system
-    [A, B, C, D] = __zgreduce__ (A', B', C', D', meps);
+    [A, B, C, D] = __zgreduce__ (A', C', B', D', meps);
 
     ## transform back
     A = A';
-    B = B';
-    C = C';
+    B2 = B;  # save for swap
+    B = C';
+    C = B2';
     D = D';
   endif
 

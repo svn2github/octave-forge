@@ -57,11 +57,11 @@ function [a, b, c, d] = __zgpbal__ (a, b, c, d)
   nmp = nn+mm+pp;
 
   ## set up log vector zz, incidence matrix ff
-  zz = zginit (a, b, c, d);
+  zz = __zginit__ (a, b, c, d);
 
   if (norm (zz))
     ## generalized conjugate gradient approach
-    xx = zgscal (a, b, c, d, zz, nn, mm, pp);
+    xx = __zgscal__ (a, b, c, d, zz, nn, mm, pp);
 
     for i = 1:nmp
       xx(i) = floor (xx(i)+0.5);

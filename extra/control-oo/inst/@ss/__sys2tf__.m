@@ -22,8 +22,11 @@
 ## Created: October 2009
 ## Version: 0.1
 
-function retsys = __sys2tf__ (sys)
+function [retsys, retlti] = __sys2tf__ (sys)
 
   error ("ss: ss2tf: not implemented yet");
+
+  retsys = tf (num, den, get (sys, "tsam"));  # tsam needed to set appropriate tfvar
+  retlti = sys.lti;   # preserve lti properties
 
 endfunction

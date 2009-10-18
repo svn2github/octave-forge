@@ -48,7 +48,8 @@ function sys = ss (a, b, c, d, varargin)
         sys = a;
         return;
       elseif (isa (a, "lti"))  # another lti object
-        sys = __sys2ss__ (a);
+        [sys, alti] = __sys2ss__ (a);
+        sys.lti = alti;  # preserve lti properties
         return;
       elseif (isnumeric (a))  # static gain
         d = a;
@@ -75,12 +76,12 @@ function sys = ss (a, b, c, d, varargin)
       [b, c] = __gaincheck__ (b, c, d);
       argc = numel (varargin);
 
-      if (issample (varargin{1}))  # sys = ss (a, b, c, d, tsam, "prop1, "val1", ...)
+      if (isscalar (varargin{1}) && (varargin{1} == abs (varargin{1})))  # sys = ss (a, b, c, d, tsam, "prop1, "val1", ...)
         tsam = varargin{1};
+        argc -= 1;
 
-        if (argc > 1)
+        if (argc > 0)
           varargin = varargin(2:end);
-          argc -= 1;
         endif
       else  # sys = ss (a, b, c, d, "prop1, "val1", ...)
         tsam = 0;

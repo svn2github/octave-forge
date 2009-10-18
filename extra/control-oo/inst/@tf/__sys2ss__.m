@@ -22,8 +22,11 @@
 ## Created: October 2009
 ## Version: 0.1
 
-function retsys = __sys2ss__ (sys)
+function [retsys, retlti] = __sys2ss__ (sys)
 
   error ("tf: tf2ss: not implemented yet");
+
+  retsys = ss (a, b, c, d);
+  retlti = sys.lti;   # preserve lti properties
 
 endfunction

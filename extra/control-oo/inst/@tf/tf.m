@@ -47,7 +47,8 @@ function sys = tf (num, den, varargin)
         sys = num;
         return;
       elseif (isa (num, "lti"))  # another lti object
-        sys = __sys2tf__ (num);
+        [sys, numlti] = __sys2tf__ (num);
+        sys.lti = numlti;  # preserve lti properties
         return;
       elseif (isnumeric (num))  # static gain
         num = num2cell (num);
@@ -83,13 +84,18 @@ function sys = tf (num, den, varargin)
       den = __conv2tfpolycell__ (den);
       argc = numel (varargin);
 
-      if (issample (varargin{1}))  # sys = tf (num, den, tsam, "prop1, "val1", ...)
+      if (isscalar (varargin{1}) && (varargin{1} == abs (varargin{1})))  # sys = tf (num, den, tsam, "prop1, "val1", ...)
         tsam = varargin{1};
-        tfvar = "z";
-
-        if (argc > 1)
+        argc -= 1;
+        
+        if (varargin{1} != 0)
+          tfvar = "z";
+        else
+          tfvar = "s";
+        endif
+        
+        if (argc > 0)
           varargin = varargin(2:end);
-          argc -= 1;
         endif
       else  # sys = tf (num, den, "prop1, "val1", ...)
         tsam = 0;
@@ -97,6 +103,7 @@ function sys = tf (num, den, varargin)
       endif
 
   endswitch
+
 
   [p, m] = __tfnddim__ (num, den);
 

@@ -1,0 +1,11 @@
+Name: Control
+Version: 0.1
+Date: 2009-10-17
+Author: Lukas Reichlin <lukas.reichlin@gmail.com>
+Maintainer: Luca Favatella <slackydeb@gmail.com>
+Title: LTI Syncope
+Description: Object-oriented control tools for Octave
+Depends: octave (>= 3.2.3)
+Autoload: yes
+License: GPL version 3 or later
+Url: http://octave.sf.net

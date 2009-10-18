@@ -1,0 +1,43 @@
+control >> Control Theory
+Linear Models
+ set
+ ss
+ tf
+Data Extraction
+ get
+ ssdata
+ tfdata
+Conversions
+ c2d
+ ss
+ tf
+System Interconnections
+ append
+ blkdiag
+ connect
+ feedback
+ mconnect
+ parallel
+ series
+ strseq
+System Gain and Dynamics
+ pole
+ zero
+State-Space Models
+ ctrb
+ obsv
+Model Dimensions and Characteristics
+ isct
+ isdt
+ issiso
+ isstable
+ size
+Overloaded and Arithmetic Operators
++
+-
+*
+\
+/
+^
+[..]
+inv

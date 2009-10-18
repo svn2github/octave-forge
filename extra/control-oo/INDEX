@@ -1,46 +1,52 @@
 control >> Control Theory
 Linear Models
- set
- ss
- tf
+  set
+  ss
+  tf
 Data Extraction
- get
- ssdata
- tfdata
+  get
+  ssdata
+  tfdata
 Conversions
- c2d
- ss
- tf
+  c2d
+  ss
+  tf
 System Interconnections
- append
- blkdiag
- connect
- feedback
- parallel
- series
- strseq
+  append
+  blkdiag
+  connect
+  feedback
+  parallel
+  series
+  strseq
 System Gain and Dynamics
- pole
- zero
+  pole
+  zero
+Time Domain Analysis
+Frequency Domain Analysis
+Model Simplification
+Compensator Design
+  place
+LQR/LQG Design
 State-Space Models
- ctrb
- obsv
+  ctrb
+  obsv
 Model Dimensions and Characteristics
- isct
- isdt
- issiso
- isstable
- size
+  isct
+  isdt
+  issiso
+  isstable
+  size
 Overloaded and Arithmetic Operators
-+
--
-*
-\
-/
-^
-[..]
-inv
+  +
+  -
+  *
+  \
+  /
+  ^
+  [..]
+  inv
 Octave-only
- isctrb
- isobsv
- mconnect
+  isctrb
+  isobsv
+  mconnect

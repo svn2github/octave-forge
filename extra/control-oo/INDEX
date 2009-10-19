@@ -16,6 +16,7 @@ System Interconnections
   blkdiag
   connect
   feedback
+  lft
   parallel
   series
   strseq

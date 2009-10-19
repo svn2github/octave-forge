@@ -30,6 +30,7 @@ Compensator Design
   place
 LQR/LQG Design
   lqr
+Controller Synthesis
 State-Space Models
   ctrb
   gram

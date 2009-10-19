@@ -23,6 +23,7 @@ System Gain and Dynamics
   pole
   zero
 Time Domain Analysis
+  gensig
 Frequency Domain Analysis
 Model Simplification
 Compensator Design
@@ -31,6 +32,7 @@ LQR/LQG Design
   lqr
 State-Space Models
   ctrb
+  gram
   obsv
 Model Dimensions and Characteristics
   isct

@@ -1,7 +1,7 @@
 sinclude ../../Makeconf
 
-PKG_FILES = COPYING DESCRIPTION INDEX $(wildcard inst/*) $(wildcard inst/control/*) $(wildcard inst/ocst/*)
-SUBDIRS = doc/ control/ ocst/
+PKG_FILES = COPYING DESCRIPTION INDEX $(wildcard inst/*)
+SUBDIRS = doc/
 
 .PHONY: $(SUBDIRS)
 

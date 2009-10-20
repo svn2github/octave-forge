@@ -1,0 +1,2 @@
+addpath(fullfile (fileparts (mfilename ("fullpath")), "control"));
+addpath(fullfile (fileparts (mfilename ("fullpath")), "ocst"));

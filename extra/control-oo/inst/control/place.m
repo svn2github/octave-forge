@@ -111,11 +111,11 @@ function K = place (argin1, argin2, argin3)
   ## Check if the eigenvalues of (A-BK) are the same specified in P
   Pcalc = eig (A-B*K);
 
-  Pcalc = __sortcom__ (Pcalc);
-  P = __sortcom__ (P);
+  Pcalc = sort (Pcalc);
+  P = sort (P);
 
   if (max ((abs(Pcalc)-abs(P))./abs(P) ) > 0.1)
-    warning ("place: Pole placed at more than 10% relative error from specified");
+    warning ("place: pole placed at more than 10% relative error from specified");
   endif
 
 endfunction

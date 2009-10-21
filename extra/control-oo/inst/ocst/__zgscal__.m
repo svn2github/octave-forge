@@ -150,3 +150,12 @@ function x = __zgscal__ (a, b, c, d, z, n, m, p)
   endif
 
 endfunction
+
+
+function [a1, b1] = __swap__ (a, b)
+
+  a1 = b;
+  b1 = a;
+
+endfunction
+

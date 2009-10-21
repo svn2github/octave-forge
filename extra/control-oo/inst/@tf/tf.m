@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{s} =} tf (@var{"s"})
-## @deftypefn {Function File} {@var{sys} =} tf (@var{sys})
+## @deftypefnx {Function File} {@var{sys} =} tf (@var{sys})
 ## @deftypefnx {Function File} {@var{sys} =} tf (@var{num}, @var{den})
 ## @deftypefnx {Function File} {@var{sys} =} tf (@var{num}, @var{den}, @var{tsam})
 ## Create or convert to transfer function model.

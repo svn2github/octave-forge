@@ -14,16 +14,17 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} @var{s} = zenity_list(@var{title}, @var{columns}, @var{data}, @var{options1}, ...)
+## @deftypefn  {Function File} @var{s} = zenity_list(@var{title}, @var{message}, @var{columns}, @var{data}, @var{options1}, ...)
 ## Displays a graphical list of data.
 ## The variable @var{title} sets the title of the list. The variable
+## @var{message} sets the main message of the window. The variable
 ## @var{columns} must be a cell array of strings of length N containing the headers
 ## of the list. The variable @var{data} must be cell array of strings of
 ## length NxM containing the data of the list.
 ##
 ## The code
 ## @example
-## zenity_list("Age versus Height", @{"Age", "Height"@}, 
+## zenity_list("Age versus Height", "Please choose an option among the following", @{"Age", "Height"@}, 
 ## @{"10", "20"; "120cm", "180cm"@})
 ## @end example
 ## produces a list of the data. The user can select a row in the table, and it's
@@ -41,8 +42,8 @@
 ## @item editable
 ## The values of the list will be editable by the user.
 ## @item A numeric value
-## The value returned by the function will be the value of this column
-## of the user selected row.
+## The user can pick a particular column. Substitute 'A numeric value' with
+## an actual Integer value. This numeric value represents which column of the user selected row will be returned.
 ## @item all
 ## The value returned by the function will be the entire row selected by the user.
 ## @end table
@@ -51,8 +52,8 @@
 ## zenity_text_info, zenity_file_selection, zenity_notification}
 ## @end deftypefn
 
-function s = zenity_list(title, columns, data, varargin)
-  if (nargin < 3 || !ischar(title) || !iscellstr(columns) || !iscellstr(data))
+function s = zenity_list(title, message, columns, data, varargin)
+  if (nargin < 3 || !ischar(title) || !ischar(message) || !iscellstr(columns) || !iscellstr(data))
     print_usage();
   endif
   
@@ -80,10 +81,10 @@ function s = zenity_list(title, columns, data, varargin)
   data = sprintf("\"%s\" ", data{:});
   
   ## Escape certain characters
-  data = strrep (data, "\\", "\\\\");
+  data = strrep(data, "\\", "\\\\");
 
-  cmd = sprintf('zenity --list --title="%s" %s %s %s --print-column="%s" --separator=":" %s %s', ...
-                title, checklist, radiolist, editable, print_column, columns, data);
+  cmd = sprintf('zenity --list --title="%s" --text="%s" %s %s %s --print-column="%s" --separator=":" %s %s', ...
+                title, message, checklist, radiolist, editable, print_column, columns, data);
   [status, output] = system(cmd);
   if (status == 0)
     if (length(output) > 0 && output(end) == "\n")

@@ -20,7 +20,10 @@
 ## @deftypefn {Function File} {} zgreduce (@var{sys}, @var{meps})
 ## Implementation of procedure REDUCE in (Emami-Naeini and Van Dooren,
 ## Automatica, # 1982).
-## @end deftypefn
+
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
 
 function [A, B, C, D] = __zgreduce__ (A, B, C, D, meps)
 

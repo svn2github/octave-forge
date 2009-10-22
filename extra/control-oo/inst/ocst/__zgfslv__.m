@@ -24,6 +24,10 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Converted to Octave by R Bruce Tenison, July 3, 1994
 
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
+
 function x = __zgfslv__ (n, m, p, b)
 
   if (nargin != 4)

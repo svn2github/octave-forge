@@ -113,7 +113,10 @@
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993.
-## Adapted for LTI Syncope by Lukas Reichlin, October 2009
+
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
 
 function [k, p, e] = lqr (a, b, q, r, s)
 

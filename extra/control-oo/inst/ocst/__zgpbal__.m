@@ -43,7 +43,10 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: July 24, 1992
 ## Conversion to Octave by R. Bruce Tenison July 3, 1994
-## Adapted for LTI Syncope by Lukas Reichlin October 2009
+
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
 
 function [a, b, c, d] = __zgpbal__ (a, b, c, d)
 

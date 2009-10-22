@@ -59,7 +59,10 @@
 ## Created: August 1993
 ## Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb
 ## Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for packed systems
-## Updated by Lukas Reichlin (lukas.reichlin@gmail.com) October, 2009 for LTI objects
+
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
 
 function [retval, U] = isctrb (a, b, tol)
 

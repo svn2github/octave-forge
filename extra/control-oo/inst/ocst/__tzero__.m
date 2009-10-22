@@ -65,7 +65,10 @@
 ## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
 ## Created: July 4, 1994
 ## A. S. Hodel Aug 1995: allow for MIMO and system data structures
-## Lukas Reichlin Oct 2009: adapted for LTI Syncope
+
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
 
 function [zer, gain] = __tzero__ (A, B, C, D)
 

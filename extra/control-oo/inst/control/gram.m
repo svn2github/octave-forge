@@ -31,6 +31,10 @@
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
+
 function W = gram (argin1, argin2)
 
   if (nargin != 2)

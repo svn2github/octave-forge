@@ -75,6 +75,10 @@
 ## Created: August 1993
 ## Adapted-By: jwe
 
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
+
 function x = dare (a, b, q, r, opt)
 
   if (nargin == 4 || nargin == 5)

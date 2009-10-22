@@ -34,7 +34,10 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993
 ## Updated by John Ingram (ingraje@eng.auburn.edu) July 1996.
-## Updated by Lukas Reichlin (lukas.reichlin@gmail.com) October 2009.
+
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
 
 function [retval, U] = isobsv (a, c, tol)
 

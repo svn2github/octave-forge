@@ -23,6 +23,10 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: July 1995
 
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: September 2009
+## Version: 0.1
+
 function bool = issample (tsam)
 
   if (nargin != 1)

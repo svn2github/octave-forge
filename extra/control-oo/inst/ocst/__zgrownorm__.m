@@ -23,6 +23,10 @@
 ## norm is less than @var{meps}.
 ## @end deftypefn
 
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
+
 function [sig, tau] = __zgrownorm__ (mat, meps)
 
   if (nargin != 2)

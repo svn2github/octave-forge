@@ -87,6 +87,10 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993
 
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
+
 function x = dlyap (a, b)
 
   if (nargin != 2)

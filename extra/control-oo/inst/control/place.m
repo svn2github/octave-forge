@@ -42,7 +42,10 @@
 ##
 ## code adaped by A.S.Hodel (a.s.hodel@eng.auburn.edu) for use in controls
 ## toolbox
-## Adapted for LTI Syncope by Lukas Reichlin (lukas.reichlin@gmail.com)
+
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
 
 function K = place (argin1, argin2, argin3)
 

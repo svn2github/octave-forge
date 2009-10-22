@@ -30,6 +30,10 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Conversion to Octave July 3, 1994
 
+## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Date: October 2009
+## Version: 0.1
+
 function y = __zgfmul__ (a, b, c, d, x)
 
   if (nargin != 5)

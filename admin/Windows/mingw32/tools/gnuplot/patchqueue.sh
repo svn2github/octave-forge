@@ -3,6 +3,15 @@
 # CHANGELOG
 # ---------
 #
+# 01-oct-2009 benjamin lindner <lindnerb@users.sourceforge.net>
+#
+#    *) update patches for 2009-07-08 CVS snapshot
+#    *) add gp_makefile-WXWIDGETS.patch
+#    *) add gp_disable-SIGINT-handler-console.patch
+#    *) add gp_enable-CAIRO.patch
+#    *) add gp_enable-WXWIDGETS.patch
+#    *) add gp_makefile-add-override.patch
+#
 # 26-aug-2009 benjamin lindner <lindnerb@users.sourceforge.net>
 #
 #    *) update to 2009-07-08-CVS snapshot
@@ -28,9 +37,14 @@ gp_gd-substitute-helvetica.patch \
 gp_post-style.patch \
 gp_makefile-SRCDIR.patch \
 gp_makefile-CAIRO.patch \
+gp_makefile-WXWIDGETS.patch \
 gp_makefile-documentation.patch \
 gp_makefile-localconf.patch \
-gp_octave-version.patch"
+gp_octave-version.patch \
+gp_disable-SIGINT-handler-console.patch \
+gp_enable-CAIRO.patch \
+gp_enable-WXWIDGETS.patch \
+gp_makefile-add-override.patch"
 
 for a in $PATCHES; do
    echo applying $a ...

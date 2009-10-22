@@ -3,14 +3,6 @@ enable support for CAIRO terminals without wxt term
 diff -r 337757fb9f97 config/makefile.mgw
 --- a/config/makefile.mgw	Wed Aug 26 16:09:07 2009 +0200
 +++ b/config/makefile.mgw	Wed Aug 26 16:09:40 2009 +0200
-@@ -57,6 +57,7 @@
- NEWGD=1
- JPEG=1
- FREETYPE=1
-+CAIRO=1
- #GDAUTOCONFIGLIBS=1
- 
- # PDF device driver
 @@ -255,6 +256,16 @@
  endif
  endif

@@ -1,8 +1,8 @@
 in makefile: local build configuration
 
-diff -r b6fc979354d8 config/config.mgw
---- a/config/config.mgw	Wed Aug 26 15:52:47 2009 +0200
-+++ b/config/config.mgw	Wed Aug 26 15:54:09 2009 +0200
+diff -r 9cee32d777de config/config.mgw
+--- a/config/config.mgw	Thu Oct 01 20:41:55 2009 +0200
++++ b/config/config.mgw	Thu Oct 01 20:42:53 2009 +0200
 @@ -508,7 +508,7 @@
  /* #undef VGAGL */
  
@@ -12,9 +12,9 @@ diff -r b6fc979354d8 config/config.mgw
  
  /* Define if you want the wxwidgets terminal. */
  /* #undef WXWIDGETS */
-diff -r b6fc979354d8 config/makefile.mgw
---- a/config/makefile.mgw	Wed Aug 26 15:52:47 2009 +0200
-+++ b/config/makefile.mgw	Wed Aug 26 15:54:09 2009 +0200
+diff -r 9cee32d777de config/makefile.mgw
+--- a/config/makefile.mgw	Thu Oct 01 20:41:55 2009 +0200
++++ b/config/makefile.mgw	Thu Oct 01 20:42:53 2009 +0200
 @@ -19,7 +19,7 @@
  #
  
@@ -33,7 +33,7 @@ diff -r b6fc979354d8 config/makefile.mgw
  #TARGET=wgnuplot_pipes.exe
  #TARGET=gnuplot.exe
  
-@@ -95,7 +95,7 @@
+@@ -94,7 +94,7 @@
  
  # Where to install the PostScript prologue files, relatively to the executable
  # wgnuplot.exe
@@ -42,7 +42,7 @@ diff -r b6fc979354d8 config/makefile.mgw
  
  # Destination directory, used in 'make install':
  DESTDIR = /c/Progra~1/Gnuplot4.3
-@@ -107,7 +107,7 @@
+@@ -106,7 +106,7 @@
  # Do you want some special optimization?
  # -mpentium means optimise for Pentium processor
  # -mpentiumpro means optimize for Pentium II and Pro procesors
@@ -51,7 +51,7 @@ diff -r b6fc979354d8 config/makefile.mgw
  
  
  # To compile the .hlp file you need hcw either out of Microsoft SDK or MS Help
-@@ -130,6 +130,9 @@
+@@ -129,6 +129,9 @@
  # GNU sort
  GNUSORT = /bin/sort
  
@@ -61,7 +61,7 @@ diff -r b6fc979354d8 config/makefile.mgw
  #
  # *************** End of Configuration section *************************
  #
-@@ -161,10 +164,8 @@
+@@ -160,10 +163,8 @@
  endif
  
  
@@ -74,7 +74,7 @@ diff -r b6fc979354d8 config/makefile.mgw
  
  RM = rm -f
  CP = cp -p
-@@ -184,7 +185,7 @@
+@@ -183,7 +184,7 @@
  endif
  
  ifdef CONSOLE
@@ -90,9 +90,9 @@ diff -r b6fc979354d8 config/makefile.mgw
 -	--define __GNUWIN32__ --use-temp-file
 +	--define __GNUWIN32__ --use-temp-file --preprocessor=$(CPP)
    ifdef WXT
- 	RCFLAGS += --define WXWIDGETS --include-dir=$(WX_LOCATION)
+ 	RCFLAGS += --define WXWIDGETS $(WX_LOCATION)
    endif
-@@ -447,7 +448,7 @@
+@@ -449,7 +450,7 @@
  	@for e in `egrep "^[ 	]*START_HELP" $^ |\
  	     $(GNUSORT) -f -t':' -k2` ; do \
  	  f=`echo $$e |cut -d\: -f1` ; s=`echo $$e | cut -d\: -f2` ;\
@@ -101,7 +101,7 @@ diff -r b6fc979354d8 config/makefile.mgw
  	done >$@
  else
  # sequence of terminals according to "ls term/*.trm":
-@@ -455,7 +456,7 @@
+@@ -457,7 +458,7 @@
  	@echo "Building allterm.h"
  	@cat $(T)*.trm > allterm.c
  	$(CPP) $(CFLAGS) -I$(T:/=) -DTERM_DRIVER_H -DTERM_HELP allterm.c | \

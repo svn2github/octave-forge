@@ -1,0 +1,59 @@
+add support for building with wxt terminal
+
+diff -r 2dae2e9978a3 config/makefile.mgw
+--- a/config/makefile.mgw	Thu Oct 01 20:37:15 2009 +0200
++++ b/config/makefile.mgw	Tue Oct 13 22:21:36 2009 +0200
+@@ -266,14 +266,15 @@
+ endif
+ 
+ ifdef WXT
+-	CFLAGS += -DWXWIDGETS
++	CFLAGS += -DWXWIDGETS -DHAVE_CAIROPDF
+ 	CXXFLAGS += $(shell wx-config --cxxflags)
+ 	CAIRO_CFLAGS = $(shell pkg-config --cflags cairo)
+ 	CAIRO_LIBS = $(shell pkg-config --libs cairo)
+ 	PANGO_CFLAGS = $(shell pkg-config --cflags pangocairo)
+ 	PANGO_LIBS = $(shell pkg-config --libs pangocairo)
+-	WX_LIBS = $(shell wx-config --libs)
+-	WX_OBJS = wxt_gui.o gp_cairo.o gp_cairo_helpers.o
++	WX_LIBS = $(shell wx-config --libs | sed -e "s+-mwindows++" -e "s+-Wl,--subsystem,windows++" ) $(CXXLIBS)
++	WX_OBJS += wxt_gui.o 
++	WX_LOCATION = $(shell wx-config --cppflags)
+ endif
+ 
+ ifdef GNU_RC
+@@ -284,7 +285,7 @@
+ 	--define __WIN32__ --define __WIN95__ --define MSRC \
+ 	--define __GNUWIN32__ --use-temp-file
+   ifdef WXT
+-	RCFLAGS += --define WXWIDGETS --include-dir=$(WX_LOCATION)
++	RCFLAGS += --define WXWIDGETS $(WX_LOCATION)
+   endif
+   RCOUT = wgplt_res.o
+   RES2COFF = echo wgplt_res.o
+@@ -292,7 +293,7 @@
+   RC = $(MSSDK)/bin/rc
+   RCFLAGS = -v -i$(MSSDK)/include -iwin -dWIN32 -dMSRC
+   ifdef WXT
+-	RCFLAGS += -dWXWIDGETS -i$(WX_LOCATION)
++	RCFLAGS += -dWXWIDGETS $(WX_LOCATION)
+   endif
+   RCOUT = -fowgnuplot.res
+   RES2COFF = res2coff -i wgnuplot.res -o wgplt_res.o
+@@ -339,6 +340,7 @@
+ vpath	%.def	$(TOP)/src
+ vpath	%.rc	$(TOP)/src
+ vpath	%.trm	$(TOP)/term
++vpath	%.cpp	$(TOP)/src
+ 
+ #
+ # Create config.h
+@@ -395,7 +397,7 @@
+ wgnuplot.mnu: $(TOP)/src/win/wgnuplot.mnu
+ 	$(CP) $^ $@
+ 
+-wxt_gui.$(O): wxterminal/wxt_gui.cpp wxterminal/wxt_gui.h $(WX_LOCATION)
++wxt_gui.$(O): wxterminal/wxt_gui.cpp wxterminal/wxt_gui.h
+ 	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(CAIRO_CFLAGS) $<
+ 
+ gp_cairo.$(O): wxterminal/gp_cairo.c wxterminal/gp_cairo.h

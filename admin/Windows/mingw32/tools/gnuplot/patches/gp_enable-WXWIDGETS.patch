@@ -1,0 +1,14 @@
+enable build of wxt terminal
+
+diff -r 3c1733a8775d -r 5dd47935eb61 config/makefile.mgw
+--- a/config/makefile.mgw	Thu Oct 01 20:36:32 2009 +0200
++++ b/config/makefile.mgw	Thu Oct 01 20:36:55 2009 +0200
+@@ -85,7 +85,7 @@
+ # Requires wxWidgets, Cairo, Pango, and their respective dependencies.
+ # Uncomment the following lines to compile it.
+ # WXT_LOCATION should give the path where can be found wx/*.h headers
+-#WXT=1
++WXT=1
+ #WX_LOCATION=/usr/local/include/wx-2.6
+ 
+ # Below you can adapt paths according to your software setup:

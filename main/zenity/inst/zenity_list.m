@@ -77,12 +77,10 @@ function s = zenity_list(title, columns, data, varargin)
   endfor
 
   columns = sprintf('--column="%s" ', columns{:});
-  data = sprintf("%s ", data{:});
+  data = sprintf("\"%s\" ", data{:});
   
   ## Escape certain characters
   data = strrep (data, "\\", "\\\\");
-  data = strrep (data, "(", "\\(");
-  data = strrep (data, ")", "\\)");
 
   cmd = sprintf('zenity --list --title="%s" %s %s %s --print-column="%s" --separator=":" %s %s', ...
                 title, checklist, radiolist, editable, print_column, columns, data);

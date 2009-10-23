@@ -9,4 +9,4 @@ PKG_VER=`echo ${VER_OCTAVE} | sed -e "s%\([^-]*\)-\([^-]*\)%\1%"`
 PKG_REL=`echo ${VER_OCTAVE} | sed -e "s%\([^-]*\)-\([^-]*\)%\2%"`
 
 # directory the package is installed to
-PACKAGE_ROOT=/opt/octmgw32_gcc${GCC_VER}${GCC_SYS}/${PKG_VER}-${PKG_REL}
+PACKAGE_ROOT=/opt/octmgw32_gcc${GCC_VERSION}${GCC_SYSTEM}/${PKG_VER}-${PKG_REL}

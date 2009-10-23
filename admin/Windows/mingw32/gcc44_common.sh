@@ -204,7 +204,7 @@ download_core() {
   ( for a in $1; do ${WGET} ${WGET_FLAGS} "$a"; done )
 }
 download() {
-  ( download_core ${URL} )
+  ( download_core "${URL}" )
 }
 
 # == create patch file ==

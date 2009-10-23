@@ -27,6 +27,7 @@ Time Domain Analysis
   gensig
 Frequency Domain Analysis
 Model Simplification
+  minreal
   sminreal
 Compensator Design
   place

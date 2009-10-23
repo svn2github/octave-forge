@@ -16,31 +16,56 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =} sminreal (@var{sys})
-## Perform state-space model reduction based on structure,
-## i.e. retain only states which are both controllable and observable.
-## The physical meaning of the states is retained.
-## @end deftypefn
+## Minimal realization of SS models. The physical meaning of states is lost.
 
 ## Algorithm based on sysmin by A. Scottedward Hodel
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: October 2009
 ## Version: 0.1
 
-function sys = sminreal (sys)
+function retsys = __minreal__ (sys, tol)
 
-  if (! isa (sys, "ss"))
-    warning ("sminreal: system not in state-space form");
-    sys = ss (sys);
+  A = sys.a;
+  B = sys.b;
+  C = sys.c;
+
+  if (! isempty (A))
+    if (tol == "def")
+      [cflg, Uc] = isctrb (A, B);
+    else
+      [cflg, Uc] = isctrb (A, B, tol);
+    endif
+    
+    if (! cflg)
+      if (! isempty (Uc))
+        A = Uc' * A * Uc;
+        B = Uc' * B;
+        C = C * Uc;
+      else
+        A = B = C = [];
+      endif
+    endif
   endif
 
-  [cflg, Uc] = isctrb (sys);
-  [oflg, Uo] = isobsv (sys);
+  if (! isempty (A))
+    if (tol == "def")
+      [oflg, Uo] = isobsv (A, C);
+    else
+      [oflg, Uo] = isobsv (A, C, tol);
+    endif
 
-  xc = find (max (abs (Uc')) != 0);
-  xo = find (max (abs (Uo')) != 0);
-  st_idx = intersect (xc, xo);
+    if (! oflg)
+      if (! isempty (Uo))
+        A = Uo' * A * Uo;
+        B = Uo' * B;
+        C = C * Uo;
+      else
+        A = B = C = [];
+      endif
+    endif
+  endif
 
-  sys = __sysprune__ (sys, ":", ":", st_idx);
+  retsys = ss (A, B, C, sys.d);
+  retsys.lti = sys.lti;  # retain i/o names and tsam
 
 endfunction

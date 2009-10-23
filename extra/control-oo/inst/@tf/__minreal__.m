@@ -42,7 +42,11 @@ function sys = __minreal__ (sys, tol)
         [jnk, idx] = min (abs (zer(k) - pol));  # find best match
 
         if (tol == "def")
-          t = 10 * abs (zer(k)) * sqrt_eps;
+          if (abs (zer(k)) < sqrt_eps)  # catch case zer(k) = 0
+            t = 1000 * eps;
+          else
+            t = 1000 * abs (zer(k)) * sqrt_eps;
+          endif
         else
           t = tol;
         endif
@@ -53,16 +57,17 @@ function sys = __minreal__ (sys, tol)
         endif
       endfor
 
-      num = gain * poly (zer);
-      den = poly (pol);
+      num = real (gain * poly (zer));
+      den = real (poly (pol));
 
       num_idx = find (abs (num) < sqrt_eps);  # suppress numerical noise
       den_idx = find (abs (den) < sqrt_eps);  # in polynomial coefficients
+
       num(num_idx) = 0;
       den(den_idx) = 0;
 
-      sys.num{p, m} = tfpoly (num);
-      sys.den{p, m} = tfpoly (den);
+      sys.num{ny, nu} = tfpoly (num);
+      sys.den{ny, nu} = tfpoly (den);
     endfor
   endfor
 

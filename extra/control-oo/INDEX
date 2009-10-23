@@ -27,6 +27,7 @@ Time Domain Analysis
   gensig
 Frequency Domain Analysis
 Model Simplification
+  sminreal
 Compensator Design
   place
 LQR/LQG Design

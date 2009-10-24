@@ -1,6 +1,8 @@
-diff -r 43c4727b54f5 PowerEditor/gcc/makefile
---- a/PowerEditor/gcc/makefile	Mon Feb 09 11:18:40 2009 +0100
-+++ b/PowerEditor/gcc/makefile	Mon Feb 09 13:09:18 2009 +0100
+npp: local makefile changes
+
+diff -r 17d0e6d9e061 PowerEditor/gcc/makefile
+--- a/PowerEditor/gcc/makefile	Sat Oct 24 15:50:40 2009 +0200
++++ b/PowerEditor/gcc/makefile	Sat Oct 24 15:51:26 2009 +0200
 @@ -16,9 +16,9 @@
  # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  
@@ -150,15 +152,16 @@ diff -r 43c4727b54f5 PowerEditor/gcc/makefile
 -INCLUDES		= $(patsubst %,-I%,$(DIRS)) -I./include
 -LDFLAGS			= -Wl,--subsystem,windows
 -LIBS			= -lcomdlg32 -lcomctl32 -lgdi32 -lole32 -loleacc -lshell32 -lshlwapi
-+CXXFLAGS		+= -Wall -fexceptions -O2 $(INCLUDESPECIAL) -DTIXML_USE_STL -DTIXMLA_USE_STL 
++override CXXFLAGS		+= -Wall -fexceptions -O2 $(INCLUDESPECIAL) -DTIXML_USE_STL -DTIXMLA_USE_STL 
 +INCLUDES		= $(patsubst %,-I%,$(DIRS)) -I$(GCC_DIR)/include
 +#LDFLAGS			= -Wl,--subsystem,windows
-+LIBS			= -lcomdlg32 -lcomctl32 -lgdi32 -lole32 -loleacc -lshell32 -lshlwapi -mwindows
++override LIBS			= -lcomdlg32 -lcomctl32 -lgdi32 -lole32 -loleacc -lshell32 -lshlwapi -mwindows
  
- RC				= windres
+-RC				= windres
++RC				?= windres
  
 -OUT_NPP			= NotepadPP.exe
-+RC_INCLUDES = -I$(NPP_DIR) -I$(DOCKING_DIR)
++override RC_INCLUDES += -I$(NPP_DIR) -I$(DOCKING_DIR)
 +
 +OUT_NPP			= Notepad++.exe
 +OUT_NPP_UNICODE			= Notepad++U.exe

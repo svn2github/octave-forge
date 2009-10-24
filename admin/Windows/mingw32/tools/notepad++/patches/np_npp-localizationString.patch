@@ -1,18 +1,20 @@
-diff -r 5c33c42df98f PowerEditor/src/Parameters.cpp
---- a/PowerEditor/src/Parameters.cpp	Mon Feb 09 11:10:59 2009 +0100
-+++ b/PowerEditor/src/Parameters.cpp	Mon Feb 09 11:12:11 2009 +0100
-@@ -331,7 +331,7 @@
- 	//
+npp: own version of localizationString.h
+
+diff -r 726bc6966d9a PowerEditor/src/Parameters.cpp
+--- a/PowerEditor/src/Parameters.cpp	Tue Jul 07 13:15:13 2009 +0200
++++ b/PowerEditor/src/Parameters.cpp	Tue Jul 07 13:15:41 2009 +0200
+@@ -364,7 +364,7 @@
  };
+ 
  #ifdef UNICODE
 -#include "localizationString.h"
 +#include "mingw-localizationString.h"
  
- LocalizationSwicher::LocalizationSwicher() 
+ wstring LocalizationSwitcher::getLangFromXmlFileName(wchar_t *fn) const
  {
-diff -r 5c33c42df98f PowerEditor/src/mingw-localizationString.h
+diff -r 726bc6966d9a PowerEditor/src/mingw-localizationString.h
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/PowerEditor/src/mingw-localizationString.h	Mon Feb 09 11:12:11 2009 +0100
++++ b/PowerEditor/src/mingw-localizationString.h	Tue Jul 07 13:15:41 2009 +0200
 @@ -0,0 +1,23 @@
 +//this file is part of notepad++
 +//Copyright (C)2003 Don HO <donho@altern.org>
@@ -33,7 +35,7 @@ diff -r 5c33c42df98f PowerEditor/src/mingw-localizationString.h
 +
 +#ifndef LOCALIZATIONSTRING_H
 +#define LOCALIZATIONSTRING_H
-+LocalizationSwicher::LocalizationDefinition localizationDefs[] = {
++LocalizationSwitcher::LocalizationDefinition localizationDefs[] = {
 +	{TEXT("English"), TEXT("english.xml")},
 +};
-+#endif LOCALIZATIONSTRING_H
++#endif // LOCALIZATIONSTRING_H

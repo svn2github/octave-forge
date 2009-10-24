@@ -1,3 +1,5 @@
+npp: userdefinelang.xml add gnupot language
+
 diff -r a4556fdf45df PowerEditor/src/userDefineLang.xml
 --- a/PowerEditor/src/userDefineLang.xml	Mon Feb 09 10:10:17 2009 +0100
 +++ b/PowerEditor/src/userDefineLang.xml	Mon Feb 09 10:11:07 2009 +0100

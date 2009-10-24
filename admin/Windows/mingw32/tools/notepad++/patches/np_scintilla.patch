@@ -1,3 +1,5 @@
+scintilla: allow octave comment for matlab language
+
 diff -r aa791b4a4728 scintilla/src/LexMatlab.cxx
 --- a/scintilla/src/LexMatlab.cxx	Mon Feb 09 09:20:24 2009 +0100
 +++ b/scintilla/src/LexMatlab.cxx	Mon Feb 09 09:28:09 2009 +0100

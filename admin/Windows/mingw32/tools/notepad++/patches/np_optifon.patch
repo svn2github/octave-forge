@@ -1,26 +1,28 @@
-diff -r d7b866972883 PowerEditor/src/Parameters.cpp
---- a/PowerEditor/src/Parameters.cpp	Mon Feb 09 09:39:09 2009 +0100
-+++ b/PowerEditor/src/Parameters.cpp	Mon Feb 09 09:53:01 2009 +0100
-@@ -533,6 +533,7 @@
+npp: add font Opti.fon to font list
+
+diff -r 288e2c89b034 PowerEditor/src/Parameters.cpp
+--- a/PowerEditor/src/Parameters.cpp	Fri Oct 16 07:27:24 2009 +0200
++++ b/PowerEditor/src/Parameters.cpp	Fri Oct 16 07:27:55 2009 +0200
+@@ -541,6 +541,7 @@
  		
- 	_asNotepadStyle = (PathFileExists(notepadStylePath) == TRUE);
+ 	_asNotepadStyle = (PathFileExists(notepadStylePath.c_str()) == TRUE);
  	::AddFontResource(LINEDRAW_FONT);
 +	::AddFontResource(OPTI_FONT);
  
  	//Load initial accelerator key definitions
  	initMenuKeys();
-@@ -552,6 +553,7 @@
- 	if (_hUXTheme)
- 		FreeLibrary(_hUXTheme);
+@@ -566,6 +567,7 @@
+ 	}
+ 	_pXmlExternalLexerDoc.clear();
  
 +	::RemoveFontResource(OPTI_FONT);
  	::RemoveFontResource(LINEDRAW_FONT);
  }
  void cutString(const TCHAR *str2cut, vector<generic_string> & patternVect)
-diff -r d7b866972883 PowerEditor/src/Parameters.h
---- a/PowerEditor/src/Parameters.h	Mon Feb 09 09:39:09 2009 +0100
-+++ b/PowerEditor/src/Parameters.h	Mon Feb 09 09:53:01 2009 +0100
-@@ -77,9 +77,10 @@
+diff -r 288e2c89b034 PowerEditor/src/Parameters.h
+--- a/PowerEditor/src/Parameters.h	Fri Oct 16 07:27:24 2009 +0200
++++ b/PowerEditor/src/Parameters.h	Fri Oct 16 07:27:55 2009 +0200
+@@ -99,9 +99,10 @@
  const bool SCIV_PRIMARY = false;
  const bool SCIV_SECOND = true;
  

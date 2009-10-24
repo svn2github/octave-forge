@@ -1,0 +1,27 @@
+fixes for gcc-4.4.0 with mingw runtime version 3.16
+
+diff -r 7693438c5a1e -r 0160971cf151 PowerEditor/gcc/include/eh.h
+--- a/PowerEditor/gcc/include/eh.h	Sat Oct 24 16:20:41 2009 +0200
++++ b/PowerEditor/gcc/include/eh.h	Sat Oct 24 17:58:43 2009 +0200
+@@ -2,6 +2,6 @@
+ 
+ typedef void (*exFunc)(unsigned int, EXCEPTION_POINTERS *);
+ 
+-void _set_se_translator(exFunc) {};
++static void _set_se_translator(exFunc) {};
+ 
+ #endif //EH_H
+diff -r 7693438c5a1e -r 0160971cf151 PowerEditor/gcc/include/various.h
+--- a/PowerEditor/gcc/include/various.h	Sat Oct 24 16:20:41 2009 +0200
++++ b/PowerEditor/gcc/include/various.h	Sat Oct 24 17:58:43 2009 +0200
+@@ -41,8 +41,8 @@
+ }
+ 
+ //__try and __except dont work in gcc, so heres some defines to take em out
+-#define __try
+-#define __except(x)	if(false)
++#define __try try
++#define __except(x)	catch(...)
+ 
+ #define GetExceptionCode()			0
+ #define GetExceptionInformation()	NULL

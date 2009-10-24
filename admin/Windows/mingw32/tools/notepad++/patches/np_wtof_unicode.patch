@@ -1,7 +1,20 @@
-diff -r 07374c570b1e PowerEditor/gcc/include/wtof.cpp
+npp: add wtof() conversion function
+
+diff -r 0a25e3546f51 PowerEditor/gcc/include/various.h
+--- a/PowerEditor/gcc/include/various.h	Fri Oct 16 08:06:30 2009 +0200
++++ b/PowerEditor/gcc/include/various.h	Sat Oct 24 16:07:07 2009 +0200
+@@ -48,4 +48,7 @@
+ #define GetExceptionInformation()	NULL
+ 
+ //Missing unicode CRT funcs
++// Only if mingwrt version is <3.15
++#if defined __MINGW32__ && __MINGW32_MAJOR_VERSION == 3 && __MINGW32_MINOR_VERSION < 15
+ double _wtof(const wchar_t * string);
++#endif
+diff -r 0a25e3546f51 PowerEditor/gcc/include/wtof.cpp
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/PowerEditor/gcc/include/wtof.cpp	Mon Feb 09 09:39:09 2009 +0100
-@@ -0,0 +1,25 @@
++++ b/PowerEditor/gcc/include/wtof.cpp	Sat Oct 24 16:07:07 2009 +0200
+@@ -0,0 +1,28 @@
 +//
 +// This file contains a stub replacement for _wtof, whcih is not available 
 +// with MSVCRT 6
@@ -10,10 +23,12 @@ diff -r 07374c570b1e PowerEditor/gcc/include/wtof.cpp
 +// libraries.
 +//
 +// 17-nov-2008 lindnerb@users.sourceforge.net
-+
++//
++// Update: this is only required for mingwrt versions <3.15
 +
 +// do this only for mingw32...
 +#ifdef __MINGW32__
++#if __MINGW32_MAJOR_VERSION == 3 && __MINGW32_MINOR_VERSION < 16
 +
 +#include <stdio.h>
 +
@@ -26,4 +41,5 @@ diff -r 07374c570b1e PowerEditor/gcc/include/wtof.cpp
 +   return dret;
 +}
 +
++#endif //  mingwrt version < 3.15
 +#endif  // __MINGW32__

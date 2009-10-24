@@ -1,6 +1,8 @@
-diff -r 168e89419413 scintilla/src/LexSearchResult.cxx
---- a/scintilla/src/LexSearchResult.cxx	Mon Feb 09 10:43:18 2009 +0100
-+++ b/scintilla/src/LexSearchResult.cxx	Mon Feb 09 10:46:02 2009 +0100
+scintilla: local bugfixes
+
+diff -r a9cd7333b264 scintilla/src/LexSearchResult.cxx
+--- a/scintilla/src/LexSearchResult.cxx	Tue Jul 07 11:57:32 2009 +0200
++++ b/scintilla/src/LexSearchResult.cxx	Tue Jul 07 13:11:20 2009 +0200
 @@ -35,7 +35,7 @@
  #include "SciLexer.h"
  

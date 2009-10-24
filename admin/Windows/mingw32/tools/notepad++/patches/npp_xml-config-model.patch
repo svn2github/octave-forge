@@ -1,3 +1,5 @@
+npp: config.model.xml disable tasklist and mru
+
 diff -r 82ee6fb76535 PowerEditor/src/config.model.xml
 --- a/PowerEditor/src/config.model.xml	Mon Feb 09 10:06:38 2009 +0100
 +++ b/PowerEditor/src/config.model.xml	Mon Feb 09 10:07:57 2009 +0100

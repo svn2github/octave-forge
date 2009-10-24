@@ -1,0 +1,12 @@
+add _countof() macro from mscrt 8
+
+diff -r 3d12defe39aa PowerEditor/gcc/include/various.h
+--- a/PowerEditor/gcc/include/various.h	Sat Oct 24 16:07:11 2009 +0200
++++ b/PowerEditor/gcc/include/various.h	Sat Oct 24 16:10:29 2009 +0200
+@@ -52,3 +52,6 @@
+ #if defined __MINGW32__ && __MINGW32_MAJOR_VERSION == 3 && __MINGW32_MINOR_VERSION < 15
+ double _wtof(const wchar_t * string);
+ #endif
++
++// Missing _countof macro
++#define _countof(x) (sizeof(x)/sizeof((x)[0]))

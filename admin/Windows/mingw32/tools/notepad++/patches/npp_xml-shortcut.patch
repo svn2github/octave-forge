@@ -1,3 +1,5 @@
+npp: shortcut.xml: add alt-left and alt-right shortcut
+
 diff -r f54ea509d59c PowerEditor/src/shortcuts.xml
 --- a/PowerEditor/src/shortcuts.xml	Mon Feb 09 10:08:59 2009 +0100
 +++ b/PowerEditor/src/shortcuts.xml	Mon Feb 09 10:10:17 2009 +0100

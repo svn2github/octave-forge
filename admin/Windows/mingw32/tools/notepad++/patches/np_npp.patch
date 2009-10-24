@@ -1,15 +1,50 @@
-diff -r 306a0b25c3fb PowerEditor/src/Notepad_plus.h
---- a/PowerEditor/src/Notepad_plus.h	Mon Feb 09 10:00:30 2009 +0100
-+++ b/PowerEditor/src/Notepad_plus.h	Mon Feb 09 10:06:38 2009 +0100
-@@ -49,6 +49,7 @@
- #include "AutoCompletion.h"
- #include "Buffer.h"
- #include "SmartHighlighter.h"
-+#include "shortcutmapper.h"
+npp: local src changes (bugfixes)
+
+diff -r 3ab36596d84b PowerEditor/src/MISC/Common/precompiledHeaders.h
+--- a/PowerEditor/src/MISC/Common/precompiledHeaders.h	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/MISC/Common/precompiledHeaders.h	Fri Oct 16 08:03:54 2009 +0200
+@@ -50,7 +50,7 @@
+ #include <shlwapi.h>
+ #include <uxtheme.h>
+ #include <Oleacc.h>
+-#include <dbghelp.h>
++// #include <dbghelp.h>
+ #include <eh.h>
  
+ #ifdef UNICODE
+@@ -62,4 +62,4 @@
+ #include "Window.h"
+ #include "StaticDialog.h"
+ 
+-#endif PRECOMPILEHEADER_H
++#endif /* PRECOMPILEHEADER_H */
+diff -r 3ab36596d84b PowerEditor/src/Notepad_plus.cpp
+--- a/PowerEditor/src/Notepad_plus.cpp	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/Notepad_plus.cpp	Fri Oct 16 08:03:54 2009 +0200
+@@ -1940,8 +1940,8 @@
+ 
+ int Notepad_plus::doReloadOrNot(const TCHAR *fn, bool dirty) 
+ {
+-	TCHAR* pattern = TEXT("%s\r\rThis file has been modified by another program.\rDo you want to reload it%s?");
+-	TCHAR* lose_info_str = dirty ? TEXT(" and lose the changes made in Notepad++") : TEXT("");
++	const TCHAR* pattern = TEXT("%s\r\rThis file has been modified by another program.\rDo you want to reload it%s?");
++	const TCHAR* lose_info_str = dirty ? TEXT(" and lose the changes made in Notepad++") : TEXT("");
+ 	TCHAR phrase[512];
+ 	wsprintf(phrase, pattern, fn, lose_info_str);
+ 	int icon = dirty ? MB_ICONEXCLAMATION : MB_ICONQUESTION;
+diff -r 3ab36596d84b PowerEditor/src/Notepad_plus.h
+--- a/PowerEditor/src/Notepad_plus.h	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/Notepad_plus.h	Fri Oct 16 08:03:54 2009 +0200
+@@ -106,6 +106,8 @@
+ #include "ScintillaCtrls.h"
+ #endif //SCINTILLACTRLS_H
+ 
++#include "shortcutmapper.h"
++
  #define MENU 0x01
  #define TOOLBAR 0x02
-@@ -122,7 +123,7 @@
+ 
+@@ -179,7 +181,7 @@
  	inline void killAllChildren();
  	virtual inline void destroy();
  
@@ -18,55 +53,31 @@ diff -r 306a0b25c3fb PowerEditor/src/Notepad_plus.h
  		return _className;
  	};
  	
-@@ -426,15 +427,15 @@
- //END: Document management
- 
- 	int doSaveOrNot(const TCHAR *fn) {
--		TCHAR pattern[64] = TEXT("Save file \"%s\" ?");
-+		const TCHAR* pattern = TEXT("Save file \"%s\" ?");
- 		TCHAR phrase[512];
- 		wsprintf(phrase, pattern, fn);
- 		return doActionOrNot(TEXT("Save"), phrase, MB_YESNOCANCEL | MB_ICONQUESTION | MB_APPLMODAL);
- 	};
- 
- 	int doReloadOrNot(const TCHAR *fn, bool dirty) {
--		TCHAR* pattern = TEXT("%s\r\rThis file has been modified by another program.\rDo you want to reload it%s?");
--		TCHAR* lose_info_str = dirty ? TEXT(" and lose the changes made in Notepad++") : TEXT("");
-+		const TCHAR* pattern = TEXT("%s\r\rThis file has been modified by another program.\rDo you want to reload it%s?");
-+		const TCHAR* lose_info_str = dirty ? TEXT(" and lose the changes made in Notepad++") : TEXT("");
- 		TCHAR phrase[512];
- 		wsprintf(phrase, pattern, fn, lose_info_str);
- 		int icon = dirty ? MB_ICONEXCLAMATION : MB_ICONQUESTION;
-@@ -442,14 +443,14 @@
- 	};
- 
- 	int doCloseOrNot(const TCHAR *fn) {
--		TCHAR pattern[128] = TEXT("The file \"%s\" doesn't exist anymore.\rKeep this file in editor?");
-+		const TCHAR* pattern = TEXT("The file \"%s\" doesn't exist anymore.\rKeep this file in editor?");
- 		TCHAR phrase[512];
- 		wsprintf(phrase, pattern, fn);
- 		return doActionOrNot(TEXT("Keep non existing file"), phrase, MB_YESNO | MB_ICONQUESTION | MB_APPLMODAL);
- 	};
- 	
- 	int doDeleteOrNot(const TCHAR *fn) {
--		TCHAR pattern[128] = TEXT("The file \"%s\"\rwill be deleted from your disk and this document will be closed.\rContinue?");
-+		const TCHAR* pattern = TEXT("The file \"%s\"\rwill be deleted from your disk and this document will be closed.\rContinue?");
- 		TCHAR phrase[512];
- 		wsprintf(phrase, pattern, fn);
- 		return doActionOrNot(TEXT("Delete file"), phrase, MB_YESNO | MB_ICONQUESTION | MB_APPLMODAL);
-diff -r 306a0b25c3fb PowerEditor/src/Notepad_plus.rc
---- a/PowerEditor/src/Notepad_plus.rc	Mon Feb 09 10:00:30 2009 +0100
-+++ b/PowerEditor/src/Notepad_plus.rc	Mon Feb 09 10:06:38 2009 +0100
-@@ -488,4 +488,4 @@
+diff -r 3ab36596d84b PowerEditor/src/Notepad_plus.rc
+--- a/PowerEditor/src/Notepad_plus.rc	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/Notepad_plus.rc	Fri Oct 16 08:03:54 2009 +0200
+@@ -626,4 +626,4 @@
  END
  
  // xp style
 -1 RT_MANIFEST "notepad++.exe.manifest"
 +// 1 RT_MANIFEST "notepad++.exe.manifest"
-diff -r 306a0b25c3fb PowerEditor/src/ScitillaComponent/Buffer.h
---- a/PowerEditor/src/ScitillaComponent/Buffer.h	Mon Feb 09 10:00:30 2009 +0100
-+++ b/PowerEditor/src/ScitillaComponent/Buffer.h	Mon Feb 09 10:06:38 2009 +0100
-@@ -58,6 +58,7 @@
+diff -r 3ab36596d84b PowerEditor/src/Parameters.h
+--- a/PowerEditor/src/Parameters.h	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/Parameters.h	Fri Oct 16 08:03:54 2009 +0200
+@@ -1070,7 +1070,7 @@
+         _list.push_back(pair<generic_string, bool>(fn, isInBL));
+     };
+ private :
+-    vector<pair<generic_string, bool>>_list;
++    vector< pair<generic_string, bool> >_list;
+ };
+ 
+ const int NB_LANG = 80;
+diff -r 3ab36596d84b PowerEditor/src/ScitillaComponent/Buffer.h
+--- a/PowerEditor/src/ScitillaComponent/Buffer.h	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/ScitillaComponent/Buffer.h	Fri Oct 16 08:03:54 2009 +0200
+@@ -61,6 +61,7 @@
  
  //File manager class maintains all buffers
  class Buffer;
@@ -74,9 +85,9 @@ diff -r 306a0b25c3fb PowerEditor/src/ScitillaComponent/Buffer.h
  class FileManager {
  public:
  	void init(Notepad_plus * pNotepadPlus, ScintillaEditView * pscratchTilla);
-diff -r 306a0b25c3fb PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc
---- a/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	Mon Feb 09 10:00:30 2009 +0100
-+++ b/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	Mon Feb 09 10:06:38 2009 +0100
+diff -r 3ab36596d84b PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc
+--- a/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	Fri Oct 16 08:03:54 2009 +0200
 @@ -20,6 +20,7 @@
  #ifndef FIND_REPLACE_DLG_RC
  #define FIND_REPLACE_DLG_RC
@@ -85,9 +96,9 @@ diff -r 306a0b25c3fb PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc
  #include "FindReplaceDlg_rc.h"
  
  IDD_FIND_REPLACE_DLG DIALOGEX 36, 44, 317, 182
-diff -r 306a0b25c3fb PowerEditor/src/ScitillaComponent/Printer.h
---- a/PowerEditor/src/ScitillaComponent/Printer.h	Mon Feb 09 10:00:30 2009 +0100
-+++ b/PowerEditor/src/ScitillaComponent/Printer.h	Mon Feb 09 10:06:38 2009 +0100
+diff -r 3ab36596d84b PowerEditor/src/ScitillaComponent/Printer.h
+--- a/PowerEditor/src/ScitillaComponent/Printer.h	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/ScitillaComponent/Printer.h	Fri Oct 16 08:03:54 2009 +0200
 @@ -36,7 +36,7 @@
  public :
  	Printer(){};
@@ -97,22 +108,36 @@ diff -r 306a0b25c3fb PowerEditor/src/ScitillaComponent/Printer.h
  		if (!::PrintDlg(&_pdlg))
  				return 0;
  
-diff -r 306a0b25c3fb PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
---- a/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	Mon Feb 09 10:00:30 2009 +0100
-+++ b/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	Mon Feb 09 10:06:38 2009 +0100
-@@ -1888,9 +1888,9 @@
- 			for (int j = 0 ; j < nbChar ; j++)
- 			{
- 				if (Case == UPPERCASE)
--					destStr[j] = (wchar_t)::CharUpperW((LPWSTR)destStr[j]);
-+					destStr[j] = (wchar_t)*::CharUpperW((LPWSTR)destStr[j]);
- 				else
--					destStr[j] = (wchar_t)::CharLowerW((LPWSTR)destStr[j]);
-+					destStr[j] = (wchar_t)*::CharLowerW((LPWSTR)destStr[j]);
- 			}
- 			::WideCharToMultiByte(codepage, 0, destStr, len, srcStr, len, NULL, NULL);
+diff -r 3ab36596d84b PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
+--- a/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	Fri Oct 16 08:03:54 2009 +0200
+@@ -2148,8 +2148,11 @@
  
-@@ -1924,9 +1924,9 @@
+     range.first = execute(SCI_LINEFROMPOSITION, start);
+     range.second = execute(SCI_LINEFROMPOSITION, end);
+-    if (range.first > range.second)
+-        range.swap(range);
++    if (range.first > range.second) {
++	int t = range.first;
++	range.first = range.second;
++	range.second = t;
++    }
+     return range;
+ }
+ 
+@@ -2242,9 +2245,9 @@
+              for (int j = 0 ; j < nbChar ; j++)
+              {
+                  if (Case == UPPERCASE)
+-                     destStr[j] = (wchar_t)::CharUpperW((LPWSTR)destStr[j]);
++                     destStr[j] = (wchar_t)*::CharUpperW((LPWSTR)destStr[j]);
+                  else
+-                     destStr[j] = (wchar_t)::CharLowerW((LPWSTR)destStr[j]);
++                     destStr[j] = (wchar_t)*::CharLowerW((LPWSTR)destStr[j]);
+              }
+              ::WideCharToMultiByte(codepage, 0, destStr, len, srcStr, len, NULL, NULL);
+   
+@@ -2282,9 +2285,9 @@
  		for (int i = 0 ; i < nbChar ; i++)
  		{
  			if (Case == UPPERCASE)
@@ -124,10 +149,28 @@ diff -r 306a0b25c3fb PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
  		}
  		::WideCharToMultiByte(codepage, 0, selectedStrW, strWSize, selectedStr, strSize, NULL, NULL);
  
-diff -r 306a0b25c3fb PowerEditor/src/ScitillaComponent/ScintillaEditView.h
---- a/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	Mon Feb 09 10:00:30 2009 +0100
-+++ b/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	Mon Feb 09 10:06:38 2009 +0100
-@@ -456,7 +456,7 @@
+diff -r 3ab36596d84b PowerEditor/src/ScitillaComponent/ScintillaEditView.h
+--- a/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	Fri Oct 16 08:03:54 2009 +0200
+@@ -160,7 +160,7 @@
+ // SortClass for vector<ColumnModeInfo>
+ // sort in _order : increased order
+ struct SortInSelectOrder {
+-	bool operator() (ColumnModeInfo & l, ColumnModeInfo & r) {
++	bool operator() (const ColumnModeInfo & l, const ColumnModeInfo & r) {
+ 		return (l._order < r._order);
+ 	}
+ };
+@@ -169,7 +169,7 @@
+ // SortClass for vector<ColumnModeInfo>
+ // sort in _selLpos : increased order
+ struct SortInPositionOrder {
+-	bool operator() (ColumnModeInfo & l, ColumnModeInfo & r) {
++	bool operator() (const ColumnModeInfo & l, const ColumnModeInfo & r) {
+ 		return (l._selLpos < r._selLpos);
+ 	}
+ };
+@@ -532,7 +532,7 @@
  		execute(SCI_INDICATORCLEARRANGE, docStart, docEnd-docStart);
  	};
  
@@ -136,11 +179,11 @@ diff -r 306a0b25c3fb PowerEditor/src/ScitillaComponent/ScintillaEditView.h
  
  	void bufferUpdated(Buffer * buffer, int mask);
  	BufferID getCurrentBufferID() { return _currentBufferID; };
-diff -r 306a0b25c3fb PowerEditor/src/WinControls/TabBar/ControlsTab.h
---- a/PowerEditor/src/WinControls/TabBar/ControlsTab.h	Mon Feb 09 10:00:30 2009 +0100
-+++ b/PowerEditor/src/WinControls/TabBar/ControlsTab.h	Mon Feb 09 10:06:38 2009 +0100
-@@ -52,7 +52,7 @@
- 		//TabBar::init(hInst, hwnd, false, true);
+diff -r 3ab36596d84b PowerEditor/src/WinControls/TabBar/ControlsTab.h
+--- a/PowerEditor/src/WinControls/TabBar/ControlsTab.h	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/WinControls/TabBar/ControlsTab.h	Fri Oct 16 08:03:54 2009 +0200
+@@ -44,7 +44,7 @@
+ 		_isVertical = isVertical;
  		TabBar::init(hInst, hwnd, false, isTraditional, isMultiLine);
  	};
 -	void ControlsTab::createTabs(WindowVector & winVector);
@@ -148,10 +191,10 @@ diff -r 306a0b25c3fb PowerEditor/src/WinControls/TabBar/ControlsTab.h
  
  	void destroy() {
  		TabBar::destroy();
-diff -r 306a0b25c3fb PowerEditor/src/WinControls/shortcut/shortcut.h
---- a/PowerEditor/src/WinControls/shortcut/shortcut.h	Mon Feb 09 10:00:30 2009 +0100
-+++ b/PowerEditor/src/WinControls/shortcut/shortcut.h	Mon Feb 09 10:06:38 2009 +0100
-@@ -204,7 +204,7 @@
+diff -r 3ab36596d84b PowerEditor/src/WinControls/shortcut/shortcut.h
+--- a/PowerEditor/src/WinControls/shortcut/shortcut.h	Fri Oct 16 07:28:01 2009 +0200
++++ b/PowerEditor/src/WinControls/shortcut/shortcut.h	Fri Oct 16 08:03:54 2009 +0200
+@@ -203,7 +203,7 @@
  	};
  
  	KeyCombo getKeyComboByIndex(int index) const;

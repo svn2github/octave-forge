@@ -186,9 +186,13 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/magick/.libs/libGraphicsMagick.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/magick/.libs/libGraphicsMagick.a ${STATICLIB_PATH}
    
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick/GraphicsMagick-config ${BINARY_PATH}
+   
    ${CP} ${CP_FLAGS} ${BUILDDIR}/magick++/lib/GraphicsMagick++.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/magick++/lib/libGraphicsMagick++.dll.a ${LIBRARY_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/magick++/lib/.libs/libGraphicsMagick++.a ${STATICLIB_PATH}
+   
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/magick++/bin/GraphicsMagick++-config ${BINARY_PATH}
    
    ${CP} ${CP_FLAGS} ${BUILDDIR}/wand/.libs/GraphicsMagickWand.dll ${SHAREDLIB_PATH}
    ${CP} ${CP_FLAGS} ${BUILDDIR}/wand/.libs/libGraphicsMagickWand.dll.a ${LIBRARY_PATH}
@@ -248,6 +252,9 @@ uninstall()
    ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/glob.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libglob.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libglob.a
+   
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/GraphicsMagick-config
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/GraphicsMagick++-config
    
    # Uninstall headers
    for a in $MAGICK_HEADERS magick_config_api.h; do

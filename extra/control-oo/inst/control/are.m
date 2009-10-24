@@ -71,57 +71,71 @@
 
 function x = are (a, b, c, opt)
 
-  if (nargin == 3 || nargin == 4)
-    if (nargin == 4)
-      if (! (ischar (opt)
-	     && (strcmp (opt, "N") || strcmp (opt, "P")
-		 || strcmp (opt, "S") || strcmp (opt, "B")
-		 || strcmp (opt, "n") || strcmp (opt, "p")
-		 || strcmp (opt, "s") || strcmp (opt, "b"))))
-        warning ("are: opt has an invalid value; setting to B");
-        opt = "B";
-      endif
-    else
-      opt = "B";
-    endif
-    if ((n = issquare(a)) == 0)
-      error ("are: a is not square");
-    endif
-
-    if (isctrb (a, b) == 0)
-      warning ("are: a, b are not controllable");
-    endif
-    if ((m = issquare (b)) == 0)
-      b = b * b';
-      m = rows (b);
-    endif
-    if (isobsv (a, c) == 0)
-      warning ("are: a,c are not observable");
-    endif
-    if ((p = issquare (c)) == 0)
-      c = c' * c;
-      p = rows (c);
-    endif
-    if (n != m || n != p)
-      error ("are: a, b, c not conformably dimensioned.");
-    endif
-
-    ## Should check for controllability/observability here
-    ## use Boley-Golub (Syst. Contr. Letters, 1984) method, not the
-    ##
-    ##                     n-1
-    ## rank ([ B A*B ... A^   *B]) method
-
-    ## RE: isctrb, isobsv use arnoldi/krylov
-
-    [d, h] = balance ([a, -b; -c, -a'], opt);
-    [u, s] = schur (h, "A");
-    u = d * u;
-    n1 = n + 1;
-    n2 = 2 * n;
-    x = u (n1:n2, 1:n) / u (1:n, 1:n);
-  else
+  if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
+
+  if (nargin == 4)
+    if (! ischar (opt))
+      warning ("are: invalid argument opt, setting to ""B""");
+      opt = "B";
+    endif
+
+    opt = upper (opt);
+
+    if (opt != "B" && opt != N && opt != "P" && opt != "S")
+      warning ("are: opt has invalid value ""%s""; setting to ""B""", opt);
+      opt = "B";
+    endif
+  else
+    opt = "B";
+  endif
+
+  n = issquare (a);
+  m = issquare (b);
+  p = issquare (c);
+
+  if (! n)
+    error ("are: matrix a is not square");
+  endif
+
+  if (! isctrb (a, b))
+    warning ("are: matrices a and b are not controllable");
+  endif
+
+  if (! m)
+    b = b * b';
+    m = rows (b);
+  endif
+
+  if (! isobsv (a, c))
+    warning ("are: matrices a and c are not observable");
+  endif
+
+  if (! p)
+    c = c' * c;
+    p = rows (c);
+  endif
+
+  if (n != m || n != p)
+    error ("are: matrices a, b and c not conformably dimensioned");
+  endif
+
+  ## Should check for controllability/observability here
+  ## use Boley-Golub (Syst. Contr. Letters, 1984) method, not the
+  ##
+  ##                     n-1
+  ## rank ([ B A*B ... A^   *B]) method
+
+  ## RE: isctrb, isobsv use Arnoldi/Krylov
+
+  [d, h] = balance ([a, -b; -c, -a'], opt);
+  [u, s] = schur (h, "A");
+
+  u = d * u;
+  n1 = n + 1;
+  n2 = 2 * n;
+
+  x = u (n1:n2, 1:n) / u (1:n, 1:n);
 
 endfunction

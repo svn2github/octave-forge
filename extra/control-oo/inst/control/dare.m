@@ -79,53 +79,65 @@
 ## Date: October 2009
 ## Version: 0.1
 
-function x = dare (a, b, q, r, opt)
+function x = dare (a, b, q, r, opt = "B")
 
-  if (nargin == 4 || nargin == 5)
-    if (nargin == 5)
-      if (! (ischar (opt)
-	     && (strcmp (opt, "N") || strcmp (opt, "P")
-		 || strcmp (opt, "S") || strcmp (opt, "B"))))
-        warning ("dare: opt has an invalid value -- setting to B");
-        opt = "B";
-      endif
-    else
+  ## TODO: return G and L
+
+  if (nargin < 4 || nargin > 5)
+    print_usage ();
+  endif
+
+  if (nargin == 5)
+    if (! ischar (opt))
+      warning ("dare: invalid argument opt, setting to ""B""");
       opt = "B";
     endif
 
-    if ((p = issquare (q)) == 0)
-      q = q'*q;
+    opt = upper (opt);
+
+    if (opt != "B" && opt != N && opt != "P" && opt != "S")
+      warning ("dare: opt has invalid value ""%s""; setting to ""B""", opt);
+      opt = "B";
     endif
-
-    ## Checking positive definiteness
-    if (isdefinite (r) <= 0)
-      error ("dare: r not positive definite");
-    endif
-    if (isdefinite (q) < 0)
-      error ("dare: q not positive semidefinite");
-    endif
-
-    ## Check r dimensions.
-    [n, m] = size (b);
-    if ((m1 = issquare (r)) == 0)
-      error ("dare: r is not square");
-    elseif (m1 != m)
-      error ("dare: b, r are not conformable");
-    endif
-
-    s1 = [a, zeros(n) ; -q, eye(n)];
-    s2 = [eye(n), (b/r)*b' ; zeros(n), a'];
-
-    [c, d, s1, s2] = balance (s1, s2, opt);
-
-    [aa, bb, u, lam] = qz (s1, s2, "S");
-
-    u = d*u;
-    n1 = n+1;
-    n2 = 2*n;
-    x = u (n1:n2, 1:n)/u(1:n, 1:n);
-  else
-    print_usage ();
   endif
+
+  ## TODO: check whether a, b are stabilizable
+  ##       and a, q are detectable
+
+  [n, m] = size (b);
+  p = issquare (q);
+  m1 = issquare (r);
+
+  if (! p)
+    q = q' * q;
+  endif
+
+  ## Checking positive definiteness
+  if (isdefinite (r) <= 0)
+    error ("dare: r not positive definite");
+  endif
+
+  if (isdefinite (q) < 0)
+    error ("dare: q not positive semidefinite");
+  endif
+
+  ## Check r dimensions
+  if (! m1)
+    error ("dare: r is not square");
+  elseif (m1 != m)
+    error ("dare: b, r are not conformable");
+  endif
+
+  s1 = [a, zeros(n) ; -q, eye(n)];
+  s2 = [eye(n), (b/r)*b' ; zeros(n), a'];
+
+  [c, d, s1, s2] = balance (s1, s2, opt);
+  [aa, bb, u, lam] = qz (s1, s2, "S");
+
+  u = d*u;
+  n1 = n+1;
+  n2 = 2*n;
+
+  x = u(n1:n2, 1:n) / u(1:n, 1:n);
 
 endfunction

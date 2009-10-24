@@ -69,7 +69,7 @@
 ## Date: October 2009
 ## Version: 0.1
 
-function x = are (a, b, c, opt)
+function x = are (a, b, c, opt = "B")
 
   if (nargin < 3 || nargin > 4)
     print_usage ();
@@ -87,8 +87,6 @@ function x = are (a, b, c, opt)
       warning ("are: opt has invalid value ""%s""; setting to ""B""", opt);
       opt = "B";
     endif
-  else
-    opt = "B";
   endif
 
   n = issquare (a);
@@ -120,14 +118,6 @@ function x = are (a, b, c, opt)
   if (n != m || n != p)
     error ("are: matrices a, b and c not conformably dimensioned");
   endif
-
-  ## Should check for controllability/observability here
-  ## use Boley-Golub (Syst. Contr. Letters, 1984) method, not the
-  ##
-  ##                     n-1
-  ## rank ([ B A*B ... A^   *B]) method
-
-  ## RE: isctrb, isobsv use Arnoldi/Krylov
 
   [d, h] = balance ([a, -b; -c, -a'], opt);
   [u, s] = schur (h, "A");

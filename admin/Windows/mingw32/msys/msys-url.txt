@@ -29,3 +29,6 @@ http://downloads.sourceforge.net/mingw/rxvt-2.7.10.20050409-1-msys-1.0.11-bin.ta
 http://downloads.sourceforge.net/mingw/sed-4.2.1-1-msys-1.0.11-bin.tar.lzma
 http://downloads.sourceforge.net/mingw/tar-1.22-1-msys-1.0.11-bin.tar.lzma
 http://downloads.sourceforge.net/project/gnuwin32/gperf/3.0.1/gperf-3.0.1-bin.zip
+
+http://downloads.sourceforge.net/sevenzip/7za465.zip
+http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe

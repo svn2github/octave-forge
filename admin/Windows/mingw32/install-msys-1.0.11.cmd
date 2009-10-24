@@ -41,6 +41,10 @@
 @rem  CHANGELOG:
 @rem  =========
 @rem
+@rem   24-oct-2009  Benjamin Lindner <lindnerb@users.sourceforge.net>
+@rem   
+@rem     * add wget.exe and 7za.exe to /local/bin
+@rem
 @rem   15-oct-2009  Benjamin Lindner <lindnerb@users.sourceforge.net>
 @rem   
 @rem     * update documentation text above
@@ -153,6 +157,13 @@ call :extracttargz "%SRCDIR%libbz2-1.0.5-1-msys-1.0.11-dll-1.tar.gz"
 @rem  Extract gperf
 @rem
 %MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%gperf-3.0.1-bin.zip" bin/*.exe
+
+@rem
+@rem  Add 7za and wget executables to /local/bin
+@rem
+mkdir "%DST%\local\bin"
+%W32TAR% x -C "%DST%\local\bin" -f "%SRCDIR%7za465.zip" 7za.exe
+copy "%SRCDIR%wget.exe" "%DST%\local\bin"
 
 @rem
 @rem  Rename the msys icon. Windows gets confused if a .m file extension

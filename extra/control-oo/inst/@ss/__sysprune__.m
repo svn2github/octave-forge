@@ -33,4 +33,6 @@ function sys = __sysprune__ (sys, out_idx, in_idx, st_idx = ":")
   sys.c = sys.c(out_idx, st_idx);
   sys.d = sys.d(out_idx, in_idx);
 
+  sys.stname = sys.stname(st_idx);
+
 endfunction

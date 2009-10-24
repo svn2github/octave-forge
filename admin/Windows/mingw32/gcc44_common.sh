@@ -246,9 +246,6 @@ make_common()
       MAKE_FILE=""
    fi
    
-   # compiler flags
-   MAKE_CFLAGS="CFLAGS=$CFLAGS CPPFLAGS=$CPPFLAGS CXXFLAGS=$CXXFLAGS FFLAGS=$FFLAGS CXXLIBS=$CXXLIBS LDFLAGS=$LDFLAGS"
-   
    # call make
    if [ -e have_configure ]; then
       # we had a configure script setup all variable accordingly
@@ -256,8 +253,29 @@ make_common()
       $MAKE $MAKE_FILE $MAKE_PARALLEL $MAKE_XTRA $*
    else
       # No configure script, simple makefile
-      echo $MAKE $MAKE_FILE $MAKE_GCC $MAKE_PARALLEL $MAKE_CFLAGS $MAKE_XTRA $*
-      $MAKE $MAKE_FILE $MAKE_GCC $MAKE_PARALLEL $MAKE_CFLAGS $MAKE_XTRA $*
+      echo $MAKE \
+      $MAKE_FILE \
+      $MAKE_GCC \
+      $MAKE_PARALLEL \
+      CFLAGS="$CFLAGS" \
+      CPPFLAGS="$CPPFLAGS" \
+      CXXFLAGS="$CXXFLAGS" \
+      FFLAGS="$FFLAGS" \
+      CXXLIBS="$CXXLIBS" \
+      LDFLAGS="$LDFLAGS" \
+      $MAKE_XTRA $*
+      
+      $MAKE \
+      $MAKE_FILE \
+      $MAKE_GCC \
+      $MAKE_PARALLEL \
+      CFLAGS="$CFLAGS" \
+      CPPFLAGS="$CPPFLAGS" \
+      CXXFLAGS="$CXXFLAGS" \
+      FFLAGS="$FFLAGS" \
+      CXXLIBS="$CXXLIBS" \
+      LDFLAGS="$LDFLAGS" \
+      $MAKE_XTRA $*
    fi
 }
 

@@ -79,15 +79,15 @@
 ## Date: October 2009
 ## Version: 0.1
 
-function x = dare (a, b, q, r, opt = "B")
+function [x, l, g] = dare (a, b, q, r, s = [], opt = "B")
 
-  ## TODO: return G and L
+  warning ("dare: under construction");
 
-  if (nargin < 4 || nargin > 5)
+  if (nargin < 4 || nargin > 6)
     print_usage ();
   endif
 
-  if (nargin == 5)
+  if (nargin == 6)
     if (! ischar (opt))
       warning ("dare: invalid argument opt, setting to ""B""");
       opt = "B";
@@ -101,35 +101,63 @@ function x = dare (a, b, q, r, opt = "B")
     endif
   endif
 
-  ## TODO: check whether a, b are stabilizable
-  ##       and a, q are detectable
-
   [n, m] = size (b);
   p = issquare (q);
   m1 = issquare (r);
 
-  if (! p)
-    q = q' * q;
-  endif
-
-  ## Checking positive definiteness
-  if (isdefinite (r) <= 0)
-    error ("dare: r not positive definite");
-  endif
-
-  if (isdefinite (q) < 0)
-    error ("dare: q not positive semidefinite");
-  endif
-
-  ## Check r dimensions
   if (! m1)
     error ("dare: r is not square");
   elseif (m1 != m)
     error ("dare: b, r are not conformable");
   endif
 
-  s1 = [a, zeros(n) ; -q, eye(n)];
-  s2 = [eye(n), (b/r)*b' ; zeros(n), a'];
+  if (! p)
+    q = q' * q;
+  endif
+
+  ## incorporate cross term into a and q.
+  if (isempty (s))
+    s = zeros (n, m);
+    ao = a;
+    qo = q;
+  else
+    [n2, m2] = size (s);
+
+    if (n2 != n || m2 != m)
+      error ("dlqr: s (%dx%d) must be identically dimensioned with b (%dx%d)",
+              n2, m2, n, m);
+    endif
+
+    ao = a - (b/r)*s';
+    qo = q - (s/r)*s';
+  endif
+
+  ## check stabilizability
+  if (! isstabilizable (ao, b, [], 1))
+    error ("dlqr: (a,b) not stabilizable");
+  endif
+
+  ## check detectability
+  dflag = isdetectable (ao, qo, [], 1);
+
+  if (dflag == 0)
+    warning ("dlqr: (a,q) not detectable");
+  elseif (dflag == -1)
+    error ("dlqr: (a,q) has non-minimal modes near unit circle");
+  endif
+
+  %## Checking positive definiteness
+  %if (isdefinite (r) <= 0)
+  %  error ("dare: r not positive definite");
+  %endif
+
+  %if (isdefinite (qo) < 0)
+  %  error ("dare: q not positive semidefinite");
+  %endif
+
+  ## solve the riccati equation
+  s1 = [ao, zeros(n) ; -qo, eye(n)];
+  s2 = [eye(n), (b/r)*b' ; zeros(n), ao'];
 
   [c, d, s1, s2] = balance (s1, s2, opt);
   [aa, bb, u, lam] = qz (s1, s2, "S");
@@ -138,6 +166,13 @@ function x = dare (a, b, q, r, opt = "B")
   n1 = n+1;
   n2 = 2*n;
 
+  ## unique stabilizing solution
   x = u(n1:n2, 1:n) / u(1:n, 1:n);
+
+  ## corresponding gain matrix
+  g = (r+b'*x*b) \ (b'*x*a + s');
+
+  # closed-loop poles
+  l = eig (a - b*k);
 
 endfunction

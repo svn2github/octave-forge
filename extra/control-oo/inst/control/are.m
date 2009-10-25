@@ -126,6 +126,6 @@ function x = are (a, b, c, opt = "B")
   n1 = n + 1;
   n2 = 2 * n;
 
-  x = u (n1:n2, 1:n) / u (1:n, 1:n);
+  x = u(n1:n2, 1:n) / u(1:n, 1:n);
 
 endfunction

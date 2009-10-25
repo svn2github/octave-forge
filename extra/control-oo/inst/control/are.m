@@ -76,15 +76,14 @@ function x = are (a, b, c, opt = "B")
   endif
 
   if (nargin == 4)
-    if (! ischar (opt))
+    if (ischar (opt))
+      opt = upper (opt);
+      if (opt != "B" && opt != N && opt != "P" && opt != "S")
+        warning ("are: opt has invalid value ""%s""; setting to ""B""", opt);
+        opt = "B";
+      endif
+    else
       warning ("are: invalid argument opt, setting to ""B""");
-      opt = "B";
-    endif
-
-    opt = upper (opt);
-
-    if (opt != "B" && opt != N && opt != "P" && opt != "S")
-      warning ("are: opt has invalid value ""%s""; setting to ""B""", opt);
       opt = "B";
     endif
   endif

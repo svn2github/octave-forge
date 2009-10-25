@@ -171,6 +171,8 @@ uninstall()
    ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pangowin32-1.0-0.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpangowin32-1.0.dll.a
    
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/pango-querymodules.exe
+   
    # Uninstall headers
    for a in $HEADERS_INSTALL $HEADERSBUILD_INSTALL; do
       ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/`basename $a`

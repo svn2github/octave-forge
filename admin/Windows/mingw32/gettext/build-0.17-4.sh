@@ -128,9 +128,9 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/glob.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libglob.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libglob.a
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/intl.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libintl.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libintl.a
    
    # Uninstall headers
    for a in $HEADERS_INSTALL; do

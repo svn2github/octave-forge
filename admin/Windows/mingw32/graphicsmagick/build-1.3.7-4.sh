@@ -249,15 +249,28 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/glob.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libglob.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libglob.a
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/GraphicsMagick.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libGraphicsMagick.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libGraphicsMagick.a
+   
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/GraphicsMagick++.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libGraphicsMagick++.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libGraphicsMagick++.a
+   
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/GraphicsMagickWand.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libGraphicsMagickWand.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libGraphicsMagickWand.a
    
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/GraphicsMagick-config
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/GraphicsMagick++-config
    
+   # Uninstall executable tools
+   for a in ${TOOLS}; do
+      ${RM} ${RM_FLAGS} ${BINARY_PATH}/$a
+   done
+   
    # Uninstall headers
-   for a in $MAGICK_HEADERS magick_config_api.h; do
+   for a in $MAGICK_HEADERS magick_config.h; do
       ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/magick/$a
    done
    rmdir --ignore-fail-on-non-empty ${INCLUDE_PATH}/magick
@@ -266,6 +279,7 @@ uninstall()
       ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/magick++/$a
    done
    rmdir --ignore-fail-on-non-empty ${INCLUDE_PATH}/magick++
+   ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/Magick++.h
    
    for a in $MGK_CONFIG_SRC $MGK_CONFIG_BUILD; do
       ${RM} ${RM_FLAGS} ${SHARE_PATH}/${PKGVER}/config/$a

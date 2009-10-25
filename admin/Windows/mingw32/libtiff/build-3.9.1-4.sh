@@ -113,9 +113,9 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/.libs/tiff-3.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/.libs/libtiff.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/.libs/libtiff.a
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/tiff-3.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libtiff.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libtiff.a
    
    # Uninstall headers
    for a in $HEADERS_INSTALL $HEADERS2_INSTALL; do

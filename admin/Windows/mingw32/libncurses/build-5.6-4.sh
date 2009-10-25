@@ -121,11 +121,11 @@ uninstall()
    
    # Install library, import library and static library
    ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/ncurses-5.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libnurses.dll.a
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libncurses.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libncurses.a
    
    # Uninstall headers
-   for a in $HEADERS_INSTALL $HEADRES2_INSTALL ncurses.h; do
+   for a in $HEADERS_INSTALL $HEADERS2_INSTALL ncurses.h; do
       ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a
    done
    
@@ -138,7 +138,7 @@ uninstall()
    ${RM} -rvf ${PREFIX}/share/tabset
    
    # Uninstall license file
-   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/README
+   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/AUTHORS
    
    uninstall_post;
 }

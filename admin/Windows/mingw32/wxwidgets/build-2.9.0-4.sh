@@ -790,26 +790,27 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/glob.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libglob.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libglob.a
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/wxmsw290u_gcc_custom.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libwx_mswu-2.9.dll.a
+   #${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libglob.a
    
    # Uninstall headers
    for a in $HEADERS_INSTALL; do
       ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a
    done
    
-   for a in $HEADERS_INSTALL; do
+   for a in $HEADERS2_INSTALL; do
       ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/`basename $a`
    done
    
    for a in $HEADERS_DIRS; do
-      rmdir --ignore-fail-if-non-empty ${INCLUDE_PATH}/wx/$a
+      rmdir --ignore-fail-on-non-empty ${INCLUDE_PATH}/wx/$a
    done
+   rmdir --ignore-fail-on-non-empty ${INCLUDE_PATH}/wx
    
-   ${RM} ${RM_FLAGS} ${BUILDDIR}/lib/wx/config/msw-unicode-release-2.9 ${LIBRARY_PATH}/wx/config
-   rmdir --ignore-fail-if-non-empty ${LIBRARY_PATH}/wx/config
-   rmdir --ignore-fail-if-non-empty ${LIBRARY_PATH}/wx
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/wx/config/msw-unicode-release-2.9
+   rmdir --ignore-fail-on-non-empty ${LIBRARY_PATH}/wx/config
+   rmdir --ignore-fail-on-non-empty ${LIBRARY_PATH}/wx
    
    # Uninstall pkg-config .pc files
    for a in $PKG_CONFIG_INSTALL; do

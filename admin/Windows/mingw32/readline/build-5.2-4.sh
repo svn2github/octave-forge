@@ -129,7 +129,7 @@ uninstall()
    done
    
    # Uninstall license file
-   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/README
+   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/COPYING
    
    uninstall_post;
 }

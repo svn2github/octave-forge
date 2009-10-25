@@ -80,7 +80,7 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/zbzip2.dll
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/bzip2.dll
    ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libbz2.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libbz2.a
    

@@ -110,9 +110,9 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/zlib1.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libz.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libz.a
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/ftgl.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libftgl.dll.a
+   # ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libz.a
    
    # Uninstall headers
    for a in $HEADERS_INSTALL; do

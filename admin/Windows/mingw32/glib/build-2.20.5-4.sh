@@ -312,6 +312,8 @@ uninstall()
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/gspawn-win32-helper.exe
    ${RM} ${RM_FLAGS} ${BINARY_PATH}/gspawn-win32-helper-console.exe
    
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/glib-mkenums
+   
    # Uninstall headers
    for a in $HEADERS_INSTALL glibconfig.h; do
       ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/`basename $a`

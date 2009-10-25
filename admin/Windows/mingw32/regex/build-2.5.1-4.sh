@@ -108,7 +108,7 @@ uninstall()
    
    # Install library, import library and static library
    ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/gnurx.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libgregex.dll.a
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libregex.dll.a
    ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libregex.a
    
    # Uninstall headers

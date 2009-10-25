@@ -174,9 +174,9 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/glob.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libglob.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libglob.a
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/freetype-6.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libfreetype.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libfreetype.a
    
    # Uninstall headers
    for a in $HEADERS_INSTALL; do

@@ -230,7 +230,7 @@ install_with_built_npp_unicode()
    TARGET_PATH=$TARGET_PATH_UNICODE
 
    cp ${CP_FLAGS} ${BUILDDIR_NPP}/../bin/notepad++U.exe ${TARGET_PATH} notepad++.exe
-   strip ${STRIP_FLAGS} ${TARGET_PATH}/notepad++U.exe
+   strip ${STRIP_FLAGS} ${TARGET_PATH}/notepad++.exe
    
    cp ${CP_FLAGS} ${SRCDIR}/PowerEditor/src/font/LineDraw.ttf ${TARGET_PATH}
    cp ${CP_FLAGS} ${SRCDIR}/PowerEditor/bin/change.log ${TARGET_PATH}

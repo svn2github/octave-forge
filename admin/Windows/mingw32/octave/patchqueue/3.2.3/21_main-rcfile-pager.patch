@@ -1,0 +1,23 @@
+set pager info in main rcfile
+
+diff -r c86f3a7a71cd scripts/startup/main-rcfile
+--- a/scripts/startup/main-rcfile	Mon May 11 19:51:34 2009 +0200
++++ b/scripts/startup/main-rcfile	Mon May 11 19:52:50 2009 +0200
+@@ -10,6 +10,17 @@
+ 				  octave_config_info ("startupfiledir"),
+ 				  filesep, "inputrc"));
+ 
++## Check for PAGER in distribution tree
++if( exist( fullfile( octave_config_info("bindir"), "less.exe") ) )
++  PAGER( fullfile( octave_config_info("bindir"), "less.exe") );
++  
++  if( isempty(getenv("LESS")) )
++     PAGER_FLAGS ("-P\"?ltlines %lt-%lb?L/%L. ?e(END). -- (f)orward, (b)ack, (q)uit$\"");
++  endif
++  
++  page_screen_output(1);
++endif
++
+ if (strcmp (PAGER (), "less") && isempty (getenv ("LESS")))
+   PAGER_FLAGS ('-e -X -P"-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$"');
+ endif

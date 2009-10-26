@@ -27,9 +27,8 @@ function [z,e] = mod(x,y)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-%       $Revision$
 %       $Id$
-%	Copyright (C) 2004 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2004,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -37,23 +36,21 @@ function [z,e] = mod(x,y)
 s = warning;
 warning('off');
 
-if all(size(x)==1)
-        x = repmat(x,size(y));
-end;
-if all(size(y)==1)
-        y = repmat(y,size(x));
-end;
-if any(size(x)~=size(y)),
-        error('Size if input arguments do not fit.\n');
+if ((numel(x)~=1) && (numel(y)~=1) && any(size(x)~=size(y))) 
+        error('Size of input arguments do not fit.');
 end;
 
 t = floor(x./y);
 z = x - y.*t;
 
-z(~t) = x(~t);		% remainder is x if y = inf
-z(~y) = 0;		% remainder must be 0 if y==0
+if numel(x)==1,
+	z(~t) = x;		% remainder is x if y = inf
+else
+	z(~t) = x(~t);		% remainder is x if y = inf
+end;
+z(~y) = 0;			% remainder must be 0 if y==0
 
-warning(s);		% reset warning status
+warning(s);			% reset warning status
 
 if nargout > 1,
         e = (abs(t)*eps);	% error interval 

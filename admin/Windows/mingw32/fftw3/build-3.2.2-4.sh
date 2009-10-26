@@ -311,6 +311,8 @@ install_sse()
    ${CP} ${CP_FLAGS} ${BUILDDIR_SSE}/.libs/fftw3f.dll ${FFTWPKGROOT}/${SHAREDLIB_DIR}
    ${CP} ${CP_FLAGS} ${BUILDDIR_SSE}/.libs/libfftw3f.dll.a ${FFTWPKGROOT}/${LIBRARY_DIR}
    ${CP} ${CP_FLAGS} ${BUILDDIR_SSE}/.libs/libfftw3f.a ${FFTWPKGROOT}/${STATICLIB_DIR}
+   strip ${STRIP_FLAGS} ${FFTWPKGROOT}/${SHAREDLIB_DIR}/fftw3f.dll
+   strip ${STRIP_FLAGS} ${FFTWPKGROOT}/${STATICLIB_DIR}/libfftw3f.a
    
 }
 
@@ -320,6 +322,8 @@ install_sse2()
    ${CP} ${CP_FLAGS} ${BUILDDIR_SSE2}/.libs/fftw3.dll ${FFTWPKGROOT}/${SHAREDLIB_DIR}
    ${CP} ${CP_FLAGS} ${BUILDDIR_SSE2}/.libs/libfftw3.dll.a ${FFTWPKGROOT}/${LIBRARY_DIR}
    ${CP} ${CP_FLAGS} ${BUILDDIR_SSE2}/.libs/libfftw3.a ${FFTWPKGROOT}/${STATICLIB_DIR}
+   strip ${STRIP_FLAGS} ${FFTWPKGROOT}/${SHAREDLIB_DIR}/fftw3.dll
+   strip ${STRIP_FLAGS} ${FFTWPKGROOT}/${STATICLIB_DIR}/libfftw3.a
    
 }
 

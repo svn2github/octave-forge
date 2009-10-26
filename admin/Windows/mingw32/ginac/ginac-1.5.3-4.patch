@@ -1,0 +1,65 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' ginac-1.5.3-orig/check/Makefile.in ginac-1.5.3/check/Makefile.in
+--- ginac-1.5.3-orig/check/Makefile.in	2009-10-26 18:10:11 +0100
++++ ginac-1.5.3/check/Makefile.in	2009-10-26 18:10:01 +0100
+@@ -752,6 +752,8 @@
+ 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+ $(am__aclocal_m4_deps):
+ 
++LIBS+=$(CXXLIBS)
++
+ clean-checkPROGRAMS:
+ 	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
+ 	echo " rm -f" $$list; \
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' ginac-1.5.3-orig/ginac/Makefile.in ginac-1.5.3/ginac/Makefile.in
+--- ginac-1.5.3-orig/ginac/Makefile.in	2009-10-26 18:10:11 +0100
++++ ginac-1.5.3/ginac/Makefile.in	2009-10-26 18:10:01 +0100
+@@ -261,7 +261,7 @@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-lib_LTLIBRARIES = libginac.la
++lib_LTLIBRARIES = libginac.la ginac.dll
+ libginac_la_SOURCES = add.cpp archive.cpp basic.cpp clifford.cpp color.cpp \
+   constant.cpp ex.cpp excompiler.cpp expair.cpp expairseq.cpp exprseq.cpp \
+   fail.cpp factor.cpp fderivative.cpp function.cpp idx.cpp indexed.cpp inifcns.cpp \
+@@ -417,6 +417,16 @@
+ libginac.la: $(libginac_la_OBJECTS) $(libginac_la_DEPENDENCIES) 
+ 	$(libginac_la_LINK) -rpath $(libdir) $(libginac_la_OBJECTS) $(libginac_la_LIBADD) $(LIBS)
+ 
++ginac.dll : libginac.la
++	$(CXX) -shared -o $@ \
++	$(LDFLAGS) \
++	-Wl,--out-implib=libginac.dll.a \
++	-Wl,--output-def=libginac.def \
++	-Wl,--whole-archive ./.libs/libginac.a \
++	-Wl,--no-whole-archive \
++	$(CXXLIBS) \
++	$(LIBS)
++
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' ginac-1.5.3-orig/ginsh/Makefile.in ginac-1.5.3/ginsh/Makefile.in
+--- ginac-1.5.3-orig/ginsh/Makefile.in	2009-10-26 18:10:11 +0100
++++ ginac-1.5.3/ginsh/Makefile.in	2009-10-26 18:10:01 +0100
+@@ -351,7 +351,7 @@
+ 	else :; fi
+ ginsh$(EXEEXT): $(ginsh_OBJECTS) $(ginsh_DEPENDENCIES) 
+ 	@rm -f ginsh$(EXEEXT)
+-	$(CXXLINK) $(ginsh_OBJECTS) $(ginsh_LDADD) $(LIBS)
++	$(CXXLINK) $(ginsh_OBJECTS) $(ginsh_LDADD) $(LIBS) $(CXXLIBS)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' ginac-1.5.3-orig/tools/Makefile.in ginac-1.5.3/tools/Makefile.in
+--- ginac-1.5.3-orig/tools/Makefile.in	2009-10-26 18:10:11 +0100
++++ ginac-1.5.3/tools/Makefile.in	2009-10-26 18:10:01 +0100
+@@ -332,7 +332,7 @@
+ 	rm -f $$list
+ viewgar$(EXEEXT): $(viewgar_OBJECTS) $(viewgar_DEPENDENCIES) 
+ 	@rm -f viewgar$(EXEEXT)
+-	$(CXXLINK) $(viewgar_OBJECTS) $(viewgar_LDADD) $(LIBS)
++	$(CXXLINK) $(viewgar_OBJECTS) $(viewgar_LDADD) $(LIBS) $(CXXLIBS)
+ install-binSCRIPTS: $(bin_SCRIPTS)
+ 	@$(NORMAL_INSTALL)
+ 	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"

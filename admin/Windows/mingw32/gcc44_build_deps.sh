@@ -67,9 +67,9 @@ VER_TEXINFO=4.13a-$REL
 VER_FTGL=2.1.3-rc5-$REL
 VER_FLTK=1.1.9-$REL
 
-#VER_NETCDF=4.0-3
-#VER_CLN=1.2.2-3
-#VER_GINAC=1.5.1-3
+VER_NETCDF=4.0-$REL
+VER_CLN=1.3.0-$REL
+VER_GINAC=1.5.3-$REL
 
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
@@ -139,6 +139,6 @@ VER_FLTK=1.1.9-$REL
 ( cd ftgl && build-${VER_FTGL}.sh ${ACTION} );
 ( cd fltk && build-${VER_FLTK}.sh ${ACTION} );
 
-#( cd netcdf && build-${VER_NETCDF}.sh ${ACTION} );
-#( cd CLN && build-${VER_CLN}.sh ${ACTION} );
-#( cd ginac && build-${VER_GINAC}.sh ${ACTION} );
+( cd netcdf && build-${VER_NETCDF}.sh ${ACTION} );
+( cd CLN && build-${VER_CLN}.sh ${ACTION} );
+( cd ginac && build-${VER_GINAC}.sh ${ACTION} );

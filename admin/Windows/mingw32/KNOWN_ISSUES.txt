@@ -1,5 +1,5 @@
 
-Known Issues with octave/mingw32 3.2.2:
+Known Issues with octave/mingw32 3.2.3:
 --------------------------------------
 
 *) The command "clear all" results in a segfault.
@@ -12,14 +12,6 @@ Known Issues with octave/mingw32 3.2.2:
    The error occurs only if any of these packages is marked "-auto" 
    i.e. is loaded at startup.
    
-*) The command "clear all" exits with the error message
-   
-     error: stdin is not a tty!
-   
-   in conjunction with the ARPACK package e.g. when calling eigs()
-   
-*) The fixed octave forge package currently does not compile
-
 *) Installing octave respectively running octave from a path which contains
    spaces breaks the installation of octave-forge packages using octave's
    package manager pkg.m.
@@ -34,8 +26,7 @@ Known Issues with octave/mingw32 3.2.2:
 
    Summary:
    
-     PASS   5730
-     FAIL     10
-     
-   octave-3.2.2\src\data.cc  PASS  500/509  FAIL 9
-   test_string.m ....................................... PASS   78/79   FAIL 1
+    PASS   5754
+    FAIL      3
+   
+   octave-3.2.3\src\data.cc  PASS  506/509  FAIL 3

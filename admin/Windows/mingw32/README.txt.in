@@ -3,16 +3,6 @@ available from http://www.octave.org.
 It has been built using revision @BUILD_REVISION@ of the building scripts 
 hosted at http://octave.sourceforge.net.
 
-The 3.2.2 installer includes the following post-3.2.2 changesets in addition 
-to the octave-3.2.2 sources:
-   
-   http://hg.tw-math.de/release-3-2-x/rev/cd95695a0a89
-   http://hg.tw-math.de/release-3-2-x/rev/b308b2e12f04
-   http://hg.tw-math.de/release-3-2-x/rev/9107c882f193
-      
-These adress bugfixes relevant to mingw32 platform (See the CHANGELOG.txt for
-additional information).
-
 This version of Octave has many new features relative to previous versions, 
 including:
 

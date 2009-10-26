@@ -1,4 +1,26 @@
 
+Changes since Octave/mingw32 3.2.2:
+-----------------------------------
+
+*) Build with gcc-4.4.0 from http://www.mingw.org
+*) Update to gnuplot 4.3.0-2009-07-08 CVS snapshot
+*) for gnuplot, add a workaround patch to SF#2848002
+*) build gnuplot with support for wxwidgets terminal. To use it, set the
+   environment variable GNUTERM to "wxt", e.g. from within octave execute
+      putenv("GNUTERM","wxt")
+*) Build Graphicsmagick as relocatable dll and remove dependency on 
+   environment variable defining installation location
+*) Update several dependency libraries
+*) Add SSE/SSE2-enabled fftw3 library
+*) add the fixed-0.7.10 octave forge package to installer
+
+Fixed Issues in 3.2.3:
+----------------------
+
+*) Printing to pdf no longer yields spurious empty pages using gnuplot
+*) Pressing CTRL-C within octave should no longer crash gnuplot
+*) the command "clear all" no longer segfaults after calling eigs()
+
 Changes since Octave/mingw32 3.2.0:
 -----------------------------------
 

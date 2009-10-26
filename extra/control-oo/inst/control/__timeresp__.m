@@ -55,13 +55,13 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
   t = (0 : dt : tfinal)';
   l_t = length (t);
 
-  ## preallocate memory
-  y = zeros (l_t, p);
-  x_arr = zeros (l_t, n);
-
   switch (resptype)
     case "initial"
       str = "Response to Initial Conditions";
+
+      ## preallocate memory
+      y = zeros (l_t, p);
+      x_arr = zeros (l_t, n);
 
       ## initial conditions
       x = x0(:);  # make sure that x is a row vector
@@ -80,40 +80,57 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
     case "step"
       str = "Step Response";
 
-      ## initial conditions
-      x = zeros (n, 1);
+      ## preallocate memory
+      y = zeros (l_t, p, m);
+      x_arr = zeros (l_t, n, m);
 
-      ## simulation
-      for k = 1 : l_t
-        y(k, :) = C * x + D;
-        x_arr(k, :) = x;
-        x = F * x + G;
+      for j = 1 : m  # for every input channel
+        ## initial conditions
+        x = zeros (n, 1);
+        u = zeros (p, 1);
+        u(j) = 1;
+
+        ## simulation
+        for k = 1 : l_t
+          y(k, :, j) = C * x + D * u;
+          x_arr(k, :, j) = x;
+          x = F * x + G * u;
+        endfor
       endfor
 
     case "impulse"
       str = "Impulse Response";
 
-      ## initial conditions
-      if (digital)
-        x = G / dt;
-        y(1, :) = D / dt;
-        x_arr(1, :) = x;
-      else
-        if (D'*D > 0)
-          warning ("impulse: system is not strictly proper");
+      ## preallocate memory
+      y = zeros (l_t, p, m);
+      x_arr = zeros (l_t, n, m);
+
+      for j = 1 : m  # for every input channel
+        ## initial conditions
+        u = zeros (p, 1);
+        u(j) = 1;
+
+        if (digital)
+          x = G * u / dt;
+          y(1, :, j) = D * u / dt;
+          x_arr(1, :, j) = x;
+        else
+          if (D'*D > 0)
+            warning ("impulse: system is not strictly proper");
+          endif
+
+          x = B * u;  # B, not G!
+          y(1, :, j) = C * x;
+          x_arr(1, :, j) = x;
+          x = F * x;
         endif
 
-        x = B;  # B, not G!
-        y(1, :) = C * x;
-        x_arr(1, :) = x;
-        x = F * x;
-      endif
-
-      ## simulation
-      for k = 2 : l_t
-        y (k, :) = C * x;
-        x_arr(k, :) = x;
-        x = F * x;
+        ## simulation
+        for k = 2 : l_t
+          y (k, :, j) = C * x;
+          x_arr(k, :, j) = x;
+          x = F * x;
+        endfor
       endfor
 
       if (digital)
@@ -135,28 +152,54 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
       outname = __markemptynames__ (outname);
     endif
 
+    if (strcmp (resptype, "initial"))
+      cols = 1;
+    else
+      cols = m;
+    endif
+
     if (digital)  # discrete system
       for k = 1 : p
-        subplot (p, 1, k)
-        stairs (t, y(:, k))
-        grid on
-        if (k == 1)
-          title (str)
-        endif
-        ylabel (sprintf ("Amplitude %s", outname{k}))
+        for j = 1 : cols
+
+          subplot (p, cols, (k-1)*cols+j)
+          stairs (t, y(:, k, j))
+          grid on
+
+          if (k == 1)
+            title (str)
+          endif
+
+          if (j == 1)
+            ylabel (sprintf ("Amplitude %s", outname{k}))
+          endif
+
+        endfor
       endfor
+
       xlabel ("Time [s]")
+
     else  # continuous system
       for k = 1 : p
-        subplot (p, 1, k)
-        plot (t, y(:, k))
-        grid on
-        if (k == 1)
-          title (str)
-        endif
-        ylabel (sprintf ("Amplitude %s", outname{k}))
+        for j = 1 : cols
+
+          subplot (p, cols, (k-1)*cols+j)
+          plot (t, y(:, k, j))
+          grid on
+
+          if (k == 1)
+            title (str)
+          endif
+
+          if (j == 1)
+            ylabel (sprintf ("Amplitude %s", outname{k}))
+          endif
+
+        endfor
       endfor
+
       xlabel ("Time [s]")
+
     endif 
   endif
 

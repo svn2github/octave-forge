@@ -87,7 +87,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
       for j = 1 : m  # for every input channel
         ## initial conditions
         x = zeros (n, 1);
-        u = zeros (p, 1);
+        u = zeros (m, 1);
         u(j) = 1;
 
         ## simulation
@@ -107,7 +107,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
 
       for j = 1 : m  # for every input channel
         ## initial conditions
-        u = zeros (p, 1);
+        u = zeros (m, 1);
         u(j) = 1;
 
         if (digital)

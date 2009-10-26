@@ -25,6 +25,9 @@ System Gain and Dynamics
   zero
 Time Domain Analysis
   gensig
+  impulse
+  initial
+  step
 Frequency Domain Analysis
 Model Simplification
   minreal

@@ -131,7 +131,7 @@ Section "Octave" SEC_OCTAVE
 
   ; octave executables
   SetOutPath "$INSTDIR\bin"
-  File /r /x blas.dll /x cblas.dll /x lapack.dll "${PACKAGE_ROOT}\bin\*.*"
+  File /r /x blas.dll /x cblas.dll /x lapack.dll /x fftw3.dll /x fftw3f.dll "${PACKAGE_ROOT}\bin\*.*"
   
   SetOutPath "$INSTDIR\doc"
   File /r "${PACKAGE_ROOT}\doc\*.*"
@@ -140,7 +140,7 @@ Section "Octave" SEC_OCTAVE
   ;SetOutPath "$INSTDIR\info"
   ;File /r "${PACKAGE_ROOT}\share\info\*.*"
   SetOutPath "$INSTDIR\lib"
-  File /r /x libblas.dll.a /x libcblas.dll.a /x liblapack.dll.a "${PACKAGE_ROOT}\lib\*.*"
+  File /r /x libblas.dll.a /x libcblas.dll.a /x liblapack.dll.a /x libfftw3.dll.a /x libfftw3f.dll.a "${PACKAGE_ROOT}\lib\*.*"
   SetOutPath "$INSTDIR\libexec"
   File /r /x packages "${PACKAGE_ROOT}\libexec\*.*"
   SetOutPath "$INSTDIR\license"
@@ -153,8 +153,8 @@ Section "Octave" SEC_OCTAVE
   File /r "${PACKAGE_ROOT}\MSYS\*.*"
   SetOutPath "$INSTDIR\share"
   File /r /x packages /x octave_packages "${PACKAGE_ROOT}\share\*.*"
-#  SetOutPath "$INSTDIR\staticlib"
-#  File /r /x libblas.a /x libcblas.a /x liblapack.a "${PACKAGE_ROOT}\staticlib\*.*"
+  ;SetOutPath "$INSTDIR\staticlib"
+  ;File /r /x libblas.a /x libcblas.a /x liblapack.a "${PACKAGE_ROOT}\staticlib\*.*"
   SetOutPath "$INSTDIR\tools"
   File /r "${PACKAGE_ROOT}\tools\*.*"
    
@@ -230,6 +230,32 @@ SectionEnd
 #SectionEnd
 
 #SectionGroupEnd
+
+SectionGroup /e "FFTW3 Libraries" SECGRP_FFTW3
+
+Section /o "Generic" SEC_FFTW3_GENERIC
+
+   SetOutPath "$INSTDIR\bin"
+   File "${PACKAGE_ROOT}\bin\fftw3.dll"
+   File "${PACKAGE_ROOT}\bin\fftw3f.dll"
+   SetOutPath "$INSTDIR\lib"
+   File "${PACKAGE_ROOT}\lib\libfftw3.dll.a"
+   File "${PACKAGE_ROOT}\lib\libfftw3f.dll.a"
+
+SectionEnd
+
+Section /o "SSE2" SEC_FFTW3_SSE2
+
+   SetOutPath "$INSTDIR\bin"
+   File "${PACKAGE_ROOT}\FFTW3\SSE2\bin\fftw3.dll"
+   File "${PACKAGE_ROOT}\FFTW3\SSE2\bin\fftw3f.dll"
+   SetOutPath "$INSTDIR\lib"
+   File "${PACKAGE_ROOT}\FFTW3\SSE2\lib\libfftw3.dll.a"
+   File "${PACKAGE_ROOT}\FFTW3\SSE2\lib\libfftw3f.dll.a"
+
+SectionEnd
+
+SectionGroupEnd
 
 SectionGroup /e "ATLAS Libraries" SECGRP_ATLAS
 
@@ -356,36 +382,46 @@ checksse3:
    ExecWait '"$TEMP\cpufeature.exe" -f sse3' $1
    StrCmp $1 1 0 checksse2
    !insertmacro SetSectionFlag  ${SEC_ATLAS_CORE2DUO} ${SF_SELECTED}
+   !insertmacro SetSectionFlag  ${SEC_FFTW3_SSE2} ${SF_SELECTED}
    StrCpy $9 ${SEC_ATLAS_CORE2DUO}
+   StrCpy $8 ${SEC_FFTW3_SSE2}
    goto cpuend
 checksse2:
    StrCpy $1 0
    ExecWait '"$TEMP\cpufeature.exe" -f sse2' $1
    StrCmp $1 1 0 checksse
    !insertmacro SetSectionFlag  ${SEC_ATLAS_P4} ${SF_SELECTED}
+   !insertmacro SetSectionFlag  ${SEC_FFTW3_SSE2} ${SF_SELECTED}
    StrCpy $9 ${SEC_ATLAS_P4}
+   StrCpy $8 ${SEC_FFTW3_SSE2}
    goto cpuend
 checksse:
    StrCpy $1 0
    ExecWait '"$TEMP\cpufeature.exe" -f sse' $1
    StrCmp $1 1 0 checkmmx
    !insertmacro SetSectionFlag  ${SEC_ATLAS_P3} ${SF_SELECTED}
+   !insertmacro SetSectionFlag  ${SEC_FFTW3_GENERIC} ${SF_SELECTED}
    StrCpy $9 ${SEC_ATLAS_P3}
+   StrCpy $8 ${SEC_FFTW3_GENERIC}
    goto cpuend
 checkmmx:
    StrCpy $1 0
    ExecWait '"$TEMP\cpufeature.exe" -f mmx' $1
    StrCmp $1 1 0 setgeneric
    !insertmacro SetSectionFlag  ${SEC_ATLAS_P2} ${SF_SELECTED}
+   !insertmacro SetSectionFlag  ${SEC_FFTW3_GENERIC} ${SF_SELECTED}
    StrCpy $9 ${SEC_ATLAS_P2}
+   StrCpy $8 ${SEC_FFTW3_GENERIC}
    goto cpuend
 setgeneric:
-  !insertmacro SetSectionFlag  ${SEC_ATLAS_GENERIC} ${SF_SELECTED}
-  StrCpy $9 ${SEC_ATLAS_GENERIC}
+   !insertmacro SetSectionFlag  ${SEC_ATLAS_GENERIC} ${SF_SELECTED}
+   !insertmacro SetSectionFlag  ${SEC_FFTW3_GENERIC} ${SF_SELECTED}
+   StrCpy $9 ${SEC_ATLAS_GENERIC}
+   StrCpy $8 ${SEC_FFTW3_GENERIC}
 cpuend:
 
-FunctionEnd   
-   
+FunctionEnd
+
 Function .onSelChange
 
    !insertmacro StartRadioButtons $9
@@ -394,6 +430,11 @@ Function .onSelChange
       !insertmacro RadioButton ${SEC_ATLAS_P3}
       !insertmacro RadioButton ${SEC_ATLAS_P4}
       !insertmacro RadioButton ${SEC_ATLAS_CORE2DUO}
+   !insertmacro EndRadioButtons
+
+   !insertmacro StartRadioButtons $8
+      !insertmacro RadioButton ${SEC_FFTW3_GENERIC}
+      !insertmacro RadioButton ${SEC_FFTW3_SSE2}
    !insertmacro EndRadioButtons
 
 FunctionEnd
@@ -499,4 +540,7 @@ SectionEnd
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ATLAS_P3} "BLAS+LAPACK with SSE. Works on Pentium III"
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ATLAS_P4} "BLAS+LAPACK with SSE2. Works on e.g. Pentium 4"
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ATLAS_CORE2DUO} "BLAS+LAPACK with SSE3. Works on e.g. Core2Duo, Pentium D, Pentium 4E"
+   !insertmacro MUI_DESCRIPTION_TEXT ${SECGRP_FFTW3} "FFTW3 Libraries"
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FFTW3_GENERIC} "Generic FFT3W"
+   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FFTW3_SSE2} "SSE/SSE2 enabled FFT3W"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END

@@ -63,6 +63,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
   switch (resptype)
     case "initial"
       str = "Response to Initial Conditions";
+      yfinal = zeros (p, 1);
 
       ## preallocate memory
       y = zeros (l_t, p);
@@ -84,6 +85,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
 
     case "step"
       str = "Step Response";
+      yfinal = dcgain (sys);
 
       ## preallocate memory
       y = zeros (l_t, p, m);
@@ -105,6 +107,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
 
     case "impulse"
       str = "Impulse Response";
+      yfinal = zeros (p, m);
 
       ## preallocate memory
       y = zeros (l_t, p, m);
@@ -168,7 +171,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
         for j = 1 : cols
 
           subplot (p, cols, (k-1)*cols+j)
-          stairs (t, y(:, k, j))
+          stairs (t, [y(:, k, j), yfinal(k, j) * ones(l_t, 1)])
           grid on
 
           if (k == 1)
@@ -189,7 +192,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
         for j = 1 : cols
 
           subplot (p, cols, (k-1)*cols+j)
-          plot (t, y(:, k, j))
+          plot (t, [y(:, k, j), yfinal(k, j) * ones(l_t, 1)])
           grid on
 
           if (k == 1)

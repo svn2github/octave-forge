@@ -88,15 +88,14 @@ function [x, l, g] = dare (a, b, q, r, s = [], opt = "B")
   endif
 
   if (nargin == 6)
-    if (! ischar (opt))
+    if (ischar (opt))
+      opt = upper (opt(1));
+      if (opt != "B" && opt != N && opt != "P" && opt != "S")
+        warning ("dare: opt has invalid value ""%s""; setting to ""B""", opt);
+        opt = "B";
+      endif
+    else
       warning ("dare: invalid argument opt, setting to ""B""");
-      opt = "B";
-    endif
-
-    opt = upper (opt);
-
-    if (opt != "B" && opt != N && opt != "P" && opt != "S")
-      warning ("dare: opt has invalid value ""%s""; setting to ""B""", opt);
       opt = "B";
     endif
   endif
@@ -156,8 +155,10 @@ function [x, l, g] = dare (a, b, q, r, s = [], opt = "B")
   %endif
 
   ## solve the riccati equation
-  s1 = [ao, zeros(n) ; -qo, eye(n)];
-  s2 = [eye(n), (b/r)*b' ; zeros(n), ao'];
+  s1 = [ ao, zeros(n);
+        -qo,  eye(n) ];
+  s2 = [ eye(n),  (b/r)*b';
+        zeros(n),    ao'  ];
 
   [c, d, s1, s2] = balance (s1, s2, opt);
   [aa, bb, u, lam] = qz (s1, s2, "S");

@@ -77,7 +77,7 @@ function x = are (a, b, c, opt = "B")
 
   if (nargin == 4)
     if (ischar (opt))
-      opt = upper (opt);
+      opt = upper (opt(1));
       if (opt != "B" && opt != N && opt != "P" && opt != "S")
         warning ("are: opt has invalid value ""%s""; setting to ""B""", opt);
         opt = "B";

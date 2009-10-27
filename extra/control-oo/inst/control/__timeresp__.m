@@ -27,6 +27,11 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
     sys = ss (sys);  # sys must be proper
   endif
 
+  if (! isempty (tfinal) && ! isscalar (tfinal))  # time vector t passed
+    dt = tfinal(2) - tfinal(1);  # assume that t is regularly spaced
+    tfinal = tfinal(end);
+  endif
+
   [A, B, C, D, tsam] = ssdata (sys);
 
   digital = ! isct (sys);  # static gains are treated as analog systems

@@ -170,43 +170,43 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
       for k = 1 : p
         for j = 1 : cols
 
-          subplot (p, cols, (k-1)*cols+j)
-          stairs (t, [y(:, k, j), yfinal(k, j) * ones(l_t, 1)])
-          grid on
+          subplot (p, cols, (k-1)*cols+j);
+          stairs (t, [y(:, k, j), yfinal(k, j) * ones(l_t, 1)]);
+          grid ("on");
 
           if (k == 1)
-            title (str)
+            title (str);
           endif
 
           if (j == 1)
-            ylabel (sprintf ("Amplitude %s", outname{k}))
+            ylabel (sprintf ("Amplitude %s", outname{k}));
           endif
 
         endfor
       endfor
 
-      xlabel ("Time [s]")
+      xlabel ("Time [s]");
 
     else  # continuous system
       for k = 1 : p
         for j = 1 : cols
 
-          subplot (p, cols, (k-1)*cols+j)
-          plot (t, [y(:, k, j), yfinal(k, j) * ones(l_t, 1)])
-          grid on
+          subplot (p, cols, (k-1)*cols+j);
+          plot (t, [y(:, k, j), yfinal(k, j) * ones(l_t, 1)]);
+          grid ("on");
 
           if (k == 1)
-            title (str)
+            title (str);
           endif
 
           if (j == 1)
-            ylabel (sprintf ("Amplitude %s", outname{k}))
+            ylabel (sprintf ("Amplitude %s", outname{k}));
           endif
 
         endfor
       endfor
 
-      xlabel ("Time [s]")
+      xlabel ("Time [s]");
 
     endif 
   endif

@@ -21,6 +21,7 @@ System Interconnections
   series
   strseq
 System Gain and Dynamics
+  dcgain
   pole
   zero
 Time Domain Analysis
@@ -29,6 +30,7 @@ Time Domain Analysis
   initial
   step
 Frequency Domain Analysis
+  freqresp
 Model Simplification
   minreal
   sminreal

@@ -1,7 +1,7 @@
 # Common functions & settings for building with gcc-4.4.x
 
 # Executables used
-TAR=bsdtar
+TAR=tar
 TAR_FLAGS=
 
 STRIP=strip
@@ -373,10 +373,32 @@ unpack_pre()
 unpack()
 {
   unpack_pre
-  ( ${TAR} -xf ${TOPDIR}/${SRCFILE} );
+  unpack_core
   unpack_post
 }
 unpack_post() { echo ; }
+
+unpack_core()
+{
+   case ${SRCFILE} in
+     *.tar.gz|*.tgz)
+       $TAR xzf ${TOPDIR}/${SRCFILE}
+     ;;
+     *.tar.bz2)
+       $TAR xjf ${TOPDIR}/${SRCFILE}
+     ;;
+     *.tar.lzma)
+       $TAR x --lzma -f ${TOPDIR}/${SRCFILE}
+     ;;
+     *.tar.xz)
+       $TAR x --xz -f ${TOPDIR}/${SRCFILE}
+     ;;
+     *)
+       echo ERROR: Source file $SRCFILE archive type not handled!
+       exit 10
+       ;;
+   esac
+}
 
 unpack_add_ver()
 {
@@ -387,7 +409,7 @@ unpack_add_ver()
    unpack_pre;
    
    rm -rf tmp
-   ( mkdir tmp && cd tmp && ${TAR} -xf ${TOPDIR}/${SRCFILE} && mv $PKG ../$SRCDIR  && cd .. && rm -rf tmp )
+   ( mkdir tmp && cd tmp && unpack_core && mv $PKG ../$SRCDIR  && cd .. && rm -rf tmp )
    
    unpack_post;
 }
@@ -403,7 +425,7 @@ unpack_orig_pre()
 unpack_orig()
 {
   unpack_orig_pre
-  ( mkdir -p ${TOPDIR}/tmp && cd ${TOPDIR}/tmp && ${TAR} -xf ${TOPDIR}/${SRCFILE} && mv ${SRCDIR} ${TOPDIR}/${SRCDIR_ORIG} && cd ${TOPDIR} && rm -rf tmp)
+  ( mkdir -p ${TOPDIR}/tmp && cd ${TOPDIR}/tmp && unpack_core && mv ${SRCDIR} ${TOPDIR}/${SRCDIR_ORIG} && cd ${TOPDIR} && rm -rf tmp)
   unpack_orig_post
 }
 unpack_orig_post() { echo ; }
@@ -417,7 +439,7 @@ unpack_orig_add_ver()
    unpack_orig_pre;
    
    rm -rf tmp
-   ( mkdir tmp && cd tmp && ${TAR} -xf ${TOPDIR}/${SRCFILE} && mv $PKG ../$SRCDIR_ORIG && cd .. && rm -rf tmp)
+   ( mkdir tmp && cd tmp && unpack_core && mv $PKG ../$SRCDIR_ORIG && cd .. && rm -rf tmp)
    
    rm -rf tmp
    

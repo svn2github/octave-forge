@@ -17,7 +17,7 @@ SRCFILE=${PKGVER}.tar.gz
 PATCHFILE=${FULLPKG}.patch
 
 # URL(s) of source code file(s)
-URL="http://cairographics.org/releases/cairo-1.8.2.tar.gz"
+URL="http://cairographics.org/releases/cairo-1.8.8.tar.gz"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`

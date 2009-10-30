@@ -47,7 +47,7 @@ if numel(x)==1,
 else
 	z(~t) = x(~t);		% remainder is x if y = inf
 end;
-z(~y) = 0;			% remainder must be 0 if y==0
+z(repmat(~y,size(z)./size(y))) = 0;	% remainder must be 0 if y==0
 
 warning(s);			% reset warning status
 

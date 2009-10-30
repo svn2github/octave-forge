@@ -26,8 +26,11 @@ function H = __freqresp__ (sys, w, resptype = 0)
   [p, m] = size (sys);
   [A, B, C, D, Ts] = ssdata (sys);
   I = eye (size (A));
+  J = eye (m);
 
-  % J = eye (m);
+  if (resptype != 0 && m != p)
+    error ("ss: freqresp: system must be square for response type %d", resptype);
+  endif
 
   if (Ts == 0 || Ts == -1)  # continuous system
     s = i * w;
@@ -58,6 +61,10 @@ function H = __freqresp__ (sys, w, resptype = 0)
       for k = 1 : l_s
         H(:, :, k) = J  +  inv (C * inv (s(k)*I - A) * B  +  D);
       endfor
+
+    otherwise
+      error ("ss: freqresp: invalid response type");
+
   endswitch
 
 endfunction

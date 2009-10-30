@@ -35,65 +35,44 @@ function H = __freqresp__ (sys, w, resptype = 0)
   l_s = length (s);
   H = zeros (p, m, l_s);
 
-  switch (resptype)
-    case 0  # default system
-      for b = 1 : p
-        for a = 1 : m
-          num_pm = num{b, a};
-          den_pm = den{b, a};
+  for b = 1 : p
+    for a = 1 : m
+      num_pm = num{b, a};
+      den_pm = den{b, a};
 
-          for k = 1 : l_s
-            H(b, a, k) = polyval (num_pm, s(k)) / polyval (den_pm, s(k));
-          endfor
-        endfor
+      for k = 1 : l_s
+        H(b, a, k) = polyval (num_pm, s(k)) / polyval (den_pm, s(k));
       endfor
-#{
-    ## FIXME: response types 1-3 are wrong for MIMO systems!
-    case 1  # inversed system
-      for b = 1 : p
-        for a = 1 : m
-          num_pm = num{b, a};
-          den_pm = den{b, a};
+    endfor
+  endfor
 
-          for k = 1 : l_s
-            H(b, a, k) = polyval (den_pm, s(k)) / polyval (num_pm, s(k));
-          endfor
+  if (resptype)
+    if (m != p)
+      error ("tf: freqresp: system must be square for response type %d", resptype);
+    endif
+
+    I = eye (p);
+
+    switch (resptype)
+      case 1  # inversed system
+        for k = 1 : l_s
+          H(:, :, k) = inv (H(:, :, k));
         endfor
-      endfor
 
-    case 2  # inversed sensitivity
-      J = eye (p);
-
-      for b = 1 : p
-        for a = 1 : m
-          num_pm = num{b, a};
-          den_pm = den{b, a};
-          J_pm = J(b, a);
-
-          for k = 1 : l_s
-            H(b, a, k) = J_pm  +  polyval (num_pm, s(k)) / polyval (den_pm, s(k));
-          endfor
+      case 2  # inversed sensitivity
+        for k = 1 : l_s
+          H(:, :, k) = I + H(:, :, k);
         endfor
-      endfor
 
-    case 3  # inversed complementary sensitivity
-      J = eye (p);
-
-      for b = 1 : p
-        for a = 1 : m
-          num_pm = num{b, a};
-          den_pm = den{b, a};
-          J_pm = J(b, a);
-
-          for k = 1 : l_s
-            H(b, a, k) = J_pm  +  polyval (den_pm, s(k)) / polyval (num_pm, s(k));
-          endfor
+      case 3  # inversed complementary sensitivity
+        for k = 1 : l_s
+          H(:, :, k) = I + inv(H(:, :, k));
         endfor
-      endfor
-#}
-    otherwise
-      error ("tf: freqresp: invalid response type");
 
-  endswitch
+      otherwise
+        error ("tf: freqresp: invalid response type");
+
+    endswitch
+  endif
 
 endfunction

@@ -40,7 +40,7 @@ function sys = tf (num, den, varargin)
       num = {};
       den = {};
       tsam = -1;
-      tfvar = "x";  % undefined
+      tfvar = "x";  # undefined
 
     case 1
       if (isa (num, "tf"))  # already in tf form
@@ -56,7 +56,7 @@ function sys = tf (num, den, varargin)
         [p, m] = size (num);
         den = tfpolyones (p, m);
         tsam = -1;
-        tfvar = "x";  % undefined
+        tfvar = "x";  # undefined
       elseif (ischar (num))  # s = tf ("s")
         tfvar = num;
         num = __conv2tfpolycell__ ([1, 0]);
@@ -84,14 +84,16 @@ function sys = tf (num, den, varargin)
       den = __conv2tfpolycell__ (den);
       argc = numel (varargin);
 
-      if (isscalar (varargin{1}) && (varargin{1} == abs (varargin{1})))  # sys = tf (num, den, tsam, "prop1, "val1", ...)
+      if (issample (varargin{1}, 1))  # sys = tf (num, den, tsam, "prop1, "val1", ...)
         tsam = varargin{1};
         argc -= 1;
         
-        if (varargin{1} != 0)
-          tfvar = "z";
-        else
+        if (varargin{1} == 0)
           tfvar = "s";
+        elseif (varargin{1} == -1)
+          tfvar = "x";
+        else
+          tfvar = "z";
         endif
         
         if (argc > 0)

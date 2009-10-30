@@ -27,12 +27,16 @@
 ## Date: September 2009
 ## Version: 0.1
 
-function bool = issample (tsam)
+function bool = issample (tsam, flg = 0)
 
-  if (nargin != 1)
+  if (nargin < 1 || nargin > 2)
     print_usage (); 
   endif
 
-  bool = (isscalar (tsam) && (tsam == abs (tsam)) && (tsam != 0));
+  if (flg)
+    bool = (isscalar (tsam) && (tsam >= 0 || tsam == -1));
+  else
+    bool = (isscalar (tsam) && (tsam == abs (tsam)) && (tsam != 0));
+  endif
 
 endfunction

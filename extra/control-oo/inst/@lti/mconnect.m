@@ -37,7 +37,7 @@
 
 function sys = mconnect (sys, M, in_idx, out_idx)
 
-  if (nargin != 2 || nargin != 4)
+  if (nargin != 2 && nargin != 4)
     print_usage ();
   endif
 

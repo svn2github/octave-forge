@@ -23,6 +23,10 @@
 
 function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
 
+  if (! isstable (sys))
+    warning ("timeresp: system is not stable");
+  endif
+
   if (! isa (sys, "ss"))
     sys = ss (sys);  # sys must be proper
   endif

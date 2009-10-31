@@ -79,10 +79,6 @@
 ## Created: August 1993
 ## Adapted-By: jwe
 
-## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
-## Date: October 2009
-## Version: 0.1
-
 function x = lyap (a, b, c)
 
   if (nargin != 3 && nargin != 2)

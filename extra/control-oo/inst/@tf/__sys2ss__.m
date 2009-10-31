@@ -24,7 +24,21 @@
 
 function [retsys, retlti] = __sys2ss__ (sys)
 
-  error ("tf: tf2ss: not implemented yet");
+  if (! issiso (sys))
+    error ("tf: tf2ss: MIMO case not implemented yet");
+  endif
+
+  [num, den] = tfdata (sys);
+
+  num = num{1, 1};
+  den = den{1, 1};
+
+  ## tfpoly ensures that there are no leading zeros
+  if (length (num) > length (den))
+    error ("tf: tf2ss: system must be proper");
+  endif
+
+  [a, b, c, d] = __tf2ss__ (num, den);
 
   retsys = ss (a, b, c, d);
   retlti = sys.lti;   # preserve lti properties

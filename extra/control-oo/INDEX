@@ -28,6 +28,7 @@ Time Domain Analysis
   gensig
   impulse
   initial
+  lsim
   step
 Frequency Domain Analysis
   freqresp

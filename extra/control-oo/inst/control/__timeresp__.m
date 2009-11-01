@@ -50,8 +50,8 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
 
   [tfinal, dt] = __simhorizon__ (A, digital, tfinal, dt);
 
-  if (! digital)  # don't transform static gains
-    sys = c2d (sys, dt);
+  if (! digital)
+    sys = c2d (sys, dt, "zoh");
   endif
 
   [F, G] = ssdata (sys);  # matrices C and D don't change

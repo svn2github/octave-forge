@@ -51,8 +51,9 @@ function sys = __sysconnect__ (sys, M)
   ##          elimination of _all_ zero/pole pairs by minreal. Bad.
   ##       3. Conversion to state-space, solving the problem there and
   ##          converting back to transfer function. Easier, but obviously,
-  ##          this way needs proper __sys2ss__ and __sys2tf__ implementations
-  ##          as described in Thomas Kailath's classic "Linear Systems".
+  ##          this way needs MIMO __sys2ss__ and __sys2tf__ implementations
+  ##          as described in chapter 6 of Thomas Kailath's classic "Linear Systems".
+  ##          Possibly this is the way to go, but it works for proper systems only.
 
   ## WARNING: The code below is a cheap hack to quickly enable SISO TF connections.
 

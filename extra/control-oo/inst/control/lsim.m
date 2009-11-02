@@ -16,12 +16,22 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @deftypefn{Function File} {[@var{y}, @var{t}, @var{x}] =} lsim (@var{sys}, @var{u}, @var{t})
+## @deftypefnx{Function File} {[@var{y}, @var{t}, @var{x}] =} lsim (@var{sys}, @var{u}, @var{t}, @var{x0})
+## @deftypefnx{Function File} {[@var{y}, @var{t}, @var{x}] =} lsim (@var{sys}, @var{u}, @var{t}, @var{x0}, @var{method})
+## Simulate LTI model response to arbitrary inputs. If no output arguments are given,
+## the system response is plotted on the screen.
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: October 2009
 ## Version: 0.1
 
 function [y_r, t_r, x_r] = lsim (sys, u, t = [], x0 = [], method = "zoh")
+
+  if (nargin < 2 || nargin > 5)
+    print_usage ();
+  endif
 
   if (! isa (sys, "ss"))
     sys = ss (sys);  # sys must be proper
@@ -56,8 +66,7 @@ function [y_r, t_r, x_r] = lsim (sys, u, t = [], x0 = [], method = "zoh")
       dt = t(2) - t(1);  # assume that t is regularly spaced
       tfinal = t(end);
     endif
-
-    sys = c2d (sys, dt, method);
+    sys = c2d (sys, dt, method);  # convert to discrete model
   endif
 
   [F, G] = ssdata (sys);  # matrices C and D don't change
@@ -66,8 +75,7 @@ function [y_r, t_r, x_r] = lsim (sys, u, t = [], x0 = [], method = "zoh")
   m = columns (G);  # number of inputs
   p = rows (C);  # number of outputs
 
-  ## time vector
-  t = (0 : dt : tfinal)';
+  t = (0 : dt : tfinal)';  # time vector
   trows = length (t);
 
   if (urows != trows)
@@ -113,29 +121,22 @@ function [y_r, t_r, x_r] = lsim (sys, u, t = [], x0 = [], method = "zoh")
         subplot (p, 1, k);
         stairs (t, y(:, k));
         grid ("on");
-
         if (k == 1)
           title (str);
         endif
-
         ylabel (sprintf ("Amplitude %s", outname{k}));
       endfor
-
       xlabel ("Time [s]");
-
     else  # continuous system
       for k = 1 : p
         subplot (p, 1, k);
         plot (t, y(:, k));
         grid ("on");
-
         if (k == 1)
           title (str);
         endif
-
         ylabel (sprintf ("Amplitude %s", outname{k}));
       endfor
-
       xlabel ("Time [s]");
     endif
   else  # return values

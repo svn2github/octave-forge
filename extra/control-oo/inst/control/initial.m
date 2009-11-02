@@ -16,12 +16,59 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @deftypefn{Function File} {[@var{y}, @var{t}, @var{x}] =} initial (@var{sys}, @var{x0})
+## @deftypefnx{Function File} {[@var{y}, @var{t}, @var{x}] =} initial (@var{sys}, @var{x0}, @var{t})
+## @deftypefnx{Function File} {[@var{y}, @var{t}, @var{x}] =} initial (@var{sys}, @var{x0}, @var{tfinal})
+## @deftypefnx{Function File} {[@var{y}, @var{t}, @var{x}] =} initial (@var{sys}, @var{x0}, @var{tfinal}, @var{dt})
+## Initial condition response of state-space model.
+## If no output arguments are given, the response is printed on the screen;
+## otherwise, the response is computed and returned.
+##
+## @strong{Inputs}
+## @table @var
+## @item sys
+## State-space model.
+## @item x0
+## Vector of initial conditions for each state.
+## @item tfinal
+## Optional simulation horizon. If not specified, it will be calculated by
+## the poles of the system to reflect adequately the response transients.
+## @item dt
+## Optional sampling time. Be sure to choose it small enough to capture transient
+## phenomena. If not specified, it will be calculated by the poles of the system.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item y
+## Output response array. Has as many rows as time samples (length of t)
+## and as many columns as outputs.
+## @item t
+## Time row vector.
+## @item x
+## State trajectories array. Has length(t) rows and as many columns as states.
+## @end table
+##
+## @seealso{impulse, lsim, step}
+## @example
+## @group
+##                    .
+## Continuous Time:   x = A x ,   y = C x ,   x(0) = x0
+##
+## Discrete Time:   x[k+1] = A x[k] ,   y[k] = C x[k] ,   x[0] = x0
+## @end group
+## @end example
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: October 2009
 ## Version: 0.1
 
 function [y_r, t_r, x_r] = initial (sys, x0, tfinal = [], dt = [])
+
+  if (nargin < 2 || nargin > 4)
+    print_usage ();
+  endif
 
   [y, t, x] = __timeresp__ (sys, "initial", ! nargout, tfinal, dt, x0);
 

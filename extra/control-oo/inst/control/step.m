@@ -16,12 +16,22 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @deftypefn{Function File} {[@var{y}, @var{t}, @var{x}] =} step (@var{sys})
+## @deftypefnx{Function File} {[@var{y}, @var{t}, @var{x}] =} step (@var{sys}, @var{t})
+## @deftypefnx{Function File} {[@var{y}, @var{t}, @var{x}] =} step (@var{sys}, @var{tfinal})
+## @deftypefnx{Function File} {[@var{y}, @var{t}, @var{x}] =} step (@var{sys}, @var{tfinal}, @var{dt})
+## Step response of LTI system.
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: October 2009
 ## Version: 0.1
 
 function [y_r, t_r, x_r] = step (sys, tfinal = [], dt = [])
+
+  if (nargin == 0 || nargin > 3)
+    print_usage ();
+  endif
 
   [y, t, x] = __timeresp__ (sys, "step", ! nargout, tfinal, dt);
 

@@ -1,0 +1,4 @@
+lti/isstable (sys, tol)
+
+feedback (sys)      # equivalent to feedback (sys, eye (size (sys)))
+feedback (sys, "+") # equivalent to feedback (sys, eye (size (sys)), +1)

@@ -16,7 +16,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*
  /* UINT8 must hold at least the values 0..255. */
  
 +#ifdef __MINGW32__
-+#define UINT8 int8_t
++typedef unsigned char UINT8;
 +#else
  #ifdef HAVE_UNSIGNED_CHAR
  typedef unsigned char UINT8;
@@ -30,7 +30,7 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*
  /* UINT16 must hold at least the values 0..65535. */
  
 +#ifdef __MINGW32__
-+#define UINT16 uint16_t
++typedef unsigned short UINT16;
 +#else
  #ifdef HAVE_UNSIGNED_SHORT
  typedef unsigned short UINT16;
@@ -42,8 +42,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*
  /* INT16 must hold at least the values -32768..32767. */
  
 +#ifdef __MINGW32__
-+#define INT16 int16_t
-+#define INT32 int32_t
++typedef short INT16;
++typedef int INT32;
 +#else
  #ifndef XMD_H			/* X11/xmd.h correctly defines INT16 */
  typedef short INT16;

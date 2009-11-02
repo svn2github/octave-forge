@@ -123,14 +123,11 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
         u(j) = 1;
 
         if (digital)
-          x = G * u / dt;
+          x = zeros (n, 1);  # zero by definition 
           y(1, :, j) = D * u / dt;
           x_arr(1, :, j) = x;
+          x = G * u / dt;
         else
-          if (D'*D > 0)
-            warning ("impulse: system is not strictly proper");
-          endif
-
           x = B * u;  # B, not G!
           y(1, :, j) = C * x;
           x_arr(1, :, j) = x;
@@ -147,6 +144,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
 
       if (digital)
         y *= dt;
+        x_arr *= dt;
       endif
 
     otherwise

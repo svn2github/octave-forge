@@ -16,16 +16,13 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## Common code for the time response functions step, impulse and initial.
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: October 2009
 ## Version: 0.1
 
 function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
-
-  if (! isstable (sys))
-    warning ("timeresp: system is not stable");
-  endif
 
   if (! isa (sys, "ss"))
     sys = ss (sys);  # sys must be proper
@@ -153,7 +150,12 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
   endswitch
 
   
-  if (plotflag)
+  if (plotflag)  # display plot
+
+    ## TODO: Set correct titles, especially for multi-input systems
+    ##       Limitations probably due to the Gnuplot backend
+
+    stable = isstable (sys);
     outname = get (sys, "outname");
 
     if (isempty (outname) || isequal ("", outname{:}))
@@ -173,7 +175,13 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
         for j = 1 : cols
 
           subplot (p, cols, (k-1)*cols+j);
-          stairs (t, [y(:, k, j), yfinal(k, j) * ones(l_t, 1)]);
+
+          if (stable)
+            stairs (t, [y(:, k, j), yfinal(k, j) * ones(l_t, 1)]);
+          else
+            stairs (t, y(:, k, j));
+          endif
+
           grid ("on");
 
           if (k == 1)
@@ -194,7 +202,13 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
         for j = 1 : cols
 
           subplot (p, cols, (k-1)*cols+j);
-          plot (t, [y(:, k, j), yfinal(k, j) * ones(l_t, 1)]);
+
+          if (stable)
+            plot (t, [y(:, k, j), yfinal(k, j) * ones(l_t, 1)]);
+          else
+            plot (t, y(:, k, j));
+          endif
+
           grid ("on");
 
           if (k == 1)

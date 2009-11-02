@@ -34,8 +34,6 @@ level 1: basic functions (not derived)
 	NANFILTER	filter function
 	CONVSKIPNAN     convolution
 	CONV2SKIPNAN (CONV2NAN)   2-dimensional convolution
-	MOD		modulus
-	REM		remainder
 	FLAG_NANS_OCCURED	returns 0 if no NaN's appeared in the input data 
 			of the last call to one of the following functions, and 1 otherwise:  
 			sumskipnan, covm, center, cor, coefficient of variation, corrcoef, geomean, harmmean, 

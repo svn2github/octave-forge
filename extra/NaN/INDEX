@@ -3,7 +3,7 @@ A statistics and machine learning toolbox for data with and w/o missing values
  coefficient_of_variation geomean meansq skewness
  covm cor cov corrcoef harmmean median statistic
  detrend kurtosis moment std mad naninsttest nantest
- nansum nanstd normpdf normcdf norminv meandev mod rem
+ nansum nanstd normpdf normcdf norminv meandev 
  percentile quantile rankcorr ranks rms sumskipnan
  var mean sem spearman trimean tpdf tcdf tinv zscore
  conv2nan flag_implicit_significance xcovf train_sc test_sc

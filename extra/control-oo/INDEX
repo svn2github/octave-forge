@@ -44,6 +44,7 @@ State-Space Models
   ctrb
   gram
   obsv
+  xperm
 Model Dimensions and Characteristics
   isct
   isdt

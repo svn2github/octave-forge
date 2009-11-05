@@ -76,7 +76,7 @@ function dispmat (m, mname, rname, cname)
   MAX_LEN = 12;  # max length of row name and column name
   [mrows, mcols] = size (m);
 
-  disp (sprintf ("%s =", mname));
+  disp ([mname, " ="]);
 
   row_name = strjust (strvcat (" ", rname), "left");
   row_name = row_name(:, 1 : min (MAX_LEN, end));

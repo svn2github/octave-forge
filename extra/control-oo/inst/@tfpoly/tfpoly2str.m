@@ -42,16 +42,12 @@ function str = tfpoly2str (p, tfvar = "x")
     endif
 
     if (lp == 1)
-      if (abs (a) != 1)
-        str = sprintf ("%s%s", cs, num2str (abs (a), 4));
-      else
-        str = sprintf ("%s%s", cs, num2str (abs (a), 4));
-      endif
+      str = [cs, num2str(abs (a), 4)];
     else
       if (abs (a) != 1)
-        str = sprintf ("%s%s %s", cs, coeff(a), variab (tfvar, lp-1));
+        str = [cs, coeff(a), " ", variab(tfvar, lp-1)];
       else
-        str = sprintf ("%s%s%s", cs, coeff(a), variab (tfvar, lp-1));
+        str = [cs, coeff(a), variab(tfvar, lp-1)];
       endif
     endif
 
@@ -68,9 +64,9 @@ function str = tfpoly2str (p, tfvar = "x")
           endif
 
           if (abs (a) != 1)
-            str = sprintf ("%s%s%s %s", str, cs, coeff(a), variab (tfvar, lp-k));
+            str = [str, cs, coeff(a), " ", variab(tfvar, lp-k)];
           else
-            str = sprintf ("%s%s%s%s", str, cs, coeff(a), variab (tfvar, lp-k));
+            str = [str, cs, coeff(a), variab(tfvar, lp-k)];
           endif
         endif
       endfor
@@ -85,7 +81,7 @@ function str = tfpoly2str (p, tfvar = "x")
           cs = " + ";
         endif
 
-        str = sprintf ("%s%s%s", str, cs, num2str (abs (a), 4));
+        str = [str, cs, num2str(abs (a), 4)];
       endif
     endif
   endif
@@ -111,7 +107,7 @@ function str = variab (tfvar, n)
   if (n == 1)
     str = tfvar;
   else
-    str = sprintf ("%s^%d", tfvar, n);
+    str = [tfvar, "^", num2str(n)];
   endif
 
 endfunction

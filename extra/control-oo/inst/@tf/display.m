@@ -44,7 +44,7 @@ function display (sys)
   disp ("");
 
   for m = 1 : nu
-    disp (sprintf ("Transfer function from input ""%s"" to output ...", inname{m}));
+    disp (["Transfer function from input \"", inname{m}, "\" to output ..."]);
     for p = 1 : ny
       dispfrac (sys.num{p, m}, sys.den{p, m}, sys.tfvar, outname{p});
     endfor

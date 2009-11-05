@@ -2,3 +2,5 @@ lti/isstable (sys, tol)
 
 feedback (sys)      # equivalent to feedback (sys, eye (size (sys)))
 feedback (sys, "+") # equivalent to feedback (sys, eye (size (sys)), +1)
+
+H = sys(w)  # equivalent to H = freqresp (sys, w) where w is a frequency vector

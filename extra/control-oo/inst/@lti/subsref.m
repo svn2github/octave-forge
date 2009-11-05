@@ -34,10 +34,10 @@ function ret = subsref (sys, s)
       idx = s(1).subs;
       if (numel (idx) == 2)
         ret = __sysprune__ (sys, idx{1}, idx{2});
-      ## elseif (numel (idx) == 1)
-      ## TODO: return frequency response if H(jw) is used  
+      elseif (numel (idx) == 1)
+        ret = __freqresp__ (sys, idx{1});  
       else
-        error ("lti: subsref: need exactly two indices");
+        error ("lti: subsref: need one or two indices");
       endif
 
     case "."

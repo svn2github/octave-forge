@@ -23,11 +23,21 @@
 %#
 %# If this function is called with no return argument then plot the solution over time in a figure window while solving the set of DDEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{lags} is a double vector that describes the lags of time, @var{hist} is a double matrix and describes the history of the DDEs, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.
 %#
+%# In other words, this function will solve a problem of the form
+%# @example
+%# dy/dt = fun (t, y(t), y(t-lags(1), y(t-lags(2), @dots{})))
+%# y(slot(1)) = init
+%# y(slot(1)-lags(1)) = hist(1), y(slot(1)-lags(2)) = hist(2), @dots{} 
+%# @end example
+%#
 %# If this function is called with one return argument then return the solution @var{sol} of type structure array after solving the set of DDEs. The solution @var{sol} has the fields @var{x} of type double column vector for the steps chosen by the solver, @var{y} of type double column vector for the solutions at each time step of @var{x}, @var{solver} of type string for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector that keep the informations of the event function if an event function handle is set in the option argument @var{opt}.
 %#
 %# If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.
 %#
-%# For example, solve an anonymous implementation of a chaotic behavior
+%# For example:
+%# @itemize @minus
+%# @item
+%# the following code solves an anonymous implementation of a chaotic behavior
 %# @example
 %# fcao = @@(vt, vy, vz) [2 * vz / (1 + vz^9.65) - vy];
 %#
@@ -37,6 +47,29 @@
 %# vlag = interp1 (vsol.x, vsol.y, vsol.x - 2);
 %# plot (vsol.y, vlag); legend ("fcao (t,y,z)");
 %# @end example
+%#
+%# @item
+%# to solve the following problem with two delayed state variables
+%#
+%# @example
+%# d y1(t)/ dt = -y1(t)
+%# d y2(t)/ dt = -y2(t) + y1(t-5)
+%# d y3(t)/dt  = -y3(t) + y2(t-10)*y1(t-10) 
+%# @end example
+%#
+%# one might do the following
+%#
+%# @example
+%# function f = fun (t, y, yd)
+%# f(1) =-y(1);                   %% y1' = -y1(t)
+%# f(2) =-y(2) + yd(1,1);         %% y2' = -y2(t) + y1(t-lags(1))
+%# f(3) =-y(3) + yd(2,2)*yd(1,2); %% y3' = -y3(t) + y2(t-lags(2))*y1(t-lags(2))
+%# endfunction
+%# T = [0,20]                                                                                             
+%# res = ode78d (@fun, t, [1;1;1], [5, 10], ones (3,2));                                                  
+%# @end example
+%#
+%# @end itemize
 %# @end deftypefn
 %#
 %# @seealso{odepkg}

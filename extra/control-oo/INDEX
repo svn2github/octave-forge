@@ -31,7 +31,12 @@ Time Domain Analysis
   lsim
   step
 Frequency Domain Analysis
+  bode
+  bodemag
   freqresp
+  margin
+  nyquist
+  sigma
 Model Simplification
   minreal
   sminreal

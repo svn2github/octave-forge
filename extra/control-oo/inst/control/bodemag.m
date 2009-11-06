@@ -27,32 +27,11 @@
 
 function [mag_r, w_r] = bodemag (sys, w = [])
 
-  ## check whether arguments are OK
   if (nargin == 0 || nargin > 2)
     print_usage ();
   endif
 
-  if(! isa (sys, "lti"))
-    error ("bodemag: first argument sys must be a LTI system");
-  endif
-
-  if (! isvector (w) && ! isempty (w))
-    error ("bodemag: second argument w must be a vector of frequencies");
-  endif
-
-  if (! issiso (sys))
-    error ("bodemag: require SISO system");
-  endif
-
-  ## find interesting frequency range w if not specified
-  if (isempty (w))
-    ## begin plot at 10^dec_min, end plot at 10^dec_max [rad/s]
-    [dec_min, dec_max] = __freqbounds__ (sys);
-
-    w = logspace (dec_min, dec_max, 500);  # [rad/s]
-  endif
-
-  H = __freqresp__ (sys, w);
+  [H, w] = __getfreqresp__ (sys, w, false, 0);
 
   H = H(:);
   mag = abs (H);

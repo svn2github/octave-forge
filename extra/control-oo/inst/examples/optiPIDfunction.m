@@ -48,7 +48,7 @@ end
 
 % Return Difference
 Q = 1 + L;
-mag = bodemag (Q, w);
+mag = bode (Q, w);
 
 % Objective Function
 J = mu_1 * itae  +  mu_2 * (max (y(:, 2)) - 1)  +  mu_3 * (1 - min (mag));

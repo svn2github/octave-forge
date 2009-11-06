@@ -16,41 +16,37 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{mag}, @var{pha}] =} nichols (@var{sys})
-## @deftypefnx {Function File} {[@var{mag}, @var{pha}] =} nichols (@var{sys}, @var{w})
-## Nichols chart of LTI model's frequency response.
-## @end deftypefn
+## Return frequency response H and frequency vector w.
+## If w is empty, it will be calculated by __freqbounds__
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2009
 ## Version: 0.1
 
-function [mag_r, pha_r, w_r] = nichols (sys, w = [])
+function [H, w] = __getfreqresp__ (sys, w = [], mimoflag = 0, resptype = 0)
 
-  if (nargin == 0 || nargin > 2)
-    print_usage ();
+  ## check arguments
+  if(! isa (sys, "lti"))
+    error ("getfreqresp: first argument sys must be a LTI system");
   endif
 
-  [H, w] = __getfreqresp__ (sys, w, false, 0);
-
-  H = H(:);
-  mag = abs (H);
-  pha = unwrap (arg (H)) * 180 / pi;
-
-  if (! nargout)
-    mag_db = 20 * log10 (mag);
-    ax_vec = __axis2dlim__ ([pha(:), mag_db(:)]);
-    
-    plot (pha, mag_db)
-    axis (ax_vec)
-    grid ("on")
-    title ("Nichols Chart")
-    xlabel ("Phase [deg]")
-    ylabel ("Magnitude [dB]")
-  else
-    mag_r = mag;
-    pha_r = pha;
-    w_r = w;
+  if (! isvector (w) && ! isempty (w))
+    error ("getfreqresp: second argument w must be a vector of frequencies");
   endif
+
+  if (! mimoflag && ! issiso (sys))
+    error ("getfreqresp: require SISO system");
+  endif
+
+  ## find interesting frequency range w if not specified
+  if (isempty (w))
+    ## begin plot at 10^dec_min, end plot at 10^dec_max [rad/s]
+    [dec_min, dec_max] = __freqbounds__ (sys);
+
+    w = logspace (dec_min, dec_max, 500);  # [rad/s]
+  endif
+
+  ## frequency response
+  H = __freqresp__ (sys, w, resptype);
 
 endfunction

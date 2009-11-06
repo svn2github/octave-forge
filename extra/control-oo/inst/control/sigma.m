@@ -59,45 +59,19 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2009
-## Version: 0.2.0
+## Version: 0.3.0
 
-function [sv_r, w_r] = sigma (sys, w = [], ptype = 0)
+function [sv_r, w_r] = sigma (sys, w = [], resptype = 0)
 
-  ## check whether arguments are OK
-  if (nargin < 1 || nargin > 3)
+  if (nargin == 0 || nargin > 3)
     print_usage ();
   endif
 
-  if(! isa (sys, "lti"))
-    error ("sigma: first argument sys must be a LTI system");
-  endif
+  [H, w] = __getfreqresp__ (sys, w, true, resptype);
 
-  if (! isvector (w) && ! isempty (w))
-    error ("sigma: second argument w must be a vector of frequencies");
-  endif
-
-  ## get system information
   [p, m] = size (sys);
-  digital = ! isct (sys);
-
-  ## handle plot type
-  if (! isfloat (ptype))  # Numeric constants like 2 are NOT integers in Octave!
-    error ("sigma: third argument plot type invalid");
-  endif
-
-  ## find interesting frequency range w if not specified
-  if (isempty (w))
-    ## begin plot at 10^dec_min, end plot at 10^dec_max [rad/s]
-    [dec_min, dec_max] = __freqbounds__ (sys);
-
-    w = logspace (dec_min, dec_max, 1000);  # [rad/s]
-  endif
-
-  ## frequency response
-  H = __freqresp__ (sys, w, ptype);
-
   l_w = length (w);
-  sv = zeros (min (m, p), l_w);
+  sv = zeros (min (m, p), l_w);  # preallocate memory
 
   ## singular value decomposition
   for k = 1 : l_w
@@ -114,10 +88,10 @@ function [sv_r, w_r] = sigma (sys, w = [], ptype = 0)
     ax_vec(1:2) = [min(w), max(w)];
 
     ## determine xlabel
-    if (digital)
-      xl_str = sprintf ("Frequency [rad/s]     w_N = %g", pi/get (sys, "tsam"));
-    else
+    if (isct (sys))
       xl_str = "Frequency [rad/s]";
+    else
+      xl_str = sprintf ("Frequency [rad/s]     w_N = %g", pi / get (sys, "tsam"));
     endif
 
     ## plot results

@@ -259,19 +259,17 @@ function [gamma_r, phi_r, w_gamma_r, w_phi_r] = margin (sys, tol = 1e-7)
 
   if (nargout == 0)  # show bode diagram
 
-    [dec_min, dec_max] = __freqbounds__ (sys);
-    w = logspace (dec_min, dec_max, 500);
-    H = __freqresp__ (sys, w);
-    H = H(:);
+    [H, w] = __getfreqresp__ (sys, w, false, 0);
 
+    H = H(:);
     mag_db = 20 * log10 (abs (H));
     pha = unwrap (arg (H)) * 180 / pi;
     gamma_db = 20 * log10 (gamma);
 
     wv = [min(w), max(w)];
-    ax_vec_mag = __axis2dlim__ ([w(:), mag_db(:)]);
+    ax_vec_mag = __axis2dlim__ ([w, mag_db]);
     ax_vec_mag(1:2) = wv;
-    ax_vec_pha = __axis2dlim__ ([w(:), pha(:)]);
+    ax_vec_pha = __axis2dlim__ ([w, pha]);
     ax_vec_pha(1:2) = wv;
 
     wgm = [w_gamma, w_gamma];

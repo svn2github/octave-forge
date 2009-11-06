@@ -16,16 +16,16 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{mag}, @var{w}] =} bodemag (@var{sys})
-## @deftypefnx {Function File} {[@var{mag}, @var{w}] =} bodemag (@var{sys}, @var{w})
-## Bode magnitude diagram of LTI model's frequency response.
+## @deftypefn {Function File} {[@var{mag}, @var{pha}] =} nichols (@var{sys})
+## @deftypefnx {Function File} {[@var{mag}, @var{pha}] =} nichols (@var{sys}, @var{w})
+## Nichols chart of LTI model's frequency response.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2009
 ## Version: 0.1
 
-function [mag_r, w_r] = bodemag (sys, w = [])
+function [mag_r, pha_r, w_r] = nichols (sys, w = [])
 
   ## check whether arguments are OK
   if (nargin == 0 || nargin > 2)
@@ -33,15 +33,15 @@ function [mag_r, w_r] = bodemag (sys, w = [])
   endif
 
   if(! isa (sys, "lti"))
-    error ("bodemag: first argument sys must be a LTI system");
+    error ("nichols: first argument sys must be a LTI system");
   endif
 
   if (! isvector (w) && ! isempty (w))
-    error ("bodemag: second argument w must be a vector of frequencies");
+    error ("nichols: second argument w must be a vector of frequencies");
   endif
 
   if (! issiso (sys))
-    error ("bodemag: require SISO system");
+    error ("nichols: require SISO system");
   endif
 
   ## find interesting frequency range w if not specified
@@ -56,28 +56,21 @@ function [mag_r, w_r] = bodemag (sys, w = [])
 
   H = H(:);
   mag = abs (H);
+  pha = unwrap (arg (H)) * 180 / pi;
 
   if (! nargout)
     mag_db = 20 * log10 (mag);
-
-    wv = [min(w), max(w)];
-    ax_vec_mag = __axis2dlim__ ([w(:), mag_db(:)]);
-    ax_vec_mag(1:2) = wv;
-
-    if (isct (sys))
-      xl_str = "Frequency [rad/s]";
-    else
-      xl_str = sprintf ("Frequency [rad/s]     w_N = %g", pi / get (sys, "tsam"));
-    endif
-
-    semilogx (w, mag_db)
-    axis (ax_vec_mag)
+    ax_vec = __axis2dlim__ ([pha(:), mag_db(:)]);
+    
+    plot (pha, mag_db)
+    axis (ax_vec)
     grid ("on")
-    title ("Bode Magnitude Diagram")
-    xlabel (xl_str)
+    title ("Nichols Chart")
+    xlabel ("Phase [deg]")
     ylabel ("Magnitude [dB]")
   else
     mag_r = mag;
+    pha_r = pha;
     w_r = w;
   endif
 

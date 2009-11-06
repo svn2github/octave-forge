@@ -35,6 +35,7 @@ Frequency Domain Analysis
   bodemag
   freqresp
   margin
+  nichols
   nyquist
   sigma
 Model Simplification

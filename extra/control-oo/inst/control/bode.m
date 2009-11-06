@@ -16,8 +16,8 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{mag}, @var{pha}] =} bode (@var{sys})
-## @deftypefnx {Function File} {[@var{mag}, @var{pha}] =} bode (@var{sys}, @var{w})
+## @deftypefn {Function File} {[@var{mag}, @var{pha}, @var{w}] =} bode (@var{sys})
+## @deftypefnx {Function File} {[@var{mag}, @var{pha}, @var{w}] =} bode (@var{sys}, @var{w})
 ## Bode diagram of LTI model's frequency response.
 ## @end deftypefn
 
@@ -25,7 +25,7 @@
 ## Created: November 2009
 ## Version: 0.1
 
-function [mag_r, pha_r] = bode (sys, w = [])
+function [mag_r, pha_r, w_r] = bode (sys, w = [])
 
   ## check whether arguments are OK
   if (nargin == 0 || nargin > 2)
@@ -89,6 +89,7 @@ function [mag_r, pha_r] = bode (sys, w = [])
   else
     mag_r = mag;
     pha_r = pha;
+    w_r = w;
   endif
 
 endfunction

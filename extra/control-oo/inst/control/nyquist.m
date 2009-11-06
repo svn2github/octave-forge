@@ -16,8 +16,8 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{re}, @var{im}] =} nyquist (@var{sys})
-## @deftypefnx {Function File} {[@var{re}, @var{im}] =} nyquist (@var{sys}, @var{w})
+## @deftypefn {Function File} {[@var{re}, @var{im}, @var{w}] =} nyquist (@var{sys})
+## @deftypefnx {Function File} {[@var{re}, @var{im}, @var{w}] =} nyquist (@var{sys}, @var{w})
 ## Nyquist diagram of LTI model's frequency response.
 ## @end deftypefn
 
@@ -25,7 +25,7 @@
 ## Created: November 2009
 ## Version: 0.1
 
-function [re_r, im_r] = nyquist (sys, w = [])
+function [re_r, im_r, w_r] = nyquist (sys, w = [])
 
   ## check whether arguments are OK
   if (nargin == 0 || nargin > 2)
@@ -71,6 +71,7 @@ function [re_r, im_r] = nyquist (sys, w = [])
   else
     re_r = re;
     im_r = im;
+    w_r = w;
   endif
 
 endfunction

@@ -184,7 +184,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
 
           grid ("on");
 
-          if (k == 1)
+          if (k == 1 && j == 1)
             title (str);
           endif
 
@@ -211,7 +211,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
 
           grid ("on");
 
-          if (k == 1)
+          if (k == 1 && j == 1)
             title (str);
           endif
 

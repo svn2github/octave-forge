@@ -31,7 +31,7 @@
 ## LTI system.
 ## @item w
 ## Optional vector of frequency values. If @var{w} is not specified, it
-## will be calculated by @code{bode_bounds}.
+## will be calculated by the zeros and poles of the system.
 ## @item ptype = 0
 ## Singular values of the frequency response H of system sys. Default Value.
 ## @item ptype = 1
@@ -114,9 +114,10 @@ endfunction
 %! B = [5 6; 7 8];
 %! C = [4 3; 2 1];
 %! D = [8 7; 6 5];
-%! w = [2 3];
-%! sv_exp = [7.91760889977901, 8.62745836756994; 0.698526948925716, 0.608629874340667];
-%! w_exp = [2; 3];
+%! w = [2 3 4];
+%! sv_exp = [7.917608899779010   8.627458367569936   9.439296073174116;
+%!           0.698526948925715   0.608629874340666   0.519476071456641];
+%! w_exp = [2; 3; 4];
 %! [sv_obs, w_obs] = sigma (ss (A, B, C, D), w);
 %!assert (sv_obs, sv_exp, 16*eps); # tolerance manually tweaked
 %!assert (w_obs, w_exp, 2*eps);

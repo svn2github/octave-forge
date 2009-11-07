@@ -16,8 +16,8 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{mag}, @var{pha}] =} nichols (@var{sys})
-## @deftypefnx {Function File} {[@var{mag}, @var{pha}] =} nichols (@var{sys}, @var{w})
+## @deftypefn {Function File} {[@var{mag}, @var{pha}, @var{w}] =} nichols (@var{sys})
+## @deftypefnx {Function File} {[@var{mag}, @var{pha}, @var{w}] =} nichols (@var{sys}, @var{w})
 ## Nichols chart of LTI model's frequency response.
 ## @end deftypefn
 

@@ -16,6 +16,9 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @deftypefn{Function File} {@var{H} =} freqresp (@var{sys}, @var{w})
+## Evaluate frequency response at given frequencies. 
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: October 2009

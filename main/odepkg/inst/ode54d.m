@@ -66,7 +66,7 @@
 %# f(3) =-y(3) + yd(2,2)*yd(1,2); %% y3' = -y3(t) + y2(t-lags(2))*y1(t-lags(2))
 %# endfunction
 %# T = [0,20]                                                                                             
-%# res = ode54d (@fun, t, [1;1;1], [5, 10], ones (3,2));                                                  
+%# res = ode54d (@fun, T, [1;1;1], [5, 10], ones (3,2));                                                  
 %# @end example
 %#
 %# @end itemize

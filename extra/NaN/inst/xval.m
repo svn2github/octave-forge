@@ -99,6 +99,8 @@ elseif size(classlabel,2)>1,
 	else
 		[Label,tmp1,NG] = unique(classlabel(:,3));
 	end;
+else 	
+	C = classlabel;	
 end; 
 if all(W==1) W = []; end;
 if sz(1)~=size(C,1),

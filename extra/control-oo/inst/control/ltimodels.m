@@ -105,3 +105,27 @@ endfunction
 %! D_exp = [  10 ];
 %! sysmat_exp = [A_exp, B_exp; C_exp, D_exp];
 %!assert (sysmat, sysmat_exp)
+
+## norm ct
+%!shared H2, Hinf
+%! sys = ss (-1, 1, 1, 0);
+%! H2 = norm (sys, 2);
+%! Hinf = norm (sys, inf);
+%!assert (H2, 0.7071, 1.5e-5);
+%!assert (Hinf, 1, 5e-4);
+
+## norm dt
+%!shared H2, Hinf
+%! a = [ 2.417   -1.002    0.5488
+%!           2        0         0
+%!           0      0.5         0 ];
+%! b = [     1
+%!           0
+%!           0 ];
+%! c = [-0.424    0.436   -0.4552 ];
+%! d = [     1 ];
+%! sys = ss (a, b, c, d, 0.1);
+%! H2 = norm (sys, 2);
+%! Hinf = norm (sys, inf);
+%!assert (H2, 1.2527, 1.5e-5);
+%!assert (Hinf, 2.7, 0.1);

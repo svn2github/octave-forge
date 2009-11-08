@@ -35,23 +35,22 @@ if isempty(DIM),
         if isempty(DIM), DIM = 1; end;
 end;
 
-
 if nargin<2,
-	help iqr
+	help trimmean
         
 else
-		q1 = p/200; 
-		q2 = 1-p/200; 
+	q1 = p/200; 
+	q2 = 1-p/200; 
 
-		sz = size(Y);
-		if DIM>length(sz),
-		        sz = [sz,ones(1,DIM-length(sz))];
-		end;
+	sz = size(Y);
+	if DIM>length(sz),
+	        sz = [sz,ones(1,DIM-length(sz))];
+	end;
 
-		D1 = prod(sz(1:DIM-1));
-		D3 = prod(sz(DIM+1:length(sz)));
-		Q  = repmat(nan,[sz(1:DIM-1),1,sz(DIM+1:length(sz))]);
-		for k = 0:D1-1,
+	D1 = prod(sz(1:DIM-1));
+	D3 = prod(sz(DIM+1:length(sz)));
+	Q  = repmat(nan,[sz(1:DIM-1),1,sz(DIM+1:length(sz))]);
+	for k = 0:D1-1,
 		for l = 0:D3-1,
 		        xi = k + l * D1*sz(DIM) + 1 ;
 			xo = k + l * D1*length(q) + 1;
@@ -62,9 +61,6 @@ else
 		        f  = mean(t(ix));
 			Q(xo:D1:xo + D1*length(q) - 1) = f;
 		end;
-		end;
-		        
+	end;
 end;
-
-
 

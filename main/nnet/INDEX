@@ -18,6 +18,7 @@ Training
 Transfer functions
  logsig
  purelin
+ radbas
  tansig
 
 Utility

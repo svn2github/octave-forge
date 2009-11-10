@@ -24,6 +24,8 @@
 
 function [zer, gain] = __zero__ (sys)
 
+  warning ("ss: zero: subroutine tzero is buggy, use results with caution");
+
   [zer, gain] = __tzero__ (sys.a, sys.b, sys.c, sys.d);
 
 endfunction

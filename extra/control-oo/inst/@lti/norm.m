@@ -33,6 +33,8 @@
 ## Date: November 2009
 ## Version: 0.1
 
+## TODO: Use Fortran code from Slicot
+
 function gain = norm (sys, ntype = "2", tol = 0.001)
 
   if (nargin > 3)  # norm () is catched by built-in function

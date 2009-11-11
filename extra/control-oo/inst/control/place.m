@@ -47,6 +47,8 @@
 ## Date: October 2009
 ## Version: 0.1
 
+## TODO: Support MIMO systems, use Fortran algorithm from Slicot
+
 function K = place (argin1, argin2, argin3)
 
   if (nargin == 3)

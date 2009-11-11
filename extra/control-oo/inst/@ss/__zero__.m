@@ -22,6 +22,8 @@
 ## Created: October 2009
 ## Version: 0.1
 
+## TODO: Use Fortran code from Slicot
+
 function [zer, gain] = __zero__ (sys)
 
   warning ("ss: zero: subroutine tzero is buggy, use results with caution");

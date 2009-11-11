@@ -24,6 +24,25 @@
 
 function sys = __sysinv__ (sys)
 
-  error ("ss: sysinv: SS models not supported yet");
+  a = sys.a;
+  b = sys.b;
+  c = sys.c;
+  d = sys.d;
+
+  if (det (d) != 0)
+    di = inv (d);
+
+    f = a - b * di * c;
+    g = b * di;
+    h = -di * c;
+    j = di;
+  else
+    error ("ss: sysinv: inverse is not proper, case not implemented yet");
+  endif
+
+  sys.a = f;
+  sys.b = g;
+  sys.c = h;
+  sys.d = j;
 
 endfunction

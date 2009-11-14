@@ -135,21 +135,21 @@ install()
    ${CP} ${CP_FLAGS} ${SRCDIR}/term/Postscript/* ${SHARE_PATH}/${PKG}/Postscript
    
    mkdir -vp ${SHARE_PATH}/${PKG}/contrib/pm3d
-   ${CP} ${CP_FLAGS} ${SRCDIR}/pm3d/contrib/* ${PREFIX}/share/${PKG}/contrib/pm3d
-   ${CP} ${CP_FLAGS} ${SRCDIR}/pm3d/README    ${PREFIX}/share/${PKG}/contrib
+   ${CP} ${CP_FLAGS} ${SRCDIR}/pm3d/contrib/* ${SHARE_PATH}/${PKG}/contrib/pm3d
+   ${CP} ${CP_FLAGS} ${SRCDIR}/pm3d/README    ${SHARE_PATH}/${PKG}/contrib
    
    mkdir -vp ${SHARE_PATH}/${PKG}/demo
-   ${CP} ${CP_FLAGS} ${SRCDIR}/demo/*               ${PREFIX}/share/${PKG}/demo
-   ${CP} ${CP_FLAGS} ${BUILDDIR_GUI}/src/binary{1,2,3} ${PREFIX}/share/${PKG}/demo
+   ${CP} ${CP_FLAGS} ${SRCDIR}/demo/*               ${SHARE_PATH}/${PKG}/demo
+   ${CP} ${CP_FLAGS} ${BUILDDIR_GUI}/src/binary{1,2,3} ${SHARE_PATH}/${PKG}/demo
    
-   mkdir -vp ${PREFIX}/doc/${PKG}
-   mkdir -vp ${PREFIX}/doc/${PKG}/postscript-terminal
-   ${CP} ${CP_FLAGS} ${BUILDDIR_GUI}/src/gnuplot.pdf      ${PREFIX}/doc/${PKG}
-   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/ps_file.doc ${PREFIX}/doc/${PKG}/postscript-terminal
-   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/ps_guide.ps ${PREFIX}/doc/${PKG}/postscript-terminal
-   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/README      ${PREFIX}/doc/${PKG}/postscript-terminal
-   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/ps_symbols.gpi      ${PREFIX}/doc/${PKG}/postscript-terminal/ps_symbols.gp
-   ${CP} ${CP_FLAGS} ${BUILDDIR_GUI}/docs/ps_fontfile_doc.pdf     ${PREFIX}/doc/${PKG}/postscript-terminal
+   mkdir -vp ${DOC_PATH}/${PKG}
+   mkdir -vp ${DOC_PATH}/${PKG}/postscript-terminal
+   ${CP} ${CP_FLAGS} ${BUILDDIR_GUI}/src/gnuplot.pdf      ${DOC_PATH}/${PKG}
+   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/ps_file.doc ${DOC_PATH}/${PKG}/postscript-terminal
+   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/ps_guide.ps ${DOC_PATH}/${PKG}/postscript-terminal
+   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/README      ${DOC_PATH}/${PKG}/postscript-terminal
+   ${CP} ${CP_FLAGS} ${SRCDIR}/docs/psdoc/ps_symbols.gpi      ${DOC_PATH}/${PKG}/postscript-terminal/ps_symbols.gp
+   ${CP} ${CP_FLAGS} ${BUILDDIR_GUI}/docs/ps_fontfile_doc.pdf     ${DOC_PATH}/${PKG}/postscript-terminal
    
    # Install pkg-config .pc files
    for a in $PKG_CONFIG_INSTALL; do

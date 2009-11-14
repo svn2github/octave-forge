@@ -82,6 +82,7 @@ BINARY_BASE=${PREFIX}
 STATICLIB_BASE=${PREFIX}
 LICENSE_BASE=${PREFIX}
 SHARE_BASE=${PREFIX}
+DOC_BASE=${PREFIX}
 
 # default subdirectories
 INCLUDE_DEFAULT=include
@@ -91,6 +92,7 @@ LIBRARY_DEFAULT=lib
 STATICLIB_DEFAULT=staticlib
 LICENSE_DEFAULT=license
 SHARE_DEFAULT=share
+DOC_DEFAULT=doc
 
 # subdirs for above components, can be overridden locally
 # (e.g. for GSL: ${INCLUDE} = include/gsl )
@@ -101,6 +103,7 @@ if [ -z ${LIBRARY_DIR} ]; then LIBRARY_DIR=${LIBRARY_DEFAULT}; fi
 if [ -z ${STATICLIB_DIR} ]; then STATICLIB_DIR=${STATICLIB_DEFAULT}; fi
 if [ -z ${LICENSE_DIR} ]; then LICENSE_DIR=${LICENSE_DEFAULT}; fi
 if [ -z ${SHARE_DIR} ]; then SHARE_DIR=${SHARE_DEFAULT}; fi
+if [ -z ${DOC_DIR} ]; then DOC_DIR=${DOC_DEFAULT}; fi
 
 # create full paths for component directories
 BINARY_PATH=${BINARY_BASE}/${BINARY_DIR}
@@ -110,6 +113,7 @@ LIBRARY_PATH=${LIBRARY_BASE}/${LIBRARY_DIR}
 STATICLIB_PATH=${STATICLIB_BASE}/${STATICLIB_DIR}
 LICENSE_PATH=${LICENSE_BASE}/${LICENSE_DIR}
 SHARE_PATH=${SHARE_BASE}/${SHARE_DIR}
+DOC_PATH=${DOC_BASE}/${DOC_DIR}
 
 # Path to pkg-config .pc files
 PKGCONFIGDATA_PATH=${LIBRARY_PATH}/pkgconfig

@@ -2,6 +2,7 @@ This is a binary release of Octave 3.2.3 for Windows platform using
 mingw32/gcc build tools. It has been tested on Windows 2K and XP.
 
 Octave-3.2.3_i686-pc-mingw32_gcc-4.4.0_setup.exe
+Octave-3.2.3-2_i686-pc-mingw32_gcc-4.4.0_setup.exe
 
 This package contains Octave 3.2.3 and a set of octave-forge packages.
 Some packages are missing because external dependency libraries have not 
@@ -17,6 +18,14 @@ The installer can be installed side-by-side with previous versions of
 octave/mingw32 and thus does not uninstall any previously installed version 
 of octave/mingw32.
 
+Fixed Issues in 3.2.3-2:
+-----------------------
+
+*) Remove SSE3 ATLAS libraries from installer as they reportedly
+   segfault on complex arithmetic. No solution available yet.
+*) Fix a bug in patch of jpeg-7 which caused loading jpeg images to fail
+*) Fix a big in installer setting wrong shortcuts to octave documentation
+*) Fix missing gnuplot documentation in installer
 
 Changes since Octave/mingw32 3.2.2:
 -----------------------------------

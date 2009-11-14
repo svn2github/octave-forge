@@ -182,14 +182,14 @@ Section "Octave" SEC_OCTAVE
    
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\Gnuplot.lnk" "$INSTDIR\doc\gnuplot\gnuplot.pdf"
    
-   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\PDF\Octave.lnk" "$INSTDIR\doc\pdf\octave.pdf"
-   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\PDF\FAQ.lnk" "$INSTDIR\doc\pdf\octave-faq.pdf"
-   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\PDF\Quick Reference Card.lnk" "$INSTDIR\doc\pdf\refcard-a4.pdf"
-   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\PDF\Octave C++ API.lnk" "$INSTDIR\doc\pdf\liboctave.pdf"
+   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\PDF\Octave.lnk" "$INSTDIR\doc\octave\pdf\octave.pdf"
+   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\PDF\FAQ.lnk" "$INSTDIR\doc\octave\pdf\octave-faq.pdf"
+   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\PDF\Quick Reference Card.lnk" "$INSTDIR\doc\octave\pdf\refcard-a4.pdf"
+   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\PDF\Octave C++ API.lnk" "$INSTDIR\doc\octave\pdf\liboctave.pdf"
    
-   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\HTML\Octave.lnk" "$INSTDIR\doc\HTML\interpreter\index.html"
-   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\HTML\Octave C++ API.lnk" "$INSTDIR\doc\HTML\liboctave\index.html"
-   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\HTML\FAQ.lnk" "$INSTDIR\doc\HTML\faq\Octave-FAQ.html"
+   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\HTML\Octave.lnk" "$INSTDIR\doc\octave\HTML\interpreter\index.html"
+   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\HTML\Octave C++ API.lnk" "$INSTDIR\doc\octave\HTML\liboctave\index.html"
+   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Documentation\HTML\FAQ.lnk" "$INSTDIR\doc\octave\HTML\faq\Octave-FAQ.html"
    
    CreateShortCut "$DESKTOP\Octave-${OCTAVE_VERSION}.lnk" "$INSTDIR\bin\octave-${OCTAVE_VERSION}.exe" "" "$INSTDIR\bin\octave.ico" 0
    
@@ -309,16 +309,16 @@ Section /o "SSE2 (P4)" SEC_ATLAS_P4
    
 SectionEnd
 
-Section /o "SSE3 (Core2Duo)" SEC_ATLAS_CORE2DUO
-
-   SetOutPath "$INSTDIR\bin"
-   File "${PACKAGE_ROOT}\ATLAS\ARCH_Core2Duo\bin\*.*"
-   SetOutPath "$INSTDIR\lib"
-   File "${PACKAGE_ROOT}\ATLAS\ARCH_Core2Duo\lib\*.*"
+#Section /o "SSE3 (Core2Duo)" SEC_ATLAS_CORE2DUO
+#
+#   SetOutPath "$INSTDIR\bin"
+#   File "${PACKAGE_ROOT}\ATLAS\ARCH_Core2Duo\bin\*.*"
+#   SetOutPath "$INSTDIR\lib"
+#   File "${PACKAGE_ROOT}\ATLAS\ARCH_Core2Duo\lib\*.*"
 #   SetOutPath "$INSTDIR\staticlib"
 #   File "${PACKAGE_ROOT}\ATLAS\ARCH_Core2Duo\staticlib\*.*"
-   
-SectionEnd
+#   
+#SectionEnd
 
 #Section /o "ATLAS_PD" SEC_ATLAS_PENTIUMD
 #
@@ -377,15 +377,15 @@ SectionEnd
 
 Function checkCPUfeature
    
-checksse3:
-   StrCpy $1 0
-   ExecWait '"$TEMP\cpufeature.exe" -f sse3' $1
-   StrCmp $1 1 0 checksse2
-   !insertmacro SetSectionFlag  ${SEC_ATLAS_CORE2DUO} ${SF_SELECTED}
-   !insertmacro SetSectionFlag  ${SEC_FFTW3_SSE2} ${SF_SELECTED}
-   StrCpy $9 ${SEC_ATLAS_CORE2DUO}
-   StrCpy $8 ${SEC_FFTW3_SSE2}
-   goto cpuend
+#checksse3:
+#   StrCpy $1 0
+#   ExecWait '"$TEMP\cpufeature.exe" -f sse3' $1
+#   StrCmp $1 1 0 checksse2
+#   !insertmacro SetSectionFlag  ${SEC_ATLAS_CORE2DUO} ${SF_SELECTED}
+#   !insertmacro SetSectionFlag  ${SEC_FFTW3_SSE2} ${SF_SELECTED}
+#   StrCpy $9 ${SEC_ATLAS_CORE2DUO}
+#   StrCpy $8 ${SEC_FFTW3_SSE2}
+#   goto cpuend
 checksse2:
    StrCpy $1 0
    ExecWait '"$TEMP\cpufeature.exe" -f sse2' $1
@@ -429,7 +429,7 @@ Function .onSelChange
       !insertmacro RadioButton ${SEC_ATLAS_P2}
       !insertmacro RadioButton ${SEC_ATLAS_P3}
       !insertmacro RadioButton ${SEC_ATLAS_P4}
-      !insertmacro RadioButton ${SEC_ATLAS_CORE2DUO}
+#      !insertmacro RadioButton ${SEC_ATLAS_CORE2DUO}
    !insertmacro EndRadioButtons
 
    !insertmacro StartRadioButtons $8
@@ -539,7 +539,7 @@ SectionEnd
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ATLAS_P2} "BLAS+LAPACK with MMX. Works on Pentium II"
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ATLAS_P3} "BLAS+LAPACK with SSE. Works on Pentium III"
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ATLAS_P4} "BLAS+LAPACK with SSE2. Works on e.g. Pentium 4"
-   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ATLAS_CORE2DUO} "BLAS+LAPACK with SSE3. Works on e.g. Core2Duo, Pentium D, Pentium 4E"
+#   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ATLAS_CORE2DUO} "BLAS+LAPACK with SSE3. Works on e.g. Core2Duo, Pentium D, Pentium 4E"
    !insertmacro MUI_DESCRIPTION_TEXT ${SECGRP_FFTW3} "FFTW3 Libraries"
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FFTW3_GENERIC} "Generic FFT3W"
    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FFTW3_SSE2} "SSE/SSE2 enabled FFT3W"

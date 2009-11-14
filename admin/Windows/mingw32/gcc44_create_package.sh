@@ -133,7 +133,7 @@ unix2dos README.txt
 sed \
 	-e "s/@OCTAVE_VERSION@/${PKG_VER}/" \
 	-e "s/@OCTAVE_RELEASE@/${PKG_REL}/" \
-	-e "s/@GCC_VERSION@/${GCC_VER}/" \
+	-e "s/@GCC_VERSION@/${GCC_VERSION}/" \
 	-e "s+@PACKAGE_ROOT@+${WPACKAGE_ROOT}+" \
 	octave.nsi.in > octave.nsi
 ${MAKENSIS} octave.nsi | tee octave_nsi.log

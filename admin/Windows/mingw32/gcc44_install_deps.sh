@@ -57,6 +57,13 @@ install_share() {
   )
 }
 
+install_doc() {
+  ( mkdir -p ${PACKAGE_ROOT}/${DOC_DIR}
+    echo cp -pR ${DOC_PATH} ${PACKAGE_ROOT}
+    cp -pR ${DOC_PATH} ${PACKAGE_ROOT}
+  )
+}
+
 install_bin;
 install_lib;
 install_sharedlib;
@@ -64,3 +71,4 @@ install_staticlib;
 install_include;
 install_license;
 install_share;
+install_doc;

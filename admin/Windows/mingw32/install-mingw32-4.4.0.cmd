@@ -47,6 +47,10 @@
 @rem  CHANGELOG:
 @rem  =========
 @rem
+@rem   29-oct-2009  Benjamin Lindner <lindnerb@users.sourceforge.net>
+@rem   
+@rem     * update to binutils-2.20-1-mingw32-bin.tar.gz
+@rem
 @rem   15-oct-2009  Benjamin Lindner <lindnerb@users.sourceforge.net>
 @rem   
 @rem     * creation
@@ -118,7 +122,7 @@ SET GCCSYS=dw2
 %W32TAR% %W32TAROPT% -f "%SRCDIR%gdb-6.8-mingw-3.tar.bz2"
 
 @rem binutils and make
-%W32TAR% %W32TAROPT% -f "%SRCDIR%binutils-2.19.1-mingw32-bin.tar.gz"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%binutils-2.20-1-mingw32-bin.tar.gz"
 %W32TAR% %W32TAROPT% -f "%SRCDIR%make-3.81-20090911-mingw32-bin.tar.gz"
 
 @rem mingw tools

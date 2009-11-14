@@ -41,6 +41,12 @@
 @rem  CHANGELOG:
 @rem  =========
 @rem
+@rem   14-nov-2009  Benjamin Lindner <lindnerb@users.sourceforge.net>
+@rem   
+@rem     * add bin/libtool from libtool-2.2.7a-1-mingw32-bin.tar.lzma
+@rem     * add an empriric patch to get libtool to build shared libraries
+@rem       found on: http://lists.cairographics.org/archives/cairo/2009-July/017683.html
+@rem
 @rem   24-oct-2009  Benjamin Lindner <lindnerb@users.sourceforge.net>
 @rem   
 @rem     * add wget.exe and 7za.exe to /local/bin
@@ -92,6 +98,9 @@ SET MSYSBSDTAR="%DST%\bin\bsdtar.exe"
 
 @rem Msys' sed
 SET MSYSSED="%DST%\bin\sed.exe"
+
+@rem Msys' patch
+SET MSYSPATCH="%DST%\bin\patch.exe"
 
 @rem
 @rem  Extract MSYScore. Requires win32 bsdtar version
@@ -164,6 +173,19 @@ call :extracttargz "%SRCDIR%libbz2-1.0.5-1-msys-1.0.11-dll-1.tar.gz"
 mkdir "%DST%\local\bin"
 %W32TAR% x -C "%DST%\local\bin" -f "%SRCDIR%7za465.zip" 7za.exe
 copy "%SRCDIR%wget.exe" "%DST%\local\bin"
+
+@rem
+@rem  Extract and patch libtool 
+@rem
+%MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%libtool-2.2.7a-1-mingw32-bin.tar.lzma"
+%MSYSSED% -i ^
+	-e "/^prefix/s+/mingw+/usr+" ^
+	-e "/^datadir/s+/mingw+/usr+" ^
+	-e "/^pkgdatadir/s+/mingw+/usr+" ^
+	-e "/^pkgltdldir/s+/mingw+/usr+" ^
+	-e "/^aclocaldir/s+/mingw+/usr+" ^
+	"%DST%\bin\libtoolize"
+type "%SRCDIR%libtool-2.2.7a-pass_all.patch" | %MSYSPATCH% -d /share/aclocal -u -p 2
 
 @rem
 @rem  Rename the msys icon. Windows gets confused if a .m file extension

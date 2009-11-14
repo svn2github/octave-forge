@@ -28,6 +28,7 @@ http://downloads.sourceforge.net/mingw/patch-2.5.9-1-msys-1.0.11-bin.tar.lzma
 http://downloads.sourceforge.net/mingw/rxvt-2.7.10.20050409-1-msys-1.0.11-bin.tar.lzma
 http://downloads.sourceforge.net/mingw/sed-4.2.1-1-msys-1.0.11-bin.tar.lzma
 http://downloads.sourceforge.net/mingw/tar-1.22-1-msys-1.0.11-bin.tar.lzma
+http://downloads.sourceforge.net/mingw/libtool-2.2.7a-1-mingw32-bin.tar.lzma
 http://downloads.sourceforge.net/project/gnuwin32/gperf/3.0.1/gperf-3.0.1-bin.zip
 
 http://downloads.sourceforge.net/sevenzip/7za465.zip

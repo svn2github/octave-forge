@@ -110,20 +110,33 @@ function [yhat, lambda] = regdatasmooth (x, y, varargin)
     y = y';
   endif
 
+  maxiter = 50;
   if (lambda)
     ## do nothing and use the provided lambda
-  elseif ( stdev )
-    opt = optimset("TolX",1e-2,"MaxFunEvals",20);
-    ##log10lambda = fminunc_compat ("rgdtsmcorewrap", guess, opt, x, y, d, {"stdev", stdev}, options{:});
-    fhandle = @(log10lambda) rgdtsmcorewrap (log10lambda, x, y, d, {"stdev", stdev}, options{:});
-    log10lambda = fminunc (fhandle, guess, opt);
-    lambda = 10^log10lambda;
   else
-    ## perform cross-validation
-    opt = optimset("TolX",1e-2,"MaxFunEvals",20);
-    ##log10lambda = fminunc_compat ("rgdtsmcorewrap", guess, opt, x, y, d, {"cve"}, options{:});
-    fhandle = @(log10lambda) rgdtsmcorewrap (log10lambda, x, y, d, {"cve"}, options{:});
-    log10lambda = fminunc (fhandle, guess, opt);
+    ## find the "optimal" lambda
+    if ( stdev )
+      ## match standard deviation
+      fhandle = @(log10lambda) rgdtsmcorewrap (log10lambda, x, y, d, {"stdev", stdev}, options{:});
+    else
+      ## perform cross-validation
+      fhandle = @(log10lambda) rgdtsmcorewrap (log10lambda, x, y, d, {"cve"}, options{:});
+    endif
+    ## "fminunc" works OK, but a derivative-free method (below) is better for this problem
+    ##opt = optimset("TolFun",1e-6,"MaxFunEvals",maxiter);
+    ##[log10lambda,fout,exitflag] = fminunc (fhandle, guess, opt);
+    ##[log10lambda,fout,exitflag] = fminunc_compat (fhandle, guess, opt);
+    ## derivative-free optimization; should use "fminsearch" for Matlab
+    ## compatibility, but fminsearch needs updates to be more compatible itself
+    [log10lambda,fout,niter] = nelder_mead_min (fhandle, guess, "ftol",1e-6, "maxev",maxiter);
+    if (niter > maxiter)
+      exitflag = 0;
+    else
+      exitflag = 1;
+    endif
+    if (!exitflag)
+      warning("Iteration limit of %i exceeded\n",maxiter)
+    endif
     lambda = 10^log10lambda;
   endif
   

@@ -45,7 +45,7 @@ function D = ddmat(x, d)
     D = speye(m);
   else
     dx = x((d + 1):m) - x(1:(m - d));
-    V = spdiags(1 ./ dx, 0, m - d, m - d);
+    V = sparse(diag(1 ./ dx);
     D = d * V * diff(ddmat(x, d - 1));
   endif
 endfunction

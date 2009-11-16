@@ -101,7 +101,7 @@ function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
 
   ## construct M, D
   M = speye(Nhat);
-  idx = interp1(xhat,1:Nhat,x,"nearest"); # works for unequal spaced xhat
+  idx = interp1(xhat,1:Nhat,x,"nearest"); # works for unequally spaced xhat
   M = M(idx,:);
   D = ddmat(xhat,d);
 
@@ -111,17 +111,17 @@ function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
     W = diag(weightv);
   elseif (relative)
     ## use relative differences
-    Yinv = spdiag(1./y);
+    Yinv = sparse(diag(1./y));
     W = Yinv^2;
   else
     W = speye(N);
   endif
   ## use midpoint rule integration (rather than simple sums)
   if (midpr)
-    Bhat = spdiag(-ones(N-1,1),-1) + spdiag(ones(N-1,1),1);
+    Bhat = sparse(diag(-ones(N-1,1),-1)) + sparse(diag(ones(N-1,1),1));
     Bhat(1,1) = -1;
     Bhat(N,N) = 1;
-    B = 1/2*spdiag(Bhat*x);
+    B = 1/2*sparse(diag(Bhat*x));
     if ( floor(d/2) == d/2 ) # test if d is even
       dh = d/2;
       Btilda = B(dh+1:N-dh,dh+1:N-dh);
@@ -153,4 +153,8 @@ function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
     v = (M*yhat - y)'*(M*yhat - y)/N / (1 - trace(H)/N)^2;
   endif
   
+  ## test mapping
+  ##figure(5)
+  ##plot(x,y,'o',x,M*yhat,'x')
+
 endfunction

@@ -259,7 +259,7 @@ function [gamma_r, phi_r, w_gamma_r, w_phi_r] = margin (sys, tol = 1e-7)
 
   if (nargout == 0)  # show bode diagram
 
-    [H, w] = __getfreqresp__ (sys, [], false, 0);
+    [H, w] = __getfreqresp__ (sys, [], false, 0, "std");
 
     H = H(:);
     mag_db = 20 * log10 (abs (H));

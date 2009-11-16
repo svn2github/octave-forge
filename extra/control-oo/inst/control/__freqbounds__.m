@@ -37,19 +37,19 @@
 ## Date: October 2009
 ## Version: 0.1
 
-function [dec_min, dec_max] = __freqbounds__ (sys)
+function [dec_min, dec_max] = __freqbounds__ (sys, wbounds = "std")
 
   zer = zero (sys);
   pol = pole (sys);
   tsam = get (sys, "tsam");
-  DIGITAL = ! isct (sys);  # static gains (tsam = -1) are continuous
+  digital = (tsam > 0);  # static gains (tsam = -1) are continuous
   
   ## make sure zer, pol are row vectors
   pol = pol(:).';
   zer = zer(:).';
 
   ## check for natural frequencies away from omega = 0
-  if (DIGITAL)
+  if (digital)
     ## The 2nd conditions prevents log(0) in the next log command
     iiz = find (abs(zer-1) > norm(zer)*eps && abs(zer) > norm(zer)*eps);
     iip = find (abs(pol-1) > norm(pol)*eps && abs(pol) > norm(pol)*eps);
@@ -85,19 +85,32 @@ function [dec_min, dec_max] = __freqbounds__ (sys)
   
   if (isempty (iip) && isempty (iiz))
     ## no poles/zeros away from omega = 0; pick defaults
-    dec_min = -1;
-    dec_max = 3;
+    dec_min = 0;  # -1
+    dec_max = 2;  # 3
   else
     dec_min = floor (log10 (min (abs ([cpol, czer]))));
     dec_max = ceil (log10 (max (abs ([cpol, czer]))));
   endif
 
   ## expand to show the entirety of the "interesting" portion of the plot
-  dec_min = dec_min - 2;
-  dec_max = dec_max + 2;
+  switch (wbounds)
+    case "std"  # standard
+      if (dec_min == dec_max)
+        dec_min -= 2;
+        dec_max += 2;
+      else
+        dec_min--;
+        dec_max++;
+      endif
+    case "ext"  # extended (for nyquist)
+      dec_min -= 2;
+      dec_max += 2;
+    otherwise
+      error ("freqbounds: second argument invalid");
+  endswitch
 
   ## run digital frequency all the way to pi
-  if (DIGITAL)
+  if (digital)
     dec_max = log10 (pi/tsam);
   endif
 

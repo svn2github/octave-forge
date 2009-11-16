@@ -23,7 +23,7 @@
 ## Created: November 2009
 ## Version: 0.1
 
-function [H, w] = __getfreqresp__ (sys, w = [], mimoflag = 0, resptype = 0)
+function [H, w] = __getfreqresp__ (sys, w = [], mimoflag = 0, resptype = 0, wbounds = "std")
 
   ## check arguments
   if(! isa (sys, "lti"))
@@ -41,7 +41,7 @@ function [H, w] = __getfreqresp__ (sys, w = [], mimoflag = 0, resptype = 0)
   ## find interesting frequency range w if not specified
   if (isempty (w))
     ## begin plot at 10^dec_min, end plot at 10^dec_max [rad/s]
-    [dec_min, dec_max] = __freqbounds__ (sys);
+    [dec_min, dec_max] = __freqbounds__ (sys, wbounds);
 
     w = logspace (dec_min, dec_max, 500);  # [rad/s]
   endif

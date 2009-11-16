@@ -31,7 +31,7 @@ function [mag_r, w_r] = bodemag (sys, w = [])
     print_usage ();
   endif
 
-  [H, w] = __getfreqresp__ (sys, w, false, 0);
+  [H, w] = __getfreqresp__ (sys, w, false, 0, "std");
 
   H = H(:);
   mag = abs (H);

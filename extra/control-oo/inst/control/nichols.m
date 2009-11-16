@@ -31,7 +31,7 @@ function [mag_r, pha_r, w_r] = nichols (sys, w = [])
     print_usage ();
   endif
 
-  [H, w] = __getfreqresp__ (sys, w, false, 0);
+  [H, w] = __getfreqresp__ (sys, w, false, 0, "ext");
 
   H = H(:);
   mag = abs (H);

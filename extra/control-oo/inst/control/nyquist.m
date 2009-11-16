@@ -31,7 +31,7 @@ function [re_r, im_r, w_r] = nyquist (sys, w = [])
     print_usage ();
   endif
 
-  [H, w] = __getfreqresp__ (sys, w, false, 0);
+  [H, w] = __getfreqresp__ (sys, w, false, 0, "ext");
 
   H = H(:);
   re = real (H);

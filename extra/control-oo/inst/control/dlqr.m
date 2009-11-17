@@ -21,7 +21,7 @@
 ## Created: November 2009
 ## Version: 0.1
 
-function [g, x, l] = lqr (a, b, q, r = [], s = [])
+function [g, x, l] = dlqr (a, b, q, r = [], s = [])
 
   if (nargin < 3 || nargin > 5)
     print_usage ();
@@ -35,7 +35,7 @@ function [g, x, l] = lqr (a, b, q, r = [], s = [])
   elseif (nargin < 4)
     print_usage ();
   else
-    tsam = 0;
+    tsam = 1;  # any value > 0 could be used here
   endif
 
   if (tsam > 0)

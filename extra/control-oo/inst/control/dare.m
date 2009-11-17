@@ -123,7 +123,7 @@ function [x, l, g] = dare (a, b, q, r, s = [], opt = "B")
     [n2, m2] = size (s);
 
     if (n2 != n || m2 != m)
-      error ("dlqr: s (%dx%d) must be identically dimensioned with b (%dx%d)",
+      error ("dare: s (%dx%d) must be identically dimensioned with b (%dx%d)",
               n2, m2, n, m);
     endif
 
@@ -145,10 +145,10 @@ function [x, l, g] = dare (a, b, q, r, s = [], opt = "B")
     error ("dlqr: (a,q) has non-minimal modes near unit circle");
   endif
 
-  %## Checking positive definiteness
-  %if (isdefinite (r) <= 0)
-  %  error ("dare: r not positive definite");
-  %endif
+  ## Checking positive definiteness
+  if (isdefinite (r) <= 0)
+    error ("dare: r not positive definite");
+  endif
 
   %if (isdefinite (qo) < 0)
   %  error ("dare: q not positive semidefinite");
@@ -173,7 +173,7 @@ function [x, l, g] = dare (a, b, q, r, s = [], opt = "B")
   ## corresponding gain matrix
   g = (r+b'*x*b) \ (b'*x*a + s');
 
-  # closed-loop poles
-  l = eig (a - b*k);
+  ## closed-loop poles
+  l = eig (a - b*g);
 
 endfunction

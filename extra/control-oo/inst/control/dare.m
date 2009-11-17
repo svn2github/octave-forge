@@ -81,8 +81,6 @@
 
 function [x, l, g] = dare (a, b, q, r, s = [], opt = "B")
 
-  warning ("dare: under construction");
-
   if (nargin < 4 || nargin > 6)
     print_usage ();
   endif
@@ -133,26 +131,26 @@ function [x, l, g] = dare (a, b, q, r, s = [], opt = "B")
 
   ## check stabilizability
   if (! isstabilizable (ao, b, [], 1))
-    error ("dlqr: (a,b) not stabilizable");
+    error ("dare: a and b not stabilizable");
   endif
 
   ## check detectability
   dflag = isdetectable (ao, qo, [], 1);
 
   if (dflag == 0)
-    warning ("dlqr: (a,q) not detectable");
+    warning ("dare: (a,q) not detectable");
   elseif (dflag == -1)
-    error ("dlqr: (a,q) has non-minimal modes near unit circle");
+    error ("dare: (a,q) has non-minimal modes near unit circle");
   endif
 
   ## Checking positive definiteness
   if (isdefinite (r) <= 0)
-    error ("dare: r not positive definite");
+    error ("dare: r must be positive definite");
   endif
 
-  %if (isdefinite (qo) < 0)
-  %  error ("dare: q not positive semidefinite");
-  %endif
+  ## if (isdefinite (qo) < 0)
+  ##   error ("dare: q not positive semidefinite");
+  ## endif
 
   ## solve the riccati equation
   s1 = [ ao, zeros(n);

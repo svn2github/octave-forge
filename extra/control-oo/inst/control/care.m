@@ -23,14 +23,36 @@
 
 function [x, l, g] = care (a, b, q, r, s = [], opt = "B")
 
-  warning ("care: under construction");
-
   if (nargin < 4 || nargin > 6)
     print_usage ();
   endif
 
+  if (nargin == 6)
+    if (ischar (opt))
+      opt = upper (opt(1));
+      if (opt != "B" && opt != N && opt != "P" && opt != "S")
+        warning ("dare: opt has invalid value ""%s""; setting to ""B""", opt);
+        opt = "B";
+      endif
+    else
+      warning ("dare: invalid argument opt, setting to ""B""");
+      opt = "B";
+    endif
+  endif
 
   [n, m] = size (b);
+  p = issquare (q);
+  m1 = issquare (r);
+
+  if (! m1)
+    error ("care: r is not square");
+  elseif (m1 != m)
+    error ("care: b, r are not conformable");
+  endif
+
+  if (! p)
+    q = q' * q;
+  endif
 
   ## incorporate cross term into a and q
   if (isempty (s))
@@ -38,22 +60,29 @@ function [x, l, g] = care (a, b, q, r, s = [], opt = "B")
     ao = a;
     qo = q;
   else
-    [n1, m1] = size (s);
-    if (n1 != n || m1 != m)
-      error ("care: s must be identically dimensioned with b");
+    [n2, m2] = size (s);
+
+    if (n2 != n || m2 != m)
+      error ("cs (%dx%d) must be identically dimensioned with b (%dx%d)",
+              n2, m2, n, m);
     endif
 
     ao = a - (b/r)*s';
     qo = q - (s/r)*s';
   endif
 
-  ## check qo and r
-  if (! issymmetric (qo))
-    error ("lqr: q must be symmetric");
+  ## check stabilizability
+  if (! isstabilizable (ao, b, [], 0))
+    error ("care: a and b not stabilizable");
   endif
 
-  if (! issymmetric (r))
-    error ("lqr: r must be symmetric");
+  ## check detectability
+  dflag = isdetectable (ao, qo, [], 0);
+
+  if (dflag == 0)
+    warning ("care: a and q not detectable");
+  elseif (dflag == -1)
+    error ("care: a and q have poles on imaginary axis");
   endif
 
   ## to allow lqe design, don't force

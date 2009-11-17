@@ -101,7 +101,7 @@ function x = are (a, b, c, opt = "B")
   endif
 
   if (! m)
-    b = b * b';
+    b = b * b';  # b must be symmetric
     m = rows (b);
   endif
 
@@ -109,8 +109,11 @@ function x = are (a, b, c, opt = "B")
     warning ("are: matrices a and c are not observable");
   endif
 
+  ## to allow lqe design, don't force
+  ## b to be positive semi-definite
+
   if (! p)
-    c = c' * c;
+    c = c' * c;  # c must be symmetric
     p = rows (c);
   endif
 

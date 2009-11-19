@@ -6,7 +6,7 @@ NetCDF
  ncchar
  ncdouble
  ncdump
- ncfillvalue
+ ncfillval
  ncfloat
  ncint
  nclong

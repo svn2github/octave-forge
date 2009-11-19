@@ -14,15 +14,15 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{fillvalue} = } ncfillvalue (@var{ncvar})
-## @deftypefnx {Loadable Function} ncfillvalue(@var{ncvar},@var{fillvalue})
+## @deftypefn {Loadable Function} {@var{fillvalue} = } ncfillval (@var{ncvar})
+## @deftypefnx {Loadable Function} ncfillval(@var{ncvar},@var{fillvalue})
 ## returns or sets the @var{fillvalue} of the NetCDF variable @var{ncvar}.
 ## @end deftypefn
 ## @seealso{netcdf}
 
 ## Author: Alexander Barth <barth.alexander@gmail.com>
 
-function varargout = ncfillvalue(varargin);
+function varargout = ncfillval(varargin);
 
 varargout = {};
 
@@ -35,6 +35,6 @@ elseif nargin == 2
   
   ncvar.FillValue_ = fv;  
 else
-  error('ncfillvalue: wrong number of arguments');
+  error('ncfillval: wrong number of arguments');
 end
 

@@ -14,10 +14,10 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{fillvalue} = } ncfillvalue(@var{ncvar})
+## @deftypefn {Loadable Function} {@var{fillvalue} = } ncfillvalue (@var{ncvar})
 ## @deftypefnx {Loadable Function} ncfillvalue(@var{ncvar},@var{fillvalue})
-## returns or sets the fillvalue of the NetCDF variable ncvar
-## 
+## returns or sets the @var{fillvalue} of the NetCDF variable @var{ncvar}.
+## @end deftypefn
 ## @seealso{netcdf}
 
 ## Author: Alexander Barth <a.barth@ulg.ac.be>

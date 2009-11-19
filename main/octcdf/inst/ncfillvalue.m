@@ -29,7 +29,7 @@ varargout = {};
 if nargin == 1
   ncvar = varargin{1};
   varargout{1} = ncvar.FillValue_;
-elseif nargin == 1
+elseif nargin == 2
   ncvar = varargin{1};
   fv = varargin{2};
   

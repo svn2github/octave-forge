@@ -25,7 +25,7 @@
 ##
 ## @seealso{ncdim,ncvar,ncatt}
 
-## Author: Alexander Barth <abarth@marine.usf.edu>
+## Author: Alexander Barth <barth.alexander@gmail.com>
 
 
 

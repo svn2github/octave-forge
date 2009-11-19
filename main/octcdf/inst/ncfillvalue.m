@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Alexander Barth <a.barth@ulg.ac.be>
+## Copyright (C) 2009 Alexander Barth <barth.alexander@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 ## @end deftypefn
 ## @seealso{netcdf}
 
-## Author: Alexander Barth <a.barth@ulg.ac.be>
+## Author: Alexander Barth <barth.alexander@gmail.com>
 
 function varargout = ncfillvalue(varargin);
 

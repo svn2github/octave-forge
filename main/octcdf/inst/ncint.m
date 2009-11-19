@@ -32,7 +32,7 @@
 ## @end deftypefn
 ## @seealso{netcdf}
 
-## Author: Alexander Barth <abarth@marine.usf.edu>
+## Author: Alexander Barth <barth.alexander@gmail.com>
 
 function c = ncint(varargin);
 

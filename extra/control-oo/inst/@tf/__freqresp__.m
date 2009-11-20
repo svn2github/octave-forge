@@ -16,6 +16,7 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## Frequency response of TF models.
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: October 2009
@@ -26,10 +27,10 @@ function H = __freqresp__ (sys, w, resptype = 0)
   [p, m] = size (sys);
   [num, den, Ts] = tfdata (sys);
 
-  if (Ts == 0 || Ts == -1)  # continuous system
+  if (Ts > 0)  # discrete system
+    s = exp (i * w * Ts);
+  else  # continuous system
     s = i * w;
-  else  # discrete system
-    s = exp (i * w * Ts); 
   endif
 
   l_s = length (s);

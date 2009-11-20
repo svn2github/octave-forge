@@ -76,8 +76,6 @@ function dispmat (m, mname, rname, cname)
   MAX_LEN = 12;  # max length of row name and column name
   [mrows, mcols] = size (m);
 
-  disp ([mname, " ="]);
-
   row_name = strjust (strvcat (" ", rname), "left");
   row_name = row_name(:, 1 : min (MAX_LEN, end));
   row_name = horzcat (repmat (" ", mrows+1, 3), row_name);
@@ -98,6 +96,8 @@ function dispmat (m, mname, rname, cname)
   endfor
 
   mat = horzcat (row_name, mat{:});
+
+  disp ([mname, " ="]);
   disp (mat);
   disp ("");
 

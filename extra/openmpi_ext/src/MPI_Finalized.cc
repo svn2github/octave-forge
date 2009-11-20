@@ -30,7 +30,7 @@
 DEFUN_DLD(NAME, args, nargout,
 "MPI_Finalized          Indicates whether MPI_Finalize has completed\n\
 \n\
-  [info flag] = MPI_Finalized\n\
+  [flag info] = MPI_Finalized\n\
 \n\
   flag(int) 0 false\n\
             1 true\n\
@@ -44,14 +44,13 @@ DEFUN_DLD(NAME, args, nargout,
 ")
 {
    octave_value_list results;
-    int flag;           
-
-
+   int flag;           
 
     int info = MPI_Finalized(&flag);
-    results(0) = info;
-    results(1) = flag;
+    if (nargout > 1)
+      results(1) = info;
+    results(0) = flag != 0;
     return results;
 
-    /* [info flag] = MPI_Finalized */
+    /* [flag info] = MPI_Finalized */
 }

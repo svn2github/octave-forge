@@ -30,7 +30,7 @@
 DEFUN_DLD(NAME, args, nargout,
 "MPI_Comm_size          Determines rank of calling process in communicator\n\
 \n\
-  [info rank] =  MPI_Comm_size (comm)\n\
+  [size info] =  MPI_Comm_size (comm)\n\
 \n\
   comm (int) communicator handle. MPI_COMM_NULL not valid\n\
   size (int) size of the calling process in group of comm\n\
@@ -49,10 +49,11 @@ DEFUN_DLD(NAME, args, nargout,
     octave_value_list results;
     int my_size;
     int info = MPI_Comm_size(MPI_COMM_WORLD,&my_size);
-    results(0) = info;
-    results(1) = my_size;
+    if (nargout > 1)
+      results(1) = info;
+    results(0) = my_size;
 
-    /* [info rank] = MPI_Comm_size (comm) */
+    /* [size info] = MPI_Comm_size (comm) */
    
     return results;
 }

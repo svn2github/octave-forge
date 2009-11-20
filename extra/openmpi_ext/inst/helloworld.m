@@ -25,11 +25,11 @@
 
 
 if not(MPI_Initialized)
-   info = MPI_Init();
+   MPI_Init();
 end
 
-  [info my_rank] = MPI_Comm_rank();
-  [info p ] = MPI_Comm_size();
+  my_rank = MPI_Comm_rank();
+  p = MPI_Comm_size();
  # Could be any number
   mytag = 48;
 
@@ -45,12 +45,12 @@ end
   else
         for source = 1:p-1
           disp("We are at rank 0 that is master etc..");
-          [info message] = MPI_Recv(source,mytag);
+          [message, info] = MPI_Recv(source,mytag);
         printf('%s\n', message);
           endfor
   end   
 
 
   if not(MPI_Finalized)
-   info = MPI_Finalize();
+   MPI_Finalize();
   end

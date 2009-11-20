@@ -30,7 +30,7 @@
 DEFUN_DLD(NAME, args, nargout,
 "MPI_Initialized        Indicates whether MPI_Init has been called\n\
 \n\
- [info flag] = MPI_Initialized\n\
+ [flag info] = MPI_Initialized\n\
 \n\
  flag(int) 0 false\n\
            1 true\n\
@@ -46,12 +46,11 @@ DEFUN_DLD(NAME, args, nargout,
   octave_value_list results;
    int flag;
 
-
-
    int info = MPI_Initialized(&flag);
-   results(0) = info;
-   results(1) = flag;
+    if (nargout > 1)
+      results(1) = info;
+    results(0) = flag != 0;
    return results;
 
-   /* [info flag] = MPI_Initialized */
+   /* [flag info] = MPI_Initialized */
 }

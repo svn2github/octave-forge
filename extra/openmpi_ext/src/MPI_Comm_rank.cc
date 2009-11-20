@@ -31,7 +31,7 @@
 DEFUN_DLD(NAME, args, nargout,
 "MPI_Comm_rank          Determines rank of calling process in communicator\n\
 \n\
-  [info rank] =  MPI_Comm_rank (comm)\n\
+  [rank info] =  MPI_Comm_rank (comm)\n\
 \n\
   comm (int) communicator handle. MPI_COMM_NULL not valid\n\
   rank (int) rank of the calling process in group of comm\n\
@@ -50,10 +50,11 @@ DEFUN_DLD(NAME, args, nargout,
     octave_value_list results;
     int my_rank;
     int info = MPI_Comm_rank(MPI_COMM_WORLD,&my_rank);
-    results(0) = info;
-    results(1) = my_rank;
+    if (nargout > 1)
+      results(1) = info;
+    results(0) = my_rank;
 
-    /* [info rank] = MPI_Comm_rank (comm) */
+    /* [rank info] = MPI_Comm_rank (comm) */
    
     return results;
 }

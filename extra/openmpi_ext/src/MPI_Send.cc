@@ -1867,7 +1867,7 @@ case ov_null_sq_string:
 
 
 
-DEFUN_DLD(MPI_Send,args,, "MPI_Send sends almost any Octave datatypes into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n")
+DEFUN_DLD(MPI_Send,args,nargout, "MPI_Send sends almost any Octave datatypes into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n")
 {
      octave_value retval;
 //      Check if MPI environment is initialized

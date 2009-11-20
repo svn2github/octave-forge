@@ -1,9 +1,9 @@
 if not(MPI_Initialized)
-   info = MPI_Init();
+   MPI_Init();
 end
 
-  [info my_rank] = MPI_Comm_rank();
-  [info p ] = MPI_Comm_size();
+  my_rank = MPI_Comm_rank();
+  p = MPI_Comm_size();
 # tag[0] ----> type of octave_value
 # tag[1] ----> array of three elements 1) num of rows 2) number of columns 3) number of non zero elements
 # tag[2] ---->  vector of rowindex
@@ -36,7 +36,7 @@ end
         for source = 1:p-1
           messager='';
           disp("We are at rank 0 that is master etc..");
-          [info messager] = MPI_Recv(source,mytag);
+          [messager, info] = MPI_Recv(source,mytag);
           disp("Rank 0 is the master receiving ... :");
           if (messager/message)
                 disp('OK!');
@@ -44,3 +44,7 @@ end
       messager
           endfor
   end   
+
+  if not(MPI_Finalized)
+   MPI_Finalize();
+  end

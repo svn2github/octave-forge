@@ -24,8 +24,8 @@
  * ----------------------------------------------------
  */
 
-#include <octave/oct.h>
 #include "mpi.h"       
+#include <octave/oct.h>
 
 DEFUN_DLD(NAME, args, nargout,
 "MPI_Comm_size          Determines rank of calling process in communicator\n\

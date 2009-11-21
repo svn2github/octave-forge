@@ -48,3 +48,6 @@ function ob = obsv (a, c)
   endfor
 
 endfunction
+
+
+%!assert (obsv ([1 0; 0 -0.5], [8 8]), [8 8; 8 -4]);

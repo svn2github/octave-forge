@@ -15,20 +15,12 @@
 @rem    wget -N -i mingw32-gcc-url.txt
 @rem
 @rem  Furthermore, it requires a native win32 version of bsdtar.exe (libarchive)
-@rem  available in your PATH.
-@rem  You can get it e.g. from the gnuwin32 project at
-@rem  http://gnuwin32.sourceforge.net
-@rem
-@rem  For a minimal install, download
-@rem    http://downloads.sourceforge.net/gnuwin32/libarchive-2.4.12-1-bin.zip
-@rem    http://downloads.sourceforge.net/gnuwin32/libarchive-2.4.12-1-dep.zip
-@rem  and extract the files 
-@rem    bzip2.dll
-@rem    zilb.dll
-@rem  from libarchive-2.4.12-1-dep.zip, and
-@rem    bsdtar.exe
-@rem    libarchive2.dll
-@rem  from libarchive-2.4.12-1-bin.zip to a location available in PATH.
+@rem  available in your PATH. The version of bsdtar must support lzma 
+@rem  compression.
+@rem  A suitable binary of bsdtar is available at
+@rem   http://downloads.sourceforge.net/mingw/bsdtar-2.7.900a_r1628-20091110-mingw32-alpha-bin.zip
+@rem  Unzip the executable bsdtar.exe to a directory which is found in your PATH
+
 @rem
 @rem  Additionally it requires a win32 version of SED available in your path
 @rem  SED binaries are also evailable e.g. from the gnuwin32 project.
@@ -46,6 +38,10 @@
 @rem
 @rem  CHANGELOG:
 @rem  =========
+@rem
+@rem   21-nov-2009  Benjamin Lindner <lindnerb@users.sourceforge.net>
+@rem   
+@rem     * update installation comments to new mingw bsdtar version 
 @rem
 @rem   29-oct-2009  Benjamin Lindner <lindnerb@users.sourceforge.net>
 @rem   

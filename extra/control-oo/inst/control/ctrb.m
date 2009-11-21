@@ -48,3 +48,6 @@ function co = ctrb (a, b)
   endfor
 
 endfunction
+
+
+%!assert (ctrb ([1 0; 0 -0.5], [8; 8]), [8 8; 8 -4]);

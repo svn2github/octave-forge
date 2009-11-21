@@ -1,3 +1,4 @@
+## Copyright (C) 1997, 2000, 2002, 2004, 2005, 2006, 2007 Kai P. Mueller
 ## Copyright (C) 2009   Lukas F. Reichlin
 ##
 ## This file is part of LTI Syncope.
@@ -21,16 +22,18 @@
 ## Controllability matrix.
 ## @end deftypefn
 
-## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
-## Created: October 2009
-## Version: 0.1
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: November 4, 1997
+## based on is_controllable.m of Scottedward Hodel
 
-function co = ctrb (a, b)
+function co = ctrb (sys_or_a, b)
 
   if (nargin == 1)
-    [a, b] = ssdata (a);
+    [a, b] = ssdata (sys_or_a);
   elseif (nargin == 2)
-    if (! isnumeric (a) || ! isnumeric (b) || rows(a) != rows (b) || ! issquare (a))
+    a = sys_or_a;
+    if (! isnumeric (a) || ! isnumeric (b) ||
+        rows(a) != rows (b) || ! issquare (a))
       error ("ctrb: invalid arguments");
     endif
   else

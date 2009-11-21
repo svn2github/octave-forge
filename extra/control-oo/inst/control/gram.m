@@ -41,55 +41,40 @@ function W = gram (argin1, argin2)
     print_usage ();
   endif
 
-  if (! ischar (argin2))  # the function was called as "gram (a, b)"
+  if (ischar (argin2))  # the function was called as "gram (sys, mode)"
+    sys = argin1;
+    argin2 = lower (argin2);
+
+    if (! isa (sys, "lti"))
+      error ("gram: first argument must be a LTI model");
+    endif
+
+    if (strcmp (argin2, "c"))
+      [a, b] = ssdata (argin1);
+    elseif (strcmp (argin2, "o"))
+      [a, b, c] = ssdata (argin1);
+      a = a';
+      b = c';
+    else
+      print_usage ();
+    endif
+  else  # the function was called as "gram (a, b)"
     a = argin1;
     b = argin2;
 
-    ## b, c and d matrices are irrelevant for stability
-    ## assume that a and b are matrices of continous-time system
-
+    ## assume that a and b are matrices of continuous-time system
+    ## values of b, c and d are irrelevant for system stability
     sys = ss (a, b, zeros (1, columns (a)), zeros (1, columns (b)));
+  endif
 
-    if (! isstable (sys))
-      error ("gram: the continuous-time system must have a stable 'a' matrix");
-    else
+  if (! isstable (sys))
+    error ("gram: system matrix a must be stable");
+  endif
 
-      ## let lyap do the error checking about dimensions
-      W = lyap (a', b*b');
-    endif
-
-  else  # the function was called as "gram (sys, mode)"
-    argin2 = lower (argin2);
-
-    if (! (strcmp (argin2, "c") || strcmp (argin2, "o")))
-      print_usage ();
-    else
-      if (strcmp (argin2, "c"))
-        [a, b] = ssdata (argin1);
-      elseif (strcmp (argin2, "o"))
-        [a, b, c] = ssdata (argin1);
-        a = a';
-        b = c';
-      endif
-
-      if (isct (argin1))
-        if (! isstable (argin1))
-          error ("gram: the continuous-time system must be stable");
-        else
-          ## let lyap do the error checking about dimensions
-          W = lyap (a', b*b');
-        endif
-
-      else  # if (isdt (argin1))
-        if (! isstable (argin1))
-          error ("gram: the discrete-time system must be stable");
-        else
-          ## let dlyap do the error checking about dimensions
-          W = dlyap (a, b*b');
-        endif
-      endif
-
-    endif
+  if (isct (sys))
+    W = lyap (a', b*b');  # let lyap do the error checking about dimensions
+  else  # discrete-time system
+    W = dlyap (a, b*b');  # let dlyap do the error checking about dimensions
   endif
 
 endfunction

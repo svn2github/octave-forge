@@ -1,4 +1,6 @@
+## Copyright (C) 1997, 2000, 2002, 2004, 2005, 2006, 2007 Kai P. Mueller
 ## Copyright (C) 2009   Lukas F. Reichlin
+## Copyright (C) 2009 Luca Favatella <slackydeb@gmail.com>
 ##
 ## This file is part of LTI Syncope.
 ##
@@ -21,31 +23,24 @@
 ## Observability matrix.
 ## @end deftypefn
 
-## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
-## Created: October 2009
-## Version: 0.1
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: November 4, 1997
 
-function ob = obsv (a, c)
+function ob = obsv (sys_or_a, c)
 
   if (nargin == 1)
-    [a, b, c] = ssdata (a);
+    [a, b, c] = ssdata (sys_or_a);
   elseif (nargin == 2)
-    if (! isnumeric (a) || ! isnumeric (c) || columns(a) != columns (c) || ! issquare (a))
+    a = sys_or_a;
+    if (! isnumeric (a) || ! isnumeric (c) ||
+        columns(a) != columns (c) || ! issquare (a))
       error ("obsv: invalid arguments");
     endif
   else
     print_usage ();
   endif
 
-  [arows, acols] = size (a);
-  [crows, ccols] = size (c);
-
-  ob = zeros (arows*crows, acols);
-
-  for k = 1 : arows
-    ob(((k-1)*crows + 1) : (k*crows), :) = c;
-    c = c * a;
-  endfor
+  ob = ctrb (a', c')';
 
 endfunction
 

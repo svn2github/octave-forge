@@ -13,20 +13,11 @@
 @rem    wget -N -i msys-url.txt
 @rem
 @rem  Furthermore, it requires a native win32 version of bsdtar.exe (libarchive)
-@rem  available in your PATH.
-@rem  You can get it e.g. from the gnuwin32 project at
-@rem  http://gnuwin32.sourceforge.net
-@rem
-@rem  For a minimal install, download
-@rem    http://downloads.sourceforge.net/gnuwin32/libarchive-2.4.12-1-bin.zip
-@rem    http://downloads.sourceforge.net/gnuwin32/libarchive-2.4.12-1-dep.zip
-@rem  and extract the files 
-@rem    bzip2.dll
-@rem    zilb.dll
-@rem  from libarchive-2.4.12-1-dep.zip, and
-@rem    bsdtar.exe
-@rem    libarchive2.dll
-@rem  from libarchive-2.4.12-1-bin.zip to a location available in PATH.
+@rem  available in your PATH. The version of bsdtar must support lzma 
+@rem  compression.
+@rem  A suitable binary of bsdtar is available at
+@rem   http://downloads.sourceforge.net/mingw/bsdtar-2.7.900a_r1628-20091110-mingw32-alpha-bin.zip
+@rem  Unzip the executable bsdtar.exe to a directory which is found in your PATH
 @rem
 @rem  Then simply execute this script, and specify the target location where
 @rem  to install the MSYS build environment, e.g.
@@ -40,6 +31,17 @@
 @rem
 @rem  CHANGELOG:
 @rem  =========
+@rem
+@rem   21-nov-2009  Benjamin Lindner <lindnerb@users.sourceforge.net>
+@rem   
+@rem     * add cygutils-1.3.4-3-msys-1.0.11-bin.tar.lzma
+@rem     * add cygutils-dos2unix-1.3.4-3-msys-1.0.11-bin.tar.lzma
+@rem     * replace msysCORE-1.0.11-bin.tar.gz
+@rem       by msysCORE-1.0.11-msys-1.0.11-base-bin.tar.lzma
+@rem     * add make-3.81-2-msys-1.0.11-bin.tar.lzma
+@rem     * add coreutils-5.97-2-msys-1.0.11-bin.tar.lzma
+@rem     * add coreutils-5.97-2-msys-1.0.11-ext.tar.lzma (for sha1sum)
+@rem     * add bash-3.1.17-2-msys-1.0.11-bin.tar.lzma
 @rem
 @rem   14-nov-2009  Benjamin Lindner <lindnerb@users.sourceforge.net>
 @rem   
@@ -105,18 +107,28 @@ SET MSYSPATCH="%DST%\bin\patch.exe"
 @rem
 @rem  Extract MSYScore. Requires win32 bsdtar version
 @rem
-%W32TAR% %W32TAROPT% -f %SRCDIR%msysCORE-1.0.11-bin.tar.gz
+%W32TAR% %W32TAROPT% -f %SRCDIR%msysCORE-1.0.11-msys-1.0.11-base-bin.tar.lzma
+
+@rem
+@rem  Extract MSYS base utilities
+@rem
+%W32TAR% %W32TAROPT% -f %SRCDIR%make-3.81-2-msys-1.0.11-bin.tar.lzma
+%W32TAR% %W32TAROPT% -f %SRCDIR%coreutils-5.97-2-msys-1.0.11-bin.tar.lzma
+%W32TAR% %W32TAROPT% -f %SRCDIR%coreutils-5.97-2-msys-1.0.11-ext.tar.lzma
+%W32TAR% %W32TAROPT% -f %SRCDIR%bash-3.1.17-2-msys-1.0.11-bin.tar.lzma
 
 @rem
 @rem  Extract MSYS BSDTAR
 @rem
-call :extracttarlzma "%SRCDIR%bsdtar-2.7.1-1-msys-1.0.11-bin.tar.lzma"
-call :extracttarlzma "%SRCDIR%libarchive-2.7.1-1-msys-1.0.11-dll-2.tar.lzma"
-call :extracttarlzma "%SRCDIR%libopenssl-0.9.8k-1-msys-1.0.11-dll-098.tar.lzma"
-call :extracttargz "%SRCDIR%liblzma-4.999.9beta-1-msys-1.0.11-dll-1.tar.gz"
-call :extracttargz "%SRCDIR%xz-4.999.9beta-1-msys-1.0.11-bin.tar.gz"
-call :extracttargz "%SRCDIR%zlib-1.2.3-1-msys-1.0.11-dll.tar.gz"
-call :extracttargz "%SRCDIR%libbz2-1.0.5-1-msys-1.0.11-dll-1.tar.gz"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%tar-1.22-1-msys-1.0.11-bin.tar.lzma"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%gzip-1.3.12-1-msys-1.0.11-bin.tar.lzma"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%bsdtar-2.7.1-1-msys-1.0.11-bin.tar.lzma"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%libarchive-2.7.1-1-msys-1.0.11-dll-2.tar.lzma"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%libopenssl-0.9.8k-1-msys-1.0.11-dll-098.tar.lzma"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%liblzma-4.999.9beta-1-msys-1.0.11-dll-1.tar.gz"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%xz-4.999.9beta-1-msys-1.0.11-bin.tar.gz"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%zlib-1.2.3-1-msys-1.0.11-dll.tar.gz"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%libbz2-1.0.5-1-msys-1.0.11-dll-1.tar.gz"
 
 @rem
 @rem  Extract PERL
@@ -142,14 +154,12 @@ call :extracttargz "%SRCDIR%libbz2-1.0.5-1-msys-1.0.11-dll-1.tar.gz"
 %MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%gawk-3.1.7-1-msys-1.0.11-bin.tar.lzma"
 %MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%grep-2.5.4-1-msys-1.0.11-bin.tar.lzma"
 %MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%groff-1.20.1-1-msys-1.0.11-bin.tar.lzma"
-%MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%gzip-1.3.12-1-msys-1.0.11-bin.tar.lzma"
 %MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%less-436-1-msys-1.0.11-bin.tar.lzma"
 %MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%m4-1.4.13-1-msys-1.0.11-bin.tar.lzma"
 %MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%man-1.6f-1-msys-1.0.11-bin.tar.lzma"
 %MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%patch-2.5.9-1-msys-1.0.11-bin.tar.lzma"
 %MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%rxvt-2.7.10.20050409-1-msys-1.0.11-bin.tar.lzma"
 %MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%sed-4.2.1-1-msys-1.0.11-bin.tar.lzma"
-%MSYSBSDTAR% %W32TAROPT% -f "%SRCDIR%tar-1.22-1-msys-1.0.11-bin.tar.lzma"
 
 @rem 
 @rem  Extract bison
@@ -186,6 +196,13 @@ copy "%SRCDIR%wget.exe" "%DST%\local\bin"
 	-e "/^aclocaldir/s+/mingw+/usr+" ^
 	"%DST%\bin\libtoolize"
 type "%SRCDIR%libtool-2.2.7a-pass_all.patch" | %MSYSPATCH% -d /share/aclocal -u -p 2
+
+@rem
+@rem  Cygutils
+@rem
+call :extracttarlzma "%SRCDIR%cygutils-1.3.4-3-msys-1.0.11-bin.tar.lzma"
+call :extracttarlzma "%SRCDIR%cygutils-dos2unix-1.3.4-3-msys-1.0.11-bin.tar.lzma"
+
 
 @rem
 @rem  Rename the msys icon. Windows gets confused if a .m file extension

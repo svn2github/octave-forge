@@ -45,4 +45,4 @@ function ob = obsv (sys_or_a, c)
 endfunction
 
 
-%!assert (obsv ([1 0; 0 -0.5], [8 8]), [8 8; 8 -4]);
+%!assert (obsv ([1, 0; 0, -0.5], [8, 8]), [8, 8; 8, -4]);

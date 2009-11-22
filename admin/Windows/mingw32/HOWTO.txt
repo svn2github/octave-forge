@@ -1,0 +1,448 @@
+How to build octave for windows
+===============================
+
+This document is a small introduction into building octave for windows platform 
+using MinGW32/MSYS, and acts as HOWTO for the build scripts that can be found
+at the octave-forge svn repository located at
+https://octave.svn.sourceforge.net/svnroot/octave/trunk/octave-forge/admin/Windows/mingw32
+
+History:
+========
+
+2009-Nov-08 v0.1    Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+
+Prerequisites
+=============
+
+0) The very basic
+-----------------
+
+You should be basically familiar with version control systems, in this case at
+least subversion. If you also want to build octave directly from development 
+sources then you should also be familiar with Mercurial.
+
+The build enviromnent consists of a directory tree and a bunch of shell scripts.
+The build process is entirely command-line driven and follows the unix way of 
+(at the very minimum)
+  make
+and possibly a "configure" stage preceeding it.
+
+Windows does not ship with a decent text editor by default (No, notepad won't 
+do). Possible free (as in speech) text editors that do a better job are e.g.
+   SciTE      (http://www.scintilla.org/SciTE.html)
+   Notepad++  (http://sourceforge.net/projects/notepad-plus/)
+
+1) VCS
+------
+
+To build octave and its dependencies you will need at least a win32 version
+of Subversion (svn). To build octave from development sources you'll 
+additionally require Mercurial (hg). 
+
+A nice svn cilent for windows is provided by the TortoiseSVN project at 
+http://tortoisesvn.tigris.org. 
+
+A win32 command line version of svn is available from the Subversion project at
+http://subversion.tigris.org. In the section 'Windows binaries' follow the
+link to 'Tigris.org binaries'. It's reasonable to choose the same version for
+the command line client as for the TortoiseSVN client. The command line client
+is distributed as zipped binaries. Look for "svn-win32-N.N.N.zip".
+At time of writing avilable:
+http://subversion.tigris.org/files/documents/15/46518/svn-win32-1.6.5.zip
+Unzip to e.g. c:\programs\svn, and add c:\programs\svn\bin (or equivalent) to 
+your PATH.
+
+A Mercurial client for win32 is provided by the TortoiseHG project at
+http://bitbucket.org/tortoisehg/stable/wiki/Home. In includes both a GUI and
+command line version to Mercurial. Simply install.
+
+2) Getting the build scripts from octave-forge
+----------------------------------------------
+
+Checkout a copy of the build environment from the octave-forge repository from
+https://octave.svn.sourceforge.net/svnroot/octave/trunk/octave-forge/admin/Windows/mingw32
+to a directory of your choice.
+Mind that for a full build you'll need several hundreds of MB available disk
+space. For the following we'll assume the local checkout directory is (for
+brevity) c:\octmgw32
+
+3) Setting up the build environment
+-----------------------------------
+
+In c:\octmgw32 you'll find two batch scripts:
+  install-mingw32-4.4.0.cmd
+  install-msys-1.0.11.cmd
+
+These are used to set up the build environment by installing a version of 
+MinGW's GNU compiler (gcc) and Miminal SYStem (MSYS). Both are provided by 
+http://www.mingw.org.
+
+To run these scripts you need the following prerequisites:
+   wget
+   bsdtar (libarchive)
+   sed
+Please refer to the comment at the top of the respective batch script for 
+details.
+
+Before calling the installation batch scripts you must download what is
+to be installed. The scripts assume the downloaded files to reside in the
+subdirectories mingw32/ and msys/ respectively. Again refer to the information 
+in the install scripts.
+
+Both batch scripts will prompt you to for an installation directory, please
+choose one without spaces in it, e.g. c:\msys\1.0.11 and c:\mingw32\4.4.0
+(You don't necessarily need to install into a subdirectory of the checked-out 
+ocatve-forge build tree).
+
+After installing msys, you must set up the correct mount points. Open the file
+c:\msys\1.0.11\etc\fstab.sample, edit it to have the correct path where you 
+installed mingw32 e.g. c:/mingw32/4.4.0 as mount point /mingw and remove the 
+sample perl mount point. Save the file as c:\msys\1.0.11\etc\fstab
+(You can also add a mount point to the directory you checked out the 
+ocatve-forge build environment, e.g. /octmgw32 to point to c:/octmgw32).
+
+After you have installed msys and set up the mount points, you can start it by 
+executing c:\msys\1.0.11\bin\msys.bat. Create a shortcut to it on your desktop, 
+and specify as parameter either
+   --norxvt .... use windows cmd.exe 
+   --rxvt ...... use msys rxvt terminal
+Try it and choose what you prefer.
+
+To check that mingw32 gcc is found, execute "mingw32-gcc-4.4.0-dw2 --version" 
+and you should get
+
+mingw32-gcc-4.4.0-dw2.exe (GCC) 4.4.0
+Copyright (C) 2009 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+4) Additional Software required
+-------------------------------
+
+The following additional software is required:
+   MiKTeX 
+   ghostscript
+   Microsoft Help Workshop
+
+If you want to build ocatve's documentation or gnuplot's documentation you
+will need a recent TeX/LaTeX distribution. One available for win32 is
+MiKTeX (http://www.miktex.org). Installing the basic package set is fine.
+You will need the following additional packages to build octave's documentation
+   epsf
+and the following packages for gnuplot's documentation
+   booktabs
+   fancyhdr
+   picins
+   
+Bulding gnuplot's windows help file requires the Microsoft Help Workshop from
+http://download.microsoft.com/download/win95/MSPRESS/1.0/W9X/EN-US/hcwsetup.EXE
+
+Additionally (for both octave and gnuplot) you need ghostscript installed
+(http://www.ghostscript.com/) and the environment variable GSC point to the
+console executable as c:\path\where\you\installed\ghostscript\bin\gswin32c.exe
+
+5) Things nice to have
+----------------------
+
+Though not strictly required for building the following software may be 
+convenient:
+   http://www.7-zip.org
+   http://www.freecommander.org
+
+
+The Octave build environment
+============================
+
+The general procedure to get octave built is
+  a) build all dependency libraries
+  b) build gnuplot
+  c) build octave
+  d) additional tools
+  e) merge everything together
+
+a) building the dependenciy libraries
+-------------------------------------
+
+You'll find every dependency in a subdirectory of the checked-out build 
+environment. 
+For every library or program there's always a build script and (possibly) a 
+patch file. The naming follows the convention of
+
+   build-$VER-$REL.sh
+   $NAME-$VER-$REL.patch
+
+for the build script and the corresponding patch file. So for example in the
+directory zlib/ you will find
+
+   build-1.2.3-4.sh
+   zlib-1.2.3-4.patch
+
+If there is no patch file then the source builds out of the box.
+
+The release number $REL is used to distinguish between builds using different
+versions of gcc or a different set of compiler settings. Currently there are 
+two releases in use:
+   -3    uses TDM's gcc-4.3.0-2 from http://www.tdragon.net/recentgcc
+   -4    uses MinGW gcc-4.4.0 from http://www.mingw.org
+
+Aside from the per-dependendcy build script and patch file, there are a couple
+of common scripts in the root checked-out folder. They are prefixed gcc43_ and
+gcc44_ and you can guess what's the difference here.
+
+There is a template file for local configuration overrides 
+   gcc44_localconf.sh.template
+Modify it (especially update the paths to ghostscript, miktex and HCW) and save 
+under the filename of
+   gcc44_localconf.sh
+This script is read at the very end of gcc44_common.sh.
+
+All build scripts are to be called as
+   build-$VER-$REL.sh action [action [action ...]]
+
+The possible actions are:
+
+   download ... retrieve the source code from the web using wget
+   
+   unpack ..... unpack the (downloaded) source code archive
+                Remove existent directory
+   
+   applypatch . apply the source code patch $NAME-$VER-REL.patch
+   
+   mkdirs ..... create the build directory/directories.
+                Remove existent directory first
+   
+   conf ....... create the makefiles, respectively call "configure"
+   
+   build ...... corresponds to calling "make"
+   
+   install .... corresponds to calling "make install"
+   
+   all ........ all of the above in sequence
+   
+   check ...... corresponds to calling "make check"
+   
+Every action can be specified singularily or in combination with others. Mind
+that there's an implicit sequence in the above commands.
+
+For example in the subdirectory zlib/
+
+   ./build-1.2.3-4.sh all
+
+will download, unpack, patch, configure, build and install zlib.
+If you already donwloaded, unpacked and patched and want to just cleanly 
+reconfigure and rebuild, you issue
+
+   ./build-1.2.3-4.sh mkdirs conf build install
+
+to only rebuild simlarily
+
+   ./build-1.2.3-4.sh build install
+
+To avoid having to call the build script for every dependency in sequence (and
+there are quite a number of dependencies), the script gcc44_build_deps.sh acts
+as a wrapper script which simply calls the individual build scripts in sequence.
+gcc44_build_deps.sh just forwards any arguments specified to the individual 
+build scripts. E.g. to simply download all dependencies call
+
+   ./gcc44_build_deps.sh download
+
+and to rebuild and install call
+
+   ./gcc44_build_deps.sh build install
+
+
+b) Building gnuplot
+-------------------
+
+For gnuplot to work with octave >= 3.2 you need a console version of gnuplot
+(gnuplot_pipes.exe will not work). Gnuplot supports building a console version
+for windows since the CVS-4.3.0-2008-11-21 snapshot. At time of writing the
+CVS-4.3.0-2009-08-07 snapshot is available and in use.
+
+The gnuplot-relevant stuff is found in tools/gnuplot/
+
+To apply the patches you can - for gnuplot - also use the patchqueue.sh script.
+i.e.
+
+   ./build-4.3.0-2009-07-08-4.sh download unpack
+   ./patchqueue.sh
+   ./build-4.3.0-2009-07-08-4.sh mkdirs conf build install
+   
+This only works for the respective latest version of gnuplot. 
+
+c) Building octave
+------------------
+
+The octave-relevant stuff is found in the octave/ subdirectory.
+Same procedure as for the dependency libraries, e.g. to build octave 3.2.3
+chdir to octave/ and issue
+
+   ./build-3.2.3-4.sh all
+
+To run the built-in tests, issue
+
+   ./build-3.2.3-4.sh check
+
+To run octave in-place, issue
+
+   ./build-3.2.3-4.sh run
+
+
+d) Additional tools
+-------------------
+
+There are additional tools, which are bundled with the octave binary installer,
+and are located in the tools/ subdirectory. They follow the same example as 
+the other build scripts, except that these programs are not installed via
+"install" but via "install_pkg" (as they are not required to be built and
+present when building octave, rather are supplemental tools which are then
+installed to $PACKAGE_ROOT).
+
+   atlas/ ....... listed just for completeness. *Not* for building atlas, enter
+                  at own risk.
+   
+   cpufeature/ .. used by the NSIS installer to determine vector extensions
+                  available at the target CPU.
+   
+   gcc-4.4.0/ ... MinGW GCC version 4.4.0 bundled to allow installation of
+                  octave forge packages
+   
+   gcc-4.3.0/ ... TDM GCC version 4.3.0-2 bundled to allow installation of
+                  octave forge packages
+   
+   gnuplot/ ..... Gnuplot. See section b). Eventually to be moved one level up
+                  in the directory tree
+   
+   msys/ ........ Minimal MSYS envirionment bundled to allow installation of
+                  octave forge packages
+   
+   notepad++/ ... The text editor shipped with the octave mingw binary installer
+   
+The directory tools/ contains a wrapper script
+   build-3.sh  (for release 3)
+   build-4.sh  (for release 4)
+which (like the gcc44_build_deps.sh) is supposed to just call the individual
+build scripts in sequence.
+
+
+e) Merge an installation
+------------------------
+
+*MIND* this behaviour is likely to be changed in future.
+
+All dependencies are installed to the $PREFIX defined in gcc44_common.sh which
+defaults to /usr/local/octmgw32_gcc$GCCVER$GCCSYS
+Octave is by default installed to $PREFIX_OCTAVE/$VER-$REL where $PREFIX_OCTAVE 
+defaults to $PREFIX/octave.
+
+This is what you may call an "intermediate" install. This is necessary in order
+to have a defined location where configure scripts, compiler and linker will 
+find all headers and libraries necessary. 
+To get a ready-to-run version of octave all built and installed libraries 
+and programs are - again - installed into the what's called "package root"
+location which is defined as $PACKAGE_ROOT in gcc44_pkg_version.sh.
+
+The action to get the intermediate install is "install".
+The action to get the final install is "install_pkg".
+However, it's not yet consistently enforced..., so:
+
+   To install all dependencies to $PACKAGE_ROOT call the script 
+   gcc44_install_deps.sh
+   
+   To install octave to $PACKAGE_ROOT, call the octave build script with the 
+   action "install_pkg", e.g.
+       cd octave && ./build-3.2.3-4.sh install_pkg
+   
+   To install the additional tools to $PACKAGE_ROOT, call the respective build
+   script with the action "install_pkg", or call the wrapper script 
+      cd tools && ./build-4.sh install_pkg
+   
+   Atlas will certainly fail to install, since you haven't built it. Don't mind.
+   
+This should finally yield an installation tree of octave and its dependencies
+in $PACKAGE_ROOT.
+You can then call octave from $PACKAGE_ROOT/bin/octave.exe
+
+
+Devilish details
+================
+
+Everything
+----------
+
+The whole build environment is not foolproof, not fault-tolerant and not 
+designed to to error-checking. So it's experts only. Use it as source of 
+inspiration rather than relying blindly on it.
+
+In fact it is work-in-progress. 
+
+The most unpleasant feature is, that executing gcc44_build_deps.sh will NOT
+stop if an error occurs in one of the individual "configure, make, make install"
+cycles. 
+
+
+ATLAS
+-----
+
+To build atlas, you need a cygwin environment. You can't do it with msys (at 
+least I found no way of doing it).
+An ATLAS howto is beyond the scope of this document. Please refer to cygwin's
+lapack package for more information.
+
+
+GCC and shared libstdc++
+------------------------
+
+This is a long story. Boiled down in essence the facts are:
+
+   To allow exceptions be thrown (and successfully caught!) across dll 
+   boundaries, you must link *all* libraries involved with shared libgcc, which
+   is done by specifying the flag -shared-libgcc at link stage.
+   This is necessary for all libraries, even if they are C code and do not know
+   exceptions at all. As a link flag, add it to $LDFLAGS
+   
+   To really reliably throw and catch exceptions across dll boundaries in the
+   presence of inheritance and virtual functions, you must also link against
+   the shared libstdc++. As for example pointed out in
+   http://sourceforge.net/mailarchive/forum.php?thread_name=90baa01f0911010423n1c8ba467q7dd753b9845f2002%40mail.gmail.com&forum_name=mingw-users
+   
+   /How/ this is done, depends on the actual gcc version and flavour you use.
+   Currently there are two versions available which include a shared libstdc++:
+      TDM's GCC 4.3.0-2 (mind the -2)
+      MinGW's GCC 4.4.0
+      
+   In both cases the shared libstdc++ library bears the name "libstdc++_s", 
+   thus you must add "-lstdc++_s" at link stage. The build environment uses
+   the variable $CXXLIBS (in the style of $LIBS and $FLIBS).
+   
+   Additionally you must add at compile time
+      -D_DLL           (for TDM gcc 4.3.0-2)
+      -D_GLIBCXX_DLL   (for MinGW gcc 4.4.0)
+   to decorate the C++ classes with __attribute__((dllimport)).
+   Since it concerns only C++ code, preferably add it to $CXXFLAGS
+   
+   And third, since the shared c++ library is not complete, both the shared
+   and static library must co-exist (and be both referenced at link stage).
+   As SF#2836185 points out, the implementation is still buggy, so you must
+   add "-Wl,--allow-multiple-definition" as workaround to present multiple
+   definitions in static libstdc++ and shared libstdc++.
+   
+   And then there's libtool.
+   
+   Libtool does not honor $LDFLAGS. And libtool does not allow you to specify 
+   -shared-libgcc. Well it does /allow/ you, but it silently ignores it. Same
+   goes for $LDFLAGS.
+   
+   http://lists.gnu.org/archive/html/libtool/2006-02/msg00058.html
+   http://lists.gnu.org/archive/html/bug-libtool/2005-10/msg00002.html
+   
+   The suggested hack around this is to specify "-shared-libgcc" as part of
+   the compiler executable name, as
+      CC="mingw32-gcc-4.4.0-dw2.exe -shared-libgcc"
+      CXX="mingw32-g++-4.4.0-dw2.exe -shared-libgcc"
+      F77="mingw32-gfortran-4.4.0-dw2.exe -shared-libgcc"
+   which is what you'll find in all build scripts that use a configure script
+   and use libtool.
+

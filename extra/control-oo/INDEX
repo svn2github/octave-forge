@@ -44,9 +44,11 @@ Model Simplification
   minreal
   sminreal
 Compensator Design
+  estim
   place
 LQR/LQG Design
   dlqr
+  kalman
   lqr
 Controller Synthesis
 State-Space Models

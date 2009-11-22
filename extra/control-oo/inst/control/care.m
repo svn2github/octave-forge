@@ -63,7 +63,7 @@ function [x, l, g] = care (a, b, q, r, s = [], opt = "B")
     [n2, m2] = size (s);
 
     if (n2 != n || m2 != m)
-      error ("cs (%dx%d) must be identically dimensioned with b (%dx%d)",
+      error ("care: s (%dx%d) must be identically dimensioned with b (%dx%d)",
               n2, m2, n, m);
     endif
 

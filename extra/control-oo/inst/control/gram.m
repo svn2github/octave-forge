@@ -49,13 +49,12 @@ function W = gram (argin1, argin2)
       error ("gram: first argument must be a LTI model");
     endif
 
-    if (strcmp (argin2, "c"))
-      [a, b] = ssdata (argin1);
-    elseif (strcmp (argin2, "o"))
-      [a, b, c] = ssdata (argin1);
+    [a, b, c] = ssdata (sys);
+
+    if (strcmp (argin2, "o"))
       a = a';
       b = c';
-    else
+    elseif (! strcmp (argin2, "c"))
       print_usage ();
     endif
   else  # the function was called as "gram (a, b)"

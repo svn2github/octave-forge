@@ -10,6 +10,8 @@ all: MPI_Init.oct \
      MPI_Finalized.oct \
      MPI_Send.oct \
      MPI_Recv.oct \
+     MPI_Iprobe.oct \
+     MPI_Probe.oct \
      
 %.oct: %.cc
 	mkoctfile -s $(MPIINC)  $(MPILIBS)   $<

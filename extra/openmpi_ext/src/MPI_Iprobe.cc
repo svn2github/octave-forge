@@ -24,6 +24,7 @@
  * ----------------------------------------------------
  */
 #include "mpi.h"
+#include "comm-util.h"       
 #include <oct.h>	
 #include <octave/ov-struct.h>
 
@@ -36,9 +37,9 @@ Octave_map put_MPI_Stat (const MPI_Status &stat){
     map.assign("tag", tmp );
     tmp = stat.MPI_ERROR;
     map.assign("err", tmp );
-    tmp = stat._count;
+    tmp = stat.count;
     map.assign("cnt", tmp);
-    tmp = stat._cancelled;
+    tmp = stat.cancelled;
     map.assign("can", tmp);
 
     return map;
@@ -78,11 +79,16 @@ DEFUN_DLD(NAME, args, nargout,
 {
    octave_value_list results;
    int nargin = args.length ();
-   if (nargin != 2)
-    {
-      error ("expecting 2 input arguments");
-      return results;
-    }
+   if (nargin != 2 && nargin != 3)
+     {
+       error ("expecting 2 or 3 input arguments");
+       return results;
+     }
+
+   MPI_Comm comm = nargin == 3 ? get_mpi_comm (args(3)) : MPI_COMM_WORLD;
+   if (error_state)
+     return results;
+
     int src = args(0).int_value();    
   if (error_state)
     {
@@ -98,7 +104,7 @@ DEFUN_DLD(NAME, args, nargout,
     }	
     int flag;
     MPI_Status stat = {0,0,0,0};    
-    int info = MPI_Iprobe(src,tag,MPI_COMM_WORLD,&flag,&stat);
+    int info = MPI_Iprobe(src,tag,comm,&flag,&stat);
     
     results(0) = flag;
     results(1) = put_MPI_Stat(stat);

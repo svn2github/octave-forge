@@ -1,6 +1,7 @@
 // Copyright (C) 2004-2007 Javier Fernández Baldomero, Mancia Anguita López
 // This code has been adjusted for octave3.2.3 and more in 
 // 2009 by  Riccardo Corradini <riccardocorradini@yahoo.it>
+// Copyright (C) 2009 VZLU Prague
 
 //
 // This program is free software; you can redistribute it and/or modify
@@ -25,6 +26,7 @@
  */
 
 #include "mpi.h"       
+#include "comm-util.h"       
 #include <octave/oct.h>
 
 DEFUN_DLD(NAME, args, nargout,
@@ -47,11 +49,21 @@ DEFUN_DLD(NAME, args, nargout,
 
 {
     octave_value_list results;
-    int my_size;
-    int info = MPI_Comm_size(MPI_COMM_WORLD,&my_size);
-    if (nargout > 1)
-      results(1) = info;
-    results(0) = my_size;
+    int nargin = args.length ();
+    if (nargin == 0 || nargin == 1)
+      {
+        MPI_Comm comm = nargin == 1 ? get_mpi_comm (args(0)) : MPI_COMM_WORLD;
+        if (! error_state)
+          {
+            int my_size;
+            int info = MPI_Comm_rank (comm, &my_size);
+            if (nargout > 1)
+              results(1) = info;
+            results(0) = my_size;
+          }
+      }
+    else
+      print_usage ();
 
     /* [size info] = MPI_Comm_size (comm) */
    

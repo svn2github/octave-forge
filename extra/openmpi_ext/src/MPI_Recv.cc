@@ -1,5 +1,6 @@
 // Copyright (C) 2009 Riccardo Corradini <riccardocorradini@yahoo.it>
 // under the terms of the GNU General Public License.
+// Copyright (C) 2009 VZLU Prague
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,6 +20,7 @@
  * info = MPI_Send(var,rank)
  */
 #include "mpi.h"   
+#include "comm-util.h"       
 #include <octave/oct.h>
 #include <ov-cell.h>    // avoid errmsg "cell -- incomplete datatype"
 #include <oct-map.h>    // avoid errmsg "Oct.map -- invalid use undef type"
@@ -91,11 +93,11 @@ ov_null_sq_string,
 
 
 
-int recv_class( octave_value &ov,  int source, int mytag);        /* along the datatype */
+int recv_class( MPI_Comm comm, octave_value &ov,  int source, int mytag);        /* along the datatype */
 /*----------------------------------*/    /* to send any octave_value */
 
 
-int recv_string( octave_value  &ov, int source, int mytag){        /* directly MPI_Send it, */
+int recv_string( MPI_Comm comm, octave_value  &ov, int source, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a  string value */
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 2);
@@ -105,7 +107,7 @@ tanktag[2]=mytag+2;
 
   int info,nitem;
   MPI_Status stat;
-  info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //   printf("I have received number of elements  %i \n",nitem);
   OCTAVE_LOCAL_BUFFER(char,mess,nitem+1);
   if (info !=MPI_SUCCESS) return info;
@@ -114,7 +116,7 @@ tanktag[2]=mytag+2;
   MPI_Type_commit(&fortvec);
 
 
-   info = MPI_Recv(mess, 1,fortvec, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+   info = MPI_Recv(mess, 1,fortvec, source, tanktag[2] , comm,&stat);
 //   printf("Flag for string received  %i \n",info);
    std::string cpp_string;
    cpp_string = mess;
@@ -123,7 +125,7 @@ tanktag[2]=mytag+2;
    return(MPI_SUCCESS);
 }
 
-int recv_matrix(octave_value &ov,int source, int mytag){       
+int recv_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
 tanktag[0] = mytag;
@@ -138,11 +140,11 @@ tanktag[4] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //        printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //              printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -152,7 +154,7 @@ tanktag[4] = mytag+4;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -171,7 +173,7 @@ tanktag[4] = mytag+4;
   MPI_Type_contiguous(nitem,MPI_DOUBLE, &fortvec);
   MPI_Type_commit(&fortvec);
 //       printf("I am printing dimvector  %i \n",tanktag[4]);
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //            printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
@@ -186,7 +188,7 @@ tanktag[4] = mytag+4;
 
 }
 
-int recv_float_matrix(octave_value &ov,int source, int mytag){       
+int recv_float_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
 tanktag[0] = mytag;
@@ -200,11 +202,11 @@ tanktag[4] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -214,7 +216,7 @@ tanktag[4] = mytag+4;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -232,7 +234,7 @@ tanktag[4] = mytag+4;
   MPI_Type_contiguous(nitem,MPI_FLOAT, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
@@ -249,7 +251,7 @@ tanktag[4] = mytag+4;
 
 
 
-int recv_complex_matrix(octave_value &ov,int source, int mytag){       
+int recv_complex_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 6);
 tanktag[0] = mytag;
@@ -265,11 +267,11 @@ tanktag[5] = mytag+5;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -279,7 +281,7 @@ tanktag[5] = mytag+5;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -304,11 +306,11 @@ tanktag[5] = mytag+5;
   MPI_Type_contiguous(nitem,MPI_DOUBLE, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
 
-          info = MPI_Recv((CLBNDA), 1,fortvec, source, tanktag[5] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((CLBNDA), 1,fortvec, source, tanktag[5] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
 
@@ -328,7 +330,7 @@ return(MPI_SUCCESS);
 }
 
 
-int recv_float_complex_matrix(octave_value &ov,int source, int mytag){       
+int recv_float_complex_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 6);
 tanktag[0] = mytag;
@@ -344,11 +346,11 @@ tanktag[5] = mytag+5;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -358,7 +360,7 @@ tanktag[5] = mytag+5;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -383,11 +385,11 @@ tanktag[5] = mytag+5;
   MPI_Type_contiguous(nitem,MPI_DOUBLE, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
 
-          info = MPI_Recv((CLBNDA), 1,fortvec, source, tanktag[5] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((CLBNDA), 1,fortvec, source, tanktag[5] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
 
@@ -412,7 +414,7 @@ return(MPI_SUCCESS);
 
 
 
-int recv_sp_mat(octave_value &ov,int source, int mytag){   
+int recv_sp_mat(MPI_Comm comm, octave_value &ov,int source, int mytag){   
 int info;   
 /*     int nr = m.rows();
      int nc = m.cols (); 
@@ -440,7 +442,7 @@ MPI_Type_contiguous(3,MPI_INT, &sintsparse);
 MPI_Type_commit(&sintsparse);
 
 // receive the sintsparse vector named s
-info = MPI_Recv(s, 1, sintsparse, source, tanktag[1], MPI_COMM_WORLD, &stat);
+info = MPI_Recv(s, 1, sintsparse, source, tanktag[1], comm, &stat);
 if (info !=MPI_SUCCESS) return info;
 
 // int appo1, appo2, appo3;
@@ -474,16 +476,16 @@ MPI_Type_commit(&columnindex);
 // Now receive the two vectors
 
 // receive the vector with row indexes
-      info =  MPI_Recv(sridx,1,rowindex,source,tanktag[2],MPI_COMM_WORLD,&stat);
+      info =  MPI_Recv(sridx,1,rowindex,source,tanktag[2],comm,&stat);
 //       printf("Hope everything is fine here with ridx %i =\n",info);
       if (info !=MPI_SUCCESS) return info;
 
 // receive the vector with column indexes
-      info =  MPI_Recv(scidx,1,columnindex,source,tanktag[3],MPI_COMM_WORLD, &stat);
+      info =  MPI_Recv(scidx,1,columnindex,source,tanktag[3],comm, &stat);
 //     printf("Hope everything is fine here with scidx %i =\n",info);
       if (info !=MPI_SUCCESS) return info;
 
-      info =  MPI_Recv(sdata,1,datavect,source,tanktag[4],MPI_COMM_WORLD,&stat);
+      info =  MPI_Recv(sdata,1,datavect,source,tanktag[4],comm,&stat);
 //       printf("Hope everything is fine here with data vect %i =\n",info);
 
 // int appoc;
@@ -513,7 +515,7 @@ return(info);
 
 
 //here ! int matrixes
-int recv_int8_matrix(octave_value &ov,int source, int mytag){       
+int recv_int8_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
 tanktag[0] = mytag;
@@ -527,11 +529,11 @@ tanktag[4] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -541,7 +543,7 @@ tanktag[4] = mytag+4;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -559,7 +561,7 @@ tanktag[4] = mytag+4;
   MPI_Type_contiguous(nitem,MPI_BYTE, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
@@ -574,7 +576,7 @@ tanktag[4] = mytag+4;
 
 }
 
-int recv_int16_matrix(octave_value &ov,int source, int mytag){       
+int recv_int16_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
 tanktag[0] = mytag;
@@ -588,11 +590,11 @@ tanktag[3] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -602,7 +604,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -620,7 +622,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nitem,MPI_SHORT, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
@@ -636,7 +638,7 @@ tanktag[3] = mytag+4;
 }
 
 
-int recv_int32_matrix(octave_value &ov,int source, int mytag){       
+int recv_int32_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
 tanktag[0] = mytag;
@@ -651,11 +653,11 @@ tanktag[3] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -665,7 +667,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -683,7 +685,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nitem,MPI_INT, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
@@ -699,7 +701,7 @@ tanktag[3] = mytag+4;
 }
 
 
-int recv_int64_matrix(octave_value &ov,int source, int mytag){       
+int recv_int64_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
 tanktag[0] = mytag;
@@ -714,11 +716,11 @@ tanktag[3] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -728,7 +730,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -746,7 +748,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nitem,MPI_INT, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
@@ -763,7 +765,7 @@ tanktag[3] = mytag+4;
 
 
 
-int recv_uint64_matrix(octave_value &ov,int source, int mytag){       
+int recv_uint64_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
 tanktag[0] = mytag;
@@ -778,11 +780,11 @@ tanktag[3] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -792,7 +794,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -810,7 +812,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nitem,MPI_UNSIGNED_LONG_LONG, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
@@ -826,7 +828,7 @@ tanktag[3] = mytag+4;
 }
 
 
-int recv_uint8_matrix(octave_value &ov,int source, int mytag){       
+int recv_uint8_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
 tanktag[0] = mytag;
@@ -841,11 +843,11 @@ tanktag[3] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -855,7 +857,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -873,7 +875,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nitem,MPI_UNSIGNED_CHAR, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
@@ -890,7 +892,7 @@ tanktag[3] = mytag+4;
 
 
 
-int recv_uint16_matrix(octave_value &ov,int source, int mytag){       
+int recv_uint16_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
 tanktag[0] = mytag;
@@ -905,11 +907,11 @@ tanktag[3] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -919,7 +921,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -937,7 +939,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nitem,MPI_UNSIGNED_SHORT, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
@@ -952,7 +954,7 @@ tanktag[3] = mytag+4;
    return(info);
 }
 
-int recv_uint32_matrix(octave_value &ov,int source, int mytag){       
+int recv_uint32_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
 tanktag[0] = mytag;
@@ -967,11 +969,11 @@ tanktag[3] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
 //       printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
@@ -981,7 +983,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
 
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -999,7 +1001,7 @@ tanktag[3] = mytag+4;
   MPI_Type_contiguous(nitem,MPI_UNSIGNED, &fortvec);
   MPI_Type_commit(&fortvec);
 
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , MPI_COMM_WORLD,&stat);
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
 //           printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
@@ -1017,7 +1019,7 @@ tanktag[3] = mytag+4;
 
 
 
-int recv_complex_sp_mat(octave_value &ov,int source, int mytag){   
+int recv_complex_sp_mat(MPI_Comm comm, octave_value &ov,int source, int mytag){   
 int info;   
 /*     int nr = m.rows();
      int nc = m.cols (); 
@@ -1045,7 +1047,7 @@ MPI_Type_contiguous(3,MPI_INT, &sintsparse);
 MPI_Type_commit(&sintsparse);
 
 // receive the sintsparse vector named s
-info = MPI_Recv(s, 1, sintsparse, source, tanktag[1], MPI_COMM_WORLD, &stat);
+info = MPI_Recv(s, 1, sintsparse, source, tanktag[1], comm, &stat);
 if (info !=MPI_SUCCESS) return info;
 
 // int appo1, appo2, appo3;
@@ -1079,16 +1081,16 @@ MPI_Type_commit(&columnindex);
 // Now receive the two vectors
 
 // receive the vector with row indexes
-      info =  MPI_Recv(sridx,1,rowindex,source,tanktag[2],MPI_COMM_WORLD,&stat);
+      info =  MPI_Recv(sridx,1,rowindex,source,tanktag[2],comm,&stat);
 //       printf("Hope everything is fine here with ridx %i =\n",info);
       if (info !=MPI_SUCCESS) return info;
 
 // receive the vector with column indexes
-      info =  MPI_Recv(scidx,1,columnindex,source,tanktag[3],MPI_COMM_WORLD, &stat);
+      info =  MPI_Recv(scidx,1,columnindex,source,tanktag[3],comm, &stat);
 //     printf("Hope everything is fine here with scidx %i =\n",info);
       if (info !=MPI_SUCCESS) return info;
 
-      info =  MPI_Recv(sdata,1,datavect,source,tanktag[4],MPI_COMM_WORLD,&stat);
+      info =  MPI_Recv(sdata,1,datavect,source,tanktag[4],comm,&stat);
 //       printf("Hope everything is fine here with data vect %i =\n",info);
 
 // int appoc;
@@ -1124,7 +1126,7 @@ return(info);
 
 
 
-int recv_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1132,14 +1134,14 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   int info;
   MPI_Status stat;
   double d = ov.double_value();
-  info = MPI_Recv((&d), 1,MPI_DOUBLE, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 1,MPI_DOUBLE, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
 }
 
-int recv_int8_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_int8_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1147,14 +1149,14 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   int info;
   MPI_Status stat;
   octave_int8 d = ov.int8_scalar_value();
-  info = MPI_Recv((&d), 1,MPI_BYTE, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 1,MPI_BYTE, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
 }
 
-int recv_int16_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_int16_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1162,14 +1164,14 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   int info;
   MPI_Status stat;
   octave_int16 d = ov.int16_scalar_value();
-  info = MPI_Recv((&d), 1,MPI_SHORT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 1,MPI_SHORT, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
 }
 
-int recv_int32_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_int32_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1177,14 +1179,14 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   int info;
   MPI_Status stat;
   octave_int32 d = ov.int32_scalar_value();
-  info = MPI_Recv((&d), 1,MPI_INT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 1,MPI_INT, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
 }
 
-int recv_int64_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_int64_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1192,14 +1194,14 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   int info;
   MPI_Status stat;
   octave_int64 d = ov.int64_scalar_value();
-  info = MPI_Recv((&d), 1,MPI_LONG_LONG, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 1,MPI_LONG_LONG, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
 }
 
-int recv_uint64_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_uint64_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1207,14 +1209,14 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   int info;
   MPI_Status stat;
   octave_uint64 d = ov.uint64_scalar_value();
-  info = MPI_Recv((&d), 1,MPI_UNSIGNED_LONG_LONG, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 1,MPI_UNSIGNED_LONG_LONG, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
 }
 
-int recv_uint32_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_uint32_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1222,14 +1224,14 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   int info;
   MPI_Status stat;
   octave_uint32 d = ov.uint32_scalar_value();
-  info = MPI_Recv((&d), 1,MPI_UNSIGNED, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 1,MPI_UNSIGNED, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
 }
 
-int recv_uint16_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_uint16_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1237,14 +1239,14 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   int info;
   MPI_Status stat;
   octave_uint16 d = ov.uint16_scalar_value();
-  info = MPI_Recv((&d), 1,MPI_UNSIGNED_SHORT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 1,MPI_UNSIGNED_SHORT, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
 }
 
-int recv_uint8_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_uint8_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1252,7 +1254,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   int info;
   MPI_Status stat;
   octave_uint8 d = ov.uint8_scalar_value();
-  info = MPI_Recv((&d), 1,MPI_UNSIGNED_CHAR, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 1,MPI_UNSIGNED_CHAR, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
@@ -1267,7 +1269,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
 
 
 
-int recv_complex_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Send it, */
+int recv_complex_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1279,7 +1281,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
 
   int info;
   MPI_Status stat;
-  info = MPI_Recv((&d), 2,MPI_DOUBLE, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 2,MPI_DOUBLE, source, tanktag[1] , comm,&stat);
 
   ov =Complex(d[0],d[1]);;
 //   printf("info for scalar is = %i \n",info);
@@ -1287,7 +1289,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
    return(MPI_SUCCESS);
 }
 
-int recv_complex_float_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Send it, */
+int recv_complex_float_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
@@ -1299,7 +1301,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
 
   int info;
   MPI_Status stat;
-  info = MPI_Recv((&d), 2,MPI_FLOAT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 2,MPI_FLOAT, source, tanktag[1] , comm,&stat);
   std::complex<float>  c = real(d[0])+imag(d[1]);
   ov =c;;
 //   printf("info for scalar is = %i \n",info);
@@ -1312,7 +1314,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
 
 
 
-int recv_float_scalar( octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_float_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a Float value */
 
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
@@ -1323,20 +1325,20 @@ tanktag[1] = mytag+1;
   int info;
   MPI_Status stat;
   float d = ov.float_value();
-  info = MPI_Recv((&d), 1,MPI_FLOAT, source, tanktag[1] , MPI_COMM_WORLD,&stat);
+  info = MPI_Recv((&d), 1,MPI_FLOAT, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
 }
 
-int recv_class(octave_value &ov, int source, int mytag ){    /* varname-strlength 1st, dims[ndim] */
+int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* varname-strlength 1st, dims[ndim] */
 /*----------------------------------*/    /* and then appropriate specific info */
   int t_id,n;
   MPI_Status status;
 //   printf("1-> source =%i\n",source);
 //   printf("2-> tag for id =%i\n",mytag);
-  int info = MPI_Recv(&t_id,1, MPI_INT, source,mytag,MPI_COMM_WORLD,&status);
+  int info = MPI_Recv(&t_id,1, MPI_INT, source,mytag,comm,&status);
 
 //    printf(" I have received t_id =%i\n",t_id);
 
@@ -1344,37 +1346,37 @@ int recv_class(octave_value &ov, int source, int mytag ){    /* varname-strlengt
 
   switch (t_id) {
 
-    case ov_scalar:    return(recv_scalar (ov,source,mytag));
-    case ov_int8_scalar:    return(recv_int8_scalar (ov,source,mytag));
-    case ov_int16_scalar:    return(recv_int16_scalar (ov,source,mytag));
-    case ov_int32_scalar:    return(recv_int32_scalar (ov,source,mytag));
-    case ov_int64_scalar:    return(recv_int64_scalar (ov,source,mytag));
-    case ov_uint8_scalar:    return(recv_uint8_scalar (ov,source,mytag));
-    case ov_uint16_scalar:    return(recv_uint16_scalar (ov,source,mytag));
-    case ov_uint32_scalar:    return(recv_uint32_scalar (ov,source,mytag));
-    case ov_uint64_scalar:    return(recv_uint64_scalar (ov,source,mytag));
-    case ov_float_scalar: return(recv_float_scalar(ov,source,mytag));
-    case ov_complex_scalar:    return(recv_complex_scalar (ov,source,mytag));
-    case ov_float_complex_scalar: return(recv_complex_float_scalar(ov,source,mytag));
+    case ov_scalar:    return(recv_scalar (comm, ov,source,mytag));
+    case ov_int8_scalar:    return(recv_int8_scalar (comm, ov,source,mytag));
+    case ov_int16_scalar:    return(recv_int16_scalar (comm, ov,source,mytag));
+    case ov_int32_scalar:    return(recv_int32_scalar (comm, ov,source,mytag));
+    case ov_int64_scalar:    return(recv_int64_scalar (comm, ov,source,mytag));
+    case ov_uint8_scalar:    return(recv_uint8_scalar (comm, ov,source,mytag));
+    case ov_uint16_scalar:    return(recv_uint16_scalar (comm, ov,source,mytag));
+    case ov_uint32_scalar:    return(recv_uint32_scalar (comm, ov,source,mytag));
+    case ov_uint64_scalar:    return(recv_uint64_scalar (comm, ov,source,mytag));
+    case ov_float_scalar: return(recv_float_scalar(comm, ov,source,mytag));
+    case ov_complex_scalar:    return(recv_complex_scalar (comm, ov,source,mytag));
+    case ov_float_complex_scalar: return(recv_complex_float_scalar(comm, ov,source,mytag));
 
-    case ov_string:    return(recv_string (ov,source,mytag));
-    case ov_matrix:    return(recv_matrix (ov,source,mytag));
-    case ov_complex_matrix:    return(recv_complex_matrix(ov,source,mytag));
-    case ov_int8_matrix:    return(recv_int8_matrix (ov,source,mytag));
-    case ov_int16_matrix:    return(recv_int16_matrix (ov,source,mytag));
-    case ov_int32_matrix:    return(recv_int32_matrix (ov,source,mytag));
-    case ov_int64_matrix:    return(recv_int64_matrix (ov,source,mytag));
+    case ov_string:    return(recv_string (comm, ov,source,mytag));
+    case ov_matrix:    return(recv_matrix (comm, ov,source,mytag));
+    case ov_complex_matrix:    return(recv_complex_matrix(comm, ov,source,mytag));
+    case ov_int8_matrix:    return(recv_int8_matrix (comm, ov,source,mytag));
+    case ov_int16_matrix:    return(recv_int16_matrix (comm, ov,source,mytag));
+    case ov_int32_matrix:    return(recv_int32_matrix (comm, ov,source,mytag));
+    case ov_int64_matrix:    return(recv_int64_matrix (comm, ov,source,mytag));
 
 
-    case ov_uint8_matrix:    return(recv_uint8_matrix (ov,source,mytag));
-    case ov_uint16_matrix:    return(recv_uint16_matrix (ov,source,mytag));
-    case ov_uint32_matrix:    return(recv_uint32_matrix (ov,source,mytag));
-    case ov_uint64_matrix:    return(recv_uint64_matrix (ov,source,mytag));
+    case ov_uint8_matrix:    return(recv_uint8_matrix (comm, ov,source,mytag));
+    case ov_uint16_matrix:    return(recv_uint16_matrix (comm, ov,source,mytag));
+    case ov_uint32_matrix:    return(recv_uint32_matrix (comm, ov,source,mytag));
+    case ov_uint64_matrix:    return(recv_uint64_matrix (comm, ov,source,mytag));
 
-    case ov_float_matrix:    return(recv_float_matrix (ov,source,mytag));
-    case ov_float_complex_matrix:    return(recv_float_complex_matrix (ov,source,mytag));
-    case ov_sparse_matrix:    return(recv_sp_mat(ov,source,mytag));
-    case ov_sparse_complex_matrix:    return(recv_complex_sp_mat(ov,source,mytag));
+    case ov_float_matrix:    return(recv_float_matrix (comm, ov,source,mytag));
+    case ov_float_complex_matrix:    return(recv_float_complex_matrix (comm, ov,source,mytag));
+    case ov_sparse_matrix:    return(recv_sp_mat(comm, ov,source,mytag));
+    case ov_sparse_complex_matrix:    return(recv_complex_sp_mat(comm, ov,source,mytag));
     case ov_unknown:    printf("MPI_Recv: unknown class\n");
             return(MPI_ERR_UNKNOWN );
 
@@ -1409,6 +1411,16 @@ case ov_null_sq_string:
 DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv sends almost any Octave datatype into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n")
 {
      octave_value_list retval;
+  int nargin = args.length ();
+  if (nargin != 4 && nargin != 3)
+    {
+      error ("expecting 3 or 4 input arguments");
+      return retval;
+    }
+
+  MPI_Comm comm = nargin == 4 ? get_mpi_comm (args(3)) : MPI_COMM_WORLD;
+  if (error_state)
+    return retval;
 
      int source = args(0).int_value();    
   if (error_state)
@@ -1424,7 +1436,7 @@ DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv sends almost any Octave datatype into
     }
 
      octave_value result;
-     int info = recv_class (result,source, mytag );
+     int info = recv_class (comm, result,source, mytag );
      if (nargout > 1)
        retval(1) = info;
      retval(0)=result;

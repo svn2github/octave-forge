@@ -1,5 +1,6 @@
 // Copyright (C) 2009 Riccardo Corradini <riccardocorradini@yahoo.it>
 // under the terms of the GNU General Public License.
+// Copyright (C) 2009 VZLU Prague
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,6 +22,7 @@
  * info = MPI_Send(var,rank)
  */
 #include "mpi.h"   
+#include "comm-util.h"       
 #include <octave/oct.h>
 #include <ov-cell.h>    // avoid errmsg "cell -- incomplete datatype"
 #include <oct-map.h>    // avoid errmsg "Oct.map -- invalid use undef type"
@@ -90,9 +92,9 @@ ov_null_sq_string,            // 52
 
 
 
-int send_class( octave_value ov,  ColumnVector rankrec, int mytag);        /* along the datatype */
+int send_class( MPI_Comm comm, octave_value ov,  ColumnVector rankrec, int mytag);        /* along the datatype */
 /*----------------------------------*/    /* to send any octave_value */
-int send_scalar( double d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_scalar( MPI_Comm comm, double d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a double value */
   int info;
   int t_id = ov_scalar;
@@ -101,15 +103,15 @@ int send_scalar( double d, ColumnVector rankrec, int mytag){        /* directly 
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_DOUBLE, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_DOUBLE, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
 }
 
-int send_float_scalar( float d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_float_scalar( MPI_Comm comm, float d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a float value */
   int info;
   int t_id = ov_float_scalar;
@@ -118,15 +120,15 @@ int send_float_scalar( float d, ColumnVector rankrec, int mytag){        /* dire
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_FLOAT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_FLOAT, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
 }
 
-int send_i8( octave_int8 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_i8( MPI_Comm comm, octave_int8 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just an int8 value */
   int info;
   int t_id = ov_int8_scalar;
@@ -135,15 +137,15 @@ int send_i8( octave_int8 d, ColumnVector rankrec, int mytag){        /* directly
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_BYTE, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_BYTE, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
 }
 
-int send_i16( octave_int16 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_i16( MPI_Comm comm, octave_int16 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just an int16 value */
   int info;
   int t_id = ov_int16_scalar;
@@ -153,15 +155,15 @@ int send_i16( octave_int16 d, ColumnVector rankrec, int mytag){        /* direct
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_SHORT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_SHORT, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
 }
 
-int send_i32( octave_int32 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_i32( MPI_Comm comm, octave_int32 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just an int32 value */
   int info;
   int t_id = ov_int32_scalar;
@@ -171,15 +173,15 @@ int send_i32( octave_int32 d, ColumnVector rankrec, int mytag){        /* direct
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_INT, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
 }
 
-int send_i64( octave_int64 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_i64( MPI_Comm comm, octave_int64 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just an int64 value */
   int info;
   int t_id = ov_int64_scalar;
@@ -189,15 +191,15 @@ int send_i64( octave_int64 d, ColumnVector rankrec, int mytag){        /* direct
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_LONG_LONG, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_LONG_LONG, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
 }
 
-int send_ui64( octave_uint64 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_ui64( MPI_Comm comm, octave_uint64 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a  value */
   int info;
   int t_id = ov_uint64_scalar;
@@ -207,15 +209,15 @@ int send_ui64( octave_uint64 d, ColumnVector rankrec, int mytag){        /* dire
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_UNSIGNED_LONG_LONG, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_UNSIGNED_LONG_LONG, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
 }
 
-int send_ui32( octave_uint32 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_ui32( MPI_Comm comm, octave_uint32 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a value */
   int info;
   int t_id = ov_uint32_scalar;
@@ -225,15 +227,15 @@ int send_ui32( octave_uint32 d, ColumnVector rankrec, int mytag){        /* dire
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_UNSIGNED, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_UNSIGNED, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
 }
 
-int send_ui16( octave_uint16 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_ui16( MPI_Comm comm, octave_uint16 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a  value */
   int info;
   int t_id = ov_uint16_scalar;
@@ -243,16 +245,16 @@ int send_ui16( octave_uint16 d, ColumnVector rankrec, int mytag){        /* dire
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_UNSIGNED_SHORT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_UNSIGNED_SHORT, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
 }
 
 
-int send_ui8( octave_uint8 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_ui8( MPI_Comm comm, octave_uint8 d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a value */
   int info;
   int t_id = ov_uint8_scalar;
@@ -262,9 +264,9 @@ int send_ui8( octave_uint8 d, ColumnVector rankrec, int mytag){        /* direct
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_UNSIGNED_CHAR, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_UNSIGNED_CHAR, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
@@ -272,7 +274,7 @@ int send_ui8( octave_uint8 d, ColumnVector rankrec, int mytag){        /* direct
 
 
 
-int send_bool( int d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_bool( MPI_Comm comm, int d, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a  value */
   int info;
   int t_id = ov_bool;
@@ -281,9 +283,9 @@ int send_bool( int d, ColumnVector rankrec, int mytag){        /* directly MPI_S
   tanktag[1] = mytag+1;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_DOUBLE, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 1,MPI_DOUBLE, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
@@ -291,7 +293,7 @@ int send_bool( int d, ColumnVector rankrec, int mytag){        /* directly MPI_S
 
 
 
-int send_complex_scalar( Complex c, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_complex_scalar( MPI_Comm comm, Complex c, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a value */
   int info;
   int t_id = ov_complex_scalar;
@@ -303,15 +305,15 @@ int send_complex_scalar( Complex c, ColumnVector rankrec, int mytag){        /* 
   d[1] = imag(c);
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 2,MPI_DOUBLE, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 2,MPI_DOUBLE, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
 }
 
-int send_float_complex_scalar( std::complex<float>  c, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
+int send_float_complex_scalar( MPI_Comm comm, std::complex<float>  c, ColumnVector rankrec, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a double value */
   int info;
   int t_id = ov_float_complex_scalar;
@@ -323,9 +325,9 @@ int send_float_complex_scalar( std::complex<float>  c, ColumnVector rankrec, int
   d[1] = imag(c);
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 2,MPI_FLOAT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+      info = MPI_Send((&d), 2,MPI_FLOAT, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
@@ -333,7 +335,7 @@ int send_float_complex_scalar( std::complex<float>  c, ColumnVector rankrec, int
 
 
 
-int send_string(std::string  oi8,ColumnVector rankrec, int mytag){        /* directly pvm_pkbyte it, */
+int send_string(MPI_Comm comm, std::string  oi8,ColumnVector rankrec, int mytag){        /* directly pvm_pkbyte it, */
 /*----------------------------------*/        /* just a char value */
   int info;
   int nitem = oi8.length();
@@ -358,13 +360,13 @@ MPI_Type_commit(&fortvec);
   {
       printf("Sending block to %i \n",rankrec(i));   
           printf("Sending block with tag to %i \n",mytag);
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), mytag, MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), mytag, comm);
       if (info !=MPI_SUCCESS) return info;
       printf("Sending type of object  %i \n",t_id);   
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("Sending nitem  %i \n",nitem);   
       if (info !=MPI_SUCCESS) return info;
-      info =  MPI_Send(&i8,1,fortvec,rankrec(i),tanktag[2],MPI_COMM_WORLD);
+      info =  MPI_Send(&i8,1,fortvec,rankrec(i),tanktag[2],comm);
           printf("Info for sending fortvec  %i \n",info);   
       if (info !=MPI_SUCCESS) return info;
   }
@@ -373,7 +375,7 @@ MPI_Type_commit(&fortvec);
 
 }
 /*-----------------------------------*/        /* to pack a struct */
-int send_struct(Octave_map map,ColumnVector rankrec, int mytag){        /* we store nkeys, */
+int send_struct(MPI_Comm comm, Octave_map map,ColumnVector rankrec, int mytag){        /* we store nkeys, */
 
 int n = map.nfields(); 
 int info;
@@ -457,12 +459,12 @@ MPI_Type_commit(&fortvec);
 // Now we start the big loop
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
 // Send the particle struct derived datatype
-    info = MPI_Send(&part,1,particletype,rankrec(i),tanktag[1],MPI_COMM_WORLD);
+    info = MPI_Send(&part,1,particletype,rankrec(i),tanktag[1],comm);
 // Dimension vector
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[2], comm);
       if (info !=MPI_SUCCESS) return info;
 
     }
@@ -470,7 +472,7 @@ Octave_map::const_iterator b = map.begin();    // iterate through keys(fnames)
     for (octave_idx_type i=0; b!=map.end(); b++, i++){
         Cell           conts = map.contents(p);    // Cell w/ND contents
         newtag = newtag + conts.capacity();
-        int info =send_class(conts,rankrec,newtag);
+        int info =send_class(comm, conts,rankrec,newtag);
         if (info !=MPI_SUCCESS) return info;
         }
 
@@ -478,7 +480,7 @@ return(MPI_SUCCESS);
 }
 
 
-int send_cell(Cell cell, ColumnVector rankrec, int mytag){    /* we first store nelems and then */
+int send_cell(MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag){    /* we first store nelems and then */
 /*----------------------------*/    /* recursively the elements themselves */
 
 // Lists of items to send
@@ -517,15 +519,15 @@ int send_cell(Cell cell, ColumnVector rankrec, int mytag){    /* we first store 
 
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
 // send cell capacity
-          info = MPI_Send(&n, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&n, 1, MPI_INT, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       if (info !=MPI_SUCCESS) return info;
 // send the dim vector
-      info =  MPI_Send(dimV,1,dimvec,rankrec(i),tanktag[3],MPI_COMM_WORLD);
+      info =  MPI_Send(dimV,1,dimvec,rankrec(i),tanktag[3],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 
@@ -533,7 +535,7 @@ int send_cell(Cell cell, ColumnVector rankrec, int mytag){    /* we first store 
          for (octave_idx_type i=0; i<n; i++){
              octave_value ov = cell.data()[i];
          newtag = newtag +ov.capacity();
-        info=send_class(ov,rankrec,newtag);
+        info=send_class(comm, ov,rankrec,newtag);
         if (info !=MPI_SUCCESS) return info;
         }
 
@@ -544,7 +546,7 @@ int send_cell(Cell cell, ColumnVector rankrec, int mytag){    /* we first store 
 
 }
 
-int send_sp_mat(SparseMatrix m ,ColumnVector rankrec, int mytag  ){
+int send_sp_mat(MPI_Comm comm, SparseMatrix m ,ColumnVector rankrec, int mytag  ){
 
 int info;
 int t_id = ov_sparse_matrix;
@@ -611,19 +613,19 @@ NDArray buf (dim_vector (m.capacity(), 1));
 
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
 // send the sintsparse vector named s
-          info = MPI_Send(s, 1, sintsparse, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(s, 1, sintsparse, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
 // send the vector with row indexes
-      info =  MPI_Send(sridx,1,rowindex,rankrec(i),tanktag[2],MPI_COMM_WORLD);
+      info =  MPI_Send(sridx,1,rowindex,rankrec(i),tanktag[2],comm);
       if (info !=MPI_SUCCESS) return info;
 // send the vector with column indexes
-      info =  MPI_Send(scidx,1,columnindex,rankrec(i),tanktag[3],MPI_COMM_WORLD);
+      info =  MPI_Send(scidx,1,columnindex,rankrec(i),tanktag[3],comm);
       if (info !=MPI_SUCCESS) return info;
 // send the vector of non zero elements
-      info =  MPI_Send(sdata,1,numnnz,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(sdata,1,numnnz,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 
@@ -635,7 +637,7 @@ return(info);
 
 
 
-int send_sp_bl_mat(SparseBoolMatrix m ,ColumnVector rankrec, int mytag  ){
+int send_sp_bl_mat(MPI_Comm comm, SparseBoolMatrix m ,ColumnVector rankrec, int mytag  ){
 
 int info;
 int t_id = ov_sparse_matrix;
@@ -695,19 +697,19 @@ OCTAVE_LOCAL_BUFFER( int ,sdata,m.capacity());
 
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
 // send the sintsparse vector named s
-          info = MPI_Send(s, 1, sintsparse, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(s, 1, sintsparse, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
 // send the vector with row indexes
-      info =  MPI_Send(sridx,1,rowindex,rankrec(i),tanktag[2],MPI_COMM_WORLD);
+      info =  MPI_Send(sridx,1,rowindex,rankrec(i),tanktag[2],comm);
       if (info !=MPI_SUCCESS) return info;
 // send the vector with column indexes
-      info =  MPI_Send(scidx,1,columnindex,rankrec(i),tanktag[3],MPI_COMM_WORLD);
+      info =  MPI_Send(scidx,1,columnindex,rankrec(i),tanktag[3],comm);
       if (info !=MPI_SUCCESS) return info;
 // send the vector of non zero elements
-      info =  MPI_Send(sdata,1,numnnz,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(sdata,1,numnnz,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 
@@ -715,7 +717,7 @@ OCTAVE_LOCAL_BUFFER( int ,sdata,m.capacity());
 return(info);
 }
 
-int send_sp_cx_mat(SparseComplexMatrix m ,ColumnVector rankrec, int mytag  ){
+int send_sp_cx_mat(MPI_Comm comm, SparseComplexMatrix m ,ColumnVector rankrec, int mytag  ){
 
 int info;
 int t_id = ov_sparse_complex_matrix;
@@ -775,23 +777,23 @@ OCTAVE_LOCAL_BUFFER( double ,isdata,m.capacity());
 
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD);
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
 // send the sintsparse vector named s
-          info = MPI_Send(s, 1, sintsparse, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(s, 1, sintsparse, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
 // send the vector with row indexes
-      info =  MPI_Send(sridx,1,rowindex,rankrec(i),tanktag[2],MPI_COMM_WORLD);
+      info =  MPI_Send(sridx,1,rowindex,rankrec(i),tanktag[2],comm);
       if (info !=MPI_SUCCESS) return info;
 // send the vector with column indexes
-      info =  MPI_Send(scidx,1,columnindex,rankrec(i),tanktag[3],MPI_COMM_WORLD);
+      info =  MPI_Send(scidx,1,columnindex,rankrec(i),tanktag[3],comm);
       if (info !=MPI_SUCCESS) return info;
 // send the vector of non zero elements
 // real
-      info =  MPI_Send(rsdata,1,numnnz,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(rsdata,1,numnnz,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
 // img
-      info =  MPI_Send(isdata,1,numnnz,rankrec(i),tanktag[5],MPI_COMM_WORLD);
+      info =  MPI_Send(isdata,1,numnnz,rankrec(i),tanktag[5],comm);
       if (info !=MPI_SUCCESS) return info;
 
   }
@@ -801,7 +803,7 @@ return(info);
 }
 
 
-int send_complex_matrix(ComplexNDArray myCNDA,ColumnVector rankrec, int mytag){       
+int send_complex_matrix(MPI_Comm comm, ComplexNDArray myCNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myCNDA.nelem();
   dim_vector dv = myCNDA.dims();
@@ -852,24 +854,24 @@ tanktag[5]= tanktag[4]+1;
   {
 //       t_id is the identifier of octave NDArray
 //       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
 //           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
 //       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
-      info =  MPI_Send(CLBNDA,1,fortvec,rankrec(i),tanktag[5],MPI_COMM_WORLD);
+      info =  MPI_Send(CLBNDA,1,fortvec,rankrec(i),tanktag[5],comm);
       if (info !=MPI_SUCCESS) return info;
 
   }
@@ -879,7 +881,7 @@ return(info);
 
 
 
-int send_float_complex_matrix(FloatComplexNDArray myCNDA,ColumnVector rankrec, int mytag){       
+int send_float_complex_matrix(MPI_Comm comm, FloatComplexNDArray myCNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myCNDA.nelem();
   dim_vector dv = myCNDA.dims();
@@ -930,24 +932,24 @@ tanktag[5]= tanktag[4]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
-      info =  MPI_Send(CLBNDA,1,fortvec,rankrec(i),tanktag[5],MPI_COMM_WORLD);
+      info =  MPI_Send(CLBNDA,1,fortvec,rankrec(i),tanktag[5],comm);
       if (info !=MPI_SUCCESS) return info;
 
   }
@@ -958,7 +960,7 @@ return(info);
 
 
 
-int send_range(Range range,ColumnVector rankrec, int mytag){        /* put base,limit,incr,nelem */
+int send_range(MPI_Comm comm, Range range,ColumnVector rankrec, int mytag){        /* put base,limit,incr,nelem */
 /*-------------------------------*/        /* just 3 doubles + 1 int */
 // octave_range (double base, double limit, double inc)
   OCTAVE_LOCAL_BUFFER(double,d,3);
@@ -968,13 +970,13 @@ int send_range(Range range,ColumnVector rankrec, int mytag){        /* put base,
   int info;
     for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
-  info = MPI_Send(d, 3, MPI_INT, rankrec(i), mytag, MPI_COMM_WORLD);
+  info = MPI_Send(d, 3, MPI_INT, rankrec(i), mytag, comm);
   }
    if (info !=MPI_SUCCESS) return info;
 return(MPI_SUCCESS);
 }
 
-int send_matrix(NDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_matrix(MPI_Comm comm, NDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1021,22 +1023,22 @@ tanktag[4]= mytag+4;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
@@ -1044,7 +1046,7 @@ return(info);
 }
 
 // Here we have float_matrix
-int send_float_matrix(FloatNDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_float_matrix(MPI_Comm comm, FloatNDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1088,22 +1090,22 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
@@ -1113,7 +1115,7 @@ return(info);
 
 
 
-int send_i8_mat(int8NDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_i8_mat(MPI_Comm comm, int8NDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1156,22 +1158,22 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
@@ -1182,7 +1184,7 @@ return(info);
 
 
 
-int send_i16_mat(int16NDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_i16_mat(MPI_Comm comm, int16NDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1225,22 +1227,22 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
@@ -1248,7 +1250,7 @@ return(info);
 }
 
 
-int send_i32_mat(int32NDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_i32_mat(MPI_Comm comm, int32NDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1291,29 +1293,29 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
 return(info);
 }
 
-int send_i64_mat(int64NDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_i64_mat(MPI_Comm comm, int64NDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1356,28 +1358,28 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
 return(info);
 }
-int send_ui8_mat(uint8NDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_ui8_mat(MPI_Comm comm, uint8NDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1420,29 +1422,29 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
 return(info);
 }
 
-int send_ui16_mat(uint16NDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_ui16_mat(MPI_Comm comm, uint16NDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1485,28 +1487,28 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
 return(info);
 }
-int send_ui32_mat(uint32NDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_ui32_mat(MPI_Comm comm, uint32NDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1549,22 +1551,22 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
@@ -1574,7 +1576,7 @@ return(info);
 
 
 
-int send_ui64_mat(uint64NDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_ui64_mat(MPI_Comm comm, uint64NDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1617,22 +1619,22 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
@@ -1642,7 +1644,7 @@ return(info);
 
 
 
-int send_ch_mat(charNDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_ch_mat(MPI_Comm comm, charNDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1686,22 +1688,22 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
@@ -1710,7 +1712,7 @@ return(info);
 
 
 
-int send_bl_mat(boolNDArray myNDA,ColumnVector rankrec, int mytag){       
+int send_bl_mat(MPI_Comm comm, boolNDArray myNDA,ColumnVector rankrec, int mytag){       
   int info;
   int nitem = myNDA.nelem();
   dim_vector dv = myNDA.dims();
@@ -1753,22 +1755,22 @@ tanktag[4]= tanktag[3]+1;
   {
 //       t_id is the identifier of octave NDArray
       printf("Sending block to %i \n",rankrec(i));   
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], MPI_COMM_WORLD); 
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
         printf("I have sent  %i \n",t_id);
       if (info !=MPI_SUCCESS) return info;
 //       nitem is the total number of elements 
-          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], MPI_COMM_WORLD);
+          info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
           printf("I have sent  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], MPI_COMM_WORLD);
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
       printf("I have sent  %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //    vector of dimensions sending
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], MPI_COMM_WORLD);
+          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
       if (info !=MPI_SUCCESS) return info;
 //      data matrix sending
-      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],MPI_COMM_WORLD);
+      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
       if (info !=MPI_SUCCESS) return info;
   }
 //    printf("info for sending scalar matrix is = %i \n",info);
@@ -1777,7 +1779,7 @@ return(info);
 
 
 
-int send_class(octave_value ov, ColumnVector rankrec,int mytag){    /* varname-strlength 1st, dims[ndim] */
+int send_class(MPI_Comm comm, octave_value ov, ColumnVector rankrec,int mytag){    /* varname-strlength 1st, dims[ndim] */
 /*----------------------------------*/    /* and then appropriate specific info */
   int t_id = ov.type_id();
 //   printf("t_id =%i\n",t_id);
@@ -1790,52 +1792,52 @@ int send_class(octave_value ov, ColumnVector rankrec,int mytag){    /* varname-s
 
 
   switch (t_id) {
-      case ov_cell:    return(send_cell   (ov.cell_value   (),rankrec,mytag));
+      case ov_cell:    return(send_cell   (comm, ov.cell_value   (),rankrec,mytag));
  
-      case ov_scalar:    return(send_scalar (ov.scalar_value (),rankrec,mytag));
-      case ov_complex_scalar:    return(send_complex_scalar(ov.complex_value(),rankrec,mytag));
-      case ov_matrix:    return(send_matrix (ov.array_value  (),rankrec,mytag));
-      case ov_sparse_matrix:  return(send_sp_mat (ov.sparse_matrix_value (),rankrec,mytag));
-      case ov_complex_matrix:    return(send_complex_matrix(ov.complex_array_value(),rankrec,mytag));
-      case ov_sparse_complex_matrix:  return(send_sp_cx_mat(ov.sparse_complex_matrix_value (),rankrec,mytag));
+      case ov_scalar:    return(send_scalar (comm, ov.scalar_value (),rankrec,mytag));
+      case ov_complex_scalar:    return(send_complex_scalar(comm, ov.complex_value(),rankrec,mytag));
+      case ov_matrix:    return(send_matrix (comm, ov.array_value  (),rankrec,mytag));
+      case ov_sparse_matrix:  return(send_sp_mat (comm, ov.sparse_matrix_value (),rankrec,mytag));
+      case ov_complex_matrix:    return(send_complex_matrix(comm, ov.complex_array_value(),rankrec,mytag));
+      case ov_sparse_complex_matrix:  return(send_sp_cx_mat(comm, ov.sparse_complex_matrix_value (),rankrec,mytag));
 
-      case ov_float_scalar:    return(send_float_scalar (ov.float_scalar_value (),rankrec,mytag));
-      case ov_float_complex_scalar:    return(send_float_complex_scalar(ov.float_complex_value(),rankrec,mytag));
+      case ov_float_scalar:    return(send_float_scalar (comm, ov.float_scalar_value (),rankrec,mytag));
+      case ov_float_complex_scalar:    return(send_float_complex_scalar(comm, ov.float_complex_value(),rankrec,mytag));
 
-      case ov_float_matrix:    return(send_float_matrix (ov.array_value  (),rankrec,mytag));
-      case ov_float_complex_matrix:    return(send_float_complex_matrix(ov.float_complex_array_value(),rankrec,mytag));
+      case ov_float_matrix:    return(send_float_matrix (comm, ov.array_value  (),rankrec,mytag));
+      case ov_float_complex_matrix:    return(send_float_complex_matrix(comm, ov.float_complex_array_value(),rankrec,mytag));
 
-      case ov_range:    return(send_range  (ov.range_value  (),rankrec,mytag));
+      case ov_range:    return(send_range  (comm, ov.range_value  (),rankrec,mytag));
 
-      case ov_bool:    return(send_bool   (ov.bool_value   (),rankrec,mytag));
-      case ov_bool_matrix:    return(send_bl_mat (ov.bool_array_value(),rankrec,mytag));
-     case ov_sparse_bool_matrix:  return(send_sp_bl_mat (ov.sparse_bool_matrix_value (),rankrec,mytag));
-     case ov_char_matrix:    return(send_ch_mat (ov.char_array_value(),rankrec,mytag));
-    case ov_string:    return(send_string (ov.string_value(),rankrec,mytag));
-    case ov_sq_string:  return(send_string (ov.string_value(),rankrec,mytag));
+      case ov_bool:    return(send_bool   (comm, ov.bool_value   (),rankrec,mytag));
+      case ov_bool_matrix:    return(send_bl_mat (comm, ov.bool_array_value(),rankrec,mytag));
+     case ov_sparse_bool_matrix:  return(send_sp_bl_mat (comm, ov.sparse_bool_matrix_value (),rankrec,mytag));
+     case ov_char_matrix:    return(send_ch_mat (comm, ov.char_array_value(),rankrec,mytag));
+    case ov_string:    return(send_string (comm, ov.string_value(),rankrec,mytag));
+    case ov_sq_string:  return(send_string (comm, ov.string_value(),rankrec,mytag));
 
-     case ov_int8_scalar:    return(send_i8     (ov.int8_scalar_value(),rankrec,mytag));
-     case ov_int16_scalar:    return(send_i16    (ov.int16_scalar_value(),rankrec,mytag));
-     case ov_int32_scalar:    return(send_i32    (ov.int32_scalar_value (),rankrec,mytag));
-     case ov_int64_scalar:    return(send_i64    (ov.int32_scalar_value (),rankrec,mytag));
+     case ov_int8_scalar:    return(send_i8     (comm, ov.int8_scalar_value(),rankrec,mytag));
+     case ov_int16_scalar:    return(send_i16    (comm, ov.int16_scalar_value(),rankrec,mytag));
+     case ov_int32_scalar:    return(send_i32    (comm, ov.int32_scalar_value (),rankrec,mytag));
+     case ov_int64_scalar:    return(send_i64    (comm, ov.int32_scalar_value (),rankrec,mytag));
 
-     case ov_uint8_scalar:    return(send_ui8     (ov.uint8_scalar_value(),rankrec,mytag));
-     case ov_uint16_scalar:    return(send_ui16    (ov.uint16_scalar_value(),rankrec,mytag));
-     case ov_uint64_scalar:    return(send_ui64    (ov.uint32_scalar_value(),rankrec,mytag));
+     case ov_uint8_scalar:    return(send_ui8     (comm, ov.uint8_scalar_value(),rankrec,mytag));
+     case ov_uint16_scalar:    return(send_ui16    (comm, ov.uint16_scalar_value(),rankrec,mytag));
+     case ov_uint64_scalar:    return(send_ui64    (comm, ov.uint32_scalar_value(),rankrec,mytag));
 
-    case ov_int8_matrix:    return(send_i8_mat (ov.int8_array_value(),rankrec,mytag));
-    case ov_int16_matrix:    return(send_i16_mat(ov.int16_array_value(),rankrec,mytag));
-    case ov_int32_matrix:    return(send_i32_mat(ov.int32_array_value(),rankrec,mytag));
-    case ov_int64_matrix:    return(send_i32_mat(ov.int64_array_value(),rankrec,mytag));
-
-
-    case ov_uint8_matrix:    return(send_ui8_mat (ov.uint8_array_value(),rankrec,mytag));
-    case ov_uint16_matrix:    return(send_ui16_mat(ov.uint16_array_value(),rankrec,mytag));
-    case ov_uint32_matrix:    return(send_ui32_mat(ov.uint32_array_value(),rankrec,mytag));
-    case ov_uint64_matrix:    return(send_ui64_mat(ov.int64_array_value(),rankrec,mytag));
+    case ov_int8_matrix:    return(send_i8_mat (comm, ov.int8_array_value(),rankrec,mytag));
+    case ov_int16_matrix:    return(send_i16_mat(comm, ov.int16_array_value(),rankrec,mytag));
+    case ov_int32_matrix:    return(send_i32_mat(comm, ov.int32_array_value(),rankrec,mytag));
+    case ov_int64_matrix:    return(send_i32_mat(comm, ov.int64_array_value(),rankrec,mytag));
 
 
-     case ov_struct:    return(send_struct (ov.map_value    (),rankrec,mytag));
+    case ov_uint8_matrix:    return(send_ui8_mat (comm, ov.uint8_array_value(),rankrec,mytag));
+    case ov_uint16_matrix:    return(send_ui16_mat(comm, ov.uint16_array_value(),rankrec,mytag));
+    case ov_uint32_matrix:    return(send_ui32_mat(comm, ov.uint32_array_value(),rankrec,mytag));
+    case ov_uint64_matrix:    return(send_ui64_mat(comm, ov.int64_array_value(),rankrec,mytag));
+
+
+     case ov_struct:    return(send_struct (comm, ov.map_value    (),rankrec,mytag));
 
      case ov_unknown:    printf("MPI_Send: unknown class\n");
              return(MPI_ERR_UNKNOWN );
@@ -1873,14 +1875,19 @@ DEFUN_DLD(MPI_Send,args,nargout, "MPI_Send sends almost any Octave datatypes int
 //      Check if MPI environment is initialized
 // first argument octave_value we want to send
 // second argument columnv vector rank of the receivers
-//  predefined MPI_COMM_WORLD
+//  predefined comm
 //      Put the rank of the receiver into a columnvector
   int nargin = args.length ();
-  if (nargin != 3)
+  if (nargin != 4 && nargin != 3)
     {
-      error ("expecting 3 input arguments");
+      error ("expecting 3 or 4 input arguments");
       return retval;
     }
+
+  MPI_Comm comm = nargin == 4 ? get_mpi_comm (args(3)) : MPI_COMM_WORLD;
+  if (error_state)
+    return retval;
+
      ColumnVector tankrank = args(1).column_vector_value();    
   if (error_state)
     {
@@ -1894,7 +1901,7 @@ DEFUN_DLD(MPI_Send,args,nargout, "MPI_Send sends almost any Octave datatypes int
       return retval;
     }
 
-     int info = send_class (args(0), tankrank, mytag);
+     int info = send_class (comm, args(0), tankrank, mytag);
      retval=info;
      return retval;
    

@@ -17,19 +17,20 @@
 
 # Please add the oct files openmpi_ext folder 
 # For instance 
-#h = genpath("/home/user/octave/openmpi_ext/");
-#addpath(h);
-#clear h;
+h = genpath("/home/corradin/working_directory/octave-forge/extra/openmpi_ext/");
+addpath(h);
+clear h;
 # if you have 4 cores or a network of 4 computers with a ssh connection with no password and same openmpi 1.3.3 installation
 # type at the terminal mpirun -np 4 octave --eval helloworld
 
 
-if not(MPI_Initialized)
    MPI_Init();
-end
+   CW = octave_comm_make("MPI_COMM_WORLD");
+#   whos CW
+   
 
-  my_rank = MPI_Comm_rank();
-  p = MPI_Comm_size();
+  my_rank = MPI_Comm_rank(CW);
+  p = MPI_Comm_size(CW);
  # Could be any number
   mytag = 48;
 
@@ -40,17 +41,15 @@ end
       dest = 0;
 #       rankvect is the vector containing the list of rank  destination process
      rankvect = 0;
-     [info] = MPI_Send(message,rankvect,mytag);
-     info
+     [info] = MPI_Send(message,0,mytag,CW);
   else
         for source = 1:p-1
           disp("We are at rank 0 that is master etc..");
-          [message, info] = MPI_Recv(source,mytag);
+          [message, info] = MPI_Recv(source,mytag,CW);
         printf('%s\n', message);
           endfor
   end   
 
 
-  if not(MPI_Finalized)
    MPI_Finalize();
-  end
+

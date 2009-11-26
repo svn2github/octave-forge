@@ -26,10 +26,20 @@ DEFUN_DLD(octave_comm_test, args, ,"")
       mlock ();
     }
 
+
+
 	octave_value retval;
+	if(args.length() < 1 
+	   || args(0).type_id()!=octave_comm::static_type_id()){
+		
+		error("Please enter a comunicator object!");
+		return octave_value(-1);
+	}
+
+
 	const octave_base_value& rep = args(0).get_rep();
 	const octave_comm& b = ((const octave_comm &)rep);
-// 	this is the amazing result I can create as many comunicator I want
+// 	this is the amazing result I can create as many comunicators I want
 // simply accessing from the public property of the octave_comm object
 	MPI_Comm gt = b.comm;
   return retval;

@@ -122,6 +122,67 @@ tanktag[2]=mytag+2;
    if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
 }
+int recv_cell(MPI_Comm comm,octave_value &ov, int source, int mytag){
+// Not tested yet
+OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
+tanktag[0] = mytag;
+tanktag[1] = mytag+1;
+tanktag[2] = mytag+2;
+tanktag[3] = mytag+3;
+tanktag[4] = mytag+4;
+
+  int info;
+  int nitem,nd;
+  MPI_Status stat;
+  dim_vector dv;
+ 
+//       nitem is the total number of elements 
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
+//        printf("I have received number of elements  %i \n",nitem);
+      if (info !=MPI_SUCCESS) return info;
+//      ndims is number of dimensions
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
+//              printf("I have received number of dimensions %i \n",nd);
+      if (info !=MPI_SUCCESS) return info;
+//  Now create contiguos datatype for dim vector
+  dv.resize(nd);
+  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
+  MPI_Datatype dimvec;
+  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
+  MPI_Type_commit(&dimvec);
+
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
+      if (info !=MPI_SUCCESS) return info;
+
+// Now reverse the content of int vector into dim vector
+ for (octave_idx_type i=0; i<nd; i++)
+ {
+   
+   dv(i) = dimV[i] ;
+//    printf("I am printing dimvector  %i \n",dimV[i]);
+ }
+
+Cell	    oc (dv);
+// Now focus on every single octave_value
+int newtag = tanktag[4];
+int ocap;
+         for (octave_idx_type i=0; i<nitem; i++)
+	    {
+	      octave_value celem;				/* double-check constr/destr */
+	      info = MPI_Recv((&ocap), 1,MPI_INT, source, tanktag[4] , comm,&stat);
+	      if (info !=MPI_SUCCESS) return info;
+	      newtag = newtag+ocap;
+	      info=recv_class(comm,celem,source,newtag);
+	      if (info !=MPI_SUCCESS) return info;
+	      oc.Array<octave_value>::elem(i)=celem;        
+	    }
+
+ov = oc;
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
+;
+
+}
 
 int recv_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
@@ -1348,6 +1409,7 @@ int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* v
   switch (t_id) {
 
     case ov_scalar:    return(recv_scalar (comm, ov,source,mytag));
+    case ov_cell:    return(recv_cell (comm, ov,source,mytag));
     case ov_int8_scalar:    return(recv_int8_scalar (comm, ov,source,mytag));
     case ov_int16_scalar:    return(recv_int16_scalar (comm, ov,source,mytag));
     case ov_int32_scalar:    return(recv_int32_scalar (comm, ov,source,mytag));

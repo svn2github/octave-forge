@@ -205,7 +205,7 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         if (f77_exception_encountered)
             error ("ss: zero: slab08nd: error in lapack subroutine dggev");
             
-        if (info != 0)
+        if (info2 != 0)
             error ("ss: zero: slab08nd: DGGEV did not return 0");
         
         // return values

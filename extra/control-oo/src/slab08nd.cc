@@ -187,7 +187,6 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         NDArray alphar (dv);
         NDArray alphai (dv);
         NDArray beta (dv);
-        NDArray zero (dv);
         
         int info2;
         

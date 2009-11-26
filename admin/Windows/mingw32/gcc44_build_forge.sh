@@ -54,6 +54,7 @@ symbolic-1.0.9 \
 zenity-0.5.7 \
 integration-1.0.7 \
 mapping-1.0.7 \
+video-1.0.2 \
 windows-1.0.8 \
 "
 

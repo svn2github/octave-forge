@@ -1,0 +1,74 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' ffmpeg-0.5-orig/Makefile ffmpeg-0.5/Makefile
+--- ffmpeg-0.5-orig/Makefile	2009-02-21 19:41:52 +0100
++++ ffmpeg-0.5/Makefile	2009-11-26 20:51:42 +0100
+@@ -42,7 +42,9 @@
+ endif
+ INSTALL_PROGS_TARGETS-$(BUILD_SHARED) = install-libs
+ 
+-all: $(FF_DEP_LIBS) $(PROGS) $(ALL_TARGETS-yes)
++DLL = avutil.dll avcodec.dll avformat.dll avdevice.dll swscale.dll
++
++all: $(FF_DEP_LIBS) $(PROGS) $(ALL_TARGETS-yes) $(DLL)
+ 
+ $(PROGS): %$(EXESUF): %_g$(EXESUF)
+ 	cp -p $< $@
+@@ -358,3 +360,38 @@
+ .PHONY: lib videohook documentation *test regtest-* swscale-error zlib-error alltools check
+ 
+ -include $(VHOOK_DEPS)
++
++avcodec.dll : libavcodec/libavcodec.a 
++avdevice.dll : libavdevice/libavdevice.a 
++avformat.dll : libavformat/libavformat.a 
++avutil.dll : libavutil/libavutil.a 
++swscale.dll : libswscale/libswscale.a
++
++avcodec.dll : avutil.dll
++avcodec.dll : DEP_LIBS = -lavutil -lz
++
++avutil.dll : DEP_LIBS = 
++
++avformat.dll : avutil.dll avcodec.dll
++avformat.dll : DEP_LIBS = -lavcodec -lavutil -lz -lbz2 -lws2_32
++
++avdevice.dll : avutil.dll avformat.dll
++avdevice.dll : DEP_LIBS = -lavformat -lavutil -lavicap32
++
++swscale.dll : avutil.dll
++swscale.dll : DEP_LIBS = -lavutil
++
++$(DLL) :
++	$(CC) -shared \
++	-o $@ \
++	-Wl,--warn-once \
++	-Wl,--enable-runtime-pseudo-reloc \
++	-Wl,--enable-auto-image-base \
++	$(LDFLAGS) \
++	-Wl,--out-implib=lib$@.a \
++	-Wl,--output-def=$@.exp \
++	-Wl,--whole-archive \
++	$< \
++	-Wl,--no-whole-archive \
++	-L. $(DEP_LIBS) \
++	$(LIBS) $(CXXLIBS)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' ffmpeg-0.5-orig/configure ffmpeg-0.5/configure
+--- ffmpeg-0.5-orig/configure	2009-03-01 18:57:14 +0100
++++ ffmpeg-0.5/configure	2009-11-26 19:28:27 +0100
+@@ -1200,7 +1200,7 @@
+ SLIBNAME_WITH_MAJOR='$(SLIBNAME).$(LIBMAJOR)'
+ LIB_INSTALL_EXTRA_CMD='$(RANLIB) "$(LIBDIR)/$(LIBNAME)"'
+ 
+-host_cflags='-O3 -g -Wall'
++host_cflags='-O2 -g -Wall'
+ host_libs='-lm'
+ 
+ target_path='.'
+@@ -2156,7 +2156,7 @@
+     elif enabled ccc; then
+         add_cflags -fast
+     else
+-        add_cflags -O3
++        add_cflags -O2
+     fi
+ fi
+ check_cflags -fno-math-errno

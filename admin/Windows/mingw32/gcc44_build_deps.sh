@@ -70,6 +70,7 @@ VER_FLTK=1.1.9-$REL
 VER_NETCDF=4.0-$REL
 VER_CLN=1.3.0-$REL
 VER_GINAC=1.5.3-$REL
+VER_FFMPEG=0.5-$REL
 
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
@@ -142,3 +143,4 @@ VER_GINAC=1.5.3-$REL
 ( cd netcdf && build-${VER_NETCDF}.sh ${ACTION} );
 ( cd CLN && build-${VER_CLN}.sh ${ACTION} );
 ( cd ginac && build-${VER_GINAC}.sh ${ACTION} );
+( cd ffmpeg && build-${VER_FFMPEG}.sh ${ACTION} );

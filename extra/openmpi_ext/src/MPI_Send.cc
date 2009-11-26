@@ -374,6 +374,77 @@ MPI_Type_commit(&fortvec);
     return(info);
 
 }
+int send_cell(MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag){    /* we first store nelems and then */
+/*----------------------------*/    /* recursively the elements themselves */
+
+// Lists of items to send
+// type_id to identify octave_value
+// n for the cell capacity
+// nd for number of dimensions
+// dimvec derived datatype
+// item of cell
+  int t_id = ov_cell;
+  int n = cell.capacity();
+  int info;
+  int tanktag[5];
+  tanktag[0] = mytag;
+  tanktag[1] = mytag+1;
+  tanktag[2] = mytag+2;
+  tanktag[3] = mytag+3;
+  tanktag[4] = mytag+4;
+  int newtag = tanktag[4];
+  dim_vector    vdim   = cell. dims();
+  int nd = cell.ndims();
+
+// Declare here the octave_local_buffers
+  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
+ for (octave_idx_type i=0; i<nd; i++)
+ {
+  dimV[i] = vdim(i) ;
+ }
+
+  // Now create the contiguos derived datatype
+  MPI_Datatype dimvec;
+  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
+  MPI_Type_commit(&dimvec);
+
+
+// Now start the big loop
+
+  for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
+  {
+          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
+      if (info !=MPI_SUCCESS) return info;
+// send cell capacity
+          info = MPI_Send(&n, 1, MPI_INT, rankrec(i), tanktag[1], comm);
+      if (info !=MPI_SUCCESS) return info;
+          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
+      if (info !=MPI_SUCCESS) return info;
+// send the dim vector
+      info =  MPI_Send(dimV,1,dimvec,rankrec(i),tanktag[3],comm);
+      if (info !=MPI_SUCCESS) return info;
+  }
+
+// send octave_value capacity
+
+// Now focus on every single octave_value
+         for (octave_idx_type i=0; i<n; i++){
+             octave_value ov = cell.data()[i];
+	     int cap =ov.capacity();
+	     info = MPI_Send(&cap, 1, MPI_INT, rankrec(i), tanktag[4], comm);
+	     if (info !=MPI_SUCCESS) return info;
+             newtag = newtag +ov.capacity();
+	     info=send_class(comm,ov,rankrec,newtag);
+	     if (info !=MPI_SUCCESS) return info;
+					    }
+					    
+
+
+  return(MPI_SUCCESS); 
+
+
+}
+
 /*-----------------------------------*/        /* to pack a struct */
 int send_struct(MPI_Comm comm, Octave_map map,ColumnVector rankrec, int mytag){        /* we store nkeys, */
 
@@ -407,7 +478,7 @@ int newtag = mytag+3;
   MPI_Type_commit(&dimvec);
 
 
-// Create a derived datatype containing three integer;
+// Create a derived datatype containing 3 integers;
 // n nd maxlenght
 typedef struct
 { int sn, snd,smlenght;
@@ -480,71 +551,7 @@ return(MPI_SUCCESS);
 }
 
 
-int send_cell(MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag){    /* we first store nelems and then */
-/*----------------------------*/    /* recursively the elements themselves */
 
-// Lists of items to send
-// type_id to identify octave_value
-// n for the cell capacity
-// nd for number of dimensions
-// dimvec derived datatype
-// item of cell
-  int t_id = ov_cell;
-  int n = cell.capacity();
-  int info;
-  int tanktag[5];
-  tanktag[0] = mytag;
-  tanktag[1] = mytag+1;
-  tanktag[2] = mytag+2;
-  tanktag[3] = mytag+3;
-  tanktag[4] = mytag+4;
-  int newtag = tanktag[4];
-  dim_vector    vdim   = cell. dims();
-  int nd = cell.ndims();
-
-// Declare here the octave_local_buffers
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
- for (octave_idx_type i=0; i<nd; i++)
- {
-  dimV[i] = vdim(i) ;
- }
-
-  // Now create the contiguos derived datatype
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-
-// Now start the big loop
-
-  for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
-  {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
-      if (info !=MPI_SUCCESS) return info;
-// send cell capacity
-          info = MPI_Send(&n, 1, MPI_INT, rankrec(i), tanktag[1], comm);
-      if (info !=MPI_SUCCESS) return info;
-          info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
-      if (info !=MPI_SUCCESS) return info;
-// send the dim vector
-      info =  MPI_Send(dimV,1,dimvec,rankrec(i),tanktag[3],comm);
-      if (info !=MPI_SUCCESS) return info;
-  }
-
-// Now focus on every single octave_value
-         for (octave_idx_type i=0; i<n; i++){
-             octave_value ov = cell.data()[i];
-         newtag = newtag +ov.capacity();
-        info=send_class(comm, ov,rankrec,newtag);
-        if (info !=MPI_SUCCESS) return info;
-        }
-
-
-
-  return(MPI_SUCCESS); 
-
-
-}
 
 int send_sp_mat(MPI_Comm comm, SparseMatrix m ,ColumnVector rankrec, int mytag  ){
 

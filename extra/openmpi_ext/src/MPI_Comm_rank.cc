@@ -26,9 +26,7 @@
  * ----------------------------------------------------
  */
 
-#include "mpi.h"       
-#include "comm-util.h"       
-#include <octave/oct.h>
+#include "octave_comm.h"       
 
 DEFUN_DLD(NAME, args, nargout,
 "MPI_Comm_rank          Determines rank of calling process in communicator\n\
@@ -51,9 +49,38 @@ DEFUN_DLD(NAME, args, nargout,
 {
     octave_value_list results;
     int nargin = args.length ();
-    if (nargin == 0 || nargin == 1)
-      {
-        MPI_Comm comm = nargin == 1 ? get_mpi_comm (args(0)) : MPI_COMM_WORLD;
+   if (nargin != 1)
+     {
+       error ("expecting  1 input argument");
+       return results;
+     }
+
+  if (!octave_comm_type_loaded)
+    {
+      octave_comm::register_type ();
+      octave_comm_type_loaded = true;
+      mlock ();
+    }
+
+	if (args(0).type_id()!=octave_comm::static_type_id()){
+		
+		error("Please enter a comunicator object!");
+		return octave_value(-1);
+	}
+
+
+	const octave_base_value& rep = args(0).get_rep();
+	const octave_comm& b = ((const octave_comm &)rep);
+	MPI_Comm comm = b.comm;
+
+	if (b.name == "MPI_COMM_WORLD")
+	{
+	 comm = MPI_COMM_WORLD;
+	}
+	else
+	{
+	 error("Other MPI Comunicator not yet implemented!");
+	}
         if (! error_state)
           {
             int my_rank;
@@ -62,11 +89,11 @@ DEFUN_DLD(NAME, args, nargout,
               results(1) = info;
             results(0) = my_rank;
           }
-      }
     else
       print_usage ();
 
     /* [rank info] = MPI_Comm_rank (comm) */
    
     return results;
+
 }

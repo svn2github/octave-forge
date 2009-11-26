@@ -26,19 +26,20 @@
 
 function [zer, gain] = __zero__ (sys)
 
-  [alphar, alphai, beta] = slab08nd (sys.a, sys.b, sys.c, sys.d);
+  if (isempty (sys.a))
+    zer = [];
+  else
+    [alphar, alphai, beta] = slab08nd (sys.a, sys.b, sys.c, sys.d);
+    zer = (alphar + i*alphai) ./ beta;
+  endif
 
-  zer = (alphar + i*alphai) ./ beta;
-
-  lz = length (zer);
+  lzer = length (zer);
   n = rows (sys.a);
-  m = columns (sys.b);
-  p = rows (sys.c);
 
-  if (lz == n)
+  if (lzer == n)
     gain = sys.d;
   else
-    gain = sys.c * (sys.a^(n-1-lz)) * sys.b;
+    gain = sys.c * (sys.a^(n-1-lzer)) * sys.b;
   endif
 
 endfunction

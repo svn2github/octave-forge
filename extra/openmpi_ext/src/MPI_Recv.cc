@@ -17,11 +17,9 @@
 /*
  * Receives most Octave datatypes into contiguous memory
  * using derived datatypes
- * info = MPI_Send(var,rank)
+ * info = MPI_Send(var,rank,comunicator)
  */
-#include "mpi.h"   
-#include "comm-util.h"       
-#include <octave/oct.h>
+#include "octave_comm.h"
 #include <ov-cell.h>    // avoid errmsg "cell -- incomplete datatype"
 #include <oct-map.h>    // avoid errmsg "Oct.map -- invalid use undef type"
 
@@ -141,13 +139,13 @@ tanktag[4] = mytag+4;
  
 //       nitem is the total number of elements 
           info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//        printf("I have received number of elements  %i \n",nitem);
+//         printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
           info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//              printf("I have received number of dimensions %i \n",nd);
+//               printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
+//  Now create contiguous datatype for dim vector
   dv.resize(nd);
   OCTAVE_LOCAL_BUFFER(int,dimV,nd);
   MPI_Datatype dimvec;
@@ -174,7 +172,7 @@ tanktag[4] = mytag+4;
   MPI_Type_commit(&fortvec);
 //       printf("I am printing dimvector  %i \n",tanktag[4]);
           info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//            printf("info for receiving data is = %i \n",info);
+//             printf("info for receiving data is = %i \n",info);
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
   {
@@ -184,7 +182,8 @@ tanktag[4] = mytag+4;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
-//     printf("info for receiving scalar matrix is = %i \n",info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
 
 }
 
@@ -245,7 +244,8 @@ tanktag[4] = mytag+4;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
-//     printf("info for receiving scalar matrix is = %i \n",info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
 
 }
 
@@ -572,7 +572,8 @@ tanktag[4] = mytag+4;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
-//     printf("info for receiving scalar matrix is = %i \n",info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
 
 }
 
@@ -633,7 +634,8 @@ tanktag[3] = mytag+4;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
-//     printf("info for receiving scalar matrix is = %i \n",info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
    return(info);
 }
 
@@ -696,7 +698,8 @@ tanktag[3] = mytag+4;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
-//     printf("info for receiving scalar matrix is = %i \n",info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
    return(info);
 }
 
@@ -759,8 +762,8 @@ tanktag[3] = mytag+4;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
-//     printf("info for receiving scalar matrix is = %i \n",info);
-   return(info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
 }
 
 
@@ -823,8 +826,8 @@ tanktag[3] = mytag+4;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
-//     printf("info for receiving scalar matrix is = %i \n",info);
-   return(info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
 }
 
 
@@ -880,14 +883,11 @@ tanktag[3] = mytag+4;
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
   {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
-//     printf("info for receiving scalar matrix is = %i \n",info);
-   return(info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
 }
 
 
@@ -950,8 +950,8 @@ tanktag[3] = mytag+4;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
-//     printf("info for receiving scalar matrix is = %i \n",info);
-   return(info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
 }
 
 int recv_uint32_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
@@ -1012,8 +1012,8 @@ tanktag[3] = mytag+4;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
-//     printf("info for receiving scalar matrix is = %i \n",info);
-   return(info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
 }
 
 
@@ -1113,7 +1113,8 @@ for (octave_idx_type i = 0; i < s[1]+1; i++)
 
 
 ov = m;
-return(info);
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
 
 
 }
@@ -1412,13 +1413,13 @@ DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv sends almost any Octave datatype into
 {
      octave_value_list retval;
   int nargin = args.length ();
-  if (nargin != 4 && nargin != 3)
+  if (nargin != 3)
     {
-      error ("expecting 3 or 4 input arguments");
+      error ("expecting 3 input arguments");
       return retval;
     }
 
-  MPI_Comm comm = nargin == 4 ? get_mpi_comm (args(3)) : MPI_COMM_WORLD;
+//   MPI_Comm comm = nargin == 4 ? get_mpi_comm (args(3)) : MPI_COMM_WORLD;
   if (error_state)
     return retval;
 
@@ -1435,11 +1436,37 @@ DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv sends almost any Octave datatype into
       return retval;
     }
 
+
+  if (!octave_comm_type_loaded)
+    {
+      octave_comm::register_type ();
+      octave_comm_type_loaded = true;
+      mlock ();
+    }
+
+	if (args(2).type_id()!=octave_comm::static_type_id()){
+		
+		error("Please enter a comunicator object!");
+		return octave_value(-1);
+	}
+
+     const octave_base_value& rep = args(2).get_rep();
+     const octave_comm& b = ((const octave_comm &)rep);
+     MPI_Comm comm = b.comm;
+	if (b.name == "MPI_COMM_WORLD")
+	{
+	 comm = MPI_COMM_WORLD;
+	}
+	else
+	{
+	 error("Other MPI Comunicator not yet implemented!");
+	}
+
+
      octave_value result;
      int info = recv_class (comm, result,source, mytag );
-     if (nargout > 1)
-       retval(1) = info;
-     retval(0)=result;
+     retval(1) = info;
+     retval(0) = result;
      return retval;
    
 }

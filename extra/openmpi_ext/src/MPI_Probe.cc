@@ -19,11 +19,6 @@
 
 
 
-
-
-
-
-
 #define   NAME  MPI_Probe
 /*
  * ----------------------------------------------------
@@ -31,9 +26,8 @@
  * [info stat] = MPI_Probe (src, tag, comm)
  * ----------------------------------------------------
  */
-#include "mpi.h"
-#include "comm-util.h"       
-#include <oct.h>	
+#include "octave_comm.h"
+	
 #include <octave/ov-struct.h>
 
 
@@ -86,15 +80,37 @@ DEFUN_DLD(NAME, args, nargout,
 {
    octave_value_list results;
    int nargin = args.length ();
-   if (nargin != 2 && nargin != 3)
+   if (nargin != 1)
      {
-       error ("expecting 2 or 3 input arguments");
+       error ("expecting  1 input arguments");
        return results;
      }
 
-   MPI_Comm comm = nargin == 3 ? get_mpi_comm (args(3)) : MPI_COMM_WORLD;
-   if (error_state)
-     return results;
+  if (!octave_comm_type_loaded)
+    {
+      octave_comm::register_type ();
+      octave_comm_type_loaded = true;
+      mlock ();
+    }
+
+	if (args(2).type_id()!=octave_comm::static_type_id()){
+		
+		error("Please enter a comunicator object!");
+		return octave_value(-1);
+	}
+
+
+	const octave_base_value& rep = args(2).get_rep();
+	const octave_comm& b = ((const octave_comm &)rep);
+	MPI_Comm comm = b.comm;
+	if (b.name == "MPI_COMM_WORLD")
+	{
+	 comm = MPI_COMM_WORLD;
+	}
+	else
+	{
+	 error("Other MPI Comunicator not yet implemented!");
+	}
 
     int src = args(0).int_value();    
   if (error_state)

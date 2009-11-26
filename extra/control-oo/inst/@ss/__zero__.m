@@ -17,17 +17,28 @@
 
 ## -*- texinfo -*-
 ## Transmission zeros of SS object.
+## Uses SLICOT AB08ND by courtesy of NICONET e.V.
+## <http://www.slicot.org>
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: October 2009
 ## Version: 0.1
 
-## TODO: Use Fortran code from Slicot
-
 function [zer, gain] = __zero__ (sys)
 
-  warning ("ss: zero: subroutine tzero is buggy, use results with caution");
+  [alphar, alphai, beta] = slab08nd (sys.a, sys.b, sys.c, sys.d);
 
-  [zer, gain] = __tzero__ (sys.a, sys.b, sys.c, sys.d);
+  zer = (alphar + i*alphai) ./ beta;
+
+  lz = length (zer);
+  n = rows (sys.a);
+  m = columns (sys.b);
+  p = rows (sys.c);
+
+  if (lz == n)
+    gain = sys.d;
+  else
+    gain = sys.c * (sys.a^(n-1-lz)) * sys.b;
+  endif
 
 endfunction

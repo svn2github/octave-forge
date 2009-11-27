@@ -176,7 +176,7 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         int ldvr = 1;
         
         double* work;
-        int lwork = 8*nu;
+        int lwork = max (1, 8*nu);
         
         vl = new double[ldvl];
         vr = new double[ldvr];

@@ -27,7 +27,7 @@
 function [zer, gain] = __zero__ (sys)
 
   if (isempty (sys.a))
-    zer = [];
+    zer = zeros (0, 1);
   else
     [alphar, alphai, beta] = slab08nd (sys.a, sys.b, sys.c, sys.d);
     zer = (alphar + i*alphai) ./ beta;
@@ -35,11 +35,17 @@ function [zer, gain] = __zero__ (sys)
 
   lzer = length (zer);
   n = rows (sys.a);
+  m = columns (sys.b);
+  p = rows (sys.c);
 
-  if (lzer == n)
-    gain = sys.d;
+  if (m == 1 && p == 1)
+    if (lzer == n)
+      gain = sys.d;
+    else
+      gain = sys.c * (sys.a^(n-1-lzer)) * sys.b;
+    endif
   else
-    gain = sys.c * (sys.a^(n-1-lzer)) * sys.b;
+    gain = [];
   endif
 
 endfunction

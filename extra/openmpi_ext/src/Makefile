@@ -1,10 +1,8 @@
-MYHOME = /home/user/
-MPIINC = -I$(MYHOME)openmpi-1.3.3/include
-MPILIBS = -lpthread -L$(MYHOME)openmpi-1.3.3/lib -lmpi_cxx -lmpi -lopen-rte -lopen-pal -ldl -lnsl -lutil -lm -ldl
+MPIINC = -I/usr/lib/openmpi/include -I/usr/lib/openmpi/include/openmpi
+MPILIBS = -lpthread -L/usr/lib/openmpi/lib -lmpi_cxx -lmpi -lopen-rte -lopen-pal -ldl -Wl,--export-dynamic -lnsl -lutil -lm -ldl
 
 all: MPI_Init.oct \
      MPI_Initialized.oct \
-     MPI_COMM_WORLD.oct \
      MPI_Comm_rank.oct \
      MPI_Comm_size.oct \
      MPI_Finalize.oct \
@@ -13,13 +11,11 @@ all: MPI_Init.oct \
      MPI_Recv.oct \
      MPI_Iprobe.oct \
      MPI_Probe.oct \
+     MPI_Barrier.oct \
+     octave_comm_make.oct \
+     octave_comm_test.oct \
 
-# Needs a better treatment
-comm-util.o:
-	mkoctfile -c $(MPIINC) comm-util.cc
-
-%.oct: %.cc comm-util.o
-	mkoctfile -s $(MPIINC)  $(MPILIBS) $< comm-util.o
-
+%.oct: %.cc
+	mkoctfile -s $(MPIINC)  $(MPILIBS)   $<
 clean:
 	-rm *.o  *.oct *~

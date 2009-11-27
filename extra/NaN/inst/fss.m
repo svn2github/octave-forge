@@ -101,19 +101,34 @@ elseif strcmpi(MODE,'FSDD');
  
 elseif isempty(MODE) || strcmpi(MODE,'rank') || strcmpi(MODE,'Pearson')
         cl = cat2bin(cl); 
+        if strcmpi(MODE,'rank'),
+                [tmp,D] = sort(D,1);
+        end; 
         for k = 1:N,
 	        f = isnan(score);
-        	r = partcorrcoef(cl, D(:,f), D(:,~f), MODE);
+
+                %%%%% compute partial correlation (X,Y|Z)
+       	        % r = partcorrcoef(cl, D(:,f), D(:,~f)); % obsolete, not very robust
+
+       	        %% this is a more robust version 
+                X = cl; Y = D(:,f); Z = D(:,~f);
+                if (k>1)
+       	                X = X-Z*(Z\X);
+                        Y = Y-Z*(Z\Y);
+                end;
+                r = corrcoef(X,Y);
+
 	        [s,ix] = max(sumsq(r,1));
-        	f = find(f);
+        	f      = find(f);
         	idx(k) = f(ix);
         	score(idx(k)) = s;
-        end
+        end;
+
 end
 
 function I = mi(x,y)
-        ix = ~any(isnan([x,y]),2);
-        H = sparse(x(ix),y(ix)); 
+        ix  = ~any(isnan([x,y]),2);
+        H   = sparse(x(ix),y(ix)); 
         pij = h./sum(ix); 
         Iij = pij.*log2(pij./(sum(pij,2)*sum(pij,1)));
         Iij(isnan(Iij)) = 0; 

@@ -141,7 +141,7 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         int info;
         
         // tolerance
-        double tol = 2.2204e-16;    // use LAPACK dlamch
+        double tol = 2.2204e-16;    // TODO: use LAPACK dlamch
 
         // SLICOT routine AB08ND
         F77_XFCN (ab08nd, AB08ND, (equil,
@@ -160,7 +160,7 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
                                    info));
 
         if (f77_exception_encountered)
-            error ("ss: zero: slab08nd: error in slicot subroutine ab08nd");
+            error ("ss: zero: slab08nd: exception in SLICOT subroutine AB08ND");
             
         if (info != 0)
             error ("ss: zero: slab08nd: AB08ND did not return 0");
@@ -202,7 +202,7 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
                                  info2));
                                  
         if (f77_exception_encountered)
-            error ("ss: zero: slab08nd: error in lapack subroutine dggev");
+            error ("ss: zero: slab08nd: exception in LAPACK subroutine DGGEV");
             
         if (info2 != 0)
             error ("ss: zero: slab08nd: DGGEV did not return 0");

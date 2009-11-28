@@ -71,7 +71,7 @@ function [y, t, x_arr] = __timeresp__ (sys, resptype, plotflag, tfinal, dt, x0)
       x_arr = zeros (l_t, n);
 
       ## initial conditions
-      x = x0(:);  # make sure that x is a row vector
+      x = x0(:);  # make sure that x is a column vector
 
       if (n != length (x0))
         error ("initial: x0 must be a vector with %d elements", n);

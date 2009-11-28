@@ -97,7 +97,7 @@ function [y_r, t_r, x_r] = lsim (sys, u, t = [], x0 = [], method = "zoh")
     error ("initial: x0 must be a vector with %d elements", n);
   endif
 
-  x = x0(:);  # make sure that x is a row vector
+  x = x0(:);  # make sure that x is a column vector
 
   ## simulation
   for k = 1 : trows

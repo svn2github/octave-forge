@@ -1,6 +1,7 @@
 function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode);
-% PARTCORRCOEF calculates the partial correlation coefficient.
-% X and Y can contain missing values encoded with NaN.
+% PARTCORRCOEF calculates the partial correlation between X and Y
+% after removing the influence of Z.
+% X, Y and Z can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
 % (Its assumed that the occurence of NaN's is uncorrelated) 
 % The output gives NaN, only if there are insufficient input data.
@@ -11,16 +12,22 @@ function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode);
 %
 % PARTCORRCOEF(X [,Mode]);
 %      calculates the (auto-)correlation matrix of X
-% PARTCORRCOEF(X,Y,Z [,Mode]);
-%      calculates the crosscorrelation between X and Y
+% PARTCORRCOEF(X,Y,Z);
+% PARTCORRCOEF(X,Y,Z,[]);
+% PARTCORRCOEF(X,Y,Z,'Pearson');
+% PARTCORRCOEF(X,Y,Z,'Rank');
+% PARTCORRCOEF(X,Y,Z,'Spearman');
 %
-% Mode='Pearson' or 'parametric' [default]
-%	gives the correlation coefficient  
-%	also known as the "product-moment coefficient of correlation" or "Pearson's correlation" [1]
-% Mode='Spearman' 	gives "Spearman's Rank Correlation Coefficient"
-%	This replaces SPEARMAN.M
-% Mode='Rank' 		gives a nonparametric Rank Correlation Coefficient
-%	This replaces RANKCORR.M
+% Mode=[] [default]
+%	removes from X and Y the part that can be explained by Z
+%	and computes the correlation of the remaining part. 
+% 	Ideally, this is equivalent to Mode='Pearson', however, in practice
+%	this is more accurate.
+% Mode='Pearson' or 'parametric'
+% Mode='Spearman'
+% Mode='Rank'
+%	computes the partial correlation based on cc(x,y),cc(x,z) and cc(y,z) 
+%	with the respective mode. 
 %
 % [R,p,ci1,ci2] = PARTCORRCOEF(...);
 %  r is the partialcorrelation matrix
@@ -34,11 +41,6 @@ function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode);
 %  p < alpha: The alternative hypothesis "R2 is larger than zero" is true with probability (1-alpha).
 %  ci1	lower 0.95 confidence interval 
 %  ci2	upper 0.95 confidence interval 
-%
-% Further recommandation related to the correlation coefficient 
-% + LOOK AT THE SCATTERPLOTS!
-% + Correlation is not causation. The observed correlation between two variables 
-%	might be due to the action of other, unobserved variables.
 %
 % see also: SUMSKIPNAN, COVM, COV, COR, SPEARMAN, RANKCORR, RANKS, CORRCOEF
 %
@@ -79,16 +81,30 @@ function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode);
 
 
 if nargin==3
-        Mode='Pearson';
+        Mode=[];
 elseif nargin==4,
 else
-        error('Error CORRCOEF: Missing argument(s)\n');
+        error('Error PARTCORRCOEF: Missing argument(s)\n');
 end;        
 
-rxy=corrcoef(X,Y,Mode);
 if isempty(Z)
-	R = rxy; 
+	R = corrcoef(X,Y,Mode);
+
+elseif isempty(Mode) 
+	if ~isempty(Z)
+	for j=1:size(X,2)
+		ix = ~any(isnan(Z),2) & ~isnan(X(:,j));
+		X(:,j) = X(:,j) - Z*(Z(ix,:)\X(ix,j));
+	end; 	
+	for j=1:size(Y,2)
+		ix = ~any(isnan(Z),2) & ~isnan(Y(:,j));
+		Y(:,j) = Y(:,j) - Z*(Z(ix,:)\Y(ix,j));
+	end;
+	end;
+	R = corrcoef(X,Y,Mode);
+
 else 
+	rxy = corrcoef(X,Y,Mode);
 	rxz = corrcoef(X,Z,Mode);
 	if isempty(Y),
         	ryz = rxz;
@@ -98,6 +114,7 @@ else
 
 	%rxy,rxz,ryz 
 	R = (rxy-rxz*ryz')./sqrt((1-rxz.^2)*(1-ryz.^2)');
+	
 end;
 
 if nargout<2, 

@@ -170,16 +170,14 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         char jobvl = 'N';
         char jobvr = 'N';
 
-        double* vl;
+        double* vl = 0;     // not referenced because jobvl = 'N'
         int ldvl = 1;
-        double* vr;
+        double* vr = 0;     // not referenced because jobvr = 'N'
         int ldvr = 1;
         
         double* work;
         int lwork = max (1, 8*nu);
         
-        vl = new double[ldvl];
-        vr = new double[ldvr];
         work = new double[lwork];
         
         dim_vector dv (1);
@@ -223,8 +221,6 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         delete[] iwork;
         delete[] dwork;
         
-        delete[] vl;
-        delete[] vr;
         delete[] work;
     }
     

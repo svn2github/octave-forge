@@ -1,4 +1,4 @@
-all: slab08nd.oct
+all: slab08nd.oct slab13dd.oct
 
 %.oct: %.cc
 	mkoctfile -s $<

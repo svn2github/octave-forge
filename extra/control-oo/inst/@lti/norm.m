@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{gain} =} norm (@var{sys}, @var{2})
-## @deftypefnx {Function File} {@var{gain} =} norm (@var{sys}, @var{inf})
-## @deftypefnx {Function File} {@var{gain} =} norm (@var{sys}, @var{inf}, @var{tol})
+## @deftypefnx {Function File} {@var{gain}, @var{wpeak} =} norm (@var{sys}, @var{inf})
+## @deftypefnx {Function File} {@var{gain}, @var{wpeak} =} norm (@var{sys}, @var{inf}, @var{tol})
 ## Return norm of LTI model. L-infinity norm uses SLICOT AB13DD.
 ## @end deftypefn
 

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} axis2dlim (@var{axdata})
+## @deftypefn {Function File} {} __axis2dlim__ (@var{axdata})
 ## Determine axis limits for 2-D data (column vectors); leaves a 10%
 ## margin around the plots.
 ## Inserts margins of +/- 0.1 if data is one-dimensional 

@@ -2,11 +2,11 @@ all: slab08nd.oct slab13dd.oct
 
 #%.oct: %.cc
 #	mkoctfile -s $<
-slab08nd.oct: slab08nd.cc
+#slab08nd.oct: slab08nd.cc
     mkoctfile slab08nd.cc \
               AB08ND.f AB08NX.f TB01ID.f MB03OY.f MB03PY.f
 
-slab13dd.oct: slab13dd.cc
+#slab13dd.oct: slab13dd.cc
     mkoctfile slab13dd.cc \
               AB13DD.f MA02AD.f MB01SD.f MB03XD.f TB01ID.f \
               TG01AD.f TG01BD.f AB13DX.f MA01AD.f MA02ID.f \

@@ -1,10 +1,9 @@
 # Please add the oct files openmpi_ext folder 
 # For instance 
-h = genpath("/home/corradin/working_directory/octave-forge/extra/openmpi_ext/");
-addpath(h);
-clear h;
-   MPI_Init();
-  CW = octave_comm_make("MPI_COMM_WORLD");
+  addpath("../src");
+  MPI_Init();
+  # the string NEWORLD is just a label could be whater you want    
+  CW = MPI_Comm_Load("NEWORLD");
   my_rank = MPI_Comm_rank(CW);
   p = MPI_Comm_size(CW);
 # tag[0] ----> type of octave_value

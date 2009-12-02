@@ -82,7 +82,7 @@ DEFUN_DLD(NAME, args, nargout,
           }
     else
       print_usage ();
-
+    comm= NULL;
     /* [rank info] = MPI_Comm_rank (comm) */
    
     return results;

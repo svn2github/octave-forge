@@ -20,6 +20,6 @@ DEFUN_DLD(MPI_Comm_Test, args, ,"")
 	const simple& b = ((const simple &)rep);
         octave_stdout << "simpletest has " << b.name_value()  << " output arguments.\n";
        MPI_Comm res = b.comunicator_value();
- 
+   
   return retval;
 }

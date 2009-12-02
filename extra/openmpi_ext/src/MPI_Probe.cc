@@ -122,7 +122,7 @@ DEFUN_DLD(NAME, args, nargout,
     }
     MPI_Status stat = {0,0,0,0};
     int info = MPI_Probe(src,tag,comm,&stat);
-    
+    comm= NULL;
     results(0) = put_MPI_Stat(stat);
     results(1) = info;
     return results;

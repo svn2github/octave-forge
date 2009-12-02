@@ -1920,6 +1920,7 @@ DEFUN_DLD(MPI_Send,args,nargout, "MPI_Send sends almost any Octave datatypes int
         const simple& B = ((const simple &)rep);
         MPI_Comm comm = ((const simple&) B).comunicator_value ();
      int info = send_class (comm, args(0), tankrank, mytag);
+     comm= NULL;
      retval=info;
      return retval;
    

@@ -1518,6 +1518,7 @@ DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv sends almost any Octave datatype into
 
      octave_value result;
      int info = recv_class (comm, result,source, mytag );
+     comm= NULL;
      retval(1) = info;
      retval(0) = result;
      return retval;

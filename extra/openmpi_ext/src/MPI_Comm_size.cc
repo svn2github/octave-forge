@@ -83,7 +83,7 @@ DEFUN_DLD(NAME, args, nargout,
           }
     else
       print_usage ();
-
+    comm= NULL;
     /* [size info] = MPI_Comm_size (comm) */
    
     return results;

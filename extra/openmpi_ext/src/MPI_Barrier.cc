@@ -80,7 +80,7 @@ DEFUN_DLD(NAME, args, nargout,
           }
     else
       print_usage ();
-
+   comm= NULL;
     /* [info] = MPI_Barrier (comm) */
    
     return results;

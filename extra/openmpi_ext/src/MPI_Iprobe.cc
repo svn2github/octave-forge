@@ -121,7 +121,7 @@ DEFUN_DLD(NAME, args, nargout,
     int flag;
     MPI_Status stat = {0,0,0,0};    
     int info = MPI_Iprobe(src,tag,comm,&flag,&stat);
-    
+    comm= NULL;
     results(0) = flag;
     results(1) = put_MPI_Stat(stat);
     results(2) = info;

@@ -26,7 +26,7 @@
  * [info stat] = MPI_Probe (src, tag, comm)
  * ----------------------------------------------------
  */
-#include "octave_comm.h"
+#include "simple.h"
 	
 #include <octave/ov-struct.h>
 
@@ -80,38 +80,33 @@ DEFUN_DLD(NAME, args, nargout,
 {
    octave_value_list results;
    int nargin = args.length ();
-   if (nargin != 1)
+   if (nargin != 3)
      {
-       error ("expecting  1 input arguments");
+       error ("expecting  3 input arguments");
        return results;
      }
 
-  if (!octave_comm_type_loaded)
+
+
+
+
+
+  if (!simple_type_loaded)
     {
-      octave_comm::register_type ();
-      octave_comm_type_loaded = true;
+      simple::register_type ();
+      simple_type_loaded = true;
       mlock ();
     }
 
-	if (args(2).type_id()!=octave_comm::static_type_id()){
+	if( args(2).type_id()!=simple::static_type_id()){
 		
-		error("Please enter a comunicator object!");
+		error("Please enter octave comunicator object!");
 		return octave_value(-1);
 	}
 
-
 	const octave_base_value& rep = args(2).get_rep();
-	const octave_comm& b = ((const octave_comm &)rep);
-	MPI_Comm comm = b.comm;
-	if (b.name == "MPI_COMM_WORLD")
-	{
-	 comm = MPI_COMM_WORLD;
-	}
-	else
-	{
-	 error("Other MPI Comunicator not yet implemented!");
-	}
-
+        const simple& B = ((const simple &)rep);
+        MPI_Comm comm = ((const simple&) B).comunicator_value ();
     int src = args(0).int_value();    
   if (error_state)
     {

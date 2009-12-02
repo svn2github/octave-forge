@@ -21,6 +21,11 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #include "comm-util.h"
+#define	STRFY(ARGNAM)  #ARGNAM
+
+#define	STRNGFY(ARGNAME)  \
+	STRFY  (ARGNAME)	// 2-level, as opposed to 1-level above
+
 
 template <class T>
 static MPI_Comm do_get (const octave_value&)
@@ -29,26 +34,16 @@ static MPI_Comm do_get (const octave_value&)
   return MPI_COMM_WORLD;
 }
 
-// Specializations. Typically, MPI_Comm is 32-bit or 64-bit integer.
-template <>
-static MPI_Comm do_get<int32_t> (const octave_value& val)
-{
-  if (val.is_scalar_type () && val.is_int32_type ())
-    {
-      octave_int32 tmp = val.int32_scalar_value ();
-      return tmp.value ();
-    }
-  else
-    error ("MPI: not a valid communicator");
-}
+
 
 template <>
-static MPI_Comm do_get<int64_t> (const octave_value& val)
+static MPI_Comm do_get<MPI_Comm> (const octave_value& val)
 {
-  if (val.is_scalar_type () && val.is_int64_type ())
+  if (val.is_string())
     {
-      octave_int64 tmp = val.int64_scalar_value ();
-      return tmp.value ();
+      std::string Comm_Name = val.string_value();
+      MPI_Comm tmp = MPI_COMM_WORLD;
+      return tmp;
     }
   else
     error ("MPI: not a valid communicator");
@@ -63,24 +58,19 @@ template <class T>
 static octave_value do_set (T)
 {
   error ("MPI handle type not supported.");
-  return octave_value ();
+  return MPI_ERR_UNKNOWN;
 }
 
-// Specializations. Typically, MPI_Comm is 32-bit or 64-bit integer.
-// Provide more if needed.
-template <>
-static octave_value do_set<int32_t> (int32_t comm)
-{
-  return octave_int32 (comm);
-}
 
 template <>
-static octave_value do_set<int64_t> (int64_t comm)
+static octave_value do_set<MPI_Comm> (MPI_Comm comm)
 {
-  return octave_int64 (comm);
+  return comm;
 }
 
-octave_value set_mpi_comm (MPI_Comm comm)
+
+
+MPI_Comm set_mpi_comm (MPI_Comm comm)
 {
   return do_set<MPI_Comm> (comm);
 }

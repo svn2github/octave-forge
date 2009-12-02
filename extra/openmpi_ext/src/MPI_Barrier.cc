@@ -25,7 +25,7 @@
  * ----------------------------------------------------
  */
 
-#include "octave_comm.h"    
+#include "simple.h"    
 
 DEFUN_DLD(NAME, args, nargout,
 "MPI_Barrier          Blocks until all processes in the communicator have reached this routine\n\
@@ -53,31 +53,23 @@ DEFUN_DLD(NAME, args, nargout,
        return results;
      }
 
-  if (!octave_comm_type_loaded)
+  if (!simple_type_loaded)
     {
-      octave_comm::register_type ();
-      octave_comm_type_loaded = true;
+      simple::register_type ();
+      simple_type_loaded = true;
       mlock ();
     }
 
-	if (args(0).type_id()!=octave_comm::static_type_id()){
+	if((args.length() != 1 )
+	   || args(0).type_id()!=simple::static_type_id()){
 		
-		error("Please enter a comunicator object!");
+		error("Please enter octave comunicator object!");
 		return octave_value(-1);
 	}
 
-
 	const octave_base_value& rep = args(0).get_rep();
-	const octave_comm& b = ((const octave_comm &)rep);
-	MPI_Comm comm = b.comm;
-	if (b.name == "MPI_COMM_WORLD")
-	{
-	 comm = MPI_COMM_WORLD;
-	}
-	else
-	{
-	 error("Other MPI Comunicator not yet implemented!");
-	}
+        const simple& B = ((const simple &)rep);
+        MPI_Comm comm = ((const simple&) B).comunicator_value ();
         if (! error_state)
           {
             int my_size;

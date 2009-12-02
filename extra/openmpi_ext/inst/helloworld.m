@@ -17,15 +17,13 @@
 
 # Please add the oct files openmpi_ext folder 
 # For instance 
-h = genpath("/home/corradin/working_directory/octave-forge/extra/openmpi_ext/");
-addpath(h);
-clear h;
+addpath("../src");
 # if you have 4 cores or a network of 4 computers with a ssh connection with no password and same openmpi 1.3.3 installation
 # type at the terminal mpirun -np 4 octave --eval helloworld
 
 
    MPI_Init();
-# the string NEWORLD is just a label could be whater you want    
+ # the string NEWORLD is just a label could be whatever you want 
    CW = MPI_Comm_Load("NEWORLD");
    whos CW
    

@@ -52,7 +52,8 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,usempi,verbose)
 	# check if doing this parallel or serial
 	if usempi
 		MPI_Init();
-		CW = octave_comm_make("MPI_COMM_WORLD");
+		 # the string NEWORLD is just a label could be whatever you want    
+		CW = MPI_Comm_Load("NEWORLD");
 		isnode = MPI_Comm_rank(CW);
 		nodes = MPI_Comm_size(CW);
 	else isnode = 0;

@@ -32,7 +32,8 @@ function output = montecarlo_basic(f, args, reps)
 
 
 	MPI_Init();
-	CW = octave_comm_make("MPI_COMM_WORLD");
+	# the string NEWORLD is just a label could be whater you want    
+        CW = MPI_Comm_Load("NEWORLD");
 
 
 	my_rank = MPI_Comm_rank(CW);

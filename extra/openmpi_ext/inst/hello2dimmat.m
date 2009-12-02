@@ -4,7 +4,7 @@
   MPI_SUCCESS =0;
   MPI_Init();
 
-  # the string NEWORLD is just a label could be whater you want    
+  # the string NEWORLD is just a label could be whatever you want    
   CW = MPI_Comm_Load("NEWORLD");
   my_rank = MPI_Comm_rank(CW);
   p = MPI_Comm_size(CW);

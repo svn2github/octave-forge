@@ -28,8 +28,8 @@ addpath("../src");
    whos CW
    
 
-  my_rank = MPI_Comm_rank(CW)
-  p = MPI_Comm_size(CW)
+  my_rank = MPI_Comm_rank(CW);
+  p = MPI_Comm_size(CW);
  # Could be any number
   mytag = 48;
 
@@ -37,11 +37,9 @@ addpath("../src");
   message="";
   if (my_rank != 0)
       message = sprintf('Greetings from process: %d!',my_rank);
-      dest = 0;
-#       rankvect is the vector containing the list of rank  destination process
+#     rankvect is the vector containing the list of rank  destination process
      rankvect = 0;
-     disp("info for sending is is");
-     [info] = MPI_Send(message,0,mytag,CW)
+     [info] = MPI_Send(message,rankvect,mytag,CW)
       
   else
         for source = 1:p-1

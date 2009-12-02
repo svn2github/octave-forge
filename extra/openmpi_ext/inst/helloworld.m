@@ -25,12 +25,13 @@ clear h;
 
 
    MPI_Init();
-   CW = octave_comm_make("MPI_COMM_WORLD");
-#   whos CW
+# the string NEWORLD is just a label could be whater you want    
+   CW = MPI_Comm_Load("NEWORLD");
+   whos CW
    
 
-  my_rank = MPI_Comm_rank(CW);
-  p = MPI_Comm_size(CW);
+  my_rank = MPI_Comm_rank(CW)
+  p = MPI_Comm_size(CW)
  # Could be any number
   mytag = 48;
 
@@ -41,7 +42,9 @@ clear h;
       dest = 0;
 #       rankvect is the vector containing the list of rank  destination process
      rankvect = 0;
-     [info] = MPI_Send(message,0,mytag,CW);
+     disp("info for sending is is");
+     [info] = MPI_Send(message,0,mytag,CW)
+      
   else
         for source = 1:p-1
           disp("We are at rank 0 that is master etc..");

@@ -51,6 +51,7 @@ LQR/LQG Design
   kalman
   lqr
 Controller Synthesis
+  h2syn
 State-Space Models
   ctrb
   gram

@@ -74,10 +74,9 @@ DEFUN_DLD(NAME, args, nargout,
           {
             int my_size;
             int info = MPI_Barrier (comm);
-            if (nargout > 1)
-              results(1) = info;
-            results(0) = my_size;
-          }
+
+              results(0) = info;
+
     else
       print_usage ();
    comm= NULL;

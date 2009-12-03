@@ -44,22 +44,28 @@ function [a0, amax, clmax] = liftanalyze (al, cl, pn = '')
   endif
   amax = al(imax);
 
-  if (any (cl(imin+1:imax) < cl(imin:imax-1)))
+  if (any (cl(imin+1:imax) <= cl(imin:imax-1)))
     warning ([wpref, "multimodal lift curve"]);
     % Try to reduce the range to find a monotonic subinterval.
     if (clmin > 0)
       ilo = imin;
-      imax = imin + 4;
+      iup = imin + 1;
     else
       ilo = find (cl < 0, 1, "last");
       iup = find (cl > 0, 1, "first");
-      imin = max (imin, ilo - 2);
-      imax = min (imax, iup + 2);
     endif
-    if (any (cl(imin+1:imax) < cl(imin:imax-1)))
-      error ([wpref, "failed to estimate zero lift"]);
+    imin = max (imin, ilo - 2);
+    imax = min (imax, iup + 2);
+    if (any (cl(imin+1:imax) <= cl(imin:imax-1)))
+      imin = ilo;
+      imax = iup;
     endif
   endif
 
-  a0 = interp1 (cl(imin:imax), al(imin:imax), 0);
+  try
+    a0 = interp1 (cl(imin:imax), al(imin:imax), 0);
+  catch
+    % Catch error here to give the polar name.
+    error ([wpref, "failed to estimate zero lift"]);
+  end_try_catch
 endfunction

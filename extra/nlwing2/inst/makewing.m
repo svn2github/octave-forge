@@ -54,6 +54,7 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
   aci = interp1 (ozac, ac(:,2:5), zac, "pchip");
   wing.xac = aci(:,1);
   wing.yac = aci(:,2);
+  wing.cac = aci(:,3);
 
   m2 = @(v) (v(1:end-1)+v(2:end))/2;
   wing.zc = zc = m2 (zac);

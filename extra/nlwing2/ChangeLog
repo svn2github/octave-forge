@@ -1,3 +1,9 @@
+2009-10-15  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/makewing.m: Also store wing.cac.
+	* inst/plotplanform: Preliminary function for plotting the planform
+	shape.
+
 2009-04-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/calcwing.m: Add missing semicolon.

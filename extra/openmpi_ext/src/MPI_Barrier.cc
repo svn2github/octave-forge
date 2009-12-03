@@ -45,7 +45,7 @@ DEFUN_DLD(NAME, args, nargout,
 ")
 
 {
-    octave_value_list results;
+    octave_value results;
     int nargin = args.length ();
    if (nargin != 1)
      {
@@ -75,8 +75,8 @@ DEFUN_DLD(NAME, args, nargout,
             int my_size;
             int info = MPI_Barrier (comm);
 
-              results(0) = info;
-
+              results = info;
+	  }
     else
       print_usage ();
    comm= NULL;

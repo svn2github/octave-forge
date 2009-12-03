@@ -104,10 +104,10 @@ DEFUN_DLD (slsb10ed, args, nargout, "Slicot SB10ED Release 5.0")
         int m = b.columns ();   // m: number of inputs
         int np = c.rows ();     // np: number of outputs
         
-        int lda = a.rows ();
-        int ldb = b.rows ();
-        int ldc = c.rows ();
-        int ldd = d.rows ();
+        int lda = max (1, a.rows ());
+        int ldb = max (1, b.rows ());
+        int ldc = max (1, c.rows ());
+        int ldd = max (1, d.rows ());
         
         int ldak = max (1, n);
         int ldbk = max (1, n);

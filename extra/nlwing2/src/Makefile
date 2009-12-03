@@ -25,5 +25,8 @@ all: vitensor.oct
 
 vitensor.oct: vitensor.cc vitens.f
 	$(MKOCTFILE) -o $@ $^
+
+biotsavart.oct: biotsavart.cc bisanb.f bisanc.f bisanf.f bisavb.f bisavc.f bisavf.f
+	$(MKOCTFILE) -o $@ $^
 clean:
 	rm -f *.o *.oct

@@ -73,21 +73,21 @@ Calculates vortex-induced velocities using Biot-Savart law.\n\
 by a vortex ray starting in @code{@var{x}(j,1:3)} and going in the direction @var{dir(1:3)}.\n\
 @deftypefnx{Loadable Function} {vn} = biotsavart (@var{cp}, @var{cn}, @var{x}, @var{dir}, \"fn\")\n\
 @code{@var{vi}(i,j,1:3)} is the velocity induced in @code{@var{cp}(i,1:3)}\n\
-in the direction @code{@var{cn}(i,1:3)\n\
+in the direction @code{@var{cn}(i,1:3)}\n\
 by a vortex ray starting in @code{@var{x}(j,1:3)} and going in the direction @var{dir(1:3)}.\n\
 @deftypefnx{Loadable Function} {vi} = biotsavart (@var{cp}, @var{x}, @var{y}, \"b\")\n\
 @code{@var{vi}(i,j,1:3)} is the velocity induced in @code{@var{cp}(i,1:3)}\n\
 by a vortex segment joining @code{@var{x}(j,1:3)} and @code{@var{y}(j,1:3)}.\n\
 @deftypefnx{Loadable Function} {vn} = biotsavart (@var{cp}, @var{cn}, @var{x}, @var{y}, \"bn\")\n\
 @code{@var{vi}(i,j,1:3)} is the velocity induced in @code{@var{cp}(i,1:3)}\n\
-in the direction @code{@var{cn}(i,1:3)\n\
+in the direction @code{@var{cn}(i,1:3)}\n\
 by a vortex segment joining @code{@var{x}(j,1:3)} and @code{@var{y}(j,1:3)}.\n\
 @deftypefnx{Loadable Function} {vi} = biotsavart (@var{cp}, @var{x}, \"c\")\n\
 @code{@var{vi}(i,j,1:3)} is the velocity induced in @code{@var{cp}(i,1:3)}\n\
 by a vortex segment joining @code{@var{x}(j,1:3)} and @code{@var{x}(j+1,1:3)}.\n\
 @deftypefnx{Loadable Function} {vn} = biotsavart (@var{cp}, @var{cn}, @var{x}, \"cn\")\n\
 @code{@var{vi}(i,j,1:3)} is the velocity induced in @code{@var{cp}(i,1:3)}\n\
-in the direction @code{@var{cn}(i,1:3)\n\
+in the direction @code{@var{cn}(i,1:3)}\n\
 by a vortex segment joining @code{@var{x}(j,1:3)} and @code{@var{x}(j+1,1:3)}.\n\
 @end deftypefn")
 {

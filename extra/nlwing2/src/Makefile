@@ -21,7 +21,7 @@
 
 MKOCTFILE=mkoctfile
 
-all: vitensor.oct
+all: vitensor.oct biotsavart.oct
 
 vitensor.oct: vitensor.cc vitens.f
 	$(MKOCTFILE) -o $@ $^

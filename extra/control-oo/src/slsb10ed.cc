@@ -133,7 +133,7 @@ DEFUN_DLD (slsb10ed, args, nargout, "Slicot SB10ED Release 5.0")
         dv_dk(1) = nmeas;
         
         dim_vector dv (1);
-        dv(0) = 4;
+        dv(0) = 7;
         
         NDArray ak (dv_ak);
         NDArray bk (dv_bk);

@@ -32,22 +32,23 @@ Version: 0.1
 
 extern "C"
 { 
-    int F77_FUNC (sb10hd, SB10HD) (int& N, int& M, int& NP,
-                                   int& NCON, int& NMEAS,
-                                   double* A, int& LDA,
-                                   double* B, int& LDB,
-                                   double* C, int& LDC,
-                                   double* D, int& LDD,
-                                   double* AK, int& LDAK,
-                                   double* BK, int& LDBK,
-                                   double* CK, int& LDCK,
-                                   double* DK, int& LDDK,
-                                   double* RCOND,
-                                   double& TOL,
-                                   int* IWORK,
-                                   double* DWORK, int& LDWORK,
-                                   bool* BWORK,
-                                   int& INFO);
+    int F77_FUNC (sb10hd, SB10HD)
+                 (int& N, int& M, int& NP,
+                  int& NCON, int& NMEAS,
+                  double* A, int& LDA,
+                  double* B, int& LDB,
+                  double* C, int& LDC,
+                  double* D, int& LDD,
+                  double* AK, int& LDAK,
+                  double* BK, int& LDBK,
+                  double* CK, int& LDCK,
+                  double* DK, int& LDDK,
+                  double* RCOND,
+                  double& TOL,
+                  int* IWORK,
+                  double* DWORK, int& LDWORK,
+                  bool* BWORK,
+                  int& INFO);
 }
 
 int max (int a, int b)
@@ -58,12 +59,25 @@ int max (int a, int b)
         return b;
 }
 
-int min (int a, int b)
+int max (int a, int b, int c)
 {
-    if (a < b)
-        return a;
+    int d = max (a, b);
+    
+    if (c > d)
+        return c;
     else
-        return b;
+        return d;
+}
+
+int max (int a, int b, int c, int d)
+{
+    int e = max (a, b);
+    int f = max (c, d);
+    
+    if (e > f)
+        return e;
+    else
+        return f;
 }
      
 DEFUN_DLD (slsb10hd, args, nargout, "Slicot SB10HD Release 5.0")
@@ -90,10 +104,10 @@ DEFUN_DLD (slsb10hd, args, nargout, "Slicot SB10HD Release 5.0")
         int m = b.columns ();   // m: number of inputs
         int np = c.rows ();     // np: number of outputs
         
-        int lda = a.rows ();
-        int ldb = b.rows ();
-        int ldc = c.rows ();
-        int ldd = d.rows ();
+        int lda = max (1, a.rows ());
+        int ldb = max (1, b.rows ());
+        int ldc = max (1, c.rows ());
+        int ldd = max (1, d.rows ());
         
         int ldak = max (1, n);
         int ldbk = max (1, n);
@@ -138,8 +152,8 @@ DEFUN_DLD (slsb10hd, args, nargout, "Slicot SB10HD Release 5.0")
         int np1 = np - nmeas;
         int np2 = nmeas;
         
-        int q = max (max (m1, m2), max (np1, np2));
-        int ldwork = 2*q*(3*q + 2*n) + max (1, max (q*(q + max (n, 5) + 1), n*(14*n + 12 + 2*q) + 5));
+        int q = max (m1, m2, np1, np2);
+        int ldwork = 2*q*(3*q + 2*n) + max (1, q*(q + max (n, 5) + 1), n*(14*n + 12 + 2*q) + 5);
         
         iwork = new int[max(2*n,n*n)];
         dwork = new double[ldwork];
@@ -150,22 +164,23 @@ DEFUN_DLD (slsb10hd, args, nargout, "Slicot SB10HD Release 5.0")
 
 
         // SLICOT routine SB10HD
-        F77_XFCN (sb10hd, SB10HD, (n, m, np,
-                                   ncon, nmeas,
-                                   a.fortran_vec (), lda,
-                                   b.fortran_vec (), ldb,
-                                   c.fortran_vec (), ldc,
-                                   d.fortran_vec (), ldd,
-                                   ak.fortran_vec (), ldak,
-                                   bk.fortran_vec (), ldbk,
-                                   ck.fortran_vec (), ldck,
-                                   dk.fortran_vec (), lddk,
-                                   rcond.fortran_vec (),
-                                   tol,
-                                   iwork,
-                                   dwork, ldwork,
-                                   bwork,
-                                   info));
+        F77_XFCN (sb10hd, SB10HD,
+                 (n, m, np,
+                  ncon, nmeas,
+                  a.fortran_vec (), lda,
+                  b.fortran_vec (), ldb,
+                  c.fortran_vec (), ldc,
+                  d.fortran_vec (), ldd,
+                  ak.fortran_vec (), ldak,
+                  bk.fortran_vec (), ldbk,
+                  ck.fortran_vec (), ldck,
+                  dk.fortran_vec (), lddk,
+                  rcond.fortran_vec (),
+                  tol,
+                  iwork,
+                  dwork, ldwork,
+                  bwork,
+                  info));
 
         if (f77_exception_encountered)
             error ("h2syn: slsb10hd: exception in SLICOT subroutine SB10HD");

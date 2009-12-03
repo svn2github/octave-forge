@@ -32,31 +32,33 @@ Version: 0.1
 
 extern "C"
 { 
-    int F77_FUNC (ab08nd, AB08ND) (char& EQUIL,
-                                   int& N, int& M, int& P,
-                                   double* A, int& LDA,
-                                   double* B, int& LDB,
-                                   double* C, int& LDC,
-                                   double* D, int& LDD,
-                                   int& NU, int& RANK, int& DINFZ,
-                                   int& NKROR, int& NKROL, int* INFZ,
-                                   int* KRONR, int* KRONL,
-                                   double* AF, int& LDAF,
-                                   double* BF, int& LDBF,
-                                   double& TOL,
-                                   int* IWORK, double* DWORK, int& LDWORK,
-                                   int& INFO);
+    int F77_FUNC (ab08nd, AB08ND)
+                 (char& EQUIL,
+                  int& N, int& M, int& P,
+                  double* A, int& LDA,
+                  double* B, int& LDB,
+                  double* C, int& LDC,
+                  double* D, int& LDD,
+                  int& NU, int& RANK, int& DINFZ,
+                  int& NKROR, int& NKROL, int* INFZ,
+                  int* KRONR, int* KRONL,
+                  double* AF, int& LDAF,
+                  double* BF, int& LDBF,
+                  double& TOL,
+                  int* IWORK, double* DWORK, int& LDWORK,
+                  int& INFO);
                                    
-    int F77_FUNC (dggev, DGGEV) (char& JOBVL, char& JOBVR,
-                                 int& N,
-                                 double* A, int& LDA,
-                                 double* B, int& LDB,
-                                 double* ALPHAR, double* ALPHAI,
-                                 double* BETA,
-                                 double* VL, int& LDVL,
-                                 double* VR, int& LDVR,
-                                 double* WORK, int& LWORK,
-                                 int& INFO);
+    int F77_FUNC (dggev, DGGEV)
+                 (char& JOBVL, char& JOBVR,
+                  int& N,
+                  double* A, int& LDA,
+                  double* B, int& LDB,
+                  double* ALPHAR, double* ALPHAI,
+                  double* BETA,
+                  double* VL, int& LDVL,
+                  double* VR, int& LDVR,
+                  double* WORK, int& LWORK,
+                  int& INFO);
 }
 
 int max (int a, int b)
@@ -98,10 +100,10 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         int m = b.columns ();   // m: number of inputs
         int p = c.rows ();      // p: number of outputs
         
-        int lda = a.rows ();
-        int ldb = b.rows ();
-        int ldc = c.rows ();
-        int ldd = d.rows ();
+        int lda = max (1, a.rows ());
+        int ldb = max (1, b.rows ());
+        int ldc = max (1, c.rows ());
+        int ldd = max (1, d.rows ());
         
         // arguments out
         int nu;
@@ -115,9 +117,9 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         int* kronl;
         
         double* af;
-        int ldaf = n + m;
+        int ldaf = max (1, n + m);
         double* bf;
-        int ldbf = n + p;
+        int ldbf = max (1, n + p);
         
         infz = new int[n];
         kronr = new int[1+max(n,m)];
@@ -144,26 +146,27 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         double tol = 2.2204e-16;    // TODO: use LAPACK dlamch
 
         // SLICOT routine AB08ND
-        F77_XFCN (ab08nd, AB08ND, (equil,
-                                   n, m, p,
-                                   a.fortran_vec (), lda,
-                                   b.fortran_vec (), ldb,
-                                   c.fortran_vec (), ldc,
-                                   d.fortran_vec (), ldd,
-                                   nu, rank, dinfz,
-                                   nkror, nkrol, infz,
-                                   kronr, kronl,
-                                   af, ldaf,
-                                   bf, ldbf,
-                                   tol,
-                                   iwork, dwork, ldwork,
-                                   info));
+        F77_XFCN (ab08nd, AB08ND,
+                 (equil,
+                  n, m, p,
+                  a.fortran_vec (), lda,
+                  b.fortran_vec (), ldb,
+                  c.fortran_vec (), ldc,
+                  d.fortran_vec (), ldd,
+                  nu, rank, dinfz,
+                  nkror, nkrol, infz,
+                  kronr, kronl,
+                  af, ldaf,
+                  bf, ldbf,
+                  tol,
+                  iwork, dwork, ldwork,
+                  info));
 
         if (f77_exception_encountered)
             error ("ss: zero: slab08nd: exception in SLICOT subroutine AB08ND");
             
         if (info != 0)
-            error ("ss: zero: slab08nd: AB08ND did not return 0");
+            error ("ss: zero: slab08nd: AB08ND returned info = %d", info);
         
         
         // DGGEV Part
@@ -177,7 +180,6 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         
         double* work;
         int lwork = max (1, 8*nu);
-        
         work = new double[lwork];
         
         dim_vector dv (1);
@@ -188,22 +190,23 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         
         int info2;
         
-        F77_XFCN (dggev, DGGEV, (jobvl, jobvr,
-                                 nu,
-                                 af, ldaf,
-                                 bf, ldbf,
-                                 alphar.fortran_vec (), alphai.fortran_vec (),
-                                 beta.fortran_vec (),
-                                 vl, ldvl,
-                                 vr, ldvr,
-                                 work, lwork,
-                                 info2));
+        F77_XFCN (dggev, DGGEV,
+                 (jobvl, jobvr,
+                  nu,
+                  af, ldaf,
+                  bf, ldbf,
+                  alphar.fortran_vec (), alphai.fortran_vec (),
+                  beta.fortran_vec (),
+                  vl, ldvl,
+                  vr, ldvr,
+                  work, lwork,
+                  info2));
                                  
         if (f77_exception_encountered)
             error ("ss: zero: slab08nd: exception in LAPACK subroutine DGGEV");
             
         if (info2 != 0)
-            error ("ss: zero: slab08nd: DGGEV did not return 0");
+            error ("ss: zero: slab08nd: DGGEV returned info = %d", info2);
         
         // return values
         retval(0) = alphar;

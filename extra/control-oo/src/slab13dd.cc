@@ -33,20 +33,21 @@ Version: 0.1
 
 extern "C"
 { 
-    int F77_FUNC (ab13dd, AB13DD) (char& DICO, char& JOBE,
-                                   char& EQUIL, char& JOBD,
-                                   int& N, int& M, int& P,
-                                   double* FPEAK,
-                                   double* A, int& LDA,
-                                   double* E, int& LDE,
-                                   double* B, int& LDB,
-                                   double* C, int& LDC,
-                                   double* D, int& LDD,
-                                   double* GPEAK,
-                                   double& TOL,
-                                   int* IWORK, double* DWORK, int& LDWORK,
-                                   Complex* CWORK, int& LCWORK,
-                                   int& INFO);
+    int F77_FUNC (ab13dd, AB13DD)
+                 (char& DICO, char& JOBE,
+                  char& EQUIL, char& JOBD,
+                  int& N, int& M, int& P,
+                  double* FPEAK,
+                  double* A, int& LDA,
+                  double* E, int& LDE,
+                  double* B, int& LDB,
+                  double* C, int& LDC,
+                  double* D, int& LDD,
+                  double* GPEAK,
+                  double& TOL,
+                  int* IWORK, double* DWORK, int& LDWORK,
+                  Complex* CWORK, int& LCWORK,
+                  int& INFO);
 }
 
 int max (int a, int b)
@@ -99,10 +100,10 @@ DEFUN_DLD (slab13dd, args, nargout, "Slicot AB13DD Release 5.0")
         int m = b.columns ();   // m: number of inputs
         int p = c.rows ();      // p: number of outputs
         
-        int lda = a.rows ();
-        int ldb = b.rows ();
-        int ldc = c.rows ();
-        int ldd = d.rows ();
+        int lda = max (1, a.rows ());
+        int ldb = max (1, b.rows ());
+        int ldc = max (1, c.rows ());
+        int ldd = max (1, d.rows ());
         int lde = 1;
         
         dim_vector dv (1);
@@ -131,26 +132,27 @@ DEFUN_DLD (slab13dd, args, nargout, "Slicot AB13DD Release 5.0")
 
 
         // SLICOT routine AB13DD
-        F77_XFCN (ab13dd, AB13DD, (dico, jobe,
-                                   equil, jobd,
-                                   n, m, p,
-                                   fpeak.fortran_vec (),
-                                   a.fortran_vec (), lda,
-                                   e, lde,
-                                   b.fortran_vec (), ldb,
-                                   c.fortran_vec (), ldc,
-                                   d.fortran_vec (), ldd,
-                                   gpeak.fortran_vec (),
-                                   tol,
-                                   iwork, dwork, ldwork,
-                                   cwork, lcwork,
-                                   info));
+        F77_XFCN (ab13dd, AB13DD,
+                 (dico, jobe,
+                  equil, jobd,
+                  n, m, p,
+                  fpeak.fortran_vec (),
+                  a.fortran_vec (), lda,
+                  e, lde,
+                  b.fortran_vec (), ldb,
+                  c.fortran_vec (), ldc,
+                  d.fortran_vec (), ldd,
+                  gpeak.fortran_vec (),
+                  tol,
+                  iwork, dwork, ldwork,
+                  cwork, lcwork,
+                  info));
 
         if (f77_exception_encountered)
             error ("lti: norm: slab13dd: exception in SLICOT subroutine AB13DD");
             
         if (info != 0)
-            error ("lti: norm: slab13dd: AB13DD did not return 0");
+            error ("lti: norm: slab13dd: AB13DD returned info = %d", info);
         
         // return values
         retval(0) = fpeak;

@@ -32,22 +32,23 @@ Version: 0.1
 
 extern "C"
 { 
-    int F77_FUNC (sb10ed, SB10ED) (int& N, int& M, int& NP,
-                                   int& NCON, int& NMEAS,
-                                   double* A, int& LDA,
-                                   double* B, int& LDB,
-                                   double* C, int& LDC,
-                                   double* D, int& LDD,
-                                   double* AK, int& LDAK,
-                                   double* BK, int& LDBK,
-                                   double* CK, int& LDCK,
-                                   double* DK, int& LDDK,
-                                   double* RCOND,
-                                   double& TOL,
-                                   int* IWORK,
-                                   double* DWORK, int& LDWORK,
-                                   bool* BWORK,
-                                   int& INFO);
+    int F77_FUNC (sb10ed, SB10ED)
+                 (int& N, int& M, int& NP,
+                  int& NCON, int& NMEAS,
+                  double* A, int& LDA,
+                  double* B, int& LDB,
+                  double* C, int& LDC,
+                  double* D, int& LDD,
+                  double* AK, int& LDAK,
+                  double* BK, int& LDBK,
+                  double* CK, int& LDCK,
+                  double* DK, int& LDDK,
+                  double* RCOND,
+                  double& TOL,
+                  int* IWORK,
+                  double* DWORK, int& LDWORK,
+                  bool* BWORK,
+                  int& INFO);
 }
 
 int max (int a, int b)
@@ -166,22 +167,23 @@ DEFUN_DLD (slsb10ed, args, nargout, "Slicot SB10ED Release 5.0")
 
 
         // SLICOT routine SB10HD
-        F77_XFCN (sb10ed, SB10ED, (n, m, np,
-                                   ncon, nmeas,
-                                   a.fortran_vec (), lda,
-                                   b.fortran_vec (), ldb,
-                                   c.fortran_vec (), ldc,
-                                   d.fortran_vec (), ldd,
-                                   ak.fortran_vec (), ldak,
-                                   bk.fortran_vec (), ldbk,
-                                   ck.fortran_vec (), ldck,
-                                   dk.fortran_vec (), lddk,
-                                   rcond.fortran_vec (),
-                                   tol,
-                                   iwork,
-                                   dwork, ldwork,
-                                   bwork,
-                                   info));
+        F77_XFCN (sb10ed, SB10ED,
+                 (n, m, np,
+                  ncon, nmeas,
+                  a.fortran_vec (), lda,
+                  b.fortran_vec (), ldb,
+                  c.fortran_vec (), ldc,
+                  d.fortran_vec (), ldd,
+                  ak.fortran_vec (), ldak,
+                  bk.fortran_vec (), ldbk,
+                  ck.fortran_vec (), ldck,
+                  dk.fortran_vec (), lddk,
+                  rcond.fortran_vec (),
+                  tol,
+                  iwork,
+                  dwork, ldwork,
+                  bwork,
+                  info));
 
         if (f77_exception_encountered)
             error ("h2syn: slsb10ed: exception in SLICOT subroutine SB10ED");

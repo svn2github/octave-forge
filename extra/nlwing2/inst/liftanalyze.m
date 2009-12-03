@@ -27,24 +27,39 @@
 
 function [a0, amax, clmax] = liftanalyze (al, cl, pn = '')
   if (pn)
-    wpref = strcat ("liftanalyze (", pn, "): ");
+    wpref = ["liftanalyze (", pn, "): "];
   else
     wpref = "liftanalyze: ";
   endif
-  if (cl(1) > 0)
-    warning ([wpref, "polar starts at positive lift"]);
-    warned = true;
-  endif
   [clmin, imin] = min (cl);
   [clmax, imax] = max (cl);
-  if (any (cl(imin+1:imax) < cl(imin:imax-1)))
-    warning ([wpref, "multimodal lift curve"]);
-    warned = true;
+  if (imin >= imax || clmax < 0)
+    error ([wpref, "unphysical lift curve"]);
+  endif
+  if (clmin > 0)
+    warning ([wpref, "polar starts at positive lift"]);
   endif
   if (imax == length (cl))
     warning ([wpref, "maximum lift at end of lift curve"]);
-    warned = true;
   endif
-  a0 = interp1 (cl(imin:imax), al(imin:imax), 0, "extrap");
   amax = al(imax);
+
+  if (any (cl(imin+1:imax) < cl(imin:imax-1)))
+    warning ([wpref, "multimodal lift curve"]);
+    % Try to reduce the range to find a monotonic subinterval.
+    if (clmin > 0)
+      ilo = imin;
+      imax = imin + 4;
+    else
+      ilo = find (cl < 0, 1, "last");
+      iup = find (cl > 0, 1, "first");
+      imin = max (imin, ilo - 2);
+      imax = min (imax, iup + 2);
+    endif
+    if (any (cl(imin+1:imax) < cl(imin:imax-1)))
+      error ([wpref, "failed to estimate zero lift"]);
+    endif
+  endif
+
+  a0 = interp1 (cl(imin:imax), al(imin:imax), 0);
 endfunction

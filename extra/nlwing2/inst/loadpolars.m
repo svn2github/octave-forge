@@ -38,6 +38,10 @@
 function pol = loadpolars (pn)
 
   if (ischar (pn))
+    if (rows (pn) != 1)
+      pol = loadpolars (cellstr (pn));
+      return;
+    endif
     dat = load ('-ascii', pn);
     alpha = dat(:,1) * pi/180;
     [a0, amax, pol.clmax] = liftanalyze (alpha, dat(:,2), pn);
@@ -49,11 +53,12 @@ function pol = loadpolars (pn)
     pol.cm = pchip (alpha, dat(:,4));
   elseif (iscellstr (pn))
     % remove duplicates
-    [pnu, inu, inu] = unique (pn);
+    [pnu, inu, inu] = unique (pn(:));
     polu = cellfun (@loadpolars, pnu);
-    pol = polu(inu);
+    pol = reshape (polu(inu), size (pn));
   elseif (isstruct (pn))
-    pol = loadpolars ({pn.names});
+    names = reshape ({pn.names}, size (pn));
+    pol = loadpolars (names);
     [pol.z] = pn.z;
   else
     error ("loadpolars: invalid input");

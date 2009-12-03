@@ -1,3 +1,10 @@
+2009-12-03  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/ppder.m: Adapt to latest Octave.
+	* inst/liftanalyze.m: Add & reorder test. Make zero lift estimation
+	more robust.
+	* inst/loadpolars.m: Preserve the shape of input.
+
 2009-10-15  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/makewing.m: Also store wing.cac.

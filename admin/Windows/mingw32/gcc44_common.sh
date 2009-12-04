@@ -397,6 +397,10 @@ unpack_core()
      *.tar.xz)
        $TAR x --xz -f ${TOPDIR}/${SRCFILE}
      ;;
+     *.zip)
+       # zip requires bsdtar...
+       bsdtar x -f ${TOPDIR}/${SRCFILE}
+     ;;
      *)
        echo ERROR: Source file $SRCFILE archive type not handled!
        exit 10

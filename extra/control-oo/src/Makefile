@@ -1,4 +1,4 @@
-all: slab08nd.oct slab13dd.oct slsb10hd.oct slsb10ed.oct slab13bd.oct
+all: slab08nd.oct slab13dd.oct slsb10hd.oct slsb10ed.oct slab13bd.oct slsb01bd.oct
 
 # transmission zeros of state-space models
 slab08nd.oct: slab08nd.cc
@@ -41,6 +41,12 @@ slab13bd.oct: slab13bd.cc
               SB03OT.f MB04ND.f MB04OD.f MB03QX.f select.f \
               SB03OR.f MB04OX.f MB03QD.f SB03OY.f MA02AD.f \
               MB03QY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
+
+# Pole assignment
+slsb01bd.oct: slsb01bd.cc
+	mkoctfile slsb01bd.cc \
+              SB01BD.f MB03QD.f MB03QY.f SB01BX.f SB01BY.f \
+              select.f
 
 clean:
 	rm *.o core octave-core *.oct *~

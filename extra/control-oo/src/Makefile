@@ -1,4 +1,5 @@
-all: slab08nd.oct slab13dd.oct slsb10hd.oct slsb10ed.oct slab13bd.oct slsb01bd.oct
+all: slab08nd.oct slab13dd.oct slsb10hd.oct slsb10ed.oct slab13bd.oct \
+     slsb01bd.oct slsb10fd.oct slsb10dd.oct
 
 # transmission zeros of state-space models
 slab08nd.oct: slab08nd.cc
@@ -47,6 +48,25 @@ slsb01bd.oct: slsb01bd.cc
 	mkoctfile slsb01bd.cc \
               SB01BD.f MB03QD.f MB03QY.f SB01BX.f SB01BY.f \
               select.f
+
+# H-inf controller synthesis - continuous-time
+slsb10fd.oct: slsb10fd.cc
+	mkoctfile slsb10fd.cc \
+              SB10FD.f SB10PD.f SB10QD.f SB10RD.f SB02RD.f \
+              MB01RU.f MB01RX.f MA02AD.f SB02SD.f MA02ED.f \
+              SB02RU.f SB02MR.f MB01SD.f SB02MS.f SB02MV.f \
+              SB02MW.f SB02QD.f MB02PD.f SB03QX.f SB03QY.f \
+              MB01RY.f SB03SX.f SB03SY.f select.f SB03MX.f \
+              SB03MY.f MB01UD.f SB03MV.f SB03MW.f SB04PX.f
+
+# H-inf controller synthesis - discrete-time
+slsb10dd.oct: slsb10dd.cc
+	mkoctfile slsb10dd.cc \
+              SB10DD.f MB01RU.f MB01RX.f SB02SD.f SB02OD.f \
+              MA02AD.f SB02OU.f SB02OV.f SB02OW.f MB01RY.f \
+              SB02OY.f SB03SX.f SB03SY.f MA02ED.f select.f \
+              SB03MX.f SB02MR.f SB02MV.f MB01UD.f SB03MV.f \
+              SB04PX.f
 
 clean:
 	rm *.o core octave-core *.oct *~

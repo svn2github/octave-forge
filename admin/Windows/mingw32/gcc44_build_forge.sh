@@ -56,6 +56,8 @@ integration-1.0.7 \
 mapping-1.0.7 \
 video-1.0.2 \
 windows-1.0.8 \
+java-1.2.6 \
+jhandles-0.3.5 \
 "
 
 
@@ -66,7 +68,7 @@ windows-1.0.8 \
 # DATA-SMOOTHING depends on OPTIM
 # GA depends on COMMUNICATIONS
 
-# ann parallel video ftp database 
+# ann parallel ftp database 
 
 # FTP requires ftplib
 # DATABASE requires sql
@@ -75,6 +77,10 @@ windows-1.0.8 \
 # SYMBOLIC requires GINAC
 # OPTIMINTERP requires the fortran libaries in FLIB  <= **DONE!**
 
+#
+# Installation directory of Java SDK
+#
+JAVA_SDK_ROOT="/c/Programs/java/jdk1.6.0_17"
 
 AUTO="-auto"
 
@@ -108,12 +114,40 @@ for a in $FORGEPACK; do
    else
       echo installing package "${PACK}" ...
       
+      # special treatment for individual packages...
+      case $PACK in
+      java-*|jhandles-*)
+         # It is necessary to define JAVA_HOME
+         JAVA_HOME=$JAVA_SDK_ROOT
+         export JAVA_HOME
+         # however it is *not* sufficient to have just JAVA_HOME, because
+         # the configure script still does not find java, so add JDK to
+         # PATH also.
+         # This looks like a bug in msys' posix-win-posix translation, because
+         # /c/foo/bar here is translated to c:/foo/bar within octave
+         # which in turn is *not* re-translated into /c/foo/bar in the 
+         # configure script...
+         PATH=$JAVA_SDK_ROOT/bin:$PATH
+         ;;
+      esac
+      
       # check if local patch is available
       if [ -e ${FORGESRCDIR}/${PACK}.patch ]; then
+         # extract to temporary directory
          if [ -e /tmp/${PACK} ]; then rm -rf /tmp/${PACK}; fi
          bsdtar x -C /tmp -f ${FORGESRCDIR}/${PACK}.tar.gz
+         
+         # the patch file to apply 
          PF=`pwd`/${FORGESRCDIR}/${PACK}.patch
+         # patch
          ( cd /tmp/${PACK} && patch -u -p 1 -i $PF )
+         
+         # call autogen if present (patch might have changed configure.base)
+         if [ -e /tmp/$PACK/src/autogen.sh ]; then
+            ( cd /tmp/$PACK/src && ./autogen.sh )
+         fi
+         
+         # ... and install from unpacked directory
          ( cd /tmp
            "${PACKAGE_ROOT}/bin/octave.exe" -q -f -H \
            --eval "page_screen_output(0); pkg install -verbose ${AUTO} ${PACK}"

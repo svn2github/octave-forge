@@ -1,37 +1,32 @@
-## Copyright (C) 1996, 1998, 2000, 2002, 2004, 2005, 2006, 2007
-##               Auburn University.  All rights reserved.
+## Copyright (C) 2009   Lukas F. Reichlin
 ##
+## This file is part of LTI Syncope.
 ##
-## This program is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## LTI Syncope is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## LTI Syncope is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{gain} =} norm (@var{sys}, @var{2})
 ## @deftypefnx {Function File} {@var{gain}, @var{wpeak} =} norm (@var{sys}, @var{inf})
 ## @deftypefnx {Function File} {@var{gain}, @var{wpeak} =} norm (@var{sys}, @var{inf}, @var{tol})
-## Return norm of LTI model. L-infinity norm uses SLICOT AB13DD.
+## Return H-2 or L-inf norm of LTI model.
+## Uses SLICOT AB13BD and AB13DD by courtesy of NICONET e.V.
+## <http://www.slicot.org>
 ## @end deftypefn
 
-## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
-## Created: August 1995
-## Reference: Doyle, Glover, Khargonekar, Francis
-##            State-Space Solutions to Standard Control Problems
-##            IEEE TAC August 1989
-
-## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
-## Date: November 2009
-## Version: 0.1
+## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Created: November 2009
+## Version: 0.2
 
 function [gain, varargout] = norm (sys, ntype = "2", tol = 0.01)
 
@@ -70,22 +65,19 @@ endfunction
 function gain = h2norm (sys)
 
   if (isstable (sys))
-    [a, b, c, d] = ssdata (sys);
-
-    if (isct (sys))
-      M = lyap (a, b*b');
+    [a, b, c, d, tsam] = ssdata (sys);
+    
+    if (tsam <= 0 && ! all (all (d == 0)))  # continuous and non-zero feedthrough
+      gain = inf;
     else
-      M = dlyap (a, b*b');
+      [gain, iwarn] = slab13bd (a, b, c, d, tsam);
+    
+      if (iwarn)
+        warning ("lti: norm: slab13bd: iwarn = %d", iwarn);
+      endif
     endif
-
-    if (min (real (eig (M))) < 0)
-      error ("norm: H2: gramian < 0 (lightly damped modes?)")
-    endif
-
-    gain = sqrt (trace (d*d' + c*M*c'));
   else
-    warning ("norm: H2: unstable input system; returning Inf");
-    gain = Inf;
+    gain = inf;
   endif
 
 endfunction

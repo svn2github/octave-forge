@@ -55,7 +55,7 @@ endif
 
 
 if(nargin==1)
-	X = create_set(x);
+	X = unique(x);
 	Nx = length(X);
 	
 	# Calculate probability Pr(x)
@@ -82,8 +82,8 @@ else
 		error("Second argument is not a vector.");
 	endif
 	
-	X = create_set(x);
-	Y = create_set(y);
+	X = unique(x);
+	Y = unique(y);
 	Nx = length(X);
 	Ny = length(Y);
 	

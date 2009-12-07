@@ -23,6 +23,8 @@
 #include <ov-cell.h>    // avoid errmsg "cell -- incomplete datatype"
 #include <oct-map.h>    // avoid errmsg "Oct.map -- invalid use undef type"
 
+// set it to true if you want to see what happens step by step
+
 // tested on Octave 3.2.3
 // Octave 3.2.X
 
@@ -110,7 +112,7 @@ tanktag[2]=mytag+2;
   OCTAVE_LOCAL_BUFFER(char,mess,nitem+1);
   if (info !=MPI_SUCCESS) return info;
   MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_CHAR, &fortvec);
+  MPI_Type_contiguous(nitem+1,MPI_CHAR, &fortvec);
   MPI_Type_commit(&fortvec);
 
 
@@ -137,12 +139,12 @@ tanktag[4] = mytag+4;
   dim_vector dv;
  
 //       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//        printf("I have received number of elements  %i \n",nitem);
+      info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
+//         printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
           info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//              printf("I have received number of dimensions %i \n",nd);
+//           printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguos datatype for dim vector
   dv.resize(nd);
@@ -152,6 +154,7 @@ tanktag[4] = mytag+4;
   MPI_Type_commit(&dimvec);
 
           info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
+//       printf("I have received number dimension vector and this is the flag .. %i \n",info);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -159,7 +162,7 @@ tanktag[4] = mytag+4;
  {
    
    dv(i) = dimV[i] ;
-//    printf("I am printing dimvector  %i \n",dimV[i]);
+//     printf("I am printing dimvector  %i \n",dimV[i]);
  }
 
 Cell	    oc (dv);
@@ -168,11 +171,13 @@ int newtag = tanktag[4];
 int ocap;
          for (octave_idx_type i=0; i<nitem; i++)
 	    {
-	      octave_value celem;				/* double-check constr/destr */
-	      info = MPI_Recv((&ocap), 1,MPI_INT, source, tanktag[4] , comm,&stat);
+	      octave_value celem;				
+	      info = MPI_Recv((&ocap), 1,MPI_INT, source, newtag , comm,&stat);
+//               printf("I have received the identifier's TAG  of the specific  octave_value %i \n",ocap);
 	      if (info !=MPI_SUCCESS) return info;
 	      newtag = newtag+ocap;
 	      info=recv_class(comm,celem,source,newtag);
+//               printf("This is info for the specific  octave_value %i \n",info);
 	      if (info !=MPI_SUCCESS) return info;
 	      oc.Array<octave_value>::elem(i)=celem;        
 	    }
@@ -299,9 +304,7 @@ tanktag[4] = mytag+4;
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
   {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
+
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
@@ -1195,12 +1198,12 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[1]=mytag+1;
   int info;
   MPI_Status stat;
-  double d = ov.double_value();
+  double d=0;
   info = MPI_Recv((&d), 1,MPI_DOUBLE, source, tanktag[1] , comm,&stat);
   ov =d;
-//   printf("info for scalar is = %i \n",info);
+//    printf("info for scalar is = %i \n",info);
   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
+   return(info);
 }
 
 int recv_int8_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
@@ -1210,7 +1213,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[1]=mytag+1;
   int info;
   MPI_Status stat;
-  octave_int8 d = ov.int8_scalar_value();
+  octave_int8 d;
   info = MPI_Recv((&d), 1,MPI_BYTE, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
@@ -1225,7 +1228,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[1]=mytag+1;
   int info;
   MPI_Status stat;
-  octave_int16 d = ov.int16_scalar_value();
+  octave_int16 d;
   info = MPI_Recv((&d), 1,MPI_SHORT, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
@@ -1240,7 +1243,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[1]=mytag+1;
   int info;
   MPI_Status stat;
-  octave_int32 d = ov.int32_scalar_value();
+  octave_int32 d;
   info = MPI_Recv((&d), 1,MPI_INT, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
@@ -1255,7 +1258,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[1]=mytag+1;
   int info;
   MPI_Status stat;
-  octave_int64 d = ov.int64_scalar_value();
+  octave_int64 d;
   info = MPI_Recv((&d), 1,MPI_LONG_LONG, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
@@ -1270,7 +1273,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[1]=mytag+1;
   int info;
   MPI_Status stat;
-  octave_uint64 d = ov.uint64_scalar_value();
+  octave_uint64 d;
   info = MPI_Recv((&d), 1,MPI_UNSIGNED_LONG_LONG, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
@@ -1285,7 +1288,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[1]=mytag+1;
   int info;
   MPI_Status stat;
-  octave_uint32 d = ov.uint32_scalar_value();
+  octave_uint32 d;
   info = MPI_Recv((&d), 1,MPI_UNSIGNED, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
@@ -1300,7 +1303,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[1]=mytag+1;
   int info;
   MPI_Status stat;
-  octave_uint16 d = ov.uint16_scalar_value();
+  octave_uint16 d;
   info = MPI_Recv((&d), 1,MPI_UNSIGNED_SHORT, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
@@ -1315,7 +1318,7 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[1]=mytag+1;
   int info;
   MPI_Status stat;
-  octave_uint8 d = ov.uint8_scalar_value();
+  octave_uint8 d;
   info = MPI_Recv((&d), 1,MPI_UNSIGNED_CHAR, source, tanktag[1] , comm,&stat);
   ov =d;
 //   printf("info for scalar is = %i \n",info);
@@ -1402,24 +1405,24 @@ int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* v
 //   printf("2-> tag for id =%i\n",mytag);
   int info = MPI_Recv(&t_id,1, MPI_INT, source,mytag,comm,&status);
 
-//    printf(" I have received t_id =%i\n",t_id);
+//     printf(" I have received t_id =%i\n",t_id);
 
   if (info !=MPI_SUCCESS) return info;
 
   switch (t_id) {
 
-    case ov_scalar:    return(recv_scalar (comm, ov,source,mytag));
-    case ov_cell:    return(recv_cell (comm, ov,source,mytag));
-    case ov_int8_scalar:    return(recv_int8_scalar (comm, ov,source,mytag));
-    case ov_int16_scalar:    return(recv_int16_scalar (comm, ov,source,mytag));
-    case ov_int32_scalar:    return(recv_int32_scalar (comm, ov,source,mytag));
-    case ov_int64_scalar:    return(recv_int64_scalar (comm, ov,source,mytag));
-    case ov_uint8_scalar:    return(recv_uint8_scalar (comm, ov,source,mytag));
-    case ov_uint16_scalar:    return(recv_uint16_scalar (comm, ov,source,mytag));
-    case ov_uint32_scalar:    return(recv_uint32_scalar (comm, ov,source,mytag));
-    case ov_uint64_scalar:    return(recv_uint64_scalar (comm, ov,source,mytag));
-    case ov_float_scalar: return(recv_float_scalar(comm, ov,source,mytag));
-    case ov_complex_scalar:    return(recv_complex_scalar (comm, ov,source,mytag));
+    case ov_scalar:    		return(recv_scalar (comm, ov,source,mytag));
+    case ov_cell:    		return(recv_cell (comm, ov,source,mytag));
+    case ov_int8_scalar:    	return(recv_int8_scalar (comm, ov,source,mytag));
+    case ov_int16_scalar:    	return(recv_int16_scalar (comm, ov,source,mytag));
+    case ov_int32_scalar:    	return(recv_int32_scalar (comm, ov,source,mytag));
+    case ov_int64_scalar:    	return(recv_int64_scalar (comm, ov,source,mytag));
+    case ov_uint8_scalar:    	return(recv_uint8_scalar (comm, ov,source,mytag));
+    case ov_uint16_scalar:    	return(recv_uint16_scalar (comm, ov,source,mytag));
+    case ov_uint32_scalar:    	return(recv_uint32_scalar (comm, ov,source,mytag));
+    case ov_uint64_scalar:    	return(recv_uint64_scalar (comm, ov,source,mytag));
+    case ov_float_scalar: 	return(recv_float_scalar(comm, ov,source,mytag));
+    case ov_complex_scalar:    	return(recv_complex_scalar (comm, ov,source,mytag));
     case ov_float_complex_scalar: return(recv_complex_float_scalar(comm, ov,source,mytag));
 
     case ov_string:    return(recv_string (comm, ov,source,mytag));

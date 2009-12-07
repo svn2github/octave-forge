@@ -28,8 +28,8 @@ function ppd = polppder (pp)
     pd = zeros (rows (p), 1);
     k = 1;
   else
-    pd = p(:,1:k) * diag (k:-1:1);
     k -= 1;
+    pd = p(:,1:k) * diag (k:-1:1);
   endif
   ppd = mkpp (x, pd);
 endfunction

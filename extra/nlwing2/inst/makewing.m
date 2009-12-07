@@ -79,20 +79,20 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
   wing.pol = pols;
   wing.np = np;
 
-  wing.a0 = zeros (length (jj), 1);
-  wing.amax = zeros (length (jj), 1);
-  wing.clmax = zeros (length (jj), 1);
-  wing.cf = zeros (length (jj), 1);
+  wing.a0 = zeros (np, 1);
+  wing.amax = zeros (np, 1);
+  wing.clmax = zeros (np, 1);
+  wing.cf = zeros (np, 1);
 
   % FIXME: 3.3.50+ will handle discontinuous interpolation.
   for i=1:length (jj)-1
     jl = jj(i); ju = jj(i+1)-1;
-    if (jl < ju)
-      cf = (zc(jl:ju) - zpol(i)) / (zpol(i+1) - zpol(i));
-      wing.cf(jl:ju) = cf;
-      wing.a0(jl:ju) = cf * pols(i).a0 + (1-cf) * pols(i+1).a0;
-      wing.amax(jl:ju) = cf * pols(i).amax + (1-cf) * pols(i+1).amax;
-      wing.clmax(jl:ju) = cf * pols(i).clmax + (1-cf) * pols(i+1).clmax;
+    if (jl <= ju)
+      lcf = (zc(jl:ju) - zpol(i)) / (zpol(i+1) - zpol(i));
+      wing.cf(jl:ju) = lcf;
+      wing.a0(jl:ju) = (1-lcf) * pols(i).a0 + lcf * pols(i+1).a0 + wing.twc(jl:ju);
+      wing.amax(jl:ju) = (1-lcf) * pols(i).amax + lcf * pols(i+1).amax + wing.twc(jl:ju);
+      wing.clmax(jl:ju) = (1-lcf) * pols(i).clmax + lcf * pols(i+1).clmax;
     endif
   endfor
 

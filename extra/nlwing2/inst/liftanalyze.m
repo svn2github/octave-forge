@@ -63,7 +63,7 @@ function [a0, amax, clmax] = liftanalyze (al, cl, pn = '')
   endif
 
   try
-    a0 = interp1 (cl(imin:imax), al(imin:imax), 0);
+    a0 = interp1 (cl(imin:imax), al(imin:imax), 0, "extrap");
   catch
     % Catch error here to give the polar name.
     error ([wpref, "failed to estimate zero lift"]);

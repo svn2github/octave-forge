@@ -16,7 +16,7 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{P} =} hinfsyn (@var{G}, @var{W1}, @var{W2}, @var{W3})
+## @deftypefn{Function File} {@var{P} =} augw (@var{G}, @var{W1}, @var{W2}, @var{W3})
 ## Extend plant for stacked S/T/KS problem.
 ## @example
 ## @group

@@ -343,15 +343,15 @@ int send_string(MPI_Comm comm, std::string  oi8,ColumnVector rankrec, int mytag)
   tanktag[0] = mytag;
   tanktag[1] = mytag+1;
   tanktag[2] = mytag+2;
-//   OCTAVE_LOCAL_BUFFER(char,i8,nitem+1);
-   char i8[nitem+1];
+//    OCTAVE_LOCAL_BUFFER(char,i8,nitem+1);
+    char i8[nitem+1];
   strcpy(i8, oi8.c_str());
   int t_id = ov_string;
 
 // Here we declare a contiguous derived datatype
 // Create a contiguous datatype for the fortranvec
 MPI_Datatype fortvec;
-MPI_Type_contiguous(nitem,MPI_CHAR, &fortvec);
+MPI_Type_contiguous(nitem+1,MPI_CHAR, &fortvec);
 MPI_Type_commit(&fortvec);
 
 
@@ -403,7 +403,7 @@ int send_cell(MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag){    /* 
   dimV[i] = vdim(i) ;
  }
 
-  // Now create the contiguos derived datatype
+  // Now create the contiguous derived datatype
   MPI_Datatype dimvec;
   MPI_Type_contiguous(nd,MPI_INT, &dimvec);
   MPI_Type_commit(&dimvec);
@@ -414,33 +414,40 @@ int send_cell(MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag){    /* 
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
           info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
+// 	  printf("I have sent the t_id of cell .. and this the flag =%i \n",info);
       if (info !=MPI_SUCCESS) return info;
 // send cell capacity
           info = MPI_Send(&n, 1, MPI_INT, rankrec(i), tanktag[1], comm);
+//           printf("I have sent the capacity of the cell .. and this the flag =%i \n",info);
+// 	  printf(".. and this the value of capacity =%i \n",n);
       if (info !=MPI_SUCCESS) return info;
           info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
+//           printf("I have sent the capacity of the number of dimensions .. and this the flag =%i \n",info);
+//           printf("I have sent the value of nd =%i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 // send the dim vector
       info =  MPI_Send(dimV,1,dimvec,rankrec(i),tanktag[3],comm);
+//       printf("I have sent the dim_vector .. and this the flag =%i \n",info);
       if (info !=MPI_SUCCESS) return info;
   }
 
-// send octave_value capacity
-
+int cap;
 // Now focus on every single octave_value
          for (octave_idx_type i=0; i<n; i++){
              octave_value ov = cell.data()[i];
-	     int cap =ov.capacity();
-	     info = MPI_Send(&cap, 1, MPI_INT, rankrec(i), tanktag[4], comm);
+	     cap =ov.capacity();
+	     info = MPI_Send(&cap, 1, MPI_INT, rankrec(i), newtag, comm);
+// 	     printf("I have sent the capacity .. and this the flag = %i\n",info);
 	     if (info !=MPI_SUCCESS) return info;
              newtag = newtag +ov.capacity();
 	     info=send_class(comm,ov,rankrec,newtag);
+//              printf("I have sent the octave_value inside the cell .. and this the flag = %i\n",info);
 	     if (info !=MPI_SUCCESS) return info;
 					    }
 					    
 
 
-  return(MPI_SUCCESS); 
+  return(info); 
 
 
 }
@@ -547,7 +554,7 @@ Octave_map::const_iterator b = map.begin();    // iterate through keys(fnames)
         if (info !=MPI_SUCCESS) return info;
         }
 
-return(MPI_SUCCESS);
+return(info);
 }
 
 
@@ -1785,83 +1792,66 @@ return(info);
 int send_class(MPI_Comm comm, octave_value ov, ColumnVector rankrec,int mytag){    /* varname-strlength 1st, dims[ndim] */
 /*----------------------------------*/    /* and then appropriate specific info */
   int t_id = ov.type_id();
-//   printf("t_id =%i\n",t_id);
-
- 
-// The T_id would be the tag
-
-
-
+//    printf("t_id THAT I WANT TO SEND=%i\n",t_id);
 
 
   switch (t_id) {
-      case ov_cell:    return(send_cell   (comm, ov.cell_value   (),rankrec,mytag));
- 
-      case ov_scalar:    return(send_scalar (comm, ov.scalar_value (),rankrec,mytag));
-      case ov_complex_scalar:    return(send_complex_scalar(comm, ov.complex_value(),rankrec,mytag));
-      case ov_matrix:    return(send_matrix (comm, ov.array_value  (),rankrec,mytag));
-      case ov_sparse_matrix:  return(send_sp_mat (comm, ov.sparse_matrix_value (),rankrec,mytag));
-      case ov_complex_matrix:    return(send_complex_matrix(comm, ov.complex_array_value(),rankrec,mytag));
-      case ov_sparse_complex_matrix:  return(send_sp_cx_mat(comm, ov.sparse_complex_matrix_value (),rankrec,mytag));
+      case ov_cell:    	 	 	return(send_cell   (comm, ov.cell_value   (),rankrec,mytag));
+      case ov_scalar:    	 	return(send_scalar (comm, ov.scalar_value (),rankrec,mytag));
+      case ov_complex_scalar:    	return(send_complex_scalar(comm, ov.complex_value(),rankrec,mytag));
+      case ov_matrix:    	 	return(send_matrix (comm, ov.array_value  (),rankrec,mytag));
+      case ov_sparse_matrix:  	 	return(send_sp_mat (comm, ov.sparse_matrix_value (),rankrec,mytag));
+      case ov_complex_matrix:    	return(send_complex_matrix(comm, ov.complex_array_value(),rankrec,mytag));
+      case ov_sparse_complex_matrix:  	return(send_sp_cx_mat(comm, ov.sparse_complex_matrix_value (),rankrec,mytag));
+      case ov_float_scalar:    		return(send_float_scalar (comm, ov.float_scalar_value (),rankrec,mytag));
+      case ov_float_complex_scalar:     return(send_float_complex_scalar(comm, ov.float_complex_value(),rankrec,mytag));
+      case ov_float_matrix:    		return(send_float_matrix (comm, ov.array_value  (),rankrec,mytag));
+      case ov_float_complex_matrix:     return(send_float_complex_matrix(comm,ov.float_complex_array_value(),rankrec,mytag));
 
-      case ov_float_scalar:    return(send_float_scalar (comm, ov.float_scalar_value (),rankrec,mytag));
-      case ov_float_complex_scalar:    return(send_float_complex_scalar(comm, ov.float_complex_value(),rankrec,mytag));
+      case ov_range:    		return(send_range  (comm, ov.range_value  (),rankrec,mytag));
+      case ov_bool:    			return(send_bool   (comm, ov.bool_value   (),rankrec,mytag));
+      case ov_bool_matrix:    		return(send_bl_mat (comm, ov.bool_array_value(),rankrec,mytag));
+      case ov_sparse_bool_matrix:  	return(send_sp_bl_mat (comm, ov.sparse_bool_matrix_value (),rankrec,mytag));
+      case ov_char_matrix:    		return(send_ch_mat (comm, ov.char_array_value(),rankrec,mytag));
+      case ov_string:    		return(send_string (comm, ov.string_value(),rankrec,mytag));
+      case ov_sq_string:  		return(send_string (comm, ov.string_value(),rankrec,mytag));
+      case ov_int8_scalar:    		return(send_i8     (comm, ov.int8_scalar_value(),rankrec,mytag));
+      case ov_int16_scalar:    		return(send_i16    (comm, ov.int16_scalar_value(),rankrec,mytag));
+      case ov_int32_scalar:    		return(send_i32    (comm, ov.int32_scalar_value (),rankrec,mytag));
+      case ov_int64_scalar:    		return(send_i64    (comm, ov.int32_scalar_value (),rankrec,mytag));
+      case ov_uint8_scalar:    		return(send_ui8     (comm, ov.uint8_scalar_value(),rankrec,mytag));
+      case ov_uint16_scalar:    	return(send_ui16    (comm, ov.uint16_scalar_value(),rankrec,mytag));
+      case ov_uint64_scalar:    	return(send_ui64    (comm, ov.uint32_scalar_value(),rankrec,mytag));
+      case ov_int8_matrix:    		return(send_i8_mat (comm, ov.int8_array_value(),rankrec,mytag));
+      case ov_int16_matrix:    		return(send_i16_mat(comm, ov.int16_array_value(),rankrec,mytag));
+      case ov_int32_matrix:    		return(send_i32_mat(comm, ov.int32_array_value(),rankrec,mytag));
+      case ov_int64_matrix:    		return(send_i32_mat(comm, ov.int64_array_value(),rankrec,mytag));
+      case ov_uint8_matrix:    		return(send_ui8_mat (comm, ov.uint8_array_value(),rankrec,mytag));
+      case ov_uint16_matrix:    	return(send_ui16_mat(comm, ov.uint16_array_value(),rankrec,mytag));
+      case ov_uint32_matrix:    	return(send_ui32_mat(comm, ov.uint32_array_value(),rankrec,mytag));
+      case ov_uint64_matrix:    	return(send_ui64_mat(comm, ov.int64_array_value(),rankrec,mytag));
+      case ov_struct:    		return(send_struct (comm, ov.map_value    (),rankrec,mytag));
 
-      case ov_float_matrix:    return(send_float_matrix (comm, ov.array_value  (),rankrec,mytag));
-      case ov_float_complex_matrix:    return(send_float_complex_matrix(comm, ov.float_complex_array_value(),rankrec,mytag));
-
-      case ov_range:    return(send_range  (comm, ov.range_value  (),rankrec,mytag));
-
-      case ov_bool:    return(send_bool   (comm, ov.bool_value   (),rankrec,mytag));
-      case ov_bool_matrix:    return(send_bl_mat (comm, ov.bool_array_value(),rankrec,mytag));
-     case ov_sparse_bool_matrix:  return(send_sp_bl_mat (comm, ov.sparse_bool_matrix_value (),rankrec,mytag));
-     case ov_char_matrix:    return(send_ch_mat (comm, ov.char_array_value(),rankrec,mytag));
-    case ov_string:    return(send_string (comm, ov.string_value(),rankrec,mytag));
-    case ov_sq_string:  return(send_string (comm, ov.string_value(),rankrec,mytag));
-
-     case ov_int8_scalar:    return(send_i8     (comm, ov.int8_scalar_value(),rankrec,mytag));
-     case ov_int16_scalar:    return(send_i16    (comm, ov.int16_scalar_value(),rankrec,mytag));
-     case ov_int32_scalar:    return(send_i32    (comm, ov.int32_scalar_value (),rankrec,mytag));
-     case ov_int64_scalar:    return(send_i64    (comm, ov.int32_scalar_value (),rankrec,mytag));
-
-     case ov_uint8_scalar:    return(send_ui8     (comm, ov.uint8_scalar_value(),rankrec,mytag));
-     case ov_uint16_scalar:    return(send_ui16    (comm, ov.uint16_scalar_value(),rankrec,mytag));
-     case ov_uint64_scalar:    return(send_ui64    (comm, ov.uint32_scalar_value(),rankrec,mytag));
-
-    case ov_int8_matrix:    return(send_i8_mat (comm, ov.int8_array_value(),rankrec,mytag));
-    case ov_int16_matrix:    return(send_i16_mat(comm, ov.int16_array_value(),rankrec,mytag));
-    case ov_int32_matrix:    return(send_i32_mat(comm, ov.int32_array_value(),rankrec,mytag));
-    case ov_int64_matrix:    return(send_i32_mat(comm, ov.int64_array_value(),rankrec,mytag));
-
-
-    case ov_uint8_matrix:    return(send_ui8_mat (comm, ov.uint8_array_value(),rankrec,mytag));
-    case ov_uint16_matrix:    return(send_ui16_mat(comm, ov.uint16_array_value(),rankrec,mytag));
-    case ov_uint32_matrix:    return(send_ui32_mat(comm, ov.uint32_array_value(),rankrec,mytag));
-    case ov_uint64_matrix:    return(send_ui64_mat(comm, ov.int64_array_value(),rankrec,mytag));
-
-
-     case ov_struct:    return(send_struct (comm, ov.map_value    (),rankrec,mytag));
-
-     case ov_unknown:    printf("MPI_Send: unknown class\n");
+      case ov_unknown:    		printf("MPI_Send: unknown class\n");
              return(MPI_ERR_UNKNOWN );
 
-case ov_class:           
-case ov_list:           
-case ov_cs_list:           
-case ov_magic_colon:           
-case ov_built_in_function:       
-case ov_user_defined_function:       
-case ov_dynamically_linked_function:   
-case ov_function_handle:       
-case ov_inline_function:       
-case ov_float_diagonal_matrix:   
-case ov_float_complex_diagonal_matrix:   
-case ov_diagonal_matrix:   
-case ov_complex_diagonal_matrix:   
-case ov_permutation_matrix:           
-case ov_null_matrix:               
-case ov_null_string:               
-case ov_null_sq_string:           
+      case ov_class:           
+      case ov_list:           
+      case ov_cs_list:           
+      case ov_magic_colon:           
+      case ov_built_in_function:       
+      case ov_user_defined_function:       
+      case ov_dynamically_linked_function:   
+      case ov_function_handle:       
+      case ov_inline_function:       
+      case ov_float_diagonal_matrix:   
+      case ov_float_complex_diagonal_matrix:   
+      case ov_diagonal_matrix:   
+      case ov_complex_diagonal_matrix:   
+      case ov_permutation_matrix:           
+      case ov_null_matrix:               
+      case ov_null_string:               
+      case ov_null_sq_string:           
     default:        printf("MPI_Send: unsupported class %s\n",
                     ov.type_name().c_str());
             return(MPI_ERR_UNKNOWN );

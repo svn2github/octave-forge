@@ -23,32 +23,30 @@ addpath("../src");
 
 
    MPI_Init();
- # the string NEWORLD is just a label could be whatever you want 
+   # the string NEWORLD is just a label could be whatever you want 
    CW = MPI_Comm_Load("NEWORLD");
-   whos CW
+
    
 
   my_rank = MPI_Comm_rank(CW);
   p = MPI_Comm_size(CW);
- # Could be any number
-  mytag = 48;
+  # Could be any number
+  TAG=1;
 
 
   message="";
   if (my_rank != 0)
       message = sprintf('Greetings from process: %d!',my_rank);
-#     rankvect is the vector containing the list of rank  destination process
-     rankvect = 0;
-     [info] = MPI_Send(message,rankvect,mytag,CW)
-      
+      # rankvect is the vector containing the list of rank  destination process
+      rankvect = 0;
+      [info] = MPI_Send(message,rankvect,TAG,CW);
   else
-        for source = 1:p-1
+      for source = 1:p-1
           disp("We are at rank 0 that is master etc..");
-          [message, info] = MPI_Recv(source,mytag,CW);
-        printf('%s\n', message);
-          endfor
+          [message, info] = MPI_Recv(source,TAG,CW);
+          printf('%s\n', message);
+      endfor
   end   
 
-
-   MPI_Finalize();
+  MPI_Finalize();
 

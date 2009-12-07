@@ -62,8 +62,8 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
   wing.twc = pi/180 * m2 (aci(:,4));
 
   zpol = [pols.z];
-  if (any (diff (zpol) < 0))
-    [zpol,isrt] = sort (zpol);
+  if (! issorted (zpol))
+    [zpol, isrt] = sort (zpol);
     pols = pols(isrt);
   endif
 
@@ -79,17 +79,21 @@ function wing = makewing (ac, pols, ref, np = 80, zac = [])
   wing.pol = pols;
   wing.np = np;
 
-  wing.a0 = interp1 (zpol, [pols.a0], zc, "extrap") + wing.twc;
-  wing.amax = interp1 (zpol, [pols.amax], zc, "extrap") + wing.twc;
-  wing.clmax = interp1 (zpol, [pols.clmax], zc, "extrap");
-
+  wing.a0 = zeros (length (jj), 1);
+  wing.amax = zeros (length (jj), 1);
+  wing.clmax = zeros (length (jj), 1);
   wing.cf = zeros (length (jj), 1);
 
-  % TODO: can fully vectorize here?
+  % FIXME: 3.3.50+ will handle discontinuous interpolation.
   for i=1:length (jj)-1
     jl = jj(i); ju = jj(i+1)-1;
-    wing.cf (jl:ju) = interp1 (zpol(i:i+1), [0 1], wing.zc (jl:ju), ...
-      'linear', 'extrap');
+    if (jl < ju)
+      cf = (zc(jl:ju) - zpol(i)) / (zpol(i+1) - zpol(i));
+      wing.cf(jl:ju) = cf;
+      wing.a0(jl:ju) = cf * pols(i).a0 + (1-cf) * pols(i+1).a0;
+      wing.amax(jl:ju) = cf * pols(i).amax + (1-cf) * pols(i+1).amax;
+      wing.clmax(jl:ju) = cf * pols(i).clmax + (1-cf) * pols(i+1).clmax;
+    endif
   endfor
 
   for [val,key] = ref

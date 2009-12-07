@@ -81,7 +81,7 @@ function P = augw (G, W1 = [], W2 = [], W3 = [])
   W3 = ss (W3);
 
   [p, m] = size (G);
-  [p1, m1] = size (W1)
+  [p1, m1] = size (W1);
   [p2, m2] = size (W2);
   [p3, m3] = size (W3);
 

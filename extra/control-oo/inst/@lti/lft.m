@@ -56,11 +56,11 @@ function sys = lft (sys1, sys2, nu, ny)
     endif
 
     if (nu > nu_max)
-      error ("lft: argumend nu (%d) must be smaller than %d", nu, nu_max+1);
+      error ("lft: argumend nu (%d) must at most %d", nu, nu_max);
     endif
 
     if (ny > ny_max)
-      error ("lft: argument ny (%d) must be smaller than %d", ny, ny_max+1);
+      error ("lft: argument ny (%d) must at most %d", ny, ny_max);
     endif
   end
 

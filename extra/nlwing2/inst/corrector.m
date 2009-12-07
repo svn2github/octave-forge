@@ -51,7 +51,8 @@ function flow = corrector (flow, tol, opts, init)
     endif
     [g, eq, info, out, eqj] = fsolve (@corrector_fcn, flow.g, opts);
     if (verbose)
-      printf ("i: %d ", info);
+      fprintf (stdout, "i: %d ", info);
+      fflush (stdout);
     endif
     if (info > 0)
       res = norm (eq) / sqrt(np);

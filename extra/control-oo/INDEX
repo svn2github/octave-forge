@@ -53,6 +53,7 @@ LQR/LQG Design
   kalman
   lqr
 Controller Synthesis
+  augw
   h2syn
   hinfsyn
 State-Space Models

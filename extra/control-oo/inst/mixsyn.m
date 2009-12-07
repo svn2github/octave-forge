@@ -17,8 +17,55 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {[@var{K}, @var{N}, @var{gamma}] =} mixsyn (@var{G}, @var{W1}, @var{W2}, @var{W3})
-## Solve stacked S/T/KS problem.
-## TODO: doc
+## Solve stacked S/T/KS H-inf problem, i.e. bound the largest singular values
+## of S (for performance), T (for robustness and to avoid sensitivity to noise)
+## and K S (to penalize large inputs).
+## @example
+## @group
+##
+##                             | W1 S   |
+## min||N(K)||             N = | W2 K S | = lft (P, K)
+##  K         inf              | W3 T   |
+##                                                       +------+  z1
+##             +---------------------------------------->|  W1  |----->
+##             |                                         +------+
+##             |                                         +------+  z2
+##             |                 +---------------------->|  W2  |----->
+##             |                 |                       +------+
+##  r   +    e |   +--------+  u |   +--------+  y       +------+  z3
+## ----->(+)---+-->|  K(s)  |----+-->|  G(s)  |----+---->|  W3  |----->
+##        ^ -      +--------+        +--------+    |     +------+
+##        |                                        |
+##        +----------------------------------------+
+##
+##                +--------+
+##                |        |-----> z1 (p1x1)
+##  r (px1) ----->|  P(s)  |-----> z2 (p2x1)
+##                |        |-----> z3 (p3x1)
+##  u (mx1) ----->|        |-----> e (px1)
+##                +--------+
+##
+##                +--------+  
+##        r ----->|        |-----> z
+##                |  P(s)  |
+##        u +---->|        |-----+ e
+##          |     +--------+     |
+##          |                    |
+##          |     +--------+     |
+##          +-----|  K(s)  |<----+
+##                +--------+
+##
+##                +--------+      
+##        r ------|  N(s)  |-----> z
+##                +--------+
+## Reference:
+## Skogestad, S. and Postlethwaite I.
+## Multivariable Feedback Control: Analysis and Design
+## Second Edition
+## Wiley 2005
+## Chapter 3.8: General Control Problem Formulation
+## @end group
+## @end example
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

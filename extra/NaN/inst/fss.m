@@ -1,8 +1,10 @@
 function [idx,score] = fss(D,cl,N,MODE)
 % FSS - feature subset selection and feature ranking 
 %   the method is motivated by the max-relevance-min-redundancy (mRMR) 
-%   approach [1]. However, the default method uses partial correlation.  
-%   An alternative method based on FSDD is supported, too. 
+%   approach [1]. However, the default method uses partial correlation,
+%   which has been developed from scratch. PCCM [3] describes
+%   a similar idea, but is more complicated. 
+%   An alternative method based on FSDD is implemented, too. 
 %    
 %  [idx,score] = fss(D,cl) 
 %  [idx,score] = fss(D,cl,MODE) 
@@ -28,6 +30,12 @@ function [idx,score] = fss(D,cl,N,MODE)
 %   Invariant optimal feature selection: A distance discriminant and feature ranking based solution, 
 %   Pattern Recognition, Volume 41, Issue 5, May 2008, Pages 1429-1439.
 %   ISSN 0031-3203, DOI: 10.1016/j.patcog.2007.10.018.
+% [3] K. Raghuraj Rao and S. Lakshminarayanan
+%   Partial correlation based variable selection approach for multivariate data classification methods
+%   Chemometrics and Intelligent Laboratory Systems
+%   Volume 86, Issue 1, 15 March 2007, Pages 68-81 
+%   http://dx.doi.org/10.1016/j.chemolab.2006.08.007
+
 
 
 %	$Id$

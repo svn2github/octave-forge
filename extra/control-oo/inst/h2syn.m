@@ -16,7 +16,7 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{K}, @var{T}, @var{gamma}] =} h2syn (@var{P}, @var{nmeas}, @var{ncon})
+## @deftypefn{Function File} {[@var{K}, @var{N}, @var{gamma}] =} h2syn (@var{P}, @var{nmeas}, @var{ncon})
 ## H2 control synthesis for LTI plant.
 ## Uses SLICOT SB10HD and SB10ED by courtesy of NICONET e.V.
 ## <http://www.slicot.org>
@@ -79,10 +79,10 @@ function [K, varargout] = h2syn (P, nmeas, ncon)
   K = ss (ak, bk, ck, dk, tsam);
   
   if (nargout > 1)
-    T = lft (P, K);
-    varargout{1} = T;
+    N = lft (P, K);
+    varargout{1} = N;
     if (nargout > 2)
-      varargout{2} = norm (T);
+      varargout{2} = norm (N);
     endif
   endif
 

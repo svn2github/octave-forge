@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {@var{P} =} augw (@var{G}, @var{W1}, @var{W2}, @var{W3})
-## Extend plant for stacked S/T/KS problem.
+## Extend plant for stacked S/KS/T problem.
 ## @example
 ## @group
 ##
@@ -39,10 +39,10 @@
 ##        +----------------------------------------+
 ##
 ##                +--------+
-##                |        |-----> z1 (p1x1)
-##  r (px1) ----->|  P(s)  |-----> z2 (p2x1)
-##                |        |-----> z3 (p3x1)
-##  u (mx1) ----->|        |-----> e (px1)
+##                |        |-----> z1 (p1x1)          z1 = W1 e
+##  r (px1) ----->|  P(s)  |-----> z2 (p2x1)          z2 = W2 u
+##                |        |-----> z3 (p3x1)          z3 = W3 y
+##  u (mx1) ----->|        |-----> e (px1)            e = r - y
 ##                +--------+
 ##
 ##                +--------+  

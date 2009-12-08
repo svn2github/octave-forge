@@ -17,9 +17,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {[@var{K}, @var{N}, @var{gamma}] =} mixsyn (@var{G}, @var{W1}, @var{W2}, @var{W3})
-## Solve stacked S/T/KS H-inf problem, i.e. bound the largest singular values
-## of S (for performance), T (for robustness and to avoid sensitivity to noise)
-## and K S (to penalize large inputs).
+## Solve stacked S/KS/T H-inf problem, i.e. bound the largest singular values
+## of S (for performance), K S (to penalize large inputs) and
+## T (for robustness and to avoid sensitivity to noise).
 ## @example
 ## @group
 ##
@@ -39,10 +39,10 @@
 ##        +----------------------------------------+
 ##
 ##                +--------+
-##                |        |-----> z1 (p1x1)
-##  r (px1) ----->|  P(s)  |-----> z2 (p2x1)
-##                |        |-----> z3 (p3x1)
-##  u (mx1) ----->|        |-----> e (px1)
+##                |        |-----> z1 (p1x1)          z1 = W1 e
+##  r (px1) ----->|  P(s)  |-----> z2 (p2x1)          z2 = W2 u
+##                |        |-----> z3 (p3x1)          z3 = W3 y
+##  u (mx1) ----->|        |-----> e (px1)            e = r - y
 ##                +--------+
 ##
 ##                +--------+  
@@ -56,8 +56,14 @@
 ##                +--------+
 ##
 ##                +--------+      
-##        r ------|  N(s)  |-----> z
+##        r ----->|  N(s)  |-----> z
 ##                +--------+
+##
+## Extended Plant:  P = augw (G, W1, W2, W3)
+## Entire System:   N = lft (P, K)
+## Open Loop:       L = G * K
+## Closed Loop:     T = feedback (L)
+##
 ## Reference:
 ## Skogestad, S. and Postlethwaite I.
 ## Multivariable Feedback Control: Analysis and Design

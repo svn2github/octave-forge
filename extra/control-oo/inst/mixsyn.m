@@ -72,9 +72,9 @@
 ## Created: December 2009
 ## Version: 0.1
 
-function [K, N, gamma] = mixsyn (G, W1 = [], W2 = [], W3 = [], gmax = 1e6)
+function [K, N, gamma] = mixsyn (G, W1 = [], W2 = [], W3 = [], varargin)
 
-  if (nargin == 0 || nargin > 5)
+  if (nargin == 0)
     print_usage ();
   endif
 
@@ -82,6 +82,6 @@ function [K, N, gamma] = mixsyn (G, W1 = [], W2 = [], W3 = [], gmax = 1e6)
 
   P = augw (G, W1, W2, W3);
   
-  [K, N, gamma] = hinfsyn (P, p, m, gmax);
+  [K, N, gamma] = hinfsyn (P, p, m, varargin{:});
 
 endfunction

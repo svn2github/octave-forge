@@ -86,15 +86,39 @@ function P = augw (G, W1 = [], W2 = [], W3 = [])
   [p3, m3] = size (W3);
 
   if (m1 != 0 && m1 != p)
-    error ("augw: W1 must have %d inputs", p);
+    if (m1 == 1)
+      W = W1;
+      for k = 2 : p
+        W1 = append (W1, W);
+      endfor
+      [p1, m1] = size (W1);
+    else
+      error ("augw: W1 must have %d inputs", p);
+    endif
   endif
 
   if (m2 != 0 && m2 != m)
-    error ("augw: W2 must have %d inputs", m);
+    if (m2 == 1)
+      W = W2;
+      for k = 2 : m
+        W2 = append (W2, W);
+      endfor
+      [p2, m2] = size (W2);
+    else
+      error ("augw: W2 must have %d inputs", m);
+    endif
   endif
 
   if (m3 != 0 && m3 != p)
-    error ("augw: W3 must have %d inputs", p);
+    if (m3 == 1)
+      W = W3;
+      for k = 2 : p
+        W3 = append (W3, W);
+      endfor
+      [p3, m3] = size (W3);
+    else
+      error ("augw: W3 must have %d inputs", p);
+    endif
   endif
 
   ## Pr = [1; 0; 0; 1];

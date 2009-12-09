@@ -5,7 +5,7 @@ function J = optiPIDfunction (C_par)
 % See "Analysis and Synthesis of SISO Control Systems"
 % by Lino Guzzella for further details
 
-global P w t dt mu_1 mu_2 mu_3
+global P t dt mu_1 mu_2 mu_3
 
 % Function Argument -> Controller Parameters
 kp = C_par(1);
@@ -46,9 +46,9 @@ for k = 1 : length (y)
   itae = itae  +  t_y(k) * abs (y(k, 1)) * dt;
 end
 
-% Return Difference
-Q = 1 + L;
-mag = bode (Q, w);
+% Critical Distance mu = 1/Ms
+S = inv (1 + L);
+mu = 1 / norm (S, inf);
 
 % Objective Function
-J = mu_1 * itae  +  mu_2 * (max (y(:, 2)) - 1)  +  mu_3 * (1 - min (mag));
+J = mu_1 * itae  +  mu_2 * (max (y(:, 2)) - 1)  +  mu_3 * (1 - mu);

@@ -9,7 +9,7 @@ close all;
 clc;
 
 % Global Variables
-global P w t dt mu_1 mu_2 mu_3
+global P t dt mu_1 mu_2 mu_3
 
 % Plant
 numP = [1];
@@ -25,7 +25,6 @@ mu_3 = 1;       % Maximize Critical Distance
 t_sim = 30;                     % Simulation Time [s]
 dt = 0.05;                      % Sampling Time [s]
 t = 0 : dt : t_sim;             % Time Vector [s]
-w = logspace (-1, 1, 100);      % Frequency Range [rad/s]
 
 % A/H PID Controller: Ms = 2.0 (mu_min = 0.5)
 [gamma, phi, w_gamma, w_phi] = margin (P);
@@ -103,16 +102,4 @@ grid ('on')
 title ('Step Response')
 xlabel ('Time [s]')
 ylabel ('Output [-]')
-legend ('A/H', 'Optimized', 'Location', 'SouthEast')
-
-% Plot Nyquist Diagram
-[re_AH, im_AH] = nyquist (L_AH, w);
-[re_opt, im_opt] = nyquist (L_opt, w);
-
-figure (2)
-plot (re_AH(:), im_AH(:), 'b', re_opt(:), im_opt(:), 'r')
-grid ('on')
-title ('Nyquist Diagram')
-xlabel ('Re\{L(jw)\}')
-ylabel ('Im\{L(jw)\}')
 legend ('A/H', 'Optimized', 'Location', 'SouthEast')

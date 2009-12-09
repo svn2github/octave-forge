@@ -43,6 +43,8 @@ outfile = "mc_output";
 n_pooled = 10;
 
 
-#montecarlo(f, args, reps, outfile, n_pooled, false, true);
+montecarlo(f, args, reps, outfile, n_pooled, false, true);
 
-montecarlo(f, args, reps, outfile, n_pooled, true, true);
+# if not(MPI_Initialized) MPI_Init; endif
+# montecarlo(f, args, reps, outfile, n_pooled, true);
+# if not(MPI_Finalized) MPI_Finalize; endif

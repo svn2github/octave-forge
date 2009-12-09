@@ -15,8 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#
-#
 # montecarlo.m: generates a specified number of replications of a function's
 # output and writes them to a user-specified output file.
 #
@@ -30,48 +28,42 @@
 # * Arg 3: (required) the number of replications to generate
 # * Arg 4: (required) the output file name
 # * Arg 5 (optional) number of replications to be pooled together between writes
-# * Arg 6: (optional) usempi (boolean) whether or not to use MPI
-# * Arg 7 (optional) verbose: 1 for on, 0 for off
-
-
-# PROBLEMS: not exiting properly, how to correctly use MPI_Finalize?
-
-# if using MPI, should run using ranks equal to number of cores plus 1,
+# * Arg 6 (optional) verbose: 1 for on, 0 for off
+#
+# If using MPI, you should run using ranks equal to number of cores plus 1,
 # and should make sure that the core running the frontend is also the one that
-# has the second rank. That way the core the frontend is on will also do work
+# has the second rank. That way the core the frontend is on will also do work.
 
-function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,usempi,verbose)
+function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,verbose)
 
 	t0 = clock(); # initialize timing
 
 	# defaults for optional arguments
-	if (nargin < 7) verbose = false; endif
-	if (nargin < 6)	usempi = false; endif;
+	if (nargin < 6) verbose = false; endif
 	if (nargin < 5)	n_pooled = 1; endif;
 
-	# check if doing this parallel or serial
-	if usempi
-		MPI_Init();
-		 # the string NEWORLD is just a label could be whatever you want    
+	if MPI_Initialized 	# check if doing this parallel or serial
+		use_mpi = true;
 		CW = MPI_Comm_Load("NEWORLD");
-		isnode = MPI_Comm_rank(CW);
+		is_node = MPI_Comm_rank(CW);
 		nodes = MPI_Comm_size(CW);
-	else isnode = 0;
+		mytag = 48;
+	else
+		use_mpi = false;
+		is_node = 0;
 	endif
 
-	# Could be any number
-	mytag = 48;
-
-	if isnode # compute nodes
+	if is_node # compute nodes
 		more_please = 1;
 		while more_please
 				for i = 1:n_pooled
 					contrib = feval(f, f_args);
 					contribs(i,:) = contrib;
 				endfor
-				MPI_Send(contribs,0,mytag,CW);
+				MPI_Send(contribs, 0, mytag, CW);
 				# check if we're done
-				if (MPI_Iprobe(0,mytag,CW)) # check for ping from rank 0
+				if (MPI_Iprobe(0, is_node, CW)) # check for ping from rank 0
+					junk = MPI_Recv(0, is_node, CW);
 					break;
 				endif
 		endwhile
@@ -79,16 +71,16 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,usempi,verbose)
 		received = 0;
 		done = false;
 		while received < reps
-			if usempi
+			if use_mpi
 				# retrieve results from compute nodes
 				for i = 1:nodes-1
-#					pause(0.2); # don't overwhelm the network with requests
+					pause(0.01); # don't overwhelm the network with requests
 					# compute nodes have results yet?
 					ready = false;
-					ready = MPI_Iprobe(i,mytag,CW); # check if message pending
+					ready = MPI_Iprobe(i, mytag, CW); # check if message pending
 					if ready
 					# get it if it's there
-					contribs = MPI_Recv(i,mytag,CW);
+					contribs = MPI_Recv(i, mytag, CW);
 					need = reps - received;
 					received = received + n_pooled;
 					# truncate?
@@ -107,10 +99,10 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,usempi,verbose)
 					fclose(FN);
 					if verbose printf("\nContribution received from node%d.  Received so far: %d\n", i, received); endif
 					endif
-					# stop MPI and loop
+					# tell compute nodes to stop loop
 					if done
 						for i = 1:nodes-1
-							MPI_Send(" ",i,mytag,CW);
+							MPI_Send(" ",i,i,CW);
 						endfor
 						break;
 					endif
@@ -139,5 +131,4 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,usempi,verbose)
 			endif
 		endwhile
 	endif
-	if usempi MPI_Finalize(); endif
 endfunction

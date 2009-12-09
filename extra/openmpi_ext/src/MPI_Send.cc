@@ -457,12 +457,12 @@ int send_struct(MPI_Comm comm, Octave_map map,ColumnVector rankrec, int mytag){ 
 
 int n = map.nfields(); 
 int info;
-int t_id;
-int tanktag[3];
-  tanktag[0] = mytag;
-  tanktag[1] = mytag+1;
-  tanktag[2] = mytag+2;
-int newtag = mytag+3;
+int t_id=ov_struct;
+OCTAVE_LOCAL_BUFFER(int,tanktag,2);
+  tanktag[0] = mytag; //t-id
+  tanktag[1] = mytag+1; // n
+int tagcap = mytag+2;
+int   ntagkey = mytag+3; // string
 
 // Create 3 contiguous derived datatype
 // one for dim_vector struc_dims
@@ -470,89 +470,48 @@ int newtag = mytag+3;
   dim_vector struc_dims = map.dims();    // struct array dimensions (ND)
   dim_vector conts_dims;        // each key stores ND field-values
 
-  int nd = map.ndims();
 
-// Declare here the octave_local_buffers
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
- for (octave_idx_type i=0; i<nd; i++)
- {
-  dimV[i] = struc_dims(i) ;
- }
-
-  // Now create the contiguos derived datatype
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-
-// Create a derived datatype containing 3 integers;
-// n nd maxlenght
-typedef struct
-{ int sn, snd,smlenght;
-} Particle;
-
-Particle part;
-MPI_Datatype particletype, oldtypes[1];
-int blockcounts[1];
-
-MPI_Aint offsets[1];
-// MPI_Status
-
-/* Setup description of 3 MPI_INT fields */
-offsets[0] =0;
-oldtypes[0] = MPI_INT;
-blockcounts[0] = 3;
-/* Now define structured type and commit */
-MPI_Type_struct(1,blockcounts, offsets, oldtypes, &particletype);
-MPI_Type_commit(&particletype);
-
-/* Initialize the particle */
-part.sn = n;
-part.snd = nd; 
-
-octave_idx_type  maxlen;
-
-  Octave_map::const_iterator p = map.begin();    // iterate through keys(fnames)
-  for (octave_idx_type i=0; p!=map.end(); p++, i++){
+// Now we start the big loop
+   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
+   {
+           info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
+//  	   printf("I have sent % i \n",t_id);
+//  	   printf("with info = % i \n",info);
+	   if (info !=MPI_SUCCESS) return info;
+     info = MPI_Send(&n,1,MPI_INT,rankrec(i),tanktag[1],comm);
+     if (info !=MPI_SUCCESS) return info;/**/
+//      printf("I have sent n with info = % i \n",info);
+// // This is to avoid confusion between tags of strings and tags of Cells
+   int   ntagCell = ntagkey+1;
+    Octave_map::const_iterator p = map.begin();    // iterate through keys(fnames)
+   int scap;
+   for (octave_idx_type i=0; p!=map.end(); p++, i++)
+    {
     std::string        key = map.key     (p);    // field name
-
-    int len = key.length()+1;        /* fieldname len, works for len==0 */
-    if  (len> maxlen) maxlen = len;
-    Cell           conts = map.contents(p);
+    Cell               conts = map.contents(p);    // Cell w/ND contents
     conts_dims = conts.dims();        /* each elemt should have same ND */
     if (struc_dims != conts_dims){
         printf("MPI_Send: inconsistent map dims\n"); return(MPI_ERR_UNKNOWN);
+				}
+    // Sending capacity of octave_cell
+    scap = conts.capacity(); 
+    info = MPI_Send(&scap,1,MPI_INT,rankrec(i),tagcap,comm);
+    if (info !=MPI_SUCCESS) return info;
+    tagcap = tagcap+1;
+    ntagkey = ntagkey + 3;
+    info =send_class(comm, key,rankrec,ntagkey);
+    if (info !=MPI_SUCCESS) return info;
+    
+    // Sending Cell
+    ntagCell = ntagCell + conts.capacity();
+    info =send_class(comm, conts,rankrec,ntagCell);
+    if (info !=MPI_SUCCESS) return info;
     }
-  if (n != map.nfields()){
-      printf("MPI_Send: inconsistent map length\n");return(MPI_ERR_UNKNOWN);
-  }
- }
 
-part.smlenght  = maxlen;
+      if (n != map.nfields()){printf("MPI_Send: inconsistent map length\n");return(MPI_ERR_UNKNOWN);}
 
-MPI_Datatype fortvec;
-MPI_Type_contiguous(maxlen,MPI_CHAR, &fortvec);
-MPI_Type_commit(&fortvec);
-
-// Now we start the big loop
-  for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
-  {
-          info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
-      if (info !=MPI_SUCCESS) return info;
-// Send the particle struct derived datatype
-    info = MPI_Send(&part,1,particletype,rankrec(i),tanktag[1],comm);
-// Dimension vector
-          info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[2], comm);
-      if (info !=MPI_SUCCESS) return info;
 
     }
-Octave_map::const_iterator b = map.begin();    // iterate through keys(fnames)
-    for (octave_idx_type i=0; b!=map.end(); b++, i++){
-        Cell           conts = map.contents(p);    // Cell w/ND contents
-        newtag = newtag + conts.capacity();
-        int info =send_class(comm, conts,rankrec,newtag);
-        if (info !=MPI_SUCCESS) return info;
-        }
 
 return(info);
 }

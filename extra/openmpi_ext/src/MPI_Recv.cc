@@ -96,6 +96,47 @@ ov_null_sq_string,
 int recv_class( MPI_Comm comm, octave_value &ov,  int source, int mytag);        /* along the datatype */
 /*----------------------------------*/    /* to send any octave_value */
 
+int recv_struct( MPI_Comm comm, octave_value  &ov, int source, int mytag){      
+
+int n; // map.fields();
+
+OCTAVE_LOCAL_BUFFER(int, tanktag, 2);
+tanktag[0]=mytag; //t_id
+tanktag[1]=mytag+1; // n
+int tagcap = mytag+2;
+int   ntagkey = mytag+3; // string
+int   ctag = mytag + 4; // cell
+  int info;
+  MPI_Status stat;
+  info = MPI_Recv((&n), 1,MPI_INT, source, tanktag[1] , comm,&stat);
+  printf("I have received n with info = % i \n",info);
+  Octave_map om;
+  int scap;  
+  for (int i=0; i<n; i++){			/* nkeys: foreach, get key */
+    octave_value ov_string;
+    ntagkey = ntagkey + 3;
+    info = recv_class(comm, ov_string,source,ntagkey);
+    std::string key = ov_string.string_value();
+    if( (info!=MPI_SUCCESS) )	return(info);
+    octave_value conts;				/* all elements on this fname */
+//     Receives capacity
+    info = MPI_Recv(&scap, 1,MPI_INT,source,tagcap, comm, &stat);
+    tagcap = tagcap+1;
+    ctag = ctag + scap;
+    info = recv_class(comm, conts,source,ctag);
+    if (! conts.is_cell())			return(MPI_ERR_UNKNOWN);
+    om.assign (key, conts.cell_value());
+  }
+  if (n != om.nfields()){
+	  printf("MPI_Recv: inconsistent map length\n");return(MPI_ERR_UNKNOWN);
+  }
+  ov=om;  
+
+
+  
+  return(MPI_SUCCESS);
+}
+
 
 int recv_string( MPI_Comm comm, octave_value  &ov, int source, int mytag){        /* directly MPI_Send it, */
 /*-----------------------------*/        /* it's just a  string value */
@@ -146,7 +187,7 @@ tanktag[4] = mytag+4;
           info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //           printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
+//  Now create contiguous datatype for dim vector
   dv.resize(nd);
   OCTAVE_LOCAL_BUFFER(int,dimV,nd);
   MPI_Datatype dimvec;
@@ -242,9 +283,6 @@ tanktag[4] = mytag+4;
       if (info !=MPI_SUCCESS) return info;
   for (octave_idx_type i=0; i<nitem; i++)
   {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
       myNDA(i)=LBNDA[i];
   }
     ov = myNDA;
@@ -460,9 +498,6 @@ tanktag[5] = mytag+5;
 
   for (octave_idx_type i=0; i<nitem; i++)
   {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
       rmyNDA(i)=LBNDA[i];
       imyNDA(i)=CLBNDA[i];
       std::complex<float>  c  = real(rmyNDA(i))+imag(imyNDA(i));
@@ -726,7 +761,7 @@ tanktag[3] = mytag+4;
           info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
 //             printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
+//  Now create contiguous datatype for dim vector
   dv.resize(nd);
   OCTAVE_LOCAL_BUFFER(int,dimV,nd);
   MPI_Datatype dimvec;
@@ -1405,44 +1440,45 @@ int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* v
 //   printf("2-> tag for id =%i\n",mytag);
   int info = MPI_Recv(&t_id,1, MPI_INT, source,mytag,comm,&status);
 
-//     printf(" I have received t_id =%i\n",t_id);
+//      printf(" I have received t_id =%i\n",t_id);
 
   if (info !=MPI_SUCCESS) return info;
 
   switch (t_id) {
 
-    case ov_scalar:    		return(recv_scalar (comm, ov,source,mytag));
-    case ov_cell:    		return(recv_cell (comm, ov,source,mytag));
-    case ov_int8_scalar:    	return(recv_int8_scalar (comm, ov,source,mytag));
-    case ov_int16_scalar:    	return(recv_int16_scalar (comm, ov,source,mytag));
-    case ov_int32_scalar:    	return(recv_int32_scalar (comm, ov,source,mytag));
-    case ov_int64_scalar:    	return(recv_int64_scalar (comm, ov,source,mytag));
-    case ov_uint8_scalar:    	return(recv_uint8_scalar (comm, ov,source,mytag));
-    case ov_uint16_scalar:    	return(recv_uint16_scalar (comm, ov,source,mytag));
-    case ov_uint32_scalar:    	return(recv_uint32_scalar (comm, ov,source,mytag));
-    case ov_uint64_scalar:    	return(recv_uint64_scalar (comm, ov,source,mytag));
-    case ov_float_scalar: 	return(recv_float_scalar(comm, ov,source,mytag));
-    case ov_complex_scalar:    	return(recv_complex_scalar (comm, ov,source,mytag));
-    case ov_float_complex_scalar: return(recv_complex_float_scalar(comm, ov,source,mytag));
+    case ov_scalar:    			return(recv_scalar (comm, ov,source,mytag));
+    case ov_cell:    			return(recv_cell (comm, ov,source,mytag));
+    case ov_int8_scalar:    		return(recv_int8_scalar (comm, ov,source,mytag));
+    case ov_int16_scalar:    		return(recv_int16_scalar (comm, ov,source,mytag));
+    case ov_int32_scalar:    		return(recv_int32_scalar (comm, ov,source,mytag));
+    case ov_int64_scalar:    		return(recv_int64_scalar (comm, ov,source,mytag));
+    case ov_uint8_scalar:    		return(recv_uint8_scalar (comm, ov,source,mytag));
+    case ov_uint16_scalar:    		return(recv_uint16_scalar (comm, ov,source,mytag));
+    case ov_uint32_scalar:    		return(recv_uint32_scalar (comm, ov,source,mytag));
+    case ov_uint64_scalar:    		return(recv_uint64_scalar (comm, ov,source,mytag));
+    case ov_float_scalar: 		return(recv_float_scalar(comm, ov,source,mytag));
+    case ov_complex_scalar:    		return(recv_complex_scalar (comm, ov,source,mytag));
+    case ov_float_complex_scalar: 	return(recv_complex_float_scalar(comm, ov,source,mytag));
 
-    case ov_string:    return(recv_string (comm, ov,source,mytag));
-    case ov_matrix:    return(recv_matrix (comm, ov,source,mytag));
-    case ov_complex_matrix:    return(recv_complex_matrix(comm, ov,source,mytag));
-    case ov_int8_matrix:    return(recv_int8_matrix (comm, ov,source,mytag));
-    case ov_int16_matrix:    return(recv_int16_matrix (comm, ov,source,mytag));
-    case ov_int32_matrix:    return(recv_int32_matrix (comm, ov,source,mytag));
-    case ov_int64_matrix:    return(recv_int64_matrix (comm, ov,source,mytag));
+    case ov_string:    			return(recv_string (comm, ov,source,mytag));
+    case ov_matrix:    			return(recv_matrix (comm, ov,source,mytag));
+    case ov_complex_matrix:    		return(recv_complex_matrix(comm, ov,source,mytag));
+    case ov_int8_matrix:    		return(recv_int8_matrix (comm, ov,source,mytag));
+    case ov_int16_matrix:    		return(recv_int16_matrix (comm, ov,source,mytag));
+    case ov_int32_matrix:    		return(recv_int32_matrix (comm, ov,source,mytag));
+    case ov_int64_matrix:    		return(recv_int64_matrix (comm, ov,source,mytag));
 
 
-    case ov_uint8_matrix:    return(recv_uint8_matrix (comm, ov,source,mytag));
-    case ov_uint16_matrix:    return(recv_uint16_matrix (comm, ov,source,mytag));
-    case ov_uint32_matrix:    return(recv_uint32_matrix (comm, ov,source,mytag));
-    case ov_uint64_matrix:    return(recv_uint64_matrix (comm, ov,source,mytag));
+    case ov_uint8_matrix:     		return(recv_uint8_matrix (comm, ov,source,mytag));
+    case ov_uint16_matrix:    		return(recv_uint16_matrix (comm, ov,source,mytag));
+    case ov_uint32_matrix:    		return(recv_uint32_matrix (comm, ov,source,mytag));
+    case ov_uint64_matrix:    		return(recv_uint64_matrix (comm, ov,source,mytag));
 
-    case ov_float_matrix:    return(recv_float_matrix (comm, ov,source,mytag));
-    case ov_float_complex_matrix:    return(recv_float_complex_matrix (comm, ov,source,mytag));
-    case ov_sparse_matrix:    return(recv_sp_mat(comm, ov,source,mytag));
-    case ov_sparse_complex_matrix:    return(recv_complex_sp_mat(comm, ov,source,mytag));
+    case ov_float_matrix:            	return(recv_float_matrix (comm, ov,source,mytag));
+    case ov_float_complex_matrix:    	return(recv_float_complex_matrix (comm, ov,source,mytag));
+    case ov_sparse_matrix:           	return(recv_sp_mat(comm, ov,source,mytag));
+    case ov_sparse_complex_matrix:   	return(recv_complex_sp_mat(comm, ov,source,mytag));
+    case ov_struct:			return(recv_struct(comm, ov,source,mytag));			
     case ov_unknown:    printf("MPI_Recv: unknown class\n");
             return(MPI_ERR_UNKNOWN );
 

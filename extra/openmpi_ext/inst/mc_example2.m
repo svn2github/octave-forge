@@ -36,15 +36,15 @@ endfunction
 n = 30;
 theta = [1;1];
 
-reps = 100;
+reps = 1000;
 f = "olswrapper";
 args = {n, theta};
 outfile = "mc_output";
 n_pooled = 10;
+verbose = true;
 
+# montecarlo(f, args, reps, outfile, n_pooled, false, verbose);
 
-montecarlo(f, args, reps, outfile, n_pooled, false, true);
-
-# if not(MPI_Initialized) MPI_Init; endif
-# montecarlo(f, args, reps, outfile, n_pooled, true);
-# if not(MPI_Finalized) MPI_Finalize; endif
+if not(MPI_Initialized) MPI_Init; endif
+montecarlo(f, args, reps, outfile, n_pooled, verbose);
+if not(MPI_Finalized) MPI_Finalize; endif

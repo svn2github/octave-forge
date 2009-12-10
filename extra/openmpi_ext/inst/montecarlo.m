@@ -56,16 +56,16 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,verbose)
 	if is_node # compute nodes
 		more_please = 1;
 		while more_please
-				for i = 1:n_pooled
-					contrib = feval(f, f_args);
-					contribs(i,:) = contrib;
-				endfor
-				MPI_Send(contribs, 0, mytag, CW);
-				# check if we're done
-				if (MPI_Iprobe(0, is_node, CW)) # check for ping from rank 0
-					junk = MPI_Recv(0, is_node, CW);
-					break;
-				endif
+			for i = 1:n_pooled
+				contrib = feval(f, f_args);
+				contribs(i,:) = contrib;
+			endfor
+			MPI_Send(contribs, 0, mytag, CW);
+			# check if we're done
+			if (MPI_Iprobe(0, is_node, CW)) # check for ping from rank 0
+				junk = MPI_Recv(0, is_node, CW);
+				break;
+			endif
 		endwhile
 	else # frontend
 		received = 0;
@@ -74,35 +74,36 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,verbose)
 			if use_mpi
 				# retrieve results from compute nodes
 				for i = 1:nodes-1
-					pause(0.01); # don't overwhelm the network with requests
 					# compute nodes have results yet?
 					ready = false;
 					ready = MPI_Iprobe(i, mytag, CW); # check if message pending
 					if ready
-					# get it if it's there
-					contribs = MPI_Recv(i, mytag, CW);
-					need = reps - received;
-					received = received + n_pooled;
-					# truncate?
-					if n_pooled  >= need
-							contribs = contribs(1:need,:);
-							done = true;
-					endif
-					# write to output file
-					FN = fopen (outfile, "a");
-					if (FN < 0) error ("montecarlo: couldn't open output file %s", outfile); endif
-					t = etime(clock(), t0);
-					for j = 1:rows(contribs)
+						# get it if it's there
+						contribs = MPI_Recv(i, mytag, CW);
+						need = reps - received;
+						received = received + n_pooled;
+						# truncate?
+						if n_pooled  >= need
+								contribs = contribs(1:need,:);
+								done = true;
+						endif
+						# write to output file
+						FN = fopen (outfile, "a");
+						if (FN < 0) error ("montecarlo: couldn't open output file %s", outfile); endif
+						t = etime(clock(), t0);
+						for j = 1:rows(contribs)
 							fprintf(FN, "%f ", i, t, contribs(j,:));
 							fprintf(FN, "\n");
-					endfor
-					fclose(FN);
-					if verbose printf("\nContribution received from node%d.  Received so far: %d\n", i, received); endif
+						endfor
+						fclose(FN);
+						if verbose printf("\nContribution received from node%d.  Received so far: %d\n", i, received); endif
 					endif
 					# tell compute nodes to stop loop
 					if done
-						for i = 1:nodes-1
-							MPI_Send(" ",i,i,CW);
+						for i = 1:(nodes-1)
+							ready = MPI_Iprobe(i, mytag, CW); # get last messages
+							if ready contribs = MPI_Recv(i, mytag, CW); endif
+							MPI_Send(" ",i,i,CW); # send out message to stop
 						endfor
 						break;
 					endif
@@ -116,15 +117,15 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,verbose)
 				received = received + n_pooled;
 				# truncate?
 				if n_pooled  >= need
-						contribs = contribs(1:need,:);
+					contribs = contribs(1:need,:);
 				endif
 				# write to output file
 				FN = fopen (outfile, "a");
 				if (FN < 0) error ("montecarlo: couldn't open output file %s", outfile); endif
 				t = etime(clock(), t0);
 				for j = 1:rows(contribs)
-						fprintf(FN, "%f ", 0, t, contribs(j,:));
-						fprintf(FN, "\n");
+					fprintf(FN, "%f ", 0, t, contribs(j,:));
+					fprintf(FN, "\n");
 				endfor
 				fclose(FN);
 				if verbose printf("\nContribution received from node 0.  Received so far: %d\n", received); endif

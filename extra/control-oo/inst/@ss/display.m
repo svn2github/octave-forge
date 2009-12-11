@@ -47,16 +47,15 @@ function display (sys)
     stname = __markemptynames__ (stname);
   endif
 
-  ## fprintf ("SS object %s:\n", inputname(1));
   disp ("");
 
   if (! isempty (sys.a))
-    dispmat (sys.a, "a", stname, stname);
-    dispmat (sys.b, "b", stname, inname);
-    dispmat (sys.c, "c", outname, stname);
+    dispmat (sys.a, [inputname(1), ".a"], stname, stname);
+    dispmat (sys.b, [inputname(1), ".b"], stname, inname);
+    dispmat (sys.c, [inputname(1), ".c"], outname, stname);
   endif
 
-  dispmat (sys.d, "d", outname, inname);
+  dispmat (sys.d, [inputname(1), ".d"], outname, inname);
 
   display (sys.lti);  # display sampling time
 

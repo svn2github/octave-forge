@@ -40,11 +40,10 @@ function display (sys)
     outname = __markemptynames__ (outname);
   endif
 
-  ## fprintf ("TF object %s:\n", inputname(1));
   disp ("");
 
   for m = 1 : nu
-    disp (["Transfer function from input \"", inname{m}, "\" to output ..."]);
+    disp (["Transfer function \"", inputname(1), "\" from input \"", inname{m}, "\" to output ..."]);
     for p = 1 : ny
       dispfrac (sys.num{p, m}, sys.den{p, m}, sys.tfvar, outname{p});
     endfor

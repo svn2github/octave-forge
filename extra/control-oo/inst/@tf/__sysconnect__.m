@@ -52,10 +52,13 @@ function sys = __sysconnect__ (sys, M)
   ##       3. Conversion to state-space, solving the problem there and
   ##          converting back to transfer function. Easier, but obviously,
   ##          this way needs MIMO __sys2ss__ and __sys2tf__ implementations
-  ##          as described in chapter 6 of Thomas Kailath's classic "Linear Systems".
-  ##          Possibly this is the way to go, but it works for proper systems only.
+  ##          as described in Thomas Kailath's classic "Linear Systems".
+  ##          Possibly this is the way to go, but it works for proper systems
+  ##          only unless descriptor state-space models are implemented.
 
   ## WARNING: The code below is a cheap hack to quickly enable SISO TF connections.
+
+  ## TODO: Check for den = 0, e.g. in feedback (tf (1), tf (-1))
 
   if (m == 2 && p == 2 && num{1,2} == 0 && num{2,1} == 0)
     sys.num(1,1) = num{1,1} * den{2,2};

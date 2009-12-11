@@ -38,4 +38,6 @@ function sys = __sysinv__ (sys)
   sys.num = den;
   sys.den = num;
 
+  ## TODO: catch case den = 0
+
 endfunction

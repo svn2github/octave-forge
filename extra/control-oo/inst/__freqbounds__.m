@@ -103,8 +103,13 @@ function [dec_min, dec_max] = __freqbounds__ (sys, wbounds = "std")
         dec_max++;
       endif
     case "ext"  # extended (for nyquist)
-      dec_min -= 2;
-      dec_max += 2;
+      if (any (abs (pol) < sqrt (eps)))  # look for integrators
+        ## dec_min -= 0.5;
+        dec_max += 2;
+      else 
+        dec_min -= 2;
+        dec_max += 2;
+      endif
     otherwise
       error ("freqbounds: second argument invalid");
   endswitch

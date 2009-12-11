@@ -1,0 +1,301 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.0  (Win32)">
+	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
+	<META NAME="CREATED" CONTENT="20091211;17230700">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
+	<META NAME="CHANGED" CONTENT="20091211;22461600">
+	<META NAME="Info 1" CONTENT="">
+	<META NAME="Info 2" CONTENT="">
+	<META NAME="Info 3" CONTENT="">
+	<META NAME="Info 4" CONTENT="">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { margin: 0.79in }
+		P { margin-bottom: 0.08in }
+		A:link { so-language: zxx }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<P ALIGN=CENTER STYLE="margin-bottom: 0in">README for Excel
+spreadsheet file r/w access scripts for octave (&gt;
+3.2.0)<BR><BR>Copyright (C) 2009, Philip Nienhuis &lt;prnienhuis at
+users.sf.net&gt;<BR><BR>This version 11 December 2009.</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>EXCEL
+ .XLS SUPPORT FILES</B></U></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR><B>doc/README-XLS.html</B></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in">This file.</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><I>----- Functions
+intended for direct invocation by users ------</I></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR><B>xlsread.m</B></P>
+<P STYLE="margin-bottom: 0in">All-in-one function for reading data
+from one specific worksheet in an Excel spreadsheet file. This script
+has Matlab-compatible functionality.<BR><BR><B>xlswrite.m</B></P>
+<P STYLE="margin-bottom: 0in">All-in-one function for writing data to
+one specific worksheet in an Excel spreadsheet file. This script has
+Matlab-compatible functionality. <BR><BR><B>xlsfinfo.m</B></P>
+<P STYLE="margin-bottom: 0in">All-in-one function for exploring basic
+properties of an Excel spreadsheet file. This script has
+Matlab-compatible functionality.<BR><BR><B>xlsopen.m</B></P>
+<P STYLE="margin-bottom: 0in">Function for &quot;opening&quot; (=
+providing a handle to) an Excel spreadsheet file (&quot;workbook&quot;).
+This function sorts out which interface to use for .xls access
+(i.e.,COM; Java &amp; Apache POI; JexcelAPI; etc.), but it's choice
+can be overridden.<BR><BR><B>xls2oct.m</B></P>
+<P STYLE="margin-bottom: 0in">Function for reading data from a
+specific worksheet pointed to in a struct created by xlsopen.m.
+xls2oct can be called multiple times consecutively using the same
+pointer struct, each time allowing to read data from different ranges
+and/or worksheets. Data are returned in the form of a 2D
+heterogeneous cell array that can be parsed by parsecell.m. xls2oct
+is a mere wrapper for interface-dependent scripts that do the actual
+low-level reading .<BR><BR><B>oct2xls.m</B></P>
+<P STYLE="margin-bottom: 0in">Function for writing data to a specific
+worksheet pointed to in a struct created by xlsopen.m. octxls can be
+called multiple times consecutively using the same pointer struct,
+each time allowing to write data to different ranges and/or
+worksheets. oct2xls is a mere wrapper for interface-dependent scripts
+that do the actual low-level writing.<BR><BR><B>xlsclose.m</B></P>
+<P STYLE="margin-bottom: 0in">Function for closing (the handle to) an
+Excel workbook. When data have been written to the workbook oct2xls
+will write the workbook to disk. Otherwise, the file pointer is
+simply closed and possibly used interfaces for Excel access
+(COM/ActiveX/Excel.exe) will be shut down properly.<BR><BR><B>parsecell.m</B></P>
+<P STYLE="margin-bottom: 0in">Function for separating the data in raw
+arrays returned by xls2oct, into numerical/logical and text (cell)
+arrays.</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR><I>------- Lower level
+function for indirect use --------<BR>(though there's no problem in
+calling them directly)</I></P>
+<P STYLE="margin-bottom: 0in"><BR><B>xls2com2oct.m, oct2com2xls.m</B></P>
+<P STYLE="margin-bottom: 0in">Functions for carrying out the actual
+reading from and writing to an Excel file using the COM interface on
+Windows systems where Excel has been installed. In fact, Excel.exe is
+invoked directly but invisibly. These low-level functions are not
+intended for direct use, they should rather be invoked through
+xls2oct() and oct2xls(). In principle all Excel file types can be
+processed providing the installed Excel version supports those
+formats. But for now only .xls is supported.<BR><BR><B>xls2jpoi2oct.m,
+oct2jpoi2xls.m</B></P>
+<P STYLE="margin-bottom: 0in">Functions for reading from and writing
+to an Excel file using the Java &amp; Apache POI interface on any
+system where Java &gt; 1.6.0 has been installed. These low-level
+functions are not meant to be invoked directly by users but rather
+through the xls2oct() and oct2xls() functions. Only Excel 97-2003
+files (BIFF8 format) and (to be implemented later:) OOXML spreadsheet
+files can be read from and written to.<BR><BR><B>xls2jxla2com.m,
+oct2jxla2com.m</B></P>
+<P STYLE="margin-bottom: 0in">Functions for reading from and writing
+to an Excel file using the Java &amp; JExcelAPI interface on any
+system where Java &gt; 1.6.0 is installed. These low-level functions
+aren't meant to be invoked directly by users but rather through the
+xls2oct() &amp; oct2xls() functions. Excel 95 (BIFF 5; reading only)
+and Excel 97-2003 (BIFF8; reading &amp; writing) formats are
+supported.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>REQUIRED
+SUPPORT SOFTWARE</B></U></FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>For the Excel/COM interface:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">A windows computer with Excel
+	installed</P>
+	<LI><P STYLE="margin-bottom: 0in">Octave-forge Windows-1.0.8 package
+	WITH LATEST SVN PATCHES APPLIED</P>
+</UL>
+<P STYLE="margin-left: 0.25in; text-indent: -0.26in; margin-bottom: 0in">
+<BR>
+</P>
+<P STYLE="margin-left: 0.25in; text-indent: -0.26in; margin-bottom: 0in">
+For the Java / Apache POI / JExcelAPI interfaces (general):</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">octave-forge java-1.2.5 package or
+	later version on Linux</P>
+	<LI><P STYLE="margin-bottom: 0in">octave-forge java-1.2.6 with
+	latest svn fixes on Windows/MingW</P>
+	<LI><P STYLE="margin-bottom: 0in">Java jre or jdk &gt; 1.6.0 (hasn't
+	been tested with earlier versions)</P>
+	<LI><P STYLE="margin-bottom: 0in">./jre/lib/rt.jar in classpath</P>
+</UL>
+<P STYLE="margin-bottom: 0in">Apache POI specific:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">class .jars:
+	<B>poi-3.5-FINAL-&lt;date&gt;.jar</B> &amp;
+	<B>poi-ooxml-3.5-FINAL-&lt;date&gt;.jar</B> (or later versions) in
+	classpath</P>
+	<LI><P STYLE="margin-bottom: 0in">Get it here:
+	<A HREF="http://poi.apache.org/download.html">http://poi.apache.org/download.html</A></P>
+</UL>
+<P STYLE="margin-bottom: 0in">JExcelAPI specific:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">class .jar: <B>jxl.jar</B> in
+	classpath</P>
+	<LI><P STYLE="margin-bottom: 0in">Get it here:
+	<A HREF="http://sourceforge.net/projects/jexcelapi/files/">http://sourceforge.net/projects/jexcelapi/files/</A></P>
+</UL>
+<P STYLE="margin-bottom: 0in">Hint: simply put the relevant
+javaaddpath statements in the .octaverc file.</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>USAGE</B></U></FONT></P>
+<P STYLE="margin-bottom: 0in"><BR><B>xlsread</B> and <B>xlswrite</B>
+are mere wrappers for <B>xlsopen</B>-<B>xls2oct</B>-<B>xlsclose</B>-<B>parsecell</B>
+and <B>xlsopen</B>-<B>oct2xls</B>-<B>xlsclose</B> sequences, resp.
+They exist for the sake of Matlab compatibility.<BR><BR><B>xlsfinf</B>o
+can be used for finding out what worksheet names exist in the
+file.<BR><BR>Invoking <B>xlsopen</B>/..../<B>xlsclose</B> directly
+provides for much more flexibility, speed, and robustness than
+<B>xlsread</B> / <B>xlswrite</B>. Indeed, using the same file handle
+(pointer struct) you can mix reading &amp; writing before writing the
+workbook out to disk using xlsclose.<BR>And: <B>xlsopen </B>/
+<B>xlsclose</B> hide the gory interface details from the
+user.<BR>Currently only .xls files (BIFF8) can be read/written; using
+JExcelAPI BIFF5 can be read as well.<BR><BR>When using
+<B>xlsopen</B>....<B>xlsclose</B> be sure to keep track of the file
+handle struct.<BR><BR>A possible scenario:<BR><BR><B>xlh = xlsopen
+(&lt;excel_filename&gt; , [rw], [&lt;requested interface&gt;])</B><BR><I>#
+Set rw to 1 if you want to write to a workbook immediately.<BR># In
+that case the check for file existence is skipped and<BR># -if
+needed- a new workbook created.<BR># If you really want an other
+interface than auto-selected<BR># by xlsopen you can request that.
+But xlsopen still checks<BR># proper support for your choice.</I><BR><BR><I>#
+Read some data</I><BR><B>[ rawarr1, xlh ] = xls2oct (xlh,
+&lt;SomeWorksheet&gt;, &lt;Range&gt;)</B><BR><I># Be sure to specify
+xlh as output argument as xls2oct keeps<BR># track of changes and the
+need to write the workbook to disk <BR># in the xlhstruct. And the
+origin range is conveyed through<BR># the xlh pointer struct.</I><BR><BR><I>#
+Separate data into numeric and text data</I><BR><B>[ numarr1,
+txtarr1, lim1 ] = parsecell (rawarr1)</B><BR><I><BR></I># Get more
+data from another worksheet in the same workbook<BR><B>[ rawarr2, xlh
+] = xls2oct (xlh, &lt;SomeOtherWorksheet&gt;, &lt;Range&gt;)</B><BR><B>[
+numarr2, txtarr2, lim2 ] = parsecell (rawarr2)</B><BR><BR># &lt;...
+Analysis and preparation of new data in cell array Newdata....&gt;<BR><BR><I>#
+Add new data to spreadsheet</I><BR><B>xlh = oct2xls (Newdata, xlh,
+&lt;AnotherWorksheet&gt;, &lt;Range&gt;)</B><BR><BR><I># Close the
+workbook and write it to disk; then clear the handle</I><BR><B>xlh =
+xlsclose (xlh)</B><BR><B>clear xlh</B></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>MATLAB
+COMPATIBILITY</B></U></FONT></P>
+<P STYLE="margin-bottom: 0in"><BR><B>xlsread</B>, <B>xlswrite</B> and
+<B>xlsfinfo</B> are for the most part matlab-compatible. Some small
+differences are mentioned below.<BR><BR><B>xlsread</B><BR>Matlab's
+<B>xlsread</B> supports invoking extra functions while reading
+(&quot;passing function handle&quot;); octave not. But this can be
+simulated outside <B>xlsread</B>.<BR><BR>Matlab's <B>xlsread</B>
+flags some spreadsheet errors, octave-forge just returns blank
+cells.<BR><BR>When using a Java interface, octave-forge returns info
+about the actual (rather than the requested) cell range where the
+data came from; matlab can't. This is due to Excel automatically
+trimming returned arrays from empty outer columns and rows; when
+using COM, octave has the same limitation.<BR>Personally I find it
+very useful to know from what part of a worksheet the data originate
+so I've put quite some effort in it :-)<BR><BR>When using the Java
+interface, reading and writing xls-files by octave-forge is
+platform-independent. On systems w/o Excel Matlab can only read Excel
+95 formatted .xls files.<BR><BR>Matlab's <B>xlsread</B> invokes
+<B>csvread</B> if no Excel interface is present. Octave-forge's
+<B>xlsread</B> doesn't.<BR><BR><B>xlswrite</B><BR>Octave-forge's
+<B>xlswrite</B> works on systems w/o Excel support, matlab's
+doesn't.<BR><BR><B>xlsfinfo</B><BR>When invoking Excel/COM interface,
+octave-forge's <B>xlsfinfo</B> also echoes the type of sheet
+(worksheet, chart), not just the sheet names. Using Java I haven't
+found similar functionality (yet).</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>COMPARISON
+OF INTERFACES &amp; USAGE</B></U></FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">Using Excel itself (through COM /
+ActiveX on Windows systems) is probably the most robust and versatile
+option. There's one gotcha: in case of some type of COM errors Excel
+will keep running invisibly, you can only end it through Task
+Manager.<BR>A tiny problem is that one cannot find out easily through
+COM what file types are supported; xls, wks, wk1, xlsx, etc.<BR>Another
+-obvious- limitation is that COM Excel access only works on Windows
+systems where Excel is installed.<BR>As Excel/COM trims returned
+arrays from empty outer row and columns it is not easy to find out
+from what cell range the returned data originate.<BR><BR>JExcelAPI
+(Java-based and therefore platform-independent) is proven technology
+but switching between reading and writing is quite involved and
+memory-hungry when processing large spreadsheets. As the docs state,
+JExcelAPI is optimized for reading and it does do that well - but
+slower than Excel/COM. The fact that upon a switch from reading to
+writing the existing spreadsheet is overwritten in place by a blank
+one and that you can only get the contents back wen writing out all
+of the changes is worrying - and any change after the first write()
+is lost as a next write() doesn't seem to work. The first is by
+JExcelAPI design, the second is probably a bug (in octave-forge/Java
+or JExcelAPI ? I don't know). Adding data to existing spreadsheets
+does work, but IMO undue confidence is needed.</P>
+<P STYLE="margin-bottom: 0in">JExcelAPI supports BIFF5 and BIFF8
+(Excel 95 and Excel 97-2003, respectively).<BR><BR>Apache POI
+(Java-based and platform-independent too) is based on the
+OpenOffice.org I/O Excel r/w routines. It is a little more versatile
+than JExcelAPI, however it while it doesn't support BIFF5 it does
+support BIFF8 and OOXML (Excel 2007). It is almost as fast as native
+Excel &amp; COM, but at the moment (3.5-FINAL) evaluation of complex
+Excel formulas while reading .xls files seems broken and OOXML
+support is not working yet through octave.<BR><BR>All in all, of the
+two Java options I'd lightly prefer JExcelAPI but I hope that Apache
+POI gets better soon.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>DEVELOPMENT</B></U></FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><B>xlsopen</B>/<B>xlsclos</B>e and
+friends have been written so that adding other interfaces (Perl?
+...?) should be very easily accomplished. <B>xlsopen</B> merely needs
+two stanzas, <B>xls2oct</B>, <B>oct2xls</B> and <B>xlsfinfo</B> each
+need an additional elseif clause, and <B>xlsclose</B> needs a small
+stanza for closing the pointer struct and writing to disk. 
+</P>
+<P STYLE="margin-bottom: 0in">The real work lies in creating the
+relevant <B>xls2&lt;...&gt;2oct</B> &amp; <B>oct2&lt;...&gt;2xls</B>
+scripts, but that shouldn't be really hard. Separating the file
+access functions and the actual reading/writing from/to the workbook
+in memory has made developer's life (I mean: my time developing this
+stuff) much easier.<BR><BR>Some other options for development (who?):</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">Speeding up, especially Java
+	worksheet/cell access. For cracks, not me.</P>
+	<LI><P STYLE="margin-bottom: 0in">Automatic conversion of Excel
+	date/time values into octave ones and vice versa. But then again
+	Excel's dates are 01-01-1900 based (octave's 0-0-0000) and buggy
+	(Excel thinks 1900 is a leap year), and I sometimes have to use
+	dates from before 1900. Maybe as an option?</P>
+	<LI><P STYLE="margin-bottom: 0in">Creating Excel graphs (a
+	significant enterprise to write from scratch).</P>
+	<LI><P STYLE="margin-bottom: 0in">ODS (OpenOffice.org Open Document)
+	support. Probably to be called odsread.m / odswrite.m. This is on my
+	own wish list.</P>
+	<LI><P STYLE="margin-bottom: 0in">Support for &quot;passing function
+	handle&quot; in xlsread.</P>
+</UL>
+<P STYLE="margin-left: 0.26in; text-indent: -0.26in; margin-bottom: 0in">
+<BR>
+</P>
+<P STYLE="margin-left: 0.26in; text-indent: -0.26in; margin-bottom: 0in">
+Enjoy!</P>
+<P STYLE="margin-left: 0.26in; text-indent: -0.26in; margin-bottom: 0in">
+<BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-left: 0.26in; text-indent: -0.26in; margin-bottom: 0in">
+Philip Nienhuis, Dec 10, 2009</P>
+</BODY>
+</HTML>

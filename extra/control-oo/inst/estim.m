@@ -16,6 +16,10 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @deftypefn {Function File} {@var{est} =} estim (@var{sys}, @var{l})
+## @deftypefnx {Function File} {@var{est} =} estim (@var{sys}, @var{l}, @var{sensors}, @var{known})
+## Return state estimator for a given estimator gain
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2009

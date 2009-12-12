@@ -16,6 +16,10 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r})
+## @deftypefnx {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r}, @var{s})
+## Design kalman estimator for LTI systems.
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2009

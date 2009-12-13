@@ -18,29 +18,74 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{f} =} place (@var{sys}, @var{p})
 ## @deftypefnx {Function File} {@var{f} =} place (@var{a}, @var{b}, @var{p})
+## @deftypefnx {Function File} {[@var{f}, @var{nfp}, @var{nap}, @var{nup}] =} place (@var{sys}, @var{p}, @var{alpha})
+## @deftypefnx {Function File} {[@var{f}, @var{nfp}, @var{nap}, @var{nup}] =} place (@var{a}, @var{b}, @var{p}, @var{alpha})
 ## Pole assignment for a given matrix pair (A,B) such that eig (A-B*F) = P.
+## If parameter alpha is specified, poles with real parts (continuous time)
+## or moduli (discrete time) below alpha are left untouched.
 ## Uses SLICOT SB01BD by courtesy of NICONET e.V.
-## Special thanks to Peter Benner from TU Chemnitz for his advice.
+## <http://www.slicot.org>
+##
+## @strong{Inputs}
+## @table @var
+## @item sys
+## LTI system.
+## @item p
+## Desired eigenvalues of the closed-loop system state-matrix A-B*F.
+## @item alpha
+## Specifies the maximum admissible value, either for real
+## parts or for moduli, of the eigenvalues of A which will
+## not be modified by the eigenvalue assignment algorithm.
+## ALPHA >= 0 for discrete-time systems.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item f
+## State feedback gain matrix.
+## @item nfp
+## The number of fixed poles, i.e. eigenvalues of A having
+## real parts less than ALPHA, or moduli less than ALPHA.
+## These eigenvalues are not modified by place.
+## @item nap
+## The number of assigned eigenvalues. NAP = N-NFP-NUP.
+## @item nup
+## The number of uncontrollable eigenvalues detected by the
+## eigenvalue assignment algorithm.
+## @end table
+##
 ## @end deftypefn
 
+## Special thanks to Peter Benner from TU Chemnitz for his advice.
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: December 2009
-## Version: 0.1
+## Version: 0.2
 
-function f = place (a, b, p)
+function [f, nfp, nap, nup] = place (a, b, p = [], alpha = [])
 
-  ## TODO: add possibility to specify alpha as a fourth parameter
-
-  if (nargin == 2)  # place (sys, p)
-    p = b;
-    [a, b, c, d, tsam] = ssdata (a);
-  elseif (nargin == 3)  # place (a, b, p)
-    if (! isnumeric (a) || ! isnumeric (b) || ! issquare (a) || rows (a) != rows (b))
-      error ("place: matrices a and b not conformal");
-    endif
-    tsam = 0;  # assume continuous system
-  else
+  if (nargin < 2 || nargin > 4)
     print_usage ();
+  endif
+
+  if (isa (a, "lti"))  # place (sys, p), place (sys, p, alpha)
+    if (nargin > 3)  # nargin < 2 already tested
+      print_usage ();
+    else
+      alpha = p;
+      p = b;
+      sys = a;
+      [a, b] = ssdata (sys);
+      digital = ! isct (sys);  # treat tsam = -1 as continuous system
+    endif
+  else  # place (a, b, p), place (a, b, p, alpha)
+    if (nargin < 3)  # nargin > 4 already tested
+      print_usage ();
+    else
+      if (! isnumeric (a) || ! isnumeric (b) || ! issquare (a) || rows (a) != rows (b))
+        error ("place: matrices a and b not conformal");
+      endif
+      digital = 0;  # assume continuous system
+    endif
   endif
 
   if (! isnumeric (p) || ! isvector (p) || isempty (p))
@@ -58,14 +103,16 @@ function f = place (a, b, p)
     error ("place: at most %d eigenvalues can be assigned for the given matrix a (%dx%d)",
             n, n, n);
   endif
-  
-  if (tsam > 0)
-    alpha = 0;
-  else
-    alpha = - norm (a, inf);
+
+  if (isempty (alpha))
+    if (digital)
+      alpha = 0;
+    else
+      alpha = - norm (a, inf);
+    endif
   endif
 
-  [f, iwarn] = slsb01bd (a, b, wr, wi, tsam, alpha);
+  [f, iwarn, nfp, nap, nup] = slsb01bd (a, b, wr, wi, digital, alpha);
   f = -f;  # A + B*F --> A - B*F
   
   if (iwarn)
@@ -84,3 +131,29 @@ endfunction
 %! Kexpected = [3.5, 3.5];
 %!assert (place (ss (A, B, C), P), Kexpected, 2*eps);
 %!assert (place (A, B, P), Kexpected, 2*eps);
+
+## FIXME: Test from SLICOT example SB01BD fails
+#%!shared F, F_exp
+#%! A = [-6.8000   0.0000  -207.0000   0.0000
+#%!       1.0000   0.0000     0.0000   0.0000
+#%!      43.2000   0.0000     0.0000  -4.2000
+#%!       0.0000   0.0000     1.0000   0.0000];
+#%!
+#%! B = [ 5.6400   0.0000
+#%!       0.0000   0.0000
+#%!       0.0000   1.1800
+#%!       0.0000   0.0000];
+#%!
+#%! P = [(-0.5000 + 0.1500*i)
+#%!      (-0.5000 +-0.1500*i)
+#%!      (-2.0000 + 0.0000*i)
+#%!      (-0.4000 + 0.0000*i)];
+#%!
+#%! ALPHA = -0.4;
+#%!
+#%! F = place (A, B, P, ALPHA)
+#%!
+#%! F_exp = - [-0.0876  -4.2138   0.0837 -18.1412
+#%!            -0.0233  18.2483  -0.4259  -4.8120];
+#%!
+#%!assert (F, F_exp, 1e-4);

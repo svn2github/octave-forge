@@ -84,10 +84,10 @@ DEFUN_DLD (slsb01bd, args, nargout, "Slicot SB01BD Release 5.0")
         NDArray b = args(1).array_value ();
         NDArray wr = args(2).array_value ();
         NDArray wi = args(3).array_value ();
-        double tsam = args(4).double_value ();
+        int digital = args(4).int_value ();
         double alpha = args(5).double_value ();
         
-        if (tsam > 0)
+        if (digital == 1)
             dico = 'D';
         else
             dico = 'C';
@@ -150,6 +150,9 @@ DEFUN_DLD (slsb01bd, args, nargout, "Slicot SB01BD Release 5.0")
         // return values
         retval(0) = f;
         retval(1) = octave_value (iwarn);
+        retval(2) = octave_value (nfp);
+        retval(3) = octave_value (nap);
+        retval(4) = octave_value (nup);
         
         // free memory
         delete[] dwork;

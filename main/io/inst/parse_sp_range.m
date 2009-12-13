@@ -21,15 +21,14 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-06-20
-## Latest update 2009-12-11
+## Latest update 2009-12-13
 
 function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
-
-	# This entire function needs fixing or replacement for OOXML (larger ranges)
 
 	range = deblank (toupper (range_org));
 	range_error = 0; nrows = 0; ncols = 0;
 
+	# Basic checks
 	if (index (range, ':') == 0) 
 		if (isempty (range))
 			range_error = 0;
@@ -37,10 +36,15 @@ function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
 			rightcol = 'A';
 		else
 			# Only upperleft cell given, just complete range to 1x1
+			# (needed for some routines)
 			range = [range ":" range];
 		endif
 	endif
+
+	# Split up both sides of the range
 	[topleft, lowerright] = strtok (range, ':');
+
+	# Get toprow and clean up left column
 	[st, en] = regexp (topleft, '\d+');
 	toprow = str2num (topleft(st:en));
 	leftcol = deblank (topleft(1:st-1));
@@ -51,6 +55,7 @@ function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
 	[st, en2] = regexp (leftcol,'\D+');
 	leftcol = leftcol(en1+1:en2);
 
+	# Get bottom row and clean up right column
 	[st, en] = regexp (lowerright,'\d+');
 	bottomrow = str2num (lowerright(st:en));
 	rightcol = deblank (lowerright(2:st-1));
@@ -60,33 +65,30 @@ function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
 	endif
 	[st, en2] = regexp (rightcol,'\D+');
 	rightcol = rightcol(en1+1:en2);
+
+	# Check nr. of rows
 	nrows = bottomrow - toprow + 1; 
 	if (nrows < 1) 
 		range_error = 1; 
 	endif
 
 	if (range_error == 0) 
-	# Get columns. 
-	# FIXME for OOXML! We provisonally assume Excel 97 format, max 256 columns
-	ncols = 0;  
-	[st, en1] = regexp (leftcol, '\D+');
-	[st, en2] = regexp (rightcol, '\D+');
-	i1= 0; i2 = 0;
-	if (en2 > en1)
-		i1 = rightcol(2:2) - leftcol(1:1) + 1;
-		i2 = rightcol(1:1) - 'A'+ 1;
-		lcol = leftcol(1:1) - 'A' + 1;
-		elseif (en2 == en1) 
-			i1 = rightcol(en2) - leftcol(en2) + 1;
-			lcol = leftcol(1:1) - 'A' + 1;
-			if (en2 == 2)
-				i2 = rightcol(1) - leftcol(1);
-				lcol = lcol * 26 + (leftcol(2:2) - 'A' + 1);
-			endif
-		else
-			range_error = 1;	 
-		endif
-		ncols = i1 + 26 * i2;
+		# Get left column nr.
+		[st, en] = regexp (leftcol, '\D+');
+		lcol = (leftcol(st:st) - 'A' + 1);
+		while (++st <= en)
+			lcol = lcol * 26 + (leftcol(st:st) - 'A' + 1);
+		endwhile
+
+		# Get right column nr.
+		[st, en] = regexp (rightcol, '\D+');
+		rcol = (rightcol(st:st) - 'A' + 1);
+		while (++st <= en)
+			rcol = rcol * 26 + (rightcol(st:st) - 'A' + 1);
+		endwhile
+
+		# Check
+		ncols = rcol - lcol + 1
 		if (ncols < 1) 
 			range_error = 1; 
 		endif

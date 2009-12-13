@@ -101,11 +101,11 @@
 ## @end example
 ##
 ## @example
-##   [An, Tn, Ra, status] = xlsread ('Sales2009.xls', 'Third_sheet');
+##   [An, Tn, Ra, limits] = xlsread ('Sales2009.xls', 'Third_sheet');
 ##   (which returns the numeric contents in range C3:AB40 in worksheet
 ##   'Third_sheet' in file test4.xls into array An, the text data into
-##   array Tn, the raw cell data into cell array Ra and the return status
-##   in status)
+##   array Tn, the raw cell data into cell array Ra and the ranges from
+##   where the actual data came in limits)
 ## @end example
 ##
 ## @seealso xlswrite, xlsopen, xls2oct, xlsclose, xlsfinfo, oct2xls
@@ -116,7 +116,7 @@
 ## Created: 2009-10-16
 ## Latest update: 2009-12-11
 
-function [ numarr, txtarr, rawarr, limits ] = xlsread (fn, wsh, datrange, reqintf=[])
+function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
 rstatus = 0;
 
@@ -164,22 +164,10 @@ if (strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'POI') || strcmp (xls.xtype,
 	xls = xlsclose (xls);
 
 	if (rstatus)
-		[numarr, txtarr, lims] = parsecell (rawarr); 
-		limits  = [];
-		
-		# Rebase various limits to original spreadsheet limits
-		if ((strcmp (xtype, 'POI') || strcmp (xtype, 'JXL')) && ~isempty (rawlimits))
-			correction = [1; 1];
-			if (~isempty(lims.numlimits))
-				limits.numlimits(:,1) = rawlimits(:,1) + lims.numlimits(:,1) - correction(:);
-				limits.numlimits(:,2) = limits.numlimits(:,1) + lims.numlimits(:,2) - lims.numlimits(:,1);
-			endif
-			if (~isempty(lims.txtlimits))
-				limits.txtlimits(:,1) = rawlimits(:,1) + lims.txtlimits(:,1) - correction(:);
-				limits.txtlimits(:,2) = limits.txtlimits(:,1) + lims.txtlimits(:,2) - lims.txtlimits(:,1);
-			endif
-			limits.rawlimits = rawlimits;
-		endif
+		[numarr, txtarr, lims] = parsecell (rawarr, rawlimits);
+		# Wipe lims if using Excel (that doesn't return reliable rawlimits).
+		# The user can get the limits relative to the rawarr by parsecell (rawarr).
+		if (strcmp (xtype, 'COM')) lims = []; endif
 	else
 		rawarr = {}; numarr = []; txtarr = {};
 	endif

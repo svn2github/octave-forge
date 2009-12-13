@@ -38,11 +38,11 @@
 ## @end deftypefn
 
 ## Author: Philip Nienhuis
-## Created: 2009-12-11
+## Created: 2009-12-13
 
-function [ numarr, txtarr, lim ] = parsecell (rawarr)
+function [ numarr, txtarr, lim ] = parsecell (rawarr, rawlimits=[])
 
-	lim = struct ( "numlimits", [], "txtlimits", [] );
+	lim = struct ( "numlimits", [], "txtlimits", []);
 
 	numarr = [];
 	txtarr = {};
@@ -59,7 +59,7 @@ function [ numarr, txtarr, lim ] = parsecell (rawarr)
 		endif
 		# Prepare parsing
 		[nrows, ncols] = size (rawarr);
-		
+	
 		# Find text entries in raw data cell array
 		txtptr = cellfun ('isclass', rawarr, 'char');
 		if (~no_txt)
@@ -82,6 +82,11 @@ function [ numarr, txtarr, lim ] = parsecell (rawarr)
 				# Crop textarray
 				txtarr = txtarr(irowt:irowb, icoll:icolr);
 				lim.txtlimits = [icoll, icolr; irowt, irowb];
+				if (~isempty (rawlimits))
+					correction = [1; 1];
+					lim.txtlimits (:,1) = lim.txtlimits(:,1) + rawlimits(:,1) - correction;
+					lim.txtlimits (:,2) = lim.txtlimits(:,2) + rawlimits(:,1) - correction;
+				endif
 			else
 				# If no text cells found return empty text array
 				txtarr = {};
@@ -118,8 +123,16 @@ function [ numarr, txtarr, lim ] = parsecell (rawarr)
 				endfor
 				numarr = cat (2, tmparr{:});
 				lim.numlimits = [icoll, icolr; irowt, irowb];
+				if (~isempty (rawlimits))
+					correction = [1; 1];
+					lim.numlimits(:,1) = lim.numlimits(:,1) + rawlimits(:,1) - correction(:);
+					lim.numlimits(:,2) = lim.numlimits(:,2) + rawlimits(:,1) - correction(:);
+				endif
 			endif
 		endif
+
+		lim.rawlimits = rawlimits;
+	
 	endif
 
 endfunction

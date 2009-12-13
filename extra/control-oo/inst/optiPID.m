@@ -81,10 +81,10 @@ T_AH = feedback (L_AH, 1);
 T_opt = feedback (L_opt, 1);
 
 % A Posteriori Stability Check
-disp ('optiPID: for stability, all eigenvalues should have negative real parts:');
+disp ('optiPID: for stability, all poles should have negative real parts:');
 
-eigw_AH = eig (T_AH)
-eigw_opt = eig (T_opt)
+p_AH = pole (T_AH)
+p_opt = pole (T_opt)
 
 % Stability Margins
 disp ('optiPID: gain margin gamma [-] and phase margin phi [deg]:');

@@ -44,10 +44,10 @@ function str = tfpoly2str (p, tfvar = "x")
     if (lp == 1)
       str = [cs, num2str(abs (a), 4)];
     else
-      if (abs (a) != 1)
-        str = [cs, coeff(a), " ", variab(tfvar, lp-1)];
-      else
+      if (abs (a) == 1)
         str = [cs, coeff(a), variab(tfvar, lp-1)];
+      else
+        str = [cs, coeff(a), " ", variab(tfvar, lp-1)];
       endif
     endif
 
@@ -63,10 +63,10 @@ function str = tfpoly2str (p, tfvar = "x")
             cs = " + ";
           endif
 
-          if (abs (a) != 1)
-            str = [str, cs, coeff(a), " ", variab(tfvar, lp-k)];
-          else
+          if (abs (a) == 1)
             str = [str, cs, coeff(a), variab(tfvar, lp-k)];
+          else
+            str = [str, cs, coeff(a), " ", variab(tfvar, lp-k)];
           endif
         endif
       endfor

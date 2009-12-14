@@ -81,7 +81,7 @@ function [K, varargout] = hinfsyn (P, nmeas, ncon, gmax = 1e6)
     N = lft (P, K);
     varargout{1} = N;
     if (nargout > 2)
-      varargout{2} = norm (N);
+      varargout{2} = norm (N, inf);
     endif
   endif
 

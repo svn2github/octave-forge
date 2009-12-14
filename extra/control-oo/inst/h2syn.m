@@ -82,7 +82,7 @@ function [K, varargout] = h2syn (P, nmeas, ncon)
     N = lft (P, K);
     varargout{1} = N;
     if (nargout > 2)
-      varargout{2} = norm (N);
+      varargout{2} = norm (N, 2);
     endif
   endif
 

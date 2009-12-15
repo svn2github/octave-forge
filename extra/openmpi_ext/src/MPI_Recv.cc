@@ -675,6 +675,68 @@ tanktag[4] = mytag+4;
    return(MPI_SUCCESS);
 
 }
+int recv_bool_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
+
+OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
+tanktag[0] = mytag;
+tanktag[1] = mytag+1;
+tanktag[2] = mytag+2;
+tanktag[3] = mytag+3;
+tanktag[3] = mytag+4;
+  int info;
+  int nitem,nd;
+  MPI_Status stat;
+  dim_vector dv;
+ 
+//       nitem is the total number of elements 
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
+//       printf("I have received number of elements  %i \n",nitem);
+      if (info !=MPI_SUCCESS) return info;
+//      ndims is number of dimensions
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
+//             printf("I have received number of dimensions %i \n",nd);
+      if (info !=MPI_SUCCESS) return info;
+//  Now create contiguos datatype for dim vector
+  dv.resize(nd);
+  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
+  MPI_Datatype dimvec;
+  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
+  MPI_Type_commit(&dimvec);
+
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
+      if (info !=MPI_SUCCESS) return info;
+
+// Now reverse the content of int vector into dim vector
+ for (octave_idx_type i=0; i<nd; i++)
+ {
+//    printf("I am printing dimvector  %i \n",i);
+   dv(i) = dimV[i] ;
+ }
+    boolNDArray myNDA(dv);
+//     double *p = myNDA.fortran_vec();
+   OCTAVE_LOCAL_BUFFER(int,LBNDA,nitem);
+//    printf("BUFFER CREATED \n");
+  // Now create the contiguous derived datatype
+  MPI_Datatype fortvec;
+  MPI_Type_contiguous(nitem,MPI_INT, &fortvec);
+  MPI_Type_commit(&fortvec);
+
+          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
+//           printf("info for receiving data is = %i \n",info);
+      if (info !=MPI_SUCCESS) return info;
+  for (octave_idx_type i=0; i<nitem; i++)
+  {
+//       *LBNDA = *p;
+//       LBNDA++;
+//       p++;
+      myNDA(i)=LBNDA[i];
+  }
+    ov = myNDA;
+   if (info !=MPI_SUCCESS) return info;
+   return(MPI_SUCCESS);
+   return(info);
+}
+
 
 int recv_int16_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
 
@@ -1240,6 +1302,20 @@ OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   if (info !=MPI_SUCCESS) return info;
    return(info);
 }
+int recv_bool( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
+/*-----------------------------*/        /* it's just a value */
+OCTAVE_LOCAL_BUFFER(int,tanktag,2);
+  tanktag[0]=mytag;
+  tanktag[1]=mytag+1;
+  int info;
+  MPI_Status stat;
+  int d=0;
+  info = MPI_Recv((&d), 1,MPI_INT, source, tanktag[1] , comm,&stat);
+  ov =d;
+//    printf("info for scalar is = %i \n",info);
+  if (info !=MPI_SUCCESS) return info;
+   return(info);
+}
 
 int recv_int8_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
@@ -1447,6 +1523,7 @@ int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* v
   switch (t_id) {
 
     case ov_scalar:    			return(recv_scalar (comm, ov,source,mytag));
+    case ov_bool:			return(recv_bool(comm, ov,source,mytag));
     case ov_cell:    			return(recv_cell (comm, ov,source,mytag));
     case ov_int8_scalar:    		return(recv_int8_scalar (comm, ov,source,mytag));
     case ov_int16_scalar:    		return(recv_int16_scalar (comm, ov,source,mytag));
@@ -1463,6 +1540,7 @@ int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* v
     case ov_string:    			return(recv_string (comm, ov,source,mytag));
     case ov_matrix:    			return(recv_matrix (comm, ov,source,mytag));
     case ov_complex_matrix:    		return(recv_complex_matrix(comm, ov,source,mytag));
+    case ov_bool_matrix:    		return(recv_bool_matrix (comm, ov,source,mytag));
     case ov_int8_matrix:    		return(recv_int8_matrix (comm, ov,source,mytag));
     case ov_int16_matrix:    		return(recv_int16_matrix (comm, ov,source,mytag));
     case ov_int32_matrix:    		return(recv_int32_matrix (comm, ov,source,mytag));

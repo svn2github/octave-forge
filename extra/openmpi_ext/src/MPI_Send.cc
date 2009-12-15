@@ -285,7 +285,7 @@ int send_bool( MPI_Comm comm, int d, ColumnVector rankrec, int mytag){        /*
   {
           info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
       if (info !=MPI_SUCCESS) return info;
-      info = MPI_Send((&d), 1,MPI_DOUBLE, rankrec(i), tanktag[1], comm);
+      info = MPI_Send((&d), 1,MPI_INT, rankrec(i), tanktag[1], comm);
       if (info !=MPI_SUCCESS) return info;
   }
    return(MPI_SUCCESS);
@@ -414,12 +414,12 @@ int send_cell(MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag){    /* 
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
           info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
-// 	  printf("I have sent the t_id of cell .. and this the flag =%i \n",info);
+//  	  printf("I have sent the t_id of cell .. and this the flag =%i \n",info);
       if (info !=MPI_SUCCESS) return info;
 // send cell capacity
           info = MPI_Send(&n, 1, MPI_INT, rankrec(i), tanktag[1], comm);
 //           printf("I have sent the capacity of the cell .. and this the flag =%i \n",info);
-// 	  printf(".. and this the value of capacity =%i \n",n);
+//  	  printf(".. and this the value of capacity =%i \n",n);
       if (info !=MPI_SUCCESS) return info;
           info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
 //           printf("I have sent the capacity of the number of dimensions .. and this the flag =%i \n",info);
@@ -427,7 +427,7 @@ int send_cell(MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag){    /* 
       if (info !=MPI_SUCCESS) return info;
 // send the dim vector
       info =  MPI_Send(dimV,1,dimvec,rankrec(i),tanktag[3],comm);
-//       printf("I have sent the dim_vector .. and this the flag =%i \n",info);
+//        printf("I have sent the dim_vector .. and this the flag =%i \n",info);
       if (info !=MPI_SUCCESS) return info;
   }
 
@@ -437,11 +437,11 @@ int cap;
              octave_value ov = cell.data()[i];
 	     cap =ov.capacity();
 	     info = MPI_Send(&cap, 1, MPI_INT, rankrec(i), newtag, comm);
-// 	     printf("I have sent the capacity .. and this the flag = %i\n",info);
+//  	     printf("I have sent the capacity .. and this the flag = %i\n",info);
 	     if (info !=MPI_SUCCESS) return info;
              newtag = newtag +ov.capacity();
 	     info=send_class(comm,ov,rankrec,newtag);
-//              printf("I have sent the octave_value inside the cell .. and this the flag = %i\n",info);
+//               printf("I have sent the octave_value inside the cell .. and this the flag = %i\n",info);
 	     if (info !=MPI_SUCCESS) return info;
 					    }
 					    
@@ -1751,7 +1751,7 @@ return(info);
 int send_class(MPI_Comm comm, octave_value ov, ColumnVector rankrec,int mytag){    /* varname-strlength 1st, dims[ndim] */
 /*----------------------------------*/    /* and then appropriate specific info */
   int t_id = ov.type_id();
-//    printf("t_id THAT I WANT TO SEND=%i\n",t_id);
+//     printf("t_id THAT I WANT TO SEND=%i\n",t_id);
 
 
   switch (t_id) {
@@ -1832,7 +1832,6 @@ DEFUN_DLD(MPI_Send,args,nargout, "MPI_Send sends almost any Octave datatypes int
       return retval;
     }
 
-//   MPI_Comm comm = nargin == 4 ? get_mpi_comm (args(3)) : MPI_COMM_WORLD;
   if (error_state)
     return retval;
 

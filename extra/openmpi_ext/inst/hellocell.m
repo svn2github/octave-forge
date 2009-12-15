@@ -44,8 +44,9 @@ addpath("../src");
   else
         for source = 1:p-1
           disp("We are at rank 0 that is master etc..");
-          [message, info] = MPI_Recv(source,TAG,CW);
-          message
+          [messager, info] = MPI_Recv(source,TAG,CW);
+	  info
+          messager
         endfor
   end   
 

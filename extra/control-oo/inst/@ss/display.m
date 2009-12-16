@@ -88,16 +88,21 @@ function dispmat (m, mname, rname, cname)
   endfor
 
   lcols = cellfun ("size", mat, 2);
-  lcols_max = 2 + max (lcols);
+  lcols_max = 2 + max (horzcat (lcols, 1));
 
   for k = 1 : mcols
     mat{k} = horzcat (repmat (" ", mrows+1, lcols_max-lcols(k)), mat{k});
   endfor
 
-  mat = horzcat (row_name, mat{:});
+  tsize = terminal_size ();
+  dispcols = max (1, floor ((tsize(2) - columns (row_name)) / lcols_max));
+  disprows = max (1, ceil (mcols / dispcols));
 
   disp ([mname, " ="]);
-  disp (mat);
-  disp ("");
+
+  for k = 1 : disprows
+    disp (horzcat (row_name, mat{1+(k-1)*dispcols : min (mcols, k*dispcols)}));
+    disp ("");
+  endfor
 
 endfunction

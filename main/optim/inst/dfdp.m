@@ -39,9 +39,9 @@ m=size(x,1); if (m==1), m=size(x,2); end  %# PAK: in case #cols > #rows
 n=length(p);      %dimensions
 if (nargin < 6)
   bounds = ones (n, 2);
-  bounds(:, 1) *= -Inf;
-  bounds(:, 2) *= Inf;
-endif
+  bounds(:, 1) = -Inf;
+  bounds(:, 2) = Inf;
+end
 prt=zeros(m,n);       % initialise Jacobian to Zero
 del = dp .* p; %cal delx=fract(dp)*param value(p)
 idx = p == 0;
@@ -65,9 +65,9 @@ min_del = min (abs (del), bounds(:, 2) - bounds(:, 1));
 	    del(j) = t_del1;
 	  else
 	    del(j) = t_del2;
-	  endif
+	  end
 	  ps(j) = p(j) + del(j);
-	endif
+	end
 	prt(:, j) = (feval (func, x, ps) - f) / del(j);
       else
 	if (p(j) - del(j) < bounds(j, 1))
@@ -80,10 +80,10 @@ min_del = min (abs (del), bounds(:, 2) - bounds(:, 1));
 	  ps(j) = p(j) + del(j);
 	  tp = p(j) - del(j);
 	  min_del(j) = 2 * del(j);
-	endif
+	end
 	f1 = feval (func, x, ps);
 	ps(j) = tp;
-        prt(:, j) = (f1 - feval (func, x, ps)) / (min_del(j));
-      endif
-    endif
-  endfor
+        prt(:, j) = (f1 - feval (func, x, ps)) / min_del(j);
+      end
+    end
+  end

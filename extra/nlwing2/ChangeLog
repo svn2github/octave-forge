@@ -1,3 +1,13 @@
+2009-12-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/calcwing.m: Gripe if not converged on initial iteration.
+	Correct computing integral quantities.
+	* inst/liftanalyze.m: Fix condition test.
+
+2009-12-17  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/calcwing.m: Correct integral quantities computation.
+
 2009-12-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/ppder.m: Adapt to latest Octave.

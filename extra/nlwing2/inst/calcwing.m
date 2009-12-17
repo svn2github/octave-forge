@@ -96,7 +96,9 @@ function clq = calcwing (wing, varargin)
 
     if (isempty (flw1))
       printf_flush (" bad.\n");
-      if (step == opts.mstep)
+      if (first_iter)
+        error ("Could not converge from initial point. Try different settings");
+      elseif (step == opts.mstep)
 	printf_flush ("terminating.\n");
 	break;
       else
@@ -158,24 +160,26 @@ function clq = calcwing (wing, varargin)
   clq.zsep = cell2mat (zsep);
 
   # integral quantities
-  dS = wing.ch .* diff (wing.zac);
-  dSp = wing.ch .* hypot (diff (wing.zac), diff (wing.yac));
+  dzac = diff (wing.zac);
+  dS = wing.ch .* dzac;
+  dSp = wing.ch .* hypot (dzac, diff (wing.yac));
   area = wing.area;
   if (wing.sym)
     area /= 2;
   endif
   cad = cos (clq.ad); sad = sin (clq.ad);
-  clq.clw = dS.' * (clq.cl .* cad) / area;
+  clq.clw = dS.' * (clq.cl .* cad + clq.cd .* sad) / area;
   clq.cdiw = -dSp.' * (clq.cl .* sad) / area;
-  clq.cdw = dSp.' * (clq.cd .* cad)/ area;
+  clq.cdw = dSp.' * (clq.cd .* cad)/ area + clq.cdiw;
   if (wing.sym)
     clq.bmw = dSp.' * (clq.cl .* cad) / area;
   endif
   # integral moment - local moment contributions
   clq.cmw = (dS .* wing.ch).' * clq.cm;
-  # local lift contributions
-  adm = repmat (wing.amac, 1, ns) + repmat (clq.al, length (dS), 1) + clq.ad;
-  clq.cmw += (dS .* wing.rmac).' * (clq.cl .* cos (adm));
+  # local force contributions
+  adm = bsxfun (@minus, clq.al, wing.amac) + clq.ad;
+  clq.cmw -= (dS .* wing.rmac).' * (clq.cl .* cos (adm));
+  clq.cmw += (dSp .* wing.rmac).' * (clq.cd .* sin (adm));
   clq.cmw /= (area * wing.cmac);
 
 endfunction

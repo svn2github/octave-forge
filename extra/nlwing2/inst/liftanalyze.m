@@ -47,7 +47,7 @@ function [a0, amax, clmax] = liftanalyze (al, cl, pn = '')
   if (any (cl(imin+1:imax) <= cl(imin:imax-1)))
     warning ([wpref, "multimodal lift curve"]);
     % Try to reduce the range to find a monotonic subinterval.
-    if (clmin > 0)
+    if (clmin >= 0)
       ilo = imin;
       iup = imin + 1;
     else

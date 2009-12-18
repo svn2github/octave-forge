@@ -46,9 +46,9 @@ for k = 1 : length (y)
   itae = itae  +  t_y(k) * abs (y(k, 1)) * dt;
 end
 
-% Critical Distance mu = 1/Ms
+% Sensitivity
 S = inv (1 + L);
-mu = 1 / norm (S, inf);
+Ms = norm (S, inf);
 
 % Objective Function
-J = mu_1 * itae  +  mu_2 * (max (y(:, 2)) - 1)  +  mu_3 * (1 - mu);
+J = mu_1 * itae  +  mu_2 * (max (y(:, 2)) - 1)  +  mu_3 * Ms;

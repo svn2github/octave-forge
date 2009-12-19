@@ -58,10 +58,7 @@ int max (int a, int b, int c)
 {
     int d = max (a, b);
     
-    if (c > d)
-        return c;
-    else
-        return d;
+    return max (c, d);
 }
 
 int min (int a, int b)

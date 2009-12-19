@@ -66,10 +66,7 @@ int max (int a, int b, int c)
 {
     int d = max (a, b);
     
-    if (c > d)
-        return c;
-    else
-        return d;
+    return max (c, d);
 }
 
 int max (int a, int b, int c, int d)
@@ -77,10 +74,7 @@ int max (int a, int b, int c, int d)
     int e = max (a, b);
     int f = max (c, d);
     
-    if (e > f)
-        return e;
-    else
-        return f;
+    return max (e, f);
 }
      
 DEFUN_DLD (slsb10dd, args, nargout, "Slicot SB10DD Release 5.0")

@@ -74,6 +74,9 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%   for each parameter. Default: [-Inf, Inf] in each row. If this
   %%   field is used with an existing user-side function for 'dFdp'
   %%   (see above) the functions interface might have to be changed.
+  %%   _Warning_: If bounds are set, returned guesses of corp, covp, and
+  %%   Z are generally invalid, even if final parameters are not at the
+  %%   bounds.
   %%
   %%          OUTPUT VARIABLES
   %% f = column vector of values computed: f = F(x,p).
@@ -88,6 +91,10 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% r2 = coefficient of multiple determination.
   %%
   %% All Zero guesses not acceptable
+
+  %% The following two blocks of comments are chiefly from the original
+  %% version for Matlab. For later changes the logs of the Octave Forge
+  %% svn repository should also be consulted.
 
   %% A modified version of Levenberg-Marquardt
   %% Non-Linear Regression program previously submitted by R.Schrager.
@@ -120,6 +127,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%       5) revise estimates of corp, stdev
   %% Modified by Ray Muzic 11-Oct-1992
   %%	1) revise estimate of Vy.  remove chi2, add Z as return values
+  %%       (later remark: the current code contains no variable Vy)
   %% Modified by Ray Muzic 7-Jan-1994
   %%       1) Replace ones(x) with a construct that is compatible with versions
   %%          newer and older than v 4.1.
@@ -367,37 +375,42 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% diag(1/wt.^2).  
   %% cov matrix of data est. from Bard Eq. 7-5-13, and Row 1 Table 5.1 
 
+  tp = wt.^2;
   if (exist('sparse'))  % save memory
-    Q=sparse(1:m,1:m,1./wt.^2);
-    Qinv=sparse(1:m,1:m,wt.^2);
+    Q = sparse (1:m, 1:m, 1 ./ tp);
+    Qinv = sparse (1:m, 1:m, tp);
   else
-    Q=diag((0*wt+1)./(wt.^2));
-    Qinv=diag(wt.*wt);
+    Q = diag (ones (m, 1) ./ tp);
+    Qinv = diag (tp);
   end
   resid=y-f;                                    %un-weighted residuals
-  covr=resid'*Qinv*resid*Q/(m-n);                 %covariance of residuals
-  Vy=1/(1-n/m)*covr;  % Eq. 7-13-22, Bard         %covariance of the data 
+  tp = resid' * Qinv * resid;
+  covr = (tp / m) * Q;    %covariance of residuals
 
-  jtgjinv=inv(jac'*Qinv*jac);			%argument of inv may be
-				%singular
-  covp=jtgjinv*jac'*Qinv*Vy*Qinv*jac*jtgjinv; % Eq. 7-5-13, Bard %cov of
+  Qinv = ((m - n) / tp) * Qinv; % Qinv now contains the inverse of the
+				% guessed covariance matrix of the data.
+				% No new variable was used, but later
+				% calculations and comments using Qinv
+				% remain valid with the new Qinv.
+  %% argument of inv may be singular
+  covp = inv (jac' * Qinv * jac); % simplified Eq. 7-5-13, Bard %cov of
 				% parm est
-  d=sqrt(abs(diag(covp)));
+  d=sqrt(diag(covp));
   corp=covp./(d*d');
 
   if (exist('sparse'))
     covr=spdiags(covr,0);
-    stdresid=resid./sqrt(spdiags(Vy,0));
+    stdresid=resid ./ sqrt (covr);
   else
     covr=diag(covr);                 % convert returned values to
 				% compact storage
-    stdresid=resid./sqrt(diag(Vy));  % compute then convert for compact storage
+    stdresid=resid ./ sqrt (covr);
   end
   Z=((m-n)*jac'*Qinv*jac)/(n*resid'*Qinv*resid);
 
 %%% alt. est. of cov. mat. of parm.:(Delforge, Circulation, 82:1494-1504, 1990
   %%disp('Alternate estimate of cov. of param. est.')
-  %%acovp=resid'*Qinv*resid/(m-n)*jtgjinv
+  %%acovp=resid'*Qinv*resid/(m-n)*inv(jac'*Qinv*jac);
 
   %%Calculate R^2 (Ref Draper & Smith p.46)
   %%

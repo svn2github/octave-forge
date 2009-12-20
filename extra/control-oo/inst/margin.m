@@ -417,8 +417,8 @@ endfunction
 %! sysd = tf (c2d (ss (sysc), 0.3));  # c2d for tf not implemented yet
 %! [gamma_d, phi_d, w_gamma_d, w_phi_d] = margin (sysd);
 %!
-%! margin_c = round (100 * [gamma_c, phi_c, w_gamma_c, w_phi_c]) / 100;
-%! margin_d = round (100 * [gamma_d, phi_d, w_gamma_d, w_phi_d]) / 100;
+%! margin_c = [gamma_c, phi_c, w_gamma_c, w_phi_c];
+%! margin_d = [gamma_d, phi_d, w_gamma_d, w_phi_d];
 %!
 %! ## results from this implementation and the "dark side" diverge
 %! ## from the third digit after the decimal point on
@@ -436,5 +436,5 @@ endfunction
 %! margin_c_exp = [gamma_c_exp, phi_c_exp, w_gamma_c_exp, w_phi_c_exp];
 %! margin_d_exp = [gamma_d_exp, phi_d_exp, w_gamma_d_exp, w_phi_d_exp];
 %!
-%!assert (margin_c, margin_c_exp);
-%!assert (margin_d, margin_d_exp);
+%!assert (margin_c, margin_c_exp, 1e-2);
+%!assert (margin_d, margin_d_exp, 1e-2);

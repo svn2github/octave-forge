@@ -104,12 +104,12 @@ endfunction
 %! sysc = ss (A, B, C, D);
 %!
 %! [yc, tc, xc] = initial (sysc, x_0, 0.2, 0.1);
-%! initial_c = round (1e4 * [yc, tc, xc]) / 1e4;
+%! initial_c = [yc, tc, xc];
 %!
 %! sysd = c2d (sysc, 2);
 %!
 %! [yd, td, xd] = initial (sysd, x_0, 4);
-%! initial_d = round (1e4 * [yd, td, xd]) / 1e4;
+%! initial_d = [yd, td, xd];
 %!
 %! ## expected values computed by the "dark side"
 %!
@@ -141,5 +141,5 @@ endfunction
 %!
 %! initial_d_exp = [yd_exp, td_exp, xd_exp];
 %!
-%!assert (initial_c, initial_c_exp)
-%!assert (initial_d, initial_d_exp)
+%!assert (initial_c, initial_c_exp, 1e-4)
+%!assert (initial_d, initial_d_exp, 1e-4)

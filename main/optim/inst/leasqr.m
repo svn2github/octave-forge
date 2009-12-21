@@ -25,22 +25,24 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%
   %% Version 3.beta
   %% Optional parameters are in braces {}.
-  %% x = column vector or matrix of independent variables, 1 row per
-  %%   observation: x = [x0 x1....xm].
-  %% y = column vector of observed values, same number of rows as x.
-  %% wt = column vector (dim=length(x)) of statistical weights.  These
-  %%   should be set to be proportional to (sqrt of var(y))^-1; (That is,
-  %%   the covariance matrix of the data is assumed to be proportional to
+  %% x = vector or matrix of independent variables, 1 entry or row per
+  %%   observation.
+  %% y = vector of observed values, same length as x or as number of
+  %%   rows of x.
+  %% wt = vector (dim=length(y)) of statistical weights.  These should
+  %%   be set to be proportional to (sqrt of var(y))^-1; (That is, the
+  %%   covariance matrix of the data is assumed to be proportional to
   %%   diagonal with diagonal equal to (wt.^2)^-1.  The constant of
   %%   proportionality will be estimated.); default = ones(length(y),1).
-  %% pin = column vec of initial parameters to be adjusted by leasqr.
+  %% pin = vec of initial parameters to be adjusted by leasqr.
   %% dp = fractional increment of p for numerical partial derivatives;
   %%   default = .001*ones(size(pin))
   %%   dp(j) > 0 means central differences on j-th parameter p(j).
   %%   dp(j) < 0 means one-sided differences on j-th parameter p(j).
   %%   dp(j) = 0 holds p(j) fixed i.e. leasqr wont change initial guess: pin(j)
-  %% F = name of function in quotes; the function shall be of the form y=f(x,p),
-  %%   with y, x, p of the form y, x, pin as described above.
+  %% F = name of function in quotes or function handle; the function
+  %%   shall be of the form y=f(x,p), with y, x, p of the form y, x, pin
+  %%   as described above; the returned y must be a column vector.
   %% dFdp = name of partial derivative function in quotes; default is 'dfdp', a
   %%   slow but general partial derivatives function; the function shall be
   %%   of the form prt=dfdp(x,f,p,dp,F[,bounds]). For backwards
@@ -88,9 +90,9 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% covr = diag(covariance matrix of the residuals).
   %% stdresid = standardized residuals.
   %% Z = matrix that defines confidence region (see comments in the source).
-  %% r2 = coefficient of multiple determination.
+  %% r2 = coefficient of multiple determination, intercept form.
   %%
-  %% All Zero guesses not acceptable
+  %% All Zero guesses not acceptable. Not suitable for non-real residuals.
 
   %% The following two blocks of comments are chiefly from the original
   %% version for Matlab. For later changes the logs of the Octave Forge
@@ -183,10 +185,11 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%
 
   y=y(:); wt=wt(:); pin=pin(:); dp=dp(:); %change all vectors to columns
+  if (isvector (x)) x = x(:); end
   %% check data vectors- same length?
-  m=length(y); n=length(pin); [m1,m2]=size(x);
-  if (m1~=m) 
-    error('input(x)/output(y) data must have same number of rows ')
+  m=length(y); n=length(pin);
+  if (size (x, 1) ~= m) 
+    error('input(x)/output(y) data must have same length ')
   end
 
   %% processing of 'options'
@@ -251,9 +254,9 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   p = pin;
   f=feval(F,x,p); fbest=f; pbest=p;
   r=wt.*(y-f);
-  ss=r'*r;
+  if (~isreal (r)) error ('weighted residuals are not real'); end
+  ss = r.' * r;
   sbest=ss;
-  nrm=zeros(n,1);
   chgprev=Inf*ones(n,1);
   cvg=0;
   epsLlast=1;
@@ -262,30 +265,23 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% do iterations
   %%
   for iter=1:niter
+    nrm = zeros (1, n);
     pprev=pbest;
     prt = eval (dfdp_cmd);
     r=wt.*(y-fbest);
+    if (~isreal (r)) error ('weighted residuals are not real'); end
     sprev=sbest;
     sgoal=(1-stol)*sprev;
-    for j=1:n
-      if (dp(j)==0)
-	nrm(j)=0;
-      else
-	prt(:,j)=wt.*prt(:,j);
-	nrm(j)=prt(:,j)'*prt(:,j);
-	if (nrm(j)>0)
-          nrm(j)=1/sqrt(nrm(j));
-	end
-      end
-      prt(:,j)=nrm(j)*prt(:,j);
-    end
-    %% above loop could ? be replaced by:
-    %% prt=prt.*wt(:,ones(1,n)); 
-    %% nrm=dp./sqrt(diag(prt'*prt)); 
-    %% prt=prt.*nrm(:,ones(1,m))';
+    msk = dp ~= 0;
+    prt(:, msk) = prt(:, msk) .* wt(:, ones (1, sum (msk)));
+    nrm(msk) = sumsq (prt(:, msk));
+    msk = nrm > 0;
+    nrm(msk) = 1 ./ sqrt (nrm(msk));
+    prt = prt .* nrm(ones (1, m), :);
+    nrm = nrm.';
     [prt,s,v]=svd(prt,0);
     s=diag(s);
-    g=prt'*r;
+    g = prt.' * r;
     for jjj=1:length(epstab),
       epsL = max(epsLlast*epstab(jjj),1e-7);
       se=sqrt((s.*s)+epsL);
@@ -296,7 +292,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       idx = ~isinf(maxstep);
       limit = abs(maxstep(idx).*pprev(idx));
       chg(idx) = min(max(chg(idx),-limit),limit);
-      if (verbose & any(ochg ~= chg))
+      if (verbose && any(ochg ~= chg))
 	disp(['Change in parameter(s): ', ...
               sprintf('%d ',find(ochg ~= chg)), 'were constrained']);
       end
@@ -321,7 +317,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	%%
 	f=feval(F,x,p);
 	r=wt.*(y-f);
-	ss=r'*r;
+	if (~isreal (r)) error ('weighted residuals are not real'); end
+	ss = r.' * r;
 	if (ss<sbest)
           pbest=p;
           fbest=f;
@@ -341,7 +338,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     end
     aprec=abs(pprec.*pbest);
     %% [aprec, chg, chgprev]
-    if (all(abs(chg) < aprec) & all(abs(chgprev) < aprec))
+    if (all(abs(chg) < aprec) && all(abs(chgprev) < aprec))
       cvg=1;
       if (verbose)
 	fprintf('Parameter changes converged to specified precision\n');
@@ -362,6 +359,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   ss=sbest;
   cvg=((sbest>sgoal)|(sbest<=eps)|cvg);
   if (cvg ~= 1) disp(' CONVERGENCE NOT ACHIEVED! '); end
+
+  if (~(verbose || nargout > 4)) return; end
 
   %% CALC VARIANCE COV MATRIX AND CORRELATION MATRIX OF PARAMETERS
   %% re-evaluate the Jacobian at optimal values
@@ -384,58 +383,88 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     Qinv = diag (tp);
   end
   resid=y-f;                                    %un-weighted residuals
-  tp = resid' * Qinv * resid;
+  if (~isreal (r)) error ('residuals are not real'); end
+  tp = resid.' * Qinv * resid;
   covr = (tp / m) * Q;    %covariance of residuals
 
-  Qinv = ((m - n) / tp) * Qinv; % Qinv now contains the inverse of the
-				% guessed covariance matrix of the data.
-				% No new variable was used, but later
-				% calculations and comments using Qinv
-				% remain valid with the new Qinv.
-  %% argument of inv may be singular
-  covp = inv (jac' * Qinv * jac); % simplified Eq. 7-5-13, Bard %cov of
-				% parm est
-  d=sqrt(diag(covp));
-  corp=covp./(d*d');
+  %% Matlab compatibility and avoiding recomputation make the following
+  %% logic clumsy.
+  compute = 1;
+  if (m <= n)
+    compute = 0;
+  else
+    Qinv = ((m - n) / tp) * Qinv;
+    %% simplified Eq. 7-5-13, Bard; cov of parm est, inverse; outer
+    %% parantheses contain inverse of guessed covariance matrix of data
+    covpinv = jac.' * Qinv * jac;
+    if (exist ('rcond') && rcond (covpinv) <= eps)
+      compute = 0;
+    elseif (rank (covpinv) < n)
+      %% above test is not equivalent to 'rcond' and may unnecessarily
+      %% reject some matrices
+      compute = 0;
+    end
+  end
+  if (compute)
+    covp = inv (covpinv);
+    d=sqrt(diag(covp));
+    corp = covp ./ (d * d.');
+  else
+    covp = NA * ones (n);
+    corp = covp;
+  end
 
   if (exist('sparse'))
     covr=spdiags(covr,0);
-    stdresid=resid ./ sqrt (covr);
   else
     covr=diag(covr);                 % convert returned values to
 				% compact storage
-    stdresid=resid ./ sqrt (covr);
   end
-  Z=((m-n)*jac'*Qinv*jac)/(n*resid'*Qinv*resid);
+  stdresid = resid .* abs (wt) / sqrt (tp / m); % equivalent to resid ./
+				% sqrt (covr)
+
+  if (~(verbose || nargout > 8)) return; end
+
+  if (m > n)
+    Z = ((m - n) / (n * resid.' * Qinv * resid)) * covpinv;
+  else
+    Z = NA * ones (n);
+  end
 
 %%% alt. est. of cov. mat. of parm.:(Delforge, Circulation, 82:1494-1504, 1990
   %%disp('Alternate estimate of cov. of param. est.')
   %%acovp=resid'*Qinv*resid/(m-n)*inv(jac'*Qinv*jac);
 
-  %%Calculate R^2 (Ref Draper & Smith p.46)
+  if (~(verbose || nargout > 9)) return; end
+
+  %%Calculate R^2, intercept form
   %%
-  r=corrcoef([y(:),f(:)]);
-  r2=r(1,2).^2;
+  tp = sumsq (y - mean (y));
+  if (tp > 0)
+    r2 = 1 - sumsq (resid) / tp;
+  else
+    r2 = NA;
+  end
 
   %% if someone has asked for it, let them have it
   %%
   if (verbose)
     eval(plotcmd);
     disp(' Least Squares Estimates of Parameters')
-    disp(p')
+    disp(p.')
     disp(' Correlation matrix of parameters estimated')
     disp(corp)
     disp(' Covariance matrix of Residuals' )
     disp(covr)
     disp(' Correlation Coefficient R^2')
     disp(r2)
-    sprintf(' 95%% conf region: F(0.05)(%.0f,%.0f)>= delta_pvec''*Z*delta_pvec',n,m-n)
+    sprintf(' 95%% conf region: F(0.05)(%.0f,%.0f)>= delta_pvec.''*Z*delta_pvec',n,m-n)
     Z
     %% runs test according to Bard. p 201.
-    n1 = sum((f-y) < 0);
-    n2 = sum((f-y) > 0);
-    nrun=sum(abs(diff((f-y)<0)))+1;
-    if ((n1>10)&(n2>10)) % sufficent data for test?
+    n1 = sum (resid > 0);
+    n2 = sum (resid < 0);
+    nrun=sum(abs(diff(resid > 0)))+1;
+    if ((n1 > 10) && (n2 > 10)) % sufficent data for test?
       zed=(nrun-(2*n1*n2/(n1+n2)+1)+0.5)/(2*n1*n2*(2*n1*n2-n1-n2)...
         /((n1+n2)^2*(n1+n2-1)));
       if (zed < 0)

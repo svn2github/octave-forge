@@ -1,4 +1,4 @@
-%# Copyright (C) 2009, Sebastian Schöps <schoeps AT math DOT uni-wuppertal DOT de>
+%# Copyright (C) 2009, Sebastian Schoeps <schoeps AT math DOT uni-wuppertal DOT de>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify

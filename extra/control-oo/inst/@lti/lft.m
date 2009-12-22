@@ -23,7 +23,7 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: October 2009
-## Version: 0.1
+## Version: 0.2
 
 function sys = lft (sys1, sys2, nu, ny)
 
@@ -65,8 +65,8 @@ function sys = lft (sys1, sys2, nu, ny)
   end
 
   M11 = zeros (m1, p1);
-  M12 = [zeros(m1-nu, p2); eye(nu), zeros(nu, p2-nu)];
-  M21 = [zeros(ny, p1-ny), eye(ny); zeros(m2-ny, p1)];
+  M12 = [zeros(m1-ny, p2); eye(ny), zeros(ny, p2-ny)];
+  M21 = [zeros(nu, p1-nu), eye(nu); zeros(m2-nu, p1)];
   M22 = zeros (m2, p2);
 
   M = [M11, M12; M21, M22];

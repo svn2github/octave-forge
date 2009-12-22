@@ -184,10 +184,10 @@ DEFUN_DLD (slsb10fd, args, nargout, "Slicot SB10FD Release 5.0")
                   info));
 
         if (f77_exception_encountered)
-            error ("h2syn: slsb10fd: exception in SLICOT subroutine SB10FD");
+            error ("hinfsyn: slsb10fd: exception in SLICOT subroutine SB10FD");
 
         if (info != 0)
-            error ("h2syn: slsb10fd: SB10FD returned info = %d", info);
+            error ("hinfsyn: slsb10fd: SB10FD returned info = %d", info);
         
         // return values
         retval(0) = ak;

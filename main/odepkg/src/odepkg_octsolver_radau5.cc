@@ -439,10 +439,8 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // option can be set by the user to another value than default value
   octave_value vinitstep = odepkg_auxiliary_getmapvalue ("InitialStep", vodeopt);
   if (args(1).length () > 2) {
-    if (!vinitstep.is_empty ())
-      warning_with_id ("OdePkg:InvalidOption",
-       "Option \"InitialStep\" will be ignored if fixed time stamps are given");
-    vinitstep = args(1).vector_value ()(1);
+    error_with_id ("OdePkg:InvalidOption",
+      "Fixed time stamps are not supported by this solver");
   }
   if (vinitstep.is_empty ()) {
     vinitstep = 1.0e-6;
@@ -755,6 +753,8 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!  B = ode5r (@fpol, 1, [3 15 1]);
 %!error %# input argument number three
 %!  B = ode5r (@flor, [0 25], 1);
+%!error %# fixed step sizes not supported
+%!  B = ode5r (@fpol, [0:0.1:2], [2 0]);
 %!test %# one output argument
 %!  vsol = ode5r (@fpol, [0 2], [2 0]);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
@@ -864,14 +864,23 @@ ode5r (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!  vopt = odeset ('Mass', @fmas, 'MStateDependence', 'strong');
 %!  vsol = ode5r (@fpol, [0 2], [2 0], vopt);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
-%!test %# Set BDF option to something else than default
-%!  vopt = odeset ('BDF', 'on');
-%!  vsol = ode5r (@fpol, [0 2], [2 0], vopt);
-%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %! %# test for MvPattern option is missing
 %! %# test for InitialSlope option is missing
 %! %# test for MaxOrder option is missing
+%!
+%!test %# Set BDF option to something else than default
+%!  vopt = odeset ('BDF', 'on');
+%!  vsol = ode5r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Set NewtonTol option to something else than default
+%!  vopt = odeset ('NewtonTol', 1e-3);
+%!  vsol = ode5r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
+%!test %# Set MaxNewtonIterations option to something else than default
+%!  vopt = odeset ('MaxNewtonIterations', 2);
+%!  vsol = ode5r (@fpol, [0 2], [2 0], vopt);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!
 %!  warning ('on', 'OdePkg:InvalidOption');
 */

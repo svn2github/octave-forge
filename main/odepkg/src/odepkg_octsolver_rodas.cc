@@ -653,10 +653,8 @@ oders (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
   // option can be set by the user to another value than default value
   octave_value vinitstep = odepkg_auxiliary_getmapvalue ("InitialStep", vodeopt);
   if (args(1).length () > 2) {
-    if (!vinitstep.is_empty ())
-      warning_with_id ("OdePkg:InvalidOption",
-       "Option \"InitialStep\" will be ignored if fixed time stamps are given");
-    vinitstep = args(1).vector_value ()(1);
+    error_with_id ("OdePkg:InvalidOption",
+      "Fixed time stamps are not supported by this solver");
   }
   if (vinitstep.is_empty ()) {
     vinitstep = 1.0e-6;
@@ -954,7 +952,9 @@ oders (@@odepkg_equations_lorenz, [0, 25], [3 15 1], vopt);\n\
 %!error %# input argument number two
 %!  B = oders (@fpol, 1, [3 15 1]);
 %!error %# input argument number three
-%!  B = oders (@flor, [0 25], 1);
+%!  B = oders (@fpol, [0 25], 1);
+%!error %# fixed step sizes not supported
+%!  B = oders (@fpol, [0:0.1:2], [2 0]);
 %!test %# one output argument
 %!  vsol = oders (@fpol, [0 2], [2 0]);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);

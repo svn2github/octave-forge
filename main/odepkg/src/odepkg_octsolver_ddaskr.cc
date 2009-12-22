@@ -614,14 +614,14 @@ odekdi (@@odepkg_equations_ilorenz, [0, 25], [3 15 1], \\\n\
       // This call of the Fortran solver has been successful so let us
       // plot the output and save the results
       for (octave_idx_type vcnt = 0; vcnt < vddaskrneqn; vcnt++) {
-	vcres(vcnt) = Y[vcnt]; vydrs(vcnt) = YPRIME[vcnt];
+        vcres(vcnt) = Y[vcnt]; vydrs(vcnt) = YPRIME[vcnt];
       }
       vsol = vcres; vyds = vydrs; vtim = T;
 
       if (!vevents.is_empty ()) {
         veveideargs(0) = vsol;
         veveideargs(1) = vyds;
-	veveidearg = veveideargs;
+        veveidearg = veveideargs;
         veveres = odepkg_auxiliary_evaleventfun (vevents, vtim, veveidearg, vddaskrextarg, 1);
         if (!veveres(0).cell_value ()(0).is_empty ())
           if (veveres(0).cell_value ()(0).int_value () == 1) {

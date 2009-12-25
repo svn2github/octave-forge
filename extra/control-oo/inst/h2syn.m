@@ -57,7 +57,8 @@ function [K, varargout] = h2syn (P, nmeas, ncon)
   d11 = d(1:p1, 1:m1);
   
   if (tsam <= 0 && ! all (all (d11 == 0)))
-    error ("h2syn: matrice D11 must be zero");
+    warning ("h2syn: setting matrice D11 to zero");
+    d(1:p1, 1:m1) = 0;
   endif
   
   if (! isstabilizable (P(:, m1+1 : m)))

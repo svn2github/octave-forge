@@ -48,6 +48,7 @@ Model Simplification
 Compensator Design
   estim
   place
+  rlocus
 LQR/LQG Design
   dlqr
   kalman

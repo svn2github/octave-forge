@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {[@var{K}, @var{N}, @var{gamma}] =} hinfsyn (@var{P}, @var{nmeas}, @var{ncon})
-## @deftypefnx{Function File} {[@var{K}, @var{N}, @var{gamma}] =} hinfsyn (@var{P}, @var{nmeas}, @var{ncon}, @var{gamma})
+## @deftypefnx{Function File} {[@var{K}, @var{N}, @var{gamma}] =} hinfsyn (@var{P}, @var{nmeas}, @var{ncon}, @var{gmax})
 ## H-infinity control synthesis for LTI plant.
 ## Uses SLICOT SB10FD and SB10DD by courtesy of NICONET e.V.
 ## <http://www.slicot.org>
@@ -27,7 +27,7 @@
 ## Created: December 2009
 ## Version: 0.1
 
-function [K, varargout] = hinfsyn (P, nmeas, ncon, gmax = 1e6)
+function [K, varargout] = hinfsyn (P, nmeas, ncon, gmax = 1e15)
 
   ## check input arguments
   if (nargin < 3 || nargin > 4)

@@ -93,8 +93,11 @@ function varargout = parcellfun (nproc, fun, varargin)
 
   if (length (args) == 0)
     print_usage ();
-  elseif (length (args) > 1 && ! size_equal (args{:}))
-    error ("arguments size must match");
+  else
+    [err, args{:}] = common_size (args{:});
+    if (err)
+      error ("parcellfun: arguments size must match");
+    endif
   endif
 
   nproc = min (nproc, numel (args{1}));

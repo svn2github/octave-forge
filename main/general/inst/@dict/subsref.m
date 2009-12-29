@@ -20,7 +20,7 @@
 ## @deftypefn{Function File} {d =} subsref (d, s)
 ## Overloaded subsref for dictionaries.
 ## @end deftypefn
-function e = subsref (d, s)
+function varargout = subsref (d, s)
   if (isempty (s))
     error ("dict: missing index");
   endif
@@ -68,6 +68,8 @@ function e = subsref (d, s)
   endswitch
 
   if (numel (s) > 1)
-    e = subsref (e, s(2:end));
+    varargout = {subsref(e, s(2:end))};
+  else
+    varargout = {e};
   endif
 endfunction

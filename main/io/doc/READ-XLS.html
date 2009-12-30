@@ -7,7 +7,7 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091211;17230700">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20091211;22461600">
+	<META NAME="CHANGED" CONTENT="20091230;182500">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
@@ -24,17 +24,15 @@
 <P ALIGN=CENTER STYLE="margin-bottom: 0in">README for Excel
 spreadsheet file r/w access scripts for octave (&gt;
 3.2.0)<BR><BR>Copyright (C) 2009, Philip Nienhuis &lt;prnienhuis at
-users.sf.net&gt;<BR><BR>This version 11 December 2009.</P>
+users.sf.net&gt;<BR><BR>This version 29 December 2009.</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>EXCEL
- .XLS SUPPORT FILES</B></U></FONT></P>
+.XLS SUPPORT FILES</B></U></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR><B>doc/README-XLS.html</B></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in">This file.</P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in"><I>----- Functions
-intended for direct invocation by users ------</I></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR><B>xlsread.m</B></P>
 <P STYLE="margin-bottom: 0in">All-in-one function for reading data
 from one specific worksheet in an Excel spreadsheet file. This script
@@ -72,35 +70,7 @@ simply closed and possibly used interfaces for Excel access
 <P STYLE="margin-bottom: 0in">Function for separating the data in raw
 arrays returned by xls2oct, into numerical/logical and text (cell)
 arrays.</P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR><I>------- Lower level
-function for indirect use --------<BR>(though there's no problem in
-calling them directly)</I></P>
-<P STYLE="margin-bottom: 0in"><BR><B>xls2com2oct.m, oct2com2xls.m</B></P>
-<P STYLE="margin-bottom: 0in">Functions for carrying out the actual
-reading from and writing to an Excel file using the COM interface on
-Windows systems where Excel has been installed. In fact, Excel.exe is
-invoked directly but invisibly. These low-level functions are not
-intended for direct use, they should rather be invoked through
-xls2oct() and oct2xls(). In principle all Excel file types can be
-processed providing the installed Excel version supports those
-formats. But for now only .xls is supported.<BR><BR><B>xls2jpoi2oct.m,
-oct2jpoi2xls.m</B></P>
-<P STYLE="margin-bottom: 0in">Functions for reading from and writing
-to an Excel file using the Java &amp; Apache POI interface on any
-system where Java &gt; 1.6.0 has been installed. These low-level
-functions are not meant to be invoked directly by users but rather
-through the xls2oct() and oct2xls() functions. Only Excel 97-2003
-files (BIFF8 format) and (to be implemented later:) OOXML spreadsheet
-files can be read from and written to.<BR><BR><B>xls2jxla2com.m,
-oct2jxla2com.m</B></P>
-<P STYLE="margin-bottom: 0in">Functions for reading from and writing
-to an Excel file using the Java &amp; JExcelAPI interface on any
-system where Java &gt; 1.6.0 is installed. These low-level functions
-aren't meant to be invoked directly by users but rather through the
-xls2oct() &amp; oct2xls() functions. Excel 95 (BIFF 5; reading only)
-and Excel 97-2003 (BIFF8; reading &amp; writing) formats are
-supported.</P>
-<P STYLE="margin-bottom: 0in"><BR>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>REQUIRED
 SUPPORT SOFTWARE</B></U></FONT></P>
@@ -184,6 +154,8 @@ workbook and write it to disk; then clear the handle</I><BR><B>xlh =
 xlsclose (xlh)</B><BR><B>clear xlh</B></P>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>MATLAB
 COMPATIBILITY</B></U></FONT></P>
 <P STYLE="margin-bottom: 0in"><BR><B>xlsread</B>, <B>xlswrite</B> and
@@ -239,18 +211,18 @@ of the changes is worrying - and any change after the first write()
 is lost as a next write() doesn't seem to work. The first is by
 JExcelAPI design, the second is probably a bug (in octave-forge/Java
 or JExcelAPI ? I don't know). Adding data to existing spreadsheets
-does work, but IMO undue confidence is needed.</P>
+does work, but IMO undue user confidence is needed.</P>
 <P STYLE="margin-bottom: 0in">JExcelAPI supports BIFF5 and BIFF8
 (Excel 95 and Excel 97-2003, respectively).<BR><BR>Apache POI
 (Java-based and platform-independent too) is based on the
 OpenOffice.org I/O Excel r/w routines. It is a little more versatile
 than JExcelAPI, however it while it doesn't support BIFF5 it does
 support BIFF8 and OOXML (Excel 2007). It is almost as fast as native
-Excel &amp; COM, but at the moment (3.5-FINAL) evaluation of complex
-Excel formulas while reading .xls files seems broken and OOXML
-support is not working yet through octave.<BR><BR>All in all, of the
-two Java options I'd lightly prefer JExcelAPI but I hope that Apache
-POI gets better soon.</P>
+Excel &amp; COM, but at the moment (3.5-FINAL) evaluation of Excel
+formulas invoking INDIRECT() seems broken and OOXML support is not
+working yet through octave.<BR><BR>All in all, of the two Java
+options I'd lightly prefer JExcelAPI but I hope that Apache POI gets
+better soon.</P>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P STYLE="margin-bottom: 0in"><BR>
@@ -281,9 +253,6 @@ stuff) much easier.<BR><BR>Some other options for development (who?):</P>
 	dates from before 1900. Maybe as an option?</P>
 	<LI><P STYLE="margin-bottom: 0in">Creating Excel graphs (a
 	significant enterprise to write from scratch).</P>
-	<LI><P STYLE="margin-bottom: 0in">ODS (OpenOffice.org Open Document)
-	support. Probably to be called odsread.m / odswrite.m. This is on my
-	own wish list.</P>
 	<LI><P STYLE="margin-bottom: 0in">Support for &quot;passing function
 	handle&quot; in xlsread.</P>
 </UL>
@@ -296,6 +265,6 @@ Enjoy!</P>
 <BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.26in; text-indent: -0.26in; margin-bottom: 0in">
-Philip Nienhuis, Dec 10, 2009</P>
+Philip Nienhuis, Dec 29, 2009</P>
 </BODY>
 </HTML>

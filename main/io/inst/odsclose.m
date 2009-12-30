@@ -14,19 +14,19 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## odsclose - close an ods spreadsheet file & if needed write out to disk
-## Basic version - no checks yet
+## odsclose - close an ods spreadsheet file
+## usage: ods = odsclose (ods)
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
+## Last update: 2009-12-27
 
 function [ ods ] = odsclose (ods)
 
-	if (ods.changed > 0)
-		file = java_new ('java.io.File', ods.filename);
-		ods.workbook.saveAs (file);
-	endif
+	# If needed warn that dangling spreadsheet pointers may be left
+	if (nargout < 1) warning ("return argument missing - ods invocation not reset."); endif
 	
+	# Until proper ODS write support has been implemented, not much need be done
 	ods = [];
 
 endfunction

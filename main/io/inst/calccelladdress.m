@@ -17,20 +17,22 @@
 ## calccelladdress - compute spreadsheet style cell address from
 ## row & column index.
 ## 
-## Max column index currently set to 1024 (ODS)
+## Max column index currently set to 1378 (ODS has max 1024)
 
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-12
+## Last updated: 2009-12-27
 
 function [ celladdress ] = calccelladdress (trow, lcol, row, column)
 
+	if (nargin < 4) error ("calccelladdress: not enough arguments.") endif
 	colnr = lcol + column - 1;
-	if (colnr> 1024) error ("Column nr >1024"); endif
+	if (colnr> 1378) error ("Column nr > 1378"); endif
 	str = char (rem ((colnr-1), 26) + 'A');
 	if (colnr > 26 && colnr < 703) 
 		tmp = char (floor ((colnr - 27) / 26) + 'A');
 		str = [tmp str];
-	elseif (colnr > 702)
+	elseif (colnr > 702 && colnr < 1379)
 		tmp = char (floor ((colnr - 703) / 26) + 'A');
 		str = ['A' tmp str];
 	endif

@@ -16,16 +16,25 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [ @var{numarr}, @var{txtarr}, @var{lim} ] = parsecell (@var{rawarr})
+## @deftypefnx {Function File} [ @var{numarr}, @var{txtarr}, @var{lim} ] = parsecell (@var{rawarr}, @var{limits})
 ##
 ## Divide a heterogeneous 2D cell array into a 2D numeric array and a
 ## 2D cell array containing only strings. Both returned arrays are
 ## trimmed from empty outer rows and columns.
+## This function is particularly useful for parsing cell arrays returned
+## by functions reading spreadsheets (e.g., xlsread, odsread).
 ##
 ## Optional return argument @var{lim} contains two field with the outer
 ## column and row numbers of @var{numarr} and @var{txtarr} in the
-## original @var{rawarr}.
+## original array @var{rawarr}.
+## If optional input argument @var{limits} contained the spreadsheet
+## data limits returned in the spreadsheet file pointer struct
+## (field xls.limits or ods.limits), optional return argument @var{lim}
+## contains the real spreadsheet row & column numbers enclosing the
+## origins of the numerical and text data returned in @var{numarr}
+## and @var{txtarr}.
 ##
-## Example:
+## Examples:
 ##
 ## @example
 ##   [An, Tn] = parsecell (Rn);
@@ -33,12 +42,19 @@
 ##    text data into array Tn)
 ## @end example
 ##
-## @seealso xlsread, xls2oct
+## @example
+##   [An, Tn, lims] = parsecell (Rn, xls.limits);
+##   (which returns the numeric contents of Rn into array An and the
+##    text data into array Tn.)
+## @end example
+##
+## @seealso xlsread, odsread, xls2oct, ods2oct
 ##
 ## @end deftypefn
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
+## Last updated: 2009-12-29
 
 function [ numarr, txtarr, lim ] = parsecell (rawarr, rawlimits=[])
 

@@ -102,10 +102,9 @@
 ##
 ## @example
 ##   [An, Tn, Ra, limits] = xlsread ('Sales2009.xls', 'Third_sheet');
-##   (which returns the numeric contents in range C3:AB40 in worksheet
-##   'Third_sheet' in file test4.xls into array An, the text data into
-##   array Tn, the raw cell data into cell array Ra and the ranges from
-##   where the actual data came in limits)
+##   (which returns all data in worksheet 'Third_sheet' in file test4.xls
+##   into array An, the text data into array Tn, the raw cell data into
+##   cell array Ra and the ranges from where the actual data came in limits)
 ## @end example
 ##
 ## @seealso xlswrite, xlsopen, xls2oct, xlsclose, xlsfinfo, oct2xls
@@ -114,7 +113,7 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-10-16
-## Latest update: 2009-12-11
+## Latest update: 2009-12-29
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 

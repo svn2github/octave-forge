@@ -29,10 +29,11 @@
 ## are referred to as COM, POI and JXL, resp., and are preferred in that
 ## order by default (depending on their presence).
 ##
-## @var{filename} must be a valid .xls Excel file name. If @var{filename}
-## does not contain any directory path, the file is saved in the current
-## directory. (Support for .xlsx (Excel 2007 OOXML) will be added later, based
-## on Java and Apache POI.)
+## @var{filename} should be a valid .xls Excel file name; but if you use the
+## COM interface you can specify any extension that your installed Excel version
+## can read AND write. If @var{filename} does not contain any directory path,
+## the file is saved in the current directory. (Support for .xlsx (Excel 2007
+## OOXML) based on Java and Apache POI will be added later).
 ##
 ## If @var{readwrite} is set to 0 (default value) or omitted, the Excel file
 ## is opened for reading. If @var{readwrite} is set to True or 1, an Excel
@@ -61,7 +62,7 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-29
-## Last updated 2009-12-07
+## Last updated 2009-12-30
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -121,18 +122,8 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
 	xlsinterfaces = getxlsinterfaces (xlsinterfaces);
 
-# Supported interfaces determined; now check Excel file type.
-
+# Supported interfaces determined; Excel file type check moved to seperate interfaces.
 	chk1 = strcmp (tolower (filename(end-3:end)), '.xls');
-#	chk2 = strcmp (tolower (filename(end-4:end)), '.xlsx');
-#	if (xlsinterfaces.POI)
-#		if ~(chk1 || chk2)
-#			error ("xlsopen: only .xls or .xlsx files can be processed reliably");
-#		end
-#	elseif (~chk1)
-	if (~chk1)
-		error ("Currently xls2oct can only read reliably from .xls files")
-	endif
 	
 	xls = struct ("xtype", 'NONE', "app", [], "filename", [], "workbook", [], "changed", 0, "limits", []); 
 	
@@ -154,6 +145,9 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		xls.filename = filename;
 		
 	elseif (xlsinterfaces.JXL)
+		if (~chk1)
+			error ("Currently xls2oct / JXL can only read reliably from .xls files")
+		endif
 		xls.xtype = 'JXL';
 		xlsin = java_new ('java.io.File', filename);
 		if (xwrite == 2)
@@ -168,6 +162,9 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		xls.filename = filename;
 	
 	elseif (xlsinterfaces.POI)
+		if (~chk1)
+			error ("Currently xls2oct / POI can only read reliably from .xls files")
+		endif
 		xls.xtype = 'POI';
 		# Get handle to workbook
 		if (xwrite == 2)
@@ -252,7 +249,7 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-29
-## Last updated 2009-12-11
+## Last updated 2009-12-27
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -303,7 +300,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 				warning ("\n Java support OK but not all required classes (.jar) in classpath");
 			endif
 		catch
-			# COM non-existent
+			# POI non-existent
 		end_try_catch
 	endif
 
@@ -330,7 +327,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 				warning ("\nJava support OK but required classes (.jar) not all in classpath");
 			endif
 		catch
-			# COM non-existent
+			# JXL non-existent
 		end_try_catch
 	endif
 	

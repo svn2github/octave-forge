@@ -54,7 +54,7 @@
 
 ## Author: Philip Nienhuis <prnienhuis@users.sourceforge.net>
 ## Created: 2009-10-27
-## Latest update (Java / POI / xlsopen): 2009-12-11
+## Latest update (Java / POI / xlsopen): 2009-12-30
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename)
 
@@ -81,7 +81,7 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename)
 		endfor
 		if (ws_cnt > 0 || ch_cnt > 0) fformat = "xlWorkbookNormal"; endif
 		
-	elseif (strcmp(xls.xtype, 'POI'))
+	elseif (strcmp (xls.xtype, 'POI'))
 		sh_cnt = xls.workbook.getNumberOfSheets();
 		sh_names = cell (sh_cnt, 2);
 		for ii=1:sh_cnt
@@ -92,7 +92,7 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename)
 		endfor
 		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; endif
 
-	elseif (strcmp(xls.xtype, 'JXL'))
+	elseif (strcmp (xls.xtype, 'JXL'))
 		sh_cnt = xls.workbook.getNumberOfSheets ();
 		sh_names = cell (sh_cnt, 2);
 		sh_names(:,1) = char (xls.workbook.getSheetNames ());
@@ -102,6 +102,9 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename)
 		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; endif
 		
 #	elseif     <Other Excel interfaces below>
+
+	else
+		error (sprintf ("xlsfinfo: unknown Excel .xls interface - %s.", xls.xtype));
 
 	endif
 	

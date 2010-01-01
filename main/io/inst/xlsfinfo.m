@@ -15,9 +15,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} [@var{filetype}] = xlsfinfo (@var{filename})
-## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}] = xlsfinfo (@var{filename})
-## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}, @var{fformat}] = xlsfinfo (@var{filename})
+## @deftypefn {Function File} [@var{filetype}] = xlsfinfo (@var{filename} [, @var{reqintf}])
+## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}] = xlsfinfo (@var{filename} [, @var{reqintf}])
+## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}, @var{fformat}] = xlsfinfo (@var{filename} [, @var{reqintf}])
 ## Query Excel spreadsheet file @var{filename} for some info about its
 ## contents.
 ##
@@ -34,6 +34,13 @@
 ## Optional return value @var{fformat} currently returns @'' (empty
 ## string) unless @var{filename} is a readable Excel 95-2003 .xls file in
 ## which case @var{fformat} is set to "xlWorkbookNormal".
+##
+## If no return arguments are specified the sheet names are echoed to the 
+## terminal screen.
+##
+## If multiple xls interfaces have been installed @var{reqintf} can be
+## specified. This can sometimes be handy to get an idea of used cell ranges
+## in each worksheet (the COM/Excel interface can't supply this information).
 ##
 ## Examples:
 ##
@@ -54,11 +61,13 @@
 
 ## Author: Philip Nienhuis <prnienhuis@users.sourceforge.net>
 ## Created: 2009-10-27
-## Latest update (Java / POI / xlsopen): 2009-12-30
+## Latest update (echo sheet names to screen, request interface type): 2009-01-01
 
-function [ filetype, sh_names, fformat ] = xlsfinfo (filename)
+function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
-	xls = xlsopen (filename);
+	xls = xlsopen (filename, 0, reqintf);
+	
+	toscreen = nargout < 1;
 
 	xlWorksheet = -4167; xlChart = 4;
 	# If any valid xls-pointer struct has been returned, it must be a valid Excel spreadsheet
@@ -76,28 +85,30 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename)
 			elseif (xls.workbook.Sheets(ii).Type == xlChart)
 				sh_names(ii, 2) = sprintf ("%5d Chart # %d", xlChart, ++ch_cnt);
 			else
-				sh_names(ii, 2) = 'Other sheet type';
+				sh_names(ii, 2) = '      Other sheet type';
 			endif
 		endfor
 		if (ws_cnt > 0 || ch_cnt > 0) fformat = "xlWorkbookNormal"; endif
 		
 	elseif (strcmp (xls.xtype, 'POI'))
 		sh_cnt = xls.workbook.getNumberOfSheets();
-		sh_names = cell (sh_cnt, 2);
+		sh_names = cell (sh_cnt, 2); nsrows = zeros (sh_cnt, 1);
 		for ii=1:sh_cnt
 			sh = xls.workbook.getSheetAt (ii-1);         # Java POI starts counting at 0 
 			sh_names(ii, 1) = char (sh.getSheetName());
 			# Java POI doesn't distinguish between worksheets and graph sheets
 			sh_names(ii, 2) = ' ';
+			nsrows(ii, 1) = sh.getLastRowNum () + 1;
 		endfor
 		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; endif
 
 	elseif (strcmp (xls.xtype, 'JXL'))
 		sh_cnt = xls.workbook.getNumberOfSheets ();
-		sh_names = cell (sh_cnt, 2);
+		sh_names = cell (sh_cnt, 2); nsrows = zeros (sh_cnt, 1);
 		sh_names(:,1) = char (xls.workbook.getSheetNames ());
 		for ii=1:sh_cnt
 			sh_names(ii, 2) = ' ';
+			nsrows(ii, 1) = xls.workbook.getSheet(ii-1).getRows ();
 		endfor
 		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; endif
 		
@@ -107,7 +118,23 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename)
 		error (sprintf ("xlsfinfo: unknown Excel .xls interface - %s.", xls.xtype));
 
 	endif
-	
+	if (toscreen)
+		# Echo sheet names to screen
+		for ii=1:sh_cnt
+			str1 = sprintf ("%3d: %s", ii, sh_names{ii, 1});
+			if (strcmp (xls.xtype, 'COM'))
+				# In case of COM interface, also echo sheet type
+				jj = index (sh_names{ii, 2}, '#');
+				if (~jj) jj = size (sh_names{ii, 2}, 2); endif
+				str2 = sprintf ("   (%s)", sh_names{ii, 2}(6:jj-2) );
+			else
+				# Other interfaces can supply last row no.
+				str2 = sprintf ("   (Last used row # = %d)", nsrows(ii, 1));
+			endif
+			printf ("%s %s\n", str1, str2);
+		endfor
+	endif
+
 	xlsclose (xls);
 	
 endfunction

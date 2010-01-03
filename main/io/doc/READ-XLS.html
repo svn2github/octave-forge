@@ -7,11 +7,14 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091211;17230700">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100103;19252100">
+	<META NAME="CHANGED" CONTENT="20100103;23191400">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<STYLE TYPE="text/css">
 	<!--
@@ -108,14 +111,13 @@ For the Java / Apache POI / JExcelAPI interfaces (general):</P>
 	with ApchePOI): 
 	</P>
 	<P STYLE="margin-bottom: 0in">poi-ooxml-schemas-&lt;version&gt;.jar,
-	xbeans.jar, dom4j-1.6.1.jar in javaclasspath. 
+	xbean.jar, dom4j-1.6.1.jar in javaclasspath. 
 	</P>
 	<P STYLE="margin-bottom: 0in">Get them here:</P>
 	<P STYLE="margin-bottom: 0in"><A HREF="http://poi.apache.org/download.html">http://poi.apache.org/download.html</A>
 	(&ldquo;xmlbeans&rdquo; and poi-ooxml-schemas)</P>
 	<P STYLE="margin-bottom: 0in"><A HREF="http://sourceforge.net/projects/dom4j/files">http://sourceforge.net/projects/dom4j/files</A>
-	 (dom4j-&lt;version&gt;)</P>
-	<P STYLE="margin-bottom: 0in"></P>
+	(dom4j-&lt;version&gt;)</P>
 </UL>
 <P STYLE="margin-bottom: 0in">JExcelAPI specific:</P>
 <UL>
@@ -133,32 +135,36 @@ javaaddpath statements in the .octaverc file.</P>
 are mere wrappers for <B>xlsopen</B>-<B>xls2oct</B>-<B>xlsclose</B>-<B>parsecell</B>
 and <B>xlsopen</B>-<B>oct2xls</B>-<B>xlsclose</B> sequences, resp.
 They exist for the sake of Matlab compatibility.<BR><BR><B>xlsfinf</B>o
-can be used for finding out what worksheet names exist in the
-file.<BR><BR>Invoking <B>xlsopen</B>/..../<B>xlsclose</B> directly
-provides for much more flexibility, speed, and robustness than
-<B>xlsread</B> / <B>xlswrite</B>. Indeed, using the same file handle
-(pointer struct) you can mix reading &amp; writing before writing the
-workbook out to disk using xlsclose.<BR>And: <B>xlsopen </B>/
-<B>xlsclose</B> hide the gory interface details from the
-user.<BR>Currently only .xls files (BIFF8) can be read/written; using
-JExcelAPI BIFF5 can be read as well.<BR><BR>When using
-<B>xlsopen</B>....<B>xlsclose</B> be sure to keep track of the file
-handle struct.<BR><BR>A possible scenario:<BR><BR><B>xlh = xlsopen
-(&lt;excel_filename&gt; , [rw], [&lt;requested interface&gt;])</B><BR><I>#
-Set rw to 1 if you want to write to a workbook immediately.<BR># In
-that case the check for file existence is skipped and<BR># -if
-needed- a new workbook created.<BR># If you really want an other
-interface than auto-selected<BR># by xlsopen you can request that.
-But xlsopen still checks<BR># proper support for your choice.</I><BR><BR><I>#
-Read some data</I><BR><B>[ rawarr1, xlh ] = xls2oct (xlh,
-&lt;SomeWorksheet&gt;, &lt;Range&gt;)</B><BR><I># Be sure to specify
-xlh as output argument as xls2oct keeps<BR># track of changes and the
-need to write the workbook to disk <BR># in the xlhstruct. And the
-origin range is conveyed through<BR># the xlh pointer struct.</I><BR><BR><I>#
-Separate data into numeric and text data</I><BR><B>[ numarr1,
-txtarr1, lim1 ] = parsecell (rawarr1)</B><BR><I><BR></I># Get more
-data from another worksheet in the same workbook<BR><B>[ rawarr2, xlh
-] = xls2oct (xlh, &lt;SomeOtherWorksheet&gt;, &lt;Range&gt;)</B><BR><B>[
+can be used for finding out what worksheet names exist in the file.
+For OOXML files the input parameter REQINTF should be specified with
+a value of 'poi'(case-insensitive) and -obviously- the complete POI
+interface must have been installed. <BR><BR>Invoking
+<B>xlsopen</B>/..../<B>xlsclose</B> directly provides for much more
+flexibility, speed, and robustness than <B>xlsread</B> / <B>xlswrite</B>.
+Indeed, using the same file handle (pointer struct) you can mix
+reading &amp; writing before writing the workbook out to disk using
+xlsclose.<BR>And: <B>xlsopen </B>/ <B>xlsclose</B> hide the gory
+interface details from the user.<BR>Currently only .xls files (BIFF8)
+can be read/written; using JExcelAPI BIFF5 can be read as well. For
+OOXML files the complete Apache POI interface must be installed (and
+possibly the REQINTF parameter specified with a value of
+'poi').<BR><BR>When using <B>xlsopen</B>....<B>xlsclose</B> be sure
+to keep track of the file handle struct.<BR><BR>A possible
+scenario:<BR><BR><B>xlh = xlsopen (&lt;excel_filename&gt; , [rw],
+[&lt;requested interface&gt;])</B><BR><I># Set rw to 1 if you want to
+write to a workbook immediately.<BR># In that case the check for file
+existence is skipped and<BR># -if needed- a new workbook created.<BR>#
+If you really want an other interface than auto-selected<BR># by
+xlsopen you can request that. But xlsopen still checks<BR># proper
+support for your choice.</I><BR><BR><I># Read some data</I><BR><B>[
+rawarr1, xlh ] = xls2oct (xlh, &lt;SomeWorksheet&gt;, &lt;Range&gt;)</B><BR><I>#
+Be sure to specify xlh as output argument as xls2oct keeps<BR># track
+of changes and the need to write the workbook to disk <BR># in the
+xlhstruct. And the origin range is conveyed through<BR># the xlh
+pointer struct.</I><BR><BR><I># Separate data into numeric and text
+data</I><BR><B>[ numarr1, txtarr1, lim1 ] = parsecell (rawarr1)</B><BR><I><BR></I>#
+Get more data from another worksheet in the same workbook<BR><B>[
+rawarr2, xlh ] = xls2oct (xlh, &lt;SomeOtherWorksheet&gt;, &lt;Range&gt;)</B><BR><B>[
 numarr2, txtarr2, lim2 ] = parsecell (rawarr2)</B><BR><BR># &lt;...
 Analysis and preparation of new data in cell array Newdata....&gt;<BR><BR><I>#
 Add new data to spreadsheet</I><BR><B>xlh = oct2xls (Newdata, xlh,
@@ -167,8 +173,10 @@ workbook and write it to disk; then clear the handle</I><BR><B>xlh =
 xlsclose (xlh)</B><BR><B>clear xlh</B></P>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<P STYLE="margin-bottom: 0in">For OOXML specify parameter 'POI' in
-xlsread, xlswrite, xlsopen, xlsfinfo.</P>
+<P STYLE="margin-bottom: 0in">When not using the COM interface,
+specify a value of 'POI' for parameter REQINTF when accessing OOXML
+files in xlsread, xlswrite, xlsopen, xlsfinfo (and be sure the
+complete Apache POI interface is installed).</P>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P STYLE="margin-bottom: 0in"><BR>
@@ -176,7 +184,7 @@ xlsread, xlswrite, xlsopen, xlsfinfo.</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>MATLAB
 COMPATIBILITY</B></U></FONT></P>
 <P STYLE="margin-bottom: 0in"><BR><B>xlsread</B>, <B>xlswrite</B> and
-<B>xlsfinfo</B> are for the most part matlab-compatible. Some small
+<B>xlsfinfo</B> are for the most part Matlab-compatible. Some small
 differences are mentioned below.<BR><BR><B>xlsread</B><BR>Matlab's
 <B>xlsread</B> supports invoking extra functions while reading
 (&quot;passing function handle&quot;); octave not. But this can be
@@ -184,21 +192,21 @@ simulated outside <B>xlsread</B>.<BR><BR>Matlab's <B>xlsread</B>
 flags some spreadsheet errors, octave-forge just returns blank
 cells.<BR><BR>When using a Java interface, octave-forge returns info
 about the actual (rather than the requested) cell range where the
-data came from; matlab can't. This is due to Excel automatically
-trimming returned arrays from empty outer columns and rows; when
-using COM, octave has the same limitation.<BR>Personally I find it
-very useful to know from what part of a worksheet the data originate
-so I've put quite some effort in it :-)<BR><BR>When using the Java
-interface, reading and writing xls-files by octave-forge is
+data came from; Matlab and ActiveX/Excel can't. This is due to Excel
+automatically trimming returned arrays from empty outer columns and
+rows. When using COM, octave has the same limitation.<BR>Personally I
+find it very useful to know from what part of a worksheet the data
+originate so I've put quite some effort in it :-)<BR><BR>When using
+the Java interface, reading and writing xls-files by octave-forge is
 platform-independent. On systems w/o Excel Matlab can only read Excel
 95 formatted .xls files.<BR><BR>Matlab's <B>xlsread</B> invokes
 <B>csvread</B> if no Excel interface is present. Octave-forge's
 <B>xlsread</B> doesn't.<BR><BR><B>xlswrite</B><BR>Octave-forge's
-<B>xlswrite</B> works on systems w/o Excel support, matlab's
-doesn't.<BR><BR><B>xlsfinfo</B><BR>When invoking Excel/COM interface,
-octave-forge's <B>xlsfinfo</B> also echoes the type of sheet
-(worksheet, chart), not just the sheet names. Using Java I haven't
-found similar functionality (yet).</P>
+<B>xlswrite</B> works on systems w/o Excel support, Matlab's doesn't
+(properly).<BR><BR><B>xlsfinfo</B><BR>When invoking Excel/COM
+interface, octave-forge's <B>xlsfinfo</B> also echoes the type of
+sheet (worksheet, chart), not just the sheet names. Using Java I
+haven't found similar functionality (yet).</P>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P STYLE="margin-bottom: 0in"><BR>

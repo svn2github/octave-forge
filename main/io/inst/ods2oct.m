@@ -56,7 +56,7 @@
 ##
 ## Erroneous data and empty cells turn up empty in @var{rawarr}.
 ## Date/time values in OpenOffice.org are returned as numerical values
-## with base 1-1-000 (same as octave). But beware that Excel spreadsheets
+## with base 1-1-0000 (same as octave). But beware that Excel spreadsheets
 ## rewritten by OpenOffice.org into .ods format may have numerical date
 ## cells with base 01-01-1900 (same as MS-Excel).
 ##

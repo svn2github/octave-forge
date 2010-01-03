@@ -24,7 +24,7 @@
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
 ## To make this function work at all, you need the Java package > 1.2.5 plus
-## either ODFtoolkit > 3.5 & xercesImpl, or jOpenDocument installed on your
+## either ODFtoolkit > 0.7.5 & xercesImpl, or jOpenDocument installed on your
 ## computer + proper javaclasspath set. These interfaces are referred to as
 ## OTK and JOD, resp., and are preferred in that order by default (depending
 ## on their presence).
@@ -58,7 +58,7 @@
 ## Created: 2009-12-13
 ## Last update: 2009-12-30
 
-function [ ods ] = odsopen (filename, rw=0, reqinterface = [])
+function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
 	persistent odsinterfaces; persistent chkintf;
 	if (isempty (chkintf))

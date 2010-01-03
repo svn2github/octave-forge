@@ -56,7 +56,8 @@
 ##
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by odsread of one interface out of the
-## supported ones: Java/ODFtoolkit or Java/jOpenDocument.
+## supported ones: Java/ODFtoolkit ('OTK') or Java/jOpenDocument 
+## ('JOD').
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values

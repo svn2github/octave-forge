@@ -15,8 +15,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} [@var{filetype}] = odsfinfo (@var{filename})
-## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}] = odsfinfo (@var{filename})
+## @deftypefn {Function File} [@var{filetype}] = odsfinfo (@var{filename} [, @var{reqintf}])
+## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}] = odsfinfo (@var{filename} [, @var{reqintf}])
 ## Query an OpenOffice.org spreadsheet file @var{filename} (with .ods
 ## suffix) for some info about its contents (viz. sheet names).
 ##
@@ -30,10 +30,14 @@
 ## to right) in which they occur in the sheet stack.
 ##
 ## If you omit return arguments @var{filetype} and @var{sh_names} altogether,
-## odsfinfo returns the sheet names + a guess for the number of rows
-## containing actual data to the screen.
+## odsfinfo returns the sheet names + (in case of the ODF toolkit interfcae) 
+## a raw guess for the number of rows containing actual data to the screen 
+## (actually the number of "table-rows" in ODS).
 ##
-## odsfinfo execution can take its time as the entire spreadsheet has to
+## By specifying a value of 'jod' or 'otk' for @var{reqintf} the automatic
+## selection of the java interface is bypassed and the specified interface
+## will be used (if at all present).
+#### odsfinfo execution can take its time as the entire spreadsheet has to
 ## be parsed to get the sheet names.
 ##
 ## Examples:
@@ -49,19 +53,19 @@
 ##    list of sheet names) 
 ## @end example
 ##
-## @seealso odsread, ods2oct
+## @seealso odsread, odsopen, ods2oct, odsclose
 ##
 ## @end deftypefn
 
 ## Author: Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## Created: 2009-12-17
-## Last updated 2009-12-29
+## Last updated 2010-01-03 (added functionality for JOD as well)
 
-function [ filetype, sheetnames ] = odsfinfo (filename)
+function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 
 	onscreen = nargout < 1;
-	
-	ods = odsopen (filename);
+
+	ods = odsopen (filename, 0, reqintf);
 	
 	filetype = 'OpenOffice.org Calc Document';
 
@@ -95,11 +99,21 @@ function [ filetype, sheetnames ] = odsfinfo (filename)
 			endfor
 			
 		elseif (strcmp (ods.xtype, 'JOD'))
-			# jOpenDocument doesn't support sheet name extraction (yet?)
-			printf ("No sheet name support implemented in jOpenDocument.\n")
+			nr_of_sheets = ods.workbook.getSheetCount ();
+			sheetnames = cell (nr_of_sheets, 1);
+			for ii=1:nr_of_sheets
+				tmp1 = char (ods.workbook.getSheet (ii-1));
+				ist = index (tmp1, 'table:name=') + 12;
+				ien = index (tmp1(ist:end), '" table') - 2 + ist;
+				sheetnames(ii) = tmp1(ist:ien);
+				if (onscreen) 
+					# Echo sheet names
+					printf (" %s\n", sheetnames{ii});
+				endif
+			endfor
 
 		else
-			error (sprintf ("odsfinfo: unknown OpenOffice.org .ods interface - %s.", xls.xtype));
+#			error (sprintf ("odsfinfo: unknown OpenOffice.org .ods interface - %s.", xls.xtype));
 
 		endif
 	endif

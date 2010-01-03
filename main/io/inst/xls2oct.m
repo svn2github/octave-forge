@@ -86,8 +86,9 @@
 ## @end deftypefn
 
 ## Author: Philip Nienhuis
-## Created: 2009-10-16
-## Latest update: 2009-12-30
+## Created: 2010-10-16
+## Latest update: 2009-01-03 (added OOXML support & cleaned up code. Excel 
+##                            INDIRECT function still not working OK)
 
 function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh, datrange='')
 
@@ -397,24 +398,12 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 							rawarr (ii+1-firstrow, jj+1-lcol) = cell.getNumericCellValue ();
 						case ctype(2)		# 1 String
 							rawarr (ii+1-firstrow, jj+1-lcol) = char (cell.getRichStringCellValue ());
-#						case ctype(3)		# 2 Formula (if still at all needed).
-#							try				#  Provisionally we simply take the result
-#								rawarr (ii+1-firstrow, jj+1-lcol) = cell.getNumericCellValue ();
-#							catch
-#								# In case of errors we copy the formula as text into rawarr
-#								rawarr (ii+1-firstrow, jj+1-lcol) = ["=" cell.getCellFormula];
-#								type_of_cell = ctype (4);
-#								if (~jerror) 
-#									warning ("Java errors in worksheet formulas (converted to string)");
-#								endif
-#								++jerror; 
-#							end
 						case ctype(4)		# 3 Blank
 							# Blank; ignore until further notice
 						case ctype(5)		# 4 Boolean
 							rawarr (ii+1-firstrow, jj+1-lcol) = cell.getBooleanCellValue ();
 						otherwise			# 5 Error
-							# Error; ignore
+							# Formula (treated above) or error; ignore
 						endswitch
 					endif
 				endif

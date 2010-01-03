@@ -71,7 +71,7 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-01
-## Latest update: 2009-12-30
+## Latest update: 2010-01-03 (OOXML support)
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh, topleft='A1')
 
@@ -351,7 +351,7 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-26
-## Last updated 2009-12-11
+## Last updated 2010-01-03
 
 function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, topleftcell="A1")
 
@@ -440,12 +440,13 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, topleftcell="A1")
 
 	obj(txtptr) = obj2(txtptr);							# Copy strings back into place
 	obj(lptr) = obj2(lptr);
+
 	typearr(txtptr) = ctype(2);							# ...and clean up 
 	typearr(emptr) = ctype(4);
-	typearr(lptr) = ctype(5);							# BOOLEAN
+	typearr(lptr) = ctype(5);							# BOOLEAN, temp NUMERIC
 
 	# Create formula evaluator (needed to be able to write boolean values!)
-	frm_eval = xls.workbook.getCreationHelper().createFormulaEvaluator();
+	frm_eval = xls.workbook.getCreationHelper ().createFormulaEvaluator ();
 
 	for ii=1:nrows
 		ll = ii + trow - 2;    		# Java POI's row count = 0-based
@@ -453,14 +454,10 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, topleftcell="A1")
 		if (isempty (row)) row = sh.createRow (ll); endif
 		for jj=1:ncols
 			kk = jj + lcol - 2;		# POI's column count is also 0-based
-			cell = row.createCell (kk, typearr(ii,jj));
-			if (typearr(ii, jj) == ctype(5))
-				cell = row.createCell (kk, ctype(3));
-				# Provisionally we make do with formulas evaluated immediately 8-Z
-				if obj{ii, jj} bool = '(1=1)'; else bool = '(1=0)'; endif
-				cell.setCellFormula (bool); frm_eval.evaluateInCell (cell);
-			elseif ~(typearr(ii, jj) == 3)
-				# Just put text or number in cell
+			if (typearr(ii, jj) == ctype(4))
+				cell = row.createCell (kk, ctype(4));
+			else
+				cell = row.createCell (kk, typearr(ii,jj));
 				cell.setCellValue (obj{ii, jj});
 			endif
 		endfor

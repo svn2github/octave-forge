@@ -18,7 +18,7 @@
 ## @deftypefn {Function File} @var{rstatus} = xlswrite (@var{filename}, @var{arr})
 ## @deftypefnx {Function File} @var{rstatus} = xlswrite (@var{filename}, @var{arr}, @var{wsh})
 ## @deftypefnx {Function File} @var{rstatus} = xlswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range})
-## @deftypefnx {Function File} @var{rstatus} = xlswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range}, @var{reqintf)
+## @deftypefnx {Function File} @var{rstatus} = xlswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range}, @var{reqintf})
 ## Add data in 1D/2D array @var{arr} to worksheet @var{wsh} in Excel
 ## spreadsheet file @var{filename} in range @var{range}.
 ##
@@ -63,6 +63,8 @@
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by xlsread of one interface out of the
 ## supported ones: COM/Excel, Java/Apache POI, or Java/JExcelAPI.
+## For writing to OOXML files (.xlsx) a value of 'poi' (case-insensitive)
+## must be specified for @var{reqintf}.
 ##
 ## xlswrite is a mere wrapper for various scripts which find out what
 ## Excel interface to use (COM, Java/POI) plus code to mimic the other
@@ -87,7 +89,7 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-10-16
-## Latest update: 2009-12-11
+## Latest update: 2010-01-04  (Adapted range capacity checks to OOXML)
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
@@ -103,10 +105,14 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 	elseif (nargin == 2)
 		# Assume first worksheet and full worksheet starting at A1
 		wsh = 1;
-		range = "A1:IV65536";
+		if (strcmp (tolower (filename(end-4:end-1)), 'xls')
+			range = "A1:XFD1048576";	# OOXML has ridiculously large limits 
+		else
+			range = "A1:IV65536";		# Regular xls limits
+		endif
 	elseif (nargin == 3)
 		# Find out whether 3rd argument = worksheet or range
-		if (isnumeric(arg3) || (isempty(findstr(arg3, ':')) && ~isempty(arg3)))
+		if (isnumeric (arg3) || (isempty (findstr (arg3, ':')) && ~isempty (arg3)))
 			# Apparently a worksheet specified
 			wsh = arg3;
 			range = "A1:IV65536";		# FIXME for OOXML (larger sheet ranges)
@@ -132,8 +138,8 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 	[nr, nc] = size (arr);
 	if ((nr > nrows) || (nc > ncols))
 		# Array too big; truncate
-		nr = min(nrows, nr);
-		nc = min(ncols, nc);
+		nr = min (nrows, nr);
+		nc = min (ncols, nc);
 		warning ("xlswrite - array truncated to %d by %d to fit in range %s", ...
 				 nrows, ncols, range);
 	endif
@@ -142,6 +148,6 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
 	[xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
 
-	xlsclose (xls);
+	xls = xlsclose (xls);
 
 endfunction

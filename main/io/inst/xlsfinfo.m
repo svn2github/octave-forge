@@ -42,6 +42,9 @@
 ## specified. This can sometimes be handy to get an idea of used cell ranges
 ## in each worksheet (the COM/Excel interface can't supply this information).
 ##
+## For use on OOXML spreadsheets one needs full POI support (see xlsopen) and
+## 'poi' needs to be specified for @var{reqintf}.
+##
 ## Examples:
 ##
 ## @example

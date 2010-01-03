@@ -66,6 +66,8 @@
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by xlsread of one interface out of the
 ## supported ones: COM/Excel, Java/Apache POI, or Java/JExcelAPI.
+## For reading from OOXML files a value of 'poi' must be specified
+## for @var{reqintf} (see help for xlsopen).
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values in

@@ -44,7 +44,7 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-29
-## Latest update: 2009-12-11
+## Latest update: 2010-01-03 (checked OOXML support)
 
 function [ xls ] = xlsclose (xls)
 
@@ -60,16 +60,7 @@ function [ xls ] = xlsclose (xls)
 		# 51 = .xlsx - xlOpenXMLWorkbook (without macro's in 2007)
 		# 52 = .xlsm - xlOpenXMLWorkbookMacroEnabled (with or without macro's in 2007)
 		# 56 = .xls  - xlExcel8 (97-2003 format in Excel 2007)
-		#
-		# Probably to be incorporated as wb.SaveAs (filename, FileFormatNum)?
-		# where filename is properly canonicalized with proper extension.
-		# This functionality is not tried or implemented yet as there are no
-		# checks if the installed Excel version can actually write the
-		# desired formats; e.g., stock Excel 97 cannot write .xlsx; & Excel
-		# always gives a pop-up when about to write non-native formats.
-		# Moreover, in case of .csv, .wks, .txt we'll have to do something
-		# about gracefully ignoring the worksheet pointer.
-		# All To Be Sorted Out some time....
+
 		unwind_protect
 			xls.app.Application.DisplayAlerts = 0;
 			if (xls.changed > 0)

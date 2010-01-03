@@ -28,12 +28,14 @@
 ## installed on your computer + proper javaclasspath set. These interfaces
 ## are referred to as COM, POI and JXL, resp., and are preferred in that
 ## order by default (depending on their presence).
+## For OOXML support, in addition to Apache POI support you also need the
+## following jars in your javaclasspath: poi-ooxml-schemas-3.5.jar,
+## xbean.jar and dom4j-1.6.1.jar (or later versions).
 ##
-## @var{filename} should be a valid .xls Excel file name; but if you use the
+## @var{filename} should be a valid .xls or xlsx Excel file name; but if you use the
 ## COM interface you can specify any extension that your installed Excel version
 ## can read AND write. If @var{filename} does not contain any directory path,
-## the file is saved in the current directory. (Support for .xlsx (Excel 2007
-## OOXML) based on Java and Apache POI will be added later).
+## the file is saved in the current directory.
 ##
 ## If @var{readwrite} is set to 0 (default value) or omitted, the Excel file
 ## is opened for reading. If @var{readwrite} is set to True or 1, an Excel
@@ -62,7 +64,7 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-29
-## Last updated 2009-12-30
+## Last updated 2010-01-03 (Added OOXML support)
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -124,6 +126,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
 # Supported interfaces determined; Excel file type check moved to seperate interfaces.
 	chk1 = strcmp (tolower (filename(end-3:end)), '.xls');
+	chk2 = strcmp (tolower (filename(end-4:end-1)), '.xls');
 	
 	xls = struct ("xtype", 'NONE', "app", [], "filename", [], "workbook", [], "changed", 0, "limits", []); 
 	
@@ -162,15 +165,19 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		xls.filename = filename;
 	
 	elseif (xlsinterfaces.POI)
-		if (~chk1)
-			error ("Currently xls2oct / POI can only read reliably from .xls files")
+		if ~(chk1 || chk2)
+			error ("Unsupported file format for xls2oct / Apache POI.")
 		endif
 		xls.xtype = 'POI';
 		# Get handle to workbook
 		if (xwrite == 2)
-			wb = java_new ('org.apache.poi.hssf.usermodel.Workbook');
+			if (chk1)
+				wb = java_new ('org.apache.poi.hssf.usermodel.HSSFWorkbook');
+			elseif (chk2)
+				wb = java_new ('org.apache.poi.xssf.usermodel.XSSFWorkbook');
+			endif
+			xls.app = 'new_POI'
 		else
-			# Get handle to xls-file. OOXML not working here despite POI Javadocs
 			try
 				xlsin = java_new ('java.io.FileInputStream', filename);
 				wb = java_invoke ('org.apache.poi.ss.usermodel.WorkbookFactory', 'create', xlsin);

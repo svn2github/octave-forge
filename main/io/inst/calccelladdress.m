@@ -17,7 +17,8 @@
 ## calccelladdress - compute spreadsheet style cell address from
 ## row & column index.
 ## 
-## Max column index currently set to 1378 (ODS has max 1024)
+## Max column index currently set to 18278 (max ODS: 1024, OOXML: 16384).
+## Row limits for ODF and OOXML are 65536 and 1048576, resp.
 
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-12
@@ -27,15 +28,19 @@ function [ celladdress ] = calccelladdress (trow, lcol, row, column)
 
 	if (nargin < 4) error ("calccelladdress: not enough arguments.") endif
 	colnr = lcol + column - 1;
-	if (colnr> 1378) error ("Column nr > 1378"); endif
-	str = char (rem ((colnr-1), 26) + 'A');
-	if (colnr > 26 && colnr < 703) 
-		tmp = char (floor ((colnr - 27) / 26) + 'A');
+	if (colnr > 18278) error ("Column nr > 18278"); endif
+	rem1 = rem ((colnr-1), 26);
+	str = char (rem1 + 'A');								# A-Z; rightmost digit
+	if (colnr > 26 && colnr < 703)							# AA-ZZ
+		tmp = char (floor(colnr - rem1) / 26 - 1 + 'A');	# Leftmost digit
 		str = [tmp str];
-	elseif (colnr > 702 && colnr < 1379)
-		tmp = char (floor ((colnr - 703) / 26) + 'A');
-		str = ['A' tmp str];
-	endif
+	elseif (colnr > 702 && colnr < 18279)					# AAA-ZZZ
+		rem2 = rem ((colnr - 26 - rem1) - 1, 676);
+		str2 = char (rem2 / 26 + 'A');						# Middle digit
+		colnr = colnr -  rem2 - rem1;
+		str3 = char (colnr / 676 - 1 + 'A');				# Leftmost digit
+		str = [str3 str2 str];
+	endif	
 	celladdress = sprintf ("%s%d", str, trow + row - 1);
 
 endfunction

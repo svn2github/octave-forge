@@ -52,8 +52,6 @@ function sys = mconnect (sys, M, in_idx, out_idx)
     error ("mconnect: second argument must be a matrix with real coefficients");
   endif
 
-  M = round (M);
-
   sys = __sysconnect__ (sys, M);
 
   if (nargin == 4)

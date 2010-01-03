@@ -7,11 +7,12 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091211;17230700">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20091230;182500">
+	<META NAME="CHANGED" CONTENT="20100103;19252100">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<STYLE TYPE="text/css">
 	<!--
 		@page { margin: 0.79in }
@@ -24,7 +25,7 @@
 <P ALIGN=CENTER STYLE="margin-bottom: 0in">README for Excel
 spreadsheet file r/w access scripts for octave (&gt;
 3.2.0)<BR><BR>Copyright (C) 2009, Philip Nienhuis &lt;prnienhuis at
-users.sf.net&gt;<BR><BR>This version 29 December 2009.</P>
+users.sf.net&gt;<BR><BR>This version 03 January 2010.</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
@@ -103,6 +104,18 @@ For the Java / Apache POI / JExcelAPI interfaces (general):</P>
 	classpath</P>
 	<LI><P STYLE="margin-bottom: 0in">Get it here:
 	<A HREF="http://poi.apache.org/download.html">http://poi.apache.org/download.html</A></P>
+	<LI><P STYLE="margin-bottom: 0in">for OOXML support (only available
+	with ApchePOI): 
+	</P>
+	<P STYLE="margin-bottom: 0in">poi-ooxml-schemas-&lt;version&gt;.jar,
+	xbeans.jar, dom4j-1.6.1.jar in javaclasspath. 
+	</P>
+	<P STYLE="margin-bottom: 0in">Get them here:</P>
+	<P STYLE="margin-bottom: 0in"><A HREF="http://poi.apache.org/download.html">http://poi.apache.org/download.html</A>
+	(&ldquo;xmlbeans&rdquo; and poi-ooxml-schemas)</P>
+	<P STYLE="margin-bottom: 0in"><A HREF="http://sourceforge.net/projects/dom4j/files">http://sourceforge.net/projects/dom4j/files</A>
+	 (dom4j-&lt;version&gt;)</P>
+	<P STYLE="margin-bottom: 0in"></P>
 </UL>
 <P STYLE="margin-bottom: 0in">JExcelAPI specific:</P>
 <UL>
@@ -152,6 +165,10 @@ Add new data to spreadsheet</I><BR><B>xlh = oct2xls (Newdata, xlh,
 &lt;AnotherWorksheet&gt;, &lt;Range&gt;)</B><BR><BR><I># Close the
 workbook and write it to disk; then clear the handle</I><BR><B>xlh =
 xlsclose (xlh)</B><BR><B>clear xlh</B></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">For OOXML specify parameter 'POI' in
+xlsread, xlswrite, xlsopen, xlsfinfo.</P>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P STYLE="margin-bottom: 0in"><BR>
@@ -217,12 +234,12 @@ does work, but IMO undue user confidence is needed.</P>
 (Java-based and platform-independent too) is based on the
 OpenOffice.org I/O Excel r/w routines. It is a little more versatile
 than JExcelAPI, however it while it doesn't support BIFF5 it does
-support BIFF8 and OOXML (Excel 2007). It is almost as fast as native
-Excel &amp; COM, but at the moment (3.5-FINAL) evaluation of Excel
-formulas invoking INDIRECT() seems broken and OOXML support is not
-working yet through octave.<BR><BR>All in all, of the two Java
-options I'd lightly prefer JExcelAPI but I hope that Apache POI gets
-better soon.</P>
+support BIFF8 (Excel 97 &ndash; 2003) and OOXML (Excel 2007). It is
+almost as fast as native Excel &amp; COM, but at the moment
+(3.5-FINAL) evaluation of Excel formulas invoking INDIRECT() seems
+broken (it seems it doesn't properly support INDIRECT() Excel
+functions.<BR><BR>All in all, of the two Java options I'd lightly
+prefer JExcelAPI but I hope that Apache POI gets better soon.</P>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P STYLE="margin-bottom: 0in"><BR>
@@ -232,10 +249,10 @@ better soon.</P>
 </P>
 <P STYLE="margin-bottom: 0in"><B>xlsopen</B>/<B>xlsclos</B>e and
 friends have been written so that adding other interfaces (Perl?
-...?) should be very easily accomplished. <B>xlsopen</B> merely needs
-two stanzas, <B>xls2oct</B>, <B>oct2xls</B> and <B>xlsfinfo</B> each
-need an additional elseif clause, and <B>xlsclose</B> needs a small
-stanza for closing the pointer struct and writing to disk. 
+native octave? ...?) should be very easily accomplished. <B>xlsopen</B>
+merely needs two stanzas, <B>xls2oct</B>, <B>oct2xls</B> and <B>xlsfinfo</B>
+each need an additional elseif clause, and <B>xlsclose</B> needs a
+small stanza for closing the pointer struct and writing to disk. 
 </P>
 <P STYLE="margin-bottom: 0in">The real work lies in creating the
 relevant <B>xls2&lt;...&gt;2oct</B> &amp; <B>oct2&lt;...&gt;2xls</B>
@@ -265,6 +282,6 @@ Enjoy!</P>
 <BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.26in; text-indent: -0.26in; margin-bottom: 0in">
-Philip Nienhuis, Dec 29, 2009</P>
+Philip Nienhuis, Jan 03, 2010</P>
 </BODY>
 </HTML>

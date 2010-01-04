@@ -1,6 +1,8 @@
 control >> Control Theory
 Examples and Demos
+  Boeing707
   optiPID
+  WestlandLynx
 Linear Models
   set
   ss

@@ -1,3 +1,9 @@
+2010-01-05  Jaroslav Hajek  <highegg@gmail.com>
+
+	* inst/clqinterp.m: New function.
+	* inst/qcalc_extra.m: New function.
+	* DESCRIPTION: Tag version 1.2.1
+
 2009-12-17  Jaroslav Hajek  <highegg@gmail.com>
 
 	* inst/calcwing.m: Gripe if not converged on initial iteration.

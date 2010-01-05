@@ -104,16 +104,20 @@
 
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-12
-## Last update: 2009-12-29
+## Last update: 2010-01-05
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
 	ods = odsopen (filename, 0, reqintf);
-	
-	[rawarr, ods] = ods2oct (ods, wsh, datrange);
-	
-	[numarr, txtarr, lim] = parsecell (rawarr, ods.limits);
 
+	[rawarr, ods, rstatus] = ods2oct (ods, wsh, datrange);
+
+	if (rstatus)
+		[numarr, txtarr, lim] = parsecell (rawarr, ods.limits);
+	else
+		warning (sprintf ("No data read from %s.", filename));
+	endif
+	
 	ods = odsclose (ods);
 
 endfunction

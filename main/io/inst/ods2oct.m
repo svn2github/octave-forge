@@ -87,9 +87,10 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
-## Latest update: 2009-12-30
+## Latest update of ods2oct: 2009-12-30
+## Latest update of functions below: 2010-01-05
 
-function [ rawarr, ods ] = ods2oct (ods, wsh=1, datrange=[])
+function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[])
 
 	if (strcmp (ods.xtype, 'OTK'))
 		# Read xls file tru Java & ODF toolkit
@@ -106,6 +107,7 @@ function [ rawarr, ods ] = ods2oct (ods, wsh=1, datrange=[])
 	endif
 
 endfunction
+
 
 #=====================================================================
 
@@ -131,12 +133,14 @@ endfunction
 
 ## Author: Philip Nenhuis <pr.nienhuis at users.sf.net>
 ## Created: 2009-12-24
-## Last update: 2009-12-30
+## Last update: 2010-01-05
 
-function [ rawarr, ods, status ] = ods2jotk2oct (ods, wsh, crange = [])
+function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 
 	# Parts after user gfterry in
 	# http://www.oooforum.org/forum/viewtopic.phtml?t=69060
+	
+	rstatus = 0;
 
 	# Get contents and table stuff from the workbook
 	odfcont = ods.workbook;		# Use a local copy just to be sure. octave 
@@ -162,10 +166,8 @@ function [ rawarr, ods, status ] = ods2jotk2oct (ods, wsh, crange = [])
 		ii = 0;
 		while (++ii <= nr_of_sheets && ischar (wsh))	
 			# Look in first part of the sheet nodeset
-			tmp1 = char (sheets.item(ii-1))(1:150);
-			ist = index (tmp1, 'table:name=') + 12;
-			ien = index (tmp1(ist:end), '" table') - 2 + ist;
-			if (strcmp (tmp1(ist:ien), wsh))
+			sh_name = sheets.item(ii-1).getTableNameAttribute ();
+			if (strcmp (sh_name, wsh))
 				# Convert local copy of wsh into a number (pointer)
 				wsh = ii + i;
 			endif
@@ -175,7 +177,7 @@ function [ rawarr, ods, status ] = ods2jotk2oct (ods, wsh, crange = [])
 		# We already have a numeric sheet pointer. If it's not in range:
 		error (sprintf ("Worksheet no. %d out of range (1 - %d)", wsh, nr_of_sheets));
 	endif
-		
+
 	# Get table-rows in sheet no. wsh. Sheet count = 1-based (!)
 	str = sprintf ("//table:table[%d]/table:table-row", wsh);
 	sh = xpath.evaluate (str, odfcont, NODESET);
@@ -210,72 +212,78 @@ function [ rawarr, ods, status ] = ods2jotk2oct (ods, wsh, crange = [])
 		row = sh.item(rowcnt++);
 		nr_of_cells = min (row.getLength (), rcol);
 		rightmcol = max (rightmcol, nr_of_cells);	# Keep track of max row length
-
+		
 		# Read column (cell, "table-cell" in ODS speak) by column
 		jj = lcol; r_cols = 0;
-		while (jj + r_cols <= 1024 && jj <= rcol)
-			tcell = char (row.getCellAt(jj-1));
-			cellcont = getcellcont (tcell);		# Parse cell contents, func = below
-			if (~isempty (cellcont.cvalue))
+		while (r_cols <= 1024 && jj <= rcol)
+			tcell = row.getCellAt(jj-1); ++r_cols;
+			if (~isempty (tcell)) 		# If empty it's possibly in columns-repeated/spanned
+				if ~(index (char(tcell), 'text:p>Err:') || index (char(tcell), 'text:p>#DIV'))	
 
-				# Get data from cell
-				switch cellcont.ctype
-					case  {'float', 'currency', 'percentage'}
-						rawarr(ii, jj) = str2double (cellcont.cvalue);
-					case 'date'
-						# Dates are returned as octave datenums, i.e. 0-0-0000 based
-						str = cellcont.cvalue;
-						yr = str2num (str(1:4));
-						mo = str2num (str(6:7));
-						dy = str2num (str(9:10));
-						if (index (str, 'T'))
-							hh = str2num (str(12:13));
-							mm = str2num (str(15:16));
-							ss = str2num (str(18:19));
-							rawarr(ii, jj) = datenum (yr, mo, dy, hh, mm, ss);
-						else
-							rawarr(ii, jj) = datenum (yr, mo, dy);
-						endif
-					case 'time'
-						str = cellcont.cvalue;
-						if (index (str, 'PT'))
-							hh = str2num (str(3:4));
-							mm = str2num (str(6:7));
-							ss = str2num (str(9:10));
-							rawarr(ii, jj) = datenum (0, 0, 0, hh, mm, ss);
-						endif
-					case 'boolean'
-						if (strcmp (cellcont.cvalue, 'true'))
-							rawarr(ii, jj) = true;
-						else
-							rawarr(ii, jj) = false;
-						endif
-					case 'string'
-						rawarr(ii, jj) = cellcont.cvalue;
-					otherwise
-						# Nothing
-				endswitch
+					# Get data from cell
+					ctype = tcell.getOfficeValueTypeAttribute ();
+					cvalue = tcell.getOfficeValueAttribute ();
+					switch deblank (ctype)
+						case  {'float', 'currency', 'percentage'}
+							rawarr(ii, jj) = cvalue;
+						case 'date'
+							cvalue = tcell.getOfficeDateValueAttribute ();
+							# Dates are returned as octave datenums, i.e. 0-0-0000 based
+							yr = str2num (cvalue(1:4));
+							mo = str2num (cvalue(6:7));
+							dy = str2num (cvalue(9:10));
+							if (index (cvalue, 'T'))
+								hh = str2num (cvalue(12:13));
+								mm = str2num (cvalue(15:16));
+								ss = str2num (cvalue(18:19));
+								rawarr(ii, jj) = datenum (yr, mo, dy, hh, mm, ss);
+							else
+								rawarr(ii, jj) = datenum (yr, mo, dy);
+							endif
+						case 'time'
+							cvalue = tcell.getOfficeTimeValueAttribute ();
+							if (index (cvalue, 'PT'))
+								hh = str2num (cvalue(3:4));
+								mm = str2num (cvalue(6:7));
+								ss = str2num (cvalue(9:10));
+								rawarr(ii, jj) = datenum (0, 0, 0, hh, mm, ss);
+							endif
+						case 'boolean'
+							if (strcmp (deblank (cvalue), 'true'))
+								rawarr(ii, jj) = true;
+							else
+								rawarr(ii, jj) = false;
+							endif
+						case 'string'
+							tmp = char (tcell);
+							# Get string value from between <text:p|r> </text:p|r> tags
+							ist = index (tmp, '<text');
+							if (ist)
+								ist = ist + 8; ien = index (tmp(ist:end), '</text') + ist - 2;
+								rawarr(ii, jj) = tmp(ist:ien);
+							endif
+						otherwise
+							# Nothing
+					endswitch
+				endif
+				# Check for repeated columns (often empty columns, viz. to right of data)
+				# and add to column count
+				r_cols = r_cols + tcell.getTableNumberColumnsRepeatedAttribute () - 1;
 			endif
 			++jj;						# Next cell
-			r_cols = cellcont.cols;		# Number of repeated columns.
 		endwhile
 
 		# Check for repeated rows (i.e. condensed in one table-row)
-		mm = index (char(row), 'number-rows-repeated');
-		if (mm)
-			str = char (row) (1:82);
-			ist = mm + 22; ien = index (str(ist:end), '"') + ist - 2; 
-			extrarows = str2num (str(ist:ien));
-			if (extrarows > 0 && ii + extrarows < 65535)
-				# Expand table-row
-				nr_of_rows = nr_of_rows + extrarows - 1;
-				ii = ii + extrarows - 1;
-				nrows = min (65536, nrows + extrarows - 1);
-				brow = min (trow + nrows - 1, nr_of_rows);
-				# Increase return argument size if needed
-				tmp = cell (extrarows, 1024);
-				rawarr = [rawarr; tmp];
-			endif
+		extrarows = row.getTableNumberRowsRepeatedAttribute () - 1;
+		if (extrarows > 1 && (ii + extrarows) < 65535)
+			# Expand rawarr cf. table-row
+			nr_of_rows = nr_of_rows + extrarows;
+			ii = ii + extrarows;
+			nrows = min (65536, nrows + extrarows);
+			brow = min (trow + nrows - 1, nr_of_rows);
+			# Increase return argument size if needed
+			tmp = cell (extrarows, 1024);
+			rawarr = [rawarr; tmp];
 		endif
 		
 	endwhile
@@ -286,85 +294,22 @@ function [ rawarr, ods, status ] = ods2jotk2oct (ods, wsh, crange = [])
 	# Crop rawarr from all empty outer rows & columns just like Excel does
 	# & keep track of limits
 	emptr = cellfun('isempty', rawarr);
-	irowt = 1;
-	while (all (emptr(irowt, :))), irowt++; endwhile
-	irowb = nr_of_rows;
-	while (all (emptr(irowb, :))), irowb--; endwhile
-	icoll = 1;
-	while (all (emptr(:, icoll))), icoll++; endwhile
-	icolr = rightmcol;
-	while (all (emptr(:, icolr))), icolr--; endwhile
-	# Crop textarray
-	rawarr = rawarr(irowt:irowb, icoll:icolr);
-	status = 1;
-
-	ods.limits = [lcol+icoll-1, lcol+icolr-1; trow+irowt-1, trow+irowb-1];
-
-endfunction
-
-
-## Copyright (C) 2009 by Philip Nienhuis <prnienhuis at users.sf.net>
-## 
-## Parse some data from ODS spreadsheet cells.
-## Input = character string <table:table-cell>...</table:table-cell>
-## 
-## Author: Philip Nenhuis <pr.nienhuis at users.sf.net>
-## Created: 2009-12-24
-## Last update: 2009-12-27
-
-function cellcont = getcellcont (tcell)
-
-	cellcont = struct ("ctype", '', "cvalue", '', "cols", 0);
-
-	# Check for repeated columns (often empty columns, viz. to right of data)
-	ii = index (tcell, 'number-columns-repeated');
-	if (ii)
-		ist = ii+25; ien = index(tcell(ist:end), '"') + ist - 2; 
-		cellcont.cols = str2num (tcell(ist:ien));
-	endif
-
-	# Get cell value type: float / boolean / string / date/.... Skip errors.
-	ii = index (tcell, 'value-type=');
-	if (ii && ~index (tcell, 'text:p>Err:') && ~index (tcell, 'text:p>#DIV'))
-		# Then cell contains useful data.
-		ist = ii + 12; ien = index (tcell(ist:end), '"') + ist - 2; 
-		cellcont.ctype = tcell(ist:ien);
-
-		if (strcmp (cellcont.ctype, 'string'))
-			# Get string value from between <text:p|r> </text:p|r> tags
-			ii = index (tcell, '<text');
-			if (ii)
-				ist = ii + 8; ien = index (tcell(ist:end), '</text') + ist - 2;
-				cellcont.cvalue = tcell(ist:ien);
-			endif
-
-		elseif (strcmp (cellcont.ctype, 'date'))
-			# Get date string
-			ii = index (tcell, 'date-value=');
-			if (ii)
-				ist = ii + 12; ien = index (tcell(ist:end), '"') + ist - 2; 
-				# Return string for the time being
-				cellcont.cvalue = tcell(ist:ien);
-			endif
-
-		elseif (strcmp (cellcont.ctype, 'time'))
-			# Get time string
-			ii = index (tcell, 'time-value=');
-			if (ii)
-				ist = ii + 12; ien = index (tcell(ist:end), '"') + ist - 2; 
-				# Return string for the time being (no pun intended)
-				cellcont.cvalue = tcell(ist:ien);
-			endif
-
-		else
-			# Get cell value as string (float, currency, percentage)
-			ii = index (tcell, 'value=');
-			if (ii)
-				ist = ii + 7; ien = index (tcell(ist:end), '"') + ist - 2; 
-				cellcont.cvalue = tcell(ist:ien);
-			endif
-
-		endif
+	if (all (all (emptr)))
+		rawarr = {};
+		ods.limits= [];
+	else
+		irowt = 1;
+		while (all (emptr(irowt, :))), irowt++; endwhile
+		irowb = nr_of_rows;
+		while (all (emptr(irowb, :))), irowb--; endwhile
+		icoll = 1;
+		while (all (emptr(:, icoll))), icoll++; endwhile
+		icolr = rightmcol;
+		while (all (emptr(:, icolr))), icolr--; endwhile
+		# Crop textarray
+		rawarr = rawarr(irowt:irowb, icoll:icolr);
+		rstatus = 1;
+		ods.limits = [lcol+icoll-1, lcol+icolr-1; trow+irowt-1, trow+irowb-1];
 	endif
 
 endfunction

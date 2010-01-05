@@ -32,8 +32,10 @@ function clq1 = clqinterp (clq, alfa1)
   endif
 
   alfa = clq.alfa;
-  transform = @(q) interp1 (alfa.', q.', alfa1.').';
+  transform = @(q) interp1 (alfa.', q.', alfa1.', "extrap").';
   clq1 = structfun (transform, clq, "uniformoutput", false);
+  clq1.alfa = alfa1;
+  clq1.al = alfa1 * (pi/180);
 
   % interpolating zsep makes little sense, so let's remove it.
   clq1 = rmfield (clq1, "zsep");

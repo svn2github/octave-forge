@@ -292,20 +292,30 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			# If we get here, at least Java works. Now check for proper entries
 			# in class path. Under *nix the classpath must first be split up
 			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
-			jpchk = 0; entries = {"rt.jar", "poi-3", "poi-ooxml"};
+			# Check basic .xls (BIFF8) support
+			jpchk1 = 0; entries1 = {"rt.jar", "poi-3", "poi-ooxml"};
 			for ii=1:size (tmp1, 2)
 				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
-				for jj=1:size (entries, 2)
-					if (strmatch (entries{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk; endif
+				for jj=1:size (entries1, 2)
+					if (strmatch (entries1{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk1; endif
 				endfor
 			endfor
-			if (jpchk > 2)
+			if (jpchk1 > 2)
 				xlsinterfaces.POI = 1;
 				printf (" Java/Apache (POI) OK. ");
 				chk1 = 1;
 			else
 				warning ("\n Java support OK but not all required classes (.jar) in classpath");
 			endif
+			# OOXML extras
+			jpchk2 = 0; entries2 = {"xbean.jar", "poi-ooxml-schemas", "dom4j"};
+			for ii=1:size (tmp1, 2)
+				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
+				for jj=1:size (entries2, 2)
+					if (strmatch (entries2{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk2; endif
+				endfor
+			endfor
+			if (jpchk2 > 2) printf ("(& OOXML OK)  "); endif
 		catch
 			# POI non-existent
 		end_try_catch

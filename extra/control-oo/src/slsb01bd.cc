@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009   Lukas F. Reichlin
+Copyright (C) 2009 - 2010   Lukas F. Reichlin
 
 This file is part of LTI Syncope.
 
@@ -23,7 +23,7 @@ Uses SLICOT SB01BD by courtesy of NICONET e.V.
 
 Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 Created: November 2009
-Version: 0.1
+Version: 0.2
 
 */
 
@@ -110,13 +110,12 @@ DEFUN_DLD (slsb01bd, args, nargout, "Slicot SB01BD Release 5.0")
         dv(1) = n;
         NDArray f (dv);
         
-        double* z;
-        z = new double[ldz*n];
+        OCTAVE_LOCAL_BUFFER (double, z, ldz*n);
         
         // workspace
-        double* dwork;
         int ldwork = max (1, 5*m, 5*n, 2*n+4*m);
-        dwork = new double[ldwork];
+        
+        OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
         
         // error indicators
         int iwarn;
@@ -150,9 +149,6 @@ DEFUN_DLD (slsb01bd, args, nargout, "Slicot SB01BD Release 5.0")
         retval(2) = octave_value (nfp);
         retval(3) = octave_value (nap);
         retval(4) = octave_value (nup);
-        
-        // free memory
-        delete[] dwork;
     }
     
     return retval;

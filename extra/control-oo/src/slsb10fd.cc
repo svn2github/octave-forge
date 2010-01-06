@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009   Lukas F. Reichlin
+Copyright (C) 2009 - 2010   Lukas F. Reichlin
 
 This file is part of LTI Syncope.
 
@@ -23,7 +23,7 @@ Uses SLICOT SB10FD by courtesy of NICONET e.V.
 
 Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 Created: December 2009
-Version: 0.1
+Version: 0.2
 
 */
 
@@ -139,9 +139,6 @@ DEFUN_DLD (slsb10fd, args, nargout, "Slicot SB10FD Release 5.0")
         NDArray rcond (dv);
         
         // workspace
-        //int* iwork;
-        //double* dwork;
-        //bool* bwork;
         
         int m2 = ncon;
         int m1 = m - m2;
@@ -154,10 +151,7 @@ DEFUN_DLD (slsb10fd, args, nargout, "Slicot SB10FD Release 5.0")
                                           2*n*(n+2*q) + max (1, 4*q*q +
                                           max (2*q, 3*n*n + max (2*n*q, 10*n*n+12*n+5)),
                                           q*(3*n + 3*q + max (2*n, 4*q + max (n, q)))));
-        
-        //iwork = new int[liwork];
-        //dwork = new double[ldwork];
-        //bwork = new bool[2*n];
+
         OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
         OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
         OCTAVE_LOCAL_BUFFER (bool, bwork, 2*n);
@@ -197,11 +191,6 @@ DEFUN_DLD (slsb10fd, args, nargout, "Slicot SB10FD Release 5.0")
         retval(1) = bk;
         retval(2) = ck;
         retval(3) = dk;
-        
-        // free memory
-        //delete[] iwork;
-        //delete[] dwork;
-        //delete[] bwork;
     }
     
     return retval;

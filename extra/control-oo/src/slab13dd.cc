@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009   Lukas F. Reichlin
+Copyright (C) 2009 - 2010   Lukas F. Reichlin
 
 This file is part of LTI Syncope.
 
@@ -23,7 +23,7 @@ Uses SLICOT AB13DD by courtesy of NICONET e.V.
 
 Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 Created: November 2009
-Version: 0.1
+Version: 0.2
 
 */
 
@@ -115,17 +115,13 @@ DEFUN_DLD (slab13dd, args, nargout, "Slicot AB13DD Release 5.0")
         fpeak(1) = 1;
         
         // workspace
-        int* iwork;
-        double* dwork;
-        Complex* cwork;
-        
         int ldwork = max (1, 15*n*n + p*p + m*m + (6*n+3)*(p+m) + 4*p*m +
                           n*m + 22*n + 7*min(p,m));
         int lcwork = max (1, (n+m)*(n+p) + 2*min(p,m) + max(p,m));
         
-        iwork = new int[n];
-        dwork = new double[ldwork];
-        cwork = new Complex[lcwork];
+        OCTAVE_LOCAL_BUFFER (int, iwork, n);
+        OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
+        OCTAVE_LOCAL_BUFFER (Complex, cwork, lcwork);
         
         // error indicator
         int info;
@@ -157,11 +153,6 @@ DEFUN_DLD (slab13dd, args, nargout, "Slicot AB13DD Release 5.0")
         // return values
         retval(0) = fpeak;
         retval(1) = gpeak;
-        
-        // free memory
-        delete[] iwork;
-        delete[] dwork;
-        delete[] cwork;
     }
     
     return retval;

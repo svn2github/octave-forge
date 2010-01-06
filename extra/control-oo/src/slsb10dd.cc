@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009   Lukas F. Reichlin
+Copyright (C) 2009 - 2010   Lukas F. Reichlin
 
 This file is part of LTI Syncope.
 
@@ -23,7 +23,7 @@ Uses SLICOT SB10DD by courtesy of NICONET e.V.
 
 Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 Created: December 2009
-Version: 0.1
+Version: 0.2
 
 */
 
@@ -154,10 +154,6 @@ DEFUN_DLD (slsb10dd, args, nargout, "Slicot SB10DD Release 5.0")
         NDArray rcond (dv);
         
         // workspace
-        //int* iwork;
-        //double* dwork;
-        //bool* bwork;
-        
         int m2 = ncon;
         int m1 = m - m2;
         int np1 = np - nmeas;
@@ -168,11 +164,7 @@ DEFUN_DLD (slsb10dd, args, nargout, "Slicot SB10DD Release 5.0")
         int ldwork = max ((n+q)*(n+q+6), 13*n*n + m*m + 2*q*q + n*(m+q) +
                      max (m*(m+7*n), 2*q*(8*n+m+2*q)) + 6*n +
                      max (14*n+23, 16*n, 2*n + max (m, 2*q), 3*max (m, 2*q)));
-        
-        //iwork = new int[liwork];
-        //dwork = new double[ldwork];
-        //bwork = new bool[2*n];
-        
+
         OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
         OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
         OCTAVE_LOCAL_BUFFER (bool, bwork, 2*n);
@@ -214,11 +206,6 @@ DEFUN_DLD (slsb10dd, args, nargout, "Slicot SB10DD Release 5.0")
         retval(1) = bk;
         retval(2) = ck;
         retval(3) = dk;
-        
-        // free memory
-        //delete[] iwork;
-        //delete[] dwork;
-        //delete[] bwork;
     }
     
     return retval;

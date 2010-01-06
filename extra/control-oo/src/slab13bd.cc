@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009   Lukas F. Reichlin
+Copyright (C) 2009 - 2010   Lukas F. Reichlin
 
 This file is part of LTI Syncope.
 
@@ -23,7 +23,7 @@ Uses SLICOT AB13BD by courtesy of NICONET e.V.
 
 Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 Created: November 2009
-Version: 0.1
+Version: 0.2
 
 */
 
@@ -112,10 +112,10 @@ DEFUN_DLD (slab13bd, args, nargout, "Slicot AB13BD Release 5.0")
         double tol = 0;
         
         // workspace
-        double* dwork;
         int ldwork = max (1, m*(n+m) + max (n*(n+5), m*(m+2), 4*p ),
                              n*(max (n, p) + 4 ) + min (n, p));
-        dwork = new double[ldwork];
+
+        OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
         
         // error indicator
         int iwarn;
@@ -145,9 +145,6 @@ DEFUN_DLD (slab13bd, args, nargout, "Slicot AB13BD Release 5.0")
         // return value
         retval(0) = octave_value (norm);
         retval(1) = octave_value (iwarn);
-        
-        // free memory
-        delete[] dwork;
     }
     
     return retval;

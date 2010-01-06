@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009   Lukas F. Reichlin
+Copyright (C) 2009 - 2010   Lukas F. Reichlin
 
 This file is part of LTI Syncope.
 
@@ -23,7 +23,7 @@ Uses SLICOT AB08ND by courtesy of NICONET e.V.
 
 Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 Created: November 2009
-Version: 0.1
+Version: 0.2
 
 */
 
@@ -112,32 +112,22 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         int nkror;
         int nkrol;
         
-        int* infz;
-        int* kronr;
-        int* kronl;
-        
-        double* af;
         int ldaf = max (1, n + m);
-        double* bf;
         int ldbf = max (1, n + p);
-        
-        infz = new int[n];
-        kronr = new int[1+max(n,m)];
-        kronl = new int[1+max(n,p)];
 
-        af = new double[ldaf*(n+min(p,m))];
-        bf = new double[ldbf*(n+m)];
+        OCTAVE_LOCAL_BUFFER (int, infz, n);
+        OCTAVE_LOCAL_BUFFER (int, kronr, 1 + max (n, m));
+        OCTAVE_LOCAL_BUFFER (int, kronl, 1 + max (n, p));
+        
+        OCTAVE_LOCAL_BUFFER (double, af, ldaf * (n + min (p, m)));
+        OCTAVE_LOCAL_BUFFER (double, bf, ldbf * (n + m));
 
         // workspace
-        int* iwork;
-        double* dwork;
-        int ldwork;
-        
         int s = max (m, p);
-        ldwork = max (s, n) + max (3*s-1, n+s);
+        int ldwork = max (s, n) + max (3*s-1, n+s);
         
-        iwork = new int[s];
-        dwork = new double[ldwork];
+        OCTAVE_LOCAL_BUFFER (int, iwork, s);
+        OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
         
         // error indicator
         int info;
@@ -178,9 +168,8 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         double* vr = 0;     // not referenced because jobvr = 'N'
         int ldvr = 1;
         
-        double* work;
         int lwork = max (1, 8*nu);
-        work = new double[lwork];
+        OCTAVE_LOCAL_BUFFER (double, work, lwork);
         
         dim_vector dv (1);
         dv(0) = nu;
@@ -212,19 +201,6 @@ DEFUN_DLD (slab08nd, args, nargout, "Slicot AB08ND Release 5.0")
         retval(0) = alphar;
         retval(1) = alphai;
         retval(2) = beta;
-        
-        // free memory
-        delete[] infz;
-        delete[] kronr;
-        delete[] kronl;
-        
-        delete[] af;
-        delete[] bf;
-        
-        delete[] iwork;
-        delete[] dwork;
-        
-        delete[] work;
     }
     
     return retval;

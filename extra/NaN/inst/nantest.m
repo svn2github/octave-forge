@@ -24,9 +24,8 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-%	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2004 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2000-2004,2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This script is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -111,6 +110,13 @@ if q(9)
 	printf('DOUBLE rejects imaginary part\n-> this can affect SUMSKIPNAN\n');
 end; 
 
+try 
+        x = reshape(1:6,3,2); 
+        [cc,nn] = covm(x+i*x,'e');
+        q(10) = 0; 
+catch
+        q(10) = 1; 
+end; 
 
 if 0,
 %%%%% MOD 

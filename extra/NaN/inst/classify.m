@@ -49,10 +49,10 @@ if strcmp(TYPE,'linear')
 	TYPE = 'LDA';
 elseif strcmp(TYPE,'quadratic')
 	TYPE = 'QDA2'; % result is closer to Matlab 
-elseif strcmp(TYPE,'diagLinear')
+elseif strcmp(TYPE,'diaglinear')
 	TYPE = 'NBC';
-elseif strcmp(TYPE,'diagQuadratic')
-	TYPE = 'aNBC';
+elseif strcmp(TYPE,'diagquadratic')
+	TYPE = 'NBC';
 elseif strcmp(TYPE,'mahalanobis')
 	TYPE = 'MDA';
 end; 	

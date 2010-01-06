@@ -81,7 +81,8 @@ if isempty(DIM),
         if isempty(DIM), DIM=1; end;
 end;
 
-[y,n,ssq] = sumskipnan(x,DIM,W);if all(ssq(:).*n(:) > 2*(y(:).^2))
+[y,n,ssq] = sumskipnan(x,DIM,W);
+if all(ssq(:).*n(:) > 2*(y(:).^2)),
 	%% rounding error is neglectable 
 	y = ssq - y.*y./n;
 else

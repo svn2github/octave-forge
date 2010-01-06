@@ -42,6 +42,9 @@ end;
 if nargin<3,
 	DIM = []; 
 end;
+if isempty(FLAG), 
+        FLAG = 0; 
+end;
 if isempty(DIM), 
         DIM=min(find(size(i)>1));
         if isempty(DIM), DIM=1; end;

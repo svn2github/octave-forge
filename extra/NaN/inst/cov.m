@@ -25,9 +25,8 @@ function CC = cov(X,Y,Mode);
 % REFERENCES:
 % http://mathworld.wolfram.com/Covariance.html
 
-%	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003,2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003,2005,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox 
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -66,14 +65,14 @@ else
 	fprintf(2,'Error COV: invalid number of arguments\n');
 end;
 
-if ~exist('OCTAVE_VERSION','builtin') & ~isempty(Y) & (size(X,2)+size(Y,2)~=2), 	
+if ~exist('OCTAVE_VERSION','builtin') && ~isempty(Y) && (size(X,2)+size(Y,2)~=2), 	
         % COV in Matlab is differently defined than COV in Octave. 
         % For compatibility reasons, this branch reflects the difference. 
         fprintf(2,'Warning NaN/COV: This kind of use of COV is discouraged because it produces different results for Matlab and Octave. \n');
         fprintf(2,'  (a) the traditional Matlab result can be obtained with:  C = COV([X(:),Y(:)]).\n');
         fprintf(2,'  (b) the traditional Octave result can be obtained with:  C = COV([X,Y]); C = C(1:size(X,2),size(X,2)+1:size(C,2)).\n');
 
-        if prod(size(Y))~=prod(size(X)),
+        if numel(Y)~=numel(X),
                 error('The lengths of X and Y must match.');
         end;
         X = [X(:),Y(:)];

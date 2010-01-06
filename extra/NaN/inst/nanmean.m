@@ -34,8 +34,8 @@ function [o] = nanmean(i,DIM)
 
 
 if nargin>1
-        o = sumskipnan(i,DIM);
+        [o,n] = sumskipnan(i,DIM);
 else
-        o = sumskipnan(i);
+        [o,n] = sumskipnan(i);
 end;
-
+o=o./n;

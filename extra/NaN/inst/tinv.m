@@ -13,8 +13,7 @@ function y = tinv(x,n);
 
 %	$Revision$
 %	$Id$
-%	Version 1.28   Date: 13 Mar 2003
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -31,8 +30,15 @@ function y = tinv(x,n);
 
 
 % allocate output memory and check size of arguments
-y = x+n-n;	% if this line causes an error, size of input arguments do not fit.
-n = n+x-x;
+if all(size(x)==1)
+	x = repmat(x,size(n));
+elseif all(size(n)==1)
+	n = repmat(n,size(x));
+elseif all(size(x)==size(n))
+	;	%% OK, do nothing
+else
+	error('size of input arguments must be equal or scalar')
+end; 	
 
 y = norminv(x); % do special cases, like x<=0, x>=1, isnan(x), n > 10000;
 y(~(n>0)) = NaN; 

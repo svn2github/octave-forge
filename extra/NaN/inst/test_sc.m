@@ -51,7 +51,7 @@ if nargin<3,
 end;
 [t1,t] = strtok(CC.datatype,':');
 [t2,t] = strtok(t,':');
-[t3,t] = strtok(t,':');
+[t3] = strtok(t,':');
 if ~strcmp(t1,'classifier'), return; end; 
 
 if isfield(CC,'prewhite')
@@ -108,7 +108,7 @@ elseif strcmp(CC.datatype,'classifier:statistical:rda')
                 ECM = CC.MD./CC.NN; 
                 NC = size(ECM); 
                 ECM0 = squeeze(sum(ECM,3));  %decompose ECM
-                [M0,sd,COV0,xc,N] = decovm(ECM0);
+                [M0,sd,COV0] = decovm(ECM0);
                 for k = 1:NC(3);
 			[M,sd,s,xc,N] = decovm(squeeze(ECM(:,:,k)));
                 	s = ((1-lambda)*N*s+lambda*COV0)/((1-lambda)*N+lambda);
@@ -123,16 +123,14 @@ elseif strcmp(CC.datatype,'classifier:statistical:rda')
 
 
 elseif strcmp(CC.datatype,'classifier:csp')
-	d = (D*CC.csp_w).^2;
 	d = filtfilt(CC.FiltB,CC.FiltA,(D*CC.csp_w).^2);
 	R = test_sc(CC.CSP,log(d));	% LDA classifier of 
 	d = R.output; 
-	cl= R.classlabel; 
 
 
-elseif strcmp(CC.datatype,'classifier:svm:lib:1vs1') | strcmp(CC.datatype,'classifier:svm:lib:rbf');
+elseif strcmp(CC.datatype,'classifier:svm:lib:1vs1') || strcmp(CC.datatype,'classifier:svm:lib:rbf');
 
-        [cl, accuracy] = svmpredict(classlabel, D, CC.model);   %Use the classifier
+        [cl] = svmpredict(classlabel, D, CC.model);   %Use the classifier
 
         %Create a pseudo tsd matrix for bci4eval
         d = zeros(size(cl,1), CC.model.nr_class);
@@ -141,7 +139,7 @@ elseif strcmp(CC.datatype,'classifier:svm:lib:1vs1') | strcmp(CC.datatype,'class
         end
 
 
-elseif isfield(CC,'weights'); %strcmpi(t2,'svm') | (strcmpi(t2,'statistical') & strncmpi(t3,'ld',2)) ;
+elseif isfield(CC,'weights'); %strcmpi(t2,'svm') || (strcmpi(t2,'statistical') & strncmpi(t3,'ld',2)) ;
 
         % linear classifiers like: LDA, SVM, LPM 
         %d = [ones(size(D,1),1), D] * CC.weights;
@@ -165,6 +163,7 @@ elseif strcmp(t2,'statistical');
                 mode.TYPE = upper(t3); 
         end;
         D = [ones(size(D,1),1),D];  % add 1-column
+        W = repmat(NaN,size(D,2),size(CC.MD,3));
 
         if 0,
         elseif strcmpi(mode.TYPE,'LD2'),
@@ -172,26 +171,26 @@ elseif strcmp(t2,'statistical');
                 ECM = CC.MD./CC.NN; 
                 NC = size(ECM); 
                 ECM0 = squeeze(sum(ECM,3));  %decompose ECM
-                [M0,sd,COV0,xc,N] = decovm(ECM0);
+                [M0] = decovm(ECM0);
                 for k = 1:NC(3);
                         ecm = squeeze(ECM(:,:,k));
-                        [M1,sd,COV1,xc,N] = decovm(ECM0-ecm);
-                        [M2,sd,COV2,xc,N] = decovm(ecm);
+                        [M1,sd,COV1] = decovm(ECM0-ecm);
+                        [M2,sd,COV2] = decovm(ecm);
                         w     = (COV1+COV2)\(M2'-M1')*2;
                         w0    = -M0*w;
                         W(:,k) = [w0; w];
                 end;
                 d = D*W;
-        elseif strcmpi(mode.TYPE,'LD3');
+        elseif strcmpi(mode.TYPE,'LD3') || strcmpi(mode.TYPE,'FLDA');
                 %d = ldbc3(CC,D);
                 ECM = CC.MD./CC.NN; 
                 NC = size(ECM); 
                 ECM0 = squeeze(sum(ECM,3));  %decompose ECM
-                [M0,sd,COV0,xc,N] = decovm(ECM0);
+                [M0,sd,COV0] = decovm(ECM0);
                 for k = 1:NC(3);
                         ecm = squeeze(ECM(:,:,k));
-                        [M1,sd,COV1,xc,N] = decovm(ECM0-ecm);
-                        [M2,sd,COV2,xc,N] = decovm(ecm);
+                        [M1] = decovm(ECM0-ecm);
+                        [M2] = decovm(ecm);
                         w     = COV0\(M2'-M1')*2;
                         w0    = -M0*w;
                         W(:,k) = [w0; w];
@@ -202,7 +201,7 @@ elseif strcmp(t2,'statistical');
                 ECM = CC.MD./CC.NN; 
                 NC = size(ECM); 
                 ECM0 = squeeze(sum(ECM,3));  %decompose ECM
-                [M0,sd,COV0,xc,N] = decovm(ECM0);
+                M0 = decovm(ECM0);
                 for k = 1:NC(3);
                         ecm = squeeze(ECM(:,:,k));
                         [M1,sd,COV1,xc,N1] = decovm(ECM0-ecm);
@@ -213,62 +212,73 @@ elseif strcmp(t2,'statistical');
                 end;
                 d = D*W;
         elseif strcmpi(mode.TYPE,'MDA');
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         d(:,k) = -sum((D*CC.IR{k}).*D,2); % calculate distance of each data point to each class
                 end;
         elseif strcmpi(mode.TYPE,'MD2');
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         d(:,k) = sum((D*CC.IR{k}).*D,2); % calculate distance of each data point to each class
                 end;
                 d = -sqrt(d);
         elseif strcmpi(mode.TYPE,'GDBC');
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         d(:,k) = sum((D*CC.IR{k}).*D,2) + CC.logSF7(k); % calculate distance of each data point to each class
                 end;
                 d = exp(-d/2);
         elseif strcmpi(mode.TYPE,'MD3');
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         d(:,k) = sum((D*CC.IR{k}).*D,2) + CC.logSF7(k); % calculate distance of each data point to each class
                 end;
                 d = exp(-d/2);
                 d = d./repmat(sum(d,2),1,size(d,2));  % Zuordungswahrscheinlichkeit [1], p.601, equ (18.39)
         elseif strcmpi(mode.TYPE,'QDA');
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         % [1] (18.33) QCF - quadratic classification function  
                         d(:,k) = -(sum((D*CC.IR{k}).*D,2) - CC.logSF5(k)); 
                 end;
         elseif strcmpi(mode.TYPE,'QDA2');
-        	r = sum(CC.NN(:,1,1));
-        	r = r/(r-length(CC.IR));
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         % [1] (18.33) QCF - quadratic classification function  
                         d(:,k) = -(sum((D*(CC.IR{k})).*D,2) + CC.logSF4(k)); 
                 end;
         elseif strcmpi(mode.TYPE,'GRB');     % Gaussian RBF
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         d(:,k) = sum((D*CC.IR{k}).*D,2); % calculate distance of each data point to each class
                 end;
                 d = exp(-sqrt(d)/2);
         elseif strcmpi(mode.TYPE,'GRB2');     % Gaussian RBF
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         d(:,k) = sum((D*CC.IR{k}).*D,2); % calculate distance of each data point to each class
                 end;
                 d = exp(-d);
         elseif strcmpi(mode.TYPE,'MQU');     % Multiquadratic 
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         d(:,k) = sum((D*CC.IR{k}).*D,2); % calculate distance of each data point to each class
                 end;
                 d = -sqrt(1+d);
         elseif strcmpi(mode.TYPE,'IMQ');     % Inverse Multiquadratic 
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         d(:,k) = sum((D*CC.IR{k}).*D,2); % calculate distance of each data point to each class
                 end;
                 d = (1+d).^(-1/2);
         elseif strcmpi(mode.TYPE,'Cauchy');     % Cauchy RBF
+                d = repmat(NaN,size(D,1),length(CC.IR)); 
                 for k = 1:length(CC.IR);
                         d(:,k) = sum((D*CC.IR{k}).*D,2); % calculate distance of each data point to each class
                 end;
                 d = 1./(1+d);
+        else 
+                error('Classifier %s not supported. see HELP TRAIN_SC for supported classifiers.',mode.TYPE);
         end;
 else
         fprintf(2,'Error TEST_SC: unknown classifier\n');

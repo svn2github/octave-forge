@@ -146,6 +146,7 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+
 if nargin<3, MODE = 'LDA'; end;
 if nargin<4, W = []; end;
 if ischar(MODE) 
@@ -171,7 +172,7 @@ elseif isempty(W)
 	%% TODO: some classifiers can deal with NaN's in D. Test whether this can be relaxed.
 	%ix = any(isnan([classlabel]),2);
 	ix = any(isnan([D,classlabel]),2);
-	D(ix,:)=[];
+	D(ix,:) = [];
 	classlabel(ix,:)=[];
 	W = []; 
 else
@@ -255,22 +256,26 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'lpm'))
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
 
 
-elseif ~isempty(strfind(lower(MODE.TYPE),'pla'))
+elseif 0, ~isempty(strfind(lower(MODE.TYPE),'pla'));
 	% Perceptron Learning Algorithm 	
 
+	%% PLA is broken
         M = length(CC.Labels);
         CC.weights  = zeros(size(D,2)+1,M);
-        
         if ~isfield(MODE.hyperparameter,'alpha') && isempty(W)
 		for k = 1:size(D,1),
-			e = [1, D(k,:)] * CC.weights  - (classlabel(k)==CC.Labels(k));
+		        o = [1, D(k,:)] * CC.weights;
+		        [tmp, c] = max(o); 
+		        if (c ~= classlabel(k))
+        			e = o  - (classlabel(k)~=[1:M]);
+        		end;
 			CC.weights = CC.weights + [1,D(k,:)]' * e ;
 		end;
 
         elseif isfield(MODE.hyperparameter,'alpha') && isempty(W)
 		a = MODE.hyperparameter.alpha;
 		for k = 1:size(D,1),
-			e = [1, D(k,:)] * CC.weights  - (classlabel(k)==CC.Labels(k));
+			e = [1, D(k,:)] * CC.weights  - (classlabel(k)~=[1:M]);
 			CC.weights = CC.weights + a * [1,D(k,:)]' * e ;
 		end;
 		
@@ -279,7 +284,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pla'))
 			W = W*MODE.hyperparameter.alpha;
 		end;	
 		for k = 1:size(D,1),
-			e = [1, D(k,:)] * CC.weights  - (classlabel(k)==CC.Labels(k));
+			e = [1, D(k,:)] * CC.weights  - (classlabel(k)~=[1:M]);
 			CC.weights = CC.weights + W(k) * [1,D(k,:)]' * e ;
 		end;
         end
@@ -288,6 +293,9 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pla'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'winnow'))
 	% winnow algorithm 	
+	if ~isempty(W) 
+		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+	end; 	
 
         M = length(CC.Labels);
         CC.weights  = ones(size(D,2),M);
@@ -590,7 +598,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                                 CC.options = MODE.options;
                         else
                                 t = 0; 
-                                if length(MODE.TYPE>7), t=MODE.TYPE(8)-'0'; end; 
+                                if length(MODE.TYPE)>7, t=MODE.TYPE(8)-'0'; end; 
                                 if (t<0 || t>4) t=0; end; 
                                 CC.options = sprintf('-s %i -c %f ',t, MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
                         end;
@@ -615,13 +623,13 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                         w = CC.SVMstruct.Alpha'*CC.SVMstruct.SupportVectors;
 
                 elseif strcmp(MODE.TYPE, 'SVM:OSU');
-                        [AlphaY, SVs, Bias, Parameters, nSV, nLabel] = mexSVMTrain(D', cl', [0 1 1 1 MODE.hyperparameter.c_value]);    % Linear Kernel, C=1; degree=1, c-SVM
+                        [AlphaY, SVs, Bias] = mexSVMTrain(D', cl', [0 1 1 1 MODE.hyperparameter.c_value]);    % Linear Kernel, C=1; degree=1, c-SVM
                         w = -SVs * AlphaY'*cl(1);  %Calculate decision hyperplane weight vector
                         % ensure correct sign of weight vector and Bias according to class label
                         Bias = -Bias * cl(1);
 
                 elseif strcmp(MODE.TYPE, 'SVM:LOO');
-                        [a, Bias, g, inds, inde, indw]  = svcm_train(D, cl, MODE.hyperparameter.c_value); % C = 1;
+                        [a, Bias, g, inds]  = svcm_train(D, cl, MODE.hyperparameter.c_value); % C = 1;
                         w = D(inds,:)' * (a(inds).*cl(inds)) ;
 
                 elseif strcmp(MODE.TYPE, 'SVM:Gunn');
@@ -630,7 +638,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                         Bias = mean(D*w);
 
                 elseif strcmp(MODE.TYPE, 'SVM:KM');
-                        [xsup,w1,Bias,inds,timeps,alpha] = svmclass(D, cl, MODE.hyperparameter.c_value, 1, 'poly', 1); % C = 1;
+                        [xsup,w1,Bias,inds] = svmclass(D, cl, MODE.hyperparameter.c_value, 1, 'poly', 1); % C = 1;
                         w = -D(inds,:)' * w1;
 
                 else
@@ -653,14 +661,13 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'csp'))
         for k = 1:length(CC.Labels),
                 %% [CC.MD(k,:,:),CC.NN(k,:,:)] = covm(D(classlabel==CC.Labels(k),:),'E');
         	ix = classlabel==CC.Labels(k);
-        	if isempty(W)
+                if isempty(W)
 	                [CC.MD(:,:,k),CC.NN(:,:,k)] = covm(D(ix,:), 'E');
 	        else        
                         [CC.MD(:,:,k),CC.NN(:,:,k)] = covm(D(ix,:), 'E', W(ix));
                 end;         
         end;
         ECM = CC.MD./CC.NN;
-        NC  = size(ECM);
 	W   = csp(ECM,'CSP3');
 	%%% ### This is a hack ###
 	CC.FiltA = 50; 
@@ -685,7 +692,7 @@ else          % Linear and Quadratic statistical classifiers
 
         ECM = CC.MD./CC.NN;
         NC  = size(ECM);
-        if strncmpi(MODE.TYPE,'LD',2) || strncmpi(MODE.TYPE,'FDA',3),
+        if strncmpi(MODE.TYPE,'LD',2) || strncmpi(MODE.TYPE,'FDA',3) || strncmpi(MODE.TYPE,'FLDA',3),
 
                 %if NC(1)==2, NC(1)=1; end;                % linear two class problem needs only one discriminant
                 CC.weights = repmat(NaN,NC(2),NC(3));     % memory allocation
@@ -693,7 +700,7 @@ else          % Linear and Quadratic statistical classifiers
 
                 ECM0 = squeeze(sum(ECM,3));  %decompose ECM
                 [M0,sd,COV0] = decovm(ECM0);
-	        for k = 1:NC(3);
+                for k = 1:NC(3);
                         ecm = squeeze(ECM(:,:,k));
                         [M1,sd,COV1] = decovm(ECM0-ecm);
                         N1 = ECM0(1,1)-ecm(1,1); 
@@ -728,7 +735,6 @@ else          % Linear and Quadratic statistical classifiers
 			error('RDA: hyperparamters lambda and/or gamma not defined')
 		end; 	         
         else
-                c  = size(ECM,2);
                 ECM0 = sum(ECM,3);
                 nn = ECM0(1,1,1);	% number of samples in training set for class k
                 XC = squeeze(ECM0(:,:,1))/nn;		% normalize correlation matrix
@@ -744,7 +750,7 @@ else          % Linear and Quadratic statistical classifiers
                 %M  = M/nn; S=S/(nn-1);
                 ICOV0 = inv(S);
                 CC.iS0 = ICOV0; 
-                ICOV1 = zeros(size(S));
+                % ICOV1 = zeros(size(S));
                 for k = 1:NC(3);
                         %[M,sd,S,xc,N] = decovm(ECM{k});  %decompose ECM
                         %c  = size(ECM,2);

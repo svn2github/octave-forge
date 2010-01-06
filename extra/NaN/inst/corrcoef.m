@@ -131,27 +131,25 @@ elseif nargin==0
         fprintf(2,'Error CORRCOEF: Missing argument(s)\n');
 elseif nargin>1
         if ischar(Y)
-		varg = [Y,varargin];
+                varg = [Y,varargin];
                 Y=[];
-        else 
-        	varg = varargin;         
-        end; 
-                
-	if length(varg)<1, 
-                Mode = 'Pearson';
-        elseif length(varg)==1, 
-		Mode = varg{1};
+        else
+                varg = varargin;
         end;
 
-	for k=2:2:length(varg),
-		mode=setfield(mode,lower(varg{k-1}),varg{k});
-	end;
-	if isfield(mode,'mode')
-		Mode = mode.mode; 
-        else
+        if length(varg)<1, 
                 Mode = 'Pearson';
-	end;
-end;        
+        elseif length(varg)==1, 
+                Mode = varg{1};
+        else
+                for k = 2:2:length(varg),
+                        mode = setfield(mode,lower(varg{k-1}),varg{k});
+                end;
+                if isfield(mode,'mode')
+                        Mode = mode.mode; 
+                end;
+        end;
+end;
 Mode=[Mode,'        '];
 
 

@@ -196,9 +196,9 @@ DEFUN_DLD (slsb10fd, args, nargout, "Slicot SB10FD Release 5.0")
         retval(3) = dk;
         
         // free memory
-        delete[] iwork;
-        delete[] dwork;
-        delete[] bwork;
+        //delete[] iwork;
+        //delete[] dwork;
+        //delete[] bwork;
     }
     
     return retval;

@@ -139,9 +139,9 @@ DEFUN_DLD (slsb10fd, args, nargout, "Slicot SB10FD Release 5.0")
         NDArray rcond (dv);
         
         // workspace
-        int* iwork;
-        double* dwork;
-        bool* bwork;
+        //int* iwork;
+        //double* dwork;
+        //bool* bwork;
         
         int m2 = ncon;
         int m1 = m - m2;
@@ -155,9 +155,12 @@ DEFUN_DLD (slsb10fd, args, nargout, "Slicot SB10FD Release 5.0")
                                           max (2*q, 3*n*n + max (2*n*q, 10*n*n+12*n+5)),
                                           q*(3*n + 3*q + max (2*n, 4*q + max (n, q)))));
         
-        iwork = new int[liwork];
-        dwork = new double[ldwork];
-        bwork = new bool[2*n];
+        //iwork = new int[liwork];
+        //dwork = new double[ldwork];
+        //bwork = new bool[2*n];
+        OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
+        OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
+        OCTAVE_LOCAL_BUFFER (bool, bwork, 2*n);
         
         // error indicator
         int info;

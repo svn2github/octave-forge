@@ -16,9 +16,9 @@ function [R]=test_sc(CC,D,mode,classlabel)
 %    TYPE = 'MD3'    mahalanobis distance based classifier
 %    TYPE = 'GRB'    Gaussian radial basis function 
 %    TYPE = 'QDA'    quadratic discriminant analysis
-%    TYPE = 'LD2'    linear discriminant analysis (see LDBC2)
-%    TYPE = 'LD3'    linear discriminant analysis (see LDBC3)
-%    TYPE = 'LD4'    linear discriminant analysis (see LDBC4)
+%    TYPE = 'LD2'    linear discriminant analysis
+%    TYPE = 'LD3', 'LDA', 'FDA, 'FLDA'   (Fisher's) linear discriminant analysis
+%    TYPE = 'LD4'    linear discriminant analysis
 %    TYPE = 'GDBC'   general distance based classifier
 % 
 % see also: TRAIN_SC
@@ -100,10 +100,10 @@ elseif strcmp(CC.datatype,'classifier:anbc')
 
 elseif strcmp(CC.datatype,'classifier:statistical:rda')
 	% Friedman (1989) Regularized Discriminant analysis
-	if isfield(CC,'hyperparameters') && isfield(CC.hyperparameters,'lambda')  && isfield(CC.hyperparameters,'gamma')
+	if isfield(CC,'hyperparameter') && isfield(CC.hyperparameter,'lambda')  && isfield(CC.hyperparameter,'gamma')
 		D = [ones(size(D,1),1),D];  % add 1-column
-		lambda = CC.hyperparameters.lambda;
-		gamma  = CC.hyperparameters.gamma;
+		lambda = CC.hyperparameter.lambda;
+		gamma  = CC.hyperparameter.gamma;
 		d = repmat(NaN,size(D,1),size(CC.MD,1));
                 ECM = CC.MD./CC.NN; 
                 NC = size(ECM); 

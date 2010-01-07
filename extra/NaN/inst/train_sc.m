@@ -18,7 +18,7 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %    'QDA'      quadratic discriminant analysis    [1]
 %    'LD2'      linear discriminant analysis (see LDBC2) [1]
 %		MODE.hyperparameter.gamma: regularization parameter [default 0] 
-%    'LD3', 'FDA', 'LDA'
+%    'LD3', 'FDA', 'LDA', 'FLDA'
 %               linear discriminant analysis (see LDBC3) [1]
 %		MODE.hyperparameter.gamma: regularization parameter [default 0] 
 %    'LD4'      linear discriminant analysis (see LDBC4) [1]
@@ -30,9 +30,9 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %		MODE.hyperparameter.lambda =
 %		gamma = 0, lambda = 0 : MDA
 %		gamma = 0, lambda = 1 : LDA
-%		Hint: hyperparameters are used only in test_sc.m, testing different 
+%		Hint: hyperparameter are used only in test_sc.m, testing different 
 %		the hyperparameters do not need repetitive calls to train_sc, 
-%		it is sufficient to modify CC.hyperparameters before calling test_sc. 	
+%		it is sufficient to modify CC.hyperparameter before calling test_sc. 	
 %    'GDBC'     general distance based classifier  [1]
 %    ''         statistical classifier, requires Mode argument in TEST_SC	
 %    '###/GSVD'	GSVD and statistical classifier [2,3], 
@@ -46,7 +46,7 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %    'NBPW'	Naive Bayesian Parzen Window [9]     
 %
 %    'PLA'	Perceptron Learning Algorithm [11]
-%		MODE.hyperparameter.alpha = 
+%		MODE.hyperparameter.alpha = alpha [default: 1]
 %		 w = w + alpha * e'*x
 %    'Winnow2'  Winnow2 algorithm [12]
 %
@@ -157,6 +157,12 @@ elseif ~isfield(MODE,'TYPE')
         MODE.TYPE=''; 
 end;
 
+if isfield(MODE,'hyperparameters') && ~isfield(MODE,'hyperparameter'), 
+	%% for backwards compatibility, this might become obsolete
+	warning('MODE.hyperparameters are used, You should use MODE.hyperparameter instead!!!');
+	MODE.hyperparameter = MODE.hyperparameters; 
+end; 	
+
 sz = size(D);
 if sz(1)~=length(classlabel),
         error('length of data and classlabel does not fit');
@@ -256,26 +262,23 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'lpm'))
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
 
 
-elseif 0, ~isempty(strfind(lower(MODE.TYPE),'pla'));
+elseif ~isempty(strfind(lower(MODE.TYPE),'pla'));
 	% Perceptron Learning Algorithm 	
 
-	%% PLA is broken
         M = length(CC.Labels);
         CC.weights  = zeros(size(D,2)+1,M);
+	ix = 1:size(D,1);
+	%ix = randperm(size(D,1)); 	%% randomize samples ??? 
         if ~isfield(MODE.hyperparameter,'alpha') && isempty(W)
-		for k = 1:size(D,1),
-		        o = [1, D(k,:)] * CC.weights;
-		        [tmp, c] = max(o); 
-		        if (c ~= classlabel(k))
-        			e = o  - (classlabel(k)~=[1:M]);
-        		end;
+		for k = ix,
+		        e = (classlabel(k)==[1:M]) - [1, D(k,:)] * CC.weights;
 			CC.weights = CC.weights + [1,D(k,:)]' * e ;
 		end;
 
         elseif isfield(MODE.hyperparameter,'alpha') && isempty(W)
 		a = MODE.hyperparameter.alpha;
-		for k = 1:size(D,1),
-			e = [1, D(k,:)] * CC.weights  - (classlabel(k)~=[1:M]);
+		for k = ix,
+		        e = (classlabel(k)==[1:M]) - [1, D(k,:)] * CC.weights;
 			CC.weights = CC.weights + a * [1,D(k,:)]' * e ;
 		end;
 		
@@ -283,8 +286,8 @@ elseif 0, ~isempty(strfind(lower(MODE.TYPE),'pla'));
         	if isfield(MODE.hyperparameter,'alpha')
 			W = W*MODE.hyperparameter.alpha;
 		end;	
-		for k = 1:size(D,1),
-			e = [1, D(k,:)] * CC.weights  - (classlabel(k)~=[1:M]);
+		for k = ix,
+		        e = (classlabel(k)==[1:M]) - [1, D(k,:)] * CC.weights;
 			CC.weights = CC.weights + W(k) * [1,D(k,:)]' * e ;
 		end;
         end
@@ -502,9 +505,9 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
 		%%% error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
 		warning(sprintf('Warning TRAIN_SC: Classifier (%s) in combination with weighted samples is not tested.',MODE.TYPE));
 	end; 	
-        if ~isfield(MODE,'hyperparameters')
+        if ~isfield(MODE,'hyperparameter')
         	nu = 1;
-        elseif isfield(MODE.hyperparameters,'nu')
+        elseif isfield(MODE.hyperparameter,'nu')
 	        nu = MODE.hyperparameter.nu;
 	else 
 		nu = 1;          
@@ -729,8 +732,8 @@ else          % Linear and Quadratic statistical classifiers
 		
                 
         elseif strcmpi(MODE.TYPE,'RDA');
-		if isfield(MODE,'hyperparameters') && isfield(MODE.hyperparameters,'lambda')  && isfield(MODE.hyperparameters,'gamma')
-		        CC.hyperparameters = MODE.hyperparameters;
+		if isfield(MODE,'hyperparameter') && isfield(MODE.hyperparameter,'lambda')  && isfield(MODE.hyperparameter,'gamma')
+		        CC.hyperparameter = MODE.hyperparameter;
 		else 
 			error('RDA: hyperparamters lambda and/or gamma not defined')
 		end; 	         

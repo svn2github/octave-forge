@@ -29,12 +29,15 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %		MODE.hyperparameter.gamma: regularization parameter 
 %		MODE.hyperparameter.lambda =
 %		gamma = 0, lambda = 0 : MDA
-%		gamma = 0, lambda = 1 : LDA
+%		gamma = 0, lambda = 1 : LDA [default]
 %		Hint: hyperparameter are used only in test_sc.m, testing different 
 %		the hyperparameters do not need repetitive calls to train_sc, 
 %		it is sufficient to modify CC.hyperparameter before calling test_sc. 	
 %    'GDBC'     general distance based classifier  [1]
 %    ''         statistical classifier, requires Mode argument in TEST_SC	
+%    '###/DELETION'  if the data contains missing values (encoded as NaNs), 
+%		a row-wise or column-wise deletion (depending on which method 
+%		removes less data values) is applied;  
 %    '###/GSVD'	GSVD and statistical classifier [2,3], 
 %    '###/sparse'  sparse  [5] 
 %		'###' must be 'LDA' or any other classifier 
@@ -48,6 +51,8 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %    'PLA'	Perceptron Learning Algorithm [11]
 %		MODE.hyperparameter.alpha = alpha [default: 1]
 %		 w = w + alpha * e'*x
+%    'LMS', 'AdaLine'  Least mean squares, adaptive line element, Widrow-Hoff, delta rule 
+%		MODE.hyperparameter.alpha = alpha [default: 1]
 %    'Winnow2'  Winnow2 algorithm [12]
 %
 %    'PSVM'	Proximal SVM [8] 
@@ -201,6 +206,25 @@ end
 
 if 0, 
 
+elseif ~isempty(strfind(lower(MODE.TYPE),'/delet'))
+        % [5] J.D. Tebbens and P.Schlesinger (2006), 
+        %       Improving Implementation of Linear Discriminant Analysis for the Small Sample Size Problem
+        %       http://www.cs.cas.cz/mweb/download/publi/JdtSchl2006.pdf
+
+        POS1 = find(MODE.TYPE=='/');
+	[rix,cix] = row_vs_col_deletion(D);	
+	if ~isempty(W), W=W(rix); end;
+        CC   = train_sc(D(rix,cix),classlabel(rix),MODE.TYPE(1:POS1(1)-1),W);
+        CC.G = sparse(cix, 1:length(cix), 1, size(D,2), length(cix)); 
+        if isfield(CC,'weights')
+                W = [CC.weights(1,:); CC.weights(2:end,:)];
+                CC.weights = sparse(size(D,2)+1, size(W,2));
+                CC.weights([1,cix+1],:) = W;
+                CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
+        else
+                CC.datatype = [CC.datatype,'/delet'];
+        end;
+        
 elseif ~isempty(strfind(lower(MODE.TYPE),'nbpw'))
 	error('NBPW not implemented yet')
 	%%%% Naive Bayesian Parzen Window Classifier. 
@@ -266,31 +290,67 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pla'));
 	% Perceptron Learning Algorithm 	
 
         M = length(CC.Labels);
-        CC.weights  = zeros(size(D,2)+1,M);
-	ix = 1:size(D,1);
-	%ix = randperm(size(D,1)); 	%% randomize samples ??? 
-        if ~isfield(MODE.hyperparameter,'alpha') && isempty(W)
-		for k = ix,
-		        e = (classlabel(k)==[1:M]) - [1, D(k,:)] * CC.weights;
-			CC.weights = CC.weights + [1,D(k,:)]' * e ;
-		end;
 
-        elseif isfield(MODE.hyperparameter,'alpha') && isempty(W)
-		a = MODE.hyperparameter.alpha;
-		for k = ix,
-		        e = (classlabel(k)==[1:M]) - [1, D(k,:)] * CC.weights;
-			CC.weights = CC.weights + a * [1,D(k,:)]' * e ;
+	[rix,cix] = row_vs_col_deletion(D);
+        weights   = sparse(length(cix)+1,M);
+
+	%ix = randperm(size(D,1)); 	%% randomize samples ??? 
+        if ~isfield(MODE.hyperparameter,'alpha')
+	        if isfield(MODE.hyperparameter,'alpha')
+	        	alpha = MODE.hyperparameter.alpha;
+	        else 	
+	        	alpha = 1; 
+		end; 	
+		for k = rix(:)',
+		        e = ((classlabel(k)==[1:M])-.5) - sign([1, D(k,cix)] * weights)/2;
+			weights = weights + alpha * [1,D(k,cix)]' * e ;
 		end;
 		
-        elseif ~isempty(W)
+        else %if ~isempty(W)
         	if isfield(MODE.hyperparameter,'alpha')
 			W = W*MODE.hyperparameter.alpha;
 		end;	
-		for k = ix,
-		        e = (classlabel(k)==[1:M]) - [1, D(k,:)] * CC.weights;
-			CC.weights = CC.weights + W(k) * [1,D(k,:)]' * e ;
+		for k = rix(:)',
+		        e = ((classlabel(k)==[1:M])-.5) - sign([1, D(k,cix)] * weights)/2;
+			weights = weights + W(k) * [1,D(k,cix)]' * e ;
 		end;
         end
+        CC.weights  = sparse(size(D,2)+1,M);
+        CC.weights([1,cix+1],:) = weights;
+        CC.datatype = ['classifier:',lower(MODE.TYPE)];
+
+
+elseif  ~isempty(strfind(lower(MODE.TYPE),'adaline')) || ~isempty(strfind(lower(MODE.TYPE),'lms')),
+	% adaptive linear elemente, least mean squares, delta rule, Widrow-Hoff,  	
+
+        M = length(CC.Labels);
+
+	[rix,cix] = row_vs_col_deletion(D);
+        weights  = sparse(length(cix)+1,M);
+
+	%ix = randperm(size(D,1)); 	%% randomize samples ??? 
+        if isempty(W)
+	        if isfield(MODE.hyperparameter,'alpha')
+	        	alpha = MODE.hyperparameter.alpha;
+	        else 	
+	        	alpha = 1; 
+		end; 	
+		for k = rix(:)',
+		        e = (classlabel(k)==[1:M]) - [1, D(k,cix)] * weights;
+		        weights = weights + alpha * [1,D(k,cix)]' * e ;
+		end;
+
+        else %if ~isempty(W)
+        	if isfield(MODE.hyperparameter,'alpha')
+			W = W*MODE.hyperparameter.alpha;
+		end;
+		for k = rix(:)',
+		        e = (classlabel(k)==[1:M]) - [1, D(k,cix)] * weights;
+		        weights = weights + W(k) * [1,D(k,cix)]' * e ;
+		end;
+        end
+        CC.weights  = sparse(size(D,2)+1,M);
+        CC.weights([1,cix+1],:) = weights;
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
 
 
@@ -333,12 +393,13 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pls')) || ~isempty(strfind(lower(MODE.
 			wD(:,k) = W.*wD(:,k);
 		end; 
 	end;
+	CC.weights = sparse(sz(2)+1,M);
 
-	[q,r] = qr(wD,0);
-	CC.weights = repmat(NaN,sz(2)+1,M);
+	[rix, cix] = row_vs_col_deletion(wD);
+	[q,r] = qr(wD(rix,cix),0);
 	for k = 1:M,
 		ix = 2*(classlabel==CC.Labels(k)) - 1;
-		CC.weights(:,k)	= r\(q'*(W.*ix));
+		CC.weights(cix,k) = r\(q'*(W.*ix));
 	end;
         CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
 
@@ -369,16 +430,18 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'/gsvd'))
         %       dx.doi.org/10.1109/TPAMI.2004.46
         % [3] http://www-static.cc.gatech.edu/~kihwan23/face_recog_gsvd.htm
 
-        Hw = zeros(size(D)+[length(CC.Labels),0]); 
+	[rix,cix] = row_vs_col_deletion(D);
+
+        Hw = zeros(length(rix)+length(CC.Labels), length(cix)); 
         Hb = [];
-	m0 = mean(D); 
+	m0 = mean(D(rix,cix)); 
         K = length(CC.Labels); 
 	for k = 1:K,
-		ix = find(classlabel==CC.Labels(k));
-		N(k) = length(ix); 
-		[Hw(ix,:), mu] = center(D(ix,:));
+		ix   = find(classlabel(rix)==CC.Labels(k));
+		N(k) = length(ix);
+		[Hw(ix,:), mu] = center(D(rix(ix),cix));
 		%Hb(k,:) = sqrt(N(k))*(mu(k,:)-m0);
-		Hw(size(D,1)+k,:) = sqrt(N(k))*(mu-m0);  % Hb(k,:)
+		Hw(length(rix)+k,:) = sqrt(N(k))*(mu-m0);  % Hb(k,:)
 	end;
         try
                 [P,R,Q] = svd(Hw,'econ');
@@ -404,11 +467,12 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'/gsvd'))
         % do not use this, gives very bad results for Medline database
         %G = G(:,1:K); this seems to be a typo in [2] and [3].
 
-        CC = train_sc(D*G,classlabel,MODE.TYPE(1:find(MODE.TYPE=='/')-1));
-        CC.G = G; 
+        CC = train_sc(D(:,cix)*G,classlabel,MODE.TYPE(1:find(MODE.TYPE=='/')-1));
+        CC.G = sparse(size(D,2),size(G,2));
+        CC.G(cix,:) = G;
         if isfield(CC,'weights')
-                CC.weights = [CC.weights(1,:); G*CC.weights(2:end,:)];
-                CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
+                CC.weights  = sparse([CC.weights(1,:); CC.G*CC.weights(2:end,:)]); 
+                CC.datatype = ['classifier:statistical:', lower(MODE.TYPE)];
         else
                 CC.datatype = [CC.datatype,'/gsvd'];
         end;
@@ -422,30 +486,32 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'sparse'))
         %       Improving Implementation of Linear Discriminant Analysis for the Small Sample Size Problem
         %       http://www.cs.cas.cz/mweb/download/publi/JdtSchl2006.pdf
 
+	[rix,cix] = row_vs_col_deletion(D);	
+
         warning('sparse LDA is sensitive to linear transformations')
         M = length(CC.Labels); 
-        G  = sparse([],[],[],size(D,1),M,size(D,1));
+        G  = sparse([],[],[],length(rix),M,length(rix));
         for k = 1:M,
-                G(classlabel==CC.Labels(k),k) = 1; 
+                G(classlabel(rix)==CC.Labels(k),k) = 1; 
         end;
         tol  = 1e-10;
 
-        G    = train_lda_sparse(D,G,1,tol);
+        G    = train_lda_sparse(D(rix,cix),G,1,tol);
         CC.datatype = 'classifier:slda';
         POS1 = find(MODE.TYPE=='/'); 
         %G = v(:,1:size(G.trafo,2)).*G.trafo; 
         %CC.weights = s * CC.weights(2:end,:) + sparse(1,1:M,CC.weights(1,:),sz(2)+1,M); 
-        G  = G.trafo; 
-        CC = train_sc(D*G,classlabel,MODE.TYPE(1:POS1(1)-1));
-        CC.G = G; 
+
+        CC = train_sc(D(rix,cix)*G.trafo,classlabel(rix),MODE.TYPE(1:POS1(1)-1));
+        CC.G = sparse(size(D,2),size(G.trafo,2));
+        CC.G(cix,:) = G.trafo;
         if isfield(CC,'weights')
-                CC.weights = [CC.weights(1,:); G*CC.weights(2:end,:)];
+                CC.weights = sparse([CC.weights(1,:); CC.G*CC.weights(2:end,:)]);
                 CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
         else
                 CC.datatype = [CC.datatype,'/sparse'];
         end;
 
-        
 elseif ~isempty(strfind(lower(MODE.TYPE),'rbf'))
 	if ~isempty(W) 
 		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
@@ -724,18 +790,24 @@ else          % Linear and Quadratic statistical classifiers
 	        	if isfield(MODE.hyperparameter,'gamma')
 	        		cov = cov + mean(diag(cov))*eye(size(cov))*MODE.hyperparameter.gamma;
         		end	
+
                         w = cov\(M2-M1)';
                         w0    = -M0*w;
                         CC.weights(:,k) = [w0; w];
                 end;
-		CC.weights = sparse(CC.weights);
+		%CC.weights = sparse(CC.weights);
 		
                 
         elseif strcmpi(MODE.TYPE,'RDA');
-		if isfield(MODE,'hyperparameter') && isfield(MODE.hyperparameter,'lambda')  && isfield(MODE.hyperparameter,'gamma')
+		if isfield(MODE,'hyperparameter')
 		        CC.hyperparameter = MODE.hyperparameter;
-		else 
-			error('RDA: hyperparamters lambda and/or gamma not defined')
+		end;         
+		% default values
+		if ~isfield(CC.hyperparameter,'gamma')
+			CC.hyperparameter.gamma = 0;
+		end;	
+		if ~isfield(CC.hyperparameter,'lambda')
+			CC.hyperparameter.lambda = 1; 
 		end; 	         
         else
                 ECM0 = sum(ECM,3);
@@ -783,3 +855,33 @@ else          % Linear and Quadratic statistical classifiers
         end;
 end;
 
+function [rix,cix] = row_vs_col_deletion(d,c,w)
+	
+	% returns number of values for row-wise and column-wise deletion
+	if nargin > 2,
+		if isempty(w) || all(w==w(1)), 
+			ix = ~isnan(c);
+		else 	
+			ix = ~any(isnan(c) | isnan(w));
+		end; 
+		d  = d(ix,:);	%% ignore samples with invalid c or w
+
+	elseif nargin > 1,
+		d  = d(~isnan(c),:);	%% ignore samples with invalid c or w
+
+	end; 	
+
+	n   = numel(d); 
+	cix = find(~any(isnan(d),1)); 
+	rix = find(~any(isnan(d),2)); 
+	nr  = length(rix)*size(d,2); % number of elements after row-wise deletion
+	nc  = length(cix)*size(d,1); % number of elements after column-wise deletion
+	
+	if (nr>nc)
+		cix = 1:size(d,2);  % select all columns
+		%fprintf(1,'row-wise deletion (%i,%i,%i)\n',n,nr,nc);		
+	else
+		rix = 1:size(d,1);  % select all rows 
+		%fprintf(1,'column-wise deletion (%i,%i,%i)\n',n,nr,nc);		
+	end; 
+end; 

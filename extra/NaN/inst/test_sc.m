@@ -59,7 +59,7 @@ if isfield(CC,'prewhite')
         CC = rmfield(CC,'prewhite');
 end;
 
-POS1 = [strfind(CC.datatype,'/gsvd'),strfind(CC.datatype,'/sparse')];
+POS1 = [strfind(CC.datatype,'/gsvd'),strfind(CC.datatype,'/sparse'),strfind(CC.datatype,'/delet')];
 
 if 0,
 
@@ -152,9 +152,9 @@ elseif isfield(CC,'weights'); %strcmpi(t2,'svm') || (strcmpi(t2,'statistical') &
         end;
 
 
-elseif ~isempty(POS1)	% GSVD & sparse
+elseif ~isempty(POS1)	% GSVD, sparse & DELETION
         CC.datatype = CC.datatype(1:POS1(1)-1);
-        r = test_sc(CC,D*CC.G);
+        r = test_sc(CC, D*sparse(CC.G));
         d = r.output; 
 
 
@@ -163,7 +163,7 @@ elseif strcmp(t2,'statistical');
                 mode.TYPE = upper(t3); 
         end;
         D = [ones(size(D,1),1),D];  % add 1-column
-        W = repmat(NaN,size(D,2),size(CC.MD,3));
+        W = repmat(NaN, size(D,2), size(CC.MD,3));
 
         if 0,
         elseif strcmpi(mode.TYPE,'LD2'),

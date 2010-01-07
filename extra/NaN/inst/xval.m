@@ -17,7 +17,10 @@ function [R,CC]=xval(D,classlabel,MODE,arg4)
 %    D:	data features (one feature per column, one sample per row)
 %    classlabel  classlabel (same number of rows)
 %    CLASSIFIER can be any classifier supported by train_sc (default='LDA')
-%	{'MDA','MD2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','REG','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse','RDA','GDBC','SVM','RBF'}
+%	{'MDA','MD2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','REG','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse','RDA','GDBC','SVM','RBF', PLA}
+%       Hyperparameters (like alpha for PLA, gamma/lambda for RDA, c_value for SVM, etc) can be defined as 
+% 	CLASSIFIER.hyperparameter.alpha, etc. and 
+% 	CLASSIFIER.TYPE = 'PLA' (as listed above). See train_sc for details.
 %    W:	weights for each sample (row) in D. 
 %	default: [] (i.e. all weights are 1)
 %	number of elements in W must match the number of rows of D 
@@ -138,25 +141,23 @@ cl = repmat(NaN,size(classlabel,1),1);
 for k = 1:max(NG),
  	ix = ix0(NG(ix0)~=k);
 	if isempty(W)	
-		CC = train_sc(D(ix,:),C(ix),MODE);
+		CC = train_sc(D(ix,:), C(ix), MODE);
 	else
-		CC = train_sc(D(ix,:),C(ix),MODE,W(ix));
-	end; 	
+		CC = train_sc(D(ix,:), C(ix), MODE, W(ix));
+	end;
  	ix = ix0(NG(ix0)==k);
-	r  = test_sc(CC,D(ix,:));
+	r  = test_sc(CC, D(ix,:));
 	cl(ix,1) = r.classlabel;
 end; 
 
-R = kappa(C,cl,'notIgnoreNAN',W);
-%R1 = kappa(C,cl,[],W)
-%R2 = kappa(R.H)
+%R = kappa(C,cl,'notIgnoreNAN',W);
+R = kappa(C,cl,[],W);
+%R2 = kappa(R.H);
 
 R.ERR = 1-R.ACC; 
 if isnumeric(R.Label)
 	R.Label = cellstr(int2str(R.Label)); 
 end; 		
-R.datatype='confusion';
-R.data = R.H; 
 
 if nargout>1,
 	% final classifier 

@@ -22,7 +22,7 @@ function [CLASS,ERR,POSTERIOR,LOGP,COEF]=classify(sample,training,classlabel,TYP
 % [1] R. Duda, P. Hart, and D. Stork, Pattern Classification, second ed. 
 %       John Wiley & Sons, 2001. 
 
-%	$Id: classify.m 2140 2009-07-02 12:03:55Z schloegl $
+%	$Id$
 %	Copyright (C) 2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
@@ -49,9 +49,9 @@ if strcmp(TYPE,'linear')
 	TYPE = 'LDA';
 elseif strcmp(TYPE,'quadratic')
 	TYPE = 'QDA2'; % result is closer to Matlab 
-elseif strcmp(TYPE,'diaglinear')
+elseif strcmp(TYPE,'diagLinear')
 	TYPE = 'NBC';
-elseif strcmp(TYPE,'diagquadratic')
+elseif strcmp(TYPE,'diagQuadratic')
 	TYPE = 'NBC';
 elseif strcmp(TYPE,'mahalanobis')
 	TYPE = 'MDA';

@@ -8,7 +8,7 @@
 %        (Q327.D83) John Wiley & Sons. ISBN 0-471-22361-1. See page 218.
 
 %	$Id$
-%	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -29,7 +29,11 @@
 
 if exist('OCTAVE_VERSION','builtin')
 	if ~exist('iris.data','file')
-	        unix('wget http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'); 
+		if strncmp(computer,'PCWIN')
+			fprintf(1,'Download http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data and save in local directory %s\nPress any key to continue ...\n',pwd);
+		else 
+		        unix('wget http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'); 
+		end;         
 	end;        
         tmp = fopen('iris.data'); species=fread(tmp,[1,inf],'uint8=>char'); fclose(tmp); 
         [meas,tmp,species]=str2double(species,',');        

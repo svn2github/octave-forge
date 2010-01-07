@@ -10,8 +10,8 @@ function FLAG = flag_accuracy_level(i)
 %	2: accuracy of double (64bit) with Kahan summation (error = 2^-52) 
 %	3: accuracy of extended (80bit) with Kahan summation  (error = 2^-64)  
 %
-%   Please not, that level 3 might be equally accurate but slower than 1 or 2 or
-%   on some platforms. In order to determine what is good for you, you might want
+%   Please note, level 3 might be equally accurate but slower than 1 or 2 on
+%   some platforms. In order to determine what is good for you, you might want
 %   to run ACCTEST. 
 %
 % FLAG = flag_accuracy_level()
@@ -50,11 +50,16 @@ persistent FLAG_ACCURACY_LEVEL;
 
 %% if strcmp(version,'3.6'), FLAG_ACCURACY_LEVEL=1; end;	%% hack for the use with Freemat3.6
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% set the default accuracy level for your platform, ACCTEST might help to determine the optimum for your platform.  
-DEFAULT_ACCURACY_LEVEL = 0;    %% maximum speed, accuracy sufficient for most needs.
-%% DEFAULT_ACCURACY_LEVEL = 1;    %% slower, but better accuracy for: Intel Atom 
-%% DEFAULT_ACCURACY_LEVEL = 2;    %% slower, but better accuracy for: AMDx64 Opteron, Phenom, Intel Pentium
-%% DEFAULT_ACCURACY_LEVEL = 3;    %% similar accuracy than 1 or 2 (depending on platform) but even slower. 
+%% If you use Matlab, use level 0 or 2; 1 and 3 are much slower but do not show a better accuracy  
+%% Octave seems to be able to use all 4 levels, were the differences of accuracy between succeeding levels become smaller   
+DEFAULT_ACCURACY_LEVEL = 0;	%% maximum speed, accuracy sufficient for most needs.
+%% DEFAULT_ACCURACY_LEVEL = 2;	%% slower, but better accuracy for: AMDx64 Opteron, Phenom, Intel Pentium
+%% DEFAULT_ACCURACY_LEVEL = 1;	%% slower, but better accuracy for: Octave on Intel Atom (no improvement with Matlab, just slower) 
+%% DEFAULT_ACCURACY_LEVEL = 3;	%% similar accuracy than 1 or 2 (depending on platform) but even slower. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %%% set DEFAULT value of FLAG
 if isempty(FLAG_ACCURACY_LEVEL),

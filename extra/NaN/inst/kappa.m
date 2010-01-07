@@ -167,11 +167,12 @@ if (nargout>1) return; end;
 
 X.kappa = kap; 
 X.kappa_se = se; 
-X.H = H;
+X.data = H;
 X.z = z; 
 X.ACC = p0; 
 X.sACC = SA;
 X.MI = R;
+X.datatype='confusion';
 
 if length(H)==2,
 	X.FNR = H(2,1)/sum(H(2,:));

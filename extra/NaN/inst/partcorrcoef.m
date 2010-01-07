@@ -49,10 +49,10 @@ function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode);
 % [1] http://www.tufts.edu/~gdallal/partial.htm
 % [2] http://www.nag.co.uk/numeric/fl/manual/pdf/G02/g02byf.pdf
 
-%       $Id$
-%       Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>	
-%       This function is part of the NaN-toolbox
-%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%    $Id$
+%    Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%    This function is part of the NaN-toolbox
+%    http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

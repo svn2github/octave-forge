@@ -853,7 +853,7 @@ else          % Linear and Quadratic statistical classifiers
                         %CC.datatype='LLBC';
                 end;
         end;
-end;
+end
 
 function [rix,cix] = row_vs_col_deletion(d,c,w)
 	
@@ -884,4 +884,5 @@ function [rix,cix] = row_vs_col_deletion(d,c,w)
 		rix = 1:size(d,1);  % select all rows 
 		%fprintf(1,'column-wise deletion (%i,%i,%i)\n',n,nr,nc);		
 	end; 
-end; 
+end;
+end

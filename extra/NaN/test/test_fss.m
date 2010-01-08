@@ -30,6 +30,7 @@ if ~exist('ue6.mat','file')
 end
 load ue6; 
 
+
 N = 50;   % select N highest ranked features
 [ix,score] = fss(data, C, N);
 
@@ -37,14 +38,24 @@ N = 50;   % select N highest ranked features
 %% compute cross-validated result; 
 for k=1:N
         R{k}=xval(data(:,ix(1:k)),C);
+end; 
+
+fprintf(1,'#\tFeature\tN\tACC [%%]\tKappa+-se\t I [bit]\n'); 
+for k=1:N
+        n(k)=sum(R{k}.data(:));
         ACC(k)=R{k}.ACC;
+        KAP(k)=R{k}.kappa;
+        KAP_Se(k)=R{k}.kappa_se;
+        MI(k)=R{k}.MI;
+        
+        fprintf(1,'%3i:\t%4i\t%i\t%5.2f\t%5.2f+-%5.2f\t%4.2f\n',k,ix(k),n(k),ACC(k),KAP(k),KAP_Se(k),MI(k));
 end
 
 
 %% display 
-plot(ACC*100); 
+plot(ACC*100,'x'); 
 set(gca,'YLim',[0,100])
 ylabel('Accuracy [%]')
 title('selection of N out of 2540 features')
 
-ix,
+

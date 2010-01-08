@@ -21,7 +21,7 @@ function Q=quantile(Y,q,DIM,method)
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -36,7 +36,7 @@ if nargin<3,
         DIM = [];
 end;
 if isempty(DIM),
-        DIM = min(find(size(Y)>1));
+        DIM = find(size(Y)>1,1);
         if isempty(DIM), DIM = 1; end;
 end;
 
@@ -68,7 +68,7 @@ else
 			x(2:2:2*length(t)) = x2;
 			x(3:2:2*length(t)) = x2(1:end-1);
                         for k2 = 1:length(q),
-				if (q(k2)<0) | (q(k2)>1) 	
+                                if (q(k2)<0) || (q(k2)>1) 	
 					Q(k2,k1) = NaN;  
 				elseif 	q(k2)==0,
 					Q(k2,k1) = t2(1);  	
@@ -97,6 +97,7 @@ else
 		        sz = [sz,ones(1,DIM-length(sz))];
 		end;
 
+                f  = zeros(1,length(q));        
 		D1 = prod(sz(1:DIM-1));
 		D3 = prod(sz(DIM+1:length(sz)));
 		Q  = repmat(nan,[sz(1:DIM-1),length(q),sz(DIM+1:length(sz))]);
@@ -110,9 +111,9 @@ else
 			
 			t2(1:2:2*length(t)) = t; 
 			t2(2:2:2*length(t)) = t;
-			x=floor([1:2*length(t)]/2);
+			x=floor((1:2*length(t))/2);
 			for k2=1:length(q)
-				if (q(k2)<0) | (q(k2)>1) 	
+				if (q(k2)<0) || (q(k2)>1) 	
 					f(k2) = NaN;  
 				elseif 	q(k2)==0	
 					f(k2) = t2(1);  	

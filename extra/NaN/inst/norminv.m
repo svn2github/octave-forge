@@ -1,4 +1,4 @@
-function x = norminv(p,m,s);
+function x = norminv(p,m,s)
 % NORMINV returns inverse cumulative function of the normal distribution
 %
 % x = norminv(p,m,s);
@@ -12,10 +12,10 @@ function x = norminv(p,m,s);
 
 % Reference(s):
 
-%	$Revision$
-%	$Id$
-%	Version 1.28   Date: 13 Mar 2003
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%    $Id$
+%    Copyright (C) 2000-2003,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%    This script is part of the NaN-toolbox
+%    http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ x((p==0) & k) = -inf;
 x((p==1) & k) = +inf;
 
 k = (p>0) & (p<1) & k;
-if prod(size(m))==1,
+if numel(m)==1,
         x(k) = m;
 else
         x(k) = m(k);

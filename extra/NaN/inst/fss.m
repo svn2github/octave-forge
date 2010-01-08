@@ -39,7 +39,7 @@ function [idx,score] = fss(D,cl,N,MODE)
 
 
 %	$Id$
-%	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -68,10 +68,10 @@ elseif nargin<4,
 	MODE = [];	
 end; 
 
-if isempty(N) N = size(D,2); end
+if isempty(N), N = size(D,2); end;
 score = repmat(NaN,1,size(D,2));
 
-if 0, strcmpi(MODE,'MRMR') || strcmpi(MODE,'MID') || strcmpi(MODE,'MIQ'),
+if 0, %strcmpi(MODE,'MRMR') || strcmpi(MODE,'MID') || strcmpi(MODE,'MIQ');
         %% RMRM/MID/MIQ is not supported
         %% TODO: FIXME 
          
@@ -112,6 +112,7 @@ elseif isempty(MODE) || strcmpi(MODE,'rank') || strcmpi(MODE,'Pearson')
         if strcmpi(MODE,'rank'),
                 [tmp,D] = sort(D,1);
         end; 
+        idx = repmat(NaN,1,N);
         for k = 1:N,
 	        f = isnan(score);
 
@@ -137,7 +138,7 @@ end
 function I = mi(x,y)
         ix  = ~any(isnan([x,y]),2);
         H   = sparse(x(ix),y(ix)); 
-        pij = h./sum(ix); 
+        pij = H./sum(ix); 
         Iij = pij.*log2(pij./(sum(pij,2)*sum(pij,1)));
         Iij(isnan(Iij)) = 0; 
         I = sum(Iij(:));

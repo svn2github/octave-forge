@@ -26,7 +26,7 @@ function [CC] = train_lda_sparse(X,G,par,tol)
 % 1ET400300415.
 %
 %
-% Modified for the use with Matlab6.5 by A. Schlögl, 22.Aug.2006
+% Modified for the use with Matlab6.5 by A. Schlï¿½gl, 22.Aug.2006
 %
 %	$Id: train_lda_sparse.m,v 1.7 2007-10-11 09:39:39 schloegl Exp $
 %       This function is part of the NaN-toolbox
@@ -55,7 +55,7 @@ g = size(G,2);
 for j=1:g
         nj(j) = norm(G(:,j))^2;
 end
-Dtild = spdiags(nj'.^(-1),[0],g,g);
+Dtild = spdiags(nj'.^(-1),0,g,g);
 Xtild = X*X';
 Xtild1 = Xtild*ones(n,1);
 help = ones(n,1)*Xtild1'/n - (ones(1,n)*Xtild'*ones(n,1))/(n^2); 
@@ -96,8 +96,8 @@ end;
 %EV = Dhalfinv*V0;
 %[s,I] = sort((diag(S)),'descend');
 %[s,I] = sort(-diag(S)); s = -s; 
-if flag ~= 0
-        'eigs did not converge'
+if flag ~= 0,
+        'eigs did not converge';
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Step (4)
 for j=1:g-1,

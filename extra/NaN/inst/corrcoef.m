@@ -1,4 +1,4 @@
-function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,varargin);
+function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,varargin)
 % CORRCOEF calculates the correlation matrix from pairwise correlations.
 %   The input data can contain missing values encoded with NaN.
 %   Missing data (NaN's) are handled by pairwise deletion [15]. 
@@ -230,7 +230,7 @@ if strcmp(lower(Mode(1:7)),'pearson');
                 end;  
                 for k = 1:length(jx),
                         %ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
-                        ik = ~isnan(X(:,[jx(k)])) & ~isnan(X(:,[jy(k)]));
+                        ik = ~isnan(X(:,jx(k))) & ~isnan(X(:,jy(k)));
                         [s,n,s2] = sumskipnan(X(ik,[jx(k),jy(k)]),1);
                         v  = (s2-s.*s./n)./n;
                         cc = X(ik,jx(k))'*X(ik,jy(k));
@@ -238,7 +238,7 @@ if strcmp(lower(Mode(1:7)),'pearson');
                         %r(k) = cc./sqrt(prod(v));
                         R(jxo(k),jyo(k)) = cc./sqrt(prod(v));
                 end;
-        end
+	end
         
 elseif strcmp(lower(Mode(1:4)),'rank');
         % see [ 6] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
@@ -254,12 +254,12 @@ elseif strcmp(lower(Mode(1:4)),'rank');
                 end;  
                 for k = 1:length(jx),
                         %ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
-                        ik = ~isnan(X(:,[jx(k)])) & ~isnan(X(:,[jy(k)]));
+                        ik = ~isnan(X(:,jx(k))) & ~isnan(X(:,jy(k)));
                         il = ranks(X(ik,[jx(k),jy(k)]));
                         R(jxo(k),jyo(k)) = corrcoef(il(:,1),il(:,2));
                 end;
 		X = ranks(X);
-        end;
+	end;
         
 elseif strcmp(lower(Mode(1:8)),'spearman');
         % see [ 6] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
@@ -278,7 +278,7 @@ elseif strcmp(lower(Mode(1:8)),'spearman');
         else
                 for k = 1:length(jx),
                         %ik = ~any(isnan(X(:,[jx(k),jy(k)])),2);
-                        ik = ~isnan(X(:,[jx(k)])) & ~isnan(X(:,[jy(k)]));
+                        ik = ~isnan(X(:,jx(k))) & ~isnan(X(:,jy(k)));
                         il = ranks(X(ik,[jx(k),jy(k)]));
                         % NN is the number of non-missing values
                         [R(jxo(k),jyo(k)),n(jxo(k),jyo(k))] = sumskipnan((il(:,1) - il(:,2)).^2);
@@ -350,7 +350,7 @@ ci2 = tanh(z+sz);
 %ci1(isnan(ci1))=R(isnan(ci1));	% in case of isnan(ci), the interval limits are exactly the R value 
 %ci2(isnan(ci2))=R(isnan(ci2));
 
-if (NARG<5) | ~YESNAN, 
+if (NARG<5) || ~YESNAN, 
 	nan_sig = repmat(NaN,size(R));
 	warning(FLAG_WARNING); 	% restore warning status
         return;

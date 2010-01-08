@@ -1,4 +1,4 @@
-function p = normpdf(x,m,s);
+function p = normpdf(x,m,s)
 % NORMPDF returns normal probability density 
 %
 % pdf = normpdf(x,m,s);
@@ -12,10 +12,10 @@ function p = normpdf(x,m,s);
 
 % Reference(s):
 
-%	$Revision$
-%	$Id$
-%	Version 1.28   Date: 13 Mar 2003
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%    $Id$
+%    Copyright (C) 2000-2003,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%    This script is part of the NaN-toolbox
+%    http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

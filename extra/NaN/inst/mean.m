@@ -71,7 +71,7 @@ elseif (nargin==2)
                 opt='a';
         end;	
 elseif (nargin == 3), 
-	if isnumeric(DIM) && isnumeric(opt)
+        if isnumeric(DIM) && isnumeric(opt)
 		%------ case:  mean(x,DIM,W)
 		W = opt; 
 		opt='a';
@@ -86,8 +86,8 @@ elseif (nargin == 3),
         	%------ case:  mean(x,DIM,opt)
         	W = [];
         end;
-elseif nargin==4; 
-		%------ case: mean(x,DIM,opt,W);
+elseif nargin==4,
+		%------ case: mean(x,DIM,opt,W)
 	; 
 else
 	help mean 

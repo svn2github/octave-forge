@@ -73,7 +73,7 @@ elseif (nargin == 2)
                 t = [];
         else
                 p = 1;
-    	end;            
+	end;            
 elseif (nargin == 3)
         if ischar(X),
 		warning('input arguments are not supported');	
@@ -102,7 +102,7 @@ if ~all(size(X,1)==size(t,1))
         fprintf (2,'detrend: size(t,1) must same as size(x,1) \n');
 end;
 % check the order of the polynomial 
-if (~(all(size(p)==1) & (p == round (p)) & (p >= 0)))
+if (~(all(size(p)==1) && (p == round (p)) && (p >= 0)))
 	fprintf (2,'detrend:  p must be a nonnegative integer\n');
 end
 
@@ -111,12 +111,12 @@ if (nargout>1)  , % needs more memory
         %T=repmat(nan,size(X)); % not supported by Octave 2.0.16
         
         
-        if (size(t,2)>1),	% for multiple time scales
+	if (size(t,2)>1),	% for multiple time scales
                 for k=1:size(X,2),
 	                idx=find(~isnan(X(:,k)));
                         b = (t(idx,k) * ones (1, p + 1)) .^ (ones (length(idx),1) * (0 : p));
 		        T(idx,k) = b * (b \ X(idx,k));
-		end;
+                end;
         	        
         else			% if only one time scale is used
 		b = (t * ones (1, p + 1)) .^ (ones (length(t),1) * (0 : p));
@@ -129,27 +129,27 @@ if (nargout>1)  , % needs more memory
 	end;
         X = X-T;  % 3nd alternative 
         
-        if (m == 1)
+	if (m == 1)
 	        X = X';
 	        T = T';
 	end
 else % needs less memory
-        if (size(t,2)>1),	% for multiple time scales
+	if (size(t,2)>1),	% for multiple time scales
                 for k = 1:size(X,2),
 	                idx = find(~isnan(X(:,k)));
                         b = (t(idx,k) * ones (1, p + 1)) .^ (ones (length(idx),1) * (0 : p));
 		        X(idx,k) = X(idx,k) -  b * (b \ X(idx,k));
-		end;
+                end;
         else			% if only one time scale is used
 		b = (t * ones (1, p + 1)) .^ (ones (length(t),1) * (0 : p));
-		for k = 1:size(X,2),
+                for k = 1:size(X,2),
 		        idx = find(~isnan(X(:,k)));
 	        	X(idx,k) = X(idx,k) - b(idx,:) * (b(idx,:) \ X(idx,k));
-		end;
+                end;
 	end;
 
-        if (m == 1)
-	        X = X';
+	if (m == 1)
+                X = X';
 	end
 end;
 

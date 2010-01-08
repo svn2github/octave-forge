@@ -16,7 +16,8 @@ function FLAG = flag_accuracy_level(i)
 %
 % FLAG = flag_accuracy_level()
 % 	gets current level
-% flag_accuracy_level(FLAG) % 	sets accuracy level  
+% flag_accuracy_level(FLAG) 
+% 	sets accuracy level  
 % 
 % see also: ACCTEST
 % 
@@ -67,8 +68,8 @@ if isempty(FLAG_ACCURACY_LEVEL),
 end;
 
 if nargin>0,
-	if (i>3) i=3; end;
-	if (i<0) i=0; end;
+	if (i>3), i=3; end;
+	if (i<0), i=0; end;
 	FLAG_ACCURACY_LEVEL = double(i); 
 end;
 FLAG = FLAG_ACCURACY_LEVEL;

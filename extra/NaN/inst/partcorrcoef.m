@@ -1,4 +1,4 @@
-function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode);
+function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode)
 % PARTCORRCOEF calculates the partial correlation between X and Y
 % after removing the influence of Z.
 % X, Y and Z can contain missing values encoded with NaN.
@@ -7,7 +7,7 @@ function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode);
 % The output gives NaN, only if there are insufficient input data.
 %
 %  The partial correlation  is defined as 
-%  pcc(xy|z)=(cc(x,y)-cc(x,z)*cc(y,z))/sqrt((1-cc(x,y)²)*((1-cc(x,z)²)))
+%  pcc(xy|z)=(cc(x,y)-cc(x,z)*cc(y,z))/sqrt((1-cc(x,y)ï¿½)*((1-cc(x,z)ï¿½)))
 %
 %
 % PARTCORRCOEF(X [,Mode]);
@@ -145,7 +145,7 @@ end;
 
 
 % CONFIDENCE INTERVAL
-if exist('flag_implicit_significance')==2,
+if exist('flag_implicit_significance','file'),
         alpha = flag_implicit_significance;
 else
 	alpha = 0.01;        

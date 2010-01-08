@@ -1,4 +1,4 @@
-function p = tcdf(x,n);
+function p = tcdf(x,n)
 % TCDF returns student cumulative distribtion function
 %
 % cdf = tcdf(x,DF);

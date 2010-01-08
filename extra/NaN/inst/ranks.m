@@ -1,4 +1,4 @@
-function r = ranks(X,DIM,Mode);
+function r = ranks(X,DIM,Mode)
 % RANKS gives the rank of each element in a vector.
 % This program uses an advanced algorithm with averge effort O(m.n.log(n)) 
 % NaN in the input yields NaN in the output.
@@ -24,13 +24,13 @@ function r = ranks(X,DIM,Mode);
 
 
 %    $Id$
-%    Copyright (C) 2000-2002,2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%    Copyright (C) 2000-2002,2005,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %    This script is part of the NaN-toolbox
 %    http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -64,7 +64,7 @@ end;
 
 sz = size(X);
 if (~DIM)
-	 [tmp,DIM] = min(find(sz>1));
+	 DIM = find(sz>1,1);
 end;	 
 [N,M] = size(X);
 if (DIM==2),
@@ -79,7 +79,7 @@ if strcmp(Mode(1:min(11,length(Mode))),'traditional'), % traditional, needs O(m.
 r = zeros(size(X));
         for i = 1:M;
                 p = X(:, i(ones(1,N)));
-                r(:,i) = [(sum (p < p') + (sum (p == p') + 1) / 2)'];
+                r(:,i) = (sum (p < p') + (sum (p == p') + 1) / 2)';
         end;
         % r(r<1)=NaN;
         
@@ -89,7 +89,7 @@ elseif strcmp(Mode(1:min(12,length(Mode))),'mtraditional'), % advanced
 	r = zeros(size(X));
         for k = 1:N;
         for i = 1:M;
-                r(k,i) = [(sum (X(:,i) < X(k,i)) + (sum (X(:,i)  == X(k,i)) + 1) / 2)];
+                r(k,i) = (sum (X(:,i) < X(k,i)) + (sum (X(:,i)  == X(k,i)) + 1) / 2);
         end;
         end;
         % r(r<1)=NaN;

@@ -32,21 +32,21 @@
 %FLAG_WARNING = warning;
 %warning('off');
 
-try,
+try
 	x = randn([3,4,5]); 
 	x(~isnan(x)) = 0;
-catch,
+catch
 	fprintf(1,'WARNING: NANTEST fails for 3-DIM matrices. \n');
 end;
-try,
+try
 	[s,n] = sumskipnan([nan,1,4,5]);
-catch,
+catch
 	fprintf(1,'WARNING: SUMSKIPNAN is not avaible. \n');
 end;
 
 % check NORMPDF, NORMCDF, NORMINV
 x = [-inf,-2,-1,-.5,0,.5,1,2,3,inf,nan]';
-if exist('normpdf')==2,
+if exist('normpdf','file')==2,
         q(1) = sum(isnan(normpdf(x,2,0)))>sum(isnan(x));
         if q(1),
                 fprintf(1,'NORMPDF cannot handle v=0.\n');
@@ -54,7 +54,7 @@ if exist('normpdf')==2,
         end;
 end;
 
-if exist('normcdf')==2,
+if exist('normcdf','file')==2,
         q(2) = sum(isnan(normcdf(x,2,0)))>sum(isnan(x));
         if q(2),
                 fprintf(1,'NORMCDF cannot handle v=0.\n');
@@ -62,7 +62,7 @@ if exist('normcdf')==2,
         end;
 end;
 
-if exist('norminv')==2,
+if exist('norminv','file')==2,
         p = [-inf,-.2,0,.2,.5,1,2,inf,nan];
         q(3) = sum(~isnan(norminv(p,2,0)))<4;
         if q(3),
@@ -70,10 +70,10 @@ if exist('norminv')==2,
                 fprintf(1,'-> NORMINV should be replaced\n');
         end;
         q(4) = ~isnan(norminv(0,NaN,0)); 
-        q(5) = any(norminv(0.5,[1 2 3 ],0)~=[1:3]);
+        q(5) = any(norminv(0.5,(1 2 3),0)~=[1:3]);
 end;
 
-if exist('tpdf')==2,
+if exist('tpdf','file')==2,
         q(6) = ~isnan(tpdf(nan,4));
         if q(6),
                 fprintf(1,'TPDF(NaN,4) does not return NaN\n');
@@ -81,10 +81,10 @@ if exist('tpdf')==2,
         end;
 end;
 
-if exist('tcdf')==2,
-        try,	
+if exist('tcdf','file')==2,
+        try
                 q(7) = ~isnan(tcdf(nan,4));
-        catch,
+        catch
                 q(7) = 1;
         end;
         if q(7),
@@ -93,10 +93,10 @@ if exist('tcdf')==2,
         end;
 end;
 
-if exist('tinv')==2,
-        try,	
+if exist('tinv','file')==2,
+        try
                 q(8) = ~isnan(tinv(nan,4));
-        catch,
+        catch
                 q(8) = 1;
         end;
         if q(8),
@@ -105,7 +105,7 @@ if exist('tinv')==2,
         end;
 end;
 
-q(9) = isreal(double([2+3i]));
+q(9) = isreal(double(2+3i));
 if q(9)
 	printf('DOUBLE rejects imaginary part\n-> this can affect SUMSKIPNAN\n');
 end; 
@@ -146,28 +146,28 @@ end;
 end; 
 
 %%%%% NANSUM(NAN) - this test addresses a problem in Matlab 5.3, 6.1 & 6.5
-if exist('nansum')==2,
+if exist('nansum','file'),
         if isnan(nansum(nan)),
                 fprintf(1,'Warning: NANSUM(NaN) returns NaN instead of 0\n');
                 fprintf(1,'-> NANSUM should be replaced\n');
         end;
 end;
 %%%%% NANSUM(NAN) - this test addresses a problem in Matlab 5.3, 6.1 & 6.5
-if exist('nanstd')==2,
+if exist('nanstd','file'),
         if ~isnan(nanstd(0)),
                 fprintf(1,'Warning: NANSTD(x) with isscalar(x) returns 0 instead of NaN\n');
                 fprintf(1,'-> NANSTD should be replaced\n');
         end;
 end;
 %%%%% GEOMEAN - this test addresses a problem in Octave
-if exist('geomean')==2,
-        if isnan(geomean([0:3]')),
+if exist('geomean','file'),
+        if isnan(geomean((0:3)')),
                 fprintf(1,'Warning: GEOMEAN([0,1,2,3]) NaN instead of 0\n');
                 fprintf(1,'-> GEOMEAN should be replaced\n');
         end;
 end;
 %%%%% HARMMEAN - this test addresses a problem in Octave
-if exist('harmmean')==2,
+if exist('harmmean','file'),
         if isnan(harmmean(0:3)),
                 fprintf(1,'Warning: HARMMEAN([0,1,2,3]) NaN instead of 0\n');
                 fprintf(1,'-> HARMMEAN should be replaced\n');
@@ -180,7 +180,7 @@ if exist('bitand')>1,
         end;
 end;
 %%%%% BITSHIFT - this test addresses a problem in Octave
-if exist('bitshift')==2,
+if exist('bitshift','file'),
         if isnan(bitshift(5,30,32)),
                 fprintf(1,'BITSHIFT can return NaN.\n');
         end;

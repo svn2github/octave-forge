@@ -24,9 +24,14 @@ function M=moment(i,p,opt,DIM)
 % REFERENCE(S):
 % http://mathworld.wolfram.com/Moment.html
 
+%    $Id$
+%    Copyright (C) 2000-2002,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%    This script is part of the NaN-toolbox
+%    http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -36,9 +41,6 @@ function M=moment(i,p,opt,DIM)
 %
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
-
-%	Version 1.24;	09 Dec 2002
-%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	
 
 if nargin==2,
         DIM=[];
@@ -57,7 +59,7 @@ if p<=0;
         return;
 end;
 
-if isnumeric(opt) | ~isnumeric(DIM),
+if isnumeric(opt) || ~isnumeric(DIM),
         tmp = DIM;
         DIM = opt;
 	opt = tmp;        
@@ -66,7 +68,7 @@ if isempty(opt),
 	opt='r';
 end;
 if isempty(DIM), 
-        DIM = min(find(size(i)>1));
+        DIM = find(size(i)>1,1);
         if isempty(DIM), DIM=1; end;
 end;
 
@@ -89,14 +91,14 @@ if isstruct(i),
 	warning('invalid datatype')		
     end;
 else
-        if any(opt=='c'),
+	if any(opt=='c'),
 	    	[S,N] = sumskipnan(i,DIM);	% gemerate N and SUM
 	        N = max(N-1,0);			% for unbiased estimation
 		i = i - repmat(S./N, size(i)./size(S)); % remove mean
 	end;
 	if any(opt=='a'),
 		i = abs(i);	
-    	end;
+	end;
 	[M,n] = sumskipnan(i.^p,DIM);
 end;
 

@@ -296,22 +296,22 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pla'));
 
 	%ix = randperm(size(D,1)); 	%% randomize samples ??? 
         if ~isfield(MODE.hyperparameter,'alpha')
-	        if isfield(MODE.hyperparameter,'alpha')
+                if isfield(MODE.hyperparameter,'alpha')
 	        	alpha = MODE.hyperparameter.alpha;
 	        else 	
 	        	alpha = 1; 
-		end; 	
-		for k = rix(:)',
-		        e = ((classlabel(k)==[1:M])-.5) - sign([1, D(k,cix)] * weights)/2;
+                end; 	
+                for k = rix(:)',
+		        e = ((classlabel(k)==(1:M))-.5) - sign([1, D(k,cix)] * weights)/2;
 			weights = weights + alpha * [1,D(k,cix)]' * e ;
-		end;
+                end;
 		
         else %if ~isempty(W)
         	if isfield(MODE.hyperparameter,'alpha')
 			W = W*MODE.hyperparameter.alpha;
 		end;	
 		for k = rix(:)',
-		        e = ((classlabel(k)==[1:M])-.5) - sign([1, D(k,cix)] * weights)/2;
+		        e = ((classlabel(k)==(1:M))-.5) - sign([1, D(k,cix)] * weights)/2;
 			weights = weights + W(k) * [1,D(k,cix)]' * e ;
 		end;
         end
@@ -336,7 +336,7 @@ elseif  ~isempty(strfind(lower(MODE.TYPE),'adaline')) || ~isempty(strfind(lower(
 	        	alpha = 1; 
 		end; 	
 		for k = rix(:)',
-		        e = (classlabel(k)==[1:M]) - [1, D(k,cix)] * weights;
+		        e = (classlabel(k)==(1:M)) - [1, D(k,cix)] * weights;
 		        weights = weights + alpha * [1,D(k,cix)]' * e ;
 		end;
 
@@ -345,7 +345,7 @@ elseif  ~isempty(strfind(lower(MODE.TYPE),'adaline')) || ~isempty(strfind(lower(
 			W = W*MODE.hyperparameter.alpha;
 		end;
 		for k = rix(:)',
-		        e = (classlabel(k)==[1:M]) - [1, D(k,cix)] * weights;
+		        e = (classlabel(k)==(1:M)) - [1, D(k,cix)] * weights;
 		        weights = weights + W(k) * [1,D(k,cix)]' * e ;
 		end;
         end
@@ -436,6 +436,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'/gsvd'))
         Hb = [];
 	m0 = mean(D(rix,cix)); 
         K = length(CC.Labels); 
+        N = zeros(1,K);
 	for k = 1:K,
 		ix   = find(classlabel(rix)==CC.Labels(k));
 		N(k) = length(ix);
@@ -461,7 +462,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'/gsvd'))
         %[size(Q);size(R);size(W)]
         
         %G = Q(1:t,:)'*[R\W'];
-        G = Q(:,1:t)*[R\W'];   % this works as well and needs only 'econ'-SVD
+        G = Q(:,1:t)*(R\W');   % this works as well and needs only 'econ'-SVD
         %G = G(:,1:t);  % not needed 
         
         % do not use this, gives very bad results for Medline database
@@ -614,7 +615,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm:lin4'))
         s(1,:) = -m.*r; 
 
         CC.options = sprintf('-s 4 -c %f ', MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
-        model = train(cl, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
+        model = train(classlabel, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
         CC.weights = model.w([end,1:end-1],:)';
 
         CC.weights = s * CC.weights(2:end,:) + sparse(1,1:M,CC.weights(1,:),sz(2)+1,M); % include pre-whitening transformation
@@ -884,5 +885,5 @@ function [rix,cix] = row_vs_col_deletion(d,c,w)
 		rix = 1:size(d,1);  % select all rows 
 		%fprintf(1,'column-wise deletion (%i,%i,%i)\n',n,nr,nc);		
 	end; 
-end;
+end
 end

@@ -1,4 +1,4 @@
-function CC = cov(X,Y,Mode);
+function CC = cov(X,Y,Mode)
 % COV covariance matrix
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
@@ -58,7 +58,7 @@ elseif nargin==2,
                 Y = [];
         else
                 Mode = 0;        
-        end;
+	end;
 elseif nargin==3, 
 		        
 else

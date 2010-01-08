@@ -82,7 +82,7 @@ if nargin<2, fun=[]; end;
 
 global FLAG_implicit_unbiased_estimation; 
 %%% check whether FLAG was already defined 
-if exist('FLAG_implicit_unbiased_estimation')~=1,
+if ~exist('FLAG_implicit_unbiased_estimation','var'),
 	FLAG_implicit_unbiased_estimation=[];
 end;
 %%% set DEFAULT value of FLAG
@@ -136,7 +136,7 @@ R.RANGE = R.MAX-R.MIN;
 
 if ~isempty(fun),
         fun=upper(fun);
-        if strncmp(fun,'CM',2) 
+	if strncmp(fun,'CM',2) 
                 oo = str2double(fun(3:length(fun)));
                 R = sumskipnan(H.PDF.*(x.^oo),1);
     	else	            

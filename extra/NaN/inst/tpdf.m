@@ -1,4 +1,4 @@
-function p = tpdf(x,n);
+function p = tpdf(x,n)
 % TPDF returns student probability density 
 %
 % pdf = tpdf(x,DF);
@@ -11,9 +11,10 @@ function p = tpdf(x,n);
 
 % Reference(s):
 
-%	$Revision$
 %	$Id$
-%	Copyright (C) 2000-2003,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003,2008,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

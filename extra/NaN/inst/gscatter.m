@@ -62,20 +62,23 @@ end
 if nargin<9
 	yname = [];
 end; 
-if isempty(clr) clr='bgrcmyk'; end; 
-if isempty(sym) sym='.'; end; 
-if isempty(doleg) doleg='on'; end; 
+if isempty(clr), clr='bgrcmyk'; end; 
+if isempty(sym), sym='.'; end; 
+if isempty(doleg), doleg='on'; end; 
 
 for k=1:length(b);
-	ix = find(k==j);
+	%ix = find(k==j);
 	c = clr(mod(k-1,length(clr))+1); 
 	s = sym(mod(k-1,length(sym))+1); 
 	hh(k) = plot(x(k==j),y(k==j),[c,s]);
 	if ~isempty(siz)	
 		z = siz(mod(k-1,length(siz))+1); 
-		set(h,'MarkerSize',z);
+		set(hh(k),'MarkerSize',z);
 	end	
+	hold on; 
 end; 
+hold off; 
+
 if ~strcmpi(doleg,'off')
 	if isnumeric(b)
 		b=num2str(b(:));
@@ -92,5 +95,4 @@ end;
 if nargout>0,
 	h = hh; 
 end;
-		
-		
+

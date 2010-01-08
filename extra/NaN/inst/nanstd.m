@@ -18,7 +18,7 @@ function [y] = nanstd(x,FLAG,DIM)
 % see also: SUM, SUMSKIPNAN, NANSUM, STD
 
 %    $Id$
-%    Copyright (C) 2000-2003,2006,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%    Copyright (C) 2000-2003,2006,2008,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %    This is part of the NaN-toolbox. For more details see
 %    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -46,11 +46,12 @@ if isempty(FLAG),
         FLAG = 0; 
 end;
 if isempty(DIM), 
-        DIM=min(find(size(i)>1));
+        DIM = find(size(x)>1,1);
         if isempty(DIM), DIM=1; end;
 end;
 
-[y,n,ssq] = sumskipnan(x,DIM);if all(ssq(:).*n(:) > 2*(y(:).^2))
+[y,n,ssq] = sumskipnan(x,DIM);
+if all(ssq(:).*n(:) > 2*(y(:).^2)),
 	%% rounding error is neglectable 
 	y = ssq - y.*y./n;
 else

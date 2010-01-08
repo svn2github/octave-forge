@@ -1,4 +1,4 @@
-function [C,N,LAGS] = xcovf(X,Y,MAXLAG,SCALEOPT);
+function [C,N,LAGS] = xcovf(X,Y,MAXLAG,SCALEOPT)
 % XCOVF generates cross-covariance function. 
 % XCOVF is the same as XCORR except 
 %   X and Y can contain missing values encoded with NaN.
@@ -12,9 +12,8 @@ function [C,N,LAGS] = xcovf(X,Y,MAXLAG,SCALEOPT);
 %
 % see also: COVM, XCORR
 
-%	$Revision$
 %	$Id$
-%	Copyright (C) 2005 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2005,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -49,24 +48,24 @@ end;
 
 if 0,
         
-elseif isempty(Y) & isempty(MAXLAG)
+elseif isempty(Y) && isempty(MAXLAG)
         NX = isnan(X);
         X(NX) = 0;
         [C,LAGS] = xcorr(X,'none');
         [N,LAGS] = xcorr(1-NX,'none');
-elseif ~isempty(Y) & isempty(MAXLAG)
+elseif ~isempty(Y) && isempty(MAXLAG)
         NX = isnan(X);
         NY = isnan(Y);
         X(NX) = 0;
         Y(NY) = 0;
         [C,LAGS] = xcorr(X,Y,'none');
         [N,LAGS] = xcorr(1-NX,1-NY,'none');
-elseif isempty(Y) & ~isempty(MAXLAG)
+elseif isempty(Y) && ~isempty(MAXLAG)
         NX = isnan(X);
         X(NX) = 0;
         [C,LAGS] = xcorr(X,MAXLAG,'none');
         [N,LAGS] = xcorr(1-NX,MAXLAG,'none');
-elseif ~isempty(Y) & ~isempty(MAXLAG)
+elseif ~isempty(Y) && ~isempty(MAXLAG)
         NX = isnan(X);
         NY = isnan(Y);
         X(NX) = 0;

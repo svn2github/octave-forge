@@ -105,7 +105,7 @@ elseif size(classlabel,2)>1,
 else 	
 	C = classlabel;	
 end; 
-if all(W==1) W = []; end;
+if all(W==1), W = []; end;
 if sz(1)~=size(C,1),
         error('length of data and classlabel does not fit');
 end;
@@ -116,14 +116,14 @@ ix0 = find(~any(isnan(C),2));
 if isempty(NG)
 if (nargin<4) || strcmpi(arg4,'LOOM')
 	%% LOOM 
-	NG = [1:sz(1)]';
+	NG = (1:sz(1))';
 
 elseif isnumeric(arg4)
 	if isscalar(arg4)  
 	% K-fold XV
-		NG = ceil([1:length(C)]'*arg4/length(C));
+		NG = ceil((1:length(C))'*arg4/length(C));
 	elseif length(arg4)==2,
-		NG = ceil([1:length(C)]'*arg4(1)/length(C));
+		NG = ceil((1:length(C))'*arg4(1)/length(C));
 	end; 	
 	
 end; 

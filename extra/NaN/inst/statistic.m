@@ -39,9 +39,14 @@ function [varargout]=statistic(i,DIM,fun)
 % [1] http://www.itl.nist.gov/
 % [2] http://mathworld.wolfram.com/
 
+%	$Id$
+%	Copyright (C) 2000-2003,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -52,9 +57,6 @@ function [varargout]=statistic(i,DIM,fun)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
-%	$Id$
 
 
 if nargin==1,
@@ -69,7 +71,7 @@ elseif nargin==2,
         end
 end
 if isempty(DIM), 
-        DIM = min(find(size(i)>1));
+        DIM = find(size(i)>1,1);
         if isempty(DIM), DIM=1; end;
 end;
 
@@ -80,7 +82,7 @@ R.S4P  = sumskipnan(i.^4,DIM);		% sum of 4th power
 %R.S5P  = sumskipnan(i.^5,DIM);		% sum of 5th power
 
 R.MEAN 	= R.SUM./R.N;			% mean 
-R.MSQ  	= R.SSQ./R.N;;			% mean square
+R.MSQ  	= R.SSQ./R.N;   		% mean square
 R.RMS  	= sqrt(R.MSQ);			% root mean square
 %R.SSQ0	= R.SSQ-R.SUM.*R.MEAN;		% sum square of mean removed
 R.SSQ0	= R.SSQ - real(R.SUM).*real(R.MEAN) - imag(R.SUM).*imag(R.MEAN);	% sum square of mean removed
@@ -97,7 +99,7 @@ R.SEM  	= sqrt(R.SSQ0./(R.N.*n1)); 	% standard error of the mean
 R.SEV	= sqrt(n1.*(n1.*R.S4P./R.N+(R.N.^2-2*R.N+3).*(R.SSQ./R.N).^2)./(R.N.^3)); % standard error of the variance
 R.COEFFICIENT_OF_VARIATION = R.STD./R.MEAN;
 
-q = quantile(i, [1:3]/4, DIM);
+q = quantile(i, (1:3)/4, DIM);
 
 %sz=size(i);sz(DIM)=1;
 %Q0500=repmat(nan,sz);
@@ -141,7 +143,7 @@ tmp = version;
 if 0, %str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6))<2136,
 	% ###obsolete: was needed for Octave version < 2.1.36
         if strcmp(fun(1:2),'CM') 
-                oo = str2num(fun(3:length(fun)));
+                oo = str2double(fun(3:length(fun)));
                 varargout  = sumskipnan(i.^oo,DIM)./n1;
         elseif isempty(fun)
 	        varargout  = R;
@@ -149,18 +151,18 @@ if 0, %str2num(tmp(1))*1000+str2num(tmp(3))*100+str2num(tmp(5:6))<2136,
                 varargout  = getfield(R,upper(fun));
         end;
 else
-        if iscell(fun),  
-        	for k=1:length(fun),
+	if iscell(fun),  
+                for k=1:length(fun),
 	                if strcmp(fun{k}(1:2),'CM') 
-            	                oo = str2num(fun{k}(3:length(fun{k})));
+            	                oo = str2double(fun{k}(3:length(fun{k})));
                     	        varargout{k}  = sumskipnan(i.^oo,DIM)./n1;
                     	else	            
                     		varargout{k}  = getfield(R,upper(fun{k}));
 	                end;
-    	        end;
+                end;
 	elseif ischar(fun),
             	if strcmp(fun(1:2),'CM') 
-                    	oo = str2num(fun(3:length(fun)));
+                    	oo = str2double(fun(3:length(fun)));
                 	varargout{1}  = sumskipnan(i.^oo,DIM)./n1;
         	else	            
     		        varargout{1}  = getfield(R,upper(fun));

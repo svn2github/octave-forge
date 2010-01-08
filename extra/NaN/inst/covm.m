@@ -1,4 +1,4 @@
-function [CC,NN] = covm(X,Y,Mode,W);
+function [CC,NN] = covm(X,Y,Mode,W)
 % COVM generates covariance matrix
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 
@@ -54,8 +54,8 @@ function [CC,NN] = covm(X,Y,Mode,W);
 
 global FLAG_NANS_OCCURED;
 
-W = []; 
 if nargin<3,
+	W = []; 
         if nargin==2,
 		if isnumeric(Y),
 			Mode='M';
@@ -81,8 +81,8 @@ elseif (nargin==3) && ~isnumeric(Y) && isnumeric(Mode);
 elseif (nargin==4) && ~isnumeric(Mode) && isnumeric(Y);
 	; %% ok 
 else 
-	error('invalid input arguments');	
-end;        
+	error('invalid input arguments');
+end;
 
 Mode = upper(Mode);
 
@@ -96,7 +96,7 @@ else
         [r2,c2]=size(X);
 end;
 
-if (c1>r1) | (c2>r2),
+if (c1>r1) || (c2>r2),
         warning('Covariance is ill-defined, because of too few observations (rows)');
 end;
 
@@ -115,14 +115,14 @@ if ~isempty(W)
 	W = W(:);
 	if (r1~=numel(W))
 		error('Error COVM: size of weight vector does not fit number of rows');
-	end; 	
+	end;
 	%w = spdiags(W(:),0,numel(W),numel(W));
 	%nn = sum(W(:)); 
 	nn = sum(W);
 else
 	nn = r1;
 end; 
-	
+
 
 if mexFLAG2 && mexFLAG && ~isempty(W),
 	%% the mex-functions here are much slower than the m-scripts below 
@@ -133,28 +133,28 @@ if mexFLAG2 && mexFLAG && ~isempty(W),
 		FLAG_NANS_OCCURED = logical(0);  % default value 
 	end;
 
-       	if any(Mode=='D') || any(Mode=='E'), 
+	if any(Mode=='D') || any(Mode=='E'),
 		[S1,N1] = sumskipnan(X,1,W);
 		if ~isempty(Y)
 	               	[S2,N2] = sumskipnan(Y,1,W);
-	        else 
-	        	S2 = S1; N2 = N1;        	
-		end; 
-	        if any(Mode=='D'), % detrending mode
+	        else
+	        	S2 = S1; N2 = N1;
+		end;
+                if any(Mode=='D'), % detrending mode
        			X  = X - ones(r1,1)*(S1./N1);
-		        if ~isempty(Y)
-	               	        Y  = Y - ones(r1,1)*(S2./N2);
-			end; 
-		end; 
-	end; 	
-       	
-       	[CC,NN] = covm_mex(real(X), real(Y), FLAG_NANS_OCCURED, W);
+                        if ~isempty(Y)
+                                Y  = Y - ones(r1,1)*(S2./N2);
+                        end;
+                end;
+	end;
+
+	[CC,NN] = covm_mex(real(X), real(Y), FLAG_NANS_OCCURED, W);
 	%% complex matrices 
 	if ~isreal(X) && ~isreal(Y)
 		[iCC,inn] = covm_mex(imag(X), imag(Y), FLAG_NANS_OCCURED, W);
 		CC = CC + iCC;
 	end; 
-	if isempty(Y) Y = X; end;   
+	if isempty(Y) Y = X; end;
 	if ~isreal(X)
 		[iCC,inn] = covm_mex(imag(X), real(Y), FLAG_NANS_OCCURED, W);
 		CC = CC - i*iCC;
@@ -162,16 +162,16 @@ if mexFLAG2 && mexFLAG && ~isempty(W),
 	if ~isreal(Y)
 		[iCC,inn] = covm_mex(real(X), imag(Y), FLAG_NANS_OCCURED, W);
 		CC = CC + i*iCC;
-	end; 	
+	end;
 	
-	if any(Mode=='D') && ~any(Mode=='1'),  %  'D1'
+        if any(Mode=='D') && ~any(Mode=='1'),  %  'D1'
                 NN = max(NN-1,0);
         end;
         if any(Mode=='E'), % extended mode
                 NN = [nn, N2; N1', NN];
                 CC = [nn, S2; S1', CC];
         end;
-	
+
 
 elseif ~isempty(W),
 
@@ -181,7 +181,7 @@ elseif ~isempty(W),
 	%% this part is not working.
 
 elseif ~isempty(Y),
-        if (~any(Mode=='D') && ~any(Mode=='E')), % if Mode == M
+	if (~any(Mode=='D') && ~any(Mode=='E')), % if Mode == M
         	NN = real(X==X)'*real(Y==Y);
 		FLAG_NANS_OCCURED = any(NN(:)<nn);
 	        X(X~=X) = 0; % skip NaN's
@@ -193,7 +193,7 @@ elseif ~isempty(Y),
                	[S2,N2] = sumskipnan(Y,1);
                	NN = real(X==X)'*real(Y==Y);
 
-		if any(Mode=='D'), % detrending mode
+                if any(Mode=='D'), % detrending mode
 			X  = X - ones(r1,1)*(S1./N1);
 			Y  = Y - ones(r1,1)*(S2./N2);
 			if any(Mode=='1'),  %  'D1'
@@ -213,7 +213,7 @@ elseif ~isempty(Y),
 	end;
 
 else
-	if (~any(Mode=='D') & ~any(Mode=='E')), % if Mode == M
+	if (~any(Mode=='D') && ~any(Mode=='E')), % if Mode == M
 		tmp = real(X==X);
 		NN  = tmp'*tmp;
 		X(X~=X) = 0; % skip NaN's

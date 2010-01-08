@@ -28,7 +28,7 @@ function [r2] = cor(X,Y);
 
 
 %       $Id$
-%	Copyright (C) 2000-2004 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2004,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -69,7 +69,7 @@ else
         [r2,c2]=size(X);
 end;
 
-if (c1>r1) | (c2>r2),
+if (c1>r1) || (c2>r2),
         fprintf(2,'Warning COR: Covariance is ill-defined, because of too less observations (rows).\n');
 end;
 

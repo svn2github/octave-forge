@@ -1,4 +1,4 @@
-function [C,N,c] = conv2nan(X,Y,arg3);
+function [C,N,c] = conv2nan(X,Y,arg3)
 % CONV2 2-dimensional convolution 
 % X and Y can contain missing values encoded with NaN.
 % NaN's are skipped, NaN do not result in a NaN output. 

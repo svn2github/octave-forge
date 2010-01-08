@@ -45,91 +45,91 @@ for k=1:2,
 	        r(9,k) =mad(x);
     		tmp = zscore(x); 
 		r(10,k)=tmp(1);
-        if exist('coefficient_of_variation')==2,
+        if exist('coefficient_of_variation','file'),
                 r(11,k)=coefficient_of_variation(x);
         end;
                 r(12,k)=geomean(x);
                 r(13,k)=harmmean(x);
-        if exist('meansq')==2,
+        if exist('meansq','file'),
         	r(14,k)=meansq(x);
         end;
-        if exist('moment')==2,
+        if exist('moment','file'),
                 r(15,k)=moment(x,6);
         end;
-        if exist('rms')==2,
+        if exist('rms','file'),
                 r(16,k)=rms(x);
         end;
         % r(17,k) is currently empty. 
         	tmp=corrcoef(x',(1:length(x))');
         r(18,k)=any(isnan(tmp(:)));
-        if exist('rankcorr')==2,
+        if exist('rankcorr','file'),
                 tmp=rankcorr(x',(1:length(x))');
                 r(19,k)=any(isnan(tmp(:)));
         end;
-        if exist('spearman')==2,
+        if exist('spearman','file'),
                 tmp=spearman(x',(1:length(x))');
 	        r(20,k)=any(isnan(tmp(:)));
         end;
-        if exist('ranks')==2,
+        if exist('ranks','file'),
                 r(21,k)=any(isnan(ranks(x')))+k;
         end;
-        if exist('center')==2,
+        if exist('center','file'),
         	tmp=center(x);
 	        r(22,k)=tmp(1);
         end;
-        if exist('trimean')==2,
+        if exist('trimean','file'),
         	r(23,k)=trimean(x);
         end;
         r(24,k)=min(x);
         r(25,k)=max(x);
         
-        if exist('tpdf')==2, 
+        if exist('tpdf','file'), 
                 fun='tpdf'; 
         elseif exist('t_pdf')==2,
                 fun='t_pdf';
         end;
         r(26,k) = k+isnan(feval(fun,x(2),4));	        
         
-        if exist('tcdf')==2, 
+        if exist('tcdf','file'), 
                 fun='tcdf'; 
-        elseif exist('t_cdf')==2,
+        elseif exist('t_cdf','file'),
                 fun='t_cdf';
         end;
-        try, 
+        try
                 r(27,k) = k*(~isnan(feval(fun,nan,4)));	        
         catch
                 r(27,k) = k;	
         end;
         
-        if exist('tinv')==2, 
+        if exist('tinv','file'), 
                 fun='tinv'; 
-        elseif exist('t_inv')==2,
+        elseif exist('t_inv','file'),
                 fun='t_inv';
         end;
         r(28,k) = k*(~isnan(feval(fun,NaN,4)));	        
         
-        if exist('normpdf')==2, 
+        if exist('normpdf','file'), 
                 fun='normpdf'; 
-        elseif exist('normal_pdf')==2,
+        elseif exist('normal_pdf','file'),
                 fun='normal_pdf';
         end;
         r(29,k) = (feval(fun,k,k,0)~=Inf)*k;	        
-        if exist('normcdf')==2, 
+        if exist('normcdf','file'), 
                 fun='normcdf'; 
-        elseif exist('normal_cdf')==2,
+        elseif exist('normal_cdf','file'),
                 fun='normal_cdf';
         end;
         r(30,k) = feval(fun,4,4,0);	        
-        if exist('norminv')==2, 
+        if exist('norminv','file'), 
                 fun='norminv'; 
-        elseif exist('normal_inv')==2,
+        elseif exist('normal_inv','file'),
                 fun='normal_inv';
         end;
         r(31,k) = k*any(isnan(feval(fun,[0,1],4,0)));	        
-        if exist('nansum')==2,
+        if exist('nansum','file'),
         	r(32,k)=k*isnan(nansum(nan));
         end;
-        if exist('nanstd')==2,
+        if exist('nanstd','file'),
         	r(33,k)=k*(~isnan(nanstd(0)));
         end;
 end;
@@ -140,7 +140,7 @@ tmp = abs(r(:,1)-r(:,2))<eps;
 q = zeros(1,5);
 
 % output
-if all(tmp) & all(~q),
+if all(tmp) && all(~q),
         fprintf(1,'NANINSTTEST successful - your NaN-tools are correctly installed\n');
 else
         fprintf(1,'NANINSTTEST %i not successful \n', find(~tmp));

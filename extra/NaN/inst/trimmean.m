@@ -10,7 +10,7 @@ function Q=trimmean(Y,p,DIM)
 
 
 %	$Id$
-%	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -31,7 +31,7 @@ if nargin<2,
         DIM = [];
 end;
 if isempty(DIM),
-        DIM = min(find(size(Y)>1));
+        DIM = find(size(Y)>1,1);
         if isempty(DIM), DIM = 1; end;
 end;
 
@@ -57,7 +57,7 @@ else
 		        t  = Y(xi:D1:xi+D1*sz(DIM)-1);
 		        t  = sort(t(~isnan(t)));
 		        N  = length(t); 
-		        ix = ([1:N] < N*q2) & ([1:N] > N*q1);
+		        ix = ((1:N) < N*q2) & ((1:N) > N*q1);
 		        f  = mean(t(ix));
 			Q(xo:D1:xo + D1*length(q) - 1) = f;
 		end;

@@ -29,7 +29,7 @@ function alpha=flag_implicit_significance(i)
 % see also: CORRCOEF, PARTCORRCOEF
 
 %	$Id$
-%	Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2002,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
 %
@@ -51,7 +51,7 @@ persistent FLAG_implicit_significance;
 DEFAULT_ALPHA = 0.01;
 
 %%% check whether FLAG was already defined 
-if exist('FLAG_implicit_significance')~=1,
+if ~exist('FLAG_implicit_significance','var'),
 	FLAG_implicit_significance = DEFAULT_ALPHA;  % default value 
 end;
 if isempty(FLAG_implicit_significance),

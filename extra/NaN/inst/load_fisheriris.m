@@ -29,7 +29,7 @@
 
 if exist('OCTAVE_VERSION','builtin')
 	if ~exist('iris.data','file')
-		if strncmp(computer,'PCWIN')
+		if strncmp(computer,'PCWIN',5)
 			fprintf(1,'Download http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data and save in local directory %s\nPress any key to continue ...\n',pwd);
 		else 
 		        unix('wget http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'); 

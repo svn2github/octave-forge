@@ -78,10 +78,10 @@ end;
 %       }; 
 
 if isempty(DIM),
-        DIM = min(find(size(x) > 1));
+        DIM = find(size(x)>1,1);
         if isempty(DIM), DIM = 1; end;
 end
-if (DIM<1) DIM = 1; end; %% Hack, because min([])=0 for FreeMat v3.5
+if (DIM<1), DIM = 1; end; %% Hack, because min([])=0 for FreeMat v3.5
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % non-float data 

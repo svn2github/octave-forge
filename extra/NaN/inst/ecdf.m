@@ -15,7 +15,7 @@ function [F,X]=ecdf(h,Y)
 
 
 %	$Id$
-%	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -42,7 +42,7 @@ DIM = [];
         SW = isstruct(Y);
         if SW, SW = isfield(Y,'datatype'); end;
         if SW, SW = strcmp(Y.datatype,'HISTOGRAM'); end;
-        if SW,                 
+	if SW,                 
                 [yr,yc]=size(Y.H);
                 if ~isfield(Y,'N');
                         Y.N = sum(Y.H,1);
@@ -64,6 +64,7 @@ DIM = [];
 		t = sort(Y,1); 
 		t = [t(1,:);t]; 	
 		N = sum(~isnan(Y),1); 
+                f = zeros(size(Y,1)+1,size(Y,2));
 		for k=1:size(Y,2),
 			f(:,k)=[0:size(Y,1)]'/N(k); 
 		end; 		

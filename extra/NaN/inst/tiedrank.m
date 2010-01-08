@@ -10,7 +10,7 @@ function R=tiedrank(X,DIM)
 
 
 %	$Id$
-%	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -36,9 +36,14 @@ if nargout>1,
 	error('more than 1 output argument is currently not supported ')
 end; 	
 
-
-DIM = min(find(size(X)>1));
-if isempty(DIM), DIM = 1; end;
+if nargin<2,
+        DIM = [];
+end;
+if isempty(DIM),
+        DIM = find(size(X)>1,1);
+        if isempty(DIM), DIM = 1; end;
+end
+if (DIM<1), DIM = 1; end; %% Hack, because min([])=0 for FreeMat v3.5
 
 R = ranks(X,DIM); 
 

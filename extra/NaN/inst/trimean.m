@@ -25,7 +25,7 @@ function y=trimean(x,DIM)
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 %	$Id$
-%	Copyright (C) 1996-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2003,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -36,7 +36,7 @@ sz=size(x);
 
 % find the dimension
 if nargin==1,
-        DIM=min(find(sz>1));
+        DIM = find(size(x)>1,1);
         if isempty(DIM), DIM=1; end;
 end;
 
@@ -65,13 +65,13 @@ for l = 0:D3-1,
         % q = flix(t,x); 	% The following find the quartiles and median.
         			% INTERP1 is not an alternative since it fails for n<2;
         x  = n*[0.25;0.50;0.75] + [0.75;0.50;0.25]; 
-	k  = x - floor(x);	% distance to next sample	 
+	d  = x - floor(x);	% distance to next sample	 
 
         t  = t(:);
-	ix = ~logical(k);     	% find integer indices
+	ix = ~logical(d);     	% find integer indices
 	q(ix) = t(x(ix)); 	% put integer indices
 	ix = ~ix;	     	% find non-integer indices
-	q(ix) = t(floor(x(ix))).*(1-k(ix)) + t(ceil(x(ix))).*k(ix);  
+	q(ix) = t(floor(x(ix))).*(1-d(ix)) + t(ceil(x(ix))).*d(ix);  
         
         y(xo) = (q(1) + 2*q(2) + q(3))/4;
 end;

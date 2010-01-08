@@ -1,4 +1,4 @@
-function [kap,se,H,z,p0,SA,R]=kappa(d,c,arg3,w);
+function [kap,se,H,z,p0,SA,R]=kappa(d,c,arg3,w)
 % KAPPA estimates Cohen's kappa coefficient
 %   and related statistics 
 %
@@ -83,7 +83,7 @@ if nargin>1,
 %			fprintf(2,'If NaN should be handled as just another label, use kappa(..,''notIgnoreNaN'').\n');
 			ix = find(c<=maxCLASS & d<=maxCLASS);
 			d = d(ix); c=c(ix);
-			if ~isempty(w) w = w(ix); end; 
+			if ~isempty(w), w = w(ix); end; 
 		end;
 		X.Label(X.Label>maxCLASS) = []; 
 	else 
@@ -105,23 +105,23 @@ if nargin>1,
             	end;
     	end;
     
-    	if 0,
+	if 0,
         	h = histo([d+c*kk; kk*kk+1; 1]); 
         	H = reshape(h(1:length(h)-1));
         	H(1,1) = H(1,1)-1;
-    	else
-		if 1;   % exist('OCTAVE_VERSION')>=5;
+        else
+                if 1;   % exist('OCTAVE_VERSION')>=5;
 	        	H = zeros(kk);
     			for k = 1:N, 
-    				if ~isnan(d(k)) & ~isnan(c(k)),
+    				if ~isnan(d(k)) && ~isnan(c(k)),
 		    			H(d(k),c(k)) = H(d(k),c(k)) + w(k);
 		    		end;	
         		end;
 		elseif isempty(w)
-			H = full(sparse(d(1:N),c(1:N),1,kk,kk));
+			H = accumarray(d(1:N),c(1:N),1,kk,kk);
 		else
-			H = full(sparse(d(1:N),c(1:N),w(1:N),kk,kk));
-    		end;
+			H = accumarray(d(1:N),c(1:N),w(1:N),kk,kk);
+                end;
 	end;
 else
 	X.Label = 1:min(size(d));
@@ -134,8 +134,8 @@ N = sum(H(:));
 p0  = sum(diag(H))/N;  %accuracy of observed agreement, overall agreement 
 %OA = sum(diag(H))/N);
 
-p_i = sum(H); %sum(H,1);
-pi_ = sum(H'); %sum(H,2)';
+p_i = sum(H,1);
+pi_ = sum(H,2)';
 
 SA  = 2*diag(H)'./(p_i+pi_); % specific agreement 
 
@@ -149,13 +149,14 @@ sd  = sqrt((pe+pe*pe-px)/(N*(1-pe*pe)));
 
 %standard error 
 se  = sqrt((p0+pe*pe-px)/N)/(1-pe);
-if ~isreal(se)
+if ~isreal(se),
 	z = NaN;
+else
+        z = kap/se;
 end
-z = kap/se;
 warning(s); 
 
-if ((1 < nargout) & (nargout<7)) return; end; 
+if ((1 < nargout) && (nargout<7)) return; end; 
 
 % Nykopp's entropy
 pwi = sum(H,2)/N;                       % p(x_i)
@@ -163,7 +164,7 @@ pwj = sum(H,1)/N;                       % p(y_j)
 pji = H./repmat(sum(H,2),1,size(H,2));  % p(y_j | x_i) 
 R   = - sumskipnan(pwj.*log2(pwj)) + sumskipnan(pwi'*(pji.*log2(pji)));
 
-if (nargout>1) return; end; 
+if (nargout>1), return; end; 
 
 X.kappa = kap; 
 X.kappa_se = se; 

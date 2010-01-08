@@ -135,11 +135,11 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %	$Id: train_sc.m 2140 2009-07-02 12:03:55Z schloegl $
 %	Copyright (C) 2005,2006,2007,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
-% as published by the Free Software Foundation; either version 2
+% as published by the Free Software Foundation; either version 3
 % of the  License, or (at your option) any later version.
 % 
 % This program is distributed in the hope that it will be useful,
@@ -266,7 +266,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'nbc'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'lpm'))
 	if ~isempty(W) 
-		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+		error('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE);
 	end; 	
         % linear programming machine 
         % CPLEX optimizer: ILOG solver, ilog cplex 6.5 reference manual http://www.ilog.com
@@ -357,7 +357,7 @@ elseif  ~isempty(strfind(lower(MODE.TYPE),'adaline')) || ~isempty(strfind(lower(
 elseif ~isempty(strfind(lower(MODE.TYPE),'winnow'))
 	% winnow algorithm 	
 	if ~isempty(W) 
-		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
 	end; 	
 
         M = length(CC.Labels);
@@ -422,7 +422,7 @@ elseif ~isempty(strfind(MODE.TYPE,'WienerHopf'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'/gsvd'))
 	if ~isempty(W) 
-		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
 	end; 	
 	% [2] Peg Howland and Haesun Park, 2004. 
         %       Generalizing Discriminant Analysis Using the Generalized Singular Value Decomposition
@@ -481,7 +481,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'/gsvd'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'sparse'))
 	if ~isempty(W) 
-		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
 	end; 	
         % [5] J.D. Tebbens and P.Schlesinger (2006), 
         %       Improving Implementation of Linear Discriminant Analysis for the Small Sample Size Problem
@@ -515,8 +515,8 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'sparse'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'rbf'))
 	if ~isempty(W) 
-		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
-	end; 	
+		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
+	end;
 
         % Martin Hieden's RBF-SVM        
         if exist('svmpredict','file')==3,
@@ -545,7 +545,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'rbf'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'svm11'))
 	if ~isempty(W) 
-		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
 	end; 	
         % 1-versus-1 scheme 
         if ~isfield(MODE.hyperparameter,'c_value')
@@ -569,8 +569,8 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm11'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
 	if ~isempty(W) 
-		%%% error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
-		warning(sprintf('Warning TRAIN_SC: Classifier (%s) in combination with weighted samples is not tested.',MODE.TYPE));
+		%%% error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
+		warning('Classifier (%s) in combination with weighted samples is not tested.',MODE.TYPE);
 	end; 	
         if ~isfield(MODE,'hyperparameter')
         	nu = 1;
@@ -599,7 +599,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'svm:lin4'))
 	if ~isempty(W) 
-		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
 	end; 	
 
         if ~isfield(MODE.hyperparameter,'c_value')
@@ -625,7 +625,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm:lin4'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
 	if ~isempty(W) 
-		error(sprintf('Error TRAIN_SC: Classifier (%s) does not support weighted samples.',MODE.TYPE));
+		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
 	end; 	
 
         if ~isfield(MODE.hyperparameter,'c_value')

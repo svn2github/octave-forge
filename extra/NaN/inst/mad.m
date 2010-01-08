@@ -25,6 +25,11 @@ function R = mad(i,DIM)
 % [3] http://mathworld.wolfram.com/MeanAbsoluteDeviation.html
 % [4] Kenney, J. F. and Keeping, E. S. "Mean Absolute Deviation." §6.4 in Mathematics of Statistics, Pt. 1, 3rd ed. Princeton, NJ: Van Nostrand, pp. 76-77 1962. 
 
+%	$Id$
+%	Copyright (C) 2000-2002,2010 by Alois Schloegl <a.schloegl@ieee.org>
+%    	This is part of the NaN-toolbox. For more details see
+%    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
 %    the Free Software Foundation; either version 2 of the License, or
@@ -38,12 +43,8 @@ function R = mad(i,DIM)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-%	Version 1.23;	07 Jun 2002
-%	Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>
-	
-
 if nargin==1,
-        DIM=min(find(size(i)>1));
+        DIM = find(size(i)>1,1);
         if isempty(DIM), DIM=1; end;
 end;
 

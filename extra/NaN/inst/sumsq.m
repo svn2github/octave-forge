@@ -34,15 +34,15 @@ function [o]=sumsq(x,DIM)
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 %	$Id$
-%	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>	
-%       This is part of the NaN-toolbox for Octave and Matlab 
-%       see also: http://hci.tugraz.at/schloegl/matlab/NaN/       
+%	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 if nargin<2,
 	DIM = []; 
 end;
 if isempty(DIM), 
-        DIM = min(find(size(x)>1));
+        DIM = find(size(x)>1,1);
         if isempty(DIM), DIM=1; end;
 end;
 

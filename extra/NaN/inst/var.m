@@ -45,9 +45,9 @@ function y=var(x,opt,DIM,W)
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 %	$Id$
-%	Copyright (C) 2000-2003,2006,2009 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2000-2003,2006,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
 %       This is part of the NaN-toolbox for Octave and Matlab 
-%       see also: http://hci.tugraz.at/schloegl/matlab/NaN/       
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 if nargin<3,
 	DIM = []; 
@@ -77,7 +77,7 @@ if isempty(opt),
 end; 	
 
 if isempty(DIM), 
-        DIM=min(find(size(x)>1));
+        DIM = find(size(x)>1,1);
         if isempty(DIM), DIM=1; end;
 end;
 

@@ -70,7 +70,7 @@ if exist('norminv','file')==2,
                 fprintf(1,'-> NORMINV should be replaced\n');
         end;
         q(4) = ~isnan(norminv(0,NaN,0)); 
-        q(5) = any(norminv(0.5,(1 2 3),0)~=[1:3]);
+        q(5) = any(norminv(0.5,[1 2 3],0)~=(1:3));
 end;
 
 if exist('tpdf','file')==2,

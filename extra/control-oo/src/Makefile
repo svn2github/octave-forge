@@ -1,5 +1,5 @@
 all: slab08nd.oct slab13dd.oct slsb10hd.oct slsb10ed.oct slab13bd.oct \
-     slsb01bd.oct slsb10fd.oct slsb10dd.oct
+     slsb01bd.oct slsb10fd.oct slsb10dd.oct slsb03md.oct
 
 # transmission zeros of state-space models
 slab08nd.oct: slab08nd.cc
@@ -67,6 +67,12 @@ slsb10dd.oct: slsb10dd.cc
               SB02OY.f SB03SX.f SB03SY.f MA02ED.f select.f \
               SB03MX.f SB02MR.f SB02MV.f MB01UD.f SB03MV.f \
               SB04PX.f
+
+# Lyapunov equations
+slsb03md.oct: slsb03md.cc
+	mkoctfile slsb03md.cc \
+              SB03MD.f select.f SB03MX.f SB03MY.f MB01RD.f \
+              SB03MV.f SB03MW.f SB04PX.f
 
 clean:
 	rm *.o core octave-core *.oct *~

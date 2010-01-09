@@ -71,7 +71,7 @@ function W = gram (argin1, argin2)
   endif
 
   if (isct (sys))
-    W = lyap (a', b*b');  # let lyap do the error checking about dimensions
+    W = lyap (a, b*b');  # let lyap do the error checking about dimensions
   else  # discrete-time system
     W = dlyap (a, b*b');  # let dlyap do the error checking about dimensions
   endif

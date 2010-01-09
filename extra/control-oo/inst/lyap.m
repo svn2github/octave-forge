@@ -1,141 +1,64 @@
-## Copyright (C) 1996, 1997, 2000, 2002, 2004, 2005, 2006, 2007
-##               Auburn University.  All rights reserved.
+## Copyright (C) 2010   Lukas F. Reichlin
 ##
+## This file is part of LTI Syncope.
 ##
-## This program is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## LTI Syncope is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## LTI Syncope is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lyap (@var{a}, @var{b}, @var{c})
-## @deftypefnx {Function File} {} lyap (@var{a}, @var{b})
-## Solve the Lyapunov (or Sylvester) equation via the Bartels-Stewart
-## algorithm (Communications of the @acronym{ACM}, 1972).
+## @deftypefn{Function File} {@var{x} =} lyap (@var{a}, @var{q})
+## 
+## @example
+## @group
 ##
-## If @var{a}, @var{b}, and @var{c} are specified, then @code{lyap} returns
-## the solution of the  Sylvester equation
-## @iftex
-## @tex
-##   $$ A X + X B + C = 0 $$
-## @end tex
-## @end iftex
-## @ifinfo
-## @example
-##     a x + x b + c = 0
+## @end group
 ## @end example
-## @end ifinfo
-## If only @code{(a, b)} are specified, then @command{lyap} returns the
-## solution of the Lyapunov equation
-## @iftex
-## @tex
-##   $$ A^T X + X A + B = 0 $$
-## @end tex
-## @end iftex
-## @ifinfo
-## @example
-##     a' x + x a + b = 0
-## @end example
-## @end ifinfo
-## If @var{b} is not square, then @code{lyap} returns the solution of either
-## @iftex
-## @tex
-##   $$ A^T X + X A + B^T B = 0 $$
-## @end tex
-## @end iftex
-## @ifinfo
-## @example
-##     a' x + x a + b' b = 0
-## @end example
-## @end ifinfo
-## @noindent
-## or
-## @iftex
-## @tex
-##   $$ A X + X A^T + B B^T = 0 $$
-## @end tex
-## @end iftex
-## @ifinfo
-## @example
-##     a x + x a' + b b' = 0
-## @end example
-## @end ifinfo
-## @noindent
-## whichever is appropriate.
-##
-## Solves by using the Bartels-Stewart algorithm (1972).
 ## @end deftypefn
 
-## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
-## Created: August 1993
-## Adapted-By: jwe
+## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Created: January 2010
+## Version: 0.1
 
-function x = lyap (a, b, c)
+function x = lyap (a, q)
 
-  if (nargin != 3 && nargin != 2)
+  if (nargin != 2)
     print_usage ();
   endif
 
-  if ((n = issquare(a)) == 0)
-    error ("lyap: a is not square");
+  na = issquare (a);
+  nq = issquare (q);
+  
+  if (! na)
+    error ("lyap: a must be square");
   endif
 
-  if (nargin == 2)
-
-    ## Transform Lyapunov equation to Sylvester equation form.
-
-    if ((m = issquare (b)) == 0)
-      if ((m = rows (b)) == n)
-
-        ## solve a x + x a' + b b' = 0
-
-        b = b * b';
-        a = a';
-      else
-
-        ## Try to solve a'x + x a + b' b = 0.
-
-        m = columns (b);
-        b = b' * b;
-      endif
-
-      if (m != n)
-        error ("lyap: a, b not conformably dimensioned");
-      endif
-    endif
-
-    ## Set up Sylvester equation.
-
-    c = b;
-    b = a;
-    a = b';
-
-  else
-
-    ## Check dimensions.
-
-    if ((m = issquare (b)) == 0)
-      error ("lyap: b must be square in a sylvester equation");
-    endif
-
-    [n1, m1] = size(c);
-
-    if (n != n1 || m != m1)
-      error("lyap: a, b, c not conformably dimensioned");
-    endif
+  if (! nq)
+    error ("lyap: q must be square")
   endif
-
-  ## Call octave built-in function.
-
-  x = syl (a, b, c);
+  
+  if (na != nq)
+    error ("lyap: a and q must be of identical size");
+  endif
+  
+  x = slsb03md (a, -q, false);
 
 endfunction
+
+
+%!shared X, X_exp
+%! A = [1, 2; -3, -4];
+%! Q = [3, 1; 1, 1];
+%! X = lyap (A, Q);
+%! X_exp = [ 6.1667, -3.8333;
+%!          -3.8333,  3.0000];
+%!assert (X, X_exp, 1e-4);

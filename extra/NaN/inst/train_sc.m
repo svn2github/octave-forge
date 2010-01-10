@@ -542,7 +542,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'rbf'))
 	end;
 
         % Martin Hieden's RBF-SVM        
-        if exist('svmpredict','file')==3,
+        if exist('svmpredict_mex','file')==3,
                 MODE.TYPE = 'SVM:LIB:RBF';
         else
                 error('No SVM training algorithm available. Install LibSVM for Matlab.\n');

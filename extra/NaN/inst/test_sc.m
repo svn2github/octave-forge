@@ -27,8 +27,8 @@ function [R]=test_sc(CC,D,mode,classlabel)
 % [1] R. Duda, P. Hart, and D. Stork, Pattern Classification, second ed. 
 %       John Wiley & Sons, 2001.
 
-%	$Id: test_sc.m 2140 2009-07-02 12:03:55Z schloegl $
-%	Copyright (C) 2005,2006,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>
+%	$Id$
+%	Copyright (C) 2005,2006,2008,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -129,7 +129,7 @@ elseif strcmp(CC.datatype,'classifier:csp')
 
 elseif strcmp(CC.datatype,'classifier:svm:lib:1vs1') || strcmp(CC.datatype,'classifier:svm:lib:rbf');
 
-        cl = svmpredict(ones(size(D,1),1), D, CC.model);   %Use the classifier
+        cl = svmpredict_mex(ones(size(D,1),1), D, CC.model);   %Use the classifier
 
         %Create a pseudo tsd matrix for bci4eval
         d = zeros(size(D,1), CC.model.nr_class);

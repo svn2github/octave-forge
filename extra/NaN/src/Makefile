@@ -28,9 +28,13 @@ matlab: $(patsubst %_mex.cpp,%_mex.$(MEX_EXT),$(wildcard *.cpp)) Makefile
 
 svmtrain_mex.mex:     svmtrain_mex.cpp svm.h svm.o svm_model_matlab.o
 	env CC=$(CXX) $(OCTMEX) svmtrain_mex.cpp svm.o svm_model_matlab.o
+svmpredict_mex.mex:     svmpredict_mex.cpp svm.h svm.o svm_model_matlab.o
+	env CC=$(CXX) $(OCTMEX) svmpredict_mex.cpp svm.o svm_model_matlab.o
 
 svmtrain_mex.$(MEX_EXT):     svmtrain_mex.cpp svm.h svm.o svm_model_matlab.o
 	$(MATMEX) svmtrain_mex.cpp svm.o svm_model_matlab.o
+svmpredict_mex.$(MEX_EXT):     svmpredict_mex.cpp svm.h svm.o svm_model_matlab.o
+	$(MATMEX) svmpredict_mex.cpp svm.o svm_model_matlab.o
 
 svm_model_matlab.o:     svm_model_matlab.c svm.h
 	$(CC) $(CFLAGS) -c svm_model_matlab.c

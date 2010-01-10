@@ -254,10 +254,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 		///***** SORT each column: initialize sorting algorithm  
 		int (*compar)(const void*, const void*);
-		size_t n; 
 		size_t *idx = NULL;
 		idx = (size_t*) mxMalloc(SZ[0]*sizeof(size_t));
-		for (size_t n=0; n<SZ[0]; n++) {
+		for (n=0; n<SZ[0]; n++) {
 			idx[n]=n;			
 		}
 		Sort.Type = mxGetClassID(PInputs[0]); 
@@ -293,7 +292,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 		// count number of different elements 	
 		n = SZ[0] ? 1 : 0; 
-		for (size_t k=1; k<SZ[0]; k++) {
+		size_t k;
+		for (k=1; k<SZ[0]; k++) {
 			if (compare(idx+k-1,idx+k)) n++;
 		}
 
@@ -313,7 +313,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		
 		l = -1;
 		if (tix) tix[idx[0]] = 1;
-		for (size_t k=0; k<SZ[0]; k++) {
+		for (k=0; k<SZ[0]; k++) {
 			if ((k==0) || compare(&idx[k-1], &idx[k])) {
 				l++;
 				for (j=0; j<SZ[1]; j++) {
@@ -432,7 +432,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			double *h = (double*)mxGetData(H);
 			int16_t *x = (int16_t*)mxGetData(X);
 
-			for (size_t n=0; n<SZ[1]; n++) {
+			for (n=0; n<SZ[1]; n++) {
 			}	
 
 			}

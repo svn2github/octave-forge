@@ -76,16 +76,13 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %    'CSP'	CommonSpatialPattern is very experimental and just a hack
 %		uses a smoothing window of 50 samples.
 %    'SVM','SVM1r'  support vector machines, one-vs-rest
-%                 uses and requires svmtrain.mex from libSVM
 %		MODE.hyperparameter.c_value = 
 %    'SVM11'    support vector machines, one-vs-one + voting
-%                 uses and requires svmtrain.mex from libSVM
 %		MODE.hyperparameter.c_value = 
 %    'RBF'      Support Vector Machines with RBF Kernel
-%               uses and requires svmtrain.mex from libSVM
 %		MODE.hyperparameter.c_value = 
 %		MODE.hyperparameter.gamma = 
-%    'SVM:LIB'    uses and requires svmtrain.mex from libSVM
+%    'SVM:LIB'    libSVM [default SVM algorithm)
 %    'SVM:bioinfo' uses and requires svmtrain from the bioinfo toolbox        
 %    'SVM:OSU'   uses and requires mexSVMTrain from the OSU-SVM toolbox 
 %    'SVM:LOO'   uses and requires svcm_train from the LOO-SVM toolbox 
@@ -97,10 +94,9 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %            z=2 LibLinear with -- L2-loss support vector machines (primal)
 %            z=3 LibLinear with -- L1-loss support vector machines (dual)
 %    'SVM:LIN4'  LibLinear with -- multi-class support vector machines by Crammer and Singer
-
 %
-%  {'MDA','MD2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','REG','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse','RDA','GDBC','SVM','RBF'} 
-% 
+% {'REG','MDA','MD2','QDA','QDA2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse', 'PLA', 'LMS','LDA/DELETION','MDA/DELETION','NBC/DELETION','RDA/DELETION','REG/DELETION','RDA','GDBC','SVM','RBF','PSVM','SVM11','SVM:LIN4','SVM:LIN0','SVM:LIN1','SVM:LIN2','SVM:LIN3','WINNOW'};
+%
 % CC contains the model parameters of a classifier. Some time ago,     
 % CC was a statistical classifier containing the mean 
 % and the covariance of the data of each class (encoded in the 
@@ -145,8 +141,8 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %       Machine Learning 285-318(2)
 % 	http://en.wikipedia.org/wiki/Winnow_(algorithm)
  
-%	$Id: train_sc.m 2140 2009-07-02 12:03:55Z schloegl $
-%	Copyright (C) 2005,2006,2007,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>
+%	$Id$
+%	Copyright (C) 2005,2006,2007,2008,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
 %       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
@@ -567,7 +563,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'rbf'))
         CC.prewhite(1,:) = -m.*r; 
 
 	[classlabel,CC.Labels] = CL1M(classlabel); 
-        CC.model = svmtrain(classlabel, D, CC.options);    % Call the training mex File     
+        CC.model = svmtrain_mex(classlabel, D, CC.options);    % Call the training mex File     
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
 
 
@@ -589,7 +585,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm11'))
         CC.prewhite(1,:) = -m.*r; 
 
 	[classlabel,CC.Labels] = CL1M(classlabel); 
-        CC.model = svmtrain(classlabel, D, CC.options);    % Call the training mex File
+        CC.model = svmtrain_mex(classlabel, D, CC.options);    % Call the training mex File
         
         FUN = 'SVM:LIB:1vs1';
         CC.datatype = ['classifier:',lower(FUN)];
@@ -671,8 +667,11 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                 % nothing to be done
         elseif exist('train','file')==3,
                 MODE.TYPE = 'SVM:LIN';        %% liblinear 
-        elseif exist('svmtrain','file')==3,
+        elseif exist('svmtrain_mex','file')==3,
                 MODE.TYPE = 'SVM:LIB';
+        elseif (exist('svmtrain','file')==3),
+                MODE.TYPE = 'SVM:LIB';
+                fprintf(1,'You need to rename %s to svmtrain_mex.mex !! \n Press any key to continue !!!\n',which('svmtrain.mex'));
         elseif exist('svmtrain','file')==2,
                 MODE.TYPE = 'SVM:bioinfo';
         elseif exist('mexSVMTrain','file')==3,
@@ -720,15 +719,15 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                         else
                                 CC.options = sprintf('-s 0 -c %f -t 0 -d 1', MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
                         end;
-                        model = svmtrain(cl, D, CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
+                        model = svmtrain_mex(cl, D, CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
                         w = cl(1) * model.SVs' * model.sv_coef;  %Calculate decision hyperplane weight vector
                         % ensure correct sign of weight vector and Bias according to class label
                         Bias = model.rho * cl(1);
 
                 elseif strcmp(MODE.TYPE, 'SVM:bioinfo');
                         CC.SVMstruct = svmtrain(D, cl,'AUTOSCALE', 0);    % 
-                        Bias = CC.SVMstruct.Bias;
-                        w = CC.SVMstruct.Alpha'*CC.SVMstruct.SupportVectors;
+                        Bias = -CC.SVMstruct.Bias;
+                        w = -CC.SVMstruct.Alpha'*CC.SVMstruct.SupportVectors;
 
                 elseif strcmp(MODE.TYPE, 'SVM:OSU');
                         [AlphaY, SVs, Bias] = mexSVMTrain(D', cl', [0 1 1 1 MODE.hyperparameter.c_value]);    % Linear Kernel, C=1; degree=1, c-SVM

@@ -109,6 +109,8 @@ level 2b: classification, cross-validation
 	TRAIN_LDA_SPARSE	utility function 
 	FSS		feature subset selection and feature ranking
 	CAT2BIN         converts categorial to binary data
+	SVMTRAIN_MEX	libSVM-training algorithm 
+
 
 
 REFERENCE(S):

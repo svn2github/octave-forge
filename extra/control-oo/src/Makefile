@@ -1,5 +1,6 @@
 all: slab08nd.oct slab13dd.oct slsb10hd.oct slsb10ed.oct slab13bd.oct \
-     slsb01bd.oct slsb10fd.oct slsb10dd.oct slsb03md.oct
+     slsb01bd.oct slsb10fd.oct slsb10dd.oct slsb03md.oct slsb04md.oct \
+     slsb04qd.oct
 
 # transmission zeros of state-space models
 slab08nd.oct: slab08nd.cc
@@ -73,6 +74,16 @@ slsb03md.oct: slsb03md.cc
 	mkoctfile slsb03md.cc \
               SB03MD.f select.f SB03MX.f SB03MY.f MB01RD.f \
               SB03MV.f SB03MW.f SB04PX.f
+
+# Sylvester equations - continuous-time
+slsb04md.oct: slsb04md.cc
+	mkoctfile slsb04md.cc \
+              SB04MD.f SB04MU.f SB04MY.f SB04MR.f SB04MW.f
+
+# Sylvester equations - discrete-time
+slsb04qd.oct: slsb04qd.cc
+	mkoctfile slsb04qd.cc \
+              SB04QD.f SB04QU.f SB04QY.f SB04MW.f SB04QR.f
 
 clean:
 	rm *.o core octave-core *.oct *~

@@ -11,10 +11,10 @@ MEX_OPTION += -largeArrayDims
 MATMEX	= $(MATLABDIR)/bin/mex $(MEX_OPTION)
 MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
 
-PROGS = $(patsubst %_mex.c,%_mex.mex,$(wildcard *.c))
+PROGS = $(patsubst %_mex.cpp,%_mex.mex,$(wildcard *.cpp))
 
-matlab: $(patsubst %_mex.c,%_mex.$(MEX_EXT),$(wildcard *.c))
-octave: $(patsubst %_mex.c,%_mex.mex,$(wildcard *.c))
+matlab: $(patsubst %_mex.cpp,%_mex.$(MEX_EXT),$(wildcard *.cpp))
+octave: $(patsubst %_mex.cpp,%_mex.mex,$(wildcard *.cpp))
 all: matlab octave
 
 $(PROGS): Makefile
@@ -22,22 +22,22 @@ $(PROGS): Makefile
 %.oct: %.cc
 	mkoctfile $<
 
-%.mex: %.c
+%.mex: %.cpp
 	$(OCTMEX) $<           ## Octave
-%.$(MEX_EXT): %.c
+%.$(MEX_EXT): %.cpp
 	$(MATMEX) $<           ## Matlab
 
-svmtrain_mex.mex:     svmtrain_mex.c svm.h svm.o svm_model_matlab.o
-	env CC=$(CXX) $(OCTMEX) svmtrain_mex.c svm.o svm_model_matlab.o
 
-svmtrain_mex.$(MEX_EXT):     svmtrain_mex.c svm.h svm.o svm_model_matlab.o
-	$(MATMEX) svmtrain_mex.c svm.o svm_model_matlab.o
+svmtrain_mex.mex:     svmtrain_mex.cpp svm.h svm.o svm_model_matlab.o
+	env CC=$(CXX) $(OCTMEX) svmtrain_mex.cpp svm.o svm_model_matlab.o
+
+svmtrain_mex.$(MEX_EXT):     svmtrain_mex.cpp svm.h svm.o svm_model_matlab.o
+	env CC=$(CXX) $(MATMEX) svmtrain_mex.cpp svm.o svm_model_matlab.o
 
 svm_model_matlab.o:     svm_model_matlab.c svm.h
-	$(CXX) $(CFLAGS) -c svm_model_matlab.c
+	$(CC) $(CFLAGS) -c svm_model_matlab.c
 
 svm.o:  svm.cpp svm.h
 	$(CXX) $(CFLAGS) -c svm.cpp
 
 clean: ; -$(RM) *.o core octave-core *.oct *~ *.mex*
-

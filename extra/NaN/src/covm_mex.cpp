@@ -1,3 +1,4 @@
+/*
 //-------------------------------------------------------------------
 #pragma hdrstop
 //-------------------------------------------------------------------
@@ -39,12 +40,13 @@
 //    http://hci.tugraz.at/~schloegl/matlab/NaN/
 //
 //-------------------------------------------------------------------
+*/
 
 #include <inttypes.h>
 #include <math.h>
 #include "mex.h"
 
-//#define NO_FLAG
+/*#define NO_FLAG*/
 
 
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 

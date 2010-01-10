@@ -462,7 +462,7 @@ inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char
 	char   flag=0; 
 	// LOOP  along dimension DIM
 	
-	void *end = data + stride*Ni; 
+	double *end = data + stride*Ni; 
 	if (W) {
 		// with weight vector 
 		long double count = 0.0;
@@ -518,7 +518,7 @@ inline int __sumskipnan3w__(double *data, size_t Ni, double *s, double *s2, doub
 	char   flag=0;
 	// LOOP  along dimension DIM
 	
-	void *end = data + stride*Ni; 
+	double *end = data + stride*Ni; 
 	if (W) {
 		// with weight vector 
 		long double count = 0.0;
@@ -572,7 +572,7 @@ inline int __sumskipnan2wr__(double *data, size_t Ni, double *s, double *No, cha
 	char   flag=0; 
 	// LOOP  along dimension DIM
 	
-	void *end = data + stride*Ni; 
+	double *end = data + stride*Ni; 
 	if (W) {
 		// with weight vector 
 		double count = 0.0;
@@ -628,7 +628,7 @@ inline int __sumskipnan3wr__(double *data, size_t Ni, double *s, double *s2, dou
 	char   flag=0;
 	// LOOP  along dimension DIM
 	
-	void *end = data + stride*Ni; 
+	double *end = data + stride*Ni; 
 	if (W) {
 		// with weight vector 
 		double count = 0.0;
@@ -694,7 +694,7 @@ inline int __sumskipnan2we__(double *data, size_t Ni, double *s, double *No, cha
 	char   flag=0; 
 	// LOOP  along dimension DIM
 	
-	void *end = data + stride*Ni; 
+	double *end = data + stride*Ni; 
 	if (W) {
 		// with weight vector 
 		long double count = 0.0;
@@ -767,7 +767,7 @@ inline int __sumskipnan3we__(double *data, size_t Ni, double *s, double *s2, dou
 	char   flag=0;
 	// LOOP  along dimension DIM
 	
-	void *end = data + stride*Ni; 
+	double *end = data + stride*Ni; 
 	if (W) {
 		// with weight vector 
 		long double count = 0.0;
@@ -848,7 +848,7 @@ inline int __sumskipnan2wer__(double *data, size_t Ni, double *s, double *No, ch
 	char   flag=0; 
 	// LOOP  along dimension DIM
 	
-	void *end = data + stride*Ni; 
+	double *end = data + stride*Ni; 
 	if (W) {
 		// with weight vector 
 		double count = 0.0;
@@ -921,7 +921,7 @@ inline int __sumskipnan3wer__(double *data, size_t Ni, double *s, double *s2, do
 	char   flag=0;
 	// LOOP  along dimension DIM
 	
-	void *end = data + stride*Ni; 
+	double *end = data + stride*Ni; 
 	if (W) {
 		// with weight vector 
 		double count = 0.0;

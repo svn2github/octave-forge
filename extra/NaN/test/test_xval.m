@@ -39,12 +39,12 @@ x(2:2:N,2) = NaN;
 x(3,2:2:end) = NaN;
 end; 
 
-for k = 35:length(classifier);
-%	try,
+for k = 1:length(classifier);
+	try,
 		[R{k},CC{k}] = xval(x, {c,w}, classifier{k}); 
-%	catch,
-%		R{k} = [];
-%	end; 
+	catch,
+		R{k} = [];
+	end; 
 end;
 
 for k = 1:length(R)

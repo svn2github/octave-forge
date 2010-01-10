@@ -3,12 +3,25 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 % 
 %  CC = train_sc(D,classlabel)
 %  CC = train_sc(D,classlabel,MODE)
-%  CC = train_sc(D,classlabel, 'REG', W)
-%	weighting D(k,:) with weight W(k)
+%  CC = train_sc(D,classlabel,MODE, W)
+%	weighting D(k,:) with weight W(k) (not all classifiers supported weighting)
 %
 % CC contains the model parameters of a classifier which can be applied 
 %   to test data using test_sc. 
 %   R = test_sc(CC,D,...) 
+%
+%   D		training samples (each row is a sample, each column is a feature)	
+%   classlabel	labels of each sample, must have the same number of rows as D. 
+% 		Two different encodings are supported: 
+%		{-1,1}-encoding (multiple classes with separate columns for each class) or
+%		1..M encoding. 
+% 		So [1;2;3;1;4] is equivalent to 
+%			[+1,-1,-1,-1;
+%			[-1,+1,-1,-1;
+%			[-1,-1,+1,-1;
+%			[+1,-1,-1,-1]
+%			[-1,-1,-1,+1]
+%		Note, samples with classlabel=0 are ignored. 
 %
 %  The following classifier types are supported MODE.TYPE
 %    'MDA'      mahalanobis distance based classifier [1]
@@ -151,7 +164,9 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-
+if nargin<2,
+	error('insufficient input arguments\n\tusage: train_sc(D,C,...)\n'); 
+end; 
 if nargin<3, MODE = 'LDA'; end;
 if nargin<4, W = []; end;
 if ischar(MODE) 
@@ -169,12 +184,9 @@ if isfield(MODE,'hyperparameters') && ~isfield(MODE,'hyperparameter'),
 end; 	
 
 sz = size(D);
-if sz(1)~=length(classlabel),
+if sz(1)~=size(classlabel,1),
         error('length of data and classlabel does not fit');
 end;
-
-%CC.Labels = unique(classlabel);
-CC.Labels = 1:max(classlabel);
 
 % remove all NaN's
 if 1,
@@ -203,9 +215,8 @@ if ~isfield(MODE,'hyperparameter')
         MODE.hyperparameter = [];
 end
 
-
-if 0, 
-
+if 0,
+	;
 elseif ~isempty(strfind(lower(MODE.TYPE),'/delet'))
         % [5] J.D. Tebbens and P.Schlesinger (2006), 
         %       Improving Implementation of Linear Discriminant Analysis for the Small Sample Size Problem
@@ -214,7 +225,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'/delet'))
         POS1 = find(MODE.TYPE=='/');
 	[rix,cix] = row_vs_col_deletion(D);	
 	if ~isempty(W), W=W(rix); end;
-        CC   = train_sc(D(rix,cix),classlabel(rix),MODE.TYPE(1:POS1(1)-1),W);
+        CC   = train_sc(D(rix,cix),classlabel(rix,:),MODE.TYPE(1:POS1(1)-1),W);
         CC.G = sparse(cix, 1:length(cix), 1, size(D,2), length(cix)); 
         if isfield(CC,'weights')
                 W = [CC.weights(1,:); CC.weights(2:end,:)];
@@ -228,6 +239,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'/delet'))
 elseif ~isempty(strfind(lower(MODE.TYPE),'nbpw'))
 	error('NBPW not implemented yet')
 	%%%% Naive Bayesian Parzen Window Classifier. 
+	[classlabel,CC.Labels] = CL1M(classlabel); 
         for k = 1:length(CC.Labels),
                 [d,CC.MEAN(k,:)] = center(D(classlabel==CC.Labels(k),:),1);
                 [CC.VAR(k,:),CC.N(k,:)] = sumskipnan(d.^2,1);  
@@ -245,6 +257,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'nbc'))
 	else 
 		CC.V = eye(size(D,2));
 	end; 
+	[classlabel,CC.Labels] = CL1M(classlabel); 
         for k = 1:length(CC.Labels),
         	ix = classlabel==CC.Labels(k); 
                 %% [d,CC.MEAN(k,:)] = center(D(ix,:),1);
@@ -274,6 +287,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'lpm'))
         if ~isfield(MODE.hyperparameter,'c_value')
                 MODE.hyperparameter.c_value = 1; 
         end
+	[classlabel,CC.Labels] = CL1M(classlabel); 
 
         M = length(CC.Labels);
         if M==2, M=1; end;   % For a 2-class problem, only 1 Discriminant is needed 
@@ -286,12 +300,12 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'lpm'))
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
 
 
-elseif ~isempty(strfind(lower(MODE.TYPE),'pla'));
+elseif ~isempty(strfind(lower(MODE.TYPE),'pla')),
 	% Perceptron Learning Algorithm 	
 
-        M = length(CC.Labels);
-
 	[rix,cix] = row_vs_col_deletion(D);
+	[CL101,CC.Labels] = cl101(classlabel); 
+	M = size(CL101,2);
         weights   = sparse(length(cix)+1,M);
 
 	%ix = randperm(size(D,1)); 	%% randomize samples ??? 
@@ -302,7 +316,8 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pla'));
 	        	alpha = 1; 
                 end; 	
                 for k = rix(:)',
-		        e = ((classlabel(k)==(1:M))-.5) - sign([1, D(k,cix)] * weights)/2;
+		        %e = ((classlabel(k)==(1:M))-.5) - sign([1, D(k,cix)] * weights)/2;
+		        e = CL101(k,:) - sign([1, D(k,cix)] * weights);
 			weights = weights + alpha * [1,D(k,cix)]' * e ;
                 end;
 		
@@ -311,7 +326,8 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pla'));
 			W = W*MODE.hyperparameter.alpha;
 		end;	
 		for k = rix(:)',
-		        e = ((classlabel(k)==(1:M))-.5) - sign([1, D(k,cix)] * weights)/2;
+		        %e = ((classlabel(k)==(1:M))-.5) - sign([1, D(k,cix)] * weights)/2;
+		        e = CL101(k,:) - sign([1, D(k,cix)] * weights);
 			weights = weights + W(k) * [1,D(k,cix)]' * e ;
 		end;
         end
@@ -323,9 +339,9 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pla'));
 elseif  ~isempty(strfind(lower(MODE.TYPE),'adaline')) || ~isempty(strfind(lower(MODE.TYPE),'lms')),
 	% adaptive linear elemente, least mean squares, delta rule, Widrow-Hoff,  	
 
-        M = length(CC.Labels);
-
 	[rix,cix] = row_vs_col_deletion(D);
+	[CL101,CC.Labels] = cl101(classlabel); 
+	M = size(CL101,2);
         weights  = sparse(length(cix)+1,M);
 
 	%ix = randperm(size(D,1)); 	%% randomize samples ??? 
@@ -336,7 +352,8 @@ elseif  ~isempty(strfind(lower(MODE.TYPE),'adaline')) || ~isempty(strfind(lower(
 	        	alpha = 1; 
 		end; 	
 		for k = rix(:)',
-		        e = (classlabel(k)==(1:M)) - [1, D(k,cix)] * weights;
+		        %e = (classlabel(k)==(1:M)) - [1, D(k,cix)] * weights;
+		        e = CL101(k,:) - sign([1, D(k,cix)] * weights);
 		        weights = weights + alpha * [1,D(k,cix)]' * e ;
 		end;
 
@@ -345,7 +362,8 @@ elseif  ~isempty(strfind(lower(MODE.TYPE),'adaline')) || ~isempty(strfind(lower(
 			W = W*MODE.hyperparameter.alpha;
 		end;
 		for k = rix(:)',
-		        e = (classlabel(k)==(1:M)) - [1, D(k,cix)] * weights;
+		        %e = (classlabel(k)==(1:M)) - [1, D(k,cix)] * weights;
+		        e = CL101(k,:) - sign([1, D(k,cix)] * weights);
 		        weights = weights + W(k) * [1,D(k,cix)]' * e ;
 		end;
         end
@@ -360,16 +378,19 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'winnow'))
 		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
 	end; 	
 
-        M = length(CC.Labels);
-        CC.weights  = ones(size(D,2),M);
+	[rix,cix] = row_vs_col_deletion(D);
+	[CL101,CC.Labels] = cl101(classlabel); 
+	M = size(CL101,2);
+        weights  = ones(length(cix),M);
         theta = size(D,2)/2;
 
-	for k = 1:size(D,1),
-		e = (1 + sign(D(k,:) * CC.weights - theta))/2 - (classlabel(k)==CC.Labels(k));
-		CC.weights = CC.weights.* 2^(D(k,:)' * e);
+	for k = rix(:)',
+		e = CL101(k,:) - sign(D(k,cix) * weights - theta);
+	        weights = weights.* 2.^(D(k,cix)' * e);
 	end;
-
-        CC.weights  = [zeros(1,M), CC.weights];
+	
+	CC.weights = sparse(size(D,2)+1,M); 
+        CC.weights(cix+1,:) = weights;
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
         
 
@@ -377,46 +398,51 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pls')) || ~isempty(strfind(lower(MODE.
 	% 4th version: support for weighted samples - work well with unequally distributed data: 
         % regression analysis, can handle sparse data, too. 
 
-        M = length(CC.Labels); 
-
 	if nargin<4,
 		W = [];
 	end;
-	wD = [ones(size(D,1),1),D]; 
+	[rix, cix] = row_vs_col_deletion(D);
+	wD = [ones(length(rix),1),D(rix,cix)]; 
 
-	if isempty(W)
-		W = 1; 
-	else	
+	if ~isempty(W)
 		%% wD = diag(W)*wD
 		W = W(:);
 		for k=1:size(wD,2)
-			wD(:,k) = W.*wD(:,k);
+			wD(:,k) = W(rix).*wD(:,k);
 		end; 
 	end;
+	[CL101, CC.Labels] = cl101(classlabel(rix,:)); 
+	M = size(CL101,2);
 	CC.weights = sparse(sz(2)+1,M);
 
-	[rix, cix] = row_vs_col_deletion(wD);
-	[q,r] = qr(wD(rix,cix),0);
-	for k = 1:M,
-		ix = 2*(classlabel==CC.Labels(k)) - 1;
-		CC.weights(cix,k) = r\(q'*(W.*ix));
-	end;
+	%[rix, cix] = row_vs_col_deletion(wD);
+	[q,r] = qr(wD,0);
+
+	if isempty(W)
+		CC.weights([1,cix+1],:) = r\(q'*CL101);
+	else
+		CC.weights([1,cix+1],:) = r\(q'*(W(rix,ones(1,M)).*CL101));
+	end; 	
+	%for k = 1:M,
+	%	CC.weights(cix,k) = r\(q'*(W.*CL101(rix,k)));
+	%end;
         CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
 
 
 elseif ~isempty(strfind(MODE.TYPE,'WienerHopf'))
         % Q: equivalent to LDA
         % equivalent to Regression, except regression can not deal with NaN's  
-        M = length(CC.Labels);
-        %if M==2, M==1; end;
-        CC.weights = repmat(NaN,size(D,2)+1,M);
+	[CL101,CC.Labels] = cl101(classlabel); 
+	M = size(CL101,2);
+        CC.weights = sparse(size(D,2)+1,M);
         cc = covm(D,'E',W);
-        c1 = classlabel(~isnan(classlabel));
-        c2 = ones(sum(~isnan(classlabel)),M);
-        for k = 1:M,
-		c2(:,k) = c1==CC.Labels(k);
-        end; 
-        CC.weights  = cc\covm([ones(size(c2,1),1),D(~isnan(classlabel),:)],2*real(c2)-1,'M',W);
+        %c1 = classlabel(~isnan(classlabel));
+        %c2 = ones(sum(~isnan(classlabel)),M);
+        %for k = 1:M,
+	%	c2(:,k) = c1==CC.Labels(k);
+        %end; 
+        %CC.weights  = cc\covm([ones(size(c2,1),1),D(~isnan(classlabel),:)],2*real(c2)-1,'M',W);
+        CC.weights  = cc\covm([ones(size(D,1),1),D],CL101,'M',W);
         CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
 
 
@@ -430,6 +456,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'/gsvd'))
         %       dx.doi.org/10.1109/TPAMI.2004.46
         % [3] http://www-static.cc.gatech.edu/~kihwan23/face_recog_gsvd.htm
 
+	[classlabel,CC.Labels] = CL1M(classlabel); 
 	[rix,cix] = row_vs_col_deletion(D);
 
         Hw = zeros(length(rix)+length(CC.Labels), length(cix)); 
@@ -456,18 +483,17 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'/gsvd'))
         R = R(1:t,1:t);
         %P = P(1:size(D,1),1:t); 
         %Q = Q(1:t,:);
-        [U,E,W] = svd(P(1:size(D,1),1:t),0);
+        [U,E,W] = svd(P(1:length(rix),1:t),0);
         %[size(U);size(E);size(W)]
         clear U E P;  
         %[size(Q);size(R);size(W)]
-        
+
         %G = Q(1:t,:)'*[R\W'];
         G = Q(:,1:t)*(R\W');   % this works as well and needs only 'econ'-SVD
         %G = G(:,1:t);  % not needed 
         
         % do not use this, gives very bad results for Medline database
         %G = G(:,1:K); this seems to be a typo in [2] and [3].
-
         CC = train_sc(D(:,cix)*G,classlabel,MODE.TYPE(1:find(MODE.TYPE=='/')-1));
         CC.G = sparse(size(D,2),size(G,2));
         CC.G(cix,:) = G;
@@ -487,6 +513,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'sparse'))
         %       Improving Implementation of Linear Discriminant Analysis for the Small Sample Size Problem
         %       http://www.cs.cas.cz/mweb/download/publi/JdtSchl2006.pdf
 
+	[classlabel,CC.Labels] = CL1M(classlabel); 
 	[rix,cix] = row_vs_col_deletion(D);	
 
         warning('sparse LDA is sensitive to linear transformations')
@@ -539,6 +566,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'rbf'))
         CC.prewhite = sparse(2:sz(2)+1,1:sz(2),r,sz(2)+1,sz(2),2*sz(2)); 
         CC.prewhite(1,:) = -m.*r; 
 
+	[classlabel,CC.Labels] = CL1M(classlabel); 
         CC.model = svmtrain(classlabel, D, CC.options);    % Call the training mex File     
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
 
@@ -551,7 +579,6 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm11'))
         if ~isfield(MODE.hyperparameter,'c_value')
                 MODE.hyperparameter.c_value = 1; 
         end
-        %CC = train_svm11(D,classlabel,MODE.hyperparameter.c_value);
 
         CC.options=sprintf('-c %g -t 0',MODE.hyperparameter.c_value);  %use linear kernel, set C
         CC.hyperparameter.c_value = MODE.hyperparameter.c_value; 
@@ -561,6 +588,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm11'))
         CC.prewhite = sparse(2:sz(2)+1,1:sz(2),r,sz(2)+1,sz(2),2*sz(2)); 
         CC.prewhite(1,:) = -m.*r; 
 
+	[classlabel,CC.Labels] = CL1M(classlabel); 
         CC.model = svmtrain(classlabel, D, CC.options);    % Call the training mex File
         
         FUN = 'SVM:LIB:1vs1';
@@ -580,9 +608,11 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
 		nu = 1;          
         end;
         [m,n] = size(D); 
-        CC.weights = repmat(NaN,n+1,length(CC.Labels));
-        for k = 1:length(CC.Labels),
-		d = sparse(1:m,1:m,(classlabel==CC.Labels(k))*2-1);
+	[CL101,CC.Labels] = cl101(classlabel); 
+        CC.weights = sparse(n+1,size(CL101,2));
+	M = size(CL101,2);
+        for k = 1:M,
+		d = sparse(1:m,1:m,CL101(:,k));
 		H = d * [-ones(m,1),D];
 		%%% r = sum(H,1)';
 		r = sumskipnan(H,1,W)';
@@ -591,7 +621,8 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
 		r = (speye(n+1)/nu + HTH)\r; %solve (I/nu+H’*H)r=H’*e
 		u = nu*(1-(H*r)); 
 		%%% CC.weights(:,k) = u'*H;
-		[CC.weights(:,k),nn] = covm(u,H,'M',W);
+		[c,nn] = covm(u,H,'M',W);
+		CC.weights(:,k) = c';
         end;
         CC.hyperparameter.nu = nu; 
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
@@ -605,20 +636,25 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm:lin4'))
         if ~isfield(MODE.hyperparameter,'c_value')
                 MODE.hyperparameter.c_value = 1; 
         end
-        M = length(CC.Labels);
-        if M==2, M=1; end;
-        CC.weights = repmat(NaN, sz(2)+1, M);
+
+	[classlabel,CC.Labels] = CL1M(classlabel); 
+	M = length(CC.Labels);
+	CC.weights = sparse(size(D,2)+1,M); 
+
+	[rix,cix] = row_vs_col_deletion(D);	
 
         % pre-whitening
-        [D,r,m]=zscore(D,1); 
-        s = sparse(2:sz(2)+1,1:sz(2),r,sz(2)+1,sz(2),2*sz(2)); 
+        [D,r,m]=zscore(D(rix,cix),1); 
+        sz2 = length(cix);
+        s = sparse(2:sz2+1,1:sz2,r,sz2+1,sz2,2*sz2); 
         s(1,:) = -m.*r; 
 
         CC.options = sprintf('-s 4 -c %f ', MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
         model = train(classlabel, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
-        CC.weights = model.w([end,1:end-1],:)';
+        weights = model.w([end,1:end-1],:)';
 
-        CC.weights = s * CC.weights(2:end,:) + sparse(1,1:M,CC.weights(1,:),sz(2)+1,M); % include pre-whitening transformation
+        CC.weights([1,cix+1],:) = s * weights(2:end,:) + sparse(1,1:M,weights(1,:),sz2+1,M); % include pre-whitening transformation
+        CC.weights([1,cix+1],:) = s * CC.weights(cix+1,:) + sparse(1,1:M,CC.weights(1,:),sz2+1,M); % include pre-whitening transformation
         CC.hyperparameter.c_value = MODE.hyperparameter.c_value; 
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
 
@@ -652,17 +688,19 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
         end;
 
         %%CC = train_svm(D,classlabel,MODE);
-        M = length(CC.Labels);
-        if M==2, M=1; end;
-        CC.weights = repmat(NaN, sz(2)+1, M);
+	[CL101,CC.Labels] = cl101(classlabel); 
+	M = size(CL101,2);
+	[rix,cix] = row_vs_col_deletion(D);	
+        CC.weights = sparse(sz(2)+1, M);
 
         % pre-whitening
-        [D,r,m]=zscore(D,1); 
-        s = sparse(2:sz(2)+1,1:sz(2),r,sz(2)+1,sz(2),2*sz(2)); 
+        [D,r,m]=zscore(D(rix,cix),1); 
+        sz2 = length(cix);
+        s = sparse(2:sz2+1,1:sz2,r,sz2+1,sz2,2*sz2); 
         s(1,:) = -m.*r; 
         
         for k = 1:M,
-                cl = sign((classlabel~=CC.Labels(k))-.5);
+                cl = CL101(:,k);
                 if strncmp(MODE.TYPE, 'SVM:LIN',7);
                         if isfield(MODE,'options')
                                 CC.options = MODE.options;
@@ -673,19 +711,19 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                                 CC.options = sprintf('-s %i -c %f ',t, MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
                         end;
                         model = train(cl, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
-                        w = model.w(1:end-1)';
-                        Bias = model.w(end);
+                        w = -model.w(1:end-1)';
+                        Bias = -model.w(end);
 
-                elseif strcmp(MODE.TYPE, 'SVM:LIB');
+                elseif strcmp(MODE.TYPE, 'SVM:LIB');	%% tested with libsvm-mat-2.9-1 
                         if isfield(MODE,'options')
                                 CC.options = MODE.options;
                         else
                                 CC.options = sprintf('-s 0 -c %f -t 0 -d 1', MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
                         end;
                         model = svmtrain(cl, D, CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
-                        w = -cl(1) * model.SVs' * model.sv_coef;  %Calculate decision hyperplane weight vector
+                        w = cl(1) * model.SVs' * model.sv_coef;  %Calculate decision hyperplane weight vector
                         % ensure correct sign of weight vector and Bias according to class label
-                        Bias  = -model.rho * cl(1);
+                        Bias = model.rho * cl(1);
 
                 elseif strcmp(MODE.TYPE, 'SVM:bioinfo');
                         CC.SVMstruct = svmtrain(D, cl,'AUTOSCALE', 0);    % 
@@ -717,15 +755,16 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                 end
 
                 CC.weights(1,k) = -Bias;
-                CC.weights(2:end,k) = w;
+                CC.weights(cix+1,k) = w;
         end;
-        CC.weights = s * CC.weights(2:end,:) + sparse(1,1:M,CC.weights(1,:),sz(2)+1,M); % include pre-whitening transformation
+        CC.weights([1,cix+1],:) = s * CC.weights(cix+1,:) + sparse(1,1:M,CC.weights(1,:),sz2+1,M); % include pre-whitening transformation
         CC.hyperparameter.c_value = MODE.hyperparameter.c_value; 
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
 
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'csp'))
         CC.datatype = ['classifier:',lower(MODE.TYPE)];
+	[classlabel,CC.Labels] = CL1M(classlabel); 
         CC.MD = repmat(NaN,[sz(2)+[1,1],length(CC.Labels)]);
         CC.NN = CC.MD;
         for k = 1:length(CC.Labels),
@@ -749,6 +788,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'csp'))
 
 else          % Linear and Quadratic statistical classifiers 
         CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
+	[classlabel,CC.Labels] = CL1M(classlabel); 
         CC.MD = repmat(NaN,[sz(2)+[1,1],length(CC.Labels)]);
         CC.NN = CC.MD;
 	for k = 1:length(CC.Labels),
@@ -857,8 +897,10 @@ else          % Linear and Quadratic statistical classifiers
 end
 
 function [rix,cix] = row_vs_col_deletion(d,c,w)
+	% decides whether row-wise or column-wise deletion removes less data. 
+	% rix and cix are the resulting index vectors
+	% either row-wise or column-wise deletion, but not a combination of both, is used. 
 	
-	% returns number of values for row-wise and column-wise deletion
 	if nargin > 2,
 		if isempty(w) || all(w==w(1)), 
 			ix = ~isnan(c);
@@ -886,4 +928,60 @@ function [rix,cix] = row_vs_col_deletion(d,c,w)
 		%fprintf(1,'column-wise deletion (%i,%i,%i)\n',n,nr,nc);		
 	end; 
 end
+
+function [CL101,Labels] = cl101(classlabel)
+	%% convert classlabels to {-1,1} encoding 
+
+	if (all(classlabel>=0) && all(classlabel==fix(classlabel)) && (size(classlabel,2)==1))
+		M = max(classlabel);
+		if M==2, 
+			CL101 = (classlabel==2)-(classlabel==1); 
+		else	
+			CL101 = zeros(size(classlabel,1),M);
+			for k=1:M, 
+				%% One-versus-Rest scheme 
+				CL101(:,k) = 2*real(classlabel==k) - 1; 
+			end; 
+		end; 	
+		CL101(isnan(classlabel),:) = NaN; %% or zero ??? 
+	
+	elseif all((classlabel==1) | (classlabel==-1)  | (classlabel==0) )
+		CL101 = classlabel; 
+		M = size(CL101,2); 
+	else 
+		classlabel,
+		error('format of classlabel unsupported');
+	end; 
+	Labels = 1:M;
+	return; 
+end; 
+
+
+function [cl1m, Labels] = CL1M(classlabel)
+	%% convert classlabels to 1..M encoding 
+	if (all(classlabel>=0) && all(classlabel==fix(classlabel)) && (size(classlabel,2)==1))
+		cl1m = classlabel; 
+	
+	elseif all((classlabel==1) | (classlabel==-1) | (classlabel==0) )
+		CL101 = classlabel; 
+		M = size(classlabel,2); 
+		if any(sum(classlabel==1,2)>1)
+			warning('invalid format of classlabel - at most one category may have +1');
+		end; 
+		[tmp, cl1m] = max(classlabel,[],2);
+		if (M==1), 
+			cl1m = (classlabel==-1) + 2*(classlabel==+1);
+		end;
+		if any(tmp ~= 1) 
+			warning('some class might not be properly represented - you might what to add another column to classlabel = [max(classlabel,[],2)<1,classlabel]'); 
+		end; 	
+		cl1m(tmp<1)= 0;	%% or NaN ???
+	else 
+		classlabel
+		error('format of classlabel unsupported');
+	end; 
+	Labels = 1:max(cl1m);
+	return; 	
+end; 
+
 end

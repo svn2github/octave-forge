@@ -15,12 +15,28 @@ function [R,CC]=xval(D,classlabel,MODE,arg4)
 %
 % Input:
 %    D:	data features (one feature per column, one sample per row)
-%    classlabel  classlabel (same number of rows)
+%    classlabel	labels of each sample, must have the same number of rows as D. 
+% 		Two different encodings are supported: 
+%		{-1,1}-encoding (multiple classes with separate columns for each class) or
+%		1..M encoding. 
+% 		So [1;2;3;1;4] is equivalent to 
+%			[+1,-1,-1,-1;
+%			[-1,+1,-1,-1;
+%			[-1,-1,+1,-1;
+%			[+1,-1,-1,-1]
+%			[-1,-1,-1,+1]
+%		Note, samples with classlabel=0 are ignored. 
+%
 %    CLASSIFIER can be any classifier supported by train_sc (default='LDA')
-%	{'MDA','MD2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','REG','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse','RDA','GDBC','SVM','RBF', PLA}
+%       {'REG','MDA','MD2','QDA','QDA2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf', 'RDA','GDBC',
+%	 'SVM','RBF','PSVM','SVM11','SVM:LIN4','SVM:LIN0','SVM:LIN1','SVM:LIN2','SVM:LIN3','WINNOW'}
+%       these can be modified by ###/GSVD, ###/sparse and ###/DELETION. 
+%	   /DELETION removes in case of NaN's either the rows or the columns (which removes less data values) with any NaN
+%	   /sparse and /GSVD preprocess the data an reduce it to some lower-dimensional space. 
 %       Hyperparameters (like alpha for PLA, gamma/lambda for RDA, c_value for SVM, etc) can be defined as 
 % 	CLASSIFIER.hyperparameter.alpha, etc. and 
-% 	CLASSIFIER.TYPE = 'PLA' (as listed above). See train_sc for details.
+% 	CLASSIFIER.TYPE = 'PLA' (as listed above). 
+%       See train_sc for details.
 %    W:	weights for each sample (row) in D. 
 %	default: [] (i.e. all weights are 1)
 %	number of elements in W must match the number of rows of D 
@@ -54,7 +70,7 @@ function [R,CC]=xval(D,classlabel,MODE,arg4)
 %	$Id: xval.m 2124 2009-06-10 20:34:02Z schloegl $
 %	Copyright (C) 2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -70,19 +86,19 @@ function [R,CC]=xval(D,classlabel,MODE,arg4)
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-if (nargin<3) || isempty(MODE), 
-	MODE = 'LDA'; 
+if (nargin<3) || isempty(MODE),
+	MODE = 'LDA';
 end;
-if ischar(MODE) 
-        tmp = MODE; 
-        clear MODE; 
+if ischar(MODE)
+        tmp = MODE;
+        clear MODE;
         MODE.TYPE = tmp;
 elseif ~isfield(MODE,'TYPE')
-        MODE.TYPE=''; 
-end;        
+        MODE.TYPE='';
+end;
 
 sz = size(D);
-NG = [];	
+NG = [];
 W = [];
 
 if iscell(classlabel)
@@ -102,7 +118,7 @@ elseif size(classlabel,2)>1,
 	else
 		[Label,tmp1,NG] = unique(classlabel(:,3));
 	end;
-else 	
+else
 	C = classlabel;	
 end; 
 if all(W==1), W = []; end;
@@ -124,10 +140,10 @@ elseif isnumeric(arg4)
 		NG = ceil((1:length(C))'*arg4/length(C));
 	elseif length(arg4)==2,
 		NG = ceil((1:length(C))'*arg4(1)/length(C));
-	end; 	
-	
-end; 
-end; 
+	end;
+
+end;
+end;
 
 sz = size(D);
 if sz(1)~=length(C),
@@ -140,7 +156,7 @@ end
 cl = repmat(NaN,size(classlabel,1),1);
 for k = 1:max(NG),
  	ix = ix0(NG(ix0)~=k);
-	if isempty(W)	
+	if isempty(W),	
 		CC = train_sc(D(ix,:), C(ix), MODE);
 	else
 		CC = train_sc(D(ix,:), C(ix), MODE, W(ix));
@@ -157,7 +173,7 @@ R = kappa(C,cl,[],W);
 R.ERR = 1-R.ACC; 
 if isnumeric(R.Label)
 	R.Label = cellstr(int2str(R.Label)); 
-end; 		
+end;
 
 if nargout>1,
 	% final classifier 

@@ -20,10 +20,11 @@
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
+if 1,
 clear
 N=100; %% number of samples 
 M=10;  %% number of features 
-classifier= {'REG','REG2','MDA','MD2','QDA','QDA2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse', 'PLA', 'LMS','LDA/DELETION','MDA/DELETION','NBC/DELETION','RDA/DELETION','REG/DELETION','REG2/DELETION','RDA','GDBC','SVM','RBF'};
+classifier= {'REG','MDA','MD2','QDA','QDA2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse', 'PLA', 'LMS','LDA/DELETION','MDA/DELETION','NBC/DELETION','RDA/DELETION','REG/DELETION','RDA','GDBC','SVM','RBF','PSVM','SVM11','SVM:LIN4','SVM:LIN0','SVM:LIN1','SVM:LIN2','SVM:LIN3','WINNOW'};
 
 x = randn(N,M);		%% data
 c = ([1:N]'>(N/2))+1; 	%% classlabel 
@@ -33,17 +34,18 @@ w = [];			%% no weightening
 x = randn(N,M);
 x = x+c*ones(1,M);
 
-x(2:2:N/2,2) = NaN; 
+%x(2:2:N/2,2) = NaN; 
+x(2:2:N,2) = NaN; 
 x(3,2:2:end) = NaN;
+end; 
 
-for k = 1:length(classifier);
-	try,
-		R{k} = xval(x, {c,w}, classifier{k}); 
-	catch,
-		R{k} = [];
-	end; 
+for k = 35:length(classifier);
+%	try,
+		[R{k},CC{k}] = xval(x, {c,w}, classifier{k}); 
+%	catch,
+%		R{k} = [];
+%	end; 
 end;
-
 
 for k = 1:length(R)
 	if isempty(R{k})

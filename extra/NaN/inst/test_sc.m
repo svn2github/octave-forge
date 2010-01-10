@@ -30,7 +30,7 @@ function [R]=test_sc(CC,D,mode,classlabel)
 %	$Id: test_sc.m 2140 2009-07-02 12:03:55Z schloegl $
 %	Copyright (C) 2005,2006,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -119,7 +119,6 @@ elseif strcmp(CC.datatype,'classifier:statistical:rda')
 	else 
 		error('QDA: hyperparamters lambda and/or gamma not defined')
 	end;
-	 
 
 
 elseif strcmp(CC.datatype,'classifier:csp')
@@ -130,10 +129,10 @@ elseif strcmp(CC.datatype,'classifier:csp')
 
 elseif strcmp(CC.datatype,'classifier:svm:lib:1vs1') || strcmp(CC.datatype,'classifier:svm:lib:rbf');
 
-        [cl] = svmpredict(classlabel, D, CC.model);   %Use the classifier
+        cl = svmpredict(ones(size(D,1),1), D, CC.model);   %Use the classifier
 
         %Create a pseudo tsd matrix for bci4eval
-        d = zeros(size(cl,1), CC.model.nr_class);
+        d = zeros(size(D,1), CC.model.nr_class);
         for i = 1:size(cl,1)
                 d(i,cl(i)) = 1;
         end
@@ -146,9 +145,6 @@ elseif isfield(CC,'weights'); %strcmpi(t2,'svm') || (strcmpi(t2,'statistical') &
         d = repmat(NaN,size(D,1),size(CC.weights,2));
         for k = 1:size(CC.weights,2),
                 d(:,k) = D * CC.weights(2:end,k) + CC.weights(1,k);
-        end;
-        if size(CC.weights,2)==1,
-                d = [d, -d];
         end;
 
 
@@ -285,9 +281,14 @@ else
         return;
 end;
 
-[tmp,cl] = max(d,[],2);
-cl = CC.Labels(cl); 
-cl(isnan(tmp)) = NaN; 
+if size(d,2)>1,
+	[tmp,cl] = max(d,[],2);
+	cl = CC.Labels(cl); 
+	cl(isnan(tmp)) = NaN; 
+elseif size(d,2)==1,
+	cl = (d<0) + 2*(d>0);
+	cl(isnan(d)) = NaN; 
+end; 	
 
 R.output = d; 
 R.classlabel = cl; 

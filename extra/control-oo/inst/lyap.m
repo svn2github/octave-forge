@@ -55,7 +55,7 @@ function x = lyap (a, b, c)
   
     [x, scale] = slsb03md (a, -b, false);  # AX + XA' = -B
     
-    x *= scale;
+    x /= scale;  # 0 < scale <= 1
     
   elseif (nargin == 3)  # Sylvester equation
   

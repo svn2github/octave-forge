@@ -136,6 +136,7 @@ DEFUN_DLD (slsb03md, args, nargout, "Slicot SB03MD Release 5.0")
         
         // return values
         retval(0) = c;
+        retval(1) = octave_value (scale);
     }
     
     return retval;

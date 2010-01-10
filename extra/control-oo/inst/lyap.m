@@ -36,7 +36,7 @@
 
 function x = lyap (a, b, c)
 
-  if (nargin == 2)
+  if (nargin == 2)  # Lyapunov equation
 
     na = issquare (a);
     nb = issquare (b);
@@ -53,9 +53,11 @@ function x = lyap (a, b, c)
       error ("lyap: a and b must be of identical size");
     endif
   
-    x = slsb03md (a, -b, false);  # AX + XA' = -B
+    [x, scale] = slsb03md (a, -b, false);  # AX + XA' = -B
     
-  elseif (nargin == 3)
+    x *= scale;
+    
+  elseif (nargin == 3)  # Sylvester equation
   
     n = issquare (a);
     m = issquare (b);

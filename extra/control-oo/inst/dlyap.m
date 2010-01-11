@@ -18,14 +18,17 @@
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {@var{x} =} dlyap (@var{a}, @var{b})
 ## @deftypefnx{Function File} {@var{x} =} dlyap (@var{a}, @var{b}, @var{c})
+## @deftypefnx{Function File} {@var{x} =} dlyap (@var{a}, @var{b}, @var{[]}, @var{e})
 ## Solve discrete-time Lyapunov or Sylvester equations.
-## Uses SLICOT SB03MD and SB04QD by courtesy of NICONET e.V.
+## Uses SLICOT SB03MD, SB04QD and SG03AD by courtesy of NICONET e.V.
 ## <http://www.slicot.org>
 ## @example
 ## @group
-## AXA' - X + B = 0   (Lyapunov Equation)
+## AXA' - X + B = 0      (Lyapunov Equation)
 ##
-## AXB' - X + C = 0   (Sylvester Equation)
+## AXB' - X + C = 0      (Sylvester Equation)
+##
+## AXA' - EXE' + B = 0   (Generalized Lyapunov Equation)
 ## @end group
 ## @end example
 ## @end deftypefn
@@ -34,52 +37,57 @@
 ## Created: January 2010
 ## Version: 0.1
 
-function x = dlyap (a, b, c)
+function x = dlyap (a, b, c, e)
 
-  if (nargin == 2)  # Lyapunov equation
+  switch (nargin)
+    case 2  # Lyapunov equation
 
-    na = issquare (a);
-    nb = issquare (b);
+      na = issquare (a);
+      nb = issquare (b);
   
-    if (! na)
-      error ("lyap: a must be square");
-    endif
+      if (! na)
+        error ("lyap: a must be square");
+      endif
 
-    if (! nb)
-      error ("lyap: b must be square")
-    endif
+      if (! nb)
+        error ("lyap: b must be square")
+      endif
   
-    if (na != nb)
-      error ("lyap: a and b must be of identical size");
-    endif
-  
-    [x, scale] = slsb03md (a, -b, true);  # AXA' - X = -B
-    
-    x /= scale;  # 0 < scale <= 1
-    
-  elseif (nargin == 3)  # Sylvester equation
-    
-    n = issquare (a);
-    m = issquare (b);
-    [crows, ccols] = size (c);
-    
-    if (! n)
-      error ("dlyap: a must be square");
-    endif
-    
-    if (! m)
-      error ("dlyap: b must be square");
-    endif
-    
-    if (crows != n || ccols != m)
-      error ("dlyap: c must be a (%dx%d) matrix", n, m);
-    endif
-  
-    x = slsb04qd (-a, b, c);  # AXB' - X = -C
+      if (na != nb)
+        error ("lyap: a and b must be of identical size");
+      endif
 
-  else
-    print_usage ();
-  endif
+      [x, scale] = slsb03md (a, -b, true);  # AXA' - X = -B
+  
+      x /= scale;  # 0 < scale <= 1
+  
+    case 3  # Sylvester equation
+  
+      n = issquare (a);
+      m = issquare (b);
+      [crows, ccols] = size (c);
+
+      if (! n)
+        error ("dlyap: a must be square");
+      endif
+
+      if (! m)
+        error ("dlyap: b must be square");
+      endif
+
+      if (crows != n || ccols != m)
+        error ("dlyap: c must be a (%dx%d) matrix", n, m);
+      endif
+
+      x = slsb04qd (-a, b, c);  # AXB' - X = -C
+
+    case 4
+      error ("dlyap: case not implemented yet");
+
+    otherwise
+      print_usage ();
+
+  endswitch
 
 endfunction
 

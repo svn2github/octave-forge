@@ -106,9 +106,9 @@ l2r_lr_fun::l2r_lr_fun(const problem *prob, double Cp, double Cn)
 	for (i=0; i<l; i++)
 	{
 		if (y[i] == 1)
-			C[i] = Cp;
+			C[i] = prob->W[i] * Cp;
 		else
-			C[i] = Cn;
+			C[i] = prob->W[i] * Cn;
 	}
 }
 
@@ -265,9 +265,9 @@ l2r_l2_svc_fun::l2r_l2_svc_fun(const problem *prob, double Cp, double Cn)
 	for (i=0; i<l; i++)
 	{
 		if (y[i] == 1)
-			C[i] = Cp;
+			C[i] = prob->W[i] * Cp;
 		else
-			C[i] = Cn;
+			C[i] = prob->W[i] * Cn;
 	}
 }
 
@@ -418,7 +418,7 @@ void l2r_l2_svc_fun::subXTv(double *v, double *XTv)
 //
 // solution will be put in w
 
-#define GETI(i) (prob->y[i])
+#define GETI(i) (i)
 // To support weights for instances, use GETI(i) (i)
 
 class Solver_MCSVM_CS
@@ -446,15 +446,18 @@ Solver_MCSVM_CS::Solver_MCSVM_CS(const problem *prob, int nr_class, double *weig
 	this->eps = eps;
 	this->max_iter = max_iter;
 	this->prob = prob;
-	this->C = weighted_C;
 	this->B = new double[nr_class];
 	this->G = new double[nr_class];
+	this->C = new double[prob->l];
+	for(int i = 0; i < prob->l; i++)
+		this->C[i] = prob->W[i] * weighted_C[prob->y[i]];
 }
 
 Solver_MCSVM_CS::~Solver_MCSVM_CS()
 {
 	delete[] B;
 	delete[] G;
+	delete[] C;
 }
 
 int compare_double(const void *a, const void *b)
@@ -727,7 +730,7 @@ void Solver_MCSVM_CS::Solve(double *w)
 // solution will be put in w
 
 #undef GETI
-#define GETI(i) (y[i]+1)
+#define GETI(i) (i)
 // To support weights for instances, use GETI(i) (i)
 
 static void solve_l2r_l1l2_svc(
@@ -752,14 +755,25 @@ static void solve_l2r_l1l2_svc(
 	double PGmax_new, PGmin_new;
 
 	// default solver_type: L2R_L2LOSS_SVC_DUAL
-	double diag[3] = {0.5/Cn, 0, 0.5/Cp};
-	double upper_bound[3] = {INF, 0, INF};
+	double *diag = new double[l];
+	double *upper_bound = new double[l];
+	double *C_ = new double[l];
+	for(i=0; i<l; i++) 
+	{
+		if(prob->y[i]>0)
+			C_[i] = prob->W[i] * Cp;
+		else 
+			C_[i] = prob->W[i] * Cn;
+		diag[i] = 0.5/C_[i];
+		upper_bound[i] = INF;
+	}
 	if(solver_type == L2R_L1LOSS_SVC_DUAL)
 	{
-		diag[0] = 0;
-		diag[2] = 0;
-		upper_bound[0] = Cn;
-		upper_bound[2] = Cp;
+		for(i=0; i<l; i++) 
+		{
+			diag[i] = 0;
+			upper_bound[i] = C_[i];
+		}
 	}
 
 	for(i=0; i<w_size; i++)
@@ -903,6 +917,9 @@ static void solve_l2r_l1l2_svc(
 	info("Objective value = %lf\n",v/2);
 	info("nSV = %d\n",nSV);
 
+	delete [] upper_bound;
+	delete [] diag;
+	delete [] C_;
 	delete [] QD;
 	delete [] alpha;
 	delete [] y;
@@ -921,7 +938,7 @@ static void solve_l2r_l1l2_svc(
 // solution will be put in w
 
 #undef GETI
-#define GETI(i) (y[i]+1)
+#define GETI(i) (i)
 // To support weights for instances, use GETI(i) (i)
 
 static void solve_l1r_l2_svc(
@@ -950,15 +967,21 @@ static void solve_l1r_l2_svc(
 	double *xj_sq = new double[w_size];
 	feature_node *x;
 
-	double C[3] = {Cn,0,Cp};
+	double *C = new double[l];
 
 	for(j=0; j<l; j++)
 	{
 		b[j] = 1;
 		if(prob_col->y[j] > 0)
+		{	
 			y[j] = 1;
+			C[j] = prob_col->W[j] * Cp;
+		}
 		else
+		{
 			y[j] = -1;
+			C[j] = prob_col->W[j] * Cn;
+		}
 	}
 	for(j=0; j<w_size; j++)
 	{
@@ -1182,6 +1205,7 @@ static void solve_l1r_l2_svc(
 	info("Objective value = %lf\n", v);
 	info("#nonzeros/#features = %d/%d\n", nnz, w_size);
 
+	delete [] C;
 	delete [] index;
 	delete [] y;
 	delete [] b;
@@ -1234,15 +1258,21 @@ static void solve_l1r_lr(
 	double *xjpos_sum = new double[w_size];
 	feature_node *x;
 
-	double C[3] = {Cn,0,Cp};
+	double *C = new double[l];
 
 	for(j=0; j<l; j++)
 	{
 		exp_wTx[j] = 1;
 		if(prob_col->y[j] > 0)
+		{
 			y[j] = 1;
+			C[j] = prob_col->W[j] * Cp;
+		}
 		else
+		{
 			y[j] = -1;
+			C[j] = prob_col->W[j] * Cn;
+		}
 	}
 	for(j=0; j<w_size; j++)
 	{
@@ -1463,6 +1493,7 @@ static void solve_l1r_lr(
 	info("Objective value = %lf\n", v);
 	info("#nonzeros/#features = %d/%d\n", nnz, w_size);
 
+	delete [] C;
 	delete [] index;
 	delete [] y;
 	delete [] exp_wTx;
@@ -1486,9 +1517,13 @@ static void transpose(const problem *prob, feature_node **x_space_ret, problem *
 	prob_col->n = n;
 	prob_col->y = new int[l];
 	prob_col->x = new feature_node*[n];
+	prob_col->W = new double[l];
 
 	for(i=0; i<l; i++)
+	{
 		prob_col->y[i] = prob->y[i];
+		prob_col->W[i] = prob->W[i];
+	}
 
 	for(i=0; i<n+1; i++)
 		col_ptr[i] = 0;
@@ -1633,6 +1668,7 @@ static void train_one(const problem *prob, const parameter *param, double *w, do
 			solve_l1r_l2_svc(&prob_col, w, eps*min(pos,neg)/prob->l, Cp, Cn);
 			delete [] prob_col.y;
 			delete [] prob_col.x;
+			delete [] prob_col.W;
 			delete [] x_space;
 			break;
 		}
@@ -1644,6 +1680,7 @@ static void train_one(const problem *prob, const parameter *param, double *w, do
 			solve_l1r_lr(&prob_col, w, eps*min(pos,neg)/prob->l, Cp, Cn);
 			delete [] prob_col.y;
 			delete [] prob_col.x;
+			delete [] prob_col.W;
 			delete [] x_space;
 			break;
 		}
@@ -1654,10 +1691,40 @@ static void train_one(const problem *prob, const parameter *param, double *w, do
 }
 
 //
+// Remove zero weighed data as libsvm and some liblinear solvers require C > 0.
+//
+static void remove_zero_weight(problem *newprob, const problem *prob) 
+{
+	int i;
+	int l = 0;
+	for(i=0;i<prob->l;i++)
+		if(prob->W[i] > 0) l++;
+	*newprob = *prob;
+	newprob->l = l;
+	newprob->x = Malloc(feature_node*,l);
+	newprob->y = Malloc(int,l);
+	newprob->W = Malloc(double,l);
+
+	int j = 0;
+	for(i=0;i<prob->l;i++)
+		if(prob->W[i] > 0)
+		{
+			newprob->x[j] = prob->x[i];
+			newprob->y[j] = prob->y[i];
+			newprob->W[j] = prob->W[i];
+			j++;
+		}
+}
+
+//
 // Interface functions
 //
 model* train(const problem *prob, const parameter *param)
 {
+	problem newprob;
+	remove_zero_weight(&newprob, prob);
+	prob = &newprob;
+
 	int i,j;
 	int l = prob->l;
 	int n = prob->n;
@@ -1702,8 +1769,12 @@ model* train(const problem *prob, const parameter *param)
 
 	// constructing the subproblem
 	feature_node **x = Malloc(feature_node *,l);
+	double *W = Malloc(double,l);
 	for(i=0;i<l;i++)
+	{
 		x[i] = prob->x[perm[i]];
+		W[i] = prob->W[perm[i]];
+	}
 
 	int k;
 	problem sub_prob;
@@ -1711,9 +1782,13 @@ model* train(const problem *prob, const parameter *param)
 	sub_prob.n = n;
 	sub_prob.x = Malloc(feature_node *,sub_prob.l);
 	sub_prob.y = Malloc(int,sub_prob.l);
+	sub_prob.W = Malloc(double,sub_prob.l);
 
 	for(k=0; k<sub_prob.l; k++)
+	{
 		sub_prob.x[k] = x[k];
+		sub_prob.W[k] = W[k];
+	}
 
 	// multi-class svm by Crammer and Singer
 	if(param->solver_type == MCSVM_CS)
@@ -1768,13 +1843,18 @@ model* train(const problem *prob, const parameter *param)
 	}
 
 	free(x);
+	free(W);
 	free(label);
 	free(start);
 	free(count);
 	free(perm);
 	free(sub_prob.x);
 	free(sub_prob.y);
+	free(sub_prob.W);
 	free(weighted_C);
+	free(newprob.x);
+	free(newprob.y);
+	free(newprob.W);
 	return model_;
 }
 
@@ -2075,18 +2155,21 @@ void cross_validation(const problem *prob, const parameter *param, int nr_fold, 
 		subprob.l = l-(end-begin);
 		subprob.x = Malloc(struct feature_node*,subprob.l);
 		subprob.y = Malloc(int,subprob.l);
+		subprob.W = Malloc(double,subprob.l);
 
 		k=0;
 		for(j=0;j<begin;j++)
 		{
 			subprob.x[k] = prob->x[perm[j]];
 			subprob.y[k] = prob->y[perm[j]];
+			subprob.W[k] = prob->W[perm[j]];
 			++k;
 		}
 		for(j=end;j<l;j++)
 		{
 			subprob.x[k] = prob->x[perm[j]];
 			subprob.y[k] = prob->y[perm[j]];
+			subprob.W[k] = prob->W[perm[j]];
 			++k;
 		}
 		struct model *submodel = train(&subprob,param);
@@ -2095,6 +2178,7 @@ void cross_validation(const problem *prob, const parameter *param, int nr_fold, 
 		destroy_model(submodel);
 		free(subprob.x);
 		free(subprob.y);
+		free(subprob.W);
 	}
 	free(fold_start);
 	free(perm);

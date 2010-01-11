@@ -547,15 +547,13 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'rbf'))
         else
                 error('No SVM training algorithm available. Install LibSVM for Matlab.\n');
         end;
-        if ~isfield(MODE.hyperparameter,'gamma')
-                MODE.hyperparameter.gamma = 1; 
+        CC.options = '-t 2 -q';   %use RBF kernel, set C, set gamma
+        if isfield(MODE.hyperparameter,'gamma')
+	        CC.options = sprintf('%s -c %g', CC.options, MODE.hyperparameter.c_value);  % set C
         end
-        if ~isfield(MODE.hyperparameter,'c_value')
-                MODE.hyperparameter.c_value = 1; 
+        if isfield(MODE.hyperparameter,'c_value')
+	        CC.options = sprintf('%s -g %g', CC.options, MODE.hyperparameter.gamma);  % set C
         end
-        CC.options = sprintf('-c %g -t 2 -g %g -q', MODE.hyperparameter.c_value, MODE.hyperparameter.gamma);  %use RBF kernel, set C, set gamma
-        CC.hyperparameter.c_value = MODE.hyperparameter.c_value; 
-        CC.hyperparameter.gamma = MODE.hyperparameter.gamma; 
 
         % pre-whitening
         [D,r,m]=zscore(D,1); 
@@ -626,7 +624,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'svm:lin4'))
 	if ~isempty(W) 
-		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
+%		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
 	end; 	
 
         if ~isfield(MODE.hyperparameter,'c_value')
@@ -645,8 +643,8 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm:lin4'))
         s = sparse(2:sz2+1,1:sz2,r,sz2+1,sz2,2*sz2); 
         s(1,:) = -m.*r; 
 
-        CC.options = sprintf('-s 4 -c %f ', MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
-        model = train(classlabel, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
+        CC.options = sprintf('-s 4 -B 1 -c %f -q', MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
+        model = train(W, classlabel, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
         weights = model.w([end,1:end-1],:)';
 
         CC.weights([1,cix+1],:) = s * weights(2:end,:) + sparse(1,1:M,weights(1,:),sz2+1,M); % include pre-whitening transformation
@@ -656,9 +654,6 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm:lin4'))
 
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
-	if ~isempty(W) 
-		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
-	end; 	
 
         if ~isfield(MODE.hyperparameter,'c_value')
                 MODE.hyperparameter.c_value = 1; 
@@ -686,6 +681,10 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                 error('No SVM training algorithm available. Install OSV-SVM, or LOO-SVM, or libSVM for Matlab.\n');
         end;
 
+	if ~strncmp(MODE.TYPE, 'SVM:LIN',7) && ~isempty(W) 
+		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
+	end; 	
+                
         %%CC = train_svm(D,classlabel,MODE);
 	[CL101,CC.Labels] = cl101(classlabel); 
 	M = size(CL101,2);
@@ -707,11 +706,13 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                                 t = 0; 
                                 if length(MODE.TYPE)>7, t=MODE.TYPE(8)-'0'; end; 
                                 if (t<0 || t>4) t=0; end; 
-                                CC.options = sprintf('-s %i -c %f ',t, MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
+                                CC.options = sprintf('-s %i -B 1 -c %f -q',t, MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
                         end;
-                        model = train(cl, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
-                        w = -model.w(1:end-1)';
-                        Bias = -model.w(end);
+                        model = train(W, cl, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
+                        w = -model.w';
+                        Bias = -model.bias;
+                        w = -model.w(:,1:end-1)';
+                        Bias = -model.w(:,end)';
 
                 elseif strcmp(MODE.TYPE, 'SVM:LIB');	%% tested with libsvm-mat-2.9-1 
                         if isfield(MODE,'options')

@@ -14,10 +14,10 @@ MATMEX	= $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
 PROGS = histo_mex.mex covm_mex.mex sumskipnan_mex.mex train.mex svmtrain_mex.mex svmpredict_mex.mex
 
-octave: $(PROGS) 
+octave: $(PROGS)
 
 MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
-matlab: $(patsubst %.mex,%_mex.$(MEX_EXT),$(wildcard *.mex)) 
+matlab: $(patsubst $(PROGS), %_mex.$(MEX_EXT), $(wildcard *.mex)) 
 
 $(PROGS): Makefile
 

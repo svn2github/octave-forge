@@ -9,14 +9,17 @@ MEX_OPTION = CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
 # comment the following line if you use MATLAB on 32-bit computer
 MEX_OPTION += -largeArrayDims
 MATMEX	= $(MATLABDIR)/bin/mex $(MEX_OPTION)
-MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
 
-PROGS = $(patsubst %_mex.cpp,%_mex.mex,$(wildcard *.cpp)) 
-all: $(PROGS) matlab
+
+
+PROGS = histo_mex.mex covm_mex.mex sumskipnan_mex.mex train.mex svmtrain_mex.mex svmpredict_mex.mex
+
+octave: $(PROGS) 
+
+MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
+matlab: $(patsubst %.mex,%_mex.$(MEX_EXT),$(wildcard *.mex)) 
 
 $(PROGS): Makefile
-
-matlab: $(patsubst %_mex.cpp,%_mex.$(MEX_EXT),$(wildcard *.cpp)) 
 
 %.oct: %.cc
 	mkoctfile $<
@@ -37,5 +40,23 @@ svmtrain_mex.$(MEX_EXT) svmpredict_mex.$(MEX_EXT):     svmtrain_mex.cpp svm.h
 	$(CC) $(CFLAGS)  -I $(MATLABDIR)/extern/include -c svm_model_matlab.c
 	$(MATMEX) svmtrain_mex.cpp svm.o svm_model_matlab.o
 	$(MATMEX) svmpredict_mex.cpp svm.o svm_model_matlab.o
+
+train.$(MEX_EXT) predict.$(MEX_EXT): train.c linear.h tron.o linear.o linear_model_matlab.c
+	$(CXX) $(CFLAGS) -I $(MATLABDIR)/extern/include -c linear_model_matlab.c
+	$(MATMEX) $(MEX_OPTION) -lblas train.c tron.o linear.o linear_model_matlab.o
+	#$(MATMEX) $(MEX_OPTION) -lblas predict.c tron.o linear.o linear_model_matlab.o
+
+train.mex predict.mex: train.c linear.h tron.o linear.o linear_model_matlab.c
+	$(CXX) $(CFLAGS) -I /usr/include/octave -c linear_model_matlab.c
+	env CC=$(CXX) $(OCTMEX) -lblas train.c tron.o linear.o linear_model_matlab.o
+        #env CC=$(CXX) $(OCTMEX) -lblas predict.c tron.o linear.o linear_model_matlab.o
+
+linear.o: linear.cpp linear.h
+	$(CXX) $(CFLAGS) -c linear.cpp
+
+tron.o: tron.cpp tron.h
+	$(CXX) $(CFLAGS) -c tron.cpp
+
+
 
 clean: ; -$(RM) *.o core octave-core *.oct *~ *.mex*

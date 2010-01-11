@@ -553,7 +553,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'rbf'))
         if ~isfield(MODE.hyperparameter,'c_value')
                 MODE.hyperparameter.c_value = 1; 
         end
-        CC.options = sprintf('-c %g -t 2 -g %g', MODE.hyperparameter.c_value, MODE.hyperparameter.gamma);  %use RBF kernel, set C, set gamma
+        CC.options = sprintf('-c %g -t 2 -g %g -q', MODE.hyperparameter.c_value, MODE.hyperparameter.gamma);  %use RBF kernel, set C, set gamma
         CC.hyperparameter.c_value = MODE.hyperparameter.c_value; 
         CC.hyperparameter.gamma = MODE.hyperparameter.gamma; 
 
@@ -576,7 +576,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm11'))
                 MODE.hyperparameter.c_value = 1; 
         end
 
-        CC.options=sprintf('-c %g -t 0',MODE.hyperparameter.c_value);  %use linear kernel, set C
+        CC.options=sprintf('-c %g -t 0 -q',MODE.hyperparameter.c_value);  %use linear kernel, set C
         CC.hyperparameter.c_value = MODE.hyperparameter.c_value; 
 
         % pre-whitening
@@ -609,7 +609,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
 	M = size(CL101,2);
         for k = 1:M,
 		d = sparse(1:m,1:m,CL101(:,k));
-		H = d * [-ones(m,1),D];
+		H = d * [ones(m,1),D];
 		%%% r = sum(H,1)';
 		r = sumskipnan(H,1,W)';
 		%%% r = (speye(n+1)/nu + H' * H)\r; %solve (I/nu+H’*H)r=H’*e
@@ -697,7 +697,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
         sz2 = length(cix);
         s = sparse(2:sz2+1,1:sz2,r,sz2+1,sz2,2*sz2); 
         s(1,:) = -m.*r; 
-        
+
         for k = 1:M,
                 cl = CL101(:,k);
                 if strncmp(MODE.TYPE, 'SVM:LIN',7);
@@ -717,7 +717,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                         if isfield(MODE,'options')
                                 CC.options = MODE.options;
                         else
-                                CC.options = sprintf('-s 0 -c %f -t 0 -d 1', MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
+                                CC.options = sprintf('-s 0 -c %f -t 0 -d 1 -q', MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
                         end;
                         model = svmtrain_mex(cl, D, CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
                         w = cl(1) * model.SVs' * model.sv_coef;  %Calculate decision hyperplane weight vector

@@ -5,6 +5,7 @@ CFLAGS 	= -Wall -Wconversion -O3 -fPIC
 OCTMEX	= mkoctfile --mex
 
 MATLABDIR = /usr/local/matlab
+MEX_OPTION = CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
 # comment the following line if you use MATLAB on 32-bit computer
 MEX_OPTION += -largeArrayDims
 MATMEX	= $(MATLABDIR)/bin/mex $(MEX_OPTION)

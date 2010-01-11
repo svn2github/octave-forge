@@ -17,7 +17,8 @@ PROGS = histo_mex.mex covm_mex.mex sumskipnan_mex.mex train.mex svmtrain_mex.mex
 octave: $(PROGS)
 
 MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
-matlab: $(patsubst $(PROGS), %_mex.$(MEX_EXT), $(wildcard *.mex)) 
+matlab: $(patsubst %.mex, %.$(MEX_EXT), $(PROGS))
+all: $(PROGS) $(patsubst %.mex, %.$(MEX_EXT), $(PROGS))
 
 $(PROGS): Makefile
 
@@ -42,14 +43,14 @@ svmtrain_mex.$(MEX_EXT) svmpredict_mex.$(MEX_EXT):     svmtrain_mex.cpp svm.h sv
 	$(MATMEX) svmpredict_mex.cpp svm.o svm_model_matlab.o
 
 train.$(MEX_EXT) predict.$(MEX_EXT): train.c linear.h tron.o linear.o linear_model_matlab.c
-	$(CXX) $(CFLAGS) -I $(MATLABDIR)/extern/include -c linear_model_matlab.c
-	$(MATMEX) $(MEX_OPTION) -lblas train.c tron.o linear.o linear_model_matlab.o
-	#$(MATMEX) $(MEX_OPTION) -lblas predict.c tron.o linear.o linear_model_matlab.o
+	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c linear_model_matlab.c
+	$(MATMEX)  -lblas  train.c tron.o linear.o linear_model_matlab.o 
+	#$(MATMEX) -lblas predict.c tron.o linear.o linear_model_matlab.o
 
 train.mex predict.mex: train.c linear.h tron.o linear.o linear_model_matlab.c
-	$(CXX) $(CFLAGS) -I /usr/include/octave -c linear_model_matlab.c
+	$(CC) $(CFLAGS) -I /usr/include/octave -c linear_model_matlab.c
 	env CC=$(CXX) $(OCTMEX) -lblas train.c tron.o linear.o linear_model_matlab.o
-        #env CC=$(CXX) $(OCTMEX) -lblas predict.c tron.o linear.o linear_model_matlab.o
+	#env CC=$(CXX) $(OCTMEX) -lblas predict.c tron.o linear.o linear_model_matlab.o
 
 linear.o: linear.cpp linear.h
 	$(CXX) $(CFLAGS) -c linear.cpp

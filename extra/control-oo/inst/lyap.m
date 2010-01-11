@@ -81,8 +81,39 @@ function x = lyap (a, b, c, e)
 
       x = slsb04md (a, b, -c);  # AX + XB = -C
 
-    case 4
-      error ("lyap: case not implemented yet");
+    case 4  # generalized Lyapunov equation
+    
+      if (! isempty (c))
+        print_usage ();
+      endif
+      
+      na = issquare (a);
+      nb = issquare (b);
+      ne = issquare (e);
+      
+      if (! na)
+        error ("lyap: a must be square");
+      endif
+      
+      if (! nb)
+        error ("lyap: b must be square");
+      endif
+      
+      if (! ne)
+        error ("lyap: e must be square");
+      endif
+      
+      if (! ((na == nb)) && (na == ne))
+        error ("lyap: a, b, e not conformal");
+      endif
+      
+      if (! issymmetric (b))
+        error ("lyap: b must be symmetric");
+      endif
+
+      [x, scale] = slsg03ad (a, e, -b, false);  # AXE' + EXA' = -B
+      
+      x /= scale;  # 0 < scale <= 1
 
     otherwise
       print_usage ();
@@ -121,3 +152,26 @@ endfunction
 %!           4.5257  -0.4389];
 %!
 %!assert (X, X_exp, 1e-4);
+
+## Generalized Lyapunov
+%!shared X, X_exp
+%! A = [  3.0     1.0     1.0
+%!        1.0     3.0     0.0
+%!        1.0     0.0     2.0];
+%!
+%! E = [  1.0     3.0     0.0
+%!        3.0     2.0     1.0
+%!        1.0     0.0     1.0];
+%!
+%! B = [-64.0   -73.0   -28.0
+%!      -73.0   -70.0   -25.0
+%!      -28.0   -25.0   -18.0];
+%!
+%! X = lyap (A', -B, [], E');
+%!
+%! X_exp = [-2.0000  -1.0000   0.0000
+%!          -1.0000  -3.0000  -1.0000
+%!           0.0000  -1.0000  -3.0000];
+%!
+%!assert (X, X_exp, 1e-4);
+

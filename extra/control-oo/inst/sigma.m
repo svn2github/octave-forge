@@ -110,14 +110,14 @@ endfunction
 
 
 %!shared sv_exp, w_exp, sv_obs, w_obs
-%! A = [1 2; 3 4];
-%! B = [5 6; 7 8];
-%! C = [4 3; 2 1];
-%! D = [8 7; 6 5];
-%! w = [2 3 4];
-%! sv_exp = [7.917608899779010   8.627458367569936   9.439296073174116;
-%!           0.698526948925715   0.608629874340666   0.519476071456641];
+%! A = [1, 2; 3, 4];
+%! B = [5, 6; 7, 8];
+%! C = [4, 3; 2, 1];
+%! D = [8, 7; 6, 5];
+%! w = [2, 3, 4];
+%! sv_exp = [7.9176, 8.6275, 9.4393;
+%!           0.6985, 0.6086, 0.5195];
 %! w_exp = [2; 3; 4];
 %! [sv_obs, w_obs] = sigma (ss (A, B, C, D), w);
-%!assert (sv_obs, sv_exp, 16*eps); # tolerance manually tweaked
-%!assert (w_obs, w_exp, 2*eps);
+%!assert (sv_obs, sv_exp, 1e-4);
+%!assert (w_obs, w_exp, 1e-4);

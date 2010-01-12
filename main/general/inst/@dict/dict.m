@@ -20,7 +20,7 @@
 ## @deftypefn{Function File} {d =} dict (@var{keys}, @var{values})
 ## @deftypefnx{Function File} {d =} dict ()
 ## Creates a dictionary object with given keys and values. @var{keys}
-## should be a cell vector of strings; @var{values} should be a cell vector
+## should be a cell array of strings; @var{values} should be a cell array
 ## with matching size. @var{values} can also be a singleton array, in
 ## which case it is expanded to the proper size; or omitted, in which case
 ## the default value of empty matrix is used.
@@ -58,26 +58,31 @@ function d = dict (keys, values)
 
   if (nargin == 0)
     d = struct ("keys", {cell(0, 1)}, "values", {cell(0, 1)});
-  elseif (nargin <= 2)
-    if (iscellstr (keys) && isvector (keys))
-      [d.keys, ind] = unique (keys(:));
+  elseif (nargin == 1)
+    if (iscellstr (keys))
+      keys = sort (keys(:));
+      values = cell (numel (keys), 1);
+    elseif (isstruct (keys))
+      values = struct2cell (keys)(:,:);
+      if (columns (values) != 1)
+        error ("dict: structure must be a scalar");
+      endif
+      [keys, ind] = sort (fieldnames (keys));
+      values = values(ind);        
     else
       error ("dict: keys must be a cell vector of strings");
     endif
-    if (nargin == 1)
-      d.values = cell (size (d.keys));
-    elseif (iscell (values) && isvector (values))
-      ## Hack: we use this weird shape to let indexed values always inherit the
-      ## shape of the index. This would not work if we just used values(:).
-      d.values = reshape (values (ind), 1, 1, length (ind));
-    else
-      error ("dict: values must be a cell vector");
-    endif
+  elseif (nargin == 2)
+    [keys, idx] = sort (keys(:));
+    values = values (idx);
   else
     print_usage ();
   endif
 
-  d = class (d, "dict");
+  ## Values are reshaped to 1x1xN so that indexed by anything they acquire
+  ## the index's shape.
+  values = reshape (values, 1, 1, numel (values));
+  d = class (struct ("keys", {keys}, "values", {values}), "dict");
 
 endfunction
 

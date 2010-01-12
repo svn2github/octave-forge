@@ -61,7 +61,7 @@ function varargout = subsref (d, s)
       case 'values'
         e = d.values(:);
       otherwise
-        error ("@polynomial/subsref: invalid property \"%s\"", fld);
+        error ("@dict/subsref: invalid property \"%s\"", fld);
       endswitch
     otherwise
       error ("invalid subscript type");

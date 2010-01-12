@@ -162,3 +162,6 @@ endfunction
 %!          5.0000   3.0000   2.0000];
 %!
 %!assert (X, X_exp, 1e-4);
+
+## Generalized Lyapunov
+TODO: add a test

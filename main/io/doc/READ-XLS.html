@@ -7,11 +7,13 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091211;17230700">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100103;23191400">
+	<META NAME="CHANGED" CONTENT="20100112;22050800">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -28,7 +30,7 @@
 <P ALIGN=CENTER STYLE="margin-bottom: 0in">README for Excel
 spreadsheet file r/w access scripts for octave (&gt;
 3.2.0)<BR><BR>Copyright (C) 2009, Philip Nienhuis &lt;prnienhuis at
-users.sf.net&gt;<BR><BR>This version 03 January 2010.</P>
+users.sf.net&gt;<BR><BR>This version 12 January 2010.</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
@@ -108,7 +110,7 @@ For the Java / Apache POI / JExcelAPI interfaces (general):</P>
 	<LI><P STYLE="margin-bottom: 0in">Get it here:
 	<A HREF="http://poi.apache.org/download.html">http://poi.apache.org/download.html</A></P>
 	<LI><P STYLE="margin-bottom: 0in">for OOXML support (only available
-	with ApchePOI): 
+	with Apache POI): 
 	</P>
 	<P STYLE="margin-bottom: 0in">poi-ooxml-schemas-&lt;version&gt;.jar,
 	xbean.jar, dom4j-1.6.1.jar in javaclasspath. 
@@ -137,8 +139,8 @@ and <B>xlsopen</B>-<B>oct2xls</B>-<B>xlsclose</B> sequences, resp.
 They exist for the sake of Matlab compatibility.<BR><BR><B>xlsfinf</B>o
 can be used for finding out what worksheet names exist in the file.
 For OOXML files the input parameter REQINTF should be specified with
-a value of 'poi'(case-insensitive) and -obviously- the complete POI
-interface must have been installed. <BR><BR>Invoking
+a value of 'poi' (case-insensitive) and -obviously- the complete POI
+interface must have been installed.<BR><BR>Invoking
 <B>xlsopen</B>/..../<B>xlsclose</B> directly provides for much more
 flexibility, speed, and robustness than <B>xlsread</B> / <B>xlswrite</B>.
 Indeed, using the same file handle (pointer struct) you can mix
@@ -196,14 +198,39 @@ data came from; Matlab and ActiveX/Excel can't. This is due to Excel
 automatically trimming returned arrays from empty outer columns and
 rows. When using COM, octave has the same limitation.<BR>Personally I
 find it very useful to know from what part of a worksheet the data
-originate so I've put quite some effort in it :-)<BR><BR>When using
-the Java interface, reading and writing xls-files by octave-forge is
-platform-independent. On systems w/o Excel Matlab can only read Excel
-95 formatted .xls files.<BR><BR>Matlab's <B>xlsread</B> invokes
-<B>csvread</B> if no Excel interface is present. Octave-forge's
-<B>xlsread</B> doesn't.<BR><BR><B>xlswrite</B><BR>Octave-forge's
+originate so I've put quite some effort in it :-)</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">Matlab's xlsread ignores all
+non-numeric data values outside the smallest rectangle encompassing
+all numerical values. Octave's xlsread doesn't. This means that
+Matlab ignores all row/column headers, not very user-friendly IMO.
+<BR><BR>When using the Java interface, reading and writing xls-files
+by octave-forge is platform-independent. On systems w/o Excel Matlab
+can only read Excel 95 formatted .xls files.<BR><BR>Matlab's <B>xlsread</B>
+invokes <B>csvread</B> if no Excel interface is present.
+Octave-forge's <B>xlsread</B> doesn't.<BR><BR><B>xlswrite</B><BR>Octave-forge's
 <B>xlswrite</B> works on systems w/o Excel support, Matlab's doesn't
-(properly).<BR><BR><B>xlsfinfo</B><BR>When invoking Excel/COM
+(properly).</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">When specifying a sheet number larger
+than the number of existing sheets in an .xls file, Matlab's xlswrite
+adds empty sheets until the new sheet number is created; Octave's
+xlswrite only adds one sheet called &ldquo;Sheet&lt;number&gt;&rdquo;
+where &lt;number&gt; is the specified sheet number. 
+</P>
+<P STYLE="margin-bottom: 0in">Even better (IMO) while M's xlswrite
+always creates Sheet1/Sheet2/Sheet3 when creating a new spreadsheet,
+octave's xlswrite only creates the requested worksheet.</P>
+<P STYLE="margin-bottom: 0in">And octave doesn't touch the &ldquo;active
+sheet&rdquo;.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">If the specified write range is larger
+than the actual data array, Matlab's xlswrite adds #N/A cells to fill
+up the lowermost rows and rightmost columns; octave-forge's xlswrite
+doesn't.   <BR><BR><B>xlsfinfo</B><BR>When invoking Excel/COM
 interface, octave-forge's <B>xlsfinfo</B> also echoes the type of
 sheet (worksheet, chart), not just the sheet names. Using Java I
 haven't found similar functionality (yet).</P>
@@ -217,37 +244,46 @@ OF INTERFACES &amp; USAGE</B></U></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0in">Using Excel itself (through COM /
 ActiveX on Windows systems) is probably the most robust and versatile
-option. There's one gotcha: in case of some type of COM errors Excel
-will keep running invisibly, you can only end it through Task
-Manager.<BR>A tiny problem is that one cannot find out easily through
-COM what file types are supported; xls, wks, wk1, xlsx, etc.<BR>Another
--obvious- limitation is that COM Excel access only works on Windows
-systems where Excel is installed.<BR>As Excel/COM trims returned
-arrays from empty outer row and columns it is not easy to find out
-from what cell range the returned data originate.<BR><BR>JExcelAPI
-(Java-based and therefore platform-independent) is proven technology
-but switching between reading and writing is quite involved and
-memory-hungry when processing large spreadsheets. As the docs state,
-JExcelAPI is optimized for reading and it does do that well - but
-slower than Excel/COM. The fact that upon a switch from reading to
-writing the existing spreadsheet is overwritten in place by a blank
-one and that you can only get the contents back wen writing out all
-of the changes is worrying - and any change after the first write()
-is lost as a next write() doesn't seem to work. The first is by
-JExcelAPI design, the second is probably a bug (in octave-forge/Java
-or JExcelAPI ? I don't know). Adding data to existing spreadsheets
-does work, but IMO undue user confidence is needed.</P>
+and especially FAST option. There's one gotcha: in case of some type
+of COM errors Excel will keep running invisibly, you can only end it
+through Task Manager.<BR>A tiny problem is that one cannot find out
+easily through COM what file types are supported; xls, wks, wk1,
+xlsx, etc.<BR>Another -obvious- limitation is that COM Excel access
+only works on Windows systems where Excel is installed.<BR>As
+Excel/COM trims returned arrays from empty outer row and columns it
+is not easy to find out from what cell range the returned data
+originate.<BR><BR>JExcelAPI (Java-based and therefore
+platform-independent) is proven technology but switching between
+reading and writing is quite involved and memory-hungry when
+processing large spreadsheets. As the docs state, JExcelAPI is
+optimized for reading and it does do that well - but slower than
+Excel/COM. The fact that upon a switch from reading to writing the
+existing spreadsheet is overwritten in place by a blank one and that
+you can only get the contents back wen writing out all of the changes
+is worrying - and any change after the first write() is lost as a
+next write() doesn't seem to work. The first is by JExcelAPI design,
+the second is probably a bug (in octave-forge/Java or JExcelAPI ? I
+don't know). Adding data to existing spreadsheets does work, but IMO
+undue user confidence is needed.</P>
 <P STYLE="margin-bottom: 0in">JExcelAPI supports BIFF5 and BIFF8
-(Excel 95 and Excel 97-2003, respectively).<BR><BR>Apache POI
-(Java-based and platform-independent too) is based on the
-OpenOffice.org I/O Excel r/w routines. It is a little more versatile
-than JExcelAPI, however it while it doesn't support BIFF5 it does
-support BIFF8 (Excel 97 &ndash; 2003) and OOXML (Excel 2007). It is
-almost as fast as native Excel &amp; COM, but at the moment
-(3.5-FINAL) evaluation of Excel formulas invoking INDIRECT() seems
-broken (it seems it doesn't properly support INDIRECT() Excel
-functions.<BR><BR>All in all, of the two Java options I'd lightly
-prefer JExcelAPI but I hope that Apache POI gets better soon.</P>
+(Excel 95 and Excel 97-2003, respectively).</P>
+<P STYLE="margin-bottom: 0in">JexcelAPI, unlike ApachePOI, doesn't
+evaluate functions while reading but instead relies on cached results
+(i.e. results computed by Excel itself). Depending on Excel settings
+(&ldquo;Automatic calculation&rdquo; ON or OFF) this may or may not
+yield incorrect results.<BR><BR>Apache POI (Java-based and
+platform-independent too) is based on the OpenOffice.org I/O Excel
+r/w routines. It is a little more versatile than JExcelAPI, while it
+doesn't support BIFF5 it does support BIFF8 (Excel 97 &ndash; 2003)
+and OOXML (Excel 2007).</P>
+<P STYLE="margin-bottom: 0in">It is slower than native JXL let alone
+Excel &amp; COM but it features active formula evaluation, although
+at the moment (v. 3.6) not all Excel functions have been implemented.
+I've made the relevant script (xls2jpoi2oct) fall back on cached
+formula results (and yield a suitable warning) for non-implemented
+Excel functions while reading Excel files.<BR><BR>All in all, of the
+two Java options I'd prefer Apache POI rather than JexcelAPI. But the
+latter is indispensable for BIFF5 formats.</P>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P STYLE="margin-bottom: 0in"><BR>
@@ -290,6 +326,6 @@ Enjoy!</P>
 <BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.26in; text-indent: -0.26in; margin-bottom: 0in">
-Philip Nienhuis, Jan 03, 2010</P>
+Philip Nienhuis, Jan 12, 2010</P>
 </BODY>
 </HTML>

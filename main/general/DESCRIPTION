@@ -1,10 +1,10 @@
 Name: General
-Version: 1.1.4
-Date: 2009-09-15
-Author: Various authors
+Version: 1.1.5
+Date: 2010-01-12
+Author: Jaroslav Hajek
 Maintainer: Jaroslav Hajek
 Title: General
-Description: General tools for octave.
+Description: General tools for octave. String dictionary, parallel computing.
 Categories: General
 Depends: octave (>= 3.2.0)
 Autoload: yes

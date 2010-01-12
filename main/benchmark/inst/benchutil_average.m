@@ -33,12 +33,13 @@ function [results, stddevs] = benchutil_average (benchmark, nruns, varargin)
 
   if (benchutil_verbose)
     [bdesc, adesc, rdesc] = benchutil_parse_desc ([benchmark, '.m']);
-    printf ('\n\n');
-    for [desc, fn] = rdesc
-      printf ('%s (avg. over %d runs): %f +/- %f%%\n', desc, nruns, 
+    fprintf ('\n\n');
+    for fn = fieldnames (rdesc).'
+      fn = fn{1};
+      fprintf ('%s (avg. over %d runs): %f +/- %f%%\n', rdesc.(fn), nruns, ...
       results.(fn), 138.59*stddevs.(fn) / results.(fn));
     end
-  endif
+  end
 
   if (nargout < 1)
     clear results stddevs

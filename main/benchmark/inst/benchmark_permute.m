@@ -40,15 +40,15 @@ function results = benchmark_permute (n, rep)
 
   a = zeros (n, n, n, n, n);
 
-  tic; b = permute (a, [2,1,3,4,5]); time_21345 = toc
+  tic; b = permute (a, [2,1,3,4,5]); time_21345 = toc;
   benchutil_set_result ('time_21345')
   
-  tic; b = permute (a, [1,3,4,2,5]); time_13425 = toc
+  tic; b = permute (a, [1,3,4,2,5]); time_13425 = toc;
   benchutil_set_result ('time_13425')
   
-  tic; b = permute (a, [3,4,1,2,5]); time_34125 = toc
+  tic; b = permute (a, [3,4,1,2,5]); time_34125 = toc;
   benchutil_set_result ('time_34125')
 
-  tic; b = permute (a, [4,5,1,2,3]); time_45123 = toc
+  tic; b = permute (a, [4,5,1,2,3]); time_45123 = toc;
   benchutil_set_result ('time_45123')
 

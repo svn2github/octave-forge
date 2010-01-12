@@ -36,6 +36,7 @@
 % time_slicenc = time for a(:,:,i:j,k)
 % time_slicend = time for a(:,:,k,i:j)
 % time_slicens = time for a(i,j,k,:)
+% time_slicen2 = time for a(i,j,:,:)
 % time_spreadr = time for a(ones(1, k), :), a row vector
 % time_spreadc = time for a(:, ones(1, k)), a column vector
 %
@@ -153,12 +154,20 @@ function results = benchmark_index (n, rep)
   time_slicens = toc;
   benchutil_set_result ('time_slicens')
 
+  tic; 
+  for irep = 1:rep
+    b = a(1,2,:,:);
+  end
+  time_slicen2 = toc;
+  benchutil_set_result ('time_slicen2')
+
   m = floor (sqrt (n));
   a = rand (1, m);
 
   tic; 
+  idx = ones (1, m);
   for irep = 1:rep
-    b = a(ones(1, m), :);
+    b = a(idx, :);
   end
   time_spreadr = toc;
   benchutil_set_result ('time_spreadr')
@@ -166,8 +175,9 @@ function results = benchmark_index (n, rep)
   a = rand (m, 1);
 
   tic; 
+  idx = ones (1, m);
   for irep = 1:rep
-    b = a(:, ones(1, m));
+    b = a(:, idx);
   end
   time_spreadc = toc;
   benchutil_set_result ('time_spreadc')

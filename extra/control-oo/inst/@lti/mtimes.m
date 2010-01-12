@@ -51,30 +51,3 @@ function sys = mtimes (sys2, sys1)
 endfunction
 
 
-%!shared sysmat, sysmat_exp
-%!
-%! sys1 = ss ([0, 1; -3, -2], [0; 1], [-5, 1], [2]);
-%! sys2 = ss ([-10], [1], [-40], [5]);
-%!
-%! sysa = sys2 * sys1;
-%!
-%! [A, B, C, D] = ssdata (sysa);
-%! sysmat = [A, B; C, D];
-%!
-%! ## expected values computed by the "dark side"
-%! A_exp = [ -10   -5    1
-%!             0    0    1
-%!             0   -3   -2 ];
-%!
-%! B_exp = [   2
-%!             0
-%!             1 ];
-%!
-%! C_exp = [ -40  -25    5 ];
-%!
-%! D_exp = [  10 ];
-%!
-%! sysmat_exp = [A_exp, B_exp; C_exp, D_exp];
-%!
-%!assert (sysmat, sysmat_exp)
-

@@ -115,67 +115,73 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-10-16
-## Latest update: 2009-12-29
+## Updates: 
+## 2009-12-29 bug fixes
+## 2010-01-12 added unwind_protect to get rid of stray Excel invocations i.c.o. COM errors
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
-rstatus = 0;
+	rstatus = 0;
 
-if (nargin < 1) 
-	error ("xlsread: no arguments specified") 
-	numarr = []; txtarr={}; rawarr = {};
-	return
-elseif (nargin == 1)
-	wsh = 1;
-	datrange = ''; 
-elseif (nargin == 2)
-	# Find out whether 2nd argument = worksheet or range
-	if (isnumeric (wsh) || (isempty (findstr(wsh,':')) && ~isempty (wsh)))
-		# Apparently a worksheet specified
-		datrange = '';
-	else
-		# Range specified
-		datrange = wsh;
+	if (nargin < 1) 
+		error ("xlsread: no arguments specified") 
+		numarr = []; txtarr={}; rawarr = {};
+		return
+	elseif (nargin == 1)
 		wsh = 1;
+		datrange = ''; 
+	elseif (nargin == 2)
+		# Find out whether 2nd argument = worksheet or range
+		if (isnumeric (wsh) || (isempty (findstr(wsh,':')) && ~isempty (wsh)))
+			# Apparently a worksheet specified
+			datrange = '';
+		else
+			# Range specified
+			datrange = wsh;
+			wsh = 1;
+		endif
 	endif
-endif
 
-# A small gesture for Matlab compatibility. JExcelAPI supports BIFF5.
-if (~isempty (reqintf) && strcmp (toupper(reqintf), 'BASIC')) 
-	reqintf= "JXL"; 
-	printf ("BASIC (BIFF5) support request translated to JXL. \n");
-endif
+	# A small gesture for Matlab compatibility. JExcelAPI supports BIFF5.
+	if (~isempty (reqintf) && strcmp (toupper(reqintf), 'BASIC')) 
+		reqintf= "JXL"; 
+		printf ("BASIC (BIFF5) support request translated to JXL. \n");
+	endif
 
-# Checks done. Get raw data into cell array "rawarr". xlsopen finds out
-# what interface to use. If none found, suggest csv
+	# Checks done. Get raw data into cell array "rawarr". xlsopen finds out
+	# what interface to use. If none found, suggest csv
 
-# Get pointer array to Excel file
-xls = xlsopen (fn, 0, reqintf);
+	unwind_protect	# Needed to catch COM errors & able to close stray Excel invocations
+	# Get pointer array to Excel file
+	xls = xlsopen (fn, 0, reqintf);
 
-if (strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'POI') || strcmp (xls.xtype, 'JXL'))
+	if (strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'POI') || strcmp (xls.xtype, 'JXL'))
 
-	# Get data from Excel file & return handle
-	[rawarr, xls, rstatus] = xls2oct (xls, wsh, datrange);
+		# Get data from Excel file & return handle
+		[rawarr, xls, rstatus] = xls2oct (xls, wsh, datrange);
 	
-	# Save some results before xls is wiped
-	rawlimits = xls.limits;
-	xtype = xls.xtype;
-	
+		# Save some results before xls is wiped
+		rawlimits = xls.limits;
+		xtype = xls.xtype;
+
+		if (rstatus)
+			[numarr, txtarr, lims] = parsecell (rawarr, rawlimits);
+			# Wipe lims if using Excel (that doesn't return reliable rawlimits).
+			# The user can get the limits relative to the rawarr by parsecell (rawarr).
+			if (strcmp (xtype, 'COM')) lims = []; endif
+		else
+			rawarr = {}; numarr = []; txtarr = {};
+		endif
+
+	else
+			printf ("\n Error XLSREAD: reading EXCEL .xls file (BIFF-Format) isn\'t supported on this system.\n You need to convert the file into a tab- or comma delimited text file or .csv file\n and then invoke dlmread()\n\n");
+
+	endif
+
+	unwind_protect_cleanup	
 	# Close Excel file
 	xls = xlsclose (xls);
 
-	if (rstatus)
-		[numarr, txtarr, lims] = parsecell (rawarr, rawlimits);
-		# Wipe lims if using Excel (that doesn't return reliable rawlimits).
-		# The user can get the limits relative to the rawarr by parsecell (rawarr).
-		if (strcmp (xtype, 'COM')) lims = []; endif
-	else
-		rawarr = {}; numarr = []; txtarr = {};
-	endif
-
-else
-        printf ("\n Error XLSREAD: reading EXCEL .xls file (BIFF-Format) isn\'t supported on this system.\n You need to convert the file into a tab- or comma delimited text file or .csv file\n and then invoke dlmread()\n\n");
-
-endif
+	end_unwind_protect
 
 endfunction

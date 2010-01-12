@@ -60,6 +60,10 @@
 ## Be aware that Excel trims @var{rawarr} from empty outer rows & columns, 
 ## so any returned cell array may turn out to be smaller than requested
 ## in @var{range}.
+## When using COM or POI interface, formulas in cells are evaluated; if
+## that fails cached values are retrieved. Those may be outdated 
+## depending on Excel's "Automatic calculation" settings when the
+## spreadsheet was saved.
 ##
 ## When reading from merged cells, all array elements NOT corresponding 
 ## to the leftmost or upper Excel cell will be treated as if the
@@ -240,6 +244,7 @@ endfunction
 
 
 #==================================================================================
+
 ## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
@@ -279,7 +284,7 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-23
-## Last updated 2009-12-11
+## Last updated 2010-01-11 - fall back to cached values when formula evaluator fails
 
 function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 
@@ -324,7 +329,7 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 	lastrow = sh.getLastRowNum ();
 	if (isempty (cellrange))
 		# Get used range by searching (slow...). Beware, it can be bit unreliable
-		lcol = 65535;  # FIXME for OOXML
+		lcol = 65535;
 		rcol = 0;
 		for ii=firstrow:lastrow
 			irow = sh.getRow (ii);
@@ -351,10 +356,7 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 	endif
 	
 	# Create formula evaluator (needed to infer proper cell type into rawarr)
-	#         NB formula evaluation is not very reliable in POI
 	frm_eval = wb.getCreationHelper().createFormulaEvaluator ();
-	
-	#wb.clearAllCachedResultsValues();		# does not work
 	
 	# Read contents into rawarr
 	rawarr = cell (nrows, ncols);			# create placeholder
@@ -366,12 +368,13 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 			for jj = max (scol, lcol) : min (lcol+ncols-1, ecol)
 				cell = irow.getCell (jj);
 				if ~isempty (cell)
-					# Process cell contents
+					# Explore cell contents
 					type_of_cell = cell.getCellType ();
 					if (type_of_cell == ctype(3))        # Formula
-						try
+						try		# Because not al Excel formulas have been implemented
 							cell = frm_eval.evaluate (cell);
 							type_of_cell = cell.getCellType();
+							# Separate switch because form.eval. yields different type
 							switch type_of_cell
 								case ctype (1)	# Numeric
 									rawarr (ii+1-firstrow, jj+1-lcol) = cell.getNumberValue ();
@@ -382,18 +385,16 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 								otherwise
 									# Nothing to do here
 							endswitch
+							# Set cell type to blank to skip switch below
+							type_of_cell = ctype(4);
 						catch
-							# In case of errors we copy the formula as text into rawarr
-							rawarr (ii+1-firstrow, jj+1-lcol) = ["=" cell.getCellFormula];
-							type_of_cell = ctype (4);
-							if (~jerror) 
-								warning ("Java errors in worksheet formulas (converted to string)");
-							endif
-							++jerror;   # We only need one warning
+							# In case of formula errors we take the cached results
+							type_of_cell = cell.getCachedFormulaResultType ();
+							++jerror;   # We only need one warning even for multiple errors 
 						end_try_catch
-					else
-						if (~isnumeric (type_of_cell)) type_of_cell = 4; endif
-						switch type_of_cell
+					endif
+					# Preparations done, get data values into data array
+					switch type_of_cell
 						case ctype(1)		# 0 Numeric
 							rawarr (ii+1-firstrow, jj+1-lcol) = cell.getNumericCellValue ();
 						case ctype(2)		# 1 String
@@ -403,15 +404,14 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 						case ctype(5)		# 4 Boolean
 							rawarr (ii+1-firstrow, jj+1-lcol) = cell.getBooleanCellValue ();
 						otherwise			# 5 Error
-							# Formula (treated above) or error; ignore
-						endswitch
-					endif
+							# Ignore
+					endswitch
 				endif
 			endfor
 		endif
 	endfor
 
-	if (jerror > 0) printf ("%d Java formula evalation errors\n", jerror); endif
+	if (jerror > 0) warning (sprintf ("oct2xls: %d cached values instead of formula evaluations.\n", jerror)); endif
 	
 	# Crop rawarr from empty outer rows & columns like Excel does
 	emptr = cellfun('isempty', rawarr);
@@ -595,4 +595,3 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[])
 	xls.limits = [lcol+icoll, lcol+icolr; firstrow+irowt, firstrow+irowb];
 	
 endfunction
-

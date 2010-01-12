@@ -89,7 +89,9 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-10-16
-## Latest update: 2010-01-04  (Adapted range capacity checks to OOXML)
+## Updates:
+## 2010-01-04 (Adapted range capacity checks to OOXML)
+## 2010-01-12 (Bug fix; added unwind_protect to xlsopen...xlsclose calls)
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
@@ -105,7 +107,7 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 	elseif (nargin == 2)
 		# Assume first worksheet and full worksheet starting at A1
 		wsh = 1;
-		if (strcmp (tolower (filename(end-4:end-1)), 'xls')
+		if (strcmp (tolower (filename(end-4:end-1)), 'xls'))
 			range = "A1:XFD1048576";	# OOXML has ridiculously large limits 
 		else
 			range = "A1:IV65536";		# Regular xls limits
@@ -144,10 +146,14 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 				 nrows, ncols, range);
 	endif
 
+	unwind_protect				# Needed to besure Excel can be closed i.c.o. errors
 	xls = xlsopen (filename, 1, reqintf);
 
 	[xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
 
+	unwind_protect_cleanup
 	xls = xlsclose (xls);
+
+	end_unwind_protect
 
 endfunction

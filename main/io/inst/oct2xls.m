@@ -148,7 +148,10 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Rewritten: 2009-09-26
-## Last updated 2009-12-11
+## Updates:
+## 2009-12-11
+## 2010-01-12 Fixed typearr sorting out (was only 1-dim & braces rather than parens))
+##            Set cells corresponding to empty array cells empty (cf. Matlab)
 
 function [ xls, status ] = oct2com2xls (obj, xls, wsh, top_left_cell='A1')
 
@@ -186,20 +189,22 @@ function [ xls, status ] = oct2com2xls (obj, xls, wsh, top_left_cell='A1')
 	
 	# Cleanup NaNs. Start with backing up strings, empty & boolean cells,
 	# then set text cells to 0
+	obj
 	obj2 = cell (size (obj));
 	txtptr = cellfun ('isclass', obj, 'char');
-	if (any(txtptr)) obj2{txtptr} = obj{txtptr}; obj{txtptr} = 0; endif
+	if (any (any (txtptr))) obj2(txtptr) = obj(txtptr); obj(txtptr) = 0; endif
 	eptr = cellfun ('isempty', obj); 
-	if (any (eptr)) obj{eptr} = 0; endif
+	if (any (any (eptr))) obj(eptr) = 0; endif
 	lptr = cellfun ("islogical" , obj);
-	if (any (lptr)) obj2{lptr} = obj{lptr}; obj{lptr} = 0; endif
+	if (any (any (lptr))) obj2(lptr) = obj(lptr); obj(lptr) = 0; endif
 
 	ptr = cellfun ("isnan", obj);
-	if (any (ptr)) obj{ptr} = []; endif
+	if (any (any (ptr))) obj{ptr} = []; endif
 
-	# Restore text & booleans
-	if (any (txtptr)) obj{txtptr} = obj2{txtptr}; endif
-	if (any (lptr)) obj{lptr} = obj2{lptr}; endif
+	# Restore text, empty cells & booleans
+	if (any (any (txtptr))) obj(txtptr) = obj2(txtptr); endif
+	if (any (any (lptr))) obj(lptr) = obj2(lptr); endif
+	if (any (any (eptr))) obj(eptr) = {[]}; endif
 	clear obj2 txtptr eptr lptr ptr;
 
 	if (xls.changed < 2) 
@@ -310,6 +315,7 @@ endfunction
 
 
 #====================================================================================
+
 ## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
@@ -351,7 +357,9 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-26
-## Last updated 2010-01-03
+## Updates: 
+## 2010-01-03 Bugfixes
+## 2010-01-12 Added xls.changed = 1 statement to signal successful write
 
 function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, topleftcell="A1")
 
@@ -462,7 +470,8 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, topleftcell="A1")
 			endif
 		endfor
 	endfor
-	
+
+	xls.changed = 1;
 	rstatus = 1;
   
 endfunction
@@ -510,7 +519,10 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-04
-## Last updated 2009-12-11
+## Updates:
+## 2009-12-11
+## 2010-01-12 Fixed skipping empty array values (now Excel-conformant => cell cleared)
+##            Added xls.changed = 1 statement to signal successful write
 
 function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, topleftcell="A1")
 
@@ -619,12 +631,16 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, topleftcell="A1")
 				case 3			# String
 					tmp = java_new ('jxl.write.Label', kk, ll, obj{ii, jj});
 					sh.addCell (tmp);
+				case {4, 5}
+					tmp = java_new ('jxl.write.Blank', kk, ll);
+					sh.addCell (tmp);
 				otherwise
 					# Just skip
 			endswitch
 		endfor
 	endfor
 	
+	xls.changed = 1;
 	rstatus = 1;
   
 endfunction

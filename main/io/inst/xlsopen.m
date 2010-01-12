@@ -64,7 +64,9 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-29
-## Last updated 2010-01-03 (Added OOXML support)
+## Last updates
+## 2010-01-03 Added OOXML support
+## 2010-01-10 Changed (java) interface preference order to COM->POI->JXL
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -130,7 +132,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 	
 	xls = struct ("xtype", 'NONE', "app", [], "filename", [], "workbook", [], "changed", 0, "limits", []); 
 	
-	# Interface preference order is defined below: currently COM -> JXL -> POI [-> CSV]
+	# Interface preference order is defined below: currently COM -> POI -> JXL
 	
 	if (xlsinterfaces.COM)
 		# Excel functioning has been tested above & file exists, so we just invoke it
@@ -144,23 +146,6 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 			# Create a new workbook
 			wb = app.Workbooks.Add ();
 		endif
-		xls.workbook = wb;
-		xls.filename = filename;
-		
-	elseif (xlsinterfaces.JXL)
-		if (~chk1)
-			error ("Currently xls2oct / JXL can only read reliably from .xls files")
-		endif
-		xls.xtype = 'JXL';
-		xlsin = java_new ('java.io.File', filename);
-		if (xwrite == 2)
-			# Get handle to new xls-file
-			wb = java_invoke ('jxl.Workbook', 'createWorkbook', xlsin);
-		else
-			# Open existing file
-			wb = java_invoke ('jxl.Workbook', 'getWorkbook', xlsin);
-		endif
-		xls.app = xlsin;
 		xls.workbook = wb;
 		xls.filename = filename;
 	
@@ -188,9 +173,26 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		endif
 		xls.workbook = wb;
 		xls.filename = filename;
+		
+	elseif (xlsinterfaces.JXL)
+		if (~chk1)
+			error ("Currently xls2oct / JXL can only read reliably from .xls files")
+		endif
+		xls.xtype = 'JXL';
+		xlsin = java_new ('java.io.File', filename);
+		if (xwrite == 2)
+			# Get handle to new xls-file
+			wb = java_invoke ('jxl.Workbook', 'createWorkbook', xlsin);
+		else
+			# Open existing file
+			wb = java_invoke ('jxl.Workbook', 'getWorkbook', xlsin);
+		endif
+		xls.app = xlsin;
+		xls.workbook = wb;
+		xls.filename = filename;
 
-	# 	elseif ---- other interfaces
-	
+		# 	elseif ---- other interfaces
+
 	else
 		warning ("No support for Excel .xls I/O"); 
 	endif

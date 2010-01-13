@@ -74,14 +74,11 @@ function d = dict (keys, values)
     endif
   elseif (nargin == 2)
     [keys, idx] = sort (keys(:));
-    values = values (idx);
+    values = values (idx)(:);
   else
     print_usage ();
   endif
 
-  ## Values are reshaped to 1x1xN so that indexed by anything they acquire
-  ## the index's shape.
-  values = reshape (values, 1, 1, numel (values));
   d = class (struct ("keys", {keys}, "values", {values}), "dict");
 
 endfunction

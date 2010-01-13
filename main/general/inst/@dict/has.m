@@ -34,7 +34,7 @@ function b = has (d, key)
   if (ischar (key) || iscellstr (key))
     b = lookup (d.keys, key, "b");
   else
-    error ("invalid key value");
+    error ("has: invalid key value");
   endif
 endfunction
 

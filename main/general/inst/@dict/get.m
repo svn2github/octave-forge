@@ -31,7 +31,6 @@ function val = get (d, key, defv = [])
   endif
 
   lookup = __lookup_compat__; # FIXME: remove when 3.3.x is required.
-  merge = __merge_compat__; # FIXME: remove when 3.3.x is required.
 
   if (ischar (key))
     i = lookup (d.keys, key, "m");
@@ -41,15 +40,18 @@ function val = get (d, key, defv = [])
       val = defv;
     endif
   elseif (iscellstr (key))
+    if (! iscell (defv))
+      val = repmat ({defv}, size (key));
+    elseif (numel (defv) == 1)
+      val = repmat (defv, size (key));
+    else
+      val = defv;
+    endif
     i = lookup (d.keys, key, "m");
     mask = i != 0;
-    val(mask) = d.values{i(mask)};
-    if (! iscell (defv))
-      defv = {defv};
-    endif
-    val = merge (mask, val, defv);
+    val(mask) = d.values(i(mask));
   else
-    error ("invalid key value");
+    error ("get: invalid key value");
   endif
 endfunction
 

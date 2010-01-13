@@ -44,8 +44,8 @@ function varargout = subsref (d, s)
         endif
       elseif (iscellstr (ind))
         i = lookup (d.keys, ind, "m");
-        if (all (i))
-          e = d.values (i);
+        if (all (i(:)))
+          e = reshape (d.values (i), size (ind)); # ensure correct shape.
         else
           ## Report the first non-existing key.
           error ("key does not exist: %s", ind{find (i == 0, 1)});
@@ -59,7 +59,7 @@ function varargout = subsref (d, s)
       case 'keys'
         e = d.keys;
       case 'values'
-        e = d.values(:);
+        e = d.values;
       otherwise
         error ("@dict/subsref: invalid property \"%s\"", fld);
       endswitch

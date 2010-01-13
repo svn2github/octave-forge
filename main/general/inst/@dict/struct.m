@@ -28,6 +28,6 @@ function s = struct (d)
   if (all (valid))
     s = cell2struct (d.values, keys, 3);
   else
-    error ("@dict/struct: invalid key value: %s", keys{find (! valid, 1)});
+    error ("struct: invalid key value: %s", keys{find (! valid, 1)});
   endif
 endfunction

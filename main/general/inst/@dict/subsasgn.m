@@ -55,9 +55,7 @@ function d = subsasgn (d, s, val)
           keys = d.keys.';
           d.keys = [keys(1:i), {ind}, keys(i+1:end)].';
           ## Insert value.
-          values = d.values(:).';
-          values = [values(1:i), {val}, values(i+1:end)];
-          d.values = reshape (values, 1, 1, length (values));
+          d.values = [values(1:i); {val}; values(i+1:end)];
         endif
       elseif (iscellstr (ind))
         ## Multiple assignment case. Perform checks.
@@ -70,16 +68,12 @@ function d = subsasgn (d, s, val)
           i = i(i != 0);
           d.keys(i) = [];
           d.values(i) = [];
-          ## Deleting can screw up the shapes.
-          d.keys = d.keys(:);
-          d.values = reshape (d.values, 1, 1, length (d.values));
         elseif (iscell (val))
-          if (isscalar (val))
-            val = val(ones (1, numel (ind)));
+          if (numel (val) == 1)
+            val = repmat (val, size (ind));
           elseif (numel (ind) != numel (val))
             error ("numbers of elements of index and rhs must match");
           endif
-          ind = ind(:); val = val(:);
           ## Choose from two paths.
           if (numel (ind) < numel (d.keys))
             ## Scarce assignment. There's a good chance that all keys will be present.
@@ -90,14 +84,14 @@ function d = subsasgn (d, s, val)
             else
               d.values(i(mask)) = val(mask);
               mask = !mask;
-              [d.keys, i] = sort ([d.keys; ind(mask)]);
-              d.values = [d.values; val(mask)](i);
+              [d.keys, i] = sort ([d.keys; ind(mask)(:)]);
+              d.values = [d.values; val(mask)(:)](i);
             endif
           else
             ## Mass assignment. Probably most of the keys are new ones, so simply
             ## melt all together.
-            [d.keys, i] = unique ([d.keys; ind]);
-            d.values = [d.values; val](i);
+            [d.keys, i] = unique ([d.keys; ind(:)]);
+            d.values = [d.values; val(:)](i);
           endif
         else
           error ("expected cell rhs for cell index");

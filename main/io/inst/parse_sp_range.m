@@ -21,7 +21,7 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-06-20
-## Latest update 2009-12-13
+## Latest update 2010-01-13
 
 function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
 
@@ -88,7 +88,7 @@ function [topleft, nrows, ncols, toprow, lcol] = parse_sp_range (range_org)
 		endwhile
 
 		# Check
-		ncols = rcol - lcol + 1
+		ncols = rcol - lcol + 1;
 		if (ncols < 1) 
 			range_error = 1; 
 		endif

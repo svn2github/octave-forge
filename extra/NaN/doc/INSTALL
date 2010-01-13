@@ -5,28 +5,29 @@ a) Extract files and save them in /your/directory/structure/to/NaN/
 
 b) Include the path with one of the following commands: 
 	addpath('/your/directory/structure/to/NaN/')
-	path('/your/directory/structure/to/NaN/',path)
-   Make sure the functions in the NaN-toolbox are found before the default functions.  
-	
+	addpath('/your/directory/structure/to/NaN/inst')
+	addpath('/your/directory/structure/to/NaN/src')
+
+   The NaN-toolbox redefines some standard functions like mean, var, std, cor, cov, corrcoef, etc.
+   You can avoid this by including the directories at the end of the path
+   
+	addpath('/your/directory/structure/to/NaN/','-end')
+	addpath('/your/directory/structure/to/NaN/inst','-end')
+	addpath('/your/directory/structure/to/NaN/src','-end')
+
+   Make sure the functions in the NaN-toolbox are found before the default functions.
+
 c) run NANINSTTEST 
-This checks whether the installation was successful. 
+This checks whether the installation was successful.
 
-d) [OPTIONAL]: 
-  For support of weighted statistics, you need the MEX-version of SUMSKIPNAN and COVM. 
-  Some precompiled binaries are provided. If your platform is not supported, 
-  compile the C-Mex-functions SUMSKIPNAN_MEX.CPP and COVM_MEX.CPP using
-    mex sumskipnan_mex.cpp
-    mex covm_mex.cpp
-    mex histo_mex.cpp
-  or for Octave use the mex-file.
-    mkoctfile --mex sumskipnan_mex.cpp
-    mkoctfile --mex covm_mex.cpp
-    mkoctfile --mex histo_mex.cpp
+d) [OPTIONAL]:
+  Several mex-files are strongly recommened. 	
+  Run MAKE from the directory .../NaN/src/ 	
 
-  Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.  
+  Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.
 
-
-	$Id$
-	Copyright (c) 2000-2003,2005,2006,2009 by Alois Schloegl <a.schloegl@ieee.org>
-	WWW: http://hci.tugraz.at/~schloegl/matlab/NaN/
+  $Id$
+  Copyright (c) 2000-2003,2005,2006,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
+  This is part of the NaN-toolbox
+  http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
 

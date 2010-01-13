@@ -152,6 +152,7 @@ endfunction
 ## 2009-12-11
 ## 2010-01-12 Fixed typearr sorting out (was only 1-dim & braces rather than parens))
 ##            Set cells corresponding to empty array cells empty (cf. Matlab)
+## 2010-01-13 Removed a extraneous statement used for debugging 
 
 function [ xls, status ] = oct2com2xls (obj, xls, wsh, top_left_cell='A1')
 
@@ -189,7 +190,6 @@ function [ xls, status ] = oct2com2xls (obj, xls, wsh, top_left_cell='A1')
 	
 	# Cleanup NaNs. Start with backing up strings, empty & boolean cells,
 	# then set text cells to 0
-	obj
 	obj2 = cell (size (obj));
 	txtptr = cellfun ('isclass', obj, 'char');
 	if (any (any (txtptr))) obj2(txtptr) = obj(txtptr); obj(txtptr) = 0; endif

@@ -57,7 +57,7 @@
 function d = dict (keys, values)
 
   if (nargin == 0)
-    d = struct ("keys", {cell(0, 1)}, "values", {cell(0, 1)});
+    keys = values = {};
   elseif (nargin == 1)
     if (iscellstr (keys))
       keys = sort (keys(:));

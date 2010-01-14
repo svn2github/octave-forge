@@ -4,7 +4,7 @@ $Id$
 Copyright (c) 2000-2009 Chih-Chung Chang and Chih-Jen Lin
 Copyright (c) 2010 Alois Schloegl <a.schloegl@ieee.org>
 This function is part of the NaN-toolbox
-http:/*hci.tugraz.at/~schloegl/matlab/NaN/
+http://hci.tugraz.at/~schloegl/matlab/NaN/
 
 This code was extracted from libsvm-mat-2.9-1 in Jan 2010 and 
 modified for the use with Octave 
@@ -20,7 +20,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, see <http:/*www.gnu.org/licenses/>.
+along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 
 Copyright (c) 2000-2009 Chih-Chung Chang and Chih-Jen Lin
@@ -53,11 +53,6 @@ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-Copyright (C) 2010 Alois Schloegl <a.schloegl@ieee.org>
-This function is part of the NaN-toolbox
-http:/*hci.tugraz.at/~schloegl/matlab/NaN/
-
 
 */
 
@@ -368,7 +363,7 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 		mwIndex *ir, *jc;
 		mxArray *pprhs[1], *pplhs[1];
 
-		/* transpose SV
+		/* transpose SV */
 		pprhs[0] = rhs[id];
 		if(mexCallMATLAB(1, pplhs, 1, pprhs, "transpose")) 
 		{

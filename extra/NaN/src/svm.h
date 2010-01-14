@@ -1,5 +1,8 @@
 /*
 This code was extracted from libsvm-mat-2.9-1 in Jan 2010 
+Copyright (C) 2010 Alois Schloegl <a.schloegl@ieee.org>
+This function is part of the NaN-toolbox
+http://hci.tugraz.at/~schloegl/matlab/NaN/
 
 Copyright (c) 2000-2009 Chih-Chung Chang and Chih-Jen Lin
 All rights reserved.
@@ -31,10 +34,6 @@ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
 LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-Copyright (C) 2010 Alois Schloegl <a.schloegl@ieee.org>
-This function is part of the NaN-toolbox
-http:/*hci.tugraz.at/~schloegl/matlab/NaN/
 
 
 */

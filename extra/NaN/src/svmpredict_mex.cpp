@@ -33,10 +33,10 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "mex.h"
 #include "svm_model_matlab.h"
 
-#ifdef MX_API_VER
-#if MX_API_VER < 0x07030000
-typedef int mwIndex;
-#endif
+#ifdef tmwtypes_h
+  #if (MX_API_VER<=0x07020000)
+    typedef int mwSize;
+  #endif 
 #endif 
 
 #define CMD_LEN 2048

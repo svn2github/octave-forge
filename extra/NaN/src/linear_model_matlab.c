@@ -31,10 +31,10 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "mex.h"
 
-#ifdef MX_API_VER
-#if MX_API_VER < 0x07030000
-typedef int mwIndex;
-#endif
+#ifdef tmwtypes_h
+  #if (MX_API_VER<=0x07020000)
+    typedef int mwSize;
+  #endif 
 #endif 
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
@@ -61,14 +61,14 @@ const char *model_to_matlab_structure(mxArray *plhs[], struct model *model_)
 
 	rhs = (mxArray **)mxMalloc(sizeof(mxArray *)*NUM_OF_RETURN_FIELD);
 
-	// Parameters
-	// for now, only solver_type is needed
+	/* Parameters */
+	/* for now, only solver_type is needed */
 	rhs[out_id] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	ptr = mxGetPr(rhs[out_id]);
 	ptr[0] = model_->param.solver_type;
 	out_id++;
 
-	// nr_class
+	/* nr_class */
 	rhs[out_id] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	ptr = mxGetPr(rhs[out_id]);
 	ptr[0] = model_->nr_class;
@@ -79,13 +79,13 @@ const char *model_to_matlab_structure(mxArray *plhs[], struct model *model_)
 	else
 		nr_w=model_->nr_class;
 
-	// nr_feature
+	/* nr_feature */
 	rhs[out_id] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	ptr = mxGetPr(rhs[out_id]);
 	ptr[0] = model_->nr_feature;
 	out_id++;
 
-	// bias
+	/* bias */
 	rhs[out_id] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	ptr = mxGetPr(rhs[out_id]);
 	ptr[0] = model_->bias;
@@ -97,7 +97,7 @@ const char *model_to_matlab_structure(mxArray *plhs[], struct model *model_)
 		n=model_->nr_feature;
 
 	w_size = n;
-	// Label
+	/* Label */
 	if(model_->label)
 	{
 		rhs[out_id] = mxCreateDoubleMatrix(model_->nr_class, 1, mxREAL);
@@ -109,7 +109,7 @@ const char *model_to_matlab_structure(mxArray *plhs[], struct model *model_)
 		rhs[out_id] = mxCreateDoubleMatrix(0, 0, mxREAL);
 	out_id++;
 
-	// w
+	/* w */
 	rhs[out_id] = mxCreateDoubleMatrix(nr_w, w_size, mxREAL);
 	ptr = mxGetPr(rhs[out_id]);
 	for(i = 0; i < w_size*nr_w; i++)
@@ -150,12 +150,12 @@ const char *matlab_matrix_to_model(struct model *model_, const mxArray *matlab_s
 	model_->w=NULL;
 	model_->label=NULL;
 
-	// Parameters
+	/* Parameters */
 	ptr = mxGetPr(rhs[id]);
 	model_->param.solver_type = (int)ptr[0];
 	id++;
 
-	// nr_class
+	/* nr_class */
 	ptr = mxGetPr(rhs[id]);
 	model_->nr_class = (int)ptr[0];
 	id++;
@@ -165,12 +165,12 @@ const char *matlab_matrix_to_model(struct model *model_, const mxArray *matlab_s
 	else
 		nr_w=model_->nr_class;
 
-	// nr_feature
+	/* nr_feature */
 	ptr = mxGetPr(rhs[id]);
 	model_->nr_feature = (int)ptr[0];
 	id++;
 
-	// bias
+	/* bias */
 	ptr = mxGetPr(rhs[id]);
 	model_->bias = (int)ptr[0];
 	id++;

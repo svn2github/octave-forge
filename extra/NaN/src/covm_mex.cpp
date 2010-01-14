@@ -42,7 +42,9 @@
 //-------------------------------------------------------------------
 */
 
-#include <inttypes.h>
+#ifdef __GNUC__ 
+        #include <inttypes.h>
+#endif
 #include <math.h>
 #include "mex.h"
 
@@ -52,13 +54,13 @@
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
     	double 		*X0,*Y0=NULL,*X,*Y,*W=NULL;
-    	double	 	*CC;
+    	double	 	*CC,cc,nw;
     	double 		*NN=NULL;
 
     	size_t		rX,cX,rY,cY,nW = 0;
-    	size_t    	i,j,k;	// running indices 
+    	size_t    	i,j,k,nn; 
 	char	 	flag_isNaN = 0, flag_speed=0;
-
+        int             ACC_LEVEL;
 
 	/*********** check input arguments *****************/
 
@@ -115,7 +117,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			mexErrMsgTxt("number of elements in W must match numbers of rows in X");
 	}
         
-	int ACC_LEVEL = 0;
+#ifdef __GNUC__
+	ACC_LEVEL = 0;
 	{
 		mxArray *LEVEL = NULL;
 		int s = mexCallMATLAB(1, &LEVEL, 0, NULL, "flag_accuracy_level");
@@ -125,7 +128,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		mxDestroyArray(LEVEL);
 	}
 	// mexPrintf("Accuracy Level=%i\n",ACC_LEVEL);
-
+#endif 
 	if (Y0==NULL) {
 		Y0 = X0; 
 		rY = rX;
@@ -206,7 +209,10 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	}
 	
 #else
-   if (ACC_LEVEL == 0) {
+#ifdef __GNUC__
+   if (ACC_LEVEL == 0) 
+#endif
+   {
 	/*------ version 2 --------------------- 
 	         using naive summation with double accuracy [1] 
 	*/
@@ -217,8 +223,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=0; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		double cc=0.0;
-		double nn=0.0;
+		cc=0.0;
+		nw=0.0;
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
 			if (isnan(z)) {
@@ -228,19 +234,19 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				continue;
 			}
 			cc += z*W[k];
-			nn += W[k];
+			nw += W[k];
 		}	
 		CC[i+j*cX] = cc; 
 		if (NN != NULL) 
-			NN[i+j*cX] = nn; 
+			NN[i+j*cX] = nw; 
 	    }
 	    else /* no weights, all weights are 1 */
   	    for (i=0; i<cX; i++)
 	    for (j=0; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		double cc=0.0;
-		size_t nn=0;
+		cc=0.0;
+		nn=0;
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
 			if (isnan(z)) {
@@ -263,8 +269,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=i; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		double cc=0.0;
-		double nn=0.0;
+		cc=0.0;
+		nw=0.0;
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
 			if (isnan(z)) {
@@ -274,13 +280,13 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				continue;
 			}
 			cc += z*W[k];
-			nn += W[k];
+			nw += W[k];
 		}	
 		CC[i+j*cX] = cc; 
 		CC[j+i*cX] = cc; 
 		if (NN != NULL) {
-			NN[i+j*cX] = nn; 
-			NN[j+i*cX] = nn; 
+			NN[i+j*cX] = nw; 
+			NN[j+i*cX] = nw; 
 		}	
 	    }
 	    else /* no weights, all weights are 1 */
@@ -288,8 +294,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    for (j=i; j<cY; j++) {
 		X = X0+i*rX;
 		Y = Y0+j*rY;
-		double cc=0.0;
-		size_t nn=0;
+		cc=0.0;
+		nn=0;
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
 			if (isnan(z)) {
@@ -310,6 +316,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	    }
 
     }
+
+#ifdef __GNUC__
+
     else if (ACC_LEVEL == 1) {
 	/*------ version 2 --------------------- 
 	         using naive summation with extended accuracy [1] 
@@ -708,7 +717,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		}	
 	    }
     }
-
+#endif
 
 #ifndef NO_FLAG
 	//mexPrintf("Third argument must be not empty - otherwise status whether a NaN occured or not cannot be returned.");
@@ -718,18 +727,19 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if  (flag_isNaN && (PInputCount > 2) && mxGetNumberOfElements(PInputs[2])) {
     		// set FLAG_NANS_OCCURED 
     		switch (mxGetClassID(PInputs[2])) {
-    		case mxLOGICAL_CLASS:
-    		case mxCHAR_CLASS:
-    		case mxINT8_CLASS:
-    		case mxUINT8_CLASS:
-    			*(uint8_t*)mxGetData(PInputs[2]) = 1;
-    			break; 
     		case mxDOUBLE_CLASS:
     			*(double*)mxGetData(PInputs[2]) = 1.0;
     			break; 
     		case mxSINGLE_CLASS:
     			*(float*)mxGetData(PInputs[2]) = 1.0;
     			break; 
+    		case mxLOGICAL_CLASS:
+    		case mxCHAR_CLASS:
+    		case mxINT8_CLASS:
+    		case mxUINT8_CLASS:
+    			*(char*)mxGetData(PInputs[2]) = 1;
+    			break; 
+#ifdef __GNUC__ 
     		case mxINT16_CLASS:
     		case mxUINT16_CLASS:
     			*(uint16_t*)mxGetData(PInputs[2]) = 1;
@@ -746,6 +756,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     		case mxUNKNOWN_CLASS:
     		case mxCELL_CLASS:
     		case mxSTRUCT_CLASS:
+#endif
+    		default: 
     			mexPrintf("Type of 3rd input argument cannot be used to return status of NaN occurence.");
 		}
 	}

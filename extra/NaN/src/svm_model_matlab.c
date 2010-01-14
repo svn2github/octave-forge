@@ -63,10 +63,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "mex.h"
 
-#ifdef MX_API_VER
-#if MX_API_VER < 0x07030000
-typedef int mwIndex;
-#endif
+#ifdef tmwtypes_h
+  #if (MX_API_VER<=0x07020000)
+    typedef int mwSize;
+  #endif 
 #endif 
 
 #define NUM_OF_RETURN_FIELD 10

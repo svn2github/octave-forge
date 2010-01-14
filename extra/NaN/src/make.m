@@ -7,20 +7,21 @@
 
 % add -largeArrayDims on 64-bit machines
 
+fprintf(1,'!!!!!!!\n\tPlease note, not all functions might compile. \n!!!!!!!\n')
 mex covm_mex.cpp
-mex histo_mex.cpp
 mex sumskipnan_mex.cpp
+mex histo_mex.cpp
 mex -c svm.cpp
 mex -c svm_model_matlab.c
 mex -c tron.cpp
 mex -c linear.cpp
 mex -c linear_model_matlab.c
 if strcmp(computer,'PCWIN')
-	mex svmtrain.cpp svm.obj svm_model_matlab.obj
+	mex svmtrain_mex.cpp svm.obj svm_model_matlab.obj
 	mex svmpredict_mex.cpp svm.obj svm_model_matlab.obj
 	mex train.c tron.obj linear.obj linear_model_matlab.obj 
 else
-	mex svmtrain.cpp svm.o svm_model_matlab.o
-	mex svmpredict_mex.cpp svm.o svm_model_matlab.o
-	mex train.c tron.o linear.o linear_model_matlab.o 
+	mex -cxx svmtrain_mex.c svm.o svm_model_matlab.o 
+	mex -cxx svmpredict_mex.cpp svm.o svm_model_matlab.o
+	mex -cxx train.c tron.o linear.o linear_model_matlab.o 
 end; 

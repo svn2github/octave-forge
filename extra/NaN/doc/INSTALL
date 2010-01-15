@@ -4,27 +4,32 @@ Installing the NaN-tb for Octave and Matlab:
 a) Extract files and save them in /your/directory/structure/to/NaN/
 
 b) Include the path with one of the following commands: 
-	addpath('/your/directory/structure/to/NaN/')
-	addpath('/your/directory/structure/to/NaN/inst')
-	addpath('/your/directory/structure/to/NaN/src')
+
+        HOME = getenv('HOME');   % if needed, change path to /your/directory/structure/to/
+
+	addpath([HOME,'/NaN/')
+	addpath([HOME,'/NaN/inst')
+	addpath([HOME,'/NaN/src')
 
    The NaN-toolbox redefines some standard functions like mean, var, std, cor, cov, corrcoef, etc.
    You can avoid this by including the directories at the end of the path
    
-	addpath('/your/directory/structure/to/NaN/','-end')
-	addpath('/your/directory/structure/to/NaN/inst','-end')
-	addpath('/your/directory/structure/to/NaN/src','-end')
+	addpath([HOME,'/NaN/','-end')
+	addpath([HOME,'/NaN/inst','-end')
+	addpath([HOME,'/NaN/src','-end')
 
    Make sure the functions in the NaN-toolbox are found before the default functions.
 
-c) run NANINSTTEST 
+c) Several mex-files are strongly recommened. 	
+   Run MAKE from the directory .../NaN/src/ 	
+
+   This is well tested on Linux, but might not work completely on other platforms. 
+   Specifically, not all functions will compile on Windows, still the toolbox can be used.  
+   (covm_mex and sumskipnan_mex are strongly recommended for performance reasons, 
+   train.mex and svmtrain_mex are   
+
+d) run NANINSTTEST 
 This checks whether the installation was successful.
-
-d) [OPTIONAL]:
-  Several mex-files are strongly recommened. 	
-  Run MAKE from the directory .../NaN/src/ 	
-
-  Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.
 
   $Id$
   Copyright (c) 2000-2003,2005,2006,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>

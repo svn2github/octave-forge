@@ -19,9 +19,9 @@ mex -c linear_model_matlab.c
 if strcmp(computer,'PCWIN')
 	mex svmtrain_mex.cpp svm.obj svm_model_matlab.obj
 	mex svmpredict_mex.cpp svm.obj svm_model_matlab.obj
-	mex train.cpp tron.obj linear.obj linear_model_matlab.obj 
+	mex train.c tron.obj linear.obj linear_model_matlab.obj 
 else
 	mex svmtrain_mex.cpp svm.o svm_model_matlab.o 
 	mex svmpredict_mex.cpp svm.o svm_model_matlab.o
-	mex train.cpp tron.o linear.o linear_model_matlab.o 
+	mex train.c tron.o linear.o linear_model_matlab.o 
 end; 

@@ -64,9 +64,10 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-29
-## Last updates
+## Updates:
 ## 2010-01-03 Added OOXML support
 ## 2010-01-10 Changed (java) interface preference order to COM->POI->JXL
+## 2010-01-16 Removed echoeing debug info in POI stanza
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -160,8 +161,10 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 				wb = java_new ('org.apache.poi.hssf.usermodel.HSSFWorkbook');
 			elseif (chk2)
 				wb = java_new ('org.apache.poi.xssf.usermodel.XSSFWorkbook');
+			else
+				# Nothing; we let the user encounter the full java error text
 			endif
-			xls.app = 'new_POI'
+			xls.app = 'new_POI';
 		else
 			try
 				xlsin = java_new ('java.io.FileInputStream', filename);
@@ -258,7 +261,7 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-29
-## Last updated 2009-12-27
+## Last updated 2009-12-27 Make sure proper dimensions are checked in parsed javaclasspath
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -294,6 +297,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			# If we get here, at least Java works. Now check for proper entries
 			# in class path. Under *nix the classpath must first be split up
 			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
+			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
 			# Check basic .xls (BIFF8) support
 			jpchk1 = 0; entries1 = {"rt.jar", "poi-3", "poi-ooxml"};
 			for ii=1:size (tmp1, 2)
@@ -331,6 +335,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			# If we get here, at least Java works. Now check for proper entries
 			# in class path. Under unix the classpath must first be split up
 			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
+			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
 			jpchk = 0; entries = {"rt.jar", "jxl.jar"};
 			for ii=1:size (tmp1, 2)
 				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");

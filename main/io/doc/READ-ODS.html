@@ -7,11 +7,13 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091229;22213000">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20091230;17155100">
+	<META NAME="CHANGED" CONTENT="20100117;20543700">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<STYLE TYPE="text/css">
 	<!--
@@ -31,7 +33,7 @@ support for Octave</B></U></FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>This
-version December 29, 2009</FONT></FONT></P>
+version January 14, 2010</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I>(ODS
@@ -53,6 +55,12 @@ text data into separate arrays.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-left: 1.98in; text-indent: -1.98in; margin-bottom: 0in">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>odswrite.m</B></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">No-hassle
+write script for writing to an ODS file.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 1.98in; text-indent: -1.98in; margin-bottom: 0in">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>odsopen.m</B></I></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 1.98in; text-indent: -1.98in; margin-bottom: 0in">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Get
@@ -65,9 +73,16 @@ raw data from an ODS spreadsheet file using the file pointer handed
 by odsopen.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in"><BR>
 </P>
+<P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>oct2ods.m</B></I></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Write
+data to an ODS spreadsheet file using the file pointer handed by
+odsopen.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in"><BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>odsclose.m</B></I></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Close
-file handle made by odsopen.</FONT></FONT></P>
+file handle made by odsopen and -if data have been transfered to a
+spreadsheet- save data.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>odsfinfo.m</B></I></FONT></FONT></P>
@@ -109,6 +124,8 @@ Linux:</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">octave
 	with java package (&gt;= 1.2.5; earlier versions not tested)</FONT></FONT></P>
 </UL>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">For
 ODS access, you'll need one of the following java class files</FONT></FONT></P>
 <UL>
@@ -135,7 +152,7 @@ ODS access, you'll need one of the following java class files</FONT></FONT></P>
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">from
 	your local java installation (jre or jdk) must be referenced with
 	full pathnames in your javaclasspath. Hint: add it in
-	./share/octave/&lt;version&gt;/m/startup/octavercusing appropriate
+	./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate
 	javaaddpath statements.</SPAN></FONT></FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
@@ -162,6 +179,12 @@ that do file access and the actual reading, plus </SPAN></FONT></FONT></SPAN><SP
 post-processing.</SPAN></FONT></FONT></SPAN></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odswrite</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">works
+similar to xlswrite. It too is a wrapper for scripts which do the
+actual work and invoke other scripts.</SPAN></FONT></FONT></SPAN></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsfinfo</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
 </SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">can
 be used to explore odsfiles with unknown content for sheet names and
@@ -180,6 +203,9 @@ a time, odsopen / ods2oct [/parsecell] / &hellip; / odsclose
 sequences provides for much more speed and flexibility as the
 spreadsheet needs to be read just once rather than repeatedly for
 each call to odsread.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Same
+reasoning goes for odswrite.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
@@ -190,10 +216,17 @@ get multiple spreadsheet file pointers.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Moreover,
+after adding data to an existing spreadsheet file, you can fiddle
+with the filename in the ods file pointer struct to save the data
+into another, possibly new spreadsheet file.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">If
 you use odsopen / ods2oct / &hellip; / odsclose, DO NOT FORGET to
 invoke odsclose in the end. The file pointers can contain an enormous
-amount of data and may unneededly keep precious memory allocated.</FONT></FONT></P>
+amount of data and may needlessly keep precious memory allocated.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.01in; margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>GOTCHAS</B></U></FONT></FONT></P>
@@ -201,13 +234,13 @@ amount of data and may unneededly keep precious memory allocated.</FONT></FONT><
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">I
-know of one big gotcha: reading dates (&amp; time).</FONT></FONT></P>
+know of one big gotcha: i.e. reading dates (&amp; time).</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Octave
 (as does Matlab) stores dates as a number representing the number of
-days since January 1, 0 (and as an aside ignores a.o. pope Gregorius'
+days since January 1, 0 (and as an aside ignores a.o. Pope Gregorius'
 intervention in 1582 when 10 days were simply skipped).</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">OpenOffice.org
@@ -230,23 +263,34 @@ spreadsheet. </FONT></FONT>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">So:
 you should carefully check what happens to date cells.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
-<BR>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">As
+octave has no &rdquo;date&rdquo; or &ldquo;time&rdquo; data type,
+octave date values (usually numerical data) are simply transferred as
+&ldquo;floats&rdquo; to ODS spreadsheets. You'll have to convert the
+values into dates yourself from within OpenOffice.org.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">While
+adding data and time values has been implemented in the write
+scripts, the wait is for clever solutions to distinguish dates from
+floats in octave cell arrays.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Smaller
 gotcha's (only with jOpenDocument):</FONT></FONT></P>
 <UL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">Sometimes
-	empty cells are not skipped but interpreted with numerical value 0
-	(zero).</SPAN></FONT></FONT></SPAN></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">A
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">While
+	reading, empty cells are sometimes not skipped but interpreted with
+	numerical value 0 (zero).</FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">A
 	valid range MUST be specified, I haven't found a way to discover the
 	actual occupied rows and columns (jOpenDocument can give the
-	physical (= capacity) but that doesn't help).</SPAN></FONT></FONT></SPAN></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">Sheet
-	names cannot be extracted yet, so odsfinfo won't work with
-	jOpenDocument.</SPAN></FONT></FONT></SPAN></P>
+	physical ones (= capacity) but that doesn't help).</FONT></FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
@@ -261,12 +305,11 @@ COMPATIBILITY</B></U></FONT></FONT></P>
 there's no similar functionality in Matlab (yet?).</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">odsread
-is fairly function-compatible to xlsread, however. </FONT></FONT>
-</P>
+is fairly function-compatible to xlsread, however.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Same
-goes for odsfinfo and xlsfinfo &ndash; however odsinfo has better
-functionality IMO.</FONT></FONT></P>
+goes for odswrite, odsfinfo and xlsfinfo &ndash; however odsinfo has
+better functionality IMO.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
@@ -278,20 +321,20 @@ OF INTERFACES</B></U></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
 ODFtoolkit (&amp; associated xerces) interface is the one that gives
-the best results at present. However, parsing xml trees into
-rectangular arrays can be a nightmare and odftoolkit does little to
-hide the gory details for the developers. </FONT></FONT>
-</P>
+the best (but slow) results at present. However, parsing xml trees
+into rectangular arrays is not quite straightforward and the other
+way round is a real nightmare; odftoolkit does little to hide the
+gory details for the developers.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Reading
-is still OK, but writing implies checking whether cells already exist
-explicitly (in table:table-cells) or implicitly (in
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">While
+reading ODS is still OK, writing implies checking whether cells
+already exist explicitly (in table:table-cells) or implicitly (in
 number-columns-repeated or number-rows-repeated nodes) or not at all
 yet in which case you'll need to add various types of parent nodes.
 Inserting new cells (&ldquo;nodes&rdquo;) or deleting nodes implies
 rebuilding possibly large parts of the tree in memory - nothing for
-the faint-of-heart. And odftoolkit lets you sort out most of this all
-by yourself.</FONT></FONT></P>
+the faint-of-heart. And odftoolkit lets you sort it out all by
+yourself.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
@@ -303,18 +346,18 @@ spreadsheet model.</FONT></FONT></P>
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">However,
 unfortunately the developers decided to shield essential methods by
 making them 'protected' (e.g. the vital getCellType). Extracting
-sheet names is not implemented (yet).</FONT></FONT></P>
+sheet names is not implemented in released versions (yet).</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">JopenDocument
 does support writing, however I couldn't reliably create new
-MutableCells beyond column 1 no matter how hard I tried. So there's
-still bugs.</FONT></FONT></P>
+MutableCells beyond column 1 no matter how hard I tried. The
+developers gave me hints but I haven't found a final solution yet.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">And
 last (but not least) the jOpenDocument developers state that their
 development is primarily driven by requests from customers who pay
 for support. I do sympathize with this business model but for octave
-needs this shuts the door for some time to come.</FONT></FONT></P>
+needs this may hamper progress for a while.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
@@ -333,8 +376,8 @@ straightforward.</FONT></FONT></P>
 for future development:</FONT></FONT></P>
 <UL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">ODS
-	write support (maybe when jOpenDocument is more mature)</FONT></FONT></P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Reliable
+	and easy ODS write support (maybe when jOpenDocument is more mature)</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Speeding
 	up</FONT></FONT></P>

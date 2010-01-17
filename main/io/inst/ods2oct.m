@@ -88,12 +88,12 @@
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
 ## Latest update of ods2oct: 2009-12-30
-## Latest update of functions below: 2010-01-05
+## Latest update of functions below: 2010-01-08
 
 function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[])
 
 	if (strcmp (ods.xtype, 'OTK'))
-		# Read xls file tru Java & ODF toolkit
+		# Read ods file tru Java & ODF toolkit
 		[rawarr, ods, rstatus] = ods2jotk2oct (ods, wsh, datrange);
 		
 	elseif (strcmp (ods.xtype, 'JOD'))
@@ -102,7 +102,7 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[])
 #	elseif ---- < Other interfaces here >
 
 	else
-		error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", xls.xtype));
+		error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
 
 	endif
 
@@ -133,7 +133,7 @@ endfunction
 
 ## Author: Philip Nenhuis <pr.nienhuis at users.sf.net>
 ## Created: 2009-12-24
-## Last update: 2010-01-05
+## Last update: 2010-01-08
 
 function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 
@@ -256,7 +256,7 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 							endif
 						case 'string'
 							tmp = char (tcell);
-							# Get string value from between <text:p|r> </text:p|r> tags
+							# Hack string value from between <text:p|r> </text:p|r> tags
 							ist = index (tmp, '<text');
 							if (ist)
 								ist = ist + 8; ien = index (tmp(ist:end), '</text') + ist - 2;
@@ -275,7 +275,7 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 
 		# Check for repeated rows (i.e. condensed in one table-row)
 		extrarows = row.getTableNumberRowsRepeatedAttribute () - 1;
-		if (extrarows > 1 && (ii + extrarows) < 65535)
+		if (extrarows > 0 && (ii + extrarows) < 65535)
 			# Expand rawarr cf. table-row
 			nr_of_rows = nr_of_rows + extrarows;
 			ii = ii + extrarows;
@@ -284,6 +284,10 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 			# Increase return argument size if needed
 			tmp = cell (extrarows, 1024);
 			rawarr = [rawarr; tmp];
+			# Copy repeated row contents over
+			for kk = ii+1:ii+extrarows
+				rawarr (kk, :) = rawarr (ii, :);
+			endfor
 		endif
 		
 	endwhile

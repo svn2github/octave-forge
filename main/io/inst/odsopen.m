@@ -56,7 +56,9 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
-## Last update: 2009-12-30
+## Updates: 
+## 2009-12-30
+## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -88,27 +90,27 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		endif
 	endif
 	
-	# Var xwrite is really used to avoid creating files when wanting to read, or
+	# Var rw is really used to avoid creating files when wanting to read, or
 	# not finding not-yet-existing files when wanting to write.
-	
-#	if (xwrite) xwrite = 1; endif		# Be sure it's either 0 or 1 initially
+
+	if (rw) rw = 1; endif		# Be sure it's either 0 or 1 initially
 
 	# Check if ODS file exists
-	# Write statements temporarily disabled!
+	# Write statements experimentally enabled!
 	fid = fopen (filename, 'rb');
 	if (fid < 0)
-#		if (~xwrite)
+		if (~rw)
 			err_str = sprintf ("File %s not found\n", filename);
 			error (err_str)
-#		else
-#			printf ("Creating file %s\n", filename);
-#			xwrite = 2;
-#		endif
+		else
+			printf ("Creating file %s\n", filename);
+			rw = 2;
+		endif
 	else
 		# close file anyway to avoid Java errors
 		fclose (fid);
 	endif
-	
+
 # Check for the various ODS interfaces. No problem if they've already
 # been checked, getodsinterfaces (far below) just returns immediately then.
 
@@ -123,14 +125,22 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
 	ods = struct ("xtype", [], "app", [], "filename", [], "workbook", [], "changed", 0, "limits", []);
 
+	# Preferred interface = OTK (ODS toolkit & xerces), so it comes first. 
+
 	if (odsinterfaces.OTK)
 		# Parts after user gfterry in
 		# http://www.oooforum.org/forum/viewtopic.phtml?t=69060
-		wb = java_invoke ('org.odftoolkit.odfdom.doc.OdfDocument', 'loadDocument', filename);
+		if (rw == 2)
+			# New spreadsheet
+			wb = java_invoke ('org.odftoolkit.odfdom.doc.OdfSpreadsheetDocument', 'newSpreadsheetDocument');
+		else
+			# Existing spreadsheet
+			wb = java_invoke ('org.odftoolkit.odfdom.doc.OdfDocument', 'loadDocument', filename);
+		endif
+		ods.workbook = wb.getContentDom();		# Reads the entire spreadsheet
 		ods.xtype = 'OTK';
 		ods.app = wb;
 		ods.filename = filename;
-		ods.workbook = wb.getContentDom();		# Reads the entire spreadsheet
 
 	elseif (odsinterfaces.JOD)
 		file = java_new ('java.io.File', filename);
@@ -145,6 +155,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
 	else
 		warning ("No support for OpenOffice.org .ods I/O"); 
+		ods = [];
 
 	endif
 
@@ -193,7 +204,9 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-27
-## Last updated 2009-12-27
+## Updates:
+## 2010-01-14
+## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -212,6 +225,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			# If we get here, at least Java works. Now check for proper entries
 			# in class path. Under *nix the classpath must first be split up
 			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
+			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
 			jpchk = 0; entries = {"rt.jar", "odfdom.jar", "xercesImpl.jar"};
 			for ii=1:size (tmp1, 2)
 				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
@@ -239,6 +253,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			# If we get here, at least Java works. Now check for proper entries
 			# in class path. Under unix the classpath must first be split up
 			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
+			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
 			jpchk = 0; entries = {"rt.jar", "jOpenDocument"};
 			for ii=1:size (tmp1, 2)
 				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");

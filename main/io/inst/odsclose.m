@@ -19,14 +19,33 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
-## Last update: 2009-12-27
+## Last update: 2010-01-08 (OTK ODS write support)
 
 function [ ods ] = odsclose (ods)
 
 	# If needed warn that dangling spreadsheet pointers may be left
 	if (nargout < 1) warning ("return argument missing - ods invocation not reset."); endif
-	
-	# Until proper ODS write support has been implemented, not much need be done
+
+	if (strcmp (ods.xtype, 'OTK'))
+		# Java & ODF toolkit
+		if (ods.changed), ods.app.save (ods.filename); endif
+		ods.app.close ();
+
+	elseif (strcmp (ods.xtype, 'JOD'))
+		# Java & jOpenDocument
+		if (ods.changed)
+			ofile = java_new ('java.io.File', ods.filename);
+			ods.workbook.saveAs (ofile);
+		endif
+
+#	elseif ---- < Other interfaces here >
+
+	else
+		error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
+
+	endif
+
+	# Reset file pointer
 	ods = [];
 
 endfunction

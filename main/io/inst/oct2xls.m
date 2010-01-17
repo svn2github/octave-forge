@@ -21,8 +21,8 @@
 ##
 ## Add data in 1D/2D CELL array @var{arr} into a range with upper left
 ## cell equal to @var{topleft} in worksheet @var{wsh} in an Excel
-## spreadsheet file pointed to in structure @var{range}.
-## Return argument @var{xlso} equals supplied argument @var{xlsi} and is
+## spreadsheet file pointed to in structure @var{xls}.
+## Return argument @var{xls} equals supplied argument @var{xls} and is
 ## updated by oct2xls.
 ##
 ## A subsequent call to xlsclose is needed to write the updated spreadsheet
@@ -65,7 +65,7 @@
 ##   [xlso, status] = xls2oct ('arr', xlsi, 'Third_sheet', 'AA31');
 ## @end example
 ##
-## @seealso xls2oct, xlsopen, xlsclose, xlsread, xlswrite, oct2com2xls, oct2jpoi2xls, oct2jxla2xls
+## @seealso xls2oct, xlsopen, xlsclose, xlsread, xlswrite, xlsfinfo
 ##
 ## @end deftypefn
 

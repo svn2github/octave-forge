@@ -61,7 +61,7 @@
 ## ignored.
 ##
 ## The optional last argument @var{reqintf} can be used to override 
-## the automatic selection by xlsread of one interface out of the
+## the automatic selection by xlswrite of one interface out of the
 ## supported ones: COM/Excel, Java/Apache POI, or Java/JExcelAPI.
 ## For writing to OOXML files (.xlsx) a value of 'poi' (case-insensitive)
 ## must be specified for @var{reqintf}.
@@ -92,6 +92,7 @@
 ## Updates:
 ## 2010-01-04 (Adapted range capacity checks to OOXML)
 ## 2010-01-12 (Bug fix; added unwind_protect to xlsopen...xlsclose calls)
+## 2010-01-15 Fixed typos in texinfo
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
@@ -117,7 +118,11 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 		if (isnumeric (arg3) || (isempty (findstr (arg3, ':')) && ~isempty (arg3)))
 			# Apparently a worksheet specified
 			wsh = arg3;
-			range = "A1:IV65536";		# FIXME for OOXML (larger sheet ranges)
+			if (strcmp (tolower (filename(end-4:end-1)), 'xls'))
+				range = "A1:XFD1048576";	# OOXML has ridiculously large limits 
+			else
+				range = "A1:IV65536";		# Regular xls limits
+			endif
 		else
 			# Range specified
 			wsh = 1;

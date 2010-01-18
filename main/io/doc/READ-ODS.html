@@ -7,11 +7,12 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091229;22213000">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100117;20543700">
+	<META NAME="CHANGED" CONTENT="20100118;21551300">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -33,7 +34,7 @@ support for Octave</B></U></FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>This
-version January 14, 2010</FONT></FONT></P>
+version January 18, 2010</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I>(ODS
@@ -127,7 +128,8 @@ Linux:</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">For
-ODS access, you'll need one of the following java class files</FONT></FONT></P>
+ODS access, you'll need to choose at least one of the following java
+class files collections:</FONT></FONT></P>
 <UL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(currently
 	the preferred option) <B>odfdom.jar</B> &amp; <B>xercesImpl.jar</B>.
@@ -234,9 +236,12 @@ amount of data and may needlessly keep precious memory allocated.</FONT></FONT><
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">I
-know of one big gotcha: i.e. reading dates (&amp; time).</FONT></FONT></P>
+know of one big gotcha: i.e. reading dates (&amp; time). A less
+obvious one is java memory pool allocation size.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
 </P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Date
+and time in ODS</B></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Octave
 (as does Matlab) stores dates as a number representing the number of
@@ -277,6 +282,53 @@ adding data and time values has been implemented in the write
 scripts, the wait is for clever solutions to distinguish dates from
 floats in octave cell arrays.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Java
+memory pool allocation size</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
+java virtual machine (JVM) initializes one big chunk of your
+computer's RAM in which all java classes and methods etc. are to be
+loaded: the java memory pool. It does this because java has a very
+sophisticated &ldquo;garbage collection&rdquo; system. At least on
+Windows, the initial size is 2MB and the maximum size is 64MB. On
+Linux this allocated size is much bigger. This part of memory is
+where the java-based ODS octave routines (and the java-based xls
+routines) live and keep their variables etc.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">For
+transferring large pieces of information to and from spreadsheets you
+might hit the limits of this pool. E.g. to be able to handle I/O of
+an array of around 50,000 cells I needed a memory pool size of 512
+MB.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
+memory size can be increased by inserting a file called &ldquo;java.opts&rdquo;
+(without quotes) in the directory
+./share/octave/packages/java-&lt;version&gt; (where the script file
+javaclasspath.m is located), containing just the following lines:</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><B>-Xms16m</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><B>-Xmx512m</B></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(where
+16 = initial size, 512 = maximum size, m stands for Megabyte).</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">After
+processing a large chunk of spreadsheet information you might notice
+that octave's memory footprint does not shrink so it looks like
+java's memory pool does not shrink back; but rest assured, the memory
+footprint is the <I>allocated</I><SPAN STYLE="font-style: normal">
+(reserved) memory size, not the actual used size. After the JVM has
+done its garbage collection, only the so-called &ldquo;working set&rdquo;
+of the memory allocation is really in use and that is a trimmed-down
+part of the memory allocation pool. On Windows systems it often
+suffices to minimize the octave terminal for a few seconds to get a
+more reasonable memory footprint.</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Smaller
@@ -380,7 +432,9 @@ for future development:</FONT></FONT></P>
 	and easy ODS write support (maybe when jOpenDocument is more mature)</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; text-decoration: none">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Speeding
-	up</FONT></FONT></P>
+	up (ODS is 10 X slower than e.g. OOXML !!!). jOpenDocument is
+	muchfasterbut </FONT></FONT>
+	</P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; text-decoration: none">&ldquo;<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">Passing
 	function handle&rdquo; a la Matlab's xlsread.</SPAN></FONT></FONT></P>
 </UL>
@@ -388,5 +442,11 @@ for future development:</FONT></FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="margin-left: 0.01in; margin-bottom: 0in; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Enjoy!</FONT></FONT></P>
+<P STYLE="margin-left: 0.26in; text-indent: -0.26in; margin-bottom: 0in">
+<BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-left: 0.26in; text-indent: -0.26in; margin-bottom: 0in; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Philip
+Nienhuis, Jan 18, 2010</FONT></FONT></P>
 </BODY>
 </HTML>

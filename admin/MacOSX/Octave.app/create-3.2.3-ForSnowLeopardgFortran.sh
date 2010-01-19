@@ -500,6 +500,10 @@ create_zlib() {
   cd $vpwd
 }
 
+# For gnuplot to work well we should build AquaTerm from SourceForge and make
+# sure gnuplot builds with AquaTerm support.  Read the INSTALL file and make sure
+# to make the sym links so gnuplot will find AquaTerm.  If AquaTerm is not included
+# then make sure the following is added to ~/.octaverc "setenv ("GNUTERM", "x11")".
 create_gnuplot() {
   vgnuplot=(gnuplot-4.2.6.tar.gz c10468d74030e8bed0fd6865a45cf1fd)
   tar -C ./work -vxzf ./work/${vgnuplot[0]} >> $vmsg 2>&1

@@ -94,7 +94,6 @@ function dateaxis (varargin)
   ticks = ticks - ticks(1) + startdate;
   ticks = datestr(ticks, dateform);
   ticks = mat2cell(ticks, ones(size(ticks,1),1), size(ticks,2));
-  keyboard
   set (h, [ax "ticklabel"], ticks);
 
 endfunction

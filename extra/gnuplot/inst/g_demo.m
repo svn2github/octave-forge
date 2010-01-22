@@ -10,6 +10,8 @@ function g_demo ()
   image_tpl =          "g_demo_plots-%i.eps"
 
   printf ("Plotting two dashed circles w/ a connection\n");
+  printf ("\n\tNote: You may need to resize the window to see the plots\n\n");
+
   gg = g_new("COL",3,"geometry",[256,256]);
   tt = linspace (0,2*pi,65); xx = [sin(tt);cos(tt)]';
   gg = g_data (gg,"-join","-step",3,"x",xx,xx/2);

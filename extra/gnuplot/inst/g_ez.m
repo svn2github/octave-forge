@@ -457,6 +457,8 @@ endfunction
 
 
 %!demo
+%! printf ("\n\tNote: You may need to resize the window to see the plots\n\n");
+%! %-------------------------------------------------
 %! im = rand(16,31); 
 %! im(3:10,5:25) = linspace(0,0.5,8)'*ones(1,21)+ones(8,1)*linspace(0,0.5,21);
 %! g_ez ("title","A random grey image","plot",im, "img")

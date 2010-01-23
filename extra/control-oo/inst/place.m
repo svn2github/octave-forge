@@ -1,4 +1,4 @@
-## Copyright (C) 2009   Lukas F. Reichlin
+## Copyright (C) 2009 - 2010   Lukas F. Reichlin
 ##
 ## This file is part of LTI Syncope.
 ##
@@ -59,26 +59,27 @@
 ## Special thanks to Peter Benner from TU Chemnitz for his advice.
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: December 2009
-## Version: 0.2
+## Version: 0.2.1
 
-function [f, nfp, nap, nup] = place (a, b, p = [], alpha = [])
+function [f, nfp, nap, nup] = place (a, b, p = [], alpha = [], tol = [])
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2 || nargin > 5)
     print_usage ();
   endif
 
-  if (isa (a, "lti"))  # place (sys, p), place (sys, p, alpha)
-    if (nargin > 3)  # nargin < 2 already tested
+  if (isa (a, "lti"))  # place (sys, p), place (sys, p, alpha), place (sys, p, alpha, tol)
+    if (nargin > 4)  # nargin < 2 already tested
       print_usage ();
     else
+      tol = alpha;
       alpha = p;
       p = b;
       sys = a;
       [a, b] = ssdata (sys);
       digital = ! isct (sys);  # treat tsam = -1 as continuous system
     endif
-  else  # place (a, b, p), place (a, b, p, alpha)
-    if (nargin < 3)  # nargin > 4 already tested
+  else  # place (a, b, p), place (a, b, p, alpha), place (a, b, p, alpha, tol)
+    if (nargin < 3)  # nargin > 5 already tested
       print_usage ();
     else
       if (! isnumeric (a) || ! isnumeric (b) || ! issquare (a) || rows (a) != rows (b))
@@ -111,8 +112,12 @@ function [f, nfp, nap, nup] = place (a, b, p = [], alpha = [])
       alpha = - norm (a, inf);
     endif
   endif
+  
+  if (isempty (tol))
+    tol = 0;
+  endif
 
-  [f, iwarn, nfp, nap, nup] = slsb01bd (a, b, wr, wi, digital, alpha);
+  [f, iwarn, nfp, nap, nup] = slsb01bd (a, b, wr, wi, digital, alpha, tol);
   f = -f;  # A + B*F --> A - B*F
   
   if (iwarn)
@@ -132,28 +137,29 @@ endfunction
 %!assert (place (ss (A, B, C), P), Kexpected, 2*eps);
 %!assert (place (A, B, P), Kexpected, 2*eps);
 
-## FIXME: Test from SLICOT example SB01BD fails
-#%!shared F, F_exp
-#%! A = [-6.8000   0.0000  -207.0000   0.0000
-#%!       1.0000   0.0000     0.0000   0.0000
-#%!      43.2000   0.0000     0.0000  -4.2000
-#%!       0.0000   0.0000     1.0000   0.0000];
-#%!
-#%! B = [ 5.6400   0.0000
-#%!       0.0000   0.0000
-#%!       0.0000   1.1800
-#%!       0.0000   0.0000];
-#%!
-#%! P = [(-0.5000 + 0.1500*i)
-#%!      (-0.5000 +-0.1500*i)
+## FIXME: Test from SLICOT example SB01BD fails with 4 eigenvalues in P
+%!shared F, F_exp
+%! A = [-6.8000   0.0000  -207.0000   0.0000
+%!       1.0000   0.0000     0.0000   0.0000
+%!      43.2000   0.0000     0.0000  -4.2000
+%!       0.0000   0.0000     1.0000   0.0000];
+%!
+%! B = [ 5.6400   0.0000
+%!       0.0000   0.0000
+%!       0.0000   1.1800
+%!       0.0000   0.0000];
+%!
+%! P = [(-0.5000 + 0.1500*i)
+%!      (-0.5000 +-0.1500*i)];
 #%!      (-2.0000 + 0.0000*i)
 #%!      (-0.4000 + 0.0000*i)];
-#%!
-#%! ALPHA = -0.4;
-#%!
-#%! F = place (A, B, P, ALPHA)
-#%!
-#%! F_exp = - [-0.0876  -4.2138   0.0837 -18.1412
-#%!            -0.0233  18.2483  -0.4259  -4.8120];
-#%!
-#%!assert (F, F_exp, 1e-4);
+%!
+%! ALPHA = -0.4;
+%! TOL = 1e-8;
+%!
+%! F = place (A, B, P, ALPHA, TOL);
+%!
+%! F_exp = - [-0.0876  -4.2138   0.0837 -18.1412
+%!            -0.0233  18.2483  -0.4259  -4.8120];
+%!
+%!assert (F, F_exp, 1e-4);

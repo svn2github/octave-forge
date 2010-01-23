@@ -23,7 +23,7 @@ Uses SLICOT SB01BD by courtesy of NICONET e.V.
 
 Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 Created: November 2009
-Version: 0.2
+Version: 0.2.1
 
 */
 
@@ -68,7 +68,7 @@ DEFUN_DLD (slsb01bd, args, nargout, "Slicot SB01BD Release 5.0")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 6)
+    if (nargin != 7)
     {
         print_usage ();
     }
@@ -83,6 +83,7 @@ DEFUN_DLD (slsb01bd, args, nargout, "Slicot SB01BD Release 5.0")
         NDArray wi = args(3).array_value ();
         int digital = args(4).int_value ();
         double alpha = args(5).double_value ();
+        double tol = args(6).double_value ();
         
         if (digital == 1)
             dico = 'D';
@@ -97,8 +98,6 @@ DEFUN_DLD (slsb01bd, args, nargout, "Slicot SB01BD Release 5.0")
         int ldb = max (1, b.rows ());
         int ldf = max (1, m);
         int ldz = max (1, n);
-        
-        double tol = 0;
         
         // arguments out
         int nfp;

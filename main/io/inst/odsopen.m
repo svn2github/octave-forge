@@ -59,6 +59,7 @@
 ## Updates: 
 ## 2009-12-30
 ## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
+## 2010-01-24 Added warning when trying to create a new spreadsheet using jOpenDocument
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -143,12 +144,17 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		ods.filename = filename;
 
 	elseif (odsinterfaces.JOD)
-		file = java_new ('java.io.File', filename);
-		wb = java_invoke ('org.jopendocument.dom.spreadsheet.SpreadSheet', 'createFromFile', file);
-		ods.xtype = 'JOD';
-		ods.app = 'file';
-		ods.filename = filename;
-		ods.workbook = wb;
+      file = java_new ('java.io.File', filename);
+      if (rw ==2)
+         warning ('No proper write support using jOpenDocument yet. Please use ODF toolkit (OTK).");
+      	ods = [];
+		else
+			wb = java_invoke ('org.jopendocument.dom.spreadsheet.SpreadSheet', 'createFromFile', file);
+			ods.xtype = 'JOD';
+			ods.app = 'file';
+			ods.filename = filename;
+			ods.workbook = wb;
+		endif
 		
 #	elseif 
 #		<other interfaces here>

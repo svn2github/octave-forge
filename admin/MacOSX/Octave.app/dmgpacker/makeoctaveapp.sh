@@ -22,7 +22,7 @@
 TARGETPLATFORM=i386 # can either be 'i386' or 'ppc'
 
 # This is the Octave version number of the Octave.app that is created.
-OCTAVEVERSION=3.2.2 # must be the version number of Octave
+OCTAVEVERSION=3.2.4 # must be the version number of Octave
 
 # This is the directory where all the dependencies are installed. Make
 # sure that there are no other files in this directory that are not

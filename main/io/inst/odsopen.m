@@ -146,7 +146,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 	elseif (odsinterfaces.JOD)
       file = java_new ('java.io.File', filename);
       if (rw ==2)
-         warning ('No proper write support using jOpenDocument yet. Please use ODF toolkit (OTK).");
+         warning ("No proper write support using jOpenDocument yet. Please use ODF toolkit (OTK).");
       	ods = [];
 		else
 			wb = java_invoke ('org.jopendocument.dom.spreadsheet.SpreadSheet', 'createFromFile', file);

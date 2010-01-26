@@ -274,7 +274,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     sgoal=(1-stol)*sprev;
     msk = dp ~= 0;
     prt(:, msk) = prt(:, msk) .* wt(:, ones (1, sum (msk)));
-    nrm(msk) = sumsq (prt(:, msk));
+    nrm(msk) = sumsq (prt(:, msk), 1);
     msk = nrm > 0;
     nrm(msk) = 1 ./ sqrt (nrm(msk));
     prt = prt .* nrm(ones (1, m), :);

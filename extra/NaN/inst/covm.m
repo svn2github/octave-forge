@@ -96,11 +96,6 @@ else
         [r2,c2]=size(X);
 end;
 
-if (c1>r1) || (c2>r2),
-        warning('Covariance is ill-defined, because of too few observations (rows)');
-end;
-
-
 persistent mexFLAG2; 
 persistent mexFLAG; 
 if isempty(mexFLAG2) 

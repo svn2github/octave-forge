@@ -705,7 +705,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                         else
                                 t = 0; 
                                 if length(MODE.TYPE)>7, t=MODE.TYPE(8)-'0'; end; 
-                                if (t<0 || t>4) t=0; end; 
+                                if (t<0 || t>6) t=0; end; 
                                 CC.options = sprintf('-s %i -B 1 -c %f -q',t, MODE.hyperparameter.c_value);      % C-SVC, C=1, linear kernel, degree = 1,
                         end;
                         model = train(W, cl, sparse(D), CC.options);    % C-SVC, C=1, linear kernel, degree = 1,
@@ -801,7 +801,7 @@ else          % Linear and Quadratic statistical classifiers
 	end;
 
         ECM = CC.MD./CC.NN;
-        NC  = size(ECM);
+        NC  = size(CC.MD);
         if strncmpi(MODE.TYPE,'LD',2) || strncmpi(MODE.TYPE,'FDA',3) || strncmpi(MODE.TYPE,'FLDA',3),
 
                 %if NC(1)==2, NC(1)=1; end;                % linear two class problem needs only one discriminant
@@ -809,32 +809,28 @@ else          % Linear and Quadratic statistical classifiers
                 type = MODE.TYPE(3)-'0';
 
                 ECM0 = squeeze(sum(ECM,3));  %decompose ECM
-                [M0,sd,COV0] = decovm(ECM0);
                 for k = 1:NC(3);
-                        ecm = squeeze(ECM(:,:,k));
-                        [M1,sd,COV1] = decovm(ECM0-ecm);
-                        N1 = ECM0(1,1)-ecm(1,1); 
-                        [M2,sd,COV2] = decovm(ecm);
-                        N2 = ecm(1,1); 
+                        ix = [1:k-1,k+1:NC(3)]; 
+                        dM = CC.MD(:,1,k)./CC.NN(:,1,k) - sum(CC.MD(:,1,ix),3)./sum(CC.NN(:,1,ix),3);
                         switch (type)
                                 case 2          % LD2
-                                        cov = (COV1+COV2)/2;
+                                        ecm0 = (sum(ECM(:,:,ix),3)/(NC(3)-1) + ECM(:,:,k));
                                 case 4          % LD4
-                                        cov = (COV1*N1+COV2*N2)/(N1+N2);
+                                        ecm0 = 2*(sum(ECM(:,:,ix),3) + ECM(:,:,k))/NC(3);
+                                        % ecm0 = sum(CC.MD,3)./sum(CC.NN,3);
                                 case 5          % LD5
-                                        cov = COV2;
+                                        ecm0 = ECM(:,:,k);
                                 case 6          % LD6
-                                        cov = COV1;
+                                        ecm0 = sum(CC.MD(:,:,ix),3)./sum(CC.NN(:,:,ix),3);
                                 otherwise       % LD3, LDA, FDA
-                                        cov = COV0; 
+                                        ecm0 = ECM0;
                         end
 	        	if isfield(MODE.hyperparameter,'gamma')
-	        		cov = cov + mean(diag(cov))*eye(size(cov))*MODE.hyperparameter.gamma;
-        		end	
+	        		ecm0 = ecm0 + mean(diag(ecm0))*eye(size(ecm0))*MODE.hyperparameter.gamma;
+        		end
 
-                        w = cov\(M2-M1)';
-                        w0    = -M0*w;
-                        CC.weights(:,k) = [w0; w];
+                        CC.weights(:,k) = ecm0\dM;
+
                 end;
 		%CC.weights = sparse(CC.weights);
 		

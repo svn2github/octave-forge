@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {} function chop (@var{x}, @var{tol})
+## @deftypefn{Function File} {} function ztvals (@var{x}, @var{tol})
 ## Replaces tiny elements of the vector @var{x} by zeros.
 ## Equivalent to 
 ## @example
@@ -25,7 +25,7 @@
 ## 1e-10 for double precision and 1e-5 for single precision inputs.
 ## @end deftypefn
 
-function x = chop (x, tol)
+function x = ztvals (x, tol)
   if (nargin == 1)
     if (isa (x, 'single'))
       tol = 1e-5;
@@ -39,7 +39,7 @@ function x = chop (x, tol)
   if (isfloat (x))
     x(abs(x) < tol*norm (x, Inf)) = 0;
   else
-    error ("chop: needs a floating-point argument");
+    error ("ztvals: needs a floating-point argument");
   endif
 
 endfunction

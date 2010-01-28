@@ -11,22 +11,24 @@ b) Include the path with one of the following commands:
 	addpath([HOME,'/NaN/inst')
 	addpath([HOME,'/NaN/src')
 
-   The NaN-toolbox redefines some standard functions like mean, var, std, cor, cov, corrcoef, etc.
-   You can avoid this by including the directories at the end of the path
+   Make sure the functions in the NaN-toolbox are found before the default functions.
+   The NaN-toolbox contains some functions like mean, var, std, cor, cov, and corrcoef 
+   which work equivalently than the orginal function - the only exception is that 
+   missing values (NaN) are skipped. [You can turn off that behavior by 
+   settting flag_implicit_skip_nan(0) ].
+   Alternatively, You can avoid this by including the directories at the end of the path
    
 	addpath([HOME,'/NaN/','-end')
 	addpath([HOME,'/NaN/inst','-end')
 	addpath([HOME,'/NaN/src','-end')
-
-   Make sure the functions in the NaN-toolbox are found before the default functions.
 
 c) Several mex-files are strongly recommened. 	
    Run MAKE from the directory .../NaN/src/ 	
 
    This is well tested on Linux, but might not work completely on other platforms. 
    Specifically, not all functions will compile on Windows, still the toolbox can be used.  
-   (covm_mex and sumskipnan_mex are strongly recommended for performance reasons, 
-   train.mex and svmtrain_mex are   
+   (covm_mex and sumskipnan_mex are strongly recommended for performance reasons,  
+   train.mex and svmtrain_mex are needed when using support vector machines)  
 
 d) run NANINSTTEST 
 This checks whether the installation was successful.

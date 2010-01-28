@@ -46,7 +46,9 @@ but more efficient and more concise.\n\
     {
       std::string struct_name = args (0).string_value ();
       string_vector fld_names(nargin-1);
-      octave_value_list fld_vals(nargin-1);
+      //octave_value_list fld_vals(nargin-1);
+      // FIXME: workaround for 3.2.4.
+      octave_value_list fld_vals (nargin-1, octave_value ());
 
       if (! error_state && ! valid_identifier (struct_name))
         error ("packfields: invalid variable name: %s", struct_name.c_str ());

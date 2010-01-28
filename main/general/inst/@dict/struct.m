@@ -26,7 +26,7 @@ function s = struct (d)
   keys = d.keys;
   valid = cellfun (@isvarname, keys);
   if (all (valid))
-    s = cell2struct (d.values, keys, 3);
+    s = cell2struct (d.values, keys, 1);
   else
     error ("struct: invalid key value: %s", keys{find (! valid, 1)});
   endif

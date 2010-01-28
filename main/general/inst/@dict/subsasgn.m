@@ -52,7 +52,7 @@ function d = subsasgn (d, s, val)
           endif
           ## Look up the proper place to insert the new key.
           i = lookup (d.keys, ind);
-          d.keys = [d.keys(1:i,1); {ind}; d.keys(i+1:end)];
+          d.keys = [d.keys(1:i,1); {ind}; d.keys(i+1:end,1)];
           ## Insert value.
           d.values = [d.values(1:i,1); {val}; d.values(i+1:end,1)];
         endif

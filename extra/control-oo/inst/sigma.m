@@ -48,7 +48,7 @@
 ## @table @var
 ## @item sv
 ## Array of singular values. For a system with m inputs and p outputs, the array sv
-## has min(m,p) columns and as many rows as frequency points (length of w).
+## has min(m,p) rows and as many columns as frequency points (length of w).
 ## The singular values at the frequency w(k) are given by sv(:,k).
 ## @item w
 ## Vector of frequency values used.

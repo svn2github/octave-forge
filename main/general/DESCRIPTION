@@ -1,12 +1,12 @@
 Name: General
-Version: 1.1.5
-Date: 2010-01-12
+Version: 1.1.6
+Date: 2010-01-28
 Author: Jaroslav Hajek
 Maintainer: Jaroslav Hajek
 Title: General
 Description: General tools for octave. String dictionary, parallel computing.
 Categories: General
-Depends: octave (>= 3.2.0)
+Depends: octave (>= 3.2.4)
 Autoload: yes
 License: GPL version 3 or later
 Url: http://octave.sf.net

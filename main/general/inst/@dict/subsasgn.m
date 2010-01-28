@@ -52,10 +52,9 @@ function d = subsasgn (d, s, val)
           endif
           ## Look up the proper place to insert the new key.
           i = lookup (d.keys, ind);
-          keys = d.keys.';
-          d.keys = [keys(1:i), {ind}, keys(i+1:end)].';
+          d.keys = [d.keys(1:i), {ind}, d.keys(i+1:end)];
           ## Insert value.
-          d.values = [values(1:i); {val}; values(i+1:end)];
+          d.values = [d.values(1:i), {val}, d.values(i+1:end)];
         endif
       elseif (iscellstr (ind))
         ## Multiple assignment case. Perform checks.
@@ -74,6 +73,8 @@ function d = subsasgn (d, s, val)
           elseif (numel (ind) != numel (val))
             error ("numbers of elements of index and rhs must match");
           endif
+          val = val(:).';
+          ind = ind(:).';
           ## Choose from two paths.
           if (numel (ind) < numel (d.keys))
             ## Scarce assignment. There's a good chance that all keys will be present.
@@ -84,14 +85,14 @@ function d = subsasgn (d, s, val)
             else
               d.values(i(mask)) = val(mask);
               mask = !mask;
-              [d.keys, i] = sort ([d.keys; ind(mask)(:)]);
-              d.values = [d.values; val(mask)(:)](i);
+              [d.keys, i] = sort ([d.keys, ind(mask)]);
+              d.values = [d.values, val(mask)](i);
             endif
           else
             ## Mass assignment. Probably most of the keys are new ones, so simply
             ## melt all together.
-            [d.keys, i] = unique ([d.keys; ind(:)]);
-            d.values = [d.values; val(:)](i);
+            [d.keys, i] = unique ([d.keys, ind]);
+            d.values = [d.values, val](i);
           endif
         else
           error ("expected cell rhs for cell index");

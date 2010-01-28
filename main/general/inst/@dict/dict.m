@@ -60,21 +60,21 @@ function d = dict (keys, values)
     keys = values = {};
   elseif (nargin == 1)
     if (iscellstr (keys))
-      keys = sort (keys(:));
+      keys = sort (keys(:).');
       values = cell (numel (keys), 1);
     elseif (isstruct (keys))
-      values = struct2cell (keys)(:,:);
-      if (columns (values) != 1)
+      values = struct2cell (keys)(:,:).';
+      if (rows (values) != 1)
         error ("dict: structure must be a scalar");
       endif
-      [keys, ind] = sort (fieldnames (keys));
+      [keys, ind] = sort (fieldnames (keys).');
       values = values(ind);        
     else
       error ("dict: keys must be a cell vector of strings");
     endif
   elseif (nargin == 2)
-    [keys, idx] = sort (keys(:));
-    values = values (idx)(:);
+    [keys, idx] = sort (keys(:).');
+    values = values (idx)(:).';
   else
     print_usage ();
   endif

@@ -30,8 +30,8 @@ function d = join (d1, d2, jop)
   keys1 = d1.keys;
   keys2 = d2.keys;
 
-  [keys, idx] = sort ([keys1, keys2]);
-  values = [d1.values, d2.values](idx);
+  [keys, idx] = sort ([keys1; keys2]);
+  values = [d1.values; d2.values](idx);
   n = numel (keys);
 
   if (n > 1)

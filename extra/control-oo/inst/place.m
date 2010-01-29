@@ -59,7 +59,7 @@
 ## Special thanks to Peter Benner from TU Chemnitz for his advice.
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: December 2009
-## Version: 0.2.1
+## Version: 0.2.2
 
 function [f, nfp, nap, nup] = place (a, b, p = [], alpha = [], tol = [])
 
@@ -128,6 +128,7 @@ function [f, nfp, nap, nup] = place (a, b, p = [], alpha = [], tol = [])
 endfunction
 
 
+## Test from "legacy" control package 1.0.*
 %!shared A, B, C, P, Kexpected
 %! A = [0, 1; 3, 2];
 %! B = [0; 1];
@@ -138,7 +139,7 @@ endfunction
 %!assert (place (A, B, P), Kexpected, 2*eps);
 
 ## FIXME: Test from SLICOT example SB01BD fails with 4 eigenvalues in P
-%!shared F, F_exp
+%!shared F, F_exp, ev_ol, ev_cl
 %! A = [-6.8000   0.0000  -207.0000   0.0000
 %!       1.0000   0.0000     0.0000   0.0000
 %!      43.2000   0.0000     0.0000  -4.2000
@@ -162,4 +163,8 @@ endfunction
 %! F_exp = - [-0.0876  -4.2138   0.0837 -18.1412
 %!            -0.0233  18.2483  -0.4259  -4.8120];
 %!
+%! ev_ol = sort (eig (A));
+%! ev_cl = sort (eig (A - B*F));
+%!
 %!assert (F, F_exp, 1e-4);
+%!assert (ev_ol(3:4), ev_cl(3:4), 1e-4);

@@ -37,7 +37,7 @@
 function dateaxis (varargin)
 
   ## defaults
-  h = gca ();
+  h = [];
   ax = "x";
   dateform = [];
   startdate = [];
@@ -59,12 +59,16 @@ function dateaxis (varargin)
       if ischar(startdate)
         startdate = datenum(startdate);
       elseif ~isnumeric(startdate)
-        error ("startdate must be either a datenum or numeric")
+        error ("dateaxis: startdate must be either a datenum or numeric")
       endif
     endif
     if length(varargin) > 3
       print_usage ();
     endif
+  endif
+  
+  if (isempty (h))
+    h = gca ();
   endif
 
   if isempty(dateform)
@@ -91,7 +95,9 @@ function dateaxis (varargin)
   endif
 
   ticks = get (h, [ax "tick"]);
-  ticks = ticks - ticks(1) + startdate;
+  if (!isempty (startdate))
+    ticks = ticks - ticks(1) + startdate;
+  endif
   ticks = datestr(ticks, dateform);
   ticks = mat2cell(ticks, ones(size(ticks,1),1), size(ticks,2));
   set (h, [ax "ticklabel"], ticks);

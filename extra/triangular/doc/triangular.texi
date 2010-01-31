@@ -56,7 +56,7 @@ the left division operator, to allow rapid solution of linear equations
 including triangular 
 
 @example
-@verbatiminclude uppertri.cc
+\include uppertri.cc
 @end example
 
 It should be noted that the above class, is given as an example only, as

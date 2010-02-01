@@ -108,3 +108,29 @@ function [x, l, g] = care (a, b, q, r, s = [], opt = "B")
   l = eig (a - b*g);
 
 endfunction
+
+
+%!shared x, l, g, xe, le, ge
+%! a = [-3   2
+%!       1   1];
+%!
+%! b = [ 0
+%!       1];
+%!
+%! c = [ 1  -1];
+%!
+%! r = 3;
+%!
+%! [x, l, g] = care (a, b, c'*c, r);
+%!
+%! xe = [ 0.5895    1.8216
+%!        1.8216    8.8188];
+%!
+%! le = [-3.5026
+%!       -1.4370];
+%!
+%! ge = [ 0.6072    2.9396];
+%!
+%!assert (x, xe, 1e-4);
+%!assert (l, le, 1e-4);
+%!assert (g, ge, 1e-4);

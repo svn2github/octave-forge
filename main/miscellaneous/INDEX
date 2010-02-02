@@ -3,11 +3,12 @@ miscellaneous
  apply
  asci
  csv2latex
+ chebyshevpoly
  grep
  hermitepoly
- chebyshevpoly
  infoskeleton
  inz
+ legendrepoly
  match
  nze
  reduce

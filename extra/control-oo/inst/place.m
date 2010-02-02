@@ -32,6 +32,7 @@
 ## LTI system.
 ## @item p
 ## Desired eigenvalues of the closed-loop system state-matrix A-B*F.
+## length (P) <= rows (A)
 ## @item alpha
 ## Specifies the maximum admissible value, either for real
 ## parts or for moduli, of the eigenvalues of A which will

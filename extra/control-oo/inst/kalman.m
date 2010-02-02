@@ -37,7 +37,7 @@ function [est, g, x] = kalman (sys, q, r, s = [])
     print_usage ();
   endif
 
-  [a, b, c, d, tsam] = ssdata (sys);
+  [a, b, c, d] = ssdata (sys);
 
   if (isempty (s))
     bs = [];
@@ -45,10 +45,10 @@ function [est, g, x] = kalman (sys, q, r, s = [])
     bs = b*s;
   endif
 
-  if (tsam > 0)
-    [x, l, g] = dare (a', c', b*q*b', r, bs);
-  else
+  if (isct (sys))
     [x, l, g] = care (a', c', b*q*b', r, bs);
+  else
+    [x, l, g] = dare (a', c', b*q*b', r, bs);
   endif
 
   g = g';

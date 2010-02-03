@@ -1,11 +1,9 @@
-# <<<<<<< .mine
-MYHOME = /home/corradin/
-MPIINC = -I$(MYHOME)openmpi-1.3.3/include
-MPILIBS = -lpthread -L$(MYHOME)openmpi-1.3.3/lib -lmpi_cxx -lmpi -lopen-rte -lopen-pal -ldl -lnsl -lutil -lm -ldl
-# =======
-# MPIINC = -I/usr/lib/openmpi/include -I/usr/lib/openmpi/include/openmpi
-# MPILIBS = -lpthread -L/usr/lib/openmpi/lib -lmpi_cxx -lmpi -lopen-rte -lopen-pal -ldl -Wl,--export-dynamic -lnsl -lutil -lm -ldl
-# >>>>>>> .r6543
+MPICC = mpicc
+JUNK := $(shell $(MPICC) -showme:compile)
+MPIINC := $(shell echo $(JUNK) | sed -e "s/-pthread/-lpthread/g")
+JUNK := $(shell $(MPICC) -showme:link)
+MPILIBS := $(shell echo $(JUNK) | sed -e "s/-pthread/ /g")
+
 
 all: MPI_Init.oct \
      MPI_Initialized.oct \
@@ -23,6 +21,6 @@ all: MPI_Init.oct \
 
 
 %.oct: %.cc
-	mkoctfile -s $(MPIINC)  $(MPILIBS)   $<
+	mkoctfile -s $(MPIINC) $(MPILIBS) $<
 clean:
 	-rm *.o  *.oct *~

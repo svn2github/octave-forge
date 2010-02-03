@@ -25,16 +25,16 @@
 function val = __get__ (sys, prop)
 
   switch (prop)  # {<internal name>, <user name>}
-    case {"a"}
+    case "a"
       val = sys.a;
 
-    case {"b"}
+    case "b"
       val = sys.b;
 
-    case {"c"}
+    case "c"
       val = sys.c;
 
-    case {"d"}
+    case "d"
       val = sys.d;
 
     case {"stname", "statename"}

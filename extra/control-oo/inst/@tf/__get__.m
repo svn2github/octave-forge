@@ -25,11 +25,19 @@
 function val = __get__ (sys, prop)
 
   switch (prop)  # {<internal name>, <user name>}
-    case {"num"}
+    case "num"
       val = sys.num;
 
-    case {"den"}
+      for k = 1 : numel (val)
+        val(k) = get (val{k});
+      endfor
+
+    case "den"
       val = sys.den;
+
+      for k = 1 : numel (val)
+        val(k) = get (val{k});
+      endfor
 
     case {"tfvar", "variable"}
       val = sys.tfvar;

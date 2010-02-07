@@ -65,12 +65,13 @@ endfunction
 function gain = h2norm (sys)
 
   if (isstable (sys))
-    [a, b, c, d, tsam] = ssdata (sys);
+    [a, b, c, d] = ssdata (sys);
+    digital = ! isct (sys);
     
-    if (tsam <= 0 && ! all (all (d == 0)))  # continuous and non-zero feedthrough
+    if (! digital && ! all (all (d == 0)))  # continuous and non-zero feedthrough
       gain = inf;
     else
-      [gain, iwarn] = slab13bd (a, b, c, d, tsam);
+      [gain, iwarn] = slab13bd (a, b, c, d, digital);
     
       if (iwarn)
         warning ("lti: norm: slab13bd: iwarn = %d", iwarn);
@@ -86,12 +87,13 @@ endfunction
 function [gain, wpeak] = linfnorm (sys, tol = 0.01)
 
   [a, b, c, d, tsam] = ssdata (sys);
+  digital = ! isct (sys);
   tol = max (tol, 100*eps);
   
-  [fpeak, gpeak] = slab13dd (a, b, c, d, tsam, tol);
+  [fpeak, gpeak] = slab13dd (a, b, c, d, digital, tol);
   
   if (fpeak(2) > 0)
-    if (tsam > 0)
+    if (digital)
       wpeak = fpeak(1) / tsam;
     else
       wpeak = fpeak(1);

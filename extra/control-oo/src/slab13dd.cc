@@ -88,13 +88,13 @@ DEFUN_DLD (slab13dd, args, nargout, "Slicot AB13DD Release 5.0")
         NDArray c = args(2).array_value ();
         NDArray d = args(3).array_value ();
         double* e = 0;
-        double tsam = args(4).double_value ();
+        int digital = args(4).int_value ();
         double tol = args(5).double_value ();
         
-        if (tsam > 0)
-            dico = 'D';
-        else
+        if (digital == 0)
             dico = 'C';
+        else
+            dico = 'D';
         
         int n = a.rows ();      // n: number of states
         int m = b.columns ();   // m: number of inputs

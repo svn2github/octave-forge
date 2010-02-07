@@ -182,8 +182,6 @@ if ! isempty (qrange)
   vrange = qnt (im(:),qrange);
 end
 
-end
-
 ## Set imin (maps to 0), imax (maps to 255) and irng ( = imax - imin)
 if ! isempty (vrange)
   if prod (size (vrange)) == 2

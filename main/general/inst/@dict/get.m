@@ -44,8 +44,10 @@ function val = get (d, key, defv = [])
       val = repmat ({defv}, size (key));
     elseif (numel (defv) == 1)
       val = repmat (defv, size (key));
-    else
+    elseif (size_equal (key, defv))
       val = defv;
+    else
+      error ("get: sizes of key & defv must match");
     endif
     i = lookup (d.keys, key, "m");
     mask = i != 0;

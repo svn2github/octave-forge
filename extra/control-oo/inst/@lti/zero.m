@@ -16,7 +16,8 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{p} =} zero (@var{sys})
+## @deftypefn {Function File} {@var{z} =} zero (@var{sys})
+## @deftypefnx {Function File} {[@var{z}, @var{k}] =} zero (@var{sys})
 ## Compute transmission zeros of LTI model.
 ## @end deftypefn
 

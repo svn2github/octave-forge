@@ -19,7 +19,7 @@
 ## @deftypefn{Function File} {[@var{p}, @var{q}] =} covar (@var{sys}, @var{w})
 ## Return the (steady-state) output covariance p as well as the state
 ## covariance q for a lti model sys driven by the Gaussian white noise
-## inputs w.
+## inputs of intensity w.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

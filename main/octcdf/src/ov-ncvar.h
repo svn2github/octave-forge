@@ -90,6 +90,7 @@ public:
   int ndims() const  { return dims().length(); }
 
   octave_idx_type numel() const  { return dims().numel(); }
+  //octave_idx_type numel() const  { return 1; }
 
   // Get dim_vector following NetCDF conventions
 

@@ -11,7 +11,6 @@ NetCDF
  ncint
  nclong
  ncshort
- netcdf_setup
  ncatt
  ncclose
  ncdatatype

@@ -19,6 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {d =} dict (@var{keys}, @var{values})
 ## @deftypefnx{Function File} {d =} dict ()
+## @deftypefnx{Function File} {d =} dict (@var{str})
 ## Creates a dictionary object with given keys and values. @var{keys}
 ## should be a cell array of strings; @var{values} should be a cell array
 ## with matching size. @var{values} can also be a singleton array, in
@@ -26,6 +27,8 @@
 ## the default value of empty matrix is used.
 ## If neither @var{keys} nor @var{values} are supplied, an empty dictionary
 ## is constructed.
+## If a scalar structure is supplied as an argument, it is converted to 
+## a dictionary using field names as keys.
 ##
 ## A dictionary can be indexed either by a single string or cell array of
 ## strings, like this:
@@ -52,6 +55,9 @@
 ## existing keys are overwritten. In the second case, the lengths of index and
 ## rhs should match or rhs should be a singleton array, in which case it is
 ## broadcasted. 
+##
+## It is also possible to retrieve keys and values as cell arrays, using the
+## "keys" and "values" properties. These properties are read-only.
 ##
 ## @end deftypefn
 function d = dict (keys, values)

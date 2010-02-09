@@ -15,7 +15,7 @@
 
 function scloseall (sockets)
 
-  ## scloseall (sockets)x
+  ## scloseall (sockets)
 
   reval("sclose(sockets);exit;",sockets);
   sclose(sockets);

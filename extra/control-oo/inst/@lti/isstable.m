@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{bool} =} isstable (@var{sys})
-## @deftypefn {Function File} {@var{bool} =} isstable (@var{sys}, @var{tol})
+## @deftypefnx {Function File} {@var{bool} =} isstable (@var{sys}, @var{tol})
 ## Determine whether LTI system is stable.
 ## @end deftypefn
 

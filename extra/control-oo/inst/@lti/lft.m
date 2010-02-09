@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{sys} =} lft (@var{sys1}, @var{sys2})
-## @deftypefn {Function File} {@var{sys} =} lft (@var{sys1}, @var{sys2}, @var{nu}, @var{ny})
+## @deftypefnx {Function File} {@var{sys} =} lft (@var{sys1}, @var{sys2}, @var{nu}, @var{ny})
 ## Linear fractional tranformation, also known as redheffer star product.
 ## @end deftypefn
 

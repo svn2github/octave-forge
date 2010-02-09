@@ -5,32 +5,32 @@ Examples and Demos
   optiPID
   WestlandLynx
 Linear Models
-  set
+  @lti/set
   ss
   tf
 Data Extraction
-  get
-  ssdata
-  tfdata
+  @lti/get
+  @lti/ssdata
+  @lti/tfdata
 Conversions
-  c2d
+  @lti/c2d
   ss
   tf
 System Interconnections
-  append
-  blkdiag
-  connect
-  feedback
-  lft
-  parallel
-  series
+  @lti/append
+  @lti/blkdiag
+  @lti/connect
+  @lti/feedback
+  @lti/lft
+  @lti/parallel
+  @lti/series
   strseq
 System Gain and Dynamics
   dcgain
-  norm
-  pole
+  @lti/norm
+  @lti/pole
   pzmap
-  zero
+  @lti/zero
 Time Domain Analysis
   covar
   gensig
@@ -47,8 +47,8 @@ Frequency Domain Analysis
   nyquist
   sigma
 Model Simplification
-  minreal
-  sminreal
+  @lti/minreal
+  @lti/sminreal
 Compensator Design
   estim
   place
@@ -66,22 +66,22 @@ State-Space Models
   ctrb
   gram
   obsv
-  xperm
+  @lti/xperm
 Model Dimensions and Characteristics
-  isct
-  isdt
-  issiso
-  isstable
-  size
+  @lti/isct
+  @lti/isdt
+  @lti/issiso
+  @lti/isstable
+  @lti/size
 Overloaded and Arithmetic Operators
-  +
-  -
-  *
-  \
-  /
-  ^
+  @lti/+
+  @lti/-
+  @lti/*
+  @lti/\
+  @lti//
+  @lti/^
   [..]
-  inv
+  @lti/inv
 Matrix Equation Solvers
   are
   care
@@ -91,4 +91,4 @@ Matrix Equation Solvers
 Octave-only
   isctrb
   isobsv
-  mconnect
+  @lti/mconnect

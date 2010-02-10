@@ -18,7 +18,10 @@
 #define __JAVA__H__
 
 #include <octave/oct.h>
+#include <octave/config.h>
+#ifndef OCTAVE_EXPORT
 #include <octave/oct-dlldefs.h>
+#endif // OCTAVE_EXPORT
 #include <jni.h>
 
 #ifdef JAVAPKG_BUILD

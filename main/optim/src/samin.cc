@@ -11,7 +11,8 @@
 //  GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU General Public License
-//  along with this program; If not, see <http://www.gnu.org/licenses/>.
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 // simann.cc (c) 2004 Michael Creel <michael.creel@uab.es>
 // References:
 //
@@ -270,7 +271,7 @@ Example: see samin_example\n\
 
 	//  Set initial values
 	nacc = 0; // total accepted trials
-	t = 1000; // temperature - will initially rise or fall to cover parameter space. Then it will fall
+	t = 1000.0; // temperature - will initially rise or fall to cover parameter space. Then it will fall
 	converge = 0; // convergence indicator 0 (failure), 1 (normal success), or 2 (convergence but near bounds)
 	coverage_ok = 0; // has parameter space been covered? When turns to 1, temperature starts to fall
 	// most recent values, to compare to when checking convergend
@@ -281,7 +282,7 @@ Example: see samin_example\n\
 	// check for out-of-bounds starting values
 	for(i = 0; i < n; i++) {
 		if(( x(i) > ub(i)) || (x(i) < lb(i))) {
-			error("samin: initial parameter %d out of bounds", i);
+			error("samin: initial parameter %d out of bounds", i+1);
 			return octave_value_list();
 		}
 	}
@@ -439,7 +440,7 @@ Example: see samin_example\n\
 					{
 						printf("==> WARNING <==: Last point satisfies convergence criteria,\n");
 						printf("but is near boundary of parameter space.\n");
-						printf("%f \% of last round evaluations were out-of-bounds.\n", 100*lnobds/(nup+ndown+nrej));
+						printf("%d out of  %d evaluations were out-of-bounds in the last round.\n", lnobds, (nup+ndown+nrej));
 						printf("Expand bounds and re-run, unless this is a constrained minimization.\n\n");
 					}
 					printf("Convergence tolerances:\nFunction: %e\nParameters: %e\n", functol, paramtol);

@@ -1,4 +1,4 @@
-MPICC = mpicc
+MPICC := mpiCC
 JUNK := $(shell $(MPICC) -showme:compile)
 MPIINC := $(shell echo $(JUNK) | sed -e "s/-pthread/-lpthread/g")
 JUNK := $(shell $(MPICC) -showme:link)

@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Christian Fischer <fischer@itm.uni-stuttgart.de>
+## Copyright (C) 2009 Christian Fischer <cfischer@itm.uni-stuttgart.de>
 ## Copyright (C) 1996, 1997 R. Storn
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 ## minimization of a user-supplied function with respect to x(1:D),
 ## using the differential evolution (DE) method based on an algorithm
 ## by  Rainer Storn (http://www.icsi.berkeley.edu/~storn/code.html)
+## See: http://www.softcomputing.net/tevc2009_1.pdf
 ##
 ##
 ## Arguments:  
@@ -120,7 +121,7 @@
 ## 	ctl.XVmax = [ 2  2];
 ## 	[x, obj_value, nfeval, convergence] = de_min (@f, ctl);
 ##
-## Author : Christian Fischer <fischer@itm.uni-stuttgart.de>
+## Author : Christian Fischer <cfischer@itm.uni-stuttgart.de>
 ## Keywords: global-optimisation optimisation minimisation
 
 function [bestmem, bestval, nfeval, convergence] = de_min(fcn, varargin)
@@ -256,26 +257,11 @@ bestmem = bestmemit;              # best member ever
 ## popold is the population which has to compete. It is static
 ## through one iteration. pop is the newly emerging population.
 
-pm1 = zeros (NP, D);            # initialize population matrix 1
-pm2 = zeros (NP, D);            # initialize population matrix 2
-pm3 = zeros (NP, D);            # initialize population matrix 3
-pm4 = zeros (NP, D);            # initialize population matrix 4
-pm5 = zeros (NP, D);            # initialize population matrix 5
-bm  = zeros (NP, D);            # initialize bestmember matrix
 bm_n= zeros (NP, D);            # initialize bestmember matrix in neighbourh.
-ui  = zeros (NP, D);            # intermediate population of perturbed vectors
-mui = zeros (NP, D);            # mask for intermediate population
-mpo = zeros (NP, D);            # mask for old population
+lpm1= zeros (NP, D);            # initialize local population matrix 1
+lpm1= zeros (NP, D);            # initialize local population matrix 2
 rot = 0:1:NP-1;                 # rotating index array (size NP)
 rotd= 0:1:D-1;                  # rotating index array (size D)
-rt  = zeros (NP);               # another rotating index array
-rtd = zeros (D);                # rotating index array for exponential crossover
-a1  = zeros (NP);               # index array
-a2  = zeros (NP);               # index array
-a3  = zeros (NP);               # index array
-a4  = zeros (NP);               # index array
-a5  = zeros (NP);               # index array
-ind = zeros (4);
 
 iter = 1;
 while ((iter < maxiter) & (nfeval < maxnfe) &  (bestval > VTR)  & ...
@@ -298,16 +284,15 @@ while ((iter < maxiter) & (nfeval < maxnfe) &  (bestval > VTR)  & ...
   pm1 = popold(a1,:);             # shuffled population 1
   pm2 = popold(a2,:);             # shuffled population 2
   pm3 = popold(a3,:);             # shuffled population 3
-  pm4 = popold(a4,:);             # shuffled population 4
-  pm5 = popold(a5,:);             # shuffled population 5
   w1  = wold(a4);                 # shuffled weightings 1
   w2  = wold(a5);                 # shuffled weightings 2
 
   bm = repmat (bestmemit, NP, 1); # population filled with the best member
                                   # of the last iteration
-  bw = repmat(bestw, NP, 1);      # the same for the weighting of the best
+  bw = repmat (bestw, NP, 1);     # the same for the weighting of the best
 
-  mui = rand (NP, D) < CR;        # all random numbers < CR are 1, 0 otherwise
+  mui = rand (NP, D) < CR;        # mask for intermediate population
+                                  # all random numbers < CR are 1, 0 otherwise
 
   if (strategy > 6)
     st = strategy - 6;		      # binomial crossover
@@ -332,14 +317,18 @@ while ((iter < maxiter) & (nfeval < maxnfe) &  (bestval > VTR)  & ...
   elseif (st == 3)                        # DE/target-to-best/1
     ui = popold + F*(bm-popold) + F*(pm1 - pm2);        
   elseif (st == 4)                  	  # DE/best/2
+    pm4 = popold(a4,:);                 # shuffled population 4
+    pm5 = popold(a5,:);                 # shuffled population 5
     ui = bm + F*(pm1 - pm2 + pm3 - pm4);  # differential variation
   elseif (st == 5)                  	  # DE/rand/2
+    pm4 = popold(a4,:);                 # shuffled population 4
+    pm5 = popold(a5,:);                 # shuffled population 5
     ui = pm5 + F*(pm1 - pm2 + pm3 - pm4); # differential variation
   else                                    # DEGL/SAW
     ## The DEGL/SAW method is more complicated.
 	## We have to generate a neighbourhood first.
-	## The neighbourhood size is 10% of NP and at least 3.
-	nr = max (1, floor ((0.1*NP -1)/2));  # neighbourhood radius
+	## The neighbourhood size is 10% of NP and at least 1.
+	nr = max (1, ceil ((0.1*NP -1)/2));  # neighbourhood radius
 	## FIXME: I don't know how to vectorise this. - if possible
 	for i = 1:NP
 	  neigh_ind = i-nr:i+nr;              # index range of neighbourhood
@@ -349,19 +338,19 @@ while ((iter < maxiter) & (nfeval < maxnfe) &  (bestval > VTR)  & ...
 	  bm_n(i,:) = popold(neigh_ind(ix),:); # copy the data from the local best
 	  neigh_ind(ix) = [];                 # remove "i"
 	  pq = neigh_ind(randperm (length (neigh_ind)));
-                                          # permutation of the remaining ind.
-	  pm4(i,:) = popold(pq(1),:);         # use the pm4/5 matrix for the random
-	  pm5(i,:) = popold(pq(2),:);         # point p,q
+                                        # permutation of the remaining ind.
+	  lpm1(i,:) = popold(pq(1),:);        # create the local pop member matrix
+	  lpm2(i,:) = popold(pq(2),:);        # for the random point p,q
 	endfor
     ## calculate the new weihting factors
     wi = wold + F*(bw - wold) + F*(w1 - w2); # use DE/target-to-best/1/nocross
                                           # for optimisation of weightings
     ## fix bounds for weightings
-	o = ones (NP, 1);
+    o = ones (NP, 1);
     wi = sort ([0.05*o, wi, 0.95*o],2)(:,2); # sort and take the second column
     ## fill weighting matrix
     wm = repmat (wi, 1, D);
-    li = popold + F*(bm_n- popold) + F*(pm4 - pm5);
+    li = popold + F*(bm_n- popold) + F*(lpm1 - lpm2);
     gi = popold + F*(bm  - popold) + F*(pm1 - pm2);
     ui = wm.*gi + (1-wm).*li;             # combine global and local part
   endif
@@ -385,7 +374,7 @@ while ((iter < maxiter) & (nfeval < maxnfe) &  (bestval > VTR)  & ...
        w(i)     = wi(i);    # save the weighting factor
 
        ## we update bestval only in case of success to save time
-       if (tempval < bestval)     # if competitor better than the best one ever
+       if (tempval <= bestval)     # if competitor better than the best one ever
           bestval = tempval;      # new best value
           bestmem = ui(i,:);      # new best parameter vector ever
           bestw   = wi(i);        # save best weighting
@@ -426,7 +415,7 @@ for i = 1:NP
   end
 end
 
-## create the convergence output
+## create the convergence result
 if (bestval <= VTR)
   convergence = 1;
 elseif (abs (max (val) - bestval) / max (1, abs (max (val))) <= tol)

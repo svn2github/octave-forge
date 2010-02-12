@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} [@var{numarr}, @var{txtarr}, @var{rawarr}, @var{limits}] = odsread (@var{filename}, @var{wsh}, @var{range}, @var{reqintf})
 ##
 ## Read data contained in range @var{range} from worksheet @var{wsh}
-## in OpenOffice.org Calc spreadsheet file @var{filename}.
+## in OpenOffice_org Calc spreadsheet file @var{filename}.
 ##
 ## You need the octave-forge java package (> 1.2.5) and one or both of
 ## jopendocument.jar or preferrably: (odfdom.jar & xercesImpl.jar) in

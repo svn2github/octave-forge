@@ -20,7 +20,7 @@
 ## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh}, @var{range})
 ##
 ## Add data in 1D/2D array @var{arr} into a cell range @var{range} in
-## sheet @var{wsh} in an OpenOffice.org Calc spreadsheet file pointed to in
+## sheet @var{wsh} in an OpenOffice_org Calc spreadsheet file pointed to in
 ## structure @var{ods}. @var{ods} must have been made earlier by odsopen().
 ## Return argument @var{ods} equals supplied argument @var{ods} and is
 ## updated by oct2ods.

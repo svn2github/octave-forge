@@ -14,7 +14,8 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## odsclose - close an ods spreadsheet file
+## odsclose - close an ods (OpenOffice_org) spreadsheet file
+
 ## usage: ods = odsclose (ods)
 
 ## Author: Philip Nienhuis

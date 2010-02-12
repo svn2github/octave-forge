@@ -20,7 +20,7 @@
 ## @deftypefnx {Function File} @var{rstatus} = odswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range})
 ## @deftypefnx {Function File} @var{rstatus} = odswrite (@var{filename}, @var{arr}, @var{wsh}, @var{range}, @var{reqintf})
 ## Add data in 1D/2D array @var{arr} to sheet @var{wsh} in
-## OpenOffice.org Calc spreadsheet file @var{filename} in range @var{range}.
+## OpenOffice_org Calc spreadsheet file @var{filename} in range @var{range}.
 ##
 ## @var{rstatus} returns 1 if write succeeded, 0 otherwise.
 ##

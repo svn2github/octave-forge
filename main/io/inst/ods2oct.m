@@ -20,7 +20,7 @@
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{ods}, @var{rstatus} ] = ods2oct (@var{ods}, @var{wsh}, @var{range})
 ##
 ## Read data contained within range @var{range} from worksheet @var{wsh}
-## in an OpenOffice.org spreadsheet file pointed to in struct @var{ods}.
+## in an OpenOffice_org spreadsheet file pointed to in struct @var{ods}.
 ##
 ## ods2oct is a mere wrapper for interface-dependent scripts (e.g.,
 ## ods2jotk2oct and ods2jod2oct) that do the actual reading.

@@ -59,3 +59,12 @@ function est = estim (sys, l, sensors = [], known = [])
   ## TODO: inname, stname, outname
 
 endfunction
+
+
+%!shared m, m_exp
+%! sys = ss (-2, 1, 1, 3);
+%! est = estim (sys, 5);
+%! [a, b, c, d] = ssdata (est);
+%! m = [a, b; c, d];
+%! m_exp = [-7, 5; 1, 0; 1, 0];
+%!assert (m, m_exp, 1e-4);

@@ -29,6 +29,8 @@
 function [est, g, x] = kalman (sys, q, r, s = [])
 
   ## TODO: complex case (sensors, known, type "current" or "delayed" for discrete systems)
+  
+  ## FIXME: return correct estimator for systems with d != 0
 
   if (nargin < 3 || nargin > 4)
     print_usage ();
@@ -38,7 +40,7 @@ function [est, g, x] = kalman (sys, q, r, s = [])
     print_usage ();
   endif
 
-  [a, b, c, d] = ssdata (sys);
+  [a, b, c] = ssdata (sys);
 
   if (isempty (s))
     bs = [];

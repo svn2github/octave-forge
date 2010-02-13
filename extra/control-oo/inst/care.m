@@ -25,11 +25,11 @@
 ## <http://www.slicot.org>
 ## @example
 ## @group
-##                -1
-## A'XA + XA - XBR  B'X + Q = 0
+##               -1
+## A'X + XA - XBR  B'X + Q = 0
 ## 
-##                       -1
-## A'XA + XA - (XB + S) R  (XB + L)' + Q = 0
+##                      -1
+## A'X + XA - (XB + S) R  (XB + L)' + Q = 0
 ##
 ##      -1
 ## G = R  B'X

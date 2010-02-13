@@ -22,6 +22,7 @@
 ## @deftypefnx {Function File} {[@var{g}, @var{x}, @var{l}] =} lqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{s})
 ## Return linear-quadratic state-feedback gain matrix g for a LTI system as well as
 ## the solution x of the associated riccati equation and the closed-loop poles l.
+## @seealso{care, dare}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

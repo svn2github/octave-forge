@@ -1,135 +1,81 @@
-## Copyright (C) 1996, 1997, 2000, 2002, 2003, 2004, 2005, 2006, 2007
-##               Auburn University.  All rights reserved.
+## Copyright (C) 2009 - 2010   Lukas F. Reichlin
 ##
+## This file is part of LTI Syncope.
 ##
-## This program is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
-## your option) any later version.
+## LTI Syncope is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-## This program is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## LTI Syncope is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x}, @var{l}, @var{g}] =} dare (@var{a}, @var{b}, @var{q}, @var{r})
 ## @deftypefnx {Function File} {[@var{x}, @var{l}, @var{g}] =} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{s})
-## @deftypefnx {Function File} {[@var{x}, @var{l}, @var{g}] =} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{s}, @var{opt})
-## Return the solution, @var{x} of the discrete-time algebraic Riccati
-## equation
-## @iftex
-## @tex
-## $$
-## A^TXA - X + A^TXB  (R + B^TXB)^{-1} B^TXA + Q = 0
-## $$
-## @end tex
-## @end iftex
-## @ifinfo
-## @example
-## a' x a - x + a' x b (r + b' x b)^(-1) b' x a + q = 0
-## @end example
-## @end ifinfo
-## @noindent
-##
-## @strong{Inputs}
-## @table @var
-## @item a
-## @var{n} by @var{n} matrix;
-##
-## @item b
-## @var{n} by @var{m} matrix;
-##
-## @item q
-## @var{n} by @var{n} matrix, symmetric positive semidefinite, or a @var{p} by @var{n} matrix,
-## In the latter case @math{q:=q'*q} is used;
-##
-## @item r
-## @var{m} by @var{m}, symmetric positive definite (invertible);
-##
-## @item opt
-## (optional argument; default = @code{"B"}):
-## String option passed to @code{balance} prior to ordered @var{QZ} decomposition.
-## @end table
-##
-## @strong{Output}
-## @table @var
-## @item x
-## solution of @acronym{DARE}.
-## @end table
-##
-## @strong{Method}
-## Generalized eigenvalue approach (Van Dooren; @acronym{SIAM} J.
-##  Sci. Stat. Comput., Vol 2) applied  to the appropriate symplectic pencil.
-##
-##  See also: Ran and Rodman, @cite{Stable Hermitian Solutions of Discrete
-##  Algebraic Riccati Equations}, Mathematics of Control, Signals and
-##  Systems, Vol 5, no 2 (1992), pp 165--194.
-## @seealso{balance, are}
+## Return unique stabilizing solution x of the discrete-time
+## riccati equation as well as the closed-loop poles l and the
+## corresponding gain matrix g.
+## Uses SLICOT SB02OD by courtesy of NICONET e.V.
+## <http://www.slicot.org>
 ## @end deftypefn
 
-## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
-## Created: August 1993
-## Adapted-By: jwe
+## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Created: October 2009
+## Version: 0.2
 
-## Adapted-By: Lukas Reichlin <lukas.reichlin@gmail.com>
-## Date: October 2009
-## Version: 0.1
+function [x, l, g] = dare (a, b, q, r, s = [])
 
-function [x, l, g] = dare (a, b, q, r, s = [], opt = "B")
-
-  if (nargin < 4 || nargin > 6)
+  if (nargin < 4 || nargin > 5)
     print_usage ();
   endif
 
-  if (nargin == 6)
-    if (ischar (opt))
-      opt = upper (opt(1));
-      if (opt != "B" && opt != N && opt != "P" && opt != "S")
-        warning ("dare: opt has invalid value ""%s""; setting to ""B""", opt);
-        opt = "B";
-      endif
-    else
-      warning ("dare: invalid argument opt, setting to ""B""");
-      opt = "B";
-    endif
+  asize = issquare (a);
+  [brows, bcols] = size (b);
+  qsize = issquare (q);
+  rsize = issquare (r);
+
+  if (! asize)
+    error ("dare: a is not square");
   endif
 
-  [n, m] = size (b);
-  p = issquare (q);
-  m1 = issquare (r);
+  if (! qsize)
+    error ("dare: q is not square");
+  endif
 
-  if (! m1)
+  if (! rsize)
     error ("dare: r is not square");
-  elseif (m1 != m)
+  endif
+  
+  if (asize != brows)
+    error ("dare: a, b are not conformable");
+  endif
+  
+  if (rsize != bcols)
     error ("dare: b, r are not conformable");
   endif
 
-  if (! p)
-    q = q' * q;
-  endif
-
-  ## incorporate cross term into a and q.
+  ## incorporate cross term into a and q
   if (isempty (s))
-    s = zeros (n, m);
     ao = a;
     qo = q;
   else
-    [n2, m2] = size (s);
+    [srows, scols] = size (s);  % [n2, m2]
 
-    if (n2 != n || m2 != m)
+    if (srows != brows || scols != bcols)
       error ("dare: s (%dx%d) must be identically dimensioned with b (%dx%d)",
-              n2, m2, n, m);
+              srows, scols, brows, bcols);
     endif
 
     ao = a - (b/r)*s';
     qo = q - (s/r)*s';
   endif
-
+  
   ## check stabilizability
   if (! isstabilizable (ao, b, [], 1))
     error ("dare: a and b not stabilizable");
@@ -144,35 +90,35 @@ function [x, l, g] = dare (a, b, q, r, s = [], opt = "B")
     error ("dare: (a,q) has non-minimal modes near unit circle");
   endif
 
-  ## Checking positive definiteness
+  ## to allow lqe design, don't force
+  ## qo to be positive semi-definite
+
+  ## checking positive definiteness
   if (isdefinite (r) <= 0)
     error ("dare: r must be positive definite");
   endif
 
-  ## if (isdefinite (qo) < 0)
-  ##   error ("dare: q not positive semidefinite");
-  ## endif
-
   ## solve the riccati equation
-  s1 = [ ao, zeros(n);
-        -qo,  eye(n) ];
-  s2 = [ eye(n),  (b/r)*b';
-        zeros(n),    ao'  ];
-
-  [c, d, s1, s2] = balance (s1, s2, opt);
-  [aa, bb, u, lam] = qz (s1, s2, "S");
-
-  u = d*u;
-  n1 = n+1;
-  n2 = 2*n;
-
-  ## unique stabilizing solution
-  x = u(n1:n2, 1:n) / u(1:n, 1:n);
-
-  ## corresponding gain matrix
-  g = (r+b'*x*b) \ (b'*x*a + s');
+  if (isempty (s))
+    ## unique stabilizing solution
+    x = slsb02od (a, b, q, r, b, true, false);
+    
+    ## corresponding gain matrix
+    g = (r+b'*x*b) \ (b'*x*a);
+  else
+    ## unique stabilizing solution
+    x = slsb02od (a, b, q, r, s, true, true);
+    
+    ## corresponding gain matrix
+    g = (r+b'*x*b) \ (b'*x*a + s');
+  endif
 
   ## closed-loop poles
   l = eig (a - b*g);
+  
+  ## TODO: use alphar, alphai and beta from SB02OD
 
 endfunction
+
+
+## TODO: add a test

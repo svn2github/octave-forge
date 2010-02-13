@@ -1,6 +1,6 @@
 all: slab08nd.oct slab13dd.oct slsb10hd.oct slsb10ed.oct slab13bd.oct \
      slsb01bd.oct slsb10fd.oct slsb10dd.oct slsb03md.oct slsb04md.oct \
-     slsb04qd.oct slsg03ad.oct
+     slsb04qd.oct slsg03ad.oct slsb02od.oct
 
 # transmission zeros of state-space models
 slab08nd.oct: slab08nd.cc
@@ -90,6 +90,12 @@ slsg03ad.oct: slsg03ad.cc
 	mkoctfile slsg03ad.cc \
               SG03AD.f MB01RW.f MB01RD.f SG03AX.f SG03AY.f \
               MB02UU.f MB02UV.f
+
+# algebraic Riccati equations
+slsb02od.oct: slsb02od.cc
+	mkoctfile slsb02od.cc \
+              SB02OD.f SB02OU.f SB02OV.f SB02OW.f SB02OY.f \
+              SB02MR.f SB02MV.f
 
 clean:
 	rm *.o core octave-core *.oct *~

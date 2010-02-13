@@ -1,4 +1,4 @@
-## Copyright (C) 2009   Lukas F. Reichlin
+## Copyright (C) 2009 - 2010   Lukas F. Reichlin
 ##
 ## This file is part of LTI Syncope.
 ##
@@ -21,56 +21,55 @@
 ## Return unique stabilizing solution x of the continuous-time
 ## riccati equation as well as the closed-loop poles l and the
 ## corresponding gain matrix g.
+## Uses SLICOT SB02OD by courtesy of NICONET e.V.
+## <http://www.slicot.org>
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2009
-## Version: 0.1
+## Version: 0.2
 
-function [x, l, g] = care (a, b, q, r, s = [], opt = "B")
+function [x, l, g] = care (a, b, q, r, s = [])
 
-  if (nargin < 4 || nargin > 6)
+  if (nargin < 4 || nargin > 5)
     print_usage ();
   endif
 
-  if (nargin == 6)
-    if (ischar (opt))
-      opt = upper (opt(1));
-      if (opt != "B" && opt != N && opt != "P" && opt != "S")
-        warning ("dare: opt has invalid value ""%s""; setting to ""B""", opt);
-        opt = "B";
-      endif
-    else
-      warning ("dare: invalid argument opt, setting to ""B""");
-      opt = "B";
-    endif
+  asize = issquare (a);
+  [brows, bcols] = size (b);
+  qsize = issquare (q);
+  rsize = issquare (r);
+
+  if (! asize)
+    error ("care: a is not square");
   endif
 
-  [n, m] = size (b);
-  p = issquare (q);
-  m1 = issquare (r);
+  if (! qsize)
+    error ("care: q is not square");
+  endif
 
-  if (! m1)
+  if (! rsize)
     error ("care: r is not square");
-  elseif (m1 != m)
-    error ("care: b, r are not conformable");
   endif
-
-  if (! p)
-    q = q' * q;
+  
+  if (asize != brows)
+    error ("care: a, b are not conformable");
+  endif
+  
+  if (rsize != bcols)
+    error ("care: b, r are not conformable");
   endif
 
   ## incorporate cross term into a and q
   if (isempty (s))
-    s = zeros (n, m);
     ao = a;
     qo = q;
   else
-    [n2, m2] = size (s);
+    [srows, scols] = size (s);  % [n2, m2]
 
-    if (n2 != n || m2 != m)
+    if (srows != brows || scols != bcols)
       error ("care: s (%dx%d) must be identically dimensioned with b (%dx%d)",
-              n2, m2, n, m);
+              srows, scols, brows, bcols);
     endif
 
     ao = a - (b/r)*s';
@@ -86,26 +85,38 @@ function [x, l, g] = care (a, b, q, r, s = [], opt = "B")
   dflag = isdetectable (ao, qo, [], 0);
 
   if (dflag == 0)
-    warning ("care: a and q not detectable");
+    warning ("care: (a,q) not detectable");
   elseif (dflag == -1)
-    error ("care: a and q have poles on imaginary axis");
+    error ("care: (a,q) has poles on imaginary axis");
   endif
 
   ## to allow lqe design, don't force
   ## qo to be positive semi-definite
 
+  ## checking positive definiteness
   if (isdefinite (r) <= 0)
     error ("care: r must be positive definite");
   endif
 
-  ## unique stabilizing solution
-  x = are (ao, (b/r)*b', qo, opt);
-
-  ## corresponding gain matrix
-  g = r \ (b'*x + s');
+  ## solve the riccati equation
+  if (isempty (s))
+    ## unique stabilizing solution
+    x = slsb02od (a, b, q, r, b, false, false);
+    
+    ## corresponding gain matrix
+    g = r \ (b'*x);
+  else
+    ## unique stabilizing solution
+    x = slsb02od (a, b, q, r, s, false, true);
+    
+    ## corresponding gain matrix
+    g = r \ (b'*x + s');
+  endif
 
   ## closed-loop poles
   l = eig (a - b*g);
+  
+  ## TODO: use alphar, alphai and beta from SB02OD
 
 endfunction
 
@@ -130,6 +141,35 @@ endfunction
 %!       -1.4370];
 %!
 %! ge = [ 0.6072    2.9396];
+%!
+%!assert (x, xe, 1e-4);
+%!assert (l, le, 1e-4);
+%!assert (g, ge, 1e-4);
+
+%!shared x, l, g, xe, le, ge
+%! a = [ 0.0  1.0
+%!       0.0  0.0];
+%!
+%! b = [ 0.0
+%!       1.0];
+%!
+%! c = [ 1.0  0.0
+%!       0.0  1.0
+%!       0.0  0.0];
+%!
+%! d = [ 0.0
+%!       0.0
+%!       1.0];
+%!
+%! [x, l, g] = care (a, b, c'*c, d'*d);
+%!
+%! xe = [ 1.7321   1.0000
+%!        1.0000   1.7321];
+%!
+%! le = [-0.8660 + 0.5000i
+%!       -0.8660 - 0.5000i];
+%!
+%! ge = [ 1.0000   1.7321];
 %!
 %!assert (x, xe, 1e-4);
 %!assert (l, le, 1e-4);

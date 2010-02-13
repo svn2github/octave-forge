@@ -23,6 +23,21 @@
 ## corresponding gain matrix g.
 ## Uses SLICOT SB02OD by courtesy of NICONET e.V.
 ## <http://www.slicot.org>
+## @example
+## @group
+##                -1
+## A'XA + XA - XBR  B'X + Q = 0
+## 
+##                       -1
+## A'XA + XA - (XB + S) R  (XB + L)' + Q = 0
+##
+##      -1
+## G = R  B'X
+##
+##      -1
+## G = R  (B'X + S')
+## @end group
+## @end example
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
@@ -30,6 +45,9 @@
 ## Version: 0.2
 
 function [x, l, g] = care (a, b, q, r, s = [])
+
+  ## TODO : Add SLICOT SG02AD (Solution of continuous- or discrete-time
+  ##        algebraic Riccati equations for descriptor systems)
 
   if (nargin < 4 || nargin > 5)
     print_usage ();

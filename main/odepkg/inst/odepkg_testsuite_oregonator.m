@@ -102,8 +102,9 @@ function y = odepkg_testsuite_oregonatorref ()
   y(1,3) = 0.13205549428467e+3;
 
 %!demo
-%! vsolver = {@ode23, @ode45, @ode54, @ode78, ...
-%!   @odebda, @oders, @ode2r, @ode5r, @odesx};
+%! %% vsolver = {@ode23, @ode45, @ode54, @ode78, ...
+%! %%   @odebda, @oders, @ode2r, @ode5r, @odesx};
+%! vsolver = {@odebda, @oders, @ode2r, @ode5r, @odesx};
 %! for vcnt=1:length (vsolver)
 %!   voreg{vcnt,1} = odepkg_testsuite_oregonator (vsolver{vcnt}, 1e-7);
 %! end

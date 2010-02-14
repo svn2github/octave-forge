@@ -246,8 +246,9 @@ function y = odepkg_testsuite_pollutionref ()
   y(20,1) = 0.56829432923163 * 10^(-4);
 
 %!demo
-%! vsolver = {@ode23, @ode45, @ode54, @ode78, ...
-%!   @odebda, @oders, @ode2r, @ode5r, @odesx};
+%! %% vsolver = {@ode23, @ode45, @ode54, @ode78, ...
+%! %%   @odebda, @oders, @ode2r, @ode5r, @odesx};
+%! vsolver = {@odebda, @oders, @ode2r, @ode5r, @odesx};
 %! for vcnt=1:length (vsolver)
 %!   poll{vcnt,1} = odepkg_testsuite_pollution (vsolver{vcnt}, 1e-7);
 %! end

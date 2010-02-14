@@ -73,7 +73,7 @@ function sys = __sysconnect__ (sys, M)
   I = eye (p);
   Z = I - D*M;
 
-  if (det (Z) == 0)  # check for singularity
+  if (rcond (Z) < eps)  # check for singularity
     error ("ss: sysconnect: (I - D*M) not invertible because of algebraic loop");
   endif
 

@@ -1,4 +1,4 @@
-%# Copyright (C) 2008, Thomas Treichl <treichl@users.sourceforge.net>
+%# Copyright (C) 2008-2009, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -38,6 +38,7 @@
 %# @itemize @minus
 %# @item
 %# the following code solves an anonymous implementation of a chaotic behavior
+%#
 %# @example
 %# fcao = @@(vt, vy, vz) [2 * vz / (1 + vz^9.65) - vy];
 %#
@@ -52,21 +53,21 @@
 %# to solve the following problem with two delayed state variables
 %#
 %# @example
-%# d y1(t)/ dt = -y1(t)
-%# d y2(t)/ dt = -y2(t) + y1(t-5)
-%# d y3(t)/dt  = -y3(t) + y2(t-10)*y1(t-10) 
+%# d y1(t)/dt = -y1(t)
+%# d y2(t)/dt = -y2(t) + y1(t-5)
+%# d y3(t)/dt = -y3(t) + y2(t-10)*y1(t-10)
 %# @end example
 %#
 %# one might do the following
 %#
 %# @example
 %# function f = fun (t, y, yd)
-%# f(1) =-y(1);                   %% y1' = -y1(t)
-%# f(2) =-y(2) + yd(1,1);         %% y2' = -y2(t) + y1(t-lags(1))
-%# f(3) =-y(3) + yd(2,2)*yd(1,2); %% y3' = -y3(t) + y2(t-lags(2))*y1(t-lags(2))
+%# f(1) = -y(1);                   %% y1' = -y1(t)
+%# f(2) = -y(2) + yd(1,1);         %% y2' = -y2(t) + y1(t-lags(1))
+%# f(3) = -y(3) + yd(2,2)*yd(1,2); %% y3' = -y3(t) + y2(t-lags(2))*y1(t-lags(2))
 %# endfunction
-%# T = [0,20]                                                                                             
-%# res = ode54d (@fun, T, [1;1;1], [5, 10], ones (3,2));                                                  
+%# T = [0,20]
+%# res = ode54d (@@fun, T, [1;1;1], [5, 10], ones (3,2));
 %# @end example
 %#
 %# @end itemize

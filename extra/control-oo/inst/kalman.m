@@ -1,4 +1,4 @@
-## Copyright (C) 2009   Lukas F. Reichlin
+## Copyright (C) 2009 - 2010   Lukas F. Reichlin
 ##
 ## This file is part of LTI Syncope.
 ##
@@ -18,44 +18,65 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r})
 ## @deftypefnx {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r}, @var{s})
-## Design kalman estimator for LTI systems.
+## @deftypefnx {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r}, @var{s}, @var{sensors}, @var{known})
+## Design Kalman estimator for LTI systems.
 ## @seealso{care, dare, estim, lqr}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2009
-## Version: 0.1
+## Version: 0.2
 
-function [est, g, x] = kalman (sys, q, r, s = [])
+function [est, k, x] = kalman (sys, q, r, s = [], sensors = [], known = [])
 
-  ## TODO: complex case (sensors, known, type "current" or "delayed" for discrete systems)
-  
-  ## FIXME: return correct estimator for systems with d != 0
+  ## TODO: type "current" for discrete-time systems
 
-  if (nargin < 3 || nargin > 4)
+  if (nargin < 3 || nargin > 6 || ! isa (sys, "lti"))
     print_usage ();
   endif
 
-  if (! isa (sys, "lti"))
-    print_usage ();
+  [a, b, c, d] = ssdata (sys);
+
+  if (isempty (sensors))
+    sensors = 1 : rows (c);
   endif
 
-  [a, b, c] = ssdata (sys);
+  stoch = 1 : columns (b);
+  stoch(known) = [];
+
+  c = c(sensors, :);
+  g = b(:, stoch);
+  h = d(sensors, stoch);
 
   if (isempty (s))
-    bs = [];
+    rbar = r + h*q*h';
+    sbar = g * q*h'
   else
-    bs = b*s;
+    rbar = r + h*s + s'*h' + h*q*h'; 
+    sbar = g * (q*h' + s);
   endif
 
   if (isct (sys))
-    [x, l, g] = care (a', c', b*q*b', r, bs);
+    [x, l, k] = care (a', c', g*q*g', rbar, sbar);
   else
-    [x, l, g] = dare (a', c', b*q*b', r, bs);
+    [x, l, k] = dare (a', c', g*q*g', rbar, sbar);
   endif
 
-  g = g';
+  k = k';
 
-  est = estim (sys, g);
+  est = estim (sys, k, sensors, known);
 
 endfunction
+
+
+%!shared m, m_exp, g, g_exp, x, x_exp
+%! sys = ss (-2, 1, 1, 3);
+%! [est, g, x] = kalman (sys, 1, 1, 1);
+%! [a, b, c, d] = ssdata (est);
+%! m = [a, b; c, d];
+%! m_exp = [-2.25, 0.25; 1, 0; 1, 0];
+%! g_exp = 0.25;
+%! x_exp = 0;
+%!assert (m, m_exp, 1e-2);
+%!assert (g, g_exp, 1e-2);
+%!assert (x, x_exp, 1e-2);

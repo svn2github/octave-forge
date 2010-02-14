@@ -90,7 +90,7 @@ function [est, k, x] = kalman (sys, q, r, s = [], sensors = [], known = [])
 
   if (isempty (s))
     rbar = r + h*q*h';
-    sbar = g * q*h'
+    sbar = g * q*h';
   else
     rbar = r + h*s + s'*h' + h*q*h'; 
     sbar = g * (q*h' + s);

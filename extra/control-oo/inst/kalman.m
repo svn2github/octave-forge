@@ -20,6 +20,46 @@
 ## @deftypefnx {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r}, @var{s})
 ## @deftypefnx {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r}, @var{s}, @var{sensors}, @var{known})
 ## Design Kalman estimator for LTI systems.
+##
+## @example
+## @group
+##                                  u  +-------+         ^
+##       +---------------------------->|       |-------> y
+##       |    +-------+             y  |  est  |         ^
+## u ----+--->|       |------>O------->|       |-------> x
+##            |  sys  |       ^        +-------+
+## w -------->|       |       |
+##            +-------+       | v
+##
+## Q = cov (w, w')     R = cov (v, v')     S = cov (w, v')
+## @end group
+## @end example
+##
+## @strong{Inputs}
+## @table @var
+## @item sys
+## Nominal plant model.
+## @item Q
+## Covariance of white process noise.
+## @item R
+## Covariance of white measurement noise.
+## @item S
+## Optional cross term covariance.
+## @item sensors
+## Indices of measured output signals y from sys.
+## @item known
+## Indices of known input signals u to sys.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item est
+## State-space model of the Kalman estimator
+## @item G
+## Estimator gain.
+## @item X
+## Solution of the Riccati equation.
+## @end table
 ## @seealso{care, dare, estim, lqr}
 ## @end deftypefn
 

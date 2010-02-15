@@ -1,9 +1,9 @@
 #! /usr/bin/sh
 
 # Name of package
-PKG=fontconfig
+PKG=pango
 # Version of Package
-VER=2.7.3
+VER=1.26.2
 # Release of (this patched) package
 REL=4
 # Name&Version of Package
@@ -12,12 +12,12 @@ PKGVER=${PKG}-${VER}
 FULLPKG=${PKGVER}-${REL}
 
 # Name of source file(s)
-SRCFILE=${PKGVER}.tar.gz
+SRCFILE=${PKGVER}.tar.bz2
 # Name of Patch file
 PATCHFILE=${FULLPKG}.patch
 
 # URL(s) of source code file(s)
-URL="http://fontconfig.org/release/fontconfig-2.7.3.tar.gz"
+URL="http://ftp.gnome.org/pub/GNOME/sources/pango/1.26/pango-1.26.1.tar.bz2"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`
@@ -32,13 +32,47 @@ MAKEFILE=
 MAKE_XTRA=
 
 # subdirectory to install heraders to (empty for default)
-INCLUDE_DIR=include/fontconfig
+INCLUDE_DIR=include/pango
 
 # Herader files to install
-HEADERS_INSTALL="fontconfig.h fcfreetype.h"
+HEADERS_INSTALL="
+pango-attributes.h
+pango-bidi-type.h
+pango-break.h
+pango-context.h
+pango-coverage.h
+pango-engine.h
+pango-font.h
+pango-fontmap.h
+pango-fontset.h
+pango-glyph-item.h
+pango-glyph.h
+pango-gravity.h
+pango-item.h
+pango-language.h
+pango-layout.h
+pango-matrix.h
+pango-modules.h
+pango-ot.h
+pango-renderer.h
+pango-script.h
+pango-tabs.h
+pango-types.h
+pango-utils.h
+pango.h
+pangocairo.h
+pangofc-decoder.h
+pangofc-font.h
+pangofc-fontmap.h
+pangoft2.h
+pangowin32.h"
+
+HEADERSBUILD_INSTALL="
+pango-features.h
+pango-enum-types.h"
 
 # pkg-config .pc files to install
-PKG_CONFIG_INSTALL="fontconfig.pc"
+PKG_CONFIG_INSTALL="pango.pc pangocairo.pc pangoft2.pc pangowin32.pc"
 
 # Additional DIFF Flags for generating diff file
 DIFF_FLAGS=
@@ -62,25 +96,23 @@ conf()
      CPP=$CPP \
      AR=$AR \
      RANLIB=$RANLIB \
-     RC=$RC \
+     WINDRES="$RC --preprocessor=$CPP" \
      STRIP=$STRIP \
      LD=$LD \
      CFLAGS="$CFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
      CXXFLAGS="$CXXFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
-     CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0500" \
+     CPPFLAGS="$CPPFLAGS" \
      LDFLAGS="${LDFLAGS}" \
      CXXLIBS="${CXXLIBS}" \
      --prefix=${PREFIX} \
-     --with-default-fonts
+     --without-x \
+     --enable-explicit-deps=no \
+     --with-included-modules=yes
    )
    touch ${BUILDDIR}/have_configure
-   modify_libtool_all ${BUILDDIR}/libtool
+   modify_libtool_nolibprefix ${BUILDDIR}/libtool
+   touch -r ${BUILDDIR}/config.lt ${BUILDDIR}/libtool
    conf_post;
-}
-
-build_post()
-{
-   ( cd ${BUILDDIR} && make_common fonts.conf )
 }
 
 install()
@@ -88,14 +120,20 @@ install()
    install_pre;
    
    # Install library, import library and static library
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/fontconfig.dll ${SHAREDLIB_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libfontconfig.dll.a ${LIBRARY_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libfontconfig.a ${STATICLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/pango-1.0-0.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpango-1.0.dll.a ${LIBRARY_PATH}
    
-   # Install fonts.conf to /etc/fonts
-   mkdir -vp ${ETC_PATH}/fonts
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/fonts.conf ${ETC_PATH}/fonts
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/pangocairo-1.0-0.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangocairo-1.0.dll.a ${LIBRARY_PATH}
    
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/pangoft2-1.0-0.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangoft2-1.0.dll.a ${LIBRARY_PATH}
+   
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/pangowin32-1.0-0.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/libpangowin32-1.0.dll.a ${LIBRARY_PATH}
+   
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/.libs/pango-querymodules.exe    ${BINARY_PATH}
+
    # Install pkg-config .pc files
    for a in $PKG_CONFIG_INSTALL; do
       ${CP} ${CP_FLAGS} ${BUILDDIR}/$a ${PKGCONFIGDATA_PATH}
@@ -103,7 +141,11 @@ install()
    
    # Install headers
    for a in $HEADERS_INSTALL; do
-      ${CP} ${CP_FLAGS} ${SRCDIR}/fontconfig/$a ${INCLUDE_PATH}
+      ${CP} ${CP_FLAGS} ${SRCDIR}/pango/$a ${INCLUDE_PATH}/`basename $a`
+   done
+   
+   for a in $HEADERSBUILD_INSTALL; do
+      ${CP} ${CP_FLAGS} ${BUILDDIR}/pango/$a ${INCLUDE_PATH}/`basename $a`
    done
    
    # Install license file
@@ -117,17 +159,23 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/fontconfig.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libfontconfig.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libfontconfig.a
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pango-1.0-0.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpango-1.0.dll.a
    
-   # Uninstall /etc/fonts/fonts.conf
-   ${RM} ${RM_FLAGS} ${ETC_PATH}/fonts/fonts.conf
-   rmdir --ignore-fail-on-non-empty ${ETC_PATH}/fonts
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pangocairo-1.0-0.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpangocairo-1.0.dll.a
+   
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pangoft2-1.0-0.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpangoft2-1.0.dll.a
+   
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pangowin32-1.0-0.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpangowin32-1.0.dll.a
+   
+   ${RM} ${RM_FLAGS} ${BINARY_PATH}/pango-querymodules.exe
    
    # Uninstall headers
-   for a in $HEADERS_INSTALL; do
-      ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a
+   for a in $HEADERS_INSTALL $HEADERSBUILD_INSTALL; do
+      ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/`basename $a`
    done
    
    # Uninstall pkg-config .pc files

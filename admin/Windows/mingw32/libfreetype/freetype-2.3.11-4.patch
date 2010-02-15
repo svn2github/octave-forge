@@ -1,0 +1,41 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' freetype-2.3.11-orig/builds/unix/freetype-config.in freetype-2.3.11/builds/unix/freetype-config.in
+--- freetype-2.3.11-orig/builds/unix/freetype-config.in	2009-12-14 21:43:18 +0100
++++ freetype-2.3.11/builds/unix/freetype-config.in	2009-12-14 21:43:31 +0100
+@@ -131,12 +131,8 @@
+ fi
+ 
+ if test "$echo_cflags" = "yes" ; then
+-  cflags="-I$includedir/freetype2"
+-  if test "$includedir" != "/usr/include" ; then
+-    echo $cflags -I$includedir
+-  else
++  cflags=""
+     echo $cflags
+-  fi
+ fi
+ 
+ if test "$echo_libs" = "yes" ; then
+@@ -145,11 +141,7 @@
+     eval "rpath=\"$hardcode_libdir_flag_spec\""
+   fi
+   libs="-lfreetype @LIBZ@ @FT2_EXTRA_LIBS@"
+-  if test "$libdir" != "/usr/lib" && test "$libdir" != "/usr/lib64"; then
+-    echo -L$libdir $rpath $libs
+-  else
+     echo $libs
+-  fi
+ fi
+ 
+ if test "$echo_libtool" = "yes" ; then
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' freetype-2.3.11-orig/builds/unix/freetype2.in freetype-2.3.11/builds/unix/freetype2.in
+--- freetype-2.3.11-orig/builds/unix/freetype2.in	2009-12-14 21:43:18 +0100
++++ freetype-2.3.11/builds/unix/freetype2.in	2009-12-14 21:43:31 +0100
+@@ -7,6 +7,6 @@
+ Description: A free, high-quality, and portable font engine.
+ Version: @ft_version@
+ Requires:
+-Libs: -L${libdir} -lfreetype
++Libs: -lfreetype
+ Libs.private: @LIBZ@ @FT2_EXTRA_LIBS@
+-Cflags: -I${includedir}/freetype2 -I${includedir}
++Cflags: 

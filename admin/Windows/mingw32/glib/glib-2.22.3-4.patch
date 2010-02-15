@@ -1,0 +1,9 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' glib-2.22.2-orig/glib-2.0.pc.in glib-2.22.2/glib-2.0.pc.in
+--- glib-2.22.2-orig/glib-2.0.pc.in	2009-04-01 01:04:20 +0200
++++ glib-2.22.2/glib-2.0.pc.in	2009-12-14 22:07:04 +0100
+@@ -12,4 +12,4 @@
+ Version: @VERSION@
+ Libs: -L${libdir} -lglib-2.0 @INTLLIBS@
+ Libs.private: @ICONV_LIBS@
+-Cflags: -I${includedir}/glib-2.0 -I${libdir}/glib-2.0/include @GLIB_EXTRA_CFLAGS@
++Cflags: -I${includedir}/glib-2.0 @GLIB_EXTRA_CFLAGS@

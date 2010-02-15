@@ -1,0 +1,28 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' glpk-4.42-orig/src/Makefile.in glpk-4.42/src/Makefile.in
+--- glpk-4.42-orig/src/Makefile.in	2010-01-13 10:00:00 +0100
++++ glpk-4.42/src/Makefile.in	2010-01-17 20:39:04 +0100
+@@ -215,7 +215,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ INCLUDES = -I$(srcdir)/../include
+-lib_LTLIBRARIES = libglpk.la
++lib_LTLIBRARIES = libglpk.la glpk.dll
+ libglpk_la_LDFLAGS = -version-info 27:0:27 \
+ -export-symbols-regex '^(glp_|_glp_lpx_).*'
+ 
+@@ -395,6 +395,15 @@
+ libglpk.la: $(libglpk_la_OBJECTS) $(libglpk_la_DEPENDENCIES) 
+ 	$(libglpk_la_LINK) -rpath $(libdir) $(libglpk_la_OBJECTS) $(libglpk_la_LIBADD) $(LIBS)
+ 
++glpk.dll : libglpk.la
++	$(CC) -shared -o $@ \
++	  $(LDFLAGS) \
++	  -Wl,--export-all-symbols \
++	  -Wl,--whole-archive .libs/libglpk.a \
++	  -Wl,--out-implib=libglpk.dll.a \
++	  -Wl,--output-def=$.exp \
++	  -Wl,--no-whole-archive $(LIBS)
++
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
+ 

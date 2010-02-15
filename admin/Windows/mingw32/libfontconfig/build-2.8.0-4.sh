@@ -3,7 +3,7 @@
 # Name of package
 PKG=fontconfig
 # Version of Package
-VER=2.7.3
+VER=2.8.0
 # Release of (this patched) package
 REL=4
 # Name&Version of Package
@@ -17,7 +17,7 @@ SRCFILE=${PKGVER}.tar.gz
 PATCHFILE=${FULLPKG}.patch
 
 # URL(s) of source code file(s)
-URL="http://fontconfig.org/release/fontconfig-2.7.3.tar.gz"
+URL="http://fontconfig.org/release/fontconfig-$VER.tar.gz"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`

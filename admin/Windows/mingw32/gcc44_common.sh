@@ -83,6 +83,7 @@ STATICLIB_BASE=${PREFIX}
 LICENSE_BASE=${PREFIX}
 SHARE_BASE=${PREFIX}
 DOC_BASE=${PREFIX}
+ETC_BASE=${PREFIX}
 
 # default subdirectories
 INCLUDE_DEFAULT=include
@@ -93,6 +94,7 @@ STATICLIB_DEFAULT=staticlib
 LICENSE_DEFAULT=license
 SHARE_DEFAULT=share
 DOC_DEFAULT=doc
+ETC_DEFAULT=etc
 
 # subdirs for above components, can be overridden locally
 # (e.g. for GSL: ${INCLUDE} = include/gsl )
@@ -104,6 +106,7 @@ if [ -z ${STATICLIB_DIR} ]; then STATICLIB_DIR=${STATICLIB_DEFAULT}; fi
 if [ -z ${LICENSE_DIR} ]; then LICENSE_DIR=${LICENSE_DEFAULT}; fi
 if [ -z ${SHARE_DIR} ]; then SHARE_DIR=${SHARE_DEFAULT}; fi
 if [ -z ${DOC_DIR} ]; then DOC_DIR=${DOC_DEFAULT}; fi
+if [ -z ${ETC_DIR} ]; then ETC_DIR=${ETC_DEFAULT}; fi
 
 # create full paths for component directories
 BINARY_PATH=${BINARY_BASE}/${BINARY_DIR}
@@ -114,6 +117,7 @@ STATICLIB_PATH=${STATICLIB_BASE}/${STATICLIB_DIR}
 LICENSE_PATH=${LICENSE_BASE}/${LICENSE_DIR}
 SHARE_PATH=${SHARE_BASE}/${SHARE_DIR}
 DOC_PATH=${DOC_BASE}/${DOC_DIR}
+ETC_PATH=${ETC_BASE}/${ETC_DIR}
 
 # Path to pkg-config .pc files
 PKGCONFIGDATA_PATH=${LIBRARY_PATH}/pkgconfig
@@ -309,6 +313,8 @@ install_pre()
   if [ ! -e ${LICENSE_PATH} ];       then mkdir -vp ${LICENSE_PATH}; fi
   if [ ! -e ${LICENSE_PATH}/${PKG} ]; then mkdir -vp ${LICENSE_PATH}/${PKG}; fi
   if [ ! -e ${PKGCONFIGDATA_PATH} ]; then mkdir -vp ${PKGCONFIGDATA_PATH}; fi
+  if [ ! -e ${SHARE_PATH} ];         then mkdir -vp ${SHARE_PATH}; fi
+  if [ ! -e ${ETC_PATH} ];           then mkdir -vp ${ETC_PATH}; fi
  }
 install()
 {
@@ -353,6 +359,9 @@ uninstall_post()
    # The SHARE Directory
    rmdir --ignore-fail-on-non-empty ${SHARE_PATH}/${PKGVER}
    rmdir --ignore-fail-on-non-empty ${SHARE_PATH}
+   
+   # The ETC Directory
+   rmdir --ignore-fail-on-non-empty ${ETC_PATH}
    
 }
 

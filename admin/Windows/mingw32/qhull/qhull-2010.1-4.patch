@@ -1,0 +1,40 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' qhull-2010.1-orig/src/Makefile qhull-2010.1/src/Makefile
+--- qhull-2010.1-orig/src/Makefile	2010-01-10 02:14:07 +0100
++++ qhull-2010.1/src/Makefile	2010-01-17 20:44:36 +0100
+@@ -34,6 +34,11 @@
+ #
+ # Do not replace tabs with spaces.  Needed by 'make' for build rules
+ 
++SRCDIR = @SRCDIR@/src
++
++vpath %.c $(SRCDIR)
++vpath %.h $(SRCDIR)
++
+ BINDIR	= /usr/local/bin
+ MANDIR	= /usr/local/man/man1
+ 
+@@ -45,7 +50,7 @@
+ 
+ #for Gnu's gcc compiler -O2 for optimization, -g for debugging, -Wall for check
+ #   -fno-strict-aliasing not needed for gcc 4.4+ (segfault in qset.c)
+-CC  = gcc
++CC  ?= gcc
+ CCOPTS1 = -O2 -ansi -fno-strict-aliasing 
+ 
+ # for Sun's cc compiler, -fast or O2 for optimization, -g for debugging, -Xc for ANSI
+@@ -84,6 +89,15 @@
+ 
+ all: rbox qconvex qdelaunay qhalf qvoronoi qhull
+ 
++lib: libqhull.a qhull.dll
++
++qhull.dll : libqhull.a
++	$(CC) -shared $(LDFLAGS) -o $@ \
++	-Wl,--out-implib=$(<:.a=.dll.a) \
++	-Wl,--output-def=$@.exp \
++	-Wl,--whole-archive $< \
++	-Wl,--no-whole-archive
++
+ unix.o:	    libqhull.h user.h mem.h
+ qconvex.o:  libqhull.h user.h mem.h
+ qdelaun.o:  libqhull.h user.h mem.h

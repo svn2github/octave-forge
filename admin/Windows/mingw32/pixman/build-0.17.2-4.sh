@@ -1,9 +1,9 @@
 #! /usr/bin/sh
 
 # Name of package
-PKG=fontconfig
+PKG=pixman
 # Version of Package
-VER=2.7.3
+VER=0.17.2
 # Release of (this patched) package
 REL=4
 # Name&Version of Package
@@ -17,7 +17,7 @@ SRCFILE=${PKGVER}.tar.gz
 PATCHFILE=${FULLPKG}.patch
 
 # URL(s) of source code file(s)
-URL="http://fontconfig.org/release/fontconfig-2.7.3.tar.gz"
+URL="http://www.cairographics.org/releases/pixman-$VER.tar.gz"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`
@@ -32,13 +32,14 @@ MAKEFILE=
 MAKE_XTRA=
 
 # subdirectory to install heraders to (empty for default)
-INCLUDE_DIR=include/fontconfig
+INCLUDE_DIR=
 
 # Herader files to install
-HEADERS_INSTALL="fontconfig.h fcfreetype.h"
+HEADERS_INSTALL="pixman/pixman.h"
+HEADERSBUILD_INSTALL="pixman/pixman-version.h"
 
 # pkg-config .pc files to install
-PKG_CONFIG_INSTALL="fontconfig.pc"
+PKG_CONFIG_INSTALL="pixman-1.pc"
 
 # Additional DIFF Flags for generating diff file
 DIFF_FLAGS=
@@ -56,9 +57,9 @@ conf()
    conf_pre;
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
      --srcdir=${TOPDIR}/${SRCDIR} \
-     CC="${CC} $LIBGCCLDFLAGS" \
-     CXX="${CXX} $LIBGCCLDFLAGS" \
-     F77="${F77} $LIBGCCLDFLAGS" \
+     CC="$CC $LIBGCCLDFLAGS" \
+     CXX="$CXX $LIBGCCLDFLAGS" \
+     F77="$F77 $LIBGCCLDFLAGS" \
      CPP=$CPP \
      AR=$AR \
      RANLIB=$RANLIB \
@@ -67,20 +68,15 @@ conf()
      LD=$LD \
      CFLAGS="$CFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
      CXXFLAGS="$CXXFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
-     CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0500" \
+     CPPFLAGS="$CPPFLAGS" \
      LDFLAGS="${LDFLAGS}" \
      CXXLIBS="${CXXLIBS}" \
      --prefix=${PREFIX} \
-     --with-default-fonts
+     --enable-shared
    )
    touch ${BUILDDIR}/have_configure
-   modify_libtool_all ${BUILDDIR}/libtool
+   modify_libtool_nolibprefix ${BUILDDIR}/libtool
    conf_post;
-}
-
-build_post()
-{
-   ( cd ${BUILDDIR} && make_common fonts.conf )
 }
 
 install()
@@ -88,13 +84,9 @@ install()
    install_pre;
    
    # Install library, import library and static library
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/fontconfig.dll ${SHAREDLIB_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libfontconfig.dll.a ${LIBRARY_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libfontconfig.a ${STATICLIB_PATH}
-   
-   # Install fonts.conf to /etc/fonts
-   mkdir -vp ${ETC_PATH}/fonts
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/fonts.conf ${ETC_PATH}/fonts
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pixman/.libs/pixman-1-0.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pixman/.libs/libpixman-1.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/pixman/.libs/libpixman-1.a ${STATICLIB_PATH}
    
    # Install pkg-config .pc files
    for a in $PKG_CONFIG_INSTALL; do
@@ -103,7 +95,11 @@ install()
    
    # Install headers
    for a in $HEADERS_INSTALL; do
-      ${CP} ${CP_FLAGS} ${SRCDIR}/fontconfig/$a ${INCLUDE_PATH}
+      ${CP} ${CP_FLAGS} ${SRCDIR}/$a ${INCLUDE_PATH}/`basename $a`
+   done
+   
+   for a in $HEADERSBUILD_INSTALL; do
+      ${CP} ${CP_FLAGS} ${BUILDDIR}/$a ${INCLUDE_PATH}/`basename $a`
    done
    
    # Install license file
@@ -117,17 +113,13 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/fontconfig.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libfontconfig.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libfontconfig.a
-   
-   # Uninstall /etc/fonts/fonts.conf
-   ${RM} ${RM_FLAGS} ${ETC_PATH}/fonts/fonts.conf
-   rmdir --ignore-fail-on-non-empty ${ETC_PATH}/fonts
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/pixman-1-0.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libpixman-1.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libpixman-1.a
    
    # Uninstall headers
-   for a in $HEADERS_INSTALL; do
-      ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a
+   for a in $HEADERS_INSTALL $HEADERSBUILD_INSTALL; do
+      ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/`basename $a`
    done
    
    # Uninstall pkg-config .pc files

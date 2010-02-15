@@ -1,9 +1,9 @@
 #! /usr/bin/sh
 
 # Name of package
-PKG=fontconfig
+PKG=ginac
 # Version of Package
-VER=2.7.3
+VER=1.5.5
 # Release of (this patched) package
 REL=4
 # Name&Version of Package
@@ -12,12 +12,12 @@ PKGVER=${PKG}-${VER}
 FULLPKG=${PKGVER}-${REL}
 
 # Name of source file(s)
-SRCFILE=${PKGVER}.tar.gz
+SRCFILE=${PKGVER}.tar.bz2
 # Name of Patch file
 PATCHFILE=${FULLPKG}.patch
 
 # URL(s) of source code file(s)
-URL="http://fontconfig.org/release/fontconfig-2.7.3.tar.gz"
+URL="ftp://ftpthep.physik.uni-mainz.de/pub/GiNaC/ginac-1.5.5.tar.bz2"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`
@@ -32,13 +32,21 @@ MAKEFILE=
 MAKE_XTRA=
 
 # subdirectory to install heraders to (empty for default)
-INCLUDE_DIR=include/fontconfig
+INCLUDE_DIR=include/ginac
 
 # Herader files to install
-HEADERS_INSTALL="fontconfig.h fcfreetype.h"
+HEADERS_INSTALL="
+ginac.h add.h archive.h assertion.h basic.h class_info.h \
+clifford.h color.h constant.h container.h ex.h excompiler.h expair.h expairseq.h \
+exprseq.h fail.h factor.h fderivative.h flags.h function.h hash_map.h idx.h indexed.h \
+inifcns.h integral.h lst.h matrix.h mul.h ncmul.h normal.h numeric.h operators.h \
+power.h print.h pseries.h ptr.h registrar.h relational.h structure.h \
+symbol.h symmetry.h tensor.h version.h wildcard.h \
+parser/parser.h \
+parser/parse_context.h"
 
 # pkg-config .pc files to install
-PKG_CONFIG_INSTALL="fontconfig.pc"
+PKG_CONFIG_INSTALL="ginac.pc"
 
 # Additional DIFF Flags for generating diff file
 DIFF_FLAGS=
@@ -51,14 +59,16 @@ BUILDDIR=".build_${BUILD_TARGET}_${FULLPKG}_gcc${GCC_VERSION}${GCC_SYSTEM}"
 
 # == override resp. specify build actions ==
 
+MAKE_XTRA=" CXXLIBS=$CXXLIBS"
+
 conf()
 {
    conf_pre;
    ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
      --srcdir=${TOPDIR}/${SRCDIR} \
-     CC="${CC} $LIBGCCLDFLAGS" \
-     CXX="${CXX} $LIBGCCLDFLAGS" \
-     F77="${F77} $LIBGCCLDFLAGS" \
+     CC="$CC $LIBGCCLDFLAGS" \
+     CXX="$CXX $LIBGCCLDFLAGS" \
+     F77="$F77 $LIBGCCLDFLAGS" \
      CPP=$CPP \
      AR=$AR \
      RANLIB=$RANLIB \
@@ -67,20 +77,15 @@ conf()
      LD=$LD \
      CFLAGS="$CFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
      CXXFLAGS="$CXXFLAGS ${GCC_ARCH_FLAGS} ${GCC_OPT_FLAGS} -Wall" \
-     CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0500" \
-     LDFLAGS="${LDFLAGS}" \
+     CPPFLAGS="$CPPFLAGS" \
+     LDFLAGS="${LDFLAGS} -Wl,--allow-multiple-definition" \
      CXXLIBS="${CXXLIBS}" \
      --prefix=${PREFIX} \
-     --with-default-fonts
+     --enable-shared
    )
    touch ${BUILDDIR}/have_configure
    modify_libtool_all ${BUILDDIR}/libtool
    conf_post;
-}
-
-build_post()
-{
-   ( cd ${BUILDDIR} && make_common fonts.conf )
 }
 
 install()
@@ -88,13 +93,9 @@ install()
    install_pre;
    
    # Install library, import library and static library
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/fontconfig.dll ${SHAREDLIB_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libfontconfig.dll.a ${LIBRARY_PATH}
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libfontconfig.a ${STATICLIB_PATH}
-   
-   # Install fonts.conf to /etc/fonts
-   mkdir -vp ${ETC_PATH}/fonts
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/fonts.conf ${ETC_PATH}/fonts
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/ginac/ginac.dll ${SHAREDLIB_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/ginac/libginac.dll.a ${LIBRARY_PATH}
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/ginac/.libs/libginac.a ${STATICLIB_PATH}
    
    # Install pkg-config .pc files
    for a in $PKG_CONFIG_INSTALL; do
@@ -103,7 +104,7 @@ install()
    
    # Install headers
    for a in $HEADERS_INSTALL; do
-      ${CP} ${CP_FLAGS} ${SRCDIR}/fontconfig/$a ${INCLUDE_PATH}
+      ${CP} ${CP_FLAGS} ${SRCDIR}/ginac/$a ${INCLUDE_PATH}/`basename $a`
    done
    
    # Install license file
@@ -117,17 +118,13 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/fontconfig.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libfontconfig.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libfontconfig.a
-   
-   # Uninstall /etc/fonts/fonts.conf
-   ${RM} ${RM_FLAGS} ${ETC_PATH}/fonts/fonts.conf
-   rmdir --ignore-fail-on-non-empty ${ETC_PATH}/fonts
+   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/ginac.dll
+   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libginac.dll.a
+   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libginac.a
    
    # Uninstall headers
    for a in $HEADERS_INSTALL; do
-      ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a
+      ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/`basename $a`
    done
    
    # Uninstall pkg-config .pc files

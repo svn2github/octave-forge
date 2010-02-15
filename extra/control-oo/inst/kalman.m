@@ -18,6 +18,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r})
 ## @deftypefnx {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r}, @var{s})
+## @deftypefnx {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r}, @var{[]}, @var{sensors}, @var{known})
 ## @deftypefnx {Function File} {[@var{est}, @var{g}, @var{x}] =} kalman (@var{sys}, @var{q}, @var{r}, @var{s}, @var{sensors}, @var{known})
 ## Design Kalman estimator for LTI systems.
 ##
@@ -25,9 +26,9 @@
 ## @group
 ##                                  u  +-------+         ^
 ##       +---------------------------->|       |-------> y
-##       |    +-------+             y  |  est  |         ^
-## u ----+--->|       |------>O------->|       |-------> x
-##            |  sys  |       ^        +-------+
+##       |    +-------+     +       y  |  est  |         ^
+## u ----+--->|       |----->(+)------>|       |-------> x
+##            |  sys  |       ^ +      +-------+
 ## w -------->|       |       |
 ##            +-------+       | v
 ##
@@ -44,17 +45,18 @@
 ## @item R
 ## Covariance of white measurement noise.
 ## @item S
-## Optional cross term covariance.
+## Optional cross term covariance. Default value is S = 0.
 ## @item sensors
-## Indices of measured output signals y from sys.
+## Indices of measured output signals y from sys. If omitted, all outputs are measured.
 ## @item known
-## Indices of known input signals u to sys.
+## Indices of known input signals u (deterministic) to sys. All other inputs to sys
+## are assumed stochastic. If argument known is omitted, no inputs u are known.
 ## @end table
 ##
 ## @strong{Outputs}
 ## @table @var
 ## @item est
-## State-space model of the Kalman estimator
+## State-space model of the Kalman estimator.
 ## @item G
 ## Estimator gain.
 ## @item X

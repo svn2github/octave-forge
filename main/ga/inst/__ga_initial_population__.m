@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Luca Favatella <slackydeb@gmail.com>
+## Copyright (C) 2008, 2010 Luca Favatella <slackydeb@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -21,41 +21,42 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 3.2.5
+## Version: 3.3
 
                                 #TODO consider PopulationSize as a
                                 #vector for multiple subpopolations
 
 function Population = \
       __ga_initial_population__ (GenomeLength, FitnessFcn, options)
-  [nrInitialPopulation ncInitialPopulation] = size (options.InitialPopulation);
-
   if (isempty (options.InitialPopulation))
     Population(1:options.PopulationSize, 1:GenomeLength) = \
         options.CreationFcn (GenomeLength, FitnessFcn, options);
-  elseif (ncInitialPopulation == GenomeLength) ## nrInitialPopulation > 0
-    if (nrInitialPopulation < options.PopulationSize)
+  else
+    if (columns (options.InitialPopulation) != GenomeLength) ## columns (InitialPopulation) > 0
+      error ("nonempty 'InitialPopulation' must have 'GenomeLength' columns");
+    else ## rows (InitialPopulation) > 0
+      nrIP = rows (options.InitialPopulation);
+      if (nrIP > options.PopulationSize)
+        error ("nonempty 'InitialPopulation' must have no more than \
+            'PopulationSize' rows");
+      elseif (nrIP == options.PopulationSize)
+        Population(1:options.PopulationSize, 1:GenomeLength) = \
+            options.InitialPopulation;
+      else # rows (InitialPopulation) < PopulationSize
 
-      ## create a complete new population, and then select only needed
-      ## individuals (creating only a partial population is difficult)
-      CreatedPopulation(1:options.PopulationSize, 1:GenomeLength) = \
-          options.CreationFcn (GenomeLength, FitnessFcn, options);
-      Population(1:options.PopulationSize, 1:GenomeLength) = vertcat \
-          (options.InitialPopulation(1:nrInitialPopulation, 1:GenomeLength),
-           CreatedPopulation(1:(options.PopulationSize - nrInitialPopulation),
-                             1:GenomeLength));
-    elseif (nrInitialPopulation == options.PopulationSize)
-      Population(1:options.PopulationSize, 1:GenomeLength) = \
-          options.InitialPopulation;
-    else ## nrInitialPopulation > options.PopulationSize
-      error ("nonempty 'InitialPopulation' must have no more than \
-          'PopulationSize' rows");
+        ## create a complete new population, and then select only needed
+        ## individuals (creating only a partial population is difficult)
+        CreatedPopulation(1:options.PopulationSize, 1:GenomeLength) = \
+            options.CreationFcn (GenomeLength, FitnessFcn, options);
+        Population(1:options.PopulationSize, 1:GenomeLength) = vertcat \
+            (options.InitialPopulation(1:nrIP, 1:GenomeLength),
+             CreatedPopulation(1:(options.PopulationSize - nrIP),
+                               1:GenomeLength));
+      endif
     endif
-  else ## (ncInitialPopulation != 0) && (ncInitialPopulation != GenomeLength)
-    error ("nonempty 'InitialPopulation' must have 'GenomeLength' \
-        columns");
   endif
 endfunction
+
 
 %!test
 %! GenomeLength = 2;
@@ -68,3 +69,24 @@ endfunction
 %! options = gaoptimset ("InitialPopulation", [1, 2; 3, 4; 5, 6]);
 %! Population = __ga_initial_population__ (GenomeLength, @rastriginsfcn, options);
 %! assert (size (Population), [options.PopulationSize, GenomeLength]);
+
+
+## nonempty 'InitialPopulation' must have 'GenomeLength' columns
+
+%!error
+%! GenomeLength = 2;
+%! options = gaoptimset ("InitialPopulation", [1; 3; 5]);
+%! __ga_initial_population__ (GenomeLength, @rastriginsfcn, options);
+
+%!error
+%! GenomeLength = 2;
+%! options = gaoptimset ("InitialPopulation", [1, 1, 1; 3, 3, 3; 5, 5, 5]);
+%! __ga_initial_population__ (GenomeLength, @rastriginsfcn, options);
+
+
+## nonempty 'InitialPopulation' must have no more than 'PopulationSize' rows
+
+%!error
+%! GenomeLength = 2;
+%! options = gaoptimset ("InitialPopulation", [1, 2; 3, 4; 5, 6], "PopulationSize", 2);
+%! __ga_initial_population__ (GenomeLength, @rastriginsfcn, options);

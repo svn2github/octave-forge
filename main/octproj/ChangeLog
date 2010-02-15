@@ -1,0 +1,116 @@
+changeset:   22:1ff84dc91041
+tag:         tip
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Feb 09 10:52:42 2010 +0100
+summary:     Use fortran_vec() method instead const_cast<double*> to obtain pointers and improve the use of warning function
+
+changeset:   21:2f1c7488eace
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Sat Feb 06 17:43:12 2010 +0100
+summary:     Date change
+
+changeset:   20:671ddf3e2a77
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Sat Feb 06 17:40:53 2010 +0100
+summary:     Change criteria for catching errors
+
+changeset:   19:bcdb32b735f9
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Sat Feb 06 17:40:41 2010 +0100
+summary:     Update documentation
+
+changeset:   18:a402765a20b8
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Sat Feb 06 17:39:59 2010 +0100
+summary:     Change criteria for catching errors
+
+changeset:   17:56e3823d72cf
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Sat Feb 06 15:43:48 2010 +0100
+summary:     Changes in test sentences and auxiliary subfunctions
+
+changeset:   16:045b046bc43a
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Sat Feb 06 14:04:26 2010 +0100
+summary:     Changes in test sentences
+
+changeset:   15:91f6ea5161f7
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Sat Feb 06 13:59:59 2010 +0100
+summary:     Testing input arguments with auxiliary subfunctions
+
+changeset:   14:13ef8e3568c5
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Sat Feb 06 12:37:57 2010 +0100
+summary:     Comment correction
+
+changeset:   13:6cf0c2c16261
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Jan 19 10:17:13 2010 +0100
+summary:     Documentation update
+
+changeset:   12:8e2c9f00c63c
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 22 18:43:50 2009 +0100
+summary:     Changes in parsing input arguments
+
+changeset:   11:56d5916bed60
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 22 17:39:28 2009 +0100
+summary:     Update general documentation
+
+changeset:   10:1391300aa003
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Fri Dec 18 08:56:04 2009 +0100
+summary:     Change in general documentation
+
+changeset:   9:d41ef12f4913
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Thu Dec 17 12:04:54 2009 +0100
+summary:     Add tex documentation file
+
+changeset:   8:3bcfd7da0c87
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 15 17:06:48 2009 +0100
+summary:     Correction in documentation
+
+changeset:   7:4ea6a2cb26ba
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 15 16:56:19 2009 +0100
+summary:     Comment the function and small changes
+
+changeset:   6:39501324d391
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 15 16:54:23 2009 +0100
+summary:     Style correction
+
+changeset:   5:791641326573
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 15 16:53:52 2009 +0100
+summary:     Creation of op_transform.m
+
+changeset:   4:6ccec5b0b0b5
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 15 16:52:54 2009 +0100
+summary:     Comment corrections
+
+changeset:   3:63eb65628b12
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 15 16:51:40 2009 +0100
+summary:     Add support to check if input arguments are both scalars or vectors and add support to convert scalars in column vectors if neccessary
+
+changeset:   2:29774e2ea3b5
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 15 16:49:46 2009 +0100
+summary:     Comments corrections and add support to convert scalars in column vectors if neccessary
+
+changeset:   1:6b515a6b5933
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 15 16:47:15 2009 +0100
+summary:     Change date
+
+changeset:   0:d89be78337c2
+user:        José Luis García Pallero <jgpallero@gmail.com>
+date:        Tue Dec 15 12:29:46 2009 +0100
+summary:     Creating Mercurial repository for OctPROJ
+

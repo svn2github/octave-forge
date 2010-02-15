@@ -1,7 +1,7 @@
-diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.def' blas-orig/makefile.mingw32 blas/makefile.mingw32
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.def' blas-orig/makefile.mingw32 blas/makefile.mingw32
 --- blas-orig/makefile.mingw32	1970-01-01 01:00:00 +0100
-+++ blas/makefile.mingw32	2009-08-23 10:59:41 +0200
-@@ -0,0 +1,102 @@
++++ blas/makefile.mingw32	2010-02-15 22:22:51 +0100
+@@ -0,0 +1,103 @@
 +SRCDIR = @SRCDIR@
 +
 +vpath %.f $(SRCDIR)
@@ -55,7 +55,8 @@ diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*
 +cgeru.f  chpr.f    csyrk.f   \
 +dasum.f  dnrm2.f   dspr.f    dtbmv.f   dznrm2.f  \
 +scnrm2.f  srot.f    sswap.f   stpmv.f   \
-+zdotc.f   zhbmv.f   zhpr2.f   ztpmv.f
++zdotc.f   zhbmv.f   zhpr2.f   ztpmv.f \
++scabs1.f
 +
 +OBJECTS = $(patsubst %.f,%.o, $(FSOURCES))
 +

@@ -48,16 +48,6 @@ BUILDDIR=".build_${BUILD_TARGET}_${FULLPKG}_gcc${GCC_VERSION}${GCC_SYSTEM}"
 
 # == override resp. specify build actions ==
 
-# BLAS is packed NOT in a subdirectory, so we must manually create one...
-unpack_pre()
-{ 
-   if [ -d ${SRCDIR} ]; then
-      echo removing ${SRCDIR} ...
-      rm -rf ${SRCDIR}
-   fi
-   mkdir ${SRCDIR} && cd ${SRCDIR}
-}
-unpack_post() { cd ..; }
 
 conf()
 {

@@ -170,5 +170,16 @@ endfunction
 
 %!xtest ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "UseParallel", "always")));
 
-                                #TODO: test that Vectorized speeds up execution
+%!test ## Vectorized option speeds up execution
+%!
+%! tic ();
+%! ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "PopulationSize", 200)));
+%! elapsed_time = toc ();
+%!
+%! tic ();
+%! ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "PopulationSize", 200, "Vectorized", "on")));
+%! elapsed_time_with_vectorized = toc ();
+%!
+%! assert (elapsed_time > elapsed_time_with_vectorized);
+
                                 #TODO: test that UseParallel speeds up execution

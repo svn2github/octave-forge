@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Luca Favatella <slackydeb@gmail.com>
+## Copyright (C) 2008, 2010 Luca Favatella <slackydeb@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,20 +14,36 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2
+## Version: 1.3
 
-function state = __ga_problem_update_state_at_each_generation__ (state, problem,
-                                                                 private_state)
-  if (state.Generation > 0)
+function state = \
+      __ga_problem_update_state_at_each_generation__ (state, problem,
+                                                      private_state)
+  if ((state.Generation > 0) || isempty (problem.options.InitialScores))
     state.Score(1:problem.options.PopulationSize, 1) = \
         __ga_scores__ (problem.fitnessfcn, state.Population);
-  else ## state.Generation == 0
-    state.Score(1:problem.options.PopulationSize, 1) = \
-        __ga_scores__ (problem.fitnessfcn,
-                       state.Population,
-                       problem.options.InitialScores);
+  else ## (Generation == 0) && (! isempty (InitialScores))
+    nrIS = rows (problem.options.InitialScores);
+    #assert (rows (problem.options.InitialPopulation) <= problem.options.PopulationSize); ## DEBUG
+    if (nrIS <= rows (problem.options.InitialPopulation))
+      missing_rows = (nrIS+1):problem.options.PopulationSize;
+      state.Score(1:problem.options.PopulationSize, 1) = \
+          [problem.options.InitialScores(:, 1);
+           (__ga_scores__ (problem.fitnessfcn,
+                           state.Population(missing_rows, :)))
+           ];
+    else
+      error ("rows (InitialScores) > rows (InitialPopulation)");
+    endif
   endif
   state.Expectation(1, 1:problem.options.PopulationSize) = \
       problem.options.FitnessScalingFcn (state.Score, private_state.nParents);
   state.Best(state.Generation + 1, 1) = min (state.Score);
 endfunction
+
+
+%!error
+%! state.Generation = 0;
+%! problem = struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "InitialScores", [0; 0; 0]));
+%! unused = 0;
+%! __ga_problem_update_state_at_each_generation__ (state, problem, unused);

@@ -71,7 +71,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.21
+## Version: 5.21.1
 
 function [x fval exitflag output population scores] = \
       ga (fitnessfcn_or_problem,
@@ -115,8 +115,7 @@ function [x fval exitflag output population scores] = \
 endfunction
 
 
-%!# nvars == 2
-%!# min != zeros (1, nvars)
+## nvars == 2    and    min != zeros (1, nvars)
 
 %!# TODO: get this test working with tol = 1e-6
 %!xtest
@@ -124,16 +123,14 @@ endfunction
 %! assert (ga (struct ("fitnessfcn", @(x) rastriginsfcn (x - min), "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "Generations", 1000, "PopInitRange", [-5; 5], "PopulationSize", 200))), min, 1e-5)
 
 
-%!# nvars == 1
-%!# min == zeros (1, nvars)
+## nvars == 1    and    min == zeros (1, nvars)
 
 %!test assert (ga (@(x) x ** 2, 1), 0, 1e-3)
 
 %!test assert (ga (@(x) (x ** 2) - (cos (2 * pi * x)) + 1, 1), 0, 1e-3)
 
 
-%!# nvars == 2
-%!# min == zeros (1, nvars)
+## nvars == 2    and    min == zeros (1, nvars)
 
 %!xtest assert (ga (@rastriginsfcn, 2), [0, 0], 1e-3)
 
@@ -144,27 +141,26 @@ endfunction
 %!xtest assert (ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("FitnessLimit", 1e-7, "PopulationSize", 200))), zeros (1, 2), 1e-4)
 
 
-%!# nvars == 4
-%!# min == zeros (1, nvars)
+## nvars == 4    and    min == zeros (1, nvars)
 
 %!# TODO: get this test working with tol = 1e-3
 %!xtest assert (ga (struct ("fitnessfcn", @(x) rastriginsfcn (x(1:2)) + ((x(3) ** 2) - (cos (2 * pi * x(3))) + 1) + (x(4) ** 2), "nvars", 4, "options", gaoptimset ("EliteCount", 5, "FitnessLimit", 1e-7, "PopInitRange", [-2; 2], "PopulationSize", 200))), zeros (1, 4), 1e-2)
 
 
-%!# InitialPopulation and InitialScores options
+## InitialPopulation and InitialScores options
 
-%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "InitialPopulation", [0, 0; 0, 0; 0, 0; 0, 0], "PopulationSize", 3)));
+%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("InitialPopulation", [0, 0; 0, 0; 0, 0; 0, 0], "PopulationSize", 3)));
 
-%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "InitialScores", [0; 0; 0])));
+%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("InitialScores", [0; 0; 0])));
 
-%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "InitialPopulation", [0, 0; 0, 0], "InitialScores", [0; 0; 0])));
+%!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("InitialPopulation", [0, 0; 0, 0], "InitialScores", [0; 0; 0])));
 
 %!test ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "InitialPopulation", [0, 0; 0, 0; 0, 0; 0, 0], "InitialScores", [0; 0; 0])));
 
 %!test ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Generations", 10, "InitialPopulation", [0, 0; 0, 0; 0, 0; 0, 0], "InitialScores", [0; 0; 0; 0])));
 
 
-%!# Vectorized and UseParallel options
+## Vectorized and UseParallel options
 
 %!error ga (struct ("fitnessfcn", @rastriginsfcn, "nvars", 2, "options", gaoptimset ("Vectorized", "bad value")));
 

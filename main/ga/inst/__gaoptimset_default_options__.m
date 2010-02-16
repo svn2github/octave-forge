@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009 Luca Favatella <slackydeb@gmail.com>
+## Copyright (C) 2008, 2009, 2010 Luca Favatella <slackydeb@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.2.2
+## Version: 1.2.3
 
 function default_options = __gaoptimset_default_options__ ()
   default_options.CreationFcn = @gacreationuniform;
@@ -48,6 +48,6 @@ function default_options = __gaoptimset_default_options__ ()
   default_options.TimeLimit = Inf;
                                 #default_options.TolCon = 1e-6;
                                 #default_options.TolFun = 1e-6;
-                                #default_options.UseParallel = "never";
-                                #default_options.Vectorized = "off";
+  default_options.UseParallel = "never";
+  default_options.Vectorized = "off";
 endfunction

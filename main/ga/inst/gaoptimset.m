@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009 Luca Favatella <slackydeb@gmail.com>
+## Copyright (C) 2008, 2009, 2010 Luca Favatella <slackydeb@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -42,19 +42,25 @@
 ## @item FitnessScalingFcn
 ## @item Generations
 ## @item InitialPopulation
+##       Can be partial.
 ## @item InitialScores
+##       column vector | [] (default) . Can be partial.
 ## @item MutationFcn
 ## @item PopInitRange
 ## @item PopulationSize
 ## @item SelectionFcn
 ## @item TimeLimit
+## @item UseParallel
+##       "always" | "never" (default) . Parallel evaluation of objective function. TODO: parallel evaluation of nonlinear constraints
+## @item Vectorized
+##       "on" | "off" (default) . Vectorized evaluation of objective function. TODO: vectorized evaluation of nonlinear constraints
 ## @end table
 ##
-## @seealso{ga, gaoptimget}
+## @seealso{ga}
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.4.4
+## Version: 4.4.5
 
 function options = gaoptimset (varargin)
   if ((nargout != 1) ||
@@ -85,5 +91,5 @@ endfunction
 %!test
 %! options = gaoptimset ("EliteCount", 1, "FitnessLimit", 1e-7, "Generations", 1000, "PopInitRange", [-5; 5], "PopulationSize", 200);
 %!
-%! ## "CrossoverFraction" is not specified, so gaoptimset should put the default value: test this too
+%! ## "CrossoverFraction" is not specified, so gaoptimset should put the default value: testing this too
 %! assert ([(getfield (options, "CrossoverFraction")); (getfield (options, "EliteCount")); (getfield (options, "FitnessLimit")); (getfield (options, "Generations")); (getfield (options, "PopInitRange")); (getfield (options, "PopulationSize"))], [0.8; 1; 1e-7; 1000; [-5; 5]; 200])

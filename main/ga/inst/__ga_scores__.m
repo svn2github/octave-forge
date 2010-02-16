@@ -14,13 +14,32 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 5.4
+## Version: 5.5
 
-function Scores = __ga_scores__ (fitnessfcn, Population)
-  [nrP ncP] = size (Population);
-  tmp = zeros (nrP, 1);
-  for index = 1:nrP
-    tmp(index, 1) = fitnessfcn (Population(index, 1:ncP));
-  endfor
-  Scores = tmp(1:nrP, 1);
+function Scores = __ga_scores__ (problem, Population)
+  if (strcmp (problem.options.Vectorized, "on")) ## using vectorized evaluation
+    if (strcmp (problem.options.UseParallel, "always"))
+      warning ("'Vectorized' option is 'on': ignoring 'UseParallel' \
+          option, even if it is 'always'");
+    endif
+    Scores = problem.fitnessfcn (Population);
+  else ## not using vectorized evaluation
+    if (! strcmp (problem.options.Vectorized, "off"))
+      error ("'Vectorized' option must be 'on' or 'off'");
+    endif
+    if (strcmp (problem.options.UseParallel, "always")) ## using parallel evaluation
+      error ("TODO: implement parallel evaluation of objective \
+          function"); ## TODO
+    else ## using serial evaluation (i.e. loop)
+      if (! strcmp (problem.options.UseParallel, "never"))
+        error ("'UseParallel' option must be 'always' or 'never'");
+      endif
+      [nrP ncP] = size (Population);
+      tmp = zeros (nrP, 1);
+      for index = 1:nrP
+        tmp(index, 1) = problem.fitnessfcn (Population(index, 1:ncP));
+      endfor
+      Scores = tmp(1:nrP, 1);
+    endif
+  endif
 endfunction

@@ -14,14 +14,14 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.3
+## Version: 1.3.1
 
 function state = \
       __ga_problem_update_state_at_each_generation__ (state, problem,
                                                       private_state)
   if ((state.Generation > 0) || isempty (problem.options.InitialScores))
     state.Score(1:problem.options.PopulationSize, 1) = \
-        __ga_scores__ (problem.fitnessfcn, state.Population);
+        __ga_scores__ (problem, state.Population);
   else ## (Generation == 0) && (! isempty (InitialScores))
     nrIS = rows (problem.options.InitialScores);
     #assert (rows (problem.options.InitialPopulation) <= problem.options.PopulationSize); ## DEBUG
@@ -29,8 +29,7 @@ function state = \
       missing_rows = (nrIS+1):problem.options.PopulationSize;
       state.Score(1:problem.options.PopulationSize, 1) = \
           [problem.options.InitialScores(:, 1);
-           (__ga_scores__ (problem.fitnessfcn,
-                           state.Population(missing_rows, :)))
+           (__ga_scores__ (problem, state.Population(missing_rows, :)))
            ];
     else
       error ("rows (InitialScores) > rows (InitialPopulation)");

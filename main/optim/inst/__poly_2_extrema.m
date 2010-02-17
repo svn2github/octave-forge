@@ -8,7 +8,7 @@
 ## Assuming that f(i) = a*l(i)^2 + b* l(i) + c = P(l(i)) for some a, b, c,
 ## ex is the extremum of the polynome P.
 ##
-function ex = __poly_2_ex (l, f)
+function ex = __poly_2_extrema (l, f)
 
 
 ### This somewhat helps if solution is very close to one of the points.

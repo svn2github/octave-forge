@@ -16,16 +16,13 @@ Data fitting
  wpolyfit wpolyfitdemo 
  leasqr leasqrdemo
  LinearRegression
-Root finding
- fzero 
- fsolve fsolve_options
 Compatibility
- fminunc
+ fminunc_compat
  optimset
  quadprog= try Yinyu Ye's <a href="http://dollar.biz.uiowa.edu/col/ye/matlab.html">code</a>
  linprog
 Numerical derivatives
- dfdp bs_gradient cdiff deriv leval
+ dfdp cdiff deriv leval
  numgradient numhessian
 Tests
   test_min_1 test_min_2 test_min_3 test_min_4
@@ -36,4 +33,4 @@ Examples
  bfgsmin_example
  rosenbrock
  samin_example
-  cg_min_test_1 cg_min_test_2 cg_min_test_3
+ cg_min_example_1 cg_min_example_2 cg_min_example_3

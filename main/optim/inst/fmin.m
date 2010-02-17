@@ -15,6 +15,8 @@
 
 function ret=fmin(varargin)
 
+  ## alias for fminbnd
+
 	ret = fminbnd(varargin{:});
 
 endfunction

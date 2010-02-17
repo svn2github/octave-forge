@@ -26,7 +26,7 @@
 ## where Deltaf is the decrease in f observed in the last iteration
 ## (each iteration consists R*C line searches).
 ## @item @var{ctl}(1)==2    : Stopping criterion : Stop search when updates are small,
-## as tested by @math{ ctl(2) > max { dx(i)/max(|x(i)|,1) | i in 1..N }}
+## as tested by @math{ ctl(2) > max @{ dx(i)/max(|x(i)|,1) | i in 1..N @}}
 ## where  dx is the change in the x that occured in the last iteration.
 ## @item @var{ctl}(2)       : Threshold used in stopping tests.           Default=10*eps
 ## @item @var{ctl}(2)==0    : Default value
@@ -44,7 +44,7 @@
 ## not passed or if nan values are given.
 ## @subheading Example:
 ##
-## function r=df( l )  b=[1;0;-1]; r = -( 2*l@{1@} - 2*b + rand(size(l{1}))); endfunction @*
+## function r=df( l )  b=[1;0;-1]; r = -( 2*l@{1@} - 2*b + rand(size(l@{1@}))); endfunction @*
 ## function r=ff( l )  b=[1;0;-1]; r = (l@{1@}-b)' * (l@{1@}-b); endfunction @*
 ## ll = @{ [10; 2; 3] @}; @*
 ## ctl(5) = 3; @*

@@ -55,6 +55,12 @@
 ## eigenvalue assignment algorithm.
 ## @end table
 ##
+## @example
+## @group
+## Place is also suitable to design estimator gains:
+## L = place (A', C', p)'
+## @end group
+## @end example
 ## @end deftypefn
 
 ## Special thanks to Peter Benner from TU Chemnitz for his advice.

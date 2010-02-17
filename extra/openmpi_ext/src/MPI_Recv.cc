@@ -23,9 +23,8 @@
 #include <ov-cell.h>    // avoid errmsg "cell -- incomplete datatype"
 #include <oct-map.h>    // avoid errmsg "Oct.map -- invalid use undef type"
 
-// set it to true if you want to see what happens step by step
 
-// tested on Octave 3.2.3
+// tested on Octave 3.2.4
 // Octave 3.2.X
 
 enum ov_t_id
@@ -94,53 +93,109 @@ ov_null_sq_string,
 
 
 int recv_class( MPI_Comm comm, octave_value &ov,  int source, int mytag);        /* along the datatype */
-/*----------------------------------*/    /* to send any octave_value */
+/*----------------------------------*/    /* to receive any octave_value */
+ 
+int recv_cell(MPI_Comm comm,octave_value &ov, int source, int mytag);
+int recv_struct( MPI_Comm comm, octave_value &ov, int source, int mytag);
+int recv_string( MPI_Comm comm, octave_value &ov,int source, int mytag);
+int recv_range(MPI_Comm comm, Range &range,int source, int mytag);
 
-int recv_struct( MPI_Comm comm, octave_value  &ov, int source, int mytag){      
+template<class AnyElem>
+int recv_vec(MPI_Comm comm, AnyElem &LBNDA, int nitem, MPI_Datatype TRCV ,int source, int mytag);
 
-int n; // map.fields();
+int recv_matrix(int t_id, MPI_Comm comm, octave_value &ov,int source, int mytag);
+int recv_sp_mat(int t_id, MPI_Comm comm, octave_value &ov,int source, int mytag);
 
-OCTAVE_LOCAL_BUFFER(int, tanktag, 2);
-tanktag[0]=mytag; //t_id
-tanktag[1]=mytag+1; // n
-int tagcap = mytag+2;
-int   ntagkey = mytag+3; // string
-int   ctag = mytag + 4; // cell
-  int info;
+template <class Any>
+int recv_scalar(int t_id, MPI_Comm comm, Any *d, int source, int mytag);
+template <class Any>
+int recv_scalar(int t_id, MPI_Comm comm, std::complex<Any> *d, int source, int mytag);
+
+
+int recv_range(MPI_Comm comm, Range &range,int source, int mytag){        /* put base,limit,incr,nelem */
+/*-------------------------------*/        /* just 3 doubles + 1 int */
+// octave_range (double base, double limit, double inc)
   MPI_Status stat;
-  info = MPI_Recv((&n), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-  printf("I have received n with info = % i \n",info);
-  Octave_map om;
-  int scap;  
-  for (int i=0; i<n; i++){			/* nkeys: foreach, get key */
-    octave_value ov_string;
-    ntagkey = ntagkey + 3;
-    info = recv_class(comm, ov_string,source,ntagkey);
-    std::string key = ov_string.string_value();
-    if( (info!=MPI_SUCCESS) )	return(info);
-    octave_value conts;				/* all elements on this fname */
-//     Receives capacity
-    info = MPI_Recv(&scap, 1,MPI_INT,source,tagcap, comm, &stat);
-    tagcap = tagcap+1;
-    ctag = ctag + scap;
-    info = recv_class(comm, conts,source,ctag);
-    if (! conts.is_cell())			return(MPI_ERR_UNKNOWN);
-    om.assign (key, conts.cell_value());
-  }
-  if (n != om.nfields()){
-	  printf("MPI_Recv: inconsistent map length\n");return(MPI_ERR_UNKNOWN);
-  }
-  ov=om;  
+  OCTAVE_LOCAL_BUFFER(int,tanktag,2);
+  tanktag[0] = mytag;
+  tanktag[1] = mytag+1;
+  OCTAVE_LOCAL_BUFFER(double,d,3);
+  d[0]= range.base();
+  d[1]= range.limit();
+  d[2]= range.inc();
 
+  int info = MPI_Recv(d, 3, MPI_INT,  source, tanktag[1] , comm,&stat);
+   
+return(info);
+}
 
-  
-  return(MPI_SUCCESS);
+// This will get the fortran_vec vector for Any type Octave can handle
+template<class AnyElem>
+int recv_vec(MPI_Comm comm, AnyElem &LBNDA, int nitem  ,MPI_Datatype TRCV ,int source, int mytag)
+{
+		      MPI_Datatype fortvec;
+		      MPI_Type_contiguous(nitem,TRCV, &fortvec);
+		      MPI_Type_commit(&fortvec);
+		      MPI_Status stat;
+		      int info = MPI_Recv((LBNDA), 1,fortvec, source, mytag , comm,&stat);
+  return(info);
 }
 
 
-int recv_string( MPI_Comm comm, octave_value  &ov, int source, int mytag){        /* directly MPI_Send it, */
-/*-----------------------------*/        /* it's just a  string value */
 
+// template specialization for complex case
+template <class Any>
+int recv_scalar(int t_id, MPI_Comm comm, std::complex<Any> &d, int source, int mytag){        
+  int info;
+  MPI_Status stat;
+  OCTAVE_LOCAL_BUFFER(int,tanktag,2);
+  tanktag[0] = mytag;
+  tanktag[1] = mytag+1;
+  OCTAVE_LOCAL_BUFFER(std::complex<Any>,Deco,2);
+  Deco[0] = real(d);
+  Deco[1] = imag(d);
+  // Most of scalars are real not complex
+  MPI_Datatype TRcv;
+  switch (t_id) {
+		  TRcv = MPI_DOUBLE;
+		  TRcv = MPI_FLOAT;
+		}
+		
+  info = MPI_Recv((&Deco), 2,TRcv, source, tanktag[1] , comm,&stat);
+  if (info !=MPI_SUCCESS) return info;
+
+  return(info);
+}
+
+template <class Any>
+int recv_scalar(int t_id, MPI_Comm comm, Any &d, int source, int mytag){        /* directly MPI_Recv it, */
+/*-----------------------------*/        /* it's just a value */
+OCTAVE_LOCAL_BUFFER(int,tanktag,2);
+  tanktag[0]=mytag;
+  tanktag[1]=mytag+1;
+  int info;
+  MPI_Status stat;
+  MPI_Datatype TRcv;
+    switch (t_id) {
+		case ov_scalar:  		TRcv = MPI_DOUBLE;
+		case ov_bool: 			TRcv = MPI_INT;
+		case ov_float_scalar:   	TRcv = MPI_FLOAT;
+		case ov_int8_scalar:   		TRcv = MPI_BYTE;
+		case ov_int16_scalar:   	TRcv = MPI_SHORT;
+		case ov_int32_scalar:   	TRcv = MPI_INT;
+		case ov_int64_scalar:   	TRcv = MPI_LONG_LONG;
+		case ov_uint8_scalar:  		TRcv = MPI_UNSIGNED_CHAR;
+		case ov_uint16_scalar:  	TRcv = MPI_UNSIGNED_SHORT;
+		case ov_uint32_scalar:  	TRcv = MPI_UNSIGNED;
+		case ov_uint64_scalar:  	TRcv = MPI_UNSIGNED_LONG_LONG;
+                }
+  info = MPI_Recv((&d), 1,TRcv, source, tanktag[1] , comm,&stat);
+  if (info !=MPI_SUCCESS) return info;
+   return(info);
+}
+int recv_string( MPI_Comm comm, octave_value &ov,int source, int mytag){        /* directly MPI_Send it, */
+/*-----------------------------*/        /* it's just a  string value */
+std::string cpp_string;
 OCTAVE_LOCAL_BUFFER(int, tanktag, 2);
 tanktag[0]=mytag;
 tanktag[1]=mytag+1;
@@ -158,12 +213,351 @@ tanktag[2]=mytag+2;
 
 
    info = MPI_Recv(mess, 1,fortvec, source, tanktag[2] , comm,&stat);
-//   printf("Flag for string received  %i \n",info);
-   std::string cpp_string;
+//    printf("Flag for string received  %i \n",info);
+   
    cpp_string = mess;
    ov = cpp_string;
    if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
+}
+
+
+int recv_matrix( int t_id,const MPI_Comm comm, octave_value &ov,  int source, int mytag){       
+
+OCTAVE_LOCAL_BUFFER(int, tanktag, 6);
+tanktag[0] = mytag;
+tanktag[1] = mytag+1;
+tanktag[2] = mytag+2;
+tanktag[3] = mytag+3;
+tanktag[4] = mytag+4;
+tanktag[5] = mytag+5;
+  int info;
+  int nitem,nd;
+  MPI_Status stat;
+  dim_vector dv;
+ 
+          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
+//  	  printf("info for nitem=%i\n",info);
+//  	  printf("nitem=%i\n",nitem);
+      if (info !=MPI_SUCCESS) return info;
+          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
+//  	  printf("info for nd=%i\n",info);
+//  	  printf("nd=%i\n",nd);
+      if (info !=MPI_SUCCESS) return info;
+
+//  Now create contiguous datatype for dim vector
+  dv.resize(nd);
+  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
+  MPI_Datatype dimvec;
+  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
+  MPI_Type_commit(&dimvec);
+
+          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
+//  	  printf("info for dim vector=%i\n",info);
+      if (info !=MPI_SUCCESS) return info;
+
+// Now reverse the content of int vector into dim vector
+ for (octave_idx_type i=0; i<nd; i++)
+ {
+   dv(i) = dimV[i] ;
+ }
+   
+  MPI_Datatype TRCV;
+		if (t_id == ov_matrix)
+		      {
+			NDArray myNDA(dv);
+		      OCTAVE_LOCAL_BUFFER(double, LBNDA,nitem);
+		      TRCV = MPI_DOUBLE;
+		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;
+		      
+		      for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=LBNDA[i];
+			  }
+			ov=myNDA;  
+		      } 
+		      
+		else if (t_id==ov_complex_matrix)
+		      {
+		      OCTAVE_LOCAL_BUFFER(double,LBNDA1,nitem);
+		      TRCV = MPI_DOUBLE;
+		      info = recv_vec(comm, LBNDA1,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;
+		      ComplexNDArray myNDA(dv);  
+		      OCTAVE_LOCAL_BUFFER(double,LBNDA2,nitem);
+		      info = recv_vec(comm, LBNDA2,nitem ,TRCV ,source, tanktag[5]);
+		      if (info !=MPI_SUCCESS) return info;
+			for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=real(LBNDA1[i])+imag(LBNDA2[i]);
+			  }
+			  ov=myNDA;
+		      }  
+		else if (t_id ==ov_bool_matrix)
+		      {
+		      OCTAVE_LOCAL_BUFFER(bool,LBNDA,nitem);
+		      TRCV = MPI_INT;
+		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;
+		      boolNDArray   myNDA(dv);
+		      for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=LBNDA[i];
+			  }
+			  ov=myNDA;
+		      }	  
+		else if (t_id==ov_float_matrix)
+		      {
+		      TRCV = MPI_FLOAT;
+		      OCTAVE_LOCAL_BUFFER(float,LBNDA,nitem);
+		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;
+		      FloatNDArray   myNDA(dv);   
+		      for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=LBNDA[i];
+			  }
+			  ov=myNDA;
+		      } 	  
+		else if (t_id==ov_float_complex_matrix)
+		     {
+		      TRCV = MPI_FLOAT;
+		      OCTAVE_LOCAL_BUFFER(float,LBNDA1,nitem);
+		      info = recv_vec(comm, LBNDA1,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;		  
+		      OCTAVE_LOCAL_BUFFER(float,LBNDA2,nitem);
+		      info = recv_vec(comm, LBNDA2,nitem ,TRCV ,source, tanktag[5]);
+		      if (info !=MPI_SUCCESS) return info;
+		      FloatComplexNDArray myNDA(dv); 
+			for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=real(LBNDA1[i])+imag(LBNDA2[i]);
+			  }
+			  ov=myNDA;
+		      }
+		else if  (t_id==ov_int8_matrix)   
+		      {  	
+			TRCV = MPI_BYTE;
+			OCTAVE_LOCAL_BUFFER(octave_int8,LBNDA1,nitem);
+			info = recv_vec(comm, LBNDA1,nitem ,TRCV ,source, tanktag[4]);
+			if (info !=MPI_SUCCESS) return info;
+			int8NDArray myNDA(dv);
+			for (octave_idx_type i=0; i<nitem; i++)
+			    {
+				myNDA(i)=LBNDA1[i];
+			    }
+			    ov=myNDA;
+		      }
+		else if (t_id==ov_int16_matrix)  
+		{  	
+		      TRCV = MPI_SHORT;
+		      OCTAVE_LOCAL_BUFFER(octave_int16,LBNDA,nitem);
+		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;
+		      int16NDArray myNDA(dv);
+		      for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=LBNDA[i];
+			  }
+			  ov=myNDA;
+		} 		
+		else if (ov_int32_matrix)  {  	TRCV = MPI_INT;
+		      OCTAVE_LOCAL_BUFFER(octave_int32,LBNDA,nitem);
+		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;
+		      int32NDArray myNDA(dv);
+		      for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=LBNDA[i];
+			  }
+			  ov=myNDA;
+		      } 		
+		else if (ov_int64_matrix)  {  	TRCV = MPI_LONG_LONG;
+		      OCTAVE_LOCAL_BUFFER(octave_int64,LBNDA,nitem);
+		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
+		      int64NDArray myNDA(dv);
+		      if (info !=MPI_SUCCESS) return info;
+		      for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=LBNDA[i];
+			  }
+			  ov=myNDA;
+		      } 		
+		else if (ov_uint8_matrix)  { 		TRCV = MPI_UNSIGNED_CHAR;
+		      OCTAVE_LOCAL_BUFFER(octave_uint8,LBNDA,nitem);
+		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;
+		      uint8NDArray myNDA(dv);
+		      for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=LBNDA[i];
+			  }
+			  ov=myNDA;
+		      } 		
+		else if (ov_uint16_matrix) {  	TRCV = MPI_UNSIGNED_SHORT;
+		      OCTAVE_LOCAL_BUFFER(octave_uint16,LBNDA,nitem);
+		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;
+		      uint16NDArray myNDA(dv);
+		      for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=LBNDA[i];
+			  }
+			  ov=myNDA;
+		      } 		
+		else if (ov_uint32_matrix) { 	TRCV = MPI_UNSIGNED;
+		      OCTAVE_LOCAL_BUFFER(octave_uint32,LBNDA,nitem);
+		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;
+		      uint32NDArray myNDA(dv);
+		      for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=LBNDA[i];
+			  }
+			ov = myNDA;  
+		      } 		
+		else if (ov_uint64_matrix) 
+		      { 	
+		      TRCV = MPI_UNSIGNED_LONG_LONG;
+		      OCTAVE_LOCAL_BUFFER(octave_uint64,LBNDA,nitem);
+		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
+		      if (info !=MPI_SUCCESS) return info;
+		      uint64NDArray myNDA(dv);
+		      for (octave_idx_type i=0; i<nitem; i++)
+			  {
+			      myNDA(i)=LBNDA[i];
+			  } 
+		      ov=myNDA;
+		      }
+return(info);
+
+}
+
+
+int recv_sp_mat(int t_id, MPI_Comm comm, octave_value &ov,int source, int mytag){   
+int info;   
+MPI_Datatype TRcv;
+                
+OCTAVE_LOCAL_BUFFER(int, tanktag,6);
+tanktag[0] = mytag;
+tanktag[1] = mytag+1;
+tanktag[2] = mytag+2;
+tanktag[3] = mytag+3;
+tanktag[4] = mytag+4;
+tanktag[5] = mytag+5;
+
+MPI_Status stat;
+
+OCTAVE_LOCAL_BUFFER(int,s,3);  
+
+// Create a contiguous derived datatype
+MPI_Datatype sintsparse;
+MPI_Type_contiguous(3,MPI_INT, &sintsparse);
+MPI_Type_commit(&sintsparse);
+
+
+
+
+// receive the sintsparse vector named s
+info = MPI_Recv(s, 1, sintsparse, source, tanktag[1], comm, &stat);
+// printf("This is info for sintsparse %i\n",info);
+if (info !=MPI_SUCCESS) return info;
+// MPI_Datatype datavect1;
+// MPI_Type_contiguous(s[2],TRcv, &datavect1);
+// MPI_Type_commit(&datavect1);
+// printf("This is info for sintsparse %i\n");
+// Create a contiguous derived datatype for row and column index
+ 
+OCTAVE_LOCAL_BUFFER(int,sridx,s[2]); 
+MPI_Datatype rowindex;
+MPI_Type_contiguous(s[2],MPI_INT, &rowindex);
+MPI_Type_commit(&rowindex);
+
+OCTAVE_LOCAL_BUFFER(int,scidx,s[1]+1); 
+MPI_Datatype columnindex;
+MPI_Type_contiguous(s[1]+1,MPI_INT, &columnindex);
+MPI_Type_commit(&columnindex);
+
+
+      info =  MPI_Recv(sridx,1,rowindex,source,tanktag[2],comm,&stat);
+//        printf("Hope everything is fine here with ridx %i =\n",info);
+      if (info !=MPI_SUCCESS) return info;
+
+// receive the vector with column indexes
+      info =  MPI_Recv(scidx,1,columnindex,source,tanktag[3],comm, &stat);
+//      printf("Hope everything is fine here with scidx %i =\n",info);
+      if (info !=MPI_SUCCESS) return info;
+
+// Now we have a different vector of non zero elements according to datatype
+
+	      if (t_id == ov_sparse_bool_matrix)
+		{  
+		  TRcv = MPI_INT;
+		  SparseBoolMatrix m(s[0],s[1],s[2]);
+		  OCTAVE_LOCAL_BUFFER(bool,LBNDA,s[2]);
+		  //Now receive the vector of non zero elements
+		  info = recv_vec(comm, LBNDA,s[2] ,TRcv ,source, tanktag[4]);
+//  		  printf("This is info for vector of non zero elements %i\n",info);
+		  if (info !=MPI_SUCCESS) return info;
+		  for (octave_idx_type i = 0; i < s[1]+1; i++)
+		  {
+		    m.cidx(i) = scidx[i];
+		  }
+		  for (octave_idx_type i = 0; i < s[2]; i++)
+		  {
+		  m.ridx(i) = sridx[i];
+// 		  printf("LBNDA[i]= %f\n",LBNDA[i]);
+		  m.data(i) = LBNDA[i];
+		  }
+		  ov = m;
+		}
+		if (t_id == ov_sparse_matrix)
+		{  
+		  TRcv = MPI_DOUBLE;
+		  SparseMatrix m(s[0],s[1],s[2]);
+		  OCTAVE_LOCAL_BUFFER(double,LBNDA,s[2]);
+		  //Now receive the vector of non zero elements
+		  info = recv_vec(comm, LBNDA,s[2] ,TRcv ,source, tanktag[4]);
+//  		  printf("This is info for receiving vector of non zero elements %i\n",info);
+		  if (info !=MPI_SUCCESS) return info;
+		  for (octave_idx_type i = 0; i < s[1]+1; i++)
+		  {
+		    m.cidx(i) = scidx[i];
+		  }
+		  for (octave_idx_type i = 0; i < s[2]; i++)
+		  {
+		  m.ridx(i) = sridx[i];
+// 		  printf("LBNDA[i]= %f\n",LBNDA[i]);
+		  m.data(i) = LBNDA[i];
+		  }
+		  ov = m;
+		}
+		if (t_id == ov_sparse_complex_matrix)
+		{  
+		  TRcv = MPI_DOUBLE;
+		  SparseComplexMatrix m(s[0],s[1],s[2]);
+		  OCTAVE_LOCAL_BUFFER(double,LBNDA1,s[2]);
+		  OCTAVE_LOCAL_BUFFER(double,LBNDA2,s[2]);
+		  info = recv_vec(comm, LBNDA1,s[2] ,TRcv ,source, tanktag[4]);
+		  if (info !=MPI_SUCCESS) return info;
+		  info = recv_vec(comm, LBNDA2,s[2] ,TRcv ,source, tanktag[5]);
+		  if (info !=MPI_SUCCESS) return info;		  
+		  for (octave_idx_type i = 0; i < s[1]+1; i++)
+		  {
+		    m.cidx(i) = scidx[i];
+		  }
+		  for (octave_idx_type i = 0; i < s[2]; i++)
+		  {
+		  m.ridx(i) = sridx[i];
+		  m.data(i) = real(LBNDA1[i])+imag(LBNDA2[i]);
+		  }
+		  ov = m;
+
+		}
+return(info);
+
+
 }
 int recv_cell(MPI_Comm comm,octave_value &ov, int source, int mytag){
 // Not tested yet
@@ -181,11 +575,11 @@ tanktag[4] = mytag+4;
  
 //       nitem is the total number of elements 
       info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//         printf("I have received number of elements  %i \n",nitem);
+//          printf("I have received number of elements  %i \n",nitem);
       if (info !=MPI_SUCCESS) return info;
 //      ndims is number of dimensions
           info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//           printf("I have received number of dimensions %i \n",nd);
+//            printf("I have received number of dimensions %i \n",nd);
       if (info !=MPI_SUCCESS) return info;
 //  Now create contiguous datatype for dim vector
   dv.resize(nd);
@@ -195,7 +589,7 @@ tanktag[4] = mytag+4;
   MPI_Type_commit(&dimvec);
 
           info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-//       printf("I have received number dimension vector and this is the flag .. %i \n",info);
+//        printf("I have received number dimension vector and this is the flag .. %i \n",info);
       if (info !=MPI_SUCCESS) return info;
 
 // Now reverse the content of int vector into dim vector
@@ -203,7 +597,7 @@ tanktag[4] = mytag+4;
  {
    
    dv(i) = dimV[i] ;
-//     printf("I am printing dimvector  %i \n",dimV[i]);
+//      printf("I am printing dimvector  %i \n",dimV[i]);
  }
 
 Cell	    oc (dv);
@@ -214,11 +608,13 @@ int ocap;
 	    {
 	      octave_value celem;				
 	      info = MPI_Recv((&ocap), 1,MPI_INT, source, newtag , comm,&stat);
-//               printf("I have received the identifier's TAG  of the specific  octave_value %i \n",ocap);
+//                printf("I have received the identifier's TAG  of the specific  octave_value %i \n",ocap);
 	      if (info !=MPI_SUCCESS) return info;
 	      newtag = newtag+ocap;
+	      
+// 	       printf("I have received NEWTAG+1  = %i\n",newtag+1);
 	      info=recv_class(comm,celem,source,newtag);
-//               printf("This is info for the specific  octave_value %i \n",info);
+//                printf("This is info for the specific  octave_value %i \n",info);
 	      if (info !=MPI_SUCCESS) return info;
 	      oc.Array<octave_value>::elem(i)=celem;        
 	    }
@@ -226,1337 +622,99 @@ int ocap;
 ov = oc;
    if (info !=MPI_SUCCESS) return info;
    return(MPI_SUCCESS);
-;
 
 }
 
-int recv_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
+int recv_struct( MPI_Comm comm, octave_value &ov, int source, int mytag){      
+Octave_map om;
+int n; // map.fields();
 
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[4] = mytag+4;
-
+OCTAVE_LOCAL_BUFFER(int, tanktag, 2);
+tanktag[0]=mytag; //t_id
+tanktag[1]=mytag+1; // n
+int tagcap = mytag+2;
+int   ntagkey = mytag+3; // string
+int   ctag = mytag + 4; // cell
   int info;
-  int nitem,nd;
   MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//         printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//               printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguous datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-   
-   dv(i) = dimV[i] ;
-//    printf("I am printing dimvector  %i \n",dimV[i]);
- }
-    NDArray myNDA(dv);
-//     double *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(double,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_DOUBLE, &fortvec);
-  MPI_Type_commit(&fortvec);
-//       printf("I am printing dimvector  %i \n",tanktag[4]);
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//             printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-      myNDA(i)=LBNDA[i];
+  info = MPI_Recv((&n), 1,MPI_INT, source, tanktag[1] , comm,&stat);
+//   printf("I have received n with info = % i \n",info);
+  int scap;  
+  for (int i=0; i<n; i++){			/* nkeys: foreach, get key */
+    octave_value ov_string;
+    ntagkey = ntagkey + 3;
+    info = recv_class(comm, ov_string,source,ntagkey);
+//     printf("I have received the string with info = % i \n",info);
+    std::string key = ov_string.string_value();
+    if( (info!=MPI_SUCCESS) )	return(info);
+    octave_value conts;				/* all elements on this fname */
+//     Receives capacity
+    info = MPI_Recv(&scap, 1,MPI_INT,source,tagcap, comm, &stat);
+//     printf("I have received capacity with info = % i \n",info);
+    tagcap = tagcap+1;
+    ctag = ctag + scap;
+    info = recv_class(comm, conts,source,ctag);
+//      printf("I have received cell with info = % i \n",info);
+    if (! conts.is_cell())			return(MPI_ERR_UNKNOWN);
+    om.assign (key, conts.cell_value());
   }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-
-}
-
-int recv_float_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[4] = mytag+4;
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//     printf("I am printing dimvector  %i \n",dimV[i]);
-   dv(i) = dimV[i] ;
- }
-    FloatNDArray myNDA(dv);
-    float *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(float,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_FLOAT, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-
-      myNDA(i)=LBNDA[i];
+  if (n != om.nfields()){
+// 	  printf("MPI_Recv: inconsistent map length\n");return(MPI_ERR_UNKNOWN);
   }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
 
+  ov=om;
+  
+  return(MPI_SUCCESS);
 }
 
-
-
-int recv_complex_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 6);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[4] = mytag+4;
-tanktag[5] = mytag+5;
-
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    NDArray rmyNDA(dv);  // for the real part
-    NDArray imyNDA(dv);  // for the img part
-
-   ComplexNDArray   oa (dv);            /* Create->Delete on ret?!? */
-
-     double *p = rmyNDA.fortran_vec();
-     double *ip = imyNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(double,LBNDA,nitem);
-   OCTAVE_LOCAL_BUFFER(double,CLBNDA,nitem);
-
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_DOUBLE, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-
-          info = MPI_Recv((CLBNDA), 1,fortvec, source, tanktag[5] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-
-
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
-      rmyNDA(i)=LBNDA[i];
-      imyNDA(i)=CLBNDA[i];
-      oa(i) = Complex (rmyNDA (i), imyNDA (i));
-  }
-    ov = oa;
-
-return(MPI_SUCCESS);
-}
-
-
-int recv_float_complex_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 6);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[4] = mytag+4;
-tanktag[5] = mytag+5;
-
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    FloatNDArray rmyNDA(dv);  // for the real part
-    FloatNDArray imyNDA(dv);  // for the img part
-
-   FloatComplexNDArray   oa (dv);            /* Create->Delete on ret?!? */
-
-     float *p = rmyNDA.fortran_vec();
-     float *ip = imyNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(float,LBNDA,nitem);
-   OCTAVE_LOCAL_BUFFER(float,CLBNDA,nitem);
-
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_DOUBLE, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-
-          info = MPI_Recv((CLBNDA), 1,fortvec, source, tanktag[5] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-
-
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-      rmyNDA(i)=LBNDA[i];
-      imyNDA(i)=CLBNDA[i];
-      std::complex<float>  c  = real(rmyNDA(i))+imag(imyNDA(i));
-      oa(i) = c;
-  }
-    ov = oa;
-
-return(MPI_SUCCESS);
-}
-
-
-
-
-
-
-int recv_sp_mat(MPI_Comm comm, octave_value &ov,int source, int mytag){   
-int info;   
-/*     int nr = m.rows();
-     int nc = m.cols (); 
-     int nnzm = m.nzmax ();*/
-// tag[0] ----> type of octave_value
-// tag[1] ----> array of three elements 1) num of rows 2) number of columns 3) number of non zero elements
-// tag[2] ---->  vector of rowindex
-// tag[3] ---->  vector of columnindex
-// tag[5] ---->  vector of number of non zero elements
-OCTAVE_LOCAL_BUFFER(int, tanktag,6);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[4] = mytag+4;
-tanktag[5] = mytag+5;
-
-MPI_Status stat;
-
-OCTAVE_LOCAL_BUFFER(int,s,3);  
-
-// Create a contiguous derived datatype
-MPI_Datatype sintsparse;
-MPI_Type_contiguous(3,MPI_INT, &sintsparse);
-MPI_Type_commit(&sintsparse);
-
-// receive the sintsparse vector named s
-info = MPI_Recv(s, 1, sintsparse, source, tanktag[1], comm, &stat);
-if (info !=MPI_SUCCESS) return info;
-
-// int appo1, appo2, appo3;
-// appo1 = s[0];
-// appo2 = s[1];
-// appo3 = s[2];
-//
-// printf("appo 1 is %i \n",appo1);
-// printf("appo 2 is %i \n",appo2);
-// printf("appo 3 is %i \n",appo3);
-
-
-
-SparseMatrix m(s[0],s[1],s[2]);
-
-// Create a contiguous derived datatype for row index
-OCTAVE_LOCAL_BUFFER(int,sridx,s[2]); 
-OCTAVE_LOCAL_BUFFER(double,sdata,s[2]);
-// Create a contiguous derived datatype for column index
-OCTAVE_LOCAL_BUFFER(int,scidx,s[1]+1);  
-MPI_Datatype rowindex;
-MPI_Type_contiguous(s[2],MPI_INT, &rowindex);
-MPI_Type_commit(&rowindex);
-MPI_Datatype datavect;
-MPI_Type_contiguous(s[2],MPI_DOUBLE, &datavect);
-MPI_Type_commit(&datavect);
-MPI_Datatype columnindex;
-MPI_Type_contiguous(s[1]+1,MPI_INT, &columnindex);
-MPI_Type_commit(&columnindex);
-
-// Now receive the two vectors
-
-// receive the vector with row indexes
-      info =  MPI_Recv(sridx,1,rowindex,source,tanktag[2],comm,&stat);
-//       printf("Hope everything is fine here with ridx %i =\n",info);
-      if (info !=MPI_SUCCESS) return info;
-
-// receive the vector with column indexes
-      info =  MPI_Recv(scidx,1,columnindex,source,tanktag[3],comm, &stat);
-//     printf("Hope everything is fine here with scidx %i =\n",info);
-      if (info !=MPI_SUCCESS) return info;
-
-      info =  MPI_Recv(sdata,1,datavect,source,tanktag[4],comm,&stat);
-//       printf("Hope everything is fine here with data vect %i =\n",info);
-
-// int appoc;
-NDArray buf (dim_vector (m.capacity(), 1));
-for (octave_idx_type i = 0; i < s[2]; i++)
-{
-    m.ridx(i) = sridx[i];
-    m.data(i) = sdata[i];
-    buf(i) = sdata[i];
-//     appoc = m.ridx(i);
-//     printf("apporow is %i \n",appoc);
-//     printf("appodata is %d \n",sdata[i]);
-}
-for (octave_idx_type i = 0; i < s[1]+1; i++)
-{
-    m.cidx(i) = scidx[i];
-//     appoc=m.cidx(i);
-//     printf("appocol is %i \n",appoc);
-}
-
-
-ov = m;
-return(info);
-
-
-}
-
-
-//here ! int matrixes
-int recv_int8_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[4] = mytag+4;
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    int8NDArray myNDA(dv);
-//     double *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(octave_int8,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_BYTE, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
-      myNDA(i)=LBNDA[i];
-  }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-
-}
-int recv_bool_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[3] = mytag+4;
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    boolNDArray myNDA(dv);
-//     double *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(int,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_INT, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
-      myNDA(i)=LBNDA[i];
-  }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-   return(info);
-}
-
-
-int recv_int16_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[3] = mytag+4;
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    int16NDArray myNDA(dv);
-//     double *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(octave_int16,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_SHORT, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
-      myNDA(i)=LBNDA[i];
-  }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-   return(info);
-}
-
-
-int recv_int32_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[3] = mytag+4;
-
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguous datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    int32NDArray myNDA(dv);
-//     double *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(octave_int32,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_INT, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
-      myNDA(i)=LBNDA[i];
-  }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-   return(info);
-}
-
-
-int recv_int64_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[3] = mytag+4;
-
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    int64NDArray myNDA(dv);
-//     double *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(octave_int64,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_INT, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
-      myNDA(i)=LBNDA[i];
-  }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-
-
-int recv_uint64_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[3] = mytag+4;
-
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    uint64NDArray myNDA(dv);
-//     double *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(octave_uint64,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_UNSIGNED_LONG_LONG, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
-      myNDA(i)=LBNDA[i];
-  }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-
-int recv_uint8_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[3] = mytag+4;
-
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    uint8NDArray myNDA(dv);
-//     double *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(octave_uint8,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_UNSIGNED_CHAR, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-      myNDA(i)=LBNDA[i];
-  }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-
-
-int recv_uint16_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[3] = mytag+4;
-
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    uint16NDArray myNDA(dv);
-//     double *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(octave_uint16,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_UNSIGNED_SHORT, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
-      myNDA(i)=LBNDA[i];
-  }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-int recv_uint32_matrix(MPI_Comm comm, octave_value &ov,int source, int mytag){       
-
-OCTAVE_LOCAL_BUFFER(int, tanktag, 5);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[3] = mytag+4;
-
-  int info;
-  int nitem,nd;
-  MPI_Status stat;
-  dim_vector dv;
- 
-//       nitem is the total number of elements 
-          info = MPI_Recv((&nitem), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-//       printf("I have received number of elements  %i \n",nitem);
-      if (info !=MPI_SUCCESS) return info;
-//      ndims is number of dimensions
-          info = MPI_Recv((&nd), 1,MPI_INT, source, tanktag[2] , comm,&stat);
-//             printf("I have received number of dimensions %i \n",nd);
-      if (info !=MPI_SUCCESS) return info;
-//  Now create contiguos datatype for dim vector
-  dv.resize(nd);
-  OCTAVE_LOCAL_BUFFER(int,dimV,nd);
-  MPI_Datatype dimvec;
-  MPI_Type_contiguous(nd,MPI_INT, &dimvec);
-  MPI_Type_commit(&dimvec);
-
-          info = MPI_Recv((dimV), 1,dimvec, source, tanktag[3] , comm,&stat);
-      if (info !=MPI_SUCCESS) return info;
-
-// Now reverse the content of int vector into dim vector
- for (octave_idx_type i=0; i<nd; i++)
- {
-//    printf("I am printing dimvector  %i \n",i);
-   dv(i) = dimV[i] ;
- }
-    uint32NDArray myNDA(dv);
-//     double *p = myNDA.fortran_vec();
-   OCTAVE_LOCAL_BUFFER(octave_uint32,LBNDA,nitem);
-//    printf("BUFFER CREATED \n");
-  // Now create the contiguous derived datatype
-  MPI_Datatype fortvec;
-  MPI_Type_contiguous(nitem,MPI_UNSIGNED, &fortvec);
-  MPI_Type_commit(&fortvec);
-
-          info = MPI_Recv((LBNDA), 1,fortvec, source, tanktag[4] , comm,&stat);
-//           printf("info for receiving data is = %i \n",info);
-      if (info !=MPI_SUCCESS) return info;
-  for (octave_idx_type i=0; i<nitem; i++)
-  {
-//       *LBNDA = *p;
-//       LBNDA++;
-//       p++;
-      myNDA(i)=LBNDA[i];
-  }
-    ov = myNDA;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-
-
-
-int recv_complex_sp_mat(MPI_Comm comm, octave_value &ov,int source, int mytag){   
-int info;   
-/*     int nr = m.rows();
-     int nc = m.cols (); 
-     int nnzm = m.nzmax ();*/
-// tag[0] ----> type of octave_value
-// tag[1] ----> array of three elements 1) num of rows 2) number of columns 3) number of non zero elements
-// tag[2] ---->  vector of rowindex
-// tag[3] ---->  vector of columnindex
-// tag[5] ---->  vector of number of non zero elements
-OCTAVE_LOCAL_BUFFER(int, tanktag,6);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-tanktag[2] = mytag+2;
-tanktag[3] = mytag+3;
-tanktag[4] = mytag+4;
-tanktag[5] = mytag+5;
-
-MPI_Status stat;
-
-OCTAVE_LOCAL_BUFFER(int,s,3);  
-
-// Create a contiguous derived datatype
-MPI_Datatype sintsparse;
-MPI_Type_contiguous(3,MPI_INT, &sintsparse);
-MPI_Type_commit(&sintsparse);
-
-// receive the sintsparse vector named s
-info = MPI_Recv(s, 1, sintsparse, source, tanktag[1], comm, &stat);
-if (info !=MPI_SUCCESS) return info;
-
-// int appo1, appo2, appo3;
-// appo1 = s[0];
-// appo2 = s[1];
-// appo3 = s[2];
-//
-// printf("appo 1 is %i \n",appo1);
-// printf("appo 2 is %i \n",appo2);
-// printf("appo 3 is %i \n",appo3);
-
-
-
-SparseMatrix m(s[0],s[1],s[2]);
-
-// Create a contiguous derived datatype for row index
-OCTAVE_LOCAL_BUFFER(int,sridx,s[2]); 
-OCTAVE_LOCAL_BUFFER(double,sdata,s[2]);
-// Create a contiguous derived datatype for column index
-OCTAVE_LOCAL_BUFFER(int,scidx,s[1]+1);  
-MPI_Datatype rowindex;
-MPI_Type_contiguous(s[2],MPI_INT, &rowindex);
-MPI_Type_commit(&rowindex);
-MPI_Datatype datavect;
-MPI_Type_contiguous(s[2],MPI_DOUBLE, &datavect);
-MPI_Type_commit(&datavect);
-MPI_Datatype columnindex;
-MPI_Type_contiguous(s[1]+1,MPI_INT, &columnindex);
-MPI_Type_commit(&columnindex);
-
-// Now receive the two vectors
-
-// receive the vector with row indexes
-      info =  MPI_Recv(sridx,1,rowindex,source,tanktag[2],comm,&stat);
-//       printf("Hope everything is fine here with ridx %i =\n",info);
-      if (info !=MPI_SUCCESS) return info;
-
-// receive the vector with column indexes
-      info =  MPI_Recv(scidx,1,columnindex,source,tanktag[3],comm, &stat);
-//     printf("Hope everything is fine here with scidx %i =\n",info);
-      if (info !=MPI_SUCCESS) return info;
-
-      info =  MPI_Recv(sdata,1,datavect,source,tanktag[4],comm,&stat);
-//       printf("Hope everything is fine here with data vect %i =\n",info);
-
-// int appoc;
-NDArray buf (dim_vector (m.capacity(), 1));
-for (octave_idx_type i = 0; i < s[2]; i++)
-{
-    m.ridx(i) = sridx[i];
-    m.data(i) = sdata[i];
-    buf(i) = sdata[i];
-//     appoc = m.ridx(i);
-//     printf("apporow is %i \n",appoc);
-//     printf("appodata is %d \n",sdata[i]);
-}
-for (octave_idx_type i = 0; i < s[1]+1; i++)
-{
-    m.cidx(i) = scidx[i];
-//     appoc=m.cidx(i);
-//     printf("appocol is %i \n",appoc);
-}
-
-
-ov = m;
-   if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-
-
-}
-
-
-
-
-
-
-
-
-
-int recv_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-  int info;
-  MPI_Status stat;
-  double d=0;
-  info = MPI_Recv((&d), 1,MPI_DOUBLE, source, tanktag[1] , comm,&stat);
-  ov =d;
-//    printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(info);
-}
-int recv_bool( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-  int info;
-  MPI_Status stat;
-  int d=0;
-  info = MPI_Recv((&d), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-  ov =d;
-//    printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(info);
-}
-
-int recv_int8_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-  int info;
-  MPI_Status stat;
-  octave_int8 d;
-  info = MPI_Recv((&d), 1,MPI_BYTE, source, tanktag[1] , comm,&stat);
-  ov =d;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-int recv_int16_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-  int info;
-  MPI_Status stat;
-  octave_int16 d;
-  info = MPI_Recv((&d), 1,MPI_SHORT, source, tanktag[1] , comm,&stat);
-  ov =d;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-int recv_int32_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-  int info;
-  MPI_Status stat;
-  octave_int32 d;
-  info = MPI_Recv((&d), 1,MPI_INT, source, tanktag[1] , comm,&stat);
-  ov =d;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-int recv_int64_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-  int info;
-  MPI_Status stat;
-  octave_int64 d;
-  info = MPI_Recv((&d), 1,MPI_LONG_LONG, source, tanktag[1] , comm,&stat);
-  ov =d;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-int recv_uint64_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-  int info;
-  MPI_Status stat;
-  octave_uint64 d;
-  info = MPI_Recv((&d), 1,MPI_UNSIGNED_LONG_LONG, source, tanktag[1] , comm,&stat);
-  ov =d;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-int recv_uint32_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-  int info;
-  MPI_Status stat;
-  octave_uint32 d;
-  info = MPI_Recv((&d), 1,MPI_UNSIGNED, source, tanktag[1] , comm,&stat);
-  ov =d;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-int recv_uint16_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-  int info;
-  MPI_Status stat;
-  octave_uint16 d;
-  info = MPI_Recv((&d), 1,MPI_UNSIGNED_SHORT, source, tanktag[1] , comm,&stat);
-  ov =d;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-int recv_uint8_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-  int info;
-  MPI_Status stat;
-  octave_uint8 d;
-  info = MPI_Recv((&d), 1,MPI_UNSIGNED_CHAR, source, tanktag[1] , comm,&stat);
-  ov =d;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-
-
-
-
-
-
-
-
-int recv_complex_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Send it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-
-  OCTAVE_LOCAL_BUFFER(double,d,2);
-
-
-
-  int info;
-  MPI_Status stat;
-  info = MPI_Recv((&d), 2,MPI_DOUBLE, source, tanktag[1] , comm,&stat);
-
-  ov =Complex(d[0],d[1]);;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-int recv_complex_float_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Send it, */
-/*-----------------------------*/        /* it's just a value */
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-  tanktag[0]=mytag;
-  tanktag[1]=mytag+1;
-
-  OCTAVE_LOCAL_BUFFER(float,d,2);
-
-
-
-  int info;
-  MPI_Status stat;
-  info = MPI_Recv((&d), 2,MPI_FLOAT, source, tanktag[1] , comm,&stat);
-  std::complex<float>  c = real(d[0])+imag(d[1]);
-  ov =c;;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
-
-
-
-
-
-
-int recv_float_scalar( MPI_Comm comm, octave_value &ov, int source, int mytag){        /* directly MPI_Recv it, */
-/*-----------------------------*/        /* it's just a Float value */
-
-OCTAVE_LOCAL_BUFFER(int,tanktag,2);
-tanktag[0] = mytag;
-tanktag[1] = mytag+1;
-
-
-  int info;
-  MPI_Status stat;
-  float d = ov.float_value();
-  info = MPI_Recv((&d), 1,MPI_FLOAT, source, tanktag[1] , comm,&stat);
-  ov =d;
-//   printf("info for scalar is = %i \n",info);
-  if (info !=MPI_SUCCESS) return info;
-   return(MPI_SUCCESS);
-}
 
 int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* varname-strlength 1st, dims[ndim] */
 /*----------------------------------*/    /* and then appropriate specific info */
   int t_id,n;
   MPI_Status status;
-//   printf("1-> source =%i\n",source);
-//   printf("2-> tag for id =%i\n",mytag);
+//      printf("1-> source =%i\n",source);
+//      printf("2-> tag for id =%i\n",mytag);
+     
   int info = MPI_Recv(&t_id,1, MPI_INT, source,mytag,comm,&status);
 
-//      printf(" I have received t_id =%i\n",t_id);
-
-  if (info !=MPI_SUCCESS) return info;
+//         printf(" I have received t_id =%i\n",t_id);
 
   switch (t_id) {
+    case ov_cell		: return(recv_cell ( comm,  ov,source,mytag));
+    case ov_struct		: return(recv_struct(comm,  ov,source,mytag)); 
+    case ov_scalar		: {double 	 d=0;  info =(recv_scalar (t_id,comm, d,source,mytag));ov=d;return(info);};
+    case ov_bool		: {bool 	 b;    info = (recv_scalar (t_id,comm, b,source,mytag));   ov=b ;return(info);};
+    case ov_int8_scalar         : {octave_int8   d;    info = (recv_scalar (t_id,comm, d,source,mytag)); ov=d ;return(info);};
+    case ov_int16_scalar        : {octave_int16  d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
+    case ov_int32_scalar        : {octave_int32  d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
+    case ov_int64_scalar        : {octave_int64  d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
+    case ov_uint8_scalar        : {octave_uint8  d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);}; 
+    case ov_uint16_scalar       : {octave_uint16 d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
+    case ov_uint32_scalar       : {octave_uint32 d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
+    case ov_uint64_scalar       : {octave_uint64 d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
+    case ov_float_scalar        : {float 	       d;    info =(recv_scalar (t_id,comm, d,source,mytag)) ;  ov=d;return(info);};
+    case ov_complex_scalar      : {std::complex<double>   d;    info =(recv_scalar (t_id,comm, d,source,mytag)) ;  ov=d;return(info);};
+    case ov_float_complex_scalar: {std::complex<float> d;    info =(recv_scalar (t_id,comm, d,source,mytag)) ;  ov=d;return(info);};
+    case ov_string		: return(recv_string (comm, ov,source,mytag));
+    case ov_sq_string		: return(recv_string (comm, ov,source,mytag));
+    case ov_range		: {Range 	       d;    info =(recv_range (comm, d,source,mytag));	ov=d;return(info);};
+    case ov_matrix    		: return(recv_matrix (t_id,comm,ov,source,mytag));	
+    case ov_complex_matrix    	: return(recv_matrix (t_id,comm,ov,source,mytag));
+    case ov_bool_matrix		: return(recv_matrix (t_id,comm,ov,source,mytag));  
+    case ov_int8_matrix		: return(recv_matrix (t_id,comm,ov,source,mytag));
+    case ov_int16_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
+    case ov_int32_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
+    case ov_int64_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
 
-    case ov_scalar:    			return(recv_scalar (comm, ov,source,mytag));
-    case ov_bool:			return(recv_bool(comm, ov,source,mytag));
-    case ov_cell:    			return(recv_cell (comm, ov,source,mytag));
-    case ov_int8_scalar:    		return(recv_int8_scalar (comm, ov,source,mytag));
-    case ov_int16_scalar:    		return(recv_int16_scalar (comm, ov,source,mytag));
-    case ov_int32_scalar:    		return(recv_int32_scalar (comm, ov,source,mytag));
-    case ov_int64_scalar:    		return(recv_int64_scalar (comm, ov,source,mytag));
-    case ov_uint8_scalar:    		return(recv_uint8_scalar (comm, ov,source,mytag));
-    case ov_uint16_scalar:    		return(recv_uint16_scalar (comm, ov,source,mytag));
-    case ov_uint32_scalar:    		return(recv_uint32_scalar (comm, ov,source,mytag));
-    case ov_uint64_scalar:    		return(recv_uint64_scalar (comm, ov,source,mytag));
-    case ov_float_scalar: 		return(recv_float_scalar(comm, ov,source,mytag));
-    case ov_complex_scalar:    		return(recv_complex_scalar (comm, ov,source,mytag));
-    case ov_float_complex_scalar: 	return(recv_complex_float_scalar(comm, ov,source,mytag));
+    case ov_uint8_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
+    case ov_uint16_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
+    case ov_uint32_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
+    case ov_uint64_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
 
-    case ov_string:    			return(recv_string (comm, ov,source,mytag));
-    case ov_matrix:    			return(recv_matrix (comm, ov,source,mytag));
-    case ov_complex_matrix:    		return(recv_complex_matrix(comm, ov,source,mytag));
-    case ov_bool_matrix:    		return(recv_bool_matrix (comm, ov,source,mytag));
-    case ov_int8_matrix:    		return(recv_int8_matrix (comm, ov,source,mytag));
-    case ov_int16_matrix:    		return(recv_int16_matrix (comm, ov,source,mytag));
-    case ov_int32_matrix:    		return(recv_int32_matrix (comm, ov,source,mytag));
-    case ov_int64_matrix:    		return(recv_int64_matrix (comm, ov,source,mytag));
-
-
-    case ov_uint8_matrix:     		return(recv_uint8_matrix (comm, ov,source,mytag));
-    case ov_uint16_matrix:    		return(recv_uint16_matrix (comm, ov,source,mytag));
-    case ov_uint32_matrix:    		return(recv_uint32_matrix (comm, ov,source,mytag));
-    case ov_uint64_matrix:    		return(recv_uint64_matrix (comm, ov,source,mytag));
-
-    case ov_float_matrix:            	return(recv_float_matrix (comm, ov,source,mytag));
-    case ov_float_complex_matrix:    	return(recv_float_complex_matrix (comm, ov,source,mytag));
-    case ov_sparse_matrix:           	return(recv_sp_mat(comm, ov,source,mytag));
-    case ov_sparse_complex_matrix:   	return(recv_complex_sp_mat(comm, ov,source,mytag));
-    case ov_struct:			return(recv_struct(comm, ov,source,mytag));			
+    case ov_float_matrix:            	return(recv_matrix (t_id,comm, ov,source,mytag));
+    case ov_float_complex_matrix:    	return(recv_matrix (t_id,comm, ov,source,mytag));
+    case ov_sparse_matrix:		return(recv_sp_mat(t_id,comm, ov,source,mytag));
+    case ov_sparse_complex_matrix:   	return(recv_sp_mat(t_id,comm, ov,source,mytag));			
     case ov_unknown:    printf("MPI_Recv: unknown class\n");
             return(MPI_ERR_UNKNOWN );
 
@@ -1587,7 +745,6 @@ case ov_null_sq_string:
 
 
 
-
 DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv sends almost any Octave datatype into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n")
 {
      octave_value_list retval;
@@ -1598,7 +755,6 @@ DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv sends almost any Octave datatype into
       return retval;
     }
 
-//   MPI_Comm comm = nargin == 4 ? get_mpi_comm (args(3)) : MPI_COMM_WORLD;
   if (error_state)
     return retval;
 
@@ -1637,6 +793,7 @@ DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv sends almost any Octave datatype into
      int info = recv_class (comm, result,source, mytag );
      comm= NULL;
      retval(1) = info;
+//       printf("info on recv_class=%i\n",info);
      retval(0) = result;
      return retval;
    

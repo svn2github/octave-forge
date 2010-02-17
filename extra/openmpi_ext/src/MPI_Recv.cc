@@ -25,8 +25,71 @@
 
 
 // tested on Octave 3.2.4
-// Octave 3.2.X
+#define HAVE_OCTAVE_324 =1
+#ifndef HAVE_OCTAVE_324
+enum ov_t_id
+{
 
+ov_unknown=0,                // t_id=0
+ov_cell,                // t_id=1
+ov_scalar,                // t_id=2
+ov_complex_scalar,            // t_id=3
+ov_matrix,                // t_id=4
+ov_diagonal_matrix,            // t_id=5
+ov_complex_matrix,            // t_id=6
+ov_complex_diagonal_matrix,        // t_id=7
+ov_range,                // t_id=8
+ov_bool,                // t_id=9
+ov_bool_matrix,                // t_id=10
+ov_string,                // t_id=11
+ov_sq_string,                // t_id=12
+ov_int8_scalar,                // t_id=13
+ov_int16_scalar,            // t_id=14
+ov_int32_scalar,            // t_id=15
+ov_int64_scalar,            // t_id=16
+ov_uint8_scalar,            // t_id=17
+ov_uint16_scalar,            // t_id=18
+ov_uint32_scalar,            // t_id=19
+ov_uint64_scalar,            // t_id=20
+ov_int8_matrix,            // t_id=21
+ov_int16_matrix,            // t_id=22
+ov_int32_matrix,                    // t_id=23
+ov_int64_matrix,                    // t_id=24
+ov_uint8_matrix,            // t_id=25
+ov_uint16_matrix,            // t_id=26
+ov_uint32_matrix,            // t_id=27
+ov_uint64_matrix,            // t_id=28
+ov_sparse_bool_matrix,            // t_id=29
+
+ov_sparse_matrix,                        // t_id=30
+ov_sparse_complex_matrix,
+ov_struct,
+ov_class,
+ov_list,
+ov_cs_list,
+ov_magic_colon,
+ov_built_in_function,
+ov_user_defined_function,
+ov_dynamically_linked_function,
+ov_function_handle,
+ov_inline_function,
+ov_float_scalar,
+ov_float_complex_scalar,
+ov_float_matrix,
+ov_float_diagonal_matrix,
+ov_float_complex_matrix,
+ov_float_complex_diagonal_matrix,
+ov_permutation_matrix,
+ov_null_matrix,
+ov_null_string,
+ov_null_sq_string,
+};
+
+
+
+
+
+#else
 enum ov_t_id
 {
 
@@ -86,7 +149,7 @@ ov_null_string,
 ov_null_sq_string,
 };
 
-
+#endif // HAVE_OCTAVE_324
 
 /*----------------------------------*/        /* forward declaration */
 

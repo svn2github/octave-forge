@@ -300,10 +300,11 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       %% ss=scalar sum of squares=sum((wt.*(y-f))^2).
       if (any(abs(chg) > 0.1*aprec))%---  % only worth evaluating function if
 	p=chg+pprev;                       % there is some non-miniscule change
-	%% apply bounds; preserving the direction of the attempted step
-	%% might lead to fixing _all_ parameters at their current value,
-	%% so decided not to do that and to simply reset parameters to
-	%% bounds
+	%% Simply reset parameters to bounds. This is probably
+	%% inefficient, but at least the Levenberg/Marquardt method
+	%% should be able to converge with this by falling back to
+	%% gradient descent if necessary. A better way seems difficult
+	%% with no approximation of the Hessian available.
 	lidx = p < bounds(:, 1);
 	p(lidx) = bounds(lidx, 1);
 	uidx = p > bounds(:, 2);

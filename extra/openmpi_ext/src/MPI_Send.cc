@@ -1322,7 +1322,7 @@ int send_class(MPI_Comm comm, octave_value ov, ColumnVector rankrec,int mytag){ 
 
 
 
-DEFUN_DLD(MPI_Send,args,nargout, "MPI_Snd_Scalar sends almost any scalar (int double folat etc into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n")
+DEFUN_DLD(MPI_Send,args,nargout, "MPI_Send sends  any octave_value  into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n")
 {
      octave_value retval;
 

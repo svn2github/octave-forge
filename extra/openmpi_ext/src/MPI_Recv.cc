@@ -808,7 +808,7 @@ case ov_null_sq_string:
 
 
 
-DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv sends almost any Octave datatype into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n")
+DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv receive  any Octave datatype into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n")
 {
      octave_value_list retval;
   int nargin = args.length ();

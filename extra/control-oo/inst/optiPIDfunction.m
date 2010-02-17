@@ -39,12 +39,8 @@ SUML = connect (SUML, CM, inputs, outputs);
 % Simulation
 [y, t_y] = step (SUML, t);
 
-% ITAE Criterion - use for-loop instead of lsim for performance reasons
-itae = 0;
-
-for k = 1 : length (y)
-  itae = itae  +  t_y(k) * abs (y(k, 1)) * dt;
-end
+% ITAE Criterion
+itae = dt * (t_y.' * abs (y(:, 1)));
 
 % Sensitivity
 S = inv (1 + L);

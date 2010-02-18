@@ -70,10 +70,16 @@ function [isFmt, fmtContents, labelFmt] = _g_parse_oct_fmt (str,plotn, wantLabel
       ##T{1}{1}
       if length (T{1}{1})		# Style
 	switch T{1}{1}
-	  case "-+", style0 = "linespoints"; xt = " pointtype 1 ";
-	  case "-*", style0 = "linespoints"; xt = " pointtype 3 ";
-	  case "-o", style0 = "linespoints"; xt = " pointtype 6 ";
-	  case "-@", style0 = "linespoints"; xt = " pointtype 6 ";
+	  case {"-+","+-"}, style0 = "linespoints"; xt = " pointtype 1 ";
+	  case {"-*","*-"}, style0 = "linespoints"; xt = " pointtype 3 ";
+	  case {"-.",".-"}, style0 = "linespoints"; xt = " pointtype 7 ";
+	  case {"-o","o-"}, style0 = "linespoints"; xt = " pointtype 6 ";
+	  case {"-@","@-"}, style0 = "linespoints"; xt = " pointtype 6 ";
+	  case {"=+","+="}, style0 = "linespoints"; xt = " pointtype 1 lw 1.5 ";
+	  case {"=*","*="}, style0 = "linespoints"; xt = " pointtype 3 lw 1.5  ";
+	  case {"=.",".="}, style0 = "linespoints"; xt = " pointtype 7 lw 1.5  ";
+	  case {"=o","o="}, style0 = "linespoints"; xt = " pointtype 6 lw 1.5  ";
+	  case {"=@","@="}, style0 = "linespoints"; xt = " pointtype 6 lw 1.5  ";
 	  case "^",  style0 = "impulses";    xt = "";
 	  case "@",  style0 = "points";      xt = " pointtype 6 ";
 	  case "*",  style0 = "points";      xt = " pointtype 3 ";
@@ -81,6 +87,7 @@ function [isFmt, fmtContents, labelFmt] = _g_parse_oct_fmt (str,plotn, wantLabel
 	  case "x",  style0 = "points";      xt = " pointtype 2 ";
 	  case "o",  style0 = "points";      xt = " pointtype 6 ";
 	  case "-",  style0 = "lines";       xt = "";
+	  case "=",  style0 = "lines";       xt = " lw 1.5 ";
 	  case "L",  style0 = "steps";       xt = "";
 	  case ".",  style0 = "dots";        xt = "";
 	  otherwise  style0 = "lines";       xt = " lw 3 ";

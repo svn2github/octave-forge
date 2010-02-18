@@ -249,7 +249,7 @@ function g = g_ez (varargin)
 	      data2 =  reshape (data(:,2), nbox, datlen)';
 	    else
 	      datindices = data(:,1);
-	      #data1 = create_set (data(:,1));
+	      #data1 = unique (data(:,1));
 	      data1 = unique (data(:,1));
 	      nbox = length (data1);
 	      data2 = data(:,2);
@@ -319,12 +319,12 @@ function g = g_ez (varargin)
 
 				# Transform args in a gnuplot_object
 
-  if struct_contains (args, "geometry"), g = g_new ("geometry", args.geometry);
+  if isfield (args, "geometry"), g = g_new ("geometry", args.geometry);
   else                                   g = g_new ();
   endif
 
 				# Special case: quote title
-  #if struct_contains (args, "title"), args.title = ["'",args.title,"'"]; endif
+  #if isfield (args, "title"), args.title = ["'",args.title,"'"]; endif
 
   if length (args.cmds), g = g_cmd (g, args.cmds{:}); endif
 
@@ -334,7 +334,7 @@ function g = g_ez (varargin)
 	 "xlabel", "ylabel", "x2label", "y2label", \
 	 "grid", "xgrid", "ygrid"};
   for i = 1:length(tmp)
-    if struct_contains (args, tmp{i})
+    if isfield (args, tmp{i})
       value = args.(tmp{i});
       val_str = _g_stringify (tmp{i}, value);
       g = g_cmd (g,["set ",tmp{i}," ",val_str,""]);
@@ -353,9 +353,9 @@ function g = g_ez (varargin)
       Ztics =  [Z,"tics"];
       Zrange = [Z,"range"];
 
-      if ! isempty (args.(Zmap)) && ! struct_contains (args,Ztics) # Must figure tics for map
+      if ! isempty (args.(Zmap)) && ! isfield (args,Ztics) # Must figure tics for map
 
-	if struct_contains(args,Zrange)	# Determine range
+	if isfield(args,Zrange)	# Determine range
 	  rng = args.(Zrange);
 	else
 	  rng = [inf,-inf];
@@ -369,7 +369,7 @@ function g = g_ez (varargin)
 	end
 	args.(Ztics) = _g_default_tics (rng);
       end
-      if struct_contains(args,Ztics)
+      if isfield(args,Ztics)
 
 	if isempty (args.(Ztics))	# No tics
 
@@ -436,11 +436,11 @@ function g = g_ez (varargin)
     if filename, g = g_plot (g,filename,extras{:});
     else         g = g_plot (g,extras{:});
     endif
-    if struct_contains (g, "double_clicks")
+    if isfield (g, "double_clicks")
       printf ("Double-clicked locations:\n");
       g.double_clicks
     end
-    if struct_contains (g, "middle_clicks")
+    if isfield (g, "middle_clicks")
       printf ("Middle-clicked locations:\n");
       g.middle_clicks
     end

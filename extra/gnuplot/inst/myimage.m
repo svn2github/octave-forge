@@ -211,7 +211,7 @@ end
 if any (irng) < 0
   error ("Range ( %s) is not positive",sprintf("%f ",irng));
 endif
-##length(create_set(im))
+##length(unique(im))
 if !is_col || sameScale
   im-=imin;
   if irng
@@ -332,7 +332,7 @@ endif
 
 #imin
 #imax
-#length(create_set(im))
+#length(unique(im))
 
 assert (all (im(:) >= 0   | isnan (im(:))));
 assert (all (im(:) <= 255 | isnan (im(:))));

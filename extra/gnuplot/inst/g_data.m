@@ -120,7 +120,7 @@ function g = g_data (g, varargin)
 	stops =      cumsum(!stop0)(find (stop0));
       endif
 
-      stops = create_set (stops);
+      stops = unique (stops);
       _g_save_data ([g.dir,"/",name], data, stops,label);
     else			# Raw data
       filename = [g.dir,"/",name];

@@ -46,7 +46,7 @@ function g = g_plot (g, varargin)
   pos_cmd =         {};
   do_color =        1;
 
-  wait_for_q = struct_contains (g.values, "wait") && g.values.wait;
+  wait_for_q = isfield (g.values, "wait") && g.values.wait;
 
   if 0
     eps_viewer = "ggv";
@@ -124,7 +124,7 @@ function g = g_plot (g, varargin)
 
   if  do_eps
     if isempty (geometry)
-      if ! struct_contains (g.values, "geometry")
+      if ! isfield (g.values, "geometry")
 	geometry = [10,8];
       else
 	geometry = g.values.geometry;
@@ -137,7 +137,7 @@ function g = g_plot (g, varargin)
     endif
   elseif do_png
     if isempty (geometry)
-      if ! struct_contains (g.values, "geometry")
+      if ! isfield (g.values, "geometry")
 	geometry = [600,400];
       else
 	geometry = g.values.geometry;
@@ -209,7 +209,7 @@ function g = g_plot (g, varargin)
     endif
     gnuplot_options = [gnuplot_options," -geometry ",opt_str," "];
     
-  elseif struct_contains (g.values, "geometry")
+  elseif isfield (g.values, "geometry")
     if !ischar (g.values.geometry),
       opt_str = sprintf ("%ix%i",g.values.geometry);
     else
@@ -249,7 +249,7 @@ function g = g_plot (g, varargin)
 	double_clicks(i,1) = eval (tokens{i}{1});
 	double_clicks(i,2) = eval (tokens{i}{2});
       end
-      ##if struct_contains (g, "double_clicks")
+      ##if isfield (g, "double_clicks")
       ##g.double_clicks = [g.double_clicks; double_clicks];
       ##else
       ## Keep only clicks from last plot
@@ -265,7 +265,7 @@ function g = g_plot (g, varargin)
 	middle_clicks(i,1) = eval (tokens{i}{1});
 	middle_clicks(i,2) = eval (tokens{i}{2});
       end
-      ##if struct_contains (g, "middle_clicks")
+      ##if isfield (g, "middle_clicks")
       ##g.middle_clicks = [g.middle_clicks; middle_clicks];
       ##else
       ## Keep only clicks from last plot

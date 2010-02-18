@@ -15,11 +15,11 @@
 ## i     : Number of arguments used in va.
 function [fmt, extra, i, zrange] = _g_image_cmd (sz, zrange, args, va)
 
-if ! struct_contains (args, "xrange")
+if ! isfield (args, "xrange")
   args.xrange = [0,sz(2)];
 end
 
-if ! struct_contains (args, "yrange")
+if ! isfield (args, "yrange")
   args.yrange = [0,sz(1)];
 end
 

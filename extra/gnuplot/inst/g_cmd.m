@@ -118,7 +118,7 @@ function g = g_cmd (g, varargin)
 	
 	g2 = _g_instantiate (varargin{i++});
 
-	if 1 ## && struct_contains (g2, "local") && g2.local
+	if 1 ## && isfield (g2, "local") && g2.local
 
 	  g.owns = {g.owns{:}, g2.dir};
 	  g.owns = {g.owns{:}, g2.owns{:}};
@@ -177,7 +177,7 @@ function g = g_cmd (g, varargin)
     if i > length (g.cmds)	# If there's none, put one at the head.
 
       multiplot_cmd = "set multiplot";
-      if struct_contains (g.values, "title")
+      if isfield (g.values, "title")
 	multiplot_cmd = [multiplot_cmd," '",g.values.title,"'"];
       endif
       g.cmds = {multiplot_cmd,\

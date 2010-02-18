@@ -22,7 +22,7 @@ function g = _g_instantiate (g, varargin)
   for i = 1:length (toks), kword_cnt.(toks{i}{1}) = 1; end
 
 				# Get all values
-  if struct_contains (g, "values"), 
+  if isfield (g, "values"), 
     if !isstruct (g.values)
       error ("g.values should be a struct. Got a %s",typeinfo (g.values));
     endif
@@ -35,7 +35,7 @@ function g = _g_instantiate (g, varargin)
 				# Substitution
   for [dumv, kword] = kword_cnt
     
-    if struct_contains (vals, kword)
+    if isfield (vals, kword)
 
       value = vals.(kword);
       if !ischar (value), value = sprintf ("%g",value); endif

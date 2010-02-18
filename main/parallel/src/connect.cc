@@ -43,6 +43,18 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 // COMM
 
+static void read_if_no_error (int fd, void *buf, size_t count, int est) {
+  if (! est)
+    if (read (fd, buf, count) < (ssize_t)count)
+      error ("read error");
+}
+
+static void write_if_no_error (int fd, const void *buf, size_t count, int est) {
+  if (! est)
+    if (write (fd, buf, count) < (ssize_t)count)
+      error ("write error");
+}
+
 DEFUN_DLD (connect, args, ,
   "connect (hosts)\n\
 \n\
@@ -114,12 +126,11 @@ Connect hosts and return sockets.")
 
 	pid=getpid();
 	nl=htonl(num_nodes);
-	write(sock,&nl,sizeof(int));
+	write_if_no_error(sock,&nl,sizeof(int),error_state);
 	nl=htonl(i);
-	write(sock,&nl,sizeof(int));
+	write_if_no_error(sock,&nl,sizeof(int),error_state);
 	nl=htonl(pid);
-	write(sock,&nl,sizeof(int));
-
+	write_if_no_error(sock,&nl,sizeof(int),error_state);
 	host=(char *)calloc(128,sizeof(char));
 	for(j=0;j<row;j++){
 	  strncpy(host,&cm.data()[col*j],col);
@@ -130,16 +141,16 @@ Connect hosts and return sockets.")
 	    *pt='\0';
 	  len=strlen(host)+1;
 	  nl=htonl(len);
-	  write(sock,&nl,sizeof(int));
-	  write(sock,host,len);
+	  write_if_no_error(sock,&nl,sizeof(int),error_state);
+	  write_if_no_error(sock,host,len,error_state);
 	}
 	free(host);
 	int comm_len;
        	std::string directory = octave_env::getcwd ();
 	comm_len=directory.length();
 	nl=htonl(comm_len);
-	write(sock,&nl,sizeof(int));
-	write(sock,directory.c_str(),comm_len);
+	write_if_no_error(sock,&nl,sizeof(int),error_state);
+	write_if_no_error(sock,directory.c_str(),comm_len,error_state);
       }      
       usleep(100);
 
@@ -196,7 +207,7 @@ Connect hosts and return sockets.")
 	  int len=0,result=0;;
 	  //send pppid
 	  nl=htonl(pid);
-	  write(sock,&nl,sizeof(int));
+	  write_if_no_error(sock,&nl,sizeof(int),error_state);
 	  //send name size
 	  strncpy(myname,cm.data(),col);
 	  pt=strchr(myname,' ');
@@ -206,16 +217,16 @@ Connect hosts and return sockets.")
 	    *pt='\0';
 	  len=strlen(myname);
 	  nl=htonl(len);
-	  write(sock,&nl,sizeof(int));
+	  write_if_no_error(sock,&nl,sizeof(int),error_state);
 	  //send name
-	  write(sock,myname,len+1);
+	  write_if_no_error(sock,myname,len+1,error_state);
 	  //recv result code
-	  read(sock,&nl,sizeof(int));
+	  read_if_no_error(sock,&nl,sizeof(int),error_state);
 	  result=ntohl(nl);
 	  if(result==0){
 	    sock_v[i]=sock;
 	    //recv endian
-	    read(sock,&nl,sizeof(int));
+	    read_if_no_error(sock,&nl,sizeof(int),error_state);
 	    sock_v[i+2*row]=ntohl(nl);
 	    //send endian
 #if defined (__BYTE_ORDER)
@@ -225,7 +236,7 @@ Connect hosts and return sockets.")
 #else
 #  error "can not determine the byte order"
 #endif
-	    write(sock,&nl,sizeof(int));
+	    write_if_no_error(sock,&nl,sizeof(int),error_state);
 	    break;
 	  }else{
 	    close(sock);
@@ -238,7 +249,7 @@ Connect hosts and return sockets.")
 
       char lf='\n';
       for(i=1;i<row;i++){
-	write((int)sock_v[i+row],&lf,sizeof(char));
+	write_if_no_error((int)sock_v[i+row],&lf,sizeof(char),error_state);
 	//	cout << i+row <<endl;
       }
     }

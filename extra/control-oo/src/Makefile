@@ -1,6 +1,6 @@
 all: slab08nd.oct slab13dd.oct slsb10hd.oct slsb10ed.oct slab13bd.oct \
      slsb01bd.oct slsb10fd.oct slsb10dd.oct slsb03md.oct slsb04md.oct \
-     slsb04qd.oct slsg03ad.oct slsb02od.oct
+     slsb04qd.oct slsg03ad.oct slsb02od.oct slab13ad.oct
 
 # transmission zeros of state-space models
 slab08nd.oct: slab08nd.cc
@@ -96,6 +96,15 @@ slsb02od.oct: slsb02od.cc
 	mkoctfile slsb02od.cc \
               SB02OD.f SB02OU.f SB02OV.f SB02OW.f SB02OY.f \
               SB02MR.f SB02MV.f
+
+# Hankel singular values
+slab13ad.oct: slab13ad.cc
+	mkoctfile slab13ad.cc \
+              AB13AD.f TB01ID.f TB01KD.f AB13AX.f MA02DD.f \
+              MB03UD.f TB01LD.f SB03OU.f MB03QX.f select.f \
+              SB03OT.f MB03QD.f MB04ND.f MB04OD.f MB03QY.f \
+              SB03OR.f SB03OY.f SB04PX.f MB04NY.f MB04OY.f \
+              SB03OV.f
 
 clean:
 	rm *.o core octave-core *.oct *~

@@ -47,6 +47,7 @@ Frequency Domain Analysis
   nyquist
   sigma
 Model Simplification
+  hsvd
   @lti/minreal
   @lti/sminreal
 Compensator Design

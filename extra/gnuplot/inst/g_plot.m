@@ -161,11 +161,17 @@ function g = g_plot (g, varargin)
 
   elseif do_png
 
-    if do_color
-      pcolors = "xffffff x000000 x000000 xc00000 xa0ffa0 x0000ff xE0E000 x00E0E0 xE000E0 x000000";
-    else
-      pcolors = "xffffff x000000 x000000 x000000 x808080 xA0A0A0 xE0E0E0 x404040 xC0C0C0 x202020";
-    end
+	if all (g_config ("gnuplot_version")(1:2) >= [4 4])
+
+	  pcolors = "";
+
+	else
+      if do_color
+		pcolors = "xffffff x000000 x000000 xc00000 xa0ffa0 x0000ff xE0E000 x00E0E0 xE000E0 x000000";
+      else
+		pcolors = "xffffff x000000 x000000 x000000 x808080 xA0A0A0 xE0E0E0 x404040 xC0C0C0 x202020";
+      end
+	end
     pre_cmd = {sprintf("set term png truecolor size %i, %i %s",geometry, pcolors),\
 	       ["set out '",outputFile,"'"]};
 
@@ -293,4 +299,3 @@ function g = g_plot (g, varargin)
   ##keyboard
   if nargout<1, clear g; endif
 endfunction
-

@@ -560,10 +560,10 @@ Connect hosts and return sockets.")
 	      int stat;
 
 	      s=(char *)calloc(32,sizeof(char));
-	      sprintf(s,"sockets=[%d,0,%d]",sock_v[0],sock_v[2*(num_nodes+1)]);
+	      sprintf(s,"sockets=zeros(%d,3)",num_nodes+1);
 	      eval_string(std::string(s),true,stat);
-	      for(i=1;i<=num_nodes;i++){
-		sprintf(s,"sockets=[sockets;%d,0,%d]",sock_v[i+2*(num_nodes+1)]);
+	      for(i=0;i<=num_nodes;i++){
+		sprintf(s,"sockets(i+1,:)=[%d,0,%d]",sock_v[i],sock_v[i+2*(num_nodes+1)]);
 		eval_string(std::string(s),true,stat);
 	      }
 		

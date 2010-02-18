@@ -33,10 +33,8 @@ function ndr = __conv2tfpolycell__ (nd)
 
   ndr = cell (ndrows, ndcols);
 
-  for k = 1 : ndrows
-    for l = 1 : ndcols
-      ndr{k, l} = tfpoly (nd{k, l});
-    endfor
+  for k = 1 : (ndrows*ndcols)
+    ndr{k} = tfpoly (nd{k});
   endfor
 
 endfunction

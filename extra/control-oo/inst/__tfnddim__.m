@@ -29,8 +29,8 @@ function [nrows, ncols] = __tfnddim__ (num, den)
   [drows, dcols] = size (den);
 
   if (nrows != drows || ncols != dcols)
-    error (sprintf ("tf: num(%dx%d) and den(%dx%d) must have equal dimensions",
-                     nrows, ncols, drows, dcols));
+    error ("tf: num(%dx%d) and den(%dx%d) must have equal dimensions",
+            nrows, ncols, drows, dcols);
   endif
 
 endfunction

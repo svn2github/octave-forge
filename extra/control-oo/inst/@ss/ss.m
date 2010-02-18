@@ -78,7 +78,7 @@ function sys = ss (a, b, c, d, varargin)
 
       if (issample (varargin{1}, 1))  # sys = ss (a, b, c, d, tsam, "prop1, "val1", ...)
         tsam = varargin{1};
-        argc -= 1;
+        argc--;
 
         if (argc > 0)
           varargin = varargin(2:end);

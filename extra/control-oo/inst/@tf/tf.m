@@ -86,7 +86,7 @@ function sys = tf (num, den, varargin)
 
       if (issample (varargin{1}, 1))  # sys = tf (num, den, tsam, "prop1, "val1", ...)
         tsam = varargin{1};
-        argc -= 1;
+        argc--;
         
         if (varargin{1} == 0)
           tfvar = "s";

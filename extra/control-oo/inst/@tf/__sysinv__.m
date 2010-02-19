@@ -32,12 +32,15 @@ function sys = __sysinv__ (sys)
     error ("tf: sysinv: MIMO systems not supported yet");
   endif
 
-  num = sys.num;
-  den = sys.den;
+  den = sys.num;
+  num = sys.den;
 
-  sys.num = den;
-  sys.den = num;
+  if (den{1, 1} == 0)  # catch case den = 0
+    num{1, 1} = tfpoly (0);
+    den{1, 1} = tfpoly (1);
+  endif
 
-  ## TODO: catch case den = 0
+  sys.num = num;
+  sys.den = den;
 
 endfunction

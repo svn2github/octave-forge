@@ -1,0 +1,72 @@
+make sure dialogs never extend beyond desktop
+
+diff -r 5901584389e6 -r 3b19e1054abb PowerEditor/src/WinControls/OpenSaveFileDialog/FileDialog.cpp
+--- a/PowerEditor/src/WinControls/OpenSaveFileDialog/FileDialog.cpp	Thu Oct 22 14:37:51 2009 +0200
++++ b/PowerEditor/src/WinControls/OpenSaveFileDialog/FileDialog.cpp	Fri Nov 13 13:59:28 2009 +0100
+@@ -437,10 +437,28 @@
+ 
+ 	RECT _rc;
+ 	::GetWindowRect(hwnd, &_rc);
+-	int x = center.x - (_rc.right - _rc.left)/2;
+-	int y = center.y - (_rc.bottom - _rc.top)/2;
++	int w = _rc.right - _rc.left;
++	int h = _rc.bottom - _rc.top;
++	int x = center.x - w/2;
++	int y = center.y - h/2;
++	
++	// Make sure window is not positioned outside desktop range
++	HDC hdc = GetDC(0);
++	if (hdc) {
++		int hx = GetDeviceCaps (hdc, HORZRES);
++		int hy = GetDeviceCaps (hdc, VERTRES);
++		
++		if (x+w > hx)
++			x = hx - w;
++		if (y+h > hy)
++			y = hy - h;
++		if (x < 0)
++			x = 0;
++		if (y < 0)
++			y = 0;
++	}
+ 
+-	::SetWindowPos(hwnd, HWND_TOP, x, y, _rc.right - _rc.left, _rc.bottom - _rc.top, SWP_SHOWWINDOW);
++	::SetWindowPos(hwnd, HWND_TOP, x, y, w, h, SWP_SHOWWINDOW);
+ }
+ 
+ generic_string changeExt(generic_string fn, generic_string ext, bool forceReplaced)
+diff -r 5901584389e6 -r 3b19e1054abb PowerEditor/src/WinControls/StaticDialog/StaticDialog.cpp
+--- a/PowerEditor/src/WinControls/StaticDialog/StaticDialog.cpp	Thu Oct 22 14:37:51 2009 +0200
++++ b/PowerEditor/src/WinControls/StaticDialog/StaticDialog.cpp	Fri Nov 13 13:59:28 2009 +0100
+@@ -26,10 +26,28 @@
+     center.y = rc.top + (rc.bottom - rc.top)/2;
+     ::ClientToScreen(_hParent, &center);
+ 
+-	int x = center.x - (_rc.right - _rc.left)/2;
+-	int y = center.y - (_rc.bottom - _rc.top)/2;
++	int w = _rc.right - _rc.left;
++	int h = _rc.bottom - _rc.top;
++	int x = center.x - w/2;
++	int y = center.y - h/2;
+ 
+-	::SetWindowPos(_hSelf, HWND_TOP, x, y, _rc.right - _rc.left, _rc.bottom - _rc.top, SWP_SHOWWINDOW);
++	// Make sure window is not positioned outside desktop range
++	HDC hdc = GetDC(0);
++	if (hdc) {
++		int hx = GetDeviceCaps (hdc, HORZRES);
++		int hy = GetDeviceCaps (hdc, VERTRES);
++		
++		if (x+w > hx)
++			x = hx - w;
++		if (y+h > hy)
++			y = hy - h;
++		if (x < 0)
++			x = 0;
++		if (y < 0)
++			y = 0;
++	}
++
++	::SetWindowPos(_hSelf, HWND_TOP, x, y, w, h, SWP_SHOWWINDOW);
+ }
+ 
+ 

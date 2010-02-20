@@ -1,20 +1,20 @@
 npp: own version of localizationString.h
 
-diff -r 726bc6966d9a PowerEditor/src/Parameters.cpp
---- a/PowerEditor/src/Parameters.cpp	Tue Jul 07 13:15:13 2009 +0200
-+++ b/PowerEditor/src/Parameters.cpp	Tue Jul 07 13:15:41 2009 +0200
-@@ -364,7 +364,7 @@
+diff -r 2f415f08e228 PowerEditor/src/Parameters.cpp
+--- a/PowerEditor/src/Parameters.cpp	Sat Feb 20 17:07:43 2010 +0100
++++ b/PowerEditor/src/Parameters.cpp	Sat Feb 20 17:07:52 2010 +0100
+@@ -446,7 +446,7 @@
  };
  
  #ifdef UNICODE
 -#include "localizationString.h"
 +#include "mingw-localizationString.h"
  
- wstring LocalizationSwitcher::getLangFromXmlFileName(wchar_t *fn) const
+ wstring LocalizationSwitcher::getLangFromXmlFileName(const wchar_t *fn) const
  {
-diff -r 726bc6966d9a PowerEditor/src/mingw-localizationString.h
+diff -r 2f415f08e228 PowerEditor/src/mingw-localizationString.h
 --- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/PowerEditor/src/mingw-localizationString.h	Tue Jul 07 13:15:41 2009 +0200
++++ b/PowerEditor/src/mingw-localizationString.h	Sat Feb 20 17:07:52 2010 +0100
 @@ -0,0 +1,23 @@
 +//this file is part of notepad++
 +//Copyright (C)2003 Don HO <donho@altern.org>

@@ -3,6 +3,10 @@
 # CHANGELOG
 # ---------
 #
+# 20-Feb-2010 benjamin lindner <lindnerb@users.sourceforge.net>
+#
+#    *) update for npp-5.6.6
+#
 # 24-oct-2009 benjamin lindner <lindnerb@users.sourceforge.net>
 #
 #    *) update for npp-5.5.1 and gcc-4.4.0 with mingwrt-3.16
@@ -34,7 +38,7 @@
 # subdirecory where patches reside
 PATCHDIR=patches
 # directory of gnuplot sources to patch
-NPP_DIR=npp-5.5.1
+NPP_DIR=npp-5.6.6
 
 # the patches to apply
 PATCHES="
@@ -54,6 +58,7 @@ np_npp-localizationString.patch
 npp_catch-refrerence-to-const.patch
 countof-mingw.patch
 mingwrt-3.16-fixes.patch
+npp_dialogs-not-beyond-desktop.patch
 "
 
 for a in $PATCHES; do

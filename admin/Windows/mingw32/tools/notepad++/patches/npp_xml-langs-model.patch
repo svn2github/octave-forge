@@ -1,18 +1,18 @@
 npp: langs.model.xml add octave keywords to matlab language
 
-diff -r 5a9433867e69 PowerEditor/src/langs.model.xml
---- a/PowerEditor/src/langs.model.xml	Fri Oct 16 08:06:33 2009 +0200
-+++ b/PowerEditor/src/langs.model.xml	Thu Oct 22 14:37:48 2009 +0200
+diff -r f0584c32afd9 PowerEditor/src/langs.model.xml
+--- a/PowerEditor/src/langs.model.xml	Sat Feb 20 17:07:16 2010 +0100
++++ b/PowerEditor/src/langs.model.xml	Sat Feb 20 17:07:37 2010 +0100
 @@ -2,7 +2,7 @@
  <NotepadPlus>
     <!-- The key words of the supported languages, don't touch them! -->
     <Languages>
--		<Language name="normal"  ext="txt">
-+		<Language name="normal"  ext="">
+-        <Language name="normal"  ext="txt">
++        <Language name="normal"  ext="">
          </Language>
- 		<Language name="actionscript" ext="as mx" commentLine="//" commentStart="/*" commentEnd="*/">
- 			<Keywords name="instre1">add for lt tellTarget and function ne this break ge new typeof continue gt not var delete if on void do ifFrameLoaded onClipEvent while else in or with eq le return instanceof case default switch</Keywords>
-@@ -111,7 +111,7 @@
+         <Language name="actionscript" ext="as mx" commentLine="//" commentStart="/*" commentEnd="*/">
+             <Keywords name="instre1">add for lt tellTarget and function ne this break ge new typeof continue gt not var delete if on void do ifFrameLoaded onClipEvent while else in or with eq le return instanceof case default switch</Keywords>
+@@ -129,7 +129,7 @@
          <Language name="makefile" ext="mak" commentLine="#">
          </Language>
          <Language name="matlab" ext="m" commentLine="%" commentStart="" commentEnd="">

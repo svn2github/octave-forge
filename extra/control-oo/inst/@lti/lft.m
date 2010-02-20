@@ -18,7 +18,71 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{sys} =} lft (@var{sys1}, @var{sys2})
 ## @deftypefnx {Function File} {@var{sys} =} lft (@var{sys1}, @var{sys2}, @var{nu}, @var{ny})
-## Linear fractional tranformation, also known as redheffer star product.
+## Linear fractional tranformation, also known as Redheffer star product.
+##
+## @strong{Inputs}
+## @table @var
+## @item sys1
+## Upper LTI model.
+## @item sys2
+## Lower LTI model.
+## @item nu
+## The last nu inputs of sys1 are connected with the first nu outputs of sys2.
+## If not specified, min (m1, p2) is taken.
+## @item ny
+## The last ny outputs of sys1 are connected with the first ny inputs of sys2.
+## If not specified, min (p1, m2) is taken.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item sys
+## Resulting LTI model.
+## @end table
+##
+## @example
+## @group
+##       .............sys..............
+##       :         +--------+         :
+## w1 ------------>|        |------------> z1
+##       :         |  sys1  |         :
+##       : u +---->|        |-----+ y :
+##       :   |     +--------+     |   :          Lower LFT
+##       :   |                    |   :
+##       :   |     +--------+     |   :          lft (sys1, sys2)
+##       :   +-----|  sys2  |<----+   :
+##       :         +--------+         :
+##       :............................:
+##
+##
+##       .............sys..............
+##       :         +--------+         :
+##       : u +---->|  sys1  |-----+ y :
+##       :   |     +--------+     |   :          Upper LFT
+##       :   |                    |   :
+##       :   |     +--------+     |   :          lft (sys1, sys2)
+##       :   +-----|        |<----+   :
+##       :         |  sys2  |         :
+## z2 <------------|        |<------------ w2
+##       :         +--------+         :
+##       :............................:
+##
+##
+##       .............sys..............
+##       :         +--------+         :
+## w1 ------------>|        |------------> z1
+##       :         |  sys1  |         :
+##       : u +---->|        |-----+ y :
+##       :   |     +--------+     |   :
+##       :   |                    |   :          lft (sys1, sys2, nu, ny)
+##       :   |     +--------+     |   :
+##       :   +-----|        |<----+   :
+##       :         |  sys2  |         :
+## z2 <------------|        |<------------ w2
+##       :         +--------+         :
+##       :............................: 
+## @end group
+## @end example
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

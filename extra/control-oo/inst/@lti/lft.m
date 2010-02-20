@@ -43,15 +43,11 @@ function sys = lft (sys1, sys2, nu, ny)
     nu = nu_max;
     ny = ny_max;
   else  # sys = lft (sys1, sys2, nu, ny)
-    if (isnumeric (nu) && isscalar (nu))
-      nu = round (abs (nu));
-    else
+    if (! isnumeric (nu) || ! isscalar (nu) || ! isreal (nu) || nu < 0)
       error ("lft: argument nu must be a positive integer");
     endif
 
-    if (isnumeric (ny) && isscalar (ny))
-      ny = round (abs (ny));
-    else
+    if (! isnumeric (ny) || ! isscalar (ny) || ! isreal (ny) || ny < 0)
       error ("lft: argument ny must be a positive integer");
     endif
 

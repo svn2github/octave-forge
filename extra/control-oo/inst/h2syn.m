@@ -17,9 +17,55 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {[@var{K}, @var{N}, @var{gamma}] =} h2syn (@var{P}, @var{nmeas}, @var{ncon})
-## H2 control synthesis for LTI plant.
+## H-2 control synthesis for LTI plant.
 ## Uses SLICOT SB10HD and SB10ED by courtesy of NICONET e.V.
 ## <http://www.slicot.org>
+##
+## @strong{Inputs}
+## @table @var
+## @item P
+## Generalized plant.
+## @item nmeas
+## Number of measured outputs. The last nmeas outputs of P are connected to the
+## inputs of controller K. The remaining outputs 1 to p-nmeas are used to calculate
+## the H-2 norm.
+## @item ncon
+## Number of controlled inputs. The last ncon inputs of P are connected to the
+## outputs of controller K. The remaining inputs 1 to m-ncon are excited by a
+## harmonic test signal.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item K
+## State-space model of the H-2 optimal controller.
+## @item N
+## State-space model of the lower LFT of P and K.
+## @item gamma
+## H-2 norm of N.
+## @end table
+##
+## @example
+## @group
+##
+## gamma = min||N(K)||             N = lft (P, K)
+##          K         2
+##
+##                +--------+  
+##        r ----->|        |-----> z
+##                |  P(s)  |
+##        u +---->|        |-----+ e
+##          |     +--------+     |
+##          |                    |
+##          |     +--------+     |
+##          +-----|  K(s)  |<----+
+##                +--------+
+##
+##                +--------+      
+##        r ----->|  N(s)  |-----> z
+##                +--------+
+## @end group
+## @end example
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

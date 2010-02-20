@@ -1,8 +1,8 @@
 local changes for documentation build
 
-diff -r 2c3e5a7aa775 docs/plotstyles.gnu
---- a/docs/plotstyles.gnu	Wed Aug 26 15:41:51 2009 +0200
-+++ b/docs/plotstyles.gnu	Wed Aug 26 15:43:39 2009 +0200
+diff -r 60c1ad8c7063 docs/plotstyles.gnu
+--- a/docs/plotstyles.gnu	Tue Dec 01 09:55:42 2009 +0100
++++ b/docs/plotstyles.gnu	Tue Dec 01 10:19:59 2009 +0100
 @@ -3,12 +3,13 @@
  #  EAM - July 2007
  #
@@ -131,27 +131,34 @@ diff -r 2c3e5a7aa775 docs/plotstyles.gnu
  reset
  set parametric
  set samples 1000
-@@ -143,16 +144,16 @@
+@@ -143,22 +144,22 @@
  unset xtics
  set tmargin 1
  #
 -set output 'figure_histclust.pdf'
 +set output 'figure_histclust.eps'
  set style histogram clustered
- plot 'histopt.dat' using 1 fs solid 0.5, '' using 2 fs empty
+ plot '../demo/histopt.dat' using 1 fs solid 0.5, '' using 2 fs empty
+ #
+-set output 'figure_histerrorbar.pdf'
++set output 'figure_histerrorbar.eps'
+ set title "Histogram with error bars" offset 0,-1
+ set style fill solid border -1
+ set style histogram errorbars lw 2
+ plot '../demo/histerror.dat' using 2:3 fs solid 0.5 ti 'A', '' using 4:5 fs empty ti 'B'
  #
 -set output 'figure_histrows.pdf'
 +set output 'figure_histrows.eps'
  set style histogram rows
  set title "Rowstacked" offset 0,-1
- plot 'histopt.dat' using 1 fs solid 0.5, '' using 2 fs empty
+ plot '../demo/histopt.dat' using 1 fs solid 0.5, '' using 2 fs empty
  #
 -set output 'figure_histcols.pdf'
 +set output 'figure_histcols.eps'
  set style histogram columns
  set title "Columnstacked" offset 0,-1
  set boxwidth 0.8 rel
-@@ -171,21 +172,21 @@
+@@ -177,21 +178,21 @@
  # Circles
  #
  reset
@@ -177,7 +184,7 @@ diff -r 2c3e5a7aa775 docs/plotstyles.gnu
  set title "2D Heat map from in-line array of values" offset 0,-1
  unset key
  set bmargin 1
-@@ -231,7 +232,7 @@
+@@ -237,7 +238,7 @@
  set hidden3d offset 1
  
  set title "3D surface plot with hidden line removal"  offset 0,1
@@ -186,7 +193,7 @@ diff -r 2c3e5a7aa775 docs/plotstyles.gnu
  splot sin(x) * cos(y) with lines lt -1
  
  set contour base
-@@ -239,7 +240,7 @@
+@@ -245,7 +246,7 @@
  unset key
  set title "3D surface with projected contours" 
  
@@ -195,7 +202,7 @@ diff -r 2c3e5a7aa775 docs/plotstyles.gnu
  splot sin(x) * cos(y) with lines lt -1
  
  unset view
-@@ -253,19 +254,19 @@
+@@ -259,19 +260,19 @@
  set lmargin
  set title "projected contours using 'set view map'" offset 0,-1
  
@@ -219,7 +226,16 @@ diff -r 2c3e5a7aa775 docs/plotstyles.gnu
  set view 45, 25, 1.0, 1.35
  set grid
  unset key
-@@ -281,7 +282,7 @@
+@@ -279,7 +280,7 @@
+ splot '../demo/blutux.rgb' binary array=128x128 flip=y format='%uchar%uchar%uchar' with rgbimage
+ 
+ reset
+-set output "figure_scaled_image.pdf"
++set output "figure_scaled_image.eps"
+ set title "Rescaled image used as plot element"
+ 
+ set xrange [ -10 : 150 ]
+@@ -308,7 +309,7 @@
  CityName(String,Size) = sprintf("{/=%d %s}", Scale(Size), stringcolumn(String))
  
  set termoption enhanced
@@ -228,9 +244,9 @@ diff -r 2c3e5a7aa775 docs/plotstyles.gnu
  unset xtics
  unset ytics
  unset key
-diff -r 2c3e5a7aa775 docs/psdoc/Makefile
---- a/docs/psdoc/Makefile	Wed Aug 26 15:41:51 2009 +0200
-+++ b/docs/psdoc/Makefile	Wed Aug 26 15:43:39 2009 +0200
+diff -r 60c1ad8c7063 docs/psdoc/Makefile
+--- a/docs/psdoc/Makefile	Tue Dec 01 09:55:42 2009 +0100
++++ b/docs/psdoc/Makefile	Tue Dec 01 10:19:59 2009 +0100
 @@ -2,27 +2,29 @@
  # Create ps_symbols.ps
  #
@@ -268,9 +284,9 @@ diff -r 2c3e5a7aa775 docs/psdoc/Makefile
  
  clean:
  	-rm -f ps_symbols.ps ps_fontfile_doc.aux ps_fontfile_doc.dvi \
-diff -r 2c3e5a7aa775 docs/titlepag.tex
---- a/docs/titlepag.tex	Wed Aug 26 15:41:51 2009 +0200
-+++ b/docs/titlepag.tex	Wed Aug 26 15:43:39 2009 +0200
+diff -r 60c1ad8c7063 docs/titlepag.tex
+--- a/docs/titlepag.tex	Tue Dec 01 09:55:42 2009 +0100
++++ b/docs/titlepag.tex	Tue Dec 01 10:19:59 2009 +0100
 @@ -14,7 +14,7 @@
  % LaTeX2e version
  % add `[a4paper]' before `{article}' to load settings for A4-paper

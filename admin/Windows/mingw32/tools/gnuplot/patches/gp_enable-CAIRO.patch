@@ -1,13 +1,16 @@
-enable build of cairo terminals
+enable support for CAIRO terminals without wxt term
 
-diff -r a320d22e4046 config/makefile.mgw
---- a/config/makefile.mgw	Thu Oct 01 20:42:56 2009 +0200
-+++ b/config/makefile.mgw	Tue Oct 13 22:18:32 2009 +0200
-@@ -57,6 +57,7 @@
- NEWGD=1
- JPEG=1
- FREETYPE=1
-+CAIRO=1
- #GDAUTOCONFIGLIBS=1
+diff -r 6418d4f24300 config/makefile.mgw
+--- a/config/makefile.mgw	Mon Sep 21 10:58:58 2009 +0200
++++ b/config/makefile.mgw	Mon Sep 21 10:59:33 2009 +0200
+@@ -83,8 +83,8 @@
+ # Cairo/Pango terminals
+ # Uncomment the following lines to select the pngcairo and pdfcairo
+ # terminals
+-#CAIROTERMS=1
+-#CAIROLIBS=1
++CAIROTERMS=1
++CAIROLIBS=1
+ #
  
- # PDF device driver
+ # WXWIDGETS interactive terminal

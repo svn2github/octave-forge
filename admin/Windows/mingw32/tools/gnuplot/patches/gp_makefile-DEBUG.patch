@@ -1,0 +1,14 @@
+add -DDEBUG if compiling with debug support
+
+diff -r 733d3c5aa95d config/makefile.mgw
+--- a/config/makefile.mgw	Tue Dec 01 09:54:06 2009 +0100
++++ b/config/makefile.mgw	Tue Dec 01 09:54:16 2009 +0100
+@@ -180,7 +180,7 @@
+ CP = cp -p
+ 
+ ifdef DEBUG
+-  CFLAGS += -g
++  CFLAGS += -g -DDEBUG
+   LDFLAGS += -g
+ else
+   CFLAGS += -O2

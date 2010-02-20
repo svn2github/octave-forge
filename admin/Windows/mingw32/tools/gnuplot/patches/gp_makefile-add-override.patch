@@ -1,24 +1,15 @@
-add override directive in makefile.mgw
+add override directive to CFLAGS CXXFLAGS LDFLAGS and RCFLAGS
 
-diff -r 9f4276db4d7c config/makefile.mgw
---- a/config/makefile.mgw	Thu Oct 01 20:37:15 2009 +0200
-+++ b/config/makefile.mgw	Thu Oct 01 20:38:32 2009 +0200
-@@ -107,7 +107,7 @@
- # Do you want some special optimization?
- # -mpentium means optimise for Pentium processor
- # -mpentiumpro means optimize for Pentium II and Pro procesors
--CFLAGS += $(GCC_ARCH_FLAGS) -Wall
-+override CFLAGS += $(GCC_ARCH_FLAGS) -Wall
- 
- 
- # To compile the .hlp file you need hcw either out of Microsoft SDK or MS Help
-@@ -171,11 +171,11 @@
+diff -r 73ca544272a4 -r 5ba130e706ff config/makefile.mgw
+--- a/config/makefile.mgw	Tue Jan 12 21:45:04 2010 +0100
++++ b/config/makefile.mgw	Tue Jan 12 21:46:47 2010 +0100
+@@ -180,11 +180,11 @@
  CP = cp -p
  
  ifdef DEBUG
--  CFLAGS += -g
+-  CFLAGS += -g -DDEBUG
 -  LDFLAGS += -g
-+  override CFLAGS += -g
++  override CFLAGS += -g -DDEBUG
 +  override LDFLAGS += -g
  else
 -  CFLAGS += -O2
@@ -28,8 +19,8 @@ diff -r 9f4276db4d7c config/makefile.mgw
  endif
  
  LDFLAGS2 = -mwindows
-@@ -193,11 +193,11 @@
- TERMFLAGS = -DGNUPLOT_PS_DIR=\"$(GNUPLOT_PS_DIR)\" -I$(TOP)/term
+@@ -202,11 +202,11 @@
+ TERMFLAGS = -DGNUPLOT_PS_DIR=\"$(GNUPLOT_PS_DIR)\" -DGNUPLOT_JS_DIR=\"$(GNUPLOT_JS_DIR)\" -I$(TOP)/term
  TERMLIBS = 
  
 -CFLAGS += -I$(TOP) -I$(TOP)/src -I. -D_Windows -DHAVE_CONFIG_H\
@@ -42,7 +33,7 @@ diff -r 9f4276db4d7c config/makefile.mgw
  endif
  
  ifdef NEWGD
-@@ -206,27 +206,27 @@
+@@ -215,27 +215,27 @@
  endif
  
  ifdef GD
@@ -75,7 +66,7 @@ diff -r 9f4276db4d7c config/makefile.mgw
    ifndef GDAUTOCONFIGLIBS
      TERMLIBS += -lfreetype
    endif
-@@ -237,7 +237,7 @@
+@@ -246,7 +246,7 @@
  endif
  
  ifdef PDF
@@ -84,7 +75,7 @@ diff -r 9f4276db4d7c config/makefile.mgw
  ifdef PDF_NOTIFF
    TERMLIBS += -lpdf_notiff
  else
-@@ -252,7 +252,7 @@
+@@ -261,7 +261,7 @@
  endif
  endif
  ifdef NEED_PNG_W
@@ -93,18 +84,23 @@ diff -r 9f4276db4d7c config/makefile.mgw
    TERMLIBS += -lpng-w -lz-w
  endif
  endif
-@@ -268,8 +268,8 @@
+@@ -276,12 +276,12 @@
+ endif
+ 
+ ifdef CAIROTERMS
+-	CFLAGS += -DHAVE_CAIROPDF
++	override CFLAGS += -DHAVE_CAIROPDF
  endif
  
  ifdef WXT
--	CFLAGS += -DWXWIDGETS -DHAVE_CAIROPDF
+-	CFLAGS += -DWXWIDGETS
 -	CXXFLAGS += $(shell wx-config --cxxflags)
-+	override CFLAGS += -DWXWIDGETS -DHAVE_CAIROPDF
++	override CFLAGS += -DWXWIDGETS
 +	override CXXFLAGS += $(shell wx-config --cxxflags)
- 	CAIRO_CFLAGS = $(shell pkg-config --cflags cairo)
- 	CAIRO_LIBS = $(shell pkg-config --libs cairo)
- 	PANGO_CFLAGS = $(shell pkg-config --cflags pangocairo)
-@@ -282,20 +282,20 @@
+ 	WX_LIBS = $(shell wx-config --libs | sed -e "s+-Wl,--subsystem,windows++g" -e "s+-mwindows++g")
+ 	WX_OBJS = wxt_gui.o
+ 	WX_LOCATION = $(shell wx-config --cppflags)
+@@ -290,12 +290,12 @@
  ifdef GNU_RC
    # RC = d:/cygnus/cygwin-b20/H-i586-cygwin32/bin/windres
    RC  = $(GCCPATH)windres
@@ -112,20 +108,10 @@ diff -r 9f4276db4d7c config/makefile.mgw
 +  override RCFLAGS = --include-dir /mingw32/include \
  	--include-dir=$(TOP)/src/win \
  	--define __WIN32__ --define __WIN95__ --define MSRC \
- 	--define __GNUWIN32__ --use-temp-file --preprocessor=$(CPP)
+ 	--define __GNUWIN32__ --use-temp-file
    ifdef WXT
 -	RCFLAGS += --define WXWIDGETS $(WX_LOCATION)
 +	override RCFLAGS += --define WXWIDGETS $(WX_LOCATION)
    endif
    RCOUT = wgplt_res.o
    RES2COFF = echo wgplt_res.o
- else
-   RC = $(MSSDK)/bin/rc
--  RCFLAGS = -v -i$(MSSDK)/include -iwin -dWIN32 -dMSRC
-+  override RCFLAGS = -v -i$(MSSDK)/include -iwin -dWIN32 -dMSRC
-   ifdef WXT
--	RCFLAGS += -dWXWIDGETS $(WX_LOCATION)
-+	override RCFLAGS += -dWXWIDGETS $(WX_LOCATION)
-   endif
-   RCOUT = -fowgnuplot.res
-   RES2COFF = res2coff -i wgnuplot.res -o wgplt_res.o

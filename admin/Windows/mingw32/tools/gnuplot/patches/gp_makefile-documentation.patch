@@ -1,9 +1,9 @@
 in makefile: fix for local documentation build
 
-diff -r a7c635c76175 config/makefile.mgw
---- a/config/makefile.mgw	Tue Jan 27 10:18:04 2009 +0100
-+++ b/config/makefile.mgw	Tue Jan 27 10:18:59 2009 +0100
-@@ -491,23 +470,72 @@
+diff -r b6e77177a3d8 config/makefile.mgw
+--- a/config/makefile.mgw	Tue Dec 01 09:45:57 2009 +0100
++++ b/config/makefile.mgw	Tue Dec 01 09:46:06 2009 +0100
+@@ -480,23 +480,74 @@
  endif
  
  gnuplot.tex: $(D)gnuplot.doc doc2tex.exe
@@ -23,6 +23,7 @@ diff -r a7c635c76175 config/makefile.mgw
 +	figure_financebars \
 +	figure_fsteps \
 +	figure_histeps \
++	figure_histerrorbar \
 +	figure_histclust \
 +	figure_histrows \
 +	figure_histcols \
@@ -42,7 +43,8 @@ diff -r a7c635c76175 config/makefile.mgw
 +	figure_surface \
 +	figure_surface+contours \
 +	figure_mapcontours \
-+	figure_heatmap
++	figure_heatmap \
++	figure_scaled_image
 +
 +# make .pdf figure from .eps
 +%.pdf : %.eps
@@ -52,7 +54,7 @@ diff -r a7c635c76175 config/makefile.mgw
 +FIGURES_PDF=$(addsuffix .pdf,$(FIGURES))
 +
 +$(FIGURES_EPS) : $(D)/plotstyles.gnu $(TARGET)
-+	GNUPLOT_LIB=$(TOP)/demo; export GNUPLOT_LIB; \
++	GNUPLOT_LIB=$(TOP)/demo:$(TOP)/docs; export GNUPLOT_LIB; \
 +	GNUPLOT_PS_DIR=$(T)postscript; export GNUPLOT_PS_DIR; \
 +	$(TARGET) $<
  

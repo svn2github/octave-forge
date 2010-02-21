@@ -27,13 +27,13 @@
 ## @item P
 ## Generalized plant.
 ## @item nmeas
-## Number of measured outputs. The last nmeas outputs of P are connected to the
-## inputs of controller K. The remaining outputs 1 to p-nmeas are used to calculate
-## the H-infinity norm.
+## Number of measured outputs e. The last nmeas outputs of P are connected to the
+## inputs of controller K. The remaining outputs z (indices 1 to p-nmeas) are used
+## to calculate the H-infinity norm.
 ## @item ncon
-## Number of controlled inputs. The last ncon inputs of P are connected to the
-## outputs of controller K. The remaining inputs 1 to m-ncon are excited by a
-## harmonic test signal.
+## Number of controlled inputs u. The last ncon inputs of P are connected to the
+## outputs of controller K. The remaining inputs r (indices 1 to m-ncon) are excited
+## by a harmonic test signal.
 ## @item gmax
 ## The maximum value of the H-infinity norm of N. It is assumed that gmax is
 ## sufficiently large so that the controller is admissible.

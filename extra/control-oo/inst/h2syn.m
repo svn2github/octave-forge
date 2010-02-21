@@ -28,7 +28,7 @@
 ## @item nmeas
 ## Number of measured outputs e. The last nmeas outputs of P are connected to the
 ## inputs of controller K. The remaining outputs z (indices 1 to p-nmeas) are used
-## to calculate the H-infinity norm.
+## to calculate the H-2 norm.
 ## @item ncon
 ## Number of controlled inputs u. The last ncon inputs of P are connected to the
 ## outputs of controller K. The remaining inputs r (indices 1 to m-ncon) are excited

@@ -17,7 +17,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {@var{P} =} augw (@var{G}, @var{W1}, @var{W2}, @var{W3})
-## Extend plant for stacked S/KS/T problem.
+## Extend plant for stacked S/KS/T problem. Subsequently, the robust control problem
+## can be solved by h2syn or hinfsyn.
 ## @example
 ## @group
 ##
@@ -63,6 +64,7 @@
 ## Chapter 3.8: General Control Problem Formulation
 ## @end group
 ## @end example
+## @seealso{h2syn, hinfsyn, mixsyn}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

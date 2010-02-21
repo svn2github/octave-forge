@@ -20,12 +20,15 @@
 ## Solve stacked S/KS/T H-inf problem, i.e. bound the largest singular values
 ## of S (for performance), K S (to penalize large inputs) and
 ## T (for robustness and to avoid sensitivity to noise).
+## In other words, the inputs r are excited by a harmonic test signal.
+## Then the algorithm tries to find a controller K which minimizes
+## the H-infinity norm calculated from the outputs z. 
 ## @example
 ## @group
 ##
-##                             | W1 S   |
-## min||N(K)||             N = | W2 K S | = lft (P, K)
-##  K         inf              | W3 T   |
+##                                     | W1 S   |
+## gamma = min||N(K)||             N = | W2 K S | = lft (P, K)
+##          K         inf              | W3 T   |
 ##                                                       +------+  z1
 ##             +---------------------------------------->|  W1  |----->
 ##             |                                         +------+
@@ -60,6 +63,7 @@
 ##                +--------+
 ##
 ## Extended Plant:  P = augw (G, W1, W2, W3)
+## Controller:      K = mixsyn (G, W1, W2, W3)
 ## Entire System:   N = lft (P, K)
 ## Open Loop:       L = G * K
 ## Closed Loop:     T = feedback (L)
@@ -72,6 +76,7 @@
 ## Chapter 3.8: General Control Problem Formulation
 ## @end group
 ## @end example
+## @seealso{hinfsyn, augw}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

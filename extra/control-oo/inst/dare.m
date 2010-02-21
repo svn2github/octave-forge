@@ -19,7 +19,7 @@
 ## @deftypefn {Function File} {[@var{x}, @var{l}, @var{g}] =} dare (@var{a}, @var{b}, @var{q}, @var{r})
 ## @deftypefnx {Function File} {[@var{x}, @var{l}, @var{g}] =} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{s})
 ## Return unique stabilizing solution x of the discrete-time
-## riccati equation as well as the closed-loop poles l and the
+## Riccati equation as well as the closed-loop poles l and the
 ## corresponding gain matrix g.
 ## Uses SLICOT SB02OD by courtesy of NICONET e.V.
 ## <http://www.slicot.org>
@@ -38,6 +38,7 @@
 ## G = (B'XB + R)   (B'XA + S')
 ## @end group
 ## @end example
+## @seealso{care, lqr, dlqr, kalman}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
@@ -122,13 +123,13 @@ function [x, l, g] = dare (a, b, q, r, s = [])
     x = slsb02od (a, b, q, r, b, true, false);
     
     ## corresponding gain matrix
-    g = (r+b'*x*b) \ (b'*x*a);
+    g = (r + b'*x*b) \ (b'*x*a);
   else
     ## unique stabilizing solution
     x = slsb02od (a, b, q, r, s, true, true);
     
     ## corresponding gain matrix
-    g = (r+b'*x*b) \ (b'*x*a + s');
+    g = (r + b'*x*b) \ (b'*x*a + s');
   endif
 
   ## closed-loop poles

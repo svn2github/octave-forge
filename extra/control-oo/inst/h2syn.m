@@ -66,6 +66,7 @@
 ##                +--------+
 ## @end group
 ## @end example
+## @seealso{augw, lqr, dlqr, kalman}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

@@ -19,7 +19,7 @@
 ## @deftypefn {Function File} {[@var{x}, @var{l}, @var{g}] =} care (@var{a}, @var{b}, @var{q}, @var{r})
 ## @deftypefnx {Function File} {[@var{x}, @var{l}, @var{g}] =} care (@var{a}, @var{b}, @var{q}, @var{r}, @var{s})
 ## Return unique stabilizing solution x of the continuous-time
-## riccati equation as well as the closed-loop poles l and the
+## Riccati equation as well as the closed-loop poles l and the
 ## corresponding gain matrix g.
 ## Uses SLICOT SB02OD by courtesy of NICONET e.V.
 ## <http://www.slicot.org>
@@ -38,6 +38,7 @@
 ## G = R  (B'X + S')
 ## @end group
 ## @end example
+## @seealso{dare, lqr, dlqr, kalman}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

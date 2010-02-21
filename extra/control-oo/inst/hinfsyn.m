@@ -70,6 +70,7 @@
 ##                +--------+
 ## @end group
 ## @end example
+## @seealso{augw, mixsyn}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

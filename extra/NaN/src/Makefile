@@ -12,7 +12,7 @@ MATMEX	= $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
 
 
-PROGS = histo_mex.mex covm_mex.mex sumskipnan_mex.mex train.mex svmtrain_mex.mex svmpredict_mex.mex
+PROGS = histo_mex.mex covm_mex.mex sumskipnan_mex.mex str2double.mex train.mex svmtrain_mex.mex svmpredict_mex.mex
 
 octave: $(PROGS)
 

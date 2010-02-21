@@ -103,7 +103,7 @@ function [K, varargout] = h2syn (P, nmeas, ncon)
   
   d11 = d(1:p1, 1:m1);
   
-  if (tsam <= 0 && ! all (all (d11 == 0)))
+  if (isct (P) && ! all (all (d11 == 0)))
     warning ("h2syn: setting matrice D11 to zero");
     d(1:p1, 1:m1) = 0;
   endif
@@ -117,10 +117,10 @@ function [K, varargout] = h2syn (P, nmeas, ncon)
   endif
 
   ## H-2 synthesis
-  if (tsam > 0)  # discrete plant
-    [ak, bk, ck, dk] = slsb10ed (a, b, c, d, ncon, nmeas);
-  else  # continuous plant
+  if (isct (P))  # continuous plant
     [ak, bk, ck, dk] = slsb10hd (a, b, c, d, ncon, nmeas);
+  else  # discrete plant
+    [ak, bk, ck, dk] = slsb10ed (a, b, c, d, ncon, nmeas);
   endif
   
   ## controller

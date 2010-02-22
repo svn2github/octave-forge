@@ -15,6 +15,7 @@ java-1.2.6 \
 splines-1.0.7 \
 msh-1.0.0 \
 fpl-1.0.0 \
+odepkg-0.6.10 \
 actuarial-1.1.0 \
 general-1.2.0 \
 miscellaneous-1.0.9 \
@@ -57,7 +58,6 @@ oct2mat-1.0.7 \
 octcdf-1.0.17 \
 octgpr-1.1.5 \
 odebvp-1.0.6 \
-odepkg-0.6.10 \
 optiminterp-0.3.2 \
 outliers-0.13.9 \
 physicalconstants-0.1.7 \
@@ -83,10 +83,11 @@ zenity-0.5.7 \
 # FINANCIAL depends on TIME
 # DATA-SMOOTHING depends on OPTIM
 # GA depends on COMMUNICATIONS
-# IO requires JAVA and WINDOWS
+# IO requires JAVA and WINDOWS (when executing)
 # JHANDLES requires JAVA
 # BIM requires FPL and MSH
 # MSH depends on SPLINES
+# OCS depends on ODEPKG
 # ann parallel ftp database 
 
 # FTP requires ftplib

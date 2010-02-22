@@ -19,9 +19,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} [@var{o1}, @var{o2}, @dots{}] = pararrayfun (@var{nproc}, @var{fun}, @var{a1}, @var{a2}, @dots{})
-## @deftypefnx{Function File} pararrayfun (nproc, fun, @dots{}, "UniformOutput", @var{val})
-## @deftypefnx{Function File} pararrayfun (nproc, fun, @dots{}, "ErrorHandler", @var{errfunc})
+## @deftypefn{Function File} {[@var{o1}, @var{o2}, @dots{}] =} pararrayfun (@var{nproc}, @var{fun}, @var{a1}, @var{a2}, @dots{})
+## @deftypefnx{Function File} {} pararrayfun (nproc, fun, @dots{}, "UniformOutput", @var{val})
+## @deftypefnx{Function File} {} pararrayfun (nproc, fun, @dots{}, "ErrorHandler", @var{errfunc})
 ## Evaluates a function for corresponding elements of an array. 
 ## Argument and options handling is analogical to @code{parcellfun}, except that
 ## arguments are arrays rather than cells. If cells occur as arguments, they are treated

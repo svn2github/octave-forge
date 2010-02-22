@@ -18,9 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} [@var{o1}, @var{o2}, @dots{}] = parcellfun (@var{nproc}, @var{fun}, @var{a1}, @var{a2}, @dots{})
-## @deftypefnx{Function File} parcellfun (nproc, fun, @dots{}, "UniformOutput", @var{val})
-## @deftypefnx{Function File} parcellfun (nproc, fun, @dots{}, "ErrorHandler", @var{errfunc})
+## @deftypefn{Function File} {[@var{o1}, @var{o2}, @dots{}] =} parcellfun (@var{nproc}, @var{fun}, @var{a1}, @var{a2}, @dots{})
+## @deftypefnx{Function File} {} parcellfun (nproc, fun, @dots{}, "UniformOutput", @var{val})
+## @deftypefnx{Function File} {} parcellfun (nproc, fun, @dots{}, "ErrorHandler", @var{errfunc})
 ## Evaluates a function for multiple argument sets using multiple processes.
 ## @var{nproc} should specify the number of processes. A maximum recommended value is
 ## equal to number of CPUs on your machine or one less.

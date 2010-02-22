@@ -11,8 +11,6 @@ miscellaneous
  match
  nze
  reduce
- rotparams
- rotv
  slurp_file
  units
  zagzig

@@ -5,6 +5,8 @@ Matrix functions
  thfm
  outer
  cartprod
+ rotparams
+ rotv
 Matrix factorization
  gsvd 
  GramSchmidt

@@ -1,0 +1,36 @@
+Index: windows-1.0.8/src/__COM__.cc
+===================================================================
+--- windows-1.0.8/src/__COM__.cc	(revision 5897)
++++ windows-1.0.8/src/__COM__.cc	(revision 6379)
+@@ -170,6 +170,12 @@
+ 
+ 	octave_value_list subsref (const std::string& type, const std::list<octave_value_list>& idx, int nargout);
+ 
++	octave_value subsref (const std::string& type, const std::list<octave_value_list>& idx)
++	{
++		octave_value_list retval = subsref (type, idx, 1);
++		return (retval.length () > 0 ? retval(0) : octave_value ());
++	}
++
+ 	octave_value subsasgn (const std::string& type, const std::list<octave_value_list>& idx, const octave_value& rhs);
+ 
+ private:
+@@ -398,12 +404,18 @@
+ 	case VT_R8:
+ 		retval = octave_value(var->dblVal);
+ 		break;
++	case VT_DATE:
++		retval = octave_value(var->dblVal);
++		break;
+ 	case VT_R4:
+ 		retval = octave_value(var->fltVal);
+ 		break;
+ 	case VT_EMPTY:
+ 		retval = octave_value(Matrix());
+ 		break;
++	case VT_ERROR:
++		retval = octave_value(Matrix());
++		break;
+ 	default:
+ 		if (var->vt & VT_ARRAY)
+ 		{

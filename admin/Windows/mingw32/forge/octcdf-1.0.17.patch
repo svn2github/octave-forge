@@ -1,0 +1,19 @@
+Index: octcdf/src/Makefile
+===================================================================
+--- octcdf/src/Makefile	(revision 6775)
++++ octcdf/src/Makefile	(working copy)
+@@ -15,11 +15,12 @@
+ #	NETCDF_LIB=/usr/lib/netcdf-3
+ #	OCTCDF_CFLAGS := $(CPPFLAGS) -I$(NETCDF_INC)
+ #	OCTCDF_LIBS := $(LDFLAGS) -L$(NETCDF_LIB) -lnetcdf
++        OCTCDF_LIBS := -lnetcdf
+ 
+ #       For NetCDF with OpenDAP (version 3.5.2 or higher) support use 
+ #	the following two lines instead
+-        OCTCDF_LIBS=$(shell ncdap-config --libs)
+-        OCTCDF_CFLAGS=$(shell ncdap-config --cflags) 
++#        OCTCDF_LIBS=$(shell ncdap-config --libs)
++#        OCTCDF_CFLAGS=$(shell ncdap-config --cflags) 
+ 
+ 
+ #       If you use a version of octave 2.1.x, uncomment the following

@@ -1,7 +1,7 @@
 Index: jhandles-0.3.5/src/configure.base
 ===================================================================
 --- jhandles-0.3.5/src/configure.base	(revision 5755)
-+++ jhandles-0.3.5/src/configure.base	(working copy)
++++ jhandles-0.3.5/src/configure.base	(revision 6130)
 @@ -321,9 +321,15 @@
  AC_SUBST(OPENGL_LIBS)
  AC_SUBST(OPENGL_INCS)
@@ -46,7 +46,7 @@ Index: jhandles-0.3.5/src/configure.base
 Index: jhandles-0.3.5/src/Makefile
 ===================================================================
 --- jhandles-0.3.5/src/Makefile	(revision 5755)
-+++ jhandles-0.3.5/src/Makefile	(working copy)
++++ jhandles-0.3.5/src/Makefile	(revision 6130)
 @@ -23,7 +23,7 @@
  test:
  	@echo $(JAVA_SOURCES)

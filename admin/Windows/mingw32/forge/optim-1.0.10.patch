@@ -1,0 +1,15 @@
+Index: optim/src/__bfgsmin.cc
+===================================================================
+--- optim/src/__bfgsmin.cc	(revision 6775)
++++ optim/src/__bfgsmin.cc	(working copy)
+@@ -29,6 +29,10 @@
+ #include <float.h>
+ #include "error.h"
+ 
++// FIXME: ugly hack for mingw32 
++#ifdef __MINGW32__
++#define isnan _isnan
++#endif
+ 
+ int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_args, const ColumnVector theta, const int minarg)
+ {

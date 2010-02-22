@@ -1,7 +1,20 @@
+Index: java-1.2.6/DESCRIPTION
+===================================================================
+--- java-1.2.6/DESCRIPTION	(revision 5755)
++++ java-1.2.6/DESCRIPTION	(revision 6866)
+@@ -6,7 +6,7 @@
+ Title: Java Interface
+ Description: Provides Java interface with OO-like Java objects manipulation
+ Categories: Java
+-Depends: octave (>= 2.9.12)
++Depends: octave (>= 3.2.0)
+ Autoload: yes
+ License: GPL version 2 or later
+ Url: http://octave.sf.net
 Index: java-1.2.6/src/__java__.cc
 ===================================================================
 --- java-1.2.6/src/__java__.cc	(revision 5755)
-+++ java-1.2.6/src/__java__.cc	(revision 6130)
++++ java-1.2.6/src/__java__.cc	(revision 6866)
 @@ -31,6 +31,7 @@
  
  #include <algorithm>
@@ -31,10 +44,25 @@ Index: java-1.2.6/src/__java__.cc
  }
  
  static octave_value convert_to_string (JNIEnv *jni_env, jobject java_object, bool force, char type)
+Index: java-1.2.6/src/__java__.h
+===================================================================
+--- java-1.2.6/src/__java__.h	(revision 5755)
++++ java-1.2.6/src/__java__.h	(revision 6866)
+@@ -18,7 +18,10 @@
+ #define __JAVA__H__
+ 
+ #include <octave/oct.h>
++#include <octave/config.h>
++#ifndef OCTAVE_EXPORT
+ #include <octave/oct-dlldefs.h>
++#endif // OCTAVE_EXPORT
+ #include <jni.h>
+ 
+ #ifdef JAVAPKG_BUILD
 Index: java-1.2.6/src/configure.base
 ===================================================================
 --- java-1.2.6/src/configure.base	(revision 5755)
-+++ java-1.2.6/src/configure.base	(revision 6130)
++++ java-1.2.6/src/configure.base	(revision 6866)
 @@ -310,9 +310,15 @@
  AC_SUBST(JAVA_LIBS)
  AC_SUBST(HAVE_JAVA)
@@ -63,7 +91,17 @@ Index: java-1.2.6/src/configure.base
          HAVE_JAVA=yes
          JAVA_LIBS=-ladvapi32
          ;;
-@@ -364,7 +370,15 @@
+@@ -343,6 +349,9 @@
+             # you need to explicitely set the include path
+             JAVA_INCS="-I${JAVA_HOME}/include"
+             HAVE_JAVA=yes
++          # This is the Debian default path
++          elif test -d "/usr/lib/jvm/default-java"; then
++            JAVA_HOME=/usr/lib/jvm/default-java
+           else
+             JAVA_HOME=/usr/lib/jvm
+           fi
+@@ -364,7 +373,15 @@
            fi
            if test -n "$JAVA_ARCH"; then
              HAVE_JAVA=yes
@@ -83,7 +121,7 @@ Index: java-1.2.6/src/configure.base
 Index: java-1.2.6/src/Makefile
 ===================================================================
 --- java-1.2.6/src/Makefile	(revision 5755)
-+++ java-1.2.6/src/Makefile	(revision 6130)
++++ java-1.2.6/src/Makefile	(revision 6866)
 @@ -1,7 +1,7 @@
  sinclude ./Makeconf
  export LFLAGS

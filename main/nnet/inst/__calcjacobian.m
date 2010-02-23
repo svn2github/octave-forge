@@ -132,6 +132,8 @@ function [Jj] = __calcjacobian(net,Im,Nn,Aa,vE)
     ## which transfer function should be used?
     if (iLayers==nLayers)
       switch(net.layers{iLayers}.transferFcn)
+        case "radbas"
+          tildeSxTemp = __dradbas(n);
         case "purelin"
           tildeSxTemp = __dpurelin(n);
         case "tansig"
@@ -146,6 +148,8 @@ function [Jj] = __calcjacobian(net,Im,Nn,Aa,vE)
       tildeSx{iLayers,1} = tildeSxTemp .* mIdentity;
       n = bias{nLayers,1};
       switch(net.layers{iLayers}.transferFcn)
+        case "radbas"
+          tildeSbxTemp = __dradbas(n);
         case "purelin"
           tildeSbxTemp = __dpurelin(n);
         case "tansig"
@@ -163,6 +167,9 @@ function [Jj] = __calcjacobian(net,Im,Nn,Aa,vE)
     if (iLayers<nLayers)
       dFx = ones(size(n));
       switch(net.layers{iLayers}.transferFcn) ######## new lines ...
+        case "radbas"
+          nx = radbas(n);
+          dFx = __dradbas(nx);
         case "purelin"
 	  nx = purelin(n);
 	  dFx = __dpurelin(nx);

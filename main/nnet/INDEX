@@ -3,7 +3,7 @@ nnet >> Neural Networks
 Creation
  newff
 
-Data pre- & postprocessing
+Data preprocessing & postprocessing
  mapstd
  prestd
  poststd

@@ -29,7 +29,7 @@
 ## See Also: This function is to be used along with functions 
 ## prbs_generator.
 ## 
-function itrs=prbs_sequence(prbs)
+function [itrs,seq]=prbs_sequence(prbs)
   if nargin < 1
     error("usage: prbs_sequence(prbs struct ); \
 	create the prbs sequence using prbs_generator() function. \
@@ -37,7 +37,7 @@ function itrs=prbs_sequence(prbs)
 	and returns to the user.")
   end
   nstate=zeros(1,prbs.reglen); 
-  itrs=0;
+  itrs=0; seq = [];
   inits = prbs.sregs;
   
   ## For each iteration, shift the output bit. Then compute the xor pattern of connections. 
@@ -56,6 +56,7 @@ function itrs=prbs_sequence(prbs)
     end
     
     ## rotate the output discarding the last output.
+    seq = [seq, prbs.sregs(end)];
     prbs.sregs=[0 prbs.sregs(1:prbs.reglen-1)];
 
     ## insert the feedback.

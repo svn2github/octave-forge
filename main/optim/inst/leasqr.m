@@ -1,6 +1,7 @@
 %% Copyright (C) 1992-1994 Richard Shrager
 %% Copyright (C) 1992-1994 Arthur Jutan
 %% Copyright (C) 1992-1994 Ray Muzic
+%% Copyright (C) 2010 Olaf Till <olaf.till@uni-jena.de>
 %%
 %% This program is free software; you can redistribute it and/or modify
 %% it under the terms of the GNU General Public License as published by
@@ -53,7 +54,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%   squares = sum((wt.*(y-f))^2); default stol = .0001;
   %% niter = scalar maximum number of iterations; default = 20;
   %% options = structure, currently recognized fields are 'fract_prec',
-  %%   'max_fract_change', and 'bounds'. For backwards compatibility,
+  %%   'max_fract_change', 'inequc', and 'bounds'. For backwards compatibility,
   %%   'options' can also be a matrix whose first and second column
   %%   contains the values of 'fract_prec' and 'max_fract_change',
   %%   respectively.
@@ -71,14 +72,22 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%   [ie. abs(chg(i))=abs(min([chg(i)
   %%   options.max_fract_change(i)*current param estimate])).], default =
   %%   Inf*ones().
+  %%   Field 'options.inequc': cell-array containing a matrix (say m)
+  %%   and a column vector (say v), specifying linear inequality
+  %%   constraints of the form `m.' * parameters + v >= 0'. If the
+  %%   constraints are just bounds, it is suggested to specify them in
+  %%   'options.bounds' instead, since then some sanity tests are
+  %%   performed, and since the function 'dfdp.m' is guarantied not to
+  %%   violate constraints during determination of the numeric gradient
+  %%   only for those constraints specified as 'bounds'.
   %%   Field 'options.bounds': two-column-matrix, one row for each
   %%   parameter in 'pin'. Each row contains a minimal and maximal value
   %%   for each parameter. Default: [-Inf, Inf] in each row. If this
   %%   field is used with an existing user-side function for 'dFdp'
   %%   (see above) the functions interface might have to be changed.
-  %%   _Warning_: If bounds are set, returned guesses of corp, covp, and
-  %%   Z are generally invalid, even if final parameters are not at the
-  %%   bounds.
+  %%   _Warning_: If constraints (or bounds) are set, returned guesses
+  %%   of corp, covp, and Z are generally invalid, even if no constraints
+  %%   are active for the final parameters.
   %%
   %%          OUTPUT VARIABLES
   %% f = column vector of values computed: f = F(x,p).
@@ -92,7 +101,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% Z = matrix that defines confidence region (see comments in the source).
   %% r2 = coefficient of multiple determination, intercept form.
   %%
-  %% All Zero guesses not acceptable. Not suitable for non-real residuals.
+  %% Not suitable for non-real residuals.
 
   %% The following two blocks of comments are chiefly from the original
   %% version for Matlab. For later changes the logs of the Octave Forge
@@ -151,7 +160,9 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%          MATLAB version >= 4.0) in computation of covp, corp, stdresid.
   %% Modified by Francesco Potortì
   %%       for use in Octave
-  %% Added bounds feature to this file and to dfdp.m, Olaf Till 4-Aug-2009
+  %% Added linear inequality constraints with quadratic programming to
+  %% this file and special case bounds to this file and to dfdp.m, Olaf
+  %% Till 24-Feb-2010
   %%
   %% References:
   %% Bard, Nonlinear Parameter Estimation, Academic Press, 1974.
@@ -195,8 +206,10 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% processing of 'options'
   pprec = zeros (n, 1);
   maxstep = Inf * ones (n, 1);
+  mc = zeros (n, 0);
+  vc = zeros (0, 1);
   bounds = cat (2, -Inf * ones (n, 1), Inf * ones (n, 1));
-  dfdp_cmd = 'feval(dFdp,x,fbest,pprev,dp,F);'; % will possibly be redefined
+  dfdp_cmd = 'feval(dFdp,x,fbest,p,dp,F);'; % will possibly be redefined
   if (nargin > 9)
     if (ismatrix (options)) % backwards compatibility
       tp = options;
@@ -217,8 +230,20 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	error ('maximum fractional step changes: wrong dimensions');
       end
     end
+    if (isfield (options, 'inequc'))
+      mc = options.inequc{1};
+      vc = options.inequc{2};
+      [rm, cm] = size (mc);
+      [rv, cv] = size (vc);
+      if (rm ~= n || cm ~= rv || cv ~= 1)
+	error ('inequality constraints: wrong dimensions');
+      end
+      if (any (mc.' * pin + vc < 0))
+	error ('initial parameters violate inequality constraints');
+      end
+    end
     if (isfield (options, 'bounds'))
-      dfdp_cmd = 'feval(dFdp,x,fbest,pprev,dp,F,bounds);';
+      dfdp_cmd = 'feval(dFdp,x,fbest,p,dp,F,bounds);';
       bounds = options.bounds;
       if (rows (bounds) ~= n || columns (bounds) ~= 2)
 	error ('bounds: wrong dimensions');
@@ -242,6 +267,11 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	warning ('some initial parameters set to upper bound');
 	pin(idx) = bounds(idx, 2);
       end
+      tp = eye (n);
+      lidx = ~ isinf (bounds(:, 1));
+      uidx = ~ isinf (bounds(:, 2));
+      mc = cat (2, mc, tp(:, lidx), - tp(:, uidx));
+      vc = cat (1, vc, - bounds(lidx, 1), bounds(uidx, 2));
     end
   end
 
@@ -262,9 +292,21 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   epsLlast=1;
   epstab=[.1, 1, 1e2, 1e4, 1e6];
 
+  %% for testing
+  %% new_s = false;
+  %% if (isfield (options, 'new_s'))
+  %%   new_s = options.new_s;
+  %% end
+
+  nz = eps; % This is arbitrary. Constraint fuction will be regarded as
+				% <= zero if less than nz.
   %% do iterations
   %%
   for iter=1:niter
+    c_act = mc.' * p + vc < nz; % index of active constraints
+    mca = mc(:, c_act);
+    vca = vc(c_act);
+    mcat = mca.';
     nrm = zeros (1, n);
     pprev=pbest;
     prt = eval (dfdp_cmd);
@@ -282,43 +324,75 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     [prt,s,v]=svd(prt,0);
     s=diag(s);
     g = prt.' * r;
-    for jjj=1:length(epstab),
+    for jjj=1:length(epstab)
       epsL = max(epsLlast*epstab(jjj),1e-7);
-      se=sqrt((s.*s)+epsL);
-      gse=g./se;
-      chg=((v*gse).*nrm);
-      %% check the change constraints and apply as necessary
+      %% printf ('epsL: %e\n', epsL); % for testing
+
+      %% Usage of this 'ser' later is equivalent to pre-multiplying the
+      %% gradient with a positive-definit matrix, but not with a
+      %% diagonal matrix, at epsL -> Inf; so there is a fallback to
+      %% gradient descent, but not in general to descent for each
+      %% gradient component. Using the commented-out 'ser' ((1 / (1 +
+      %% epsL^2)) * (1 ./ se + epsL * s)) would be equivalent to using
+      %% Marquardts diagonal of the Hessian-approximation for epsL ->
+      %% Inf, but currently this gives no advantages in tests, even with
+      %% constraints.
+      ser = 1 ./ sqrt((s.*s)+epsL);
+      %% se=sqrt((s.*s)+epsL);
+      %%if (new_s)
+      %% %% for testing
+      %% ser = (1 / (1 + epsL^2)) * (1 ./ se + epsL * s);
+      %% else
+      %% ser = 1 ./ se;
+      %% end
+      tp1 = (v * (g .* ser)) .* nrm;
+      if (any (c_act))
+	%% calculate chg by 'quadratic programming'
+	idx = ones (1, size (mca, 2));
+	nrme = nrm(:, idx);
+	ser2 = ser .* ser;
+	tp2 = nrme .* (v * (ser2(:, idx) .* (v.' * (nrme .* mca))));
+	[lb, idx] = cpiv (mcat * tp1, mcat * tp2);
+	chg = tp1 + tp2(:, idx) * lb;
+	%% collect inactive constraints
+	mcit = mc(:, ~ c_act).';
+	vci = vc(~ c_act);
+      else
+	%% chg is the Levenberg/Marquardt step
+	chg = tp1;
+	%% inactive constraints consist of all constraints
+	mcit = mc.';
+	vci = vc;
+      end
+      %% apply inactive constraints (since this is a Levenberg/Marquardt
+      %% algorithm, no line-search is performed here)
+      hstep = mcit * chg;
+      idx = hstep < 0;
+      if (any (idx))
+	k = min (1, min (- (vci(idx) + mcit(idx, :) * pprev) ./ ...
+			 hstep(idx)));
+	chg = k * chg;
+      end
+      %% check the maximal stepwidth and apply as necessary
       ochg=chg;
       idx = ~isinf(maxstep);
       limit = abs(maxstep(idx).*pprev(idx));
       chg(idx) = min(max(chg(idx),-limit),limit);
       if (verbose && any(ochg ~= chg))
 	disp(['Change in parameter(s): ', ...
-              sprintf('%d ',find(ochg ~= chg)), 'were constrained']);
+              sprintf('%d ',find(ochg ~= chg)), 'maximal fractional stepwidth enforced']);
       end
       aprec=abs(pprec.*pbest);       %---
       %% ss=scalar sum of squares=sum((wt.*(y-f))^2).
-      if (any(abs(chg) > 0.1*aprec))%---  % only worth evaluating function if
-	p=chg+pprev;                       % there is some non-miniscule change
-	%% Simply reset parameters to bounds. This is probably
-	%% inefficient, but at least the Levenberg/Marquardt method
-	%% should be able to converge with this by falling back to
-	%% gradient descent if necessary. A better way seems difficult
-	%% with no approximation of the Hessian available.
-	lidx = p < bounds(:, 1);
-	p(lidx) = bounds(lidx, 1);
-	uidx = p > bounds(:, 2);
-	p(uidx) = bounds(uidx, 2);
-	idx = lidx | uidx;
-	if (verbose && any (idx))
-	  tp = find (idx);
-	  fprintf ('bounds apply for parameters number %s %i\n', \
-		   sprintf ('%i, ', tp(1:end - 1)), tp(end));
-	end
-	%%
+      if (any(abs(chg) > 0.1*aprec))%---  % only worth evaluating
+				% function if there is some non-miniscule
+				% change
+	p=chg+pprev;
 	f=feval(F,x,p);
 	r=wt.*(y-f);
-	if (~isreal (r)) error ('weighted residuals are not real'); end
+	if (~isreal (r))
+	  error ('weighted residuals are not real');
+	end
 	ss = r.' * r;
 	if (ss<sbest)
           pbest=p;
@@ -330,6 +404,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	end
       end                          %---
     end
+    %% printf ('epsL no.: %i\n', jjj); % for testing
     epsLlast = epsL;
     if (verbose)
       eval(plotcmd);

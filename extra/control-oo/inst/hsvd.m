@@ -43,7 +43,7 @@ function hsv_r = hsvd (sys, prop = "offset", val = 1e-8)
   endif
   
   [a, b, c] = ssdata (sys);
-  
+
   digital = ! isct (sys);
   
   if (digital)
@@ -60,7 +60,7 @@ function hsv_r = hsvd (sys, prop = "offset", val = 1e-8)
   if (nargout)
     hsv_r = hsv;
   else
-    bar (idx, hsv);
+    bar (idx + (rows (a) - ns), hsv);
     title ("Hankel Singular Values of Stable Part");
     xlabel ("State");
     ylabel ("State Energy");

@@ -10,22 +10,22 @@
 ## tail rotor collective
 ##
 ## STATES
-## pitch attitude           theta
-## roll attitude            phi
-## roll rate (body-axis)    p
-## pitch rate (body-axis)   q
-## yaw rate                 xi
-## forward velocity         v_x
-## lateral velocity         v_y
-## vertical velocity        v_z
+## pitch attitude           theta       [rad]
+## roll attitude            phi         [rad]
+## roll rate (body-axis)    p           [rad/s]
+## pitch rate (body-axis)   q           [rad/s]
+## yaw rate                 xi          [rad/s]
+## forward velocity         v_x         [ft/s]
+## lateral velocity         v_y         [ft/s]
+## vertical velocity        v_z         [ft/s]
 ##
 ## OUTPUTS
-## heave velocity           H_dot
-## pitch attitude           theta
-## roll attitude            phi
-## heading rate             psi_dot
-## roll rate                p
-## pitch rate               q
+## heave velocity           H_dot       [ft/s]
+## pitch attitude           theta       [rad]
+## roll attitude            phi         [rad]
+## heading rate             psi_dot     [rad/s]
+## roll rate                p           [rad/s]
+## pitch rate               q           [rad/s]
 ##
 ## Reference:
 ## Skogestad, S. and Postlethwaite I.

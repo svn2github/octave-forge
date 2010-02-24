@@ -16,10 +16,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dradbas (@var{n})
+## @deftypefn {Function File} {} __dradbas (@var{n})
 ## First derivative of the radial basis transfer function.
 ##
-## @code{radbas(n) = exp(-n^2)}
+## @code{__dradbas(n) = exp(-n^2)*-2*x}
 ##
 ## @end deftypefn
 
@@ -31,9 +31,14 @@ function retval = __dradbas (n)
   if (nargin != 1)
     print_usage ();
   else
-    retval = exp (-n^2);
+    retval = exp (-n^2)*(-2)*x;
+    # the derivative of exp(-n^2) must be calculated
+    # with help of the chain-rule!
+    # d/dx of e^x = e^x
+    # d/dx of -x^2 = -2x
+    # now calculate the product of both
   endif
 endfunction
 
 
-%!assert (radbas (3), exp (-3^2));
+#%!assert (radbas (3), exp (-3^2));

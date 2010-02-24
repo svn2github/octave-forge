@@ -21,13 +21,15 @@
 //
 // usage:
 //	[...] = str2double_mex(s)
+//	[...] = str2double_mex(sa)
 //	[...] = str2double_mex(s,cdelim)
 //	[...] = str2double_mex(s,cdelim,rdelim)
 //	[...] = str2double_mex(s,cdelim,rdelim,ddelim)
 //	[num,status,strarray] = str2double_mex(...)
 //
 // Input:
-//  s 	        data array
+//  s 	        char string 
+//  sa 	        cell array of strings 
 //  cdelim	column delimiter
 //  rdelim	row delimiter
 //  ddelim      decimal delimiter
@@ -55,6 +57,81 @@
 #endif 
 
 
+int str2val(char *s, double *r, double *i) 
+{
+/* 
+	str2val converts string into numeric value. real and complex numbers are supported. 
+	complex numbers are "3.4 + 5.6i" or "3.4 + i * 5.6" (spaces are optional)
+
+	input:
+		s	char string 
+	output: 
+		*r	real value 
+		*i	imaginary value
+	return values: 
+		0: conversion failed 
+		1: real number returned: 
+		2: complex number returned 	
+	
+*/
+	char *endptr = NULL;
+	double val = strtod(s, &endptr);	// conversion 
+
+	while (isspace(*endptr)) endptr++;
+#ifdef DEBUG		
+	mexPrintf("123<%s>\t,%f,\t[%s]\n",s,val,endptr);
+#endif
+	if (!*endptr) {
+		// conversion successful 
+		*r = val; 
+		return(1); 
+	}
+	else if ((*endptr=='+') || (*endptr=='-')) {
+		// imaginary part 
+		double sgn = (*endptr=='+') ? 1.0 : -1.0; 
+		double ival; 
+		while (isspace(*(++endptr))); 
+
+		if (*endptr=='i') {
+			// case " a + i * b " 		
+			while (isspace(*(++endptr))); 
+
+			if (*endptr=='*') {
+				ival = strtod(endptr+1, &endptr);	// conversion 
+				if (*endptr && !isspace(*endptr)) {
+					return(0); 	// failed 
+				}	
+				else {
+					*r = val; 
+					*i = sgn*ival; 
+					return(2);	// 
+				}	
+			}
+			else 
+				return(0); 	//failed 
+		}
+		else {
+			// case " a + bi " 		
+			ival = strtod(endptr, &endptr);	// conversion 
+			if (*endptr != 'i') return(0); 
+			endptr++;
+			while (*endptr) {
+				if (!isspace(*endptr)) return(0); 
+				endptr++;
+			}	
+			*r = val; 
+			*i = sgn*ival; 
+			return(2); 
+		}
+	}
+	else if (*endptr && !isspace(*endptr)) {
+		// conversion failed 
+		return(0); 
+	}
+}
+
+
+
 void mexFunction(
     int           nlhs,           /* number of expected outputs */
     mxArray       *plhs[],        /* array of pointers to output arguments */
@@ -77,17 +154,67 @@ void mexFunction(
 		mexPrintf("   Actually, it fixes the problem discussed here: http://www-old.cae.wisc.edu/pipermail/help-octave/2007-December/007325.html\n");
 		mexPrintf("\n   Usage of STR2DOUBLE_MEX:\n");
 		mexPrintf("\t[...] = str2double(s)\n");
+		mexPrintf("\t[...] = str2double(sa)\n");
 		mexPrintf("\t[...] = str2double(s,cdelim)\n");
 		mexPrintf("\t[...] = str2double(s,cdelim,rdelim)\n");
 		mexPrintf("\t[...] = str2double(s,cdelim,rdelim,ddelim)\n");
 		mexPrintf("\t[num,status,strarray] = str2double(...)\n");
-		mexPrintf("   Input:\n\ts\tstring\n\tcdelim\tlist of column delimiters (default: \"<Tab>,\"\n\trdelim\tlist of row delimiter (defautlt: \"<LF><CR>;\")");
+		mexPrintf("   Input:\n\ts\tstring\n\tsa\tcell array of strings\n\tcdelim\tlist of column delimiters (default: \"<Tab>,\"\n\trdelim\tlist of row delimiter (defautlt: \"<LF><CR>;\")");
 		mexPrintf("\n\tddelim\tdecimal delimiter (default: \".\"). This is useful if decimal delimiter is a comma (e.g. after Excel export in Europe)\n");
 		mexPrintf("   Output:\n\tnum\tnumeric array\n\tstatus\tflag failing conversion\n\tstrarray\tcell array of strings contains strings of failed conversions\n");
+		mexPrintf("\nExamples:\n\tstr2double('4.12')\n\tstr2double('1.2 - 3.4e2i')   complex numbers\n\tstr2double('101.01 , 0-i4; 1.2 - i * 3.4, abc')\n\tstr2double({'101.01', '0-i4'; '1.2 - i * 3.4', 'abc'})\n\tstr2double('1,2;a,b,c;3,4')\n");
+		mexPrintf("\tstr2double('1;2,3;4',';',',')   exchange row- and column delimiter\n\tstr2double('1,200 4;3,400 5',' ',';',',')  replace decimal delimter\n");
 		return; 
 	}
 
 	/* sanity check of input arguments */
+
+	if ((nrhs==1) && mxIsCell(prhs[0])) {	
+		// cell array of strings 
+		maxrow = mxGetM(prhs[0]);
+		maxcol = mxGetN(prhs[0]);
+
+		/* allocate output memory */
+		if (nlhs>2) plhs[2] = mxCreateCellMatrix(maxrow, maxcol);
+		uint8_t *v = NULL;
+		if (nlhs>1) {
+			plhs[1] = mxCreateLogicalMatrix(maxrow, maxcol);
+			v = (uint8_t*)mxGetData(plhs[1]);	
+			memset(v, 1, maxrow*maxcol);
+		}
+		plhs[0] = mxCreateDoubleMatrix(maxrow, maxcol, mxREAL);
+		double *o = (double*)mxGetData(plhs[0]);
+		double *oi= NULL; 
+		for (k=0; k<maxrow*maxcol; k++) {
+			o[k] = 0.0/0.0;
+		}
+		for (k = 0; k < maxrow*maxcol; k++) {
+			double ival; 
+			char *s = mxArrayToString(mxGetCell(prhs[0],k)); 
+			if (s==NULL) {
+				mxArray *a = mxGetCell(prhs[0],k);
+				/*
+					this does not work because a must not be modified 
+					if (nlhs>2) mxSetCell(plhs[2], k, a);
+				*/
+			}
+			else {
+				int typ = str2val(s, o+k, &ival);
+				if ((nlhs>2) && (typ==0)) mxSetCell(plhs[2], k, mxCreateString(s));
+				if ((nlhs>1) && (typ> 0)) v[k] = 0;
+				if (typ==2) {
+					if (mxGetPi(plhs[0])==NULL) {
+						oi = (double*) mxCalloc(maxrow*maxcol, sizeof(double));
+						mxSetPi(plhs[0], oi);
+					}
+					oi[k] = ival;
+				}	
+			}	
+		}
+		// cell-array input is finished 
+		return; 
+	}
+
 	if (nrhs>0) {
 		if (mxIsChar(prhs[0])) {	
 			s = mxArrayToString(prhs[0]);
@@ -131,13 +258,6 @@ void mexFunction(
 			u[k] = 0; 	// ordinary character 
 	}
 
-#ifdef DEBUG		
-	mexPrintf("<%s>\n[",s);
-	for (k=0; k<slen; k++)
-		mexPrintf("%i",u[k]);
-	mexPrintf("]\n",s);
-#endif
-	
 	/* count dimensions and set delimiter elements to 0 */
 	nc=0, nr=0;
 	if (u[slen-1]<2) {
@@ -168,10 +288,6 @@ void mexFunction(
 	maxcol += (slen>0);
 	maxrow = nr;
 
-#ifdef DEBUG		
-	mexPrintf("[%i,%i]\n",maxrow,maxcol);
-#endif
-
 	/* allocate output memory */
 	if (nlhs>2) plhs[2] = mxCreateCellMatrix(maxrow, maxcol);
 	uint8_t *v = NULL;
@@ -182,6 +298,7 @@ void mexFunction(
 	}
 	plhs[0] = mxCreateDoubleMatrix(maxrow, maxcol, mxREAL);
 	double *o = (double*)mxGetData(plhs[0]);
+	double *oi = NULL; 
 	for (k=0; k<maxrow*maxcol; k++) {
 		o[k] = 0.0/0.0;
 	}
@@ -197,19 +314,20 @@ void mexFunction(
 				o[idx] = 0.0/0.0; 
 			}
 			else {
-				char *endptr = NULL;
-				double val = strtod(s+last,&endptr);	// conversion 
-				if (*endptr && !isspace(*endptr)) {
-					// conversion failed 
-					o[idx] = 0.0/0.0; 
-					if (nlhs>2) mxSetCell(plhs[2], idx, mxCreateString(s+last));
-				}
-				else {
-					// conversion successful 
-					o[idx] = val; 
-					if (nlhs>1) v[idx] = 0; 
-				}
+				double ival;
+				int typ = str2val(s+last, o+idx, &ival);
+
+				if ((nlhs>2) && (typ==0)) mxSetCell(plhs[2], idx, mxCreateString(s+last));
+				if ((nlhs>1) && (typ> 0)) v[idx] = 0;
+				if (typ==2) {
+					if (oi==NULL) {
+						oi = (double*) mxCalloc(maxrow*maxcol, sizeof(double));
+						mxSetPi(plhs[0], oi);
+					}
+					oi[idx] = ival;
+				}	
 			}	
+
 			nc++;	// next element 
 			if (u[k]==2) {
 				nr++;	// next row 

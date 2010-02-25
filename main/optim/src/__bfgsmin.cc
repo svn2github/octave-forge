@@ -28,7 +28,9 @@
 #include <octave/Cell.h>
 #include <float.h>
 #include "error.h"
-
+#ifdef __MINGW32__
+#define isnan _isnan
+#endif
 
 int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_args, const ColumnVector theta, const int minarg)
 {

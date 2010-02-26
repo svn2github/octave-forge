@@ -109,8 +109,6 @@ end
 
 endfunction
 
-% Two demos for users of P. Kienzle's 'demo'-feature :
-
 %!demo	 % same as in help - part
 %! deg= 2; N= 20; x1= -(1+i), x= linspace(x1,1+i/2,N).';
 %! h = x(2) - x(1)
@@ -124,5 +122,18 @@ endfunction
 %! y= (2+i)*exp( (-1-2i)*x ) + (-1+3i)*exp( (2+3i)*x );
 %! A= 5e-2; y+= A*(randn(N,1)+randn(N,1)*i); % add complex noise
 %! [alpha,c,rms]= expfit( deg, x1, h, y )
+
+%!demo
+%! x0 = 1.5; step = 0.05; xend = 5;
+%! a = [1.3, 2]';
+%! c = [2, -0.5]';
+%! v = 1e-4;
+%! 
+%! x = x0:step:xend;
+%! y = exp (x(:) * a(:).') * c(:);
+%! err = randn (size (y)) * v;
+%! plot (x, y + err);
+%! 
+%! [a_out, c_out, rms] = expfit (2, x0, step, y+err)
 
 

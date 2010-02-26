@@ -28,6 +28,8 @@ function sys = __transpose__ (sys)
   b = sys.b;
   c = sys.c;
   d = sys.d;
+  
+  sys.stname = repmat ({""}, rows (a), 1);
 
   sys.a = a.';
   sys.b = c.';

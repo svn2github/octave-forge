@@ -81,9 +81,9 @@ Overloaded and Arithmetic Operators
   @lti/\
   @lti//
   @lti/^
+  @lti/.'
   [..]
   @lti/inv
-  @lti/transpose
 Matrix Equation Solvers
   care
   dare

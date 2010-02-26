@@ -233,15 +233,29 @@ function plt(x,y,dy,p,s,varargin)
   endif
 
 %!demo % #1  
-%!     x = linspace(0,4,20);
-%!     dy = (1+rand(size(x)))/2;
-%!     y = polyval([2,3,1],x) + dy.*randn(size(x));
-%!     wpolyfit(x,y,dy,2);
+%! x = linspace(0,4,20);
+%! dy = (1+rand(size(x)))/2;
+%! y = polyval([2,3,1],x) + dy.*randn(size(x));
+%! wpolyfit(x,y,dy,2);
   
 %!demo % #2
-%!     x = linspace(-i,+2i,20);
-%!     noise = ( randn(size(x)) + i*randn(size(x)) )/10;
-%!     P = [2-i,3,1+i];
-%!     y = polyval(P,x) + noise;
-%!     wpolyfit(x,y,2)
+%! x = linspace(-i,+2i,20);
+%! noise = ( randn(size(x)) + i*randn(size(x)) )/10;
+%! P = [2-i,3,1+i];
+%! y = polyval(P,x) + noise;
+%! wpolyfit(x,y,2)
+
+%!demo
+%! pin = [3; -1; 2];
+%! x = -3:0.1:3;
+%! y = polyval (pin, x);
+%!
+%! ## Poisson weights
+%! # dy = sqrt (abs (y));
+%! ## Uniform weights in [0.5,1]
+%! dy = 0.5 + 0.5 * rand (size (y));
+%!
+%! y = y + randn (size (y)) .* dy;
+%! printf ("Original polynomial: %s\n", polyout (pin, 'x'));
+%! wpolyfit (x, y, dy, length (pin)-1);
 

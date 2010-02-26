@@ -29,15 +29,15 @@ function sys = __sysinv__ (sys)
   c = sys.c;
   d = sys.d;
 
-  if (det (d) != 0)
+  if (rcond (d) < eps)
+    error ("ss: sysinv: inverse is not proper, case not implemented yet");
+  else
     di = inv (d);
 
     f = a - b * di * c;
     g = b * di;
     h = -di * c;
     j = di;
-  else
-    error ("ss: sysinv: inverse is not proper, case not implemented yet");
   endif
 
   sys.a = f;

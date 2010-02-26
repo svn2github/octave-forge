@@ -200,3 +200,94 @@ if verbose, printf ("cg_min: Too many evaluatiosn!\n"); end
 
 endfunction
 
+%!demo
+%! P = 15; # Number of parameters
+%! R = 20; # Number of observations (must have R >= P)
+%! 
+%! obsmat = randn (R, P);
+%! truep = randn (P, 1);
+%! xinit = randn (P, 1);
+%! obses = obsmat * truep;
+%! 
+%! msq = @(x) mean (x (!isnan(x)).^2);
+%! ff  = @(x) msq (obses - obsmat * x{1}) + 1;
+%! dff = @(x) 2 / rows (obses) * obsmat.' * (-obses + obsmat * x{1});
+%! 
+%! tic;
+%! [xlev,vlev,nlev] = cg_min (ff, dff, xinit) ;
+%! toc;
+%! 
+%! printf ("  Costs :     init=%8.3g, final=%8.3g, best=%8.3g\n", ...
+%!         ff ({xinit}), vlev, ff ({truep}));
+%! 
+%! if (max (abs (xlev-truep)) > 100*sqrt (eps))
+%!   printf ("Error is too big : %8.3g\n", max (abs (xlev-truep)));
+%! else
+%!   printf ("All tests ok\n");
+%! endif
+
+%!demo
+%! N = 1 + floor (30 * rand ());
+%! truemin = randn (N, 1);
+%! offset  = 100 * randn ();
+%! metric = randn (2 * N, N); 
+%! metric = metric.' * metric;
+%! 
+%! if (N > 1)
+%!   [u,d,v] = svd (metric);
+%!   d = (0.1+[0:(1/(N-1)):1]).^2;
+%!   metric = u * diag (d) * u.';
+%! endif
+%! 
+%! testfunc = @(x) sum((x{1}-truemin)'*metric*(x{1}-truemin)) + offset;
+%! dtestf = @(x) metric' * 2*(x{1}-truemin);
+%! 
+%! xinit = 10 * randn (N, 1);
+%! 
+%! [x, v, niter] = cg_min (testfunc, dtestf, xinit);
+%! 
+%! if (any (abs (x-truemin) > 100 * sqrt(eps)))
+%!   printf ("NOT OK 1\n");
+%! else
+%!   printf ("OK 1\n");
+%! endif
+%! 
+%! if (v-offset > 1e-8)
+%!   printf ("NOT OK 2\n");
+%! else
+%!   printf ("OK 2\n");
+%! endif
+%! 
+%! printf ("nev=%d  N=%d  errx=%8.3g   errv=%8.3g\n",...
+%!         niter (1), N, max (abs (x-truemin)), v-offset);
+
+%!demo
+%! P = 2; # Number of parameters
+%! R = 3; # Number of observations
+%! 
+%! obsmat = randn (R, P);
+%! truep  = randn (P, 1);
+%! xinit  = randn (P, 1);
+%! 
+%! obses = obsmat * truep;
+%! 
+%! msq = @(x) mean (x (!isnan(x)).^2);
+%! ff = @(xx) msq (xx{3} - xx{2} * xx{1}) + 1;
+%! dff = @(xx) 2 / rows(xx{3}) * xx{2}.' * (-xx{3} + xx{2}*xx{1});
+%! 
+%! tic;
+%! x = {xinit, obsmat, obses};
+%! [xlev, vlev, nlev] = cg_min (ff, dff, x);
+%! toc;
+%! 
+%! xinit_ = {xinit, obsmat, obses};
+%! xtrue_ = {truep, obsmat, obses};
+%! printf ("  Costs :     init=%8.3g, final=%8.3g, best=%8.3g\n", ...
+%!         ff (xinit_), vlev, ff (xtrue_));
+%! 
+%! if (max (abs(xlev-truep)) > 100*sqrt (eps))
+%!   printf ("Error is too big : %8.3g\n", max (abs (xlev-truep)));
+%! else
+%!   printf ("All tests ok\n");
+%! endif
+

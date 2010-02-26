@@ -59,6 +59,7 @@
 ## @group
 ## Place is also suitable to design estimator gains:
 ## L = place (A', C', p)'
+## L = place (sys.', p)'   % useful for discrete-time systems
 ## @end group
 ## @end example
 ## @end deftypefn

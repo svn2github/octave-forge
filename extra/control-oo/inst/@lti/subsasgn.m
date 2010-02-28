@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## Subscripted assignment for LTI objects.
-## Used by the parser for "sys.property = value".
+## Used by Octave for "sys.property = value".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: October 2009

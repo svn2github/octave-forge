@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## Subscripted reference for LTI objects.
-## Used by the parser for "sys = sys(2:4, :)" or "val = sys.prop".
+## Used by Octave for "sys = sys(2:4, :)" or "val = sys.prop".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: September 2009

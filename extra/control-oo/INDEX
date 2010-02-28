@@ -75,15 +75,19 @@ Model Dimensions and Characteristics
   @lti/isstable
   @lti/size
 Overloaded and Arithmetic Operators
-  @lti/+
-  @lti/-
-  @lti/*
-  @lti/\
-  @lti//
-  @lti/^
-  @lti/.'
-  [..]
+  @lti/plus
+  @lti/minus
+  @lti/uminus
+  @lti/mtimes
+  @lti/mldivide
+  @lti/mrdivide
+  @lti/mpower
   @lti/inv
+  @lti/transpose
+  @lti/horzcat
+  @lti/vertcat
+  @lti/subsasgn
+  @lti/subsref
 Matrix Equation Solvers
   care
   dare

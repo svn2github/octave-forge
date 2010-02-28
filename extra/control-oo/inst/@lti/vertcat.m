@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## Vertical concatenation of LTI objects. If necessary, object conversion
-## is done by sysgroup. Used by the parser for "[lti1; lti2]".
+## is done by sysgroup. Used by Octave for "[lti1; lti2]".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: September 2009

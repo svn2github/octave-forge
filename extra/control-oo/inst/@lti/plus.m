@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## Binary addition of LTI objects. If necessary, object conversion
-## is done by sysgroup. Used by the parser for "lti1 + lti2".
+## is done by sysgroup. Used by Octave for "lti1 + lti2".
 ## Operation is also known as "parallel connection".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

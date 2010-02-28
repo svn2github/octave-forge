@@ -16,7 +16,7 @@
 ## along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Transpose of LTI objects.
+## Transpose of LTI objects. Used by Octave for "sys.'".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: February 2010

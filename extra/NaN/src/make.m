@@ -3,7 +3,7 @@
 %	$Id$
 %	Copyright (C) 2010 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 % add -largeArrayDims on 64-bit machines
 
@@ -16,6 +16,7 @@ mex -c svm_model_matlab.c
 mex -c tron.cpp
 mex -c linear.cpp
 mex -c linear_model_matlab.c
+mex -c str2double.cpp
 if strcmp(computer,'PCWIN')
 	mex svmtrain_mex.cpp svm.obj svm_model_matlab.obj
 	mex svmpredict_mex.cpp svm.obj svm_model_matlab.obj

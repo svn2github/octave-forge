@@ -2,7 +2,7 @@ Name: Control
 Version: 0.2.7
 Date: 2010-02-14
 Author: Lukas Reichlin <lukas.reichlin@gmail.com>
-Maintainer: Luca Favatella <slackydeb@gmail.com>
+Maintainer: Lukas Reichlin <lukas.reichlin@gmail.com>
 Title: LTI Syncope
 Description: Object-oriented control tools for GNU Octave
 Depends: octave (>= 3.2.3)

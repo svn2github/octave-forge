@@ -29,13 +29,11 @@ function [kap,se,H,z,p0,SA,R]=kappa(d,c,arg3,w)
 % [4] Kraemer, H. C. (1982). Kappa coefficient. In S. Kotz and N. L. Johnson (Eds.), 
 %        Encyclopedia of Statistical Sciences. New York: John Wiley & Sons.
 % [5] http://ourworld.compuserve.com/homepages/jsuebersax/kappa.htm
-%
-%  
 
 %	$Id: kappa.m 2141 2009-07-02 12:05:29Z schloegl $
 %	Copyright (c) 1997-2006,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 %
 %    BioSig is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -169,6 +167,7 @@ if (nargout>1), return; end;
 X.kappa = kap; 
 X.kappa_se = se; 
 X.data = H;
+X.H = X.data;
 X.z = z; 
 X.ACC = p0; 
 X.sACC = SA;

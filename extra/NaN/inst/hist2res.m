@@ -41,7 +41,8 @@ function [R]=hist2res(H,fun)
 
 %	$Id: hist2res.m,v 1.4 2007/02/06 09:21:09 schloegl Exp $
 %	Copyright (c) 1996-2002,2006 by Alois Schloegl <a.schloegl@ieee.org>
-%    	This is part of the BIOSIG-toolbox http://biosig.sf.net/
+%       This function is part of the NaN-toolbox
+%       http://biosig-consulting.com/matlab/NaN/
 
 
 if strcmp(H.datatype,'HISTOGRAM')

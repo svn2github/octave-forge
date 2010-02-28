@@ -50,7 +50,7 @@ function [o,count,SSQ] = sumskipnan(x, DIM, W)
 %	$Id$
 %    	Copyright (C) 2000-2005,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 
 global FLAG_NANS_OCCURED;

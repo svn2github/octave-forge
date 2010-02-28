@@ -7,16 +7,16 @@ function [h,stats] = cdfplot(X)
 %
 %  h is the handle to the cdf curve
 %  stats is a struct containing various summary statistics
-%  	like mean, std, median, min, max, etc.
+%      like mean, std, median, min, max, etc.
 %
 % see also: ecdf, median, statistics, hist2res
 %
 % References: 
 
-%	$Id$
-%	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>
+%       $Id$
+%       Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -37,11 +37,11 @@ his = histo3(X(:));
 hh  = plot(his.X,his.H/sum(his.H));
 
 if nargout>0,
-	h = hh; 
+        h = hh; 
 end;
 if nargout>1,
-	stats = hist2res(his);
-	stats.median = quantile(his,.5); 
+        stats = hist2res(his);
+        stats.median = quantile(his,.5); 
 end;
-	
+
 

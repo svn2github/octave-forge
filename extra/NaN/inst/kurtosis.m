@@ -33,9 +33,10 @@ function R=kurtosis(i,DIM)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>
-%	$Revision$
 %	$Id$
+%	Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>
+%       This function is part of the NaN-toolbox for Octave and Matlab 
+%       http://biosig-consulting.com/matlab/NaN/
 
 
 if nargin==1,

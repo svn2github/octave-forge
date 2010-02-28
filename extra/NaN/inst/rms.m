@@ -39,8 +39,9 @@ function o=rms(x,DIM,W)
 
 
 %	$Id$
-%	Copyright (C) 2000-2003,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	%       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%	Copyright (C) 2000-2003,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>
+%       This function is part of the NaN-toolbox
+%       http://biosig-consulting.com/matlab/NaN/
 
 
 if nargin<2,

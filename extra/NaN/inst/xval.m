@@ -62,15 +62,15 @@ function [R,CC]=xval(D,classlabel,MODE,arg4)
 % References: 
 % [1] R. Duda, P. Hart, and D. Stork, Pattern Classification, second ed. 
 %       John Wiley & Sons, 2001. 
-% [2] A. Schlögl, J. Kronegg, J.E. Huggins, S. G. Mason;
+% [2] A. Schl�gl, J. Kronegg, J.E. Huggins, S. G. Mason;
 %       Evaluation criteria in BCI research.
 %       (Eds.) G. Dornhege, J.R. Millan, T. Hinterberger, D.J. McFarland, K.-R.Müller;
 %       Towards Brain-Computer Interfacing, MIT Press, 2007, p.327-342
 
-%	$Id: xval.m 2124 2009-06-10 20:34:02Z schloegl $
-%	Copyright (C) 2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Id$
+%	Copyright (C) 2008,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License

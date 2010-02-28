@@ -144,7 +144,7 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %	$Id$
 %	Copyright (C) 2005,2006,2007,2008,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -863,12 +863,12 @@ else          % Linear and Quadratic statistical classifiers
                 ICOV0 = inv(S);
                 CC.iS0 = ICOV0; 
                 % ICOV1 = zeros(size(S));
-                for k = 1:NC(3);
+                for k = 1:NC(3),
                         %[M,sd,S,xc,N] = decovm(ECM{k});  %decompose ECM
                         %c  = size(ECM,2);
-                        nn = ECM(1,1,k);	% number of samples in training set for class k
-                        XC = squeeze(ECM(:,:,k))/nn;		% normalize correlation matrix
-                        M  = XC(1,2:NC(2));		% mean
+                        nn = ECM(1,1,k);% number of samples in training set for class k
+                        XC = squeeze(ECM(:,:,k))/nn;% normalize correlation matrix
+                        M  = XC(1,2:NC(2));% mean
                         S  = XC(2:NC(2),2:NC(2)) - M'*M;% covariance matrix
                         %M  = M/nn; S=S/(nn-1);
 
@@ -878,6 +878,9 @@ else          % Linear and Quadratic statistical classifiers
                         CC.IR{k}  = [-M;eye(NC(2)-1)]*inv(S)*[-M',eye(NC(2)-1)];  % inverse correlation matrix extended by mean
                         CC.IR0{k} = [-M;eye(NC(2)-1)]*ICOV0*[-M',eye(NC(2)-1)];  % inverse correlation matrix extended by mean
                         d = NC(2)-1;
+                        if exist('OCTAVE_VERSION','builtin')
+	                        S = full(S);
+	                end;         
                         CC.logSF(k)  = log(nn) - d/2*log(2*pi) - det(S)/2;
                         CC.logSF2(k) = -2*log(nn/sum(ECM(:,1,1)));
                         CC.logSF3(k) = d*log(2*pi) + log(det(S));

@@ -17,7 +17,7 @@ function Q=quantile(Y,q,DIM,method)
 %	$Id$
 %	Copyright (C) 1996-2003,2005,2006,2007,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -71,22 +71,22 @@ else
                                 if (q(k2)<0) || (q(k2)>1) 	
 					Q(k2,k1) = NaN;  
 				elseif 	q(k2)==0,
-					Q(k2,k1) = t2(1);  	
+					Q(k2,k1) = t2(1);
 				elseif 	q(k2)==1,
-					Q(k2,k1) = t2(end);  	
-				else 	
+					Q(k2,k1) = t2(end);
+				else
 					n=1;
-					while (q(k2)*N > x(n)), 
+					while (q(k2)*N > x(n)),
 						n=n+1; 
-					end; 			
+					end;
 
 					if q(k2)*N==x(n)
 						% mean of upper and lower bound 
 						Q(k2,k1) = (t2(n)+t2(n+1))/2;
 					else
 						Q(k2,k1) = t2(n);
-					end; 
-                                end; 
+					end;
+                                end;
                         end
                 end;
 

@@ -40,7 +40,7 @@ function [SE,M]=sem(x,DIM, W)
 %	Copyright (C) 2000-2003,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %	$Id$
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 
 if nargin>2,

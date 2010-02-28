@@ -11,7 +11,7 @@ function Z = zScoreMedian(X, DIM)
 %	Copyright (C) 2009 Alois Schloegl
 %	$Id$
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

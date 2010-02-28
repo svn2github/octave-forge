@@ -14,6 +14,8 @@ function [C,N,LAGS] = xcovf(X,Y,MAXLAG,SCALEOPT)
 
 %	$Id$
 %	Copyright (C) 2005,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This function is part of the NaN-toolbox
+%       http://biosig-consulting.com/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -47,7 +49,7 @@ elseif all(size(Y)==1),
 end;
 
 if 0,
-        
+
 elseif isempty(Y) && isempty(MAXLAG)
         NX = isnan(X);
         X(NX) = 0;
@@ -72,7 +74,7 @@ elseif ~isempty(Y) && ~isempty(MAXLAG)
         Y(NY) = 0;
         [C,LAGS] = xcorr(X,Y,MAXLAG,'none');
         [N,LAGS] = xcorr(1-NX,1-NY,MAXLAG,'none');
-end;        
+end;
 
 
 
@@ -90,10 +92,10 @@ elseif strcmp(SCALEOPT,'coeff')
 
 elseif strcmp(SCALEOPT,'biased')
 	C = C./repmat(max(N),size(C,1),1);
-	
+
 elseif strcmp(SCALEOPT,'unbiased')
 	C = C./(repmat(max(N),size(C,1),1)-repmat(LAGS,1,size(C,2)));
 
 else
-        warning('invalid SCALEOPT - not supported');    
+        warning('invalid SCALEOPT - not supported');
 end;

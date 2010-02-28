@@ -14,10 +14,10 @@ function Q=prctile(Y,q,DIM)
 %
 % see also: HISTO2, HISTO3, QUANTILE
 
-%	$Id: percentile.m 4585 2008-02-04 13:47:45Z adb014 $
+%	$Id$
 %	Copyright (C) 1996-2003,2005,2006,2007,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

@@ -27,7 +27,7 @@ function y=trimean(x,DIM)
 %	$Id$
 %	Copyright (C) 1996-2003,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 global FLAG_NANS_OCCURED;
 

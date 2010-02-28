@@ -17,9 +17,10 @@ function r = rankcorr(X,Y)
 % [1] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
 % [2] http://mathworld.wolfram.com/CorrelationCoefficient.html
 
-%    $Revision$
 %    $Id$
 %    Copyright (C) 2000-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%    This function is part of the NaN-toolbox
+%       http://biosig-consulting.com/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

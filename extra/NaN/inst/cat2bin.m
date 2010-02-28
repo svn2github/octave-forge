@@ -26,7 +26,7 @@ function [B,BLab]=cat2bin(D, Label, MODE)
 %	$Id$
 %	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -53,14 +53,14 @@ c     = 0;
 k1    = 0; 
 BLab  = [];
 for m = 1:size(D,2) 
-        h = histo_mex(D(:,m));    
+        h = histo_mex(D(:,m));
         x = h.X(h.H>0);
         if strcmpi(MODE,'notIgnoreNaN')
                 ;
         elseif strcmpi(MODE,'IgnoreZeros')
-                x = x(x~=0);        
+                x = x(x~=0);
         elseif strcmpi(MODE,'IgnoreZeros+NaN')
-                x = x((x~=0) & (x==x));        
+                x = x((x~=0) & (x==x));
         else 
                 x = x(x==x);
         end; 
@@ -69,20 +69,20 @@ for m = 1:size(D,2)
                         B(k, c + find(D(k,m)==x)) = 1;
                 elseif isnan(x(end)),
                         B(k, c + length(x)) = 1;
-                end;            
+                end;
         end;
 
-        c = c + length(x); 
+        c = c + length(x);
         if nargout>1,
                 for k = 1:length(x),
                         k1 = k1+1;
                         if isempty(Label)
                                 BLab{k1} = ['#',int2str(m),':',int2str(x(k))];
-                        else        
+                        else
                                 BLab{k1} = [Label{m},':',int2str(x(k))];
-                        end;        
-                end;         
-        end; 
-end; 
+                        end;
+                end;
+        end;
+end;
 
 

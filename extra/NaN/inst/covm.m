@@ -36,7 +36,7 @@ function [CC,NN] = covm(X,Y,Mode,W)
 %	$Id$
 %	Copyright (C) 2000-2005,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://hci.tugraz.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

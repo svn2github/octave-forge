@@ -27,7 +27,7 @@
 %	$Id$
 %	Copyright (C) 2000-2004,2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This script is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://biosig-consulting.com/matlab/NaN/
 
 %FLAG_WARNING = warning;
 %warning('off');

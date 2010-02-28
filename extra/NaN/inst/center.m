@@ -36,11 +36,11 @@ function [i,S] = center(i,DIM,W)
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 
-%	$Id$
-%	Copyright (C) 2000-2003,2005,2009 by Alois Schloegl <a.schloegl@ieee.org>
-%    	This is part of the NaN-toolbox. For more details see
-%    	   http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
-	
+%       $Id$
+%       Copyright (C) 2000-2003,2005,2009 by Alois Schloegl <a.schloegl@ieee.org>
+%       This is part of the NaN-toolbox. For more details see
+%       http://biosig-consulting.com/matlab/NaN/
+
 
 if any(size(i)==0); return; end;
 

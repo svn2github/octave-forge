@@ -17,12 +17,14 @@ function r = spearman(x,y)
 % [1] http://mathworld.wolfram.com/SpearmanRankCorrelationCoefficient.html
 % [2] http://mathworld.wolfram.com/CorrelationCoefficient.html
 
-%    Version 1.27  Date: 12 Aug 2002
-%    Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>	
+%    $Id$
+%    Copyright (C) 2000-2002 by Alois Schloegl <a.schloegl@ieee.org>
+%    This function is part of the NaN-toolbox
+%       http://biosig-consulting.com/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,

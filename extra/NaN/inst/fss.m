@@ -36,13 +36,10 @@ function [idx,score] = fss(D,cl,N,MODE)
 %   Volume 86, Issue 1, 15 March 2007, Pages 68-81 
 %   http://dx.doi.org/10.1016/j.chemolab.2006.08.007
 
-
-
 %	$Id$
 %	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
-
+%       http://biosig-consulting.com/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

@@ -26,8 +26,8 @@ function M=moment(i,p,opt,DIM)
 
 %    $Id$
 %    Copyright (C) 2000-2002,2010 by Alois Schloegl <a.schloegl@ieee.org>	
-%    This script is part of the NaN-toolbox
-%    http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%    This functions is part of the NaN-toolbox
+%    http://biosig-consulting.com/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

@@ -72,6 +72,7 @@ VER_CLN=1.3.1-$REL
 VER_GINAC=1.5.5-$REL
 VER_FFMPEG=0.5-$REL
 VER_JOGL=1.1.1-$REL
+VER_XLSODF=1.0-$REL
 
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
@@ -146,3 +147,4 @@ VER_JOGL=1.1.1-$REL
 ( cd ginac && build-${VER_GINAC}.sh ${ACTION} );
 ( cd ffmpeg && build-${VER_FFMPEG}.sh ${ACTION} );
 ( cd jogl && build-${VER_JOGL}.sh ${ACTION} );
+( cd xlsodf && build-${VER_XLSODF}.sh ${ACTION} );

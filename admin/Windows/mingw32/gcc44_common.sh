@@ -393,25 +393,32 @@ unpack_post() { echo ; }
 
 unpack_core()
 {
-   case ${SRCFILE} in
+   # allow unpack_core FOO.tar.gz
+   if [ -z "$1" ]; then
+      S=$TOPDIR/$SRCFILE
+   else
+      S=$1
+   fi
+   
+   case $S in
      *.tar.gz|*.tgz)
-       $TAR xzf ${TOPDIR}/${SRCFILE}
+       $TAR xzf $S
      ;;
      *.tar.bz2)
-       $TAR xjf ${TOPDIR}/${SRCFILE}
+       $TAR xjf $S
      ;;
      *.tar.lzma)
-       $TAR x --lzma -f ${TOPDIR}/${SRCFILE}
+       $TAR x --lzma -f $S
      ;;
      *.tar.xz)
-       $TAR x --xz -f ${TOPDIR}/${SRCFILE}
+       $TAR x --xz -f $S
      ;;
      *.zip)
        # zip requires bsdtar...
-       bsdtar x -f ${TOPDIR}/${SRCFILE}
+       bsdtar x -f $S
      ;;
      *)
-       echo ERROR: Source file $SRCFILE archive type not handled!
+       echo ERROR: Source file $S archive type not handled!
        exit 10
        ;;
    esac

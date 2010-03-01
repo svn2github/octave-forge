@@ -90,9 +90,9 @@
 function [ rstatus ] = odswrite (filename, data, wsh=1, range=[], reqintf=[])
 
 	if (isnumeric (data))
-		data = num2cell (data)
+		data = num2cell (data);
 	elseif (ischar (data))
-		data = {data}
+		data = {data};
 	endif
 
 	ods = odsopen (filename, 1, reqintf);

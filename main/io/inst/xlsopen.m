@@ -24,7 +24,7 @@
 ## Calling xlsopen without specifying a return argument is fairly useless!
 ##
 ## To make this function work at all, you need MS-Excel (95 - 2003), and/or
-## the Java package > 1.2.5 plus either Apache POI > 3.5 or JExcelAPI
+## the Java package > 1.2.6 plus either Apache POI > 3.5 or JExcelAPI
 ## installed on your computer + proper javaclasspath set. These interfaces
 ## are referred to as COM, POI and JXL, resp., and are preferred in that
 ## order by default (depending on their presence).
@@ -68,6 +68,7 @@
 ## 2010-01-03 Added OOXML support
 ## 2010-01-10 Changed (java) interface preference order to COM->POI->JXL
 ## 2010-01-16 Removed echoeing debug info in POI stanza
+## 2010-03-01 Removed javaclasspath check for rt.jar
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -95,6 +96,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 			usage (sprintf ("Unknown .xls interface \"%s\" requested. Only COM, POI or JXL supported", reqinterface));
 		endif
 		xlsinterfaces = getxlsinterfaces (xlsinterfaces);
+
 		# Well, is the requested interface supported on the system?
 		if (~xlsinterfaces.(toupper (reqinterface)))
 			# No it aint
@@ -296,17 +298,17 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			tmp1 = javaclasspath;
 			# If we get here, at least Java works. Now check for proper entries
 			# in class path. Under *nix the classpath must first be split up
-			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
-			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
+			if (isunix) tmp1 = strsplit (char (tmp1), ":"); endif
+			if (size (tmp1, 1) > size (tmp1, 2)) tmp1 = tmp1'; endif
 			# Check basic .xls (BIFF8) support
-			jpchk1 = 0; entries1 = {"rt.jar", "poi-3", "poi-ooxml"};
+			jpchk1 = 0; entries1 = {"poi-3", "poi-ooxml"};
 			for ii=1:size (tmp1, 2)
 				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
 				for jj=1:size (entries1, 2)
 					if (strmatch (entries1{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk1; endif
 				endfor
 			endfor
-			if (jpchk1 > 2)
+			if (jpchk1 > 1)
 				xlsinterfaces.POI = 1;
 				printf (" Java/Apache (POI) OK. ");
 				chk1 = 1;
@@ -336,14 +338,14 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			# in class path. Under unix the classpath must first be split up
 			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
 			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
-			jpchk = 0; entries = {"rt.jar", "jxl.jar"};
+			jpchk = 0; entries = {"jxl.jar"};
 			for ii=1:size (tmp1, 2)
 				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
 				for jj=1:size (entries, 2)
 					if (strmatch (entries{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk; endif
 				endfor
 			endfor
-			if (jpchk > 1)
+			if (jpchk > 0)
 				xlsinterfaces.JXL = 1;
 				printf (" Java/JExcelAPI (JXL) OK. ");
 				chk1 = 1;

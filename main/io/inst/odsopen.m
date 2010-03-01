@@ -60,6 +60,7 @@
 ## 2009-12-30
 ## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
 ## 2010-01-24 Added warning when trying to create a new spreadsheet using jOpenDocument
+## 2010-03-01 Removed check for rt.jar in javaclasspath
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -84,6 +85,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			usage (sprintf ("Unknown .ods interface \"%s\" requested. Only OTK or JOD supported", reqinterface));
 		endif
 		odsinterfaces = getodsinterfaces (odsinterfaces);
+
 		# Well, is the requested interface supported on the system?
 		if (~odsinterfaces.(toupper (reqinterface)))
 			# No it aint
@@ -232,14 +234,14 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			# in class path. Under *nix the classpath must first be split up
 			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
 			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
-			jpchk = 0; entries = {"rt.jar", "odfdom.jar", "xercesImpl.jar"};
+			jpchk = 0; entries = {"odfdom.jar", "xercesImpl.jar"};
 			for ii=1:size (tmp1, 2)
 				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
 				for jj=1:size (entries, 2)
 					if (strmatch (entries{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk; endif
 				endfor
 			endfor
-			if (jpchk > 2)
+			if (jpchk >= 2)
 				odsinterfaces.OTK = 1;
 				printf (" Java/ODFtoolkit (OTK) OK. ");
 				chk1 = 1;
@@ -260,14 +262,14 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			# in class path. Under unix the classpath must first be split up
 			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
 			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
-			jpchk = 0; entries = {"rt.jar", "jOpenDocument"};
+			jpchk = 0; entries = {"jOpenDocument"};
 			for ii=1:size (tmp1, 2)
 				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
 				for jj=1:size (entries, 2)
 					if (strmatch (entries{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk; endif
 				endfor
 			endfor
-			if (jpchk > 1)
+			if (jpchk >= 1)
 				odsinterfaces.JOD = 1;
 				printf (" Java/jOpenDocument (JOD) OK. ");
 				chk1 = 1;

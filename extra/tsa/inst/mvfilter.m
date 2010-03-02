@@ -1,3 +1,4 @@
+
 function [x,z]=mvfilter(B,A,x,z)
 % Multi-variate filter function
 %
@@ -6,7 +7,7 @@ function [x,z]=mvfilter(B,A,x,z)
 %
 %  Y = MVFILTER(B,A,X) filters the data in matrix X with the
 %    filter described by cell arrays A and B to create the filtered
-%    data Y.  The filter is a "Direct Form II Transposed"
+%    data Y.  The filter is a 'Direct Form II Transposed'
 %    implementation of the standard difference equation:
 % 
 %    a0*Y(n) = b0*X(:,n) + b1*X(:,n-1) + ... + bq*X(:,n-q)
@@ -97,7 +98,7 @@ else
 end; 
 
 for k = 1:N,
-        acc = B(:,1:M) * (x(:,k) + z(:,1));  % / A{1};
+        acc = B(:,1:M) * x(:,k) + z(:,1);  % / A{1};
 	z   = [z(:,2:oo), zeros(M,1)];
         for l = 1:q,
         	z(:,l) = z(:,l) + B(:,l*M+(1:M)) * x(:,k);
@@ -107,3 +108,4 @@ for k = 1:N,
         end;
         x(:,k) = acc;
 end;
+

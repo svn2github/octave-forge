@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{filetype}] = odsfinfo (@var{filename} [, @var{reqintf}])
 ## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}] = odsfinfo (@var{filename} [, @var{reqintf}])
-## Query an OpenOffice_org spreadsheet file @var{filename} (with .ods
+## Query an OpenOffice.org spreadsheet file @var{filename} (with .ods
 ## suffix) for some info about its contents (viz. sheet names).
 ##
 ## If @var{filename} is a recognizable OpenOffice.org spreadsheet file,
@@ -59,7 +59,9 @@
 
 ## Author: Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## Created: 2009-12-17
-## Last updated 2010-01-03 (added functionality for JOD as well)
+## Updates:
+## 2010-01-03 added functionality for JOD as well
+## 2010-03-03 fixed echo of proper number of occupied data rows
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 
@@ -93,8 +95,20 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 				sheetnames(ii) = tmp1(ist:ien);
 				if (onscreen) 
 					# Echo sheet names + row count estimate to screen
-					nr_of_rows = sheets.item(ii-1).getLength ();
-					printf (sprintf("%s    (~%d data rows)\n", sheetnames{ii}, nr_of_rows));
+					nr_of_trows = sheets.item(ii-1).getLength ();
+					jj = 0; kk = 0;
+					while jj < nr_of_trows
+						sh_char = char (sheets.item(ii-1).item(jj)) (1:min(500, length(char (sheets.item(ii-1).item(jj)))));
+						if (findstr ('office:value-type', sh_char)), ++kk; endif
+						ll = findstr ('number-rows-repeated', sh_char);
+						if (ll)
+							extrows = sscanf (char (sheets.item(ii-1).item(jj)) (ll+20:ll+30), "%d") - 1;
+						else
+							ll = 0;
+						endif
+						++jj + ll;
+					endwhile
+					printf (sprintf("%s    (~%d data rows)\n", sheetnames{ii}, kk));
 				endif
 			endfor
 			

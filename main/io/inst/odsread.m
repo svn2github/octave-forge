@@ -23,8 +23,8 @@
 ## Read data contained in range @var{range} from worksheet @var{wsh}
 ## in OpenOffice_org Calc spreadsheet file @var{filename}.
 ##
-## You need the octave-forge java package (> 1.2.5) and one or both of
-## jopendocument.jar or preferrably: (odfdom.jar & xercesImpl.jar) in
+## You need the octave-forge java package (> 1.2.6) and one or both of
+## jopendocument.jar or preferrably: (odfdom.jar 0.7.5 & xercesImpl.jar) in
 ## your javaclasspath.
 ##
 ## Return argument @var{numarr} contains the numeric data, optional
@@ -104,7 +104,9 @@
 
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-12
-## Last update: 2010-01-05
+## Updates: 
+## 2010-01-05 (....)
+## 2010-03-04 Slight adaptations in texinfo
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 

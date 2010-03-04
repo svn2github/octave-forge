@@ -23,8 +23,8 @@
 ##
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
-## To make this function work at all, you need the Java package > 1.2.5 plus
-## either ODFtoolkit > 0.7.5 & xercesImpl, or jOpenDocument installed on your
+## To make this function work at all, you need the Java package > 1.2.6 plus
+## either ODFtoolkit version 0.7.5 & xercesImpl, or jOpenDocument installed on your
 ## computer + proper javaclasspath set. These interfaces are referred to as
 ## OTK and JOD, resp., and are preferred in that order by default (depending
 ## on their presence).
@@ -61,6 +61,7 @@
 ## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
 ## 2010-01-24 Added warning when trying to create a new spreadsheet using jOpenDocument
 ## 2010-03-01 Removed check for rt.jar in javaclasspath
+## 2010-03-04 Slight texinfo adaptation (reqd. odfdom version = 0.7.5)
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 

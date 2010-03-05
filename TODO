@@ -7,9 +7,6 @@ Packages
 ========
 * GPC package needs conversion to package manager
 
-* Fix the "make -C packages compare" target so that it correctly
-  identifies packages that need updating on sourceforge
-
 * gsl_sf.cc is a derived file, but the function reference links to
   rather than the template, consider a better means of addressing this.
 

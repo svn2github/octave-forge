@@ -95,7 +95,6 @@ function s = blksparse (i, j, sv, m = 0, n = 0, mode)
   endif
 
   s = struct ("i", i, "j", j, "sv", sv, "siz", siz, "bsiz", size (sv)(1:2));
-  s.trans = false;
   s = class (s, "blksparse");
 
 endfunction

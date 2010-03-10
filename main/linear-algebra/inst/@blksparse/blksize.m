@@ -14,6 +14,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function siz = size (s)
+function siz = blksize (s)
   siz = s.siz;
 endfunction
+

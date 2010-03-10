@@ -18,11 +18,9 @@ function display (s)
   printf ("%s = \n\n", argn);
   nbl = size (s.sv, 3);
   header = "Block Sparse Matrix (rows = %d, cols = %d, block = %dx%d, nblocks = %d)\n\n";
-  printf (header, s.siz .* s.bsiz, s.bsiz, nbl)
-  rng = [s.i, s.j] * diag (s.bsiz);
-  rng = [rng(:,1) + 1-s.bsiz(1), rng(:,1), rng(:,2) + 1-s.bsiz(2), rng(:,2)];
+  printf (header, s.siz, s.bsiz, nbl)
   for k = 1:nbl
-    printf ("(%d:%d, %d:%d) ->\n\n", rng(k,:));
+    printf ("(%d, %d) ->\n\n", s.i(k), s.j(k));
     disp (s.sv(:,:,k));
     puts ("\n");
   endfor

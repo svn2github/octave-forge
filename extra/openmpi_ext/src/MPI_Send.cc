@@ -19,134 +19,8 @@
 
 
 #include "simple.h"
-// set it to 0 if you are using 3.3.50+
-#define HAVE_OCTAVE_324 =1
 #include <ov-cell.h>    // avoid errmsg "cell -- incomplete datatype"
 #include <oct-map.h>    // avoid errmsg "Oct.map -- invalid use undef type"
-#ifndef HAVE_OCTAVE_324
-enum ov_t_id
-{
-
-ov_unknown=0,                // t_id=0
-ov_cell,                // t_id=1
-ov_scalar,                // t_id=2
-ov_complex_scalar,            // t_id=3
-ov_matrix,                // t_id=4
-ov_diagonal_matrix,            // t_id=5
-ov_complex_matrix,            // t_id=6
-ov_complex_diagonal_matrix,        // t_id=7
-ov_range,                // t_id=8
-ov_bool,                // t_id=9
-ov_bool_matrix,                // t_id=10
-ov_string,                // t_id=11
-ov_sq_string,                // t_id=12
-ov_int8_scalar,                // t_id=13
-ov_int16_scalar,            // t_id=14
-ov_int32_scalar,            // t_id=15
-ov_int64_scalar,            // t_id=16
-ov_uint8_scalar,            // t_id=17
-ov_uint16_scalar,            // t_id=18
-ov_uint32_scalar,            // t_id=19
-ov_uint64_scalar,            // t_id=20
-ov_int8_matrix,            // t_id=21
-ov_int16_matrix,            // t_id=22
-ov_int32_matrix,                    // t_id=23
-ov_int64_matrix,                    // t_id=24
-ov_uint8_matrix,            // t_id=25
-ov_uint16_matrix,            // t_id=26
-ov_uint32_matrix,            // t_id=27
-ov_uint64_matrix,            // t_id=28
-ov_sparse_bool_matrix,            // t_id=29
-
-ov_sparse_matrix,                        // t_id=30
-ov_sparse_complex_matrix,
-ov_struct,
-ov_class,
-ov_list,
-ov_cs_list,
-ov_magic_colon,
-ov_built_in_function,
-ov_user_defined_function,
-ov_dynamically_linked_function,
-ov_function_handle,
-ov_inline_function,
-ov_float_scalar,
-ov_float_complex_scalar,
-ov_float_matrix,
-ov_float_diagonal_matrix,
-ov_float_complex_matrix,
-ov_float_complex_diagonal_matrix,
-ov_permutation_matrix,
-ov_null_matrix,
-ov_null_string,
-ov_null_sq_string,
-};
-
-
-
-
-
-#else
-enum ov_t_id
-{
-
-ov_unknown=0,                // t_id=0
-ov_cell,                // t_id=1
-ov_scalar,                // t_id=2
-ov_complex_scalar,            // t_id=3
-ov_matrix,                // t_id=4
-ov_diagonal_matrix,            // t_id=5
-ov_complex_matrix,            // t_id=6
-ov_complex_diagonal_matrix,        // t_id=7
-ov_range,                // t_id=8
-ov_bool,                // t_id=9
-ov_bool_matrix,                // t_id=10
-ov_char_matrix,                // t_id=11
-ov_string,                // t_id=12
-ov_sq_string,                // t_id=13
-ov_int8_scalar,                // t_id=14
-ov_int16_scalar,            // t_id=15
-ov_int32_scalar,            // t_id=16
-ov_int64_scalar,            // t_id=17
-ov_uint8_scalar,            // t_id=18
-ov_uint16_scalar,            // t_id=19
-ov_uint32_scalar,            // t_id=20
-ov_uint64_scalar,            // t_id=21
-ov_int8_matrix,            // t_id=22
-ov_int16_matrix,            // t_id=23
-ov_int32_matrix,                    // t_id=24
-ov_int64_matrix,                    // t_id=25
-ov_uint8_matrix,            // t_id=26
-ov_uint16_matrix,            // t_id=27
-ov_uint32_matrix,            // t_id=28
-ov_uint64_matrix,            // t_id=29
-ov_sparse_bool_matrix,            // t_id=30
-
-ov_sparse_matrix,                        // t_id=31
-ov_sparse_complex_matrix,
-ov_struct,
-ov_class,
-ov_list,
-ov_cs_list,
-ov_magic_colon,
-ov_built_in_function,
-ov_user_defined_function,
-ov_dynamically_linked_function,
-ov_function_handle,
-ov_inline_function,
-ov_float_scalar,
-ov_float_complex_scalar,
-ov_float_matrix,
-ov_float_diagonal_matrix,
-ov_float_complex_matrix,
-ov_float_complex_diagonal_matrix,
-ov_permutation_matrix,
-ov_null_matrix,
-ov_null_string,
-ov_null_sq_string,
-};
-
-#endif // HAVE_OCTAVE_324
 
 
 /*----------------------------------*/        /* forward declaration */
@@ -157,28 +31,28 @@ int send_class( MPI_Comm comm, octave_value ov,  ColumnVector rankrec, int mytag
 
 int send_string(int t_id, MPI_Comm comm, std::string  oi8,ColumnVector rankrec, int mytag);
 
-int send_cell( MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag);
-int send_struct(MPI_Comm comm, Octave_map map,ColumnVector rankrec, int mytag);
+int send_cell(int t_id, MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag);
+int send_struct(int t_id, MPI_Comm comm, Octave_map map,ColumnVector rankrec, int mytag);
 
 
 template <class Any>
-int send_scalar(int t_id, MPI_Comm comm, std::complex<Any> d, ColumnVector rankrec, int mytag);
+int send_scalar(int t_id, MPI_Datatype TSnd,MPI_Comm comm, std::complex<Any> d, ColumnVector rankrec, int mytag);
 
-template <class Any>	
-int send_scalar(int t_id, MPI_Comm comm, Any d, ColumnVector rankrec, int mytag);
+
+template <class Any>
+int send_scalar(int t_id, MPI_Datatype TSnd, MPI_Comm comm, Any d, ColumnVector rankrec, int mytag);
 
 int send_range(int t_id, MPI_Comm comm, Range range,ColumnVector rankrec, int mytag);
 
+int send_matrix(int t_id,  MPI_Datatype TSnd,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec, int mytag);
 
-int send_matrix(int t_id, MPI_Comm comm, octave_value myO, ColumnVector rankrec, int mytag);
 
-
-int send_sp_mat(int t_id,MPI_Comm comm, octave_value MyOv ,ColumnVector rankrec, int mytag  );
+int send_sp_mat(int t_id, MPI_Datatype TSnd ,MPI_Comm comm, octave_value MyOv ,ColumnVector rankrec, int mytag  );
 
 // template specialization for complex case
 
 template <class Any>
-int send_scalar(int t_id, MPI_Comm comm, std::complex<Any> d, ColumnVector rankrec, int mytag){        
+int send_scalar(int t_id,MPI_Datatype TSnd ,MPI_Comm comm, std::complex<Any> d, ColumnVector rankrec, int mytag){        
   int info;
   OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0] = mytag;
@@ -186,12 +60,7 @@ int send_scalar(int t_id, MPI_Comm comm, std::complex<Any> d, ColumnVector rankr
   OCTAVE_LOCAL_BUFFER(std::complex<Any>,Deco,2);
   Deco[0] = real(d);
   Deco[1] = imag(d);
-  // Most of scalars are real not complex
-  MPI_Datatype TSnd;
-  switch (t_id) {
-		  TSnd = MPI_DOUBLE;
-		  TSnd = MPI_FLOAT;
-		}
+
       for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
       {
 	  info = MPI_Send(&t_id, 1, MPI_INT,  rankrec(i), tanktag[0], comm);
@@ -205,26 +74,11 @@ int send_scalar(int t_id, MPI_Comm comm, std::complex<Any> d, ColumnVector rankr
 
 
 template <class Any>
-int send_scalar(int t_id, MPI_Comm comm, Any d, ColumnVector rankrec, int mytag){        
+int send_scalar(int t_id, MPI_Datatype TSnd, MPI_Comm comm, Any d, ColumnVector rankrec, int mytag){        
   int info;
   OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0] = mytag;
   tanktag[1] = mytag+1;
-  // Most of scalars are real not complex
-  MPI_Datatype TSnd;
-  switch (t_id) {
-		case ov_scalar:  		TSnd = MPI_DOUBLE;
-		case ov_bool: 			TSnd = MPI_INT;
-		case ov_float_scalar:   	TSnd = MPI_FLOAT;
-		case ov_int8_scalar:   		TSnd = MPI_BYTE;
-		case ov_int16_scalar:   	TSnd = MPI_SHORT;
-		case ov_int32_scalar:   	TSnd = MPI_INT;
-		case ov_int64_scalar:   	TSnd = MPI_LONG_LONG;
-		case ov_uint8_scalar:  		TSnd = MPI_UNSIGNED_CHAR;
-		case ov_uint16_scalar:  	TSnd = MPI_UNSIGNED_SHORT;
-		case ov_uint32_scalar:  	TSnd = MPI_UNSIGNED;
-		case ov_uint64_scalar:  	TSnd = MPI_UNSIGNED_LONG_LONG;
-                }
   
       for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
       {
@@ -260,7 +114,7 @@ return(MPI_SUCCESS);
 }
 
 
-int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec, int mytag){       
+int send_matrix(int t_id,  MPI_Datatype TSnd,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec, int mytag){       
   int info;
   int nitem;
   dim_vector dv;
@@ -271,13 +125,9 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
   tanktag[3] = mytag+3;
   tanktag[4] = mytag+4;
   tanktag[5] = mytag+5;
-
   int nd;
-
-  MPI_Datatype TSnd;
-		if (t_id == ov_matrix) 
+		if (TSnd == MPI_DOUBLE and myOv.is_real_type())
 		{  
-		TSnd = MPI_DOUBLE;
 		NDArray myNDA = myOv.array_value();
 		nitem = myNDA.nelem();
 		dv = myNDA.dims();
@@ -319,9 +169,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		      if (info !=MPI_SUCCESS) return info;
 		  }		
 		}
-		else if (t_id == ov_complex_matrix)
+		else if (TSnd == MPI_DOUBLE and myOv.is_complex_type())
 		{  
-		TSnd = MPI_DOUBLE;
 		ComplexNDArray myNDA = myOv.complex_array_value();
 		nitem = myNDA.nelem();
 		dv = myNDA.dims();
@@ -368,9 +217,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		  }		
 
 		}
-		else if (t_id==ov_bool_matrix)
+		else if (TSnd == MPI_INT and myOv.is_bool_type())
 		{  
-		TSnd = MPI_INT;
 		boolNDArray myNDA = myOv.bool_array_value();
 		nitem = myNDA.nelem();
 		dv = myNDA.dims();
@@ -413,9 +261,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		  }		
 
 		}
-		else if(t_id==ov_float_matrix)
+		else if(TSnd == MPI_FLOAT and myOv.is_float_type())
 		{  
-		  TSnd = MPI_FLOAT;
 		  FloatNDArray myNDA = myOv.float_array_value();
 		  nitem = myNDA.nelem();
 		  dv = myNDA.dims();
@@ -459,7 +306,7 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 
 		
 		}
-		else if (t_id==ov_float_complex_matrix)
+		else if(TSnd == MPI_FLOAT and myOv.is_complex_type())
 		{  
 		  FloatComplexNDArray myNDA = myOv.float_complex_array_value();
 		  nitem = myNDA.nelem();
@@ -506,10 +353,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		    }		
 
 		}
-		else if(t_id==ov_int8_matrix)
+		else if(TSnd == MPI_BYTE and myOv.is_int8_type())
 		{   
-		TSnd = MPI_BYTE;
-		TSnd = MPI_FLOAT;
 		int8NDArray myNDA = myOv.array_value();
 		nitem = myNDA.nelem();
 		dv = myNDA.dims();
@@ -552,9 +397,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		  }		
 		
 		}
-		else if(t_id== ov_int16_matrix)
+		else if(TSnd == MPI_SHORT and myOv.is_int16_type())
 		{  
-		TSnd = MPI_SHORT;
 		int16NDArray myNDA = myOv.array_value();
 		nitem = myNDA.nelem();
 		dv = myNDA.dims();
@@ -597,9 +441,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		  }		
 
 		}
-		else if(t_id== ov_int32_matrix)
+		else if (TSnd == MPI_INT and myOv.is_int32_type())
 		{   
-		TSnd = MPI_INT;
 		int32NDArray myNDA = myOv.array_value();
 		nitem = myNDA.nelem();
 		dv = myNDA.dims();
@@ -642,9 +485,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		  }		
 
 		}
-		else if(t_id== ov_int64_matrix)
+		else if(TSnd == MPI_LONG_LONG and myOv.is_int64_type())
 		{   
-		TSnd = MPI_LONG_LONG;
 		int64NDArray myNDA = myOv.array_value();
 		nitem = myNDA.nelem();
 		dv = myNDA.dims();
@@ -687,9 +529,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		  }		
 
 		}
-		else if(t_id== ov_uint8_matrix)
+		else if(TSnd == MPI_UNSIGNED_CHAR and myOv.is_uint8_type()) 
 		{  
-		TSnd = MPI_UNSIGNED_CHAR;
 		uint8NDArray myNDA = myOv.array_value();
 		nitem = myNDA.nelem();
 		dv = myNDA.dims();
@@ -732,9 +573,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		  }		
 
 		}
-		else if(t_id== ov_uint16_matrix) 
+		else if(TSnd == MPI_UNSIGNED_SHORT and myOv.is_uint16_type())
 		{  
-		TSnd = MPI_UNSIGNED_SHORT;
 		uint16NDArray myNDA = myOv.array_value();
 		nitem = myNDA.nelem();
 		dv = myNDA.dims();
@@ -777,9 +617,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		  }		
 
 		}
-		else if(t_id==ov_uint32_matrix) 
+		else if(TSnd == MPI_UNSIGNED and myOv.is_uint32_type())
 		{   
-		TSnd = MPI_UNSIGNED;
 		uint32NDArray myNDA = myOv.array_value();
 		nitem = myNDA.nelem();
 		dv = myNDA.dims();
@@ -822,9 +661,8 @@ int send_matrix(int t_id,MPI_Comm comm, octave_value myOv ,ColumnVector rankrec,
 		  }		
 
 		}
-		else if(t_id== ov_uint64_matrix)
+		else if(TSnd== MPI_UNSIGNED_LONG_LONG and myOv.is_uint64_type())
 		{  
-		    TSnd = MPI_UNSIGNED_LONG_LONG;
 		    uint64NDArray myNDA = myOv.array_value();
 		    nitem = myNDA.nelem();
 		    dv = myNDA.dims();
@@ -873,7 +711,7 @@ return(info);
 }
 
 
-int send_sp_mat(int t_id,MPI_Comm comm, octave_value MyOv ,ColumnVector rankrec, int mytag  ){
+int send_sp_mat(int t_id, MPI_Datatype TSnd ,MPI_Comm comm, octave_value MyOv ,ColumnVector rankrec, int mytag  ){
 int info;
 OCTAVE_LOCAL_BUFFER(int,tanktag,6);
 tanktag[0] = mytag;
@@ -884,9 +722,8 @@ tanktag[4] = mytag+4;
 tanktag[5] = mytag+5;
 
 // printf("I will send this t_id=%i\n",t_id);
-MPI_Datatype TSnd;
   
-		if(t_id == ov_sparse_bool_matrix)
+		if(TSnd == MPI_INT and MyOv.is_bool_type())
 		 {  
 		  TSnd = MPI_INT;
 		  OCTAVE_LOCAL_BUFFER(int,s,3); 
@@ -941,7 +778,7 @@ MPI_Datatype TSnd;
 		      if (info !=MPI_SUCCESS) return info;
 		  }
 		 }
-		else if (t_id == ov_sparse_matrix)
+		else if (TSnd == MPI_DOUBLE and MyOv.is_real_type())
 		 { 
 		  TSnd = MPI_DOUBLE;
 		  SparseMatrix m = MyOv.sparse_matrix_value();
@@ -1001,9 +838,8 @@ MPI_Datatype TSnd;
 		      if (info !=MPI_SUCCESS) return info;
 		  }		
 		 }
-		else if (t_id == ov_sparse_complex_matrix)
+		else if (TSnd == MPI_DOUBLE and MyOv.is_complex_type())
 		 { 
-		  TSnd = MPI_DOUBLE;
 		  SparseComplexMatrix m = MyOv.sparse_complex_matrix_value();
 		  OCTAVE_LOCAL_BUFFER(int,s,3);  
 		  s[0]= m.rows();
@@ -1099,7 +935,7 @@ MPI_Type_commit(&fortvec);
     return(info);
 
 }
-int send_cell(MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag){    /* we first store nelems and then */
+int send_cell(int t_id,MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag){    /* we first store nelems and then */
 /*----------------------------*/    /* recursively the elements themselves */
 
 // Lists of items to send
@@ -1108,7 +944,6 @@ int send_cell(MPI_Comm comm, Cell cell, ColumnVector rankrec, int mytag){    /* 
 // nd for number of dimensions
 // dimvec derived datatype
 // item of cell
-  int t_id = ov_cell;
   int n = cell.capacity();
   int info;
   int tanktag[5];
@@ -1181,9 +1016,8 @@ int cap;
 
 }
 
-int send_struct(MPI_Comm comm, Octave_map map,ColumnVector rankrec, int mytag){        /* we store nkeys, */
+int send_struct(int t_id,MPI_Comm comm, Octave_map map,ColumnVector rankrec, int mytag){        /* we store nkeys, */
 
-int t_id = ov_struct;
 int n = map.nfields(); 
 int info;
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
@@ -1251,73 +1085,58 @@ return(info);
 int send_class(MPI_Comm comm, octave_value ov, ColumnVector rankrec,int mytag){    /* varname-strlength 1st, dims[ndim] */
 /*----------------------------------*/    /* and then appropriate specific info */
   int t_id = ov.type_id();
-
-  switch (t_id) {
+  const std::string mystring = ov.type_name();
+  MPI_Datatype TSnd;
       // range
-      case ov_range:    		return(send_range  (t_id, comm, ov.range_value(),rankrec,mytag));
+      if (mystring == "range")     		return(send_range  (t_id, comm, ov.range_value(),rankrec,mytag));
       // scalar
-      case ov_scalar:    	 	return(send_scalar (t_id, comm, ov.scalar_value(),rankrec,mytag));
-      case ov_int8_scalar:   		return(send_scalar (t_id, comm, ov.int8_scalar_value(),rankrec,mytag));
-      case ov_int16_scalar:   		return(send_scalar (t_id, comm, ov.int16_scalar_value(),rankrec,mytag));
-      case ov_int32_scalar:   		return(send_scalar (t_id, comm, ov.int32_scalar_value(),rankrec,mytag));
-      case ov_int64_scalar:   		return(send_scalar (t_id, comm, ov.int64_scalar_value(),rankrec,mytag));
-      case ov_uint8_scalar:  		return(send_scalar (t_id, comm, ov.uint8_scalar_value(),rankrec,mytag));
-      case ov_uint16_scalar:  		return(send_scalar (t_id, comm, ov.uint16_scalar_value(),rankrec,mytag));
-      case ov_uint32_scalar:  		return(send_scalar (t_id, comm, ov.uint32_scalar_value(),rankrec,mytag));
-      case ov_uint64_scalar:  		return(send_scalar (t_id, comm, ov.uint64_scalar_value(),rankrec,mytag));
-      case ov_bool:			return(send_scalar (t_id, comm, ov.int_value(),rankrec,mytag));
-      case ov_float_scalar:    		return(send_scalar (t_id, comm, ov.float_value (),rankrec,mytag));
-      case ov_complex_scalar: 		return(send_scalar (t_id, comm, ov.complex_value(),rankrec,mytag));
-      case ov_float_complex_scalar: 		return(send_scalar (t_id, comm, ov.float_complex_value(),rankrec,mytag));
+      if (mystring == "scalar")  {   TSnd = MPI_DOUBLE;	 	return(send_scalar (t_id, TSnd,comm, ov.scalar_value(),rankrec,mytag)); }
+      if (mystring == "int8 scalar")  { TSnd = MPI_BYTE;		return(send_scalar (t_id, TSnd,comm, ov.int8_scalar_value(),rankrec,mytag)); }
+      if (mystring == "int16 scalar")  { TSnd = MPI_SHORT; 		return(send_scalar (t_id,TSnd ,comm, ov.int16_scalar_value(),rankrec,mytag));}
+      if (mystring ==  "int32 scalar")  { TSnd = MPI_INT;		return(send_scalar (t_id, TSnd,comm, ov.int32_scalar_value(),rankrec,mytag));}
+      if (mystring ==  "int64 scalar")  { TSnd = MPI_LONG_LONG;		return(send_scalar (t_id,TSnd ,comm, ov.int64_scalar_value(),rankrec,mytag));}
+      if (mystring ==  "uint8 scalar")  {	TSnd = MPI_UNSIGNED_CHAR;	return(send_scalar (t_id,TSnd ,comm, ov.uint8_scalar_value(),rankrec,mytag));}
+      if (mystring ==  "uint16 scalar")  {	TSnd = MPI_UNSIGNED_SHORT;	return(send_scalar (t_id,TSnd , comm, ov.uint16_scalar_value(),rankrec,mytag));}
+      if (mystring ==  "uint32 scalar")  {	TSnd = MPI_UNSIGNED;	return(send_scalar (t_id,TSnd , comm, ov.uint32_scalar_value(),rankrec,mytag));}
+      if (mystring == "uint64 scalar")  {	TSnd = MPI_UNSIGNED_LONG_LONG;	return(send_scalar (t_id,TSnd , comm, ov.uint64_scalar_value(),rankrec,mytag));}
+      if (mystring ==  "bool")		{TSnd = MPI_INT;	return(send_scalar (t_id,TSnd , comm, ov.int_value(),rankrec,mytag));}
+      if (mystring ==  "float scalar")    	{ TSnd = MPI_FLOAT;	return(send_scalar (t_id,TSnd , comm, ov.float_value (),rankrec,mytag));}
+      if (mystring ==  "complex scalar") 	{ TSnd = MPI_DOUBLE;	return(send_scalar (t_id,TSnd , comm, ov.complex_value(),rankrec,mytag));}
+      if (mystring ==  "float complex scalar")	{ TSnd = MPI_FLOAT; 		return(send_scalar (t_id,TSnd , comm, ov.float_complex_value(),rankrec,mytag));}
       // matrix
-      case ov_matrix:    	 	return(send_matrix(t_id, comm, ov,rankrec,mytag)); 
-      case ov_bool_matrix:		return(send_matrix(t_id, comm, ov,rankrec,mytag));
-      case ov_int8_matrix:    	 	return(send_matrix(t_id, comm, ov,rankrec,mytag));
-      case ov_int16_matrix:    	 	return(send_matrix(t_id, comm, ov,rankrec,mytag));        
-      case ov_int32_matrix:    	 	return(send_matrix(t_id, comm, ov,rankrec,mytag));
-      case ov_int64_matrix:    	 	return(send_matrix(t_id, comm, ov,rankrec,mytag));
-      case ov_uint8_matrix:    	 	return(send_matrix(t_id, comm, ov,rankrec,mytag));
-      case ov_uint16_matrix:    	return(send_matrix(t_id, comm, ov,rankrec,mytag));
-      case ov_uint32_matrix:    	return(send_matrix(t_id, comm, ov,rankrec,mytag));
-      case ov_uint64_matrix:    	return(send_matrix(t_id, comm, ov,rankrec,mytag));
-//       case ov_char_matrix:    		return(send_matrix(t_id, comm, ov,rankrec,mytag));
+      if (mystring ==  "matrix")    	 	{TSnd = MPI_DOUBLE; return(send_matrix(t_id,TSnd,comm, ov,rankrec,mytag));} 
+      if (mystring ==  "bool matrix")		{TSnd = MPI_INT;return(send_matrix(t_id,TSnd,comm, ov,rankrec,mytag));}
+      if (mystring ==  "int8 matrix")    	 	{TSnd = MPI_BYTE;return(send_matrix(t_id,TSnd,comm, ov,rankrec,mytag));}
+      if (mystring ==  "int16 matrix")    	 	{TSnd = MPI_SHORT;return(send_matrix(t_id,TSnd,comm, ov,rankrec,mytag));}        
+      if (mystring ==  "int32 matrix")    	 	{TSnd = MPI_INT;return(send_matrix(t_id,TSnd,comm, ov,rankrec,mytag));}
+      if (mystring ==  "int64 matrix")   	 	{TSnd = MPI_LONG_LONG;return(send_matrix(t_id,TSnd,comm, ov,rankrec,mytag));}
+      if (mystring ==  "uint8 matrix")    	 	{TSnd = MPI_UNSIGNED_CHAR;return(send_matrix(t_id,TSnd,comm, ov,rankrec,mytag));}
+      if (mystring ==  "uint16 matrix")    	{TSnd = MPI_UNSIGNED_SHORT;return(send_matrix(t_id,TSnd,comm, ov,rankrec,mytag));}
+      if (mystring ==  "uint32 matrix")    	{TSnd = MPI_UNSIGNED;return(send_matrix(t_id,TSnd,comm, ov,rankrec,mytag));}
+      if (mystring ==  "uint64 matrix")    	{TSnd = MPI_UNSIGNED_LONG_LONG;return(send_matrix(t_id,TSnd ,comm, ov,rankrec,mytag));}
 //       complex matrix
-      case ov_complex_matrix:           return(send_matrix(t_id, comm,ov,rankrec,mytag));
-      case ov_float_complex_matrix:  	return(send_matrix(t_id, comm,ov,rankrec,mytag)); 
+      if (mystring ==  "complex matrix")           {TSnd = MPI_DOUBLE;return(send_matrix(t_id,TSnd,comm,ov,rankrec,mytag));}
+      if (mystring ==  "float complex matrix")     {TSnd = MPI_FLOAT;return(send_matrix(t_id,TSnd,comm,ov,rankrec,mytag));} 
 //       sparse matrix
-      case ov_sparse_bool_matrix:		  return(send_sp_mat(t_id, comm,ov,rankrec,mytag));
-      case ov_sparse_matrix:			  return(send_sp_mat(t_id,comm,ov,rankrec,mytag));	
-      case ov_sparse_complex_matrix:  	return(send_sp_mat(t_id,comm,ov,rankrec,mytag));	
+      if (mystring ==  "sparse bool matrix")		  {TSnd = MPI_INT;return(send_sp_mat(t_id,TSnd,comm,ov,rankrec,mytag));}
+      if (mystring ==  "sparse matrix")			  {TSnd = MPI_DOUBLE;return(send_sp_mat(t_id,TSnd,comm,ov,rankrec,mytag));}	
+      if (mystring ==  "sparse complex matrix")  		  {TSnd = MPI_DOUBLE;return(send_sp_mat(t_id,TSnd,comm,ov,rankrec,mytag));}	
       
-      case ov_string:    		return(send_string (t_id,comm, ov.string_value(),rankrec,mytag));
-      case ov_sq_string:  		return(send_string (t_id,comm, ov.string_value(),rankrec,mytag));
-      case ov_struct:    		return(send_struct (comm, ov.map_value    (),rankrec,mytag));
-      case ov_cell:    	 	 	return(send_cell   (comm, ov.cell_value   (),rankrec,mytag));
-      case ov_unknown:    		printf("MPI_Send: unknown class\n");
+      if (mystring == "string")    		return(send_string (t_id,comm, ov.string_value(),rankrec,mytag));
+      if (mystring == "sq_string")  		return(send_string (t_id,comm, ov.string_value(),rankrec,mytag));
+      
+      if (mystring ==  "struct")    		return(send_struct (t_id,comm, ov.map_value    (),rankrec,mytag));
+      if (mystring ==  "cell")    	 	 	return(send_cell   (t_id,comm, ov.cell_value   (),rankrec,mytag));
+      
+      if (mystring ==  "<unknown type>")  {  		printf("MPI_Send: unknown class\n");
              return(MPI_ERR_UNKNOWN );
-
-      case ov_class:           
-      case ov_list:           
-      case ov_cs_list:           
-      case ov_magic_colon:           
-      case ov_built_in_function:       
-      case ov_user_defined_function:       
-      case ov_dynamically_linked_function:   
-      case ov_function_handle:       
-      case ov_inline_function:       
-      case ov_float_diagonal_matrix:   
-      case ov_float_complex_diagonal_matrix:   
-      case ov_diagonal_matrix:   
-      case ov_complex_diagonal_matrix:   
-      case ov_permutation_matrix:           
-      case ov_null_matrix:               
-      case ov_null_string:               
-      case ov_null_sq_string:           
-      default:        printf("MPI_Send: unsupported class %s\n",
+	  } 
+      else{
+	    printf("MPI_Send: unsupported class %s\n",
                     ov.type_name().c_str());
-            return(MPI_ERR_UNKNOWN );      
+            return(MPI_ERR_UNKNOWN );
+	   } 
       
-  }
 }
 
 

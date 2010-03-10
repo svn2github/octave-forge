@@ -14,142 +14,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program; If not, see <http://www.gnu.org/licenses/>.
-/*
- * Receives most Octave datatypes into contiguous memory
- * using derived datatypes
- * info = MPI_Send(var,rank,comunicator)
- */
+
 #include "simple.h"
 #include <ov-cell.h>    // avoid errmsg "cell -- incomplete datatype"
 #include <oct-map.h>    // avoid errmsg "Oct.map -- invalid use undef type"
 
 
-// tested on Octave 3.2.4
-#define HAVE_OCTAVE_324 =1
-#ifndef HAVE_OCTAVE_324
-enum ov_t_id
-{
 
-ov_unknown=0,                // t_id=0
-ov_cell,                // t_id=1
-ov_scalar,                // t_id=2
-ov_complex_scalar,            // t_id=3
-ov_matrix,                // t_id=4
-ov_diagonal_matrix,            // t_id=5
-ov_complex_matrix,            // t_id=6
-ov_complex_diagonal_matrix,        // t_id=7
-ov_range,                // t_id=8
-ov_bool,                // t_id=9
-ov_bool_matrix,                // t_id=10
-ov_string,                // t_id=11
-ov_sq_string,                // t_id=12
-ov_int8_scalar,                // t_id=13
-ov_int16_scalar,            // t_id=14
-ov_int32_scalar,            // t_id=15
-ov_int64_scalar,            // t_id=16
-ov_uint8_scalar,            // t_id=17
-ov_uint16_scalar,            // t_id=18
-ov_uint32_scalar,            // t_id=19
-ov_uint64_scalar,            // t_id=20
-ov_int8_matrix,            // t_id=21
-ov_int16_matrix,            // t_id=22
-ov_int32_matrix,                    // t_id=23
-ov_int64_matrix,                    // t_id=24
-ov_uint8_matrix,            // t_id=25
-ov_uint16_matrix,            // t_id=26
-ov_uint32_matrix,            // t_id=27
-ov_uint64_matrix,            // t_id=28
-ov_sparse_bool_matrix,            // t_id=29
-
-ov_sparse_matrix,                        // t_id=30
-ov_sparse_complex_matrix,
-ov_struct,
-ov_class,
-ov_list,
-ov_cs_list,
-ov_magic_colon,
-ov_built_in_function,
-ov_user_defined_function,
-ov_dynamically_linked_function,
-ov_function_handle,
-ov_inline_function,
-ov_float_scalar,
-ov_float_complex_scalar,
-ov_float_matrix,
-ov_float_diagonal_matrix,
-ov_float_complex_matrix,
-ov_float_complex_diagonal_matrix,
-ov_permutation_matrix,
-ov_null_matrix,
-ov_null_string,
-ov_null_sq_string,
-};
-
-
-
-
-
-#else
-enum ov_t_id
-{
-
-ov_unknown=0,                // t_id=0
-ov_cell,                // t_id=1
-ov_scalar,                // t_id=2
-ov_complex_scalar,            // t_id=3
-ov_matrix,                // t_id=4
-ov_diagonal_matrix,            // t_id=5
-ov_complex_matrix,            // t_id=6
-ov_complex_diagonal_matrix,        // t_id=7
-ov_range,                // t_id=8
-ov_bool,                // t_id=9
-ov_bool_matrix,                // t_id=10
-ov_char_matrix,                // t_id=11
-ov_string,                // t_id=12
-ov_sq_string,                // t_id=13
-ov_int8_scalar,                // t_id=14
-ov_int16_scalar,            // t_id=15
-ov_int32_scalar,            // t_id=16
-ov_int64_scalar,            // t_id=17
-ov_uint8_scalar,            // t_id=18
-ov_uint16_scalar,            // t_id=19
-ov_uint32_scalar,            // t_id=20
-ov_uint64_scalar,            // t_id=21
-ov_int8_matrix,            // t_id=22
-ov_int16_matrix,            // t_id=23
-ov_int32_matrix,                    // t_id=24
-ov_int64_matrix,                    // t_id=25
-ov_uint8_matrix,            // t_id=26
-ov_uint16_matrix,            // t_id=27
-ov_uint32_matrix,            // t_id=28
-ov_uint64_matrix,            // t_id=29
-ov_sparse_bool_matrix,            // t_id=30
-
-ov_sparse_matrix,                        // t_id=31
-ov_sparse_complex_matrix,
-ov_struct,
-ov_class,
-ov_list,
-ov_cs_list,
-ov_magic_colon,
-ov_built_in_function,
-ov_user_defined_function,
-ov_dynamically_linked_function,
-ov_function_handle,
-ov_inline_function,
-ov_float_scalar,
-ov_float_complex_scalar,
-ov_float_matrix,
-ov_float_diagonal_matrix,
-ov_float_complex_matrix,
-ov_float_complex_diagonal_matrix,
-ov_permutation_matrix,
-ov_null_matrix,
-ov_null_string,
-ov_null_sq_string,
-};
-
-#endif // HAVE_OCTAVE_324
 
 /*----------------------------------*/        /* forward declaration */
 
@@ -166,13 +37,15 @@ int recv_range(MPI_Comm comm, Range &range,int source, int mytag);
 template<class AnyElem>
 int recv_vec(MPI_Comm comm, AnyElem &LBNDA, int nitem, MPI_Datatype TRCV ,int source, int mytag);
 
-int recv_matrix(int t_id, MPI_Comm comm, octave_value &ov,int source, int mytag);
-int recv_sp_mat(int t_id, MPI_Comm comm, octave_value &ov,int source, int mytag);
+int recv_matrix(bool is_complex,MPI_Datatype TRcv, MPI_Comm comm, octave_value &ov,int source, int mytag);
+int recv_sp_mat(bool is_complex,MPI_Datatype TRcv, MPI_Comm comm, octave_value &ov,int source, int mytag);
 
 template <class Any>
-int recv_scalar(int t_id, MPI_Comm comm, Any *d, int source, int mytag);
+int recv_scalar(MPI_Datatype TRcv, MPI_Comm comm, Any *d, int source, int mytag);
 template <class Any>
-int recv_scalar(int t_id, MPI_Comm comm, std::complex<Any> *d, int source, int mytag);
+int recv_scalar(MPI_Datatype TRcv, MPI_Comm comm, std::complex<Any> *d, int source, int mytag);
+
+
 
 
 int recv_range(MPI_Comm comm, Range &range,int source, int mytag){        /* put base,limit,incr,nelem */
@@ -183,12 +56,15 @@ int recv_range(MPI_Comm comm, Range &range,int source, int mytag){        /* put
   tanktag[0] = mytag;
   tanktag[1] = mytag+1;
   OCTAVE_LOCAL_BUFFER(double,d,3);
+
   d[0]= range.base();
   d[1]= range.limit();
-  d[2]= range.inc();
-
+  d[2]= range.inc();  
   int info = MPI_Recv(d, 3, MPI_INT,  source, tanktag[1] , comm,&stat);
-   
+
+
+  
+  
 return(info);
 }
 
@@ -208,7 +84,7 @@ int recv_vec(MPI_Comm comm, AnyElem &LBNDA, int nitem  ,MPI_Datatype TRCV ,int s
 
 // template specialization for complex case
 template <class Any>
-int recv_scalar(int t_id, MPI_Comm comm, std::complex<Any> &d, int source, int mytag){        
+int recv_scalar(MPI_Datatype TRcv ,MPI_Comm comm, std::complex<Any> &d, int source, int mytag){        
   int info;
   MPI_Status stat;
   OCTAVE_LOCAL_BUFFER(int,tanktag,2);
@@ -217,12 +93,6 @@ int recv_scalar(int t_id, MPI_Comm comm, std::complex<Any> &d, int source, int m
   OCTAVE_LOCAL_BUFFER(std::complex<Any>,Deco,2);
   Deco[0] = real(d);
   Deco[1] = imag(d);
-  // Most of scalars are real not complex
-  MPI_Datatype TRcv;
-  switch (t_id) {
-		  TRcv = MPI_DOUBLE;
-		  TRcv = MPI_FLOAT;
-		}
 		
   info = MPI_Recv((&Deco), 2,TRcv, source, tanktag[1] , comm,&stat);
   if (info !=MPI_SUCCESS) return info;
@@ -231,32 +101,18 @@ int recv_scalar(int t_id, MPI_Comm comm, std::complex<Any> &d, int source, int m
 }
 
 template <class Any>
-int recv_scalar(int t_id, MPI_Comm comm, Any &d, int source, int mytag){        /* directly MPI_Recv it, */
+int recv_scalar(MPI_Datatype TRcv , MPI_Comm comm, Any &d, int source, int mytag){        /* directly MPI_Recv it, */
 /*-----------------------------*/        /* it's just a value */
 OCTAVE_LOCAL_BUFFER(int,tanktag,2);
   tanktag[0]=mytag;
   tanktag[1]=mytag+1;
   int info;
   MPI_Status stat;
-  MPI_Datatype TRcv;
-    switch (t_id) {
-		case ov_scalar:  		TRcv = MPI_DOUBLE;
-		case ov_bool: 			TRcv = MPI_INT;
-		case ov_float_scalar:   	TRcv = MPI_FLOAT;
-		case ov_int8_scalar:   		TRcv = MPI_BYTE;
-		case ov_int16_scalar:   	TRcv = MPI_SHORT;
-		case ov_int32_scalar:   	TRcv = MPI_INT;
-		case ov_int64_scalar:   	TRcv = MPI_LONG_LONG;
-		case ov_uint8_scalar:  		TRcv = MPI_UNSIGNED_CHAR;
-		case ov_uint16_scalar:  	TRcv = MPI_UNSIGNED_SHORT;
-		case ov_uint32_scalar:  	TRcv = MPI_UNSIGNED;
-		case ov_uint64_scalar:  	TRcv = MPI_UNSIGNED_LONG_LONG;
-                }
   info = MPI_Recv((&d), 1,TRcv, source, tanktag[1] , comm,&stat);
   if (info !=MPI_SUCCESS) return info;
    return(info);
 }
-int recv_string( MPI_Comm comm, octave_value &ov,int source, int mytag){        /* directly MPI_Send it, */
+int recv_string( MPI_Comm comm, octave_value &ov,int source, int mytag){        
 /*-----------------------------*/        /* it's just a  string value */
 std::string cpp_string;
 OCTAVE_LOCAL_BUFFER(int, tanktag, 2);
@@ -284,8 +140,7 @@ tanktag[2]=mytag+2;
    return(MPI_SUCCESS);
 }
 
-
-int recv_matrix( int t_id,const MPI_Comm comm, octave_value &ov,  int source, int mytag){       
+int recv_matrix( bool is_complex,MPI_Datatype TRCV,const MPI_Comm comm, octave_value &ov,  int source, int mytag){       
 
 OCTAVE_LOCAL_BUFFER(int, tanktag, 6);
 tanktag[0] = mytag;
@@ -324,13 +179,10 @@ tanktag[5] = mytag+5;
  {
    dv(i) = dimV[i] ;
  }
-   
-  MPI_Datatype TRCV;
-		if (t_id == ov_matrix)
+		if (TRCV == MPI_DOUBLE and is_complex == false )
 		      {
 			NDArray myNDA(dv);
 		      OCTAVE_LOCAL_BUFFER(double, LBNDA,nitem);
-		      TRCV = MPI_DOUBLE;
 		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
 		      if (info !=MPI_SUCCESS) return info;
 		      
@@ -341,10 +193,9 @@ tanktag[5] = mytag+5;
 			ov=myNDA;  
 		      } 
 		      
-		else if (t_id==ov_complex_matrix)
+		else if (TRCV == MPI_DOUBLE and is_complex== true )
 		      {
 		      OCTAVE_LOCAL_BUFFER(double,LBNDA1,nitem);
-		      TRCV = MPI_DOUBLE;
 		      info = recv_vec(comm, LBNDA1,nitem ,TRCV ,source, tanktag[4]);
 		      if (info !=MPI_SUCCESS) return info;
 		      ComplexNDArray myNDA(dv);  
@@ -357,22 +208,21 @@ tanktag[5] = mytag+5;
 			  }
 			  ov=myNDA;
 		      }  
-		else if (t_id ==ov_bool_matrix)
+		else if (TRCV == MPI_INT)
 		      {
-		      OCTAVE_LOCAL_BUFFER(bool,LBNDA,nitem);
+		      OCTAVE_LOCAL_BUFFER(bool,LBNDA,nitem);// tested on Octave 3.2.4
 		      TRCV = MPI_INT;
 		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
 		      if (info !=MPI_SUCCESS) return info;
-		      boolNDArray   myNDA(dv);
+		      int32NDArray   myNDA(dv);
 		      for (octave_idx_type i=0; i<nitem; i++)
 			  {
 			      myNDA(i)=LBNDA[i];
 			  }
 			  ov=myNDA;
 		      }	  
-		else if (t_id==ov_float_matrix)
+		else if (TRCV == MPI_FLOAT)
 		      {
-		      TRCV = MPI_FLOAT;
 		      OCTAVE_LOCAL_BUFFER(float,LBNDA,nitem);
 		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
 		      if (info !=MPI_SUCCESS) return info;
@@ -383,9 +233,8 @@ tanktag[5] = mytag+5;
 			  }
 			  ov=myNDA;
 		      } 	  
-		else if (t_id==ov_float_complex_matrix)
+		else if (TRCV == MPI_FLOAT and is_complex == true)
 		     {
-		      TRCV = MPI_FLOAT;
 		      OCTAVE_LOCAL_BUFFER(float,LBNDA1,nitem);
 		      info = recv_vec(comm, LBNDA1,nitem ,TRCV ,source, tanktag[4]);
 		      if (info !=MPI_SUCCESS) return info;		  
@@ -399,9 +248,8 @@ tanktag[5] = mytag+5;
 			  }
 			  ov=myNDA;
 		      }
-		else if  (t_id==ov_int8_matrix)   
+		else if  (TRCV == MPI_BYTE )   
 		      {  	
-			TRCV = MPI_BYTE;
 			OCTAVE_LOCAL_BUFFER(octave_int8,LBNDA1,nitem);
 			info = recv_vec(comm, LBNDA1,nitem ,TRCV ,source, tanktag[4]);
 			if (info !=MPI_SUCCESS) return info;
@@ -412,9 +260,8 @@ tanktag[5] = mytag+5;
 			    }
 			    ov=myNDA;
 		      }
-		else if (t_id==ov_int16_matrix)  
+		else if (TRCV == MPI_SHORT)  
 		{  	
-		      TRCV = MPI_SHORT;
 		      OCTAVE_LOCAL_BUFFER(octave_int16,LBNDA,nitem);
 		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
 		      if (info !=MPI_SUCCESS) return info;
@@ -425,18 +272,9 @@ tanktag[5] = mytag+5;
 			  }
 			  ov=myNDA;
 		} 		
-		else if (ov_int32_matrix)  {  	TRCV = MPI_INT;
-		      OCTAVE_LOCAL_BUFFER(octave_int32,LBNDA,nitem);
-		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
-		      if (info !=MPI_SUCCESS) return info;
-		      int32NDArray myNDA(dv);
-		      for (octave_idx_type i=0; i<nitem; i++)
-			  {
-			      myNDA(i)=LBNDA[i];
-			  }
-			  ov=myNDA;
-		      } 		
-		else if (ov_int64_matrix)  {  	TRCV = MPI_LONG_LONG;
+		
+		else if (TRCV == MPI_LONG_LONG)  
+		      {  	
 		      OCTAVE_LOCAL_BUFFER(octave_int64,LBNDA,nitem);
 		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
 		      int64NDArray myNDA(dv);
@@ -447,7 +285,8 @@ tanktag[5] = mytag+5;
 			  }
 			  ov=myNDA;
 		      } 		
-		else if (ov_uint8_matrix)  { 		TRCV = MPI_UNSIGNED_CHAR;
+		else if (TRCV == MPI_UNSIGNED_CHAR)  
+		      { 	
 		      OCTAVE_LOCAL_BUFFER(octave_uint8,LBNDA,nitem);
 		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
 		      if (info !=MPI_SUCCESS) return info;
@@ -458,7 +297,8 @@ tanktag[5] = mytag+5;
 			  }
 			  ov=myNDA;
 		      } 		
-		else if (ov_uint16_matrix) {  	TRCV = MPI_UNSIGNED_SHORT;
+		else if (TRCV == MPI_UNSIGNED_SHORT) 
+		      {  	
 		      OCTAVE_LOCAL_BUFFER(octave_uint16,LBNDA,nitem);
 		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
 		      if (info !=MPI_SUCCESS) return info;
@@ -469,7 +309,7 @@ tanktag[5] = mytag+5;
 			  }
 			  ov=myNDA;
 		      } 		
-		else if (ov_uint32_matrix) { 	TRCV = MPI_UNSIGNED;
+		else if (TRCV == MPI_UNSIGNED) { 	
 		      OCTAVE_LOCAL_BUFFER(octave_uint32,LBNDA,nitem);
 		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
 		      if (info !=MPI_SUCCESS) return info;
@@ -480,9 +320,8 @@ tanktag[5] = mytag+5;
 			  }
 			ov = myNDA;  
 		      } 		
-		else if (ov_uint64_matrix) 
+		else if (TRCV == MPI_UNSIGNED_LONG_LONG) 
 		      { 	
-		      TRCV = MPI_UNSIGNED_LONG_LONG;
 		      OCTAVE_LOCAL_BUFFER(octave_uint64,LBNDA,nitem);
 		      info = recv_vec(comm, LBNDA,nitem ,TRCV ,source, tanktag[4]);
 		      if (info !=MPI_SUCCESS) return info;
@@ -498,9 +337,8 @@ return(info);
 }
 
 
-int recv_sp_mat(int t_id, MPI_Comm comm, octave_value &ov,int source, int mytag){   
+int recv_sp_mat(bool is_complex,MPI_Datatype TRcv, MPI_Comm comm, octave_value &ov,int source, int mytag){   
 int info;   
-MPI_Datatype TRcv;
                 
 OCTAVE_LOCAL_BUFFER(int, tanktag,6);
 tanktag[0] = mytag;
@@ -554,9 +392,8 @@ MPI_Type_commit(&columnindex);
 
 // Now we have a different vector of non zero elements according to datatype
 
-	      if (t_id == ov_sparse_bool_matrix)
+	      if (TRcv == MPI_INT)
 		{  
-		  TRcv = MPI_INT;
 		  SparseBoolMatrix m(s[0],s[1],s[2]);
 		  OCTAVE_LOCAL_BUFFER(bool,LBNDA,s[2]);
 		  //Now receive the vector of non zero elements
@@ -575,9 +412,8 @@ MPI_Type_commit(&columnindex);
 		  }
 		  ov = m;
 		}
-		if (t_id == ov_sparse_matrix)
+		if (TRcv == MPI_DOUBLE  and is_complex==false)
 		{  
-		  TRcv = MPI_DOUBLE;
 		  SparseMatrix m(s[0],s[1],s[2]);
 		  OCTAVE_LOCAL_BUFFER(double,LBNDA,s[2]);
 		  //Now receive the vector of non zero elements
@@ -596,7 +432,7 @@ MPI_Type_commit(&columnindex);
 		  }
 		  ov = m;
 		}
-		if (t_id == ov_sparse_complex_matrix)
+		if (TRcv == MPI_DOUBLE  and is_complex==true)
 		{  
 		  TRcv = MPI_DOUBLE;
 		  SparseComplexMatrix m(s[0],s[1],s[2]);
@@ -733,76 +569,60 @@ int   ctag = mytag + 4; // cell
 
 int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* varname-strlength 1st, dims[ndim] */
 /*----------------------------------*/    /* and then appropriate specific info */
-  int t_id,n;
+  int t_id;
   MPI_Status status;
-//      printf("1-> source =%i\n",source);
-//      printf("2-> tag for id =%i\n",mytag);
+//       printf("1-> source =%i\n",source);
+//       printf("2-> tag for id =%i\n",mytag);
      
   int info = MPI_Recv(&t_id,1, MPI_INT, source,mytag,comm,&status);
-
-//         printf(" I have received t_id =%i\n",t_id);
-
-  switch (t_id) {
-    case ov_cell		: return(recv_cell ( comm,  ov,source,mytag));
-    case ov_struct		: return(recv_struct(comm,  ov,source,mytag)); 
-    case ov_scalar		: {double 	 d=0;  info =(recv_scalar (t_id,comm, d,source,mytag));ov=d;return(info);};
-    case ov_bool		: {bool 	 b;    info = (recv_scalar (t_id,comm, b,source,mytag));   ov=b ;return(info);};
-    case ov_int8_scalar         : {octave_int8   d;    info = (recv_scalar (t_id,comm, d,source,mytag)); ov=d ;return(info);};
-    case ov_int16_scalar        : {octave_int16  d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
-    case ov_int32_scalar        : {octave_int32  d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
-    case ov_int64_scalar        : {octave_int64  d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
-    case ov_uint8_scalar        : {octave_uint8  d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);}; 
-    case ov_uint16_scalar       : {octave_uint16 d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
-    case ov_uint32_scalar       : {octave_uint32 d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
-    case ov_uint64_scalar       : {octave_uint64 d;    info = (recv_scalar (t_id,comm, d,source,mytag));   ov=d ;return(info);};
-    case ov_float_scalar        : {float 	       d;    info =(recv_scalar (t_id,comm, d,source,mytag)) ;  ov=d;return(info);};
-    case ov_complex_scalar      : {std::complex<double>   d;    info =(recv_scalar (t_id,comm, d,source,mytag)) ;  ov=d;return(info);};
-    case ov_float_complex_scalar: {std::complex<float> d;    info =(recv_scalar (t_id,comm, d,source,mytag)) ;  ov=d;return(info);};
-    case ov_string		: return(recv_string (comm, ov,source,mytag));
-    case ov_sq_string		: return(recv_string (comm, ov,source,mytag));
-    case ov_range		: {Range 	       d;    info =(recv_range (comm, d,source,mytag));	ov=d;return(info);};
-    case ov_matrix    		: return(recv_matrix (t_id,comm,ov,source,mytag));	
-    case ov_complex_matrix    	: return(recv_matrix (t_id,comm,ov,source,mytag));
-    case ov_bool_matrix		: return(recv_matrix (t_id,comm,ov,source,mytag));  
-    case ov_int8_matrix		: return(recv_matrix (t_id,comm,ov,source,mytag));
-    case ov_int16_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
-    case ov_int32_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
-    case ov_int64_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
-
-    case ov_uint8_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
-    case ov_uint16_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
-    case ov_uint32_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
-    case ov_uint64_matrix	: return(recv_matrix (t_id,comm,ov,source,mytag));
-
-    case ov_float_matrix:            	return(recv_matrix (t_id,comm, ov,source,mytag));
-    case ov_float_complex_matrix:    	return(recv_matrix (t_id,comm, ov,source,mytag));
-    case ov_sparse_matrix:		return(recv_sp_mat(t_id,comm, ov,source,mytag));
-    case ov_sparse_complex_matrix:   	return(recv_sp_mat(t_id,comm, ov,source,mytag));			
-    case ov_unknown:    printf("MPI_Recv: unknown class\n");
+//   printf("3-> t_id =%i\n",t_id);
+   
+   static string_vector pattern = octave_value_typeinfo::installed_type_names ();
+//          printf(" I have received t_id =%i\n",t_id);
+  const std::string tstring = pattern(t_id); 
+//   octave_stdout << "MPI_Recv has " << tstring  << " string argument.\n";
+    if (tstring == "cell")   return(recv_cell ( comm,  ov,source,mytag));
+    if (tstring == "struct") return(recv_struct(comm,  ov,source,mytag)); 
+    if (tstring == "scalar")  {double 	 d=0; MPI_Datatype TRcv = MPI_DOUBLE ;info =(recv_scalar (TRcv,comm, d,source,mytag));ov=d;return(info);};
+    if (tstring == "bool")    {bool 	 b; MPI_Datatype TRcv = MPI_INT;info = (recv_scalar (TRcv,comm, b,source,mytag));   ov=b ;return(info);};
+    if (tstring == "int8 scalar")       {octave_int8   d; MPI_Datatype TRcv = MPI_BYTE;   info = (recv_scalar (TRcv,comm, d,source,mytag)); ov=d ;return(info);};
+    if (tstring == "int16 scalar")        {octave_int16  d; MPI_Datatype TRcv = MPI_SHORT;  info = (recv_scalar (TRcv,comm, d,source,mytag));   ov=d ;return(info);};
+    if (tstring == "int32 scalar")        {octave_int32  d; MPI_Datatype TRcv = MPI_INT;  info = (recv_scalar (TRcv,comm, d,source,mytag));   ov=d ;return(info);};
+    if (tstring == "int64 scalar")        {octave_int64  d; MPI_Datatype TRcv = MPI_LONG_LONG;  info = (recv_scalar (TRcv,comm, d,source,mytag));   ov=d ;return(info);};
+    if (tstring == "uint8 scalar")        {octave_uint8  d; MPI_Datatype TRcv = MPI_UNSIGNED_CHAR;   info = (TRcv,recv_scalar (TRcv,comm, d,source,mytag));   ov=d ;return(info);}; 
+    if (tstring == "uint16 scalar")       {octave_uint16 d; MPI_Datatype TRcv = MPI_UNSIGNED_SHORT;   info = (recv_scalar (TRcv,comm, d,source,mytag));   ov=d ;return(info);};
+    if (tstring == "uint32 scalar")       {octave_uint32 d; MPI_Datatype TRcv = MPI_UNSIGNED;   info = (recv_scalar (TRcv,comm, d,source,mytag));   ov=d ;return(info);};
+    if (tstring == "uint64 scalar")       {octave_uint64 d; MPI_Datatype TRcv = MPI_UNSIGNED_LONG_LONG;   info = (recv_scalar (TRcv,comm, d,source,mytag));   ov=d ;return(info);};
+    if (tstring == "float scalar")      {float 	 d; MPI_Datatype TRcv = MPI_FLOAT;   info =(recv_scalar (TRcv,comm, d,source,mytag)) ;  ov=d;return(info);};
+    if (tstring == "complex scalar")     {std::complex<double>   d; MPI_Datatype TRcv = MPI_DOUBLE;   info =(recv_scalar (TRcv,comm, d,source,mytag)) ;  ov=d;return(info);};
+    if (tstring == "float complex scalar") {std::complex<float> d; MPI_Datatype TRcv = MPI_FLOAT;   info =(recv_scalar (TRcv,comm, d,source,mytag)) ;  ov=d;return(info);};
+    if (tstring == "string")  return(recv_string (comm, ov,source,mytag));
+    if (tstring == "sq_string") return(recv_string (comm, ov,source,mytag));
+    if (tstring == "range")		 {Range 	       d;    info =(recv_range (comm, d,source,mytag));	ov=d;return(info);};
+    if (tstring == "matrix")    		{ bool is_complex = false;MPI_Datatype TRcv = MPI_DOUBLE; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag); printf("Info for receiving matrix %i\n",info);return(info);}	
+    if (tstring == "complex matrix")		{ bool is_complex = true;MPI_Datatype TRcv = MPI_DOUBLE; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info); }
+    if (tstring == "bool matrix")		{ bool is_complex = false;MPI_Datatype TRcv = MPI_INT; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}  
+    if (tstring == "int8 matrix")  		{ bool is_complex = false;MPI_Datatype TRcv = MPI_BYTE; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}
+    if (tstring == "int16 matrix") 		{ bool is_complex = false;MPI_Datatype TRcv = MPI_SHORT; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}
+    if (tstring == "int32 matrix") 		{ bool is_complex = false;MPI_Datatype TRcv = MPI_INT; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}
+    if (tstring == "int64 matrix") 		{ bool is_complex = false;MPI_Datatype TRcv = MPI_LONG_LONG; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}
+    if (tstring == "uint8 matrix")		{ bool is_complex = false;MPI_Datatype TRcv = MPI_UNSIGNED_CHAR; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}
+    if (tstring == "uint16 matrix")		{ bool is_complex = false;MPI_Datatype TRcv = MPI_UNSIGNED_SHORT; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}
+    if (tstring == "uint32 matrix")		{ bool is_complex = false;MPI_Datatype TRcv = MPI_UNSIGNED; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag) ;return(info);}
+    if (tstring == "uint64 matrix")		{ bool is_complex = false;MPI_Datatype TRcv = MPI_UNSIGNED_LONG_LONG; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag) ;return(info);}
+    if (tstring == "float matrix")            	{ bool is_complex = false;MPI_Datatype TRcv = MPI_DOUBLE; info = recv_matrix (is_complex,TRcv,comm, ov,source,mytag) ;return(info);}
+    if (tstring == "float complex matrix")    	{ bool is_complex = true;MPI_Datatype TRcv = MPI_FLOAT; info = recv_matrix(is_complex,TRcv,comm, ov,source,mytag) ;return(info);}
+    if (tstring == "sparse matrix")		{ bool is_complex = false;MPI_Datatype TRcv = MPI_DOUBLE; info = recv_sp_mat(is_complex,TRcv,comm, ov,source,mytag) ;return(info);}
+    if (tstring == "sparse complex matrix")   	{ bool is_complex = true;MPI_Datatype TRcv = MPI_DOUBLE; info = recv_sp_mat(is_complex,TRcv,comm, ov,source,mytag) ;return(info);}			
+    if (tstring == "<unknown type>")    { printf("MPI_Recv: unknown class\n");
             return(MPI_ERR_UNKNOWN );
 
-case ov_class:           
-case ov_list:           
-case ov_cs_list:           
-case ov_magic_colon:           
-case ov_built_in_function:       
-case ov_user_defined_function:       
-case ov_dynamically_linked_function:   
-case ov_function_handle:       
-case ov_inline_function:       
-case ov_float_diagonal_matrix:   
-case ov_float_complex_diagonal_matrix:   
-case ov_diagonal_matrix:   
-case ov_complex_diagonal_matrix:   
-case ov_permutation_matrix:           
-case ov_null_matrix:               
-case ov_null_string:               
-case ov_null_sq_string:           
+	    }
 
-    default:        printf("MPI_Recv: unsupported class %s\n",
-                    ov.type_name().c_str());
-            return(MPI_ERR_UNKNOWN );
-  }
+    else    {    printf("MPI_Recv: unsupported class %s\n",
+                     ov.type_name().c_str());
+             return(MPI_ERR_UNKNOWN );
+ 	    }
 }
 
 
@@ -856,7 +676,7 @@ DEFUN_DLD(MPI_Recv,args,nargout, "MPI_Recv receive  any Octave datatype into con
      int info = recv_class (comm, result,source, mytag );
      comm= NULL;
      retval(1) = info;
-//       printf("info on recv_class=%i\n",info);
+       printf("info on recv_class=%i\n",info);
      retval(0) = result;
      return retval;
    

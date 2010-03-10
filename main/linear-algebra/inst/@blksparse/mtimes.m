@@ -17,7 +17,7 @@
 function c = mtimes (a, b)
   if (isa (a, "blksparse"))
     if (isa (b, "blksparse"))
-      c = mtimes_ss (a, b)
+      c = mtimes_ss (a, b);
     else
       c = mtimes_sm (a, b);
     endif
@@ -104,6 +104,9 @@ function s = mtimes_ss (s1, s2)
   ss = ss(:,s2.i);
   [i, j, k] = find (ss);
   sv = blkmm (s1.sv(:,:,k), s2.sv(:,:,j));
+  j = s2.j(j);
+
+  s = blksparse (i, j, sv, siz1(1), siz2(2));
   
 endfunction
 

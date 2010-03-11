@@ -31,23 +31,21 @@
 
 #include "mpi.h"        // mpi.h, oct.h
 #include <octave/oct.h>
-
-DEFUN_DLD(NAME, args, nargout,
-"MPI_Init               Initialize the MPI execution environment\n\
+DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} @var{exprinfo} = MPI_Init()\n\
+           Initialize the MPI execution environment\n\
 \n\
-  info = MPI_Init [ ( 'arg' [, 'arg']... ) ]\n\
-\n\
-  arg (str) arguments to pass\n\
-  info(int) return code\n\
-      0 MPI_SUCCESS    No error\n\
-     16 MPI_ERR_OTHER  Attempt was made to call MPI_INIT a  second  time\n\
-                       MPI_INIT may only be called once in a program\n\
+ @example\n\
+ @group\n\
+    @var{exprinfo} (int) return code\n\
+       0 MPI_SUCCESS    No error\n\
+      16 MPI_ERR_OTHER  Attempt was made to call MPI_Init a  second  time\n\
+                       MPI_Init may only be called once in a program\n\
                        \n\
-\n\
-  SEE ALSO: MPI_Finalize, MPI_Initialized, MPI_Finalized\n\
-            misc\n\
-\n\
-")
+SEE ALSO: MPI_Finalize, MPI_Initialized, MPI_Finalized\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
     int nargin = args.length();            
     for (int i=0; i<nargin; i++){

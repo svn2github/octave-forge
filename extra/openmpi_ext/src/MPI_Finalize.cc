@@ -26,21 +26,20 @@
 #include "mpi.h"       
 #include <octave/oct.h>
 
-DEFUN_DLD(NAME, args, nargout,
-"MPI_Finalize           Terminates MPI execution environment\n\
+DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} @var{exprinfo} = MPI_Finalize()\n\
+           Terminates MPI execution environment\n\
 \n\
-  info = MPI_Finalize\n\
-\n\
-  info(int) return code\n\
-      0 MPI_SUCCESS    No error\n\
-     17 MPI_ERR_INTERN This is fatal. Please send bug report to OPENMPI\n\
-     16 MPI_ERR_OTHER  A different thread attempts to finalize MPI than\n\
-                       the thread that initialized MPI\n\
-\n\
-  SEE ALSO: MPI_Init, MPI_Initialized, MPI_Finalized\n\
-            misc\n\
-\n\
-")
+ @example\n\
+ @group\n\
+    @var{exprinfo} (int) return code\n\
+       0 MPI_SUCCESS    No error\n\
+       5 MPI_ERR_COMM   Invalid communicator (NULL?)\n\
+      13 MPI_ERR_ARG    Invalid argument (typically a NULL pointer?)\n\
+SEE ALSO: MPI_Init\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
 
     int info = MPI_Finalize();

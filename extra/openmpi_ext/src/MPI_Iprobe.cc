@@ -43,37 +43,34 @@ Octave_map put_MPI_Stat (const MPI_Status &stat){
     return map;
 }
 
-DEFUN_DLD(NAME, args, nargout,
-"MPI_Iprobe             Nonblocking test for a message\n\
-\n\
-  [flag stat info] = MPI_Iprobe (src, tag, comm)\n\
-\n\
-  src  (int) expected source rank, or MPI_ANY_SOURCE\n\
-  tag  (int) expected tag value or MPI_ANY_TAG\n\
-  comm (int) communicator (handle)\n\
-\n\
-  flag (int) 1 if the message is ready to be received\n\
-             0 if it is not (boolean)\n\
-\n\
-  stat(struc)status object\n\
+
+
+DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} [@var{exprflag} @var{exprstat} @var{exprinfo}] = MPI_Iprobe(@var{exprsrc}, @var{exprtag}, @var{exprcomm})\n\
+           Nonblocking test for a message\n\
+ @example\n\
+ @group\n\
+ \n\
+     @var{exprflag} int \n\
+	    1 if the message is ready to be received\n\
+           0 if it is not (boolean)\n\
+     @var{exprstat} struct object\n\
        src (int)       source rank for the accepted message\n\
        tag (int)       message tag for the accepted message\n\
        err(int)        error \n\
        cnt (int)       count\n\
        can (int)       cancel\n\
-\n\
-  info (int)return code\n\
+    @var{exprinfo} (int) return code\n\
       0 MPI_SUCCESS    No error\n\
      13 MPI_ERR_ARG    Invalid argument\n\
       5 MPI_ERR_COMM   Invalid communicator (null?)\n\
       4 MPI_ERR_TAG    Invalid tag argument (MPI_ANY_TAG, 0..MPI_TAG_UB attr)\n\
       6 MPI_ERR_RANK   Invalid src/dst rank (MPI_ANY_SOURCE, 0..Comm_size-1)\n\
-\n\
-  SEE ALSO: MPI_Probe, MPI_Irecv, MPI_Recv,\n\
-            cancel\n\
-\n\
-")
-
+ @end group\n\
+ @end example\n\
+ \n\
+  SEE ALSO: MPI_Probe, MPI_Recv,\n\
+@end deftypefn")
 {
    octave_value_list results;
    int nargin = args.length ();

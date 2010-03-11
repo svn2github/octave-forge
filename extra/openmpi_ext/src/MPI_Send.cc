@@ -1138,10 +1138,23 @@ int send_class(MPI_Comm comm, octave_value ov, ColumnVector rankrec,int mytag){ 
 	   } 
       
 }
-
-
-
-DEFUN_DLD(MPI_Send,args,nargout, "MPI_Send sends  any octave_value  into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n")
+DEFUN_DLD(MPI_Send,args,nargout, 
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{exprinfo} =} MPI_Send(@var{EXPROV},@var{EXPRRANKVECT},@var{EXPRTAG},@var{EXPRCOMMOBJ})\n\
+MPI_Send sends  any octave_value  into contiguous memory using openmpi library \n\
+even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU.\n\
+Returns an integer @var{exprinfo} to indicate success or failure of octave_value expedition.\n\
+ @example\n\
+ @group\n\
+@var{EXPROV} must be an octave variable \n\
+@var{EXPRRANKVECT} must be a vector cointaining the list of rank destination processes \n\
+@var{EXPRTAG} must be an integer called TAG to identifie the message by openmpi \n\
+@var{EXPRCOMMOBJ} must be an octave communicator object created by MPI_Comm_Load function \n\
+@end group\n\
+@end example\n\
+\n\
+@seealso{MPI_Comm_Load,MPI_Init,MPI_Finalize,MPI_Recv}\n\
+@end deftypefn")
 {
      octave_value retval;
 

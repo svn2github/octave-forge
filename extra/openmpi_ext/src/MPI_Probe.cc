@@ -49,34 +49,29 @@ Octave_map put_MPI_Stat (const MPI_Status &stat){
     return map;
 }
 
-
-DEFUN_DLD(NAME, args, nargout,
-"MPI_Probe              Blocking test for a message\n\
-\n\
-  [stat info] = MPI_Probe (src, tag, comm)\n\
-\n\
-  src  (int) expected source rank, or MPI_ANY_SOURCE\n\
-  tag  (int) expected tag value or MPI_ANY_TAG\n\
-  comm (int) communicator (handle)\n\
-\n\
-  stat(struc)status object\n\
+DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} [@var{exprstat} @var{exprinfo}] = MPI_Probe(@var{exprsrc}, @var{exprtag}, @var{exprcomm})\n\
+           Nonblocking test for a message\n\
+ @example\n\
+ @group\n\
+ \n\
+     @var{exprstat} struct object\n\
        src (int)       source rank for the accepted message\n\
        tag (int)       message tag for the accepted message\n\
        err(int)        error \n\
        cnt (int)       count\n\
        can (int)       cancel\n\
-\n\
-  info (int)return code\n\
+    @var{exprinfo} (int) return code\n\
       0 MPI_SUCCESS    No error\n\
+     13 MPI_ERR_ARG    Invalid argument\n\
       5 MPI_ERR_COMM   Invalid communicator (null?)\n\
       4 MPI_ERR_TAG    Invalid tag argument (MPI_ANY_TAG, 0..MPI_TAG_UB attr)\n\
       6 MPI_ERR_RANK   Invalid src/dst rank (MPI_ANY_SOURCE, 0..Comm_size-1)\n\
-\n\
-  SEE ALSO: MPI_Iprobe, MPI_Recv, MPI_Irecv\n\
-            cancel\n\
-\n\
-")
-
+ @end group\n\
+ @end example\n\
+ \n\
+  SEE ALSO: MPI_Iprobe, MPI_Recv,\n\
+@end deftypefn")
 {
    octave_value_list results;
    int nargin = args.length ();

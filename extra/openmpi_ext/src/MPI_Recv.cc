@@ -627,14 +627,11 @@ int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* v
 
 
 
-
-DEFUN_DLD(MPI_Recv,args,nargout, 
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{expresult} @var{exprinfo} =} MPI_Recv(@var{EXPRSOURCE},@var{EXPRTAG},@var{EXPRCOMMOBJ})\n\
+DEFUN_DLD(MPI_Recv, args, nargout,"-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} [@var{exprflag} @var{exprinfo}]= MPI_Recv(@var{EXPRSOURCE},@var{EXPRTAG},@var{EXPRCOMMOBJ})\n\
 MPI_Recv receive  any Octave datatype into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n \n\
-even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU.\n\
 Returns @var{expresult} that is an octave variable received\n\
-and an integer @var{exprinfo} to indicate success or failure  \n\ \n\
+and an integer @var{exprinfo} to indicate success or failure  \
  @example\n\
  @group\n\
 @var{EXPRSOURCE} must be an integer indicating source processes \n\
@@ -642,7 +639,6 @@ and an integer @var{exprinfo} to indicate success or failure  \n\ \n\
 @var{EXPRCOMMOBJ} must be an octave communicator object created by MPI_Comm_Load function \n\
 @end group\n\
 @end example\n\
-\n\
 @seealso{MPI_Comm_Load,MPI_Init,MPI_Finalize,MPI_Send}\n\
 @end deftypefn")
 {

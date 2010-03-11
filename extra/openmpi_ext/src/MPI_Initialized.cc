@@ -26,22 +26,21 @@
  */
 #include "mpi.h"
 #include <octave/oct.h>
-
-DEFUN_DLD(NAME, args, nargout,
-"MPI_Initialized        Indicates whether MPI_Init has been called\n\
+DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} [@var{exprflag} @var{exprinfo}] = MPI_Initialized\n\
+           Indicates whether MPI_Init has been called\n\
 \n\
- [flag info] = MPI_Initialized\n\
-\n\
- flag(int) 0 false\n\
-           1 true\n\
-\n\
- info(int) return code\n\
-     0 MPI_SUCCESS    This function always returns MPI_SUCCESS\n\
-\n\
- SEE ALSO: MPI_Init, MPI_Finalize,\n\
-           misc\n\
-\n\
-")
+ @example\n\
+ @group\n\
+    @var{exprflag} (int) return code\n\
+	    0 false\n\
+            1 true\n\
+    @var{exprinfo} (int) return code\n\
+       0 MPI_SUCCESS    This function always returns MPI_SUCCESS\n\
+SEE ALSO: MPI_Init, MPI_Finalize\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list results;
    int flag;

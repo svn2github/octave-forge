@@ -49,6 +49,13 @@
 
 function s = blksparse (i, j, sv, m = 0, n = 0, mode)
   persistent chkver = check_version ();
+  if (nargin == 0)
+    i = j = zeros (0, 1);
+    sv = zeros (1, 1, 0);
+    s = class (struct ("i", i, "j", j, "sv", sv, "siz", [0, 0], "bsiz", [1, 1]), "blksparse");
+    return
+  endif
+
   if (nargin < 3 || nargin > 6)
     print_usage ();
   endif

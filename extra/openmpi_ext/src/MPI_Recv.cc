@@ -599,7 +599,7 @@ int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* v
     if (tstring == "string")  return(recv_string (comm, ov,source,mytag));
     if (tstring == "sq_string") return(recv_string (comm, ov,source,mytag));
     if (tstring == "range")		 {Range 	       d;    info =(recv_range (comm, d,source,mytag));	ov=d;return(info);};
-    if (tstring == "matrix")    		{ bool is_complex = false;MPI_Datatype TRcv = MPI_DOUBLE; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag); printf("Info for receiving matrix %i\n",info);return(info);}	
+    if (tstring == "matrix")    		{ bool is_complex = false;MPI_Datatype TRcv = MPI_DOUBLE; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}	
     if (tstring == "complex matrix")		{ bool is_complex = true;MPI_Datatype TRcv = MPI_DOUBLE; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info); }
     if (tstring == "bool matrix")		{ bool is_complex = false;MPI_Datatype TRcv = MPI_INT; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}  
     if (tstring == "int8 matrix")  		{ bool is_complex = false;MPI_Datatype TRcv = MPI_BYTE; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}

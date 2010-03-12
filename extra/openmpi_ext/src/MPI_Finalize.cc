@@ -27,12 +27,12 @@
 #include <octave/oct.h>
 
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} @var{exprinfo} = MPI_Finalize()\n\
+@deftypefn {Loadable Function} {} @var{INFO} = MPI_Finalize()\n\
            Terminates MPI execution environment\n\
 \n\
  @example\n\
  @group\n\
-    @var{exprinfo} (int) return code\n\
+    @var{INFO} (int) return code\n\
        0 MPI_SUCCESS    No error\n\
        5 MPI_ERR_COMM   Invalid communicator (NULL?)\n\
       13 MPI_ERR_ARG    Invalid argument (typically a NULL pointer?)\n\

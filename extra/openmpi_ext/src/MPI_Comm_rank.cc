@@ -28,14 +28,14 @@
 
 #include "simple.h"       
 DEFUN_DLD(NAME, args,nargout ,"-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} [@var{exprank} @var{exprinfo}] = MPI_Comm_rank (@var{exprin})\n\
+@deftypefn {Loadable Function} {} [@var{RANK} @var{INFO}] = MPI_Comm_rank (@var{COMM})\n\
 Determines rank of calling process in communicator.\n\
-If @var{exprin} octave comunicator object loaded with MPI_Comm_Load is omitted \n\
+If @var{COMM} octave comunicator object loaded with MPI_Comm_Load is omitted \n\
 returns an error. \n\
  @example\n\
  @group\n\
-    @var{exprank} rank of the calling process in group of communicator\n\
-    @var{exprinfo} (int) return code\n\
+    @var{RANK} rank of the calling process in group of communicator\n\
+    @var{INFO} (int) return code\n\
        0 MPI_SUCCESS    No error\n\
        5 MPI_ERR_COMM   Invalid communicator (NULL?)\n\
       13 MPI_ERR_ARG    Invalid argument (typically a NULL pointer?)\n\

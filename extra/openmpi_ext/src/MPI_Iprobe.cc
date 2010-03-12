@@ -46,21 +46,21 @@ Octave_map put_MPI_Stat (const MPI_Status &stat){
 
 
 DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} [@var{exprflag} @var{exprstat} @var{exprinfo}] = MPI_Iprobe(@var{exprsrc}, @var{exprtag}, @var{exprcomm})\n\
+@deftypefn {Loadable Function} {} [@var{FLAG} @var{STAT} @var{INFO}] = MPI_Iprobe(@var{SRCRANK}, @var{TAG}, @var{COMM})\n\
            Nonblocking test for a message\n\
  @example\n\
  @group\n\
  \n\
-     @var{exprflag} int \n\
+     @var{FLAG} int \n\
 	    1 if the message is ready to be received\n\
            0 if it is not (boolean)\n\
-     @var{exprstat} struct object\n\
+     @var{STAT} struct object\n\
        src (int)       source rank for the accepted message\n\
        tag (int)       message tag for the accepted message\n\
        err(int)        error \n\
        cnt (int)       count\n\
        can (int)       cancel\n\
-    @var{exprinfo} (int) return code\n\
+    @var{INFO} (int) return code\n\
       0 MPI_SUCCESS    No error\n\
      13 MPI_ERR_ARG    Invalid argument\n\
       5 MPI_ERR_COMM   Invalid communicator (null?)\n\
@@ -69,7 +69,7 @@ DEFUN_DLD(NAME, args, nargout,"-*- texinfo -*-\n\
  @end group\n\
  @end example\n\
  \n\
-  SEE ALSO: MPI_Probe, MPI_Recv,\n\
+  SEE ALSO: MPI_Probe, MPI_Recv, MPI documentation for examples\n\
 @end deftypefn")
 {
    octave_value_list results;

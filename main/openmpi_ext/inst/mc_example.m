@@ -22,7 +22,6 @@
 # orterun -np 3 octave --eval mc_example
 
 1;
-addpath("../src");
 function betahat = olswrapper(args)
 	n = args{1};
 	theta = args{2};
@@ -33,14 +32,14 @@ function betahat = olswrapper(args)
 endfunction
 
 
-n = 30;
+n = 2000;
 theta = [1;1];
 
 reps = 1000;
 f = "olswrapper";
 args = {n, theta};
 outfile = "mc_output";
-n_pooled = 10;
+n_pooled = 500;
 verbose = true;
 
 # montecarlo(f, args, reps, outfile, n_pooled, false, verbose);

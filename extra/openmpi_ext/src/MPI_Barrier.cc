@@ -24,23 +24,17 @@
  * [info ] = MPI_Barrier (comm)
  * ----------------------------------------------------
  */
-// Return @var{exprout} \n\
-//    @var{exprout} (int) return code\n\
-//       0 MPI_SUCCESS    No error\n\
-//       5 MPI_ERR_COMM   Invalid communicator (NULL?)\n\
-//      13 MPI_ERR_ARG    Invalid argument (typically a NULL pointer?)\n\
-// \n\
-//   SEE ALSO: MPI_Comm_Load , MPI_Comm_rank\n\
+
 
 #include "simple.h"    
 DEFUN_DLD(NAME, args, ,"-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} @var{exprout} = MPI_Barrier (@var{exprin})\n\
+@deftypefn {Loadable Function} {} @var{INFO} = MPI_Barrier (@var{COMM})\n\
 Blocks until all processes in the communicator have reached this routine.\n\
-If @var{exprin} octave comunicator object loaded with MPI_Comm_Load is omitted \n\
+If @var{COMM} octave comunicator object loaded with MPI_Comm_Load is omitted \n\
 returns an error. \n\
  @example\n\
  @group\n\
-    @var{exprout} (int) return code\n\
+    @var{INFO} (int) return code\n\
        0 MPI_SUCCESS    No error\n\
        5 MPI_ERR_COMM   Invalid communicator (NULL?)\n\
       13 MPI_ERR_ARG    Invalid argument (typically a NULL pointer?)\n\

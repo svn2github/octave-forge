@@ -334,12 +334,6 @@ function varargout = parcellfun (nproc, fun, varargin)
         fclose (cmdw(isubp));
       endfor
 
-      ## close all pipe ends
-      fclose (statr);
-      for i = 1:nproc
-        fclose (resr(i));
-      endfor
-
       ## explicitly recognize all terminated processes.
       for i = 1:nproc
         if (verbose_level > 1)
@@ -347,6 +341,13 @@ function varargout = parcellfun (nproc, fun, varargin)
           fflush (stderr);
         endif
         [pid, status] = waitpid (pids(i));
+      endfor
+
+      ## FIXME: I think order is possibly important here, and this is correct.
+      ## close all pipe ends
+      fclose (statr);
+      for i = 1:nproc
+        fclose (resr(i));
       endfor
 
     end_unwind_protect

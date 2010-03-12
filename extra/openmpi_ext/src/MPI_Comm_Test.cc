@@ -1,7 +1,7 @@
 #include "simple.h"
 DEFUN_DLD(MPI_Comm_Test, args, ,"-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} @var{exprout} = MPI_Comm_Test (@var{exprin})\n\
-Return @var{exprout} string description of the MPI_Communicator  @var{exprin}\n\
+@deftypefn {Loadable Function} {} @var{DESCRIPTION} = MPI_Comm_Test (@var{COMM})\n\
+Return @var{DESCRIPTION} string description of the MPI_Communicator  @var{COMM}\n\
 For\n\
 example,\n\
 \n\
@@ -28,13 +28,13 @@ MPI_Finalize();\n\
 	if(args.length() != 1 
 	   || args(0).type_id()!=simple::static_type_id()){
 		
-		error("usage: simpletest(simpleobject)");
+		error("usage: MPI_Comm_Test(octave_comunicator_object)");
 		return octave_value(-1);
 	}
 	const octave_base_value& rep = args(0).get_rep();
 	const simple& b = ((const simple &)rep);
-        octave_stdout << "simpletest has " << b.name_value()  << " output arguments.\n";
+        octave_stdout << "MPI_Comm_Test has " << b.name_value()  << " output arguments.\n";
        MPI_Comm res = b.comunicator_value();
-   
+       retval = b.name_value();
   return retval;
 }

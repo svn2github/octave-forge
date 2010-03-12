@@ -26,6 +26,12 @@
 ## Argument and options handling is analogical to @code{parcellfun}, except that
 ## arguments are arrays rather than cells. If cells occur as arguments, they are treated
 ## as arrays of singleton cells.
+## Arrayfun supports one extra option compared to parcellfun: "Vectorized".
+## This option must be given together with "ChunksPerProc" and it indicates
+## that @var{fun} is able to operate on vectors rather than just scalars, and returns
+## a vector. The same must be true for @var{errfunc}, if given.
+## In this case, the array is split into chunks which are then directly served to @var{func}
+## for evaluation, and the results are concatenated to output arrays.
 ## @seealso{parcellfun, arrayfun}
 ## @end deftypefn
 
@@ -35,26 +41,33 @@ function varargout = pararrayfun (nproc, func, varargin)
     print_usage ();
   endif
 
-  nargs = length (varargin);
-
-  recognized_opts = {"UniformOutput", "ErrorHandler", "VerboseLevel"};
-
-  while (nargs >= 2)
-    maybeopt = varargin{nargs-1};
-    if (ischar (maybeopt) && any (strcmpi (maybeopt, recognized_opts)))
-      nargs -= 2;
-    else
-      break;
-    endif
-  endwhile
+  [nargs, uniform_output, error_handler, ...
+  verbose_level, chunks_per_proc, vectorized] = parcellfun_opts (varargin); 
 
   args = varargin(1:nargs);
   opts = varargin(nargs+1:end);
+  if (nargs == 0)
+    print_usage ();
+  elseif (nargs > 1)
+    [err, args{:}] = common_size (args{:});
+    if (err)
+      error ("pararrayfun: arguments size must match");
+    endif
+  endif
 
-  args = cellfun (@num2cell, args, "UniformOutput", false,
-  "ErrorHandler",  @arg_class_error);
+  njobs = numel (args{1});
 
-  [varargout{1:nargout}] = parcellfun (nproc, func, args{:}, opts{:});
+  if (vectorized && chunks_per_proc > 0 && chunks_per_proc < njobs / nproc)
+    ## If "Vectorized" is on, we apply the function directly on chunks of
+    ## arrays.
+    [varargout{1:nargout}] = chunk_parcellfun (nproc, chunks_per_proc, ...
+    func, error_handler, verbose_level, args{:});
+  else
+    args = cellfun (@num2cell, args, "UniformOutput", false,
+    "ErrorHandler",  @arg_class_error);
+
+    [varargout{1:nargout}] = parcellfun (nproc, func, args{:}, opts{:});
+  endif
 
 endfunction
 

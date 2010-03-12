@@ -21,6 +21,7 @@
 ## @deftypefn{Function File} {[@var{o1}, @var{o2}, @dots{}] =} parcellfun (@var{nproc}, @var{fun}, @var{a1}, @var{a2}, @dots{})
 ## @deftypefnx{Function File} {} parcellfun (nproc, fun, @dots{}, "UniformOutput", @var{val})
 ## @deftypefnx{Function File} {} parcellfun (nproc, fun, @dots{}, "ErrorHandler", @var{errfunc})
+## @deftypefnx{Function File} {} parcellfun (nproc, fun, @dots{}, "ChunksPerProc", @var{val})
 ## Evaluates a function for multiple argument sets using multiple processes.
 ## @var{nproc} should specify the number of processes. A maximum recommended value is
 ## equal to number of CPUs on your machine or one less.
@@ -33,6 +34,9 @@
 ## A VerboseLevel option controlling the level output is supported.  
 ## A value of 0 is quiet, 1 is normal, and 2 or more enables
 ## debugging output.
+## The ChunksPerProc option control the number of chunks which contains elementary jobs. This
+## option particularly useful when time execution of function is small. Setting this option
+## to 100 is a good choice in most cases.
 ##
 ## NOTE: this function is implemented using "fork" and a number of pipes for IPC.
 ## Suitable for systems with an efficient "fork" implementation (such as GNU/Linux),
@@ -60,44 +64,39 @@ function varargout = parcellfun (nproc, fun, varargin)
     error ("parcellfun: fun must be either a function handle or name")
   endif
 
-  uniform_output = true;
-  error_handler = [];
-  verbose_level = 1; # default to normal output level
+  [nargs, uniform_output, error_handler, ...
+  verbose_level, chunks_per_proc] = parcellfun_opts (varargin);
 
-  args = varargin;
-  nargs = length (varargin);
-
-  ## parse options
-  if (nargs > 1)
-    do
-      if (strcmp (args{nargs-1}, "UniformOutput"))
-        uniform_output = args{nargs};
-        nargs -= 2;
-        continue;
-      endif
-      if (strcmp (args{nargs-1}, "ErrorHandler"))
-        error_handler = args{nargs};
-        nargs -= 2;
-        continue;
-      endif
-      if (strcmp (args{nargs-1}, "VerboseLevel"))
-        verbose_level = args{nargs};
-        nargs -= 2;
-        continue;
-      endif
-      break;
-    until (nargs < 2);
+  args = varargin(1:nargs);
+  if (! all (cellfun ("isclass", args, "cell")))
+    error ("parcellfun: all non-option arguments except the first one must be cell arrays");
   endif
-
-  args = args(1:nargs);
-
-  if (length (args) == 0)
+  
+  if (nargs == 0)
     print_usage ();
-  elseif (length (args) > 1)
+  elseif (nargs > 1)
     [err, args{:}] = common_size (args{:});
     if (err)
       error ("parcellfun: arguments size must match");
     endif
+  endif
+
+  njobs = numel (args{1});
+
+  if (chunks_per_proc > 0 && chunks_per_proc < njobs / nproc)
+    ## We need chunked evaluation.
+
+    ## Function executed for a chunk.
+    if (isempty (error_handler))
+      chunk_fun = @(varargin) cellfun (fun, varargin{:}, "UniformOutput", uniform_output);
+    else
+      chunk_fun = @(varargin) cellfun (fun, varargin{:}, ...
+      "UniformOutput", uniform_output, "ErrorHandler", error_handler);
+    endif
+
+    [varargout{1:nargout}] = chunk_parcellfun (nproc, chunks_per_proc, ...
+    chunk_fun, [], verbose_level, args{:});
+    return
   endif
 
   nproc = min (nproc, numel (args{1}));
@@ -270,7 +269,6 @@ function varargout = parcellfun (nproc, fun, varargin)
 
   else
     ## parent process.
-    njobs = numel (varargin{1});
     res = cell (nargout, njobs);
 
     pjobs = 0;
@@ -316,7 +314,7 @@ function varargout = parcellfun (nproc, fun, varargin)
           fwrite (cmdw(isubp), 0, "double");
           fclose (cmdw(isubp));
         endif
-        if( verbose_level > 0 )
+        if (verbose_level > 0)
           fprintf (stderr, "\rparcellfun: %d/%d jobs done", pjobs - sum (pending != 0), njobs);
           fflush (stderr);
         endif

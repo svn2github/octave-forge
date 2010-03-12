@@ -1,10 +1,26 @@
+// Copyright (C) 2009 Riccardo Corradini <riccardocorradini@yahoo.it>
+// under the terms of the GNU General Public License.
+// Copyright (C) 2009 VZLU Prague
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include "simple.h"
 
 DEFUN_DLD(MPI_Comm_Load, args, ,"-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} @var{exprout} = MPI_Comm_Load (@var{exprin})\n\
-Return @var{exprout} the MPI_Communicator object whose description is  @var{exprin}, as a string.\n\
+@deftypefn {Loadable Function} {} @var{COMM} = MPI_Comm_Load (@var{DESCRIPTION})\n\
+Return @var{COMM} the MPI_Communicator object whose description is  @var{DESCRIPTION}, as a string.\n\
 The default value will be MPI_COMM_WORLD. \n\
-If @var{exprin} is omitted, return anyway an MPI_COMM_WORLD comunicator object \n\
+If @var{DESCRIPTION} is omitted, return anyway an MPI_COMM_WORLD comunicator object \n\
 with no decription.\n\
 For\n\
 example,\n\
@@ -29,7 +45,7 @@ MPI_Finalize();\n\
   octave_value retval;
   if (args.length () != 1 || !args (0).is_string ())
     {
-      error ("simple: first argument must be a string");
+      error ("MPI_Comm_Load: first argument must be a string");
       return retval;
     }
    

@@ -363,6 +363,9 @@ end;
 % remove diagonal elements, because these have not any meaning %
 nan_sig(isnan(nan_R)) = nan;
 
+% reshape 
+nan_sig = nan_sig(1:c1,c1+(1:c2));
+
 if any(nan_sig(:) < alpha),
         tmp = nan_sig(:);			% Hack to skip NaN's in MIN(X)
         min_sig = min(tmp(~isnan(tmp))); 	% Necessary, because Octave returns NaN rather than min(X) for min(NaN,X) 

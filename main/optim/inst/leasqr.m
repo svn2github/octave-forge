@@ -596,3 +596,28 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 %! [f1, p1, kvg1, iter1, corp1, covp1, covr1, stdresid1, Z1, r21] = ...
 %!    leasqr (t, data, pin, F, stol, niter, wt1, dp, dFdp, options);
 
+%!demo
+%!  %% Example for linear inequality constraints.
+%!  %% model function:
+%!  F = @ (x, p) p(1) * exp (p(2) * x);
+%!  %% independents and dependents:
+%!  x = 1:5;
+%!  y = [1, 2, 4, 7, 14];
+%!  %% initial values:
+%!  init = [.25; .25];
+%!  %% other configuration (default values):
+%!  tolerance = .0001;
+%!  max_iterations = 20;
+%!  weights = ones (5, 1);
+%!  dp = [.001; .001]; % bidirectional numeric gradient stepsize
+%!  dFdp = 'dfdp'; % function for gradient (numerical)
+%!
+%!  %% linear constraints, A.' * parametervector + B >= 0
+%!  A = [1; -1]; B = 0; % p(1) >= p(2);
+%!  options.inequc = {A, B};
+%!
+%!  %% start leasqr, be sure that 'verbose' is not set
+%!  global verbose; verbose = false;
+%!  [f, p, cvg, iter] = ...
+%!      leasqr (x, y, init, F, tolerance, max_iterations, ...
+%!	      weights, dp, dFdp, options)

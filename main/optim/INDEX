@@ -12,9 +12,9 @@ Minimization
  cg_min
  de_min
 Data fitting
- expfit expdemo
- wpolyfit wpolyfitdemo 
- leasqr leasqrdemo
+ expfit
+ wpolyfit
+ leasqr
  LinearRegression
 Compatibility
  fminunc_compat
@@ -33,4 +33,3 @@ Examples
  bfgsmin_example
  rosenbrock
  samin_example
- cg_min_example_1 cg_min_example_2 cg_min_example_3

@@ -629,13 +629,13 @@ int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* v
 
 DEFUN_DLD(MPI_Recv, args, nargout,"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} [@var{VALUE} @var{INFO}]= MPI_Recv(@var{SOURCE},@var{TAG},@var{COMM})\n\
-MPI_Recv receive  any Octave datatype into contiguous memory using openmpi library even over an hetherogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n \n\
+MPI_Recv receive any Octave datatype into contiguous memory using openmpi library even over an heterogeneous cluster i.e 32 bits CPUs and 64 bits CPU \n \n\
 Returns @var{VALUE} that is an octave variable received\n\
 and an integer @var{INFO} to indicate success or failure  \
  @example\n\
  @group\n\
 @var{SOURCE} must be an integer indicating source processes \n\
-@var{TAG} must be an integer called TAG to identifie the message by openmpi \n\
+@var{TAG} must be an integer to identify the message by openmpi \n\
 @var{COMM} must be an octave communicator object created by MPI_Comm_Load function \n\
 @end group\n\
 @end example\n\

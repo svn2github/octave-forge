@@ -168,7 +168,7 @@ int __bisectionstep(double &step, double &obj, const std::string f, const octave
 	__bfgsmin_obj(obj, f, f_args, trial, minarg);
 	if (verbose) printf("bisectionstep: trial step: %g  obj value: %g\n", step, obj);
 	// this first loop goes until an improvement is found
-	while (obj > best_obj) {
+	while (obj >= best_obj) {
 		if (step < 2.0*DBL_EPSILON) {
 			if (verbose) warning("bisectionstep: unable to find improvement, setting step to zero");
 			step = 0.0;
@@ -223,13 +223,13 @@ int __newtonstep(double &step, double &obj, const std::string f, const octave_va
 	hessian = fabs(hessian); // ensures we're going in a decreasing direction
 	if (hessian < 2.0*DBL_EPSILON) hessian = 1.0; // avoid div by zero
 	step = - gradient / hessian;  // hessian inverse gradient: the Newton step
-	step = (step < 1.0)*step + 1.0*(step >= 1.0); // maximum stepsize is 1.0 - conservative
+//	step = (step < 1.0)*step + 1.0*(step >= 1.0); // maximum stepsize is 1.0 - conservative
 	// ensure that this is improvement, and if not, fall back to bisection
 	__bfgsmin_obj(obj, f, f_args, x + step*dx, minarg);
-	if (verbose) printf("newtonstep: trial step: %g  obj value: %g\n", step, obj);
-	if (obj > obj_0) {
+        if (verbose) printf("newtonstep: trial step: %g  obj value: %g\n", step, obj);
+        if (obj > obj_0) {
 		obj = obj_0;
-	if (verbose) warning("__stepsize: no improvement with Newton step, falling back to bisection");
+	        if (verbose) warning("__stepsize: no improvement with Newton step, falling back to bisection");
 		found_improvement = __bisectionstep(step, obj, f, f_args, x, dx, minarg, verbose);
 	}
 	else found_improvement = 1;
@@ -311,10 +311,8 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	}
 
 	last_obj_value = obj_in; // initialize, is updated after each iteration
-	obj_value = obj_in;
 	// MAIN LOOP STARTS HERE
 	for (iter = 0; iter < max_iters; iter++) {
-		obj_in = obj_value;
     		if(memory > 0) {  // lbfgs
 			if (iter < memory) d = lbfgs_recursion(iter, sigmas, gammas, g);
 			else d = lbfgs_recursion(memory, sigmas, gammas, g);
@@ -326,13 +324,10 @@ Users should not use this directly. Use bfgsmin.m instead") {
 		conv_param = 0;
 		conv_grad = 0;
 		// function convergence
-		__bfgsmin_obj(obj_value, f, f_args, theta+d, minarg);
-                if (fabs(last_obj_value) > 1.0)	{
-			conv_fun = (fabs(obj_value - last_obj_value)/fabs(last_obj_value)) < func_tol;
-		}
-		else {
-			conv_fun = fabs(obj_value - last_obj_value) < func_tol;
-		}
+                p = theta+d;
+		__bfgsmin_obj(obj_value, f, f_args, p, minarg);
+                if (fabs(last_obj_value) > 1.0)	conv_fun=(fabs((obj_value/last_obj_value-1)))<func_tol;
+		else conv_fun = fabs(obj_value - last_obj_value) < func_tol;
        		// parameter change convergence
 		test = sqrt(theta.transpose() * theta);
 		if (test > 1.0) conv_param = sqrt(d.transpose() * d) / test < param_tol ;
@@ -353,12 +348,13 @@ Users should not use this directly. Use bfgsmin.m instead") {
                 // if not done, then take a step
 		// stepsize: try (l)bfgs direction, then steepest descent if it fails
 		f_args(minarg - 1) = theta;
+                obj_value = last_obj_value;
 		__newtonstep(stepsize, obj_value, f, f_args, theta, d, minarg, warnings);
 		if (stepsize == 0.0)  {  // fall back to steepest descent
 			if (warnings) warning("bfgsmin: BFGS direction fails, switch to steepest descent");
 			d = -g; // try steepest descent
 			H = identity_matrix(k,k); // accompany with Hessian reset, for good measure
-			obj_value = obj_in;
+			obj_value = last_obj_value;
 			__newtonstep(stepsize, obj_value, f, f_args, theta, d, minarg, warnings);
 			if (stepsize == 0.0) {  // if true, exit, we can't find a direction of descent
 				warning("bfgsmin: failure, exiting. Try different start values?");

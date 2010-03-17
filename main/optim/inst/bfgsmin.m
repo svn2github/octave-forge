@@ -81,7 +81,7 @@ function [parameter, obj, convergence, iters] = bfgsmin(f, f_args, control)
 	if (length(control) == 2) control{3} = 1; endif # strong (function, gradient and parameter change) convergence required?
 	if (length(control) == 3) control{4} = 1; endif # argument with respect to which minimization is done
 	if (length(control) == 4) control{5} = 0; endif # memory for lbfgs: 0 uses ordinary bfgs
-	if (length(control) == 5) control{6} = 1e-12; endif # tolerance for function convergence
+	if (length(control) == 5) control{6} = 1e-10; endif # tolerance for function convergence
 	if (length(control) == 6) control{7} = 1e-6; endif # tolerance for parameter convergence
 	if (length(control) == 7) control{8} = 1e-5; endif # tolerance for gradient convergence
 

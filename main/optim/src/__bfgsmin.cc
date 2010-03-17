@@ -1,4 +1,4 @@
-// Copyright (C) 2004,2005,2006,2007  Michael Creel   <michael.creel@uab.es>
+// Copyright (C) 2004,2005,2006,2007,2010  Michael Creel   <michael.creel@uab.es>
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -28,9 +28,7 @@
 #include <octave/Cell.h>
 #include <float.h>
 #include "error.h"
-#ifdef __MINGW32__
-#define isnan _isnan
-#endif
+
 
 int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_args, const ColumnVector theta, const int minarg)
 {
@@ -164,13 +162,13 @@ int __bisectionstep(double &step, double &obj, const std::string f, const octave
 	ColumnVector trial;
 	// initial values
 	best_obj = obj;
-	improvement_0 = 0.0;
+        improvement_0 = 0.0;
 	step = 1.0;
 	trial = x + step*dx;
 	__bfgsmin_obj(obj, f, f_args, trial, minarg);
 	if (verbose) printf("bisectionstep: trial step: %g  obj value: %g\n", step, obj);
 	// this first loop goes until an improvement is found
-	while (obj >= best_obj) {
+	while (obj > best_obj) {
 		if (step < 2.0*DBL_EPSILON) {
 			if (verbose) warning("bisectionstep: unable to find improvement, setting step to zero");
 			step = 0.0;
@@ -212,7 +210,7 @@ int __newtonstep(double &step, double &obj, const std::string f, const octave_va
 	double obj_0, obj_left, obj_right, delta, inv_delta_sq, gradient, hessian;
 	int found_improvement = 0;
 	obj_0 = obj;
-	delta = 0.001; // experimentation show that this is a good choice
+	delta = 0.001; // experimentation shows that this is a good choice
 	inv_delta_sq = 1.0 / (delta*delta);
 	ColumnVector x_right = x + delta*dx;
 	ColumnVector x_left = x  - delta*dx;
@@ -225,19 +223,13 @@ int __newtonstep(double &step, double &obj, const std::string f, const octave_va
 	hessian = fabs(hessian); // ensures we're going in a decreasing direction
 	if (hessian < 2.0*DBL_EPSILON) hessian = 1.0; // avoid div by zero
 	step = - gradient / hessian;  // hessian inverse gradient: the Newton step
-	if (step < 0.0) {	// step should be positive. If it is not, go to bisection step
-		if (verbose) warning("__stepsize: no improvement with Newton step, falling back to bisection");
-		obj = obj_0;
-		found_improvement = __bisectionstep(step, obj, f, f_args, x, dx, minarg, verbose);
-		return 0;
-	}
 	step = (step < 1.0)*step + 1.0*(step >= 1.0); // maximum stepsize is 1.0 - conservative
 	// ensure that this is improvement, and if not, fall back to bisection
 	__bfgsmin_obj(obj, f, f_args, x + step*dx, minarg);
 	if (verbose) printf("newtonstep: trial step: %g  obj value: %g\n", step, obj);
-	if (obj >= obj_0) {
+	if (obj > obj_0) {
 		obj = obj_0;
-		if (verbose) warning("__stepsize: no improvement with Newton step, falling back to bisection");
+	if (verbose) warning("__stepsize: no improvement with Newton step, falling back to bisection");
 		found_improvement = __bisectionstep(step, obj, f, f_args, x, dx, minarg, verbose);
 	}
 	else found_improvement = 1;
@@ -260,7 +252,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 		gradient_ok, i, j, k, conv_fun, conv_param, conv_grad, have_gradient, \
 		try_gradient, warnings;
 	double func_tol, param_tol, gradient_tol, stepsize, obj_value, obj_in, \
-		last_obj_value, denominator, test;
+		last_obj_value, obj_value2, denominator, test;
 	Matrix H, H1, H2;
 	ColumnVector thetain, d, g, g_new, p, q, sig, gam;
 
@@ -308,8 +300,8 @@ Users should not use this directly. Use bfgsmin.m instead") {
 
 	// Initial gradient (try analytic, and use it if it's close enough to numeric)
 	__bfgsmin_gradient(g, f, f_args, theta, minarg, 1, have_gradient);	// try analytic
-	if (warnings) printf("function claims to provide analytic gradient\n");
-	if (have_gradient) {					// check equality if analytic available
+        if (have_gradient) {					// check equality if analytic available
+		if (warnings) printf("function claims to provide analytic gradient\n");
 		have_gradient = 0;				// force numeric
 		__bfgsmin_gradient(g_new, f, f_args, theta, minarg, 0, have_gradient);
 		p = g - g_new;
@@ -323,16 +315,42 @@ Users should not use this directly. Use bfgsmin.m instead") {
 	// MAIN LOOP STARTS HERE
 	for (iter = 0; iter < max_iters; iter++) {
 		obj_in = obj_value;
-		// make sure the messages aren't stale
-		conv_fun = -1;
-		conv_param = -1;
-		conv_grad = -1;
     		if(memory > 0) {  // lbfgs
 			if (iter < memory) d = lbfgs_recursion(iter, sigmas, gammas, g);
 			else d = lbfgs_recursion(memory, sigmas, gammas, g);
 			d = -d;
 		}
 		else d = -H*g; // ordinary bfgs
+        	// convergence tests
+		conv_fun = 0;
+		conv_param = 0;
+		conv_grad = 0;
+		// function convergence
+		__bfgsmin_obj(obj_value, f, f_args, theta+d, minarg);
+                if (fabs(last_obj_value) > 1.0)	{
+			conv_fun = (fabs(obj_value - last_obj_value)/fabs(last_obj_value)) < func_tol;
+		}
+		else {
+			conv_fun = fabs(obj_value - last_obj_value) < func_tol;
+		}
+       		// parameter change convergence
+		test = sqrt(theta.transpose() * theta);
+		if (test > 1.0) conv_param = sqrt(d.transpose() * d) / test < param_tol ;
+		else conv_param = sqrt(d.transpose() * d) < param_tol;		// Want intermediate results?
+                // gradient convergence
+		conv_grad = sqrt(g.transpose() * g) < gradient_tol;
+                // Are we done?
+		if (criterion == 1) {
+			if (conv_fun && conv_param && conv_grad) {
+				convergence = 1;
+				break;
+			}
+		}
+		else if (conv_fun) {
+			convergence = 1;
+			break;
+		}
+                // if not done, then take a step
 		// stepsize: try (l)bfgs direction, then steepest descent if it fails
 		f_args(minarg - 1) = theta;
 		__newtonstep(stepsize, obj_value, f, f_args, theta, d, minarg, warnings);
@@ -352,43 +370,31 @@ Users should not use this directly. Use bfgsmin.m instead") {
 			}
 		}
 		p = stepsize*d;
-		// check normal convergence: all 3 must be satisfied
-		// function convergence
-		if (fabs(last_obj_value) > 1.0)	{
-			conv_fun = (fabs(obj_value - last_obj_value)/fabs(last_obj_value)) < func_tol;
-		}
-		else {
-			conv_fun = fabs(obj_value - last_obj_value) < func_tol;
-		}
-		// parameter change convergence
-		test = sqrt(theta.transpose() * theta);
-		if (test > 1.0) conv_param = sqrt(p.transpose() * p) / test < param_tol ;
-		else conv_param = sqrt(p.transpose() * p) < param_tol;		// Want intermediate results?
-		// gradient convergence
-		conv_grad = sqrt(g.transpose() * g) < gradient_tol;
-		// Want intermediate results?
+                // Want intermediate results?
 		if (verbosity > 1) {
 			printf("------------------------------------------------\n");
 			printf("bfgsmin iteration %d  convergence (f g p): %d %d %d\n", iter, conv_fun, conv_grad, conv_param);
 			if (warnings) {
 				if (memory > 0) printf("Using LBFGS, memory is last %d iterations\n",memory);
 			}
-			printf("\nfunction value: %g  stepsize: %g  \n\n", obj_value, stepsize);
+			printf("\nfunction value: %g  stepsize: %g  \n\n", last_obj_value, stepsize);
 			if (have_gradient) printf("used analytic gradient\n");
 			else printf("used numeric gradient\n");
 			for (j = 0; j<k; j++) printf("%15.5f %15.5f %15.5f\n",theta(j), g(j), p(j));
 		}
-		// Are we done?
-		if (criterion == 1) {
-			if (conv_fun && conv_param && conv_grad) {
-				convergence = 1;
-				break;
-			}
-		}
-		else if (conv_fun) {
-			convergence = 1;
-			break;
-		}
+		//--------------------------------------------------
+		// // Are we done?
+		// if (criterion == 1) {
+		// 	if (conv_fun && conv_param && conv_grad) {
+		// 		convergence = 1;
+		// 		break;
+		// 	}
+		// }
+		// else if (conv_fun) {
+		// 	convergence = 1;
+		// 	break;
+		// }
+		//-------------------------------------------------- 
 		last_obj_value = obj_value;
 		theta = theta + p;
 		// new gradient
@@ -456,7 +462,7 @@ Users should not use this directly. Use bfgsmin.m instead") {
 		if (have_gradient) printf("used analytic gradient\n");
 		else printf("used numeric gradient\n");
 		printf("          param    gradient (n)          change\n");
-		for (j = 0; j<k; j++) printf("%15.5f %15.5f %15.5f\n",theta(j), g(j), p(j));
+		for (j = 0; j<k; j++) printf("%15.5f %15.5f %15.5f\n",theta(j), g(j), d(j));
 	}
 	f_return(3) = iter;
 	f_return(2) = convergence;

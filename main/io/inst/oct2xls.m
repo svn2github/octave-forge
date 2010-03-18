@@ -58,6 +58,11 @@
 ## Beware that -if invoked- Excel invocations may be left running silently
 ## in case of COM errors. Invoke xlsclose with proper pointer struct to
 ## close them.
+## When using java, note that data array sizes > 2.10^5 elements may exhaust
+## the java shared memory space for the default java memory settings.
+## For larger arrays appropriate memory settings are needed in the file
+## java.opts; then the maximum array size for the java-based spreadsheet
+## options is about 5-6.10^5 elements.
 ##
 ## Examples:
 ##
@@ -71,7 +76,9 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-01
-## Latest update: 2010-01-03 (OOXML support)
+## Updates: 
+## 2010-01-03 (OOXML support)
+## 2010-03-14 Updated help text section on java memory usage
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh, topleft='A1')
 
@@ -152,7 +159,9 @@ endfunction
 ## 2009-12-11
 ## 2010-01-12 Fixed typearr sorting out (was only 1-dim & braces rather than parens))
 ##            Set cells corresponding to empty array cells empty (cf. Matlab)
-## 2010-01-13 Removed a extraneous statement used for debugging 
+## 2010-01-13 Removed an extraneous statement used for debugging 
+##            FIXMEs added (array size vs. spreadsheet size in java based subfunctions);
+##            I plan look at it when octave v.3.4 is about to arrive.
 
 function [ xls, status ] = oct2com2xls (obj, xls, wsh, top_left_cell='A1')
 
@@ -360,6 +369,9 @@ endfunction
 ## Updates: 
 ## 2010-01-03 Bugfixes
 ## 2010-01-12 Added xls.changed = 1 statement to signal successful write
+## 2010-03-08 Dumped formula evaluator for booleans. Not being able to 
+##            write booleans was due to a __java__.oct deficiency (see
+##            http://sourceforge.net/mailarchive/forum.php?thread_name=4B59A333.5060302%40net.in.tum.de&forum_name=octave-dev )
 
 function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, topleftcell="A1")
 
@@ -429,6 +441,8 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, topleftcell="A1")
  
 	[topleft, nrows, ncols, trow, lcol] = parse_sp_range (topleftcell);
 	[nrows, ncols] = size (obj);
+	
+	## FIXME Check on max spreadsheet size vs. max data array size needed
 
 	# Prepare type array
 	typearr = ctype(4) * ones (nrows, ncols);			# type "BLANK", provisionally
@@ -454,7 +468,7 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, topleftcell="A1")
 	typearr(lptr) = ctype(5);							# BOOLEAN, temp NUMERIC
 
 	# Create formula evaluator (needed to be able to write boolean values!)
-	frm_eval = xls.workbook.getCreationHelper ().createFormulaEvaluator ();
+	# frm_eval = xls.workbook.getCreationHelper ().createFormulaEvaluator ();
 
 	for ii=1:nrows
 		ll = ii + trow - 2;    		# Java POI's row count = 0-based
@@ -593,6 +607,8 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, topleftcell="A1")
  
 	[topleft, nrows, ncols, trow, lcol] = parse_sp_range (topleftcell);
 	[nrows, ncols] = size (obj);
+
+	## FIXME check on spreadsheet size vs. data array size needed
 
 	# Prepare type array to speed up writing
 	typearr = 5 * ones (nrows, ncols);				# type "EMPTY", provisionally

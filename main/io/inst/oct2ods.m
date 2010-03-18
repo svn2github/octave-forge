@@ -19,14 +19,15 @@
 ## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh})
 ## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh}, @var{range})
 ##
-## Add data in 1D/2D array @var{arr} into a cell range @var{range} in
-## sheet @var{wsh} in an OpenOffice_org Calc spreadsheet file pointed to in
-## structure @var{ods}. @var{ods} must have been made earlier by odsopen().
-## Return argument @var{ods} equals supplied argument @var{ods} and is
-## updated by oct2ods.
+## Transfer data to an OpenOffice_org Calc spreadsheet previously opened
+## by odsopen().
 ##
-## A subsequent call to odsclose is needed to write the updated spreadsheet
-## to disk (and -if needed- close the Java invocation holding the file pointer).
+## Data in 1D/2D array @var{arr} are transferred into a cell range
+## @var{range} in sheet @var{wsh}. @var{ods} must have been made earlier
+## by odsopen(). Return argument @var{ods} should be the same as supplied
+## argument @var{ods} and is updated by oct2ods. A subsequent call to
+## odsclose is needed to write the updated spreadsheet to disk (and
+## -if needed- close the Java invocation holding the file pointer).
 ##
 ## @var{arr} can be any array type save complex. Mixed numeric/text arrays
 ## can only be cell arrays.
@@ -71,8 +72,8 @@
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
 ## Updates:
-## 2010-01-15 Texinfo header
-## 2010-03-14 Updated help text on java memory usage
+## 2010-01-15 Updated texinfo header
+## 2010-03-14 Updated help text (a.o. on java memory usage)
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[])
 
@@ -547,6 +548,8 @@ endfunction
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
 ## First usable version: 2010-01-14
+## Updates:
+## 2010-03-17 Adapted to simplified calccelladdress argument list
 
 function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 
@@ -572,7 +575,7 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 		trow = trow - 1; lcol = lcol - 1;
 	endif
 	if (trow >65536 || lcol> 1024)
-		celladd = calccelladdress (lcol, trow, 1, 1);
+		celladd = calccelladdress (lcol, trow);
 		error (sprintf ("Topleft cell (%s) beyond spreadsheet limits (AMJ65536).", celladd));
 	endif
 	# Check spreadsheet capacity beyond requested topleft cell

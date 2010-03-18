@@ -20,7 +20,7 @@
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{ods}, @var{rstatus} ] = ods2oct (@var{ods}, @var{wsh}, @var{range})
 ##
 ## Read data contained within range @var{range} from worksheet @var{wsh}
-## in an OpenOffice_org spreadsheet file pointed to in struct @var{ods}.
+## in an OpenOffice.org spreadsheet file pointed to in struct @var{ods}.
 ##
 ## ods2oct is a mere wrapper for interface-dependent scripts (e.g.,
 ## ods2jotk2oct and ods2jod2oct) that do the actual reading.
@@ -133,7 +133,12 @@ endfunction
 
 ## Author: Philip Nenhuis <pr.nienhuis at users.sf.net>
 ## Created: 2009-12-24
-## Last update: 2010-01-08
+## Updates:
+## 2010-01-08 First working version
+## 2010-03-18 Fixed many bugs with wrong row references in case of empty upper rows
+##      "     Fixed reference to upper row in case of nr-rows-repeated top tablerow
+##      "     Tamed down memory usage for rawarr when desired data range is given
+##      "     Added call to getusedrange() for cases when o range was specified
 
 function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 
@@ -169,7 +174,7 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 			sh_name = sheets.item(ii-1).getTableNameAttribute ();
 			if (strcmp (sh_name, wsh))
 				# Convert local copy of wsh into a number (pointer)
-				wsh = ii + i;
+				wsh = ii;
 			endif
 		endwhile
 		if (ischar (wsh)) error (sprintf ("No worksheet '%s' found in file %s", wsh, ods.filename)); endif
@@ -182,17 +187,12 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 	str = sprintf ("//table:table[%d]/table:table-row", wsh);
 	sh = xpath.evaluate (str, odfcont, NODESET);
 	nr_of_rows = sh.getLength(); 
-	# Create storage for data content. We can't know max row length yet so expect the worst
-	rawarr = cell (nr_of_rows, 1024);
 
 	# Either parse (given cell range) or prepare (unknown range) help variables 
 	if (isempty (crange))
-		trow = 1;				# Top row
-		brow = nr_of_rows;		# Bottom row (ODS max = 65535, Xpath's guess = better)
-		nrows = brow;			# Number of rows to be read
-		lcol = 1;				# Leftmost column of range
-		rcol = 1024;			# Rightmost columns (1024 on ODS)
-		ncols = rcol;			# Number of columns to be read
+		[ trow, brow, lcol, rcol ] = getusedrange (ods, wsh);
+		nrows = brow - trow + 1;	# Number of rows to be read
+		ncols = rcol - lcol + 1;	# Number of columns to be read
 	else
 		[dummy, nrows, ncols, trow, lcol] = parse_sp_range (crange);
 		brow = min (trow + nrows - 1, nr_of_rows);
@@ -203,23 +203,37 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 		ncols = min (ncols, 1024 - lcol + 1);
 		nrows = min (nrows, 65536 - trow + 1);
 	endif
+	# Create storage for data content. We can't know max row length yet so expect the worst
+	rawarr = cell (brow, rcol);
 
-	# Read from worksheet row by row. Row numbers are 0-based
+	# Prepare reading sheet row by row
 	rightmcol = 0;		# Used to find actual rightmost column
 	ii = trow - 1;		# Spreadsheet row counter
-	rowcnt = ii;		# xpath row counter (multiple rows may be condensed in one!)
-	while (++ii <= brow)
+	rowcnt = 0;
+	# Find requested uppermost requested *tablerow*. It may be influenced by nr-rows-repeated
+	if (ii >= 1)
+		tfillrows = 0;
+		while (tfillrows < ii)
+			row = sh.item(tfillrows);
+			extrarows = row.getTableNumberRowsRepeatedAttribute ();
+			tfillrows = tfillrows + extrarows;
+			++rowcnt;
+		endwhile
+		# Desired top row may be in a nr-rows-repeated tablerow....
+		if (tfillrows > ii) ii = tfillrows; endif
+	endif
+
+	# Read from worksheet row by row. Row numbers are 0-based
+	while (ii < brow)
 		row = sh.item(rowcnt++);
 		nr_of_cells = min (row.getLength (), rcol);
 		rightmcol = max (rightmcol, nr_of_cells);	# Keep track of max row length
-		
 		# Read column (cell, "table-cell" in ODS speak) by column
 		jj = lcol; r_cols = 0;
 		while (r_cols <= 1024 && jj <= rcol)
 			tcell = row.getCellAt(jj-1); ++r_cols;
 			if (~isempty (tcell)) 		# If empty it's possibly in columns-repeated/spanned
 				if ~(index (char(tcell), 'text:p>Err:') || index (char(tcell), 'text:p>#DIV'))	
-
 					# Get data from cell
 					ctype = tcell.getOfficeValueTypeAttribute ();
 					cvalue = tcell.getOfficeValueAttribute ();
@@ -249,19 +263,23 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 								rawarr(ii, jj) = datenum (0, 0, 0, hh, mm, ss);
 							endif
 						case 'boolean'
-							if (strcmp (deblank (cvalue), 'true'))
-								rawarr(ii, jj) = true;
-							else
-								rawarr(ii, jj) = false;
-							endif
+							cvalue = tcell.getOfficeBooleanValueAttribute ();
+							rawarr(ii, jj) = cvalue; 
 						case 'string'
-							tmp = char (tcell);
-							# Hack string value from between <text:p|r> </text:p|r> tags
-							ist = index (tmp, '<text');
-							if (ist)
-								ist = ist + 8; ien = index (tmp(ist:end), '</text') + ist - 2;
-								rawarr(ii, jj) = tmp(ist:ien);
+							cvalue = tcell.getOfficeStringValueAttribute ();
+							if (isempty (cvalue))
+								tmp = char (tcell);
+								# Hack string value from between <text:p|r> </text:p|r> tags
+								ist = findstr (tmp, '<text:');
+								if (ist)
+									ist = ist (length (ist));
+									ist = ist + 8;
+									ien = index (tmp(ist:end), '</text') + ist - 2;
+									tmp (ist:ien);
+									cvalue = tmp(ist:ien);
+								endif
 							endif
+							rawarr(ii, jj) = cvalue;
 						otherwise
 							# Nothing
 					endswitch
@@ -279,21 +297,24 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 			# Expand rawarr cf. table-row
 			nr_of_rows = nr_of_rows + extrarows;
 			ii = ii + extrarows;
-			nrows = min (65536, nrows + extrarows);
-			brow = min (trow + nrows - 1, nr_of_rows);
-			# Increase return argument size if needed
-			tmp = cell (extrarows, 1024);
-			rawarr = [rawarr; tmp];
-			# Copy repeated row contents over
-			for kk = ii+1:ii+extrarows
-				rawarr (kk, :) = rawarr (ii, :);
-			endfor
+			if (isempty (crange))
+				'increased'
+				nrows = min (65536, nrows + extrarows);
+				brow = min (trow + nrows - 1, nr_of_rows);
+				# Increase return argument size if needed
+				tmp = cell (extrarows, rcol);
+				rawarr = [rawarr; tmp];
+				# Copy repeated row contents over
+				for kk = ii+1:ii+extrarows
+					rawarr (kk, :) = rawarr (ii, :);
+				endfor
+			endif
 		endif
-		
+		++ii;
 	endwhile
 
 	# Pre-crop rawarr from right (max was 1024) and bottom
-	rawarr = rawarr (1:nr_of_rows, 1:rightmcol);
+	rawarr = rawarr (1:brow, 1:rightmcol);
 
 	# Crop rawarr from all empty outer rows & columns just like Excel does
 	# & keep track of limits
@@ -304,7 +325,7 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 	else
 		irowt = 1;
 		while (all (emptr(irowt, :))), irowt++; endwhile
-		irowb = nr_of_rows;
+		irowb = brow;
 		while (all (emptr(irowb, :))), irowb--; endwhile
 		icoll = 1;
 		while (all (emptr(:, icoll))), icoll++; endwhile

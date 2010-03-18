@@ -33,7 +33,9 @@
 ## does not contain any directory path, the file is saved in the current
 ## directory.
 ##
-## @var{readwrite} is currently ignored until ODS writesupport is implemented.
+## @var{readwrite} must be set to 1 if writing to spreadsheet is desired
+## immediately after calling odsopen(). It merely serves proper handling
+## of file errors (e.g., "file not found" or "new file created").
 ##
 ## Optional input argument @var{reqintf} can be used to override the ODS
 ## interface automatically selected by odsopen. Currently implemented interfaces
@@ -62,6 +64,7 @@
 ## 2010-01-24 Added warning when trying to create a new spreadsheet using jOpenDocument
 ## 2010-03-01 Removed check for rt.jar in javaclasspath
 ## 2010-03-04 Slight texinfo adaptation (reqd. odfdom version = 0.7.5)
+## 2010-03-14 Updated help text (section on readwrite)
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -100,7 +103,6 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 	if (rw) rw = 1; endif		# Be sure it's either 0 or 1 initially
 
 	# Check if ODS file exists
-	# Write statements experimentally enabled!
 	fid = fopen (filename, 'rb');
 	if (fid < 0)
 		if (~rw)

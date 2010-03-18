@@ -44,8 +44,11 @@
 ##
 ## If omitted, @var{range} is initially supposed to be 'A1:AMJ65536'.
 ## The actual range to be used is determined by the size of @var{arr}.
-## Be aware that data array sizes > 2.10^5 elements may be the maximum
-## as that may exhaust the java heap space.
+## Be aware that data array sizes > 2.10^5 elements may exhaust the
+## java shared memory space for the default java memory settings.
+## For larger arrays appropriate memory settings are needed in the file
+## java.opts; then the maximum array size for the java-based spreadsheet
+## options is about 5-6.10^5 elements.
 ##
 ## Data are added to the sheet, ignoring other data already present;
 ## existing data in the range to be used will be overwritten.
@@ -69,6 +72,7 @@
 ## Created: 2009-12-13
 ## Updates:
 ## 2010-01-15 Texinfo header
+## 2010-03-14 Updated help text on java memory usage
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[])
 
@@ -111,17 +115,21 @@ endfunction
 ## oct2jotk2ods
 ## write data array to an ODS spreadsheet using Java & ODFtoolkit
 
+## I'm truly sorry that oct2jotk2ods is so ridiculously complex,
+## and therefore so slow; but there's a good reason for that:
 ## Writing to ODS is already fairly complicated when just making a
-## new sheet ("table").
-## It becomes a headache when writing to an existing sheet. In that
-## case one should beware of table-number-columns-repeated,
-## table-number-rows-repeated, covered (merged) cells, incomplete 
-## tables and rows, etc.
-## ODF toolkit does nothing to hide this from the user; your're SOL.
+## new sheet ("table"); but it really becomes a headache when
+## writing to an existing sheet. In that case one should beware of
+## table-number-columns-repeated, table-number-rows-repeated,
+## covered (merged) cells, incomplete tables and rows, etc.
+## ODF toolkit does nothing to hide this from the user; you may
+## sort it out all by yourself.
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2010-01-07
-## Latest update: 2010-01-14 (finally seems to work OK)
+## Updates: 
+## 2010-01-14 (finally seems to work OK)
+## 2010-03-08 Some comment lines adapted
 
 function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 
@@ -142,7 +150,7 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 		error ("oct2ods: input array neither cell nor numeric array");
 	endif
 
-	# Get some basic spreadsheet data using ODFtoolkit
+	# Get some basic spreadsheet data from the pointer using ODFtoolkit
 	odfcont = ods.workbook;
 	xpath = ods.app.getXPath ();
 	offsprdsh = ods.app.getContentRoot();
@@ -316,7 +324,7 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 		nr_of_trows = trows.getLength(); 	# Nr. of existing table-rows, not data rows!
 
 		# For the first rows we do some preprocessing here. Similar stuff for cells
-		# i.e. table-cells (columns) isdone in the loops below.
+		# i.e. table-cells (columns) is done in the loops below.
 		# Make sure the upper data array row doesn't end up in a nr-rows-repeated row
 
 		# Provisionally! set start table-row in case "while" & "if" (split) are skipped
@@ -477,7 +485,7 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 					else
 						cell.setOfficeValueAttribute (false);
 					endif
-				case 4	# Date (implemented but Octave has no "date" data type)
+				case 4	# Date (implemented but Octave has no "date" data type - yet?)
 					cell.setOfficeValueTypeAttribute ('date');
 					[hh mo dd hh mi ss] = datevec (c_arr{ii,jj});
 					str = sprintf ("%4d-%2d-%2dT%2d:%2d:%2d", yy, mo, dd, hh, mi, ss);

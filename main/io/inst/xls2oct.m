@@ -85,14 +85,16 @@
 ##   [An, xls2, status] = xls2oct (xls2, 'Third_sheet');
 ## @end example
 ##
-## @seealso oct2xls, xlsopen, xlsclose, parsexls, xlsread, xlsfinfo, xlswrite, xls2com2oct, xls2jpoi2oct, xls2jxla2oct 
+## @seealso oct2xls, xlsopen, xlsclose, parsecell, xlsread, xlsfinfo, xlswrite 
 ##
 ## @end deftypefn
 
 ## Author: Philip Nienhuis
 ## Created: 2010-10-16
-## Latest update: 2009-01-03 (added OOXML support & cleaned up code. Excel 
-##                            INDIRECT function still not working OK)
+## Updates: 
+## 2009-01-03 (added OOXML support & cleaned up code. Excel 
+##             ADDRESS function still not working OK)
+## 2010-03-14 Updated help text   
 
 function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh, datrange='')
 
@@ -284,7 +286,9 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-23
-## Last updated 2010-01-11 - fall back to cached values when formula evaluator fails
+## Updates: 
+## 2010-01-11 Fall back to cached values when formula evaluator fails
+## 2010-03-14 Fixed max column nr for OOXML for empty given range
 
 function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 
@@ -329,7 +333,8 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 	lastrow = sh.getLastRowNum ();
 	if (isempty (cellrange))
 		# Get used range by searching (slow...). Beware, it can be bit unreliable
-		lcol = 65535;
+#		lcol = 65535;    # Old xls value
+		lcol = 1048576;  # OOXML (xlsx) max.
 		rcol = 0;
 		for ii=firstrow:lastrow
 			irow = sh.getRow (ii);

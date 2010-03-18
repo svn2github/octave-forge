@@ -30,15 +30,16 @@
 ## to right) in which they occur in the sheet stack.
 ##
 ## If you omit return arguments @var{filetype} and @var{sh_names} altogether,
-## odsfinfo returns the sheet names + (in case of the ODF toolkit interfcae) 
-## a raw guess for the number of rows containing actual data to the screen 
-## (actually the number of "table-rows" in ODS).
+## odsfinfo returns the sheet names + (in case of the ODF toolkit interface) 
+## a qualified guess for the actual occupied data range to the screen.
+## 
+## odsfinfo execution can take its time for large spreadsheets as the entire
+## spreadsheet has to be parsed to get the sheet names, let alone exploring
+## used data ranges.
 ##
 ## By specifying a value of 'jod' or 'otk' for @var{reqintf} the automatic
 ## selection of the java interface is bypassed and the specified interface
 ## will be used (if at all present).
-#### odsfinfo execution can take its time as the entire spreadsheet has to
-## be parsed to get the sheet names.
 ##
 ## Examples:
 ##
@@ -60,8 +61,11 @@
 ## Author: Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## Created: 2009-12-17
 ## Updates:
-## 2010-01-03 added functionality for JOD as well
-## 2010-03-03 fixed echo of proper number of occupied data rows
+## 2010-01-03 Added functionality for JOD as well
+## 2010-03-03 Fixed echo of proper number of occupied data rows
+## 2010-03-18 Fixed proper echo of occupied data range 
+##            (ah those pesky table-row-repeated & table-column-repeated attr.... :-( )
+## 2010-03-18 Separated range exploration (for OTK only yet) in separate function file
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 
@@ -89,26 +93,17 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 			# Get sheet names (& optionally date row count estimate)
 			for ii=1:nr_of_sheets
 				# Check in first part of the sheet nodeset
-				tmp1 = char (sheets.item(ii-1))(1:150);
-				ist = index (tmp1, 'table:name=') + 12;
-				ien = index (tmp1(ist:end), '" table') - 2 + ist;
-				sheetnames(ii) = tmp1(ist:ien);
+				sheetnames (ii) = sheets.item(ii-1).getTableNameAttribute ();
+				printf (sprintf("%s", sheetnames{ii}));
 				if (onscreen) 
-					# Echo sheet names + row count estimate to screen
-					nr_of_trows = sheets.item(ii-1).getLength ();
-					jj = 0; kk = 0;
-					while jj < nr_of_trows
-						sh_char = char (sheets.item(ii-1).item(jj)) (1:min(500, length(char (sheets.item(ii-1).item(jj)))));
-						if (findstr ('office:value-type', sh_char)), ++kk; endif
-						ll = findstr ('number-rows-repeated', sh_char);
-						if (ll)
-							extrows = sscanf (char (sheets.item(ii-1).item(jj)) (ll+20:ll+30), "%d") - 1;
-						else
-							ll = 0;
-						endif
-						++jj + ll;
-					endwhile
-					printf (sprintf("%s    (~%d data rows)\n", sheetnames{ii}, kk));
+					[ tr, lr, lc, rc ] = getusedrange (ods, ii);
+					if (tr)
+						printf (sprintf("    (used range = %s:%s)", \
+						calccelladdress (tr, lc), calccelladdress (lr, rc)));
+					else
+						printf         ("    (empty)");
+					endif
+					printf ("\n");
 				endif
 			endfor
 			

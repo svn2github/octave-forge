@@ -87,14 +87,26 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
-## Latest update of ods2oct: 2009-12-30
-## Latest update of functions below: 2010-01-08
+## Updates:
+## 2009-12-30 First working version
+## 2010-03-19 Added check for odfdom version (should be 0.7.5 until further notice)
+##
+## Latest update of subfunctions below: 2010-03-19
 
 function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[])
 
 	if (strcmp (ods.xtype, 'OTK'))
 		# Read ods file tru Java & ODF toolkit
-		[rawarr, ods, rstatus] = ods2jotk2oct (ods, wsh, datrange);
+		# Get odf toolkit .jar version. Versions 0.7.5. & 0.8 have widely different API
+		versn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
+		if (strcmp (versn, '0.7.5'))
+			[rawarr, ods, rstatus] = ods2jotk2oct (ods, wsh, datrange);
+		elseif (strcmp (versn, '0.8'))
+			error ('odfdom version 0.8 not implemented yet - use version 0.7.5');
+#			[rawarr, ods, rstatus] = ods3jotk2oct (ods, wsh, datrange);
+		else
+			error ('Wrong ODF Toolkit version - only odfdom 0.7.5 or 0.8 supported');
+		endif
 		
 	elseif (strcmp (ods.xtype, 'JOD'))
 		[rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, datrange);
@@ -139,6 +151,7 @@ endfunction
 ##      "     Fixed reference to upper row in case of nr-rows-repeated top tablerow
 ##      "     Tamed down memory usage for rawarr when desired data range is given
 ##      "     Added call to getusedrange() for cases when o range was specified
+## 2010-03-19 More code cleanup & fixes for bugs introduced 18/3/2010 8-()
 
 function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 
@@ -152,7 +165,7 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 								# makes physical copies only when needed (?)
 	xpath = ods.app.getXPath;
 	
-	# AFAICS ODS spreadsheets have the following hierarchy:
+	# AFAICS ODS spreadsheets have the following hierarchy (after Xpath processing):
 	# <table:table> - table nodes, the actual worksheets;
 	# <table:table-row> - row nodes, the rows in a worksheet;
 	# <table:table-cell> - cell nodes, the cells in a row;
@@ -177,7 +190,9 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 				wsh = ii;
 			endif
 		endwhile
-		if (ischar (wsh)) error (sprintf ("No worksheet '%s' found in file %s", wsh, ods.filename)); endif
+		if (ischar (wsh))
+			error (sprintf ("No worksheet '%s' found in file %s", wsh, ods.filename));
+		endif
 	elseif (wsh > nr_of_sheets || wsh < 1)
 		# We already have a numeric sheet pointer. If it's not in range:
 		error (sprintf ("Worksheet no. %d out of range (1 - %d)", wsh, nr_of_sheets));
@@ -197,20 +212,22 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 		[dummy, nrows, ncols, trow, lcol] = parse_sp_range (crange);
 		brow = min (trow + nrows - 1, nr_of_rows);
 		# Check ODS column limits
-		if (lcol > 1024 || trow > 65536) error ("ods2oct: invalid range; max 1024 columns & 65536 rows."); endif
+		if (lcol > 1024 || trow > 65536) 
+			error ("ods2oct: invalid range; max 1024 columns & 65536 rows."); 
+		endif
 		# Truncate range silently if needed
 		rcol = min (lcol + ncols - 1, 1024);
 		ncols = min (ncols, 1024 - lcol + 1);
 		nrows = min (nrows, 65536 - trow + 1);
 	endif
-	# Create storage for data content. We can't know max row length yet so expect the worst
-	rawarr = cell (brow, rcol);
+	# Create storage for data content
+	rawarr = cell (nrows, ncols);
 
 	# Prepare reading sheet row by row
 	rightmcol = 0;		# Used to find actual rightmost column
 	ii = trow - 1;		# Spreadsheet row counter
 	rowcnt = 0;
-	# Find requested uppermost requested *tablerow*. It may be influenced by nr-rows-repeated
+	# Find uppermost requested *tablerow*. It may be influenced by nr-rows-repeated
 	if (ii >= 1)
 		tfillrows = 0;
 		while (tfillrows < ii)
@@ -229,9 +246,9 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 		nr_of_cells = min (row.getLength (), rcol);
 		rightmcol = max (rightmcol, nr_of_cells);	# Keep track of max row length
 		# Read column (cell, "table-cell" in ODS speak) by column
-		jj = lcol; r_cols = 0;
-		while (r_cols <= 1024 && jj <= rcol)
-			tcell = row.getCellAt(jj-1); ++r_cols;
+		jj = lcol; 
+		while (jj <= rcol)
+			tcell = row.getCellAt(jj-1);
 			if (~isempty (tcell)) 		# If empty it's possibly in columns-repeated/spanned
 				if ~(index (char(tcell), 'text:p>Err:') || index (char(tcell), 'text:p>#DIV'))	
 					# Get data from cell
@@ -239,7 +256,7 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 					cvalue = tcell.getOfficeValueAttribute ();
 					switch deblank (ctype)
 						case  {'float', 'currency', 'percentage'}
-							rawarr(ii, jj) = cvalue;
+							rawarr(ii-trow+2, jj-lcol+1) = cvalue;
 						case 'date'
 							cvalue = tcell.getOfficeDateValueAttribute ();
 							# Dates are returned as octave datenums, i.e. 0-0-0000 based
@@ -250,9 +267,9 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 								hh = str2num (cvalue(12:13));
 								mm = str2num (cvalue(15:16));
 								ss = str2num (cvalue(18:19));
-								rawarr(ii, jj) = datenum (yr, mo, dy, hh, mm, ss);
+								rawarr(ii-trow+2, jj-lcol+1) = datenum (yr, mo, dy, hh, mm, ss);
 							else
-								rawarr(ii, jj) = datenum (yr, mo, dy);
+								rawarr(ii-trow+2, jj-lcol+1) = datenum (yr, mo, dy);
 							endif
 						case 'time'
 							cvalue = tcell.getOfficeTimeValueAttribute ();
@@ -260,14 +277,14 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 								hh = str2num (cvalue(3:4));
 								mm = str2num (cvalue(6:7));
 								ss = str2num (cvalue(9:10));
-								rawarr(ii, jj) = datenum (0, 0, 0, hh, mm, ss);
+								rawarr(ii-trow+2, jj-lcol+1) = datenum (0, 0, 0, hh, mm, ss);
 							endif
 						case 'boolean'
 							cvalue = tcell.getOfficeBooleanValueAttribute ();
-							rawarr(ii, jj) = cvalue; 
+							rawarr(ii-trow+2, jj-lcol+1) = cvalue; 
 						case 'string'
 							cvalue = tcell.getOfficeStringValueAttribute ();
-							if (isempty (cvalue))
+							if (isempty (cvalue))     # Happens with e.g., hyperlinks
 								tmp = char (tcell);
 								# Hack string value from between <text:p|r> </text:p|r> tags
 								ist = findstr (tmp, '<text:');
@@ -279,14 +296,11 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 									cvalue = tmp(ist:ien);
 								endif
 							endif
-							rawarr(ii, jj) = cvalue;
+							rawarr(ii-trow+2, jj-lcol+1)= cvalue;
 						otherwise
 							# Nothing
 					endswitch
 				endif
-				# Check for repeated columns (often empty columns, viz. to right of data)
-				# and add to column count
-				r_cols = r_cols + tcell.getTableNumberColumnsRepeatedAttribute () - 1;
 			endif
 			++jj;						# Next cell
 		endwhile
@@ -297,24 +311,9 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 			# Expand rawarr cf. table-row
 			nr_of_rows = nr_of_rows + extrarows;
 			ii = ii + extrarows;
-			if (isempty (crange))
-				'increased'
-				nrows = min (65536, nrows + extrarows);
-				brow = min (trow + nrows - 1, nr_of_rows);
-				# Increase return argument size if needed
-				tmp = cell (extrarows, rcol);
-				rawarr = [rawarr; tmp];
-				# Copy repeated row contents over
-				for kk = ii+1:ii+extrarows
-					rawarr (kk, :) = rawarr (ii, :);
-				endfor
-			endif
 		endif
 		++ii;
 	endwhile
-
-	# Pre-crop rawarr from right (max was 1024) and bottom
-	rawarr = rawarr (1:brow, 1:rightmcol);
 
 	# Crop rawarr from all empty outer rows & columns just like Excel does
 	# & keep track of limits
@@ -325,11 +324,11 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 	else
 		irowt = 1;
 		while (all (emptr(irowt, :))), irowt++; endwhile
-		irowb = brow;
+		irowb = nrows;
 		while (all (emptr(irowb, :))), irowb--; endwhile
 		icoll = 1;
 		while (all (emptr(:, icoll))), icoll++; endwhile
-		icolr = rightmcol;
+		icolr = ncols;
 		while (all (emptr(:, icolr))), icolr--; endwhile
 		# Crop textarray
 		rawarr = rawarr(irowt:irowb, icoll:icolr);

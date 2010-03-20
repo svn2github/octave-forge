@@ -17,8 +17,8 @@
 # primarily for use by BFGS
 function [theta_us, vartheta_us] = unscale_parameters(theta, vartheta, scalecoefs);
 	k = rows(theta);
-	A = nth(scalecoefs, 1);
-	b = nth(scalecoefs, 2);
+	A = scalecoefs {1};
+	b = scalecoefs {2};
 	
 	kk = rows(b);
 	B = zeros(kk-1,kk);

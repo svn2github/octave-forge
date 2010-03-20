@@ -110,7 +110,7 @@ ans = -1.0000\n\
 
 	// copy cell contents over to octave_value_list to use feval()
 	k = f_args_cell.length();
-	f_args(k); // resize only once
+	f_args.resize (k); // resize only once
 	for (i = 0; i<k; i++) f_args(i) = f_args_cell(i);
 
 	// check which arg w.r.t which we need to differentiate
@@ -120,7 +120,12 @@ ans = -1.0000\n\
 	Matrix derivative(k, k);
 
 	f_return = feval(f, f_args);
-	obj_value = f_return(0).double_value();
+	if (f_return.length () > 0 && f_return(0).is_double_type ())
+      obj_value = f_return(0).double_value();
+    else {
+        error ("numhessian: function must return a scalar of class 'double'");
+        return octave_value_list ();
+    }
 
 	diff = exp(log(DBL_EPSILON)/4);
 	SQRT_EPS = sqrt(DBL_EPSILON);
@@ -146,7 +151,12 @@ ans = -1.0000\n\
 			hja = dj - pj;
 			f_args(minarg - 1) = parameter;
 			f_return = feval(f, f_args);
-			fpp = f_return(0).double_value();
+		    if (f_return.length () > 0 && f_return (0).is_double_type ())
+              fpp = f_return(0).double_value();
+            else {
+                error ("numhessian: function must return a scalar of class 'double'");
+                return octave_value_list ();
+            }
 
 			// -1 -1
 			parameter(i) = di = pi - hi;
@@ -155,21 +165,36 @@ ans = -1.0000\n\
 			hja = hja + pj - dj;
 			f_args(minarg - 1) = parameter;
 			f_return = feval(f, f_args);
-			fmm = f_return(0).double_value();
+		    if (f_return.length () > 0 && f_return (0).is_double_type ())
+			    fmm = f_return(0).double_value();
+            else {
+                error ("numhessian: function must return a scalar of class 'double'");
+                return octave_value_list ();
+            }
 
 			// +1 -1
 			parameter(i) = pi + hi;
 			parameter(j) = pj - hj;
 			f_args(minarg - 1) = parameter;
 			f_return = feval(f, f_args);
-			fpm = f_return(0).double_value();
+		    if (f_return.length () > 0 && f_return (0).is_double_type ())
+    			fpm = f_return(0).double_value();
+            else {
+                error ("numhessian: function must return a scalar of class 'double'");
+                return octave_value_list ();
+            }
 
 			// -1 +1
 			parameter(i) = pi - hi;
 			parameter(j) = pj + hj;
 			f_args(minarg - 1) = parameter;
 			f_return = feval(f, f_args);
-			fmp = f_return(0).double_value();
+		    if (f_return.length () > 0 && f_return (0).is_double_type ())
+    			fmp = f_return(0).double_value();
+            else {
+                error ("numhessian: function must return a scalar of class 'double'");
+                return octave_value_list ();
+            }
 
 			derivative(j,i) = ((fpp - fpm) + (fmm - fmp)) / (hia * hja);
 			derivative(i,j) = derivative(j,i);
@@ -182,14 +207,24 @@ ans = -1.0000\n\
 		parameter(i) = di = pi + 2 * hi;
 		f_args(minarg - 1) = parameter;
 		f_return = feval(f, f_args);
-		fpp = f_return(0).double_value();
+        if (f_return.length () > 0 && f_return (0).is_double_type ())
+    		fpp = f_return(0).double_value();
+        else {
+            error ("numhessian: function must return a scalar of class 'double'");
+            return octave_value_list ();
+        }
 		hia = (di - pi) / 2;
 
 		// -1 -1
 		parameter(i) = di = pi - 2 * hi;
 		f_args(minarg - 1) = parameter;
 		f_return = feval(f, f_args);
-		fmm = f_return(0).double_value();
+        if (f_return.length () > 0 && f_return (0).is_double_type ())
+    		fmm = f_return(0).double_value();
+        else {
+            error ("numhessian: function must return a scalar of class 'double'");
+            return octave_value_list ();
+        }
 		hia = hia + (pi - di) / 2;
 
 		derivative(i,i) = ((fpp - obj_value) + (fmm - obj_value)) / (hia * hia);

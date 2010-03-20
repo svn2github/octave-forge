@@ -22,5 +22,5 @@ function m = poisson_moments(theta, data, momentargs)
 	w = data(:, k+2:columns(data));
 	lambda = exp(x*theta);
 	e = y ./ lambda - 1;
-	m = dmult(e, w);
+	m = diag(e) * w;
 endfunction	

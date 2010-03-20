@@ -38,7 +38,7 @@ function [zz, scalecoefs] = scale_data(z);
 		# don't take out mean if the column is a constant, to preserve identification
 		b = b .* test;
 		b = A*b;
-		bb = dmult(b, ones(k,n))';
+		bb = (diag(b) * ones(k,n))';
 	endif
 	zz = z*A + bb;
 	scalecoefs = {A,b};

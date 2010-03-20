@@ -20,6 +20,6 @@ function [log_density, score] = poisson(theta, data, otherargs)
 	x = data(:,2:columns(data));
 	lambda = exp(x*theta);
 	log_density = -lambda + y .* (x*theta) - lgamma(y+1);
-	score = dmult(y - lambda,x);
+	score = diag (y - lambda) * x;
 	if (otherargs{1} == 1) score = "na"; endif # provide analytic score or not?
 endfunction	

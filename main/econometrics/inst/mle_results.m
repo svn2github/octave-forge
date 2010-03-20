@@ -21,7 +21,7 @@
 # data: data matrix
 # model: name of function that computes log-likelihood
 # modelargs: (cell) additional inputs needed by model. May be empty ("")
-# names: vector of parameter names, e.g., use names = str2mat("param1", "param2");
+# names: vector of parameter names, e.g., use names = char("param1", "param2");
 # title: string, describes model estimated
 # unscale: (optional) cell that holds means and std. dev. of data (see scale_data)
 # control: (optional) BFGS or SA controls (see bfgsmin and samin). May be empty ("").
@@ -38,9 +38,7 @@
 ## Please see mle_example for information on how to use this
 
 # report results
-function [theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, mletitle, unscale, control, nslaves)
-	if nargin < 9 nslaves = 0; endif # serial by default
-	if nargin < 8 control = {-1}; endif
+function [theta, V, obj_value, infocrit] = mle_results(theta, data, model, modelargs, names, mletitle, unscale, control = {-1}, nslaves = 0)
 	if nargin < 6 mletitle = "Generic MLE title"; endif
 
 	[theta, obj_value, convergence] = mle_estimate(theta, data, model, modelargs, control, nslaves);
@@ -70,9 +68,9 @@ function [theta, V, obj_value, infocrit] = mle_results(theta, data, model, model
 
 	printf("Average Log-L: %f\n", obj_value);
 	printf("Observations: %d\n", n);
-	a =[theta, se, theta./se, 2 - 2*normal_cdf(abs(theta ./ se))];
+	a =[theta, se, theta./se, 2 - 2*normcdf(abs(theta ./ se))];
 
-	clabels = str2mat("estimate", "st. err", "t-stat", "p-value");
+	clabels = char("estimate", "st. err", "t-stat", "p-value");
 
 	printf("\n");
 	if names !=0 prettyprint(a, names, clabels);

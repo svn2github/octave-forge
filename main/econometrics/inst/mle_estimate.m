@@ -31,7 +31,7 @@
 # iters: number of BFGS iteration used
 #
 # please see mle_example.m for examples of how to use this
-function [theta, obj_value, convergence, iters] = mle_estimate(theta, data, model, modelargs, control, nslaves)
+function [theta, obj_value, convergence, iters] = mle_estimate(theta, data, model, modelargs, control, nslaves = 0)
 
 
 	if nargin < 3
@@ -42,7 +42,6 @@ function [theta, obj_value, convergence, iters] = mle_estimate(theta, data, mode
 	if !iscell(modelargs) modelargs = {}; endif # default controls if receive placeholder
 	if nargin < 5 control = {-1,0,1,1}; endif # default controls and method
 	if !iscell(control) control = {-1,0,1,1}; endif # default controls if receive placeholder
-	if nargin < 6 nslaves = 0; endif
 	if nslaves > 0
 		global NSLAVES PARALLEL NEWORLD TAG;
 		LAM_Init(nslaves);

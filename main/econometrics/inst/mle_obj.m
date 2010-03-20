@@ -19,11 +19,10 @@
 ## This is for internal use by mle_estimate
 
 
-function [obj_value, score] = mle_obj(theta, data, model, modelargs, nslaves)
+function [obj_value, score] = mle_obj(theta, data, model, modelargs, nslaves = 0)
 
 	n = rows(data);   
 	
-	if nargin < 5 nslaves = 0; endif
 	if nslaves > 0
 		global NSLAVES PARALLEL NEWORLD NSLAVES TAG;
 

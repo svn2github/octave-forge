@@ -25,7 +25,7 @@
 # momentargs: (cell) additional inputs needed to compute moments.
 #             May be empty ("")
 #      names: vector of parameter names
-#             e.g., names = str2mat("param1", "param2");
+#             e.g., names = char("param1", "param2");
 #      title: string, describes model estimated
 #    unscale: (optional) cell that holds means and std. dev. of data
 #             (see scale_data)
@@ -87,7 +87,7 @@ function [theta, V, obj_value] = gmm_results(theta, data, weight, moments, momen
 	junk = "X^2 test";
 	df = n - k;
 	if df > 0
-		clabels = str2mat("Value","df","p-value");
+		clabels = char("Value","df","p-value");
 		a = [n*obj_value, df, 1 - chisquare_cdf(n*obj_value, df)];
 		printf("\n");
 		prettyprint(a, junk, clabels);
@@ -97,7 +97,7 @@ function [theta, V, obj_value] = gmm_results(theta, data, weight, moments, momen
 
 	# results for parameters
 	a =[theta, se, theta./se, 2 - 2*normal_cdf(abs(theta ./ se))];
-	clabels = str2mat("estimate", "st. err", "t-stat", "p-value");
+	clabels = char("estimate", "st. err", "t-stat", "p-value");
 	printf("\n");
 	prettyprint(a, names, clabels);
 

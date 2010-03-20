@@ -36,7 +36,7 @@ moments = "poisson_moments";
 momentargs = {k}; # needed to know where x ends and w starts
 
 # additional args for gmm_results
-names = str2mat("theta1", "theta2", "theta3", "theta4", "theta5");
+names = char("theta1", "theta2", "theta3", "theta4", "theta5");
 gmmtitle = "Poisson GMM trial";
 control = {100,0,1,1};
 

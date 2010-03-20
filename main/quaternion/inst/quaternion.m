@@ -38,37 +38,37 @@ function [a, b, c, d] = quaternion (w, x, y, z)
   switch (nargin)
     case(1)
       if (! (isvector (w) && length (w) == 4))
-	error ("input vector must be of length 4)");
+        error ("input vector must be of length 4)");
       endif
       ## extract data
       switch (nargout)
-	case(4)
-	  a = w(1);
-	  b = w(2);
-	  c = w(3);
-	  d = w(4);
+        case(4)
+          a = w(1);
+          b = w(2);
+          c = w(3);
+          d = w(4);
 
-	case(2)
-	  if (abs (norm (w) - 1) > 1e-12)
-	    warning ("quaternion: ||w||=%e, setting=1 for vv, theta", norm(w));
-	    w = w/norm(w);
-	  endif
-	  [a, b, c, d] = quaternion (w);
-	  theta = acos (d) * 2;
-	  if (abs (theta) > pi)
-	    theta = theta - sign (theta) * pi;
-	  endif
-	  sin_th_2 = norm ([a, b, c]);
+        case(2)
+          if (abs (norm (w) - 1) > 1e-12)
+            warning ("quaternion: ||w||=%e, setting=1 for vv, theta", norm(w));
+            w = w/norm(w);
+          endif
+          [a, b, c, d] = quaternion (w);
+          theta = acos (d) * 2;
+          if (abs (theta) > pi)
+            theta = theta - sign (theta) * pi;
+          endif
+          sin_th_2 = norm ([a, b, c]);
 
-	  if (sin_th_2 != 0)
-	    vv = [a, b, c] / sin_th_2;
-	  else
-	    vv = [a, b, c];
-	  endif
-	  a = vv;
-	  b = theta;
-	otherwise
-	  print_usage ();
+          if (sin_th_2 != 0)
+            vv = [a, b, c] / sin_th_2;
+          else
+            vv = [a, b, c];
+          endif
+          a = vv;
+          b = theta;
+        otherwise
+          print_usage ();
       endswitch
 
   case(2)

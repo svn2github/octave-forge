@@ -26,7 +26,7 @@ theta = 1:3; # true coefficients are 1,2,3
 theta = theta';
 
 lambda = exp(x*theta);
-y = poisson_rnd(lambda); # generate the dependent variable
+y = poissrnd(lambda); # generate the dependent variable
 
 ####################################
 # define arguments for mle_results #
@@ -40,7 +40,7 @@ data = [y, x];
 model = "poisson";
 modelargs = {0}; # if this is zero the function gives analytic score, otherwise not
 # parameter names
-names = str2mat("beta1", "beta2", "beta3");
+names = char("beta1", "beta2", "beta3");
 mletitle = "Poisson MLE trial"; # title for the run
 
 # controls for bfgsmin: 30 iterations is not always enough for convergence

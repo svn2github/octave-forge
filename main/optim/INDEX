@@ -4,7 +4,7 @@ Minimization
  nelder_mead_min
  d2_min
  nrm
- fmin fminbnd
+ fmin
  line_min
  fmins adsmax mdsmax nmsmax
  bfgsmin samin battery

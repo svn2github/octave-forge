@@ -90,22 +90,24 @@
 ## Updates:
 ## 2009-12-30 First working version
 ## 2010-03-19 Added check for odfdom version (should be 0.7.5 until further notice)
+## 2010-03-20 Works for odfdom v 0.8 too. Added subfunction ods3jotk2oct for that
 ##
-## Latest update of subfunctions below: 2010-03-19
+## Latest update of subfunctions below: 2010-03-20
 
 function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[])
 
 	if (strcmp (ods.xtype, 'OTK'))
 		# Read ods file tru Java & ODF toolkit
-		# Get odf toolkit .jar version. Versions 0.7.5. & 0.8 have widely different API
+		# Get odf toolkit .jar version. Versions 0.7.5. & 0.8 have a different API...
 		versn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
+		# Each odfdom version has a different subfunction to avoid performance issues
+		# due to many "if .... else .... endif" statements
 		if (strcmp (versn, '0.7.5'))
 			[rawarr, ods, rstatus] = ods2jotk2oct (ods, wsh, datrange);
 		elseif (strcmp (versn, '0.8'))
-			error ('odfdom version 0.8 not implemented yet - use version 0.7.5');
-#			[rawarr, ods, rstatus] = ods3jotk2oct (ods, wsh, datrange);
+			[rawarr, ods, rstatus] = ods3jotk2oct (ods, wsh, datrange);
 		else
-			error ('Wrong ODF Toolkit version - only odfdom 0.7.5 or 0.8 supported');
+			error ('Unsupported ODF Toolkit version - only odfdom 0.7.5 or 0.8 work!');
 		endif
 		
 	elseif (strcmp (ods.xtype, 'JOD'))
@@ -148,9 +150,9 @@ endfunction
 ## Updates:
 ## 2010-01-08 First working version
 ## 2010-03-18 Fixed many bugs with wrong row references in case of empty upper rows
-##      "     Fixed reference to upper row in case of nr-rows-repeated top tablerow
-##      "     Tamed down memory usage for rawarr when desired data range is given
-##      "     Added call to getusedrange() for cases when o range was specified
+##     ""     Fixed reference to upper row in case of nr-rows-repeated top tablerow
+##     ""     Tamed down memory usage for rawarr when desired data range is given
+##     ""     Added call to getusedrange() for cases when o range was specified
 ## 2010-03-19 More code cleanup & fixes for bugs introduced 18/3/2010 8-()
 
 function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
@@ -313,6 +315,175 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 			ii = ii + extrarows;
 		endif
 		++ii;
+	endwhile
+
+	# Crop rawarr from all empty outer rows & columns just like Excel does
+	# & keep track of limits
+	emptr = cellfun('isempty', rawarr);
+	if (all (all (emptr)))
+		rawarr = {};
+		ods.limits= [];
+	else
+		irowt = 1;
+		while (all (emptr(irowt, :))), irowt++; endwhile
+		irowb = nrows;
+		while (all (emptr(irowb, :))), irowb--; endwhile
+		icoll = 1;
+		while (all (emptr(:, icoll))), icoll++; endwhile
+		icolr = ncols;
+		while (all (emptr(:, icolr))), icolr--; endwhile
+		# Crop textarray
+		rawarr = rawarr(irowt:irowb, icoll:icolr);
+		rstatus = 1;
+		ods.limits = [lcol+icoll-1, lcol+icolr-1; trow+irowt-1, trow+irowb-1];
+	endif
+
+endfunction
+
+
+#===========================================================================
+
+## Copyright (C) 2009 Philip Nienhuis <prnienhuis _at- users.sf.net>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## odf3jotk2oct - read ODS spreadsheet data using Java & odftoolkit v 0-8.
+## You need proper java-for-octave & odfdom.jar 0.8 + xercesImpl.jar
+## in your javaclasspath.
+
+## Author: Philip Nenhuis <pr.nienhuis at users.sf.net>
+## Created: 2010-03-16, after ods2jotk2oct()
+## Updates:
+## 2010-03-17 First somewhat usable version for odfdom-0.8
+## 2010-03-19 Showstopper bug in odfdom-0.8 - getCellByPosition() crashes on rows #10 !!!
+##            Rest seems to work OK, however
+## 2010-03-20 First usable version for odfdom 0.8
+
+function [ rawarr, ods, rstatus ] = ods3jotk2oct (ods, wsh=1, crange = [])
+
+	# Parts after user gfterry in
+	# http://www.oooforum.org/forum/viewtopic.phtml?t=69060
+	
+	rstatus = 0;
+
+	# Get contents and table stuff from the workbook
+	odfcont = ods.workbook;		# Use a local copy just to be sure. octave 
+								# makes physical copies only when needed (?)
+    xpath = ods.app.getXPath;
+
+	# Create an instance of type NODESET for use in subsequent statement
+	NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
+	# Parse sheets ("tables") from ODS file
+	sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
+	nr_of_sheets = sheets.getLength ();
+
+	# Check user input & find sheet pointer
+	if (~isnumeric (wsh))
+		try
+			sh = ods.app.getTableByName (wsh);
+			# We do need a sheet index number to be able to invoke getusedrange() ...
+			ii = 0;
+			while (ischar (wsh) && ii < nr_of_sheets) 
+				sh_nm = sheets.item(ii).getTableNameAttribute ();
+				if (strcmp (sh_nm, wsh)) wsh = ii + 1; else ++ii; endif
+			endwhile
+		catch
+			error (sprintf ("No worksheet '%s' found in file %s", wsh, ods.filename));
+		end_try_catch
+	elseif (wsh > nr_of_sheets || wsh < 1)
+		# We already have a numeric sheet pointer. If it's not in range:
+		error (sprintf ("Worksheet no. %d out of range (1 - %d)", wsh, nr_of_sheets));
+	else
+		sh = sheets.item(wsh - 1);
+		sh = ods.app.getTableByName (sh.getTableNameAttribute ());
+	endif
+
+	# Get nr of data rows in sheet. Empty rows above data are always included
+	nr_of_rows = sh.getRowCount (); 
+	# Either parse (given cell range) or prepare (unknown range) help variables 
+	if (isempty (crange))
+		[trow, brow, lcol, rcol] = getusedrange (ods, wsh);
+		nrows = brow - trow + 1;			# Number of rows to be read
+		ncols = rcol - lcol + 1;			# Number of columns to be read
+	else
+		[dummy, nrows, ncols, trow, lcol] = parse_sp_range (crange);
+		# Check ODS column limits
+		if (lcol > 1024 || trow > 65536) error ("ods2oct: invalid range; max 1024 columns & 65536 rows."); endif
+		brow = min (trow + nrows - 1, nr_of_rows);
+		# Truncate range silently if needed
+		rcol = min (lcol + ncols - 1, 1024);
+		ncols = min (ncols, 1024 - lcol + 1);
+		nrows = min (nrows, 65536 - trow + 1);
+	endif
+
+	# Create storage for data content. We can't know max row length yet so expect the worst
+	rawarr = cell (nrows, ncols);
+
+	# Read from worksheet row by row. Row numbers are 0-based
+	ii = trow;			# Spreadsheet row counter
+	while (ii <= brow)
+		jj = lcol;
+		while (jj <= rcol)
+			tcell = sh.getCellByPosition (jj-1, ii-1);
+			ctype = tcell.getValueType ();
+			if ~isempty (ctype)	
+				# Some error checks which are not yet formally in odfdom 0.8
+				str = char (tcell.getOdfElement ());
+				if ~(strcmp (ctype, 'float') && (index (str, 'text:p>Err:') || index (str, 'text:p>#DIV')))
+					# Get data from cell
+					switch deblank (ctype)
+						case 'float'
+							rawarr(ii-trow+1, jj-lcol+1) = tcell.getDoubleValue();
+						case  {'currency', 'percentage'}
+							# A bit of a hack but converting arbitrary formatted strings is worse... 
+							cvalue = tcell.getOdfElement ().getOfficeValueAttribute ();
+							rawarr(ii-trow+1, jj-lcol+1) = cvalue;
+						case 'date'   # Also a bit hacky
+							cvalue = tcell.getOdfElement().getOfficeDateValueAttribute ();
+							# Dates are returned as octave datenums, i.e. 0-0-0000 based
+							yr = str2num (cvalue(1:4));
+							mo = str2num (cvalue(6:7));
+							dy = str2num (cvalue(9:10));
+							if (index (cvalue, 'T'))
+								hh = str2num (cvalue(12:13));
+								mm = str2num (cvalue(15:16));
+								ss = str2num (cvalue(18:19));
+								rawarr(ii-trow+1, jj-lcol+1) = datenum (yr, mo, dy, hh, mm, ss);
+							else
+								rawarr(ii-trow+1, jj-lcol+1) = datenum (yr, mo, dy);
+							endif
+						case 'time'   # Also a bit hacky
+							cvalue = tcell.getOdfElement ().getOfficeTimeValueAttribute ();
+							if (index (cvalue, 'PT'))
+								hh = str2num (cvalue(3:4));
+								mm = str2num (cvalue(6:7));
+								ss = str2num (cvalue(9:10));
+								rawarr(ii-trow+1, jj) = datenum (0, 0, 0, hh, mm, ss);
+							endif
+						case 'boolean'
+							rawarr(ii-trow+1, jj-lcol+1) = tcell.getBooleanValue ();
+						case 'string'
+							rawarr(ii-trow+1, jj-lcol+1) = tcell.getStringValue ();
+						otherwise  # 'void'
+							# Nothing
+					endswitch
+				endif
+			endif
+			++jj;			# Next cell
+		endwhile
+		++ii;				# Next row
 	endwhile
 
 	# Crop rawarr from all empty outer rows & columns just like Excel does

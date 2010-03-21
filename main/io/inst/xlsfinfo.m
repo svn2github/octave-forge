@@ -36,7 +36,8 @@
 ## which case @var{fformat} is set to "xlWorkbookNormal".
 ##
 ## If no return arguments are specified the sheet names are echoed to the 
-## terminal screen.
+## terminal screen; in case of java interfaces for each sheet the actual
+## occupied data range is echoed as well.
 ##
 ## If multiple xls interfaces have been installed @var{reqintf} can be
 ## specified. This can sometimes be handy to get an idea of used cell ranges
@@ -64,9 +65,15 @@
 
 ## Author: Philip Nienhuis <prnienhuis@users.sourceforge.net>
 ## Created: 2009-10-27
-## Latest update (echo sheet names to screen, request interface type): 2009-01-01
+## Updates:
+## 2009-01-01 Echo sheet names to screen, request interface type)
+## 2010-03-21 Better tabulated output; occupied date range per sheet echoed 
+##            for Java interfaces (though it may be a bit off in case of JXL)
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
+
+	persistent str2; str2 = '                                 ' # 33 spaces
+	persistent lstr2; lstr2 = length (str2);
 
 	xls = xlsopen (filename, 0, reqintf);
 	
@@ -94,14 +101,19 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 		if (ws_cnt > 0 || ch_cnt > 0) fformat = "xlWorkbookNormal"; endif
 		
 	elseif (strcmp (xls.xtype, 'POI'))
+		persistent cblnk; cblnk = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_BLANK');
 		sh_cnt = xls.workbook.getNumberOfSheets();
 		sh_names = cell (sh_cnt, 2); nsrows = zeros (sh_cnt, 1);
 		for ii=1:sh_cnt
 			sh = xls.workbook.getSheetAt (ii-1);         # Java POI starts counting at 0 
 			sh_names(ii, 1) = char (sh.getSheetName());
 			# Java POI doesn't distinguish between worksheets and graph sheets
-			sh_names(ii, 2) = ' ';
-			nsrows(ii, 1) = sh.getLastRowNum () + 1;
+			[tr, lr, lc, rc] = getusedrange (xls, ii);
+			if (tr)
+				sh_names(ii, 2) = sprintf ("(Used range = %s:%s)", calccelladdress (tr, lc), calccelladdress (lr, rc));
+			else
+				sh_names(ii, 2) = "(Empty)";
+			endif
 		endfor
 		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; endif
 
@@ -110,8 +122,12 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 		sh_names = cell (sh_cnt, 2); nsrows = zeros (sh_cnt, 1);
 		sh_names(:,1) = char (xls.workbook.getSheetNames ());
 		for ii=1:sh_cnt
-			sh_names(ii, 2) = ' ';
-			nsrows(ii, 1) = xls.workbook.getSheet(ii-1).getRows ();
+			[tr, lr, lc, rc] = getusedrange (xls, ii);
+			if (tr)
+				sh_names(ii, 2) = sprintf ("(Used range ~ %s:%s)", calccelladdress (tr, lc), calccelladdress (lr, rc));
+			else
+				sh_names(ii, 2) = "(Empty)";
+			endif
 		endfor
 		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; endif
 		
@@ -129,12 +145,12 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 				# In case of COM interface, also echo sheet type
 				jj = index (sh_names{ii, 2}, '#');
 				if (~jj) jj = size (sh_names{ii, 2}, 2); endif
-				str2 = sprintf ("   (%s)", sh_names{ii, 2}(6:jj-2) );
+				str3 = sprintf (" (%s)", sh_names{ii, 2}(6:jj-2) );
 			else
 				# Other interfaces can supply last row no.
-				str2 = sprintf ("   (Last used row # = %d)", nsrows(ii, 1));
+				str3 = sh_names {ii, 2};
 			endif
-			printf ("%s %s\n", str1, str2);
+			printf ("%s%s%s\n", str1, str2(1:lstr2-length (sh_names{ii, 1})), str3);
 		endfor
 	endif
 

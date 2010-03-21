@@ -66,6 +66,7 @@
 ## 2010-03-18 Fixed proper echo of occupied data range 
 ##            (ah those pesky table-row-repeated & table-column-repeated attr.... :-( )
 ## 2010-03-18 Separated range exploration (for OTK only yet) in separate function file
+## 2010-03-20 "Beautified" output (for OTK ), used range now in more tabular form
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 
@@ -74,6 +75,8 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 	ods = odsopen (filename, 0, reqintf);
 	
 	filetype = 'OpenOffice.org Calc Document';
+	
+	persistent adj_str; adj_str = '                              '; # 30 char filler string
 
 	# To save execution time, only proceed if sheet names are wanted
 	if ~(nargout == 1)
@@ -98,10 +101,11 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 				if (onscreen) 
 					[ tr, lr, lc, rc ] = getusedrange (ods, ii);
 					if (tr)
-						printf (sprintf("    (used range = %s:%s)", \
+						printf (sprintf("%s (used range = %s:%s)", \
+						adj_str(1:(30 - length(sheetnames{ii}))), \
 						calccelladdress (tr, lc), calccelladdress (lr, rc)));
 					else
-						printf         ("    (empty)");
+						printf ("%s (empty)", adj_str(1:(30 - length(sheetnames{ii}))));
 					endif
 					printf ("\n");
 				endif

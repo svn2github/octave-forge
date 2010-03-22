@@ -72,7 +72,7 @@ function [a, b, c, d] = quaternion (w, x, y, z)
       endswitch
 
   case(2)
-    if (nargout != 1)
+    if (nargout > 1)
       print_usage ();
     endif
     vv = w;
@@ -98,7 +98,7 @@ function [a, b, c, d] = quaternion (w, x, y, z)
     a = quaternion (vv(1), vv(2), vv(3), d);
 
   case(4)
-    if (nargout != 1)
+    if (nargout > 1)
       print_usage ();
     endif
     if (! (isscalar (w) && isscalar (x) && isscalar (y) && isscalar (z)))

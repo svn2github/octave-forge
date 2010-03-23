@@ -19,7 +19,7 @@ function [C,N,LAGS] = xcovf(X,Y,MAXLAG,SCALEOPT)
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
-%    the Free Software Foundation; either version 2 of the License, or
+%    the Free Software Foundation; either version 3 of the License, or
 %    (at your option) any later version.
 %
 %    This program is distributed in the hope that it will be useful,
@@ -76,8 +76,6 @@ elseif ~isempty(Y) && ~isempty(MAXLAG)
         [N,LAGS] = xcorr(1-NX,1-NY,MAXLAG,'none');
 end;
 
-
-
 if 0,
 
 elseif strcmp(SCALEOPT,'none')
@@ -85,9 +83,9 @@ elseif strcmp(SCALEOPT,'none')
 
 elseif strcmp(SCALEOPT,'coeff')
 	ix = find(LAGS==0);
-	c  = repmat(C(ix,1:size(C,2)+1:end));
-	v  = sqrt(1./c);
-	v  = v'*v; 
+	c  = C(ix,1:size(X,2)+1:end);
+	v  = c.^-0.5; % sqrt(1./c(:));
+	v  = v'*v;
 	C  = C.*repmat(v(:).',size(C,1),1);	
 
 elseif strcmp(SCALEOPT,'biased')

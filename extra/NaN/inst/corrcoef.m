@@ -150,6 +150,7 @@ elseif nargin>1
                 end;
         end;
 end;
+if isempty(Mode) Mode='pearson'; end; 
 Mode=[Mode,'        '];
 
 
@@ -203,7 +204,7 @@ else
         
         IX = ones(c1,c2);
         [jxo,jyo] = find(IX);
-	R = repmat(nan,c1,c2);
+	R = zeros(c1,c2);
 end;  
 
 if strcmp(lower(Mode(1:7)),'pearson');
@@ -318,6 +319,7 @@ end;
 
 
 % SIGNIFICANCE TEST
+R(isnan(R))=0;
 tmp = 1 - R.*R;
 tmp(tmp<0) = 0;		% prevent tmp<0 i.e. imag(t)~=0 
 t   = R.*sqrt(max(NN-2,0)./tmp);
@@ -331,6 +333,7 @@ else
         sig = repmat(nan,size(R));
 end;
 sig  = 2 * min(sig,1 - sig);
+
 
 if NARG<3, 
 	warning(FLAG_WARNING); 	% restore warning status
@@ -353,20 +356,18 @@ ci2 = tanh(z+sz);
 if (NARG<5) || ~YESNAN, 
 	nan_sig = repmat(NaN,size(R));
 	warning(FLAG_WARNING); 	% restore warning status
-        return;
+	return;
 end;
 
-
 %%%%% ----- check independence of NaNs (missing values) -----
-[nan_R, nan_sig] = corrcoef(X,(isnan(X)));
+[nan_R, nan_sig] = corrcoef(X,double(isnan(X)));
 
 % remove diagonal elements, because these have not any meaning %
 nan_sig(isnan(nan_R)) = nan;
+% remove diagonal elements, because these have not any meaning %
+nan_R(isnan(nan_R)) = 0;
 
-% reshape 
-nan_sig = nan_sig(1:c1,c1+(1:c2));
-
-if any(nan_sig(:) < alpha),
+if 0, any(nan_sig(:) < alpha),
         tmp = nan_sig(:);			% Hack to skip NaN's in MIN(X)
         min_sig = min(tmp(~isnan(tmp))); 	% Necessary, because Octave returns NaN rather than min(X) for min(NaN,X) 
         fprintf(1,'CORRCOFF Warning: Missing Values (i.e. NaNs) are not independent of data (p-value=%f)\n', min_sig);

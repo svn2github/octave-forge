@@ -26,11 +26,9 @@
 #include <oct.h>
 #include <octave/parse.h>
 #include <octave/Cell.h>
+#include <octave/lo-mappers.h>
 #include <float.h>
 #include "error.h"
-#ifdef __MINGW32__
-#define isnan _isnan
-#endif
  
 
 int __bfgsmin_obj(double &obj, const std::string f, const octave_value_list f_args, const ColumnVector theta, const int minarg)
@@ -236,7 +234,7 @@ int __newtonstep(double &step, double &obj, const std::string f, const octave_va
 		found_improvement = __bisectionstep(step, obj, f, f_args, x, dx, minarg, verbose);
 	}
 	else found_improvement = 1;
-	if (isnan(obj)) {
+	if (xisnan(obj)) {
 		obj = obj_0;
 		if (verbose) warning("__stepsize: objective function crash in Newton step, falling back to bisection");
 		found_improvement = __bisectionstep(step, obj, f, f_args, x, dx, minarg, verbose);

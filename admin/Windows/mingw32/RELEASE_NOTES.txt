@@ -1,10 +1,9 @@
-This is a binary release of Octave 3.2.3 for Windows platform using 
-mingw32/gcc build tools. It has been tested on Windows 2K and XP.
+This is a binary release of Octave 3.2.4 for Windows platform using 
+mingw32/gcc build tools. It has been tested on Windows XP.
 
-Octave-3.2.3_i686-pc-mingw32_gcc-4.4.0_setup.exe
-Octave-3.2.3-2_i686-pc-mingw32_gcc-4.4.0_setup.exe
+Octave-3.2.4_i686-pc-mingw32_gcc-4.4.0_setup.exe
 
-This package contains Octave 3.2.3 and a set of octave-forge packages.
+This package contains Octave 3.2.4 and a set of octave-forge packages.
 Some packages are missing because external dependency libraries have not 
 been built using mingw32/gcc yet.
 
@@ -18,38 +17,49 @@ The installer can be installed side-by-side with previous versions of
 octave/mingw32 and thus does not uninstall any previously installed version 
 of octave/mingw32.
 
-Fixed Issues in 3.2.3-2:
------------------------
+Octave/mingw32 3.2.4 new features, changes and bugfixes (from 3.2.3-2)
+====================================================================
 
-*) Remove SSE3 ATLAS libraries from installer as they reportedly
-   segfault on complex arithmetic. No solution available yet.
-*) Fix a bug in patch of jpeg-7 which caused loading jpeg images to fail
-*) Fix a big in installer setting wrong shortcuts to octave documentation
-*) Fix missing gnuplot documentation in installer
+*) CHG: add the following packages from octave forge to the installer:
+            jhandles-0.3.5+
+            java-1.2.7+
+            video-1.0.2
+            msh-1.0.0
+            fpl-1.0.0
+            actuarial-1.1.0
+            bim-1.0.10
+            fenv-0.1.0
+            generate_html-0.1.2
+            gnuplot-1.0.1
+            gpc-0.1.7
+            nlwing2-1.1.1
+            nurbs-1.0.3
+            ocs-0.0.4
+            oct2mat-1.0.7
+            octgpr-1.1.5
+            simp-1.1.0
+            spline-gcvspl-1.0.8
+            symband-1.0.10
 
-Changes since Octave/mingw32 3.2.2:
------------------------------------
+*) CHG: updated the following octave forge packages
+            windows  1.0.8  -> 1.0.8+
+            octcdf   1.0.13 -> 1.0.17+
+            optim    1.0.6  -> 1.0.12
+            general  1.1.3  -> 1.2.0
+            io       1.0.9  -> 1.0.11
+            odepkg   0.6.7  -> 0.6.10
+        
+*) CHG: update gnuplot to 4.4.0
+*) CHG: revert PS1 to octave's default (of not including the pwd)
+*) CHG: add necessary jars for ods/xls support in the io package
+*) NOTE: The xls/ods code requires that you have a Java Runtime Environment (JRE)
+        installed on your computer. It is *not* included in the octave/mingw32
+        installer. You can get JRE for windows at http://www.java.com.
+        Please also refer to the documentation of the io package located at
+        <path-to-octave>\share\octave\packages\io-1.0.11\doc
 
-*) Build with gcc-4.4.0 from http://www.mingw.org
-*) Update to gnuplot 4.3.0-2009-07-08 CVS snapshot
-*) for gnuplot, add a workaround patch to SF#2848002
-*) build gnuplot with support for wxwidgets terminal. To use it, set the
-   environment variable GNUTERM to "wxt", e.g. from within octave execute
-      putenv("GNUTERM","wxt")
-*) Build Graphicsmagick as relocatable dll and remove dependency on 
-   environment variable defining installation location
-*) Update several dependency libraries
-*) Add SSE/SSE2-enabled fftw3 library
-*) add the fixed-0.7.10 octave forge package to installer
 
-Fixed Issues in 3.2.3:
-----------------------
-
-*) Printing to pdf no longer yields spurious empty pages using gnuplot
-*) Pressing CTRL-C within octave should no longer crash gnuplot
-*) the command "clear all" no longer segfaults after calling eigs()
-
-Known Issues with octave/mingw32 3.2.3:
+Known Issues with octave/mingw32 3.2.4:
 --------------------------------------
 
 *) The command "clear all" results in a segfault.
@@ -79,4 +89,4 @@ Known Issues with octave/mingw32 3.2.3:
     PASS   5754
     FAIL      3
    
-   octave-3.2.3\src\data.cc  PASS  506/509  FAIL 3
+   octave-3.2.4\src\data.cc  PASS  506/509  FAIL 3

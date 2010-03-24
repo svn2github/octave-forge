@@ -42,11 +42,11 @@ Using this package for the development of OCT and MEX files:
 -----------------------------------------------------------
 
 This package is bundled with the compiler used to compile this package.
-This version of the package has been compiled with TDM's port of GCC/mingw32
-using GCC version @GCC_VERSION@.
+This version of the package has been compiled with Mingw32 gcc using GCC 
+version @GCC_VERSION@.
 The compiler is available from
 
-http://www.tdragon.net/recentgcc/
+http://sourceforge.net/projects/mingw
 
 OCT files can be compiled from the Octave prompt with the "mkoctfile"
 command, whereas as MEX files can be compiled with the "mex" command.
@@ -80,6 +80,16 @@ If you cannot provide funding or contribute code, you can still help
 make Octave better and more reliable by reporting any bugs
 (http://www.octave.org/bugs.html) you find and by offering suggestions
 for ways to improve Octave.
+
+Using xls/ods support in the io package
+---------------------------------------
+
+The newly added code in the io octave forge package to read/write xls and ods 
+files requires a Java Runtime Environment (JRE) installed on your computer.
+The JRE is not included in the octave/mingw32 installer. You can get JRE 
+installers for windows at http://www.java.com.
+Please also refer to the documentation of the io package located at
+<path-to-octave>\share\octave\packages\io-1.0.11\doc
 
 Octave-Forge Packages
 ---------------------

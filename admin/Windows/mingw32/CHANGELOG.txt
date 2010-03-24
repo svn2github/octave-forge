@@ -32,7 +32,12 @@ Octave/mingw32 3.2.4 new features, changes and bugfixes (from 3.2.3-2)
         
 *) CHG: update gnuplot to 4.4.0
 *) CHG: revert PS1 to octave's default (of not including the pwd)
-
+*) CHG: add necessary jars for ods/xls support in the io package
+*) NOTE: The xls/ods code requires that you have a Java Runtime Environment (JRE)
+        installed on your computer. It is *not* included in the octave/mingw32
+        installer. You can get JRE for windows at http://www.java.com.
+        Please also refer to the documentation of the io package located at
+        <path-to-octave>\share\octave\packages\io-1.0.11\doc
 
 Octave/mingw32 3.2.3-2 new features, changes and bugfixes (from 3.2.3)
 ====================================================================

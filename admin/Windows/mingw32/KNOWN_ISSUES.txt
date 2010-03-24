@@ -1,5 +1,5 @@
 
-Known Issues with octave/mingw32 3.2.3:
+Known Issues with octave/mingw32 3.2.4:
 --------------------------------------
 
 *) The command "clear all" results in a segfault.
@@ -29,4 +29,4 @@ Known Issues with octave/mingw32 3.2.3:
     PASS   5754
     FAIL      3
    
-   octave-3.2.3\src\data.cc  PASS  506/509  FAIL 3
+   octave-3.2.4\src\data.cc  PASS  506/509  FAIL 3

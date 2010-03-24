@@ -1,0 +1,16 @@
+check for pgnuplot in main rcfile
+
+diff -r 0d329befea4e scripts/startup/main-rcfile
+--- a/scripts/startup/main-rcfile	Thu Aug 20 20:28:41 2009 +0200
++++ b/scripts/startup/main-rcfile	Thu Aug 20 20:28:44 2009 +0200
+@@ -57,4 +57,10 @@
+ endif
+ clear mingw_path
+ 
++## check for gnuplot in bundle
++
++if( exist( fullfile( octave_config_info("bindir"),"gnuplot.exe") ) )
++   gnuplot_binary( fullfile( octave_config_info("bindir"),"gnuplot.exe") );
++endif
++
+ atexit ("__finish__");

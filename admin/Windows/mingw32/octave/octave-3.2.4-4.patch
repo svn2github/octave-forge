@@ -1,0 +1,492 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/Makeconf.in octave-3.2.4/Makeconf.in
+--- octave-3.2.4-orig/Makeconf.in	2010-01-19 12:13:14 +0100
++++ octave-3.2.4/Makeconf.in	2010-02-28 12:55:38 +0100
+@@ -248,6 +248,7 @@
+ QRUPDATE_LIBS = @QRUPDATE_LIBS@
+ ARPACK_LIBS = @ARPACK_LIBS@
+ LIBS = @LIBS@
++CXXLIBS = @CXXLIBS@
+ 
+ USE_64_BIT_IDX_T = @USE_64_BIT_IDX_T@
+ 
+@@ -524,6 +525,7 @@
+   -e "s|%OCTAVE_CONF_LIBOCTINTERP%|\"${LIBOCTINTERP}\"|" \
+   -e "s|%OCTAVE_CONF_LIBREADLINE%|\"${LIBREADLINE}\"|" \
+   -e "s|%OCTAVE_CONF_LIBS%|\"${LIBS}\"|" \
++  -e "s|%OCTAVE_CONF_CXXLIBS%|\"${CXXLIBS}\"|" \
+   -e "s|%OCTAVE_CONF_LN_S%|\"${LN_S}\"|" \
+   -e "s|%OCTAVE_CONF_MAGICK_INCFLAGS%|\"${MAGICK_INCFLAGS}\"|" \
+   -e "s|%OCTAVE_CONF_MAGICK_LIBS%|\"${MAGICK_LIBS}\"|" \
+@@ -604,9 +606,9 @@
+ define do-subst-texinfo-vals
+ echo "making $@ from $<"
+ $(SED) < $< \
+-  -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
+-  -e "s|%top_srcdir%|${top_srcdir}|" \
+-  -e "s|%OCTAVE_HOME%|${prefix}|" \
++  -e "s|%abs_top_srcdir%|`cd ${abs_top_srcdir} && pwd -W`|" \
++  -e "s|%top_srcdir%|`cd ${top_srcdir} && pwd -W`|" \
++  -e "s|%OCTAVE_HOME%|`cd ${prefix} && pwd -W`|" \
+   -e "s|%OCTAVE_VERSION%|${version}|" \
+   -e "s|%TEXINFO_COLAMD%|${TEXINFO_COLAMD}|" \
+   -e "s|%TEXINFO_CHOLMOD%|${TEXINFO_CHOLMOD}|" \
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/aclocal.m4 octave-3.2.4/aclocal.m4
+--- octave-3.2.4-orig/aclocal.m4	2009-11-26 14:32:24 +0100
++++ octave-3.2.4/aclocal.m4	2010-02-28 12:55:38 +0100
+@@ -534,8 +534,8 @@
+ dnl OCTAVE_PROG_GHOSTSCRIPT
+ AC_DEFUN(OCTAVE_PROG_GHOSTSCRIPT, [
+   case "$canonical_host_type" in
+-    *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
+-      gs_names="gs gswin32"
++    *-*-cygwin* | *-*-mingw* | *-*-msdosmsvc)
++      gs_names="gs gswin32c gswin32"
+     ;;
+     *)
+       gs_names=gs
+@@ -608,6 +608,8 @@
+   AC_MSG_CHECKING([if C++ library is ISO compliant])
+   AC_CACHE_VAL(octave_cv_cxx_iso_compliant_library, [
+     AC_LANG_PUSH(C++)
++    XLIBS="$LIBS"
++    LIBS="$LIBS $CXXLIBS"
+     rm -f conftest.h
+ ### Omitting cwctype for now, since it is broken with gcc-3.0.x and
+ ### possibly other versions...
+@@ -627,6 +629,7 @@
+         digits = 0;]])],
+       [octave_cv_cxx_iso_compliant_library=yes],
+       [octave_cv_cxx_iso_compliant_library=no])
++    LIBS="$XLIBS"
+     AC_LANG_POP(C++)
+   ])
+   AC_MSG_RESULT($octave_cv_cxx_iso_compliant_library)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/configure.in octave-3.2.4/configure.in
+--- octave-3.2.4-orig/configure.in	2010-01-19 12:13:14 +0100
++++ octave-3.2.4/configure.in	2010-02-28 12:55:38 +0100
+@@ -1272,8 +1272,8 @@
+     SHLEXT=dll
+     SHLLIB=dll.a
+     SHLBIN=dll
+-    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+-    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
++    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc \$(LDFLAGS)"
++    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base \$(LDFLAGS)"
+     SONAME_FLAGS='-Wl,--out-implib=$@.a'
+     library_path_var=PATH
+     SCRIPTS_EXE_SUFFIX='$(EXEEXT)'
+@@ -1454,6 +1454,7 @@
+ AC_SUBST(OCTGRAPHICS_DLL_DEFS)
+ AC_SUBST(library_path_var)
+ AC_SUBST(SCRIPTS_EXE_SUFFIX)
++AC_SUBST(CXXLIBS)
+ 
+ ### special checks for odd OS specific things.
+ ###
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/doc/interpreter/Makefile.in octave-3.2.4/doc/interpreter/Makefile.in
+--- octave-3.2.4-orig/doc/interpreter/Makefile.in	2009-11-20 10:48:24 +0100
++++ octave-3.2.4/doc/interpreter/Makefile.in	2010-02-28 12:55:38 +0100
+@@ -135,13 +135,13 @@
+ # targeted file name (e.g. to generate octave-a4.pdf, copy to
+ # octave-a4.texi) and call texi2[dvi|pdf] on it.
+ 
+-TEXI2DVICOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+-	TEXMFCNF="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXMFCNF)$(sepchar)" \
+-	  $(TEXI2DVI)
+-
+-TEXI2PDFCOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+-	TEXMFCNF="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXMFCNF)$(sepchar)" \
+-	  $(TEXI2PDF)
++TEXI2DVICOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
++	TEXMFCNF="..:$(srcdir):$(srcdir)/..:$(TEXMFCNF):" \
++	  $(TEXI2DVI) -I$(srcdir)/..
++
++TEXI2PDFCOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
++	TEXMFCNF="..:$(srcdir):$(srcdir)/..:$(TEXMFCNF):" \
++	  $(TEXI2PDF) -I$(srcdir)/..
+ 
+ FORMATTED = octave.info octave.pdf octave-a4.pdf octave.info-[0-9]*
+ 
+@@ -182,7 +182,7 @@
+ $(TEXINFO): $(DOCSTRING_FILES) munge-texi$(BUILD_EXEEXT)
+ 
+ munge-texi$(BUILD_EXEEXT): munge-texi.cc
+-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
++	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS) $(CXXLIBS)
+ 
+ $(DOCSTRING_FILES):
+ 	$(MAKE) -C $(dir $@) $(notdir $@)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/doc/liboctave/Makefile.in octave-3.2.4/doc/liboctave/Makefile.in
+--- octave-3.2.4-orig/doc/liboctave/Makefile.in	2009-05-25 08:04:58 +0200
++++ octave-3.2.4/doc/liboctave/Makefile.in	2010-02-28 12:55:38 +0100
+@@ -66,14 +66,14 @@
+ 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $<
+ 
+ liboctave.dvi: $(TEXINFO)
+-	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
++	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+ 	  $(TEXI2DVI) $<
+ 
+ liboctave.ps: liboctave.dvi
+ 	-dvips -o $@ $<
+ 
+ liboctave.pdf: $(TEXINFO)
+-	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
++	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+ 	  $(TEXI2PDF) $<
+ 
+ HTML/index.html: $(TEXINFO)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/libcruft/Makefile.in octave-3.2.4/libcruft/Makefile.in
+--- octave-3.2.4-orig/libcruft/Makefile.in	2009-06-24 08:45:41 +0200
++++ octave-3.2.4/libcruft/Makefile.in	2010-02-28 12:55:38 +0100
+@@ -59,7 +59,7 @@
+ SH_LDFLAGS += $(XTRA_CRUFT_SH_LDFLAGS)
+ 
+ # Include BLAS and FFTW just in case some of libcruft depends on them
+-LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)
++LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS) $(CXXLIBS)
+ 
+ all: libraries
+ .PHONY: all
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/liboctave/Makefile.in octave-3.2.4/liboctave/Makefile.in
+--- octave-3.2.4-orig/liboctave/Makefile.in	2010-01-20 12:01:50 +0100
++++ octave-3.2.4/liboctave/Makefile.in	2010-02-28 12:55:38 +0100
+@@ -39,7 +39,8 @@
+   $(LIBCRUFT) $(CHOLMOD_LIBS) $(UMFPACK_LIBS) $(AMD_LIBS) $(CAMD_LIBS) \
+   $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(ARPACK_LIBS) \
+   $(QRUPDATE_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) $(LIBGLOB) \
+-  $(REGEX_LIBS) $(LIBS) $(FLIBS) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS)
++  $(REGEX_LIBS) $(LIBS) $(FLIBS) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) \
++  $(CXXLIBS)
+ 
+ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
+ 	Array-util.h MArray-decl.h MArray-defs.h \
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/liboctave/syswait.h octave-3.2.4/liboctave/syswait.h
+--- octave-3.2.4-orig/liboctave/syswait.h	2009-05-25 08:04:59 +0200
++++ octave-3.2.4/liboctave/syswait.h	2010-02-28 12:55:38 +0100
+@@ -41,6 +41,11 @@
+ #include <sys/wait.h>
+ #endif
+ 
++#if defined (__MINGW32__) || defined (_MSC_VER)
++#define WIFEXITED(stat_val) ( (stat_val) != -1 )
++#define WEXITSTATUS(stat_val) ((unsigned)(stat_val))
++#endif
++
+ #if defined (NeXT)
+ #define HAVE_WAITPID 1
+ #define WAITPID(a, b, c) \
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/mkoctfile.cc.in octave-3.2.4/mkoctfile.cc.in
+--- octave-3.2.4-orig/mkoctfile.cc.in	2009-06-08 07:34:31 +0200
++++ octave-3.2.4/mkoctfile.cc.in	2010-02-28 12:55:38 +0100
+@@ -226,6 +226,7 @@
+   vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
+   vars["FFTW_LIBS"] = get_variable ("FFTW_LIBS", %OCTAVE_CONF_FFTW_LIBS%);
+   vars["LIBS"] = get_variable ("LIBS", %OCTAVE_CONF_LIBS%);
++  vars["CXXLIBS"] = get_variable ("CXXLIBS", %OCTAVE_CONF_CXXLIBS%);
+   vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
+   vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_LD_CXX%);
+   vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
+@@ -297,13 +298,14 @@
+ "			    CPPFLAGS                  LIBOCTAVE\n"
+ "			    CXX                       LIBOCTINTERP\n"
+ "			    CXXFLAGS                  LIBREADLINE\n"
+-"			    CXXPICFLAG                LIBS\n"
+-"			    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS\n"
+-"			    DEPEND_FLAGS              RDYNAMIC_FLAG\n"
+-"			    DL_LD                     RLD_FLAG\n"
+-"			    DL_LDFLAGS                SED\n"
+-"			    F77                       XTRA_CFLAGS\n"
+-"			    FFLAGS                    XTRA_CXXFLAGS\n"
++"			    CXXLIBS                   LIBS\n"
++"			    CXXPICFLAG                OCTAVE_LIBS\n"
++"			    DEPEND_EXTRA_SED_PATTERN  RDYNAMIC_FLAG\n"
++"			    DEPEND_FLAGS              RLD_FLAG\n"
++"			    DL_LD                     SED\n"
++"			    DL_LDFLAGS                XTRA_CFLAGS\n"
++"			    F77                       XTRA_CXXFLAGS\n"
++"			    FFLAGS                    \n"
+ "			    FFTW_LIBS\n"
+ "\n"
+ "  --link-stand-alone      Link a stand-alone executable file.\n"
+@@ -728,7 +730,7 @@
+ 		+ vars["RLD_FLAG"] + " " + vars["OCTAVE_LIBS"] + " "
+ 		+ vars["BLAS_LIBS"] + " " + vars["FFTW_LIBS"] + " "
+ 		+ vars["LIBREADLINE"] + " " + vars["LIBS"] + " "
+-		+ vars["FLIBS"];
++		+ vars["FLIBS"] + " " + vars["CXXLIBS"];
+ 	      result = run_command (cmd);
+ 	    }
+ 	  else
+@@ -742,7 +744,8 @@
+ 	{
+ 	  string LINK_DEPS = vars["LFLAGS"] + " " + vars["OCTAVE_LIBS"]
+ 	    + " " + vars["LDFLAGS"] + " " + vars["BLAS_LIBS"] + " "
+-	    + vars["FFTW_LIBS"] + " " + vars["LIBS"] + " " + vars["FLIBS"];
++	    + vars["FFTW_LIBS"] + " " + vars["LIBS"] + " " + vars["FLIBS"]
++	    + " " + vars["CXXLIBS"];
+ 	  string cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " "
+ 	    + pass_on_options + " -o " + octfile + " " + objfiles + " "
+ 	    + libfiles + " " + ldflags + " " + LINK_DEPS;
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/mkoctfile.in octave-3.2.4/mkoctfile.in
+--- octave-3.2.4-orig/mkoctfile.in	2009-05-25 08:04:59 +0200
++++ octave-3.2.4/mkoctfile.in	2010-02-28 12:55:38 +0100
+@@ -95,6 +95,7 @@
+ : ${BLAS_LIBS=%OCTAVE_CONF_BLAS_LIBS%}
+ : ${FFTW_LIBS=%OCTAVE_CONF_FFTW_LIBS%}
+ : ${LIBS=%OCTAVE_CONF_LIBS%}
++: ${CXXLIBS=%OCTAVE_CONF_CXXLIBS%}
+ : ${FLIBS=%OCTAVE_CONF_FLIBS%}
+ : ${LD_CXX=%OCTAVE_CONF_LD_CXX%}
+ : ${LDFLAGS=%OCTAVE_CONF_LDFLAGS%}
+@@ -227,13 +228,14 @@
+ 			    CPPFLAGS                  LIBOCTAVE
+ 			    CXX                       LIBOCTINTERP
+ 			    CXXFLAGS                  LIBREADLINE
+-			    CXXPICFLAG                LIBS
+-			    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
+-			    DEPEND_FLAGS              RDYNAMIC_FLAG
+-			    DL_LD                     RLD_FLAG
+-			    DL_LDFLAGS                SED
+-			    F77                       XTRA_CFLAGS
+-			    FFLAGS                    XTRA_CXXFLAGS
++			    CXXLIBS                   LIBS
++			    CXXPICFLAG                OCTAVE_LIBS
++			    DEPEND_EXTRA_SED_PATTERN  RDYNAMIC_FLAG
++			    DEPEND_FLAGS              RLD_FLAG
++			    DL_LD                     SED
++			    DL_LDFLAGS                XTRA_CFLAGS
++			    F77                       XTRA_CXXFLAGS
++			    FFLAGS                    
+ 			    FFTW_LIBS
+ 
+   --link-stand-alone      Link a stand-alone executable file.
+@@ -508,7 +510,7 @@
+ if $link && [ -n "$objfiles" ]; then
+   if $link_stand_alone; then
+     if [ -n "$LD_CXX" ]; then
+-      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBREADLINE $LIBS $FLIBS"
++      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBREADLINE $LIBS $FLIBS $CXXLIBS"
+       $dbg $cmd
+       eval $cmd
+     else
+@@ -516,7 +518,7 @@
+       exit 1
+     fi
+   else
+-    LINK_DEPS="$LFLAGS $OCTAVE_LIBS $LDFLAGS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS"
++    LINK_DEPS="$LFLAGS $OCTAVE_LIBS $LDFLAGS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS $CXXLIBS"
+     cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $libfiles $ldflags $LINK_DEPS"
+     $dbg $cmd
+     eval $cmd
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/octMakefile.in octave-3.2.4/octMakefile.in
+--- octave-3.2.4-orig/octMakefile.in	2010-01-19 13:45:58 +0100
++++ octave-3.2.4/octMakefile.in	2010-02-28 12:55:38 +0100
+@@ -122,7 +122,7 @@
+ ifneq ($(EXEEXT),)
+ octave-bug$(EXEEXT): octave-bug.o
+ 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+-	    $(ALL_LDFLAGS) -o $@ octave-bug.o
++	    $(ALL_LDFLAGS) -o $@ octave-bug.o $(CXXLIBS)
+ endif
+ 
+ octave-config: octave-config.in Makeconf octMakefile $(top_srcdir)/src/version.h
+@@ -135,7 +135,7 @@
+ ifneq ($(EXEEXT),)
+ octave-config$(EXEEXT): octave-config.o
+ 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+-	    $(ALL_LDFLAGS) -o $@ octave-config.o
++	    $(ALL_LDFLAGS) -o $@ octave-config.o $(CXXLIBS)
+ endif
+ 
+ mkoctfile: mkoctfile.in Makeconf octMakefile $(top_srcdir)/src/version.h
+@@ -148,7 +148,7 @@
+ ifneq ($(EXEEXT),)
+ mkoctfile$(EXEEXT): mkoctfile.o
+ 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+-	    $(ALL_LDFLAGS) -o $@ mkoctfile.o
++	    $(ALL_LDFLAGS) -o $@ mkoctfile.o $(CXXLIBS)
+ endif
+ 
+ run-octave: run-octave.in Makeconf octMakefile
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/scripts/Makefile.in octave-3.2.4/scripts/Makefile.in
+--- octave-3.2.4-orig/scripts/Makefile.in	2009-05-25 08:04:59 +0200
++++ octave-3.2.4/scripts/Makefile.in	2010-02-28 12:55:38 +0100
+@@ -79,7 +79,7 @@
+ 	mv $@.t $@
+ 
+ gethelp$(BUILD_EXEEXT): gethelp.cc
+-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
++	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS) $(CXXLIBS)
+ 
+ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
+ 	@$(subdir-for-command)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/scripts/startup/main-rcfile octave-3.2.4/scripts/startup/main-rcfile
+--- octave-3.2.4-orig/scripts/startup/main-rcfile	2009-05-25 08:04:59 +0200
++++ octave-3.2.4/scripts/startup/main-rcfile	2010-02-28 12:55:38 +0100
+@@ -10,6 +10,17 @@
+ 				  octave_config_info ("startupfiledir"),
+ 				  filesep, "inputrc"));
+ 
++## Check for PAGER in distribution tree
++if( exist( fullfile( octave_config_info("bindir"), "less.exe") ) )
++  PAGER( fullfile( octave_config_info("bindir"), "less.exe") );
++  
++  if( isempty(getenv("LESS")) )
++     PAGER_FLAGS ("-P\"?ltlines %lt-%lb?L/%L. ?e(END). -- (f)orward, (b)ack, (q)uit$\"");
++  endif
++  
++  page_screen_output(1);
++endif
++
+ if (strcmp (PAGER (), "less") && isempty (getenv ("LESS")))
+   PAGER_FLAGS ('-e -X -P"-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$"');
+ endif
+@@ -19,4 +30,37 @@
+ 
+ pkg ("load", "auto");
+ 
++## check for notepad++ editor
++
++npp_path = fullfile( octave_config_info("prefix"), "tools", "notepad++" );
++if( exist(npp_path,"dir") )
++   EDITOR( fullfile( npp_path, "notepad++.exe" ) );
++   edit("mode","async");
++endif
++clear npp_path
++
++## check for MSYS environment
++
++msys_path = fullfile( octave_config_info("prefix"), "MSYS" );
++if( exist( msys_path, "dir" ) )
++   msys_path = cat(2, msys_path, filesep, "bin", ";", EXEC_PATH );
++   EXEC_PATH( msys_path );
++endif
++clear msys_path
++
++## check for mingw32
++
++mingw_path = fullfile( octave_config_info("prefix"), "MINGW32" );
++if( exist(mingw_path, "dir") )
++   mingw_path = cat(2, mingw_path, filesep, "bin", ";", EXEC_PATH );
++   EXEC_PATH( mingw_path );
++endif
++clear mingw_path
++
++## check for gnuplot in bundle
++
++if( exist( fullfile( octave_config_info("bindir"),"gnuplot.exe") ) )
++   gnuplot_binary( fullfile( octave_config_info("bindir"),"gnuplot.exe") );
++endif
++
+ atexit ("__finish__");
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/src/ChangeLog octave-3.2.4/src/ChangeLog
+--- octave-3.2.4-orig/src/ChangeLog	2010-01-22 10:23:24 +0100
++++ octave-3.2.4/src/ChangeLog	2010-02-28 12:55:38 +0100
+@@ -415,6 +415,11 @@
+ 
+ 	* variables.cc (do_who): Only output symbols with a defined value.
+ 
++2009-05-24  Benjamin Lindner <lindnerb@users.sourceforge.net>
++
++	* pager.cc: enclose VPAGER in double quotes and enclose
++	total pager command string in double quotes on mingw platform
++
+ 2009-05-22  Michael Goffioul  <michael.goffioul@gmail.com>
+ 
+ 	* toplev.h (main_loop): Tag with OCTINTERP_API.
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/src/DLD-FUNCTIONS/__magick_read__.cc octave-3.2.4/src/DLD-FUNCTIONS/__magick_read__.cc
+--- octave-3.2.4-orig/src/DLD-FUNCTIONS/__magick_read__.cc	2009-08-25 10:26:01 +0200
++++ octave-3.2.4/src/DLD-FUNCTIONS/__magick_read__.cc	2010-02-28 12:55:38 +0100
+@@ -33,7 +33,7 @@
+ 
+ #ifdef HAVE_MAGICK
+ 
+-#include <GraphicsMagick/Magick++.h>
++#include <Magick++.h>
+ 
+ unsigned int
+ scale_quantum_to_depth (const Magick::Quantum& quantum, unsigned int depth)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/src/Makefile.in octave-3.2.4/src/Makefile.in
+--- octave-3.2.4-orig/src/Makefile.in	2009-06-03 14:32:49 +0200
++++ octave-3.2.4/src/Makefile.in	2010-02-28 12:55:38 +0100
+@@ -299,13 +299,13 @@
+ 
+ OCTINTERP_LINK_DEPS = \
+   -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS) \
+-  $(X11_LIBS) $(OPENGL_LIBS) $(CARBON_LIBS)
++  $(X11_LIBS) $(OPENGL_LIBS) $(CARBON_LIBS) $(CXXLIBS)
+ 
+ OCT_LINK_DEPS = \
+   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
+   -L. $(LIBOCTINTERP) $(CHOLMOD_LIBS) $(UMFPACK_LIBS) $(AMD_LIBS) \
+    $(CAMD_LIBS) $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(BLAS_LIBS) \
+-   $(FFTW_LIBS) $(QRUPDATE_LIBS) $(ARPACK_LIBS) $(LIBS) $(FLIBS)
++   $(FFTW_LIBS) $(QRUPDATE_LIBS) $(ARPACK_LIBS) $(LIBS) $(FLIBS) $(CXXLIBS)
+ 
+ BUILT_DISTFILES = DOCSTRINGS oct-gperf.h parse.cc lex.cc y.tab.h \
+ 	$(OPT_HANDLERS) $(BUILT_EXTRAS)
+@@ -377,7 +377,8 @@
+ 	$(LEXLIB) $(UMFPACK_LIBS) $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
+ 	$(CHOLMOD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(BLAS_LIBS) \
+ 	$(FFTW_LIBS) $(QRUPDATE_LIBS) $(ARPACK_LIBS) $(OPENGL_LIBS) \
+-	$(X11_LIBS) $(CARBON_LIBS) $(LIBS) $(FLIBS)
++	$(X11_LIBS) $(CARBON_LIBS) $(LIBS) $(FLIBS) \
++	$(CXXLIBS)
+ 
+ stmp-pic: pic
+ 	@if [ -f stmp-pic ]; then \
+@@ -432,7 +433,7 @@
+ 	@mv $@-t $@
+ 
+ gendoc$(BUILD_EXEEXT): gendoc.cc
+-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
++	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS) $(CXXLIBS)
+ 
+ ops.cc: $(OP_SRC) mkops
+ 	@echo making $@ from $(OP_SRC)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x configure -x config.h.in -x 'autom4te.cache*' -x '*.rej' -x '*.orig' octave-3.2.4-orig/src/pager.cc octave-3.2.4/src/pager.cc
+--- octave-3.2.4-orig/src/pager.cc	2009-05-25 08:05:00 +0200
++++ octave-3.2.4/src/pager.cc	2010-02-28 12:55:38 +0100
+@@ -132,11 +132,40 @@
+ static std::string
+ pager_command (void)
+ {
+-  std::string cmd = VPAGER;
++  std::string cmd = "\"" + VPAGER + "\"";
+ 
+   if (! (cmd.empty () || VPAGER_FLAGS.empty ()))
++  {
+     cmd += " " + VPAGER_FLAGS;
+ 
++#ifdef __MINGW32__
++  // the documentation of CMD.EXE tells:
++  //
++  //  If /C or /K is specified, then the remainder of the command line after
++  //  the switch is processed as a command line, where the following logic is
++  //  used to process quote (") characters:
++  //  
++  //      1.  If all of the following conditions are met, then quote characters
++  //          on the command line are preserved:
++  //  
++  //          - no /S switch
++  //          - exactly two quote characters
++  //          - no special characters between the two quote characters,
++  //            where special is one of: &<>()@^|
++  //          - there are one or more whitespace characters between the
++  //            the two quote characters
++  //          - the string between the two quote characters is the name
++  //            of an executable file.
++  //  
++  //      2.  Otherwise, old behavior is to see if the first character is
++  //          a quote character and if so, strip the leading character and
++  //          remove the last quote character on the command line, preserving
++  //          any text after the last quote character.
++    
++    cmd = "\"" + cmd + "\"";
++#endif
++  }
++  
+   return cmd;
+ }
+ 

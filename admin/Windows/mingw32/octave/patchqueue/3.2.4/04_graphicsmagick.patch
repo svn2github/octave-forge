@@ -1,0 +1,14 @@
+remove explicit graphicsmagick/ path component when include graphicsmagick headers
+
+diff -r 2a7ed3ea120c -r d5ba49ddea77 src/DLD-FUNCTIONS/__magick_read__.cc
+--- a/src/DLD-FUNCTIONS/__magick_read__.cc	Sun Oct 25 19:26:42 2009 +0100
++++ b/src/DLD-FUNCTIONS/__magick_read__.cc	Sun Oct 25 19:31:34 2009 +0100
+@@ -33,7 +33,7 @@
+ 
+ #ifdef HAVE_MAGICK
+ 
+-#include <GraphicsMagick/Magick++.h>
++#include <Magick++.h>
+ 
+ unsigned int
+ scale_quantum_to_depth (const Magick::Quantum& quantum, unsigned int depth)

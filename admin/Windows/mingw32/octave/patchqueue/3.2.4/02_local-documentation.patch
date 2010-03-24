@@ -1,0 +1,61 @@
+local changes to build documentation for win32 using msys/miktex27
+
+diff -r 4818c0c61ac3 Makeconf.in
+--- a/Makeconf.in	Sun Nov 22 17:25:48 2009 +0100
++++ b/Makeconf.in	Sun Nov 22 17:29:38 2009 +0100
+@@ -601,9 +601,9 @@
+ define do-subst-texinfo-vals
+ echo "making $@ from $<"
+ $(SED) < $< \
+-  -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
+-  -e "s|%top_srcdir%|${top_srcdir}|" \
+-  -e "s|%OCTAVE_HOME%|${prefix}|" \
++  -e "s|%abs_top_srcdir%|`cd ${abs_top_srcdir} && pwd -W`|" \
++  -e "s|%top_srcdir%|`cd ${top_srcdir} && pwd -W`|" \
++  -e "s|%OCTAVE_HOME%|`cd ${prefix} && pwd -W`|" \
+   -e "s|%OCTAVE_VERSION%|${version}|" \
+   -e "s|%TEXINFO_COLAMD%|${TEXINFO_COLAMD}|" \
+   -e "s|%TEXINFO_CHOLMOD%|${TEXINFO_CHOLMOD}|" \
+diff -r 4818c0c61ac3 doc/interpreter/Makefile.in
+--- a/doc/interpreter/Makefile.in	Sun Nov 22 17:25:48 2009 +0100
++++ b/doc/interpreter/Makefile.in	Sun Nov 22 17:29:38 2009 +0100
+@@ -135,13 +135,13 @@
+ # targeted file name (e.g. to generate octave-a4.pdf, copy to
+ # octave-a4.texi) and call texi2[dvi|pdf] on it.
+ 
+-TEXI2DVICOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+-	TEXMFCNF="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXMFCNF)$(sepchar)" \
+-	  $(TEXI2DVI)
++TEXI2DVICOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
++	TEXMFCNF="..:$(srcdir):$(srcdir)/..:$(TEXMFCNF):" \
++	  $(TEXI2DVI) -I$(srcdir)/..
+ 
+-TEXI2PDFCOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+-	TEXMFCNF="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXMFCNF)$(sepchar)" \
+-	  $(TEXI2PDF)
++TEXI2PDFCOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
++	TEXMFCNF="..:$(srcdir):$(srcdir)/..:$(TEXMFCNF):" \
++	  $(TEXI2PDF) -I$(srcdir)/..
+ 
+ FORMATTED = octave.info octave.pdf octave-a4.pdf octave.info-[0-9]*
+ 
+diff -r 4818c0c61ac3 doc/liboctave/Makefile.in
+--- a/doc/liboctave/Makefile.in	Sun Nov 22 17:25:48 2009 +0100
++++ b/doc/liboctave/Makefile.in	Sun Nov 22 17:29:38 2009 +0100
+@@ -66,14 +66,14 @@
+ 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $<
+ 
+ liboctave.dvi: $(TEXINFO)
+-	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
++	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+ 	  $(TEXI2DVI) $<
+ 
+ liboctave.ps: liboctave.dvi
+ 	-dvips -o $@ $<
+ 
+ liboctave.pdf: $(TEXINFO)
+-	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
++	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+ 	  $(TEXI2PDF) $<
+ 
+ HTML/index.html: $(TEXINFO)

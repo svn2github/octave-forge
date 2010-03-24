@@ -1,0 +1,283 @@
+add CXXLIBS to support shared libstdc++ build with mingw32
+
+diff -r 936438a7860a Makeconf.in
+--- a/Makeconf.in	Thu Feb 18 20:42:15 2010 +0100
++++ b/Makeconf.in	Thu Feb 18 20:44:16 2010 +0100
+@@ -248,6 +248,7 @@
+ QRUPDATE_LIBS = @QRUPDATE_LIBS@
+ ARPACK_LIBS = @ARPACK_LIBS@
+ LIBS = @LIBS@
++CXXLIBS = @CXXLIBS@
+ 
+ USE_64_BIT_IDX_T = @USE_64_BIT_IDX_T@
+ 
+@@ -524,6 +525,7 @@
+   -e "s|%OCTAVE_CONF_LIBOCTINTERP%|\"${LIBOCTINTERP}\"|" \
+   -e "s|%OCTAVE_CONF_LIBREADLINE%|\"${LIBREADLINE}\"|" \
+   -e "s|%OCTAVE_CONF_LIBS%|\"${LIBS}\"|" \
++  -e "s|%OCTAVE_CONF_CXXLIBS%|\"${CXXLIBS}\"|" \
+   -e "s|%OCTAVE_CONF_LN_S%|\"${LN_S}\"|" \
+   -e "s|%OCTAVE_CONF_MAGICK_INCFLAGS%|\"${MAGICK_INCFLAGS}\"|" \
+   -e "s|%OCTAVE_CONF_MAGICK_LIBS%|\"${MAGICK_LIBS}\"|" \
+diff -r 936438a7860a aclocal.m4
+--- a/aclocal.m4	Thu Feb 18 20:42:15 2010 +0100
++++ b/aclocal.m4	Thu Feb 18 20:44:16 2010 +0100
+@@ -608,6 +608,8 @@
+   AC_MSG_CHECKING([if C++ library is ISO compliant])
+   AC_CACHE_VAL(octave_cv_cxx_iso_compliant_library, [
+     AC_LANG_PUSH(C++)
++    XLIBS="$LIBS"
++    LIBS="$LIBS $CXXLIBS"
+     rm -f conftest.h
+ ### Omitting cwctype for now, since it is broken with gcc-3.0.x and
+ ### possibly other versions...
+@@ -627,6 +629,7 @@
+         digits = 0;]])],
+       [octave_cv_cxx_iso_compliant_library=yes],
+       [octave_cv_cxx_iso_compliant_library=no])
++    LIBS="$XLIBS"
+     AC_LANG_POP(C++)
+   ])
+   AC_MSG_RESULT($octave_cv_cxx_iso_compliant_library)
+diff -r 936438a7860a configure.in
+--- a/configure.in	Thu Feb 18 20:42:15 2010 +0100
++++ b/configure.in	Thu Feb 18 20:44:16 2010 +0100
+@@ -1272,8 +1272,8 @@
+     SHLEXT=dll
+     SHLLIB=dll.a
+     SHLBIN=dll
+-    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc"
+-    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base"
++    DL_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc \$(LDFLAGS)"
++    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-auto-image-base \$(LDFLAGS)"
+     SONAME_FLAGS='-Wl,--out-implib=$@.a'
+     library_path_var=PATH
+     SCRIPTS_EXE_SUFFIX='$(EXEEXT)'
+@@ -1454,6 +1454,7 @@
+ AC_SUBST(OCTGRAPHICS_DLL_DEFS)
+ AC_SUBST(library_path_var)
+ AC_SUBST(SCRIPTS_EXE_SUFFIX)
++AC_SUBST(CXXLIBS)
+ 
+ ### special checks for odd OS specific things.
+ ###
+diff -r 936438a7860a doc/interpreter/Makefile.in
+--- a/doc/interpreter/Makefile.in	Thu Feb 18 20:42:15 2010 +0100
++++ b/doc/interpreter/Makefile.in	Thu Feb 18 20:44:16 2010 +0100
+@@ -182,7 +182,7 @@
+ $(TEXINFO): $(DOCSTRING_FILES) munge-texi$(BUILD_EXEEXT)
+ 
+ munge-texi$(BUILD_EXEEXT): munge-texi.cc
+-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
++	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS) $(CXXLIBS)
+ 
+ $(DOCSTRING_FILES):
+ 	$(MAKE) -C $(dir $@) $(notdir $@)
+diff -r 936438a7860a libcruft/Makefile.in
+--- a/libcruft/Makefile.in	Thu Feb 18 20:42:15 2010 +0100
++++ b/libcruft/Makefile.in	Thu Feb 18 20:44:16 2010 +0100
+@@ -59,7 +59,7 @@
+ SH_LDFLAGS += $(XTRA_CRUFT_SH_LDFLAGS)
+ 
+ # Include BLAS and FFTW just in case some of libcruft depends on them
+-LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)
++LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS) $(CXXLIBS)
+ 
+ all: libraries
+ .PHONY: all
+diff -r 936438a7860a liboctave/Makefile.in
+--- a/liboctave/Makefile.in	Thu Feb 18 20:42:15 2010 +0100
++++ b/liboctave/Makefile.in	Thu Feb 18 20:44:16 2010 +0100
+@@ -39,7 +39,8 @@
+   $(LIBCRUFT) $(CHOLMOD_LIBS) $(UMFPACK_LIBS) $(AMD_LIBS) $(CAMD_LIBS) \
+   $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(ARPACK_LIBS) \
+   $(QRUPDATE_LIBS) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) $(LIBGLOB) \
+-  $(REGEX_LIBS) $(LIBS) $(FLIBS) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS)
++  $(REGEX_LIBS) $(LIBS) $(FLIBS) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) \
++  $(CXXLIBS)
+ 
+ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
+ 	Array-util.h MArray-decl.h MArray-defs.h \
+diff -r 936438a7860a mkoctfile.cc.in
+--- a/mkoctfile.cc.in	Thu Feb 18 20:42:15 2010 +0100
++++ b/mkoctfile.cc.in	Thu Feb 18 20:44:16 2010 +0100
+@@ -226,6 +226,7 @@
+   vars["BLAS_LIBS"] = get_variable ("BLAS_LIBS", %OCTAVE_CONF_BLAS_LIBS%);
+   vars["FFTW_LIBS"] = get_variable ("FFTW_LIBS", %OCTAVE_CONF_FFTW_LIBS%);
+   vars["LIBS"] = get_variable ("LIBS", %OCTAVE_CONF_LIBS%);
++  vars["CXXLIBS"] = get_variable ("CXXLIBS", %OCTAVE_CONF_CXXLIBS%);
+   vars["FLIBS"] = get_variable ("FLIBS", %OCTAVE_CONF_FLIBS%);
+   vars["LD_CXX"] = get_variable ("LD_CXX", %OCTAVE_CONF_LD_CXX%);
+   vars["LDFLAGS"] = get_variable ("LDFLAGS", %OCTAVE_CONF_LDFLAGS%);
+@@ -297,13 +298,14 @@
+ "			    CPPFLAGS                  LIBOCTAVE\n"
+ "			    CXX                       LIBOCTINTERP\n"
+ "			    CXXFLAGS                  LIBREADLINE\n"
+-"			    CXXPICFLAG                LIBS\n"
+-"			    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS\n"
+-"			    DEPEND_FLAGS              RDYNAMIC_FLAG\n"
+-"			    DL_LD                     RLD_FLAG\n"
+-"			    DL_LDFLAGS                SED\n"
+-"			    F77                       XTRA_CFLAGS\n"
+-"			    FFLAGS                    XTRA_CXXFLAGS\n"
++"			    CXXLIBS                   LIBS\n"
++"			    CXXPICFLAG                OCTAVE_LIBS\n"
++"			    DEPEND_EXTRA_SED_PATTERN  RDYNAMIC_FLAG\n"
++"			    DEPEND_FLAGS              RLD_FLAG\n"
++"			    DL_LD                     SED\n"
++"			    DL_LDFLAGS                XTRA_CFLAGS\n"
++"			    F77                       XTRA_CXXFLAGS\n"
++"			    FFLAGS                    \n"
+ "			    FFTW_LIBS\n"
+ "\n"
+ "  --link-stand-alone      Link a stand-alone executable file.\n"
+@@ -728,7 +730,7 @@
+ 		+ vars["RLD_FLAG"] + " " + vars["OCTAVE_LIBS"] + " "
+ 		+ vars["BLAS_LIBS"] + " " + vars["FFTW_LIBS"] + " "
+ 		+ vars["LIBREADLINE"] + " " + vars["LIBS"] + " "
+-		+ vars["FLIBS"];
++		+ vars["FLIBS"] + " " + vars["CXXLIBS"];
+ 	      result = run_command (cmd);
+ 	    }
+ 	  else
+@@ -742,7 +744,8 @@
+ 	{
+ 	  string LINK_DEPS = vars["LFLAGS"] + " " + vars["OCTAVE_LIBS"]
+ 	    + " " + vars["LDFLAGS"] + " " + vars["BLAS_LIBS"] + " "
+-	    + vars["FFTW_LIBS"] + " " + vars["LIBS"] + " " + vars["FLIBS"];
++	    + vars["FFTW_LIBS"] + " " + vars["LIBS"] + " " + vars["FLIBS"]
++	    + " " + vars["CXXLIBS"];
+ 	  string cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " "
+ 	    + pass_on_options + " -o " + octfile + " " + objfiles + " "
+ 	    + libfiles + " " + ldflags + " " + LINK_DEPS;
+diff -r 936438a7860a mkoctfile.in
+--- a/mkoctfile.in	Thu Feb 18 20:42:15 2010 +0100
++++ b/mkoctfile.in	Thu Feb 18 20:44:16 2010 +0100
+@@ -95,6 +95,7 @@
+ : ${BLAS_LIBS=%OCTAVE_CONF_BLAS_LIBS%}
+ : ${FFTW_LIBS=%OCTAVE_CONF_FFTW_LIBS%}
+ : ${LIBS=%OCTAVE_CONF_LIBS%}
++: ${CXXLIBS=%OCTAVE_CONF_CXXLIBS%}
+ : ${FLIBS=%OCTAVE_CONF_FLIBS%}
+ : ${LD_CXX=%OCTAVE_CONF_LD_CXX%}
+ : ${LDFLAGS=%OCTAVE_CONF_LDFLAGS%}
+@@ -227,13 +228,14 @@
+ 			    CPPFLAGS                  LIBOCTAVE
+ 			    CXX                       LIBOCTINTERP
+ 			    CXXFLAGS                  LIBREADLINE
+-			    CXXPICFLAG                LIBS
+-			    DEPEND_EXTRA_SED_PATTERN  OCTAVE_LIBS
+-			    DEPEND_FLAGS              RDYNAMIC_FLAG
+-			    DL_LD                     RLD_FLAG
+-			    DL_LDFLAGS                SED
+-			    F77                       XTRA_CFLAGS
+-			    FFLAGS                    XTRA_CXXFLAGS
++			    CXXLIBS                   LIBS
++			    CXXPICFLAG                OCTAVE_LIBS
++			    DEPEND_EXTRA_SED_PATTERN  RDYNAMIC_FLAG
++			    DEPEND_FLAGS              RLD_FLAG
++			    DL_LD                     SED
++			    DL_LDFLAGS                XTRA_CFLAGS
++			    F77                       XTRA_CXXFLAGS
++			    FFLAGS                    
+ 			    FFTW_LIBS
+ 
+   --link-stand-alone      Link a stand-alone executable file.
+@@ -508,7 +510,7 @@
+ if $link && [ -n "$objfiles" ]; then
+   if $link_stand_alone; then
+     if [ -n "$LD_CXX" ]; then
+-      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBREADLINE $LIBS $FLIBS"
++      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBREADLINE $LIBS $FLIBS $CXXLIBS"
+       $dbg $cmd
+       eval $cmd
+     else
+@@ -516,7 +518,7 @@
+       exit 1
+     fi
+   else
+-    LINK_DEPS="$LFLAGS $OCTAVE_LIBS $LDFLAGS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS"
++    LINK_DEPS="$LFLAGS $OCTAVE_LIBS $LDFLAGS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS $CXXLIBS"
+     cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $libfiles $ldflags $LINK_DEPS"
+     $dbg $cmd
+     eval $cmd
+diff -r 936438a7860a octMakefile.in
+--- a/octMakefile.in	Thu Feb 18 20:42:15 2010 +0100
++++ b/octMakefile.in	Thu Feb 18 20:44:16 2010 +0100
+@@ -122,7 +122,7 @@
+ ifneq ($(EXEEXT),)
+ octave-bug$(EXEEXT): octave-bug.o
+ 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+-	    $(ALL_LDFLAGS) -o $@ octave-bug.o
++	    $(ALL_LDFLAGS) -o $@ octave-bug.o $(CXXLIBS)
+ endif
+ 
+ octave-config: octave-config.in Makeconf octMakefile $(top_srcdir)/src/version.h
+@@ -135,7 +135,7 @@
+ ifneq ($(EXEEXT),)
+ octave-config$(EXEEXT): octave-config.o
+ 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+-	    $(ALL_LDFLAGS) -o $@ octave-config.o
++	    $(ALL_LDFLAGS) -o $@ octave-config.o $(CXXLIBS)
+ endif
+ 
+ mkoctfile: mkoctfile.in Makeconf octMakefile $(top_srcdir)/src/version.h
+@@ -148,7 +148,7 @@
+ ifneq ($(EXEEXT),)
+ mkoctfile$(EXEEXT): mkoctfile.o
+ 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
+-	    $(ALL_LDFLAGS) -o $@ mkoctfile.o
++	    $(ALL_LDFLAGS) -o $@ mkoctfile.o $(CXXLIBS)
+ endif
+ 
+ run-octave: run-octave.in Makeconf octMakefile
+diff -r 936438a7860a scripts/Makefile.in
+--- a/scripts/Makefile.in	Thu Feb 18 20:42:15 2010 +0100
++++ b/scripts/Makefile.in	Thu Feb 18 20:44:16 2010 +0100
+@@ -79,7 +79,7 @@
+ 	mv $@.t $@
+ 
+ gethelp$(BUILD_EXEEXT): gethelp.cc
+-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
++	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS) $(CXXLIBS)
+ 
+ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
+ 	@$(subdir-for-command)
+diff -r 936438a7860a src/Makefile.in
+--- a/src/Makefile.in	Thu Feb 18 20:42:15 2010 +0100
++++ b/src/Makefile.in	Thu Feb 18 20:44:16 2010 +0100
+@@ -299,13 +299,13 @@
+ 
+ OCTINTERP_LINK_DEPS = \
+   -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS) \
+-  $(X11_LIBS) $(OPENGL_LIBS) $(CARBON_LIBS)
++  $(X11_LIBS) $(OPENGL_LIBS) $(CARBON_LIBS) $(CXXLIBS)
+ 
+ OCT_LINK_DEPS = \
+   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
+   -L. $(LIBOCTINTERP) $(CHOLMOD_LIBS) $(UMFPACK_LIBS) $(AMD_LIBS) \
+    $(CAMD_LIBS) $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(BLAS_LIBS) \
+-   $(FFTW_LIBS) $(QRUPDATE_LIBS) $(ARPACK_LIBS) $(LIBS) $(FLIBS)
++   $(FFTW_LIBS) $(QRUPDATE_LIBS) $(ARPACK_LIBS) $(LIBS) $(FLIBS) $(CXXLIBS)
+ 
+ BUILT_DISTFILES = DOCSTRINGS oct-gperf.h parse.cc lex.cc y.tab.h \
+ 	$(OPT_HANDLERS) $(BUILT_EXTRAS)
+@@ -377,7 +377,8 @@
+ 	$(LEXLIB) $(UMFPACK_LIBS) $(AMD_LIBS) $(CAMD_LIBS) $(COLAMD_LIBS) \
+ 	$(CHOLMOD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(BLAS_LIBS) \
+ 	$(FFTW_LIBS) $(QRUPDATE_LIBS) $(ARPACK_LIBS) $(OPENGL_LIBS) \
+-	$(X11_LIBS) $(CARBON_LIBS) $(LIBS) $(FLIBS)
++	$(X11_LIBS) $(CARBON_LIBS) $(LIBS) $(FLIBS) \
++	$(CXXLIBS)
+ 
+ stmp-pic: pic
+ 	@if [ -f stmp-pic ]; then \
+@@ -432,7 +433,7 @@
+ 	@mv $@-t $@
+ 
+ gendoc$(BUILD_EXEEXT): gendoc.cc
+-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
++	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS) $(CXXLIBS)
+ 
+ ops.cc: $(OP_SRC) mkops
+ 	@echo making $@ from $(OP_SRC)

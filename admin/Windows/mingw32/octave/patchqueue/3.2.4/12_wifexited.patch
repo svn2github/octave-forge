@@ -1,0 +1,17 @@
+define WIFEXITED and WEXITSTATUS for windows platform
+
+diff -r b66e16c1161f liboctave/syswait.h
+--- a/liboctave/syswait.h	Sun Oct 25 19:24:27 2009 +0100
++++ b/liboctave/syswait.h	Sun Oct 25 19:24:43 2009 +0100
+@@ -41,6 +41,11 @@
+ #include <sys/wait.h>
+ #endif
+ 
++#if defined (__MINGW32__) || defined (_MSC_VER)
++#define WIFEXITED(stat_val) ( (stat_val) != -1 )
++#define WEXITSTATUS(stat_val) ((unsigned)(stat_val))
++#endif
++
+ #if defined (NeXT)
+ #define HAVE_WAITPID 1
+ #define WAITPID(a, b, c) \

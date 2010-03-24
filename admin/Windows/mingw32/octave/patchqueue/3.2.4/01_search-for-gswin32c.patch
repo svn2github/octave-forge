@@ -1,0 +1,16 @@
+search for console ghostscript on mingw
+
+diff -r ea2283b9436d aclocal.m4
+--- a/aclocal.m4	Mon Sep 14 08:01:43 2009 +0200
++++ b/aclocal.m4	Sun Oct 25 19:23:49 2009 +0100
+@@ -534,8 +534,8 @@
+ dnl OCTAVE_PROG_GHOSTSCRIPT
+ AC_DEFUN(OCTAVE_PROG_GHOSTSCRIPT, [
+   case "$canonical_host_type" in
+-    *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
+-      gs_names="gs gswin32"
++    *-*-cygwin* | *-*-mingw* | *-*-msdosmsvc)
++      gs_names="gs gswin32c gswin32"
+     ;;
+     *)
+       gs_names=gs

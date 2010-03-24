@@ -29,9 +29,9 @@ http://downloads.sourceforge.net/octave/ident-1.0.7.tar.gz
 http://downloads.sourceforge.net/octave/image-1.0.10.tar.gz
 http://downloads.sourceforge.net/octave/informationtheory-0.1.8.tar.gz
 http://downloads.sourceforge.net/octave/integration-1.0.7.tar.gz
-http://downloads.sourceforge.net/octave/io-1.0.10.tar.gz
+http://downloads.sourceforge.net/octave/io-1.0.11.tar.gz
 http://downloads.sourceforge.net/octave/irsa-1.0.7.tar.gz
-http://downloads.sourceforge.net/octave/java-1.2.6.tar.gz
+http://downloads.sourceforge.net/octave/java-1.2.7.tar.gz
 http://downloads.sourceforge.net/octave/jhandles-0.3.5.tar.gz
 http://downloads.sourceforge.net/octave/linear-algebra-1.0.8.tar.gz
 http://downloads.sourceforge.net/octave/mapping-1.0.7.tar.gz
@@ -49,7 +49,7 @@ http://downloads.sourceforge.net/octave/octcdf-1.0.17.tar.gz
 http://downloads.sourceforge.net/octave/octgpr-1.1.5.tar.gz
 http://downloads.sourceforge.net/octave/odebvp-1.0.6.tar.gz
 http://downloads.sourceforge.net/octave/odepkg-0.6.10.tar.gz
-http://downloads.sourceforge.net/octave/optim-1.0.10.tar.gz
+http://downloads.sourceforge.net/octave/optim-1.0.12.tar.gz
 http://downloads.sourceforge.net/octave/optiminterp-0.3.2.tar.gz
 http://downloads.sourceforge.net/octave/outliers-0.13.9.tar.gz
 http://downloads.sourceforge.net/octave/parallel-2.0.1.tar.gz

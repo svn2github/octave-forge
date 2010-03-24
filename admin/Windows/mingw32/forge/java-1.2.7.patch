@@ -1,0 +1,36 @@
+Index: java-1.2.7/PKG_ADD
+===================================================================
+--- java-1.2.7/PKG_ADD	(revision 7108)
++++ java-1.2.7/PKG_ADD	(working copy)
+@@ -9,3 +9,31 @@
+ autoload ("java_unsigned_conversion", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
+ autoload ("java_debug", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
+ atexit ("java_exit");
++
++if (file_in_path (EXEC_PATH, "dom4j-1.6.1.jar"))
++    javaaddpath (file_in_path (EXEC_PATH, "dom4j-1.6.1.jar"));
++endif
++if (file_in_path (EXEC_PATH, "jOpenDocument-1.2b2.jar"))
++    javaaddpath (file_in_path (EXEC_PATH, "jOpenDocument-1.2b2.jar"));
++endif
++if (file_in_path (EXEC_PATH, "jxl.jar"))
++    javaaddpath (file_in_path (EXEC_PATH, "jxl.jar"));
++endif
++if (file_in_path (EXEC_PATH, "odfdom.jar"))
++    javaaddpath (file_in_path (EXEC_PATH, "odfdom.jar"));
++endif
++if (file_in_path (EXEC_PATH, "poi-3.6-20091214.jar"))
++    javaaddpath (file_in_path (EXEC_PATH, "poi-3.6-20091214.jar"));
++endif
++if (file_in_path (EXEC_PATH, "poi-ooxml-3.6-20091214.jar"))
++    javaaddpath (file_in_path (EXEC_PATH, "poi-ooxml-3.6-20091214.jar"));
++endif
++if (file_in_path (EXEC_PATH, "poi-ooxml-schemas-3.6-20091214.jar"))
++    javaaddpath (file_in_path (EXEC_PATH, "poi-ooxml-schemas-3.6-20091214.jar"));
++endif
++if (file_in_path (EXEC_PATH, "xbean.jar"))
++    javaaddpath (file_in_path (EXEC_PATH, "xbean.jar"));
++endif
++if (file_in_path (EXEC_PATH, "xercesImpl.jar"))
++    javaaddpath (file_in_path (EXEC_PATH, "xercesImpl.jar"));
++endif

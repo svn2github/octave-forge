@@ -11,7 +11,7 @@ source gcc44_pkg_version.sh
 # in the form <package-name>-<version>
 FORGEPACK="\
 windows-1.0.8 \
-java-1.2.6 \
+java-1.2.7 \
 splines-1.0.7 \
 msh-1.0.0 \
 fpl-1.0.0 \
@@ -21,7 +21,7 @@ general-1.2.0 \
 miscellaneous-1.0.9 \
 time-1.0.9 \
 specfun-1.0.8 \
-optim-1.0.10 \
+optim-1.0.12 \
 signal-1.0.10 \
 audio-1.1.4 \
 benchmark-1.1.1 \
@@ -44,7 +44,7 @@ ident-1.0.7 \
 image-1.0.10 \
 informationtheory-0.1.8 \
 integration-1.0.7 \
-io-1.0.10 \
+io-1.0.11 \
 irsa-1.0.7 \
 jhandles-0.3.5 \
 linear-algebra-1.0.8 \

@@ -24,7 +24,9 @@ install_sharedlib() {
  ( mkdir -p ${PACKAGE_ROOT}/${SHAREDLIB_DIR}
    echo cp -pR ${SHAREDLIB_PATH} ${PACKAGE_ROOT} 
    cp -pR ${SHAREDLIB_PATH} ${PACKAGE_ROOT} 
-   strip ${STRIP_FLAGS} ${PACKAGE_ROOT}/${SHAREDLIB_DIR}/*.dll
+   find ${PACKAGE_ROOT}/${SHAREDLIB_DIR} \
+   -iname '*.dll' -a -not -iname 'jogl*.dll' -a -not -iname 'gluegen-rt.dll' \
+   -exec strip ${STRIP_FLAGS} '{}' \;
  )
 }
 
@@ -64,6 +66,13 @@ install_doc() {
   )
 }
 
+install_etc() {
+  ( mkdir -p ${PACKAGE_ROOT}/${ETC_DIR}
+    echo cp -pR ${ETC_PATH} ${PACKAGE_ROOT}
+    cp -pR ${ETC_PATH} ${PACKAGE_ROOT}
+  )
+}
+
 install_bin;
 install_lib;
 install_sharedlib;
@@ -72,3 +81,4 @@ install_include;
 install_license;
 install_share;
 install_doc;
+install_etc;

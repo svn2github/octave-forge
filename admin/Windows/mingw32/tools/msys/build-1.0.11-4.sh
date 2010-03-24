@@ -21,9 +21,9 @@ HTTP_ROOT="http://downloads.sourceforge.net/mingw"
 URLS_MSYS="
 ${HTTP_ROOT}/msysCORE-1.0.11-bin.tar.gz"
 
-URLS_MSYSADD="
-${HTTP_ROOT}/sed-4.2.1-1-msys-1.0.11-bin.tar.lzma
-${HTTP_ROOT}/tar-1.22-1-msys-1.0.11-bin.tar.lzma"
+#URLS_MSYSADD="
+#${HTTP_ROOT}/sed-4.2.1-1-msys-1.0.11-bin.tar.lzma
+#${HTTP_ROOT}/tar-1.22-1-msys-1.0.11-bin.tar.lzma"
 
 URL="${URLS_MSYS} ${URLS_MSYSADD}"
 
@@ -46,6 +46,9 @@ install_msys() {
       echo bsdtar x -f "$TOPDIR/`basename $a`"
       bsdtar x -f "$TOPDIR/`basename $a`"
    done
+   
+   # delete the locales
+   rm -rf $TDIR/share/lcoale
    
    # move .ico file because windows gets confused when you have also installed matlab
    mv ${TDIR}/m.ico ${TDIR}/the-m.ico

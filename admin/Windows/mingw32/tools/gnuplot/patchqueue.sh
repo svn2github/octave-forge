@@ -3,6 +3,11 @@
 # CHANGELOG
 # ---------
 #
+# 24-mar-2010 benjamin lindner <lindnerb@users.sourceforge.net>
+#
+#    *) update patches for 4.4.0
+#    *) remove gp_disable-SIGINT-handler-console.patch
+#
 # 18-jan-2010 benjamin lindner <lindnerb@users.sourceforge.net>
 #
 #    *) update patches for 4.4.0-rc1
@@ -31,7 +36,7 @@
 # subdirecory where patches reside
 PATCHDIR=patches
 # directory of gnuplot sources to patch
-GNUPLOT_DIR=gnuplot-4.4.0-rc1
+GNUPLOT_DIR=gnuplot-4.4.0
 
 # the patches to apply
 PATCHES="
@@ -49,7 +54,6 @@ gp_post-style.patch \
 gp_emf-style.patch \
 gp_gd-substitute-helvetica.patch \
 gp_octave-version.patch \
-gp_disable-SIGINT-handler-console.patch \
 "
 
 for a in $PATCHES; do

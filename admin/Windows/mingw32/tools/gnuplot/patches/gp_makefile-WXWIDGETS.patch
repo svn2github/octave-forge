@@ -1,17 +1,17 @@
 local changes to makefile to support wxwidgets terminal
 
-diff -r e97097cda53f config/makefile.mgw
---- a/config/makefile.mgw	Tue Dec 01 09:44:26 2009 +0100
-+++ b/config/makefile.mgw	Tue Dec 01 09:45:57 2009 +0100
-@@ -284,6 +284,7 @@
+diff --git a/config/makefile.mgw b/config/makefile.mgw
+--- a/config/makefile.mgw
++++ b/config/makefile.mgw
+@@ -292,6 +292,7 @@
  	CXXFLAGS += $(shell wx-config --cxxflags)
  	WX_LIBS = $(shell wx-config --libs | sed -e "s+-Wl,--subsystem,windows++g" -e "s+-mwindows++g")
  	WX_OBJS = wxt_gui.o
 +	WX_LOCATION = $(shell wx-config --cppflags)
  endif
  
- ifdef GNU_RC
-@@ -294,7 +295,7 @@
+ ifdef LUA
+@@ -308,7 +309,7 @@
  	--define __WIN32__ --define __WIN95__ --define MSRC \
  	--define __GNUWIN32__ --use-temp-file
    ifdef WXT
@@ -20,7 +20,7 @@ diff -r e97097cda53f config/makefile.mgw
    endif
    RCOUT = wgplt_res.o
    RES2COFF = echo wgplt_res.o
-@@ -302,7 +303,7 @@
+@@ -316,7 +317,7 @@
    RC = $(MSSDK)/bin/rc
    RCFLAGS = -v -i$(MSSDK)/include -iwin -dWIN32 -dMSRC
    ifdef WXT
@@ -29,7 +29,7 @@ diff -r e97097cda53f config/makefile.mgw
    endif
    RCOUT = -fowgnuplot.res
    RES2COFF = res2coff -i wgnuplot.res -o wgplt_res.o
-@@ -349,6 +350,7 @@
+@@ -363,6 +364,7 @@
  vpath	%.def	$(TOP)/src
  vpath	%.rc	$(TOP)/src
  vpath	%.trm	$(TOP)/term
@@ -37,7 +37,7 @@ diff -r e97097cda53f config/makefile.mgw
  
  #
  # Create config.h
-@@ -405,7 +407,7 @@
+@@ -419,7 +421,7 @@
  wgnuplot.mnu: $(TOP)/src/win/wgnuplot.mnu
  	$(CP) $^ $@
  

@@ -1,9 +1,9 @@
 in makefile: local build configuration
 
-diff -r 0d49e496b40c config/makefile.mgw
---- a/config/makefile.mgw	Tue Dec 01 09:57:18 2009 +0100
-+++ b/config/makefile.mgw	Tue Dec 01 09:57:28 2009 +0100
-@@ -19,7 +19,7 @@
+diff --git a/config/makefile.mgw b/config/makefile.mgw
+--- a/config/makefile.mgw
++++ b/config/makefile.mgw
+@@ -20,7 +20,7 @@
  #
  
  # Specify the path to the sources (top directory)
@@ -12,7 +12,7 @@ diff -r 0d49e496b40c config/makefile.mgw
  
  # Choose target to compile:
  # 1. wgnuplot.exe: The usual Windows GUI for input commands.
-@@ -34,7 +34,7 @@
+@@ -35,7 +35,7 @@
  # used when gnuplot.exe was not available on Windows. Nowadays, pgnuplot.exe
  # is deprecated -- plese use gnuplot.exe instead.
  
@@ -21,7 +21,7 @@ diff -r 0d49e496b40c config/makefile.mgw
  #TARGET=wgnuplot_pipes.exe
  #TARGET=gnuplot.exe
  
-@@ -102,7 +102,7 @@
+@@ -106,7 +106,7 @@
  
  # Where to install the PostScript prologue files, relatively to the executable
  # wgnuplot.exe
@@ -30,7 +30,7 @@ diff -r 0d49e496b40c config/makefile.mgw
  
  # Similarly for javascript files for the canvas terminal:
  GNUPLOT_JS_DIR = share/js
-@@ -117,7 +117,7 @@
+@@ -124,7 +124,7 @@
  # Do you want some special optimization?
  # -mpentium means optimise for Pentium processor
  # -mpentiumpro means optimize for Pentium II and Pro procesors
@@ -39,7 +39,7 @@ diff -r 0d49e496b40c config/makefile.mgw
  
  
  # To compile the .hlp file you need hcw either out of Microsoft SDK or MS Help
-@@ -140,6 +140,9 @@
+@@ -147,6 +147,9 @@
  # GNU sort
  GNUSORT = /bin/sort
  
@@ -49,7 +49,7 @@ diff -r 0d49e496b40c config/makefile.mgw
  #
  # *************** End of Configuration section *************************
  #
-@@ -171,10 +174,8 @@
+@@ -178,10 +181,8 @@
  endif
  
  
@@ -62,7 +62,7 @@ diff -r 0d49e496b40c config/makefile.mgw
  
  RM = rm -f
  CP = cp -p
-@@ -194,7 +195,7 @@
+@@ -201,7 +202,7 @@
  endif
  
  ifdef CONSOLE
@@ -71,16 +71,16 @@ diff -r 0d49e496b40c config/makefile.mgw
    LDFLAGS2 = -mconsole
  endif
  
-@@ -293,7 +294,7 @@
-   RCFLAGS = --include-dir /mingw32/include \
+@@ -307,7 +308,7 @@
+   override RCFLAGS = --include-dir /mingw32/include \
  	--include-dir=$(TOP)/src/win \
  	--define __WIN32__ --define __WIN95__ --define MSRC \
 -	--define __GNUWIN32__ --use-temp-file
 +	--define __GNUWIN32__ --use-temp-file --preprocessor=$(CPP)
    ifdef WXT
- 	RCFLAGS += --define WXWIDGETS $(WX_LOCATION)
+ 	override RCFLAGS += --define WXWIDGETS $(WX_LOCATION)
    endif
-@@ -459,7 +460,7 @@
+@@ -473,7 +474,7 @@
  	@for e in `egrep "^[ 	]*START_HELP" $^ |\
  	     $(GNUSORT) -f -t':' -k2` ; do \
  	  f=`echo $$e |cut -d\: -f1` ; s=`echo $$e | cut -d\: -f2` ;\
@@ -89,7 +89,7 @@ diff -r 0d49e496b40c config/makefile.mgw
  	done >$@
  else
  # sequence of terminals according to "ls term/*.trm":
-@@ -467,7 +468,7 @@
+@@ -481,7 +482,7 @@
  	@echo "Building allterm.h"
  	@cat $(T)*.trm > allterm.c
  	$(CPP) $(CFLAGS) -I$(T:/=) -DTERM_DRIVER_H -DTERM_HELP allterm.c | \

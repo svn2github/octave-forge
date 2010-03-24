@@ -1,9 +1,9 @@
 makefile: support separate SRCDIR and BUILDDIR
 
-diff -r 5a5444d68dd6 config/makefile.mgw
---- a/config/makefile.mgw	Tue Dec 01 09:02:48 2009 +0100
-+++ b/config/makefile.mgw	Tue Dec 01 09:54:06 2009 +0100
-@@ -18,6 +18,9 @@
+diff --git a/config/makefile.mgw b/config/makefile.mgw
+--- a/config/makefile.mgw
++++ b/config/makefile.mgw
+@@ -19,6 +19,9 @@
  # ************** Begin of Configuration section ************************
  #
  
@@ -13,13 +13,14 @@ diff -r 5a5444d68dd6 config/makefile.mgw
  # Choose target to compile:
  # 1. wgnuplot.exe: The usual Windows GUI for input commands.
  # 2. wgnuplot_pipes.exe: The usual Windows GUI with support of pipes, so
-@@ -195,11 +198,11 @@
+@@ -202,12 +205,12 @@
    LDFLAGS2 = -mconsole
  endif
  
 -TOP = ..
 +TOP = $(SRCDIR)
  TERMFLAGS = -DGNUPLOT_PS_DIR=\"$(GNUPLOT_PS_DIR)\" -DGNUPLOT_JS_DIR=\"$(GNUPLOT_JS_DIR)\" -I$(TOP)/term
+ 
  TERMLIBS = 
  
 -CFLAGS += -I$(TOP) -I. -D_Windows -DHAVE_CONFIG_H\
@@ -27,7 +28,7 @@ diff -r 5a5444d68dd6 config/makefile.mgw
  	$(OPTS)
  
  ifdef MOUSE
-@@ -287,7 +290,7 @@
+@@ -301,7 +304,7 @@
    # RC = d:/cygnus/cygwin-b20/H-i586-cygwin32/bin/windres
    RC  = $(GCCPATH)windres
    RCFLAGS = --include-dir /mingw32/include \
@@ -36,7 +37,7 @@ diff -r 5a5444d68dd6 config/makefile.mgw
  	--define __WIN32__ --define __WIN95__ --define MSRC \
  	--define __GNUWIN32__ --use-temp-file
    ifdef WXT
-@@ -307,19 +310,19 @@
+@@ -321,19 +324,19 @@
  
  # macros for makefile.all
  O=o
@@ -61,7 +62,7 @@ diff -r 5a5444d68dd6 config/makefile.mgw
  
  OBJS = $(COREOBJS) version.$(O) gpexecute.$(O) $(WX_OBJS) $(CAIRO_OBJS)
  
-@@ -337,14 +340,20 @@
+@@ -351,14 +354,20 @@
  # default rules
  .SUFFIXES: .exe .o .c
  .c.o:
@@ -84,7 +85,7 @@ diff -r 5a5444d68dd6 config/makefile.mgw
  	cp $< $@
  
  $(OBJS) $(WINOBJS) dbinary.$(O): config.h
-@@ -354,78 +363,79 @@
+@@ -368,78 +377,79 @@
  	$(TERMLIBS) $(WX_LIBS) $(CAIRO_LIBS) $(PANGO_LIBS)
  
  $(PGNUPLOT): win/pgnuplot.c version.o
@@ -187,7 +188,7 @@ diff -r 5a5444d68dd6 config/makefile.mgw
  #	cd ..
  
  # _Windows causes wtext.h to define fread() etc
-@@ -444,7 +454,7 @@
+@@ -458,7 +468,7 @@
  # sort alphabetically all terminals (note: req. GNU sort, not from MS)
  allterm.h: $(CORETERM)
  	@echo "Building allterm.h"

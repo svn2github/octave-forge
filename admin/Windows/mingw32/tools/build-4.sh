@@ -13,7 +13,7 @@ echo $0: ACTION = "${ACTION}";
 ( cd notepad++ && ./build-5.6.6-4.sh ${ACTION} )
 
 # install gnuplot
-( cd gnuplot && ./build-4.4.0-rc1-4.sh ${ACTION} )
+( cd gnuplot && ./build-4.4.0-4.sh ${ACTION} )
 
 # install ATLAS
 ( cd atlas && ./build-3.8.2-4.sh ${ACTION} )

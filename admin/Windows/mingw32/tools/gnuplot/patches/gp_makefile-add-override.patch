@@ -1,9 +1,9 @@
 add override directive to CFLAGS CXXFLAGS LDFLAGS and RCFLAGS
 
-diff -r 73ca544272a4 -r 5ba130e706ff config/makefile.mgw
---- a/config/makefile.mgw	Tue Jan 12 21:45:04 2010 +0100
-+++ b/config/makefile.mgw	Tue Jan 12 21:46:47 2010 +0100
-@@ -180,11 +180,11 @@
+diff --git a/config/makefile.mgw b/config/makefile.mgw
+--- a/config/makefile.mgw
++++ b/config/makefile.mgw
+@@ -187,11 +187,11 @@
  CP = cp -p
  
  ifdef DEBUG
@@ -19,8 +19,8 @@ diff -r 73ca544272a4 -r 5ba130e706ff config/makefile.mgw
  endif
  
  LDFLAGS2 = -mwindows
-@@ -202,11 +202,11 @@
- TERMFLAGS = -DGNUPLOT_PS_DIR=\"$(GNUPLOT_PS_DIR)\" -DGNUPLOT_JS_DIR=\"$(GNUPLOT_JS_DIR)\" -I$(TOP)/term
+@@ -210,11 +210,11 @@
+ 
  TERMLIBS = 
  
 -CFLAGS += -I$(TOP) -I$(TOP)/src -I. -D_Windows -DHAVE_CONFIG_H\
@@ -33,7 +33,7 @@ diff -r 73ca544272a4 -r 5ba130e706ff config/makefile.mgw
  endif
  
  ifdef NEWGD
-@@ -215,27 +215,27 @@
+@@ -223,27 +223,27 @@
  endif
  
  ifdef GD
@@ -66,7 +66,7 @@ diff -r 73ca544272a4 -r 5ba130e706ff config/makefile.mgw
    ifndef GDAUTOCONFIGLIBS
      TERMLIBS += -lfreetype
    endif
-@@ -246,7 +246,7 @@
+@@ -254,7 +254,7 @@
  endif
  
  ifdef PDF
@@ -75,7 +75,7 @@ diff -r 73ca544272a4 -r 5ba130e706ff config/makefile.mgw
  ifdef PDF_NOTIFF
    TERMLIBS += -lpdf_notiff
  else
-@@ -261,7 +261,7 @@
+@@ -269,7 +269,7 @@
  endif
  endif
  ifdef NEED_PNG_W
@@ -84,7 +84,7 @@ diff -r 73ca544272a4 -r 5ba130e706ff config/makefile.mgw
    TERMLIBS += -lpng-w -lz-w
  endif
  endif
-@@ -276,12 +276,12 @@
+@@ -284,12 +284,12 @@
  endif
  
  ifdef CAIROTERMS
@@ -100,7 +100,7 @@ diff -r 73ca544272a4 -r 5ba130e706ff config/makefile.mgw
  	WX_LIBS = $(shell wx-config --libs | sed -e "s+-Wl,--subsystem,windows++g" -e "s+-mwindows++g")
  	WX_OBJS = wxt_gui.o
  	WX_LOCATION = $(shell wx-config --cppflags)
-@@ -290,12 +290,12 @@
+@@ -304,12 +304,12 @@
  ifdef GNU_RC
    # RC = d:/cygnus/cygwin-b20/H-i586-cygwin32/bin/windres
    RC  = $(GCCPATH)windres

@@ -1,9 +1,9 @@
 enable building WXT terminal by setting WXT=1 in makefile configuration section
 
-diff -r ac3ba43eef45 config/makefile.mgw
---- a/config/makefile.mgw	Mon Aug 31 09:54:45 2009 +0200
-+++ b/config/makefile.mgw	Mon Aug 31 09:55:17 2009 +0200
-@@ -91,9 +91,9 @@
+diff --git a/config/makefile.mgw b/config/makefile.mgw
+--- a/config/makefile.mgw
++++ b/config/makefile.mgw
+@@ -92,9 +92,9 @@
  # Requires wxWidgets, Cairo, Pango, and their respective dependencies.
  # Uncomment the following lines to compile it.
  # WXT_LOCATION should give the path where can be found wx/*.h headers
@@ -13,5 +13,5 @@ diff -r ac3ba43eef45 config/makefile.mgw
 -#CAIROLIBS=1
 +CAIROLIBS=1
  
- # Below you can adapt paths according to your software setup:
- 
+ # Uncomment the following line to select the lua/tikz terminal
+ #LUA=1

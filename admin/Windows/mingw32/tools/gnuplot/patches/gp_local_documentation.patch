@@ -1,8 +1,19 @@
 local changes for documentation build
 
-diff -r 60c1ad8c7063 docs/plotstyles.gnu
---- a/docs/plotstyles.gnu	Tue Dec 01 09:55:42 2009 +0100
-+++ b/docs/plotstyles.gnu	Tue Dec 01 10:19:59 2009 +0100
+diff --git a/docs/pdffigures.tex b/docs/pdffigures.tex
+--- a/docs/pdffigures.tex
++++ b/docs/pdffigures.tex
+@@ -3,5 +3,5 @@
+ %
+ % This file is modified dynamically by "make" depending on whether or not
+ % figures are to be included in the documentation
+-% \usepackage{graphicx}
+-% \usepackage{picins}
++\usepackage{graphicx}
++\usepackage{picins}
+diff --git a/docs/plotstyles.gnu b/docs/plotstyles.gnu
+--- a/docs/plotstyles.gnu
++++ b/docs/plotstyles.gnu
 @@ -3,12 +3,13 @@
  #  EAM - July 2007
  #
@@ -244,9 +255,9 @@ diff -r 60c1ad8c7063 docs/plotstyles.gnu
  unset xtics
  unset ytics
  unset key
-diff -r 60c1ad8c7063 docs/psdoc/Makefile
---- a/docs/psdoc/Makefile	Tue Dec 01 09:55:42 2009 +0100
-+++ b/docs/psdoc/Makefile	Tue Dec 01 10:19:59 2009 +0100
+diff --git a/docs/psdoc/Makefile b/docs/psdoc/Makefile
+--- a/docs/psdoc/Makefile
++++ b/docs/psdoc/Makefile
 @@ -2,27 +2,29 @@
  # Create ps_symbols.ps
  #
@@ -284,9 +295,9 @@ diff -r 60c1ad8c7063 docs/psdoc/Makefile
  
  clean:
  	-rm -f ps_symbols.ps ps_fontfile_doc.aux ps_fontfile_doc.dvi \
-diff -r 60c1ad8c7063 docs/titlepag.tex
---- a/docs/titlepag.tex	Tue Dec 01 09:55:42 2009 +0100
-+++ b/docs/titlepag.tex	Tue Dec 01 10:19:59 2009 +0100
+diff --git a/docs/titlepag.tex b/docs/titlepag.tex
+--- a/docs/titlepag.tex
++++ b/docs/titlepag.tex
 @@ -14,7 +14,7 @@
  % LaTeX2e version
  % add `[a4paper]' before `{article}' to load settings for A4-paper
@@ -304,7 +315,7 @@ diff -r 60c1ad8c7063 docs/titlepag.tex
          pdftitle={gnuplot documentation},
          pdfauthor={gnuplot},
          pdfsubject={see www.gnuplot.info}
-@@ -52,12 +53,12 @@
+@@ -51,12 +52,12 @@
  %\addtolength{\textheight}{48pt}
  %\addtolength{\topmargin}{-24pt}
  

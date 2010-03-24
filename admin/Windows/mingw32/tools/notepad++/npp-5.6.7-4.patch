@@ -1,0 +1,916 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/gcc/include/eh.h npp-5.6.7/PowerEditor/gcc/include/eh.h
+--- npp-5.6.7-orig/PowerEditor/gcc/include/eh.h	2008-07-09 20:08:40 +0200
++++ npp-5.6.7/PowerEditor/gcc/include/eh.h	2010-02-27 20:15:13 +0100
+@@ -2,6 +2,6 @@
+ 
+ typedef void (*exFunc)(unsigned int, EXCEPTION_POINTERS *);
+ 
+-void _set_se_translator(exFunc) {};
++static void _set_se_translator(exFunc) {};
+ 
+ #endif //EH_H
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/gcc/include/various.h npp-5.6.7/PowerEditor/gcc/include/various.h
+--- npp-5.6.7-orig/PowerEditor/gcc/include/various.h	2008-09-10 00:35:20 +0200
++++ npp-5.6.7/PowerEditor/gcc/include/various.h	2010-02-27 20:15:13 +0100
+@@ -41,11 +41,17 @@
+ }
+ 
+ //__try and __except dont work in gcc, so heres some defines to take em out
+-#define __try
+-#define __except(x)	if(false)
++#define __try try
++#define __except(x)	catch(...)
+ 
+ #define GetExceptionCode()			0
+ #define GetExceptionInformation()	NULL
+ 
+ //Missing unicode CRT funcs
++// Only if mingwrt version is <3.15
++#if defined __MINGW32__ && __MINGW32_MAJOR_VERSION == 3 && __MINGW32_MINOR_VERSION < 15
+ double _wtof(const wchar_t * string);
++#endif
++
++// Missing _countof macro
++#define _countof(x) (sizeof(x)/sizeof((x)[0]))
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/gcc/include/wtof.cpp npp-5.6.7/PowerEditor/gcc/include/wtof.cpp
+--- npp-5.6.7-orig/PowerEditor/gcc/include/wtof.cpp	1970-01-01 01:00:00 +0100
++++ npp-5.6.7/PowerEditor/gcc/include/wtof.cpp	2010-02-27 20:15:12 +0100
+@@ -0,0 +1,28 @@
++//
++// This file contains a stub replacement for _wtof, whcih is not available 
++// with MSVCRT 6
++//
++// I use this to build Notepad++ 5.1.1 using mingw32 with default msvcrt 
++// libraries.
++//
++// 17-nov-2008 lindnerb@users.sourceforge.net
++//
++// Update: this is only required for mingwrt versions <3.15
++
++// do this only for mingw32...
++#ifdef __MINGW32__
++#if __MINGW32_MAJOR_VERSION == 3 && __MINGW32_MINOR_VERSION < 16
++
++#include <stdio.h>
++
++double _wtof(const wchar_t * string) {
++   double dret = 0.0;
++   int iret = 0;
++   
++   iret = wscanf( string, &dret );
++   
++   return dret;
++}
++
++#endif //  mingwrt version < 3.15
++#endif  // __MINGW32__
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/gcc/makefile npp-5.6.7/PowerEditor/gcc/makefile
+--- npp-5.6.7-orig/PowerEditor/gcc/makefile	2008-09-10 00:35:20 +0200
++++ npp-5.6.7/PowerEditor/gcc/makefile	2010-02-27 20:15:12 +0100
+@@ -16,9 +16,9 @@
+ # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+ # Directories:
+-NPP_DIR			= ../src
+-SCI_DIR			= ../../scintilla/include
+-GCC_DIR			= .
++NPP_DIR			= @SRCDIR@/src
++SCI_DIR			= @SRCDIR@/../scintilla/include
++GCC_DIR			= @SRCDIR@/gcc
+ GCCINCLUDE_DIR  = $(GCC_DIR)/include
+ 
+ #MISC:
+@@ -34,6 +34,7 @@
+ 
+ #TinyXml
+ TIXML_DIR		= $(NPP_DIR)/TinyXml
++TIXMLA_DIR		= $(NPP_DIR)/TinyXml/tinyXmlA
+ 
+ #WinControls
+ WIN_DIR			= $(NPP_DIR)/WinControls
+@@ -77,6 +78,7 @@
+ 
+ #TinyXml
+ SRC_TIXML		= $(wildcard $(TIXML_DIR)/*.cpp)
++SRC_TIXMLA		= $(wildcard $(TIXMLA_DIR)/*.cpp)
+ 
+ #WinControls
+ SRC_WIN			= $(wildcard $(WIN_DIR)/*.cpp)
+@@ -102,52 +104,53 @@
+  SRC_WINDOWSDLG	= $(wildcard $(WINDOWSDLG_DIR)/*.cpp)
+ 
+ # Objects:
+-OBJ_NPP			= $(patsubst %.cpp,%.o,$(SRC_NPP))
+-OBJ_GCCINCLUDE  = $(patsubst %.cpp,%.o,$(SRC_GCCINCLUDE))
++OBJ_NPP			= $(notdir $(patsubst %.cpp,%.o,$(SRC_NPP)))
++OBJ_GCCINCLUDE  = $(notdir $(patsubst %.cpp,%.o,$(SRC_GCCINCLUDE)))
+ 
+ #MISC
+-OBJ_MISC		= $(patsubst %.cpp,%.o,$(SRC_MISC))
+- OBJ_COMMON		= $(patsubst %.cpp,%.o,$(SRC_COMMON))
+- OBJ_EXCEPTION	= $(patsubst %.cpp,%.o,$(SRC_EXCEPTION))
+- OBJ_PLUGINS	= $(patsubst %.cpp,%.o,$(SRC_PLUGINS))
+- OBJ_PROCESS	= $(patsubst %.cpp,%.o,$(SRC_PROCESS))
+- OBJ_REGEXT		= $(patsubst %.cpp,%.o,$(SRC_REGEXT))
++OBJ_MISC		= $(notdir $(patsubst %.cpp,%.o,$(SRC_MISC)))
++ OBJ_COMMON		= $(notdir $(patsubst %.cpp,%.o,$(SRC_COMMON)))
++ OBJ_EXCEPTION	= $(notdir $(patsubst %.cpp,%.o,$(SRC_EXCEPTION)))
++ OBJ_PLUGINS	= $(notdir $(patsubst %.cpp,%.o,$(SRC_PLUGINS)))
++ OBJ_PROCESS	= $(notdir $(patsubst %.cpp,%.o,$(SRC_PROCESS)))
++ OBJ_REGEXT		= $(notdir $(patsubst %.cpp,%.o,$(SRC_REGEXT)))
+ 
+ #ScintillaComponent
+-OBJ_SCINT		= $(patsubst %.cpp,%.o,$(SRC_SCINT))
++OBJ_SCINT		= $(notdir $(patsubst %.cpp,%.o,$(SRC_SCINT)))
+ 
+ #TinyXml
+-OBJ_TIXML		= $(patsubst %.cpp,%.o,$(SRC_TIXML))
++OBJ_TIXML		= $(notdir $(patsubst %.cpp,%.o,$(SRC_TIXML)))
++OBJ_TIXMLA		= $(notdir $(patsubst %.cpp,%.o,$(SRC_TIXMLA)))
+ 
+ #WinControls
+-OBJ_WIN			= $(patsubst %.cpp,%.o,$(SRC_WIN))
+- OBJ_ABOUT		= $(patsubst %.cpp,%.o,$(SRC_ABOUT))
+- OBJ_CONTEXT	= $(patsubst %.cpp,%.o,$(SRC_CONTEXT))
+- OBJ_COLOUR		= $(patsubst %.cpp,%.o,$(SRC_COLOUR))
+- OBJ_DOCKING	= $(patsubst %.cpp,%.o,$(SRC_DOCKING))
+- OBJ_GRID		= $(patsubst %.cpp,%.o,$(SRC_GRID))
+- OBJ_IMLIST		= $(patsubst %.cpp,%.o,$(SRC_IMLIST))
+- OBJ_OPENSAVE	= $(patsubst %.cpp,%.o,$(SRC_OPENSAVE))
+- OBJ_PREFERENCE	= $(patsubst %.cpp,%.o,$(SRC_PREFERENCE))
+- OBJ_SHORTCUT	= $(patsubst %.cpp,%.o,$(SRC_SHORTCUT))
+- OBJ_SPLITTER	= $(patsubst %.cpp,%.o,$(SRC_SPLITTER))
+- OBJ_STATICDLG	= $(patsubst %.cpp,%.o,$(SRC_STATICDLG))
+-  OBJ_RUNDLG	= $(patsubst %.cpp,%.o,$(SRC_RUNDLG))
+- OBJ_STATUSBAR	= $(patsubst %.cpp,%.o,$(SRC_STATUSBAR))
+- OBJ_TABBAR		= $(patsubst %.cpp,%.o,$(SRC_TABBAR))
+- OBJ_TASKLIST	= $(patsubst %.cpp,%.o,$(SRC_TASKLIST))
+- OBJ_TOOLBAR	= $(patsubst %.cpp,%.o,$(SRC_TOOLBAR))
+- OBJ_TOOLTIP	= $(patsubst %.cpp,%.o,$(SRC_TOOLTIP))
+- OBJ_TRAYICON	= $(patsubst %.cpp,%.o,$(SRC_TRAYICON))
+- OBJ_TREEVIEW	= $(patsubst %.cpp,%.o,$(SRC_TREEVIEW))
+- OBJ_WINDOWSDLG	= $(patsubst %.cpp,%.o,$(SRC_WINDOWSDLG))
++OBJ_WIN			= $(notdir $(patsubst %.cpp,%.o,$(SRC_WIN)))
++ OBJ_ABOUT		= $(notdir $(patsubst %.cpp,%.o,$(SRC_ABOUT)) )
++ OBJ_CONTEXT	= $(notdir $(patsubst %.cpp,%.o,$(SRC_CONTEXT)))
++ OBJ_COLOUR		= $(notdir $(patsubst %.cpp,%.o,$(SRC_COLOUR)))
++ OBJ_DOCKING	= $(notdir $(patsubst %.cpp,%.o,$(SRC_DOCKING)))
++ OBJ_GRID		= $(notdir $(patsubst %.cpp,%.o,$(SRC_GRID)))
++ OBJ_IMLIST		= $(notdir $(patsubst %.cpp,%.o,$(SRC_IMLIST)))
++ OBJ_OPENSAVE	= $(notdir $(patsubst %.cpp,%.o,$(SRC_OPENSAVE)))
++ OBJ_PREFERENCE	= $(notdir $(patsubst %.cpp,%.o,$(SRC_PREFERENCE)))
++ OBJ_SHORTCUT	= $(notdir $(patsubst %.cpp,%.o,$(SRC_SHORTCUT)))
++ OBJ_SPLITTER	= $(notdir $(patsubst %.cpp,%.o,$(SRC_SPLITTER)))
++ OBJ_STATICDLG	= $(notdir $(patsubst %.cpp,%.o,$(SRC_STATICDLG)))
++  OBJ_RUNDLG	= $(notdir $(patsubst %.cpp,%.o,$(SRC_RUNDLG)))
++ OBJ_STATUSBAR	= $(notdir $(patsubst %.cpp,%.o,$(SRC_STATUSBAR)))
++ OBJ_TABBAR		= $(notdir $(patsubst %.cpp,%.o,$(SRC_TABBAR)))
++ OBJ_TASKLIST	= $(notdir $(patsubst %.cpp,%.o,$(SRC_TASKLIST)))
++ OBJ_TOOLBAR	= $(notdir $(patsubst %.cpp,%.o,$(SRC_TOOLBAR)))
++ OBJ_TOOLTIP	= $(notdir $(patsubst %.cpp,%.o,$(SRC_TOOLTIP)))
++ OBJ_TRAYICON	= $(notdir $(patsubst %.cpp,%.o,$(SRC_TRAYICON)))
++ OBJ_TREEVIEW	= $(notdir $(patsubst %.cpp,%.o,$(SRC_TREEVIEW)))
++ OBJ_WINDOWSDLG	= $(notdir $(patsubst %.cpp,%.o,$(SRC_WINDOWSDLG)))
+ 
+ # Collections
+ DIRS_WIN		= $(WIN_DIR) $(ABOUT_DIR) $(CONTEXT_DIR) $(COLOUR_DIR) $(DOCKING_DIR) $(GRID_DIR) $(IMLIST_DIR) $(OPENSAVE_DIR) $(PREFERENCE_DIR) $(SHORTCUT_DIR) $(SPLITTER_DIR) $(STATICDLG_DIR) $(RUNDLG_DIR) $(STATUSBAR_DIR) $(TABBAR_DIR) $(TASKLIST_DIR) $(TOOLBAR_DIR) $(TOOLTIP_DIR) $(TRAYICON_DIR) $(TREEVIEW_DIR) $(WINDOWSDLG_DIR)
+-DIRS_TIXML		= $(TIXML_DIR)
++DIRS_TIXML		= $(TIXML_DIR) $(TIXMLA_DIR)
+ DIRS_SCINT		= $(SCINT_DIR)
+ DIRS_MISC		= $(MISC_DIR) $(COMMON_DIR) $(EXCEPTION_DIR) $(PLUGINS_DIR) $(PROCESS_DIR) $(REGEXT_DIR)
+-DIRS			= $(NPP_DIR) $(DIRS_WIN) $(DIRS_TIXML) $(DIRS_SCINT) $(DIRS_MISC) $(SCI_DIR)
++DIRS			= $(NPP_DIR) $(DIRS_WIN) $(DIRS_TIXML) $(DIRS_SCINT) $(DIRS_MISC) $(SCI_DIR) $(GCCINCLUDE_DIR)
+ 
+ SRCS_WIN		= $(SRC_WIN) $(SRC_ABOUT) $(SRC_CONTEXT) $(SRC_COLOUR) $(SRC_DOCKING) $(SRC_GRID) $(SRC_IMLIST) $(SRC_OPENSAVE) $(SRC_PREFERENCE) $(SRC_SHORTCUT) $(SRC_SPLITTER) $(SRC_STATICDLG) $(SRC_RUNDLG) $(SRC_STATUSBAR) $(SRC_TABBAR) $(SRC_TASKLIST) $(SRC_TOOLBAR) $(SRC_TOOLTIP) $(SRC_TRAYICON) $(SRC_TREEVIEW) $(SRC_WINDOWSDLG)
+ SRCS_TIXML		= $(SRC_TIXML)
+@@ -156,47 +159,63 @@
+ SRCS			= $(SRC_NPP) $(SRCS_WIN) $(SRCS_TIXML) $(SRCS_SCINT) $(SRCS_MISC) $(SRC_GCCINCLUDE)
+ 
+ OBJS_WIN		= $(OBJ_WIN) $(OBJ_ABOUT) $(OBJ_CONTEXT) $(OBJ_COLOUR) $(OBJ_DOCKING) $(OBJ_GRID) $(OBJ_IMLIST) $(OBJ_OPENSAVE) $(OBJ_PREFERENCE) $(OBJ_SHORTCUT) $(OBJ_SPLITTER) $(OBJ_STATICDLG) $(OBJ_RUNDLG) $(OBJ_STATUSBAR) $(OBJ_TABBAR) $(OBJ_TASKLIST) $(OBJ_TOOLBAR) $(OBJ_TOOLTIP) $(OBJ_TRAYICON) $(OBJ_TREEVIEW) $(OBJ_WINDOWSDLG)
+-OBJS_TIXML		= $(OBJ_TIXML)
++OBJS_TIXML		= $(OBJ_TIXML) $(OBJ_TIXMLA)
+ OBJS_SCINT		= $(OBJ_SCINT)
+ OBJS_MISC		= $(OBJ_MISC) $(OBJ_COMMON) $(OBJ_EXCEPTION) $(OBJ_PLUGINS) $(OBJ_PROCESS) $(OBJ_REGEXT)
+-OBJS			= $(OBJ_NPP) $(OBJS_WIN) $(OBJS_TIXML) $(OBJS_SCINT) $(OBJS_MISC) $(OBJ_GCCINCLUDE)
++OBJS			= $(OBJS_SCINT) $(OBJS_TIXML) $(OBJS_WIN) $(OBJS_MISC) $(OBJ_GCCINCLUDE) $(OBJ_NPP) 
++
++OBJS_UNICODE=$(patsubst %.o,%.uco,$(OBJS))
+ 
+ # Main resource file
+-SRC_RES			= ./resources.rc
+-OBJ_RES			= $(patsubst %.rc,%.res,$(SRC_RES))
++SRC_RES			= $(GCC_DIR)/resources.rc
++OBJ_RES			= $(notdir $(patsubst %.rc,%.res,$(SRC_RES)))
++
++OBJ_RES_UNICODE = $(patsubst %.res,%.ucres,$(OBJ_RES))
+ 
+ # Parameters
+-INCLUDESPECIAL	= -include./include/various.h -includeCommon.h
++INCLUDESPECIAL	= -include $(GCC_DIR)/include/various.h
+ #    Comment this out for ANSI build
+ UNICODE         = -DUNICODE -D_UNICODE
+ 
+-CXX				= g++
+ #CXXFLAGS		= -O2 $(INCLUDESPECIAL)
+-CXXFLAGS		= $(INCLUDESPECIAL) -DTIXML_USE_STL $(UNICODE)
+-INCLUDES		= $(patsubst %,-I%,$(DIRS)) -I./include
+-LDFLAGS			= -Wl,--subsystem,windows
+-LIBS			= -lcomdlg32 -lcomctl32 -lgdi32 -lole32 -loleacc -lshell32 -lshlwapi
++override CXXFLAGS		+= -Wall -fexceptions -O2 $(INCLUDESPECIAL) -DTIXML_USE_STL -DTIXMLA_USE_STL 
++INCLUDES		= $(patsubst %,-I%,$(DIRS)) -I$(GCC_DIR)/include
++#LDFLAGS			= -Wl,--subsystem,windows
++override LIBS			= -lcomdlg32 -lcomctl32 -lgdi32 -lole32 -loleacc -lshell32 -lshlwapi -mwindows
++
++RC				?= windres
+ 
+-RC				= windres
++override RC_INCLUDES += -I$(NPP_DIR) -I$(DOCKING_DIR)
+ 
+-OUT_NPP			= NotepadPP.exe
++OUT_NPP			= Notepad++.exe
++OUT_NPP_UNICODE			= Notepad++U.exe
+ 
+ EXEC			= ../bin/$(OUT_NPP)
++EXEC_UNICODE			= ../bin/$(OUT_NPP_UNICODE)
+ 
+-all: NotepadPP
++vpath %.cpp $(DIRS)
++vpath %.rc $(GCC_DIR)
++
++all: NotepadPP NotepadPPUnicode
+ 
+ # Main Notepad++ rule
+ NotepadPP: $(OBJS) $(OBJ_RES)
+-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LDFLAGS) $(OBJS) $(OBJ_RES) -o $(EXEC) $(LIBS)
++	$(CXX) $(LDFLAGS) $^ -o $(EXEC) -s $(CXXLIBS) $(LIBS)
+ 
+-NotepadPPUnicode: $(OBJS) $(OBJ_RES)
+-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LDFLAGS) $(OBJS) $(OBJ_RES) -o $(EXEC) $(LIBS)
++NotepadPPUnicode: $(OBJS_UNICODE) $(OBJ_RES_UNICODE)
++	$(CXX) $(LDFLAGS) $^ -o $(EXEC_UNICODE) -s $(CXXLIBS) $(LIBS)
+ 	
+ %.o: %.cpp
+ 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+ 
+ %.res: %.rc
+-	$(RC) $(INCLUDES) $(UNICODE) --input=$< --output=$@ --input-format=rc --output-format=coff
++	$(RC) --preprocessor=$(CPP) $(RC_INCLUDES) --input=$< --output=$@ --input-format=rc --output-format=coff
++
++%.uco: %.cpp
++	$(CXX) $(CXXFLAGS) $(INCLUDES) $(UNICODE) -c $< -o $@
++
++%.ucres: %.rc
++	$(RC) --preprocessor=$(CPP) $(RC_INCLUDES) $(UNICODE) --input=$< --output=$@ --input-format=rc --output-format=coff
+ 
+ # Cleanup
+ clean:
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/MISC/Common/precompiledHeaders.h npp-5.6.7/PowerEditor/src/MISC/Common/precompiledHeaders.h
+--- npp-5.6.7-orig/PowerEditor/src/MISC/Common/precompiledHeaders.h	2009-09-04 02:10:02 +0200
++++ npp-5.6.7/PowerEditor/src/MISC/Common/precompiledHeaders.h	2010-02-27 20:15:12 +0100
+@@ -50,7 +50,7 @@
+ #include <shlwapi.h>
+ #include <uxtheme.h>
+ #include <Oleacc.h>
+-#include <dbghelp.h>
++// #include <dbghelp.h>
+ #include <eh.h>
+ 
+ #ifdef UNICODE
+@@ -62,4 +62,4 @@
+ #include "Window.h"
+ #include "StaticDialog.h"
+ 
+-#endif PRECOMPILEHEADER_H
++#endif /* PRECOMPILEHEADER_H */
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/MISC/Exception/MiniDumper.cpp npp-5.6.7/PowerEditor/src/MISC/Exception/MiniDumper.cpp
+--- npp-5.6.7-orig/PowerEditor/src/MISC/Exception/MiniDumper.cpp	2009-09-04 02:10:02 +0200
++++ npp-5.6.7/PowerEditor/src/MISC/Exception/MiniDumper.cpp	2010-02-27 20:15:13 +0100
+@@ -18,7 +18,9 @@
+ //Adapted from http://www.codeproject.com/KB/debug/postmortemdebug_standalone1.aspx#_Reading_a_Minidump_with%20Visual%20Stud
+ //Modified for use by Npp
+ 
++#ifndef __MINGW32__
+ #include "precompiledHeaders.h"
++
+ #include "MiniDumper.h"
+ 
+ LPCTSTR msgTitle = TEXT("Notepad++ crash analysis");
+@@ -98,3 +100,5 @@
+ 
+ 	return retval;
+ }
++
++#endif  // #ifndef __MINGW32__
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/MISC/Exception/MiniDumper.h npp-5.6.7/PowerEditor/src/MISC/Exception/MiniDumper.h
+--- npp-5.6.7-orig/PowerEditor/src/MISC/Exception/MiniDumper.h	2009-09-04 02:10:02 +0200
++++ npp-5.6.7/PowerEditor/src/MISC/Exception/MiniDumper.h	2010-02-27 20:15:13 +0100
+@@ -20,6 +20,7 @@
+ #ifndef MDUMP_H
+ #define MDUMP_H
+ 
++#ifndef __MINGW32__
+ 
+ // based on dbghelp.h
+ typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
+@@ -34,4 +35,5 @@
+ 	bool writeDump(EXCEPTION_POINTERS * pExceptionInfo);
+ };
+ 
++#endif // #ifndef __MINGW32__
+ #endif //MDUMP_H
+\ No newline at end of file
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/Notepad_plus.cpp npp-5.6.7/PowerEditor/src/Notepad_plus.cpp
+--- npp-5.6.7-orig/PowerEditor/src/Notepad_plus.cpp	2010-02-21 19:17:54 +0100
++++ npp-5.6.7/PowerEditor/src/Notepad_plus.cpp	2010-02-27 20:15:12 +0100
+@@ -1078,8 +1078,8 @@
+ 
+ int Notepad_plus::doReloadOrNot(const TCHAR *fn, bool dirty) 
+ {
+-	TCHAR* pattern = TEXT("%s\r\rThis file has been modified by another program.\rDo you want to reload it%s?");
+-	TCHAR* lose_info_str = dirty ? TEXT(" and lose the changes made in Notepad++") : TEXT("");
++	const TCHAR* pattern = TEXT("%s\r\rThis file has been modified by another program.\rDo you want to reload it%s?");
++	const TCHAR* lose_info_str = dirty ? TEXT(" and lose the changes made in Notepad++") : TEXT("");
+ 	TCHAR phrase[512];
+ 	wsprintf(phrase, pattern, fn, lose_info_str);
+ 	int icon = dirty ? MB_ICONEXCLAMATION : MB_ICONQUESTION;
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/Notepad_plus.h npp-5.6.7/PowerEditor/src/Notepad_plus.h
+--- npp-5.6.7-orig/PowerEditor/src/Notepad_plus.h	2010-02-21 19:17:54 +0100
++++ npp-5.6.7/PowerEditor/src/Notepad_plus.h	2010-02-27 20:15:12 +0100
+@@ -110,6 +110,8 @@
+ #include "lesDlgs.h"
+ #endif //SIZE_DLG_H
+ 
++#include "shortcutmapper.h"
++
+ #define MENU 0x01
+ #define TOOLBAR 0x02
+ 
+@@ -188,7 +190,7 @@
+         ::DestroyWindow(_hSelf);
+     };
+ 
+-    static const TCHAR * Notepad_plus::getClassName() {
++    static const TCHAR * getClassName() {
+ 		return _className;
+ 	};
+ 	
+@@ -599,7 +601,7 @@
+ 	int getLangFromMenuName(const TCHAR * langName);
+ 	generic_string getLangFromMenu(const Buffer * buf);
+ 
+-    generic_string Notepad_plus::exts2Filters(generic_string exts) const;
++    generic_string exts2Filters(generic_string exts) const;
+ 	int setFileOpenSaveDlgFilters(FileDialog & fDlg, int langType = -1);
+ 	void markSelectedTextInc(bool enable);
+ 	Style * getStyleFromName(const TCHAR *styleName);
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/Notepad_plus.rc npp-5.6.7/PowerEditor/src/Notepad_plus.rc
+--- npp-5.6.7-orig/PowerEditor/src/Notepad_plus.rc	2010-02-04 02:22:41 +0100
++++ npp-5.6.7/PowerEditor/src/Notepad_plus.rc	2010-02-27 20:15:12 +0100
+@@ -798,4 +798,4 @@
+ END
+ 
+ // xp style
+-1 RT_MANIFEST "notepad++.exe.manifest"
++//1 RT_MANIFEST "notepad++.exe.manifest"
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/Parameters.cpp npp-5.6.7/PowerEditor/src/Parameters.cpp
+--- npp-5.6.7-orig/PowerEditor/src/Parameters.cpp	2010-02-04 02:22:41 +0100
++++ npp-5.6.7/PowerEditor/src/Parameters.cpp	2010-02-27 20:15:13 +0100
+@@ -446,7 +446,7 @@
+ };
+ 
+ #ifdef UNICODE
+-#include "localizationString.h"
++#include "mingw-localizationString.h"
+ 
+ wstring LocalizationSwitcher::getLangFromXmlFileName(const wchar_t *fn) const
+ {
+@@ -625,6 +625,8 @@
+ 		
+ 	_asNotepadStyle = (PathFileExists(notepadStylePath.c_str()) == TRUE);
+ 
++	::AddFontResource(OPTI_FONT);
++	
+ 	//Load initial accelerator key definitions
+ 	initMenuKeys();
+ 	initScintillaKeys();
+@@ -648,6 +650,8 @@
+ 		delete (*it);
+ 	}
+ 	_pXmlExternalLexerDoc.clear();
++	
++	::RemoveFontResource(OPTI_FONT);
+ }
+ 
+ void cutString(const TCHAR *str2cut, vector<generic_string> & patternVect)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/Parameters.h npp-5.6.7/PowerEditor/src/Parameters.h
+--- npp-5.6.7-orig/PowerEditor/src/Parameters.h	2010-02-08 01:44:49 +0100
++++ npp-5.6.7/PowerEditor/src/Parameters.h	2010-02-27 20:15:12 +0100
+@@ -99,8 +99,9 @@
+ const bool SCIV_PRIMARY = false;
+ const bool SCIV_SECOND = true;
+ 
+-const TCHAR fontSizeStrs[][3] = {TEXT(""), TEXT("8"), TEXT("9"), TEXT("10"), TEXT("11"), TEXT("12"), TEXT("14"), TEXT("16"), TEXT("18"), TEXT("20"), TEXT("22"), TEXT("24"), TEXT("26"), TEXT("28")};
++const TCHAR fontSizeStrs[][3] = {TEXT(""), TEXT("7"), TEXT("8"), TEXT("9"), TEXT("10"), TEXT("11"), TEXT("12"), TEXT("14"), TEXT("16"), TEXT("18"), TEXT("20"), TEXT("22"), TEXT("24"), TEXT("26"), TEXT("28")};
+ 
++const TCHAR OPTI_FONT[] = TEXT("Opti.fon");
+ const TCHAR localConfFile[] = TEXT("doLocalConf.xml");
+ const TCHAR notepadStyleFile[] = TEXT("asNotepad.xml");
+ 
+@@ -1078,7 +1079,7 @@
+         _list.push_back(pair<generic_string, bool>(fn, isInBL));
+     };
+ private :
+-    vector<pair<generic_string, bool>>_list;
++    vector< pair<generic_string, bool> >_list;
+ };
+ 
+ const int NB_LANG = 80;
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/ScitillaComponent/Buffer.h npp-5.6.7/PowerEditor/src/ScitillaComponent/Buffer.h
+--- npp-5.6.7-orig/PowerEditor/src/ScitillaComponent/Buffer.h	2010-02-04 02:22:41 +0100
++++ npp-5.6.7/PowerEditor/src/ScitillaComponent/Buffer.h	2010-02-27 20:15:12 +0100
+@@ -59,6 +59,8 @@
+ //const int userLangNameMax = 16;
+ const TCHAR UNTITLED_STR[] = TEXT("new ");
+ 
++class Notepad_plus;
++
+ //File manager class maintains all buffers
+ class FileManager {
+ public:
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc npp-5.6.7/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc
+--- npp-5.6.7-orig/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	2009-12-18 00:33:39 +0100
++++ npp-5.6.7/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	2010-02-27 20:15:12 +0100
+@@ -20,6 +20,7 @@
+ #ifndef FIND_REPLACE_DLG_RC
+ #define FIND_REPLACE_DLG_RC
+ #include <windows.h>
++#include <commctrl.h>
+ #include "FindReplaceDlg_rc.h"
+ 
+ IDD_FIND_REPLACE_DLG DIALOGEX 36, 44, 317, 182
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/ScitillaComponent/Printer.h npp-5.6.7/PowerEditor/src/ScitillaComponent/Printer.h
+--- npp-5.6.7-orig/PowerEditor/src/ScitillaComponent/Printer.h	2009-09-04 02:10:02 +0200
++++ npp-5.6.7/PowerEditor/src/ScitillaComponent/Printer.h	2010-02-27 20:15:12 +0100
+@@ -36,7 +36,7 @@
+ public :
+ 	Printer(){};
+ 	void init(HINSTANCE hInst, HWND hwnd, ScintillaEditView *pSEView, bool showDialog, int startPos, int endPos);
+-	size_t Printer::doPrint() {
++	size_t doPrint() {
+ 		if (!::PrintDlg(&_pdlg))
+ 				return 0;
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp npp-5.6.7/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
+--- npp-5.6.7-orig/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	2010-02-04 02:22:41 +0100
++++ npp-5.6.7/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	2010-02-27 20:15:12 +0100
+@@ -2173,8 +2173,11 @@
+ 
+     range.first = execute(SCI_LINEFROMPOSITION, start);
+     range.second = execute(SCI_LINEFROMPOSITION, end);
+-    if (range.first > range.second)
+-        range.swap(range);
++    if (range.first > range.second) {
++	int t = range.first;
++	range.first = range.second;
++	range.second = t;
++    }
+     return range;
+ }
+ 
+@@ -2267,9 +2270,9 @@
+              for (int j = 0 ; j < nbChar ; j++)
+              {
+                  if (Case == UPPERCASE)
+-                     destStr[j] = (wchar_t)::CharUpperW((LPWSTR)destStr[j]);
++                     destStr[j] = (wchar_t)*::CharUpperW((LPWSTR)destStr[j]);
+                  else
+-                     destStr[j] = (wchar_t)::CharLowerW((LPWSTR)destStr[j]);
++                     destStr[j] = (wchar_t)*::CharLowerW((LPWSTR)destStr[j]);
+              }
+              ::WideCharToMultiByte(codepage, 0, destStr, len, srcStr, len, NULL, NULL);
+   
+@@ -2307,9 +2310,9 @@
+ 		for (int i = 0 ; i < nbChar ; i++)
+ 		{
+ 			if (Case == UPPERCASE)
+-				selectedStrW[i] = (WCHAR)::CharUpperW((LPWSTR)selectedStrW[i]);
++				selectedStrW[i] = (WCHAR)*::CharUpperW((LPWSTR)selectedStrW[i]);
+ 			else
+-				selectedStrW[i] = (WCHAR)::CharLowerW((LPWSTR)selectedStrW[i]);
++				selectedStrW[i] = (WCHAR)*::CharLowerW((LPWSTR)selectedStrW[i]);
+ 		}
+ 		::WideCharToMultiByte(codepage, 0, selectedStrW, strWSize, selectedStr, strSize, NULL, NULL);
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/ScitillaComponent/ScintillaEditView.h npp-5.6.7/PowerEditor/src/ScitillaComponent/ScintillaEditView.h
+--- npp-5.6.7-orig/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	2010-02-04 02:22:41 +0100
++++ npp-5.6.7/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	2010-02-27 20:15:12 +0100
+@@ -160,7 +160,7 @@
+ // SortClass for vector<ColumnModeInfo>
+ // sort in _order : increased order
+ struct SortInSelectOrder {
+-	bool operator() (ColumnModeInfo & l, ColumnModeInfo & r) {
++	bool operator() (const ColumnModeInfo & l, const ColumnModeInfo & r) {
+ 		return (l._order < r._order);
+ 	}
+ };
+@@ -169,7 +169,7 @@
+ // SortClass for vector<ColumnModeInfo>
+ // sort in _selLpos : increased order
+ struct SortInPositionOrder {
+-	bool operator() (ColumnModeInfo & l, ColumnModeInfo & r) {
++	bool operator() (const ColumnModeInfo & l, const ColumnModeInfo & r) {
+ 		return (l._selLpos < r._selLpos);
+ 	}
+ };
+@@ -532,7 +532,7 @@
+ 		execute(SCI_INDICATORCLEARRANGE, docStart, docEnd-docStart);
+ 	};
+ 
+-	static LanguageName ScintillaEditView::langNames[L_EXTERNAL+1];
++	static LanguageName langNames[L_EXTERNAL+1];
+ 
+ 	void bufferUpdated(Buffer * buffer, int mask);
+ 	BufferID getCurrentBufferID() { return _currentBufferID; };
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/WinControls/OpenSaveFileDialog/FileDialog.cpp npp-5.6.7/PowerEditor/src/WinControls/OpenSaveFileDialog/FileDialog.cpp
+--- npp-5.6.7-orig/PowerEditor/src/WinControls/OpenSaveFileDialog/FileDialog.cpp	2009-11-25 02:51:05 +0100
++++ npp-5.6.7/PowerEditor/src/WinControls/OpenSaveFileDialog/FileDialog.cpp	2010-02-27 20:15:13 +0100
+@@ -437,10 +437,28 @@
+ 
+ 	RECT _rc;
+ 	::GetWindowRect(hwnd, &_rc);
+-	int x = center.x - (_rc.right - _rc.left)/2;
+-	int y = center.y - (_rc.bottom - _rc.top)/2;
++	int w = _rc.right - _rc.left;
++	int h = _rc.bottom - _rc.top;
++	int x = center.x - w/2;
++	int y = center.y - h/2;
++	
++	// Make sure window is not positioned outside desktop range
++	HDC hdc = GetDC(0);
++	if (hdc) {
++		int hx = GetDeviceCaps (hdc, HORZRES);
++		int hy = GetDeviceCaps (hdc, VERTRES);
++		
++		if (x+w > hx)
++			x = hx - w;
++		if (y+h > hy)
++			y = hy - h;
++		if (x < 0)
++			x = 0;
++		if (y < 0)
++			y = 0;
++	}
+ 
+-	::SetWindowPos(hwnd, HWND_TOP, x, y, _rc.right - _rc.left, _rc.bottom - _rc.top, SWP_SHOWWINDOW);
++	::SetWindowPos(hwnd, HWND_TOP, x, y, w, h, SWP_SHOWWINDOW);
+ }
+ 
+ generic_string changeExt(generic_string fn, generic_string ext, bool forceReplaced)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/WinControls/StaticDialog/StaticDialog.cpp npp-5.6.7/PowerEditor/src/WinControls/StaticDialog/StaticDialog.cpp
+--- npp-5.6.7-orig/PowerEditor/src/WinControls/StaticDialog/StaticDialog.cpp	2009-11-25 02:51:05 +0100
++++ npp-5.6.7/PowerEditor/src/WinControls/StaticDialog/StaticDialog.cpp	2010-02-27 20:15:13 +0100
+@@ -26,10 +26,28 @@
+     center.y = rc.top + (rc.bottom - rc.top)/2;
+     ::ClientToScreen(_hParent, &center);
+ 
+-	int x = center.x - (_rc.right - _rc.left)/2;
+-	int y = center.y - (_rc.bottom - _rc.top)/2;
++	int w = _rc.right - _rc.left;
++	int h = _rc.bottom - _rc.top;
++	int x = center.x - w/2;
++	int y = center.y - h/2;
+ 
+-	::SetWindowPos(_hSelf, HWND_TOP, x, y, _rc.right - _rc.left, _rc.bottom - _rc.top, SWP_SHOWWINDOW);
++	// Make sure window is not positioned outside desktop range
++	HDC hdc = GetDC(0);
++	if (hdc) {
++		int hx = GetDeviceCaps (hdc, HORZRES);
++		int hy = GetDeviceCaps (hdc, VERTRES);
++		
++		if (x+w > hx)
++			x = hx - w;
++		if (y+h > hy)
++			y = hy - h;
++		if (x < 0)
++			x = 0;
++		if (y < 0)
++			y = 0;
++	}
++
++	::SetWindowPos(_hSelf, HWND_TOP, x, y, w, h, SWP_SHOWWINDOW);
+ }
+ 
+ 
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/WinControls/TabBar/ControlsTab.h npp-5.6.7/PowerEditor/src/WinControls/TabBar/ControlsTab.h
+--- npp-5.6.7-orig/PowerEditor/src/WinControls/TabBar/ControlsTab.h	2009-09-04 02:10:02 +0200
++++ npp-5.6.7/PowerEditor/src/WinControls/TabBar/ControlsTab.h	2010-02-27 20:15:12 +0100
+@@ -44,7 +44,7 @@
+ 		_isVertical = isVertical;
+ 		TabBar::init(hInst, hwnd, false, isTraditional, isMultiLine);
+ 	};
+-	void ControlsTab::createTabs(WindowVector & winVector);
++	void createTabs(WindowVector & winVector);
+ 
+ 	void destroy() {
+ 		TabBar::destroy();
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/WinControls/shortcut/shortcut.h npp-5.6.7/PowerEditor/src/WinControls/shortcut/shortcut.h
+--- npp-5.6.7-orig/PowerEditor/src/WinControls/shortcut/shortcut.h	2009-09-04 02:10:02 +0200
++++ npp-5.6.7/PowerEditor/src/WinControls/shortcut/shortcut.h	2010-02-27 20:15:12 +0100
+@@ -203,7 +203,7 @@
+ 	};
+ 
+ 	KeyCombo getKeyComboByIndex(int index) const;
+-	void ScintillaKeyMap::setKeyComboByIndex(int index, KeyCombo combo);
++	void setKeyComboByIndex(int index, KeyCombo combo);
+ 	void removeKeyComboByIndex(int index);
+ 	void clearDups() {
+ 		if (size > 1)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/config.model.xml npp-5.6.7/PowerEditor/src/config.model.xml
+--- npp-5.6.7-orig/PowerEditor/src/config.model.xml	2009-07-05 18:05:25 +0200
++++ npp-5.6.7/PowerEditor/src/config.model.xml	2010-02-27 20:15:12 +0100
+@@ -55,7 +55,7 @@
+                                 2 : verbose backup
+                       -->
+         <GUIConfig name="Backup" action="0" useCustumDir="no" dir="" />
+-        <GUIConfig name="TaskList">yes</GUIConfig>
++        <GUIConfig name="TaskList">no</GUIConfig>
+         <GUIConfig name="SaveOpenFileInSameDir">no</GUIConfig>
+         <!--
+ 			value 0 for the folloing parameters means invisible :
+@@ -71,7 +71,7 @@
+ 			-->
+         <GUIConfig name="noUpdate">no</GUIConfig>
+         <GUIConfig name="MaitainIndent">yes</GUIConfig>
+-        <GUIConfig name="MRU">yes</GUIConfig>
++        <GUIConfig name="MRU">no</GUIConfig>
+         <GUIConfig name="URL">0</GUIConfig>
+         <GUIConfig name="globalOverride" fg="no" bg="no" font="no" fontSize="no" bold="no" italic="no" underline="no" />
+         <GUIConfig name="auto-completion" autoCAction="0" triggerFromNbChar="1" />
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/langs.model.xml npp-5.6.7/PowerEditor/src/langs.model.xml
+--- npp-5.6.7-orig/PowerEditor/src/langs.model.xml	2010-01-23 19:07:32 +0100
++++ npp-5.6.7/PowerEditor/src/langs.model.xml	2010-02-27 20:15:12 +0100
+@@ -2,7 +2,7 @@
+ <NotepadPlus>
+    <!-- The key words of the supported languages, don't touch them! -->
+    <Languages>
+-        <Language name="normal"  ext="txt">
++        <Language name="normal"  ext="">
+         </Language>
+         <Language name="actionscript" ext="as mx" commentLine="//" commentStart="/*" commentEnd="*/">
+             <Keywords name="instre1">add for lt tellTarget and function ne this break ge new typeof continue gt not var delete if on void do ifFrameLoaded onClipEvent while else in or with eq le return instanceof case default switch</Keywords>
+@@ -129,7 +129,7 @@
+         <Language name="makefile" ext="mak" commentLine="#">
+         </Language>
+         <Language name="matlab" ext="m" commentLine="%" commentStart="" commentEnd="">
+-            <Keywords name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while</Keywords>
++            <Keywords name="instre1">break case catch continue else elseif end for function global if otherwise persistent return switch try while do endfor endfunction endif endswitch endwhile end_unwind_protect until unwind_protect unwind_protect_cleanup</Keywords>
+         </Language>
+         <Language name="nfo" ext="nfo">
+         </Language>
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/mingw-localizationString.h npp-5.6.7/PowerEditor/src/mingw-localizationString.h
+--- npp-5.6.7-orig/PowerEditor/src/mingw-localizationString.h	1970-01-01 01:00:00 +0100
++++ npp-5.6.7/PowerEditor/src/mingw-localizationString.h	2010-02-27 20:15:13 +0100
+@@ -0,0 +1,23 @@
++//this file is part of notepad++
++//Copyright (C)2003 Don HO <donho@altern.org>
++//
++//This program is free software; you can redistribute it and/or
++//modify it under the terms of the GNU General Public License
++//as published by the Free Software Foundation; either
++//version 2 of the License, or (at your option) any later version.
++//
++//This program is distributed in the hope that it will be useful,
++//but WITHOUT ANY WARRANTY; without even the implied warranty of
++//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++//GNU General Public License for more details.
++//
++//You should have received a copy of the GNU General Public License
++//along with this program; if not, write to the Free Software
++//Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++
++#ifndef LOCALIZATIONSTRING_H
++#define LOCALIZATIONSTRING_H
++LocalizationSwitcher::LocalizationDefinition localizationDefs[] = {
++	{TEXT("English"), TEXT("english.xml")},
++};
++#endif // LOCALIZATIONSTRING_H
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/shortcuts.xml npp-5.6.7/PowerEditor/src/shortcuts.xml
+--- npp-5.6.7-orig/PowerEditor/src/shortcuts.xml	2009-09-19 23:43:11 +0200
++++ npp-5.6.7/PowerEditor/src/shortcuts.xml	2010-02-27 20:15:13 +0100
+@@ -1,5 +1,8 @@
+ <NotepadPlus>
+-    <InternalCommands />
++    <InternalCommands>
++        <Shortcut name="Go to next document" id="50003" Ctrl="no" Alt="yes" Shift="no" Key="38" />
++        <Shortcut name="Go to previous document" id="50004" Ctrl="no" Alt="yes" Shift="no" Key="40" />
++    </InternalCommands>
+     <Macros>
+         <Macro name="Trim Trailing and save" Ctrl="no" Alt="yes" Shift="yes" Key="83">
+             <Action type="2" message="0" wParam="42024" lParam="0" sParam="" />
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/userDefineLang.xml npp-5.6.7/PowerEditor/src/userDefineLang.xml
+--- npp-5.6.7-orig/PowerEditor/src/userDefineLang.xml	2007-08-07 02:55:50 +0200
++++ npp-5.6.7/PowerEditor/src/userDefineLang.xml	2010-02-27 20:15:13 +0100
+@@ -59,4 +59,38 @@
+             <WordsStyle name="OPERATOR" styleID="10" fgColor="804000" bgColor="FFFFFF" fontName="" fontStyle="1" fontSize="" />
+         </Styles>
+     </UserLang>
++    <UserLang name="gnuplot" ext="gp">
++        <Settings>
++            <Global caseIgnored="no" />
++            <TreatAsSymbol comment="no" commentLine="no" />
++            <Prefix words1="no" words2="no" words3="no" words4="no" />
++        </Settings>
++        <KeywordLists>
++            <Keywords name="Delimiters">&quot;00&quot;00</Keywords>
++            <Keywords name="Folder+"></Keywords>
++            <Keywords name="Folder-"></Keywords>
++            <Keywords name="Operators">$ ( ) , . @ =</Keywords>
++            <Keywords name="Comment">1 1 2 2 0#</Keywords>
++            <Keywords name="Words1">call cd clear exit fit help history if load lower pause plot print pwd quit raise replot reread reset save set shell show splot system test unset update</Keywords>
++            <Keywords name="Words2">angles arrow autoscale bars bmargin border boxwidth cbdata cbdtics cblabel cbmtics cbrange cbtics clabel clip cntrparam colorbox contour datafile decimalsign dgrid3d dummy encoding fontpath format functions grid hidden3d historysize isosamples key label lmargin loadpath locale logscale macros mapping margin mouse multiplot mx2tics mxtics my2tics mytics mztics nomxtics nomytics nomztics noxtics noytics noztics offsets origin output palette parametric pm3d pointsize polar print object rmargin rrange samples size style surface table term terminal termoption tics ticslevel ticscale timestamp timefmt title tmargin trange urange variables version view vrange x2data x2dtics x2label x2mtics x2range x2tics x2zeroaxis xdata xdtics xlabel xmtics xrange xtics xyplane xzeroaxis y2data y2dtics y2label y2mtics y2range y2tics y2zeroaxis ydata ydtics ylabel ymtics yrange ytics yyplane yzeroaxis zdata zdtics zero zeroaxis zlabel zmtics zrange ztics zzeroaxis</Keywords>
++            <Keywords name="Words3">every index lc linecolor lines linestyle linetype linewidth linespoints ls lt lw pointsize pointtype ps pt rgb using with</Keywords>
++            <Keywords name="Words4"></Keywords>
++        </KeywordLists>
++        <Styles>
++            <WordsStyle name="DEFAULT" styleID="11" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="FOLDEROPEN" styleID="12" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="FOLDERCLOSE" styleID="13" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD1" styleID="5" fgColor="FF0000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD2" styleID="6" fgColor="0000FF" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD3" styleID="7" fgColor="FF8000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="KEYWORD4" styleID="8" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="COMMENT" styleID="1" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="COMMENT LINE" styleID="2" fgColor="008000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="NUMBER" styleID="4" fgColor="0080C0" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="OPERATOR" styleID="10" fgColor="FF8040" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER1" styleID="14" fgColor="808080" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER2" styleID="15" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++            <WordsStyle name="DELIMINER3" styleID="16" fgColor="000000" bgColor="FFFFFF" fontName="" fontStyle="0" />
++        </Styles>
++    </UserLang>
+ </NotepadPlus>
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/PowerEditor/src/winmain.cpp npp-5.6.7/PowerEditor/src/winmain.cpp
+--- npp-5.6.7-orig/PowerEditor/src/winmain.cpp	2010-02-11 00:54:44 +0100
++++ npp-5.6.7/PowerEditor/src/winmain.cpp	2010-02-27 20:15:13 +0100
+@@ -181,9 +181,9 @@
+ 	LPTSTR cmdLine = ::GetCommandLine();
+ 	ParamVector params;
+ 	parseCommandLine(cmdLine, params);
+-
++#ifndef __MINGW32__
+ 	MiniDumper mdump;	//for debugging purposes.
+-
++#endif
+ 	bool TheFirstOne = true;
+ 	::SetLastError(NO_ERROR);
+ 	::CreateMutex(NULL, false, TEXT("nppInstance"));
+@@ -386,9 +386,11 @@
+ #endif
+ 			ex.code(), ex.what(), ex.where());
+ 		::MessageBox(Notepad_plus::gNppHWND, message, TEXT("Win32Exception"), MB_OK | MB_ICONERROR);
++#ifndef __MINGW32__
+ 		mdump.writeDump(ex.info());
+-		doException(notepad_plus_plus);
+-	} catch(std::exception ex) {
++#endif
++	    doException(notepad_plus_plus);
++	} catch(const std::exception& ex) {
+ #ifdef UNICODE
+ 		const wchar_t * text = WcharMbcsConvertor::getInstance()->char2wchar(ex.what(), CP_ACP);
+ 		::MessageBox(Notepad_plus::gNppHWND, text, TEXT("C++ Exception"), MB_OK);
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/scintilla/src/LexMatlab.cxx npp-5.6.7/scintilla/src/LexMatlab.cxx
+--- npp-5.6.7-orig/scintilla/src/LexMatlab.cxx	2009-04-26 01:38:15 +0200
++++ npp-5.6.7/scintilla/src/LexMatlab.cxx	2010-02-27 20:15:12 +0100
+@@ -159,7 +159,7 @@
+ 
+ static void ColouriseMatlabDoc(unsigned int startPos, int length, int initStyle,
+                                WordList *keywordlists[], Accessor &styler) {
+-	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabCommentChar);
++	ColouriseMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveCommentChar);
+ }
+ 
+ static void ColouriseOctaveDoc(unsigned int startPos, int length, int initStyle,
+@@ -213,7 +213,7 @@
+ 
+ static void FoldMatlabDoc(unsigned int startPos, int length, int initStyle,
+                           WordList *keywordlists[], Accessor &styler) {
+-	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsMatlabComment);
++	FoldMatlabOctaveDoc(startPos, length, initStyle, keywordlists, styler, IsOctaveComment);
+ }
+ 
+ static void FoldOctaveDoc(unsigned int startPos, int length, int initStyle,
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/scintilla/src/LexSearchResult.cxx npp-5.6.7/scintilla/src/LexSearchResult.cxx
+--- npp-5.6.7-orig/scintilla/src/LexSearchResult.cxx	2009-04-12 22:09:03 +0200
++++ npp-5.6.7/scintilla/src/LexSearchResult.cxx	2010-02-27 20:15:12 +0100
+@@ -35,7 +35,7 @@
+ #include "SciLexer.h"
+ 
+ // The following definitions are a copy of the ones in FindReplaceDlg.h
+-static enum { searchHeaderLevel = SC_FOLDLEVELBASE + 1, fileHeaderLevel, resultLevel };
++enum { searchHeaderLevel = SC_FOLDLEVELBASE + 1, fileHeaderLevel, resultLevel };
+ 
+ 
+ static inline bool AtEOL(Accessor &styler, unsigned int i) {
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.svn' -x '*.hg' -x '*.rej' npp-5.6.7-orig/scintilla/win32/makefile npp-5.6.7/scintilla/win32/makefile
+--- npp-5.6.7-orig/scintilla/win32/makefile	2009-08-23 04:24:49 +0200
++++ npp-5.6.7/scintilla/win32/makefile	2010-02-27 20:15:12 +0100
+@@ -6,48 +6,45 @@
+ # The -fvtable-thunks option is required for older (2.9*) versions of gcc but can be removed
+ # safely if using a newer version which may display warning messages.
+ 
++SRCDIR=@SRCDIR@
++
+ .SUFFIXES: .cxx
+-CC = g++
+ DLLWRAP = dllwrap
+-DEL = del /q
++DEL = rm -rf
+ 
+ COMPONENT = ../bin/Scintilla.dll
+ LEXCOMPONENT = ../bin/SciLexer.dll
+-LEXLIB = Lexers.a
+-
+-ifndef NOTHUNKS
+-gversion = $(word 1,$(subst ., ,$(shell g++ --version)))
+-ifeq ($(gversion),2)
+-THUNKFLAGS=-fvtable-thunks
+-endif
+-endif
++LEXLIB = ../lib/Lexers.a
+ 
+-vpath %.h ../src ../include
+-vpath %.cxx ../src
++vpath %.h $(SRCDIR)/src $(SRCDIR)/include $(SRCDIR)/win32
++vpath %.cxx $(SRCDIR)/src $(SRCDIR)/win32
++vpath %.rc  $(SRCDIR)/src $(SRCDIR)/win32
++vpath %.def $(SRCDIR)/win32
+ 
+-LDFLAGS=-mwindows -lstdc++ -limm32 -lole32 -luuid -mno-cygwin
++override LDFLAGS+=-mwindows -limm32 -lole32 -luuid 
+ # Add -MMD to get dependencies
+ #CXXFLAGS = -g -pg -pedantic -Os -fno-exceptions -fvtable-thunks -fno-rtti
+-INCLUDEDIRS=-I ../include -I ../src
+-CXXBASEFLAGS=-Wall -Wno-missing-braces -Wno-char-subscripts -pedantic $(INCLUDEDIRS) $(THUNKFLAGS) -fno-rtti -mno-cygwin
++INCLUDEDIRS=-I $(SRCDIR)/include -I $(SRCDIR)/src
++CXXBASEFLAGS=-Wall $(INCLUDEDIRS) -O3  -fno-rtti 
+ 
+ ifdef DEBUG
+-CXXFLAGS=-DDEBUG -g $(CXXBASEFLAGS)
++override CXXFLAGS+=-DDEBUG -g $(CXXBASEFLAGS)
+ else
+-CXXFLAGS=-DNDEBUG -Os $(CXXBASEFLAGS)
++override CXXFLAGS+=-DNDEBUG -Os $(CXXBASEFLAGS)
+ STRIPFLAG=-s
+ endif
+ 
+ .cxx.o:
+ 	$(CC) $(CXXFLAGS) -c $<
+ 
+-ALL:	$(COMPONENT) $(LEXCOMPONENT) $(LEXLIB) ScintillaWinS.o WindowAccessor.o
++ALL:	deps $(COMPONENT) $(LEXCOMPONENT) $(LEXLIB) ScintillaWinS.o WindowAccessor.o
+ 
+ clean:
+ 	$(DEL) *.exe *.o *.obj *.dll *.res *.map
+ 
+ deps:
+-	$(CC) -MM $(CXXFLAGS) *.cxx ../src/*.cxx >deps.mak
++	$(CC) -MM $(CXXFLAGS) $(SRCDIR)/win32/*.cxx $(SRCDIR)/src/*.cxx | sed -e 's%\([a-z]\):[\\/]%/\1/%' -e 's+\\\([^^]\)+/\1+g' > deps.mak
++	touch deps
+ 
+ #++Autogenerated -- run src/LexGen.py to regenerate
+ #**LEXOBJS=\\\n\(\*.o \)
+@@ -62,7 +59,8 @@
+ LexPB.o LexPerl.o LexPLM.o LexPOV.o LexPowerPro.o LexPowerShell.o \
+ LexProgress.o LexPS.o LexPython.o LexR.o LexRebol.o LexRuby.o LexScriptol.o \
+ LexSmalltalk.o LexSML.o LexSorcus.o LexSpecman.o LexSpice.o LexSQL.o LexTACL.o \
+-LexTADS3.o LexTAL.o LexTCL.o LexTeX.o LexVB.o LexVerilog.o LexVHDL.o LexYAML.o
++LexTADS3.o LexTAL.o LexTCL.o LexTeX.o LexVB.o LexVerilog.o LexVHDL.o LexYAML.o \
++LexUser.o LexSearchResult.o LexObjC.o
+ #--Autogenerated -- end of automatically generated section
+ 
+ SOBJS	= ScintillaWin.o ScintillaBase.o Editor.o CharClassify.o Decoration.o \
+@@ -70,7 +68,7 @@
+ 	ScintRes.o PlatWin.o PositionCache.o KeyMap.o Indicator.o LineMarker.o RESearch.o RunStyles.o \
+ 	Selection.o Style.o ViewStyle.o AutoComplete.o UniConversion.o PropSet.o XPM.o PerLine.o
+ $(COMPONENT): $(SOBJS) Scintilla.def
+-	$(DLLWRAP) --add-stdcall-alias --target i386-mingw32 -o $@ $(SOBJS) $(LDFLAGS) $(STRIPFLAG) --relocatable
++	$(DLLWRAP) --driver-name=$(CXX) -def $(SRCDIR)/win32/Scintilla.def --add-stdcall-alias --target i386-mingw32 -o $@ $(SOBJS) $(CXXLIBS) $(LDFLAGS) $(STRIPFLAG) --relocatable
+ 
+ LOBJS	= ScintillaWinL.o ScintillaBaseL.o Editor.o CharClassify.o Decoration.o \
+ 	Document.o ContractionState.o CellBuffer.o CallTip.o \
+@@ -78,7 +76,7 @@
+ 	Selection.o Style.o ViewStyle.o AutoComplete.o UniConversion.o KeyWords.o \
+ 	DocumentAccessor.o PropSet.o ExternalLexer.o StyleContext.o XPM.o PerLine.o $(LEXOBJS)
+ $(LEXCOMPONENT): $(LOBJS) Scintilla.def
+-	$(DLLWRAP) --add-stdcall-alias --target i386-mingw32 -o $@ $(LOBJS) $(LDFLAGS) $(STRIPFLAG) --relocatable
++	$(DLLWRAP) --driver-name=$(CXX) -def $(SRCDIR)/win32/Scintilla.def --add-stdcall-alias --target i386-mingw32 -o $@ $(LOBJS) $(CXXLIBS) $(LDFLAGS) $(STRIPFLAG) --relocatable
+ 
+ $(LEXLIB): $(LEXOBJS)
+ 	$(AR) rc $@ $^
+@@ -113,5 +111,5 @@
+ 	$(CC) $(CXXFLAGS) -D SCI_LEXER -c $< -o $@
+ 
+ ScintRes.o:	ScintRes.rc PlatformRes.h
+-	windres ScintRes.rc $@
++	windres --preprocessor=$(CPP) $< $@
+ 

@@ -3,6 +3,10 @@
 # CHANGELOG
 # ---------
 #
+# 27-Feb-2010 benjamin lindner <lindnerb@users.sourceforge.net>
+#
+#    *) update for npp-5.6.7
+#
 # 20-Feb-2010 benjamin lindner <lindnerb@users.sourceforge.net>
 #
 #    *) update for npp-5.6.6
@@ -38,7 +42,7 @@
 # subdirecory where patches reside
 PATCHDIR=patches
 # directory of gnuplot sources to patch
-NPP_DIR=npp-5.6.6
+NPP_DIR=npp-5.6.7
 
 # the patches to apply
 PATCHES="

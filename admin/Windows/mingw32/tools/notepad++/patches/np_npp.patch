@@ -1,8 +1,8 @@
 npp: local src changes (bugfixes)
 
-diff -r 390c29f033a4 PowerEditor/src/MISC/Common/precompiledHeaders.h
---- a/PowerEditor/src/MISC/Common/precompiledHeaders.h	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/MISC/Common/precompiledHeaders.h	Sat Feb 20 17:07:13 2010 +0100
+diff -r 60596a5ca830 PowerEditor/src/MISC/Common/precompiledHeaders.h
+--- a/PowerEditor/src/MISC/Common/precompiledHeaders.h	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/MISC/Common/precompiledHeaders.h	Sat Feb 27 20:08:42 2010 +0100
 @@ -50,7 +50,7 @@
  #include <shlwapi.h>
  #include <uxtheme.h>
@@ -18,10 +18,10 @@ diff -r 390c29f033a4 PowerEditor/src/MISC/Common/precompiledHeaders.h
  
 -#endif PRECOMPILEHEADER_H
 +#endif /* PRECOMPILEHEADER_H */
-diff -r 390c29f033a4 PowerEditor/src/Notepad_plus.cpp
---- a/PowerEditor/src/Notepad_plus.cpp	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/Notepad_plus.cpp	Sat Feb 20 17:07:13 2010 +0100
-@@ -2087,8 +2087,8 @@
+diff -r 60596a5ca830 PowerEditor/src/Notepad_plus.cpp
+--- a/PowerEditor/src/Notepad_plus.cpp	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/Notepad_plus.cpp	Sat Feb 27 20:08:42 2010 +0100
+@@ -1078,8 +1078,8 @@
  
  int Notepad_plus::doReloadOrNot(const TCHAR *fn, bool dirty) 
  {
@@ -32,9 +32,9 @@ diff -r 390c29f033a4 PowerEditor/src/Notepad_plus.cpp
  	TCHAR phrase[512];
  	wsprintf(phrase, pattern, fn, lose_info_str);
  	int icon = dirty ? MB_ICONEXCLAMATION : MB_ICONQUESTION;
-diff -r 390c29f033a4 PowerEditor/src/Notepad_plus.h
---- a/PowerEditor/src/Notepad_plus.h	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/Notepad_plus.h	Sat Feb 20 17:07:13 2010 +0100
+diff -r 60596a5ca830 PowerEditor/src/Notepad_plus.h
+--- a/PowerEditor/src/Notepad_plus.h	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/Notepad_plus.h	Sat Feb 27 20:08:42 2010 +0100
 @@ -110,6 +110,8 @@
  #include "lesDlgs.h"
  #endif //SIZE_DLG_H
@@ -44,28 +44,37 @@ diff -r 390c29f033a4 PowerEditor/src/Notepad_plus.h
  #define MENU 0x01
  #define TOOLBAR 0x02
  
-@@ -183,7 +185,7 @@
- 	inline void killAllChildren();
- 	virtual inline void destroy();
+@@ -188,7 +190,7 @@
+         ::DestroyWindow(_hSelf);
+     };
  
 -    static const TCHAR * Notepad_plus::getClassName() {
 +    static const TCHAR * getClassName() {
  		return _className;
  	};
  	
-diff -r 390c29f033a4 PowerEditor/src/Notepad_plus.rc
---- a/PowerEditor/src/Notepad_plus.rc	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/Notepad_plus.rc	Sat Feb 20 17:07:13 2010 +0100
+@@ -599,7 +601,7 @@
+ 	int getLangFromMenuName(const TCHAR * langName);
+ 	generic_string getLangFromMenu(const Buffer * buf);
+ 
+-    generic_string Notepad_plus::exts2Filters(generic_string exts) const;
++    generic_string exts2Filters(generic_string exts) const;
+ 	int setFileOpenSaveDlgFilters(FileDialog & fDlg, int langType = -1);
+ 	void markSelectedTextInc(bool enable);
+ 	Style * getStyleFromName(const TCHAR *styleName);
+diff -r 60596a5ca830 PowerEditor/src/Notepad_plus.rc
+--- a/PowerEditor/src/Notepad_plus.rc	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/Notepad_plus.rc	Sat Feb 27 20:08:42 2010 +0100
 @@ -798,4 +798,4 @@
  END
  
  // xp style
 -1 RT_MANIFEST "notepad++.exe.manifest"
 +//1 RT_MANIFEST "notepad++.exe.manifest"
-diff -r 390c29f033a4 PowerEditor/src/Parameters.h
---- a/PowerEditor/src/Parameters.h	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/Parameters.h	Sat Feb 20 17:07:13 2010 +0100
-@@ -1078,7 +1078,7 @@
+diff -r 60596a5ca830 PowerEditor/src/Parameters.h
+--- a/PowerEditor/src/Parameters.h	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/Parameters.h	Sat Feb 27 20:08:42 2010 +0100
+@@ -1079,7 +1079,7 @@
          _list.push_back(pair<generic_string, bool>(fn, isInBL));
      };
  private :
@@ -74,9 +83,9 @@ diff -r 390c29f033a4 PowerEditor/src/Parameters.h
  };
  
  const int NB_LANG = 80;
-diff -r 390c29f033a4 PowerEditor/src/ScitillaComponent/Buffer.h
---- a/PowerEditor/src/ScitillaComponent/Buffer.h	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/ScitillaComponent/Buffer.h	Sat Feb 20 17:07:13 2010 +0100
+diff -r 60596a5ca830 PowerEditor/src/ScitillaComponent/Buffer.h
+--- a/PowerEditor/src/ScitillaComponent/Buffer.h	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/ScitillaComponent/Buffer.h	Sat Feb 27 20:08:42 2010 +0100
 @@ -59,6 +59,8 @@
  //const int userLangNameMax = 16;
  const TCHAR UNTITLED_STR[] = TEXT("new ");
@@ -86,9 +95,9 @@ diff -r 390c29f033a4 PowerEditor/src/ScitillaComponent/Buffer.h
  //File manager class maintains all buffers
  class FileManager {
  public:
-diff -r 390c29f033a4 PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc
---- a/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	Sat Feb 20 17:07:13 2010 +0100
+diff -r 60596a5ca830 PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc
+--- a/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc	Sat Feb 27 20:08:42 2010 +0100
 @@ -20,6 +20,7 @@
  #ifndef FIND_REPLACE_DLG_RC
  #define FIND_REPLACE_DLG_RC
@@ -97,9 +106,9 @@ diff -r 390c29f033a4 PowerEditor/src/ScitillaComponent/FindReplaceDlg.rc
  #include "FindReplaceDlg_rc.h"
  
  IDD_FIND_REPLACE_DLG DIALOGEX 36, 44, 317, 182
-diff -r 390c29f033a4 PowerEditor/src/ScitillaComponent/Printer.h
---- a/PowerEditor/src/ScitillaComponent/Printer.h	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/ScitillaComponent/Printer.h	Sat Feb 20 17:07:13 2010 +0100
+diff -r 60596a5ca830 PowerEditor/src/ScitillaComponent/Printer.h
+--- a/PowerEditor/src/ScitillaComponent/Printer.h	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/ScitillaComponent/Printer.h	Sat Feb 27 20:08:42 2010 +0100
 @@ -36,7 +36,7 @@
  public :
  	Printer(){};
@@ -109,9 +118,9 @@ diff -r 390c29f033a4 PowerEditor/src/ScitillaComponent/Printer.h
  		if (!::PrintDlg(&_pdlg))
  				return 0;
  
-diff -r 390c29f033a4 PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
---- a/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	Sat Feb 20 17:07:13 2010 +0100
+diff -r 60596a5ca830 PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
+--- a/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp	Sat Feb 27 20:08:42 2010 +0100
 @@ -2173,8 +2173,11 @@
  
      range.first = execute(SCI_LINEFROMPOSITION, start);
@@ -150,9 +159,9 @@ diff -r 390c29f033a4 PowerEditor/src/ScitillaComponent/ScintillaEditView.cpp
  		}
  		::WideCharToMultiByte(codepage, 0, selectedStrW, strWSize, selectedStr, strSize, NULL, NULL);
  
-diff -r 390c29f033a4 PowerEditor/src/ScitillaComponent/ScintillaEditView.h
---- a/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	Sat Feb 20 17:07:13 2010 +0100
+diff -r 60596a5ca830 PowerEditor/src/ScitillaComponent/ScintillaEditView.h
+--- a/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/ScitillaComponent/ScintillaEditView.h	Sat Feb 27 20:08:42 2010 +0100
 @@ -160,7 +160,7 @@
  // SortClass for vector<ColumnModeInfo>
  // sort in _order : increased order
@@ -180,9 +189,9 @@ diff -r 390c29f033a4 PowerEditor/src/ScitillaComponent/ScintillaEditView.h
  
  	void bufferUpdated(Buffer * buffer, int mask);
  	BufferID getCurrentBufferID() { return _currentBufferID; };
-diff -r 390c29f033a4 PowerEditor/src/WinControls/TabBar/ControlsTab.h
---- a/PowerEditor/src/WinControls/TabBar/ControlsTab.h	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/WinControls/TabBar/ControlsTab.h	Sat Feb 20 17:07:13 2010 +0100
+diff -r 60596a5ca830 PowerEditor/src/WinControls/TabBar/ControlsTab.h
+--- a/PowerEditor/src/WinControls/TabBar/ControlsTab.h	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/WinControls/TabBar/ControlsTab.h	Sat Feb 27 20:08:42 2010 +0100
 @@ -44,7 +44,7 @@
  		_isVertical = isVertical;
  		TabBar::init(hInst, hwnd, false, isTraditional, isMultiLine);
@@ -192,9 +201,9 @@ diff -r 390c29f033a4 PowerEditor/src/WinControls/TabBar/ControlsTab.h
  
  	void destroy() {
  		TabBar::destroy();
-diff -r 390c29f033a4 PowerEditor/src/WinControls/shortcut/shortcut.h
---- a/PowerEditor/src/WinControls/shortcut/shortcut.h	Sat Feb 20 17:05:20 2010 +0100
-+++ b/PowerEditor/src/WinControls/shortcut/shortcut.h	Sat Feb 20 17:07:13 2010 +0100
+diff -r 60596a5ca830 PowerEditor/src/WinControls/shortcut/shortcut.h
+--- a/PowerEditor/src/WinControls/shortcut/shortcut.h	Sat Feb 27 20:05:24 2010 +0100
++++ b/PowerEditor/src/WinControls/shortcut/shortcut.h	Sat Feb 27 20:08:42 2010 +0100
 @@ -203,7 +203,7 @@
  	};
  

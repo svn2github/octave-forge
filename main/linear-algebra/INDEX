@@ -14,6 +14,21 @@ Test
  test_gsvd
 
 sparse >> Sparse matrix support
+Block sparse matrices
+ @blksparse/blksparse
+ @blksparse/blksize
+ @blksparse/ctranspose
+ @blksparse/display
+ @blksparse/minus
+ @blksparse/mtimes
+ @blksparse/plus
+ @blksparse/size
+ @blksparse/sparse
+ @blksparse/subsref
+ @blksparse/transpose
+ @blksparse/uminus
+ @blksparse/uplus
+
 Iterative techniques
  bicg pgmres
 

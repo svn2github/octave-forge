@@ -11,12 +11,12 @@ fprintf(1,'!!!!!!!\n\tPlease note, not all functions might compile. \n!!!!!!!\n'
 mex covm_mex.cpp
 mex sumskipnan_mex.cpp
 mex histo_mex.cpp
+mex str2double.cpp
 mex -c svm.cpp
 mex -c svm_model_matlab.c
 mex -c tron.cpp
 mex -c linear.cpp
 mex -c linear_model_matlab.c
-mex -c str2double.cpp
 if strcmp(computer,'PCWIN')
 	mex svmtrain_mex.cpp svm.obj svm_model_matlab.obj
 	mex svmpredict_mex.cpp svm.obj svm_model_matlab.obj

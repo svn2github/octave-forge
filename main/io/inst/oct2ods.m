@@ -74,6 +74,7 @@
 ## Updates:
 ## 2010-01-15 Updated texinfo header
 ## 2010-03-14 Updated help text (a.o. on java memory usage)
+## 2010-03-25 see oct2jotk2ods
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[])
 
@@ -131,6 +132,7 @@ endfunction
 ## Updates: 
 ## 2010-01-14 (finally seems to work OK)
 ## 2010-03-08 Some comment lines adapted
+## 2010-03-25 Try-catch added f unpatched-for-booleans java-1.2.6 / 1.2.7 package
 
 function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 
@@ -311,9 +313,6 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 			nrow = drow.cloneNode (1);	# Deep copy
 			sh.appendRow (nrow);
 		endfor
-#		# 7. Finally copy top row to bottom as template and adapt repeat count.
-#		row = sh.item (0).cloneNode (1);	# Again deep copy
-#		row.setTableNumberRowsRepeatedAttribute (65536 - nrows - trow);
 
 	else
 		# Existing sheet. We must be prepared for all situations, incomplete rows,
@@ -479,23 +478,36 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 					cell.setOfficeValueTypeAttribute ('string');
 					pe = java_new ('org.odftoolkit.odfdom.doc.text.OdfTextParagraph', odfcont,'', c_arr{ii, jj});
 					cell.appendChild (pe);
-				case 3	# boolean
-					cell.setOfficeValueTypeAttribute ('boolean');
-					if (c_arr{ii, jj})
-						cell.setOfficeValueAttribute (true);
-					else
-						cell.setOfficeValueAttribute (false);
-					endif
+				case 3		# boolean
+					# Beware, for unpatched-for-booleans java-1.2.7 we must resort to floats
+					try
+						# First try the preferred java-boolean way
+						cell.setOfficeValueTypeAttribute ('boolean');
+						cell.removeAttribute ('office:value');
+						if (c_arr{ii, jj})
+							cell.setOfficeBooleanValueAttribute (1);
+						else
+							cell.setOfficeBooleanValueAttribute (0);
+						endif
+					catch
+						# Unpatched java package. Fall back to transferring a float
+						cell.setOfficeValueTypeAttribute ('float');
+						if (c_arr{ii, jj})
+							cell.setOfficeValueAttribute (1);
+						else
+							cell.setOfficeValueAttribute (0);
+						endif
+					end_try_catch
 				case 4	# Date (implemented but Octave has no "date" data type - yet?)
 					cell.setOfficeValueTypeAttribute ('date');
 					[hh mo dd hh mi ss] = datevec (c_arr{ii,jj});
 					str = sprintf ("%4d-%2d-%2dT%2d:%2d:%2d", yy, mo, dd, hh, mi, ss);
-					cell.setOfficeValueDateAttribute (str);
+					cell.setOfficeDateValueAttribute (str);
 				case 5	# Time (implemented but Octave has no "time" data type)
 					cell.setOfficeValueTypeAttribute ('time');
 					[hh mo dd hh mi ss] = datevec (c_arr{ii,jj});
 					str = sprintf ("PT%2d:%2d:%2d", hh, mi, ss);
-					cell.setOfficeValueTimeAttribute (str);
+					cell.setOfficeTimeValuettribute (str);
 				case 0	# Empty. Clear value attributes
 					if (~newsh)
 						cell.removeAttribute ('office:value-type');

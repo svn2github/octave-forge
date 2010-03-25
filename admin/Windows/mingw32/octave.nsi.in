@@ -175,7 +175,7 @@ Section "Octave" SEC_OCTAVE
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\WGnuplot.lnk" "$INSTDIR\bin\wgnuplot.exe" 
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Notepad++.lnk" "$INSTDIR\tools\notepad++\notepad++.exe" 
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\CHANGELOG.lnk" "$INSTDIR\CHANGELOG.txt" 
-   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\KNOWN_ISSUES.lnk" "INSTDIR\KNOWN_ISSUES.txt" 
+   CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\KNOWN_ISSUES.lnk" "$INSTDIR\KNOWN_ISSUES.txt" 
    CreateShortCut "$SMPROGRAMS\$SMFOLDERNAME\Uninstall.lnk" "$INSTDIR\uninstaller.exe"
    
    CreateDirectory "$SMPROGRAMS\$SMFOLDERNAME\Documentation"

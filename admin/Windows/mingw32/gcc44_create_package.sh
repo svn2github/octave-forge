@@ -34,6 +34,7 @@ PKGFILE=${FULLPKG}
 
 SRCES="${PACKAGE_ROOT}/bin \
 ${PACKAGE_ROOT}/doc \
+${PACKAGE_ROOT}/etc \
 ${PACKAGE_ROOT}/include \
 ${PACKAGE_ROOT}/info \
 ${PACKAGE_ROOT}/lib \

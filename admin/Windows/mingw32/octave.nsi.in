@@ -135,6 +135,8 @@ Section "Octave" SEC_OCTAVE
   
   SetOutPath "$INSTDIR\doc"
   File /r "${PACKAGE_ROOT}\doc\*.*"
+  SetOutPath "$INSTDIR\etc"
+  File /r "${PACKAGE_ROOT}\etc\*.*"
   SetOutPath "$INSTDIR\include"
   File /r "${PACKAGE_ROOT}\include\*.*"
   ;SetOutPath "$INSTDIR\info"
@@ -193,17 +195,17 @@ Section "Octave" SEC_OCTAVE
    
    CreateShortCut "$DESKTOP\Octave-${OCTAVE_VERSION}.lnk" "$INSTDIR\bin\octave-${OCTAVE_VERSION}.exe" "" "$INSTDIR\bin\octave.ico" 0
    
-   ; write some reg settings to have nice default look-and-feel
-   
-   WriteRegStr   HKCU "Console\Octave" "FaceName" "Lucida Console"
-   WriteRegDWORD HKCU "Console\Octave" "FontFamily" 0x36
-   WriteRegDWORD HKCU "Console\Octave" "FontSize" 0x000c0000
-   WriteRegDWORD HKCU "Console\Octave" "FontWeight" 0x190
-   WriteRegDWORD HKCU "Console\Octave" "FullScreen" 0x0
-   WriteRegDWORD HKCU "Console\Octave" "InsertMode" 0x1
-   WriteRegDWORD HKCU "Console\Octave" "QuickEdit" 0x1
-   WriteRegDWORD HKCU "Console\Octave" "ScreenBufferSize" 0x0bb80078
-   WriteRegDWORD HKCU "Console\Octave" "WindowSize" 0x00280078
+;   ; write some reg settings to have nice default look-and-feel
+;   
+;   WriteRegStr   HKCU "Console\Octave" "FaceName" "Lucida Console"
+;   WriteRegDWORD HKCU "Console\Octave" "FontFamily" 0x36
+;   WriteRegDWORD HKCU "Console\Octave" "FontSize" 0x000c0000
+;   WriteRegDWORD HKCU "Console\Octave" "FontWeight" 0x190
+;   WriteRegDWORD HKCU "Console\Octave" "FullScreen" 0x0
+;   WriteRegDWORD HKCU "Console\Octave" "InsertMode" 0x1
+;   WriteRegDWORD HKCU "Console\Octave" "QuickEdit" 0x1
+;   WriteRegDWORD HKCU "Console\Octave" "ScreenBufferSize" 0x0bb80078
+;   WriteRegDWORD HKCU "Console\Octave" "WindowSize" 0x00280078
    
    !insertmacro MUI_STARTMENU_WRITE_END
    

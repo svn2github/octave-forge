@@ -17,4 +17,36 @@ sparse >> Sparse matrix support
 Iterative techniques
  bicg pgmres
 
+Kronecker Products
+ @kronprod/kronprod
+ @kronprod/rows
+ @kronprod/columns
+ @kronprod/numel
+ @kronprod/size
+ @kronprod/display
+ @kronprod/disp
+ @kronprod/issquare
+ @kronprod/issparse
+ @kronprod/isreal
+ @kronprod/iscomplex
+ @kronprod/ismatrix
+ @kronprod/sparse
+ @kronprod/full
+ @kronprod/transpose
+ @kronprod/ctranspose
+ @kronprod/uplus
+ @kronprod/uminus
+ @kronprod/plus
+ @kronprod/minus
+ @kronprod/times
+ @kronprod/rdivide
+ @kronprod/mldivide
+ @kronprod/mtimes
+ @kronprod/mpower
+ @kronprod/inv
+ @kronprod/det
+ @kronprod/rank
+ @kronprod/trace
+ @kronprod/eig
+ @kronprod/svd
 

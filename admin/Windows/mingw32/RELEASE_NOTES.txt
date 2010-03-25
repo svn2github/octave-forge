@@ -53,6 +53,9 @@ Please also refer to the documentation of the io package located at
    <path-to-octave>\share\octave\packages\io-1.0.11\doc
 specifically the notes on Java memory usage in READ-XLS.html!
 
+Octave/mingw32 3.2.4 new features, changes and bugfixes (from 3.2.3-2)
+====================================================================
+
 *) CHG: add the following packages from octave forge to the installer:
             jhandles-0.3.5+   (noauto)
             java-1.2.7+       (noauto)

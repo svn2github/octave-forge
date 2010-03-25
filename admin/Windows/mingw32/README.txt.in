@@ -24,7 +24,7 @@ https://octave.svn.sourceforge.net/svnroot/octave/trunk/octave-forge/admin/Windo
 and the file CHANGELOG.txt in your local installation root.
 
 For known issues of octave on mingw32 platform see the known issues section 
-below ot the one available at
+below or the one available at
 https://octave.svn.sourceforge.net/svnroot/octave/trunk/octave-forge/admin/Windows/mingw32/KNOWN_ISSUES.txt
 and the KNOWN_ISSUES.txt file in your local installation root.
 
@@ -37,6 +37,43 @@ added at the installation will work if installed into a path containing spaces,
 HOWEVER you will currently NOT be able to install packages using octave's
 package manager at a later time if Octave was installed to a directory 
 containing spaces.
+
+Using the Java interface packages
+---------------------------------
+
+The "java" and "jhandles" packages are marked "noauto" as they require a Java
+Runtime Environment (JRE) installed when loaded in octave.
+The JRE is *not* included in the octave/mingw32 installer. You can get a JRE for 
+windows at http://www.java.com. 
+To use these packages in octave execute "pkg load java".
+To mark them as autoload execute "pkg rebuild -auto java".
+
+Using the xls/ods scripts in the io package
+-------------------------------------------
+
+The io package now includes read/write access scripts for Excel/xls and 
+OpenOffice/ods spreadsheet files. Depending on the interface chosen, these
+scripts depend on additional software.
+
+Accessing Excel/xls files can be done using either the Excel/COM interface or
+a Java interface (ApachePOI or JExcelAPI). Access to OpenOffice/ods files is 
+implemented using a java interface (either JOpenDocument or odfdom/xerces).
+
+The Excel/COM Interface additionally requires:
+   * the windows-1.0.8+ package from the octave/mingw32 installer 
+   * An installed version of Excel
+   
+The Java interface additionally requires:
+   * the java-1.2.7+ package from the octave/mingw32 installer
+   * a Java Runtime Environment (JRE) >1.6.0 installed
+
+All necessary .jar files for the java interface (except for the JRE) are 
+included in the installer.
+
+Please also refer to the documentation of the io package located at
+   <path-to-octave>\share\octave\packages\io-1.0.11\doc
+specifically the notes on Java memory usage in READ-XLS.html!
+
 
 Using this package for the development of OCT and MEX files:
 -----------------------------------------------------------
@@ -81,16 +118,6 @@ make Octave better and more reliable by reporting any bugs
 (http://www.octave.org/bugs.html) you find and by offering suggestions
 for ways to improve Octave.
 
-Using xls/ods support in the io package
----------------------------------------
-
-The newly added code in the io octave forge package to read/write xls and ods 
-files requires a Java Runtime Environment (JRE) installed on your computer.
-The JRE is not included in the octave/mingw32 installer. You can get JRE 
-installers for windows at http://www.java.com.
-Please also refer to the documentation of the io package located at
-<path-to-octave>\share\octave\packages\io-1.0.11\doc
-
 Octave-Forge Packages
 ---------------------
 
@@ -102,4 +129,5 @@ MIND that package installation is currently only possible if Octave is
 installed to a directory WITHOUT spaces!
 
 This package is bundled with the binaries & development files of external
-libraries allowing the build of the following octave-forge packages:
+libraries (*except* a Java development kit) allowing the build of the 
+following octave-forge packages:

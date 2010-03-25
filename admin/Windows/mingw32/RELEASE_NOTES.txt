@@ -17,12 +17,45 @@ The installer can be installed side-by-side with previous versions of
 octave/mingw32 and thus does not uninstall any previously installed version 
 of octave/mingw32.
 
-Octave/mingw32 3.2.4 new features, changes and bugfixes (from 3.2.3-2)
-====================================================================
+Using the Java interface packages
+=================================
+
+The "java" and "jhandles" packages are marked "noauto" as they require a Java
+Runtime Environment (JRE) installed when loaded in octave.
+The JRE is *not* included in the octave/mingw32 installer. You can get a JRE for 
+windows at http://www.java.com. 
+To use these packages in octave execute "pkg load java".
+To mark them as autoload execute "pkg rebuild -auto java".
+
+Using the xls/ods scripts in the io package
+===========================================
+
+The io package now includes read/write access scripts for Excel/xls and 
+OpenOffice/ods spreadsheet files. Depending on the interface chosen, these
+scripts depend on additional software.
+
+Accessing Excel/xls files can be done using either the Excel/COM interface or
+a Java interface (ApachePOI or JExcelAPI). Access to OpenOffice/ods files is 
+implemented using a java interface (either JOpenDocument or odfdom/xerces).
+
+The Excel/COM Interface additionally requires:
+   * the windows-1.0.8+ package from the octave/mingw32 installer 
+   * An installed version of Excel
+   
+The Java interface additionally requires:
+   * the java-1.2.7+ package from the octave/mingw32 installer
+   * a Java Runtime Environment (JRE) >1.6.0 installed
+
+All necessary .jar files for the java interface (except for the JRE) are 
+included in the installer.
+
+Please also refer to the documentation of the io package located at
+   <path-to-octave>\share\octave\packages\io-1.0.11\doc
+specifically the notes on Java memory usage in READ-XLS.html!
 
 *) CHG: add the following packages from octave forge to the installer:
-            jhandles-0.3.5+
-            java-1.2.7+
+            jhandles-0.3.5+   (noauto)
+            java-1.2.7+       (noauto)
             video-1.0.2
             msh-1.0.0
             fpl-1.0.0
@@ -41,9 +74,17 @@ Octave/mingw32 3.2.4 new features, changes and bugfixes (from 3.2.3-2)
             spline-gcvspl-1.0.8
             symband-1.0.10
 
+*) NOTE: The following packages are marked "noauto" as they require a Java
+         Runtime Environment (JRE) installed when loaded.
+            java
+            jhandles
+         To use these packages execute "pkg load java". Make sure to have a JRE 
+         installed.
+         To mark them as autoload execute "pkg rebuild -auto java"
+
 *) CHG: updated the following octave forge packages
-            windows  1.0.8  -> 1.0.8+
-            octcdf   1.0.13 -> 1.0.17+
+            windows  1.0.8  -> 1.0.8+    (noauto)
+            octcdf   1.0.13 -> 1.0.17+   (noauto)
             optim    1.0.6  -> 1.0.12
             general  1.1.3  -> 1.2.0
             io       1.0.9  -> 1.0.11
@@ -52,11 +93,19 @@ Octave/mingw32 3.2.4 new features, changes and bugfixes (from 3.2.3-2)
 *) CHG: update gnuplot to 4.4.0
 *) CHG: revert PS1 to octave's default (of not including the pwd)
 *) CHG: add necessary jars for ods/xls support in the io package
-*) NOTE: The xls/ods code requires that you have a Java Runtime Environment (JRE)
-        installed on your computer. It is *not* included in the octave/mingw32
-        installer. You can get JRE for windows at http://www.java.com.
-        Please also refer to the documentation of the io package located at
-        <path-to-octave>\share\octave\packages\io-1.0.11\doc
+
+*) NOTE: for reading/writing xls files you can use either:
+           - Execl/COM Interface: requires the windows package and Excel 
+                                  installed on your cmputer
+           - Java Interface: requires the java package and a JRE > 1.6.0 
+                             installed on your computer
+
+*) NOTE: reading/writing ods files uses a:
+           - Java Interface: requires the java package and a JRE > 1.6.0 
+                             installed on your computer
+
+*) NOTE: The JRE is *not* included in the octave/mingw32 installer. You can get 
+        a JRE for windows at http://www.java.com.
 
 
 Known Issues with octave/mingw32 3.2.4:

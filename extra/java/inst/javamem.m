@@ -15,8 +15,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} show_java_mem
-## @deftypefnx {Function File} [@var{jmem}] = show_java_mem
+## @deftypefn {Function File} javamem
+## @deftypefnx {Function File} [@var{jmem}] = javamem
 ## Show current memory status of the java virtual machine (JVM)
 ## & run garbage collector.
 ##
@@ -55,27 +55,27 @@
 ## Author: Philip Nienhuis
 ## Created: 2010-03-25
 ## Updates: 
-##
+## 2010-03-26 Changed name to javamem & indentation to double spaces
 
-function [ j_mem ] = show_java_mem ()
+function [ j_mem ] = javamem ()
 
-	rt = java_invoke ('java.lang.Runtime', 'getRuntime');
-	rt.gc;
-	jmem = cell (3, 1);
-	jmem{1} = rt.maxMemory ().doubleValue ();
-	jmem{2} = rt.totalMemory ().doubleValue ();
-	jmem{3} = rt.freeMemory ().doubleValue ();
+  rt = java_invoke ('java.lang.Runtime', 'getRuntime');
+  rt.gc;
+  jmem = cell (3, 1);
+  jmem{1} = rt.maxMemory ().doubleValue ();
+  jmem{2} = rt.totalMemory ().doubleValue ();
+  jmem{3} = rt.freeMemory ().doubleValue ();
 
-	if (nargout < 1)
-		printf ("\nJava virtual machine (JVM) memory info:\n");
-		printf ("Maximum available memory:        %5d MiB;\n", jmem{1} / 1024 / 1024);
-		printf ("   (...running garbage collector...)\n");
-		printf ("OK, current status:\n");
-		printf ("Total memory in virtual machine: %5d MiB;\n", jmem{2} / 1024 / 1024);
-		printf ("Free memory in virtual machine:  %5d MiB;\n", jmem{3} / 1024 / 1024);
-		printf ("%d CPUs available.\n", rt.availableProcessors ());
-	else
-		j_mem = jmem;
-	endif
+  if (nargout < 1)
+    printf ("\nJava virtual machine (JVM) memory info:\n");
+    printf ("Maximum available memory:        %5d MiB;\n", jmem{1} / 1024 / 1024);
+    printf ("   (...running garbage collector...)\n");
+    printf ("OK, current status:\n");
+    printf ("Total memory in virtual machine: %5d MiB;\n", jmem{2} / 1024 / 1024);
+    printf ("Free memory in virtual machine:  %5d MiB;\n", jmem{3} / 1024 / 1024);
+    printf ("%d CPUs available.\n", rt.availableProcessors ());
+  else
+    j_mem = jmem;
+  endif
 
 endfunction

@@ -86,6 +86,7 @@ public:
   int ndims() const  { return 1; }
 
   octave_idx_type numel() const  { return  ncd->length; }
+  octave_idx_type numel(const octave_value_list&) {  return  ncd->length; };
 
   dim_vector dims() const {  return dim_vector(ncd->length,1); }
 

@@ -36,8 +36,10 @@
 
 function files = zenity_file_selection(title, varargin)
   
-  save = multiple = directory = filename = title = "";
-  if (nargin == 0 || isempty(title)), title = "Select a file"; endif
+  save = multiple = directory = filename = "";
+  if (nargin == 0 || isempty(title))
+    title = "Select a file";
+  endif
   for i = 1:length(varargin)
     option = varargin{i};
     isc = ischar(option);

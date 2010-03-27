@@ -1,4 +1,5 @@
 ## Copyright (C) 2006 Søren Hauberg
+## Copyright (C) 2010 Carnë Draug
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -22,9 +23,10 @@
 ## @item save
 ## The file selection dialog is a dialog for saving files.
 ## @item multiple
-## It is possible to select multiple files.
+## It is possible to select multiple files. @var{title}} will hold a cell array, even
+## if user selects only one file.
 ## @item directory
-## It is possible to select directories as well as files.
+## It is possible to select only directories.
 ## @item Anything else
 ## The argument will be the default selected file.
 ## @end table
@@ -35,14 +37,14 @@
 ## @end deftypefn
 
 function files = zenity_file_selection(title, varargin)
-  
+
   save = multiple = directory = filename = "";
   if (nargin == 0 || isempty(title))
     title = "Select a file";
   endif
   for i = 1:length(varargin)
-    option = varargin{i};
-    isc = ischar(option);
+    option  = varargin{i};
+    isc     = ischar(option);
     if (isc && strcmpi(option, "save"))
       save = "--save";
     elseif (isc && strcmpi(option, "multiple"))
@@ -55,26 +57,40 @@ function files = zenity_file_selection(title, varargin)
       error("zenity_file_selection: unsupported option");
     endif
   endfor
-  
-  cmd = sprintf('zenity --file-selection --title="%s" --separator=":" %s %s %s %s', ...
+
+  # Separator set to "/" because it's an invalid character in most decent
+  # filesystems and so, unlikely to exist in the middle of filenames
+  # It's also the fileseparator so filenames will always already start with a
+  # '/' which is good since it can look for double '//' as separator
+  cmd = sprintf('zenity --file-selection --title="%s" --separator="/" %s %s %s %s', ...
                  title, save, multiple, directory, filename);
   [status, output] = system(cmd);
   if (status == 0)
-    if (length(output) > 0 && output(end) == "\n")
-      output = output(1:end-1);
+    if (output(end) == "\n")
+        output = output(1:end-1);
     endif
-    idx = strfind(output, ":");
-    idx = [0, idx, length(output)+1];
-    l = length(idx);
-    if (l == 2)
-      files = output;
+    # With 'multiple', always place the output in a cell array, even if only one
+    # file is selected.
+    if (multiple)
+      idx = strfind(output, "//");
+      if (idx)
+        files = cell(length(idx)+1,1);
+        idx   = [0, idx, length(output)];
+        for i = 1:(length(idx)-2)
+          files{i} = output((idx(i)+1):(idx(i+1)-1));
+        endfor
+        files{i+1} = output((idx(i+1)+1):idx(end));
+        return
+      else
+        files     = cell(1);
+        files{1}  = output;
+        return
+      endif
     else
-      files = cell(1, l-1);
-      for i = 1:l-1
-        files{i} = output((idx(i)+1):(idx(i+1)-1));
-      endfor
+      files = output;
     endif
-  elseif (status == 1)
+  elseif (status == 1 || status == -1)
+    warning("No file selected selected. Returning empty string.");
     files = "";
   else
     error("zenity_file_selection: %s", output);

@@ -38,7 +38,7 @@
 ## the initial memory size in megabytes, the second line specifies the
 ## requested maximum size (where 512 MB is the limit for java 1.6): @*
 ## -Xms64m @*
-## -Xms512m @*
+## -Xmx512m @*
 ## You can adapt these values if your system has limited available
 ## physical memory. When no java.opts file is present, the default
 ## assignments are 16 MB and 64MB, respectively.

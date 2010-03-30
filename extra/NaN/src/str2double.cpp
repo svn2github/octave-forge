@@ -142,7 +142,7 @@ void mexFunction(
 {
 	char *s = NULL;
 	char *cdelim = "\x09,";
-	char *rdelim = "\x10\x13;";
+	char *rdelim = "\x0a;";
 	char *ddelim = NULL;
 	char *valid_delim = " ()[]{},;:\"|/\x20\x21\x22\x09\0x0a\0x0b\0x0c\0x0d\x00";	// valid delimiter
 	uint8_t *u;	

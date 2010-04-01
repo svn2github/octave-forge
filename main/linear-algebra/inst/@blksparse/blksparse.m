@@ -107,8 +107,8 @@ function s = blksparse (i, j, sv, m = 0, n = 0, mode)
 endfunction
 
 function ok = check_version ()
-  ok = compare_versions (version, "3.3.50+", ">=");
+  ok = compare_versions (version, "3.3.51", ">=");
   if (! ok)
-    error ("blksparse: can only be used with Octave 3.3.50+");
+    error ("blksparse: can only be used with Octave 3.3.51+");
   endif
 endfunction

@@ -15,5 +15,5 @@
 ## <http://www.gnu.org/licenses/>.
 
 function siz = size (s)
-  siz = s.siz;
+  siz = s.bsiz .* s.siz;
 endfunction

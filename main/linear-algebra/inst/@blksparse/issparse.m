@@ -14,21 +14,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function display (s)
-  printf ("%s = \n\n", argn);
-  nbl = size (s.sv, 3);
-  header = "Block Sparse Matrix (rows = %d, cols = %d, block = %dx%d, nblocks = %d)\n\n";
-  printf (header, s.siz .* s.bsiz, s.bsiz, nbl)
-  if (nbl == 0)
-    return;
-  endif
-  rng = [s.i, s.j] * diag (s.bsiz);
-  rng = [rng(:,1) + 1-s.bsiz(1), rng(:,1), rng(:,2) + 1-s.bsiz(2), rng(:,2)];
-  for k = 1:nbl
-    printf ("(%d:%d, %d:%d) ->\n\n", rng(k,:));
-    disp (s.sv(:,:,k));
-    puts ("\n");
-  endfor
+function yes = issparse (s)
+  yes = true;
 endfunction
-
 

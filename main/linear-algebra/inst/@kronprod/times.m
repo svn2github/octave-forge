@@ -41,57 +41,27 @@ function retval = times (M1, M2)
   M1_is_KP = isa (M1, "kronprod");
   M2_is_KP = isa (M2, "kronprod");
   
-  if (M1_is_KP && M2_is_KP) # Product of Kronecker Products
-    ## Check if the size match such that the result is a Kronecker Product
-    if (size_equal (M1.A, M2.A) && size_equal (M1.B, M2.B))
-      retval = kronprod (M1.A .* M2.A, M1.B .* M2.B);
+  ## Product of Kronecker Products
+  ## Check if the size match such that the result is a Kronecker Product
+  if (M1_is_KP && M2_is_KP && size_equal (M1.A, M2.A) && size_equal (M1.B, M2.B))
+    retval = kronprod (M1.A .* M2.A, M1.B .* M2.B);
+  elseif (isscalar (M1) || isscalar (M2)) # Product of Kronecker Product and scalar
+    retval = M1 * M2; ## Forward to mtimes.
+  else # All other cases.
+    ## Form the full matrix or sparse matrix of both matrices
+    ## XXX: Can we do something smarter here?
+    if (issparse (M1))
+      M1 = sparse (M1);
     else
-      ## Form the full matrix or sparse matrix of both matrices
-      ## XXX: Can we do something smarter here?
-      if (issparse (M1))
-        M1 = sparse (M1);
-      else
-        M1 = full (M1);
-      endif
-      
-      if (issparse (M2))
-        M2 = sparse (M2);
-      else
-        M2 = full (M2);
-      endif
-      
-      retval = M1 .* M2;
+      M1 = full (M1);
     endif
     
-  elseif (M1_is_KP && isscalar (M2)) # Product of Kronecker Product and scalar
-    if (numel (M1.A) < numel (M1.B))
-      retval = kronprod (M2 * M1.A, M1.B);
+    if (issparse (M2))
+      M2 = sparse (M2);
     else
-      retval = kronprod (M1.A, M2 * M1.B);
+      M2 = full (M2);
     endif
     
-  elseif (M1_is_KP && ismatrix (M2)) # Product of Kronecker Product and Matrix
-    retval = zeros (rows (M1), columns (M2));
-    for n = 1:columns (M2)
-      M = reshape (M2 (:, n), [columns(M1.B), columns(M1.A)]);
-      retval (:, n) = vec (M1.B * M * M1.A');
-    endfor
-  
-  elseif (isscalar (M1) && M2_is_KP) # Product of scalar and Kronecker Product
-    if (numel (M2.A) < numel (M2.B))
-      retval = kronprod (M1 * M2.A, M2.B);
-    else
-      retval = kronprod (M2.A, M1 * M2.B);
-    endif
-    
-  elseif (ismatrix (M1) && M2_is_KP) # Product of Matrix and Kronecker Product
-    retval = zeros (rows (M1), columns (M2));
-    for n = 1:rows (M1)
-      M = reshape (M1 (n, :), [rows(M2.B), rows(M2.A)]);
-      retval (n, :) = vec (M2.B' * M * M2.A);
-    endfor
-      
-  else
-    error ("mtimes: internal error for 'kronprod'");
+    retval = M1 .* M2;
   endif
 endfunction

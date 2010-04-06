@@ -75,14 +75,32 @@
 ## 2010-01-15 Updated texinfo header
 ## 2010-03-14 Updated help text (a.o. on java memory usage)
 ## 2010-03-25 see oct2jotk2ods
+## 2010-03-28 Added basic support for ofdom v.0.8. Everything works except adding cols/rows
+## 2010-03-29 Removed odfdom-0.8 support, it's simply too buggy :-( Added a warning instead
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[])
 
 	if (strcmp (ods.xtype, 'OTK'))
-		# Read xls file tru Java & ODF toolkit
-		[ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange);
+		# Write ods file tru Java & ODF toolkit.
+		# Get odf toolkit .jar version. Versions 0.7.5. & 0.8 have a different API...
+		versn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
+		# Each odfdom version has a different subfunction to avoid performance issues
+		# due to many "if .... else .... endif" statements
+		if (strcmp (versn, '0.7.5'))
+			# ... and only odfdom version 0.7.5. works sufficiently reliably.
+			[ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange);
+		elseif (strcmp (versn, '0.8'))
+			# 2010-03-28 ... while odfdom-0.8 is still too buggy to use :-(
+			printf ("Writing ODS not supported using odfdom 0.8 - please use odfdom 0.7.5\n");
+			printf ("Nothing done..\n");
+			# Below call & subfunction only included for reference. It works badly....
+#			[ ods, rstatus ] = oct3jotk2ods (c_arr, ods, wsh, crange);
+		else
+			error ('Unsupported ODF Toolkit version - only odfdom 0.7.5 works for writing ODS');
+		endif
 		
 	elseif (strcmp (ods.xtype, 'JOD'))
+		# Write ods file tru Java & jOpenDocument. API still leaves lots to be wished...
 		warning ("oct2ods: unreliable writing tru jOpenDocument interface.");
 		[ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange);
 		
@@ -531,6 +549,255 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 		rstatus = 1;
 	endif
 	
+endfunction
+
+
+#=============================================================================
+
+## Copyright (C) 2009 Philip Nienhuis <prnienhuis _at- users.sf.net>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## odf3jotk2oct - read ODS spreadsheet data using Java & odftoolkit v 0-8.
+## You need proper java-for-octave & odfdom.jar 0.8 + xercesImpl.jar
+## in your javaclasspath. For reliable writing odfdom-0.8 is still
+## too buggy :-(  Please use 0.7.5
+##
+## Author: Philip Nenhuis <pr.nienhuis at users.sf.net>
+## Created: 2010-03-16, after oct2jotk2ods()
+## Updates:
+## 2010-03-17 Rebuild for odfdom-0.8
+## 2010-03-19 Showstopper bug in odfdom-0.8 - getCellByPosition(<address>)
+##            crashes on rows #10 !!! Rest seems to work OK, however
+## 2010-03-22 First somewhat usable version for odfdom 0.8
+## 2010-03-29 Gave up. Writing a new empty sheet works, appending
+##            data to an existing one can crash virtually anywhere.
+##            The wait is for odfdom-0.8.+ ....
+##            Included only for reference (who knows, someone may know
+##            how to get it working properly
+
+function [ ods, rstatus ] = oct3jotk2ods (c_arr, ods, wsh=1, crange=[])
+
+	persistent ctype;
+	if (isempty (ctype))
+		# Number, String, Boolean, Date, Time, Empty
+		ctype = [1, 2, 3, 4, 5, 6];
+	endif
+
+	rstatus = 0; changed = 0; newsh = 0;
+
+	# ODS' current row and column capacity
+	ROW_CAP = 65536; COL_CAP = 1024;
+
+	if (isnumeric (c_arr))
+		c_arr = num2cell (c_arr);
+	elseif (~iscell (c_arr))
+		error ("oct2ods: input array neither cell nor numeric array");
+	endif
+
+	# Get contents and table stuff from the workbook
+	odfcont = ods.workbook;		# Use a local copy just to be sure. octave 
+								# makes physical copies only when needed (?)
+	odfroot = odfcont.getRootElement ();
+	offsprdsh = ods.app.getContentRoot();
+	xpath = ods.app.getXPath ();
+	# Get some basic spreadsheet data from the pointer using ODFtoolkit
+	autostyles = odfcont.getOrCreateAutomaticStyles();
+	officestyles = ods.app.getOrCreateDocumentStyles();
+	# Create an instance of type NODESET for use in subsequent statement
+	NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
+	# Parse sheets ("tables") from ODS file
+	sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
+	nr_of_sheets = sheets.getLength ();
+
+	# Check user input & find sheet pointer
+	if (~isnumeric (wsh))
+		try
+			sh = ods.app.getTableByName (wsh);
+			# We do need a sheet index number...
+			ii = 0;
+			while (ischar (wsh) && ii < nr_of_sheets) 
+				sh_nm = sheets.item(ii).getTableNameAttribute ();
+				if (strcmp (sh_nm, wsh)) wsh = ii + 1; else ++ii; endif
+			endwhile
+		catch
+			newsh = 1;
+		end_try_catch
+		if isempty (sh) newsh = 1; endif
+	elseif (wsh > nr_of_sheets + 1 || wsh < 1)
+		# We already have a numeric sheet pointer. If it's not in range:
+		error (sprintf ("Worksheet no. %d out of range (1 - %d)", wsh, nr_of_sheets));
+	elseif (wsh == nr_of_sheets + 1)
+		newsh = 1;
+	else
+		sh = sheets.item(wsh - 1);
+		sh = ods.app.getTableByName (sh.getTableNameAttribute ());
+	endif
+
+	# Get nr of row & columns to be read
+	[nr, nc] = size (c_arr);
+	# Either parse (given cell range) or prepare (unknown range) help variables 
+	if (isempty (crange))
+		trow = 0;
+		lcol = 0;
+		nrows = nr;
+		ncols = nc;
+	else
+		[dummy, nrows, ncols, trow, lcol] = parse_sp_range (crange);
+		# Row/col = 0 based in ODFtoolkit
+		trow = trow - 1; lcol = lcol - 1;
+	endif
+	# Check if requested range is wholly within spreadsheet size limits at all
+	if (trow > ROW_CAP || lcol > COL_CAP)
+		celladd = calccelladdress (lcol, trow, 1, 1);
+		error (sprintf ("Requested topleft cell (%s) beyond spreadsheet limits (AMJ65536).", celladd));
+	endif
+	# Check spreadsheet capacity beyond requested topleft cell
+	nrows = min (nrows, ROW_CAP - trow + 1);
+	ncols = min (ncols, COL_CAP - lcol + 1);
+	# Check array size and requested range
+	nrows = min (nrows, nr);
+	ncols = min (ncols, nc);
+	if (nrows < nr || ncols < nc) warning ("Array truncated to fit in range"); endif
+
+# Parse data array, setup typarr and throw out NaNs  to speed up writing;
+# 			1Number, 2String, 3Boolean, 4Date, 5Time, 0Empty
+
+	typearr = ones (nrows, ncols);					# type "NUMERIC", provisionally
+	obj2 = cell (size (c_arr));						# Temporary storage for strings
+
+	txtptr = cellfun ('isclass', c_arr, 'char');	# type "STRING" replaced by "NUMERIC"
+	obj2(txtptr) = c_arr(txtptr); c_arr(txtptr) = 2; # Save strings in a safe place
+
+	emptr = cellfun ("isempty", c_arr);
+	c_arr(emptr) = 0;								# Set empty cells to NUMERIC
+
+	lptr = cellfun ("islogical" , c_arr);			# Find logicals...
+	obj2(lptr) = c_arr(lptr);						# .. and set them to BOOLEAN
+
+	ptr = cellfun ("isnan", c_arr);					# Find NaNs & set to BLANK
+	typearr(ptr) = 6; 								# All other cells are now numeric
+
+	c_arr(txtptr) = obj2(txtptr);					# Copy strings back into place
+	c_arr(lptr) = obj2(lptr);
+	typearr(txtptr) = 2;							# ...and clean up 
+	typearr(emptr) = 0;
+	typearr(lptr) = 3;								# BOOLEAN
+
+# Prepare spreadsheet for writing (size, etc.). If needed create new sheet
+	if (newsh)
+		# Create a new sheet using DOM API. This part works OK.
+		sh = offsprdsh.newTableTableElement ();
+		changed = 1;
+		# Rebuild sheet nodes xpath
+		sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
+		if (isnumeric (wsh))
+			# Give sheet a name
+			str = sprintf ("Sheet%d", wsh);
+			sh.setTableNameAttribute (str);
+			wsh = str;
+		else
+			# Assign name to sheet and change wsh into numeric pointer
+			sh.setTableNameAttribute (wsh);
+		endif
+		printf ("Sheet %s added to spreadsheet.\n", wsh);
+		# Add columns & style (but styles don't work properly yet)
+		nwcol = sh.newTableTableColumnElement ();
+		nwcol.setTableNumberColumnsRepeatedAttribute(lcol + ncols); # lcol = 0-based now
+		nwcol.setTableDefaultCellStyleNameAttribute ("Default");
+		nwcol.setTableStyleNameAttribute ("co1");
+		# Switch to OdfElement API & add rows
+		sh = ods.app.getTableByName (wsh);
+		if (trow)
+			# Empty upper rows
+			row = sh.appendRow ();
+			row.getOdfElement ().setTableNumberRowsRepeatedAttribute (trow+nrows);
+			for ii=1:sh.getColumnCount ()
+				row.getCellByIndex (ii-1).getOdfElement ().setTableStyleNameAttribute ("co1");
+			endfor
+		endif
+		
+	else
+		# Add spreadsheet data columns if needed. Compute nr of extra columns & rows.
+		# FIXME Unfortunately, odfdom-0.8 calls may crash on some otherwise valid sheets
+		ii = max (0, lcol + ncols - sh.getColumnCount())
+		jj = max (0, trow + nrows - sh.getRowCount())
+# keyboard
+		if (ii > 0)
+			col = sh.appendColumn();
+#			col = sh.getOdfElement ().newTableTableColumnElement ();
+#			col = sh.getColumnByIndex (sh.getColumnCount () - 1);
+			try
+			 for kk=0:sh.getRowCount () -1
+			  try
+				ncell = col.getCellByIndex (kk);
+				ncell.setColumnsRepeatedNumber (ii);
+			  catch
+# 'error w col'
+# keyboard
+			  end_try_catch
+			 endfor
+			catch
+			 end_try_catch
+		endif
+		changed = 1;
+# 'cols'
+# keyboard
+		# Add spreadsheet rows if needed
+		if (jj > 0)
+			row = sh.appendRow ();
+			if (jj > 1) row.getOdfElement ().setTableNumberRowsRepeatedAttribute (jj); endif
+# keyboard
+			tblrow = row.getOdfElement ();
+			for kk=0:tblrow.getLength()-1
+				# Remove bogus attributes introduced by buggy odfdom-0.8 calls
+				tblrow.item(kk).removeAttribute ('office:value');
+				tblrow.item(kk).removeAttribute ('office:value-type');
+			endfor
+			changed = 1;
+		endif
+	endif
+# 'ready f writing'
+# keyboard
+
+	# Transfer array data to sheet
+	for ii=1:nrows
+		for jj=1:ncols
+			ocell = sh.getCellByPosition (jj+lcol-1, ii+trow-1);
+			if ~(isempty (ocell ) || typearr(ii, jj) == 6) # Might be spanned (merged), hidden, ....
+				# Number, String, Boolean, Date, Time, Empty
+				switch typearr (ii, jj)
+					case 1	# Numeric
+						ocell.setDoubleValue (c_arr{ii, jj}); 
+					case 2	# String
+						ocell.setStringValue (c_arr{ii, jj});
+					case 3	# Logical / Boolean
+						ocell.setBooleanValue (c_arr{ii, jj});
+					otherwise
+						# The above is all octave has to offer & java can accept...
+				endswitch
+				changed = 1;
+			endif
+		endfor
+	endfor
+
+	if (changed)	
+		ods.changed = 1;
+		rstatus = 1;
+	endif
+
 endfunction
 
 

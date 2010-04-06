@@ -91,23 +91,32 @@
 ## 2009-12-30 First working version
 ## 2010-03-19 Added check for odfdom version (should be 0.7.5 until further notice)
 ## 2010-03-20 Works for odfdom v 0.8 too. Added subfunction ods3jotk2oct for that
-##
-## Latest update of subfunctions below: 2010-03-20
+## 2010-04-06 Benchmarked odfdom versions. v0.7.5 is up to 7 times faster than v0.8!
+##            So I added a warning for users using odfdom 0.8.
+## (Latest update of subfunctions below: 2010-03-20)
 
 function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[])
 
+	persistent odf08;
+	
 	if (strcmp (ods.xtype, 'OTK'))
 		# Read ods file tru Java & ODF toolkit
 		# Get odf toolkit .jar version. Versions 0.7.5. & 0.8 have a different API...
 		versn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
 		# Each odfdom version has a different subfunction to avoid performance issues
-		# due to many "if .... else .... endif" statements
+		# otherwise caused by too many "if .... else .... endif" statements
 		if (strcmp (versn, '0.7.5'))
 			[rawarr, ods, rstatus] = ods2jotk2oct (ods, wsh, datrange);
 		elseif (strcmp (versn, '0.8'))
+			if (isempty (odf08)) 
+				# This works OK, but slow....
+				printf ("Warning: you have odfdom v. 0.8 installed;\n"); 
+				printf ("better use odfdom v. 0.7.5 ) (~ 7 times faster!)\n");
+				odf08 = 1;
+			endif
 			[rawarr, ods, rstatus] = ods3jotk2oct (ods, wsh, datrange);
 		else
-			error ('Unsupported ODF Toolkit version - only odfdom 0.7.5 or 0.8 work!');
+			error ('Unsupported ODF Toolkit version - only odfdom.jar v. 0.7.5 or 0.8 work!');
 		endif
 		
 	elseif (strcmp (ods.xtype, 'JOD'))
@@ -152,7 +161,7 @@ endfunction
 ## 2010-03-18 Fixed many bugs with wrong row references in case of empty upper rows
 ##     ""     Fixed reference to upper row in case of nr-rows-repeated top tablerow
 ##     ""     Tamed down memory usage for rawarr when desired data range is given
-##     ""     Added call to getusedrange() for cases when o range was specified
+##     ""     Added call to getusedrange() for cases when no range was specified
 ## 2010-03-19 More code cleanup & fixes for bugs introduced 18/3/2010 8-()
 
 function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
@@ -203,7 +212,7 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh=1, crange = [])
 	# Get table-rows in sheet no. wsh. Sheet count = 1-based (!)
 	str = sprintf ("//table:table[%d]/table:table-row", wsh);
 	sh = xpath.evaluate (str, odfcont, NODESET);
-	nr_of_rows = sh.getLength(); 
+	nr_of_rows = sh.getLength (); 
 
 	# Either parse (given cell range) or prepare (unknown range) help variables 
 	if (isempty (crange))

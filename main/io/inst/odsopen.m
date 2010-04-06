@@ -24,7 +24,7 @@
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
 ## To make this function work at all, you need the Java package > 1.2.6 plus
-## either ODFtoolkit version 0.7.5 & xercesImpl, or jOpenDocument installed on your
+## ODFtoolkit version 0.7.5 & xercesImpl, and/or jOpenDocument installed on your
 ## computer + proper javaclasspath set. These interfaces are referred to as
 ## OTK and JOD, resp., and are preferred in that order by default (depending
 ## on their presence).
@@ -237,7 +237,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			# in class path. Under *nix the classpath must first be split up
 			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
 			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
-			jpchk = 0; entries = {"odfdom.jar", "xercesImpl.jar"};
+			jpchk = 0; entries = {"odfdom", "xercesImpl.jar"};
 			for ii=1:size (tmp1, 2)
 				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
 				for jj=1:size (entries, 2)

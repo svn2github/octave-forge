@@ -7,11 +7,12 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091229;22213000">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100301;16382300">
+	<META NAME="CHANGED" CONTENT="20100406;21295100">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -35,7 +36,7 @@ support for Octave</B></U></FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>This
-version March 1, 2010</FONT></FONT></P>
+version April 6, 2010</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I>(ODS
@@ -116,7 +117,7 @@ SUPPORT SOFTWARE</B></U></FONT></FONT></P>
 Windows (MingW):</FONT></FONT></P>
 <UL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">octave
-	with java package (&gt;= 1.2.6)</FONT></FONT></P>
+	with java package (&gt;= 1.2.6) with latest svn fixes applied</FONT></FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
@@ -133,8 +134,8 @@ ODS access, you'll need to choose at least one of the following java
 class files collections:</FONT></FONT></P>
 <UL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(currently
-	the preferred option) <B>odfdom.jar</B> (only version 0.7.5 works
-	OK!) &amp; <B>xercesImpl.jar</B>. Get them here:</FONT></FONT></P>
+	the preferred option) <B>odfdom.jar</B> (only version <B>0.7.5</B>
+	works OK!) &amp; <B>xercesImpl.jar</B>. Get them here:</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases</FONT></FONT></A></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="http://xerces.apache.org/mirrors.cgi"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">http://xerces.apache.org/mirrors.cgi</FONT></FONT></A></P>
 </UL>
@@ -150,9 +151,10 @@ class files collections:</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <UL>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">These</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">
-	must be referenced with full pathnames in your javaclasspath. Hint:
-	add it in ./share/octave/&lt;version&gt;/m/startup/octaverc using
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">These</FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">must
+	be referenced with full pathnames in your javaclasspath. Hint: add
+	it in ./share/octave/&lt;version&gt;/m/startup/octaverc using
 	appropriate javaaddpath statements.</SPAN></FONT></FONT></P>
 </UL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
@@ -171,9 +173,10 @@ class files collections:</FONT></FONT></P>
 </SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">is
 a sort of analog to xlsread and works more or less the same. </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsread
 </B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">is
-a mere wrapper for the functions </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsopen</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">,</SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>ods2oct,</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+a mere wrapper for the functions </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsopen</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">,
+</SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>ods2oct,</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
 </SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">and
-</SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsclos</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">e
+</SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsclos</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>e</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">
 that do file access and the actual reading, plus </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>parsecell</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
 </SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">for
 post-processing.</SPAN></FONT></FONT></SPAN></P>
@@ -182,7 +185,7 @@ post-processing.</SPAN></FONT></FONT></SPAN></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odswrite</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
 </SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">works
 similar to xlswrite. It too is a wrapper for scripts which do the
-actual work and invoke other scripts.</SPAN></FONT></FONT></SPAN></P>
+actual work and invoke other scripts, a.o. </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>oct2ods</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">.</SPAN></FONT></FONT></SPAN></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsfinfo</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
@@ -227,6 +230,9 @@ into another, possibly new spreadsheet file.</FONT></FONT></P>
 you use odsopen / ods2oct / &hellip; / odsclose, DO NOT FORGET to
 invoke odsclose in the end. The file pointers can contain an enormous
 amount of data and may needlessly keep precious memory allocated.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>GOTCHAS</B></U></FONT></FONT></P>
@@ -428,12 +434,35 @@ for future development:</FONT></FONT></P>
 	and easy ODS write support (maybe when jOpenDocument is more mature)</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Speeding
-	up (ODS is 10 X slower than e.g. OOXML !!!). jOpenDocument is
-	muchfasterbut </FONT></FONT>
-	</P>
+	up (ODS is 10 X slower than e.g. OOXML !!!). jOpenDocument is much
+	faster but still immature</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; text-decoration: none">&ldquo;<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">Passing
 	function handle&rdquo; a la Matlab's xlsread.</SPAN></FONT></FONT></P>
 </UL>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Some
+notes on the choice for Java:</FONT></FONT></P>
+<OL>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">It
+	saves a LOT of development time to use ready-baked Java classes
+	rather than developing your own routines and thus effectively
+	reinvent the wheel.</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">A
+	BIG advantage is that a Java-based solution is platform-independent
+	(&ldquo;portable&rdquo;).</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">But
+	Java is known to be not very conservative with resources, especially
+	not when processing XML-based formats.</FONT></FONT></P>
+</OL>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">So
+Java is a compromise between portability and rapid development time
+versus capacity (and speed).</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">But
+IMO data sets larger than 5.10<SUP>5</SUP> cells should not be kept
+in spreadsheets anyway. Use real databases for such data sets.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; text-decoration: none"><BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
@@ -443,6 +472,6 @@ for future development:</FONT></FONT></P>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Philip
-Nienhuis, Mar 01, 2010</FONT></FONT></P>
+Nienhuis, April 6, 2010</FONT></FONT></P>
 </BODY>
 </HTML>

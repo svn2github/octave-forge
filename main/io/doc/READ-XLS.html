@@ -7,11 +7,12 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091211;17230700">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100301;16403500">
+	<META NAME="CHANGED" CONTENT="20100406;21325100">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -32,7 +33,7 @@
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">README
 for Excel spreadsheet file r/w access scripts for octave (&gt;
 3.2.0)<BR><BR>Copyright (C) 2009, 2010 Philip Nienhuis &lt;prnienhuis
-at users.sf.net&gt;<BR><BR>This version 1 March 2010.</FONT></FONT></P>
+at users.sf.net&gt;<BR><BR>This version April 6, 2010.</FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
@@ -222,7 +223,14 @@ doesn't. This means that Matlab ignores all row/column headers, not
 very user-friendly IMO. <BR><BR>When using the Java interface,
 reading and writing xls-files by octave-forge is
 platform-independent. On systems w/o Excel Matlab can only read Excel
-95 formatted .xls files.<BR><BR>Matlab's <B>xlsread</B> invokes
+95 formatted .xls files.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Matlab's
+xlsread returns strings for cells containing date values. Octave
+returns numerical data (where 0 = 1/1/1900 &ndash; you need to
+transfer them into proper octave date values yourself, see bottom of
+this document for more info).<BR><BR>Matlab's <B>xlsread</B> invokes
 <B>csvread</B> if no Excel interface is present. Octave-forge's
 <B>xlsread</B> doesn't.<BR><BR><B>xlswrite</B><BR>Octave-forge's
 <B>xlswrite</B> works on systems w/o Excel support, Matlab's doesn't
@@ -304,6 +312,28 @@ Apache POI rather than JexcelAPI. But the latter is indispensable for
 BIFF5 formats.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Some
+notes on the choice for Java:</FONT></FONT></P>
+<OL>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">It
+	saves a LOT of development time to use ready-baked Java classes
+	rather than developing your own routines and thus effectively
+	reinvent the wheel.</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">A
+	BIG advantage is that a Java-based solution is platform-independent
+	(&ldquo;portable&rdquo;).</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">But
+	Java is known to be not very conservative with resources, especially
+	not when processing XML-based formats.</FONT></FONT></P>
+</OL>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">So
+Java is a compromise between portability and rapid development time
+versus capacity (and speed).</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">But
+IMO data sets larger than 5.10<SUP>5</SUP> cells should not be kept
+in spreadsheets anyway. Use real databases for such data sets.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>A
@@ -314,19 +344,19 @@ NOTE ON JAVA MEMORY USAGE</B></U></FONT></FONT></P>
 memory pool allocation size</B></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
-java virtual machine (JVM) initializes one big chunk of your
-computer's RAM in which all java classes and methods etc. are to be
-loaded: the java memory pool. It does this because java has a very
-sophisticated &ldquo;garbage collection&rdquo; system. At least on
-Windows, the initial size is 2MB and the maximum size is 64MB. On
-Linux this allocated size is much bigger. This part of memory is
-where the java-based ODS octave routines (and the java-based xls
-routines) live and keep their variables etc.</FONT></FONT></P>
+java virtual machine (JVM), when initialized by octave, reserves one
+big chunk of your computer's RAM in which all java classes and
+methods etc. are to be loaded: the java memory pool. It does this
+because java has a very sophisticated &ldquo;garbage collection&rdquo;
+system. At least on Windows, the initial size is 2MB and the maximum
+size is 64MB. On Linux this allocated size might differ. This part of
+memory is where the java-based XLS/ODS octave routines live and keep
+their variables etc.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">For
 transferring large pieces of information to and from spreadsheets you
 might hit the limits of this pool. E.g. to be able to handle I/O of
-an array of around 50,000 cells I needed a memory pool size of 512
+an array of around 500,000 cells I needed a memory pool size of 512
 MB.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
@@ -401,6 +431,6 @@ other options for development (who?):</FONT></FONT></P>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Philip
-Nienhuis, Mar1, 2010</FONT></FONT></P>
+Nienhuis, April 6, 2010</FONT></FONT></P>
 </BODY>
 </HTML>

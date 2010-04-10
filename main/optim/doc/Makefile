@@ -13,18 +13,20 @@ html : $(HTML)
 	echo '</body></html>' >> html/index.html
 
 %.pdf : %.tex
-	latex $< > /dev/null 2>&1
-	latex $< > /dev/null 2>&1
+	latex  -interaction=nonstopmode $< > /dev/null 2>&1
+	latex  -interaction=nonstopmode $< > /dev/null 2>&1
 	$(DVIPDF) $(@:.pdf=.dvi)
 
 # Note verbosity=0 as well as making latex2html quieter, has the side-effect
 # of not including a url to the raw text, which it'll get wrong
 html/%/index.html : %.tex
-	latex2html -verbosity=0 -local_icons $<
-	if [ ! -e "html" ]; then \
-	  mkdir html; \
-	fi; \
-	mv -f $(patsubst html/%/index.html,%,$@) html
+	if [ -e `which latex2html` ] ; then \
+		latex2html -verbosity=0 -local_icons $< ; \
+		if [ ! -e "html" ]; then \
+		  mkdir html; \
+		fi; \
+		mv -f $(patsubst html/%/index.html,%,$@) html ; \
+	fi
 
 clean:
 	rm -fr $(patsubst %.tex,%,$(TEX)) html *.log

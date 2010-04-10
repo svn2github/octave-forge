@@ -6,8 +6,8 @@ PDF = $(patsubst %.tex,%.pdf,$(TEX))
 all : $(PDF) html/index.html
 
 %.pdf : %.tex
-	latex -interaction=batchmode $< > /dev/null 2>&1
-	latex -interaction=batchmode  $< > /dev/null 2>&1
+	latex -interaction=nonstopmode $< > /dev/null 2>&1
+	latex -interaction=nonstopmode $< > /dev/null 2>&1
 	$(DVIPDF) $(@:.pdf=.dvi)
 
 # Note verbosity=0 as well as making latex2html quieter, has the side-effect

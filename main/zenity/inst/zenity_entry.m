@@ -43,9 +43,9 @@
 function s = zenity_entry(text, varargin)
 
   if (nargin < 1)
-    error ("'Text' argument is not optional")
+    error ("'text' argument is not optional")
   elseif (!ischar(text))
-    error ("Expected string as 'text' argument")
+    error ("'text' argument must be a string")
   endif
   text = ["--text=", text];
 
@@ -123,9 +123,9 @@ function s = zenity_entry(text, varargin)
     warning("Timeout reached. Returning empty string.");
     s = "";
   elseif (status == -1)
-    error("zenity_entry An unexpected error occurred: %s", output);
+    error("zenity_entry: an unexpected error occurred: %s", output);
   else
-    error("zenity_entry An unexpected error occurred with exit code '%i' and...
+    error("zenity_entry: an unexpected error occurred with exit code '%i' and...
           output '%s'", status, output);
   endif
 

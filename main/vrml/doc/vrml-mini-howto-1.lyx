@@ -2,7 +2,7 @@
 \lyxformat 221
 \textclass article
 \begin_preamble
-\usepackage{dsfont}
+% \usepackage{dsfont}
 
 % No date please
 \date{}

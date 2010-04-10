@@ -1,4 +1,5 @@
 ## Copyright (C) 2006 Søren Hauberg
+## Copyright (C) 2010 Carnë Draug
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,35 +15,118 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} @var{s} = zenity_entry(@var{text}, @var{entry_text}, @var{password})
-## Displays a text entry dialog.
-## The variable @var{text} sets the title of the dialog, and the
-## @var{entry_text} variable sets the default value of the text
-## entry field. If the @var{password} variable is non-empty the
-## value of the text entry field will not be displayed on the screen.
-## All arguments are optional.
+## @deftypefn  {Function File} @var{s} = zenity_entry(@var{text}, @var{parameter1}, @var{value1}, ...)
+## Displays a text entry dialog. The variable @var{text} sets the dialog text
+## and is the only mandatory argument.
 ##
-## @seealso{zenity_calendar, zenity_list, zenity_progress, zenity_message,
-## zenity_text_info, zenity_file_selection, zenity_notification}
+## All @var{parameter1} are optional, but if given, may require a corresponding
+## @var{value1}. All possible parameters are:
+## @table @samp
+## @item entry
+## Sets the default text in the entry field. Requires a string as value.
+## @item title
+## Sets the title of the window. Requires a string as value.
+## @item password
+## Hides the text in the text entry fiel. No value is required.
+## @item width
+## Sets the width of the dialog window. Requires a scalar as value.
+## @item height
+## Sets the height of the dialog window. Requires a scalar as value.
+## @item timeout
+## Sets the time in seconds after which the dialog is closed. Requires a scalar
+## as value.
+## @end table
+##
+## @seealso{input, menu, kbhit, zenity_message, zenity_file_selection}
 ## @end deftypefn
 
-function s = zenity_entry(text, entrytext, password)
-  if (nargin < 1), text      = ""; endif
-  if (nargin < 2), entrytext = ""; endif
-  if (nargin < 3), password  = ""; endif
+function s = zenity_entry(text, varargin)
 
-  if (!isempty(text)), text = sprintf('--text="%s" --title="%s"', text, text); endif
-  if (!isempty(entrytext)), entrytext = sprintf('--entry-text="%s"', entrytext); endif
-  if (!isempty(password)), password = "--hide-text"; endif
-  
-  cmd = sprintf('zenity --entry %s %s %s', text, entrytext, password);
+  if (nargin < 1)
+    error ("'Text' argument is not optional")
+  elseif (!ischar(text))
+    error ("Expected string as 'text' argument")
+  endif
+  text = ["--text=", text];
+
+  ## Process of all options and values
+  entry = title = password = width = height = timeout = "";
+  narg = 1;
+  while (narg <= numel (varargin))
+    option = varargin{narg};
+    if ( !ischar(option) )
+        error ("Option/parameter number %i is not a string", narg)
+
+    elseif (strcmpi(option,"entry"))
+      if ( !ischar(varargin{narg+1}) )
+        error ("Parameter 'entry' requires a string as value.");
+      endif
+      entry     = ["--entry-text=", varargin{narg+1}];
+      narg++;
+
+    elseif (strcmpi(option,"title"))
+      if ( !ischar(varargin{narg+1}) )
+        error ("Parameter 'title' requires a string as value.");
+      endif
+      title     = ["--title=", varargin{narg+1}];
+      narg++;
+
+    elseif (strcmpi(option,"password"))
+      password  = "--hide-text";
+
+    elseif (strcmpi(option,"width"))
+      if ( !isscalar(varargin{narg+1}) )
+        error ("Parameter 'width' requires a scalar as value.");
+      endif
+      value = num2str (varargin{narg+1});
+      width     = ["--width=", value];
+      narg++;
+
+    elseif (strcmpi(option,"height"))
+      if ( !isscalar(varargin{narg+1}) )
+        error ("Parameter 'height' requires a scalar as value.");
+      endif
+      value = num2str (varargin{narg+1});
+      height    = ["--height=", value];
+      narg++;
+
+    elseif (strcmpi(option,"timeout"))
+      if ( !isscalar(varargin{narg+1}) )
+        error ("Parameter 'timeout' requires a scalar as value.");
+      endif
+      value = num2str (varargin{narg+1});
+      timeout   = ["--timeout=", value];
+      narg++;
+    endif
+
+    narg++;
+  endwhile
+
+  cmd = sprintf("zenity --entry %s %s %s %s %s %s %s %s", ...
+                text, entry, title, password, width, height, timeout);
   [status, output] = system(cmd);
+
+  ## Exit code -1 = An unexpected error has occurred
+  ## Exit code  0 = The user has pressed either OK or Close. 
+  ## Exit code  1 = The user has either pressed Cancel, or used the window
+  ## functions to close the dialog
+  ## Exit code  5 = The dialog has been closed because the timeout has been reached
   if (status == 0)
-    if (output(end) == "\n") output = output(1:end-1); endif
+    if (output(end) == "\n")
+      output = output(1:end-1);
+    endif
     s = output;
   elseif (status == 1)
+    warning("No value entered. Returning empty string.");
     s = "";
+  elseif (status == 5)
+    warning("Timeout reached. Returning empty string.");
+    s = "";
+  elseif (status == -1)
+    error("zenity_entry An unexpected error occurred: %s", output);
   else
-    error("zenity_entry: %s", output);
+    error("zenity_entry An unexpected error occurred with exit code '%i' and...
+          output '%s'", status, output);
   endif
+
 endfunction

@@ -147,7 +147,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
 		  goal,perf,minGrad,normGradX,shortStr,net);
 
     ## show performance plot, if needed
-    if !(strcmp(show,"NaN"))
+    if !isnan(show) # if no performance plot is needed
       ## now make it possible to define after how much loops the
       ## performance plot should be updated
       if (mod(iEpochs,show)==0)
@@ -158,7 +158,7 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
 	endif
       endif
     endif # if !(strcmp(show,"NaN"))
-    legend("Training","Validation");
+#    legend("Training","Validation");
 
     ## stop if one of the criterias is reached.
     if length(stop)
@@ -305,20 +305,21 @@ function [net] = __trainlm(net,Im,Pp,Tt,VV)
       fprintf(shortStr);   # outputs the training algorithm
       if isfinite(epochs)
         fprintf(", Epoch %g/%g",iEpochs, epochs);
-	  endif
-	  if isfinite(time)
+      endif
+      if isfinite(time)
         fprintf(", Time %4.1f%%",currentTime/time*100);   # \todo: Time wird nicht ausgegeben
-	  endif
-	  if isfinite(goal)
-	    fprintf(", %s %g/%g",upper(net.performFcn),perf,goal); # outputs the performance function
-	  endif
-	  if isfinite(minGrad)
+      endif
+      if isfinite(goal)
+        fprintf(", %s %g/%g",upper(net.performFcn),perf,goal); # outputs the performance function
+      endif
+      if isfinite(minGrad)
         fprintf(", Gradient %g/%g",normGradX,minGrad);
-	  endif
-	  fprintf("\n")
+      endif
+      fprintf("\n")
       if length(stop)
-	    fprintf("%s, %s\n\n",shortStr,stop);
-	  endif
+        fprintf("%s, %s\n\n",shortStr,stop);
+      endif
+      fflush(stdout); # writes output to stdout as soon as output messages are available
     endif
   endfunction
   

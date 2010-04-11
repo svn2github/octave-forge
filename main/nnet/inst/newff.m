@@ -114,7 +114,10 @@ function net = newff(Pr,ss,transFunc,trainFunc,notUsed,performFunc)
   ## set size of IW
   net.IW{1,1} = zeros(1,nRows);
   ## set more needed empty cells
-  net.IW{2:nLayers,1} = [];
+  for iLayers = 2:nLayers
+    net.IW{iLayers,1} = [];
+    #  net.IW{2:nLayers,1} = [];    # old code
+  endfor
   ## set number of bias, one per layer
   for iBiases = 1:nLayers
     net.b{iBiases,1} = 0;

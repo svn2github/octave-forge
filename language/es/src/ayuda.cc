@@ -46,12 +46,12 @@ along with this software; see the file COPYING.  If not, see
 #define MD5_MISMATCH "La firma MD5 no coincide con el texto traducido.\n\
 Use `help' para ver el texto de ayuda original"
 #define TEXINFO_ERROR_1 "El filtro de formato de TeXinfo ha terminado en forma inesperada"
-#define TEXINFO_ERROR_2 "C@'odigo fuente sin formato a continuación..."
+#define TEXINFO_ERROR_2 "C@'odigo fuente sin formato a continuaci@'on..."
 
 // Additional help message.
 #define ADDITIONAL_HELP \
 "Informaci@'on adicional acerca de las funciones incorporadas y de los\n\
-operadores se encuentra disponible en la versión en l@'inea del manual.\n\
+operadores se encuentra disponible en la versi@'on en l@'inea del manual.\n\
 Use el comando `doc <tema>' para buscar en el @'indice del manual.\n\
 \n\
 Para ayuda e informaci@'on adicional acerca de Octave visite\n\

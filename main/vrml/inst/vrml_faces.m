@@ -72,7 +72,7 @@ function s = vrml_faces (x,f,varargin)
 
   if rows (x) != 3
     if columns (x) != 3
-      error ("x is %i x %i, has neither 3 rows nor 3 columns.", size (f));
+      error ("x is %i x %i, has neither 3 rows nor 3 columns.", size (x));
     else
       x = x';
     end
@@ -257,7 +257,7 @@ function s = vrml_faces (x,f,varargin)
   if is_list (f), nfaces = length (f); else nfaces = columns (f); end
 
 
-  tpl0 = sprintf ("%%%dd, ",floor (log10 (columns (x)))+1);
+  tpl0 = sprintf ("%%%dd, ",floor (log10 (max (1, columns (x))))+1);
   ltpl0 = length (tpl0);
 
   ptsface = zeros (1,nfaces);

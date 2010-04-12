@@ -58,6 +58,7 @@
 ##                      function
 ##
 ## "bars"             : Represent surface as a bar plot
+## "bwid"             : Bar width, relative to point separation. Default = 2/3
 ##
 ## "level", l   : 1xN : Display one or more horizontal translucent plane(s)
 ##
@@ -65,6 +66,7 @@
 ## 
 ## "lcol", lc   : Nx3 : Color of the plane(s).          Default = [.7 .7 .7]
 ## "ltran",lt   : Nx1 : Transparency of the plane(s).   Default =        0.3
+## "tex", texFile
 ##
 ## "normalize"  :       Normalize z to [-1,1]
 ##
@@ -106,11 +108,11 @@ surf_args = {x,y,z};	# Arguments that'll be passed to vrml_surf
 
 if numel (varargin)
 
-  op1 = [" tran col checker creaseAngle emit colorPerVertex tex zcol",\
-	 " level lcol ltran "];
+  op1 = [" tran col checker creaseAngle emit colorPerVertex tex zcol  frame ",\
+	 " level lcol ltran bwid "];
   op0 = " smooth zgray zrb normalize steps bars ";
 
-  df = tars (level, lcol, ltran, normalize);
+  df = tars (level, lcol, ltran, normalize, frame);
 
   opts = read_options (varargin,"op0",op0,"op1",op1,"default",df);
 
@@ -119,7 +121,7 @@ if numel (varargin)
 # 			 "colorPerVertex", "smooth", "tex",\
 # 			 "zgray","zrb","zcol");
   all_surf_opts  = {"tran", "col", "checker", "creaseAngle", "emit", \
-		    "colorPerVertex", "smooth", "steps", "bars", "tex",\
+		    "colorPerVertex", "smooth", "steps", "bars", "bwid", "tex",\
 		    "zgray","zrb","zcol"};
 
   for i = 1:length(all_surf_opts)
@@ -134,9 +136,10 @@ if numel (varargin)
       end
     end
   end
+  lcol  =     opts.lcol;
   level =     opts.level;
   ltran =     opts.ltran;
-  lcol  =     opts.lcol;
+  frame =     opts.frame;
   normalize = opts.normalize;
 end
 
@@ -174,10 +177,11 @@ pt2 = pts(:,ii); x2 = x(:)(ii); y2 = y(:)(ii); z2 = z(:)(ii);
 
 # pl = [pl1 pl2];
 
-pl = [vrml_DirectionalLight("direction",[-1,-1,-1],"intensity",0.9),\
-      vrml_DirectionalLight("direction",[-1, 1,-1],"intensity",0.7),\
-      vrml_DirectionalLight("direction",[ 1,-1,-1],"intensity",0.7),\
-      vrml_DirectionalLight("direction",[ 1, 1,-1],"intensity",0.5)];
+pl = [vrml_DirectionalLight("direction",[-1,-1,-1],"intensity",0.75),\
+      vrml_DirectionalLight("direction",[-1, 1,-1],"intensity",0.5),\
+      vrml_DirectionalLight("direction",[ 1,-1,-1],"intensity",0.5),\
+      vrml_DirectionalLight("direction",[ 1, 1,-1],"intensity",0.33),\
+      vrml_DirectionalLight("direction",[ 0, 0, 1],"intensity",0.5)];
 
 #  distance = max ([max (x(:)) - min (x(:)),\
 #  		 max (y(:)) - min (y(:)),\
@@ -232,9 +236,11 @@ end
 s = [pl, sbg, s , fr, slevel];
 
 
-vrml_browse (s);
 
-if ! nargout,  clear s; end
+if ! nargout,  
+  vrml_browse (s);
+  clear s; 
+end
 
 %!demo
 %! % Test the vmesh and vrml_browse functions with the test_vmesh script

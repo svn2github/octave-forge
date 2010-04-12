@@ -64,6 +64,7 @@
 ##                         between facets forming an angle less than a.
 ##                                                              default = 0
 ## "smooth"           : same as "creaseAngle",pi.
+## "tex", texFile 
 ##
 ## See also: vmesh(), vrml_faces(), test_moving_surf()
 
@@ -95,12 +96,14 @@ if (nargin <= 1) || ischar(y),	# Cruft to allow not passing x and y
   x = xx ; y = yy ; z = zz ;
 end
 
+defaultCol = [0.3; 0.4; 0.9];
+
 				# Read options
 				# Default values
 
 upper = 1;			# Do "upper" triangulation of square grid
 tran = 0 ;			# Transparency
-col = [0.3, 0.4, 0.9] ;		# Color
+col = defaultCol ;		# Color
 checker = 0;			# Checkered coloring
 colorPerVertex = 1;		# Color vertices or faces
 zrb = zgray = zcol = 0;		# Color by elevation
@@ -108,15 +111,17 @@ emit = 0;			# emissiveColor or diffuse only
 smooth = creaseAngle = nan ;
 steps = 0;
 bars = 0;
+tex = 0;
+bwid = -1;
 DEFcoord = DEFcol = "";		# Give a name to VRML objects
 
 if numel (varargin)
 
-  op1 = " tran col creaseAngle emit colorPerVertex checker DEFcoord DEFcol zcol ";
+  op1 = " tran col creaseAngle emit colorPerVertex checker DEFcoord DEFcol zcol bwid tex ";
   op0 = " smooth zgray zrb steps bars " ;
 
   default = tars (tran, col, creaseAngle, emit, colorPerVertex, steps, bars, \
-		 DEFcoord, DEFcol, zcol, smooth, checker, zgray, zrb);
+		  bwid, DEFcoord, DEFcol, zcol, smooth, checker, zgray, zrb, tex);
 
   s = read_options (varargin,"op0",op0,"op1",op1,"default",default);
   
@@ -131,6 +136,11 @@ if numel (varargin)
   smooth=          s.smooth;
   steps=           s.steps;
   bars=            s.bars;
+  bwid=            s.bwid;
+  tex=             s.tex;
+  if bwid >= 0
+    bars = 1;
+  end
   checker=         s.checker;
   zgray=           s.zgray;
   zrb=             s.zrb;
@@ -144,19 +154,24 @@ if any (size (y) == 1), y = y(:)*ones(1,C)  ; end
 
 if bars
 
+  if  bwid < 0
+    bwid = 2/3;
+  end
+  brad = bwid/2;
+
   R4 = 4*R;
   C4 = 4*C;
   x2 = y2 = z2 = zeros (R4,C4);
 
-  x2(:,1) = x2(:,2) = kron ((4*x(:,1)-x(:,2))/3, [1;1;1;1]);
-  x2(:,C4-1) = x2(:,C4) = kron ((4*x(:,C)-x(:,C-1))/3, [1;1;1;1]);
-  x2(:,5:4:C4) =  x2(:,6:4:C4) = kron ((2*x(:,2:C)+x(:,1:C-1))/3, [1;1;1;1]);
-  x2(:,3:4:C4-4) =  x2(:,4:4:C4-4) = kron ((2*x(:,1:C-1)+x(:,2:C))/3, [1;1;1;1]);
+  x2(:,1) = x2(:,2) = kron ((1+brad)*x(:,1) - brad*x(:,2), [1;1;1;1]);
+  x2(:,C4-1) = x2(:,C4) = kron ((1+brad)*x(:,C) - brad*x(:,C-1), [1;1;1;1]);
+  x2(:,5:4:C4) =  x2(:,6:4:C4) = kron ((1-brad)*x(:,2:C) + brad*x(:,1:C-1), [1;1;1;1]);
+  x2(:,3:4:C4-4) =  x2(:,4:4:C4-4) = kron ((1-brad)*x(:,1:C-1)+brad*x(:,2:C), [1;1;1;1]);
 
-  y2(1,:) = y2(2,:) = kron ((4*y(1,:)-y(2,:))/3, [1 1 1 1]);
-  y2(R4-1,:) = y2(R4,:) = kron ((4*y(R,:)-y(R-1,:))/3, [1 1 1 1]);
-  y2(5:4:R4,:) =  y2(6:4:R4,:) = kron ((2*y(2:R,:)+y(1:R-1,:))/3, [1 1 1 1]);
-  y2(3:4:R4-4,:) =  y2(4:4:R4-4,:) = kron ((2*y(1:R-1,:)+y(2:R,:))/3, [1 1 1 1]);
+  y2(1,:) = y2(2,:) = kron ((1+brad)*y(1,:) - brad*y(2,:), [1 1 1 1]);
+  y2(R4-1,:) = y2(R4,:) = kron ((1+brad)*y(R,:) - brad*y(R-1,:), [1 1 1 1]);
+  y2(5:4:R4,:) =  y2(6:4:R4,:) = kron ((1-brad)*y(2:R,:) + brad*y(1:R-1,:), [1 1 1 1]);
+  y2(3:4:R4-4,:) =  y2(4:4:R4-4,:) = kron ((1-brad)*y(1:R-1,:) + brad*y(2:R,:), [1 1 1 1]);
   
   z2([2:4:R4;3:4:R4],[2:4:C4;3:4:C4]) = kron(z,ones(2));
 
@@ -165,6 +180,43 @@ if bars
   z = z2;
   R = R4;
   C = C4;
+
+  if numel (size (col)) == 2 && all (size (col) == size (defaultCol)) && all (col == defaultCol)
+    col = [col, 0.8*col, 0.9*col]
+  end
+  if numel (col) == 3
+    col = col(:);
+    topCol = col;
+    botCol = col;
+    sideCol = [col,col,col,col];
+  elseif numel (col) == 6
+    col = col(:);
+    topCol = col(1:3);
+    botCol = col(1:3);
+    sideCol = col(4:6)*ones(1,4);
+  elseif numel (col) == 9
+    col = col(:);
+    topCol = col(1:3)
+    botCol = col(7:9)
+    sideCol = col(4:6)*ones(1,4)
+  end
+  col = ones(3, R-1, C-1);
+  for i=1:3
+    col(i,2:4:R-1,2:4:C-1) = topCol(i);
+    col(i,4:4:R-1,:) = botCol(i);
+    col(i,:,4:4:C-1) = botCol(i);
+    col(i,3:4:R-1,2:4:C-1) = sideCol(i,1);
+    col(i,2:4:R-1,1:4:C-1) = sideCol(i,2);
+    col(i,1:4:R-1,2:4:C-1) = sideCol(i,3);
+    col(i,2:4:R-1,3:4:C-1) = sideCol(i,2);
+  end    
+  iOnFloor = find (! z(1:R-1,1:C-1));
+  if ! isempty (iOnFloor)
+    ## keyboard
+    col(3*(iOnFloor-1)+1) = botCol(1);
+    col(3*(iOnFloor-1)+2) = botCol(2);
+    col(3*(iOnFloor-1)+3) = botCol(3);
+  end
 
 elseif steps			# Constant by parts
 
@@ -195,6 +247,22 @@ elseif steps			# Constant by parts
   y = y2;
   z = z2;
 
+  if checker
+    col = checker_color (checker, col, 2*R,2*C);
+  end
+  if numel (col) == R*C
+    col = [1;1;1]*col(:)';
+  end
+  if numel (col) == 3*R*C
+    col = reshape (col, 3,R,C);
+    col2 = zeros (3,2*R-1,2*C-1);
+    col2(1,:,:) = defaultCol(1);
+    col2(2,:,:) = defaultCol(2);
+    col2(3,:,:) = defaultCol(3);
+    col2(:,1:2:end,1:2:end) = col;
+    col = reshape (col2,3,(2*R-1)*(2*C-1));
+  end
+
   R *= 2;
   C *= 2;
 end
@@ -203,6 +271,10 @@ pts = [x(:)';y(:)';z(:)'];
 
 keepp = all (!isnan(pts) & finite(pts)) ;
 keepip = find (keepp);
+if tex
+  [texX,texY] = meshgrid (linspace (0,1,C), linspace (0,1,R));
+  texXY = [texX(:)'; texY(:)'];
+end
 
 trgs = zeros(3,2*(R-1)*(C-1)) ;
 
@@ -282,6 +354,9 @@ else				# Do "upper" triangulation
   trgs(3,tmp) = trgs(1,tmp) - R + 1 - tmp3 ;
 end				# EOF "upper" triangulation
 
+#trgs = trgs(:,find(rem(1:R-1,2)'*rem(1:C-1,2)));
+
+
 if length (col) == 1		# Convert graylevel to RGB
   col = [1 1 1]*col;
 
@@ -307,28 +382,33 @@ if zgray || zrb || any (zcol(:)) # Treat zgray zrb and zcol options
 end				# EOF zgray zrb and zcol options
 
 
-if checker
+if checker && numel (col) <= 6
   if isnan (checker), checker = 10; end
   if length (checker) == 1, checker = [checker, checker]; end
+  
+  col = checker_color (checker, col, R,C);
 
-  if checker(1) > 0, checker(1) = - C/checker(1); end
-  if checker(2) > 0, checker(2) = - R/checker(2); end
-  checker *= -1;
-  colx = 2 * (rem (0:C-2,2*checker(1)) < checker(1)) - 1;
-  coly = 2 * (rem (0:R-2,2*checker(2)) < checker(2)) - 1;
-  icol = 1 + ((coly'*colx) > 0);
+  if 0
+    if checker(1) > 0, checker(1) = - (C-1)/checker(1); end
+    if checker(2) > 0, checker(2) = - (R-1)/checker(2); end
+    
+    checker *= -1;
+    colx = 2 * (rem (0:C-2,2*checker(1)) < checker(1)) - 1;
+    coly = 2 * (rem (0:R-2,2*checker(2)) < checker(2)) - 1;
+    icol = 1 + ((coly'*colx) > 0);
 				# Keep at most 1st 2 colors of col for the
 				# checker
-  if prod (size (col)) == 2,
-    col = [1;1;1]*col;
-  elseif  prod (size (col)) < 6, # Can't be < 3 because of previous code
-    col = col(1:3)(:);
-    if all (col >= 1-eps), col = [col [0;0;0]];	# Black and White
-    else                   col = [col [1;1;1]];	# X and White
+    if prod (size (col)) == 2,
+      col = [1;1;1]*col;
+    elseif  prod (size (col)) < 6, # Can't be < 3 because of previous code
+      col = col(1:3)(:);
+      if all (col >= 1-eps), col = [col [0;0;0]];	# Black and White
+      else                   col = [col [1;1;1]];	# X and White
+      end
     end
+    col = reshape (col(:),3,2);
+    col = col(:,icol);
   end
-  col = reshape (col(:),3,2);
-  col = col(:,icol);
 end				# EOF if checker
 
 
@@ -394,11 +474,26 @@ if ! all(keepp),
 
 end
 ## printf ("Calling vrml_faces\n");
-s = vrml_faces (pts, trgs, "col", col,\
-		"colorPerVertex",colorPerVertex,\
-		"creaseAngle", creaseAngle,\
-		"tran", tran, "emit", emit,\
-		"DEFcoord",DEFcoord,"DEFcol",DEFcol);
+if !tex
+  s = vrml_faces (pts, trgs, "col", col,\
+		  "colorPerVertex",colorPerVertex,\
+		  "creaseAngle", creaseAngle,\
+		  "tran", tran, "emit", emit,\
+		  "DEFcoord",DEFcoord,"DEFcol",DEFcol);
+else
+   texXY = texXY(:,keepip);
+#   texXY(:,[1:5,232:236])
+#   pts(:,[1:5,232:236])
+#   trgs(:,1:20)
+#  [texXY;  pts]
+#  trgs
+#  texXY(:,trgs(:))
+#   R, C
+#  keyboard
+  s = vrml_faces (pts, trgs,\
+		  "tran", tran, "tex", tex, "tcoord", texXY,\
+		  "DEFcoord",DEFcoord,"DEFcol",DEFcol);
+end  
 ## printf ("Done\n");
 ## R=5; C=11;
 ## x = ones(R,1)*[1:C]; y = [1:R]'*ones(1,C);

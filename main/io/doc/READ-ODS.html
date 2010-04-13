@@ -7,11 +7,12 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091229;22213000">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100406;21295100">
+	<META NAME="CHANGED" CONTENT="20100413;20255500">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -36,7 +37,7 @@ support for Octave</B></U></FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>This
-version April 6, 2010</FONT></FONT></P>
+version April 13, 2010</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I>(ODS
@@ -176,8 +177,9 @@ a sort of analog to xlsread and works more or less the same. </SPAN></FONT></FON
 a mere wrapper for the functions </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsopen</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">,
 </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>ods2oct,</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
 </SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">and
-</SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsclos</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>e</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">
-that do file access and the actual reading, plus </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>parsecell</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+</SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsclose</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">that
+do file access and the actual reading, plus </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>parsecell</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
 </SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">for
 post-processing.</SPAN></FONT></FONT></SPAN></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
@@ -230,8 +232,7 @@ into another, possibly new spreadsheet file.</FONT></FONT></P>
 you use odsopen / ods2oct / &hellip; / odsclose, DO NOT FORGET to
 invoke odsclose in the end. The file pointers can contain an enormous
 amount of data and may needlessly keep precious memory allocated.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<BR>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
@@ -461,7 +462,31 @@ versus capacity (and speed).</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">But
 IMO data sets larger than 5.10<SUP>5</SUP> cells should not be kept
 in spreadsheets anyway. Use real databases for such data sets.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; text-decoration: none"><BR>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>ODFDOM
+versions</B></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">I
+have tried odfdom version 0.8. Although the API has been simplified
+enormously (finally one can address cells by spreadsheet address
+rather than find out yourself by parsing the table-column/-row/-cell
+structure), many irrecoverable bugs have been introduced. In addition
+processing ODS files became significantly slower (up to 7 times!).</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">So
+at the moment (mid April 2010) only odfdom 0.7.5 is supported.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Ifyou
+want to experiment with odfdom 0.8, you can try:</FONT></FONT></P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">odsopen.m
+	(revision 7157)</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">ods2oct.m
+	(revision 7158)</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">oct2ods.m
+	(revision 7159)</FONT></FONT></P>
+</UL>
+<P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
 </P>
@@ -472,6 +497,6 @@ in spreadsheets anyway. Use real databases for such data sets.</FONT></FONT></P>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Philip
-Nienhuis, April 6, 2010</FONT></FONT></P>
+Nienhuis, April 13, 2010</FONT></FONT></P>
 </BODY>
 </HTML>

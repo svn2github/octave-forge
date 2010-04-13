@@ -72,14 +72,48 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%   [ie. abs(chg(i))=abs(min([chg(i)
   %%   options.max_fract_change(i)*current param estimate])).], default =
   %%   Inf*ones().
-  %%   Field 'options.inequc': cell-array containing a matrix (say m)
-  %%   and a column vector (say v), specifying linear inequality
-  %%   constraints of the form `m.' * parameters + v >= 0'. If the
-  %%   constraints are just bounds, it is suggested to specify them in
-  %%   'options.bounds' instead, since then some sanity tests are
-  %%   performed, and since the function 'dfdp.m' is guarantied not to
-  %%   violate constraints during determination of the numeric gradient
-  %%   only for those constraints specified as 'bounds'.
+  %%   Field 'options.inequc': cell-array containing up to four entries,
+  %%   two entries for linear inequality constraints and/or one or two
+  %%   entries for general inequality constraints. Either linear or
+  %%   general constraints may be the first entries, but the two entries
+  %%   for linear constraints must be adjacent and, if two entries are
+  %%   given for general constraints, they also must be adjacent. The
+  %%   two entries for linear constraints are a matrix (say m) and a
+  %%   vector (say v), specifying linear inequality constraints of the
+  %%   form `m.' * parameters + v >= 0'. If the constraints are just
+  %%   bounds, it is suggested to specify them in 'options.bounds'
+  %%   instead, since then some sanity tests are performed, and since
+  %%   the function 'dfdp.m' is guarantied not to violate constraints
+  %%   during determination of the numeric gradient only for those
+  %%   constraints specified as 'bounds'. The first entry for general
+  %%   constraints must be a differentiable vector valued function (say
+  %%   h), specifying general inequality constraints of the form `h (p[,
+  %%   idx]) >= 0'; p is the column vector of optimized paraters and the
+  %%   optional argument idx is a logical index. h has to return the
+  %%   values of all constraints if idx is not given, and has to return
+  %%   only the indexed constraints if idx is given (so computation of
+  %%   the other constraints can be spared). If a second entry for
+  %%   general constraints is given, it must be a function (say dh)
+  %%   which returnes a matrix whos rows contain the gradients of the
+  %%   constraint function h with respect to the optimized parameters.
+  %%   It has the form jac_h = dh (vh, p, dp, h, idx[, bounds]); p is
+  %%   the column vector of optimized parameters, and idx is a logical
+  %%   index --- only the rows indexed by idx must be returned (so
+  %%   computation of the others can be spared). The other arguments of
+  %%   dh are for the case that dh computes numerical gradients: vh is
+  %%   the column vector of the current values of the constraint
+  %%   function h, with idx already applied. h is a function h (p) to
+  %%   compute the values of the constraints for parameters p, it will
+  %%   return only the values indexed by idx. dp is a suggestion for
+  %%   relative step width, having the same value as the argument 'dp'
+  %%   of leasqr above. If bounds were specified to leasqr, they are
+  %%   provided in the argument bounds of dh, to enable their
+  %%   consideration in determination of numerical gradients. If dh is
+  %%   not specified to leasqr, numerical gradients are computed in the
+  %%   same way as with 'dfdp.m' (see above). If some constraints are
+  %%   linear, they should be specified as linear constraints (or
+  %%   bounds, if applicable) for reasons of performance, even if
+  %%   general constraints are also specified.
   %%   Field 'options.bounds': two-column-matrix, one row for each
   %%   parameter in 'pin'. Each row contains a minimal and maximal value
   %%   for each parameter. Default: [-Inf, Inf] in each row. If this
@@ -88,6 +122,9 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%   _Warning_: If constraints (or bounds) are set, returned guesses
   %%   of corp, covp, and Z are generally invalid, even if no constraints
   %%   are active for the final parameters.
+  %%   Field 'options.cpiv': Function for complementary pivot algorithm
+  %%   for inequality constraints, default: @ cpiv_bard. No different
+  %%   function is supplied.
   %%
   %%          OUTPUT VARIABLES
   %% f = column vector of values computed: f = F(x,p).
@@ -161,12 +198,25 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% Modified by Francesco Potortì
   %%       for use in Octave
   %% Added linear inequality constraints with quadratic programming to
-  %% this file and special case bounds to this file and to dfdp.m, Olaf
-  %% Till 24-Feb-2010
+  %% this file and special case bounds to this file and to dfdp.m
+  %% (24-Feb-2010) and later also general inequality constraints
+  %% (12-Apr-2010) (Reference: Bard, Y., 'An eclectic approach to
+  %% nonlinear programming', Proc. ANU Sem. Optimization, Canberra,
+  %% Austral. Nat. Univ.). Differences from the reference: adaption to
+  %% svd-based algorithm, linesearch or stepwidth adaptions to ensure
+  %% decrease in objective function omitted to rather start a new
+  %% overall cycle with a new epsL, some performance gains from linear
+  %% constraints even if general constraints are specified. Olaf Till
+
   %%
   %% References:
   %% Bard, Nonlinear Parameter Estimation, Academic Press, 1974.
   %% Draper and Smith, Applied Regression Analysis, John Wiley and Sons, 1981.
+
+  %% needed for some anonymous functions
+  if (exist ('ifelse') ~= 5)
+    ifelse = @ scalar_ifelse;
+  end
 
   %% argument processing
   %%
@@ -188,11 +238,16 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     verbose=0;       %This will not tell them the results
   end
 
-  if (nargin <= 8) dFdp='dfdp'; end
+  if (nargin <= 8)
+    dFdp = @ dfdp;
+  elseif (ischar (dFdp))
+    dFdp = str2func (dFdp);
+  end
   if (nargin <= 7) dp=.001*(pin*0+1); end %DT
   if (nargin <= 6) wt=ones(length(y),1); end	% SMB modification
   if (nargin <= 5) niter=20; end
   if (nargin == 4) stol=.0001; end
+  if (ischar (F)) F = str2func (F); end
   %%
 
   y=y(:); wt=wt(:); pin=pin(:); dp=dp(:); %change all vectors to columns
@@ -206,16 +261,29 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% processing of 'options'
   pprec = zeros (n, 1);
   maxstep = Inf * ones (n, 1);
+  have_gencstr = false; % no general constraints
+  n_gencstr = 0;
   mc = zeros (n, 0);
-  vc = zeros (0, 1);
+  vc = zeros (0, 1); rv = 0;
   bounds = cat (2, -Inf * ones (n, 1), Inf * ones (n, 1));
-  dfdp_cmd = 'feval(dFdp,x,fbest,p,dp,F);'; % will possibly be redefined
+  dfdp_bounds = {};
+  cpiv = @ cpiv_bard;
   if (nargin > 9)
     if (ismatrix (options)) % backwards compatibility
       tp = options;
       options = struct ('fract_prec', tp(:, 1));
       if (columns (tp) > 1)
 	options.max_fract_change = tp(:, 2);
+      end
+    end
+    if (isfield (options, 'cpiv') && ~isempty (options.cpiv))
+      %% As yet there is only one cpiv function distributed with leasqr,
+      %% but this may change; cpiv_bard is said to be relatively fast,
+      %% but may have disadvantages.
+      if (ischar (options.cpiv))
+	cpiv = str2func (options.cpiv);
+      else
+	cpiv = options.cpiv;
       end
     end
     if (isfield (options, 'fract_prec'))
@@ -231,19 +299,59 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       end
     end
     if (isfield (options, 'inequc'))
-      mc = options.inequc{1};
-      vc = options.inequc{2};
+      inequc = options.inequc;
+      if (ismatrix (inequc{1}))
+	mc = inequc{1};
+	vc = inequc{2};
+	if (length (inequc) > 2)
+	  have_gencstr = true;
+	  f_gencstr = inequc{3};
+	  if (length (inequc) > 3)
+	    df_gencstr = inequc{4};
+	  else
+	    df_gencstr = @ dcdp;
+	  end
+	end
+      else
+	lid = 0; % no linear constraints
+	have_gencstr = true;
+	f_gencstr = inequc{1};
+	if (length (inequc) > 1)
+	  if (ismatrix (inequc{2}))
+	    lid = 2;
+	    df_gencstr = @ dcdp;
+	  else
+	    df_gencstr = inequc{2};
+	    if (length (inequc) > 2)
+	      lid = 3;
+	    end
+	  end
+	else
+	  df_gencstr = @ dcdp;
+	end
+	if (lid)
+	  mc = inequc{lid};
+	  vc = inequc{lid + 1};
+	end
+      end
+      if (have_gencstr)
+	if (ischar (f_gencstr)) f_gencstr = str2func (f_gencstr); end
+	if (ischar (df_gencstr)) df_gencstr = str2func (df_gencstr); end
+      end
       [rm, cm] = size (mc);
       [rv, cv] = size (vc);
       if (rm ~= n || cm ~= rv || cv ~= 1)
-	error ('inequality constraints: wrong dimensions');
+	error ('linear inequality constraints: wrong dimensions');
       end
-      if (any (mc.' * pin + vc < 0))
+      if (have_gencstr)
+	tp = f_gencstr (pin);
+	n_gencstr = length (tp);
+      end
+      if (any (mc.' * pin + vc < 0) || (have_gencstr && any (tp < 0)))
 	error ('initial parameters violate inequality constraints');
       end
     end
     if (isfield (options, 'bounds'))
-      dfdp_cmd = 'feval(dFdp,x,fbest,p,dp,F,bounds);';
       bounds = options.bounds;
       if (rows (bounds) ~= n || columns (bounds) ~= 2)
 	error ('bounds: wrong dimensions');
@@ -268,11 +376,43 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	pin(idx) = bounds(idx, 2);
       end
       tp = eye (n);
-      lidx = ~ isinf (bounds(:, 1));
-      uidx = ~ isinf (bounds(:, 2));
+      lidx = ~isinf (bounds(:, 1));
+      uidx = ~isinf (bounds(:, 2));
       mc = cat (2, mc, tp(:, lidx), - tp(:, uidx));
       vc = cat (1, vc, - bounds(lidx, 1), bounds(uidx, 2));
+      [rm, cm] = size (mc);
+      [rv, cv] = size (vc);
+      dfdp_bounds = {bounds};
     end
+  end
+  nidxl = 1:rv;
+  nidxh = rv+1:rv+n_gencstr;
+  if (have_gencstr)
+    f_cstr = @ (p, idx) ...
+	cat (1, mc(:, idx(nidxl)).' * p + vc(idx(nidxl), 1), ...
+	     tf_gencstr (p, idx(nidxh), f_gencstr));
+    if (strcmp (func2str (df_gencstr), 'dcdp'))
+      df_cstr = @ (f, p, idx) ...
+	  cat (1, mc(:, idx(nidxl)).', ...
+	       df_gencstr (f(nidxh(idx(nidxh))), p, dp, ...
+			   @ (tp) tf_gencstr (tp, idx(nidxh), ...
+					      f_gencstr), ...
+			   dfdp_bounds{:}));
+    else
+      df_cstr = @ (f, p, idx) ...
+	  cat (1, mc(:, idx(nidxl)).', ...
+	       df_gencstr (f(nidxh(idx(nidxh))), p, dp, ...
+			   @ (tp) tf_gencstr (tp, idx(nidxh), ...
+					      f_gencstr), ...
+			   idx(nidxh), ...
+			   dfdp_bounds{:}));
+    end
+    if (any (~isinf (maxstep)))
+      warning ('setting both a maximum fractional step change of parameters and general constraints may result in inefficiency and failure');
+    end
+  else
+    f_cstr = @ (p, idx) mc(:, idx).' * p + vc(idx, 1);
+    df_cstr = @ (f, p, idx) mc(:, idx).';
   end
 
   if (all (dp == 0))
@@ -282,7 +422,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% set up for iterations
   %%
   p = pin;
-  f=feval(F,x,p); fbest=f; pbest=p;
+  f = F (x, p); fbest=f; pbest=p;
   r=wt.*(y-f);
   if (~isreal (r)) error ('weighted residuals are not real'); end
   ss = r.' * r;
@@ -291,25 +431,43 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   cvg=0;
   epsLlast=1;
   epstab=[.1, 1, 1e2, 1e4, 1e6];
+  ac_idx = true (rv + n_gencstr, 1); % all constraints
+  nc_idx = false (rv + n_gencstr, 1); % non of all constraints
+  gc_idx = cat (1, false (rv, 1), true (n_gencstr, 1)); % gen. constr.
+  lc_idx = ~gc_idx;
 
   %% for testing
   %% new_s = false;
   %% if (isfield (options, 'new_s'))
   %%   new_s = options.new_s;
   %% end
+  %% if (isfield (options, 'testing') && options.testing)
+  %%   testing = true;
+  %% else
+  %%   testing = false;
+  %% end
 
-  nz = eps; % This is arbitrary. Constraint fuction will be regarded as
-				% <= zero if less than nz.
+  nz = 20 * eps; % This is arbitrary. Constraint function will be
+				% regarded as <= zero if less than nz.
   %% do iterations
   %%
   for iter=1:niter
-    c_act = mc.' * p + vc < nz; % index of active constraints
-    mca = mc(:, c_act);
-    vca = vc(c_act);
-    mcat = mca.';
+    %% deb_printf (testing, '\nstart outer iteration\n');
+    v_cstr = f_cstr (p, ac_idx);
+    c_act =  v_cstr < nz; % index of active constraints
+    if (any (c_act))
+      if (have_gencstr)
+	dct = df_cstr (v_cstr, p, ac_idx);
+	dc = dct.';
+	dcat = dct(c_act, :);
+      else
+	dcat = df_cstr (v_cstr, p, c_act);
+      end
+      dca = dcat.';
+    end
     nrm = zeros (1, n);
     pprev=pbest;
-    prt = eval (dfdp_cmd);
+    prt = dFdp (x, fbest, p, dp, F, dfdp_bounds{:});
     r=wt.*(y-fbest);
     if (~isreal (r)) error ('weighted residuals are not real'); end
     sprev=sbest;
@@ -325,6 +483,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     s=diag(s);
     g = prt.' * r;
     for jjj=1:length(epstab)
+      %% deb_printf (testing, '\nstart inner iteration\n');
       epsL = max(epsLlast*epstab(jjj),1e-7);
       %% printf ('epsL: %e\n', epsL); % for testing
 
@@ -347,40 +506,176 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       %% end
       tp1 = (v * (g .* ser)) .* nrm;
       if (any (c_act))
+	%% deb_printf (testing, 'constraints are active:\n');
+	%% deb_printf (testing, '%i\n', c_act);
 	%% calculate chg by 'quadratic programming'
-	idx = ones (1, size (mca, 2));
-	nrme = nrm(:, idx);
-	ser2 = ser .* ser;
-	tp2 = nrme .* (v * (ser2(:, idx) .* (v.' * (nrme .* mca))));
-	[lb, idx] = cpiv (mcat * tp1, mcat * tp2);
-	chg = tp1 + tp2(:, idx) * lb;
-	%% collect inactive constraints
-	mcit = mc(:, ~ c_act).';
-	vci = vc(~ c_act);
+	nrme= diag (nrm);
+	ser2 = diag (ser .* ser);
+	mfc1 = nrme * v * ser2 * v.' * nrme;
+	tp2 = mfc1 * dca;
+	[lb, bidx, ridx, tbl] = cpiv (dcat * tp1, dcat * tp2);
+	chg = tp1 + tp2(:, bidx) * lb;
+	%% indices for different types of constraints
+	c_inact = ~c_act; % inactive constraints
+	c_binding = nc_idx; 
+	c_binding(c_act) = bidx; % constraints selected binding
+	c_unbinding = nc_idx;
+	c_unbinding(c_act) = ridx; % constraints unselected binding
+	c_nonbinding = c_act & ~(c_binding | c_unbinding); % constraints
+				% selected non-binding
       else
 	%% chg is the Levenberg/Marquardt step
 	chg = tp1;
-	%% inactive constraints consist of all constraints
-	mcit = mc.';
-	vci = vc;
+	%% indices for different types of constraints
+	c_inact = ac_idx; % inactive constraints consist of all
+				% constraints
+	c_binding = nc_idx;
+	c_unbinding = nc_idx;
+	c_nonbinding = nc_idx;
       end
-      %% apply inactive constraints (since this is a Levenberg/Marquardt
-      %% algorithm, no line-search is performed here)
+      %% apply constraints to step width (since this is a
+      %% Levenberg/Marquardt algorithm, no line-search is performed
+      %% here)
+      k = 1;
+      c_tp = c_inact(1:rv);
+      mcit = mc(:, c_tp).';
+      vci = vc(c_tp);
       hstep = mcit * chg;
       idx = hstep < 0;
       if (any (idx))
 	k = min (1, min (- (vci(idx) + mcit(idx, :) * pprev) ./ ...
 			 hstep(idx)));
-	chg = k * chg;
+	%% deb_printf (testing, 'stepwidth: linear constraints\n');
       end
-      %% check the maximal stepwidth and apply as necessary
-      ochg=chg;
-      idx = ~isinf(maxstep);
-      limit = abs(maxstep(idx).*pprev(idx));
-      chg(idx) = min(max(chg(idx),-limit),limit);
-      if (verbose && any(ochg ~= chg))
-	disp(['Change in parameter(s): ', ...
-              sprintf('%d ',find(ochg ~= chg)), 'maximal fractional stepwidth enforced']);
+      if (have_gencstr)
+	c_tp = gc_idx & (c_nonbinding | c_inact);
+	if (any (c_tp) && any (f_cstr (pprev + k * chg, c_tp) < 0))
+	  [k, fval, info] = ...
+	      fzero (@ (x) min (cat (1, ...
+				     f_cstr (pprev + x * chg, c_tp), ...
+				     k - x, ...
+				     ifelse (x < 0, -Inf, Inf))), ...
+		     0);
+	  if (info ~= 1 || abs (fval) >= nz)
+	    error ('could not find stepwidth to satisfy inactive and non-binding general inequality constraints');
+	  end
+	  %% deb_printf (testing, 'general constraints limit stepwidth\n');
+	end
+      end
+      chg = k * chg;
+
+      if (any (gc_idx & c_binding)) % none selected binding =>
+				% none unselected binding
+	%% deb_printf (testing, 'general binding constraints must be regained:\n');
+	%% regain binding constraints and one of the possibly active
+	%% previously inactive or non-binding constraints
+	ptp1 = pprev + chg;
+
+	tp = true;
+	nt_nosuc = true;
+	lim = 20;
+	while (nt_nosuc && lim >= 0)
+	  %% deb_printf (testing, 'starting from new value of p in regaining:\n');
+	  %% deb_printf (testing, '%e\n', ptp1);
+ 	  %% we keep dp.' * inv (mfc1) * dp minimal in each step of the
+	  %% inner loop; this is both sensible (this metric considers a
+	  %% guess of curvature of sum of squared residuals) and
+	  %% convenient (we have useful matrices available for it)
+	  c_tp0 = c_inact | c_nonbinding;
+	  c_tp1 = c_inact | (gc_idx & c_nonbinding);
+	  btbl = tbl(bidx, bidx);
+	  c_tp2 = c_binding;
+	  if (any (tp)) % if none before, does not get true again
+	    tp = f_cstr (ptp1, c_tp1) < nz;
+	    if (any (tp)) % could be less clumsy, but ml-compatibility..
+	      %% keep only the first true entry in tp
+	      tp(tp) = logical (cat (1, 1, zeros (sum (tp) - 1, 1)));
+	      %% supplement binding index with one (the first) getting
+	      %% binding in c_tp1
+	      c_tp2(c_tp1) = tp;
+	      %% gradient of this added constraint
+	      caddt = dct(c_tp2 & ~c_binding, :);
+	      cadd = caddt.';
+	      C = dct(c_binding, :) * mfc1 * cadd;
+	      Ct = C.';
+	      G = [btbl, btbl * C; ...
+		   -Ct * btbl, caddt * mfc1 * cadd - Ct * btbl * C];
+	      btbl = gjp (G, size (G, 1));
+	    end
+	  end
+	  dcbt = dct(c_tp2, :);
+	  mfc = - mfc1 * dcbt.' * btbl;
+	  %% deb_printf (testing, 'constraints to regain:\n');
+	  %% deb_printf (testing, '%i\n', c_tp2);
+
+	  ptp2 = ptp1;
+	  nt_niter = 100;
+	  while (nt_nosuc && nt_niter >= 0)
+	    hv = f_cstr (ptp2, c_tp2);
+	    if (all (hv < nz))
+	      nt_nosuc = false;
+	      chg = ptp2 - pprev;
+	    else
+	      ptp2 = ptp2 + mfc * hv;
+	    end
+	    nt_niter = nt_niter - 1;
+	  end
+	  if (nt_nosuc || ...
+	      any (abs (chg) > abs (pprev .* maxstep)) || ...
+	      any (f_cstr (ptp2, c_tp0) < -nz))
+	    nt_nosuc = true;
+	    ptp1 = (pprev + ptp1) / 2;
+	    if (nt_nosuc)
+	      %% deb_printf (testing, 'regaining did not converge\n');
+	    else
+	      %% deb_printf (testing, 'regaining violated type 3 and 4\n');
+	    end
+	  end
+	  if (~nt_nosuc)
+	    tp = f_cstr (ptp2, c_unbinding);
+	    if (any (tp) < 0) % again ml-compatibility clumsyness..
+	      [discarded, id] = min(tp);
+	      tid = find (ridx);
+	      id = tid(id);
+	      if (abs (tbl(id, id)) < nz) % Bard: not absolute value
+		[discarded, idm] = max (abs (tbl(bidx, id)));
+		tid = find (bidx);
+		idm = tid(idm);
+		tbl = gjp (tbl, idm);
+		bidx(idm) = false;
+		ridx(idm) = true;
+	      end
+	      tbl = gjp (tbl, id);
+	      bidx(id) = true;
+	      ridx(id) = false;
+	      c_binding = nc_idx;
+	      c_binding(c_act) = bidx;
+	      c_unbinding = nc_idx;
+	      c_unbinding(c_act) = ridx;
+	      nt_nosuc = true;
+	      %% deb_printf (testing, 'regaining violated type 2\n');
+	    end
+	  end
+	  if (~nt_nosuc)
+	    %% deb_printf (testing, 'regaining successful, converged with %i iterations:\n', ...
+	    %% 100 - nt_niter);
+	    %% deb_printf (testing, '%e\n', ptp2);
+	  end
+	  lim = lim - 1;
+	end
+	if (nt_nosuc)
+	  error ('could not regain binding constraints');
+	end
+      else
+	%% check the maximal stepwidth and apply as necessary
+	ochg=chg;
+	idx = ~isinf(maxstep);
+	limit = abs(maxstep(idx).*pprev(idx));
+	chg(idx) = min(max(chg(idx),-limit),limit);
+	if (verbose && any(ochg ~= chg))
+	  disp(['Change in parameter(s): ', ...
+		sprintf('%d ',find(ochg ~= chg)), 'maximal fractional stepwidth enforced']);
+	end
       end
       aprec=abs(pprec.*pbest);       %---
       %% ss=scalar sum of squares=sum((wt.*(y-f))^2).
@@ -388,7 +683,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 				% function if there is some non-miniscule
 				% change
 	p=chg+pprev;
-	f=feval(F,x,p);
+	f = F (x, p);
 	r=wt.*(y-f);
 	if (~isreal (r))
 	  error ('weighted residuals are not real');
@@ -440,7 +735,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 
   %% CALC VARIANCE COV MATRIX AND CORRELATION MATRIX OF PARAMETERS
   %% re-evaluate the Jacobian at optimal values
-  jac = eval (dfdp_cmd);
+  jac = dFdp (x, fbest, p, dp, F, dfdp_bounds{:});
   msk = dp ~= 0;
   n = sum(msk);           % reduce n to equal number of estimated parameters
   jac = jac(:, msk);	% use only fitted parameters
@@ -534,7 +829,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     disp(covr)
     disp(' Correlation Coefficient R^2')
     disp(r2)
-    sprintf(' 95%% conf region: F(0.05)(%.0f,%.0f)>= delta_pvec.''*Z*delta_pvec',n,m-n)
+    sprintf(' 95%% conf region: F(0.05)(%.0f,%.0f)>= delta_pvec.%s*Z*delta_pvec', n, m - n, char (39)) % works with ' and '
     Z
     %% runs test according to Bard. p 201.
     n1 = sum (resid > 0);
@@ -551,6 +846,34 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
         disp([num2str(prob),'% chance of greater than ',num2str(nrun),' runs.']);
       end
     end
+  end
+
+function ret = tf_gencstr (p, idx, f)
+
+  %% necessary since user function f_gencstr might return []
+
+  ret = f (p, idx);
+  if (isempty (ret))
+    ret = zeros (0, 1);
+  elseif (size (ret, 2) > 1)
+    ret = ret(:);
+  end
+
+function fval = scalar_ifelse (cond, tval, fval)
+
+  %% needed for some anonymous functions, builtin ifelse only available
+  %% in Octave > 3.2; we need only the scalar case here
+
+  if (cond)
+    fval = tval;
+  end
+
+function deb_printf (do_printf, varargin)
+
+  %% for testing
+
+  if (do_printf)
+    printf (varargin{:})
   end
 
 %!demo

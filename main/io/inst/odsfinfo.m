@@ -17,8 +17,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{filetype}] = odsfinfo (@var{filename} [, @var{reqintf}])
 ## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}] = odsfinfo (@var{filename} [, @var{reqintf}])
-## Query an OpenOffice_org spreadsheet file @var{filename} (with .ods
-## suffix) for some info about its contents (viz. sheet names).
+## Query an OpenOffice_org spreadsheet file @var{filename} (with ods
+## suffix) for some info about its contents.
 ##
 ## If @var{filename} is a recognizable OpenOffice.org spreadsheet file,
 ## @var{filetype} returns the string "OpenOffice.org Calc spreadsheet",
@@ -67,6 +67,7 @@
 ##            (ah those pesky table-row-repeated & table-column-repeated attr.... :-( )
 ## 2010-03-18 Separated range exploration (for OTK only yet) in separate function file
 ## 2010-03-20 "Beautified" output (for OTK ), used range now in more tabular form
+## 2010-04-13 Fixed help text for compliance with generate_html (short descr.)
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 

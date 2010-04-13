@@ -14,13 +14,16 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## odsclose - close an ods (OpenOffice_org) spreadsheet file
+## odsclose - close an ods (OpenOffice_org) spreadsheet file and
+## write it to disk if it was changed.
 
 ## usage: ods = odsclose (ods)
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
-## Last update: 2010-01-08 (OTK ODS write support)
+## Updates:
+## 2010-01-08 (OTK ODS write support)
+## 2010-04-13 Improved help text a little bit
 
 function [ ods ] = odsclose (ods)
 

@@ -14,10 +14,10 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## parse_sp_range
-##  Parse a string representing a range of cells for a spreadsheet  
-##  into nr of rows and nr of columns and also extract top left
-##  cell address + top row+ left column. Some error checks are implemented.
+
+## Parse a string representing a range of cells for a spreadsheet
+## into nr of rows and nr of columns and also extract top left
+## cell address + top row + left column. Some error checks are implemented.
 
 ## Author: Philip Nienhuis
 ## Created: 2009-06-20

@@ -1,5 +1,5 @@
 function [num,strarray] = xlsread_old(fn)
-%% XLSREAD reads EXCEL-files. 
+%% XLSREAD_OLD reads EXCEL-files in csv format. 
 %% Currently, only a hack to read excel tables is implemented.  
 %% First, you need to convert your excel table into a tab-delimited 
 %% text file. Then you can use XLSREAD to load that file. 

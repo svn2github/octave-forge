@@ -65,6 +65,8 @@
 ## 2010-03-01 Removed check for rt.jar in javaclasspath
 ## 2010-03-04 Slight texinfo adaptation (reqd. odfdom version = 0.7.5)
 ## 2010-03-14 Updated help text (section on readwrite)
+##
+## Latest change on subfunction below: 2010-04-11
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -93,7 +95,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		# Well, is the requested interface supported on the system?
 		if (~odsinterfaces.(toupper (reqinterface)))
 			# No it aint
-			error (" ...but that's not supported!");
+			error (" ...but %s is not supported.", toupper (reqinterface));
 		endif
 	endif
 	
@@ -218,6 +220,7 @@ endfunction
 ## Updates:
 ## 2010-01-14
 ## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
+## 2010-04-11 Introduced check on odfdom.jar version - only 0.7.5 works properly
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -234,7 +237,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		try
 			tmp1 = javaclasspath;
 			# If we get here, at least Java works. Now check for proper entries
-			# in class path. Under *nix the classpath must first be split up
+			# in class path. Under *nix first the classpath must be split up.
 			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
 			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
 			jpchk = 0; entries = {"odfdom", "xercesImpl.jar"};
@@ -244,10 +247,16 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 					if (strmatch (entries{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk; endif
 				endfor
 			endfor
-			if (jpchk >= 2)
-				odsinterfaces.OTK = 1;
-				printf (" Java/ODFtoolkit (OTK) OK. ");
-				chk1 = 1;
+			if (jpchk >= 2)		# Apparently all requested classes present.
+				# Only now we can check for proper odfdom version (only 0.7.5. works OK)
+				odfdvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
+				if ~(strcmp (odfdvsn, '0.7.5'))
+					warning ("\nodfdom version %s is not supported - use v. 0.7.5.\n", odfdvsn);
+				else	
+					odsinterfaces.OTK = 1;
+					printf (" Java/ODFtoolkit (OTK) OK. ");
+					chk1 = 1;
+				endif
 			else
 				warning ("\n Java support OK but not all required classes (.jar) in classpath");
 			endif

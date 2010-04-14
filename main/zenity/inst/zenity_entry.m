@@ -47,7 +47,7 @@ function out = zenity_entry(text, varargin)
   elseif (!ischar(text))
     error ("'text' argument must be a string")
   endif
-  text = ["--text=\"", text, "\""];
+  text = sprintf("--text=\"%s\"", text);
 
   options = _zenity_options_ ("entry", varargin);
 

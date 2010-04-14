@@ -46,36 +46,30 @@
 ## zenity_text_info}
 ## @end deftypefn
 
-function options = _zenity_options_ (dialog, unprocessed)
+function op = _zenity_options_ (dialog, varargin)
 
-  options.title = options.width = options.height = options.timeout = "";
+  varargin = varargin{1};    # because other functions varargin is this varargin
+
+  op.title = op.width = op.height = op.timeout = "";
   if ( !ischar(dialog) )
     error ("Type of dialog should be a string");
   elseif (strcmpi(dialog, "calendar"))
-    dialog = "calendar";
   elseif (strcmpi(dialog, "entry"))
-    dialog = "entry";
-    options.password = options.entry = "";
+    op.password = op.entry = "";
   elseif (strcmpi(dialog, "file selection"))
-    dialog = "file selection";
+    op.directory = op.filename = op.multiple = op.save = "";
   elseif (strcmpi(dialog, "list"))
-    dialog = "list";
   elseif (strcmpi(dialog, "message"))
-    dialog = "message";
   elseif (strcmpi(dialog, "notification"))
-    dialog = "notification";
   elseif (strcmpi(dialog, "progress"))
-    dialog = "progress";
   elseif (strcmpi(dialog, "scale"))
-    dialog = "scale";
   elseif (strcmpi(dialog, "text info"))
-    dialog = "text info";
   else
     error ("The type of dialog '%s' is not supported", dialog);
   endif
 
   ## In case no options were set, returns the empty strings
-  if (numel(unprocessed) == 1 && isempty(unprocessed{1}))
+  if (numel(varargin) == 1 && isempty(varargin{1}))
     return
   endif
 
@@ -87,73 +81,112 @@ function options = _zenity_options_ (dialog, unprocessed)
   ## error if not
 
   narg = 1;
-  while (narg <= numel (unprocessed))
-    param = unprocessed{narg++};
+  while (narg <= numel (varargin))
+    param = varargin{narg++};
 
-    if (narg <= numel(unprocessed)) # Check if we are already in the last index
-      value = unprocessed{narg};    # this is only for readability later on
-    else
-      clear value;
+    if (narg <= numel(varargin))  # Check if we are already in the last index
+      value = varargin{narg};     # this is only for readability later on
+    else                          # Writing varargin{narg} in all conditions
+      clear value;                # is a pain and makes it even more confusing
     endif
+
 
     if ( !ischar(param) )
         error ("Parameter number %i is not a string", narg-1);
 
-    ## Process all general options first
-    elseif (strcmpi(param,"title"))
+    ## Process ALL GENERAL OPTIONS first
+    elseif (strcmpi(param,"title"))                   # General - title
       if ( !exist("value", "var") || !ischar(value) )
         error ("Parameter 'title' requires a string as value.");
-      elseif (options.title)
+      elseif (op.title)
         error ("Parameter 'title' defined twice, with values '%s' and '%s'", ...
-                title(10,end-1), value);
+                op.title(10:end-1), value);
       endif
-      options.title   = sprintf("--title=\"%s\"", value);
+      op.title   = sprintf("--title=\"%s\"", value);
       narg++;
-
-    elseif (strcmpi(param,"width"))
+    elseif (strcmpi(param,"width"))                   # General - width
       if ( !exist("value", "var") || !isscalar(value) )
         error ("Parameter 'width' requires a scalar as value.");
-      elseif (options.width)
+      elseif (op.width)
         error ("Parameter 'width' defined twice, with values '%s' and '%g'", ...
-                width(9,end), value);
+                op.width(9:end), value);
       endif
-      options.width   = sprintf("--width=\"%s\"", num2str(value));
+      op.width   = sprintf("--width=\"%s\"", num2str(value));
       narg++;
-
-    elseif (strcmpi(param,"height"))
+    elseif (strcmpi(param,"height"))                  # General - height
       if ( !exist("value", "var") || !isscalar(value) )
         error ("Parameter 'height' requires a scalar as value.");
-      elseif (options.height)
+      elseif (op.height)
         error ("Parameter 'height' defined twice, with values '%s' and '%g'", ...
-                height(10,end), value);
+                op.height(10:end), value);
       endif
-      options.height  = sprintf("--height=\"%s\"", num2str(value));
+      op.height  = sprintf("--height=\"%s\"", num2str(value));
       narg++;
-
-    elseif (strcmpi(param,"timeout"))
+    elseif (strcmpi(param,"timeout"))                 # General - timeout
       if ( !exist("value", "var") || !isscalar(value) )
         error ("Parameter 'timeout' requires a scalar as value.");
-      elseif (options.timeout)
+      elseif (op.timeout)
         error ("Parameter 'timeout' defined twice, with values '%s' and '%g'", ...
-                timeout(11,end), value);
+                op.timeout(11:end), value);
       endif
-      options.timeout = sprintf("--timeout=\"%s\"", num2str(value));
+      op.timeout = sprintf("--timeout=\"%s\"", num2str(value));
       narg++;
 
-    ## Process options for zenity_entry
-    elseif (dialog == "entry")
-      if (strcmpi(param,"entry"))
+    ## Process options for ZENITY_ENTRY
+    elseif ( strcmpi(dialog, "entry") )
+      if (strcmpi(param,"entry"))                     # Entry - entry
         if ( !exist("value", "var") || !ischar(value) )
           error ("Parameter 'entry' requires a string as value.");
+        elseif (op.entry)
+          error ("Parameter 'entry' defined twice, with values '%s' and '%s'", ...
+                  op.entry(15:end-1), value);
         endif
-        options.entry     = sprintf("--entry-text=\"%s\"", value);
+        op.entry     = sprintf("--entry-text=\"%s\"", value);
         narg++;
-
-      elseif (strcmpi(param,"password"))
-        options.password  = sprintf("--hide-text");
+      elseif (strcmpi(param,"password"))              # Entry - password
+        if (op.password)
+          error ("Parameter 'password' set twice.");
+        endif
+        op.password  = sprintf("--hide-text");
       else
         error ("Parameter '%s' is not supported", param);
       endif
+
+    ## Process options for ZENITY_FILE_SELECTION
+    elseif ( strcmpi(dialog, "file selection") )
+      if (strcmpi(param,"directory"))                 # File selection - directory
+        if (op.directory)
+          error ("Parameter 'directory' set twice.");
+        endif
+        op.directory = sprintf("--directory");
+      elseif (strcmpi(param,"filename"))              # File selection - filename
+        if ( !exist("value", "var") || !ischar(value) )
+          error ("Parameter 'filename' requires a string as value.");
+        elseif (op.filename)
+          error ("Parameter 'filename' defined twice, with values '%s' and '%s'", ...
+                  op.filename(13:end-1), value);
+        endif
+        op.filename     = sprintf("--filename=\"%s\"", value);
+        narg++;
+      elseif (strcmpi(param,"multiple"))              # File selection - multiple
+        if (op.multiple)
+          error ("Parameter 'multiple' set twice");
+        endif
+        op.multiple  = sprintf("--multiple");
+      elseif (strcmpi(param,"overwrite"))             # File selection - overwrite
+        if (op.overwrite)
+          error ("Parameter 'overwrite' set twice");
+        endif
+        op.overwrite  = sprintf("--confirm-overwrite");
+      elseif (strcmpi(param,"save"))                  # File selection - save
+        if (op.save)
+          error ("Parameter 'save' set twice");
+        endif
+        op.save  = sprintf("--save");
+      else
+        error ("Parameter '%s' is not supported", param);
+      endif
+
 
     else
       error ("Parameter '%s' is not supported", param);

@@ -158,11 +158,11 @@ fill_dist_matrix (octave_idx_type dim, octave_idx_type nx,
 
 template<typename T>
 Matrix
-get_dist_matrix (const MArray2<T>& X, bool ssq, double p = 0)
+get_dist_matrix (const MArray<T>& X, bool ssq, double p = 0)
 {
   Matrix D(X.rows (), X.rows ());
 
-  MArray2<T> XT = X.transpose ();
+  MArray<T> XT = X.transpose ();
 
   if (ssq)
     fill_dist_matrix (XT.rows (), XT.cols (),
@@ -185,11 +185,11 @@ get_dist_matrix (const MArray2<T>& X, bool ssq, double p = 0)
 
 template<typename T>
 Matrix
-get_dist_matrix (const MArray2<T>& X, const MArray2<T>& Y, bool ssq, double p = 0)
+get_dist_matrix (const MArray<T>& X, const MArray<T>& Y, bool ssq, double p = 0)
 {
   Matrix D(X.rows (), Y.rows ());
 
-  MArray2<T> XT = X.transpose (), YT = Y.transpose ();
+  MArray<T> XT = X.transpose (), YT = Y.transpose ();
 
   if (ssq)
     fill_dist_matrix (XT.rows (), XT.cols (), YT.cols (),

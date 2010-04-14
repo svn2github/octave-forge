@@ -107,7 +107,7 @@ function options = _zenity_options_ (dialog, unprocessed)
         error ("Parameter 'title' defined twice, with values '%s' and '%s'", ...
                 title(10,end-1), value);
       endif
-      options.title   = ["--title=\"", value, "\""];
+      options.title   = sprintf("--title=\"%s\"", value);
       narg++;
 
     elseif (strcmpi(param,"width"))
@@ -117,7 +117,7 @@ function options = _zenity_options_ (dialog, unprocessed)
         error ("Parameter 'width' defined twice, with values '%s' and '%g'", ...
                 width(9,end), value);
       endif
-      options.width    = ["--width=", num2str(value)];
+      options.width   = sprintf("--width=\"%s\"", num2str(value));
       narg++;
 
     elseif (strcmpi(param,"height"))
@@ -127,7 +127,7 @@ function options = _zenity_options_ (dialog, unprocessed)
         error ("Parameter 'height' defined twice, with values '%s' and '%g'", ...
                 height(10,end), value);
       endif
-      options.height   = ["--height=", num2str(value)];
+      options.height  = sprintf("--height=\"%s\"", num2str(value));
       narg++;
 
     elseif (strcmpi(param,"timeout"))
@@ -137,7 +137,7 @@ function options = _zenity_options_ (dialog, unprocessed)
         error ("Parameter 'timeout' defined twice, with values '%s' and '%g'", ...
                 timeout(11,end), value);
       endif
-      options.timeout = ["--timeout=", num2str(value)];
+      options.timeout = sprintf("--timeout=\"%s\"", num2str(value));
       narg++;
 
     ## Process options for zenity_entry
@@ -146,11 +146,11 @@ function options = _zenity_options_ (dialog, unprocessed)
         if ( !exist("value", "var") || !ischar(value) )
           error ("Parameter 'entry' requires a string as value.");
         endif
-        options.entry     = ["--entry-text=\"", value, "\""];
+        options.entry     = sprintf("--entry-text=\"%s\"", value);
         narg++;
 
       elseif (strcmpi(param,"password"))
-        options.password  = "--hide-text";
+        options.password  = sprintf("--hide-text");
       else
         error ("Parameter '%s' is not supported", param);
       endif

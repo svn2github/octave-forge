@@ -37,36 +37,36 @@ along with this software; see the file COPYING.  If not, see
 // that accented characters respect texinfo formatting
 #define HELP_TEXT  \
  "@deftypefn {Comando} {} ayuda @var{tema}\n\
-  @deftypefnx {Funci@'on cargable} {} ayuda (@var{tema})\n\
-  Funci@'on de ayuda en Espa@~nol.\n"
+  @deftypefnx {Función cargable} {} ayuda (@var{tema})\n\
+  Función de ayuda en Español.\n"
 
 // Some additional non texinfo formatted message 
 #define NOT_FOUND "no se encuentra"
-#define NOT_DOCUMENTED "no est@'a documentado"
+#define NOT_DOCUMENTED "no está documentado"
 #define MD5_MISMATCH "La firma MD5 no coincide con el texto traducido.\n\
-Use `help' para ver el texto de ayuda original"
-#define TEXINFO_ERROR_1 "El filtro de formato de TeXinfo ha terminado en forma inesperada"
-#define TEXINFO_ERROR_2 "C@'odigo fuente sin formato a continuaci@'on..."
+Use `help' para ver el texto de ayuda original."
+#define TEXINFO_ERROR_1 "El filtro de formato de Texinfo terminó en forma inesperada."
+#define TEXINFO_ERROR_2 "Código fuente sin formato a continuación..."
 
 // Additional help message.
 #define ADDITIONAL_HELP \
-"Informaci@'on adicional acerca de las funciones incorporadas y de los\n\
-operadores se encuentra disponible en la versi@'on en l@'inea del manual.\n\
-Use el comando `doc <tema>' para buscar en el @'indice del manual.\n\
+"Información adicional acerca de las funciones incorporadas y de los\n\
+operadores se encuentra disponible en la versión en línea del manual.\n\
+Use el comando `doc <tema>' para buscar en el índice del manual.\n\
 \n\
-Para ayuda e informaci@'on adicional acerca de Octave visite\n\
-el sitio web http://www.octave.org o a trav@'es de la lista de correo\n\
+Para ayuda e información adicional acerca de Octave visite\n\
+el sitio web http://www.octave.org o a través de la lista de correo\n\
 help@octave.org.\n"
 
 // Language specific macros and seealso macro
 #define MAKEINFO_MACROS \
-"@documentencoding ISO-8859-1\n\
+"@documentencoding UTF-8\n\
 @set cedilha @,{c}\n\
 @set o_til @~o\n\
 @macro seealso {args}\n\
 @sp 1\n\
 @noindent\n\
-V@'ease tambi@'en: \\args\\.\n\
+Véase también: \\args\\.\n\
 @end macro\n"
 
 // Below is a bit of magic that allows the indexing script to correctly

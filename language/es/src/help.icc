@@ -95,6 +95,7 @@ local_display_help_text (std::ostream& os, const std::string& msg)
 	  << " --no-validate"
 	  << " --no-headers"
 	  << " --force"
+	  << " --disable-encoding"
 	  << " --output \"" << tmp_file_name << "\"";
 
       oprocstream filter (buf.str ());

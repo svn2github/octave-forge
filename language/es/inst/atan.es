@@ -1,5 +1,5 @@
-md5="6368f2b10a0ff684890efdf96e43e8ea";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="6368f2b10a0ff684890efdf96e43e8ea";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} atan (@var{x})
+@deftypefn {Función de mapeo} {} atan (@var{x})
 Calcula la tangente inversa de cada elemento de @var{x}.
 @end deftypefn

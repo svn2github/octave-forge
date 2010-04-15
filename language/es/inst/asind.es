@@ -1,6 +1,6 @@
-md5="02ad24d017b6a04cdbc39d3f2123fec8";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="02ad24d017b6a04cdbc39d3f2123fec8";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} asind (@var{x})
-Calcula el seno inverso de un @'angulo en grados.
+@deftypefn {Archivo de función} {} asind (@var{x})
+Calcula el seno inverso de un ángulo en grados.
 @seealso{asin, sind, acosd}
 @end deftypefn

@@ -1,5 +1,5 @@
-md5="ac4c5b9001db1f659be934609183674c";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="ac4c5b9001db1f659be934609183674c";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} acosh (@var{x})
-Calcula el coseno hiperb@'olico inverso de cada elemento de @var{x}.
+@deftypefn {Función de mapeo} {} acosh (@var{x})
+Calcula el coseno hiperbólico inverso de cada elemento de @var{x}.
 @end deftypefn

@@ -1,7 +1,7 @@
-md5="6f370f19768f5cc033d23c1843ef1ff1";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="6f370f19768f5cc033d23c1843ef1ff1";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} arg (@var{z})
-@deftypefnx {Funci@'on de mapeo} {} angle (@var{z})
+@deftypefn {Función de mapeo} {} arg (@var{z})
+@deftypefnx {Función de mapeo} {} angle (@var{z})
 Calcula el argumento de @var{z}, definido como
 @iftex
 @tex

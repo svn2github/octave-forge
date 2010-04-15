@@ -1,7 +1,7 @@
-md5="7e029052f477865e397935c9776b66a3";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="7e029052f477865e397935c9776b66a3";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} atexit (@var{fcn})
-Registra una funci@'on para ser llamada cuando Octave finalice. Por ejemplo,
+@deftypefn {Función incorporada} {} atexit (@var{fcn})
+Registra una función para ser llamada cuando Octave finalice. Por ejemplo,
 
 @example
 @group
@@ -14,5 +14,5 @@ atexit ("print_fortune");
 @end example
 
 @noindent
-mostrar@'a un mensaje cuando Octave termine su ejecuci@'on.
+mostrará un mensaje cuando Octave termine su ejecución.
 @end deftypefn

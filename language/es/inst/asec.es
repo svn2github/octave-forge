@@ -1,5 +1,5 @@
-md5="e8870b5c41b6f0666cc2cad578b53f05";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e8870b5c41b6f0666cc2cad578b53f05";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} asec (@var{x})
+@deftypefn {Función de mapeo} {} asec (@var{x})
 Calcula la secante inversa de cada elemento de @var{x}.
 @end deftypefn

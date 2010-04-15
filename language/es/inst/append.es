@@ -1,9 +1,9 @@
-md5="bf4d851335ad6e7a413419ae0a781b32";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="bf4d851335ad6e7a413419ae0a781b32";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Built-in Function} {} append (@var{list}, @var{a1}, @var{a2}, @dots{})
-Retorna una lista nueva creada a@~nadiendo @var{a1}, @var{a1}, @dots{}, a
-@var{list}. Si alguno de los agumentos a ser a@~nadido es una lista, sus
-elementos son a@~nadidos individualmente. Por ejemplo,
+Retorna una lista nueva creada añadiendo @var{a1}, @var{a1}, @dots{}, a
+@var{list}. Si alguno de los agumentos a ser añadido es una lista, sus
+elementos son añadidos individualmente. Por ejemplo,
 
 @example
 x = list (1, 2);

@@ -1,5 +1,5 @@
-md5="c93dd1cf028733cd95fee530297fb4dc";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="c93dd1cf028733cd95fee530297fb4dc";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} asinh (@var{x})
-Calcula el seno hiperb@'olico inverso de cada elemento de @var{x}.
+@deftypefn {Función de mapeo} {} asinh (@var{x})
+Calcula el seno hiperbólico inverso de cada elemento de @var{x}.
 @end deftypefn

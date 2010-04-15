@@ -1,5 +1,5 @@
-md5="8a026b7fa0b751cb53d929b0d7bdfccb";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="8a026b7fa0b751cb53d929b0d7bdfccb";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} and (@var{x}, @var{y})
-Esta funci@'on es equivalente a @code{x & y}.
+@deftypefn {Función incorporada} {} and (@var{x}, @var{y})
+Esta función es equivalente a @code{x & y}.
 @end deftypefn

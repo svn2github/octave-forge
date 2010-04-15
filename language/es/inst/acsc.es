@@ -1,5 +1,5 @@
-md5="1767c34b99393084d6d0a8b2de5eda5b";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1767c34b99393084d6d0a8b2de5eda5b";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} acsc (@var{x})
+@deftypefn {Función de mapeo} {} acsc (@var{x})
 Calcula la cosecante inversa de cada uno de los elementos de @var{x}.
 @end deftypefn

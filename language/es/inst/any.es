@@ -1,6 +1,6 @@
-md5="c2463a2a49f0e68a56588d18c2f280d5";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="c2463a2a49f0e68a56588d18c2f280d5";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} any (@var{x}, @var{dim})
+@deftypefn {Función incorporada} {} any (@var{x}, @var{dim})
 Para un vector como argumento, retorna 1 si cualquier elemento del vector es 
 distinto de cero.
 
@@ -16,7 +16,7 @@ any (eye (2, 4))
 @end example
 
 Si el agumento opcional @var{dim} es proporcionado, opera a lo largo 
-de la dimensi@'on @var{dim}. Por ejemplo,
+de la dimensión @var{dim}. Por ejemplo,
 
 @example
 @group

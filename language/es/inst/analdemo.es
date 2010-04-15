@@ -1,7 +1,7 @@
-md5="f659ab2f55f6e3c3e05fcc0af251c1fd";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="f659ab2f55f6e3c3e05fcc0af251c1fd";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} analdemo ()
-Demostraci@'on de las herramientas de controles de Octave: 
-Demostraci@'on de las herramientas para el an@'alisis de espacios 
+@deftypefn {Archivo de función} {} analdemo ()
+Demostración de las herramientas de controles de Octave: 
+Demostración de las herramientas para el análisis de espacios 
 de estados.
 @end deftypefn

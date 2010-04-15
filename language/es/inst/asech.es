@@ -1,5 +1,5 @@
-md5="d0021c971b242edc930826a997293fcd";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d0021c971b242edc930826a997293fcd";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} asech (@var{x})
-Calcula la secante hiperb@'olica inversa de cada elemento de @var{x}.
+@deftypefn {Función de mapeo} {} asech (@var{x})
+Calcula la secante hiperbólica inversa de cada elemento de @var{x}.
 @end deftypefn

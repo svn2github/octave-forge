@@ -1,25 +1,25 @@
-md5="71f0c67dcebd6c9f347c2c2377671df6";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="71f0c67dcebd6c9f347c2c2377671df6";rev="7199";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{fun}, @var{fillval}, @var{issparse})
-@deftypefnx {Archivo de funci@'on} {} accumarray (@var{csubs}, @var{vals}, @dots{})
+@deftypefn {Archivo de función} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{fun}, @var{fillval}, @var{issparse})
+@deftypefnx {Archivo de función} {} accumarray (@var{csubs}, @var{vals}, @dots{})
 
 
-Crea una matriz de acumulaci@'on de los elementos de un vector en las 
-posiciones definidas por sus sub@'indices. Los sub@'indices est@'an definidos 
+Crea una matriz de acumulación de los elementos de un vector en las 
+posiciones definidas por sus subíndices. Los subíndices están definidos 
 por las filas de la matriz @var{subs} y los valores por @var{vals}. Cada 
 fila de @var{subs} corresponde a uno de los valores en @var{vals}.
 
-El tama@~no de la matriz ser@'a determinado por los sub@'indices mismos. 
-Sin embargo, si @var{sz} est@'a definido, determina el tama@~no de la 
-matriz. La longitud de @var{sz} debe corresponder con el n@'umero de columnas en @var{subs}.
+El tamaño de la matriz será determinado por los subíndices mismos. 
+Sin embargo, si @var{sz} está definido, determina el tamaño de la 
+matriz. La longitud de @var{sz} debe corresponder con el número de columnas en @var{subs}.
 
-La acci@'on predeterminada de @code{accumarray} es sumar los elementos con 
-los mismos sub@'indices. Este comportamiento puede ser modificado definiendo 
-la funci@'on @var{fun}. @'Esta deber@'ia ser una funci@'on o un manejador de funci@'on 
-que acepta un vector columna y retorna un escalar. El resultado de la funci@'on 
-no debe depender del orden de los sub@'indices.
+La acción predeterminada de @code{accumarray} es sumar los elementos con 
+los mismos subíndices. Este comportamiento puede ser modificado definiendo 
+la función @var{fun}. Ésta debería ser una función o un apuntador de función 
+que acepta un vector columna y retorna un escalar. El resultado de la función 
+no debe depender del orden de los subíndices.
 
-Los elementos del arreglo retornado que no tienen sub@'indices asociados con 
+Los elementos del arreglo retornado que no tienen subíndices asociados con 
 ellos se ponen en cero. Definiendo @var{fillval} como otro valor permite 
 que estos valores definidos.
 

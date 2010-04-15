@@ -25,14 +25,14 @@ fi
 
 case $1 in
     missing)
-	basefiles=`find $base/help -type f -o -wholename "*.svn*" -prune`
+	basefiles=`find $base/inst -type f -o -wholename "*.svn*" -prune`
 	for basefile in $basefiles; do
 	    file=${basefile##*/}
-	    test ! `find help -name $file.$lang` && echo $file
+	    test ! `find inst -name $file.$lang` && echo $file
         done
     ;;
     updated)
-	files=`find help -name \*.$lang`
+	files=`find inst -name \*.$lang`
 	for file in $files; do
 	    basefile=`basename ${file##*/} .$lang`
 	    basefile=`find $base -type f -name $basefile`
@@ -50,7 +50,7 @@ case $1 in
     diff)
         shift
         for file in $*; do
-	    _file=`find help -name $file.$lang`
+	    _file=`find inst -name $file.$lang`
 	    if test -n "$_file"; then
 	      tranver=`head -1 $_file | sed -e's/^.*rev="\([0-9]\+\).*$/\1/'`
 	      if test -n "$tranver"; then
@@ -74,7 +74,7 @@ case $1 in
 	fi
         shift
         for file in $*; do
-	    _file=`find help -name $file.$lang`
+	    _file=`find inst -name $file.$lang`
 	    basefile=`find $base -name $file`
 	    basedir=`dirname $basefile`
 	    baserev=`svn status -v $basefile | awk '{print $1}'`

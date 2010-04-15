@@ -1,6 +1,6 @@
 Name: es
 Version: 0.0.4
-Date: 2010-04-11
+Date: 2010-04-15
 Author: Javier Enciso
 Maintainer: Javier Enciso
 Title: Spanish translation package
@@ -12,4 +12,4 @@ Problems: Special characters might not appear properly.
 Url: http://octave.sourceforge.net/
 Autoload: yes
 Depends: octave (> 2.9.9)
-SVNRelease: 7165
+SVNRelease: 7197

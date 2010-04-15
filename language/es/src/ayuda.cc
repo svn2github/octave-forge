@@ -54,8 +54,8 @@ Use `help' para ver el texto de ayuda original."
 operadores se encuentra disponible en la versión en línea del manual.\n\
 Use el comando `doc <tema>' para buscar en el índice del manual.\n\
 \n\
-Para ayuda e información adicional acerca de Octave visite\n\
-el sitio web http://www.octave.org o a través de la lista de correo\n\
+Para ayuda e información adicional acerca de GNU Octave visite el\n\
+sitio web http://www.octave.org/ o a través de la lista de correo\n\
 help@octave.org.\n"
 
 // Language specific macros and seealso macro

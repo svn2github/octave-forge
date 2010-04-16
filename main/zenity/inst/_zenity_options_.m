@@ -18,7 +18,8 @@
 ## This function is not intended for users but for the other functions of the
 ## zenity package. Returns the structure @var{options} that holds the processed
 ## @var{param} and @var{value} for the function of the zenity package
-## @var{dialog}. @var{dialog} must be a string and one of the following:
+## @var{dialog}, or the defaults when they are not defined.. @var{dialog} must
+## be a string and one of the following:
 ##
 ## @table @samp
 ## @item calendar
@@ -60,6 +61,7 @@ function op = _zenity_options_ (dialog, varargin)
     op.directory = op.filename = op.multiple = op.save = "";
   elseif (strcmpi(dialog, "list"))
   elseif (strcmpi(dialog, "message"))
+    op.type = op.wrap = "";
   elseif (strcmpi(dialog, "notification"))
   elseif (strcmpi(dialog, "progress"))
   elseif (strcmpi(dialog, "scale"))
@@ -87,111 +89,136 @@ function op = _zenity_options_ (dialog, varargin)
     if (narg <= numel(varargin))  # Check if we are already in the last index
       value = varargin{narg};     # this is only for readability later on
     else                          # Writing varargin{narg} in all conditions
-      clear value;                # is a pain and makes it even more confusing
+      value = "";                 # is a pain and makes it even more confusing
     endif
 
 
     if ( !ischar(param) )
-        error ("Parameter number %i is not a string", narg-1);
+        error ("All parameters must be strings.");
 
     ## Process ALL GENERAL OPTIONS first
     elseif (strcmpi(param,"title"))                   # General - title
-      if ( !exist("value", "var") || !ischar(value) )
-        error ("Parameter 'title' requires a string as value.");
-      elseif (op.title)
-        error ("Parameter 'title' defined twice, with values '%s' and '%s'", ...
-                op.title(10:end-1), value);
-      endif
-      op.title   = sprintf("--title=\"%s\"", value);
-      narg++;
+      narg            = sanity_checks ("char", param, value, op.title, narg);
+      op.title        = sprintf("--title=\"%s\"", value);
     elseif (strcmpi(param,"width"))                   # General - width
-      if ( !exist("value", "var") || !isscalar(value) )
-        error ("Parameter 'width' requires a scalar as value.");
-      elseif (op.width)
-        error ("Parameter 'width' defined twice, with values '%s' and '%g'", ...
-                op.width(9:end), value);
-      endif
-      op.width   = sprintf("--width=\"%s\"", num2str(value));
-      narg++;
+      narg            = sanity_checks ("scalar", param, value, op.width, narg);
+      op.width        = sprintf("--width=\"%s\"", num2str(value));
     elseif (strcmpi(param,"height"))                  # General - height
-      if ( !exist("value", "var") || !isscalar(value) )
-        error ("Parameter 'height' requires a scalar as value.");
-      elseif (op.height)
-        error ("Parameter 'height' defined twice, with values '%s' and '%g'", ...
-                op.height(10:end), value);
-      endif
-      op.height  = sprintf("--height=\"%s\"", num2str(value));
-      narg++;
+      narg            = sanity_checks ("scalar", param, value, op.height, narg);
+      op.height       = sprintf("--height=\"%s\"", num2str(value));
     elseif (strcmpi(param,"timeout"))                 # General - timeout
-      if ( !exist("value", "var") || !isscalar(value) )
-        error ("Parameter 'timeout' requires a scalar as value.");
-      elseif (op.timeout)
-        error ("Parameter 'timeout' defined twice, with values '%s' and '%g'", ...
-                op.timeout(11:end), value);
-      endif
-      op.timeout = sprintf("--timeout=\"%s\"", num2str(value));
-      narg++;
+      narg            = sanity_checks ("scalar", param, value, op.timeout, narg);
+      op.timeout      = sprintf("--timeout=\"%s\"", num2str(value));
 
     ## Process options for ZENITY_ENTRY
     elseif ( strcmpi(dialog, "entry") )
-      if (strcmpi(param,"entry"))                     # Entry - entry
-        if ( !exist("value", "var") || !ischar(value) )
-          error ("Parameter 'entry' requires a string as value.");
-        elseif (op.entry)
-          error ("Parameter 'entry' defined twice, with values '%s' and '%s'", ...
-                  op.entry(15:end-1), value);
-        endif
-        op.entry     = sprintf("--entry-text=\"%s\"", value);
-        narg++;
+      if (strcmpi(param,"entry"))                     # Entry - entry text
+        narg            = sanity_checks ("char", param, value, op.entry, narg);
+        op.entry        = sprintf("--entry-text=\"%s\"", value);
       elseif (strcmpi(param,"password"))              # Entry - password
-        if (op.password)
-          error ("Parameter 'password' set twice.");
-        endif
-        op.password  = sprintf("--hide-text");
+        narg            = sanity_checks ("indie", param, value, op.password, narg);
+        op.password     = "--hide-text";
       else
-        error ("Parameter '%s' is not supported", param);
+        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
 
     ## Process options for ZENITY_FILE_SELECTION
     elseif ( strcmpi(dialog, "file selection") )
       if (strcmpi(param,"directory"))                 # File selection - directory
-        if (op.directory)
-          error ("Parameter 'directory' set twice.");
-        endif
-        op.directory = sprintf("--directory");
+        narg            = sanity_checks ("indie", param, value, op.directory, narg);
+        op.directory    = "--directory";
       elseif (strcmpi(param,"filename"))              # File selection - filename
-        if ( !exist("value", "var") || !ischar(value) )
-          error ("Parameter 'filename' requires a string as value.");
-        elseif (op.filename)
-          error ("Parameter 'filename' defined twice, with values '%s' and '%s'", ...
-                  op.filename(13:end-1), value);
-        endif
+        narg            = sanity_checks ("char", param, value, op.filename, narg);
         op.filename     = sprintf("--filename=\"%s\"", value);
-        narg++;
       elseif (strcmpi(param,"multiple"))              # File selection - multiple
-        if (op.multiple)
-          error ("Parameter 'multiple' set twice");
-        endif
-        op.multiple  = sprintf("--multiple");
+        narg            = sanity_checks ("indie", param, value, op.multiple, narg);
+        op.multiple     = "--multiple";
       elseif (strcmpi(param,"overwrite"))             # File selection - overwrite
-        if (op.overwrite)
-          error ("Parameter 'overwrite' set twice");
-        endif
-        op.overwrite  = sprintf("--confirm-overwrite");
+        narg            = sanity_checks ("indie", param, value, op.overwrite, narg);
+        op.overwrite    = "--confirm-overwrite";
       elseif (strcmpi(param,"save"))                  # File selection - save
-        if (op.save)
-          error ("Parameter 'save' set twice");
-        endif
-        op.save  = sprintf("--save");
+        narg            = sanity_checks ("indie", param, value, op.save, narg);
+        op.save         = "--save";
       else
-        error ("Parameter '%s' is not supported", param);
+        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
 
+    ## Process options for ZENITY_MESSAGE
+    elseif ( strcmpi(dialog, "message") )
+      if (strcmpi(param,"type"))                      # Message - type
+        narg            = sanity_checks ("valueless", param, value, op.type, narg);
+        if (strcmpi(value,"error"))
+          op.type       = "--error";
+        elseif (strcmpi(value,"info"))
+          op.type       = "--info";
+        elseif (strcmpi(value,"question"))
+          op.type       = "--question";
+        elseif (strcmpi(value,"warning"))
+          op.type       = "--warning";
+        else
+          error ("Non supported type of message dialog '%s'", value);
+        endif
+      elseif (strcmpi(param,"wrap"))                  # Message - wrap
+        narg            = sanity_checks ("indie", param, value, op.wrap, narg);
+        op.wrap         = "--no-wrap";
+      else
+        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
+      endif
 
     else
-      error ("Parameter '%s' is not supported", param);
+      error ("Parameter '%s' is not supported.", param);
     endif
 
   endwhile
+
+  ## Set the DEFAULTS
+  if (strcmpi(dialog,"message"))                      # Defaults for Message
+    if ( isempty(op.type) )
+      op.type = "--info";
+    endif
+  endif
+
+
+endfunction
+
+################################################################################
+function narg = sanity_checks (type, param, value, previous, narg)
+  if (strcmpi(type,"char"))                             # Value must be string
+    if (previous)
+      idx = strfind(previous, "=");
+      error ("Parameter '%s' set twice, with values '%s' and '%s'.", ...
+                  param, previous(idx(1)+2:end-1), value);
+    elseif ( isempty(value) || !ischar(value) )
+      error ("Parameter '%s' requires a string as value.", param);
+    endif
+    narg++;
+
+  elseif (strcmpi(type,"scalar"))                       # Value must be scalar
+    if (previous)
+      idx = strfind(previous, "=");
+      error ("Parameter '%s' set twice, with values '%s' and '%g'.", ...
+                  param, previous(idx(1)+2:end-1), value);
+    elseif ( isempty(value) || !isscalar(value) )
+      error ("Parameter '%s' requires a scalar as value.", param);
+    endif
+    narg++;
+
+  elseif (strcmpi(type,"indie"))                        # Independent parameter
+    if (previous)
+      error ("Parameter '%s' set twice.", param);
+    endif
+
+  elseif (strcmpi(type,"valueless"))                    # Valueless parameter
+    if (previous)
+      error ("Parameter '%s' set twice, with values '%s' and '%s'.", ...
+                  param, previous(3:end), value);
+    elseif ( isempty(value) || !ischar(value) )
+      error ("Parameter '%s' requires a string as value.", param);
+    endif
+    narg++;
+
+  else
+    error ("Non supported type for sanity_checks '%s'.", type)
+  endif
 
 endfunction

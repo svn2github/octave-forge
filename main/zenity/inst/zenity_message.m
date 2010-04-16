@@ -3,7 +3,7 @@
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ## 
 ## This program is distributed in the hope that it will be useful,
@@ -65,83 +65,23 @@ function status = zenity_message(text, varargin)
   elseif (!ischar(text))
     error ("'text' argument must be a string")
   endif
-  text = ["--text=\"", text, "\""];
+  text = sprintf("--text=\"%s\"", text);
 
-  ## Process of all options and values
-  type = "--info";  # Info is the default type
-  title = wrap = width = height = timeout = "";
+  options = _zenity_options_ ("message", varargin);
 
-  narg = 1;
-  while (narg <= numel (varargin))
-    option = varargin{narg++};
-    if ( !ischar(option) )
-        error ("Option/parameter number %i is not a string", narg)
+  cmd = sprintf("zenity %s %s %s %s %s %s %s %s %s", ...
+                options.type, text, options.wrap, options.title, ...
+                options.width, options.height, options.timeout);
 
-    elseif (strcmpi(option,"type"))
-      if ( !ischar(varargin{narg}) )
-        error ("Parameter 'type' requires a string as value.");
-      endif
-      value     = varargin{narg++};
-      if (strcmpi(value,"error"))
-        type    = "--error";
-      elseif (strcmpi(value,"info"))
-        type    = "--info";
-      elseif (strcmpi(value,"question"))
-        type    = "--question";
-      elseif (strcmpi(value,"warning"))
-        type    = "--warning";
-      else
-        error ("Illegal value '%s' for parameter 'type'", value);
-      endif
-
-    elseif (strcmpi(option,"title"))
-      if ( !ischar(varargin{narg}) )
-        error ("Parameter 'title' requires a string as value.");
-      endif
-      title     = ["--title=\"", varargin{narg++}, "\""];
-
-    elseif (strcmpi(option,"no-wrap"))
-      wrap      = "--no-wrap";
-
-    elseif (strcmpi(option,"width"))
-      if ( !isscalar(varargin{narg}) )
-        error ("Parameter 'width' requires a scalar as value.");
-      endif
-      value     = num2str (varargin{narg++});
-      width     = ["--width=", value];
-
-    elseif (strcmpi(option,"height"))
-      if ( !isscalar(varargin{narg}) )
-        error ("Parameter 'height' requires a scalar as value.");
-      endif
-      value     = num2str (varargin{narg++});
-      height    = ["--height=", value];
-
-    elseif (strcmpi(option,"timeout"))
-      if ( !isscalar(varargin{narg}) )
-        error ("Parameter 'timeout' requires a scalar as value.");
-      endif
-      value     = num2str (varargin{narg++});
-      timeout   = ["--timeout=", value];
-
-    else
-      error ("Parameter '%s' not supported", option)
-    endif
-
-  endwhile
-
-  cmd = sprintf('zenity %s %s %s %s %s %s %s', ...
-                type, text, title, timeout, wrap, width, height);
   [status, output] = system(cmd);
 
-# Exit code -1 = An unexpected error has occurred
-# Exit code  0 = The user has pressed either OK or Close. 
-# Exit code  1 = The user has either pressed Cancel, or used the window
-# functions to close the dialog
-# Exit code  5 = The dialog has been closed because the timeout has been reached
+  # Exit code -1 = An unexpected error has occurred
+  # Exit code  0 = The user has pressed either OK or Close. 
+  # Exit code  1 = The user has either pressed Cancel, or used the window
+  # functions to close the dialog
+  # Exit code  5 = The dialog has been closed because the timeout has been reached
   if (status == 0 || 1 || 5)
     return
-
   else
     error("An unexpected error occurred with exit code '%i' and output '%s'",...
           status, output);

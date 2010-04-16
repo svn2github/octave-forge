@@ -528,7 +528,7 @@ FunctionEnd
 Section -Post
 
    ExecWait '"$INSTDIR\bin\octave.exe" -qfH --eval "pkg rebuild"'
-   ExecWait '"$INSTDIR\bin\octave.exe" -qfH --eval "pkg rebuild -noauto windows ga communications octcdf java jhandles"'
+   ExecWait '"$INSTDIR\bin\octave.exe" -qfH --eval "pkg rebuild -noauto windows ga communications octcdf java jhandles oct2mat"'
 
 SectionEnd
 

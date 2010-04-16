@@ -48,6 +48,10 @@ function files = zenity_file_selection(varargin)
 
   options = _zenity_options_ ("file selection", varargin);
 
+  if ( !isempty(options.save) && (!isempty(options.multiple) || !isempty(options.directory)) )
+    error ("Parameter 'save' cannot be set together with 'multiple' or directory'.");
+  endif
+
   # The separator is set to "/" because it's an invalid character for filenames
   # in most filesystems and so, unlikely to exist in the middle of filenames.
   # It's also the fileseparator so filenames will always already start with a

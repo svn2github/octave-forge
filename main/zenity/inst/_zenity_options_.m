@@ -58,7 +58,7 @@ function op = _zenity_options_ (dialog, varargin)
   elseif (strcmpi(dialog, "entry"))
     op.password = op.entry = "";
   elseif (strcmpi(dialog, "file selection"))
-    op.directory = op.filename = op.multiple = op.save = "";
+    op.directory = op.filename = op.filter = op.multiple = op.save = "";
   elseif (strcmpi(dialog, "list"))
   elseif (strcmpi(dialog, "message"))
     op.type = op.wrap = "";
@@ -130,6 +130,9 @@ function op = _zenity_options_ (dialog, varargin)
       elseif (strcmpi(param,"filename"))              # File selection - filename
         narg            = sanity_checks ("char", param, value, op.filename, narg);
         op.filename     = sprintf("--filename=\"%s\"", value);
+      elseif (strcmpi(param,"filter"))                # File selection - file filter
+        narg            = sanity_checks ("multiple", param, value, op.directory, narg);
+        op.filter    = sprintf("%s --file-filter=\"%s\"", op.filter, value);
       elseif (strcmpi(param,"multiple"))              # File selection - multiple
         narg            = sanity_checks ("indie", param, value, op.multiple, narg);
         op.multiple     = "--multiple";
@@ -213,6 +216,12 @@ function narg = sanity_checks (type, param, value, previous, narg)
       error ("Parameter '%s' set twice, with values '%s' and '%s'.", ...
                   param, previous(3:end), value);
     elseif ( isempty(value) || !ischar(value) )
+      error ("Parameter '%s' requires a string as value.", param);
+    endif
+    narg++;
+
+  elseif (strcmpi(type,"multiple"))                     # Value can be set more than once
+    if ( isempty(value) || !ischar(value) )
       error ("Parameter '%s' requires a string as value.", param);
     endif
     narg++;

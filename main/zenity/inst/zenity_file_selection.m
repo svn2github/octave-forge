@@ -25,6 +25,13 @@
 ## Activates directory-only selection. No value is required.
 ## @item filename
 ## Sets the default selected file. Requires a string as value.
+## @item filter
+## Sets a filename filter. Requires a string as value. Multiple filters can be
+## set with multiple calls for this setting. The following example shows how to
+## block users from selecting files that don't end in `.txt' or `.m':
+## @example
+## @code{zenity_file_selection ("filter", "*.txt", "filter", "*.m")}
+## @end example
 ## @item height
 ## Sets the height of the dialog window. Requires a scalar as value.
 ## @item multiple
@@ -56,10 +63,10 @@ function files = zenity_file_selection(varargin)
   # in most filesystems and so, unlikely to exist in the middle of filenames.
   # It's also the fileseparator so filenames will always already start with a
   # '/' which is good since we can look for double '//' as separator for filepaths
-  cmd = sprintf("zenity --file-selection --separator=\"/\" %s %s %s %s %s %s", ...
+  cmd = sprintf("zenity --file-selection --separator=\"/\" %s %s %s %s %s %s %s", ...
                  options.directory, options.filename, options.height, ...
                  options.multiple, options.save, options.timeout, ...
-                 options.title, options.width);
+                 options.title, options.width, options.filter);
 
   [status, output] = system(cmd);
 

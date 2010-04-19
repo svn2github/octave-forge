@@ -51,7 +51,7 @@ function op = _zenity_options_ (dialog, varargin)
 
   varargin = varargin{1};    # because other functions varargin is this varargin
 
-  op.title = op.width = op.height = op.timeout = "";
+  op.title = op.width = op.height = op.timeout = op.icon = "";
   if ( !ischar(dialog) )
     error ("Type of dialog should be a string");
   elseif (strcmpi(dialog, "calendar"))
@@ -109,6 +109,9 @@ function op = _zenity_options_ (dialog, varargin)
     elseif (strcmpi(param,"timeout"))                 # General - timeout
       narg            = sanity_checks ("scalar", param, value, op.timeout, narg);
       op.timeout      = sprintf("--timeout=\"%s\"", num2str(value));
+    elseif (strcmpi(param,"icon"))                    # General - icon
+      narg            = sanity_checks ("char", param, value, op.icon, narg);
+      op.icon         = sprintf("--window-icon=\"%s\"", value);
 
     ## Process options for ZENITY_ENTRY
     elseif ( strcmpi(dialog, "entry") )
@@ -132,7 +135,7 @@ function op = _zenity_options_ (dialog, varargin)
         op.filename     = sprintf("--filename=\"%s\"", value);
       elseif (strcmpi(param,"filter"))                # File selection - file filter
         narg            = sanity_checks ("multiple", param, value, op.directory, narg);
-        op.filter    = sprintf("%s --file-filter=\"%s\"", op.filter, value);
+        op.filter       = sprintf("%s --file-filter=\"%s\"", op.filter, value);
       elseif (strcmpi(param,"multiple"))              # File selection - multiple
         narg            = sanity_checks ("indie", param, value, op.multiple, narg);
         op.multiple     = "--multiple";

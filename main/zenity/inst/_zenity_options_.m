@@ -63,6 +63,7 @@ function op = _zenity_options_ (dialog, varargin)
   elseif (strcmpi(dialog, "message"))
     op.type = op.wrap = "";
   elseif (strcmpi(dialog, "notification"))
+    op.text = "";
   elseif (strcmpi(dialog, "progress"))
   elseif (strcmpi(dialog, "scale"))
   elseif (strcmpi(dialog, "text info"))
@@ -111,7 +112,17 @@ function op = _zenity_options_ (dialog, varargin)
       op.timeout      = sprintf("--timeout=\"%s\"", num2str(value));
     elseif (strcmpi(param,"icon"))                    # General - icon
       narg            = sanity_checks ("char", param, value, op.icon, narg);
-      op.icon         = sprintf("--window-icon=\"%s\"", value);
+      if (strcmpi(value, "error"))
+        op.icon       = "--window-icon=\"error\"";
+      elseif (strcmpi(value, "info"))
+        op.icon       = "--window-icon=\"info\"";
+      elseif (strcmpi(value, "question"))
+        op.icon       = "--window-icon=\"question\"";
+      elseif (strcmpi(value, "warning"))
+        op.icon       = "--window-icon=\"warning\"";
+      else
+        op.icon       = sprintf("--window-icon=\"%s\"", value);
+      endif
 
     ## Process options for ZENITY_ENTRY
     elseif ( strcmpi(dialog, "entry") )
@@ -171,6 +182,15 @@ function op = _zenity_options_ (dialog, varargin)
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
 
+    ## Process options for ZENITY_NOTIFICATION
+    elseif ( strcmpi(dialog, "notification") )
+      if (strcmpi(param,"text"))                 # Notification - text
+        narg            = sanity_checks ("char", param, value, op.text, narg);
+        op.text         = sprintf("--text=\"%s\"", value);
+      else
+        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
+    endif
+
     else
       error ("Parameter '%s' is not supported.", param);
     endif
@@ -182,8 +202,11 @@ function op = _zenity_options_ (dialog, varargin)
     if ( isempty(op.type) )
       op.type = "--info";
     endif
+  elseif (strcmpi(dialog,"notification"))             # Defaults for Notification
+    if ( isempty(op.icon) )
+      op.icon = "--window-icon=\"warning\"";
+    endif
   endif
-
 
 endfunction
 

@@ -103,14 +103,13 @@ function files = zenity_file_selection(varargin)
     warning("No file selected. Returning empty string.");
     files = "";
   elseif (status == 5 && options.multiple)
-    warning("Timeout reached. No file selected selected. Returning empty cell array.");
+    warning("Timeout reached. No file selected. Returning empty cell array.");
     files = cell(1);
   elseif (status == 5)
-    warning("Timeout reached. No file selected selected. Returning empty string.");
+    warning("Timeout reached. No file selected. Returning empty string.");
     files = "";
-  elseif (status == -1)
-    error("An unexpected error occurred: %s", output);
   else
-    error("zenity_file_selection: %s", output);
+    error("An unexpected error occurred with exit code '%i' and output '%s'",...
+          status, output);
   endif
 endfunction

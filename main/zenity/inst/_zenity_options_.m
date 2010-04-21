@@ -223,11 +223,8 @@ function op = _zenity_options_ (dialog, varargin)
         for i = 1:numel(value)
           if (value(i) == 1)
             op.hide_one = 1;                          # Needed for sanity checks
-          elseif (value(i) == 0)
-            tmp = "all";
-            break
-          elseif (value(i) < 0)
-            error ("Value %g is not accepted for parameter '%s', all must be non-negative.", value(i), param)
+          elseif (value(i) < 1)
+            error ("Value %g is not accepted for parameter '%s', must be larger than zero.", value(i), param)
           elseif (value(i) > list.col)
             error ("Value %g for the parameter '%s' is larger than the number of columns.", value(i), param)
           endif
@@ -242,6 +239,9 @@ function op = _zenity_options_ (dialog, varargin)
           if (value(i) == 1)
             op.print_col_one = 1;                     # Needed for sanity checks
           elseif (value(i) == 0)
+            if (numel(value) > 1)
+              error ("Value 0 (all) found as value for parameter '%s'. If desired must be set alone as scalar.", param);
+            endif
             tmp = "all";
             break
           elseif (value(i) < 0)
@@ -320,7 +320,7 @@ function narg = sanity_checks (type, param, value, previous, narg)
 
   elseif (strcmpi(type,"num"))                # Value can be set more than once
     if ( isempty(value) || !isnumeric(value) )
-      error ("Parameter '%g' requires a numeric as value.", param);
+      error ("Parameter '%s' requires a numeric as value.", param);
     endif
     narg++;
 

@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------
 #pragma hdrstop
 //-------------------------------------------------------------------
-//   C-MEX implementation of STR2DOUBLE - this function is part of the NaN-toolbox. 
-//   Actually, it also fixes a problem in str2double.m described here:
+//   C-MEX implementation of STR2ARRAY - this function is part of the NaN-toolbox. 
+//   Actually, it also fixes a problem in STR2ARRAY.m described here:
 //   http://www-old.cae.wisc.edu/pipermail/help-octave/2007-December/007325.html
 //
 //   This program is free software; you can redistribute it and/or modify
@@ -20,12 +20,12 @@
 //
 //
 // usage:
-//	[...] = str2double_mex(s)
-//	[...] = str2double_mex(sa)
-//	[...] = str2double_mex(s,cdelim)
-//	[...] = str2double_mex(s,cdelim,rdelim)
-//	[...] = str2double_mex(s,cdelim,rdelim,ddelim)
-//	[num,status,strarray] = str2double_mex(...)
+//	[...] = STR2ARRAY(s)
+//	[...] = STR2ARRAY(sa)
+//	[...] = STR2ARRAY(s,cdelim)
+//	[...] = STR2ARRAY(s,cdelim,rdelim)
+//	[...] = STR2ARRAY(s,cdelim,rdelim,ddelim)
+//	[num,status,strarray] = STR2ARRAY(...)
 //
 // Input:
 //  s 	        char string 
@@ -35,7 +35,7 @@
 //  ddelim      decimal delimiter
 //
 // Output:
-//    $Id$
+//    $Id: STR2ARRAY.cpp 7142 2010-03-30 18:48:06Z schloegl $
 //    Copyright (C) 2010 Alois Schloegl <a.schloegl@ieee.org>
 //    This function is part of the NaN-toolbox
 //    http://biosig-consulting.com/matlab/NaN/
@@ -144,26 +144,28 @@ void mexFunction(
 	char *cdelim = "\x09,";
 	char *rdelim = "\x0a;";
 	char *ddelim = NULL;
-	char *valid_delim = " ()[]{},;:\"|/\x20\x21\x22\x09\0x0a\0x0b\0x0c\0x0d\x00";	// valid delimiter
+	char *valid_delim = " ()[]{},;:\"|/\x21\x22\x09\0x0a\0x0b\0x0c\0x0d\x00";	// valid delimiter
 	uint8_t *u;	
 	size_t slen = 0,k;
 	size_t maxcol=0, maxrow=0, nr, nc;
 	
 	if (nrhs<1) {
-		mexPrintf("   STR2DOUBLE.MEX is a mex-implementation of STR2DOUBLE.M\n");
-		mexPrintf("   Actually, it fixes the problem discussed here: http://www-old.cae.wisc.edu/pipermail/help-octave/2007-December/007325.html\n");
-		mexPrintf("\n   Usage of STR2DOUBLE_MEX:\n");
-		mexPrintf("\t[...] = str2double(s)\n");
-		mexPrintf("\t[...] = str2double(sa)\n");
-		mexPrintf("\t[...] = str2double(s,cdelim)\n");
-		mexPrintf("\t[...] = str2double(s,cdelim,rdelim)\n");
-		mexPrintf("\t[...] = str2double(s,cdelim,rdelim,ddelim)\n");
-		mexPrintf("\t[num,status,strarray] = str2double(...)\n");
+		mexPrintf("   STR2ARRAY.MEX converts delimiter text files into arrays of numerics and cell-strings\n");
+		mexPrintf("   STR2ARRAY.MEX converts delimiter text files into numeric arrays\n");
+		mexPrintf("   It fixes a problem of the old STR2DOUBLE discussed here: http://www-old.cae.wisc.edu/pipermail/help-octave/2007-December/007325.html\n");
+		mexPrintf("   at avoids using the insecure STR2NUM using EVAL\n");
+		mexPrintf("\n   Usage of STR2ARRAY:\n");
+		mexPrintf("\t[...] = STR2ARRAY(s)\n");
+		mexPrintf("\t[...] = STR2ARRAY(sa)\n");
+		mexPrintf("\t[...] = STR2ARRAY(s,cdelim)\n");
+		mexPrintf("\t[...] = STR2ARRAY(s,cdelim,rdelim)\n");
+		mexPrintf("\t[...] = STR2ARRAY(s,cdelim,rdelim,ddelim)\n");
+		mexPrintf("\t[num,status,strarray] = STR2ARRAY(...)\n");
 		mexPrintf("   Input:\n\ts\tstring\n\tsa\tcell array of strings\n\tcdelim\tlist of column delimiters (default: \"<Tab>,\"\n\trdelim\tlist of row delimiter (defautlt: \"<LF><CR>;\")");
 		mexPrintf("\n\tddelim\tdecimal delimiter (default: \".\"). This is useful if decimal delimiter is a comma (e.g. after Excel export in Europe)\n");
 		mexPrintf("   Output:\n\tnum\tnumeric array\n\tstatus\tflag failing conversion\n\tstrarray\tcell array of strings contains strings of failed conversions\n");
-		mexPrintf("\nExamples:\n\tstr2double('4.12')\n\tstr2double('1.2 - 3.4e2i')   complex numbers\n\tstr2double('101.01 , 0-i4; 1.2 - i * 3.4, abc')\n\tstr2double({'101.01', '0-i4'; '1.2 - i * 3.4', 'abc'})\n\tstr2double('1,2;a,b,c;3,4')\n");
-		mexPrintf("\tstr2double('1;2,3;4',';',',')   exchange row- and column delimiter\n\tstr2double('1,200 4;3,400 5',' ',';',',')  replace decimal delimter\n");
+		mexPrintf("\nExamples:\n\tSTR2ARRAY('4.12')\n\tSTR2ARRAY('1.2 - 3.4e2i')   complex numbers\n\tSTR2ARRAY('101.01 , 0-i4; 1.2 - i * 3.4, abc')\n\tSTR2ARRAY({'101.01', '0-i4'; '1.2 - i * 3.4', 'abc'})\n\tSTR2ARRAY('1,2;a,b,c;3,4')\n");
+		mexPrintf("\tSTR2ARRAY('1;2,3;4',';',',')   exchange row- and column delimiter\n\tSTR2ARRAY('1,200 4;3,400 5',' ',';',',')  replace decimal delimter\n");
 		return; 
 	}
 
@@ -249,13 +251,15 @@ void mexFunction(
 
 	/* identify separators */
 	u = (uint8_t*) mxMalloc(slen+1);
-	for (k = 0; k < slen; k++) {
-		if (strchr(cdelim,s[k]) != NULL)
+	for (k = 0; k < slen; ) {
+		if (strchr(cdelim,s[k]) != NULL) {
 			u[k] = 1;	// column delimiter
+			while (s[++k]==' ');        // ignore extra space characters
+		}	
 		else if (strchr(rdelim,s[k]) != NULL)
-			u[k] = 2;	// row delimiter
+			u[k++] = 2;	// row delimiter
 		else 
-			u[k] = 0; 	// ordinary character 
+			u[k++] = 0; 	// ordinary character 
 	}
 
 	/* count dimensions and set delimiter elements to 0 */

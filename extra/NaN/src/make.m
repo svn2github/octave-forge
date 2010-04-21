@@ -11,7 +11,7 @@ fprintf(1,'!!!!!!!\n\tPlease note, not all functions might compile. \n!!!!!!!\n'
 mex covm_mex.cpp
 mex sumskipnan_mex.cpp
 mex histo_mex.cpp
-mex str2double.cpp
+mex str2array.cpp
 mex -c svm.cpp
 mex -c svm_model_matlab.c
 mex -c tron.cpp

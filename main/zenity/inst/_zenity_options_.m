@@ -52,10 +52,10 @@ function op = _zenity_options_ (dialog, varargin)
   varargin = varargin{1};    # because other functions varargin is this varargin
 
   ## A present from zenity_list. Take it out of varargin before before other stuff
-  if ( strcmpi(dialog, "list") )
-   list.col       = varargin{end};
-    varargin(end) = [];             # By using (end), it actually pulls the value out instead of leaving it empty
-  endif
+#  if ( strcmpi(dialog, "list") )
+#   list.col       = varargin{end};
+#    varargin(end) = [];             # By using (end), it actually pulls the value out instead of leaving it empty
+#  endif
 
   op.title = op.width = op.height = op.timeout = op.icon = "";
   if ( !ischar(dialog) )
@@ -66,8 +66,10 @@ function op = _zenity_options_ (dialog, varargin)
   elseif (strcmpi(dialog, "file selection"))
     op.directory = op.filename = op.filter = op.multiple = op.save = "";
   elseif (strcmpi(dialog, "list"))
-    op.separator = op.text  = op.hide  = op.print_col = op.print_col_one = "";
-    op.multiple  = op.radio = op.check = op.editable  = op.hide_one      = "";
+    op.separator = op.text     = op.hide      = op.print_col = "";
+    op.multiple  = op.radio    = op.check     = op.editable  = "";
+    op.hide_max  = op.hide_min = op.print_max = op.print_min = "";
+    op.print_numel = "";
   elseif (strcmpi(dialog, "message"))
     op.type = op.wrap = "";
   elseif (strcmpi(dialog, "notification"))
@@ -219,43 +221,33 @@ function op = _zenity_options_ (dialog, varargin)
         op.check        = "--checklist";
       elseif (strcmpi(param,"hide column"))            # List - hide column
         narg            = sanity_checks ("num", param, value, op.hide, narg);
+        op.hide_min     = min(value(:));
+        op.hide_max     = max(value(:));
         tmp             = "";
         for i = 1:numel(value)
-          if (value(i) == 1)
-            op.hide_one = 1;                          # Needed for sanity checks
-          elseif (value(i) < 1)
-            error ("Value %g is not accepted for parameter '%s', must be larger than zero.", value(i), param)
-          elseif (value(i) > list.col)
-            error ("Value %g for the parameter '%s' is larger than the number of columns.", value(i), param)
-          endif
           str = num2str(value(i));
           tmp = sprintf("%s%s,", tmp, str);
         endfor
-        op.hide         = sprintf("--hide-column=%s", tmp);
+        op.hide         = sprintf("--hide-column=\"%s\"", tmp);
       elseif (strcmpi(param,"print column"))          # List - print column
         narg            = sanity_checks ("num", param, value, op.print_col, narg);
+        op.print_min    = min(value(:));
+        op.print_max    = max(value(:));
+        op.print_numel  = numel(value);
         tmp             = "";
         for i = 1:numel(value)
-          if (value(i) == 1)
-            op.print_col_one = 1;                     # Needed for sanity checks
-          elseif (value(i) == 0)
-            if (numel(value) > 1)
-              error ("Value 0 (all) found as value for parameter '%s'. If desired must be set alone as scalar.", param);
-            endif
-            tmp = "all";
+          if (value == 0)
+            tmp = "all"
             break
-          elseif (value(i) < 0)
-            error ("Value %g is not accepted for parameter '%s', all must be non-negative.", value(i), param)
-          elseif (value(i) > list.col)
-            error ("Value %g for the parameter '%s' is larger than the number of columns.", value(i), param)
           endif
           str = num2str(value(i));
           tmp = sprintf("%s%s,", tmp, str);
         endfor
-        op.hide         = sprintf("--print-column=%s", tmp);
+        op.print_col    = sprintf("--print-column=\"%s\"", tmp);
       else
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
+
 
     else
       error ("Parameter '%s' is not supported.", param);
@@ -281,7 +273,7 @@ function narg = sanity_checks (type, param, value, previous, narg)
   if (strcmpi(type,"char"))                             # Value must be string
     if (previous)
       idx = strfind(previous, "=");
-      error ("Parameter '%s' set twice, with values '%s' and '%s'.", ...
+      error ("Parameter '%s' set twice, with values '%s' and '%g'.", ...
                   param, previous(idx(1)+2:end-1), value);
     elseif ( isempty(value) || !ischar(value) )
       error ("Parameter '%s' requires a string as value.", param);
@@ -319,7 +311,11 @@ function narg = sanity_checks (type, param, value, previous, narg)
     narg++;
 
   elseif (strcmpi(type,"num"))                # Value can be set more than once
-    if ( isempty(value) || !isnumeric(value) )
+    if (previous)
+      idx = strfind(previous, "=");
+      error ("Parameter '%s' set twice, with values '%s' and '%g'.", ...
+                  param, previous(idx(1)+2:end-1), value);
+    elseif ( isempty(value) || !isnumeric(value) )
       error ("Parameter '%s' requires a numeric as value.", param);
     endif
     narg++;

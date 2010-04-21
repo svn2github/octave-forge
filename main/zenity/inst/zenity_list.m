@@ -1,8 +1,9 @@
 ## Copyright (C) 2006 Søren Hauberg
+## Copyright (C) 2010 Carnë Draug
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ## 
 ## This program is distributed in the hope that it will be useful,
@@ -14,100 +15,309 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} @var{s} = zenity_list(@var{title}, @var{columns}, @var{data}, @var{options1}, ...)
-## Displays a graphical list of data.
-## The variable @var{title} sets the title of the list. The variable
-## @var{columns} must be a cell array of strings of length N containing the headers
-## of the list. The variable @var{data} must be cell array of strings of
-## length NxM containing the data of the list.
+## @deftypefn {Function File} [@var{selected}, @var{status}] = zenity_list(@var{columns}, @var{data}, @var{param1}, @var{value1}, ...)
+## Displays a graphical list of data using Zenity. The values on the list can be
+## selected and/or modified by the user.
 ##
-## The code
+## @var{columns} must be a cell array of strings of length N containing the
+## headers for each column of the list. @var{data} must be a cell array of
+## strings of size NxM containing the data for the list.
+##
+## The following code produces a list dialog with two columns. The first column,
+## @code{Age}, will have the values @code{10} and @code{20}, while the second,
+## @code{Height}, will have the values @code{120cm} and @code{180cm}:
+##
 ## @example
-## zenity_list("Age versus Height", @{"Age", "Height"@}, 
-## @{"10", "20"; "120cm", "180cm"@})
+## columns = @{"Age", "Height"@}
+## data    = @{"10", "120cm",
+##            "20"; "180cm"@}
+## zenity_list(columns, data)
 ## @end example
-## produces a list of the data. The user can select a row in the table, and it's
-## first value will be returned by the function when the user closes the window.
 ##
-## It's possible to alter the behaviour of the list window by passing more than
-## three arguments to the funtion. Theese optional string arguments can be
+## The output @var{selected} will hold a string with the value of the
+## first column of the selected row. If the parameter @code{multiple} is set or
+## the @code{print column} has multiple values, @var{selected} is a cell array
+## of strings. If a value is empty, it returns @code{(null)}. The values of
+## @var{selected} may come in any order since the user is allowed to sort them.
+##
+## The output @var{status} holds the exit code. 0 if user pressed cancel, 1 if
+## pressed OK and selected at least one row, 5 if timeout has been reached, and
+## 256 if user has pressed OK but selected no row. In the case no value has been
+## selected when the window closes, @var{selected} will hold an empty string or
+## cell array, the same size as it would be expected if one value had been
+## selected.
+##
+## All @var{parameters} are optional, but if given, may require a corresponding
+## @var{value}. All possible parameters are:
+##
 ## @table @samp
-## @item message
-## Is a string that writes the main message of the menu list
 ## @item checklist
-## The first row in the list will be a check box. The first value of each data row
-## must be either "TRUE" or "FALSE".
-## @item radiolist
-## The first row in the list will be a radio list. The first value of each data row
-## must be either "TRUE" or "FALSE".
+## The first column in the list will be of check buttons. No value is required. If
+## set, the first column of @var{data} must consist of strings with values
+## @code{true} or @code{false} and the rows with values of @code{true} will be
+## selected by default. This parameter cannot be set together with the
+## parameters @code{editable}.or @code{checklist}. It automatically sets
+## the parameter @code{multiple}. If set, @var{selected} will hold the
+## values for the second column of data.
+##
+## The following example creates a list with the first and second row selected
+## by default. If user presses OK, it will return a cell array with two rows,
+## with the strings @code{FreeBSD} and @code{Linux}.
+##
+## @example
+## columns = @{"", "OS"@}
+## data    = @{"true" , "FreeBSD",
+##            "true" , "Linux",
+##            "false", "NetBSD"
+##            "false", "OpenBSD",
+##            "false", "OpenSolaris"@}
+## zenity_list(columns, data, "checklist")
+## @end example
+##
 ## @item editable
-## The values of the list will be editable by the user.
-## @item A numeric value
-## The user can pick a particular column. Substitute 'A numeric value' with
-## an actual Integer value. This numeric value represents which column of the user selected row will be returned.
-## @item all
-## The value returned by the function will be the entire row selected by the user.
+## Allows the user to edit the values. No value is required. It cannot be set
+## together with the parameters @code{checklist} or @code{radiolist}. Since a
+## value can be erased, if an empty value is selected, it returns @code{(null)}.
+##
+## @item height
+## Sets the height of the dialog window. Requires a scalar as value.
+##
+## @item hide column
+## Hides the specified columns from the user. Requires a numeric data type as
+## value. Multiple columns can be selected with ranges or matrixes. If the
+## parameters @code{radiolist} or @code{checklist} are set, the first
+## column cannot cannot be hidden. The values of these columns will still be
+## present in the output @var{selected}.
+##
+## @item multiple
+## Allows multiple rows to be selected. No value is required. It cannot be set
+## together with parameter @code{radiolist}. and it is automatically set when
+## parameter @code{checklist} is set.
+##
+## @item print column
+## The numbers of the columns whose values should be returned. Requires a numeric
+## data type as value. Multiple columns can be selected with ranges or matrixes,
+## and all columns can be selected with the scalar 0 (zero). If the
+## parameters @code{radiolist} or @code{checklist} are set, the first
+## column cannot cannot be returned.
+##
+## @item radiolist
+## The first column in the list will be of radio buttons. No value is required. If
+## set, the first column of @var{data} must be consiste of strings with values
+## @code{true} or @code{false}. If a row has a value of @code{true}, and only
+## one row can have that value, it will be selected by default. This parameter
+## cannot be set together with the parameters @code{multiple},
+## @code{editable}.or @code{checklist}. If set, @var{selected} will hold the
+## values for the second column of data.
+##
+## @item text
+## Sets the dialog text. Requires a string as value.
+##
+## @item timeout
+## Sets the time in seconds after which the dialog is closed. Requires a scalar
+## as value.
+##
+## @item title
+## Sets the title of the window. Requires a string as value.
+##
+## @item width
+## Sets the width of the dialog window. Requires a scalar as value.
+##
 ## @end table
 ##
-## @seealso{zenity_calendar, zenity_progress, zenity_entry, zenity_message,
-## zenity_text_info, zenity_file_selection, zenity_notification}
+## @seealso{input, menu, kbhit, zenity_message, zenity_file_selection,
+## zenity_notification}
 ## @end deftypefn
 
-function s = zenity_list(title, columns, data, varargin)
-  if (nargin < 3 || !ischar(title) || !iscellstr(columns) || !iscellstr(data))
-    print_usage();
+function [val, status] = zenity_list(col, data, varargin)
+
+  ## List of things that cannot be done:
+  ## * editable cannot be set at the same time of checklist or radiolist
+  ## * radiolist and checklist cannot be set at the same time
+  ## * multiple and radiolist cannot be set at the same time
+  ## * if radiolist or checklist are set, only 'true' and 'false' strings are
+  ## allowed in the first column of data
+  ## * if radiolist is set, only one row of the first column can have a string
+  ## value of 'true'. All others must be 'false'
+  ## * if print and hide column are set, they can't have a value of 1 (which is
+  ## the buttons column)
+  ## * if print and hide column are set, they can't have a value of larger than
+  ## the number of columns  
+  ## * if print value is to be set to zero (all columns), it must be set alone
+  ## and not together with other values which contradict him
+  ## * number of columns 'data' must be the same size as 'columns'
+  ## * all cells in 'data' and 'column' must be strings
+
+
+  ## TODO
+  ## * should have the option to use logical values in the first column of data
+  ## when using radio or check buttons?
+  ## * parameters 'radiolist' and 'checklist' could take as value a cell array. The
+  ## first would have to be a string with the column tittle and the second either
+  ## a matrix of 1 and 0 (for the selected by default) or a scalar value with the
+  ## row number to select by default
+  ## * it could be possible to have a parameter that sets the divisor instead of
+  ## counting on the low chances of having a value with the string we use. However,
+  ## it's not so obvious how zenity will escape things, and same goes for the index
+  ## function used to split the output
+
+  if (nargin < 1)
+    error ("'columns' argument is not optional.")
+  elseif (nargin < 2)
+    error ("'data' argument must be a string.")
+  elseif (!iscell(col))
+    error ("'columns' argument must be a cell array.")
+  elseif (!iscell(data))
+    error ("'data' argument must be a cell array.")
   endif
-  
-  checklist = radiolist = editable = "";
-  print_column = "1";
-  message = "";
-  for i = 1:length(varargin)
-    option = varargin{i};
-    isc = ischar(option);
-    if (isc && strcmpi(option, "checklist"))
-      checklist = "--checklist";
-    elseif (isc && strcmpi(option, "radiolist"))
-      radiolist = "--radiolist";
-    elseif (isc && strcmpi(option, "editable"))
-      editable = "--editable";
-    elseif (isc && strcmpi(option, "all"))
-      print_column = "all";
-    elseif (isnumeric(option))
-      print_column = num2str(option);
-    elseif (isc)
-      message = ["--text=\"", option, "\""];
-    else
-      error("zenity_list: unsupported option");
+
+  ## Sanity checks
+  ## by using numel(col) instead of columns, allows to not worry on the dimension they are placed
+  if (columns(data) != numel(col))
+    error("Size of 'columns' (%g) is different than the number of columns in 'data' (%g).", ...
+          numel(col), columns(data))
+  endif
+  for i = 1:numel(data)
+    if (!ischar(data{i}))
+      error ("Index '%g' of the argument 'data' is not a string.", i);
     endif
   endfor
-  
-  columns = sprintf('--column="%s" ', columns{:});
-  data = sprintf("\"%s\" ", data{:});
-  
-  ## Escape certain characters
-  data = strrep(data, "\\", "\\\\");
+  for i = 1:numel(col)
+    if (!ischar(col{i}))
+      error ("Index '%g' of the argument 'columns' is not a string.", i);
+    endif
+  endfor
 
-  cmd = sprintf('zenity --list --title="%s" %s %s %s %s --print-column="%s" --separator=":" %s %s', ...
-                title, message, checklist, radiolist, editable, print_column, columns, data);
-  [status, output] = system(cmd);
-  if (status == 0)
-    if (length(output) > 0 && output(end) == "\n")
-      output = output(1:end-1);
-    endif
-    idx = strfind(output, ":");
-    idx = [0, idx, length(output)+1];
-    l = length(idx);
-    if (l == 2)
-      s = output;
-    else
-      s = cell(1, l-1);
-      for i = 1:l-1
-        s{i} = output((idx(i)+1):(idx(i+1)-1));
-      endfor
-    endif
-  elseif (status == 1)
-    s = "";
-  else
-    error("zenity_list: %s", output);
+  options                       = _zenity_options_ ("list", varargin);
+
+  ## More sanity checks
+  if ( !isempty(options.check) && !isempty(options.radio) )
+    error ("Parameter 'checklist' cannot be set together with 'radiolist'.")
+  elseif( !isempty(options.multiple) && !isempty(options.radio) )
+    error ("Parameter 'multiple' cannot be set together with 'radiolist'.")
+  elseif ( !isempty(options.editable) && !isempty(options.radio) )
+    error ("Parameter 'editable' cannot be set together with 'radiolist'.")
+  elseif ( !isempty(options.editable) && !isempty(options.check) )
+    error ("Parameter 'editable' cannot be set together with 'checklist'.")
+  elseif ( options.hide_min == 1 && (!isempty(options.check) || !isempty(options.radio)) )
+    error ("'hide column' cannot have a value of 1 when 'checklist' and 'radiolist' are set.");
+  elseif ( options.print_min == 1 && (!isempty(options.check) || !isempty(options.radio)) )
+    error ("'print column' cannot have a value of 1 when 'checklist' and 'radiolist' are set.");
+  elseif ( options.print_min == 0 && options.print_numel > 1)
+    error ("Value of 0 (all) found as value for parameter 'print column' as part of multiple values. If desired, it must be set as scalar.");
+  elseif ( options.hide_max > numel(col) )
+    error ("Value %g found for the parameter 'hide column' and is larger than the number of columns.", options.hide_max)
+  elseif ( options.print_max > numel(col) )
+    error ("Value %g found for the parameter 'print column' and is larger than the number of columns.", options.print_max)
+  elseif ( options.print_min < 0 )
+    error ("Negative value '%g' found for the parameter 'print column'.", options.print_min)
+  elseif ( options.hide_min < 1 )
+    error ("Parameter 'hide column' cannot have values smaller than 1 (found minimun as '%g').", options.hide_min)
   endif
+
+  if ( !isempty(options.check) )
+    for i = 1:rows(data)
+      if ( !strcmpi(data{i,1},"true") && !strcmpi(data{i,1},"false") )
+        error ("All cells on the first column of 'data' must be either 'true' or 'false' when 'radiolist' or 'checklist' are set.");
+      endif
+    endfor
+  elseif (!isempty(options.radio) )
+    seen_true = 0;
+    for i = 1:rows(data)
+      if ( !strcmpi(data{i,1},"true") && !strcmpi(data{i,1},"false") )
+        error ("All cells on the first column of 'data' must be either 'true' or 'false' when 'radiolist' or 'checklist' are set.");
+      elseif (strcmpi(data{i,1},"true"))
+        if (seen_true == 1)
+          error ("Only one cell on the first column of 'data' can be true, when 'radiolist is set.");
+        endif
+        seen_true = 1;
+      endif
+    endfor
+  endif
+
+  ## Process for input
+  data          = data';
+  options.col   = sprintf("--column=\"%s\" ", col{:});
+  options.data  = sprintf("\"%s\" ", data{:});
+
+  ## Set separator
+  options.separator = '--separator="/\\|/\\"';   # Will use /\|/\ as separator
+
+  pre_cmd = sprintf("%s ", ...
+                    options.title, options.width, options.height, ...
+                    options.timeout, options.separator, options.text, ...
+                    options.hide, options.print_col, options.multiple, ...
+                    options.radio, options.check, options.editable, ...
+                    options.col, options.data);
+
+  cmd               = sprintf ("zenity --list %s", pre_cmd);
+  [status, output]  = system(cmd);
+
+  # Exit code -1 = An unexpected error has occurred
+  # Exit code  0 = The user has pressed either OK or Close. 
+  # Exit code  1 = The user has either pressed Cancel, or used the window
+  # functions to close the dialog
+  # Exit code  5 = The dialog has been closed because the timeout has been reached
+
+  if ( options.print_min == 0 && (!isempty(options.check) || !isempty(options.radio)) )
+    expec_col = numel(col) -1;
+  elseif (options.print_min == 0)
+    expec_col = numel(col);
+  elseif (options.print_min != 0)
+    expec_col = options.print_numel;
+  else
+    expec_col = 1;
+  endif
+
+  if (status == 0)
+    ## User can press OK without selecting anything which returns empty string
+    if (isempty(output) || (numel(output) == 1 && output(end) == "\n") )
+      if (expec_col > 1)
+        val = cell(1,expec_col);
+      else
+        val = "";
+      endif
+     status = 256; # zenity should never return this value, it's forged for octave
+     return
+    endif
+    if (output(end) == "\n")
+        output = output(1:end-1);
+    endif
+  ## When 'multiple' values are expected, always place the output in a cell
+  ##array, even if only one file is selected.
+    if (expec_col > 1)
+      idx = strfind(output, '/\|/\');
+      if (idx)
+        tmp_val   = cell(length(idx)+1, 1);
+        idx       = [-4, idx, length(output)+1];
+        for i = 1 : (length(idx)-1)
+          tmp_val{i}  = output( idx(i)+5 : idx(i+1)-1 );
+        endfor
+        ## Order of the output will have them ordered by row. Must create an
+        ## inversed cell array to allocate the values and transverse it at the end
+        val = cell(expec_col, numel(tmp_val)/expec_col);
+        for i = 1 : numel(tmp_val)
+          val(i) = tmp_val(i);
+        endfor
+        val = val';
+      else
+        val     = cell(1);
+        val{1}  = output;
+      endif
+    else
+      val = output;
+    endif
+  elseif (status == 1 && expec_col > 1)
+    val = cell(1, expec_col);
+  elseif (status == 1)
+    val = "";
+  elseif (status == 5 && expec_col > 1)
+    val = cell(1, expec_col);
+  elseif (status == 5)
+    val = "";
+  else
+    error("An unexpected error occurred with exit code '%i' and output '%s'.",...
+          status, output);
+  endif
+
 endfunction

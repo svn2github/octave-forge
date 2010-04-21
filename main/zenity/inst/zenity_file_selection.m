@@ -15,11 +15,17 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} @var{files} = zenity_file_selection(@var{param1}, @var{value1}, ...)
-## Opens a file selection dialog using Zenity. All @var{parameters} are 
-## optional, but if given, may require a corresponding @var{value}. All possible
-## parameters are:
-## 
+## @deftypefn  {Function File} [@var{files} @var{status}] = zenity_file_selection(@var{param1}, @var{value1}, ...)
+## Opens a file selection dialog using Zenity. Output @var{files} is a string or
+## a cell array of strings depending on whether the function has been set to
+## allows selection of multiple files or directories. Status will be 0 if user
+## closed the window without selecting something, 1 if user pressed OK (and
+## selected something), and 5 if timeout has been reached (and therefore no file
+## was selected).
+##
+## All @var{parameters} are optional, but if given, may require a corresponding
+## @var{value}. All possible parameters are:
+##
 ## @table @samp
 ## @item directory
 ## Activates directory-only selection. No value is required.
@@ -51,7 +57,7 @@
 ## @seealso{zenity_list, zenity_entry, zenity_message, zenity_text_info}
 ## @end deftypefn
 
-function files = zenity_file_selection(varargin)
+function [files, status] = zenity_file_selection(varargin)
 
   options = _zenity_options_ ("file selection", varargin);
 
@@ -97,16 +103,12 @@ function files = zenity_file_selection(varargin)
       files = output;
     endif
   elseif (status == 1 && options.multiple)
-    warning("No file selected. Returning empty cell array.");
     files = cell(1);
   elseif (status == 1)
-    warning("No file selected. Returning empty string.");
     files = "";
   elseif (status == 5 && options.multiple)
-    warning("Timeout reached. No file selected. Returning empty cell array.");
     files = cell(1);
   elseif (status == 5)
-    warning("Timeout reached. No file selected. Returning empty string.");
     files = "";
   else
     error("An unexpected error occurred with exit code '%i' and output '%s'",...

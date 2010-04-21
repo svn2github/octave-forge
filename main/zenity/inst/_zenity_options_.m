@@ -51,6 +51,12 @@ function op = _zenity_options_ (dialog, varargin)
 
   varargin = varargin{1};    # because other functions varargin is this varargin
 
+  ## A present from zenity_list. Take it out of varargin before before other stuff
+  if ( strcmpi(dialog, "list") )
+   list.col       = varargin{end};
+    varargin(end) = [];             # By using (end), it actually pulls the value out instead of leaving it empty
+  endif
+
   op.title = op.width = op.height = op.timeout = op.icon = "";
   if ( !ischar(dialog) )
     error ("Type of dialog should be a string");
@@ -60,6 +66,8 @@ function op = _zenity_options_ (dialog, varargin)
   elseif (strcmpi(dialog, "file selection"))
     op.directory = op.filename = op.filter = op.multiple = op.save = "";
   elseif (strcmpi(dialog, "list"))
+    op.separator = op.text  = op.hide  = op.print_col = op.print_col_one = "";
+    op.multiple  = op.radio = op.check = op.editable  = op.hide_one      = "";
   elseif (strcmpi(dialog, "message"))
     op.type = op.wrap = "";
   elseif (strcmpi(dialog, "notification"))
@@ -145,7 +153,7 @@ function op = _zenity_options_ (dialog, varargin)
         narg            = sanity_checks ("char", param, value, op.filename, narg);
         op.filename     = sprintf("--filename=\"%s\"", value);
       elseif (strcmpi(param,"filter"))                # File selection - file filter
-        narg            = sanity_checks ("multiple", param, value, op.directory, narg);
+        narg            = sanity_checks ("multiple-char", param, value, op.directory, narg);
         op.filter       = sprintf("%s --file-filter=\"%s\"", op.filter, value);
       elseif (strcmpi(param,"multiple"))              # File selection - multiple
         narg            = sanity_checks ("indie", param, value, op.multiple, narg);
@@ -184,12 +192,70 @@ function op = _zenity_options_ (dialog, varargin)
 
     ## Process options for ZENITY_NOTIFICATION
     elseif ( strcmpi(dialog, "notification") )
-      if (strcmpi(param,"text"))                 # Notification - text
+      if (strcmpi(param,"text"))                      # Notification - text
         narg            = sanity_checks ("char", param, value, op.text, narg);
         op.text         = sprintf("--text=\"%s\"", value);
       else
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
-    endif
+      endif
+
+    ## Process options for ZENITY_LIST
+    ## TODO should an option to change the separator be set for list?
+    elseif ( strcmpi(dialog, "list") )
+      if (strcmpi(param,"text"))                      # List - text
+        narg            = sanity_checks ("char", param, value, op.text, narg);
+        op.text         = sprintf("--text=\"%s\"", value);
+      elseif (strcmpi(param,"editable"))              # List - editable
+        narg            = sanity_checks ("indie", param, value, op.editable, narg);
+        op.editable     = "--editable";
+      elseif (strcmpi(param,"multiple"))              # List - multiple
+        narg            = sanity_checks ("indie", param, value, op.multiple, narg);
+        op.multiple     = "--multiple";
+      elseif (strcmpi(param,"radiolist"))              # List - radiolist
+        narg            = sanity_checks ("indie", param, value, op.radio, narg);
+        op.radio        = "--radiolist";
+      elseif (strcmpi(param,"checklist"))              # List - checklist
+        narg            = sanity_checks ("indie", param, value, op.check, narg);
+        op.check        = "--checklist";
+      elseif (strcmpi(param,"hide column"))            # List - hide column
+        narg            = sanity_checks ("num", param, value, op.hide, narg);
+        tmp             = "";
+        for i = 1:numel(value)
+          if (value(i) == 1)
+            op.hide_one = 1;                          # Needed for sanity checks
+          elseif (value(i) == 0)
+            tmp = "all";
+            break
+          elseif (value(i) < 0)
+            error ("Value %g is not accepted for parameter '%s', all must be non-negative.", value(i), param)
+          elseif (value(i) > list.col)
+            error ("Value %g for the parameter '%s' is larger than the number of columns.", value(i), param)
+          endif
+          str = num2str(value(i));
+          tmp = sprintf("%s%s,", tmp, str);
+        endfor
+        op.hide         = sprintf("--hide-column=%s", tmp);
+      elseif (strcmpi(param,"print column"))          # List - print column
+        narg            = sanity_checks ("num", param, value, op.print_col, narg);
+        tmp             = "";
+        for i = 1:numel(value)
+          if (value(i) == 1)
+            op.print_col_one = 1;                     # Needed for sanity checks
+          elseif (value(i) == 0)
+            tmp = "all";
+            break
+          elseif (value(i) < 0)
+            error ("Value %g is not accepted for parameter '%s', all must be non-negative.", value(i), param)
+          elseif (value(i) > list.col)
+            error ("Value %g for the parameter '%s' is larger than the number of columns.", value(i), param)
+          endif
+          str = num2str(value(i));
+          tmp = sprintf("%s%s,", tmp, str);
+        endfor
+        op.hide         = sprintf("--print-column=%s", tmp);
+      else
+        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
+      endif
 
     else
       error ("Parameter '%s' is not supported.", param);
@@ -198,11 +264,11 @@ function op = _zenity_options_ (dialog, varargin)
   endwhile
 
   ## Set the DEFAULTS
-  if (strcmpi(dialog,"message"))                      # Defaults for Message
+  if (strcmpi(dialog,"message"))                      # Defaults for message
     if ( isempty(op.type) )
       op.type = "--info";
     endif
-  elseif (strcmpi(dialog,"notification"))             # Defaults for Notification
+  elseif (strcmpi(dialog,"notification"))             # Defaults for notification
     if ( isempty(op.icon) )
       op.icon = "--window-icon=\"warning\"";
     endif
@@ -246,11 +312,18 @@ function narg = sanity_checks (type, param, value, previous, narg)
     endif
     narg++;
 
-  elseif (strcmpi(type,"multiple"))                     # Value can be set more than once
+  elseif (strcmpi(type,"multiple-char"))                # Value can be set more than once
     if ( isempty(value) || !ischar(value) )
       error ("Parameter '%s' requires a string as value.", param);
     endif
     narg++;
+
+  elseif (strcmpi(type,"num"))                # Value can be set more than once
+    if ( isempty(value) || !isnumeric(value) )
+      error ("Parameter '%g' requires a numeric as value.", param);
+    endif
+    narg++;
+
 
   else
     error ("Non supported type for sanity_checks '%s'.", type)

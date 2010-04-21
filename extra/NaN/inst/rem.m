@@ -27,7 +27,7 @@ function [z,e] = rem(x,y)
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 %       $Id$
-%	Copyright (C) 2004,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2004,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://biosig-consulting.com/matlab/NaN/
 
@@ -47,7 +47,8 @@ if numel(x)==1,
 else
 	z(~t) = x(~t);		% remainder is x if y = inf
 end;
-z(repmat(~y,size(z)./size(y))) = 0;	% remainder must be 0 if y==0
+
+z(~repmat(y,size(z)./size(y))) = 0;	% remainder must be 0 if y==0
 
 warning(s);			% reset warning status
 

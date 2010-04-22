@@ -19,9 +19,9 @@
 ## Opens a file selection dialog using Zenity. Output @var{files} is a string or
 ## a cell array of strings depending on whether the function has been set to
 ## allows selection of multiple files or directories. Status will be 0 if user
-## closed the window without selecting something, 1 if user pressed OK (and
-## selected something), and 5 if timeout has been reached (and therefore no file
-## was selected).
+## pressed OK (and selected something), 1 if closed the window without selecting
+## something, and 5 if timeout has been reached (and therefore no file was
+## selected).
 ##
 ## All @var{parameters} are optional, but if given, may require a corresponding
 ## @var{value}. All possible parameters are:

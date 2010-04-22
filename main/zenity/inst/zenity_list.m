@@ -40,8 +40,8 @@
 ## of strings. If a value is empty, it returns @code{(null)}. The values of
 ## @var{selected} may come in any order since the user is allowed to sort them.
 ##
-## The output @var{status} holds the exit code. 0 if user pressed cancel, 1 if
-## pressed OK and selected at least one row, 5 if timeout has been reached, and
+## The output @var{status} holds the exit code. 0 if user pressed OK and
+## selected at least one row, 1 if pressed cancel, 5 if timeout has been reached, and
 ## 256 if user has pressed OK but selected no row. In the case no value has been
 ## selected when the window closes, @var{selected} will hold an empty string or
 ## cell array, the same size as it would be expected if one value had been
@@ -88,6 +88,19 @@
 ## parameters @code{radiolist} or @code{checklist} are set, the first
 ## column cannot cannot be hidden. The values of these columns will still be
 ## present in the output @var{selected}.
+##
+## The following example will show a list with foods only and a column with
+## radio buttons. It will return the third column of @var{data}, the one that is
+## not shown and holds the numbers.
+##
+## @example
+## columns = @{"", "Foods", "not visible"@}
+## data    = @{"true" , "Ice cream", "1"
+##            "false", "Danish",    "2"
+##            "false", "Soup",      "3"
+##            "false", "Lasagne",   "4"@}
+## zenity_list(columns, data, "radiolist", "hide column", 3, "print column", 3)
+## @end example
 ##
 ## @item multiple
 ## Allows multiple rows to be selected. No value is required. It cannot be set

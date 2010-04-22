@@ -1,8 +1,8 @@
-md5="880986ae12b636650d1c9cbf35feabed";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="880986ae12b636650d1c9cbf35feabed";rev="7223";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci髇 incorporada} {} all (@var{x}, @var{dim})
-La funci髇 @code{all} se comporta como la funci髇 @code{any}, excepto
+@deftypefn {Funci贸n incorporada} {} all (@var{x}, @var{dim})
+La funci贸n @code{all} se comporta como la funci贸n @code{any}, excepto
 que devuelve verdadero si todos los elementos de un vector, o todos los
-elementos a lo largo de la dimensi髇 @var{dim} de una matriz, son 
+elementos a lo largo de la dimensi贸n @var{dim} de una matriz, son 
 distintos de cero.
 @end deftypefn

@@ -1,6 +1,6 @@
-md5="96ff15a4d0fc5754695d5309e037f0ca";rev="7199";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="96ff15a4d0fc5754695d5309e037f0ca";rev="7223";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de función} {[@var{n}, @var{m}, @var{p}] =} abcddim (@var{a}, @var{b}, @var{c}, @var{d})
+@deftypefn {Archivo de funciÃ³n} {[@var{n}, @var{m}, @var{p}] =} abcddim (@var{a}, @var{b}, @var{c}, @var{d})
 Prueba de compatibilidad de las dimensiones de las matrices definiendo 
 el sistema lineal
 @iftex
@@ -28,13 +28,13 @@ Si las matrices son compatibles en dimensiones, entonces @code{abcddim} retorna
 
 @table @var
 @item n
-El número de estados del sistema.
+El nÃºmero de estados del sistema.
 
 @item m
-El número de entradas del sistema.
+El nÃºmero de entradas del sistema.
 
 @item p
-El número de salidas del sistema.
+El nÃºmero de salidas del sistema.
 @end table
 
 De lo contrario @code{abcddim} returns @var{n} = @var{m} = @var{p} = @minus{}1.

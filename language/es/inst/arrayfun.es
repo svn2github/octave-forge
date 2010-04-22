@@ -1,14 +1,14 @@
-md5="3630cec0eb91d05685d2284a76299ffb";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="3630cec0eb91d05685d2284a76299ffb";rev="7223";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci髇} {@var{a} =} arrayfun (@var{name}, @var{c})
-@deftypefnx {Archivo de funci髇} {@var{a} =} arrayfun (@var{func}, @var{c})
-@deftypefnx {Archivo de funci髇} {@var{a} =} arrayfun (@var{func}, @var{c}, @var{d})
-@deftypefnx {Archivo de funci髇} {@var{a} =} arrayfun (@var{func}, @var{c}, @var{options})
-@deftypefnx {Archivo de funci髇} {[@var{a}, @var{b}, @dots{}] =} arrayfun (@var{func}, @var{c}, @dots{})
-Ejecuta una funci髇 en cada elemento de un arreglo. 蓅ta es until para
-funciones que no aceptan arreglos como argumentos. Si la funci髇 acepta 
-arreglos como agumentos, es mejor llamar la funci髇 directamente.
+@deftypefn {Archivo de funci贸n} {@var{a} =} arrayfun (@var{name}, @var{c})
+@deftypefnx {Archivo de funci贸n} {@var{a} =} arrayfun (@var{func}, @var{c})
+@deftypefnx {Archivo de funci贸n} {@var{a} =} arrayfun (@var{func}, @var{c}, @var{d})
+@deftypefnx {Archivo de funci贸n} {@var{a} =} arrayfun (@var{func}, @var{c}, @var{options})
+@deftypefnx {Archivo de funci贸n} {[@var{a}, @var{b}, @dots{}] =} arrayfun (@var{func}, @var{c}, @dots{})
+Ejecuta una funci贸n en cada elemento de un arreglo. 脡sta es until para
+funciones que no aceptan arreglos como argumentos. Si la funci贸n acepta 
+arreglos como agumentos, es mejor llamar la funci贸n directamente.
 
-V閍se @code{cellfun} para instrucciones completas acerca de su uso.
+V茅ase @code{cellfun} para instrucciones completas acerca de su uso.
 @seealso{cellfun}
 @end deftypefn

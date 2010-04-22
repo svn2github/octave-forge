@@ -1,6 +1,6 @@
-md5="47a653e9c3b9dc45c842df36759a2658";rev="7199";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="47a653e9c3b9dc45c842df36759a2658";rev="7223";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci�n de mapeo} {} abs (@var{z})
+@deftypefn {FunciÃ³n de mapeo} {} abs (@var{z})
 Calcula la magnitud de @var{z}, definida como
 @iftex
 @tex

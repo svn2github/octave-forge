@@ -1,8 +1,8 @@
-md5="9fa0150a85d6876fa575f9d668d18401";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="9fa0150a85d6876fa575f9d668d18401";rev="7223";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {@var{val} =} automatic_replot ()
-@deftypefnx {Funci@'on cargable} {@var{old_val} =} automatic_replot (@var{new_val})
-Consulta o ajusta el estado de replot autom@'atico actual. Aunque es bastante 
-ineficiente, especialmete para gr@'aficas grandes, replotting autom@'atico est@'a habilitado
+@deftypefn {Función cargable} {@var{val} =} automatic_replot ()
+@deftypefnx {Función cargable} {@var{old_val} =} automatic_replot (@var{new_val})
+Consulta o ajusta el estado de replot automático actual. Aunque es bastante 
+ineficiente, especialmete para gráficas grandes, replotting automático está habilitado
 en forma predeterminada para garantizar compatibilidad con Matlab.
 @end deftypefn

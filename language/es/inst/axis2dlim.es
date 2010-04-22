@@ -1,10 +1,10 @@
-md5="5dcb4b0aa397a56ab64f14fc9da3e211";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="5dcb4b0aa397a56ab64f14fc9da3e211";rev="7223";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Arhivo de funci@'on} {} axis2dlim (@var{axdata})
-Determina el l@'imite del eje para datos 2-D (vectores columna); 
-deja un 10% de margen alrededor de las gr@'aficas.
+@deftypefn {Arhivo de función} {} axis2dlim (@var{axdata})
+Determina el límite del eje para datos 2-D (vectores columna); 
+deja un 10% de margen alrededor de las gráficas.
 Inserta margenes de +/- 0.1 si los datos son unidimensionales
-(o un @'unico punto).
+(o un único punto).
 
 @strong{Input}
 @table @var
@@ -15,6 +15,6 @@ Matriz de @var{n} por 2 de datos [@var{x}, @var{y}].
 @strong{Output}
 @table @var
 @item axvec
-Vector de l@'imites de ejes apropiado para el llamado a la funci@'on @command{axis}.
+Vector de límites de ejes apropiado para el llamado a la función @command{axis}.
 @end table
 @end deftypefn

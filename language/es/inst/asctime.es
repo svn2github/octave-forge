@@ -1,6 +1,6 @@
-md5="bf07d928d1e762e0b1e59c0083a1f568";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="bf07d928d1e762e0b1e59c0083a1f568";rev="7223";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de función} {} asctime (@var{tm_struct})
+@deftypefn {Archivo de funciÃ³n} {} asctime (@var{tm_struct})
 Convierte una estructura de tipo time en una cadena de caracteres 
 usando el siguiente formato de cinco campos: Jue Mar 28 08:40:14 1996.  Por ejemplo,
 
@@ -11,5 +11,5 @@ asctime (localtime (time ()))
 @end group
 @end example
 
-Esta función es equivalente a @code{ctime (time ())}.
+Esta funciÃ³n es equivalente a @code{ctime (time ())}.
 @end deftypefn

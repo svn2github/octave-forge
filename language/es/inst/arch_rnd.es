@@ -1,6 +1,6 @@
-md5="bbe8400992d788ad18503bc9eb7d21e0";rev="7201";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="bbe8400992d788ad18503bc9eb7d21e0";rev="7223";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de función} {} arch_rnd (@var{a}, @var{b}, @var{t})
+@deftypefn {Archivo de funciÃ³n} {} arch_rnd (@var{a}, @var{b}, @var{t})
 Simula una secuencia ARCH de longitud @var{t} con @var{b}
 coeficientes AR y @var{a} coeficientes CH.  P.e., el resultado
 @math{y(t)} sigue el modelo

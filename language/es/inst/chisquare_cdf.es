@@ -1,7 +1,7 @@
-md5="b74d1f59b3869a363dacc007d772f833";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="b74d1f59b3869a363dacc007d772f833";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} chisquare_cdf (@var{x}, @var{n})
-Para cada elemento de @var{x}, calcula la funci@'on de distribuci@'on 
-acumulada (CDF) en @var{x} de la distribuci@'on chi-cuadrado con @var{n}
+@deftypefn {Archivo de función} {} chisquare_cdf (@var{x}, @var{n})
+Para cada elemento de @var{x}, calcula la función de distribución 
+acumulada (CDF) en @var{x} de la distribución chi-cuadrado con @var{n}
 grados de libertad.
 @end deftypefn

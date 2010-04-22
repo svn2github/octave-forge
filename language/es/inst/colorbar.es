@@ -1,32 +1,32 @@
-md5="e294dd9d61ce88cceccb7bdf40815b48";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e294dd9d61ce88cceccb7bdf40815b48";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} colorbar (@var{s})
-@deftypefnx {Archivo de funci@'on} {} colorbar ('peer', @var{h}, @dots{})
-Agrega una barra de colores a los ejes actuales. Los valores v@'alidos para 
+@deftypefn {Archivo de función} {} colorbar (@var{s})
+@deftypefnx {Archivo de función} {} colorbar ('peer', @var{h}, @dots{})
+Agrega una barra de colores a los ejes actuales. Los valores válidos para 
 @var{s} son
 
 @table @asis
 @item 'EastOutside'
-Ubica una barra de colores fuera de la gr@'afica, a la derecha. Esta es la 
-opci@'on predeterminada.
+Ubica una barra de colores fuera de la gráfica, a la derecha. Esta es la 
+opción predeterminada.
 @item 'East'
-Ubica la barra de colores dentro de la gr@'afica, a la derecha.
+Ubica la barra de colores dentro de la gráfica, a la derecha.
 @item 'WestOutside'
-Ubica la barra de colores fuera de la gr@'afica, a la izquierda.
+Ubica la barra de colores fuera de la gráfica, a la izquierda.
 @item 'West'
-Ubica la barra de colores dentro de la gr@'afica, a la izquierda.
+Ubica la barra de colores dentro de la gráfica, a la izquierda.
 @item 'NorthOutside'
-Ubica la barra de colores encima de la gr@'afica.
+Ubica la barra de colores encima de la gráfica.
 @item 'North'
-Ubica la barra de colores arriba de la gr@'afica.
+Ubica la barra de colores arriba de la gráfica.
 @item 'SouthOutside'
-Ubica la barra de colores encima de la gr@'afica.
+Ubica la barra de colores encima de la gráfica.
 @item 'South'
-Ubica la barra de colores debajo de la gr@'afica.
+Ubica la barra de colores debajo de la gráfica.
 @item 'Off', 'None'
-Remueve cualquier barra de colores existente en la gr@'afica.
+Remueve cualquier barra de colores existente en la gráfica.
 @end table
 
 Si se suministra el argumento 'peer', el siguiente argumento se trata como 
-el manejador de ejes sobre el cual se agrega la barra de colores.
+el apuntador de ejes sobre el cual se agrega la barra de colores.
 @end deftypefn

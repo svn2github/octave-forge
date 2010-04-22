@@ -1,8 +1,8 @@
-md5="e1a38e4658db14061333a337660921a7";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e1a38e4658db14061333a337660921a7";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} cell2struct (@var{cell}, @var{fields}, @var{dim})
-Convierte @var{cell} en una estructura. El n@'umeor de campos en @var{fields}
-debe coincidir con el n@'umero de elementos en @var{cell} a lo largo de la dimensi@'on @var{dim},
+@deftypefn {Función incorporada} {} cell2struct (@var{cell}, @var{fields}, @var{dim})
+Convierte @var{cell} en una estructura. El númeor de campos en @var{fields}
+debe coincidir con el número de elementos en @var{cell} a lo largo de la dimensión @var{dim},
 este es @code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.
 
 @example

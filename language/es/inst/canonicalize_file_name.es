@@ -1,5 +1,5 @@
-md5="bd5c2bc65287627845bdd6d96ed6d2a9";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="bd5c2bc65287627845bdd6d96ed6d2a9";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Fuci@'on incorporada} {[@var{cname}, @var{status}, @var{msg}]} canonicalize_file_name (@var{name})
-Retorna el nombre can@'onico del archivo @var{name}.
+@deftypefn {Fución incorporada} {[@var{cname}, @var{status}, @var{msg}]} canonicalize_file_name (@var{name})
+Retorna el nombre canónico del archivo @var{name}.
 @end deftypefn

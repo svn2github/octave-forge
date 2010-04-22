@@ -1,14 +1,14 @@
-md5="c47c5ec7313695b835b8ed0dadfa8511";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="c47c5ec7313695b835b8ed0dadfa8511";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} calendar (@dots{})
-@deftypefnx {Archivo de funci@'on} {@var{c} =} calendar ()
-@deftypefnx {Archivo de funci@'on} {@var{c} =} calendar (@var{d})
-@deftypefnx {Archivo de funci@'on} {@var{c} =} calendar (@var{y}, @var{m})
+@deftypefn {Archivo de función} {} calendar (@dots{})
+@deftypefnx {Archivo de función} {@var{c} =} calendar ()
+@deftypefnx {Archivo de función} {@var{c} =} calendar (@var{d})
+@deftypefnx {Archivo de función} {@var{c} =} calendar (@var{y}, @var{m})
 Si es llamado sin argumentos, retorna el calendario mensual actual en
 una matriz de 6x7.
 
 Si @var{d} se especifica, retorna el calendario para el mes que 
-contiene el dia @var{d}, el cual debe ser una n@'umero de fecha serial
+contiene el dia @var{d}, el cual debe ser una número de fecha serial
 o una cadena de fecha.
 
 Si @var{y} y @var{m} se especifican, retorna el calendario para el a@~

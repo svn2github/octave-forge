@@ -1,9 +1,9 @@
-md5="82603d19225b09996b80a37c5e4aa230";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="82603d19225b09996b80a37c5e4aa230";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} ctime (@var{t})
+@deftypefn {Archivo de función} {} ctime (@var{t})
 Convierte un valor retornado @code{time} (o cualquier otro entero 
 no negativo), al tiempo actual y retorna una cadena con el mismo formato de 
-@code{asctime}. La funci@'on @code{ctime (time)} es equivalente a
+@code{asctime}. La función @code{ctime (time)} es equivalente a
 @code{asctime (localtime (time))}. Por ejemplo,
 
 @example

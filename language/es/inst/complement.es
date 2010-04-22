@@ -1,7 +1,7 @@
-md5="73c45236decd091d052d0f50846403cf";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="73c45236decd091d052d0f50846403cf";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} complement (@var{x}, @var{y})
-Retorna los elementos del conjunto @var{y} que no est@'an en el conjunto  @var{x}. Por ejemplo,
+@deftypefn {Archivo de función} {} complement (@var{x}, @var{y})
+Retorna los elementos del conjunto @var{y} que no están en el conjunto  @var{x}. Por ejemplo,
 
 @example
 @group

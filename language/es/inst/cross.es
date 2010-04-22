@@ -1,6 +1,6 @@
-md5="f33df5b1c68338f7d052768607a7ed1f";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="f33df5b1c68338f7d052768607a7ed1f";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} cross (@var{x}, @var{y}, @var{dim})
+@deftypefn {Archivo de función} {} cross (@var{x}, @var{y}, @var{dim})
 Calcula el producto vectorial entre dos vectores 3-dimensionales 
 @var{x} y @var{y}.
 
@@ -12,7 +12,7 @@ cross ([1,1,0], [0,1,1])
 @end example
 
 Si @var{x} y @var{y} son matrices, el producto vectorial se aplica 
-a lo largo de la primera dimensi@'on con tres elementos. El argumento opcional 
+a lo largo de la primera dimensión con tres elementos. El argumento opcional 
 @var{dim} se usa para forzar que el producto vectorial sea calculado a lo largo 
-de la dimensi@'on definida en @var{dim}.
+de la dimensión definida en @var{dim}.
 @end deftypefn

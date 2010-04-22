@@ -1,6 +1,6 @@
-md5="f3eed67207a01f50eeb8027232c2357b";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="f3eed67207a01f50eeb8027232c2357b";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} conj (@var{z})
+@deftypefn {Función de mapeo} {} conj (@var{z})
 Retorna el complejo conjugado de @var{z}, definido como
 @iftex
 @tex

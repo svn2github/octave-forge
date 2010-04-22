@@ -1,6 +1,6 @@
-md5="158fbf32d5b31ee07a7ec13db1add174";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="158fbf32d5b31ee07a7ec13db1add174";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} compan (@var{c})
+@deftypefn {Archivo de función} {} compan (@var{c})
 Calcula la matriz compa@~{n}era correspondiente al vector de coeficientes de polinomio @var{c}.
 
 La matriz compa@~{n}era es

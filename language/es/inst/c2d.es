@@ -1,7 +1,7 @@
-md5="f38588f0339daa44656d805318797fbe";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="f38588f0339daa44656d805318797fbe";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} c2d (@var{sys}, @var{opt}, @var{t})
-@deftypefnx {Archivo de funci@'on} {} c2d (@var{sys}, @var{t})
+@deftypefn {Archivo de función} {} c2d (@var{sys}, @var{opt}, @var{t})
+@deftypefnx {Archivo de función} {} c2d (@var{sys}, @var{t})
 
 Convierte la estructura de datos del sistema descrito:
 @iftex
@@ -26,7 +26,7 @@ $$ x_{n+1} = A_dx_n + B_du_n $$
 x[n+1] = Ad x[n] + Bd u[n]
 @end example
 @end ifinfo
-por medio de la matriz exponencial o la transformaci@'on bilineal.
+por medio de la matriz exponencial o la transformación bilineal.
 
 @strong{Inputs}
 @table @var
@@ -34,13 +34,13 @@ por medio de la matriz exponencial o la transformaci@'on bilineal.
 estructura de datos del sistema (puede tener tanto subsistemas 
 continuos como de tiempo discreto)
 @item opt
-argumento de tipo cadena; opci@'on de conversi@'on (argumento
+argumento de tipo cadena; opción de conversión (argumento
 opcional; se puede omitir como se muestra arriba)
 @table @code
 @item "ex"
 usa la matriz exponencial (predeterminado)
 @item "bi"
-usa la transformaci@'on bilineal
+usa la transformación bilineal
 @iftex
 @tex
 $$ s = { 2(z-1) \over T(z+1) } $$
@@ -56,16 +56,16 @@ s = -----
 FIXME: This option exits with an error if @var{sys} is not purely
 continuous. (The @code{ex} option can handle mixed systems.)
 @item "matched"
-Usa la transformaci@'on equivalente de emparejamiento de polos/
+Usa la transformación equivalente de emparejamiento de polos/
 ceros (actualmente solo funciona con sistemas puramente continuos 
 @acronym{SISO}).
 @end table
 @item t
 tiempo de muestreo; requerido si @var{sys} es puramente continuo.
 
-@strong{N@'otese} que si el segundo argumento no es una cadena, 
+@strong{Nótese} que si el segundo argumento no es una cadena, 
 @code{c2d()} asume que el segundo argumento es @var{t} y ejecuta 
-la revisi@'on de los argumentos apropiados.
+la revisión de los argumentos apropiados.
 @end table
 
 @strong{Output}
@@ -75,6 +75,6 @@ tiempo discreto equivalente via sostenimiento de orden cero,
 muestreo cada @var{t} segundos.
 @end table
 
-Esta funci@'on a@~{n}ade el sufijo @code{_d}
+Esta función a@~{n}ade el sufijo @code{_d}
 a los nombres de los nuevos estados discretos.
 @end deftypefn

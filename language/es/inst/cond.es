@@ -1,6 +1,6 @@
-md5="2585eddd5d3911f248b503ea25dae4c8";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="2585eddd5d3911f248b503ea25dae4c8";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} cond (@var{a})
-Calcula la (norma-dos) el n@'umero de condici@'on de una matriz. La condici@'on @code{cond (a)} se define como @code{norm (a) * norm (inv (a))}, y se calcula por medio de la factorizaci@'on de valor singular.
+@deftypefn {Archivo de función} {} cond (@var{a})
+Calcula la (norma-dos) el número de condición de una matriz. La condición @code{cond (a)} se define como @code{norm (a) * norm (inv (a))}, y se calcula por medio de la factorización de valor singular.
 @seealso{norm, svd, rank}
 @end deftypefn

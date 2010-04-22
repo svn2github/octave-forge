@@ -1,7 +1,7 @@
-md5="52e68a7e95b71231226e762559e89a8c";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="52e68a7e95b71231226e762559e89a8c";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} create_set (@var{x})
-Retorna un vector fila con los valores @'unicos en @var{x}, ordenados en
+@deftypefn {Archivo de función} {} create_set (@var{x})
+Retorna un vector fila con los valores únicos en @var{x}, ordenados en
 forma ascendente. Por ejemplo,
 
 @example

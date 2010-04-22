@@ -1,12 +1,12 @@
-md5="ebc812db2539a86d4bbe2a8da512a847";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="ebc812db2539a86d4bbe2a8da512a847";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} corrcoef (@var{x}, @var{y})
-Calcula la correlaci@'on entre @var{x} y @var{y}.
+@deftypefn {Archivo de función} {} corrcoef (@var{x}, @var{y})
+Calcula la correlación entre @var{x} y @var{y}.
 
-Si cada fila de @var{x} y @var{y} es una observaci@'on y cada columna es
-una variable, la (@var{i}, @var{j})-@'esima entrada de
-@code{corrcoef (@var{x}, @var{y})} es la correlaci@'on entre la 
-@var{i}-@'esima variable en @var{x} y la @var{j}-@'esima variable en @var{y}.
+Si cada fila de @var{x} y @var{y} es una observación y cada columna es
+una variable, la (@var{i}, @var{j})-ésima entrada de
+@code{corrcoef (@var{x}, @var{y})} es la correlación entre la 
+@var{i}-ésima variable en @var{x} y la @var{j}-ésima variable en @var{y}.
 
 @iftex
 @tex

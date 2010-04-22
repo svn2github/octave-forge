@@ -1,20 +1,20 @@
-md5="58f6101645bf73529d912274820a3aa8";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="58f6101645bf73529d912274820a3aa8";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} compass (@var{u}, @var{v})
-@deftypefnx {Archivo de funci@'on} {} compass (@var{z})
-@deftypefnx {Archivo de funci@'on} {} compass (@dots{}, @var{style})
-@deftypefnx {Archivo de funci@'on} {} compass (@var{h}, @dots{})
-@deftypefnx {Archivo de funci@'on} {@var{h} =} compass (@dots{})
+@deftypefn {Archivo de función} {} compass (@var{u}, @var{v})
+@deftypefnx {Archivo de función} {} compass (@var{z})
+@deftypefnx {Archivo de función} {} compass (@dots{}, @var{style})
+@deftypefnx {Archivo de función} {} compass (@var{h}, @dots{})
+@deftypefnx {Archivo de función} {@var{h} =} compass (@dots{})
 
-Graf@'ica los componentes @code{(@var{u}, @var{v})} de un campo vectorial amanando
-desde el orgien de una gr@'afica en coordenadas polares. Si se suministra un @'unico 
+Grafíca los componentes @code{(@var{u}, @var{v})} de un campo vectorial amanando
+desde el orgien de una gráfica en coordenadas polares. Si se suministra un único 
 argumento complejo @var{z}, @code{@var{u} = real (@var{z})} y @code{@var{v} = imag 
 (@var{z})}.
 
-El estilo usado en la gr@'afica puede ser definido con un estilo de l@'inea @var{style}
-de manera similar a los estilos de l@'inea usados con el comando @code{plot}.
+El estilo usado en la gráfica puede ser definido con un estilo de línea @var{style}
+de manera similar a los estilos de línea usados con el comando @code{plot}.
 
-El valor opcional retornado @var{h} suministra una lista de manejadores a las partes del campo vectorial
+El valor opcional retornado @var{h} suministra una lista de apuntadores a las partes del campo vectorial
  (cuerpo, flecha y marcador).
 
 @example

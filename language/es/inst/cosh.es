@@ -1,5 +1,5 @@
-md5="61ccd1d24a0a6f329a27b4a3e754a0bd";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="61ccd1d24a0a6f329a27b4a3e754a0bd";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} cosh (@var{x})
-Calcula el coseno hiperb@'olico de cada elemento de @var{x}.
+@deftypefn {Función de mapeo} {} cosh (@var{x})
+Calcula el coseno hiperbólico de cada elemento de @var{x}.
 @end deftypefn

@@ -1,8 +1,8 @@
-md5="4b8e6435990c2743ae22ad51cbe8f5c2";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4b8e6435990c2743ae22ad51cbe8f5c2";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {} chol (@var{a})
-@cindex Factorizaci@'on de Cholesky
-Calcula el factor Cholesky, @var{r}, de la matriz sim@'etrica positiva 
+@deftypefn {Función cargable} {} chol (@var{a})
+@cindex Factorización de Cholesky
+Calcula el factor Cholesky, @var{r}, de la matriz simétrica positiva 
 definida @var{a}, donde
 @iftex
 @tex

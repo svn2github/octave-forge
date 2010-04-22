@@ -1,7 +1,7 @@
-md5="1518a89f2c5a8446a19a47b3f21fda23";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="1518a89f2c5a8446a19a47b3f21fda23";rev="7225";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} ctrb (@var{sys}, @var{b})
-@deftypefnx {Archivo de funci@'on} {} ctrb (@var{a}, @var{b})
+@deftypefn {Archivo de función} {} ctrb (@var{sys}, @var{b})
+@deftypefnx {Archivo de función} {} ctrb (@var{a}, @var{b})
 Construye la matriz de control:
 @iftex
 @tex
@@ -18,6 +18,6 @@ Qs = [ B AB A B ... A   B ]
 de una estructura de datos del sistema o la pareja (@var{a}, @var{b}).
 
 @command{ctrb} forma la matriz de control.
-Las propiedades num@'ericas de @command{is_controllable}
+Las propiedades numéricas de @command{is_controllable}
 son mejores para las pruebas de control.
 @end deftypefn

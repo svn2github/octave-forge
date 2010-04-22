@@ -365,15 +365,18 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	warning ('lower and upper bounds identical for some parameters, setting the respective elements of dp to zero');
 	dp(idx) = 0;
       end
-      idx = pin < bounds(:, 1);
-      if (any (idx))
-	warning ('some initial parameters set to lower bound');
-	pin(idx) = bounds(idx, 1);
+      lidx = pin < bounds(:, 1);
+      uidx = pin > bounds(:, 2);
+      if (any (lidx | uidx) && (rv > 0 || have_gencstr))
+	error ('initial parameters outside bounds, not corrected since other constraints are given');
       end
-      idx = pin > bounds(:, 2);
-      if (any (idx))
+      if (any (lidx))
+	warning ('some initial parameters set to lower bound');
+	pin(lidx) = bounds(lidx, 1);
+      end
+      if (any (uidx))
 	warning ('some initial parameters set to upper bound');
-	pin(idx) = bounds(idx, 2);
+	pin(uidx) = bounds(uidx, 2);
       end
       tp = eye (n);
       lidx = ~isinf (bounds(:, 1));
@@ -441,18 +444,18 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% if (isfield (options, 'new_s'))
   %%   new_s = options.new_s;
   %% end
-  %% if (isfield (options, 'testing') && options.testing)
-  %%   testing = true;
-  %% else
-  %%   testing = false;
-  %% end
+  if (isfield (options, 'testing') && options.testing)
+    testing = true;
+  else
+    testing = false;
+  end
 
   nz = 20 * eps; % This is arbitrary. Constraint function will be
 				% regarded as <= zero if less than nz.
   %% do iterations
   %%
   for iter=1:niter
-    %% deb_printf (testing, '\nstart outer iteration\n');
+    deb_printf (testing, '\nstart outer iteration\n');
     v_cstr = f_cstr (p, ac_idx);
     c_act =  v_cstr < nz; % index of active constraints
     if (any (c_act))
@@ -483,7 +486,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     s=diag(s);
     g = prt.' * r;
     for jjj=1:length(epstab)
-      %% deb_printf (testing, '\nstart inner iteration\n');
+      deb_printf (testing, '\nstart inner iteration\n');
       epsL = max(epsLlast*epstab(jjj),1e-7);
       %% printf ('epsL: %e\n', epsL); % for testing
 
@@ -506,15 +509,18 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       %% end
       tp1 = (v * (g .* ser)) .* nrm;
       if (any (c_act))
-	%% deb_printf (testing, 'constraints are active:\n');
-	%% deb_printf (testing, '%i\n', c_act);
+	deb_printf (testing, 'constraints are active:\n');
+	deb_printf (testing, '%i\n', c_act);
 	%% calculate chg by 'quadratic programming'
 	nrme= diag (nrm);
 	ser2 = diag (ser .* ser);
 	mfc1 = nrme * v * ser2 * v.' * nrme;
 	tp2 = mfc1 * dca;
 	[lb, bidx, ridx, tbl] = cpiv (dcat * tp1, dcat * tp2);
-	chg = tp1 + tp2(:, bidx) * lb;
+	chg = tp1 + tp2(:, bidx) * lb; % if dp is zero for a parameter,
+				% the respective component of chg should
+				% be zero too, even here (with active
+				% constraints)
 	%% indices for different types of constraints
 	c_inact = ~c_act; % inactive constraints
 	c_binding = nc_idx; 
@@ -545,7 +551,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       if (any (idx))
 	k = min (1, min (- (vci(idx) + mcit(idx, :) * pprev) ./ ...
 			 hstep(idx)));
-	%% deb_printf (testing, 'stepwidth: linear constraints\n');
+	deb_printf (testing, 'stepwidth: linear constraints\n');
       end
       if (have_gencstr)
 	c_tp = gc_idx & (c_nonbinding | c_inact);
@@ -559,14 +565,14 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	  if (info ~= 1 || abs (fval) >= nz)
 	    error ('could not find stepwidth to satisfy inactive and non-binding general inequality constraints');
 	  end
-	  %% deb_printf (testing, 'general constraints limit stepwidth\n');
+	  deb_printf (testing, 'general constraints limit stepwidth\n');
 	end
       end
       chg = k * chg;
 
       if (any (gc_idx & c_binding)) % none selected binding =>
 				% none unselected binding
-	%% deb_printf (testing, 'general binding constraints must be regained:\n');
+	deb_printf (testing, 'general binding constraints must be regained:\n');
 	%% regain binding constraints and one of the possibly active
 	%% previously inactive or non-binding constraints
 	ptp1 = pprev + chg;
@@ -575,12 +581,12 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	nt_nosuc = true;
 	lim = 20;
 	while (nt_nosuc && lim >= 0)
-	  %% deb_printf (testing, 'starting from new value of p in regaining:\n');
-	  %% deb_printf (testing, '%e\n', ptp1);
- 	  %% we keep dp.' * inv (mfc1) * dp minimal in each step of the
-	  %% inner loop; this is both sensible (this metric considers a
-	  %% guess of curvature of sum of squared residuals) and
-	  %% convenient (we have useful matrices available for it)
+	  deb_printf (testing, 'starting from new value of p in regaining:\n');
+	  deb_printf (testing, '%e\n', ptp1);
+ 	  %% we keep d_p.' * inv (mfc1) * d_p minimal in each step of
+	  %% the inner loop; this is both sensible (this metric
+	  %% considers a guess of curvature of sum of squared residuals)
+	  %% and convenient (we have useful matrices available for it)
 	  c_tp0 = c_inact | c_nonbinding;
 	  c_tp1 = c_inact | (gc_idx & c_nonbinding);
 	  btbl = tbl(bidx, bidx);
@@ -605,8 +611,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	  end
 	  dcbt = dct(c_tp2, :);
 	  mfc = - mfc1 * dcbt.' * btbl;
-	  %% deb_printf (testing, 'constraints to regain:\n');
-	  %% deb_printf (testing, '%i\n', c_tp2);
+	  deb_printf (testing, 'constraints to regain:\n');
+	  deb_printf (testing, '%i\n', c_tp2);
 
 	  ptp2 = ptp1;
 	  nt_niter = 100;
@@ -616,7 +622,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	      nt_nosuc = false;
 	      chg = ptp2 - pprev;
 	    else
-	      ptp2 = ptp2 + mfc * hv;
+	      ptp2 = ptp2 + mfc * hv; % step should be zero for each
+				% component for which dp is zero
 	    end
 	    nt_niter = nt_niter - 1;
 	  end
@@ -626,9 +633,9 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	    nt_nosuc = true;
 	    ptp1 = (pprev + ptp1) / 2;
 	    if (nt_nosuc)
-	      %% deb_printf (testing, 'regaining did not converge\n');
+	      deb_printf (testing, 'regaining did not converge\n');
 	    else
-	      %% deb_printf (testing, 'regaining violated type 3 and 4\n');
+	      deb_printf (testing, 'regaining violated type 3 and 4\n');
 	    end
 	  end
 	  if (~nt_nosuc)
@@ -653,13 +660,13 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	      c_unbinding = nc_idx;
 	      c_unbinding(c_act) = ridx;
 	      nt_nosuc = true;
-	      %% deb_printf (testing, 'regaining violated type 2\n');
+	      deb_printf (testing, 'regaining violated type 2\n');
 	    end
 	  end
 	  if (~nt_nosuc)
-	    %% deb_printf (testing, 'regaining successful, converged with %i iterations:\n', ...
-	    %% 100 - nt_niter);
-	    %% deb_printf (testing, '%e\n', ptp2);
+	    deb_printf (testing, 'regaining successful, converged with %i iterations:\n', ...
+	    100 - nt_niter);
+	    deb_printf (testing, '%e\n', ptp2);
 	  end
 	  lim = lim - 1;
 	end

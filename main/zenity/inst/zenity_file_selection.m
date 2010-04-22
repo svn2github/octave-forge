@@ -15,7 +15,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} [@var{files} @var{status}] = zenity_file_selection(@var{param1}, @var{value1}, ...)
+## @deftypefn  {Function File} [@var{files} @var{status}] = zenity_file_selection (@var{param1}, @var{value1}, ...)
 ## Opens a file selection dialog using Zenity. Output @var{files} is a string or
 ## a cell array of strings depending on whether the function has been set to
 ## allows selection of multiple files or directories. Status will be 0 if user
@@ -69,11 +69,12 @@ function [files, status] = zenity_file_selection(varargin)
   # in most filesystems and so, unlikely to exist in the middle of filenames.
   # It's also the fileseparator so filenames will always already start with a
   # '/' which is good since we can look for double '//' as separator for filepaths
-  cmd = sprintf("zenity --file-selection --separator=\"/\" %s %s %s %s %s %s %s", ...
-                 options.directory, options.filename, options.height, ...
-                 options.multiple, options.save, options.timeout, ...
-                 options.title, options.width, options.filter);
+  pre_cmd = sprintf("%s ", ...
+                    options.directory, options.filename, options.height, ...
+                    options.multiple, options.save, options.timeout, ...
+                    options.title, options.width, options.filter);
 
+  cmd              = sprintf("zenity --file-selection --separator=\"/\" %s", pre_cmd);
   [status, output] = system(cmd);
 
   # Exit code -1 = An unexpected error has occurred

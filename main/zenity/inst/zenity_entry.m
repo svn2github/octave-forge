@@ -51,10 +51,11 @@ function out = zenity_entry(text, varargin)
 
   options = _zenity_options_ ("entry", varargin);
 
-  cmd = sprintf("zenity --entry %s %s %s %s %s %s %s %s", ...
-                text, options.entry, options.title, options.password, ...
-                options.width, options.height, options.timeout);
+  pre_cmd = sprintf("%s ", ...
+                    text, options.entry, options.title, options.password, ...
+                    options.width, options.height, options.timeout);
 
+  cmd              = sprintf("zenity --entry %s", pre_cmd);
   [status, output] = system(cmd);
 
   ## Exit code -1 = An unexpected error has occurred

@@ -45,9 +45,10 @@ function zenity_notification(varargin)
 
   options = _zenity_options_ ("notification", varargin);
 
-  cmd = sprintf("zenity --notification %s %s %s",
-                options.icon, options.text, options.timeout);
+  pre_cmd = sprintf("%s ", ...
+                    options.icon, options.text, options.timeout);
 
+  cmd              = sprintf("zenity --notification %s", pre_cmd);
   [status, output] = system(cmd);
   ## Exit code -1 = An unexpected error has occurred
   ## Exit code  0 = The user has pressed either OK or Close. 

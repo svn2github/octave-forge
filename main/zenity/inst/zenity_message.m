@@ -69,10 +69,11 @@ function status = zenity_message(text, varargin)
 
   options = _zenity_options_ ("message", varargin);
 
-  cmd = sprintf("zenity %s %s %s %s %s %s %s %s %s", ...
-                options.type, text, options.wrap, options.title, ...
-                options.width, options.height, options.timeout);
+  pre_cmd = sprintf("%s ", ...
+                    options.type, text, options.wrap, options.title, ...
+                    options.width, options.height, options.timeout);
 
+  cmd              = sprintf("zenity %s", pre_cmd);
   [status, output] = system(cmd);
 
   # Exit code -1 = An unexpected error has occurred

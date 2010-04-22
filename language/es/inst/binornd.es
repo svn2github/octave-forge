@@ -1,9 +1,9 @@
-md5="83b6a54cd147a48da93869e2cb5dae56";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="83b6a54cd147a48da93869e2cb5dae56";rev="7224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} binornd (@var{n}, @var{p}, @var{r}, @var{c})
-@deftypefnx {Archivo de funci@'on} {} binornd (@var{n}, @var{p}, @var{sz})
+@deftypefn {Archivo de función} {} binornd (@var{n}, @var{p}, @var{r}, @var{c})
+@deftypefnx {Archivo de función} {} binornd (@var{n}, @var{p}, @var{sz})
 Retorna una matriz de @var{r} por @var{c}  o @code{size (@var{sz})} de
-muestras aleatorias de la distribuci@'on Binomial con par@'ametros 
+muestras aleatorias de la distribución Binomial con parámetros 
 @var{n} y @var{p}. Tanto @var{n} como @var{p} deben ser escalares o
 de dimensiones @var{r} por @var{c}.
 

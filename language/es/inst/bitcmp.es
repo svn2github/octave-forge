@@ -1,6 +1,6 @@
-md5="36f7776ea57902af036d64f46cff5b78";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="36f7776ea57902af036d64f46cff5b78";rev="7224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} bitcmp (@var{a}, @var{k})
+@deftypefn {Archivo de función} {} bitcmp (@var{a}, @var{k})
 Retorna el @var{k}-bit complemento de enteros en @var{a}. Si 
 @var{k} es omitido @code{k = log2 (bitmax) + 1} es asumido.
 

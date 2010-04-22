@@ -1,8 +1,8 @@
-md5="6baf89dd63014f7b43dc3e9264e7ff13";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="6baf89dd63014f7b43dc3e9264e7ff13";rev="7224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} bitshift (@var{a}, @var{k})
-@deftypefnx {Funci@'on incorporada} {} bitshift (@var{a}, @var{k}, @var{n})
-Retorna un corrimiento de @var{k} bits de @var{n} d@'igitos del entero
+@deftypefn {Función incorporada} {} bitshift (@var{a}, @var{k})
+@deftypefnx {Función incorporada} {} bitshift (@var{a}, @var{k}, @var{n})
+Retorna un corrimiento de @var{k} bits de @var{n} dígitos del entero
  sin signo @var{a}. 
  
 Si @var{k} es positivo, conduce al corrimiento a la izquierda. Si 

@@ -1,9 +1,9 @@
-md5="a24acf65875dcbc0b262ffc7ef6dfe93";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a24acf65875dcbc0b262ffc7ef6dfe93";rev="7224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} blackman (@var{m})
+@deftypefn {Archivo de función} {} blackman (@var{m})
 Retorna los coeficientes del filtro para una ventana de Blackman de 
 longitud @var{m}.
 
-Para una definici@'on de la ventana de Blackman, v@'ease p.e. A. V.
+Para una definición de la ventana de Blackman, véase p.e. A. V.
 Oppenheim & R. W. Schafer, ``Discrete-Time Signal Processing''.
 @end deftypefn

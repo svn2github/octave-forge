@@ -1,7 +1,7 @@
-md5="890dc1b8aedabdb2516575d3df37a38d";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="890dc1b8aedabdb2516575d3df37a38d";rev="7224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} betainc (@var{x}, @var{a}, @var{b})
-Retorna la funci@'on Beta incompleta,
+@deftypefn {Función de mapeo} {} betainc (@var{x}, @var{a}, @var{b})
+Retorna la función Beta incompleta,
 @iftex
 @tex
 $$

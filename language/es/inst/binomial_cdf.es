@@ -1,6 +1,6 @@
-md5="4c8fcca0e5dc9c73f5f72143e86c0485";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4c8fcca0e5dc9c73f5f72143e86c0485";rev="7224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} binomial_cdf (@var{x}, @var{n}, @var{p})
-Para cada elemento de @var{x}, calcula la distribuci@'on probabilidad 
-en @var{x} de la distribuci@'on Binomial con par@'ametros @var{n} y @var{p}.
+@deftypefn {Archivo de función} {} binomial_cdf (@var{x}, @var{n}, @var{p})
+Para cada elemento de @var{x}, calcula la distribución probabilidad 
+en @var{x} de la distribución Binomial con parámetros @var{n} y @var{p}.
 @end deftypefn

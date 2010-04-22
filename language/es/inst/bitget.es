@@ -1,6 +1,6 @@
-md5="d8eb691d2fb8af42d0f9958e66160f56";rev="6125";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d8eb691d2fb8af42d0f9958e66160f56";rev="7224";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{X} =} bitget (@var{a},@var{n})
+@deftypefn {Archivo de función} {@var{X} =} bitget (@var{a},@var{n})
 Retorna el estado de los @var{n} bits del entero sin signo @var{a}.
 El estado del bit menos significativo se obtiene con @var{n} = 1.
 

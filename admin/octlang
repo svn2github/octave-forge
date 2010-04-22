@@ -94,8 +94,8 @@ case $1 in
 	    else
 		cat $_file >> $tmpfile
 	    fi
-	    mv $tmpfile $_file
-      iconv -f ISO-8859-1 -t UTF-8 $_file
+      iconv -f ISO-8859-1 -t UTF-8 $tmpfile > $_file
+      rm $tmpfile
 	done
     ;;
     help)

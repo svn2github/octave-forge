@@ -1,6 +1,6 @@
-md5="2454e1188756094f4e0d5da4790983bd";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="2454e1188756094f4e0d5da4790983bd";rev="7231";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} kurtosis (@var{x}, @var{dim})
+@deftypefn {Archivo de función} {} kurtosis (@var{x}, @var{dim})
 Si @var{x} es un vector de longitud @math{N}, retorna la curtosis
 @iftex
 @tex
@@ -19,7 +19,7 @@ kurtosis (x) = N^(-1) std(x)^(-4) sum ((x - mean(x)).^4) - 3
 
 @noindent
 de @var{x}.  Si @var{x} es una matriz, retorna la curtosis sobre la 
-primero dimensi@'on no sencilla. El argumento opcional @var{dim}
+primero dimensión no sencilla. El argumento opcional @var{dim}
 puede ser dado para forzar que la curtosis sea calculada sobre 
-esa dimensi@'on.
+esa dimensión.
 @end deftypefn

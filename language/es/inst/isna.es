@@ -1,6 +1,6 @@
-md5="31ce22784f04cc99a7b5612e08a3d552";rev="6274";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="31ce22784f04cc99a7b5612e08a3d552";rev="7231";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} isna (@var{x})
+@deftypefn {Función de mapeo} {} isna (@var{x})
 Retorna 1 para los elementos de @var{x} que son valores NA (no aplica) y 0 
 en otro caso. Por ejemplo, 
 

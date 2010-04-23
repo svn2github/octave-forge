@@ -1,6 +1,6 @@
-md5="06738fe9cdeb399005cda5a6ab560e48";rev="6274";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="06738fe9cdeb399005cda5a6ab560e48";rev="7231";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} isinf (@var{x})
+@deftypefn {Función de mapeo} {} isinf (@var{x})
 Retorna 1 para los elementos de @var{x} que son infinito y 0 
 en otro caso. Por ejemplo, 
 

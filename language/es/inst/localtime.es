@@ -1,6 +1,6 @@
-md5="310973415530efaa490f2b59b633552a";rev="6461";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="310973415530efaa490f2b59b633552a";rev="7231";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {} localtime (@var{t})
+@deftypefn {Función cargable} {} localtime (@var{t})
 Dado un valor retornado por @code{time} (o cualquier entero no negativo), 
 retorna una estructuta de tiempo correspondiente a la hora local. 
 

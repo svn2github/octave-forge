@@ -1,13 +1,13 @@
-md5="adc2e4ea385c3883a121fd85c57954e3";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="adc2e4ea385c3883a121fd85c57954e3";rev="7231";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{L} =} legendre (@var{n}, @var{X})
+@deftypefn {Archivo de función} {@var{L} =} legendre (@var{n}, @var{X})
 
-Funci@'on de Legendre de grado n y orden m donde se devuelven todos
+Función de Legendre de grado n y orden m donde se devuelven todos
 los valores de m = 0.. @var{n}. @var{n} debe ser un escalar en el intervalo
-[0 .. 255]. El valor de retorno tiene una dimensi@'on m@'as que @var{x}.
+[0 .. 255]. El valor de retorno tiene una dimensión más que @var{x}.
 
 @example
-la fuci@'on Legendre de grado n y ordem m.
+la fución Legendre de grado n y ordem m.
 
 @group
  m        m       2  m/2   d^m

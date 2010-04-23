@@ -1,6 +1,6 @@
-md5="2645197aa2fc38331493386b4520c624";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="2645197aa2fc38331493386b4520c624";rev="7231";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} kron (@var{a}, @var{b})
+@deftypefn {Archivo de función} {} kron (@var{a}, @var{b})
 Realiza el producto de kronecker entre dos matrices, definifo bloque por bloque como: 
 
 @example

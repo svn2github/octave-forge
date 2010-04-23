@@ -1,6 +1,6 @@
-md5="03ccc54506e8601db989c4a5cfd41a0f";rev="6893";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="03ccc54506e8601db989c4a5cfd41a0f";rev="7231";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{digital} =} is_digital (@var{sys}, @var{eflg})
+@deftypefn {Archivo de función} {@var{digital} =} is_digital (@var{sys}, @var{eflg})
 Regresa distinto de cero si el sistema es digital.
 
 @strong{Entradas}

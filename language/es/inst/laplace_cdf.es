@@ -1,6 +1,6 @@
-md5="af732daf924f80012b4347214ed2ed40";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="af732daf924f80012b4347214ed2ed40";rev="7231";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} laplace_cdf (@var{x})
-Para cada elemento de @var{x}, calcula la funci@'on de distribuci@'on acumulada 
-(CDF) en @var{x} de la distribuci@'on de Laplace.
+@deftypefn {Archivo de función} {} laplace_cdf (@var{x})
+Para cada elemento de @var{x}, calcula la función de distribución acumulada 
+(CDF) en @var{x} de la distribución de Laplace.
 @end deftypefn

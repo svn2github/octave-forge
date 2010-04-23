@@ -1,7 +1,7 @@
-md5="79404e550582cf818fcedb6a65e9526b";rev="6420";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="79404e550582cf818fcedb6a65e9526b";rev="7231";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} intmin (@var{type})
-Retorna el entero m@'as peque@~{n}o que puede ser representado 
+@deftypefn {Función incorporada} {} intmin (@var{type})
+Retorna el entero más peque@~{n}o que puede ser representado 
 por una variable de tipo entero.
 
 La variable @var{type} puede ser 

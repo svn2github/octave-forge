@@ -1,7 +1,7 @@
-md5="d2bee76b7bbedb91e3956b672a8e0357";rev="6420";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="d2bee76b7bbedb91e3956b672a8e0357";rev="7231";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} intmax (@var{type})
-Retorna el entero m@'as grande que puede ser representado 
+@deftypefn {Función incorporada} {} intmax (@var{type})
+Retorna el entero más grande que puede ser representado 
 por una variable de tipo entero.
 
 La variable @var{type} puede ser 

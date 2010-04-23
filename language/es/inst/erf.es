@@ -1,7 +1,7 @@
-md5="aaddf887d691990d9fb74290f307da25";rev="6241";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="aaddf887d691990d9fb74290f307da25";rev="7228";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} erf (@var{z})
-Calcula la funci@'on de error,
+@deftypefn {Función de mapeo} {} erf (@var{z})
+Calcula la función de error,
 @iftex
 @tex
 $$

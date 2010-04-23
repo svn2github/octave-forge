@@ -1,7 +1,7 @@
-md5="0c041031bcaa2f05e62cf2e99f452477";rev="6241";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="0c041031bcaa2f05e62cf2e99f452477";rev="7228";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} erfc (@var{z})
-Calcula la funci@'on de error complementario,
+@deftypefn {Función de mapeo} {} erfc (@var{z})
+Calcula la función de error complementario,
 @iftex
 @tex
 $1 - {\rm erf} (z)$.

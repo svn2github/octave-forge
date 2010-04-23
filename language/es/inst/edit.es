@@ -1,42 +1,42 @@
-md5="4a38838282ee2c119eaa1e136288e608";rev="6241";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="4a38838282ee2c119eaa1e136288e608";rev="7228";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deftypefn {Comando} edit @var{name}
 @deftypefnx {Comando} edit @var{field} @var{value}
 @deftypefnx {Comando} @var{value} = edit get @var{field}
-Edita la funci@'on llamada, o cambia la configuraci@'on del editor.
+Edita la función llamada, o cambia la configuración del editor.
 
-Si se llama @code{edit} con el nombre de un archivo o funci@'on como 
-argumento, abre el archivo o funci@'on en un editor de texto.
+Si se llama @code{edit} con el nombre de un archivo o función como 
+argumento, abre el archivo o función en un editor de texto.
 
 @itemize @bullet
 @item
-Si la funci@'on @var{name} est@'a disponible en un archivo dentro entorno y 
-el archivo es modificable, el archivo se edita en ubicaci@'on actual. Si es 
-una funci@'on del sistema, el archivo se copia en el directorio @code{HOME} 
-(v@'ease a continuaci@'on) se edita.
+Si la función @var{name} está disponible en un archivo dentro entorno y 
+el archivo es modificable, el archivo se edita en ubicación actual. Si es 
+una función del sistema, el archivo se copia en el directorio @code{HOME} 
+(véase a continuación) se edita.
 
 @item
-Si @var{name} es el nombre de una funci@'on definida en el int@'erprete pero  
-no en un archivo m, se crea un archivo m en @code{HOME} con la funci@'on 
+Si @var{name} es el nombre de una función definida en el intérprete pero  
+no en un archivo m, se crea un archivo m en @code{HOME} con la función 
 actual.
 
 @item
 Si se espedifica @code{name.cc}, se busca @code{name.cc} en el entorno 
 de trabajo y se modifica, en otro caso, se crea un nuevo archivo 
-@file{.cc} en @code{HOME}. Si @var{name} es una funci@'on definida en un 
-archivo m o en el int@'erprete, se inserta el texto de la funci@'on dentro 
+@file{.cc} en @code{HOME}. Si @var{name} es una función definida en un 
+archivo m o en el intérprete, se inserta el texto de la función dentro 
 del archivo .cc como un comentario.
 
 @item
-Si @var{name.ext} est@'a dentro del entorno de trabajo, se edita. En otro 
+Si @var{name.ext} está dentro del entorno de trabajo, se edita. En otro 
 caso, el editor crea y abre el archivo @file{HOME/name.ext}. Si  
 @file{name.ext} es no modificable, se copia en el directorio 
 @code{HOME} antes de ser editado.
 
 @strong{ADVERTENCIA!} Es probable que deba eliminar el contenido de 
-@var{name} antes de que la nueva definici@'on est@'e disponible. Si se edita 
+@var{name} antes de que la nueva definición esté disponible. Si se edita 
 un archivo .cc, se debe ejecutar el comando @code{mkoctfile @file{name.cc}} 
-antes de que la definici@'on est@'e disponible.
+antes de que la definición esté disponible.
 @end itemize
 
 Si se llama @code{edit} con la variables @var{field} y @var{value}, 
@@ -49,9 +49,9 @@ Se usan los siguientes campos:
 @table @samp
 @item editor
 Este es el nombre del editor usado para modificar los funciones. En forma 
-predetermina, Octave usa la funci@'on incorporada @code{EDITOR}, la cual 
+predetermina, Octave usa la función incorporada @code{EDITOR}, la cual 
 toma su valor desde @code{getenv("EDITOR")} y es @code{emacs}. Use @code{%s} 
-en lugar del nombre de la funci@'on. Por ejemplo,
+en lugar del nombre de la función. Por ejemplo,
 @table @samp
 @item [EDITOR, " %s"]
 Use el editor predefinido en Octave para @code{bug_report}.
@@ -62,26 +62,26 @@ Lo envia al Emacs actual; debe tener @code{(gnuserv-start)} en @file{.emacs}.
 @end table
 
 En cygwin, se debe convertir la ruta de cygwin en una ruta tipo windows
-si se est@'a usando un editor nativo de Windows. Por ejemplo 
+si se está usando un editor nativo de Windows. Por ejemplo 
 @example
 '"C:/Program Files/Good Editor/Editor.exe" "$(cygpath -wa %s)"'
 @end example
 
 @item home
-Ubicaci@'on de los archivos m locales del usuario. Aseg@'usre de estar 
+Ubicación de los archivos m locales del usuario. Asegúsre de estar 
 en la direcotrio del usuario actual. El valor predetermiando es 
 @file{~/octave}.
 
 @item author
-Nombre que se pondr@'a despu@'es del campo "## Author:" de la funciones 
+Nombre que se pondrá después del campo "## Author:" de la funciones 
 nuevas. El valor predeterminado es tomado del campo @code{gecos} de la base 
 de datos de contrase@~{n}as.
 
 @item email
-Direcci@'on de e-mail que se pondr@'a depu@'es del nombre en el campo autor. 
+Dirección de e-mail que se pondrá depués del nombre en el campo autor. 
 El valor predeterminado es tomado de @code{<$LOGNAME@@$HOSTNAME>}, y si no 
-est@'a definido @code{$HOSTNAME}, usa el comando @code{uname -n}. 
-Probalemente sea necesario sobreescribir esta funci@'on. Aseg@'usere de usar 
+está definido @code{$HOSTNAME}, usa el comando @code{uname -n}. 
+Probalemente sea necesario sobreescribir esta función. Asegúsere de usar 
 el formato @code{<user@@host>}.
 
 @item license
@@ -97,9 +97,9 @@ Derechos de autor y licencia definidos por el usuario.
 @end table
 
 @item mode
-Determina si el editor deber@'ia iniciar en modo as@'incrono o modo 
-s@'incrono. Use "async" para iniciar el editor en modo as@'incrono. El 
-valor predeterminado es "sync" (v@'ease tambi@'en "system").
+Determina si el editor debería iniciar en modo asíncrono o modo 
+síncrono. Use "async" para iniciar el editor en modo asíncrono. El 
+valor predeterminado es "sync" (véase también "system").
 
 A menos que se especifique @samp{pd}, el comando @code{edit} agrega la 
 sentencia de derechos de autor "Copyright (C) yyyy Function Author".

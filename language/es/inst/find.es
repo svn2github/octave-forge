@@ -1,8 +1,8 @@
-md5="0524bdd29329fec586c49ecfafd52af8";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="0524bdd29329fec586c49ecfafd52af8";rev="7229";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {} find (@var{x})
-@deftypefnx {Funci@'on cargable} {} find (@var{x}, @var{n})
-@deftypefnx {Funci@'on cargable} {} find (@var{x}, @var{n}, @var{direction})
+@deftypefn {Función cargable} {} find (@var{x})
+@deftypefnx {Función cargable} {} find (@var{x}, @var{n})
+@deftypefnx {Función cargable} {} find (@var{x}, @var{n}, @var{direction})
 Return a vector of indices of nonzero elements of a matrix.  To obtain a
 single index for each matrix element, Octave pretends that the columns
 of a matrix form one long vector (like Fortran arrays are stored).  For

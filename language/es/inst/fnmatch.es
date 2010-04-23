@@ -1,6 +1,6 @@
-md5="46763fcc66210450c07f83cb6714eafa";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="46763fcc66210450c07f83cb6714eafa";rev="7229";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} fnmatch (@var{pattern}, @var{string})
+@deftypefn {Función incorporada} {} fnmatch (@var{pattern}, @var{string})
 Retorna 1 para cada elemento de @var{string} que coincide con cualquira de 
 los elementos del arreglo cadena @var{pattern}, usando las reglas del 
 emparejamiento de patronos de nombres de archivos. Por ejemplo, 

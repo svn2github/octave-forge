@@ -1,7 +1,7 @@
-md5="7536ce2616d1ff694375c315b42a82b9";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="7536ce2616d1ff694375c315b42a82b9";rev="7229";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} flipdim (@var{x}, @var{dim})
-Retorna una copia de @var{x} reflejada en la dimensi@'on @var{dim}.
+@deftypefn {Archivo de función} {} flipdim (@var{x}, @var{dim})
+Retorna una copia de @var{x} reflejada en la dimensión @var{dim}.
 Por ejemplo 
 
 @example

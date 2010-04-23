@@ -1,11 +1,11 @@
-md5="0f7df3a29a0027ebac56aa928220824f";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="0f7df3a29a0027ebac56aa928220824f";rev="7229";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} file_in_loadpath (@var{file})
-@deftypefnx {Funci@'on incorporada} {} file_in_loadpath (@var{file}, "all")
+@deftypefn {Función incorporada} {} file_in_loadpath (@var{file})
+@deftypefnx {Función incorporada} {} file_in_loadpath (@var{file}, "all")
 
 Retorna el nombre absoluto de @var{file} si se puede encontrar en 
 la lista de directorios especificados en @code{path}. Si no se encuentra 
-ning@'un archivo, retorna una matriz vacia. 
+ningún archivo, retorna una matriz vacia. 
 
 Si el primer argumento es un arreglo de celdas de cadenas, busca en cada 
 directorio de @code{loadpath} para elementos del arreglo de celdas y retorna 

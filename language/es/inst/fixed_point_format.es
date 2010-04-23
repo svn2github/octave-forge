@@ -1,11 +1,11 @@
-md5="c165ffaa5bff156fabd2e1f12b9c8497";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="c165ffaa5bff156fabd2e1f12b9c8497";rev="7229";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {@var{val} =} fixed_point_format ()
-@deftypefnx {Funci@'on incorporada} {@var{old_val} =} fixed_point_format (@var{new_val})
-Consulta o establece la variable interna que controla si Octave usar@'a 
+@deftypefn {Función incorporada} {@var{val} =} fixed_point_format ()
+@deftypefnx {Función incorporada} {@var{old_val} =} fixed_point_format (@var{new_val})
+Consulta o establece la variable interna que controla si Octave usará 
 un formato a escala para imprimir valores de matrices tales que el 
-elemento m@'as grande pueda ser escrito como un @'unico d@'igito con el 
-factor de escala en frente de la primera l@'inea de salida. Por ejemplo, 
+elemento más grande pueda ser escrito como un único dígito con el 
+factor de escala en frente de la primera línea de salida. Por ejemplo, 
 
 @example
 @group
@@ -23,7 +23,7 @@ ans =
 @end example
 
 @noindent
-N@'otese que el primer valor aparece como cero cuando es realmente 1. Por 
-esta raz@'on, se debe prestar atenci@'on cuando se va cambiar 
+Nótese que el primer valor aparece como cero cuando es realmente 1. Por 
+esta razón, se debe prestar atención cuando se va cambiar 
 @code{fixed_point_format} por un valor distinto de cero.
 @end deftypefn

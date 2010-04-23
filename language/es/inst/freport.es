@@ -1,7 +1,7 @@
-md5="b3ddb15093a972c28911ee364baeb47d";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="b3ddb15093a972c28911ee364baeb47d";rev="7229";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} freport ()
-Imprime la lista de c@'uales archivos han sido abiertos, y si han sido abiertos para 
+@deftypefn {Función incorporada} {} freport ()
+Imprime la lista de cúales archivos han sido abiertos, y si han sido abiertos para 
 lectura, escritura o ambos. Por ejemplo,
 
 @example

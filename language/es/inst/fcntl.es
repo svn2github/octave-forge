@@ -1,6 +1,6 @@
-md5="9dfc76e55d6c25d724bce97f0ced1676";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="9dfc76e55d6c25d724bce97f0ced1676";rev="7229";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})
+@deftypefn {Función incorporada} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})
 Cambia las propiedades del archivo abierto @var{fid}. Los siguientes valores 
 se pueden pasar como @var{request}: 
 
@@ -16,7 +16,7 @@ Establece los indicadores del descriptor del archivo @var{fid}.
 
 @item F_GETFL
 Retorna los indicadores de estado de archivo para @var{fid}. Los siguientes 
-c@'odigos pueden ser reotornados (algunos de los indicadores pueden no estar 
+códigos pueden ser reotornados (algunos de los indicadores pueden no estar 
 definidos en algunos sistemas).
 
 @vtable @code
@@ -42,16 +42,16 @@ Modo de no bloqueo.
 Espera mientras se completa la escritura.
 
 @item O_ASYNC
-Entrada/Salida as@'incrona.
+Entrada/Salida asíncrona.
 @end vtable
 
 @item F_SETFL
 Establece los indicadores de estado de archivo @var{fid} al valor especificado por 
-@var{arg}. El @'unico indicador que puede ser cambiado es @code{O_APPEND} y 
+@var{arg}. El único indicador que puede ser cambiado es @code{O_APPEND} y 
 @code{O_NONBLOCK}.
 @end vtable
 
-Si la ejecuci@'on es exitosa, @var{err} es 0 y @var{msg} es una cadena vacia.
+Si la ejecución es exitosa, @var{err} es 0 y @var{msg} es una cadena vacia.
 En otro caso, @var{err} es diferente de cero y @var{msg} contiene un mensaje 
 de error dependiente del sistema.
 @end deftypefn

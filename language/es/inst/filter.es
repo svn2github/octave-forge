@@ -1,10 +1,10 @@
-md5="0e5affc63e823b484067389f2a54bfe0";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="0e5affc63e823b484067389f2a54bfe0";rev="7229";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {y =} filter (@var{b}, @var{a}, @var{x})
-@deftypefnx {Funci@'on cargable} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})
-@deftypefnx {Funci@'on cargable} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})
-@deftypefnx {Funci@'on cargable} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})
-Retorna la soluci@'on de la siguiente ecuaci@'on de diferencias lineal, 
+@deftypefn {Función cargable} {y =} filter (@var{b}, @var{a}, @var{x})
+@deftypefnx {Función cargable} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})
+@deftypefnx {Función cargable} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})
+@deftypefnx {Función cargable} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})
+Retorna la solución de la siguiente ecuación de diferencias lineal, 
 invariante en el tiempo: 
 @iftex
 @tex
@@ -33,8 +33,8 @@ donde
  $a \in \Re^{N-1}$, $b \in \Re^{M-1}$, y $x \in \Re^P$.
 @end tex
 @end iftex
-sobre la primera dimensi@'on no singleton de @var{x} o sobre @var{dim} si 
-se suministra. Una forma equivalente de esta ecuaci@'on es: 
+sobre la primera dimensión no singleton de @var{x} o sobre @var{dim} si 
+se suministra. Una forma equivalente de esta ecuación es: 
 @iftex
 @tex
 $$
@@ -69,9 +69,9 @@ estado inicial del sistema y el estado final se retorna como
 igual a la longitud del vector de coeficientes mas largo menos uno. 
 Si no se suministra @var{si}, se asigna cero al vector de estado inicial.
 
-En t@'erminos de la transformada z, la variable @var{y} es el resultado de 
-pasar la se@~{n}al discreta @var{x} a trav@'es del sistema caracterizado por
-la siguiente funci@'on racional del sistema: 
+En términos de la transformada z, la variable @var{y} es el resultado de 
+pasar la se@~{n}al discreta @var{x} a través del sistema caracterizado por
+la siguiente función racional del sistema: 
 @iftex
 @tex
 $$

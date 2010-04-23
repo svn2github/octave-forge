@@ -1,7 +1,7 @@
-md5="3e22563d39ba230e58e267e74f04cd91";rev="6834";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="3e22563d39ba230e58e267e74f04cd91";rev="7229";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} fir2sys (@var{num}, @var{tsam}, @var{inname}, @var{outname})
-Construye una estructura de datos de sistema de descripci@'on @acronym{FIR} 
+@deftypefn {Archivo de función} {} fir2sys (@var{num}, @var{tsam}, @var{inname}, @var{outname})
+Construye una estructura de datos de sistema de descripción @acronym{FIR} 
 
 @strong{Inputs}
 @table @var
@@ -15,7 +15,7 @@ vector de coeficientes
 $ [c_0, c_1, \ldots, c_n ]$
 @end tex
 @end iftex
-de el @acronym{SISO} @acronym{FIR} funci@'on de transferencia
+de el @acronym{SISO} @acronym{FIR} función de transferencia
 @ifinfo
 C(z) = c0 + c1*z^(-1) + c2*z^(-2) + @dots{} + cn*z^(-n)
 @end ifinfo
@@ -40,7 +40,7 @@ entrada sencilla.
 @strong{Output}
 @table @var
 @item sys
-estructura de informaci@'on del sistema
+estructura de información del sistema
 @end table
 
 @strong{Example}

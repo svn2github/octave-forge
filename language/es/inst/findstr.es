@@ -1,8 +1,8 @@
-md5="7d17b58deed4bc57bbcdf3b610ca1b76";rev="6253";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="7d17b58deed4bc57bbcdf3b610ca1b76";rev="7229";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} findstr (@var{s}, @var{t}, @var{overlap})
-Retorna el vector con todas las posiciones donde la cadena m@'as corta aparece en 
-la m@'as larga. Si el argumento opcional @var{overlap} es distinto de cero, el 
+@deftypefn {Archivo de función} {} findstr (@var{s}, @var{t}, @var{overlap})
+Retorna el vector con todas las posiciones donde la cadena más corta aparece en 
+la más larga. Si el argumento opcional @var{overlap} es distinto de cero, el 
 vector retornado puede incluir posiciones  que se superponen (predeterminado). 
 Por ejemplo, 
 

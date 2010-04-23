@@ -41,7 +41,7 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,verbose)
 	# defaults for optional arguments
 	if (nargin < 6) verbose = false; endif
 	if (nargin < 5)	n_pooled = 1; endif;
-	nodes = 2;
+
 	if MPI_Initialized 	# check if doing this parallel or serial
 		use_mpi = true;
 		CW = MPI_Comm_Load("NEWORLD");
@@ -53,24 +53,25 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,verbose)
 		is_node = 0;
 	endif
 
-	if n_pooled > reps/(nodes-1); n_pooled = ceil(reps/(nodes-1)); endif # fix too large pooling size
-
 	if is_node # compute nodes
-		while true
+		more_please = 1;
+		while more_please
 			for i = 1:n_pooled
 				contrib = feval(f, f_args);
 				contribs(i,:) = contrib;
 			endfor
 			MPI_Send(contribs, 0, mytag, CW);
+			pause(0.05); # give time for the fronted to send a stop message, if done
 			# check if we're done
-			message = MPI_Recv(0, is_node, CW);
-			if strcmp(message, "stop") break; endif  
+			if (MPI_Iprobe(0, is_node, CW)) # check for ping from rank 0
+				junk = MPI_Recv(0, is_node, CW);
+				break;
+			endif
 		endwhile
 	else # frontend
 		received = 0;
 		done = false;
 		while received < reps
-		  	pause(0.1); # don't use too much CPU spinning
 			if use_mpi
 				# retrieve results from compute nodes
 				for i = 1:nodes-1
@@ -82,13 +83,10 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,verbose)
 						contribs = MPI_Recv(i, mytag, CW);
 						need = reps - received;
 						received = received + n_pooled;
-						# finished?
+						# truncate?
 						if n_pooled  >= need
-							contribs = contribs(1:need,:);
-							done = true;
-							received = reps;
-							# stop the nodes
-							for j = 1:(nodes-1) MPI_Send("stop",j,j,CW); endfor
+								contribs = contribs(1:need,:);
+								done = true;
 						endif
 						# write to output file
 						FN = fopen (outfile, "a");
@@ -100,7 +98,17 @@ function n_received = montecarlo(f,f_args,reps,outfile,n_pooled,verbose)
 						endfor
 						fclose(FN);
 						if verbose printf("\nContribution received from node%d.  Received so far: %d\n", i, received); endif
-						if done break; endif
+						if done
+							# tell compute nodes to stop loop
+							for j = 1:5
+								for i = 1:(nodes-1)
+									if (j==1) MPI_Send(" ",i,i,CW); endif # send out message to stop
+									ready = MPI_Iprobe(i, mytag, CW); # get last messages
+									if ready contribs = MPI_Recv(i, mytag, CW); endif
+								endfor
+							endfor
+							break;
+						endif	
 					endif
 				endfor
 			else

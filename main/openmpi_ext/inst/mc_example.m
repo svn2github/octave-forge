@@ -32,14 +32,14 @@ function betahat = olswrapper(args)
 endfunction
 
 
-n = 2000;
+n = 30;
 theta = [1;1];
 
 reps = 1000;
 f = "olswrapper";
 args = {n, theta};
 outfile = "mc_output";
-n_pooled = 500;
+n_pooled = 10;
 verbose = true;
 
 # montecarlo(f, args, reps, outfile, n_pooled, false, verbose);

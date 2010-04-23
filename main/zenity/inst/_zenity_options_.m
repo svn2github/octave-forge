@@ -69,7 +69,7 @@ function op = _zenity_options_ (dialog, varargin)
     op.separator = op.text     = op.hide      = op.print_col = "";
     op.multiple  = op.radio    = op.check     = op.editable  = "";
     op.hide_max  = op.hide_min = op.print_max = op.print_min = "";
-    op.print_numel = "";
+    op.print_numel = op.num_out = "";
   elseif (strcmpi(dialog, "message"))
     op.type = op.wrap = "";
   elseif (strcmpi(dialog, "notification"))
@@ -202,7 +202,6 @@ function op = _zenity_options_ (dialog, varargin)
       endif
 
     ## Process options for ZENITY_LIST
-    ## TODO should an option to change the separator be set for list?
     elseif ( strcmpi(dialog, "list") )
       if (strcmpi(param,"text"))                      # List - text
         narg            = sanity_checks ("char", param, value, op.text, narg);
@@ -219,6 +218,9 @@ function op = _zenity_options_ (dialog, varargin)
       elseif (strcmpi(param,"checklist"))              # List - checklist
         narg            = sanity_checks ("indie", param, value, op.check, narg);
         op.check        = "--checklist";
+      elseif (strcmpi(param,"numeric output"))         # List - numeric output
+        narg            = sanity_checks ("char", param, value, op.num_out, narg);
+        op.num_out      = value;
       elseif (strcmpi(param,"hide column"))            # List - hide column
         narg            = sanity_checks ("num", param, value, op.hide, narg);
         op.hide_min     = min(value(:));

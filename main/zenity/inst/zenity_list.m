@@ -107,6 +107,18 @@
 ## together with parameter @code{radiolist}. and it is automatically set when
 ## parameter @code{checklist} is set.
 ##
+## @item numeric output
+## Returns @var{selected} as a matrix and numeric values (double precision type)
+## instead of cell array of strings. It uses the function str2double for the
+## conversion. Requires a string as value. Possible values are: 
+##
+## @table @samp
+## @item error
+## Abort the function and return an error if unable to covert into numeric form.
+## @item nan
+## Returns NaN for the values it is unable to convert.
+## @end table
+##
 ## @item print column
 ## The numbers of the columns whose values should be returned. Requires a numeric
 ## data type as value. Multiple columns can be selected with ranges or matrixes,
@@ -142,7 +154,7 @@
 ## zenity_notification}
 ## @end deftypefn
 
-function [val, status] = zenity_list(col, data, varargin)
+function [val, status, tmp] = zenity_list(col, data, varargin)
 
   ## List of things that cannot be done:
   ## * editable cannot be set at the same time of checklist or radiolist
@@ -272,7 +284,15 @@ function [val, status] = zenity_list(col, data, varargin)
   # functions to close the dialog
   # Exit code  5 = The dialog has been closed because the timeout has been reached
 
-  if ( options.print_min == 0 && (!isempty(options.check) || !isempty(options.radio)) )
+  # If it would be possible for the function to return more than one value
+  if ( !isempty(options.check) || !isempty(options.multiple) || options.print_numel > 1)
+    multi = 1;
+  else
+    multi = 0;
+  endif
+
+  # Calculate the number of expected columns
+  if ( options.print_min == 0 && (options.check || options.radio) )
     expec_col = numel(col) -1;
   elseif (options.print_min == 0)
     expec_col = numel(col);
@@ -285,7 +305,7 @@ function [val, status] = zenity_list(col, data, varargin)
   if (status == 0)
     ## User can press OK without selecting anything which returns empty string
     if (isempty(output) || (numel(output) == 1 && output(end) == "\n") )
-      if (expec_col > 1)
+      if (multi)
         val = cell(1,expec_col);
       else
         val = "";
@@ -296,9 +316,9 @@ function [val, status] = zenity_list(col, data, varargin)
     if (output(end) == "\n")
         output = output(1:end-1);
     endif
-  ## When 'multiple' values are expected, always place the output in a cell
-  ##array, even if only one file is selected.
-    if (expec_col > 1)
+    ## When 'multiple' values are expected, always place the output in a cell
+    ## array, even if only one file is selected.
+    if (multi)
       idx = strfind(output, '/\|/\');
       if (idx)
         tmp_val   = cell(length(idx)+1, 1);
@@ -320,17 +340,26 @@ function [val, status] = zenity_list(col, data, varargin)
     else
       val = output;
     endif
-  elseif (status == 1 && expec_col > 1)
+  elseif (multi && (status == 1 || status == 5))
     val = cell(1, expec_col);
-  elseif (status == 1)
-    val = "";
-  elseif (status == 5 && expec_col > 1)
-    val = cell(1, expec_col);
-  elseif (status == 5)
+  elseif (status == 1 || status ==5)
     val = "";
   else
     error("An unexpected error occurred with exit code '%i' and output '%s'.",...
           status, output);
+  endif
+
+  if (options.num_out)
+    [val, sta] = str2double(val);
+    if (strcmpi(options.num_out, "error"))
+      if ( any(sta(:)) )
+        error("Conversion of output to numeric form was unsucessful")
+      endif
+    elseif (strcmpi(options.num_out, "nan"))
+      ## Do nothing
+    else
+      error("Unknow value '%s' for the parameter 'numeric output'", option)
+    endif
   endif
 
 endfunction

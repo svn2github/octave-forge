@@ -15,9 +15,14 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} zenity_notification(@var{param1}, @var{value1}, ...)
-## Displays an icon with a text in the notification area using Zenity. All
-## variables are optional but if given, may require a corresponding
+## @deftypefn  {Function File} status = zenity_notification(@var{param1}, @var{value1}, ...)
+## Displays an icon with a text in the notification area using Zenity.
+##
+## @var{status} is the exit code of the function and has a value of @code{0} if
+## it is pressed; @code{1} if @option{Close} is pressed or the window
+## functions are used to close it; or @code{5} if timeout has been reached.
+##
+## All variables are optional but if given, may require a corresponding
 ## @var{value}. All possible parameters are:
 ##
 ## @table @samp
@@ -41,21 +46,21 @@
 ## @seealso{zenity_progress, zenity_message}
 ## @end deftypefn
 
-function zenity_notification(varargin)
+function [output status] = zenity_notification (varargin)
 
   options = _zenity_options_ ("notification", varargin);
 
   pre_cmd = sprintf("%s ", ...
                     options.icon, options.text, options.timeout);
 
-  cmd              = sprintf("zenity --notification %s", pre_cmd);
+  cmd              = sprintf("zenity --notification --listen %s", pre_cmd);
   [status, output] = system(cmd);
   ## Exit code -1 = An unexpected error has occurred
   ## Exit code  0 = The user has pressed either OK or Close. 
   ## Exit code  1 = The user has either pressed Cancel, or used the window
   ## functions to close the dialog
   ## Exit code  5 = The dialog has been closed because the timeout has been reached
-  if (status == 0 || 1 || 5)
+  if (status == 0 || status == 1 || status == 5)
     return
   else
     error("An unexpected error occurred with exit code '%i' and output '%s'",...

@@ -18,12 +18,13 @@
 ## @deftypefn  {Function File} @var{status} = zenity_message(@var{text}, @var{parameter1}, @var{value1}, ...)
 ## Displays different types of graphical message dialogs using Zenity.
 ##
-## Returns 0 if `OK' is pressed; 1 if `Close' is pressed or the window
-## functions are used to close it; or 5 if timeout has been reached.
+## Returns @code{0} if @option{OK} is pressed; @code{1} if @option{Close} is
+## pressed or the window functions are used to close it; or @code{5} if timeout
+## has been reached.
 ##
 ## The variable @var{text} sets the message of the dialog and is the only
-## mandatory argument. All @var{parameter1} are optional, but if given, may require
-## a corresponding @var{value1}. All possible parameters are:
+## mandatory argument. All @var{parameters} are optional, but if given, may require
+## a corresponding @var{value}. All possible parameters are:
 ##
 ## @table @samp
 ## @item type
@@ -81,7 +82,7 @@ function status = zenity_message(text, varargin)
   # Exit code  1 = The user has either pressed Cancel, or used the window
   # functions to close the dialog
   # Exit code  5 = The dialog has been closed because the timeout has been reached
-  if (status == 0 || 1 || 5)
+  if (status == 0 || status == 1 || status == 5)
     return
   else
     error("An unexpected error occurred with exit code '%i' and output '%s'",...

@@ -15,12 +15,23 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} @var{s} = zenity_entry(@var{text}, @var{parameter1}, @var{value1}, ...)
-## Displays a text entry dialog using Zenity. The variable @var{text} sets the dialog text
-## and is the only mandatory argument.
+## @deftypefn  {Function File} [@var{entry}, @var{status}] = zenity_entry(@var{text}, @var{parameter1}, @var{value1}, ...)
+## Displays a text entry dialog using Zenity.
 ##
-## All @var{parameter1} are optional, but if given, may require a corresponding
+## The variable @var{text} sets the dialog text and is the only mandatory
+## argument.
+## 
+## @var{entry} is a string with the text from the entry field and @var{status} 
+## is a scalar with the exit code. @var{status} will have a value of @code{0} if
+## @option{OK} is pressed; @code{1} if @option{Close} is pressed or the window
+## functions are used to close it; or @code{5} if timeout has been reached.
+##
+## Note that unless @option{OK} is used to close the window, @var{entry} will be
+## an empty string, despite whatever text was in the entry field.
+##
+## All @var{parameters} are optional, but if given, may require a corresponding
 ## @var{value1}. All possible parameters are:
+##
 ## @table @samp
 ## @item entry
 ## Sets the default text in the entry field. Requires a string as value.
@@ -40,7 +51,7 @@
 ## @seealso{input, menu, kbhit, zenity_message, zenity_file_selection}
 ## @end deftypefn
 
-function out = zenity_entry(text, varargin)
+function [out, status] = zenity_entry(text, varargin)
 
   if (nargin < 1)
     error ("'text' argument is not optional")
@@ -68,11 +79,7 @@ function out = zenity_entry(text, varargin)
       output = output(1:end-1);
     endif
     out = output;
-  elseif (status == 1)
-    warning("No value entered. Returning empty string.");
-    out = "";
-  elseif (status == 5)
-    warning("Timeout reached. Returning empty string.");
+  elseif (status == 1 || status == 5)
     out = "";
   else
     error("An unexpected error occurred with exit code '%i' and output '%s'",...

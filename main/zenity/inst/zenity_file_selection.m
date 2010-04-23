@@ -16,12 +16,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} [@var{files} @var{status}] = zenity_file_selection (@var{param1}, @var{value1}, ...)
-## Opens a file selection dialog using Zenity. Output @var{files} is a string or
-## a cell array of strings depending on whether the function has been set to
-## allows selection of multiple files or directories. Status will be 0 if user
-## pressed OK (and selected something), 1 if closed the window without selecting
-## something, and 5 if timeout has been reached (and therefore no file was
-## selected).
+## Opens a file selection dialog using Zenity.
+##
+## @var{files} is a string or a cell array of strings depending on whether the
+## function has been set to allow selection of multiple files or directories.
+##
+## @var{status} will be @code{0} if user pressed @option{OK} (and selected
+## something), @code{1} if closed the window without selecting something, and
+## @code{5} if timeout has been reached (and therefore no file was selected).
 ##
 ## All @var{parameters} are optional, but if given, may require a corresponding
 ## @var{value}. All possible parameters are:
@@ -103,13 +105,9 @@ function [files, status] = zenity_file_selection(varargin)
     else
       files = output;
     endif
-  elseif (status == 1 && options.multiple)
+  elseif (options.multiple && (status == 1 || status == 5) )
     files = cell(1);
-  elseif (status == 1)
-    files = "";
-  elseif (status == 5 && options.multiple)
-    files = cell(1);
-  elseif (status == 5)
+  elseif (status == 1 || status == 5)
     files = "";
   else
     error("An unexpected error occurred with exit code '%i' and output '%s'",...

@@ -34,18 +34,21 @@
 ## zenity_list(columns, data)
 ## @end example
 ##
-## The output @var{selected} will hold a string with the value of the
-## first column of the selected row. If the parameter @code{multiple} is set or
-## the @code{print column} has multiple values, @var{selected} is a cell array
-## of strings. If a value is empty, it returns @code{(null)}. The values of
-## @var{selected} may come in any order since the user is allowed to sort them.
+## @var{selected} holds a string with the value of the first column of the
+## selected row. If the parameter @code{multiple} is set, or the @code{print
+## column} has multiple values, @var{selected} is a cell array of strings. If a
+## value is empty, it returns @code{(null)}. The values of @var{selected} may
+## come in any order since the user is allowed to sort them. Instead, use of the
+## parameter @code{hide column}, together with a numbered column is recomended.
 ##
-## The output @var{status} holds the exit code. 0 if user pressed OK and
-## selected at least one row, 1 if pressed cancel, 5 if timeout has been reached, and
-## 256 if user has pressed OK but selected no row. In the case no value has been
-## selected when the window closes, @var{selected} will hold an empty string or
-## cell array, the same size as it would be expected if one value had been
-## selected.
+## In the case no value has been selected when the window closes, @var{selected}
+## will hold an empty string or cell array, the same size as it would be
+## expected if one value had been selected.
+##
+## @var{status} holds the exit code. @code{0} if user pressed @option{OK} and
+## selected at least one row, @code{1} if pressed @option{cancel}, @code{5} if
+## timeout has been reached, and @code{256} if user has pressed @option{OK} but
+## selected no row.
 ##
 ## All @var{parameters} are optional, but if given, may require a corresponding
 ## @var{value}. All possible parameters are:
@@ -349,6 +352,7 @@ function [val, status, tmp] = zenity_list(col, data, varargin)
           status, output);
   endif
 
+  ## If user asked for numeric output, convert it to matrix
   if (options.num_out)
     [val, sta] = str2double(val);
     if (strcmpi(options.num_out, "error"))

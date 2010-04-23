@@ -1,10 +1,10 @@
-md5="fb7776437d38ea1e2783ecb3caa84eac";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="fb7776437d38ea1e2783ecb3caa84eac";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a})
-@deftypefnx {Archivo de funci@'on} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a1}, @var{a2}, @dots{}, @var{an})
+@deftypefn {Archivo de función} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a})
+@deftypefnx {Archivo de función} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a1}, @var{a2}, @dots{}, @var{an})
 
-Copia los par@'ametros de entrada en los par@'ametros de salida correspondientes.
-Si solo se suministra un par@'ametro de entrada, se copia su valor en cada salida.
+Copia los parámetros de entrada en los parámetros de salida correspondientes.
+Si solo se suministra un parámetro de entrada, se copia su valor en cada salida.
 
 Por ejemplo,
 

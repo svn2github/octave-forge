@@ -1,7 +1,7 @@
-md5="b1f0248d812a06ac7cafa73358e278a7";rev="6231";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="b1f0248d812a06ac7cafa73358e278a7";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{tvals}, @var{plist}] =} dre (@var{sys}, @var{q}, @var{r}, @var{qf}, @var{t0}, @var{tf}, @var{ptol}, @var{maxits})
-Resuelve la ecuaci@'on diferencial de Riccati
+@deftypefn {Archivo de función} {[@var{tvals}, @var{plist}] =} dre (@var{sys}, @var{q}, @var{r}, @var{qf}, @var{t0}, @var{tf}, @var{ptol}, @var{maxits})
+Resuelve la ecuación diferencial de Riccati
 @ifinfo
 @example
   -d P/dt = A'P + P A - P B inv(R) B' P + Q
@@ -14,8 +14,8 @@ $$ -{dP \over dt} = A^T P+PA-PBR^{-1}B^T P+Q $$
 $$ P(t_f) = Q_f $$
 @end tex
 @end iftex
-para ek sistema @acronym{LTI} @var{sys}. La soluci@'on del 
-sistema est@'andar @acronym{LTI}
+para ek sistema @acronym{LTI} @var{sys}. La solución del 
+sistema estándar @acronym{LTI}
 @ifinfo
 @example
   min int(t0, tf) ( x' Q x + u' R u ) dt + x(tf)' Qf x(tf)
@@ -49,12 +49,12 @@ Penalidad de integral de entrada
 Penalidad de estado terminal
 @item t0
 @itemx tf
-L@'imites de integraci@'on
+Límites de integración
 @item ptol
-Tolerancia (usada para seleccionar las muestra de tiempo; v@'ease a 
-continuaci@'on); predetermiando = 0.1
+Tolerancia (usada para seleccionar las muestra de tiempo; véase a 
+continuación); predetermiando = 0.1
 @item maxits
-N@'umero de iteraciones de refinamiento (predetermiando = 10)
+Número de iteraciones de refinamiento (predetermiando = 10)
 @end table
 @strong{Salidas}
 @table @var

@@ -1,7 +1,7 @@
-md5="a9585da2c329177a20136a8ac1dbbe06";rev="6231";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="a9585da2c329177a20136a8ac1dbbe06";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{Lp}, @var{Lf}, @var{P}, @var{Z}] =} dkalman (@var{A}, @var{G}, @var{C}, @var{Qw}, @var{Rv}, @var{S})
-Construye el estimador lineal cuadr@'atico (predictor de Kalman) para el 
+@deftypefn {Archivo de función} {[@var{Lp}, @var{Lf}, @var{P}, @var{Z}] =} dkalman (@var{A}, @var{G}, @var{C}, @var{Qw}, @var{Rv}, @var{S})
+Construye el estimador lineal cuadrático (predictor de Kalman) para el 
 sistema de tiempo discreto 
 @iftex
 @tex
@@ -63,7 +63,7 @@ is stable.
 Ganancia del filtro.
 
 @item P
-Soluci@'on de Riccati.
+Solución de Riccati.
 @iftex
 @tex
 $P = E \{(x - x_{n|n-1})(x - x_{n|n-1})'\}$

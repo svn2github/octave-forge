@@ -1,10 +1,10 @@
-md5="3a59c5a6d19f97ecf29faf4d33950a4d";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="3a59c5a6d19f97ecf29faf4d33950a4d";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {} dassl_options (@var{opt}, @var{val})
-Cuando es invocada con dos argumentos, esta funci@'on 
-permite establecer los par@'ametros opcionales de la funci@'on @code{dassl}.
+@deftypefn {Función cargable} {} dassl_options (@var{opt}, @var{val})
+Cuando es invocada con dos argumentos, esta función 
+permite establecer los parámetros opcionales de la función @code{dassl}.
 Dado un argumento, @code{dassl_options} retorna el valor de la 
-opci@'on correspondiente. Si no se suministran argumentos, se muestran 
+opción correspondiente. Si no se suministran argumentos, se muestran 
 todos los nombres de las opciones disponibles y sus respectivos valores.
 
 Las opciones incluyen 
@@ -19,34 +19,34 @@ Tolerancia relativa. Puede ser vecotr o escalar. Si es un vector, debe
 coincidir con las dimensiones del vector de estados, y la tolerancia 
 absoluta debe ser un vector de la misma longintud.
 
-La prueba de error local aplicada en cada paso de integraci@'on es 
+La prueba de error local aplicada en cada paso de integración es 
 
 @example
   abs (local error in x(i))
        <= rtol(i) * abs (Y(i)) + atol(i)
 @end example
 @item "compute consistent initial condition"
-Si es distinto de cero, @code{dassl} intentar@'a calcular un conjunto de 
+Si es distinto de cero, @code{dassl} intentará calcular un conjunto de 
 condiciones iniciales consistentes. Esto no es confiable generalmente, lo 
-mejor es suministrar un conjunto consistente y asignar cero a esta opci@'on.
+mejor es suministrar un conjunto consistente y asignar cero a esta opción.
 @item "enforce nonnegativity constraints"
-Si se sabe que las soluciones a de las ecuaciones siempre ser@'an no 
+Si se sabe que las soluciones a de las ecuaciones siempre serán no 
 negativas, puede ayudar asignar un valor distinto de cero a este 
-par@'ametro. Sin embargo, probablementente lo mejor es asignar cero a esta 
+parámetro. Sin embargo, probablementente lo mejor es asignar cero a esta 
 opci'on primero, y solo asignar un valor distinto de cero si no funciona bien.
 @item "initial step size"
 Los problemas algebraico-diferenciales pueden sufrir de dificultades 
 severas de escalamiento en el primer paso. Si usted sabe acerca de 
 dificultades de escalamiento en su problema, es posible aliviar esta 
-situaci@'on especificando la longitud del paso inicial.
+situación especificando la longitud del paso inicial.
 @item "maximum order"
-Restringe el orden m@'aximo del m@'etodo de soluci@'on. Esta opci@'on debe estar 
+Restringe el orden máximo del método de solución. Esta opción debe estar 
 entre 1 y 5.
 @item "maximum step size"
-Ajustando la longitud m@'axima del paso se evitar@'a pasar sobre 
+Ajustando la longitud máxima del paso se evitará pasar sobre 
 regiones grandes (el valor predeterminado es no especificado).
 @item "step limit"
-N@'umero m@'aximo de pasos de integraci@'on a intentar en un llamado 
-sencillo al c@'odigo Fortran subyascente.
+Número máximo de pasos de integración a intentar en un llamado 
+sencillo al código Fortran subyascente.
 @end table
 @end deftypefn

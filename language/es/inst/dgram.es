@@ -1,6 +1,6 @@
-md5="ba1e9b3ab0343eb8a6f2ed429abd3063";rev="6231";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="ba1e9b3ab0343eb8a6f2ed429abd3063";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} dgram (@var{a}, @var{b})
+@deftypefn {Archivo de función} {} dgram (@var{a}, @var{b})
 Retorna el gramiano de controlabilidad del sistema de tiempo discreto 
 @iftex
 @tex

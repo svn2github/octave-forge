@@ -1,8 +1,8 @@
-md5="5585c59269d823dd10c5b5023ee28a85";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="5585c59269d823dd10c5b5023ee28a85";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {@var{val} =} debug_symtab_lookups ()
-@deftypefnx {Funci@'on incorporada} {@var{old_val} =} debug_symtab_lookups (@var{new_val})
+@deftypefn {Función incorporada} {@var{val} =} debug_symtab_lookups ()
+@deftypefnx {Función incorporada} {@var{old_val} =} debug_symtab_lookups (@var{new_val})
 Consulta o establece la variable interna que controla si se imprime la 
-informaci@'on de depuraci@'on cuando se buscan s@'imbolos en la tabla 
-de s@'imbolos.
+información de depuración cuando se buscan símbolos en la tabla 
+de símbolos.
 @end deftypefn

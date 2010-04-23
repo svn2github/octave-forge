@@ -1,10 +1,10 @@
-md5="db94c5decab67524642c47f0b13c66ec";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="db94c5decab67524642c47f0b13c66ec";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {} dasrt_options (@var{opt}, @var{val})
-Cuando es invocada con dos argumentos, esta funci@'on 
-permite establecer los par@'ametros de la funci@'on @code{dasrt}.
+@deftypefn {Función cargable} {} dasrt_options (@var{opt}, @var{val})
+Cuando es invocada con dos argumentos, esta función 
+permite establecer los parámetros de la función @code{dasrt}.
 Dado un argumento, @code{dasrt_options} retorna el valor de la 
-opci@'on correspondiente. Si no se suministran argumentos, se muestran 
+opción correspondiente. Si no se suministran argumentos, se muestran 
 todos los nombres de las opciones disponibles y sus valores actuales.
 
 Las opciones incluyen 
@@ -13,13 +13,13 @@ Las opciones incluyen
 @item "absolute tolerance"
 Tolerancia absoluta. Puede ser vector o escalar. Si es un vector, debe 
 coincidir con las dimensiones del vector de estados, y la tolerancia 
-relativa debe ser tambi@'en un vector de la misma longitud.
+relativa debe ser también un vector de la misma longitud.
 @item "relative tolerance"
 Tolerancia relativa. Puede ser vector o escalar. Si es un vector, debe 
 coincidir con las dimensiones del vector de estados, y la tolerancia 
-absoluta debe ser tambi@'en un vector de la misma longitud.
+absoluta debe ser también un vector de la misma longitud.
 
-La prueba de error local aplicado en cada paso de integraci@'on es 
+La prueba de error local aplicado en cada paso de integración es 
 @example
   abs (local error in x(i)) <= ...
       rtol(i) * abs (Y(i)) + atol(i)
@@ -28,15 +28,15 @@ La prueba de error local aplicado en cada paso de integraci@'on es
 Los problemas algebraico-diferenciales pueden sufrir de dificultades 
 severas de escalamiento en el primer paso. Si usted sabe acerca de 
 dificultades de escalamiento en su problema, es posible aliviar esta 
-situaci@'on especificando la longitud del paso inicial.
+situación especificando la longitud del paso inicial.
 @item "maximum order"
-Restringe el orden m@'aximo del m@'etodo de soluci@'on. Esta opci@'on debe estar 
+Restringe el orden máximo del método de solución. Esta opción debe estar 
 entre 1 y 5.
 @item "maximum step size"
-Ajustando la longitud m@'axima del paso se evitar@'a pasar sobre 
+Ajustando la longitud máxima del paso se evitará pasar sobre 
 regiones grandes.
 @item "step limit"
-N@'umero m@'aximo de pasos de integraci@'on a intentar en un llamado 
-sencillo al c@'odigo Fortran subyascente.
+Número máximo de pasos de integración a intentar en un llamado 
+sencillo al código Fortran subyascente.
 @end table
 @end deftypefn

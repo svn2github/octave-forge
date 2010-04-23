@@ -1,23 +1,23 @@
-md5="327ddad2b90f8b1685e49b13c801b718";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="327ddad2b90f8b1685e49b13c801b718";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{str} =} datestr (@var{date}, [@var{f}, [@var{p}]])
+@deftypefn {Archivo de función} {@var{str} =} datestr (@var{date}, [@var{f}, [@var{p}]])
 Cambia el formato de la fecha/hora de acuerdo con el formato @code{f} y retorna 
-el resultado en @var{str}. @var{date} es n@'umero de fecha serial (v@'ease 
-@code{datenum}) o un vector de fecha (v@'ease @code{datevec}). El valor de 
+el resultado en @var{str}. @var{date} es número de fecha serial (véase 
+@code{datenum}) o un vector de fecha (véase @code{datevec}). El valor de 
 @var{date} puede ser una cadena o un arreglo de celdas de cadenas.
 
-El par@'ametro @var{f} puede ser un entero el cual corresponde con uno de los 
-c@'odigos en la tabla a continuaci@'on, o una cadena de formato de fecha.
+El parámetro @var{f} puede ser un entero el cual corresponde con uno de los 
+códigos en la tabla a continuación, o una cadena de formato de fecha.
 
-El par@'ametro @var{p} es el a@~{n}o del siglo inicial en el cual los dos 
-d@'igitos del a@~{n}o ser@'an interpretados. Si no se especifica, el valor 
+El parámetro @var{p} es el a@~{n}o del siglo inicial en el cual los dos 
+dígitos del a@~{n}o serán interpretados. Si no se especifica, el valor 
 predeterminado es el a@~{n}o actual menos 50.
 
 Por ejemplo, el formato de la fecha 730736.65149 (2000-09-07 15:38:09.0934) 
-ser@'a modificado de la siguiente forma:
+será modificado de la siguiente forma:
 
 @multitable @columnfractions 0.1 0.45 0.35
-@headitem C@'odigo @tab Formato @tab Ejemplo
+@headitem Código @tab Formato @tab Ejemplo
 @item  0 @tab dd-mmm-yyyy HH:MM:SS   @tab 07-Sep-2000 15:38:09
 @item  1 @tab dd-mmm-yyyy            @tab 07-Sep-2000
 @item  2 @tab mm/dd/yy               @tab 09/07/00
@@ -52,21 +52,21 @@ ser@'a modificado de la siguiente forma:
 @item 31 @tab yyyy-mm-dd HH:MM:SS    @tab 1047-03-13 13:26:03
 @end multitable
 
-Si @var{f} es una cadena de formato, se reconocen los siguientes s@'imbolos:
+Si @var{f} es una cadena de formato, se reconocen los siguientes símbolos:
 
 @multitable @columnfractions 0.1 0.7 0.2
-@headitem S@'imbolo @tab Descripci@'on @tab Ejemplo
+@headitem Símbolo @tab Descripción @tab Ejemplo
 @item yyyy @tab A@~{n}o completo                             @tab 2005
-@item yy   @tab A@~{n}o con dos d@'igitos                    @tab 05
+@item yy   @tab A@~{n}o con dos dígitos                    @tab 05
 @item mmmm @tab Nombre del mes completo                      @tab December
 @item mmm  @tab Nombre del mes abreviado                     @tab Dec
-@item mm   @tab N@'umero del mes (con ceros)                 @tab 01, 08, 12
-@item m    @tab Primera letra del nombre del mes (may@'us.)  @tab D
-@item dddd @tab Nombre del d@'ia completo                    @tab Sunday
-@item ddd  @tab Nombre del d@'ia abreviado                   @tab Sun
-@item dd   @tab N@'umero del d@'ia del mes (con ceros)       @tab 11
-@item d    @tab Primera letra del nombre del d@'ia (may@'us.)@tab S
-@item HH   @tab Hora del d@'ia, con ceros si est@'a en PM    @tab 09:00
+@item mm   @tab Número del mes (con ceros)                 @tab 01, 08, 12
+@item m    @tab Primera letra del nombre del mes (mayús.)  @tab D
+@item dddd @tab Nombre del día completo                    @tab Sunday
+@item ddd  @tab Nombre del día abreviado                   @tab Sun
+@item dd   @tab Número del día del mes (con ceros)       @tab 11
+@item d    @tab Primera letra del nombre del día (mayús.)@tab S
+@item HH   @tab Hora del día, con ceros si está en PM    @tab 09:00
 @item      @tab y sin ceros en otro caso                     @tab 9:00 AM
 @item MM   @tab Minuto de la hora (con ceros)                @tab 10:05
 @item SS   @tab Secondo del minuto (con ceros)               @tab 10:05:03
@@ -74,8 +74,8 @@ Si @var{f} es una cadena de formato, se reconocen los siguientes s@'imbolos:
 @end multitable
 
 Si no se especifica @var{f} o es @code{-1}, usa 0, 1 o 16,
-dependiendo en si la porci@'on de la fecha o la porci@'on de la hora de 
-@var{date} est@'a vacia.
+dependiendo en si la porción de la fecha o la porción de la hora de 
+@var{date} está vacia.
 
 Si no se especifica @var{p}, se inicializa con el a@~{n}o actual menos 50.
 

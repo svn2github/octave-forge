@@ -1,7 +1,7 @@
-md5="bd143222caba6ac5a3f783aac0823eba";rev="6231";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="bd143222caba6ac5a3f783aac0823eba";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} duplication_matrix (@var{n})
-Retorna la matriz de duplicaci@'on 
+@deftypefn {Archivo de función} {} duplication_matrix (@var{n})
+Retorna la matriz de duplicación 
 @iftex
 @tex
  $D_n$
@@ -10,7 +10,7 @@ Retorna la matriz de duplicaci@'on
 @ifinfo
 @math{Dn}
 @end ifinfo
- la cual es @'unica
+ la cual es única
 @iftex
 @tex
  $n^2 \times n(n+1)/2$
@@ -28,7 +28,7 @@ Retorna la matriz de duplicaci@'on
 @ifinfo
 @math{Dn vech (A) = vec (A)}
 @end ifinfo
- para todos sim@'etrica
+ para todos simétrica
 @iftex
 @tex
  $n \times n$
@@ -47,6 +47,6 @@ Retorna la matriz de duplicaci@'on
 @math{A}.
 @end ifinfo
 
-V@'ease Magnus y Neudecker (1988), Matrix differential calculus with
+Véase Magnus y Neudecker (1988), Matrix differential calculus with
 applications in statistics and econometrics.
 @end deftypefn

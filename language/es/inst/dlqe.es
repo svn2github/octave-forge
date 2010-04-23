@@ -1,7 +1,7 @@
-md5="cdfde1dc2139217915282239a9c464fe";rev="6231";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="cdfde1dc2139217915282239a9c464fe";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{l}, @var{m}, @var{p}, @var{e}] =} dlqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv}, @var{z})
-Construye un estimador cuadr@'atico lineal (filtro Kalman) para el 
+@deftypefn {Archivo de función} {[@var{l}, @var{m}, @var{p}, @var{e}] =} dlqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv}, @var{z})
+Construye un estimador cuadrático lineal (filtro Kalman) para el 
 sistema de tiempo discreto 
 @iftex
 @tex
@@ -64,10 +64,10 @@ $(A - ALC)$.
 is stable.
 
 @item m
-La soluci@'on de la ecuaci@'on de Riccati. 
+La solución de la ecuación de Riccati. 
 
 @item p
-El estimador de la covarianza del error despu@'es de la actualizaci@'on 
+El estimador de la covarianza del error después de la actualización 
 de la medida.
 
 @item e

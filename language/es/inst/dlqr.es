@@ -1,7 +1,7 @@
-md5="4b5a26552ec5e5dddc4236d163f55dc6";rev="6231";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="4b5a26552ec5e5dddc4236d163f55dc6";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{k}, @var{p}, @var{e}] =} dlqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
-Construye el regulador cuadr@'atico lineal para el sistema de tiempo discreto 
+@deftypefn {Archivo de función} {[@var{k}, @var{p}, @var{e}] =} dlqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
+Construye el regulador cuadrático lineal para el sistema de tiempo discreto 
 @iftex
 @tex
 $$
@@ -53,7 +53,7 @@ Se retornan los siguientes valores:
 
 @table @var
 @item k
-El estado de ganancia de retroalimentaci@'on, 
+El estado de ganancia de retroalimentación, 
 @iftex
 @tex
 $(A - B K)$
@@ -65,7 +65,7 @@ $(A - B K)$
 es estable.
 
 @item p
-La soluci@'on de la ecuaci@'on algebr@'aica de Riccati. 
+La solución de la ecuación algebráica de Riccati. 
 
 @item e
 Los polos de ciclo cerrado de 

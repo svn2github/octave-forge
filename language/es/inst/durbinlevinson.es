@@ -1,7 +1,7 @@
-md5="3f74f0d32944792eefd48aa40828a077";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="3f74f0d32944792eefd48aa40828a077";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} durbinlevinson (@var{c}, @var{oldphi}, @var{oldv})
-Ejecuta una iteraci@'on del algoritmo de Durbin-Levinson.
+@deftypefn {Archivo de función} {} durbinlevinson (@var{c}, @var{oldphi}, @var{oldv})
+Ejecuta una iteración del algoritmo de Durbin-Levinson.
 
 El vector @var{c} especifica las autocovarianzas @code{[gamma_0, @dots{},
 gamma_t]} desde retraso 0 hasta @var{t}, @var{oldphi} especifica los 

@@ -1,8 +1,8 @@
-md5="68361390818b394e88d40cd5658628aa";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="68361390818b394e88d40cd5658628aa";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{x} =} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{opt})
+@deftypefn {Archivo de función} {@var{x} =} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{opt})
 
-Retorna la soluci@'on @var{x} de la ecuac@'on algebr@'aica de Riccati de tiempo 
+Retorna la solución @var{x} de la ecuacón algebráica de Riccati de tiempo 
 discreto
 @iftex
 @tex
@@ -27,28 +27,28 @@ matriz de @var{n} por @var{n};
 matriz de @var{n} por @var{m};
 
 @item q
-matriz de @var{n} por @var{n}, sim@'etrica semidefinida positiva, o una matriz de @var{p} por @var{n},
-En el @'utimo caso se usa @math{q:=q'*q};
+matriz de @var{n} por @var{n}, simétrica semidefinida positiva, o una matriz de @var{p} por @var{n},
+En el útimo caso se usa @math{q:=q'*q};
 
 @item r
-matriz de @var{m} por @var{m}, sim@'etrica semidefinida positiva (invertible);
+matriz de @var{m} por @var{m}, simétrica semidefinida positiva (invertible);
 
 @item opt
 (argumento opcional; predeterminado = @code{"B"}):
-Opci@'on que se pasa a @code{balance} previo a la factorizaci@'on ordenada @var{QZ}.
+Opción que se pasa a @code{balance} previo a la factorización ordenada @var{QZ}.
 @end table
 
 @strong{Salida}
 @table @var
 @item x
-soluci@'on de @acronym{DARE}.
+solución de @acronym{DARE}.
 @end table
 
 @strong{Method}
-M@'etodo generalizado de valores propios (Van Dooren; @acronym{SIAM} J.
+Método generalizado de valores propios (Van Dooren; @acronym{SIAM} J.
  Sci. Stat. Comput., Vol 2) aplicado.
 
-V@'ease tambi@'en: Ran and Rodman, @cite{Stable Hermitian Solutions of Discrete
+Véase también: Ran and Rodman, @cite{Stable Hermitian Solutions of Discrete
  Algebraic Riccati Equations}, Mathematics of Control, Signals and
  Systems, Vol 5, no 2 (1992), pp 165--194.
 @seealso{balance, are}

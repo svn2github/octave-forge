@@ -1,14 +1,14 @@
-md5="a1a48f0ed2f8cea102d91e1bab1e6008";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="a1a48f0ed2f8cea102d91e1bab1e6008";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} datenum (@var{year}, @var{month}, @var{day})
-@deftypefnx {Archivo de funci@'on} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour})
-@deftypefnx {Archivo de funci@'on} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute})
-@deftypefnx {Archivo de funci@'on} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute}, @var{second})
-@deftypefnx {Archivo de funci@'on} {} datenum (@code{"date"})
-@deftypefnx {Archivo de funci@'on} {} datenum (@code{"date"}, @var{p})
-Retorna la fecha especificada como el n@'umero del dia, en donde Ene 1, 0000
-es el dia 1. De esta forma, Ene 1, 1970 es n@'umero de dia 719529.  
-La porci@'on fracionaria, @var{p}, corresponde a la porci@'on del 
+@deftypefn {Archivo de función} {} datenum (@var{year}, @var{month}, @var{day})
+@deftypefnx {Archivo de función} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour})
+@deftypefnx {Archivo de función} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute})
+@deftypefnx {Archivo de función} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute}, @var{second})
+@deftypefnx {Archivo de función} {} datenum (@code{"date"})
+@deftypefnx {Archivo de función} {} datenum (@code{"date"}, @var{p})
+Retorna la fecha especificada como el número del dia, en donde Ene 1, 0000
+es el dia 1. De esta forma, Ene 1, 1970 es número de dia 719529.  
+La porción fracionaria, @var{p}, corresponde a la porción del 
 dia especificado.
 
 Notas:
@@ -28,14 +28,14 @@ Los dias antes del inicio del mes se consideran en el mes previo.
 Los dias pueden ser fracciones.
 @end itemize
 
-@strong{Advertencia:} esta funci@'on no intenta maniular calendarios 
-Julianos ya que fechas previas al 15 de Octubre de 1582 est@'an 
-corridas por 11 dias. Tambi@'en debe ser conciente que los paises 
-Cat@'olicos Romanos adoptaron el calendario en 1582. Fue hasta 1924 
-que se adopt@'o en todo el mundo. V@'ease el Calendario Gregoriano 
+@strong{Advertencia:} esta función no intenta maniular calendarios 
+Julianos ya que fechas previas al 15 de Octubre de 1582 están 
+corridas por 11 dias. También debe ser conciente que los paises 
+Católicos Romanos adoptaron el calendario en 1582. Fue hasta 1924 
+que se adoptó en todo el mundo. Véase el Calendario Gregoriano 
 en Wikipedia para mas detalles.
 
 @strong{Advertencia:} los saltos de seungos son ignorados. Una tabla de saltos de segundos 
-est@'a disponible en Saltos de segundos en Wikipedia.
+está disponible en Saltos de segundos en Wikipedia.
 @seealso{date, clock, now, datestr, datevec, calendar, weekday}
 @end deftypefn

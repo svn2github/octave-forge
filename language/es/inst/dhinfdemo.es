@@ -1,6 +1,6 @@
-md5="c7b777119b2f8cced492fa52977b2ffe";rev="6231";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="c7b777119b2f8cced492fa52977b2ffe";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} dhinfdemo ()
+@deftypefn {Archivo de función} {} dhinfdemo ()
 Muestra las funciones disponibles para dise@~{n}ar el controlador 
 @iftex
 @tex
@@ -13,7 +13,7 @@ H-infinity
 discreto. Este no es un dise@~{n}o discreto verdadero. El dise@~{n}o
 se realiza en tiempo continuo mientras que el efecto del muestro se 
 describe mediante trasnformaciones bilineales del sistema muestreado.
-Este m@'etodo funciona bien si el periodo de muestro es "peque@~{n}o" 
+Este método funciona bien si el periodo de muestro es "peque@~{n}o" 
 comparado con las constantes de tiempo de planta.
 
 Planta continua:

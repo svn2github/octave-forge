@@ -1,15 +1,15 @@
-md5="038f5f5ae3967ceecf182fad9fc3db3c";rev="6224";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="038f5f5ae3967ceecf182fad9fc3db3c";rev="7226";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{tri}=} delaunay (@var{x}, @var{y})
-@deftypefnx {Archivo de funci@'on} {@var{tri}=} delaunay (@var{x}, @var{y}, @var{opt})
-Retorna una matriz [n, 3] con un conjunto de tri@'angulos los cuales 
-son descritos por los @'indices del punto @var{x} y el vector @var{y}.
-La triangulaci@'on satisface el criterio circumcircular de Delaunay.
-Ning@'un otro punto est@'a en el circumc@'irculo del tri@'angulo definido.
+@deftypefn {Archivo de función} {@var{tri}=} delaunay (@var{x}, @var{y})
+@deftypefnx {Archivo de función} {@var{tri}=} delaunay (@var{x}, @var{y}, @var{opt})
+Retorna una matriz [n, 3] con un conjunto de triángulos los cuales 
+son descritos por los índices del punto @var{x} y el vector @var{y}.
+La triangulación satisface el criterio circumcircular de Delaunay.
+Ningún otro punto está en el circumcírculo del triángulo definido.
 
 Un tercer argumento opcional, el cual debe ser una cadena, contiene opciones 
-dicionales que se suministran al subyasciente comando qhull. V@'ease la documentaci@'on de
-la librer@'ia Qhull para detalles.
+dicionales que se suministran al subyasciente comando qhull. Véase la documentación de
+la librería Qhull para detalles.
 
 @example
 @group

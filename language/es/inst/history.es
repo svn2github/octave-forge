@@ -1,8 +1,8 @@
-md5="fa61c60e58ea0bd2aa427e95d27d030f";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="fa61c60e58ea0bd2aa427e95d27d030f";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deffn {Comando} history options
 Si se invoca sin argumentos, @code{history} muestra una lista de comandos
-que se han ejecutado. Las opciones v@'alidas son:
+que se han ejecutado. Las opciones válidas son:
 
 @table @code
 @item -w @var{file}
@@ -16,14 +16,14 @@ con su contenido. Si se omite el nombre, utilice el archivo de la
 historia por defecto (normalmente @file{~/.octave_hist}).
 
 @item @var{n}
-Solo muestra las m@'as recientes @var{n} l@'ineas de la historia.
+Solo muestra las más recientes @var{n} líneas de la historia.
 
 @item -q
-No muestra el n@'umero de las l@'ineas de la historia. Esto es @'util para
-cortar y pegar los comandos si est@'a utilizando el X Window System.
+No muestra el número de las líneas de la historia. Esto es útil para
+cortar y pegar los comandos si está utilizando el X Window System.
 @end table
 
-Por ejemplo, para mostrar los cinco comandos m@'as recientes que ha escrito
-sin mostrar n@'umeros de l@'inea, utilice el comando
+Por ejemplo, para mostrar los cinco comandos más recientes que ha escrito
+sin mostrar números de línea, utilice el comando
 @kbd{history -q 5}.
 @end deffn

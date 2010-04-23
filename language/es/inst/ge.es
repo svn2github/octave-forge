@@ -1,5 +1,5 @@
-md5="5900fabbced4e0ccda70cfc4b88a8b58";rev="6131";by="Javier Enciso <encisomo@in.tum.de>"
+md5="5900fabbced4e0ccda70cfc4b88a8b58";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} ge (@var{x}, @var{y})
-Esta funci@'on es equivalente a @code{x >= y}.
+@deftypefn {Función incorporada} {} ge (@var{x}, @var{y})
+Esta función es equivalente a @code{x >= y}.
 @end deftypefn

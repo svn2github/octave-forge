@@ -1,6 +1,6 @@
-md5="ca741c581da89d432815103c2449df56";rev="6461";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="ca741c581da89d432815103c2449df56";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {} gmtime (@var{t})
+@deftypefn {Función cargable} {} gmtime (@var{t})
 Dado el valor retornado por @code{time} (o cualquier entero no negativo), 
 retorna una estructura de tiempo correspondiente a CUT. Por ejemplo, 
 

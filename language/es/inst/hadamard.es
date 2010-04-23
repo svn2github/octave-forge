@@ -1,6 +1,6 @@
-md5="27d593bf9284c548f32741e7e1a41523";rev="6944";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="27d593bf9284c548f32741e7e1a41523";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} hadamard (@var{n})
+@deftypefn {Archivo de función} {} hadamard (@var{n})
 Construir una matriz de Hadamard @var{Hn} de tama@~{n}o @var{n}-por-@var{n}.
 El tama@~{n}o de @var{n} debe ser de la forma @code{2 ^ @var{k} * @var{p}} 
 en el que @var{p} es uno de 1, 12, 20 o 28. La matriz devuelta es 
@@ -20,7 +20,7 @@ Las filas de @var{Hn} son ortogonales.
 @code{det (@var{A}) <= det (@var{Hn})} for all @var{A} with 
 @code{abs (@var{A} (@var{i}, @var{j})) <= 1}.
 @item
-Multiplicar cualquier fila o columna por -1 y tendra todav@'ia 
+Multiplicar cualquier fila o columna por -1 y tendra todavía 
 una matriz de Hadamard.
 @end itemize
 

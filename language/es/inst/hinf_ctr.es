@@ -1,6 +1,6 @@
-md5="ad3496b9ff7264d29a88c30ec863bcbe";rev="6433";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="ad3496b9ff7264d29a88c30ec863bcbe";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{K} =} hinf_ctr (@var{dgs}, @var{f}, @var{h}, @var{z}, @var{g})
+@deftypefn {Archivo de función} {@var{K} =} hinf_ctr (@var{dgs}, @var{f}, @var{h}, @var{z}, @var{g})
 Llamado por @code{hinfsyn} para calcular el 
 @iftex
 @tex
@@ -10,7 +10,7 @@ $ { \cal H }_\infty $
 @ifinfo
 H-infinity
 @end ifinfo
-controlador @'optimo. 
+controlador óptimo. 
 
 @strong{Entradas}
 @table @var
@@ -18,7 +18,7 @@ controlador @'optimo.
 Estructura de datos retornada por @code{is_dgkf}
 @item f
 @itemx h
-Retroalimentaci@'on y ganancia filtrada (no particionada)
+Retroalimentación y ganancia filtrada (no particionada)
 @item g
 Valor gamma final
 @end table
@@ -28,6 +28,6 @@ Valor gamma final
 Controlador (estructura de datos del sistema)
 @end table
 
-No intente usar esto en casa; no se realiza verificaci@'on de 
+No intente usar esto en casa; no se realiza verificación de 
 ninguno de los argumentos.
 @end deftypefn

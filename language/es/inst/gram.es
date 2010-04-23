@@ -1,6 +1,6 @@
-md5="180817a4771ae2243ee7e5d78d27b9e1";rev="6131";by="Javier Enciso <encisomo@in.tum.de>"
+md5="180817a4771ae2243ee7e5d78d27b9e1";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} gram (@var{a}, @var{b})
+@deftypefn {Archivo de función} {} gram (@var{a}, @var{b})
 Retorna la controlabilidad gramiana @var{m} del  sistema de tiempo continuo
 @math{dx/dt = a x + b u}.
 

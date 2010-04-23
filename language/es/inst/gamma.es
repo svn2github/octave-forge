@@ -1,7 +1,7 @@
-md5="b6a9a5e3371e8fbf85ca6969875324c2";rev="6287";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="b6a9a5e3371e8fbf85ca6969875324c2";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} gamma (@var{z})
-Calcula la funci@'on Gamma, definida como 
+@deftypefn {Función de mapeo} {} gamma (@var{z})
+Calcula la función Gamma, definida como 
 @iftex
 @tex
 $$

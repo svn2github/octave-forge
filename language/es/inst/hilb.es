@@ -1,6 +1,6 @@
-md5="d7d8c3f0828801ae03034533c05d37af";rev="6137";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d7d8c3f0828801ae03034533c05d37af";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} hilb (@var{n})
+@deftypefn {Archivo de función} {} hilb (@var{n})
 Retorna matriz de Hilbert de orden @var{n}. El 
 @iftex
 @tex

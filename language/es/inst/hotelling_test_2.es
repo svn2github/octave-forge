@@ -1,6 +1,6 @@
-md5="179003f179ef1cf48e01eb29ce8e8323";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="179003f179ef1cf48e01eb29ce8e8323";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{pval}, @var{tsq}] =} hotelling_test_2 (@var{x}, @var{y})
+@deftypefn {Archivo de función} {[@var{pval}, @var{tsq}] =} hotelling_test_2 (@var{x}, @var{y})
 For two samples @var{x} from multivariate normal distributions with
 the same number of variables (columns), unknown means and unknown
 equal covariance matrices, test the null hypothesis @code{mean

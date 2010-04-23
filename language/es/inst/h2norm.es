@@ -1,6 +1,6 @@
-md5="11c0149d80d177d335dc76ef57bf7de1";rev="6377";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="11c0149d80d177d335dc76ef57bf7de1";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} h2norm (@var{sys})
+@deftypefn {Archivo de función} {} h2norm (@var{sys})
 Calcula la norma 
 @iftex
 @tex

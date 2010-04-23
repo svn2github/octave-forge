@@ -1,10 +1,10 @@
-md5="83af78301520a35dd8d04a4e308bcb94";rev="6137";by="Javier Enciso <encisomo@in.tum.de>"
+md5="83af78301520a35dd8d04a4e308bcb94";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} hidden (@var{mode})
-@deftypefnx {Archivo de funci@'on} {} hidden ()
-Manipula la remoci@'on de las l@'ineas de la malla 
+@deftypefn {Archivo de función} {} hidden (@var{mode})
+@deftypefnx {Archivo de función} {} hidden ()
+Manipula la remoción de las líneas de la malla 
 oculta. Cuando se llama sin agumentos, el estado de 
-remoci@'on de la l@'inea oculta es intercambiado. El 
+remoción de la línea oculta es intercambiado. El 
 argumento @var{mode} puede ser 'on' o 'off'.
 @seealso{mesh, meshc, surf}
 @end deftypefn

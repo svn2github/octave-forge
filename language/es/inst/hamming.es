@@ -1,10 +1,10 @@
-md5="7aebb2642ac97ccf46e49971540ad50b";rev="6137";by="Javier Enciso <encisomo@in.tum.de>"
+md5="7aebb2642ac97ccf46e49971540ad50b";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} hamming (@var{m})
+@deftypefn {Archivo de función} {} hamming (@var{m})
 Retorna los coeficientes del filtro de una ventana de 
 Hamming de longitud @var{m}.
 
-Para una definici@'on de la ventana de Hamming, v@'ease 
+Para una definición de la ventana de Hamming, véase 
 p.e. A. V. Oppenheim & R. W. Schafer, "Discrete-Time 
 Signal Processing".
 @end deftypefn

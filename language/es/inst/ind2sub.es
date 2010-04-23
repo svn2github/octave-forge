@@ -1,9 +1,9 @@
-md5="1d2f0fcec5c3e0bee9c9088c5c0fedc7";rev="6288";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="1d2f0fcec5c3e0bee9c9088c5c0fedc7";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})
-Convierte un @'indice lineal en sub@'ndices. 
+@deftypefn {Archivo de función} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})
+Convierte un índice lineal en sub@'ndices. 
 
-El siguiente ejemplo muestra como convertir el @'indice lineal @code{8} 
+El siguiente ejemplo muestra como convertir el índice lineal @code{8} 
 de una matriz de 3 por 3 en un sub@'ndice. 
 
 @example

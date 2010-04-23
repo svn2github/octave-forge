@@ -1,7 +1,7 @@
-md5="78b46117139272f8626244a31620b613";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="78b46117139272f8626244a31620b613";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} gammainc (@var{x}, @var{a})
-Calcule la normalizada de la funci@'on incompleta gamma,
+@deftypefn {Función de mapeo} {} gammainc (@var{x}, @var{a})
+Calcule la normalizada de la función incompleta gamma,
 
 @iftex
 @tex
@@ -21,8 +21,8 @@ gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt
 @end smallexample
 
 @end ifinfo
-con el valor l@'imite de 1 @var{x} tiende a infinito.
-La notaci@'on est@'andar es @math{P(a,x)}, por ejemplo
+con el valor límite de 1 @var{x} tiende a infinito.
+La notación estándar es @math{P(a,x)}, por ejemplo
 Abramowitz y Stegun (6.5.1).
 
 Si @var{a} es escalar, entonces @code{gammainc (@var{x}, @var{a})} regresa

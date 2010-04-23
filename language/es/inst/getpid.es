@@ -1,5 +1,5 @@
-md5="e0c23baa0cd4583d45f4eb7862e0269f";rev="6131";by="Javier Enciso <encisomo@in.tum.de>"
+md5="e0c23baa0cd4583d45f4eb7862e0269f";rev="7230";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {pid =} getpid ()
+@deftypefn {Función incorporada} {pid =} getpid ()
 Retorna el identificador del proceso actual.
 @end deftypefn

@@ -1,7 +1,7 @@
-md5="2bd018a2075c612dd0f81d0675f27d42";rev="6893";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="2bd018a2075c612dd0f81d0675f27d42";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{out} =} ltifr (@var{a}, @var{b}, @var{w})
-@deftypefnx {Archivo de funci@'on} {@var{out} =} ltifr (@var{sys}, @var{w})
+@deftypefn {Archivo de función} {@var{out} =} ltifr (@var{a}, @var{b}, @var{w})
+@deftypefnx {Archivo de función} {@var{out} =} ltifr (@var{sys}, @var{w})
 Tiempo de respuesta de frecuencia invariable lineal de sistemas de 
 entradas sencillas.
 

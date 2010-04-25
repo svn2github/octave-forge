@@ -1,6 +1,6 @@
-md5="bf81628001245dc4e9e628e8b3c4cccb";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="bf81628001245dc4e9e628e8b3c4cccb";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} nextpow2 (@var{x})
+@deftypefn {Archivo de función} {} nextpow2 (@var{x})
 Si @var{x} es un escalar, retorna el primer entero @var{n} tal que 
 @iftex
 @tex

@@ -1,6 +1,6 @@
-md5="fc59de0d52c261cb87f45e9a581cf387";rev="6300";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="fc59de0d52c261cb87f45e9a581cf387";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} mu2lin (@var{x}, @var{bps})
+@deftypefn {Archivo de función} {} mu2lin (@var{x}, @var{bps})
 Convierte datos de audio lineales en mu-law. Los valores mu-law son enteros 
 sin signo de  8-bits. Los valores lineales usan enteros sin signo de 
 @var{n}-bits o valores de punto flotante en el rango @code{-1<=y<=1} si 

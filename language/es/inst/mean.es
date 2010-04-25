@@ -1,6 +1,6 @@
-md5="d1fa47a0025ef0801247822e61343e50";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="d1fa47a0025ef0801247822e61343e50";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} mean (@var{x}, @var{dim}, @var{opt})
+@deftypefn {Archivo de función} {} mean (@var{x}, @var{dim}, @var{opt})
 Si @var{x} es un vector, calcula la media de los elementos de @var{x}
 @iftex
 @tex
@@ -21,17 +21,17 @@ ser seleccionado. Las siguientes opciones son reconocidas:
 
 @table @code
 @item "a"
-Calcula la (ordinary) la media aritm@'etica. Este es el predeterminado.
+Calcula la (ordinary) la media aritmética. Este es el predeterminado.
 
 @item "g"
-Calcula la media geom@'etrica.
+Calcula la media geométrica.
 
 @item "h"
 Calcule la media harmonica.
 @end table
 
 Si el argumento opcional @var{dim} es suministrado, trabaja a lo largo
-de la dimensi@'on @var{dim}.
+de la dimensión @var{dim}.
 
 @var{dim} y @var{opt} son opcionales. Si ambos se suministran,
 bien pueden aparecer en primer lugar.

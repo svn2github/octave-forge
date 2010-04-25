@@ -1,6 +1,6 @@
-md5="6442151c617dea41e533ed7d752e2344";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="6442151c617dea41e533ed7d752e2344";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} logistic_pdf (@var{x})
+@deftypefn {Archivo de función} {} logistic_pdf (@var{x})
 Para cada elemento de @var{x}, calcula la PDF en @var{x} de la 
-dstribuci@'on log@'istica.
+dstribución logística.
 @end deftypefn

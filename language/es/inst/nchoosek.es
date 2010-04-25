@@ -1,6 +1,6 @@
-md5="0c833663e65b49955803d800422a01a0";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="0c833663e65b49955803d800422a01a0";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{c} =} nchoosek (@var{n}, @var{k})
+@deftypefn {Archivo de función} {@var{c} =} nchoosek (@var{n}, @var{k})
 
 Calcule el coeficiente binomial o todas las combinaciones de @var{n}.
 Si @var{n} es un escalar entonces, calcule el coeficiente binomial 
@@ -29,7 +29,7 @@ $$
 
 Si @var{n} es un vector genera todas las combinaciones de los
 elementos de @var{n}, tomando @var{k} a la vez, una fila para
-cada combinaci@'on. El resultado @var{c} tiene el tama@~{n}o 
+cada combinación. El resultado @var{c} tiene el tama@~{n}o 
 de @code{[nchoosek (length (@var{n}), @var{k}), @var{k}]}.
 @seealso{bincoeff}
 @end deftypefn

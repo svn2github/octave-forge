@@ -1,7 +1,7 @@
-md5="0f211326c4febe78f7409fe979e8dc81";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="0f211326c4febe78f7409fe979e8dc81";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} nthroot (@var{x}, @var{n})
-Calcula la raiz n-@'esima de @var{x}, retornando valores reales para los 
+@deftypefn {Archivo de función} {} nthroot (@var{x}, @var{n})
+Calcula la raiz n-ésima de @var{x}, retornando valores reales para los 
 componentes de @var{x}. Por ejemplo
 
 @example

@@ -1,5 +1,5 @@
-md5="a8dc6e1cf573a42ad9c1cc1e8d98038c";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="a8dc6e1cf573a42ad9c1cc1e8d98038c";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {} lpsolve ()
+@deftypefn {Función cargable} {} lpsolve ()
 No implementada todavia...
 @end deftypefn

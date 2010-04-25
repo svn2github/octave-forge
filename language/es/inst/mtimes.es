@@ -1,5 +1,5 @@
-md5="d07257acce1b7a40418e5a4627097b9f";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d07257acce1b7a40418e5a4627097b9f";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} mtimes (@var{x}, @var{y})
-Esta funci@'on es equivalente a @code{x * y}.
+@deftypefn {Función incorporada} {} mtimes (@var{x}, @var{y})
+Esta función es equivalente a @code{x * y}.
 @end deftypefn

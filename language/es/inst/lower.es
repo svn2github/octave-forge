@@ -1,7 +1,7 @@
-md5="0c3ddeca46f03ab570332f28ba1d48b9";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="0c3ddeca46f03ab570332f28ba1d48b9";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} lower (@var{s})
+@deftypefn {Archivo de función} {} lower (@var{s})
 Transforma todas las letras en la cadena de caracteres (o arreglo de celdas de 
-cadenas de caracteres) @var{s} en leters min@'usculas.
+cadenas de caracteres) @var{s} en leters minúsculas.
 @seealso{upper, tolower, toupper}
 @end deftypefn

@@ -1,4 +1,4 @@
-md5="dadc44bc354c2a4dfe8eca4b172bd4a4";rev="6346";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="dadc44bc354c2a4dfe8eca4b172bd4a4";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @deffn {Comando} ls options
 Lista el contenido de un directorio. Por ejemplo, 

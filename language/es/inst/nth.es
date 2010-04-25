@@ -1,5 +1,5 @@
-md5="3b1c062129c7bd448993975aa808422b";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="3b1c062129c7bd448993975aa808422b";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} nth (@var{list}, @var{n})
-Retorna el @var{n}-@'esimo elemento de @var{list}.
+@deftypefn {Función incorporada} {} nth (@var{list}, @var{n})
+Retorna el @var{n}-ésimo elemento de @var{list}.
 @end deftypefn

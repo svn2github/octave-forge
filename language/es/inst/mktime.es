@@ -1,8 +1,8 @@
-md5="9de6b49442dc6041b454ef9a6671f464";rev="6300";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="9de6b49442dc6041b454ef9a6671f464";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {} mktime (@var{tm_struct})
+@deftypefn {Función cargable} {} mktime (@var{tm_struct})
 Convierte una estructura de tiempo correspondiente al tiempo local 
-al n@'umero de segundos desde la @'epoca. Por ejemplo, 
+al número de segundos desde la época. Por ejemplo, 
 
 @example
 @group

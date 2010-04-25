@@ -1,8 +1,8 @@
-md5="34304b89c6b3683f4ae9c948ba3d44c6";rev="6420";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="34304b89c6b3683f4ae9c948ba3d44c6";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})
+@deftypefn {Función cargable} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})
 @cindex LU decomposition
-Calcula la factorizaci@'on LU de @var{a}, mediante las subrutinas de 
+Calcula la factorización LU de @var{a}, mediante las subrutinas de 
 @sc{Lapack}. El resultado se retorna en forma permutada, acorde con el 
 valor opcional de retorno @var{p}. Por ejemplo, dada la matriz 
 @code{a = [1, 2; 3, 4]},

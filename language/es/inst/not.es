@@ -1,5 +1,5 @@
-md5="74a686adda1edc1841c6d2d521a06c60";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="74a686adda1edc1841c6d2d521a06c60";rev="7236";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} not (@var{x})
-Esta funci@'on es equivalente a @code{! x}.
+@deftypefn {Función incorporada} {} not (@var{x})
+Esta función es equivalente a @code{! x}.
 @end deftypefn

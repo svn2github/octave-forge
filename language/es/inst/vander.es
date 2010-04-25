@@ -1,7 +1,7 @@
-md5="dec5ae668b90e7af69cc4ee061f9fa50";rev="6944";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="dec5ae668b90e7af69cc4ee061f9fa50";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} vander (@var{c})
-Regresa la matriz de Vandermonde cuya pen@'ultima columna es @var{c}.
+@deftypefn {Archivo de función} {} vander (@var{c})
+Regresa la matriz de Vandermonde cuya penúltima columna es @var{c}.
 
 Una matriz Vandermonde tiene la forma:
 @iftex

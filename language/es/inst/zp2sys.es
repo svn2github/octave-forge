@@ -1,6 +1,6 @@
-md5="afab23a05d443a970e06305fcee16e27";rev="6944";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="afab23a05d443a970e06305fcee16e27";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} zp2sys (@var{zer}, @var{pol}, @var{k}, @var{tsam}, @var{inname}, @var{outname})
+@deftypefn {Archivo de función} {} zp2sys (@var{zer}, @var{pol}, @var{k}, @var{tsam}, @var{inname}, @var{outname})
 Crea una estructura de datos del sistema de zero-pole data.
 
 @strong{Entradas}
@@ -12,7 +12,7 @@ Vector de polos del sistema.
 @item   k
 Primer coeficiente escalar. 
 @item   tsam
-Per@'iodo de muestreo; por defecto: 0(Sistema continuo).
+Período de muestreo; por defecto: 0(Sistema continuo).
 @item   inname
 @itemx  outname
 nombre de Entrada/salida de se@~{n}al (lista de caracteres).

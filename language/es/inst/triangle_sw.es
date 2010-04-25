@@ -1,6 +1,6 @@
-md5="3e6a12508684fb749e0199d76d076a96";rev="6211";by="Javier Enciso <encisomo@in.tum.de>"
+md5="3e6a12508684fb749e0199d76d076a96";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} triangle_sw (@var{n}, @var{b})
-Ventana espectral triangular. Subfunci@'on usada para la estimaci@'on de la 
+@deftypefn {Archivo de función} {} triangle_sw (@var{n}, @var{b})
+Ventana espectral triangular. Subfunción usada para la estimación de la 
 densidad espectral.
 @end deftypefn

@@ -1,6 +1,6 @@
-md5="fdba7449ce6109361627b1dc8acb0ee2";rev="6211";by="Javier Enciso <encisomo@in.tum.de>"
+md5="fdba7449ce6109361627b1dc8acb0ee2";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} values (@var{x})
+@deftypefn {Archivo de función} {} values (@var{x})
 Retorna los valores diferentes en un vector columna, organizado en orden 
 ascendente.
 

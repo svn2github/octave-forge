@@ -1,4 +1,4 @@
-md5="87c2a3725efcdea68ceedb6c121f089e";rev="6284";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="87c2a3725efcdea68ceedb6c121f089e";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
 @defvr {Variable incorporada} warn_empty_list_elements
 Si el valor de @code{warn_empty_list_elements} es distinto de cero, 

@@ -1,9 +1,9 @@
-md5="b6bfe923387dc23eec1125791a85a28d";rev="6433";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="b6bfe923387dc23eec1125791a85a28d";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} zeros (@var{x})
-@deftypefnx {Funci@'on incorporada} {} zeros (@var{n}, @var{m})
-@deftypefnx {Funci@'on incorporada} {} zeros (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {Funci@'on incorporada} {} zeros (@dots{}, @var{class})
+@deftypefn {Función incorporada} {} zeros (@var{x})
+@deftypefnx {Función incorporada} {} zeros (@var{n}, @var{m})
+@deftypefnx {Función incorporada} {} zeros (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {Función incorporada} {} zeros (@dots{}, @var{class})
 Retorna una matriz o un arreglo de N dimensiones cuyos elementos son 
 0.
 

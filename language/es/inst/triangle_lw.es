@@ -1,6 +1,6 @@
-md5="bf31dfbe8bea518d6ce1ea8712c64b71";rev="6211";by="Javier Enciso <encisomo@in.tum.de>"
+md5="bf31dfbe8bea518d6ce1ea8712c64b71";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} triangle_lw (@var{n}, @var{b})
-Ventana de retraso triangular. Subfunci@'on usada para la estimaci@'on de la 
+@deftypefn {Archivo de función} {} triangle_lw (@var{n}, @var{b})
+Ventana de retraso triangular. Subfunción usada para la estimación de la 
 densidad espectral.
 @end deftypefn

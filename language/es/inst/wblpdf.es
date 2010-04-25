@@ -1,8 +1,8 @@
-md5="d6883851eb088497973494e2b0e791f9";rev="6381";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="d6883851eb088497973494e2b0e791f9";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} wblpdf (@var{x}, @var{scale}, @var{shape})
-Calcula la funci@'on de densidad de probabilidad (PDF) de @var{x} 
-de la distribuci@'on de Weibull con par@'ametro de escala @var{scale} 
+@deftypefn {Archivo de función} {} wblpdf (@var{x}, @var{scale}, @var{shape})
+Calcula la función de densidad de probabilidad (PDF) de @var{x} 
+de la distribución de Weibull con parámetro de escala @var{scale} 
 y de forma @var{shape}, los cuales estan dados por 
 
 @iftex

@@ -1,7 +1,7 @@
-md5="49225ab7301bfee86e3e453873ec5a7d";rev="6287";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="49225ab7301bfee86e3e453873ec5a7d";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} union (@var{x}, @var{y})
-Retorna el conjunto de elementos que est@'an en el conjunto @var{x} 
+@deftypefn {Archivo de función} {} union (@var{x}, @var{y})
+Retorna el conjunto de elementos que están en el conjunto @var{x} 
 y @var{y}. Por ejemplo,
 
 @example

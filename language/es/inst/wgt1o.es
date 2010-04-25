@@ -1,10 +1,10 @@
-md5="e8d63fef65bf65f530ba20de198dfd32";rev="6893";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="e8d63fef65bf65f530ba20de198dfd32";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{W} =} wgt1o (@var{vl}, @var{vh}, @var{fc})
-Obtenga la descripci@'on de espacio de primer orden que pondera 
-la funci@'on.
+@deftypefn {Archivo de funci贸n} {@var{W} =} wgt1o (@var{vl}, @var{vh}, @var{fc})
+Obtenga la descripci贸n de espacio de primer orden que pondera 
+la funci贸n.
 
-Ponderar la funci@'on es necesario para el
+Ponderar la funci贸n es necesario para el
 @iftex
 @tex
 $ { \cal H }_2 / { \cal H }_\infty $
@@ -13,9 +13,9 @@ $ { \cal H }_2 / { \cal H }_\infty $
 @ifinfo
 H-2/H-infinity
 @end ifinfo
-dise馻r el procedimiento.
+dise帽ar el procedimiento.
 Estas funciones son parte de la planta aumentada @var{P}
-(revise @command{hinfdemo} para una aplicaci@'on de ejemplo).
+(revise @command{hinfdemo} para una aplicaci贸n de ejemplo).
 @strong{Entradas}
 @table @var
 @item vl
@@ -29,6 +29,6 @@ La frecuencia de esquina (en Hz, @strong{not} en rad/sec)
 @strong{Salidas}
 @table @var
 @item W
-Funci@'on ponderada, dada en forma de estructura de datos de sistema.
+Funci贸n ponderada, dada en forma de estructura de datos de sistema.
 @end table
 @end deftypefn

@@ -1,8 +1,8 @@
-md5="dbe6f99094d3aa24295a4a98367acca6";rev="6312";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="dbe6f99094d3aa24295a4a98367acca6";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} wblcdf (@var{x}, @var{scale}, @var{shape})
-Calcula la funci@'ob de distribuci@'on acumulada (CDF) en @var{x} de la 
-distribuci@'on Weibull con par@'ametro de escala @var{scale} y par@'ametro 
+@deftypefn {Archivo de función} {} wblcdf (@var{x}, @var{scale}, @var{shape})
+Calcula la funciób de distribución acumulada (CDF) en @var{x} de la 
+distribución Weibull con parámetro de escala @var{scale} y parámetro 
 de forma @var{shape}, el cual esta dado por 
 
 @iftex

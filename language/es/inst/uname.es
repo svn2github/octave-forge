@@ -1,7 +1,7 @@
-md5="110f78e4d7e99881ee7c7f5a43c835a3";rev="6420";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="110f78e4d7e99881ee7c7f5a43c835a3";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {[@var{uts}, @var{err}, @var{msg}] =} uname ()
-Retorna la informaci@'on del sistema en una estructura. Por ejemplo, 
+@deftypefn {Función incorporada} {[@var{uts}, @var{err}, @var{msg}] =} uname ()
+Retorna la información del sistema en una estructura. Por ejemplo, 
 
 @example
 @group
@@ -16,7 +16,7 @@ uname ()
 @end group
 @end example
 
-Si la ejecuci@'on es exitosa, la variable @var{err} es 0 y @var{msg} es 
+Si la ejecución es exitosa, la variable @var{err} es 0 y @var{msg} es 
 una cadena vacia. En otro caso, @var{err} es distinto de cero y @var{msg} 
 contiene un mensaje de error dependiente del sistema.
 @end deftypefn

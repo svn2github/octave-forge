@@ -1,5 +1,5 @@
-md5="bc64b4401bc0be40ffdedc6af296a654";rev="6211";by="Javier Enciso <encisomo@in.tum.de>"
+md5="bc64b4401bc0be40ffdedc6af296a654";rev="7241";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} uminus (@var{x})
-Esta funci@'on es equivalente a @code{- x}.
+@deftypefn {Función incorporada} {} uminus (@var{x})
+Esta función es equivalente a @code{- x}.
 @end deftypefn

@@ -1,13 +1,13 @@
-md5="bdeae73d5a9dc925c98defead7016d71";rev="6466";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="bdeae73d5a9dc925c98defead7016d71";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} realmin (@var{x})
-@deftypefnx {Funci@'on incorporada} {} realmin (@var{n}, @var{m})
-@deftypefnx {Funci@'on incorporada} {} realmin (@var{n}, @var{m}, @var{k}, @dots{})
-@deftypefnx {Funci@'on incorporada} {} realmin (@dots{}, @var{class})
+@deftypefn {Función incorporada} {} realmin (@var{x})
+@deftypefnx {Función incorporada} {} realmin (@var{n}, @var{m})
+@deftypefnx {Función incorporada} {} realmin (@var{n}, @var{m}, @var{k}, @dots{})
+@deftypefnx {Función incorporada} {} realmin (@dots{}, @var{class})
 
 Retorna una matriz o arreglo de N dimensiones cuyos elementos son todos iguales 
-al n@'umero de punto flotante m@'as peque@~{n}o que es representable. El valor 
-real es dependiente del sistema. En m@'aquinas que soportan aritm@'etica de punto 
+al número de punto flotante más peque@~{n}o que es representable. El valor 
+real es dependiente del sistema. En máquinas que soportan aritmética de punto 
 flotante de 64 bits de IEEE, @code{realmin} es aproximadamente 
 
 @ifinfo

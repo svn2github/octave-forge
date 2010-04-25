@@ -1,7 +1,7 @@
-md5="feb364b5ed9240f5aaede46bb37d85ea";rev="6173";by="Javier Enciso <encisomo@in.tum.de>"
+md5="feb364b5ed9240f5aaede46bb37d85ea";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} [c,s] = rotg(@var{a}, @var{b})
-Calcula la rotaci@'on de givens.
+@deftypefn {Archivo de función} {} [c,s] = rotg(@var{a}, @var{b})
+Calcula la rotación de givens.
 
 Nota: Use [c,s] = givens(a,b) en reemplazo.
 @end deftypefn

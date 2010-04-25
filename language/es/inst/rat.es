@@ -1,9 +1,9 @@
-md5="320d18f1fae954721d0546eaaa103020";rev="6405";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="320d18f1fae954721d0546eaaa103020";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{s} =} rat (@var{x}, @var{tol})
-@deftypefnx {Archivo de funci@'on} {[@var{n}, @var{d}] =} rat (@var{x}, @var{tol})
-Encuentra una aproximaci@'on racional a @var{x} dentro de la tolerancia 
-definida por @var{tol} mediante la expansi@'on continua de fracciones. 
+@deftypefn {Archivo de función} {@var{s} =} rat (@var{x}, @var{tol})
+@deftypefnx {Archivo de función} {[@var{n}, @var{d}] =} rat (@var{x}, @var{tol})
+Encuentra una aproximación racional a @var{x} dentro de la tolerancia 
+definida por @var{tol} mediante la expansión continua de fracciones. 
 Por ejemplo, 
 
 @example

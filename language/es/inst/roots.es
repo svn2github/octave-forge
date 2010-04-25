@@ -1,8 +1,8 @@
-md5="5413c421a90de29f0b567a7efc2d9f50";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="5413c421a90de29f0b567a7efc2d9f50";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} roots (@var{v})
+@deftypefn {Archivo de función} {} roots (@var{v})
 Para un vector @var{v} con @math{N} componentes, regresa
-las ra@'ices del polinomio.
+las raíces del polinomio.
 @iftex
 @tex
 $$
@@ -17,7 +17,7 @@ v(1) * z^(N-1) + ... + v(N-1) * z + v(N)
 @end example
 @end ifnottex
 
-Como ejemplo, el siguiente c@'odigo encuentra las ra@'ices del
+Como ejemplo, el siguiente código encuentra las raíces del
 polinomio de segundo grado.
 @iftex
 @tex

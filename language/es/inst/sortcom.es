@@ -1,14 +1,14 @@
-md5="18749d613b934df5608217e04289b9ed";rev="6433";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="18749d613b934df5608217e04289b9ed";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{yy}, @var{idx}] =} sortcom (@var{xx}[, @var{opt}])
-Ordena un vector de n@'umeros complejos.
+@deftypefn {Archivo de función} {[@var{yy}, @var{idx}] =} sortcom (@var{xx}[, @var{opt}])
+Ordena un vector de números complejos.
 
 @strong{Entradas}
 @table @var
 @item xx
-Vector de n@'umeros complejos.
+Vector de números complejos.
 @item opt
-Opci@'on de ordenamiento:
+Opción de ordenamiento:
 @table @code
 @item "re"
 Parte real (predeterminado);
@@ -26,6 +26,6 @@ los complejos conjugados, @math{a - jb} segido por @math{a + jb}.
 @item yy
 Valores ordenados
 @item idx
-Vector de permutaci@'on: @code{yy = xx(idx)}
+Vector de permutación: @code{yy = xx(idx)}
 @end table
 @end deftypefn

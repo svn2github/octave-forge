@@ -1,7 +1,7 @@
-md5="5844afa2af2ccecfc1f5b1f4a45edbac";rev="6461";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="5844afa2af2ccecfc1f5b1f4a45edbac";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{x}, @var{y}, @var{z}] =} sphere (@var{n})
-@deftypefnx {Archivo de funci@'on} {} sphere (@var{h}, @dots{})
+@deftypefn {Archivo de función} {[@var{x}, @var{y}, @var{z}] =} sphere (@var{n})
+@deftypefnx {Archivo de función} {} sphere (@var{h}, @dots{})
 Genera tres matrices en formato @code{meshgrid}, tales que 
 @code{surf (@var{x}, @var{y}, @var{z})} genera una esfera unitaria. 
 Las matrices tienen dimensiones @code{@var{n}+1} por @code{@var{n}+1}. 

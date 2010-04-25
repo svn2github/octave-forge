@@ -1,10 +1,10 @@
-md5="67b33986d4df8d49779ac7d821f48362";rev="6433";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="67b33986d4df8d49779ac7d821f48362";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{y} =} speye (@var{m})
-@deftypefnx {Archivo de funci@'on} {@var{y} =} speye (@var{m}, @var{n})
-@deftypefnx {Archivo de funci@'on} {@var{y} =} speye (@var{sz})
-Retorna una matriz identidad dispersa. Esta funci@'on es significativamente 
-m@'as eficiente que @code{sparse (eye (@var{m}))} debido a que no 
+@deftypefn {Archivo de función} {@var{y} =} speye (@var{m})
+@deftypefnx {Archivo de función} {@var{y} =} speye (@var{m}, @var{n})
+@deftypefnx {Archivo de función} {@var{y} =} speye (@var{sz})
+Retorna una matriz identidad dispersa. Esta función es significativamente 
+más eficiente que @code{sparse (eye (@var{m}))} debido a que no 
 se construye la matriz completa. 
 
 Cuando se llama sin argumentos, se crea una matriz dispersa de 

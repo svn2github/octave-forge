@@ -1,7 +1,7 @@
-md5="fa535e5da107161ad06404ac29ab5707";rev="6408";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="fa535e5da107161ad06404ac29ab5707";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} rate (@var{n}, @var{p}, @var{v}, @var{l}, @var{method})
-Retorna la tasa de retorno para una inversi@'on de valor presente @var{v}, 
+@deftypefn {Archivo de función} {} rate (@var{n}, @var{p}, @var{v}, @var{l}, @var{method})
+Retorna la tasa de retorno para una inversión de valor presente @var{v}, 
 la cual paga @var{p} en @var{n} periodos consecutivos.
 
 El argumento opcional @var{l} se puede usar para especificar el pago total 

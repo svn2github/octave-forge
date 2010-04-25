@@ -1,8 +1,8 @@
-md5="8c9b6928f5070f630035519e2af60cf5";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="8c9b6928f5070f630035519e2af60cf5";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{y} =} shiftdim (@var{x}, @var{n})
-@deftypefnx {Archivo de funci@'on} {[@var{y}, @var{ns}] =} shiftdim (@var{x})
-Cambios de la dimensi@'on de @var{x} por @var{n}, donde @var{n} debe ser
+@deftypefn {Archivo de función} {@var{y} =} shiftdim (@var{x}, @var{n})
+@deftypefnx {Archivo de función} {[@var{y}, @var{ns}] =} shiftdim (@var{x})
+Cambios de la dimensión de @var{x} por @var{n}, donde @var{n} debe ser
 un escalar entero. Cuando @var{n} es positivo, las dimensiones de @var{x}
 se desplazan a la izquierda, con las dimensiones principales distribuidas
 hasta el final. Si @var{n} es negativa, entonces las dimensiones de @var{x}
@@ -10,7 +10,7 @@ se desplazan a la derecha, con @var{n} principal dimension unitarias
 agregada.
 
 La llamada con un solo argumento, @code{shiftdim}, elimina las dimensiones
-principales unitarias, devolviendo el n@'umero de dimensiones eliminadas
+principales unitarias, devolviendo el número de dimensiones eliminadas
 en la segunda salida argumento @var{ns}.
 
 Por ejemplo

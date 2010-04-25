@@ -1,5 +1,5 @@
-md5="978812ad23948dcf42b0a917880bd8f6";rev="6173";by="Javier Enciso <encisomo@in.tum.de>"
+md5="978812ad23948dcf42b0a917880bd8f6";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} rgb2ntsc (@var{rgb})
-Conversi@'on de formato de imagen.
+@deftypefn {Archivo de función} {} rgb2ntsc (@var{rgb})
+Conversión de formato de imagen.
 @end deftypefn

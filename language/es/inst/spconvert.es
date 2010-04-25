@@ -1,6 +1,6 @@
-md5="9d99314294ead58887dd1b219b8074b8";rev="6315";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="9d99314294ead58887dd1b219b8074b8";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{x} =} spconvert (@var{m})
+@deftypefn {Archivo de función} {@var{x} =} spconvert (@var{m})
 Convierte una matriz dispersa @var{m} producida con otro programa 
 en una matriz dispersa utilizando el formato interno de Octave. 
 La entrada @var{x} puede ser una matriz real de 3 o 4 columnas, con 

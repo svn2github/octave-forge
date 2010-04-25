@@ -1,7 +1,7 @@
-md5="3546a7c797255db5894b0019caaf49db";rev="6300";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="3546a7c797255db5894b0019caaf49db";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} sign (@var{x})
-Calcula la funci@'on @dfn{signum}, la cual se define como 
+@deftypefn {Función de mapeo} {} sign (@var{x})
+Calcula la función @dfn{signum}, la cual se define como 
 @iftex
 @tex
 $$
@@ -18,6 +18,6 @@ sign (x) =  0, x = 0;
 @end example
 @end ifinfo
 
-Para argumentos complejos, la funci@'on @code{sign} retorna 
+Para argumentos complejos, la función @code{sign} retorna 
 @code{x ./ abs (@var{x})}.
 @end deftypefn

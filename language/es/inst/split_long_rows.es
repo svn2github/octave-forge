@@ -1,13 +1,13 @@
-md5="cc58f6cd259ed328f66a24257a701b13";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="cc58f6cd259ed328f66a24257a701b13";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {@var{val} =} split_long_rows ()
-@deftypefnx {Funci@'on incorporada} {@var{old_val} =} split_long_rows (@var{new_val})
+@deftypefn {Función incorporada} {@var{val} =} split_long_rows ()
+@deftypefnx {Función incorporada} {@var{old_val} =} split_long_rows (@var{new_val})
 Consulta o establece la variable interna que controla si las filas de una
 matriz puede separarse cuando se muestren en una ventana terminal. Si se
-separan las filas, Octave mostrar@'a la matriz en una serie de peque@~{n}as
-piezas, cada una de las cuales puede caber dentro de los l@'imites de su
+separan las filas, Octave mostrará la matriz en una serie de peque@~{n}as
+piezas, cada una de las cuales puede caber dentro de los límites de su
 ancho de terminal, y cada conjunto de filas se etiqueta de manera que 
-usted puede ver f@'acilmente las columnas que se mostrar@'an. Por ejemplo:
+usted puede ver fácilmente las columnas que se mostrarán. Por ejemplo:
 
 @smallexample
 @group

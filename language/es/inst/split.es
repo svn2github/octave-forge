@@ -1,10 +1,10 @@
-md5="13bb11a5ab673c82baf8d741850f3135";rev="6405";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="13bb11a5ab673c82baf8d741850f3135";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} split (@var{s}, @var{t}, @var{n})
+@deftypefn {Archivo de función} {} split (@var{s}, @var{t}, @var{n})
 Divide la cadena @var{s} en partes separadas por @var{t}, retornando 
 el resultado en un arreglo cadena (emparejado con espacios en blanco 
-hasta completar una mastriz v@'alida). Si se suministra el par@'ametro 
-opcional @var{n}, divide @var{s} en m@'aximo @var{n} partes difentes.
+hasta completar una mastriz válida). Si se suministra el parámetro 
+opcional @var{n}, divide @var{s} en máximo @var{n} partes difentes.
 
 Por ejemplo, 
 

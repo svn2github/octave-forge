@@ -1,6 +1,6 @@
-md5="7148f229f6995b0a743ffefb10a8fd99";rev="6367";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="7148f229f6995b0a743ffefb10a8fd99";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} spkron (@var{a}, @var{b})
+@deftypefn {Archivo de función} {} spkron (@var{a}, @var{b})
 Forma producto de Kronecker entre dos matrices dispersas. 
 Este producto se define bloque por bloque como 
 

@@ -1,7 +1,7 @@
-md5="b45a6e50195d0a58e9f031d3f49345ea";rev="6408";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="b45a6e50195d0a58e9f031d3f49345ea";rev="7239";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{k1}, @dots{}, @var{v1}] =} setfield (@var{s}, @var{k1}, @var{v1}, @dots{})
-Establece el n@'umero de campos en una estructura.
+@deftypefn {Archivo de función} {[@var{k1}, @dots{}, @var{v1}] =} setfield (@var{s}, @var{k1}, @var{v1}, @dots{})
+Establece el número de campos en una estructura.
 
 @example
 @group
@@ -12,7 +12,7 @@ oo(1,2).fd(3).b == 6
 @end group
 @end example
 
-N@'otese que esta funci@'on se podr@'ia escribir como 
+Nótese que esta función se podría escribir como 
 
 @example
          i1= @{1,2@}; i2= 'fd'; i3= @{3@}; i4= 'b';

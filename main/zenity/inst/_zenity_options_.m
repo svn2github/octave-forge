@@ -57,7 +57,7 @@ function op = _zenity_options_ (dialog, varargin)
 #    varargin(end) = [];             # By using (end), it actually pulls the value out instead of leaving it empty
 #  endif
 
-  op.title = op.width = op.height = op.timeout = op.icon = "";
+  op.title = op.width = op.height = op.timeout = "";
   if ( !ischar(dialog) )
     error ("Type of dialog should be a string");
   elseif (strcmpi(dialog, "calendar"))
@@ -72,8 +72,10 @@ function op = _zenity_options_ (dialog, varargin)
     op.print_numel = op.num_out = "";
   elseif (strcmpi(dialog, "message"))
     op.type = op.wrap = "";
-  elseif (strcmpi(dialog, "notification"))
-    op.text = "";
+  elseif (strcmpi(dialog, "new notification"))
+    op.text = op.icon = "";
+  elseif (strcmpi(dialog, "piped notification"))
+    op.text = op.icon = op.message = "";
   elseif (strcmpi(dialog, "progress"))
   elseif (strcmpi(dialog, "scale"))
   elseif (strcmpi(dialog, "text info"))
@@ -110,35 +112,22 @@ function op = _zenity_options_ (dialog, varargin)
     ## Process ALL GENERAL OPTIONS first
     elseif (strcmpi(param,"title"))                   # General - title
       narg            = sanity_checks ("char", param, value, op.title, narg);
-      op.title        = sprintf("--title=\"%s\"", value);
+      op.title        = sprintf('--title="%s"', value);
     elseif (strcmpi(param,"width"))                   # General - width
       narg            = sanity_checks ("scalar", param, value, op.width, narg);
-      op.width        = sprintf("--width=\"%s\"", num2str(value));
+      op.width        = sprintf('--width="%s"', num2str(value));
     elseif (strcmpi(param,"height"))                  # General - height
       narg            = sanity_checks ("scalar", param, value, op.height, narg);
-      op.height       = sprintf("--height=\"%s\"", num2str(value));
+      op.height       = sprintf('--height="%s"', num2str(value));
     elseif (strcmpi(param,"timeout"))                 # General - timeout
       narg            = sanity_checks ("scalar", param, value, op.timeout, narg);
-      op.timeout      = sprintf("--timeout=\"%s\"", num2str(value));
-    elseif (strcmpi(param,"icon"))                    # General - icon
-      narg            = sanity_checks ("char", param, value, op.icon, narg);
-      if (strcmpi(value, "error"))
-        op.icon       = "--window-icon=\"error\"";
-      elseif (strcmpi(value, "info"))
-        op.icon       = "--window-icon=\"info\"";
-      elseif (strcmpi(value, "question"))
-        op.icon       = "--window-icon=\"question\"";
-      elseif (strcmpi(value, "warning"))
-        op.icon       = "--window-icon=\"warning\"";
-      else
-        op.icon       = sprintf("--window-icon=\"%s\"", value);
-      endif
+      op.timeout      = sprintf('--timeout="%s"', num2str(value));
 
     ## Process options for ZENITY_ENTRY
     elseif ( strcmpi(dialog, "entry") )
       if (strcmpi(param,"entry"))                     # Entry - entry text
         narg            = sanity_checks ("char", param, value, op.entry, narg);
-        op.entry        = sprintf("--entry-text=\"%s\"", value);
+        op.entry        = sprintf('--entry-text="%s"', value);
       elseif (strcmpi(param,"password"))              # Entry - password
         narg            = sanity_checks ("indie", param, value, op.password, narg);
         op.password     = "--hide-text";
@@ -153,10 +142,10 @@ function op = _zenity_options_ (dialog, varargin)
         op.directory    = "--directory";
       elseif (strcmpi(param,"filename"))              # File selection - filename
         narg            = sanity_checks ("char", param, value, op.filename, narg);
-        op.filename     = sprintf("--filename=\"%s\"", value);
+        op.filename     = sprintf('--filename="%s"', value);
       elseif (strcmpi(param,"filter"))                # File selection - file filter
         narg            = sanity_checks ("multiple-char", param, value, op.directory, narg);
-        op.filter       = sprintf("%s --file-filter=\"%s\"", op.filter, value);
+        op.filter       = sprintf('%s --file-filter="%s"', op.filter, value);
       elseif (strcmpi(param,"multiple"))              # File selection - multiple
         narg            = sanity_checks ("indie", param, value, op.multiple, narg);
         op.multiple     = "--multiple";
@@ -192,20 +181,59 @@ function op = _zenity_options_ (dialog, varargin)
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
 
-    ## Process options for ZENITY_NOTIFICATION
-    elseif ( strcmpi(dialog, "notification") )
+    ## Process options for ZENITY_NOTIFICATION (creating new)
+    elseif ( strcmpi(dialog, "new notification") )
       if (strcmpi(param,"text"))                      # Notification - text
         narg            = sanity_checks ("char", param, value, op.text, narg);
-        op.text         = sprintf("--text=\"%s\"", value);
+        op.text         = sprintf('--text="%s"', value);
+      elseif (strcmpi(param,"icon"))                  # Notification - icon
+        narg            = sanity_checks ("char", param, value, op.icon, narg);
+        if (strcmpi(value, "error"))
+          op.icon       = '--window-icon="error"';
+        elseif (strcmpi(value, "info"))
+          op.icon       = '--window-icon="info"';
+        elseif (strcmpi(value, "question"))
+          op.icon       = '--window-icon="question"';
+        elseif (strcmpi(value, "warning"))
+          op.icon       = '--window-icon="warning"';
+        else
+          op.icon       = sprintf('--window-icon="%s"', value);
+        endif
       else
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
+    ## Process options for ZENITY_NOTIFICATION (pipelining)
+    elseif ( strcmpi(dialog, "piped notification") )
+      if (strcmpi(param,"text"))                      # Notification - text
+        narg            = sanity_checks ("char", param, value, op.text, narg);
+        op.text         = sprintf('tooltip: %s', value);
+      elseif (strcmpi(param,"message"))                  # Notification - message
+        narg            = sanity_checks ("char", param, value, op.message, narg);
+        op.message      = sprintf('message: %s', value);
+      elseif (strcmpi(param,"icon"))                  # Notification - icon
+        narg            = sanity_checks ("char", param, value, op.icon, narg);
+        if (strcmpi(value, "error"))
+          op.icon       = 'icon: error';
+        elseif (strcmpi(value, "info"))
+          op.icon       = 'icon: info';
+        elseif (strcmpi(value, "question"))
+          op.icon       = 'icon: question';
+        elseif (strcmpi(value, "warning"))
+          op.icon       = 'icon: warning';
+        else
+          op.icon       = sprintf('icon: %s', value);
+        endif
+      else
+        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
+      endif
+
+
 
     ## Process options for ZENITY_LIST
     elseif ( strcmpi(dialog, "list") )
       if (strcmpi(param,"text"))                      # List - text
         narg            = sanity_checks ("char", param, value, op.text, narg);
-        op.text         = sprintf("--text=\"%s\"", value);
+        op.text         = sprintf('--text="%s"', value);
       elseif (strcmpi(param,"editable"))              # List - editable
         narg            = sanity_checks ("indie", param, value, op.editable, narg);
         op.editable     = "--editable";
@@ -228,9 +256,9 @@ function op = _zenity_options_ (dialog, varargin)
         tmp             = "";
         for i = 1:numel(value)
           str = num2str(value(i));
-          tmp = sprintf("%s%s,", tmp, str);
+          tmp = sprintf('%s%s,', tmp, str);
         endfor
-        op.hide         = sprintf("--hide-column=\"%s\"", tmp);
+        op.hide         = sprintf('--hide-column="%s"', tmp);
       elseif (strcmpi(param,"print column"))          # List - print column
         narg            = sanity_checks ("num", param, value, op.print_col, narg);
         op.print_min    = min(value(:));
@@ -243,9 +271,9 @@ function op = _zenity_options_ (dialog, varargin)
             break
           endif
           str = num2str(value(i));
-          tmp = sprintf("%s%s,", tmp, str);
+          tmp = sprintf('%s%s,', tmp, str);
         endfor
-        op.print_col    = sprintf("--print-column=\"%s\"", tmp);
+        op.print_col    = sprintf('--print-column="%s"', tmp);
       else
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
@@ -262,9 +290,9 @@ function op = _zenity_options_ (dialog, varargin)
     if ( isempty(op.type) )
       op.type = "--info";
     endif
-  elseif (strcmpi(dialog,"notification"))             # Defaults for notification
+  elseif (strcmpi(dialog,"new notification"))             # Defaults for notification
     if ( isempty(op.icon) )
-      op.icon = "--window-icon=\"warning\"";
+      op.icon = '--window-icon="warning"';
     endif
   endif
 

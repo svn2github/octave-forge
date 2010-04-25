@@ -1,8 +1,8 @@
-md5="7ccaf2ddc956b9c1d9ea4526b169d1e8";rev="6893";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="7ccaf2ddc956b9c1d9ea4526b169d1e8";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} prepad (@var{x}, @var{l}, @var{c})
-@deftypefnx {Archivo de funci@'on} {} postpad (@var{x}, @var{l}, @var{c})
-@deftypefnx {Archivo de funci@'on} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
+@deftypefn {Archivo de función} {} prepad (@var{x}, @var{l}, @var{c})
+@deftypefnx {Archivo de función} {} postpad (@var{x}, @var{l}, @var{c})
+@deftypefnx {Archivo de función} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
 
 Antepone (anexa), el valor escalar @var{c} para el vector @var{x}
 hasta que tenga una longitud @var{l}. Si el tercer argumento no es
@@ -15,5 +15,5 @@ Si @var{x} es una matriz, los elementos se Anteponen o son retirados de
 cada fila.
 
 Si el argumento opcional @var{dim} es dado, entonces opera a lo largo
-de esta dimensi@'on
+de esta dimensión
 @end deftypefn

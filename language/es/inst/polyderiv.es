@@ -1,8 +1,8 @@
-md5="d7754cd85023893d0920cdd53f807e27";rev="6466";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="d7754cd85023893d0920cdd53f807e27";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} polyderiv (@var{c})
-@deftypefnx {Archivo de funci@'on} {[@var{q}] =} polyderiv (@var{b}, @var{a})
-@deftypefnx {Archivo de funci@'on} {[@var{q}, @var{r}] =} polyderiv (@var{b}, @var{a})
+@deftypefn {Archivo de función} {} polyderiv (@var{c})
+@deftypefnx {Archivo de función} {[@var{q}] =} polyderiv (@var{b}, @var{a})
+@deftypefnx {Archivo de función} {[@var{q}, @var{r}] =} polyderiv (@var{b}, @var{a})
 
 Retorna los coeficientes de la derivada del polinomio cuyos coeficientes 
 estan dados por el vector @var{c}. Si se suministra una pareja de polinomios 

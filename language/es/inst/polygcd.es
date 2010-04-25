@@ -1,8 +1,8 @@
-md5="44e60bcb65ff330203e946094bcc4196";rev="6944";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="44e60bcb65ff330203e946094bcc4196";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{q} =} polygcd (@var{b}, @var{a}, @var{tol})
-Encuentra el m@'aximo com@'un divisor de dos polinomios. Esto es
-equivalente al polinomio multiplicado por todas ra@'ices comunes.
+@deftypefn {Archivo de función} {@var{q} =} polygcd (@var{b}, @var{a}, @var{tol})
+Encuentra el máximo común divisor de dos polinomios. Esto es
+equivalente al polinomio multiplicado por todas raíces comunes.
 Junto con deconv, puede reducir el cociente de dos polinomos.
 La tolerancia por defecto es
 

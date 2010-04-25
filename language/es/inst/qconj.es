@@ -1,6 +1,6 @@
-md5="95defd26b2dd691d66f13ba35aecab9b";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="95defd26b2dd691d66f13ba35aecab9b";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} qconj (@var{q})
+@deftypefn {Archivo de función} {} qconj (@var{q})
 Calcula el conjugado de un cuaternion. Por ejemplo, 
 
 @example

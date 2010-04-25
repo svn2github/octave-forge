@@ -1,7 +1,7 @@
-md5="295c5b26dfd25ea3fe84bc5a085d8d69";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="295c5b26dfd25ea3fe84bc5a085d8d69";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{aa}, @var{bb}, @var{q}, @var{z}] =} qzhess (@var{a}, @var{b})
-Calcule la descomposici@'on Hessenberg-triangular de la matriz de l@'apiz
+@deftypefn {Archivo de función} {[@var{aa}, @var{bb}, @var{q}, @var{z}] =} qzhess (@var{a}, @var{b})
+Calcule la descomposición Hessenberg-triangular de la matriz de lápiz
 @code{(@var{a}, @var{b})}, regresando
 @code{@var{aa} = @var{q} * @var{a} * @var{z}},
 @code{@var{bb} = @var{q} * @var{b} * @var{z}}, con @var{q} y @var{z}
@@ -17,8 +17,8 @@ ortogonales. Por ejemplo,
 @end group
 @end example
 
-la descomposici@'on Hessenberg-triangular es el primer paso en 
-Moler y el algoritmo de descomposici@'on de Stewart's QZ
+la descomposición Hessenberg-triangular es el primer paso en 
+Moler y el algoritmo de descomposición de Stewart's QZ
 
 Algoritmo tomado de Golub y Van Loan, @cite{Matrix Computations, 2nd
 edition}.

@@ -1,9 +1,9 @@
-md5="c6400e76baba9f60d96c59601d1bd375";rev="6300";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="c6400e76baba9f60d96c59601d1bd375";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} polyval (@var{c}, @var{x})
+@deftypefn {Archivo de función} {} polyval (@var{c}, @var{x})
 Evalua un polinomio. 
 
-La funci@'on @code{polyval (@var{c}, @var{x})} evalua el polinomio @var{c} 
+La función @code{polyval (@var{c}, @var{x})} evalua el polinomio @var{c} 
 en el valor especificado @var{x}.
 
 Si @var{x} es un vector o una matriz, se evalua el polinomio en cada uno 

@@ -1,6 +1,6 @@
-md5="ff1193349d3df889de78bb0dd9b62151";rev="6377";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="ff1193349d3df889de78bb0dd9b62151";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} polyout (@var{c}, @var{x})
+@deftypefn {Archivo de función} {} polyout (@var{c}, @var{x})
 Muestra el polinomio con formato 
 @iftex
 @tex

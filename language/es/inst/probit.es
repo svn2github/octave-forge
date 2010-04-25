@@ -1,6 +1,6 @@
-md5="3c81d3d0b21805ba2f41babefeadeb1b";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="3c81d3d0b21805ba2f41babefeadeb1b";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} probit (@var{p})
+@deftypefn {Archivo de función} {} probit (@var{p})
 Para cada elemento de @var{p}, retorna el probit (el cuantil de la 
-distribuci@'on normal est@'andar) de @var{p}.
+distribución normal estándar) de @var{p}.
 @end deftypefn

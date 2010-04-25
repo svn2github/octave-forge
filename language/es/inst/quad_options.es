@@ -1,10 +1,10 @@
-md5="57258f1a459cbdecb934f07f577a1ccc";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="57258f1a459cbdecb934f07f577a1ccc";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {} quad_options (@var{opt}, @var{val})
+@deftypefn {Función cargable} {} quad_options (@var{opt}, @var{val})
 Cuando se llama con dos argumentos, permite establecer las opciones 
-de los par@'ametros de la funci@'on @code{quad}.
+de los parámetros de la función @code{quad}.
 
-Dado un argumento, @code{quad_options} retorna el valor de la opci@'on
+Dado un argumento, @code{quad_options} retorna el valor de la opción
 correspondiente. Si no se suministran argumentos, se muestran los nombres 
 de todas las opciones disponibles y sus valores actuales.
 

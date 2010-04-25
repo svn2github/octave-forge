@@ -1,7 +1,7 @@
-md5="50ea6efd4be73eb904dca36d23a73fc1";rev="6288";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="50ea6efd4be73eb904dca36d23a73fc1";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} perms (@var{v})
-Genera todas las permutaciones de @var{v}, una fila porpermutaci@'on. 
+@deftypefn {Archivo de función} {} perms (@var{v})
+Genera todas las permutaciones de @var{v}, una fila porpermutación. 
 El resultado tiene el tama@~{n}o @code{factorial (@var{n}) * @var{n}}, 
 donde @var{n} es la longitud de @var{v}.
 

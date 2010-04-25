@@ -1,9 +1,9 @@
-md5="14d60d4ab364d9da55bcf44ed24b57d7";rev="6287";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="14d60d4ab364d9da55bcf44ed24b57d7";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} perror (@var{name}, @var{num})
-Imprime el mensaje de error de la funci@'on @var{name} correspondiente 
-al n@'umero de error @var{num}. Esta funci@'on est@'a destinada a ser 
-utilizada para imprimir mensajes de error @'utiles para aquellas 
-funciones que retornan c@'odigos num@'ericos de error.
+@deftypefn {Archivo de función} {} perror (@var{name}, @var{num})
+Imprime el mensaje de error de la función @var{name} correspondiente 
+al número de error @var{num}. Esta función está destinada a ser 
+utilizada para imprimir mensajes de error útiles para aquellas 
+funciones que retornan códigos numéricos de error.
 @seealso{strerror}
 @end deftypefn

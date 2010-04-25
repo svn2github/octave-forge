@@ -1,6 +1,6 @@
-md5="1447c96f6fbe3dfa5f2eaa8b40d9af33";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="1447c96f6fbe3dfa5f2eaa8b40d9af33";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{p}, @var{s}] =} polyfit (@var{x}, @var{y}, @var{n})
+@deftypefn {Archivo de función} {[@var{p}, @var{s}] =} polyfit (@var{x}, @var{y}, @var{n})
 Regresa los coeficientes de un polinomio @var{p}(@var{x}) de grado 
 @var{n} que minimiza
 @iftex
@@ -13,7 +13,7 @@ $$
 @ifinfo
 @code{sumsq (p(x(i)) - y(i))},
 @end ifinfo
-para ajustar mejor los datos en el sentido de m@'inimos cuadrados
+para ajustar mejor los datos en el sentido de mínimos cuadrados
  
 Los coeficientes del polinomio se devuelven en un vector de fila.
 

@@ -1,6 +1,6 @@
-md5="a4b731ced966a8a71bed25c910864caa";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="a4b731ced966a8a71bed25c910864caa";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {@var{fid} =} popen (@var{command}, @var{mode})
+@deftypefn {Función incorporada} {@var{fid} =} popen (@var{command}, @var{mode})
 Iniciar un proceso y crear un enlace. El nombre del comando a ejecutar
 es dado por @var{command}. El identificador de archivo correspondiente al
 flujo de entrada o salida del proceso se devuelve en @var{fid}.
@@ -8,11 +8,11 @@ El argumento @var{mode} puede ser
 
 @table @code
 @item "r"
-El enlace se conecta a la salida est@'andar del proceso, y se abre
+El enlace se conecta a la salida estándar del proceso, y se abre
 para la lectura.
 
 @item "w"
-El enlace se conecta a la entrada est@'andar del proceso, y se abre
+El enlace se conecta a la entrada estándar del proceso, y se abre
 para escritura.
 @end table
 

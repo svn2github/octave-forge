@@ -1,6 +1,6 @@
-md5="4e0930a97e0004a7868911f1586f44d3";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="4e0930a97e0004a7868911f1586f44d3";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} qzval (@var{a}, @var{b})
+@deftypefn {Archivo de función} {} qzval (@var{a}, @var{b})
 Calcula los valores propios generalizados de la matriz matriz pencil
 @ifinfo
 @example
@@ -15,5 +15,5 @@ $(A - \lambda B)$.
 
 donde @var{a} y @var{b} deben ser matrices reales.
 
-La funci@'on @code{qzval} es obsoleta; use @code{qz} en reemplazo.
+La función @code{qzval} es obsoleta; use @code{qz} en reemplazo.
 @end deftypefn

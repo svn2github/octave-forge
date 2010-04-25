@@ -1,6 +1,6 @@
-md5="e5bd9af6975214757084813b73f5e5d7";rev="6466";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="e5bd9af6975214757084813b73f5e5d7";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{reg}, @var{prop}] =} parseparams (@var{params})
+@deftypefn {Archivo de función} {[@var{reg}, @var{prop}] =} parseparams (@var{params})
 
 Retorna las celdas de elementos de @var{param} hasta el primer elemento 
 de tipo cadena en @var{reg} y todos los elementos restantes comenzando 
@@ -22,7 +22,7 @@ prop =
 @end group
 @end example
 
-La funci@'on @code{parseparams} puede ser usada para separar argumentos 
+La función @code{parseparams} puede ser usada para separar argumentos 
 'regular' y argumentos adicionales dados como parejas propiedad valor del 
 arreglo de celdas @var{varargin}.
 

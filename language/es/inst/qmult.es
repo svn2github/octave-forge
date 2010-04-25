@@ -1,6 +1,6 @@
-md5="d9b831c837f53681fdb13849a10db2be";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="d9b831c837f53681fdb13849a10db2be";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} qmult (@var{a}, @var{b})
+@deftypefn {Archivo de función} {} qmult (@var{a}, @var{b})
 Multiplica dos cuaterniones.
 
 @example

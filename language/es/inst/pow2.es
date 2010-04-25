@@ -1,7 +1,7 @@
-md5="232892831df864b0efdd60bba5684bad";rev="6288";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="232892831df864b0efdd60bba5684bad";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} pow2 (@var{x})
-@deftypefnx {Funci@'on de mapeo} {} pow2 (@var{f}, @var{e})
+@deftypefn {Función de mapeo} {} pow2 (@var{x})
+@deftypefnx {Función de mapeo} {} pow2 (@var{f}, @var{e})
 Con un argumento, calcula 
 @iftex
 @tex

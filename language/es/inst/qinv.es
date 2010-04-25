@@ -1,6 +1,6 @@
-md5="f351b7f66c363d0f7fcc76da3c2f04a5";rev="6166";by="Javier Enciso <encisomo@in.tum.de>"
+md5="f351b7f66c363d0f7fcc76da3c2f04a5";rev="7238";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} qinv (@var{q})
+@deftypefn {Archivo de función} {} qinv (@var{q})
 Retorna el inverso de un cuaternion.
 
 @example

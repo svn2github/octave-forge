@@ -1,14 +1,14 @@
-md5="773eb83b523226f850d33bfd464eb235";rev="6944";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="773eb83b523226f850d33bfd464eb235";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} tf2sys (@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname})
+@deftypefn {Archivo de función} {} tf2sys (@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname})
 Construye un sistema de estructura de datos al formato de datos 
-de la funci@'on de transferencia.
+de la función de transferencia.
 
 @strong{Entrada}
 @table @var
 @item  num
 @itemx den
-coeficientes de numerador/denominador polin@'omicos
+coeficientes de numerador/denominador polinómicos
 @item tsam
 intervalo de muestreo. Por defecto: 0 (tiempo continuo)
 @item inname
@@ -32,7 +32,7 @@ Entrada(s)
 Salida(s):
         1: y_1 (discrete)
 Intervalo de muestreo: 0.1
-funci@'on transferencia de:
+función transferencia de:
 2*z^1 + 1
 -----------------
 1*z^2 + 2*z^1 + 1

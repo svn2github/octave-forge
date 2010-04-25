@@ -1,7 +1,7 @@
-md5="ec072566f58981206c324685ca0b4a8c";rev="6312";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="ec072566f58981206c324685ca0b4a8c";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on cargable} {@var{x} =} syl (@var{a}, @var{b}, @var{c})
-Resuelve la ecuaci@'on de Silvestre 
+@deftypefn {Función cargable} {@var{x} =} syl (@var{a}, @var{b}, @var{c})
+Resuelve la ecuación de Silvestre 
 @iftex
 @tex
 $$
@@ -15,7 +15,7 @@ $$
 A X + X B + C = 0
 @end example
 @end ifinfo
-usando las subrutinas est@'andar de @sc{Lapack}. Por ejemplo, 
+usando las subrutinas estándar de @sc{Lapack}. Por ejemplo, 
 
 @example
 @group

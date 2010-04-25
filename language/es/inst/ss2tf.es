@@ -1,8 +1,8 @@
-md5="5b4e6a6b1d1e13f81babde87cee8a97c";rev="6466";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="5b4e6a6b1d1e13f81babde87cee8a97c";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{num}, @var{den}] =} ss2tf (@var{a}, @var{b}, @var{c}, @var{d})
+@deftypefn {Archivo de función} {[@var{num}, @var{den}] =} ss2tf (@var{a}, @var{b}, @var{c}, @var{d})
 
-Convierte un espacio de estados en funci@'on de transferencia. 
+Convierte un espacio de estados en función de transferencia. 
 
 El sistema de espacios de estados: 
 
@@ -20,7 +20,7 @@ $$ y = Cx + Du $$
 @end example
 @end ifinfo
 
-es convertido en la funci@'on de transferencia: 
+es convertido en la función de transferencia: 
 @iftex
 @tex
 $$ G(s) = { { \rm num }(s) \over { \rm den }(s) } $$
@@ -35,6 +35,6 @@ $$ G(s) = { { \rm num }(s) \over { \rm den }(s) } $$
 @end example
 @end ifinfo
 
-Esta funci@'on es usada internamente para las manipulaciones de 
+Esta función es usada internamente para las manipulaciones de 
 formato de las estructuras de datos de sistemas.
 @end deftypefn

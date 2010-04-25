@@ -1,5 +1,5 @@
-md5="3b30e01a8bd9950f1e433664a163f030";rev="6211";by="Javier Enciso <encisomo@in.tum.de>"
+md5="3b30e01a8bd9950f1e433664a163f030";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} toc ()
-V@'ease @code{tic}.
+@deftypefn {Función incorporada} {} toc ()
+Véase @code{tic}.
 @end deftypefn

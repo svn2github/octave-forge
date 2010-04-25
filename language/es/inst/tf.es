@@ -1,8 +1,8 @@
-md5="9c938dbb0986311c984ad9c1cc2028f1";rev="6944";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="9c938dbb0986311c984ad9c1cc2028f1";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} tf (@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname})
+@deftypefn {Archivo de función} {} tf (@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname})
 Construye un sistema de estructura de datos al formato de datos 
-de la funci@'on de transferencia.
+de la función de transferencia.
 
 @strong{Entrada}
 @table @var
@@ -29,7 +29,7 @@ Entrada(s)
 Salida(s):
         1: y_1 (discrete)
 Intervalo de muestreo: 0.1
-funci@'on transferencia de:
+función transferencia de:
 2*z^1 + 1
 -----------------
 1*z^2 + 2*z^1 + 1

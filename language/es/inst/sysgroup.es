@@ -1,7 +1,7 @@
-md5="91dbb9e71dd24d8492d16f03f3f615ea";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="91dbb9e71dd24d8492d16f03f3f615ea";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{sys} =} sysgroup (@var{asys}, @var{bsys})
-Combina dos sistemas en un @'unico sistema.
+@deftypefn {Archivo de función} {@var{sys} =} sysgroup (@var{asys}, @var{bsys})
+Combina dos sistemas en un único sistema.
 
 @strong{Entradas}
 @table @var
@@ -28,8 +28,8 @@ u2 ----->|--> | bsys |--->|----> y2
               Ksys
 @end group
 @end example
-La funci@'on tambi@'en reordena el estado-espacio interno de realizaci@'on
+La función también reordena el estado-espacio interno de realización
 de @var{sys} de modo que los estados continuos van en primer lugar y los
-estados discretos vienen despu@'es. Si no hay nombres duplicados, el 
-segundo nombre tiene un sufijo @'unico agregado a la final del nombre.
+estados discretos vienen después. Si no hay nombres duplicados, el 
+segundo nombre tiene un sufijo único agregado a la final del nombre.
 @end deftypefn

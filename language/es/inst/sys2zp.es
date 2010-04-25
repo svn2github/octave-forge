@@ -1,10 +1,10 @@
-md5="452d41ac731bf9d53bc0082efd31ba1b";rev="6312";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="452d41ac731bf9d53bc0082efd31ba1b";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{zer}, @var{pol}, @var{k}, @var{tsam}, @var{inname}, @var{outname}] =} sys2zp (@var{sys})
-Extrae la informaci@'on de los coeficientes cero/polo/inicial de 
+@deftypefn {Archivo de función} {[@var{zer}, @var{pol}, @var{k}, @var{tsam}, @var{inname}, @var{outname}] =} sys2zp (@var{sys})
+Extrae la información de los coeficientes cero/polo/inicial de 
 la estructura de datos del sistema.
 
-V@'ease @command{zp} para la descripci@'ib de los par@'ametros.
+Véase @command{zp} para la descripciíb de los parámetros.
 
 @strong{Ejemplo}
 @example

@@ -1,5 +1,5 @@
-md5="62ab9fb7b4ed090b1e14fec21f8409af";rev="6211";by="Javier Enciso <encisomo@in.tum.de>"
+md5="62ab9fb7b4ed090b1e14fec21f8409af";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} tan (@var{x})
+@deftypefn {Función de mapeo} {} tan (@var{x})
 Calcula la tangente para cada elemento de @var{x}.
 @end deftypefn

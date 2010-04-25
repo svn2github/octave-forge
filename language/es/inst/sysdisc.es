@@ -1,6 +1,6 @@
-md5="384dfb84bdaff3102439b4ca4874fad0";rev="6315";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="384dfb84bdaff3102439b4ca4874fad0";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{dsys}, @var{adc}, @var{cdc}] =} sysdisc (@var{sys})
+@deftypefn {Archivo de función} {[@var{dsys}, @var{adc}, @var{cdc}] =} sysdisc (@var{sys})
 
 @strong{Entrada}
 @table @var
@@ -11,7 +11,7 @@ Estructura de datos del sistema.
 @strong{Salidas}
 @table @var
 @item dsys
-Porci@'on discreta de @var{sys} (Si no hay una ruta discreta 
+Porción discreta de @var{sys} (Si no hay una ruta discreta 
 pura entre la entrada y las salidas, retorna vacio).
 @item    adc
 @itemx   cdc

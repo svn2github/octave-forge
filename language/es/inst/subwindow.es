@@ -1,9 +1,9 @@
-md5="f8feee8e41dbea241856f02df6139916";rev="6287";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="f8feee8e41dbea241856f02df6139916";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} subwindow (@var{xn}, @var{yn})
-Establece la posici@'on de la subventana en el modo de gr@'aficas 
-m@'ultiples para la siguiente gr@'afica. El modo de gr@'aficas 
-m@'ultiples tiene que ser inicializado previamente con la funci@'on 
+@deftypefn {Archivo de función} {} subwindow (@var{xn}, @var{yn})
+Establece la posición de la subventana en el modo de gráficas 
+múltiples para la siguiente gráfica. El modo de gráficas 
+múltiples tiene que ser inicializado previamente con la función 
 @code{multiplot}, en otro caso, este comando solo se convierte en 
 un alias de @code{multiplot}.
 @end deftypefn

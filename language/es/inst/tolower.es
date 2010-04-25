@@ -1,9 +1,9 @@
-md5="ce78d1936f341281b09a8c36eadba3c4";rev="6287";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="ce78d1936f341281b09a8c36eadba3c4";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} tolower (@var{s})
+@deftypefn {Función de mapeo} {} tolower (@var{s})
 Retorna una copia de la cadena @var{s}, con cada caracter en 
-may@'uscula reemplazado con el correspondiente caracter en 
-min@'uscula; los caracteres no alfanum@'ericos permanecen 
+mayúscula reemplazado con el correspondiente caracter en 
+minúscula; los caracteres no alfanuméricos permanecen 
 intactos. Por ejemplo, 
 
 @example

@@ -1,6 +1,6 @@
-md5="67449c1e465da0a44c6812d2ee2c69b9";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="67449c1e465da0a44c6812d2ee2c69b9";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{retsys} =} sysprune (@var{asys}, @var{out_idx}, @var{in_idx})
+@deftypefn {Archivo de función} {@var{retsys} =} sysprune (@var{asys}, @var{out_idx}, @var{in_idx})
 Extrae especificas entradas/salidas de un sistema 
 
 @strong{Entradas}
@@ -10,9 +10,9 @@ estructura de datos del sistema
 @item out_idx
 @itemx in_idx
 
-@'Indices o nombres de las se@~{n}ales de las salidas y entradas que se
+Índices o nombres de las se@~{n}ales de las salidas y entradas que se
 encuentran en el sistema de retorno; conexiones restantes son ``pruned''
-off. Podr@'a seleccionar como [] (matriz vac@'ia) para especificar todas
+off. Podrá seleccionar como [] (matriz vacía) para especificar todas
 las salidas/entradas.
 
 @example

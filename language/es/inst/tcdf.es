@@ -1,7 +1,7 @@
-md5="000e992450d1bd45969b20e01991e43e";rev="6211";by="Javier Enciso <encisomo@in.tum.de>"
+md5="000e992450d1bd45969b20e01991e43e";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} tcdf (@var{x}, @var{n})
+@deftypefn {Archivo de función} {} tcdf (@var{x}, @var{n})
 Para cada elemento de @var{x}, calcula la CDF en @var{x} de la 
-distribuci@'on t (Student) con @var{n} grados de libertad, p.e.,
+distribución t (Student) con @var{n} grados de libertad, p.e.,
 PROB (t(@var{n}) <= @var{x}).
 @end deftypefn

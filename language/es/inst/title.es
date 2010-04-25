@@ -1,5 +1,5 @@
-md5="874c296f9474d4888d1548c775504cb6";rev="6211";by="Javier Enciso <encisomo@in.tum.de>"
+md5="874c296f9474d4888d1548c775504cb6";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} title (@var{title})
-Crea un objeto t@'itulo y retorna un manejador a @'el mismo.
+@deftypefn {Archivo de función} {} title (@var{title})
+Crea un objeto título y retorna un apuntador a él mismo.
 @end deftypefn

@@ -1,8 +1,8 @@
-md5="b866bd23733081f2e5a8dd1ff67144aa";rev="6461";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="b866bd23733081f2e5a8dd1ff67144aa";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on incorporada} {} sum (@var{x}, @var{dim})
-@deftypefnx {Funci@'on incorporada} {} sum (@dots{}, 'native')
-Suma los elementos a lo largo de la dimensi@'on @var{dim}. Si se 
+@deftypefn {Función incorporada} {} sum (@var{x}, @var{dim})
+@deftypefnx {Función incorporada} {} sum (@dots{}, 'native')
+Suma los elementos a lo largo de la dimensión @var{dim}. Si se 
 omiete @var{dim}, el valor predetermiando es 1 (suma en sentido de 
 las columnas).
 

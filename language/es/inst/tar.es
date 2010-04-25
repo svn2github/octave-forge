@@ -1,6 +1,6 @@
-md5="f06683dd932c55160f567205fe22ec80";rev="6351";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="f06683dd932c55160f567205fe22ec80";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {@var{entries} =} tar (@var{tarfile}, @var{files}, @var{root})
+@deftypefn {Archivo de función} {@var{entries} =} tar (@var{tarfile}, @var{files}, @var{root})
 Empaqueta los archivos @var{files} en un archivo TAR @var{tarfile}. La 
 lista de archivos debe ser una cadena o un arreglo de celdas de cadenas.
 

@@ -1,11 +1,11 @@
-md5="c505247047211a9c33be1b94559b3289";rev="6466";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="c505247047211a9c33be1b94559b3289";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} stairs (@var{x}, @var{y})
-Produce una gr@'afica escalonada. Los argumentos pueden ser vectores 
+@deftypefn {Archivo de función} {} stairs (@var{x}, @var{y})
+Produce una gráfica escalonada. Los argumentos pueden ser vectores 
 o matrices.
 
 Si solo se suministra un argumento, se toma como los valores de @code{y} 
-y las coordenadas @code{x} se toman a partir de los @'indices de los 
+y las coordenadas @code{x} se toman a partir de los índices de los 
 elementos.
 
 Si se suministran dos argumentos de salida, genera los datos pero no se 

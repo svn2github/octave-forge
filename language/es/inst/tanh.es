@@ -1,5 +1,5 @@
-md5="b213aadfda8f4a961a69db459f2a7009";rev="6211";by="Javier Enciso <encisomo@in.tum.de>"
+md5="b213aadfda8f4a961a69db459f2a7009";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Funci@'on de mapeo} {} tanh (@var{x})
-Calcula la tangente hiperb@'olica para cada elemento de @var{x}.
+@deftypefn {Función de mapeo} {} tanh (@var{x})
+Calcula la tangente hiperbólica para cada elemento de @var{x}.
 @end deftypefn

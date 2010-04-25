@@ -1,6 +1,6 @@
-md5="2ea0435d89b80f4d941f27d805d01afd";rev="6287";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="2ea0435d89b80f4d941f27d805d01afd";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} strrep (@var{s}, @var{x}, @var{y})
+@deftypefn {Archivo de función} {} strrep (@var{s}, @var{x}, @var{y})
 Reemplaza todas las ocurrencias de la subcadena @var{x} de la cadena @var{s} 
 con la cadena @var{y}. Por ejemplo, 
 

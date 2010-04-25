@@ -1,7 +1,7 @@
-md5="ecf427f82394ef1456887b04089708cf";rev="6211";by="Javier Enciso <encisomo@in.tum.de>"
+md5="ecf427f82394ef1456887b04089708cf";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} t_inv (@var{x}, @var{n})
+@deftypefn {Archivo de función} {} t_inv (@var{x}, @var{n})
 Para cada elemento de @var{x}, calcula el cuantil (el inverso de 
-la CDF) en @var{x} de la distribuci@'on t (Student) con par@'ametro
+la CDF) en @var{x} de la distribución t (Student) con parámetro
 @var{n}.
 @end deftypefn

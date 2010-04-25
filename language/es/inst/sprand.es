@@ -1,10 +1,10 @@
-md5="7bd5adb4eebd5b7ff41f712d5c7ac7e5";rev="6461";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="7bd5adb4eebd5b7ff41f712d5c7ac7e5";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} sprand (@var{m}, @var{n}, @var{d})
-@deftypefnx {Archivo de funci@'on} {} sprand (@var{s})
+@deftypefn {Archivo de función} {} sprand (@var{m}, @var{n}, @var{d})
+@deftypefnx {Archivo de función} {} sprand (@var{s})
 Genera una matriz dispersa aleatoria. El tama@~{n}o de la matriz es 
 @var{m} por @var{n}, con una densidad @var{d} de valores. La variable 
-@var{d} deber@'ia estar entre 0 y 1. Los valores son distribuidos 
+@var{d} debería estar entre 0 y 1. Los valores son distribuidos 
 uniformemente entre 0 y 1.
 
 Nota: algunas veces la densidad real puede ser un poco menor que @var{d}. 

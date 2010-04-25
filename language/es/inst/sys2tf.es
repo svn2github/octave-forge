@@ -1,10 +1,10 @@
-md5="046d71b4fb4d330ea2fd1a764c554018";rev="6301";by="Javier Enciso <j4r.e4o@gmail.com>"
+md5="046d71b4fb4d330ea2fd1a764c554018";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {[@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname}] =} sys2tf (@var{sys})
-Extrae los datos de la funci@'on de transferencia de la estructura de datos 
+@deftypefn {Archivo de función} {[@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname}] =} sys2tf (@var{sys})
+Extrae los datos de la función de transferencia de la estructura de datos 
 del sistema.
 
-V@'ease el comando @command{tf} para la descripci@'on de los par@'ametros. 
+Véase el comando @command{tf} para la descripción de los parámetros. 
 
 @strong{Ejemplo}
 @example

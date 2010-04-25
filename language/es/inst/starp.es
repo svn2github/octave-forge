@@ -1,6 +1,6 @@
-md5="2a6524607200badc428a0723ab594b46";rev="7136";by="Javier Enciso <j4r.e4o@gmail.com> and Edwin Moreno <edwinmoreno1@hotmail.com>"
+md5="2a6524607200badc428a0723ab594b46";rev="7240";by="Javier Enciso <j4r.e4o@gmail.com>"
 -*- texinfo -*-
-@deftypefn {Archivo de funci@'on} {} starp (@var{P}, @var{K}, @var{ny}, @var{nu})
+@deftypefn {Archivo de función} {} starp (@var{P}, @var{K}, @var{ny}, @var{nu})
 El producto estrella de Redheffer o upper/lower LFT, respectivamente.
 
 @example
@@ -23,10 +23,10 @@ El producto estrella de Redheffer o upper/lower LFT, respectivamente.
 @end group
 @end example
 Si @var{ny} y @var{nu} ``consume'' todas las entradas y salidas de 
-@var{K} entonces el resultado es una transformaci@'on lower fraccionada. 
+@var{K} entonces el resultado es una transformación lower fraccionada. 
 Si @var{ny} y @var{nu} ``consume'' todas las entradas y salidas de
-@var{P} entonces el resultado es una transformaci@'on upper fraccionada.
+@var{P} entonces el resultado es una transformación upper fraccionada.
 
-@var{ny} y/o @var{nu} puede ser negativa (es decir, retroalimentaci@'on
+@var{ny} y/o @var{nu} puede ser negativa (es decir, retroalimentación
 negativa).
 @end deftypefn

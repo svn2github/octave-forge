@@ -65,7 +65,7 @@ function op = _zenity_options_ (dialog, varargin)
     op.hide_max  = op.hide_min = op.print_max = op.print_min = "";
     op.print_numel = op.num_out = "";
   elseif (strcmpi(dialog, "message"))
-    op.type = op.wrap = "";
+    op.type = op.wrap = op.ok = op.cancel = "";
   elseif (strcmpi(dialog, "new notification"))
     op.text = "";
   elseif (strcmpi(dialog, "piped notification"))
@@ -196,6 +196,12 @@ function op = _zenity_options_ (dialog, varargin)
       elseif (strcmpi(param,"wrap"))                  # Message - wrap
         narg            = sanity_checks ("indie", param, value, op.wrap, narg);
         op.wrap         = "--no-wrap";
+      elseif (strcmpi(param,"ok button"))             # Message - OK button
+        narg            = sanity_checks ("char", param, value, op.ok, narg);
+        op.ok           = sprintf('--ok-label="%s"', value);
+      elseif (strcmpi(param,"cancel button"))         # Message - cancel button
+        narg            = sanity_checks ("char", param, value, op.cancel, narg);
+        op.cancel       = sprintf('--cancel-label="%s"', value);
       else
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif

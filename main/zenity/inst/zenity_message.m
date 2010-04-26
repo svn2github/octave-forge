@@ -33,13 +33,13 @@
 ##
 ## @table @samp
 ## @item error
-## Creates an error dialog.
+## Creates an error dialog with an @option{OK} button.
 ## @item info
-## Creates an information dialog (default).
+## Creates an information dialog with an @option{OK} button (default).
 ## @item question
-## Creates a question dialog.
+## Creates a question dialog with an @option{OK} and a @option{cancel} button.
 ## @item warning
-## Creates a warning dialog.
+## Creates a warning dialog with an @option{OK} button.
 ## @end table
 ##
 ## @item icon
@@ -54,6 +54,12 @@
 ## @item warning
 ## @end table
 ##
+## @item OK button
+## Sets the the text to show on the @option{OK} button if type of message is set
+## to @option{question}. Requires a string as value.
+## @item cancel button
+## Sets the the text to show on the @option{cancel} button if type of message is
+## set to @option{question}. Requires a string as value.
 ## @item title
 ## Sets the title of the window. Requires a string as value.
 ## @item no-wrap
@@ -85,9 +91,15 @@ function status = zenity_message(text, varargin)
 
   options = _zenity_options_ ("message", varargin);
 
+  ## Sanity checks
+  if ( !strcmpi(options.type, "--question") && (options.ok || options.cancel))
+    error("Paremeters 'ok button' and 'cancel button' can only bet set in 'question' messages")
+  endif
+
   pre_cmd = sprintf("%s ", ...
                     options.type, text, options.wrap, options.title, ...
-                    options.icon, options.width, options.height, options.timeout);
+                    options.icon, options.width, options.height, ...
+                    options.timeout, options.ok, options.cancel);
 
   cmd              = sprintf("zenity %s", pre_cmd);
   [status, output] = system(cmd);

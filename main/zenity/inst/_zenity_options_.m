@@ -51,13 +51,7 @@ function op = _zenity_options_ (dialog, varargin)
 
   varargin = varargin{1};    # because other functions varargin is this varargin
 
-  ## A present from zenity_list. Take it out of varargin before before other stuff
-#  if ( strcmpi(dialog, "list") )
-#   list.col       = varargin{end};
-#    varargin(end) = [];             # By using (end), it actually pulls the value out instead of leaving it empty
-#  endif
-
-  op.title = op.width = op.height = op.timeout = "";
+  op.title = op.width = op.height = op.timeout = op.icon = "";
   if ( !ischar(dialog) )
     error ("Type of dialog should be a string");
   elseif (strcmpi(dialog, "calendar"))
@@ -73,9 +67,9 @@ function op = _zenity_options_ (dialog, varargin)
   elseif (strcmpi(dialog, "message"))
     op.type = op.wrap = "";
   elseif (strcmpi(dialog, "new notification"))
-    op.text = op.icon = "";
+    op.text = "";
   elseif (strcmpi(dialog, "piped notification"))
-    op.text = op.icon = op.message = "";
+    op.text = op.message = op.visible = "";
   elseif (strcmpi(dialog, "progress"))
   elseif (strcmpi(dialog, "scale"))
   elseif (strcmpi(dialog, "text info"))
@@ -88,7 +82,15 @@ function op = _zenity_options_ (dialog, varargin)
     return
   endif
 
-  ## Here's the guidelines of the processing:
+  ## Identifies when it's being called to process stuff to send through pipes
+  ## since they'll have major differences in the processing
+  if ( strcmpi(dialog, "piped notification") )
+    pipelining = 1;
+  else
+    pipelining = 0;
+  endif
+
+  ## Here's the guidelines for the processing:
   ## - the parameteres and values are case insensitive
   ## - if a parameter is being defined twice, return an error
   ## - if a parameter requires a value but this is not given, return an error
@@ -96,7 +98,12 @@ function op = _zenity_options_ (dialog, varargin)
   ## error if not
 
   narg = 1;
+  ## This will ONLY process the input when the output won't be send through a
+  ## pipe. See the next while block for that.
   while (narg <= numel (varargin))
+    if (pipelining)
+      break                       # Move to the next while to process the input
+    endif
     param = varargin{narg++};
 
     if (narg <= numel(varargin))  # Check if we are already in the last index
@@ -104,7 +111,6 @@ function op = _zenity_options_ (dialog, varargin)
     else                          # Writing varargin{narg} in all conditions
       value = "";                 # is a pain and makes it even more confusing
     endif
-
 
     if ( !ischar(param) )
         error ("All parameters must be strings.");
@@ -122,6 +128,19 @@ function op = _zenity_options_ (dialog, varargin)
     elseif (strcmpi(param,"timeout"))                 # General - timeout
       narg            = sanity_checks ("scalar", param, value, op.timeout, narg);
       op.timeout      = sprintf('--timeout="%s"', num2str(value));
+    elseif (strcmpi(param,"icon"))                    # General - icon
+      narg            = sanity_checks ("char", param, value, op.icon, narg);
+      if (strcmpi(value, "error"))
+        op.icon       = '--window-icon="error"';
+      elseif (strcmpi(value, "info"))
+        op.icon       = '--window-icon="info"';
+      elseif (strcmpi(value, "question"))
+        op.icon       = '--window-icon="question"';
+      elseif (strcmpi(value, "warning"))
+        op.icon       = '--window-icon="warning"';
+      else
+        op.icon       = sprintf('--window-icon="%s"', value);
+      endif
 
     ## Process options for ZENITY_ENTRY
     elseif ( strcmpi(dialog, "entry") )
@@ -186,48 +205,9 @@ function op = _zenity_options_ (dialog, varargin)
       if (strcmpi(param,"text"))                      # Notification - text
         narg            = sanity_checks ("char", param, value, op.text, narg);
         op.text         = sprintf('--text="%s"', value);
-      elseif (strcmpi(param,"icon"))                  # Notification - icon
-        narg            = sanity_checks ("char", param, value, op.icon, narg);
-        if (strcmpi(value, "error"))
-          op.icon       = '--window-icon="error"';
-        elseif (strcmpi(value, "info"))
-          op.icon       = '--window-icon="info"';
-        elseif (strcmpi(value, "question"))
-          op.icon       = '--window-icon="question"';
-        elseif (strcmpi(value, "warning"))
-          op.icon       = '--window-icon="warning"';
-        else
-          op.icon       = sprintf('--window-icon="%s"', value);
-        endif
       else
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
-    ## Process options for ZENITY_NOTIFICATION (pipelining)
-    elseif ( strcmpi(dialog, "piped notification") )
-      if (strcmpi(param,"text"))                      # Notification - text
-        narg            = sanity_checks ("char", param, value, op.text, narg);
-        op.text         = sprintf('tooltip: %s', value);
-      elseif (strcmpi(param,"message"))                  # Notification - message
-        narg            = sanity_checks ("char", param, value, op.message, narg);
-        op.message      = sprintf('message: %s', value);
-      elseif (strcmpi(param,"icon"))                  # Notification - icon
-        narg            = sanity_checks ("char", param, value, op.icon, narg);
-        if (strcmpi(value, "error"))
-          op.icon       = 'icon: error';
-        elseif (strcmpi(value, "info"))
-          op.icon       = 'icon: info';
-        elseif (strcmpi(value, "question"))
-          op.icon       = 'icon: question';
-        elseif (strcmpi(value, "warning"))
-          op.icon       = 'icon: warning';
-        else
-          op.icon       = sprintf('icon: %s', value);
-        endif
-      else
-        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
-      endif
-
-
 
     ## Process options for ZENITY_LIST
     elseif ( strcmpi(dialog, "list") )
@@ -278,11 +258,62 @@ function op = _zenity_options_ (dialog, varargin)
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
 
-
     else
       error ("Parameter '%s' is not supported.", param);
     endif
 
+  endwhile
+
+
+  while (narg <= numel (varargin))
+    if (!pipelining)
+      break                       # It should have already been processed in the previous while block
+    endif
+    param = varargin{narg++};
+
+    if (narg <= numel(varargin))  # Check if we are already in the last index
+      value = varargin{narg};     # this is only for readability later on
+    else                          # Writing varargin{narg} in all conditions
+      value = "";                 # is a pain and makes it even more confusing
+    endif
+
+    ## Process options for ZENITY_NOTIFICATION (pipelining)
+    if ( strcmpi(dialog, "piped notification") )
+      if (strcmpi(param,"text"))                      # Notification - text
+        narg            = sanity_checks ("char", param, value, op.text, narg);
+        op.text         = sprintf('tooltip: %s', value);
+      elseif (strcmpi(param,"message"))                  # Notification - message
+        narg            = sanity_checks ("char", param, value, op.message, narg);
+        op.message      = sprintf('message: %s', value);
+      elseif (strcmpi(param,"visible"))                  # Notification - message
+        narg            = sanity_checks ("char", param, value, op.message, narg);
+        if (strcmpi(value, "on"))
+          op.visible    = "visible: true";
+        elseif (strcmpi(value, "off"))
+          op.visible    = "visible: false";
+        else
+          error ("'%s' is not a valid value for the parameter '%s'", value, param)
+        endif
+      elseif (strcmpi(param,"icon"))                  # Notification - icon
+        narg            = sanity_checks ("char", param, value, op.icon, narg);
+        if (strcmpi(value, "error"))
+          op.icon       = 'icon: error';
+        elseif (strcmpi(value, "info"))
+          op.icon       = 'icon: info';
+        elseif (strcmpi(value, "question"))
+          op.icon       = 'icon: question';
+        elseif (strcmpi(value, "warning"))
+          op.icon       = 'icon: warning';
+        else
+          op.icon       = sprintf('icon: %s', value);
+        endif
+      else
+        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
+      endif
+
+    else
+      error ("Parameter '%s' is not supported.", param);
+    endif
   endwhile
 
   ## Set the DEFAULTS

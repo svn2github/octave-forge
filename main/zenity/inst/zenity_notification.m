@@ -24,15 +24,16 @@
 ##
 ## The first and second forms of the @code{zenity_notification} function creates
 ## a new notification icon with whatever parameters are set, and return the
-## handle @var{h} for later interaction with the notification icon.
+## handle @var{h} for later interaction with the notification icon or @code{-1}
+## on error.
 ##
 ## The third form of the @code{zenity_notification} function changes the
 ## parameteres of the existing icon and/or displays popup messages given the
-## handle @var{h}. Returns @code{0} on success and @code{1} on error.
+## handle @var{h}. Returns @code{0} on success and @code{-1} on error.
 ##
 ## The fourth form of the @code{zenity_notification} function closes the
 ## notification icon given the handle @var{h} followed by the string
-## @code{close}. Returns @code{0} on success and @code{1} on error.
+## @code{close}. Returns @code{0} on success and @code{-1} on error.
 ##
 ## The following example, creates a notification info icon in the notification
 ## panel that shows the text @samp{working} when the mouse is over the
@@ -54,11 +55,8 @@
 ## @table @samp
 ## @item message
 ## Shows a pop up notification. Requires a string as value and Can only be used
-## is the notification icon already exists. Newline characters are illegal
+## if the notification icon already exists. Newline characters are illegal
 ## characters and will be replaced by a space from the message.
-##
-## Note: the duration of the message as well as the time interval between
-## consequent messages is defined by the user's system preferences.
 ##
 ## @item icon
 ## Sets or changes new or existent notification icons. Requires a string as
@@ -82,7 +80,16 @@
 ## @item timeout
 ## Sets the time in seconds after which the dialog is closed. Requires a scalar
 ## as value and can only be set when creating a new icon.
+##
+## @item visible
+## Sets the visibility pf the icon in the notification area. Requires the string
+## @code{'on'} or @code{'off'} as value and can only be used if the notification
+## icon already exists. @code{'on'} makes the icon visible, while @code{'off'}
+## makes it invisible.
 ## @end table
+##
+## @strong{Note:} ultimately, the availability of some parameters is dependent
+## on the user's system preferences and zenity version.
 ##
 ## @seealso{zenity_progress, zenity_message}
 ## @end deftypefn
@@ -111,12 +118,11 @@ function sta = zenity_notification (varargin)
         warning ("There's %g argument(s) after '%s' which will be ignored", (nargin-2), varargin{1})
       endif
       try
-        pclose(handle);
-        sta = 0;
+        sta = pclose(handle);
       catch
         sta = -1;
       end_try_catch
-#      ## Commented because function should return the exit code
+#      ## Commented because function should return the exit code, not give an error
 #      if (sta != 0)
 #        error ("Error when closing zenity notification");
 #      endif
@@ -131,14 +137,15 @@ function sta = zenity_notification (varargin)
     options.icon    = add_newline (options.icon);
     options.text    = add_newline (options.text);
     options.message = add_newline (options.message);
+    options.visible = add_newline (options.visible);
     ## icon comes first so that if there's a new message it already comes
     ## with the new icon (the icon is also present on the messages, not only in
     ## the panel)
     pre_cmd = sprintf("%s", ...
-                      options.icon, options.text, options.message);
+                      options.icon, options.text, options.message, options.visible);
     try
-      fputs(handle, pre_cmd);
-      sta = 0;
+      sta = fputs(handle, pre_cmd);
+      fflush (handle);
     catch
       sta = -1;
     end_try_catch
@@ -147,7 +154,11 @@ function sta = zenity_notification (varargin)
     pre_cmd = sprintf("%s ", ...
                       options.icon, options.text, options.timeout);
     cmd     = sprintf("zenity --notification --listen %s", pre_cmd);
-    sta     = popen(cmd, "w");
+    try
+      sta   = popen(cmd, "w");
+    catch
+      sta   = -1
+    end_try_catch
   endif
 
 endfunction

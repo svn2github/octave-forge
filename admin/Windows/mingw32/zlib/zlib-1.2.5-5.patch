@@ -1,0 +1,92 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' zlib-1.2.5-orig/win32/Makefile.gcc zlib-1.2.5/win32/Makefile.gcc
+--- zlib-1.2.5-orig/win32/Makefile.gcc	2010-04-19 01:35:55 +0000
++++ zlib-1.2.5/win32/Makefile.gcc	2010-04-26 14:54:14 +0000
+@@ -19,13 +19,15 @@
+ #
+ #   make install -fmakefile.gcc
+ 
++SRCDIR=@SRCDIR@
++
+ # Note:
+ # If the platform is *not* MinGW (e.g. it is Cygwin or UWIN),
+ # the DLL name should be changed from "zlib1.dll".
+ 
+ STATICLIB = libz.a
+ SHAREDLIB = zlib1.dll
+-IMPLIB    = libzdll.a
++IMPLIB    = libz.dll.a
+ 
+ #
+ # Set to 1 if shared object needs to be installed
+@@ -36,23 +38,23 @@
+ #LOC = -DDEBUG -g
+ 
+ PREFIX =
+-CC = $(PREFIX)gcc
+-CFLAGS = $(LOC) -O3 -Wall
+-EXTRA_CFLAGS = -DNO_VIZ
++CC ?= $(PREFIX)gcc
++# CFLAGS = $(LOC) -O3 -Wall
++EXTRA_CFLAGS = -DNO_VIZ -O3 -Wall
+ 
+-AS = $(CC)
++AS ?= $(CC)
+ ASFLAGS = $(LOC) -Wall
+ 
+ LD = $(CC)
+-LDFLAGS = $(LOC)
++LDFLAGS ?= $(LOC)
+ 
+-AR = $(PREFIX)ar
++AR ?= $(PREFIX)ar
+ ARFLAGS = rcs
+ 
+-RC = $(PREFIX)windres
+-RCFLAGS = --define GCC_WINDRES
++RC ?= $(PREFIX)windres
++RCFLAGS ?= --define GCC_WINDRES
+ 
+-STRIP = $(PREFIX)strip
++STRIP ?= $(PREFIX)strip
+ 
+ CP = cp -fp
+ # If GNU install is available, replace $(CP) with install.
+@@ -62,6 +64,11 @@
+ prefix = /usr/local
+ exec_prefix = $(prefix)
+ 
++vpath	%.h  $(SRCDIR)
++vpath	%.c  $(SRCDIR)
++vpath	%.def  $(SRCDIR)
++vpath	%.rc  $(SRCDIR)
++
+ OBJS = adler32.o compress.o crc32.o deflate.o gzclose.o gzlib.o gzread.o \
+        gzwrite.o infback.o inffast.o inflate.o inftrees.o trees.o uncompr.o zutil.o
+ OBJA =
+@@ -87,10 +94,13 @@
+ 
+ $(IMPLIB): $(SHAREDLIB)
+ 
+-$(SHAREDLIB): win32/zlib.def $(OBJS) $(OBJA) zlibrc.o
+-	$(CC) -shared -Wl,--out-implib,$(IMPLIB) $(LDFLAGS) \
+-	-o $@ win32/zlib.def $(OBJS) $(OBJA) zlibrc.o
+-	$(STRIP) $@
++$(SHAREDLIB): $(STATICLIB) zlibrc.o
++	$(CC) -shared $(LDFLAGS) \
++	-o $@ \
++	-Wl,--out-implib=$(IMPLIB) \
++	$(SRCDIR)/win32/zlib.def \
++	-Wl,--whole-archive $^ \
++	-Wl,--no-whole-archive 
+ 
+ example.exe: example.o $(STATICLIB)
+ 	$(LD) $(LDFLAGS) -o $@ example.o $(STATICLIB)
+@@ -109,7 +119,7 @@
+ 	$(STRIP) $@
+ 
+ zlibrc.o: win32/zlib1.rc
+-	$(RC) $(RCFLAGS) -o $@ win32/zlib1.rc
++	$(RC) $(RCFLAGS) -o $@ $<
+ 
+ 
+ # BINARY_PATH, INCLUDE_PATH and LIBRARY_PATH must be set.

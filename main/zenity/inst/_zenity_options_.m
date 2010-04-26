@@ -60,7 +60,7 @@ function op = _zenity_options_ (dialog, varargin)
   elseif (strcmpi(dialog, "file selection"))
     op.directory = op.filename = op.filter = op.multiple = op.save = "";
   elseif (strcmpi(dialog, "list"))
-    op.separator = op.text     = op.hide      = op.print_col = "";
+    op.separator = op.text     = op.hide      = op.print_col = op.no_head = "";
     op.multiple  = op.radio    = op.check     = op.editable  = "";
     op.hide_max  = op.hide_min = op.print_max = op.print_min = "";
     op.print_numel = op.num_out = "";
@@ -220,6 +220,9 @@ function op = _zenity_options_ (dialog, varargin)
       if (strcmpi(param,"text"))                      # List - text
         narg            = sanity_checks ("char", param, value, op.text, narg);
         op.text         = sprintf('--text="%s"', value);
+      elseif (strcmpi(param,"no headers"))              # List - no headers
+        narg            = sanity_checks ("indie", param, value, op.no_head, narg);
+        op.no_head      = "--hide-header";
       elseif (strcmpi(param,"editable"))              # List - editable
         narg            = sanity_checks ("indie", param, value, op.editable, narg);
         op.editable     = "--editable";

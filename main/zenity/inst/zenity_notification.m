@@ -96,6 +96,11 @@
 
 function sta = zenity_notification (varargin)
 
+  ## Update figures so they are show before the dialog. To not be shown at this
+  ## step, turn them off with 'figure(N, "visible", "off")
+  ## This is similar to the functions input and pause
+  drawnow;
+
   ## If no arguments, open a new notification
   if ( nargin == 0 )
     pipelining  = 0;
@@ -147,7 +152,10 @@ function sta = zenity_notification (varargin)
                       options.message, ...
                       options.visible);
     try
+      ## just in case someone has been playing with the pipe, flush it before
+      fflush (handle);
       sta = fputs(handle, pre_cmd);
+      ## make sure there's no input buffered
       fflush (handle);
     catch
       sta = -1;

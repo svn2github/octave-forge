@@ -209,6 +209,11 @@ function [val, status] = zenity_list(col, data, varargin)
   ## it's not so obvious how zenity will escape things, and same goes for the index
   ## function used to split the output
 
+  ## Update figures so they are show before the dialog. To not be shown at this
+  ## step, turn them off with 'figure(N, "visible", "off")
+  ## This is similar to the functions input and pause
+  drawnow;
+
   if (nargin < 1)
     error ("'columns' argument is not optional.")
   elseif (nargin < 2)

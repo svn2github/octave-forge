@@ -67,6 +67,11 @@
 
 function [out, status] = zenity_entry(text, varargin)
 
+  ## Update figures so they are show before the dialog. To not be shown at this
+  ## step, turn them off with 'figure(N, "visible", "off")
+  ## This is similar to the functions input and pause
+  drawnow;
+
   if (nargin < 1)
     error ("'text' argument is not optional")
   elseif (!ischar(text))

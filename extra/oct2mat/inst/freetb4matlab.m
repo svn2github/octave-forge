@@ -19,7 +19,7 @@ function freetb4matlab(indir,outdir)
 %    convert the m-functions of octave 
 
 %       $Id$
-%       Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -44,33 +44,33 @@ end;
 if isempty(outdir)
 	outdir=fullfile(pwd,'freetb4matlab');
 end; 
-outdir,
+
 if isempty(indir)
 	if exist('OCTAVE_VERSION','builtin');
 		% heuristic to find octave toolboxes
 		p = fileparts(which('help'));
 		p = fileparts(p);
 		freetb4matlab(p,outdir);
-		return; 
-	else 
-		p = pwd; 	
-	end; 	
-end; 
+		return;
+	else
+		p = pwd;
+	end;
+end;
 
 p0 = '/tmp/oct2mat';
 global OCT2MAT_CMD
 if isempty(OCT2MAT_CMD)
-	OCT2MAT_CMD = [getenv('HOME'), '/cvs/octave-forge/extra/oct2mat/inst/oct2mat '];
+	OCT2MAT_CMD = [getenv('HOME'), '/src/octave-forge/extra/oct2mat/inst/oct2mat '];
 end; 
 
 if ~exist(outdir,'dir')
 	unix(['mkdir ',outdir]);
-end; 
+end;
 if ~exist(p0,'dir')
 	unix(['mkdir ',p0]);
-end; 
+end;
 
-disp(indir);	
+disp(indir);
 cd(indir);
 
 fn=dir(indir);
@@ -82,23 +82,23 @@ for k=1:length(fn)
 		;
 	elseif (fn(k).name(end)=='~')
 		;
-	elseif fn(k).isdir, 
+	elseif fn(k).isdir,
 		if strmatch(fn(k).name,{'miscellaneous','freetb4matlab','admin'},'exact')
 			; % ignore these directories 
 			; % some files conflict with (matlab-) functions used in this script 
-			; % freetb4matlab is the default target directory, this would result in endless recursion	
+			; % freetb4matlab is the default target directory, this would result in endless recursion
 		elseif (isequal(fn(k).name,'doc') ...
 			 || isequal(fn(k).name,'inst') ...
 			 || isequal(fn(k).name,'src')  ...
 			 || isequal(fn(k).name,'main')  ...
-			 || isequal(fn(k).name,'extra') ) 
-		 	%% pruning of directory tree 
-			freetb4matlab(f,outdir); 
+			 || isequal(fn(k).name,'extra') )
+		 	%% pruning of directory tree
+			freetb4matlab(f,outdir);
 		else
-			freetb4matlab(f,fullfile(outdir,fn(k).name)); 
-		end; 	
+			freetb4matlab(f,fullfile(outdir,fn(k).name));
+		end;
 
-	elseif (fn(k).name(end)=='m') && (fn(k).name(end-1)=='.'), 
+	elseif (fn(k).name(end)=='m') && (fn(k).name(end-1)=='.'),
 		%disp(['cd ',indir ]);
 		%disp([oct2mat fn(k).name]);
 		unix(['cd ',indir ]);
@@ -106,7 +106,7 @@ for k=1:length(fn)
 		unix(['cp ',fullfile(p0,fn(k).name),' ',outdir]);
 
 	else 
-		%% copy all other files, too. They might contain information to fix some problems 	
+		%% copy all other files, too. They might contain information to fix some problems.
 		unix(['cp ',f,' ',outdir]);
 		fprintf(1,'DoNotConvert %s\n',fullfile(indir,fn(k).name));
 	end; 		

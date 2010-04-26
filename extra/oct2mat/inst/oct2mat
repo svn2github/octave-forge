@@ -34,8 +34,6 @@
 #    endblah -> end
 #    # -> %
 #    blah() -> blah
-#    && -> &
-#    || -> |
 #    gset blah -> 
 #    blah \<nl> -> blah ...<nl>
 #    SEEK_SET, SEEK_CUR, SEEK_END -> -1, 0, 1
@@ -176,7 +174,6 @@ FNR==1 {
     gsub("endfor","end");
     gsub("endswitch","end");
     gsub("end_try_catch","end");
-    gsub(/&&/,"\\&");
     gsub("SEEK_CUR",0);
     gsub("SEEK_END",1);
     gsub("SEEK_SET",-1);
@@ -185,7 +182,6 @@ FNR==1 {
     gsub("unwind_protect_cleanup","");
     gsub("end_unwind_protect","");
     gsub("unwind_protect","");
-    gsub(/\|\|/,"|");
     gsub("!","~");
     gsub("[\\\\]$","...");
     if (incopyright) copyright = copyright "\n" fixquotes($0); 

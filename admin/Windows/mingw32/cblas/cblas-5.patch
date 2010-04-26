@@ -1,0 +1,138 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' cblas-orig/Makefile cblas/Makefile
+--- cblas-orig/Makefile	1999-03-15 20:26:42 +0000
++++ cblas/Makefile	2010-04-26 12:23:13 +0000
+@@ -1,5 +1,6 @@
+-dlvl = ./.
++dlvl = @SRCDIR@
+ include $(dlvl)/Makefile.in
++all: alllib 
+ help:
+ 	@ echo "Make sure you are using correct Makefile.in for your system."
+ 	@ echo "At this level, assuming you have downloded all necessary    "
+@@ -75,8 +76,6 @@
+ 
+ # In general, the Makefile call other Makefiles in the sub-directories.
+ 
+-all: alllib alltst 
+-
+ clean:
+ 	( cd testing ; make clean )
+ 	( cd src ; make clean )
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' cblas-orig/makefile.in cblas/makefile.in
+--- cblas-orig/makefile.in	1970-01-01 00:00:00 +0000
++++ cblas/makefile.in	2010-04-26 12:24:35 +0000
+@@ -0,0 +1,54 @@
++#
++# Makefile.MINGW32
++#
++#
++# If you compile, change the name to Makefile.in.
++#
++#
++ 
++#-----------------------------------------------------------------------------
++# Shell
++#-----------------------------------------------------------------------------
++
++SHELL = /bin/sh
++
++#-----------------------------------------------------------------------------
++# Platform
++#-----------------------------------------------------------------------------
++
++PLAT = MINGW32
++
++#-----------------------------------------------------------------------------
++# Libraries and includes
++#-----------------------------------------------------------------------------
++ 
++BLLIB = -lblas
++CBDIR = $(TOPDIR)/$(SRCDIR)
++CBLIBDIR = ../lib
++CBLIB = $(CBLIBDIR)/libcblas.a
++CBLIBDLL=$(CBLIBDIR)/cblas.dll
++IMPLIB=$(CBLIBDIR)/libcblas.dll.a
++DEFFILE=$(CBLIB:.a=.def)
++
++#-----------------------------------------------------------------------------
++# Compilers
++#-----------------------------------------------------------------------------
++
++CC = $(CC)
++FC = $(F77)
++LOADER = $(FC)
++
++#-----------------------------------------------------------------------------
++# Flags for Compilers
++#-----------------------------------------------------------------------------
++
++override CFLAGS += -O3 -DADD_ 
++override FFLAGS += -O3  
++
++#-----------------------------------------------------------------------------
++# Archive programs and flags
++#-----------------------------------------------------------------------------
++
++ARCH = $(AR)
++ARCHFLAGS = r
++RANLIB = ranlib
+\ No newline at end of file
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' cblas-orig/src/Makefile cblas/src/Makefile
+--- cblas-orig/src/Makefile	1999-03-15 20:11:03 +0000
++++ cblas/src/Makefile	2010-04-26 12:23:13 +0000
+@@ -1,9 +1,12 @@
+ # This Makefile compiles the CBLAS routines
+ #
+-dlvl = ../.
++dlvl = @SRCDIR@
+ include $(dlvl)/Makefile.in
+ INC = -I$(CBDIR)/src
+ 
++vpath %.c $(dlvl)/src
++vpath %.f $(dlvl)/src
++
+ #
+ # Erase all object and archive files
+ #
+@@ -31,8 +34,7 @@
+          cblas_sswap.o cblas_sscal.o  cblas_scopy.o cblas_saxpy.o \
+          cblas_sdot.o  cblas_sdsdot.o cblas_snrm2.o cblas_sasum.o \
+          cblas_isamax.o   sdotsub.o   sdsdotsub.o snrm2sub.o sasumsub.o \
+-         isamaxsub.o cblas_scasum.o scasumsub.o cblas_scnrm2.o \
+-         scnrm2sub.o
++         isamaxsub.o 
+ #
+ # All object files for double real precision
+ #
+@@ -230,15 +232,28 @@
+ 	$(ARCH) $(ARCHFLAGS) $(CBLIB) $(alev3) 
+ 	$(RANLIB) $(CBLIB)
+ 
++$(DEFFILE):
++	echo EXPORTS>$@
++	sed -ne "s/^\(void\|float\|CBLAS_INDEX\)[ \t]*\(cblas_[^(]\+\)(.*$$/\2/p" $(dlvl)/src/cblas_*.c >> $@
++
+ # All levels and precisions
+-all: $(alev)  
++all: $(alev) $(CBLIB) $(CBLIBDLL)
++
++$(CBLIB) : $(alev)
+ 	$(ARCH) $(ARCHFLAGS)  $(CBLIB) $(alev) 
+ 	$(RANLIB) $(CBLIB)
+ 
++$(CBLIBDLL) : $(DEFFILE)
++	$(F77) -shared $(FLDFLAGS) \
++		-o $(CBLIBDLL) \
++		$(alev) $(DEFFILE)\
++		-Wl,--out-implib=$(IMPLIB) \
++		-Wl,--output-def=$(CLIBDLL).exp \
++		-Wl,--no-whole-archive $(BLLIB)
+ 
+ .SUFFIXES: .o .c .f
+ 
+ .c.o:
+-	$(CC) $(CFLAGS) $(INC) -c $*.c
++	$(CC) $(CFLAGS) $(INC) -c $<
+ .f.o:
+-	$(FC) $(FFLAGS) -c $*.f
++	$(FC) $(FFLAGS) -c $<

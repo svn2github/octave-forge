@@ -250,16 +250,16 @@ void mexFunction(
 	}		
 
 	/* identify separators */
-	u = (uint8_t*) mxMalloc(slen+1);
+	u = (uint8_t*) mxCalloc(1,slen+1);
 	for (k = 0; k < slen; ) {
 		if (strchr(cdelim,s[k]) != NULL) {
-			u[k] = 1;	// column delimiter
-			while (s[++k]==' ');        // ignore extra space characters
+			u[k] = 1;      // column delimiter
+			while (s[++k]==' ');    // ignore extra space characters
 		}	
 		else if (strchr(rdelim,s[k]) != NULL)
-			u[k++] = 2;	// row delimiter
+			u[k++] = 2;    // row delimiter
 		else 
-			u[k++] = 0; 	// ordinary character 
+			k++; 	       // ordinary character 
 	}
 
 	/* count dimensions and set delimiter elements to 0 */
@@ -271,22 +271,16 @@ void mexFunction(
 	}	
 	for (k = 0; k < slen; ) {
 		if (u[k]==2) {
-			while ((u[k]==2) && s[k]) {
-				s[k++]=0; 
-				nr++;
-			}
-
+			s[k] = 0; 
+			nr++;
 			if (nc > maxcol) maxcol=nc;
 			nc = 0; 
 		}
 		else if (u[k]==1) {
-			while ((u[k]==1) && s[k]) {
-				s[k++]=0;
-				nc++;
-			}
+			s[k] = 0;
+			nc++;
 		}
-		else 
-			while ((u[k]==0) && s[k]) k++;
+		k++; 
 	}
 	if (nc > maxcol) maxcol=nc;
 	maxcol += (slen>0);

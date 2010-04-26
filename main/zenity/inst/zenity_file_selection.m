@@ -42,6 +42,18 @@
 ## @end example
 ## @item height
 ## Sets the height of the dialog window. Requires a scalar as value.
+##
+## @item icon
+## Sets the icon of the window. Requires a string as value with the file path to
+## an image, or one of the four stock icons:
+##
+## @table @samp
+## @item error
+## @item info
+## @item question
+## @item warning
+## @end table
+##
 ## @item multiple
 ## Allows selection of multiple files. No value is required. @var{files} will
 ## hold a cell array, even if user selects only one or no file.
@@ -55,6 +67,9 @@
 ## @item width
 ## Sets the width of the dialog window. Requires a scalar as value.
 ## @end table
+##
+## @strong{Note:} ultimately, the availability of some parameters is dependent
+## on the user's system preferences and zenity version.
 ##
 ## @seealso{zenity_list, zenity_entry, zenity_message, zenity_text_info}
 ## @end deftypefn
@@ -74,7 +89,7 @@ function [files, status] = zenity_file_selection(varargin)
   pre_cmd = sprintf("%s ", ...
                     options.directory, options.filename, options.height, ...
                     options.multiple, options.save, options.timeout, ...
-                    options.title, options.width, options.filter);
+                    options.title, options.width, options.filter, options.icon);
 
   cmd              = sprintf("zenity --file-selection --separator=\"/\" %s", pre_cmd);
   [status, output] = system(cmd);

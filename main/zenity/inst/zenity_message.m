@@ -42,6 +42,18 @@
 ## Creates a warning dialog.
 ## @end table
 ##
+## @item icon
+## Sets the icon of the window. Requires a string as value with the file path to
+## an image, or one of the four stock icons (default is the same as the type of
+## of message):
+##
+## @table @samp
+## @item error
+## @item info
+## @item question
+## @item warning
+## @end table
+##
 ## @item title
 ## Sets the title of the window. Requires a string as value.
 ## @item no-wrap
@@ -55,6 +67,9 @@
 ## as value.
 ## @end table
 ##
+## @strong{Note:} ultimately, the availability of some parameters is dependent
+## on the user's system preferences and zenity version.
+##
 ## @seealso{zenity_text_info, warning, error, disp, puts, printf, zenity_entry,
 ## zenity_notification}
 ## @end deftypefn
@@ -66,13 +81,13 @@ function status = zenity_message(text, varargin)
   elseif (!ischar(text))
     error ("'text' argument must be a string")
   endif
-  text = sprintf("--text=\"%s\"", text);
+  text = sprintf('--text="%s"', text);
 
   options = _zenity_options_ ("message", varargin);
 
   pre_cmd = sprintf("%s ", ...
                     options.type, text, options.wrap, options.title, ...
-                    options.width, options.height, options.timeout);
+                    options.icon, options.width, options.height, options.timeout);
 
   cmd              = sprintf("zenity %s", pre_cmd);
   [status, output] = system(cmd);

@@ -105,6 +105,17 @@
 ## zenity_list(columns, data, "radiolist", "hide column", 3, "print column", 3)
 ## @end example
 ##
+## @item icon
+## Sets the icon of the window. Requires a string as value with the file path to
+## an image, or one of the four stock icons:
+##
+## @table @samp
+## @item error
+## @item info
+## @item question
+## @item warning
+## @end table
+##
 ## @item multiple
 ## Allows multiple rows to be selected. No value is required. It cannot be set
 ## together with parameter @code{radiolist}. and it is automatically set when
@@ -152,6 +163,9 @@
 ## Sets the width of the dialog window. Requires a scalar as value.
 ##
 ## @end table
+##
+## @strong{Note:} ultimately, the availability of some parameters is dependent
+## on the user's system preferences and zenity version.
 ##
 ## @seealso{input, menu, kbhit, zenity_message, zenity_file_selection,
 ## zenity_notification}
@@ -276,7 +290,7 @@ function [val, status, tmp] = zenity_list(col, data, varargin)
                     options.timeout, options.separator, options.text, ...
                     options.hide, options.print_col, options.multiple, ...
                     options.radio, options.check, options.editable, ...
-                    options.col, options.data);
+                    options.icon, options.col, options.data);
 
   cmd               = sprintf ("zenity --list %s", pre_cmd);
   [status, output]  = system(cmd);

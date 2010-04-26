@@ -43,10 +43,24 @@
 ## Sets the width of the dialog window. Requires a scalar as value.
 ## @item height
 ## Sets the height of the dialog window. Requires a scalar as value.
+## @item icon
+## Sets the icon of the window. Requires a string as value with the file path to
+## an image, or one of the four stock icons:
+##
+## @table @samp
+## @item error
+## @item info
+## @item question
+## @item warning
+## @end table
+##
 ## @item timeout
 ## Sets the time in seconds after which the dialog is closed. Requires a scalar
 ## as value.
 ## @end table
+##
+## @strong{Note:} ultimately, the availability of some parameters is dependent
+## on the user's system preferences and zenity version.
 ##
 ## @seealso{input, menu, kbhit, zenity_message, zenity_file_selection}
 ## @end deftypefn
@@ -64,7 +78,7 @@ function [out, status] = zenity_entry(text, varargin)
 
   pre_cmd = sprintf("%s ", ...
                     text, options.entry, options.title, options.password, ...
-                    options.width, options.height, options.timeout);
+                    options.icon, options.width, options.height, options.timeout);
 
   cmd              = sprintf("zenity --entry %s", pre_cmd);
   [status, output] = system(cmd);

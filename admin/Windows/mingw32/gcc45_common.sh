@@ -102,6 +102,8 @@ make_common()
       $MAKE_FILE \
       F77="gfortran -shared-libgcc" \
       CC="gcc -shared-libgcc" \
+      ${LDFLAGS:+LDFLAGS="$LDFLAGS"} \
+      ${FLDFLAGS:+FLDFLAGS="$FLDFLAGS"} \
       $MAKE_PARALLEL \
       $MAKE_XTRA $*
       
@@ -109,6 +111,8 @@ make_common()
       $MAKE_FILE \
       F77="gfortran -shared-libgcc" \
       CC="gcc -shared-libgcc" \
+      ${LDFLAGS:+LDFLAGS="$LDFLAGS"} \
+      ${FLDFLAGS:+FLDFLAGS="$FLDFLAGS"} \
       $MAKE_PARALLEL \
       $MAKE_XTRA $*
    fi

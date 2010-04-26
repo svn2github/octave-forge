@@ -361,8 +361,11 @@ _libtool_removeversuffix()
 }
 
 # == package src & dev ==
+pkg_pre() { echo; }
 pkg()
 {
+   pkg_pre;
+   
    mkdir -vp $PREFIX/dev
    mkdir -vp $PREFIX/src
    
@@ -383,8 +386,10 @@ pkg()
    
    # create src pkg
    $TAR c -j -v -f $PREFIX/src/$FULLPKG-src.tar.bz2 $SRCFILE $PATCHFILE build${VER:+-$VER}${REL:+-$REL}.sh ../gcc45_common.sh
+   
+   pkg_post;
 }
-
+pkg_post() { echo; }
 
 # == MAIN ==
 main() {

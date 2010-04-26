@@ -111,12 +111,12 @@ uninstall()
    
    # Uninstall headers
    for a in $HEADERS_INSTALL; do
-      ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/$a
+      ${RM} ${RM_FLAGS} $PREFIX/$INC_DIR/$a
    done
    
    # Uninstall license file
    for a in $LICENSE_INSTALL; do
-      ${RM} ${RM_FLAGS} $PREFIX/$LIC_DIR/$PKG/LICENSE
+      ${RM} ${RM_FLAGS} $PREFIX/$LIC_DIR/$PKG/$a
    done
    
    uninstall_post;

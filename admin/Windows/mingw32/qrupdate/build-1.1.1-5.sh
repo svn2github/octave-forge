@@ -131,7 +131,7 @@ uninstall()
    
    # Uninstall license file
    for a in $LICENSE_INSTALL; do
-      ${RM} ${RM_FLAGS} $PREFIX/$LIC_DIR/$PKG/LICENSE
+      ${RM} ${RM_FLAGS} $PREFIX/$LIC_DIR/$PKG/$a
    done
    
    uninstall_post;

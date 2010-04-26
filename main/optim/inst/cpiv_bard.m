@@ -23,10 +23,12 @@ function [lb, idx, ridx, m] = cpiv_bard (v, m, incl)
   %% l, w >= 0, l >= 0, l.' * w == 0. Chooses idx, w, and l so that
   %% l(~idx) == 0, l(idx) == -inv (m(idx, idx)) * v(idx), w(idx) roughly
   %% == 0, and w(~idx) == v(~idx) + m(idx, ~idx).' * l(idx). idx indexes
-  %% at least everything indexed by incl. lb: l(idx) (column vector);
-  %% idx: logical index, defined above; ridx: ~idx & w roughly == 0; mv:
-  %% [m, v] after performing a Gauss-Jordan 'sweep' (with gjp.m) on each
-  %% diagonal element indexed by idx. This is called solving the
+  %% at least everything indexed by incl, but l(incl) may be < 0. lb:
+  %% l(idx) (column vector); idx: logical index, defined above; ridx:
+  %% ~idx & w roughly == 0; mv: [m, v] after performing a Gauss-Jordan
+  %% 'sweep' (with gjp.m) on each diagonal element indexed by idx.
+  %% Except the handling of incl (which enables handling of equality
+  %% constraints in the calling code), this is called solving the
   %% 'complementary pivot problem' (Cottle, R. W. and Dantzig, G. B.,
   %% 'Complementary pivot theory of mathematical programming', Linear
   %% Algebra and Appl. 1, 102--125. References for the current
@@ -48,26 +50,30 @@ function [lb, idx, ridx, m] = cpiv_bard (v, m, incl)
   nincl(incl) = [];
   m = cat (2, m, v);
   sgn = ones (n, 1);
-  for id = incl
+  for id = incl(:).'
     sgn(id) = -sgn(id);
     m = gjp (m, id);
   end
   nz = eps; % This is arbitrary; components of w and -l are regarded as
 				% non-negative if >= -nz.
   nl = 100 * n; % maximum number of loop repeats, after that give up
-  ready = false;
-  while (~ready && nl > 0)
-    [vm, idm] = min (sgn(nincl) .* m(nincl, end));
-    if (vm >= -nz)
-      ready = true;
-    else
-      idm = nincl(idm);
-      sgn(idm) = -sgn(idm);
-      m = gjp (m, idm);
-      nl = nl - 1;
+  if (isempty (nincl))
+    ready = true;
+  else
+    ready = false;
+    while (~ready && nl > 0)
+      [vm, idm] = min (sgn(nincl) .* m(nincl, end));
+      if (vm >= -nz)
+	ready = true;
+      else
+	idm = nincl(idm);
+	sgn(idm) = -sgn(idm);
+	m = gjp (m, idm);
+	nl = nl - 1;
+      end
     end
   end
-  if (~ready || any (m(incl, end) > nz))
+  if (~ready)
     error ('not successful');
   end
   idx = sgn < 0;

@@ -72,22 +72,24 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%   [ie. abs(chg(i))=abs(min([chg(i)
   %%   options.max_fract_change(i)*current param estimate])).], default =
   %%   Inf*ones().
+
   %%   Field 'options.inequc': cell-array containing up to four entries,
   %%   two entries for linear inequality constraints and/or one or two
-  %%   entries for general inequality constraints. Either linear or
-  %%   general constraints may be the first entries, but the two entries
-  %%   for linear constraints must be adjacent and, if two entries are
-  %%   given for general constraints, they also must be adjacent. The
-  %%   two entries for linear constraints are a matrix (say m) and a
-  %%   vector (say v), specifying linear inequality constraints of the
-  %%   form `m.' * parameters + v >= 0'. If the constraints are just
-  %%   bounds, it is suggested to specify them in 'options.bounds'
-  %%   instead, since then some sanity tests are performed, and since
-  %%   the function 'dfdp.m' is guarantied not to violate constraints
-  %%   during determination of the numeric gradient only for those
-  %%   constraints specified as 'bounds'. The first entry for general
-  %%   constraints must be a differentiable vector valued function (say
-  %%   h), specifying general inequality constraints of the form `h (p[,
+  %%   entries for general inequality constraints. Initial parameters
+  %%   must satisfy these constraints. Either linear or general
+  %%   constraints may be the first entries, but the two entries for
+  %%   linear constraints must be adjacent and, if two entries are given
+  %%   for general constraints, they also must be adjacent. The two
+  %%   entries for linear constraints are a matrix (say m) and a vector
+  %%   (say v), specifying linear inequality constraints of the form
+  %%   `m.' * parameters + v >= 0'. If the constraints are just bounds,
+  %%   it is suggested to specify them in 'options.bounds' instead,
+  %%   since then some sanity tests are performed, and since the
+  %%   function 'dfdp.m' is guarantied not to violate constraints during
+  %%   determination of the numeric gradient only for those constraints
+  %%   specified as 'bounds'. The first entry for general constraints
+  %%   must be a differentiable vector valued function (say h),
+  %%   specifying general inequality constraints of the form `h (p[,
   %%   idx]) >= 0'; p is the column vector of optimized paraters and the
   %%   optional argument idx is a logical index. h has to return the
   %%   values of all constraints if idx is not given, and has to return
@@ -119,11 +121,15 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%   for each parameter. Default: [-Inf, Inf] in each row. If this
   %%   field is used with an existing user-side function for 'dFdp'
   %%   (see above) the functions interface might have to be changed.
+  %%   Field 'options.equc': equality constraints, specified the same
+  %%   way as inequality constraints (see field 'options.inequc').
+  %%   Initial parameters must satisfy these constraints.
   %%   _Warning_: If constraints (or bounds) are set, returned guesses
   %%   of corp, covp, and Z are generally invalid, even if no constraints
-  %%   are active for the final parameters.
+  %%   are active for the final parameters. If equality constraints are
+  %%   specified, corp, covp, and Z are not guessed at all.
   %%   Field 'options.cpiv': Function for complementary pivot algorithm
-  %%   for inequality constraints, default: @ cpiv_bard. No different
+  %%   for inequality constraints, default: cpiv_bard. No different
   %%   function is supplied.
   %%
   %%          OUTPUT VARIABLES
@@ -262,12 +268,20 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   pprec = zeros (n, 1);
   maxstep = Inf * ones (n, 1);
   have_gencstr = false; % no general constraints
+  have_genecstr = false; % no general equality constraints
   n_gencstr = 0;
   mc = zeros (n, 0);
   vc = zeros (0, 1); rv = 0;
+  emc = zeros (n, 0);
+  evc = zeros (0, 1); erv = 0;
   bounds = cat (2, -Inf * ones (n, 1), Inf * ones (n, 1));
   dfdp_bounds = {};
   cpiv = @ cpiv_bard;
+  eq_idx = []; % numerical index for equality constraints in all
+				% constraints, later converted to
+				% logical index
+  nz = 20 * eps; % This is arbitrary. Constraint function will be
+				% regarded as <= zero if less than nz.
   if (nargin > 9)
     if (ismatrix (options)) % backwards compatibility
       tp = options;
@@ -335,20 +349,91 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	end
       end
       if (have_gencstr)
-	if (ischar (f_gencstr)) f_gencstr = str2func (f_gencstr); end
-	if (ischar (df_gencstr)) df_gencstr = str2func (df_gencstr); end
+	if (ischar (f_gencstr))
+	  f_gencstr = str2func (f_gencstr);
+	end
+	tp = f_gencstr (pin);
+	n_gencstr = length (tp);
+ 	f_gencstr = @ (p, idx) tf_gencstr (p, idx, f_gencstr);
+	if (ischar (df_gencstr))
+	  df_gencstr = str2func (df_gencstr);
+	end
+	if (strcmp (func2str (df_gencstr), 'dcdp'))
+	  df_gencstr = @ (f, p, dp, fun, idx, db) ...
+	      df_gencstr (f, p, dp, fun, db);
+	end
       end
       [rm, cm] = size (mc);
       [rv, cv] = size (vc);
       if (rm ~= n || cm ~= rv || cv ~= 1)
 	error ('linear inequality constraints: wrong dimensions');
       end
-      if (have_gencstr)
-	tp = f_gencstr (pin);
-	n_gencstr = length (tp);
-      end
       if (any (mc.' * pin + vc < 0) || (have_gencstr && any (tp < 0)))
 	error ('initial parameters violate inequality constraints');
+      end
+    end
+    if (isfield (options, 'equc'))
+      equc = options.equc;
+      if (ismatrix (equc{1}))
+	emc = equc{1};
+	evc = equc{2};
+	if (length (equc) > 2)
+	  have_genecstr = true;
+	  f_genecstr = equc{3};
+	  if (length (equc) > 3)
+	    df_genecstr = equc{4};
+	  else
+	    df_genecstr = @ dcdp;
+	  end
+	end
+      else
+	lid = 0; % no linear constraints
+	have_genecstr = true;
+	f_genecstr = equc{1};
+	if (length (equc) > 1)
+	  if (ismatrix (equc{2}))
+	    lid = 2;
+	    df_genecstr = @ dcdp;
+	  else
+	    df_genecstr = equc{2};
+	    if (length (equc) > 2)
+	      lid = 3;
+	    end
+	  end
+	else
+	  df_genecstr = @ dcdp;
+	end
+	if (lid)
+	  emc = equc{lid};
+	  evc = equc{lid + 1};
+	end
+      end
+      if (have_genecstr)
+	if (ischar (f_genecstr))
+	  f_genecstr = str2func (f_genecstr);
+	end
+	tp = f_genecstr (pin);
+	n_genecstr = length (tp);
+	f_genecstr = @ (p, idx) tf_gencstr (p, idx, f_genecstr);
+	if (ischar (df_genecstr))
+	  df_genecstr = str2func (df_genecstr);
+	end
+	if (strcmp (func2str (df_genecstr), 'dcdp'))
+	  df_genecstr = @ (f, p, dp, fun, idx, db) ...
+	      df_genecstr (f, p, dp, fun, db{:});
+	else
+	  df_genecstr = @ (f, p, dp, fun, idx, db) ...
+	      df_genecstr (f, p, dp, fun, idx, db{:});
+	end
+      end
+      [erm, ecm] = size (emc);
+      [erv, ecv] = size (evc);
+      if (erm ~= n || ecm ~= erv || ecv ~= 1)
+	error ('linear equality constraints: wrong dimensions');
+      end
+      if (any (abs (emc.' * pin + evc) >= nz) || ...
+	  (have_genecstr && any (abs (tp) >= nz)))
+	error ('initial parameters violate equality constraints');
       end
     end
     if (isfield (options, 'bounds'))
@@ -367,7 +452,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       end
       lidx = pin < bounds(:, 1);
       uidx = pin > bounds(:, 2);
-      if (any (lidx | uidx) && (rv > 0 || have_gencstr))
+      if (any (lidx | uidx) && (rv > 0 || have_gencstr || ...
+				erv > 0 || have_genecstr))
 	error ('initial parameters outside bounds, not corrected since other constraints are given');
       end
       if (any (lidx))
@@ -387,29 +473,45 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       [rv, cv] = size (vc);
       dfdp_bounds = {bounds};
     end
+    %% concatenate inequality and equality constraint functions, mc, and
+    %% vc; update eq_idx, rv, n_gencstr, have_gencstr
+    if (erv > 0)
+      mc = cat (2, mc, emc);
+      vc = cat (1, vc, evc);
+      eq_idx = rv + 1 : rv + erv;
+      rv = rv + erv;
+    end
+    if (have_genecstr)
+      if (have_gencstr)
+	f_gencstr = @ (p, idx) cat (1, ...
+				    f_gencstr (p, idx), ...
+				    f_genecstr (p, idx));
+	df_gencstr = @ (f, p, dp, fun, idx, db) ...
+	    cat (1, ...
+		 df_gencstr (f, p, dp, fun, idx, db), ...
+		 df_genecstr (f, p, dp, fun, idx, db));
+      else
+	f_gencstr = f_genecstr;
+	df_gencstr = df_genecstr;
+	have_gencstr = true;
+      end
+      eq_idx = cat (2, eq_idx, ...
+		    rv + n_gencstr + 1 : rv + n_gencstr + n_genecstr);
+      n_gencstr = n_gencstr + n_genecstr;
+    end
   end
   nidxl = 1:rv;
   nidxh = rv+1:rv+n_gencstr;
   if (have_gencstr)
     f_cstr = @ (p, idx) ...
 	cat (1, mc(:, idx(nidxl)).' * p + vc(idx(nidxl), 1), ...
-	     tf_gencstr (p, idx(nidxh), f_gencstr));
-    if (strcmp (func2str (df_gencstr), 'dcdp'))
-      df_cstr = @ (f, p, idx) ...
-	  cat (1, mc(:, idx(nidxl)).', ...
-	       df_gencstr (f(nidxh(idx(nidxh))), p, dp, ...
-			   @ (tp) tf_gencstr (tp, idx(nidxh), ...
-					      f_gencstr), ...
-			   dfdp_bounds{:}));
-    else
-      df_cstr = @ (f, p, idx) ...
-	  cat (1, mc(:, idx(nidxl)).', ...
-	       df_gencstr (f(nidxh(idx(nidxh))), p, dp, ...
-			   @ (tp) tf_gencstr (tp, idx(nidxh), ...
-					      f_gencstr), ...
-			   idx(nidxh), ...
-			   dfdp_bounds{:}));
-    end
+	     f_gencstr (p, idx(nidxh)));
+    df_cstr = @ (f, p, idx) ...
+	cat (1, mc(:, idx(nidxl)).', ...
+	     df_gencstr (f(nidxh(idx(nidxh))), p, dp, ...
+			 @ (tp) f_gencstr (tp, idx(nidxh)), ...
+			 idx(nidxh), ...
+			 dfdp_bounds));
     if (any (~isinf (maxstep)))
       warning ('setting both a maximum fractional step change of parameters and general constraints may result in inefficiency and failure');
     end
@@ -417,7 +519,6 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     f_cstr = @ (p, idx) mc(:, idx).' * p + vc(idx, 1);
     df_cstr = @ (f, p, idx) mc(:, idx).';
   end
-
   if (all (dp == 0))
     error ('no free parameters');
   end
@@ -438,6 +539,9 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   nc_idx = false (rv + n_gencstr, 1); % non of all constraints
   gc_idx = cat (1, false (rv, 1), true (n_gencstr, 1)); % gen. constr.
   lc_idx = ~gc_idx;
+  tidx = nc_idx;
+  tidx(eq_idx) = true;
+  eq_idx = tidx;
 
   %% for testing
   %% new_s = false;
@@ -450,8 +554,6 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     testing = false;
   end
 
-  nz = 20 * eps; % This is arbitrary. Constraint function will be
-				% regarded as <= zero if less than nz.
   %% do iterations
   %%
   for iter=1:niter
@@ -516,7 +618,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	ser2 = diag (ser .* ser);
 	mfc1 = nrme * v * ser2 * v.' * nrme;
 	tp2 = mfc1 * dca;
-	[lb, bidx, ridx, tbl] = cpiv (dcat * tp1, dcat * tp2);
+	a_eq_idx = eq_idx(c_act);
+	[lb, bidx, ridx, tbl] = cpiv (dcat * tp1, dcat * tp2, a_eq_idx);
 	chg = tp1 + tp2(:, bidx) * lb; % if dp is zero for a parameter,
 				% the respective component of chg should
 				% be zero too, even here (with active
@@ -551,6 +654,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       if (any (idx))
 	k = min (1, min (- (vci(idx) + mcit(idx, :) * pprev) ./ ...
 			 hstep(idx)));
+      end
+      if (k < 1)
 	deb_printf (testing, 'stepwidth: linear constraints\n');
       end
       if (have_gencstr)
@@ -618,7 +723,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	  nt_niter = 100;
 	  while (nt_nosuc && nt_niter >= 0)
 	    hv = f_cstr (ptp2, c_tp2);
-	    if (all (hv < nz))
+	    if (all (abs (hv) < nz))
 	      nt_nosuc = false;
 	      chg = ptp2 - pprev;
 	    else
@@ -630,35 +735,51 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	  if (nt_nosuc || ...
 	      any (abs (chg) > abs (pprev .* maxstep)) || ...
 	      any (f_cstr (ptp2, c_tp0) < -nz))
-	    nt_nosuc = true;
-	    ptp1 = (pprev + ptp1) / 2;
 	    if (nt_nosuc)
 	      deb_printf (testing, 'regaining did not converge\n');
 	    else
 	      deb_printf (testing, 'regaining violated type 3 and 4\n');
 	    end
+	    nt_nosuc = true;
+	    ptp1 = (pprev + ptp1) / 2;
 	  end
 	  if (~nt_nosuc)
 	    tp = f_cstr (ptp2, c_unbinding);
 	    if (any (tp) < 0) % again ml-compatibility clumsyness..
 	      [discarded, id] = min(tp);
 	      tid = find (ridx);
-	      id = tid(id);
+	      id = tid(id); % index within active constraints
+	      unsuccessful_exchange = false;
 	      if (abs (tbl(id, id)) < nz) % Bard: not absolute value
-		[discarded, idm] = max (abs (tbl(bidx, id)));
-		tid = find (bidx);
-		idm = tid(idm);
-		tbl = gjp (tbl, idm);
-		bidx(idm) = false;
-		ridx(idm) = true;
+		%% exchange this unselected binding constraint against a
+		%% binding constraint, but not against an equality
+		%% constraint
+		tbidx = bidx & ~a_eq_idx;
+		if (~any (tbidx))
+		  unsuccessful_exchange = true;
+		else
+		  [discarded, idm] = max (abs (tbl(tbidx, id)));
+		  tid = find (tbidx);
+		  idm = tid(idm); % -> index within active constraints
+		  tbl = gjp (tbl, idm);
+		  bidx(idm) = false;
+		  ridx(idm) = true;
+		end
 	      end
-	      tbl = gjp (tbl, id);
-	      bidx(id) = true;
-	      ridx(id) = false;
-	      c_binding = nc_idx;
-	      c_binding(c_act) = bidx;
-	      c_unbinding = nc_idx;
-	      c_unbinding(c_act) = ridx;
+	      if (unsuccessful_exchange)
+		%% It probably doesn't look good now; this desperate
+		%% last attempt is not in the original algortithm, since
+		%% that didn't account for equality constraints.
+		ptp1 = (pprev + ptp1) / 2;
+	      else
+		tbl = gjp (tbl, id);
+		bidx(id) = true;
+		ridx(id) = false;
+		c_binding = nc_idx;
+		c_binding(c_act) = bidx;
+		c_unbinding = nc_idx;
+		c_unbinding(c_act) = ridx;
+	      end
 	      nt_nosuc = true;
 	      deb_printf (testing, 'regaining violated type 2\n');
 	    end
@@ -768,7 +889,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% Matlab compatibility and avoiding recomputation make the following
   %% logic clumsy.
   compute = 1;
-  if (m <= n)
+  if (m <= n || any (eq_idx))
     compute = 0;
   else
     Qinv = ((m - n) / tp) * Qinv;
@@ -803,7 +924,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 
   if (~(verbose || nargout > 8)) return; end
 
-  if (m > n)
+  if (m > n && ~any (eq_idx))
     Z = ((m - n) / (n * resid.' * Qinv * resid)) * covpinv;
   else
     Z = NA * ones (n);
@@ -857,7 +978,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 
 function ret = tf_gencstr (p, idx, f)
 
-  %% necessary since user function f_gencstr might return []
+  %% necessary since user function f_gencstr might return [] or a row
+  %% vector
 
   ret = f (p, idx);
   if (isempty (ret))

@@ -344,7 +344,6 @@ Creates a cell array of all dimenstion in a NetCDF file. The length of the NetCD
   else if (args(0).class_name() == "ncvar") {
     octave_ncvar& ncvar = (octave_ncvar&)args(0).get_rep();
 
-    //    Cell  vars = Cell (dim_vector(1,ncvar.ndims()));
     Cell  vars = Cell (dim_vector(1,ncvar.ncndims() ));
 
     for (int i=0; i < ncvar.ncndims(); i++) {
@@ -610,7 +609,7 @@ octave_value ov_nc_get_att(int ncid, int varid,const std::string name) {
 	  if (lenp == 1) {					        \
 	    retval = octave_value(*var);                                \
 	  } else {                                                      \
-	    ArrayN<double> arr =  ArrayN<double>(dim_vector(lenp));	\
+	    Array<double> arr =  Array<double>(dim_vector(lenp));	\
 	    for (unsigned int i=0; i<lenp; i++) {                       \
 	      arr.xelem(i) = (double)var[i];                            \
 	    }                                                           \
@@ -699,7 +698,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
   long *count = new long[ncndim];
   long *stride = new long[ncndim];
   long sliced_numel = 1;
-  ArrayN<double> arr;
+  Array<double> arr;
   dim_vector sliced_dim_vector;
   int status;
   // permutation vector for Fortran-storage to C-storage
@@ -753,7 +752,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
       if (status != NC_NOERR)						   \
 	error("Error while retrieving variable: %s", nc_strerror(status)); \
 									   \
-      arr = ArrayN < double >(reverse(sliced_dim_vector));		   \
+      arr = Array < double >(reverse(sliced_dim_vector));		   \
 									   \
       for (int i = 0; i < sliced_numel; i++)				   \
 	arr.xelem(i) = (double)var[i];					   \
@@ -787,7 +786,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
 	  error("Error while retrieving variable: %s", nc_strerror(status));
 
 	//	charNDArray arr = charNDArray(reverse(sliced_dim_vector));
-	ArrayN<char> arr = ArrayN<char>(reverse(sliced_dim_vector));
+	Array<char> arr = Array<char>(reverse(sliced_dim_vector));
 
 	for (int i = 0; i < sliced_numel; i++)
 	  arr.xelem(i) = (char)var[i];
@@ -826,7 +825,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
   long *count = new long[ncndim];
   long *stride = new long[ncndim];
   long sliced_numel = 1;
-  ArrayN<double> arr;
+  Array<double> arr;
   int status;
   // permutation vector for Fortran-storage to C-storage
   // not used if ncndim == 1
@@ -873,7 +872,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
 	    }
 	} 
 	else {
-	  ArrayN<char> arr =  rhs.char_array_value();
+	  Array<char> arr =  rhs.char_array_value();
 									
           if (STORAGE_ORDER == C_ORDER && ncndim > 1 )				
 	      arr = arr.permute(perm_vector);				
@@ -907,7 +906,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
 	      }								\
 	  }								\
 	  else {							\
-	    ArrayN<double> arr = rhs.array_value();                     \
+	    Array<double> arr = rhs.array_value();                      \
 									\
 	    if (STORAGE_ORDER == C_ORDER && ncndim > 1)		       	\
 	      arr = arr.permute(perm_vector);				\

@@ -32,7 +32,6 @@
 #include <vector>
 #include <string>
 #include <netcdf.h>
-#include <ArrayN.h>
 #include <list>
 
 #include "ov-uint64.h"

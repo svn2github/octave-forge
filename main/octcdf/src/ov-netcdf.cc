@@ -829,7 +829,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
   int status;
   // permutation vector for Fortran-storage to C-storage
   // not used if ncndim == 1
-  Array<int> perm_vector(ncndim);
+  Array<int> perm_vector(1,ncndim);
 
 
 #  ifdef OV_NETCDF_VERBOSE

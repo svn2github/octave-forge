@@ -609,7 +609,7 @@ octave_value ov_nc_get_att(int ncid, int varid,const std::string name) {
 	  if (lenp == 1) {					        \
 	    retval = octave_value(*var);                                \
 	  } else {                                                      \
-	    Array<double> arr =  Array<double>(dim_vector(lenp));	\
+	    Array<double> arr =  Array<double>(dim_vector(1,lenp));	\
 	    for (unsigned int i=0; i<lenp; i++) {                       \
 	      arr.xelem(i) = (double)var[i];                            \
 	    }                                                           \
@@ -703,7 +703,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
   int status;
   // permutation vector for Fortran-storage to C-storage
   // not used if ncndim == 1
-  Array<int> perm_vector(ncndim);
+  Array<int> perm_vector(1,ncndim);
 
 #  ifdef OV_NETCDF_VERBOSE
   octave_stdout << " ov_nc_get_vars" << std::endl;
@@ -794,9 +794,9 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
 	delete[] var;
 
         if (STORAGE_ORDER == FORTRAN_ORDER || ncndim == 1)                                  
-          retval = octave_value(CAST_CARRAY(arr),true);                                        
+          retval = octave_value(CAST_CARRAY(arr));                                        
         else                                                                 
-          retval = octave_value(CAST_CARRAY(arr.permute(perm_vector)),true);	  	   
+          retval = octave_value(CAST_CARRAY(arr.permute(perm_vector)));	  	   
 
 	break;
       }

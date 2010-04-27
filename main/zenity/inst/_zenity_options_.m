@@ -23,23 +23,16 @@
 ##
 ## @table @samp
 ## @item calendar
-## If used by zenity_calendar
 ## @item entry
-## If used by zenity_entry
 ## @item file selection
-## If used by zenity_file_selection
 ## @item list
-## If used by zenity_list
 ## @item message
-## If used by zenity_message
-## @item notification
-## If used by zenity_notification
-## @item progress
-## If used by zenity_progress
+## @item new notification
+## @item piped notification
+## @item new progress
+## @item piped progress
 ## @item scale
-## If used by zenity_scale
 ## @item text info
-## If used by zenity_text_info
 ## @end table
 ##
 ## @seealso{zenity_calendar, zenity_entry, zenity_file_selection, zenity_list,
@@ -70,7 +63,11 @@ function op = _zenity_options_ (dialog, varargin)
     op.text = "";
   elseif (strcmpi(dialog, "piped notification"))
     op.text = op.message = op.visible = "";
-  elseif (strcmpi(dialog, "progress"))
+  elseif (strcmpi(dialog, "new progress"))
+    op.percent  = op.text       = op.auto_close   = "";
+    op.pulsate  = op.auto_kill  = op.hide_cancel  = "";
+  elseif (strcmpi(dialog, "piped progress"))
+    op.percent  = op.text = "";
   elseif (strcmpi(dialog, "scale"))
   elseif (strcmpi(dialog, "text info"))
   else
@@ -84,7 +81,7 @@ function op = _zenity_options_ (dialog, varargin)
 
   ## Identifies when it's being called to process stuff to send through pipes
   ## since they'll have major differences in the processing
-  if ( strcmpi(dialog, "piped notification") )
+  if ( strcmpi(dialog, "piped notification") || strcmpi(dialog, "piped progress") )
     pipelining = 1;
   else
     pipelining = 0;
@@ -121,13 +118,13 @@ function op = _zenity_options_ (dialog, varargin)
       op.title        = sprintf('--title="%s"', value);
     elseif (strcmpi(param,"width"))                   # General - width
       narg            = sanity_checks ("scalar", param, value, op.width, narg);
-      op.width        = sprintf('--width="%s"', num2str(value));
+      op.width        = sprintf('--width="%i"', value);
     elseif (strcmpi(param,"height"))                  # General - height
       narg            = sanity_checks ("scalar", param, value, op.height, narg);
-      op.height       = sprintf('--height="%s"', num2str(value));
+      op.height       = sprintf('--height="%i"', value);
     elseif (strcmpi(param,"timeout"))                 # General - timeout
       narg            = sanity_checks ("scalar", param, value, op.timeout, narg);
-      op.timeout      = sprintf('--timeout="%s"', num2str(value));
+      op.timeout      = sprintf('--timeout="%i"', value);
     elseif (strcmpi(param,"icon"))                    # General - icon
       narg            = sanity_checks ("char", param, value, op.icon, narg);
       if (strcmpi(value, "error"))
@@ -220,7 +217,7 @@ function op = _zenity_options_ (dialog, varargin)
       if (strcmpi(param,"text"))                      # List - text
         narg            = sanity_checks ("char", param, value, op.text, narg);
         op.text         = sprintf('--text="%s"', value);
-      elseif (strcmpi(param,"no headers"))              # List - no headers
+      elseif (strcmpi(param,"no headers"))            # List - no headers
         narg            = sanity_checks ("indie", param, value, op.no_head, narg);
         op.no_head      = "--hide-header";
       elseif (strcmpi(param,"editable"))              # List - editable
@@ -229,16 +226,16 @@ function op = _zenity_options_ (dialog, varargin)
       elseif (strcmpi(param,"multiple"))              # List - multiple
         narg            = sanity_checks ("indie", param, value, op.multiple, narg);
         op.multiple     = "--multiple";
-      elseif (strcmpi(param,"radiolist"))              # List - radiolist
+      elseif (strcmpi(param,"radiolist"))             # List - radiolist
         narg            = sanity_checks ("indie", param, value, op.radio, narg);
         op.radio        = "--radiolist";
-      elseif (strcmpi(param,"checklist"))              # List - checklist
+      elseif (strcmpi(param,"checklist"))             # List - checklist
         narg            = sanity_checks ("indie", param, value, op.check, narg);
         op.check        = "--checklist";
-      elseif (strcmpi(param,"numeric output"))         # List - numeric output
+      elseif (strcmpi(param,"numeric output"))        # List - numeric output
         narg            = sanity_checks ("char", param, value, op.num_out, narg);
         op.num_out      = value;
-      elseif (strcmpi(param,"hide column"))            # List - hide column
+      elseif (strcmpi(param,"hide column"))           # List - hide column
         narg            = sanity_checks ("num", param, value, op.hide, narg);
         op.hide_min     = min(value(:));
         op.hide_max     = max(value(:));
@@ -263,6 +260,35 @@ function op = _zenity_options_ (dialog, varargin)
           tmp = sprintf('%s%s,', tmp, str);
         endfor
         op.print_col    = sprintf('--print-column="%s"', tmp);
+      else
+        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
+      endif
+
+    ## Process options for ZENITY_PROGRESS (creating new)
+    elseif ( strcmpi(dialog, "new progress") )
+      if (strcmpi(param,"text"))                      # Progress - text
+        narg            = sanity_checks ("char", param, value, op.text, narg);
+        op.text         = sprintf('--text="%s"', value);
+      elseif (strcmpi(param,"auto close"))            # Progress - auto close
+        narg            = sanity_checks ("indie", param, value, op.auto_close, narg);
+        op.auto_close   = "--auto-close";
+      elseif (strcmpi(param,"auto kill"))             # Progress - auto close
+        narg            = sanity_checks ("indie", param, value, op.auto_kill, narg);
+        op.auto_kill    = "--auto-kill";
+      elseif (strcmpi(param,"hide cancel"))           # Progress - hide cancel
+        narg            = sanity_checks ("indie", param, value, op.hide_cancel, narg);
+        op.hide_cancel  = "--no-cancel";
+      elseif (strcmpi(param,"pulsate"))               # Progress - pulsate
+        narg            = sanity_checks ("indie", param, value, op.pulsate, narg);
+        op.pulsate      = "--pulsate";
+      elseif (strcmpi(param,"percentage"))            # Progress - percentage
+        narg            = sanity_checks ("scalar", param, value, op.percent, narg);
+        if (value < 0 || value > 100)
+          error("Percentage must be between '0' and '100' but it was set to '%g'", value)
+        endif
+        ## floor must be used to round, so to avoid returning 100, which in the
+        ## the case of having auto-close set, would close the dialog too soon
+        op.percent      = sprintf('--percentage="%i"', floor(value));
       else
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
@@ -316,6 +342,23 @@ function op = _zenity_options_ (dialog, varargin)
         else
           op.icon       = sprintf('icon: %s', value);
         endif
+      else
+        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
+      endif
+
+    ## Process options for ZENITY_PROGRESS (pipelining)
+    elseif ( strcmpi(dialog, "piped progress") )
+      if (strcmpi(param,"text"))                      # Progress - text
+        narg            = sanity_checks ("char", param, value, op.text, narg);
+        op.text         = sprintf('# %s', value);
+      elseif (strcmpi(param,"percentage"))            # Progress - percentage
+        narg            = sanity_checks ("scalar", param, value, op.percent, narg);
+        if (value < 0 || value > 100)
+          error("Percentage must be between '0' and '100' but it was set to '%g'", value)
+        endif
+        ## floor must be used to round, so to avoid returning 100, which in the
+        ## the case of having auto-close set, would close the dialog too soon
+        op.percent      = sprintf('%i', floor(value));
       else
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif

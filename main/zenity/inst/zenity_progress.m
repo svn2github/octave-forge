@@ -1,8 +1,9 @@
-## Copyright (C) 2006  Søren Hauberg
+## Copyright (C) 2006 Søren Hauberg
+## Copyright (C) 2010 Carnë Draug
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ## 
 ## This program is distributed in the hope that it will be useful,
@@ -14,74 +15,164 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} @var{h} = zenity_progress(@var{title}, @var{option1}, @var{option2})
-## @deftypefnx {Function File} zenity_progress(@var{h}, @var{progress})
-## @deftypefnx {Function File} zenity_progress(@var{h}, @var{progress}, @var{text})
-## Displays a graphical progress bar.
-## If the first argument is either non-present or a string, a new progress bar is
-## created and a handle is returned. If the first argument is a string it will be
-## used as the title of the progress bar. The two optional arguments @var{option1}
-## and @var{option2} can be
+## @deftypefn {Function File} @var{h} = zenity_progress
+## @deftypefnx {Function File} @var{h} = zenity_progress (@var{param1}, @var{value1}, ...)
+## @deftypefnx {Function File} @var{s} = zenity_progress (@var{h}, @var{param1}, @var{value1}, ...)
+## @deftypefnx {Function File} @var{s} = zenity_progress (@var{h}, "close")
+## Displays a progress bar dialog using Zenity.
+##
+## The first and second forms of the @command{zenity_progress} function creates
+## a new progress bar dialog with whatever parameters are set, and return the
+## handle @var{h} for later interaction with the progress bar or @code{-1}
+## on error. All @var{parameters} for this form are optional but if given, may
+## require a corresponding @var{value}. All possibilities are:
+##
 ## @table @samp
-## @item auto-close
-## The progress bar will be closed when it reaches 100.
+## @item percentage
+## Sets the initial value of the progress bar. Requires a scalar between @code{0} and
+## @code{100} as value.
+##
+## @item text
+## Sets the text of the dialog window. Requires a string as value.
+##
+## @item auto close
+## When the bar reachs @code{100}, automatically closes the dialog window. Requires no value.
+##
+## @item auto kill
+## If the @option{cancel} button is pressed, it will kill the parent process
+## (@abbr{i.e.} the program that is calling the function). Requires no value.
+##
+## @item hide cancel
+## Hides the @option{cancel} button from the dialog window (the user can still
+## close the window with its functions). Requires no value.
+##
 ## @item pulsate
-## The progress bar will pulsate.
+## The progress bar will be pulsing instead of showing a bar increasing with
+## percentage. Setting the percentage, will have no effect. Requires no value.
+##
+## @item icon
+## Sets the icon of the window. Requires a string as value with the file path to
+## an image, or one of the four stock icons:
+##
+## @table @samp
+## @item error
+## @item info
+## @item question
+## @item warning
 ## @end table
 ##
-## If the first argument is a handle to a progress bar and the second
-## argument is an integer, the progress bar will set its current value
-## to the given integer. If the second argument is a string, the text
-## of the progress bar will be set to the given string.
-## It is possible to pass both an integer and a string to the function
-## in one function call.
+## @item timeout
+## Sets the time in seconds after which the dialog is closed. Requires a scalar
+## as value.
 ##
-## @seealso{zenity_calendar, zenity_list, zenity_entry, zenity_message,
-## zenity_text_info, zenity_file_selection, zenity_notification}
+## @item title
+## Sets the title of the window. Requires a string as value.
+##
+## @item height
+## Sets the height of the dialog window. Requires a scalar as value.
+##
+## @item width
+## Sets the width of the dialog window. Requires a scalar as value.
+##
+## @end table
+##
+## The third form of the @command{zenity_progress} function changes the
+## parameteres of the existing progress bar given the handle @var{h}. The only
+## parameters allowed are @option{percentage} and @option{text}. Returns @code{0} on
+## success and @code{-1} on error.
+##
+## The fourth form of the @command{zenity_progress} function finishes the progress
+## bar, given the handle @var{h} followed by the string @code{close}. This will
+## move the progress bar to the end and wait for the user to press
+## @option{OK}. To avoid this behaviour, @option{auto close} can be set when
+## creating the progress bar. Returns @code{0} on success and @code{-1} on error.
+##
+## @strong{Note:} ultimately, the availability of some parameters is dependent
+## on the user's system preferences and zenity version.
+##
+## @seealso{zenity_notification, zenity_message}
 ## @end deftypefn
 
-function pid = zenity_progress(h, progress, text)
-  ## Create a progress bar?
-  if (nargin == 0 || (nargin >= 1 && ischar(h)))
-    ## Title
-    title = options = "";
-    if (nargin == 1)
-        title = sprintf('--title="%s" --text="%s"', h, h);
-    endif
-    ## Options
-    if (nargin > 1 && ischar(progress))
-      if (strcmpi(progress, "auto-close"))
-        options = sprintf("%s --auto-close", options);
-      elseif (strcmpi(progress, "pulsate"))
-        options = sprintf("%s --pulsate", options);
-      endif
-    endif
-    if (nargin > 2 && ischar(text))
-      if (strcmpi(text, "auto-close"))
-        options = sprintf("%s --auto-close", options);
-      elseif (strcmpi(text, "pulsate"))
-        options = sprintf("%s --pulsate", options);
-      endif
-    endif
-    ## Start the process
-    pid = popen(["zenity --progress ", title, " ", options], "w");
-  ## Handle an existing process
-  elseif (nargin > 0 && isnumeric(h))
-    out = "";
-    if (nargin > 1 && isnumeric(progress))
-      out = sprintf("%s\n%d\n", out, progress);
-    endif
-    if (nargin > 1 && ischar(progress))
-      out = sprintf("%s\n#%s\n", out, progress);
-    endif
-    if (nargin > 2 && isnumeric(text))
-      out = sprintf("%s\n%d\n", out, text);
-    endif
-    if (nargin > 2 && ischar(text))
-      out = sprintf("%s\n#%s\n", out, text);
-    endif
-    fputs(h, out);
+function sta = zenity_progress(varargin)
+
+  ## If no arguments, open a new progress bar
+  if ( nargin == 0 )
+    pipelining  = 0;
+  ## If first argument is the fid for an already open progress, remove it
+  ## from varargin (remove it != empty it) before feeding to _zenity_options_
+  elseif (isscalar (varargin{1}) && isnumeric(varargin{1}) )
+    pipelining  = 1;
+    handle      = varargin{1};
+    varargin(1) = [];
+  elseif ( ischar(varargin{1}) && strcmpi(varargin{1}, "close") )
+    error("Argument to close was given, but not the handle.")
   else
-    print_usage();
+    pipelining  = 0;
+  endif
+
+  if (pipelining)
+    ## If the first argument after the handle is the string 'close' say 'bye bye'
+    if ( ischar(varargin{1}) && strcmpi(varargin{1}, "close") )
+      if (nargin > 2)
+        warning ("There's %g argument(s) after '%s' which will be ignored", (nargin-2), varargin{1})
+      endif
+      try
+        sta = pclose(handle);
+      catch
+        sta = -1;
+      end_try_catch
+      return
+    endif
+    options = _zenity_options_ ("piped progress", varargin);
+    ## Must add the new line only if they exist or zenity will complain about
+    ## not being able to parse some of the lines.
+    ## Atention to whitespace. First character must be digit or #
+    ## " #test text"  <-- no error, but does nothing
+    ## "#test text"   <-- changes text for 'test text
+    ## "# test text"  <-- exactly the same as above
+    options.text    = add_newline (options.text);
+    options.percent = add_newline (options.percent);
+
+    pre_cmd = sprintf("%s", ...
+                      options.text, ...
+                      options.percent);
+    try
+      ## just in case someone has been playing with the pipe, flush it before
+      fflush (handle);
+      sta = fputs(handle, pre_cmd);
+      ## make sure there's no input buffered
+      fflush (handle);
+    catch
+      sta = -1;
+    end_try_catch
+  else
+    options = _zenity_options_ ("new progress", varargin);
+    pre_cmd = sprintf("%s ", ...
+                      options.title, ...
+                      options.width, ...
+                      options.height,...
+                      options.timeout, ...
+                      options.icon, ...
+                      options.text, ...
+                      options.percent, ...
+                      options.auto_close, ...
+                      options.pulsate, ...
+                      options.auto_kill,...
+                      options.hide_cancel);
+    cmd     = sprintf("zenity --progress %s", pre_cmd);
+    try
+      sta   = popen(cmd, "w");
+    catch
+      sta   = -1
+    end_try_catch
+  endif
+
+endfunction
+
+### Add new lines only if the option exist and replace other newlines that may be
+function val = add_newline (val)
+  if(!isempty(val))
+    val = strrep (val, "\n", " ");
+    val = sprintf("%s\n", val);
   endif
 endfunction

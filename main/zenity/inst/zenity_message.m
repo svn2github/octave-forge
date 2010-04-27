@@ -57,17 +57,23 @@
 ## @item OK button
 ## Sets the the text to show on the @option{OK} button if type of message is set
 ## to @option{question}. Requires a string as value.
+##
 ## @item cancel button
 ## Sets the the text to show on the @option{cancel} button if type of message is
 ## set to @option{question}. Requires a string as value.
+##
 ## @item title
 ## Sets the title of the window. Requires a string as value.
+##
 ## @item no-wrap
 ## Disables text wrapping. No value is required.
+##
 ## @item width
 ## Sets the width of the dialog window. Requires a scalar as value.
+##
 ## @item height
 ## Sets the height of the dialog window. Requires a scalar as value.
+##
 ## @item timeout
 ## Sets the time in seconds after which the dialog is closed. Requires a scalar
 ## as value.

@@ -35,11 +35,11 @@
 ## @end example
 ##
 ## @var{selected} holds a string with the value of the first column of the
-## selected row. If the parameter @code{multiple} is set, or the @code{print
+## selected row. If the parameter @option{multiple} is set, or the @option{print
 ## column} has multiple values, @var{selected} is a cell array of strings. If a
 ## value is empty, it returns @code{(null)}. The values of @var{selected} may
 ## come in any order since the user is allowed to sort them. Instead, use of the
-## parameter @code{hide column}, together with a numbered column is recomended.
+## parameter @option{hide column}, together with a numbered column is recomended.
 ##
 ## In the case no value has been selected when the window closes, @var{selected}
 ## will hold an empty string or cell array, the same size as it would be
@@ -58,13 +58,13 @@
 ## The first column in the list will be of check buttons. No value is required. If
 ## set, the first column of @var{data} must consist of strings with values
 ## @code{true} or @code{false} and the rows with values of @code{true} will be
-## selected by default. This parameter cannot be set together with the
-## parameters @code{editable}.or @code{checklist}. It automatically sets
-## the parameter @code{multiple}. If set, @var{selected} will hold the
+## selected by default. This parameter cannot be set together with
+## @option{editable}.or @option{checklist}. It automatically sets
+## the parameter @option{multiple}. @var{selected} will return the
 ## values for the second column of data.
 ##
 ## The following example creates a list with the first and second row selected
-## by default. If user presses OK, it will return a cell array with two rows,
+## by default. If user press @option{OK}, it will return a cell array with two rows,
 ## with the strings @code{FreeBSD} and @code{Linux}.
 ##
 ## @example
@@ -79,7 +79,7 @@
 ##
 ## @item editable
 ## Allows the user to edit the values. No value is required. It cannot be set
-## together with the parameters @code{checklist} or @code{radiolist}. Since a
+## together with @option{checklist} or @option{radiolist}. Since a
 ## value can be erased, if an empty value is selected, it returns @code{(null)}.
 ##
 ## @item height
@@ -87,10 +87,10 @@
 ##
 ## @item hide column
 ## Hides the specified columns from the user. Requires a numeric data type as
-## value. Multiple columns can be selected with ranges or matrixes. If the
-## parameters @code{radiolist} or @code{checklist} are set, the first
+## value. Multiple columns can be selected with ranges or matrixes. If
+## @option{radiolist} or @option{checklist} are set, the first
 ## column cannot cannot be hidden. The values of these columns will still be
-## present in the output @var{selected}.
+## present in @var{selected}.
 ##
 ## The following example will show a list with foods only and a column with
 ## radio buttons. It will return the third column of @var{data}, the one that is
@@ -124,8 +124,7 @@
 ##
 ## @item multiple
 ## Allows multiple rows to be selected. No value is required. It cannot be set
-## together with parameter @code{radiolist}. and it is automatically set when
-## parameter @code{checklist} is set.
+## with @option{radiolist} and is automatically set when @option{checklist} is set.
 ##
 ## @item numeric output
 ## Returns @var{selected} as a matrix and numeric values (double precision type)
@@ -134,26 +133,25 @@
 ##
 ## @table @samp
 ## @item error
-## Abort the function and return an error if unable to covert into numeric form.
+## Abort the function and give an error if unable to covert into numeric form.
 ## @item nan
-## Returns NaN for the values it is unable to convert.
+## Returns @code{NaN} for the values it is unable to convert.
 ## @end table
 ##
 ## @item print column
 ## The numbers of the columns whose values should be returned. Requires a numeric
 ## data type as value. Multiple columns can be selected with ranges or matrixes,
-## and all columns can be selected with the scalar 0 (zero). If the
-## parameters @code{radiolist} or @code{checklist} are set, the first
+## and all columns can be selected with the scalar @code{0}. If the
+## @option{radiolist} or @option{checklist} are set, the first
 ## column cannot cannot be returned.
 ##
 ## @item radiolist
 ## The first column in the list will be of radio buttons. No value is required. If
 ## set, the first column of @var{data} must be consiste of strings with values
 ## @code{true} or @code{false}. If a row has a value of @code{true}, and only
-## one row can have that value, it will be selected by default. This parameter
-## cannot be set together with the parameters @code{multiple},
-## @code{editable}.or @code{checklist}. If set, @var{selected} will hold the
-## values for the second column of data.
+## one row can have that value, it will be selected by default. Cannot be set
+## with @option{multiple}, @option{editable}.or @option{checklist}. @var{selected}
+## will return the values for the second column of data.
 ##
 ## @item text
 ## Sets the dialog text. Requires a string as value.

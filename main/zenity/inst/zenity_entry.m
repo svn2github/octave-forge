@@ -30,19 +30,24 @@
 ## an empty string, despite whatever text was in the entry field.
 ##
 ## All @var{parameters} are optional, but if given, may require a corresponding
-## @var{value1}. All possible parameters are:
+## @var{value}. All possible parameters are:
 ##
 ## @table @samp
 ## @item entry
 ## Sets the default text in the entry field. Requires a string as value.
+##
 ## @item title
 ## Sets the title of the window. Requires a string as value.
+##
 ## @item password
 ## Hides the text in the text entry field. No value is required.
+##
 ## @item width
 ## Sets the width of the dialog window. Requires a scalar as value.
+##
 ## @item height
 ## Sets the height of the dialog window. Requires a scalar as value.
+##
 ## @item icon
 ## Sets the icon of the window. Requires a string as value with the file path to
 ## an image, or one of the four stock icons:

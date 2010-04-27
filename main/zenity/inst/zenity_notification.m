@@ -22,23 +22,23 @@
 ## Displays an icon with a text in the notification area, and pop up messages
 ## using Zenity.
 ##
-## The first and second forms of the @code{zenity_notification} function creates
+## The first and second forms of the @command{zenity_notification} function creates
 ## a new notification icon with whatever parameters are set, and return the
 ## handle @var{h} for later interaction with the notification icon or @code{-1}
 ## on error.
 ##
-## The third form of the @code{zenity_notification} function changes the
+## The third form of the @command{zenity_notification} function changes the
 ## parameteres of the existing icon and/or displays popup messages given the
 ## handle @var{h}. Returns @code{0} on success and @code{-1} on error.
 ##
-## The fourth form of the @code{zenity_notification} function closes the
+## The fourth form of the @command{zenity_notification} function closes the
 ## notification icon given the handle @var{h} followed by the string
 ## @code{close}. Returns @code{0} on success and @code{-1} on error.
 ##
 ## The following example, creates a notification info icon in the notification
 ## panel that shows the text @samp{working} when the mouse is over the
 ## icon. Then shows a pop up message saying @samp{step 1 started} followed by
-## another saying @samp{"error during step 1} all the while changing the icon
+## another saying @samp{error during step 1} all the while changing the icon
 ## from info to error. It then finnaly closes the icon, removing it from the
 ## notification panel. Trough all the example, the text stays @samp{working}.
 ##
@@ -75,7 +75,7 @@
 ## @item text
 ## Sets the notification text. Requires a string as value. This text appears
 ## when the mouse is placed over the icon. To show a popup notification, use
-## @code{message}.
+## @option{message}.
 ##
 ## @item timeout
 ## Sets the time in seconds after which the dialog is closed. Requires a scalar
@@ -83,9 +83,8 @@
 ##
 ## @item visible
 ## Sets the visibility pf the icon in the notification area. Requires the string
-## @code{'on'} or @code{'off'} as value and can only be used if the notification
-## icon already exists. @code{'on'} makes the icon visible, while @code{'off'}
-## makes it invisible.
+## @code{on} or @code{off} as value and can only be used if the notification
+## icon already exists.
 ## @end table
 ##
 ## @strong{Note:} ultimately, the availability of some parameters is dependent
@@ -147,7 +146,7 @@ function sta = zenity_notification (varargin)
     ## with the new icon (the icon is also present on the messages, not only in
     ## the panel)
     pre_cmd = sprintf("%s", ...
-                      options.icon, ...
+                      options.icon, ... # This one (icon), must come first
                       options.text, ...
                       options.message, ...
                       options.visible);
@@ -163,7 +162,7 @@ function sta = zenity_notification (varargin)
   else
     options = _zenity_options_ ("new notification", varargin);
     pre_cmd = sprintf("%s ", ...
-                      options.icon, ...
+                      options.icon, ... 
                       options.text, ...
                       options.timeout);
     cmd     = sprintf("zenity --notification --listen %s", pre_cmd);

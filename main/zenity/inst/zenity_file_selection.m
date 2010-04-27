@@ -31,17 +31,23 @@
 ## @table @samp
 ## @item directory
 ## Activates directory-only selection. No value is required.
+##
 ## @item filename
 ## Sets the default selected file. Requires a string as value.
+##
 ## @item filter
 ## Sets a filename filter. Requires a string as value. Multiple filters can be
-## set with multiple calls for this setting. The following example shows how to
-## block users from selecting files that don't end in `.txt' or `.m':
+## set with multiple calls of this parameter, or one filter can be made with
+## multiple regexp. Filters can also be named which blocks the user from actualy
+## seeing the filter.. The following examples shows how to create two filters,
+## two named filters, one filter for two different extensions, and the same
+## filter but named:
 ## @example
 ## @code{zenity_file_selection ("filter", "*.txt", "filter", "*.m")}
+## @code{zenity_file_selection ("filter", "text files| *.txt", "filter", "octave files| *.m")}
+## @code{zenity_file_selection ("filter", "*.tif *.png")}
+## @code{zenity_file_selection ("filter", "Images | *.tif *.png")}
 ## @end example
-## @item height
-## Sets the height of the dialog window. Requires a scalar as value.
 ##
 ## @item icon
 ## Sets the icon of the window. Requires a string as value with the file path to
@@ -57,13 +63,20 @@
 ## @item multiple
 ## Allows selection of multiple files. No value is required. @var{files} will
 ## hold a cell array, even if user selects only one or no file.
+##
 ## @item save
 ## The file selection dialog is a dialog for saving files. No value is required.
+##
 ## @item timeout
 ## Sets the time in seconds after which the dialog is closed. Requires a scalar
 ## as value.
+##
 ## @item title
 ## Sets the title of the window. Requires a string as value.
+##
+## @item height
+## Sets the height of the dialog window. Requires a scalar as value.
+##
 ## @item width
 ## Sets the width of the dialog window. Requires a scalar as value.
 ## @end table

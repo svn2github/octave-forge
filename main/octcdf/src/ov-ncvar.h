@@ -90,7 +90,17 @@ public:
   int ndims() const  { return dims().length(); }
 
   octave_idx_type numel() const  { return dims().numel(); }
-  octave_idx_type numel(const octave_value_list&) { return dims().numel(); };
+
+  // This does not work:
+  //
+  // octave_idx_type numel(const octave_value_list&) { return dims().numel(); };
+  // It is necessary to make numel turn 1, otherwise the following fails:
+  //
+  // >> nc{'int_var'}.byte_att = ncbyte(1234);
+  // invalid assignment to cs-list outside multiple assignment.
+
+
+  octave_idx_type numel(const octave_value_list&) { return 1; };
 
   // Get dim_vector following NetCDF conventions
 

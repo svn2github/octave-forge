@@ -40,7 +40,7 @@
 ## zenity_text_info}
 ## @end deftypefn
 
-function op = _zenity_options_ (dialog, varargin)
+function op = zenity_options (dialog, varargin)
 
   varargin = varargin{1};    # because other functions varargin is this varargin
 

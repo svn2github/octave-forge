@@ -100,7 +100,7 @@ function status = zenity_message(text, varargin)
   endif
   text = sprintf('--text="%s"', text);
 
-  options = _zenity_options_ ("message", varargin);
+  options = zenity_options ("message", varargin);
 
   ## Sanity checks
   if ( !strcmpi(options.type, "--question") && (options.ok || options.cancel))

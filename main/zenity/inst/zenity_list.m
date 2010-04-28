@@ -239,7 +239,7 @@ function [val, status] = zenity_list(col, data, varargin)
     endif
   endfor
 
-  options                       = _zenity_options_ ("list", varargin);
+  options                       = zenity_options ("list", varargin);
 
   ## More sanity checks
   if ( !isempty(options.check) && !isempty(options.radio) )

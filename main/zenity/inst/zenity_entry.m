@@ -84,7 +84,7 @@ function [out, status] = zenity_entry(text, varargin)
   endif
   text = sprintf("--text=\"%s\"", text);
 
-  options = _zenity_options_ ("entry", varargin);
+  options = zenity_options ("entry", varargin);
 
   pre_cmd = sprintf("%s ", ...
                     text, ...

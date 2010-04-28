@@ -94,7 +94,7 @@ function [files, status] = zenity_file_selection(varargin)
   ## This is similar to the functions input and pause
   drawnow;
 
-  options = _zenity_options_ ("file selection", varargin);
+  options = zenity_options ("file selection", varargin);
 
   if ( !isempty(options.save) && (!isempty(options.multiple) || !isempty(options.directory)) )
     error ("Parameter 'save' cannot be set together with 'multiple' or directory'.");

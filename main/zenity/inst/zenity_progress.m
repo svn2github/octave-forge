@@ -99,7 +99,7 @@ function sta = zenity_progress(varargin)
   if ( nargin == 0 )
     pipelining  = 0;
   ## If first argument is the fid for an already open progress, remove it
-  ## from varargin (remove it != empty it) before feeding to _zenity_options_
+  ## from varargin (remove it != empty it) before feeding to zenity_options
   elseif (isscalar (varargin{1}) && isnumeric(varargin{1}) )
     pipelining  = 1;
     handle      = varargin{1};
@@ -123,7 +123,7 @@ function sta = zenity_progress(varargin)
       end_try_catch
       return
     endif
-    options = _zenity_options_ ("piped progress", varargin);
+    options = zenity_options ("piped progress", varargin);
     ## Must add the new line only if they exist or zenity will complain about
     ## not being able to parse some of the lines.
     ## Atention to whitespace. First character must be digit or #
@@ -146,7 +146,7 @@ function sta = zenity_progress(varargin)
       sta = -1;
     end_try_catch
   else
-    options = _zenity_options_ ("new progress", varargin);
+    options = zenity_options ("new progress", varargin);
     pre_cmd = sprintf("%s ", ...
                       options.title, ...
                       options.width, ...

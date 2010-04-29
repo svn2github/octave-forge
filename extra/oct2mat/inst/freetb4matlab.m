@@ -57,15 +57,23 @@ if isempty(indir)
 	end;
 end;
 
-p0 = '/tmp/oct2mat';
-global OCT2MAT_CMD
-if isempty(OCT2MAT_CMD)
-	OCT2MAT_CMD = [getenv('HOME'), '/src/octave-forge/extra/oct2mat/inst/oct2mat '];
-end; 
-
 if ~exist(outdir,'dir')
 	unix(['mkdir ',outdir]);
 end;
+
+global OCT2MAT_CMD
+if isempty(OCT2MAT_CMD)
+        % invoke only once
+	p = fileparts(which('freetb4matlab'));
+	OCT2MAT_CMD = [p, filesep,'oct2mat '];
+	p0 = fullfile(outdir,'oct2mat'); 
+        if ~exist(p0,'dir')
+        	unix(['mkdir ',p0]);
+        end;
+	generate_basics(p0);
+end; 
+
+p0 = '/tmp/oct2mat';
 if ~exist(p0,'dir')
 	unix(['mkdir ',p0]);
 end;
@@ -83,10 +91,12 @@ for k=1:length(fn)
 	elseif (fn(k).name(end)=='~')
 		;
 	elseif fn(k).isdir,
-		if strmatch(fn(k).name,{'miscellaneous','freetb4matlab','admin'},'exact')
+		if strmatch(fn(k).name,{'miscellaneous','freetb4matlab','language','admin','deprecated'},'exact')
 			; % ignore these directories 
 			; % some files conflict with (matlab-) functions used in this script 
 			; % freetb4matlab is the default target directory, this would result in endless recursion
+		elseif (fn(k).name(1)=='@')
+			; % same as above
 		elseif (isequal(fn(k).name,'doc') ...
 			 || isequal(fn(k).name,'inst') ...
 			 || isequal(fn(k).name,'src')  ...

@@ -1,0 +1,162 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' ncurses-5.7-orig/include/tic.h ncurses-5.7/include/tic.h
+--- ncurses-5.7-orig/include/tic.h	2010-05-03 10:58:41 +0000
++++ ncurses-5.7/include/tic.h	2010-05-03 14:01:29 +0000
+@@ -318,6 +318,9 @@
+     dbdTIC = 0,
+ #if USE_DATABASE
+     dbdEnvOnce,
++#if defined(__MINGW32__)
++    dbWin32,
++#endif
+     dbdHome,
+     dbdEnvList,
+     dbdCfgList,
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' ncurses-5.7-orig/misc/run_tic.in ncurses-5.7/misc/run_tic.in
+--- ncurses-5.7-orig/misc/run_tic.in	2010-05-03 10:58:44 +0000
++++ ncurses-5.7/misc/run_tic.in	2010-05-03 10:59:12 +0000
+@@ -141,33 +141,33 @@
+ # to find terminfo under /usr/lib.  That is, we'll _try_ to do that.  Not
+ # all systems support symbolic links, and those that do provide a variety
+ # of options for 'test'.
+-if test "$TICDIR" != "$TERMINFO" ; then
+-	( rm -f $TICDIR 2>/dev/null )
+-	if ( cd $TICDIR 2>/dev/null )
+-	then
+-		cd $TICDIR
+-		TICDIR=`pwd`
+-		if test $TICDIR != $TERMINFO ; then
+-			# Well, we tried.  Some systems lie to us, so the
+-			# installer will have to double-check.
+-			echo "Verify if $TICDIR and $TERMINFO are the same."
+-			echo "The new terminfo is in $TERMINFO; the other should be a link to it."
+-			echo "Otherwise, remove $TICDIR and link it to $TERMINFO."
+-		fi
+-	else
+-		cd ${DESTDIR}$prefix
+-		# Construct a symbolic link that only assumes $ticdir has the
+-		# same $prefix as the other installed directories.
+-		RELATIVE=`echo $ticdir|sed -e 's%^'$prefix'/%%'`
+-		if test "$RELATIVE" != "$ticdir" ; then
+-			RELATIVE=../`echo $ticdir|sed -e 's%^'$prefix'/%%' -e 's%^/%%'`
+-		fi
+-		if ( @LN_S@ $RELATIVE $TICDIR )
+-		then
+-			echo '** sym-linked '$TICDIR' for compatibility'
+-		else
+-			echo '** could not sym-link '$TICDIR' for compatibility'
+-		fi
+-	fi
+-fi
++#if test "$TICDIR" != "$TERMINFO" ; then
++#	( rm -f $TICDIR 2>/dev/null )
++#	if ( cd $TICDIR 2>/dev/null )
++#	then
++#		cd $TICDIR
++#		TICDIR=`pwd`
++#		if test $TICDIR != $TERMINFO ; then
++#			# Well, we tried.  Some systems lie to us, so the
++#			# installer will have to double-check.
++#			echo "Verify if $TICDIR and $TERMINFO are the same."
++#			echo "The new terminfo is in $TERMINFO; the other should be a link to it."
++#			echo "Otherwise, remove $TICDIR and link it to $TERMINFO."
++#		fi
++#	else
++#		cd ${DESTDIR}$prefix
++#		# Construct a symbolic link that only assumes $ticdir has the
++#		# same $prefix as the other installed directories.
++#		RELATIVE=`echo $ticdir|sed -e 's%^'$prefix'/%%'`
++#		if test "$RELATIVE" != "$ticdir" ; then
++#			RELATIVE=../`echo $ticdir|sed -e 's%^'$prefix'/%%' -e 's%^/%%'`
++#		fi
++#		if ( @LN_S@ $RELATIVE $TICDIR )
++#		then
++#			echo '** sym-linked '$TICDIR' for compatibility'
++#		else
++#			echo '** could not sym-link '$TICDIR' for compatibility'
++#		fi
++#	fi
++#fi
+ # vile:shmode
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' ncurses-5.7-orig/ncurses/tinfo/db_iterator.c ncurses-5.7/ncurses/tinfo/db_iterator.c
+--- ncurses-5.7-orig/ncurses/tinfo/db_iterator.c	2010-05-03 10:58:55 +0000
++++ ncurses-5.7/ncurses/tinfo/db_iterator.c	2010-05-03 14:02:44 +0000
+@@ -165,6 +165,11 @@
+ 		result = _nc_home_terminfo();
+ 	    }
+ 	    break;
++#if defined(__MINGW32__)
++	case dbWin32:
++	    result = _nc_win32_terminfo();
++	    break;
++#endif
+ 	case dbdEnvList:
+ 	    if (use_terminfo_vars()) {
+ 		if ((result = NEXT_DBD(getenv("TERMINFO_DIRS"), offset)) != 0)
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' ncurses-5.7-orig/ncurses/tinfo/home_terminfo.c ncurses-5.7/ncurses/tinfo/home_terminfo.c
+--- ncurses-5.7-orig/ncurses/tinfo/home_terminfo.c	2008-08-03 23:43:11 +0000
++++ ncurses-5.7/ncurses/tinfo/home_terminfo.c	2010-05-03 14:05:25 +0000
+@@ -34,6 +34,12 @@
+  *	home_terminfo.c -- return the $HOME/.terminfo string, expanded
+  */
+ 
++#if defined(__MINGW32__)
++#include <windows.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#endif
++
+ #include <curses.priv.h>
+ #include <tic.h>
+ 
+@@ -65,3 +71,51 @@
+ #endif
+     return result;
+ }
++
++#if defined(__MINGW32__)
++NCURSES_EXPORT(char *)
++_nc_win32_terminfo(void)
++{
++    char *result = 0;
++    static char *temp = 0;
++    int n = 1024, nr;
++
++    if (temp == 0) {
++        HMODULE hmod = GetModuleHandle("libncurses-5");
++        do {
++            if (temp == 0)
++                temp = typeMalloc(char, n);
++            else {
++                n *= 2;
++                temp = typeRealloc(char, n, temp);
++            }
++
++            if ((nr = GetModuleFileName(hmod, temp, n)) == 0)
++                break;
++            else if (nr < n) {
++                char *p = strrchr(temp, '\\');
++                if (p != 0) {
++                    *p = 0;
++                    nr = strlen(temp);
++                    if (nr > 4 && strncmp(&temp[nr-4], "\\bin", 4) == 0) {
++                        struct stat st;
++                        temp = typeRealloc(char, nr-4+64, temp);
++                        strcpy(&temp[nr-4], "\\share\\terminfo");
++                        if (stat(temp, &st) == 0 && (st.st_mode & _S_IFDIR) != 0)
++                            result = temp;
++                    }
++                }
++                break;
++            }
++        } while (1);
++    } else
++        result = temp;
++
++    if (result == 0 && temp != 0) {
++        free(temp);
++        temp = 0;
++    }
++
++    return result;
++}
++#endif

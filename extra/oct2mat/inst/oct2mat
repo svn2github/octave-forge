@@ -36,6 +36,7 @@
 #    blah() -> blah
 #    gset blah -> 
 #    blah \<nl> -> blah ...<nl>
+#    blah ( blah1 <nl> blah2 ) -> blah ( blah1 ...<nl> blah2 )
 #    SEEK_SET, SEEK_CUR, SEEK_END -> -1, 0, 1
 #    __error_text__ -> lasterr
 # Support functions:
@@ -47,6 +48,9 @@
 #    x=y=blah;   ->  y=blah; x=y;
 #    function [x y]=blah -> function [x, y]=blah
 #    global y=blah; -> global y; if isempty(y), y=blah; end
+#    [0,blah()](1:n), [1:10](3:5)
+#    blah()(1:n), (1:10)(3:5)
+#    num2cell(1:n)(3:5), {1,2,3,4,5,6,7}(3:5)  
 #    error(x,y,z) -> error(sprintf(x,y,z))
 #    end -> <nl>   if 'end' happens to be the end for the function def.
 #    unwind_protect doblah unwind_protect_cleanup cleanblah end_unwind_protect
@@ -143,7 +147,10 @@ function fixquotes(x)
 
 
 #BEGIN { target=ENVIRON["HOME"] "/matlab/"; }
-BEGIN { target="/tmp/oct2mat/"; }
+BEGIN { 
+        target="/tmp/oct2mat/"; 
+        ocnt = 0; 
+}
 
 FNR==1 {
   if (file) { 
@@ -183,7 +190,20 @@ FNR==1 {
     gsub("end_unwind_protect","");
     gsub("unwind_protect","");
     gsub("!","~");
-    gsub("[\\\\]$","...");
+    gsub("[\\\\]$","..."); 
+#### add ... when line is not closed ####
+    {
+        line = $0;
+        lcnt = gsub("\(","",line);
+        rcnt = gsub("\)","",line);        
+        ocnt = ocnt+lcnt-rcnt;
+        if (ocnt > 0 && !index($0 ,"...") )
+                $0 = $0 " ...";
+    }
+#### replace obsolete functions ####
+    gsub("cell \(\);", "{};");
+    gsub("= t_cdf \(" , "= tcdf \(");
+    gsub("is_matrix","ismatrix");
     if (incopyright) copyright = copyright "\n" fixquotes($0); 
     else body = body "\n" fixquotes($0);
 }

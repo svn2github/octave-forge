@@ -84,7 +84,7 @@ cd(indir);
 fn=dir(indir);
 unix(['rm -rf ',p0,'/* ']);
 
-for k=1:length(fn)
+for k=1:length(fn),
 	f = fullfile(indir,fn(k).name);
 	if (fn(k).name(1)=='.')
 		;
@@ -104,6 +104,13 @@ for k=1:length(fn)
 			 || isequal(fn(k).name,'extra') )
 		 	%% pruning of directory tree
 			freetb4matlab(f,outdir);
+		elseif 0, ~exist('OCTAVE_VERSION','builtin') && any(strmatch(fn(k).name,{'general','string'},'exact'))
+		        %% this is very slow
+		        cmd = ['cd ',f,'; ',OCT2MAT_CMD,';']
+		        unix(cmd);
+		        cmd = ['cp /tmp/oct2mat ',fullfile(outdir,fn(k).name)]
+		        unix(cmd); 
+		        break;
 		else
 			freetb4matlab(f,fullfile(outdir,fn(k).name));
 		end;
@@ -115,6 +122,8 @@ for k=1:length(fn)
 		unix([OCT2MAT_CMD fn(k).name]);
 		unix(['cp ',fullfile(p0,fn(k).name),' ',outdir]);
 
+        elseif any(strfind(fn(k).name,'.o')==length(fn(k).name)-1) || any(strfind(fn(k).name,'.mex')==length(fn(k).name)-3) 
+                ;         % skip *.o and *.mex files  
 	else 
 		%% copy all other files, too. They might contain information to fix some problems.
 		unix(['cp ',f,' ',outdir]);

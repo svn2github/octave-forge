@@ -4,6 +4,9 @@
 # then type oct2mat files.  This will convert all files in that directory,
 # storing the output in $HOME/matlab., auplot_points=1000; endif
 #
+# Copyright 2001,2002,2003,2004 Paul Kienzle
+# Copyright 2010 Alois Schloegl 
+#
 # Goal: automatically convert most octave code so that it will run on matlab.
 #    * Preferably, the code should run on matlab4, but the lack of varargin
 #    support makes this awkward for some functions.
@@ -44,14 +47,16 @@
 #    Note: these routines should be run through octave2matlab
 #    striplegend removes ;blah; from string
 # Does not yet handle:
-#    _y -> y_
+#    k++; k--; blah(k++), blah(k--);
+#    +=, *=, -=, /=, etc.
+#    __y -> y__
 #    x=y=blah;   ->  y=blah; x=y;
 #    function [x y]=blah -> function [x, y]=blah
 #    global y=blah; -> global y; if isempty(y), y=blah; end
 #    [0,blah()](1:n), [1:10](3:5)
 #    blah()(1:n), (1:10)(3:5)
 #    num2cell(1:n)(3:5), {1,2,3,4,5,6,7}(3:5)  
-#    error(x,y,z) -> error(sprintf(x,y,z))
+#    do a until (c);
 #    end -> <nl>   if 'end' happens to be the end for the function def.
 #    unwind_protect doblah unwind_protect_cleanup cleanblah end_unwind_protect
 #        -> try doblah cleanblah catch cleanblah end
@@ -180,15 +185,16 @@ FNR==1 {
     gsub("endwhile","end");
     gsub("endfor","end");
     gsub("endswitch","end");
+    gsub("endclassdef","end");
     gsub("end_try_catch","end");
     gsub("SEEK_CUR",0);
     gsub("SEEK_END",1);
     gsub("SEEK_SET",-1);
     gsub("usage","error");
     gsub("__error_text__","lasterr");
-    gsub("unwind_protect_cleanup","");
+    gsub("unwind_protect_cleanup","end");
     gsub("end_unwind_protect","");
-    gsub("unwind_protect","");
+    gsub("unwind_protect","try");
     gsub("!","~");
     gsub("[\\\\]$","..."); 
 #### add ... when line is not closed ####

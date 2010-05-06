@@ -41,12 +41,18 @@ And especially Paul Kienzle for oct2mat
 INSTALL: 
 ==========
 
+You need awk (available on any unix system).
+Binaries for win32 are available from here:
+  http://gnuwin32.sourceforge.net/packages/gawk.htm
+  http://cm.bell-labs.com/cm/cs/awkbook/
+
 1) Include path to oct2mat
         addpath $HOME/octave-forge/extra/oct2mat/inst
 2) convert Octave/scripts
         freetb4matlab  $HOME/octave/scripts /tmp/freetb
 3) convert Octave-forge        
         freetb4matlab  $HOME/octave-forge /tmp/freetb
+
 
 
 CONTACT: 

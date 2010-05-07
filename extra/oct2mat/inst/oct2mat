@@ -150,11 +150,117 @@ function fixquotes(x)
   return y;
 }
 
+# given a string beginning with "{", "(" or "[", attempts to find 
+# a matching "}", ")" or "]" w.r.t. nesting.
+# Can also match backwards, i.e. }{, )( and ][.
+function matching_paren(s) {
+  if (length(s) == 0)
+    return 0;
+  lpar = substr(s, 0, 1);
+  if (lpar == "{")
+    rpar = "}";
+  else if (lpar == "}")
+    rpar = "{";
+  else if (lpar == "(")
+    rpar = ")";
+  else if (lpar == ")")
+    rpar = "(";
+  else if (lpar == "[")
+    rpar = "]";
+  else if (lpar == "]")
+    rpar = "[";
+  else
+    return 0;
+
+  lev = 1;
+  rem = substr(s, 2);
+  while (lev > 0 && length(rem) > 0) {
+    idxl = index(rem, lpar);
+    idxr = index(rem, rpar);
+    if (idxr > 0) {
+      if (idxl > 0 && idxl < idxr) {
+	lev += 1;
+	rem = substr(rem, idxl+1);
+      } else {
+	lev -= 1;
+	rem = substr(rem, idxr+1);
+      }
+    } else
+      rem = "";
+  }
+
+  if (lev == 0)
+    return length(s) - length(rem);
+  else
+    return 0;
+}
+
+function reverse(s)
+{
+  p = ""
+  for(i=length(s); i > 0; i--) { p = p substr(s, i, 1) }
+  return p
+}
+
+function tmpvarname()
+{
+  tmpcounter += 1;
+  return "o2m_tmp_" tmpcounter
+}
+
+function subst_indexed_expr(line, rpos) {
+  if (line ~ /\<while\>/) {
+    bad = 1;
+    print "cannot convert indexed expression in while() clause at line " NR > "/dev/stderr"
+    return line;
+  }
+
+  ## strip leading whitespace.
+  if (match(line, /^\s+/)) {
+    n = RLENGTH;
+    spc = substr(line, 1, n);
+    line = substr(line, n+1);
+    return spc subst_indexed_expr(line, rpos - n);
+  }
+
+  par = substr(line, rpos, 1);
+  lpiece = substr(line, 1, rpos);
+  lpiece = reverse(lpiece);
+  n = matching_paren(lpiece);
+  if (n == 0) {
+    bad = 1;
+    print "couldn't find matching parenthesis at line " NR > "/dev/stderr"
+    return line;
+  }
+  rem = substr(lpiece, n+1);
+
+  ## check for a semicolon
+  sem = index(rem, ";");
+  if (sem > 0) {
+    sem = length(lpiece) + 1 - (n + sem);
+    lpart = substr(line, 1, sem);
+    rpart = substr(line, sem+1);
+    return lpart subst_indexed_expr(rpart, rpos - sem);
+  }
+
+  if (par == ")") {
+    ## Attempt to include an indexed token.
+    if (match(rem, /^\s*\w+/))
+      n += RLENGTH;
+  }
+
+  varname = tmpvarname();
+  prestmt = varname " = " substr(line, rpos-n+1, n) ";\n";
+  return prestmt substr(line, 1, rpos-n) varname substr(line, rpos+1);
+}
+
 
 #BEGIN { target=ENVIRON["HOME"] "/matlab/"; }
 BEGIN { 
         target="/tmp/oct2mat/"; 
         ocnt = 0; 
+	tmpcounter = 0;
+	bad = 0;
 }
 
 FNR==1 {
@@ -197,18 +303,56 @@ FNR==1 {
     gsub("unwind_protect","try");
     gsub("!","~");
     gsub("[\\\\]$","..."); 
+
+    if (1) { ## EXPERIMENTAL...
+
+      if ($0 ~ /(\+|-|\.?\*|\.?\/|\.?\^)=/) {
+	## try to substitute computed assignments.
+	## +=, -=, &=, |= don't generally need extra parens.
+	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)])(\s*)(\+|-|\&|\|)=/, "\\1\\2=\\2\\1\\2\\3", "g");
+	## *=, /=, ^= and their dotted counterparts need parenthesizing the RHS.
+	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)])(\s*)(\.?\*|\.?\/|\.?\^)=(\s*)([^;]+)/,
+	   "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
+      }
+
+      ## match expression indexing.
+      bad = 0;
+      while (match($0, /\)\s*\(/) && !bad) { 
+	# (expr)(index) or name(expr)(index)
+	$0 = subst_indexed_expr($0, RSTART);
+      } 
+
+      bad = 0;
+      while (match($0, /\)\s*\{/) && !bad) { 
+	# (expr){index} or name(expr){index}
+	$0 = subst_indexed_expr($0, RSTART);
+      } 
+
+      bad = 0;
+      while (match($0, /\]\s*\(/) && !bad) { 
+	# [expr](index)
+	$0 = subst_indexed_expr($0, RSTART);
+      } 
+
+      bad = 0;
+      while (match($0, /\]\s*\{/) && !bad) { 
+	# [expr]{index}
+	$0 = subst_indexed_expr($0, RSTART);
+      } 
+    } ## EXPERIMENTAL
+
 #### add ... when line is not closed ####
     {
         line = $0;
-        lcnt = gsub("\(","",line);
-        rcnt = gsub("\)","",line);        
+        lcnt = gsub(/\(/,"",line);
+        rcnt = gsub(/\)/,"",line);        
         ocnt = ocnt+lcnt-rcnt;
         if (ocnt > 0 && !index($0 ,"...") )
                 $0 = $0 " ...";
     }
 #### replace obsolete functions ####
-    gsub("cell \(\);", "{};");
-    gsub("= t_cdf \(" , "= tcdf \(");
+    gsub(/cell \(\);/, "{};");
+    gsub(/= t_cdf \(/ , "= tcdf (");
     gsub("is_matrix","ismatrix");
     if (incopyright) copyright = copyright "\n" fixquotes($0); 
     else body = body "\n" fixquotes($0);

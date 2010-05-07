@@ -216,7 +216,7 @@ function subst_indexed_expr(line, rpos) {
   }
 
   ## strip leading whitespace.
-  if (match(line, /^\s+/)) {
+  if (match(line, /^[ \t]+/)) {
     n = RLENGTH;
     spc = substr(line, 1, n);
     line = substr(line, n+1);
@@ -245,7 +245,7 @@ function subst_indexed_expr(line, rpos) {
 
   if (par == ")") {
     ## Attempt to include an indexed token.
-    if (match(rem, /^\s*\w+/))
+    if (match(rem, /^[ \t]*\w+/))
       n += RLENGTH;
   }
 
@@ -309,33 +309,33 @@ FNR==1 {
       if ($0 ~ /(\+|-|\.?\*|\.?\/|\.?\^)=/) {
 	## try to substitute computed assignments.
 	## +=, -=, &=, |= don't generally need extra parens.
-	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])(\s*)(\+|-|\&|\|)=/, "\\1\\2=\\2\\1\\2\\3", "g");
+	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\+|-|\&|\|)=/, "\\1\\2=\\2\\1\\2\\3", "g");
 	## *=, /=, ^= and their dotted counterparts need parenthesizing the RHS.
-	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])(\s*)(\.?\*|\.?\/|\.?\^)=(\s*)([^;]+)/,
+	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\.?\*|\.?\/|\.?\^)=([ \t]*)([^;]+)/,
 	   "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
       }
 
       ## match expression indexing.
       bad = 0;
-      while (match($0, /\)\s*\(/) && !bad) { 
+      while (match($0, /\)[ \t]*\(/) && !bad) { 
 	# (expr)(index) or name(expr)(index)
 	$0 = subst_indexed_expr($0, RSTART);
       } 
 
       bad = 0;
-      while (match($0, /\)\s*\{/) && !bad) { 
+      while (match($0, /\)[ \t]*\{/) && !bad) { 
 	# (expr){index} or name(expr){index}
 	$0 = subst_indexed_expr($0, RSTART);
       } 
 
       bad = 0;
-      while (match($0, /\]\s*\(/) && !bad) { 
+      while (match($0, /\][ \t]*\(/) && !bad) { 
 	# [expr](index)
 	$0 = subst_indexed_expr($0, RSTART);
       } 
 
       bad = 0;
-      while (match($0, /\]\s*\{/) && !bad) { 
+      while (match($0, /\][ \t]*\{/) && !bad) { 
 	# [expr]{index}
 	$0 = subst_indexed_expr($0, RSTART);
       } 

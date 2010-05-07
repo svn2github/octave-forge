@@ -309,9 +309,9 @@ FNR==1 {
       if ($0 ~ /(\+|-|\.?\*|\.?\/|\.?\^)=/) {
 	## try to substitute computed assignments.
 	## +=, -=, &=, |= don't generally need extra parens.
-	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)])(\s*)(\+|-|\&|\|)=/, "\\1\\2=\\2\\1\\2\\3", "g");
+	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])(\s*)(\+|-|\&|\|)=/, "\\1\\2=\\2\\1\\2\\3", "g");
 	## *=, /=, ^= and their dotted counterparts need parenthesizing the RHS.
-	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)])(\s*)(\.?\*|\.?\/|\.?\^)=(\s*)([^;]+)/,
+	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])(\s*)(\.?\*|\.?\/|\.?\^)=(\s*)([^;]+)/,
 	   "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
       }
 

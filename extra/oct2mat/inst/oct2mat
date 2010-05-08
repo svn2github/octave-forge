@@ -2,10 +2,11 @@
 
 # Usage: change to the directory which has the files you want to convert
 # then type oct2mat files.  This will convert all files in that directory,
-# storing the output in $HOME/matlab., auplot_points=1000; endif
+# storing the output in /tmp/oct2mat/, auplot_points=1000; endif
 #
 # Copyright 2001,2002,2003,2004 Paul Kienzle
 # Copyright 2010 Alois Schloegl 
+# Copyright 2010 Jaroslav Hajek 
 #
 # Goal: automatically convert most octave code so that it will run on matlab.
 #    * Preferably, the code should run on matlab4, but the lack of varargin
@@ -36,6 +37,10 @@
 #    endfunction ->
 #    endblah -> end
 #    # -> %
+#    +=, -=, &=, |=, *=, /=, \=, ^=, .*=, ./=, .\=, .^=
+#    [0,blah()](1:n), [1:10](3:5)
+#    blah()(1:n), (1:10)(3:5)
+#    num2cell(1:n)(3:5), {1,2,3,4,5,6,7}(3:5)  
 #    blah() -> blah
 #    gset blah -> 
 #    blah \<nl> -> blah ...<nl>
@@ -48,14 +53,10 @@
 #    striplegend removes ;blah; from string
 # Does not yet handle:
 #    k++; k--; blah(k++), blah(k--);
-#    +=, *=, -=, /=, etc.
 #    __y -> y__
 #    x=y=blah;   ->  y=blah; x=y;
 #    function [x y]=blah -> function [x, y]=blah
 #    global y=blah; -> global y; if isempty(y), y=blah; end
-#    [0,blah()](1:n), [1:10](3:5)
-#    blah()(1:n), (1:10)(3:5)
-#    num2cell(1:n)(3:5), {1,2,3,4,5,6,7}(3:5)  
 #    do a until (c);
 #    end -> <nl>   if 'end' happens to be the end for the function def.
 #    unwind_protect doblah unwind_protect_cleanup cleanblah end_unwind_protect
@@ -306,12 +307,15 @@ FNR==1 {
 
     if (1) { ## EXPERIMENTAL...
 
-      if ($0 ~ /(\+|-|\.?\*|\.?\/|\.?\^)=/) {
+      if ($0 ~ /(\+|-|\&|\||\.?\\|\.?\*|\.?\/|\.?\^)=/) {
 	## try to substitute computed assignments.
 	## +=, -=, &=, |= don't generally need extra parens.
-	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\+|-|\&|\|)=/, "\\1\\2=\\2\\1\\2\\3", "g");
-	## *=, /=, ^= and their dotted counterparts need parenthesizing the RHS.
-	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\.?\*|\.?\/|\.?\^)=([ \t]*)([^;]+)/,
+	## $0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\+|-|\&|\|)=/, "\\1\\2=\\2\\1\\2\\3", "g");
+	## *=, /=, \=, ^= and their dotted counterparts need parenthesizing the RHS.
+	## $0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\.?\*|\.?\/|\.?\\|\.?\^)=([ \t]*)([^;]+)/,
+	##   "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
+	## +=, -=, &=, |=,  *=, /=, \=, ^= all operators might need parenthesizing the RHS. e.g. a &= b || c;
+	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\+|-|\&|\||.?\*|\.?\/|\.?\\|\.?\^)=([ \t]*)([^;]+)/,
 	   "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
       }
 
@@ -352,8 +356,6 @@ FNR==1 {
     }
 #### replace obsolete functions ####
     gsub(/cell \(\);/, "{};");
-    gsub(/= t_cdf \(/ , "= tcdf (");
-    gsub("is_matrix","ismatrix");
     if (incopyright) copyright = copyright "\n" fixquotes($0); 
     else body = body "\n" fixquotes($0);
 }

@@ -11,18 +11,18 @@ x = 1:5; y=1:2;
 b(1,:) += c(2,:);
 [cols{1:3}] = num2cell (mat){:};
 if(all((BW2==BW & BW != 0)(:)))
-  k += 2 + a;
-  k += 2 | a;
-  k |= 2 || a;
-  k -= 2 + a;
-  k /= 2 + a;
-  k \= 2 + a;
+  k_1 += 2 + a;
+  k_2 += 2 | a;        ## make sure RHS is in parenthesis
+  k_3 |= 2 || a;       ## make sure RHS is in parenthesis
+  k_4 -= 2 + a;        ## make sure RHS is in parenthesis
+  k /= 2 / a;
+  k \= 2 \ a;
   k *= 2 + a;
   k ./= 2 + a;
   k .\= 2 + a;
   k .*= 2 + a;
-  k &= 2 + a;
-  k |= 2 + a;
+  k &= 2 | a;        ## make sure RHS is in parenthesis
+  k |= 2 & a;
   k ^= 2 + a;
   k .^= 2 + a;
   sub{d} += incr;
@@ -38,12 +38,20 @@ if (a ||
 end
     
 k = 0; N=10;
+k++;
 while (k++ < N)         ## todo 
    a = 5;     
 endwhile 
 
 do         ## not resolved 
     x++;
+    x-- ;
+    x_5-- ;
+    x_5_-- ;
+    _x_5_-- ;
+    x(2)++ ;
+    a=b+c; x++ ;
+    x -- ;
 until (x(3)>10);
 
 function x = __underscore_function__(x)         ## todo 

@@ -38,6 +38,7 @@
 #    endblah -> end
 #    # -> %
 #    +=, -=, &=, |=, *=, /=, \=, ^=, .*=, ./=, .\=, .^=
+#    k++; k--; simple form 
 #    [0,blah()](1:n), [1:10](3:5)
 #    blah()(1:n), (1:10)(3:5)
 #    num2cell(1:n)(3:5), {1,2,3,4,5,6,7}(3:5)  
@@ -52,7 +53,7 @@
 #    Note: these routines should be run through octave2matlab
 #    striplegend removes ;blah; from string
 # Does not yet handle:
-#    k++; k--; blah(k++), blah(k--);
+#    blah(k++), blah(k--);
 #    __y -> y__
 #    x=y=blah;   ->  y=blah; x=y;
 #    function [x y]=blah -> function [x, y]=blah
@@ -307,16 +308,26 @@ FNR==1 {
 
     if (1) { ## EXPERIMENTAL...
 
+      if ($0 ~ /\+\+|--/) {
+        ## substitute simple ++ and -- expressions like k++; 
+        ## TODO: indexed expressions like a(ix)--; variables with underscore
+	$0 = gensub(/([ \t]*)(\w)([ \t]*)(\+\+)([ \t]*)([;])/,
+	   "\\1\\2 = \\2 \+ 1;", "g");
+	$0 = gensub(/([ \t]*)(\w)([ \t]*)(--)([ \t]*)([;])/,
+	   "\\1\\2 = \\2 - 1;", "g");
+      }  
+
       if ($0 ~ /(\+|-|\&|\||\.?\\|\.?\*|\.?\/|\.?\^)=/) {
 	## try to substitute computed assignments.
 	## +=, -=, &=, |= don't generally need extra parens.
-	## $0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\+|-|\&|\|)=/, "\\1\\2=\\2\\1\\2\\3", "g");
+        $0 = gensub(/([^ ;]*[_a-zA-Z0-9\)\}])([ \t]*)(\+|-|\&|\|)=/, "\\1\\2=\\2\\1\\2\\3", "g");
 	## *=, /=, \=, ^= and their dotted counterparts need parenthesizing the RHS.
-	## $0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\.?\*|\.?\/|\.?\\|\.?\^)=([ \t]*)([^;]+)/,
-	##   "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
+	$0 = gensub(/([^ ;]*[_a-zA-Z0-9\)\}])([ \t]*)(\.?\*|\.?\/|\.?\\|\.?\^)=([ \t]*)([^;]+)/,
+	  "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
 	## +=, -=, &=, |=,  *=, /=, \=, ^= all operators might need parenthesizing the RHS. e.g. a &= b || c;
-	$0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\+|-|\&|\||.?\*|\.?\/|\.?\\|\.?\^)=([ \t]*)([^;]+)/,
-	   "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
+	##    unfortunately, this breaks the expression like k.x(:,1) += conv (x, y)(:) - [1; a](:)
+	## $0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\+|-|\&|\||.?\*|\.?\/|\.?\\|\.?\^)=([ \t]*)([^;]+)/,
+	##   "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
       }
 
       ## match expression indexing.

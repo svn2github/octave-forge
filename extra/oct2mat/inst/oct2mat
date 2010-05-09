@@ -312,9 +312,9 @@ FNR==1 {
         ## substitute simple ++ and -- expressions like k++; 
         ## TODO: indexed expressions like a(ix)--; variables with underscore
 	$0 = gensub(/([ \t]*)(\w)([ \t]*)(\+\+)([ \t]*)([;])/,
-	   "\\1\\2 = \\2 \+ 1;", "g");
+	   "\\1\\2 += 1;", "g");
 	$0 = gensub(/([ \t]*)(\w)([ \t]*)(--)([ \t]*)([;])/,
-	   "\\1\\2 = \\2 - 1;", "g");
+	   "\\1\\2 -= 1;", "g");
       }  
 
       if ($0 ~ /(\+|-|\&|\||\.?\\|\.?\*|\.?\/|\.?\^)=/) {

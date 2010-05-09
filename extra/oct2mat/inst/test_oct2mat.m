@@ -23,14 +23,20 @@ if(all((BW2==BW & BW != 0)(:)))
   k .*= 2 + a;
   k &= 2 | a;        ## make sure RHS is in parenthesis
   k |= 2 & a;
+  k += - 2;
   k ^= 2 + a;
   k .^= 2 + a;
   sub{d} += incr;
+  x /= 4 ; y /= 4 ;
+       res(vars(irow)) +=...
+           c(irow);
+
 endif
 a = -ones(length(x)+length(y)-2,1);
 k.x = zeros(length(x)+length(y)-1);
 k.x(:,1) += conv (x, y)(:) - [1; a](:);        ## not correctly resolved
 k.x(1,:) += conv (x, y)(:).' - [1, a](:);
+y += [1; a](:);        ## not correctly resolved
 
 b = 0;
 if (a ||

@@ -120,7 +120,11 @@ for k=1:length(fn),
 		%disp([oct2mat fn(k).name]);
 		unix(['cd ',indir ]);
 		unix([OCT2MAT_CMD fn(k).name]);
-		unix(['cp ',fullfile(p0,fn(k).name),' ',outdir]);
+		if (fn(k).name(1)=='_')
+        		unix(['cp ',fullfile(p0,fn(k).name),' ',fullfile(outdir,['b2o_tmp_',fn(k).name])]);
+		else
+        		unix(['cp ',fullfile(p0,fn(k).name),' ',outdir]);
+        	end;	
 
         elseif any(strfind(fn(k).name,'.o')==length(fn(k).name)-1) || any(strfind(fn(k).name,'.mex')==length(fn(k).name)-3) 
                 ;         % skip *.o and *.mex files  

@@ -321,6 +321,13 @@ FNR==1 {
         $0 = gensub(/([^;%]*)(=)([^;%\<\>~=]*)(=)([^;%]*)/,"\\3=\\5;\\1=\\3","g");
     }     
 
+    ## function and variable names starting with "_" (underscore)    
+    if ($0 ~ /(.*[^[:alnum:]]_\w)/) {
+            print $0
+            $0 = gensub(/(^|.*[^[:alnum:]_])(_\w)/,"\\1o2m_tmp_\\2","g")
+            print $0
+    }
+
     if (1) { ## EXPERIMENTAL ...
       if ($0 ~ /\+\+|--/) {
         ## substitute simple ++ and -- expressions like k++; 

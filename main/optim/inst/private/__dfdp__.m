@@ -53,7 +53,8 @@ function prt = __dfdp__ (f, p, dp, func, bounds)
 	  end
 	  ps(j) = p(j) + del(j);
 	end
-	prt(:, j) = (func (ps) - f) / del(j);
+	tpf = func (ps);
+	prt(:, j) = (tpf(:) - f) / del(j);
       else
 	if (p(j) - del(j) < bounds(j, 1))
 	  tp = bounds(j, 1);
@@ -67,8 +68,10 @@ function prt = __dfdp__ (f, p, dp, func, bounds)
 	  min_del(j) = 2 * del(j);
 	end
 	f1 = func (ps);
+	f1 = f1(:);
 	ps(j) = tp;
-        prt(:, j) = (f1 - func (ps)) / min_del(j);
+	tpf = func (ps);
+        prt(:, j) = (f1 - tpf(:)) / min_del(j);
       end
     end
   end

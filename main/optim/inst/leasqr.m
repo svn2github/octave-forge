@@ -28,13 +28,12 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% Optional parameters are in braces {}.
   %% x = vector or matrix of independent variables, 1 entry or row per
   %%   observation.
-  %% y = vector of observed values, same length as x or as number of
-  %%   rows of x.
-  %% wt = vector (dim=length(y)) of statistical weights.  These should
-  %%   be set to be proportional to (sqrt of var(y))^-1; (That is, the
+  %% y = vector or matrix of observed values.
+  %% wt = statistical weights (same dimensions as y).  These should be
+  %%   set to be proportional to (sqrt of var(y))^-1; (That is, the
   %%   covariance matrix of the data is assumed to be proportional to
   %%   diagonal with diagonal equal to (wt.^2)^-1.  The constant of
-  %%   proportionality will be estimated.); default = ones(length(y),1).
+  %%   proportionality will be estimated.); default = ones( size (y)).
   %% pin = vec of initial parameters to be adjusted by leasqr.
   %% dp = fractional increment of p for numerical partial derivatives;
   %%   default = .001*ones(size(pin))
@@ -44,20 +43,20 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% F = name of function in quotes or function handle; the function
   %%   shall be of the form y=f(x,p), with y, x, p of the form y, x, pin
   %%   as described above; the returned y must be a column vector.
-  %% dFdp = name of partial derivative function in quotes; default is 'dfdp', a
-  %%   slow but general partial derivatives function; the function shall be
-  %%   of the form prt=dfdp(x,f,p,dp,F[,bounds]). For backwards
-  %%   compatibility, the function will only be called with an extra
-  %%   'bounds' argument if the 'bounds' option is explicitely specified
-  %%   to leasqr (see dfdp.m).
+  %% dFdp = name of partial derivative function in quotes or function
+  %% handle; default is 'dfdp', a slow but general partial derivatives
+  %% function; the function shall be of the form
+  %% prt=dfdp(x,f,p,dp,F[,bounds]). For backwards compatibility, the
+  %% function will only be called with an extra 'bounds' argument if the
+  %% 'bounds' option is explicitely specified to leasqr (see dfdp.m).
   %% stol = scalar tolerance on fractional improvement in scalar sum of
   %%   squares = sum((wt.*(y-f))^2); default stol = .0001;
   %% niter = scalar maximum number of iterations; default = 20;
   %% options = structure, currently recognized fields are 'fract_prec',
-  %%   'max_fract_change', 'inequc', and 'bounds'. For backwards compatibility,
-  %%   'options' can also be a matrix whose first and second column
-  %%   contains the values of 'fract_prec' and 'max_fract_change',
-  %%   respectively.
+  %% 'max_fract_change', 'inequc', 'bounds', and 'equc'. For backwards
+  %% compatibility, 'options' can also be a matrix whose first and
+  %% second column contains the values of 'fract_prec' and
+  %% 'max_fract_change', respectively.
   %%   Field 'options.fract_prec': column vector (same length as 'pin') of
   %%   desired fractional precisions in parameter estimates. Iterations
   %%   are terminated if change in parameter vector (chg) on two
@@ -72,7 +71,6 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%   [ie. abs(chg(i))=abs(min([chg(i)
   %%   options.max_fract_change(i)*current param estimate])).], default =
   %%   Inf*ones().
-
   %%   Field 'options.inequc': cell-array containing up to four entries,
   %%   two entries for linear inequality constraints and/or one or two
   %%   entries for general inequality constraints. Initial parameters
@@ -212,7 +210,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% svd-based algorithm, linesearch or stepwidth adaptions to ensure
   %% decrease in objective function omitted to rather start a new
   %% overall cycle with a new epsL, some performance gains from linear
-  %% constraints even if general constraints are specified. Olaf Till
+  %% constraints even if general constraints are specified. Equality
+  %% constraints also implemented. Olaf Till
 
   %%
   %% References:
@@ -224,45 +223,35 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     ifelse = @ scalar_ifelse;
   end
 
+  plot_cmds (); % flag persistent variables invalid
+
+  global verbose;
+
   %% argument processing
   %%
-
-  %%if (sscanf(version,'%f') >= 4),
-  vernum= sscanf(version,'%f');
-  if (vernum(1) >= 4)
-    global verbose
-    plotcmd='plot(x(:,1),y,''+'',x(:,1),f); figure(gcf)';
-  else
-    plotcmd='plot(x(:,1),y,''+'',x(:,1),f); shg';
-  end
-  if (exist('OCTAVE_VERSION'))
-    global verbose
-    plotcmd='plot(x(:,1),y,''+;data;'',x(:,1),f,'';fit;'');';
-  end
-
-  if(exist('verbose')~=1) %If verbose undefined, print nothing
-    verbose=0;       %This will not tell them the results
-  end
 
   if (nargin <= 8)
     dFdp = @ dfdp;
   elseif (ischar (dFdp))
     dFdp = str2func (dFdp);
   end
+  if (isvector (y)) y = y(:); end
   if (nargin <= 7) dp=.001*(pin*0+1); end %DT
-  if (nargin <= 6) wt=ones(length(y),1); end	% SMB modification
+  if (nargin <= 6) wt = ones (size (y)); end	% SMB modification
   if (nargin <= 5) niter=20; end
   if (nargin == 4) stol=.0001; end
   if (ischar (F)) F = str2func (F); end
   %%
 
-  y=y(:); wt=wt(:); pin=pin(:); dp=dp(:); %change all vectors to columns
-  if (isvector (x)) x = x(:); end
-  %% check data vectors- same length?
-  m=length(y); n=length(pin);
-  if (size (x, 1) ~= m) 
-    error('input(x)/output(y) data must have same length ')
+  if (isvector (wt)) wt = wt (:); end
+  if (any (size (y) ~= size (wt)))
+    error ('dimensions of observations and weights do not match');
   end
+  wtl = wt(:);
+  pin=pin(:); dp=dp(:); %change all vectors to columns
+  if (isvector (x)) x = x(:); end
+  [rows_y, cols_y] = size (y);
+  m = rows_y * cols_y; n=length(pin);
 
   %% processing of 'options'
   pprec = zeros (n, 1);
@@ -527,7 +516,14 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%
   p = pin;
   f = F (x, p); fbest=f; pbest=p;
-  r=wt.*(y-f);
+  %% only in the first call of F the effort is made to check the
+  %% dimensions and to give an explanative error message
+  if (any (size (f) ~= size (y)))
+    error ('dimensions of values returned by model function (%i, %i) not equal to dimensions of observations (%i, %i)',	...
+	   size (f), size (y));
+  end
+  r = wt .* (y - f);
+  r = r(:);
   if (~isreal (r)) error ('weighted residuals are not real'); end
   ss = r.' * r;
   sbest=ss;
@@ -548,7 +544,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% if (isfield (options, 'new_s'))
   %%   new_s = options.new_s;
   %% end
-  if (isfield (options, 'testing') && options.testing)
+  if (exist ('options') && isfield (options, 'testing') && options.testing)
     testing = true;
   else
     testing = false;
@@ -572,13 +568,14 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     end
     nrm = zeros (1, n);
     pprev=pbest;
-    prt = dFdp (x, fbest, p, dp, F, dfdp_bounds{:});
+    prt = dFdp (x, fbest(:), p, dp, F, dfdp_bounds{:});
     r=wt.*(y-fbest);
+    r = r(:);
     if (~isreal (r)) error ('weighted residuals are not real'); end
     sprev=sbest;
     sgoal=(1-stol)*sprev;
     msk = dp ~= 0;
-    prt(:, msk) = prt(:, msk) .* wt(:, ones (1, sum (msk)));
+    prt(:, msk) = prt(:, msk) .* wtl(:, ones (1, sum (msk)));
     nrm(msk) = sumsq (prt(:, msk), 1);
     msk = nrm > 0;
     nrm(msk) = 1 ./ sqrt (nrm(msk));
@@ -812,7 +809,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 				% change
 	p=chg+pprev;
 	f = F (x, p);
-	r=wt.*(y-f);
+	r = wt .* (y - f);
+	r = r(:);
 	if (~isreal (r))
 	  error ('weighted residuals are not real');
 	end
@@ -830,7 +828,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     %% printf ('epsL no.: %i\n', jjj); % for testing
     epsLlast = epsL;
     if (verbose)
-      eval(plotcmd);
+      plot_cmds (x, y, f);
     end
     if (ss<eps)
       break;
@@ -861,6 +859,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 
   if (~(verbose || nargout > 4)) return; end
 
+  yl = y(:);
+  fbest = fbest(:);
   %% CALC VARIANCE COV MATRIX AND CORRELATION MATRIX OF PARAMETERS
   %% re-evaluate the Jacobian at optimal values
   jac = dFdp (x, fbest, p, dp, F, dfdp_bounds{:});
@@ -873,7 +873,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% diag(1/wt.^2).  
   %% cov matrix of data est. from Bard Eq. 7-5-13, and Row 1 Table 5.1 
 
-  tp = wt.^2;
+  tp = wtl.^2;
   if (exist('sparse'))  % save memory
     Q = sparse (1:m, 1:m, 1 ./ tp);
     Qinv = sparse (1:m, 1:m, tp);
@@ -881,8 +881,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     Q = diag (ones (m, 1) ./ tp);
     Qinv = diag (tp);
   end
-  resid=y-f;                                    %un-weighted residuals
-  if (~isreal (r)) error ('residuals are not real'); end
+  resid = yl - fbest; % un-weighted residuals
+  if (~isreal (resid)) error ('residuals are not real'); end
   tp = resid.' * Qinv * resid;
   covr = (tp / m) * Q;    %covariance of residuals
 
@@ -919,8 +919,10 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     covr=diag(covr);                 % convert returned values to
 				% compact storage
   end
-  stdresid = resid .* abs (wt) / sqrt (tp / m); % equivalent to resid ./
+  covr = reshape (covr, rows_y, cols_y);
+  stdresid = resid .* abs (wtl) / sqrt (tp / m); % equivalent to resid ./
 				% sqrt (covr)
+  stdresid = reshape (stdresid, rows_y, cols_y);
 
   if (~(verbose || nargout > 8)) return; end
 
@@ -938,7 +940,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 
   %%Calculate R^2, intercept form
   %%
-  tp = sumsq (y - mean (y));
+  tp = sumsq (yl - mean (yl));
   if (tp > 0)
     r2 = 1 - sumsq (resid) / tp;
   else
@@ -948,7 +950,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %% if someone has asked for it, let them have it
   %%
   if (verbose)
-    eval(plotcmd);
+    plot_cmds (x, y, f);
     disp(' Least Squares Estimates of Parameters')
     disp(p.')
     disp(' Correlation matrix of parameters estimated')
@@ -957,7 +959,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
     disp(covr)
     disp(' Correlation Coefficient R^2')
     disp(r2)
-    sprintf(' 95%% conf region: F(0.05)(%.0f,%.0f)>= delta_pvec.%s*Z*delta_pvec', n, m - n, char (39)) % works with ' and '
+    fprintf(' 95%% conf region: F(0.05)(%.0f,%.0f)>= delta_pvec.%s*Z*delta_pvec\n', n, m - n, char (39)); % works with ' and '
     Z
     %% runs test according to Bard. p 201.
     n1 = sum (resid > 0);
@@ -1004,6 +1006,40 @@ function deb_printf (do_printf, varargin)
   if (do_printf)
     printf (varargin{:})
   end
+
+function plot_cmds (x, y, f)
+
+  persistent lgnd;
+  persistent use_x;
+  if (nargin == 0)
+    lgnd = [];
+    return;
+  end
+  if (isempty (lgnd));
+    n = size (y, 2);
+    if (n == 1)
+      lgnd = {'data', 'fit'};
+    else
+      id = num2str ((1:n).');
+      lgnd1 = cat (2, repmat ('data ', n, 1), id);
+      lgnd2 = cat (2, repmat ('fit ', n, 1), id);
+      lgnd = cat (1, cellstr (lgnd1), cellstr (lgnd2));
+    end
+    if (size (x, 1) == size (y, 1))
+      use_x = true;
+    else
+      use_x = false;
+    end
+  end
+
+  x = x(:, 1);
+  if (use_x)
+    plot (x, y, 'marker', '+', 'linestyle', 'none', x, f);
+  else
+    plot (y, 'marker', '+', 'linestyle', 'none', f);
+  end
+  legend (lgnd);
+  drawnow;
 
 %!demo
 %! % Define functions

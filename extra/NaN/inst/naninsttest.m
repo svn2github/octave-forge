@@ -22,7 +22,7 @@
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 
-r = zeros(25,2);
+r = zeros(38,2);
 
 x = [5,NaN,0,1,nan];
 
@@ -32,7 +32,7 @@ x = [5,NaN,0,1,nan];
 %FLAG_WARNING = warning;
 warning('off');
 
-funlist = {'sumskipnan','mean','std','var','skewness','kurtosis','sem','median','mad','zscore','coefficient_of_variation','geomean','harmmean','meansq','moment','rms','','corrcoef','rankcorr','spearman','ranks','center','trimean','min','max','tpdf','tcdf','tinv','normpdf','normcdf','norminv','nansum','nanstd','','','','','','','','','','','',''};
+funlist = {'sumskipnan','mean','std','var','skewness','kurtosis','sem','median','mad','zscore','coefficient_of_variation','geomean','harmmean','meansq','moment','rms','','corrcoef','rankcorr','spearman','ranks','center','trimean','min','max','tpdf','tcdf','tinv','normpdf','normcdf','norminv','nansum','nanstd','histo_mex','sumskipnan_mex','covm_mex','svmtrain_mex','train','','','','','','','',''};
 for k=1:2,
         if k==2, x(isnan(x))=[]; end; 
         r(1,k) =sumskipnan(x(1));
@@ -84,30 +84,15 @@ for k=1:2,
         r(24,k)=min(x);
         r(25,k)=max(x);
         
-        if exist('tpdf','file'), 
-                fun='tpdf'; 
-        elseif exist('t_pdf')==2,
-                fun='t_pdf';
-        end;
-        r(26,k) = k+isnan(feval(fun,x(2),4));	        
+        r(26,k) = k+isnan(tpdf(x(2),4));	        
         
-        if exist('tcdf','file'), 
-                fun='tcdf'; 
-        elseif exist('t_cdf','file'),
-                fun='t_cdf';
-        end;
         try
-                r(27,k) = k*(~isnan(feval(fun,nan,4)));	        
+                r(27,k) = k*(~isnan(tcdf(nan,4)));	        
         catch
                 r(27,k) = k;	
         end;
         
-        if exist('tinv','file'), 
-                fun='tinv'; 
-        elseif exist('t_inv','file'),
-                fun='t_inv';
-        end;
-        r(28,k) = k*(~isnan(feval(fun,NaN,4)));	        
+        r(28,k) = k*(~isnan(tinv(NaN,4)));	        
         
         if exist('normpdf','file'), 
                 fun='normpdf'; 
@@ -133,6 +118,32 @@ for k=1:2,
         if exist('nanstd','file'),
         	r(33,k)=k*(~isnan(nanstd(0)));
         end;
+        
+        %%% check mex files 
+        try 
+                histo_mex([1:5]');
+               	r(34,k)=0;
+       	catch;
+               	r(34,k)=k;
+        end;
+        try 
+                sumskipnan_mex([1:5]');
+               	r(35,k)=0;
+       	catch;
+               	r(35,k)=k;
+       	end;
+        try 
+                covm_mex([1:5]');
+               	r(36,k)=0;
+       	catch;
+               	r(36,k)=k;
+       	end;
+        if ~exist('svmtrain_mex','file'),
+                r(37,k)=k;
+        end;
+        if ~exist('train','file'),
+                r(38,k)=k;
+        end;
 end;
 
 % check if result is correct
@@ -141,8 +152,15 @@ tmp = abs(r(:,1)-r(:,2))<eps;
 q = zeros(1,5);
 
 % output
-if all(tmp) && all(~q),
+if all(tmp(1:32)) && all(~q),
         fprintf(1,'NANINSTTEST successful - your NaN-tools are correctly installed\n');
+        if any(~tmp(34:38)),
+                fprintf(1,'Warning: the following mex-files are not (properly) compiled:\n');
+                for k=find(~tmp(34:38)'),
+                        fprintf(1,'     %s.mex \n',funlist{k+33});
+                end;
+                fprintf(1,'run \n  mex -setup\n  cd .../NaN/src\n  make \n');
+        end; 
 else
         fprintf(1,'NANINSTTEST %i not successful \n', find(~tmp));
 	fprintf(1,'The following functions contain a NaN-related bug:\n');

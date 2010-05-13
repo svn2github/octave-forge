@@ -20,6 +20,7 @@ function freetb4matlab(indir,outdir)
 
 %       $Id$
 %       Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
+%       This is part of Octave-Forge's Oct2Mat
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -34,7 +35,7 @@ function freetb4matlab(indir,outdir)
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+PWD = pwd;
 if nargin<1, 
 	indir=[];
 end;	
@@ -128,6 +129,7 @@ for k=1:length(fn),
 
         elseif any(strfind(fn(k).name,'.o')==length(fn(k).name)-1) || any(strfind(fn(k).name,'.mex')==length(fn(k).name)-3) 
                 ;         % skip *.o and *.mex files  
+
 	else 
 		%% copy all other files, too. They might contain information to fix some problems.
 		unix(['cp ',f,' ',outdir]);
@@ -137,4 +139,4 @@ for k=1:length(fn),
 end; 
 unix(['rm -rf ',p0,'/* ']);
 
-cd(indir);
+cd(PWD);

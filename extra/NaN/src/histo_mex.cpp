@@ -30,7 +30,7 @@
 //     HIS.H
 //
 //    $Id$
-//    Copyright (C) 2009 Alois Schloegl <a.schloegl@ieee.org>
+//    Copyright (C) 2009,2010 Alois Schloegl <a.schloegl@ieee.org>
 //    This function is part of the NaN-toolbox
 //    http://hci.tugraz.at/~schloegl/matlab/NaN/
 //
@@ -184,8 +184,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	const mwSize	*SZ;	    
 	char 		flag_rows = 0; 
 	char 		done = 0; 
-    	mwSize    	j, k;		// running indices 
-    	ssize_t		l;
+    	mwSize    	j, k, l;	// running indices 
 	const mxArray	*W = NULL; 
     	double 		*w = NULL; 
 
@@ -284,6 +283,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		case mxDOUBLE_CLASS: 
 			Sort.Size = 8;
 			break;
+		case mxCHAR_CLASS: 
+		        Sort.Size = sizeof(mxChar);
+			break;
 		default:
 			mexErrMsgTxt("unsupported input type"); 
 		}	
@@ -311,20 +313,20 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		double  *h = (double*)mxGetData(H);
 		uint8_t *x = (uint8_t*)mxGetData(X);
 		
-		l = -1;
+		l = 0;
 		if (tix) tix[idx[0]] = 1;
 		for (k=0; k<SZ[0]; k++) {
 			if ((k==0) || compare(&idx[k-1], &idx[k])) {
-				l++;
 				for (j=0; j<SZ[1]; j++) {
 					memcpy(x + (l+j*n)*Sort.Size, Sort.Table+(idx[k] + j*Sort.Stride)*Sort.Size, Sort.Size);
 				}
+				l++;
 			}
-			if (tix) tix[idx[k]] = l+1;
+			if (tix) tix[idx[k]] = l;
 			if (w != NULL) 
-				h[l]+=w[idx[k]];
+				h[l-1]+=w[idx[k]];
 			else 
-				h[l]+=1.0;	
+				h[l-1]+=1.0;	
 		}
 		mxFree(idx); 
 		done = 1;
@@ -332,19 +334,18 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	else { 
 		switch (mxGetClassID(PInputs[0])) {
-/*
 		case mxCHAR_CLASS: {
 			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxUINT64_CLASS,mxREAL);
 			mxArray *X = mxCreateNumericMatrix(256, 1, mxINT8_CLASS,mxREAL); 
 			mxSetField(HIS,0,"H",H);
 			mxSetField(HIS,0,"X",X);
 
-			char *x;
-			x = (char*)mxGetData(X);
-			qsort(x,n,sz,strcpy);	
+			mxChar *x;
+			x = (mxChar*)mxGetData(X);
+			qsort(x,n,sizeof(mxChar),strcpy);	
 			break;
 			}
-*/
+
 		case mxINT8_CLASS: { 	
 			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxDOUBLE_CLASS,mxREAL);
 			mxArray *X = mxCreateNumericMatrix(256, 1, mxINT8_CLASS,mxREAL); 

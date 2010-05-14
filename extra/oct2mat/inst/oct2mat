@@ -4,9 +4,11 @@
 # then type oct2mat files.  This will convert all files in that directory,
 # storing the output in /tmp/oct2mat/, auplot_points=1000; endif
 #
+# $Id$
 # Copyright 2001,2002,2003,2004 Paul Kienzle
 # Copyright 2010 Alois Schloegl 
 # Copyright 2010 Jaroslav Hajek 
+# This is part of Octave-Forge's Oct2Mat toolbox
 #
 # Goal: automatically convert most octave code so that it will run on matlab.
 #    * Preferably, the code should run on matlab4, but the lack of varargin
@@ -274,6 +276,7 @@ FNR==1 {
   if (FILENAME=="-") file="-"; else file=target FILENAME; 
   incopyright=0;
   print "Converting " FILENAME;
+  print "--Converting " FILENAME > "/dev/stderr";
 }
 
 /^## Copyright/ { incopyright=1; }
@@ -281,14 +284,52 @@ FNR==1 {
 /^[^#]/ {incopyright=0; }
 
 {
+
     if (sub("#<oct","")) $0 = "#<oct" $0;
     if (sub("#<mat","")) $0 = sprintf("%-73s#<mat",$0);
-    gsub("#" , "%");
+    #####  Extract comments ###################
+    COMMENTS = ""; 
+    if (match($0,/[#%]/)>0) {
+            PosComment = RSTART; 
+            if (substr($0,1,RSTART) ~ /["']/) {
+                PosComment = 0; 
+                StringOn = 0;
+                i = 0; 
+                DLM = "";
+                prevChar = ",";
+                while (PosComment == 0 && i<length($0)) {
+                    i++;
+                    c = substr($0,i,1);
+                    if (StringOn == 0) {
+                        if (c ~ /"/ || (c ~ /'/ && prevChar ~ /[= \t,;\n\r]/ ) ) {
+                                StringOn = 1;
+                                DLM = c; 
+                        } 
+                        else if (c ~ /[#%]/)        
+                                PosComment = i;
+                    } 
+                    else if (StringOn == 1) {
+                            if (c=="\\")
+                                 i++;         #skip next character 
+                            else if (c==DLM)
+                                 StringOn = 0;         
+                    }           
+                    if (c !~ /[ \t]/) prevChar = c;
+                }   
+            }
+            if (PosComment>0) {
+                    ## Extract comments and remove them from $0 
+                    COMMENTS = "%" substr($0,PosComment+1);
+                    $0 = substr($0,1,PosComment-1);
+            }        
+    }                               
+
     gsub("[(][)]","");
     gsub("gset[^;%]*;","");
     gsub("gset[^;]*%","%");
     gsub("gset[^;]*$","");
     gsub("\\*\\*","^");         ## replace ** with ^ 
+    
     ## replace DO ... UNTIL (COND); % comment -> WHILE(1) ... IF(COND) BREAK; ENDIF; ENDWHILE; %% comment    
     gsub(/\<do\>/,"while (1)");
     if ($0 ~ /\<until\>/) {
@@ -371,7 +412,7 @@ FNR==1 {
 	$0 = subst_indexed_expr($0, RSTART);
       } 
     } ## EXPERIMENTAL
-
+    
     ## add ... when line is not closed ####
     {
         line = $0;
@@ -381,7 +422,13 @@ FNR==1 {
         if (ocnt > 0 && !index($0 ,"...") )
                 $0 = $0 " ...";
     }
-    ## replace obsolete functions ####
+
+    ##### Restore Comments #####
+    if (length(COMMENTS)>0) {        
+            $0 = $0 COMMENTS
+    }
+    
+    ##### replace obsolete functions #####
     gsub(/cell \(\);/, "{};");
     if (incopyright) copyright = copyright "\n" fixquotes($0); 
     else body = body "\n" fixquotes($0);

@@ -83,6 +83,11 @@ install()
    install_post;
 }
 
+install_strip()
+{
+   install;
+   $STRIP $STRIP_FLAGS $PREFIX/$BIN_DIR/expat.dll
+}
 uninstall()
 {
    uninstall_pre;

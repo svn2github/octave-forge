@@ -160,6 +160,14 @@ install()
    install_post;
 }
 
+install_strip()
+{
+   install;
+   for a in ncurses form menu panel; do
+      $STRIP $STRIP_FLAGS $PREFIX/$BIN_DIR/lib$a-$NCURSES_ABI.dll
+   done
+}
+
 uninstall()
 {
    uninstall_pre;

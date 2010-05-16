@@ -76,6 +76,7 @@ do         ## not resolved
     x_5-- ;
     x_5_-- ;
     _x_5_-- ;
+    x(2)++;
     x(2)++ ;
     x(2) -= 1;
     a=b+c; x++ ;
@@ -91,3 +92,41 @@ x = __underscore_function__(5);              ## todo
 __underscore_variable__ = 5;                 ## todo 
  __underscore_variable__ = 5;                 ## todo 
 
+
+a' #comment
+a ' #comment '
+a .' #comment '
+a " #comment " 
+
+
+    for i = 1:N:pad_sz
+      hb = hb + fft (postpad (b(i:i+N-1), N))(1:n);
+      ha = ha + fft (postpad (a(i:i+N-1), N))(1:n);
+    endfor
+
+#### xx{kk++} = aa;
+varargout{++vr_val_cnt} = nn;
+varargout{vr_val_cnt++} = nn;
+varargout{vr_val_cnt++} = xx;
+tmp(img_idx--) = tmap(img);
+tmp(--img_idx) = tmap(img);
+str(--idx) = "*";
+outstruct.namesn(++nnames)=nn;
+
+args{1,++kk} = real (olpol);
+args{1,++kk} = [sigma_A sigma_A+len_A*cos(phi_A)];
+args{1,++kk} = real (rlzer);
+args5{1,++kk} = real (rlzer);
+
+set (hplt(kk--), "linewidth", 2);
+set (hplt(kk--), "markersize", 2);
+
+f(1) = r(k++); 
+f(2) = r(k++); 
+
+opts = varargin(narg++);
+param = varargin{narg++};
+std_formats{++nfmt} = "HH:MM";
+  
+++y(m > 12);   
+++y.b;

@@ -51,20 +51,9 @@ BUILDDIR=".build_${BUILD_TARGET}_${FULLPKG}_gcc${GCC_VERSION}${GCC_SYSTEM}"
 
 # == override resp. specify build actions ==
 
-conf()
+conf_post()
 {
-   conf_pre;
-   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
-     --srcdir=${TOPDIR}/${SRCDIR} \
-     --prefix=${PREFIX} \
-     CC="gcc -shared-libgcc" \
-     CXX="g++ -shared-libgcc" \
-     F77="gfortran -shared-libgcc" \
-     LDFLAGS="-Wl,--enable-runtime-pseudo-reloc-v2"
-   )
-   touch ${BUILDDIR}/have_configure
    modify_libtool_all ${BUILDDIR}/libtool
-   conf_post;
 }
 
 install()

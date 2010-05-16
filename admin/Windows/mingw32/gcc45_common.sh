@@ -91,6 +91,9 @@ make_common()
       MAKE_FILE=""
    fi
    
+   LDFLAGS+=" -Wl,--enable-runtime-pseudo-reloc-v2";
+   FLDFLAGS+=" -Wl,--enable-runtime-pseudo-reloc-v2";
+   
    # call make
    if [ -e have_configure ]; then
       # we had a configure script setup all variable accordingly
@@ -233,7 +236,27 @@ unpack_orig_add_ver()
 conf_pre() { echo ; }
 conf()
 {
-   echo Not implemented!
+   conf_pre;
+   echo ../$SRCDIR/configure \
+     --srcdir=$TOPDIR/$SRCDIR \
+     --prefix=$PREFIX \
+     CC="gcc -shared-libgcc" \
+     CXX="g++ -shared-libgcc" \
+     F77="gfortran -shared-libgcc" \
+     LDFLAGS="-Wl,--enable-runtime-pseudo-reloc-v2" \
+     $CONFIGURE_XTRA_ARGS
+   
+   ( cd $BUILDDIR && ../$SRCDIR/configure \
+     --srcdir=$TOPDIR/$SRCDIR \
+     --prefix=$PREFIX \
+     CC="gcc -shared-libgcc" \
+     CXX="g++ -shared-libgcc" \
+     F77="gfortran -shared-libgcc" \
+     LDFLAGS="-Wl,--enable-runtime-pseudo-reloc-v2" \
+     $CONFIGURE_XTRA_ARGS
+   )
+   touch $BUILDDIR/have_configure
+   conf_post;
 }
 conf_post() { echo ; }
 

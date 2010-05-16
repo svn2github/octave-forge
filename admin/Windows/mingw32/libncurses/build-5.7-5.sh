@@ -115,16 +115,9 @@ unpack_rolluppatch()
    done
 }
 
-conf()
+conf_pre()
 {
-   conf_pre;
-   ( cd ${BUILDDIR} && ${TOPDIR}/${SRCDIR}/configure \
-     --srcdir=${TOPDIR}/${SRCDIR} \
-     CC="gcc -shared-libgcc" \
-     CXX="g++ -shared-libgcc" \
-     F77="gfortran -shared-libgcc" \
-     LDFLAGS="-Wl,--enable-runtime-pseudo-reloc-v2" \
-     --prefix=$PREFIX \
+    CONFIGURE_XTRA_ARGS="\
      --without-ada \
      --without-cxx \
      --without-cxx-binding \
@@ -132,10 +125,7 @@ conf()
      --with-libtool \
      --with-normal \
      --enable-term-driver \
-     --enable-sp-funcs
-   )
-   touch ${BUILDDIR}/have_configure
-   conf_post;
+     --enable-sp-funcs"
 }
 
 install()

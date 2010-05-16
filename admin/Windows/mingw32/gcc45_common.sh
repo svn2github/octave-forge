@@ -234,9 +234,8 @@ unpack_orig_add_ver()
 
 # == configure ==
 conf_pre() { echo ; }
-conf()
+conf_common()
 {
-   conf_pre;
    echo ../$SRCDIR/configure \
      --srcdir=$TOPDIR/$SRCDIR \
      --prefix=$PREFIX \
@@ -256,9 +255,15 @@ conf()
      $CONFIGURE_XTRA_ARGS
    )
    touch $BUILDDIR/have_configure
-   conf_post;
 }
 conf_post() { echo ; }
+
+conf()
+{
+   conf_pre;
+   conf_common;
+   conf_post;
+}
 
 # == check ==
 check_pre() { echo ; }
@@ -304,7 +309,7 @@ substvars_post() { echo ; }
 # == install ==
 install_pre()
 {
-  for a in $BIN_DIR $LIB_DIR $STATICLIB_DIR $INC_DIR $LIC_DIR $LIC_DIR/$PKG $ETC_DIR $SHARE_DIR; do
+  for a in $BIN_DIR $LIB_DIR $STATICLIB_DIR $INC_DIR $LIC_DIR $LIC_DIR/$PKG $ETC_DIR $SHARE_DIR $PKGCONFIG_DIR; do
      if [ ! -e $PREFIX/$a ]; then mkdir -vp $PREFIX/$a; fi
   done
 }
@@ -327,7 +332,7 @@ uninstall()
 uninstall_post()
 { 
    # Remove installation directories if empty
-   for a in $BIN_DIR $LIB_DIR $STATICLIB_DIR $INC_DIR $LIC_DIR/$PKG $LIC_DIR $ETC_DIR $SHARE_DIR; do
+   for a in $BIN_DIR $LIB_DIR $STATICLIB_DIR $INC_DIR $LIC_DIR/$PKG $LIC_DIR $ETC_DIR $SHARE_DIR $PKGCONFIG_DIR; do
       rmdir --ignore-fail-on-non-empty $PREFIX/$a 
    done
 }

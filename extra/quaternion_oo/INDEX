@@ -1,0 +1,19 @@
+quaternion >> Quaternion
+Quaternions
+  quaternion
+  @quaternion/conj
+  @quaternion/diag
+  @quaternion/ispure
+Overloaded and Arithmetic Operators
+  @quaternion/plus
+  @quaternion/minus
+  @quaternion/uminus
+  @quaternion/times
+  @quaternion/mtimes
+  @quaternion/transpose
+  @quaternion/ctranspose
+  @quaternion/horzcat
+  @quaternion/vertcat
+  @quaternion/subsref
+  @quaternion/eq
+

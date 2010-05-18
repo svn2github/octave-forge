@@ -27,6 +27,6 @@ function a = ctranspose (a)
     print_usage ();
   endif
 
-  a = conj (transpose (a))
+  a = conj (transpose (a));
 
 endfunction

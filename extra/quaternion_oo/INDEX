@@ -11,8 +11,12 @@ Overloaded and Arithmetic Operators
   @quaternion/times
   @quaternion/mtimes
   @quaternion/inv
-  @quaternion/mldivide
+  @quaternion/rdivide
+  @quaternion/ldivide
   @quaternion/mrdivide
+  @quaternion/mldivide
+  @quaternion/power
+  @quaternion/mpower
   @quaternion/transpose
   @quaternion/ctranspose
   @quaternion/horzcat

@@ -4,6 +4,9 @@ Quaternions
   @quaternion/conj
   @quaternion/diag
   @quaternion/ispure
+  @quaternion/rows
+  @quaternion/columns
+  @quaternion/size
 Overloaded and Arithmetic Operators
   @quaternion/plus
   @quaternion/minus

@@ -6,4 +6,7 @@ function a = power (a, b)
     error ("quaternion: power: case not implemeted");
   endif
 
+  ## TODO: - q1 .^ q2
+  ##       - arrays
+
 endfunction

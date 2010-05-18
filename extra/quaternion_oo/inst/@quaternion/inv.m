@@ -33,6 +33,8 @@ function a = inv (a)
     error ("quaternion: inv: implemented for scalar quaternions only");
   endif
 
+  ## TODO: quaternion arrays
+
   norm2 = a.w*a.w + a.x*a.x + a.y*a.y + a.z*a.z;
 
   a.w = a.w / norm2;

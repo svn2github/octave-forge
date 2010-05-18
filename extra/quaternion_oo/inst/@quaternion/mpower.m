@@ -6,4 +6,7 @@ function a = mpower (a, b)
     error ("quaternion: mpower: case not implemeted");
   endif
 
+  ## TODO: - q1 ^ q2
+  ##       - arrays
+
 endfunction

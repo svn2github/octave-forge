@@ -1,12 +1,27 @@
-function s = size (a, b = ":")
+function [s, varargout] = size (a, b)
 
-  if (nargin > 2)
-    print_usage ();
-  endif
+  switch (nargout)
+    case {0, 1}
+      switch (nargin)
+        case 1
+          s = size (a.w);
 
-  s = size (a.w)(b).';
+        case 2
+          s = size (a.w, b);
 
-  ## TODO: - catch case nargout == 2
-  ##       - return 1 if b > numel (s)
+        otherwise
+          print_usage ();
+      endswitch
+
+    case 2
+      if (nargin == 1)
+        [s, varargout{1}] = size (a.w);
+      else
+        print_usage ();
+      endif
+
+    otherwise
+      print_usage ();
+  endswitch
 
 endfunction

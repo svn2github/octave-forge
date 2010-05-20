@@ -85,16 +85,18 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%   since then some sanity tests are performed, and since the
   %%   function 'dfdp.m' is guarantied not to violate constraints during
   %%   determination of the numeric gradient only for those constraints
-  %%   specified as 'bounds'. The first entry for general constraints
-  %%   must be a differentiable vector valued function (say h),
-  %%   specifying general inequality constraints of the form `h (p[,
-  %%   idx]) >= 0'; p is the column vector of optimized paraters and the
-  %%   optional argument idx is a logical index. h has to return the
-  %%   values of all constraints if idx is not given, and has to return
-  %%   only the indexed constraints if idx is given (so computation of
-  %%   the other constraints can be spared). If a second entry for
-  %%   general constraints is given, it must be a function (say dh)
-  %%   which returnes a matrix whos rows contain the gradients of the
+  %%   specified as 'bounds' (possibly with violations due to a certain
+  %%   inaccuracy, however, except if no constraints except bounds are
+  %%   specified). The first entry for general constraints must be a
+  %%   differentiable vector valued function (say h), specifying general
+  %%   inequality constraints of the form `h (p[, idx]) >= 0'; p is the
+  %%   column vector of optimized paraters and the optional argument idx
+  %%   is a logical index. h has to return the values of all constraints
+  %%   if idx is not given, and has to return only the indexed
+  %%   constraints if idx is given (so computation of the other
+  %%   constraints can be spared). If a second entry for general
+  %%   constraints is given, it must be a function (say dh) which
+  %%   returnes a matrix whos rows contain the gradients of the
   %%   constraint function h with respect to the optimized parameters.
   %%   It has the form jac_h = dh (vh, p, dp, h, idx[, bounds]); p is
   %%   the column vector of optimized parameters, and idx is a logical
@@ -122,6 +124,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%   Field 'options.equc': equality constraints, specified the same
   %%   way as inequality constraints (see field 'options.inequc').
   %%   Initial parameters must satisfy these constraints.
+  %%   Note that there is possibly a certain inaccuracy in honoring
+  %%   constraints, except if only bounds are specified. 
   %%   _Warning_: If constraints (or bounds) are set, returned guesses
   %%   of corp, covp, and Z are generally invalid, even if no constraints
   %%   are active for the final parameters. If equality constraints are
@@ -425,6 +429,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	error ('initial parameters violate equality constraints');
       end
     end
+    have_constraints_except_bounds = ...
+	rv > 0 || erv > 0 || have_gencstr || have_genecstr;
     if (isfield (options, 'bounds'))
       bounds = options.bounds;
       if (rows (bounds) ~= n || columns (bounds) ~= 2)
@@ -441,8 +447,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       end
       lidx = pin < bounds(:, 1);
       uidx = pin > bounds(:, 2);
-      if (any (lidx | uidx) && (rv > 0 || have_gencstr || ...
-				erv > 0 || have_genecstr))
+      if (any (lidx | uidx) && have_constraints_except_bounds)
 	error ('initial parameters outside bounds, not corrected since other constraints are given');
       end
       if (any (lidx))
@@ -808,6 +813,17 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 				% function if there is some non-miniscule
 				% change
 	p=chg+pprev;
+	%% since the projection method may have slightly violated
+	%% constraints due to inaccuracy, correct parameters to bounds
+	%% --- but only if no further constraints are given, otherwise
+	%% the inaccuracy in honoring them might increase by this
+	if (~have_constraints_except_bounds)
+	  lidx = p < bounds(:, 1);
+	  uidx = p > bounds(:, 2);
+	  p(lidx) = bounds(lidx, 1);
+	  p(uidx) = bounds(uidx, 2);
+	end
+	%%
 	f = F (x, p);
 	r = wt .* (y - f);
 	r = r(:);

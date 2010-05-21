@@ -36,10 +36,8 @@ endif
 
 nopt = nargin - 1;
 
-va_arg_cnt = 1;
-
 for i = 1:nopt
-	tk_cmd( sprintf ("button .master.b%d -text \"%s\" -command { set menuChoice %d; quit}", i, nth (varargin, va_arg_cnt++), i) );
+	tk_cmd( sprintf ("button .master.b%d -text \"%s\" -command { set menuChoice %d; quit}", i, varargin{i}, i) );
 	tk_cmd( sprintf ("pack .master.b%d -fill x", i) );
 endfor
 

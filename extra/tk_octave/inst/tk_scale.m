@@ -1,3 +1,4 @@
+
 ## Copyright (C) 1998, 1999, 2000 Joao Cardoso.
 ## 
 ## This program is free software; you can redistribute it and/or modify it
@@ -52,11 +53,11 @@ cmd_ok = cmd_res = "";
 va_arg_cnt = 1;
 
 for i=1:nopt
-    desc = nth (varargin, va_arg_cnt++);
-    val = nth (varargin, va_arg_cnt++);
-    min_val = nth (varargin, va_arg_cnt++);
-    max_val = nth (varargin, va_arg_cnt++);
-    inc_val = nth (varargin, va_arg_cnt++);
+    desc = varargin{va_arg_cnt++};
+    val = varargin{va_arg_cnt++};
+    min_val = varargin{va_arg_cnt++};
+    max_val = varargin{va_arg_cnt++};
+    inc_val = varargin{va_arg_cnt++};
 	
     tk_cmd( sprintf("set val_%d %f", i, val) );
     tk_cmd( sprintf("scale .master.s%d -from %f -to %f \
@@ -69,9 +70,9 @@ endfor
 
 tk_cmd( "tkwait window .master" );
 	
-vr_val_cnt = 1;
 for i=1:nopt
-    varargout{vr_val_cnt++} = eval([tk_cmd(sprintf("set val_%d",i)), ";"]);
+    varargout{i} = eval([tk_cmd(sprintf("set val_%d",i)), ";"]);
 endfor
 
 endfunction
+

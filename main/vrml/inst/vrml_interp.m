@@ -27,15 +27,17 @@ static nname = struct ("col"        , "Color",
 		       "Position"   , "Position",
 		       "scal"       , "Scalar",
 		       "Scalar"     , "Scalar");
-if struct_contains (nname, typ)
+if isfield (nname, typ)
   typs = nname.(typ);
 elseif ischar(typ)
-  e2 = leval ("sprintf",\
-	      append (list("    '%s'\n"), fieldnames (nname)));
+#  e2 = leval ("sprintf",\
+#	      append (list("    '%s'\n"), fieldnames (nname)));
+  e2 = sprintf("    '%s'\n", fieldnames (nname){:});
   error ("vrml_interp : Unknown type '%s'. Should be in:\n%s",typ,e2);
 else
-  e2 = leval ("sprintf",\
-	      append (list("    '%s;\n"), fieldnames (nname)));
+#  e2 = leval ("sprintf",\
+#	      append (list("    '%s;\n"), fieldnames (nname)));
+  e2 = sprintf("    '%s'\n", fieldnames (nname){:});
   error ("vrml_interp : typ should be a string in:\n%s",typ,e2);
 end
 

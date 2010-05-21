@@ -56,7 +56,7 @@ for [val,key] = h,
     elseif !(isnumeric(val) && isnan (val))
 
 				# Check validity of field
-    if ! struct_contains (tpl, key)
+    if ! isfield (tpl, key)
       error (sprintf ("vrml_PointLight : unknown field '%s'",key));
     end
 
@@ -67,7 +67,7 @@ for [val,key] = h,
   end
 end
 s = sprintf ("PointLight {\n%s}\n", body);
-if struct_contains (h,"DEF") && !isempty (h.DEF)
+if isfield (h,"DEF") && !isempty (h.DEF)
   s = ["DEF ",h.DEF," ",s];
 end 
 endfunction

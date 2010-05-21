@@ -64,7 +64,7 @@ cmd = sprintf("tk_dialog .top_tk_dialog \"%s\" \"%s\" \"%s\" %d", title, text, b
 #varargin = list(varargin, all_va_args);
 
 for argnum=1:length(varargin)
-	arg = nth (varargin, argnum);
+	arg = varargin{argnum};
 	if (! ischar(arg))
 		error("The arguments must be strings.\n");
 		return

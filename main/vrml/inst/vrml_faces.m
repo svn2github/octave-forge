@@ -95,7 +95,7 @@ function s = vrml_faces (x,f,varargin)
 
   i = 1;
   while nargin>=i	
-    tmp = nth (varargin, i++);
+    tmp = varargin{i++};
     if ! ischar(tmp) ,
       error ("vrml_faces : Non-string option : \n") ;
       ## keyboard
@@ -103,7 +103,7 @@ function s = vrml_faces (x,f,varargin)
 
     if index(opt1,[" ",tmp," "]) ,
       
-      tmp2 = nth (varargin, i++) ;
+      tmp2 = varargin{i++} ;
 
       eval([tmp,"=tmp2;"]) ;
 
@@ -131,11 +131,7 @@ function s = vrml_faces (x,f,varargin)
 
   ## printf ("creaseAngle = %8.3f\n",creaseAngle);
 
-  ## TODO : s/list/cell/g; Should put this code in sometime soon
-  ## if is_list (f), tmp={}; for i=1:length(f), tmp{i}=nth(f,i);end; f=tmp; end;
-  ## if is_list (f), nfaces = length (f); else nfaces = columns (f); end
-
-  if is_list (f), nfaces = length (f); else nfaces = columns (f); end
+  nfaces = columns (f); 
   if ismatrix(f)
     if rows (f) < 3
       error ("Faces matrix 'f' has %i < 3 rows, so it does not define faces",
@@ -254,7 +250,7 @@ function s = vrml_faces (x,f,varargin)
   ## TODO : s/list/cell/g; Should put this code in sometime soon
   ## Code below seems useless
 				# Faces 
-  if is_list (f), nfaces = length (f); else nfaces = columns (f); end
+  if iscell (f), nfaces = length (f); else nfaces = columns (f); end
 
 
   tpl0 = sprintf ("%%%dd, ",floor (log10 (max (1, columns (x))))+1);
@@ -265,15 +261,15 @@ function s = vrml_faces (x,f,varargin)
 				# Determine total number of vertices, number
 				# of vertices per face and indexes of
 				# vertices of each face
-  ## TODO : s/list/cell/g; Should put this code in sometime soon
-  ## if iscell (f), ... f{i} 
-  if is_list (f)			
-
+  if iscell (f)			
     npts = 0;
-    for i = 1:length (f), npts += ptsface(i) = 1+length (nth (f,i)); end
+    for i = 1:length (f), 
+       ptsface(i) = 1+length (f{i});
+       npts += ptsface(i);  
+    end
     ii = [0, cumsum(ptsface)]';
     all_indexes = -ones (1,npts);
-    for i = 1:length (f), all_indexes(ii(i)+1:ii(i+1)-1) = nth (f,i) - 1; end
+    for i = 1:length (f), all_indexes(ii(i)+1:ii(i+1)-1) = f{i} - 1; end
   else
     f = [f;-ones(1,columns(f))];
     npts = sum (ptsface = (sum (!! f)));

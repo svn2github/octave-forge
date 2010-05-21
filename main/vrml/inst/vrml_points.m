@@ -1,3 +1,4 @@
+
 ## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -65,7 +66,7 @@ i = 1; 			# pos 2.1.39
 
 while i <= nargin-1
 
-  tmp = nth (varargin,i++);
+  tmp = varargin{i++};
   if strcmp(tmp,"hide") ,
     hide = 1;
   elseif strcmp(tmp,"balls") ,
@@ -74,20 +75,20 @@ while i <= nargin-1
     cubes = 1;
   elseif strcmp(tmp,"rad") ,
 
-    rad = nth (varargin,i++);
+    rad = varargin{i++};
   elseif strcmp(tmp,"nums") ,
     nums = 1;
   elseif strcmp(tmp,"emit") ,
 
-    emit = nth (varargin,i++);
+    emit = varargin{i++};
   elseif strcmp(tmp,"col") ,
 
-    col = nth (varargin,i++);
+    col = varargin{i++};
   elseif strcmp(tmp,"name") ,
 
-    name = nth (varargin,i++);
+    name = varargin{i++};
   elseif strcmp(tmp,"tran") ,
-    tran = nth (varargin,i++);
+    tran = varargin{i++};
   end
 end
 
@@ -217,4 +218,5 @@ else
   end
 end
 endfunction
+
 

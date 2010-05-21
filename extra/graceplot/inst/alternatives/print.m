@@ -1,3 +1,4 @@
+
 ## Copyright (C) 2001 Laurent Mazet
 ##
 ## This program is free software; it is distributed in the hope that it
@@ -124,7 +125,7 @@ function print(varargin)
   va_arg_cnt = 1;
 
   for i=1:nargin
-    arg = nth (varargin, va_arg_cnt++);
+    arg = varargin{va_arg_cnt++}; 
     if ischar(arg)
       if strcmp(arg, "-color")
 	use_color = 1;
@@ -412,3 +413,4 @@ function print(varargin)
   endif
 
 endfunction
+

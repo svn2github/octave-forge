@@ -14,7 +14,7 @@ end
 if isempty (root), root = "N"; end
 
 n = sprintf ([root,"%0d"],100000*rand());
-while struct_contains (vrml_namespace, n)
+while isfield (vrml_namespace, n)
   n = sprintf ([root,"%0d"],100000*rand());
 end
 endfunction

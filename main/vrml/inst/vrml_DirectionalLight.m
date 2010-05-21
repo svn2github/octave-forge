@@ -19,11 +19,10 @@
 function s = vrml_DirectionalLight (varargin) # pos 2.1.39
 
 
-hash = struct ();		# pos 2.1.39
-
-
-if nargin, hash = setfield(hash,varargin{:}); end # pos 2.1.39
-## hash = rmfield (hash, "dummy");
+hash = struct ();
+for k=1:2:nargin,
+   hash = setfield(hash,varargin{k:k+1}); 
+end
 
 tpl = struct ("ambientIntensity", "%8.3f",\
 	      "intensity",        "%8.3f",\
@@ -37,7 +36,7 @@ for [val,key] = hash,
   if !(isnumeric(val) && isnan (val)),
 
 				# Check validity of field
-    if ! struct_contains (tpl, key)
+    if !isfield (tpl, key)
       error (sprintf ("vrml_PointLight : unknown field '%s'",key));
     end
 

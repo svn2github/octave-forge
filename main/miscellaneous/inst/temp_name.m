@@ -38,7 +38,7 @@ if nargin<1 || !length(rootname), rootname = "temp_name_" ; end
 if nargin<2, quick = 1; end
 
 if quick
-  if ! struct_contains (cnt, rootname)
+  if ! isfield (cnt, rootname)
     cnt.(rootname) = 0;
     c = 0 ;
   else

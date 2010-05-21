@@ -54,11 +54,11 @@ p = creadpdb(fname);
 global elements_struct;
 load("-force", file_in_loadpath("elements_struct.mat"));
 
-if(struct_contains(p, "atomname"))
+if(isfield(p, "atomname"))
    p.az = atomnames_to_z(p.atomname);
 endif
 
-if(struct_contains(p, "hetname"))
+if(isfield(p, "hetname"))
    p.hetz = atomnames_to_z(p.hetname);
 endif
 

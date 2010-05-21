@@ -24,7 +24,7 @@
 
 function write_pdb(p, fname, varargin)
 
-if(!isstruct(p)) # || !struct_contains(p, "acoord"))
+if(!isstruct(p)) # || !isfield(p, "acoord"))
     error("p must be a pdb struct");
 endif
 
@@ -44,13 +44,13 @@ if(!quick)
 
 # Print the Title Section
 
-if( struct_contains(p, "classification") || struct_contains(p, "idcode") ) 
-  if struct_contains(p, "classification")  
+if( isfield(p, "classification") || isfield(p, "idcode") ) 
+  if isfield(p, "classification")  
     classification = p.classification;
   else
     classification = "Unknown";
   endif
-  if(struct_contains(p, "idcode"))
+  if(isfield(p, "idcode"))
     idcode = p.idcode;
   else
     idcode = "N/A ";
@@ -65,7 +65,7 @@ endif
 # Print the Primary Structure Section
 
 numres = 0;
-if(struct_contains(p, "seqres"))
+if(isfield(p, "seqres"))
   numres = size(p.seqres, 1);
   j = 1;
   i = 1;
@@ -104,24 +104,24 @@ endif
 
 # Print the Crystallographic and Coordinate Transformation Section 
 
-if( struct_contains(p, "cellsize") || struct_contains(p, "cellangl") \
-    || struct_contains(p, "sgroup") || struct_contains(p, "z") )
-    if(struct_contains(p, "cellsize"))
+if( isfield(p, "cellsize") || isfield(p, "cellangl") \
+    || isfield(p, "sgroup") || isfield(p, "z") )
+    if(isfield(p, "cellsize"))
       cellsize = p.cellsize;
     else
       cellsize = zeros(3,1);
     endif    
-    if(struct_contains(p, "cellangl"))
+    if(isfield(p, "cellangl"))
       cellangl = p.cellangl;
     else
       cellangl = zeros(3,1);
     endif    
-    if(struct_contains(p, "sgroup"))
+    if(isfield(p, "sgroup"))
       sgroup = p.sgroup;
     else
       sgroup = "N/A";
     endif
-    if(struct_contains(p, "z"))
+    if(isfield(p, "z"))
       z = p.z;
     else
       z = 0;
@@ -149,13 +149,13 @@ end
 #buf(80) = "\n";
 #fprintf(f, "%s", buf);
 
-if( struct_contains(p, "scalem") || struct_contains(p, "scalev") )
-  if(struct_contains(p, "scalem"))
+if( isfield(p, "scalem") || isfield(p, "scalev") )
+  if(isfield(p, "scalem"))
     scalem = p.scalem;
   else
     scalem = eye(3);
   endif
-  if(struct_contains(p, "scalev"))
+  if(isfield(p, "scalev"))
     scalev = p.scalev;
   else
     scalev = zeros(3,1);
@@ -183,33 +183,33 @@ endif
 endif # if(!quick)
 
 serialn = 0;
-if(struct_contains(p, "acoord"))
+if(isfield(p, "acoord"))
   natoms = size(p.acoord, 1);
-  if(struct_contains(p, "atomname"))
+  if(isfield(p, "atomname"))
     atomname = toupper(p.atomname);
   else
     for i = 1:natoms,
       atomname(i, :) = "    ";
     endfor
   endif
-  if(struct_contains(p, "aresname"))
+  if(isfield(p, "aresname"))
     aresname = toupper(p.aresname);
   else
     for i = 1:natoms,
       aresname(i, :) = "   ";
     endfor
   endif
-  if(struct_contains(p, "aresseq"))
+  if(isfield(p, "aresseq"))
     aresseq = p.aresseq;
   else
     aresseq = ones(natoms, 1);
   endif
-  if(struct_contains(p, "aoccupancy"))
+  if(isfield(p, "aoccupancy"))
     aoccupancy = p.aoccupancy;
   else
     aoccupancy = ones(natoms, 1);
   endif
-  if(struct_contains(p, "atempfactor"))
+  if(isfield(p, "atempfactor"))
     atempfactor = p.atempfactor;
   else
     atempfactor = zeros(natoms, 1);
@@ -265,33 +265,33 @@ if(struct_contains(p, "acoord"))
   fprintf(f, "%s", buf);
 endif
 
-if(struct_contains(p,"hetcoord")) 
+if(isfield(p,"hetcoord")) 
   nhet = size(p.hetcoord, 1);
-  if(struct_contains(p, "hetname"))
+  if(isfield(p, "hetname"))
     hetname = toupper(p.hetname);
   else
     for i = 1:nhet
       hetname(i, :) = "    ";
     endfor
   endif
-  if(struct_contains(p, "hetresname"))
+  if(isfield(p, "hetresname"))
     hetresname = toupper(p.hetresname);
   else
     for i = 1:nhet,
       hetresname(i, :) = "   ";
     endfor
   endif
-  if(struct_contains(p, "hetresseq"))
+  if(isfield(p, "hetresseq"))
     hetresseq = p.hetresseq;
   else
     hetresseq = ones(nhet, 1);
   endif
-  if(struct_contains(p, "hetoccupancy"))
+  if(isfield(p, "hetoccupancy"))
     hetoccupancy = p.hetoccupancy;
   else
     hetoccupancy = ones(nhet, 1);
   endif
-  if(struct_contains(p, "hettempfactor"))
+  if(isfield(p, "hettempfactor"))
     hettempfactor = p.hettempfactor;
   else
     hettempfactor = zeros(nhet, 1);

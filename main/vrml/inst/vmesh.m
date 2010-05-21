@@ -1,3 +1,4 @@
+
 ## Copyright (C) 2002-2009 Etienne Grossmann.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -125,9 +126,8 @@ if numel (varargin)
 		    "zgray","zrb","zcol"};
 
   for i = 1:length(all_surf_opts)
-    ## optname = nth (all_surf_opts, i);
     optname = all_surf_opts{i};
-    if struct_contains (opts, optname)
+    if isfield (opts, optname)
       ## surf_args = append (surf_args, list (optname));
       surf_args{length(surf_args)+1} = optname;
       if index (op1,[" ",optname," "])
@@ -163,7 +163,7 @@ s = vrml_surf (surf_args{:});
 
 pts = [x(:)';y(:)';z(:)'];
 ii = find (all (isfinite (pts)));
-pt2 = pts(:,ii); x2 = x(:)(ii); y2 = y(:)(ii); z2 = z(:)(ii);
+pt2 = pts(:,ii); x2 = x(ii); y2 = y(ii); z2 = z(ii);
 
 ## Add a point light
 
@@ -215,7 +215,7 @@ if ! isempty (level)
 				# Transpose colors
     if all (szlc == [3,nlev]), lcol = lcol'; 
 				# Single gray level
-    elseif nlc == 1          , lcol *= ones (nlev,3);
+    elseif nlc == 1          , lcol = lcol * ones (nlev,3);
 				# nlev gray levels
     elseif nlc == nlev       , lcol = lcol(:)*[1 1 1];
     elseif nlc == 3          , lcol = ones(nlev,1)*lcol(:)';
@@ -273,4 +273,5 @@ end
 return
 
 endfunction
+
 

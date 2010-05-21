@@ -79,16 +79,17 @@ if rem (nargs, 2), error ("odd number of optional args"); end
 
 i=1;
 while i<nargs
-  if ! ischar (tmp = varargin{i++}), error ("non-string option"); end
-  if     strcmp (tmp, "op0")    , op0     = varargin{i++};
-  elseif strcmp (tmp, "op1")    , op1     = varargin{i++};
-  elseif strcmp (tmp, "extra")  , extra   = varargin{i++};
-  elseif strcmp (tmp, "default"), op      = varargin{i++};
-  elseif strcmp (tmp, "prefix") , prefix  = varargin{i++};
-  elseif strcmp (tmp, "nocase") , nocase  = varargin{i++};
-  elseif strcmp (tmp, "quiet")  , quiet   = varargin{i++};
-  elseif strcmp (tmp, "skipnan"), skipnan = varargin{i++};
-  elseif strcmp (tmp, "verbose"), verbose = varargin{i++};
+  if ! ischar (tmp = varargin{i}), error ("non-string option"); end
+  i = i+1;
+  if     strcmp (tmp, "op0")    , op0     = varargin{i}; i=i+1;
+  elseif strcmp (tmp, "op1")    , op1     = varargin{i}; i=i+1;
+  elseif strcmp (tmp, "extra")  , extra   = varargin{i}; i=i+1;
+  elseif strcmp (tmp, "default"), op      = varargin{i}; i=i+1;
+  elseif strcmp (tmp, "prefix") , prefix  = varargin{i}; i=i+1;
+  elseif strcmp (tmp, "nocase") , nocase  = varargin{i}; i=i+1;
+  elseif strcmp (tmp, "quiet")  , quiet   = varargin{i}; i=i+1;
+  elseif strcmp (tmp, "skipnan"), skipnan = varargin{i}; i=i+1;
+  elseif strcmp (tmp, "verbose"), verbose = varargin{i}; i=i+1;
   else 
     error ("unknown option '%s' for option-reading function!",tmp);
   end
@@ -109,7 +110,7 @@ if length (op1)
 end
 
 if length (extra)
-  lextra = lgrep (cellstr (split (extra, " ")));
+  lextra = lgrep (cellstr (strsplit (extra, " ")));
 else
   lextra = {};
 end
@@ -159,7 +160,7 @@ while nread < length (args)
     tmp = correct = "";
     j = 0;
     for i = ii
-      fullen(++j) = spi(find (spi > i)(1))-i ;
+      fullen(++j) = spi(find (spi > i,1))-i ;
       tmp = [tmp,"', '",opts(i:i+fullen(j)-1)];
     end
     tmp = tmp(5:length(tmp));
@@ -168,13 +169,13 @@ while nread < length (args)
 	  ((min (fullen) != length(name)) && ! prefix) ,
       error ("ambiguous option '%s'. Could be '%s'",oname,tmp);
     end
-    j = find (fullen == min (fullen))(1);
+    j = find (fullen == min (fullen), 1);
     ii = ii(j);
   end
 
 				# Full name of option (w/ correct case)
 
-  fullname = opts_orig(ii:spi(find (spi > ii)(1))-1);
+  fullname = opts_orig(ii:spi(find (spi > ii, 1))-1);
   if ii < iend
     if verbose, printf ("read_options : found boolean '%s'\n",fullname); end
     op.(fullname) = 1;
@@ -184,7 +185,7 @@ while nread < length (args)
       tmp = args{++nread};
       if verbose, printf ("read_options : size is %i x %i\n",size(tmp)); end
       if !isnumeric (tmp) || !all (isnan (tmp(:))) || \
-	    !struct_contains (op, fullname)
+	    !isfield (op, fullname)
 	op.(fullname) =  tmp;
       else
 	if verbose, printf ("read_options : ignoring nan\n"); end

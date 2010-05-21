@@ -56,7 +56,7 @@ opts = struct ("skyColor",         3,
 
 body = "";
 for [val,key] = hash,
-  if struct_contains (opts, key)
+  if isfield (opts, key)
     n = opts.(key);
     if (n == 0)
       if (ischar(val))

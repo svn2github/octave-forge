@@ -50,7 +50,7 @@ location = location';
 
 printf("EXAMPLE 1: Ordinary BFGS, using analytic gradient\n");
 t=cputime();
-control = {-1;1};  # maxiters, verbosity
+control = {Inf,1};  # maxiters, verbosity
 [theta, obj_value, convergence] = bfgsmin("objective", {theta0, location}, control);
 fflush(1);
 t1 = cputime() - t;

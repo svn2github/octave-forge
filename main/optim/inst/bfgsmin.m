@@ -87,7 +87,7 @@ function [parameter, obj, convergence, iters] = bfgsmin(f, f_args, control)
 
 	# validity checks on all controls
 	tmp = control{1};
-	if (((tmp !=Inf) || (tmp != -1)) & (tmp > 0 & (mod(tmp,1) != 0)))
+	if (((tmp !=Inf) & (tmp != -1)) & (tmp > 0 & (mod(tmp,1) != 0)))
 		usage("bfgsmin: 1st element of 3rd argument (iteration limit) must be Inf or positive integer");
 	endif
 	tmp = control{2};

@@ -28,7 +28,7 @@ y0 = randn(N,1) ;
 ## Return value
 function v = ff(x,y,t)
   A = [1 -1;1 1]; M = A'*diag([100,1])*A;
-  v = ((x - y)(1:2))'*M*((x-y)(1:2)) + 1;
+  v = (x(1:2) - y(1:2))'*M*(x(1:2)-y(1:2)) + 1;
 endfunction
 
 ## Return differential
@@ -36,7 +36,7 @@ function dv = dff(x,y,t)
   if nargin < 3, t = 1; end
   if t == 1, N = length (x); else N = length (y); end
   A = [1 -1;1 1]; M = A'*diag([100,1])*A;
-  dv = 2*((x-y)(1:2))'*M;
+  dv = 2*(x(1:2)-y(1:2))'*M;
   if N>2, dv = [dv, zeros(1,N-2)]; end
   if t == 2, dv = -dv; end
 endfunction
@@ -46,8 +46,8 @@ function [v,dv,d2v] = d2ff(x,y,t)
   if nargin < 3, t = 1; end
   if t == 1, N = length (x); else N = length (y); end
   A = [1 -1;1 1]; M = A'*diag([100,1])*A;
-  v = ((x - y)(1:2))'*M*((x-y)(1:2)) + 1;
-  dv = 2*((x-y)(1:2))'*M;
+  v = (x(1:2) - y(1:2))'*M*(x(1:2)-y(1:2)) + 1;
+  dv = 2*(x(1:2)-y(1:2))'*M;
   d2v = zeros (N); d2v(1:2,1:2) = 2*M;
   if N>2, dv = [dv, zeros(1,N-2)]; end
   if t == 2, dv = -dv; end
@@ -58,8 +58,8 @@ function [v,dv,d2v] = d2iff(x,y,t)
   if nargin < 3, t = 1; end
   if t == 1, N = length (x); else N = length (y); end
   A = [1 -1;1 1]; M = A'*diag([100,1])*A;
-  v = ((x - y)(1:2))'*M*((x-y)(1:2)) + 1;
-  dv = 2*((x-y)(1:2))'*M;
+  v = (x(1:2) - y(1:2))'*M*(x(1:2)-y(1:2)) + 1;
+  dv = 2*(x(1:2)-y(1:2))'*M;
   d2v = zeros (N); d2v(1:2,1:2) = inv (2*M);
   if N>2, dv = [dv, zeros(1,N-2)]; end
   if t == 2, dv = -dv; end
@@ -77,7 +77,7 @@ end
 
 ## Plain run, just to make sure ######################################
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1));
+[xlev,vlev,nlev] = minimize ("ff",{x0,y0,1});
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -89,7 +89,7 @@ elseif verbose,  prn ("ok %i\n",cnt);
 end
 
 ## See what 'backend' gives in that last case ########################
-[method,ctl] = minimize ("ff",list (x0,y0,1),"order",0,"backend");
+[method,ctl] = minimize ("ff",{x0,y0,1},"order",0,"backend");
 
 cnt++;
 if ! ischar (method) || ! strcmp (method,"nelder_mead_min")
@@ -105,7 +105,7 @@ if ! ischar (method) || ! strcmp (method,"nelder_mead_min")
 elseif verbose,  prn ("ok %i\n",cnt);
 end
 
-[xle2,vle2,nle2] = feval (method, "ff",list (x0,y0,1), ctl);
+[xle2,vle2,nle2] = feval (method, "ff", {x0,y0,1}, ctl);
 cnt++;
 				# nelder_mead_min is not very repeatable
 				# because of restarts from random positions
@@ -121,7 +121,7 @@ end
 ## Run, w/ differential, just to make sure ###########################
 ## Minimum wrt 'x' is y0
 
-# [xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"df","dff");
+# [xlev,vlev,nlev] = minimize ("ff",{x0,y0,1},"df","dff");
 
 # cnt++;
 # if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -134,7 +134,7 @@ end
 
 ## Run, w/ differential returned by function ('jac' option) ##########
 ## Minimum wrt 'x' is y0
-# [xlev,vlev,nlev] = minimize ("d2ff",list (x0,y0,1),"jac");
+# [xlev,vlev,nlev] = minimize ("d2ff",{x0,y0,1},"jac");
 
 # cnt++;
 # if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -147,7 +147,7 @@ end
 
 ## Run, w/ 2nd differential, just to make sure #######################
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"d2f","d2ff");
+[xlev,vlev,nlev] = minimize ("ff",{x0,y0,1},"d2f","d2ff");
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -160,7 +160,7 @@ end
 
 ## Use the 'hess' option, when f can return 2nd differential #########
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = minimize ("d2ff",list (x0,y0,1),"hess");
+[xlev,vlev,nlev] = minimize ("d2ff", {x0,y0,1},"hess");
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -173,7 +173,7 @@ end
 
 ## Run, w/ inverse of 2nd differential, just to make sure ############
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"d2i","d2iff");
+[xlev,vlev,nlev] = minimize ("ff", {x0,y0,1},"d2i","d2iff");
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -186,7 +186,7 @@ end
 
 ## Use the 'ihess' option, when f can return pinv of 2nd differential 
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = minimize ("d2iff",list (x0,y0,1),"ihess");
+[xlev,vlev,nlev] = minimize ("d2iff", {x0,y0,1},"ihess");
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -199,7 +199,7 @@ end
 
 ## Run, w/ numerical differential ####################################
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"ndiff");
+[xlev,vlev,nlev] = minimize ("ff",{x0,y0,1},"ndiff");
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -212,7 +212,7 @@ end
 
 ## Run, w/ numerical differential, specified by "order" ##############
 ## Minimum wrt 'x' is y0
-[xlev,vlev,nlev] = minimize ("ff",list (x0,y0,1),"order",1);
+[xlev,vlev,nlev] = minimize ("ff",{x0,y0,1},"order",1);
 
 cnt++;
 if max (abs (xlev-y0)) > 100*sqrt (eps)
@@ -224,7 +224,7 @@ elseif verbose,  prn ("ok %i\n",cnt);
 end
 
 # ## See what 'backend' gives in that last case ########################
-# [method,ctl] = minimize ("ff",list (x0,y0,1),"order",1,"backend");
+# [method,ctl] = minimize ("ff",{x0,y0,1},"order",1,"backend");
 
 # cnt++;
 # if ! strcmp (method,"bfgsmin")
@@ -235,8 +235,8 @@ end
 # elseif verbose,  prn ("ok %i\n",cnt);
 # end
 
-## [xle2,vle2,nle2] = feval (method, "ff",list (x0,y0,1), ctl);
-[xle2,vle2,nle2] = minimize ("ff",list (x0,y0,1),"order",1);
+## [xle2,vle2,nle2] = feval (method, "ff",{x0,y0,1}, ctl);
+[xle2,vle2,nle2] = minimize ("ff",{x0,y0,1},"order",1);
 cnt++;
 if max (abs (xlev-xle2)) > 100*eps
   if verbose

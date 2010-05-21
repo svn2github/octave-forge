@@ -1,3 +1,4 @@
+
 ## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -36,17 +37,17 @@ if verbose,
 end
 
 function c = my_quad_func (x,y,z)
-  c = 1 + sum ((x-y)(:)'*z*((x-y)(:)));
+  c = 1 + sum (vec(x-y)'*z*(vec(x-y)));
 end
 
 function c = non_quad_func_1 (x,y,z)
-  tmp = sum ((x-y)(:)'*z*((x-y)(:)));
+  tmp = sum (vec(x-y)'*z*(vec(x-y)));
   c = 1 + 1.1*tmp + sin (sqrt(tmp));
 end
 
 function c = non_quad_func_2 (x,y,z)
-  tmp1 = sum ((x-y)(:)'*z*((x-y)(:)));
-  tmp2 = max (abs ((x-y)(:)))^2;
+  tmp1 = sum (vec(x-y)'*z*(vec(x-y)));
+  tmp2 = max (abs (vec(x-y)))^2;
   c = 1 + 1.1*tmp1 + tmp2 ;
 end
 
@@ -61,21 +62,21 @@ function dt = mytic()
    last_mytic = t ;
 endfunction
 
-fnames = list ( "my_quad_func", "non_quad_func_1", "non_quad_func_2");
+fnames = { "my_quad_func", "non_quad_func_1", "non_quad_func_2"};
 
 x0 = randn(R,C) ;
 x1 = x0 + randn(R,C) ;
 z = randn (R*C); z = z*z';
 
 for i = 1:length (fnames)
-  fname = nth (fnames, i);
+  fname = fnames{i};
   if verbose, 
     printf ("trying to minimize '%s'\n", fname);
   end
   ctl = nan*zeros (1,6);
 
   mytic ();
-  [x2,v,nf] = nelder_mead_min (fname, list (x1,x0,z), ctl) ;
+  [x2,v,nf] = nelder_mead_min (fname, {x1,x0,z}, ctl) ;
   t0 = mytic ();
 
   if any (abs (x2-x0)(:) > 100*tol),
@@ -92,7 +93,7 @@ for i = 1:length (fnames)
 
 				# Use vanilla nelder_mead_min
   mytic ();
-  [x2,v,nf] = nelder_mead_min (fname, list (x1,x0,z)) ;
+  [x2,v,nf] = nelder_mead_min (fname, {x1,x0,z}) ;
   t1 = mytic ();
 
   if any (abs (x2-x0)(:) > 100*tol),
@@ -114,7 +115,7 @@ for i = 1:length (fnames)
   ctl(3) = 2;
 
   mytic ();
-  [x2,v,nf] = nelder_mead_min (fname, list (x1,x0,z), ctl) ;
+  [x2,v,nf] = nelder_mead_min (fname, {x1,x0,z}, ctl) ;
   t0 = mytic ();
 
   if any (abs (x2-x1)(:) > 100*tol),
@@ -134,7 +135,7 @@ for i = 1:length (fnames)
   ctl(3) = 2;
 
   mytic ();
-  [x2,v,nf] = nelder_mead_min (fname, list (x1,x0,z), ctl) ;
+  [x2,v,nf] = nelder_mead_min (fname, {x1,x0,z}, ctl) ;
   t1 = mytic ();
 
   if any (abs (x2-x1)(:) > tol),
@@ -151,7 +152,7 @@ for i = 1:length (fnames)
   if 0
 				# Check with struct control variable
     ctls = struct ("narg", 2);
-    [x2bis,vbis,nfbis] = nelder_mead_min (fname, list (x1,x0,z), ctls) ;
+    [x2bis,vbis,nfbis] = nelder_mead_min (fname, {x1,x0,z}, ctls) ;
     t1 = mytic ();
     ## [nf,nfbis]
     if any ((x2-x2bis)(:))
@@ -167,7 +168,7 @@ for i = 1:length (fnames)
     cnt++;
     
 				# Check with named args
-    [x2bis,vbis,nfbis] = nelder_mead_min (fname, list (x1,x0,z), "narg", 2) ;
+    [x2bis,vbis,nfbis] = nelder_mead_min (fname, {x1,x0,z}, "narg", 2) ;
     t1 = mytic ();
     ## [nf,nfbis]
     if any ((x2-x2bis)(:))
@@ -187,4 +188,5 @@ end
 if verbose && ok
   printf ("All tests ok\n");
 end
+
 

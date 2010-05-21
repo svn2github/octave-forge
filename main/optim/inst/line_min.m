@@ -47,13 +47,13 @@ function [a,fx,nev] = line_min (f, dx, args, narg)
 
   nev = 0;
   h = 0.001;			# Was 0.01 here
-  x = nth (args,narg);
+  x = args{narg};
   a = 0;
 				# was 1e-4
   while (abs (velocity) > 0.000001)
-    fx = leval (f,splice (args, narg, 1, list (x+a*dx)));
-    fxph = leval (f,splice (args, narg,1,list (x+(a+h)*dx)));
-    fxmh = leval (f,splice (args, narg,1,list (x+(a-h)*dx)));
+    fx = feval (f,{args{1:narg-1}, {x+a*dx}, args{narg+1:end}}{:});
+    fxmh = feval (f,{args{1:narg-1}, {x+(a+h)*dx}, args{narg+1:end}}{:});
+    fxmh = feval (f,{args{1:narg-1}, {x+(a-h)*dx}, args{narg+1:end}}{:});
 
     velocity = (fxph - fxmh)/(2*h);
     acceleration = (fxph - 2*fx + fxmh)/(h^2);

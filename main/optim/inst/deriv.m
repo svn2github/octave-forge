@@ -1,3 +1,4 @@
+
 ## Copyright (C) 2000 Ben Sapp.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -28,17 +29,17 @@ function dx = deriv(f,x0,varargin)
   endif
   if(nargin >= 3)
     va_arg_cnt = 1;
-    h = nth (varargin, va_arg_cnt++);
+    h = varargin{va_arg_cnt++};
     if(!is_scalar(h))
       error("h must be a scalar.");
     endif
     if(nargin >= 4)
-      O = nth (varargin, va_arg_cnt++);
+      O = varargin{va_arg_cnt++};
       if((O != 2) && (O != 4))
 	error("Only order 2 or 4 is supported.\n");
       endif
       if(nargin >= 5)
-	N = nth (varargin, va_arg_cnt++);
+	N = varargin{va_arg_cnt++};
 	if((N > 4)||(N < 1))
 	  error("Only 1st,2nd,3rd or 4th order derivatives are acceptable.\n");
 	endif
@@ -83,3 +84,4 @@ function dx = deriv(f,x0,varargin)
       error("Only order 4 or 2 supported\n");
   endswitch
 endfunction
+

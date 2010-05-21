@@ -1,3 +1,4 @@
+
 ## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
 ##
 ## This program is free software; you can redistribute it and/or modify it
@@ -113,14 +114,14 @@ if nargin >= 4			# Read arguments
     if length (ctl)>=4 && !isnan (ctl(4)), maxev = ctl(4); end
     if length (ctl)>=5 && !isnan (ctl(5)), id2f  = ctl(5); end
   elseif isstruct (ctl)
-    if struct_contains (ctl, "crit")   , crit    = ctl.crit   ; end
-    if struct_contains (ctl, "tol")    , tol     = ctl.tol    ; end
-    if struct_contains (ctl, "narg")   , narg    = ctl.narg   ; end
-    if struct_contains (ctl, "maxev")  , maxev   = ctl.maxev  ; end
-    if struct_contains (ctl, "maxout") , maxout  = ctl.maxout ; end
-    if struct_contains (ctl, "id2f")   , id2f    = ctl.id2f   ; end
-    if struct_contains (ctl, "verbose"), verbose = ctl.verbose; end
-    if struct_contains (ctl, "code")   , code    = ctl.code   ; end
+    if isfield (ctl, "crit")   , crit    = ctl.crit   ; end
+    if isfield (ctl, "tol")    , tol     = ctl.tol    ; end
+    if isfield (ctl, "narg")   , narg    = ctl.narg   ; end
+    if isfield (ctl, "maxev")  , maxev   = ctl.maxev  ; end
+    if isfield (ctl, "maxout") , maxout  = ctl.maxout ; end
+    if isfield (ctl, "id2f")   , id2f    = ctl.id2f   ; end
+    if isfield (ctl, "verbose"), verbose = ctl.verbose; end
+    if isfield (ctl, "code")   , code    = ctl.code   ; end
   else 
     error ("The 'ctl' argument should be either a vector or a struct");
   end
@@ -135,11 +136,11 @@ end
 
 if nargin < 5, code = "" ; end
 
-if is_list (args)		# List of arguments 
-  x = nth (args, narg);
+if iscell (args)		# List of arguments 
+  x = args{narg};
 else				# Single argument
   x = args;
-  args = list (args); 
+  args = {args}; 
 end
 
 ############################## Checking ##############################
@@ -158,7 +159,7 @@ end
 
 sz = size (x); N = prod (sz);
 
-v = leval (f, args);
+v = feval (f, args{:});
 nev = [1,0];
 
 if prudent && (! isnumeric (v) || isnan (v) || any (size (v)>1))
@@ -173,9 +174,11 @@ if verbose
     printf ( "d2_min : Initially, v=%8.3g\n",v);
 end
 
-while niter++ <= maxout && nev(1) < maxev
+while niter <= maxout
+  niter += 1;
+  if nev(1) < maxev, break; end;  
 
-  [v,d,h] = leval (d2f, splice (args, narg, 1, list (reshape (x,sz))));
+  [v,d,h] = feval (d2f, {args{1:narg-1},reshape(x,sz),args{narg+1:end}}{:}); 
   nev(2)++;
 
   if prudent && niter <= 1 && \
@@ -189,7 +192,7 @@ while niter++ <= maxout && nev(1) < maxev
   d = d(:);
 
   if prudent
-    v2 = leval (f, splice (args, narg, 1, list (reshape (x,sz))));
+    v2 = feval (f, {args{1:narg-1},reshape(x,sz),args{narg+1:end}}{:});
     nev(1)++;
     if abs(v2-v) > 0.001 * sqrt(eps) * max (abs(v2), 1)
       printf ("d2_min : f and d2f disagree %8.3g\n",abs(v2-v));
@@ -224,11 +227,12 @@ while niter++ <= maxout && nev(1) < maxev
   wn = 1 ;			# Weight of Newton step
   wt = 1 ;			# Total weight
   
-  ninner = done_inner = 0;	# 0=not found. 1=Ready to quit inner.
+  ninner = 0; 
+  done_inner = 0;	# 0=not found. 1=Ready to quit inner.
   
 				# ##########################################
-  while ninner++ < maxinner	# Inner loop ###############################
-
+  while ninner < maxinner,	# Inner loop ###############################
+    ninner += 1;
 				# Proposed step
     dx = wt*(wn*dnewton - (1-wn)*d) ;
     xnew = x+dx ;
@@ -242,8 +246,8 @@ while niter++ <= maxout && nev(1) < maxev
       printf ("d2_min : Whoa!! any(isnan(xnew)) (1)\n"); 
     end
 
-    vnew = leval (f, splice (args, narg, 1, list (reshape (xnew,sz))));
-    nev(1)++ ;
+    vnew = feval (f, {args{1:narg-1},reshape(xnew,sz),args{narg+1:end}}{:});
+    nev(1)++;
 
     if vnew<vbest		# Stash best values
       dbest = dx ; 
@@ -281,7 +285,7 @@ while niter++ <= maxout && nev(1) < maxev
     if any(isnan(xnew)),
       printf ("d2_min : Whoa!! any(isnan(xnew)) (2)\n"); 
     end
-    vnew = leval (f, splice (args, narg, 1, list (reshape (xnew,sz))));
+    vnew = feval (f, {args{1:narg-1},reshape(xnew,sz),args{narg+1:end}}{:});
     nev(1)++;
 
     while vnew < vbest,
@@ -290,7 +294,7 @@ while niter++ <= maxout && nev(1) < maxev
       xbest = xnew; 
       wn = wn*ocoeff ;
       xnew = x+wn*dbest;
-      vnew = leval (f, splice (args, narg, 1, list (reshape (xnew,sz))));
+      vnew = feval (f, {args{1:narg-1},reshape(xnew,sz),args{narg+1:length(args)}}{:});
       if verbose
           printf ( "Looking farther : v = %8.3g\n",vnew);
       end
@@ -315,7 +319,7 @@ while niter++ <= maxout && nev(1) < maxev
   if vbest < vold
     ## "improvement found"
     if prudent
-      tmpv = leval (f, splice (args, narg, 1, list (reshape (xbest,sz))));
+      tmpv = feval (f, {args{1:narg-1},reshape(xbest,sz),args{2:end}}{:});
       nev(1)++;
 
       if abs (tmpv-vbest) > eps
@@ -338,8 +342,8 @@ while niter++ <= maxout && nev(1) < maxev
       abest = args;
 				# Check whether eval (code) changes value
       if prudent
-	tmpv = leval (f, splice (args, narg, 1, list (reshape (x,sz))));
-	nev(1)++;
+        tmpv = feval (f, {args{1:narg-1},reshape(x,sz),args{2:end}}{:});
+        nev(1)++;
 	if abs (tmpv-vbest) > max (min (100*eps,0.00001*abs(vbest)), eps) ,
 	  printf ("d2_min : Whoa! Value changes by %g after eval (code)\n",\
 		  abs (tmpv-vbest));
@@ -382,7 +386,7 @@ end
 
 				# One last check
 if prudent
-  err = leval (f, splice (args, narg, 1, list (reshape (xbest,sz))));
+  err = feval (f, {args{1:narg-1},reshape(xbest,sz),args{2:end}}{:});
   nev(1)++;
 
   if abs (err-vbest) > eps,
@@ -390,3 +394,4 @@ if prudent
     printf ("       : %8.3e - %8.3e = %8.3e != 0\n",err,vbest,err-vbest);
   end
 end
+

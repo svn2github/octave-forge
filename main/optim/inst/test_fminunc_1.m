@@ -91,7 +91,7 @@ if ! ischar (method) || ! strcmp (method,"nelder_mead_min")
 elseif verbose,  prn ("ok %i\n",cnt);
 end
 
-[xle2,vle2,nle2] = feval (method, "ff",list (x0,y0,1), ctl);
+[xle2,vle2,nle2] = feval (method, "ff",{x0,y0,1}, ctl);
 cnt++;
 				# nelder_mead_min is not very repeatable
 				# because of restarts from random positions

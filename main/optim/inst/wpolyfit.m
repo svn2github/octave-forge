@@ -1,3 +1,4 @@
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{p}, @var{s}] =} wpolyfit (@var{x}, @var{y}, @var{dy}, @var{n})
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
@@ -33,7 +34,7 @@
 ##
 ## You can use a chi^2 test to reject the polynomial fit:
 ## @example
-## p = 1-chisquare_cdf(s.normr^2,s.df);
+## p = 1-chi2cdf(s.normr^2,s.df);
 ## @end example
 ## p is the probability of seeing a chi^2 value higher than that which 
 ## was observed assuming the data are normally distributed around the fit.
@@ -177,7 +178,7 @@ function [p_out, s, mu] = wpolyfit (varargin)
   endif
 
   if nargout == 0
-    good_fit = 1-chisquare_cdf(s.normr^2,s.df);
+    good_fit = 1-chi2cdf(s.normr^2,s.df);
     printf("Polynomial: %s  [ p(chi^2>observed)=%.2f%% ]\n", polyout(p,'x'), good_fit*100);
     plt(x,y,dy,p,s,'ci');
   else
@@ -258,4 +259,5 @@ function plt(x,y,dy,p,s,varargin)
 %! y = y + randn (size (y)) .* dy;
 %! printf ("Original polynomial: %s\n", polyout (pin, 'x'));
 %! wpolyfit (x, y, dy, length (pin)-1);
+
 

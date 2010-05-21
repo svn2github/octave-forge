@@ -134,23 +134,7 @@ default = struct ("backend",0,"verbose",0,\
 		    "isz",  nan);
 
 if nargin == 3			# Accomodation to struct and list optional
-  va_arg_cnt = 1;				# args
-  tmp = nth (varargin, va_arg_cnt++);
-
-  if isstruct (tmp)
-    opls = list ();
-    for [v,k] = tmp		# Treat separately unary and binary opts
-      if findstr ([" ",k," "],op0)
-	opls = append (opls, k);
-      else
-	opls = append (opls, k, v);
-      end
-    end
-  elseif is_list (tmp)
-    opls = tmp;
-  else
-    opls = list (tmp);
-  end
+  opls = varargin{1};
 else
   opls = varargin;
 end
@@ -191,11 +175,7 @@ end
 				# f(), unless backend is specified, in which
 				# case I don't need to call f()
 if ! isnan (narg) && ! backend
-  if is_list (args)
-    if narg > length (args)
-      es = [es,sprintf("narg=%i > length(args)=%i\n",narg, length(args))];
-    end
-  elseif narg > 1
+  if narg > 1
     es = [es,sprintf("narg=%i, but a single argument was passed\n",narg)];
   end
 end
@@ -265,21 +245,21 @@ end
 if length (ws), warn (ws); end
 				# EOF More checks ##########################
 
-if     strcmp (method, "d2_min"), all_args = list (f, d2f, args);
-elseif strcmp (method, "bfgsmin"),all_args = list (f, args);
-else                              all_args = list (f, args);
+if     strcmp (method, "d2_min"), all_args = {f, d2f, args};
+elseif strcmp (method, "bfgsmin"),all_args = {f, args};
+else                              all_args = {f, args};
 end
 				# Eventually add ctls to argument list
-if op, all_args = append (all_args, list (ctls)); end
+if op, all_args{end+1} = {ctls}; end
 
+  method,
 if ! backend			# Call the backend ###################
   if strcmp (method, "d2_min"),
-    [x,v,nev,h] = leval (method, all_args);
+    [x,v,nev,h] = d2_min(all_args{:});
 				# Eventually return inverse of Hessian
-    if nargout > 3, vr_val_cnt = 1; varargout{vr_val_cnt++} = h; end 
+    if nargout > 3, varargout{1} = h; vr_val_cnt=2; end 
   elseif strcmp (method, "bfgsmin")
     nev = nan;
-    if is_list (args),tmp={};for i=1:length(args),tmp{i}=nth(args,i);end;args=tmp;end
     if !iscell(args), args = {args}; end
     if isnan (ftol), ftol = 1e-12; end # Use bfgsmin's defaults
     if isnan (utol), utol = 1e-6; end
@@ -287,7 +267,7 @@ if ! backend			# Call the backend ###################
     if isnan (maxev), maxev = inf; end
     [x, v, okcv] = bfgsmin (f, args, {maxev,verbose,1,narg},{ftol,utol,dtol});
   else
-    [x,v,nev] = leval (method, all_args);
+    [x,v,nev] = feval (method, all_args{:});
   end
 
 else				# Don't call backend, just return its name

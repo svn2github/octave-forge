@@ -34,7 +34,7 @@ y0 = (N:-1:1)'/N;
 
 function v = ff(x,y,t)
   A = [1 -1;1 1]; M = A'*diag([100,1])*A;
-  v = ((x - y)(1:2))'*M*((x-y)(1:2)) + 1;
+  v = (x(1:2) - y(1:2))'*M*(x(1:2)-y(1:2)) + 1;
 endfunction
 
 
@@ -42,7 +42,7 @@ function dv = dff(x,y,t)
   if nargin < 3, t = 1; end
   if t == 1, N = length (x); else N = length (y); end
   A = [1 -1;1 1]; M = A'*diag([100,1])*A;
-  dv = 2*((x-y)(1:2))'*M;
+  dv = 2*(x(1:2)-y(1:2))'*M;
   if N>2, dv = [dv, zeros(1,N-2)]; end
   if t == 2, dv = -dv; end
 endfunction
@@ -62,7 +62,7 @@ end
 
 ## Plain run, just to make sure ######################################
 ## Minimum wrt 'x' is y0
-## [xlev,vlev,nlev] = feval (optim_func, "ff", "dff", list (x0,y0,1));
+## [xlev,vlev,nlev] = feval (optim_func, "ff", "dff", {x0,y0,1});
 ## ctl.df = "dff";
 [xlev,vlev,nlev] = feval (optim_func, "ff", {x0,y0,1});
 
@@ -80,7 +80,6 @@ end
 ## ctl = struct ("narg", 2,"df","dff");
 ## ctl = [nan,nan,2];
 ## [xlev,vlev,nlev] = feval (optim_func, "ff", list (x0,y0,2),ctl);
-
 [xlev,vlev,nlev] = feval (optim_func, "ff", {x0,y0,2},{inf,0,1,2});
 
 cnt++;
@@ -96,7 +95,7 @@ end
 ## Minimum wrt 'x' is y0
 ## ctl = struct ("narg", 1,"verbose",verbose, "df", "dff");
 ## ctl = [nan,nan,2];
-## [xlev,vlev,nlev] = feval (optim_func, "ff", "dff", list (x0,y0,1),ctl);
+## [xlev,vlev,nlev] = feval (optim_func, "ff", "dff", {x0,y0,1},ctl);
 [xlev,vlev,nlev] = feval (optim_func, "ff", {x0,y0,1},{inf,1,1,1});
 
 cnt++;

@@ -44,9 +44,9 @@ function [x,fval,flag,out,df,d2f] = fminunc_compat (fun,x0,opt,varargin)
 
 if nargin < 3, opt = struct (); end
 if nargin > 3, 
-  args = list (x0, varargin{:});
+  args = {x0, varargin{:}};
 else 
-  args = list (x0);
+  args = {x0};
 end
 
 ## Do some checks ####################################################
@@ -67,7 +67,6 @@ for [v,k] = opt
     es = [es,sprintf("Unknown option '%s'\n",k)];
   end
 end
-
 ## Check for ignored options
 ## All ignored options
 iop = [" DerivativeCheck DiffMaxChange DiffMinChange",\
@@ -97,7 +96,7 @@ equiv = struct ("TolX"       , "utol"   , "TolFun"     , "ftol",\
 		"Backend"    , "backend");
 
 for [v,k] = equiv
-  if struct_contains (opt,k)
+  if isfield (opt,k)
     opm = setfield (opm, getfield(equiv,k), getfield(opt,k));
   end
 end
@@ -115,23 +114,23 @@ for [v,k] = opm
 end
 
 unary_opt = " hess jac backend verbose ";
-opml = list ();
+opml = {};
 for [v,k] = opm
   if findstr ([" ",k," "], unary_opt)
-    opml = append (opml, list (k));
+    opml{end+1} = {k};
   else
-    opml = append (opml, list (k, v));
+    opml{end+1} = {k,v};
   end
 end
 				# Return only options to minimize() ##
-if struct_contains (opt, "MinEquiv")
+if isfield (opt, "MinEquiv")
   x = opml;			
   if nargout > 1
     warning ("Only 1 return value is defined with the 'MinEquiv' option");
   end
   return
 				# Use the backend option #############
-elseif struct_contains (opm, "backend")
+elseif isfield (opm, "backend")
   [x,fval] = minimize (fun, args, opml);
   if nargout > 2
     warning ("Only 2 return values are defined with the 'Backend' option");
@@ -140,17 +139,15 @@ elseif struct_contains (opm, "backend")
 else  				# Do the minimization ################
   [x,fval,out] = minimize (fun, args, opml);
   
-  if struct_contains (opm, "maxev")
+  if isfield (opm, "maxev")
     flag = out(1) < getfield(opm,"maxev");
   else
     flag = 1;
   end
   
   if nargout > 4
-    args = splice (args, 1, 1, list (x));
-    [dummy,df,d2f] = leval (fun, args);
+    [dummy,df,d2f] = feval (fun, x, args{2:end});
   elseif nargout > 3
-    args = splice (args, 1, 1, list (x));
-    [dummy,df] = leval (fun, args);
+    [dummy,df] = feval (fun, x, args{2:end});
   end
 end

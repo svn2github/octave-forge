@@ -91,7 +91,7 @@ u = roots(p);
 a = log(u)/h;
 
 % Compose second matrix A(i,j) = u(j)^(i-1)
-A = ( ones(N,1) * u(:).' ) .^ ( [0:N-1](:) * ones(1,deg) );
+A = ( ones(N,1) * u(:).' ) .^ ( [0:N-1]' * ones(1,deg) );
 
 % Solve linear system
 f = A\y;

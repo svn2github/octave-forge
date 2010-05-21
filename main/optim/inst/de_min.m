@@ -1,3 +1,4 @@
+
 ## Copyright (C) 2009 Christian Fischer <cfischer@itm.uni-stuttgart.de>
 ## Copyright (C) 1996, 1997 R. Storn
 ##
@@ -147,7 +148,7 @@ if nargin >= 2,			# Read control arguments
   if nargin > 2,
     ctl = struct (varargin{:});
   else
-    ctl = nth (varargin, va_arg_cnt++);
+    ctl = varargin{va_arg_cnt++};
   end
   if isnumeric (ctl)
     if length (ctl)>=1 && !isnan (ctl(1)), XVmin  = ctl(1); end
@@ -454,4 +455,5 @@ endfunction
 %! ctl.XVmax = [ 3  3];
 %! ## and solve it with de_min
 %! [x, obj_value, nfeval, convergence] = de_min (f, ctl)
+
 

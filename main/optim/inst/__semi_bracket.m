@@ -1,7 +1,7 @@
 ## [a, b, ga, gb, nev] = semi_bracket (f, dx, a, narg, args)
 ##
 ## Find an interval containing a local minimum of the function 
-## g : h in [a, inf[ ---> f (x+h*dx) where x = nth (args, narg)
+## g : h in [a, inf[ ---> f (x+h*dx) where x = args{narg}
 ##
 ## The local minimum may be in a.
 ## a < b.
@@ -15,7 +15,7 @@ function [a,b,ga,gb,n] = __semi_bracket (f, dx, a, narg, args)
 
 step = 1;
 
-x = nth (args, narg);
+x = args{narg};
 args{narg} =  x+a*dx; ga = feval (f, args );
 b = a + step;
 args{narg} =  x+b*dx; gb = feval (f, args );

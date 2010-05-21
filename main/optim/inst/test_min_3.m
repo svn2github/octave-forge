@@ -45,7 +45,7 @@ xinit = truep + 2*(1:P)'/(P);
 ## global obses ;
 obses = obsmat*truep ;
 
-extra = list (obsmat, obses);
+extra = {obsmat, obses};
 
 
 function v = ff(x, obsmat, obses)

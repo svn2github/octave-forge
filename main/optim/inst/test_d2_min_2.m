@@ -84,7 +84,7 @@ ctl = nan*zeros(1,5); ctl(5) = 1;
 
 if verbose, printf ( "Going to call d2_min()\n"); end
 mytic() ;
-[xlev,vlev,nev] = d2_min ("ff", "d2ff", list (xinit,y), ctl) ;
+[xlev,vlev,nev] = d2_min ("ff", "d2ff", {xinit,y}, ctl) ;
 tlev = mytic ();
 
 if verbose,

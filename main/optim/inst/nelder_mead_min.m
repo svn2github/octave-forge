@@ -65,7 +65,7 @@
 ##
 ##                { x + e_i | i in 0..N } 
 ## 
-##                Where x == nth (args, narg) is the initial value 
+##                Where x == args{narg} is the initial value 
 ##                 e_0    == zeros (size (x)), 
 ##                 e_i(j) == 0 if j != i and e_i(i) == ctl(5)
 ##                 e_i    has same size as x
@@ -100,7 +100,11 @@ rst = 0;			# Max # of restarts
 
 if nargin >= 3,			# Read control arguments
   va_arg_cnt = 1;
-  if nargin > 3, ctl = struct (varargin{:}); else ctl = nth (varargin, va_arg_cnt++); end
+  if nargin > 3, 
+          ctl = struct (varargin{:}); 
+  else 
+          ctl = varargin{va_arg_cnt++}; 
+  end
   if isnumeric (ctl)
     if length (ctl)>=1 && !isnan (ctl(1)), crit = ctl(1); end
     if length (ctl)>=2 && !isnan (ctl(2)), tol = ctl(2); end
@@ -109,16 +113,16 @@ if nargin >= 3,			# Read control arguments
     if length (ctl)>=5 && !isnan (ctl(5)), isz = ctl(5); end
     if length (ctl)>=6 && !isnan (ctl(6)), rst = ctl(6); end
   else
-    if struct_contains (ctl, "crit") && ! isnan (ctl.crit ), crit  = ctl.crit ; end
-    if struct_contains (ctl,  "tol") && ! isnan (ctl.tol  ), tol   = ctl.tol  ; end
-    if struct_contains (ctl, "ftol") && ! isnan (ctl.ftol ), ftol  = ctl.ftol ; end
-    if struct_contains (ctl, "rtol") && ! isnan (ctl.rtol ), rtol  = ctl.rtol ; end
-    if struct_contains (ctl, "vtol") && ! isnan (ctl.vtol ), vtol  = ctl.vtol ; end
-    if struct_contains (ctl, "narg") && ! isnan (ctl.narg ), narg  = ctl.narg ; end
-    if struct_contains (ctl,"maxev") && ! isnan (ctl.maxev), maxev = ctl.maxev; end
-    if struct_contains (ctl,  "isz") && ! isnan (ctl.isz  ), isz   = ctl.isz  ; end
-    if struct_contains (ctl,  "rst") && ! isnan (ctl.rst  ), rst   = ctl.rst  ; end
-    if struct_contains(ctl,"verbose")&& !isnan(ctl.verbose),verbose=ctl.verbose;end
+    if isfield (ctl, "crit") && ! isnan (ctl.crit ), crit  = ctl.crit ; end
+    if isfield (ctl,  "tol") && ! isnan (ctl.tol  ), tol   = ctl.tol  ; end
+    if isfield (ctl, "ftol") && ! isnan (ctl.ftol ), ftol  = ctl.ftol ; end
+    if isfield (ctl, "rtol") && ! isnan (ctl.rtol ), rtol  = ctl.rtol ; end
+    if isfield (ctl, "vtol") && ! isnan (ctl.vtol ), vtol  = ctl.vtol ; end
+    if isfield (ctl, "narg") && ! isnan (ctl.narg ), narg  = ctl.narg ; end
+    if isfield (ctl,"maxev") && ! isnan (ctl.maxev), maxev = ctl.maxev; end
+    if isfield (ctl,  "isz") && ! isnan (ctl.isz  ), isz   = ctl.isz  ; end
+    if isfield (ctl,  "rst") && ! isnan (ctl.rst  ), rst   = ctl.rst  ; end
+    if isfield(ctl,"verbose")&& !isnan(ctl.verbose),verbose=ctl.verbose;end
   end
 end
 
@@ -131,14 +135,10 @@ end
 
 if iscell (args)
   x = args{1};
-elseif islist (args),		# List of arguments 
-  args = {args{:}};
-  x = args{1};
 else				# Single argument
   x = args;
   args = {args};
 endif
-
 
 if narg > length (args)		# Check
   error ("nelder_mead_min : narg==%i, length (args)==%i\n",
@@ -152,10 +152,9 @@ x = x(:);
 u = isz * eye (N+1,N) + ones(N+1,1)*x';
 
 y = zeros (N+1,1);
-
 for i = 1:N+1,
-  ##y(i) = leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));
-  y(i) = feval (f, {args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)}}{:});
+  aa = {args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:end}};
+  y(i) = feval (f, aa{:});
 end ;
 nev = N+1;
 
@@ -181,10 +180,14 @@ while nev <= maxev,
   
 				# Compute stopping criterion
   done = 0;
-  if ! isnan (ftol), done |= (max(y)-min(y)) / max(1,max(abs(y))) < ftol;end
-  if ! isnan (rtol), done |= 2*max (max (u) - min (u)) < rtol; end
+  if ! isnan (ftol), 
+     done |= ((max(y)-min(y)) / max(1,max(abs(y))) < ftol); 
+  end
+  if ! isnan (rtol), 
+     done = (2*max (max (u) - min (u)) < rtol); 
+  end
   if ! isnan (vtol)
-    done |= abs (det (u(1:N,:)-ones(N,1)*u(N+1,:)))/factorial(N) < vtol;
+    done |= (abs (det (u(1:N,:)-ones(N,1)*u(N+1,:)))/factorial(N) < vtol);
   end
   ## [ 2*max (max (u) - min (u)), abs (det (u(1:N,:)-ones(N,1)*u(N+1,:)))/factorial(N);\
   ##  rtol, vtol]
@@ -217,7 +220,6 @@ while nev <= maxev,
       u += jumplen * randn (size (u));
       for i = 1:N+1, y(i) = \
 	    feval (f, {args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)}}{:});
-	## leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));	
       end
       nev += N+1;
       [ymin,imin] = min(y);  [ymax,imax] = max(y);
@@ -249,7 +251,6 @@ while nev <= maxev,
   ## f2 = f1 - (-1)  = 2/N + 1 = (N+2)/N
   xnew = (2*xsum - (N+2)*u(imax,:)) / N;
   ## xnew = (2*xsum - N*u(imax,:)) / N;
-  ## ynew = leval (f, splice (args, narg, 1, list ( reshape (xnew, R,C))));
   ynew = feval (f, {args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)}}{:});
   nev++;
   
@@ -267,7 +268,6 @@ while nev <= maxev,
     ## f1 = (1-2)/N = -1/N
     ## f2 = f1 - 2  = -1/N - 2 = -(2*N+1)/N
     xnew = ( -xsum + (2*N+1)*u(imax,:) ) / N;
-    ##ynew = leval (f, splice (args, narg, 1, list ( reshape (xnew, R,C))));
     ynew = feval (f, {args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)}}{:});
     nev++;
       
@@ -299,7 +299,6 @@ while nev <= maxev,
     ## f1 = (1-0.5)/N = 0.5/N
     ## f2 = f1 - 0.5  = 0.5*(1 - N)/N
     xnew = 0.5*(xsum + (N-1)*u(imax,:)) / N;
-    ##ynew = leval (f, splice (args, narg, 1, list (reshape (xnew, R,C))));
     ynew = feval (f, {args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)}}{:});
     nev++;
 
@@ -318,7 +317,6 @@ while nev <= maxev,
       for i = ii
 	y(i) = \
 	    ynew = feval (f, {args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)}}{:});
-	    ##leval (f, splice (args, narg, 1, list (reshape (u(i,:),R,C))));
       end
       ##      'contraction'
       tra += 16 ;

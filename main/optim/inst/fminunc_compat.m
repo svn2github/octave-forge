@@ -119,7 +119,7 @@ for [v,k] = opm
   if findstr ([" ",k," "], unary_opt)
     opml{end+1} = {k};
   else
-    opml{end+1} = {k,v};
+    opml{end+[1,2]} = {k,v};    # append k and v 
   end
 end
 				# Return only options to minimize() ##

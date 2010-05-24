@@ -134,7 +134,22 @@ default = struct ("backend",0,"verbose",0,\
 		    "isz",  nan);
 
 if nargin == 3			# Accomodation to struct and list optional
-  opls = varargin{1};
+  tmp = varargin{1};
+
+  if isstruct (tmp)
+    opls = {};
+    for [v,k] = tmp		# Treat separately unary and binary opts
+      if findstr ([" ",k," "],op0)
+	opls {end+1} = k;
+      else
+	opls {end+[1:2]} = {k, v};
+      end
+    end
+  elseif iscell (tmp)
+    opls = tmp;
+  else
+    opls = {tmp};
+  end
 else
   opls = varargin;
 end

@@ -267,7 +267,6 @@ end
 				# Eventually add ctls to argument list
 if op, all_args{end+1} = {ctls}; end
 
-  method,
 if ! backend			# Call the backend ###################
   if strcmp (method, "d2_min"),
     [x,v,nev,h] = d2_min(all_args{:});

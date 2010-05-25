@@ -153,8 +153,7 @@ u = isz * eye (N+1,N) + ones(N+1,1)*x';
 
 y = zeros (N+1,1);
 for i = 1:N+1,
-  aa = {args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:end}};
-  y(i) = feval (f, aa{:});
+  y(i) = feval (f, args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:end});
 end ;
 nev = N+1;
 

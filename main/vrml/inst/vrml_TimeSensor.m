@@ -115,7 +115,7 @@ while i < length (varargin)
 	    if verbose
 	      printf ("vrml_TimeSensor : Using default type : %s\n",getfield(dnode,k));
 	    end
-	    v = {getfield(dnode,k), v{:});
+	    v = {getfield(dnode,k), v{:}};
 	  else
 	    error ("vrml_TimeSensor : Can't determine type of node '%s'",k);
 	  end

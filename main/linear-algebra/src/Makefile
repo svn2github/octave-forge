@@ -9,7 +9,7 @@ GSVD_OBJECTS = gsvd.o dbleGSVD.o CmplxGSVD.o
 GSVD_TARGET = gsvd.oct
 GSVD_DEPENDS = gsvd.d dbleGSVD.d CmplxGSVD.d
 
-OTHER_OBJECTS = outer.o GramSchmidt.o pgmres.o
+OTHER_OBJECTS = GramSchmidt.o pgmres.o
 OTHER_TARGETS = $(patsubst %.o,%.oct,$(OTHER_OBJECTS))
 OTHER_DEPENDS = $(patsubst %.o,%.d,$(OTHER_OBJECTS))
 

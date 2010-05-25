@@ -1,4 +1,5 @@
 ## Copyright (C) 2008 Muthiah Annamalai <muthiah.annamalai@uta.edu>
+## Copyright (C) 2010 VZLU Prague
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -44,35 +45,20 @@
 ## @seealso{kron}
 
 
-function P = cartprod( varargin )
-     if ( nargin < 1 )
-  	     error('usage: cartprod(A,B,C, ... )')
-     end
-      
-     %% kludge allows to use input matrix arguments
-     if ( rows(varargin{1}) > 1 && columns(varargin{1}) > 1 )
- 	     A = varargin{1};
-	    for itr = 1:columns(A)
-		  varargin{itr} = A(:,itr);
- 	    end
-     end
-      
-     itr = 1; P = [];
-     while ( itr <= length(varargin) )
-	  B = varargin{itr};
-          B = reshape(B,[length(B),1]);      
-	  rP = rows(P); lB=length(B);
-	  if ( rP == 0 ) 
-		P = B; itr = itr + 1;
-		continue;
-	  end
-	  Q = repmat(P,[lB,1]);	  
-          R = reshape(repmat(B,[1,rP]).',[lB*rP,1]);
-          P = [Q,R];
-          itr = itr + 1;
-     end     
-     return
-end%!
+function p = cartprod (varargin)
+   if (nargin < 1)
+     print_usage ();
+   elseif (nargin == 1)
+     p = varargin{1};
+   endif
+
+   [p{1:nargin}] = ndgrid (varargin{:});
+   p = cat (nargin+1, p{:});
+   p = reshape (p, [], nargin);
+
+endfunction
+
+%!
 %!assert(cartprod(1:2,0:1),[1 0; 2 0; 1 1; 2 1])
 %!
 

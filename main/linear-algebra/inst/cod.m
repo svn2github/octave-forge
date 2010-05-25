@@ -27,7 +27,7 @@
 ## Let @var{a} be an M-by-N matrix, and let @code{K = min(M, N)}. 
 ## Then @var{q} is M-by-M orthogonal, @var{z} is N-by-N orthogonal,
 ## and @var{r} is M-by-N such that @code{@var{r}(:,1:K)} is upper 
-## trapezoidal and @code{var{r}(:,K+1:N)} is zero.
+## trapezoidal and @code{@var{r}(:,K+1:N)} is zero.
 ## The additional @var{p} output argument specifies that pivoting should be used in
 ## the first step (QR decomposition). In this case,
 ## @example

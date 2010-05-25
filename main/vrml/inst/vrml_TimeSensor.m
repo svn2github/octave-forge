@@ -104,11 +104,34 @@ while i < length (varargin)
 
       if verbose, printf ("vrml_TimeSensor : Trying to learn type of node\n"); end
 
-      if isfield (dnode, k)
+      if iscell (v)		# v is list of arguments
+
+				# Check whether 1st arg is node type's name.
+        n = v{1};
+
+	if all (exist (["vrml_",tn]) != [2,3,5])
+	  			# If it isn't type's name, use default type.
+	  if isfield (dnode, k)
+	    if verbose
+	      printf ("vrml_TimeSensor : Using default type : %s\n",getfield(dnode,k));
+	    end
+	    v = {getfield(dnode,k), v{:});
+	  else
+	    error ("vrml_TimeSensor : Can't determine type of node '%s'",k);
+	  end
+	else
+	  if verbose
+            printf ("vrml_TimeSensor : 1st list element is type : %s\n",tn);
+	  end
+	end
+				# If v is not a list, maybe it has a default
+				# node type type (otherwise, it's be sent
+				# plain.
+      elseif isfield (dnode, k)
 	if verbose
 	  printf ("vrml_TimeSensor : Using default type : %s\n",dnode.(k));
 	end
-	v = {getfield(dnode,k), v};
+	v = {getfield(dnode,k), v{:}};
       end
     end
     l = {l{:}, k, " ", data2vrml(getfield(tpl,k),v),"\n"};

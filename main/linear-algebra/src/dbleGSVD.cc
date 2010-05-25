@@ -191,10 +191,10 @@ GSVD::init (const Matrix& a, const Matrix& b, GSVD::type gsvd_type)
   lwork = lwork > m ? lwork : m;
   lwork = (lwork > p ? lwork : p) + n;
 
-  Array<double> work (lwork);
-  Array<double> alpha (n);
-  Array<double> beta (n);
-  Array<int> 	iwork (n);
+  Array<double> work (lwork, 1);
+  Array<double> alpha (n, 1);
+  Array<double> beta (n, 1);
+  Array<int> 	iwork (n, 1);
 
   F77_XFCN (dggsvd, DGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
 			     F77_CONST_CHAR_ARG2 (&jobv, 1),

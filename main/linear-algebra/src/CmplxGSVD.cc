@@ -195,11 +195,11 @@ ComplexGSVD::init (const ComplexMatrix& a, const ComplexMatrix& b,
   lwork = lwork > m ? lwork : m;
   lwork = (lwork > p ? lwork : p) + n;
 
-  Array<Complex>  work (lwork);
-  Array<double>   alpha (n);
-  Array<double>   beta (n);
-  Array<double>   rwork(2*n);
-  Array<int>      iwork (n);
+  Array<Complex>  work (lwork, 1);
+  Array<double>   alpha (n, 1);
+  Array<double>   beta (n, 1);
+  Array<double>   rwork(2*n, 1);
+  Array<int>      iwork (n, 1);
 
   F77_XFCN (zggsvd, ZGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
 			     F77_CONST_CHAR_ARG2 (&jobv, 1),

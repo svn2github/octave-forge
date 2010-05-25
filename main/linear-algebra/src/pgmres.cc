@@ -23,6 +23,7 @@
 
 #include <octave/oct.h>
 #include <octave/parse.h>
+#include <octave/oct-norm.h>
 #include <iostream>
 
 class matrixfreematrix
@@ -131,7 +132,7 @@ DEFUN_DLD(pgmres,args,nargout,"\
 	  x = x_old;
 	  res = b - (*A) * x_old;
 	  res = (*invP) * res;
-	  prn = res.norm (2.0);
+	  prn = xnorm (res, 2.0);
 	  
 	  B = ColumnVector (restart + 1, 0.0);
 	  B(0) = prn;
@@ -140,7 +141,7 @@ DEFUN_DLD(pgmres,args,nargout,"\
 	  iter = 0;
 	  reit = restart + 1; 
 	  resids(0) = prn;
-	  pbn = ((*invP) * b).norm (2.0);
+	  pbn = xnorm ((*invP) * b, 2.0);
 	  
 	  while (! converged(pbn, prn, iter, prtol, max_it))
 	    {
@@ -152,7 +153,7 @@ DEFUN_DLD(pgmres,args,nargout,"\
 		  x_old = x;	      
 		  res = b - (*A) * x_old;
 		  res = (*invP) * res;
-		  prn = res.norm (2.0);
+		  prn = xnorm (res, 2.0);
 		  B(0) = prn;
 		  H = Matrix (1, 1, 0.0);
 		  V = Matrix (b.length (), 1, 0.0);
@@ -172,13 +173,13 @@ DEFUN_DLD(pgmres,args,nargout,"\
 		  tmp = tmp - (H (j, reit-1) * V.column (j));
 		}
 	      
-	      H(reit, reit-1) = tmp.norm (2.0);
+	      H(reit, reit-1) = xnorm (tmp, 2.0);
 	      V = V.append (tmp / H(reit, reit-1));
 	      
 	      Y = (H.lssolve (B.extract_n (0, reit+1)));
 	      
 	      little_res = B.extract_n (0,reit+1) - H * Y.extract_n (0,reit);
-	      prn = little_res.norm (2.0);
+	      prn = xnorm (little_res, 2.0);
 	      
 	      x = x_old + V.extract_n (0, 0, V.rows (), reit) * Y.extract_n (0, reit);
 	      
@@ -234,7 +235,7 @@ matrixfreematrixmat::matrixfreematrixmat  (octave_value A)
   
 ColumnVector matrixfreematrixmat::operator * (ColumnVector b) 
 {
-  return (mat * b).column_vector_value ();
+  return mat * Matrix (b);
 }
 
 //----------------------//----------------------//

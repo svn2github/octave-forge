@@ -51,12 +51,9 @@ function [a,fx,nev] = line_min (f, dx, args, narg)
   a = 0;
 				# was 1e-4
   while (abs (velocity) > 0.000001)
-    arglist = {args{1:narg-1}, x+a*dx, args{narg+1:end}};
-    fx = feval (f,arglist{:});
-    arglist = {args{1:narg-1}, x+(a+h)*dx, args{narg+1:end}};
-    fxph = feval (f,arglist{:});
-    arglist = {args{1:narg-1}, x+(a-h)*dx, args{narg+1:end}};
-    fxmh = feval (f,arglist{:});
+    fx = feval (f,args{1:narg-1}, x+a*dx, args{narg+1:end});
+    fxph = feval (f,args{1:narg-1}, x+(a+h)*dx, args{narg+1:end});
+    fxmh = feval (f,args{1:narg-1}, x+(a-h)*dx, args{narg+1:end});
 
     velocity = (fxph - fxmh)/(2*h);
     acceleration = (fxph - 2*fx + fxmh)/(h^2);

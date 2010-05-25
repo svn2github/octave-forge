@@ -219,7 +219,7 @@ while nev <= maxev,
       
       u += jumplen * randn (size (u));
       for i = 1:N+1, y(i) = \
-	    feval (f, {args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)}}{:});
+	    feval (f, args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)});
       end
       nev += N+1;
       [ymin,imin] = min(y);  [ymax,imax] = max(y);
@@ -251,7 +251,7 @@ while nev <= maxev,
   ## f2 = f1 - (-1)  = 2/N + 1 = (N+2)/N
   xnew = (2*xsum - (N+2)*u(imax,:)) / N;
   ## xnew = (2*xsum - N*u(imax,:)) / N;
-  ynew = feval (f, {args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)}}{:});
+  ynew = feval (f, args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)});
   nev++;
   
   if ynew <= ymin ,		# Reflection is good
@@ -268,7 +268,7 @@ while nev <= maxev,
     ## f1 = (1-2)/N = -1/N
     ## f2 = f1 - 2  = -1/N - 2 = -(2*N+1)/N
     xnew = ( -xsum + (2*N+1)*u(imax,:) ) / N;
-    ynew = feval (f, {args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)}}{:});
+    ynew = feval (f, args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)});
     nev++;
       
     if ynew <= ymin ,		# expansion improves
@@ -299,7 +299,7 @@ while nev <= maxev,
     ## f1 = (1-0.5)/N = 0.5/N
     ## f2 = f1 - 0.5  = 0.5*(1 - N)/N
     xnew = 0.5*(xsum + (N-1)*u(imax,:)) / N;
-    ynew = feval (f, {args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)}}{:});
+    ynew = feval (f, args{1:narg-1},reshape(xnew,R,C),args{narg+1:length(args)});
     nev++;
 
     if ynew >= ymax ,		# New point is even worse. Contract whole
@@ -316,7 +316,7 @@ while nev <= maxev,
       else                ii = [1:imin-1,imin+1:N+1]; end
       for i = ii
 	y(i) = \
-	    ynew = feval (f, {args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)}}{:});
+	    ynew = feval (f, args{1:narg-1},reshape(u(i,:),R,C),args{narg+1:length(args)});
       end
       ##      'contraction'
       tra += 16 ;

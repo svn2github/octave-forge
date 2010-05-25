@@ -178,7 +178,7 @@ while niter <= maxout
   niter += 1;
   if nev(1) < maxev, break; end;  
 
-  [v,d,h] = feval (d2f, {args{1:narg-1},reshape(x,sz),args{narg+1:end}}{:}); 
+  [v,d,h] = feval (d2f, args{1:narg-1},reshape(x,sz),args{narg+1:end}); 
   nev(2)++;
 
   if prudent && niter <= 1 && \
@@ -192,7 +192,7 @@ while niter <= maxout
   d = d(:);
 
   if prudent
-    v2 = feval (f, {args{1:narg-1},reshape(x,sz),args{narg+1:end}}{:});
+    v2 = feval (f, args{1:narg-1},reshape(x,sz),args{narg+1:end});
     nev(1)++;
     if abs(v2-v) > 0.001 * sqrt(eps) * max (abs(v2), 1)
       printf ("d2_min : f and d2f disagree %8.3g\n",abs(v2-v));
@@ -246,7 +246,7 @@ while niter <= maxout
       printf ("d2_min : Whoa!! any(isnan(xnew)) (1)\n"); 
     end
 
-    vnew = feval (f, {args{1:narg-1},reshape(xnew,sz),args{narg+1:end}}{:});
+    vnew = feval (f, args{1:narg-1},reshape(xnew,sz),args{narg+1:end});
     nev(1)++;
 
     if vnew<vbest		# Stash best values
@@ -285,7 +285,7 @@ while niter <= maxout
     if any(isnan(xnew)),
       printf ("d2_min : Whoa!! any(isnan(xnew)) (2)\n"); 
     end
-    vnew = feval (f, {args{1:narg-1},reshape(xnew,sz),args{narg+1:end}}{:});
+    vnew = feval (f, args{1:narg-1},reshape(xnew,sz),args{narg+1:end});
     nev(1)++;
 
     while vnew < vbest,
@@ -294,7 +294,7 @@ while niter <= maxout
       xbest = xnew; 
       wn = wn*ocoeff ;
       xnew = x+wn*dbest;
-      vnew = feval (f, {args{1:narg-1},reshape(xnew,sz),args{narg+1:length(args)}}{:});
+      vnew = feval (f, args{1:narg-1},reshape(xnew,sz),args{narg+1:length(args)});
       if verbose
           printf ( "Looking farther : v = %8.3g\n",vnew);
       end
@@ -319,7 +319,7 @@ while niter <= maxout
   if vbest < vold
     ## "improvement found"
     if prudent
-      tmpv = feval (f, {args{1:narg-1},reshape(xbest,sz),args{2:end}}{:});
+      tmpv = feval (f, args{1:narg-1},reshape(xbest,sz),args{2:end});
       nev(1)++;
 
       if abs (tmpv-vbest) > eps
@@ -342,7 +342,7 @@ while niter <= maxout
       abest = args;
 				# Check whether eval (code) changes value
       if prudent
-        tmpv = feval (f, {args{1:narg-1},reshape(x,sz),args{2:end}}{:});
+        tmpv = feval (f, args{1:narg-1},reshape(x,sz),args{2:end});
         nev(1)++;
 	if abs (tmpv-vbest) > max (min (100*eps,0.00001*abs(vbest)), eps) ,
 	  printf ("d2_min : Whoa! Value changes by %g after eval (code)\n",\
@@ -386,7 +386,7 @@ end
 
 				# One last check
 if prudent
-  err = feval (f, {args{1:narg-1},reshape(xbest,sz),args{2:end}}{:});
+  err = feval (f, args{1:narg-1},reshape(xbest,sz),args{2:end});
   nev(1)++;
 
   if abs (err-vbest) > eps,

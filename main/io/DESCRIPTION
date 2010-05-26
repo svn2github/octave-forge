@@ -1,8 +1,8 @@
 Name: io
 Version: 1.0.12
-Date: 2010-04-13
+Date: 2010-05-26
 Author: Various Authors
-Maintainer: The Octave Community
+Maintainer: Philip Nienhuis <prnienhuis@users.sf.net>
 Title: Input/Output
 Description: Input/Output in external formats.
 Categories: IO

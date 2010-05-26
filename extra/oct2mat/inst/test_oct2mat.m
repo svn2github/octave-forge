@@ -7,18 +7,17 @@ c=ones(5);
 mat = randn(5);
 BW2=1; BW=[-2:2];
 x = 1:5; y=1:2; z = 2**a;
-## multiple assignments
-a=b=c;  ## coment1
-a=b=c=0; ## comment2
-a=b=c=d=e; 
-a=b=c~=d=e; 
-a = b = c = d = e; 
-aa = bb = cc = dd = ee; 
-## exclude comparison 
-aa=bb~=cc;
-aa=bb<=cc;
-aa=bb~=cc=dd;
-aa=bb>=cc=dd;
+## parsing comments 
+"a"  #comment "
+"a'\'b"  #comment "
+"a#%b"  #comment "
+"a\"\'b"  #comment "
+a'  #comment "
+a.'  #comment "
+a '  #comment "
+a "  #comment "
+a .'  #comment "
+
 ##***********************
  undo; 
  do2
@@ -53,6 +52,7 @@ if (all((BW2==BW & BW != 0)(:)))
            c(irow);
 
 endif
+if (nargout == 0)
 a = -ones(length(x)+length(y)-2,1);
 k.x = zeros(length(x)+length(y)-1);
 k.x(:,1) += conv (x, y)(:) - [1; a](:);        ## not correctly resolved
@@ -86,11 +86,35 @@ until (x(3)>10);
 function x = __underscore_function__(x)         ## todo 
 function x = __underscore_function__ (x)         ## todo 
         x += 2;
-endfunction      
+endfunction  
+    
 
 x = __underscore_function__(5);              ## todo
 __underscore_variable__ = 5;                 ## todo 
  __underscore_variable__ = 5;                 ## todo 
+
+function x = __bvp4c_solve__ (t, x, h, odefun, bcfun, Nvar, Nint, s)
+  fun = @( x ) ( [vec(__bvp4c_fun_u__(t, 
+				  reshape(x(1:Nvar*(Nint+1)),Nvar,(Nint+1)),
+				  reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s),
+ 				  h,
+				  s,
+				  Nint,
+				  Nvar));
+		  vec(__bvp4c_fun_K__(t, 
+				  reshape(x(1:Nvar*(Nint+1)),Nvar,(Nint+1)),
+				  reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s),
+				  odefun,
+				  h,
+				  s,
+				  Nint,
+				  Nvar));
+		  bcfun(vec(x(1:Nvar)),
+			vec(x(Nvar*Nint+1:Nvar*(Nint+1))));
+		  ] );
+  
+  x    = fsolve ( fun, x );
+endfunction
 
 
 a' #comment
@@ -130,3 +154,38 @@ std_formats{++nfmt} = "HH:MM";
   
 ++y(m > 12);   
 ++y.b;
+ ijob = ++pjobs;
+ ijob = pjobs++;
+ ijob = --pjobs;
+ ijob = pjobs--;
+ 
+ 
+   real_ax_pts = real_ax_pts(find (imag (real_ax_pts) == 0));
+
+ ## multiple assignments
+a=b=c;  ## coment1
+a=b=c=0; ## comment2
+a=b=c=d=e;
+a=b=c~=d=e;
+a = b = c = d = e; 
+aa = bb = cc = dd = ee; 
+## exclude comparison 
+aa=bb~=cc;
+aa=bb<=cc;
+aa=bb~=cc=dd;
+aa=bb>=cc=dd;
+
+      kk += 1; 
+			++drows;
+			++drows ; 4,
+    i += 1;
+    val *= 1000;
+    coeff -= 1;
+    val /= 1000;
+    coeff += 1;
+
+
+aa = dd.(kk);
+  dd.(kk) = bb;
+  dd.(kk) = [bb;1];
+  dd.(kk) = [bb;1];b=a;

@@ -11,7 +11,7 @@
 # This is part of Octave-Forge's Oct2Mat toolbox
 #
 # Goal: automatically convert most octave code so that it will run on matlab.
-#    * Preferably, the code should run on matlab4, but the lack of varargin
+#    * Preferably, the code should run on matlab, but the lack of varargin
 #    support makes this awkward for some functions.
 #    * Code that isn't convertible automatically, should be marked as octave
 #    specific or matlab specific.  Note that system specific code can be
@@ -65,6 +65,8 @@
 #    unwind_protect doblah unwind_protect_cleanup cleanblah end_unwind_protect
 #        -> try doblah cleanblah catch cleanblah end
 #        instead sends them all to null
+#    fun(expr)(:) 
+#    (expr)(:) 
 # Does not handle octave's builtin variables
 #    Ideally, references to globals would be eliminated entirely but that is
 #    of course impossible (the halting problem and all that), so instead
@@ -109,6 +111,7 @@
 #    function blah(blah,...) -> function blah(blah,varargin)
 #    va_start() -> __idx = 1;
 #    blah(va_arg()) -> blah(varargin(__idx))<nl> __idx = __idx+1;
+#    [~,ix] = min(...) -> [tmp_o2m_,ix]=min(...)
 # Comments and strings
 #    * don't convert text therein, except of course for examples and text
 #    destined for eval.  May need home-brew eval which does all the
@@ -117,6 +120,8 @@
 #    string delimiter, so it isn't surprising).  Make sure transpose and
 #    and strings don't appear on the same line of code or there may be
 #    confusion
+#  semicolon ";" 
+#    can not distinguish between [..;..] and ... ;
 
 function fixquotes(x)
 {
@@ -331,13 +336,20 @@ FNR==1 {
     gsub("gset[^;]*$","");
     gsub("\\*\\*","^");         ## replace ** with ^ 
     
-    ## replace DO ... UNTIL (COND); % comment -> WHILE(1) ... IF(COND) BREAK; ENDIF; ENDWHILE; %% comment    
-    gsub(/\<do\>/,"while (1)");
+    #### replace DO ... UNTIL (COND); % comment -> WHILE(1) ... IF(COND) BREAK; ENDIF; ENDWHILE; %% comment    
+    if ($0 ~ /\<do\>/) {
+           $0 = gensub(/^([ \t]*)(do)([ \t]*)$/,"\\1while (1)\\3", "g");
+    }        
     if ($0 ~ /\<until\>/) {
-	$0 = gensub(/([^%]*)(\<until\>)([^%]*)/,
+	$0 = gensub(/(^[ \t]*)(\<until\>)([^%]*)/,
 	   "\\1if\\3 break; endif; endwhile; % while end ", "g");
         }
-    ## 
+
+    #### replace "=dd.ee.(kk)" with "=getfield(dd.ee,kk)"  -------------- 
+        $0 = gensub(/^([^=]*=[^=]*)(\<[[:alnum:]_\.]*)\.\((\<[^\(]*)\)/,"\\1getfield(\\2,\\3)", "g");
+    #### replace "dd.ee.(kk) = vv;" with "setfield(dd.ee,kk,vv);"  -------------- 
+        $0 = gensub(/^([ \t]*)(\<[[:alnum:]_.\]*)\.\((\<[^\(]*)\)[ \t]*=[ \t]*([^;]*);[ \t]*$/,"\\1setfield(\\2,\\3,\\4)", "g");
+    
     gsub(/\<endfunction\>/,"");
     gsub(/\<endif\>/,"end");
     gsub(/\<endwhile\>/,"end");
@@ -345,6 +357,8 @@ FNR==1 {
     gsub(/\<endswitch\>/,"end");
     gsub(/\<endclassdef\>/,"end");
     gsub(/\<end_try_catch\>/,"end");
+    gsub(/\<struct_contains\>/,"isfield");
+    gsub(/\<cell[ \t]*\([ \t]*\)[ \t]*;/, "{};");  ## cell() -> {}
     gsub("SEEK_CUR",0);
     gsub("SEEK_END",1);
     gsub("SEEK_SET",-1);
@@ -356,79 +370,89 @@ FNR==1 {
     gsub("!","~");
     gsub("[\\\\]$","..."); 
 
-    ## multiple assignments a=b=c=d=e;
-    if ($0 !~ /(\&|\|)/) {
-        $0 = gensub(/([^;%]*)(=)([^;%\<\>~=]+)(=)([^;%]*)/,"\\3=\\5;\\1=\\3","g");
-        $0 = gensub(/([^;%]*)(=)([^;%\<\>~=]+)(=)([^;%]*)/,"\\3=\\5;\\1=\\3","g");
-        $0 = gensub(/([^;%]*)(=)([^;%\<\>~=]+)(=)([^;%]*)/,"\\3=\\5;\\1=\\3","g");
+    #### multiple assignments a=b=c=d=e; ###############
+    if ($0 ~ /[^;]+=[^;]+=[^;]+;/) {
+        $0 = gensub(/([[:alpha:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+;)/,"\\3\\4\\5 \\1\\2\\3;","g");
+        $0 = gensub(/([[:alpha:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+;)/,"\\3\\4\\5 \\1\\2\\3;","g");
+        $0 = gensub(/([[:alpha:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+;)/,"\\3\\4\\5 \\1\\2\\3;","g");
     }     
 
     #############################################################
     # Special conversions - without claiming a general solution #
-    # extra/pdb/inst/strtoz.m:	
-        #f(1) = r(k++); -> f(1) = r(k); k+=1;
-        #f(2) = r(k++); -> f(2) = r(k); k+=1;
-        $0 = gensub(/([[:alpha:]_]\w*\([1-9]\)[ \t]*=[ \t]*r\()(k)\+\+\);/,"\\1\\2); \\2 = \\2 + 1;","g")
     # main/control/inst/rlocus.m
 	#args{1,++kk} = real (rlpol (ii,:));
-        $0 = gensub(/([[:alpha:]_]\w*)\{1,\+\+([[:alpha:]_]\w*)\}([ \t]*=[ \t]*.*;$)/,"\\2 = \\2 + 1; \\1{1,\\2}\\3","g")
+        $0 = gensub(/([ \t]*)([[:alpha:]_]\w*)\{1,\+\+([[:alpha:]_]\w*)\}([ \t]*=.*;$[ \t]*)/,"\\3 = \\3 + 1; \\2{1,\\3}\\4","g")
 
     # main/control/inst/rlocus.m
 	#set (hplt(kk--), "markersize", 2);
         $0 = gensub(/(set \(hplt\(kk\-\-\), )\"(markersize|linewidth)\"(, 2\);)/,"set (hplt(kk), \"\\2\", 2); kk = kk - 1;","g")
 
+    # main/optim/...
+	#   nev(2) += 1;
+	#   nev(2)++;
+	$0 = gensub(/(^[ \t]*)(nev\([1-9]\))[ \t]*\+=[ \t]*([[:alnum:]_]+)[ \t]*(;[ \t]*$)/,
+	   "\\1\\2 = \\2 + \\3\\4", "g");
+	$0 = gensub(/(^[ \t]*)(nev\([1-9]\))[ \t]*\+\+[ \t]*(;[ \t]*$)/,
+	   "\\1\\2 = \\2 + 1\\4", "g");
 
     #############################################################
 
-    ## function and variable names starting with "_" (underscore)    
-    $0 = gensub(/(^|.*[^[:alnum:]_])(_\w)/,"\\1o2m_tmp_\\2","g")
+    ## function and variable names starting with "_" (underscore): _fun -> o2m_tmp__fun    
+    $0 = gensub(/(^|.*[^[:alnum:]_])(_\w)/,"\\1o2m_tmp_\\2","g");
 
     if (1) { ## EXPERIMENTAL ...
       if ($0 ~ /\+\+|--/) {
         ## substitute simple ++ and -- expressions like k++; x(k)++;
 
-	#### y++; y(k)++;
-	$0 = gensub(/([ \t]*)([[:alpha:]_]\w*(\y|\(\w+\)))[ \t]*(\+\+)[ \t]*;/,
-	   "\\1\\2 = \\2 + 1;", "g");
-	$0 = gensub(/([ \t]*)\+\+[ \t]*([[:alpha:]_]\w*(\y|\(\w+\)))[ \t]*;/,
-	   "\\1\\2 = \\2 + 1;", "g");
-	$0 = gensub(/([ \t]*)([[:alpha:]_]\w*(\y|\(\w+\)))[ \t]*\-\-[ \t]*;/,
-	   "\\1\\2 = \\2 - 1;", "g");
-	$0 = gensub(/([ \t]*)\-\-[ \t]*([[:alpha:]_]\w*(\y|\(\w+\)))[ \t]*;/,
-	   "\\1\\2 = \\2 - 1;", "g");
+	#### y++; y(k)++; xx=++yy;
+	$0 = gensub(/(^[ \t]*)(\w*[ \t]*=|)([ \t]*)([[:alpha:]_]\w*(\y|\(\w+\)))[ \t]*(\+\+)[ \t]*(;[ \t]*$)/,
+	   "\\1\\2 \\4; \\3\\4 = \\4 + 1\\5", "g");
+	$0 = gensub(/(^[ \t]*)(\w*[ \t]*=|)([ \t]*)\+\+[ \t]*([[:alpha:]_]\w*(|\(\w+\)))[ \t]*(;[ \t]*$)/,
+	   "\\1\\3\\4 = \\4 + 1; \\2 \\4\\5", "g");
+	$0 = gensub(/(^[ \t]*)(\w*[ \t]*=|)([ \t]*)([[:alpha:]_]\w*(\y|\(\w+\)))[ \t]*\-\-[ \t]*(;[ \t]*$)/,
+	   "\\1\\2 \\4; \\3\\4 = \\4 - 1\\5", "g");
+	$0 = gensub(/(^[ \t]*)(\w*[ \t]*=|)([ \t]*)\-\-[ \t]*([[:alpha:]_]\w*(|\(\w+\)))[ \t]*(;[ \t]*$)/,
+	   "\\1\\3\\4 = \\4 - 1; \\2 \\4\\5", "g");
 
-	#### ++y(m>12)
-	$0 = gensub(/([ \t]*)\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*\((.*)\);/,
+	#### ++y(m>12);
+	$0 = gensub(/(^[ \t]*)\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*(\(.*\));[ \t]*$/,
 	   "\\1o2m_tmp = \\3; \\2(o2m_tmp) = \\2(o2m_tmp) + 1;", "g");
-	$0 = gensub(/([ \t]*)\-\-[ \t]*([[:alpha:]_]\w*)[ \t]*\((.*)\);/,
+	$0 = gensub(/(^[ \t]*)\-\-[ \t]*([[:alpha:]_]\w*)[ \t]*(\(.*\));[ \t]*$/,
 	   "\\1o2m_tmp = \\3; \\2(o2m_tmp) = \\2(o2m_tmp) - 1;", "g");
-	$0 = gensub(/([ \t]*)\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*\((.*)\);/,
-	   "\\1o2m_tmp = \\3; \\2(o2m_tmp) = \\2(o2m_tmp) + 1;", "g");
-	$0 = gensub(/([ \t]*)\-\-[ \t]*([[:alpha:]_]\w*)[ \t]*\((.*)\);/,
-	   "\\1o2m_tmp = \\3; \\2(o2m_tmp) = \\2(o2m_tmp) - 1;", "g");
+
+	#### ++y; zz -- ;
+        #if ( /^([ \t]*)\+\+[ \t]*([[:alpha:]_][[:alnum:]_\.]*)([ \t]*;[ \t]*)/ ) {
+	$0 = gensub(/^([ \t]*)\+\+[ \t]*([[:alpha:]_][[:alnum:]_\.]*)([ \t]*;[ \t]*)/,
+	   "\\1\\2 = \\2 + 1; ", "g");
+	$0 = gensub(/(^[ \t]*)\-\-[ \t]*([[:alpha:]_][[:alnum:]_\.]*)([ \t]*;[ \t]*)/,
+	   "\\1\\2 = \\2 - 1; ", "g");
+	$0 = gensub(/^([ \t]*)([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\+\+([ \t]*;[ \t]*)/,
+	   "\\1\\2 = \\2 + 1; ", "g");
+	$0 = gensub(/^([ \t]*)([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\-\-([ \t]*;[ \t]*)/,
+	   "\\1\\2 = \\2 - 1; ", "g");
 
 	##### y = y{k++}; y = y(k++);
         # main/zenity/inst/private/zenity_options.m
 	# param = varargin{narg++};
 	# opts = varargin(narg++);
 	# param = varargin{++narg};
-        $0 = gensub(/([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\{[ \t]*\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*\}[ \t]*;/,
-           "\\3 = \\3 + 1; \\1 = \\2{\\3};","g");
-        $0 = gensub(/([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\{[ \t]*([[:alpha:]_]\w*)[ \t]*\+\+[ \t]*\}[ \t]*;/,
-           "\\1 = \\2{\\3}; \\3 = \\3 + 1;","g");
-        $0 = gensub(/([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\{[ \t]*\-\-[ \t]*([[:alpha:]_]\w*)[ \t]*\}[ \t]*;/,
-           "\\3 = \\3 - 1; \\1 = \\2{\\3};","g");
-        $0 = gensub(/([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\{[ \t]*([[:alpha:]_]\w*)[ \t]*\-\-[ \t]*\}[ \t]*;/,
-           "\\1 = \\2{\\3}; \\3 = \\3 - 1;","g");
+        $0 = gensub(/(^[ \t]*)([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\{[ \t]*\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*\}[ \t]*(;[ \t]*$)/,
+           "\\1\\4 = \\4 + 1; \\2 = \\3{\\4}\\5","g");
+        $0 = gensub(/(^[ \t]*)([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\{[ \t]*([[:alpha:]_]\w*)[ \t]*\+\+[ \t]*\}[ \t]*(;[ \t]*$)/,
+           "\\1\\2 = \\3{\\4}; \\4 = \\4 + 1\\5","g");
+        $0 = gensub(/(^[ \t]*)([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\{[ \t]*\-\-[ \t]*([[:alpha:]_]\w*)[ \t]*\}[ \t]*(;[ \t]*$)/,
+           "\\1\\4 = \\4 - 1; \\2 = \\3{\\4}\\5","g");
+        $0 = gensub(/(^[ \t]*)([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\{[ \t]*([[:alpha:]_]\w*)[ \t]*\-\-[ \t]*\}[ \t]*(;[ \t]*$)/,
+           "\\1\\2 = \\3{\\4}; \\4 = \\4 - 1\\5","g");
 
-        $0 = gensub(/([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\([ \t]*\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*\)[ \t]*;/,
-           "\\3 = \\3 + 1; \\1 = \\2{\\3};","g");
-        $0 = gensub(/([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\([ \t]*([[:alpha:]_]\w*)[ \t]*\+\+[ \t]*\)[ \t]*;/,
-           "\\1 = \\2{\\3}; \\3 = \\3 + 1;","g");
-        $0 = gensub(/([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\([ \t]*\-\-[ \t]*([[:alpha:]_]\w*)[ \t]*\)[ \t]*;/,
-           "\\3 = \\3 - 1; \\1 = \\2{\\3};","g");
-        $0 = gensub(/([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\([ \t]*([[:alpha:]_]\w*)[ \t]*\-\-[ \t]*\)[ \t]*;/,
-           "\\1 = \\2{\\3}; \\3 = \\3 - 1;","g");
+        $0 = gensub(/(^[ \t]*)([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\([ \t]*\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*\)[ \t]*(;[ \t]*$)/,
+           "\\1\\4 = \\4 + 1; \\3 = \\3{\\4}\\5","g");
+        $0 = gensub(/(^[ \t]*)([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\([ \t]*([[:alpha:]_]\w*)[ \t]*\+\+[ \t]*\)[ \t]*(;[ \t]*$)/,
+           "\\1\\2 = \\3{\\4}; \\4 = \\4 + 1\\5","g");
+        $0 = gensub(/(^[ \t]*)([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\([ \t]*\-\-[ \t]*([[:alpha:]_]\w*)[ \t]*\)[ \t]*(;[ \t]*$)/,
+           "\\1\\4 = \\4 - 1; \\2 = \\3{\\4}\\5","g");
+        $0 = gensub(/(^[ \t]*)([[:alpha:]_]\w*)[ \t]*=[ \t]*([[:alpha:]_]\w*)[ \t]*\([ \t]*([[:alpha:]_]\w*)[ \t]*\-\-[ \t]*\)[ \t]*(;[ \t]*$)/,
+           "\\1\\2 = \\3{\\4}; \\4 = \\4 - 1\\5","g");
 
     	# main/image/inst/imhist.m
 		#varargout{vr_val_cnt++} = nn;
@@ -439,41 +463,31 @@ FNR==1 {
  		#outstruct.namesn(++nnames)=nn;
 
 	##### yy.zz(k++) = a; yy.bb{k++} = "abc";
-    	$0 = gensub(/([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\{[ \t]*\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*\}[ \t]*(=.*;)/,
-    	     "\\2 = \\2 + 1; \\1{\\2} \\3","g");
-    	$0 = gensub(/([[:alpha:]_][[:alnum:]_\.]*))[ \t]*\{[ \t]*([[:alpha:]_]\w*)[ \t]*\+\+[ \t]*\}[ \t]*(=.*;)/,
-    	     "\\1{\\2} \\3 \\2 = \\2 + 1;","g");
-    	$0 = gensub(/([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\([ \t]*\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*\)[ \t]*(=.*;)/,
-    	     "\\2 = \\2 + 1; \\1(\\2) \\3","g");
-    	$0 = gensub(/([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\([ \t]*([[:alpha:]_]\w*)[ \t]*\+\+[ \t]*\)[ \t]*(=.*;)/,
-    	     "\\1(\\2) \\3 \\2 = \\2 + 1;","g");
+    	$0 = gensub(/(^[ \t]*)([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\{[ \t]*\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*\}[ \t]*(=.*;)([ \t]*$)/,
+    	     "\\1\\3 = \\3 + 1; \\2{\\3} \\4\\5","g");
+    	$0 = gensub(/(^[ \t]*)([[:alpha:]_][[:alnum:]_\.]*))[ \t]*\{[ \t]*([[:alpha:]_]\w*)[ \t]*\+\+[ \t]*\}[ \t]*(=.*;)([ \t]*$)/,
+    	     "\\1\\2{\\3} \\4 \\3 = \\3 + 1;\\5","g");
+    	$0 = gensub(/(^[ \t]*)([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\([ \t]*\+\+[ \t]*([[:alpha:]_]\w*)[ \t]*\)[ \t]*(=.*;)([ \t]*$)/,
+    	     "\\1\\3 = \\3 + 1; \\2(\\3) \\4\\5","g");
+    	$0 = gensub(/(^[ \t]*)([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\([ \t]*([[:alpha:]_]\w*)[ \t]*\+\+[ \t]*\)[ \t]*(=.*;)([ \t]*$)/,
+    	     "\\1\\2(\\3) \\4 \\3 = \\3 + 1;\\5","g");
 
-    	$0 = gensub(/([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\{[ \t]*--[ \t]*([[:alpha:]_]\w*)[ \t]*\}[ \t]*(=.*;)/,
-    	     "\\2 = \\2 - 1; \\1{\\2} \\3","g");
-    	$0 = gensub(/([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\{[ \t]*([[:alpha:]_]\w*)[ \t]*\-\-[ \t]*\}[ \t]*(=.*;)/,
-    	     "\\1{\\2} \\3 \\2 = \\2 - 1;","g");
-    	$0 = gensub(/([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\([ \t]*--[ \t]*([[:alpha:]_]\w*)[ \t]*\)[ \t]*(=.*;)/,
-    	     "\\2 = \\2 - 1; \\1(\\2) \\3","g");
-    	$0 = gensub(/([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\([ \t]*([[:alpha:]_]\w*)[ \t]*\-\-[ \t]*\)[ \t]*(=.*;)/,
-    	     "\\1(\\2) \\3 \\2 = \\2 - 1;","g");
-      }  
+    	$0 = gensub(/(^[ \t]*)([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\{[ \t]*--[ \t]*([[:alpha:]_]\w*)[ \t]*\}[ \t]*(=.*;)([ \t]*$)/,
+    	     "\\1\\3 = \\3 - 1; \\2{\\3} \\4\\5","g");
+    	$0 = gensub(/(^[ \t]*)([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\{[ \t]*([[:alpha:]_]\w*)[ \t]*\-\-[ \t]*\}[ \t]*(=.*;)([ \t]*$)/,
+    	     "\\1\\2{\\3} \\4 \\3 = \\3 - 1;\\5","g");
+    	$0 = gensub(/(^[ \t]*)([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\([ \t]*--[ \t]*([[:alpha:]_]\w*)[ \t]*\)[ \t]*(=.*;)([ \t]*$)/,
+    	     "\\1\\3 = \\3 - 1; \\2(\\3) \\4\\5","g");
+    	$0 = gensub(/(^[ \t]*)([[:alpha:]_][[:alnum:]_\.]*)[ \t]*\([ \t]*([[:alpha:]_]\w*)[ \t]*\-\-[ \t]*\)[ \t]*(=.*;)([ \t]*$)/,
+    	     "\\1\\2(\\3) \\4 \\3 = \\3 - 1;\\5","g");
+      }
 
       #####  +=, -=, *=, /=, \=, &=, |=, .+=, .-=, .*=, ./=, .\=, &=, |=, 	
       if (/(\+|-|\&|\||\.?\\|\.?\*|\.?\/|\.?\^)=/) {
-        if (0) {
-	## try to substitute computed assignments.
-	## +=, -=, &=, |= don't generally need extra parens.
-        $0 = gensub(/([^ ;]*[_a-zA-Z0-9\)\}])([ \t]*)(\+|-|\&|\|)=/, "\\1\\2=\\2\\1\\2\\3", "g");
-	## *=, /=, \=, ^= and their dotted counterparts need parenthesizing the RHS.
-	$0 = gensub(/([^ ;]*[_a-zA-Z0-9\)\}])([ \t]*)(\.?\*|\.?\/|\.?\\|\.?\^)=([ \t]*)([^;]+)/,
-	  "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
-	}
-	else {
 	## +=, -=, &=, |=,  *=, /=, \=, ^= all operators might need parenthesizing the RHS. e.g. a &= b || c;
 	##    unfortunately, this breaks the expression like k.x(:,1) += conv (x, y)(:) - [1; a](:)
-	   $0 = gensub(/([^ ;]*[a-zA-Z0-9\)\}])([ \t]*)(\+|-|\&|\||.?\*|\.?\/|\.?\\|\.?\^)=([ \t]*)([^;]+)/,
-	      "\\1\\2=\\2\\1\\2\\3\\4(\\5)", "g");
-	}      
+	   $0 = gensub(/(^[ \t]*)([[:alpha:]_][[:alnum:]_\.]*)[ \t]*(\+|-|\&|\||\.?\*|\.?\\|\.?\/|\.?\^)=([ \t]*)([^;]*)([ \t]*;[ \t]*)/,
+	      "\\1\\2 = \\2 \\3 (\\5)\\6", "g");
       }
 
       ## match expression indexing.
@@ -502,7 +516,7 @@ FNR==1 {
       } 
     } ## EXPERIMENTAL
     
-    ## add ... when line is not closed ####
+    #### add "..." when line is not closed ########
     {
         line = $0;
         lcnt = gsub(/\(/,"",line);
@@ -512,8 +526,22 @@ FNR==1 {
                 $0 = $0 " ...";
     }
 
-    if (/\+\+|\-\-|(\+|-|\&|\||\.?\\|\.?\*|\.?\/|\.?\^)=/) {
-	print FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
+    ##### report on failed conversions ####################
+    if (/(\+|-|\&|\||\\|\*|\/|\^)=/) {
+	print ".=:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
+    }
+    if (/\+\+|\-\-/) {
+	print "++|--:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
+    }
+    if (/\<nth[ \t]*\(|\<is_list[ \t]*\(|\<islist[ \t]*\(|\<list[ \t]*\(|\<splice\>|\<leval\>/) {
+        ## report obsolete functions 
+	print "list(): " FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
+    }
+    if (/\<do\>|\<until\>/) {
+	print "do:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
+    }
+    if (/\.\(/) {
+	print "set/getfield:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
     }
     
     ##### Restore Comments #####
@@ -521,8 +549,6 @@ FNR==1 {
             $0 = $0 COMMENTS
     }
     
-    ##### replace obsolete functions #####
-    gsub(/cell \(\);/, "{};");
     if (incopyright) copyright = copyright "\n" fixquotes($0); 
     else body = body "\n" fixquotes($0);
 }

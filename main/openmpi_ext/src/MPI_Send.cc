@@ -92,21 +92,25 @@ int send_scalar(int t_id, MPI_Datatype TSnd, MPI_Comm comm, Any d, ColumnVector 
 }
 
 int send_range(int t_id, MPI_Comm comm, Range range,ColumnVector rankrec, int mytag){        /* put base,limit,incr,nelem */
-/*-------------------------------*/        /* just 3 doubles + 1 int */
-// octave_range (double base, double limit, double inc)
-  OCTAVE_LOCAL_BUFFER(int,tanktag,2);
+/*-------------------------------*/        /* just 2 doubles + 1 int */
+  OCTAVE_LOCAL_BUFFER(int,tanktag,3);
   tanktag[0] = mytag;
   tanktag[1] = mytag+1;
+  tanktag[2] = mytag+2;
   OCTAVE_LOCAL_BUFFER(double,d,3);
+//   Range  (double  b, double  l, double  i)
   d[0]= range.base();
   d[1]= range.limit();
   d[2]= range.inc();
+  int nele = range.nelem();
   int info;
   for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
   {
     info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
     if (info !=MPI_SUCCESS) return info;
-    info = MPI_Send(d, 3, MPI_INT, rankrec(i), tanktag[1], comm);
+    info = MPI_Send(d, 2, MPI_DOUBLE, rankrec(i), tanktag[1], comm);
+    if (info !=MPI_SUCCESS) return info;
+    info = MPI_Send(&nele, 1, MPI_INT, rankrec(i), tanktag[2], comm);
     if (info !=MPI_SUCCESS) return info;
   }
    
@@ -136,6 +140,7 @@ int send_matrix(int t_id,  MPI_Datatype TSnd,MPI_Comm comm, octave_value myOv ,C
 		  for (octave_idx_type i=0; i<nd; i++)
 		  {
 		    dimV[i] = dv(i) ;
+// 		    printf("\ndimV[i] = %i\n",dimV[i]);
 		  }
 		// Now create the contiguous derived datatype for the dim vector
 		MPI_Datatype dimvec;
@@ -157,15 +162,22 @@ int send_matrix(int t_id,  MPI_Datatype TSnd,MPI_Comm comm, octave_value myOv ,C
 		
 		  for (octave_idx_type  i = 0; i< rankrec.nelem(); i++)
 		  {  
-			  info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm); 
+			  info = MPI_Send(&t_id, 1, MPI_INT, rankrec(i), tanktag[0], comm);
+// 			  printf("\n info  for t_id is %i",info);
 		      if (info !=MPI_SUCCESS) return info;
 			  info = MPI_Send(&nitem, 1, MPI_INT, rankrec(i), tanktag[1], comm);
+// 			  printf("\n info  for nitem is %i",info);
+// 			  printf("\n OK nitem is %i",nitem);  
 		      if (info !=MPI_SUCCESS) return info;
 			  info = MPI_Send(&nd, 1, MPI_INT, rankrec(i), tanktag[2], comm);
+// 			  printf("\n info  for nd is %i",info);
 		      if (info !=MPI_SUCCESS) return info;
+// 			  printf("\n processing dim  vector with %i\n",nd);
 			  info = MPI_Send(dimV, 1, dimvec, rankrec(i), tanktag[3], comm);
+// 			  printf("\n info  for dimV is %i",info);
 		      if (info !=MPI_SUCCESS) return info;
 		      info =  MPI_Send(LBNDA,1,fortvec,rankrec(i),tanktag[4],comm);
+// 			  printf("\n info  for LBNDA is % i",info);
 		      if (info !=MPI_SUCCESS) return info;
 		  }		
 		}
@@ -706,7 +718,6 @@ int send_matrix(int t_id,  MPI_Datatype TSnd,MPI_Comm comm, octave_value myOv ,C
 
                  }
 
- 
 return(info);
 }
 
@@ -1201,6 +1212,7 @@ Returns an integer @var{INFO} to indicate success or failure of octave_value exp
         const simple& B = ((const simple &)rep);
         MPI_Comm comm = ((const simple&) B).comunicator_value ();
      int info = send_class (comm, args(0), tankrank, mytag);
+//      printf("\nThis is info for class %i \n",info);
      comm= NULL;
      retval=info;
      return retval;

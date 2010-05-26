@@ -117,9 +117,9 @@ unary_opt = " hess jac backend verbose ";
 opml = {};
 for [v,k] = opm
   if findstr ([" ",k," "], unary_opt)
-    opml{end+1} = {k};
+    opml(end+1) = {k};          # append k 
   else
-    opml{end+[1,2]} = {k,v};    # append k and v 
+    opml(end+[1,2]) = {k,v};    # append k and v 
   end
 end
 				# Return only options to minimize() ##

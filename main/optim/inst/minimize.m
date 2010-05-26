@@ -140,9 +140,9 @@ if nargin == 3			# Accomodation to struct and list optional
     opls = {};
     for [v,k] = tmp		# Treat separately unary and binary opts
       if findstr ([" ",k," "],op0)
-	opls {end+1} = k;
+	opls (end+1) = {k};        # append k 
       else
-	opls {end+[1:2]} = {k, v};
+	opls (end+[1:2]) = {k, v}; # append k and v 
       end
     end
   elseif iscell (tmp)
@@ -265,7 +265,7 @@ elseif strcmp (method, "bfgsmin"),all_args = {f, args};
 else                              all_args = {f, args};
 end
 				# Eventually add ctls to argument list
-if op, all_args{end+1} = {ctls}; end
+if op, all_args{end+1} = ctls; end
 
 if ! backend			# Call the backend ###################
   if strcmp (method, "d2_min"),
@@ -279,7 +279,7 @@ if ! backend			# Call the backend ###################
     if isnan (utol), utol = 1e-6; end
     if isnan (dtol), dtol = 1e-5; end
     if isnan (maxev), maxev = inf; end
-    [x, v, okcv] = bfgsmin (f, args, {maxev,verbose,1,narg},{ftol,utol,dtol});
+    [x, v, okcv] = bfgsmin (f, args, {maxev,verbose,1,narg,0,ftol,utol,dtol});
   else
     [x,v,nev] = feval (method, all_args{:});
   end

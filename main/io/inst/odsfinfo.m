@@ -67,7 +67,7 @@
 ##            (ah those pesky table-row-repeated & table-column-repeated attr.... :-( )
 ## 2010-03-18 Separated range exploration (for OTK only yet) in separate function file
 ## 2010-03-20 "Beautified" output (for OTK ), used range now in more tabular form
-## 2010-04-13 Fixed help text for compliance with generate_html (short descr.)
+## 2010-05-23 Updated jOpenDocument support (can also get occupied data range now)
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 
@@ -116,13 +116,18 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 			nr_of_sheets = ods.workbook.getSheetCount ();
 			sheetnames = cell (nr_of_sheets, 1);
 			for ii=1:nr_of_sheets
-				tmp1 = char (ods.workbook.getSheet (ii-1));
-				ist = index (tmp1, 'table:name=') + 12;
-				ien = index (tmp1(ist:end), '" table') - 2 + ist;
-				sheetnames(ii) = tmp1(ist:ien);
+				sheetnames(ii) = ods.workbook.getSheet (ii-1).getName ();
+				printf (sprintf("%s", sheetnames{ii}));
 				if (onscreen) 
-					# Echo sheet names
-					printf (" %s\n", sheetnames{ii});
+					[ tr, lr, lc, rc ] = getusedrange (ods, ii);
+					if (tr)
+						printf (sprintf("%s (used range = %s:%s)", \
+						adj_str(1:(30 - length(sheetnames{ii}))), \
+						calccelladdress (tr, lc), calccelladdress (lr, rc)));
+					else
+						printf ("%s (empty)", adj_str(1:(30 - length(sheetnames{ii}))));
+					endif
+					printf ("\n");
 				endif
 			endfor
 

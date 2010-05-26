@@ -32,7 +32,7 @@ int recv_class( MPI_Comm comm, octave_value &ov,  int source, int mytag);       
 int recv_cell(MPI_Comm comm,octave_value &ov, int source, int mytag);
 int recv_struct( MPI_Comm comm, octave_value &ov, int source, int mytag);
 int recv_string( MPI_Comm comm, octave_value &ov,int source, int mytag);
-int recv_range(MPI_Comm comm, Range &myrange, int mytag);
+int recv_range(MPI_Comm comm, octave_value &ov,int source, int mytag);
 
 template<class AnyElem>
 int recv_vec(MPI_Comm comm, AnyElem &LBNDA, int nitem, MPI_Datatype TRCV ,int source, int mytag);
@@ -48,7 +48,7 @@ int recv_scalar(MPI_Datatype TRcv, MPI_Comm comm, std::complex<Any> *d, int sour
 
 
 
-int recv_range(MPI_Comm comm, Range &myrange,int source, int mytag){        /* put base,limit,incr,nelem */
+int recv_range(MPI_Comm comm, octave_value &ov,int source, int mytag){        /* put base,limit,incr,nelem */
 /*-------------------------------*/        /* just 3 doubles + 1 int */
 // octave_range (double base, double limit, double inc)
   MPI_Status stat;
@@ -57,20 +57,18 @@ int recv_range(MPI_Comm comm, Range &myrange,int source, int mytag){        /* p
   tanktag[1] = mytag+1;
   tanktag[2] = mytag+2;
   OCTAVE_LOCAL_BUFFER(double,d,2);
-  int nelem =0;
+
   // first receive
   int info = MPI_Recv(d, 3, MPI_DOUBLE,  source, tanktag[1] , comm,&stat);
   if (info !=MPI_SUCCESS) return info;
+  int nelem=0;
   info = MPI_Recv(&nelem, 1, MPI_INT,  source, tanktag[2] , comm,&stat);
   if (info !=MPI_SUCCESS) return info;
-  double b = d[0];
-  double i = d[2];
-  myrange.set_base(d[0]);
-  myrange.set_limit(d[1]);
-  myrange.set_inc(d[2]);
-  Range  Range1  (d[0], d[2], nelem);
-  myrange = Range1;
-  
+//   b = d[0];
+//   l = d[1];
+//   i = d[2];
+  Range r(d[0],d[2],nelem); 
+  ov =r;
 return(info);
 }
 
@@ -604,7 +602,7 @@ int recv_class(MPI_Comm comm, octave_value &ov, int source, int mytag ){    /* v
     if (tstring == "float complex scalar") {std::complex<float> d; MPI_Datatype TRcv = MPI_FLOAT;   info =(recv_scalar (TRcv,comm, d,source,mytag)) ;  ov=d;return(info);};
     if (tstring == "string")  return(recv_string (comm, ov,source,mytag));
     if (tstring == "sq_string") return(recv_string (comm, ov,source,mytag));
-    if (tstring == "range")		 {Range 	       d;    info =(recv_range (comm, d,source,mytag));ov=d;return(info);};
+    if (tstring == "range")		 {double b;double l;double i;int nelem;info =(recv_range (comm, ov,source,mytag));return(info);};
     if (tstring == "matrix")    		{ bool is_complex = false;MPI_Datatype TRcv = MPI_DOUBLE; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag); return(info);}	
     if (tstring == "complex matrix")		{ bool is_complex = true;MPI_Datatype TRcv = MPI_DOUBLE; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info); }
     if (tstring == "bool matrix")		{ bool is_complex = false;MPI_Datatype TRcv = MPI_INT; info = recv_matrix (is_complex,TRcv,comm,ov,source,mytag);return(info);}  

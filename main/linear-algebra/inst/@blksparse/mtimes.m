@@ -29,13 +29,12 @@ function c = mtimes (a, b)
 endfunction
 
 function y = mtimes_sm (s, x)
-  if (issparse (x))
-    warning ("blksparse * sparse not implemented. Converting to full.");
-    x = full (x);
-  elseif (isscalar (x))
+  if (isscalar (x))
     y = s;
     y.sv *= x;
     return;
+  elseif (issparse (x))
+    error ("blksparse * sparse not implemented.");
   endif
   siz = s.siz;
   bsiz = s.bsiz;
@@ -59,13 +58,12 @@ function y = mtimes_sm (s, x)
 endfunction
 
 function y = mtimes_ms (x, s)
-  if (issparse (x))
-    warning ("sparse * blksparse not implemented. Converting to full.");
-    x = full (x);
-  elseif (isscalar (x))
+  if (isscalar (x))
     y = s;
     y.sv *= x;
     return;
+  elseif (issparse (x))
+    error ("sparse * blksparse not implemented.");
   endif
   siz = s.siz;
   bsiz = s.bsiz;

@@ -19,8 +19,11 @@ Block sparse matrices
  @blksparse/blksize
  @blksparse/ctranspose
  @blksparse/display
+ @blksparse/full
  @blksparse/minus
  @blksparse/mtimes
+ @blksparse/mldivide
+ @blksparse/mrdivide
  @blksparse/plus
  @blksparse/size
  @blksparse/sparse

@@ -34,4 +34,8 @@ function retval = full (KP)
   endif
   
   retval = full (kron (KP.A, KP.B));
+  if (!isempty (KP.P))
+    #retval = KP.P * retval * KP.P';
+    retval = retval (KP.P, KP.P);
+  endif
 endfunction

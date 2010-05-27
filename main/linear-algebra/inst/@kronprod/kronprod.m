@@ -14,18 +14,31 @@
 ## along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} kronprod (@var{KP})
+## @deftypefn {Function File} kronprod (@var{A}, @var{B})
+## @deftypefnx{Function File} kronprod (@var{A}, @var{B}, @var{P})
 ## Construct a Kronecker product object.
+## XXX: Write proper documentation
 ##
-## XXX: Write documentation
+## With two input arguments, the following matrix is represented: kron (A, B);
+##
+## With three input arguments, the following matrix is represented: P * kron (A, B) * P'
+## (P must be a permutation matrix)
+##
 ## @end deftypefn
 
-function retval = kronprod (A, B)
+function retval = kronprod (A, B, P)
   if (nargin == 0)
-    KP.A = KP.B = KP.full = [];
+    KP.A = KP.B = KP.P = [];
   elseif (nargin == 2 && ismatrix (A) && ismatrix (B))
     KP.A = A;
     KP.B = B;
+    KP.P = [];
+  elseif (nargin == 3 && ismatrix (A) && ismatrix (B))
+#          && strcmp (typeinfo (P), "permutation matrix"))
+    ## XXX: Check that the size of P is correct
+    KP.A = A;
+    KP.B = B;
+    KP.P = P;
   else
     print_usage ();
   endif

@@ -33,14 +33,21 @@ function [U, S, V] = svd (KP)
     ## Only singular values were requested
     S_A = svd (KP.A);
     S_B = svd (KP.B);
-    U = kronprod (S_A, S_B);
+    U = sort (kron (S_A, S_B), "descend");
   elseif (nargout == 3)
     ## The full SVD was requested
     [U_A, S_A, V_A] = svd (KP.A);
     [U_B, S_B, V_B] = svd (KP.B);
-    U = kronprod (U_A, U_B);
-    S = kronprod (S_A, S_B);
-    V = kronprod (V_A, V_B);
+
+    ## Compute and sort singular values
+    [sv, idx] = sort (kron (diag (S_A), diag (S_B)), "descend");
+    
+    ## Form matrices
+    S = resize (diag (sv), [rows(KP), columns(KP)]);
+    #Pu = eye (rows (KP)) (idx, :);
+    U = kronprod (U_A, U_B, idx);
+    #Pv = eye (columns (KP)) (idx, :);
+    V = kronprod (V_A, V_B, idx);
   else
     print_usage ();
   endif

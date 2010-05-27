@@ -62,6 +62,4 @@ Kronecker Products
  @kronprod/det
  @kronprod/rank
  @kronprod/trace
- @kronprod/eig
- @kronprod/svd
 

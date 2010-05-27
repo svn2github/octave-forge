@@ -30,9 +30,19 @@ function display (KP)
     error ("display: input argument must be of class 'kronprod'");
   endif
   
-  disp ("Kronecker Product of A and B with");
-  disp ("A = ");
-  disp (KP.A);
-  disp ("B = ");
-  disp (KP.B);
+  if (isempty (KP.P))
+    disp ("Kronecker Product of A and B with");
+    disp ("A = ");
+    disp (KP.A);
+    disp ("B = ");
+    disp (KP.B);
+  else
+    disp ("Permuted Kronecker Product of A and B (i.e. P * kron (A, B) * P') with");
+    disp ("A = ");
+    disp (KP.A);
+    disp ("B = ");
+    disp (KP.B);
+    disp ("P = ");
+    disp (KP.P);
+  endif
 endfunction

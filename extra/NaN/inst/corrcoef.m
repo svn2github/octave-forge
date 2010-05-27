@@ -15,13 +15,14 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,varargin)
 %
 % [...] = CORRCOEF(..., Mode);
 %       Mode='Pearson' or 'parametric' [default]
-%       	gives the correlation coefficient  
-%       	also known as the 'product-moment coefficient of correlation' 
+%               gives the correlation coefficient  
+%               also known as the 'product-moment coefficient of correlation' 
 %               or 'Pearson''s correlation' [1]
 %       Mode='Spearman' 	gives 'Spearman''s Rank Correlation Coefficient'
-%	        This replaces SPEARMAN.M
+%               This replaces SPEARMAN.M
 %       Mode='Rank' 		gives a nonparametric Rank Correlation Coefficient
-%	        This replaces RANKCORR.M
+%               This is the "Spearman rank correlation with proper handling of ties"
+%               This replaces RANKCORR.M
 %
 % [...] = CORRCOEF(..., param1, value1, param2, value2, ... );
 %	param 		value
@@ -112,7 +113,7 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,varargin)
 % + parametric and non-parametric (rank) correlation
 %       + Pearson's correlation
 %       + Spearman's rank correlation
-%       + Rank correlation (non-parametric, non-Spearman)
+%       + Rank correlation (non-parametric, Spearman rank correlation with proper handling of ties)
 % + is fast, using an efficient algorithm O(n.log(n)) for calculating the ranks
 % + significance test for null-hypthesis: r=0 
 % + confidence interval included

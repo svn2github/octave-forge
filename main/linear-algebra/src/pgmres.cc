@@ -254,23 +254,29 @@ ColumnVector matrixfreematrixinvmat::operator * (ColumnVector b)
 
 /*
 
-%!shared A,b
+%!shared A, b, dim
 %!test
-%! A = spdiags ([-ones(100,1) 2*ones(100,1) ones(100,1)], [-1:1], 100, 100);
-%! b =  ones(100, 1);
-%! [x, resids] = pgmres (A, b, b, 1e-10,100, 100, @(x) x./diag(A));
+%! dim = 300;
+%! A = spdiags ([-ones(dim,1) 2*ones(dim,1) ones(dim,1)], [-1:1], dim, dim);
+%! b =  ones(dim, 1); 
+%! [x, resids] = pgmres (A, b, b, 1e-10,dim, dim, @(x) x./diag(A));
 %! assert(x, A\b, 1e-9*norm(x,inf))
+%!
 %!test
-%! [x, resids] = pgmres (A, b, b, 1e-10, 1e4, 100, @(x) diag(diag(A))\x);
+%! [x, resids] = pgmres (A, b, b, 1e-10, 1e4, dim, @(x) diag(diag(A))\x);
 %! assert(x, A\b, 1e-7*norm(x,inf))
+%!
 %!test
-%! A = sprandn (100, 100, .1);
+%! A = sprandn (dim, dim, .1);
 %! A = A'*A;
-%! b = rand (100, 1);
-%! [x, resids] = pgmres (@(x) A*x, b, b, 1e-10, 100, 100, @(x) diag(diag(A))\x);
+%! b = rand (dim, 1);
+%! [x, resids] = pgmres (@(x) A*x, b, b, 1e-10, dim, dim, @(x) diag(diag(A))\x);
 %! assert(x, A\b, 1e-9*norm(x,inf))
+%! [x, resids] = pgmres (A, b, b, 1e-10, dim, dim, @(x) diag(diag(A))\x);
+%! assert(x, A\b, 1e-9*norm(x,inf))
+%!
 %!test
-%! [x, resids] = pgmres (A, b, b, 1e-10, 1e6, 100, @(x) x./diag(A));
+%! [x, resids] = pgmres (A, b, b, 1e-10, 1e6, dim, @(x) x./diag(A));
 %! assert(x, A\b, 1e-7*norm(x,inf))
 
 */

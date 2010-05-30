@@ -235,7 +235,7 @@ matrixfreematrixmat::matrixfreematrixmat  (octave_value A)
   
 ColumnVector matrixfreematrixmat::operator * (ColumnVector b) 
 {
-  return mat * Matrix (b);
+  return ColumnVector (mat * Matrix(b));
 }
 
 //----------------------//----------------------//

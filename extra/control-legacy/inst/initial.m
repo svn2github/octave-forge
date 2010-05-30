@@ -61,7 +61,7 @@
 ## @end example
 ## @end deftypefn
 
-## Author: Lukas Reichlin <lukas.reichlin@swissonline.ch>
+## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: August 16, 2009
 ## based on __stepimp__.m of Kai P. Mueller and A. Scottedward Hodel
 ## Version: 0.2

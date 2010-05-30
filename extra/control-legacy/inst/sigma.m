@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Lukas Reichlin <lukas.reichlin@swissonline.ch>
+## Copyright (C) 2009 Lukas Reichlin <lukas.reichlin@gmail.com>
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@
 ## @seealso{bode, svd, bode_bounds, is_digital}
 ## @end deftypefn
 
-## Author: Lukas Reichlin <lukas.reichlin@swissonline.ch>
+## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Version: 0.1.2
 
 function [sv_r, w_r] = sigma (sys, w = [], ptype = 0)

@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Lukas Reichlin <lukas.reichlin@swissonline.ch>
+## Copyright (C) 2009 Lukas Reichlin <lukas.reichlin@gmail.com>
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@
 ##
 ## @end deftypefn
 
-## Author: Lukas Reichlin <lukas.reichlin@swissonline.ch>
+## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Version: 0.2.2
 
 function retsys = sysfeedback (sys)

@@ -90,10 +90,7 @@ function [x, resids] = pgmres (A, b, x0, rtol, maxit, restart, P)
     ##basic iteration
 
     tmp = Pm1x (Ax (V(:, restart_it)));
-    [tmp, H(1:restart_it, restart_it)] = mgorth (tmp, V(:,1:restart_it));
-    
-    H(restart_it+1, restart_it) = norm (tmp, 2);
-    V(:,restart_it+1) = (tmp / H(restart_it+1, restart_it));
+    [V(:,restart_it+1), H(1:restart_it+1, restart_it)] = mgorth (tmp, V(:,1:restart_it));
     
     Y = (H(1:restart_it+1, 1:restart_it) \ B (1:restart_it+1));
 	      

@@ -27,24 +27,22 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Internal rate of return of an investment
 
-function r = irr (p, i)
-
-  if (nargin == 1)
-    i = 0;
-  elseif (! (nargin == 2))
+function r = irr (p, i = 0)
+  ## Check input
+  if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
   if (! (isvector (p)))
     error ("irr: p must be a vector");
-  else
-    p_string = cstrcat ("[", sprintf ("%.15f, ", p), "]");
   endif
 
   if (! isscalar (i))
     error ("irr: i must be a scalar");
   endif
 
-  r = fsolve (sprintf ("npv (x, %s) - %g", p_string, i), 0.01);
+  ## Solve system
+  f = @(x) npv (x, p) - i;
+  r = fsolve (f, 0.01);
 
 endfunction

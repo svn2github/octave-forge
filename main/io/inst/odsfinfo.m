@@ -30,8 +30,9 @@
 ## to right) in which they occur in the sheet stack.
 ##
 ## If you omit return arguments @var{filetype} and @var{sh_names} altogether,
-## odsfinfo returns the sheet names + (in case of the ODF toolkit interface) 
-## a qualified guess for the actual occupied data range to the screen.
+## odsfinfo returns the sheet names and for each sheet the actual occupied
+## data ranges to the screen.The occupied cell range will have to be
+## determined behind the scenes first; this can take some time.
 ## 
 ## odsfinfo execution can take its time for large spreadsheets as the entire
 ## spreadsheet has to be parsed to get the sheet names, let alone exploring
@@ -68,6 +69,7 @@
 ## 2010-03-18 Separated range exploration (for OTK only yet) in separate function file
 ## 2010-03-20 "Beautified" output (for OTK ), used range now in more tabular form
 ## 2010-05-23 Updated jOpenDocument support (can also get occupied data range now)
+## 2010-05-31 Added remark about delays when determining occupied data range
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 

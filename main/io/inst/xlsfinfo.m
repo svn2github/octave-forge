@@ -37,7 +37,9 @@
 ##
 ## If no return arguments are specified the sheet names are echoed to the 
 ## terminal screen; in case of java interfaces for each sheet the actual
-## occupied data range is echoed as well.
+## occupied data range is echoed as well. The occupied cell range will have
+## to be determined behind the scenes first; this can take some time for the
+## Java-based interfaces.
 ##
 ## If multiple xls interfaces have been installed @var{reqintf} can be
 ## specified. This can sometimes be handy to get an idea of used cell ranges
@@ -69,6 +71,7 @@
 ## 2009-01-01 Echo sheet names to screen, request interface type)
 ## 2010-03-21 Better tabulated output; occupied date range per sheet echoed 
 ##            for Java interfaces (though it may be a bit off in case of JXL)
+## 2010-05-31 Added remark about delays when determining occupied data range
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 

@@ -14,13 +14,48 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## getusedrange - get used range from a spreadsheet
+## -*- texinfo -*-
+## @deftypefn {Function File} [ @var{toprow#}, @var{bottomrow#}, @var{leftcol#}, @var{rightcol#} ] = getusedrange (@var{spptr}, @var{shindex#})
+## Find occupied data range in worksheet @var{shindex#} in a spreadsheet
+## pointed to in struct @var{spptr} (either MS-Excel or
+## OpenOffice Calc).
+##
+## @var{shindex#} must be numeric. @var{spptr} can either refer to an
+## MS-Excel spreadsheet (spptr returned by xlsopen) or an OpenOffice.org
+## Calc spreadsheet (sptr returned by odsopen).
+##
+## Be aware that especially for OpenOffice.org Calc (ODS) spreadsheets 
+## the results can only be obtained by counting all cells in all rows;
+## this can be fairly time-consuming.
+## The ActiveX (COM interface) doesn't allow (AFAIK) returning this info.
+##
+## Examples:
+##
+## @example
+##   [trow, brow, lcol, rcol] = getusedrange (ods2, 3);
+##   (which returns the outermost row & column numbers of the rectangle
+##    enveloping the occupied cells in the third sheet of an OpenOffice.org
+##    Calc spreadsheet pointedto in struct ods2)
+## @end example
+##
+## @example
+##   [trow, brow, lcol, rcol] = getusedrange (xls3, 3);
+##   (which returns the outermost row & column numbers of the rectangle
+##    enveloping the occupied cells in the third sheet of an Excel
+##    spreadsheet pointed to in struct xls3)
+## @end example
+##
+## @seealso xlsopen, xlsclose, odsopen, odsclose, xlsfinfo, odsfinfo
+##
+## @end deftypefn
+
 
 ## Author: Philip Nienhuis <philip@JVC741>
 ## Created: 2010-03-18 (First usable version) for ODS (java/OTK)
 ## Updates:
 ## 2010-03-20 Added Excel support (Java/POI)
 ## 2010-05-23 Added in support for jOpenDocument ODS
+## 2010-05-31 Fixed bugs in getusedrange_jod.m
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -154,6 +189,8 @@ endfunction
 
 ## Author: Philip <Philip@DESKPRN>
 ## Created: 2010-05-25
+## Last updates:
+## 2010-05-31 Fixed ignoring table-covered-cells; fixed count of sheets comprising just A1:A1
 
 function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 
@@ -169,7 +206,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 
 #	brow = length (id_trow) - 1;
 	trow = rcol = 0;
-	lcol = 1024;
+	lcol = 1024; brow = 0;
 	if (~isempty (id))
 		# Loop over all table-rows
 		rowrepcnt = 0;
@@ -192,10 +229,13 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 				rowrepcnt += str2num (rowrept+st-1:min (rowend, rowrept+en-1)) - 1;
 			endif
 
-			# Search table-cells. table-c covers both table-cell & table-covered-cell
-			id_tcell = strfind (tablerow, '<table:table-c'); 
-			id_tcell = [id_tcell rowl];
-			if (~isempty (id_tcell(1:end-1)))
+			# Search table-cells. table-c is a table-covered-cell that is considered empty
+			id_tcell = strfind (tablerow, '<table:table-c');
+			if (~isempty (id_tcell))
+				# OK, this row has a value cell. Now table-covered-cells must be included.
+				id_tcell2 = strfind (tablerow, '<table:covered-t');
+				if (~isempty (id_tcell2)) id_tcell = sort ([id_tcell id_tcell2]); endif
+				id_tcell = [id_tcell rowl];
 				# Search for non-empty cells (i.e., with an office:value-type)
 				id_valtcell = strfind (tablerow, 'office:value-type=');
 				id_valtcell = [id_valtcell rowl];
@@ -238,6 +278,9 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 							repcnt += str2num (tablerow(id_reptcell(ii)+st-1:id_reptcell(ii)+en-1)) - 1;
 							++ii;
 						endwhile
+					else
+						# In case left column = A
+						lcol = min (lcol, llcol);
 					endif
 					# Count all table-cells in value table-cell-range
 					ii = 1; 			# Indexes cannot be negative
@@ -251,7 +294,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 		endfor
 	else
 		# No data found, empty sheet
-		lcol = 0;
+		lcol = rcol = brow = trow = 0;
 	endif
 
 endfunction

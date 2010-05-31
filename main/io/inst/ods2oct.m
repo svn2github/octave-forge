@@ -97,13 +97,12 @@
 ##            So I added a warning for users using odfdom 0.8.
 ## 2010-04-11 Removed support for odfdom-0.8 - it's painfully slow and unreliable
 ## 2010-05-31 Updated help text (delay i.c.o. empty range due to getusedrange call)
+## 2010-05-31 Added support for jOpenDocument 1.2b3; improved this subfunc a lot
 ##
-## (Latest update of subfunctions below: 2010-04-13)
+## (Latest update of subfunctions below: 2010-05-31)
 
 function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[])
 
-	persistent odf08;
-	
 	if (strcmp (ods.xtype, 'OTK'))
 		# Read ods file tru Java & ODF toolkit
 		[rawarr, ods, rstatus] = ods2jotk2oct (ods, wsh, datrange);
@@ -357,25 +356,79 @@ endfunction
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## ods2oct - get data out of an ODS spreadsheet into octave.
-## Watch out, no error checks, and spreadsheet formula error results
-## are conveyed as 0 (zero).
+## ods2jod2oct - get data out of an ODS spreadsheet into octave using
+## jOpenDocument.
 ##
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
+## Updates:
+## 2010-05-31 First working updates for jopendocument v 1.2b3
+##            Added getusedrange, lifted requirement of range argument
 
-function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
+function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange=[])
 
-	persistent months;
+	persistent months; persistent ctype;
 	months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+	ctype = {'FLOAT',  'STRING', 'BOOLEAN', 'DATE', 'TIME', 'EMPTY', 'CURRENCY', 'PERCENTAGE', '', ''};
 
-	if (isempty (crange)) error ("Empty cell range not allowed w. jOpenDocument."); endif
+	rstatus = 1
 
-	if (isnumeric(wsh)) wsh = max (wsh - 1, 1); endif	# Sheet COUNT starts at 0!
-	sh	= ods.workbook.getSheet (wsh);
-	
-	[dummy, nrows, ncols, toprow, lcol] = parse_sp_range (crange);
-	if (lcol > 1024 || toprow > 65536) error ("ods2oct: invalid range; max 1024 columns & 65536 rows."); endif
+	if (isnumeric (wsh)) 
+		try
+			sh = ods.workbook.getSheet (wsh - 1);
+			iwsh = wsh;
+		catch
+			rstatus = 0;
+			error ("Sheet nr. %d out of range - only %d sheets present in file %s\n", \
+			 wsh, ods.workbook.getSheetCount (), ods.filename);
+		end_try_catch
+	else
+		sh	= ods.workbook.getSheet (wsh);
+		if (isempty (sh))
+			rstatus = 0;
+			error ("Sheet %s not present in file %s\n", wsh, ods.filename);
+		endif
+		if (isempty (crange))
+			# In that case we need the sheet index for a call to getusedrange ()
+			ii = 0; shcnt = ods.workbook.getSheetCount ();
+			while (ii < shcnt)
+				shname = char (ods.workbook.getSheet (ii).getName ());
+				if (strcmp (shname, wsh))
+					iwsh = ii + 1;
+					ii = shcnt;
+				else
+					++ii;
+				endif
+			endwhile
+		endif
+	endif
+
+	# Check jOpenDocument version
+	cl = sh.getCellAt (0, 0);
+	try
+		# 1.2b3 has public getValueType ()
+		cl.getValueType ()
+		ver = 3
+	catch
+		# 1.2b2 has not
+		ver = 2
+	end_try_catch
+
+	if (isempty (crange))
+		[toprow, brow, lcol, rcol] = getusedrange (ods, iwsh);
+		if (toprow == 0)
+			# Empty sheet
+			nrows = 0;
+		else
+			ncols = rcol - lcol + 1;
+			nrows = brow - toprow + 1;
+		endif
+	else
+		[dummy, nrows, ncols, toprow, lcol] = parse_sp_range (crange);
+		if (lcol > 1024 || toprow > 65536) error ("ods2oct: invalid range; max 1024 columns & 65536 rows."); endif
+		brow = toprow + nrows - 1;
+		rcol = lcol + ncols - 1;
+	endif
 	# Truncate range silently if needed
 	rcol = min (lcol + ncols - 1, 1024);
 	ncols = min (ncols, 1024 - lcol + 1);
@@ -383,48 +436,123 @@ function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 
 	# Placeholder for data
 	rawarr = cell (nrows, ncols);
-	for ii=1:nrows
-		for jj = 1:ncols
-			celladdress = calccelladdress (toprow, lcol, ii, jj);
-			try
-				val = sh.getCellAt (celladdress).getValue ();
-			catch
-				# No panic, probably a merged cell
-				val = {};
-			end_try_catch
-			if (~isempty (val))
-				if (ischar (val))
-					# Text string
-					rawarr(ii, jj) = val;
-				elseif (isnumeric (val))
-					# Boolean
-					if (val) rawarr(ii, jj) = true; else; rawarr(ii, jj) = false; endif 
-				else
-					try
-						val = sh.getCellAt (celladdress).getValue ().doubleValue ();
-						rawarr(ii, jj) = val;
-					catch
-						val = char (val);
-						if (isempty (val))
-							# Probably empty Cell
-						else
-							# Maybe date / time value. Dirty hack to get values:
-							mo = strmatch (toupper (val(5:7)), months);
-							dd = str2num (val(9:10));
-							yy = str2num (val(25:end));
-							hh = str2num (val(12:13));
-							mm = str2num (val(15:16));
-							ss = str2num (val(18:19));
-							rawarr(ii, jj) = datenum (yy, mo, dd, hh, mm,ss);
-						endif
-					end_try_catch
+
+	# Get data from sheet
+	if (ver ==3)				# jOpenDocument version 1.2b3
+
+		for ii=1:nrows
+			for jj = 1:ncols
+				cl = sh.getCellAt (jj+lcol-2, ii+toprow-2);
+				valtype = char (cl.getValueType ());
+				if (~isempty (valtype))
+					switch deblank (valtype)
+						case {'FLOAT', 'CURRENCY', 'PERCENTAGE'}
+							# Check for error values
+							txt = cl.getTextValue ();
+							if ~(strfind (txt, 'Err:') || strfind (txt, '#DIV/0'))
+								rawarr (ii, jj) = cl.getValue ().doubleValue ();
+							endif
+						case 'STRING'
+							rawarr (ii, jj) = cl.getTextValue ();
+						case 'BOOLEAN'
+							rawarr (ii, jj) = cl.getValue ();
+						case 'DATE'
+							cl = char (cl);
+							st = strfind (cl, 'office:date-value=') + 19;
+							en = strfind (cl(st:end), '">')(1) + st - 2;
+							cvalue = cl(st:en);
+							# Dates are returned as octave datenums, i.e. 0-0-0000 based
+							yr = str2num (cvalue(1:4));
+							mo = str2num (cvalue(6:7));
+							dy = str2num (cvalue(9:10));
+							if (index (cvalue, 'T'))
+								hh = str2num (cvalue(12:13));
+								mm = str2num (cvalue(15:16));
+								ss = str2num (cvalue(18:19));
+								rawarr(ii, jj) = datenum (yr, mo, dy, hh, mm, ss);
+							else
+								rawarr(ii, jj) = datenum (yr, mo, dy);
+							endif
+						case 'TIME'
+							cl = char (cl);
+							st = strfind (cl, 'office:time-value=') + 19;
+							en = strfind (cl(st:end), '">')(1) + st - 2;
+							cvalue = cl(st:en);
+							if (index (cvalue, 'PT'))
+								hh = str2num (cvalue(3:4));
+								mm = str2num (cvalue(6:7));
+								ss = str2num (cvalue(9:10));
+								rawarr(ii, jj) = datenum (0, 0, 0, hh, mm, ss);
+							endif
+						otherwise
+					endswitch
 				endif
-			endif
+			endfor
 		endfor
-	endfor
-	
-	ods.limits = [ lcol, lcol+ncols-1; toprow, toprow+nrows-1 ];
-	
-	rstatus = ~isempty (rawarr);
+
+	elseif (ver ==2 )					# jOpenDocument version 1.2b2
+
+		for ii=1:nrows
+			for jj = 1:ncols
+				celladdress = calccelladdress (toprow, lcol, ii, jj);
+				try
+					val = sh.getCellAt (celladdress).getValue ();
+				catch
+					# No panic, probably a merged cell
+					val = {};
+				end_try_catch
+				if (~isempty (val))
+					if (ischar (val))
+						# Text string
+						rawarr(ii, jj) = val;
+					elseif (isnumeric (val))
+						# Boolean
+						if (val) rawarr(ii, jj) = true; else; rawarr(ii, jj) = false; endif 
+					else
+						try
+							val = sh.getCellAt (celladdress).getValue ().doubleValue ();
+							rawarr(ii, jj) = val;
+						catch
+							val = char (val);
+							if (isempty (val))
+								# Probably empty Cell
+							else
+								# Maybe date / time value. Dirty hack to get values:
+								mo = strmatch (toupper (val(5:7)), months);
+								dd = str2num (val(9:10));
+								yy = str2num (val(25:end));
+								hh = str2num (val(12:13));
+								mm = str2num (val(15:16));
+								ss = str2num (val(18:19));
+								rawarr(ii, jj) = datenum (yy, mo, dd, hh, mm,ss);
+							endif
+						end_try_catch
+					endif
+				endif
+			endfor
+		endfor
+
+	endif
+
+	# Crop rawarr from all empty outer rows & columns just like Excel does
+	# & keep track of limits
+	emptr = cellfun('isempty', rawarr);
+	if (all (all (emptr)))
+		rawarr = {};
+		ods.limits= [];
+	else
+		irowt = 1;
+		while (all (emptr(irowt, :))), irowt++; endwhile
+		irowb = nrows;
+		while (all (emptr(irowb, :))), irowb--; endwhile
+		icoll = 1;
+		while (all (emptr(:, icoll))), icoll++; endwhile
+		icolr = ncols;
+		while (all (emptr(:, icolr))), icolr--; endwhile
+		# Crop textarray
+		rawarr = rawarr(irowt:irowb, icoll:icolr);
+		rstatus = 1;
+		ods.limits = [lcol+icoll-1, lcol+icolr-1; toprow+irowt-1, toprow+irowb-1];
+	endif
 
 endfunction

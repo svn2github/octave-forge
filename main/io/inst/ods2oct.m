@@ -364,7 +364,7 @@ endfunction
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
 
-function [ rawarr, ods, rstatus] = ods_2jod2oct (ods, wsh, crange)
+function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 
 	persistent months;
 	months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};

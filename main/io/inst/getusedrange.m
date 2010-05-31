@@ -191,13 +191,18 @@ endfunction
 ## Created: 2010-05-25
 ## Last updates:
 ## 2010-05-31 Fixed ignoring table-covered-cells; fixed count of sheets comprising just A1:A1
+##            Added option for wsh being a string argument 
 
 function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 
 	# This function works by virtue of sheets in JOD actually being a Java string.
 	# It works outside of the Java memory/heap space which is an added benefit.
 
-	sh = char (ods.workbook.getSheet (wsh - 1));
+	if (isnumeric (wsh))
+		sh = char (ods.workbook.getSheet (wsh - 1));
+	else
+		sh = char (ods.workbook.getSheet (wsh));
+	endif
 
 	# Get table-row pointers
 	id_trow = strfind (sh, '<table:table-row');

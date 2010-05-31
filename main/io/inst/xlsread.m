@@ -40,6 +40,9 @@
 ##
 ## @var{range} is expected to be a regular spreadsheet range format,
 ## or "" (empty string, indicating all data in a worksheet).
+## If no range is specified the occupied cell range will have to be
+## determined behind the scenes first; this can take some time for the
+## Java-based interfaces.
 ##
 ## @var{wsh} is either numerical or text, in the latter case it is 
 ## case-sensitive and it may be max. 31 characters long.
@@ -118,6 +121,7 @@
 ## Updates: 
 ## 2009-12-29 bug fixes
 ## 2010-01-12 added unwind_protect to get rid of stray Excel invocations i.c.o. COM errors
+## 2010-05-31 Updated help text (delays i.c.o. empty range due to getusedrange call)
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 

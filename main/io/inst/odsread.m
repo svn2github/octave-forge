@@ -45,6 +45,8 @@
 ##
 ## @var{range} is expected to be a regular spreadsheet range format,
 ## or "" (empty string, indicating all data in a worksheet).
+## If no range is specified the occupied cell range will have to be
+## determined behind the scenes first; this can take some time.
 ##
 ## If only the first argument is specified, odsread will try to read
 ## all contents from the first = leftmost (or the only) worksheet (as
@@ -107,6 +109,7 @@
 ## Updates: 
 ## 2010-01-05 (....)
 ## 2010-03-04 Slight adaptations in texinfo
+## 2010-05-31 Updated help text (delays i.c.o. empty range due to getusedrange call)
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 

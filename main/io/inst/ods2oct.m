@@ -34,6 +34,8 @@
 ##
 ## @var{range} is expected to be a regular spreadsheet range format,
 ## or "" (empty string, indicating all data in a worksheet).
+## If no range is specified the occupied cell range will have to be
+## determined behind the scenes first; this can take some time.
 ##
 ## If only the first argument is specified, ods2oct will try to read
 ## all contents from the first = leftmost (or the only) worksheet (as
@@ -94,6 +96,7 @@
 ## 2010-04-06 Benchmarked odfdom versions. v0.7.5 is up to 7 times faster than v0.8!
 ##            So I added a warning for users using odfdom 0.8.
 ## 2010-04-11 Removed support for odfdom-0.8 - it's painfully slow and unreliable
+## 2010-05-31 Updated help text (delay i.c.o. empty range due to getusedrange call)
 ##
 ## (Latest update of subfunctions below: 2010-04-13)
 
@@ -361,7 +364,7 @@ endfunction
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
 
-function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
+function [ rawarr, ods, rstatus] = ods_2jod2oct (ods, wsh, crange)
 
 	persistent months;
 	months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};

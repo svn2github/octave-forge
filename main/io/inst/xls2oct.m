@@ -31,6 +31,9 @@
 ##
 ## @var{range} is expected to be a regular spreadsheet range format,
 ## or "" (empty string, indicating all data in a worksheet).
+## If no range is specified the occupied cell range will have to be
+## determined behind the scenes first; this can take some time for the
+## Java-based interfaces.
 ##
 ## If only the first argument is specified, xls2oct will try to read
 ## all contents from the first = leftmost (or the only) worksheet (as
@@ -94,7 +97,8 @@
 ## Updates: 
 ## 2009-01-03 (added OOXML support & cleaned up code. Excel 
 ##             ADDRESS function still not working OK)
-## 2010-03-14 Updated help text   
+## 2010-03-14 Updated help text
+## 2010-05-31 Updated help text (delay i.c.o. empty range due to getusedrange call)
 
 function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh, datrange='')
 

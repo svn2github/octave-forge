@@ -6,7 +6,7 @@ Maintainer: Jaroslav Hajek
 Title: Linear Algebra.
 Description: Additional linear algebra code, including general SVD and matrix functions.
 Categories: Linear-Algebra
-Depends: octave (>= 3.2.4)
+Depends: octave (>= 3.2.3)
 Autoload: yes
 License: GPL version 3 or later
 Url: http://octave.sf.net

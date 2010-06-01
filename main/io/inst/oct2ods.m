@@ -77,8 +77,9 @@
 ## 2010-03-25 see oct2jotk2ods
 ## 2010-03-28 Added basic support for ofdom v.0.8. Everything works except adding cols/rows
 ## 2010-03-29 Removed odfdom-0.8 support, it's simply too buggy :-( Added a warning instead
+## 2010-06-01 Almost complete support for upcoming jOpenDocument 1.2b4. 1.2b3 still lacks a bit
 ##
-## Last update of subfunctions below: 2010-04-13
+## Last update of subfunctions below: 2010-06-01
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[])
 
@@ -553,7 +554,7 @@ endfunction
 
 #=============================================================================
 
-## Copyright (C) 2009 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009-2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -571,26 +572,67 @@ endfunction
 
 ## ods2oct - write data from octave to an ODS spreadsheet using the
 ## jOpenDocument interface.
-## Watch out, no error checks. Sheet WSH must exist. Data can only be
-## modified, not added.
 ##
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
 ## First usable version: 2010-01-14
 ## Updates:
 ## 2010-03-17 Adapted to simplified calccelladdress argument list
+## 2010-04-24 Added ensureColumnCount & ensureRowCount
+##            Fixed a few bugs with top row & left column indexes
+##            Fixed a number of other stupid bugs
+##            Added check on NaN before assigning data value to sprdsh-cell
+## 2010-06-01 Checked logic. AFAICS all should work with upcoming jOpenDocument 1.2b4;
+##            in 1.2b3 adding a newsheet always leaves an incomplete upper row;
+##            supposedly (hopefully) that will be fixed in 1.2b4.
+##      "     Added check for jOpenDocument version. Adding sheets only works for
+##            1.2b3+ (barring bug above)
 
 function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 
-	# jOpenDocument version
+	# Check jOpenDocument version
+	sh = ods.workbook.getSheet (0);
+	cl = sh.getCellAt (0, 0);
+	try
+		# 1.2b3 has public getValueType ()
+		cl.getValueType ()
+		ver = 3
+	catch
+		# 1.2b2 has not
+		ver = 2
+	end_try_catch
 
-	rstatus = 0;
+	rstatus = 0; sh = [];
 
 	# Get worksheet. Use first one if none given
 	if (isempty (wsh)) wsh = 1; endif
-	if (isnumeric (wsh)) wsh = wsh - 1; endif	# Sheet nos. 0-based
-	sh = ods.workbook.getSheet (wsh);			# Either numeric or char string
-	if (isempty (sh)) error ("Requested sheet does not exist in file."); endif
+	sh_cnt = ods.workbook.getSheetCount ();
+	if (isnumeric (wsh))
+		if (wsh > 1024)
+			error ("Sheet number out of range of ODS specification (>1024)");
+		elseif (wsh > sh_cnt)
+			error ("Sheet number (%d) larger than number of sheets in file (%d)\n", wsh, sh_cnt);
+		else
+			wsh = wsh - 1;
+			sh = ods.workbook.getSheet (wsh);
+			if (isempty (sh))
+				wsh = sprintf ("Sheet%d", wsh);
+			endif
+		endif
+	endif
+	# wsh is now either a 0-based sheet no. or a string. In latter case:
+	if (isempty (sh) && ischar (wsh))
+		sh = ods.workbook.getSheet (wsh);
+		if (isempty (sh))
+			# Create sheet
+			if (ver == 3)
+				printf ("Adding sheet '%s'\n", wsh);
+				sh = ods.workbook.addSheet (sh_cnt, wsh);
+			else
+				error ("jOpenDocument v. 1.2b2 does not support adding sheets - upgrade to v. 1.2b3\n");
+			endif
+		endif
+	endif
 
 	[nr, nc] = size (c_arr);
 	if (isempty (crange))
@@ -603,32 +645,43 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 		# Row/col = 0 based in jOpenDocument
 		trow = trow - 1; lcol = lcol - 1;
 	endif
-	if (trow >65536 || lcol> 1024)
-		celladd = calccelladdress (lcol, trow);
+
+	if (trow > 65535 || lcol > 1023)
+		celladd = calccelladdress (lcol + 1, trow + 1);
 		error (sprintf ("Topleft cell (%s) beyond spreadsheet limits (AMJ65536).", celladd));
 	endif
 	# Check spreadsheet capacity beyond requested topleft cell
-	nrows = min (nrows, 65536 - trow + 1);
-	ncols = min (ncols, 1024 - lcol + 1);
+	nrows = min (nrows, 65536 - trow);		# Remember, lcol & trow are zero-based
+	ncols = min (ncols, 1024 - lcol);
 	# Check array size and requested range
 	nrows = min (nrows, nr);
 	ncols = min (ncols, nc);
-	if (nrows < nc || ncols < nc) warning ("Array truncated to fit in range"); endif
+	if (nrows < nr || ncols < nc) warning ("Array truncated to fit in range"); endif
 
 	if (isnumeric (c_arr)) c_arr = num2cell (c_arr); endif
 
+	# Ensure sheet capacity is large enough to contain new data
+	try		# try-catch needed to work around bug in jOpenDocument v 1.2b3 and earlier
+		sh.ensureColumnCount (lcol + ncols);	# Remember, lcol & trow are zero-based
+	catch	# catch is needed for new empty sheets (first ensureColCnt() hits null ptr)
+		sh.ensureColumnCount (lcol + ncols);
+		# Kludge needed because upper row is defective (NPE jOpenDocument bug). Fixed in 1.2b4?
+		if (trow == 0), ++trow; endif		# Shift rows one down to avoid defective upper row
+	end_try_catch
+	sh.ensureRowCount (trow + nrows);
+
 	# Write data to worksheet
 	changed = 0;
-	for ii = 1 : min (nrows, nr)
-		for jj = 1 : min (ncols, nc)
+	for ii = 1 : nrows
+		for jj = 1 : ncols
 			val = c_arr {ii, jj};
-			if (isnumeric (val) || ischar (val) || islogical (val))
+			if ((isnumeric (val) && ~isnan (val)) || ischar (val) || islogical (val))
 				try
-					jcell = sh.getCellAt (ii + lcol - 1, jj + trow - 1).setValue (val);
+					jcell = sh.getCellAt (jj + lcol - 1, ii + trow - 1).setValue (val);
 					changed = 1;
 				catch
 					# No panic, probably a merged cell
-					printf (sprintf ("Cell skipped at (%d, %d)\n", ii+lcol-1, jj+trow-1));
+				#	printf (sprintf ("Cell skipped at (%d, %d)\n", ii+lcol-1, jj+trow-1));
 				end_try_catch
 			endif
 		endfor

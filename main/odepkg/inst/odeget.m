@@ -76,7 +76,15 @@ function [vret] = odeget (varargin)
 
   %# Run through number of input arguments given
   for vcntarg = 1:vint.lengtharg
-    if (vint.odestruct.(vint.arguments{vcntarg}) == vint.otemplate.(vint.arguments{vcntarg}))
+    if ((...
+         isempty(vint.odestruct.(vint.arguments{vcntarg}))
+        )||( ...
+         ischar(vint.odestruct.(vint.arguments{vcntarg})) && ...
+         strcmp(vint.odestruct.(vint.arguments{vcntarg}),vint.otemplate.(vint.arguments{vcntarg}))...
+        )||(...
+         ~ischar(vint.odestruct.(vint.arguments{vcntarg})) && ...
+         vint.odestruct.(vint.arguments{vcntarg}) == vint.otemplate.(vint.arguments{vcntarg}) ...
+        ))
       if (nargin == 3), vint.returnval{vcntarg} = vint.defaults{vcntarg};
       else, vint.returnval{vcntarg} = vint.odestruct.(vint.arguments{vcntarg}); end
     else, vint.returnval{vcntarg} = vint.odestruct.(vint.arguments{vcntarg});
@@ -87,10 +95,12 @@ function [vret] = odeget (varargin)
   if (vint.lengtharg == 1), vret = vint.returnval{1};
   else, vret = vint.returnval; end
 
-%!test odeget (odeset, 'RelTol');
-%!test odeget (odeset, 'RelTol', 10);
-%!test odeget (odeset, {'RelTol', 'AbsTol'});
-%!test odeget (odeset, {'RelTol', 'AbsTol'}, {10 20});
+%!test assert (odeget (odeset (), 'RelTol'), []);
+%!test assert (odeget (odeset (), 'RelTol', 10), 10);
+%!test assert (odeget (odeset (), {'RelTol', 'AbsTol'}), {[] []})
+%!test assert (odeget (odeset (), {'RelTol', 'AbsTol'}, {10 20}), {10 20});
+%!test assert (odeget (odeset (), 'Stats'), 'off');
+%!test assert (odeget (odeset (), 'Stats', 'on'), 'on');
 
 %!demo
 %! # Return the manually changed value RelTol of the OdePkg options

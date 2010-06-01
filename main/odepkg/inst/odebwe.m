@@ -362,16 +362,19 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
             end            
             vnpds = vnpds + 1;
             vfulljac  = vmass/vthestep - vjac;
-            % use sparse lu decomposition if possible 
-            [L,U,P] = lu(vfulljac);
-            vndecomps = vndecomps + 1;
+            %# one could do a matrix decomposition of vfulljac here, 
+            %# but the choice of decomposition depends on the problem
+            %# and therefore we use the backslash-operator in row 374 
           end
           
           %# Compute the residual
           vres = vmass/vthestep*(y(j,:)-y0)' - feval(vfun,vthetime,y(j,:)',vfunarguments{:});
           vresnrm(vnewtit+1) = norm(vres,inf);
           %# Solve the linear system
-          y(j,:) = U\(L\(P*(-vres+vfulljac*y(j,:)')));
+          y(j,:) = vfulljac\(-vres+vfulljac*y(j,:)');
+          %# the backslash operator decomposes the matrix 
+          %# and solves the system in a single step. 
+          vndecomps = vndecomps + 1;
           vnlinsols = vnlinsols + 1;
           %# Prepare next iteration
           vnewtit = vnewtit + 1;

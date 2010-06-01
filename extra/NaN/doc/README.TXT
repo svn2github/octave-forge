@@ -110,7 +110,7 @@ level 2b: classification, cross-validation
 	FSS		feature subset selection and feature ranking
 	CAT2BIN         converts categorial to binary data
 	SVMTRAIN_MEX	libSVM-training algorithm 
-
+	ROW_COL_DELETION heuristic to select rows and columns to remove missing values
 
 
 REFERENCE(S):

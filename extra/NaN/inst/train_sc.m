@@ -103,7 +103,7 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %  so-called "extended covariance matrices". Nowadays, also other 
 % classifiers are supported. 
 %
-% see also: TEST_SC, COVM
+% see also: TEST_SC, COVM, ROW_COL_DELETION
 %
 % References: 
 % [1] R. Duda, P. Hart, and D. Stork, Pattern Classification, second ed. 
@@ -214,12 +214,8 @@ end
 if 0,
 	;
 elseif ~isempty(strfind(lower(MODE.TYPE),'/delet'))
-        % [5] J.D. Tebbens and P.Schlesinger (2006), 
-        %       Improving Implementation of Linear Discriminant Analysis for the Small Sample Size Problem
-        %       http://www.cs.cas.cz/mweb/download/publi/JdtSchl2006.pdf
-
         POS1 = find(MODE.TYPE=='/');
-	[rix,cix] = row_vs_col_deletion(D);	
+	[rix,cix] = row_col_deletion(D);	
 	if ~isempty(W), W=W(rix); end;
         CC   = train_sc(D(rix,cix),classlabel(rix,:),MODE.TYPE(1:POS1(1)-1),W);
         CC.G = sparse(cix, 1:length(cix), 1, size(D,2), length(cix)); 
@@ -299,7 +295,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'lpm'))
 elseif ~isempty(strfind(lower(MODE.TYPE),'pla')),
 	% Perceptron Learning Algorithm 	
 
-	[rix,cix] = row_vs_col_deletion(D);
+	[rix,cix] = row_col_deletion(D);
 	[CL101,CC.Labels] = cl101(classlabel); 
 	M = size(CL101,2);
         weights   = sparse(length(cix)+1,M);
@@ -335,7 +331,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pla')),
 elseif  ~isempty(strfind(lower(MODE.TYPE),'adaline')) || ~isempty(strfind(lower(MODE.TYPE),'lms')),
 	% adaptive linear elemente, least mean squares, delta rule, Widrow-Hoff,  	
 
-	[rix,cix] = row_vs_col_deletion(D);
+	[rix,cix] = row_col_deletion(D);
 	[CL101,CC.Labels] = cl101(classlabel); 
 	M = size(CL101,2);
         weights  = sparse(length(cix)+1,M);
@@ -374,7 +370,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'winnow'))
 		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
 	end; 	
 
-	[rix,cix] = row_vs_col_deletion(D);
+	[rix,cix] = row_col_deletion(D);
 	[CL101,CC.Labels] = cl101(classlabel); 
 	M = size(CL101,2);
         weights  = ones(length(cix),M);
@@ -397,7 +393,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pls')) || ~isempty(strfind(lower(MODE.
 	if nargin<4,
 		W = [];
 	end;
-	[rix, cix] = row_vs_col_deletion(D);
+	[rix, cix] = row_col_deletion(D);
 	wD = [ones(length(rix),1),D(rix,cix)]; 
 
 	if ~isempty(W)
@@ -411,7 +407,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'pls')) || ~isempty(strfind(lower(MODE.
 	M = size(CL101,2);
 	CC.weights = sparse(sz(2)+1,M);
 
-	%[rix, cix] = row_vs_col_deletion(wD);
+	%[rix, cix] = row_col_deletion(wD);
 	[q,r] = qr(wD,0);
 
 	if isempty(W)
@@ -453,7 +449,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'/gsvd'))
         % [3] http://www-static.cc.gatech.edu/~kihwan23/face_recog_gsvd.htm
 
 	[classlabel,CC.Labels] = CL1M(classlabel); 
-	[rix,cix] = row_vs_col_deletion(D);
+	[rix,cix] = row_col_deletion(D);
 
         Hw = zeros(length(rix)+length(CC.Labels), length(cix)); 
         Hb = [];
@@ -510,7 +506,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'sparse'))
         %       http://www.cs.cas.cz/mweb/download/publi/JdtSchl2006.pdf
 
 	[classlabel,CC.Labels] = CL1M(classlabel); 
-	[rix,cix] = row_vs_col_deletion(D);	
+	[rix,cix] = row_col_deletion(D);	
 
         warning('sparse LDA is sensitive to linear transformations')
         M = length(CC.Labels); 
@@ -635,7 +631,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm:lin4'))
 	M = length(CC.Labels);
 	CC.weights = sparse(size(D,2)+1,M); 
 
-	[rix,cix] = row_vs_col_deletion(D);	
+	[rix,cix] = row_col_deletion(D);	
 
         % pre-whitening
         [D,r,m]=zscore(D(rix,cix),1); 
@@ -688,7 +684,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
         %%CC = train_svm(D,classlabel,MODE);
 	[CL101,CC.Labels] = cl101(classlabel); 
 	M = size(CL101,2);
-	[rix,cix] = row_vs_col_deletion(D);	
+	[rix,cix] = row_col_deletion(D);	
         CC.weights = sparse(sz(2)+1, M);
 
         % pre-whitening
@@ -895,38 +891,6 @@ else          % Linear and Quadratic statistical classifiers
         end;
 end
 
-function [rix,cix] = row_vs_col_deletion(d,c,w)
-	% decides whether row-wise or column-wise deletion removes less data. 
-	% rix and cix are the resulting index vectors
-	% either row-wise or column-wise deletion, but not a combination of both, is used. 
-	
-	if nargin > 2,
-		if isempty(w) || all(w==w(1)), 
-			ix = ~isnan(c);
-		else 	
-			ix = ~any(isnan(c) | isnan(w));
-		end; 
-		d  = d(ix,:);	%% ignore samples with invalid c or w
-
-	elseif nargin > 1,
-		d  = d(~isnan(c),:);	%% ignore samples with invalid c or w
-
-	end; 	
-
-	n   = numel(d); 
-	cix = find(~any(isnan(d),1)); 
-	rix = find(~any(isnan(d),2)); 
-	nr  = length(rix)*size(d,2); % number of elements after row-wise deletion
-	nc  = length(cix)*size(d,1); % number of elements after column-wise deletion
-	
-	if (nr>nc)
-		cix = 1:size(d,2);  % select all columns
-		%fprintf(1,'row-wise deletion (%i,%i,%i)\n',n,nr,nc);		
-	else
-		rix = 1:size(d,1);  % select all rows 
-		%fprintf(1,'column-wise deletion (%i,%i,%i)\n',n,nr,nc);		
-	end; 
-end
 
 function [CL101,Labels] = cl101(classlabel)
 	%% convert classlabels to {-1,1} encoding 

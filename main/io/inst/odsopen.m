@@ -65,6 +65,7 @@
 ## 2010-03-01 Removed check for rt.jar in javaclasspath
 ## 2010-03-04 Slight texinfo adaptation (reqd. odfdom version = 0.7.5)
 ## 2010-03-14 Updated help text (section on readwrite)
+## 2010-06-01 Added check for jOpenDocument version + suitable warning
 ##
 ## Latest change on subfunction below: 2010-04-11
 
@@ -138,31 +139,46 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 	if (odsinterfaces.OTK)
 		# Parts after user gfterry in
 		# http://www.oooforum.org/forum/viewtopic.phtml?t=69060
+		odftk = 'org.odftoolkit.odfdom.doc';
 		if (rw == 2)
 			# New spreadsheet
-			wb = java_invoke ('org.odftoolkit.odfdom.doc.OdfSpreadsheetDocument', 'newSpreadsheetDocument');
+			wb = java_invoke ([odftk '.OdfSpreadsheetDocument'], 'newSpreadsheetDocument');
 		else
 			# Existing spreadsheet
-			wb = java_invoke ('org.odftoolkit.odfdom.doc.OdfDocument', 'loadDocument', filename);
+			wb = java_invoke ([odftk '.OdfDocument'], 'loadDocument', filename);
 		endif
-		ods.workbook = wb.getContentDom();		# Reads the entire spreadsheet
+		ods.workbook = wb.getContentDom ();		# Reads the entire spreadsheet
 		ods.xtype = 'OTK';
 		ods.app = wb;
 		ods.filename = filename;
 
 	elseif (odsinterfaces.JOD)
-      file = java_new ('java.io.File', filename);
-      if (rw ==2)
-         warning ("No proper write support using jOpenDocument yet. Please use ODF toolkit (OTK).");
-      	ods = [];
+		file = java_new ('java.io.File', filename);
+		jopendoc = 'org.jopendocument.dom.spreadsheet.SpreadSheet';
+		if (rw ==2)
+			# Create an empty 2 x 2 default TableModel template
+			tmodel= java_new ('javax.swing.table.DefaultTableModel', 2, 2);
+			wb = java_invoke (jopendoc, 'createEmpty', tmodel);
 		else
-			wb = java_invoke ('org.jopendocument.dom.spreadsheet.SpreadSheet', 'createFromFile', file);
-			ods.xtype = 'JOD';
-			ods.app = 'file';
-			ods.filename = filename;
-			ods.workbook = wb;
+			wb = java_invoke (jopendoc, 'createFromFile', file);
 		endif
-		
+		ods.workbook = wb;
+		ods.filename = filename;
+		ods.xtype = 'JOD';
+		ods.app = 'file';
+		# Check jOpenDocument version
+		sh = ods.workbook.getSheet (0);
+		cl = sh.getCellAt (0, 0);
+		try
+			# 1.2b3 has public getValueType ()
+			cl.getValueType ()
+			ver = 3
+		catch
+			# 1.2b2 has not
+			ver = 2
+			printf ("NOTE: jOpenDocument v. 1.2b2 has limited functionality. Try upgrading to 1.2b3+\n");
+		end_try_catch
+
 #	elseif 
 #		<other interfaces here>
 

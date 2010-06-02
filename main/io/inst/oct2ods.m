@@ -89,7 +89,7 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[])
 		
 	elseif (strcmp (ods.xtype, 'JOD'))
 		# Write ods file tru Java & jOpenDocument. API still leaves lots to be wished...
-		warning ("oct2ods: unreliable writing tru jOpenDocument interface.");
+#		warning ("oct2ods: unreliable writing tru jOpenDocument interface.");
 		[ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange);
 		
 #	elseif ---- < Other interfaces here >
@@ -587,6 +587,7 @@ endfunction
 ##            supposedly (hopefully) that will be fixed in 1.2b4.
 ##      "     Added check for jOpenDocument version. Adding sheets only works for
 ##            1.2b3+ (barring bug above)
+## 2010-06-02 Fixed first sheet remaining in new spreadsheets
 
 function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 
@@ -595,17 +596,17 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 	cl = sh.getCellAt (0, 0);
 	try
 		# 1.2b3 has public getValueType ()
-		cl.getValueType ()
-		ver = 3
+		cl.getValueType ();
+		ver = 3;
 	catch
 		# 1.2b2 has not
-		ver = 2
+		ver = 2;
 	end_try_catch
 
-	rstatus = 0; sh = [];
+	rstatus = 0; sh = []; changed = 0;
 
 	# Get worksheet. Use first one if none given
-	if (isempty (wsh)) wsh = 1; endif
+	if (isempty (wsh) || ods.changed == 2) wsh = 1; endif
 	sh_cnt = ods.workbook.getSheetCount ();
 	if (isnumeric (wsh))
 		if (wsh > 1024)
@@ -616,7 +617,11 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 			wsh = wsh - 1;
 			sh = ods.workbook.getSheet (wsh);
 			if (isempty (sh))
-				wsh = sprintf ("Sheet%d", wsh);
+				# Sheet number wsh didn't exist yet
+				wsh = sprintf ("Sheet%d", wsh+1);
+			elseif (ods.changed == 2)
+				sh.setName ('Sheet1');
+				ods.changed = 0;
 			endif
 		endif
 	endif
@@ -624,10 +629,17 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 	if (isempty (sh) && ischar (wsh))
 		sh = ods.workbook.getSheet (wsh);
 		if (isempty (sh))
-			# Create sheet
+			# Still doesn't exist. Create sheet
 			if (ver == 3)
-				printf ("Adding sheet '%s'\n", wsh);
-				sh = ods.workbook.addSheet (sh_cnt, wsh);
+				if (ods.changed == 2)
+					# 1st "new" -unnamed- sheet has already been made when creating the spreadsheet
+					sh.setName = wsh;
+					ods.changed = 0;
+				else
+					# For existing spreadsheets
+					printf ("Adding sheet '%s'\n", wsh);
+					sh = ods.workbook.addSheet (sh_cnt, wsh);
+				endif
 			else
 				error ("jOpenDocument v. 1.2b2 does not support adding sheets - upgrade to v. 1.2b3\n");
 			endif
@@ -666,12 +678,15 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 	catch	# catch is needed for new empty sheets (first ensureColCnt() hits null ptr)
 		sh.ensureColumnCount (lcol + ncols);
 		# Kludge needed because upper row is defective (NPE jOpenDocument bug). Fixed in 1.2b4?
-		if (trow == 0), ++trow; endif		# Shift rows one down to avoid defective upper row
+		if (trow == 0)
+			# Shift rows one down to avoid defective upper row
+			++trow;
+			printf ("Info: empy upper row above data added to avoid JOD bug.\n");
+		endif
 	end_try_catch
 	sh.ensureRowCount (trow + nrows);
 
 	# Write data to worksheet
-	changed = 0;
 	for ii = 1 : nrows
 		for jj = 1 : ncols
 			val = c_arr {ii, jj};
@@ -687,7 +702,8 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 		endfor
 	endfor
 
-	if (changed && (ods.changed < 1)) 
+#	if (changed && (ods.changed < 1))     # Why ?
+	if (changed)
 		ods.changed = 1; 
 		rstatus = 1;
 	endif

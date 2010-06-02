@@ -66,6 +66,9 @@
 ## 2010-03-04 Slight texinfo adaptation (reqd. odfdom version = 0.7.5)
 ## 2010-03-14 Updated help text (section on readwrite)
 ## 2010-06-01 Added check for jOpenDocument version + suitable warning
+## 2010-06-02 Added ";" to supress debug stuff around lines 115
+##      "     Moved JOD version check to subfunc getodsinterfaces
+##      "     Fiddled ods.changed flag when creating s spreadsheet to avoid unnamed 1st sheets
 ##
 ## Latest change on subfunction below: 2010-04-11
 
@@ -159,6 +162,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			# Create an empty 2 x 2 default TableModel template
 			tmodel= java_new ('javax.swing.table.DefaultTableModel', 2, 2);
 			wb = java_invoke (jopendoc, 'createEmpty', tmodel);
+			ods.changed = 2;
 		else
 			wb = java_invoke (jopendoc, 'createFromFile', file);
 		endif
@@ -166,18 +170,6 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		ods.filename = filename;
 		ods.xtype = 'JOD';
 		ods.app = 'file';
-		# Check jOpenDocument version
-		sh = ods.workbook.getSheet (0);
-		cl = sh.getCellAt (0, 0);
-		try
-			# 1.2b3 has public getValueType ()
-			cl.getValueType ()
-			ver = 3
-		catch
-			# 1.2b2 has not
-			ver = 2
-			printf ("NOTE: jOpenDocument v. 1.2b2 has limited functionality. Try upgrading to 1.2b3+\n");
-		end_try_catch
 
 #	elseif 
 #		<other interfaces here>
@@ -237,6 +229,7 @@ endfunction
 ## 2010-01-14
 ## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
 ## 2010-04-11 Introduced check on odfdom.jar version - only 0.7.5 works properly
+## 2010-06-02 Moved in check on JOD version
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -304,6 +297,18 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			else
 				warning ("\nJava support OK but required classes (.jar) not all in classpath");
 			endif
+			# Check jOpenDocument version
+			sh = ods.workbook.getSheet (0);
+			cl = sh.getCellAt (0, 0);
+			try
+				# 1.2b3 has public getValueType ()
+				cl.getValueType ();
+				ver = 3;
+			catch
+				# 1.2b2 has not
+				ver = 2;
+				printf ("NOTE: jOpenDocument v. 1.2b2 has limited functionality. Try upgrading to 1.2b3+\n");
+			end_try_catch
 		catch
 			# No jOpenDocument support
 		end_try_catch

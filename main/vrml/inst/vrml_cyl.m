@@ -96,7 +96,8 @@ for i = 2:N
     t = mean (x(:,[i,i-1])')' ;
 
     if ! arrow || i != N
-      smat = vrml_material (col(:,i), emitcol(:,i), tran(i));
+
+      smat = vrml_material (col(:,i-1), emitcol(:,i-1), tran(i-1));
 				# Do a cylinder
       s = [s,sprintf(["Transform {\n",\
 		      "  translation %8.3f %8.3f %8.3f\n",\

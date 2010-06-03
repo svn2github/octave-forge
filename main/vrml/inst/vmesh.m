@@ -161,6 +161,13 @@ end
 
 s = vrml_surf (surf_args{:});
 
+if numel (x) == columns (z)
+  x = ones(rows(z),1) * x(:)';
+end
+if numel (y) == columns (z)
+  y = y(:) * ones(1,rows(z));
+end
+
 pts = [x(:)';y(:)';z(:)'];
 ii = find (all (isfinite (pts)));
 pt2 = pts(:,ii); x2 = x(ii); y2 = y(ii); z2 = z(ii);

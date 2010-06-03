@@ -35,7 +35,9 @@ if nargin < 3, tran = 0; end
 if nargin < 4, DEF = ""; end
 
 if prod (size (ec)) == 1 && !isnan (ec) , emit = ec ; ec = dc ; end
-
+if isnan (tran)
+  tran = 0;
+end
 
 if emit && !isnan (ec)
   se = sprintf ("              emissiveColor %8.3g %8.3g %8.3g\n",ec);

@@ -25,13 +25,13 @@ if nargin == 0, return end
 s = "";
 
 				# beginpre 2.1.38
-# if (nargin > 0) 
-#   varargin = list(varargin, all_va_args); 
-# end
+## if (nargin > 0) 
+##   varargin = list(varargin, all_va_args); 
+## end
 				# endpre 2.1.38
-if nargin > 0, s = nth (varargin, 1); end
+if nargin > 0, s = varargin{1}; end
 if nargin > 1
-  for i = 2:nargin, s = [s,",\n", nth(varargin, i)]; end
+  for i = 2:nargin, s = [s,",\n", varargin{i}]; end
 end
 ## indent s
 ni = 4;

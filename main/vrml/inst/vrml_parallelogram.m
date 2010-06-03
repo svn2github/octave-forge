@@ -63,7 +63,8 @@ end
 x = [x(:,1:3), x(:,1)-x(:,2)+x(:,3)];
 
 				# The facet
-s = vrml_faces (x,list (1:4),"col",col, "tran", tran,"emit",emit);
+
+s = vrml_faces (x, (1:4)', "col",col, "tran", tran,"emit",emit);
 
 				# Decoration : balls on vertices
 if balls

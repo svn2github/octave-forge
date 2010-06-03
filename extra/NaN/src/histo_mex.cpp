@@ -252,7 +252,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if (flag_rows || (SZ[1]==1)) { 
 
 		///***** SORT each column: initialize sorting algorithm  
-		int (*compar)(const void*, const void*);
 		size_t *idx = NULL;
 		idx = (size_t*) mxMalloc(SZ[0]*sizeof(size_t));
 		for (n=0; n<SZ[0]; n++) {
@@ -334,17 +333,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	else { 
 		switch (mxGetClassID(PInputs[0])) {
-		case mxCHAR_CLASS: {
-			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxUINT64_CLASS,mxREAL);
-			mxArray *X = mxCreateNumericMatrix(256, 1, mxINT8_CLASS,mxREAL); 
-			mxSetField(HIS,0,"H",H);
-			mxSetField(HIS,0,"X",X);
-
-			mxChar *x;
-			x = (mxChar*)mxGetData(X);
-			qsort(x,n,sizeof(mxChar),strcpy);	
-			break;
-			}
 
 		case mxINT8_CLASS: { 	
 			mxArray *H = mxCreateNumericMatrix(256, SZ[1], mxDOUBLE_CLASS,mxREAL);

@@ -23,6 +23,10 @@ VER_NCURSES=5.7-$REL
 VER_FFTW3=5.7-$REL
 VER_PCRE=8.00-$REL
 
+VER_JPEG=8b-$REL
+VER_TIFF=3.9.2-$REL
+VER_PNG=1.2.43-$REL
+
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
 # LAPACK depends on BLAS
@@ -57,4 +61,6 @@ VER_PCRE=8.00-$REL
 ( cd fftw3 && build-${VER_FFTW3}.sh ${ACTION} );
 ( cd pcre && build-${VER_PCRE}.sh ${ACTION} );
 
-
+( cd libjpeg && build-${VER_JPEG}.sh ${ACTION} );
+( cd libtiff && build-${VER_TIFF}.sh ${ACTION} );
+( cd libpng && build-${VER_PNG}.sh ${ACTION} );

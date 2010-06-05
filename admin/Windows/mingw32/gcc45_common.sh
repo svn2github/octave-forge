@@ -320,6 +320,26 @@ install()
   install_post
 }
 install_post() { echo ; }
+install_common()
+{
+   # Install pkg-config .pc files
+   for a in $PKG_CONFIG_INSTALL; do
+      ${CP} ${CP_FLAGS} $BUILDDIR/$a $PREFIX/$PKGCONFIG_DIR
+   done
+   
+   # Install headers
+   for a in $HEADERS_INSTALL; do
+      ${CP} ${CP_FLAGS} $SRCDIR/$a $PREFIX/${INC_DIR}${INC_SUBDIR:+/$INC_SUBDIR}/`basename $a`
+   done
+   for a in $HEADERS_BUILD_INSTALL; do
+      ${CP} ${CP_FLAGS} $BUILDDIR/$a $PREFIX/${INC_DIR}${INC_SUBDIR:+/$INC_SUBDIR}/`basename $a`
+   done
+   
+   # Install license file
+   for a in $LICENSE_INSTALL; do
+      ${CP} ${CP_FLAGS} $SRCDIR/$a $PREFIX/$LIC_DIR/$PKG
+   done
+}
 
 # == uninstall ==
 uninstall_pre() { echo ; }
@@ -336,7 +356,23 @@ uninstall_post()
       rmdir --ignore-fail-on-non-empty $PREFIX/$a 
    done
 }
-
+uninstall_common()
+{
+   # Uninstall headers
+   for a in $HEADERS_INSTALL $HEADERS_BUILD_INSTALL; do
+      ${RM} ${RM_FLAGS} $PREFIX/$INC_DIR/`basename $a`
+   done
+   
+   # Uninstall pkg-config .pc files
+   for a in $PKG_CONFIG_INSTALL; do
+      ${RM} ${RM_FLAGS} $PREFIX/$PKGCONFIG_DIR/`basename $a`
+   done
+   
+   # Uninstall license file
+   for a in $LICENSE_INSTALL; do
+      ${RM} ${RM_FLAGS} $PREFIX/$LIC_DIR/$PKG/`basename $a`
+   done
+}
 
 # == modify libtool ==
 modify_libtool_all()

@@ -34,7 +34,16 @@ MAKEFILE=
 MAKE_XTRA=
 
 # Header files to install
-HEADERS_INSTALL="term.h curses.h unctrl.h termcap.h ncurses_dll.h"
+HEADERS_INSTALL=
+HEADERS_BUILD_INSTALL="
+include/term.h 
+include/curses.h 
+include/unctrl.h 
+include/termcap.h 
+include/ncurses_dll.h"
+
+# install subdirectory below $PREFIX/$INC_DIR (if any)
+INCLUDE_SUBDIR=
 
 # License file(s) to install
 LICENSE_INSTALL="README"
@@ -139,24 +148,10 @@ install()
       ${CP} ${CP_FLAGS} ${BUILDDIR}/lib/.libs/lib$a.a      $PREFIX/$STATICLIB_DIR
    done
    
-   # Install pkg-config .pc files
-   for a in $PKG_CONFIG_INSTALL; do
-      ${CP} ${CP_FLAGS} ${BUILDDIR}/$a $PREFIX/$PKGCONFIG_DIR
-   done
-   
-   # Install headers
-   for a in $HEADERS_INSTALL; do
-      ${CP} ${CP_FLAGS} ${BUILDDIR}/include/$a $PREFIX/$INC_DIR
-   done
-   
    ( cd ${BUILDDIR}/misc && make install prefix=$PREFIX ticdir=$PREFIX/share/terminfo )
    # ${RM} ${RM_FLAGS} $PREFIX/$BIN_DIR/ncurses5-config
-
-   # Install license file
-   for a in $LICENSE_INSTALL; do
-      ${CP} ${CP_FLAGS} ${SRCDIR}/$a $PREFIX/$LIC_DIR/$PKG
-   done
    
+   install_common;
    install_post;
 }
 
@@ -179,24 +174,10 @@ uninstall()
       ${RM} ${RM_FLAGS} $PREFIX/$STATICLIB_DIR/lib$a.a
    done
    
-   # Uninstall headers
-   for a in $HEADERS_INSTALL $HEADERS2_INSTALL ncurses.h; do
-      ${RM} ${RM_FLAGS} $PREFIX/$INC_DIR/$a
-   done
-   
-   # Uninstall pkg-config .pc files
-   for a in $PKG_CONFIG_INSTALL; do
-      ${RM} ${RM_FLAGS} $PREFIX/$PKGCONFIG_DIR/$a
-   done
-   
    ${RM} -rvf $PREFIX/$SHARE_DIR/terminfo
    ${RM} -rvf $PREFIX/$SHARE_DIR/tabset
-   
-   # Uninstall license file
-   for a in $LICENSE_INSTALL; do
-      ${RM} ${RM_FLAGS} $PREFIX/$LIC_DIR/$PKG/$a
-   done
-   
+
+   uninstall_common;
    uninstall_post;
 }
 

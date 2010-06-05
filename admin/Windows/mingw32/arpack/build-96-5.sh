@@ -34,6 +34,10 @@ MAKE_XTRA=
 
 # Header files to install
 HEADERS_INSTALL=
+HEADERS_BUILD_INSTALL=
+
+# install subdirectory below $PREFIX/$INC_DIR (if any)
+INCLUDE_SUBDIR=
 
 # License file(s) to install
 LICENSE_INSTALL="README"
@@ -90,16 +94,7 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/libarpack.dll.a $PREFIX/$LIB_DIR
    ${CP} ${CP_FLAGS} ${BUILDDIR}/libarpack.a     $PREFIX/$STATICLIB_DIR
    
-   # Install headers
-   for a in $HEADERS_INSTALL; do
-      ${CP} ${CP_FLAGS} ${SRCDIR}/$a $PREFIX/$INC_DIR
-   done
-   
-   # Install license file
-   for a in $LICENSE_INSTALL; do
-      ${CP} ${CP_FLAGS} ${SRCDIR}/$a $PREFIX/$LIC_DIR/$PKG
-   done
-   
+   install_common;
    install_post;
 }
 
@@ -118,16 +113,7 @@ uninstall()
    ${RM} ${RM_FLAGS} $PREFIX/$LIB_DIR/libarpack.dll.a
    ${RM} ${RM_FLAGS} $PREFIX/$STATICLIB_DIR/libarpack.a
    
-   # Uninstall headers
-   for a in $HEADERS_INSTALL; do
-      ${RM} ${RM_FLAGS} $PREFIX/$INC_DIR/$a
-   done
-   
-   # Uninstall license file
-   for a in $LICENSE_INSTALL; do
-      ${RM} ${RM_FLAGS} $PREFIX/$LIC_DIR/$PKG/$a
-   done
-   
+   uninstall_common;
    uninstall_post;
 }
 

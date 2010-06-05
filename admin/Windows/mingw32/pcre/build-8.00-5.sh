@@ -91,7 +91,7 @@ install()
 install_strip()
 {
    install;
-   $STRIP $STRIP_FLAGS $PREFIX/$BIN_DIR/expat.dll
+   $STRIP $STRIP_FLAGS $PREFIX/$BIN_DIR/pcre.dll
 }
 
 uninstall()

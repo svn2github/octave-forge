@@ -73,6 +73,8 @@ endwhile
 do         ## not resolved 
     x++;
     x-- ;
+    ++x;
+    --x;
     x_5-- ;
     x_5_-- ;
     _x_5_-- ;
@@ -189,3 +191,21 @@ aa = dd.(kk);
   dd.(kk) = bb;
   dd.(kk) = [bb;1];
   dd.(kk) = [bb;1];b=a;
+  
+  
+      __sqp_nfun__++;
+     x(i) += deltax;
+     x{i} += deltax;
+     x (i) += deltax;
+     x {i} += deltax;
+     x(i,j) += deltax;
+     x{i,j} += deltax;
+
+   [~,ix]=max(a);
+   
+                      ++st;
+                 ++drows;
+                ++jj;
+           --llcol;
+
+                      

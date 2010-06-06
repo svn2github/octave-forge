@@ -92,7 +92,7 @@ for k=1:length(fn),
 	elseif (fn(k).name(end)=='~')
 		;
 	elseif fn(k).isdir,
-		if strmatch(fn(k).name,{'miscellaneous','freetb4matlab','language','admin','deprecated'},'exact')
+		if strmatch(fn(k).name,{'freetb4matlab','language','admin','deprecated'},'exact')
 			; % ignore these directories 
 			; % some files conflict with (matlab-) functions used in this script 
 			; % freetb4matlab is the default target directory, this would result in endless recursion

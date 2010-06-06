@@ -237,7 +237,7 @@ conf_pre() { echo ; }
 conf_common()
 {
    echo ../$SRCDIR/configure \
-     --srcdir=$TOPDIR/$SRCDIR \
+     --srcdir=../$SRCDIR \
      --prefix=$PREFIX \
      CC="gcc -shared-libgcc" \
      CXX="g++ -shared-libgcc" \
@@ -245,8 +245,9 @@ conf_common()
      LDFLAGS="-Wl,--enable-runtime-pseudo-reloc-v2" \
      $CONFIGURE_XTRA_ARGS
    
-   ( cd $BUILDDIR && ../$SRCDIR/configure \
-     --srcdir=$TOPDIR/$SRCDIR \
+   ( PATH=$PREFIX/bin:$PATH
+     cd $BUILDDIR && ../$SRCDIR/configure \
+     --srcdir=../$SRCDIR \
      --prefix=$PREFIX \
      CC="gcc -shared-libgcc" \
      CXX="g++ -shared-libgcc" \
@@ -309,7 +310,7 @@ substvars_post() { echo ; }
 # == install ==
 install_pre()
 {
-  for a in $BIN_DIR $LIB_DIR $STATICLIB_DIR $INC_DIR $LIC_DIR $LIC_DIR/$PKG $ETC_DIR $SHARE_DIR $PKGCONFIG_DIR; do
+  for a in $BIN_DIR $LIB_DIR $STATICLIB_DIR ${INC_DIR}${INC_SUBDIR:+/$INC_SUBDIR} $LIC_DIR $LIC_DIR/$PKG $ETC_DIR $SHARE_DIR $PKGCONFIG_DIR; do
      if [ ! -e $PREFIX/$a ]; then mkdir -vp $PREFIX/$a; fi
   done
 }
@@ -352,7 +353,7 @@ uninstall()
 uninstall_post()
 { 
    # Remove installation directories if empty
-   for a in $BIN_DIR $LIB_DIR $STATICLIB_DIR $INC_DIR $LIC_DIR/$PKG $LIC_DIR $ETC_DIR $SHARE_DIR $PKGCONFIG_DIR; do
+   for a in $BIN_DIR $LIB_DIR $STATICLIB_DIR ${INC_DIR}${INC_SUBDIR:+/$INC_SUBDIR} $INC_DIR $LIC_DIR/$PKG $LIC_DIR $ETC_DIR $SHARE_DIR $PKGCONFIG_DIR; do
       rmdir --ignore-fail-on-non-empty $PREFIX/$a 
    done
 }

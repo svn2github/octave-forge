@@ -1,0 +1,12 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' fontconfig-2.8.0-orig/src/Makefile.in fontconfig-2.8.0/src/Makefile.in
+--- fontconfig-2.8.0-orig/src/Makefile.in	2009-12-14 21:39:50 +0100
++++ fontconfig-2.8.0/src/Makefile.in	2009-12-14 21:39:44 +0100
+@@ -738,7 +738,7 @@
+ 	(cat $(PUBLIC_FILES) $(PUBLIC_FT_FILES) || echo 'FcERROR ()' ) | \
+  	grep '^Fc[^ ]* *(' | sed -e 's/ *(.*$$//' -e 's/^/	/' | \
+ 	sort; \
+-	echo LIBRARY libfontconfig-@LIBT_CURRENT_MINUS_AGE@.dll; \
++	echo LIBRARY fontconfig.dll; \
+ 	echo VERSION @LIBT_CURRENT@.@LIBT_REVISION@) >$@
+ 	@ ! grep -q FcERROR $@ || ($(RM) $@; false)
+ 

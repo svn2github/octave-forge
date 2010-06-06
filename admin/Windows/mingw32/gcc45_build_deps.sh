@@ -26,6 +26,15 @@ VER_PCRE=8.00-$REL
 VER_JPEG=8b-$REL
 VER_TIFF=3.9.2-$REL
 VER_PNG=1.2.43-$REL
+VER_FREETYPE=2.3.12-$REL
+VER_FONTCONFIG=2.8.0-$REL
+VER_FLTK=1.1.10-$REL
+
+VER_GMP=5.1.0-$REL
+VER_GLPK=4.43-$REL
+
+VER_ICONV=1.13-$REL
+VER_GETTEXT=0.17-$REL
 
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
@@ -64,3 +73,12 @@ VER_PNG=1.2.43-$REL
 ( cd libjpeg && build-${VER_JPEG}.sh ${ACTION} );
 ( cd libtiff && build-${VER_TIFF}.sh ${ACTION} );
 ( cd libpng && build-${VER_PNG}.sh ${ACTION} );
+( cd libfreetype && build-${VER_FREETYPE}.sh ${ACTION} );
+( cd libfontconfig && build-${VER_FONTCONFIG}.sh ${ACTION} );
+( cd libfltk && build-${VER_FLTK}.sh ${ACTION} );
+
+( cd gmp && build-${VER_GMP}.sh ${ACTION} );
+( cd glpk && build-${VER_GLPK}.sh ${ACTION} );
+
+( cd iconv && build-${VER_ICONV}.sh ${ACTION} );
+( cd gettext && build-${VER_GETTEXT}.sh ${ACTION} );

@@ -1,0 +1,151 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*configure' -x config.h.in gettext-0.17-orig/gettext-runtime/intl/Makefile.in gettext-0.17/gettext-runtime/intl/Makefile.in
+--- gettext-0.17-orig/gettext-runtime/intl/Makefile.in	2009-09-14 20:24:12 +0200
++++ gettext-0.17/gettext-runtime/intl/Makefile.in	2009-09-14 20:24:52 +0200
+@@ -85,7 +85,7 @@
+ CPPFLAGS = @CPPFLAGS@
+ CFLAGS = @CFLAGS@ @CFLAG_VISIBILITY@
+ LDFLAGS = @LDFLAGS@ $(LDFLAGS_@WOE32DLL@)
+-LDFLAGS_yes = -Wl,--export-all-symbols
++LDFLAGS_yes =
+ LDFLAGS_no =
+ LIBS = @LIBS@
+ 
+@@ -179,8 +179,9 @@
+ libgnuintl.h_vms Makefile.vms libgnuintl.h.msvc-static \
+ libgnuintl.h.msvc-shared Makefile.msvc
+ 
+-all: all-@USE_INCLUDED_LIBINTL@
+-all-yes: libintl.$la libintl.h charset.alias ref-add.sed ref-del.sed
++all: all-@USE_INCLUDED_LIBINTL@-@WOE32DLL@
++all-yes-no: libintl.$la libintl.h charset.alias ref-add.sed ref-del.sed
++all-yes-yes: libintl.$la libintl.h charset.alias ref-add.sed ref-del.sed
+ all-no: all-no-@BUILD_INCLUDED_LIBINTL@
+ all-no-yes: libgnuintl.$la
+ all-no-no:
+@@ -194,8 +195,8 @@
+ 	$(LIBTOOL) --mode=link \
+ 	  $(CC) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS) $(LDFLAGS) -o $@ \
+ 	  $(OBJECTS) @LTLIBICONV@ @INTL_MACOSX_LIBS@ $(LIBS) @LTLIBTHREAD@ @LTLIBC@ \
+-	  $(OBJECTS_RES_@WOE32@) \
+-	  -version-info $(LTV_CURRENT):$(LTV_REVISION):$(LTV_AGE) \
++	  -Wl,$(OBJECTS_RES_@WOE32@) -Wl,$(srcdir)/intl.def \
++	  -module -avoid-version \
+ 	  -rpath $(libdir) \
+ 	  -no-undefined
+ 
+@@ -284,7 +285,7 @@
+ 	sed_extract_major='/^[0-9]/{'$${nl}'s/^\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
+ 	sed_extract_minor='/^[0-9][0-9]*[.][0-9]/{'$${nl}'s/^[0-9]*[.]\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
+ 	sed_extract_subminor='/^[0-9][0-9]*[.][0-9][0-9]*[.][0-9]/{'$${nl}'s/^[0-9]*[.][0-9]*[.]\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
+-	$(WINDRES) \
++	$(WINDRES) --preprocessor=$(CPP) \
+ 	  "-DPACKAGE_VERSION_STRING=\\\"$(VERSION)\\\"" \
+ 	  "-DPACKAGE_VERSION_MAJOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_major"` \
+ 	  "-DPACKAGE_VERSION_MINOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_minor"` \
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*configure' -x config.h.in gettext-0.17-orig/gettext-runtime/intl/intl.def gettext-0.17/gettext-runtime/intl/intl.def
+--- gettext-0.17-orig/gettext-runtime/intl/intl.def	1970-01-01 01:00:00 +0100
++++ gettext-0.17/gettext-runtime/intl/intl.def	2009-09-14 20:24:52 +0200
+@@ -0,0 +1,30 @@
++LIBRARY intl.dll
++EXPORTS
++_nl_msg_cat_cntr DATA
++bind_textdomain_codeset
++bindtextdomain
++dcgettext
++dcngettext
++dgettext
++dngettext
++gettext
++libintl_bind_textdomain_codeset
++libintl_bindtextdomain
++libintl_dcgettext
++libintl_dcngettext
++libintl_dgettext
++libintl_dngettext
++libintl_fprintf
++libintl_gettext
++libintl_ngettext
++libintl_printf
++libintl_set_relocation_prefix
++libintl_snprintf
++libintl_sprintf
++libintl_textdomain
++libintl_vfprintf
++libintl_vprintf
++libintl_vsprintf
++libintl_vsnprintf
++ngettext
++textdomain
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*configure' -x config.h.in gettext-0.17-orig/gettext-runtime/intl/libgnuintl.h.in gettext-0.17/gettext-runtime/intl/libgnuintl.h.in
+--- gettext-0.17-orig/gettext-runtime/intl/libgnuintl.h.in	2009-09-14 20:24:12 +0200
++++ gettext-0.17/gettext-runtime/intl/libgnuintl.h.in	2009-09-14 20:24:52 +0200
+@@ -330,7 +330,7 @@
+ extern int vfprintf (FILE *, const char *, va_list);
+ 
+ #undef printf
+-#if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__ || defined __MINGW32__
++#if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__
+ /* Don't break __attribute__((format(printf,M,N))).
+    This redefinition is only possible because the libc in NetBSD, Cygwin,
+    mingw does not have a function __printf__.  */
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*configure' -x config.h.in gettext-0.17-orig/gettext-runtime/intl/printf.c gettext-0.17/gettext-runtime/intl/printf.c
+--- gettext-0.17-orig/gettext-runtime/intl/printf.c	2009-09-14 20:24:12 +0200
++++ gettext-0.17/gettext-runtime/intl/printf.c	2009-09-14 20:24:52 +0200
+@@ -69,7 +69,7 @@
+ #define STATIC static
+ 
+ /* This needs to be consistent with libgnuintl.h.in.  */
+-#if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__ || defined __MINGW32__
++#if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__
+ /* Don't break __attribute__((format(printf,M,N))).
+    This redefinition is only possible because the libc in NetBSD, Cygwin,
+    mingw does not have a function __printf__.  */
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*configure' -x config.h.in gettext-0.17-orig/gettext-runtime/src/Makefile.in gettext-0.17/gettext-runtime/src/Makefile.in
+--- gettext-0.17-orig/gettext-runtime/src/Makefile.in	2009-09-14 20:24:13 +0200
++++ gettext-0.17/gettext-runtime/src/Makefile.in	2009-09-14 20:28:00 +0200
+@@ -861,7 +861,7 @@
+ 	uninstall-binSCRIPTS
+ 
+ @WOE32_TRUE@gettext.res : $(top_srcdir)/../windows/gettext.rc
+-@WOE32_TRUE@	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` -i $(top_srcdir)/../windows/gettext.rc -o gettext.res --output-format=coff
++@WOE32_TRUE@	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` --preprocessor=$(CPP) -i $(top_srcdir)/../windows/gettext.rc -o gettext.res --output-format=coff
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*configure' -x config.h.in gettext-0.17-orig/gettext-tools/libgettextpo/Makefile.in gettext-0.17/gettext-tools/libgettextpo/Makefile.in
+--- gettext-0.17-orig/gettext-tools/libgettextpo/Makefile.in	2009-09-14 20:24:13 +0200
++++ gettext-0.17/gettext-tools/libgettextpo/Makefile.in	2009-09-14 20:24:52 +0200
+@@ -1372,7 +1372,7 @@
+ 	uninstall-nodist_includeHEADERS
+ 
+ @WOE32_TRUE@libgettextpo.res : $(srcdir)/libgettextpo.rc
+-@WOE32_TRUE@	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` -i $(srcdir)/libgettextpo.rc -o libgettextpo.res --output-format=coff
++@WOE32_TRUE@	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` --preprocessor=$(CPP) -i $(srcdir)/libgettextpo.rc -o libgettextpo.res --output-format=coff
+ 
+ # Hide symbols that are defined by libgettextpo_la_AUXSOURCES or libgnu.la
+ # from the global namespace, by prefixing them with "libgettextpo_".
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*configure' -x config.h.in gettext-0.17-orig/gettext-tools/src/Makefile.in gettext-0.17/gettext-tools/src/Makefile.in
+--- gettext-0.17-orig/gettext-tools/src/Makefile.in	2009-09-14 20:24:15 +0200
++++ gettext-0.17/gettext-tools/src/Makefile.in	2009-09-14 20:24:52 +0200
+@@ -2218,7 +2218,7 @@
+ uninstall-tcl:
+ 	$(RM) $(DESTDIR)$(pkgdatadir)/msgunfmt.tcl
+ @WOE32_TRUE@gettext.res : $(top_srcdir)/../windows/gettext.rc
+-@WOE32_TRUE@	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` -i $(top_srcdir)/../windows/gettext.rc -o gettext.res --output-format=coff
++@WOE32_TRUE@	$(WINDRES) `$(SHELL) $(top_srcdir)/../windows/windres-options --escape $(VERSION)` --preprocessor=$(CPP) -i $(top_srcdir)/../windows/gettext.rc -o gettext.res --output-format=coff
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*configure' -x config.h.in gettext-0.17-orig/gettext-tools/woe32dll/gettextlib-exports.c gettext-0.17/gettext-tools/woe32dll/gettextlib-exports.c
+--- gettext-0.17-orig/gettext-tools/woe32dll/gettextlib-exports.c	2009-09-14 20:24:13 +0200
++++ gettext-0.17/gettext-tools/woe32dll/gettextlib-exports.c	2009-09-14 20:24:52 +0200
+@@ -26,7 +26,7 @@
+ VARIABLE(gl_array_list_implementation)
+ VARIABLE(gl_linkedhash_list_implementation)
+ VARIABLE(program_name)
+-VARIABLE(rpl_optarg)
+-VARIABLE(rpl_optind)
++/* VARIABLE(rpl_optarg) */
++/* VARIABLE(rpl_optind) */
+ VARIABLE(simple_backup_suffix)
+ VARIABLE(styled_ostream_typeinfo)

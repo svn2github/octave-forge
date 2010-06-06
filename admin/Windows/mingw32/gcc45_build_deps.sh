@@ -30,6 +30,10 @@ VER_FREETYPE=2.3.12-$REL
 VER_FONTCONFIG=2.8.0-$REL
 VER_FLTK=1.1.10-$REL
 
+VER_WMF=0.2.8.4-$REL
+VER_BZIP2=1.0.5-$REL
+VER_GRAPHICSMAGICK=1.3.12-$REL
+
 VER_GMP=5.1.0-$REL
 VER_GLPK=4.43-$REL
 
@@ -76,6 +80,10 @@ VER_GETTEXT=0.17-$REL
 ( cd libfreetype && build-${VER_FREETYPE}.sh ${ACTION} );
 ( cd libfontconfig && build-${VER_FONTCONFIG}.sh ${ACTION} );
 ( cd libfltk && build-${VER_FLTK}.sh ${ACTION} );
+
+( cd wmf && build-${VER_WMF}.sh ${ACTION} );
+( cd bzip2 && build-${VER_BZIP2}.sh ${ACTION} );
+( cd graphicsmagick && build-${VER_GRAPHICSMAGICK}.sh ${ACTION} );
 
 ( cd gmp && build-${VER_GMP}.sh ${ACTION} );
 ( cd glpk && build-${VER_GLPK}.sh ${ACTION} );

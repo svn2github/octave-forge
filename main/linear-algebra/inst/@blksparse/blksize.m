@@ -14,6 +14,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} blksize (@var{x})
+## Returns the block size of the matrix.
+## @end deftypefn
+
 function siz = blksize (s)
   siz = s.siz;
 endfunction

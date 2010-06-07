@@ -14,6 +14,15 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} mldivide (@var{x}, @var{y})
+## Performs a left division with a block sparse matrix.
+## If @var{x} is a block sparse matrix, it must be either diagonal
+## or triangular, and @var{y} must be full.
+## If @var{x} is built-in sparse or full, @var{y} is converted
+## accordingly, then the built-in division is used.
+## @end deftypefn
+
 function c = mldivide (a, b)
   if (isa (a, "blksparse"))
     if (issparse (b))

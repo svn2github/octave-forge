@@ -14,6 +14,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} transpose (@var{x})
+## Returns the transpose of a block sparse matrix @var{x}.
+## @end deftypefn
+
 function y = transpose (x)
   y.siz = x.siz(2:-1:1);
   y.bsiz = x.bsiz(2:-1:1);

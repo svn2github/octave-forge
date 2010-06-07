@@ -14,6 +14,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} uminus (@var{x})
+## Returns the negative of a block sparse matrix @var{x}.
+## @end deftypefn
+
 function y = uminus (x)
   y = x;
   y.sv = -x.sv;

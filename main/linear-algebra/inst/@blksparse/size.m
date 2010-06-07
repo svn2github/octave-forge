@@ -14,6 +14,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} size (@var{x})
+## Returns the size of the matrix.
+## @end deftypefn
+
 function siz = size (s)
   siz = s.bsiz .* s.siz;
 endfunction

@@ -14,6 +14,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} full (@var{x})
+## Converts a block sparse matrix to full.
+## @end deftypefn
+
 function f = full (s)
   f = zeros ([s.bsiz, s.siz]);
   f(:,:, sub2ind (s.siz, s.i, s.j)) = s.sv;

@@ -14,6 +14,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} display (@var{x})
+## Displays the block sparse matrix.
+## @end deftypefn
+
 function display (s)
   printf ("%s = \n\n", argn);
   nbl = size (s.sv, 3);

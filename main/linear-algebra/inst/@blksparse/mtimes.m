@@ -14,6 +14,13 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} mtimes (@var{x}, @var{y})
+## Multiplies a block sparse matrix with a full matrix, or two block sparse
+## matrices. Multiplication of block sparse * sparse is not implemented.
+## If one of arguments is a scalar, it's a scalar multiply.
+## @end deftypefn
+
 function c = mtimes (a, b)
   if (isa (a, "blksparse"))
     if (isa (b, "blksparse"))

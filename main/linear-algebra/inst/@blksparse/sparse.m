@@ -14,6 +14,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} sparse (@var{x})
+## Converts a block sparse matrix to (built-in) sparse.
+## @end deftypefn
+
 function sp = sparse (s)
   bsiz = s.bsiz;
   i = repmat (shiftdim (s.i, -2), bsiz);

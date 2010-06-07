@@ -16,7 +16,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} iscomplex (@var{KP})
 ## Return @t{true} if the Kronecker product @var{KP} contains any complex values.
-## @seealso{iscomplex, @kronprod/isreal}
+## @seealso{iscomplex, @@kronprod/isreal}
 ## @end deftypefn
 
 function retval = iscomplex (KP)

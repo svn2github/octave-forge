@@ -21,7 +21,7 @@
 ## @var{q}-by-@var{r} matrix, then the result is a @var{n}@var{q}-by-@var{m}@var{r}
 ## matrix. Thus, the result can require vast amount of memory, so this function
 ## should be avoided whenever possible.
-## @seealso{full, @kronprod/sparse}
+## @seealso{full, @@kronprod/sparse}
 ## @end deftypefn
 
 function retval = full (KP)

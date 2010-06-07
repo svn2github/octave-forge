@@ -23,7 +23,7 @@
 ##
 ## If @var{KP} is square but not a Kronecker product of square matrices, the
 ## inverse will be computed using the SVD
-## @seealso{@kronprod/sparse}
+## @seealso{@@kronprod/sparse}
 ## @end deftypefn
 
 function retval = inv (KP)

@@ -9,7 +9,6 @@ Matrix functions
  mgorth
 Matrix factorization
  gsvd 
- GramSchmidt
 Test
  test_gsvd
 

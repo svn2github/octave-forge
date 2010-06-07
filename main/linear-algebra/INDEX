@@ -3,7 +3,6 @@ Matrix functions
  condeig
  funm
  thfm
- outer
  cartprod
  rotparams
  rotv

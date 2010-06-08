@@ -22,6 +22,7 @@ end;
 mex covm_mex.cpp
 mex sumskipnan_mex.cpp
 mex histo_mex.cpp
+mex kth_element.cpp
 mex str2array.cpp
 mex -c svm.cpp
 mex -c svm_model_matlab.c
@@ -47,13 +48,15 @@ if strcmp(computer,'PCWIN') && ~exist('OCTAVE_VERSION','builtin'),
         mex -c LAPACK/ddot.f
         mex -c LAPACK/dscal.f
         mex -c LAPACK/dnrm2.f
+	dos('copy train.c train.cpp');
 	mex('train.cpp','tron.obj','linear.obj','linear_model_matlab.obj','daxpy.obj','ddot.obj','dscal.obj','dnrm2.obj')
 	dos('del *.obj');
 
 else
 	mex svmtrain_mex.cpp svm.o svm_model_matlab.o 
 	mex svmpredict_mex.cpp svm.o svm_model_matlab.o
+	unix('cp train.c train.cpp');
 	mex train.cpp tron.o linear.o linear_model_matlab.o 
-
+	unix('rm *.o');
 end
 

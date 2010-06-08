@@ -53,21 +53,33 @@ D2 = sz(DIM);
 D3 = prod(sz(DIM+1:length(sz)));
 D0 = [sz(1:DIM-1),1,sz(DIM+1:length(sz))];
 y  = repmat(nan,D0);
+flag_MexKthElement = exist(kth_element,'file')==3;
+
 for k = 0:D1-1,
 for l = 0:D3-1,
         xi = k + l * D1*sz(DIM) + 1 ;
         xo = k + l * D1 + 1;
         t = x(xi+(0:sz(DIM)-1)*D1);
-        t = sort(t(~isnan(t)));
-        n = length(t); 
-        
-        if n==0,
-                y(xo) = nan;
-        elseif ~rem(n,2),
-                y(xo) = (t(n/2) + t(n/2+1)) / 2;
-        elseif rem(n,2),
-                y(xo) = t((n+1)/2);
-        end;
+        t = t(~isnan(t));
+        n = length(t);
+
+        if flag_MexKthElement, 
+                if ~rem(n,2),
+                        y(xo) = sum( kth_element( double(t), n/2 + [0,1] ) ) / 2;
+                elseif rem(n,2),
+                        y(xo) = kth_element(double(t), (n+1)/2 );
+                end;
+        else
+                t = sort(t);
+                if n==0,
+                        y(xo) = nan;
+                elseif ~rem(n,2),
+                        y(xo) = (t(n/2) + t(n/2+1)) / 2;
+                elseif rem(n,2),
+                        y(xo) = t((n+1)/2);
+                end;
+        end
+
         if (n<D2) 
 	        FLAG_NANS_OCCURED = 1; 
         end; 

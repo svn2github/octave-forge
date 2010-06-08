@@ -262,6 +262,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   maxstep = Inf * ones (n, 1);
   have_gencstr = false; % no general constraints
   have_genecstr = false; % no general equality constraints
+  have_constraints_except_bounds = false;
   n_gencstr = 0;
   mc = zeros (n, 0);
   vc = zeros (0, 1); rv = 0;

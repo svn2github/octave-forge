@@ -21,7 +21,7 @@
 ## @strong{Inputs}
 ## @table @var
 ## @item param
-## Parameter to set. Unspecified parameters are set to their default values.
+## Parameter to set. Unspecified parameters are set to their default values; specifying no parameters is allowed.
 ## @item value
 ## Value of @var{param}.
 ## @end table
@@ -60,7 +60,7 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 4.4.5
+## Version: 4.4.6
 
 function options = gaoptimset (varargin)
   if ((nargout != 1) ||
@@ -84,6 +84,13 @@ function options = gaoptimset (varargin)
     endfor
   endif
 endfunction
+
+
+%!error gaoptimset ("Generations", 123)
+%!error [a, b] = gaoptimset ("Generations", 123)
+
+%!error gaoptimset ("odd number of arguments")
+%!error gaoptimset ("Generations", 123, "odd number of arguments")
 
 
 %!assert (getfield (gaoptimset ("Generations", 123), "Generations"), 123)

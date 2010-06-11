@@ -29,6 +29,7 @@
 ##
 ## @seealso{__hex2bin__}
 ## @end deftypefn
+
 %!function h = __bin2hex__ (b)
 %!  h = dec2hex (bin2dec (b));
 %!

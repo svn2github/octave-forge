@@ -129,6 +129,9 @@ function varargout = parcellfun (nproc, fun, varargin)
 
   fflush (stdout); # prevent subprocesses from inheriting buffered output
 
+  ## query rand state.  
+  rstat = rand ("state");
+
   pids = zeros (nproc, 1);
 
   ## fork subprocesses
@@ -194,6 +197,9 @@ function varargout = parcellfun (nproc, fun, varargin)
     ## the border patrol. we really don't want errors escape after the forks.
     unwind_protect
       try
+        ## re-seed random number state, adjusted for each process
+        rstat(end-1) -= iproc;
+        rand ("state", rstat);
 
         ## child process. indicate ready state.
         fwrite (statw, -iproc, "double");

@@ -19,15 +19,22 @@
 ## @end deftypefn
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 1.3
+## Version: 1.4
 
 function retval = rastriginsfcn (x)
-  x1 = x(:, 1);
-  x2 = x(:, 2);
-  retval = 20 + (x1 .** 2) + (x2 .** 2) - 10 .* (cos (2 .* pi .* x1) + 
-                                                 cos (2 .* pi .* x2));
+  if (nargout != 1)
+    print_usage ();
+  else
+    x1 = x(:, 1);
+    x2 = x(:, 2);
+    retval = 20 + (x1 .** 2) + (x2 .** 2) - 10 .* (cos (2 .* pi .* x1) +
+                                                   cos (2 .* pi .* x2));
+  endif
 endfunction
 
+
+%!error rastriginsfcn ()
+%!error rastriginsfcn ([0, 0], "other argument")
 
 %!assert (rastriginsfcn ([0, 0]), 0)
 %!assert (rastriginsfcn ([0, 0; 0, 0]), [0; 0])

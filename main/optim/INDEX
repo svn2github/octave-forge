@@ -32,6 +32,7 @@ Tests
   test_d2_min_1 test_d2_min_2 test_d2_min_3
   test_nelder_mead_min_1 test_nelder_mead_min_2
   poly_2_ex test_minimize_1
+  optim_problems
 Examples
  bfgsmin_example
  rosenbrock

@@ -92,7 +92,10 @@ function ret = optim_problems ()
   %% parameters + v >|>=|== 0; .general: handle of internally defined
   %% function h with h (p) >|>=|== 0; possibly .general_dcdp: handle of
   %% internally defined function (argument: parameters) returning the
-  %% jacobian of the constraints given in .general.
+  %% jacobian of the constraints given in .general. For the sake of
+  %% optimizers which can exploit this, the function in subfield
+  %% .general may accept a logical index vector as an optional second
+  %% argument, returning only the indexed constraint values.
 
 
   %% Please keep the following list of problems current.
@@ -113,7 +116,18 @@ function ret = optim_problems ()
   %% dynamic modeling. To assess optimizers, .init_p_f should be used
   %% with 1:64. There should be two groups of results, indicating the
   %% presence of two local minima. Olaf Till <olaf.till@uni-jena.de>
-
+  %%
+  %% .....schittkowski_...: Klaus Schittkowski: 'More test examples for
+  %% nonlinear programming codes.' Lecture Notes in Economics and
+  %% Mathematical Systems 282, Berlin 1987. The published problems are
+  %% numbered from 201 to 395 and may appear here under the fields
+  %% .curve, .general, or .zero.
+  %%
+  %% .curve.schittkowski_327: Two parameters, one general inequality
+  %% constraint, two bounds. The best solution given in the publication
+  %% seems not very good (it probably has been achieved with general
+  %% minimization, not curve fitting) and has been replaced here by a
+  %% better.
   if (~exist ('OCTAVE_VERSION'))
     NA = NaN;
   end
@@ -350,6 +364,47 @@ function ret = optim_problems ()
 	     -8.9827382090060922e+01, -3.1118708128841241e+00, ...
 	     -5.0039950796246986e+00, -7.9749636293721071e+00];
   ret.curve.p_r.f = @ (x, p) f_r (x, p, hook);
+
+  ret.curve.schittkowski_327.dfdp = ...
+      @ (x, p) [1 + exp(-p(2) * (x - 8)), ...
+		(p(1) + .49) * (8 - x) .* exp (-p(2) * (x - 8))];
+  ret.curve.schittkowski_327.init_p = [.42; 5];
+  ret.curve.schittkowski_327.data.x = ...
+      [8; 8; 10; 10; 10; 10; 12; 12; 12; 12; 14; 14; 14; 16; 16; 16; ...
+       18; 18; 20; 20; 20; 22; 22; 22; 24; 24; 24; 26; 26; 26; 28; ...
+       28; 30; 30; 30; 32; 32; 34; 36; 36; 38; 38; 40; 42];
+  ret.curve.schittkowski_327.data.y= ...
+      [.49; .49; .48; .47; .48; .47; .46; .46; .45; .43; .45; .43; \
+       .43; .44; .43; .43; .46; .45; .42; .42; .43; .41; .41; .40; \
+       .42; .40; .40; .41; .40; .41; .41; .40; .40; .40; .38; .41; \
+       .40; .40; .41; .38; .40; .40; .39; .39];
+  ret.curve.schittkowski_327.data.wt = [];
+  ret.curve.schittkowski_327.data.cov = [];
+  %% This result was given by Schittkowski. No constraint is active
+  %% here. The second parameter is unchanged from initial value.
+  %%
+  %% ret.curve.schittkowski_327.result.p = [.4219; 5];
+  %% ret.curve.schittkowski_327.result.obj = .0307986;
+  %%
+  %% This is the result of leasqr of Octave Forge. The general
+  %% constraint is active here. Both parameters are different from
+  %% initial value. The value of the objective function is better.
+  %%
+  ret.curve.schittkowski_327.result.p = [.4199227; 1.2842958];
+  ret.curve.schittkowski_327.result.obj = .0284597;
+  ret.curve.schittkowski_327.strict_inequc.bounds = [];
+  ret.curve.schittkowski_327.strict_inequc.linear = [];
+  ret.curve.schittkowski_327.strict_inequc.general = [];
+  ret.curve.schittkowski_327.non_strict_inequc.bounds = [.4, Inf; ...
+							 .4, Inf];
+  ret.curve.schittkowski_327.non_strict_inequc.linear = [];
+  ret.curve.schittkowski_327.non_strict_inequc.general = ...
+      @ (p, varargin) apply_idx_if_given ...
+      (-.09 - p(1) * p(2) + .49 * p(2), varargin{:});
+  ret.curve.schittkowski_327.equc.linear = [];
+  ret.curve.schittkowski_327.equc.general = [];
+  ret.curve.schittkowski_327.f = ...
+      @ (x, p) p(1) + (.49 - p(1)) * exp (-p(2) * (x - 8));
 
   function ret = f_1 (x, p)
 
@@ -832,6 +887,12 @@ function ret = optim_problems ()
 	repmat (xi - x(idx), m, 1) .* ...
 	(y(:, idx + 1) - y(:, idx)) ./ ...
 	repmat (x(idx + 1) - x(idx), m, 1);
+
+  function ret = apply_idx_if_given  (ret, idx)
+
+    if (nargin > 1)
+      ret = ret(idx);
+    end
 
 %!demo
 %! p_t = optim_problems ().curve.p_1;

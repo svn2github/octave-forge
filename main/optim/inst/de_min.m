@@ -1,5 +1,4 @@
-
-## Copyright (C) 2009 Christian Fischer <cfischer@itm.uni-stuttgart.de>
+## Copyright (C) 2009-2010 Christian Fischer <cfischer@itm.uni-stuttgart.de>
 ## Copyright (C) 1996, 1997 R. Storn
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -210,7 +209,7 @@ if (maxiter <= 0)
   error("maxiter must be positive.")
 end
 if (maxnfe <= 0)
-  error("maxiter must be positive.")
+  error("maxnfe must be positive.")
 end
 refresh = floor(abs(refresh));
 
@@ -337,7 +336,7 @@ while ((iter < maxiter) & (nfeval < maxnfe) &  (bestval > VTR)  & ...
                                           # do wrap around
 	  [x, ix] = min (val(neigh_ind));     # find the local best and its index
 	  bm_n(i,:) = popold(neigh_ind(ix),:); # copy the data from the local best
-	  neigh_ind(ix) = [];                 # remove "i"
+	  neigh_ind(nr+1) = [];                 # remove "i"
 	  pq = neigh_ind(randperm (length (neigh_ind)));
                                         # permutation of the remaining ind.
 	  lpm1(i,:) = popold(pq(1),:);        # create the local pop member matrix
@@ -455,5 +454,3 @@ endfunction
 %! ctl.XVmax = [ 3  3];
 %! ## and solve it with de_min
 %! [x, obj_value, nfeval, convergence] = de_min (f, ctl)
-
-

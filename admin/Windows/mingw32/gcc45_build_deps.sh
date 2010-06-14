@@ -22,6 +22,8 @@ VER_EXPAT=2.0.1-$REL
 VER_NCURSES=5.7-$REL
 VER_FFTW3=5.7-$REL
 VER_PCRE=8.00-$REL
+VER_REGEX=2.5.1-$REL
+VER_LESS=436-$REL
 
 VER_JPEG=8b-$REL
 VER_TIFF=3.9.2-$REL
@@ -39,6 +41,8 @@ VER_GLPK=4.43-$REL
 
 VER_ICONV=1.13-$REL
 VER_GETTEXT=0.17-$REL
+
+VER_TEXINFO=4.13a-$REL
 
 # Mind the dependency of libraries:
 # CBLAS depends on BLAS
@@ -73,6 +77,8 @@ VER_GETTEXT=0.17-$REL
 ( cd libncurses && build-${VER_NCURSES}.sh ${ACTION} );
 ( cd fftw3 && build-${VER_FFTW3}.sh ${ACTION} );
 ( cd pcre && build-${VER_PCRE}.sh ${ACTION} );
+( cd regex && build-${VER_REGEX}.sh ${ACTION} );
+( cd less && build-${VER_LESS}.sh ${ACTION} );
 
 ( cd libjpeg && build-${VER_JPEG}.sh ${ACTION} );
 ( cd libtiff && build-${VER_TIFF}.sh ${ACTION} );
@@ -90,3 +96,5 @@ VER_GETTEXT=0.17-$REL
 
 ( cd iconv && build-${VER_ICONV}.sh ${ACTION} );
 ( cd gettext && build-${VER_GETTEXT}.sh ${ACTION} );
+
+( cd texinfo && build-${VER_TEXINFO}.sh ${ACTION} );

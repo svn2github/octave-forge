@@ -19,7 +19,13 @@ PATCHFILE=${FULLPKG}.patch
 # URL(s) of source code file(s)
 URL="http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.7.tar.gz"
 ROLLUPPATCHURL="ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20100424-patch.sh.bz2"
-PATCHURL="ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20100501.patch.gz"
+PATCHURL=" \
+ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20100501.patch.gz \
+ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20100515.patch.gz \
+ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20100522.patch.gz \
+ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20100529.patch.gz \
+ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20100605.patch.gz \
+ftp://invisible-island.net/ncurses/5.7/ncurses-5.7-20100612.patch.gz"
 
 # Top dir of this building process (i.e. where the patch file and source file(s) reside)
 TOPDIR=`pwd`

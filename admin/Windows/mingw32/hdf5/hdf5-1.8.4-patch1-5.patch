@@ -1,0 +1,111 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' hdf5-1.8.4-patch1-orig/config/i686-pc-mingw32 hdf5-1.8.4-patch1/config/i686-pc-mingw32
+--- hdf5-1.8.4-patch1-orig/config/i686-pc-mingw32	1970-01-01 00:00:00 +0000
++++ hdf5-1.8.4-patch1/config/i686-pc-mingw32	2010-06-14 11:02:31 +0000
+@@ -0,0 +1,52 @@
++#							-*- shell-script -*-
++#
++# Copyright by The HDF Group.
++# Copyright by the Board of Trustees of the University of Illinois.
++# All rights reserved.
++#
++# This file is part of HDF5.  The full HDF5 copyright notice, including
++# terms governing use, modification, and redistribution, is contained in
++# the files COPYING and Copyright.html.  COPYING can be found at the root
++# of the source code distribution tree; Copyright.html can be found at the
++# root level of an installed copy of the electronic HDF5 document set and
++# is linked from the top-level documents page.  It can also be found at
++# http://hdfgroup.org/HDF5/doc/Copyright.html.  If you do not have
++# access to either file, you may request a copy from help@hdfgroup.org.
++
++
++# This file is part of the HDF5 build script.  It is processed shortly
++# after configure starts and defines, among other things, flags for
++# the various compile modes.
++
++
++LIBS+="-lws2_32"
++
++#----------------------------------------------------------------------------
++# Compiler flags. The CPPFLAGS values should not include package debug
++# flags like `-DH5G_DEBUG' since these are added with the
++# `--enable-debug' switch of configure.
++#----------------------------------------------------------------------------
++
++
++# Choosing a C Compiler
++# ---------------------
++#
++# The user should be able to specify the compiler by setting the CC
++# environment variable to the name of the compiler and any switches it 
++# requires for proper operation.  If CC is unset then this script may
++# set it.  If CC is unset by time this script completes then configure 
++# will try `gcc' and `cc' in that order (perhaps some others too).
++#
++# Note: Code later in this file may depend on the value of $CC_BASENAME
++#       in order to distinguish between different compilers when
++#       deciding which compiler command-line switches to use.  This
++#       variable is set based on the incoming value of $CC and is only
++#       used within this file.
++
++if test "X-" =  "X-$CC"; then
++    CC=gcc
++    CC_BASENAME=$CC
++fi
++
++# Don't build with -O3 optimization flags
++# It doesn't work!
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' hdf5-1.8.4-patch1-orig/src/Makefile.in hdf5-1.8.4-patch1/src/Makefile.in
+--- hdf5-1.8.4-patch1-orig/src/Makefile.in	2010-02-22 21:32:56 +0000
++++ hdf5-1.8.4-patch1/src/Makefile.in	2010-06-14 10:54:28 +0000
+@@ -439,7 +439,7 @@
+ H5detect_CFLAGS = -g $(AM_CFLAGS)
+ 
+ # Our main target, the HDF5 library
+-lib_LTLIBRARIES = libhdf5.la
++lib_LTLIBRARIES = libhdf5.la .libs/hdf5.dll
+ 
+ # Add libtool numbers to the HDF5 library (from config/lt_vers.am)
+ libhdf5_la_LDFLAGS = -version-info $(LT_VERS_INTERFACE):$(LT_VERS_REVISION):$(LT_VERS_AGE) $(AM_LDFLAGS)
+@@ -628,6 +628,13 @@
+ libhdf5.la: $(libhdf5_la_OBJECTS) $(libhdf5_la_DEPENDENCIES) 
+ 	$(libhdf5_la_LINK) -rpath $(libdir) $(libhdf5_la_OBJECTS) $(libhdf5_la_LIBADD) $(LIBS)
+ 
++.libs/hdf5.dll : libhdf5.la
++	$(CC) -shared $(LDFLAGS) -o $@ \
++	  -Wl,--whole-archive .libs/libhdf5.a \
++	  -Wl,--out-implib=.libs/libhdf5.dll.a \
++	  -Wl,--output-def=.libs/libhdf5.def \
++	  -Wl,--no-whole-archive $(LIBS)
++
+ clean-noinstPROGRAMS:
+ 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
+ 	echo " rm -f" $$list; \
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' hdf5-1.8.4-patch1-orig/test/testerror.sh.in hdf5-1.8.4-patch1/test/testerror.sh.in
+--- hdf5-1.8.4-patch1-orig/test/testerror.sh.in	2010-02-22 21:31:50 +0000
++++ hdf5-1.8.4-patch1/test/testerror.sh.in	2010-06-14 09:35:59 +0000
+@@ -73,7 +73,10 @@
+ 	-e 's/[1-9]*\.[0-9]*\.[0-9]*[^)]*/version (number)/' \
+ 	$actual_err > $actual_ext
+    cat $actual_ext >> $actual
+-    
++   
++   cat $actual | tr -d '\015' > foo.tmp
++   mv foo.tmp $actual
++   
+    if $CMP $expect1 $actual; then
+       echo " PASSED"
+    elif $CMP $expect2 $actual; then
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' -x '~' -x .hg -x '*.orig' -x '*.rej' hdf5-1.8.4-patch1-orig/test/testlibinfo.sh.in hdf5-1.8.4-patch1/test/testlibinfo.sh.in
+--- hdf5-1.8.4-patch1-orig/test/testlibinfo.sh.in	2010-02-22 21:31:50 +0000
++++ hdf5-1.8.4-patch1/test/testlibinfo.sh.in	2010-06-14 10:51:39 +0000
+@@ -84,6 +84,10 @@
+         shlibsuffix=.dylib
+         break
+         ;;
++    MINGW*)	# Mingw
++        shlibsuffix=.dll
++        break
++        ;;
+     *)		# default
+         shlibsuffix=.so
+         break

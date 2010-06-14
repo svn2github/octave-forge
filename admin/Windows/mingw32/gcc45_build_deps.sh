@@ -70,7 +70,7 @@ VER_GETTEXT=0.17-$REL
 ( cd suitesparse && build-${VER_SUITESPARSE}.sh ${ACTION} );
 
 ( cd expat && build-${VER_EXPAT}.sh ${ACTION} );
-( cd ncurses && build-${VER_NCURSES}.sh ${ACTION} );
+( cd libncurses && build-${VER_NCURSES}.sh ${ACTION} );
 ( cd fftw3 && build-${VER_FFTW3}.sh ${ACTION} );
 ( cd pcre && build-${VER_PCRE}.sh ${ACTION} );
 

@@ -83,8 +83,8 @@ install()
    ${CP} ${CP_FLAGS} ${BUILDDIR}/src/.libs/libfontconfig.dll.a $PREFIX/$STATICLIB_DIR
    
    # Install fonts.conf to /etc/fonts
-   mkdir -vp ${ETC_PATH}/fonts
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/fonts.conf ${ETC_PATH}/fonts
+   mkdir -vp $PREFIX/$ETC_DIR/fonts
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/fonts.conf $PREFIX/$ETC_DIR/fonts
    
    install_common;
    install_post;
@@ -106,8 +106,8 @@ uninstall()
    ${RM} ${RM_FLAGS} $PREFIX/$STATICLIB_DIR/libfontconfig.dll.a
    
    # Uninstall /etc/fonts/fonts.conf
-   ${RM} ${RM_FLAGS} ${ETC_PATH}/fonts/fonts.conf
-   rmdir --ignore-fail-on-non-empty ${ETC_PATH}/fonts
+   ${RM} ${RM_FLAGS} $PREFIX/$ETC_DIR/fonts/fonts.conf
+   rmdir --ignore-fail-on-non-empty $PREFIX/$ETC_DIR/fonts
 
    uninstall_common;
    uninstall_post;

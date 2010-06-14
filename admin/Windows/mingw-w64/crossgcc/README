@@ -1,0 +1,61 @@
+Octave-mingw64 crossgcc
+=======================
+
+This directory contains a minimal environment to build x86 and/or 
+x64 targetted GNU gcc toolchain based on the mingw-w64 CRT 
+(http://sourceforge.net/projects/mingw-w64/).
+The gcc build makefile is based on and inspierd by the mingw-w64 project's 
+makefile available at
+https://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/experimental/buildsystem/makebuildroot.mk
+and
+https://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/experimental/buildsystem/makebuildroot-test.mk
+Credit to the mingw-w64 project for providing these.
+
+Msys installer
+==============
+
+To build the gcc toolchain a proper msys environment is required, along with
+a win32-based gcc compiler.
+The script in msysinstaller/install.cmd acts as a mini-installer which fetches
+the necessary msys binaries from the mingw SF project page at 
+http://sourceforge.net/project/mingw and installs it to a location specified by
+the caller.
+Additionally it installs the mingw32 gcc also available from the mingw project
+and makes it available to the msys environment.
+
+Usage
+=====
+
+The msys installer script requires that you have the following executables
+*prior* to installing msys available in your PATH:
+
+  *) basic-bsdtar.exe available from the mingw project at
+     http://downloads.sourceforge.net/mingw/basic-bsdtar-2.8.3-1-mingw32-bin.zip
+     Download it, unzip, and place in your PATH (or the directory the installer 
+     script resides)
+     
+  *) wget.exe available e.g. from 
+     http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe
+
+Call install.cmd and specify the directory you want MSYS installed to.
+Preferably use an installation path without spaces.
+
+The gcc toolchain can then be built from within msys by simply calling
+   make all
+By default, a 32bit hosted gcc tagetting the i686-w64-mingw32 platform is built.
+To change the target platform specify 
+   make TARGET_ARCH=x86_64-w64-mingw32 all
+You might also want to change the default MAKE_PARALLEL of "-j4" to a value 
+appropriate to your build machine.
+
+/**
+ * DISCLAIMER
+ * The files in this directory and subdirectories have no copyright assigned 
+ * and are placed in the Public Domain.
+ * These files are part of the octave-mingw64 toolchain.
+ *
+ * The files under this directory and any code is distributed in the hope 
+ * that it will be useful but WITHOUT ANY WARRANTY.  ALL WARRANTIES, EXPRESSED 
+ * OR IMPLIED ARE HEREBY DISCLAIMED.  This includes but is not limited to 
+ * warranties of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */

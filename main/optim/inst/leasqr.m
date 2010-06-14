@@ -363,7 +363,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
 	error ('linear inequality constraints: wrong dimensions');
       end
       if (any (mc.' * pin + vc < 0) || (have_gencstr && any (tp < 0)))
-	error ('initial parameters violate inequality constraints');
+	warning ('leasqr:constraints', ...
+		 'initial parameters violate inequality constraints');
       end
     end
     if (isfield (options, 'equc'))
@@ -427,7 +428,8 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       end
       if (any (abs (emc.' * pin + evc) >= nz) || ...
 	  (have_genecstr && any (abs (tp) >= nz)))
-	error ('initial parameters violate equality constraints');
+	warning ('leasqr:constraints', ...
+		 'initial parameters violate equality constraints');
       end
     end
     have_constraints_except_bounds = ...
@@ -443,20 +445,23 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
       bounds(idx, 1) = tp;
       idx = bounds(:, 1) == bounds(:, 2);
       if (any (idx))
-	warning ('lower and upper bounds identical for some parameters, setting the respective elements of dp to zero');
+	warning ('leasqr:constraints', 'lower and upper bounds identical for some parameters, setting the respective elements of dp to zero');
 	dp(idx) = 0;
       end
       lidx = pin < bounds(:, 1);
       uidx = pin > bounds(:, 2);
       if (any (lidx | uidx) && have_constraints_except_bounds)
-	error ('initial parameters outside bounds, not corrected since other constraints are given');
+	warning ('leasqr:constraints', ...
+		 'initial parameters outside bounds, not corrected since other constraints are given');
       end
       if (any (lidx))
-	warning ('some initial parameters set to lower bound');
+	warning ('leasqr:constraints', ...
+		 'some initial parameters set to lower bound');
 	pin(lidx) = bounds(lidx, 1);
       end
       if (any (uidx))
-	warning ('some initial parameters set to upper bound');
+	warning ('leasqr:constraints', ...
+		 'some initial parameters set to upper bound');
 	pin(uidx) = bounds(uidx, 2);
       end
       tp = eye (n);

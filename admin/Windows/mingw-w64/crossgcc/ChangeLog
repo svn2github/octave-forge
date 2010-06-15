@@ -1,3 +1,9 @@
+2010-Jun-15  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	* build/makefile (strip-exe): use mingw32's strip, not the built one, 
+	since the cross-compiler is win32-hosted, but not necessarily 
+	win32-targetted
+
 2010-Jun-14  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	* initial import

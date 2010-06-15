@@ -633,10 +633,8 @@ all : \
     gcc-install
 
 strip-exe :
-	cp -av $(PREFIX)/bin/$(TARGET_ARCH)-strip.exe $(PREFIX)/bin/tmp-strip.exe
 	find $(PREFIX) -iname '*.exe' \
-	-print -exec $(PREFIX)/bin/tmp-strip.exe --strip-unneeded '{}' \;
-	rm $(PREFIX)/bin/tmp-strip.exe
+	-print -exec strip.exe --strip-unneeded '{}' \;
 
 dist :
 	cd $(PREFIX) && $(TAR) c --exclude '*.marker' * | lzma -czv7 > $(CURDIR)/$(TARGET_ARCH)_gcc-$(GCC_BRANCH)_`date "+%Y%m%d"`.tar.lzma

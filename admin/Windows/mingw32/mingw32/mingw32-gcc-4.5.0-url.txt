@@ -22,7 +22,7 @@ http://downloads.sourceforge.net/mingw/w32api-3.14-mingw32-dev.tar.gz
 http://downloads.sourceforge.net/mingw/libpthread-2.8.0-3-mingw32-dll-2.tar.lzma
 http://downloads.sourceforge.net/mingw/pthreads-w32-2.8.0-3-mingw32-dev.tar.lzma
 
-http://downloads.sourceforge.net/mingw/binutils-2.20.1-2-mingw32-bin.tar.gz
+http://downloads.sourceforge.net/mingw/binutils-2.20.51-1-mingw32-bin.tar.lzma
 
 http://downloads.sourceforge.net/mingw/gdb-7.1-2-mingw32-bin.tar.gz
 http://downloads.sourceforge.net/mingw/libexpat-2.0.1-1-mingw32-dll-1.tar.gz

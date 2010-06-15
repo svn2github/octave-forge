@@ -35,6 +35,10 @@
 @rem  CHANGELOG:
 @rem  =========
 @rem
+@rem   15-Jun-2010  Benjamin Lindner <lindnerb@users.sourceforge.net>
+@rem   
+@rem     * update binutils to 2.20.51-1
+@rem
 @rem   26-apr-2010  Benjamin Lindner <lindnerb@users.sourceforge.net>
 @rem   
 @rem     * adapt from install-mingw32-4.4.0.cmd
@@ -100,7 +104,7 @@ SET GCCVER=4.5.0
 
 %W32TAR% %W32TAROPT% -f "%SRCDIR%w32api-3.14-mingw32-dev.tar.gz"
 
-%W32TAR% %W32TAROPT% -f "%SRCDIR%binutils-2.20.1-2-mingw32-bin.tar.gz"
+%W32TAR% %W32TAROPT% -f "%SRCDIR%binutils-2.20.51-1-mingw32-bin.tar.lzma"
 
 %W32TAR% %W32TAROPT% -f "%SRCDIR%gdb-7.1-2-mingw32-bin.tar.gz"
 %W32TAR% %W32TAROPT% -f "%SRCDIR%libexpat-2.0.1-1-mingw32-dll-1.tar.gz"

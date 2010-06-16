@@ -124,7 +124,7 @@ function [Jj] = __calcjacobian(net,Im,Nn,Aa,vE)
   ## tildeSx = -dFx(n_x^x)
   ## use mIdentity to calculate the number of targets correctly
   ## for all other layers, use instead:
-  ## tildeSx(-1) = dF1(n_x^(x-1)))(W^x)' * tildeSx;
+  ## tildeSx(-1) = dF1(n_x^(x-1))(W^x)' * tildeSx;
 
   for iLayers = nLayers:-1:1 # this will count from the last
                              # layer to the first layer ...

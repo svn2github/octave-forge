@@ -37,7 +37,7 @@
 
 
 function D = ddmat(x, d)
-  if ( size(x)(2) != 1 )
+  if ( size(x,2) != 1 )
     error("x should be a column vector")
   endif
   m = length(x);
@@ -45,7 +45,7 @@ function D = ddmat(x, d)
     D = speye(m);
   else
     dx = x((d + 1):m) - x(1:(m - d));
-    V = sparse(diag(1 ./ dx);
+    V = sparse(diag(1 ./ dx));
     D = d * V * diff(ddmat(x, d - 1));
   endif
 endfunction

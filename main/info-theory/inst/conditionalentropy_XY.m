@@ -48,7 +48,7 @@
 
 function val=conditionalentropy_XY(XY)
   val=0.0;
-  for i=1:size(XY)(2)
+  for i=1:size(XY, 2)
     Yi = sum(XY(i,:));
     val = val + Yi*entropy(XY(i,:)/sum(XY(i,:)));
   end

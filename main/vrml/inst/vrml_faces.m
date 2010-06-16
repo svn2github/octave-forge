@@ -90,7 +90,6 @@ function s = vrml_faces (x,f,varargin)
   opt0 = " smooth convex " ;
 
   verbose = 0 ;
-  nargin = nargin();
   nargin -= 2 ;
 
   i = 1;

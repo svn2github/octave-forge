@@ -103,10 +103,10 @@ function [yhat, lambda] = regdatasmooth (x, y, varargin)
   if (length(x)!=length(y))
     error("x and y must be equal length vectors")
   endif
-  if ( size(x)(1)==1 )
+  if ( size(x,1)==1 )
     x = x';
   endif
-  if ( size(y)(1)==1 )
+  if ( size(y,1)==1 )
     y = y';
   endif
 

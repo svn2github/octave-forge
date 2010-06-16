@@ -146,7 +146,7 @@ function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
   tc = log (10) / fast_eig;
   nst = ceil ((tf-t0)/tc);
   tvals = -linspace (-tf, -t0, nst);
-  Plist = list (Qf);
+  Plist = {Qf};
   In = eye (nn);
   n1 = nn+1;
   n2 = nn+nn;
@@ -163,7 +163,7 @@ function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
       delta_t = tvals(ii-1) - tvals(ii);
       uv = expm (-H*delta_t)*uv_i_minus_1;
       Qi = uv(n1:n2,1:nn)/uv(1:nn,1:nn);
-      Plist(ii) = (Qi+Qi')/2;
+      Plist{ii} = (Qi+Qi')/2;
       ## check error
       Perr = norm (Plist{ii} - Plist{ii-1})/norm(Plist{ii});
       maxerr = max (maxerr,Perr);

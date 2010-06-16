@@ -49,8 +49,8 @@ endif
 
     
 for i=1:nopt
-	desc = nth (varargin, va_arg_cnt++);
-	val = nth (varargin, va_arg_cnt++);
+	desc = varargin{va_arg_cnt++};
+	val =  varargin{va_arg_cnt++};
 
 	# unset previous invocation values
 	tk_cmd( sprintf( "if {[info exists \"val_%d\"]} {unset val_%d}\n",
@@ -101,9 +101,8 @@ tk_cmd( sprintf("pack .master -fill both -expand 1") );
 tk_cmd( "tkwait window .master" );
 eval(tk_cmd(sprintf("set result \"%s\" ", cmd_ok )));
 
-vr_val_cnt = 1;
  for i=1:nopt
-        varargout{vr_val_cnt++} = eval(sprintf("val_%d;",i));
+        varargout{i} = eval(sprintf("val_%d;",i));
         tk_cmd( sprintf( "trace vdelete val_%d w varcheck", i) );
  endfor
  	

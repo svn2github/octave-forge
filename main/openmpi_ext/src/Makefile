@@ -18,9 +18,10 @@ all: MPI_Init.oct \
      MPI_Barrier.oct \
      MPI_Comm_Load.oct \
      MPI_Comm_Test.oct \
-
+     MPI_Get_processor_name.oct \
 
 %.oct: %.cc
 	mkoctfile -s $(MPIINC) $(MPILIBS) $<
 clean:
 	-rm *.o  *.oct *~
+

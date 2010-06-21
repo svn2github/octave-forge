@@ -70,7 +70,7 @@ src/H5Zpublic.h
 HEADERS_BUILD_INSTALL="src/H5pubconf.h"
 
 # install subdirectory below $PREFIX/$INC_DIR (if any)
-INCLUDE_SUBDIR=
+INC_SUBDIR=
 
 # License file(s) to install
 LICENSE_INSTALL="COPYING"

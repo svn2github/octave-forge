@@ -36,7 +36,7 @@ HEADERS_INSTALL=
 HEADERS_BUILD_INSTALL=
 
 # install subdirectory below $PREFIX/$INC_DIR (if any)
-INCLUDE_SUBDIR=
+INC_SUBDIR=
 
 # License file(s) to install
 LICENSE_INSTALL="COPYING LICENSE"

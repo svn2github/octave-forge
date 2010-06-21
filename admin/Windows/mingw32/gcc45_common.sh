@@ -17,7 +17,7 @@ STATICLIB_DIR=${STATICLIB_DIR:-staticlib}
 INC_DIR=${INC_DIR:-include}
 SHARE_DIR=${SHARE_DIR:-share}
 ETC_DIR=${ETC_DIR:-etc}
-PKGCONFIG_DIR=${PKGCONFIG_DIR:-lib/pkconfig}
+PKGCONFIG_DIR=${PKGCONFIG_DIR:-lib/pkgconfig}
 LIC_DIR=${LIC_DIR:-license}
 
 # -----------------------

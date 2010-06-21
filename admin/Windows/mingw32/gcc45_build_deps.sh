@@ -18,6 +18,8 @@ VER_ARPACK=96-$REL
 VER_QRUPDATE=1.1.1-$REL
 VER_SUITESPARSE=3.2.0-$REL
 
+VER_HDF5=1.8.4-patch1-$REL
+
 VER_EXPAT=2.0.1-$REL
 VER_NCURSES=5.7-$REL
 VER_FFTW3=3.2.2-$REL
@@ -74,6 +76,8 @@ VER_TEXINFO=4.13a-$REL
 ( cd arpack && build-${VER_ARPACK}.sh ${ACTION} );
 ( cd qrupdate && build-${VER_QRUPDATE}.sh ${ACTION} );
 ( cd suitesparse && build-${VER_SUITESPARSE}.sh ${ACTION} );
+
+( cd hdf5 && build-${VER_HDF5}.sh ${ACTION} );
 
 ( cd expat && build-${VER_EXPAT}.sh ${ACTION} );
 ( cd libncurses && build-${VER_NCURSES}.sh ${ACTION} );

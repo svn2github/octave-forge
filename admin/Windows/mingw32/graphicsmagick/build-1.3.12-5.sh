@@ -237,53 +237,55 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/GraphicsMagick.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libGraphicsMagick.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libGraphicsMagick.a
+   ${RM} ${RM_FLAGS} $PREFIX/$BIN_DIR/GraphicsMagick.dll
+   ${RM} ${RM_FLAGS} $PREFIX/$LIB_DIR/libGraphicsMagick.dll.a
+   ${RM} ${RM_FLAGS} $PREFIX/$STATICLIB_DIR/libGraphicsMagick.a
    
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/GraphicsMagick++.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libGraphicsMagick++.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libGraphicsMagick++.a
+   ${RM} ${RM_FLAGS} $PREFIX/$BIN_DIR/GraphicsMagick++.dll
+   ${RM} ${RM_FLAGS} $PREFIX/$LIB_DIR/libGraphicsMagick++.dll.a
+   ${RM} ${RM_FLAGS} $PREFIX/$STATICLIB_DIR/libGraphicsMagick++.a
    
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/GraphicsMagickWand.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libGraphicsMagickWand.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libGraphicsMagickWand.a
+   ${RM} ${RM_FLAGS} $PREFIX/$BIN_DIR/GraphicsMagickWand.dll
+   ${RM} ${RM_FLAGS} $PREFIX/$LIB_DIR/libGraphicsMagickWand.dll.a
+   ${RM} ${RM_FLAGS} $PREFIX/$STATICLIB_DIR/libGraphicsMagickWand.a
    
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/GraphicsMagick-config
-   ${RM} ${RM_FLAGS} ${BINARY_PATH}/GraphicsMagick++-config
+   ${RM} ${RM_FLAGS} $PREFIX/$BIN_DIR/GraphicsMagick-config
+   ${RM} ${RM_FLAGS} $PREFIX/$BIN_DIR/GraphicsMagick++-config
    
    # Uninstall executable tools
    for a in ${TOOLS}; do
-      ${RM} ${RM_FLAGS} ${BINARY_PATH}/$a
+      ${RM} ${RM_FLAGS} $PREFIX/$BIN_DIR/$a
    done
    
    # Uninstall headers
    for a in $MAGICK_HEADERS magick_config.h; do
-      ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/magick/$a
+      ${RM} ${RM_FLAGS} $PREFIX/$INC_DIR/magick/$a
    done
-   rmdir --ignore-fail-on-non-empty ${INCLUDE_PATH}/magick
+   rmdir --ignore-fail-on-non-empty $PREFIX/$INC_DIR/magick
    
    for a in $MAGICKPP_HEADERS; do
-      ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/magick++/$a
+      ${RM} ${RM_FLAGS} $PREFIX/$INC_DIR/magick++/$a
    done
-   rmdir --ignore-fail-on-non-empty ${INCLUDE_PATH}/magick++
-   ${RM} ${RM_FLAGS} ${INCLUDE_PATH}/Magick++.h
+   rmdir --ignore-fail-on-non-empty $PREFIX/$INC_DIR/magick++
+   ${RM} ${RM_FLAGS} $PREFIX/$INC_DIR/Magick++.h
    
    for a in $MGK_CONFIG_SRC $MGK_CONFIG_BUILD; do
-      ${RM} ${RM_FLAGS} ${SHARE_PATH}/${PKGVER}/config/$a
+      ${RM} ${RM_FLAGS} $PREFIX/$SHARE_DIR/${PKGVER}/config/$a
    done
-   rmdir --ignore-fail-on-non-empty ${SHARE_PATH}/${PKGVER}/config
+   rmdir --ignore-fail-on-non-empty $PREFIX/$SHARE_DIR/${PKGVER}/config
+   rmdir --ignore-fail-on-non-empty $PREFIX/$SHARE_DIR/${PKGVER}
    
    # Uninstall pkg-config .pc files
    for a in $PKG_CONFIG_INSTALL; do
-      ${RM} ${RM_FLAGS} ${PKGCONFIGDATA_PATH}/`basename $a`
+      ${RM} ${RM_FLAGS} $PREFIX/$PKGCONFIG_DIR/`basename $a`
    done
    
    # Uninstall license file
-   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/Copyright.txt
-   ${RM} ${RM_FLAGS} ${LICENSE_PATH}/${PKG}/Magick++/COPYING
-   rmdir --ignore-fail-on-non-empty ${LICENSE_PATH}/${PKG}/Magick++
+   ${RM} ${RM_FLAGS} $PREFIX/$LIC_DIR/${PKG}/Copyright.txt
+   ${RM} ${RM_FLAGS} $PREFIX/$LIC_DIR/${PKG}/Magick++/COPYING
+   rmdir --ignore-fail-on-non-empty $PREFIX/$LIC_DIR/${PKG}/Magick++
    
+   uninstall_common;
    uninstall_post;
 }
 

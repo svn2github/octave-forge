@@ -361,7 +361,7 @@ uninstall_common()
 {
    # Uninstall headers
    for a in $HEADERS_INSTALL $HEADERS_BUILD_INSTALL; do
-      ${RM} ${RM_FLAGS} $PREFIX/$INC_DIR/`basename $a`
+      ${RM} ${RM_FLAGS} $PREFIX/${INC_DIR}${INC_SUBDIR:+/$INC_SUBDIR}/`basename $a`
    done
    
    # Uninstall pkg-config .pc files

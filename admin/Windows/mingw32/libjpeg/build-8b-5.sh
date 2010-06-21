@@ -89,9 +89,9 @@ uninstall()
    uninstall_pre;
    
    # Install library, import library and static library
-   ${RM} ${RM_FLAGS} ${SHAREDLIB_PATH}/jpeg-8.dll
-   ${RM} ${RM_FLAGS} ${LIBRARY_PATH}/libjpeg.dll.a
-   ${RM} ${RM_FLAGS} ${STATICLIB_PATH}/libjpeg.a
+   ${RM} ${RM_FLAGS} $PREFIX/$BIN_DIR/jpeg-8.dll
+   ${RM} ${RM_FLAGS} $PREFIX/$LIB_DIR/libjpeg.dll.a
+   ${RM} ${RM_FLAGS} $PREFIX/$STATICLIB_DIR/libjpeg.a
    
    uninstall_common;
    uninstall_post;

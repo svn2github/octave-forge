@@ -180,6 +180,7 @@ uninstall()
       ${RM} ${RM_FLAGS} $PREFIX/$STATICLIB_DIR/lib$a.a
    done
    
+   ${RM} ${RM_FLAGS} $PREFIX/$BIN_DIR/ncurses5-config
    ${RM} -rvf $PREFIX/$SHARE_DIR/terminfo
    ${RM} -rvf $PREFIX/$SHARE_DIR/tabset
 

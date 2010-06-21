@@ -115,7 +115,7 @@ install()
    # Install library, import library and static library
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/freetype-6.dll    $PREFIX/$BIN_DIR
    ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libfreetype.dll.a $PREFIX/$LIB_DIR
-   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libfreetype.dll.a $PREFIX/$STATICLIB_DIR
+   ${CP} ${CP_FLAGS} ${BUILDDIR}/.libs/libfreetype.a     $PREFIX/$STATICLIB_DIR
    
    ${CP} ${CP_FLAGS} ${BUILDDIR}/freetype-config         $PREFIX/$BIN_DIR
    

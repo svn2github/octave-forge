@@ -41,6 +41,8 @@ VER_GLPK=4.43-$REL
 
 VER_ICONV=1.13-$REL
 VER_GETTEXT=0.17-$REL
+VER_GLIB=2.24.0-$REL
+VER_PKGCONFIG=0.23-$REL
 
 VER_TEXINFO=4.13a-$REL
 
@@ -96,5 +98,7 @@ VER_TEXINFO=4.13a-$REL
 
 ( cd iconv && build-${VER_ICONV}.sh ${ACTION} );
 ( cd gettext && build-${VER_GETTEXT}.sh ${ACTION} );
+( cd glib && build-${VER_GLIB}.sh ${ACTION} );
+( cd pkg-config && build-${VER_PKGCONFIG}.sh ${ACTION} );
 
 ( cd texinfo && build-${VER_TEXINFO}.sh ${ACTION} );

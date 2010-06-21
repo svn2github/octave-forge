@@ -85,7 +85,7 @@ VER_TEXINFO=4.13a-$REL
 ( cd libpng && build-${VER_PNG}.sh ${ACTION} );
 ( cd libfreetype && build-${VER_FREETYPE}.sh ${ACTION} );
 ( cd libfontconfig && build-${VER_FONTCONFIG}.sh ${ACTION} );
-( cd libfltk && build-${VER_FLTK}.sh ${ACTION} );
+( cd fltk && build-${VER_FLTK}.sh ${ACTION} );
 
 ( cd wmf && build-${VER_WMF}.sh ${ACTION} );
 ( cd bzip2 && build-${VER_BZIP2}.sh ${ACTION} );

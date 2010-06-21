@@ -51,15 +51,18 @@ TypeMetric.h"
 
 MAGICK_HEADERS="
 api.h \
+analyze.h \
 attribute.h \
 average.h \
 blob.h \
 cdl.h \
 channel.h \
 color.h \
+color_lookup.h \
 colormap.h \
 colorspace.h \
 command.h \
+common.h \
 compare.h \
 composite.h \
 compress.h \
@@ -107,6 +110,7 @@ symbols.h \
 texture.h \
 timer.h \
 transform.h \
+type.h \
 utility.h \
 version.h
 "

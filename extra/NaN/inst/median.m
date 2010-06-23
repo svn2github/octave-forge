@@ -53,7 +53,7 @@ D2 = sz(DIM);
 D3 = prod(sz(DIM+1:length(sz)));
 D0 = [sz(1:DIM-1),1,sz(DIM+1:length(sz))];
 y  = repmat(nan,D0);
-flag_MexKthElement = exist(kth_element,'file')==3;
+flag_MexKthElement = exist('kth_element','file')==3;
 
 for k = 0:D1-1,
 for l = 0:D3-1,

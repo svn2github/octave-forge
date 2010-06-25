@@ -51,55 +51,45 @@
 #endif 
 
 
-/*
-   http://en.wikipedia.org/wiki/Selection_algorithm
- */
-static size_t partition(double array[], size_t left, size_t right, size_t pivotIndex)
-{
-        double temp;
-        double pivotValue = array[pivotIndex];
-        array[pivotIndex] = array[right];
-        array[right] = pivotValue;
-        size_t storeIndex = left;
-        for (size_t i = left; i <= right - 1; ++i ) {
-                if (array[i] <= pivotValue) {
-                        temp = array[i];
-                        array[i] = array[storeIndex];
-                        array[storeIndex] = temp;
-                        ++storeIndex;
-                }
-        }
-        temp = array[storeIndex];
-        array[storeIndex] = array[right];
-        array[right] = temp;
-        return storeIndex;
-}
-
+#define SWAP(a,b) {temp = a; a=b; b=temp;} 
  
 static void findFirstK(double array[], size_t left, size_t right, size_t k)
 {
-        size_t pivotNewIndex = 0;
-        if (right > left) {
-                size_t pivotIndex = (left + right) / 2;
-                pivotNewIndex = partition(array, left, right, pivotIndex);
-                if (pivotNewIndex > k)
-                        findFirstK(array, left, pivotNewIndex - 1, k);
-                else if (pivotNewIndex < k)
-                        findFirstK(array, pivotNewIndex + 1, right, k);
+        while (right > left) {
+                mwIndex pivotIndex = (left + right) / 2;
+
+		/* partition */
+	        double temp;
+	        double pivotValue = array[pivotIndex];
+        	SWAP(array[pivotIndex], array[right]);
+        	pivotIndex = left;
+	        for (mwIndex i = left; i <= right - 1; ++i ) {
+        	        if (array[i] <= pivotValue || isnan(pivotValue)) {
+        	        	SWAP(array[i], array[pivotIndex]);
+        	                ++pivotIndex;
+                	}
+        	}
+        	SWAP(array[pivotIndex], array[right]);
+
+                if (pivotIndex > k)
+                	right = pivotIndex - 1;
+                else if (pivotIndex < k)
+                        left = pivotIndex + 1;
+                else break;        
         }
 }
  
 
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
-    	mwIndex j, k, n;	// running indices 
+    	mwIndex k, n;	// running indices 
     	mwSize  szK, szX; 
     	double 	*Y,*X,*K; 
 
 	// check for proper number of input and output arguments
 	if (PInputCount != 2) {
-		mexPrintf("KTH_ELEMENT returns the K-th smallest element of vector X\n\n");
-		mexPrintf("usage:\tx = kth_element(X,k)\n");
+		mexPrintf("KTH_ELEMENT returns the K-th smallest element of vector X\n");
+		mexPrintf("\nusage:\tx = kth_element(X,k)\n");
 		mexPrintf("\nNote, the elements in X are modified in place. Do not use kth_element directely unless you know what you do. You are warned.\n");
 		
 	    	mexPrintf("\nsee also: median, quantile\n\n");
@@ -122,22 +112,16 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	szX = mxGetNumberOfElements(PInputs[0]);
 	X = (double*)mxGetData(PInputs[0]);
 
-	for (j=0, k=0; k<szX; k++) {
-		if (j<k) X[j] = X[k];
-		if (!mxIsNaN(X[k])) j++;
-	}
-	for ( k=j; k<szX; k++) X[k] = 0.0/0.0; // needed when X contains NaN's and kth_element is called several times on the same data.  
-
 	/*********** create output arguments *****************/
 
 	POutput[0] = mxCreateDoubleMatrix(mxGetM(PInputs[1]),mxGetN(PInputs[1]),mxREAL);
 	Y = (double*) mxGetData(POutput[0]);
 	for (k=0; k < szK; k++) {
 		n = K[k]-1;       // convert to zero-based indexing 
-		if (n >= j || n < 0)
-			Y[k] = 0.0/0.0;
+		if (n >= szX || n < 0)
+			Y[k] = 0.0/0.0;	// NaN: result undefined
 		else {
-        		findFirstK(X, 0, j-1, n);
+        		findFirstK(X, 0, szX-1, n);
         		Y[k] = X[n];
 		}	
 	}

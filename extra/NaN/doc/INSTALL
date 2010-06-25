@@ -26,7 +26,7 @@ c) Several mex-files are strongly recommened.
    Run MAKE from the directory .../NaN/src/ 	
 
    This is well tested on Linux, but might not work completely on other platforms. 
-   Specifically, not all functions will compile on Windows, still the toolbox can be used.  
+   Specifically, on Windows you need to setup gnumex and gcc (typically mingw or cygwin).  
    (covm_mex and sumskipnan_mex are strongly recommended for performance reasons,  
    train.mex and svmtrain_mex are needed when using support vector machines)  
 
@@ -36,5 +36,5 @@ This checks whether the installation was successful.
   $Id$
   Copyright (c) 2000-2003,2005,2006,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
   This is part of the NaN-toolbox
-  http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+  http://www.biosig-consulting.com/matlab/NaN/
 

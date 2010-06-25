@@ -83,10 +83,16 @@ elseif strcmp(SCALEOPT,'none')
 
 elseif strcmp(SCALEOPT,'coeff')
 	ix = find(LAGS==0);
-	c  = C(ix,1:size(X,2)+1:end);
-	v  = c.^-0.5; % sqrt(1./c(:));
-	v  = v'*v;
-	C  = C.*repmat(v(:).',size(C,1),1);	
+	if ~any(size(X)==1), %% ~isvector(X)	
+		c  = C(ix,1:size(X,2)+1:end);	%% diagonal elements
+		v  = c.^-0.5; % sqrt(1./c(:));
+		v  = v'*v;
+		C  = C.*repmat(v(:).',size(C,1),1);
+	elseif isempty(Y)
+		C = C/C(ix);
+	else 
+		C = C/sqrt(sumsq(X)*sumsq(Y));
+	end;		
 
 elseif strcmp(SCALEOPT,'biased')
 	C = C./repmat(max(N),size(C,1),1);

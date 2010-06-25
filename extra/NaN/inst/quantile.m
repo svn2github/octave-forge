@@ -106,21 +106,25 @@ else
 		        xi = k + l * D1*sz(DIM) + 1 ;
 			xo = k + l * D1*length(q) + 1;
 		        t  = Y(xi:D1:xi+D1*sz(DIM)-1);
-		        t  = sort(t(~isnan(t)));
+		        t  = t(~isnan(t));
 		        N  = length(t); 
 			
-			t2(1:2:2*length(t)) = t; 
-			t2(2:2:2*length(t)) = t;
-			x=floor((1:2*length(t))/2);
-			for k2=1:length(q)
-				if (q(k2)<0) || (q(k2)>1) 	
-					f(k2) = NaN;  
-				elseif 	q(k2)==0	
-					f(k2) = t2(1);  	
+			if (N==0)
+		            	f(:) = NaN;        
+			else
+  			    t  = sort(t);
+  			    t2(1:2:2*length(t)) = t; 
+			    t2(2:2:2*length(t)) = t;
+			    x = floor((1:2*length(t))/2);
+			    for k2=1:length(q)
+				if (q(k2)<0) || (q(k2)>1)
+					f(k2) = NaN;
+				elseif 	q(k2)==0
+					f(k2) = t2(1);
 				elseif 	q(k2)==1,
-					f(k2) = t2(end);  	
+					f(k2) = t2(end);
 				else 	
-					n=1;
+					n = 1;
 					while (q(k2)*N > x(n)),
 						n = n+1;
 					end;
@@ -132,7 +136,8 @@ else
 						f(k2) = t2(n);
 					end; 
 				end; 		
-			end;
+			    end;
+			end; 
 			Q(xo:D1:xo + D1*length(q) - 1) = f;
 		end;
 		end;

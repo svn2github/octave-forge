@@ -46,13 +46,14 @@
 #ifdef tmwtypes_h
   #if (MX_API_VER<=0x07020000)
     typedef int mwSize;
+    typedef int mwIndex;
   #endif 
 #endif 
 
 
 /*
    http://en.wikipedia.org/wiki/Selection_algorithm
- */ 
+ */
 static size_t partition(double array[], size_t left, size_t right, size_t pivotIndex)
 {
         double temp;

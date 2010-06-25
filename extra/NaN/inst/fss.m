@@ -21,6 +21,8 @@ function [idx,score] = fss(D,cl,N,MODE)
 % idx	ranking of the feature    
 %       [tmp,idx]=sort(-score)
 %
+% see also: TRAIN_SC, XVAL, ROW_COL_DELETION
+%
 % REFERENCES:
 % [1] Peng, H.C., Long, F., and Ding, C., 
 %   Feature selection based on mutual information: criteria of max-dependency, max-relevance, and min-redundancy, 

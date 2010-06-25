@@ -30,7 +30,7 @@ function [kap,se,H,z,p0,SA,R]=kappa(d,c,arg3,w)
 %        Encyclopedia of Statistical Sciences. New York: John Wiley & Sons.
 % [5] http://ourworld.compuserve.com/homepages/jsuebersax/kappa.htm
 
-%	$Id: kappa.m 2141 2009-07-02 12:05:29Z schloegl $
+%	$Id$
 %	Copyright (c) 1997-2006,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
 %       http://biosig-consulting.com/matlab/NaN/

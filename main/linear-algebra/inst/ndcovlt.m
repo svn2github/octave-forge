@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{y} =} ndcovt (@var{x}, @var{t1}, @var{t2}, @dots{})
+## @deftypefn{Function File} {@var{y} =} ndcovlt (@var{x}, @var{t1}, @var{t2}, @dots{})
 ## Computes an n-dimensional covariant linear transform of an n-d tensor, given a
 ## transformation matrix for each dimension. The number of columns of each transformation
 ## matrix must match the corresponding extent of @var{x}, and the number of rows determines
@@ -34,7 +34,13 @@
 ##   @var{x}(j1, j2, @dots{}) * @var{t1}(i1, j1) * @var{t2}(i2, j2) * @dots{}
 ## @end example
 ##
-## over all j1, j2, @dots{}.
+## over all j1, j2, @dots{}. For two dimensions, this reduces to
+## @example
+##   @var{y} = @var{t1} * @var{x} * @var{t2}.'
+## @end example
+## 
+## [] passed as a transformation matrix is converted to identity matrix for
+## the corresponding dimension.
 ##
 ## @end deftypefn
 

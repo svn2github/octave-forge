@@ -208,4 +208,4 @@ aa = dd.(kk);
                 ++jj;
            --llcol;
 
-                      
+   [tolower(xyz),toupper(xyz)]

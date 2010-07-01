@@ -362,6 +362,8 @@ FNR==1 {
     gsub(/\<endclassdef\>/,"end");
     gsub(/\<end_try_catch\>/,"end");
     gsub(/\<struct_contains\>/,"isfield");
+    gsub(/\<tolower[ \t]*\(/,"lower(");
+    gsub(/\<toupper[ \t]*\(/,"upper(");
     gsub(/\<cell[ \t]*\([ \t]*\)[ \t]*;/, "{};");  ## cell() -> {}
     gsub("SEEK_CUR",0);
     gsub("SEEK_END",1);

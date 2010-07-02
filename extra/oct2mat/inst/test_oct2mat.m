@@ -208,4 +208,7 @@ aa = dd.(kk);
                 ++jj;
            --llcol;
 
-   [tolower(xyz),toupper(xyz)]
+   {tolower(xyz),toupper(xyz),arg(Z),toascii([64,10,13,32,9,64])}
+   printf('abc= %s','xyz');
+   
+   

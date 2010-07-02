@@ -354,6 +354,7 @@ FNR==1 {
     #### replace "dd.ee.(kk) = vv;" with "setfield(dd.ee,kk,vv);"  -------------- 
         $0 = gensub(/^([ \t]*)(\<[[:alnum:]_\.]*)\.\((\<[^\(]*)\)[ \t]*=[ \t]*([^;]*);[ \t]*$/,"\\1setfield(\\2,\\3,\\4)", "g");
 
+    #### keywords
     gsub(/\<endfunction\>/,"");
     gsub(/\<endif\>/,"end");
     gsub(/\<endwhile\>/,"end");
@@ -362,8 +363,13 @@ FNR==1 {
     gsub(/\<endclassdef\>/,"end");
     gsub(/\<end_try_catch\>/,"end");
     gsub(/\<struct_contains\>/,"isfield");
-    gsub(/\<tolower[ \t]*\(/,"lower(");
-    gsub(/\<toupper[ \t]*\(/,"upper(");
+
+    #### builtin-functions 
+    gsub(/\<arg[ \t]*\(/, "angle(");
+    gsub(/\<printf[ \t]*\(/, "fprintf(1,");
+    gsub(/\<toascii[ \t]*\(/, "abs(");
+    gsub(/\<tolower[ \t]*\(/, "lower(");
+    gsub(/\<toupper[ \t]*\(/, "upper(");
     gsub(/\<cell[ \t]*\([ \t]*\)[ \t]*;/, "{};");  ## cell() -> {}
     gsub("SEEK_CUR",0);
     gsub("SEEK_END",1);
@@ -378,6 +384,7 @@ FNR==1 {
 
     #### multiple assignments a=b=c=d=e; ###############
     if ($0 ~ /[^;]+=[^;]+=[^;]+;/) {
+        $0 = gensub(/^([ \t]*[[:alpha:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+[ \t]*;)[ \t]*[\n\r]*$/,"\\3\\4\\5 \\1\\2\\3;","g");
         $0 = gensub(/^([ \t]*[[:alpha:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+[ \t]*;)[ \t]*[\n\r]*$/,"\\3\\4\\5 \\1\\2\\3;","g");
         $0 = gensub(/^([ \t]*[[:alpha:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+[ \t]*;)[ \t]*[\n\r]*$/,"\\3\\4\\5 \\1\\2\\3;","g");
         $0 = gensub(/^([ \t]*[[:alpha:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+[ \t]*;)[ \t]*[\n\r]*$/,"\\3\\4\\5 \\1\\2\\3;","g");

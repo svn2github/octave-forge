@@ -211,4 +211,17 @@ aa = dd.(kk);
    {tolower(xyz),toupper(xyz),arg(Z),toascii([64,10,13,32,9,64])}
    printf('abc= %s','xyz');
    
-   
+   y = Z(:,1); X = [ones(rows(Z),1), Z(:,2:end)];
+   if (rows (y) ~= rows (X))
+   if (rows (varargin{1}) == 1 && columns (varargin{1}) > 1)
+   if ((rows(x)==1)&(columns(x)>1))
+   a=ones(rows(d),1);
+   a=ones((rows(d(a{b(4)}))),1);
+     
+   vec(X)
+   vec([Y{a},1;2,3])
+   m=m|all(vec(X==[0,0,1;0,1,0;0,0,0]));
+
+   mx = vec ( xx + xx' )/2;
+    
+    

@@ -382,6 +382,17 @@ FNR==1 {
     gsub("!","~");
     gsub("[\\\\]$","..."); 
 
+    #### special functions ###############
+    if ($0 ~ /vec[ \t]*\(/) {
+	$0 = gensub(/\<vec[ \t]*\(([^\(\)]+)\)/,"reshape(\\1,[],1)","g"); 
+    }	
+    if ($0 ~ /rows[ \t]*\(/) {
+	$0 = gensub(/\<rows[ \t]*\(([^\(\)]+)\)/,"size(\\1,1)","g"); 
+    }	
+    if ($0 ~ /columns[ \t]*\(/) {
+	$0 = gensub(/\<columns[ \t]*\(([^\(\)]+)\)/,"size(\\1,2)","g"); 
+    }	
+
     #### multiple assignments a=b=c=d=e; ###############
     if ($0 ~ /[^;]+=[^;]+=[^;]+;/) {
         $0 = gensub(/^([ \t]*[[:alpha:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+)([ \t]*=[ \t]*)([[:alnum:]_\(\)\{\}]+[ \t]*;)[ \t]*[\n\r]*$/,"\\3\\4\\5 \\1\\2\\3;","g");
@@ -563,6 +574,15 @@ FNR==1 {
     }
     if (/[ \t]*\[.~.\][ \t]*=/) {
 	print "ignored LHS arg:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
+    }
+    if (/\<vec[ \t]*\(/) {
+	print "vec:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
+    }
+    if (/\<rows[ \t]*\(/) {
+	print "rows:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
+    }
+    if (/\<columns[ \t]*\(/) {
+	print "columns:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
     }
     
     ##### Restore Comments #####

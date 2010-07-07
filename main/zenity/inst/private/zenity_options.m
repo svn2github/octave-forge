@@ -44,10 +44,12 @@ function op = zenity_options (dialog, varargin)
 
   varargin = varargin{1};    # because other functions varargin is this varargin
 
+  ## Create empty variables in case user does not set them
   op.title = op.width = op.height = op.timeout = op.icon = "";
   if ( !ischar(dialog) )
     error ("Type of dialog should be a string");
   elseif (strcmpi(dialog, "calendar"))
+    op.text = op.day = op.month = op.year = "";
   elseif (strcmpi(dialog, "entry"))
     op.password = op.entry = "";
   elseif (strcmpi(dialog, "file selection"))
@@ -74,13 +76,13 @@ function op = zenity_options (dialog, varargin)
     error ("The type of dialog '%s' is not supported", dialog);
   endif
 
-  ## In case no options were set, returns the empty strings
+  ## In case no options were set, stop here and return the empty strings
   if (numel(varargin) == 1 && isempty(varargin{1}))
     return
   endif
 
   ## Identifies when it's being called to process stuff to send through pipes
-  ## since they'll have major differences in the processing
+  ## since that will have major differences in the processing
   if ( strcmpi(dialog, "piped notification") || strcmpi(dialog, "piped progress") )
     pipelining = 1;
   else
@@ -94,9 +96,11 @@ function op = zenity_options (dialog, varargin)
   ## - check if the rigth type of value is given (char or scalar) and return an
   ## error if not
 
+  ## This will hold the index of varargin  that's currently being processed
   narg = 1;
-  ## This will ONLY process the input when the output won't be send through a
-  ## pipe. See the next while block for that.
+
+  ## This will ONLY process the input when the output WON'T be sent through a
+  ## pipe. See the next while block for when it is
   while (narg <= numel (varargin))
     if (pipelining)
       break                       # Move to the next while to process the input
@@ -104,7 +108,7 @@ function op = zenity_options (dialog, varargin)
     param = varargin{narg++};
 
     if (narg <= numel(varargin))  # Check if we are already in the last index
-      value = varargin{narg};     # this is only for readability later on
+      value = varargin{narg};     # this is only for readability later on.
     else                          # Writing varargin{narg} in all conditions
       value = "";                 # is a pain and makes it even more confusing
     endif
@@ -293,6 +297,29 @@ function op = zenity_options (dialog, varargin)
         error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
       endif
 
+    ## Process options for ZENITY_CALENDAR
+    elseif ( strcmpi(dialog, "calendar") )
+      if (strcmpi(param,"text"))                 # Calendar - text
+        narg            = sanity_checks ("char", param, value, op.text, narg);
+        op.text         = sprintf('--text="%s"', value);
+      elseif (strcmpi(param,"day"))                   # Calendar - day
+        narg            = sanity_checks ("scalar", param, value, op.day, narg);
+        value           = round (value);
+        if (value < 1 || value > 31) error("Default selection '%d' for day", value); endif
+        op.day          = sprintf('--day="%d"', value);
+      elseif (strcmpi(param,"month"))                   # Calendar - month
+        narg            = sanity_checks ("scalar", param, value, op.month, narg);
+        value           = round (value);
+        if (value < 1 || value > 12) error("Invalid default selection '%d' for month", value); endif
+        op.month        = sprintf('--month="%d"', value);
+      elseif (strcmpi(param,"year"))                   # Calendar - day
+        narg            = sanity_checks ("scalar", param, value, op.year, narg);
+        value           = round (value);
+        op.year         = sprintf('--year="%d"', value);
+      else
+        error ("Parameter '%s' is not supported for '%s' dialog.", param, dialog);
+      endif
+
     else
       error ("Parameter '%s' is not supported.", param);
     endif
@@ -300,9 +327,11 @@ function op = zenity_options (dialog, varargin)
   endwhile
 
 
+  ## This will ONLY process the input when the output WILL be sent through a
+  ## pipe. See the previous while block when creating new dialogs
   while (narg <= numel (varargin))
     if (!pipelining)
-      break                       # It should have already been processed in the previous while block
+      break                       # It should have already been processed in the previous while block but it doesn't hurt to check again
     endif
     param = varargin{narg++};
 
@@ -382,6 +411,8 @@ function op = zenity_options (dialog, varargin)
 endfunction
 
 ################################################################################
+##  Extra functions
+################################################################################
 function narg = sanity_checks (type, param, value, previous, narg)
   if (strcmpi(type,"char"))                             # Value must be string
     if (previous)
@@ -423,7 +454,7 @@ function narg = sanity_checks (type, param, value, previous, narg)
     endif
     narg++;
 
-  elseif (strcmpi(type,"num"))                # Value can be set more than once
+  elseif (strcmpi(type,"num"))                          # Value can be set more than once
     if (previous)
       idx = strfind(previous, "=");
       error ("Parameter '%s' set twice, with values '%s' and '%g'.", ...

@@ -366,6 +366,8 @@ FNR==1 {
 
     #### builtin-functions 
     gsub(/\<arg[ \t]*\(/, "angle(");
+    gsub(/\<isna[ \t]*\(/, "isnan(");
+    gsub(/\<NA\>/, "NaN");
     gsub(/\<printf[ \t]*\(/, "fprintf(1,");
     gsub(/\<toascii[ \t]*\(/, "abs(");
     gsub(/\<tolower[ \t]*\(/, "lower(");

@@ -30,12 +30,11 @@
 ## If two arguments are given, they are interpreted as follows.
 ##
 ## @example
-## publish (@var{filename}, @var{options})
+## publish (@var{filename}, [@var{option}, @var{value}, ...])
 ## @end example
 ##
 ## @noindent
-## where @var{options} is a structure with one or more of the
-## following fields.
+## The following options are available:
 ##
 ## @itemize @bullet
 ## @item format
@@ -115,10 +114,10 @@
 
 ## Author: Fotios Kasolis <fotios.kasolis@gmail.com>
 
-function publish (file_name, options)
+function publish (file_name, varargin)
 
-  if nargin < 1 || nargin > 2
-    error ("Invalid call to publish");
+  if ((nargin < 1) || (rem (numel (varargin), 2) != 0))
+    print_usage ();
   endif
 
   if (!strcmp (file_name(end-1:end), ".m"))
@@ -133,15 +132,8 @@ function publish (file_name, options)
     error ("File %s does not exist.", ifile);
   endif
 
-  if (nargin == 1)
-    options = set_default (struct ());
-  endif
-
-  if (nargin==2 && !isstruct (options))
-    error ("Second argumnet must be structure of options");
-  endif
-
-  options = set_default (options);
+  options = set_default (struct ());
+  options = read_options (varargin, "op1", "format imageFormat showCode evalCode", "default", options);
 
   if (strcmpi (options.format, "latex"))
     create_latex (ifile, ofile, options);

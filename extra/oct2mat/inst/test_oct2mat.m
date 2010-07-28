@@ -225,3 +225,6 @@ aa = dd.(kk);
    mx = vec ( xx + xx' )/2;
     
     
+for [k,v]=x,    
+for [ k , v ] = x,    
+end

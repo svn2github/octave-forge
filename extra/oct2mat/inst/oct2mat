@@ -350,9 +350,9 @@ FNR==1 {
         }
 
     #### replace "=dd.ee.(kk)" with "=getfield(dd.ee,kk)"  -------------- 
-        $0 = gensub(/^([^=]*=[^=]*)(\<[[:alnum:]_\.]*)\.\((\<[^\(]*)\)/,"\\1getfield(\\2,\\3)", "g");
+    #    $0 = gensub(/^([^=]*=[^=]*)(\<[[:alnum:]_\.]*)\.\((\<[^\(]*)\)/,"\\1getfield(\\2,\\3)", "g");
     #### replace "dd.ee.(kk) = vv;" with "setfield(dd.ee,kk,vv);"  -------------- 
-        $0 = gensub(/^([ \t]*)(\<[[:alnum:]_\.]*)\.\((\<[^\(]*)\)[ \t]*=[ \t]*([^;]*);[ \t]*$/,"\\1setfield(\\2,\\3,\\4)", "g");
+    #    $0 = gensub(/^([ \t]*)(\<[[:alnum:]_\.]*)\.\((\<[^\(]*)\)[ \t]*=[ \t]*([^;]*);[ \t]*$/,"\\1setfield(\\2,\\3,\\4)", "g");
 
     #### keywords
     gsub(/\<endfunction\>/,"");
@@ -571,7 +571,7 @@ FNR==1 {
 	print "do:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
     }
     if (/\.\(/) {
-	print "set/getfield:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
+    #	print "set/getfield:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
     }
     if (/[ \t]*\[.~.\][ \t]*=/) {
 	print "ignored LHS arg:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
@@ -584,6 +584,9 @@ FNR==1 {
     }
     if (/\<columns[ \t]*\(/) {
 	print "columns:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
+    }
+    if (/\<for[ \t]*\[[^=]*,[^=]*\][ \t]*=[ \t]*[[:alpha:]_]/) {
+	print "loop over fields from structs:\t" FILENAME " line " NR "+: " $0  >> "/tmp/oct2mat.log"
     }
     
     ##### Restore Comments #####

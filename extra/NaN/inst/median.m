@@ -63,17 +63,18 @@ for l = 0:D3-1,
         t = t(~isnan(t));
         n = length(t);
 
-        if flag_MexKthElement, 
+        if n==0,
+                y(xo) = nan;
+        elseif flag_MexKthElement, 
+	        if (D1==1) t = t+0.0; end;	% make sure a real copy (not just a reference to x) is used        	flag_KthE = 0; % fast kth_element can be used, because t does not contain any NaN and there is need to care about in-place sorting
                 if ~rem(n,2),
-                        y(xo) = sum( kth_element( double(t), n/2 + [0,1] ) ) / 2;
+                        y(xo) = sum( kth_element( double(t), n/2 + [0,1], flag_KthE) ) / 2;
                 elseif rem(n,2),
-                        y(xo) = kth_element(double(t), (n+1)/2 );
+                        y(xo) = kth_element(double(t), (n+1)/2, flag_KthE);
                 end;
         else
                 t = sort(t);
-                if n==0,
-                        y(xo) = nan;
-                elseif ~rem(n,2),
+                if ~rem(n,2),
                         y(xo) = (t(n/2) + t(n/2+1)) / 2;
                 elseif rem(n,2),
                         y(xo) = t((n+1)/2);

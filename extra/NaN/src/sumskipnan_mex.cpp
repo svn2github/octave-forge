@@ -448,6 +448,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     		case mxUNKNOWN_CLASS:
     		case mxCELL_CLASS:
     		case mxSTRUCT_CLASS:
+    		default: 
     			mexPrintf("Type of 3rd input argument not supported.");
 		}
 	}

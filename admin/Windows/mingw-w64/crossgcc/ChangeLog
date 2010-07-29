@@ -1,5 +1,11 @@
 2010-Jul-29  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
+	* build/makefile (gcc-bootstrap-compile): fix build error due to line 
+	endings mismatch
+	(gcc-libgcc-install): move libgcc_s.a to correct location
+
+2010-Jul-29  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
 	* msysinstaller/install.cmd (cygutils-dos2unix): new archive
 	(libpopt): new archive
 

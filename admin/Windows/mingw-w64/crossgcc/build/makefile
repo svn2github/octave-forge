@@ -389,6 +389,7 @@ $(BUILD_DIR)/gcc/.config.marker : \
 # --------------------------------------
 gcc-bootstrap-compile : $(BUILD_DIR)/gcc/.bootstrap.compile.marker
 $(BUILD_DIR)/gcc/.bootstrap.compile.marker : $(BUILD_DIR)/gcc/.config.marker
+	u2d $(SRC_DIR)/gcc/gcc/doc/tm.texi $(SRC_DIR)/gcc/gcc/doc/tm.texi.in
 	$(MAKE) -C $(dir $@) $(MAKE_PARALLEL) all-gcc
 	touch $@
 
@@ -447,6 +448,8 @@ $(BUILD_DIR)/gcc/.libgcc.build.marker : $(BUILD_DIR)/crt/obj/.install.marker
 gcc-libgcc-install : $(BUILD_DIR)/gcc/.libgcc.install.marker
 $(BUILD_DIR)/gcc/.libgcc.install.marker : $(BUILD_DIR)/gcc/.libgcc.build.marker
 	$(MAKE) -C $(dir $@) install-target-libgcc
+	cp -av $(PREFIX)/lib/gcc/$(TARGET_ARCH)/lib/libgcc_s.a $(PREFIX)/lib/gcc/$(TARGET_ARCH)/`cat $(SRC_DIR)/gcc/gcc/BASE-VER`
+	rm -f $(PREFIX)/lib/gcc/$(TARGET_ARCH)/lib/libgcc_s.a
 	touch $@
 
 gcc-libgcc-all : \

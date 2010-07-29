@@ -74,7 +74,8 @@ call :checkforutil "%WGET%
 rem
 rem  Download and install
 rem
-call :msysinstall msysCORE-1.0.14-1-msys-1.0.14-bin.tar.lzma
+call :msysinstall msysCORE-1.0.15-1-msys-1.0.15-bin.tar.lzma
+call :msysinstall msysCORE-1.0.15-1-msys-1.0.15-ext.tar.lzma
 call :msysinstall libiconv-1.13.1-2-msys-1.0.13-dll-2.tar.lzma
 call :msysinstall libcharset-1.13.1-2-msys-1.0.13-dll-1.tar.lzma
 call :msysinstall libintl-0.17-2-msys-dll-8.tar.lzma
@@ -112,6 +113,7 @@ call :msysinstall bison-2.4.2-1-msys-1.0.13-bin.tar.lzma
 
 call :msysinstall texinfo-4.13a-2-msys-1.0.13-bin.tar.lzma
 
+mkdir "%DST%\mingw"
 call :mingwinstall gcc-core-4.5.0-1-mingw32-bin.tar.lzma
 call :mingwinstall gcc-c++-4.5.0-1-mingw32-bin.tar.lzma
 call :mingwinstall libgcc-4.5.0-1-mingw32-dll-1.tar.lzma
@@ -119,7 +121,7 @@ call :mingwinstall libstdc++-4.5.0-1-mingw32-dll-6.tar.lzma
 call :mingwinstall libgmp-5.0.1-1-mingw32-dll-10.tar.lzma
 call :mingwinstall libmpfr-2.4.1-1-mingw32-dll-1.tar.lzma
 call :mingwinstall libmpc-0.8.1-1-mingw32-dll-2.tar.lzma
-call :mingwinstall binutils-2.20.1-2-mingw32-bin.tar.gz
+call :mingwinstall binutils-2.20.51-1-mingw32-bin.tar.lzma
 call :mingwinstall mingwrt-3.18-mingw32-dll.tar.gz
 call :mingwinstall mingwrt-3.18-mingw32-dev.tar.gz
 call :mingwinstall w32api-3.14-mingw32-dev.tar.gz
@@ -128,7 +130,7 @@ mkdir "%DST%\local\bin"
 call :install junction.zip  http://download.sysinternals.com/Files/junction.zip \local\bin
 
 mkdir "%DST%\mingw"
-call :install svn-win32-1.6.6.zip http://subversion.tigris.org/files/documents/15/46880/svn-win32-1.6.6.zip \mingw "--strip-components=1"
+call :install svn-win32-1.6.12.zip http://alagazam.net/svn-1.6.12/svn-win32-1.6.12.zip \mingw "--strip-components=1"
 
 call :download wget.exe "http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe"
 echo wget.exe...

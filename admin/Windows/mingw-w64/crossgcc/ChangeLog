@@ -1,3 +1,11 @@
+2010-Jul-29  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	* msysinstaller/install.cmd (msysCORE-bin): update to 1.0.15
+	  (msysCORE-ext): add new archive
+	  (binutils): update to 2.20.51
+	  (svn): update to 1.6.12, use new download site
+	  Ensure subdirectory mingw/ is created before installing mingw32-gcc
+
 2010-Jun-15  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	* build/makefile (strip-exe): use mingw32's strip, not the built one, 

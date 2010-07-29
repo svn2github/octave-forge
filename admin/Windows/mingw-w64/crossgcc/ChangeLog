@@ -1,5 +1,10 @@
 2010-Jul-29  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
+	* msysinstaller/install.cmd (cygutils-dos2unix): new archive
+	(libpopt): new archive
+
+2010-Jul-29  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
 	* msysinstaller/install.cmd (msysCORE-bin): update to 1.0.15
 	  (msysCORE-ext): add new archive
 	  (binutils): update to 2.20.51

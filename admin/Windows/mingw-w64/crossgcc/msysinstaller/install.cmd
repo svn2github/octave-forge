@@ -113,6 +113,9 @@ call :msysinstall bison-2.4.2-1-msys-1.0.13-bin.tar.lzma
 
 call :msysinstall texinfo-4.13a-2-msys-1.0.13-bin.tar.lzma
 
+call :msysinstall cygutils-dos2unix-1.3.4-4-msys-1.0.13-bin.tar.lzma
+call :msysinstall libpopt-1.15-2-msys-1.0.13-dll-0.tar.lzma
+
 mkdir "%DST%\mingw"
 call :mingwinstall gcc-core-4.5.0-1-mingw32-bin.tar.lzma
 call :mingwinstall gcc-c++-4.5.0-1-mingw32-bin.tar.lzma

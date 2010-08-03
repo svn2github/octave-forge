@@ -18,6 +18,7 @@
 ## @deftypefn {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods})
 ## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh})
 ## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh}, @var{range})
+## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh}, @var{range}, @var(options))
 ##
 ## Transfer data to an OpenOffice_org Calc spreadsheet previously opened
 ## by odsopen().
@@ -43,13 +44,23 @@
 ## inserted to the right of all existing sheets. The pointer to the
 ## "active" sheet (shown when Calc opens the file) remains untouched.
 ##
-## If omitted, @var{range} is initially supposed to be 'A1:AMJ65536'.
-## The actual range to be used is determined by the size of @var{arr}.
+## If omitted, @var{range} is initially supposed to be 'A1:AMJ65536';
+## only a top left cell address can be specified as well. In these cases
+## the actual range to be used is determined by the size of @var{arr}.
 ## Be aware that data array sizes > 2.10^5 elements may exhaust the
 ## java shared memory space for the default java memory settings.
 ## For larger arrays appropriate memory settings are needed in the file
 ## java.opts; then the maximum array size for the java-based spreadsheet
 ## options is about 5-6.10^5 elements.
+##
+## Optional argument @var{options}, a structure, can be used to specify
+## various write modes.
+## Currently the only option field is "formulas_as_text", which -if set
+## to 1 or TRUE- specifies that formula strings (i.e., text strings
+## starting with "=" and ending in a ")" ) should be entered as litteral
+## text strings rather than as spreadsheet formulas (the latter is the
+## default). As jOpenDocument doesn't support formula I/O at all yet,
+## this option is ignored for the JOD interface.
 ##
 ## Data are added to the sheet, ignoring other data already present;
 ## existing data in the range to be used will be overwritten.
@@ -62,7 +73,13 @@
 ## Examples:
 ##
 ## @example
-##   [ods, status] = ods2oct ('arr', ods, 'Newsheet1', 'AA31:GH165');
+##   [ods, status] = ods2oct (arr, ods, 'Newsheet1', 'AA31:GH165');
+##   Write array arr into sheet Newsheet1 with upperleft cell at AA31
+## @end example
+##
+## @example
+##   [ods, status] = ods2oct ({'String'}, ods, 'Oldsheet3', 'B15:B15');
+##   Put a character string into cell B15 in sheet Oldsheet3
 ## @end example
 ##
 ## @seealso ods2oct, odsopen, odsclose, odsread, odswrite, odsfinfo
@@ -78,18 +95,24 @@
 ## 2010-03-28 Added basic support for ofdom v.0.8. Everything works except adding cols/rows
 ## 2010-03-29 Removed odfdom-0.8 support, it's simply too buggy :-( Added a warning instead
 ## 2010-06-01 Almost complete support for upcoming jOpenDocument 1.2b4. 1.2b3 still lacks a bit
+## 2010-07-05 Added example for writng character strings
+## 2010-07-29 Added option for entering / reading back spreadsheet formulas
 ##
-## Last update of subfunctions below: 2010-06-01
+## Last update of subfunctions below: 2010-08-01
 
-function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[])
+function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
+
+	if isempty (spsh_opts)
+		spsh_opts.formulas_as_text = 0;
+		# Other options here
+	endif
 
 	if (strcmp (ods.xtype, 'OTK'))
 		# Write ods file tru Java & ODF toolkit.
-		[ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange);
+		[ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts);
 		
 	elseif (strcmp (ods.xtype, 'JOD'))
 		# Write ods file tru Java & jOpenDocument. API still leaves lots to be wished...
-#		warning ("oct2ods: unreliable writing tru jOpenDocument interface.");
 		[ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange);
 		
 #	elseif ---- < Other interfaces here >
@@ -142,19 +165,23 @@ endfunction
 ## 2010-04-11 Changed all references to "cell" to "scell" to avoid reserved keyword
 ##            Small bugfix for cases with empty left columns (wrong cell reference)
 ## 2010-04-13 Fixed bug with stray cell copies beyond added data rectangle
+## 2010-07-29 Added formula input support (based on xls patch by Benjamin Lindner)
+## 2010-08-01 Added try-catch around formula input
+##     "      Changed range arg to also allow just topleft cell
+## 2010-08-03 Moved range checks and type array parsing to separate functions
 
-function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
+function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 
 	persistent ctype;
 	if (isempty (ctype))
-		# Number, String, Boolean, Date, Time, Empty
-		ctype = [1, 2, 3, 4, 5, 6];
+		# Number, Boolean, String, Formula, Empty, Date, Time
+		ctype = [1, 2, 3, 4, 5, 6, 7];
 	endif
 
-	rstatus = 0; changed = 0;
+	rstatus = 0; changed = 0; f_errs = 0;
 
-	# ODS' current row and column capacity
-	ROW_CAP = 65536; COL_CAP = 1024;
+#	# ODS' current row and column capacity
+#	ROW_CAP = 65536; COL_CAP = 1024;
 
 	if (isnumeric (c_arr))
 		c_arr = num2cell (c_arr);
@@ -206,53 +233,21 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 	endif
 
 # Check size of data array & range / capacity of worksheet & prepare vars
-
 	[nr, nc] = size (c_arr);
-	if (isempty (crange))
-		trow = 0;
-		lcol = 0;
-		nrows = nr;
-		ncols = nc;
-	else
-		[dummy, nrows, ncols, trow, lcol] = parse_sp_range (crange);
-		# Row/col = 0 based in ODFtoolkit
-		trow = trow - 1; lcol = lcol - 1;
+	[topleft, nrows, ncols, trow, lcol] = spsh_chkrange (crange, nr, nc, ods.xtype, ods.filename);
+	--trow; --lcol;									# Zero-based row # & col #
+	if (nrows < nr || ncols < nc)
+		warning ("Array truncated to fit in range");
+		obj = obj(1:nrows, 1:ncols);
 	endif
-	if (trow > ROW_CAP || lcol > COL_CAP)
-		celladd = calccelladdress (lcol, trow, 1, 1);
-		error (sprintf ("Topleft cell (%s) beyond spreadsheet limits (AMJ65536).", celladd));
-	endif
-	# Check spreadsheet capacity beyond requested topleft cell
-	nrows = min (nrows, ROW_CAP - trow + 1);
-	ncols = min (ncols, COL_CAP - lcol + 1);
-	# Check array size and requested range
-	nrows = min (nrows, nr);
-	ncols = min (ncols, nc);
-	if (nrows < nr || ncols < nc) warning ("Array truncated to fit in range"); endif
 	
 # Parse data array, setup typarr and throw out NaNs  to speed up writing;
-# 			1Number, 2String, 3Boolean, 4Date, 5Time, 0Empty
-
-	typearr = ones (nrows, ncols);					# type "NUMERIC", provisionally
-	obj2 = cell (size (c_arr));						# Temporary storage for strings
-
-	txtptr = cellfun ('isclass', c_arr, 'char');	# type "STRING" replaced by "NUMERIC"
-	obj2(txtptr) = c_arr(txtptr); c_arr(txtptr) = 2;# Save strings in a safe place
-
-	emptr = cellfun ("isempty", c_arr);
-	c_arr(emptr) = 0;								# Set empty cells to NUMERIC
-
-	lptr = cellfun ("islogical" , c_arr);			# Find logicals...
-	obj2(lptr) = c_arr(lptr);						# .. and set them to BOOLEAN
-
-	ptr = cellfun ("isnan", c_arr);					# Find NaNs & set to BLANK
-	typearr(ptr) = 0; 								# All other cells are now numeric
-
-	c_arr(txtptr) = obj2(txtptr);					# Copy strings back into place
-	c_arr(lptr) = obj2(lptr);
-	typearr(txtptr) = 2;							# ...and clean up 
-	typearr(emptr) = 0;
-	typearr(lptr) = 3;								# BOOLEAN
+	typearr = spsh_prstype (c_arr, nrows, ncols, ctype, spsh_opts, 0);
+	if ~(spsh_opts.formulas_as_text)
+		# Find formulas (designated by a string starting with "=" and ending in ")")
+		fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1) && strncmp (x(end:end), ")", 1), c_arr);
+		typearr(fptr) = ctype(4);					# FORMULA
+	endif
 
 # Prepare worksheet for writing. If needed create new sheet
 
@@ -486,18 +481,16 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 					scell.removeChild (tmp);
 					changed = 1;
 				endwhile
+				scell.removeAttribute ('table:formula');
 			endif
+
 			# Empty cell count stuff done. At last we can add the data
 			switch (typearr (ii, jj))
 				case 1	# float
 					scell.setOfficeValueTypeAttribute ('float');
 					scell.setOfficeValueAttribute (c_arr{ii, jj});
-				case 2	# string
-					scell.setOfficeValueTypeAttribute ('string');
-					pe = java_new ('org.odftoolkit.odfdom.doc.text.OdfTextParagraph', odfcont,'', c_arr{ii, jj});
-					scell.appendChild (pe);
-				case 3		# boolean
-					# Beware, for unpatched-for-booleans java-1.2.7 we must resort to floats
+				case 2		# boolean
+					# Beware, for unpatched-for-booleans java-1.2.7- we must resort to floats
 					try
 						# First try the preferred java-boolean way
 						scell.setOfficeValueTypeAttribute ('boolean');
@@ -516,21 +509,42 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 							scell.setOfficeValueAttribute (0);
 						endif
 					end_try_catch
-				case 4	# Date (implemented but Octave has no "date" data type - yet?)
-					scell.setOfficeValueTypeAttribute ('date');
-					[hh mo dd hh mi ss] = datevec (c_arr{ii,jj});
-					str = sprintf ("%4d-%2d-%2dT%2d:%2d:%2d", yy, mo, dd, hh, mi, ss);
-					scell.setOfficeDateValueAttribute (str);
-				case 5	# Time (implemented but Octave has no "time" data type)
-					scell.setOfficeValueTypeAttribute ('time');
-					[hh mo dd hh mi ss] = datevec (c_arr{ii,jj});
-					str = sprintf ("PT%2d:%2d:%2d", hh, mi, ss);
-					scell.setOfficeTimeValuettribute (str);
-				case 0	# Empty. Clear value attributes
+				case 3	# string
+					scell.setOfficeValueTypeAttribute ('string');
+					pe = java_new ('org.odftoolkit.odfdom.doc.text.OdfTextParagraph', odfcont,'', c_arr{ii, jj});
+					scell.appendChild (pe);
+				case 4  # Formula.  
+					# As we don't know the result type, simply remove previous type info.
+					# Once OOo Calc reads it, it'll add the missing attributes
+					scell.removeAttribute ('office:value');
+					scell.removeAttribute ('office:value-type');
+					# Try-catch not strictly needed, there's no formula validator yet
+					try
+						scell.setTableFormulaAttribute (c_arr{ii, jj});
+						scell.setOfficeValueTypeAttribute ('string');
+						pe = java_new ('org.odftoolkit.odfdom.doc.text.OdfTextParagraph', odfcont,'', '#Recalc Formula#');
+						scell.appendChild (pe);
+					catch
+						++f_errs;
+						scell.setOfficeValueTypeAttribute ('string');
+						pe = java_new ('org.odftoolkit.odfdom.doc.text.OdfTextParagraph', odfcont,'', c_arr{ii, jj});
+						scell.appendChild (pe);
+					end_try_catch
+				case {0 5}	# Empty. Clear value attributes
 					if (~newsh)
 						scell.removeAttribute ('office:value-type');
 						scell.removeAttribute ('office:value');
 					endif
+				case 6	# Date (implemented but Octave has no "date" data type - yet?)
+					scell.setOfficeValueTypeAttribute ('date');
+					[hh mo dd hh mi ss] = datevec (c_arr{ii,jj});
+					str = sprintf ("%4d-%2d-%2dT%2d:%2d:%2d", yy, mo, dd, hh, mi, ss);
+					scell.setOfficeDateValueAttribute (str);
+				case 7	# Time (implemented but Octave has no "time" data type)
+					scell.setOfficeValueTypeAttribute ('time');
+					[hh mo dd hh mi ss] = datevec (c_arr{ii,jj});
+					str = sprintf ("PT%2d:%2d:%2d", hh, mi, ss);
+					scell.setOfficeTimeValuettribute (str);
 				otherwise
 					# Nothing
 			endswitch
@@ -544,6 +558,9 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh=1, crange=[])
 
 	endfor
 
+	if (f_errs) 
+		printf ("%d formula errors encountered - please check input array\n", f_errs); 
+	endif
 	if (changed)	
 		ods.changed = 1;
 		rstatus = 1;
@@ -588,8 +605,10 @@ endfunction
 ##      "     Added check for jOpenDocument version. Adding sheets only works for
 ##            1.2b3+ (barring bug above)
 ## 2010-06-02 Fixed first sheet remaining in new spreadsheets
+## 2010-08-01 Added option for crange to be only topleft cell address
+##     "      Code cleanup
 
-function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
+function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 
 	# Check jOpenDocument version
 	sh = ods.workbook.getSheet (0);
@@ -652,6 +671,12 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 		lcol = 0;
 		nrows = nr;
 		ncols = nc;
+	elseif (isempty (strfind (deblank (crange), ':'))) 
+		[dummy1, dummy2, dummy3, trow, lcol] = parse_sp_range (crange);
+		nrows = nr;
+		ncols = nc;
+		# Row/col = 0 based in jOpenDocument
+		trow = trow - 1; lcol = lcol - 1;
 	else
 		[dummy, nrows, ncols, trow, lcol] = parse_sp_range (crange);
 		# Row/col = 0 based in jOpenDocument
@@ -659,8 +684,7 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh=1, crange=[])
 	endif
 
 	if (trow > 65535 || lcol > 1023)
-		celladd = calccelladdress (lcol + 1, trow + 1);
-		error (sprintf ("Topleft cell (%s) beyond spreadsheet limits (AMJ65536).", celladd));
+		error ("Topleft cell beyond spreadsheet limits (AMJ65536).");
 	endif
 	# Check spreadsheet capacity beyond requested topleft cell
 	nrows = min (nrows, 65536 - trow);		# Remember, lcol & trow are zero-based

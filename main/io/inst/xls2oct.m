@@ -18,6 +18,7 @@
 ## @deftypefn {Function File} [ @var{rawarr}, @var{xls}, @var{rstatus} ] = xls2oct (@var{xls})
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{xls}, @var{rstatus} ] = xls2oct (@var{xls}, @var{wsh})
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{xls}, @var{rstatus} ] = xls2oct (@var{xls}, @var{wsh}, @var{range})
+## @deftypefnx {Function File} [ @var{rawarr}, @var{xls}, @var{rstatus} ] = xls2oct (@var{xls}, @var{wsh}, @var{range}, @var{options})
 ##
 ## Read data contained within range @var{range} from worksheet @var{wsh}
 ## in an Excel spreadsheet file pointed to in struct @var{xls}.
@@ -34,6 +35,13 @@
 ## If no range is specified the occupied cell range will have to be
 ## determined behind the scenes first; this can take some time for the
 ## Java-based interfaces.
+##
+## Optional argument @var{options}, a structure, can be used to
+## specify various read modes. Currently the only option field is
+## "formulas_as_text"; if set to TRUE or 1, spreadsheet formulas
+## (if at all present) are read as formula strings rather than the
+## evaluated formula result values. This only works for the Java
+## based interfaces (POI and JXL).
 ##
 ## If only the first argument is specified, xls2oct will try to read
 ## all contents from the first = leftmost (or the only) worksheet (as
@@ -99,18 +107,24 @@
 ##             ADDRESS function still not working OK)
 ## 2010-03-14 Updated help text
 ## 2010-05-31 Updated help text (delay i.c.o. empty range due to getusedrange call)
+## 2010-07-28 Added option to read formulas as text strings rather than evaluated value
 
-function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh, datrange='')
+function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh, datrange='', spsh_opts=[])
+
+	if isempty (spsh_opts)
+		spsh_opts.formulas_as_text = 0;
+		# Other future options here
+	endif
 
 	if (strcmp (xls.xtype, 'COM'))
 		# Call Excel tru COM server
 		[rawarr, xls, rstatus] = xls2com2oct (xls, wsh, datrange);
 	elseif (strcmp (xls.xtype, 'POI'))
 		# Read xls file tru Java POI
-		[rawarr, xls, rstatus] = xls2jpoi2oct (xls, wsh, datrange);
+		[rawarr, xls, rstatus] = xls2jpoi2oct (xls, wsh, datrange, spsh_opts);
 	elseif (strcmp (xls.xtype, 'JXL'))
 		# Read xls file tru JExcelAPI
-		[rawarr, xls, rstatus] = xls2jxla2oct (xls, wsh, datrange);
+		[rawarr, xls, rstatus] = xls2jxla2oct (xls, wsh, datrange, spsh_opts);
 
 #	elseif ---- <Other interfaces here>
 
@@ -123,7 +137,7 @@ endfunction
 
 
 #====================================================================================
-## Copyright (C)2009 P.R. Nienhuis, <pr.nienhuis at hccnet.nl>
+## Copyright (C) 2009 P.R. Nienhuis, <pr.nienhuis at hccnet.nl>
 ##
 ## based on mat2xls by Michael Goffioul (2007) <michael.goffioul@swing.be>
 ##
@@ -293,12 +307,14 @@ endfunction
 ## Updates: 
 ## 2010-01-11 Fall back to cached values when formula evaluator fails
 ## 2010-03-14 Fixed max column nr for OOXML for empty given range
+## 2010-07-28 Added option to read formulas as text strings rather than evaluated value
+## 2010-08-01 Some bug fixes for formula reading (cvalue rather than scell)
 
-function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
+function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_opts)
 
 	persistent ctype;
 	if (isempty (ctype))
-		# Get enumrated cell types. Beware as they start at 0 not 1
+		# Get enumerated cell types. Beware as they start at 0 not 1
 		ctype(1) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_NUMERIC');
 		ctype(2) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_STRING');
 		ctype(3) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_FORMULA');
@@ -337,6 +353,7 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 	lastrow = sh.getLastRowNum ();
 	if (isempty (cellrange))
 		# Get used range by searching (slow...). Beware, it can be bit unreliable
+		## FIXME - can be replaced by call to getusedrange.m
 #		lcol = 65535;    # Old xls value
 		lcol = 1048576;  # OOXML (xlsx) max.
 		rcol = 0;
@@ -375,43 +392,50 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[])
 			scol = (irow.getFirstCellNum).intValue ();
 			ecol = (irow.getLastCellNum).intValue () - 1;
 			for jj = max (scol, lcol) : min (lcol+ncols-1, ecol)
-				cell = irow.getCell (jj);
-				if ~isempty (cell)
+				scell = irow.getCell (jj);
+				if ~isempty (scell)
 					# Explore cell contents
-					type_of_cell = cell.getCellType ();
+					type_of_cell = scell.getCellType ();
 					if (type_of_cell == ctype(3))        # Formula
-						try		# Because not al Excel formulas have been implemented
-							cell = frm_eval.evaluate (cell);
-							type_of_cell = cell.getCellType();
-							# Separate switch because form.eval. yields different type
-							switch type_of_cell
-								case ctype (1)	# Numeric
-									rawarr (ii+1-firstrow, jj+1-lcol) = cell.getNumberValue ();
-								case ctype(2)	# String
-									rawarr (ii+1-firstrow, jj+1-lcol) = char (cell.getStringValue ());
-								case ctype (5)	# Boolean
-									rawarr (ii+1-firstrow, jj+1-lcol) = cell.BooleanValue ();
-								otherwise
-									# Nothing to do here
-							endswitch
-							# Set cell type to blank to skip switch below
-							type_of_cell = ctype(4);
-						catch
-							# In case of formula errors we take the cached results
-							type_of_cell = cell.getCachedFormulaResultType ();
-							++jerror;   # We only need one warning even for multiple errors 
-						end_try_catch
+						if ~(spsh_opts.formulas_as_text)
+							try		# Because not al Excel formulas have been implemented
+								cvalue = frm_eval.evaluate (scell);
+								type_of_cell = cvalue.getCellType();
+								# Separate switch because form.eval. yields different type
+								switch type_of_cell
+									case ctype (1)	# Numeric
+										rawarr (ii+1-firstrow, jj+1-lcol) = scell.getNumberValue ();
+									case ctype(2)	# String
+										rawarr (ii+1-firstrow, jj+1-lcol) = char (scell.getStringValue ());
+									case ctype (5)	# Boolean
+										rawarr (ii+1-firstrow, jj+1-lcol) = scell.BooleanValue ();
+									otherwise
+										# Nothing to do here
+								endswitch
+								# Set cell type to blank to skip switch below
+								type_of_cell = ctype(4);
+							catch
+								# In case of formula errors we take the cached results
+								type_of_cell = scell.getCachedFormulaResultType ();
+								++jerror;   # We only need one warning even for multiple errors 
+							end_try_catch
+						endif
 					endif
 					# Preparations done, get data values into data array
 					switch type_of_cell
 						case ctype(1)		# 0 Numeric
-							rawarr (ii+1-firstrow, jj+1-lcol) = cell.getNumericCellValue ();
+							rawarr (ii+1-firstrow, jj+1-lcol) = scell.getNumericCellValue ();
 						case ctype(2)		# 1 String
-							rawarr (ii+1-firstrow, jj+1-lcol) = char (cell.getRichStringCellValue ());
+							rawarr (ii+1-firstrow, jj+1-lcol) = char (scell.getRichStringCellValue ());
+						case ctype(3)
+							if (spsh_opts.formulas_as_text)
+								tmp = char (scell.getCellFormula ());
+								rawarr (ii+1-firstrow, jj+1-lcol) = ['=' tmp];
+							endif
 						case ctype(4)		# 3 Blank
 							# Blank; ignore until further notice
 						case ctype(5)		# 4 Boolean
-							rawarr (ii+1-firstrow, jj+1-lcol) = cell.getBooleanCellValue ();
+							rawarr (ii+1-firstrow, jj+1-lcol) = scell.getBooleanCellValue ();
 						otherwise			# 5 Error
 							# Ignore
 					endswitch
@@ -481,9 +505,13 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-04
-## Last updated 2009-12-11
+## Updates:
+## 2009-12-11 ??? some bug fix
+## 2010-07-28 Added option to read formulas as text strings rather than evaluated value
+##            Added check for proper xls structure
+## 2010-07-29 Added check for too latge requested data rectangle
 
-function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[])
+function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_opts)
 
 	persistent ctype;
 	if (isempty (ctype))
@@ -542,47 +570,59 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[])
 		# Translate range to HSSF POI row & column numbers
 		[dummy, nrows, ncols, trow, lcol] = parse_sp_range (cellrange);
 		firstrow = max (trow-1, firstrow);
-		lastrow = firstrow + nrows - 1;
 		lcol = lcol - 1;					# POI rows & column # 0-based
+		# Check for too large requested range against actually present range
+		lastrow = min (firstrow + nrows - 1, sh.getRows () - 1);
+		nrows = min (nrows, sh.getRows () - firstrow);
+		ncols = min (ncols, sh.getColumns () - lcol);
 	endif
 
 	# Read contents into rawarr
 	rawarr = cell (nrows, ncols);			# create placeholder
 	for jj = lcol : lcol+ncols-1
 		for ii = firstrow:lastrow
-			cell = sh.getCell (jj, ii);
-			type_of_cell = char (cell.getType ());
-			switch type_of_cell
-				case ctype {1, 1}
-					# Boolean
-					rawarr (ii+1-firstrow, jj+1-lcol) = cell.getValue ();
-				case ctype {2, 1}
-					# Boolean formula
-					rawarr (ii+1-firstrow, jj+1-lcol) = cell.getValue ();
-				case ctype {3, 1}
-					# Date
-					rawarr (ii+1-firstrow, jj+1-lcol) = cell.getValue ();
-				case ctype {4, 1}
-					# Date Formula
-					rawarr (ii+1-firstrow, jj+1-lcol) = cell.getValue ();
-				case ctype {5, 1}
-					# Empty. Nothing to do here
-				case ctype {6, 1}
-					# Error. Nothing to do here
-				case ctype {7, 1}
-					# Formula Error. Nothing to do here
-				case ctype {8, 1}
-					# Number
-					rawarr (ii+1-firstrow, jj+1-lcol) = cell.getValue ();
-				case ctype {9, 1}
-					# String
-					rawarr (ii+1-firstrow, jj+1-lcol) = cell.getString ();
-				case ctype {10, 1}
-					# NumericalFormula
-					rawarr (ii+1-firstrow, jj+1-lcol) = cell.getValue ();
-				case ctype {11, 1}
-					# String Formula
-					rawarr (ii+1-firstrow, jj+1-lcol) = cell.getString ();
+			scell = sh.getCell (jj, ii);
+			switch char (scell.getType ())
+				case ctype {1, 1}   # Boolean
+					rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
+				case ctype {2, 1}   # Boolean formula
+					if (spsh_opts.formulas_as_text)
+						tmp = scell.getFormula ();
+						rawarr (ii+1-firstrow, jj+1-lcol) = ["=" tmp];
+					else
+						rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
+					endif
+				case ctype {3, 1}   # Date
+					rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
+				case ctype {4, 1}   # Date formula
+					if (spsh_opts.formulas_as_text)
+						tmp = scell.getFormula ();
+						rawarr (ii+1-firstrow, jj+1-lcol) = ["=" tmp];
+					else
+						rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
+					endif
+				case { ctype {5, 1}, ctype {6, 1}, ctype {7, 1} }
+					# Empty, Error or Formula error. Nothing to do here
+				case ctype {8, 1}   # Number
+					rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
+				case ctype {9, 1}   # String
+					rawarr (ii+1-firstrow, jj+1-lcol) = scell.getString ();
+				case ctype {10, 1}  # Numerical formula
+					if (spsh_opts.formulas_as_text)
+						tmp = scell.getFormula ();
+						rawarr (ii+1-firstrow, jj+1-lcol) = ["=" tmp];
+					else
+						rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
+					endif
+				case ctype {11, 1}  # String formula
+					if (spsh_opts.formulas_as_text)
+						tmp = scell.getFormula ();
+						rawarr (ii+1-firstrow, jj+1-lcol) = ["=" tmp];
+					else
+						rawarr (ii+1-firstrow, jj+1-lcol) = scell.getString ();
+					endif
+				otherwise
+					# Do nothing
 			endswitch
 		endfor
 	endfor

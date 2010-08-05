@@ -1,0 +1,124 @@
+%# -*- mode: Octave -*-
+%!shared x, y, z
+%! x=dataframe('octave_frame/data_test.csv');
+%! y=x(:, 2:6, 'df');
+%! # direct matrix setting through struct access
+%! y.Freq=[(1:10).' (10:-1:1).'];
+%! # direct setting through 3D matrix
+%! y(:, ["C"; "G"], 1:2) = repmat(y(:, ["C"; "G"]), [1 1 2]);
+%! y(4:5, 4:5) = NaN;
+%!test
+%! if any(size(x) != [10 7]),
+%!   error('x: wrong input size')
+%! endif
+%! if any(size(y) != [10 5 8]),
+%!   error('y: wrong input size')
+%! endif
+%!assert(numel(x), 70);
+%! # test simple slices
+%!assert(x.VBIAS(1:6), (6:-.2:5).');
+%!assert(x(6:end, 2), (5:-.2:4.2).');
+%!assert(x(6, "OK"), 'B');
+%!assert(x(2, logical([0 0 1 1])), x(2, 3:4))
+%!assert(size(y(:, :, :)), [10 5 2]);
+%!assert(size(y(:, :)), [10 10]);
+%!assert(size(y(:, 2, 2)), [10 1]);
+%!assert(size(y(:, 2)), [10 1]);
+%!assert(y.C(4:5), [NaN NaN]);
+%!error error("Accessing past limits")
+%! x(1, 8)
+%! x(11, 1)
+%! x(1, logical(ones(1, 7)))
+%! x.types{"FReq*"}
+%!test
+%! #select one column	      
+%!assert(x(1:3, 1, 'cell')(:), x(1:3, 'cell')(:))	
+%!assert(x('cell')(33:35).', x('cell')(33:35)(:))
+%! #select two columns	      
+%!assert(x(1:10, 2:3, 'cell')(:), x(11:30, 'cell')(:))	
+%!assert(x(1:10, 2:3, 'cell')(:), x('cell')(1:10, 2:3)(:))
+%!error error("Complex accesses");
+%! x{};
+%! x('dataframe')('cell');
+%!test
+%! # test modifying column type
+%! x.types{"Freq"}='uint32'; x.types{"VB*"} = 'single';
+%!assert(class(x(1, "Freq")), 'uint32')
+%!error error("mixing different types") 
+%! x([12:18 22:28 32:38]);
+%!error error("non-square access")
+%! x([22:28 32:37], 'dataframe');
+%! x([1:19], 'cell');
+%!error error("Single-dimension name access")
+%! x("Freq");
+%!test
+%! # remove rownames
+%! x.rownames = [];
+%!assert(size(x.rownames), [0 0])
+%! # complex access
+%! x(x.OK=='?', ["C"; "G"]) = NaN;
+%!assert(x(4, 5:6), [NaN NaN])
+%! # extract values
+%! y = x(x.OK=='A', {"Freq", "VB*", "C", "G"}, "dataframe");
+%! #comparison using cell output class, because assert use (:)
+%!assert(y(:, 2:3, "cell"), x([1 7], ["VB*"; "C"], "cell"))
+%!assert(x((33:35).'), x(3:5, 4))
+%! #test further dereferencing
+%!assert(x(:, "C")(2:4), x(2:4, "C"))
+%! # complex modifications through cell access
+%! z = dataframe(x, {"VB*", {"Polarity" ,"Sense"; ones(12,2), zeros(10,2)}});
+%!assert(size(z), [12 9 11]);
+%!assert(z.Sense(11:12, :), NA*ones(2, 2));
+
+%!demo
+%! x=dataframe('octave_frame/data_test.csv')
+%! disp("Access as a struct: x.VBIAS(1:6)")
+%! x.VBIAS(1:6)
+%! pause; disp("Access as a matrix: x(6, 'OK')")
+%! x(6, "OK")
+%! pause; disp("Removing the row names:  x.rownames = []");
+%! x.rownames = []
+%! pause; disp("Modifying column type: x.types{'Freq'}='uint32'");
+%! x.types{"Freq"}='uint32'
+%! pause; disp("Partial extract, returning a dataframe");
+%! disp("y = x(x.OK=='A'|x.OK=='B', {'Freq', 'VB*', 'C', 'G'}, 'dataframe')")
+%! y = x(x.OK=='A'|x.OK=='B', {"Freq", "VB*", "C", "G"}, "dataframe")
+%! pause; disp("Setting rownames")
+%! disp("y.rownames = char({'low', 'med', 'med', 'high'})");
+%! y.rownames = char({'low', 'med', 'med', 'high'})
+%! pause; disp("Partial modification of one column")
+%! disp("y.Freq('med')=[290e3; 310e3]")
+%! y.Freq('med') = [290e3; 310e3]
+%! pause; disp('Complex access');
+%! disp("y.C('med')([2 1])");
+%! y.C('med')([2 1])
+%! pause; disp('Print stats about a dataframe: summary(y)');
+%! summary(y)
+
+%!demo
+%! disp('Modifying a dataframe from a cell array')
+%!  RHS={ 'don''t care', 'idx', 'Vb', 'freq', 'Ib', 'C', 'status', 'comment'
+%!        'yes',     uint16(5), single(3.2), 10000, 1e-11, 6e-13, 'bla', '@'
+%!        'no',     uint16(16), 4, 12000, 2e-11, 4e-13, 7, 'X'};
+%! disp("Resetting a dataframe: x=dataframe([])");
+%! x = dataframe([]);
+%! x(:, :) = RHS
+%! disp("Overwriting the second line")
+%! RHS{1, 2} = "idg"; RHS{3, 1}= "No!";
+%! disp("'x(2, :) = RHS(1:2, :)' will produce two warnings")
+%! disp("Notice that only the second line content will change");
+%! disp("x(2, :) = RHS(1:2, :)")
+%! x(2, :) = RHS(1:2, :)
+%! pause; disp('same effect, but skipping first column');
+%! disp("x(1, :) = RHS([1 3], 2:end)");
+%! x(1, :) = RHS([1 3], 2:end)
+%!demo
+%! disp("same game, but using row indexes.")
+%! disp("Notice the first field name is empty")
+%! RHS= { '', 'idx', 'Vb', 'freq', 'Ib', 'C', 'status', 'comment'
+%!        5, uint32(16),   5.3, 11000, 3e-12, 5e-12, "may", "8th"}; 
+%! disp("x= dataframe(RHS)")
+%! x = dataframe(RHS)
+%! pause; disp("The same effect is achieved by assigning to an empty dataframe")
+%! x = dataframe([]);
+%! x(:, :) = RHS

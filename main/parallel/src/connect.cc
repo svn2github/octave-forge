@@ -70,10 +70,10 @@ Connect hosts and return sockets.")
       struct hostent *he;
       octave_value hosts=args(0);
       charMatrix cm=hosts.char_matrix_value();
-      char *host,*pt,myname[16];
+      char *host,*pt; // ,myname[16];
       
       errno=0;
-      gethostname(myname,15);
+      // gethostname(myname,15);
       row= cm.rows();
       col= cm.columns();
       cm= cm.transpose(); 
@@ -209,17 +209,17 @@ Connect hosts and return sockets.")
 	  nl=htonl(pid);
 	  write_if_no_error(sock,&nl,sizeof(int),error_state);
 	  //send name size
-	  strncpy(myname,cm.data(),col);
-	  pt=strchr(myname,' ');
+	  strncpy(host,cm.data(),col);
+	  pt=strchr(host,' ');
 	  if(pt==NULL)
-	    myname[col]='\0';
+	    host[col]='\0';
 	  else
 	    *pt='\0';
-	  len=strlen(myname);
+	  len=strlen(host);
 	  nl=htonl(len);
 	  write_if_no_error(sock,&nl,sizeof(int),error_state);
 	  //send name
-	  write_if_no_error(sock,myname,len+1,error_state);
+	  write_if_no_error(sock,host,len+1,error_state);
 	  //recv result code
 	  read_if_no_error(sock,&nl,sizeof(int),error_state);
 	  result=ntohl(nl);

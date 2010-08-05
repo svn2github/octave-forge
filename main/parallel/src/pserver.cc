@@ -388,11 +388,11 @@ Connect hosts and return sockets.")
 	      read(asock,&nl,sizeof(int));
 	      pppid=ntohl(nl);
 	      sock_v=(int *)calloc((num_nodes+1)*3,sizeof(int));
-	      host_list=(char **)calloc(num_nodes,sizeof(char *));
+	      host_list=(char **)calloc(num_nodes+1,sizeof(char *));
 	      for(i=0;i<=num_nodes;i++){
 		read(asock,&nl,sizeof(int));
 		len=ntohl(nl);
-		host_list[i]=(char *)calloc(len,sizeof(char *));
+		host_list[i]=(char *)calloc(len,sizeof(char));
 		read(asock,host_list[i],len);
 	      }
 
@@ -423,7 +423,7 @@ Connect hosts and return sockets.")
 		  ol=sizeof(bufsize);
 		  setsockopt(dasock,SOL_SOCKET,SO_REUSEADDR,&bufsize,ol);
 		  
-		  //recv pppid
+		  //recv pppid (of connecting process at master)
 		  read(dasock,&nl,sizeof(int));
 		  rpppid=ntohl(nl);
 		  //recv name size
@@ -445,7 +445,6 @@ Connect hosts and return sockets.")
 		  //send result code
 		  if(result==0){
 		    if(pppid==rpppid){
-		      result=0;
 		      nl=htonl(result);
 		      write(dasock,&nl,sizeof(int));
 		      //send endian
@@ -458,10 +457,12 @@ Connect hosts and return sockets.")
 #endif
 		      write(dasock,&nl,sizeof(int));
 		      //recv endian
-		      read(sock,&nl,sizeof(int));
+		      read(dasock,&nl,sizeof(int));
 		      sock_v[j+2*(num_nodes+1)]=ntohl(nl);
 		      break;
-		    }
+		    } // And else? Shouldn't this test have been made
+		      // before? What is the policy if a different
+		      // process at the master meddles in?
 		  }else{
 		    result=-1;
 		    nl=htonl(result);
@@ -513,8 +514,8 @@ Connect hosts and return sockets.")
 		  setsockopt(dsock,SOL_SOCKET,SO_REUSEADDR,&bufsize,ol);
 		  
 		  //send pppid
+		  nl=htonl(pppid);
 		  write(dsock,&nl,sizeof(int));
-		  pppid=ntohl(nl);
 		  //send name size
 		  len=strlen(host_list[me]);
 		  nl=htonl(len);
@@ -528,7 +529,7 @@ Connect hosts and return sockets.")
 		  if(result==0){
 		    sock_v[i]=dsock;
 		    //recv endian
-		    read(sock,&nl,sizeof(int));
+		    read(dsock,&nl,sizeof(int));
 		    sock_v[i+2*(num_nodes+1)]=ntohl(nl);
 		    //send endian
 #if defined (__BYTE_ORDER)
@@ -538,7 +539,7 @@ Connect hosts and return sockets.")
 #else
 #  error "can not determine the byte order"
 #endif
-		    write(sock,&nl,sizeof(int));
+		    write(dsock,&nl,sizeof(int));
 		    break;
 		  }else{
 		    close(dsock);
@@ -546,11 +547,11 @@ Connect hosts and return sockets.")
 		}
 		free(addr);
 	      }
-	      /*   for(i=0;i<=num_nodes;i++){
+	      for(i=0;i<=num_nodes;i++){
 		free(host_list[i]);
 	      }
 	      free(host_list);
-	      */
+
  	      //normal act
 	      install_signal_handlers ();
       
@@ -563,10 +564,12 @@ Connect hosts and return sockets.")
 	      sprintf(s,"sockets=zeros(%d,3)",num_nodes+1);
 	      eval_string(std::string(s),true,stat);
 	      for(i=0;i<=num_nodes;i++){
-		sprintf(s,"sockets(i+1,:)=[%d,0,%d]",sock_v[i],sock_v[i+2*(num_nodes+1)]);
+		sprintf(s,"sockets(%d,:)=[%d,0,%d]",i+1,sock_v[i],sock_v[i+2*(num_nodes+1)]);
 		eval_string(std::string(s),true,stat);
 	      }
 		
+	      free(sock_v);
+
 	      interactive = false;
 	      
 	      line_editing = false;

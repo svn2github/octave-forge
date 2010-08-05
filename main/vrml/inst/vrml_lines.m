@@ -46,7 +46,7 @@ i=1;
 
 while args>=i ,
 
-  tmp = nth (varargin, i++) ;	# pos 2.1.39
+  tmp = varargin{i++} ;	# pos 2.1.39
   if ! ischar(tmp) ,
     error ("vrml_lines : Non-string option : \n") ;
     ## keyboard
@@ -55,7 +55,7 @@ while args>=i ,
   if index(opt1,[" ",tmp," "]) ,
     
 
-    tmp2 = nth (varargin, i++); # pos 2.1.39
+    tmp2 = varargin{i++}; # pos 2.1.39
     ## args-- ;
     eval([tmp,"=tmp2;"]) ;
 

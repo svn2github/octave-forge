@@ -7,11 +7,13 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091211;17230700">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100406;21325100">
+	<META NAME="CHANGED" CONTENT="20100810;23223700">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -33,7 +35,7 @@
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">README
 for Excel spreadsheet file r/w access scripts for octave (&gt;
 3.2.0)<BR><BR>Copyright (C) 2009, 2010 Philip Nienhuis &lt;prnienhuis
-at users.sf.net&gt;<BR><BR>This version April 6, 2010.</FONT></FONT></P>
+at users.sf.net&gt;<BR><BR>This version August 10, 2010.</FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
@@ -84,6 +86,18 @@ properly.<BR><BR><B>parsecell.m</B></FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Function
 for separating the data in raw arrays returned by xls2oct, into
 numerical/logical and text (cell) arrays.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>spsh_chkrange.m</B></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>spsh_prstype.m</B></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>getusedrange.m</B></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>calccelladdress.m</B></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>parse_sp_range.m</B></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Support
+files called by the scripts and not meant for direct invocation by
+users.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><BR><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>REQUIRED
@@ -94,7 +108,7 @@ the Excel/COM interface:</FONT></FONT></P>
 	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">A
 	windows computer with Excel installed</FONT></FONT></P>
 	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Octave-forge
-	Windows-1.0.8 package WITH LATEST SVN PATCHES APPLIED</FONT></FONT></P>
+	Windows-1.0.8 or later package WITH LATEST SVN PATCHES APPLIED</FONT></FONT></P>
 </UL>
 <P STYLE="margin-left: 0.64cm; text-indent: -0.66cm; margin-bottom: 0cm">
 <BR>
@@ -195,25 +209,88 @@ xlsfinfo (and be sure the complete Apache POI interface is
 installed).</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Using
+JExcelAPI (JXL), after writing into a worksheet you MUST save the
+file &ndash; adding data to the same or another worksheet is no more
+possible after the first call to oct2xls().</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>SPREADSHEET
+FORMULA SUPPORT</B></U></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><BR>When
+using the POI and JXL interfaces you can:</FONT></FONT></P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(When
+	reading, xls2oct) either read spreadsheet formula results (like in
+	COM interface), or the literal formula text strings;</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(When
+	writing, oct2xls) either enter formulas in the worksheet as
+	formulas, or enter them as literal text strings. The former is also
+	like in COM.</FONT></FONT></P>
+</UL>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">In
+short, you can enter spreadsheet formulas and in a later stage read
+them back, change them and re-enter them in the worksheet.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
+behaviour is controlled by an option structure </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options</B></FONT></FONT>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">which
+for now has only one (logical) field:</SPAN></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options.formulas_as_text</B></FONT></FONT>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">=
+0 (the default) implies enter formulas as formulas and read back
+formula results</SPAN></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options.formulas_as_text
+</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">=1
+(or any positive integer) means enter formulas as text strings and
+read them back as text strings.</SPAN></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">Be
+aware that there's no formula evaluator in JexcelAPI (JXL). So if you
+create formulas in your spreadsheet using oct2xls or xlswrite with
+'JXL', do not expect meaningful results when reading those files
+later on </SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>unless</B></FONT></FONT>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">you
+open them in Excel and write them back to disk.</SPAN></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-weight: normal"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">While
+both Apache POI and JExcelAPI feature a formula validator, not all
+spreadsheet functions present in Excel have been implemented (yet).</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm; font-weight: normal"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Worse,
+older Excel versions feature less functions than newer versions. So
+be wary as this may make for interesting confusion.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>MATLAB
 COMPATIBILITY</B></U></FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><BR><B>xlsread</B>,
 <B>xlswrite</B> and <B>xlsfinfo</B> are for the most part
-Matlab-compatible. Some small differences are mentioned
-below.<BR><BR><B>xlsread</B><BR>Matlab's <B>xlsread</B> supports
-invoking extra functions while reading (&quot;passing function
-handle&quot;); octave not. But this can be simulated outside
+Matlab-compatible. Some small differences are mentioned below. When
+using the Java interfaces octave supplies some formula manipulation
+support.<BR><BR><U><B>xlsread</B></U><BR>Matlab's <B>xlsread</B>
+supports invoking extra functions while reading (&quot;passing
+function handle&quot;); octave not. But this can be simulated outside
 <B>xlsread</B>.<BR><BR>Matlab's <B>xlsread</B> flags some spreadsheet
 errors, octave-forge just returns blank cells.<BR><BR>When using a
 Java interface, octave-forge returns info about the actual (rather
 than the requested) cell range where the data came from; Matlab and
 ActiveX/Excel can't. This is due to Excel automatically trimming
 returned arrays from empty outer columns and rows. When using COM,
-octave has the same limitation.<BR>Personally I find it very useful
-to know from what part of a worksheet the data originate so I've put
-quite some effort in it :-)</FONT></FONT></P>
+octave has the same limitation.<BR>This might be solved using
+advanced Visual Basic statements into getusedrange.m but my VB
+proficiency is inadequate for this :-)</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Personally
+I find it very useful to know from what part of a worksheet the data
+originate so I've put quite some effort in it :-)</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Matlab's
@@ -222,8 +299,9 @@ rectangle encompassing all numerical values. Octave's xlsread
 doesn't. This means that Matlab ignores all row/column headers, not
 very user-friendly IMO. <BR><BR>When using the Java interface,
 reading and writing xls-files by octave-forge is
-platform-independent. On systems w/o Excel Matlab can only read Excel
-95 formatted .xls files.</FONT></FONT></P>
+platform-independent. On systems w/o installed Excel, Matlab can only
+read Excel 95 formatted .xls files (written using ML xlswrite's
+'Basic&rdquo; option).</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Matlab's
@@ -232,7 +310,7 @@ returns numerical data (where 0 = 1/1/1900 &ndash; you need to
 transfer them into proper octave date values yourself, see bottom of
 this document for more info).<BR><BR>Matlab's <B>xlsread</B> invokes
 <B>csvread</B> if no Excel interface is present. Octave-forge's
-<B>xlsread</B> doesn't.<BR><BR><B>xlswrite</B><BR>Octave-forge's
+<B>xlsread</B> doesn't.<BR><BR><U><B>xlswrite</B></U><BR>Octave-forge's
 <B>xlswrite</B> works on systems w/o Excel support, Matlab's doesn't
 (properly).</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
@@ -247,7 +325,9 @@ specified sheet number. </FONT></FONT>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Even
 better (IMO) while M's xlswrite always creates Sheet1/Sheet2/Sheet3
 when creating a new spreadsheet, octave's xlswrite only creates the
-requested worksheet.</FONT></FONT></P>
+requested worksheet. (Did you know that you can instruct Excel to
+create spreadsheets with just one, or any number of, worksheets? Look
+in Tools | Options, General tab.)</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">And
 octave doesn't touch the &ldquo;active sheet&rdquo;.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
@@ -283,15 +363,17 @@ between reading and writing is quite involved and memory-hungry when
 processing large spreadsheets. As the docs state, JExcelAPI is
 optimized for reading and it does do that well - but slower than
 Excel/COM. The fact that upon a switch from reading to writing the
-existing spreadsheet is overwritten in place by a blank one and that
-you can only get the contents back wen writing out all of the changes
-is worrying - and any change after the first write() is lost as a
-next write() doesn't seem to work. The first is by JExcelAPI design,
-the second is probably a bug (in octave-forge/Java or JExcelAPI ? I
-don't know). Adding data to existing spreadsheets does work, but IMO
-undue user confidence is needed.</FONT></FONT></P>
+existing spreadsheet is overwritten <B>in plac</B>e by a blank one
+and that you can only get the contents back wen writing out all of
+the changes is worrying - and any change after the first write() is
+lost as a next write() doesn't seem to work, worse yet, you may
+completely loose the spreadsheet in question. The first is by
+JExcelAPI design, the second is probably a bug (in octave-forge/Java
+or JExcelAPI ? I don't know). Adding data to existing spreadsheets
+does work, but IMO undue user confidence is needed.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">JExcelAPI
-supports BIFF5 and BIFF8 (Excel 95 and Excel 97-2003, respectively).</FONT></FONT></P>
+supports BIFF5 (only reading) and BIFF8 (Excel 95 and Excel 97-2003,
+respectively).</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">JexcelAPI,
 unlike ApachePOI, doesn't evaluate functions while reading but
 instead relies on cached results (i.e. results computed by Excel
@@ -304,12 +386,12 @@ than JExcelAPI, while it doesn't support BIFF5 it does support BIFF8
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">It
 is slower than native JXL let alone Excel &amp; COM but it features
 active formula evaluation, although at the moment (v. 3.6) not all
-Excel functions have been implemented. I've made the relevant script
-(xls2jpoi2oct) fall back on cached formula results (and yield a
-suitable warning) for non-implemented Excel functions while reading
-Excel files.<BR><BR>All in all, of the two Java options I'd prefer
-Apache POI rather than JexcelAPI. But the latter is indispensable for
-BIFF5 formats.</FONT></FONT></P>
+Excel functions have been implemented. I've made the relevant
+subfunction (xls2jpoi2oct) fall back to cached formula results (and
+yield a suitable warning) for non-implemented Excel functions while
+reading Excel files.<BR><BR>All in all, of the two Java options I'd
+prefer Apache POI rather than JexcelAPI. But the latter is
+indispensable for BIFF5 formats.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Some
@@ -331,7 +413,7 @@ Java is a compromise between portability and rapid development time
 versus capacity (and speed).</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">But
 IMO data sets larger than 5.10<SUP>5</SUP> cells should not be kept
-in spreadsheets anyway. Use real databases for such data sets.</FONT></FONT></P>
+in spreadsheets anyway. Better use real databases for such data sets.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><BR>
@@ -349,9 +431,9 @@ big chunk of your computer's RAM in which all java classes and
 methods etc. are to be loaded: the java memory pool. It does this
 because java has a very sophisticated &ldquo;garbage collection&rdquo;
 system. At least on Windows, the initial size is 2MB and the maximum
-size is 64MB. On Linux this allocated size might differ. This part of
-memory is where the java-based XLS/ODS octave routines live and keep
-their variables etc.</FONT></FONT></P>
+size is 16 MB. On Linux this allocated size might differ. This part
+of memory is where the java-based XLS/ODS octave routines live and
+keep their variables etc.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">For
 transferring large pieces of information to and from spreadsheets you
@@ -387,6 +469,28 @@ the memory allocation is really in use and that is a trimmed-down
 part of the memory allocation pool. On Windows systems it often
 suffices to minimize the octave terminal for a few seconds to get a
 more reasonable memory footprint.</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>TROUBLESHOOTING</B></U></FONT></FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal">Some
+hints for troubleshooting Excel support are contained in this thread:</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><A HREF="http://sourceforge.net/mailarchive/forum.php?thread_name=4C61B649.9090802%40hccnet.nl&amp;forum_name=octave-dev"><SPAN STYLE="font-style: normal">http://sourceforge.net/mailarchive/forum.php?thread_name=4C61B649.9090802%40hccnet.nl&amp;forum_name=octave-dev</SPAN></A></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal">dated
+August 10, 2010.</SPAN></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><BR>
@@ -431,6 +535,6 @@ other options for development (who?):</FONT></FONT></P>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Philip
-Nienhuis, April 6, 2010</FONT></FONT></P>
+Nienhuis, August 10, 2010</FONT></FONT></P>
 </BODY>
 </HTML>

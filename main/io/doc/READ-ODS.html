@@ -7,11 +7,13 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091229;22213000">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100810;23131100">
+	<META NAME="CHANGED" CONTENT="20100811;22422700">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -39,7 +41,7 @@ support for Octave</B></U></FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>This
-version August 10, 2010</FONT></FONT></P>
+version August 11, 2010</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I>(ODS
@@ -149,9 +151,10 @@ ODS access, you'll need to choose at least one of the following java
 class files collections:</FONT></FONT></P>
 <UL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(currently
-	the preferred option) <B>odfdom.jar</B> (<U>only</U><SPAN STYLE="text-decoration: none"><SPAN STYLE="font-weight: normal">
-	version</SPAN></SPAN> <B>0.7.5</B> <SPAN STYLE="text-decoration: none">works
-	OK!</SPAN>) &amp; <B>xercesImpl.jar</B>. Get them here:</FONT></FONT></P>
+	the preferred option) <B>odfdom.jar</B> (<U>only</U><SPAN STYLE="text-decoration: none">
+	</SPAN><SPAN STYLE="text-decoration: none"><SPAN STYLE="font-weight: normal">version</SPAN></SPAN>
+	<B>0.7.5</B> <SPAN STYLE="text-decoration: none">works OK!</SPAN>) &amp;
+	<B>xercesImpl.jar</B>. Get them here:</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases</FONT></FONT></A></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="http://xerces.apache.org/mirrors.cgi"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">http://xerces.apache.org/mirrors.cgi</FONT></FONT></A></P>
 </UL>
@@ -271,11 +274,13 @@ them back, change them and re-enter them in the worksheet.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
-behaviour is controlled by an option structure </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">
-(as last argument to oct2ods.m and ods2oct.m) which for now has only
-one (logical) field:</SPAN></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options.formulas_as_text</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">
-= 0 (the default) implies enter formulas as formulas and read back
+behaviour is controlled by an option structure </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options</B></FONT></FONT>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">(as
+last argument to oct2ods.m and ods2oct.m) which for now has only one
+(logical) field:</SPAN></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options.formulas_as_text</B></FONT></FONT>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">=
+0 (the default) implies enter formulas as formulas and read back
 formula results</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options.formulas_as_text
 </B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">=1
@@ -287,15 +292,16 @@ read them back as text strings.</SPAN></FONT></FONT></P>
 aware that there's no formula evaluator in ODS java, not even a
 formula validator. So if you create formulas in your spreadsheet
 using oct2ods or odswrite, do not expect meaningful results when
-reading those files later on </SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>unless</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">
-you open them in OpenOffice.org Calc and write them back to disk.</SPAN></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">You
+reading those files later on </SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>unless</B></FONT></FONT>
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">you
+open them in OpenOffice.org Calc and write them back to disk.</SPAN></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm; font-weight: normal"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">You
 can write all kind of junk as a formula into a spreadsheet cell.
 There's not much validity checking built into odfdom.jar. I didn't
 bother to try OpenOffice.org Calc to read such faulty spreadsheets,
 so I don't know what will happen with spreadsheets containing invalid
 formulas. But using the above options, you can at least repair them
-using octave....</SPAN></FONT></FONT></P>
+using octave....</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
@@ -449,11 +455,10 @@ OF INTERFACES</B></U></FONT></FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
-ODFtoolkit (&amp; associated xerces) interface is the one that gives
-the best (but slow) results at present. However, parsing xml trees
-into rectangular arrays is not quite straightforward and the other
-way round is a real nightmare; odftoolkit does little to hide the
-gory details for the developers.</FONT></FONT></P>
+ODFtoolkit is the one that gives the best (but slow) results at
+present. However, parsing xml trees into rectangular arrays is not
+quite straightforward and the other way round is a real nightmare;
+odftoolkit does little to hide the gory details for the developers.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">While
 reading ODS is still OK, writing implies checking whether cells
@@ -474,19 +479,114 @@ spreadsheet model.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">However,
 unfortunately the developers decided to shield essential methods by
-making them 'protected' (e.g. the vital getCellType). Extracting
-sheet names is not implemented in released versions (yet).</FONT></FONT></P>
+making them 'protected' (e.g. the vital getCellType). </FONT></FONT>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">JopenDocument
 does support writing, however I couldn't reliably create new
-MutableCells beyond column 1 no matter how hard I tried. The
-developers gave me hints but I haven't found a final solution yet.</FONT></FONT></P>
+MutableCells in row 1 beyond column 1 no matter how hard I tried.
+Supposedly this is fixed in future version1.2b4.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">And
 last (but not least) the jOpenDocument developers state that their
 development is primarily driven by requests from customers who pay
 for support. I do sympathize with this business model but for octave
 needs this may hamper progress for a while.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>TROUBLESHOOTING</B></U></FONT></FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Some
+hints for troubleshooting ODS support are given here. </FONT></FONT>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<OL>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
+	if java works. Do a </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
+	list </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">and
+	see</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<P>a. <SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
+	there's a java package mentioned (then it's installed). If not,
+	install it.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<P><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">b.
+	If there's an asterisk on the java package line (then the package is
+	loaded). If not, do a </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
+	rebuild-auto java</SPAN></SPAN></FONT></FONT></SPAN></P>
+</OL>
+<P ALIGN=LEFT STYLE="margin-left: 2cm; text-indent: -0.64cm; margin-bottom: 0cm">
+<BR>
+</P>
+<OL START=2>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
+	java memory settings. Try </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javamem</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<P STYLE="font-style: normal; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">a.
+	If it works, check if it reports sufficiently large max memory (had
+	better be 200 MiB, the bigger the better)</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">b.
+	If it doesn't work, do:</FONT></FONT></P>
+	<OL TYPE=a>
+		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+		<FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt">rt
+		= java_invoke ('java.lang.Runtime', 'getRuntime')</FONT></FONT></P>
+		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+		<FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt">rt.gc</FONT></FONT></P>
+		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+		<FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt">rt.maxMemory
+		().doubleValue () / 1024 / 1024</FONT></FONT></P>
+		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+		<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
+		last command will show MaxMemory in MiB.</FONT></FONT></P>
+	</OL>
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">c.
+	In case you have insufficient memory, see in &ldquo;GOTCHAS&rdquo;,
+	&ldquo;Java memory pool allocation size&rdquo;, how to increase
+	java's memory pre-reservation.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
+	if all classes (.jarfiles) are in class path. Do a '</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javaclasspath</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">'
+	(under unix/linux, do '</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">tmp
+	= javaclasspath; strsplit (tmp,&rdquo;:&rdquo;)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">'
+	(w/o quotes). See above under &ldquo;REQUIRED SUPPORT SOFTWARE&rdquo;
+	what classes should be mentioned.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
+	classes (.jar files) armissing, download and put them somewhere and
+	add them to the javaclass path with their fully qualified pathname
+	(in quotes) using </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javaaddpath()</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.</SPAN></SPAN></FONT></FONT></SPAN></P>
+</OL>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Once
+all classes are present and in the javaclasspath, the ods interfaces
+should just work. The only remaining showstoppers left are
+insufficient write privileges for the working directory, a wrecked up
+octave or some other problems outside octave.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<OL START=4>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Try
+	opening an ods file: </FONT></FONT>
+	</P>
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods1
+	= odsopen ('test.ods', 1, 'otk')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
+	If this works and ods1 is a struct with various fields containing
+	objects, ODF toolkit interface (OTK) works. Do an </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods1
+	= odsclose (ods1)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
+	to close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods2
+	= odsopen ('test.ods', 1, 'jod')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
+	If this works and ods2 is a struct with various fields containing
+	objects, jOpenDocument interface (JOD) works as well.  Do </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods2
+	= odsclose (ods2)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
+	to close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
+</OL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
@@ -556,7 +656,8 @@ introduced :-(( </FONT></FONT>
 addition processing ODS files became significantly slower (up to 7
 times!).</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">So
-at the moment (mid April 2010) only odfdom 0.7.5 is supported.</FONT></FONT></P>
+at the moment (summer 2010 = last I looked) only odfdom 0.7.5 is
+supported.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">If
 you want to experiment with odfdom 0.8, you can try:</FONT></FONT></P>
 <UL>
@@ -585,8 +686,8 @@ June 05, 2010:</FONT></FONT></P>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Philip
-Nienhuis, August 10, 2010</FONT></FONT></P>
-<P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
+Nienhuis, August 11, 2010</FONT></FONT></P>
+<P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm">
 <BR>
 </P>
 </BODY>

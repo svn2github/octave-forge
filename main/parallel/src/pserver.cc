@@ -504,7 +504,7 @@ Connect hosts and return sockets.")
 		      usleep(5000);
 		    }
 		  }
-		  int bufsize=262144;
+		  int bufsize=BUFF_SIZE;
 		  socklen_t ol;
 		  ol=sizeof(bufsize);
 		  setsockopt(dsock,SOL_SOCKET,SO_SNDBUF,&bufsize,ol);

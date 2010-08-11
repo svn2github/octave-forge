@@ -94,6 +94,8 @@
 ##     "      Changed argument topleft into range (now compatible with ML); the
 ##     "      old argument version (just topleft cell) is still recognized, though
 
+## Last script file update (incl. subfunctions): 2010-08-11
+
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh, crange=[], spsh_opts=[])
 
 	# Make sure input array is a cell array
@@ -583,6 +585,7 @@ endfunction
 ##     "      Code cleanup
 ##     "      Changed topleft arg into range arg (topleft version still recognized)
 ## 2010-08-03 Moved range checks and cell type parsing to separate routines
+## 2010-08-11 Moved addcell() into try-catch as it is addCell which throws fatal errors
 
 function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -697,12 +700,15 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 					# There's no guarantee for formula correctness, so....
 					try		# Actually JExcelAPI flags formula errors as warnings :-(
 						tmp = java_new ('jxl.write.Formula', kk, ll, obj{ii, jj});
+						# ... while errors are actualy detected in addCell(), so
+						#     that should be within the try-catch
+						sh.addCell (tmp);
 					catch
 						++f_errs;
 						# Formula error. Enter formula as text string instead
 						tmp = java_new ('jxl.write.Label', kk, ll, obj{ii, jj});
+						sh.addCell (tmp);
 					end_try_catch
-					sh.addCell (tmp);
 				case 5		# Empty or NaN
 					tmp = java_new ('jxl.write.Blank', kk, ll);
 					sh.addCell (tmp);

@@ -784,7 +784,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'csp'))
 
 else          % Linear and Quadratic statistical classifiers 
         CC.datatype = ['classifier:statistical:',lower(MODE.TYPE)];
-	[classlabel,CC.Labels] = CL1M(classlabel); 
+	[classlabel,CC.Labels] = CL1M(classlabel);
         CC.MD = repmat(NaN,[sz(2)+[1,1],length(CC.Labels)]);
         CC.NN = CC.MD;
 	for k = 1:length(CC.Labels),
@@ -924,21 +924,22 @@ function [cl1m, Labels] = CL1M(classlabel)
 	%% convert classlabels to 1..M encoding 
 	if (all(classlabel>=0) && all(classlabel==fix(classlabel)) && (size(classlabel,2)==1))
 		cl1m = classlabel; 
-	
+
 	elseif all((classlabel==1) | (classlabel==-1) | (classlabel==0) )
 		CL101 = classlabel; 
 		M = size(classlabel,2); 
 		if any(sum(classlabel==1,2)>1)
 			warning('invalid format of classlabel - at most one category may have +1');
 		end; 
-		[tmp, cl1m] = max(classlabel,[],2);
 		if (M==1), 
 			cl1m = (classlabel==-1) + 2*(classlabel==+1);
+		else 	
+			[tmp, cl1m] = max(classlabel,[],2);
+			if any(tmp ~= 1) 
+				warning('some class might not be properly represented - you might what to add another column to classlabel = [max(classlabel,[],2)<1,classlabel]'); 
+			end; 	
+			cl1m(tmp<1)= 0;	%% or NaN ???
 		end;
-		if any(tmp ~= 1) 
-			warning('some class might not be properly represented - you might what to add another column to classlabel = [max(classlabel,[],2)<1,classlabel]'); 
-		end; 	
-		cl1m(tmp<1)= 0;	%% or NaN ???
 	else 
 		classlabel
 		error('format of classlabel unsupported');

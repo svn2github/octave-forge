@@ -22,13 +22,19 @@ b) Include the path with one of the following commands:
 	addpath([HOME,'/NaN/inst','-end')
 	addpath([HOME,'/NaN/src','-end')
 
-c) Several mex-files are strongly recommened. 	
-   Run MAKE from the directory .../NaN/src/ 	
+c) The use of mex-files is recommended for using the full capabilities of the NaN-toolbox.
+   Without the mex-files, SVN- and Liblinear classifiers are not available, and in some cases
+   slower m-functions are used. 
 
-   This is well tested on Linux, but might not work completely on other platforms. 
-   Specifically, on Windows you need to setup gnumex and gcc (typically mingw or cygwin).  
-   (covm_mex and sumskipnan_mex are strongly recommended for performance reasons,  
-   train.mex and svmtrain_mex are needed when using support vector machines)  
+   Setup your mex compiler using GCC, the GNU Compiler Collection (or some derivative like MinGW)
+      >> mex -setup
+   Run MAKE from the directory .../NaN/src/
+
+   Compiling the mex-files is well tested on Linux, but might not work completely on other platforms.
+   Specifically, on Windows you need to setup gnumex and gcc (typically mingw or cygwin).
+   (covm_mex and sumskipnan_mex are strongly recommended for performance reasons,
+   train.mex and svmtrain_mex are needed when using support vector machines) 
+   Precompiled binaries are provided for 32bit Windows with Matlab 7.x (tested with 7.1 and 7.6).
 
 d) run NANINSTTEST 
 This checks whether the installation was successful.

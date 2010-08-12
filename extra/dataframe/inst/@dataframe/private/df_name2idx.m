@@ -109,7 +109,6 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
   endif
 
   if isempty(idx),
-    keyboard
     dummy = sprintf("Unknown %s name while searching for %s", ...
 		    dimname, orig_name);
     error(dummy);

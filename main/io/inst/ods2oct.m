@@ -398,7 +398,7 @@ endfunction
 ##            allows better cell type parsing and is therefore more reliable
 
 function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
-wsh
+
 	persistent months;
 	months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
 

@@ -24,7 +24,7 @@
 function ret = subsref (q, s)
 
   switch (s(1).type)
-    case "."
+    case "."  # q.w
       switch (tolower (s.subs))
         case {"w", "s"}
           ret = q.w;
@@ -44,12 +44,37 @@ function ret = subsref (q, s)
         
         otherwise
           error ("quaternion: invalid subscript name");
+      endswitch
 
+    case "()"  # q(...)
+      idx = s(1).subs;
+
+      ## TODO: allow stuff like q(:, 1:3) to extract
+      ##       submatrices q.x(:, 1:3)
+
+      if (numel (idx) != 1)
+        error ("quaternion: only one index allowed");
+      endif
+
+      switch (idx{1})  # q(4)
+        case {0, 4}
+          ret = q.w;
+
+        case 1
+          ret = q.x;
+
+        case 2
+          ret = q.y;
+
+        case 3
+          ret = q.z;
+        
+        otherwise
+          error ("quaternion: invalid index");
       endswitch
 
     otherwise
       error ("quaternion: invalid subscript type");
-
   endswitch
 
 endfunction

@@ -1,7 +1,16 @@
 %# -*- mode: Octave -*-
 %!shared x, y, z
 %! x=dataframe('octave_frame/data_test.csv');
-%! y=x.df(:, 2:6);
+%! # remove rownames
+%! x.rownames = [];
+%!assert(size(x.rownames), [0 0])
+%! # remove a column as '.' access
+%! y = x; y.DataName = [];
+%!assert(size(y), [10 6]);
+%! # remove a column as (:, name) access
+%! y = x; y(:, "DataName") = [];
+%!assert(size(y), [10 6]);
+%! y = x.df(:, 2:6);
 %! # direct matrix setting through struct access
 %! y.Freq=[(1:10).' (10:-1:1).'];
 %! # direct setting through 3D matrix
@@ -52,9 +61,6 @@
 %!error error("Single-dimension name access")
 %! x("Freq");
 %!test
-%! # remove rownames
-%! x.rownames = [];
-%!assert(size(x.rownames), [0 0])
 %! # complex access
 %! x(x.OK=='?', ["C"; "G"]) = NaN;
 %!assert(x(4, 5:6), [NaN NaN])

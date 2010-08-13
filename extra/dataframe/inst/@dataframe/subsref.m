@@ -99,7 +99,7 @@ function resu = subsref(df, S)
 	      S(1).subs = "_cnt";
 	      S(2).type = "()"; S(2).subs{1}= 2;
 	    case "rowidx"
-	      S(1).subs = "_ridx"; 
+	      S(1).subs = "_ridx"; further_deref = true;
 	    case "types"	%# this one should be accessed as a matrix
 	      S(1).subs = "_type"; preop = '{}'; further_deref = true;
 	    otherwise

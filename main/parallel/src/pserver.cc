@@ -92,55 +92,6 @@ sigchld_handler(int /* sig */)
   signal(SIGCHLD, sigchld_handler);
 }
 
-// XXX FIXME XXX -- this should really be static, but that causes
-// problems on some systems.
-std::stack<std::string> octave_atexit_functions;
-
-void
-do_octave_atexit_server (void)
-{
-  static bool deja_vu = false;
-  extern bool quitting_gracefully;
-
-  while (! octave_atexit_functions.empty ())
-    {
-      std::string fcn = octave_atexit_functions.top ();
-
-      octave_atexit_functions.pop ();
-
-      feval (fcn, octave_value_list (), 0);
-
-      flush_octave_stdout ();
-    }
-
-  if (! deja_vu)
-    {
-      deja_vu = true;
-
-      command_editor::restore_terminal_state ();
-
-      // XXX FIXME XXX -- is this needed?  Can it cause any trouble?
-      raw_mode (0);
-
-      close_files ();
-
-      cleanup_tmp_files ();
-
-      flush_octave_stdout ();
-
-      if (!quitting_gracefully && (interactive || forced_interactive))
-        std::cout << "\n";
-    }
-}
-
-void
-clean_up_and_exit_server (int retval)
-{
-  do_octave_atexit_server ();
-
-  exit (retval == EOF ? 0 : retval);
-}
-
 int
 reval_loop (int sock)
 {
@@ -191,15 +142,15 @@ reval_loop (int sock)
 	    fin=read(sock,&nl,sizeof(int));
 	    len=ntohl(nl);
 	    if(!fin)
-	      clean_up_and_exit_server (0);
+	      clean_up_and_exit (0);
 	  }
 	  if(pollfd[0].revents&POLLERR){
 	    std::cerr <<"Error condition "<<std::endl;
-	    clean_up_and_exit_server (POLLERR);
+	    clean_up_and_exit (POLLERR);
 	  }
 	  if(pollfd[0].revents&POLLHUP){
 	    std::cerr <<"Hung up "<<std::endl;
-	    clean_up_and_exit_server (POLLHUP);
+	    clean_up_and_exit (POLLHUP);
 	  }
         }
       }
@@ -563,7 +514,7 @@ Connect hosts and return sockets.")
  	      //normal act
 	      install_signal_handlers ();
       
-	      atexit (do_octave_atexit_server);
+	      atexit (do_octave_atexit);
 	      
 	      char * s;
 	      int stat;
@@ -601,7 +552,7 @@ Connect hosts and return sockets.")
 	      
 	      close(asock);
 
-	      clean_up_and_exit_server (retval);
+	      clean_up_and_exit (retval);
 	      
 	    }
 	  

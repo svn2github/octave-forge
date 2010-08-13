@@ -75,6 +75,7 @@
 %! z = dataframe(x, {"VB*", {"Polarity" ,"Sense"; ones(12,2), zeros(10,2)}});
 %!assert(size(z), [12 9 11]);
 %!assert(z.Sense(11:12, :), NA*ones(2, 2));
+%!assert(size(z._over{2}, 2) - size(x._over{2}, 2), 2);
 
 %!demo
 %! x=dataframe('octave_frame/data_test.csv')

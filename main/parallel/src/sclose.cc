@@ -18,6 +18,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <octave/oct.h>
+#include <oct-stream.h>
 
 #include "defun-dld.h"
 #include "dirfns.h"
@@ -53,9 +54,10 @@ Close sockets")
 
   if(args.length () == 1)
     {
-      int i,nsock=0,sock,k,err=0,nl;
+      int i,nsock=0,sock,k,err=0,nl, rows;
 
-      nsock=args(0).matrix_value().rows()*2;
+      rows = args(0).matrix_value().rows();
+      nsock = rows * 2;
       
       if((int)args(0).matrix_value().data()[0]==0){
 	int num,pid;
@@ -99,10 +101,17 @@ Close sockets")
 	}
       }
 
-      for(i=nsock-1;i>=0;i--){
+      for(i=nsock-1;i>=rows;i--){
 	sock=(int)args(0).matrix_value().data()[i];
 	if(sock!=0){
 	  if(close(sock)!=0)
+	    err++;
+	}
+      }
+      for(i=rows-1;i>=0;i--){
+	sock=(int)args(0).matrix_value().data()[i];
+	if(sock!=0){
+	  if(octave_stream_list::remove (octave_value (sock), "") != 0)
 	    err++;
 	}
       }

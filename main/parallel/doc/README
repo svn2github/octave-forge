@@ -9,9 +9,10 @@ independent sets of functions.
    function. Please see "README.bw".
 
 As yet, the package only contains functions for parallel execution on
-a cluster of machines. For parallel execution on a single machine, see
+a cluster of machines. See also package openmpi_ext, maintained by
+Riccardo Corradini. For parallel execution on a single machine, see
 for example "parcellfun" (author: Jaroslav Hajek) in package
 "general".
 
 
-Olaf Till <olaf.till@uni-jena.de>, 2009-03-27
+Olaf Till <olaf.till@uni-jena.de>, 2010-08-11

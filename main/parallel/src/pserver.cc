@@ -59,6 +59,8 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <setjmp.h>
 #include <netinet/in.h>
 
+#include "sock-stream.h"
+
 // SSIZE_MAX might be for 64-bit. Limit to 2^31-1
 #define BUFF_SIZE 2147483647
 
@@ -459,6 +461,7 @@ Connect hosts and return sockets.")
 		      //recv endian
 		      read(dasock,&nl,sizeof(int));
 		      sock_v[j+2*(num_nodes+1)]=ntohl(nl);
+		      socket_to_oct_iostream (dasock);
 		      break;
 		    } // And else? Shouldn't this test have been made
 		      // before? What is the policy if a different
@@ -471,6 +474,8 @@ Connect hosts and return sockets.")
 		    sleep(1);
 		  }
 		}
+		if (error_state)
+		  _exit (-1);
 	      }
 	      //	      close(dsock);
 	      //me
@@ -540,12 +545,15 @@ Connect hosts and return sockets.")
 #  error "can not determine the byte order"
 #endif
 		    write(dsock,&nl,sizeof(int));
+		    socket_to_oct_iostream (dsock);
 		    break;
 		  }else{
 		    close(dsock);
 		  }
 		}
 		free(addr);
+		if (error_state)
+		  _exit (-1);
 	      }
 	      for(i=0;i<=num_nodes;i++){
 		free(host_list[i]);

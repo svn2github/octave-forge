@@ -17,6 +17,8 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+// TODO: error handling is a mess
+
 #include <octave/oct.h>
 
 #include "defun-dld.h"
@@ -39,6 +41,8 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <unistd.h>
 #include <netinet/in.h>
 
+#include "sock-stream.h"
+
 #define BUFF_SIZE SSIZE_MAX
 
 // COMM
@@ -60,8 +64,8 @@ DEFUN_DLD (connect, args, ,
 \n\
 Connect hosts and return sockets.")
 {
-
-  int sock=0,col=0,row=0,i,j,len;
+  octave_value retval;
+  int sock=0,col=0,row=0,i,j,len, not_connected;
   double *sock_v=0;
   if (args.length () == 1)
     {
@@ -105,8 +109,10 @@ Connect hosts and return sockets.")
 	}
 	memcpy(&addr->sin_addr,he->h_addr_list[0],he->h_length);
 	
+	not_connected = 1;
 	for(j=0;j<10;j++){
-	  if(connect(sock,(struct sockaddr *)addr,sizeof(*addr))==0){
+	  if((not_connected =
+	      connect(sock,(struct sockaddr *)addr,sizeof(*addr)))==0){
 	    break;
 	  }else if(errno!=ECONNREFUSED){
 	    error("connect error ");
@@ -114,43 +120,48 @@ Connect hosts and return sockets.")
 	    usleep(5000);
 	  }
 	}
-	if(!sock)
-	  error("Unable to connect to %s: Connection refused",host);
-	
-	sock_v[i+row]=sock;
-	
+
 	free(addr);
 	free(host);
 
-	int num_nodes=row-1;
+	if(not_connected)
 
-	pid=getpid();
-	nl=htonl(num_nodes);
-	write_if_no_error(sock,&nl,sizeof(int),error_state);
-	nl=htonl(i);
-	write_if_no_error(sock,&nl,sizeof(int),error_state);
-	nl=htonl(pid);
-	write_if_no_error(sock,&nl,sizeof(int),error_state);
-	host=(char *)calloc(128,sizeof(char));
-	for(j=0;j<row;j++){
-	  strncpy(host,&cm.data()[col*j],col);
-	  pt=strchr(host,' ');
-	  if(pt==NULL)
-	    host[col]='\0';
-	  else
-	    *pt='\0';
-	  len=strlen(host)+1;
-	  nl=htonl(len);
-	  write_if_no_error(sock,&nl,sizeof(int),error_state);
-	  write_if_no_error(sock,host,len,error_state);
-	}
-	free(host);
-	int comm_len;
-       	std::string directory = octave_env::getcwd ();
-	comm_len=directory.length();
-	nl=htonl(comm_len);
-	write_if_no_error(sock,&nl,sizeof(int),error_state);
-	write_if_no_error(sock,directory.c_str(),comm_len,error_state);
+	  error("Unable to connect to %s: Connection refused",host);
+
+	else
+	  {
+	    sock_v[i+row]=sock;
+	
+	    int num_nodes=row-1;
+
+	    pid=getpid();
+	    nl=htonl(num_nodes);
+	    write_if_no_error(sock,&nl,sizeof(int),error_state);
+	    nl=htonl(i);
+	    write_if_no_error(sock,&nl,sizeof(int),error_state);
+	    nl=htonl(pid);
+	    write_if_no_error(sock,&nl,sizeof(int),error_state);
+	    host=(char *)calloc(128,sizeof(char));
+	    for(j=0;j<row;j++){
+	      strncpy(host,&cm.data()[col*j],col);
+	      pt=strchr(host,' ');
+	      if(pt==NULL)
+		host[col]='\0';
+	      else
+		*pt='\0';
+	      len=strlen(host)+1;
+	      nl=htonl(len);
+	      write_if_no_error(sock,&nl,sizeof(int),error_state);
+	      write_if_no_error(sock,host,len,error_state);
+	    }
+	    free(host);
+	    int comm_len;
+	    std::string directory = octave_env::getcwd ();
+	    comm_len=directory.length();
+	    nl=htonl(comm_len);
+	    write_if_no_error(sock,&nl,sizeof(int),error_state);
+	    write_if_no_error(sock,directory.c_str(),comm_len,error_state);
+	  }
       }      
       usleep(100);
 
@@ -180,71 +191,78 @@ Connect hosts and return sockets.")
 	  error("Unknown host %s",host);
 	}
 	memcpy(&addr->sin_addr,he->h_addr_list[0],he->h_length);
-	while(1){
-	  for(j=0;j<10;j++){
-	    if(connect(sock,(struct sockaddr *)addr,sizeof(*addr))==0){
-	      break;
-	    }else if(errno!=ECONNREFUSED){
-	      perror("connect : ");
-	      exit(-1);
-	    }else {
-	      usleep(5000);
-	    }
-	  }
-	  if(!sock)
-	    error("Unable to connect to %s: Connection refused",host);
-	  
-	  int bufsize=262144;
-	  socklen_t ol;
-	  ol=sizeof(bufsize);
-	  setsockopt(sock,SOL_SOCKET,SO_SNDBUF,&bufsize,ol);
-	  setsockopt(sock,SOL_SOCKET,SO_RCVBUF,&bufsize,ol);
-	  bufsize=1;
-	  ol=sizeof(bufsize);
-	  setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&bufsize,ol);
-	  
 
-	  int len=0,result=0;;
-	  //send pppid
-	  nl=htonl(pid);
-	  write_if_no_error(sock,&nl,sizeof(int),error_state);
-	  //send name size
-	  strncpy(host,cm.data(),col);
-	  pt=strchr(host,' ');
-	  if(pt==NULL)
-	    host[col]='\0';
-	  else
-	    *pt='\0';
-	  len=strlen(host);
-	  nl=htonl(len);
-	  write_if_no_error(sock,&nl,sizeof(int),error_state);
-	  //send name
-	  write_if_no_error(sock,host,len+1,error_state);
-	  //recv result code
-	  read_if_no_error(sock,&nl,sizeof(int),error_state);
-	  result=ntohl(nl);
-	  if(result==0){
-	    sock_v[i]=sock;
-	    //recv endian
+	not_connected = 1;
+	for(j=0;j<10;j++){
+	  if((not_connected =
+	      connect(sock,(struct sockaddr *)addr,sizeof(*addr)))==0){
+	    break;
+	  }else if(errno!=ECONNREFUSED){
+	    perror("connect error ");
+	  }else {
+	    usleep(5000);
+	  }
+	}
+	if(not_connected)
+
+	  error("Unable to connect to %s: Connection refused",host);
+
+	else
+	  {
+	    int bufsize=262144;
+	    socklen_t ol;
+	    ol=sizeof(bufsize);
+	    setsockopt(sock,SOL_SOCKET,SO_SNDBUF,&bufsize,ol);
+	    setsockopt(sock,SOL_SOCKET,SO_RCVBUF,&bufsize,ol);
+	    bufsize=1;
+	    ol=sizeof(bufsize);
+	    setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&bufsize,ol);
+
+	    int len=0,result=0;;
+	    //send pppid
+	    nl=htonl(pid);
+	    write_if_no_error(sock,&nl,sizeof(int),error_state);
+	    //send name size
+	    strncpy(host,cm.data(),col);
+	    pt=strchr(host,' ');
+	    if(pt==NULL)
+	      host[col]='\0';
+	    else
+	      *pt='\0';
+	    len=strlen(host);
+	    nl=htonl(len);
+	    write_if_no_error(sock,&nl,sizeof(int),error_state);
+	    //send name
+	    write_if_no_error(sock,host,len+1,error_state);
+	    //recv result code
 	    read_if_no_error(sock,&nl,sizeof(int),error_state);
-	    sock_v[i+2*row]=ntohl(nl);
-	    //send endian
+	    result=ntohl(nl);
+	    if(result==0){
+	      sock_v[i]=sock;
+	      //recv endian
+	      read_if_no_error(sock,&nl,sizeof(int),error_state);
+	      sock_v[i+2*row]=ntohl(nl);
+	      //send endian
 #if defined (__BYTE_ORDER)
-	    nl=htonl(__BYTE_ORDER);
+	      nl=htonl(__BYTE_ORDER);
 #elif defined (BYTE_ORDER)
-	    nl=htonl(BYTE_ORDER);
+	      nl=htonl(BYTE_ORDER);
 #else
 #  error "can not determine the byte order"
 #endif
-	    write_if_no_error(sock,&nl,sizeof(int),error_state);
-	    break;
-	  }else{
-	    close(sock);
+	      write_if_no_error(sock,&nl,sizeof(int),error_state);
+	      socket_to_oct_iostream (sock);
+
+	    }else{
+	      close(sock);
+	    }
 	  }
-	}
-	
+
 	free(addr);
 	free(host);
+
+	if (error_state)
+	  return retval;
       }
 
       char lf='\n';
@@ -256,16 +274,14 @@ Connect hosts and return sockets.")
   else
     {
       print_usage ();
-      octave_value retval;
       return retval;
     }
-      
 
   Matrix mx(row,3);
   double *tmp =mx.fortran_vec();
   for (i=0;i<3*row;i++)
     tmp[i]=sock_v[i];
-  octave_value retval(mx);
+  retval = octave_value (mx);
 
   return retval;
 }

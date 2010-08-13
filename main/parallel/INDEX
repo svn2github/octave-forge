@@ -5,6 +5,7 @@ Parallel
  connect
  sclose
  scloseall
+ select_sockets
 Internal
  __bw_lock_file__
  __bw_is_locked__

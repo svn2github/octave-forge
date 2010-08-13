@@ -93,7 +93,9 @@ function resu = subasgn(df, S, RHS)
 	    %# full assignement
 	    S(2).type = '()'; S(2).subs = { '', indc, ':' };
 	    if length(size(RHS)) < 3,
-	      if 1 == size(RHS, 2),
+	      if isnull(RHS),
+		S(2).subs = {':', indc};
+	      elseif 1 == size(RHS, 2),
 		S(2).subs = { '', indc };
 	      elseif 1 == ncol && 1 == size(df._data{indc}, 2),
 		%# force the padding of the vector to a matrix 
@@ -102,10 +104,11 @@ function resu = subasgn(df, S, RHS)
 	    endif
 	  endif
 	  %# do we need to "rotate" RHS ?
-	  if 1 == ncol && length(size(RHS)) < 3 ...
+	  if 1 == ncol && length(size(RHS)) < 3 \
 		&& size(RHS, 2) > 1,
 	    RHS = reshape(RHS, [size(RHS, 1), 1, size(RHS, 2)]);
 	  endif
+
 	  resu = df_matassign(df, S(2), indc, ncol, RHS);
       endswitch
       

@@ -75,6 +75,7 @@ function df = df_pad(df, dim, n, coltype=[])
 	if indc < df._cnt(2),
 	  %# shift to the right
 	  df._name{2}(n + (indc+1:end)) =  df._name{2}(indc+1:end);
+	  df._over{2}(n + (indc+1:end)) =  df._over{2}(indc+1:end);
 	  dummy = cstrcat(repmat('_', n, 1), ...
 			  strjust(num2str(indc + (1:n).'), 'left'));
 	  df._name{2}(indc + (1:n)) = cellstr(dummy);	 

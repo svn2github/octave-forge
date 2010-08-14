@@ -7,11 +7,12 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091229;22213000">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100811;22422700">
+	<META NAME="CHANGED" CONTENT="20100814;22463500">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -544,10 +545,11 @@ hints for troubleshooting ODS support are given here. </FONT></FONT>
 		<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
 		last command will show MaxMemory in MiB.</FONT></FONT></P>
 	</OL>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">c.
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">c.
 	In case you have insufficient memory, see in &ldquo;GOTCHAS&rdquo;,
 	&ldquo;Java memory pool allocation size&rdquo;, how to increase
-	java's memory pre-reservation.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	java's memory pre-reservation.</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
 	if all classes (.jarfiles) are in class path. Do a '</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javaclasspath</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">'
 	(under unix/linux, do '</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">tmp
@@ -578,14 +580,16 @@ octave or some other problems outside octave.</FONT></FONT></P>
 	= odsopen ('test.ods', 1, 'otk')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
 	If this works and ods1 is a struct with various fields containing
 	objects, ODF toolkit interface (OTK) works. Do an </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods1
-	= odsclose (ods1)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
-	to close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	= odsclose (ods1)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+	</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">to
+	close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
 	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods2
 	= odsopen ('test.ods', 1, 'jod')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
 	If this works and ods2 is a struct with various fields containing
-	objects, jOpenDocument interface (JOD) works as well.  Do </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods2
-	= odsclose (ods2)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
-	to close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	objects, jOpenDocument interface (JOD) works as well. Do </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods2
+	= odsclose (ods2)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+	</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">to
+	close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
 </OL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
@@ -597,7 +601,9 @@ octave or some other problems outside octave.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">As
 with the Excel r/w stuff, adding new interfaces should be easy and
-straightforward.</FONT></FONT></P>
+straightforward. Add relevant stanzas in odsopen, odsclose, odsfinfo
+&amp; getusedrange and add new subfunctions (for the real work) to
+oct2ods and ods2oct.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">

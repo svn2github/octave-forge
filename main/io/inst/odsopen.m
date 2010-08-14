@@ -68,7 +68,7 @@
 ## 2010-06-01 Added check for jOpenDocument version + suitable warning
 ## 2010-06-02 Added ";" to supress debug stuff around lines 115
 ##      "     Moved JOD version check to subfunc getodsinterfaces
-##      "     Fiddled ods.changed flag when creating s spreadsheet to avoid unnamed 1st sheets
+##      "     Fiddled ods.changed flag when creating a spreadsheet to avoid unnamed 1st sheets
 ##
 ## Latest change on subfunction below: 2010-04-11
 
@@ -146,6 +146,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		if (rw == 2)
 			# New spreadsheet
 			wb = java_invoke ([odftk '.OdfSpreadsheetDocument'], 'newSpreadsheetDocument');
+			ods.changed = 2;
 		else
 			# Existing spreadsheet
 			wb = java_invoke ([odftk '.OdfDocument'], 'loadDocument', filename);
@@ -230,6 +231,7 @@ endfunction
 ## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
 ## 2010-04-11 Introduced check on odfdom.jar version - only 0.7.5 works properly
 ## 2010-06-02 Moved in check on JOD version
+## 2010-06-05 Experimental odfdom 0.8.5 support
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -259,7 +261,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			if (jpchk >= 2)		# Apparently all requested classes present.
 				# Only now we can check for proper odfdom version (only 0.7.5. works OK)
 				odfdvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
-				if ~(strcmp (odfdvsn, '0.7.5'))
+				if ~(strcmp (odfdvsn, '0.7.5') || strcmp (odfdvsn, '0.8.5'))
 					warning ("\nodfdom version %s is not supported - use v. 0.7.5.\n", odfdvsn);
 				else	
 					odsinterfaces.OTK = 1;

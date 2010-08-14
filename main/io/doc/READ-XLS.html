@@ -7,11 +7,12 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091211;17230700">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100811;22412500">
+	<META NAME="CHANGED" CONTENT="20100814;22501800">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -492,52 +493,52 @@ hints for troubleshooting Excel support are contained in this thread:</FONT></FO
 August 10, 2010.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal">A
-more structured approach is below:</SPAN></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<BR>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">A
+more structured approach is below:</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <OL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
-	if COM / ActiveXworks (only under Windows OS). Do a   </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
-	list </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
-	and see</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P>a.  <SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
+	if COM / ActiveXworks (only under Windows OS). Do a </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
+	list </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">and
+	see</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<P>a. <SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
 	there's a windows package mentioned (then it's installed). If not,
 	install it.</SPAN></SPAN></FONT></FONT></SPAN></P>
 	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">b.
-	 If there's an asterisk on the windows package line (then the
-	package is loaded). If not, do a   </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
-	load windows</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
-	</SPAN></SPAN></FONT></FONT></SPAN>
+	If there's an asterisk on the windows package line (then the package
+	is loaded). If not, do a </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
+	load windows</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+	</SPAN>
 	</P>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
-	if the ActiveX server works. Do:</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Check
+	if the ActiveX server works. Do:</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">exl
-	= actxserver ('Excel.Application')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
-	       ## Note the period between &ldquo;Excel&rdquo; and
-	&ldquo;Application&rdquo;</SPAN></SPAN></FONT></FONT></SPAN></P>
+	= actxserver ('Excel.Application')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+	</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">##
+	Note the period between &ldquo;Excel&rdquo; and &ldquo;Application&rdquo;</SPAN></SPAN></FONT></FONT></SPAN></P>
 	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
-	a COM object is returned, ActiveX / COM / Excel works. Do:   
+	a COM object is returned, ActiveX / COM / Excel works. Do:
 	</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">exl.Quit();
-	delete (exl)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
-	 to shut down the (hidden) Excel invocation.</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
+	delete (exl)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+	</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">to
+	shut down the (hidden) Excel invocation.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">If
 	you get an error message, your last resort is re-installing the
-	windows package, or trying the Java-based interfaces.</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"></P>
+	windows package, or trying the Java-based interfaces.</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
-	if java works. Do a   </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
-	list </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
-	and see</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P>a.  <SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
+	if java works. Do a </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
+	list </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">and
+	see</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<P>a. <SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
 	there's a java package mentioned (then it's installed). If not,
 	install it.</SPAN></SPAN></FONT></FONT></SPAN></P>
 	<P><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">b.
-	 If there's an asterisk on the java package line (then the package
-	is loaded). If not, do a   </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
+	If there's an asterisk on the java package line (then the package is
+	loaded). If not, do a </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
 	rebuild-auto java</SPAN></SPAN></FONT></FONT></SPAN></P>
 </OL>
 <P ALIGN=LEFT STYLE="margin-left: 2cm; text-indent: -0.64cm; margin-bottom: 0cm">
@@ -545,29 +546,31 @@ more structured approach is below:</SPAN></FONT></FONT></P>
 </P>
 <OL START=4>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
-	java memory settings. Try    </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javamem</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">a.
-	 If it works, check if it reports sufficiently large max memory (had
-	better be 200 MiB, the bigger the better)</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">b.
-	 If it doesn't work, do:</SPAN></SPAN></FONT></FONT></SPAN></P>
+	java memory settings. Try </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javamem</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<P STYLE="font-style: normal; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">a.
+	If it works, check if it reports sufficiently large max memory (had
+	better be 200 MiB, the bigger the better)</FONT></FONT></P>
+	<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">b.
+	If it doesn't work, do:</FONT></FONT></P>
 	<OL TYPE=a>
-		<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Courier New, monospace"><SPAN STYLE="text-decoration: none"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">rt
-		= java_invoke ('java.lang.Runtime', 'getRuntime')</SPAN></SPAN></FONT></SPAN></FONT></P>
-		<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Courier New, monospace"><SPAN STYLE="text-decoration: none"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">rt.gc</SPAN></SPAN></FONT></SPAN></FONT></P>
-		<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Courier New, monospace"><SPAN STYLE="text-decoration: none"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">rt.maxMemory
-		().doubleValue () / 1024 / 1024</SPAN></SPAN></FONT></SPAN></FONT></P>
-		<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">The
-		last command will show MaxMemory in MiB.</SPAN></SPAN></FONT></FONT></SPAN></P>
+		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+		<FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt">rt
+		= java_invoke ('java.lang.Runtime', 'getRuntime')</FONT></FONT></P>
+		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+		<FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt">rt.gc</FONT></FONT></P>
+		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+		<FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt">rt.maxMemory
+		().doubleValue () / 1024 / 1024</FONT></FONT></P>
+		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+		<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
+		last command will show MaxMemory in MiB.</FONT></FONT></P>
 	</OL>
 	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">c.
-	 In case you have insufficient memory, see in &ldquo;GOTCHAS&rdquo;,
-	&ldquo;</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Java
-	memory pool allocation size&rdquo;, how to increase java's memory
-	pre-reservation.</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<OL TYPE=a>
-		<P ALIGN=LEFT STYLE="margin-bottom: 0cm"></P>
-	</OL>
+	In case you have insufficient memory, see in &ldquo;GOTCHAS&rdquo;,
+	&ldquo;Java memory pool allocation size&rdquo;, how to increase
+	java's memory pre-reservation.</SPAN></SPAN></FONT></FONT></SPAN></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
 	if all classes (.jarfiles) are in class path. Do a '</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javaclasspath</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">'
 	(under unix/linux, do '</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">tmp
@@ -577,34 +580,38 @@ more structured approach is below:</SPAN></FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
 	classes (.jar files) are missing, download and put them somewhere
 	and add them to the javaclass path with their fully qualified
-	pathname (in quotes) using   </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javaaddpath()</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	pathname (in quotes) using </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javaaddpath()</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.</SPAN></SPAN></FONT></FONT></SPAN></P>
 </OL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Once
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Once
 all classes are present and in the javaclasspath, the xls interfaces
 should just work. The only remaining showstoppers left are
 insufficient write privileges for the working directory, a wrecked up
-octave or some other problem outside octave.</SPAN></SPAN></FONT></FONT></SPAN></P>
+octave or some other problem outside octave.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <OL START=6>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Try
-	opening an xls file: </SPAN></SPAN></FONT></FONT></SPAN>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Try
+	opening an xls file: </FONT></FONT>
 	</P>
 	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">xls1
 	= xlsopen ('test.xls', 1, 'poi')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
 	If this works and xls1 is a struct with various fields containing
 	objects, the Apache POI interface (POI) works. Do an </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">xls1
-	= xlsclose (xls1)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
-	to close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	= xlsclose (xls1)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+	</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">to
+	close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
 	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">xls2
 	= xlsopen ('test.xls', 1, 'jxl')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
 	If this works and xls2 is a struct with various fields containing
 	objects, the JExcelAPI interface (JXL) works as well. Don'tforget to
-	do  </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">xls2
-	= xlsclose (xls2)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">
-	to close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
+	do </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">xls2
+	= xlsclose (xls2)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
+	</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">to
+	close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
 </OL>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
@@ -616,17 +623,19 @@ octave or some other problem outside octave.</SPAN></SPAN></FONT></FONT></SPAN><
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>xlsopen</B>/<B>xlsclos</B>e
 and friends have been written so that adding other interfaces (Perl?
 native octave? ...?) should be very easily accomplished. <B>xlsopen</B>
-merely needs two stanzas, <B>xls2oct</B>, <B>oct2xls</B> and <B>xlsfinfo</B>
-each need an additional elseif clause, and <B>xlsclose</B> needs a
+merely needs two stanzas, <B>xlsfinfo</B> and <B>getusedrange</B>
+each need an additional elseif stanza, and <B>xlsclose</B> needs a
 small stanza for closing the pointer struct and writing to disk. </FONT></FONT>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
-real work lies in creating the relevant <B>xls2&lt;...&gt;2oct</B> &amp;
-<B>oct2&lt;...&gt;2xls</B> scripts, but that shouldn't be really
-hard. Separating the file access functions and the actual
-reading/writing from/to the workbook in memory has made developer's
-life (I mean: my time developing this stuff) much easier.<BR><BR>Some
-other options for development (who?):</FONT></FONT></P>
+real work lies in creating the relevant <I><B>xls2&lt;...&gt;2oct</B></I>
+&amp; <I><B>oct2&lt;...&gt;2xls</B></I> subfunction scripts in
+<B>xls2oct</B> and <B>oct2xls</B>, resp., but that shouldn't be
+really hard, depending on the interface support libraries' quality
+and documentation. Separating the file access functions and the
+actual reading/writing from/to the workbook in memory has made
+developer's life (I mean: my time developing this stuff) much
+easier.<BR><BR>Some other options for development (who?):</FONT></FONT></P>
 <UL>
 	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Speeding
 	up, especially Java worksheet/cell access. For cracks, not me.</FONT></FONT></P>

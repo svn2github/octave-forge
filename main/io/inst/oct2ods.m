@@ -97,11 +97,27 @@
 ## 2010-06-01 Almost complete support for upcoming jOpenDocument 1.2b4. 1.2b3 still lacks a bit
 ## 2010-07-05 Added example for writng character strings
 ## 2010-07-29 Added option for entering / reading back spreadsheet formulas
+## 2010-08-14 Moved check on input cell array to main function
 ##
 ## Last update of subfunctions below: 2010-08-01
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 
+	# Check if input array is cell
+	if (isempty (c_arr))
+		warning ("Request to write empty matrix - ignored."); 
+		rstatus = 1;
+		return;
+	elseif (isnumeric (c_arr))
+		c_arr = num2cell (c_arr);
+	elseif (ischar(c_arr))
+		c_arr = {c_arr};
+		printf ("(oct2ods: input character array converted to 1x1 cell)\n");
+	elseif (~iscell (c_arr))
+		error ("oct2ods: input array neither cell nor numeric array");
+	endif
+
+	# Check and if needed initialize spsh_opts
 	if isempty (spsh_opts)
 		spsh_opts.formulas_as_text = 0;
 		# Other options here
@@ -169,6 +185,7 @@ endfunction
 ## 2010-08-01 Added try-catch around formula input
 ##     "      Changed range arg to also allow just topleft cell
 ## 2010-08-03 Moved range checks and type array parsing to separate functions
+## 2010-08-13 Fixed empty Sheet1 in case of new spreadsheets fix input text sheet name
 
 function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -183,12 +200,6 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 #	# ODS' current row and column capacity
 #	ROW_CAP = 65536; COL_CAP = 1024;
 
-	if (isnumeric (c_arr))
-		c_arr = num2cell (c_arr);
-	elseif (~iscell (c_arr))
-		error ("oct2ods: input array neither cell nor numeric array");
-	endif
-
 	# Get some basic spreadsheet data from the pointer using ODFtoolkit
 	odfcont = ods.workbook;
 	xpath = ods.app.getXPath ();
@@ -199,13 +210,11 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 	# Create an instance of type NODESET for use in subsequent statements
 	NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
 
-# Check user input & find sheet pointer (1-based)
-
 	# Parse sheets ("tables") from ODS file
 	sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
 	nr_of_sheets = sheets.getLength ();
 	newsh = 0;								# Assume existing sheet
-
+	if isempty (wsh) wsh = 1; endif
 	if (~isnumeric (wsh))					# Sheet name specified
 		# Search in sheet names, match sheet name to sheet number.
 		# Beware, 0-based index, 1-based count!
@@ -220,7 +229,7 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 		endwhile
 		if (ischar (wsh) && nr_of_sheets < 256) newsh = 1; endif
 	else										# Sheet index specified
-		if (wsh > nr_of_sheets && wsh < 256)	# Max nr of sheets = 256
+		if ((ods.changed == 2) || (wsh > nr_of_sheets && wsh < 256))	# Max nr of sheets = 256
 			# Create a new sheet
 			newsh = 1;
 		elseif (wsh <=nr_of_sheets && wsh > 0)
@@ -250,15 +259,21 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 	endif
 
 # Prepare worksheet for writing. If needed create new sheet
-
 	if (newsh)
-		# Create a new sheet. First the basics
-		sh = java_new ('org.odftoolkit.odfdom.doc.table.OdfTable', odfcont);
-		changed = 1;
-		# Append sheet to spreadsheet ( contentRoot)
-		offsprdsh.appendChild (sh);
-		# Rebuild sheets nodes
-		sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
+		if (ods.changed == 2)
+			# New spreadsheet. Prepare to use the default 1x1 first sheet.
+			sh = sheets.item(0);
+		else
+			# Other sheets exist, create a new sheet. First the basics
+			sh = java_new ('org.odftoolkit.odfdom.doc.table.OdfTable', odfcont);
+			changed = 1;
+			# Append sheet to spreadsheet ( contentRoot)
+			offsprdsh.appendChild (sh);
+			# Rebuild sheets nodes
+			sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
+		endif 
+
+		# Sheet name
 		if (isnumeric (wsh))
 			# Give sheet a name
 			str = sprintf ("Sheet%d", wsh);
@@ -268,6 +283,9 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 			sh.setTableNameAttribute (wsh);
 			wsh = sheets.getLength () - 1;
 		endif
+		# Fixup wsh pointer in case of new spreadsheet
+		if (ods.changed == 2) wsh = 0; endif
+
 		# Add table-column entry for style etc
 		col = sh.addTableColumn ();
 		col.setTableDefaultCellStyleNameAttribute ("Default");
@@ -312,6 +330,15 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 		# Only now add drow as otherwise for each cell an empty table-column is
 		# inserted above the rows (odftoolkit bug?)
 		sh.appendRow (drow);
+		if (ods.changed == 2)
+			# In case of a completely new spreadsheet, delete the first initial 1-cell row
+			# But check if it *is* a row...
+			try
+				sh.removeChild (drow.getPreviousRow ());
+			catch
+				# Nothing. Apparently there was only the just appended row.
+			end_try_catch
+		endif
 		# 6. Row template ready. Copy row template down to cover future array
 		for ii=2:nrows
 			nrow = drow.cloneNode (1);	# Deep copy
@@ -607,6 +634,7 @@ endfunction
 ## 2010-06-02 Fixed first sheet remaining in new spreadsheets
 ## 2010-08-01 Added option for crange to be only topleft cell address
 ##     "      Code cleanup
+## 2010-08-13 Fixed bug of ignoring text sheet name in case of new spreadsheet
 
 function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 
@@ -614,7 +642,7 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 	sh = ods.workbook.getSheet (0);
 	cl = sh.getCellAt (0, 0);
 	try
-		# 1.2b3 has public getValueType ()
+		# Versions 1.2b3+ have public getValueType ()
 		cl.getValueType ();
 		ver = 3;
 	catch
@@ -625,7 +653,7 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 	rstatus = 0; sh = []; changed = 0;
 
 	# Get worksheet. Use first one if none given
-	if (isempty (wsh) || ods.changed == 2) wsh = 1; endif
+	if (isempty (wsh)) wsh = 1; endif
 	sh_cnt = ods.workbook.getSheetCount ();
 	if (isnumeric (wsh))
 		if (wsh > 1024)
@@ -726,7 +754,6 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 		endfor
 	endfor
 
-#	if (changed && (ods.changed < 1))     # Why ?
 	if (changed)
 		ods.changed = 1; 
 		rstatus = 1;

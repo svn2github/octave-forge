@@ -93,16 +93,24 @@
 ## 2010-08-01 Added check on input array size vs. spreadsheet capacity
 ##     "      Changed argument topleft into range (now compatible with ML); the
 ##     "      old argument version (just topleft cell) is still recognized, though
+## 2010-08014 Added char array conversion to 1x1 cell for character input arrays
 
 ## Last script file update (incl. subfunctions): 2010-08-11
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh, crange=[], spsh_opts=[])
 
 	# Make sure input array is a cell array
-	if (isnumeric (obj))
+	if (isempty (obj))
+		warning ("Request to write empty matrix - ignored."); 
+		rstatus = 1;
+		return;
+	elseif (isnumeric (obj))
 		obj = num2cell (obj);
 	elseif (ischar (obj))
 		obj = {obj};
+		printf ("(oct2xls: input character array converted to 1x1 cell)\n");
+	elseif (~iscell (obj))
+		error ("oct2xls: input array neither cell nor numeric array");
 	endif
 
 	# Various options 
@@ -203,7 +211,6 @@ function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 	# Preliminary sanity checks
 	if (nargin < 2) error ("oct2com2xls needs a minimum of 2 arguments."); endif
 	if (nargin == 2) wsh = 1; endif
-	if (~iscell (obj)) error ("Cell array expected as input argument"); endif
 	if (~strmatch (tolower (xls.filename(end-4:end)), '.xls'))
 		error ("oct2com2xls can only write to Excel .xls or .xlsx files")
 	endif
@@ -211,11 +218,6 @@ function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 		if (wsh < 1) error ("Illegal worksheet number: %i\n", wsh); endif
 	elseif (size (wsh, 2) > 31) 
 		error ("Illegal worksheet name - too long")
-	endif
-	if (isempty (obj))
-		warning ("Request to write empty matrix."); 
-		rstatus = 1;
-		return; 
 	endif
 	# Check xls file pointer struct
 	test1 = ~isfield (xls, "xtype");
@@ -428,13 +430,6 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 	rstatus = 0; changed = 1; f_errs = 0;
 
 	# Preliminary sanity checks
-	if (isempty (obj))
-		warning ("Request to write empty matrix."); 
-		rstatus = 1;
-		return; 
-	elseif (~iscell(obj))
- 		error ("First argument is not a cell array");
-	endif
 	if (nargin < 2) error ("oct2jpoi2xls needs a minimum of 2 arguments."); endif
 	if (nargin == 2) wsh = 1; endif
 	if (~strmatch (tolower (xls.filename(end-4:end)), '.xls'))
@@ -474,9 +469,6 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 			xls.changed = 2;
 		endif
 	endif
-
-	# Beware of strings variables interpreted as char arrays; change them to cell.
-	if (ischar (obj)) obj = {obj}; endif
 
 	# Parse date ranges  
 	[nr, nc] = size (obj);
@@ -599,13 +591,6 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 	rstatus = 0; changed = 1; f_errs = 0;
 
 	# Preliminary sanity checks
-	if (isempty (obj))
-		warning ("Request to write empty matrix."); 
-		rstatus = 1;
-		return; 
-	elseif (~iscell(obj))
- 		error ("First argument is not a cell array");
-	endif
 	if (nargin < 2) error ("oct2java2xls needs a minimum of 2 arguments."); endif
 	if (nargin == 2) wsh = 1; endif
 	if (~strmatch (tolower (xls.filename(end-4:end)), '.xls'))	# No OOXML in JXL

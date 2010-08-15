@@ -18,7 +18,7 @@
 ## @deftypefn {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods})
 ## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh})
 ## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh}, @var{range})
-## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh}, @var{range}, @var(options))
+## @deftypefnx {Function File} [ @var{ods}, @var{rstatus} ] = oct2ods (@var{arr}, @var{ods}, @var{wsh}, @var{range}, @var{options})
 ##
 ## Transfer data to an OpenOffice_org Calc spreadsheet previously opened
 ## by odsopen().
@@ -35,7 +35,7 @@
 ##
 ## @var{ods} must be a valid pointer struct created earlier by odsopen.
 ##
-## @var{wsh} can be a number or string.
+## @var{wsh} can be a number (sheet name) or string (sheet number).
 ## In case of a yet non-existing Calc file, the first sheet will be
 ## used & named according to @var{wsh}.
 ## In case of existing files, some checks are made for existing sheet
@@ -78,7 +78,7 @@
 ## @end example
 ##
 ## @example
-##   [ods, status] = ods2oct ({'String'}, ods, 'Oldsheet3', 'B15:B15');
+##   [ods, status] = ods2oct (@{'String'@}, ods, 'Oldsheet3', 'B15:B15');
 ##   Put a character string into cell B15 in sheet Oldsheet3
 ## @end example
 ##
@@ -98,6 +98,7 @@
 ## 2010-07-05 Added example for writng character strings
 ## 2010-07-29 Added option for entering / reading back spreadsheet formulas
 ## 2010-08-14 Moved check on input cell array to main function
+## 2010-08-15 Texinfo header edits
 ##
 ## Last update of subfunctions below: 2010-08-01
 
@@ -635,6 +636,7 @@ endfunction
 ## 2010-08-01 Added option for crange to be only topleft cell address
 ##     "      Code cleanup
 ## 2010-08-13 Fixed bug of ignoring text sheet name in case of new spreadsheet
+## 2010-08-15 Fixed bug with invalid first sheet in new spreadsheets
 
 function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 
@@ -680,7 +682,8 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 			if (ver == 3)
 				if (ods.changed == 2)
 					# 1st "new" -unnamed- sheet has already been made when creating the spreadsheet
-					sh.setName = wsh;
+					sh = ods.workbook.getSheet (0);
+					sh.setName (wsh);
 					ods.changed = 0;
 				else
 					# For existing spreadsheets
@@ -729,7 +732,7 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 		sh.ensureColumnCount (lcol + ncols);	# Remember, lcol & trow are zero-based
 	catch	# catch is needed for new empty sheets (first ensureColCnt() hits null ptr)
 		sh.ensureColumnCount (lcol + ncols);
-		# Kludge needed because upper row is defective (NPE jOpenDocument bug). Fixed in 1.2b4?
+		# Kludge needed because upper row is defective (NPE jOpenDocument bug). ?Fixed in 1.2b4?
 		if (trow == 0)
 			# Shift rows one down to avoid defective upper row
 			++trow;

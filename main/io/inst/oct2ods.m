@@ -99,6 +99,7 @@
 ## 2010-07-29 Added option for entering / reading back spreadsheet formulas
 ## 2010-08-14 Moved check on input cell array to main function
 ## 2010-08-15 Texinfo header edits
+## 2010-08-16 Added check on presence of output argument
 ##
 ## Last update of subfunctions below: 2010-08-01
 
@@ -123,6 +124,8 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 		spsh_opts.formulas_as_text = 0;
 		# Other options here
 	endif
+	
+	if (nargout < 1) printf ("Warning: no output spreadsheet file pointer specified as argument.\n"); endif
 
 	if (strcmp (ods.xtype, 'OTK'))
 		# Write ods file tru Java & ODF toolkit.

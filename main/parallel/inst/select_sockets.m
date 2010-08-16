@@ -16,18 +16,24 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{n}, @var{idx}] =} select_sockets
-## (@var{sockets}, @var{timeout}[, @var{nfds}])\n\
-## Calls Unix @code{select}.\n\
-## @var{sockets}: valid sockets matrix as returned by @code{connect}.\n\
-## @var{timeout}: seconds, negative for infinite.\n\
-## @var{nfds}: optional, default is Unix' FD_SETSIZE (platform specific).\n\
-## Passed to Unix @code{select} as the first argument --- see there.\n\
-## An error is returned if nfds or a watched filedescriptor \n\
-## plus one exceeds FD_SETSIZE.\n\
-## Return values are:\n\
-## @var{idx}: index vector to rows in @var{sockets} with pending input\n\
-## readable with @code{recv}.\n\
-## @var{n}: number of rows in @var{sockets} with pending input.\n\
+## (@var{sockets}, @var{timeout}[, @var{nfds}])
+##
+## Calls Unix @code{select}.
+##
+## @var{sockets}: valid sockets matrix as returned by @code{connect}.
+##
+## @var{timeout}: seconds, negative for infinite.
+##
+## @var{nfds}: optional, default is Unix' FD_SETSIZE (platform
+## specific). Passed to Unix @code{select} as the first argument --- see
+## there.
+##
+## An error is returned if nfds or a watched filedescriptor plus one
+## exceeds FD_SETSIZE.
+##
+## Return values are: @var{idx}: index vector to rows in @var{sockets}
+## with pending input, readable with @code{recv}. @var{n}: number of
+## rows in @var{sockets} with pending input.
 ## @end deftypefn
 
 function [n, ridx] = select_sockets (varargin)
@@ -36,8 +42,8 @@ function [n, ridx] = select_sockets (varargin)
     error ("two or three arguments required");
   endif
 
-  if (! ismatrix (sockets = varargin{1}) || rows (sockets < 1) || \
-      colums (sockets) != 3)
+  if (! ismatrix (sockets = varargin{1}) || rows (sockets) < 1 || \
+      columns (sockets) != 3)
     error ("no valid sockets matrix");
   endif
 

@@ -94,10 +94,11 @@
 ##     "      Changed argument topleft into range (now compatible with ML); the
 ##     "      old argument version (just topleft cell) is still recognized, though
 ## 2010-08014 Added char array conversion to 1x1 cell for character input arrays
+## 2010-08-16 Added check on presence of output argument. Made wsh = 1 default
 
 ## Last script file update (incl. subfunctions): 2010-08-11
 
-function [ xls, rstatus ] = oct2xls (obj, xls, wsh, crange=[], spsh_opts=[])
+function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
 
 	# Make sure input array is a cell array
 	if (isempty (obj))

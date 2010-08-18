@@ -20,9 +20,9 @@
 ## @deftypefnx {Function File} [ @var{xls}, @var{rstatus} ] = oct2xls (@var{arr}, @var{xls}, @var{wsh}, @var{range})
 ## @deftypefnx {Function File} [ @var{xls}, @var{rstatus} ] = oct2xls (@var{arr}, @var{xls}, @var{wsh}, @var{range}, @var{options})
 ##
-## Add data in 1D/2D CELL array @var{arr} into a range specified
-## in @var{topleft} in worksheet @var{wsh} in an Excel
-## spreadsheet file pointed to in structure @var{xls}.
+## Add data in 1D/2D CELL array @var{arr} into a range specified in
+## @var{range} in worksheet @var{wsh} in an Excel spreadsheet file
+## pointed to in structure @var{xls}.
 ## Return argument @var{xls} equals supplied argument @var{xls} and is
 ## updated by oct2xls.
 ##
@@ -45,9 +45,10 @@
 ## inserted to the right of all existing worksheets. The pointer to the
 ## "active" sheet (shown when Excel opens the file) remains untouched.
 ##
-## If @var{range} is omitted or if only a topleft cell address is specified,
-## the topleft cell of @var{range} is supposed to be 'A1' and the actual
-## range to be used is determined by the size of @var{arr}.
+## If @var{range} is omitted or just the top left cell of the range is
+## specified, the actual range to be used is determined by the size of
+## @var{arr}. If nothing is specified for @var{range} the top left cell
+## is assumed to be 'A1'.
 ##
 ## Data are added to the worksheet, ignoring other data already present;
 ## existing data in the range to be used will be overwritten.
@@ -95,6 +96,7 @@
 ##     "      old argument version (just topleft cell) is still recognized, though
 ## 2010-08014 Added char array conversion to 1x1 cell for character input arrays
 ## 2010-08-16 Added check on presence of output argument. Made wsh = 1 default
+## 2010-08-17 Corrected texinfo ("topleft" => "range")
 
 ## Last script file update (incl. subfunctions): 2010-08-11
 
@@ -547,9 +549,9 @@ endfunction
 ## @deftypefnx {Function File} [ @var{xlso}, @var{rstatus} ] = oct2jxla2xls (@var{arr}, @var{xlsi}, @var{wsh}, @var{range})
 ## @deftypefnx {Function File} [ @var{xlso}, @var{rstatus} ] = oct2jxla2xls (@var{arr}, @var{xlsi}, @var{wsh}, @var{range}, @var{options})
 ##
-## Add data in 1D/2D CELL array @var{arr} into a range with upper left
-## cell equal to @var{topleft} in worksheet @var{wsh} in an Excel
-## spreadsheet file pointed to in structure @var{range}.
+## Add data in 1D/2D CELL array @var{arr} into spreadsheet cell range @var{range}
+## in worksheet @var{wsh} in an Excel spreadsheet file pointed to in structure
+## @var{range}.
 ## Return argument @var{xlso} equals supplied argument @var{xlsi} and is
 ## updated by oct2jxla2xls.
 ##

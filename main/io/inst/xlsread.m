@@ -122,6 +122,8 @@
 ## 2009-12-29 bug fixes
 ## 2010-01-12 added unwind_protect to get rid of stray Excel invocations i.c.o. COM errors
 ## 2010-05-31 Updated help text (delays i.c.o. empty range due to getusedrange call)
+## 2010-08-18 Added check for existence of xls after call to xlsopen to 
+##	          avoid unneeded error message clutter
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
@@ -151,13 +153,17 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 		reqintf= "JXL"; 
 		printf ("BASIC (BIFF5) support request translated to JXL. \n");
 	endif
+	
+	if (nargout < 1) printf ("Warning: no output spreadsheet file pointer specified as argument.\n"); endif
 
 	# Checks done. Get raw data into cell array "rawarr". xlsopen finds out
 	# what interface to use. If none found, suggest csv
 
 	unwind_protect	# Needed to catch COM errors & able to close stray Excel invocations
 	# Get pointer array to Excel file
+	xls_ok = 0;
 	xls = xlsopen (fn, 0, reqintf);
+	xls_ok = 1;
 
 	if (strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'POI') || strcmp (xls.xtype, 'JXL'))
 
@@ -184,7 +190,7 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 
 	unwind_protect_cleanup	
 	# Close Excel file
-	xls = xlsclose (xls);
+	if (xls_ok) xls = xlsclose (xls); endif
 
 	end_unwind_protect
 

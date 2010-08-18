@@ -93,6 +93,8 @@
 ## 2010-01-04 (Adapted range capacity checks to OOXML)
 ## 2010-01-12 (Bug fix; added unwind_protect to xlsopen...xlsclose calls)
 ## 2010-01-15 Fixed typos in texinfo
+## 2010-08-18 Added check for existence of xls after call to xlsopen to 
+##	          avoid unneeded error message clutter
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
@@ -152,12 +154,14 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 	endif
 
 	unwind_protect				# Needed to besure Excel can be closed i.c.o. errors
+	xls_ok = 0;
 	xls = xlsopen (filename, 1, reqintf);
+	xls_ok = 1;
 
 	[xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
 
 	unwind_protect_cleanup
-	xls = xlsclose (xls);
+	if (xls_ok) xls = xlsclose (xls); endif
 
 	end_unwind_protect
 

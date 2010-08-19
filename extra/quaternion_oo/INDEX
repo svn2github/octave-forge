@@ -1,6 +1,7 @@
 quaternion >> Quaternion
 Quaternions
   quaternion
+  @quaternion/abs
   @quaternion/conj
   @quaternion/diag
   @quaternion/ispure

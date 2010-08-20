@@ -15,6 +15,8 @@ Requirements
 
  1. GNU Octave >= 3.0.0 that is available at http://www.octave.org/
  2. two or more computers
+ 3. identical versions of package "parallel" installed on these
+    computers
 
 
 Security note
@@ -22,16 +24,18 @@ Security note
  Commands are sent to slave machines over TCP connections to port
  12502, data is sent between machines over TCP connections to port
  12501. With the current version, it is your own responsibility to
- secure these ports against unauthorized access.
+ secure these ports against unauthorized access. There is no
+ ecryption.
 
 
 How to use
+
  Note first that this package assumes the use in a multiple-computer 
  system consisting of a master (your console) computer and some 
  slave computers.  Run Octave with argument "server.m" on every slave 
- computer.
+ computer, e.g. (the actual path to server.m may differ):
 
- $ octave /usr/local/share/octave/2.1.43/site/m/octave-forge/parallel/server.m
+ $ octave /usr/share/octave/packages/parallel-...version.../server.m
 
  Run Octave without argument "server.m" on the master computer
 
@@ -89,12 +93,11 @@ reval (commands, sockets)
 
         reval ([ "a=[ 1:3 ]"; "a=a'*a" ],socket(2,:));
 
-sclose (sockets)
+scloseall (sockets)
  Close the connections specified by the matrix "sockets".
- Returns zero on success, or nonzero if an error occurred.
  For example,
 
-        sclose (sockets);
+        scloseall (sockets);
 
 select_sockets: [N, IDX] = select_sockets (SOCKETS, TIMEOUT[, NFDS])
  See help-text of this function. Returns an index to rows in "sockets"
@@ -112,14 +115,14 @@ Sample program:
 
 clear;
 hosts = [ "host1"; "host2"; "host3" ];
-sockets = connect(hosts);
-psum = zeros(1,2);
-reval( "send(sum([1:50]),sockets(1,:))", sockets(2,:));
-reval( "send(sum([51:100]),sockets(1,:))", sockets(3,:));
-psum(1) = recv(sockets(2,:));
-psum(2) = recv(sockets(3,:));
-sum(psum)
-scloseall(sockets);
+sockets = connect (hosts);
+psum = zeros (1, 2);
+reval ("send (sum (1:50), sockets(1, :))", sockets(2, :));
+reval ("send (sum (51:100), sockets(1, :))", sockets(3, :));
+psum(1) = recv (sockets(2, :));
+psum(2) = recv (sockets(3, :));
+sum (psum)
+scloseall (sockets);
 
 
  In the following script, the variable s="Hello, again!" 
@@ -128,20 +131,21 @@ scloseall(sockets);
 clear;
 hosts = [ "host1"; "host2"; "host3"; "host4" ]; 
 sockets = connect(hosts);
-s="Hello, again!";
-send(s,sockets(2,:)); # for larger data than contained in "s", this command should be given _after_ the following "reval" commands
-reval( "s=recv(sockets(1,:));",sockets(2,:));
-reval( "send(s,sockets(3,:));",sockets(2,:));
-reval( "s=recv(sockets(2,:));",sockets(3,:));
-reval( "send(s,sockets(4,:));",sockets(3,:));
-reval( "s=recv(sockets(3,:));",sockets(4,:));
-reval( "send(s,sockets(1,:));",sockets(4,:));
-s2=recv(sockets(4,:))
-scloseall(sockets);
+s = "Hello, again!";
+send (s,sockets(2,:)); # for larger data than contained in "s", this command should be given _after_ the following "reval" commands
+reval ("s = recv (sockets(1, :));", sockets(2, :));
+reval ("send (s, sockets(3, :));", sockets(2, :));
+reval ("s = recv (sockets(2, :));", sockets(3, :));
+reval ("send (s, sockets(4,:));", sockets(3, :));
+reval ("s = recv (sockets(3,:));", sockets(4, :));
+reval ("send (s, sockets(1, :));",sockets(4, :));
+s2 = recv (sockets(4,:))
+scloseall (sockets);
 
 
 
 License:
+
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation. See individual files for GPL Version.

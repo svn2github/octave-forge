@@ -19,112 +19,43 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include <octave/oct.h>
 
-#include "defun-dld.h"
-#include "dirfns.h"
-#include "error.h"
-#include "help.h"
-#include "oct-map.h"
-#include "systime.h"
-#include "ov.h"
-#include "oct-obj.h"
-#include "utils.h"
-#include "oct-env.h"
-#include "file-io.h"
-#include "sighandlers.h"
-#include "parse.h"
-#include "cmd-edit.h"
-#include "variables.h"
-#include "toplev.h"
-#include "sysdep.h"
-#include "oct-prcstrm.h"
-#include "oct-stream.h"
-#include "oct-strstrm.h"
-#include "oct-iostrm.h"
-#include "unwind-prot.h"
-#include "input.h"
-#include "quit.h"
+#include <oct-env.h>
+#include <file-io.h>
+#include <sighandlers.h>
+#include <parse.h>
+#include <cmd-edit.h>
+#include <toplev.h>
 
-#include <iostream>
-#include <stdio.h>
-#include <sys/types.h>
 #include <sys/socket.h>
+#include <iostream>
 #include <sys/stat.h>
-#include <sys/wait.h>
 #include <sys/poll.h>
-#include <netinet/in.h>
 #include <errno.h>
-#include <signal.h>
 #include <netdb.h>
-#include <unistd.h>
-#include <setjmp.h>
-#include <netinet/in.h>
 
 #include "sock-stream.h"
 
-// SSIZE_MAX might be for 64-bit. Limit to 2^31-1
-#define BUFF_SIZE 2147483647
+/* children are not killed on parent exit; for that octave_child_list
+   can not be used and an own SIGCHLD handler is needed */
 
-// Handle server SIGTERM SIGQUIT
-
-static RETSIGTYPE
-sigterm_handler (int /* sig */)
+static
+bool pserver_child_event_handler (pid_t pid, int ev)
 {
-  int len=118;
-  char hostname[120],pidname[128];
-  gethostname(hostname,len);
-  sprintf(pidname,"/tmp/.octave-%s.pid",hostname);
-  remove (pidname);
-  close_files ();
-
-  std::cerr << "exiting, " <<hostname <<std::endl;
-  cleanup_tmp_files ();
-  exit(0);
-
+  return 1; // remove child from octave_child_list
 }
 
-static RETSIGTYPE
-sigchld_handler(int /* sig */)
-{
-  int status;
-  /* Reap all childrens */
-  while (waitpid(-1, &status, WNOHANG) > 0)
-    ;
-  signal(SIGCHLD, sigchld_handler);
-}
-
-int
+void
 reval_loop (int sock)
 {
-  // Allow the user to interrupt us without exiting.
+  // The big loop.
+
   int len=0;
   char *ev_str;
   std::string s;
 
-  octave_save_signal_mask ();
-
-  if (octave_set_current_context)
-    {
-#if defined (USE_EXCEPTIONS_FOR_INTERRUPTS)
-      panic_impossible ();
-#else
-      unwind_protect::run_all ();
-      raw_mode (0);
-      std::cout << "\n";
-      octave_restore_signal_mask ();
-#endif
-    }
-
-  can_interrupt = true;
-
-  octave_catch_interrupts ();
-
-  octave_initialized = true;
-
-  // The big loop.
-
   char dummy;
   read(sock,&dummy,sizeof(char));
-  int retval,count,r_len,num,fin,nl;
+  int p_err,count,r_len,num,fin,nl;
   struct pollfd *pollfd;
       
   pollfd=(struct pollfd *)malloc(sizeof(struct pollfd));
@@ -132,7 +63,7 @@ reval_loop (int sock)
   pollfd[0].events=0;
   pollfd[0].events=POLLIN|POLLERR|POLLHUP;
 
-  do
+  while (true) // function does not return
     {
       pollfd[0].revents=0;
       num=poll(pollfd,1,-1);
@@ -166,16 +97,23 @@ reval_loop (int sock)
       ev_str[len]='\0';
 
       s=(std::string)ev_str;
-      eval_string(s,false,retval,0);
+      eval_string(s,false,p_err,0);
 
       delete(ev_str);
+      nl = 0;
       if (error_state)
         {
-	  nl=htonl(error_state);
-	  write(sock,&nl,sizeof(int));
-	  read(sock,&nl,sizeof(int));
-	  // clean_up_and_exit_server (retval);
+	  nl = 1;
+	  error_state = 0;
         }
+      else if (p_err)
+	nl = 1;
+      if (nl)
+	{
+	  nl = htonl (nl);
+	  write (sock, &nl, sizeof (int));
+	  read (sock, &nl, sizeof (int));
+	}
       else
         {
           if (octave_completion_matches_called)
@@ -183,12 +121,8 @@ reval_loop (int sock)
           else
             command_editor::increment_current_command_number ();
         }
-      // Blocking Execution
-      //      write(sock,&error_state,sizeof(error_state));
     }
-  while (retval == 0);
 
-  return retval;
 }
 
 DEFUN_DLD (pserver,,,
@@ -208,22 +142,28 @@ Connect hosts and return sockets.")
 	clean_up_and_exit (1);
       }
 
+      // initialize exit function
+      feval ("__pserver_exit__", octave_value (hostname), 0);
+
       if (fork())
         clean_up_and_exit(0);
       
-      /* Touch lock file. */
+      // register exit function
+      feval ("atexit", octave_value ("__pserver_exit__"), 0);
+
+      /* Touch lock file, mark for deletion. */
       ppid=getpid();
+      mark_for_deletion (pidname);
       pidfile = fopen (pidname, "w");
       fprintf(pidfile,"%d\n",ppid);
       fclose(pidfile);
       std::cout <<pidname<<std::endl;
 
-      /* */
-      signal(SIGCHLD, sigchld_handler);
-      signal(SIGTERM,sigterm_handler);
-      signal(SIGQUIT,sigterm_handler);
+      // avoid dumping octave_core if killed by a signal
+      feval ("sigterm_dumps_octave_core", octave_value (0), 0);
+      feval ("sighup_dumps_octave_core", octave_value (0), 0);
 
-      /* Redirect stdin, stdout, and stderr to /dev/null. */
+      /* Redirect stdin and stdout to /dev/null. */
       freopen("/dev/null", "r", stdin);
       freopen("/dev/null", "w", stdout);
 
@@ -277,7 +217,7 @@ Connect hosts and return sockets.")
       dsock=socket(PF_INET,SOCK_STREAM,0);
       if(dsock==-1){
 	perror("socket : ");
-	exit(-1);
+	clean_up_and_exit(-1);
       }
       
       addr=(struct sockaddr_in *) calloc(1,sizeof(struct sockaddr_in));
@@ -289,11 +229,11 @@ Connect hosts and return sockets.")
       
       if(bind(dsock,(struct sockaddr *) addr,sizeof(*addr))!=0){
 	perror("bind : ");
-	exit(-1);
+	clean_up_and_exit(-1);
       }
       if(listen(dsock,SOMAXCONN)!=0){
 	perror("listen : ");
-	exit(-1);
+	clean_up_and_exit(-1);
       }
       free(addr);
       int param=1;
@@ -318,6 +258,18 @@ Connect hosts and return sockets.")
 	  /* Normal production daemon.  Fork, and have the child process
              the connection.  The parent continues listening. */
 	  
+	  // remove non-existing children from octave_child_list
+	  OCTAVE_QUIT;
+
+	  sigset_t nset, oset, dset;
+
+	  BLOCK_CHILD (nset, oset);
+	  BLOCK_SIGNAL (SIGTERM, nset, dset);
+	  BLOCK_SIGNAL (SIGHUP, nset, dset);
+
+	  // restores all signals to state before BLOCK_CHILD
+#define RESTORE_SIGNALS(ovar) UNBLOCK_CHILD(ovar)
+
 	  if((pid=fork())==-1)
 	    {
 	      perror("fork ");
@@ -329,6 +281,8 @@ Connect hosts and return sockets.")
 	      signal(SIGCHLD,SIG_DFL);
 	      signal(SIGTERM,SIG_DFL);
 	      signal(SIGQUIT,SIG_DFL);
+
+	      RESTORE_SIGNALS (oset);
 
 	      val=1;
 	      ol=sizeof(val);
@@ -365,7 +319,7 @@ Connect hosts and return sockets.")
 		  dasock=accept(dsock,(sockaddr *)&rem_addr,(socklen_t *)&len);
 		  if(dasock==-1){
 		    perror("accept dat ");
-		    exit(-1);
+		    _exit(-1);
 		  }
 		  int bufsize=BUFF_SIZE;
 		  socklen_t ol;
@@ -438,7 +392,7 @@ Connect hosts and return sockets.")
 		dsock=socket(PF_INET,SOCK_STREAM,0);
 		if(dsock==-1){
 		  perror("socket : ");
-		  exit(-1);
+		  _exit(-1);
 		}
 		addr=(struct sockaddr_in *) calloc(1,sizeof(struct sockaddr_in));
 		
@@ -455,7 +409,7 @@ Connect hosts and return sockets.")
 		      break;
 		    }else if(errno!=ECONNREFUSED){
 		      perror("connect : ");
-		      exit(-1);
+		      _exit(-1);
 		    }else {
 		      usleep(5000);
 		    }
@@ -511,11 +465,6 @@ Connect hosts and return sockets.")
 	      }
 	      free(host_list);
 
- 	      //normal act
-	      install_signal_handlers ();
-      
-	      atexit (do_octave_atexit);
-	      
 	      char * s;
 	      int stat;
 
@@ -545,21 +494,21 @@ Connect hosts and return sockets.")
 	      if(cd_ok != true){
 		octave_env::chdir ("/tmp");
 	      }
-	      int retval = reval_loop(asock);
-	      
-	      if (retval == 1 && ! error_state)
-		retval = 0;
-	      
-	      close(asock);
 
-	      clean_up_and_exit (retval);
+	      reval_loop (asock); // does not return
 	      
 	    }
+
+	  // parent
+
+	  octave_child_list::insert (pid, pserver_child_event_handler);
+
+	  RESTORE_SIGNALS (oset);
 	  
 	  close(asock);
 	  
 	}
       close(sock);
-      exit(-1);
+      clean_up_and_exit(-1);
       
 }

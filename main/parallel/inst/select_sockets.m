@@ -50,3 +50,5 @@ function [n, ridx] = select_sockets (varargin)
   [n, ridx] = \
       select (cat \
 	      (2, {varargin{1}(:, 1)}, {[], []}, varargin(2:end)){:});
+
+endfunction

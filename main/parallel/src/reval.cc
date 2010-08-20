@@ -105,6 +105,9 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
 	}
       }
 
+      if (error_state)
+	return retval;
+
       for(i=0;i<nsock;i++){
 	sock=(int)sock_m.data()[i+nsock];
 	if(sock!=0){

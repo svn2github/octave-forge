@@ -14,9 +14,18 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+#if !defined (sock_stream_h)
+#define sock_stream_h
+
+// (this comment and the definition have been taken from pserver.cc
+// and were probably from Hayato Fujiwara)
+//
+// SSIZE_MAX might be for 64-bit. Limit to 2^31-1
+#define BUFF_SIZE 2147483647
 
 int socket_to_oct_iostream (int sd);
 
+#endif
 
 /*
 ;;; Local Variables: ***

@@ -20,30 +20,13 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 // TODO: error handling is a mess
 
 #include <octave/oct.h>
+#include <oct-env.h>
 
-#include "defun-dld.h"
-#include "dirfns.h"
-#include "error.h"
-#include "help.h"
-#include "oct-map.h"
-#include "systime.h"
-#include "ov.h"
-#include "oct-obj.h"
-#include "utils.h"
-#include "oct-env.h"
-
-#include <stdio.h>
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
 #include <errno.h>
 #include <netdb.h>
-#include <unistd.h>
-#include <netinet/in.h>
 
 #include "sock-stream.h"
-
-#define BUFF_SIZE SSIZE_MAX
 
 // COMM
 
@@ -209,7 +192,7 @@ Connect hosts and return sockets.")
 
 	else
 	  {
-	    int bufsize=262144;
+	    int bufsize = BUFF_SIZE;
 	    socklen_t ol;
 	    ol=sizeof(bufsize);
 	    setsockopt(sock,SOL_SOCKET,SO_SNDBUF,&bufsize,ol);

@@ -4,12 +4,15 @@
 %! # remove rownames
 %! x.rownames = [];
 %!assert(size(x.rownames), [0 0])
-%! # remove a column as '.' access
+%! # remove a column through '.' access
 %! y = x; y.DataName = [];
 %!assert(size(y), [10 6]);
-%! # remove a column as (:, name) access
+%! # remove a column through (:, name) access
 %! y = x; y(:, "DataName") = [];
 %!assert(size(y), [10 6]);
+%! # create an aempty dataframe
+%! y = dataframe([]);
+%!assert(isempty(y), true);
 %! y = x.df(:, 2:6);
 %! # direct matrix setting through struct access
 %! y.Freq=[(1:10).' (10:-1:1).'];

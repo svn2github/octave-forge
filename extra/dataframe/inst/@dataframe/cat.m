@@ -113,6 +113,7 @@ function resu = cat(dim, A, varargin)
       
       for indi=1:length(varargin),
 	B = varargin{indi};
+	disp(sprintf("inside cat: %d", size(B)));
 	if !isa(B, 'dataframe'),
 	  if iscell(B) && 2 == length(B),
 	    B = dataframe(B{2}, 'rownames', B{1});
@@ -121,6 +122,7 @@ function resu = cat(dim, A, varargin)
 	  endif
 	endif
 	if resu._cnt(1) != B._cnt(1),
+	  disp('line 124 '); keyboard
 	  error('Different number of rows in dataframes');
 	endif
 	if resu._cnt(2) != B._cnt(2),

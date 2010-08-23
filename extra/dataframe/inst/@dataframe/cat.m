@@ -113,7 +113,6 @@ function resu = cat(dim, A, varargin)
       
       for indi=1:length(varargin),
 	B = varargin{indi};
-	disp(sprintf("inside cat: %d", size(B)));
 	if !isa(B, 'dataframe'),
 	  if iscell(B) && 2 == length(B),
 	    B = dataframe(B{2}, 'rownames', B{1});

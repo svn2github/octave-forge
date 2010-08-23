@@ -24,6 +24,7 @@ mex sumskipnan_mex.cpp
 mex histo_mex.cpp
 mex kth_element.cpp
 mex str2array.cpp
+mex xptopen.cpp
 mex -c svm.cpp
 mex -c svm_model_matlab.c
 mex -c tron.cpp

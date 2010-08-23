@@ -44,6 +44,9 @@ level 1: basic functions (not derived)
 	FLAG_ACCURACY_LEVEL can be used to increase the accuracy of summations (sumskipnan and covm) 
 	                at the cost of speed.
 	LOAD_FISHERIRIS	loads famous fisher iris data set 
+	STR2ARRAY	convert string to array - useful to extract numeric data from 
+			delimiter files
+	XPTOPEN		read and write *.XPT (SAS Transport Format) files
 
 level 2a: derived functions
 	MEAN	 	mean (options: arithmetic, geometric, harmonic)

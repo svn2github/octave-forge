@@ -45,6 +45,22 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 // COMM
 
+static
+void read_if_no_error (int fd, void *buf, size_t count, int est)
+{
+  if (! est)
+    if (read (fd, buf, count) < (ssize_t)count)
+      error ("read error");
+}
+
+static
+void write_if_no_error (int fd, const void *buf, size_t count, int est)
+{
+  if (! est)
+    if (write (fd, buf, count) < (ssize_t)count)
+      error ("write error");
+}
+
 DEFUN_DLD (reval, args, ,
   "reval (commands,sockets)\n\
 \n\
@@ -54,7 +70,7 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
 
   if(args.length () ==2)
     {
-      int sock,row=0,col=0,nsock=0,i,j,k;
+      int sock,row=0,col=0,nsock=0,i,j,k, fin;
       int error_code,count=0,r_len=0,nl;
       octave_value val=args(0);
       Matrix sock_m=args(1).matrix_value();
@@ -66,40 +82,51 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
       row=val.rows();
       col=val.columns();
 
-      if(sock_m.data()[0]==0){
-	int num,pid;
-	struct pollfd *pollfd;
-	pollfd=(struct pollfd *)malloc(nsock*sizeof(struct pollfd));
-	for(i=0;i<nsock;i++){
-	  sock=(int)sock_m.data()[i+nsock];
-	  pollfd[i].fd=sock;
-	  pollfd[i].events=0;
-	  pollfd[i].events=POLLIN|POLLERR|POLLHUP;
-	}
-	
-	num=poll(pollfd,nsock,0);
-	if(num){
-	  for(k=0;k<nsock;k++){
-	    if(pollfd[k].revents && (pollfd[k].fd !=0)){
-	      sockaddr_in r_addr;
-	      struct hostent *hehe;
-	      socklen_t len = sizeof(r_addr);
-	      getpeername(pollfd[k].fd, (sockaddr*)&r_addr, &len );
-	      hehe=gethostbyaddr((char *)&r_addr.sin_addr.s_addr,sizeof(r_addr.sin_addr), AF_INET);
-	      
-	      if(pollfd[k].revents&POLLIN){
-		pid=getpid();
-		read(pollfd[k].fd,&nl,sizeof(int));
-		error_code=ntohl(nl);
-		write(pollfd[k].fd,&nl,sizeof(int));
-		error("error occurred in %s\n\tsee %s:/tmp/octave_error-%s_%5d.log for detail",hehe->h_name,hehe->h_name,hehe->h_name,pid );
-	      }
-	      if(pollfd[k].revents&POLLERR){
-		error("Error condition - %s",hehe->h_name );
-	      }
-	      if(pollfd[k].revents&POLLHUP){
-		error("Hung up - %s",hehe->h_name );
-	      }
+      int num,pid;
+      struct pollfd *pollfd;
+      pollfd=(struct pollfd *)malloc(nsock*sizeof(struct pollfd));
+      for(i=0;i<nsock;i++){
+	sock=(int)sock_m.data()[i+nsock];
+	pollfd[i].fd=sock;
+	pollfd[i].events = POLLIN;
+      }
+
+      num=poll(pollfd,nsock,0);
+      if(num){
+	for(k=0;k<nsock;k++){
+	  if(pollfd[k].revents && (pollfd[k].fd !=0)){
+	    sockaddr_in r_addr;
+	    struct hostent *hehe;
+	    socklen_t len = sizeof(r_addr);
+	    getpeername(pollfd[k].fd, (sockaddr*)&r_addr, &len );
+	    hehe=gethostbyaddr((char *)&r_addr.sin_addr.s_addr,sizeof(r_addr.sin_addr), AF_INET);
+
+	    if(pollfd[k].revents&POLLIN){
+	      pid=getpid();
+	      if (read (pollfd[k].fd, &nl, sizeof (int)) < sizeof (int))
+		{
+		  error ("read error");
+		  return retval;
+		}
+	      error_code=ntohl(nl);
+	      if (write (pollfd[k].fd, &nl, sizeof (int)) < sizeof (int))
+		{
+		  error ("write error");
+		  return retval;
+		}
+	      error("error occurred in %s\n\tsee %s:/tmp/octave_error-%s_%5d.log for detail",hehe->h_name,hehe->h_name,hehe->h_name,pid );
+	    }
+	    if(pollfd[k].revents&POLLERR){
+	      error("Error condition - %s",hehe->h_name );
+	      return retval;
+	    }
+	    if(pollfd[k].revents&POLLHUP){
+	      error("Hung up - %s",hehe->h_name );
+	      return retval;
+	    }
+	    if(pollfd[k].revents & POLLNVAL){
+	      error ("fd not open - %s", hehe->h_name);
+	      return retval;
 	    }
 	  }
 	}
@@ -116,13 +143,22 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
 	    comm[col]='\n';
 	    comm[col+1]='\0';
 	    nl=htonl(col);
-	    write(sock,&nl,sizeof(int));
+	    if (write(sock,&nl,sizeof(int)) < sizeof (int))
+	      {
+		error ("write error");
+		return retval;
+	      }
 	    count=0;
 	    r_len=BUFF_SIZE;
 	    while(count <col){
 	      if((col-count) < BUFF_SIZE)
 		r_len=col-count;
-	      count +=write(sock,(comm+count),r_len);
+	      count += (fin = write (sock, (comm + count), r_len));
+	      if (fin <= 0)
+		{
+		  error ("write error");
+		  return retval;
+		}
 	    }
 
 	    // Blocking Execution

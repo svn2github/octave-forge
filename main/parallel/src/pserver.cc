@@ -39,6 +39,26 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
    can not be used and an own SIGCHLD handler is needed */
 
 static
+void read_or_exit (int fd, void *buf, size_t count)
+{
+  if (read (fd, buf, count) < (ssize_t)count)
+    {
+      error ("read error");
+      _exit (1);
+    }
+}
+
+static
+void write_or_exit (int fd, const void *buf, size_t count)
+{
+  if (write (fd, buf, count) < (ssize_t)count)
+    {
+      error ("write error");
+      _exit (1);
+    }
+}
+
+static
 bool pserver_child_event_handler (pid_t pid, int ev)
 {
   return 1; // remove child from octave_child_list
@@ -60,8 +80,7 @@ reval_loop (int sock)
       
   pollfd=(struct pollfd *)malloc(sizeof(struct pollfd));
   pollfd[0].fd=sock;
-  pollfd[0].events=0;
-  pollfd[0].events=POLLIN|POLLERR|POLLHUP;
+  pollfd[0].events=POLLIN;
 
   while (true) // function does not return
     {
@@ -70,28 +89,35 @@ reval_loop (int sock)
       if(num){
 	if(pollfd[0].revents && (pollfd[0].fd !=0)){
 	  if(pollfd[0].revents&POLLIN){
-	    fin=read(sock,&nl,sizeof(int));
+	    read_or_exit(sock,&nl,sizeof(int));
 	    len=ntohl(nl);
-	    if(!fin)
-	      clean_up_and_exit (0);
 	  }
 	  if(pollfd[0].revents&POLLERR){
 	    std::cerr <<"Error condition "<<std::endl;
-	    clean_up_and_exit (POLLERR);
+	    _exit (POLLERR);
 	  }
 	  if(pollfd[0].revents&POLLHUP){
 	    std::cerr <<"Hung up "<<std::endl;
-	    clean_up_and_exit (POLLHUP);
+	    _exit (POLLHUP);
+	  }
+	  if(pollfd[0].revents&POLLNVAL){
+	    std::cerr <<"fd not open "<<std::endl;
+	    _exit (POLLNVAL);
 	  }
         }
       }
       ev_str=new char[len+1];
       count=0;
       r_len=BUFF_SIZE;
-      while(count <len){
+      while(count < len){
 	if((len-count) < BUFF_SIZE)
 	  r_len=len-count;
-	count +=read(sock,(ev_str+count),r_len);
+	count += (fin = read (sock, (ev_str + count), r_len));
+	if (fin <= 0)
+	  {
+	    error ("read error");
+	    _exit (1);
+	  }
       }
       //      read(sock,ev_str,len);
       ev_str[len]='\0';
@@ -111,8 +137,8 @@ reval_loop (int sock)
       if (nl)
 	{
 	  nl = htonl (nl);
-	  write (sock, &nl, sizeof (int));
-	  read (sock, &nl, sizeof (int));
+	  write_or_exit (sock, &nl, sizeof (int));
+	  read_or_exit (sock, &nl, sizeof (int));
 	}
       else
         {
@@ -288,19 +314,19 @@ Connect hosts and return sockets.")
 	      ol=sizeof(val);
 	      setsockopt(asock,SOL_SOCKET,SO_REUSEADDR,&val,ol);
 	      
-	      read(asock,&nl,sizeof(int));
+	      read_or_exit(asock,&nl,sizeof(int));
 	      num_nodes=ntohl(nl);
-	      read(asock,&nl,sizeof(int));
+	      read_or_exit(asock,&nl,sizeof(int));
 	      me=ntohl(nl);
-	      read(asock,&nl,sizeof(int));
+	      read_or_exit(asock,&nl,sizeof(int));
 	      pppid=ntohl(nl);
 	      sock_v=(int *)calloc((num_nodes+1)*3,sizeof(int));
 	      host_list=(char **)calloc(num_nodes+1,sizeof(char *));
 	      for(i=0;i<=num_nodes;i++){
-		read(asock,&nl,sizeof(int));
+		read_or_exit(asock,&nl,sizeof(int));
 		len=ntohl(nl);
 		host_list[i]=(char *)calloc(len,sizeof(char));
-		read(asock,host_list[i],len);
+		read_or_exit(asock,host_list[i],len);
 	      }
 
 	      sprintf(errname,"/tmp/octave_error-%s_%05d.log",hostname,pppid);
@@ -331,13 +357,13 @@ Connect hosts and return sockets.")
 		  setsockopt(dasock,SOL_SOCKET,SO_REUSEADDR,&bufsize,ol);
 		  
 		  //recv pppid (of connecting process at master)
-		  read(dasock,&nl,sizeof(int));
+		  read_or_exit(dasock,&nl,sizeof(int));
 		  rpppid=ntohl(nl);
 		  //recv name size
-		  read(dasock,&nl,sizeof(int));
+		  read_or_exit(dasock,&nl,sizeof(int));
 		  len=ntohl(nl);
 		  //recv name
-		  read(dasock,rem_name,len+1);
+		  read_or_exit(dasock,rem_name,len+1);
 		  rem_name[len]='\0';
 
 		  for(j=0;j<me;j++){
@@ -353,7 +379,7 @@ Connect hosts and return sockets.")
 		  if(result==0){
 		    if(pppid==rpppid){
 		      nl=htonl(result);
-		      write(dasock,&nl,sizeof(int));
+		      write_or_exit(dasock,&nl,sizeof(int));
 		      //send endian
 #if defined (__BYTE_ORDER)
 		      nl=htonl(__BYTE_ORDER);
@@ -362,9 +388,9 @@ Connect hosts and return sockets.")
 #else
 #  error "can not determine the byte order"
 #endif
-		      write(dasock,&nl,sizeof(int));
+		      write_or_exit(dasock,&nl,sizeof(int));
 		      //recv endian
-		      read(dasock,&nl,sizeof(int));
+		      read_or_exit(dasock,&nl,sizeof(int));
 		      sock_v[j+2*(num_nodes+1)]=ntohl(nl);
 		      socket_to_oct_iostream (dasock);
 		      break;
@@ -374,7 +400,7 @@ Connect hosts and return sockets.")
 		  }else{
 		    result=-1;
 		    nl=htonl(result);
-		    write(dasock,&nl,sizeof(int));
+		    write_or_exit(dasock,&nl,sizeof(int));
 		    close(dasock);
 		    sleep(1);
 		  }
@@ -425,21 +451,21 @@ Connect hosts and return sockets.")
 		  
 		  //send pppid
 		  nl=htonl(pppid);
-		  write(dsock,&nl,sizeof(int));
+		  write_or_exit(dsock,&nl,sizeof(int));
 		  //send name size
 		  len=strlen(host_list[me]);
 		  nl=htonl(len);
-		  write(dsock,&nl,sizeof(int));
+		  write_or_exit(dsock,&nl,sizeof(int));
 		  //send name
-		  write(dsock,host_list[me],len+1);
+		  write_or_exit(dsock,host_list[me],len+1);
 		  //recv result code
-		  read(dsock,&nl,sizeof(int));
+		  read_or_exit(dsock,&nl,sizeof(int));
 		  result=ntohl(nl);
 
 		  if(result==0){
 		    sock_v[i]=dsock;
 		    //recv endian
-		    read(dsock,&nl,sizeof(int));
+		    read_or_exit(dsock,&nl,sizeof(int));
 		    sock_v[i+2*(num_nodes+1)]=ntohl(nl);
 		    //send endian
 #if defined (__BYTE_ORDER)
@@ -449,7 +475,7 @@ Connect hosts and return sockets.")
 #else
 #  error "can not determine the byte order"
 #endif
-		    write(dsock,&nl,sizeof(int));
+		    write_or_exit(dsock,&nl,sizeof(int));
 		    socket_to_oct_iostream (dsock);
 		    break;
 		  }else{
@@ -486,10 +512,10 @@ Connect hosts and return sockets.")
 
 	      char *newdir;
 	      int newdir_len;
-	      read(asock,&nl,sizeof(int));
+	      read_or_exit(asock,&nl,sizeof(int));
 	      newdir_len=ntohl(nl);
 	      newdir=(char *)calloc(sizeof(char),newdir_len+1);
-	      read(asock,newdir,newdir_len);
+	      read_or_exit(asock,newdir,newdir_len);
 	      int cd_ok=octave_env::chdir (newdir);
 	      if(cd_ok != true){
 		octave_env::chdir ("/tmp");

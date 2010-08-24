@@ -30,13 +30,17 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 // COMM
 
-static void read_if_no_error (int fd, void *buf, size_t count, int est) {
+static
+void read_if_no_error (int fd, void *buf, size_t count, int est)
+{
   if (! est)
     if (read (fd, buf, count) < (ssize_t)count)
       error ("read error");
 }
 
-static void write_if_no_error (int fd, const void *buf, size_t count, int est) {
+static
+void write_if_no_error (int fd, const void *buf, size_t count, int est)
+{
   if (! est)
     if (write (fd, buf, count) < (ssize_t)count)
       error ("write error");
@@ -145,8 +149,12 @@ Connect hosts and return sockets.")
 	    write_if_no_error(sock,&nl,sizeof(int),error_state);
 	    write_if_no_error(sock,directory.c_str(),comm_len,error_state);
 	  }
-      }      
-      usleep(100);
+
+	if (error_state)
+	  return retval;
+      }
+
+      usleep(100); // why?
 
       for(i=1;i<row;i++){
 	
@@ -253,6 +261,9 @@ Connect hosts and return sockets.")
 	write_if_no_error((int)sock_v[i+row],&lf,sizeof(char),error_state);
 	//	cout << i+row <<endl;
       }
+
+      if (error_state)
+	return retval;
     }
   else
     {

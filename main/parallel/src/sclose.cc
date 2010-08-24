@@ -66,8 +66,7 @@ Close sockets")
 	for(i=0;i<nsock;i++){
 	  sock=(int)args(0).matrix_value().data()[i+nsock];
 	  pollfd[i].fd=sock;
-	  pollfd[i].events=0;
-	  pollfd[i].events=POLLIN|POLLERR|POLLHUP;
+	  pollfd[i].events=POLLIN;
 	}
 	
 	num=poll(pollfd,nsock,0);
@@ -95,6 +94,9 @@ Close sockets")
 	      }
 	      if(pollfd[k].revents&POLLHUP){
 		error("Hung up - %s",hehe->h_name );
+	      }
+	      if(pollfd[k].revents&POLLNVAL){
+		error("fd not open - %s",hehe->h_name );
 	      }
 	    }
 	  }

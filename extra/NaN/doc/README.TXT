@@ -102,6 +102,7 @@ level 2a: derived functions
 	TCDF		student cumulative distribution 
 	TINV		inverse of the student cumulative distribution
 	NANSUM, NANSTD	fixes for buggy versions included
+	TTEST		paired t-test
 	TTEST2		(unpaired) t-test
 
 level 2b: classification, cross-validation 

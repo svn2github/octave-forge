@@ -1,3 +1,5 @@
+// Copyright (C) 2002 Hayato Fujiwara
+
 // Copyright (C) 2010 Olaf Till <olaf.till@uni-jena.de>
 
 // This program is free software; you can redistribute it and/or modify
@@ -20,6 +22,12 @@
 #include <octave/oct-stream.h>
 #include <octave/oct-map.h>
 
+#include <sys/socket.h>
+#include <sys/poll.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
+
 DEFUN_DLD (recv, args, nargout, "recv (socket)\n\
 \n\
 Receive a variable from the computer specified by the row vector 'socket'.\n")
@@ -36,6 +44,67 @@ Receive a variable from the computer specified by the row vector 'socket'.\n")
 
   if (error_state)
     return retval;
+
+  if ((int) socket.data ()[2]) // I'm the master
+    {
+      // This is code from original send.cc by Hayato Fujiwara
+
+      int num, pid, sock, nl, error_code;
+      struct pollfd spollfd;
+
+      sock = (int) socket.data ()[1];
+      spollfd.fd = sock;
+      spollfd.events = POLLIN;
+	
+      num = poll (&spollfd, 1, 0);
+      if (num)
+	{
+	  if (spollfd.revents && (spollfd.fd !=0))
+	    {
+	      sockaddr_in r_addr;
+	      struct hostent *hehe;
+	      socklen_t len = sizeof (r_addr);
+	      getpeername (spollfd.fd, (sockaddr*)&r_addr, &len);
+	      hehe = gethostbyaddr ((char *)&r_addr.sin_addr.s_addr,
+				    sizeof(r_addr.sin_addr), AF_INET);
+
+	      if (spollfd.revents & POLLIN)
+		{
+		  pid = getpid ();
+		  if (read (spollfd.fd, &nl, sizeof (int)) <
+		      sizeof (int))
+		    {
+		      error ("read error");
+		    }
+		  error_code = ntohl (nl);
+		  if (write (spollfd.fd, &nl, sizeof (int)) <
+		      sizeof (int))
+		    {
+		      error ("write error");
+		    }
+		  error ("error occurred in %s\n\tsee "
+			 "%s:/tmp/octave_error-%s_%5d.log for detail",
+			 hehe->h_name, hehe->h_name, hehe->h_name, pid);
+		}
+	      if (spollfd.revents & POLLERR)
+		{
+		  error ("Error condition - %s", hehe->h_name);
+		}
+	      if (spollfd.revents & POLLHUP)
+		{
+		  error("Hung up - %s", hehe->h_name);
+		}
+	      if (spollfd.revents & POLLNVAL)
+		{
+		  error("fd not open - %s", hehe->h_name);
+		}
+	    }
+	}
+
+      if (error_state)
+	return retval;
+    }
+
 
   octave_stream is = octave_stream_list::lookup
     (octave_value (socket(0, 0)), "recv");

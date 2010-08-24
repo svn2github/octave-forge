@@ -151,7 +151,10 @@ Connect hosts and return sockets.")
 	  }
 
 	if (error_state)
-	  return retval;
+	  {
+	    free (sock_v);
+	    return retval;
+	  }
       }
 
       usleep(100); // why?
@@ -230,20 +233,8 @@ Connect hosts and return sockets.")
 	    result=ntohl(nl);
 	    if(result==0){
 	      sock_v[i]=sock;
-	      //recv endian
-	      read_if_no_error(sock,&nl,sizeof(int),error_state);
-	      sock_v[i+2*row]=ntohl(nl);
-	      //send endian
-#if defined (__BYTE_ORDER)
-	      nl=htonl(__BYTE_ORDER);
-#elif defined (BYTE_ORDER)
-	      nl=htonl(BYTE_ORDER);
-#else
-#  error "can not determine the byte order"
-#endif
-	      write_if_no_error(sock,&nl,sizeof(int),error_state);
+	      sock_v[i + 2 * row] = 1; // means "I'm the master"
 	      socket_to_oct_iostream (sock);
-
 	    }else{
 	      close(sock);
 	    }
@@ -253,7 +244,10 @@ Connect hosts and return sockets.")
 	free(host);
 
 	if (error_state)
-	  return retval;
+	  {
+	    free (sock_v);
+	    return retval;
+	  }
       }
 
       char lf='\n';
@@ -263,21 +257,26 @@ Connect hosts and return sockets.")
       }
 
       if (error_state)
-	return retval;
+	{
+	  free (sock_v);
+	  return retval;
+	}
+
+      Matrix mx(row,3);
+      double *tmp =mx.fortran_vec();
+      for (i=0;i<3*row;i++)
+	tmp[i]=sock_v[i];
+      retval = octave_value (mx);
+
+      free (sock_v);
+
+      return retval;
     }
   else
     {
       print_usage ();
       return retval;
     }
-
-  Matrix mx(row,3);
-  double *tmp =mx.fortran_vec();
-  for (i=0;i<3*row;i++)
-    tmp[i]=sock_v[i];
-  retval = octave_value (mx);
-
-  return retval;
 }
 
 

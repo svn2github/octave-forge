@@ -106,31 +106,33 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
 	      if (read (pollfd[k].fd, &nl, sizeof (int)) < sizeof (int))
 		{
 		  error ("read error");
-		  return retval;
+		  break;
 		}
 	      error_code=ntohl(nl);
 	      if (write (pollfd[k].fd, &nl, sizeof (int)) < sizeof (int))
 		{
 		  error ("write error");
-		  return retval;
+		  break;
 		}
 	      error("error occurred in %s\n\tsee %s:/tmp/octave_error-%s_%5d.log for detail",hehe->h_name,hehe->h_name,hehe->h_name,pid );
 	    }
 	    if(pollfd[k].revents&POLLERR){
 	      error("Error condition - %s",hehe->h_name );
-	      return retval;
+	      break;
 	    }
 	    if(pollfd[k].revents&POLLHUP){
 	      error("Hung up - %s",hehe->h_name );
-	      return retval;
+	      break;
 	    }
 	    if(pollfd[k].revents & POLLNVAL){
 	      error ("fd not open - %s", hehe->h_name);
-	      return retval;
+	      break;
 	    }
 	  }
 	}
       }
+
+      free (pollfd);
 
       if (error_state)
 	return retval;
@@ -175,7 +177,6 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
     print_usage ();
 
   return retval;
-
 }
 
 /*

@@ -1,3 +1,5 @@
+// Copyright (C) 2002 Hayato Fujiwara
+
 // Copyright (C) 2010 Olaf Till <olaf.till@uni-jena.de>
 
 // This program is free software; you can redistribute it and/or modify
@@ -19,6 +21,12 @@
 #include <octave/ls-oct-binary.h>
 #include <octave/oct-stream.h>
 
+#include <sys/socket.h>
+#include <sys/poll.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
+
 DEFUN_DLD (send, args, , "send (X, sockets)\n\
 \n\
 Send the variable 'X' to the computers specified by matrix 'sockets'\n.")
@@ -38,6 +46,79 @@ Send the variable 'X' to the computers specified by matrix 'sockets'\n.")
     return retval;
 
   int rows = sockets.rows ();
+
+  if ((int) sockets.data ()[2 * rows]) // I'm the master
+    {
+      // This is code from original send.cc by Hayato Fujiwara
+
+      int num, pid, sock, nl, error_code;
+      struct pollfd *pollfd;
+      pollfd = (struct pollfd *) malloc (rows * sizeof (struct pollfd));
+      for(int i = 0; i < rows; i++)
+	{
+	  sock = (int) sockets.data ()[i + rows];
+	  pollfd[i].fd = sock;
+	  pollfd[i].events = POLLIN;
+	}
+	
+      num = poll (pollfd, rows, 0);
+      if (num)
+	{
+	  for (int k = 0; k < rows; k++)
+	    {
+	      if (pollfd[k].revents && (pollfd[k].fd !=0))
+		{
+		  sockaddr_in r_addr;
+		  struct hostent *hehe;
+		  socklen_t len = sizeof (r_addr);
+		  getpeername (pollfd[k].fd, (sockaddr*)&r_addr, &len);
+		  hehe = gethostbyaddr ((char *)&r_addr.sin_addr.s_addr,
+					sizeof(r_addr.sin_addr), AF_INET);
+
+		  if (pollfd[k].revents & POLLIN)
+		    {
+		      pid = getpid ();
+		      if (read (pollfd[k].fd, &nl, sizeof (int)) <
+			  sizeof (int))
+			{
+			  error ("read error");
+			  break;
+			}
+		      error_code = ntohl (nl);
+		      if (write (pollfd[k].fd, &nl, sizeof (int)) <
+			  sizeof (int))
+			{
+			  error ("write error");
+			  break;
+			}
+		      error ("error occurred in %s\n\tsee "
+			     "%s:/tmp/octave_error-%s_%5d.log for detail",
+			     hehe->h_name, hehe->h_name, hehe->h_name, pid);
+		    }
+		  if (pollfd[k].revents & POLLERR)
+		    {
+		      error ("Error condition - %s", hehe->h_name);
+		      break;
+		    }
+		  if (pollfd[k].revents & POLLHUP)
+		    {
+		      error("Hung up - %s", hehe->h_name);
+		      break;
+		    }
+		  if (pollfd[k].revents & POLLNVAL)
+		    {
+		      error("fd not open - %s", hehe->h_name);
+		      break;
+		    }
+		}
+	    }
+	}
+
+	free (pollfd);
+
+	if (error_state)
+	  return retval;
+    }
 
   double sid;
 

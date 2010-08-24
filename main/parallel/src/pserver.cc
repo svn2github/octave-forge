@@ -380,18 +380,6 @@ Connect hosts and return sockets.")
 		    if(pppid==rpppid){
 		      nl=htonl(result);
 		      write_or_exit(dasock,&nl,sizeof(int));
-		      //send endian
-#if defined (__BYTE_ORDER)
-		      nl=htonl(__BYTE_ORDER);
-#elif defined (BYTE_ORDER)
-		      nl=htonl(BYTE_ORDER);
-#else
-#  error "can not determine the byte order"
-#endif
-		      write_or_exit(dasock,&nl,sizeof(int));
-		      //recv endian
-		      read_or_exit(dasock,&nl,sizeof(int));
-		      sock_v[j+2*(num_nodes+1)]=ntohl(nl);
 		      socket_to_oct_iostream (dasock);
 		      break;
 		    } // And else? Shouldn't this test have been made
@@ -464,18 +452,6 @@ Connect hosts and return sockets.")
 
 		  if(result==0){
 		    sock_v[i]=dsock;
-		    //recv endian
-		    read_or_exit(dsock,&nl,sizeof(int));
-		    sock_v[i+2*(num_nodes+1)]=ntohl(nl);
-		    //send endian
-#if defined (__BYTE_ORDER)
-		    nl=htonl(__BYTE_ORDER);
-#elif defined (BYTE_ORDER)
-		    nl=htonl(BYTE_ORDER);
-#else
-#  error "can not determine the byte order"
-#endif
-		    write_or_exit(dsock,&nl,sizeof(int));
 		    socket_to_oct_iostream (dsock);
 		    break;
 		  }else{

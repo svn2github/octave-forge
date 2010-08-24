@@ -28,7 +28,11 @@ function resu = end(df, k, n)
   %#
 
   try
-    resu = df._cnt(k);
+    if k < 3,
+      resu = df._cnt(k);
+    else
+      resu =  max(cellfun('size', df._data, 2));
+    endif
   catch
     error("incorrect call to end, index greater than number of dimensions");
   end_try_catch

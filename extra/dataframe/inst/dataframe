@@ -16,6 +16,8 @@
 %! y = x.df(:, 2:6);
 %! # direct matrix setting through struct access
 %! y.Freq=[(1:10).' (10:-1:1).'];
+%! # verify the "end" operator on the third dim
+%!assert(y(2, 2, end), 9);
 %! # direct setting through 3D matrix
 %! y(:, ["C"; "G"], 1:2) = repmat(y(:, ["C"; "G"]), [1 1 2]);
 %! y(4:5, 4:5) = NaN;

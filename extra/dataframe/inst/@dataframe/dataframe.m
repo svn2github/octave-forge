@@ -142,7 +142,9 @@ while indi <= size(varargin, 2),
 	  fclose(fid);
 	end_unwind_protect
 	lines = regexp(in,'(^|\n)([^\n]+)', 'match'); %# cut into lines
-	content = cellfun(@(x) regexp(x, '(\b|'')[^,]+(''|\b)', 'match'), ...
+	%# a field either starts at a word boundary, either by + - . for
+	%# a numeric data, either by ' for a string. 
+	content = cellfun(@(x) regexp(x, '(\b|[-+\.''])[^,]+(''|\b)', 'match'), \
 			  lines, 'UniformOutput', false); %# extract fields
 	indl = 1; indj = 1; %# disp('line 151 '); keyboard
 	if ~isempty(seeked),

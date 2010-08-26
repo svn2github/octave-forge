@@ -2,12 +2,15 @@ function [R]=test_sc(CC,D,mode,classlabel)
 % TEST_SC: apply statistical and SVM classifier to test data 
 %
 %  R = test_sc(CC,D,TYPE [,target_Classlabel]) 
-%       R.output     output distance for each class
-%       R.classlabel class for output data
+%       R.output     	output: "signed" distance for each class. 
+%		This represents the distances between sample D and the separating hyperplane
+%		The "signed distance" is possitive if it matches the target class, and 
+%		and negative if it lays on the opposite side of the separating hyperplane. 
+%       R.classlabel 	class for output data
 %  The target class is optional. If it is provided, the following values are returned. 
-%       R.kappa Cohen's kappa coefficient
-%       R.ACC   Classification accuracy 
-%       R.H     Confusion matrix 
+%       R.kappa 	Cohen's kappa coefficient
+%       R.ACC   	Classification accuracy 
+%       R.H     	Confusion matrix 
 %
 % The classifier CC is typically obtained by TRAIN_SC. If a statistical 
 % classifier is used, TYPE can be used to modify the classifier. 

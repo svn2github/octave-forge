@@ -16,14 +16,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [ @var{topleftaddr}, @var{nrows}, @var{ncols}, @var{toprow}, @var{leftcol} ] = spsh_chkrange ( @var{range}, @var{rowsize}, @var{colsize}, @var{intf-type}, @var{filename})
-## Get and check various cell and range address parameters for spreadsheet input.
+## (Internal function) Get and check various cell and range address parameters for spreadsheet input.
 ##
 ## spsh_chkrange should not be invoked directly but rather through oct2xls or oct2ods.
 ##
 ## Example:
 ##
 ## @example
-##   [tl, nrw, ncl, trw, lcl] = spsh_chkrange (crange, nr, nc, xtype, filename);
+##   [tl, nrw, ncl, trw, lcl] = spsh_chkrange (crange, nr, nc, xtype, fileptr);
 ## @end example
 ##
 ## @end deftypefn
@@ -31,9 +31,23 @@
 ## Author: Philip Nienhuis, <prnienhuis@users.sf.net>
 ## Created: 2010-08-02
 ## Updates: 
-##
+## 2010-08-25 Option for supplying file pointer rather than interface_type & filename
+##            (but this can be wasteful if the file ptr is copied)
 
-function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, xtype, filename)
+function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, intf, filename=[])
+
+	if (nargin == 4)
+		# File pointer input assumed
+		if (isstruct (xtype))
+			xtype = intf.xtype;
+			filename = intf.filename;
+		else
+			error ("Too few or improper arguments supplied.");
+		endif
+	else
+		# Interface type & filename supplied
+		xtype = intf;
+	endif
 
 	# Define max row & column capacity from interface type & file suffix
 	switch xtype

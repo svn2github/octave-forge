@@ -69,11 +69,11 @@
 ## Beware that -if invoked- Excel invocations may be left running silently
 ## in case of COM errors. Invoke xlsclose with proper pointer struct to
 ## close them.
-## When using java, note that data array sizes > 2.10^5 elements may exhaust
+## When using java, note that large data array sizes elements may exhaust
 ## the java shared memory space for the default java memory settings.
-## For larger arrays appropriate memory settings are needed in the file
+## For larger arrays, appropriate memory settings are needed in the file
 ## java.opts; then the maximum array size for the java-based spreadsheet
-## options is about 5-6.10^5 elements.
+## options may be in the order of 10^6 elements.
 ##
 ## Examples:
 ##
@@ -97,6 +97,7 @@
 ## 2010-08014 Added char array conversion to 1x1 cell for character input arrays
 ## 2010-08-16 Added check on presence of output argument. Made wsh = 1 default
 ## 2010-08-17 Corrected texinfo ("topleft" => "range")
+## 2010-08-25 Improved help text (section on java memory usage)
 
 ## Last script file update (incl. subfunctions): 2010-08-11
 

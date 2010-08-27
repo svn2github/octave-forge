@@ -27,11 +27,12 @@
 ## Optional return argument @var{lim} contains two field with the outer
 ## column and row numbers of @var{numarr} and @var{txtarr} in the
 ## original array @var{rawarr}.
-## If optional input argument @var{limits} contained the spreadsheet
+## Optional input argument @var{limits} can either be the spreadsheet
 ## data limits returned in the spreadsheet file pointer struct
-## (field xls.limits or ods.limits), optional return argument @var{lim}
-## contains the real spreadsheet row & column numbers enclosing the
-## origins of the numerical and text data returned in @var{numarr}
+## (field xls.limits or ods.limits), or the file ptr struct itself.
+## If one of these is specified, optional return argument @var{lim}
+## will contain the real spreadsheet row & column numbers enclosing
+## the origins of the numerical and text data returned in @var{numarr}
 ## and @var{txtarr}.
 ##
 ## Examples:
@@ -54,9 +55,22 @@
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
-## Last updated: 2009-12-29
+## Updates:
+## 2009-12-29
+#3 2010-08-25 Added option for second argument to be a file ptr
 
-function [ numarr, txtarr, lim ] = parsecell (rawarr, rawlimits=[])
+function [ numarr, txtarr, lim ] = parsecell (rawarr, arg2=[])
+
+	if (isstruct (arg2))
+		# Assume a file ptr has been supplied
+		if (isfield (arg2, 'limits'))
+			rawlimits = arg2.limits;
+		else
+			warning ("Invalid file ptr supplied to parsecell() - limits ignored.");
+		endif
+	else
+		rawlimits = arg2;
+	endif
 
 	lim = struct ( "numlimits", [], "txtlimits", []);
 

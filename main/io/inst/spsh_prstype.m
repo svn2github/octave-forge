@@ -16,7 +16,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [ @var{type-array} ] = spsh_prstype ( @var{iarray}, @var{rowsize}, @var{colsize}, @var{celltypes}, @var{options})
-## Return a square array with codes for cell types in square input cell array @var{iarray}.
+## (Internal function) Return rectangular array with codes for cell types in rectangular input cell array @var{iarray}.
 ## Codes are contained in input vector in order of Numeric, Boolean, Text, Formula and Empty, resp.
 ##
 ## spsh_prstype should not be invoked directly but rather through oct2xls or oct2ods.
@@ -32,7 +32,7 @@
 ## Author: Philip Nienhuis, <prnienhuis@users.sf.net>
 ## Created: 2010-08-02
 ## Updates:
-##
+## 2010-08-25 Corrected help text (square -> rectangular; stressed "internal" use)
 
 function [ typearr ] = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts)
 

@@ -7,11 +7,12 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091229;22213000">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100814;22463500">
+	<META NAME="CHANGED" CONTENT="20100827;22445900">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -42,7 +43,7 @@ support for Octave</B></U></FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>This
-version August 11, 2010</FONT></FONT></P>
+version August 27, 2010</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I>(ODS
@@ -387,7 +388,8 @@ javaclasspath.m is located), containing just the following lines:</FONT></FONT><
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><B>-Xmx512m</B></FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(where
-16 = initial size, 512 = maximum size, m stands for Megabyte).</FONT></FONT></P>
+16 = initial size, 512 = maximum size (in this example), m stands for
+Megabyte. This number is system-dependent).</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">After
 processing a large chunk of spreadsheet information you might notice
@@ -438,7 +440,8 @@ COMPATIBILITY</B></U></FONT></FONT></P>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">AFAIK
-there's no similar functionality in Matlab (yet?).</FONT></FONT></P>
+there's no similar functionality in Matlab (yet?), only for reading
+and then very limited.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">odsread
 is fairly function-compatible to xlsread, however.</FONT></FONT></P>
@@ -652,20 +655,31 @@ versions</B></FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">I
-have tried odfdom version 0.8 &amp; 0.8.5. Although the API has been
-simplified enormously (finally one can address cells by spreadsheet
-address rather than find out yourself by parsing the
+have tried various odfdom version. As to 0.8 &amp; 0.8.5, while the
+API has been simplified enormously (finally one can address cells by
+spreadsheet address rather than find out yourself by parsing the
 table-column/-row/-cell structure), many irrecoverable bugs have been
 introduced :-(( </FONT></FONT>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">In
 addition processing ODS files became significantly slower (up to 7
 times!).</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">End
+of August 2010 I have implemented support for odfdom-0.8.6.jar &ndash;
+that version is at last sufficiently reliable to use. The few
+remaining bugs and limitations could easily be worked around by
+diving in the older TableTable API.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">So
-at the moment (summer 2010 = last I looked) only odfdom 0.7.5 is
-supported.</FONT></FONT></P>
+at the moment (end of summer 2010 = last I looked) only odfdom
+versions <B>0.7.5</B> and <B>0.8.6</B> are supported.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">If
-you want to experiment with odfdom 0.8, you can try:</FONT></FONT></P>
+you want to experiment with odfdom 0.8 &amp; 0.8.5, you can try:</FONT></FONT></P>
 <UL>
 	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">odsopen.m
 	(revision 7157)</FONT></FONT></P>
@@ -676,15 +690,6 @@ you want to experiment with odfdom 0.8, you can try:</FONT></FONT></P>
 </UL>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Update
-June 05, 2010:</FONT></FONT></P>
-<UL>
-	<LI><P STYLE="margin-bottom: 0cm">- <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">odfdom
-	0.8.5 is not better for any of the above mentioned aspects :-( The
-	same showstopper bugs are still present.</FONT></FONT></P>
-</UL>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
 <P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Enjoy!</FONT></FONT></P>
 <P STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm">
@@ -692,7 +697,7 @@ June 05, 2010:</FONT></FONT></P>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Philip
-Nienhuis, August 11, 2010</FONT></FONT></P>
+Nienhuis, August 27 2010</FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm">
 <BR>
 </P>

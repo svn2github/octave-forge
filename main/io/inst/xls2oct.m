@@ -34,7 +34,9 @@
 ## or "" (empty string, indicating all data in a worksheet).
 ## If no range is specified the occupied cell range will have to be
 ## determined behind the scenes first; this can take some time for the
-## Java-based interfaces.
+## Java-based interfaces. Be aware that in Excel/ActiveX interface the
+## used range can be outdated. The Java-based interfaces are more 
+## reliable in this respect albeit much slower.
 ##
 ## Optional argument @var{options}, a structure, can be used to
 ## specify various read modes. Currently the only option field is
@@ -72,7 +74,7 @@
 ## so any returned cell array may turn out to be smaller than requested
 ## in @var{range}.
 ## When using COM or POI interface, formulas in cells are evaluated; if
-## that fails cached values are retrieved. Those may be outdated 
+## that fails cached values are retrieved. These may be outdated 
 ## depending on Excel's "Automatic calculation" settings when the
 ## spreadsheet was saved.
 ##
@@ -108,6 +110,7 @@
 ## 2010-03-14 Updated help text
 ## 2010-05-31 Updated help text (delay i.c.o. empty range due to getusedrange call)
 ## 2010-07-28 Added option to read formulas as text strings rather than evaluated value
+## 2010-08-25 Small typo in help text
 
 function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh, datrange='', spsh_opts=[])
 

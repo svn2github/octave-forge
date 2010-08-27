@@ -19,7 +19,8 @@
 ## @deftypefnx {Function File} @var{xls} = xlsopen (@var{filename}, @var{readwrite})
 ## @deftypefnx {Function File} @var{xls} = xlsopen (@var{filename}, @var{readwrite}, @var{reqintf})
 ## Get a pointer to an Excel spreadsheet in the form of return argument
-## @var{xls}.
+## @var{xls}. After processing the spreadsheet, the file pointer must be
+## explicitly closed calling xlsclose().
 ##
 ## Calling xlsopen without specifying a return argument is fairly useless!
 ##
@@ -42,10 +43,12 @@
 ## file is opened (or created) for reading & writing.
 ##
 ## Optional input argument @var{reqintf} can be used to override the Excel
-## interface automatically selected by xlsopen. Currently implemented interfaces
-## are 'COM' (Excel / COM), 'POI' (Java / Apache POI) or 'JXL' (Java / JExcelAPI).
+## interface that otherwise is automatically selected by xlsopen. Currently
+## implemented interfaces (in order of preference) are 'COM' (Excel / COM),
+## 'POI' (Java / Apache POI) or 'JXL' (Java / JExcelAPI).
 ##
-## Beware: Excel invocations may be left running invisibly in case of COM errors.
+## Beware: Excel invocations may be left running invisibly in case of COM errors
+## or forgetting to close the file pointer.
 ##
 ## Examples:
 ##
@@ -69,7 +72,9 @@
 ## 2010-01-10 Changed (java) interface preference order to COM->POI->JXL
 ## 2010-01-16 Removed echoeing debug info in POI stanza
 ## 2010-03-01 Removed javaclasspath check for rt.jar
-## 2010-03-14 Fixed check on xwrite flag lines 204+, if xlsopen fails xls ptr should be []
+## 2010-03-14 Fixed check on xwrite flag lines 204+, if xlsopen fails xls ptr
+##            should be []
+## 2010-08-25 Improved help text
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 

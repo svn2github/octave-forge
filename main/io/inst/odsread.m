@@ -24,8 +24,8 @@
 ## in OpenOffice_org Calc spreadsheet file @var{filename}.
 ##
 ## You need the octave-forge java package (> 1.2.6) and one or both of
-## jopendocument.jar or preferrably: (odfdom.jar 0.7.5 & xercesImpl.jar) in
-## your javaclasspath.
+## jopendocument-<version>.jar or preferrably: (odfdom.jar (version 0.7.5
+#3 or 0.8.6) & xercesImpl.jar) in your javaclasspath.
 ##
 ## Return argument @var{numarr} contains the numeric data, optional
 ## return arguments @var{txtarr} and @var{rawarr} contain text strings
@@ -36,7 +36,7 @@
 ## assumed to be in the current directory.
 ##
 ## @var{wsh} is either numerical or text, in the latter case it is 
-## case-sensitive and it should conformtoOpenOffice.org Calc sheet
+## case-sensitive and it should conform to OpenOffice.org Calc sheet
 ## name requirements.
 ## Note that in case of a numerical @var{wsh} this number refers to the
 ## position in the worksheet stack, counted from the left in a Calc
@@ -100,7 +100,7 @@
 ##   cell array Ra and the ranges from where the actual data came in limits)
 ## @end example
 ##
-## @seealso odsopen, ods2oct, odsclose, odsfinfo, parsecell
+## @seealso odsopen, ods2oct, oct2ods, odsclose, odswrite, odsfinfo, parsecell
 ##
 ## @end deftypefn
 

@@ -37,14 +37,16 @@
 ##   (Close spreadsheet file pointed to in pointer struct xls1; xls1 is reset)
 ## @end example
 ##
-## @seealso xlsclose, xlsread, xlswrite, xls2oct, oct2xls, xlsfinfo
+## @seealso xlsopen, xlsread, xlswrite, xls2oct, oct2xls, xlsfinfo
 ##
 ## @end deftypefn
 
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-29
-## Latest update: 2010-01-03 (checked OOXML support)
+## Updates: 
+## 2010-01-03 (checked OOXML support)
+## 2010-08-25 See also: xlsopen (instead of xlsclose)
 
 function [ xls ] = xlsclose (xls)
 

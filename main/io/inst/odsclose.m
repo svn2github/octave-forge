@@ -14,16 +14,37 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## odsclose - close an ods (OpenOffice_org) spreadsheet file and
-## write it to disk if it was changed.
-
-## usage: ods = odsclose (ods)
+## -*- texinfo -*-
+## @deftypefn {Function File} [@var{ods}] = odsclose (@var{ods})
+## Close the OpenOffice_org Calc spreadsheet pointed to in struct
+## @var{ods}, if needed write the file to disk. An empty pointer struct
+## will be returned. odsclose will determine if the file must be written
+## to disk based on information contained in @var{ods}.
+##
+## You need the Java package > 1.2.6 plus odfdom.jar + xercesImpl.jar
+## and/or jopendocument-<version>.jar installed on your computer +
+## proper javaclasspath set, to make this function work at all.
+##
+## @var{ods} must be a valid pointer struct made by odsopen() in the same
+## octave session.
+##
+## Examples:
+##
+## @example
+##   ods1 = odsclose (ods1);
+##   (Close spreadsheet file pointed to in pointer struct ods1; ods1 is reset)
+## @end example
+##
+## @seealso odsopen, odsread, odswrite, ods2oct, oct2ods, odsfinfo
+##
+## @end deftypefn
 
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
 ## Updates:
 ## 2010-01-08 (OTK ODS write support)
 ## 2010-04-13 Improved help text a little bit
+## 2010-08-25 Swapped in texinfo help text
 
 function [ ods ] = odsclose (ods)
 

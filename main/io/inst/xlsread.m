@@ -28,9 +28,9 @@
 ## and the raw spreadsheet cell data, respectively.
 ##
 ## If neither Excel, Java/Apache POI or Java/JExcelAPI are installed,
-## xlsread falls back to csv file reading.
+## xlsread will fail and suggest .csv file reading.
 ##
-## In case one of the Java interfaces (Apache POI / JExcelAPI) was
+## In case one of the Java interfaces (Apache POI / JExcelAPI) has been
 ## invoked, @var{limits} contains the outer column/row numbers of the
 ## spreadsheet range where @var{numarr}, @var{txtarr} and @var{rawarr}
 ## have come from (remember, xlsread trims outer rows and columns).
@@ -42,7 +42,7 @@
 ## or "" (empty string, indicating all data in a worksheet).
 ## If no range is specified the occupied cell range will have to be
 ## determined behind the scenes first; this can take some time for the
-## Java-based interfaces.
+## Java-based interfaces (but these are more reliable).
 ##
 ## @var{wsh} is either numerical or text, in the latter case it is 
 ## case-sensitive and it may be max. 31 characters long.
@@ -70,7 +70,8 @@
 ## the automatic selection by xlsread of one interface out of the
 ## supported ones: COM/Excel, Java/Apache POI, or Java/JExcelAPI.
 ## For reading from OOXML files a value of 'poi' must be specified
-## for @var{reqintf} (see help for xlsopen).
+## for @var{reqintf} (see help for xlsopen); for Excel'95 files use
+## 'jxl'.
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values in
@@ -123,7 +124,8 @@
 ## 2010-01-12 added unwind_protect to get rid of stray Excel invocations i.c.o. COM errors
 ## 2010-05-31 Updated help text (delays i.c.o. empty range due to getusedrange call)
 ## 2010-08-18 Added check for existence of xls after call to xlsopen to 
-##	          avoid unneeded error message clutter
+##	           avoid unneeded error message clutter
+## 2010-08-25 Improved help text, esp. sections Excel file types and interfaces
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 

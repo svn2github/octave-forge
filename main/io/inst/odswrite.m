@@ -31,10 +31,9 @@
 ## @var{arr} can be any array type save complex. Mixed numeric/text arrays
 ## can only be cell arrays.
 ##
-## @var{wsh} can be a number or string (max. 31 chars).
-## In case of a not yet existing OpenOffice.org spreadsheet, the first
-## sheet will be used & named according to @var{wsh} - no extra empty
-## sheets are created.
+## @var{wsh} can be a number or string. In case of a not yet existing
+## OpenOffice.org spreadsheet, the first sheet will be used & named
+## according to @var{wsh} - no extra empty sheets are created.
 ## In case of existing files, some checks are made for existing sheet
 ## names or numbers, or whether @var{wsh} refers to an existing sheet with
 ## a type other than sheet (e.g., chart).
@@ -86,6 +85,7 @@
 ## Updates:
 ## 2010-01-14 Finalized write support tru ODS toolkit
 ## 2010-01-15 Added texinfo help
+## 2010-08-25 Removed text about 31 char limit for sheet names (invalid)
 
 function [ rstatus ] = odswrite (filename, data, wsh=1, range=[], reqintf=[])
 

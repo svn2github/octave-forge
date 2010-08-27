@@ -32,8 +32,10 @@
 ## in the sheet stack.
 ##
 ## Optional return value @var{fformat} currently returns @'' (empty
-## string) unless @var{filename} is a readable Excel 95-2003 .xls file in
-## which case @var{fformat} is set to "xlWorkbookNormal".
+## string) unless @var{filename} is a readable Excel 97-2003 .xls file or
+## an Excel 2007 .xlsx / .xlsb file in which case @var{fformat} is set to
+## "xlWorkbookNormal". Excel 95 .xls files can only be read through the JXL
+## (JExcelAPI) java-based interface.
 ##
 ## If no return arguments are specified the sheet names are echoed to the 
 ## terminal screen; in case of java interfaces for each sheet the actual
@@ -41,12 +43,13 @@
 ## to be determined behind the scenes first; this can take some time for the
 ## Java-based interfaces.
 ##
-## If multiple xls interfaces have been installed @var{reqintf} can be
-## specified. This can sometimes be handy to get an idea of used cell ranges
-## in each worksheet (the COM/Excel interface can't supply this information).
+## If multiple xls interfaces have been installed, @var{reqintf} can be
+## specified. This can sometimes be handy, e.g. to get an idea of occupied
+## cell ranges in each worksheet using a java-based interface (the COM / ActiveX
+## interface can't supply this information).
 ##
 ## For use on OOXML spreadsheets one needs full POI support (see xlsopen) and
-## 'poi' needs to be specified for @var{reqintf}.
+## 'poi' needs to be specified for @var{reqintf}. For Excel 95 file use 'jxl'.
 ##
 ## Examples:
 ##
@@ -72,6 +75,7 @@
 ## 2010-03-21 Better tabulated output; occupied date range per sheet echoed 
 ##            for Java interfaces (though it may be a bit off in case of JXL)
 ## 2010-05-31 Added remark about delays when determining occupied data range
+## 2010-08-25 Improved help text (Excel file types)
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 

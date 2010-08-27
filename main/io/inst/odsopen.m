@@ -23,11 +23,11 @@
 ##
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
-## To make this function work at all, you need the Java package > 1.2.6 plus
-## ODFtoolkit version 0.7.5 & xercesImpl, and/or jOpenDocument installed on your
-## computer + proper javaclasspath set. These interfaces are referred to as
-## OTK and JOD, resp., and are preferred in that order by default (depending
-## on their presence).
+## To make this function work at all, you need the Java package > 1.2.5 plus
+## ODFtoolkit (version 0.7.5 or 0.8.6) & xercesImpl, and/or jOpenDocument
+## installed on your computer + proper javaclasspath set. These interfaces are
+## referred to as OTK and JOD, resp., and are preferred in that order by default
+## (depending on their presence).
 ##
 ## @var{filename} must be a valid .ods OpenOffice.org file name. If @var{filename}
 ## does not contain any directory path, the file is saved in the current
@@ -59,7 +59,7 @@
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
 ## Updates: 
-## 2009-12-30
+## 2009-12-30 ....
 ## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
 ## 2010-01-24 Added warning when trying to create a new spreadsheet using jOpenDocument
 ## 2010-03-01 Removed check for rt.jar in javaclasspath
@@ -69,8 +69,11 @@
 ## 2010-06-02 Added ";" to supress debug stuff around lines 115
 ##      "     Moved JOD version check to subfunc getodsinterfaces
 ##      "     Fiddled ods.changed flag when creating a spreadsheet to avoid unnamed 1st sheets
+## 2010-08-23 Added version field "odfvsn" to ods file ptr, set in getodsinterfaces() (odfdom)
+##      "     Moved JOD version check to this func from subfunc getodsinterfaces()
+## 2010-08-27 Improved help text
 ##
-## Latest change on subfunction below: 2010-04-11
+## Latest change on subfunction below: 2010-08-23
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -94,7 +97,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		else
 			usage (sprintf ("Unknown .ods interface \"%s\" requested. Only OTK or JOD supported", reqinterface));
 		endif
-		odsinterfaces = getodsinterfaces (odsinterfaces);
+		[odsinterfaces] = getodsinterfaces (odsinterfaces);
 
 		# Well, is the requested interface supported on the system?
 		if (~odsinterfaces.(toupper (reqinterface)))
@@ -126,7 +129,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 # Check for the various ODS interfaces. No problem if they've already
 # been checked, getodsinterfaces (far below) just returns immediately then.
 
-	odsinterfaces = getodsinterfaces (odsinterfaces);
+	[odsinterfaces] = getodsinterfaces (odsinterfaces);
 
 # Supported interfaces determined; now check ODS file type.
 
@@ -135,7 +138,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		error ("Currently ods2oct can only read reliably from .ods files")
 	endif
 
-	ods = struct ("xtype", [], "app", [], "filename", [], "workbook", [], "changed", 0, "limits", []);
+	ods = struct ("xtype", [], "app", [], "filename", [], "workbook", [], "changed", 0, "limits", [], "odfvsn", []);
 
 	# Preferred interface = OTK (ODS toolkit & xerces), so it comes first. 
 
@@ -155,6 +158,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		ods.xtype = 'OTK';
 		ods.app = wb;
 		ods.filename = filename;
+		ods.odfvsn = odsinterfaces.odfvsn;
 
 	elseif (odsinterfaces.JOD)
 		file = java_new ('java.io.File', filename);
@@ -171,6 +175,18 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		ods.filename = filename;
 		ods.xtype = 'JOD';
 		ods.app = 'file';
+		# Check jOpenDocument version
+		sh = ods.workbook.getSheet (0);
+		cl = sh.getCellAt (0, 0);
+		try
+			# 1.2b3 has public getValueType ()
+			cl.getValueType ();
+			ods.odfvsn = 3;
+		catch
+			# 1.2b2 has not
+			ods.odfvsn = 2;
+			printf ("NOTE: jOpenDocument v. 1.2b2 has limited functionality. Try upgrading to 1.2b3+\n");
+		end_try_catch
 
 #	elseif 
 #		<other interfaces here>
@@ -182,7 +198,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 	endif
 
 	if (~isempty (reqinterface))
-		# Reset found interfaces for re-testing in the next call. Add interfaces if needed.
+		# Reset all found interfaces for re-testing in the next call. Add interfaces if needed.
 		chkintf = [];
 	endif
 
@@ -232,6 +248,10 @@ endfunction
 ## 2010-04-11 Introduced check on odfdom.jar version - only 0.7.5 works properly
 ## 2010-06-02 Moved in check on JOD version
 ## 2010-06-05 Experimental odfdom 0.8.5 support
+## 2010-06-## dropped 0.8.5, too buggy
+## 2010-08-22 Experimental odfdom 0.8.6 support
+## 2010-08-23 Added odfvsn (odfdom version string) to output struct argument
+##     "      Bugfix: moved JOD version check to main function (it can't work here)
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -259,15 +279,23 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 				endfor
 			endfor
 			if (jpchk >= 2)		# Apparently all requested classes present.
-				# Only now we can check for proper odfdom version (only 0.7.5. works OK)
-				odfdvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
-				if ~(strcmp (odfdvsn, '0.7.5') || strcmp (odfdvsn, '0.8.5'))
-					warning ("\nodfdom version %s is not supported - use v. 0.7.5.\n", odfdvsn);
+				# Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6 work OK).
+				# The odfdom team deemed it necessary to change the version call so we need this:
+				odfdvsn = ' ';
+				try
+					# New in 0.8.6
+					odfvsn = java_invoke ('org.odftoolkit.odfdom.JarManifest', 'getOdfdomVersion');
+				catch
+					odfdvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
+				end_try_catch
+				if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6'))
+					warning ("\nodfdom version %s is not supported - use v. 0.7.5 or 0.8.6.\n", odfvsn);
 				else	
 					odsinterfaces.OTK = 1;
 					printf (" Java/ODFtoolkit (OTK) OK. ");
 					chk1 = 1;
 				endif
+				odsinterfaces.odfvsn = odfvsn;
 			else
 				warning ("\n Java support OK but not all required classes (.jar) in classpath");
 			endif
@@ -299,18 +327,6 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			else
 				warning ("\nJava support OK but required classes (.jar) not all in classpath");
 			endif
-			# Check jOpenDocument version
-			sh = ods.workbook.getSheet (0);
-			cl = sh.getCellAt (0, 0);
-			try
-				# 1.2b3 has public getValueType ()
-				cl.getValueType ();
-				ver = 3;
-			catch
-				# 1.2b2 has not
-				ver = 2;
-				printf ("NOTE: jOpenDocument v. 1.2b2 has limited functionality. Try upgrading to 1.2b3+\n");
-			end_try_catch
 		catch
 			# No jOpenDocument support
 		end_try_catch

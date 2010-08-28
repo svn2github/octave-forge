@@ -1,5 +1,5 @@
 %# -*- mode: Octave -*-
-%!shared x, y, z
+%!shared x, y, Y, z
 %! x=dataframe('octave_frame/data_test.csv');
 %! # remove rownames
 %! x.rownames = [];
@@ -10,10 +10,14 @@
 %! # remove a column through (:, name) access
 %! y = x; y(:, "DataName") = [];
 %!assert(size(y), [10 6]);
-%! # create an aempty dataframe
+%! # create an empty dataframe
 %! y = dataframe([]);
 %!assert(isempty(y), true);
 %! y = x.df(:, 2:6);
+%! Y = 2*pi*double(y.Freq).*y.C+y.G;
+%! z = dataframe(y,{{'Y'; Y}});
+%!assert(size(z), [10 6]);
+%!assert(abs(z(1, "Y") - Y(1)), 0);
 %! # direct matrix setting through struct access
 %! y.Freq=[(1:10).' (10:-1:1).'];
 %! # verify the "end" operator on the third dim

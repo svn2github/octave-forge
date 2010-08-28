@@ -39,13 +39,13 @@ function resu = subasgn(df, S, RHS)
 	    df._name{1}(1:df._cnt(1), 1) = {''};
 	    df._over{1}(1, 1:df._cnt(1)) = true;
 	  endif
-	  [resu._name{1}, resu._over{1}] = df_strset...
+	  [resu._name{1}, resu._over{1}] = df_strset\
 	      (df._name{1}, df._over{1}, S(2:end), RHS);
 	  return
 	
 	case "colnames"
 	  if isnull(RHS), error("Colnames can't be nulled"); endif
-	  [resu._name{2}, resu._over{2}] = df_strset...
+	  [resu._name{2}, resu._over{2}] = df_strset\
 	      (df._name{2}, df._over{2}, S(2:end), RHS, '_');
 	  return
 	  
@@ -65,7 +65,7 @@ function resu = subasgn(df, S, RHS)
 	      error("Types can only be changed as a whole");
 	    endif
 	    if !isnumeric(S(2).subs{1}),
-	      [indj, ncol, S(2).subs{1}] = df_name2idx...
+	      [indj, ncol, S(2).subs{1}] = df_name2idx\
 		  (df._name{2}, S(2).subs{1}, df._cnt(2), 'column');
 	    endif
 	    for indi = 1:length(indj),
@@ -81,7 +81,7 @@ function resu = subasgn(df, S, RHS)
 	    error("Congratulations. I didn't see how to produce this error");
 	  endif
 	  %# translate the name to column
-	  [indc, ncol] = df_name2idx(df._name{2}, S(1).subs, ...
+	  [indc, ncol] = df_name2idx(df._name{2}, S(1).subs, \
 				     df._cnt(2), 'column');
     	  if length(S) > 1,
 	    if 1 == length(S(2).subs), %# add column reference
@@ -113,9 +113,9 @@ function resu = subasgn(df, S, RHS)
       endswitch
       
     case '()'
-      [indr, nrow, S(1).subs{1}] = df_name2idx(df._name{1}, S(1).subs{1},...
+      [indr, nrow, S(1).subs{1}] = df_name2idx(df._name{1}, S(1).subs{1}, \
 					       df._cnt(1), 'row');
-      [indc, ncol, S(1).subs{2}] = df_name2idx(df._name{2}, S(1).subs{2}, ...
+      [indc, ncol, S(1).subs{2}] = df_name2idx(df._name{2}, S(1).subs{2}, \
 				 df._cnt(2), 'column');
       resu = df_matassign(df, S, indc, ncol, RHS);
  
@@ -140,7 +140,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     if strcmp(S.subs(1), ':'),  %# removing column/matrix
       RHS = S; RHS.subs(2) = [];
       for indi = 1:ncol, %# loop over columns
-	df._data{indc(indi)} = builtin('subsasgn', df._data{indc(indi)},...
+	df._data{indc(indi)} = builtin('subsasgn', df._data{indc(indi)}, \
 				       RHS, []);
       endfor
       %# remove empty elements
@@ -186,21 +186,21 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     ncol = size(RHS, 2); indc = 1:ncol;
   endif
   indr = S.subs{1, 1}; 
-  indr_was_set = ~isempty(indr);
+  indr_was_set = ~isempty(indr); 
   %# initial dataframe was empty ?
   if ~indr_was_set || strcmp(indr, ':'),
-    if isvector(RHS),
-      if 0 == df._cnt(1),
-	nrow = length(RHS); %# try to produce row vectors
-      else
-	nrow = df._cnt(1);  %# limit to df numbner of rows
-      endif 
+    if iscell(RHS),
+      nrow = max(sum(cellfun('size', RHS, 1)));
     else
-      %# deduce limit from RHS 
-      if iscell(RHS),
-	nrow = max(sum(cellfun('size', RHS, 1)));
+      if isvector(RHS),
+	if 0 == df._cnt(1),
+	  nrow = length(RHS); %# try to produce row vectors
+	else
+	  nrow = df._cnt(1);  %# limit to df numbner of rows
+	endif 
       else
-	nrow = size(RHS, 1);
+	%# deduce limit from RHS 
+      	nrow = size(RHS, 1);
       endif
     endif
     indr = 1:nrow;
@@ -211,19 +211,19 @@ function df = df_matassign(df, S, indc, ncol, RHS)
   ridx = []; cname = rname; ctype = rname;
 
   if iscell(RHS),
-    if (length(indc) == df._cnt(2) && size(RHS, 2) >=  df._cnt(2))...
+    if (length(indc) == df._cnt(2) && size(RHS, 2) >=  df._cnt(2)) \
 	  || 0 == df._cnt(2) || isempty(S.subs{1}),
       %# providing too much information -- remove extra content
       if size(RHS, 1) > 1,
 	%# at this stage, verify that the first line doesn't contain
 	%# chars only; use them for column names
-	dummy = cellfun('class', ...
-			RHS(1, ~cellfun('isempty', RHS(1, :))), ...
+	dummy = cellfun('class', \
+			RHS(1, ~cellfun('isempty', RHS(1, :))), \
 			'UniformOutput', false);
 	dummy = strcmp(dummy, 'char');
 	if all(dummy),
-	  if length(df._over{2}) >= max(indc) && ...
-		!all(df._over{2}(indc)),
+	  if length(df._over{2}) >= max(indc) \
+		&& !all(df._over{2}(indc)),
 	    warning("Trying to overwrite colum names");
 	  endif
 	  cname = RHS(1, :).'; RHS = RHS(2:end, :);
@@ -233,17 +233,17 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	endif
 	%# at this stage, verify that the first line doesn't contain
 	%# chars only; use them for column types
-	dummy = cellfun('class', ...
-			RHS(1, ~cellfun('isempty', RHS(1, :))), ...
+	dummy = cellfun('class', \
+			RHS(1, ~cellfun('isempty', RHS(1, :))), \
 			'UniformOutput', false);
 	dummy = strcmp(dummy, 'char');
 	if all(dummy),
-	  if length(df._over{2}) >= max(indc) && ...
-		!all(df._over{2}(indc)),
+	  if length(df._over{2}) >= max(indc) \
+		&& !all(df._over{2}(indc)),
 	    warning("Trying to overwrite colum names");
 	  endif
 	  ctype = RHS(1, :); RHS = RHS(2:end, :);
-	  if ~indr_was_set, 
+	  if ~indr_was_set,
 	    nrow = nrow - 1; indr = 1:nrow;
 	  endif
 	endif
@@ -252,7 +252,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       %# more elements than df width -- try to use the first two as
       %# row index and/or row name
       if size(RHS, 1) > 1,
-	dummy = all(cellfun('isnumeric', ...
+	dummy = all(cellfun('isnumeric', \
 			    RHS(~cellfun('isempty', RHS(:, 1)), 1)));
       else
 	dummy =  isnumeric(RHS{1, 1});
@@ -277,14 +277,14 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       if size(RHS, 2) >  df._cnt(2),
 	%# verify the the first row doesn't contain chars only, use them
 	%# for row names
-	dummy = cellfun('class', ...
-			RHS(~cellfun('isempty', RHS(:, 1)), 1), ...
+	dummy = cellfun('class', \
+			RHS(~cellfun('isempty', RHS(:, 1)), 1), \
 			'UniformOutput', false);
-	dummy = strcmp(dummy, 'char') ...
+	dummy = strcmp(dummy, 'char') \
 	    && (!isempty(cname) && size(cname{1}, 2) < 1);
 	if all(dummy), 
-	  if length(df._over{1}) >= max(indr) && ...
-		!all(df._over{1}(indr)),
+	  if length(df._over{1}) >= max(indr) \
+		&& !all(df._over{1}(indr)),
 	    warning("Trying to overwrite row names");
 	  else
 	    rname = RHS(:, 1); 
@@ -364,8 +364,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	      dummy  = cast(fillfunc(indj), df._type{indc(indi)});
 	  endswitch
 	catch
-	  dummy = ...
-	      sprintf("Assignement failed for colum %d, of type %s and length %d,\nwith new content\n%s", ...
+	  dummy = \
+	      sprintf("Assignement failed for colum %d, of type %s and length %d,\nwith new content\n%s", \
 		      indj, df._type{indc(indi)}, length(indr), disp(RHS(:, indj)));
 	  error(dummy);
 	end_try_catch
@@ -383,8 +383,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	      dummy(indr, :) = cast(fillfunc(indj), df._type{indc(indi)});
 	  endswitch
 	catch
-	  dummy = ...
-	      sprintf("Assignement failed for colum %d, of type %s and length %d,\nwith new content\n%s", ...
+	  dummy = \
+	      sprintf("Assignement failed for colum %d, of type %s and length %d,\nwith new content\n%s", \
 		      indj, df._type{indc(indi)}, length(indr), disp(RHS(:, indj)));
 	  error(dummy);
 	end_try_catch
@@ -400,19 +400,19 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     if isa(RHS, 'dataframe'),
       for indi = 1:length(indc),
 	if 1 == size(RHS._data{indc(indi)}, 2),
-	  if strcmp(df._type(indc(indi)), ...
+	  if strcmp(df._type(indc(indi)), \
 		    RHS._type(indc(indi))),
 	    df._data{indc(indi)}(indr, 1)  = RHS._data{indc(indi)};
 	  else
-	    df._data{indc(indi)}(indr, 1)  = cast(RHS._data{indc(indi)}, ...
+	    df._data{indc(indi)}(indr, 1)  = cast(RHS._data{indc(indi)}, \
 						  df._type(indc(indi)));
 	  endif
 	else
-	  if strcmp(df._type(indc(indi)), ...
+	  if strcmp(df._type(indc(indi)), \
 		    RHS._type(indc(indi))),
 	    df._data{indc(indi)}(indr, :)  = RHS._data{indc(indi)};
 	  else
-	    df._data{indc(indi)}(indr, :)  = cast(RHS._data{indc(indi)}, ...
+	    df._data{indc(indi)}(indr, :)  = cast(RHS._data{indc(indi)}, \
 						  df._type(indc(indi)));
 	  endif
 	endif
@@ -465,18 +465,18 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	dummy(indr(indi)) = ridx{indi};
       endfor
     endif
-    if length(unique(dummy)) != length(dummy), %# || ...
+    if length(unique(dummy)) != length(dummy), %# || \
 	  %# any(diff(dummy) <= 0),
       error("row indexes are not unique or not ordered");
     endif
     df._ridx = dummy;
   endif
-  if !isempty(rname) && (length(df._over{1}) < max(indr) || ...
+  if !isempty(rname) && (length(df._over{1}) < max(indr) || \
 	all(df._over{1}(indr))),
     df._name{1}(indr, 1) = rname;
     df._over{1}(1, indr) = false;
   endif
-  if !isempty(cname) && (length(df._over{2}) < max(indc) || ...
+  if !isempty(cname) && (length(df._over{2}) < max(indc) || \
 	all(df._over{2}(indc))),
     df._name{2}(indc, 1) = cname;
     df._over{2}(1, indc) = false;

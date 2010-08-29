@@ -123,6 +123,10 @@ function ret = optim_problems ()
   %% numbered from 201 to 395 and may appear here under the fields
   %% .curve, .general, or .zero.
   %%
+  %% .general.schittkowski_281: 10 parameters, unconstrained.
+  %%
+  %% .general.schittkowski_289: 30 parameters, unconstrained.
+  %%
   %% .general.schittkowski_327 and
   %%
   %% .curve.schittkowski_327: Two parameters, one general inequality
@@ -136,11 +140,26 @@ function ret = optim_problems ()
   %% .general.schittkowski_372: 9 parameters, 12 general inequality
   %% constraints, 6 bounds. Infeasible initial parameters
   %% (.curve.schittkowski_372.init_p_f(1) provides a set of more or less
-  %% feasible parameters. leasqr sticks at the (feasible) initial
+  %% feasible parameters). leasqr sticks at the (feasible) initial
   %% values. sqp has no problems.
   %%
   %% .curve.schittkowski_373: 9 parameters, 6 equality constraints.
-  %% Infeasible initial parameters.
+  %% Infeasible initial parameters (.curve.schittkowski_373.init_p_f(1)
+  %% provides a set of more or less feasible parameters). leasqr sticks
+  %% at the (feasible) initial values. sqp has no problems.
+  %%
+  %% .general.schittkowski_391: 30 parameters, unconstrained. The best
+  %% solution given in the publication seems not very good, obviously
+  %% the used routine had not managed to get very far from the starting
+  %% parameters; it has been replaced here by a better (Octaves
+  %% fminunc). The result still varies widely (without much changes in
+  %% objective function) with changes of starting values. Maybe not a
+  %% very good test problem, no well defined minimum ...
+
+  %% needed for some anonymous functions
+  if (exist ('ifelse') ~= 5)
+    ifelse = @ scalar_ifelse;
+  end
 
   if (~exist ('OCTAVE_VERSION'))
     NA = NaN;
@@ -379,6 +398,44 @@ function ret = optim_problems ()
 	     -5.0039950796246986e+00, -7.9749636293721071e+00];
   ret.curve.p_r.f = @ (x, p) f_r (x, p, hook);
 
+  ret.general.schittkowski_281.dfdp = ...
+      @ (p) schittkowski_281_dfdp (p);
+  ret.general.schittkowski_281.init_p = zeros (10, 1);
+  ret.general.schittkowski_281.result.p = ones (10, 1); % 'theoretically'
+  ret.general.schittkowski_281.result.obj = 0; % 'theoretically'
+  ret.general.schittkowski_281.strict_inequc.bounds = [];
+  ret.general.schittkowski_281.strict_inequc.linear = [];
+  ret.general.schittkowski_281.strict_inequc.general = [];
+  ret.general.schittkowski_281.non_strict_inequc.bounds = [];
+  ret.general.schittkowski_281.non_strict_inequc.linear = [];
+  ret.general.schittkowski_281.non_strict_inequc.general = [];
+  ret.general.schittkowski_281.equc.linear = [];
+  ret.general.schittkowski_281.equc.general = [];
+  ret.general.schittkowski_281.f = ...
+      @ (p) (sum (((1:10).') .^ 3 .* (p - 1) .^ 2)) ^ (1 / 3);
+
+  ret.general.schittkowski_289.dfdp = ...
+      @ (p) exp (- sum (p .^ 2) / 60) / 30 * p;
+  ret.general.schittkowski_289.init_p = [-1.03; 1.07; -1.10; 1.13; ...
+					 -1.17; 1.20; -1.23; 1.27; ...
+					 -1.30; 1.33; -1.37; 1.40; ...
+					 -1.43; 1.47; -1.50; 1.53; ...
+					 -1.57; 1.60; -1.63; 1.67; ...
+					 -1.70; 1.73; -1.77; 1.80; ...
+					 -1.83; 1.87; -1.90; 1.93; ...
+					 -1.97; 2.00];
+  ret.general.schittkowski_289.result.p = zeros (30, 1); % 'theoretically'
+  ret.general.schittkowski_289.result.obj = 0; % 'theoretically'
+  ret.general.schittkowski_289.strict_inequc.bounds = [];
+  ret.general.schittkowski_289.strict_inequc.linear = [];
+  ret.general.schittkowski_289.strict_inequc.general = [];
+  ret.general.schittkowski_289.non_strict_inequc.bounds = [];
+  ret.general.schittkowski_289.non_strict_inequc.linear = [];
+  ret.general.schittkowski_289.non_strict_inequc.general = [];
+  ret.general.schittkowski_289.equc.linear = [];
+  ret.general.schittkowski_289.equc.general = [];
+  ret.general.schittkowski_289.f = @ (p) 1 - exp (- sum (p .^ 2) / 60);
+
   ret.curve.schittkowski_327.dfdp = ...
       @ (x, p) [1 + exp(-p(2) * (x - 8)), ...
 		(p(1) + .49) * (8 - x) .* exp (-p(2) * (x - 8))];
@@ -388,9 +445,9 @@ function ret = optim_problems ()
        18; 18; 20; 20; 20; 22; 22; 22; 24; 24; 24; 26; 26; 26; 28; ...
        28; 30; 30; 30; 32; 32; 34; 36; 36; 38; 38; 40; 42];
   ret.curve.schittkowski_327.data.y= ...
-      [.49; .49; .48; .47; .48; .47; .46; .46; .45; .43; .45; .43; \
-       .43; .44; .43; .43; .46; .45; .42; .42; .43; .41; .41; .40; \
-       .42; .40; .40; .41; .40; .41; .41; .40; .40; .40; .38; .41; \
+      [.49; .49; .48; .47; .48; .47; .46; .46; .45; .43; .45; .43; ...
+       .43; .44; .43; .43; .46; .45; .42; .42; .43; .41; .41; .40; ...
+       .42; .40; .40; .41; .40; .41; .41; .40; .40; .40; .38; .41; ...
        .40; .40; .41; .38; .40; .40; .39; .39];
   ret.curve.schittkowski_327.data.wt = [];
   ret.curve.schittkowski_327.data.cov = [];
@@ -426,9 +483,9 @@ function ret = optim_problems ()
        18; 18; 20; 20; 20; 22; 22; 22; 24; 24; 24; 26; 26; 26; 28; ...
        28; 30; 30; 30; 32; 32; 34; 36; 36; 38; 38; 40; 42];
   ret.general.schittkowski_327.data.y= ...
-      [.49; .49; .48; .47; .48; .47; .46; .46; .45; .43; .45; .43; \
-       .43; .44; .43; .43; .46; .45; .42; .42; .43; .41; .41; .40; \
-       .42; .40; .40; .41; .40; .41; .41; .40; .40; .40; .38; .41; \
+      [.49; .49; .48; .47; .48; .47; .46; .46; .45; .43; .45; .43; ...
+       .43; .44; .43; .43; .46; .45; .42; .42; .43; .41; .41; .40; ...
+       .42; .40; .40; .41; .40; .41; .41; .40; .40; .40; .38; .41; ...
        .40; .40; .41; .38; .40; .40; .39; .39];
   x = ret.general.schittkowski_327.data.x;
   y = ret.general.schittkowski_327.data.y;
@@ -488,7 +545,7 @@ function ret = optim_problems ()
   ret.curve.schittkowski_372.data.y= zeros (6, 1);
   ret.curve.schittkowski_372.data.wt = [];
   ret.curve.schittkowski_372.data.cov = [];
-  %% recomputed with sqp (e.g. not with curve fitting)
+  %% recomputed with sqp (i.e. not with curve fitting)
   ret.curve.schittkowski_372.result.p = [5.2330557804078126e+02; ...
 					 -1.5694790476454301e+02; ...
 					 -1.9966450018535931e-01; ...
@@ -536,6 +593,17 @@ function ret = optim_problems ()
   %% not feasible
   ret.curve.schittkowski_373.init_p = [300; -100; -.1997; -127; ...
 				       -151; 379; 421; 460; 426];
+  %% feasible
+  ret.curve.schittkowski_373.init_p_f = @ (id) ...
+      ifelse (id == 0, 1, [2.5722721227695763e+02; ...
+			   -1.5126681606092043e+02; ...
+			   8.3101871447778766e-02; ...
+			   -3.0390506000425454e+01; ...
+			   1.1661334225083069e+01; ...
+			   2.6097719374430665e+02; ...
+			   3.2814725183082305e+02; ...
+			   3.9686840023267564e+02; ...
+			   3.9796353824451995e+02]);
   ret.curve.schittkowski_373.data.x = (1:6).'; % any different numbers
   ret.curve.schittkowski_373.data.y= zeros (6, 1);
   ret.curve.schittkowski_373.data.wt = [];
@@ -615,6 +683,51 @@ function ret = optim_problems ()
   ret.general.schittkowski_372.equc.linear = [];
   ret.general.schittkowski_372.equc.general = [];
   ret.general.schittkowski_372.f = @ (p) sumsq (p(4:9));
+
+  ret.general.schittkowski_391.dfdp = [];
+  ret.general.schittkowski_391.init_p = ...
+      -2.8742711 * alpha_391 (zeros (30, 1), 1:30);
+  %% computed with fminunc (Octave)
+  ret.general.schittkowski_391.result.p = [-1.1986682e+18; ...
+					   -1.1474574e+07; ...
+					   -1.3715802e+07; ...
+					   -1.0772255e+07; ...
+					   -1.0634232e+07; ...
+					   -1.0622915e+07; ...
+					   -8.8775399e+06; ...
+					   -8.8201496e+06; ...
+					   -9.7729975e+06; ...
+					   -1.0431808e+07; ...
+					   -1.0415089e+07; ...
+					   -1.0350400e+07; ...
+					   -1.0325094e+07; ...
+					   -1.0278561e+07; ...
+					   -1.0275751e+07; ...
+					   -1.0276546e+07; ...
+					   -1.0292584e+07; ...
+					   -1.0289350e+07; ...
+					   -1.0192566e+07; ...
+					   -1.0058577e+07; ...
+					   -1.0096341e+07; ...
+					   -1.0242386e+07; ...
+					   -1.0615831e+07; ...
+					   -1.1142096e+07; ...
+					   -1.1617283e+07; ...
+					   -1.2005738e+07; ...
+					   -1.2282117e+07; ...
+					   -1.2301260e+07; ...
+					   -1.2051365e+07; ...
+					   -1.1704693e+07];
+  ret.general.schittkowski_391.result.obj = -5.1615468e+20;
+  ret.general.schittkowski_391.strict_inequc.bounds = [];
+  ret.general.schittkowski_391.strict_inequc.linear = [];
+  ret.general.schittkowski_391.strict_inequc.general = [];
+  ret.general.schittkowski_391.non_strict_inequc.bounds = [];
+  ret.general.schittkowski_391.non_strict_inequc.linear = [];
+  ret.general.schittkowski_391.non_strict_inequc.general = [];
+  ret.general.schittkowski_391.equc.linear = [];
+  ret.general.schittkowski_391.equc.general = [];
+  ret.general.schittkowski_391.f = @ (p) sum (alpha_391 (p, 1:30));
 
   function ret = f_1 (x, p)
 
@@ -716,6 +829,30 @@ function ret = optim_problems ()
     ret(ido) = 0;
     ret(idx) = - ((p(4) + p(1)) * p(2)) ./ ...
 	((p(5) * dls(idx)) ./ (1 - tf(idx) .^ 2) + p(1)) + p(2);
+
+  function ret = alpha_391 (p, id)
+
+    %% for .general.schittkowski_391; id is a numeric index(-vector)
+    %% into p
+
+    p = p(:);
+    n = size (p, 1);
+
+    nid = length (id);
+    id = reshape (id, 1, nid);
+
+    v = sqrt (repmat (p .^ 2, 1, nid) + 1 ./ ((1:n).') * id);
+
+    log_v = log (v);
+
+    ret = 420 * p(id) + (id(:) - 15) .^ 3 + ...
+	sum (v .* (sin (log_v) .^ 5 + cos (log_v) .^ 5)).';
+
+  function ret = schittkowski_281_dfdp (p)
+
+    tp = (sum (((1:10).') .^ 3 .* (p - 1) .^ 2)) ^ (- 2 / 3) / 3;
+
+    ret = 2 * ((1:10).') .^ 3 .* (p - 1) * tp;
 
   function state = fixed_step_rk4 (t, x0, step, f)
 
@@ -1102,6 +1239,15 @@ function ret = optim_problems ()
 
     if (nargin > 1)
       ret = ret(idx);
+    end
+
+  function fval = scalar_ifelse (cond, tval, fval)
+
+    %% needed for some anonymous functions, builtin ifelse only available
+    %% in Octave > 3.2; we need only the scalar case here
+
+    if (cond)
+      fval = tval;
     end
 
 %!demo

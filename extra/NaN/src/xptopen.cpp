@@ -28,6 +28,8 @@
 //
 //    $Id$
 //    Copyright (C) 2010 Alois Schloegl <a.schloegl@ieee.org>
+//    This function is part of the NaN-toolbox
+//    http://biosig-consulting.com/matlab/NaN/
 //
 // References:
 // [1]	TS-140 THE RECORD LAYOUT OF A DATA SET IN SAS TRANSPORT (XPORT) FORMAT
@@ -64,6 +66,7 @@
 
 
 #define max(a,b)	(((a) > (b)) ? (a) : (b))
+#define min(a,b)	(((a) < (b)) ? (a) : (b))
 
 
 #ifdef __linux__
@@ -218,6 +221,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		mexPrintf("\t\tsave fields of struct X in filename.\n\n");
 		mexPrintf("\tThe fields of X must be column vectors of equal length.\n");
 		mexPrintf("\tEach vector is either a numeric vector or a cell array of strings.\n");
+		mexPrintf("\nDate/Time can be stored as numeric value counting the number of days since 1960-01-01.\n\n");
 		return;
 	}
 	if ( PInputCount > 1) 
@@ -290,28 +294,28 @@ return;
 
 			ListOfVarNames[k] = VarNames+pos;
 			int n = k*sz2+8;
+			int flagDate = (!memcmp(H2+n+48,"DATE    ",8) || !memcmp(H2+n+48,"MONNAME ",8));
 			do {
 				VarNames[pos++] = H2[n];	
-			} while (isalnum(H2[++n]));	
+			} while (isalnum(H2[++n]) && (n < k*sz2+16));	
+			
 			
 			VarNames[pos++] = 0;
 
 			if ((*(int16_t*)(H2+k*sz2)) == b_endian_u16(1) && (*(int16_t*)(H2+k*sz2+4)) == b_endian_u16(8) ) {
-				R[k] = mxCreateDoubleMatrix(M, 1, mxREAL); 				
+				// numerical data
+				R[k] = mxCreateDoubleMatrix(M, 1, mxREAL); 
 				for (size_t m=0; m<M; m++) {
-					double d;
-#if TEST_CONVERSION==0
-					d = *(double*)(Data+m*recsize+POS);
-#elif TEST_CONVERSION==1
-					// FIXME: 
-					xpt2ieee(Data+m*recsize+POS,(unsigned char*)&d);
-#elif TEST_CONVERSION==2
-					d = xpt2d(b_endian_u64(*(uint64_t*)(Data+m*recsize+POS)));
-#endif
+					double d = xpt2d(b_endian_u64(*(uint64_t*)(Data+m*recsize+POS)));
+
+//					if (flagDate) d += 715876;  // add number of days from 0000-Jan-01 to 1960-Jan-01
+
 					*(mxGetPr(R[k])+m) = d;
-				} 
+							
+				}
 			}
 			else if ((*(int16_t*)(H2+k*sz2)) == b_endian_u16(2)) {
+				// character string 
 				R[k] = mxCreateCellMatrix(M, 1);
 				char *f = (char*)malloc(maxlen+1);
 				for (size_t m=0; m<M; m++) {
@@ -359,6 +363,8 @@ return;
 		strftime(tt, 17, DATEFORMAT, localtime(&t));
 		memcpy(H1+80*2-16,tt,16);		
 		memcpy(H1+80*2,tt,16);		
+		memcpy(H1+80*5+8,fn,min(8,strcspn(fn,".\x00")));		
+		memcpy(H1+80*5+32,"XPTOPEN.MEX (OCTAVE/MATLAB)",27);		
 		memcpy(H1+80*6-16,tt,16);		
 		memcpy(H1+80*6,tt,16);		
 		 
@@ -426,18 +432,8 @@ return;
 
 				if (*(int16_t*)(H2+k*sz2) == b_endian_u16(1)) {
 					// numeric
-#if TEST_CONVERSION==0
-					double d = *(double*)(mxGetPr(F[k])+m);
-					count += fwrite((void*)&d, 1, 8, fid);
-#elif  TEST_CONVERSION==1
-					// FIXME: 
-					unsigned char temp[9];
-					ieee2xpt((unsigned char *)(mxGetPr(F[k])+m), temp);
-					count += fwrite(temp, 1, 8, fid);
-#elif  TEST_CONVERSION==2
 					uint64_t u64 = b_endian_u64(d2xpt(*(mxGetPr(F[k])+m)));
 					count += fwrite(&u64, 1, 8, fid);
-#endif
 				}	
 
 /*				else if (mxIsChar(F[k])) { 

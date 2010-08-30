@@ -36,8 +36,16 @@
 //	http://support.sas.com/techsup/technote/ts140.html
 // [2] IBM floating point format 
 //	http://en.wikipedia.org/wiki/IBM_Floating_Point_Architecture
+// [3] see http://old.nabble.com/Re%3A-IBM-integer-and-double-formats-p20428979.html
+// [4] STATA File Format
+//	http://www.stata.com/help.cgi?dta 
+//	http://www.stata.com/help.cgi?dta_113
 //-------------------------------------------------------------------
 
+/*
+SPSS file format
+// http://cvs.savannah.gnu.org/pspp/doc/data-file-format.texi?root=pspp&content-type=text%2Fplain
+*/
 
 #define TEST_CONVERSION 2  // 0: ieee754, 1: SAS converter (big endian bug), 2: experimental
 #define DEBUG 0
@@ -50,13 +58,6 @@
 #include <time.h>
 #include "mex.h"
 
-#if 0
-#define malloc(a) mxMalloc(a)
-#define calloc(a,b) mxCalloc(a,b)
-#define realloc(a,b) mxRealloc(a,b)
-#define free(a) mxFree(a)
-#endif 
-
 #ifdef tmwtypes_h
   #if (MX_API_VER<=0x07020000)
     typedef int mwSize;
@@ -64,7 +65,7 @@
   #endif 
 #endif 
 
-
+#define NaN  		(0.0/0.0)
 #define max(a,b)	(((a) > (b)) ? (a) : (b))
 #define min(a,b)	(((a) < (b)) ? (a) : (b))
 
@@ -130,61 +131,22 @@
 #endif /* __BYTE_ORDER */
 
 
-struct REAL_HEADER {
-  char sas_symbol[2][8];
-  char saslib[8];
-  char sasver[8];
-  char sas_os[8];
-  char blanks[24];
-  char sas_create[16];
-};
-
-struct SAS_XPORT_header {
-  char sas_symbol[2][8];	/* should be "SAS     " */
-  char saslib[8];		/* should be "SASLIB  " */
-  char sasver[8];
-  char sas_os[8];
-  char sas_create[16];
-  char sas_mod[16];
-};
-
-struct SAS_XPORT_member {
-  char sas_symbol[8];
-  char sas_dsname[8];
-  char sasdata[8];
-  char sasver[8];
-  char sas_osname[8];
-  char sas_create[16];
-  char sas_mod[16];
-};
-
-struct SAS_XPORT_namestr {
-    short   ntype;              /* VARIABLE TYPE: 1=NUMERIC, 2=CHAR    */
-    short   nhfun;              /* HASH OF NNAME (always 0)            */
-    short   nlng;               /* LENGTH OF VARIABLE IN OBSERVATION   */
-    short   nvar0;              /* VARNUM                              */
-    char    nname[8];		/* NAME OF VARIABLE                    */
-    char    nlabel[40];		/* LABEL OF VARIABLE                   */
-    char    nform[8];		/* NAME OF FORMAT                      */
-    short   nfl;                /* FORMAT FIELD LENGTH OR 0            */
-    short   nfd;                /* FORMAT NUMBER OF DECIMALS           */
-    short   nfj;                /* 0=LEFT JUSTIFICATION, 1=RIGHT JUST  */
-    char    nfill[2];           /* (UNUSED, FOR ALIGNMENT AND FUTURE)  */
-    char    niform[8];		/* NAME OF INPUT FORMAT                */
-    short   nifl;               /* INFORMAT LENGTH ATTRIBUTE           */
-    short   nifd;               /* INFORMAT NUMBER OF DECIMALS         */
-    int     npos;               /* POSITION OF VALUE IN OBSERVATION    */
-    char    rest[52];           /* remaining fields are irrelevant     */
-};
-
-#if TEST_CONVERSION==1
-void xpt2ieee(unsigned char *xport, unsigned char *ieee);
-void ieee2xpt(unsigned char *ieee, unsigned char *xport);
-int  cnxptiee(unsigned char *from, int fromtype, unsigned char *to, int totype);
-#elif TEST_CONVERSION==2
 double xpt2d(uint64_t x);
 uint64_t d2xpt(double x);
-#endif 
+
+/*
+	compare first n characters of two strings, ignore case  
+ */
+int strncmpi(const char* str1, const char* str2, size_t n)
+{	
+	unsigned int k=0;
+	int r=0;
+	while (!r && str1[k] && str2[k] && (k<n)) {
+		r = tolower(str1[k]) - tolower(str2[k]);
+		k++; 
+	}	
+	return(r); 	 	
+}
 
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
@@ -200,10 +162,10 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	const  char DATEFORMAT[] = "%d%b%y:%H:%M:%S";
 	char   *fn = NULL; 
-	char   *Mode = "r"; 
+	char   Mode[3] = "r"; 
 	FILE   *fid; 	
-	size_t count = 0, NS = 0, HeadLen1=80*8, HeadLen2=0, sz2 = 0;
-	char   H1[HeadLen1];
+	size_t count = 0, NS = 0, HeadLen0=80*8, HeadLen2=0, sz2 = 0, M=0;
+	char   H0[HeadLen0];
 	char   *H2 = NULL;
 	
 	// check for proper number of input and output arguments
@@ -221,121 +183,331 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		mexPrintf("\t\tsave fields of struct X in filename.\n\n");
 		mexPrintf("\tThe fields of X must be column vectors of equal length.\n");
 		mexPrintf("\tEach vector is either a numeric vector or a cell array of strings.\n");
-		mexPrintf("\nDate/Time can be stored as numeric value counting the number of days since 1960-01-01.\n\n");
+		mexPrintf("\nSupported data formats: SAS-XPT (rw), STATA(r).\n");
+		mexPrintf("\nThe SAS-XPT format stores Date/Time as numeric value counting the number of days since 1960-01-01.\n\n");
 		return;
 	}
 	if ( PInputCount > 1) 
 	if (mxGetClassID(PInputs[1])==mxCHAR_CLASS && mxGetNumberOfElements(PInputs[1])) {
-		Mode = (char*)mxGetData(PInputs[1]);
+		mxGetString(PInputs[1],Mode,3);
+		Mode[2]=0;
 	}
-	
+
 	fid = fopen(fn,Mode);
 	if (fid < 0) {
 	        mexErrMsgTxt("Error XPTOPEN: cannot open file\n");
 	}	
 
-#if 0 //DEBUG
-	double f1 = -118.625, f2;
-	uint64_t u1,u2; 
-	u1 = d2xpt(-118.625); 
-	f2 = xpt2d(u1);
-	mexPrintf("%f\t%016Lx\t%016Lx\t%f\n",f1,u1,u1,f2);
-	u1 = d2xpt(+118.625); 
-	f2 = xpt2d(u1);
-	mexPrintf("%f\t%016Lx\t%016Lx\t%f\n",f1,u1,u1,f2);
-//	mexPrintf("%f  %x \n", −118.625, d2xpt(−118.625) );
-	
-return;	
-#endif
-
 	if (Mode[0]=='r' || Mode[0]=='a' ) {
 
-		/* TODO: sanity checks */
+		count += fread(H0,1,80*8,fid);		
+		enum FileFormat {
+			noFile, unknown, ARFF, SASXPT, SPSS, STATA
+		};
+		enum FileFormat TYPE; 		/* type of file format */
+		uint8_t		LittleEndian;   /* 1 if file is LittleEndian data format and 0 for big endian data format*/  
 
-		count += fread(H1,1,80*8,fid);		
 
-		char tmp[5]; 
-		memcpy(tmp,H1+7*80+54,4); 
-		tmp[4]=0;
-		NS = atoi(tmp);
-		
-		char *tmp2;
-		sz2 = strtoul(H1+4*80-6, &tmp2, 10); 
-		 
-		HeadLen2 = NS*sz2;
-		if (HeadLen2 % 80) HeadLen2 = (HeadLen2 / 80 + 1) * 80; 	
-
-		/* read namestr header, and header line "OBS" */
-		H2 = (char*) realloc(H2, HeadLen2+81);
-		count  += fread(H2,1,HeadLen2+80,fid);		
-
-		/* size of single record */ 		
-		size_t pos=0, recsize = 0, POS = 0;
-		for (size_t k = 0; k < NS; k++) 
-			recsize += b_endian_u16(*(int16_t*)(H2+k*sz2+4));
-
-		/* read data section */			 
-		size_t szData = 0; 
-		uint8_t *Data = NULL; 
-		while (!feof(fid)) {
-			size_t szNew = max(16,szData*2);
-			Data         = (uint8_t*)realloc(Data,szNew);
-			szData      += fread(Data+szData,1,szNew-szData,fid);
+		TYPE = unknown; 
+		if (!memcmp(H0,"$FL2@(#) SPSS DATA FILE",8)) {
+		/*
+			SPSS file format 
+		*/
+			TYPE = SPSS;	
+			switch (*(uint32_t*)(H0+64)) {
+			case 0x00000002:
+			case 0x00000003:
+		    		LittleEndian = 1;
+		    		NS = l_endian_u32(*(uint32_t*)(H0+68));
+		    		M  = l_endian_u32(*(uint32_t*)(H0+80));
+			    	break;
+			case 0x02000000:
+			case 0x03000000:
+		    		LittleEndian = 0;
+		    		NS = b_endian_i32(*(uint32_t*)(H0+68));
+		    		M  = b_endian_i32(*(uint32_t*)(H0+80));
+			    	break;
+			default: 
+				TYPE = unknown;   	
+			}
 		}
+
+		if (TYPE == SPSS) 
+			;
+		else if ((H0[0]==113 || H0[0]==114) && (H0[1]==1 || H0[1]==2) && H0[2]==1 && H0[3]==0) { 
+		/*
+			STATA File Format
+			http://www.stata.com/help.cgi?dta 
+			http://www.stata.com/help.cgi?dta_113
+		*/
+			TYPE = STATA;
+			// Header 119 bytes 	
+	    		LittleEndian = H0[1]==2;
+	    		if (LittleEndian) {
+	    			NS = l_endian_u16(*(uint16_t*)(H0+4));
+	    			M = l_endian_u32(*(uint32_t*)(H0+6));
+	    		}
+	    		else {
+	    			NS = b_endian_u16(*(uint16_t*)(H0+4));
+	    			M  = b_endian_u32(*(uint32_t*)(H0+6));
+	    		}
+
+	    		// Descriptors 
+	    		int fmtlen = (H0[0]==113) ? 12 : 49; 
+	    		fseek(fid,109,SEEK_SET);
+	    		size_t HeadLen2 = 2+NS*(1+33+2+fmtlen+33+81);
+			char *H1 = (char*)malloc(HeadLen2);
+			fread(H1,1,HeadLen2,fid); 
+
+			// expansion fields
+			char typ; int32_t len,c;
+			char flagSWAP = (((__BYTE_ORDER == __BIG_ENDIAN) && LittleEndian) || ((__BYTE_ORDER == __LITTLE_ENDIAN) && !LittleEndian));
+			do { 
+				fread(&typ,1,1,fid);
+				fread(&len,4,1,fid);
+				if (flagSWAP) bswap_32(len); 
+				fseek(fid,len,SEEK_CUR);
+			} while (len);				
+			uint8_t *typlist = (uint8_t*)H1;
+/*
+			char *varlist = H1+NS;
+			char *srtlist;
+			char *fmtlist = H1+NS*36+2;			
+			char *lbllist = H1+NS*(36+fmtlen)+2;			
+*/
 		
-		size_t M = szData/recsize; 			
-
-		mxArray **R = (mxArray**) malloc(NS*sizeof(mxArray*));
-		const char **ListOfVarNames = (const char**)malloc(NS * sizeof(char*)); 
-		char *VarNames = (char*)malloc(NS * 9);
-
-		for (size_t k = 0; k < NS; k++) {
-			size_t maxlen = b_endian_u16(*(int16_t*)(H2+k*sz2+4));
-
-			ListOfVarNames[k] = VarNames+pos;
-			int n = k*sz2+8;
-			int flagDate = (!memcmp(H2+n+48,"DATE    ",8) || !memcmp(H2+n+48,"MONNAME ",8));
-			do {
-				VarNames[pos++] = H2[n];	
-			} while (isalnum(H2[++n]) && (n < k*sz2+16));	
+			mxArray **R = (mxArray**) malloc(NS*sizeof(mxArray*));
+			size_t *bi = (size_t*) malloc((NS+1)*sizeof(size_t*));
+			const char **ListOfVarNames = (const char**)malloc(NS * sizeof(char*)); 
+			bi[0] = 0;
+			for (size_t k = 0; k < NS; k++) {
+				size_t sz;
+				ListOfVarNames[k] = H1+NS+33*k;
+				switch (typlist[k]) {
+				case 0xfb: sz = 1; break; 
+				case 0xfc: sz = 2; break; 
+				case 0xfd: sz = 4; break; 
+				case 0xfe: sz = 4; break; 
+				case 0xff: sz = 8; break;
+				otherwise: sz = typlist[k];
+				} 
+				bi[k+1] = bi[k]+sz;
+			}
 			
+			// data 
+			uint8_t *data = (uint8_t *) malloc(bi[NS] * M);
+			fread(data, bi[NS], M, fid);
 			
-			VarNames[pos++] = 0;
+			char *f = (char*)malloc(bi[NS]+1);
+			for (size_t k = 0; k < NS; k++) {
+				switch (typlist[k]) {
+				case 0xfb: 
+					R[k] = mxCreateDoubleMatrix(M, 1, mxREAL); 
+					for (size_t m = 0; m < M; m++) {
+						int8_t d = *(int8_t*)(data+bi[k]+m*bi[NS]);
+						((double*)mxGetData(R[k]))[m] = (d>100) ? NaN : d;
+					}
+					break; 
+				case 0xfc: 
+					R[k] = mxCreateDoubleMatrix(M, 1, mxREAL); 
+					if (flagSWAP) for (size_t m = 0; m < M; m++) {
+						int16_t d = (int16_t) bswap_16(*(uint16_t*)(data+bi[k]+m*bi[NS]));
+						((double*)mxGetData(R[k]))[m] = (d>32740) ? NaN : d;
+					}
+					else for (size_t m = 0; m < M; m++) {
+						int16_t d = *(int16_t*)(data+bi[k]+m*bi[NS]);
+						((double*)mxGetData(R[k]))[m] = (d>32740) ? NaN : d;
+					}
+					break; 
+				case 0xfd: 
+					R[k] = mxCreateDoubleMatrix(M, 1, mxREAL); 
+					if (flagSWAP) for (size_t m = 0; m < M; m++) {
+						int32_t d = (int32_t)bswap_32(*(uint32_t*)(data+bi[k]+m*bi[NS]));
+						((double*)mxGetData(R[k]))[m] = (d>2147483620) ? NaN : d;
+					}
+					else for (size_t m = 0; m < M; m++) {
+						int32_t d = *(int32_t*)(data+bi[k]+m*bi[NS]);
+						((double*)mxGetData(R[k]))[m] = (d>2147483620) ? NaN : d;
+					}
+					break; 
+				case 0xfe: 
+					R[k] = mxCreateNumericMatrix(M, 1, mxSINGLE_CLASS, mxREAL); 
+					if (flagSWAP) for (size_t m = 0; m < M; m++) {
+						((uint32_t*)mxGetData(R[k]))[m] = bswap_32(*(uint32_t*)(data+bi[k]+m*bi[NS]));;  
+					}
+					else for (size_t m = 0; m < M; m++) {
+						((uint32_t*)mxGetData(R[k]))[m] = *(uint32_t*)(data+bi[k]+m*bi[NS]);  
+					}
+					break; 
+				case 0xff: 
+					R[k] = mxCreateDoubleMatrix(M, 1, mxREAL); 
+					if (flagSWAP) for (size_t m = 0; m < M; m++) {
+						((uint64_t*)mxGetData(R[k]))[m] = bswap_64(*(uint64_t*)(data+bi[k]+m*bi[NS]));  
+					}
+					else for (size_t m = 0; m < M; m++) {
+						((uint64_t*)mxGetData(R[k]))[m] = *(uint64_t*)(data+bi[k]+m*bi[NS]);
+					}
+					break;
+				default:
+					R[k] =	mxCreateCellMatrix(M, 1);
+					size_t sz = typlist[k];
+					for (size_t m = 0; m < M; m++) {
+						memcpy(f, data+bi[k]+m*bi[NS], sz);
+						f[sz] = 0;
+						mxSetCell(R[k], m, mxCreateString(f));
+					}	
+				} 
+			}
+			if (f) free(f); 
+			if (H1) free(H1);
+			if (bi) free(bi);
+			
+			/* convert into output */
+			POutput[0] = mxCreateStructMatrix(1, 1, NS, ListOfVarNames);
+			for (size_t k = 0; k < NS; k++) {
+				 mxSetField(POutput[0], 0, ListOfVarNames[k], R[k]);
+			}
 
-			if ((*(int16_t*)(H2+k*sz2)) == b_endian_u16(1) && (*(int16_t*)(H2+k*sz2+4)) == b_endian_u16(8) ) {
-				// numerical data
-				R[k] = mxCreateDoubleMatrix(M, 1, mxREAL); 
-				for (size_t m=0; m<M; m++) {
-					double d = xpt2d(b_endian_u64(*(uint64_t*)(Data+m*recsize+POS)));
+			if (ListOfVarNames) free(ListOfVarNames);
+		}
 
-//					if (flagDate) d += 715876;  // add number of days from 0000-Jan-01 to 1960-Jan-01
+		else if (H0[0]=='%' || H0[0]=='@') {
+		/*
+			 ARFF
+		*/
+			TYPE = ARFF;	
+			rewind(fid);
+			char *H000 = NULL;
+			count = 0;
+			while (!feof(fid)) {
+				HeadLen0 = HeadLen0*2;
+				H000 = (char*)realloc(H000,HeadLen0);
+				count += fread(H000+count,1,HeadLen0-count,fid);
+			} 
+			
+			char *line = strtok(H000,"\x0a\x0d");
+			int status = 0; 
+			while (line) {
+				if (!strncmpi(line,"@relation",9)) {	
+					status = 1;
+				}					
 
-					*(mxGetPr(R[k])+m) = d;
+				else if (status == 1 && !strncmpi(line,"@attribute",10)) {	
+					NS++;
+					
+				}	
+
+				else if (status == 1 && !strncmpi(line,"@data",5)) {	
+					status = 2;		
+				}
+				
+				line = strtok(NULL,"\x0a\x0d");
+			}			
+			
+			if (H000) free(H000);
+
+		}	
+
+		else if (!memcmp(H0,"HEADER RECORD*******LIBRARY HEADER RECORD!!!!!!!000000000000000000000000000000",78)) {
+		/*
+			 SAS Transport file format (XPORT)
+		*/
+			TYPE = SASXPT;	
+			
+			/* TODO: sanity checks */
+
+			char tmp[5]; 
+			memcpy(tmp,H0+7*80+54,4); 
+			tmp[4] = 0;
+			NS = atoi(tmp);
+		
+			char *tmp2;
+			sz2 = strtoul(H0+4*80-6, &tmp2, 10); 
+			 
+			HeadLen2 = NS*sz2;
+			if (HeadLen2 % 80) HeadLen2 = (HeadLen2 / 80 + 1) * 80; 	
+
+			/* read namestr header, and header line "OBS" */
+			H2 = (char*) realloc(H2, HeadLen2+81);
+			count  += fread(H2,1,HeadLen2+80,fid);		
+
+			/* size of single record */ 		
+			size_t pos=0, recsize = 0, POS = 0;
+			for (size_t k = 0; k < NS; k++) 
+				recsize += b_endian_u16(*(int16_t*)(H2+k*sz2+4));
+
+			/* read data section */			 
+			size_t szData = 0; 
+			uint8_t *Data = NULL; 
+			while (!feof(fid)) {
+				size_t szNew = max(16,szData*2);
+				Data         = (uint8_t*)realloc(Data,szNew);
+				szData      += fread(Data+szData,1,szNew-szData,fid);
+			}
+		
+			M = szData/recsize; 			
+
+			mxArray **R = (mxArray**) malloc(NS*sizeof(mxArray*));
+			const char **ListOfVarNames = (const char**)malloc(NS * sizeof(char*)); 
+			char *VarNames = (char*)malloc(NS * 9);
+
+			for (size_t k = 0; k < NS; k++) {
+				size_t maxlen = b_endian_u16(*(int16_t*)(H2+k*sz2+4));
+
+				ListOfVarNames[k] = VarNames+pos;
+				int n = k*sz2+8;
+				int flagDate = (!memcmp(H2+n+48,"DATE    ",8) || !memcmp(H2+n+48,"MONNAME ",8));
+				do {
+					VarNames[pos++] = H2[n];	
+				} while (isalnum(H2[++n]) && (n < k*sz2+16));	
+			
+
+				VarNames[pos++] = 0;
+
+				if ((*(int16_t*)(H2+k*sz2)) == b_endian_u16(1) && (*(int16_t*)(H2+k*sz2+4)) == b_endian_u16(8) ) {
+					// numerical data
+					R[k] = mxCreateDoubleMatrix(M, 1, mxREAL); 
+					for (size_t m=0; m<M; m++) {
+						double d = xpt2d(b_endian_u64(*(uint64_t*)(Data+m*recsize+POS)));
+
+//						if (flagDate) d += 715876;  // add number of days from 0000-Jan-01 to 1960-Jan-01
+
+						*(mxGetPr(R[k])+m) = d;
 							
+					}
 				}
-			}
-			else if ((*(int16_t*)(H2+k*sz2)) == b_endian_u16(2)) {
-				// character string 
-				R[k] = mxCreateCellMatrix(M, 1);
-				char *f = (char*)malloc(maxlen+1);
-				for (size_t m=0; m<M; m++) {
-					memcpy(f, Data+m*recsize+POS, maxlen);
-					f[maxlen] = 0;
-					mxSetCell(R[k], m, mxCreateString(f));
+				else if ((*(int16_t*)(H2+k*sz2)) == b_endian_u16(2)) {
+					// character string 
+					R[k] = mxCreateCellMatrix(M, 1);
+					char *f = (char*)malloc(maxlen+1);
+					for (size_t m=0; m<M; m++) {
+						memcpy(f, Data+m*recsize+POS, maxlen);
+						f[maxlen] = 0;
+						mxSetCell(R[k], m, mxCreateString(f));
+					}
+					if (f) free(f);
 				}
-				if (f) free(f);
+				POS += maxlen;
 			}
-			POS += maxlen;
+
+			POutput[0] = mxCreateStructMatrix(1, 1, NS, ListOfVarNames);
+			for (size_t k = 0; k < NS; k++) {
+				 mxSetField(POutput[0], 0, ListOfVarNames[k], R[k]);
+			}
+	
+			if (VarNames) 	    free(VarNames);
+			if (ListOfVarNames) free(ListOfVarNames);
+			if (Data)	    free(Data); 
+			/* end of reading SAS format */
+		}
+			
+		else {
+			fclose(fid);
+			mexErrMsgTxt("file format not supported");
+			return; 
 		}
 
-		POutput[0] = mxCreateStructMatrix(1, 1, NS, ListOfVarNames);
-		for (size_t k = 0; k < NS; k++) {
-			 mxSetField(POutput[0], 0, ListOfVarNames[k], R[k]);
-		}
 
-		if (VarNames) 	    free(VarNames);
-		if (ListOfVarNames) free(ListOfVarNames);
-		if (Data)	    free(Data); 
 		
 	}
 
@@ -346,31 +518,31 @@ return;
 
 		// generate default (fixed) header	
 		if (Mode[0]=='w') {
-			memset(H1,' ',80*8);
-			memcpy(H1,L1,strlen(L1));
-			memcpy(H1+80,L2,strlen(L2));
+			memset(H0,' ',80*8);
+			memcpy(H0,L1,strlen(L1));
+			memcpy(H0+80,L2,strlen(L2));
 
-			memcpy(H1+80*3,L4,strlen(L4));
-			memcpy(H1+80*4,L5,strlen(L5));
-			memcpy(H1+80*5,L6,strlen(L6));
+			memcpy(H0+80*3,L4,strlen(L4));
+			memcpy(H0+80*4,L5,strlen(L5));
+			memcpy(H0+80*5,L6,strlen(L6));
 
-			memcpy(H1+80*7,L8,strlen(L8));
+			memcpy(H0+80*7,L8,strlen(L8));
 		}
 		
 		time_t t;
 		time(&t); 
 		char tt[20];
 		strftime(tt, 17, DATEFORMAT, localtime(&t));
-		memcpy(H1+80*2-16,tt,16);		
-		memcpy(H1+80*2,tt,16);		
-		memcpy(H1+80*5+8,fn,min(8,strcspn(fn,".\x00")));		
-		memcpy(H1+80*5+32,"XPTOPEN.MEX (OCTAVE/MATLAB)",27);		
-		memcpy(H1+80*6-16,tt,16);		
-		memcpy(H1+80*6,tt,16);		
+		memcpy(H0+80*2-16,tt,16);		
+		memcpy(H0+80*2,tt,16);		
+		memcpy(H0+80*5+8,fn,min(8,strcspn(fn,".\x00")));		
+		memcpy(H0+80*5+32,"XPTOPEN.MEX (OCTAVE/MATLAB)",27);		
+		memcpy(H0+80*6-16,tt,16);		
+		memcpy(H0+80*6,tt,16);		
 		 
 		char tmp[17];
 		sprintf(tmp,"%04i", NS);	// number of variables 
-		memcpy(H1+80*7+54, tmp, 4);
+		memcpy(H0+80*7+54, tmp, 4);
 		
 		if (sz2==0) sz2 = 140;
 		if (sz2 < 136)  
@@ -423,7 +595,7 @@ return;
 			strncpy(H2+k*sz2+8,mxGetFieldNameByNumber(PInputs[2],k),8);
 		}
 
-		count  = fwrite(H1, 1, HeadLen1, fid);
+		count  = fwrite(H0, 1, HeadLen0, fid);
 		count += fwrite(H2, 1, HeadLen2, fid);
 		/* write OBS header line */
 		count += fwrite(LO, 1, strlen(LO), fid);
@@ -490,7 +662,6 @@ double xpt2d(uint64_t x) {
 	mexPrintf("xpt2d(%016Lx): [0x%x]\n",x,c);
 #endif
 
-	const double NaN = 0.0/0.0;
 	// missing values 
 	if ((c==0x2e || c==0x5f || (c>0x40 && c<0x5b)) && !u ) 
 		return(NaN);
@@ -541,7 +712,7 @@ uint64_t d2xpt(double x) {
 #if DEBUG 
 	mexPrintf("d2xpt(%f)\n",x);
 #endif 
-	
+	// see http://old.nabble.com/Re%3A-IBM-integer-and-double-formats-p20428979.html
 	m = *(uint64_t*) &x;
 	*(((char*)&m) + 6) &= 0x0f; //
 	if (e) *(((char*)&m) + 6) |= 0x10; // reconstruct implicit leading '1' for normalized numbers 

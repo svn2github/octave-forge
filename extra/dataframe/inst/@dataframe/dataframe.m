@@ -213,7 +213,7 @@ while indi <= size(varargin, 2),
 	indj =  indc + (1:size(x, 2));
       else
 	if isa(x{1}, 'cell'),
-	  x = x{1};
+	  x = x{1}; %# remove one cell level
 	endif
 	indj = df._cnt(2)+(1:size(x, 2));
       endif

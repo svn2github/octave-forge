@@ -212,6 +212,9 @@ while indi <= size(varargin, 2),
 	x = x{2}; 
 	indj =  indc + (1:size(x, 2));
       else
+	if isa(x{1}, 'cell'),
+	  x = x{1};
+	endif
 	indj = df._cnt(2)+(1:size(x, 2));
       endif
       if length(df._name{2}) < indj(1) || isempty(df._name{2}(indj)),

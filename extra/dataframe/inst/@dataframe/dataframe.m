@@ -194,7 +194,8 @@ while indi <= size(varargin, 2),
     
     %# fallback, avoiding a recursive call
     idx.type = '()';
-
+    indj = df._cnt(2)+(1:size(x, 2));
+    
     if iscell(x),
       if 2 == length(x),
 	%# use the intermediate value as destination column
@@ -210,12 +211,11 @@ while indi <= size(varargin, 2),
 	end_try_catch
 	df = df_pad(df, 2, [length(dummy) indc], dummy);
 	x = x{2}; 
-	indj =  indc + (1:size(x, 2));
+	indj =  indc + (1:size(x, 2)); 	%# redefine target range
       else
 	if isa(x{1}, 'cell'),
 	  x = x{1}; %# remove one cell level
 	endif
-	indj = df._cnt(2)+(1:size(x, 2));
       endif
       if length(df._name{2}) < indj(1) || isempty(df._name{2}(indj)),
 	[df._name{2}(indj, 1),  df._over{2}(1, indj)] ...

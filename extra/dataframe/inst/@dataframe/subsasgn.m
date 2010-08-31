@@ -395,7 +395,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
   else 
     %# RHS is either a numeric, either a df
     if any(indc > df._cnt(2)),
-      df = df_pad(df, 2, max(indc-df._cnt(2)), class(RHS));
+       df = df_pad(df, 2, max(indc-df._cnt(2)), class(RHS));
     endif
     if isa(RHS, 'dataframe'),
       for indi = 1:length(indc),

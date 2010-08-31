@@ -89,6 +89,9 @@ function df = df_pad(df, dim, n, coltype=[])
 	indc = df._cnt(2); %# add new values after the last column
       endif
       if !isa(coltype, 'cell'), coltype = {coltype}; endif
+      if isscalar(coltype) && n > 1,
+	coltype = repmat(coltype, 1, n);
+      endif
       for indi = (1:n),
 	switch coltype{indi}
 	  case {'char'}

@@ -107,7 +107,7 @@ function df = df_pad(df, dim, n, coltype=[])
       	%# generate a name for the new column(s)
 	dummy = cstrcat(repmat('_', n, 1), ...
 			strjust(num2str(indc + (1:n).'), 'left'));
-	df._name{2}(indc + (1:n)) = cellstr(dummy)
+	df._name{2}(indc + (1:n)) = cellstr(dummy);
 	df._over{2}(1, indc + (1:n)) = true;
       endif
       df._cnt(2) = df._cnt(2) + n;

@@ -9,3 +9,5 @@ autoload ("java_convert_matrix", fullfile (fileparts (mfilename ("fullpath")), "
 autoload ("java_unsigned_conversion", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
 autoload ("java_debug", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
 atexit ("java_exit");
+autoload ("javaObject", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));
+autoload ("javaMethod", fullfile (fileparts (mfilename ("fullpath")), "__java__.oct"));

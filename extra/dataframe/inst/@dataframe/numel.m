@@ -27,15 +27,25 @@ function n = numel(df, varargin)
   %# $Id: numel.m 981 2010-07-26 16:23:08Z dupuis $
   %#
 
-if 1 == nargin,
-  n = prod(df._cnt([1 end]));
-else
-  error(print_usage());
-endif
+  if isempty(varargin),
+    n = builtin('numel', df);
+  else
+    n = builtin('numel', df, varargin);
+  endif
+  return;
 
+  %# dead code -- MatLab usage of numel is inconsistant between arrays
+  %# and objects. Compare numel(randn(3)) and numel(some_class)
+
+  if 1 == nargin,
+    n = prod(df._cnt([1 end]));
+  else
+    error(print_usage());
+  endif
+  
 endfunction
 
 function usage = print_usage()
-  usage = strcat('Invalid call to numel.  Correct usage is: ', ' ', ...
-		  '-- Overloaded Function:  numel (A)');
+  usage = strcat('Invalid call to numel.  Correct usage is: ', ' ', \
+		 '-- Overloaded Function:  numel (A)');
 endfunction

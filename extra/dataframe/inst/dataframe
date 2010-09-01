@@ -40,7 +40,7 @@
 %! if any(size(y) != [10 5 8]),
 %!   error('y: wrong input size')
 %! endif
-%!assert(numel(x), 70);
+%!assert(numel(x), 1);
 %! # test simple slices
 %!assert(x.VBIAS(1:6), (-6:.2:-5).');
 %!assert(x(6:end, 2), (-5:.2:-4.2).');

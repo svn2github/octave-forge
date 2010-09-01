@@ -122,9 +122,10 @@ function resu = subsref(df, S)
 	      error("Invalid internal field name access");
 	    endif
 	  endif
-	  if !isempty(dummy),
-	    S = [S dummy];
-	  endif
+	  %# workaround around bug 30921, fixed in hg changeset 10937
+	  %# if !isempty(dummy),
+	  %#  S = [S dummy];
+	  %# endif
 	  resu = builtin('subsref', resu, S);
 	  if !isempty(postop),
 	    resu = postop(resu);

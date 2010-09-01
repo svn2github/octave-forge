@@ -429,13 +429,18 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       %# RHS is homogenous, pad at once
       S.subs(2) = []; %# ignore 'column' dimension
       if isvector(RHS), %# scalar - vector
-	if isempty(S.subs{1}),
-	  fillfunc = @(x) RHS;
-	else
-	  fillfunc = @(x) builtin('subsasgn', x, S, RHS);
+	if isempty(S.subs),
+	  fillfunc = @(x, y) RHS;
+	else 
+	  if length(indc) > 1 && length(RHS) > 1,
+	    %# set a row from a vector
+	    fillfunc = @(x, y) builtin('subsasgn', x, S, RHS(y));
+	  else   
+	    fillfunc = @(x, y) builtin('subsasgn', x, S, RHS);
+	  endif
 	endif
 	for indi = 1:length(indc),
-	  df._data{indc(indi)} = fillfunc(df._data{indc(indi)});
+	  df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, indi);
 	endfor
       else %# 2D - 3D matrix
 	%# rotate slices in dim 1-3 to slices in dim 1-2

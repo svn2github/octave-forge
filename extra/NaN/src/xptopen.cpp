@@ -66,6 +66,7 @@ SPSS file format
 #endif 
 
 #define NaN  		(0.0/0.0)
+#define fix(m)     	(m<0 ? ceil(m) : floor(m))	
 #define max(a,b)	(((a) > (b)) ? (a) : (b))
 #define min(a,b)	(((a) < (b)) ? (a) : (b))
 
@@ -133,6 +134,7 @@ SPSS file format
 
 double xpt2d(uint64_t x);
 uint64_t d2xpt(double x);
+double tm_time2gdf_time(struct tm *t);
 
 /*
 	compare first n characters of two strings, ignore case  
@@ -230,10 +232,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			default: 
 				TYPE = unknown;   	
 			}
+			HeadLen0 = 184;
 		}
 
-		if (TYPE == SPSS) 
+		if (TYPE == SPSS) {
 			;
+		}	
 		else if ((H0[0]==113 || H0[0]==114) && (H0[1]==1 || H0[1]==2) && H0[2]==1 && H0[3]==0) { 
 		/*
 			STATA File Format
@@ -375,37 +379,209 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		/*
 			 ARFF
 		*/
+
+mexPrintf("ARFF 101\n"); 
+
 			TYPE = ARFF;	
 			rewind(fid);
-			char *H000 = NULL;
+			char *H1 = NULL;
 			count = 0;
+			size_t ns = 0; 
+			char *vartyp = NULL;
+			char **datestr = NULL;
+			const char **ListOfVarNames = NULL; 
+			mxArray **R = NULL;
+			size_t m = 0;
+			
 			while (!feof(fid)) {
 				HeadLen0 = HeadLen0*2;
-				H000 = (char*)realloc(H000,HeadLen0);
-				count += fread(H000+count,1,HeadLen0-count,fid);
+				H1 = (char*)realloc(H1,HeadLen0);
+				count += fread(H1+count,1,HeadLen0-count-1,fid);
 			} 
+			H1[count]=0;
 			
-			char *line = strtok(H000,"\x0a\x0d");
+mexPrintf("ARFF 111: %i\n",count); 
+
+			char *line = strtok(H1,"\x0a\x0d");
 			int status = 0; 
 			while (line) {
+
 				if (!strncmpi(line,"@relation",9)) {	
 					status = 1;
 				}					
 
 				else if (status == 1 && !strncmpi(line,"@attribute",10)) {	
-					NS++;
+mexPrintf("ARFF 141 %i: [%i],<%s>\n",status,m,line); 
+					if (ns<=NS) {
+						ns = max(16, ns*2);
+						ListOfVarNames = (const char**)realloc(ListOfVarNames,ns*sizeof(char*));
+						vartyp         = (char*)realloc(vartyp,ns*sizeof(char));
+						R              = (mxArray**) malloc(ns*sizeof(mxArray*));
+					}
+					size_t k = 10;
+					char *p1, *p2;
+					while (isspace(line[k])) k++;
+					p1 = line+k;
+					while (!isspace(line[k])) k++;
+					line[k++]=0;
+					while (isspace(line[k])) k++;
+					p2 = line+k;
 					
+mexPrintf("ARFF 141 %i: [%i],<%s>,<%s>,<%s>\n",status,m,line,p1,p2); 
+					ListOfVarNames[NS] = p1;
+					if      (!strncmpi(p2,"numeric",7)) {
+						vartyp[NS] = 1; 
+					}	 
+					else if (!strncmpi(p2,"integer",7)) {					
+						vartyp[NS] = 2; 
+					}
+					else if (!strncmpi(p2,"real",4)) {	 	
+						vartyp[NS] = 3; 
+					}
+					else if (!strncmpi(p2,"string",6)) {					
+						vartyp[NS] = 4; 
+					}
+					else if (!strncmpi(p2,"{",1)) {
+						vartyp[NS] = 5; 
+					}	
+					else if (!strncmpi(p2,"date",4)) {				
+						vartyp[NS] = 6; 
+						datestr = (char**)realloc(datestr,(NS+1)*sizeof(char*));
+						p2+=4; 
+						while (isspace(*p2)) p2++;
+						datestr[NS] = p2;
+						if (p2[0]==34) {
+							p2++;
+							while (p2[0]!=34 && p2[0]) p2++;
+							p2[1]=0;
+						}
+					}
+					// else if (!strncmpi(p2,"relational",4))					
+mexPrintf("ARFF 149 %i: [%i],%i %i<%s>\n",status,m,NS,vartyp[NS],line); 
+					NS++;
 				}	
 
 				else if (status == 1 && !strncmpi(line,"@data",5)) {	
-					status = 2;		
+mexPrintf("ARFF 165 %i: [%i/%i],<%s>\n",status,m,M,line); 
+					status = 2;
+					char *p = line; 
+					while (*p) p++;  // goto end of current line  
+					p++; 		   // skip \x00
+					M = 0; 
+mexPrintf("ARFF 166 %i: [%i/%i],<%s>\n",status,m,M,line); 
+					while (*p) {
+						if (p[0]==0x0a || p[0]==0x0d) {
+							M++;
+							p+=2;  
+						}
+						else p++;
+					}
+mexPrintf("ARFF 168 %i: [%i/%i],<%s>\n",status,m,M,line); 
+					for (size_t k=0; k<NS; k++) {
+						if (vartyp[k]==4 || vartyp[k]==5) 
+							R[k] = mxCreateCellMatrix(M, 1);
+						else
+							R[k] = mxCreateDoubleMatrix(M, 1, mxREAL);
+					}		
 				}
 				
-				line = strtok(NULL,"\x0a\x0d");
-			}			
-			
-			if (H000) free(H000);
+				else if (status == 2) {
+mexPrintf("ARFF 171: [%i,%i] <%s>\n",NS,m,line); 
 
+					size_t p = 0,k; 
+					for (ns = 0; ns<NS; ns++) { 
+						// read next token 
+						while (isspace(line[p])) p++; 
+mexPrintf("ARFF 172: [%i,%i] <%s>\n",ns,m,line+p); 
+						if (line[p]==39) {
+							p++; k=p;
+							while (line[k]!=39 && line[k]) k++;
+							// if (!line[k]) ; // error
+							line[k] = 0; 
+						} 
+						else
+							k=p;
+mexPrintf("ARFF 173: [%i,%i] <%s>\n",ns,m,line+p); 
+						while (line[k] != ',' && line[k]) k++; 
+mexPrintf("ARFF 174: [%i,%i] <%s>\n",ns,m,line+p); 
+						line[k] = 0;
+
+mexPrintf("ARFF 175: [%i,%i,%i] <%s>\n",ns,vartyp[ns],m,line+p); 
+						if (vartyp[ns] < 4) {
+							double d = atof(line+p);
+							*(mxGetPr(R[ns])+m) = d;
+						}
+						else if (vartyp[ns] < 6) {
+mexPrintf("ARFF 176: [%i,%i,%i] <%s>\n",ns,vartyp[ns],m,line+p); 
+							mxSetCell(R[ns], m, mxCreateString(line+p));
+mexPrintf("ARFF 176: [%i,%i,%i] <%s>\n",ns,vartyp[ns],m,line+p); 
+						}
+						else if (vartyp[ns] == 6) {
+							size_t kk[6],n=0, N=strlen(datestr[ns]);
+							char T0[6][5];
+							char ix = 0;
+							struct tm t; 
+
+							for (n=0; n < N; n++) {
+								switch (datestr[ns][n]) {
+								case 'Y':
+									ix = 0;
+									break;
+								case 'M':
+									ix = 1;
+									break;
+								case 'd':
+									ix = 2;
+									break;
+								case 'H':
+									ix = 3;
+									break;
+								case 'm':
+									ix = 4;
+									break;
+								case 's':
+									ix = 5;
+									break;
+								default: 
+									ix = 99;	
+								}	
+
+								if (ix < 6) {
+									T0[ix][kk[ix]++] = line[p+n];
+								}	
+							}
+							for (n=0; n<6; n++) {
+								T0[n][kk[n]] = 0;
+							}
+							t.tm_year = atoi(T0[0]);
+							t.tm_mon  = atoi(T0[1]);
+							t.tm_mday = atoi(T0[2]);
+							t.tm_hour = atoi(T0[3]);
+							t.tm_min  = atoi(T0[4]);
+							t.tm_sec  = atoi(T0[5]);
+
+							*(mxGetPr(R[ns])+m) = tm_time2gdf_time(&t);
+						}
+
+						p = k+1;
+					} 
+					m++;
+				}
+				line = strtok(NULL, "\x0a\x0d");
+			}			
+
+			/* convert into output */
+			POutput[0] = mxCreateStructMatrix(1, 1, NS, ListOfVarNames);
+			for (size_t k = 0; k < NS; k++) {
+				mxSetField(POutput[0], 0, ListOfVarNames[k], R[k]);
+			}
+
+mexPrintf("ARFF 191: [%i,%i]\n",NS,m); 
+
+			if (ListOfVarNames) free(ListOfVarNames);
+			if (vartyp) free(vartyp);
+			if (datestr) free(datestr);
+			if (H1) free(H1);
 		}	
 
 		else if (!memcmp(H0,"HEADER RECORD*******LIBRARY HEADER RECORD!!!!!!!000000000000000000000000000000",78)) {
@@ -732,4 +908,40 @@ uint64_t d2xpt(double x) {
 
 } 
 
+
+double tm_time2gdf_time(struct tm *t) {
+	/* based Octave's datevec.m 
+	it referes Peter Baum's algorithm at http://vsg.cape.com/~pbaum/date/date0.htm 
+	but the link is not working anymore as of 2008-12-03. 
+
+	Other links to Peter Baum's algorithm are
+	http://www.rexswain.com/b2mmddyy.rex
+	http://www.dpwr.net/forums/index.php?s=ecfa72e38be61327403126e23aeea7e5&showtopic=4309
+	*/
+	
+	int Y,M,s; //h,m,
+	double D; 
+		
+	D = t->tm_mday; 
+	M = t->tm_mon+1; 
+	Y = t->tm_year+1900;
+		
+	// Set start of year to March by moving Jan. and Feb. to previous year.
+  	// Correct for months > 12 by moving to subsequent years.
+  	Y += fix ((M-14.0)/12);
+  
+  	const int monthstart[] = {306, 337, 0, 31, 61, 92, 122, 153, 184, 214, 245, 275};
+	// Lookup number of days since start of the current year.
+  	D += monthstart[t->tm_mon % 12] + 60;
+
+	// Add number of days to the start of the current year. Correct
+  	// for leap year every 4 years except centuries not divisible by 400.
+  	D += 365*Y + floor (Y/4) - floor (Y/100) + floor (Y/400);
+
+  	// Add fraction representing current second of the day.
+  	s = t->tm_hour*3600 + t->tm_min*60 + t->tm_sec; 
+
+	// s -= timezone;	
+	return(D + s/86400.0);
+}
 

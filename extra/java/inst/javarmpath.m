@@ -15,30 +15,31 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function file} {} javaaddpath (@var{path})
+## @deftypefn {Function file} {} javarmpath (@var{path})
 ##
-## Adds @var{path} to the dynamic class path of the Java virtual
+## Removes @var{path} from the dynamic class path of the Java virtual
 ## machine. @var{path} can be either a directory where .class files
 ## can be found, or a .jar file containing Java classes.
 ##
 ## @end deftypefn
-## @seealso{javaclasspath}
+## @seealso{javaaddpath,javaclasspath}
 
-function javaaddpath (class_path)
+function javarmpath (class_path)
 
   if (nargin != 1)
     print_usage ();
   else
     % MH 30-08-2010: added tilde_expand to allow for specification of user's home
-    new_path = canonicalize_file_name (tilde_expand(class_path));
-    if (exist (new_path, "dir"))
-      if (! strcmp (new_path (end), filesep))
-        new_path = [new_path, filesep];
-      endif
-    elseif (! exist (new_path, "file"))
-      error ("invalid Java classpath: %s", class_path);
-    endif
-    success = java_invoke ("org.octave.ClassHelper", "addClassPath", new_path);
-  endif 
-   
-endfunction
+    old_path = canonicalize_file_name (tilde_expand(class_path));
+    if (exist (old_path, "dir"))
+      if (! strcmp (old_path (end), filesep))
+        old_path = [old_path, filesep];
+      end
+    end
+    success = java_invoke ('org.octave.ClassHelper', 'removeClassPath', old_path);
+    if (! success)
+      disp(['Warning: ', old_path, ' not found in Java classpath.',10]);
+    end
+  end
+
+end

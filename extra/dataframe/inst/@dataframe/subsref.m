@@ -124,7 +124,7 @@ function resu = subsref(df, S)
 	  endif
 	  %# workaround around bug 30921, fixed in hg changeset 10937
 	  %# if !isempty(dummy),
-	  %#  S = [S dummy];
+	  S = [S dummy];
 	  %# endif
 	  resu = builtin('subsref', resu, S);
 	  if !isempty(postop),

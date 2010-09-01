@@ -42,7 +42,7 @@ public class OctClassLoader extends java.net.URLClassLoader
       // not do it (seems to cache initial java.library.path instead)
 
       String[] paths = System.getProperty ("java.library.path").split (File.pathSeparator);
-      
+
       libname = System.mapLibraryName (libname);
       for (int i=0; i<paths.length; i++)
         {
@@ -60,8 +60,9 @@ public class OctClassLoader extends java.net.URLClassLoader
       addURL (f.toURI ().toURL ());
     }
 
-  public void removeClassPath (String name) throws Exception
+  // new -MH-
+  public void addURL (java.net.URL url)
     {
-      throw new Exception ("not implemented yet");
+      super.addURL (url);
     }
 }

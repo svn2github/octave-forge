@@ -5,11 +5,15 @@ IMPORT_LIBS = __java__.lib
 PROGS = __java__.oct __java__.h octave.jar
 
 
-JAVASRC = ClassHelper.java OctClassLoader.java Octave.java OctaveReference.java Matrix.java
+JAVASRC = ClassHelper.java OctClassLoader.java Octave.java OctaveReference.java Matrix.java \
+          JDialogBox.java DlgListener.java TeXtranslator.java TeXcode.java
 JAVADIR = org/octave
+RSCDIR  = org/octave/images
+IMAGES  = question.png error.png warning.png information.png octave.png
 
 JAVA_SOURCES = $(addprefix $(JAVADIR)/, $(JAVASRC))
 JAVA_CLASSES = $(patsubst %.java, %.class, $(JAVA_SOURCES))
+JAVA_RSC     = $(addprefix $(RSCDIR)/, $(IMAGES))
 
 ifeq ($(HAVE_JAVA),yes)
 all: $(PROGS)
@@ -39,7 +43,7 @@ __java__.oct: __java__.cc __java__.h
 
 octave.jar: $(JAVA_CLASSES)
 	-rm -f $@
-	$(JAR) cf $@ $(JAVA_CLASSES)
+	$(JAR) cf $@ $(JAVA_CLASSES) $(JAVA_RSC)
 
 $(JAVA_CLASSES): $(JAVA_SOURCES)
 	$(JAVAC) -source 1.3 -target 1.3 $(JAVA_SOURCES)

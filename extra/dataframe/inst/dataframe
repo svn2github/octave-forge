@@ -1,6 +1,7 @@
 %# -*- mode: Octave -*-
 %!shared x, y, Y, z
-%! x=dataframe(randn(3, 3));
+%! x=dataframe(randn(3, 3), 'rownames', (7:-1:5).');
+%!assert(isempty(x.rowidx), false);
 %! x=dataframe('octave_frame/data_test.csv');
 %! # remove rownames
 %! x.rownames = [];

@@ -314,7 +314,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       df = df_pad(df, 1, max(indr)-df._cnt(1), rname_width);
     endif
   endif
-
+  
   if iscell(RHS), %# we must pad on a column-by-column basis
     %# verify that each cell contains a non-empty vector, and that sizes
     %# are compatible
@@ -471,6 +471,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     endif
     df._ridx = dummy;
   endif
+  
   if !isempty(rname) && (length(df._over{1}) < max(indr) || \
 	all(df._over{1}(indr))),
     df._name{1}(indr, 1) = rname;

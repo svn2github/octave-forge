@@ -48,6 +48,9 @@ extern "C" JNIEXPORT void JNICALL Java_org_octave_Octave_doEvalString
 extern "C" JNIEXPORT jboolean JNICALL Java_org_octave_Octave_needThreadedInvokation
   (JNIEnv *, jclass);
 
+static octave_value _java_new ( const octave_value_list& args );
+static octave_value _java_invoke ( const octave_value_list& args );
+  
 static JavaVM *jvm = 0;
 static bool jvm_attached = false;
 
@@ -1283,6 +1286,32 @@ arguments @var{arg1}, ...\n\
 @seealso{java_invoke, java_get, java_set}\n\
 @end deftypefn")
 {
+  return _java_new ( args );
+}
+
+
+DEFUN_DLD (javaObject, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{obj} =} javaObject (@var{name}, @var{arg1}, ...)\n\
+Create a Java object of class @var{name}, by calling the class constructor with the\n\
+arguments @var{arg1}, ...\n\
+The first example creates an unitialized object, \
+while the second example supplies an initializer argument.\n\
+\n\
+@example\n\
+  x = javaObject (\"java.lang.StringBuffer\")\n\
+  x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
+@end example\n\
+\n\
+@seealso{java_invoke, java_new, java_get, java_set}\n\
+@end deftypefn")
+{
+  return _java_new ( args );
+}
+
+// internally called from java_new and javaObject for backward compatibility
+static octave_value _java_new ( const octave_value_list& args )
+{
   octave_value retval;
 
   initialize_java ();
@@ -1310,49 +1339,6 @@ arguments @var{arg1}, ...\n\
   return retval;
 }
 
-DEFUN_DLD (javaObject, args, ,
-    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{obj} =} javaObject (@var{name}, @var{arg1}, ...)\n\
-Create a Java object of class @var{name}, by calling the class constructor with the\n\
-arguments @var{arg1}, ...\n\
-The first example creates an unitialized object, \
-while the second example supplies an initializer argument.\n\
-\n\
-@example\n\
-  x = javaObject (\"java.lang.StringBuffer\")\n\
-  x = javaObject (\"java.lang.StringBuffer\", \"Initial string\")\n\
-@end example\n\
-\n\
-@seealso{java_invoke, java_new, java_get, java_set}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  initialize_java ();
-  if (! error_state)
-    {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length () > 0)
-        {
-          std::string name = args(0).string_value ();
-          if (! error_state)
-          {
-            octave_value_list tmp;
-            for (int i=1; i<args.length (); i++)
-              tmp(i-1) = args(i);
-            retval = octave_java::do_java_create (current_env, name, tmp);
-          }
-          else
-            error ("javaObject: first argument must be a string");
-        }
-      else
-        print_usage ();
-    }
-
-  return retval;
-}
-
 DEFUN_DLD (java_invoke, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{ret} =} java_invoke (@var{obj}, @var{name}, @var{arg1}, ...)\n\
@@ -1371,6 +1357,34 @@ as a shortcut syntax. For instance, the two following statements are equivalent\
 \n\
 @seealso{java_get, java_set, java_new}\n\
 @end deftypefn")
+{
+  return _java_invoke ( args );
+}
+
+DEFUN_DLD (javaMethod, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{ret} =} javaMethod (@var{obj}, @var{name}, @var{arg1}, ...)\n\
+Invoke the method @var{name} on the Java object @var{obj} with the arguments\n\
+@var{arg1}, ... For static methods, @var{obj} can be a string representing the\n\
+fully qualified name of the corresponding class. The function returns the result\n\
+of the method invocation.\n\
+\n\
+When @var{obj} is a regular Java object, the structure-like indexing can be used\n\
+as a shortcut syntax. For instance, the two following statements are equivalent\n\
+\n\
+@example\n\
+  ret = javaMethod (x, \"method1\", 1.0, \"a string\")\n\
+  ret = x.method1 (1.0, \"a string\")\n\
+@end example\n\
+\n\
+@seealso{java_get, java_set, java_new}\n\
+@end deftypefn")
+{
+  return _java_invoke ( args );
+}
+
+// internally called from java_invoke and javaMethod for backward compatibility
+static octave_value _java_invoke ( const octave_value_list& args )
 {
   octave_value retval;
 
@@ -1403,64 +1417,6 @@ as a shortcut syntax. For instance, the two following statements are equivalent\
             }
           else
             error ("java_invoke: second argument must be a string");
-        }
-      else
-        print_usage ();
-    }
-
-  return retval;
-}
-
-DEFUN_DLD (javaMethod, args, ,
-    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{ret} =} javaMethod (@var{obj}, @var{name}, @var{arg1}, ...)\n\
-Invoke the method @var{name} on the Java object @var{obj} with the arguments\n\
-@var{arg1}, ... For static methods, @var{obj} can be a string representing the\n\
-fully qualified name of the corresponding class. The function returns the result\n\
-of the method invocation.\n\
-\n\
-When @var{obj} is a regular Java object, the structure-like indexing can be used\n\
-as a shortcut syntax. For instance, the two following statements are equivalent\n\
-\n\
-@example\n\
-  ret = javaMethod (x, \"method1\", 1.0, \"a string\")\n\
-  ret = x.method1 (1.0, \"a string\")\n\
-@end example\n\
-\n\
-@seealso{java_get, java_set, java_new}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  initialize_java ();
-  if (! error_state)
-    {
-      JNIEnv *current_env = octave_java::thread_jni_env ();
-
-      if (args.length() > 1)
-        {
-          std::string name = args(1).string_value ();
-          if (! error_state)
-            {
-              octave_value_list tmp;
-              for (int i=2; i<args.length (); i++)
-                tmp(i-2) = args(i);
-
-              if (args(0).class_name () == "octave_java")
-                {
-                  octave_java *jobj = TO_JAVA (args(0));
-                  retval = jobj->do_java_invoke (current_env, name, tmp);
-                }
-              else if (args(0).is_string ())
-                {
-                  std::string cls = args(0).string_value ();
-                  retval = octave_java::do_java_invoke (current_env, cls, name, tmp);
-                }
-              else
-                error ("javaMethod: first argument must be a Java object or a string");
-            }
-          else
-            error ("javaMethod: second argument must be a string");
         }
       else
         print_usage ();

@@ -1,17 +1,8 @@
-Changes 26-August-2010
+Changes 1-September-2010
 ----------------------
-- docs updated: ...dlg functions added under category 'Dialog Boxes'
-   ./doc  - files octave-java.texi, octave-java.info, octave-java.pdf replaced
-   ./inst - files doc.info replaced
-   ./src/org/octave/TeXtranslator.java - replaced
-       to remove deadlock when user entered a nonexistent TeX symbol code.
+- src/__java__.cc - code duplication for javaObject and javaMethod unified
+  Windows CR/LF to Unix LF converted
 
-
-Changes 26-August-2010
-----------------------
-- extension of static classpath via classpath.txt added. 
-  Files are searched in user home and in package installation directory.
-- javaclasspath modified to show static and dynamic classpath like Matlab
 
 Changes 30-August-2010
 ----------------------
@@ -105,3 +96,18 @@ sb.insert(0,'This is the ');
 sb.toString()
 ans = This is the initial string
 *********************************************************************************************************
+
+Changes 26-August-2010
+----------------------
+- extension of static classpath via classpath.txt added. 
+  Files are searched in user home and in package installation directory.
+- javaclasspath modified to show static and dynamic classpath like Matlab
+
+
+Changes 26-August-2010
+----------------------
+- docs updated: ...dlg functions added under category 'Dialog Boxes'
+   ./doc  - files octave-java.texi, octave-java.info, octave-java.pdf replaced
+   ./inst - files doc.info replaced
+   ./src/org/octave/TeXtranslator.java - replaced
+       to remove deadlock when user entered a nonexistent TeX symbol code.

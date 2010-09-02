@@ -67,6 +67,8 @@ function resu = subasgn(df, S, RHS)
 	    if !isnumeric(S(2).subs{1}),
 	      [indj, ncol, S(2).subs{1}] = df_name2idx\
 		  (df._name{2}, S(2).subs{1}, df._cnt(2), 'column');
+	    else
+	      indj = S(2).subs{1}; ncol = length(indj);
 	    endif
 	    for indi = 1:length(indj),
 	      %# perform explicit cast on selected columns

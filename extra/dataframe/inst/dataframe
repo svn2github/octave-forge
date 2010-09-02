@@ -68,7 +68,7 @@
 %! x.dataframe.cell
 %!test
 %! # test modifying column type
-%! x.types{"Freq"}='uint32'; x.types{"VB*"} = 'single';
+%! x.types{"Freq"}='uint32'; x.types{2} = 'single';
 %! # downclassing must occur !
 %!assert(class(x(1, ["Freq"; "C"])), 'uint32')
 %! # upclassing must occur !

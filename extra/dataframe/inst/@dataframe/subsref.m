@@ -93,7 +93,7 @@ function resu = subsref(df, S)
 	      endif
 	    else %# access of an attribute
 	      dummy = S(2:end); S = S(1);
-	      postop = ''; preop = '()'; further_deref = false;
+	      postop = ''; further_deref = false;
 	      %# translate the external to internal name
 	      switch S(1).subs
 		case "rownames"
@@ -113,7 +113,7 @@ function resu = subsref(df, S)
 		case "rowidx"
 		  S(1).subs = "_ridx"; further_deref = true;
 		case "types"	%# this one should be accessed as a matrix
-		  S(1).subs = "_type"; preop = '{}'; further_deref = true;
+		  S(1).subs = "_type"; further_deref = true;
 		otherwise
 		  error("Unknown column name: %s", S(1).subs);
 	      endswitch
@@ -130,8 +130,8 @@ function resu = subsref(df, S)
 		    error("Unknown column name: %s",  dummy(1).subs{1});
 		  endif
 		endif
-		if !strcmp(dummy(1).type, preop),
-		  error("Invalid internal field name access");
+		if !strcmp(dummy(1).type, '()'),
+		  error("Invalid internal field name sub-access, use () instead");
 		endif
 	      endif
 	      %# workaround around bug 30921, fixed in hg changeset 10937

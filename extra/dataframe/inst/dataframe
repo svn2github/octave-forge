@@ -68,11 +68,13 @@
 %! x.dataframe.cell
 %!test
 %! # test modifying column type
-%! x.types{"Freq"}='uint32'; x.types{2} = 'single';
+%! x.types("Freq") = 'uint32'; x.types(2) = 'single';
 %! # downclassing must occur !
 %!assert(class(x(1, ["Freq"; "C"])), 'uint32')
 %! # upclassing must occur !
 %!assert(class(x.as.double(1, ["Freq"; "C"])), 'double')
+%!error error("Incorrect internal field sub-referencing")
+%! x.types{"Freq"}	 
 %!error error("mixing different types") 
 %! x([12:18 22:28 32:38]);
 %!error error("non-square access")

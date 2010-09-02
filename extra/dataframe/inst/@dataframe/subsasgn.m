@@ -58,8 +58,8 @@ function resu = subasgn(df, S, RHS)
 	      resu._type{indi} = RHS;
 	    endfor
 	  else
-	    if !strcmp(S(2).type, '{}'),
-	      error("Invalid cell access");
+	    if !strcmp(S(2).type, '()'),
+	      error("Invalid internal type sub-access, use () instead");
 	    endif 
 	    if length(S) > 2 || length(S(2).subs) > 1,
 	      error("Types can only be changed as a whole");

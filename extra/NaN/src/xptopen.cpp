@@ -211,7 +211,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 
 		TYPE = unknown; 
-		if (!memcmp(H0,"$FL2@(#) SPSS DATA FILE",8)) {
+		if (!memcmp(H0,"$FL2@(#) SPSS DATA FILE",27) || !memcmp(H0,"$FL2@(#) PASW STATISTICS DATA FILE",27)) {
 		/*
 			SPSS file format 
 		*/
@@ -280,7 +280,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			char *lbllist = H1+NS*(36+fmtlen)+2;			
 */
 		
-			mxArray **R = (mxArray**) malloc(NS*sizeof(mxArray*));
+			mxArray **R = (mxArray**) mxMalloc(NS*sizeof(mxArray*));
 			size_t *bi = (size_t*) malloc((NS+1)*sizeof(size_t*));
 			const char **ListOfVarNames = (const char**)malloc(NS * sizeof(char*)); 
 			bi[0] = 0;
@@ -379,11 +379,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		/*
 			 ARFF
 		*/
-
-mexPrintf("ARFF 101\n"); 
-
 			TYPE = ARFF;	
 			rewind(fid);
+
 			char *H1 = NULL;
 			count = 0;
 			size_t ns = 0; 
@@ -394,15 +392,24 @@ mexPrintf("ARFF 101\n");
 			size_t m = 0;
 			
 			while (!feof(fid)) {
-				HeadLen0 = HeadLen0*2;
+				HeadLen0 = max(1024,HeadLen0*2);
 				H1 = (char*)realloc(H1,HeadLen0);
 				count += fread(H1+count,1,HeadLen0-count-1,fid);
 			} 
-			H1[count]=0;
-			
-mexPrintf("ARFF 111: %i\n",count); 
+			H1[count]   = 0;
 
-			char *line = strtok(H1,"\x0a\x0d");
+			switch (H1[count-1]) {
+			case 0x0a:
+			case 0x0d:
+				H1[count]   = 0;
+				break;
+			default:	
+				H1[count]   = 0x0a;
+			}
+			H1[count+1] = 0;
+
+			char *line = strtok(H1,"\x0a\0x0d");
+
 			int status = 0; 
 			while (line) {
 
@@ -411,12 +418,11 @@ mexPrintf("ARFF 111: %i\n",count);
 				}					
 
 				else if (status == 1 && !strncmpi(line,"@attribute",10)) {	
-mexPrintf("ARFF 141 %i: [%i],<%s>\n",status,m,line); 
 					if (ns<=NS) {
 						ns = max(16, ns*2);
 						ListOfVarNames = (const char**)realloc(ListOfVarNames,ns*sizeof(char*));
 						vartyp         = (char*)realloc(vartyp,ns*sizeof(char));
-						R              = (mxArray**) malloc(ns*sizeof(mxArray*));
+						R              = (mxArray**) mxRealloc(R,ns*sizeof(mxArray*));
 					}
 					size_t k = 10;
 					char *p1, *p2;
@@ -427,7 +433,6 @@ mexPrintf("ARFF 141 %i: [%i],<%s>\n",status,m,line);
 					while (isspace(line[k])) k++;
 					p2 = line+k;
 					
-mexPrintf("ARFF 141 %i: [%i],<%s>,<%s>,<%s>\n",status,m,line,p1,p2); 
 					ListOfVarNames[NS] = p1;
 					if      (!strncmpi(p2,"numeric",7)) {
 						vartyp[NS] = 1; 
@@ -456,27 +461,29 @@ mexPrintf("ARFF 141 %i: [%i],<%s>,<%s>,<%s>\n",status,m,line,p1,p2);
 							p2[1]=0;
 						}
 					}
-					// else if (!strncmpi(p2,"relational",4))					
-mexPrintf("ARFF 149 %i: [%i],%i %i<%s>\n",status,m,NS,vartyp[NS],line); 
+					else if (!strncmpi(p2,"relational",10)) {
+						vartyp[NS] = 7; 
+					}
+					else vartyp[NS] = 99; 
+					
 					NS++;
 				}	
 
 				else if (status == 1 && !strncmpi(line,"@data",5)) {	
-mexPrintf("ARFF 165 %i: [%i/%i],<%s>\n",status,m,M,line); 
 					status = 2;
 					char *p = line; 
 					while (*p) p++;  // goto end of current line  
 					p++; 		   // skip \x00
 					M = 0; 
-mexPrintf("ARFF 166 %i: [%i/%i],<%s>\n",status,m,M,line); 
 					while (*p) {
 						if (p[0]==0x0a || p[0]==0x0d) {
+							// count number of <CR>
 							M++;
+							// skip next char (deals with <CR><NL>) 
 							p+=2;  
 						}
 						else p++;
 					}
-mexPrintf("ARFF 168 %i: [%i/%i],<%s>\n",status,m,M,line); 
 					for (size_t k=0; k<NS; k++) {
 						if (vartyp[k]==4 || vartyp[k]==5) 
 							R[k] = mxCreateCellMatrix(M, 1);
@@ -486,35 +493,28 @@ mexPrintf("ARFF 168 %i: [%i/%i],<%s>\n",status,m,M,line);
 				}
 				
 				else if (status == 2) {
-mexPrintf("ARFF 171: [%i,%i] <%s>\n",NS,m,line); 
 
 					size_t p = 0,k; 
 					for (ns = 0; ns<NS; ns++) { 
 						// read next token 
 						while (isspace(line[p])) p++; 
-mexPrintf("ARFF 172: [%i,%i] <%s>\n",ns,m,line+p); 
 						if (line[p]==39) {
 							p++; k=p;
 							while (line[k]!=39 && line[k]) k++;
 							// if (!line[k]) ; // error
-							line[k] = 0; 
+							line[k++] = 0;
 						} 
 						else
 							k=p;
-mexPrintf("ARFF 173: [%i,%i] <%s>\n",ns,m,line+p); 
-						while (line[k] != ',' && line[k]) k++; 
-mexPrintf("ARFF 174: [%i,%i] <%s>\n",ns,m,line+p); 
+						while (line[k] != ',' && line[k] != 0) k++; 
 						line[k] = 0;
 
-mexPrintf("ARFF 175: [%i,%i,%i] <%s>\n",ns,vartyp[ns],m,line+p); 
 						if (vartyp[ns] < 4) {
 							double d = atof(line+p);
 							*(mxGetPr(R[ns])+m) = d;
 						}
 						else if (vartyp[ns] < 6) {
-mexPrintf("ARFF 176: [%i,%i,%i] <%s>\n",ns,vartyp[ns],m,line+p); 
 							mxSetCell(R[ns], m, mxCreateString(line+p));
-mexPrintf("ARFF 176: [%i,%i,%i] <%s>\n",ns,vartyp[ns],m,line+p); 
 						}
 						else if (vartyp[ns] == 6) {
 							size_t kk[6],n=0, N=strlen(datestr[ns]);
@@ -562,7 +562,6 @@ mexPrintf("ARFF 176: [%i,%i,%i] <%s>\n",ns,vartyp[ns],m,line+p);
 
 							*(mxGetPr(R[ns])+m) = tm_time2gdf_time(&t);
 						}
-
 						p = k+1;
 					} 
 					m++;
@@ -575,8 +574,6 @@ mexPrintf("ARFF 176: [%i,%i,%i] <%s>\n",ns,vartyp[ns],m,line+p);
 			for (size_t k = 0; k < NS; k++) {
 				mxSetField(POutput[0], 0, ListOfVarNames[k], R[k]);
 			}
-
-mexPrintf("ARFF 191: [%i,%i]\n",NS,m); 
 
 			if (ListOfVarNames) free(ListOfVarNames);
 			if (vartyp) free(vartyp);
@@ -623,7 +620,7 @@ mexPrintf("ARFF 191: [%i,%i]\n",NS,m);
 		
 			M = szData/recsize; 			
 
-			mxArray **R = (mxArray**) malloc(NS*sizeof(mxArray*));
+			mxArray **R = (mxArray**) mxMalloc(NS*sizeof(mxArray*));
 			const char **ListOfVarNames = (const char**)malloc(NS * sizeof(char*)); 
 			char *VarNames = (char*)malloc(NS * 9);
 
@@ -731,7 +728,7 @@ mexPrintf("ARFF 191: [%i,%i]\n",NS,m);
 		memset(H2,0,HeadLen2);
 		
 		mwIndex M = 0;
-		mxArray **F = (mxArray**) malloc(NS*sizeof(mxArray*));
+		mxArray **F = (mxArray**) mxMalloc(NS*sizeof(mxArray*));
 		char **Fstr = (char**) malloc(NS*sizeof(char*));
 		size_t *MAXLEN = (size_t*) malloc(NS*sizeof(size_t*));
 		for (int16_t k = 0; k < NS; k++) {

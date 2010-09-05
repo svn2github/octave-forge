@@ -17,14 +17,14 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} javamem
 ## @deftypefnx {Function File} [@var{jmem}] = javamem
-## Show current memory status of the java virtual machine (JVM)
+## Show current memory status of the Java virtual machine (JVM)
 ## & run garbage collector.
 ##
 ## When no return argument is given the info is echoed to the screen.
-## Otherwise, cell array @var{jmem} contains Maximum, Total, and
-## Free memory (in bytes).
+## Otherwise, output cell array @var{jmem} contains Maximum, Total,
+## and Free memory (in bytes).
 ##
-## All java-based routines are run in the JVM's shared memory pool,
+## All Java-based routines are run in the JVM's shared memory pool,
 ## a dedicated and separate part of memory claimed by the JVM from
 ## your computer's total memory (which comprises physical RAM and
 ## virtual memory / swap space on hard disk).
@@ -34,20 +34,21 @@
 ## "which javaaddpath". Usually that is: @*
 ## [/usr]/share/octave/packages/java-<version>.
 ##
-## java.opts is a text file with just two lines. The first line specifies
-## the initial memory size in megabytes, the second line specifies the
-## requested maximum size (where 512 MB is the limit for java 1.6): @*
+## java.opts is a plain text file, one option per line. The
+## default initial memory size and default maximum memory size (which
+## are both system dependent) can be overridden like so: @*
 ## -Xms64m @*
 ## -Xmx512m @*
-## You can adapt these values if your system has limited available
-## physical memory. When no java.opts file is present, the default
-## assignments are 16 MB and 64MB, respectively.
+## (in megabytes in this example.)
+## You can adapt these values to your own requirements if your system
+## has limited available physical memory or when you get Java memory
+## errors.
 ##
 ## "Total memory" is what the operating system has currently assigned
 ## to the JVM and depends on actual and active memory usage.
-## "Free memory" is self-explanatory. During operation of java-based
+## "Free memory" is self-explanatory. During operation of Java-based
 ## octave functions the amounts of Total and Free memory will vary,
-## due to java's own cleaning up and your operating system's memory
+## due to Java's own cleaning up and your operating system's memory
 ## management.
 ##
 ## @end deftypefn
@@ -56,6 +57,8 @@
 ## Created: 2010-03-25
 ## Updates: 
 ## 2010-03-26 Changed name to javamem & indentation to double spaces
+## 2010-08-25 Corrected text on java memory assignments
+## 2010-09-05 Further overhauled help text
 
 function [ j_mem ] = javamem ()
 

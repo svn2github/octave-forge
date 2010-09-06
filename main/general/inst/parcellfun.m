@@ -198,7 +198,7 @@ function varargout = parcellfun (nproc, fun, varargin)
     unwind_protect
       try
         ## re-seed random number state, adjusted for each process
-        rstat(end-1) -= iproc;
+        rstat(end-1) = mod (rand(end-1) + iproc, 2^32);
         rand ("state", rstat);
 
         ## child process. indicate ready state.
@@ -367,6 +367,9 @@ function varargout = parcellfun (nproc, fun, varargin)
         varargout{i} = cell2mat (varargout{i});
       endif
     endfor
+
+    ## query one random number to avoid restarting from the same state.
+    rand;
 
   endif
 

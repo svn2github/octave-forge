@@ -198,7 +198,8 @@ function varargout = parcellfun (nproc, fun, varargin)
     unwind_protect
       try
         ## re-seed random number state, adjusted for each process
-        rstat(end-1) = mod (rand(end-1) + iproc, 2^32);
+        nrstat = length (rstat) - 1;
+        rstat(1:nrstat) = mod (rstat(1:nrstat) .* (65521*iproc * [1:nrstat].'), 2^32);
         rand ("state", rstat);
 
         ## child process. indicate ready state.

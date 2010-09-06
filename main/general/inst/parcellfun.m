@@ -38,6 +38,11 @@
 ## option particularly useful when time execution of function is small. Setting this option
 ## to 100 is a good choice in most cases.
 ##
+## Notice that jobs are served from a single first-come first-served queue,
+## so the number of jobs executed by each process is generally unpredictable.
+## This means, for example, that when using this function to perform Monte-Carlo
+## simulations one cannot expect results to be exactly reproducible.
+##
 ## NOTE: this function is implemented using "fork" and a number of pipes for IPC.
 ## Suitable for systems with an efficient "fork" implementation (such as GNU/Linux),
 ## on other systems (Windows) it should be used with caution.
@@ -197,9 +202,7 @@ function varargout = parcellfun (nproc, fun, varargin)
     ## the border patrol. we really don't want errors escape after the forks.
     unwind_protect
       try
-        ## re-seed random number state, adjusted for each process
-        nrstat = length (rstat) - 1;
-        rstat(1:nrstat) = mod (rstat(1:nrstat) .* (65521*iproc * [1:nrstat].'), 2^32);
+        ## re-seed random number state, adjusted for each process                                                    rstat = bitxor (rstat, iproc);
         rand ("state", rstat);
 
         ## child process. indicate ready state.

@@ -202,7 +202,8 @@ function varargout = parcellfun (nproc, fun, varargin)
     ## the border patrol. we really don't want errors escape after the forks.
     unwind_protect
       try
-        ## re-seed random number state, adjusted for each process                                                    rstat = bitxor (rstat, iproc);
+        ## re-seed random number state, adjusted for each process
+	rstat = bitxor (rstat, iproc);
         rand ("state", rstat);
 
         ## child process. indicate ready state.

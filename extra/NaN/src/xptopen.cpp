@@ -76,6 +76,12 @@ SPSS file format
 #include <byteswap.h>
 #endif 
 
+#ifdef _WIN32
+#define __LITTLE_ENDIAN 1234
+#define __BIG_ENDIAN 4321
+#define __BYTE_ORDER __LITTLE_ENDIAN
+#endif
+
 #ifndef _BYTESWAP_H
 /* define our own version - needed for Max OS X*/
 #define bswap_16(x)   \

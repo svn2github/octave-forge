@@ -108,7 +108,7 @@
 ## 2010-08-03 Added support for reading back formulas (works only in OTK)
 ## 2010-08-12 Added explicit support for jOpenDocument v 1.2b3+
 ## 2010-08-25 Improved helptext (moved some text around)
-## 2010-08-27 Added ods3jotk2oct-internal function for odfdom-0.8.6.jar
+## 2010-08-27 Added ods3jotk2oct - internal function for odfdom-0.8.6.jar
 ##      "     Extended check on spsh_opts (must be a struct) 
 ##
 ## (Latest update of subfunctions below: 2010-08-27)

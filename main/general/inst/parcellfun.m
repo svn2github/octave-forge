@@ -137,8 +137,8 @@ function varargout = parcellfun (nproc, fun, varargin)
 
   fflush (stdout); # prevent subprocesses from inheriting buffered output
 
-  ## query rand state.
-  rstat = rand ("state");
+  ## get a seed and change state
+  seed = rand;
 
   pids = zeros (nproc, 1);
 
@@ -206,9 +206,9 @@ function varargout = parcellfun (nproc, fun, varargin)
     unwind_protect
       try
         ## re-seed random number states, adjusted for each process
-	rstat = bitxor (rstat, iproc);
+	seed *= iproc*bitmax;
 	for f = {(@rand) (@randn) (@rande) (@randp) (@randg)}
-	  feval(f{}, "state", rstat);
+          feval(f{}, "state", seed);
 	endfor
 
         ## child process. indicate ready state.
@@ -377,9 +377,6 @@ function varargout = parcellfun (nproc, fun, varargin)
         varargout{i} = cell2mat (varargout{i});
       endif
     endfor
-
-    ## query one random number to avoid restarting from the same state.
-    rand;
 
   endif
 

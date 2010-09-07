@@ -32,7 +32,7 @@
 ##
 ## The UniformOutput and ErrorHandler options are supported with meaning identical
 ## to @dfn{cellfun}.
-## A VerboseLevel option controlling the level output is supported.  
+## A VerboseLevel option controlling the level output is supported.
 ## A value of 0 is quiet, 1 is normal, and 2 or more enables
 ## debugging output.
 ## The ChunksPerProc option control the number of chunks which contains elementary jobs. This
@@ -42,7 +42,9 @@
 ## Notice that jobs are served from a single first-come first-served queue,
 ## so the number of jobs executed by each process is generally unpredictable.
 ## This means, for example, that when using this function to perform Monte-Carlo
-## simulations one cannot expect results to be exactly reproducible.
+## simulations one cannot expect results to be exactly reproducible.  The pseudo
+## random number generators of each process are initialised with a unique state.
+## This currently works only for new style generators.
 ##
 ## NOTE: this function is implemented using "fork" and a number of pipes for IPC.
 ## Suitable for systems with an efficient "fork" implementation (such as GNU/Linux),
@@ -77,7 +79,7 @@ function varargout = parcellfun (nproc, fun, varargin)
   if (! all (cellfun ("isclass", args, "cell")))
     error ("parcellfun: all non-option arguments except the first one must be cell arrays");
   endif
-  
+
   if (nargs == 0)
     print_usage ();
   elseif (nargs > 1)
@@ -135,7 +137,7 @@ function varargout = parcellfun (nproc, fun, varargin)
 
   fflush (stdout); # prevent subprocesses from inheriting buffered output
 
-  ## query rand state.  
+  ## query rand state.
   rstat = rand ("state");
 
   pids = zeros (nproc, 1);
@@ -203,9 +205,11 @@ function varargout = parcellfun (nproc, fun, varargin)
     ## the border patrol. we really don't want errors escape after the forks.
     unwind_protect
       try
-        ## re-seed random number state, adjusted for each process
+        ## re-seed random number states, adjusted for each process
 	rstat = bitxor (rstat, iproc);
-        rand ("state", rstat);
+	for f = {(@rand) (@randn) (@rande) (@randp) (@randg)}
+	  feval(f{}, "state", rstat);
+	endfor
 
         ## child process. indicate ready state.
         fwrite (statw, -iproc, "double");

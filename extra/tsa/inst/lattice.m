@@ -35,7 +35,10 @@
 %  M.B. Priestley "Spectral Analysis and Time Series" Academic Press, 1981. 
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
-%	$Id$%	Copyright (C) 1996-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%	$Id$ 
+%	Copyright (C) 1996-2002,2008,2010 by Alois Schloegl <a.schloegl@ieee.org>
+%       This is part of the TSA-toolbox. See also 
+%       http://biosig-consulting.com/matlab/tsa/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

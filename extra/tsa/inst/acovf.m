@@ -7,7 +7,7 @@ function [ACF,NN] = acovf(Z,KMAX,Mode,Mode2);
 % Input:
 %  Z    Signal (one channel per row);
 %  MAXLAG  maximum lag
-%  Mode	'biased'  : normalizes with N
+%  Mode	'biased'  : normalizes with N [default]
 %	'unbiased': normalizes with N-lag
 %	'coeff'	  : normalizes such that lag 0 is 1	
 %        others	  : no normalization
@@ -15,7 +15,6 @@ function [ACF,NN] = acovf(Z,KMAX,Mode,Mode2);
 % Output:
 %  ACF autocovariance function
 %  NN  number of valid elements 
-%
 %
 % REFERENCES:
 %  A.V. Oppenheim and R.W. Schafer, Digital Signal Processing, Prentice-Hall, 1975.
@@ -25,7 +24,9 @@ function [ACF,NN] = acovf(Z,KMAX,Mode,Mode2);
 %  J.S. Bendat and A.G.Persol "Random Data: Analysis and Measurement procedures", Wiley, 1986.
 
 %	$Id$
-%       Copyright (C) 1998-2003,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 1998-2003,2008,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This is part of the TSA-toolbox. See also 
+%       http://biosig-consulting.com/matlab/tsa/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

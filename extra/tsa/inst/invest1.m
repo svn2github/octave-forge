@@ -39,7 +39,10 @@ function [AutoCov,AutoCorr,ARPMX,E,C,s]=invest1(Y,Pmax,D);
 % optPHI 	order where PHI is minimal
 % optRC2        max reflection coefficient larger than std-error
 
-%	$Id$%	Copyright (C) 1998-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%	$Id$
+%	Copyright (C) 1998-2002,2008,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%       This is part of the TSA-toolbox. See also 
+%       http://biosig-consulting.com/matlab/tsa/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

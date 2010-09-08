@@ -206,10 +206,9 @@ function varargout = parcellfun (nproc, fun, varargin)
     unwind_protect
       try
         ## re-seed random number states, adjusted for each process
-	seed *= iproc*bitmax;
-	for f = {(@rand) (@randn) (@rande) (@randp) (@randg)}
-          feval(f{}, "state", seed);
-	endfor
+        seed *= iproc*bitmax;
+        cellfun (@feval, {"rand", "randn", "rande", "randp", "randg"},
+        {"state"}, {seed});
 
         ## child process. indicate ready state.
         fwrite (statw, -iproc, "double");

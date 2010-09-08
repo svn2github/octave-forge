@@ -314,6 +314,7 @@ function varargout = parcellfun (nproc, fun, varargin)
             ## no more jobs to start.
             njobs = pjobs;
             ## skip the rest; don't send commands to the process.
+            fclose(cmdw(isubp));
             continue;
           endif
         endif

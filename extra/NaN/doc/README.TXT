@@ -46,7 +46,7 @@ level 1: basic functions (not derived)
 	LOAD_FISHERIRIS	loads famous fisher iris data set 
 	STR2ARRAY	convert string to array - useful to extract numeric data from 
 			delimiter files
-	XPTOPEN		read and write *.XPT (SAS Transport Format) files
+	XPTOPEN		read and write SAS Transport Format (XPT); reads ARFF and STATA files
 
 level 2a: derived functions
 	MEAN	 	mean (options: arithmetic, geometric, harmonic)

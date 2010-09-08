@@ -36,8 +36,15 @@ c) The use of mex-files is recommended for using the full capabilities of the Na
    train.mex and svmtrain_mex are needed when using support vector machines) 
    Precompiled binaries are provided for 32bit Windows with Matlab 7.x (tested with 7.1 and 7.6).
 
-d) run NANINSTTEST 
-This checks whether the installation was successful.
+d) run "naninsttest" from the Octave/Matlab command line prompt 
+      >> naninsttest
+  In case of success, You should see the following message: 
+      >> naninsttest
+      NANINSTTEST successful - your NaN-tools are correctly installed
+
+  This checks whether the installation was successful.
+
+-----------------------
 
   $Id$
   Copyright (c) 2000-2003,2005,2006,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>

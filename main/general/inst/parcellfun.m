@@ -62,6 +62,9 @@
 
 function varargout = parcellfun (nproc, fun, varargin)
 
+  ## The list of functions to be seeded in each slave.
+  persistent random_func_list = {@rand, @randn, @rande, @randp, @randg};
+
   if (nargin < 3 || ! isscalar (nproc) || nproc <= 0)
     print_usage ();
   endif
@@ -207,9 +210,10 @@ function varargout = parcellfun (nproc, fun, varargin)
       try
         ## re-seed random number states, adjusted for each process
         seed *= iproc*bitmax;
-	## make rfh return a value to work around a bug in Octave 3.2.4's cellfun
-	rfh = @(r) zeros (feval (r, "state", seed));
-	cellfun (rfh, {@rand, @randn, @rande, @randp, @randg});
+        ## FIXME: use cellfun when 3.4. is a requirement
+        for rf = random_func_list
+          rf{1}("state", seed);
+        endfor
 
         ## child process. indicate ready state.
         fwrite (statw, -iproc, "double");

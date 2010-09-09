@@ -208,7 +208,7 @@ function varargout = parcellfun (nproc, fun, varargin)
         ## re-seed random number states, adjusted for each process
         seed *= iproc*bitmax;
 	## make rfh return a value to work around a bug in Octave 3.2.4's cellfun
-	rfh = @(r) zeros( feval (r, "state", seed));
+	rfh = @(r) zeros (feval (r, "state", seed));
 	cellfun (rfh, {@rand, @randn, @rande, @randp, @randg});
 
         ## child process. indicate ready state.

@@ -77,7 +77,7 @@ function resu = subsref(df, S)
 	      if strcmp(df._type{indi}, 'char') ...
 		    && 1 == size(df._data{indi}, 2),
 		resu = char(resu);
-	      endif
+	      endif 
 	      if length(S) > 1,
 		dummy = S(2:end); S = S(1);
 		switch dummy(1).type
@@ -150,8 +150,9 @@ function resu = subsref(df, S)
     endif
   endif
   
-  %# disp('line 103 '); keyboard
+  %#  disp('line 103 '); keyboard
 
+  IsFirst = true;
   while 1, %# avoid recursive calls on dataframe sub-accesses
     
     %# a priori, performs whole accesses
@@ -160,7 +161,12 @@ function resu = subsref(df, S)
    
     %# iterate over S, sort out strange constructs as x()()(1:10, 1:4)
     while length(S) > 0,
-      if !strcmp(S(1).type, '()'),
+      if strcmp(S(1).type, '{}'),
+	if !IsFirst || !isempty(asked_output_format),
+	  error("Illegal dataframe dereferencing");
+	endif
+	[asked_output_type, asked_output_format] = deal('cell');
+      elseif !strcmp(S(1).type, '()'),
 	%#   disp(S); keyboard
 	error("Illegal dataframe dereferencing");
       endif
@@ -177,7 +183,7 @@ function resu = subsref(df, S)
 	else
 	  %# avoid recursive calls
 	  S = S(2:end); 
-	  continue;
+	  IsFirst = false; continue;
 	endif      
       endif
       %# generic access
@@ -286,6 +292,7 @@ function resu = subsref(df, S)
     endif
     
     if strcmp(output_type, class(df)),
+      %# disp('line 295 ')
       %# export the result as a dataframe
       resu = dataframe([]);
       resu._cnt(1) = nrow; resu._cnt(2) = ncol;
@@ -316,23 +323,33 @@ function resu = subsref(df, S)
       
     elseif strcmp(output_type, 'cell'),
       %# export the result as a cell array
-      resu = cell(2+nrow, 2+ncol); resu(1:end, 1:2) = {''};
-      resu(2, 3:end) = df._type(indc);			%column type
+      if isempty(asked_output_format),
+	resu = cell(2+nrow, 2+ncol); resu(1:end, 1:2) = {''};
+	resu(2, 3:end) = df._type(indc);			%column type
+	row_offs = 2; col_offs = 2;
+	for indi = 1:ncol,
+	  resu{1, 2+indi} = df._name{2}{indc(indi)}; 		% column name
+	endfor
+	resu(3:end, 1) =  mat2cell(df._ridx(indr), ones(nrow, 1), 1);
+	if length(df._name{1}) >= max(indr),
+	  resu(3:end, 2) = df._name{1}{indr};
+	endif	  	
+      else
+	resu = cell(nrow, ncol);
+	row_offs = 0; col_offs = 0;
+      endif
       for indi = 1:ncol,
-	resu{1, 2+indi} = df._name{2}{indc(indi)}; 		% column name
 	switch df._type{indc(indi)}				% cell content
 	  case {'char' }
 	    dummy = cellstr(df._data{indc(indi)}(indr, :));
-	    resu(3:end, 2+indi) = dummy;
+	    resu(1+row_offs:end, indi+col_offs) = dummy;
 	  otherwise
 	    dummy = df._data{indc(indi)}(indr, :);
-	    resu(3:end, 2+indi) =  mat2cell(dummy, ones(nrow, 1), 1);
+	    resu(1+row_offs:end, indi+col_offs) = \
+		mat2cell(dummy, ones(nrow, 1), 1);
 	endswitch
       endfor
-      resu(3:end, 1) =  mat2cell(df._ridx(indr), ones(nrow, 1), 1);
-      if length(df._name{1}) >= max(indr),
-	resu(3:end, 2) = df._name{1}{indr};
-      endif
+      
       %# did we arrive here by x.cell ?
       if 0 == length(S), return; endif
       
@@ -394,7 +411,7 @@ function resu = subsref(df, S)
       %# * x(:, :) returns a horzcat of the third dimension 
       %# * x(:, n:m) select only the first sequence 
       %# * x(:) returns a vertcat of the columns of x(:, :)
-     
+      %# disp('line 403 '); keyboard
       if length(S(1).subs) > 1, %# access-as-matrix
 	if ~isempty(asked_output_format), %# force a conversion
 	  if strmatch(asked_output_format, 'cell'),

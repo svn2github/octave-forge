@@ -212,7 +212,7 @@ function varargout = parcellfun (nproc, fun, varargin)
         seed *= iproc*bitmax;
         ## FIXME: use cellfun when 3.4. is a requirement
         for rf = random_func_list
-          rf{1}("state", seed);
+          feval (rf{1}, "state", seed);
         endfor
 
         ## child process. indicate ready state.

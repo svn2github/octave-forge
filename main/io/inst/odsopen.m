@@ -73,7 +73,7 @@
 ##      "     Moved JOD version check to this func from subfunc getodsinterfaces()
 ## 2010-08-27 Improved help text
 ##
-## Latest change on subfunction below: 2010-08-23
+## Latest change on subfunction below: 2010-09-11
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -252,6 +252,7 @@ endfunction
 ## 2010-08-22 Experimental odfdom 0.8.6 support
 ## 2010-08-23 Added odfvsn (odfdom version string) to output struct argument
 ##     "      Bugfix: moved JOD version check to main function (it can't work here)
+## 2010-09-11 Bugfix: corrected typos in OTK detection code (odfdvsn -> odfvsn)
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -281,12 +282,12 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			if (jpchk >= 2)		# Apparently all requested classes present.
 				# Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6 work OK).
 				# The odfdom team deemed it necessary to change the version call so we need this:
-				odfdvsn = ' ';
+				odfvsn = ' ';
 				try
 					# New in 0.8.6
 					odfvsn = java_invoke ('org.odftoolkit.odfdom.JarManifest', 'getOdfdomVersion');
 				catch
-					odfdvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
+					odfvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
 				end_try_catch
 				if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6'))
 					warning ("\nodfdom version %s is not supported - use v. 0.7.5 or 0.8.6.\n", odfvsn);

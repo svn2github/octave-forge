@@ -110,6 +110,7 @@
 ## 2010-08-25 Improved helptext (moved some text around)
 ## 2010-08-27 Added ods3jotk2oct - internal function for odfdom-0.8.6.jar
 ##      "     Extended check on spsh_opts (must be a struct) 
+## 2010-09-11 Corrected wrong argument index in ods struct error message
 ##
 ## (Latest update of subfunctions below: 2010-08-27)
 
@@ -120,7 +121,7 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
 	odschk = odschk && isstruct(ods);
 	odschk = odschk && (~isempty (ods.filename));
 	odschk = odschk	&& (ods.xtype == 'OTK' || ods.xtype == 'JOD');
-	if (~odschk) error ("Arg # 2 is an invalid ods file ptr\n"); endif
+	if (~odschk) error ("Arg # 1 is an invalid ods file ptr\n"); endif
 
 	if isempty (spsh_opts)
 		spsh_opts.formulas_as_text = 0;

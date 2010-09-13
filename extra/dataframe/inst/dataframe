@@ -64,6 +64,7 @@
 %! x(11, 1)
 %! x(1, logical(ones(1, 7)))
 %! x.types{"FReq*"}
+%! x(1, :)
 %!test
 %! #!! removed -- output format may only be specified before selection
 %! #select one column	      

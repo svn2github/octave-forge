@@ -349,51 +349,56 @@ function resu = subsref(df, S)
 		mat2cell(dummy, ones(nrow, 1), 1);
 	endswitch
       endfor
-      
+
       %# did we arrive here by x.cell ?
       if 0 == length(S), return; endif
       
+      %# perform the selection on the content, keeping the header
       if length(S) > 1, %# perform further access, if required
 	if ~strcmp(S(2).type, '()'),
 	  error("Illegal dataframe-as-cell sub-dereferencing");
 	endif
-	if length(S(2).subs) != 1,
-	  %# normal, two-dimensionnal access apply the selection on the
-	  %# zone containing the data
-	  dummy = S;
-	  if !isempty(dummy(2).subs),
-	    dummy(2).subs{2} = ':';
-	  endif
-	  resuf = cat(2, ...
-		      %# reselect indexes
-		      builtin('subsref', resu(3:end, 1),
-			      dummy(2:end)), ...
-		      %# reselect rownames
-		      builtin('subsref', resu(3:end, 2),
-			      dummy(2:end)), ...
-		      %# extract - reorder - whatever
-		      builtin('subsref', resu(3:end, 3:end), S(2:end))
-		      ...
-		      );
-	  dummy = S;
-	  if !isempty(dummy(2).subs),
-	    dummy(2).subs{1} =  [1 2];
-	  endif
-	  resuf =  cat(1, ...
-		       %# reselect column names and types
-		       [cell(2, 2) builtin('subsref', resu(1:2,
-							   3:end), ...
-					   dummy(2:end))], ...
-		       resuf ...
-		       );
-	  resuf(1:2, 1:2) = {''}; resu = resuf;
-	else
-	  %# one dimensionnal access of the whole 2D cell array -- you
-	  %# asked it, you got it
-	  resu = builtin('subsref', resu(:), S(2:end));
-	  if !isa(S(2).subs{1}, 'char') ...
-		&& size(S(2).subs{1}, 2) > 1,
-	    resu = resu.';
+	if !isempty(asked_output_format),
+	  resu = builtin('subsref', resu, S(2:end));
+	else	
+	  if length(S(2).subs) != 1,
+	    %# normal, two-dimensionnal access apply the selection on the
+	    %# zone containing the data
+	    dummy = S;
+	    if !isempty(dummy(2).subs),
+	      dummy(2).subs{2} = ':';
+	    endif
+	    resuf = cat(2, ...
+			%# reselect indexes
+			builtin('subsref', resu(3:end, 1),
+				dummy(2:end)), ...
+			%# reselect rownames
+			builtin('subsref', resu(3:end, 2),
+				dummy(2:end)), ...
+			%# extract - reorder - whatever
+			builtin('subsref', resu(3:end, 3:end), S(2:end))
+			...
+			);
+	    dummy = S;
+	    if !isempty(dummy(2).subs),
+	      dummy(2).subs{1} =  [1 2];
+	    endif
+	    resuf =  cat(1, ...
+			 %# reselect column names and types
+			 [cell(2, 2) builtin('subsref', resu(1:2,
+							     3:end), ...
+					     dummy(2:end))], ...
+			 resuf ...
+			 );
+	    resuf(1:2, 1:2) = {''}; resu = resuf;
+	  else
+	    %# one dimensionnal access of the whole 2D cell array -- you
+	    %# asked it, you got it
+	    resu = builtin('subsref', resu(:), S(2:end));
+	    if !isa(S(2).subs{1}, 'char') ...
+		  && size(S(2).subs{1}, 2) > 1,
+	      resu = resu.';
+	    endif
 	  endif
 	endif
       elseif 1 == length(S(1).subs),
@@ -404,6 +409,7 @@ function resu = subsref(df, S)
 	endif
       endif
       return; %# no more iteration required
+  
     else
       %# export the result as a vector/matrix. Rules:
       %# * x(:, :, :) returns a 3D matrix 

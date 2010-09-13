@@ -16,7 +16,13 @@
 %! y = x; y.DataName = [];
 %!assert(size(y), [10 6]);
 %! y = x{};
-%!assert(size(y), [10 7]);   
+%!assert(size(y), [10 7]);
+%! y = x{[2 5], [2 7]};
+%!assert(y, {-5.8, "E"; -5.2, "C"});
+%! y = x{}([2 5], [2 7]);
+%!assert(y, {-5.8, "E"; -5.2, "C"});
+%! y = x{1:2, 1:2}(4);
+%!assert(y, {-5.8});	
 %! # remove a column through (:, name) access
 %! y = x; y(:, "DataName") = [];
 %!assert(size(y), [10 6]);

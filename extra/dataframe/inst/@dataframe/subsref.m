@@ -259,18 +259,18 @@ function resu = subsref(df, S)
 	  break;
 	endif
       endfor
-      if any(strcmp({output_type, asked_output_type}, class(df))),
-	if !isempty(S) && 1 == length(S(1).subs),
-	  if ncol > 1 
-	    if strcmp(asked_output_type, class(df))
-	      error("Vector-like access not implemented for 'dataframe' output format");
-	    endif
-	    error("Selected columns not compatible with cat() -- use 'cell' as output format");
+    endif
+    if any(strcmp({output_type, asked_output_type}, class(df))),
+      if !isempty(S) && 1 == length(S(1).subs),
+	if ncol > 1 
+	  if strcmp(asked_output_type, class(df))
+	    error("Vector-like access not implemented for 'dataframe' output format");
 	  endif
+	  error("Selected columns not compatible with cat() -- use 'cell' as output format");
 	endif
       endif
     endif
-
+    
     indt = {}; %# in case we have to mix matrix of different width
     if !isempty(S) && length(S(1).subs) > 1, %# access-as-matrix
       if  length(S(1).subs) > 2,

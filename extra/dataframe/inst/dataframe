@@ -73,7 +73,8 @@
 %! #select two columns	      
 %!assert(x.cell(1:10, 2:3)(:), x.cell(11:30)(:))	
 %!error error("Complex accesses");
-%! x{};
+%! x(:);
+%! x.dataframe(:);
 %! x.dataframe.cell
 %!test
 %! # test modifying column type

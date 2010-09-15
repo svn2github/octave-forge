@@ -7,6 +7,7 @@ endif
 DEFINES = -DHAVE_CONFIG_H
 GSVD_OBJECTS = gsvd.o dbleGSVD.o CmplxGSVD.o 
 GSVD_TARGET = gsvd.oct
+GSVD_TEST = gsvd
 GSVD_DEPENDS = gsvd.d dbleGSVD.d CmplxGSVD.d
 
 OTHER_OBJECTS = mgorth.o
@@ -17,7 +18,7 @@ OBJECTS = $(OTHER_OBJECTS) $(GSVD_OBJECTS)
 TARGETS = $(OTHER_TARGETS) $(GSVD_TARGET) 
 DEPENDS = $(OTHER_DEPENDS) $(GSVD_DEPENDS) 
 
-.PHONY: all clean count
+.PHONY: all test clean count
 
 .SUFFIXES:
 
@@ -27,6 +28,8 @@ all : $(TARGETS)
 
 $(GSVD_TARGET) : $(GSVD_DEPENDS) $(GSVD_OBJECTS)
 	$(MKOCTFILE) $(DEFINES) $(GSVD_OBJECTS) -o $@
+
+$(GSVD_TEST) : $(GSVD_TARGET)
 
 ifneq (,$(DEPENDS))
   sinclude $(DEPENDS)
@@ -43,6 +46,10 @@ endif
 	$(MKOCTFILE) $(DEFINES) -c $<
 %.oct:%.o
 	$(MKOCTFILE) $(DEFINES) $< -o $@
+
+.phony: test
+test: $(GSVD_TEST)
+	for i in $^; do echo "test $$i"; done | octave --silent
 
 clean: 
 	rm -f $(TARGETS) $(DEPENDS) $(OBJECTS) octave-core

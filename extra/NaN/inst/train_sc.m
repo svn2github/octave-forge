@@ -619,10 +619,6 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'psvm'))
         
 
 elseif ~isempty(strfind(lower(MODE.TYPE),'svm:lin4'))
-	if ~isempty(W) 
-%		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
-	end; 	
-
         if ~isfield(MODE.hyperparameter,'c_value')
                 MODE.hyperparameter.c_value = 1; 
         end
@@ -677,10 +673,6 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                 error('No SVM training algorithm available. Install OSV-SVM, or LOO-SVM, or libSVM for Matlab.\n');
         end;
 
-	if ~strncmp(MODE.TYPE, 'SVM:LIN',7) && ~isempty(W) 
-		error('Classifier (%s) does not support weighted samples.',MODE.TYPE);
-	end; 	
-                
         %%CC = train_svm(D,classlabel,MODE);
 	[CL101,CC.Labels] = cl101(classlabel); 
 	M = size(CL101,2);

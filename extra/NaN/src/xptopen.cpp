@@ -175,6 +175,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	size_t count = 0, NS = 0, HeadLen0=80*8, HeadLen2=0, sz2 = 0, M=0;
 	char   H0[HeadLen0];
 	char   *H2 = NULL;
+	char 	SWAP = 0;
 	
 	// check for proper number of input and output arguments
 	if ( PInputCount > 0 && mxGetClassID(PInputs[1])==mxCHAR_CLASS) {
@@ -215,7 +216,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		enum FileFormat TYPE; 		/* type of file format */
 		uint8_t		LittleEndian;   /* 1 if file is LittleEndian data format and 0 for big endian data format*/  
 
-
 		TYPE = unknown; 
 		if (!memcmp(H0,"$FL2@(#) SPSS DATA FILE",27) || !memcmp(H0,"$FL2@(#) PASW STATISTICS DATA FILE",27)) {
 		/*
@@ -226,11 +226,13 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			case 0x00000002:
 			case 0x00000003:
 		    		LittleEndian = 1;
+		    		SWAP = __BYTE_ORDER==__BIG_ENDIAN;
 		    		NS = l_endian_u32(*(uint32_t*)(H0+68));
 		    		M  = l_endian_u32(*(uint32_t*)(H0+80));
 			    	break;
 			case 0x02000000:
 			case 0x03000000:
+		    		SWAP = __BYTE_ORDER==__LITTLE_ENDIAN;
 		    		LittleEndian = 0;
 		    		NS = b_endian_i32(*(uint32_t*)(H0+68));
 		    		M  = b_endian_i32(*(uint32_t*)(H0+80));
@@ -238,11 +240,89 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			default: 
 				TYPE = unknown;   	
 			}
+			NS = *(int32_t*)(H0+80);
+			M  = *(int32_t*)(H0+80); 
+			if (SWAP) {
+				NS = bswap_32(NS);
+				M  = bswap_32(M);
+			}
 			HeadLen0 = 184;
-		}
+			char *H2 = (char*)malloc(NS*32);
+			size_t c2 = 0;
+			
+			/*
+				Read Variable SPSS header		
+			*/
+			int ns = 0;
+			const char **ListOfVarNames = (const char**)malloc((NS+1) * sizeof(char*)); 
+			char *VarNames   = (char*)malloc((NS+1) * sizeof(char) * 9); 
+			double *MISSINGS = (double*)malloc((NS+1) * sizeof(double)); 
+			for (uint32_t k=0; k<NS; k++) {
+				int32_t rec_type, type, FlagHasLabel, FlagMissing;
+				c2 += fread(&rec_type,1,4,fid);
+				c2 += fread(&type,1,4,fid);
+				c2 += fread(&FlagHasLabel,1,4,fid);
+				c2 += fread(&FlagMissing,1,4,fid);
+				fseek(fid,4,SEEK_CUR);
+				if (SWAP) {
+					rec_type     = bswap_32(rec_type);
+					type         = bswap_32(type);
+					FlagHasLabel = bswap_32(FlagHasLabel);
+				}	
+				if (rec_type != 2) ;//error('invalid SPSS file');
+				c2 += fread(VarNames+9*ns,1,8,fid);
+				VarNames[9*ns+8] = 0;
+				ListOfVarNames[ns] = VarNames+9*ns;
+				if (FlagHasLabel==1) {
+					int32_t LenLabel;
+					c2 += fread(&LenLabel,1,4,fid);
+					if (SWAP) LenLabel = bswap_32(LenLabel);
+					if (LenLabel%4) LenLabel += 4 - LenLabel % 4; 
+					fseek(fid,LenLabel,SEEK_CUR);
+				}
+				if (FlagMissing) 
+					c2 += fread(MISSINGS+ns,1,8,fid);
+					
+				if (type != -1) ns++;
+			}
+
+
+			NS = ns;
+			mxArray **R = (mxArray**) mxMalloc(NS * sizeof(mxArray*));
+			/* ToDo: 
+				EXTRACT data
+			*/
+
+			/* convert into output */
+			POutput[0] = mxCreateStructMatrix(1, 1, NS, ListOfVarNames);
+			for (uint32_t k = 0; k < NS; k++) {
+				 mxSetField(POutput[0], 0, ListOfVarNames[k], R[k]);
+			}
+			
+			if (MISSINGS) 	    free(MISSINGS);
+			if (VarNames) 	    free(VarNames);
+			if (ListOfVarNames) free(ListOfVarNames);
+			if (H2) 	    free(H2);
+		}  
 
 		if (TYPE == SPSS) {
-			;
+/*
+The records must appear in the following order:
+- File header record.
+- Variable records.
+- All pairs of value labels records and value label variables records,
+if present.
+- Document record, if present.
+- Any of the following records, if present, in any order:
+	Machine integer info record.
+	Machine floating-point info record.
+	Variable display parameter record.
+	Long variable names record.
+	Miscellaneous informational records.
+- Dictionary termination record.
+- Data record.
+
+*/			;
 		}	
 		else if ((H0[0]==113 || H0[0]==114) && (H0[1]==1 || H0[1]==2) && H0[2]==1 && H0[3]==0) { 
 		/*
@@ -279,6 +359,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 				fseek(fid,len,SEEK_CUR);
 			} while (len);				
 			uint8_t *typlist = (uint8_t*)H1;
+
 /*
 			char *varlist = H1+NS;
 			char *srtlist;

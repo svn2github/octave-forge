@@ -1,9 +1,6 @@
 #define STATUS(x) do { if (debug) std::cout << x << std::endl << std::flush; } while (0)
-#define USE_DEFUN_INTERNAL 1
-// Temporary hack (I hope).  For some reason the interpreter
-// is not finding the send/senderror commands, so I install
-// them by hand..
 
+//#define HAVE_OCTAVE_30
 #include <iomanip>
 #include <iostream>
 #include <cstdio>
@@ -429,15 +426,9 @@ process_commands(int channel)
 
 int channel = -1;
 
-#if USE_DEFUN_INTERNAL
-DEFUN_INTERNAL(senderror,args,,"\
-Send the given error message across the socket.  The error context\n\
-is taken to be the last command received from the socket.")
-#else
 DEFUN_DLD(senderror,args,,"\
 Send the given error message across the socket.  The error context\n\
 is taken to be the last command received from the socket.")
-#endif
 {
   std::string str;
   const int nargin = args.length();
@@ -461,21 +452,12 @@ is taken to be the last command received from the socket.")
   return octave_value_list();
 }
 
-#if USE_DEFUN_INTERNAL
-DEFUN_INTERNAL(send,args,,"\
-send(str)\n\
-  Send a command on the current connection\n\
-send(name,value)\n\
-  Send a binary value with the given name on the current connection\n\
-")
-#else
 DEFUN_DLD(send,args,,"\
 send(str)\n\
   Send a command on the current connection\n\
 send(name,value)\n\
   Send a binary value with the given name on the current connection\n\
 ")
-#endif
 {
   bool ok;
   uint32_t t;
@@ -622,6 +604,16 @@ sprintf(addr, "%d.%d.%d.%d",
 #endif /* BROKEN_INET_NTOA */
 
 
+void _autoload(const char name[])
+{
+  octave_value_list evalargs, fret;
+  evalargs(0) = "server";
+  fret = feval("which",evalargs,1);
+  evalargs(0) = name;
+  evalargs(1) = fret(0);
+  fret = feval("autoload",evalargs,0);
+}
+
 DEFUN_DLD(server,args,,"\
 server(port,host,host,...)\n\
    Listen for connections on the given port.  Normally only accepts\n\
@@ -639,14 +631,10 @@ server(...,'loopback')\n\
    Use loopback address 127.0.0.1 rather than 0.0.0.0.\n\
 ")
 {
-#if USE_DEFUN_INTERNAL
-  install_builtin_function (Fsend, "send", "builtin send doc", false);
-  install_builtin_function (Fsenderror, 
-			    "senderror", "builtin senderror doc", false);
-#endif
-
   bool canfork = CAN_FORK;
 
+  _autoload("send");
+  _autoload("senderror");
   octave_value_list ret;
   int nargin = args.length();
   if (nargin < 1)

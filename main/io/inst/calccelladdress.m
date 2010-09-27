@@ -24,16 +24,17 @@
 ## Created: 2009-12-12
 ## Updates:
 ## 2009-12-27 Fixed OOXML limits
-## 2010-03-17 Simplified argument list, only row + column needed.
+## 2010-03-17 Simplified argument list, only row + column needed
+## 2010-09-27 Made error message more comprehensible
 
 function [ celladdress ] = calccelladdress (row, column)
 
-	if (nargin < 2) error ("calccelladdress: not enough arguments.") endif
+	if (nargin < 2) error ("calccelladdress: Two arguments needed") endif
 
-	if (column > 18278) error ("Column nr > 18278"); endif
+	if (column > 18278 || column < 1) error ("Specified column out of range (1..18278)"); endif
 	rem1 = rem ((column-1), 26);
 	str = char (rem1 + 'A');								# A-Z; rightmost digit
-	if (column > 26 && column < 703)							# AA-ZZ
+	if (column > 26 && column < 703)						# AA-ZZ
 		tmp = char (floor(column - rem1) / 26 - 1 + 'A');	# Leftmost digit
 		str = [tmp str];
 	elseif (column > 702 && column < 18279)					# AAA-ZZZ

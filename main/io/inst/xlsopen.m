@@ -75,6 +75,9 @@
 ## 2010-03-14 Fixed check on xwrite flag lines 204+, if xlsopen fails xls ptr
 ##            should be []
 ## 2010-08-25 Improved help text
+## 2010-09-27 Improved POI help message for unrecognized .xls format to hint for BIFF5/JXL
+##
+## 2010-09-27 Latest subfunction update
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -179,7 +182,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 				wb = java_invoke ('org.apache.poi.ss.usermodel.WorkbookFactory', 'create', xlsin);
 				xls.app = xlsin;
 			catch
-				error ("File format not supported");
+				error ("File format not supported. Hint: perhaps it's (Excel 95) - try JXL");
 			end_try_catch
 		endif
 		xls.workbook = wb;
@@ -270,7 +273,10 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-11-29
-## Last updated 2009-12-27 Make sure proper dimensions are checked in parsed javaclasspath
+## Last updates: 
+## 2009-12-27 Make sure proper dimensions are checked in parsed javaclasspath
+## 2010-09-11 Rearranged code and clarified messages about missing classes
+## 2010-09-27 More code cleanup
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -288,80 +294,82 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			app = actxserver ("Excel.application");
 			# If we get here, the call succeeded & COM works.
 			xlsinterfaces.COM = 1;
-			# Close Excel
+			# Close Excel. Yep this is inefficient when we need only one r/w action,
+			# but it quickly pays off when we need to do more with the same file
+			# (+, MS-Excel code is in OS cache after this call anyway so no big deal)
 			app.Quit();
 			delete(app);
-			printf (" Excel (COM) OK. ");
+			printf ("Excel (COM) OK. ");
 			chk1 = 1;
 		catch
 			# COM non-existent
 		end_try_catch
 	endif
 
+	try
+		tmp1 = javaclasspath;
+		# If we get here, at least Java works. Now check for proper entries
+		# in class path. Under *nix the classpath must first be split up
+		if (isunix) tmp1 = strsplit (char (tmp1), ":"); endif
+	catch
+		# No Java support found
+		xlsinterfaces.POI = 0;
+		xlsinterfaces.JXL = 0;
+		if ~(isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL))
+			# Some Java-based interface requested but Java support is absent
+			error ('No Java support found.');
+		else
+			# No specific Java-based interface requested. Just return
+			return;
+		endif
+	end_try_catch
+
 	# Try Java & Apache POI
 	if (isempty (xlsinterfaces.POI))
 		xlsinterfaces.POI = 0;
-		try
-			tmp1 = javaclasspath;
-			# If we get here, at least Java works. Now check for proper entries
-			# in class path. Under *nix the classpath must first be split up
-			if (isunix) tmp1 = strsplit (char (tmp1), ":"); endif
-			if (size (tmp1, 1) > size (tmp1, 2)) tmp1 = tmp1'; endif
 			# Check basic .xls (BIFF8) support
-			jpchk1 = 0; entries1 = {"poi-3", "poi-ooxml"};
-			for ii=1:size (tmp1, 2)
-				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
-				for jj=1:size (entries1, 2)
-					if (strmatch (entries1{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk1; endif
+			jpchk1 = 0; entries1 = {"poi-3", "poi-ooxml-3"};
+			# Only under *nix we might use brute force: e.g., strfind(classname, classpath);
+			# under Windows we need the following more subtle, platform-independent approach:
+			for ii=1:length (tmp1)
+				for jj=1:length (entries1)
+					if (strfind (tmp1{ii}, entries1{jj})), ++jpchk1; endif
 				endfor
 			endfor
 			if (jpchk1 > 1)
 				xlsinterfaces.POI = 1;
-				printf (" Java/Apache (POI) OK. ");
+				printf ("Java/Apache (POI) ");
 				chk1 = 1;
 			else
-				warning ("\n Java support OK but not all required classes (.jar) in classpath");
+				warning ("\n Not all classes (.jar) required for POI in classpath");
 			endif
-			# OOXML extras
+			# Check OOXML support
 			jpchk2 = 0; entries2 = {"xbean.jar", "poi-ooxml-schemas", "dom4j"};
-			for ii=1:size (tmp1, 2)
-				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
-				for jj=1:size (entries2, 2)
-					if (strmatch (entries2{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk2; endif
+			for ii=1:length (tmp1)
+				for jj=1:length (entries2)
+					if (strmatch (tmp1{ii}, entries2{jj})), ++jpchk2; endif
 				endfor
 			endfor
-			if (jpchk2 > 2) printf ("(& OOXML OK)  "); endif
-		catch
-			# POI non-existent
-		end_try_catch
+			if (jpchk2 > 2) printf ("(& OOXML) "); endif
+			if (jpchk1 > 1) printf ("OK. "); endif
 	endif
 
 	# Try Java & JExcelAPI
 	if (isempty (xlsinterfaces.JXL))
 		xlsinterfaces.JXL = 0;
-		try
-			tmp1 = javaclasspath;
-			# If we get here, at least Java works. Now check for proper entries
-			# in class path. Under unix the classpath must first be split up
-			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
-			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
 			jpchk = 0; entries = {"jxl.jar"};
-			for ii=1:size (tmp1, 2)
-				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
-				for jj=1:size (entries, 2)
-					if (strmatch (entries{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk; endif
+			for ii=1:length (tmp1)
+				for jj=1:length (entries)
+					if (strfind (tmp1{ii}, entries{jj})), ++jpchk; endif
 				endfor
 			endfor
 			if (jpchk > 0)
 				xlsinterfaces.JXL = 1;
-				printf (" Java/JExcelAPI (JXL) OK. ");
+				printf ("Java/JExcelAPI (JXL) OK.");
 				chk1 = 1;
 			else
-				warning ("\nJava support OK but required classes (.jar) not all in classpath");
+				warning ("\n Not all classes (.jar) required for JXL in classpath");
 			endif
-		catch
-			# JXL non-existent
-		end_try_catch
 	endif
 	
 	# ---- Other interfaces here, similar to the ones above

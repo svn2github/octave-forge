@@ -686,7 +686,7 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
         s(1,:) = -m.*r; 
 
         for k = 1:M,
-                cl = CL101(:,k);
+                cl = CL101(rix,k);
                 if strncmp(MODE.TYPE, 'SVM:LIN',7);
                         if isfield(MODE,'options')
                                 CC.options = MODE.options;

@@ -1,6 +1,6 @@
 NaN-Tb: A statistics toolbox 
 ------------------------------------------------------------
-Copyright (C) 2000-2005,2009 Alois Schloegl <a.schloegl@ieee.org>
+Copyright (C) 2000-2005,2009,2010 Alois Schloegl <a.schloegl@ieee.org>
 
 
 FEATURES of the NaN-tb:
@@ -267,16 +267,14 @@ d) Compile mex files:
   Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.  
 
 e) [OPTIONAL]
-   In case you want to use SVM classifiers, you need to install additional toolboxes: 
-   libSVM: http://www.csie.ntu.edu.tw/~cjlin/libsvm/
-   LibLinear: http://www.csie.ntu.edu.tw/~cjlin/liblinear/                 
-   OSU-SVM: https://sourceforge.net/projects/svm/     
-   simpleSVM: https://sourceforge.net/projects/simplesvm/
-   
+   In case you want to use some other SVM classifiers (besides libSVM and LibLinear), 
+   you need to install additional toolboxes: 
+     OSU-SVM: https://sourceforge.net/projects/svm/     
+     simpleSVM: https://sourceforge.net/projects/simplesvm/
 
 	$Id$
-	Copyright (C) 2000-2005,2009 by  Alois Schloegl <a.schloegl@ieee.org>	
-	WWW: http://hci.tugraz.at/~schloegl/matlab/NaN/
+	Copyright (C) 2000-2005,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+	WWW: http://biosig-consulting.com/matlab/NaN/
 
 
 LICENSE:

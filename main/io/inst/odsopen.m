@@ -59,7 +59,7 @@
 ## Author: Philip Nienhuis
 ## Created: 2009-12-13
 ## Updates: 
-## 2009-12-30 ....
+## 2009-12-30 ....<forgot what is was >
 ## 2010-01-17 Make sure proper dimensions are checked in parsed javaclasspath
 ## 2010-01-24 Added warning when trying to create a new spreadsheet using jOpenDocument
 ## 2010-03-01 Removed check for rt.jar in javaclasspath
@@ -71,9 +71,10 @@
 ##      "     Fiddled ods.changed flag when creating a spreadsheet to avoid unnamed 1st sheets
 ## 2010-08-23 Added version field "odfvsn" to ods file ptr, set in getodsinterfaces() (odfdom)
 ##      "     Moved JOD version check to this func from subfunc getodsinterfaces()
+##      "     Full support for odfdom 0.8.6 (in subfunc)
 ## 2010-08-27 Improved help text
 ##
-## Latest change on subfunction below: 2010-09-11
+## Latest change on subfunction below: 2010-09-27
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -252,7 +253,10 @@ endfunction
 ## 2010-08-22 Experimental odfdom 0.8.6 support
 ## 2010-08-23 Added odfvsn (odfdom version string) to output struct argument
 ##     "      Bugfix: moved JOD version check to main function (it can't work here)
-## 2010-09-11 Bugfix: corrected typos in OTK detection code (odfdvsn -> odfvsn)
+##     "      Finalized odfdom 0.8.6 support (even prefered version now)
+## 2010-09-11 Somewhat clarified messages about missing java classes
+##     "      Rearranged code a bit; fixed typos in OTK detection code (odfdvsn -> odfvsn)
+## 2010-09-27 More code cleanup
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -263,74 +267,75 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		chk1= 0;
 	endif
 
+	# Check Java support
+	try
+		tmp1 = javaclasspath;
+		# If we get here, at least Java works. Now check for proper entries
+		# in class path. Under *nix the classpath must first be split up
+		if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
+	catch
+		# No Java support
+		odsinterfaces.OTK = 0;
+		odsinterfaces.JOD = 0;
+		if ~(isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL))
+			# Some Java-based interface requested but Java support is absent
+			error ('No Java support found.');
+		else
+			# No specific Java-based interface requested. Just return
+			return;
+		endif
+	end_try_catch
+
 	# Try Java & ODF toolkit
 	if (isempty (odsinterfaces.OTK))
 		odsinterfaces.OTK = 0;
-		try
-			tmp1 = javaclasspath;
-			# If we get here, at least Java works. Now check for proper entries
-			# in class path. Under *nix first the classpath must be split up.
-			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
-			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
-			jpchk = 0; entries = {"odfdom", "xercesImpl.jar"};
-			for ii=1:size (tmp1, 2)
-				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
-				for jj=1:size (entries, 2)
-					if (strmatch (entries{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk; endif
-				endfor
+		jpchk = 0; entries = {"odfdom", "xercesImpl"};
+		# Only under *nix we might use brute force: e.g., strfind(classpath, classname);
+		# under Windows we need the following more subtle, platform-independent approach:
+		for ii=1:length (tmp1)
+			for jj=1:length (entries)
+				if (strfind ( tmp1{ii}, entries{jj})), ++jpchk; endif
 			endfor
-			if (jpchk >= 2)		# Apparently all requested classes present.
-				# Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6 work OK).
-				# The odfdom team deemed it necessary to change the version call so we need this:
-				odfvsn = ' ';
-				try
-					# New in 0.8.6
-					odfvsn = java_invoke ('org.odftoolkit.odfdom.JarManifest', 'getOdfdomVersion');
-				catch
-					odfvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
-				end_try_catch
-				if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6'))
-					warning ("\nodfdom version %s is not supported - use v. 0.7.5 or 0.8.6.\n", odfvsn);
-				else	
-					odsinterfaces.OTK = 1;
-					printf (" Java/ODFtoolkit (OTK) OK. ");
-					chk1 = 1;
-				endif
-				odsinterfaces.odfvsn = odfvsn;
-			else
-				warning ("\n Java support OK but not all required classes (.jar) in classpath");
+		endfor
+		if (jpchk >= 2)		# Apparently all requested classes present.
+			# Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6 work OK).
+			# The odfdom team deemed it necessary to change the version call so we need this:
+			odfvsn = ' ';
+			try
+				# New in 0.8.6
+				odfvsn = java_invoke ('org.odftoolkit.odfdom.JarManifest', 'getOdfdomVersion');
+			catch
+				odfvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
+			end_try_catch
+			if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6'))
+				warning ("\nodfdom version %s is not supported - use v. 0.7.5 or 0.8.6.\n", odfvsn);
+			else	
+				odsinterfaces.OTK = 1;
+				printf (" Java/ODFtoolkit (OTK) OK. ");
+				chk1 = 1;
 			endif
-		catch
-			# ODFtoolkit support nonexistent
-		end_try_catch
+			odsinterfaces.odfvsn = odfvsn;
+		else
+			warning ("\nNot all required classes (.jar) in classpath for OTK");
+		endif
 	endif
 
 	# Try Java & jOpenDocument
 	if (isempty (odsinterfaces.JOD))
 		odsinterfaces.JOD = 0;
-		try
-			tmp1 = javaclasspath;
-			# If we get here, at least Java works. Now check for proper entries
-			# in class path. Under unix the classpath must first be split up
-			if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
-			if (size (tmp1, 1) > size (tmp1,2)) tmp1 = tmp1'; endif
-			jpchk = 0; entries = {"jOpenDocument"};
-			for ii=1:size (tmp1, 2)
-				tmp2 = strsplit (char (tmp1(1, ii)), "\\/");
-				for jj=1:size (entries, 2)
-					if (strmatch (entries{1, jj}, tmp2{size (tmp2, 2)})), ++jpchk; endif
-				endfor
+		jpchk = 0; entries = {"jOpenDocument"};
+		for ii=1:length (tmp1)
+			for jj=1:length (entries)
+				if (strfind (tmp1{ii}, entries{jj})), ++jpchk; endif
 			endfor
-			if (jpchk >= 1)
-				odsinterfaces.JOD = 1;
-				printf (" Java/jOpenDocument (JOD) OK. ");
-				chk1 = 1;
-			else
-				warning ("\nJava support OK but required classes (.jar) not all in classpath");
-			endif
-		catch
-			# No jOpenDocument support
-		end_try_catch
+		endfor
+		if (jpchk >= 1)
+			odsinterfaces.JOD = 1;
+			printf (" Java/jOpenDocument (JOD) OK. ");
+			chk1 = 1;
+		else
+			warning ("\nNot all required classes (.jar) in classpath for JOD");
+		endif
 	endif
 	
 	# ---- Other interfaces here, similar to the ones above

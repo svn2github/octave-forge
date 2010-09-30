@@ -89,50 +89,54 @@ if length(varargin) > 0,
   indi = 1;
   %# loop over possible arguments
   while indi <= size(varargin, 2),
-    switch(varargin{indi})
-      case 'rownames'
-	switch class(varargin{indi+1})
-	  case {'cell'}
-	    df._name{1} = varargin{indi+1};
-	  case {'char'}
-	    df._name{1} = cellstr(varargin{indi+1});
-	  otherwise
-	    df._name{1} = cellstr(num2str(varargin{indi+1}));
-	endswitch
-	df._over{1}(1, 1:length(df._name{1})) = false;
-	df._cnt(1) = size(df._name{1}, 1);
-	df._ridx = (1:df._cnt(1))';
-	varargin(indi:indi+1) = [];
-      case 'colnames'
-	switch class(varargin{indi+1})
-	  case {'cell'}
-	    df._name{2} = varargin{indi+1};
-	  case {'char'}
-	    df._name{2} = cellstr(varargin{indi+1});
-	  otherwise
-	    df._name{2} = cellstr(num2str(varargin{indi+1}));
-	endswitch
-	%# detect assignment - functions calls - ranges
-	dummy = cellfun('size', cellfun(@(x) strsplit(x, ":=("), df._name{2}, \
-					"UniformOutput", false), 2);
-	if any(dummy > 1),
-	  warning('dataframe colnames taken literally and not interpreted');
-	endif
-	df._over{2}(1, 1:length(df._name{2})) = false;
-	varargin(indi:indi+1) = [];
-      case 'seeked',
-	seeked = varargin{indi + 1};
-	varargin(indi:indi+1) = [];
-      case 'unquot',
-	unquot = varargin{indi + 1};
-	varargin(indi:indi+1) = [];
-      case 'sep',
-	sep = varargin{indi + 1};
-	varargin(indi:indi+1) = [];
-      otherwise %# FIXME: just skip it for now
-	disp(sprintf("Ignoring unkown argument %s", varargin{indi}));
-	indi = indi + 1;
-    endswitch
+    if isa(varargin{indi}, 'char'),
+      switch(varargin{indi})
+	case 'rownames'
+	  switch class(varargin{indi+1})
+	    case {'cell'}
+	      df._name{1} = varargin{indi+1};
+	    case {'char'}
+	      df._name{1} = cellstr(varargin{indi+1});
+	    otherwise
+	      df._name{1} = cellstr(num2str(varargin{indi+1}));
+	  endswitch
+	  df._over{1}(1, 1:length(df._name{1})) = false;
+	  df._cnt(1) = size(df._name{1}, 1);
+	  df._ridx = (1:df._cnt(1))';
+	  varargin(indi:indi+1) = [];
+	case 'colnames'
+	  switch class(varargin{indi+1})
+	    case {'cell'}
+	      df._name{2} = varargin{indi+1};
+	    case {'char'}
+	      df._name{2} = cellstr(varargin{indi+1});
+	    otherwise
+	      df._name{2} = cellstr(num2str(varargin{indi+1}));
+	  endswitch
+	  %# detect assignment - functions calls - ranges
+	  dummy = cellfun('size', cellfun(@(x) strsplit(x, ":=("), df._name{2}, \
+					  "UniformOutput", false), 2);
+	  if any(dummy > 1),
+	    warning('dataframe colnames taken literally and not interpreted');
+	  endif
+	  df._over{2}(1, 1:length(df._name{2})) = false;
+	  varargin(indi:indi+1) = [];
+	case 'seeked',
+	  seeked = varargin{indi + 1};
+	  varargin(indi:indi+1) = [];
+	case 'unquot',
+	  unquot = varargin{indi + 1};
+	  varargin(indi:indi+1) = [];
+	case 'sep',
+	  sep = varargin{indi + 1};
+	  varargin(indi:indi+1) = [];
+	otherwise %# FIXME: just skip it for now
+	  disp(sprintf("Ignoring unkown argument %s", varargin{indi}));
+	  indi = indi + 1;    
+      endswitch
+    else
+      indi = indi + 1;    %# skip it
+    endif	  
   endwhile
 endif
 

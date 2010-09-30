@@ -29,6 +29,7 @@ function df = dataframe(x = [], varargin)
   %# Each preceeding line is silently skipped. Default: none
   %# @item unquot: a logical switch telling wheter or not strings should
   %# be unquoted before storage, default = true;
+  %# @item sep: the elements separator, default ','
   %# @end itemize
   %# The remaining data are concatenanted (right-appended) to the existing ones.
   %# @end deftypefn
@@ -82,7 +83,7 @@ else
   df = dataframe([]); %# get the right fields
 endif
 
-seeked = []; unquot = true; 
+seeked = []; unquot = true; sep = ',';
 
 if length(varargin) > 0,
   indi = 1;
@@ -112,7 +113,7 @@ if length(varargin) > 0,
 	    df._name{2} = cellstr(num2str(varargin{indi+1}));
 	endswitch
 	%# detect assignment - functions calls - ranges
-	dummy = cellfun('size', cellfun(@(x) strsplit(x, ':=('), df._name{2}, \
+	dummy = cellfun('size', cellfun(@(x) strsplit(x, ":=("), df._name{2}, \
 					"UniformOutput", false), 2);
 	if any(dummy > 1),
 	  warning('dataframe colnames taken literally and not interpreted');
@@ -124,6 +125,9 @@ if length(varargin) > 0,
 	varargin(indi:indi+1) = [];
       case 'unquot',
 	unquot = varargin{indi + 1};
+	varargin(indi:indi+1) = [];
+      case 'sep',
+	sep = varargin{indi + 1};
 	varargin(indi:indi+1) = [];
       otherwise %# FIXME: just skip it for now
 	indi = indi + 1;
@@ -152,11 +156,18 @@ while indi <= size(varargin, 2),
 	  fclose(fid);
 	end_unwind_protect
 	lines = regexp(in,'(^|\n)([^\n]+)', 'match'); %# cut into lines
+	lines = cellfun(@(x) regexp(x, '[^\n]*', 'match'), lines);
+	%#, \'UniformOutput', false); 
+	%# remove \n
 	%# a field either starts at a word boundary, either by + - . for
 	%# a numeric data, either by ' for a string. 
-	content = cellfun(@(x) regexp(x, '(\b|[-+\.''])[^,]+(''|\b)', 'match'), \
-			  lines, 'UniformOutput', false); %# extract fields
-	indl = 1; indj = 1; %# disp('line 151 '); keyboard
+
+ 	%# content = cellfun(@(x) regexp(x, '(\b|[-+\.''])[^,]*(''|\b)', 'match'),\
+	%# lines, 'UniformOutput', false); %# extract fields
+
+	content = cellfun(@(x) strsplit(x, sep), lines, \
+			  'UniformOutput', false); %# extract fields	
+	indl = 1; indj = 1; %#disp('line 151 '); keyboard
 	if ~isempty(seeked),
 	  while indl <= length(lines),
 	    dummy = content{indl};
@@ -169,8 +180,14 @@ while indi <= size(varargin, 2),
 	  dummy = content{indl};
 	endif
 	x = cell(1+length(lines)-indl, size(dummy, 2)); 
+	empty_lines = [];
 	while indl <= length(lines),
 	  dummy = content{indl};
+	  if all(cellfun('size', dummy, 2) == 0),
+	    empty_lines = [empty_lines indj];
+	    indl = indl + 1; indj = indj + 1;
+	    continue;
+	  endif
 	  %# try to convert to float
 	  the_line = cellfun(@(x) sscanf(x, "%f"), dummy, ...
 			     'UniformOutput', false);
@@ -185,8 +202,8 @@ while indi <= size(varargin, 2),
 		  in = regexp(dummy{indk}, '[^'']+', 'match');
 		  if !isempty(in),
 		    x(indj, indk) = in{1};
-		  else
-		    x(indj, indk) = [];
+		    %# else
+		    %#    x(indj, indk) = [];
 		  endif
 		end_try_catch
 	      else
@@ -198,10 +215,18 @@ while indi <= size(varargin, 2),
 	  endfor
 	  indl = indl + 1; indj = indj + 1;
 	endwhile
-	clear UTF8_BOM fid in lines indl the_line content
+	if !isempty(empty_lines),
+	  x(empty_lines, :) = [];
+	endif
+	%# detect empty columns
+	empty_lines = find(0 == sum(cellfun('size', x, 2)))
+	if !isempty(empty_lines),
+	  x(:, empty_lines) = [];
+	endif
+	clear UTF8_BOM fid in lines indl the_line content empty_lines
       end_try_catch
     endif
-    
+  
     %# fallback, avoiding a recursive call
     idx.type = '()';
     indj = df._cnt(2)+(1:size(x, 2));

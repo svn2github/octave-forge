@@ -130,6 +130,7 @@ if length(varargin) > 0,
 	sep = varargin{indi + 1};
 	varargin(indi:indi+1) = [];
       otherwise %# FIXME: just skip it for now
+	disp(sprintf("Ignoring unkown argument %s", varargin{indi}));
 	indi = indi + 1;
     endswitch
   endwhile
@@ -155,17 +156,18 @@ while indi <= size(varargin, 2),
 	unwind_protect_cleanup
 	  fclose(fid);
 	end_unwind_protect
-	lines = regexp(in,'(^|\n)([^\n]+)', 'match'); %# cut into lines
-	lines = cellfun(@(x) regexp(x, '[^\n]*', 'match'), lines);
-	%# remove \n
-	%#, \'UniformOutput', false); 
+	eol = '\r\n|\n|\x0b|\f|\r|\x85';
+	%# cut into lines -- include the EOL to have a one-to-one
+	%# matching between line numbers
+	lines = regexp(in, ['(^|' eol ')([^' eol ']+)'], 'match'); 
+	%# remove the EOL character(s)
+	lines = cellfun(@(x) regexp(x, ['[^' eol ']+'], 'match'), lines);
 	
 	%# a field either starts at a word boundary, either by + - . for
 	%# a numeric data, either by ' for a string. 
 
  	%# content = cellfun(@(x) regexp(x, '(\b|[-+\.''])[^,]*(''|\b)', 'match'),\
 	%# lines, 'UniformOutput', false); %# extract fields
-
 	content = cellfun(@(x) strsplit(x, sep), lines, \
 			  'UniformOutput', false); %# extract fields	
 	indl = 1; indj = 1; %# disp('line 151 '); keyboard
@@ -233,7 +235,7 @@ while indi <= size(varargin, 2),
     %# fallback, avoiding a recursive call
     idx.type = '()';
     indj = df._cnt(2)+(1:size(x, 2));
-    
+   
     if iscell(x),
       if 2 == length(x),
 	%# use the intermediate value as destination column

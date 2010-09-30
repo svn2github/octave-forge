@@ -157,8 +157,9 @@ while indi <= size(varargin, 2),
 	end_unwind_protect
 	lines = regexp(in,'(^|\n)([^\n]+)', 'match'); %# cut into lines
 	lines = cellfun(@(x) regexp(x, '[^\n]*', 'match'), lines);
-	%#, \'UniformOutput', false); 
 	%# remove \n
+	%#, \'UniformOutput', false); 
+	
 	%# a field either starts at a word boundary, either by + - . for
 	%# a numeric data, either by ' for a string. 
 
@@ -167,7 +168,7 @@ while indi <= size(varargin, 2),
 
 	content = cellfun(@(x) strsplit(x, sep), lines, \
 			  'UniformOutput', false); %# extract fields	
-	indl = 1; indj = 1; %#disp('line 151 '); keyboard
+	indl = 1; indj = 1; %# disp('line 151 '); keyboard
 	if ~isempty(seeked),
 	  while indl <= length(lines),
 	    dummy = content{indl};
@@ -176,8 +177,8 @@ while indi <= size(varargin, 2),
 	    endif
 	    indl = indl + 1;
 	  endwhile
-	else
-	  dummy = content{indl};
+	  %#	else
+	  %# dummy = content{indl};
 	endif
 	x = cell(1+length(lines)-indl, size(dummy, 2)); 
 	empty_lines = [];
@@ -188,6 +189,8 @@ while indi <= size(varargin, 2),
 	    indl = indl + 1; indj = indj + 1;
 	    continue;
 	  endif
+	  %# remove leading space(s)
+	  dummy = cellfun(@(x) regexp(x, '[^ ].*', 'match'), dummy);
 	  %# try to convert to float
 	  the_line = cellfun(@(x) sscanf(x, "%f"), dummy, ...
 			     'UniformOutput', false);
@@ -219,7 +222,7 @@ while indi <= size(varargin, 2),
 	  x(empty_lines, :) = [];
 	endif
 	%# detect empty columns
-	empty_lines = find(0 == sum(cellfun('size', x, 2)))
+	empty_lines = find(0 == sum(cellfun('size', x, 2)));
 	if !isempty(empty_lines),
 	  x(:, empty_lines) = [];
 	endif

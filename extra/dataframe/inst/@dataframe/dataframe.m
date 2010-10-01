@@ -195,20 +195,19 @@ while indi <= size(varargin, 2),
 	    indl = indl + 1; indj = indj + 1;
 	    continue;
 	  endif
-	  %# remove leading space(s)
-	  dummy = cellfun(@(x) regexp(x, '[^ ].*', 'match'), dummy);
 	  %# try to convert to float
-	  the_line = cellfun(@(x) sscanf(x, "%f"), dummy, ...
+	  the_line = cellfun(@(x) sscanf(x, "%f"), dummy, \
 			     'UniformOutput', false);
 	  for indk = 1: size(the_line, 2),
 	    if isempty(the_line{indk}) || any(size(the_line{indk}) > 1), 
-	      %#if indi > 1 && indk > 1, disp('line 117 '); keyboard; endif
+	      %#if indi > 1 && indk > 1, disp('line 117 '); keyboard; %#endif
 	      if unquot,
 		try
-		  x(indj, indk) = regexp(dummy{indk}, '[^''].*[^'']', 'match'){1};
+		  %# remove quotes and leading space(s)
+		  x(indj, indk) = regexp(dummy{indk}, '[^'' ].*[^'']', 'match'){1};
 		catch
 		  %# if the previous test fails, try a simpler one
-		  in = regexp(dummy{indk}, '[^'']+', 'match');
+		  in = regexp(dummy{indk}, '[^'' ]+', 'match');
 		  if !isempty(in),
 		    x(indj, indk) = in{1};
 		    %# else
@@ -216,7 +215,8 @@ while indi <= size(varargin, 2),
 		  endif
 		end_try_catch
 	      else
-		x(indj, indk) = dummy{indk}; %# no conversion possible
+		%# no conversion possible, store and remove leading space(s)
+		x(indj, indk) = regexp(dummy{indk}, '[^ ].*', 'match');
 	      endif
 	    else
 	      x(indj, indk) = the_line{indk}; 

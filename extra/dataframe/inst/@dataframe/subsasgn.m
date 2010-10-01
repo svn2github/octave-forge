@@ -345,6 +345,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     %# the real assignement
     if 1 == size(RHS, 1), %# each cell contains one vector
       fillfunc = @(x) RHS{x};
+      idxOK = logical(indr);
     else %# use cell2mat to pad on a column-by-column basis
       fillfunc = @(x) cell2mat(RHS(:, x));
     endif
@@ -359,20 +360,32 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	  df = df_pad(df, 2, indc(indi)-df._cnt(2), ctype{indj});
 	endif
       endif
-      dummy = df._data{indc(indi)}; 
       if nrow == df._cnt(1),
 	%# whole assignement
 	try 
-	  %# keeps indexes in sync
-	  indr = ~cellfun('isempty', RHS(:, indj));
-	  switch df._type{indc(indi)}
-	    case {'char' } %# use a cell array to hold strings
-	      dummy = RHS(:, indj);
-	    case {'double' }
-	      dummy(indr) = fillfunc(indj);
-	    otherwise
-	      dummy(indr)  = cast(fillfunc(indj), df._type{indc(indi)});
-	  endswitch
+	  if size(RHS, 1) <= 1,
+	    switch df._type{indc(indi)}
+	      case {'char' } %# use a cell array to hold strings
+		dummy = RHS(:, indj);
+	      case {'double' }
+		dummy = fillfunc(indj);
+	      otherwise
+		dummy = cast(fillfunc(indj), df._type{indc(indi)});
+	    endswitch
+	  else
+	    %# keeps indexes in sync as cell elements may be empty
+	    idxOK = ~cellfun('isempty', RHS(:, indj));
+	    %# intialise dummy so that it can receive "anything"
+	    dummy = [];
+	    switch df._type{indc(indi)}
+	      case {'char' } %# use a cell array to hold strings
+		dummy = RHS(:, indj);
+	      case {'double' }
+		dummy(idxOK, :) = fillfunc(indj);
+	      otherwise
+		dummy(idxOK, :) = cast(fillfunc(indj), df._type{indc(indi)});
+	    endswitch
+	  endif
 	catch
 	  dummy = \
 	      sprintf("Assignement failed for colum %d, of type %s and length %d,\nwith new content\n%s", \
@@ -383,6 +396,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	  dummy(end+1:df._cnt(1), :) = NA;
 	endif
       else
+	%# partial assignement -- extract actual data and update
+	dummy = df._data{indc(indi)}; 
 	try     
 	  switch df._type{indc(indi)}
 	    case {'char' } %# use a cell array to hold strings

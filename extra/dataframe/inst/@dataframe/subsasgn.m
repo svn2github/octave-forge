@@ -261,19 +261,25 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       endif
       dummy = dummy && (!isempty(cname) && size(cname{1}, 2) < 1);
       if dummy,
-	ridx = RHS(:, 1); RHS = RHS(:, 2:end);
-	if length(df._name{2}) == df._cnt(2) + ncol,
-	  %# columns name were pre-filled with too much values
-	  df._name{2}(end) = [];
-	  df._over{2}(end) = [];
-	  if size(RHS, 2) < ncol, 
-	    ncol = size(RHS, 2); indc = 1:ncol;
-	  endif
-	elseif !indc_was_set, 
-	  ncol = ncol - 1;  indc = 1:ncol; 
-	endif 
-	if !isempty(cname), cname = cname(2:end); endif
-	if !isempty(ctype), ctype = ctype(2:end); endif
+	ridx = cell2mat(RHS(:, 1));
+	%# can it be converted to a list of unique numbers ?
+	if length(unique(ridx)) == length(ridx),
+	  ridx = RHS(:, 1); RHS = RHS(:, 2:end);
+	  if length(df._name{2}) == df._cnt(2) + ncol,
+	    %# columns name were pre-filled with too much values
+	    df._name{2}(end) = [];
+	    df._over{2}(end) = [];
+	    if size(RHS, 2) < ncol, 
+	      ncol = size(RHS, 2); indc = 1:ncol;
+	    endif
+	  elseif !indc_was_set, 
+	    ncol = ncol - 1;  indc = 1:ncol; 
+	  endif 
+	  if !isempty(cname), cname = cname(2:end); endif
+	  if !isempty(ctype), ctype = ctype(2:end); endif
+	else
+	  ridx = [];
+	endif
       endif
 
       if size(RHS, 2) >  df._cnt(2),
@@ -320,21 +326,21 @@ function df = df_matassign(df, S, indc, ncol, RHS)
   if iscell(RHS), %# we must pad on a column-by-column basis
     %# verify that each cell contains a non-empty vector, and that sizes
     %# are compatible
-    dummy = cellfun('size', RHS(:), 2);
-    if any(dummy < 1),
-      error("cells content may not be empty");
-    endif
+    %# dummy = cellfun('size', RHS(:), 2);
+    %# if any(dummy < 1),
+    %#   error("cells content may not be empty");
+    %# endif
     
-    dummy = cellfun('size', RHS, 1);
-    if any(dummy < 1),
-      error("cells content may not be empty");
-    endif
-    if any(diff(dummy) > 0),
-      error("cells content with unequal length");
-    endif
-    if 1 < size(RHS, 1) && any(dummy > 1),
-      error("cells may only contain scalar");
-    endif
+    %# dummy = cellfun('size', RHS, 1);
+    %# if any(dummy < 1),
+    %#   error("cells content may not be empty");
+    %# endif
+    %# if any(diff(dummy) > 0),
+    %#   error("cells content with unequal length");
+    %# endif
+    %# if 1 < size(RHS, 1) && any(dummy > 1),
+    %#   error("cells may only contain scalar");
+    %# endif
     
     %# the real assignement
     if 1 == size(RHS, 1), %# each cell contains one vector
@@ -356,14 +362,16 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       dummy = df._data{indc(indi)}; 
       if nrow == df._cnt(1),
 	%# whole assignement
-	try     
+	try 
+	  %# keeps indexes in sync
+	  indr = ~cellfun('isempty', RHS(:, indj));
 	  switch df._type{indc(indi)}
 	    case {'char' } %# use a cell array to hold strings
 	      dummy = RHS(:, indj);
 	    case {'double' }
-	      dummy = fillfunc(indj);
+	      dummy(indr) = fillfunc(indj);
 	    otherwise
-	      dummy  = cast(fillfunc(indj), df._type{indc(indi)});
+	      dummy(indr)  = cast(fillfunc(indj), df._type{indc(indi)});
 	  endswitch
 	catch
 	  dummy = \
@@ -461,7 +469,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       endif
     endif
   endif
-  
+
   %# adjust ridx and rnames, if required
   if !isempty(ridx),
     dummy = df._ridx;

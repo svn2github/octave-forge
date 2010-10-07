@@ -2,6 +2,7 @@ miscellaneous >> Miscellaneous functions
 miscellaneous
  apply
  asci
+ cell2cell
  csv2latex
  chebyshevpoly
  hermitepoly

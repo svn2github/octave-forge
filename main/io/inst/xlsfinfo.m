@@ -76,10 +76,13 @@
 ##            for Java interfaces (though it may be a bit off in case of JXL)
 ## 2010-05-31 Added remark about delays when determining occupied data range
 ## 2010-08-25 Improved help text (Excel file types)
+## 2010-10-06 Added ";" to str2 declaration
+##     "      Added occupieded range echo for COM interface (may be a bit off too)
+## 2010-10-10 Made output arg2 contain only address ranges (or other sheet type names)
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
-	persistent str2; str2 = '                                 ' # 33 spaces
+	persistent str2; str2 = '                                 '; # 33 spaces
 	persistent lstr2; lstr2 = length (str2);
 
 	xls = xlsopen (filename, 0, reqintf);
@@ -94,15 +97,20 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 		# See if desired worksheet number or name exists
 		sh_cnt = xls.workbook.Sheets.count;
 		sh_names = cell (sh_cnt, 2);
-		ws_cnt = 0; ch_cnt = 0;
+		ws_cnt = 0; ch_cnt = 0; o_cnt = 0;
 		for ii=1:sh_cnt
 			sh_names(ii, 1) = xls.workbook.Sheets(ii).Name;
 			if (xls.workbook.Sheets(ii).Type == xlWorksheet)
-				sh_names(ii, 2) = sprintf ("%5d Worksheet # %d", xlWorksheet, ++ws_cnt);
+				[tr, lr, lc, rc] = getusedrange (xls, ++ws_cnt);
+				if (tr)
+					sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
+				else
+					sh_names(ii, 2) = "Empty";
+				endif
 			elseif (xls.workbook.Sheets(ii).Type == xlChart)
-				sh_names(ii, 2) = sprintf ("%5d Chart # %d", xlChart, ++ch_cnt);
+				sh_names(ii, 2) = sprintf ("Chart"); ++ch_cnt;
 			else
-				sh_names(ii, 2) = '      Other sheet type';
+				sh_names(ii, 2) = 'Other_type'; ++o_cnt;
 			endif
 		endfor
 		if (ws_cnt > 0 || ch_cnt > 0) fformat = "xlWorkbookNormal"; endif
@@ -117,9 +125,9 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 			# Java POI doesn't distinguish between worksheets and graph sheets
 			[tr, lr, lc, rc] = getusedrange (xls, ii);
 			if (tr)
-				sh_names(ii, 2) = sprintf ("(Used range = %s:%s)", calccelladdress (tr, lc), calccelladdress (lr, rc));
+				sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
 			else
-				sh_names(ii, 2) = "(Empty)";
+				sh_names(ii, 2) = "Empty";
 			endif
 		endfor
 		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; endif
@@ -131,9 +139,9 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 		for ii=1:sh_cnt
 			[tr, lr, lc, rc] = getusedrange (xls, ii);
 			if (tr)
-				sh_names(ii, 2) = sprintf ("(Used range ~ %s:%s)", calccelladdress (tr, lc), calccelladdress (lr, rc));
+				sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
 			else
-				sh_names(ii, 2) = "(Empty)";
+				sh_names(ii, 2) = "Empty";
 			endif
 		endfor
 		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; endif
@@ -148,14 +156,10 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 		# Echo sheet names to screen
 		for ii=1:sh_cnt
 			str1 = sprintf ("%3d: %s", ii, sh_names{ii, 1});
-			if (strcmp (xls.xtype, 'COM'))
-				# In case of COM interface, also echo sheet type
-				jj = index (sh_names{ii, 2}, '#');
-				if (~jj) jj = size (sh_names{ii, 2}, 2); endif
-				str3 = sprintf (" (%s)", sh_names{ii, 2}(6:jj-2) );
+			if (index (sh_names{ii, 2}, ":"))
+				str3 = ['(Used range ~ ' sh_names{ii, 2} ')'];
 			else
-				# Other interfaces can supply last row no.
-				str3 = sh_names {ii, 2};
+				str3 = sh_names{ii, 2};
 			endif
 			printf ("%s%s%s\n", str1, str2(1:lstr2-length (sh_names{ii, 1})), str3);
 		endfor

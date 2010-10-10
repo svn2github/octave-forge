@@ -7,11 +7,12 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091211;17230700">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100827;22462200">
+	<META NAME="CHANGED" CONTENT="20101010;23171800">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
 	<META NAME="Info 4" CONTENT="">
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
@@ -38,7 +39,7 @@
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">README
 for Excel spreadsheet file r/w access scripts for octave (&gt;
 3.2.0)<BR><BR>Copyright (C) 2009, 2010 Philip Nienhuis &lt;prnienhuis
-at users.sf.net&gt;<BR><BR>This version August 27, 2010.</FONT></FONT></P>
+at users.sf.net&gt;<BR><BR>This version October 10, 2010.</FONT></FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
@@ -170,9 +171,10 @@ and <B>xlswrite</B> are mere wrappers for
 <B>xlsopen</B>-<B>oct2xls</B>-<B>xlsclose</B> sequences, resp. They
 exist for the sake of Matlab compatibility.<BR><BR><B>xlsfinf</B>o
 can be used for finding out what worksheet names exist in the file.
-For OOXML files the input parameter REQINTF should be specified with
-a value of 'poi' (case-insensitive) and -obviously- the complete POI
-interface must have been installed.<BR><BR>Invoking
+For OOXML files you either need MS-Excel 2007 for Windows (or later
+version) installed, and/or the input parameter REQINTF should be
+specified with a value of 'poi' (case-insensitive) and -obviously-
+the complete POI interface must have been installed.<BR><BR>Invoking
 <B>xlsopen</B>/..../<B>xlsclose</B> directly provides for much more
 flexibility, speed, and robustness than <B>xlsread</B> / <B>xlswrite</B>.
 Indeed, using the same file handle (pointer struct) you can mix
@@ -180,25 +182,26 @@ reading &amp; writing before writing the workbook out to disk using
 xlsclose.<BR>And: <B>xlsopen </B>/ <B>xlsclose</B> hide the gory
 interface details from the user.<BR>Currently only .xls files (BIFF8)
 can be read/written; using JExcelAPI BIFF5 can be read as well. For
-OOXML files the complete Apache POI interface must be installed (and
-possibly the REQINTF parameter specified with a value of
-'poi').<BR><BR>When using <B>xlsopen</B>....<B>xlsclose</B> be sure
-to keep track of the file handle struct.<BR><BR>A possible
-scenario:<BR><BR><B>xlh = xlsopen (&lt;excel_filename&gt; , [rw],
-[&lt;requested interface&gt;])</B><BR><I># Set rw to 1 if you want to
-write to a workbook immediately.<BR># In that case the check for file
-existence is skipped and<BR># -if needed- a new workbook created.<BR>#
-If you really want an other interface than auto-selected<BR># by
-xlsopen you can request that. But xlsopen still checks<BR># proper
-support for your choice.</I><BR><BR><I># Read some data</I><BR><B>[
-rawarr1, xlh ] = xls2oct (xlh, &lt;SomeWorksheet&gt;, &lt;Range&gt;)</B><BR><I>#
-Be sure to specify xlh as output argument as xls2oct keeps<BR># track
-of changes and the need to write the workbook to disk <BR># in the
-xlhstruct. And the origin range is conveyed through<BR># the xlh
-pointer struct.</I><BR><BR><I># Separate data into numeric and text
-data</I><BR><B>[ numarr1, txtarr1, lim1 ] = parsecell (rawarr1)</B><BR><I><BR></I>#
-Get more data from another worksheet in the same workbook<BR><B>[
-rawarr2, xlh ] = xls2oct (xlh, &lt;SomeOtherWorksheet&gt;, &lt;Range&gt;)</B><BR><B>[
+OOXML files either Excel 2007 for Windows (or higher) and/or the
+complete Apache POI interface must be installed (and probably the
+REQINTF parameter specified with a value of 'poi').<BR><BR>When using
+<B>xlsopen</B>....<B>xlsclose</B> be sure to keep track of the file
+handle struct.<BR><BR>A possible scenario:<BR><BR><B>xlh = xlsopen
+(&lt;excel_filename&gt; , [rw], [&lt;requested interface&gt;])</B><BR><I>#
+Set rw to 1 if you want to write to a workbook immediately.<BR># In
+that case the check for file existence is skipped and<BR># -if
+needed- a new workbook created.<BR># If you really want an other
+interface than auto-selected<BR># by xlsopen you can request that.
+But xlsopen still checks<BR># proper support for your choice.</I><BR><BR><I>#
+Read some data</I><BR><B>[ rawarr1, xlh ] = xls2oct (xlh,
+&lt;SomeWorksheet&gt;, &lt;Range&gt;)</B><BR><I># Be sure to specify
+xlh as output argument as xls2oct keeps<BR># track of changes and the
+need to write the workbook to disk <BR># in the xlhstruct. And the
+origin range is conveyed through<BR># the xlh pointer struct.</I><BR><BR><I>#
+Separate data into numeric and text data</I><BR><B>[ numarr1,
+txtarr1, lim1 ] = parsecell (rawarr1)</B><BR><I><BR></I># Get more
+data from another worksheet in the same workbook<BR><B>[ rawarr2, xlh
+] = xls2oct (xlh, &lt;SomeOtherWorksheet&gt;, &lt;Range&gt;)</B><BR><B>[
 numarr2, txtarr2, lim2 ] = parsecell (rawarr2)</B><BR><BR># &lt;...
 Analysis and preparation of new data in cell array Newdata....&gt;<BR><BR><I>#
 Add new data to spreadsheet</I><BR><B>xlh = oct2xls (Newdata, xlh,
@@ -211,13 +214,16 @@ xlsclose (xlh)</B><BR><B>clear xlh</B></FONT></FONT></P>
 not using the COM interface, specify a value of 'POI' for parameter
 REQINTF when accessing OOXML files in xlsread, xlswrite, xlsopen,
 xlsfinfo (and be sure the complete Apache POI interface is
-installed).</FONT></FONT></P>
+installed). If you haven't got ActiveX installed (i.e., not having
+MS-Excel under Windows) specifying 'POI' may not be needed as in such
+cases Apache POI is the next default interface.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Using
-JExcelAPI (JXL), after writing into a worksheet you MUST save the
-file &ndash; adding data to the same or another worksheet is no more
-possible after the first call to oct2xls().</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">When
+using JExcelAPI (JXL), after writing into a worksheet you MUST save
+the file &ndash; adding data to the same or another worksheet is no
+more possible after the first call to oct2xls(). This is a limitation
+of JExcelAPI.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><BR>
@@ -257,7 +263,7 @@ read them back as text strings.</SPAN></FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">Be
-aware that there's no formula evaluator in JexcelAPI (JXL). So if you
+aware that there's no formula evaluator in JExcelAPI (JXL). So if you
 create formulas in your spreadsheet using oct2xls or xlswrite with
 'JXL', do not expect meaningful results when reading those files
 later on </SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>unless</B></FONT></FONT>
@@ -285,17 +291,19 @@ support.<BR><BR><U><B>xlsread</B></U><BR>Matlab's <B>xlsread</B>
 supports invoking extra functions while reading (&quot;passing
 function handle&quot;); octave not. But this can be simulated outside
 <B>xlsread</B>.<BR><BR>Matlab's <B>xlsread</B> flags some spreadsheet
-errors, octave-forge just returns blank cells.<BR><BR>When using a
-Java interface, octave-forge returns info about the actual (rather
-than the requested) cell range where the data came from; Matlab and
-ActiveX/Excel can't. This is due to Excel automatically trimming
-returned arrays from empty outer columns and rows. When using COM,
-octave has the same limitation.<BR>This might be solved using
-advanced Visual Basic statements into getusedrange.m but my VB
-proficiency is inadequate for this :-)</FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Personally
-I find it very useful to know from what part of a worksheet the data
-originate so I've put quite some effort in it :-)</FONT></FONT></P>
+errors, octave-forge just returns blank cells.<BR><BR>Octave-forge
+returns info about the actual (rather than the requested) cell range
+where the data came from. Personally I find it very useful to know
+from what part of a worksheet the data originate so I've put quite
+some effort in it :-)</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Matlab
+can't, due to Excel automatically trimming returned arrays from empty
+outer columns and rows. Octave is more clever but the Visual Basic
+call used for determining the actually used range has some
+limitations: (1) it relies on cached range values and thus may be
+out-of-date, and (2) it counts empty formatted cells too. When using
+ActiveX/COM, if octave's xlsfinfo.m returns wrong data ranges it is
+most often an overestimation.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Matlab's
@@ -310,14 +318,15 @@ read Excel 95 formatted .xls files (written using ML xlswrite's
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Matlab's
-xlsread returns strings for cells containing date values. Octave
-returns numerical data (where 0 = 1/1/1900 &ndash; you need to
-transfer them into proper octave date values yourself, see bottom of
-this document for more info).<BR><BR>Matlab's <B>xlsread</B> invokes
-<B>csvread</B> if no Excel interface is present. Octave-forge's
-<B>xlsread</B> doesn't.<BR><BR><U><B>xlswrite</B></U><BR>Octave-forge's
-<B>xlswrite</B> works on systems w/o Excel support, Matlab's doesn't
-(properly).</FONT></FONT></P>
+xlsread returns strings for cells containing date values. This makes
+for endless if-then-elseif-else-end constructs to catch all  expected
+date formates. Octave returns numerical data (where 0 = 1/1/1900 &ndash;
+you can easily transfer them into proper octave date values yourself
+using e.g. datestr(), see bottom of this document for more
+info).<BR><BR>Matlab's <B>xlsread</B> invokes <B>csvread</B> if no
+Excel interface is present. Octave-forge's <B>xlsread</B>
+doesn't.<BR><BR><U><B>xlswrite</B></U><BR>Octave-forge's <B>xlswrite</B>
+works on systems w/o Excel support, Matlab's doesn't (properly).</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">When
@@ -333,8 +342,9 @@ when creating a new spreadsheet, octave's xlswrite only creates the
 requested worksheet. (Did you know that you can instruct Excel to
 create spreadsheets with just one, or any number of, worksheets? Look
 in Tools | Options, General tab.)</FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">And
-octave doesn't touch the &ldquo;active sheet&rdquo;.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Oh
+and octave doesn't touch the &ldquo;active sheet&rdquo; - but that's
+not automatically an advantage.</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">If
@@ -360,18 +370,16 @@ invisibly, you can only end it through Task Manager.<BR>A tiny
 problem is that one cannot find out easily through COM what file
 types are supported; xls, wks, wk1, xlsx, etc.<BR>Another -obvious-
 limitation is that COM Excel access only works on Windows systems
-where Excel is installed.<BR>As Excel/COM trims returned arrays from
-empty outer row and columns it is not easy to find out from what cell
-range the returned data originate.<BR><BR>JExcelAPI (Java-based and
-therefore platform-independent) is proven technology but switching
-between reading and writing is quite involved and memory-hungry when
+where Excel is installed.<BR><BR>JExcelAPI (Java-based and therefore
+platform-independent) is proven technology but switching between
+reading and writing is quite involved and memory-hungry when
 processing large spreadsheets. As the docs state, JExcelAPI is
 optimized for reading and it does do that well - but slower than
 Excel/COM. The fact that upon a switch from reading to writing the
-existing spreadsheet is overwritten <B>in plac</B>e by a blank one
-and that you can only get the contents back wen writing out all of
-the changes is worrying - and any change after the first write() is
-lost as a next write() doesn't seem to work, worse yet, you may
+existing spreadsheet is overwritten <B>in plac</B><B>e</B> by a blank
+one and that you can only get the contents back wen writing out all
+of the changes is worrying - and any change after the first write()
+is lost as a next write() doesn't seem to work, worse yet, you may
 completely loose the spreadsheet in question. The first is by
 JExcelAPI design, the second is probably a bug (in octave-forge/Java
 or JExcelAPI ? I don't know). Adding data to existing spreadsheets
@@ -383,11 +391,11 @@ respectively).</FONT></FONT></P>
 unlike ApachePOI, doesn't evaluate functions while reading but
 instead relies on cached results (i.e. results computed by Excel
 itself). Depending on Excel settings (&ldquo;Automatic calculation&rdquo;
-ON or OFF) this may or may not yield incorrect results.<BR><BR>Apache
-POI (Java-based and platform-independent too) is based on the
-OpenOffice.org I/O Excel r/w routines. It is a little more versatile
-than JExcelAPI, while it doesn't support BIFF5 it does support BIFF8
-(Excel 97 &ndash; 2003) and OOXML (Excel 2007).</FONT></FONT></P>
+ON or OFF) this may or may not yield incorrect (or expected)
+results.<BR><BR>Apache POI (Java-based and platform-independent too)
+is based on the OpenOffice.org I/O Excel r/w routines. It is a little
+more versatile than JExcelAPI, while it doesn't support BIFF5 it does
+support BIFF8 (Excel 97 &ndash; 2003) and OOXML (Excel 2007).</FONT></FONT></P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">It
 is slower than native JXL let alone Excel &amp; COM but it features
 active formula evaluation, although at the moment (v. 3.6) not all
@@ -436,9 +444,10 @@ big chunk of your computer's RAM in which all java classes and
 methods etc. are to be loaded: the java memory pool. It does this
 because java has a very sophisticated &ldquo;garbage collection&rdquo;
 system. At least on Windows, the initial size is 2MB and the maximum
-size is 16 MB. On Linux this allocated size might differ. This part
-of memory is where the java-based XLS/ODS octave routines live and
-keep their variables etc.</FONT></FONT></P>
+size is 16 MB. On Linux this allocated size might differ (e.g., my
+Mandriva box with openJDK has a 512 MB default max setting). This
+part of memory is where the java-based XLS/ODS octave routines live
+and keep their variables etc.</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">For
 transferring large pieces of information to and from spreadsheets you
@@ -460,7 +469,8 @@ javaclasspath.m is located), containing just the following lines:</FONT></FONT><
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(where
 16 = initial size, 512 = maximum size (in this example), m stands for
-Megabyte. This maximum is system-dependent).</FONT></FONT></P>
+Megabyte. This maximum is system-dependent. E.g., I have a 1 GB
+setting).</FONT></FONT></P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
@@ -541,10 +551,9 @@ more structured approach is below:</FONT></FONT></P>
 	<P><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">b.
 	If there's an asterisk on the java package line (then the package is
 	loaded). If not, do a </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
-	rebuild-auto java</SPAN></SPAN></FONT></FONT></SPAN></P>
+	rebuild -auto java</SPAN></SPAN></FONT></FONT></SPAN></P>
 </OL>
-<P ALIGN=LEFT STYLE="margin-left: 2cm; text-indent: -0.64cm; margin-bottom: 0cm">
-<BR>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
 </P>
 <OL START=4>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
@@ -610,8 +619,8 @@ octave or some other problem outside octave.</FONT></FONT></P>
 	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">xls2
 	= xlsopen ('test.xls', 1, 'jxl')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
 	If this works and xls2 is a struct with various fields containing
-	objects, the JExcelAPI interface (JXL) works as well. Don'tforget to
-	do </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">xls2
+	objects, the JExcelAPI interface (JXL) works as well. Don't forget
+	to do </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">xls2
 	= xlsclose (xls2)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
 	</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">to
 	close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
@@ -625,9 +634,9 @@ octave or some other problem outside octave.</FONT></FONT></P>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>xlsopen</B>/<B>xlsclos</B>e
 and friends have been written so that adding other interfaces (Perl?
-native octave? ...?) should be very easily accomplished. <B>xlsopen</B>
-merely needs two stanzas, <B>xlsfinfo</B> and <B>getusedrange</B>
-each need an additional elseif stanza, and <B>xlsclose</B> needs a
+native octave? ...?) should be very easily accomplished. <B>Xlsopen.m</B>
+merely needs two stanzas, <B>xlsfinfo.m</B> and <B>getusedrange.m</B>
+each need an additional elseif stanza, and <B>xlsclose.m</B> needs a
 small stanza for closing the pointer struct and writing to disk. </FONT></FONT>
 </P>
 <P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
@@ -662,6 +671,6 @@ easier.<BR><BR>Some other options for development (who?):</FONT></FONT></P>
 </P>
 <P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm">
 <FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Philip
-Nienhuis, August 27, 2010</FONT></FONT></P>
+Nienhuis, October 10, 2010</FONT></FONT></P>
 </BODY>
 </HTML>

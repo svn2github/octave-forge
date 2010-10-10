@@ -110,7 +110,6 @@
 ## 2010-08-25 Improved helptext (moved some text around)
 ## 2010-08-27 Added ods3jotk2oct - internal function for odfdom-0.8.6.jar
 ##      "     Extended check on spsh_opts (must be a struct) 
-## 2010-09-11 Corrected wrong argument index in ods struct error message
 ##
 ## (Latest update of subfunctions below: 2010-08-27)
 
@@ -364,7 +363,7 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh, crange, spsh_opts)
 		++ii;
 	endwhile
 
-	# Crop rawarr from all empty outer rows & columns just like Excel does
+	# Crop rawarr from all empty outer rows & columns
 	# & keep track of limits
 	emptr = cellfun ('isempty', rawarr);
 	if (all (all (emptr)))
@@ -583,7 +582,7 @@ endfunction
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## ods2oct - get data out of an ODS spreadsheet into octave.
+## ods2oct - get data out of an ODS spreadsheet into octave using jOpenDocument.
 ## Watch out, no error checks, and spreadsheet formula error results
 ## are conveyed as 0 (zero).
 ##

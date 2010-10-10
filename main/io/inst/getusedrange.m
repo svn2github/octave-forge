@@ -20,14 +20,16 @@
 ## pointed to in struct @var{spptr} (either MS-Excel or
 ## OpenOffice Calc).
 ##
-## @var{shindex#} must be numeric. @var{spptr} can either refer to an
-## MS-Excel spreadsheet (spptr returned by xlsopen) or an OpenOffice.org
-## Calc spreadsheet (sptr returned by odsopen).
+## @var{shindex#} must be numeric and is 1-based. @var{spptr} can either
+## refer to an MS-Excel spreadsheet (spptr returned by xlsopen) or an
+## OpenOffice.org Calc spreadsheet (spptr returned by odsopen).
 ##
 ## Be aware that especially for OpenOffice.org Calc (ODS) spreadsheets 
 ## the results can only be obtained by counting all cells in all rows;
 ## this can be fairly time-consuming.
-## The ActiveX (COM interface) doesn't allow (AFAIK) returning this info.
+## For the ActiveX (COM) interface the underlying Visual Basic call relies
+## on cached range values and counts empty cells with only formatting too,
+## so COM returns only approximate (but usually too big) range values.
 ##
 ## Examples:
 ##
@@ -58,6 +60,7 @@
 ## 2010-08-24 Added support for odfdom 0.8.6 (ODF Toolkit)
 ## 2010-08-27 Added checks for input arguments
 ##      "     Indentation changed from tab to doublespace
+## 2010-10-07 Added COM support (at last!)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -68,6 +71,8 @@ function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
     [ trow, lrow, lcol, rcol ] = getusedrange_otk (spptr, ii);
   elseif (strcmp (spptr.xtype, 'JOD'))
     [ trow, lrow, lcol, rcol ] = getusedrange_jod (spptr, ii);
+  elseif (strcmp (spptr.xtype, 'COM'))
+    [ trow, lrow, lcol, rcol ] = getusedrange_com (spptr, ii);
   elseif (strcmp (spptr.xtype, 'POI'))
     [ trow, lrow, lcol, rcol ] = getusedrange_poi (spptr, ii);
   elseif (strcmp (spptr.xtype, 'JXL'))
@@ -207,7 +212,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 
 	# This function works by virtue of sheets in JOD actually being a Java string.
 	# It works outside of the Java memory/heap space which is an added benefit...
-	# (Read: this is one big dirty hack......)
+	# (Read: this is one big dirty hack...... prone to crash Java on BIG spreadsheets)
 
 	if (isnumeric (wsh))
 		sh = char (ods.workbook.getSheet (wsh - 1));
@@ -315,6 +320,57 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 endfunction
 
 
+## Copyright (C) 2010 Philip Nienhuis
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## getusedrange_com
+
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
+## Created: 2010-10-07
+
+function [ trow, brow, lcol, rcol ] = getusedrange_com (xls, ii)
+
+	sh = xls.workbook.Worksheets (ii);
+	
+	# Decipher used range. Beware, UsedRange() returns *cached* rectangle of
+	# all spreadsheet cells containing *anything*, including just formatting
+	# (i.e., empty cells are included too). ==> This is an approximation only
+	allcells = sh.UsedRange;
+	
+	# Get top left cell as a Range object
+	toplftcl = allcells.Columns(1).Rows(1);
+	
+	# Count number of rows & cols in virtual range from A1 to top left cell
+	lcol = sh.Range ("A1", toplftcl).columns.Count;
+	trow = sh.Range ("A1", toplftcl).rows.Count;
+	
+	# Add real occupied rows & cols to obtain end row & col
+	brow = trow + allcells.rows.Count() - 1;
+	rcol = lcol + allcells.columns.Count() - 1;
+	
+	# Check if there are real data
+	if ((lcol == rcol) && (trow = brow))
+		if (isempty (toplftcl.Value))
+			trow = brow = lcol = rcol = 0;
+		endif
+	endif
+
+endfunction
+
+
 ## Copyright (C) 2010 Philip Nienhuis, prnienhuis at users.sf.net
 ## 
 ## This program is free software; you can redistribute it and/or modify
@@ -342,8 +398,8 @@ function [ trow, brow, lcol, rcol ] = getusedrange_poi (xls, ii)
 
 	sh = xls.workbook.getSheetAt (ii-1);         # Java POI starts counting at 0 
 
-	trow = sh.getFirstRowNum ();
-	brow = sh.getLastRowNum ();
+	trow = sh.getFirstRowNum ();                 # 0-based
+	brow = sh.getLastRowNum ();                  # 0-based
 	# Get column range
 	lcol = 1048577;  # OOXML (xlsx) max. + 1
 	rcol = 0;
@@ -365,7 +421,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_poi (xls, ii)
 		# Empty sheet
 		trow = 0; brow = 0; lcol = 0; rcol = 0;
 	else
-		brow = min (brow, botrow) + 1; ++trow; ++lcol; ++rcol;
+		brow = min (brow, botrow) + 1; ++trow; ++lcol; ++rcol;    # 1-based return values
 	endif
 
 endfunction
@@ -397,7 +453,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jxl (xls, wsh)
 
 	persistent emptycell = (java_get ('jxl.CellType', 'EMPTY')).toString ();
 
-	sh = xls.workbook.getSheet (wsh - 1);			# POI sheet count 0-based
+	sh = xls.workbook.getSheet (wsh - 1);			# JXL sheet count 0-based
 
 	brow = sh.getRows ();
 	rcol = sh.getColumns ();

@@ -111,16 +111,22 @@
 ## 2010-05-31 Updated help text (delay i.c.o. empty range due to getusedrange call)
 ## 2010-07-28 Added option to read formulas as text strings rather than evaluated value
 ## 2010-08-25 Small typo in help text
+##
+## Latest subfunc update: 2010-10-08 (xls2com2oct)
 
 function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh, datrange='', spsh_opts=[])
 
-	if isempty (spsh_opts)
+	# Check & setup options struct
+	if (nargin < 4 || isempty (spsh_opts))
 		spsh_opts.formulas_as_text = 0;
-		# Other future options here
+		spsh_opts.strip_array = 1;
+		# Future options:
 	endif
 
+	# Select the proper interfaces
 	if (strcmp (xls.xtype, 'COM'))
-		# Call Excel tru COM server
+		# Call Excel tru COM server. Excel/COM has no way of returning formulas
+		# as strings, so arg spsh_opts has no use (yet)
 		[rawarr, xls, rstatus] = xls2com2oct (xls, wsh, datrange);
 	elseif (strcmp (xls.xtype, 'POI'))
 		# Read xls file tru Java POI
@@ -128,12 +134,33 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh, datrange='', spsh_opts=[]
 	elseif (strcmp (xls.xtype, 'JXL'))
 		# Read xls file tru JExcelAPI
 		[rawarr, xls, rstatus] = xls2jxla2oct (xls, wsh, datrange, spsh_opts);
-
 #	elseif ---- <Other interfaces here>
-
+		# Call to next interface
 	else
 		error (sprintf ("xls2oct: unknown Excel .xls interface - %s.", xls.xtype));
+	endif
 
+	# Optionally strip empty outer rows and columns & keep track of original data location
+	if (spsh_opts.strip_array)
+		emptr = cellfun ('isempty', rawarr);
+		if (all (all (emptr)))
+			rawarr = {};
+			xls.limits = [];
+		else
+			nrows = size (rawarr, 1); ncols = size (rawarr, 2);
+			irowt = 1;
+			while (all (emptr(irowt, :))), irowt++; endwhile
+			irowb = nrows;
+			while (all (emptr(irowb, :))), irowb--; endwhile
+			icoll = 1;
+			while (all (emptr(:, icoll))), icoll++; endwhile
+			icolr = ncols;
+			while (all (emptr(:, icolr))), icolr--; endwhile
+
+			# Crop output cell array and update limits
+			rawarr = rawarr(irowt:irowb, icoll:icolr);
+			xls.limits = xls.limits + [icoll-1, icolr-ncols; irowt-1, irowb-nrows];
+		endif
 	endif
 
 endfunction
@@ -179,11 +206,15 @@ endfunction
 
 ## Author: Philip Nienhuis
 ## Created: 2009-09-23
-## Last updated 2009-12-11
+## Last updates:
+## 2009-12-11 <forgot what it was>
+## 2010-10-07 Implemented limits (only reliable for empty input ranges)
+## 2010-10-08 Resulting data array now cropped (also in case of specified range)
+## 2010-10-10 More code cleanup (shuffled xls tests & wsh ptr code before range checks)
 
-function [obj, xls, rstatus ] = xls2com2oct (xls, wsh, range)
+function [rawarr, xls, rstatus ] = xls2com2oct (xls, wsh, crange)
 
-	rstatus = 0; obj = {};
+	rstatus = 0; rawarr = {};
   
 	# Basic checks
 	if (nargin < 2) error ("xls2com2oct needs a minimum of 2 arguments."); endif
@@ -192,76 +223,81 @@ function [obj, xls, rstatus ] = xls2com2oct (xls, wsh, range)
 		wsh = wsh(1:31);
 	endif
 
+	# Check the file handle struct
+	test1 = ~isfield (xls, "xtype");
+	test1 = test1 || ~isfield (xls, "workbook");
+	test1 = test1 || ~strcmp (char (xls.xtype), 'COM');
+	test1 = test1 || isempty (xls.workbook);
+	test1 = test1 || isempty (xls.app);
+	if test1
+		error ("Invalid file pointer struct");
+	endif
+
+
+	app = xls.app;
+	wb = xls.workbook;
+
+	# Check & get handle to requested worksheet
+	wb_cnt = wb.Worksheets.count;
+	old_sh = 0;	
+	if (isnumeric (wsh))
+		if (wsh < 1 || wsh > wb_cnt)
+			errstr = sprintf ("Worksheet number: %d out of range 1-%d", wsh, wb_cnt);
+			error (errstr)
+			return
+		else
+			old_sh = wsh;
+		endif
+	else
+		# Find worksheet number corresponding to name in wsh
+		wb_cnt = wb.Worksheets.count;
+		for ii =1:wb_cnt
+			sh_name = wb.Worksheets(ii).name;
+			if (strcmp (sh_name, wsh)) old_sh = ii; endif
+		endfor
+		if (~old_sh)
+			errstr = sprintf ("Worksheet name \"%s\" not present", wsh);
+			error (errstr)
+		else
+			wsh = old_sh;
+		endif
+	endif
+	sh = wb.Worksheets (wsh);		
+
 	nrows = 0;
-	emptyrange = 0;
-	if ((nargin == 2) || (isempty (range))) 
-		emptyrange = 1;
+	if ((nargin == 2) || (isempty (crange)))
+		allcells = sh.UsedRange;
+		# Get actually used range indices
+		[trow, brow, lcol, rcol] = getusedrange (xls, old_sh);
+		nrows = brow - trow + 1; ncols = rcol - lcol + 1;
+		topleft = calccelladdress (trow, lcol);
 	else
 		# Extract top_left_cell from range
-		[topleft, nrows, ncols] = parse_sp_range (range);
+		[topleft, nrows, ncols, trow, lcol] = parse_sp_range (crange);
+		brow = trow + nrows - 1;
+		rcol = lcol + ncols - 1;
 	endif;
   
-	if (nrows >= 1 || emptyrange) 
-		# Check the file handle struct
-		test1 = ~isfield (xls, "xtype");
-		test1 = test1 || ~isfield (xls, "workbook");
-		test1 = test1 || ~strcmp (char (xls.xtype), 'COM');
-		test1 = test1 || isempty (xls.workbook);
-		test1 = test1 || isempty (xls.app);
-		if test1
-			error ("Invalid file pointer struct");
-		endif
-		app = xls.app;
-		wb = xls.workbook;
-		wb_cnt = wb.Worksheets.count;
-		old_sh = 0;	
-		if (isnumeric (wsh))
-			if (wsh < 1 || wsh > wb_cnt)
-				errstr = sprintf ("Worksheet number: %d out of range 1-%d", wsh, wb_cnt);
-				error (errstr)
-				return
-			else
-				old_sh = wsh;
-			endif
-		else
-			# Find worksheet number corresponding to name in wsh
-			wb_cnt = wb.Worksheets.count;
-			for ii =1:wb_cnt
-				sh_name = wb.Worksheets(ii).name;
-				if (strcmp (sh_name, wsh)) old_sh = ii; endif
-			endfor
-			if (~old_sh)
-				errstr = sprintf ("Worksheet name \"%s\" not present", wsh);
-				error (errstr)
-			else
-				wsh = old_sh;
-			endif
+	if (nrows >= 1) 
+		# Get object from Excel sheet, starting at cell top_left_cell
+		r = sh.Range (topleft);
+		r = r.Resize (nrows, ncols);
+		rawarr = r.Value;
+		delete (r);
+
+		# Take care of actual singe cell range
+		if (isnumeric (rawarr) || ischar (rawarr))
+			rawarr = {rawarr};
 		endif
 
-		sh = wb.Worksheets (wsh);
-		
-		if (emptyrange)
-		   allcells = sh.UsedRange;
-		   obj = allcells.Value;
-		else
-			# Get object from Excel sheet, starting at cell top_left_cell
-			r = sh.Range (topleft);
-			r = r.Resize (nrows, ncols);
-			obj = r.Value;
-			delete (r);
-		endif;
-		# Take care of actual singe cell range
-		if (isnumeric (obj) || ischar (obj))
-			obj = {obj};
-		endif
 		# If we get here, all seems to have gone OK
 		rstatus = 1;
-	
-  else
-    error ("No data read from Excel file");
-	rstatus = 0;
-	
-  endif
+		# Keep track of data rectangle limits
+		xls.limits = [lcol, rcol; trow, brow];
+	else
+		error ("No data read from Excel file");
+		rstatus = 0;
+	endif
 	
 endfunction
 
@@ -312,6 +348,8 @@ endfunction
 ## 2010-03-14 Fixed max column nr for OOXML for empty given range
 ## 2010-07-28 Added option to read formulas as text strings rather than evaluated value
 ## 2010-08-01 Some bug fixes for formula reading (cvalue rather than scell)
+## 2010-10-10 Code cleanup: -getusedrange called; - fixed typo in formula evaluation msg;
+##      "     moved cropping output array to calling function.
 
 function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_opts)
 
@@ -348,54 +386,59 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_op
 		printf ("(Reading from worksheet %s)\n", 	sh.getSheetName ());
 	else
 		sh = wb.getSheet (wsh);
-		if (isempty (sh)), error (sprintf("Worksheet %s not found in file %s", wsh, xls.filename)); endif
+		if (isempty (sh)), error (sprintf ("Worksheet %s not found in file %s", wsh, xls.filename)); endif
 	end
 
 	# Check ranges
-	firstrow = sh.getFirstRowNum ();
-	lastrow = sh.getLastRowNum ();
+	firstrow = sh.getFirstRowNum ();		# 0-based
+	lastrow = sh.getLastRowNum ();			# 0-based
 	if (isempty (cellrange))
-		# Get used range by searching (slow...). Beware, it can be bit unreliable
-		## FIXME - can be replaced by call to getusedrange.m
+#		# Get used range by searching (slow...). Beware, it can be bit unreliable
+#		## FIXME - can be replaced by call to getusedrange.m
 #		lcol = 65535;    # Old xls value
-		lcol = 1048576;  # OOXML (xlsx) max.
-		rcol = 0;
-		for ii=firstrow:lastrow
-			irow = sh.getRow (ii);
-			if (~isempty (irow))
-				scol = (irow.getFirstCellNum).intValue ();
-				lcol = min (lcol, scol);
-				ecol = (irow.getLastCellNum).intValue () - 1;
-				rcol = max (rcol, ecol);
-				# Keep track of lowermost non-empty row as getLastRowNum() is unreliable
-				if ~(irow.getCell(scol).getCellType () == ctype(4) && irow.getCell(ecol).getCellType () == ctype(4))
-					botrow = ii;
-				endif
-			endif
-		endfor
-		lastrow = min (lastrow, botrow);
+#		lcol = 1048576;  # OOXML (xlsx) max.
+#		rcol = 0;
+#		for ii=firstrow:lastrow
+#			irow = sh.getRow (ii);
+#			if (~isempty (irow))
+#				scol = (irow.getFirstCellNum).intValue ();
+#				lcol = min (lcol, scol);
+#				ecol = (irow.getLastCellNum).intValue () - 1;
+#				rcol = max (rcol, ecol);
+#				# Keep track of lowermost non-empty row as getLastRowNum() is unreliable
+#				if ~(irow.getCell(scol).getCellType () == ctype(4) && irow.getCell(ecol).getCellType () == ctype(4))
+#					botrow = ii;
+#				endif
+#			endif
+#		endfor
+		if (ischar (wsh))
+			# get numeric sheet index
+			ii = wb.getSheetIndex (sh);
+		else
+			ii = wsh;
+		endif
+		[ firstrow, lastrow, lcol, rcol ] = getusedrange (xls, ii);
 		nrows = lastrow - firstrow + 1;
 		ncols = rcol - lcol + 1;
 	else
 		# Translate range to HSSF POI row & column numbers
-		[topleft, nrows, ncols, trow, lcol] = parse_sp_range (cellrange);
-		firstrow = max (trow-1, firstrow);
+		[topleft, nrows, ncols, firstrow, lcol] = parse_sp_range (cellrange);
 		lastrow = firstrow + nrows - 1;
-		lcol = lcol -1;						# POI rows & column # 0-based
+		rcol = lcol + ncols - 1;
 	endif
-	
+
 	# Create formula evaluator (needed to infer proper cell type into rawarr)
 	frm_eval = wb.getCreationHelper().createFormulaEvaluator ();
 	
 	# Read contents into rawarr
 	rawarr = cell (nrows, ncols);			# create placeholder
 	for ii = firstrow:lastrow
-		irow = sh.getRow (ii);
+		irow = sh.getRow (ii-1);
 		if ~isempty (irow)
 			scol = (irow.getFirstCellNum).intValue ();
 			ecol = (irow.getLastCellNum).intValue () - 1;
-			for jj = max (scol, lcol) : min (lcol+ncols-1, ecol)
-				scell = irow.getCell (jj);
+			for jj = lcol:rcol
+				scell = irow.getCell (jj-1);
 				if ~isempty (scell)
 					# Explore cell contents
 					type_of_cell = scell.getCellType ();
@@ -447,23 +490,23 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_op
 		endif
 	endfor
 
-	if (jerror > 0) warning (sprintf ("oct2xls: %d cached values instead of formula evaluations.\n", jerror)); endif
+	if (jerror > 0) warning (sprintf ("xls2oct: %d cached values instead of formula evaluations.\n", jerror)); endif
 	
-	# Crop rawarr from empty outer rows & columns like Excel does
-	emptr = cellfun('isempty', rawarr);
-	irowt = 1;
-	while (all (emptr(irowt, :))), irowt++; endwhile
-	irowb = nrows;
-	while (all (emptr(irowb, :))), irowb--; endwhile
-	icoll = 1;
-	while (all (emptr(:, icoll))), icoll++; endwhile
-	icolr = ncols;
-	while (all (emptr(:, icolr))), icolr--; endwhile
-	# Crop textarray
-	rawarr = rawarr(irowt:irowb, icoll:icolr);
+#	# Crop rawarr from empty outer rows & columns
+#	emptr = cellfun('isempty', rawarr);
+#	irowt = 1;
+#	while (all (emptr(irowt, :))), irowt++; endwhile
+#	irowb = nrows;
+#	while (all (emptr(irowb, :))), irowb--; endwhile
+#	icoll = 1;
+#	while (all (emptr(:, icoll))), icoll++; endwhile
+#	icolr = ncols;
+#	while (all (emptr(:, icolr))), icolr--; endwhile
+#	# Crop cell array
+#	rawarr = rawarr(irowt:irowb, icoll:icolr);
 	status = 1;
 
-	xls.limits = [lcol+icoll, lcol+icolr; firstrow+irowt, firstrow+irowb];
+	xls.limits = [lcol, rcol; firstrow, lastrow];
 	
 endfunction
 
@@ -513,6 +556,8 @@ endfunction
 ## 2010-07-28 Added option to read formulas as text strings rather than evaluated value
 ##            Added check for proper xls structure
 ## 2010-07-29 Added check for too latge requested data rectangle
+## 2010-10-10 Code cleanup: -getusedrange(); moved cropping result array to
+##      "     calling function
 
 function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_opts)
 
@@ -560,31 +605,39 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 	end
 
 	# Check ranges
-	firstrow = 0;
-	lcol = 0;
-	
+#	firstrow = 0;
+#	lcol = 0;
+
 	if (isempty (cellrange))
-		nrows = sh.getRows ();
-		lastrow = nrows - 1;
-		ncols = sh.getColumns ();
-		trow = firstrow;
-		rcol = ncols - 1;
+		# Get numeric sheet pointer (1-based)
+		ii = 1;
+		while (ii <= nr_of_sheets)
+			if (strcmp (wsh, shnames{ii}) == 1)
+				wsh = ii;
+				ii = nr_of_sheets + 1;
+			else
+				++ii;
+			endif
+		endwhile
+		# Get data rectangle row & column numbers (1-based)
+		[firstrow, lastrow, lcol, rcol] = getusedrange (xls, wsh);
+		nrows = lastrow - firstrow + 1;
+		ncols = rcol - lcol + 1;
 	else
-		# Translate range to HSSF POI row & column numbers
-		[dummy, nrows, ncols, trow, lcol] = parse_sp_range (cellrange);
-		firstrow = max (trow-1, firstrow);
-		lcol = lcol - 1;					# POI rows & column # 0-based
+		# Translate range to row & column numbers (1-based)
+		[dummy, nrows, ncols, firstrow, lcol] = parse_sp_range (cellrange);
 		# Check for too large requested range against actually present range
-		lastrow = min (firstrow + nrows - 1, sh.getRows () - 1);
-		nrows = min (nrows, sh.getRows () - firstrow);
-		ncols = min (ncols, sh.getColumns () - lcol);
+		lastrow = min (firstrow + nrows - 1, sh.getRows ());
+		nrows = min (nrows, sh.getRows () - firstrow + 1);
+		ncols = min (ncols, sh.getColumns () - lcol + 1);
+		rcol = lcol + ncols - 1;
 	endif
 
 	# Read contents into rawarr
 	rawarr = cell (nrows, ncols);			# create placeholder
-	for jj = lcol : lcol+ncols-1
+	for jj = lcol : rcol
 		for ii = firstrow:lastrow
-			scell = sh.getCell (jj, ii);
+			scell = sh.getCell (jj-1, ii-1);
 			switch char (scell.getType ())
 				case ctype {1, 1}   # Boolean
 					rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
@@ -630,20 +683,20 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 		endfor
 	endfor
 
-	# Crop rawarr from empty outer rows & columns just like Excel does
-	emptr = cellfun('isempty', rawarr);
-	irowt = 1;
-	while (all (emptr(irowt, :))), irowt++; endwhile
-	irowb = nrows;
-	while (all (emptr(irowb, :))), irowb--; endwhile
-	icoll = 1;
-	while (all (emptr(:, icoll))), icoll++; endwhile
-	icolr = ncols;
-	while (all (emptr(:, icolr))), icolr--; endwhile
-	# Crop textarray
-	rawarr = rawarr(irowt:irowb, icoll:icolr);
+#	# Crop rawarr from empty outer rows & columns
+#	emptr = cellfun('isempty', rawarr);
+#	irowt = 1;
+#	while (all (emptr(irowt, :))), irowt++; endwhile
+#	irowb = nrows;
+#	while (all (emptr(irowb, :))), irowb--; endwhile
+#	icoll = 1;
+#	while (all (emptr(:, icoll))), icoll++; endwhile
+#	icolr = ncols;
+#	while (all (emptr(:, icolr))), icolr--; endwhile
+#	# Crop cell array
+#	rawarr = rawarr(irowt:irowb, icoll:icolr);
 	status = 1;
 
-	xls.limits = [lcol+icoll, lcol+icolr; firstrow+irowt, firstrow+irowb];
+	xls.limits = [lcol, rcol; firstrow, lastrow];
 	
 endfunction

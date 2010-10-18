@@ -1,0 +1,12 @@
+struct >> Structure Handling
+Structure handling
+ getfields
+ setfields
+ tars
+ arefields
+ fields2cell
+ cell2fields
+ fieldempty
+ structcat
+Tests
+ test_struct

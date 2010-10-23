@@ -73,6 +73,11 @@ INSTALL_DIR = root
 
 PREFIX=$(CURDIR)/$(INSTALL_DIR)
 
+# --------------------------------------
+# Download URLs
+# --------------------------------------
+PTHREADS_CVS_PULL ?= :pserver:anoncvs@sourceware.org:/cvs/pthreads-win32
+PTHREADS_CVS_DATE ?= '5/11/2010'
 
 # --------------------------------------
 # DO NOT EDIT BELOW THIS LINE
@@ -89,7 +94,8 @@ GCC_CONFIG_ARGS = \
 --with-dwarf2 \
 --enable-version-specific-runtime-libs \
 --disable-win32-registry \
---disable-nls
+--disable-nls \
+--disable-lto
 CRT_CONFIG_ARGS = CPPFLAGS=-D__MINGW_SHOW_INVALID_PARAMETER_EXCEPTION
 
 # --------------------------------------
@@ -357,6 +363,8 @@ ifeq ($(GCC_UPDATE),0)
 .PHONY: $(SRC_DIR)/gcc/.update.marker
 else
 $(SRC_DIR)/gcc/.update.marker : $(SRC_DIR)/gcc/.co.marker
+	cd $(dir $@) && $(SVN) revert gcc/doc/tm.texi
+	cd $(dir $@) && $(SVN) revert gcc/doc/tm.texi.in
 	cd $(dir $@) && $(SVN) update --revision ${GCC_REVISION}
 endif
 
@@ -381,7 +389,7 @@ $(BUILD_DIR)/gcc/.config.marker : \
 	--enable-languages=c,c++,fortran \
 	$(GCC_CONFIG_ARGS) \
 	${GCC_CONFIG_EXTRA_ARGS_MULTI_${ENABLE_MULTILIB}} \
-	$(GCC_CONFG_EXTRA_ARGS)
+	$(GCC_CONFIG_EXTRA_ARGS)
 	touch $@
 
 # --------------------------------------
@@ -461,13 +469,13 @@ gcc-libgcc-install
 # --------------------------------------
 pthreads-download : $(SRC_DIR)/pthreads/.co.marker
 $(SRC_DIR)/pthreads/.co.marker : $(SRC_DIR)/pthreads/.mkdir.marker
-	cd ${SRC_DIR} && $(CVS) -z9 -d ":pserver:anoncvs@sourceware.org:/cvs/pthreads-win32" checkout pthreads
+	cd ${SRC_DIR} && $(CVS) cvs -z9 -d $(PTHREADS_CVS_PULL) checkout -D ${PTHREADS_CVS_DATE} pthreads
 	@touch $@
 
 pthreads-update : $(SRC_DIR)/pthreads/.update.marker
 ifeq ($(strip $(PTHREADS_UPDATE)),1)
 $(SRC_DIR)/pthreads/.update.marker :
-	cd $(dir $@) && $(CVS) update
+	cd $(dir $@) && $(CVS) update -D ${PTHREADS_CVS_DATE}
 else
 .PHONY: $(SRC_DIR)/pthreads/.update.marker
 endif
@@ -640,4 +648,20 @@ strip-exe :
 	-print -exec strip.exe --strip-unneeded '{}' \;
 
 dist :
-	cd $(PREFIX) && $(TAR) c --exclude '*.marker' * | lzma -czv7 > $(CURDIR)/$(TARGET_ARCH)_gcc-$(GCC_BRANCH)_`date "+%Y%m%d"`.tar.lzma
+	cd $(PREFIX) && $(TAR) c --exclude '*.marker' --exclude '*.la' * | lzma -czv7 > $(CURDIR)/$(TARGET_ARCH)_gcc-$(GCC_BRANCH)_`date "+%Y%m%d"`.tar.lzma
+	cd $(PREFIX) && zip -r -9 $(CURDIR)/$(TARGET_ARCH)_gcc-$(GCC_BRANCH)_`date "+%Y%m%d"`.zip . -x '.*.marker' '*.*.marker' '*.la'
+
+mostly-clean :
+	if test -e $(PREFIX)/mingw; then junction -d $(PREFIX)/mingw; fi
+	if test -e $(PREFIX)/$(TARGET_ARCH)/lib; then junction -d "$(PREFIX)/$(TARGET_ARCH)/lib"; fi
+	-rm -rf $(PREFIX)
+	-rm -rf $(BUILD_DIR)/binutils
+	-rm -rf $(BUILD_DIR)/gcc
+	-rm -rf $(BUILD_DIR)/headers
+	-rm -rf $(BUILD_DIR)/crt
+	-rm -rf $(BUILD_DIR)/pthreads
+
+dist-clean : mostly-clean
+	-rm -rf $(BUILD_DIR)/mpc
+	-rm -rf $(BUILD_DIR)/mpfr
+	-rm -rf $(BUILD_DIR)/gmp

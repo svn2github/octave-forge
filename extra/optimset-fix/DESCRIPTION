@@ -1,0 +1,10 @@
+Name: optimset-fix
+Version: 0.1
+Date: 2010-10-25
+Author: See files
+Maintainer: Olaf Till <olaf.till@uni-jena.de>
+Title: optimset fix
+Description: Fixed versions of optimset, optimget, __all_opts__ for use with Octave 3.2.4
+Depends: octave (<= 3.2.4)
+Autoload: yes
+License: GPL 3 or later

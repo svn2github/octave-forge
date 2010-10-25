@@ -16,7 +16,7 @@
 %% You should have received a copy of the GNU General Public License
 %% along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-function prt = dfdp (varargin)
+function prt = dfdp (x, f, p, dp, func, bounds)
 
   %% function prt = dfdp (x, f, p, dp, func[, bounds])
   %% numerical partial derivatives (Jacobian) df/dp for use with leasqr
@@ -36,15 +36,34 @@ function prt = dfdp (varargin)
   %%----------OUTPUT VARIABLES-------
   %% prt= Jacobian Matrix prt(i,j)=df(i)/dp(j)
   %%================================
+  %%
+  %% dfxpdp is more general and is meant to be used instead of dfdp in
+  %% optimization.
 
   %% This is just an interface. The original code has been moved to
   %% __dfdp__.m, which is used with two different interfaces by
   %% leasqr.m.
 
-  if (ischar (varargin{5}))
-    varargin{5} = @ (p) str2func (varargin{5}) (varargin{1}, p);
+  %% if (ischar (varargin{5}))
+  %%   varargin{5} = @ (p) str2func (varargin{5}) (varargin{1}, p);
+  %% else
+  %%   varargin{5} = @ (p) varargin{5} (varargin{1}, p);
+  %% end
+
+  if (ischar (func))
+    func = @ (p) str2func (func) (x, p);
   else
-    varargin{5} = @ (p) varargin{5} (varargin{1}, p);
+    func = @ (p) func (x, p);
   end
 
-  prt = __dfdp__ (varargin{2:end});
+  hook.f = f;
+
+  if (nargin > 5)
+    hook.bounds = bounds;
+  end
+
+  hook.diffp = abs (dp);
+  hook.fixed = dp == 0;
+  hook.diff_onesided = dp < 0;
+
+  prt = __dfdp__ (p, func, hook);

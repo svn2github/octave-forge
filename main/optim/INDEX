@@ -15,14 +15,16 @@ Data fitting
  expfit
  wpolyfit
  leasqr
+ nonlin_residmin
+ nonlin_curvefit
  LinearRegression
 Compatibility
  fminunc_compat
- optimset
+ optimset_compat
  quadprog= try Yinyu Ye's <a href="http://dollar.biz.uiowa.edu/col/ye/matlab.html">code</a>
  linprog
 Numerical derivatives
- dfdp dcdp cdiff deriv leval
+ dfdp dcdp dfpdp dfxpdp cdiff deriv leval
  numgradient numhessian
 Pivoting
  cpiv_bard.m

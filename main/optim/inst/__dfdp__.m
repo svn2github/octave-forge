@@ -16,24 +16,72 @@
 %% You should have received a copy of the GNU General Public License
 %% along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-function prt = __dfdp__ (f, p, dp, func, bounds)
+function prt = __dfdp__ (p, func, hook)
 
-  %% Meant to be called by interfaces 'dfdp.m' and 'dcdp.m', see there.
+  %% Meant to be called by interfaces 'dfxpdp.m' and 'dfpdp.m', see there.
+
+  
+  if (nargin > 2 && isfield (hook, 'f'))
+    f = hook.f;
+  else
+    f = func (p);
+    f = f(:);
+  end
 
   m = length (f);
   n = length (p);
-  if (nargin < 5)
+
+  if (nargin > 2)
+
+    if (isfield (hook, 'fixed'))
+      fixed = hook.fixed;
+    else
+      fixed = false (n, 1);
+    end
+
+    if (isfield (hook, 'diffp'))
+      diffp = hook.diffp;
+    else
+      diffp = .001 * ones (n, 1);
+    end
+
+    if (isfield (hook, 'diff_onesided'))
+      diff_onesided = hook.diff_onesided;
+    else
+      diff_onesided = false (n, 1);
+    end
+
+    if (isfield (hook, 'bounds'))
+      bounds = hook.bounds;
+    else
+      bounds = ones (n, 2);
+      bounds(:, 1) = -Inf;
+      bounds(:, 2) = Inf;
+    end
+
+    if (isfield (hook, 'plabels'))
+      plabels = hook.plabels;
+    else
+      plabels = num2cell ((1:n).');
+    end
+
+  else
+    fixed = false (n, 1);
+    diff_onesided = fixed;
+    diffp = .001 * ones (n, 1);
     bounds = ones (n, 2);
     bounds(:, 1) = -Inf;
     bounds(:, 2) = Inf;
-  end
+  end    
+
   prt = zeros (m, n); % initialise Jacobian to Zero
-  del = dp .* p;
-  absdel = abs (del);
+  del = diffp .* p;
   idxa = p == 0;
-  del(idxa) = dp(idxa);
-  idxd = dp > 0; % double sided interval
-  idxz = dp == 0;
+  del(idxa) = diffp(idxa);
+  del(diff_onesided) = - del(diff_onesided); % keep course of
+				% optimization of previous versions
+  absdel = abs (del);
+  idxd = ~(diff_onesided | fixed); % double sided interval
   p1 = zeros (n, 1);
   p2 = p1;
   idxvs = false (n, 1);
@@ -48,7 +96,7 @@ function prt = __dfdp__ (f, p, dp, func, bounds)
   idxd(idxvl) = false;
   p1(idxvg) = max (p(idxvg) - absdel(idxvg), bounds(idxvg, 1));
   idxd(idxvg) = false;
-  idxs = ~(idxz | idxd); % single sided interval
+  idxs = ~(fixed | idxd); % single sided interval
 
   idxnv = ~(idxvl | idxvg); % current paramters within bounds
   idxnvs = idxs & idxnv; % within bounds, single sided interval
@@ -77,16 +125,24 @@ function prt = __dfdp__ (f, p, dp, func, bounds)
   del(idxs) = p1(idxs) - p(idxs);
   del(idxd) = p1(idxd) - p2(idxd);
 
+  info.f = f;
+  info.parallel = false;
+
   for j = 1:n
-    if (~idxz(j))
+    if (~fixed(j))
+      info.plabels = plabels(j, :);
       ps = p;
       ps(j) = p1(j);
-      tp1 = func (ps);
       if (idxs(j))
+	info.side = 0; % onesided interval
+	tp1 = func (ps, info);
 	prt(:, j) = (tp1(:) - f) / del(j);
       else
+	info.side = 1; % centered interval, side 1
+	tp1 = func (ps, info);
 	ps(j) = p2(j);
-	tp2 = func (ps);
+	info.side = 2; % centered interval, side 2
+	tp2 = func (ps, info);
 	prt(:, j) = (tp1(:) - tp2(:)) / del(j);
       end
     end

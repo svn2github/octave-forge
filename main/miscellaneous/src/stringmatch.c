@@ -69,6 +69,7 @@ terms specified in this license.
  *----------------------------------------------------------------------
  */
 
+#include <ctype.h> /* PAK: need tolower declaration */
 #define CONST const
 #define UCHAR (unsigned char)
 
@@ -82,8 +83,8 @@ StringCaseMatch(string, pattern, nocase)
 				 * characters. */
     int nocase;			/* 0 for case sensitive, 1 for insensitive */
 {
-    int p, charLen;
-    CONST char *pstart = pattern;
+    int p /*, charLen*/;  /* PAK: unused */
+    /* CONST char *pstart = pattern; */  /* PAK: unused */
     char ch1, ch2;
     
     while (1) {

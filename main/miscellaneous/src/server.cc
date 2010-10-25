@@ -127,7 +127,7 @@ inline void socket_error(const char *context)
 {
   int err = socket_errno();
   char errno_str[15];
-  sprintf(" %d: ",errno_str);
+  snprintf(errno_str, sizeof(errno_str), " %d: ", err);
   std::string msg = std::string(context) + std::string(errno_str) 
                   + std::string (strerror(err));
   error(msg.c_str());
@@ -189,14 +189,17 @@ sigterm_handler(int /* sig */)
 static void
 daemonize(void)
 {
-  if (fork()) exit(0);
+  if (fork()) exit(0);  // Stop parent
+  // Show child PID
   std::cout << "Octave pid: " << octave_syscalls::getpid() << std::endl;
+  std::cout.flush();
   signal(SIGTERM,sigterm_handler);
   signal(SIGQUIT,sigterm_handler);
 
-  freopen("/dev/null", "r", stdin);
-  freopen("/dev/null", "w", stdout);
-  freopen("/dev/null", "w", stderr);
+  // Exit silently if I/O redirect fails.
+  if (freopen("/dev/null", "r", stdin) == NULL
+      || freopen("/dev/null", "w", stdout) == NULL
+      || freopen("/dev/null", "w", stderr)) exit(0);
 }
 
 #else
@@ -395,6 +398,12 @@ process_commands(int channel)
 
 	if (debug) tic();
 #if 1
+        error_state = 0;
+	int parse_status = 0;
+        eval_string(context, true, parse_status, 0);
+        if (parse_status != 0 || error_state)
+            eval_string("senderror(lasterr);", true, parse_status, 0);
+#elif 0
 	octave_value_list evalargs;
 	evalargs(1) = "senderror(lasterr);";
 	evalargs(0) = context;
@@ -479,7 +488,6 @@ send(name,value)\n\
 
   // XXX FIXME XXX perhaps process the panalopy of types?
   if (nargin > 1) {
-    STATUS("sending !!!x(" << cmd.length() << ") " << cmd.c_str());
     
     octave_value def = args(1);
     if (args(1).is_string()) {
@@ -487,6 +495,7 @@ send(name,value)\n\
       // Can't use args(1).string_value() because that trims trailing \0
       charMatrix m(args(1).char_matrix_value());
       std::string s(m.row_as_string(0,false,true));
+      STATUS("sending string(" << cmd.c_str() << " len " << s.length() << ")");
       ok = writes(channel,"!!!s",4);               // string message
       t = htonl(8 + cmd.length() + s.length());
       if (ok) ok = writes(channel,&t,4);           // length of message
@@ -498,9 +507,10 @@ send(name,value)\n\
 	ok = writes(channel, cmd.c_str(), cmd.length());    // name
       if (s.length() && ok) 
 	ok = writes(channel, s.c_str(), s.length());        // string
-      STATUS("sent string(" << s.length() << ")");
     } else if (args(1).is_real_type()) {
       Matrix m(args(1).matrix_value());
+      STATUS("sending matrix(" << cmd.c_str() << " " 
+             <<  m.rows() << "x" << m.columns() << ")");
       
       // write the matrix transfer header
       ok = writes(channel,"!!!m",4);               // matrix message
@@ -518,13 +528,13 @@ send(name,value)\n\
       const double *v = m.data();                  // data
       if (m.rows()*m.columns() && ok) 
 	ok = writes(channel,v,sizeof(double)*m.rows()*m.columns());
-      STATUS("sent matrix(" << m.rows() << "x" << m.columns() << ")");
     } else {
       ok = false;
       error("send expected name and matrix or string value");
     }
     if (!ok) error("send could not write to channel");
   } else {
+    STATUS("sending command(" << cmd.length() << ") " << cmd.c_str());
     // STATUS("start writing at "<<toc()<<"us");
     ok = writes(channel, "!!!x", 4);
     t = htonl(cmd.length()); writes(channel, &t, 4);

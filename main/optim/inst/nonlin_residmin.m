@@ -15,11 +15,9 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{p}, @var{resid}, @var{cvg},
-## @var{outp}] =} nonlin_residmin (@var{f}, @var{pin})
+## @deftypefn {Function File} {[@var{p}, @var{resid}, @var{cvg}, @var{outp}] =} nonlin_residmin (@var{f}, @var{pin})
 ##
-## @deftypefnx {Function File} {[@var{p}, @var{resid}, @var{cvg},
-## @var{outp}] =} nonlin_residmin (@var{f}, @var{pin}, @var{settings})
+## @deftypefnx {Function File} {[@var{p}, @var{resid}, @var{cvg}, @var{outp}] =} nonlin_residmin (@var{f}, @var{pin}, @var{settings})
 ##
 ## Frontend for nonlinear minimization of residuals returned by a model
 ## function. The functions supplied by the user have a minimal
@@ -39,7 +37,16 @@
 ## @var{pin}: real column vector of initial parameters.
 ##
 ## @var{settings}: structure whose fields stand for optional settings
-## refered to below; the fields can be set by @code{optimset()}.
+## refered to below; at the moment, the fields cannot be set by
+## @code{optimset()} due to two bugs in Octaves current optimset
+## mechanism, but must be directly set as structure-fields in the
+## correct case. (With some effort one can fix this for oneself: from
+## Octave Forges svn repository, manually install the functions in
+## extra/optimset-fix/inst/ _instead_ of the corresponding Octave
+## functions, _(re)start_ Octave, and remove the internal redirection of
+## optimget in the installed file __nonlin_residmin__ of the optim
+## package; there is no other way save waiting for a new Octave version
+## with the submitted fix applied).
 ##
 ## The returned values are the column vector of final parameters
 ## @var{p}, the final array of residuals @var{resid}, an integer
@@ -83,8 +90,7 @@
 ##
 ## @code{diffp}: column vector of fractional intervals (doubled for
 ## central intervals) supposed to be used by jacobian functions
-## performing finite differencing. Default: @code{.001 * ones (size
-## (parameters))}. The default jacobian function will use these as
+## performing finite differencing. Default: @code{.001 * ones (size (parameters))}. The default jacobian function will use these as
 ## absolute intervals for parameters with value zero.
 ##
 ## @code{diff_onesided}: logical column vector indicating that one-sided
@@ -181,12 +187,12 @@
 ## column vector. For this, a corresponding setting must be set to
 ## @code{true}: @code{f_pstruct} (model function), @code{dfdp_pstruct}
 ## (jacobian of model function), @code{f_inequc_pstruct} (general
-## inequality constraints), @code{df_inequc_pstruct (jacobian of general
-## inequality constraints), @code{f_equc_pstruct} (general equality
-## constraints), and @code{df_equc_pstruct} (jacobian of general
-## equality constraints). If a jacobian-function is configured in such a
-## way, it must return the columns of the jacobian as fields of a
-## structure under the respective parameter names.
+## inequality constraints), @code{df_inequc_pstruct} (jacobian of
+## general inequality constraints), @code{f_equc_pstruct} (general
+## equality constraints), and @code{df_equc_pstruct} (jacobian of
+## general equality constraints). If a jacobian-function is configured
+## in such a way, it must return the columns of the jacobian as fields
+## of a structure under the respective parameter names.
 ##
 ## Similarly, for specifying linear constraints, instead of the matrix
 ## (called @code{m} above), a structure containing the rows of the
@@ -222,15 +228,6 @@
 ## Interpretation of @code{Display}: if set to @code{"iter"}, currently
 ## @code{plot_cmd} is evaluated for each iteration, and some further
 ## diagnostics may be printed.
-##
-## Bugs:
-##
-## Case insensitivity of settings will not work and even with correct
-## case there will be warnings about unrecognized options at least with
-## Octave version 3.2.4. This is due to a bug in the optimset/optimget
-## mechanism, for which a fix has been submitted to Octaves development
-## branch shortly after snapshot 3.3.53. The package extra/optimset-fix
-## can be installed for fixed versions of the necessary functions.
 ##
 ## @seealso {nonlin_curvefit}
 ##

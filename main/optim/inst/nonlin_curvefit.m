@@ -15,12 +15,9 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {[@var{p}, @var{fy}, @var{cvg},
-## @var{outp}] =} nonlin_curvefit (@var{f}, @var{pin}, @var{x}, @var{y})
+## @deftypefn {Function File} {[@var{p}, @var{fy}, @var{cvg}, @var{outp}] =} nonlin_curvefit (@var{f}, @var{pin}, @var{x}, @var{y})
 ##
-## @deftypefn {Function File} {[@var{p}, @var{fy}, @var{cvg},
-## @var{outp}] =} nonlin_curvefit (@var{f}, @var{pin}, @var{x}, @var{y},
-## @var{settings})
+## @deftypefnx {Function File} {[@var{p}, @var{fy}, @var{cvg}, @var{outp}] =} nonlin_curvefit (@var{f}, @var{pin}, @var{x}, @var{y}, @var{settings})
 ##
 ## Frontend for nonlinear fitting of values, computed by a model
 ## function, to observed values.
@@ -58,15 +55,30 @@ function [p, fy, cvg, outp] = nonlin_curvefit (f, pin, x, y, settings)
     settings = struct ();
   endif
 
+  ## optimset mechanism is broken in Octave 3.2.4
+  optimget = @ __optimget__;
   if (! isempty (dfdp = optimget (settings, "dfdp")))
     if (ischar (dfdp))
       dfdp = str2func (dfdp);
     endif
-    settings = optimset \
-	(settings, "dfdp", @ (p, varargin) dfdp (p, x, varargin{:}));
+    ## settings = optimset \
+    ## (settings, "dfdp", @ (p, varargin) dfdp (p, x, varargin{:}));
+    settings.dfdp =  @ (p, varargin) dfdp (p, x, varargin{:});
   endif
 
   [p, fy, cvg, outp] = __nonlin_residmin__ \
       (@ (p) f (p, x), pin, settings, struct ("observations", y));
+
+endfunction
+
+function ret = __optimget__ (s, name, default)
+
+  if (isfield (s, name))
+    ret = s.(name);
+  elseif (nargin > 2)
+    ret = default;
+  else
+    ret = [];
+  endif
 
 endfunction

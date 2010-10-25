@@ -23,6 +23,9 @@
 function [p, resid, cvg, outp] = \
       __nonlin_residmin__ (f, pin, settings, hook)
 
+  ## The optimset mechanism is broken in Octave 3.2.4.
+  optimget = @ __optimget__;
+
   ## some scalar defaults; some defaults are backend specific, so
   ## lacking elements in respective constructed vectors will be set to
   ## NA here in the frontend
@@ -685,5 +688,17 @@ endfunction
 function lval = assign (lval, lidx, rval)
 
   lval(lidx) = rval;
+
+endfunction
+
+function ret = __optimget__ (s, name, default)
+
+  if (isfield (s, name))
+    ret = s.(name);
+  elseif (nargin > 2)
+    ret = default;
+  else
+    ret = [];
+  endif
 
 endfunction

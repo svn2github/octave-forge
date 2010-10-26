@@ -29,7 +29,7 @@ function df = dataframe(x = [], varargin)
   %# Each preceeding line is silently skipped. Default: none
   %# @item unquot: a logical switch telling wheter or not strings should
   %# be unquoted before storage, default = true;
-  %# @item sep: the elements separator, default ','
+  %# @item sep: the elements separator, default '\t,'
   %# @end itemize
   %# The remaining data are concatenanted (right-appended) to the existing ones.
   %# @end deftypefn
@@ -83,7 +83,7 @@ else
   df = dataframe([]); %# get the right fields
 endif
 
-seeked = []; unquot = true; sep = ',';
+seeked = []; unquot = true; sep = "\t,";
 
 if length(varargin) > 0,
   indi = 1;
@@ -191,6 +191,12 @@ while indi <= size(varargin, 2),
 	while indl <= length(lines),
 	  dummy = content{indl};
 	  if all(cellfun('size', dummy, 2) == 0),
+	    empty_lines = [empty_lines indj];
+	    indl = indl + 1; indj = indj + 1;
+	    continue;
+	  endif
+	  %# does it looks like a comment line ?
+	  if regexp(dummy{1}, '^\s*#'),
 	    empty_lines = [empty_lines indj];
 	    indl = indl + 1; indj = indj + 1;
 	    continue;

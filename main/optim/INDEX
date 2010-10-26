@@ -24,11 +24,11 @@ Compatibility
  quadprog= try Yinyu Ye's <a href="http://dollar.biz.uiowa.edu/col/ye/matlab.html">code</a>
  linprog
 Numerical derivatives
- dfdp dcdp dfpdp dfxpdp cdiff deriv leval
+ dfdp dcdp dfpdp dfxpdp cdiff deriv
  numgradient numhessian
 Pivoting
- cpiv_bard.m
- gjp.m
+ cpiv_bard
+ gjp
 Tests
   test_min_1 test_min_2 test_min_3 test_min_4
   test_d2_min_1 test_d2_min_2 test_d2_min_3

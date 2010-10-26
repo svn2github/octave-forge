@@ -63,7 +63,7 @@ if 0 == nargin
   return
 endif
 
-if isempty(x),
+if isempty(x) && 1 == nargin,
   %# default constructor: initialise the fields in the right order
   df._cnt = [0 0];
   df._name = {cell(0, 1), cell(1, 0)}; %# rows - cols 
@@ -196,7 +196,7 @@ while indi <= size(varargin, 2),
 	    continue;
 	  endif
 	  %# does it looks like a comment line ?
-	  if regexp(dummy{1}, '^\s*#'),
+	  if regexp(dummy{1}, ['^\s*' char(35)]),
 	    empty_lines = [empty_lines indj];
 	    indl = indl + 1; indj = indj + 1;
 	    continue;
@@ -274,14 +274,20 @@ while indi <= size(varargin, 2),
       %# allow overwriting of column names
       df._over{2}(1, indj) = true;
     else
-      if length(df._name{2}) < indj(1) || isempty(df._name{2}(indj)),
-	[df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
-	    = df_colnames(inputname(indi), indj);
+      if !isempty(indj),		    
+	if length(df._name{2}) < indj(1) || isempty(df._name{2}(indj)),
+	  [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
+	      = df_colnames(inputname(indi), indj);
+	endif
       endif
     endif
-    idx.subs = {'', indj};
-    %# use direct assignement
-    df = subsasgn(df, idx, x);
+    if !isempty(indj),
+      idx.subs = {'', indj};
+      %# use direct assignement
+      df = subsasgn(df, idx, x);
+    else
+      df._cnt(2) = length(df._name{2});
+    endif
   elseif indi > 1,
     error('Concatenating dataframes: use cat instead');
   endif

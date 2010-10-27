@@ -160,8 +160,9 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       indr = S.subs{1}; 
       if !isempty(df._name{1}),
 	df._name{1}(indr, :) = []; 
+	df._over{1}(indr) = []; 
       endif	
-      df._over{1}(indr) = []; df._ridx(indr) = [];
+      df._ridx(indr) = [];
       %# to remove a line, iterate on each column
       for indi = 1:df._cnt(2),
 	dummy =  df._data{indi};

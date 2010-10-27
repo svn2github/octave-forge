@@ -37,7 +37,8 @@ endif
 if all(df._cnt > 0), %# stop for empty df
   vspace = repmat(' ', df._cnt(1), 1);
   indi = 1; %# the real, unfolded index
-  for indc = 1:df._cnt(2), %# loop over columns
+  %# loop over columns where the corresponding _data really exists
+  for indc = 1:min(df._cnt(2), size(df._data, 2)), 
     %# emit column names and type
     if 1 == size(df._data{indc}, 2),
       dummy{1, 2+indi} = deblank(disp(df._name{2}{indc}));
@@ -136,7 +137,8 @@ if all(df._cnt > 0), %# stop for empty df
     endif
     
     %# emit each colum
-    for indi = 1:max(df._cnt(2:end)),
+    for indi = 1: size(dummy, 2) - 2,
+      %# was max(df._cnt(2:end)),
       try
 	%# avoid this column touching the previous one
 	if any(cellfun('size', dummy(1:2, 2+indi), 2) >= ...

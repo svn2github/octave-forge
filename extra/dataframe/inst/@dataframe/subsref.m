@@ -68,10 +68,11 @@ function resu = subsref(df, S)
 	  resu = struct(df); %# avoid recursive calls  
 	  if 1 == strfind(S(1).subs, '_'), %# its an internal field name
 	    %# FIXME: this should only be called from class members and friends
-	    resu = builtin('subsref', resu, S);
+	    %# FIXME -- in case many columns are asked, horzcat them
+	    resu = horzcat(builtin('subsref', resu, S));
 	  else
-	    %# direct access through the column name
-	    indi = strmatch(S(1).subs, resu._name{2});
+	    %# direct access through the exact column name
+	    indi = strmatch(S(1).subs, resu._name{2}, "exact");
 	    if ~isempty(indi),
 	      resu = df._data{indi}; %# extract colum;
 	      if strcmp(df._type{indi}, 'char') ...

@@ -39,30 +39,32 @@ function df = df_pad(df, dim, n, coltype=[])
 	  df._over{1}(1, df._cnt(1)+(1:n), 1) = true;
 	endif
       endif
-      %# complete row indexes
+      %# complete row indexes: by default, row number.
       if isempty(df._ridx),
-	dummy = (1:n).';
+	dummy = (1:n)(:);
       else
-	dummy = vertcat(df._ridx, repmat(NA, n, size(df._ridx, 2))); 
+	dummy = vertcat(df._ridx, repmat(size(df._ridx, 1)+(1:n)(:), ...
+					 1, size(df._ridx, 2))); 
       endif
-      df._ridx = dummy;
+      df._ridx = dummy; 
       %# pad every line
-      if !isempty(df._data),
-	for indi = 1:df._cnt(2),
+      for indi = 1:min(size(df._data, 2), df._cnt(2)),
+	neff = n - size(df._data{indi}, 1);
+	if neff > 0,
 	  m = size(df._data{indi}, 2);
 	  switch df._type{indi}
 	    case {'char'}
-	      dummy = {}; dummy(1:n,1:m) = NA;
+	      dummy = {}; dummy(1:neff, 1:m) = NA;
 	      dummy = vertcat(df._data{indi}, dummy);
 	    case { 'double' }
-	      dummy = vertcat(df._data{indi}, repmat(NA, n, m));
+	      dummy = vertcat(df._data{indi}, repmat(NA, neff, m));
 	    otherwise
-	      dummy = cast(vertcat(df._data{indi}, repmat(NA, n, m)), ...
+	      dummy = cast(vertcat(df._data{indi}, repmat(NA, neff, m)), ...
 			   df._type{indi});
 	  endswitch
 	  df._data{indi} = dummy;
-	endfor
-      endif
+	endif
+      endfor
       df._cnt(1) = df._cnt(1) + n;
 
     case 2
@@ -86,7 +88,8 @@ function df = df_pad(df, dim, n, coltype=[])
 	  df._data(indc + (1:n)) = NA;
 	endif
       else
-	indc = df._cnt(2); %# add new values after the last column
+	%# add new values after the last column
+	indc = min(size(df._data, 2), df._cnt(2)); 
       endif
       if !isa(coltype, 'cell'), coltype = {coltype}; endif
       if isscalar(coltype) && n > 1,
@@ -105,15 +108,18 @@ function df = df_pad(df, dim, n, coltype=[])
 	df._data{indc+indi} = dummy;
 	df._type{indc+indi} = coltype{indi};
       endfor
-      
-      if length(df._name{2}) < df._cnt(2)+n,
-      	%# generate a name for the new column(s)
+   
+      if size(df._data, 2) > df._cnt(2),
+	df._cnt(2) =  size(df._data, 2);
+      endif
+      if length(df._name{2}) < df._cnt(2),
+	%# generate a name for the new column(s)
 	dummy = cstrcat(repmat('_', n, 1), ...
 			strjust(num2str(indc + (1:n).'), 'left'));
 	df._name{2}(indc + (1:n)) = cellstr(dummy);
 	df._over{2}(1, indc + (1:n)) = true;
       endif
-      df._cnt(2) = df._cnt(2) + n;
+     
       
     case 3
       if isempty(coltype),

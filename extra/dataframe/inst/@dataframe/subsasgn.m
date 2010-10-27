@@ -316,9 +316,9 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     endif
   endif
   
-  %# perform row resizing now
+  %# perform row resizing if columns are already filled
   if !isempty(indr) && isnumeric(indr),
-    if max(indr) > df._cnt(1),
+    if max(indr) > df._cnt(1) && size(df._data, 2) == df._cnt(2),
       df = df_pad(df, 1, max(indr)-df._cnt(1), rname_width);
     endif
   endif
@@ -419,8 +419,9 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     
   else 
     %# RHS is either a numeric, either a df
-    if any(indc > df._cnt(2)),
-       df = df_pad(df, 2, max(indc-df._cnt(2)), class(RHS));
+    if any(indc > min(size(df._data, 2), df._cnt(2))),
+      df = df_pad(df, 2, max(indc-min(size(df._data, 2), df._cnt(2))),\
+		   class(RHS));
     endif
     if isa(RHS, 'dataframe'),
       for indi = 1:length(indc),
@@ -452,8 +453,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       df._over{1}(indr) = RHS._over{1};
     else
       %# RHS is homogenous, pad at once
-      S.subs(2) = []; %# ignore 'column' dimension
       if isvector(RHS), %# scalar - vector
+	S.subs(2) = 1; %# ignore 'column' dimension -- force colum vectors
 	if isempty(S.subs),
 	  fillfunc = @(x, y) RHS;
 	else 
@@ -468,6 +469,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	  df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, indi);
 	endfor
       else %# 2D - 3D matrix
+	S.subs(2) = []; %# ignore 'column' dimension
 	%# rotate slices in dim 1-3 to slices in dim 1-2
 	if isempty(S.subs{1}),
 	  fillfunc = @(x, y) squeeze(RHS(:, y, :));
@@ -479,9 +481,16 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	  df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, indi);
 	endfor
       endif
-      if indi < size(RHS, 2),
+      if indi < size(RHS, 2) && !isa(RHS, 'char'),
 	warning(' not all columns of RHS used');
       endif
+    endif
+  endif
+
+  %# delayed row padding -- column padding occured before
+  if !isempty(indr) && isnumeric(indr),
+    if max(indr) > df._cnt(1) && size(df._data, 2) < df._cnt(2),
+      df = df_pad(df, 1, max(indr)-df._cnt(1), rname_width);
     endif
   endif
 

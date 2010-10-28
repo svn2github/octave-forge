@@ -349,7 +349,7 @@ function resu = subsref(df, S)
 	  otherwise
 	    dummy = df._data{indc(indi)}(indr, :);
 	    resu(1+row_offs:end, indi+col_offs) = \
-		mat2cell(dummy, ones(nrow, 1), 1);
+		mat2cell(dummy, ones(nrow, 1), size(dummy, 2));
 	endswitch
       endfor
 

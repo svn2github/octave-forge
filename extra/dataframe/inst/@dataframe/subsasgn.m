@@ -455,11 +455,14 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     else
       %# RHS is homogenous, pad at once
       if isvector(RHS), %# scalar - vector
-	S.subs(2) = 1; %# ignore 'column' dimension -- force colum vectors
 	if isempty(S.subs),
 	  fillfunc = @(x, y) RHS;
 	else 
-	  if length(indc) > 1 && length(RHS) > 1,
+	  %# ignore 'column' dimension -- force colum vectors -- use a
+	  %# third dim just in case
+	  S.subs(2) = []; 
+	  if length(S.subs) < 2, S.subs(2) = 1; endif 	
+  	  if length(indc) > 1 && length(RHS) > 1,
 	    %# set a row from a vector
 	    fillfunc = @(x, y) builtin('subsasgn', x, S, RHS(y));
 	  else   
@@ -468,6 +471,16 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	endif
 	for indi = 1:length(indc),
 	  df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, indi);
+	  # catch
+	  #   if ndims(df._data{indc(indi)}) > 2,
+	  #     %# upstream forgot to give the third dim
+	  #     dummy = S; dummy.subs(3) = 1;
+	  #     df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, \
+	  # 				      dummy, indi);
+	  #   else
+	  #     rethrow(lasterr());
+	  #   endif
+	  # end_try_catch
 	endfor
       else %# 2D - 3D matrix
 	S.subs(2) = []; %# ignore 'column' dimension
@@ -523,6 +536,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     df._over{2}(1, indc) = false;
   endif
   
+  %# adjust cnt(3) if required
   dummy = sum(cellfun('size', df._data, 2));
   if (dummy > df._cnt(2)) || length(df._cnt) > 2,
     df._cnt(3) = dummy;

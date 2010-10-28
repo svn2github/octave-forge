@@ -33,7 +33,7 @@ function resu = cat(dim, A, varargin)
     case 1
       resu = A;
           
-      for indi=1:length(varargin),
+      for indi = 1:length(varargin),
 	B = varargin{indi};
 	if !isa(B, 'dataframe'),
 	  if iscell(B) && 2 == length(B),
@@ -81,7 +81,8 @@ function resu = cat(dim, A, varargin)
       
     case 2
       resu = A;
-      for indi=1:length(varargin),
+
+      for indi = 1:length(varargin),
 	B = varargin{indi};
 	if !isa(B, 'dataframe'),
 	  if iscell(B) && 2 == length(B),
@@ -99,19 +100,15 @@ function resu = cat(dim, A, varargin)
 	endif
 	resu._name{2} = vertcat(resu._name{2}, B._name{2});
 	resu._over{2} = [resu._over{2} B._over{2}];
-	indj = resu._cnt(2) + 1;
-	for indi = 1:B._cnt(2),
-	  resu._data{indj} = B._data{indi};
-	  resu._type{indj} = B._type{indi};
-	  indj = indj + 1;
-	endfor
+	resu._data(resu._cnt(2)+(1:B._cnt(2))) = B._data;
+	resu._type(resu._cnt(2)+(1:B._cnt(2))) = B._type;
 	resu._cnt(2) = resu._cnt(2) + B._cnt(2);	
       endfor
       
     case 3
       resu = A;
       
-      for indi=1:length(varargin),
+      for indi = 1:length(varargin),
 	B = varargin{indi};
 	if !isa(B, 'dataframe'),
 	  if iscell(B) && 2 == length(B),

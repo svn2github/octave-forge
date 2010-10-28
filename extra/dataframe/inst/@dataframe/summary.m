@@ -53,7 +53,7 @@ function resu = summary(df)
 	s = statistics(df._data{:, indi});
 	s = s([1:3 6 4:5]);
 	%# generate a column with name and fields name
-	resuR = strjust([deblank(df._name{1, 2}(indi, :)); 
+	resuR = strjust([deblank(df._name{1, 2}{indi, :}); 
 			 "Min.   :"; "1st Qu.:";
 			 "Median :"; "Mean   :";
 			 "3rd Qu.:"; "Max.   :"], 'right');

@@ -26,29 +26,24 @@ function resu = minus(A, B);
   %#
   %# $Id: minus.m 852 2010-07-22 10:47:55Z dupuis $
   %#
-
+keyboard
   [A, B] = df_basecomp(A, B);
-
+keyboard
   if isscalar(A) 
     %# B is a dataframe
     resu = B; 
-    for indi = 1:B._cnt(2),
-      resu._data{indi} = A-B._data{indi};
-    endfor
+    resu._data = cellfun(@(x) A-x, B._data, "UniformOutput", false);
     return
   elseif ismatrix(A),
     resu = B; 
-    for indi = 1:B._cnt(2),
-      resu._data{indi} = A(indi, :) - B._data{indi};
-    endfor
+    resu._data = cellfun(@(x, y) x-y, num2cell(A, 1),  B._data, \
+			 "UniformOutput", false);
     return
   endif
 
   if isscalar(B),
     resu = A; 
-    for indi = 1:A._cnt(2),
-      resu._data{indi} = A._data{indi} -B;
-    endfor
+    resu._data = cellfun(@(x) x-B, A._data, "UniformOutput", false);
     return
   elseif ismatrix(B),
     resu = A; 

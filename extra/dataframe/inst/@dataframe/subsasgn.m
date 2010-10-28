@@ -52,11 +52,10 @@ function resu = subasgn(df, S, RHS)
 	case "types"
 	  if isnull(RHS), error("Types can't be nulled"); endif
 	  if 1 == length(S),
-	    for indi = 1:df_cnt(2),
-	      %# perform explicit cast on each column
-	      resu._data{indi} = cast(resu._data{indi}, RHS);
-	      resu._type{indi} = RHS;
-	    endfor
+	    %# perform explicit cast on each column
+	    resu._data = cellfun(@(x) cast(x, RHS), resu._data, 
+				 "UniformOutput", false);
+	    resu._type(1:end) = RHS;
 	  else
 	    if !strcmp(S(2).type, '()'),
 	      error("Invalid internal type sub-access, use () instead");
@@ -70,11 +69,9 @@ function resu = subasgn(df, S, RHS)
 	    else
 	      indj = S(2).subs{1}; ncol = length(indj);
 	    endif
-	    for indi = 1:length(indj),
-	      %# perform explicit cast on selected columns
-	      resu._data{indj(indi)} = cast(resu._data{indj(indi)}, RHS);
-	      resu._type{indj(indi)} = RHS;
-	    endfor 
+	    resu._data(indj) = cellfun(@(x) cast(x, RHS), resu._data(indj), 
+				       "UniformOutput", false);
+	    resu._type(indj) = {RHS};
 	  endif
 	  return
 	  
@@ -141,10 +138,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     
     if strcmp(S.subs(1), ':'),  %# removing column/matrix
       RHS = S; RHS.subs(2) = [];
-      for indi = 1:ncol, %# loop over columns
-	df._data{indc(indi)} = builtin('subsasgn', df._data{indc(indi)}, \
-				       RHS, []);
-      endfor
+      df._data(indc) = cellfun(@(x) builtin('subsasgn', x, RHS, []),
+			       df._data(indc), "UniformOutput", false);
       %# remove empty elements
       indi = cellfun('isempty', df._data);
       if any(indi), %# nothing left, remove this column

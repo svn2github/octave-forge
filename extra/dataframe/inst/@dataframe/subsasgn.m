@@ -159,11 +159,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       endif	
       df._ridx(indr) = [];
       %# to remove a line, iterate on each column
-      for indi = 1:df._cnt(2),
-	dummy =  df._data{indi};
-	dummy(indr, :) = [];
-	df._data{indi} = dummy;
-      endfor
+      df._data = cellfun(@(x) builtin('subsasgn', x, S, []), \
+			 df._data, "UniformOutPut", false);
       if isa(indr, 'char')
 	 df._cnt(1) = 0;
        else
@@ -509,9 +506,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     if 1 == size(RHS, 1),
       dummy(indr) = ridx{1};
     else
-      for indi = 1:nrow,
-	dummy(indr(indi)) = ridx{indi};
-      endfor
+      dummy(indr) = vertcat(ridx{indi});
     endif
     if length(unique(dummy)) != length(dummy), %# || \
 	  %# any(diff(dummy) <= 0),

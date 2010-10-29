@@ -1,6 +1,6 @@
 Name: dataframe
 Version: 0.8
-Date: 2010-08-26
+Date: 2010-10-29
 Author: Pascal Dupuis
 Maintainer: The Octave Community
 Title: Data Frame
@@ -9,4 +9,4 @@ Categories: data manipulation, statistics
 Depends: octave (>= 3.2.0)
 License: GPL version 3 or later
 Url: http://octave.sf.net
-SVNRelease: $Rev$
+SVNRelease: 7895

@@ -27,7 +27,7 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: df_name2idx.m 1037 2010-08-03 16:25:05Z dupuis $
+  %# $Id$
   %#
 
   if isempty(subs),

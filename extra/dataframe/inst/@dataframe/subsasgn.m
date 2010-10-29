@@ -24,7 +24,7 @@ function resu = subasgn(df, S, RHS)
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: subsasgn.m 1035 2010-08-03 16:22:58Z dupuis $
+  %# $Id$
   %#
 
   switch(S(1).type)

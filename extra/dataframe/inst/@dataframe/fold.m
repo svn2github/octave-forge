@@ -28,7 +28,7 @@ function resu = fold(df, dim, indr, indc)
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: fold.m 1016 2010-07-30 13:49:35Z dupuis $
+  %# $Id$
   %#
 switch dim
   case 1

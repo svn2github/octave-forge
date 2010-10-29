@@ -1,6 +1,7 @@
-function resu = df_check_char_array(x, nelem, required)
+function resu = uminus(A);
 
-  %# auxiliary function: pad a char array to some width
+  %# function resu = uminus(A)
+  %# Implements the unitary '-' operator for a dataframe.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -25,28 +26,8 @@ function resu = df_check_char_array(x, nelem, required)
   %#
   %# $Id$
   %#
-  
-  if 2 == nargin, required = [nelem 1]; endif
 
-  if nelem < required(1),
-    error("Too many elements to assign");
-  endif
-
-  %# a zero-length element is still considered as a space by char
-  if isempty(x), x = ' '; endif 
-
-  if size(x, 1) < max(required(1), nelem)
-    %# pad vertically
-    dummy = repmat(' ', nelem-size(x, 1), 1);
-    resu = char(x, dummy);
-  else
-    resu = x;
-  endif
-      
-  if size(resu, 2) < required(2),
-    %# pad horizontally
-    dummy = repmat(' ', nelem, required(2)-size(resu, 2));
-    resu = horzcat(resu, dummy);
-  endif
-
+  resu = A; 
+  resu._data = cellfun(@(x) -x, A._data, "UniformOutput", false);
+        
 endfunction

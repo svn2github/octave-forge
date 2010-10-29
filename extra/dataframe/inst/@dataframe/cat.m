@@ -26,7 +26,7 @@ function resu = cat(dim, A, varargin)
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: cat.m 1025 2010-08-02 08:55:55Z dupuis $
+  %# $Id$
   %#
 
   switch dim

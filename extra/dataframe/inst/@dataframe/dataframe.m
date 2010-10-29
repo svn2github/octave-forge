@@ -55,7 +55,7 @@ function df = dataframe(x = [], varargin)
   %% Suite 330, Boston, MA 02111-1307, USA.
 
   %#
-  %# $Id: dataframe.m 1036 2010-08-03 16:24:01Z dupuis $
+  %# $Id$
   %#
 
 if 0 == nargin

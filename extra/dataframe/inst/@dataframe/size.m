@@ -23,7 +23,7 @@ function [nrow, ncol] = size(df, varargin)
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: size.m 852 2010-07-22 10:47:55Z dupuis $
+  %# $Id$
   %#
 
   switch nargin

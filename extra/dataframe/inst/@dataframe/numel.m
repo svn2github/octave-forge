@@ -24,7 +24,7 @@ function n = numel(df, varargin)
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: numel.m 981 2010-07-26 16:23:08Z dupuis $
+  %# $Id$
   %#
 
   if isempty(varargin),

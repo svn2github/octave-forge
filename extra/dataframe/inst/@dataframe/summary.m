@@ -26,7 +26,7 @@ function resu = summary(df)
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: summary.m 852 2010-07-22 10:47:55Z dupuis $
+  %# $Id$
   %#
 
   dummy = df._type; resu = [];

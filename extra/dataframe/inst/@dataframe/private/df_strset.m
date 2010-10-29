@@ -25,7 +25,7 @@ function [x, over] = df_strset(x, over, S, RHS, pad = ' ')
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: df_strset.m 1020 2010-07-30 15:21:23Z dupuis $
+  %# $Id$
   %#
 
   %# adjust x size, if required

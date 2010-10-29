@@ -1,7 +1,7 @@
-function resu = minus(A, B);
+function resu = mrdivide(A, B);
 
-  %# function resu = minus(A, B)
-  %# Implements the '-' operator when at least one argument is a dataframe.
+  %# function resu = mrdivide(A, B)
+  %# Implements the '*' operator when at least one argument is a dataframe.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -33,27 +33,24 @@ function resu = minus(A, B);
     if !isa(A, 'dataframe'),
       resu = B; 
       if isscalar(A) 
-	resu._data = cellfun(@(x) A-x, B._data, "UniformOutput", false);
+	resu._data = cellfun(@(x) A/x, B._data, "UniformOutput", false);
       elseif ismatrix(A),
-	resu._data = cellfun(@(x, y) x-y, num2cell(A, 1),  B._data,\
-			     "UniformOutput", false);
+	resu._data = num2cell(A/cell2mat(B._data), 1);
       else
-	error("Operator - not implemented");
+	error("Operator / not implemented");
       endif
     else
       resu = A; 
-      resu._data = cellfun(@(x, y) x-y, A._data,  B._data,\
-			   "UniformOutput", false);
+      resu._data = num2cell(cell2mat(A._data)/cell2mat(B._data), 1);
     endif
   else
-    resu = A; 
+    resu = A;    
     if isscalar(B),
-      resu._data = cellfun(@(x) x-B, A._data, "UniformOutput", false);
+      resu._data = cellfun(@(x) x/B, A._data, "UniformOutput", false);
     elseif ismatrix(B),
-      resu._data = cellfun(@(x, y) x-y, A._data, num2cell(B, 1),\
-			   "UniformOutput", false);
+      resu._data =  num2cell(cell2mat(A._data)/B, 1);
     else
-      error("Operator - not implemented");
+      error("Operator / not implemented");
     endif
   endif
         

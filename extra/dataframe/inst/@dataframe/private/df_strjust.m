@@ -23,7 +23,7 @@ function [a, b] = df_strjust(a, b)
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: df_strjust.m 852 2010-07-22 10:47:55Z dupuis $
+  %# $Id$
   %#
 
   indi = size(a, 2) - size(b, 2);

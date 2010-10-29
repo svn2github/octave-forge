@@ -27,7 +27,7 @@ function df = df_pad(df, dim, n, coltype=[])
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: df_pad.m 1028 2010-08-03 10:10:26Z dupuis $
+  %# $Id$
   %#
 
   switch dim

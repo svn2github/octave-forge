@@ -32,7 +32,7 @@ function resu = subsref(df, S)
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: subsref.m 1034 2010-08-03 16:22:09Z dupuis $
+  %# $Id$
   %#
   
   %# what kind of object should we return ?

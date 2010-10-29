@@ -24,7 +24,7 @@ function resu = display(df)
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: display.m 1027 2010-08-02 08:59:39Z dupuis $
+  %# $Id$
   %#
 
 %# generate header name

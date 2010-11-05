@@ -69,6 +69,8 @@ function [p, fy, cvg, outp] = nonlin_curvefit (f, pin, x, y, settings)
   [p, fy, cvg, outp] = __nonlin_residmin__ \
       (@ (p) f (p, x), pin, settings, struct ("observations", y));
 
+  fy += y;
+
 endfunction
 
 function ret = __optimget__ (s, name, default)

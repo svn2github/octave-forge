@@ -49,7 +49,8 @@ Works similarly to @code{struct2cell} (see there), but considers only fields giv
       return octave_value_list ();
     }
 
-  if (! names.dims ().is_vector ())
+  dim_vector ndims = names.dims ();
+  if (ndims.length () > 2 || (ndims(0) > 1 && ndims(1) > 1))
     {
       error ("%s: second argument must be a one-dimensional cell array",
 	     fname.c_str ());

@@ -48,7 +48,9 @@ Return structure @var{s} after setting the fields @var{fields} with the slices o
       return octave_value_list ();
     }
 
-  if (! names.dims ().is_vector ())
+  // do not reject if ndims == [0, 0]
+  dim_vector ndims = names.dims ();
+  if (ndims.length () > 2 || (ndims(0) > 1 && ndims(1) > 1))
     {
       error ("%s: second argument must be a one-dimensional cell array",
 	     fname.c_str ());
@@ -58,7 +60,7 @@ Return structure @var{s} after setting the fields @var{fields} with the slices o
   octave_idx_type dim = args(2).int_value ();
   if (error_state)
     {
-      error ("%s: second argument must be an integer",
+      error ("%s: third argument must be an integer",
 	     fname.c_str ());
       return octave_value_list ();
     }
@@ -66,7 +68,7 @@ Return structure @var{s} after setting the fields @var{fields} with the slices o
   Octave_map s = args(3).map_value ();
   if (error_state)
     {
-      error ("%s: third argument must be a structure", fname.c_str ());
+      error ("%s: fourth argument must be a structure", fname.c_str ());
       return octave_value_list ();
     }
 
@@ -80,7 +82,7 @@ Return structure @var{s} after setting the fields @var{fields} with the slices o
 
   octave_idx_type nr = 1;
 
-  if (n_cdims >= dim && cdims(dim - 1) > 1)
+  if (n_cdims >= dim)
     {
       nr = cdims(dim - 1);
 
@@ -104,7 +106,7 @@ Return structure @var{s} after setting the fields @var{fields} with the slices o
     {
       if (s.dims () != tdims)
 	{
-	  error ("%s: structure has incorrect dimenstions", fname.c_str ());
+	  error ("%s: structure has incorrect dimensions", fname.c_str ());
 
 	  return octave_value_list ();
 	}

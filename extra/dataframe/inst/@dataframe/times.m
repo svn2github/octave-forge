@@ -1,7 +1,7 @@
 function resu = times(A, B);
 
   %# function resu = times(A, B)
-  %# Implements the '.*' operator when at least one argument is a dataframe.
+  %# Implements the dotted '*' operator when at least one argument is a dataframe.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%

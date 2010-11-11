@@ -183,7 +183,7 @@ while nev <= maxev,
      done |= ((max(y)-min(y)) / max(1,max(abs(y))) < ftol); 
   end
   if ! isnan (rtol), 
-     done = (2*max (max (u) - min (u)) < rtol); 
+     done |= (2*max (max (u) - min (u)) < rtol); 
   end
   if ! isnan (vtol)
     done |= (abs (det (u(1:N,:)-ones(N,1)*u(N+1,:)))/factorial(N) < vtol);

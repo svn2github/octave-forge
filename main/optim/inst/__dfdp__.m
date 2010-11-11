@@ -72,6 +72,7 @@ function prt = __dfdp__ (p, func, hook)
     bounds = ones (n, 2);
     bounds(:, 1) = -Inf;
     bounds(:, 2) = Inf;
+    plabels = num2cell ((1:n).');
   end    
 
   prt = zeros (m, n); % initialise Jacobian to Zero

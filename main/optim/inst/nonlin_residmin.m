@@ -197,6 +197,7 @@
 ## Similarly, for specifying linear constraints, instead of the matrix
 ## (called @code{m} above), a structure containing the rows of the
 ## matrix in fields under the respective parameter names can be given.
+## In this case, rows containing only zeros need not be given.
 ##
 ## The vector/matrix-based settings @code{bounds}, @code{fixed},
 ## @code{diffp}, @code{diff_onesided}, @code{fract_prec}, and

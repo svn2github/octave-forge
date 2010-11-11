@@ -122,6 +122,9 @@ function [p, resid, cvg, outp] = \
     endif
   else
     pord = pord(:);
+    if (rows (unique (pord)) < rows (pord))
+      error ("duplicate parameter names in 'param_order'");
+    endif
   endif
 
   if (! pin_struct)
@@ -333,12 +336,24 @@ function [p, resid, cvg, outp] = \
 
   ## linear inequality constraints
   if (mc_struct)
-    mc = cat (1, fields2cell (mc, pord){:});
+    idx = arefields (mc, pord);
+    if (rows (fieldnames (mc)) > sum (idx))
+      error ("unknown fields in structure of linear inequality constraints");
+    endif
+    smc = mc;
+    mc = zeros (np, rows (vc));
+    mc(idx, :) = cat (1, fields2cell (smc, pord(idx)){:});
   endif
 
   ## linear equality constraints
   if (emc_struct)
-    emc = cat (1, fields2cell (emc, pord){:});
+    idx = arefields (emc, pord);
+    if (rows (fieldnames (emc)) > sum (idx))
+      error ("unknown fields in structure of linear equality constraints");
+    endif
+    semc = emc;
+    emc = zeros (np, rowd (evc));
+    emc(idx, :) = cat (1, fields2cell (semc, pord(idx)){:});
   endif
 
   ## parameter-related configuration for jacobi functions

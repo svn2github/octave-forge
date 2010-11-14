@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip
+## Copyright (C) 2009,2010 Philip
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -26,12 +26,14 @@
 ## 2009-12-27 Fixed OOXML limits
 ## 2010-03-17 Simplified argument list, only row + column needed
 ## 2010-09-27 Made error message more comprehensible
+## 2010-10-11 Added check for row range
 
 function [ celladdress ] = calccelladdress (row, column)
 
 	if (nargin < 2) error ("calccelladdress: Two arguments needed") endif
 
 	if (column > 18278 || column < 1) error ("Specified column out of range (1..18278)"); endif
+	if (row > 1048576 || row < 1), error ('Specified row out of range (1..1048576)'); endif
 	rem1 = rem ((column-1), 26);
 	str = char (rem1 + 'A');								# A-Z; rightmost digit
 	if (column > 26 && column < 703)						# AA-ZZ

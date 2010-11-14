@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 ##
 ## @var{wsh} can be a number or string (max. 31 chars).
 ## In case of a yet non-existing Excel file, the first worksheet will be
-## used & named according to @var{wsh} - the extra worksheets that Excel
+## used & named according to @var{wsh} - extra empty worksheets that Excel
 ## creates by default are deleted.
 ## In case of existing files, some checks are made for existing worksheet
 ## names or numbers, or whether @var{wsh} refers to an existing sheet with
@@ -98,11 +98,14 @@
 ## 2010-08-16 Added check on presence of output argument. Made wsh = 1 default
 ## 2010-08-17 Corrected texinfo ("topleft" => "range")
 ## 2010-08-25 Improved help text (section on java memory usage)
+## 2010-11-12 Moved ptr struct check into main func. More input validity checks
+## 2010-11-13 Added check for 2-D input array
 
-## Last script file update (incl. subfunctions): 2010-08-11
+## Last script file update (incl. subfunctions): 2011-11-12
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
 
+	if (nargin < 2) error ("oct2xls needs a minimum of 2 arguments."); endif
 	# Make sure input array is a cell array
 	if (isempty (obj))
 		warning ("Request to write empty matrix - ignored."); 
@@ -116,42 +119,53 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
 	elseif (~iscell (obj))
 		error ("oct2xls: input array neither cell nor numeric array");
 	endif
-
+	if (ndims (c_arr) > 2), error ("Only 2-dimensional arrays can be written to spreadsheet"); endif
+	# Check xls file pointer struct
+	test1 = ~isfield (xls, "xtype");
+	test1 = test1 || ~isfield (xls, "workbook");
+	test1 = test1 || isempty (xls.workbook);
+	test1 = test1 || isempty (xls.app);
+	if (test1)
+		error ("Invalid xls file pointer struct");
+	endif
+	# Check worksheet ptr
+	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 3"); endif
+	# Check range
+	if (~(isempty (crange) || ischar (crange))), error ("Character string (range) expected for arg # 4"); endif
 	# Various options 
-	if isempty (spsh_opts)
+	if (isempty (spsh_opts))
 		spsh_opts.formulas_as_text = 0;
 		# other options to be implemented here
+	elseif (isstruct (spsh_opts))
+		if (~isfield (spsh_opts, 'formulas_as_text')), spsh_opts.formulas_as_text = 0; endif
+		# other options to be implemented here
+	else
+		error ("Structure expected for arg # 5");
 	endif
-
+	
+	if (nargout < 1) printf ("Warning: no output spreadsheet file pointer specified.\n"); endif
+	
 	# Select interface to be used
 	if (strcmp (xls.xtype, 'COM'))
 		# Call oct2com2xls to do the work
 		[xls, rstatus] = oct2com2xls (obj, xls, wsh, crange, spsh_opts);
-
 	elseif (strcmp (xls.xtype, 'POI'))
 		# Invoke Java and Apache POI
 		[xls, rstatus] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts);
-
 	elseif (strcmp (xls.xtype, 'JXL'))
 		# Invoke Java and JExcelAPI
 		[xls, rstatus] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts);
-
 #	elseif (strcmp'xls.xtype, '<whatever>'))
 #		<Other Excel interfaces>
-
 	else
 		error (sprintf ("oct2xls: unknown Excel .xls interface - %s.", xls.xtype));
-
 	endif
 
 endfunction
 
 
 #===================================================================================
-## Copyright (C) 2007 by Michael Goffioul <michael.goffioul at swing.be>
-##
-## Adapted by P.R. Nienhuis <prnienhuis at users.sf.net> (2009)
-## for more flexible writing into Excel worksheets through COM.
+## Copyright (C) 2009,2010 by Philip Nienhuis <prnienhuis@users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -189,7 +203,7 @@ endfunction
 ##
 ## @end deftypefn
 
-## Author: Philip Nienhuis
+## Author: Philip Nienhuis  (originally based on mat2xls by Michael Goffioul)
 ## Rewritten: 2009-09-26
 ## Updates:
 ## 2009-12-11
@@ -203,18 +217,18 @@ endfunction
 ##     "      Added option for formula input as text string
 ## 2010-08-01 Added range vs. array size vs. capacity checks
 ## 2010-08-03 Moved range checks and type array parsing to separate functions
+## 2010-10-20 Bug fix removing new empty sheets in new workbook that haven't been 
+##            created in the first place duetoExcelsetting (thanks Ian Journeaux)
+##     "      Changed range use in COM transfer call
+## 2010-10-21 Improved file change tracking (var xls.changed)
+## 2010-10-24 Fixed bug introduced in above fix: for loops have no stride param,
+##     "      replaced by while loop
+##     "      Added check for "live" ActiveX server
+## 2010-11-12 Moved ptr struct check into main func
 
 function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 
-	# define some constants not yet in __COM__.cc
-	xlWorksheet = -4167; # xlChart= 4;
-
-	# scratch vars
-	status = 0;
-
 	# Preliminary sanity checks
-	if (nargin < 2) error ("oct2com2xls needs a minimum of 2 arguments."); endif
-	if (nargin == 2) wsh = 1; endif
 	if (~strmatch (tolower (xls.filename(end-4:end)), '.xls'))
 		error ("oct2com2xls can only write to Excel .xls or .xlsx files")
 	endif
@@ -223,19 +237,23 @@ function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 	elseif (size (wsh, 2) > 31) 
 		error ("Illegal worksheet name - too long")
 	endif
-	# Check xls file pointer struct
-	test1 = ~isfield (xls, "xtype");
-	test1 = test1 || ~isfield (xls, "workbook");
-	test1 = test1 || ~strcmp (char (xls.xtype), 'COM');
-	test1 = test1 || isempty (xls.workbook);
-	test1 = test1 || isempty (xls.app);
-	if test1
-		error ("Invalid file pointer struct");
-	endif
+	# Check to see if ActiveX is still alive
+	try
+		wb_cnt = xls.workbook.Worksheets.count;
+	catch
+		error ("ActiveX invocation in file ptr struct seems non-functional");
+	end_try_catch
+
+	# define some constants not yet in __COM__.cc
+	xlWorksheet = -4167; # xlChart= 4;
+	# scratch vars
+	status = 0;
 
 	# Parse date ranges  
 	[nr, nc] = size (obj);
 	[topleft, nrows, ncols, trow, lcol] = spsh_chkrange (crange, nr, nc, xls.xtype, xls.filename);
+	lowerright = calccelladdress (trow + nrows - 1, lcol + ncols - 1);
+	crange = [topleft ':' lowerright];
 	if (nrows < nr || ncols < nc)
 		warning ("Array truncated to fit in range");
 		obj = obj(1:nrows, 1:ncols);
@@ -246,7 +264,7 @@ function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 	typearr = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts);
 	# Make cells now indicated to be empty, empty
 	fptr = ~(4 * (ones (size (typearr))) .- typearr);
-	obj(fptr) = cellfun(@(x) [], obj(fptr), "Uniformoutput",  false);
+	obj(fptr) = cellfun (@(x) [], obj(fptr), "Uniformoutput",  false);
 
 	if (spsh_opts.formulas_as_text)
 		# find formulas (designated by a string starting with "=" and ending in ")")
@@ -256,8 +274,9 @@ function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 	endif
 	clear fptr;
 
-	if (xls.changed < 2) 
-		# Existing file. Some involved investigation is needed to preserve
+	if (xls.changed < 3) 
+		# Existing file OR a new file with data added in a previous oct2xls call.
+		# Some involved investigation is needed to preserve
 		# existing data that shouldn't be touched.
 		#
 		# See if desired *sheet* name exists. 
@@ -300,7 +319,7 @@ function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 		if (old_sh) 
 			# Requested sheet exists. Check if it is a *work*sheet
 			if ~(xls.workbook.Sheets(old_sh).Type == xlWorksheet)
-				# Error as you can't write data to this
+				# Error as you can't write data to Chart sheet
 				error (sprintf ("Existing sheet '%s' is not type worksheet.", wsh));
 			else
 				# Simply point to the relevant sheet
@@ -308,7 +327,11 @@ function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 			endif
 		else
 			# Add a new worksheet. Earlier it was checked whether this is safe
-			sh = xls.workbook.Worksheets.Add ();
+			try
+				sh = xls.workbook.Worksheets.Add ();
+			catch
+				error (sprintf ("Cannot add new worksheet to file %s\n", xls.filename));
+			end_try_catch
 			if (~isnumeric (wsh)) 
 				sh.Name = wsh;
 			else
@@ -328,44 +351,52 @@ function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 			# ....then move the last one before the new sheet.
 			xls.workbook.Worksheets (ws_cnt).Move (before = xls.workbook.Worksheets(ws_cnt - 1));
 		endif
-		xls.changed = 1;
 
 	else
-		# The easy case: a new Excel file.
-		# Workbook was created in xlsopen. Write to first worksheet:
-		sh = xls.workbook.Worksheets (1);
+		# The easy case: a new Excel file. Workbook was created in xlsopen. 
+
 		# Delete empty non-used sheets, last one first
 		xls.app.Application.DisplayAlerts = 0;
-		xls.workbook.Worksheets(3).Delete(); xls.workbook.Worksheets(2).Delete();
+		ii = xls.workbook.Sheets.count;
+		while (ii > 1)
+			xls.workbook.Worksheets(ii).Delete();
+			--ii;
+		endwhile
 		xls.app.Application.DisplayAlerts = 1;
 
+		# Write to first worksheet:
+		sh = xls.workbook.Worksheets (1);
 		# Rename the sheet
-		if (isnumeric(wsh))
-			sh.Name = sprintf("Sheet%i", wsh);
+		if (isnumeric (wsh))
+			sh.Name = sprintf ("Sheet%i", wsh);
 		else
 			sh.Name = wsh;
 		endif
-		xls.changed = 2;
+		xls.changed = 2;			# 3 => 2
 	endif
-	
+
 	# MG's original part.
 	# Save object in Excel sheet, starting at cell top_left_cell
 	if (~isempty(obj))
-		r = sh.Range (topleft);
-		r = r.Resize (size (obj, 1), size (obj, 2));
-		r.Value = obj;
+		r = sh.Range (crange);
+		try
+			r.Value = obj;
+		catch
+			error (sprintf ("Cannot add data to worksheet %s in file %s\n", sh.Name, xls.filename));
+		end_try_catch
 		delete (r);
 	endif
 
 	# If we get here, all went OK
 	status = 1;
+	xls.changed = max (xls.changed, 1);			# If it was 2, preserve it.
 	
 endfunction
 
 
 #====================================================================================
 
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -417,8 +448,16 @@ endfunction
 ## 2010-08-01 Improved try-catch for formulas to enter wrong formulas as text strings
 ## 2010-08-01 Added range vs. array size vs. capacity checks
 ## 2010-08-03 Moved range checks and type array parsingto separate functions
+## 2010-10-21 Improved logic for tracking file changes
+## 2010-10-27 File change tracking again refined, internal var 'changed' dropped
+## 2010-11-12 Moved ptr struct check into main func
 
 function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
+
+	# Preliminary sanity checks
+	if (~strmatch (tolower (xls.filename(end-4:end)), '.xls'))
+		error ("oct2jpoi2xls can only write to Excel .xls or .xlsx files")
+	endif
 
 	persistent ctype;
 	if (isempty (ctype))
@@ -429,24 +468,8 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 		ctype(4) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_FORMULA');	# 2
 		ctype(5) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_BLANK');	# 3
 	endif
-
 	# scratch vars
-	rstatus = 0; changed = 1; f_errs = 0;
-
-	# Preliminary sanity checks
-	if (nargin < 2) error ("oct2jpoi2xls needs a minimum of 2 arguments."); endif
-	if (nargin == 2) wsh = 1; endif
-	if (~strmatch (tolower (xls.filename(end-4:end)), '.xls'))
-		error ("oct2jpoi2xls can only write to Excel .xls or .xlsx files")
-	endif
-	
-	# Check if xls struct pointer seems valid
-	test1 = ~isfield (xls, "xtype");
-	test1 = test1 || ~isfield (xls, "workbook");
-	test1 = test1 || ~strcmp (char (xls.xtype), 'POI');
-	test1 = test1 || isempty (xls.workbook);
-	test1 = test1 || isempty (xls.app);
-	if test1 error ("Invalid xls file struct"); endif
+	rstatus = 0; f_errs = 0;
 
 	# Check if requested worksheet exists in the file & if so, get pointer
 	nr_of_sheets = xls.workbook.getNumberOfSheets ();
@@ -461,6 +484,7 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 			endwhile
 			if (ii >= 5) error (sprintf( " > 5 sheets named [_]Sheet%d already present!", wsh)); endif
 			sh = xls.workbook.createSheet (strng);
+			xls.changed = min (xls.changed, 2);				# Keep 2 for new files
 		else
 			sh = xls.workbook.getSheetAt (wsh - 1);			# POI sheet count 0-based
 		endif
@@ -470,7 +494,7 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 		if (isempty (sh))
 			# Sheet not found, just create it
 			sh = xls.workbook.createSheet (wsh);
-			xls.changed = 2;
+			xls.changed = min (xls.changed, 2);				# Keep 2 or 3 f. new files
 		endif
 	endif
 
@@ -486,6 +510,7 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 	typearr = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts);
 	if ~(spsh_opts.formulas_as_text)
 		# Remove leading '=' from formula strings
+		# FIXME should be easier using typearr<4> info
 		fptr = ~(2 * (ones (size (typearr))) .- typearr);
 		obj(fptr) = cellfun (@(x) x(2:end), obj(fptr), "Uniformoutput", false); 
 	endif
@@ -521,14 +546,14 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 	if (f_errs) 
 		printf ("%d formula errors encountered - please check input array\n", f_errs); 
 	endif
-	xls.changed = 1;
+	xls.changed = max (xls.changed, 1);	   # Preserve a "2"
 	rstatus = 1;
   
 endfunction
 
 
 #====================================================================================
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -582,44 +607,38 @@ endfunction
 ##     "      Changed topleft arg into range arg (topleft version still recognized)
 ## 2010-08-03 Moved range checks and cell type parsing to separate routines
 ## 2010-08-11 Moved addcell() into try-catch as it is addCell which throws fatal errors
+## 2010-10-20 Improved logic for tracking file changes (xls.changed 2 or 3); dropped
+##     "      internal variable 'changed'
+## 2010-10-27 File change tracking again refined
+## 2010-11-12 Moved ptr struct check into main func
 
 function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
+
+	# Preliminary sanity checks
+	if (~strmatch (tolower (xls.filename(end-4:end-1)), '.xls'))	# No OOXML in JXL
+		error ("JExcelAPI can only write to Excel .xls files")
+	endif
 
 	persistent ctype;
 	if (isempty (ctype))
 		ctype = [1, 2, 3, 4, 5];
 		# Number, Boolean, String, Formula, Empty
 	endif
-
 	# scratch vars
-	rstatus = 0; changed = 1; f_errs = 0;
-
-	# Preliminary sanity checks
-	if (nargin < 2) error ("oct2java2xls needs a minimum of 2 arguments."); endif
-	if (nargin == 2) wsh = 1; endif
-	if (~strmatch (tolower (xls.filename(end-4:end)), '.xls'))	# No OOXML in JXL
-		error ("oct2java2xls can only write to Excel .xls files")
-	endif
-	test1 = ~isfield (xls, "xtype");
-	test1 = test1 || ~isfield (xls, "workbook");
-	test1 = test1 || ~strcmp (char (xls.xtype), 'JXL');
-	test1 = test1 || isempty (xls.workbook);
-	test1 = test1 || isempty (xls.app);
-	if test1
-		error ("Invalid file pointer struct");
-	endif
+	rstatus = 0; f_errs = 0;
 	
 	# Prepare workbook pointer if needed
-	if (xls.changed < 2)
-		# Create writable copy of workbook. If 2 a writable wb was made in xlsopen
+	if (xls.changed == 0)			# Only for 1st call of octxls after xlsopen
+		# Create writable copy of workbook. If >2 a writable wb was made in xlsopen
 		xlsout = java_new ('java.io.File', xls.filename);
 		wb = java_invoke ('jxl.Workbook', 'createWorkbook', xlsout, xls.workbook);
-		xls.changed = 1;			# For in case we come from reading the file
+		# Catch JExcelAPI bug/"feature": when switching to write mode, the file on disk
+		# is affected and the memory file MUST be written to disk to save earlier data
+		xls.changed = 1;
 		xls.workbook = wb;
 	else
 		wb = xls.workbook;
 	endif
-
 	# Check if requested worksheet exists in the file & if so, get pointer
 	nr_of_sheets = xls.workbook.getNumberOfSheets ();	# 1 based !!
 	if (isnumeric (wsh))
@@ -633,8 +652,9 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 			endwhile
 			if (ii >= 5) error (sprintf( " > 5 sheets named [_]Sheet%d already present!", wsh)); endif
 			sh = wb.createSheet (strng, nr_of_sheets); ++nr_of_sheets;
+			xls.changed = min (xls.changed, 2);		# Keep a 2 in case of new file
 		else
-			sh = wb.getSheet (wsh - 1);			# POI sheet count 0-based
+			sh = wb.getSheet (wsh - 1);				# POI sheet count 0-based
 		endif
 		shnames = char (wb.getSheetNames ());
 		printf ("(Writing to worksheet %s)\n", 	shnames {nr_of_sheets, 1});
@@ -644,12 +664,9 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 			# Sheet not found, just create it
 			sh = wb.createSheet (wsh, nr_of_sheets);
 			++nr_of_sheets;
-			xls.changed = 2;
+			xls.changed = min (xls.changed, 2);		# Keep a 2 for new file
 		endif
 	endif
-
-	# Beware of strings variables interpreted as char arrays; change them to cell.
-	if (ischar (obj)) obj = {obj}; endif
 
 	# Parse date ranges  
 	[nr, nc] = size (obj);
@@ -689,7 +706,7 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 					# There's no guarantee for formula correctness, so....
 					try		# Actually JExcelAPI flags formula errors as warnings :-(
 						tmp = java_new ('jxl.write.Formula', kk, ll, obj{ii, jj});
-						# ... while errors are actualy detected in addCell(), so
+						# ... while errors are actually detected in addCell(), so
 						#     that should be within the try-catch
 						sh.addCell (tmp);
 					catch
@@ -710,7 +727,7 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 	if (f_errs) 
 		printf ("%d formula errors encountered - please check input array\n", f_errs); 
 	endif
-	xls.changed = 1;
+	xls.changed = max (xls.changed, 1);		# Preserve 2 for new files
 	rstatus = 1;
   
 endfunction

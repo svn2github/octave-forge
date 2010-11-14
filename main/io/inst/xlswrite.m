@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@
 ##
 ## @var{rstatus} returns 1 if write succeeded, 0 otherwise.
 ##
-## @var{filename} must be a valid .xls Excel file name. If @var{filename}
-## does not contain any directory path, the file is saved in the current
-## directory.
+## @var{filename} must be a valid .xls Excel file name (including file
+## name extension). If @var{filename} does not contain any directory path,
+## the file is saved in the current directory.
 ##
 ## @var{arr} can be any array type save complex. Mixed numeric/text arrays
 ## can only be cell arrays.
@@ -95,25 +95,24 @@
 ## 2010-01-15 Fixed typos in texinfo
 ## 2010-08-18 Added check for existence of xls after call to xlsopen to 
 ##	          avoid unneeded error message clutter
+## 2010-10-27 Chnged range -> crange to unhide other range functions
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
 	rstatus = 0;
 
 	# Sanity checks
-	if (nargin < 1)
-		error ("xlswrite - no Excel filename specified")
-		return
-	elseif (nargin == 1)
-		error ("xlswrite - no data (array) specified")
-		return
+	if (nargin < 2)
+		usage ("Insufficient arguments - see 'help xlswrite'");
+	elseif (~ischar (filename))
+		error ("First argument must be a filename (incl. suffix)");
 	elseif (nargin == 2)
 		# Assume first worksheet and full worksheet starting at A1
 		wsh = 1;
 		if (strcmp (tolower (filename(end-4:end-1)), 'xls'))
-			range = "A1:XFD1048576";	# OOXML has ridiculously large limits 
+			crange = "A1:XFD1048576";	# OOXML has ridiculously large limits 
 		else
-			range = "A1:IV65536";		# Regular xls limits
+			crange = "A1:IV65536";		# Regular xls limits
 		endif
 	elseif (nargin == 3)
 		# Find out whether 3rd argument = worksheet or range
@@ -121,18 +120,18 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 			# Apparently a worksheet specified
 			wsh = arg3;
 			if (strcmp (tolower (filename(end-4:end-1)), 'xls'))
-				range = "A1:XFD1048576";	# OOXML has ridiculously large limits 
+				crange = "A1:XFD1048576";	# OOXML has ridiculously large limits 
 			else
-				range = "A1:IV65536";		# Regular xls limits
+				crange = "A1:IV65536";		# Regular xls limits
 			endif
 		else
 			# Range specified
 			wsh = 1;
-			range = arg3;
+			crange = arg3;
 		endif
 	elseif (nargin >= 4)
 		wsh = arg3;
-		range = arg4;
+		crange = arg4;
 	endif
 	if (nargin == 5)
 		reqintf = arg5;
@@ -141,7 +140,7 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 	endif
 	
 	# Parse range
-	[topleft, nrows, ncols, trow, lcol] = parse_sp_range (range);
+	[topleft, nrows, ncols, trow, lcol] = parse_sp_range (crange);
 	
 	# Check if arr fits in range
 	[nr, nc] = size (arr);
@@ -150,10 +149,10 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 		nr = min (nrows, nr);
 		nc = min (ncols, nc);
 		warning ("xlswrite - array truncated to %d by %d to fit in range %s", ...
-				 nrows, ncols, range);
+				 nrows, ncols, crange);
 	endif
 
-	unwind_protect				# Needed to besure Excel can be closed i.c.o. errors
+	unwind_protect				# Needed to be sure Excel can be closed i.c.o. errors
 	xls_ok = 0;
 	xls = xlsopen (filename, 1, reqintf);
 	xls_ok = 1;

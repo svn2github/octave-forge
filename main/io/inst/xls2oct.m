@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -64,7 +64,6 @@
 ##
 ## If one of the Java interfaces is used, field @var{xls}.limits contains
 ## the outermost column and row numbers of the actually read cell range.
-## This doesn't work with native Excel / COM.
 ##
 ## Erroneous data and empty cells turn up empty in @var{rawarr}.
 ## Date/time values in Excel are returned as numerical values.
@@ -106,21 +105,44 @@
 ## Created: 2010-10-16
 ## Updates: 
 ## 2009-01-03 (added OOXML support & cleaned up code. Excel 
-##             ADDRESS function still not working OK)
+##             ADDRESS function still not implemented in Apache POI)
 ## 2010-03-14 Updated help text
 ## 2010-05-31 Updated help text (delay i.c.o. empty range due to getusedrange call)
 ## 2010-07-28 Added option to read formulas as text strings rather than evaluated value
 ## 2010-08-25 Small typo in help text
+## 2010-10-20 Added option fornot stripping output arrays
+## 2010-11-07 More rigorous input checks. 
+## 2010-11-12 Moved pointer check into main func
+## 2010-11-13 Catch empty sheets when no range was specified
 ##
-## Latest subfunc update: 2010-10-08 (xls2com2oct)
+## Latest subfunc update: 2010-11-14 (poi)
 
-function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh, datrange='', spsh_opts=[])
+function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=[])
 
+	# Check if xls struct pointer seems valid
+	if (~isstruct (xls)), error ("File ptr struct expected for arg @ 1"); endif
+	test1 = ~isfield (xls, "xtype");
+	test1 = test1 || ~isfield (xls, "workbook");
+	test1 = test1 || isempty (xls.workbook);
+	test1 = test1 || isempty (xls.app);
+	if test1
+		error ("Invalid xls file struct");
+	endif
+	# Check worksheet ptr
+	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 2"); endif
+	# Check range
+	if (~(isempty (datrange) || ischar (datrange))), error ("Character string (range) expected for arg # 3"); endif
 	# Check & setup options struct
 	if (nargin < 4 || isempty (spsh_opts))
 		spsh_opts.formulas_as_text = 0;
 		spsh_opts.strip_array = 1;
 		# Future options:
+	elseif (isstruct (spsh_opts))
+		if (~isfield (spsh_opts', formulas_as_text')), spsh_opts.formulas_as_text = 0; endif
+		if (~isfield (spsh_opts', strip_array')), spsh_opts.strip_array = 1; endif
+		% Future options:
+	else
+		error ("Structure expected for arg # 4");
 	endif
 
 	# Select the proper interfaces
@@ -167,7 +189,7 @@ endfunction
 
 
 #====================================================================================
-## Copyright (C) 2009 P.R. Nienhuis, <pr.nienhuis at hccnet.nl>
+## Copyright (C) 2009,2010 P.R. Nienhuis, <pr.nienhuis at hccnet.nl>
 ##
 ## based on mat2xls by Michael Goffioul (2007) <michael.goffioul@swing.be>
 ##
@@ -211,6 +233,10 @@ endfunction
 ## 2010-10-07 Implemented limits (only reliable for empty input ranges)
 ## 2010-10-08 Resulting data array now cropped (also in case of specified range)
 ## 2010-10-10 More code cleanup (shuffled xls tests & wsh ptr code before range checks)
+## 2010-10-20 Slight change to Excel range setup
+## 2010-10-24 Added check for "live" ActiveX server
+## 2010-11-12 Moved ptr struct check into main func
+## 2010-11-13 Catch empty sheets when no range was specified
 
 function [rawarr, xls, rstatus ] = xls2com2oct (xls, wsh, crange)
 
@@ -222,20 +248,14 @@ function [rawarr, xls, rstatus ] = xls2com2oct (xls, wsh, crange)
 		warning ("Worksheet name too long - truncated") 
 		wsh = wsh(1:31);
 	endif
-
-	# Check the file handle struct
-	test1 = ~isfield (xls, "xtype");
-	test1 = test1 || ~isfield (xls, "workbook");
-	test1 = test1 || ~strcmp (char (xls.xtype), 'COM');
-	test1 = test1 || isempty (xls.workbook);
-	test1 = test1 || isempty (xls.app);
-	if test1
-		error ("Invalid file pointer struct");
-	endif
-
-
 	app = xls.app;
 	wb = xls.workbook;
+	# Check to see if ActiveX is still alive
+	try
+		wb_cnt = wb.Worksheets.count;
+	catch
+		error ("ActiveX invocation in file ptr struct seems non-functional");
+	end_try_catch
 
 	# Check & get handle to requested worksheet
 	wb_cnt = wb.Worksheets.count;
@@ -244,6 +264,7 @@ function [rawarr, xls, rstatus ] = xls2com2oct (xls, wsh, crange)
 		if (wsh < 1 || wsh > wb_cnt)
 			errstr = sprintf ("Worksheet number: %d out of range 1-%d", wsh, wb_cnt);
 			error (errstr)
+			rstatus = 1;
 			return
 		else
 			old_sh = wsh;
@@ -269,8 +290,17 @@ function [rawarr, xls, rstatus ] = xls2com2oct (xls, wsh, crange)
 		allcells = sh.UsedRange;
 		# Get actually used range indices
 		[trow, brow, lcol, rcol] = getusedrange (xls, old_sh);
-		nrows = brow - trow + 1; ncols = rcol - lcol + 1;
-		topleft = calccelladdress (trow, lcol);
+		if (trow == 0 && brow == 0)
+			# Empty sheet
+			rawarr = {};
+			printf ("Worksheet '%s' contains no data\n", sh.Name);
+			return;
+		else
+			nrows = brow - trow + 1; ncols = rcol - lcol + 1;
+			topleft = calccelladdress (trow, lcol);
+			lowerright = calccelladdress (brow, rcol);
+			crange = [topleft ':' lowerright];
+		endif
 	else
 		# Extract top_left_cell from range
 		[topleft, nrows, ncols, trow, lcol] = parse_sp_range (crange);
@@ -280,10 +310,9 @@ function [rawarr, xls, rstatus ] = xls2com2oct (xls, wsh, crange)
   
 	if (nrows >= 1) 
 		# Get object from Excel sheet, starting at cell top_left_cell
-		r = sh.Range (topleft);
-		r = r.Resize (nrows, ncols);
-		rawarr = r.Value;
-		delete (r);
+		rr = sh.Range (crange);
+		rawarr = rr.Value;
+		delete (rr);
 
 		# Take care of actual singe cell range
 		if (isnumeric (rawarr) || ischar (rawarr))
@@ -304,7 +333,7 @@ endfunction
 
 #==================================================================================
 
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -350,6 +379,10 @@ endfunction
 ## 2010-08-01 Some bug fixes for formula reading (cvalue rather than scell)
 ## 2010-10-10 Code cleanup: -getusedrange called; - fixed typo in formula evaluation msg;
 ##      "     moved cropping output array to calling function.
+## 2010-11-12 Moved ptr struct check into main func
+## 2010-11-13 Catch empty sheets when no range was specified
+## 2010-11-14 Fixed sheet # index (was offset by -1) in call to getusedrange() in case
+#3            of text sheet name arg
 
 function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_opts)
 
@@ -365,18 +398,7 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_op
 	endif
 	
 	status = 0; jerror = 0;
-	
-	# Check if xls struct pointer seems valid
-	test1 = ~isfield (xls, "xtype");
-	test1 = test1 || ~isfield (xls, "workbook");
-	test1 = test1 || ~strcmp (char (xls.xtype), 'POI');
-	test1 = test1 || isempty (xls.workbook);
-	test1 = test1 || isempty (xls.app);
-	if test1
-		error ("Invalid xls file struct");
-	else
-		wb = xls.workbook;
-	endif
+	wb = xls.workbook;
 	
 	# Check if requested worksheet exists in the file & if so, get pointer
 	nr_of_sheets = wb.getNumberOfSheets ();
@@ -393,33 +415,23 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_op
 	firstrow = sh.getFirstRowNum ();		# 0-based
 	lastrow = sh.getLastRowNum ();			# 0-based
 	if (isempty (cellrange))
-#		# Get used range by searching (slow...). Beware, it can be bit unreliable
-#		## FIXME - can be replaced by call to getusedrange.m
-#		lcol = 65535;    # Old xls value
-#		lcol = 1048576;  # OOXML (xlsx) max.
-#		rcol = 0;
-#		for ii=firstrow:lastrow
-#			irow = sh.getRow (ii);
-#			if (~isempty (irow))
-#				scol = (irow.getFirstCellNum).intValue ();
-#				lcol = min (lcol, scol);
-#				ecol = (irow.getLastCellNum).intValue () - 1;
-#				rcol = max (rcol, ecol);
-#				# Keep track of lowermost non-empty row as getLastRowNum() is unreliable
-#				if ~(irow.getCell(scol).getCellType () == ctype(4) && irow.getCell(ecol).getCellType () == ctype(4))
-#					botrow = ii;
-#				endif
-#			endif
-#		endfor
 		if (ischar (wsh))
 			# get numeric sheet index
-			ii = wb.getSheetIndex (sh);
+			ii = wb.getSheetIndex (sh) + 1;
 		else
 			ii = wsh;
 		endif
 		[ firstrow, lastrow, lcol, rcol ] = getusedrange (xls, ii);
-		nrows = lastrow - firstrow + 1;
-		ncols = rcol - lcol + 1;
+		if (firstrow == 0 && lastrow == 0)
+			# Empty sheet
+			rawarr = {};
+			printf ("Worksheet '%s' contains no data\n", sh.getSheetName ());
+			rstatus = 1;
+			return;
+		else
+			nrows = lastrow - firstrow + 1;
+			ncols = rcol - lcol + 1;
+		endif
 	else
 		# Translate range to HSSF POI row & column numbers
 		[topleft, nrows, ncols, firstrow, lcol] = parse_sp_range (cellrange);
@@ -450,11 +462,11 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_op
 								# Separate switch because form.eval. yields different type
 								switch type_of_cell
 									case ctype (1)	# Numeric
-										rawarr (ii+1-firstrow, jj+1-lcol) = scell.getNumberValue ();
+										rawarr {ii+1-firstrow, jj+1-lcol} = scell.getNumberValue ();
 									case ctype(2)	# String
-										rawarr (ii+1-firstrow, jj+1-lcol) = char (scell.getStringValue ());
+										rawarr {ii+1-firstrow, jj+1-lcol} = char (scell.getStringValue ());
 									case ctype (5)	# Boolean
-										rawarr (ii+1-firstrow, jj+1-lcol) = scell.BooleanValue ();
+										rawarr {ii+1-firstrow, jj+1-lcol} = scell.BooleanValue ();
 									otherwise
 										# Nothing to do here
 								endswitch
@@ -470,18 +482,18 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_op
 					# Preparations done, get data values into data array
 					switch type_of_cell
 						case ctype(1)		# 0 Numeric
-							rawarr (ii+1-firstrow, jj+1-lcol) = scell.getNumericCellValue ();
+							rawarr {ii+1-firstrow, jj+1-lcol} = scell.getNumericCellValue ();
 						case ctype(2)		# 1 String
-							rawarr (ii+1-firstrow, jj+1-lcol) = char (scell.getRichStringCellValue ());
+							rawarr {ii+1-firstrow, jj+1-lcol} = char (scell.getRichStringCellValue ());
 						case ctype(3)
 							if (spsh_opts.formulas_as_text)
 								tmp = char (scell.getCellFormula ());
-								rawarr (ii+1-firstrow, jj+1-lcol) = ['=' tmp];
+								rawarr {ii+1-firstrow, jj+1-lcol} = ['=' tmp];
 							endif
 						case ctype(4)		# 3 Blank
 							# Blank; ignore until further notice
 						case ctype(5)		# 4 Boolean
-							rawarr (ii+1-firstrow, jj+1-lcol) = scell.getBooleanCellValue ();
+							rawarr {ii+1-firstrow, jj+1-lcol} = scell.getBooleanCellValue ();
 						otherwise			# 5 Error
 							# Ignore
 					endswitch
@@ -492,20 +504,7 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_op
 
 	if (jerror > 0) warning (sprintf ("xls2oct: %d cached values instead of formula evaluations.\n", jerror)); endif
 	
-#	# Crop rawarr from empty outer rows & columns
-#	emptr = cellfun('isempty', rawarr);
-#	irowt = 1;
-#	while (all (emptr(irowt, :))), irowt++; endwhile
-#	irowb = nrows;
-#	while (all (emptr(irowb, :))), irowb--; endwhile
-#	icoll = 1;
-#	while (all (emptr(:, icoll))), icoll++; endwhile
-#	icolr = ncols;
-#	while (all (emptr(:, icolr))), icolr--; endwhile
-#	# Crop cell array
-#	rawarr = rawarr(irowt:irowb, icoll:icolr);
 	status = 1;
-
 	xls.limits = [lcol, rcol; firstrow, lastrow];
 	
 endfunction
@@ -558,6 +557,8 @@ endfunction
 ## 2010-07-29 Added check for too latge requested data rectangle
 ## 2010-10-10 Code cleanup: -getusedrange(); moved cropping result array to
 ##      "     calling function
+## 2010-11-12 Moved ptr struct check into main func
+## 2010-11-13 Catch empty sheets when no range was specified
 
 function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_opts)
 
@@ -565,32 +566,21 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 	if (isempty (ctype))
 		ctype = cell (11, 1);
 		# Get enumerated cell types. Beware as they start at 0 not 1
-		ctype(1,1) = (java_get ('jxl.CellType', 'BOOLEAN')).toString ();
-		ctype(2,1) = (java_get ('jxl.CellType', 'BOOLEAN_FORMULA')).toString ();
-		ctype(3,1) = (java_get ('jxl.CellType', 'DATE')).toString ();
-		ctype(4,1) = (java_get ('jxl.CellType', 'DATE_FORMULA')).toString ();
-		ctype(5,1) = (java_get ('jxl.CellType', 'EMPTY')).toString ();
-		ctype(6,1) = (java_get ('jxl.CellType', 'ERROR')).toString ();
-		ctype(7,1) = (java_get ('jxl.CellType', 'FORMULA_ERROR')).toString ();
-		ctype(8,1) = (java_get ('jxl.CellType', 'NUMBER')).toString ();
-		ctype(9,1) = (java_get ('jxl.CellType', 'LABEL')).toString ();
-		ctype(10,1) = (java_get ('jxl.CellType', 'NUMBER_FORMULA')).toString ();
-		ctype(11,1) = (java_get ('jxl.CellType', 'STRING_FORMULA')).toString ();
+		ctype( 1) = (java_get ('jxl.CellType', 'BOOLEAN')).toString ();
+		ctype( 2) = (java_get ('jxl.CellType', 'BOOLEAN_FORMULA')).toString ();
+		ctype( 3) = (java_get ('jxl.CellType', 'DATE')).toString ();
+		ctype( 4) = (java_get ('jxl.CellType', 'DATE_FORMULA')).toString ();
+		ctype( 5) = (java_get ('jxl.CellType', 'EMPTY')).toString ();
+		ctype( 6) = (java_get ('jxl.CellType', 'ERROR')).toString ();
+		ctype( 7) = (java_get ('jxl.CellType', 'FORMULA_ERROR')).toString ();
+		ctype( 8) = (java_get ('jxl.CellType', 'NUMBER')).toString ();
+		ctype( 9) = (java_get ('jxl.CellType', 'LABEL')).toString ();
+		ctype(10) = (java_get ('jxl.CellType', 'NUMBER_FORMULA')).toString ();
+		ctype(11) = (java_get ('jxl.CellType', 'STRING_FORMULA')).toString ();
 	endif
 	
-	status = 0;
-	
-	# Check if xls struct pointer seems valid
-	test1 = ~isfield (xls, "xtype");
-	test1 = test1 || ~isfield (xls, "workbook");
-	test1 = test1 || ~strcmp (char (xls.xtype), 'JXL');
-	test1 = test1 || isempty (xls.workbook);
-	test1 = test1 || isempty (xls.app);
-	if test1
-		error ("Invalid xls file struct");
-	else
-		wb = xls.workbook;
-	endif
+	status = 0; 
+	wb = xls.workbook;
 	
 	# Check if requested worksheet exists in the file & if so, get pointer
 	nr_of_sheets = wb.getNumberOfSheets ();
@@ -603,10 +593,6 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 		sh = wb.getSheet (wsh);
 		if (isempty (sh)), error (sprintf ("Worksheet %s not found in file %s", wsh, xls.filename)); endif
 	end
-
-	# Check ranges
-#	firstrow = 0;
-#	lcol = 0;
 
 	if (isempty (cellrange))
 		# Get numeric sheet pointer (1-based)
@@ -621,8 +607,16 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 		endwhile
 		# Get data rectangle row & column numbers (1-based)
 		[firstrow, lastrow, lcol, rcol] = getusedrange (xls, wsh);
-		nrows = lastrow - firstrow + 1;
-		ncols = rcol - lcol + 1;
+		if (firstrow == 0 && lastrow == 0)
+			# Empty sheet
+			rawarr = {};
+			printf ("Worksheet '%s' contains no data\n", shnames {wsh});
+			rstatus = 1;
+			return;
+		else
+			nrows = lastrow - firstrow + 1;
+			ncols = rcol - lcol + 1;
+		endif
 	else
 		# Translate range to row & column numbers (1-based)
 		[dummy, nrows, ncols, firstrow, lcol] = parse_sp_range (cellrange);
@@ -639,43 +633,85 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 		for ii = firstrow:lastrow
 			scell = sh.getCell (jj-1, ii-1);
 			switch char (scell.getType ())
-				case ctype {1, 1}   # Boolean
-					rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
-				case ctype {2, 1}   # Boolean formula
+				case ctype {1}   # Boolean
+					rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
+				case ctype {2}   # Boolean formula
 					if (spsh_opts.formulas_as_text)
 						tmp = scell.getFormula ();
-						rawarr (ii+1-firstrow, jj+1-lcol) = ["=" tmp];
+						rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
 					else
-						rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
+						rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
 					endif
-				case ctype {3, 1}   # Date
-					rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
-				case ctype {4, 1}   # Date formula
+				case ctype {3}   # Date
+					try
+						% Older JXL.JAR, returns float
+						rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
+					catch
+						% Newer JXL.JAR, returns date string w. epoch = 1-1-1900 :-(
+						tmp = strsplit (' ', char (scell.getDate ()));
+						yy = str2num (tmp{6});
+						mo = find (ismember (months, upper (tmp{2})) == 1);
+						dd = str2num (tmp{3});
+						hh = str2num (tmp{4}(1:2));
+						mi = str2num (tmp{4}(4:5));
+						ss = str2num (tmp{4}(7:8));
+						if (~scell.isTime ())
+							yy = mo = dd = 0;
+						endif
+						rawarr {ii+1-firstrow, jj+1-lcol} = datenum (yy, mo, dd, hh, mi, ss);
+					end_try_catch
+				case ctype {4}   # Date formula
 					if (spsh_opts.formulas_as_text)
 						tmp = scell.getFormula ();
-						rawarr (ii+1-firstrow, jj+1-lcol) = ["=" tmp];
+						rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
 					else
-						rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
+						unwind_protect
+							% Older JXL.JAR, returns float
+							tmp = scell.getValue ();
+							% if we get here, we got a float (old JXL).
+							% Check if it is time
+							if (~scell.isTime ())
+								% Reset rawarr <> so it can be processed below as date string
+								rawarr {ii+1-firstrow, jj+1-lcol} = [];
+							else
+								rawarr {ii+1-firstrow, jj+1-lcol} = tmp;
+							end
+						unwind_protect_cleanup
+							if (isempty (rawarr {ii+1-firstrow, jj+1-lcol}))
+								% Newer JXL.JAR, returns date string w. epoch = 1-1-1900 :-(
+								tmp = strsplit (' ', char (scell.getDate ()));
+								yy = str2num (tmp{6});
+								mo = find (ismember (months, upper (tmp{2})) == 1);
+								dd = str2num (tmp{3});
+								hh = str2num (tmp{4}(1:2));
+								mi = str2num (tmp{4}(4:5));
+								ss = str2num (tmp{4}(7:8));
+								if (scell.isTime ())
+									yy = 0; mo = 0; dd = 0;
+								end
+								rawarr {ii+1-firstrow, jj+1-lcol} = datenum (yy, mo, dd, hh, mi, ss);
+							endif
+						end_unwind_protect
 					endif
-				case { ctype {5, 1}, ctype {6, 1}, ctype {7, 1} }
+				case { ctype {5}, ctype {6}, ctype {7} }
 					# Empty, Error or Formula error. Nothing to do here
-				case ctype {8, 1}   # Number
-					rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
-				case ctype {9, 1}   # String
-					rawarr (ii+1-firstrow, jj+1-lcol) = scell.getString ();
-				case ctype {10, 1}  # Numerical formula
+				case ctype {8}   # Number
+					rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
+				case ctype {9}   # String
+					rawarr {ii+1-firstrow, jj+1-lcol} = scell.getString ();
+				case ctype {10}  # Numerical formula
 					if (spsh_opts.formulas_as_text)
 						tmp = scell.getFormula ();
-						rawarr (ii+1-firstrow, jj+1-lcol) = ["=" tmp];
+						rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
 					else
-						rawarr (ii+1-firstrow, jj+1-lcol) = scell.getValue ();
+						rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
 					endif
-				case ctype {11, 1}  # String formula
+				case ctype {11}  # String formula
 					if (spsh_opts.formulas_as_text)
 						tmp = scell.getFormula ();
-						rawarr (ii+1-firstrow, jj+1-lcol) = ["=" tmp];
+						rawarr {ii+1-firstrow, jj+1-lcol} = ["=" tmp];
 					else
-						rawarr (ii+1-firstrow, jj+1-lcol) = scell.getString ();
+						rawarr {ii+1-firstrow, jj+1-lcol} = scell.getString ();
 					endif
 				otherwise
 					# Do nothing
@@ -683,20 +719,7 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 		endfor
 	endfor
 
-#	# Crop rawarr from empty outer rows & columns
-#	emptr = cellfun('isempty', rawarr);
-#	irowt = 1;
-#	while (all (emptr(irowt, :))), irowt++; endwhile
-#	irowb = nrows;
-#	while (all (emptr(irowb, :))), irowb--; endwhile
-#	icoll = 1;
-#	while (all (emptr(:, icoll))), icoll++; endwhile
-#	icolr = ncols;
-#	while (all (emptr(:, icolr))), icolr--; endwhile
-#	# Crop cell array
-#	rawarr = rawarr(irowt:irowb, icoll:icolr);
 	status = 1;
-
 	xls.limits = [lcol, rcol; firstrow, lastrow];
 	
 endfunction

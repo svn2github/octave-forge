@@ -1,4 +1,4 @@
-## Copyright (C) 2009 by Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 by Philip Nienhuis <prnienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -30,21 +30,25 @@
 ## If neither Excel, Java/Apache POI or Java/JExcelAPI are installed,
 ## xlsread will fail and suggest .csv file reading.
 ##
-## In case one of the Java interfaces (Apache POI / JExcelAPI) has been
-## invoked, @var{limits} contains the outer column/row numbers of the
+## @var{limits} contains the outer column/row numbers of the read
 ## spreadsheet range where @var{numarr}, @var{txtarr} and @var{rawarr}
 ## have come from (remember, xlsread trims outer rows and columns).
 ##
 ## If @var{filename} does not contain any directory, the file is
-## assumed to be in the current directory.
+## assumed to be in the current directory. The filename extension
+## (.xls or .xlsx) must be included in the file name; when using the
+## COM interface any file format can be read from that can be read
+## and written by the locally installed MS-Excel version (e.g., wk1,
+## csv, dbf, ...).
 ##
 ## @var{range} is expected to be a regular spreadsheet range format,
 ## or "" (empty string, indicating all data in a worksheet).
 ## If no range is specified the occupied cell range will have to be
 ## determined behind the scenes first; this can take some time for the
-## Java-based interfaces (but these are more reliable).
+## Java-based interfaces (but the results are more reliable than that
+## of ActiveX/COM).
 ##
-## @var{wsh} is either numerical or text, in the latter case it is 
+## @var{wsh} is either numerical or text; in the latter case it is 
 ## case-sensitive and it may be max. 31 characters long.
 ## Note that in case of a numerical @var{wsh} this number refers to the
 ## position in the worksheet stack, counted from the left in an Excel
@@ -68,14 +72,18 @@
 ##
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by xlsread of one interface out of the
-## supported ones: COM/Excel, Java/Apache POI, or Java/JExcelAPI.
+## supported ones: COM/Excel, Java/Apache POI, or Java/JExcelAPI
+## (in that built-in order of preference).
 ## For reading from OOXML files a value of 'poi' must be specified
 ## for @var{reqintf} (see help for xlsopen); for Excel'95 files use
-## 'jxl'.
+## 'com', or if Excel is not installed use 'jxl' or 'basic' (POI
+## can't read Excel 95 but will try to fall back to JXL).
+## As @var{reqintf} can also be a cell array of strings, one can
+## select or exclude one or more interfaces.
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values in
-## Excel are returned as numerical values in @var{obj}. Note that
+## Excel are returned as numerical values in @var{numarr}. Note that
 ## Excel and Octave have different date base values (1/1/1900 & 
 ## 1/1/0000, resp.)
 ## @var{numarr} and @var{txtarr} are trimmed from empty outer rows
@@ -88,12 +96,12 @@
 ## "corresponding" Excel cells are empty.
 ##
 ## xlsread is just a wrapper for a collection of scripts that find out
-## the interface to be used (COM, Java/POI,Java/JXL) and do the actual
+## the interface to be used (COM, Java/POI, Java/JXL) and do the actual
 ## reading. For each call to xlsread the interface must be started and
 ## the Excel file read into memory. When reading multiple ranges (in
 ## optionally multiple worksheets) a significant speed boost can be
-## obtained by invoking those scripts directly (xlsopen /xls2oct / ...
-## / xlsclose [/ parsecell]).
+## obtained by invoking those scripts directly as in:
+## xlsopen / xls2oct [/ parsecell] / ... / xlsclose
 ##
 ## Beware: when using the COM interface, hidden Excel invocations may be
 ## kept running silently if not closed explicitly.
@@ -108,9 +116,15 @@
 ##
 ## @example
 ##   [An, Tn, Ra, limits] = xlsread ('Sales2009.xls', 'Third_sheet');
-##   (which returns all data in worksheet 'Third_sheet' in file test4.xls
+##   (which returns all data in worksheet 'Third_sheet' in file 'Sales2009.xls'
 ##   into array An, the text data into array Tn, the raw cell data into
 ##   cell array Ra and the ranges from where the actual data came in limits)
+## @end example
+##
+## @example
+##   numarr = xlsread ('Sales2010.xls', 4, [], @{'JXL', 'COM'@});
+##   (Read all data from 4th worksheet in file Sales2010.xls using either JXL
+##    or COM interface (i.e, exclude POI interface). 
 ## @end example
 ##
 ## @seealso xlswrite, xlsopen, xls2oct, xlsclose, xlsfinfo, oct2xls
@@ -124,13 +138,20 @@
 ## 2010-01-12 added unwind_protect to get rid of stray Excel invocations i.c.o. COM errors
 ## 2010-05-31 Updated help text (delays i.c.o. empty range due to getusedrange call)
 ## 2010-08-18 Added check for existence of xls after call to xlsopen to 
-##	           avoid unneeded error message clutter
+##	   "      avoid unneeded error message clutter
 ## 2010-08-25 Improved help text, esp. sections Excel file types and interfaces
+## 2010-10-20 Dropped wiping xls.limits for COM (nowadays COM can return those)
+## 2010-10-21 Formally added 'BASIC' option as synonym for 'JXL'
+## 2010-11-05 Updated help text
+## 2010-11-13 Added some input checks
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
 	rstatus = 0;
 
+	if (nargout < 1)
+		usage ("xlsread: no output argument(s) specified");
+	endif
 	if (nargin < 1) 
 		error ("xlsread: no arguments specified") 
 		numarr = []; txtarr={}; rawarr = {};
@@ -151,8 +172,8 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 	endif
 
 	# A small gesture for Matlab compatibility. JExcelAPI supports BIFF5.
-	if (~isempty (reqintf) && strcmp (toupper(reqintf), 'BASIC')) 
-		reqintf= "JXL"; 
+	if (~isempty (reqintf) && ischar (reqintf) && strcmp (toupper(reqintf), 'BASIC')) 
+		reqintf= {"JXL"} ; 
 		printf ("BASIC (BIFF5) support request translated to JXL. \n");
 	endif
 	
@@ -178,15 +199,14 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 
 		if (rstatus)
 			[numarr, txtarr, lims] = parsecell (rawarr, rawlimits);
-			# Wipe lims if using Excel (that doesn't return reliable rawlimits).
-			# The user can get the limits relative to the rawarr by parsecell (rawarr).
-			if (strcmp (xtype, 'COM')) lims = []; endif
 		else
 			rawarr = {}; numarr = []; txtarr = {};
 		endif
 
 	else
-			printf ("\n Error XLSREAD: reading EXCEL .xls file (BIFF-Format) isn\'t supported on this system.\n You need to convert the file into a tab- or comma delimited text file or .csv file\n and then invoke dlmread()\n\n");
+		printf ("Error XLSREAD: reading EXCEL file (BIFF- or OOXML Format) isn\'t supported on this system.\n");
+		printf ("You need to convert the file into a tab- or comma delimited text file or .csv file\n");
+		printf ("and then invoke csvread(), dlmread() or textread()\n\n");
 
 	endif
 

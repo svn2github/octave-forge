@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
@@ -7,7 +7,7 @@
 	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
 	<META NAME="CREATED" CONTENT="20091229;22213000">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20100827;22445900">
+	<META NAME="CHANGED" CONTENT="20101114;18275600">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
@@ -25,681 +25,601 @@
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<STYLE TYPE="text/css">
-	<!--
-		@page { margin: 2.01cm }
-		P { margin-bottom: 0.2cm }
-		A:link { so-language: zxx }
-	-->
-	</STYLE>
+	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
 </HEAD>
 <BODY LANG="en-US" DIR="LTR">
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><U><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><B>ODS
-support for Octave</B></U></FONT></FONT></P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Copyright
-&copy; 2009, 2010 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</FONT></FONT></P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>This
-version August 27, 2010</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I>(ODS
-= Open Document Format spreadsheet data format, used by e.g.,
-OpenOffice.org.)</I></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><U><B>Files
-content</B></U></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 5.03cm; text-indent: -5.03cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>odsread.m</B></I></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">No-hassle
-read script for reading from an ODS file and parsing the numeric and
-text data into separate arrays.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 5.03cm; text-indent: -5.03cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>odswrite.m</B></I></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">No-hassle
-write script for writing to an ODS file.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 5.03cm; text-indent: -5.03cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>odsopen.m</B></I></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 5.03cm; text-indent: -5.03cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Get
-a file pointer to an ODS spreadsheet file.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>ods2oct.m</B></I></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Read
-raw data from an ODS spreadsheet file using the file pointer handed
-by odsopen.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>oct2ods.m</B></I></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Write
-data to an ODS spreadsheet file using the file pointer handed by
-odsopen.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>odsclose.m</B></I></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Close
-file handle made by odsopen and -if data have been transfered to a
-spreadsheet- save data.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>odsfinfo.m</B></I></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Explore
-sheet names and optionally estimated data size of ods files with
-unknown content.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>calccelladdress.m</B></I></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Utility
-function needed for jOpenDocument class.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><B>parsecell.m</B></I></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(contained
-in Excel xlsread scripts, but works also for ods support) parse raw
-data (cell array) into separate numeric array and text (cell) array.)</FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>spsh_chkrange.m</B></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>spsh_prstype.m</B></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>getusedrange.m</B></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>calccelladdress.m</B></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>parse_sp_range.m</B></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Support
-files called by the scripts and not meant for direct invocation by
-users.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>REQUIRED
-SUPPORT SOFTWARE</B></U></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 5.03cm; text-indent: -5.03cm; margin-bottom: 0cm">
+<P ALIGN=CENTER><U><FONT FACE="Arial, sans-serif"><FONT SIZE=4><B>ODS
+support for Octave</B></U></FONT></FONT><P ALIGN=CENTER>
 <BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 5.03cm; text-indent: -5.03cm; margin-bottom: 0cm">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">For
-Windows (MingW):</FONT></FONT></P>
+<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Copyright
+&copy; 2009, 2010 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</FONT></FONT><P ALIGN=CENTER>
+<BR>
+<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=2>This
+version November 14, 2010</FONT></FONT><DL>
+	<DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I>(ODS = Open
+	Document Format spreadsheet data format, used by e.g.,
+	OpenOffice.org.)</I></FONT></FONT><DT><P>
+	<BR>
+	<DT><P><BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><U><B>Files
+	content</B></U></FONT></FONT><DT><P>
+	<BR>
+	<DL>
+		<DL>
+			<DL>
+				<DL>
+					<DD><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I><B>odsread.m</B></I></FONT></FONT></DL>
+			</DL>
+		</DL>
+	</DL>
+	<DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>No-hassle read script
+	for reading from an ODS file and parsing the numeric and text data
+	into separate arrays.</FONT></FONT><DT><P>
+	<BR>
+	<DL>
+		<DL>
+			<DL>
+				<DL>
+					<DD><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I><B>odswrite.m</B></I></FONT></FONT></DL>
+			</DL>
+		</DL>
+	</DL>
+	<DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>No-hassle write script
+	for writing to an ODS file.</FONT></FONT><DT><P>
+	<BR>
+	<DL>
+		<DL>
+			<DL>
+				<DL>
+					<DD><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I><B>odsopen.m</B></I></FONT></FONT><DD><P ALIGN=LEFT>
+					<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Get a file pointer
+					to an ODS spreadsheet file.</FONT></FONT></DL>
+			</DL>
+		</DL>
+	</DL>
+	<DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I><B>ods2oct.m</B></I></FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Read raw data from an
+	ODS spreadsheet file using the file pointer handed by odsopen.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I><B>oct2ods.m</B></I></FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Write data to an ODS
+	spreadsheet file using the file pointer handed by odsopen.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I><B>odsclose.m</B></I></FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Close file handle made
+	by odsopen and -if data have been transfered to a spreadsheet- save
+	data.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I><B>odsfinfo.m</B></I></FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Explore sheet names and
+	optionally estimated data size of ods files with unknown content.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I><B>calccelladdress.m</B></I></FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Utility function needed
+	for jOpenDocument class.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I><B>parsecell.m</B></I></FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>(contained in Excel
+	xlsread scripts, but works also for ods support) parse raw data
+	(cell array) into separate numeric array and text (cell) array.)</FONT></FONT><DT>
+	<BR>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>spsh_chkrange.m</B></FONT></FONT><DT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>spsh_prstype.m</B></FONT></FONT><DT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>getusedrange.m</B></FONT></FONT><DT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>calccelladdress.m</B></FONT></FONT><DT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>parse_sp_range.m</B></FONT></FONT><DT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Support files called by
+	the scripts and not meant for direct invocation by users.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><BR>
+	<DT><P><BR>
+</DL>
+<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>REQUIRED
+SUPPORT SOFTWARE</B></U></FONT></FONT><DL>
+	<DL>
+		<DL>
+			<DL>
+				<DL>
+					<DD><P ALIGN=LEFT>
+					<BR>
+					<DD><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>For
+					Windows (MingW):</FONT></FONT></DL>
+			</DL>
+		</DL>
+	</DL>
+</DL>
 <UL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">octave
-	with java package (&gt;= 1.2.6) with latest svn fixes applied</FONT></FONT></P>
-</UL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">For
-Linux:</FONT></FONT></P>
+	<LI><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>octave with java package
+	(&gt;= 1.2.6) with latest svn fixes applied</FONT></FONT></UL>
+<DL>
+	<DT><P><BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>For Linux:</FONT></FONT></DL>
 <UL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">octave
-	with java package (&gt;= 1.2.5; earlier versions not tested)</FONT></FONT></P>
-</UL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">For
-ODS access, you'll need to choose at least one of the following java
-class files collections:</FONT></FONT></P>
+	<LI><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>octave with java package
+	(&gt;= 1.2.5; earlier versions not tested)</FONT></FONT></UL>
+<DL>
+	<DT><P><BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>For ODS access,
+	you'll need to choose at least one of the following java class files
+	collections:</FONT></FONT></DL>
 <UL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(currently
-	the preferred option) <B>odfdom.jar</B> (<U>only</U><SPAN STYLE="text-decoration: none">
-	</SPAN><SPAN STYLE="text-decoration: none"><SPAN STYLE="font-weight: normal">version</SPAN></SPAN>
-	<B>0.7.5</B> <SPAN STYLE="text-decoration: none">works OK!</SPAN>) &amp;
-	<B>xercesImpl.jar</B>. Get them here:</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases</FONT></FONT></A></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><A HREF="http://xerces.apache.org/mirrors.cgi"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">http://xerces.apache.org/mirrors.cgi</FONT></FONT></A></P>
-</UL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">and/or</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
+	<LI><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>(currently the preferred
+	option) <B>odfdom.jar</B> (<U>only</U> versions <B>0.7.5</B> and
+	<B>0.8.6</B> work OK!) &amp; <B>xercesImpl.jar</B>. Get them here:</FONT></FONT><LI><P ALIGN=LEFT>
+	<A HREF="http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases</FONT></FONT></A><LI><P LANG="zxx" ALIGN=LEFT>
+	<FONT COLOR="#000080"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><U>http://odftoolkit.org/projects/odfdom/downloads/directory/current-version</U></FONT></FONT></FONT><LI><P ALIGN=LEFT>
+	<A HREF="http://xerces.apache.org/mirrors.cgi"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>http://xerces.apache.org/mirrors.cgi</FONT></FONT></A></UL>
+<DL>
+	<DT><P><BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>and/or</FONT></FONT><DT><P>
+	<BR>
+</DL>
 <UL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>jopendocument</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">&lt;version&gt;</SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>.jar</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">.
-	Get it from <A HREF="http://www.jopendocument.org/">http://www.jopendocument.org</A></FONT></FONT></P>
-</UL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
+	<LI><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>jopendocument</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>&lt;version&gt;</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>.jar</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>.
+	Get it from <A HREF="http://www.jopendocument.org/">http://www.jopendocument.org</A></FONT></FONT><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>(jOpenDocument 1.2
+	(final) is the most recent one and recommended for Octave)</FONT></FONT></UL>
+<DL>
+	<DT><P><BR>
+</DL>
 <UL>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">These</FONT></FONT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">must
-	be referenced with full pathnames in your javaclasspath. Hint: add
-	it in ./share/octave/&lt;version&gt;/m/startup/octaverc using
-	appropriate javaaddpath statements.</SPAN></FONT></FONT></P>
-</UL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>USAGE</B></U></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(see
-&ldquo;help ods&lt;function_filename&gt;&rdquo; in octave terminal.)</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsread</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
-</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">is
-a sort of analog to xlsread and works more or less the same. </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsread
-</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">is
-a mere wrapper for the functions </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsopen</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">,
-</SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>ods2oct,</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
-</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">and
-</SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsclose</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
-</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">that
-do file access and the actual reading, plus </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>parsecell</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
-</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">for
-post-processing.</SPAN></FONT></FONT></SPAN></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odswrite</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
-</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">works
-similar to xlswrite. It too is a wrapper for scripts which do the
-actual work and invoke other scripts, a.o. </SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>oct2ods</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">.</SPAN></FONT></FONT></SPAN></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>odsfinfo</B></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
-</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">can
-be used to explore odsfiles with unknown content for sheet names and
-to get an impression of the data content sizes.</SPAN></FONT></FONT></SPAN></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">When
-you need data from just one sheet, odsread is for you. </FONT></FONT>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">But
-when you need data from multiple sheets in the same spreadsheet file,
-or if you want to process spreadsheet data by limited-size chunks at
-a time, odsopen / ods2oct [/parsecell] / &hellip; / odsclose
-sequences provides for much more speed and flexibility as the
-spreadsheet needs to be read just once rather than repeatedly for
-each call to odsread.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Same
-reasoning goes for odswrite.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Also,
-if you use odsopen / &hellip;../, you can process multiple
-spreadsheets simultaneously &ndash; just use odsopen repeatedly to
-get multiple spreadsheet file pointers.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Moreover,
-after adding data to an existing spreadsheet file, you can fiddle
-with the filename in the ods file pointer struct to save the data
-into another, possibly new spreadsheet file.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">If
-you use odsopen / ods2oct / &hellip; / odsclose, DO NOT FORGET to
-invoke odsclose in the end. The file pointers can contain an enormous
-amount of data and may needlessly keep precious memory allocated.</FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>SPREADSHEET
-FORMULA SUPPORT</B></U></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><BR>When
-using the OTK interface you can:</FONT></FONT></P>
+	<P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>These</FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>must be referenced with
+	full pathnames in your javaclasspath. Hint: add it in
+	./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate
+	javaaddpath statements.</FONT></FONT></UL>
+<DL>
+	<DT><P><BR>
+	<DT><P><BR>
+</DL>
+<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>USAGE</B></U></FONT></FONT><DL>
+	<DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>(see &ldquo;help
+	ods&lt;function_filename&gt;&rdquo; in octave terminal.)</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>odsread</B></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>is a sort of analog to
+	xlsread and works more or less the same. </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>odsread
+	</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>is a
+	mere wrapper for the functions </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>odsopen</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>,
+	</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>ods2oct,</B></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>and </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>odsclose</B></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>that do file access and
+	the actual reading, plus </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>parsecell</B></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>for post-processing.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>odswrite</B></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>works similar to
+	xlswrite. It too is a wrapper for scripts which do the actual work
+	and invoke other scripts, a.o. </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>oct2ods</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>odsfinfo</B></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>can be used to explore
+	odsfiles with unknown content for sheet names and to get an
+	impression of the data content sizes.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>When you need
+	data from just one sheet, <B>odsread</B> is for you. </FONT></FONT>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>But when you need
+	data from multiple sheets in the same spreadsheet file, or if you
+	want to process spreadsheet data by limited-size chunks at a time,
+	<B>odsopen</B> / <B>ods2oct</B> [/<B>parsecell</B>] / &hellip; /
+	<B>odsclose</B> sequences provides for much more speed and
+	flexibility as the spreadsheet needs to be read just once rather
+	than repeatedly for each call to <B>odsread</B>.</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Same reasoning goes for
+	<B>odswrite</B>.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Also, if you use
+	<B>odsopen</B> / &hellip;../, you can process multiple spreadsheets
+	simultaneously &ndash; just use <B>odsopen</B> repeatedly to get
+	multiple spreadsheet file pointers.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Moreover, after
+	adding data to an existing spreadsheet file, you can fiddle with the
+	filename in the ods file pointer struct to save the data into
+	another, possibly new spreadsheet file.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>If you use
+	<B>odsopen</B> / <B>ods2oct</B> / &hellip; / <B>oct2ods</B> / &hellip;.
+	/  <B>odsclose</B>, DO NOT FORGET to invoke <B>odsclose</B> in the
+	end. The file pointers can contain an enormous amount of data and
+	may needlessly keep precious memory allocated.</FONT></FONT><DT>
+	<BR>
+	<DT><BR>
+</DL>
+<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>SPREADSHEET
+FORMULA SUPPORT</B></U></FONT></FONT><DL>
+	<DT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><BR>When using the OTK
+	interface you can:</FONT></FONT></DL>
 <UL>
-	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(When
-	reading, xls2oct) either read spreadsheet formula results, or the
-	literal formula text strings;</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(When
-	writing, oct2xls) either enter formulas in the worksheet as
-	formulas, or enter them as literal text strings.</FONT></FONT></P>
-</UL>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">In
-short, you can enter spreadsheet formulas and in a later stage read
-them back, change them and re-enter them in the worksheet.</FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
-behaviour is controlled by an option structure </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options</B></FONT></FONT>
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">(as
-last argument to oct2ods.m and ods2oct.m) which for now has only one
-(logical) field:</SPAN></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options.formulas_as_text</B></FONT></FONT>
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">=
-0 (the default) implies enter formulas as formulas and read back
-formula results</SPAN></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>options.formulas_as_text
-</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">=1
-(or any positive integer) means enter formulas as text strings and
-read them back as text strings.</SPAN></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">Be
-aware that there's no formula evaluator in ODS java, not even a
-formula validator. So if you create formulas in your spreadsheet
-using oct2ods or odswrite, do not expect meaningful results when
-reading those files later on </SPAN></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>unless</B></FONT></FONT>
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">you
-open them in OpenOffice.org Calc and write them back to disk.</SPAN></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm; font-weight: normal"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">You
-can write all kind of junk as a formula into a spreadsheet cell.
-There's not much validity checking built into odfdom.jar. I didn't
-bother to try OpenOffice.org Calc to read such faulty spreadsheets,
-so I don't know what will happen with spreadsheets containing invalid
-formulas. But using the above options, you can at least repair them
-using octave....</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>GOTCHAS</B></U></FONT></FONT></P>
-<P ALIGN=CENTER STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">I
-know of one big gotcha: i.e. reading dates (&amp; time). A less
-obvious one is java memory pool allocation size.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Date
-and time in ODS</B></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Octave
-(as does Matlab) stores dates as a number representing the number of
-days since January 1, 0 (and as an aside ignores a.o. Pope Gregorius'
-intervention in 1582 when 10 days were simply skipped).</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">OpenOffice.org
-stores dates as text strings like &ldquo;yyyy-mm-dd&rdquo;.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">MS-Excel
-stores dates as a number representing the number of days since
-January 1, 1900 (and as an aside, erroneously assumes 1900 to be a
-leap year).</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Now,
-converting OpenOffice.org date cell values into Octave looks pretty
-straightforward. But when the ODS spreadsheet was originally an Excel
-spreadsheet converted by OpenOffice.org, the date cells can either be
-OOo date values (i.e.,strings) OR old numerical values from the Excel
-spreadsheet. </FONT></FONT>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">So:
-you should carefully check what happens to date cells.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">As
-octave has no &rdquo;date&rdquo; or &ldquo;time&rdquo; data type,
-octave date values (usually numerical data) are simply transferred as
-&ldquo;floats&rdquo; to ODS spreadsheets. You'll have to convert the
-values into dates yourself from within OpenOffice.org.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">While
-adding data and time values has been implemented in the write
-scripts, the wait is for clever solutions to distinguish dates from
-floats in octave cell arrays.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Java
-memory pool allocation size</B></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
-java virtual machine (JVM) initializes one big chunk of your
-computer's RAM in which all java classes and methods etc. are to be
-loaded: the java memory pool. It does this because java has a very
-sophisticated &ldquo;garbage collection&rdquo; system. At least on
-Windows, the initial size is 2MB and the maximum size is 64MB. On
-Linux this allocated size is much bigger. This part of memory is
-where the java-based ODS octave routines (and the java-based xls
-routines) live and keep their variables etc.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">For
-transferring large pieces of information to and from spreadsheets you
-might hit the limits of this pool. E.g. to be able to handle I/O of
-an array of around 50,000 cells I needed a memory pool size of 512
-MB.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
-memory size can be increased by inserting a file called &ldquo;java.opts&rdquo;
-(without quotes) in the directory
-./share/octave/packages/java-&lt;version&gt; (where the script file
-javaclasspath.m is located), containing just the following lines:</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><B>-Xms16m</B></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><B>-Xmx512m</B></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">(where
-16 = initial size, 512 = maximum size (in this example), m stands for
-Megabyte. This number is system-dependent).</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">After
-processing a large chunk of spreadsheet information you might notice
-that octave's memory footprint does not shrink so it looks like
-java's memory pool does not shrink back; but rest assured, the memory
-footprint is the <I>allocated</I> <SPAN STYLE="font-style: normal">(reserved)
-memory size, not the actual used size. After the JVM has done its
-garbage collection, only the so-called &ldquo;working set&rdquo; of
-the memory allocation is really in use and that is a trimmed-down
-part of the memory allocation pool. On Windows systems it often
-suffices to minimize the octave terminal for a few seconds to get a
-more reasonable memory footprint.</SPAN></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Reading
-cells containing errors</B></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Spreadsheet
-cells containing erroneous stuff are transferred to Octave as NaNs.
-But not all errors can be catched. Cells showing #Value# in
-OpenOffice.org Calc often contain invalid formulas but may have a 0
-(null) value stored in the value fields. It is impossible to catch
-this as there is no run-time formula evaluator (yet) in ODF Toolkit
-nor jOpenDocument (like there is in Apache POI for Excel).</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Smaller
-gotcha's (only with jOpenDocument 1.2b2, fixed in 1.2b3+):</FONT></FONT></P>
+	<LI>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>(When reading, <B>od</B><B>s2oct</B>)
+	either read spreadsheet formula results, or the literal formula text
+	strings;</FONT></FONT><LI>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>(When writing, <B>oct2</B><B>od</B><B>s</B>)
+	either enter formulas in the worksheet as formulas, or enter them as
+	literal text strings.</FONT></FONT></UL>
+<DL>
+	<DT><BR>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>In short, you can
+	enter spreadsheet formulas and in a later stage read them back,
+	change them and re-enter them in the worksheet.</FONT></FONT><DT>
+	<BR>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>The behaviour is
+	controlled by an option structure </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>options</B></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>(as last argument to
+	</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>oct2ods</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>.m
+	and </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>ods2oct</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>.m)
+	which for now has only one (logical) field:</FONT></FONT><DT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>options.formulas_as_text</B></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>= 0 (the default)
+	implies enter formulas as formulas and read back formula results</FONT></FONT><DT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>options.formulas_as_text
+	</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>=1 (or
+	any positive integer) means enter formulas as text strings and read
+	them back as text strings.</FONT></FONT><DT>
+	<BR>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Be aware that
+	there's no formula evaluator in ODS java, not even a formula
+	validator. So if you create formulas in your spreadsheet using
+	</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>oct2ods</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>
+	or </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>odswrite</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>,
+	do not expect meaningful results when reading those files later on
+	</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>unless</B></FONT></FONT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>you open them in
+	OpenOffice.org Calc and write them back to disk.</FONT></FONT><DT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>You can write all kind
+	of junk as a formula into a spreadsheet cell. There's not much
+	validity checking built into odfdom.jar. I didn't bother to try
+	OpenOffice.org Calc to read such faulty spreadsheets, so I don't
+	know what will happen with spreadsheets containing invalid formulas.
+	But using the above options, you can at least repair them using
+	octave....</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><BR>
+</DL>
+<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>GOTCHAS</B></U></FONT></FONT><P ALIGN=CENTER>
+<BR>
+<DL>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>I know of one big
+	gotcha: i.e. reading dates (&amp; time). A less obvious one is Java
+	memory pool allocation size.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>Date and time
+	in ODS</B></FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Octave (as does Matlab)
+	stores dates as a number representing the number of days since
+	January 1, 0 (and as an aside ignores a.o. Pope Gregorius'
+	intervention in 1582 when 10 days were simply skipped).</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>OpenOffice.org stores
+	dates as text strings like &ldquo;yyyy-mm-dd&rdquo;.</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>MS-Excel stores dates as
+	a number representing the number of days since January 1, 1900 (and
+	as an aside, erroneously assumes 1900 to be a leap year).</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Now, converting
+	OpenOffice.org date cell values (actually, character strings flagged
+	by &ldquo;date&rdquo; attributes) into Octave looks pretty
+	straightforward. But when the ODS spreadsheet was originally an
+	Excel spreadsheet converted by OpenOffice.org, the date cells can
+	either be OOo date values (i.e.,strings) OR old numerical values
+	from the Excel spreadsheet. </FONT></FONT>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>So: you should
+	carefully check what happens to date cells.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>As octave has no
+	&rdquo;date&rdquo; or &ldquo;time&rdquo; data type, octave date
+	values (usually numerical data) are simply transferred as &ldquo;floats&rdquo;
+	to ODS spreadsheets. You'll have to convert the values into dates
+	yourself from within OpenOffice.org.</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>While adding data and
+	time values has been implemented in the write scripts, the wait is
+	for clever solutions to distinguish dates from floats in octave cell
+	arrays.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>Java memory
+	pool allocation size</B></FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>The Java virtual machine
+	(JVM) initializes one big chunk of your computer's RAM in which all
+	Java classes and methods etc. are to be loaded: the Java memory
+	pool. It does this because Java has a very sophisticated &ldquo;garbage
+	collection&rdquo; system. At least on Windows, the initial size is
+	2MB and the maximum size is 64MB. On Linux this allocated size is
+	much bigger. This part of memory is where the Java-based ODS octave
+	routines (and the Java-based ods routines) live and keep their
+	variables etc.</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>For transferring large
+	pieces of information to and from spreadsheets you might hit the
+	limits of this pool. E.g. to be able to handle I/O of an array of
+	around 50,000 cells I needed a memory pool size of 512 MB.</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>The memory size can be
+	increased by inserting a file called &ldquo;java.opts&rdquo;
+	(without quotes) in the directory
+	./share/octave/packages/java-&lt;version&gt; (where the script file
+	javaclasspath.m is located), containing just the following lines:</FONT></FONT><DT><P>
+	<FONT FACE="Courier New, monospace"><FONT SIZE=2><B>-Xms16m</B></FONT></FONT><DT><P>
+	<FONT FACE="Courier New, monospace"><FONT SIZE=2><B>-Xmx512m</B></FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>(where 16 = initial
+	size, 512 = maximum size (in this example), m stands for Megabyte.
+	This number is system-dependent).</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>After processing a large
+	chunk of spreadsheet information you might notice that octave's
+	memory footprint does not shrink so it looks like Java's memory pool
+	does not shrink back; but rest assured, the memory footprint is the
+	<I>allocated</I> (reserved) memory size, not the actual used size.
+	After the JVM has done its garbage collection, only the so-called
+	&ldquo;working set&rdquo; of the memory allocation is really in use
+	and that is a trimmed-down part of the memory allocation pool. On
+	Windows systems it often suffices to minimize the octave terminal
+	for a few seconds to get a more reasonable memory footprint.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>Reading cells
+	containing errors</B></FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Spreadsheet cells
+	containing erroneous stuff are transferred to Octave as NaNs. But
+	not all errors can be catched. Cells showing #Value# in
+	OpenOffice.org Calc often contain invalid formulas but may have a 0
+	(null) value stored in the value fields. It is impossible to catch
+	this as there is no run-time formula evaluator (yet) in ODF Toolkit
+	nor jOpenDocument (like there is in Apache POI for Excel).</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Smaller gotcha's
+	(only with jOpenDocument 1.2b2, <B>fixed</B> in <B>1.2b3+</B> and
+	<B>1.2 final</B>):</FONT></FONT></DL>
 <UL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">While
-	reading, empty cells are sometimes not skipped but interpreted with
-	numerical value 0 (zero).</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">A
-	valid range MUST be specified, I haven't found a way to discover the
-	actual occupied rows and columns (jOpenDocument can give the
-	physical ones (= capacity) but that doesn't help).</FONT></FONT></P>
-</UL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>MATLAB
-COMPATIBILITY</B></U></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">AFAIK
-there's no similar functionality in Matlab (yet?), only for reading
-and then very limited.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">odsread
-is fairly function-compatible to xlsread, however.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Same
-goes for odswrite, odsfinfo and xlsfinfo &ndash; however odsinfo has
-better functionality IMO.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>COMPARISON
-OF INTERFACES</B></U></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
-ODFtoolkit is the one that gives the best (but slow) results at
-present. However, parsing xml trees into rectangular arrays is not
-quite straightforward and the other way round is a real nightmare;
-odftoolkit does little to hide the gory details for the developers.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">While
-reading ODS is still OK, writing implies checking whether cells
-already exist explicitly (in table:table-cells) or implicitly (in
-number-columns-repeated or number-rows-repeated nodes) or not at all
-yet in which case you'll need to add various types of parent nodes.
-Inserting new cells (&ldquo;nodes&rdquo;) or deleting nodes implies
-rebuilding possibly large parts of the tree in memory - nothing for
-the faint-of-heart. And odftoolkit lets you sort it out all by
-yourself.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
-jOpenDocument interface is the most promising, as it does shield the
-xml tree details and presents developers something which looks like a
-spreadsheet model.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">However,
-unfortunately the developers decided to shield essential methods by
-making them 'protected' (e.g. the vital getCellType). </FONT></FONT>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">JopenDocument
-does support writing, however I couldn't reliably create new
-MutableCells in row 1 beyond column 1 no matter how hard I tried.
-Supposedly this is fixed in future version1.2b4.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">And
-last (but not least) the jOpenDocument developers state that their
-development is primarily driven by requests from customers who pay
-for support. I do sympathize with this business model but for octave
-needs this may hamper progress for a while.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>TROUBLESHOOTING</B></U></FONT></FONT></P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Some
-hints for troubleshooting ODS support are given here. </FONT></FONT>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
+	<LI><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>While reading, empty
+	cells are sometimes not skipped but interpreted with numerical value
+	0 (zero).</FONT></FONT><LI><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>A valid range MUST be
+	specified, I haven't found a way to discover the actual occupied
+	rows and columns (jOpenDocument can give the physical ones (=
+	capacity) but that doesn't help).</FONT></FONT></UL>
+<DL>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>NOT fixed in
+	version 1.2 final:</FONT></FONT></DL>
+<UL>
+	<LI><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>jOpenDocument doesn't
+	set the so-called &lt;office:value-type='string'&gt;  attribute in
+	cells containing text; as a consequence ODF Toolkit will treat them
+	as empty cells. Ooo will read them OK.</FONT></FONT></UL>
+<DL>
+	<DT><P><BR>
+	<DT><P><BR>
+</DL>
+<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>MATLAB
+COMPATIBILITY</B></U></FONT></FONT><DL>
+	<DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>AFAIK there's no
+	similar functionality in Matlab (yet?), only for reading and then
+	very limited.</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>o<B>dsread</B> is fairly
+	function-compatible to <B>xlsread</B>, however.</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Same goes for <B>odswrite</B>,
+	<B>odsfinfo</B> and <B>xlsfinfo</B> &ndash; however <B>ods</B><B>f</B><B>info</B>
+	has better functionality IMO.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><BR>
+</DL>
+<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>COMPARISON
+OF INTERFACES</B></U></FONT></FONT><DL>
+	<DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>The ODFtoolkit is
+	the one that gives the best (but slow) results at present. However,
+	parsing xml trees into rectangular arrays is not quite
+	straightforward and the other way round is a real nightmare;
+	odftoolkit up til 0.7.5. did little to hide the gory details for the
+	developers.</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>While reading ODS is
+	still OK, writing implies checking whether cells already exist
+	explicitly (in table:table-cells) or implicitly (in
+	number-columns-repeated or number-rows-repeated nodes) or not at all
+	yet in which case you'll need to add various types of parent nodes.
+	Inserting new cells (&ldquo;nodes&rdquo;) or deleting nodes implies
+	rebuilding possibly large parts of the tree in memory - nothing for
+	the faint-of-heart. Only with ODFToolkit (odfdom) 0.8.6 things have
+	been simplified for developers.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>The jOpenDocument
+	interface is the most promising, as it does shield the xml tree
+	details and presents developers something which looks like a
+	spreadsheet model.</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>However, unfortunately
+	the developers decided to shield essential methods by making them
+	'protected' (e.g. the vital getCellType). JopenDocument does support
+	writing. But OTOH many obvious methods are still lacking and formula
+	support is absent.</FONT></FONT><DT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>And last (but not least)
+	the jOpenDocument developers state that their development is
+	primarily driven by requests from customers who pay for support. I
+	do sympathize with this business model but for octave needs this may
+	hamper progress for a while.</FONT></FONT><DT><P>
+	<BR>
+	<DT><BR>
+</DL>
+<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>TROUBLESHOOTING</B></U></FONT></FONT><P ALIGN=CENTER>
+<BR>
+<DL>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Some hints for
+	troubleshooting ODS support are given here. </FONT></FONT>
+	<DT><P><BR>
+</DL>
 <OL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
-	if java works. Do a </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
-	list </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">and
-	see</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P>a. <SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
-	there's a java package mentioned (then it's installed). If not,
-	install it.</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">b.
-	If there's an asterisk on the java package line (then the package is
-	loaded). If not, do a </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">pkg
-	rebuild-auto java</SPAN></SPAN></FONT></FONT></SPAN></P>
+	<LI><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Check
+	if </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>J</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>ava
+	works. Do a </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>pkg
+	list </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>and
+	see</FONT></FONT><P>
+	a. <FONT FACE="Arial, sans-serif"><FONT SIZE=2>If there's a </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>J</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>ava
+	package mentioned (then it's installed). If not, install it.</FONT></FONT></P>
+	<P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>b. If there's an
+	asterisk on the java package line (then the package is loaded). If
+	not, do a </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>pkg
+	rebuild-auto java</FONT></FONT></P>
 </OL>
-<P ALIGN=LEFT STYLE="margin-left: 2cm; text-indent: -0.64cm; margin-bottom: 0cm">
-<BR>
-</P>
+<DL>
+	<DL>
+		<DD><P ALIGN=LEFT><BR>
+	</DL>
+</DL>
 <OL START=2>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
-	java memory settings. Try </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javamem</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P STYLE="font-style: normal; font-weight: normal; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">a.
-	If it works, check if it reports sufficiently large max memory (had
-	better be 200 MiB, the bigger the better)</FONT></FONT></P>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">b.
-	If it doesn't work, do:</FONT></FONT></P>
-	<OL TYPE=a>
-		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
-		<FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt">rt
-		= java_invoke ('java.lang.Runtime', 'getRuntime')</FONT></FONT></P>
-		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
-		<FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt">rt.gc</FONT></FONT></P>
-		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
-		<FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt">rt.maxMemory
-		().doubleValue () / 1024 / 1024</FONT></FONT></P>
-		<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
-		<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">The
-		last command will show MaxMemory in MiB.</FONT></FONT></P>
-	</OL>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">c.
-	In case you have insufficient memory, see in &ldquo;GOTCHAS&rdquo;,
-	&ldquo;Java memory pool allocation size&rdquo;, how to increase
-	java's memory pre-reservation.</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Check
-	if all classes (.jarfiles) are in class path. Do a '</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javaclasspath</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">'
-	(under unix/linux, do '</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">tmp
-	= javaclasspath; strsplit (tmp,&rdquo;:&rdquo;)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">'
+	<LI><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Check
+	</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>J</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>ava
+	memory settings. Try </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>javamem</FONT></FONT><P>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>a. If it works, check if
+	it reports sufficiently large max memory (had better be 200 MiB, the
+	bigger the better)</FONT></FONT></P>
+	<P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>b. If it
+	doesn't work, do:</FONT></FONT>
+	<OL TYPE=a><P ALIGN=LEFT>
+		<FONT FACE="Courier New, monospace"><FONT SIZE=2>rt = java_invoke
+		('java.lang.Runtime', 'getRuntime')</FONT></FONT><P ALIGN=LEFT>
+		<FONT FACE="Courier New, monospace"><FONT SIZE=2>rt.gc</FONT></FONT><P ALIGN=LEFT>
+		<FONT FACE="Courier New, monospace"><FONT SIZE=2>rt.maxMemory
+		().doubleValue () / 1024 / 1024</FONT></FONT><P ALIGN=LEFT>
+		<FONT FACE="Arial, sans-serif"><FONT SIZE=2>The last command will
+		show MaxMemory in MiB.</FONT></FONT></OL>
+	<P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>c. In case
+	you have insufficient memory, see in &ldquo;GOTCHAS&rdquo;, &ldquo;Java
+	memory pool allocation size&rdquo;, how to increase java's memory
+	pre-reservation.</FONT></FONT><LI><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Check if all classes
+	(.jarfiles) are in class path. Do a '</FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>javaclasspath</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>'
+	(under unix/linux, do '</FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>tmp
+	= javaclasspath; strsplit (tmp,&rdquo;:&rdquo;)</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>'
 	(w/o quotes). See above under &ldquo;REQUIRED SUPPORT SOFTWARE&rdquo;
-	what classes should be mentioned.</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">If
-	classes (.jar files) armissing, download and put them somewhere and
-	add them to the javaclass path with their fully qualified pathname
-	(in quotes) using </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">javaaddpath()</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.</SPAN></SPAN></FONT></FONT></SPAN></P>
-</OL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Once
-all classes are present and in the javaclasspath, the ods interfaces
-should just work. The only remaining showstoppers left are
-insufficient write privileges for the working directory, a wrecked up
-octave or some other problems outside octave.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
+	what classes should be mentioned.</FONT></FONT><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>If classes (.jar files)
+	ar</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>e</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>
+	missing, download and put them somewhere and add them to the
+	javaclass path with their fully qualified pathname (in quotes) using
+	</FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>javaaddpath()</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>.</FONT></FONT></OL>
+<DL>
+	<DT><P><BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Once all classes
+	are present and in the javaclasspath, the ods interfaces should just
+	work. The only remaining showstoppers are insufficient write
+	privileges for the working directory, a wrecked up octave or some
+	other problems outside octave.</FONT></FONT><DT><P>
+	<BR>
+</DL>
 <OL START=4>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-style: normal; font-weight: normal; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Try
+	<LI><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Try
 	opening an ods file: </FONT></FONT>
-	</P>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods1
-	= odsopen ('test.ods', 1, 'otk')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
+	<P ALIGN=LEFT><FONT FACE="Courier New, monospace"><FONT SIZE=2>ods1
+	= odsopen ('test.ods', 1, 'otk')</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>.
 	If this works and ods1 is a struct with various fields containing
-	objects, ODF toolkit interface (OTK) works. Do an </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods1
-	= odsclose (ods1)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
-	</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">to
-	close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
-	<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods2
-	= odsopen ('test.ods', 1, 'jod')</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">.
+	objects, ODF toolkit interface (OTK) works. Do an </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>ods1
+	= odsclose (ods1)</FONT></FONT> <FONT FACE="Arial, sans-serif"><FONT SIZE=2>to
+	close the file.</FONT></FONT><P ALIGN=LEFT>
+	<FONT FACE="Courier New, monospace"><FONT SIZE=2>ods2 = odsopen
+	('test.ods', 1, 'jod')</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>.
 	If this works and ods2 is a struct with various fields containing
-	objects, jOpenDocument interface (JOD) works as well. Do </SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Courier New, monospace"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">ods2
-	= odsclose (ods2)</SPAN></SPAN></FONT></FONT></SPAN><SPAN STYLE="text-decoration: none">
-	</SPAN><SPAN STYLE="text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">to
-	close the file.</SPAN></SPAN></FONT></FONT></SPAN></P>
-</OL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-left: 0.02cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><U><B>DEVELOPMENT</B></U></FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">As
-with the Excel r/w stuff, adding new interfaces should be easy and
-straightforward. Add relevant stanzas in odsopen, odsclose, odsfinfo
-&amp; getusedrange and add new subfunctions (for the real work) to
-oct2ods and ods2oct.</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Suggestions
-for future development:</FONT></FONT></P>
+	objects, jOpenDocument interface (JOD) works as well. Do </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>ods2
+	= odsclose (ods2)</FONT></FONT> <FONT FACE="Arial, sans-serif"><FONT SIZE=2>to
+	close the file.</FONT></FONT></OL>
+<DL>
+	<DT><P><BR>
+	<DT><P><BR>
+</DL>
+<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>DEVELOPMENT</B></U></FONT></FONT><DL>
+	<DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>As with the Excel
+	r/w stuff, adding new interfaces should be easy and straightforward.
+	Add relevant stanzas in <B>odsopen</B>, <B>odsclose, odsfinfo</B> &amp;
+	<B>getusedrange</B> and add new subfunctions (for the real work) to
+	<B>getusedrange_</B>&lt;INTF&gt;,  <B>oct2ods</B> and <B>ods2oct</B>.</FONT></FONT><DT><P>
+	<BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Suggestions for
+	future development:</FONT></FONT></DL>
 <UL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Reliable
-	and easy ODS write support (maybe when jOpenDocument is more mature)</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Speeding
-	up (ODS is 10 X slower than e.g. OOXML !!!). jOpenDocument is much
-	faster but still immature</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; text-decoration: none">&ldquo;<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-weight: normal">Passing
-	function handle&rdquo; a la Matlab's xlsread</SPAN></FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Adding
-	styles (borders, cell lay-out, font, etc.)</FONT></FONT></P>
-</UL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Some
-notes on the choice for Java:</FONT></FONT></P>
+	<LI><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Reliable and easy ODS
+	write support (maybe when jOpenDocument is more mature)</FONT></FONT><LI><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Speeding up (ODS is 10 X
+	slower than e.g. OOXML !!!). jOpenDocument is much faster but still
+	immature</FONT></FONT><LI><P ALIGN=LEFT>
+	&ldquo;<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Passing function
+	handle&rdquo; a la Matlab's </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>xlsread</B></FONT></FONT><LI><P ALIGN=LEFT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Adding styles (borders,
+	cell lay-out, font, etc.)</FONT></FONT></UL>
+<DL>
+	<DT><P><BR>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Some notes on the
+	choice for Java:</FONT></FONT></DL>
 <OL>
-	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">It
-	saves a LOT of development time to use ready-baked Java classes
-	rather than developing your own routines and thus effectively
-	reinvent the wheel.</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">A
-	BIG advantage is that a Java-based solution is platform-independent
-	(&ldquo;portable&rdquo;).</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">But
-	Java is known to be not very conservative with resources, especially
-	not when processing XML-based formats.</FONT></FONT></P>
-</OL>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">So
-Java is a compromise between portability and rapid development time
-versus capacity (and speed).</FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">But
-IMO data sets larger than 5.10<SUP>5</SUP> cells should not be kept
-in spreadsheets anyway. Use real databases for such data sets.</FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>ODFDOM
-versions</B></FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">I
-have tried various odfdom version. As to 0.8 &amp; 0.8.5, while the
-API has been simplified enormously (finally one can address cells by
-spreadsheet address rather than find out yourself by parsing the
-table-column/-row/-cell structure), many irrecoverable bugs have been
-introduced :-(( </FONT></FONT>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">In
-addition processing ODS files became significantly slower (up to 7
-times!).</FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">End
-of August 2010 I have implemented support for odfdom-0.8.6.jar &ndash;
-that version is at last sufficiently reliable to use. The few
-remaining bugs and limitations could easily be worked around by
-diving in the older TableTable API.</FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">So
-at the moment (end of summer 2010 = last I looked) only odfdom
-versions <B>0.7.5</B> and <B>0.8.6</B> are supported.</FONT></FONT></P>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">If
-you want to experiment with odfdom 0.8 &amp; 0.8.5, you can try:</FONT></FONT></P>
+	<LI>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>It saves a LOT of
+	development time to use ready-baked Java classes rather than
+	developing your own routines and thus effectively reinvent the
+	wheel.</FONT></FONT><LI>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>A BIG advantage is that
+	a Java-based solution is platform-independent (&ldquo;portable&rdquo;).</FONT></FONT><LI>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>But Java is known to be
+	not very conservative with resources, especially not when processing
+	XML-based formats.</FONT></FONT></OL>
+<DL>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>So Java is a
+	compromise between portability and rapid development time versus
+	capacity (and speed).</FONT></FONT><DT>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>But IMO data sets larger
+	than 5.10<SUP>5</SUP> cells should not be kept in spreadsheets
+	anyway. Use real databases for such data sets.</FONT></FONT><DT>
+	<BR>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>ODFDOM versions</B></FONT></FONT><DT>
+	<BR>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>I have tried various
+	odfdom version. As to 0.8 &amp; 0.8.5, while the API has been
+	simplified enormously (finally one can address cells by spreadsheet
+	address rather than find out yourself by parsing the
+	table-column/-row/-cell structure), many irrecoverable bugs have
+	been introduced :-(( </FONT></FONT>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>In addition
+	processing ODS files became significantly slower (up to 7 times!).</FONT></FONT><DT>
+	<BR>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>End of August 2010 I
+	have implemented support for odfdom-0.8.6.jar &ndash; that version
+	is at last sufficiently reliable to use. The few remaining bugs and
+	limitations could easily be worked around by diving in the older
+	TableTable API.</FONT></FONT><DT>
+	<BR>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>So at the moment
+	(November 2010 = last I looked) only odfdom versions <B>0.7.5</B>
+	and <B>0.8.6</B> are supported.</FONT></FONT><DT>
+	<BR>
+	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>If you want to
+	experiment with odfdom 0.8 &amp; 0.8.5, you can try:</FONT></FONT></DL>
 <UL>
-	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">odsopen.m
-	(revision 7157)</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">ods2oct.m
-	(revision 7158)</FONT></FONT></P>
-	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">oct2ods.m
-	(revision 7159)</FONT></FONT></P>
-</UL>
-<P STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-left: 0.02cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Enjoy!</FONT></FONT></P>
-<P STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm">
-<BR>
-</P>
-<P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm; font-weight: normal; text-decoration: none">
-<FONT FACE="Arial, sans-serif"><FONT SIZE=2 STYLE="font-size: 11pt">Philip
-Nienhuis, August 27 2010</FONT></FONT></P>
-<P ALIGN=CENTER STYLE="margin-left: 0.66cm; text-indent: -0.66cm; margin-bottom: 0cm">
-<BR>
-</P>
+	<LI>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>odsopen.m (revision
+	7157)</FONT></FONT><LI>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>ods2oct.m (revision
+	7158)</FONT></FONT><LI>
+	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>oct2ods.m (revision
+	7159)</FONT></FONT></UL>
+<DL>
+	<DT><BR>
+	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Enjoy!</FONT></FONT><DD>
+	<BR>
+	<DD><P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Philip
+	Nienhuis, November 14, 2010</FONT></FONT><DD><P ALIGN=CENTER>
+	<BR>
+</DL>
 </BODY>
 </HTML>

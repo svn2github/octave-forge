@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -79,6 +79,7 @@
 ## 2010-10-06 Added ";" to str2 declaration
 ##     "      Added occupieded range echo for COM interface (may be a bit off too)
 ## 2010-10-10 Made output arg2 contain only address ranges (or other sheet type names)
+## 2010-11-01 Added other file type strings for return arg #3 (fformat)
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
@@ -113,7 +114,19 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 				sh_names(ii, 2) = 'Other_type'; ++o_cnt;
 			endif
 		endfor
-		if (ws_cnt > 0 || ch_cnt > 0) fformat = "xlWorkbookNormal"; endif
+		if (ws_cnt > 0 || ch_cnt > 0)
+			if (strcmp (tolower (xls.filename(end-2:end)), 'xls'))
+				fformat = "xlWorkbookNormal";
+			elseif (strcmp (tolower (xls.filename(end-2:end)), 'csv'))
+				fformat = "xlCSV";			# Works only with COM
+			elseif (strcmp (tolower (xls.filename(end-3:end-1)), 'xls'))
+				fformat = "xlOpenXMLWorkbook";
+			elseif (strmatch ('htm', tolower (xls.filename(end-3:end))))
+				fformat = "xlHtml";			# Works only with COM
+			else
+				fformat = '';
+			endif
+		endif
 		
 	elseif (strcmp (xls.xtype, 'POI'))
 		persistent cblnk; cblnk = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_BLANK');
@@ -130,7 +143,15 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 				sh_names(ii, 2) = "Empty";
 			endif
 		endfor
-		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; endif
+		if (sh_cnt > 0)
+			if (strcmp (tolower (xls.filename(end-2:end)), 'xls'))
+				fformat = "xlWorkbookNormal";
+			elseif (strcmp (tolower (xls.filename(end-3:end-1)), 'xls'))
+				fformat = "xlOpenXMLWorkbook";
+			else
+				fformat = '';
+			endif
+		endif
 
 	elseif (strcmp (xls.xtype, 'JXL'))
 		sh_cnt = xls.workbook.getNumberOfSheets ();
@@ -144,7 +165,7 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 				sh_names(ii, 2) = "Empty";
 			endif
 		endfor
-		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; endif
+		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; else, fformat = ''; endif
 		
 #	elseif     <Other Excel interfaces below>
 

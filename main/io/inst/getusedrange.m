@@ -61,6 +61,8 @@
 ## 2010-08-27 Added checks for input arguments
 ##      "     Indentation changed from tab to doublespace
 ## 2010-10-07 Added COM support (at last!)
+##
+## Last subfunc update: 2010-11-13 (OTK, JOD)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -109,6 +111,9 @@ endfunction
 ##            => TableTable API because 0.8.6 is fooled by empty lowermost
 ##            filler rows comprising number-rows-repeated table attribute :-(
 ##      "     Indentation changed from tab to double space
+## 2010-11-13 Catched jOpenDocument bug (1.2bx) where string cells have no office:value-type
+##            attrib set (by JOD). Somehow OTK is more robust as it catches these cells;
+##            Currently this fix is just commented.
 
 function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
 
@@ -130,7 +135,7 @@ function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
     row = sh.item(jj);
     # Check for data rows
     rw_char = char (row) (1:min(500, length (char (row))));
-    if (findstr ('office:value-type', rw_char))
+    if (findstr ('office:value-type', rw_char) || findstr ('<text:', rw_char))
       ++drows;
       # Check for uppermost data row
       if (~trow) 
@@ -144,6 +149,9 @@ function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
 	  # Get leftmost cell column number
       lcell = row.getFirstChild ();
       cl_char = char (lcell);
+	  # Swap the following lines into comment to catch a jOpenDocument bug
+	  # (JOD doesn't set <office:value-type='string'> attribute when writing strings
+      #if isempty (findstr ('office:value-type', cl_char) || findstr ('<text:', cl_char))
       if isempty (findstr ('office:value-type', cl_char))
         lcol = min (lcol, lcell.getTableNumberColumnsRepeatedAttribute () + 1);
       else
@@ -159,7 +167,7 @@ function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
           rc = rc + lcell.getTableNumberColumnsRepeatedAttribute ();
         endfor
         # Watch out for filler tablecells
-        if isempty (findstr ('office:value-type', char (lcell)))
+        if isempty (findstr ('office:value-type', char (lcell)) || findstr ('<text:', char (lcell)))
           rc = rc - lcell.getTableNumberColumnsRepeatedAttribute ();
         endif
         rcol = max (rcol, rc);
@@ -207,6 +215,8 @@ endfunction
 ## 2010-05-31 Fixed ignoring table-covered-cells; fixed count of sheets comprising just A1:A1
 ##            Added option for wsh being a string argument 
 ## 2010-08-12 Little textual adaptations
+## 2010-11-13 Catched jOpenDocument bug (1.2bx) where string cells have no office:value-type
+##      "     attrb set (by JOD). Somehow OTK is more robust as it catches these cells
 
 function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 
@@ -256,8 +266,11 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 				id_tcell2 = strfind (tablerow, '<table:covered-t');
 				if (~isempty (id_tcell2)) id_tcell = sort ([id_tcell id_tcell2]); endif
 				id_tcell = [id_tcell rowl];
-				# Search for non-empty cells (i.e., with an office:value-type)
+				# Search for non-empty cells (i.e., with an office:value-type attribute). But:
+				# jOpenDocument 1.2b3 has a bug: it often doesn't set this attr for string cells
 				id_valtcell = strfind (tablerow, 'office:value-type=');
+				id_textonlycell = strfind (tablerow, '<text:');
+				id_valtcell = sort ([id_valtcell id_textonlycell]);
 				id_valtcell = [id_valtcell rowl];
 				if (~isempty (id_valtcell(1:end-1)))
 					brow = irow + rowrepcnt;

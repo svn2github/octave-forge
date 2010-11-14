@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{filetype}] = odsfinfo (@var{filename} [, @var{reqintf}])
 ## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}] = odsfinfo (@var{filename} [, @var{reqintf}])
-## Query an OpenOffice_org spreadsheet file @var{filename} (with ods
+## Query an OpenOffice_org spreadsheet file @var{filename} (with .ods
 ## suffix) for some info about its contents.
 ##
 ## If @var{filename} is a recognizable OpenOffice.org spreadsheet file,
@@ -134,7 +134,7 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 			endfor
 
 		else
-#			error (sprintf ("odsfinfo: unknown OpenOffice.org .ods interface - %s.", xls.xtype));
+#			error (sprintf ("odsfinfo: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
 
 		endif
 	endif

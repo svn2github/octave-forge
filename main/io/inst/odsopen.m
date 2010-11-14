@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -29,13 +29,13 @@
 ## referred to as OTK and JOD, resp., and are preferred in that order by default
 ## (depending on their presence).
 ##
-## @var{filename} must be a valid .ods OpenOffice.org file name. If @var{filename}
-## does not contain any directory path, the file is saved in the current
-## directory.
+## @var{filename} must be a valid .ods OpenOffice.org file name including
+## .ods suffix. If @var{filename} does not contain any directory path,
+## the file is saved in the current directory.
 ##
-## @var{readwrite} must be set to 1 if writing to spreadsheet is desired
-## immediately after calling odsopen(). It merely serves proper handling
-## of file errors (e.g., "file not found" or "new file created").
+## @var{readwrite} must be set to true ornumerical 1 if writing to spreadsheet
+## is desired immediately after calling odsopen(). It merely serves proper
+## handling of file errors (e.g., "file not found" or "new file created").
 ##
 ## Optional input argument @var{reqintf} can be used to override the ODS
 ## interface automatically selected by odsopen. Currently implemented interfaces
@@ -73,6 +73,9 @@
 ##      "     Moved JOD version check to this func from subfunc getodsinterfaces()
 ##      "     Full support for odfdom 0.8.6 (in subfunc)
 ## 2010-08-27 Improved help text
+## 2010-10-27 Improved tracking of file changes tru ods.changed
+## 2010-11-12 Small changes to help text
+##     "      Added try-catch to file open sections to create fallback to other intf
 ##
 ## Latest change on subfunction below: 2010-09-27
 
@@ -86,6 +89,10 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 	
 	if (nargout < 1) usage ("ODS = odsopen (ODSfile, [Rw]). But no return argument specified!"); endif
 
+	## FIXME: if ever another interface is implemented the below stanzas
+	## should be remodeled after xlsopen() to allow for multiple
+	## user-desired interface requests (for just 2 interfaces there's
+	## no need yet)
 	if (~isempty (reqinterface))
 		# Try to invoke requested interface for this call. Check if it
 		# is supported anyway by emptying the corresponding var.
@@ -112,15 +119,22 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
 	if (rw) rw = 1; endif		# Be sure it's either 0 or 1 initially
 
-	# Check if ODS file exists
-	fid = fopen (filename, 'rb');
+	# Check if ODS file exists. Set open mode based on rw argument
+	if (rw), fmode = 'r+b'; else fmode = 'rb'; endif
+	fid = fopen (filename, fmode);
 	if (fid < 0)
-		if (~rw)
+		if (~rw)			# Read mode requested but file doesn't exist
 			err_str = sprintf ("File %s not found\n", filename);
 			error (err_str)
-		else
-			printf ("Creating file %s\n", filename);
-			rw = 2;
+		else				# For writing we need more info:
+			fid = fopen (filename, 'rb');  # Check if it can be opened for reading
+			if (fid < 0)	# Not found => create it
+				printf ("Creating file %s\n", filename);
+				rw = 3;
+			else			# Found but not writable = error
+				fclose (fid);	# Do not forget to close the handle neatly
+				error (sprintf ("Write mode requested but file %s is not writable\n", filename))
+			endif
 		endif
 	else
 		# close file anyway to avoid Java errors
@@ -135,67 +149,95 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 # Supported interfaces determined; now check ODS file type.
 
 	chk1 = strcmp (tolower (filename(end-3:end)), '.ods');
-	if (~chk1)
-		error ("Currently ods2oct can only read reliably from .ods files")
-	endif
+	# Only jOpenDocument (JOD) can read from .sxc files, but only if odfvsn = 2
+	chk2 = strcmp (tolower (filename(end-3:end)), '.sxc');
+#	if (~chk1)
+#		error ("Currently ods2oct can only read reliably from .ods files")
+#	endif
 
 	ods = struct ("xtype", [], "app", [], "filename", [], "workbook", [], "changed", 0, "limits", [], "odfvsn", []);
 
 	# Preferred interface = OTK (ODS toolkit & xerces), so it comes first. 
+	# Keep track of which interface is selected. Can be used for fallback to other intf
+	odssupport = 0;
 
-	if (odsinterfaces.OTK)
+	if (odsinterfaces.OTK && ~odssupport)
 		# Parts after user gfterry in
 		# http://www.oooforum.org/forum/viewtopic.phtml?t=69060
 		odftk = 'org.odftoolkit.odfdom.doc';
-		if (rw == 2)
-			# New spreadsheet
-			wb = java_invoke ([odftk '.OdfSpreadsheetDocument'], 'newSpreadsheetDocument');
-			ods.changed = 2;
-		else
-			# Existing spreadsheet
-			wb = java_invoke ([odftk '.OdfDocument'], 'loadDocument', filename);
-		endif
-		ods.workbook = wb.getContentDom ();		# Reads the entire spreadsheet
-		ods.xtype = 'OTK';
-		ods.app = wb;
-		ods.filename = filename;
-		ods.odfvsn = odsinterfaces.odfvsn;
+		try
+			if (rw > 2)
+				# New spreadsheet
+				wb = java_invoke ([odftk '.OdfSpreadsheetDocument'], 'newSpreadsheetDocument');
+			else
+				# Existing spreadsheet
+				wb = java_invoke ([odftk '.OdfDocument'], 'loadDocument', filename);
+			endif
+			ods.workbook = wb.getContentDom ();		# Reads the entire spreadsheet
+			ods.xtype = 'OTK';
+			ods.app = wb;
+			ods.filename = filename;
+			ods.odfvsn = odsinterfaces.odfvsn;
+			odssupport += 1;
+		catch
+			if (xlsinterfaces.JOD && ~rw && chk2)
+				printf ('Couldn''t open file %s using OTK; trying .sxc format with JOD...\n', filename);
+			else
+				error ('Couldn''t open file %s using OTK', filename);
+			endif
+		end_try_catch
+	endif
 
-	elseif (odsinterfaces.JOD)
+	if (odsinterfaces.JOD && ~odssupport)
 		file = java_new ('java.io.File', filename);
 		jopendoc = 'org.jopendocument.dom.spreadsheet.SpreadSheet';
-		if (rw ==2)
-			# Create an empty 2 x 2 default TableModel template
-			tmodel= java_new ('javax.swing.table.DefaultTableModel', 2, 2);
-			wb = java_invoke (jopendoc, 'createEmpty', tmodel);
-			ods.changed = 2;
-		else
-			wb = java_invoke (jopendoc, 'createFromFile', file);
-		endif
-		ods.workbook = wb;
-		ods.filename = filename;
-		ods.xtype = 'JOD';
-		ods.app = 'file';
-		# Check jOpenDocument version
-		sh = ods.workbook.getSheet (0);
-		cl = sh.getCellAt (0, 0);
 		try
-			# 1.2b3 has public getValueType ()
-			cl.getValueType ();
-			ods.odfvsn = 3;
+			if (rw > 2)
+				# Create an empty 2 x 2 default TableModel template
+				tmodel= java_new ('javax.swing.table.DefaultTableModel', 2, 2);
+				wb = java_invoke (jopendoc, 'createEmpty', tmodel);
+			else
+				wb = java_invoke (jopendoc, 'createFromFile', file);
+			endif
+			ods.workbook = wb;
+			ods.filename = filename;
+			ods.xtype = 'JOD';
+			ods.app = 'file';
+			# Check jOpenDocument version. This can only work here when a
+			# workbook has been opened
+			sh = ods.workbook.getSheet (0);
+			cl = sh.getCellAt (0, 0);
+			try
+				# 1.2b3 has public getValueType ()
+				cl.getValueType ();
+				ods.odfvsn = 3;
+			catch
+				# 1.2b2 has not
+				ods.odfvsn = 2;
+				printf ("NOTE: jOpenDocument v. 1.2b2 has limited functionality. Try upgrading to 1.2b3+\n");
+			end_try_catch
+			odssupport += 2;
 		catch
-			# 1.2b2 has not
-			ods.odfvsn = 2;
-			printf ("NOTE: jOpenDocument v. 1.2b2 has limited functionality. Try upgrading to 1.2b3+\n");
+			error ('Couldn''t open file %s using JOD', filename);
 		end_try_catch
+	endif
 
-#	elseif 
+#	if 
 #		<other interfaces here>
 
-	else
+	if (~odssupport)
 		warning ("No support for OpenOffice.org .ods I/O"); 
 		ods = [];
+	else
+		# From here on rw is tracked via ods.changed in the various lower
+		# level r/w routines and it is only used to determine if an informative
+		# message is to be given when saving a newly created ods file.
+		ods.changed = rw;
 
+		# Until something was written to existing files we keep status "unchanged".
+		# ods.changed = 0 (existing/only read from), 1 (existing/data added), 2 (new,
+		# data added) or 3 (pristine, no data added).
+		if (ods.changed == 1) ods.changed = 0; endif
 	endif
 
 	if (~isempty (reqinterface))
@@ -206,7 +248,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 endfunction
 
 
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -257,6 +299,7 @@ endfunction
 ## 2010-09-11 Somewhat clarified messages about missing java classes
 ##     "      Rearranged code a bit; fixed typos in OTK detection code (odfdvsn -> odfvsn)
 ## 2010-09-27 More code cleanup
+## 2010-11-12 Warning added about waning support for odfdom v. 0.7.5
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -273,6 +316,8 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		# If we get here, at least Java works. Now check for proper entries
 		# in class path. Under *nix the classpath must first be split up
 		if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
+		## FIXME implement more rigid Java version check a la xlsopen.
+		## ods / Java stuff is less critical than xls / Java, however
 	catch
 		# No Java support
 		odsinterfaces.OTK = 0;
@@ -309,7 +354,10 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			end_try_catch
 			if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6'))
 				warning ("\nodfdom version %s is not supported - use v. 0.7.5 or 0.8.6.\n", odfvsn);
-			else	
+			else
+				if (strcmp (odfvsn, '0.7.5'))
+					warning ("odfdom v. 0.7.5 support won't be maintained - please upgrade to 0.8.6 or higher."); 
+				endif
 				odsinterfaces.OTK = 1;
 				printf (" Java/ODFtoolkit (OTK) OK. ");
 				chk1 = 1;

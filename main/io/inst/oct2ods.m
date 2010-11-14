@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -104,11 +104,16 @@
 ## 2010-08-23 Added check on validity of ods file ptr
 ##     "      Experimental support for odfdom 0.8.6 (in separate subfunc, to be integrated later)
 ## 2010-08-25 Improved help text (java memory, ranges)
+## 2010-10-27 Improved file change tracking tru ods.changed
+## 2010-11-12 Better input argument checks
+## 2010-11-13 Reset ods.limits when read was successful
+## 2010-11-13 Added check for 2-D input array
 ##
-## Last update of subfunctions below: 2010-08-23
+## Last update of subfunctions below: 2011-11-12
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 
+	if (nargin < 2) error ("oct2xls needs a minimum of 2 arguments."); endif
 	# Check if input array is cell
 	if (isempty (c_arr))
 		warning ("Request to write empty matrix - ignored."); 
@@ -122,21 +127,31 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 	elseif (~iscell (c_arr))
 		error ("oct2ods: input array neither cell nor numeric array");
 	endif
-
-	# Check ods file ptr
-	odschk = 1;
-	odschk = odschk && isstruct(ods);
-	odschk = odschk && (~isempty (ods.filename));
-	odschk = odschk	&& (ods.xtype == 'OTK' || ods.xtype == 'JOD');
-	if (~odschk) error ("Arg # 2 is an invalid ods file ptr\n"); endif
-
-	# Check and if needed initialize spsh_opts
-	if isempty (spsh_opts)
+	if (ndims (c_arr) > 2), error ("Only 2-dimensional arrays can be written to spreadsheet"); endif
+	# Check ods file pointer struct
+	test1 = ~isfield (ods, "xtype");
+	test1 = test1 || ~isfield (ods, "workbook");
+	test1 = test1 || isempty (ods.workbook);
+	test1 = test1 || isempty (ods.app);
+	if test1
+		error ("Invalid ods file pointer struct");
+	endif
+	# Check worksheet ptr
+	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 3"); endif
+	# Check range
+	if (~(isempty (crange) || ischar (crange))), error ("Character string (range) expected for arg # 4"); endif
+	# Various options 
+	if (isempty (spsh_opts))
 		spsh_opts.formulas_as_text = 0;
-		# Other options here
+		# other options to be implemented here
+	elseif (isstruct (spsh_opts))
+		if (~isfield (spsh_opts, 'formulas_as_text')), spsh_opts.formulas_as_text = 0; endif
+		# other options to be implemented here
+	else
+		error ("Structure expected for arg # 5");
 	endif
 	
-	if (nargout < 1) printf ("Warning: no output spreadsheet file pointer specified as argument.\n"); endif
+	if (nargout < 1) printf ("Warning: no output spreadsheet file pointer specified.\n"); endif
 
 	if (strcmp (ods.xtype, 'OTK'))
 		# Write ods file tru Java & ODF toolkit.
@@ -148,17 +163,16 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 			otherwise
 				error ("Unsupported odfdom version");
 		endswitch
-		
 	elseif (strcmp (ods.xtype, 'JOD'))
 		# Write ods file tru Java & jOpenDocument. API still leaves lots to be wished...
 		[ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange);
-		
-#	elseif ---- < Other interfaces here >
-
+#	elseif 
+		# ---- < Other interfaces here >
 	else
 		error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
-
 	endif
+
+	if (rstatus), ods.limits = []; endif
 
 endfunction
 
@@ -191,23 +205,25 @@ endfunction
 ## writing to an existing sheet. In that case one should beware of
 ## table-number-columns-repeated, table-number-rows-repeated,
 ## covered (merged) cells, incomplete tables and rows, etc.
-## ODF toolkit does nothing to hide this from the user; you may
-## sort it out all by yourself.
+## ODF toolkit v. 0.7.5 does nothing to hide this from the user;
+## you may sort it out all by yourself.
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2010-01-07
 ## Updates: 
 ## 2010-01-14 (finally seems to work OK)
 ## 2010-03-08 Some comment lines adapted
-## 2010-03-25 Try-catch added f unpatched-for-booleans java-1.2.6 / 1.2.7 package
+## 2010-03-25 Try-catch added f. unpatched-for-booleans java-1.2.6 / 1.2.7 package
 ## 2010-04-11 Changed all references to "cell" to "scell" to avoid reserved keyword
-##            Small bugfix for cases with empty left columns (wrong cell reference)
+##     "      Small bugfix for cases with empty left columns (wrong cell reference)
 ## 2010-04-13 Fixed bug with stray cell copies beyond added data rectangle
 ## 2010-07-29 Added formula input support (based on xls patch by Benjamin Lindner)
 ## 2010-08-01 Added try-catch around formula input
 ##     "      Changed range arg to also allow just topleft cell
 ## 2010-08-03 Moved range checks and type array parsing to separate functions
-## 2010-08-13 Fixed empty Sheet1 in case of new spreadsheets fix input text sheet name
+## 2010-08-13 Fixed empty Sheet1 in case of new spreadsheets, fix input text sheet name
+## 2010-10-27 Improved file change tracking tru ods.changed
+## 2010-11-12 Improved file change tracking tru ods.changed
 
 function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -217,7 +233,7 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 		ctype = [1, 2, 3, 4, 5, 6, 7];
 	endif
 
-	rstatus = 0; changed = 0; f_errs = 0;
+	rstatus = 0; f_errs = 0;
 
 	# Get some basic spreadsheet data from the pointer using ODFtoolkit
 	odfcont = ods.workbook;
@@ -248,7 +264,7 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 		endwhile
 		if (ischar (wsh) && nr_of_sheets < 256) newsh = 1; endif
 	else										# Sheet index specified
-		if ((ods.changed == 2) || (wsh > nr_of_sheets && wsh < 256))	# Max nr of sheets = 256
+		if ((ods.changed > 2) || (wsh > nr_of_sheets && wsh < 256))	# Max nr of sheets = 256
 			# Create a new sheet
 			newsh = 1;
 		elseif (wsh <=nr_of_sheets && wsh > 0)
@@ -279,13 +295,12 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 
 # Prepare worksheet for writing. If needed create new sheet
 	if (newsh)
-		if (ods.changed == 2)
+		if (ods.changed > 2)
 			# New spreadsheet. Prepare to use the default 1x1 first sheet.
 			sh = sheets.item(0);
 		else
 			# Other sheets exist, create a new sheet. First the basics
 			sh = java_new ('org.odftoolkit.odfdom.doc.table.OdfTable', odfcont);
-			changed = 1;
 			# Append sheet to spreadsheet ( contentRoot)
 			offsprdsh.appendChild (sh);
 			# Rebuild sheets nodes
@@ -303,7 +318,7 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 			wsh = sheets.getLength () - 1;
 		endif
 		# Fixup wsh pointer in case of new spreadsheet
-		if (ods.changed == 2) wsh = 0; endif
+		if (ods.changed > 2) wsh = 0; endif
 
 		# Add table-column entry for style etc
 		col = sh.addTableColumn ();
@@ -349,7 +364,7 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 		# Only now add drow as otherwise for each cell an empty table-column is
 		# inserted above the rows (odftoolkit bug?)
 		sh.appendRow (drow);
-		if (ods.changed == 2)
+		if (ods.changed > 2)
 			# In case of a completely new spreadsheet, delete the first initial 1-cell row
 			# But check if it *is* a row...
 			try
@@ -363,6 +378,7 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 			nrow = drow.cloneNode (1);	# Deep copy
 			sh.appendRow (nrow);
 		endfor
+		ods.changed = min (ods.changed, 2);		# Keep 2 for new spshsht, 1 for existing + changed
 
 	else
 		# Existing sheet. We must be prepared for all situations, incomplete rows,
@@ -393,7 +409,6 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 			# Apparently a nr-rows-repeated top table-row must be split, as the
 			# first data row seems to be projected in it (1st while condition above!)
 			row.removeAttribute ('table:number-rows-repeated');
-			changed = 1;
 			row.getCellAt (0).removeAttribute ('table:number-columns-repeated');
 			nrow = row.cloneNode (1);
 			drow = nrow;							# Future upper data array row
@@ -421,7 +436,6 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 			sh.appendRow (row);
 			drow.appendCell (dcell);
 			sh.appendRow (drow);
-			changed = 1;
 		endif
 	endif
 
@@ -438,13 +452,11 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 				scell.setTableNumberColumnsRepeatedAttribute (lcol + 1);
 				row.appendCell (scell);
 				sh.appendRow (row);
-				changed = 1;
 			else
 				# If needed expand nr-rows-repeated
 				repcnt = row.getTableNumberRowsRepeatedAttribute ();
 				if (repcnt > 1)
 					row.removeAttribute ('table:number-rows-repeated');
-					changed = 1;
 					# Insert new table-rows above row until our new data space is complete.
 					# Keep handle of upper new table-row as that's where data are added 1st
 					drow = row.cloneNode (1);
@@ -475,7 +487,6 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 			if (csplit > 0)
 				# Apparently a nr-columns-repeated cell must be split
 				scell.removeAttribute ('table:number-columns-repeated');
-				changed = 1;
 				ncell = scell.cloneNode (1);
 				if (repcnt > 1)
 					scell.setTableNumberColumnsRepeatedAttribute (repcnt - csplit);
@@ -494,7 +505,6 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 				scell = dcell.cloneNode (1);
 				dcell.setTableNumberColumnsRepeatedAttribute (-csplit);
 				row.appendCell (dcell);
-				changed = 1;
 				row.appendCell (scell);
 			endif
 		endif
@@ -508,13 +518,11 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 					# Apparently end of row encountered. Add cell
 					scell = java_new ('org.odftoolkit.odfdom.doc.table.OdfTableCell', odfcont);
 					scell = row.appendCell (scell);
-					changed = 1;
 				else
 					# If needed expand nr-cols-repeated
 					repcnt = scell.getTableNumberColumnsRepeatedAttribute ();
 					if (repcnt > 1)
 						scell.removeAttribute ('table:number-columns-repeated');
-						changed = 1;
 						for kk=2:repcnt
 							ncell = scell.cloneNode (1);
 							row.insertBefore (ncell, scell.getNextSibling ());
@@ -525,7 +533,6 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 				while (scell.hasChildNodes ())
 					tmp = scell.getFirstChild ();
 					scell.removeChild (tmp);
-					changed = 1;
 				endwhile
 				scell.removeAttribute ('table:formula');
 			endif
@@ -594,7 +601,6 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 				otherwise
 					# Nothing
 			endswitch
-			changed = 1;
 
 			scell = scell.getNextSibling ();
 
@@ -607,10 +613,8 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 	if (f_errs) 
 		printf ("%d formula errors encountered - please check input array\n", f_errs); 
 	endif
-	if (changed)	
-		ods.changed = 1;
-		rstatus = 1;
-	endif
+	ods.changed = max (min (ods.changed, 2), changed);	# Preserve 2 (new file), 1 (existing)
+	rstatus = 1;
 	
 endfunction
 
@@ -651,6 +655,8 @@ endfunction
 ## 2010-06-05 odfdom 0.8.5 is there, next try....
 ## 2010-06-## odfdom 0.8.5 dropped, too buggy
 ## 2010-08-22 odfdom 0.8.6 is there... seems to work with just one bug, easily worked around
+## 2010-10-27 Improved file change tracking tru ods.changed
+## 2010-11-12 Improved file change tracking tru ods.changed
 
 function [ ods, rstatus ] = oct3jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -718,8 +724,13 @@ function [ ods, rstatus ] = oct3jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 
 # Prepare spreadsheet for writing (size, etc.). If needed create new sheet
 	if (newsh)
-		# Create a new sheet using DOM API. This part works OK.
-		sh = sheets.get (nr_of_sheets - 1).newTable (spsh, nrows, ncols);
+		if (ods.changed > 2)
+			# New spreadsheet, use default first sheet
+			sh = sheets.get (0);
+		else
+			# Create a new sheet using DOM API. This part works OK.
+			sh = sheets.get (nr_of_sheets - 1).newTable (spsh, nrows, ncols);
+		endif
 		changed = 1;
 		if (isnumeric (wsh))
 			# Give sheet a name
@@ -793,7 +804,7 @@ function [ ods, rstatus ] = oct3jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 	endfor
 
 	if (changed)	
-		ods.changed = 1;
+		ods.changed = max (min (ods.changed, 2), changed);	# Preserve 2 (new file), 1 (existing)
 		rstatus = 1;
 	endif
 
@@ -840,20 +851,10 @@ endfunction
 ##     "      Code cleanup
 ## 2010-08-13 Fixed bug of ignoring text sheet name in case of new spreadsheet
 ## 2010-08-15 Fixed bug with invalid first sheet in new spreadsheets
+## 2010-10-27 Improved file change tracking tru ods.changed
+## 2010-11-12 Improved file change tracking tru ods.changed
 
 function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
-
-	# Check jOpenDocument version
-	sh = ods.workbook.getSheet (0);
-	cl = sh.getCellAt (0, 0);
-	try
-		# Versions 1.2b3+ have public getValueType ()
-		cl.getValueType ();
-		ver = 3;
-	catch
-		# 1.2b2 has not
-		ver = 2;
-	end_try_catch
 
 	rstatus = 0; sh = []; changed = 0;
 
@@ -871,9 +872,9 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 			if (isempty (sh))
 				# Sheet number wsh didn't exist yet
 				wsh = sprintf ("Sheet%d", wsh+1);
-			elseif (ods.changed == 2)
+			elseif (ods.changed > 2)
 				sh.setName ('Sheet1');
-				ods.changed = 0;
+				changed = 1;
 			endif
 		endif
 	endif
@@ -882,16 +883,17 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 		sh = ods.workbook.getSheet (wsh);
 		if (isempty (sh))
 			# Still doesn't exist. Create sheet
-			if (ver == 3)
-				if (ods.changed == 2)
+			if (ods.odfvsn == 3)
+				if (ods.changed > 2)
 					# 1st "new" -unnamed- sheet has already been made when creating the spreadsheet
 					sh = ods.workbook.getSheet (0);
 					sh.setName (wsh);
-					ods.changed = 0;
+					changed = 1;
 				else
 					# For existing spreadsheets
 					printf ("Adding sheet '%s'\n", wsh);
 					sh = ods.workbook.addSheet (sh_cnt, wsh);
+					changed = 1;
 				endif
 			else
 				error ("jOpenDocument v. 1.2b2 does not support adding sheets - upgrade to v. 1.2b3\n");
@@ -950,6 +952,7 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 			val = c_arr {ii, jj};
 			if ((isnumeric (val) && ~isnan (val)) || ischar (val) || islogical (val))
 				try
+					sh.getCellAt (jj + lcol - 1, ii + trow - 1).clearValue();
 					jcell = sh.getCellAt (jj + lcol - 1, ii + trow - 1).setValue (val);
 					changed = 1;
 				catch
@@ -961,7 +964,7 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 	endfor
 
 	if (changed)
-		ods.changed = 1; 
+		ods.changed = max (min (ods.changed, 2), changed);	# Preserve 2 (new file), 1 (existing)
 		rstatus = 1;
 	endif
 

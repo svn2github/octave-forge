@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -33,7 +33,8 @@
 ##a struct containing the data origins of the various returned arrays.
 ##
 ## If @var{filename} does not contain any directory, the file is
-## assumed to be in the current directory.
+## assumed to be in the current directory. @var{filename} should include
+## the filename extension (.ods).
 ##
 ## @var{wsh} is either numerical or text, in the latter case it is 
 ## case-sensitive and it should conform to OpenOffice.org Calc sheet
@@ -110,8 +111,17 @@
 ## 2010-01-05 (....)
 ## 2010-03-04 Slight adaptations in texinfo
 ## 2010-05-31 Updated help text (delays i.c.o. empty range due to getusedrange call)
+## 2010-11-10 Updated help text (filename extension req'd)
+## 2010-11-13 Added some input validity checks
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
+
+	if (nargin < 1 || isempty (findstr ('.ods', tolower (filename))))
+		usage ("odsread: at least a filename incl. suffix is needed");
+	endif
+	if (nargout < 1)
+		usage ("odsread: no output argument(s) specified");
+	endif
 
 	ods = odsopen (filename, 0, reqintf);
 

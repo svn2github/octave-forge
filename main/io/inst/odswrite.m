@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@
 ##
 ## @var{rstatus} returns 1 if write succeeded, 0 otherwise.
 ##
-## @var{filename} must be a valid .ods OpenOffice.org file name. If
-## @var{filename} does not contain any directory path, the file is saved
-## in the current directory.
+## @var{filename} must be a valid .ods OpenOffice.org file name (including
+## file name extension). If @var{filename} does not contain any directory
+## path, the file is saved in the current directory.
 ##
 ## @var{arr} can be any array type save complex. Mixed numeric/text arrays
 ## can only be cell arrays.
@@ -86,13 +86,16 @@
 ## 2010-01-14 Finalized write support tru ODS toolkit
 ## 2010-01-15 Added texinfo help
 ## 2010-08-25 Removed text about 31 char limit for sheet names (invalid)
+## 2010-11-13 Added note about required file extension in help text
+## 2010-11-13 Added some input arg checks
 
 function [ rstatus ] = odswrite (filename, data, wsh=1, range=[], reqintf=[])
 
-	if (isnumeric (data))
-		data = num2cell (data);
-	elseif (ischar (data))
-		data = {data};
+	# Input validity checks
+	if (nargin < 2)
+		usage ("Insufficient arguments - see 'help odswrite'");
+	elseif (~ischar (filename) || isempty (findstr ('.ods', tolower (filename))))
+		error ("First argument must be a filename (incl. .ods suffix)");
 	endif
 
 	ods = odsopen (filename, 1, reqintf);

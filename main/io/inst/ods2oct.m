@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -110,26 +110,39 @@
 ## 2010-08-25 Improved helptext (moved some text around)
 ## 2010-08-27 Added ods3jotk2oct - internal function for odfdom-0.8.6.jar
 ##      "     Extended check on spsh_opts (must be a struct) 
+## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to here
 ##
-## (Latest update of subfunctions below: 2010-08-27)
+## (Latest update of subfunctions below: 2010-11-13)
 
 function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=[])
 
-	# Check ods file ptr
-	odschk = 1;
-	odschk = odschk && isstruct(ods);
-	odschk = odschk && (~isempty (ods.filename));
-	odschk = odschk	&& (ods.xtype == 'OTK' || ods.xtype == 'JOD');
-	if (~odschk) error ("Arg # 1 is an invalid ods file ptr\n"); endif
-
-	if isempty (spsh_opts)
+	# Check if ods struct pointer seems valid
+	if (~isstruct (ods)), error ("File ptr struct expected for arg @ 1"); endif
+	test1 = ~isfield (ods, "xtype");
+	test1 = test1 || ~isfield (ods, "workbook");
+	test1 = test1 || isempty (ods.workbook);
+	test1 = test1 || isempty (ods.app);
+	if (test1)
+		error ("Arg #1 is an invalid ods file struct");
+	endif
+	# Check worksheet ptr
+	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 2"); endif
+	# Check range
+	if (~(isempty (datrange) || ischar (datrange))), error ("Character string (range) expected for arg # 3"); endif
+	# Check & setup options struct
+	if (nargin < 4 || isempty (spsh_opts))
 		spsh_opts.formulas_as_text = 0;
+		spsh_opts.strip_array = 1;
 		# Other options here
-		#
 	elseif (~isstruct (spsh_opts))
 		error ("struct expected for OPTIONS argument (# 4)");
+	else
+		if (~isfield (spsh_opts, 'formulas_as_text')), spsh_opts.formulas_as_text = 0; endif
+		if (~isfield (spsh_opts, 'strip_array')), spsh_opts.strip_array = 1; endif
+		% Future options:
 	endif
-	
+
+	# Select the proper interfaces
 	if (strcmp (ods.xtype, 'OTK'))
 		# Read ods file tru Java & ODF toolkit
 		switch ods.odfvsn
@@ -140,15 +153,36 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
 			otherwise
 				error ("Unsupported odfdom version or invalid ods file pointer.");
 		endswitch
-
 	elseif (strcmp (ods.xtype, 'JOD'))
+		# Read ods file tru Java & jOpenDocument. JOD doesn't know about formulas :-(
 		[rawarr, ods, rstatus] = ods2jod2oct  (ods, wsh, datrange);
-		
-#	elseif ---- < Other interfaces here >
-
+#	elseif 
+	#	---- < Other interfaces here >
 	else
 		error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
+	endif
 
+	# Optionally strip empty outer rows and columns & keep track of original data location
+	if (spsh_opts.strip_array)
+		emptr = cellfun ('isempty', rawarr);
+		if (all (all (emptr)))
+			rawarr = {};
+			ods.limits= [];
+		else
+			nrows = size (rawarr, 1); ncols = size (rawarr, 2);
+			irowt = 1;
+			while (all (emptr(irowt, :))), irowt++; endwhile
+			irowb = nrows;
+			while (all (emptr(irowb, :))), irowb--; endwhile
+			icoll = 1;
+			while (all (emptr(:, icoll))), icoll++; endwhile
+			icolr = ncols;
+			while (all (emptr(:, icolr))), icolr--; endwhile
+
+			# Crop outer rows and columns and update limits
+			rawarr = rawarr(irowt:irowb, icoll:icolr);
+			ods.limits = ods.limits + [icoll-1, icolr-ncols; irowt-1, irowb-nrows];
+		endif
 	endif
 
 endfunction
@@ -156,7 +190,7 @@ endfunction
 
 #=====================================================================
 
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis _at- users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis _at- users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -186,6 +220,7 @@ endfunction
 ##     ""     Added call to getusedrange() for cases when no range was specified
 ## 2010-03-19 More code cleanup & fixes for bugs introduced 18/3/2010 8-()
 ## 2010-08-03 Added preliminary support for reading back formulas as text strings
+## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to caller
 
 function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh, crange, spsh_opts)
 
@@ -363,26 +398,8 @@ function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh, crange, spsh_opts)
 		++ii;
 	endwhile
 
-	# Crop rawarr from all empty outer rows & columns
-	# & keep track of limits
-	emptr = cellfun ('isempty', rawarr);
-	if (all (all (emptr)))
-		rawarr = {};
-		ods.limits= [];
-	else
-		irowt = 1;
-		while (all (emptr(irowt, :))), irowt++; endwhile
-		irowb = nrows;
-		while (all (emptr(irowb, :))), irowb--; endwhile
-		icoll = 1;
-		while (all (emptr(:, icoll))), icoll++; endwhile
-		icolr = ncols;
-		while (all (emptr(:, icolr))), icolr--; endwhile
-		# Crop textarray
-		rawarr = rawarr(irowt:irowb, icoll:icolr);
-		rstatus = 1;
-		ods.limits = [lcol+icoll-1, lcol+icolr-1; trow+irowt-1, trow+irowb-1];
-	endif
+	# Keep track of data rectangle limits
+	ods.limits = [lcol, rcol; trow, brow];
 
 endfunction
 
@@ -410,7 +427,8 @@ endfunction
 ## Author: Philip Nienhuis <Philip@DESKPRN>
 ## Created: 2010-08-24. First workable version Aug 27, 2010
 ## Updates:
-##
+## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to caller
+## 2010-11-13 Added workaround for reading text cells in files made by jOpenDocument 1.2bx
 
 function [ rawarr, ods, rstatus ] = ods3jotk2oct (ods, wsh, crange, spsh_opts)
 
@@ -467,6 +485,7 @@ function [ rawarr, ods, rstatus ] = ods3jotk2oct (ods, wsh, crange, spsh_opts)
 		rcol = min (lcol + ncols - 1, 1024);
 		ncols = min (ncols, 1024 - lcol + 1);
 		nrows = min (nrows, 65536 - trow + 1);
+		brow = trow + nrows - 1;
 	endif
 
 	# Create storage for data content
@@ -478,13 +497,19 @@ function [ rawarr, ods, rstatus ] = ods3jotk2oct (ods, wsh, crange, spsh_opts)
 		for jj=lcol:ncols+lcol-1;
 			ocell = row.getCellByIndex (jj-1);
 			if ~isempty (ocell)
-				otype = ocell.getValueType ();
+				otype = deblank (tolower (ocell.getValueType ()));
 				if (spsh_opts.formulas_as_text)
 					if ~isempty (ocell.getFormula ())
 						otype = 'formula';
 					endif
 				endif
-				switch deblank (tolower (otype))
+				# Provisions for catching jOpenDocument 1.2b bug where text cells
+				# haven't been assigned an <office:value-type='string'> attribute
+				if (~isempty (ocell))
+					if (findstr ('<text:', char (ocell.getOdfElement ()))), otype = 'string'; endif
+				endif
+				# At last, read the data
+				switch otype
 					case  {'float', 'currency', 'percentage'}
 						rawarr(ii-trow+1, jj-lcol+1) = ocell.getDoubleValue ();
 					case 'date'
@@ -534,39 +559,21 @@ function [ rawarr, ods, rstatus ] = ods3jotk2oct (ods, wsh, crange, spsh_opts)
 					case 'formula'
 						rawarr(ii-trow+1, jj-lcol+1) = ocell.getFormula ();
 					otherwise
-						# Nothing
+						# Nothing.
 				endswitch
 			endif
 		endfor
 	endfor
 
-	# Crop rawarr from all empty outer rows & columns just like Excel does
-	# & keep track of limits
-	emptr = cellfun ('isempty', rawarr);
-	if (all (all (emptr)))
-		rawarr = {};
-		ods.limits= [];
-	else
-		irowt = 1;
-		while (all (emptr(irowt, :))), irowt++; endwhile
-		irowb = nrows;
-		while (all (emptr(irowb, :))), irowb--; endwhile
-		icoll = 1;
-		while (all (emptr(:, icoll))), icoll++; endwhile
-		icolr = ncols;
-		while (all (emptr(:, icolr))), icolr--; endwhile
-		# Crop textarray
-		rawarr = rawarr(irowt:irowb, icoll:icolr);
-		rstatus = 1;
-		ods.limits = [lcol+icoll-1, lcol+icolr-1; trow+irowt-1, trow+irowb-1];
-	endif
+	# Keep track of data rectangle limits
+	ods.limits = [lcol, rcol; trow, brow];
 
 endfunction
 
 
 #===========================================================================
 
-## Copyright (C) 2009 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -591,6 +598,8 @@ endfunction
 ## Last updates:
 ## 2010-08-12 Added separate stanzas for jOpenDocument v 1.2b3 and up. This version
 ##            allows better cell type parsing and is therefore more reliable
+## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to here
+## 2010-11-13 Added workaround for reading text cells in files made by jOpenDocument 1.2bx
 
 function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 
@@ -600,10 +609,8 @@ function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 	# Check jOpenDocument version
 	sh = ods.workbook.getSheet (0);
 	cl = sh.getCellAt (0, 0);
-	try
+	if (ods.odfvsn == 3)
 		# 1.2b3+ has public getValueType ()
-		cl.getValueType ();
-		ver = 3;
 		persistent ctype;
 		if (isempty (ctype))
 			BOOLEAN    = char (java_get ('org.jopendocument.dom.ODValueType', 'BOOLEAN'));
@@ -614,10 +621,10 @@ function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 			STRING     = char (java_get ('org.jopendocument.dom.ODValueType', 'STRING'));
 			TIME       = char (java_get ('org.jopendocument.dom.ODValueType', 'TIME'));
 		endif
-	catch
-		# 1.2b2 has not
-		ver = 2;
-	end_try_catch
+#	else
+#		# 1.2b2 has not
+#		ver = 2;
+	endif
 
 	if (isnumeric (wsh)) wsh = wsh - 1; endif	 # Sheet INDEX starts at 0
 	# Check if sheet exists. If wsh = numeric, nonexistent sheets throw errors.
@@ -630,13 +637,14 @@ function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 	if (isempty (sh))
 		error ("No sheet called '%s' present in file %s\n", wsh, ods.filename);
 	endif
-	
+
 	# Either parse (given cell range) or prepare (unknown range) help variables 
 	if (isempty (crange))
-		if (ver < 3)
+		if (ods.odfvsn < 3)
 			error ("No empty read range allowed in jOpenDocument version 1.2b2")
 		else
-			[ trow, brow, lcol, rcol ] = getusedrange (ods, wsh+1);
+			if (isnumeric (wsh)) wsh = wsh + 1; endif
+			[ trow, brow, lcol, rcol ] = getusedrange (ods, wsh);
 			nrows = brow - trow + 1;	# Number of rows to be read
 			ncols = rcol - lcol + 1;	# Number of columns to be read
 		endif
@@ -650,11 +658,54 @@ function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 		rcol = min (lcol + ncols - 1, 1024);
 		ncols = min (ncols, 1024 - lcol + 1);
 		nrows = min (nrows, 65536 - trow + 1);
+		brow= trow + nrows - 1;
 	endif
 	# Create storage for data content
 	rawarr = cell (nrows, ncols);
 
-	if (ver == 2) 
+	if (ods.odfvsn >= 3) 
+		# Version 1.2b3+
+		for ii=1:nrows
+			for jj = 1:ncols
+				try
+					scell = sh.getCellAt (lcol+jj-2, trow+ii-2);
+					sctype = char (scell.getValueType ());
+					# Workaround for sheets written by jOpenDocument 1.2bx (no value-type attrb):
+					if (~isempty (scell))
+						if (findstr ('<text:', char (scell))), sctype = STRING; endif
+					endif
+					switch sctype
+						case { FLOAT, CURRENCY, PERCENTAGE }
+							rawarr{ii, jj} = scell.getValue ().doubleValue ();
+						case BOOLEAN
+							rawarr {ii, jj} = scell.getValue () == 1;
+						case STRING
+							rawarr{ii, jj} = scell.getValue();
+						case DATE
+							tmp = strsplit (char (scell.getValue ()), ' ');
+							yy = str2num (tmp{6});
+							mo = find (ismember (months, toupper (tmp{2})) == 1);
+							dd = str2num (tmp{3});
+							hh = str2num (tmp{4}(1:2));
+							mi = str2num (tmp{4}(4:5));
+							ss = str2num (tmp{4}(7:8));
+							rawarr{ii, jj} = datenum (yy, mo, dd, hh, mi, ss);
+						case TIME
+							tmp = strsplit (char (scell.getValue ().getTime ()), ' ');
+							hh = str2num (tmp{4}(1:2)) /    24.0;
+							mi = str2num (tmp{4}(4:5)) /  1440.0;
+							ss = str2num (tmp{4}(7:8)) / 86600.0;
+							rawarr {ii, jj} = hh + mi + ss;
+						otherwise
+							# Nothing
+					endswitch
+				catch
+					# Probably a merged cell, just skip
+					# printf ("Error in row %d, col %d (addr. %s)\n", ii, jj, calccelladdress (lcol+jj-2, trow+ii-2));
+				end_try_catch
+			endfor
+		endfor
+	else	# ods,odfvsn == 3
 		# 1.2b2
 		for ii=1:nrows
 			for jj = 1:ncols
@@ -696,64 +747,10 @@ function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 			endfor
 		endfor
 
-	else
-		# Version 1.2b3+
-		for ii=1:nrows
-			for jj = 1:ncols
-				try
-					scell = sh.getCellAt (lcol+jj-2, trow+ii-2);
-					switch char (scell.getValueType ())
-						case { FLOAT, CURRENCY, PERCENTAGE }
-							rawarr{ii, jj} = scell.getValue ().doubleValue ();
-						case BOOLEAN
-							rawarr {ii, jj} = scell.getValue () == 1;
-						case STRING
-							rawarr{ii, jj} = scell.getValue();
-						case DATE
-							tmp = strsplit (char (scell.getValue ()), ' ');
-							yy = str2num (tmp{6});
-							mo = find (ismember (months, toupper (tmp{2})) == 1);
-							dd = str2num (tmp{3});
-							hh = str2num (tmp{4}(1:2));
-							mi = str2num (tmp{4}(4:5));
-							ss = str2num (tmp{4}(7:8));
-							rawarr{ii, jj} = datenum (yy, mo, dd, hh, mi, ss);
-						case TIME
-							tmp = strsplit (char (scell.getValue ().getTime ()), ' ');
-							hh = str2num (tmp{4}(1:2)) /    24.0;
-							mi = str2num (tmp{4}(4:5)) /  1440.0;
-							ss = str2num (tmp{4}(7:8)) / 86600.0;
-							rawarr {ii, jj} = hh + mi + ss;
-						otherwise
-							# Nothing
-					endswitch
-				catch
-					# Probably a merged cell, just skip
-				end_try_catch
-			endfor
-		endfor
 	endif	
-	
-	# Crop rawarr from all empty outer rows & columns just like Excel does
-	# & keep track of limits
-	emptr = cellfun ('isempty', rawarr);
-	if (all (all (emptr)))
-		rawarr = {};
-		ods.limits= [];
-	else
-		irowt = 1;
-		while (all (emptr(irowt, :))), irowt++; endwhile
-		irowb = nrows;
-		while (all (emptr(irowb, :))), irowb--; endwhile
-		icoll = 1;
-		while (all (emptr(:, icoll))), icoll++; endwhile
-		icolr = ncols;
-		while (all (emptr(:, icolr))), icolr--; endwhile
-		# Crop textarray
-		rawarr = rawarr(irowt:irowb, icoll:icolr);
-		rstatus = 1;
-		ods.limits = [lcol+icoll-1, lcol+icolr-1; trow+irowt-1, trow+irowb-1];
-	endif
+
+	# Keep track of data rectangle limits
+	ods.limits = [lcol, rcol; trow, brow];
 	
 	rstatus = ~isempty (rawarr);
 

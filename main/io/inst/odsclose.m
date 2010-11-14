@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,10 +16,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{ods}] = odsclose (@var{ods})
+## @deftypefnx {Function File} [@var{ods}] = odsclose (@var{ods}, @var{filename})
 ## Close the OpenOffice_org Calc spreadsheet pointed to in struct
-## @var{ods}, if needed write the file to disk. An empty pointer struct
-## will be returned. odsclose will determine if the file must be written
-## to disk based on information contained in @var{ods}.
+## @var{ods}, if needed write the file to disk.
+## odsclose will determine if the file must be written to disk based on
+## information contained in @var{ods}.
+## An empty pointer struct will be returned if no errors occurred. 
+## Optional argument @var{filename} can be used to write changed spreadsheet
+## files to an other file than opened by odsopen().
 ##
 ## You need the Java package > 1.2.6 plus odfdom.jar + xercesImpl.jar
 ## and/or jopendocument-<version>.jar installed on your computer +
@@ -45,32 +49,64 @@
 ## 2010-01-08 (OTK ODS write support)
 ## 2010-04-13 Improved help text a little bit
 ## 2010-08-25 Swapped in texinfo help text
+## 2010-10-17 Fixed typo in error message about unknown interface
+## 2010-10-27 Improved file change tracking tru ods.changed
+## 2010-11-12 Keep ods file pointer when write errors occur.
+##      "     Added optional filename arg to change filename to be written to
 
-function [ ods ] = odsclose (ods)
+function [ ods ] = odsclose (ods, filename=[])
 
 	# If needed warn that dangling spreadsheet pointers may be left
 	if (nargout < 1) warning ("return argument missing - ods invocation not reset."); endif
 
+	if (~isempty (filename))
+		if (ischar (filename))
+			if (ods.changed == 0 || ods.changed > 2)
+				warning ("File %s wasn't changed, new filename ignored.", ods.filename);
+			else
+				if (strfind (tolower (filename), '.sxc') || strfind (tolower (filename), '.ods'))
+					ods.filename = filename;
+				else
+					error ('No .sxc or .ods filename extension specified');
+				endif
+			endif
+		endif
+	endif
+
 	if (strcmp (ods.xtype, 'OTK'))
 		# Java & ODF toolkit
-		if (ods.changed), ods.app.save (ods.filename); endif
-		ods.app.close ();
+		try
+			if (ods.changed && ods.changed < 3)
+				ods.app.save (ods.filename);
+				ods.changed = 0;
+			endif
+			ods.app.close ();
+		catch
+		end_try_catch
 
 	elseif (strcmp (ods.xtype, 'JOD'))
 		# Java & jOpenDocument
-		if (ods.changed)
-			ofile = java_new ('java.io.File', ods.filename);
-			ods.workbook.saveAs (ofile);
-		endif
+		try
+			if (ods.changed && ods.changed < 3)
+				ofile = java_new ('java.io.File', ods.filename);
+				ods.workbook.saveAs (ofile);
+				ods.changed = 0;
+			endif
+		catch
+		end_try_catch
 
 #	elseif ---- < Other interfaces here >
 
 	else
-		error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
+		error (sprintf ("ods2close: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
 
 	endif
 
-	# Reset file pointer
-	ods = [];
+	if (ods.changed && ods.changed < 3)
+		error ( sprintf ("Could not save file %s - read-only or in use elsewhere?\nFile pointer preserved", ods.filename));
+	else
+		# Reset file pointer
+		ods = [];
+	endif
 
 endfunction

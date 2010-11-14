@@ -57,7 +57,8 @@
 ## Created: 2009-12-13
 ## Updates:
 ## 2009-12-29
-#3 2010-08-25 Added option for second argument to be a file ptr
+## 2010-08-25 Added option for second argument to be a file ptr
+## 2010-10-15 Simplified code for numerical array
 
 function [ numarr, txtarr, lim ] = parsecell (rawarr, arg2=[])
 
@@ -140,18 +141,14 @@ function [ numarr, txtarr, lim ] = parsecell (rawarr, arg2=[])
 				while (all(emptr(:, icoll))) icoll++; endwhile
 				icolr = ncols;
 				while (all(emptr(:, icolr))) icolr--; endwhile
-				# Put numvalues column by column into temporary storage while
-				# skipping leading & trailing NaN columns & -rows.
-				# As columns are usually bigger chunks than rows & octave
-				# stores arrays by column, building by columns is supposedly
-				# faster than bulding by rows
-				tmparr = cell (1, icolr-icoll+1);
-				for ii = icoll:icolr
-					tmpcol = rawarr(irowt:irowb, ii);
-					tmpcol(find (emptr(irowt:irowb, ii))) = NaN;
-					tmparr(ii) = cat (1, tmpcol{:});
-				endfor
-				numarr = cat (2, tmparr{:});
+
+				# Pre-crop rawarr
+				rawarr = rawarr (irowt:irowb, icoll:icolr);
+				# Build numerical array
+				numarr = zeros (irowb-irowt+1, icolr-icoll+1);
+				numarr (emptr(irowt:irowb, icoll:icolr)) = NaN;
+				numarr(~emptr(irowt:irowb, icoll:icolr)) = cell2mat (rawarr(~emptr(irowt:irowb, icoll:icolr)));
+				# Save limits
 				lim.numlimits = [icoll, icolr; irowt, irowb];
 				if (~isempty (rawlimits))
 					correction = [1; 1];

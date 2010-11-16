@@ -160,13 +160,16 @@ while indi <= size(varargin, 2),
 	unwind_protect_cleanup
 	  fclose(fid);
 	end_unwind_protect
-	eol = '\r\n|\n|\x0b|\f|\r|\x85';
+	eol = '(\r\n|\n|\r|\f|\x85)';
 	%# cut into lines -- include the EOL to have a one-to-one
-	%# matching between line numbers
-	lines = regexp(in, ['(^|' eol ')([^' eol ']+)'], 'match'); 
+	%# matching between line numbers. Use a non-greedy match.
+	lines = regexp(in, ['.*?' eol], 'match');
+	dummy = cellfun(@(x) regexp(x, eol), lines);
 	%# remove the EOL character(s)
-	lines = cellfun(@(x) regexp(x, ['[^' eol ']+'], 'match'), lines);
-	
+	lines(1==dummy) = {""};
+	%# use a positive lookahead -- eol is not part of the match
+	lines(dummy > 1) = cellfun(@(x) regexp(x, ['.*(?=' eol ')'], 'match'), \
+				   lines(dummy > 1));
 	%# a field either starts at a word boundary, either by + - . for
 	%# a numeric data, either by ' for a string. 
 

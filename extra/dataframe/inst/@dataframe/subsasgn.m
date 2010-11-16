@@ -254,7 +254,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       endif
       dummy = dummy && (!isempty(cname) && size(cname{1}, 2) < 1);
       if dummy,
-	ridx = cell2mat(RHS(:, 1));
+	ridx = cell2mat(RHS(:, 1)); 
 	%# can it be converted to a list of unique numbers ?
 	if length(unique(ridx)) == length(ridx),
 	  ridx = RHS(:, 1); RHS = RHS(:, 2:end);
@@ -506,7 +506,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     if 1 == size(RHS, 1),
       dummy(indr) = ridx{1};
     else
-      dummy(indr) = vertcat(ridx{indi});
+      dummy(indr) = vertcat(ridx{indr});
     endif
     if length(unique(dummy)) != length(dummy), %# || \
 	  %# any(diff(dummy) <= 0),

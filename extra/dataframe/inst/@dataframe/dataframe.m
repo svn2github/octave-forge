@@ -164,12 +164,12 @@ while indi <= size(varargin, 2),
 	%# cut into lines -- include the EOL to have a one-to-one
 	%# matching between line numbers. Use a non-greedy match.
 	lines = regexp(in, ['.*?' eol], 'match');
-	dummy = cellfun(@(x) regexp(x, eol), lines);
+	dummy = cellfun(@(x) regexp(x, eol), lines); 
 	%# remove the EOL character(s)
 	lines(1==dummy) = {""};
 	%# use a positive lookahead -- eol is not part of the match
-	lines(dummy > 1) = cellfun(@(x) regexp(x, ['.*(?=' eol ')'], 'match'), \
-				   lines(dummy > 1));
+	lines(dummy > 1) = cellfun(@(x) regexp(x, ['.*?(?=' eol ')'], \
+					       'match'), lines(dummy > 1));
 	%# a field either starts at a word boundary, either by + - . for
 	%# a numeric data, either by ' for a string. 
 

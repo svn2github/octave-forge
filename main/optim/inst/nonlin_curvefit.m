@@ -38,8 +38,6 @@
 ##
 ## @end deftypefn
 
-## PKG_ADD: __all_opts__ ("nonlin_curvefit");
-
 function [p, fy, cvg, outp] = nonlin_curvefit (f, pin, x, y, settings)
 
   if (nargin == 1)

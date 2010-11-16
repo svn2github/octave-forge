@@ -234,8 +234,6 @@
 ##
 ## @end deftypefn
 
-## PKG_ADD: __all_opts__ ("nonlin_residmin");
-
 function [p, resid, cvg, outp] = nonlin_residmin (varargin)
 
   if (nargin == 1)

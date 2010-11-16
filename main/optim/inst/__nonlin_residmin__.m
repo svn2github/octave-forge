@@ -20,6 +20,8 @@
 ## returned values of unchanged model function can be checked against
 ## each other exactly one time.
 
+## disabled PKG_ADD: __all_opts__ ("__nonlin_residmin__");
+
 function [p, resid, cvg, outp] = \
       __nonlin_residmin__ (f, pin, settings, hook)
 

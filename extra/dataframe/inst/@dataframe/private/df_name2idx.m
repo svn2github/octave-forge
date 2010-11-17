@@ -55,17 +55,19 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
 	orig_name = num2str(subs);
     endswitch
   endif
- 
+
   if isa(subs, 'cell'),
     subs = subs(:); idx = [];
     %# translate list of variables to list of indices
     for indi= 1:size(subs, 1),
       %# regexp doesn't like empty patterns
       if isempty(subs{indi}), continue, endif 
-      %# convert from standard pattern to regexp pattern
-      subs{indi} = regexprep(subs{indi}, '([^\.])\*', "$1.*");
+      %# convert '*' from standard pattern to regexp pattern
+      subs{indi} = regexprep(subs{indi}, '([^\.]|^)\*', "$1.*");
+      %# quote '|', otherwise the regexp will stall forever
+      subs{indi} = regexprep(subs{indi}, '([^\\]|^)\|', "$1\\|");
       if 0 == index(subs{indi}, ':'),
- 	for indj = 1:min(length(names), count), %# sanity check
+	for indj = 1:min(length(names), count), %# sanity check
 	  if ~isempty(regexp(names{indj}, subs{indi})),
 	    idx = [idx indj];
 	  endif

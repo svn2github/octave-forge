@@ -17,6 +17,7 @@
 %!assert(size(x.rownames), [0 0])
 %! # remove a column through '.' access
 %! y = x; y.DataName = [];
+%!assert(size(y(:, '|IBIAS|')), [10 1])
 %!assert(size(y), [10 6]);
 %! y = x{};
 %!assert(size(y), [10 7]);

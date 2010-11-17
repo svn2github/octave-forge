@@ -1,5 +1,5 @@
 #notice there is a extra separator
-DataName, VBIAS, Freq, IBIAS, C, G, OK,
+DataName, VBIAS, Freq, |IBIAS|, C, G, OK,
 DataValue, -6, 300000, 1.6272E-11, 7.02154E-13, 1.60436E-07, 'A',
 DataValue, -5.8, 300000, 1.599E-11, 6.96065E-13, 1.5728E-07, 'E',
 # a comment line, and an empty one

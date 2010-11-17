@@ -14,7 +14,7 @@ function [h,stats] = cdfplot(X)
 % References: 
 
 %       $Id$
-%       Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
 %       http://biosig-consulting.com/matlab/NaN/
 
@@ -34,7 +34,7 @@ function [h,stats] = cdfplot(X)
 
 
 his = histo3(X(:));
-hh  = plot(his.X,his.H/sum(his.H));
+hh  = plot(his.X,cumsum(his.H)/sum(his.H));
 
 if nargout>0,
         h = hh; 

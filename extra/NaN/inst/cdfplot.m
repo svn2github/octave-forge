@@ -1,15 +1,22 @@
-function [h,stats] = cdfplot(X)
+function [h,stats] = cdfplot(X, varargin)
 % CDFPLOT plots empirical commulative distribution function
 %
 %   cdfplot(X)
-%   h = cdfplot(X)
+%   cdfplot(X, FMT)
+%   cdfplot(X, PROPERTY, VALUE,...)
+%   h = cdfplot(...)
 %   [h,stats] = cdfplot(X)
 %
-%  h is the handle to the cdf curve
-%  stats is a struct containing various summary statistics
-%      like mean, std, median, min, max, etc.
+%  X contains the data vector
+% 	(matrix data is currently changed to a vector, this might change in future) 
+%  FMT,PROPERTY,VALUE 
+%	are used for formating; see HELP PLOT for more details 
+%  h 	graphics handle to the cdf curve
+%  stats 
+%	a struct containing various summary statistics including
+%	mean, std, median, min, max.
 %
-% see also: ecdf, median, statistics, hist2res
+% see also: ecdf, median, statistics, hist2res, plot
 %
 % References: 
 
@@ -37,7 +44,7 @@ his = histo_mex(X(:));
 cdf = cumsum(his.H,1) ./ sum(his.H,1);
 ix1 = ceil ([1:2*size(his.X,1)]'/2);  
 ix2 = floor([2:2*size(his.X,1)]'/2);  
-hh  = plot (his.X(ix1), [0; cdf(ix2)]);
+hh  = plot (his.X(ix1), [0; cdf(ix2)], varargin);
 
 if nargout>0,
         h = hh; 

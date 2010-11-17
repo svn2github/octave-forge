@@ -374,9 +374,10 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	      case {'char' } %# use a cell array to hold strings
 		dummy = RHS(:, indj);
 	      case {'double' }
-		dummy(idxOK, :) = fillfunc(indj);
+		dummy(idxOK, :) = fillfunc(indj); dummy(~idxOK, :) = NA;
 	      otherwise
-		dummy(idxOK, :) = cast(fillfunc(indj), df._type{indc(indi)});
+		dummy(idxOK, :) = fillfunc(indj); dummy(~idxOK, :) = NA;
+		dummy = cast(dummy, df._type{indc(indi)});
 	    endswitch
 	  endif
 	catch

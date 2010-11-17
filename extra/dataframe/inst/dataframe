@@ -11,6 +11,7 @@
 %! x.types ='single';
 %!assert(class(x(1, 1)), 'single')
 %! x=dataframe('octave_frame/data_test.csv');
+%!assert(isna(x(9, 4)))
 %! # remove rownames
 %! x.rownames = [];
 %!assert(size(x.rownames), [0 0])

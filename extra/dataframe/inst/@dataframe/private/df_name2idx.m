@@ -64,8 +64,12 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
       if isempty(subs{indi}), continue, endif 
       %# convert '*' from standard pattern to regexp pattern
       subs{indi} = regexprep(subs{indi}, '([^\.]|^)\*', "$1.*");
-      %# quote '|', otherwise the regexp will stall forever
-      subs{indi} = regexprep(subs{indi}, '([^\\]|^)\|', "$1\\|");
+      %# quote '|[]()?$', otherwise the regexp will stall forever/fail
+      subs{indi} = regexprep(subs{indi}, \
+			     '([^\\])([\|\[\(\)\]\?\$])', "$1\\$2");
+      %# work at start of line too
+      subs{indi} = regexprep(subs{indi}, \
+			     '^([\|\[\(\)\]\?\$])', "\\$1");
       if 0 == index(subs{indi}, ':'),
 	for indj = 1:min(length(names), count), %# sanity check
 	  if ~isempty(regexp(names{indj}, subs{indi})),

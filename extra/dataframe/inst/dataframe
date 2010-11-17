@@ -34,7 +34,7 @@
 %! y = dataframe([]);
 %!assert(isempty(y), true);
 %! y = x.df(:, 2:6);
-%! Y = 2*pi*double(y.Freq).*y.C+y.G;
+%! Y = 2*pi*double(y.Freq).*y.C+y.GOUT;
 %! z = dataframe(y,{{'Y'; Y}});
 %!assert(size(z), [10 6]);
 %!assert(abs(z(1, "Y") - Y(1)), 0);
@@ -56,7 +56,7 @@
 %! # test simple slices
 %!assert(x.VBIAS(1:6), (-6:.2:-5).');
 %!assert(x(6:end, 2), (-5:.2:-4.2).');
-%!assert(x(6, "OK"), 'B');
+%!assert(x(6, "OK?"), 'B');
 %!assert(x(2, logical([0 0 1 1])), x(2, 3:4))
 %!assert(size(y(:, :, :)), [10 5 2]);
 %!assert(size(y(:, :)), [10 10]);
@@ -98,10 +98,10 @@
 %! x("Freq");
 %!test
 %! # complex access
-%! x(x.OK=='?', ["C"; "G"]) = NaN;
+%! x(x(:, "OK?") == '?', ["C"; "G"]) = NaN;
 %!assert(x(4, 5:6), [NaN NaN])
 %! # extract values
-%! y = x.dataframe(x.OK=='A', {"Freq", "VB*", "C", "G"});
+%! y = x.dataframe(x(:, "OK?") =='A', {"Freq", "VB*", "C", "G"});
 %! #comparison using cell output class, because assert use (:)
 %!assert(y.cell(:, 2:3), x.cell([1 7], ["VB*"; "C"]))
 %!assert(x((33:35).'), x(3:5, 4))
@@ -118,14 +118,14 @@
 %! disp("Access as a struct: x.VBIAS(1:6)")
 %! x.VBIAS(1:6)
 %! pause; disp("Access as a matrix: x(6, 'OK')")
-%! x(6, "OK")
+%! x(6, "OK?")
 %! pause; disp("Removing the row names:  x.rownames = []");
 %! x.rownames = []
 %! pause; disp("Modifying column type: x.types{'Freq'}='uint32'");
 %! x.types{"Freq"}='uint32'
 %! pause; disp("Partial extract, returning a dataframe");
-%! disp("y = x(x.OK=='A'|x.OK=='B', {'Freq', 'VB*', 'C', 'G'}, 'dataframe')")
-%! y = x(x.OK=='A'|x.OK=='B', {"Freq", "VB*", "C", "G"}, "dataframe")
+%! disp("y = x(x(:, 'OK.') == 'A'|x(:, "OK?") == 'B', {'Freq', 'VB*', 'C', 'G'}, 'dataframe')")
+%! y = x(x(:, 'OK?') == 'A'|(x(:, "OK?") == 'B', {"Freq", "VB*", "C", "G"}, "dataframe")
 %! pause; disp("Setting rownames")
 %! disp("y.rownames = char({'low', 'med', 'med', 'high'})");
 %! y.rownames = char({'low', 'med', 'med', 'high'})

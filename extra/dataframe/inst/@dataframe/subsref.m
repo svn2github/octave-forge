@@ -254,7 +254,7 @@ function resu = subsref(df, S)
 	if ~strcmp(output_type, df._type{indc(indi)}),
 	  if dummy, continue; endif
 	  %# unmixable args -- falls back to type of parent container 
-	  error("Selected columns not compatible with cat() -- use 'cell' as output format");
+	  error("Selected columns %s not compatible with cat() -- use 'cell' as output format", mat2str(indc));
 	  %# dead code -- suppress previous line for switching automagically the output format to df
 	  output_type = class(df); 
 	  break;

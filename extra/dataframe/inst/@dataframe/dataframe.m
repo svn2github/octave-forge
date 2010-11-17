@@ -160,7 +160,10 @@ while indi <= size(varargin, 2),
 	unwind_protect_cleanup
 	  fclose(fid);
 	end_unwind_protect
-	eol = '(\r\n|\n|\r|\f|\x85)';
+	%# explicit list taken from 'man pcrepattern' -- we enclose all
+	%# vertical separators in case the underlying regexp engine
+	%# doesn't have them all.
+	eol = '(\r\n|\n|\v|\f|\r|\x85)';
 	%# cut into lines -- include the EOL to have a one-to-one
 	%# matching between line numbers. Use a non-greedy match.
 	lines = regexp(in, ['.*?' eol], 'match');

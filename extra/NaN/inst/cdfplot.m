@@ -44,7 +44,7 @@ his = histo_mex(X(:));
 cdf = cumsum(his.H,1) ./ sum(his.H,1);
 ix1 = ceil ([1:2*size(his.X,1)]'/2);  
 ix2 = floor([2:2*size(his.X,1)]'/2);  
-hh  = plot (his.X(ix1), [0; cdf(ix2)], varargin);
+hh  = plot (his.X(ix1), [0; cdf(ix2)], varargin{:});
 
 if nargout>0,
         h = hh; 

@@ -105,7 +105,7 @@ for j=1:length(na)
   fprintf(fid,['nc.%s = nc%s(%s);\n'],ncname(na{j}),datatype,att2str(na{j}));
 end
 
-fprintf(fid,'ncclose(nc)\n');
+fprintf(fid,'close(nc)\n');
 
 if (fid ~= 1)
   fclose(fid);
@@ -131,7 +131,7 @@ function s = att2str(att)
  n = length(att);
  val = att(:);
  
- if (n == 1 | strcmp(datatype,'char'))
+ if (n == 1 || strcmp(datatype,'char'))
    s = sprintf(f,val);   
  else
    s = '[';

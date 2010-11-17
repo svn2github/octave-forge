@@ -44,27 +44,29 @@ nc('latitude') = 181;
 nc{'longitude'} = ncdouble('longitude');              % create a variable longitude of type double with 
                                                       % 360 elements (dimension longitude).
 nc{'longitude'}(:) = longitude;                       % store the octave variable longitude in the netcdf file
-nc{'longitude'}.units = 'degree West';                % define a string attribute of the variable longitude
+nc{'longitude'}.units = 'degrees_east';                % define a string attribute of the variable longitude
 
 % coordinate variable latitude
 
 nc{'latitude'} = ncdouble('latitude');;               % create a variable latitude of type double with 
                                                       % 181 elements (dimension latitude).                
 nc{'latitude'}(:) = latitude;                         % store the octave variable latitude in the netcdf file
-nc{'latitude'}.units = 'degree North';                % define a string attribute of the variable latitude
+nc{'latitude'}.units = 'degrees_north';                % define a string attribute of the variable latitude
 
 % variable temp
 
-nc{'temp'} = ncdouble('longitude','latitude');        % create a variable temp of type double of the size 360x181 
+nc{'temp'} = ncdouble('latitude','longitude');        % create a variable temp of type double of the size 360x181 
                                                       % (dimension longitude and latitude).    
 nc{'temp'}(:) = temp;                                 % store the octave variable temp in the netcdf file
+nc{'temp'}.long_name = 'Temperature';                 
 nc{'temp'}.units = 'degree Celsius';                  % define a string attribute of the variable
 nc{'temp'}.valid_range = [-10 40];                    % define a vector of doubles attribute of the variable
 
-nc.history = 'netcdf file created by example_netcdf.m in octave';
                                                       % define a global string attribute
+nc.history = 'netcdf file created by example_netcdf.m in octave';
+nc.title = 'sample file';
 
-ncclose(nc)                                           % close netcdf file and all changes are written to disk
+close(nc)                                             % close netcdf file and all changes are written to disk
 
 
 disp(['example.nc file created. You might now inspect this file with the shell command "ncdump -h example.nc"']);

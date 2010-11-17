@@ -16,7 +16,7 @@ function [h,stats] = cdfplot(X)
 %       $Id$
 %       Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -33,8 +33,11 @@ function [h,stats] = cdfplot(X)
 % Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-his = histo3(X(:));
-hh  = plot(his.X,cumsum(his.H)/sum(his.H));
+his = histo_mex(X(:));
+cdf = cumsum(his.H,1) ./ sum(his.H,1);
+ix1 = ceil ([1:2*size(his.X,1)]'/2);  
+ix2 = floor([2:2*size(his.X,1)]'/2);  
+hh  = plot (his.X(ix1), [0; cdf(ix2)]);
 
 if nargout>0,
         h = hh; 

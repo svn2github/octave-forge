@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 DEFUN_DLD (cell2fields, args, , 
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} cell2fields (@var{c}, @var{fields}, @var{dim}, @var{s})\n\
-Return structure @var{s} after setting the fields @var{fields} with the slices of cell-array @var{c} vertically to dimension @var{dim}. @var{s} must have matching dimensions or be empty.\n\
+Return structure-array @var{s} after setting the fields @var{fields} with the slices of cell-array @var{c} vertically to dimension @var{dim}. @var{s} must have matching dimensions or be empty.\n\
 @end deftypefn")
 {
   std::string fname ("cell2fields");

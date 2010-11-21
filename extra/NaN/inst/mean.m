@@ -94,7 +94,9 @@ else
 %	fprintf(1,'usage: mean(x) or mean(x,DIM) or mean(x,opt,DIM) or mean(x,DIM,opt) or mean(x,DIM,W) or mean(x,DIM,opt,W); '
 end;
 
-if any(opt=='aAgGhH')
+if isempty(opt)
+	opt = 'A';
+elseif any(opt=='aAgGhH')
 	opt = upper(opt); % eliminate old version 
 else 
 	error('Error MEAN: invalid opt argument');

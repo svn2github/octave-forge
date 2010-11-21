@@ -92,6 +92,7 @@ level 2a: derived functions
 	PRCTILE,PERCENTILE	p-th percentile
 	TRIMEAN		trimean
 
+	BLAND_ALTMANN	Bland-Altmann plot 
 	ECDF		empirical cumulative distribution function 
 	CDFPLOT		plot empirical cumulative distribution function 
 	GSCATTER	scatter plot of grouped data 

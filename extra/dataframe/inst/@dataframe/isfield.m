@@ -32,7 +32,7 @@ function [resu, idx] = isfield(df, name, strict)
   %% Suite 330, Boston, MA 02111-1307, USA.
 
   %#
-  %# $Id: dataframe.m 7931 2010-11-17 17:07:37Z cdemills $
+  %# $Id$
   %#
 
   if !isa(df, 'dataframe'),

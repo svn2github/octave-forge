@@ -71,6 +71,7 @@ if isempty(x) && 1 == nargin,
   df._ridx = [];  
   df._data = cell(0, 0); 
   df._type = cell(0, 0);
+  df._src = cell(0, 0);
   df = class(df, 'dataframe');
   return
 endif
@@ -147,111 +148,128 @@ while indi <= size(varargin, 2),
     if isa(x, 'char') && size(x, 1) < 2,
       %# read the data frame from a file
       try
-	x = load(tilde_expand(x));
+	dummy = tilde_expand(x);
+	x = load(dummy);
+	df._src{end+1, 1} = dummy;
       catch
-        UTF8_BOM = char([0xEF 0xBB 0xBF]);
+        %# try our own method
+	UTF8_BOM = char([0xEF 0xBB 0xBF]);
 	unwind_protect
-	  fid = fopen(tilde_expand(x));
-	  dummy = fgetl(fid);
-	  if !strcmp(dummy, UTF8_BOM),
-	    frewind(fid);
+	  dummy = tilde_expand(x);
+	  fid = fopen(dummy);
+	  if fid != -1,
+	    dummy = fgetl(fid);
+	    if !strcmp(dummy, UTF8_BOM),
+	      frewind(fid);
+	    endif
+	    in = fscanf(fid, "%c"); %# slurps everything
+	    df._src{end+1, 1} = dummy;
+	  else
+	    in = [];
 	  endif
-	  in = fscanf(fid, "%c"); %# slurps everything
 	unwind_protect_cleanup
-	  fclose(fid);
+	  if fid != -1, fclose(fid); endif
 	end_unwind_protect
-	%# explicit list taken from 'man pcrepattern' -- we enclose all
-	%# vertical separators in case the underlying regexp engine
-	%# doesn't have them all.
-	eol = '(\r\n|\n|\v|\f|\r|\x85)';
-	%# cut into lines -- include the EOL to have a one-to-one
-	%# matching between line numbers. Use a non-greedy match.
-	lines = regexp(in, ['.*?' eol], 'match');
-	dummy = cellfun(@(x) regexp(x, eol), lines); 
-	%# remove the EOL character(s)
-	lines(1==dummy) = {""};
-	%# use a positive lookahead -- eol is not part of the match
-	lines(dummy > 1) = cellfun(@(x) regexp(x, ['.*?(?=' eol ')'], \
-					       'match'), lines(dummy > 1));
-	%# a field either starts at a word boundary, either by + - . for
-	%# a numeric data, either by ' for a string. 
 
- 	%# content = cellfun(@(x) regexp(x, '(\b|[-+\.''])[^,]*(''|\b)', 'match'),\
-	%# lines, 'UniformOutput', false); %# extract fields
-	content = cellfun(@(x) strsplit(x, sep), lines, \
-			  'UniformOutput', false); %# extract fields	
-	indl = 1; indj = 1; %# disp('line 151 '); keyboard
-	if ~isempty(seeked),
+	if !isempty(in),
+	  %# explicit list taken from 'man pcrepattern' -- we enclose all
+	  %# vertical separators in case the underlying regexp engine
+	  %# doesn't have them all.
+	  eol = '(\r\n|\n|\v|\f|\r|\x85)';
+	  %# cut into lines -- include the EOL to have a one-to-one
+	  %# matching between line numbers. Use a non-greedy match.
+	  lines = regexp(in, ['.*?' eol], 'match');
+	  dummy = cellfun(@(x) regexp(x, eol), lines); 
+	  %# remove the EOL character(s)
+	  lines(1==dummy) = {""};
+	  %# use a positive lookahead -- eol is not part of the match
+	  lines(dummy > 1) = cellfun(@(x) regexp(x, ['.*?(?=' eol ')'], \
+						 'match'), lines(dummy > 1));
+	  %# a field either starts at a word boundary, either by + - . for
+	  %# a numeric data, either by ' for a string. 
+	  
+ 	  %# content = cellfun(@(x) regexp(x, '(\b|[-+\.''])[^,]*(''|\b)', 'match'),\
+	  %# lines, 'UniformOutput', false); %# extract fields
+	  content = cellfun(@(x) strsplit(x, sep), lines, \
+			    'UniformOutput', false); %# extract fields	
+	  indl = 1; indj = 1; %# disp('line 151 '); keyboard
+	  if ~isempty(seeked),
+	    while indl <= length(lines),
+	      dummy = content{indl};
+	      if strcmp(dummy{1}, seeked)
+		break;
+	      endif
+	      indl = indl + 1;
+	    endwhile
+	    %#	else
+	    %# dummy = content{indl};
+	  endif
+	  x = cell(1+length(lines)-indl, size(dummy, 2)); 
+	  empty_lines = [];
 	  while indl <= length(lines),
 	    dummy = content{indl};
-	    if strcmp(dummy{1}, seeked)
-	      break;
+	    if all(cellfun('size', dummy, 2) == 0),
+	      empty_lines = [empty_lines indj];
+	      indl = indl + 1; indj = indj + 1;
+	      continue;
 	    endif
-	    indl = indl + 1;
-	  endwhile
-	  %#	else
-	  %# dummy = content{indl};
-	endif
-	x = cell(1+length(lines)-indl, size(dummy, 2)); 
-	empty_lines = [];
-	while indl <= length(lines),
-	  dummy = content{indl};
-	  if all(cellfun('size', dummy, 2) == 0),
-	    empty_lines = [empty_lines indj];
-	    indl = indl + 1; indj = indj + 1;
-	    continue;
-	  endif
-	  %# does it looks like a comment line ?
-	  if regexp(dummy{1}, ['^\s*' char(35)]),
-	    empty_lines = [empty_lines indj];
-	    indl = indl + 1; indj = indj + 1;
-	    continue;
-	  endif
-	  %# try to convert to float
-	  the_line = cellfun(@(x) sscanf(x, "%f"), dummy, \
-			     'UniformOutput', false);
-	  for indk = 1: size(the_line, 2),
-	    if isempty(the_line{indk}) || any(size(the_line{indk}) > 1), 
-	      %#if indi > 1 && indk > 1, disp('line 117 '); keyboard; %#endif
-	      if unquot,
-		try
-		  %# remove quotes and leading space(s)
-		  x(indj, indk) = regexp(dummy{indk}, '[^'' ].*[^'']', 'match'){1};
-		catch
-		  %# if the previous test fails, try a simpler one
-		  in = regexp(dummy{indk}, '[^'' ]+', 'match');
-		  if !isempty(in),
-		    x(indj, indk) = in{1};
-		    %# else
-		    %#    x(indj, indk) = [];
-		  endif
-		end_try_catch
+	    %# does it looks like a comment line ?
+	    if regexp(dummy{1}, ['^\s*' char(35)]),
+	      empty_lines = [empty_lines indj];
+	      indl = indl + 1; indj = indj + 1;
+	      continue;
+	    endif
+	    %# try to convert to float
+	    the_line = cellfun(@(x) sscanf(x, "%f"), dummy, \
+			       'UniformOutput', false);
+	    for indk = 1: size(the_line, 2),
+	      if isempty(the_line{indk}) || any(size(the_line{indk}) > 1), 
+		%#if indi > 1 && indk > 1, disp('line 117 '); keyboard; %#endif
+		if unquot,
+		  try
+		    %# remove quotes and leading space(s)
+		    x(indj, indk) = regexp(dummy{indk}, '[^'' ].*[^'']', 'match'){1};
+		  catch
+		    %# if the previous test fails, try a simpler one
+		    in = regexp(dummy{indk}, '[^'' ]+', 'match');
+		    if !isempty(in),
+		      x(indj, indk) = in{1};
+		      %# else
+		      %#    x(indj, indk) = [];
+		    endif
+		  end_try_catch
+		else
+		  %# no conversion possible, store and remove leading space(s)
+		  x(indj, indk) = regexp(dummy{indk}, '[^ ].*', 'match');
+		endif
 	      else
-		%# no conversion possible, store and remove leading space(s)
-		x(indj, indk) = regexp(dummy{indk}, '[^ ].*', 'match');
+		x(indj, indk) = the_line{indk}; 
 	      endif
-	    else
-	      x(indj, indk) = the_line{indk}; 
-	    endif
-	  endfor
-	  indl = indl + 1; indj = indj + 1;
-	endwhile
-	if !isempty(empty_lines),
-	  x(empty_lines, :) = [];
+	    endfor
+	    indl = indl + 1; indj = indj + 1;
+	  endwhile
+	  if !isempty(empty_lines),
+	    x(empty_lines, :) = [];
+	  endif
+	  %# detect empty columns
+	  empty_lines = find(0 == sum(cellfun('size', x, 2)));
+	  if !isempty(empty_lines),
+	    x(:, empty_lines) = [];
+	  endif
+	  clear UTF8_BOM fid in lines indl the_line content empty_lines
 	endif
-	%# detect empty columns
-	empty_lines = find(0 == sum(cellfun('size', x, 2)));
-	if !isempty(empty_lines),
-	  x(:, empty_lines) = [];
-	endif
-	clear UTF8_BOM fid in lines indl the_line content empty_lines
       end_try_catch
     endif
   
     %# fallback, avoiding a recursive call
     idx.type = '()';
-    indj = df._cnt(2)+(1:size(x, 2));
-   
+    if !isa(x, 'char'),
+      indj = df._cnt(2)+(1:size(x, 2));
+    else
+      %# at this point, reading some filename failed
+      error("dataframe: can't open '%s' for reading data", x);
+    endif;
+    
     if iscell(x),
       if 2 == length(x),
 	%# use the intermediate value as destination column
@@ -280,7 +298,7 @@ while indi <= size(varargin, 2),
       %# allow overwriting of column names
       df._over{2}(1, indj) = true;
     else
-      if !isempty(indj),		    
+      if !isempty(indj),	
 	if length(df._name{2}) < indj(1) || isempty(df._name{2}(indj)),
 	  [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
 	      = df_colnames(inputname(indi), indj);
@@ -315,14 +333,24 @@ function [x, y] = df_colnames(base, num)
   if any([index(base, "=")]),
     %# takes the left part as base
     x = strsplit(base, "=");
-    x = deblank(x{1}); y = false;
-  elseif any([index(base, '''')]),
-    %# base is most probably a filename
-    x =  regexp(base, '[^''].*[^'']', 'match'){1}; y = true;
-  elseif any([index(base, "(") index(base, ":")]),
-    x = 'X'; y = true; %# this is a default value, may be changed
+    x = deblank(x{1});
+    if isvarname(x),  
+      y = false;
+    else
+      x = 'X'; y = true; 
+    endif
   else
-    x = base; y = false;
+    %# is base most probably a filename ?
+    x =  regexp(base, '''[^''].*[^'']''', 'match');
+    if isempty(x),
+      if isvarname(base),
+	x = base; y = false;
+      else
+	x = 'X'; y = true; %# this is a default value, may be changed
+      endif
+    else
+      x = x{1}; y = true;
+    endif
   endif
 
   if numel(num) > 1,

@@ -83,13 +83,12 @@ if all(df._cnt > 0), %# stop for empty df
 	%# keep only one horizontal space per line
 	indk = 1; while indk <= size(df._data{indc}, 2),
 	  dummy{3, 2+indi} = disp(df._data{indc}(:, indk));
-	  tmp_str = char(regexp(dummy{3, 2+indi}, ' \S.*', ...
+	  tmp_str = char(regexp(dummy{3, 2+indi}, \
+				'[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?(\s??[-+]\s??[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?i)?', \
 				'match', 'dotexceptnewline'));
-	  if size(tmp_str, 1) < df._cnt(1),
-	    tmp_str = horzcat...
-		(vspace, char(regexp(dummy{3, 2+indi}, '\S.*', ...
-				     'match', 'dotexceptnewline')));
-	  endif
+	  tmp_str = horzcat...
+	      (vspace, char(regexp(dummy{3, 2+indi}, '\S.*', ...
+				   'match', 'dotexceptnewline')));
 	  dummy{3, 2+indi} = tmp_str;
 	  indi = indi + 1; indk = indk + 1;
 	endwhile

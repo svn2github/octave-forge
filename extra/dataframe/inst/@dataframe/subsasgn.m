@@ -189,7 +189,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     else
       if isvector(RHS),
 	if 0 == df._cnt(1),
-	  nrow = length(RHS); %# try to produce row vectors
+	  nrow = size(RHS, 1); 
 	else
 	  nrow = df._cnt(1);  %# limit to df numbner of rows
 	endif 
@@ -308,7 +308,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       endif
     endif
   endif
-  
+
   %# perform row resizing if columns are already filled
   if !isempty(indr) && isnumeric(indr),
     if max(indr) > df._cnt(1) && size(df._data, 2) == df._cnt(2),
@@ -453,8 +453,9 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	else 
 	  %# ignore 'column' dimension -- force colum vectors -- use a
 	  %# third dim just in case
+	  if isempty(S.subs{1}), S.subs{1} = ':'; endif 
 	  S.subs(2) = []; 
-	  if length(S.subs) < 2, S.subs(2) = 1; endif 	
+	  if length(S.subs) < 2, S.subs{2} = 1; endif 	
   	  if length(indc) > 1 && length(RHS) > 1,
 	    %# set a row from a vector
 	    fillfunc = @(x, y) builtin('subsasgn', x, S, RHS(y));
@@ -463,7 +464,11 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	  endif
 	endif
 	for indi = 1:length(indc),
-	  df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, indi);
+	  try
+	    df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, indi);
+	  catch
+	    disp('line 470 '); keyboard
+	  end_try_catch
 	  # catch
 	  #   if ndims(df._data{indc(indi)}) > 2,
 	  #     %# upstream forgot to give the third dim

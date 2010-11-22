@@ -34,6 +34,12 @@ else
   head = sprintf("Dataframe with %d rows and %d columns (%d unfolded)", ...
 		 df._cnt);
 endif
+if !isempty(df._src),
+  for indi = 1:size(df._src, 1),
+    head = char(head, ["Src: " df._src{indi, 1}]);
+  endfor
+endif
+
 if all(df._cnt > 0), %# stop for empty df
   vspace = repmat(' ', df._cnt(1), 1);
   indi = 1; %# the real, unfolded index

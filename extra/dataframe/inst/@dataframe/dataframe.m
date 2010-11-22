@@ -158,12 +158,12 @@ while indi <= size(varargin, 2),
 	  dummy = tilde_expand(x);
 	  fid = fopen(dummy);
 	  if fid != -1,
+	    df._src{end+1, 1} = dummy;
 	    dummy = fgetl(fid);
 	    if !strcmp(dummy, UTF8_BOM),
 	      frewind(fid);
 	    endif
 	    in = fscanf(fid, "%c"); %# slurps everything
-	    df._src{end+1, 1} = dummy;
 	  else
 	    in = [];
 	  endif

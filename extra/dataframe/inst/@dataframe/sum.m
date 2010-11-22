@@ -54,18 +54,16 @@ function resu = sum(df, varargin)
   %# $Id$
   %#
 
-
-
   if !isa(df, 'dataframe'),
     resu = []; return;
   endif
 
   dim = []; type_comp = [];
-  
+
   indi = 1; while indi <= length(varargin)
     if isnumeric(varargin{indi}),
       if !isempty(dim),
-	print_usage();
+	print_usage('@dataframe/sum');
 	resu = [];
 	return
       else
@@ -73,13 +71,14 @@ function resu = sum(df, varargin)
       endif
     else
       if !isempty(type_comp),
-	print_usage();
+	print_usage('@dataframe/sum');
 	resu = [];
 	return
       else
 	type_comp = varargin{indi};
       endif
     endif
+    indi = indi + 1;
   endwhile;
 
   if isempty(dim), dim = 1; endif;
@@ -87,6 +86,7 @@ function resu = sum(df, varargin)
 
   %# pre-assignation
   resu = struct(df); 
+  if !isempty(resu._src), resu._src = cell(0, 0); endif
   
   switch(dim)
     case {1},

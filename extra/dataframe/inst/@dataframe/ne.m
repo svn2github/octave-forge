@@ -1,6 +1,7 @@
-function varargout = size(df, varargin)
-  %# function resu = size(df, varargin)
-  %# This is size operator for a dataframe object.
+function resu = ne(A, B);
+
+  %# function resu = ne(A, B)
+  %# Implements the '!=' operator when at least one argument is a dataframe.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -26,35 +27,6 @@ function varargout = size(df, varargin)
   %# $Id$
   %#
 
-  switch nargin
-    case 1
-      switch nargout
-	case {0 1}
-	  varargout{1} = df._cnt;
-	case {2}
-	  varargout{1} = df._cnt(1); varargout{2} = df._cnt(2);
-	otherwise
-	  error(print_usage());
-      endswitch
-    case 2
-      switch nargout
-	case {0 1}
-	  varargout{1} = df._cnt;
-	  try
-	    varargout{1} = varargout{1}(varargin{1});
-	  catch
-	    error(print_usage());
-	  end_try_catch
-	otherwise
-	  error(print_usage());
-      endswitch
-    otherwise
-      error(print_usage());
-  endswitch
+  resu = cell2mat(df_func(@ne, A, B));
 
-endfunction
-
-function usage = print_usage()
-  usage = strcat('Invalid call to size.  Correct usage is: ', ' ', ...
-		  '-- Overloaded Function:  size (A, N)');
 endfunction

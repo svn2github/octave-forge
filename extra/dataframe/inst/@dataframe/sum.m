@@ -1,35 +1,5 @@
 function resu = sum(df, varargin) 
   
-  %# -*- texinfo -*-
-  %# @deftypefn  {Function File} {} sum (@var{x})
-  %# @deftypefnx {Function File} {} sum (@var{x}, @var{dim})
-  %# @deftypefnx {Function File} {} sum (@dots{}, 'native')
-  %# @deftypefnx {Function File} {} sum (@dots{}, 'double')
-  %# @deftypefnx {Function File} {} sum (@dots{}, 'extra')
-  %# Sum of elements along dimension @var{dim}.  If @var{dim} is
-  %# omitted, it defaults to the first non-singleton dimension.
-  %# 
-  %# If the optional argument 'native' is given, then the sum is performed
-  %# in the same type as the original argument, rather than in the default
-  %# double type.  For example:
-  %#
-  %# @example
-  %# @group
-  %# sum ([true, true])
-  %# @result{} 2
-  %# sum ([true, true], 'native')
-  %# @result{} true
-  %# @end group
-  %# @end example
-  %#
-  %# On the contrary, if 'double' is given, the sum is performed in double
-  %# precision even for single precision inputs.
-  %#
-  %# For double precision inputs, 'extra' indicates that a more accurate algorithm
-  %# than straightforward summation is to be used.  For single precision inputs,
-  %# 'extra' is the same as 'double'.  Otherwise, 'extra' has no effect.\n\
-  %# @end deftypefn 
-
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
@@ -58,53 +28,6 @@ function resu = sum(df, varargin)
     resu = []; return;
   endif
 
-  dim = []; type_comp = [];
-
-  indi = 1; while indi <= length(varargin)
-    if isnumeric(varargin{indi}),
-      if !isempty(dim),
-	print_usage('@dataframe/sum');
-	resu = [];
-	return
-      else
-	dim = varargin{indi};
-      endif
-    else
-      if !isempty(type_comp),
-	print_usage('@dataframe/sum');
-	resu = [];
-	return
-      else
-	type_comp = varargin{indi};
-      endif
-    endif
-    indi = indi + 1;
-  endwhile;
-
-  if isempty(dim), dim = 1; endif;
-  if isempty(type_comp), type_comp = 'double'; endif
-
-  %# pre-assignation
-  resu = struct(df); 
-  
-  switch(dim)
-    case {1},
-      resu._ridx = 1; resu._name{1, 1} = []; resu._over{1, 1} = [];
-      for indi = 1:resu._cnt(2),
-	resu._data{1, indi} = sum(resu._data{1, indi}, dim, type_comp);
-      endfor
-      resu._cnt(1) = 1;
-    case {2},
-      error('Operation not implemented');
-    case {3},
-      for indi = 1:resu._cnt(2),
-	resu._data{1, indi} = sum(resu._data{1, indi}, 2, type_comp)
-      endfor
-      if length(resu._cnt) > 2, resu._cnt = resu._cnt(1:2); endif
-    otherwise
-      error("Invalid dimension %d", dim); 
-  endswitch
-
-  resu = dataframe(resu);
+  resu = df_mapper2(@sum, df, varargin{:});
 
 endfunction

@@ -1,6 +1,4 @@
-function varargout = size(df, varargin)
-  %# function resu = size(df, varargin)
-  %# This is size operator for a dataframe object.
+function varargout = find(df, varargin) 
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -21,40 +19,40 @@ function varargout = size(df, varargin)
   %% License along with Octave; see the file COPYING.  If not,
   %% write to the Free Software Foundation, 59 Temple Place -
   %% Suite 330, Boston, MA 02111-1307, USA.
-  
+
   %#
   %# $Id$
   %#
 
-  switch nargin
-    case 1
-      switch nargout
-	case {0 1}
-	  varargout{1} = df._cnt;
-	case {2}
-	  varargout{1} = df._cnt(1); varargout{2} = df._cnt(2);
-	otherwise
-	  error(print_usage());
-      endswitch
+  switch nargout
+    case {0, 1}
+      nz = 0; resu = [];
+      for indi = 1:df._cnt(2),
+	resu = [resu; nz + feval(@find, df._data{indi})];
+	nz = nz + prod(size(df._data{indi}));
+      endfor
+      varargout{1} = resu;
     case 2
-      switch nargout
-	case {0 1}
-	  varargout{1} = df._cnt;
-	  try
-	    varargout{1} = varargout{1}(varargin{1});
-	  catch
-	    error(print_usage());
-	  end_try_catch
-	otherwise
-	  error(print_usage());
-      endswitch
+      nz = 0; idx_i = []; idx_j = [];
+      for indi = 1:df._cnt(2),
+	[dum1, dum2] = feval(@find, df._data{indi});
+	idx_i = [idx_i; dum1];
+	idx_j = [idx_j; nz + dum2];
+	nz = nz + size(df._data{indi}, 2);
+      endfor
+      varargout{1} = idx_i; varargout{2} = idx_j;
+    case 3
+      nz = 0; idx_i = []; idx_j = []; val = [];
+      for indi = 1:df._cnt(2),
+	[dum1, dum2, dum3] = feval(@find, df._data{indi});
+	idx_i = [idx_i; dum1];
+	idx_j = [idx_j; nz + dum2];
+	val = [val; dum3];
+	nz = nz + size(df._data{indi}, 2);
+      endfor
+      varargout{1} = idx_i; varargout{2} = idx_j; varargout{3} = val;
     otherwise
-      error(print_usage());
+      print_usage('find');
   endswitch
 
-endfunction
-
-function usage = print_usage()
-  usage = strcat('Invalid call to size.  Correct usage is: ', ' ', ...
-		  '-- Overloaded Function:  size (A, N)');
 endfunction

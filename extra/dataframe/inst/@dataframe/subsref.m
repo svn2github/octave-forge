@@ -115,6 +115,9 @@ function resu = subsref(df, S)
 		  S(1).subs = "_ridx"; further_deref = true;
 		case "types"	%# this one should be accessed as a matrix
 		  S(1).subs = "_type"; further_deref = true;
+		case "source"
+		  S(1).subs = "_src";
+		  further_deref = true;
 		otherwise
 		  error("Unknown column name: %s", S(1).subs);
 	      endswitch
@@ -440,16 +443,20 @@ function resu = subsref(df, S)
 	    %# "turn" the extracted matrix
 	    resu(:, 1, :) = dummy(indr, inds);
 	  else
-	    resu = repmat(dummy(indr), [1 ncol nseq]);
+	    resu = repmat(dummy(indr(:)), [1 ncol nseq]);
 	  endif
 	  for indi = 2:ncol,
 	    dummy = extractfunc(indi);
 	    if 1 == size(dummy, 2),
-	      if 1 == nseq,
-		resu(:, indi) = dummy(indr);
-	      else
-		resu(:, indi, :) = repmat(dummy(indr),  [1 1 nseq]);
-	      endif
+	      try
+		if 1 == nseq,
+		  resu(:, indi) = dummy(indr)(:);
+		else
+		  resu(:, indi, :) = repmat(dummy(indr),  [1 1 nseq]);
+		endif
+	      catch
+		disp('line 458 '); keyboard
+	      end_try_catch
 	    else
 	      %# "turn" the extracted matrix
 	      resu(:, indi, :) = dummy(indr, inds);

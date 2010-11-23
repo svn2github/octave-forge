@@ -63,7 +63,7 @@ function resu = cat(dim, A, varargin)
 	indb = logical(ones(1, resu._cnt(2)));
 	indi = 1;
 	while indi <= resu._cnt(2),
-	  indj = strmatch(resu._name{2}(indi), B. _name{2});
+	  indj = strmatch(resu._name{2}(indi), B. _name{2}, 'exact');
 	  if ~isempty(indj),
 	    indj = indj(1);
 	    if ~strcmp(resu._type{indi}, B._type{indj}),
@@ -134,7 +134,7 @@ function resu = cat(dim, A, varargin)
 	indb = logical(ones(1, resu._cnt(2)));
 	indi = 1;
 	while indi <= resu._cnt(2),
-	  indj = strmatch(resu._name{2}(indi), B. _name{2});
+	  indj = strmatch(resu._name{2}(indi), B. _name{2}, 'exact');
 	  if ~isempty(indj),
 	    indj = indj(1);
 	    if ~strcmp(resu._type{indi}, B._type{indj}),

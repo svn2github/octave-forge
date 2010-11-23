@@ -1,4 +1,4 @@
-function resu = sum(df, varargin) 
+function resu = sumsq(df, varargin) 
   
   %# -*- texinfo -*-
   %# @deftypefn  {Function File} {} sum (@var{x})
@@ -58,32 +58,27 @@ function resu = sum(df, varargin)
     resu = []; return;
   endif
 
-  dim = []; type_comp = [];
+  dim = []; 
 
   indi = 1; while indi <= length(varargin)
     if isnumeric(varargin{indi}),
       if !isempty(dim),
-	print_usage('@dataframe/sum');
+	print_usage('@dataframe/sumsq');
 	resu = [];
 	return
       else
 	dim = varargin{indi};
       endif
     else
-      if !isempty(type_comp),
-	print_usage('@dataframe/sum');
-	resu = [];
-	return
-      else
-	type_comp = varargin{indi};
-      endif
+      print_usage('@dataframe/sumsq');
+      resu = [];
+      return
     endif
     indi = indi + 1;
   endwhile;
-
+  
   if isempty(dim), dim = 1; endif;
-  if isempty(type_comp), type_comp = 'double'; endif
-
+  
   %# pre-assignation
   resu = struct(df); 
   
@@ -91,14 +86,14 @@ function resu = sum(df, varargin)
     case {1},
       resu._ridx = 1; resu._name{1, 1} = []; resu._over{1, 1} = [];
       for indi = 1:resu._cnt(2),
-	resu._data{1, indi} = sum(resu._data{1, indi}, dim, type_comp);
+	resu._data{1, indi} = sumsq(resu._data{1, indi}, dim);
       endfor
       resu._cnt(1) = 1;
     case {2},
       error('Operation not implemented');
     case {3},
       for indi = 1:resu._cnt(2),
-	resu._data{1, indi} = sum(resu._data{1, indi}, 2, type_comp)
+	resu._data{1, indi} = sumsq(resu._data{1, indi}, 2);
       endfor
       if length(resu._cnt) > 2, resu._cnt = resu._cnt(1:2); endif
     otherwise

@@ -28,7 +28,13 @@ function resu = df_func(func, A, B);
   %# $Id$
   %#
 
-  [A, B] = df_basecomp(A, B);
+  try
+    [A, B] = df_basecomp(A, B);
+  catch
+    A
+    B
+    keyboard
+  end_try_catch
 
   if isa(B, 'dataframe')
     if !isa(A, 'dataframe'),

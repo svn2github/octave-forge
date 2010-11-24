@@ -1,7 +1,6 @@
-function n = numel(df, varargin)
-  %# function resu = end(df, varargin)
-  %# This is the numel operator for a dataframe object, returning the
-  %# product of the  number of rows by the number of columns
+function resu = ismatrix(df)
+  %# function resu = ismatrix(df)
+  %# returns true if the dataframe can be converted to a matrix
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -22,24 +21,18 @@ function n = numel(df, varargin)
   %% License along with Octave; see the file COPYING.  If not,
   %% write to the Free Software Foundation, 59 Temple Place -
   %% Suite 330, Boston, MA 02111-1307, USA.
-  
+
   %#
   %# $Id$
   %#
 
-%#  if 1 == nargout,
-%#    n = feval(@numel, df, varargin{:});
-%#  else
-    if 1 == nargin,
-      n = prod(df._cnt([1 end]));
-    else
-      error(print_usage());
-    endif
-%#  endif
+  df_is_num  = isnumeric(df._data{1});
+  df_is_char = ischar(df._data{1});
+  for indi = df._cnt(2):-1:2,
+    df_is_num  = df_is_num & isnumeric(df._data{indi});
+    df_is_char = df_is_char & ischar(df._data{indi});
+  endfor
+  
+  resu = df_is_num | df_is_char;
 
-endfunction
-
-function usage = print_usage()
-  usage = strcat('Invalid call to numel.  Correct usage is: ', ' ', \
-		 '-- Overloaded Function:  numel (A)');
 endfunction

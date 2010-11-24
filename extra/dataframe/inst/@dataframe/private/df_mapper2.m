@@ -40,7 +40,7 @@ function resu = df_mapper2(func, df, varargin)
   switch(dim)
     case {1},
       %# remove row metadata
-      resu._ridx = 1; resu._name{1, 1} = []; resu._over{1, 1} = [];
+      resu._ridx = []; resu._name{1, 1} = []; resu._over{1, 1} = [];
       for indi = resu._cnt(2):-1:1,
 	resu._data{indi} = feval(func, resu._data{indi}, vout{:});
       endfor

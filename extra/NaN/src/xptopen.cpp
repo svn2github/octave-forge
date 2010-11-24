@@ -38,7 +38,7 @@
 //	http://en.wikipedia.org/wiki/IBM_Floating_Point_Architecture
 // [3] see http://old.nabble.com/Re%3A-IBM-integer-and-double-formats-p20428979.html
 // [4] STATA File Format
-//	http://www.stata.com/help.cgi?
+//	http://www.stata.com/help.cgi?dta
 //	http://www.stata.com/help.cgi?dta_113
 //-------------------------------------------------------------------
 
@@ -196,6 +196,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		mexPrintf("\nThe SAS-XPT format stores Date/Time as numeric value counting the number of days since 1960-01-01.\n\n");
 		return;
 	}
+
 	if ( PInputCount > 1)
 	if (mxGetClassID(PInputs[1])==mxCHAR_CLASS && mxGetNumberOfElements(PInputs[1])) {
 		mxGetString(PInputs[1],Mode,3);
@@ -217,10 +218,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		uint8_t		LittleEndian;   /* 1 if file is LittleEndian data format and 0 for big endian data format*/
 
 		TYPE = unknown;
-		if (!memcmp(H0,"$FL2@(#) SPSS DATA FILE",27) || !memcmp(H0,"$FL2@(#) PASW STATISTICS DATA FILE",27)) {
+		if (!memcmp(H0,"$FL2@(#) SPSS DATA FILE",23) || !memcmp(H0,"$FL2@(#) PASW STATISTICS DATA FILE",27)) {
 		/*
 			SPSS file format
 		*/
+		        mexWarnMsgTxt("XPTOPEN: support of for SPSS file format is very experimantal (do not use it for production use)\n");
+
 			TYPE = SPSS;
 			switch (*(uint32_t*)(H0+64)) {
 			case 0x00000002:
@@ -329,6 +332,7 @@ if present.
 			STATA File Format
 			http://www.stata.com/help.cgi?dta
 			http://www.stata.com/help.cgi?dta_113
+			Stata files written by R start with 0x6e
 		*/
 			TYPE = STATA;
 			// Header 119 bytes

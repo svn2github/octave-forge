@@ -35,25 +35,28 @@ function resu = df_mapper2(func, df, varargin)
     if 3 == dim, vout(1) = 2; endif
   endif
 
-  resu = df;
-
   switch(dim)
     case {1},
-      %# remove row metadata
-      resu._ridx = []; resu._name{1, 1} = []; resu._over{1, 1} = [];
+      resu = df_colmeta(df);
       for indi = resu._cnt(2):-1:1,
-	resu._data{indi} = feval(func, resu._data{indi}, vout{:});
+	resu._data{indi} = feval(func, df._data{indi}, vout{:});
       endfor
       resu._cnt(1) = 1;
     case {2},
       error('Operation not implemented');
     case {3},
+      resu = df_allmeta(df);
       for indi = resu._cnt(2):-1:1;
-	resu._data{indi} = feval(func, resu._data{indi}, vout{:});
+	resu._data{indi} = feval(func, df._data{indi}, vout{:});
       endfor
-      if length(resu._cnt) > 2, resu._cnt = resu._cnt(1:2); endif
     otherwise
       error("Invalid dimension %d", dim); 
   endswitch
-    
+
+  %# sanity check
+  dummy = sum(cellfun('size', resu._data, 2));
+  if dummy != resu._cnt(2),
+    resu._cnt(3) = dummy;
+  endif
+  
 endfunction

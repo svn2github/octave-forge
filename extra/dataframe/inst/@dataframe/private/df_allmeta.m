@@ -1,6 +1,8 @@
-function resu = df_mapper(func, df, varargin)
-  %# resu = df_mapper(func, df)
-  %# small interface to iterate some func over the elements of a dataframe.
+function resu = df_allmeta(df)
+
+  %# function resu = df_allmeta(df)
+  %# Returns a new dataframe, initalised with the allthe
+  %# meta-information but with empty data
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -23,18 +25,18 @@ function resu = df_mapper(func, df, varargin)
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id$
+  %# $Id: df_func.m 7943 2010-11-24 15:33:54Z cdemills $
   %#
 
-  resu = df_allmeta(df);
-  for indi = df._cnt(2):-1:1,
-    resu._data{indi} = feval(func, df._data{indi}, varargin{:});
-  endfor
-    
-  %# sanity check
-  dummy = sum(cellfun('size', resu._data, 2));
-  if dummy != resu._cnt(2),
-    resu._cnt(3) = dummy;
-  endif
+  resu = dataframe([]);
+  
+  resu._cnt(1:2) = df._cnt(1:2);
+  resu._name = df._name;
+  resu._over = df._over;
+  resu._ridx = df._ridx;
+  resu._type = df._type;
+  %# init it with the right orientation
+  resu._data = cell(size(df._data));
+  resu._src  = df._src;
 
 endfunction

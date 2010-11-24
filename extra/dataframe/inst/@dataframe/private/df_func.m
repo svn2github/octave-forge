@@ -2,7 +2,7 @@ function resu = df_func(func, A, B);
 
   %# function resu = df_func(func, A, B)
   %# Implements an iterator to apply some func when at least one
-  %# argument is a dataframe
+  %# argument is a dataframe. The output is NOT a dataframe.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%

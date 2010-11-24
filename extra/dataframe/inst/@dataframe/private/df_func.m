@@ -1,8 +1,9 @@
-function resu = df_func(func, A, B);
+function resu = df_func(func, A, B, varargin);
 
   %# function resu = df_func(func, A, B)
   %# Implements an iterator to apply some func when at least one
-  %# argument is a dataframe. The output is NOT a dataframe.
+  %# argument is a dataframe. The output is a dataframe with the same
+  %# metadata, types may be altered, like f.i. double=>logical.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -28,37 +29,44 @@ function resu = df_func(func, A, B);
   %# $Id$
   %#
 
-  try
-    [A, B] = df_basecomp(A, B);
-  catch
-    A
-    B
-    keyboard
-  end_try_catch
-
+  [A, B] = df_basecomp(A, B);
+  
   if isa(B, 'dataframe')
+    resu = df_allmeta(B);
     if !isa(A, 'dataframe'),
       if isscalar(A) 
-	resu = cellfun(@(x) feval(func, A, x), B._data, "UniformOutput", false);
+	resu._data = cellfun(@(x) feval(func, A, x, varargin{:}), B._data, \
+			     "UniformOutput", false);
       elseif ismatrix(A),
-	resu = cellfun(@(x, y) feval(func, x, y), num2cell(A, 1),  B._data, \
-		       "UniformOutput", false);
+	resu._data = cellfun(@(x, y) feval(func, x, y, varargin{:}), \
+			     num2cell(A, 1),  B._data, "UniformOutput", false);
       else
-	error("Function %s not implemented", func2str(func));
+	error("Function %s not implemented for %s by %s", \
+	      func2str(func), class(A), class(B));
       endif
     else
-      resu = cellfun(@(x, y) feval(func, x, y), A._data,  B._data, \
-		     "UniformOutput", false);
-    endif
+      resu._data = cellfun(@(x, y) feval(func, x, y, varargin{:}), A._data, \
+			   B._data, "UniformOutput", false);
+    endif  
   else
+    resu = df_allmeta(A);
     if isscalar(B),
-      resu = cellfun(@(x) feval(func, x, B), A._data, "UniformOutput", false);
+      resu._data = cellfun(@(x) feval(func, x, B, varargin{:}), A._data, \ 
+			   "UniformOutput", false);
     elseif ismatrix(B),
-      resu = cellfun(@(x, y) feval(func, x, y), A._data, num2cell(B, 1), \
-		     "UniformOutput", false);
+      resu._data = cellfun(@(x, y) feval(func, x, y, varargin{:}), A._data, \
+			   num2cell(B, 1), "UniformOutput", false);
     else
-      error("Operator < not implemented");
+      error("Function %s not implemented for %s by %s", \
+	    func2str(func), class(A), class(B));
     endif
   endif
-        
+
+  resu._type = cellfun(@(x) class(x(1)), resu._data, "UniformOutput", false); 
+  %# sanity check
+  dummy = sum(cellfun('size', resu._data, 2));
+  if dummy != resu._cnt(2),
+    resu._cnt(3) = dummy;
+  endif
+
 endfunction

@@ -27,34 +27,6 @@ function resu = plus(A, B);
   %# $Id$
   %#
 
-  [A, B] = df_basecomp(A, B);
-
-  if isa(B, 'dataframe')
-    if !isa(A, 'dataframe'),
-      resu = B; 
-      if isscalar(A) 
-	resu._data = cellfun(@(x) A+x, B._data, "UniformOutput", false);
-      elseif ismatrix(A),
-	resu._data = cellfun(@(x, y) x+y, num2cell(A, 1),  B._data,\
-			     "UniformOutput", false);
-      else
-	error("Operator + not implemented");
-      endif
-    else
-      resu = A; 
-      resu._data = cellfun(@(x, y) x+y, A._data,  B._data,\
-			   "UniformOutput", false);
-    endif
-  else
-    resu = A; 
-    if isscalar(B),
-      resu._data = cellfun(@(x) x+B, A._data, "UniformOutput", false);
-    elseif ismatrix(B),
-      resu._data = cellfun(@(x, y) x+y, A._data, num2cell(B, 1),\
-			   "UniformOutput", false);
-    else
-      error("Operator + not implemented");
-    endif
-  endif
+  resu = df_func(@plus, A, B);
         
 endfunction

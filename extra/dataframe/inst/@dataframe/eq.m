@@ -27,6 +27,6 @@ function resu = eq(A, B);
   %# $Id$
   %#
 
-  resu = cell2mat(df_func(@eq, A, B));
+  resu = df_func(@eq, A, B); 
 
 endfunction

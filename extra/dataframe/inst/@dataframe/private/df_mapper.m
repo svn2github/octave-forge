@@ -27,10 +27,9 @@ function resu = df_mapper(func, df, varargin)
   %#
 
   resu = df_allmeta(df);
-  for indi = df._cnt(2):-1:1,
-    resu._data{indi} = feval(func, df._data{indi}, varargin{:});
-  endfor
-    
+  resu._data = cellfun(@(x) feval(func, x, varargin{:}), df._data, "UniformOutput", false);
+  resu._type = cellfun(@(x) class(x(1)), resu._data, "UniformOutput", false);
+
   %# sanity check
   dummy = sum(cellfun('size', resu._data, 2));
   if dummy != resu._cnt(2),

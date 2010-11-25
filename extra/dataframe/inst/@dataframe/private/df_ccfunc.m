@@ -1,9 +1,9 @@
 function resu = df_func(func, A, B, varargin);
 
-  %# function resu = df_func(func, A, B)
-  %# Implements an iterator to apply some func when at least one
-  %# argument is a dataframe. The output is a dataframe with the same
-  %# metadata, types may be altered, like f.i. double=>logical.
+  %# function resu = df_ccfunc(func, A, B)
+  %# Implements an column vs column iterator to apply some func when at
+  %# least one argument is a dataframe. The output is a dataframe with
+  %# the same metadata, types may be altered, like f.i. double=>logical.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -26,7 +26,7 @@ function resu = df_func(func, A, B, varargin);
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id$
+  %# $Id: df_func.m 7947 2010-11-24 21:57:16Z cdemills $
   %#
 
   [A, B, resu] = df_basecomp(A, B);

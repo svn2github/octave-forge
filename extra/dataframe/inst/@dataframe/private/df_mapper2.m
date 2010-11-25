@@ -1,7 +1,8 @@
 function resu = df_mapper2(func, df, varargin)
   %# resu = df_mapper2(func, df)
   %# small interface to iterate some vector func over the elements of a
-  %# dataframe.
+  %# dataframe. This one is specifically adapted to all functions where
+  %# the first argument, if numeric, is 'dim'.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -27,9 +28,9 @@ function resu = df_mapper2(func, df, varargin)
   %# $Id$
   %#
 
-  dim =1; resu = []; vout = varargin;
+  dim = 1; resu = []; vout = varargin;
   
-  if !isempty(varargin) && isnumeric(varargin{1}), 
+  if (!isempty(varargin) && isnumeric(varargin{1})), 
     dim = varargin{1}; 
     %# the "third" dim is the second on stored data
     if 3 == dim, vout(1) = 2; endif
@@ -38,17 +39,20 @@ function resu = df_mapper2(func, df, varargin)
   switch(dim)
     case {1},
       resu = df_colmeta(df);
-      for indi = resu._cnt(2):-1:1,
-	resu._data{indi} = feval(func, df._data{indi}, vout{:});
-      endfor
-      resu._cnt(1) = 1;
+      resu._data = cellfun(@(x) feval(func, x, vout{:}), df._data, \ 
+			   "UniformOutput", false);
+      resu._cnt(1) = max(cellfun('size', resu._data, 2));
+      if (resu._cnt(1) == df._cnt(1)),
+	%# the func was not contracting
+	resu._ridx = df._ridx;
+	resu._name{1} = resu._name{1}; resu._over{1} = resu._over{1};
+      endif
     case {2},
       error('Operation not implemented');
     case {3},
       resu = df_allmeta(df);
-      for indi = resu._cnt(2):-1:1;
-	resu._data{indi} = feval(func, df._data{indi}, vout{:});
-      endfor
+      resu._data = cellfun(@(x) feval(func, x, vout{:}), df._data, \ 
+			   "UniformOutput", false);
     otherwise
       error("Invalid dimension %d", dim); 
   endswitch

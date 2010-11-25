@@ -1,9 +1,9 @@
-function resu = df_func(func, A, B, varargin);
+function resu = df_rcfunc(func, A, B, varargin);
 
-  %# function resu = df_func(func, A, B)
-  %# Implements an iterator to apply some func when at least one
-  %# argument is a dataframe. The output is a dataframe with the same
-  %# metadata, types may be altered, like f.i. double=>logical.
+  %# function resu = df_rcfunc(func, A, B)
+  %# Implements an row vs column iterator to apply some func when at
+  %# least one argument is a dataframe. The output is a dataframe with
+  %# the same metadata, types may be altered, like f.i. double=>logical.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -41,6 +41,7 @@ function resu = df_func(func, A, B, varargin);
 	      func2str(func), class(A), class(B));
       endif
     else
+      error('To be implemented');
       resu._data = cellfun(@(x, y) feval(func, x, y, varargin{:}), A._data, \
 			   B._data, "UniformOutput", false);
     endif  

@@ -27,6 +27,6 @@ function resu = xor(A, B);
   %# $Id$
   %#
 
-  resu = cell2mat(df_func(@xor, A, B));
+  resu = df_ccfunc(@xor, A, B);
 
 endfunction

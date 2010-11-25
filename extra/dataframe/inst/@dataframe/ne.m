@@ -27,6 +27,6 @@ function resu = ne(A, B);
   %# $Id$
   %#
 
-  resu = cell2mat(df_func(@ne, A, B));
+  resu = df_ccfunc(@ne, A, B);
 
 endfunction

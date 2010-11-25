@@ -1,6 +1,6 @@
-function resu = uminus(A);
+function resu = uminus(df);
 
-  %# function resu = uminus(A)
+  %# function resu = uminus(df)
   %# Implements the unitary '-' operator for a dataframe.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
@@ -27,7 +27,6 @@ function resu = uminus(A);
   %# $Id$
   %#
 
-  resu = A; 
-  resu._data = cellfun(@(x) -x, A._data, "UniformOutput", false);
+  resu = df_mapper(@uminus, df);
         
 endfunction

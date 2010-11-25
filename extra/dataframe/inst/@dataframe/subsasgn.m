@@ -27,6 +27,17 @@ function resu = subasgn(df, S, RHS)
   %# $Id$
   %#
 
+  %# we may use df as index !
+  for indi = 1:length(S),
+    if isa(S(indi).subs, 'cell'), 
+      for indj = 1:length(S(indi).subs),
+	if isa(S(indi).subs{indj}, 'dataframe'),
+	  S(indi).subs{indj} = horzcat((struct(S(indi).subs{indj}))._data{:});
+	endif
+      endfor
+    endif
+  endfor
+  
   switch(S(1).type)
     case '{}'
       error('Invalid dataframe as cell assignement');
@@ -41,6 +52,14 @@ function resu = subasgn(df, S, RHS)
 	  endif
 	  [resu._name{1}, resu._over{1}] = df_strset\
 	      (df._name{1}, df._over{1}, S(2:end), RHS);
+	  return
+
+	case "rowidx"
+	  if 1 == length(S),
+	    resu._ridx = RHS;
+	  else
+	    resu._ridx = feval(@subsasgn, resu._ridx, S(2:end), RHS);
+	  endif
 	  return
 	
 	case "colnames"
@@ -74,7 +93,15 @@ function resu = subasgn(df, S, RHS)
 	    resu._type(indj) = {RHS};
 	  endif
 	  return
-	  
+
+	case "source"
+	  if length(S) > 1,
+	    resu._src = feval(@subsasgn, df._src, S(2:end), RHS);
+	  else
+	    resu._src = RHS;
+	  endif
+	  return
+
 	otherwise
 	  if !ischar(S(1).subs),
 	    error("Congratulations. I didn't see how to produce this error");
@@ -138,7 +165,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     
     if strcmp(S.subs(1), ':'),  %# removing column/matrix
       RHS = S; RHS.subs(2) = [];
-      df._data(indc) = cellfun(@(x) builtin('subsasgn', x, RHS, []),
+      df._data(indc) = cellfun(@(x) feval(@subsasgn, x, RHS, []),
 			       df._data(indc), "UniformOutput", false);
       %# remove empty elements
       indi = cellfun('isempty', df._data);
@@ -159,7 +186,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       endif	
       df._ridx(indr) = [];
       %# to remove a line, iterate on each column
-      df._data = cellfun(@(x) builtin('subsasgn', x, S, []), \
+      df._data = cellfun(@(x) feval(@subsasgn, x, S, []), \
 			 df._data, "UniformOutPut", false);
       if isa(indr, 'char')
 	 df._cnt(1) = 0;
@@ -419,36 +446,45 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     endif
     if isa(RHS, 'dataframe'),
       for indi = 1:length(indc),
-	if 1 == size(RHS._data{indc(indi)}, 2),
+	if 1 == size(RHS._data{indi}, 2),
 	  if strcmp(df._type(indc(indi)), \
-		    RHS._type(indc(indi))),
-	    df._data{indc(indi)}(indr, 1)  = RHS._data{indc(indi)};
+		    RHS._type(indi)),
+	    df._data{indc(indi)}(indr, 1)  = RHS._data{indi};
 	  else
-	    df._data{indc(indi)}(indr, 1)  = cast(RHS._data{indc(indi)}, \
+	    df._data{indc(indi)}(indr, 1)  = cast(RHS._data{indi}, \
 						  df._type(indc(indi)));
 	  endif
 	else
-	  if strcmp(df._type(indc(indi)), \
-		    RHS._type(indc(indi))),
-	    df._data{indc(indi)}(indr, :)  = RHS._data{indc(indi)};
+	  dummy = 1:size(RHS._data{indi}, 2);
+	  if strcmp(df._type(indc(indi)), RHS._type(indi)),
+	    df._data{indc(indi)}(indr, dummy)  = RHS._data{indi};
 	  else
-	    df._data{indc(indi)}(indr, :)  = cast(RHS._data{indc(indi)}, \
-						  df._type(indc(indi)));
+	    df._data{indc(indi)}(indr, dummy)  = cast(RHS._data{indi}, \
+						      df._type(indc(indi)));
 	  endif
 	endif
       endfor
-      if 1 == size(RHS._ridx, 2)
+      if (1 == size(RHS._ridx, 2))
 	df._ridx(indr, :) = NA;
 	df._ridx(indr, 1) = RHS._ridx;
       else
-	df._ridx(indr, :) = RHS._ridx;
+	dummy = 1:size(RHS._ridx, 2);
+	df._ridx(indr, dummy) = RHS._ridx;
       endif
-      df._name{1}(indr) = RHS._name{1};
-      df._over{1}(indr) = RHS._over{1};
+      if (!isempty(RHS._name{1})),
+	df._name{1}(indr) = RHS._name{1}(indr);
+	df._over{1}(indr) = RHS._over{1}(indr);
+      endif
+      if (!isempty(RHS._src)),
+	%# keyboard
+	if (!any(strcmp(cellstr(df._src), cellstr(RHS._src)))),
+	  df._src = vertcat(df._src, RHS._src);
+	endif
+      endif
     else
       %# RHS is homogenous, pad at once
-      if isvector(RHS), %# scalar - vector
-	if isempty(S.subs),
+      if (isvector(RHS)), %# scalar - vector
+	if (isempty(S.subs)),
 	  fillfunc = @(x, y) RHS;
 	else 
 	  %# ignore 'column' dimension -- force colum vectors -- use a
@@ -458,9 +494,9 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	  if length(S.subs) < 2, S.subs{2} = 1; endif 	
   	  if length(indc) > 1 && length(RHS) > 1,
 	    %# set a row from a vector
-	    fillfunc = @(x, y) builtin('subsasgn', x, S, RHS(y));
+	    fillfunc = @(x, y) feval(@subsasgn, x, S, RHS(y));
 	  else   
-	    fillfunc = @(x, y) builtin('subsasgn', x, S, RHS);
+	    fillfunc = @(x, y) feval(@subsasgn, x, S, RHS);
 	  endif
 	endif
 	for indi = 1:length(indc),
@@ -486,7 +522,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	if isempty(S.subs{1}),
 	  fillfunc = @(x, y) squeeze(RHS(:, y, :));
 	else
-	  fillfunc = @(x, y) builtin('subsasgn', x, S, squeeze(RHS(:, y, :)));
+	  fillfunc = @(x, y) feval(@subsasgn, x, S, squeeze(RHS(:, y, :)));
 	endif
 	for indi = 1:length(indc),
 	  %# disp('line 454 '); keyboard

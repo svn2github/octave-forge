@@ -27,6 +27,11 @@ function resu = plus(A, B);
   %# $Id$
   %#
 
-  resu = df_func(@plus, A, B);
-        
+  try
+    resu = df_ccfunc(@plus, A, B);
+  catch
+    disp(lasterr());
+    error("Operator + problem for %s vs. %s", class(A), class(B));
+  end_try_catch
+
 endfunction

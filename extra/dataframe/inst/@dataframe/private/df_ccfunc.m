@@ -1,4 +1,4 @@
-function resu = df_func(func, A, B, varargin);
+function resu = df_ccfunc(func, A, B, varargin);
 
   %# function resu = df_ccfunc(func, A, B)
   %# Implements an column vs column iterator to apply some func when at
@@ -34,8 +34,16 @@ function resu = df_func(func, A, B, varargin);
   if (isa(B, 'dataframe'))
     if (!isa(A, 'dataframe')),
       if (isscalar(A) || ismatrix(A)), 
-	resu._data = cellfun(@(x) feval(func, A, x, varargin{:}), B._data, \
-			     "UniformOutput", false);
+	for indi = resu._cnt(2):-1:1,
+	  switch resu._type{indi}
+	    case "char"
+	      resu._data{indi} = feval(func, A, char(B._data{indi}), \
+				       varargin{:});
+	    otherwise
+	      resu._data{indi} = feval(func, A, B._data{indi}, \
+				       varargin{:});
+	  endswitch
+	endfor
       else
 	error("Function %s not implemented for %s by %s", \
 	      func2str(func), class(A), class(B));
@@ -46,8 +54,16 @@ function resu = df_func(func, A, B, varargin);
     endif  
   else
     if (isscalar(B) || ismatrix(B)),
-      resu._data = cellfun(@(x) feval(func, x, B, varargin{:}), A._data, \ 
-			   "UniformOutput", false);    
+      for indi = resu._cnt(2):-1:1,
+	switch resu._type{indi}
+	  case "char"
+	    resu._data{indi} = feval(func, char(A._data{indi}), \
+				     B, varargin{:});
+	  otherwise
+	    resu._data{indi} = feval(func, A._data{indi}, \
+				     B, varargin{:});
+	endswitch
+      endfor	
     else
       error("Function %s not implemented for %s by %s", \
 	    func2str(func), class(A), class(B));

@@ -27,6 +27,6 @@ function resu = or(A, B);
   %# $Id$
   %#
 
-  resu = cell2mat(df_func(@or, A, B));
+  resu = df_ccfunc(@or, A, B);
 
 endfunction

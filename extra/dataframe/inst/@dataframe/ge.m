@@ -27,6 +27,6 @@ function resu = ge(A, B);
   %# $Id$
   %#
 
-  resu = cell2mat(df_func(@ge, A, B));
+  resu = df_ccfunc(@ge, A, B);
 
 endfunction

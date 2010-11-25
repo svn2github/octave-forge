@@ -27,6 +27,6 @@ function resu = gt(A, B);
   %# $Id$
   %#
 
-  resu = cell2mat(df_func(@gt, A, B));
+  resu = df_ccfunc(@gt, A, B);
 
 endfunction

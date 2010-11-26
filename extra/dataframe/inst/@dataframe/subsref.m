@@ -37,16 +37,6 @@ function resu = subsref(df, S)
   
   %# what kind of object should we return ?
   asked_output_type = ''; asked_output_format = [];
-  %# we may use df as index !
-  for indi = 1:length(S),
-    if isa(S(indi).subs, 'cell'), 
-      for indj = 1:length(S(indi).subs),
-	if isa(S(indi).subs{indj}, 'dataframe'),
-	  S(indi).subs{indj} = horzcat((struct(S(indi).subs{indj}))._data{:});
-	endif
-      endfor
-    endif
-  endfor
 
   if (strcmp(S(1).type, '.')), %# struct access
     indi = strmatch(S(1).subs, 'as');

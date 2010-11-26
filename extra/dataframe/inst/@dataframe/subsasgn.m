@@ -27,17 +27,6 @@ function resu = subasgn(df, S, RHS)
   %# $Id$
   %#
 
-  %# we may use df as index !
-  for indi = 1:length(S),
-    if isa(S(indi).subs, 'cell'), 
-      for indj = 1:length(S(indi).subs),
-	if isa(S(indi).subs{indj}, 'dataframe'),
-	  S(indi).subs{indj} = horzcat((struct(S(indi).subs{indj}))._data{:});
-	endif
-      endfor
-    endif
-  endfor
-  
   switch(S(1).type)
     case '{}'
       error('Invalid dataframe as cell assignement');

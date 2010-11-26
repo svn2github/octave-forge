@@ -51,6 +51,8 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
     switch class(subs)
       case {"cell" }
 	orig_name = char(subs);
+      case {"dataframe"}
+	orig_name = "elements indexed by a dataframe";
       otherwise
 	orig_name = num2str(subs);
     endswitch
@@ -111,6 +113,8 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
   elseif isa(subs, 'logical'),
     idx = 1:length(subs);
     idx(~subs) = [];
+  elseif isa(subs, 'dataframe'),
+    idx = subsindex(subs, 1);
   else
     idx = subs;
   endif

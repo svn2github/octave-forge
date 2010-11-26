@@ -1,9 +1,10 @@
-function resu = df_rcfunc(func, A, B, varargin);
+function resu = df_rcfunc(func, A, B, whole);
 
-  %# function resu = df_rcfunc(func, A, B)
+  %# function resu = df_rcfunc(func, A, B, whole)
   %# Implements an row vs column iterator to apply some func when at
   %# least one argument is a dataframe. The output is a dataframe with
   %# the same metadata, types may be altered, like f.i. double=>logical.
+  %# 'whole' indicate if the LHS as to be taken in block, default = false.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -30,12 +31,28 @@ function resu = df_rcfunc(func, A, B, varargin);
   %#
 
   [A, B, resu] = df_basecomp(A, B);
-  
+   if nargin < 4, whole = false; endif
+
   if (isa(B, 'dataframe'))
     if (!isa(A, 'dataframe')),
-      if (isscalar(A) || ismatrix(A)), 
-	resu._data = cellfun(@(x) feval(func, A, x, varargin{:}), B._data, \
-			     "UniformOutput", false);
+      if (isscalar(A) || (ismatrix(A) && whole)),
+ 	for indi = resu._cnt(2):-1:1,
+	  switch resu._type{indi}
+	    case "char"
+	      resu._data{indi} = feval(func, A, char(B._data{indi}));
+	    otherwise
+	      resu._data{indi} = feval(func, A, B._data{indi});
+	  endswitch
+	endfor
+      elseif (ismatrix(A)),
+	for indi = resu._cnt(2):-1:1,
+	  switch resu._type{indi}
+	    case "char"
+	      resu._data{indi} = feval(func, A(indi, :), char(B._data{indi}));
+	    otherwise
+	      resu._data{indi} = feval(func, A(indi, :), B._data{indi});
+	  endswitch
+	endfor
       else
 	error("Function %s not implemented for %s by %s", \
 	      func2str(func), class(A), class(B));

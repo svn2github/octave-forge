@@ -27,6 +27,6 @@ function resu = eq(A, B);
   %# $Id$
   %#
 
-  resu = df_ccfunc(@eq, A, B); 
+  resu = df_func(@eq, A, B); 
 
 endfunction

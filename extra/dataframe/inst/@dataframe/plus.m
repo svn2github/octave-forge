@@ -28,7 +28,7 @@ function resu = plus(A, B);
   %#
 
   try
-    resu = df_ccfunc(@plus, A, B);
+    resu = df_func(@plus, A, B);
   catch
     disp(lasterr());
     error("Operator + problem for %s vs. %s", class(A), class(B));

@@ -1,7 +1,6 @@
-function resu = mtimes(A, B);
-
-  %# function resu = mtimes(A, B)
-  %# Implements the '*' operator when at least one argument is a dataframe.
+function resu = subsindex(df, base)
+  %# function resu = subsindex(df)
+  %# This function convert a dataframe to an index
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -26,12 +25,22 @@ function resu = mtimes(A, B);
   %#
   %# $Id$
   %#
-
-  try
-    resu = df_rcfunc(@mtimes, A, B, true);
-  catch
-    disp(lasterr());
-    error("Operator * problem for %s vs. %s", class(A), class(B));
-  end_try_catch
-
+  
+  if nargin < 2, 
+    base = -1.0; 
+  else
+    base = base - 1.0;
+  endif
+  
+  resu = [];
+  for indi = 1:length(df._data),
+    %# transform each column to an index
+    switch(df._type{indi})
+      case 'logical'
+	resu = vertcat(resu, find(df._data{indi}) - base);
+      otherwise
+	resu = vertcat(resu, double(df._data{indi}) - base);
+    endswitch
+  endfor
+  
 endfunction

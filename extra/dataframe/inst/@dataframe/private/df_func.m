@@ -1,10 +1,12 @@
-function resu = df_ccfunc(func, A, B, whole);
+function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
 
-  %# function resu = df_ccfunc(func, A, B, whole)
-  %# Implements an column vs column iterator to apply some func when at
+  %# function resu = df_rcfunc(func, A, B, whole)
+  %# Implements an iterator to apply some func when at
   %# least one argument is a dataframe. The output is a dataframe with
   %# the same metadata, types may be altered, like f.i. double=>logical.
-  %# 'whole' indicate if the LHS as to be taken in block, default = false.
+  %# When itercol is 'true', the default, LHS is iterated by columns,
+  %# otherwise by rows. 'Whole' is a two-elements logical vector with
+  %# the meaning that LHS and or RHS must be iterated at once or not
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -27,16 +29,15 @@ function resu = df_ccfunc(func, A, B, whole);
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: df_func.m 7947 2010-11-24 21:57:16Z cdemills $
+  %# $Id: df_rcfunc.m 7950 2010-11-25 18:07:59Z cdemills $
   %#
 
   [A, B, resu] = df_basecomp(A, B);
-  if nargin < 4, whole = false; endif
-  
+ 
   if (isa(B, 'dataframe'))
     if (!isa(A, 'dataframe')),
-      if (isscalar(A) || (ismatrix(A) && whole)), 
-	for indi = resu._cnt(2):-1:1,
+      if (isscalar(A)),
+ 	for indi = resu._cnt(2):-1:1,
 	  switch resu._type{indi}
 	    case "char"
 	      resu._data{indi} = feval(func, A, char(B._data{indi}));
@@ -44,35 +45,48 @@ function resu = df_ccfunc(func, A, B, whole);
 	      resu._data{indi} = feval(func, A, B._data{indi});
 	  endswitch
 	endfor
-      elseif (ismatrix(A)),
-	for indi = resu._cnt(2):-1:1,
-	  switch resu._type{indi}
-	    case "char"
-	      resu._data{indi} = feval(func, A(:, indi), char(B._data{indi}));
-	    otherwise
-	      resu._data{indi} = feval(func, A(:, indi), B._data{indi});
-	  endswitch
-	endfor
       else
-	error("Function %s not implemented for %s by %s", \
-	      func2str(func), class(A), class(B));
+	if (whole(1) && !whole(2)),
+	  for indi = resu._cnt(2):-1:1,
+	    switch resu._type{indi}
+	      case "char"
+		resu._data{indi} = feval(func, A, char(B._data{indi}));
+	      otherwise
+		resu._data{indi} = feval(func, A, B._data{indi});
+	    endswitch
+	  endfor
+	elseif (itercol && !whole(2)),
+	  for indi = resu._cnt(2):-1:1,
+	    switch resu._type{indi}
+	      case "char"
+		resu._data{indi} = feval(func, A(:, indi), char(B._data{indi}));
+	      otherwise
+		resu._data{indi} = feval(func, A(:, indi), B._data{indi});
+	    endswitch
+	  endfor
+	elseif (!whole(2)),
+	  for indi = resu._cnt(2):-1:1,
+	    switch resu._type{indi}
+	      case "char"
+		resu._data{indi} = feval(func, A(indi, :), char(B._data{indi}));
+	      otherwise
+		resu._data{indi} = feval(func, A(indi, :), B._data{indi});
+	    endswitch
+	  endfor
+	else
+	  error("Function %s not implemented for %s by %s", \
+		func2str(func), class(A), class(B));
+	endif
       endif
     else
+      error('To be implemented');
       resu._data = cellfun(@(x, y) feval(func, x, y, varargin{:}), A._data, \
 			   B._data, "UniformOutput", false);
     endif  
   else
     if (isscalar(B) || ismatrix(B)),
-      for indi = resu._cnt(2):-1:1,
-	switch resu._type{indi}
-	  case "char"
-	    resu._data{indi} = feval(func, char(A._data{indi}), \
-				     B, varargin{:});
-	  otherwise
-	    resu._data{indi} = feval(func, A._data{indi}, \
-				     B, varargin{:});
-	endswitch
-      endfor	
+      resu._data = cellfun(@(x) feval(func, x, B, varargin{:}), A._data, \ 
+			   "UniformOutput", false);    
     else
       error("Function %s not implemented for %s by %s", \
 	    func2str(func), class(A), class(B));

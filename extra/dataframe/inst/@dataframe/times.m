@@ -28,7 +28,7 @@ function resu = times(A, B);
   %#
 
   try
-    resu = df_ccfunc(@times, A, B);
+    resu = df_func(@times, A, B);
   catch
     disp(lasterr());
     error("Operator .* problem for %s vs. %s", class(A), class(B));

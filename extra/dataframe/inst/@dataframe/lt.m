@@ -27,6 +27,6 @@ function resu = lt(A, B);
   %# $Id$
   %#
 
-  resu = df_ccfunc(@lt, A, B);
+  resu = df_func(@lt, A, B);
 
 endfunction

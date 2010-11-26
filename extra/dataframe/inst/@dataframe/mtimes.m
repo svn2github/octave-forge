@@ -28,7 +28,7 @@ function resu = mtimes(A, B);
   %#
 
   try
-    resu = df_rcfunc(@mtimes, A, B, true);
+    resu = df_func(@mtimes, A, B, false, [true false]);
   catch
     disp(lasterr());
     error("Operator * problem for %s vs. %s", class(A), class(B));

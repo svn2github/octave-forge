@@ -29,7 +29,7 @@ function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: df_rcfunc.m 7950 2010-11-25 18:07:59Z cdemills $
+  %# $Id$
   %#
 
   [A, B, resu] = df_basecomp(A, B);

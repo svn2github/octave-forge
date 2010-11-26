@@ -27,6 +27,6 @@ function resu = ge(A, B);
   %# $Id$
   %#
 
-  resu = df_ccfunc(@ge, A, B);
+  resu = df_func(@ge, A, B);
 
 endfunction

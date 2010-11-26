@@ -27,6 +27,6 @@ function resu = ne(A, B);
   %# $Id$
   %#
 
-  resu = df_ccfunc(@ne, A, B);
+  resu = df_func(@ne, A, B);
 
 endfunction

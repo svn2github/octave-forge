@@ -1,7 +1,9 @@
-function resu = gt(A, B);
+function [resu, rcond] = inv(df);
 
-  %# function resu = gt(A, B)
-  %# Implements the '>' operator when at least one argument is a dataframe.
+  %# function [x, rcond] = inv(df)
+  %# Overloaded function computing the inverse of a dataframe. To
+  %# succeed, the dataframe must be convertible to an square array. Row
+  %# and column meta-information are exchanged.  
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -27,6 +29,24 @@ function resu = gt(A, B);
   %# $Id$
   %#
 
-  resu = df_func(@gt, A, B);
+  if (length(df._cnt) > 2 || (df._cnt(1) != df._cnt(2))),
+    error("Dataframe is not square");
+  endif
 
+  %# quick and dirty conversion
+  [dummy, rcond] = inv(horzcat(df._data{:}));
+
+  resu = df_allmeta(df);
+  
+  [resu._name{2}, resu._name{1}] = deal(resu._name{1}, resu._name{2});
+  [resu._over{2}, resu._over{1}] = deal(resu._over{1}, resu._over{2});
+  if (isempty(resu._name{2})),
+    resu._name{2} = cellstr(repmat('_', resu._cnt(2), 1));
+    resu._over{2} = ones(1, resu._cnt(2));
+  endif
+  for indi = resu._cnt(1):-1:1,
+    resu._data{indi} = dummy(:, indi);
+  endfor
+  resu._type(:) = class(dummy);
+  
 endfunction

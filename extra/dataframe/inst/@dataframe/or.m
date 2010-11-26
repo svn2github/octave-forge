@@ -27,6 +27,6 @@ function resu = or(A, B);
   %# $Id$
   %#
 
-  resu = df_ccfunc(@or, A, B);
+  resu = df_func(@or, A, B);
 
 endfunction

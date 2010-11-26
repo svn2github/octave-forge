@@ -28,7 +28,7 @@ function resu = ldivide(A, B);
   %#
 
   try
-    resu = df_ccfunc(@ldivide, A, B);
+    resu = df_func(@ldivide, A, B);
   catch
     disp(lasterr());
     error("Operator .\\ problem for %s vs. %s", class(A), class(B));

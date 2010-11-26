@@ -27,6 +27,6 @@ function resu = xor(A, B);
   %# $Id$
   %#
 
-  resu = df_ccfunc(@xor, A, B);
+  resu = df_func(@xor, A, B);
 
 endfunction

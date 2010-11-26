@@ -27,6 +27,6 @@ function resu = and(A, B);
   %# $Id$
   %#
 
-  resu = df_ccfunc(@and, A, B);
+  resu = df_func(@and, A, B);
 
 endfunction

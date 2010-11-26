@@ -262,12 +262,16 @@ function resu = subsref(df, S)
 	output_type = asked_output_type;
       else
 	%# can the data be merged ?
-	output_type = df._type{indc(1)}; 
+	output_type = df._data{indc(1)}(1);
 	dummy = isnumeric(df._data{indc(1)}); 
 	for indi = 2:ncol,
 	  dummy = dummy & isnumeric(df._data{indc(indi)});
 	  if ~strcmp(output_type, df._type{indc(indi)}),
-	    if dummy, continue; endif
+	    if dummy, 
+	      %# let downclassing occur
+	      output_type = horzcat(output_type, df._data{indc(indi)}(1));
+	      continue; 
+	    endif
 	    %# unmixable args -- falls back to type of parent container 
 	    error("Selected columns %s not compatible with cat() -- use 'cell' as output format", mat2str(indc));
 	    %# dead code -- suppress previous line for switching automagically the output format to df
@@ -275,6 +279,8 @@ function resu = subsref(df, S)
 	    break;
 	  endif
 	endfor
+	asked_output_format = class(output_type);
+	output_type = "array";
       endif
     endif
 
@@ -312,7 +318,7 @@ function resu = subsref(df, S)
 	endif
       endif
     endif
-    
+
     if (strcmp(output_type, class(df))),
       %# disp('line 295 ')
       %# export the result as a dataframe

@@ -79,17 +79,88 @@ function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
 	endif
       endif
     else
-      error('To be implemented');
-      resu._data = cellfun(@(x, y) feval(func, x, y, varargin{:}), A._data, \
-			   B._data, "UniformOutput", false);
+      if (itercol),
+	for indi = resu._cnt(2):-1:1,
+	  switch resu._type{indi}
+	    case "char"
+	      resu._data{indi} = feval(func, char(A._data{indi}), char(B._data{indi}));
+	    otherwise
+	      resu._data{indi} = feval(func, A._data{indi}, B._data{indi});
+	  endswitch
+	endfor
+      else
+	dummy = horzcat(A._data {:});
+	if whole(1),
+	  for indi = resu._cnt(2):-1:1,
+	    switch resu._type{indi}
+	      case "char"
+		resu._data{indi} = feval(func, dummy, char(B._data{indi}));
+	      otherwise
+		resu._data{indi} = feval(func, dummy, B._data{indi});
+	    endswitch
+	  endfor
+	else
+	  for indi = resu._cnt(2):-1:1,
+	    switch resu._type{indi}
+	      case "char"
+		resu._data{indi} = feval(func, dummy(indi, :), char(B._data{indi}));
+	      otherwise
+		resu._data{indi} = feval(func, dummy(indi, :), B._data{indi});
+	    endswitch
+	  endfor
+	endif
+      endif
     endif  
-  else
-    if (isscalar(B) || ismatrix(B)),
-      resu._data = cellfun(@(x) feval(func, x, B, varargin{:}), A._data, \ 
-			   "UniformOutput", false);    
+  else %# B is not a dataframe
+    if (isscalar(B)),
+      for indi = resu._cnt(2):-1:1,
+	switch resu._type{indi}
+	  case "char"
+	    resu._data{indi} = feval(func, char(A._data{indi}), B);
+	  otherwise
+	    resu._data{indi} = feval(func, A._data{indi}, B);
+	endswitch
+      endfor
     else
-      error("Function %s not implemented for %s by %s", \
-	    func2str(func), class(A), class(B));
+      if (itercol),
+	if (whole(2)),
+	  for indi = resu._cnt(2):-1:1,
+	    switch resu._type{indi}
+	      case "char"
+		resu._data{indi} = feval(func, char(A._data{indi}), B);
+	      otherwise
+		resu._data{indi} = feval(func, A._data{indi}, B);
+	    endswitch
+	  endfor
+	else
+	  for indi = resu._cnt(2):-1:1,
+	    switch resu._type{indi}
+	      case "char"
+		resu._data{indi} = feval(func, char(A._data{indi}), \
+					 B(:, indi));
+	      otherwise
+		resu._data{indi} = feval(func, A._data{indi}, B(:, indi));
+	    endswitch
+	  endfor
+	endif
+      else
+	dummy = horzcat(A._data {:});
+	if whole(1),
+	  for indi = resu._cnt(2):-1:1,
+	    resu._data{indi} = feval(func, dummy, B(:, indi));
+	  endfor
+	else
+	  if !whole(2),
+	    for indi = resu._cnt(2):-1:1,
+	      resu._data{indi} = feval(func, dummy(indi, :), B(:, indi));
+	    endfor
+	  else
+	    for indi = resu._cnt(2):-1:1,
+	      resu._data{indi} = feval(func, dummy(indi, :), B);
+	    endfor
+	  endif
+	endif
+      endif
     endif
   endif
 

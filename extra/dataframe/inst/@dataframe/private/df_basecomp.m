@@ -55,9 +55,16 @@ function [A, B, C] = df_basecomp(A, B);
 	
 	if (!isempty(A._name{1})) 
 	  if (!isempty(B._name{1}))
-	    if (!any(strcmp(cellstr(A._name{1}), cellstr(B._name{1})))),
+	    dummy = !(strcmp(cellstr(A._name{1}), cellstr(B._name{1}))\
+		      | (A._over{1}(:)) | (B._over{1}(:)));
+	    if (any(dummy)),
 	      error("Incompatible row names");
 	    endif
+	    dummy = A._over{1} > B._over{1};
+	    if (any(dummy)),
+	       C._name{1}(dummy) = B._name{1}(dummy);
+	       C._over{1}(dummy) = B._over{1}(dummy);
+	     endif
 	  endif
 	else
 	  if (nargout > 2), 
@@ -67,24 +74,31 @@ function [A, B, C] = df_basecomp(A, B);
 	
 	if (!isempty(A._name{2}))
 	  if (!isempty(B._name{2}))
-	    if (!any(strcmp(cellstr(A._name{2}), cellstr(B._name{2})))),
+	    dummy = !(strcmp(cellstr(A._name{2}), cellstr(B._name{2}))\
+		| (A._over{2}(:)) | (B._over{2}(:)));
+	    if (any(dummy)),
 	      error("Incompatible column names");
 	    endif
+	    dummy = A._over{2} > B._over{2};
+	    if (any(dummy)),
+	       C._name{2}(dummy) = B._name{2}(dummy);
+	       C._over{2}(dummy) = B._over{2}(dummy);
+	     endif
 	  endif
 	else
-	  if (nargout > 2), 
+	  if (nargout > 2 && !isempty(B._name{2})),
 	    C._name{2} = B._name{2}; C._over{2} = B._over{2}; 
 	  endif
 	endif
 	
-	if (isempty(A._src) && nargout > 2), 
+	if (isempty(A._src) && nargout > 2 && !isempty(B._src)), 
 	  C._src = B._src;
 	endif
       endif
     else
       if (nargout > 2), C = df_allmeta(B); endif         
     endif
-  else
+  else %# one of the arg is a scalar
     if (isa(A, 'dataframe')) 
       if (nargout > 2), C = df_allmeta(A); endif         
     else

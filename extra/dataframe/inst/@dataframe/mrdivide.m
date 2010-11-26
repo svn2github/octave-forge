@@ -28,7 +28,7 @@ function resu = mrdivide(A, B);
   %#
 
   try
-    resu = df_func(@mrdivide, A, B);
+    resu = df_func(@mrdivide, A, B, false, [true false]);
   catch
     disp(lasterr());
     error("Operator / problem for %s vs. %s", class(A), class(B));

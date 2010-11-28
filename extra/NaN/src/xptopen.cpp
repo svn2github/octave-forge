@@ -138,6 +138,14 @@ SPSS file format
 #endif /* __BYTE_ORDER */
 
 
+/* 
+	Including ZLIB enables reading gzipped files (they are decompressed on-the-fly)  
+	The output files can be zipped, too. 
+ */
+
+#include <zlib.h>
+
+
 double xpt2d(uint64_t x);
 uint64_t d2xpt(double x);
 double tm_time2gdf_time(struct tm *t);
@@ -171,11 +179,23 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	const  char DATEFORMAT[] = "%d%b%y:%H:%M:%S";
 	char   *fn = NULL;
 	char   Mode[3] = "r";
-	FILE   *fid;
 	size_t count = 0, NS = 0, HeadLen0=80*8, HeadLen2=0, sz2 = 0, M=0;
 	char   H0[HeadLen0];
 	char   *H2 = NULL;
-	char 	SWAP = 0;
+	char   SWAP = 0;
+
+#ifndef ZLIB_H
+	FILE   *fid;
+#else
+	gzFile  fid;
+	#define fopen 		gzopen	
+	#define fread(a,b,c,d) 	(gzread(d,a,b*c)/b)	
+	#define fwrite(a,b,c,d)	(gzwrite(d,a,b*c)/b)	
+	#define feof 		gzeof	
+	#define fseek 		gzseek	
+	#define fclose 		gzclose	
+	#define	rewind(fid) 	(gzseek(fid,0,SEEK_SET)) 
+#endif
 
 	// check for proper number of input and output arguments
 	if ( PInputCount > 0 && mxGetClassID(PInputs[0])==mxCHAR_CLASS) {
@@ -184,15 +204,15 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		mxGetString(PInputs[0], fn, buflen);
 	}
 	else {
-		mexPrintf("XPTOPEN read and writes the SAS Transport Format (*.xpt)\n");
+		mexPrintf("XPTOPEN read of several file formats and writing of the SAS Transport Format (*.xpt)\n");
 		mexPrintf("\n\tX = xptopen(filename)\n");
 		mexPrintf("\tX = xptopen(filename,'r')\n");
 		mexPrintf("\t\tread filename and return variables in struct X\n");
+		mexPrintf("\tSupported are ARFF, SAS-XPT and STATA files with or w/o zlib/gzip compression.\n");
 		mexPrintf("\n\tX = xptopen(filename,'w',X)\n");
 		mexPrintf("\t\tsave fields of struct X in filename.\n\n");
 		mexPrintf("\tThe fields of X must be column vectors of equal length.\n");
 		mexPrintf("\tEach vector is either a numeric vector or a cell array of strings.\n");
-		mexPrintf("\nSupported data formats: SAS-XPT (rw), STATA(r).\n");
 		mexPrintf("\nThe SAS-XPT format stores Date/Time as numeric value counting the number of days since 1960-01-01.\n\n");
 		return;
 	}
@@ -205,11 +225,10 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	fid = fopen(fn,Mode);
 	if (fid < 0) {
-	        mexErrMsgTxt("Error XPTOPEN: cannot open file\n");
-	}
+	        mexWarnMsgTxt("Warning XPTOPEN: suppor for SPSS file format is very experimantal ( do not use it for production use)\n");
+		}
 
 	if (Mode[0]=='r' || Mode[0]=='a' ) {
-
 		count += fread(H0,1,80*8,fid);
 		enum FileFormat {
 			noFile, unknown, ARFF, SASXPT, SPSS, STATA
@@ -222,7 +241,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		/*
 			SPSS file format
 		*/
-		        mexWarnMsgTxt("XPTOPEN: support of for SPSS file format is very experimantal (do not use it for production use)\n");
+		        mexWarnMsgTxt("XPTOPEN: support of for SPSS file format is very experimental (do not use it for production use)\n");
 
 			TYPE = SPSS;
 			switch (*(uint32_t*)(H0+64)) {
@@ -237,8 +256,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			case 0x03000000:
 		    		SWAP = __BYTE_ORDER==__LITTLE_ENDIAN;
 		    		LittleEndian = 0;
-		    		NS = b_endian_i32(*(uint32_t*)(H0+68));
-		    		M  = b_endian_i32(*(uint32_t*)(H0+80));
+		    		NS = b_endian_u32(*(uint32_t*)(H0+68));
+		    		M  = b_endian_u32(*(uint32_t*)(H0+80));
 			    	break;
 			default:
 				TYPE = unknown;
@@ -339,7 +358,7 @@ if present.
 	    		LittleEndian = H0[1]==2;
 	    		if (LittleEndian) {
 	    			NS = l_endian_u16(*(uint16_t*)(H0+4));
-	    			M = l_endian_u32(*(uint32_t*)(H0+6));
+	    			M  = l_endian_u32(*(uint32_t*)(H0+6));
 	    		}
 	    		else {
 	    			NS = b_endian_u16(*(uint16_t*)(H0+4));
@@ -453,7 +472,7 @@ if present.
 					}
 				}
 			}
-			if (f) free(f);
+			if (f)  free(f);
 			if (H1) free(H1);
 			if (bi) free(bi);
 

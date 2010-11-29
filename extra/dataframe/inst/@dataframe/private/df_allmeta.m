@@ -1,4 +1,4 @@
-function resu = df_allmeta(df)
+function resu = df_allmeta(df, dim = [])
 
   %# function resu = df_allmeta(df)
   %# Returns a new dataframe, initalised with the allthe
@@ -29,14 +29,24 @@ function resu = df_allmeta(df)
   %#
 
   resu = dataframe([]);
-  
-  resu._cnt(1:2) = df._cnt(1:2);
-  resu._name = df._name;
-  resu._over = df._over;
-  resu._ridx = df._ridx;
-  resu._type = df._type;
+
+  if isempty(dim), dim = df._cnt(1:2); endif
+
+  resu._cnt(1:2) = min(dim, df._cnt(1:2));
+  if (!isempty(df._name{1})),
+    resu._name{1} = df._name{1}(1:resu._cnt(1));
+    resu._over{1} = df._over{1}(1:resu._cnt(1));
+  endif
+  if (!isempty(df._name{2})),
+    resu._name{2} = df._name{2}(1:resu._cnt(2));
+    resu._over{2} = df._over{2}(1:resu._cnt(2));
+  endif
+  if (!isempty(df._ridx)),
+    resu._ridx = df._ridx(1:resu._cnt(1));
+  endif
+  resu._type = df._type(1:resu._cnt(2));
   %# init it with the right orientation
   resu._data = cell(size(df._data));
   resu._src  = df._src;
-
+  
 endfunction

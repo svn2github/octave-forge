@@ -1,6 +1,6 @@
 function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
 
-  %# function resu = df_rcfunc(func, A, B, whole)
+  %# function resu = df_func(func, A, B, whole)
   %# Implements an iterator to apply some func when at
   %# least one argument is a dataframe. The output is a dataframe with
   %# the same metadata, types may be altered, like f.i. double=>logical.
@@ -32,7 +32,7 @@ function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
   %# $Id$
   %#
 
-  [A, B, resu] = df_basecomp(A, B);
+  [A, B, resu] = df_basecomp(A, B, itercol, func);
  
   if (isa(B, 'dataframe'))
     if (!isa(A, 'dataframe')),
@@ -74,8 +74,11 @@ function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
 	    endswitch
 	  endfor
 	else
-	  error("Function %s not implemented for %s by %s", \
-		func2str(func), class(A), class(B));
+	  dummy = feval(func, A, horzcat(B._data {:}));
+	  for indi = resu._cnt(2):-1:1, %# store column-wise
+	    resu._data{indi} = dummy(:, indi);
+	    resu._type{indi} = class(dummy);
+	  endfor
 	endif
       endif
     else
@@ -99,7 +102,7 @@ function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
 		resu._data{indi} = feval(func, dummy, B._data{indi});
 	    endswitch
 	  endfor
-	else
+	elseif (!whole(2)),
 	  for indi = resu._cnt(2):-1:1,
 	    switch resu._type{indi}
 	      case "char"
@@ -107,6 +110,12 @@ function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
 	      otherwise
 		resu._data{indi} = feval(func, dummy(indi, :), B._data{indi});
 	    endswitch
+	  endfor
+	else
+	  dummy = feval(func, dummy, horzcat(B._data{:}));
+	  for indi = resu._cnt(2):-1:1, %# store column-wise
+	    resu._data{indi} = dummy(:, indi);
+	    resu._type{indi} = class(dummy);
 	  endfor
 	endif
       endif
@@ -146,18 +155,40 @@ function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
       else
 	dummy = horzcat(A._data {:});
 	if whole(1),
-	  for indi = resu._cnt(2):-1:1,
+	  for indi = columns(B):-1:1,
 	    resu._data{indi} = feval(func, dummy, B(:, indi));
 	  endfor
 	else
 	  if !whole(2),
-	    for indi = resu._cnt(2):-1:1,
+	    for indi = resu._cnt(1):-1:1,
 	      resu._data{indi} = feval(func, dummy(indi, :), B(:, indi));
 	    endfor
 	  else
-	    for indi = resu._cnt(2):-1:1,
-	      resu._data{indi} = feval(func, dummy(indi, :), B);
+	    for indi = resu._cnt(1):-1:1, %# in place computation
+	      dummy(indi, :) = feval(func, dummy(indi, :), B);
 	    endfor
+	    for indi = resu._cnt(2):-1:1, %# store column-wise
+	      resu._data{indi} = dummy(:, indi);
+	    endfor
+	  endif
+	endif
+	%# verify that sizes match, this is required for "\"
+	resu._cnt(2) = length(resu._data);
+	resu._cnt(1) = max(cellfun('size', resu._data, 1));
+	if (length(resu._ridx) < resu._cnt(1)),
+	  if (1 == length(resu._ridx)),
+	    resu._ridx(end+1:resu._cnt(1), 1) = resu._ridx(1);
+	  else
+	    resu._ridx(end+1:resu._cnt(1), 1) = NA;
+	  endif
+	endif
+	if (length(resu._name{2}) < resu._cnt(2)),
+	  if (1 == length(resu._name{2})),
+	    resu._name{2}(end+1:resu._cnt(2), 1) = resu._name{2};
+	    resu._over{2}(end+1:resu._cnt(2), 1) = resu._over{2};
+	  else
+	    resu._name{2}(end+1:resu._cnt(2), 1) = '_';
+	    resu._over{2}(end+1:resu._cnt(2), 1) = true;
 	  endif
 	endif
       endif

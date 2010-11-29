@@ -99,19 +99,51 @@
 %!test
 %! # complex access
 %! x(x(:, "OK?") == '?', ["C"; "G"]) = NaN;
-%!assert(x(4, 5:6), [NaN NaN])
+%!assert(x.array(4, 5:6), [NaN NaN])
 %! # extract values
 %! y = x.dataframe(x(:, "OK?") =='A', {"Freq", "VB*", "C", "G"});
 %! #comparison using cell output class, because assert use (:)
 %!assert(y.cell(:, 2:3), x.cell([1 7], ["VB*"; "C"]))
-%!assert(x((33:35).'), x(3:5, 4))
+%!assert(x.array((33:35).'), x.array(3:5, 4))
 %! #test further dereferencing
-%!assert(x(:, "C")(2:4), x(2:4, "C"))
+%!assert(x.array(:, "C")(2:4), x.array(2:4, "C"))
 %! # complex modifications through cell access
 %! z = dataframe(x, {"VB*", {"Polarity" ,"Sense"; ones(12,2), zeros(10,2)}});
 %!assert(size(z), [12 9 11]);
 %!assert(z.Sense(11:12, :), NA*ones(2, 2));
 %!assert(size(z._over{2}, 2) - size(x._over{2}, 2), 2);
+%! x=dataframe(randn(3, 3)); y = randn(3, 3); z=dataframe(y);
+%!assert((x+y(1)).array, x.array+y(1))
+%!assert((y(1)+x).array, y(1)+x.array)
+%!assert((x+y).array, x.array+y)
+%!assert((y+x).array, y+x.array)
+%!assert((x+z).array, x.array+z.array);
+%!assert((x > 0).array, x.array > 0)
+%!assert((0 > x).array, 0 > x.array)
+%!assert((x > y).array, x.array > y);
+%!assert((y > x).array, y > x.array);
+%!assert((x > z).array, x.array > z.array)
+%!assert((x*y(1)).array, x.array*y(1))
+%!assert((y(1)*x).array, y(1)*x.array)
+%!assert((x.*y).array, x.array.*y)
+%!assert((y.*x).array, y.*x.array)
+%!assert((z.*x).array, z.array.*x.array)
+%!assert((x*y).array, x.array*y)
+%!assert((y*x).array, y*x.array)
+%!assert((x*z).array, x.array*z.array)
+%!assert((x/y(1)).array, x.array/y(1))
+%!assert((x./y).array, x.array./y)
+%!assert((y./x).array, y./x.array)
+%!assert((z./x).array, z.array./x.array)
+%!assert((x/y).array, x.array/y)
+%!assert((y/x).array, y/x.array)
+%!assert((x/z).array, x.array/z.array)
+% # left division is a bit more complicated
+%!assert((x(1, 1)\y).array, x.array(1, 1)\y)
+%!assert((x(:, 1)\y).array, x.array(:, 1)\y, sqrt(eps))
+%!assert((x\y).array, x.array\y)
+%!assert((y\x).array, y\x.array)
+%!assert((x\z).array, x.array\z.array)
 
 %!demo
 %! x=dataframe('octave_frame/data_test.csv')

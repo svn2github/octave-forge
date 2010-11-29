@@ -59,24 +59,28 @@ function resu = cat(dim, A, varargin)
 	resu._cnt(1) = resu._cnt(1) + B._cnt(1);
 	resu._ridx = [resu._ridx(:); B._ridx(:)];
 	%# find data with same column names
-	indr = logical(ones(1, resu._cnt(2)));
-	indb = logical(ones(1, resu._cnt(2)));
-	indi = 1;
-	while indi <= resu._cnt(2),
-	  indj = strmatch(resu._name{2}(indi), B. _name{2}, 'exact');
-	  if ~isempty(indj),
-	    indj = indj(1);
-	    if ~strcmp(resu._type{indi}, B._type{indj}),
-	      error("Trying to mix columns of different types");
+	dummy = A._over{2} & B._over{2}; 
+	indA = logical(ones(1, resu._cnt(2)));
+	indB = logical(ones(1, resu._cnt(2)));
+	for indj = 1:resu._cnt(2),
+	  if (dummy(indj)),
+	    indk = strmatch(resu._name{2}(indi), B. _name{2}, 'exact');
+	    if (~isempty(indk)),
+	      indk = indk(1);
+	      if ~strcmp(resu._type{indi}, B._type{indk}),
+		error("Trying to mix columns of different types");
+	      endif
 	    endif
-	    resu._data{indi} = [resu._data{indi}; B._data{indj}];
-	    indr(indi) = false; indb(indj) = false;
+	  else
+	    indk = indj;
 	  endif
-	  indi = indi + 1;
-	endwhile
-	if any(indr) || any(indb)
+	  resu._data{indj} = [resu._data{indj}; B._data{indk}];
+	  indA(indj) = false; indB(indk) = false;
+	endfor
+	if any(indA) || any(indB)
 	  error('Different number/names of columns in dataframe');
 	endif
+	
       endfor
       
     case 2

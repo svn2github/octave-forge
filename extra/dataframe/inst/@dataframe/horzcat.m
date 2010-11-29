@@ -24,6 +24,10 @@ function resu = horzcat(df, varargin)
   %# $Id$
   %#
 
-  resu = cat(1, df, varargin{:});
+ for indi = 1:length(varargin),
+    varargin{indi} = dataframe(varargin{indi}, 'colnames', inputname(1+indi));,
+  endfor
+  
+  resu = cat(2, df, varargin{:});
 
 endfunction

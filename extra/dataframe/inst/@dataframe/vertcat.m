@@ -24,6 +24,11 @@ function resu = vertcat(df, varargin)
   %# $Id$
   %#
 
-  resu = cat(2, df, varargin{:});
+  %# do the conversion now, in order not to loose inputnames
+  for indi = 1:length(varargin),
+    varargin{indi} = dataframe(varargin{indi}, 'colnames', inputname(1+indi));,
+  endfor
+
+  resu = cat(1, df, varargin{:});
 
 endfunction

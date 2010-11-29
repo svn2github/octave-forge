@@ -299,7 +299,11 @@ while indi <= size(varargin, 2),
       df._over{2}(1, indj) = true;
     else
       if !isempty(indj),	
-	if length(df._name{2}) < indj(1) || isempty(df._name{2}(indj)),
+	if (1 == length(df._name{2}) && length(df._name{2}) < \
+	    length(indj)),
+	  [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
+	      = df_colnames(char(df._name{2}), indj);
+	elseif (length(df._name{2}) < indj(1) || isempty(df._name{2}(indj))),
 	  [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
 	      = df_colnames(inputname(indi), indj);
 	endif

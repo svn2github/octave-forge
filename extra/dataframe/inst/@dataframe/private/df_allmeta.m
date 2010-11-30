@@ -1,7 +1,7 @@
 function resu = df_allmeta(df, dim = [])
 
   %# function resu = df_allmeta(df)
-  %# Returns a new dataframe, initalised with the allthe
+  %# Returns a new dataframe, initalised with the all the
   %# meta-information but with empty data
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
@@ -30,7 +30,11 @@ function resu = df_allmeta(df, dim = [])
 
   resu = dataframe([]);
 
-  if isempty(dim), dim = df._cnt(1:2); endif
+  if (isempty(dim)), 
+    dim = df._cnt(1:2); 
+  else
+    dim = dim(1:2); %# ignore third dim, if any
+  endif
 
   resu._cnt(1:2) = min(dim, df._cnt(1:2));
   if (!isempty(df._name{1})),
@@ -42,11 +46,16 @@ function resu = df_allmeta(df, dim = [])
     resu._over{2} = df._over{2}(1:resu._cnt(2));
   endif
   if (!isempty(df._ridx)),
-    resu._ridx = df._ridx(1:resu._cnt(1));
+    if (size(df._ridx, 2) >= resu._cnt(2)),
+      resu._ridx = df._ridx(1:resu._cnt(1), :, :);
+    else
+      resu._ridx = df._ridx(1:resu._cnt(1), 1, :);
+    endif
   endif
-  resu._type = df._type(1:resu._cnt(2));
   %# init it with the right orientation
   resu._data = cell(size(df._data));
+  resu._rep = cell(size(df._rep));
+  resu._type = df._type(1:resu._cnt(2));
   resu._src  = df._src;
   
 endfunction

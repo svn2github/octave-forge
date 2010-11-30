@@ -27,11 +27,13 @@ function resu = df_mapper(func, df, varargin)
   %#
 
   resu = df_allmeta(df);
-  resu._data = cellfun(@(x) feval(func, x, varargin{:}), df._data, "UniformOutput", false);
+  resu._data = cellfun(@(x) feval(func, x, varargin{:}), df._data, \
+		       "UniformOutput", false);
+  resu._rep = df._rep; %# things didn't change
   resu._type = cellfun(@(x) class(x(1)), resu._data, "UniformOutput", false);
 
   %# sanity check
-  dummy = sum(cellfun('size', resu._data, 2));
+  dummy = sum(cellfun(@length, resu._rep));
   if dummy != resu._cnt(2),
     resu._cnt(3) = dummy;
   endif

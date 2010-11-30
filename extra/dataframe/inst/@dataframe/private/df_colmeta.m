@@ -36,6 +36,7 @@ function resu = df_colmeta(df)
   resu._type = df._type;
   %# init it with the right orientation
   resu._data = cell(size(df._data));
+  resu._rep = cell(size(df._rep));
   resu._src  = df._src;
 
 endfunction

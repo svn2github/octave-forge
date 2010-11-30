@@ -1,7 +1,7 @@
-function resu = end(df, k, n)
-  %# function resu = end(df, k, n)
-  %# This is the end operator for a dataframe object, returning the
-  %# maximum number of rows or columns
+function resu = df_whole(df);
+
+  %# function resu = df_whole(df)
+  %# Generate a full matrix from a column-compressed version of a dataframe.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -27,14 +27,28 @@ function resu = end(df, k, n)
   %# $Id$
   %#
 
-  try
-    if k < 3,
-      resu = df._cnt(k);
-    else
-      resu =  max(cellfun(@length, df._rep));
+  inds = max(cellfun(@length, df._rep));
+
+  resu = df._data{1}(:, df._rep{1});
+  if (inds > 1),
+    resu = reshape(resu, df._cnt(1), 1, []);
+    if (1 == size(resu, 3)),
+      resu = repmat(resu, [1 1 inds]);
     endif
-  catch
-    error("incorrect call to end, index greater than number of dimensions");
-  end_try_catch
+  endif
+
+  if df._cnt(2) > 1,
+    resu = repmat(resu, [1 df._cnt(2)]);
+    for indi = 2:df._cnt(2),
+      dummy = df._data{indi}(:, df._rep{indi});
+      if (inds > 1),
+	dummy = reshape(dummy, df._cnt(1), 1, []);
+	if (1 == size(dummy, 3)),
+	  dummy = repmat(dummy, [1 1 inds]);
+	endif
+      endif
+      resu(:, indi, :) = dummy;
+    endfor
+  endif
 
 endfunction

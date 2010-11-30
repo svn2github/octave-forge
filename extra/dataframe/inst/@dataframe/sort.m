@@ -112,15 +112,19 @@ function [resu, idx] = sort(df, varargin)
   switch(dim)
     case {1},
       for indi = 1:resu._cnt(2),
-	[resu._data{1, indi}, idx(:, indi)] = sort(resu._data{1, indi}, varargin{:});
+	[resu._data{indi}, idx(:, indi, :)] = sort\
+	    (resu._data{indi}(:, resu._rep{indi}), varargin{:});
+	resu._data{indi} = squeeze(resu._data{indi});
+	resu._rep{indi} = 1:size(resu._data{indi}, 2);
       endfor
-      if 1 == size(idx, 2),
+      if all([1 == size(idx, 2) 1 == size(idx, 3)]),
 	resu._ridx = resu._ridx(idx, :);
 	resu._name{1, 1} = resu._name{1, 1}(idx);
 	resu._over{1, 1} = resu._over{1, 1}(idx);
       else
 	%# data where mixed
-	resu._ridx = idx; resu._name{1, 1} = []; resu._over{1, 1} = [];
+	resu._ridx = idx;
+	resu._name{1, 1} = []; resu._over{1, 1} = [];
       endif
 
     case {2},

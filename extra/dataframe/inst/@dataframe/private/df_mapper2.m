@@ -39,9 +39,12 @@ function resu = df_mapper2(func, df, varargin)
   switch(dim)
     case {1},
       resu = df_colmeta(df);
-      resu._data = cellfun(@(x) feval(func, x, vout{:}), df._data, \ 
-			   "UniformOutput", false);
-      resu._cnt(1) = max(cellfun('size', resu._data, 2));
+      for indi = 1:df._cnt(2),
+	resu._data{indi} = feval(func, df._data{indi}(:, df._rep{indi}), \
+				 vout{:});
+	resu._rep{indi} = 1:size(resu._data{indi}, 2);
+      endfor
+      resu._cnt(1) = max(cellfun('size', resu._data, 1));
       if (resu._cnt(1) == df._cnt(1)),
 	%# the func was not contracting
 	resu._ridx = df._ridx;
@@ -50,15 +53,18 @@ function resu = df_mapper2(func, df, varargin)
     case {2},
       error('Operation not implemented');
     case {3},
-      resu = df_allmeta(df);
-      resu._data = cellfun(@(x) feval(func, x, vout{:}), df._data, \ 
-			   "UniformOutput", false);
+      resu = df_allmeta(df); 
+      for indi = 1:df._cnt(2),
+	resu._data{indi} = feval(func, df._data{indi}(:, df._rep{indi}), \
+				 vout{:});
+	resu._rep{indi} = 1:size(resu._data{indi}, 2);
+      endfor
     otherwise
       error("Invalid dimension %d", dim); 
   endswitch
 
   %# sanity check
-  dummy = sum(cellfun('size', resu._data, 2));
+  dummy = sum(cellfun(@length, resu._rep));
   if dummy != resu._cnt(2),
     resu._cnt(3) = dummy;
   endif

@@ -58,7 +58,7 @@ function [A, B, C] = df_basecomp(A, B, itercol=true, func=@plus);
     if (isscalar(A)), 
       Csize = size(B);
     else
-      if (size(A, 1) != size(B, 1)),
+        if (size(A, 1) != size(B, 1)),
 	error("Non compatible row sizes (op1 is %dx%d, op2 is %dx%d)",\
 	      size(A), size(B));
       endif
@@ -77,6 +77,7 @@ function [A, B, C] = df_basecomp(A, B, itercol=true, func=@plus);
 	if (!isempty(A._ridx))
 	  if (!isempty(B._ridx) && itercol),
 	    if (any(A._ridx-B._ridx)),
+	      keyboard
 	      error("Non compatible indexes");
 	    endif
 	  endif

@@ -69,8 +69,9 @@ if isempty(x) && 1 == nargin,
   df._name = {cell(0, 1), cell(1, 0)}; %# rows - cols 
   df._over = cell(1, 2);
   df._ridx = [];  
-  df._data = cell(0, 0); 
-  df._type = cell(0, 0);
+  df._data = cell(0, 0);
+  df._rep = cell(0, 0);   %# a repetition index
+  df._type = cell(0, 0);  %# the type of each column
   df._src = cell(0, 0);
   df = class(df, 'dataframe');
   return
@@ -312,6 +313,7 @@ while indi <= size(varargin, 2),
     if !isempty(indj),
       idx.subs = {'', indj};
       %# use direct assignement
+      if ndims(x) > 2, idx.subs{3} = 1:size(x, 3); endif
       df = subsasgn(df, idx, x);
     else
       df._cnt(2) = length(df._name{2});

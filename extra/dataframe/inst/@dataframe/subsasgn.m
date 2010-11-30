@@ -154,8 +154,14 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     
     if strcmp(S.subs(1), ':'),  %# removing column/matrix
       RHS = S; RHS.subs(2) = [];
-      df._data(indc) = cellfun(@(x) feval(@subsasgn, x, RHS, []),
-			       df._data(indc), "UniformOutput", false);
+      for indi = indc,
+	unfolded  = df._data{indi}(:, df._rep{indi});
+	unfolded  = feval(@subsasgn, unfolded, RHS, []);
+	df._data{indi} = unfolded;
+	if (!isempty(unfolded)),
+	  df._rep(indi) = 1:size(unfolded, 2);
+	endif
+      endfor
       %# remove empty elements
       indi = cellfun('isempty', df._data);
       if any(indi), %# nothing left, remove this column
@@ -165,6 +171,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	df._over{2} = df._over{2}(indi);
 	df._type = df._type(indi);
 	df._data = df._data(indi);
+	df._rep = df._rep(indi);
       endif
     endif
     if strcmp(S.subs(2), ':'),  %# removing rows
@@ -183,7 +190,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	 df._cnt(1) = df._cnt(1) - length(indr);
        endif
     endif
-    dummy = sum(cellfun('size', df._data, 2));
+    %# ici
+    dummy = sum(cellfun(@length, df._rep));
     if dummy != df._cnt(2),
       df._cnt(3) = dummy;
     else
@@ -196,6 +204,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
   if ~indc_was_set, %# initial dataframe was empty
     ncol = size(RHS, 2); indc = 1:ncol;
   endif
+  
   indr = S.subs{1, 1}; 
   indr_was_set = ~isempty(indr); 
   %# initial dataframe was empty ?
@@ -218,6 +227,12 @@ function df = df_matassign(df, S, indc, ncol, RHS)
   elseif !isempty(indr) && isnumeric(indr),
     nrow = length(indr);
   endif
+  if (length(S.subs) > 2),
+    inds = S.subs{1, 3};
+  else
+    inds = [];
+  endif
+  
   rname = cell(0, 0); rname_width = max(1, size(df._name{2}, 2)); 
   ridx = []; cname = rname; ctype = rname;
 
@@ -407,6 +422,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	endif
       else
 	%# partial assignement -- extract actual data and update
+	keyboard
 	dummy = df._data{indc(indi)}; 
 	try     
 	  switch df._type{indc(indi)}
@@ -424,42 +440,56 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	  error(dummy);
 	end_try_catch
       endif
-      df._data{indc(indi)} = dummy; indj = indj + 1;
+      df._data{indc(indi)} = dummy; df._rep{indc(indi)} = 1:size(dummy, 2); 
+      indj = indj + 1;
     endfor
     
   else 
     %# RHS is either a numeric, either a df
-    if any(indc > min(size(df._data, 2), df._cnt(2))),
+    if (any(indc > min(size(df._data, 2), df._cnt(2)))),
       df = df_pad(df, 2, max(indc-min(size(df._data, 2), df._cnt(2))),\
 		   class(RHS));
     endif
-    if isa(RHS, 'dataframe'),
+    if (!isempty(inds) && any(inds > 1)),
+      for indi=1:length(indc),
+	if (max(inds) > length(df._rep{indc(indi)})),
+	  df = df_pad(df, 3, max(inds)-length(df._rep{indc(indi)}), \
+		      indc(indi));
+	endif
+      endfor
+    endif
+
+    if (isa(RHS, 'dataframe')),
+      %# block-copy index
+      S.subs(2) = 1;
+      df._ridx = feval(@subsasgn,  df._ridx, S,  RHS._ridx);
+      %# skip second dim and copy data
+      S.subs(2) = [];
       for indi = 1:length(indc),
-	if 1 == size(RHS._data{indi}, 2),
-	  if strcmp(df._type(indc(indi)), \
-		    RHS._type(indi)),
+	if (1 == length(RHS._rep{indi})),
+	  df = df_cow(df, S, indc(indi), inds);
+	  if (strcmp(df._type(indc(indi)), \
+		    RHS._type(indi))),
 	    df._data{indc(indi)}(indr, 1)  = RHS._data{indi};
 	  else
 	    df._data{indc(indi)}(indr, 1)  = cast(RHS._data{indi}, \
 						  df._type(indc(indi)));
 	  endif
 	else
-	  dummy = 1:size(RHS._data{indi}, 2);
-	  if strcmp(df._type(indc(indi)), RHS._type(indi)),
-	    df._data{indc(indi)}(indr, dummy)  = RHS._data{indi};
+	  unfolded = df._data{indc(indi)}(:, df._rep{indc(indi)});
+	  if (strcmp(df._type(indc(indi)), RHS._type(indi))),
+	    truc =  RHS._data{indi}(:, RHS._rep{indi});
+	    unfolded = feval(@subsasgn, unfolded, S, \
+			     RHS._data{indi}(:, RHS._rep{indi}));
 	  else
-	    df._data{indc(indi)}(indr, dummy)  = cast(RHS._data{indi}, \
-						      df._type(indc(indi)));
+	    unfolded = feval(@subsasgn, unfolded, S, \
+			     cast(RHS._data{indi}(:, RHS._rep{indi}), \
+				  df._type(indc(indi))));
 	  endif
+	  df._data{indc(indi)} = unfolded; 
+	  df._rep{indc(indi)} = 1:size(unfolded, 2);
 	endif
       endfor
-      if (1 == size(RHS._ridx, 2))
-	df._ridx(indr, :) = NA;
-	df._ridx(indr, 1) = RHS._ridx;
-      else
-	dummy = 1:size(RHS._ridx, 2);
-	df._ridx(indr, dummy) = RHS._ridx;
-      endif
       if (!isempty(RHS._name{1})),
 	df._name{1}(indr) = RHS._name{1}(indr);
 	df._over{1}(indr) = RHS._over{1}(indr);
@@ -478,19 +508,24 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	else 
 	  %# ignore 'column' dimension -- force colum vectors -- use a
 	  %# third dim just in case
-	  if isempty(S.subs{1}), S.subs{1} = ':'; endif 
+	  if (isempty(S.subs{1})), S.subs{1} = ':'; endif 
 	  S.subs(2) = []; 
-	  if length(S.subs) < 2, S.subs{2} = 1; endif 	
-  	  if length(indc) > 1 && length(RHS) > 1,
+	  if (length(S.subs) < 2), 
+	    S.subs{2} = 1; 
+	  endif 	
+  	  if (length(indc) > 1 && length(RHS) > 1),
 	    %# set a row from a vector
-	    fillfunc = @(x, y) feval(@subsasgn, x, S, RHS(y));
+	    fillfunc = @(x, S, y) feval(@subsasgn, x, S, RHS(y));
 	  else   
-	    fillfunc = @(x, y) feval(@subsasgn, x, S, RHS);
+	    fillfunc = @(x, S, y) feval(@subsasgn, x, S, RHS);
 	  endif
 	endif
+	Sorig = S;
 	for indi = 1:length(indc),
 	  try
-	    df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, indi);
+	    [df, S] = df_cow(df, S, indc(indi), inds);
+	    df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, S, indi);
+	    S = Sorig;
 	  catch
 	    disp('line 470 '); keyboard
 	  end_try_catch
@@ -508,14 +543,16 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       else %# 2D - 3D matrix
 	S.subs(2) = []; %# ignore 'column' dimension
 	%# rotate slices in dim 1-3 to slices in dim 1-2
-	if isempty(S.subs{1}),
-	  fillfunc = @(x, y) squeeze(RHS(:, y, :));
+	if (isempty(S.subs{1})),
+	  fillfunc = @(x, S, y) squeeze(RHS(:, y, :));
 	else
-	  fillfunc = @(x, y) feval(@subsasgn, x, S, squeeze(RHS(:, y, :)));
+	  fillfunc = @(x, S, y) feval(@subsasgn, x, S, squeeze(RHS(:, y, :)));
 	endif
+	Sorig = S; 
 	for indi = 1:length(indc),
-	  %# disp('line 454 '); keyboard
-	  df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, indi);
+	  [df, S] = df_cow(df, S, indc(indi), inds);
+	  df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, S, indi);
+	  S = Sorig;
 	endfor
       endif
       if indi < size(RHS, 2) && !isa(RHS, 'char'),
@@ -528,6 +565,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
   if !isempty(indr) && isnumeric(indr),
     if max(indr) > df._cnt(1) && size(df._data, 2) < df._cnt(2),
       df = df_pad(df, 1, max(indr)-df._cnt(1), rname_width);
+      keyboard
     endif
   endif
 
@@ -558,7 +596,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
   endif
   
   %# adjust cnt(3) if required
-  dummy = sum(cellfun('size', df._data, 2));
+  dummy = sum(cellfun(@length, df._rep));
   if (dummy > df._cnt(2)) || length(df._cnt) > 2,
     df._cnt(3) = dummy;
   endif

@@ -32,9 +32,9 @@ function resu = repmat(df, varargin)
   else
     dummy(2) = 1;
   endif
-  %# operate on first and third dim first
-  if (idx(1) > 1 || length(idx) > 2)
-    resu = df_mapper(@repmat, df, dummy);
+  %# operate on first  dim 
+  if (idx(1) > 1),
+    resu = df_mapper(@repmat, df, [idx(1) 1]);
     if (!isempty(df._name{1})),
       resu._name{1} = feval(@repmat, df._name{1}, [idx(1) 1]);
       resu._over{1} = feval(@repmat, df._over{1}, [idx(1) 1]);
@@ -42,8 +42,14 @@ function resu = repmat(df, varargin)
     resu._cnt(1) = resu._cnt(1) * idx(1);
   endif
 
+  if (dummy(2) > 1),
+    for indi = 1:resu._cnt(2),
+      resu._rep{indi} = feval(@repmat, resu._rep{indi}, [1 dummy(2)]);
+    endfor
+  endif
+
   %# operate on ridx 
-  resu._ridx = feval(@repmat, resu._ridx, dummy);
+  resu._ridx = feval(@repmat, resu._ridx, idx);
   
   %# operate on second dim
   if (length(idx) > 1 && idx(2) > 1),
@@ -55,7 +61,7 @@ function resu = repmat(df, varargin)
   endif
 
   if (any([length(resu._cnt) length(idx)] > 2)),
-    resu._cnt(3) = sum(cellfun('size', resu._data, 2));
+    resu._cnt(3) = sum(cellfun(@length, resu._rep));
   endif
       
 endfunction

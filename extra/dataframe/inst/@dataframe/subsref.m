@@ -55,7 +55,7 @@ function resu = subsref(df, S)
         indi = strmatch(S(1).subs, char('df', class(df)));
 	if (~isempty(indi)),
 	  %# requiring a dataframe
-	  if 1 == indi, %# 'df' = short for 'dataframe'
+	  if (1 == indi), %# 'df' = short for 'dataframe'
 	    asked_output_type = 'dataframe';
 	  else
 	    asked_output_type =  S(1).subs;
@@ -300,18 +300,18 @@ function resu = subsref(df, S)
     inds = 1; indt(1, 1:df._cnt(2)) = inds; nseq = 1;
     if (isempty(S) || all(cellfun('isclass', S(1).subs, 'char')))
       inds = ':'; indt(1, 1:df._cnt(2)) = inds;
-      nseq = max(cellfun('size', df._data(indc), 2));
+      nseq = max(cellfun(@length, df._rep(indc)));
     else
       if (length(S(1).subs) > 1), %# access-as-matrix
 	if (length(S(1).subs) > 2),
 	  inds = S(1).subs{3};
-	  if isa(inds, 'char'),
-	    nseq = max(cellfun('size', df._data(indc), 2));
+	  if (isa(inds, 'char')),
+	    nseq = max(cellfun(@length, df._rep(indc)));
 	    indt(1, 1:df._cnt(2)) = inds;
 	  else
 	    %# generate a specific index for each column
 	    nseq = length(inds);
-	    dummy = cellfun('size', df._data(indc), 2);
+	    dummy = cellfun(@length, df._rep(indc));
 	    indt(1, 1:df._cnt(2)) = inds;
 	    indt(1==dummy) = 1; 
 	  endif
@@ -327,10 +327,12 @@ function resu = subsref(df, S)
       for indi = 1:ncol,
 	resu._data{indi} =  df._data{indc(indi)}\
 	    (indr, indt{indc(indi)}); 
+	resu._rep{indi} =  df._rep{indc(indi)}(indt{indc(indi)}); 
 	resu._name{2}(indi, 1) = df._name{2}(indc(indi));
 	resu._over{2}(1, indi) = df._over{2}(indc(indi));
 	resu._type{indi} = df._type{indc(indi)};
       endfor
+      %# to be verified :       keyboard
       if (!isempty(df._ridx) && size(df._ridx, 2) >= inds),
 	resu._ridx = df._ridx(indr, inds);
       endif 
@@ -339,7 +341,7 @@ function resu = subsref(df, S)
 	resu._over{1}(1, 1:nrow) = df._over{1}(indr);
       endif
       resu._src = df._src;
-      dummy = sum(cellfun('size', resu._data, 2));
+      dummy = sum(cellfun(@length, resu._rep));
       if (dummy > resu._cnt(2)),
 	resu._cnt(3) = dummy;
       else
@@ -456,56 +458,54 @@ function resu = subsref(df, S)
 	df = struct(df); 
 	if (~isempty(asked_output_format)), %# force a conversion
 	  if (strmatch(asked_output_format, 'cell')),
-	    extractfunc = @(x) mat2cell(df._data{indc(x)}, \
-					ones(df._cnt(1), 1));
+	    extractfunc = @(x) mat2cell\
+		(df._data{indc(x)}(indr, df._rep{indc(x)}(inds)), \
+		 ones(nrow, 1));
 	  else
-	    extractfunc = @(x) cast(df._data{indc(x)}, asked_output_format);
+	    extractfunc = @(x) cast(df._data{indc(x)}\
+				    (indr, df._rep{indc(x)}(inds)),\
+				    asked_output_format);
 	  endif
 	else %# let the usual downclassing occur
-	  extractfunc = @(x) df._data{indc(x)};
+	  extractfunc = @(x) df._data{indc(x)}(indr, df._rep{indc(x)}(inds));
 	endif
 	try
-	  dummy = extractfunc(1); 
+	  if (nseq > 1),
+	    dummy = reshape(extractfunc(1), nrow, 1, []); 
+	    if (size(dummy, 3) < nseq),
+	      dummy = repmat(dummy, [1 1 nseq]);
+	    endif
+	  else
+	    dummy = extractfunc(1);
+	  endif
 	catch
 	  error("Column %d format (%s) can't be converted to %s", \
 		indc(1), df._type{indc(1)}, asked_output_format);
 	end_try_catch
 	if (ncol > 1),
 	  %# dynamic allocation with the final type
-	  if (size(dummy, 2) > 1),
-	    resu = repmat(dummy(indr, inds(1)), [1 ncol nseq]);
-	    %# "turn" the extracted matrix
-	    resu(:, 1, :) = dummy(indr, inds);
-	  else
-	    resu = repmat(dummy(indr(:)), [1 ncol nseq]);
-	  endif
+	  resu = repmat(dummy, [1 ncol]);
 	  for indi = 2:ncol,
 	    try
-	      dummy = extractfunc(indi);
+	      if (nseq > 1),
+		dummy = reshape(extractfunc(indi), nrow, 1, []);
+		if (size(dummy, 3) < nseq),
+		  dummy = repmat(dummy, [1 1 nseq]);
+		endif
+	      else
+		dummy = extractfunc(indi);
+	      endif
 	    catch
 	      error("Column %d format (%s) can't be converted to %s", \
 		    indc(indi), df._type{indc(indi)}, asked_output_format);
 	    end_try_catch
-	    if (1 == size(dummy, 2)),
-	      try
-		if (1 == nseq),
-		  resu(:, indi) = dummy(indr)(:);
-		else
-		  resu(:, indi, :) = repmat(dummy(indr),  [1 1 nseq]);
-		endif
-	      catch
-		disp('line 458 '); keyboard
-	      end_try_catch
-	    else
-	      %# "turn" the extracted matrix
-	      resu(:, indi, :) = dummy(indr, inds);
-	    endif
+	    resu(:, indi, :) = dummy;
 	  endfor
 	else
 	  if (strcmp(df._type{indc(1)}, 'char')),
-	    resu = char(dummy(indr, inds));
+	    resu = char(dummy);
 	  else
-	    resu = dummy(indr, inds);
+	    resu = dummy;
 	  endif
 	endif
 	if (!isempty(S) && 2 == length(S(1).subs) \

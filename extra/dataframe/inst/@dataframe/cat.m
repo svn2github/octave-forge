@@ -28,7 +28,7 @@ function resu = cat(dim, A, varargin)
   %#
   %# $Id$
   %#
-
+disp('@dataframe/cat.m'); disp(dim)
   switch dim
     case 1
       resu = A;
@@ -57,17 +57,22 @@ function resu = cat(dim, A, varargin)
 	  resu._over{1} = [resu._over{1} B._over{1}];
 	endif
 	resu._cnt(1) = resu._cnt(1) + B._cnt(1);
-	resu._ridx = [resu._ridx(:); B._ridx(:)];
+	if size(resu._ridx, 2) < size(B._ridx, 2),
+	  resu._ridx(:, end+1:size(B._ridx, 2)) = NA;
+	elseif size(resu._ridx, 2) > size(B._ridx, 2),
+	  B._ridx(:, end+1:size(resu._ridx, 2)) = NA;
+	endif
+	resu._ridx = [resu._ridx; B._ridx];
 	%# find data with same column names
 	dummy = A._over{2} & B._over{2}; 
-	indA = logical(ones(1, resu._cnt(2)));
-	indB = logical(ones(1, resu._cnt(2)));
+	indA = true(1, resu._cnt(2));
+	indB = true(1, resu._cnt(2));
 	for indj = 1:resu._cnt(2),
 	  if (dummy(indj)),
-	    indk = strmatch(resu._name{2}(indi), B. _name{2}, 'exact');
+	    indk = strmatch(resu._name{2}(indj), B._name{2}, 'exact');
 	    if (~isempty(indk)),
 	      indk = indk(1);
-	      if ~strcmp(resu._type{indi}, B._type{indk}),
+	      if ~strcmp(resu._type{indj}, B._type{indk}),
 		error("Trying to mix columns of different types");
 	      endif
 	    endif
@@ -114,59 +119,75 @@ function resu = cat(dim, A, varargin)
       
       for indi = 1:length(varargin),
 	B = varargin{indi};
-	if !isa(B, 'dataframe'),
-	  if iscell(B) && 2 == length(B),
+	if (!isa(B, 'dataframe')),
+	  if (iscell(B) && 2 == length(B)),
 	    B = dataframe(B{2}, 'rownames', B{1});
 	  else
-	    B = dataframe(B, 'colnames', inputname(2+indi));
+	    B = dataframe(B, 'colnames', inputname(indi+2)); 
 	  endif
 	endif
-	if resu._cnt(1) != B._cnt(1),
-	  disp('line 124 '); keyboard
+	if (resu._cnt(1) != B._cnt(1)),
 	  error('Different number of rows in dataframes');
 	endif
-	if resu._cnt(2) != B._cnt(2),
+	if (resu._cnt(2) != B._cnt(2)),
 	  error('Different number of columns in dataframes');
 	endif
 	%# to be merged against 3rd dim, rownames must be equals, if
 	%# non-empty. Columns are merged based upon their name; columns
 	%# with identic content are kept.
 
-	resu._ridx = [resu._ridx B._ridx(:)];
+	if size(resu._ridx, 2) < size(B._ridx, 2),
+	  resu._ridx(:, end+1:size(B._ridx, 2)) = NA;
+	elseif size(resu._ridx, 2) > size(B._ridx, 2),
+	  B._ridx(:, end+1:size(resu._ridx, 2)) = NA;
+	endif
+	resu._ridx = cat(3, resu._ridx, B._ridx);
 	%# find data with same column names
-	indr = logical(ones(1, resu._cnt(2)));
-	indb = logical(ones(1, resu._cnt(2)));
-	indi = 1;
-	while indi <= resu._cnt(2),
-	  indj = strmatch(resu._name{2}(indi), B. _name{2}, 'exact');
-	  if ~isempty(indj),
-	    indj = indj(1);
-	    if ~strcmp(resu._type{indi}, B._type{indj}),
-	      error("Trying to mix columns of different types");
+	indA = true(1, resu._cnt(2));
+	indB = true(1, resu._cnt(2));
+	dummy = A._over{2} & B._over{2}; 
+	for indj = 1:resu._cnt(2),
+	  if (dummy(indj)),
+	    indk = strmatch(resu._name{2}(indj), B._name{2}, 'exact');
+	    if (~isempty(indk)),
+	      indk = indk(1);
+	      if (~strcmp(resu._type{indj}, B._type{indk})),
+		error("Trying to mix columns of different types");
+	      endif
 	    endif
-	    if all([isnumeric(resu._data{indi}) isnumeric(B._data{indj})]),
-	      try
-		dummy =  all(abs(resu._data{indi} - B._data{indj}) <= eps);
-		if dummy,
-		  %# two numeric columns with same content -- skip
-		  indr(indi) = false; indb(indj) = false;
-		  indi = indi+1; continue;
-		endif
-	      catch
-		%# things are not substractible
-	      end_try_catch
-	    endif
-	    %# pad
-	    resu._data{indi} = [resu._data{indi} B._data{indj}];
-	    indr(indi) = false; indb(indj) = false;
+	  else
+	    indk = indj;
 	  endif
-	  indi = indi + 1;
-	endwhile
-	if any(indr) || any(indb)
+	  if (all([isnumeric(resu._data{indj}) isnumeric(B._data{indk})])),
+	    %# iterate over the columns of resu and B
+	    op1 = resu._data{indj}; op2 = B._data{indk};
+	    for ind2=1:columns(op2),
+	      indr = false;
+	      for ind1=1:columns(op1),
+		if (all(abs(op1(:, ind1) - op2(:, ind2)) <= eps)),
+		  resu._rep{indj} = [resu._rep{indj} ind1];
+		  indr = true;
+		  break;
+		endif
+	      endfor
+	      if (!indr),
+		%# pad in the second dim
+		resu._data{indj} = [resu._data{indj}, B._data{indk}];
+		resu._rep{indj} = [resu._rep{indj} 1+length(resu._rep{indj})];
+	      endif
+	    endfor
+	  else
+	    resu._data{indj} = [resu._data{indj} B._data{indk}];
+	    resu._rep{indj} = [resu._rep{indj} 1+length(resu._rep({indj}))];
+	  endif
+	  indA(indj) = false; indB(indk) = false;
+	endfor
+	if (any(indA) || any(indB)),
 	  error('Different number/names of columns in dataframe');
 	endif
       endfor
-      dummy = sum(cellfun('size', resu._data, 2));
+     
+      dummy = sum(cellfun(@length, resu._rep));
       if dummy != resu._cnt(2),
 	resu._cnt(3) = dummy;
       else

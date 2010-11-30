@@ -35,7 +35,7 @@ switch dim
     [indr, nrow] = df_name2idx(df._name{1}, indr, df._cnt(1), 'row');
     [indc, ncol] = df_name2idx(df._name{2}, indc, df._cnt(2), 'column');
     
-    if indr(1) > 1,
+    if (indr(1) > 1),
       slice_size = indr(1) - 1;
       %# we can't use directly resu = df(1:slice_size, :, :)
       S.type = '()';
@@ -43,10 +43,10 @@ switch dim
       resu = subsref(df, S);
       
       %# how many columns for each slice
-      targets = cellfun('size', df._data, 2); 
+      targets = cellfun(@length, df._rep);
       %# a test function to determine if the location is free
       for indj = 1:df._cnt(2),
-	if any(indj == indc),
+	if (any(indj == indc)),
 	  continue;
 	endif
 	switch df._type{indj}
@@ -63,19 +63,20 @@ switch dim
 	%# where does this line go ?
 	where = find(df._data{indc}(1:slice_size, 1) ...
 		     == df._data{indc}(indi, 1));
-	if !isempty(where),
+	if (!isempty(where)),
 	  %# transfering one line -- loop over columns
 	  for indj = 1:df._cnt(2),
 	    if any(indj == indc),
 	      continue;
 	    endif
 	   
-	    if testfunc{indj}(resu._data{indj}, where, targets(indj))
+	    if (testfunc{indj}(resu._data{indj}, where, targets(indj))),
 	      %# add one more sheet
 	      resu = df_pad(resu, 3, 1, indj);
 	      targets(indj) = targets(indj) + 1;
 	    endif
 	    %# transfer field
+	    stop
 	    resu._data{indj}(where, targets(indj)) = ...
 		df._data{indj}(indi, 1);
 	  endfor

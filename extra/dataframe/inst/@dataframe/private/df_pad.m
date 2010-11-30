@@ -49,7 +49,7 @@ function df = df_pad(df, dim, n, coltype=[])
       df._ridx = dummy; 
       %# pad every line
       for indi = 1:min(size(df._data, 2), df._cnt(2)),
-	neff = n - size(df._data{indi}, 1);
+	neff = n + df._cnt(1) - size(df._data{indi}, 1);
 	if neff > 0,
 	  m = size(df._data{indi}, 2);
 	  switch df._type{indi}
@@ -85,7 +85,9 @@ function df = df_pad(df, dim, n, coltype=[])
 	  df._type(n+(indc+1:end)) = df._type(indc+1:end);
 	  df._type(indc + (1:n)) = NA;
 	  df._data(n + (indc+1:end)) = df._data(indc+1:end);
+	  df._rep(n + (indc+1:end)) = df._rep(indc+1:end);
 	  df._data(indc + (1:n)) = NA;
+	  df._rep(indc + (1:n)) = 1;
 	endif
       else
 	%# add new values after the last column
@@ -106,6 +108,7 @@ function df = df_pad(df, dim, n, coltype=[])
 	    dummy = cast(repmat(NA, df._cnt(1), 1), coltype{indi});
 	endswitch
 	df._data{indc+indi} = dummy;
+	df._rep{indc+indi} = 1;
 	df._type{indc+indi} = coltype{indi};
       endfor
    
@@ -118,14 +121,14 @@ function df = df_pad(df, dim, n, coltype=[])
 			strjust(num2str(indc + (1:n).'), 'left'));
 	df._name{2}(indc + (1:n)) = cellstr(dummy);
 	df._over{2}(1, indc + (1:n)) = true;
-      endif
-     
+      endif   
       
     case 3
-      if isempty(coltype),
+      if (n <= 0), return; endif
+      if (isempty(coltype)),
 	coltype = 1:df._cnt(2);
       endif
-      dummy = max(n+cellfun('size', df._data(coltype), 2));
+      dummy = max(n+cellfun(@length, df._rep(coltype)));
       if size(df._ridx, 2) < dummy,
 	df._ridx(:, end+1:dummy) = NA;
       endif
@@ -133,19 +136,23 @@ function df = df_pad(df, dim, n, coltype=[])
 	switch df._type{indi}
 	  case {'char'}
 	    if isa(df._data{indi}, 'char'),
-	      dummy = horzcat(df._data{indi}, {repmat(NA, df._cnt(1), n)});
+	      dummy = horzcat(df._data{indi}(:, df._rep{indi}), \
+			      {repmat(NA, df._cnt(1), 1)});
 	    else
 	      dummy = df._data{indi};
 	    endif
 	  case { 'double' }
-	    dummy = horzcat(df._data{indi}, repmat(NA, df._cnt(1), n));
+	    dummy = horzcat(df._data{indi}(:, df._rep{indi}), \
+			    repmat(NA, df._cnt(1), 1));
 	  otherwise
-	    dummy = cast(horzcat(df._data{indi}, repmat(NA, df._cnt(1), n)), ...
+	    dummy = cast(horizcat(df._data{indi}(:, df._rep{indi}), \
+				  repmat(NA, df._cnt(1), 1)), \
 			 df._type{indi});
 	endswitch
 	df._data{indi} = dummy;
+	df._rep{indi} = [df._rep{indi} length(df._rep{indi})+ones(1, n)];
       endfor
-      df._cnt(3) = sum(cellfun('size', df._data, 2));
+      df._cnt(3) = sum(cellfun(@length, df._rep));
     otherwise
       error('Invalid dimension in df_pad');
   endswitch

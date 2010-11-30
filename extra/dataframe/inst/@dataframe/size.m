@@ -29,10 +29,22 @@ function varargout = size(df, varargin)
   switch nargin
     case 1
       switch nargout
-	case {0 1}
+	case {0, 1}
 	  varargout{1} = df._cnt;
 	case {2}
-	  varargout{1} = df._cnt(1); varargout{2} = df._cnt(2);
+	  varargout{1} = df._cnt(1);
+	  if (1 == df._cnt(2) && length(df._cnt) > 2),
+	    varargout{2} = df._cnt(3);
+	  else
+	    varargout{2} = df._cnt(2);
+	  endif
+	case {3}
+	  varargout{1:2} = df._cnt(1:2);
+	  if 2==length(df._cnt),
+	    varargout{3} = 1;
+	  else
+	    varargout{3} = df._cnt(3);
+	  endif
 	otherwise
 	  error(print_usage());
       endswitch
@@ -40,6 +52,22 @@ function varargout = size(df, varargin)
       switch nargout
 	case {0 1}
 	  varargout{1} = df._cnt;
+	  try
+	    varargout{1} = varargout{1}(varargin{1});
+	  catch
+	    error(print_usage());
+	  end_try_catch
+	otherwise
+	  error(print_usage());
+      endswitch
+    case 3
+      switch nargout
+	case {0 1}
+	  if (length(df._cnt) < 3),
+	    varargout{1} = 1;
+	  else
+	    varargout{1} = df._cnt;
+	  endif
 	  try
 	    varargout{1} = varargout{1}(varargin{1});
 	  catch

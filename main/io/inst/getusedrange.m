@@ -62,7 +62,7 @@
 ##      "     Indentation changed from tab to doublespace
 ## 2010-10-07 Added COM support (at last!)
 ##
-## Last subfunc update: 2010-11-13 (OTK, JOD)
+## Last subfunc update: 2010-12-01 (COM)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -353,26 +353,16 @@ endfunction
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2010-10-07
+## Updates:
+## 2010-12-01 Found much simpler trick which also works on Excel 97
 
 function [ trow, brow, lcol, rcol ] = getusedrange_com (xls, ii)
 
 	sh = xls.workbook.Worksheets (ii);
 	
-	# Decipher used range. Beware, UsedRange() returns *cached* rectangle of
-	# all spreadsheet cells containing *anything*, including just formatting
-	# (i.e., empty cells are included too). ==> This is an approximation only
-	allcells = sh.UsedRange;
-	
-	# Get top left cell as a Range object
-	toplftcl = allcells.Columns(1).Rows(1);
-	
-	# Count number of rows & cols in virtual range from A1 to top left cell
-	lcol = sh.Range ("A1", toplftcl).columns.Count;
-	trow = sh.Range ("A1", toplftcl).rows.Count;
-	
-	# Add real occupied rows & cols to obtain end row & col
-	brow = trow + allcells.rows.Count() - 1;
-	rcol = lcol + allcells.columns.Count() - 1;
+    [tl, nrows, ncols, trow, lcol] = parse_sp_range (strrep (sh.UsedRange.Address, '$', ''));
+    brow = trow + nrows - 1;
+    rcol = lcol + ncols - 1;
 	
 	# Check if there are real data
 	if ((lcol == rcol) && (trow = brow))

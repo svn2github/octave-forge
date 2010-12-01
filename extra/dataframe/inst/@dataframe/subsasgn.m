@@ -91,6 +91,14 @@ function resu = subasgn(df, S, RHS)
 	  endif
 	  return
 
+	case "comment"
+	  if length(S) > 1,
+	    resu._cmt = feval(@subsasgn, df._cmt, S(2:end), RHS);
+	  else
+	    resu._cmt = RHS;
+	  endif
+	  return
+
 	otherwise
 	  if !ischar(S(1).subs),
 	    error("Congratulations. I didn't see how to produce this error");
@@ -500,11 +508,16 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	df._over{1}(indr) = RHS._over{1}(indr);
       endif
       if (!isempty(RHS._src)),
-	%# keyboard
 	if (!any(strcmp(cellstr(df._src), cellstr(RHS._src)))),
 	  df._src = vertcat(df._src, RHS._src);
 	endif
       endif
+      if (!isempty(RHS._cmt)),
+	if (!any(strcmp(cellstr(df._cmt), cellstr(RHS._cmt)))),
+	  df._cmt = vertcat(df._cmt, RHS._cmt);
+	endif
+      endif
+
     else
       %# RHS is homogenous, pad at once
       if (isvector(RHS)), %# scalar - vector

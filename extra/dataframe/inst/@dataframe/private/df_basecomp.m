@@ -142,6 +142,8 @@ function [A, B, C] = df_basecomp(A, B, itercol=true, func=@plus);
 	if (isempty(A._src) && nargout > 2 && !isempty(B._src)), 
 	  C._src = B._src;
 	endif
+	if (isempty(A._cmt) && nargout > 2 && !isempty(B._cmt)), 
+	  C._cmt = B._cmt;
       endif
     else
       if (nargout > 2), C = df_allmeta(B, Csize); endif         

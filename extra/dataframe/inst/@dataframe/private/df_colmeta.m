@@ -38,5 +38,6 @@ function resu = df_colmeta(df)
   resu._data = cell(size(df._data));
   resu._rep = cell(size(df._rep));
   resu._src  = df._src;
+  resu._cmt  = df._cmt;
 
 endfunction

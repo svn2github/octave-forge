@@ -124,6 +124,9 @@ function resu = subsref(df, S)
 		  case "source"
 		    S(1).subs = "_src";
 		    further_deref = true;
+		  case "comment"
+		    S(1).subs = "_cmt";
+		    further_deref = true;
 		  otherwise
 		    error("Unknown column name: %s", S(1).subs);
 		endswitch

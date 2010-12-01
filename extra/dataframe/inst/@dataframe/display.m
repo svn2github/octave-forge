@@ -37,7 +37,16 @@ function resu = display(df)
 
   if !isempty(df._src),
     for indi = 1:size(df._src, 1),
-      head = char(head, ["Src: " df._src{indi, 1}]);
+      head = strvcat\
+	  (head, [repmat("Src: ", size(df._src{indi, 1}, 1), 1)\
+		  df._src{indi, 1}]);
+    endfor
+  endif
+  if !isempty(df._cmt),
+    for indi = 1:size(df._cmt, 1),
+      head = strvcat\
+	  (head, [repmat("Comment: ", size(df._cmt{indi, 1}, 1), 1)\
+		  df._cmt{indi, 1}]);
     endfor
   endif
   

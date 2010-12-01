@@ -57,5 +57,6 @@ function resu = df_allmeta(df, dim = [])
   resu._rep = cell(size(df._rep));
   resu._type = df._type(1:resu._cnt(2));
   resu._src  = df._src;
+  resu._cmt  = df._cmt;
   
 endfunction

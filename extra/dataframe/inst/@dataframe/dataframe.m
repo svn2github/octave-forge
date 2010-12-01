@@ -31,7 +31,7 @@ function df = dataframe(x = [], varargin)
   %# be unquoted before storage, default = true;
   %# @item sep: the elements separator, default '\t,'
   %# @end itemize
-  %# The remaining data are concatenanted (right-appended) to the existing ones.
+  %# The remaining data are concatenated (right-appended) to the existing ones.
   %# @end deftypefn
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
@@ -73,6 +73,7 @@ if isempty(x) && 1 == nargin,
   df._rep = cell(0, 0);   %# a repetition index
   df._type = cell(0, 0);  %# the type of each column
   df._src = cell(0, 0);
+  df._cmt = cell(0, 0);   %# to put comments
   df = class(df, 'dataframe');
   return
 endif
@@ -85,7 +86,7 @@ else
   df = dataframe([]); %# get the right fields
 endif
 
-seeked = []; unquot = true; sep = "\t,";
+seeked = []; unquot = true; sep = "\t,"; cmt_lines = [];
 
 if length(varargin) > 0,
   indi = 1;
@@ -206,7 +207,7 @@ while indi <= size(varargin, 2),
 	    %# dummy = content{indl};
 	  endif
 	  x = cell(1+length(lines)-indl, size(dummy, 2)); 
-	  empty_lines = [];
+	  empty_lines = []; cmt_lines = [];
 	  while indl <= length(lines),
 	    dummy = content{indl};
 	    if all(cellfun('size', dummy, 2) == 0),
@@ -217,6 +218,7 @@ while indi <= size(varargin, 2),
 	    %# does it looks like a comment line ?
 	    if regexp(dummy{1}, ['^\s*' char(35)]),
 	      empty_lines = [empty_lines indj];
+	      cmt_lines = strvcat(cmt_lines, horzcat(dummy{:}));
 	      indl = indl + 1; indj = indj + 1;
 	      continue;
 	    endif
@@ -310,15 +312,19 @@ while indi <= size(varargin, 2),
 	endif
       endif
     endif
-    if !isempty(indj),
+    if (!isempty(indj)),
       idx.subs = {'', indj};
       %# use direct assignement
-      if ndims(x) > 2, idx.subs{3} = 1:size(x, 3); endif
+      if (ndims(x) > 2), idx.subs{3} = 1:size(x, 3); endif
       df = subsasgn(df, idx, x);
+      if (!isempty(cmt_lines)),
+	df._cmt{end+1, 1} = cmt_lines;
+	cmt_lines = [];
+      endif
     else
       df._cnt(2) = length(df._name{2});
     endif
-  elseif indi > 1,
+  elseif (indi > 1),
     error('Concatenating dataframes: use cat instead');
   endif
 
@@ -336,11 +342,11 @@ endfunction
 function [x, y] = df_colnames(base, num)
   %# small auxiliary function to generate column names. This is required
   %# here, as only the constructor can use inputname()
-  if any([index(base, "=")]),
+  if (any([index(base, "=")])),
     %# takes the left part as base
     x = strsplit(base, "=");
     x = deblank(x{1});
-    if isvarname(x),  
+    if (isvarname(x)),  
       y = false;
     else
       x = 'X'; y = true; 
@@ -348,8 +354,8 @@ function [x, y] = df_colnames(base, num)
   else
     %# is base most probably a filename ?
     x =  regexp(base, '''[^''].*[^'']''', 'match');
-    if isempty(x),
-      if isvarname(base),
+    if (isempty(x)),
+      if (isvarname(base)),
 	x = base; y = false;
       else
 	x = 'X'; y = true; %# this is a default value, may be changed
@@ -359,7 +365,7 @@ function [x, y] = df_colnames(base, num)
     endif
   endif
 
-  if numel(num) > 1,
+  if (numel(num) > 1),
     x = repmat(x, numel(num), 1);
     x = cstrcat(x, strjust(num2str(num(:)), 'left'));
     y = repmat(y, 1, numel(num));

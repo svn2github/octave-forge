@@ -153,7 +153,9 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
   for iter = 1:niter
     deb_printf (testing, '\nstart outer iteration\n');
     v_cstr = f_cstr (p, ac_idx);
-    c_act =  v_cstr < nz; % index of active constraints
+    %% index of active constraints
+    c_act =  v_cstr < nz | eq_idx; # equality constraints might be
+				# violated at start
     if (any (c_act))
       if (n_gencstr > 0)
 	dct = df_cstr (p, ac_idx, ...
@@ -201,14 +203,14 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
       %% Marquardts diagonal of the Hessian-approximation for epsL ->
       %% Inf, but currently this gives no advantages in tests, even with
       %% constraints.
-      ser = 1 ./ sqrt((s.*s)+epsL);
-      %% se=sqrt((s.*s)+epsL);
-      %%if (new_s)
-      %% %% for testing
-      %% ser = (1 / (1 + epsL^2)) * (1 ./ se + epsL * s);
-      %% else
-      %% ser = 1 ./ se;
-      %% end
+%%% ser = 1 ./ sqrt((s.*s)+epsL);
+      se = sqrt ((s.*s) + epsL);
+      if (new_s)
+	%% for testing
+	ser = (1 / (1 + epsL^2)) * (1 ./ se + epsL * s);
+      else
+	ser = 1 ./ se;
+      end
       tp1 = (v * (g .* ser)) .* nrm;
       if (any (c_act))
 	deb_printf (testing, 'constraints are active:\n');
@@ -224,6 +226,9 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
 				% the respective component of chg should
 				% be zero too, even here (with active
 				% constraints)
+	deb_printf (testing, 'change:\n');
+	deb_printf (testing, '%e\n', chg);
+	deb_printf (testing, '\n');
 	%% indices for different types of constraints
 	c_inact = ~c_act; % inactive constraints
 	c_binding = nc_idx; 
@@ -320,7 +325,8 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
 	  deb_printf (testing, '%i\n', c_tp2);
 
 	  ptp2 = ptp1;
-	  nt_niter = 100;
+	  nt_niter_start = 100;
+	  nt_niter = nt_niter_start;
 	  while (nt_nosuc && nt_niter >= 0)
 	    hv = f_cstr (ptp2, c_tp2);
 	    if (all (abs (hv) < nz))
@@ -333,6 +339,8 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
 	    end
 	    nt_niter = nt_niter - 1;
 	  end
+	  deb_printf (testing, 'constraints after regaining:\n');
+	  deb_printf (testing, '%e\n', hv);
 	  if (nt_nosuc || ...
 	      any (abs (chg) > abs (pprev .* maxstep)) || ...
 	      any (f_cstr (ptp2, c_tp0) < -nz))
@@ -387,7 +395,7 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
 	  end
 	  if (~nt_nosuc)
 	    deb_printf (testing, 'regaining successful, converged with %i iterations:\n', ...
-	    100 - nt_niter);
+	    nt_niter_start - nt_niter);
 	    deb_printf (testing, '%e\n', ptp2);
 	  end
 	  lim = lim - 1;
@@ -432,6 +440,9 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
 	  error ('weighted residuals are not real');
 	end
 	ss = r.' * r;
+	deb_printf (testing, 'sbest: %.16e\n', sbest);
+	deb_printf (testing, 'sgoal: %.16e\n', sgoal);
+	deb_printf (testing, '   ss: %.16e\n', ss);
 	if (ss<sbest)
           pbest=p;
           fbest=f;

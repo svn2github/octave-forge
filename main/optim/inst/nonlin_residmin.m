@@ -173,6 +173,9 @@
 ## intermediate results. Will be called with current computed
 ## residualse. Default: plot nothing.
 ##
+## @code{debug}: Logical scalar, default: @code{false}. Will be passed
+## to the backend, which might print debugging information if true.
+##
 ## Structure-based parameter handling
 ##
 ## The setting @code{param_order}, a cell-array of parameter names, is a
@@ -229,6 +232,10 @@
 ## Interpretation of @code{Display}: if set to @code{"iter"}, currently
 ## @code{plot_cmd} is evaluated for each iteration, and some further
 ## diagnostics may be printed.
+##
+## Specific option: @code{lm_svd_feasible_alt_s}: if falling back to
+## nearly gradient descent, do it more like original Levenberg/Marquardt
+## method, with descent in each gradient component; for testing only.
 ##
 ## @seealso {nonlin_curvefit}
 ##

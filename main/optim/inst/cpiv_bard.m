@@ -48,11 +48,17 @@ function [lb, idx, ridx, m] = cpiv_bard (v, m, incl)
   end
   nincl = 1:n;
   nincl(incl) = [];
-  m = cat (2, m, v);
   sgn = ones (n, 1);
-  for id = incl(:).'
-    sgn(id) = -sgn(id);
-    m = gjp (m, id);
+  if (length (incl) == n)
+    sgn = - sgn;
+    m = inv (m);
+    m = cat (2, m, m * v);
+  else
+    m = cat (2, m, v);
+    for id = incl(:).'
+      sgn(id) = -sgn(id);
+      m = gjp (m, id);
+    end
   end
   nz = eps; % This is arbitrary; components of w and -l are regarded as
 				% non-negative if >= -nz.

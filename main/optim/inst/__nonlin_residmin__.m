@@ -58,7 +58,9 @@ function [p, resid, cvg, outp] = \
 		  "MaxIter", [], \
 		  "Display", "off", \
 		  "Algorithm", "lm_svd_feasible", \
-		  "plot_cmd", @ (f) 0);
+		  "plot_cmd", @ (f) 0, \
+		  "debug", false, \
+		  "lm_svd_feasible_alt_s", false);
     return;
   endif
 
@@ -354,7 +356,7 @@ function [p, resid, cvg, outp] = \
       error ("unknown fields in structure of linear equality constraints");
     endif
     semc = emc;
-    emc = zeros (np, rowd (evc));
+    emc = zeros (np, rows (evc));
     emc(idx, :) = cat (1, fields2cell (semc, pord(idx)){:});
   endif
 
@@ -425,6 +427,8 @@ function [p, resid, cvg, outp] = \
   endif
   hook.Display = optimget (settings, "Display", "off");
   hook.plot_cmd = optimget (settings, "plot_cmd", @ (f) 0);
+  hook.testing = optimget (settings, "debug", false);
+  hook.new_s = optimget (settings, "lm_svd_feasible_alt_s", false);
   backend = optimget (settings, "Algorithm", "lm_svd_feasible");
   backend = map_matlab_algorithm_names (backend);
   backend = map_backend (backend);

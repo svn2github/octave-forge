@@ -144,6 +144,11 @@
 %!assert((x\y).array, x.array\y)
 %!assert((y\x).array, y\x.array)
 %!assert((x\z).array, x.array\z.array)
+% x=dataframe(randn(4, 3, 2)); y=randn(4, 3, 2); z=dataframe(y);
+%!assert((abs(sum(center(x)) < eps).array))
+%!assert((x+y).array, x.array+y)
+%!assert((y+x).array, y+x.array)
+%!assert((x+z).array, x.array+z.array);
 
 %!demo
 %! x=dataframe('octave_frame/data_test.csv')

@@ -220,7 +220,8 @@ function resu = subsref(df, S)
 	  error("Accessing dataframe past end of columns");
 	endif
       else
-	%# one single dim -- probably something like df(:)
+	%# one single dim -- probably something like df(:), df(A), ...
+	fullindr = 1;
 	switch class(S(1).subs{1})
 	  case {'char'} %# one dimensional access, disallow it if not ':' 
 	    if strcmp(S(1).subs{1}, ':'),
@@ -229,25 +230,38 @@ function resu = subsref(df, S)
 	      error(["Accessing through single dimension and name " \
 		     S(1).subs{1} " not allowed\n-- use variable(:, 'name') instead"]);
 	    endif
-	  otherwise
-	    [fullindr, fullindc] = ind2sub(df._cnt, S(1).subs{1});
-	    indr = unique(fullindr); indc = unique(fullindc);
-	    nrow = length(indr); ncol = length(indc);
-	    if !isempty(asked_output_type) && ncol > 1,
-	      %# verify that the extracted values form a square matrix
-	      dummy = zeros(indr(end), indc(end));
-	      for indi = 1:ncol,
-		indj = find(fullindc == indc(indi));
-		dummy(fullindr(indj), indc(indi)) = 1;
-	      endfor
-	      dummy = dummy(indr(1):indr(end), indc(1):indc(end));
-	      if any(any(dummy!= 1)),
-		error("Vector-like selection is not rectangular for the asked output type");
-	      else
-		fullindr = []; fullindc = [];
-	      endif
-	    endif 
+	  case {'logical'}
+	    S(1).subs{1} = find(S(1).subs{1});
+	  case {'dataframe'}
+	    S(1).subs{1} = subsindex(S(1).subs{1}, 1);
 	endswitch
+	
+	if (!isempty(fullindr))
+	  if (length(df._cnt) <= 2),
+	    [fullindr, fullindc] = ind2sub(df._cnt, S(1).subs{1});
+	    fullinds = ones(size(fullindr));
+	  else
+	    dummy = max(cellfun(@length, df._rep));
+	    [fullindr, fullindc, fullinds] = ind2sub\
+		([df._cnt dummy], S(1).subs{1});
+	  endif 
+	  indr = unique(fullindr); indc = unique(fullindc);
+	  nrow = length(indr); ncol = length(indc);
+	  if !isempty(asked_output_type) && ncol > 1,
+	    %# verify that the extracted values form a square matrix
+	    dummy = zeros(indr(end), indc(end));
+	    for indi = 1:ncol,
+	      indj = find(fullindc == indc(indi));
+	      dummy(fullindr(indj), indc(indi)) = 1;
+	    endfor
+	    dummy = dummy(indr(1):indr(end), indc(1):indc(end));
+	    if (any(any(dummy!= 1))),
+	      error("Vector-like selection is not rectangular for the asked output type");
+	    else
+	      fullindr = []; fullindc = [];
+	    endif
+	  endif 
+	endif
       endif
       %# at this point, S is either empty, either contains further dereferencing
       break;
@@ -287,16 +301,21 @@ function resu = subsref(df, S)
       endif
     endif
 
-    if (any(strcmp({output_type, asked_output_type}, class(df)))),
-      if (!isempty(S) && 1 == length(S(1).subs)),
-	if (ncol > 1), 
-	  if (isempty(asked_output_type) \
+    if (any(strcmp({asked_output_type}, class(df)))),
+      %# was (any(strcmp({output_type, asked_output_type}, class(df))))
+     if (!isempty(S) && 1 == length(S(1).subs)),
+       if (ncol > 1), 
+	  if (false  & isempty(asked_output_type) \
 	      || strcmp(asked_output_type, class(df))),
 	    error("Vector-like access not implemented for 'dataframe' output format");
+	  else
+	    [asked_output_type, output_type] = deal("array");
 	  endif
-	  error("Selected columns not compatible with cat() -- use 'cell' as output format");
+%#	  error("Selected columns not compatible with cat() -- use 'cell' as output format");
 	endif
       endif
+    elseif (isempty(asked_output_type) && 1 == length(S(1).subs)),
+      [asked_output_type, output_type] = deal("array");
     endif
     
     indt = {}; %# in case we have to mix matrix of different width
@@ -517,44 +536,31 @@ function resu = subsref(df, S)
 	endif
       else %# access-as-vector
 	if (!isempty(fullindr)),
-	  indj = find(fullindc == indc(1));
 	  switch df._type{indc(1)}
 	    case {'char'}
-	      resu = df._data{indc(1)}(fullindr(indj));
-	      for indi = 2:ncol,
-		indj = find(fullindc == indc(indi));
-		resu = char(resu, df._data{indc(indi)}(fullindr(indj)));
+	      resu = df._data{indc(1)}(fullindr(1), \
+				       df._rep{indc(1)}(fullinds(1)));
+	      for indi = 2:length(fullindr),
+		resu = char(resu, df._data{indc(indi)}\
+			    (fullindr(indi), df._rep{indc(indi)}(fullinds(indi))));
 	      endfor
 	    otherwise
 	      if (isempty(asked_output_format)),
-		resu = df._data{indc(1)}(fullindr(indj));
+		resu = df._data{fullindc(1)}\
+		    (fullindr(1), df._rep{fullindc(1)}(fullinds(1)));
 	      else 	%# this type will propagate with subsequent cat
-		resu = cast(df._data{indc(1)}(fullindr(indj)), \
+		resu = cast(df._data{fullindc(1)}\
+			    (fullindr(1), df._rep{fullindc(1)}(fullinds(1))),\
 			    asked_output_format);
 	      endif
-	      for indi = 2:ncol,
-		indj = find(fullindc == indc(indi));
-		resu = cat(1, resu, \
-			   df._data{indc(indi)}(fullindr(indj)));
+	      for indi = 2:length(fullindr),
+		resu = cat(1, resu, df._data{fullindc(indi)}\
+			   (fullindr(indi), \
+			    df._rep{fullindc(indi)}(fullinds(indi))));
 	      endfor
 	  endswitch
 	else %# using the (:) operator
-	  switch df._type{indc(1)}
-	    case {'char'}
-	      resu = df._data{indc(1)}(indr);
-	      for indi = 2:ncol,
-		resu = char(resu, df._data{indc(indi)}(indr));
-	      endfor
-	    otherwise
-	      if (isempty(asked_output_format)),
-		resu = df._data{indc(1)}(indr);
-	      else 	%# this type will propagate with subsequent cat
-		resu = cast(df._data{indc(1)}(indr), asked_output_format);
-	      endif
-	      for indi = 2:ncol,
-		resu = cat(1, resu, df._data{indc(indi)}(indr));
-	      endfor
-	  endswitch
+	  resu = df_whole(df)(:);
 	endif
 	if (!isa(S(1).subs{1}, 'char') \
 	      && size(S(1).subs{1}, 2) > 1),

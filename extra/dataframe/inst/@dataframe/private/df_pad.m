@@ -102,8 +102,10 @@ function df = df_pad(df, dim, n, coltype=[])
 	  case {'char'}
 	    dummy = {repmat(NA, df._cnt(1), 1) }; 
 	    dummy(:, 1) = '_';
-	  case { 'double' }
+	  case { 'double'}
 	    dummy = repmat(NA, df._cnt(1), 1);
+	  case {'logical'} %# there is no NA in logical type
+	    dummy = repmat(false, df._cnt(1), 1);
 	  otherwise
 	    dummy = cast(repmat(NA, df._cnt(1), 1), coltype{indi});
 	endswitch

@@ -28,7 +28,11 @@ function resu = cat(dim, A, varargin)
   %#
   %# $Id$
   %#
-disp('@dataframe/cat.m'); disp(dim)
+
+  if (!isa(A, 'dataframe')),
+    A = dataframe(A);
+  endif
+
   switch dim
     case 1
       resu = A;

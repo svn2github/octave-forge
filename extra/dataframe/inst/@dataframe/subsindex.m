@@ -1,6 +1,7 @@
 function resu = subsindex(df, base)
   %# function resu = subsindex(df)
-  %# This function convert a dataframe to an index
+  %# This function convert a dataframe to an index. Do not expect a
+  %# meaningfull result when mixing numeric and logical columns.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -27,20 +28,17 @@ function resu = subsindex(df, base)
   %#
   
   if nargin < 2, 
-    base = -1.0; 
+    base = 1.0; 
   else
     base = base - 1.0;
   endif
   
-  resu = [];
-  for indi = 1:length(df._data),
-    %# transform each column to an index
-    switch(df._type{indi})
-      case 'logical'
-	resu = vertcat(resu, find(df._data{indi}) - base);
-      otherwise
-	resu = vertcat(resu, double(df._data{indi}) - base);
-    endswitch
-  endfor
-  
+  %# extract all values at once
+  dummy = df_whole(df); 
+  if isa(dummy, 'logical'),
+    resu = sort(find(dummy)-base);
+  else
+    resu = dummy(:) - base;
+  endif
+
 endfunction

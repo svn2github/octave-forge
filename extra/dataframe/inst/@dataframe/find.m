@@ -26,29 +26,30 @@ function varargout = find(df, varargin)
 
   switch nargout
     case {0, 1}
-      nz = 0; resu = [];
-      for indi = 1:df._cnt(2),
-	resu = [resu; nz + feval(@find, df._data{indi})];
-	nz = nz + prod(size(df._data{indi}));
+      resu = []; mz = max(cellfun(@length, df._rep));
+      for indc = 1:df._cnt(2),
+	[indr, inds] = feval(@find, df._data{indc}(:, df._rep{indc}));
+	resu = [resu; sub2ind([df._cnt(1:2) mz], indr, \
+			      repmat(indc, [length(indr) 1]), inds)]; 
       endfor
-      varargout{1} = resu;
+      varargout{1} = sort(resu);
     case 2
       nz = 0; idx_i = []; idx_j = [];
-      for indi = 1:df._cnt(2),
-	[dum1, dum2] = feval(@find, df._data{indi});
+      for indc = 1:df._cnt(2),
+	[dum1, dum2] = feval(@find, df._data{indc}(:, df._rep{indc}));
 	idx_i = [idx_i; dum1];
 	idx_j = [idx_j; nz + dum2];
-	nz = nz + size(df._data{indi}, 2);
+	nz = nz + df._cnt(1)*length(df._rep{indc});
       endfor
       varargout{1} = idx_i; varargout{2} = idx_j;
     case 3
       nz = 0; idx_i = []; idx_j = []; val = [];
-      for indi = 1:df._cnt(2),
-	[dum1, dum2, dum3] = feval(@find, df._data{indi});
+      for indc = 1:df._cnt(2),
+	[dum1, dum2, dum3] = feval(@find, df._data{indc}(:, df._rep{indc}));
 	idx_i = [idx_i; dum1];
 	idx_j = [idx_j; nz + dum2];
 	val = [val; dum3];
-	nz = nz + size(df._data{indi}, 2);
+	nz = nz + df._cnt(1)*length(df._rep{indc});
       endfor
       varargout{1} = idx_i; varargout{2} = idx_j; varargout{3} = val;
     otherwise

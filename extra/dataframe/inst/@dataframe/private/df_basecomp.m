@@ -72,7 +72,7 @@ function [A, B, C] = df_basecomp(A, B, itercol=true, func=@plus);
     
     if (isa(A, 'dataframe')) 
       if (nargout > 2), C = df_allmeta(A, Csize);endif         
-      if (isa(B, 'dataframe')),
+      if (isa(B, 'dataframe') && strict),
 	%# compare indexes if both exist
 	if (!isempty(A._ridx))
 	  if (!isempty(B._ridx) && itercol),
@@ -144,6 +144,7 @@ function [A, B, C] = df_basecomp(A, B, itercol=true, func=@plus);
 	endif
 	if (isempty(A._cmt) && nargout > 2 && !isempty(B._cmt)), 
 	  C._cmt = B._cmt;
+	endif
       endif
     else
       if (nargout > 2), C = df_allmeta(B, Csize); endif         

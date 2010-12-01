@@ -34,22 +34,28 @@ function [df, S] = df_cow(df, S, col, inds)
   endif
   
   if isempty(inds), inds = 1; endif
-
   for indi = inds,
-    dummy = df._rep{col}; dummy(indi)=[];
+    dummy = df._rep{col}; dummy(indi) = 0;
     [t1, t2] = ismember(df._rep{col}(indi)(:), dummy);
     for indj = t2(find(t2)), %# Copy-On-Write
       %# determines the index for the next column
       t1 = 1+max(df._rep{col}); 
-      %# update repetition index aliasing this one
-      df._rep{col}(find(df._rep{col} == indj)(2:end)) = t1;
       %# duplicate the touched column
-      df._data{col} = horzcat(df._data{col}, df._data{col}(:, indj)); 
-      if (length(S.subs) > 1),
-	%# adapt the sheet index accordingly
-	indk = find(S.subs{2} == indj);
-	S.subs{2}(indk(2:end)) = t1;
+      df._data{col} = horzcat(df._data{col}, \
+			      df._data{col}(:, df._rep{col}(indj)));  
+      if (indi > 1)
+	%# a new column has been created
+	df._rep{col}(indi) = t1;
+      else
+	%# update repetition index aliasing this one
+	dummy = find(dummy == indi);
+	df._rep{col}(dummy) = t1;
       endif
+      if (length(S.subs) > 1 && indi > 1),
+	%# adapt the sheet index accordingly
+	S.subs{2}(find(S.subs{2}==indi)) = t1;
+      endif
+
     endfor
   endfor
  

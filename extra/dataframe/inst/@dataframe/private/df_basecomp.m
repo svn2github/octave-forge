@@ -40,8 +40,8 @@ function [A, B, C] = df_basecomp(A, B, itercol=true, func=@plus);
     %# if strict is set, B may not be non-scalar vs scalar
     if ((!(isscalar(A) || isscalar(B)))||(strict && isscalar(A))),
       if (itercol), %# requires full compatibility
-	Csize = size(A);
-	if (any(Csize - size(B))),
+	Csize = size(A)(1:2);
+	if (any(Csize - size(B)(1:2))),
 	  %# disp([size(A) size(B)])
 	  error("Non compatible row and columns sizes (op1 is %dx%d, op2 is %dx%d)",\
 		Csize, size(B));
@@ -49,18 +49,18 @@ function [A, B, C] = df_basecomp(A, B, itercol=true, func=@plus);
       else %# compatibility with matrix product
 	if (size(A, 2) - size(B, 1)),
 	  error("Non compatible columns vs. rows size (op1 is %dx%d, op2 is %dx%d)",\
-		size(A), size(B));
+		size(A)(1:2), size(B)(1:2));
 	endif
 	Csize = [size(A, 1) size(B, 2)];
       endif
     endif
   else
     if (isscalar(A)), 
-      Csize = size(B);
+      Csize = size(B)(1:2);
     else
         if (size(A, 1) != size(B, 1)),
 	error("Non compatible row sizes (op1 is %dx%d, op2 is %dx%d)",\
-	      size(A), size(B));
+	      size(A), size(B)(1:2));
       endif
       Csize = [size(A, 2) size(B, 2)];
     endif

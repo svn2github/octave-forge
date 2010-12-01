@@ -64,10 +64,10 @@ function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
 	  for indi = resu._cnt(2):-1:1,
 	    switch resu._type{indi}
 	      case "char"
-		resu._data{indi} = feval(func, A(:, indi, :), \
+		resu._data{indi} = feval(func, squeeze(A(:, indi, :)), \
 					 char(B._data{indi}(:, B._rep{indi})));
 	      otherwise
-		resu._data{indi} = feval(func, A(:, indi, :), \
+		resu._data{indi} = feval(func, squeeze(A(:, indi, :)), \
 					 B._data{indi}(:, B._rep{indi}));
 	    endswitch
 	    resu._rep{indi} = 1:size(resu._data{indi}, 2);
@@ -176,8 +176,8 @@ function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
 	      otherwise
 		unfolded = A._data{indi}(:, A._rep{indi});
 	    endswitch
-	    resu._data{indi} = squeeze(feval(func, unfolded, \
-					     B(:, indi, :)));
+	    resu._data{indi} = feval(func, unfolded, \
+				     squeeze(B(:, indi, :)));
 	    resu._rep{indi} = 1:size(resu._data{indi}, 2);
 	  endfor
 	endif 

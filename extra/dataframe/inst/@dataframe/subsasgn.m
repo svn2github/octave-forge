@@ -130,8 +130,13 @@ function resu = subasgn(df, S, RHS)
     case '()'
       [indr, nrow, S(1).subs{1}] = df_name2idx(df._name{1}, S(1).subs{1}, \
 					       df._cnt(1), 'row');
-      [indc, ncol, S(1).subs{2}] = df_name2idx(df._name{2}, S(1).subs{2}, \
-				 df._cnt(2), 'column');
+      if (length(S(1).subs) > 1),
+    	[indc, ncol, S(1).subs{2}] = df_name2idx(df._name{2}, S(1).subs{2}, \
+						 df._cnt(2), 'column');
+      else
+	indc = 1; ncol = 1; 
+	S(1).subs{2} = 1; %# avoid an error at line 516
+      endif
       resu = df_matassign(df, S, indc, ncol, RHS);
  
   endswitch
@@ -527,6 +532,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	    df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, S, indi);
 	    S = Sorig;
 	  catch
+	    disp(lasterr)
 	    disp('line 470 '); keyboard
 	  end_try_catch
 	  # catch

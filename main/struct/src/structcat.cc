@@ -31,10 +31,12 @@ static octave_value
 structcat_cat_op_fcn (const octave_value& v1, const octave_value& v2, 
 		      const Array<octave_idx_type>& ra_idx)
 {
-  Octave_map retval;
-
   Octave_map m1 = v1.map_value ();
   Octave_map m2 = v2.map_value ();
+
+  dim_vector dv1 (m1.dims ());
+
+  Octave_map retval (dv1);
 
   Cell c2 (m2.dims ());
 
@@ -49,8 +51,6 @@ structcat_cat_op_fcn (const octave_value& v1, const octave_value& v2,
 	retval.assign (m1.key(pa),
 		       m1.contents(pa).insert (m2.contents(pb), ra_idx));
     }
-
-  dim_vector dv1 (m1.dims ());
 
   for (Octave_map::const_iterator pa = m2.begin (); pa != m2.end (); pa++)
     {

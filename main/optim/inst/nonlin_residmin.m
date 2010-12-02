@@ -205,13 +205,13 @@
 ## The vector/matrix-based settings @code{bounds}, @code{fixed},
 ## @code{diffp}, @code{diff_onesided}, @code{fract_prec}, and
 ## @code{max_fract_change} can be replaced by the setting
-## @code{param_config}. It is a structure containing at least all fields
-## named in @code{param_order}. For each parameter, there may be
-## subfields with the same names as the above vector/matrix-based
-## settings, but containing a scalar value (or a two-element row vector
-## in the case of bounds) for the respective parameter. If
-## @code{param_config} is specified, none of the above
-## vector/matrix-based settings may be used.
+## @code{param_config}. It is a structure that can contain fields named
+## in @code{param_order}. For each such field, there may be subfields
+## with the same names as the above vector/matrix-based settings, but
+## containing a scalar value (or a two-element row vector in the case of
+## bounds) for the respective parameter. If @code{param_config} is
+## specified, none of the above vector/matrix-based settings may be
+## used.
 ##
 ## Description of backends (currently only one)
 ##

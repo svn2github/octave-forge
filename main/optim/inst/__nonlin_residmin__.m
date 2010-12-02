@@ -155,14 +155,15 @@ function [p, resid, cvg, outp] = \
     ## parameter-related configuration is either allowed by a structure
     ## or by vectors
     if (! (isempty (bounds) && isempty (max_fract_change) && \
-	 isempty (fract_prec) && isempty (diffp) && \
-	 isempty (diff_onesided) && isempty (fixed)))
+	   isempty (fract_prec) && isempty (diffp) && \
+	   isempty (diff_onesided) && isempty (fixed)))
       error ("if param_config is given, its potential items must not be configured in another way");
     endif
 
-    if (! all (arefields (pconf, pord)))
-      error ("param_config does not contain fields for all parameters");
-    endif
+    ## supplement parameter names lacking in param_config
+    nidx = ! arefields (pconf, pord);
+    pconf = cell2fields ({struct()}(ones (1, sum (nidx))), \
+			 pord(nidx), 2, pconf);
 
     pconf = structcat (1, fields2cell (pconf, pord){:});
 

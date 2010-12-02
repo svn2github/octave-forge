@@ -142,8 +142,14 @@ function resu = subasgn(df, S, RHS)
     	[indc, ncol, S(1).subs{2}] = df_name2idx(df._name{2}, S(1).subs{2}, \
 						 df._cnt(2), 'column');
       else
-	indc = 1; ncol = 1; 
-	S(1).subs{2} = 1; %# avoid an error at line 516
+	mz = max(cellfun(@length, df._rep));
+	[indr, indc, inds] = ind2sub([df._cnt(1:2) mz], indr);
+	ncol = length(unique(indc));
+	S(1).subs{1} = indr; S(1).subs{2} = indc;
+	if (any(inds > 1)),
+	  S(1).subs{3} = inds;
+	endif
+	keyboard
       endif
       resu = df_matassign(df, S, indc, ncol, RHS);
  
@@ -435,7 +441,6 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	endif
       else
 	%# partial assignement -- extract actual data and update
-	keyboard
 	dummy = df._data{indc(indi)}; 
 	try     
 	  switch df._type{indc(indi)}
@@ -530,8 +535,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	  S.subs(2) = []; 
 	  if (length(S.subs) < 2), 
 	    S.subs{2} = 1; 
-	  endif 	
-  	  if (length(indc) > 1 && length(RHS) > 1),
+	  endif 
+	  if (length(indc) > 1 && length(RHS) > 1),
 	    %# set a row from a vector
 	    fillfunc = @(x, S, y) feval(@subsasgn, x, S, RHS(y));
 	  else   

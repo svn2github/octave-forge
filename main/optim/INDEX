@@ -18,6 +18,8 @@ Data fitting
  nonlin_residmin
  nonlin_curvefit
  LinearRegression
+Zero finding
+ vfzero
 Compatibility
  fminunc_compat
  optimset_compat

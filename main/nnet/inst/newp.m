@@ -21,6 +21,10 @@
 ## @code{newp} create a perceptron
 ##
 ## @example
+## PLEASE DON'T USE THIS FUNCTIONS, IT'S STILL NOT FINISHED!
+## =========================================================
+## @end example
+## @example
 ## Pr - R x 2 matrix of min and max values for R input elements
 ## ss - a scalar value with the number of neurons
 ## transFunc - a string with the transfer function
@@ -29,9 +33,6 @@
 ##       default = "learnp"
 ## @end example
 ##
-## @example
-## EXAMPLE 1
-## @end example
 ##
 ## @end deftypefn
 

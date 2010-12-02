@@ -24,23 +24,20 @@
 ## @end example
 ## @noindent
 ##
-## left side arguments:
 ## @example
-## net: the trained network of the net structure @code{MLPnet}
-## tr :
-## out:
-## E  : Error
+## left side arguments:
+##   net: the trained network of the net structure @code{MLPnet}
 ## @end example
 ## @noindent
 ##
-## right side arguments:
 ## @example
-## MLPnet : the untrained network, created with @code{newff}
-## mInputN: normalized input matrix
-## mOutput: output matrix (normalized or not)
-## []     : unused parameter
-## []     : unused parameter
-## VV     : validize structure
+## right side arguments:
+##   MLPnet : the untrained network, created with @code{newff}
+##   mInputN: normalized input matrix
+##   mOutput: output matrix (normalized or not)
+##   []     : unused parameter
+##   []     : unused parameter
+##   VV     : validize structure
 ## @end example
 ## @end deftypefn
 
@@ -62,9 +59,9 @@ function [net] = train(net,Pp,Tt,notUsed1,notUsed2,VV)
   ## set defaults
   doValidation = 0;
   if nargin==6
-    doValidation=1;
+    # doValidation=1;
     ## check if VV is in MATLAB(TM) notation
-    [VV] = checkVV(VV);
+    [VV, doValidation] = checkVV(VV);
   endif
 
   ## check input args
@@ -186,25 +183,31 @@ function [net] = train(net,Pp,Tt,notUsed1,notUsed2,VV)
 
 # -------------------------------------------------------
 
-  function [VV] = checkVV(VV)
+  function [VV, doValidation] = checkVV(VV)
 
     ## check number of arguments
     error(nargchk(1,1,nargin));
 
-    ## check if MATLAB(TM) naming convention is used
-    if isfield(VV,"P")
-      VV.Pp = VV.P;
-      VV.P = [];
-    elseif !isfield(VV,"Pp")
-      error("VV is defined but inside exist no VV.P or VV.Pp")
-    endif
+	if (isempty(VV))	
+	  doValidation = 0;	
+	else
+	  doValidation = 1;
+      ## check if MATLAB(TM) naming convention is used
+      if isfield(VV,"P")
+        VV.Pp = VV.P;
+        VV.P = [];
+      elseif !isfield(VV,"Pp")
+        error("VV is defined but inside exist no VV.P or VV.Pp")
+      endif
 
-    if isfield(VV,"T")
-      VV.Tt = VV.T;
-      VV.T = [];
-    elseif !isfield(VV,"Tt")
-      error("VV is defined but inside exist no VV.TP or VV.Tt")
-    endif
+      if isfield(VV,"T")
+        VV.Tt = VV.T;
+        VV.T = [];
+      elseif !isfield(VV,"Tt")
+        error("VV is defined but inside exist no VV.TP or VV.Tt")
+      endif
+	
+	endif
 
 
   endfunction

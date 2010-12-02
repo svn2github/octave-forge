@@ -30,7 +30,7 @@ function [cAr mData] = loadtestresults(strFileName)
   fid = fopen(strFileName,"rt"); # open read only
 
   strLine = fgetl(fid);
-  while (strLine!=-1) # this means, while not eof
+  while (!feof(fid)) # this means, while not eof
 
     [val, count] = sscanf (strLine, "%f");
     if (count)
@@ -42,6 +42,15 @@ function [cAr mData] = loadtestresults(strFileName)
     strLine = fgetl(fid);
     i += 1;
   endwhile
+  
+  # here, the strLine contains the last row of a file
+  # so do the complete coding once more
+  [val, count] = sscanf (strLine, "%f");
+  if (count)
+    mData = [mData; val'];
+  else
+    cAr{i} = strLine;
+  endif
 
   fclose(fid);
   

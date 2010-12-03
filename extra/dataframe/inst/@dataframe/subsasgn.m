@@ -143,14 +143,17 @@ function resu = subasgn(df, S, RHS)
 						 df._cnt(2), 'column');
       else
 	mz = max(cellfun(@length, df._rep));
+before = S(1).subs{1};
 	[indr, indc, inds] = ind2sub([df._cnt(1:2) mz], indr);
 	ncol = length(unique(indc));
 	S(1).subs{1} = indr; S(1).subs{2} = indc;
 	if (any(inds > 1)),
 	  S(1).subs{3} = inds;
 	endif
+	toto=df_whole(df);
 	keyboard
       endif
+      keyboard
       resu = df_matassign(df, S, indc, ncol, RHS);
  
   endswitch
@@ -463,6 +466,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     endfor
     
   else 
+    keyboard
     %# RHS is either a numeric, either a df
     if (any(indc > min(size(df._data, 2), df._cnt(2)))),
       df = df_pad(df, 2, max(indc-min(size(df._data, 2), df._cnt(2))),\
@@ -543,7 +547,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	    fillfunc = @(x, S, y) feval(@subsasgn, x, S, RHS);
 	  endif
 	endif
-	Sorig = S;
+	Sorig = S; keyboard
 	for indi = 1:length(indc),
 	  try
 	    [df, S] = df_cow(df, S, indc(indi), inds);
@@ -565,6 +569,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	  # end_try_catch
 	endfor
       else %# 2D - 3D matrix
+	disp('line 572 '); keyboard
 	S.subs(2) = []; %# ignore 'column' dimension
 	%# rotate slices in dim 1-3 to slices in dim 1-2
 	if (isempty(S.subs{1})),
@@ -574,8 +579,14 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	endif
 	Sorig = S; 
 	for indi = 1:length(indc),
+	  disp('line 582 '); disp(df._rep); disp(S); keyboard
 	  [df, S] = df_cow(df, S, indc(indi), inds);
+	  disp('line 584 '); disp(df._rep);disp(S);  keyboard
 	  df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, S, indi);
+	  disp('line 586 '); disp(df._rep); 
+	  disp(squeeze(RHS(:, indc(indi), :)));
+	  disp(df._data{indc(indi)}(:, df._rep{indc(indi)}));
+	       keyboard
 	  S = Sorig;
 	endfor
       endif

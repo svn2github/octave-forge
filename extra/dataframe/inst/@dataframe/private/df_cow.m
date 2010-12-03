@@ -53,6 +53,7 @@ function [df, S] = df_cow(df, S, col, inds)
       endif
       if (length(S.subs) > 1 && indi > 1),
 	%# adapt the sheet index accordingly
+	keyboard
 	S.subs{2}(find(S.subs{2}==indi)) = t1;
       endif
 

@@ -51,15 +51,16 @@ function [df, S] = df_cow(df, S, col, inds)
 	dummy = find(dummy == indi);
 	df._rep{col}(dummy) = t1;
       endif
-      if (length(S.subs) > 1 && indi > 1),
-	%# adapt the sheet index accordingly
-	keyboard
-	S.subs{2}(find(S.subs{2}==indi)) = t1;
-      endif
-
     endfor
   endfor
- 
+  %# reorder S
+  if (length(S.subs) > 1),
+    dummy = length(S.subs{2}); 
+    if (dummy > 1),
+      %# the second factor is a permutation matrix
+      S.subs{2} = S.subs{2}*(eye(dummy)(:, df._rep{col}));
+    endif
+  endif
   %# sanity check
   dummy = sum(cellfun(@length, df._rep));
   if dummy != df._cnt(2),

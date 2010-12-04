@@ -313,6 +313,7 @@ while indi <= size(varargin, 2),
       endif
     endif
     if (!isempty(indj)),
+      %# the exact row size will be determined latter
       idx.subs = {'', indj};
       %# use direct assignement
       if (ndims(x) > 2), idx.subs{3} = 1:size(x, 3); endif

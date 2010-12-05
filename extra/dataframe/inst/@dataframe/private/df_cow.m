@@ -1,6 +1,6 @@
-function [df, S] = df_cow(df, S, col, inds)
+function [df, S] = df_cow(df, S, col)
 
-  %# function [resu, S] = df_cow(df, S, col, inds)
+  %# function [resu, S] = df_cow(df, S, col)
   %# Implements Copy-On-Write on dataframe. If one or more columns
   %# specified in inds is aliased to another one, duplicate it and
   %# adjust the repetition index to remove the aliasing
@@ -33,7 +33,12 @@ function [df, S] = df_cow(df, S, col, inds)
     error("df_cow must work on a column-by-column basis");
   endif
   
-  if isempty(inds), inds = 1; endif
+  if (1 == length(S.subs)),
+    inds = 1; 
+  else
+    inds = S.subs{2};
+  endif
+
   for indi = inds,
     dummy = df._rep{col}; dummy(indi) = 0;
     [t1, t2] = ismember(df._rep{col}(indi)(:), dummy);
@@ -53,12 +58,12 @@ function [df, S] = df_cow(df, S, col, inds)
       endif
     endfor
   endfor
+
   %# reorder S
   if (length(S.subs) > 1),
-    dummy = length(S.subs{2}); 
-    if (dummy > 1),
-      %# the second factor is a permutation matrix
-      S.subs{2} = S.subs{2}*(eye(dummy)(:, df._rep{col}));
+    if (S.subs{2} != 1 || length(S.subs{2}) > 1), 
+      %# adapt sheet index according to df_rep
+      S.subs{2} = df._rep{col}(S.subs{2});
     endif
   endif
   %# sanity check

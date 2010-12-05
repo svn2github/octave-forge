@@ -348,8 +348,8 @@ function resu = subsref(df, S)
       resu._cnt(1) = nrow; resu._cnt(2) = ncol;
       for indi = 1:ncol,
 	resu._data{indi} =  df._data{indc(indi)}\
-	    (indr, indt{indc(indi)}); 
-	resu._rep{indi} =  df._rep{indc(indi)}(indt{indc(indi)}); 
+	    (indr, df._rep{indi}(indt{indc(indi)})); 
+	resu._rep{indi} =  1:size(resu._data{indi}, 2);
 	resu._name{2}(indi, 1) = df._name{2}(indc(indi));
 	resu._over{2}(1, indi) = df._over{2}(indc(indi));
 	resu._type{indi} = df._type{indc(indi)};

@@ -479,33 +479,22 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     if (isa(RHS, 'dataframe')),
       %# block-copy index
       S.subs(2) = 1;
-      df._ridx = feval(@subsasgn,  df._ridx, S,  RHS._ridx);
+      if any(!isna(RHS._ridx)),
+	df._ridx = feval(@subsasgn,  df._ridx, S,  RHS._ridx);
+      endif
       %# skip second dim and copy data
-      S.subs(2) = [];
+      S.subs(2) = []; Sorig = S;
       for indi = 1:length(indc),
-	if (1 == length(RHS._rep{indi})),
-	  df = df_cow(df, S, indc(indi), inds);
-	  if (strcmp(df._type(indc(indi)), \
-		    RHS._type(indi))),
-	    df._data{indc(indi)}(indr, 1)  = RHS._data{indi};
-	  else
-	    df._data{indc(indi)}(indr, 1)  = cast(RHS._data{indi}, \
-						  df._type(indc(indi)));
-	  endif
+	[df, S] = df_cow(df, S, indc(indi));
+	if (strcmp(df._type(indc(indi)), RHS._type(indi))),
+	  df._data{indc(indi)} = feval(@subsasgn, df._data{indc(indi)}, S, \
+				       RHS._data{indi}(:, RHS._rep{indi}));
 	else
-	  unfolded = df._data{indc(indi)}(:, df._rep{indc(indi)});
-	  if (strcmp(df._type(indc(indi)), RHS._type(indi))),
-	    truc =  RHS._data{indi}(:, RHS._rep{indi});
-	    unfolded = feval(@subsasgn, unfolded, S, \
-			     RHS._data{indi}(:, RHS._rep{indi}));
-	  else
-	    unfolded = feval(@subsasgn, unfolded, S, \
-			     cast(RHS._data{indi}(:, RHS._rep{indi}), \
-				  df._type(indc(indi))));
-	  endif
-	  df._data{indc(indi)} = unfolded; 
-	  df._rep{indc(indi)} = 1:size(unfolded, 2);
+	  df._data{indc(indi)} = feval(@subsasgn, df._data{indc(indi)}, S, \
+				       cast(RHS._data{indi}(:, RHS._rep{indi}),\
+					    df._type(indc(indi))));
 	endif
+	S = Sorig;
       endfor
       if (!isempty(RHS._name{1})),
 	df._name{1}(indr) = RHS._name{1}(indr);
@@ -545,7 +534,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	Sorig = S; 
 	for indi = 1:length(indc),
 	  try
-	    [df, S] = df_cow(df, S, indc(indi), inds);
+	    [df, S] = df_cow(df, S, indc(indi));
 	    df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, S, indi);
 	    S = Sorig;
 	  catch
@@ -572,7 +561,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	fillfunc = @(x, S, y) feval(@subsasgn, x, S, squeeze(RHS(:, y, :)));
 	Sorig = S; 
 	for indi = 1:length(indc),
-	  [df, S] = df_cow(df, S, indc(indi), inds);
+	  [df, S] = df_cow(df, S, indc(indi));
 	  df._data{indc(indi)} = fillfunc(df._data{indc(indi)}, S, indi);
 	  S = Sorig;
 	endfor

@@ -15,9 +15,9 @@
 ## Inc., 51 Franklin Street, 5th Floor, Boston, MA 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} plotcollapse (@var{P})
-## @deftypefnx {Function File} {} plotcollapse (@var{P}, @var{so})
-## @deftypefnx {Function File} {} plotcollapse (@var{P}, @var{so}, @var{res})
+## @deftypefn {Function File} {} plotdecimate (@var{P})
+## @deftypefnx {Function File} {} plotdecimate (@var{P}, @var{so})
+## @deftypefnx {Function File} {} plotdecimate (@var{P}, @var{so}, @var{res})
 ##
 ## Optimise plot data by removing redundant points and segments
 ##
@@ -34,11 +34,11 @@
 ## @end deftypefn
 
 ## Author: Francesco Potortì <Potorti@isti.cnr.it>
-## 2.7
-## Usage: plotcollapse(P[, so[, res]])
+## $Revision: 2.7 $
+## Usage: plotdecimate(P[, so[, res]])
 ## Description: Optimise plot data by removing redundant points and segments
 
-function C = plotcollapse (P, so, res)
+function C = plotdecimate (P, so, res)
 
   if (!ismatrix(P) || columns(P) != 2)
     error("P must be a matrix with two columns");
@@ -110,3 +110,25 @@ function C = plotcollapse (P, so, res)
 
   C = P(V,:) .* repmat(E',sum(V),1); # denormalize P
 endfunction
+
+%!test
+%! x = [ 0 1 2 3 4 8 8 8 8 8 9 ]';
+%! y = [ 0 1 1 1 1 1 1 2 3 4 5 ]';
+%!
+%! x1 = [0 1 8 8 9]';
+%! y1 = [0 1 1 4 5]';
+%!   # optimised for segment plot
+%!
+%! x2 = [ 0 1 2 3 4 8 8 8 8 9 ]';
+%! y2 = [ 0 1 1 1 1 1 2 3 4 5 ]';
+%!   # double points removed
+%!
+%! P = [x,y];
+%!   # Original
+%! P1 = [x1, y1];
+%!   # optimised segments
+%! P2 = [x2, y2];
+%!   # double points removed
+%!
+%! assert(plotdecimate(P), P1);
+%! assert(plotdecimate(P, false), P2);

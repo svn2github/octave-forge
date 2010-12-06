@@ -48,13 +48,12 @@ function [df, S] = df_cow(df, S, col)
       %# duplicate the touched column
       df._data{col} = horzcat(df._data{col}, \
 			      df._data{col}(:, df._rep{col}(indj)));  
-      if (indi > 1)
+      if (indi > 1),
 	%# a new column has been created
 	df._rep{col}(indi) = t1;
       else
 	%# update repetition index aliasing this one
-	dummy = find(dummy == indi);
-	df._rep{col}(dummy) = t1;
+	df._rep{col}(find(dummy == indi)) = t1;
       endif
     endfor
   endfor
@@ -68,7 +67,7 @@ function [df, S] = df_cow(df, S, col)
   endif
   %# sanity check
   dummy = sum(cellfun(@length, df._rep));
-  if dummy != df._cnt(2),
+  if (dummy != df._cnt(2)),
     df._cnt(3) = dummy;
   endif
 

@@ -1,16 +1,24 @@
+####################################################
+# Copyright 2010 Alois Schloegl 
+# This is part of the NaN-toolbox - a statistics and machine learning toolbox for data with and without missing values. 
+# http://pub.ist.ac.at/~schloegl/matlab/NaN/
+####################################################
+
+### modify directories according to your needs 
+INCOCTAVE = -I /usr/include/octave 
+MATLABDIR = /usr/local/matlab
+# comment the following line if you use MATLAB on 32-bit operating system
+MEX_OPTION += -largeArrayDims
+
+####################################################
 
 CC  	= gcc
 CXX 	= g++
 CFLAGS 	= -Wall -Wconversion -O3 -fPIC
 OCTMEX	= mkoctfile --mex
 
-MATLABDIR = /usr/local/matlab
-MEX_OPTION = CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
-# comment the following line if you use MATLAB on 32-bit computer
-MEX_OPTION += -largeArrayDims
-MATMEX	= $(MATLABDIR)/bin/mex $(MEX_OPTION)
-
-
+MEX_OPTION  = CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
+MATMEX	    = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
 PROGS = histo_mex.mex covm_mex.mex kth_element.mex sumskipnan_mex.mex str2array.mex train.mex svmtrain_mex.mex svmpredict_mex.mex xptopen.mex
 
@@ -31,8 +39,8 @@ $(PROGS): Makefile
 	$(MATMEX) $<           ## Matlab
 
 svmtrain_mex.mex svmpredict_mex.mex:     svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c
-	$(CXX) $(CFLAGS) -I /usr/include/octave -c svm.cpp
-	$(CC) $(CFLAGS) -I /usr/include/octave -c svm_model_matlab.c
+	$(CXX) $(CFLAGS) $(INCOCTAVE) -c svm.cpp
+	$(CC)  $(CFLAGS) $(INCOCTAVE) -c svm_model_matlab.c
 	env CC=$(CXX) $(OCTMEX) svmtrain_mex.cpp svm.o svm_model_matlab.o
 	env CC=$(CXX) $(OCTMEX) svmpredict_mex.cpp svm.o svm_model_matlab.o
 
@@ -48,7 +56,7 @@ train.$(MEX_EXT) predict.$(MEX_EXT): train.c linear.h tron.o linear.o linear_mod
 	#$(MATMEX) -lblas predict.c tron.o linear.o linear_model_matlab.o
 
 train.mex predict.mex: train.c linear.h tron.o linear.o linear_model_matlab.c
-	$(CC) $(CFLAGS) -I /usr/include/octave -c linear_model_matlab.c
+	$(CC) $(CFLAGS) $(INCOCTAVE) -c linear_model_matlab.c
 	env CC=$(CXX) $(OCTMEX) -lblas train.c tron.o linear.o linear_model_matlab.o
 	#env CC=$(CXX) $(OCTMEX) -lblas predict.c tron.o linear.o linear_model_matlab.o
 
@@ -57,7 +65,6 @@ linear.o: linear.cpp linear.h
 
 tron.o: tron.cpp tron.h
 	$(CXX) $(CFLAGS) -c tron.cpp
-
 
 
 clean: ; -$(RM) *.o core octave-core *.oct *~ *.mex*

@@ -374,7 +374,7 @@ if test -n "$JAVAC" -a -n "$JAR"; then
             HAVE_JAVA=yes
             JAVA_INCS="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/linux"
           fi
-          AC_CHECK_HEADER(GL/gl.h, [], AC_MSG_ERROR(Could not find OpenGL headers))
+          AC_CHECK_HEADER(gl.h, [], AC_MSG_ERROR(Could not find OpenGL headers))
           OF_CHECK_LIB(GL, glEnable, OPENGL_LIBS=-lGL, [
 	    ## Invalidate the cache.
 	    $as_unset ac_cv_lib_GL_glEnable

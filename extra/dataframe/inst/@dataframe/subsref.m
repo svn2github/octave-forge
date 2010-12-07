@@ -329,7 +329,8 @@ function resu = subsref(df, S)
     
     indt = {}; %# in case we have to mix matrix of different width
     if (!isempty(fullinds)),
-      nseq = length(unique(fullinds)); inds = fullinds;
+      inds = unique(fullinds); nseq = length(inds);
+      indt(1, 1:df._cnt(2)) = inds;
     else      
       inds = 1; indt(1, 1:df._cnt(2)) = inds; nseq = 1;
       if (isempty(S) || all(cellfun('isclass', S(1).subs, 'char')))

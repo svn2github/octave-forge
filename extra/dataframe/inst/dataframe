@@ -154,10 +154,16 @@
 %!assert((y\x).array, y\x.array)
 %!assert((x\z).array, x.array\z.array)
 % x=dataframe(randn(4, 3, 2)); y=randn(4, 3, 2); z=dataframe(y);
-%!assert((abs(sum(center(x)) < 10*eps).array))
+%!assert((abs(sum(center(x)) < sqrt(eps)).array))
 %!assert((x+y).array, x.array+y)
 %!assert((y+x).array, y+x.array)
 %!assert((x+z).array, x.array+z.array);
+%! [a, b] = sort(x(:)); x=dataframe(reshape((1:9)(b), [3 3])); 
+%! y = reshape((1:9)(b), [3 3]); z = dataframe(y);
+%!assert(x(x(:)), y(x(:)));
+%!assert(x(y(:)), y(y(:)));
+%!assert(x(x), y(x));
+%!assert(x(y), y(y)); 
 
 %!demo
 %! x=dataframe('octave_frame/data_test.csv')

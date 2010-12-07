@@ -168,28 +168,30 @@ function resu = subsref(df, S)
 
   IsFirst = true;
   while 1, %# avoid recursive calls on dataframe sub-accesses
-    
+  
     %# a priori, performs whole accesses
-    nrow = df._cnt(1); indr = 1:nrow;
-    ncol = df._cnt(2); indc = 1:ncol;
-   
+    nrow = df._cnt(1); indr = 1:nrow; 
+    ncol = df._cnt(2); indc = 1:ncol; 
+    %# linear indexes
+    [fullindr, fullindc, fullinds, onedimidx] = deal([]);
+
     %# iterate over S, sort out strange constructs as x()()(1:10, 1:4)
     while length(S) > 0,
-      if strcmp(S(1).type, '{}'),
-	if !IsFirst || !isempty(asked_output_format),
+      if (strcmp(S(1).type, '{}')),
+	if (!IsFirst || !isempty(asked_output_format)),
 	  error("Illegal dataframe dereferencing");
 	endif
 	[asked_output_type, asked_output_format] = deal('cell');
-      elseif !strcmp(S(1).type, '()'),
+      elseif (!strcmp(S(1).type, '()')),
 	%#   disp(S); keyboard
 	error("Illegal dataframe dereferencing");
       endif
-      if isempty(S(1).subs), %# process calls like x()
-	if isempty(asked_output_type),
+      if (isempty(S(1).subs)), %# process calls like x()
+	if (isempty(asked_output_type)),
 	  asked_output_type = class(df);
 	endif
-	if length(S) <= 1, 
-	  if strcmp(asked_output_type, class(df)),
+	if (length(S) <= 1), 
+	  if (strcmp(asked_output_type, class(df))),
 	    %# whole access without conversion
 	    resu = df; return; 
 	  endif
@@ -202,21 +204,21 @@ function resu = subsref(df, S)
 	endif      
       endif
       %# generic access
-      if isempty(S(1).subs{1}),
+      if (isempty(S(1).subs{1})),
 	error('subsref: first dimension empty ???');
       endif
-      if length(S(1).subs) > 1,
-	if isempty(S(1).subs{2}),
+      if (length(S(1).subs) > 1),
+	if (isempty(S(1).subs{2})),
 	  error('subsref: second dimension empty ???');
 	endif
 	[indr, nrow, S(1).subs{1}] = \
 	    df_name2idx(df._name{1}, S(1).subs{1}, df._cnt(1), 'row');      
-	if !isa(indr, 'char') && max(indr) > df._cnt(1),
+	if (!isa(indr, 'char') && max(indr) > df._cnt(1)),
 	  error("Accessing dataframe past end of lines");
 	endif
 	[indc, ncol, S(1).subs{2}] = \
 	    df_name2idx(df._name{2}, S(1).subs{2}, df._cnt(2), 'column');
-	if max(indc) > df._cnt(2),
+	if (max(indc) > df._cnt(2)),
 	  error("Accessing dataframe past end of columns");
 	endif
       else
@@ -224,7 +226,7 @@ function resu = subsref(df, S)
 	fullindr = 1;
 	switch class(S(1).subs{1})
 	  case {'char'} %# one dimensional access, disallow it if not ':' 
-	    if strcmp(S(1).subs{1}, ':'),
+	    if (strcmp(S(1).subs{1}, ':')),
 	      fullindr = []; fullindc = [];	 
 	    else
 	      error(["Accessing through single dimension and name " \
@@ -236,7 +238,8 @@ function resu = subsref(df, S)
 	    S(1).subs{1} = subsindex(S(1).subs{1}, 1);
 	endswitch
 	
-	if (!isempty(fullindr))
+	if (!isempty(fullindr)),
+	  %# convert linear index to subscripts
 	  if (length(df._cnt) <= 2),
 	    [fullindr, fullindc] = ind2sub(df._cnt, S(1).subs{1});
 	    fullinds = ones(size(fullindr));
@@ -245,9 +248,14 @@ function resu = subsref(df, S)
 	    [fullindr, fullindc, fullinds] = ind2sub\
 		([df._cnt dummy], S(1).subs{1});
 	  endif 
-	  indr = unique(fullindr); indc = unique(fullindc);
-	  nrow = length(indr); ncol = length(indc);
-	  if !isempty(asked_output_type) && ncol > 1,
+	  
+	  onedimidx = S(1).subs{1};
+
+	  indr = unique(fullindr); nrow = length(indr);
+	  %# determine on which columns we'll iterate
+	  indc = unique(fullindc)(:).'; ncol = length(indc);
+
+	  if (!isempty(asked_output_type) && ncol > 1),
 	    %# verify that the extracted values form a square matrix
 	    dummy = zeros(indr(end), indc(end));
 	    for indi = 1:ncol,
@@ -261,6 +269,7 @@ function resu = subsref(df, S)
 	      fullindr = []; fullindc = [];
 	    endif
 	  endif 
+	
 	endif
       endif
       %# at this point, S is either empty, either contains further dereferencing
@@ -319,36 +328,40 @@ function resu = subsref(df, S)
     endif
     
     indt = {}; %# in case we have to mix matrix of different width
-    inds = 1; indt(1, 1:df._cnt(2)) = inds; nseq = 1;
-    if (isempty(S) || all(cellfun('isclass', S(1).subs, 'char')))
-      inds = ':'; indt(1, 1:df._cnt(2)) = inds;
-      nseq = max(cellfun(@length, df._rep(indc)));
-    else
-      if (length(S(1).subs) > 1), %# access-as-matrix
-	if (length(S(1).subs) > 2),
-	  inds = S(1).subs{3};
-	  if (isa(inds, 'char')),
-	    nseq = max(cellfun(@length, df._rep(indc)));
-	    indt(1, 1:df._cnt(2)) = inds;
-	  else
-	    %# generate a specific index for each column
-	    nseq = length(inds);
-	    dummy = cellfun(@length, df._rep(indc));
-	    indt(1, 1:df._cnt(2)) = inds;
-	    indt(1==dummy) = 1; 
+    if (!isempty(fullinds)),
+      nseq = length(unique(fullinds)); inds = fullinds;
+    else      
+      inds = 1; indt(1, 1:df._cnt(2)) = inds; nseq = 1;
+      if (isempty(S) || all(cellfun('isclass', S(1).subs, 'char')))
+	inds = ':'; indt(1, 1:df._cnt(2)) = inds;
+	nseq = max(cellfun(@length, df._rep(indc)));
+      else
+	if (length(S(1).subs) > 1), %# access-as-matrix
+	  if (length(S(1).subs) > 2),
+	    inds = S(1).subs{3};
+	    if (isa(inds, 'char')),
+	      nseq = max(cellfun(@length, df._rep(indc)));
+	      indt(1, 1:df._cnt(2)) = inds;
+	    else
+	      %# generate a specific index for each column
+	      nseq = length(inds);
+	      dummy = cellfun(@length, df._rep(indc));
+	      indt(1, 1:df._cnt(2)) = inds;
+	      indt(1==dummy) = 1; 
+	    endif
 	  endif
 	endif
       endif
     endif
 
     if (strcmp(output_type, class(df))),
-      %# disp('line 295 ')
+      %#  disp('line 295 '); keyboard
       %# export the result as a dataframe
       resu = dataframe([]);
       resu._cnt(1) = nrow; resu._cnt(2) = ncol;
       for indi = 1:ncol,
 	resu._data{indi} =  df._data{indc(indi)}\
-	    (indr, df._rep{indi}(indt{indc(indi)})); 
+	    (indr, df._rep{indc(indi)}(indt{indc(indi)})); 
 	resu._rep{indi} =  1:size(resu._data{indi}, 2);
 	resu._name{2}(indi, 1) = df._name{2}(indc(indi));
 	resu._over{2}(1, indi) = df._over{2}(indc(indi));
@@ -473,68 +486,100 @@ function resu = subsref(df, S)
       %# * x(:, :) returns a horzcat of the third dimension 
       %# * x(:, n:m) select only the first sequence 
       %# * x(:) returns a vertcat of the columns of x(:, :)
-      %#   disp('line 403 '); keyboard
+      %# disp('line 403 '); keyboard
       if (isempty(S) || isempty(S(1).subs) || \
-	  length(S(1).subs) > 1), %# access-as-matrix
-	%# remove the magic, avoid recursive calls
-	df = struct(df); 
-	if (~isempty(asked_output_format)), %# force a conversion
-	  if (strmatch(asked_output_format, 'cell')),
-	    extractfunc = @(x) mat2cell\
-		(df._data{indc(x)}(indr, df._rep{indc(x)}(inds)), \
-		 ones(nrow, 1));
-	  else
-	    extractfunc = @(x) cast(df._data{indc(x)}\
-				    (indr, df._rep{indc(x)}(inds)),\
-				    asked_output_format);
-	  endif
-	else %# let the usual downclassing occur
-	  extractfunc = @(x) df._data{indc(x)}(indr, df._rep{indc(x)}(inds));
-	endif
-	try
-	  if (nseq > 1),
-	    dummy = reshape(extractfunc(1), nrow, 1, []); 
-	    if (size(dummy, 3) < nseq),
-	      dummy = repmat(dummy, [1 1 nseq]);
+	  length(S(1).subs) > 1 || \
+	  (isnumeric(S(1).subs{1}) && !isvector(S(1).subs{1}))), 
+	%# access-as-matrix
+	df = struct(df);	%# remove the magic, avoid recursive calls 
+	if (isempty(fullindr)), %# two index access
+	  if (~isempty(asked_output_format)), %# force a conversion
+	    if (strmatch(asked_output_format, 'cell')),
+	      extractfunc = @(x) mat2cell\
+		  (df._data{indc(x)}(indr, df._rep{indc(x)}(inds)), \
+		   ones(nrow, 1));
+	    else
+	      extractfunc = @(x) cast(df._data{indc(x)}\
+				      (indr, df._rep{indc(x)}(inds)),\
+				      asked_output_format);
 	    endif
-	  else
-	    dummy = extractfunc(1);
-	  endif
-	catch
-	  error("Column %d format (%s) can't be converted to %s", \
-		indc(1), df._type{indc(1)}, asked_output_format);
-	end_try_catch
-	if (ncol > 1),
-	  %# dynamic allocation with the final type
-	  resu = repmat(dummy, [1 ncol]);
-	  for indi = 2:ncol,
-	    try
-	      if (nseq > 1),
-		dummy = reshape(extractfunc(indi), nrow, 1, []);
-		if (size(dummy, 3) < nseq),
-		  dummy = repmat(dummy, [1 1 nseq]);
-		endif
-	      else
-		dummy = extractfunc(indi);
+	  else %# let the usual downclassing occur
+	    extractfunc = @(x) df._data{indc(x)}(indr, df._rep{indc(x)}(inds));
+	  endif	
+	  try
+	    if (nseq > 1),
+	      dummy = reshape(extractfunc(1), nrow, 1, []); 
+	      if (size(dummy, 3) < nseq),
+		dummy = repmat(dummy, [1 1 nseq]);
 	      endif
-	    catch
-	      error("Column %d format (%s) can't be converted to %s", \
-		    indc(indi), df._type{indc(indi)}, asked_output_format);
-	    end_try_catch
-	    resu(:, indi, :) = dummy;
-	  endfor
-	else
-	  if (strcmp(df._type{indc(1)}, 'char')),
-	    resu = char(dummy);
+	    else
+	      dummy = extractfunc(1);
+	    endif
+	  catch
+	    error("Column %d format (%s) can't be converted to %s", \
+		  indc(1), df._type{indc(1)}, asked_output_format);
+	  end_try_catch
+	  if (ncol > 1),
+	    %# dynamic allocation with the final type
+	    resu = repmat(dummy, [1 ncol]);
+	    for indi = 2:ncol,
+	      try
+		if (nseq > 1),
+		  dummy = reshape(extractfunc(indi), nrow, 1, []);
+		  if (size(dummy, 3) < nseq),
+		    dummy = repmat(dummy, [1 1 nseq]);
+		  endif
+		else
+		  dummy = extractfunc(indi);
+		endif
+	      catch
+		error("Column %d format (%s) can't be converted to %s", \
+		      indc(indi), df._type{indc(indi)}, asked_output_format);
+	      end_try_catch
+	      resu(:, indi, :) = dummy;
+	    endfor
 	  else
-	    resu = dummy;
+	    if (strcmp(df._type{indc(1)}, 'char')),
+	      resu = char(dummy);
+	    else
+	      resu = dummy;
+	    endif
 	  endif
-	endif
-	if (!isempty(S) && 2 == length(S(1).subs) \
+	  if (!isempty(S) && 2 == length(S(1).subs) \
 	      && all(cellfun('isclass', S(1).subs, 'char'))),
-	  resu = reshape(resu, nrow, ncol*nseq);
+	    resu = reshape(resu, nrow, ncol*nseq);
+	  endif
+	else %# one index access
+	  if (~isempty(asked_output_format)), %# force a conversion
+	    if (strmatch(asked_output_format, 'cell')),
+	      extractfunc = @(x, y) mat2cell(df._data{x}(:, df._rep{x}(y)), \
+					     ones(length(y), 1));
+	    else
+	      extractfunc = @(x, y) cast(df._data{x}(:, df._rep{x})(y), \
+					 asked_output_format);	    
+	    endif
+	  else %# let the usual downclassing occur
+	    extractfunc = @(x, y) df._data{x}(:, df._rep{x})(y);
+	  endif
+	  try
+	    resu = zeros(0, class(sum(cellfun(@(x) zeros(1, class(x(1))),\
+					      df._data(indc)))));
+	    for indi = indc,
+	      dummy = find(indi == fullindc);	%# linear global index
+	      %# linear index for this matrix
+	      idx = sub2ind(size(df._data{indi}), fullindr(dummy), \
+			    fullinds(dummy));
+	      resu(dummy) = extractfunc(indi, idx);
+	    endfor
+	  catch
+	    disp(lasterr); 
+	    error("Column %d format (%s) can't be converted to %s", \
+		  indi, df._type{indi}, asked_output_format);
+	  end_try_catch
+	  resu = reshape(resu, size(onedimidx));
 	endif
       else %# access-as-vector
+	%# disp('line 548 '); 
 	if (!isempty(fullindr)),
 	  switch df._type{indc(1)}
 	    case {'char'}

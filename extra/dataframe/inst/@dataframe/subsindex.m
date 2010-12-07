@@ -38,7 +38,7 @@ function resu = subsindex(df, base)
   if isa(dummy, 'logical'),
     resu = sort(find(dummy)-base);
   else
-    resu = dummy(:) - base;
+    resu = dummy - base;
   endif
 
 endfunction

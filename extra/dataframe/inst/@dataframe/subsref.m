@@ -233,11 +233,11 @@ function resu = subsref(df, S)
 	endif
       else
 	%# one single dim -- probably something like df(:), df(A), ...
-	fullindr = 1;
+	fullindr = 1; onedimidx = S(1).subs{1};
 	switch class(S(1).subs{1})
 	  case {'char'} %# one dimensional access, disallow it if not ':' 
 	    if (strcmp(S(1).subs{1}, ':')),
-	      fullindr = []; fullindc = [];	 
+	      fullindr = []; fullindc = []; asked_output_type = "array"; 
 	    else
 	      error(["Accessing through single dimension and name " \
 		     S(1).subs{1} " not allowed\n-- use variable(:, 'name') instead"]);
@@ -259,12 +259,9 @@ function resu = subsref(df, S)
 		([df._cnt dummy], S(1).subs{1});
 	  endif 
 	  
-	  onedimidx = S(1).subs{1};
-
 	  indr = unique(fullindr); nrow = length(indr);
 	  %# determine on which columns we'll iterate
 	  indc = unique(fullindc)(:).'; ncol = length(indc);
-
 	  if (!isempty(asked_output_type) && ncol > 1),
 	    %# verify that the extracted values form a square matrix
 	    dummy = zeros(indr(end), indc(end));
@@ -279,7 +276,6 @@ function resu = subsref(df, S)
 	      fullindr = []; fullindc = [];
 	    endif
 	  endif 
-	
 	endif
       endif
       %# at this point, S is either empty, either contains further dereferencing
@@ -319,22 +315,24 @@ function resu = subsref(df, S)
 	output_type = "array";
       endif
     endif
-
+    
     if (any(strcmp({asked_output_type}, class(df)))),
       %# was (any(strcmp({output_type, asked_output_type}, class(df))))
-     if (!isempty(S) && 1 == length(S(1).subs)),
-       if (ncol > 1), 
+      if (!isempty(S) && (1 == length(S(1).subs))),
+	if (ncol > 1), 
 	  if (false  & isempty(asked_output_type) \
 	      || strcmp(asked_output_type, class(df))),
 	    error("Vector-like access not implemented for 'dataframe' output format");
 	  else
 	    [asked_output_type, output_type] = deal("array");
 	  endif
-%#	  error("Selected columns not compatible with cat() -- use 'cell' as output format");
+	  %#	  error("Selected columns not compatible with cat() -- use 'cell' as output format");
+	elseif ((isnumeric(S(1).subs) && isvector(S(1).subs)) \
+		&& isempty(asked_output_type)),
+	  %# in the case of vector input, favor array output
+	  [asked_output_type, output_type] = deal("array");
 	endif
       endif
-    elseif (isempty(asked_output_type) && 1 == length(S(1).subs)),
-      [asked_output_type, output_type] = deal("array");
     endif
     
     indt = {}; %# in case we have to mix matrix of different width
@@ -492,7 +490,7 @@ function resu = subsref(df, S)
       %# * x(:, :) returns a horzcat of the third dimension 
       %# * x(:, n:m) select only the first sequence 
       %# * x(:) returns a vertcat of the columns of x(:, :)
-      %# disp('line 403 '); keyboard
+      disp('line 403 '); keyboard
       if (isempty(S) || isempty(S(1).subs) || \
 	  length(S(1).subs) > 1 || \
 	  (isnumeric(S(1).subs{1}) && !isvector(S(1).subs{1}))), 

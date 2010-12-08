@@ -143,8 +143,10 @@ function resu = subasgn(df, S, RHS)
 						 df._cnt(2), 'column');
       else
 	mz = max(cellfun(@length, df._rep));
-	[indr, indc, inds] = ind2sub([df._cnt(1:2) mz], indr);
-	ncol = length(unique(indc));
+	[fullindr, fullindc, fullinds] = ind2sub([df._cnt(1:2) mz], indr);
+	indr = unique(fullindr); indc = unique(fullindc); 
+	inds = unique(fullinds);
+	ncol = length(indc);
 	S(1).subs{1} = indr; S(1).subs{2} = indc;
 	if (any(inds > 1)),
 	  S(1).subs{3} = inds;
@@ -481,10 +483,19 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       %# skip second dim and copy data
       S.subs(2) = []; Sorig = S;
       for indi = 1:length(indc),
-	[df, S] = df_cow(df, S, indc(indi));
+	%try
+	  [df, S] = df_cow(df, S, indc(indi));
+	# catch
+	#   keyboard
+	#   error(lasterr());
+	# end_try_catch
 	if (strcmp(df._type(indc(indi)), RHS._type(indi))),
+	  try
 	  df._data{indc(indi)} = feval(@subsasgn, df._data{indc(indi)}, S, \
 				       RHS._data{indi}(:, RHS._rep{indi}));
+	  catch
+	    keyboard
+	  end_try_catch
 	else
 	  df._data{indc(indi)} = feval(@subsasgn, df._data{indc(indi)}, S, \
 				       cast(RHS._data{indi}(:, RHS._rep{indi}),\

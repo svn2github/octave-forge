@@ -31,7 +31,7 @@ function resu = display(df)
   if 2 == length(df._cnt),
     head = sprintf("Dataframe with %d rows and %d columns", df._cnt);
   else
-    head = sprintf("Dataframe with %d rows and %d columns (%d unfolded)", ...
+    head = sprintf("Dataframe with %d rows and %d columns on %d pages", ...
 		   df._cnt);
   endif
 

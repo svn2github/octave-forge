@@ -31,7 +31,7 @@ function n = numel(df, varargin)
 %#    n = feval(@numel, df, varargin{:});
 %#  else
     if 1 == nargin,
-      n = prod(df._cnt([1 end]));
+      n = sum(cellfun(@numel, df._data));
     else
       error(print_usage());
     endif

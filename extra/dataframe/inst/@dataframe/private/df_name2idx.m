@@ -30,12 +30,12 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
   %# $Id$
   %#
 
-  if isempty(subs),
+  if (isempty(subs)),
     %# not caring about rownames ? Avoid generating an error.
     idx = []; nelem = 0; return
   endif
 
-  if isa(subs, 'char'),
+  if (isa(subs, 'char')),
     orig_name = subs;
     if 1 == size(subs, 1),
       if strcmp(subs, ':') %# range operator
@@ -45,8 +45,9 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
     endif
     subs = cellstr(subs);
   else
-    if !isvector(subs),
-      error("Trying to access column as a matrix");
+    if (!isvector(subs)),
+      %# yes/no ?
+      %# error("Trying to access column as a matrix");
     endif
     switch class(subs)
       case {"cell" }
@@ -58,7 +59,7 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
     endswitch
   endif
 
-  if isa(subs, 'cell'),
+  if (isa(subs, 'cell')),
     subs = subs(:); idx = [];
     %# translate list of variables to list of indices
     for indi= 1:size(subs, 1),
@@ -73,35 +74,35 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
       %# detect | followed by EOL 
       subs{indi} = regexprep(subs{indi}, '([^\\])\|$', "$1\\|");
     
-      if 0 == index(subs{indi}, ':'),
+      if (0 == index(subs{indi}, ':')),
 	for indj = 1:min(length(names), count), %# sanity check
-	  if ~isempty(regexp(names{indj}, subs{indi})),
+	  if (~isempty(regexp(names{indj}, subs{indi}))),
 	    idx = [idx indj];
 	  endif
 	endfor
       else
 	dummy = strsplit( subs{indi}, ':');
 	ind_start = 1;
-	if !isempty(dummy{1}),
+	if (!isempty(dummy{1})),
 	  ind_start = sscanf(dummy{1}, "%d");
-	  if isempty(ind_start),
+	  if (isempty(ind_start)),
 	    ind_start = 1;
 	    for indj = 1:min(length(names), count), %# sanity check
-	      if ~isempty(regexp(names{indj}, subs{indi})),
+	      if (~isempty(regexp(names{indj}, subs{indi}))),
 		ind_start = indj; break; %# stop at the first match
 	      endif
 	    endfor
 	  endif
 	endif
 	
-	if isempty(dummy{2}) || strcmp(dummy{2}, 'end'),
+	if (isempty(dummy{2}) || strcmp(dummy{2}, 'end')),
 	  ind_stop = count;
 	else
 	  ind_stop = sscanf(dummy{2}, "%d");
-	  if isempty(ind_stop),
+	  if (isempty(ind_stop)),
 	    ind_stop = 1;
 	    for indj = min(length(names), count):-1:1, %# sanity check
-	      if ~isempty(regexp(names{indj}, subs{indi})),
+	      if (~isempty(regexp(names{indj}, subs{indi}))),
 		ind_stop = indj; break; %# stop at the last match
 	      endif
 	    endfor
@@ -110,19 +111,18 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
 	idx = [idx ind_start:ind_stop];
       endif
     endfor
-  elseif isa(subs, 'logical'),
+    if (isempty(idx)),
+      dummy = sprintf("Unknown %s name while searching for %s", ...
+		      dimname, orig_name);
+      error(dummy);
+    endif
+  elseif (isa(subs, 'logical')),
     idx = 1:length(subs);
     idx(~subs) = [];
-  elseif isa(subs, 'dataframe'),
+  elseif (isa(subs, 'dataframe')),
     idx = subsindex(subs, 1);
   else
     idx = subs;
-  endif
-
-  if isempty(idx),
-    dummy = sprintf("Unknown %s name while searching for %s", ...
-		    dimname, orig_name);
-    error(dummy);
   endif
 
   subs = idx;

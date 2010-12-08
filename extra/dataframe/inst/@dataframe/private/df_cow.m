@@ -39,7 +39,7 @@ function [df, S] = df_cow(df, S, col)
     inds = S.subs{2};
   endif
 
-  for indi = inds,
+  for indi = inds(:).',
     dummy = df._rep{col}; dummy(indi) = 0;
     [t1, t2] = ismember(df._rep{col}(indi)(:), dummy);
     for indj = t2(find(t2)), %# Copy-On-Write

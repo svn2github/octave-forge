@@ -117,9 +117,10 @@ function resu = display(df)
     resu = []; 
     if (!isempty(df._ridx)),
       for ind1 = 1:size(df._ridx, 2),
-	if (1 == size(df._ridx, 3)) && (any(!isna(df._ridx(:, ind1)))),
+	if (1 == size(df._ridx, 3)) && \
+	      (any(!isna(df._ridx(1:df._cnt(1), ind1)))),
 	  dummy{2, 1} = [sprintf("_%d", ind1) ; "Nr"];
-	  dummy{3, 1} = disp(df._ridx(:, ind1)); 
+	  dummy{3, 1} = disp(df._ridx(1:df._cnt(1), ind1)); 
 	  indi = regexp(dummy{3, 1}, '\b.*\b', 'match', 'dotexceptnewline');
 	  if isempty(resu),
 	    resu = strjust(char(dummy{2, 1}, indi), 'right');
@@ -129,9 +130,9 @@ function resu = display(df)
 	  endif
 	else 
 	  for ind2 = 1:size(df._ridx, 3),
-	    if (any(!isna(df._ridx(:, ind1, ind2)))),
+	    if (any(!isna(df._ridx(1:df._cnt(1), ind1, ind2)))),
 	      dummy{2, 1} = [sprintf("_%d.%d", ind1, ind2) ; "Nr"];
-	      dummy{3, 1} = disp(df._ridx(:, ind1, ind2)); 
+	      dummy{3, 1} = disp(df._ridx(1:df._cnt(1), ind1, ind2)); 
 	      indi = regexp(dummy{3, 1}, '\b.*\b', 'match', 'dotexceptnewline');
 	      if isempty(resu), 
 		resu = strjust(char(dummy{2, 1}, indi), 'right');

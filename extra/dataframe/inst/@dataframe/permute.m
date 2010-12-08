@@ -1,4 +1,4 @@
-function resu = permute(df, varargin) 
+function resu = permute(df, perm) 
   
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -26,6 +26,85 @@ function resu = permute(df, varargin)
 
   %# resu = df_mapper2(@permute, df, varargin{:});
 
-  resu = permute(df_whole(df), varargin{:});
+  resu = dataframe([]);
+
+  resu._cnt = df._cnt(perm);
+  if (ndims(df._ridx) < 3),
+    resu._ridx = permute(df._ridx, [min(perm(1), 2) min(perm(2:3))]);
+  else
+    resu._ridx = permute(df._ridx, perm);
+  endif
+   
+  if (perm(1) > 1),
+    resu._name{1} = df._name{2};
+    resu._over{1} = df._over{2};
+  else
+    resu._name{1} = df._name{1};
+    resu._over{1} = df._over{1};
+  endif
+
+  if (isempty(resu._name{1})),
+    indc = 0;
+  else
+    indc = length(resu._name{1});
+  endif
+  indi = resu._cnt(1) - indc;
+  if (indi > 0),
+    %# generate a name for the new row(s)
+    dummy = cstrcat(repmat('_', indi, 1), ...
+		    strjust(num2str(indc + (1:indi).'), 'left'));
+    resu._name{1}(indc + (1:indi)) = cellstr(dummy);
+    resu._over{1}(1, indc + (1:indi)) = true;
+  endif 
+
+  if (perm(2) > 1),
+    resu._name{2} = df._name{2};
+    resu._over{2} = df._over{2};
+  else
+    resu._name{2} = df._name{1};
+    resu._over{2} = df._over{1};
+  endif
+  
+  if (isempty(resu._name{2})),
+    indc = 0;
+  else
+    indc = length(resu._name{2});
+  endif
+  indi = resu._cnt(2) - indc;
+  if (indi > 0),
+    %# generate a name for the new column(s)
+    dummy = cstrcat(repmat('_', indi, 1), ...
+		    strjust(num2str(indc + (1:indi).'), 'left'));
+    resu._name{2}(indc + (1:indi)) = cellstr(dummy);
+    resu._over{2}(1, indc + (1:indi)) = true;    
+  endif 
+  
+  if (2 != perm(2)),
+    %# recompute the new type
+    dummy = zeros(0, class(sum(cellfun(@(x) zeros(1, class(x(1))),\
+				       df._data))));
+    resu._type(1:resu._cnt(2)) = class(dummy);
+    dummy = permute(df_whole(df), perm);
+    for indi = 1:resu._cnt(2),
+      resu._data{indi} = squeeze(dummy(:, indi, :));
+      resu._rep{indi} = 1:size(resu._data{indi}, 2);
+    endfor 
+  else %# 2 == perm(2)
+    if (1 == perm(1)), %# blank operation
+      resu._type = df._type;
+      resu._data = df._data;
+      resu._rep = df._rep;
+    else
+      for indi = 1:resu._cnt(2),
+	unfolded = df._data{indi}(:, df._rep{indi});
+	resu._data{indi} = permute(unfolded, [2 1]);
+	resu._rep{indi} = 1:size(resu._data{indi}, 2);
+	resu._type{indi} = df._type{indi};
+      endfor    
+    endif
+  endif
+
+  resu.src = df._src;
+  resu.cmt = df._cmt;
 
 endfunction

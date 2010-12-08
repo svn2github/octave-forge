@@ -399,7 +399,9 @@ function resu = subsref(df, S)
 	else
 	  resu._ridx = df._ridx;
 	endif
-	resu._ridx = resu._ridx(onedimidx);
+	if (!isempty(resu._ridx)),
+	  resu._ridx = resu._ridx(onedimidx);
+	endif
       endif
       %# to be verified :       keyboard
       resu._src = df._src;

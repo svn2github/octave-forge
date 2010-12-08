@@ -229,10 +229,7 @@ function resu = df_func(func, A, B, itercol=true, whole=logical([0 0]));
   endif
 
   resu._type = cellfun(@class, resu._data, "UniformOutput", false); 
-  %# sanity check
-  dummy = sum(cellfun(@length, resu._rep));
-  if dummy != resu._cnt(2),
-    resu._cnt(3) = dummy;
-  endif
+
+  resu = df_thirddim(resu);
 
 endfunction

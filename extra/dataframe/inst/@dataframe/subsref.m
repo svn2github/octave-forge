@@ -377,12 +377,7 @@ function resu = subsref(df, S)
 	resu._over{1}(1, 1:nrow) = df._over{1}(indr);
       endif
       resu._src = df._src;
-      dummy = sum(cellfun(@length, resu._rep));
-      if (dummy > resu._cnt(2)),
-	resu._cnt(3) = dummy;
-      else
-	resu._cnt = resu._cnt(1:2);
-      endif
+      resu = df_thirddim(resu);
       if (length(S) > 1), %# perform further access, if required
 	df = resu;
 	S = S(2:end); 	%# avoid recursive calls

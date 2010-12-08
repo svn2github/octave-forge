@@ -191,12 +191,7 @@ function resu = cat(dim, A, varargin)
 	endif
       endfor
      
-      dummy = sum(cellfun(@length, resu._rep));
-      if dummy != resu._cnt(2),
-	resu._cnt(3) = dummy;
-      else
-	resu._cnt = resu._cnt(1:2);
-      endif
+      resu = df_thirddim(resu);
       
     otherwise
       error('Incorrect call to cat');

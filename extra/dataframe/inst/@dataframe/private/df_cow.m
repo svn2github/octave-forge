@@ -65,10 +65,7 @@ function [df, S] = df_cow(df, S, col)
       S.subs{2} = df._rep{col}(S.subs{2});
     endif
   endif
-  %# sanity check
-  dummy = sum(cellfun(@length, df._rep));
-  if (dummy != df._cnt(2)),
-    df._cnt(3) = dummy;
-  endif
+
+  df = df_thirddim(df);
 
 endfunction

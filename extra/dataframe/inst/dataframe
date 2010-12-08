@@ -49,7 +49,7 @@
 %! if any(size(x) != [10 7]),
 %!   error('x: wrong input size')
 %! endif
-%! if any(size(y) != [10 5 8]),
+%! if any(size(y) != [10 5 2]),
 %!   error('y: wrong input size')
 %! endif
 %!#assert(numel(x), 1);
@@ -109,7 +109,7 @@
 %!assert(x.array(:, "C")(2:4), x.array(2:4, "C"))
 %! # complex modifications through cell access
 %! z = dataframe(x, {"VB*", {"Polarity" ,"Sense"; ones(12,2), zeros(10,2)}});
-%!assert(size(z), [12 9 11]);
+%!assert(size(z), [12 9 2]);
 %!assert(z.Sense(11:12, :), NA*ones(2, 2));
 %!assert(size(z._over{2}, 2) - size(x._over{2}, 2), 2);
 %! x = dataframe(randn(3, 3)); y = x.array;

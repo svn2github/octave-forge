@@ -1,6 +1,8 @@
-function resu = df_mapper(func, df, varargin)
-  %# resu = df_mapper(func, df)
-  %# small interface to iterate some func over the elements of a dataframe.
+function [df] = df_thirddim(df)
+
+  %# function [resu] = df_thirddim(df)
+  %# This is a small helper function which recomputes the third dim each
+  %# time a change may have occured.
 
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -26,12 +28,12 @@ function resu = df_mapper(func, df, varargin)
   %# $Id$
   %#
 
-  resu = df_allmeta(df);
-  resu._data = cellfun(@(x) feval(func, x, varargin{:}), df._data, \
-		       "UniformOutput", false);
-  resu._rep = df._rep; %# things didn't change
-  resu._type = cellfun(@(x) class(x(1)), resu._data, "UniformOutput", false);
-
-  resu = df_thirddim(resu);
+  %# sanity check
+  dummy = max(cellfun(@length, df._rep));
+  if (dummy != 1),
+    df._cnt(3) = dummy;
+  elseif (length(df._cnt) > 2), 
+    df._cnt = df._cnt(1:2);
+  endif
 
 endfunction

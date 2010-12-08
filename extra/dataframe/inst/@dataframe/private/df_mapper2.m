@@ -63,10 +63,6 @@ function resu = df_mapper2(func, df, varargin)
       error("Invalid dimension %d", dim); 
   endswitch
 
-  %# sanity check
-  dummy = sum(cellfun(@length, resu._rep));
-  if dummy != resu._cnt(2),
-    resu._cnt(3) = dummy;
-  endif
-  
+  resu = df_thirddim(resu);
+
 endfunction

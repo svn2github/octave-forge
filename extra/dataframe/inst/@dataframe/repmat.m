@@ -60,8 +60,6 @@ function resu = repmat(df, varargin)
     resu._cnt(2)  = resu._cnt(2) * idx(2);
   endif
 
-  if (any([length(resu._cnt) length(idx)] > 2)),
-    resu._cnt(3) = sum(cellfun(@length, resu._rep));
-  endif
-      
+  resu = df_thirddim(resu);
+
 endfunction

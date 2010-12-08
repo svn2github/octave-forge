@@ -210,12 +210,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	 df._cnt(1) = df._cnt(1) - length(indr);
        endif
     endif
-    dummy = sum(cellfun(@length, df._rep));
-    if (dummy != df._cnt(2)),
-      df._cnt(3) = dummy;
-    else
-      df._cnt = df._cnt(1:2);
-    endif
+    df = df_thirddim(df);
     return;
   endif
 
@@ -606,11 +601,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     df._over{2}(1, indc) = false;
   endif
   
-  %# adjust cnt(3) if required
-  dummy = sum(cellfun(@length, df._rep));
-  if (dummy > df._cnt(2)) || length(df._cnt) > 2,
-    df._cnt(3) = dummy;
-  endif
+  df = df_thirddim(df);
 
   %# catch
   %#   dummy = lasterr();

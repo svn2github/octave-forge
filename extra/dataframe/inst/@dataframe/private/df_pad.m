@@ -154,7 +154,7 @@ function df = df_pad(df, dim, n, coltype=[])
 	df._data{indi} = dummy;
 	df._rep{indi} = [df._rep{indi} length(df._rep{indi})+ones(1, n)];
       endfor
-      df._cnt(3) = sum(cellfun(@length, df._rep));
+        df =  df_thirddim(df);
     otherwise
       error('Invalid dimension in df_pad');
   endswitch

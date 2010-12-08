@@ -191,14 +191,16 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	df._data = df._data(indi);
 	df._rep = df._rep(indi);
       endif
-    endif
-    if (strcmp(S.subs(2), ':')),  %# removing rows
+      if (size(df._ridx, 3) > 1),
+	df._ridx(:, indc, :) = [];
+      endif
+    elseif (strcmp(S.subs(2), ':')),  %# removing rows
       indr = S.subs{1}; 
       if !isempty(df._name{1}),
 	df._name{1}(indr, :) = []; 
 	df._over{1}(indr) = []; 
       endif	
-      df._ridx(indr) = [];
+      df._ridx(indr, :, :) = [];
       %# to remove a line, iterate on each column
       df._data = cellfun(@(x) feval(@subsasgn, x, S, []), \
 			 df._data, "UniformOutPut", false);

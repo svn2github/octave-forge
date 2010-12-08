@@ -146,9 +146,13 @@ function df = df_pad(df, dim, n, coltype=[])
 	  case { 'double' }
 	    dummy = horzcat(df._data{indi}(:, df._rep{indi}), \
 			    repmat(NA, df._cnt(1), 1));
+	  case { 'logical' }
+	    %# there is no logical 'NA' -- fill empty elems with false
+	    dummy = horzcat(df._data{indi}(:, df._rep{indi}), \
+			    repmat(false, df._cnt(1), 1));
 	  otherwise
-	    dummy = cast(horizcat(df._data{indi}(:, df._rep{indi}), \
-				  repmat(NA, df._cnt(1), 1)), \
+	    dummy = cast(horzcat(df._data{indi}(:, df._rep{indi}), \
+				 repmat(NA, df._cnt(1), 1)), \
 			 df._type{indi});
 	endswitch
 	df._data{indi} = dummy;

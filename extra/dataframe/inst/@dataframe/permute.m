@@ -24,6 +24,8 @@ function resu = permute(df, varargin)
   %# $Id$
   %#
 
-  resu = df_mapper2(@permute, df, varargin{:});
+  %# resu = df_mapper2(@permute, df, varargin{:});
+
+  resu = permute(df_whole(df), varargin{:});
 
 endfunction

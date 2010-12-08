@@ -29,8 +29,9 @@ function varargout = find(df, varargin)
       resu = []; mz = max(cellfun(@length, df._rep));
       for indc = 1:df._cnt(2),
 	[indr, inds] = feval(@find, df._data{indc}(:, df._rep{indc}));
-	resu = [resu; sub2ind([df._cnt(1:2) mz], indr, \
-			      repmat(indc, [length(indr) 1]), inds)]; 
+	%# create a vector the same size as indr
+	dummy = indr; dummy(:) = indc;
+	resu = [resu; sub2ind([df._cnt(1:2) mz], indr, dummy, inds)];
       endfor
       varargout{1} = sort(resu);
     case 2

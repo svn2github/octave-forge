@@ -30,10 +30,19 @@ function resu = df_mapper2(func, df, varargin)
 
   dim = 1; resu = []; vout = varargin;
   
-  if (!isempty(varargin) && isnumeric(varargin{1})), 
-    dim = varargin{1}; 
-    %# the "third" dim is the second on stored data
-    if 3 == dim, vout(1) = 2; endif
+  %# take care of constructs as min(x, [], dim)  
+  if (!isempty(varargin)),
+    indk = 1; while indk <= length(varargin),
+      if (isnumeric(varargin{indk})),
+	if (isempty(varargin{indk})),
+	  indk = indk + 1; continue;
+	endif
+	dim = varargin{indk}; 
+	%# the "third" dim is the second on stored data
+	if 3 == dim, vout(indk) = 2; endif
+      endif
+      break;
+    endwhile
   endif
 
   switch(dim)

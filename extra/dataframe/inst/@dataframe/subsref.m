@@ -219,7 +219,17 @@ function resu = subsref(df, S)
 	[indc, ncol, S(1).subs{2}] = \
 	    df_name2idx(df._name{2}, S(1).subs{2}, df._cnt(2), 'column');
 	if (max(indc) > df._cnt(2)),
-	  error("Accessing dataframe past end of columns");
+	  %# is it a two index access of a 3D structure ?
+	  if (length(df._cnt) > 2),
+	    [fullindc, fullinds] = ind2sub(df._cnt(2:3), indc);
+	    if (fullindc <= df._cnt(2)),
+	      indc = fullindc; inds = fullinds; 
+	    endif
+	  endif
+	  %# retest
+	  if (max(indc) > df._cnt(2)),
+	    error("Accessing dataframe past end of columns");
+	  endif
 	endif
       else
 	%# one single dim -- probably something like df(:), df(A), ...

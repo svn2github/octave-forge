@@ -162,8 +162,10 @@
 %! y = reshape((1:9)(b), [3 3]); z = dataframe(y);
 %!assert(x(x(:)), y(x(:)));
 %!assert(x(y(:)), y(y(:)));
-%!assert(x(x), y(x));
-%!assert(x(y), y(y)); 
+%! z= x(x);
+%!assert(z.array, y(x));
+%! z = x(y);
+%!assert(z.array, y(y)); 
 
 %!demo
 %! x=dataframe('octave_frame/data_test.csv')

@@ -183,7 +183,7 @@ function resu = subsref(df, S)
 	endif
 	[asked_output_type, asked_output_format] = deal('cell');
       elseif (!strcmp(S(1).type, '()')),
-	%#   disp(S); keyboard
+	%# disp(S); keyboard
 	error("Illegal dataframe dereferencing");
       endif
       if (isempty(S(1).subs)), %# process calls like x()
@@ -316,25 +316,17 @@ function resu = subsref(df, S)
       endif
     endif
     
-    if (any(strcmp({asked_output_type}, class(df)))),
-      %# was (any(strcmp({output_type, asked_output_type}, class(df))))
+    if (any(strcmp({output_type, asked_output_type}, class(df))))
       if (!isempty(S) && (1 == length(S(1).subs))),
-	if (ncol > 1), 
-	  if (false  & isempty(asked_output_type) \
-	      || strcmp(asked_output_type, class(df))),
-	    error("Vector-like access not implemented for 'dataframe' output format");
-	  else
-	    [asked_output_type, output_type] = deal("array");
-	  endif
-	  %#	  error("Selected columns not compatible with cat() -- use 'cell' as output format");
-	elseif ((isnumeric(S(1).subs) && isvector(S(1).subs)) \
-		&& isempty(asked_output_type)),
+	%# is the selection index vector-like ?
+	if ((isnumeric(S(1).subs{1}) && isvector(S(1).subs{1})) \
+	    && isempty(asked_output_type)),
 	  %# in the case of vector input, favor array output
 	  [asked_output_type, output_type] = deal("array");
 	endif
       endif
     endif
-    
+      
     indt = {}; %# in case we have to mix matrix of different width
     if (!isempty(fullinds)),
       inds = unique(fullinds); nseq = length(inds);
@@ -364,27 +356,54 @@ function resu = subsref(df, S)
     endif
 
     if (strcmp(output_type, class(df))),
-      %#  disp('line 295 '); keyboard
+      %# disp('line 295 '); keyboard
       %# export the result as a dataframe
       resu = dataframe([]);
       resu._cnt(1) = nrow; resu._cnt(2) = ncol;
-      for indi = 1:ncol,
-	resu._data{indi} =  df._data{indc(indi)}\
-	    (indr, df._rep{indc(indi)}(indt{indc(indi)})); 
-	resu._rep{indi} =  1:size(resu._data{indi}, 2);
-	resu._name{2}(indi, 1) = df._name{2}(indc(indi));
-	resu._over{2}(1, indi) = df._over{2}(indc(indi));
-	resu._type{indi} = df._type{indc(indi)};
-      endfor
-      %# to be verified :       keyboard
-      if (!isempty(df._ridx) && size(df._ridx, 2) >= inds),
-	resu._ridx = df._ridx(indr, inds);
-      endif 
-      if (length(df._name{1}) >= max(indr)),
-	resu._name{1}(1:nrow, 1) = df._name{1}(indr);
-	resu._over{1}(1, 1:nrow) = df._over{1}(indr);
+      if (isempty(fullindr)),
+	for indi = 1:ncol,
+	  resu._data{indi} =  df._data{indc(indi)}\
+	      (indr, df._rep{indc(indi)}(indt{indc(indi)})); 
+	  resu._rep{indi} =  1:size(resu._data{indi}, 2);
+	  resu._name{2}(indi, 1) = df._name{2}(indc(indi));
+	  resu._over{2}(1, indi) = df._over{2}(indc(indi));
+	  resu._type{indi} = df._type{indc(indi)};
+	endfor
+	if (!isempty(df._ridx) && size(df._ridx, 2) >= inds),
+	  resu._ridx = df._ridx(indr, inds);
+	endif 
+	if (length(df._name{1}) >= max(indr)),
+	  resu._name{1}(1:nrow, 1) = df._name{1}(indr);
+	  resu._over{1}(1, 1:nrow) = df._over{1}(indr);
+	endif
+      else
+	dummy = df_whole(df);
+	dummy = dummy(onedimidx);
+	for indi = 1:size(dummy, 2),
+	  resu._data{indi} = squeeze(dummy(:, indi, :));
+	  resu._type{indi} = class(dummy(1, indi, 1));
+	  resu._rep{indi} = 1:size(resu._data{indi}, 2);
+	endfor
+	for indi = 1:resu._cnt(2),
+	  dummy = unique(fullindc(:, indi));
+	  if (1 == length(dummy)),
+	    resu._name{2}(indi)= df._name{2}(dummy);
+	    resu._over{2}(indi)= df._over{2}(dummy);
+	  else
+	    resu._name{2}(indi)= ["X" num2str(indi)];
+	    resu._over{2}(indi)= true;
+	  endif
+	endfor
+	if (1 ==  size(df._ridx, 2)),
+	  resu._ridx = repmat(df._ridx, [1 ncol 1]);
+	else
+	  resu._ridx = df._ridx;
+	endif
+	resu._ridx = resu._ridx(onedimidx);
       endif
+      %# to be verified :       keyboard
       resu._src = df._src;
+      resu._cmt = df._cmt;
       resu = df_thirddim(resu);
       if (length(S) > 1), %# perform further access, if required
 	df = resu;
@@ -490,7 +509,7 @@ function resu = subsref(df, S)
       %# * x(:, :) returns a horzcat of the third dimension 
       %# * x(:, n:m) select only the first sequence 
       %# * x(:) returns a vertcat of the columns of x(:, :)
-      disp('line 403 '); keyboard
+      %# disp('line 403 '); keyboard
       if (isempty(S) || isempty(S(1).subs) || \
 	  length(S(1).subs) > 1 || \
 	  (isnumeric(S(1).subs{1}) && !isvector(S(1).subs{1}))), 
@@ -554,6 +573,7 @@ function resu = subsref(df, S)
 	    resu = reshape(resu, nrow, ncol*nseq);
 	  endif
 	else %# one index access
+	  %# disp('line 557'); keyboard
 	  if (~isempty(asked_output_format)), %# force a conversion
 	    if (strmatch(asked_output_format, 'cell')),
 	      extractfunc = @(x, y) mat2cell(df._data{x}(:, df._rep{x}(y)), \
@@ -583,7 +603,7 @@ function resu = subsref(df, S)
 	  resu = reshape(resu, size(onedimidx));
 	endif
       else %# access-as-vector
-	%# disp('line 548 '); 
+	%# disp('line 548 '); keyboard
 	if (!isempty(fullindr)),
 	  switch df._type{indc(1)}
 	    case {'char'}

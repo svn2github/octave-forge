@@ -379,19 +379,23 @@ function resu = subsref(df, S)
       else
 	dummy = df_whole(df);
 	dummy = dummy(onedimidx);
-	for indi = 1:size(dummy, 2),
-	  resu._data{indi} = squeeze(dummy(:, indi, :));
-	  resu._type{indi} = class(dummy(1, indi, 1));
-	  resu._rep{indi} = 1:size(resu._data{indi}, 2);
-	endfor
-	for indi = 1:resu._cnt(2),
-	  dummy = unique(fullindc(:, indi));
-	  if (1 == length(dummy)),
-	    resu._name{2}(indi)= df._name{2}(dummy);
-	    resu._over{2}(indi)= df._over{2}(dummy);
+      	for indi = 1:resu._cnt(2),
+	  indc = unique(fullindc(:, indi));
+	  if (1 == length(indc)),
+	    resu._name{2}(indi)= df._name{2}(indc);
+	    resu._over{2}(indi)= df._over{2}(indc);
+	    unfolded = df._data{indi}(:, df._rep{indi});
+	    indj =  sub2ind(size(unfolded), fullindr(:, indc), \
+			    fullinds(:, indc));
+	    resu._data{indi} = unfolded(indj);
+	    resu._type{indi} = df._type{indi};
+	    resu._rep{indi} = 1:size(resu._data{indi}, 2);  
 	  else
 	    resu._name{2}(indi)= ["X" num2str(indi)];
 	    resu._over{2}(indi)= true;
+	    resu._data{indi} = squeeze(dummy(:, indi, :));
+	    resu._type{indi} = class(dummy(1, indi, 1));
+	    resu._rep{indi} = 1:size(resu._data{indi}, 2);  
 	  endif
 	endfor
 	if (1 ==  size(df._ridx, 2)),

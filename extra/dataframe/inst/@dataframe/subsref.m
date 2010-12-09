@@ -384,11 +384,11 @@ function resu = subsref(df, S)
 	  if (1 == length(indc)),
 	    resu._name{2}(indi)= df._name{2}(indc);
 	    resu._over{2}(indi)= df._over{2}(indc);
-	    unfolded = df._data{indi}(:, df._rep{indi});
-	    indj =  sub2ind(size(unfolded), fullindr(:, indc), \
-			    fullinds(:, indc));
+	    unfolded = df._data{indc}(:, df._rep{indc});
+	    indj =  sub2ind(size(unfolded), fullindr(:, indi), \
+			    fullinds(:, indi));
 	    resu._data{indi} = unfolded(indj);
-	    resu._type{indi} = df._type{indi};
+	    resu._type{indi} = df._type{indc};
 	    resu._rep{indi} = 1:size(resu._data{indi}, 2);  
 	  else
 	    resu._name{2}(indi)= ["X" num2str(indi)];

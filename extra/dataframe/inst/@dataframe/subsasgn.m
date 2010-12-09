@@ -55,6 +55,7 @@ function resu = subasgn(df, S, RHS)
 	  if isnull(RHS), error("Colnames can't be nulled"); endif
 	  [resu._name{2}, resu._over{2}] = df_strset\
 	      (df._name{2}, df._over{2}, S(2:end), RHS, '_');
+	  resu._name{2} = genvarname(resu._name{2});
 	  return
 	  
 	case "types"
@@ -105,7 +106,15 @@ function resu = subasgn(df, S, RHS)
 	  endif
 	  %# translate the name to column
 	  [indc, ncol] = df_name2idx(df._name{2}, S(1).subs, \
-				     df._cnt(2), 'column');
+				     df._cnt(2), 'column', true);
+	  if isempty(indc),
+	    %# dynamic allocation
+	    df = df_pad(df, 2, 1, class(RHS));
+	    indc = df._cnt(2); ncol = 1;
+	    df._name{2}(end) = S(1).subs;
+	    df._name{2} = genvarname(df._name{2});
+	    df._over{2} = false;
+	  endif
     	  if (length(S) > 1),
 	    if (1 == length(S(2).subs)), %# add column reference
 	      S(2).subs{2} = indc;
@@ -504,7 +513,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	S = Sorig;
       endfor
       if (!isempty(RHS._name{1})),
-	df._name{1}(indr) = RHS._name{1}(indr);
+	df._name{1}(indr) = genvarname(RHS._name{1}(indr));
 	df._over{1}(indr) = RHS._over{1}(indr);
       endif
       if (!isempty(RHS._src)),
@@ -603,12 +612,12 @@ function df = df_matassign(df, S, indc, ncol, RHS)
   
   if !isempty(rname) && (length(df._over{1}) < max(indr) || \
 	all(df._over{1}(indr))),
-    df._name{1}(indr, 1) = rname;
+    df._name{1}(indr, 1) = genvarname(rname);
     df._over{1}(1, indr) = false;
   endif
   if !isempty(cname) && (length(df._over{2}) < max(indc) || \
 	all(df._over{2}(indc))),
-    df._name{2}(indc, 1) = cname;
+    df._name{2}(indc, 1) = genvarname(cname);
     df._over{2}(1, indc) = false;
   endif
   

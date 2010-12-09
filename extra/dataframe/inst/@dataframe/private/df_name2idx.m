@@ -1,4 +1,4 @@
-function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
+function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname, missingOK=false);
 
   %# This is a helper routine to translate rownames or columnames into
   %# real index. Input: names, a char array, and subs, a cell array as
@@ -111,7 +111,7 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname);
 	idx = [idx ind_start:ind_stop];
       endif
     endfor
-    if (isempty(idx)),
+    if (isempty(idx) && !missingOK),
       dummy = sprintf("Unknown %s name while searching for %s", ...
 		      dimname, orig_name);
       error(dummy);

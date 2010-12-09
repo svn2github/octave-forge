@@ -103,6 +103,7 @@ if length(varargin) > 0,
 	    otherwise
 	      df._name{1} = cellstr(num2str(varargin{indi+1}));
 	  endswitch
+	  df._name{1} = genvarname(df._name{1});
 	  df._over{1}(1, 1:length(df._name{1})) = false;
 	  df._cnt(1) = size(df._name{1}, 1);
 	  df._ridx = (1:df._cnt(1))';
@@ -122,6 +123,7 @@ if length(varargin) > 0,
 	  if any(dummy > 1),
 	    warning('dataframe colnames taken literally and not interpreted');
 	  endif
+	  df._name{2} = genvarname(df._name{2});
 	  df._over{2}(1, 1:length(df._name{2})) = false;
 	  varargin(indi:indi+1) = [];
 	case 'seeked',
@@ -165,7 +167,8 @@ while indi <= size(varargin, 2),
 	    if !strcmp(dummy, UTF8_BOM),
 	      frewind(fid);
 	    endif
-	    in = fscanf(fid, "%c"); %# slurps everything
+	    in = fread(fid); %# slurps everything
+	    in = char(in.'); %# convert doubles to char
 	  else
 	    in = [];
 	  endif
@@ -297,6 +300,7 @@ while indi <= size(varargin, 2),
       if length(df._name{2}) < indj(1) || isempty(df._name{2}(indj)),
 	[df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
 	    = df_colnames(inputname(indi), indj);
+	df._name{2} = genvarname(df._name{2});
       endif
       %# allow overwriting of column names
       df._over{2}(1, indj) = true;
@@ -310,6 +314,7 @@ while indi <= size(varargin, 2),
 	  [df._name{2}(indj, 1),  df._over{2}(1, indj)] ...
 	      = df_colnames(inputname(indi), indj);
 	endif
+	df._name{2} = genvarname(df._name{2});
       endif
     endif
     if (!isempty(indj)),

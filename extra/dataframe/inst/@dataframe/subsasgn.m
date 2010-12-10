@@ -113,7 +113,7 @@ function resu = subasgn(df, S, RHS)
 	    indc = df._cnt(2); ncol = 1;
 	    df._name{2}(end) = S(1).subs;
 	    df._name{2} = genvarname(df._name{2});
-	    df._over{2} = false;
+	    df._over{2}(end) = false;
 	  endif
     	  if (length(S) > 1),
 	    if (1 == length(S(2).subs)), %# add column reference

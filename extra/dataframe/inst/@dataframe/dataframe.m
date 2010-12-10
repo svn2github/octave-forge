@@ -167,8 +167,9 @@ while indi <= size(varargin, 2),
 	    if !strcmp(dummy, UTF8_BOM),
 	      frewind(fid);
 	    endif
-	    in = fread(fid); %# slurps everything
-	    in = char(in.'); %# convert doubles to char
+	    %# slurp everything and convert doubles to char, avoiding
+	    %# problems with char > 127
+	    in = char(fread(fid).'); 
 	  else
 	    in = [];
 	  endif

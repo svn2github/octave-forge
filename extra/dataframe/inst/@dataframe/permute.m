@@ -24,13 +24,12 @@ function resu = permute(df, perm)
   %# $Id$
   %#
 
-  %# resu = df_mapper2(@permute, df, varargin{:});
-
   resu = dataframe([]);
 
   resu._cnt = df._cnt(perm);
+  
   if (ndims(df._ridx) < 3),
-    resu._ridx = permute(df._ridx, [min(perm(1), 2) min(perm(2:3))]);
+    resu._ridx = permute(df._ridx, [min(perm(1), 2) min(perm(2:end))]);
   else
     resu._ridx = permute(df._ridx, perm);
   endif
@@ -104,7 +103,7 @@ function resu = permute(df, perm)
     endif
   endif
 
-  resu.src = df._src;
-  resu.cmt = df._cmt;
+  resu._src = df._src;
+  resu._cmt = df._cmt;
 
 endfunction

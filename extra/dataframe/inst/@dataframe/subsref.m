@@ -319,8 +319,8 @@ function resu = subsref(df, S)
     if (any(strcmp({output_type, asked_output_type}, class(df))))
       if (!isempty(S) && (1 == length(S(1).subs))),
 	%# is the selection index vector-like ?
-	if ((isnumeric(S(1).subs{1}) && isvector(S(1).subs{1})) \
-	    && isempty(asked_output_type)),
+	if ((isnumeric(S(1).subs{1}) && isvector(S(1).subs{1}) &&
+	     df._cnt(1) > 1) && isempty(asked_output_type)),
 	  %# in the case of vector input, favor array output
 	  [asked_output_type, output_type] = deal("array");
 	endif

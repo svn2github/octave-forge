@@ -323,7 +323,8 @@ while indi <= size(varargin, 2),
       idx.subs = {'', indj};
       %# use direct assignement
       if (ndims(x) > 2), idx.subs{3} = 1:size(x, 3); endif
-      df = subsasgn(df, idx, x);
+      %#      df = subsasgn(df, idx, x);	<= call directly lower level
+      df = df_matassign(df, idx, indj, length(indj), x);
       if (!isempty(cmt_lines)),
 	df._cmt{end+1, 1} = cmt_lines;
 	cmt_lines = [];

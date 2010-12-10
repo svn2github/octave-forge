@@ -136,7 +136,12 @@ function [resu, idx] = sort(df, varargin)
      otherwise
       error("Invalid dimension %d", dim); 
   endswitch
-
-  resu = dataframe(resu);
+  
+  dummy = dbstack();
+  if (any(strmatch('quantile', {dummy.name}))),
+    resu = df_whole(resu);
+  else
+    resu = dataframe(resu);
+  endif
 
 endfunction

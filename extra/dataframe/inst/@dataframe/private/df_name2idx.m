@@ -117,7 +117,7 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname, missingOK
       error(dummy);
     endif
   elseif (isa(subs, 'logical')),
-    idx = 1:length(subs);
+    idx = 1:length(subs(:)); idx = reshape(idx, size(subs));
     idx(~subs) = [];
   elseif (isa(subs, 'dataframe')),
     idx = subsindex(subs, 1);

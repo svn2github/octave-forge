@@ -1,5 +1,4 @@
-function resu = reshape(df, varargin)
-  %# function resu = reshape(df, varargin)
+function resu = kron(A, B)
   
   %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
@@ -25,11 +24,13 @@ function resu = reshape(df, varargin)
   %# $Id$
   %#
 
-  dummy = horzcat(varargin{:});
-  if (any(dummy != df._cnt)),
-    error('Function not yet implemented on dataframe');
-  else
-    resu = df; %# blank operation
+  if (isa(A, 'dataframe')),
+    A = df_whole(A);
   endif
+  if (isa(B, 'dataframe')),
+    B = df_whole(B);
+  endif
+
+  resu = kron(A, B);
 
 endfunction

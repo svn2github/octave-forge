@@ -117,10 +117,12 @@ function [resu, idx] = sort(df, varargin)
 	resu._data{indi} = squeeze(resu._data{indi});
 	resu._rep{indi} = 1:size(resu._data{indi}, 2);
       endfor
-      if all([1 == size(idx, 2) 1 == size(idx, 3)]),
-	resu._ridx = resu._ridx(idx, :);
-	resu._name{1, 1} = resu._name{1, 1}(idx);
-	resu._over{1, 1} = resu._over{1, 1}(idx);
+      if (all([1 == size(idx, 2) 1 == size(idx, 3)])),
+	resu._ridx = resu._ridx(idx, :); 
+	if (!isempty(resu._name{1, 1})),
+	  resu._name{1, 1} = resu._name{1, 1}(idx);
+	  resu._over{1, 1} = resu._over{1, 1}(idx);
+	endif
       else
 	%# data where mixed
 	resu._ridx = idx;

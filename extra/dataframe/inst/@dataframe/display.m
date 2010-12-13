@@ -165,8 +165,12 @@ function resu = display(df)
     if (!isempty(dummy{3, 2})),
       indi = ~cellfun('isempty', dummy{3, 2});
       if (any(indi)),
-	resu = horzcat(resu, vspace, strjust(char(dummy{2, 2}, dummy{3, 2}),\
-					     'right'));
+	try
+	  resu = horzcat(resu, vspace, strjust(char(dummy{2, 2}, dummy{3, 2}),\
+					       'right'));
+	catch
+	  disp('line 172 '); keyboard
+	end_try_catch
       endif
     endif
     

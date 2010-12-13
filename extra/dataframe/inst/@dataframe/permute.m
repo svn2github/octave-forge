@@ -26,7 +26,11 @@ function resu = permute(df, perm)
 
   resu = dataframe([]);
 
-  resu._cnt = df._cnt(perm);
+  if (length(df._cnt) >= length(perm)),
+    resu._cnt = df._cnt(perm);
+  else
+    resu._cnt = [df._cnt 1](perm);
+  endif
   
   if (ndims(df._ridx) < 3),
     resu._ridx = permute(df._ridx, [min(perm(1), 2) min(perm(2:end))]);
@@ -34,7 +38,7 @@ function resu = permute(df, perm)
     resu._ridx = permute(df._ridx, perm);
   endif
    
-  if (perm(1) > 1),
+  if (2 == perm(1)),
     resu._name{1} = df._name{2};
     resu._over{1} = df._over{2};
   else
@@ -56,7 +60,7 @@ function resu = permute(df, perm)
     resu._over{1}(1, indc + (1:indi)) = true;
   endif 
 
-  if (perm(2) > 1),
+  if (2 == perm(2)),
     resu._name{2} = df._name{2};
     resu._over{2} = df._over{2};
   else

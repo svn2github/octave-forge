@@ -247,7 +247,12 @@ function resu = subsref(df, S)
 	  case {'dataframe'}
 	    S(1).subs{1} = subsindex(S(1).subs{1}, 1);
 	endswitch
-	
+
+	if (isempty(S(1).subs{1})), 
+	  resu = df_colmeta(df);
+	  return; 
+	endif
+
 	if (!isempty(fullindr)),
 	  %# convert linear index to subscripts
 	  if (length(df._cnt) <= 2),

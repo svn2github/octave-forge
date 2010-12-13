@@ -326,7 +326,7 @@ while indi <= size(varargin, 2),
       %#      df = subsasgn(df, idx, x);	<= call directly lower level
       df = df_matassign(df, idx, indj, length(indj), x);
       if (!isempty(cmt_lines)),
-	df._cmt{end+1, 1} = cmt_lines;
+	df._cmt = vertcat(df._cmt, cellstr(cmt_lines));
 	cmt_lines = [];
       endif
     else

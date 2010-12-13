@@ -28,21 +28,28 @@ function resu = display(df)
   %#
 
   %# generate header name
-  if 2 == length(df._cnt),
-    head = sprintf("Dataframe with %d rows and %d columns", df._cnt);
-  else
-    head = sprintf("Dataframe with %d rows and %d columns on %d pages", ...
-		   df._cnt);
+  dummy = inputname(1);
+  if (isempty(dummy)),
+    dummy = "ans";
   endif
 
-  if !isempty(df._src),
+  if (2 == length(df._cnt)),
+    head = sprintf("%s = dataframe with %d rows and %d columns", \
+		   dummy, df._cnt);
+  else
+    head = sprintf("%s = dataframe with %d rows and %d columns on %d pages", \
+		   dummy, df._cnt);
+  endif
+
+  if (!isempty(df._src)),
     for indi = 1:size(df._src, 1),
       head = strvcat\
 	  (head, [repmat("Src: ", size(df._src{indi, 1}, 1), 1)\
 		  df._src{indi, 1}]);
     endfor
   endif
-  if !isempty(df._cmt),
+
+  if (!isempty(df._cmt)),
     for indi = 1:size(df._cmt, 1),
       head = strvcat\
 	  (head, [repmat("Comment: ", size(df._cmt{indi, 1}, 1), 1)\
@@ -50,13 +57,13 @@ function resu = display(df)
     endfor
   endif
   
-  if all(df._cnt > 0), %# stop for empty df
+  if (all(df._cnt > 0)), %# stop for empty df
     dummy=[]; vspace = repmat(' ', df._cnt(1), 1);
     indi = 1; %# the real, unfolded index
     %# loop over columns where the corresponding _data really exists
     for indc = 1:min(df._cnt(2), size(df._data, 2)), 
       %# emit column names and type
-      if 1 == length(df._rep{indc}),
+      if (1 == length(df._rep{indc})),
 	dummy{1, 2+indi} = deblank(disp(df._name{2}{indc}));
 	dummy{2, 2+indi} = deblank(df._type{indc});
       else
@@ -79,8 +86,8 @@ function resu = display(df)
 	    indj = cellfun('isprint', tmp_str, 'UniformOutput', false); 
 	    indj = ~cellfun('all', indj);
 	    for indr = 1:length(indj),
-	      if indj(indr),
-		if isna(tmp_str{indr}),
+	      if (indj(indr)),
+		if (isna(tmp_str{indr})),
 		  tmp_str{indr} = "NA";
 		else
 		  tmp_str{indr} = undo_string_escapes(tmp_str{indr});
@@ -122,7 +129,7 @@ function resu = display(df)
 	  dummy{2, 1} = [sprintf("_%d", ind1) ; "Nr"];
 	  dummy{3, 1} = disp(df._ridx(1:df._cnt(1), ind1)); 
 	  indi = regexp(dummy{3, 1}, '\b.*\b', 'match', 'dotexceptnewline');
-	  if isempty(resu),
+	  if (isempty(resu)),
 	    resu = strjust(char(dummy{2, 1}, indi), 'right');
 	  else
 	    resu = horzcat(resu, vspace, strjust(char(dummy{2, 1}, indi), \
@@ -134,7 +141,7 @@ function resu = display(df)
 	      dummy{2, 1} = [sprintf("_%d.%d", ind1, ind2) ; "Nr"];
 	      dummy{3, 1} = disp(df._ridx(1:df._cnt(1), ind1, ind2)); 
 	      indi = regexp(dummy{3, 1}, '\b.*\b', 'match', 'dotexceptnewline');
-	      if isempty(resu), 
+	      if (isempty(resu)), 
 		resu = strjust(char(dummy{2, 1}, indi), 'right');
 	      else
 		resu = horzcat(resu, vspace, strjust(char(dummy{2, 1}, indi), \
@@ -147,7 +154,7 @@ function resu = display(df)
     endif
 
     %# emit row names
-    if isempty(df._name{1}),
+    if (isempty(df._name{1})),
       dummy{2, 2} = []; dummy{3, 2} = [];
     else
       dummy{2, 2} = [" ";" "];
@@ -155,9 +162,9 @@ function resu = display(df)
     endif
     
     %# insert a vertical space
-    if !isempty(dummy{3, 2}),
+    if (!isempty(dummy{3, 2})),
       indi = ~cellfun('isempty', dummy{3, 2});
-      if any(indi),
+      if (any(indi)),
 	resu = horzcat(resu, vspace, strjust(char(dummy{2, 2}, dummy{3, 2}),\
 					     'right'));
       endif

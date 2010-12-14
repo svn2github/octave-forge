@@ -37,29 +37,30 @@ function resu = permute(df, perm)
   else
     resu._ridx = permute(df._ridx, perm);
   endif
-   
+
+  if (size(resu._ridx, 1) < resu._cnt(1)),
+    %# adjust index size, if required
+    resu._ridx(end+1:resu._cnt(1), :, :) = NA;
+  endif
+
   if (2 == perm(1)),
     resu._name{1} = df._name{2};
     resu._over{1} = df._over{2};
+    indc = length(resu._name{1});
+    indi = resu._cnt(1) - indc;
+    if (indi > 0),
+      %# generate a name for the new row(s)
+      dummy = cstrcat(repmat('_', indi, 1), ...
+		      strjust(num2str(indc + (1:indi).'), 'left'));
+      resu._name{1}(indc + (1:indi)) = cellstr(dummy);
+      resu._over{1}(1, indc + (1:indi)) = true;
+    endif 
   else
     resu._name{1} = df._name{1};
     resu._over{1} = df._over{1};
   endif
 
-  if (isempty(resu._name{1})),
-    indc = 0;
-  else
-    indc = length(resu._name{1});
-  endif
-  indi = resu._cnt(1) - indc;
-  if (indi > 0),
-    %# generate a name for the new row(s)
-    dummy = cstrcat(repmat('_', indi, 1), ...
-		    strjust(num2str(indc + (1:indi).'), 'left'));
-    resu._name{1}(indc + (1:indi)) = cellstr(dummy);
-    resu._over{1}(1, indc + (1:indi)) = true;
-  endif 
-
+  
   if (2 == perm(2)),
     resu._name{2} = df._name{2};
     resu._over{2} = df._over{2};

@@ -118,7 +118,9 @@ function [resu, idx] = sort(df, varargin)
 	resu._rep{indi} = 1:size(resu._data{indi}, 2);
       endfor
       if (all([1 == size(idx, 2) 1 == size(idx, 3)])),
-	resu._ridx = resu._ridx(idx, :); 
+	if (size(resu._ridx, 1) == resu._cnt(1)),
+	  resu._ridx = resu._ridx(idx, :);
+	endif
 	if (!isempty(resu._name{1, 1})),
 	  resu._name{1, 1} = resu._name{1, 1}(idx);
 	  resu._over{1, 1} = resu._over{1, 1}(idx);

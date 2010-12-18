@@ -23,16 +23,18 @@
 
 function display (q)
 
-  disp ([inputname(1), ".w ="]);
+  inputname_str = inputname(1);
+
+  disp ([inputname_str, ".w ="]);
   disp (q.w);
   disp ("");
-  disp ([inputname(1), ".x ="]);
+  disp ([inputname_str, ".x ="]);
   disp (q.x);
   disp ("");
-  disp ([inputname(1), ".y ="]);
+  disp ([inputname_str, ".y ="]);
   disp (q.y);
   disp ("");
-  disp ([inputname(1), ".z ="]);
+  disp ([inputname_str, ".z ="]);
   disp (q.z);
   disp ("");
 

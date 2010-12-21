@@ -352,6 +352,9 @@ if test -n "$JAVAC" -a -n "$JAR"; then
           # This is the Debian default path
           elif test -d "/usr/lib/jvm/default-java"; then
             JAVA_HOME=/usr/lib/jvm/default-java
+          # This is the path of java 6 on debian
+          elif test -d "/usr/lib/jvm/java-6-sun"; then
+            JAVA_HOME=//usr/lib/jvm/java-6-sun
           else
             JAVA_HOME=/usr/lib/jvm
           fi

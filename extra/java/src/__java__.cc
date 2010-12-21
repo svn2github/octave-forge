@@ -224,7 +224,11 @@ static std::string get_module_path(const std::string& name, bool strip_name = tr
   std::string retval;
 
   retval = octave_env::make_absolute (load_path::find_file (name), 
+#ifdef HAVE_OCTAVE_33
+                      octave_env::get_current_directory ());
+#else
 				      octave_env::getcwd ());
+#endif
 
   if (! retval.empty () && strip_name)
     {
@@ -418,7 +422,11 @@ static void initialize_jvm ()
     if (! jvm_bin_path.empty ())
       {
 	jvm_bin_path = (jvm_bin_path + std::string ("\\bin"));
-	old_cwd = octave_env::getcwd ();
+#ifdef HAVE_OCTAVE_33
+    old_cwd = octave_env::get_current_directory ());
+#else
+    old_cwd = octave_env::getcwd ());
+#endif
 	set_dll_directory (jvm_bin_path);
 	octave_env::chdir (jvm_bin_path);
       }

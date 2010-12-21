@@ -31,7 +31,8 @@ function prt = dcdp (f, p, dp, func, bounds)
   hook.f = f;
 
   if (nargin > 4)
-    hook.bounds = bounds;
+    hook.lbounds = bounds(:, 1);
+    hook.ubounds = bounds(:, 2);
   end
 
   hook.diffp = abs (dp);

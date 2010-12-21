@@ -51,28 +51,31 @@ function prt = __dfdp__ (p, func, hook)
       diff_onesided = false (n, 1);
     end
 
-    if (isfield (hook, 'bounds'))
-      bounds = hook.bounds;
+    if (isfield (hook, 'lbound'))
+      lbound = hook.lbound;
     else
-      bounds = ones (n, 2);
-      bounds(:, 1) = -Inf;
-      bounds(:, 2) = Inf;
+      lbound = - Inf (n, 1);
+    end
+
+    if (isfield (hook, 'ubound'))
+      ubound = hook.ubound;
+    else
+      ubound = Inf (n, 1);
     end
 
     if (isfield (hook, 'plabels'))
       plabels = hook.plabels;
     else
-      plabels = num2cell ((1:n).');
+      plabels = cell2cell (num2cell ((1:n).'), 1);
     end
 
   else
     fixed = false (n, 1);
     diff_onesided = fixed;
     diffp = .001 * ones (n, 1);
-    bounds = ones (n, 2);
-    bounds(:, 1) = -Inf;
-    bounds(:, 2) = Inf;
-    plabels = num2cell ((1:n).');
+    lbound = - Inf (n, 1);
+    ubound = Inf (n, 1);
+    plabels = cell2cell (num2cell ((1:n).'), 1);
   end    
 
   prt = zeros (m, n); % initialise Jacobian to Zero
@@ -91,11 +94,11 @@ function prt = __dfdp__ (p, func, hook)
 
   %% p may be slightly out of bounds due to inaccuracy, or exactly at
   %% the bound -> single sided interval
-  idxvl = p <= bounds(:, 1);
-  idxvg = p >= bounds(:, 2);
-  p1(idxvl) = min (p(idxvl) + absdel(idxvl), bounds(idxvl, 2));
+  idxvl = p <= lbound;
+  idxvg = p >= ubound;
+  p1(idxvl) = min (p(idxvl) + absdel(idxvl), ubound(idxvl, 1));
   idxd(idxvl) = false;
-  p1(idxvg) = max (p(idxvg) - absdel(idxvg), bounds(idxvg, 1));
+  p1(idxvg) = max (p(idxvg) - absdel(idxvg), lbound(idxvg, 1));
   idxd(idxvg) = false;
   idxs = ~(fixed | idxd); % single sided interval
 
@@ -109,19 +112,19 @@ function prt = __dfdp__ (p, func, hook)
 				% versions
   %% remaining single sided intervals, violating a bound -> take largest
   %% possible direction of single sided interval
-  idxvs(idxnvs) = p1(idxnvs) < bounds(idxnvs, 1) | ...
-      p1(idxnvs) > bounds(idxnvs, 2);
-  del1 = p(idxvs) - bounds(idxvs, 1);
-  del2 = bounds(idxvs, 2) - p(idxvs);
+  idxvs(idxnvs) = p1(idxnvs) < lbound(idxnvs, 1) | ...
+      p1(idxnvs) > ubound(idxnvs, 1);
+  del1 = p(idxvs) - lbound(idxvs, 1);
+  del2 = ubound(idxvs, 1) - p(idxvs);
   idx1g2 = del1 > del2;
   idx1g2w(idxvs) = idx1g2;
   idx1le2w(idxvs) = ~idx1g2;
-  p1(idx1g2w) = max (p(idx1g2w) - absdel(idx1g2w), bounds(idx1g2w, 1));
+  p1(idx1g2w) = max (p(idx1g2w) - absdel(idx1g2w), lbound(idx1g2w, 1));
   p1(idx1le2w) = min (p(idx1le2w) + absdel(idx1le2w), ...
-		      bounds(idx1le2w, 2));
+		      ubound(idx1le2w, 1));
   %% double sided interval
-  p1(idxnvd) = min (p(idxnvd) + absdel(idxnvd), bounds(idxnvd, 2));
-  p2(idxnvd) = max (p(idxnvd) - absdel(idxnvd), bounds(idxnvd, 1));
+  p1(idxnvd) = min (p(idxnvd) + absdel(idxnvd), ubound(idxnvd, 1));
+  p2(idxnvd) = max (p(idxnvd) - absdel(idxnvd), lbound(idxnvd, 1));
 
   del(idxs) = p1(idxs) - p(idxs);
   del(idxd) = p1(idxd) - p2(idxd);

@@ -37,9 +37,9 @@ function ret = dfxpdp (varargin)
   %% (useful in optimization if some parameters are not optimized, but
   %% are 'fixed').
   %%
-  %% hook.bounds: Two-column matrix of parameter bounds (or -Inf or
-  %% +Inf, respectively) to be respected in finite differencing. The
-  %% consistency of this matrix is not checked.
+  %% hook.lbound, hook.ubound: vectors of lower and upper parameter
+  %% bounds (or -Inf or +Inf, respectively) to be respected in finite
+  %% differencing. The consistency of bounds is not checked.
 
 
   %% This is an interface to __dfdp__.m.

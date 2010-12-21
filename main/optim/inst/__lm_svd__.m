@@ -38,8 +38,8 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
   n_gencstr = hook.n_gencstr; % number of non-linear constraints
   eq_idx = hook.eq_idx; % logical index of equality constraints in all
 				% constraints
-  bounds = hook.bounds; % bounds, subset of linear inequality
-				% constraints in mc and vc
+  lbound = hook.lbound; % bounds, subset of linear inequality
+  ubound = hook.ubound; % constraints in mc and vc
 
   %% passed values of constraints for initial parameters
   pin_cstr = hook.pin_cstr;
@@ -80,7 +80,8 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
   %% some useful variables derived from passed variables
   n_lcstr = size (vc, 1);
   have_constraints_except_bounds = ...
-      n_lcstr + n_gencstr > sum (reshape (~isinf (bounds), [], 1));
+      n_lcstr + n_gencstr > ...
+      sum (lbound ~= -Inf) + sum (ubound ~= Inf);
   n = length (pin);
   wtl = wt(:);
 
@@ -98,7 +99,7 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
       warning ('initial parameters violate equality constraints');
     end
   end
-  idx = bounds(:, 1) == bounds(:, 2);
+  idx = lbound == ubound;
   if (any (idx))
     warning ('lower and upper bounds identical for some parameters, fixing the respective parameters');
     fixed(idx) = true;
@@ -106,18 +107,18 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
   if (all (fixed))
     error ('no free parameters');
   end
-  lidx = pin < bounds(:, 1);
-  uidx = pin > bounds(:, 2);
+  lidx = pin < lbound;
+  uidx = pin > ubound;
   if (any (lidx | uidx) && have_constraints_except_bounds)
     warning ('initial parameters outside bounds, not corrected since other constraints are given');
   else
     if (any (lidx))
       warning ('some initial parameters set to lower bound');
-      pin(lidx) = bounds(lidx, 1);
+      pin(lidx, 1) = lbound(lidx, 1);
     end
     if (any (uidx))
       warning ('some initial parameters set to upper bound');
-      pin(uidx) = bounds(uidx, 2);
+      pin(uidx, 1) = ubound(uidx, 1);
     end
   end
   if (n_gencstr > 0 && any (~isinf (maxstep)))
@@ -425,12 +426,12 @@ function [p, resid, cvg, outp] = __lm_svd__ (F, pin, hook)
 	%% --- but only if no further constraints are given, otherwise
 	%% the inaccuracy in honoring them might increase by this
 	if (~have_constraints_except_bounds)
-	  lidx = p < bounds(:, 1);
-	  uidx = p > bounds(:, 2);
-	  p(lidx) = bounds(lidx, 1);
-	  p(uidx) = bounds(uidx, 2);
-	  chg(lidx) = p(lidx) - pprev(lidx);
-	  chg(uidx) = p(uidx) - pprev(uidx);
+	  lidx = p < lbound;
+	  uidx = p > ubound;
+	  p(lidx, 1) = lbound(lidx, 1);
+	  p(uidx, 1) = ubound(uidx, 1);
+	  chg(lidx, 1) = p(lidx, 1) - pprev(lidx, 1);
+	  chg(uidx, 1) = p(uidx, 1) - pprev(uidx, 1);
 	end
 	%%
 	f = F (p);

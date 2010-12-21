@@ -59,7 +59,8 @@ function prt = dfdp (x, f, p, dp, func, bounds)
   hook.f = f;
 
   if (nargin > 5)
-    hook.bounds = bounds;
+    hook.lbound = bounds(:, 1);
+    hook.ubound = bounds(:, 2);
   end
 
   hook.diffp = abs (dp);

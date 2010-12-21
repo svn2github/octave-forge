@@ -37,13 +37,15 @@ function [p, resid, cvg, outp] = \
   if (nargin == 1 && ischar (f) && strcmp (f, "defaults"))
     p = optimset ("param_config", [], \
 		  "param_order", [], \
+		  "param_dims", [], \
 		  "f_inequc_pstruct", false, \
 		  "f_equc_pstruct", false, \
 		  "f_pstruct", false, \
 		  "df_inequc_pstruct", false, \
 		  "df_equc_pstruct", false, \
 		  "dfdp_pstruct", false, \
-		  "bounds", [], \
+		  "lbound", [], \
+		  "ubound", [], \
 		  "dfdp", [], \
 		  "cpiv", @ cpiv_bard, \
 		  "max_fract_change", [], \
@@ -84,6 +86,7 @@ function [p, resid, cvg, outp] = \
 
   pconf = optimget (settings, "param_config");
   pord = optimget (settings, "param_order");
+  pdims = optimget (settings, "param_dims");
   f_inequc_pstruct = optimget (settings, "f_inequc_pstruct", false);
   f_equc_pstruct = optimget (settings, "f_equc_pstruct", false);
   f_pstruct = optimget (settings, "f_pstruct", false);
@@ -92,7 +95,8 @@ function [p, resid, cvg, outp] = \
 				f_inequc_pstruct);
   df_equc_pstruct = optimget (settings, "df_equc_pstruct", \
 			      f_equc_pstruct);
-  bounds = optimget (settings, "bounds");
+  lbound = optimget (settings, "lbound");
+  ubound = optimget (settings, "ubound");
   dfdp = optimget (settings, "dfdp");
   if (ischar (dfdp)) dfdp = str2func (dfdp); endif
   max_fract_change = optimget (settings, "max_fract_change");
@@ -100,6 +104,11 @@ function [p, resid, cvg, outp] = \
   diffp = optimget (settings, "diffp");
   diff_onesided = optimget (settings, "diff_onesided");
   fixed = optimget (settings, "fixed");
+
+  any_vector_conf = ! (isempty (lbound) && isempty (ubound) && \
+		       isempty (max_fract_change) && \
+		       isempty (fract_prec) && isempty (diffp) && \
+		       isempty (diff_onesided) && isempty (fixed));
 
   ## collect constraints
   [mc, vc, f_genicstr, df_gencstr, user_df_gencstr] = \
@@ -117,34 +126,97 @@ function [p, resid, cvg, outp] = \
   if (! user_df_genecstr) df_equc_pstruct = false; endif
 
   ## some settings require a parameter order
-  if (isempty (pord))
-    if ((pin_struct || ! isempty (pconf) || f_inequc_pstruct || \
-	 f_equc_pstruct || f_pstruct || dfdp_pstruct || \
-	 df_inequc_pstruct || df_equc_pstruct || mc_struct || \
-	 emc_struct))
-      error ("given settings require specification of parameter order");
+  if ((pin_struct || ! isempty (pconf) || f_inequc_pstruct || \
+       f_equc_pstruct || f_pstruct || dfdp_pstruct || \
+       df_inequc_pstruct || df_equc_pstruct || mc_struct || \
+       emc_struct))
+    if (isempty (pord))
+      if (pin_struct)
+	if (any_vector_conf || \
+	    ! (f_pstruct && \
+	       (f_inequc_pstruct || isempty (f_genicstr)) && \
+	       (f_equc_pstruct || isempty (f_genecstr)) && \
+	       (dfdp_pstruct || isempty (dfdp)) && \
+	       (df_inequc_pstruct || ! user_df_gencstr) && \
+	       (df_equc_pstruct || ! user_df_genecstr) && \
+	       (mc_struct || isempty (mc)) && \
+	       (emc_struct || isempty (emc))))
+	  error ("no parameter order specified and constructing a parameter order from the structure of initial parameters can not be done since not all configuration or given functions are structure based");
+	else
+	  pord = fieldnames (pin);
+	endif
+      else
+	error ("given settings require specification of parameter order or initial parameters in the form of a structure");
+      endif
     endif
-  else
     pord = pord(:);
-    if (rows (unique (pord)) < rows (pord))
+    if (pin_struct && ! all (arefields (pin, pord)))
+      error ("some initial parameters lacking");
+    endif
+    if ((nnames = rows (unique (pord))) < rows (pord))
       error ("duplicate parameter names in 'param_order'");
     endif
-  endif
-
-  if (! pin_struct)
-    np = length (pin);
+    if (isempty (pdims))
+      if (pin_struct)
+	pdims = cellfun \
+	    (@ size, fields2cell (pin, pord), "UniformOutput", false);
+      else
+	pdims = num2cell (ones (nnames, 2), 2);
+      endif
+    else
+      pdims = pdims(:);
+      if (pin_struct && \
+	  ! all (cellfun (@ (x, y) prod (size (x)) == prod (y), \
+			  struct2cell (pin), pdims)))
+	error ("given param_dims and dimensions of initial parameters do not match");
+      endif
+    endif
+    if (nnames != rows (pdims))
+      error ("lengths of 'param_order' and 'param_dims' not equal");
+    endif
+    pnel = cellfun (@ prod, pdims);
+    ppartidx = cumsum (pnel);
+    ppartidx = [[1; ppartidx(1:end-1)+1], ppartidx];
+    if (any (pnel > 1))
+      pnonscalar = true;
+      cpnel = num2cell (pnel);
+      prepidx = cat (1, cellfun \
+		     (@ (x, n) x(ones (1, n), 1), \
+		      num2cell ((1:nnames).'), cpnel, \
+		      "UniformOutput", false){:});
+      epord = pord(prepidx, 1);
+      psubidx = cat (1, cellfun \
+		     (@ (n) (1:n).', cpnel, \
+		      "UniformOutput", false){:});
+    else
+      pnonscalar = false; # some less expensive interfaces later
+      prepidx = (1:nnames).';
+      epord = pord;
+      psubidx = ones (nnames, 1);
+    endif
   else
-    np = length (pord);
+    pord = []; # spares checks for given but not needed
   endif
 
-  plabels = num2cell ((1:np).');
+  if (pin_struct)
+    np = sum (pnel);
+  else
+    np = length (pin);
+    if (! isempty (pord) && np != sum (pnel))
+      error ("number of initial parameters not correct");
+    endif
+  endif
+
+  plabels = cell2cell (num2cell ((1:np).'), 1);
   if (! isempty (pord))
-    plabels = cat (2, plabels, pord);
+    plabels = cat (2, plabels, cell2cell (epord, 1), \
+		   cell2cell (num2cell (psubidx), 1));
   endif
 
   ## some useful vectors
   zerosvec = zeros (np, 1);
   NAvec = NA (np, 1);
+  Infvec = Inf (np, 1);
   falsevec = false (np, 1);
   sizevec = [np, 1];
 
@@ -154,10 +226,9 @@ function [p, resid, cvg, outp] = \
 
     ## parameter-related configuration is either allowed by a structure
     ## or by vectors
-    if (! (isempty (bounds) && isempty (max_fract_change) && \
-	   isempty (fract_prec) && isempty (diffp) && \
-	   isempty (diff_onesided) && isempty (fixed)))
-      error ("if param_config is given, its potential items must not be configured in another way");
+    if (any_vector_conf)
+      error ("if param_config is given, its potential items must not \
+	  be configured in another way");
     endif
 
     ## supplement parameter names lacking in param_config
@@ -167,49 +238,116 @@ function [p, resid, cvg, outp] = \
 
     pconf = structcat (1, fields2cell (pconf, pord){:});
 
-    bounds = zeros (np, 2);
-    bounds(:, 1) = -Inf;
-    bounds(:, 2) = Inf;
-    if (isfield (pconf, "bounds"))
-      bounds(! fieldempty (pconf, "bounds"), :) = cat (1, pconf.bounds);
+    ## in the following, use reshape with explicit dimensions (instead
+    ## of x(:)) so that errors are thrown if a configuration item has
+    ## incorrect number of elements
+
+    lbound = - Infvec;
+    if (isfield (pconf, "lbound"))
+      idx = ! fieldempty (pconf, "lbound");
+      if (pnonscalar)
+	lbound (idx(prepidx), 1) = \
+	    cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
+			     {pconf(idx).lbound}.', \
+			     cpnel(idx), "UniformOutput", false){:});
+      else
+	lbound(idx, 1) = cat (1, pconf.lbound);
+      endif
+    endif
+
+    ubound = Infvec;
+    if (isfield (pconf, "ubound"))
+      idx = ! fieldempty (pconf, "ubound");
+      if (pnonscalar)
+	ubound (idx(prepidx), 1) = \
+	    cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
+			     {pconf(idx).ubound}.', \
+			     cpnel(idx), "UniformOutput", false){:});
+      else
+	ubound(idx, 1) = cat (1, pconf.ubound);
+      endif
     endif
 
     max_fract_change = fract_prec = NAvec;
 
     if (isfield (pconf, "max_fract_change"))
-      max_fract_change(! fieldempty (pconf, "max_fract_change")) = \
-	  [pconf.max_fract_change];
+      idx = ! fieldempty (pconf, "max_fract_change");
+      if (pnonscalar)
+	max_fract_change(idx(prepidx)) = \
+	    cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
+			     {pconf(idx).max_fract_change}.', \
+			     cpnel(idx), \
+			     "UniformOutput", false){:});
+      else
+	max_fract_change(idx) = [pconf.max_fract_change];
+      endif
     endif
 
     if (isfield (pconf, "fract_prec"))
-      fract_prec(! fieldempty (pconf, "fract_prec")) = \
-	  [pconf.fract_prec];
+      idx = ! fieldempty (pconf, "fract_prec");
+      if (pnonscalar)
+	fract_prec(idx(prepidx)) = \
+	    cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
+			     {pconf(idx).fract_prec}.', cpnel(idx), \
+			     "UniformOutput", false){:});
+      else
+	fract_prec(idx) = [pconf.fract_prec];
+      endif
     endif
 
     diffp = zerosvec;
     diffp(:) = diffp_default;
     if (isfield (pconf, "diffp"))
-      diffp(! fieldempty (pconf, "diffp")) = [pconf.diffp];
+      idx = ! fieldempty (pconf, "diffp");
+      if (pnonscalar)
+	diffp(idx(prepidx)) = \
+	    cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
+			     {pconf(idx).diffp}.', cpnel(idx), \
+			     "UniformOutput", false){:});
+      else
+	diffp(idx) = [pconf.diffp];
+      endif
     endif
 
     diff_onesided = fixed = falsevec;
 
     if (isfield (pconf, "diff_onesided"))
-      diff_onesided(! fieldempty (pconf, "diff_onesided")) = \
-	  logical ([pconf.diff_onesided]);
+      idx = ! fieldempty (pconf, "diff_onesided");
+      if (pnonscalar)
+	diff_onesided(idx(prepidx)) = \
+	    logical \
+	    (cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
+			      {pconf(idx).diff_onesided}.', cpnel(idx), \
+			     "UniformOutput", false){:}));
+      else
+	diff_onesided(idx) = logical ([pconf.diff_onesided]);
+      endif
     endif
 
     if (isfield (pconf, "fixed"))
-      fixed(! fieldempty (pconf, "fixed")) = logical ([pconf.fixed]);
+      idx = ! fieldempty (pconf, "fixed");
+      if (pnonscalar)
+	fixed(idx(prepidx)) = \
+	    logical \
+	    (cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
+			      {pconf(idx).fixed}.', cpnel(idx), \
+			     "UniformOutput", false){:}));
+      else
+	fixed(idx) = logical ([pconf.fixed]);
+      endif
     endif
   else
     ## use supplied configuration vectors
 
-    if (isempty (bounds))
-      bounds = zeros (np, 2);
-      bounds(:, 1) = -Inf;
-      bounds(:, 2) = Inf;
-    elseif (any (size (bounds) != [np, 2]))
+    if (isempty (lbound))
+      lbound = - Infvec;
+    elseif (any (size (lbound) != sizevec))
+      error ("bounds: wrong dimensions");
+    endif
+
+    if (isempty (ubound))
+      ubound = Infvec;
+    elseif (any (size (ubound) != sizevec))
       error ("bounds: wrong dimensions");
     endif
 
@@ -256,10 +394,10 @@ function [p, resid, cvg, outp] = \
     endif
   endif
 
-  ## guaranty all (bounds(:, 1) <= bounds(:, 2))
-  tp = bounds((idx = bounds(:, 1) > bounds(:, 2)), 2);
-  bounds(idx, 2) = bounds(idx, 1);
-  bounds(idx, 1) = tp;
+  ## guaranty all (lbound <= ubound)
+  if (any (lbound > ubound))
+    error ("some lower bounds larger than upper bounds");
+  endif
 
   #### consider whether initial parameters and functions are based on
   #### parameter structures or parameter vectors; wrappers for call to
@@ -267,16 +405,27 @@ function [p, resid, cvg, outp] = \
 
   ## initial parameters
   if (pin_struct)
-    if (! all (arefields (pin, pord)))
-      error ("some initial parameters lacking");
+    if (pnonscalar)
+      pin = cat (1, cellfun (@ (x, n) reshape (x, n, 1), \
+			     fields2cell (pin, pord), cpnel, \
+			     "UniformOutput", false){:});
+    else
+      pin = cat (1, fields2cell (pin, pord){:});
     endif
-    pin = cat (1, fields2cell (pin, pord){:});
   endif
 
   ## model function
   if (f_pstruct)
-    f = @ (p, varargin) \
-	f (cell2struct (num2cell (p), pord, 1), varargin{:});
+    if (pnonscalar)
+      f = @ (p, varargin) \
+	  f (cell2struct \
+	     (cellfun (@ reshape, partarray (p, ppartidx), \
+		       pdims, "UniformOutput", false), \
+	      pord, 1), varargin{:});
+    else
+      f = @ (p, varargin) \
+	  f (cell2struct (num2cell (p), pord, 1), varargin{:});
+    endif
   endif
   f_pin = f (pin);
   if (isfield (hook, "observations"))
@@ -292,18 +441,37 @@ function [p, resid, cvg, outp] = \
     dfdp = @ (p, hook) __dfdp__ (p, f, hook);
   endif
   if (dfdp_pstruct)
-    dfdp = @ (p, hook) \
-	cat (2, \
-	     fields2cell \
-	     (dfdp (cell2struct (num2cell (p), pord, 1), hook), \
-	      pord){:});
+    if (pnonscalar)
+      dfdp = @ (p, hook) \
+	  cat (2, \
+	       fields2cell \
+	       (dfdp (cell2struct \
+		      (cellfun (@ reshape, partarray (p, ppartidx), \
+				pdims, "UniformOutput", false), \
+		       pord, 1), hook), \
+		pord){:});
+    else
+      dfdp = @ (p, hook) \
+	  cat (2, \
+	       fields2cell \
+	       (dfdp (cell2struct (num2cell (p), pord, 1), hook), \
+		pord){:});
+    endif
   endif
 
   ## function for general inequality constraints
   if (f_inequc_pstruct)
-    f_genicstr = @ (p, varargin) \
-	f_genicstr \
-	(cell2struct (num2cell (p), pord, 1), varargin{:});
+    if (pnonscalar)
+      f_genicstr = @ (p, varargin) \
+	  f_genicstr (cell2struct \
+		      (cellfun (@ reshape, partarray (p, ppartidx), \
+				pdims, "UniformOutput", false), \
+		       pord, 1), varargin{:});
+    else
+      f_genicstr = @ (p, varargin) \
+	  f_genicstr \
+	  (cell2struct (num2cell (p), pord, 1), varargin{:});
+    endif
   endif
 
   ## note this stage
@@ -311,19 +479,39 @@ function [p, resid, cvg, outp] = \
 
   ## jacobian of general inequality constraints
   if (df_inequc_pstruct)
-    df_gencstr = @ (p, func, idx, hook) \
-	cat (2, \
-	     fields2cell \
-	     (df_gencstr (cell2struct (num2cell (p), pord, 1), \
-			  func, idx, hook), \
-	      pord){:});
+    if (pnonscalar)
+      df_gencstr = @ (p, func, idx, hook) \
+	  cat (2, \
+	       fields2cell \
+	       (df_gencstr \
+		(cell2struct \
+		 (cellfun (@ reshape, partarray (p, ppartidx), \
+			   pdims, "UniformOutput", false), pord, 1), \
+		 func, idx, hook), \
+		pord){:});
+    else
+      df_gencstr = @ (p, func, idx, hook) \
+	  cat (2, \
+	       fields2cell \
+	       (df_gencstr (cell2struct (num2cell (p), pord, 1), \
+			    func, idx, hook), \
+		pord){:});
+    endif
   endif
 
   ## function for general equality constraints
   if (f_equc_pstruct)
-    f_genecstr = @ (p, varargin) \
-	f_genecstr \
-	(cell2struct (num2cell (p), pord, 1), varargin{:});
+    if (pnonscalar)
+      f_genecstr = @ (p, varargin) \
+	  f_genecstr (cell2struct \
+		      (cellfun (@ reshape, partarray (p, ppartidx), \
+				pdims, "UniformOutput", false), \
+		       pord, 1), varargin{:});
+    else
+      f_genecstr = @ (p, varargin) \
+	  f_genecstr \
+	  (cell2struct (num2cell (p), pord, 1), varargin{:});
+    endif
   endif
 
   ## note this stage
@@ -331,12 +519,24 @@ function [p, resid, cvg, outp] = \
 
   ## jacobian of general equality constraints
   if (df_equc_pstruct)
-    df_genecstr = @ (p, func, idx, hook) \
-	cat (2, \
-	     fields2cell \
-	     (df_genecstr (cell2struct (num2cell (p), pord, 1), \
-			   func, idx, hook), \
-	      pord){:});
+    if (pnonscalar)
+      df_genecstr = @ (p, func, idx, hook) \
+	  cat (2, \
+	       fields2cell \
+	       (df_genecstr \
+		(cell2struct \
+		 (cellfun (@ reshape, partarray (p, ppartidx), \
+			   pdims, "UniformOutput", false), pord, 1), \
+		 func, idx, hook), \
+		pord){:});
+    else
+      df_genecstr = @ (p, func, idx, hook) \
+	  cat (2, \
+	       fields2cell \
+	       (df_genecstr (cell2struct (num2cell (p), pord, 1), \
+			     func, idx, hook), \
+		pord){:});
+    endif
   endif
 
   ## linear inequality constraints
@@ -347,7 +547,7 @@ function [p, resid, cvg, outp] = \
     endif
     smc = mc;
     mc = zeros (np, rows (vc));
-    mc(idx, :) = cat (1, fields2cell (smc, pord(idx)){:});
+    mc(idx(prepidx), :) = cat (1, fields2cell (smc, pord(idx)){:});
   endif
 
   ## linear equality constraints
@@ -358,21 +558,50 @@ function [p, resid, cvg, outp] = \
     endif
     semc = emc;
     emc = zeros (np, rows (evc));
-    emc(idx, :) = cat (1, fields2cell (semc, pord(idx)){:});
+    emc(idx(prepidx), :) = cat (1, fields2cell (semc, pord(idx)){:});
   endif
 
   ## parameter-related configuration for jacobi functions
   if (dfdp_pstruct || df_inequc_pstruct || df_equc_pstruct)
-    s_diffp = cell2struct (num2cell (diffp), pord, 1);
-    s_diff_onesided = cell2struct (num2cell (diff_onesided), pord, 1);
-    s_orig_bounds = cell2struct (num2cell (bounds, 2), pord, 1);
-    s_plabels = cell2struct (cell2cell (plabels, 1), pord, 1);
-    s_orig_fixed = cell2struct (num2cell (fixed), pord, 1);
+    if(pnonscalar)
+      s_diffp = cell2struct \
+	  (cellfun (@ reshape, partarray (diffp, ppartidx), \
+		    pdims, "UniformOutput", false), pord, 1);
+      s_diff_onesided = cell2struct \
+	  (cellfun (@ reshape, partarray (diff_onesided, ppartidx), \
+		    pdims, "UniformOutput", false), pord, 1);
+      s_orig_lbound = cell2struct \
+	  (cellfun (@ reshape, partarray (lbound, ppartidx), \
+		    pdims, "UniformOutput", false), pord, 1);
+      s_orig_ubound = cell2struct \
+	  (cellfun (@ reshape, partarray (ubound, ppartidx), \
+		    pdims, "UniformOutput", false), pord, 1);
+      s_plabels = cell2struct \
+	  (cell2cell \
+	   (cat (2, cellfun \
+		 (@ (x) cellfun \
+		  (@ reshape, partarray (cat (1, x{:}), ppartidx), \
+		   pdims, "UniformOutput", false), \
+		  cell2cell (plabels, 2), "UniformOutput", false){:}), \
+	    1), \
+	   pord, 1);
+      s_plabels = cell2struct (cell2cell (plabels, 1), pord, 1);
+      s_orig_fixed = cell2struct \
+	  (cellfun (@ reshape, partarray (fixed, ppartidx), \
+		    pdims, "UniformOutput", false), pord, 1);
+    else
+      s_diffp = cell2struct (num2cell (diffp), pord, 1);
+      s_diff_onesided = cell2struct (num2cell (diff_onesided), pord, 1);
+      s_orig_lbound = cell2struct (num2cell (lbound), pord, 1);
+      s_orig_ubound = cell2struct (num2cell (ubound), pord, 1);
+      s_plabels = cell2struct (cell2cell (plabels, 1), pord, 1);
+      s_orig_fixed = cell2struct (num2cell (fixed), pord, 1);
+    endif
   endif
 
   #### some further values and checks
 
-  if (any (fixed & (pin < bounds(:, 1) | pin > bounds(:, 2))))
+  if (any (fixed & (pin < lbound | pin > ubound)))
     warning ("some fixed parameters outside bounds");
   endif
 
@@ -435,7 +664,8 @@ function [p, resid, cvg, outp] = \
   backend = map_backend (backend);
 
   #### handle fixing of parameters
-  orig_bounds = bounds;
+  orig_lbound = lbound;
+  orig_ubound = ubound;
   orig_fixed = fixed;
   if (all (fixed))
     error ("no free parameters");
@@ -482,7 +712,8 @@ function [p, resid, cvg, outp] = \
 
     ## _last_ of all, vectors of parameter-related configuration,
     ## including "fixed" itself
-    bounds = bounds(nonfixed, :);
+    lbound = lbound(nonfixed, :);
+    ubound = ubound(nonfixed, :);
     max_fract_change = max_fract_change(nonfixed);
     fract_prec = fract_prec(nonfixed);
     fixed = fixed(nonfixed);
@@ -494,19 +725,20 @@ function [p, resid, cvg, outp] = \
   if (dfdp_pstruct)
     dfdp = @ (p, hook) \
 	dfdp (p, cell2fields \
-	      ({s_diffp, s_diff_onesided, s_orig_bounds, s_plabels, \
+	      ({s_diffp, s_diff_onesided, s_orig_lbound, \
+		s_orig_ubound, s_plabels, \
 		cell2fields(num2cell(hook.fixed), pord(nonfixed), \
 			    1, s_orig_fixed)}, \
-	       {"diffp", "diff_onesided", "bounds", "plabels", \
-		"fixed"}, \
+	       {"diffp", "diff_onesided", "lbound", "ubound", \
+		"plabels", "fixed"}, \
 	       2, hook));
   else
     dfdp = @ (p, hook) \
 	dfdp (p, cell2fields \
-	      ({diffp, diff_onesided, orig_bounds, plabels, \
-		assign(orig_fixed, nonfixed, hook.fixed)}, \
-	       {"diffp", "diff_onesided", "bounds", "plabels", \
-		"fixed"}, \
+	      ({diffp, diff_onesided, orig_lbound, orig_ubound, \
+		plabels, assign(orig_fixed, nonfixed, hook.fixed)}, \
+	       {"diffp", "diff_onesided", "lbound", "ubound", \
+		"plabels", "fixed"}, \
 	       2, hook));
   endif
 
@@ -514,19 +746,21 @@ function [p, resid, cvg, outp] = \
   if (df_inequc_pstruct)
     df_gencstr = @ (p, func, idx, hook) \
 	df_gencstr (p, func, idx, cell2fields \
-		    ({s_diffp, s_diff_onesided, s_orig_bounds, s_plabels, \
+		    ({s_diffp, s_diff_onesided, s_orig_lbound, \
+		      s_orig_ubound, s_plabels, \
 		      cell2fields(num2cell(hook.fixed), pord(nonfixed), \
 				  1, s_orig_fixed)}, \
-		     {"diffp", "diff_onesided", "bounds", "plabels", \
-		      "fixed"}, \
+		     {"diffp", "diff_onesided", "lbound", "ubound", \
+		      "plabels", "fixed"}, \
 		     2, hook));
   else
     df_gencstr = @ (p, func, idx, hook) \
 	df_gencstr (p, func, idx, cell2fields \
-		    ({diffp, diff_onesided, orig_bounds, plabels, \
+		    ({diffp, diff_onesided, orig_lbound, \
+		      orig_ubound, plabels, \
 		      assign(orig_fixed, nonfixed, hook.fixed)}, \
-		     {"diffp", "diff_onesided", "bounds", "plabels", \
-		      "fixed"}, \
+		     {"diffp", "diff_onesided", "lbound", "ubound", \
+		      "plabels", "fixed"}, \
 		     2, hook));
   endif
 
@@ -534,19 +768,21 @@ function [p, resid, cvg, outp] = \
   if (df_equc_pstruct)
     df_genecstr = @ (p, func, idx, hook) \
 	df_genecstr (p, func, idx, cell2fields \
-		     ({s_diffp, s_diff_onesided, s_orig_bounds, s_plabels, \
+		     ({s_diffp, s_diff_onesided, s_orig_lbound, \
+		       s_orig_ubound, s_plabels, \
 		       cell2fields(num2cell(hook.fixed), pord(nonfixed), \
 				   1, s_orig_fixed)}, \
-		      {"diffp", "diff_onesided", "bounds", "plabels", \
-		       "fixed"}, \
+		      {"diffp", "diff_onesided", "lbound", "ubound", \
+		       "plabels", "fixed"}, \
 		      2, hook));
   else
     df_genecstr = @ (p, func, idx, hook) \
 	df_genecstr (p, func, idx, cell2fields \
-		     ({diffp, diff_onesided, orig_bounds, plabels, \
+		     ({diffp, diff_onesided, orig_lbound, \
+		       orig_ubound, plabels, \
 		       assign(orig_fixed, nonfixed, hook.fixed)}, \
-		      {"diffp", "diff_onesided", "bounds", "plabels", \
-		       "fixed"}, \
+		      {"diffp", "diff_onesided", "lbound", "ubound", \
+		       "plabels", "fixed"}, \
 		      2, hook));
   endif
 
@@ -554,10 +790,10 @@ function [p, resid, cvg, outp] = \
   
   ## include bounds into linear inequality constraints
   tp = eye (sum (nonfixed));
-  lidx = ! isinf (bounds(:, 1));
-  uidx = ! isinf (bounds(:, 2));
+  lidx = lbound != - Inf;
+  uidx = ubound != Inf;
   mc = cat (2, mc, tp(:, lidx), - tp(:, uidx));
-  vc = cat (1, vc, - bounds(lidx, 1), bounds(uidx, 2));
+  vc = cat (1, vc, - lbound(lidx, 1), ubound(uidx, 1));
 
   ## concatenate linear inequality and equality constraints
   mc = cat (2, mc, emc);
@@ -644,7 +880,8 @@ function [p, resid, cvg, outp] = \
   hook.df_cstr = df_cstr;
   hook.n_gencstr = n_gencstr;
   hook.eq_idx = eq_idx;
-  hook.bounds = bounds;
+  hook.lbound = lbound;
+  hook.ubound = ubound;
 
   ## passed values of constraints for initial parameters
   hook.pin_cstr = pin_cstr;
@@ -671,7 +908,14 @@ function [p, resid, cvg, outp] = \
   [p, resid, cvg, outp] = backend (f, pin, hook);
 
   if (pin_struct)
-    p = cell2struct (num2cell (p), pord, 1);
+    if (pnonscalar)
+      p = cell2struct \
+	  (cellfun (@ reshape, partarray (p, ppartidx), \
+		    pdims, "UniformOutput", false), \
+	   pord, 1);
+    else
+      p = cell2struct (num2cell (p), pord, 1);
+    endif
   endif
 
 endfunction

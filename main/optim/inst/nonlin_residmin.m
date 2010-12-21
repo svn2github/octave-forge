@@ -75,18 +75,19 @@
 ## parameters, reshaped to a column vector, @code{fixed}: logical vector
 ## indicating which parameters are not optimized, so these partial
 ## derivatives need not be computed and can be set to zero,
-## @code{diffp}, @code{diff_onesided}, @code{bounds}: identical to the
-## user settings of this name, @code{plabels}: 2-dimensional cell-array
-## with labels for parameters, one row for each parameter, the row
-## contains one entry with the numerical index ot this parameter. The
-## default jacobian function will call the model function with the
-## second argument set with fields @code{f}: as the @code{f} passed to
-## the jacobian function, @code{plabels}: row of @code{plabels} as
-## passed to the jacobian function corresponding to current parameter,
-## @code{side}: @code{0} for one-sided interval, @code{1} or @code{2},
-## respectively, for the sides of a two-sided interval, and
-## @code{parallel}: logical scalar indicating parallel computation of
-## partial derivatives.
+## @code{diffp}, @code{diff_onesided}, @code{lbound}, @code{ubound}:
+## identical to the user settings of this name, @code{plabels}:
+## 1-dimensional cell-array of column-cell-arrays, each column with
+## labels for all parameters, the first column contains the numerical
+## indices of the parameters. The default jacobian function will call
+## the model function with the second argument set with fields @code{f}:
+## as the @code{f} passed to the jacobian function, @code{plabels}:
+## cell-array of 1x1 cell-arrays with the entries of the
+## column-cell-arrays of @code{plabels} as passed to the jacobian
+## function corresponding to current parameter, @code{side}: @code{0}
+## for one-sided interval, @code{1} or @code{2}, respectively, for the
+## sides of a two-sided interval, and @code{parallel}: logical scalar
+## indicating parallel computation of partial derivatives.
 ##
 ## @code{diffp}: column vector of fractional intervals (doubled for
 ## central intervals) supposed to be used by jacobian functions
@@ -102,8 +103,8 @@
 ## done independently of the backend, but the backend may choose to fix
 ## additional parameters under certain conditions.
 ##
-## @code{bounds}: 2-column matrix of bounds for parameters. Default:
-## @code{-Inf} and @code{+Inf} for the first and second column,
+## @code{lbound}, @code{ubound}: column vectors of lower and upper
+## bounds for parameters. Default: @code{-Inf} and @code{+Inf},
 ## respectively. The bounds are non-strict, i.e. parameters are allowed
 ## to be exactly equal to a bound. The default jacobian function will
 ## respect bounds (but no further inequality constraints) in finite
@@ -178,8 +179,11 @@
 ##
 ## Structure-based parameter handling
 ##
-## The setting @code{param_order}, a cell-array of parameter names, is a
-## prerequisite for any kind of structure-based parameter handling.
+## The setting @code{param_order} is a cell-array with names of the
+## optimized parameters. If not given, and initial parameters are a
+## structure, all parameters in the structure are optimized. It is an
+## error if @code{param_order} is not given and there are any
+## non-structure-based configuration items or functions.
 ##
 ## The initial parameters @var{pin} can be given as a structure
 ## containing at least all fields named in @code{param_order}. In this
@@ -202,16 +206,27 @@
 ## matrix in fields under the respective parameter names can be given.
 ## In this case, rows containing only zeros need not be given.
 ##
-## The vector/matrix-based settings @code{bounds}, @code{fixed},
-## @code{diffp}, @code{diff_onesided}, @code{fract_prec}, and
-## @code{max_fract_change} can be replaced by the setting
+## The vector-based settings @code{lbound}, @code{ubound},
+## @code{fixed}, @code{diffp}, @code{diff_onesided}, @code{fract_prec},
+## and @code{max_fract_change} can be replaced by the setting
 ## @code{param_config}. It is a structure that can contain fields named
 ## in @code{param_order}. For each such field, there may be subfields
-## with the same names as the above vector/matrix-based settings, but
-## containing a scalar value (or a two-element row vector in the case of
-## bounds) for the respective parameter. If @code{param_config} is
-## specified, none of the above vector/matrix-based settings may be
-## used.
+## with the same names as the above vector-based settings, but
+## containing a scalar value for the respective parameter. If
+## @code{param_config} is specified, none of the above
+## vector/matrix-based settings may be used.
+##
+## Additionally, named parameters are allowed to be non-scalar real
+## arrays. In this case, their dimensions are given by the setting
+## @code{param_dims}, a cell-array of dimension vectors, each containing
+## at least two dimensions; if not given, dimensions are taken from the
+## initial parameters, if these are given in a structure. Any
+## vector-based settings or not structure-based linear constraints then
+## must correspond to an order of parameters with all parameters
+## reshaped to vectors and concatenated in the user-given order of
+## parameter names. Structure-based settings or structure-based initial
+## parameters must contain arrays with dimensions reshapable to those of
+## the respective parameters.
 ##
 ## Description of backends (currently only one)
 ##

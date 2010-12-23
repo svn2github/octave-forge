@@ -127,6 +127,19 @@ function resu = subsref(df, S)
 		  case "comment"
 		    S(1).subs = "_cmt";
 		    further_deref = true;
+		  case "new"
+		    if (isempty(dummy)),
+		      resu = dataframe([]);
+		    else
+		      if (!strcmp(dummy(1).type, "()")),
+			error("Bogus constructor call");
+		      endif
+		      resu = dataframe(dummy(1).subs{:});
+		    endif
+		    if (length(dummy) > 1),
+		      resu = subsref(resu, dummy(2:end));
+		    endif
+		    return;
 		  otherwise
 		    error("Unknown column name: %s", S(1).subs);
 		endswitch

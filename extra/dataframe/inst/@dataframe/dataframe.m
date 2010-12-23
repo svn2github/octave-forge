@@ -60,6 +60,7 @@ function df = dataframe(x = [], varargin)
 
 if 0 == nargin
   disp('FIXME -- should create a dataframe from the whole workspace')
+  df = dataframe([]);
   return
 endif
 

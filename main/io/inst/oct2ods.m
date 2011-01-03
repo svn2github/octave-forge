@@ -109,7 +109,7 @@
 ## 2010-11-13 Reset ods.limits when read was successful
 ## 2010-11-13 Added check for 2-D input array
 ##
-## Last update of subfunctions below: 2011-11-12
+## Last update of subfunctions below: 2012-12-08
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 
@@ -282,7 +282,7 @@ function [ ods, rstatus ] = oct2jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 	--trow; --lcol;									# Zero-based row # & col #
 	if (nrows < nr || ncols < nc)
 		warning ("Array truncated to fit in range");
-		obj = obj(1:nrows, 1:ncols);
+		c_arr = c_arr(1:nrows, 1:ncols);
 	endif
 	
 # Parse data array, setup typarr and throw out NaNs  to speed up writing;
@@ -657,6 +657,7 @@ endfunction
 ## 2010-08-22 odfdom 0.8.6 is there... seems to work with just one bug, easily worked around
 ## 2010-10-27 Improved file change tracking tru ods.changed
 ## 2010-11-12 Improved file change tracking tru ods.changed
+#3 2010-12-08 Bugfixes (obj -> arg L.715; removed stray arg in call to spsh_prstype L.719)
 
 function [ ods, rstatus ] = oct3jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -711,11 +712,11 @@ function [ ods, rstatus ] = oct3jotk2ods (c_arr, ods, wsh, crange, spsh_opts)
 	--trow; --lcol;									# Zero-based row # & col #
 	if (nrows < nr || ncols < nc)
 		warning ("Array truncated to fit in range");
-		obj = obj(1:nrows, 1:ncols);
+		c_arr = c_arr(1:nrows, 1:ncols);
 	endif
 	
 # Parse data array, setup typarr and throw out NaNs  to speed up writing;
-	typearr = spsh_prstype (c_arr, nrows, ncols, ctype, spsh_opts, 0);
+	typearr = spsh_prstype (c_arr, nrows, ncols, ctype, spsh_opts);
 	if ~(spsh_opts.formulas_as_text)
 		# Find formulas (designated by a string starting with "=" and ending in ")")
 		fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1) && strncmp (x(end:end), ")", 1), c_arr);

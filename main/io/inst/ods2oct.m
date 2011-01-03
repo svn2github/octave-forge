@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{ods}, @var{rstatus} ] = ods2oct (@var{ods}, @var{wsh}, @var{range}, @var{options})
 ##
 ## Read data contained within range @var{range} from worksheet @var{wsh}
-## in an OpenOffice.org spreadsheet file pointed to in struct @var{ods}.
+## in an OpenOffice_org spreadsheet file pointed to in struct @var{ods}.
 ##
 ## @var{wsh} is either numerical or text, in the latter case it is 
 ## case-sensitive and it may be max. 31 characters long.
@@ -111,6 +111,7 @@
 ## 2010-08-27 Added ods3jotk2oct - internal function for odfdom-0.8.6.jar
 ##      "     Extended check on spsh_opts (must be a struct) 
 ## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to here
+## 2010-12-06 Textual changes to info header 
 ##
 ## (Latest update of subfunctions below: 2010-11-13)
 

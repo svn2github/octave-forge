@@ -19,7 +19,7 @@
 ## @deftypefnx {Function File} @var{ods} = odsopen (@var{filename}, @var{readwrite})
 ## @deftypefnx {Function File} @var{ods} = odsopen (@var{filename}, @var{readwrite}, @var{reqintf})
 ## Get a pointer to an OpenOffice_org spreadsheet in the form of return
-## argument @var{ods}.
+## argument (file pointer struct) @var{ods}.
 ##
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
@@ -76,6 +76,7 @@
 ## 2010-10-27 Improved tracking of file changes tru ods.changed
 ## 2010-11-12 Small changes to help text
 ##     "      Added try-catch to file open sections to create fallback to other intf
+## 2010-12-06 Textual changes to info header 
 ##
 ## Latest change on subfunction below: 2010-09-27
 

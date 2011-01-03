@@ -19,8 +19,8 @@
 ## @deftypefnx {Function File} @var{xls} = xlsopen (@var{filename}, @var{readwrite})
 ## @deftypefnx {Function File} @var{xls} = xlsopen (@var{filename}, @var{readwrite}, @var{reqintf})
 ## Get a pointer to an Excel spreadsheet in the form of return argument
-## @var{xls}. After processing the spreadsheet, the file pointer must be
-## explicitly closed calling xlsclose().
+## (file pointer struct) @var{xls}. After processing the spreadsheet,
+## the file pointer must be explicitly closed by calling xlsclose().
 ##
 ## Calling xlsopen without specifying a return argument is fairly useless!
 ##
@@ -87,6 +87,8 @@
 ## 2010-11-05 Slight change to reporting to screen
 ## 2010-11-08 Tested with POI 3.7 (OK)
 ## 2010-11-10 Texinfo header updated
+## 2010-12-01 Small bugfix - reset xlssupport in l. 102
+## 2010-12-06 Textual changes to info header 
 ##
 ## 2010-11-05 Latest subfunction update
 
@@ -98,6 +100,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		xlsinterfaces = struct ( "COM", [], "POI", [], "JXL", [] );
 		chkintf = 1;
 	endif
+	xlssupport = 0;
 
 	if (nargout < 1)
 		usage ("XLS = xlsopen (Xlfile [, Rw] [, reqintf]). But no return argument specified!"); 
@@ -106,7 +109,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		usage ("Numerical or logical value expected for arg # 2")
 	endif
 	if (~isempty (reqinterface))
-		if ~(ischar (reqinterface) || iscell(reqinterface)), usage ("Arg # 3 not recognized"); endif
+		if ~(ischar (reqinterface) || iscell (reqinterface)), usage ("Arg # 3 not recognized"); endif
 		# Turn arg3 into cell array if needed
 		if (~iscell (reqinterface)), reqinterface = {reqinterface}; endif
 		xlsinterfaces.COM = 0; xlsinterfaces.POI = 0; xlsinterfaces.JXL = 0;
@@ -121,7 +124,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 			elseif (strcmp (reqintf, 'JXL'))
 				xlsinterfaces.JXL = [];
 			else 
-				usage (sprintf ("Unknown .xls interface \"%s\" requested. Only COM, POI or JXL supported", reqinterface{}));
+				usage (sprintf ("Unknown .xls interface \"%s\" requested. Only COM, POI or JXL supported\n", reqinterface{}));
 			endif
 		endfor
 		printf ("Checking interface(s):\n");

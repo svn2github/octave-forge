@@ -126,12 +126,13 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=
 	test1 = test1 || isempty (xls.workbook);
 	test1 = test1 || isempty (xls.app);
 	if test1
-		error ("Invalid xls file struct");
+		error ("Invalid xls file pointer struct");
 	endif
 	# Check worksheet ptr
 	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 2"); endif
 	# Check range
 	if (~(isempty (datrange) || ischar (datrange))), error ("Character string (range) expected for arg # 3"); endif
+
 	# Check & setup options struct
 	if (nargin < 4 || isempty (spsh_opts))
 		spsh_opts.formulas_as_text = 0;

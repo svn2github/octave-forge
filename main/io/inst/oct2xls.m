@@ -100,6 +100,7 @@
 ## 2010-08-25 Improved help text (section on java memory usage)
 ## 2010-11-12 Moved ptr struct check into main func. More input validity checks
 ## 2010-11-13 Added check for 2-D input array
+## 2010-12-01 Better check on file pointer struct (ischar (xls.xtype))
 
 ## Last script file update (incl. subfunctions): 2011-11-12
 
@@ -120,11 +121,13 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
 		error ("oct2xls: input array neither cell nor numeric array");
 	endif
 	if (ndims (c_arr) > 2), error ("Only 2-dimensional arrays can be written to spreadsheet"); endif
+	
 	# Check xls file pointer struct
 	test1 = ~isfield (xls, "xtype");
 	test1 = test1 || ~isfield (xls, "workbook");
 	test1 = test1 || isempty (xls.workbook);
 	test1 = test1 || isempty (xls.app);
+	test1 = test1 || ischar (xls.xtype);
 	if (test1)
 		error ("Invalid xls file pointer struct");
 	endif

@@ -77,7 +77,7 @@ function [ xls ] = xlsclose (xls, filename=[])
 					warning ("JXL doesn't support changing filename, new filename ignored.");
 				elseif ~(strcmp (xls.xtype, 'COM') || strmatch ('.xls', filename))
 					# Excel / ActiveX will write any filename extension
-					error ('No .xls or .xlsx filename extension specified');
+					error ('No .xls or .xlsx extension lacking in filename %s', filename);
 				else
 					### For multi-user environments, uncomment below AND relevant stanza in xlsopen
 					# In case of COM, be sure to first close the open workbook

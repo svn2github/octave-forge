@@ -3,7 +3,7 @@ function n = numel(df, varargin)
   %# This is the numel operator for a dataframe object, returning the
   %# product of the  number of rows by the number of columns
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2011 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%
@@ -27,19 +27,7 @@ function n = numel(df, varargin)
   %# $Id$
   %#
 
-%#  if 1 == nargout,
-%#    n = feval(@numel, df, varargin{:});
-%#  else
-    if 1 == nargin,
-      n = sum(cellfun(@numel, df._data));
-    else
-      error(print_usage());
-    endif
-%#  endif
-
-endfunction
-
-function usage = print_usage()
-  usage = strcat('Invalid call to numel.  Correct usage is: ', ' ', \
-		 '-- Overloaded Function:  numel (A)');
+  %# a dataframe is an object and a array. You can't have array of dataframes.
+  n = 1;
+  
 endfunction

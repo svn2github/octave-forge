@@ -316,7 +316,7 @@ function resu = subsref(df, S)
 	dummy = isnumeric(df._data{indc(1)}); 
 	for indi = 2:ncol,
 	  dummy = dummy & isnumeric(df._data{indc(indi)});
-	  if ~strcmp(output_type, df._type{indc(indi)}),
+	  if ~strcmp(class(output_type), df._type{indc(indi)}),
 	    if dummy, 
 	      %# let downclassing occur
 	      output_type = horzcat(output_type, df._data{indc(indi)}(1));

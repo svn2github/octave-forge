@@ -127,6 +127,7 @@
 %!assert((x+y).array, x.array+y)
 %!assert((y+x).array, y+x.array)
 %!assert((x+z).array, x.array+z.array);
+%!assert((bsxfun(@plus, x, z(1,:))).array, bsxfun(@plus, x.array, z.array(1,:)));
 %!assert((x > 0).array, x.array > 0)
 %!assert((0 > x).array, 0 > x.array)
 %!assert((x > y).array, x.array > y);
@@ -158,6 +159,7 @@
 %!assert((x+y).array, x.array+y)
 %!assert((y+x).array, y+x.array)
 %!assert((x+z).array, x.array+z.array);
+%!assert((bsxfun(@plus, x, z(1,:,:))).array, bsxfun(@plus, x.array, z.array(1,:,:)));
 %! [a, b] = sort(x(:)); x=dataframe(reshape((1:9)(b), [3 3])); 
 %! y = reshape((1:9)(b), [3 3]); z = dataframe(y);
 %!assert(x(x(:)), y(x(:)));

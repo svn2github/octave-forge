@@ -328,8 +328,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       df = df_pad(df, 2, max(indc-min(size(df._data, 2), df._cnt(2))),\
 		   class(RHS));
     endif
-    if (!isempty(inds) && any(inds > 1)),
-      for indi=1:length(indc),
+    if (!isempty(inds) && isnumeric(inds) && any(inds > 1)),
+      for indi = 1:length(indc),
 	if (max(inds) > length(df._rep{indc(indi)})),
 	  df = df_pad(df, 3, max(inds)-length(df._rep{indc(indi)}), \
 		      indc(indi));
@@ -344,13 +344,13 @@ function df = df_matassign(df, S, indc, ncol, RHS)
 	df._ridx = feval(@subsasgn,  df._ridx, S,  RHS._ridx);
       endif
       %# skip second dim and copy data
-      S.subs(2) = []; Sorig = S;
+      S.subs(2) = []; Sorig = S; 
       for indi = 1:length(indc),
 	[df, S] = df_cow(df, S, indc(indi));
 	if (strcmp(df._type(indc(indi)), RHS._type(indi))),
 	  try
-	  df._data{indc(indi)} = feval(@subsasgn, df._data{indc(indi)}, S, \
-				       RHS._data{indi}(:, RHS._rep{indi}));
+	    df._data{indc(indi)} = feval(@subsasgn, df._data{indc(indi)}, S, \
+					 RHS._data{indi}(:, RHS._rep{indi}));
 	  catch
 	    disp(lasterr()); disp('line 516 ???'); keyboard
 	  end_try_catch

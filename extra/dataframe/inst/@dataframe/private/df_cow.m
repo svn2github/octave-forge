@@ -39,6 +39,13 @@ function [df, S] = df_cow(df, S, col)
     inds = S.subs{2};
   endif
 
+  if (!isnumeric(inds)), 
+    if !strcmp(inds, ':'),
+      error("Unknown sheet selector %s", inds);
+    endif
+    inds = 1:length(df._rep(col));
+  endif
+
   for indi = inds(:).',
     dummy = df._rep{col}; dummy(indi) = 0;
     [t1, t2] = ismember(df._rep{col}(indi)(:), dummy);

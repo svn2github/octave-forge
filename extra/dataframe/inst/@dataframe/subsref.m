@@ -422,7 +422,11 @@ function resu = subsref(df, S)
 	  resu._ridx = df._ridx;
 	endif
 	if (!isempty(resu._ridx)),
-	  resu._ridx = resu._ridx(onedimidx);
+	  if (size(resu._ridx, 2) > 1),
+	    resu._ridx = resu._ridx(indr, indc);
+	  else
+	    resu._ridx = resu._ridx(indr);
+	  endif
 	endif
       endif
       %# to be verified :       keyboard

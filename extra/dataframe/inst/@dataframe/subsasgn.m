@@ -27,6 +27,10 @@ function resu = subasgn(df, S, RHS)
   %# $Id$
   %#
 
+  if isempty(df),
+    error('dataframe subsasgn: first argument may not be empty');
+  endif
+
   switch(S(1).type)
     case '{}'
       error('Invalid dataframe as cell assignement');
@@ -165,10 +169,14 @@ function resu = subasgn(df, S, RHS)
 	indr = unique(fullindr); indc = unique(fullindc); 
 	inds = unique(fullinds);
 	ncol = length(indc);
-	S(1).subs{1} = indr; S(1).subs{2} = indc;
 	if (any(inds > 1)),
 	  S(1).subs{3} = inds;
 	endif
+      endif
+      
+      %# avoid passing ':' as selector on the two first dims
+      if (!isnull(RHS)),
+	S(1).subs{1} = indr; S(1).subs{2} = indc;
       endif
 
       resu = df_matassign(df, S, indc, ncol, RHS);

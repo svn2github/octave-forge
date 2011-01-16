@@ -138,7 +138,7 @@ for i=1:n  % Loop over search directions.
       x(:) = y; return
    end
 
-   if fmax > flast & ~isempty(savit)
+   if (fmax > flast && ~isempty (savit))
       x(:) = y;
       eval(['save ' savit ' x fmax nf'])
    end

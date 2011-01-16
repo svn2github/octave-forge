@@ -173,7 +173,9 @@ while 1   %%% Inner repeat loop.
     end
 
     if replaced, break, end
-    if trace & rem(m,10) == 0, fprintf('        ...inner = %2.0f...\n',m), end
+    if (trace && rem(m, 10) == 0)
+      fprintf('        ...inner = %2.0f...\n', m);
+    end
     end %%% Of inner repeat loop.
 
 if flag_break, break, end

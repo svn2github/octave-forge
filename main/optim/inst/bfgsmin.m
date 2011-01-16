@@ -87,7 +87,7 @@ function [parameter, obj, convergence, iters] = bfgsmin(f, f_args, control)
 
 	# validity checks on all controls
 	tmp = control{1};
-	if (((tmp !=Inf) & (tmp != -1)) & (tmp > 0 & (mod(tmp,1) != 0)))
+	if (((tmp !=Inf) && (tmp != -1)) && (tmp > 0 && (mod(tmp,1) != 0)))
 		usage("bfgsmin: 1st element of 3rd argument (iteration limit) must be Inf or positive integer");
 	endif
 	tmp = control{2};
@@ -95,7 +95,7 @@ function [parameter, obj, convergence, iters] = bfgsmin(f, f_args, control)
 		usage("bfgsmin: 2nd element of 3rd argument (verbosity level) must be 0, 1, 2, or 3");
 	endif
 	tmp = control{3};
-	if ((tmp != 0) & (tmp != 1))
+	if ((tmp != 0) && (tmp != 1))
 		usage("bfgsmin: 3rd element of 3rd argument (strong/weak convergence) must be 0 (weak) or 1 (strong)");
 	endif
 	tmp = control{4};

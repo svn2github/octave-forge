@@ -46,7 +46,9 @@ x0 = x(:);  % Work with column vector internally.
 n = length(x0);
 
 % Set up convergence parameters etc.
-if nargin < 3 | isempty(stopit), stopit(1) = 1e-3; end
+if (nargin < 3 || isempty(stopit))
+  stopit(1) = 1e-3;
+end
 tol = stopit(1);  % Tolerance for cgce test based on relative size of simplex.
 if length(stopit) == 1, stopit(2) = inf; end  % Max no. of f-evaluations.
 if length(stopit) == 2, stopit(3) = inf; end  % Default target for f-values.

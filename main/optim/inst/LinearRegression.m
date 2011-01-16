@@ -37,12 +37,12 @@ function [p,y_var,r,p_var]=LinearRegression(F,y,weight)
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-if ((nargin < 2)|(nargin>=4))
+if (nargin < 2 || nargin >= 4)
  usage('wrong number of arguments in [p,y_var,r,p_var]=LinearRegression(F,y)');
 end
 
 [rF, cF] = size(F);  [ry, cy] =size(y);
-if ( (rF ~= ry)|(cy>1))
+if (rF ~= ry || cy > 1)
   error ('LinearRegression: incorrect matrix dimensions');
 end
 

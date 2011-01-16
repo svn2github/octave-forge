@@ -199,10 +199,10 @@ end
 if (NP < 5)
   error("Population size NP must be bigger than 5.")
 end
-if ((F <= 0) | (F > 2))
+if ((F <= 0) || (F > 2))
   error("Difference Factor F out of range (0,2].")
 end
-if ((CR < 0) | (CR > 1))
+if ((CR < 0) || (CR > 1))
   error("CR value out of range [0,1].")
 end
 if (maxiter <= 0)
@@ -264,7 +264,7 @@ rot = 0:1:NP-1;                 # rotating index array (size NP)
 rotd= 0:1:D-1;                  # rotating index array (size D)
 
 iter = 1;
-while ((iter < maxiter) & (nfeval < maxnfe) &  (bestval > VTR)  & ...
+while ((iter < maxiter) && (nfeval < maxnfe) &&  (bestval > VTR)  && ...
        ((abs (max (val) - bestval) / max (1, abs (max (val))) > tol)))
   popold = pop;                   # save the old population
   wold   = w;                     # save the old weighting factors

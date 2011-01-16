@@ -69,18 +69,17 @@ function [mc, vc, f_gencstr, df_gencstr, user_df] = \
     endif
   endif
 
+endfunction
 
-  function ret = tf_gencstr (f, varargin) # varargin: p[, idx[, info]]
+function ret = tf_gencstr (f, varargin) # varargin: p[, idx[, info]]
 
-    ## necessary since user function f_gencstr might return [] or a row
-    ## vector
+  ## necessary since user function f_gencstr might return [] or a row
+  ## vector
 
-    if (isempty (ret = f (varargin{:})))
-      ret = zeros (0, 1);
-    elseif (columns (ret) > 1)
-      ret = ret(:);
-    endif
-
-  endfunction
+  if (isempty (ret = f (varargin{:})))
+    ret = zeros (0, 1);
+  elseif (columns (ret) > 1)
+    ret = ret(:);
+  endif
 
 endfunction

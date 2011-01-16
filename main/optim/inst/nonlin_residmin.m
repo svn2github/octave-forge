@@ -37,16 +37,9 @@
 ## @var{pin}: real column vector of initial parameters.
 ##
 ## @var{settings}: structure whose fields stand for optional settings
-## refered to below; at the moment, the fields cannot be set by
-## @code{optimset()} due to two bugs in Octaves current optimset
-## mechanism, but must be directly set as structure-fields in the
-## correct case. (With some effort one can fix this for oneself: from
-## Octave Forges svn repository, manually install the functions in
-## extra/optimset-fix/inst/ _instead_ of the corresponding Octave
-## functions, _(re)start_ Octave, and remove the internal redirection of
-## optimget in the installed file __nonlin_residmin__ of the optim
-## package; there is no other way save waiting for a new Octave version
-## with the submitted fix applied).
+## referred to below. The fields can be set by @code{optimset()} with
+## Octave versions 3.3.55 or greater; with older Octave versions, the
+## fields must be set directly as structure-fields in the correct case.
 ##
 ## The returned values are the column vector of final parameters
 ## @var{p}, the final array of residuals @var{resid}, an integer

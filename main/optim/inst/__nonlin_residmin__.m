@@ -25,8 +25,11 @@
 function [p, resid, cvg, outp] = \
       __nonlin_residmin__ (f, pin, settings, hook)
 
-  ## The optimset mechanism is broken in Octave 3.2.4.
-  optimget = @ __optimget__;
+  if (compare_versions (version (), "3.3.55", "<"))
+    ## optimset mechanism was fixed for option names with underscores
+    ## sometime in 3.3.54+, if I remember right
+    optimget = @ __optimget__;
+  endif
 
   ## some scalar defaults; some defaults are backend specific, so
   ## lacking elements in respective constructed vectors will be set to

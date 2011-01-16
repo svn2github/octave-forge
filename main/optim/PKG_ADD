@@ -1,0 +1,5 @@
+if (compare_versions (version (), "3.3.55", ">="))
+  ## optimset mechanism was fixed for option names with underscores
+  ## sometime in 3.3.54+, if I remember right
+  __all_opts__ ("__nonlin_residmin__");
+endif

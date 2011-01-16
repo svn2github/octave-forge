@@ -5,7 +5,7 @@ Author: Various Authors
 Maintainer: The Octave Community
 Title: Optimzation.
 Description: Non-linear optimization toolkit.
-Depends: octave (>= 2.9.7), miscellaneous (>= 1.0.11), struct (>= 1.0.8)
+Depends: octave (>= 2.9.7), miscellaneous (>= 1.0.11), struct (>= 1.0.9)
 Autoload: yes
 License: GPL version 2 or later and GFDL
 Url: http://octave.sf.net

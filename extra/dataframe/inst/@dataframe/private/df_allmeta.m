@@ -25,7 +25,7 @@ function resu = df_allmeta(df, dim = [])
   %% Suite 330, Boston, MA 02111-1307, USA.
   
   %#
-  %# $Id: df_func.m 7943 2010-11-24 15:33:54Z cdemills $
+  %# $Id$
   %#
 
   resu = dataframe([]);

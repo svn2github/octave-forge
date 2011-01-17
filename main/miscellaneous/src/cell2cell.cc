@@ -60,7 +60,14 @@ Return a one-dimensional cell array, extending along dimension @var{dim}, which 
 
   if (n_cdims >= dim && cdims(dim - 1) > 1)
     {
-      rdims.resize (dim);
+      if (dim == 1)
+	{
+	  rdims.resize (2);
+
+	  rdims(1) = 1;
+	}
+      else
+	rdims.resize (dim);
 
       for (i = 0; i < dim - 1; i++)
 	rdims(i) = 1;

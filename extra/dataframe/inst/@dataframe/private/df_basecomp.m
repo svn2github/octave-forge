@@ -36,35 +36,41 @@ function [A, B, C] = df_basecomp(A, B, itercol=true, func=@plus);
     strict = itercol(2); itercol = itercol(1);
   endif
   
-  if (!strcmp(func2str(func), 'mldivide')),
-    %# if strict is set, B may not be non-scalar vs scalar
-    if ((!(isscalar(A) || isscalar(B)))||(strict && isscalar(A))),
-      if (itercol), %# requires full compatibility
-	Csize = size(A)(1:2);
-	if (any(Csize - size(B)(1:2))),
-	  %# disp([size(A) size(B)])
-	  error("Non compatible row and columns sizes (op1 is %dx%d, op2 is %dx%d)",\
-		Csize, size(B));
-	endif
-      else %# compatibility with matrix product
-	if (size(A, 2) - size(B, 1)),
-	  error("Non compatible columns vs. rows size (op1 is %dx%d, op2 is %dx%d)",\
-		size(A)(1:2), size(B)(1:2));
-	endif
-	Csize = [size(A, 1) size(B, 2)];
-      endif
-    endif
-  else
-    if (isscalar(A)), 
-      Csize = size(B)(1:2);
-    else
+  switch (func2str(func)),
+    case 'bsxfun'
+      %# bsxfun compatibility rule: if there is at least one singleton
+      %# dim, the smallest is repeated to reach the size of the
+      %# greatest. Otherwise, all dims must be equal.
+      keyboard;
+    case 'mldivide'
+      if (isscalar(A)), 
+	Csize = size(B)(1:2);
+      else
         if (size(A, 1) != size(B, 1)),
-	error("Non compatible row sizes (op1 is %dx%d, op2 is %dx%d)",\
-	      size(A), size(B)(1:2));
+	  error("Non compatible row sizes (op1 is %dx%d, op2 is %dx%d)",\
+		size(A), size(B)(1:2));
+	endif
+	Csize = [size(A, 2) size(B, 2)];
       endif
-      Csize = [size(A, 2) size(B, 2)];
-    endif
-  endif
+    otherwise
+      %# if strict is set, B may not be non-scalar vs scalar
+      if ((!(isscalar(A) || isscalar(B)))||(strict && isscalar(A))),
+	if (itercol), %# requires full compatibility
+	  Csize = size(A)(1:2);
+	  if (any(Csize - size(B)(1:2))),
+	    %# disp([size(A) size(B)])
+	    error("Non compatible row and columns sizes (op1 is %dx%d, op2 is %dx%d)",\
+		  Csize, size(B));
+	  endif
+	else %# compatibility with matrix product
+	  if (size(A, 2) - size(B, 1)),
+	    error("Non compatible columns vs. rows size (op1 is %dx%d, op2 is %dx%d)",\
+		  size(A)(1:2), size(B)(1:2));
+	  endif
+	  Csize = [size(A, 1) size(B, 2)];
+	endif
+      endif
+  endswitch
 
   if !(isscalar(A) || isscalar(B))
     if (iscell(A)), A = dataframe(A); endif

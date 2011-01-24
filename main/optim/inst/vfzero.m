@@ -188,6 +188,9 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
   mba = mu * (b - a);
   not_ready = true (nx, 1);
   while (niter < maxiter && nfev < maxfev && any (not_ready))
+
+    ## FIXME: Make vectorization of original switch exclusive
+
     ## itype == 1
     type1idx = not_ready & itype == 1;
     ## The initial test.
@@ -242,9 +245,9 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
 	  .*(c(tidx) - a(tidx))(:);
       pdc = a1(taidx)(:) + a2(taidx)(:).*(2*c(tidx) - a(tidx) - b(tidx))(:);
       tidx0 = tidx;
-      tidx0(tidx0) &= (p0idx = pdc == 0);
+      tidx0(tidx0, 1) &= (p0idx = pdc == 0);
       taidx0 = tidx0(idx);
-      tidx(tidx) &= ! p0idx;
+      tidx(tidx, 1) &= ! p0idx;
       c(tidx0) = a(tidx0)(:) - (a0(taidx0)./a1(taidx0))(:);
       c(tidx) = c(tidx)(:) - (pc(! p0idx)./pdc(! p0idx))(:);
     endfor
@@ -275,6 +278,8 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
     c(nidx) = max (a(nidx) + delta(nidx), \
 		   min (b(nidx) - delta(nidx), c(nidx)));
 
+    ## FIXME: apply not_ready
+    ##
     ## Calculate new point.
     x = c;
     fval = fc = fun (c)(:); 
@@ -331,9 +336,11 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
   endwhile
 
   ## Check solution for a singularity by examining slope
-  info(not_ready & info == 1 & (b - a) != 0 & \
-       abs ((fb - fa)./(b - a) ./ slope0) > max (1e6, 0.5/(eps+tolx))) \
-      = - 5;
+  idx = not_ready & info == 1 & (b - a) != 0;
+  idx(idx, 1) &= \
+      abs ((fb(idx, 1) - fa(idx, 1))./(b(idx, 1) - a(idx, 1)) \
+	   ./ slope0(idx, 1)) > max (1e6, 0.5/(eps+tolx));
+  info(idx) = - 5;
 
   output.iterations = niter;
   output.funcCount = nfev;

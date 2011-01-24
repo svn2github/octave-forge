@@ -25,6 +25,7 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 #include <sys/socket.h>
 #include <errno.h>
 #include <netdb.h>
+#include <netinet/in.h> // reported necessary for FreeBSD-8
 
 #include "sock-stream.h"
 

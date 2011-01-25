@@ -127,7 +127,7 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
   niter = 0;
   nfev = 0;
 
-  x = fval = a = fa = b = fb = aa = c = u = fu = NaN (nx, 1);
+  x = fval = fc = a = fa = b = fb = aa = c = u = fu = NaN (nx, 1);
   bracket_ready = false (nx, 1);
   eps = eps (class (x0));
 
@@ -189,8 +189,6 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
   not_ready = true (nx, 1);
   while (niter < maxiter && nfev < maxfev && any (not_ready))
 
-    ## FIXME: Make vectorization of original switch exclusive
-
     ## itype == 1
     type1idx = not_ready & itype == 1;
     ## The initial test.
@@ -199,6 +197,7 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
     info(idx) = 1;
     not_ready(idx) = false;
     type1idx &= not_ready;
+    exclidx = type1idx;
     ## Secant step.
     idx = type1idx & \
 	(tidx = abs (fa) <= 1e3*abs (fb) & abs (fb) <= 1e3*abs (fa));
@@ -210,7 +209,8 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
     itype(type1idx) = 5;
 
     ## itype == 2 or 3
-    type23idx = not_ready & (itype == 2 | itype == 3);
+    type23idx = not_ready & ! exclidx & (itype == 2 | itype == 3);
+    exclidx |= type23idx;
     uidx = cellfun (@ (x) length (unique (x)), \
 		    num2cell ([fa, fb, fd, fe], 2)) == 4;
     oidx = sign (c - a) .* sign (c - b) > 0;
@@ -254,7 +254,8 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
     itype(type23idx) += 1; 
 
     ## itype == 4
-    type4idx = not_ready & itype == 4;
+    type4idx = not_ready & ! exclidx & itype == 4;
+    exclidx |= type4idx;
     ## Double secant step.
     idx = type4idx;
     c(idx) = u(idx) - 2*(b(idx) - a(idx))./(fb(idx) - fa(idx)).*fu(idx);
@@ -264,7 +265,7 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
     itype(type4idx) = 5;
 
     ## itype == 5
-    type5idx = not_ready & itype == 5;
+    type5idx = not_ready & ! exclidx & itype == 5;
     ## Bisection step.
     idx = type5idx;
     c(idx) = 0.5 * (b(idx) + a(idx));
@@ -278,12 +279,16 @@ function [x, fval, info, output] = vfzero (fun, x0, options = struct ())
     c(nidx) = max (a(nidx) + delta(nidx), \
 		   min (b(nidx) - delta(nidx), c(nidx)));
 
-    ## FIXME: apply not_ready
-    ##
     ## Calculate new point.
-    x = c;
-    fval = fc = fun (c)(:); 
-    niter ++; nfev ++;
+    idx = not_ready;
+    x(idx, 1) = c(idx, 1);
+    if (any (idx))
+      c(! idx) = u(! idx); # to have some working place-holders since
+				# fun() might expect full-length
+				# argument
+      fval(idx, 1) = fc(idx, 1) = fun (c)(:)(idx, 1);
+      niter ++; nfev ++;
+    endif
 
     ## Modification 2: skip inverse cubic interpolation if
     ## nonmonotonicity is detected.

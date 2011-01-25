@@ -9,6 +9,6 @@ OCTS = sclose.oct  connect.oct pserver.oct \
 all: $(OCTS)
 
 %.oct: %.cc
-	mkoctfile -s $< sock-stream.cc
+	@MKOCTFILE@ -s $< sock-stream.cc
 
 clean: ; rm *.o *.oct

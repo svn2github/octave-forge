@@ -19,6 +19,8 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 // TODO: error handling is a mess
 
+#include "config.h"
+
 #include <octave/oct.h>
 #include <oct-env.h>
 
@@ -144,7 +146,11 @@ Connect hosts and return sockets.")
 	    }
 	    free(host);
 	    int comm_len;
+#ifdef OCTAVE_LE_3_2_4
 	    std::string directory = octave_env::getcwd ();
+#else
+	    std::string directory = octave_env::get_current_directory ();
+#endif
 	    comm_len=directory.length();
 	    nl=htonl(comm_len);
 	    write_if_no_error(sock,&nl,sizeof(int),error_state);

@@ -36,6 +36,38 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 #include "sock-stream.h"
 
+#include "config.h"
+
+#ifndef OCTAVE_LE_3_2_4
+
+// Octave > 3.2.4 does not have these in a header file, but in
+// sighandlers.cc, and uses gnulib:: for these. So this is copied from
+// Octave-3.2.4.
+#define BLOCK_SIGNAL(sig, nvar, ovar) \
+  do \
+    { \
+      sigemptyset (&nvar); \
+      sigaddset (&nvar, sig); \
+      sigemptyset (&ovar); \
+      sigprocmask (SIG_BLOCK, &nvar, &ovar); \
+    } \
+  while (0)
+
+#if !defined (SIGCHLD) && defined (SIGCLD)
+#define SIGCHLD SIGCLD
+#endif
+
+// FIXME: Octave-3.2.4 had HAVE_POSIX_SIGNALS in config.h, newer
+// Octave has not (probably due to using gnulib?). We have not this
+// test in configure now, but assume HAVE_POSIX_SIGNALS defined.
+#define BLOCK_CHILD(nvar, ovar) BLOCK_SIGNAL (SIGCHLD, nvar, ovar)
+#define UNBLOCK_CHILD(ovar) sigprocmask (SIG_SETMASK, &ovar, 0)
+// #else
+// #define BLOCK_CHILD(nvar, ovar) ovar = sigblock (sigmask (SIGCHLD))
+// #define UNBLOCK_CHILD(ovar) sigsetmask (ovar)
+
+#endif
+
 /* children are not killed on parent exit; for that octave_child_list
    can not be used and an own SIGCHLD handler is needed */
 
@@ -75,7 +107,7 @@ reval_loop (int sock)
   std::string s;
 
   char dummy;
-  read(sock,&dummy,sizeof(char));
+  read_or_exit (sock, &dummy, sizeof (char));
   int p_err,count,r_len,num,fin,nl;
   struct pollfd *pollfd;
       
@@ -191,16 +223,24 @@ Connect hosts and return sockets.")
       feval ("sighup_dumps_octave_core", octave_value (0), 0);
 
       /* Redirect stdin and stdout to /dev/null. */
-      freopen("/dev/null", "r", stdin);
-      freopen("/dev/null", "w", stdout);
+      if (! freopen ("/dev/null", "r", stdin)) {
+	perror ("freopen ");
+	clean_up_and_exit (1);
+      }
+      if (! freopen ("/dev/null", "w", stdout)) {
+	perror ("freopen ");
+	clean_up_and_exit (1);
+      }
 
       sprintf(errname,"/tmp/octave_error-%s.log",hostname);
       if(stat(errname,&fstat)==0){
 	sprintf(bakname,"/tmp/octave_error-%s.bak",hostname);
 	rename(errname,bakname);
       }
-      freopen(errname, "w", stderr);
-      
+      if (! freopen (errname, "w", stderr)) {
+	perror ("freopen ");
+	clean_up_and_exit (1);
+      }      
 
       int sock=0,asock=0,dsock=0,dasock=0,pid=0;
       struct sockaddr_in *addr,rem_addr;;
@@ -335,7 +375,10 @@ Connect hosts and return sockets.")
 		sprintf(bakname,"/tmp/octave_error-%s_%05d.bak",hostname,pppid);
 		rename(errname,bakname);
 	      }
-	      freopen(errname, "w", stderr);
+	      if (! freopen(errname, "w", stderr)) {
+		perror ("freopen ");
+		_exit (1);
+	      }
 
 	      for(i=0;i<me;i++){
 		//      recv;

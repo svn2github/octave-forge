@@ -1,0 +1,11 @@
+2011-Jan-27  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	add minimal installers for msys and mingw-gcc
+	
+	msysinstaller\
+	* install.cmd: new file
+	* bin\README.txt: new file
+	
+	mingwinstaller\
+	* install.cmd: new file
+	* bin\README.txt: new file

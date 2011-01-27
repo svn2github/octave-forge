@@ -1,6 +1,4 @@
 //-------------------------------------------------------------------
-#pragma hdrstop
-//-------------------------------------------------------------------
 //   C-MEX implementation of STR2ARRAY - this function is part of the NaN-toolbox. 
 //   Actually, it also fixes a problem in STR2ARRAY.m described here:
 //   http://www-old.cae.wisc.edu/pipermail/help-octave/2007-December/007325.html
@@ -36,9 +34,9 @@
 //
 // Output:
 //    $Id: STR2ARRAY.cpp 7142 2010-03-30 18:48:06Z schloegl $
-//    Copyright (C) 2010 Alois Schloegl <a.schloegl@ieee.org>
+//    Copyright (C) 2010,2011 Alois Schloegl <a.schloegl@ieee.org>
 //    This function is part of the NaN-toolbox
-//    http://biosig-consulting.com/matlab/NaN/
+//    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 //
 //-------------------------------------------------------------------
 

@@ -17,7 +17,7 @@ function Q=quantile(Y,q,DIM,method)
 %	$Id$
 %	Copyright (C) 1996-2003,2005,2006,2007,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

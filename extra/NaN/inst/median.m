@@ -31,7 +31,7 @@ function [y]=median(x,DIM)
 %	$Id$
 %	Copyright (C) 2000-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 global FLAG_NANS_OCCURED;
 

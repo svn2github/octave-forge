@@ -27,9 +27,9 @@
 //   along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 //    $Id$
-//    Copyright (C) 2010 Alois Schloegl <a.schloegl@ieee.org>
+//    Copyright (C) 2010,2011 Alois Schloegl <a.schloegl@ieee.org>
 //    This function is part of the NaN-toolbox
-//    http://biosig-consulting.com/matlab/NaN/
+//    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 //
 // References:
 // [1]	TS-140 THE RECORD LAYOUT OF A DATA SET IN SAS TRANSPORT (XPORT) FORMAT

@@ -39,7 +39,7 @@ function [y]=mean(x,DIM,opt,W)
 %	$Id$
 %	Copyright (C) 2000-2004,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %    	This is part of the NaN-toolbox. For more details see
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 %
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

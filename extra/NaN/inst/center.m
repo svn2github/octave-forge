@@ -39,7 +39,7 @@ function [i,S] = center(i,DIM,W)
 %       $Id$
 %       Copyright (C) 2000-2003,2005,2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This is part of the NaN-toolbox. For more details see
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 
 if any(size(i)==0); return; end;

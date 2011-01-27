@@ -42,7 +42,7 @@ function [R]=hist2res(H,fun)
 %	$Id$
 %	Copyright (c) 1996-2002,2006 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 
 if strcmp(H.datatype,'HISTOGRAM')

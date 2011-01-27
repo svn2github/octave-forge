@@ -52,7 +52,7 @@ function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode)
 %    $Id$
 %    Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %    This function is part of the NaN-toolbox
-%    http://biosig-consulting.com/matlab/NaN/
+%    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

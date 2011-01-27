@@ -70,7 +70,7 @@ function [R,CC]=xval(D,classlabel,MODE,arg4)
 %	$Id$
 %	Copyright (C) 2008,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -162,7 +162,7 @@ for k = 1:max(NG),
 		CC = train_sc(D(ix,:), C(ix), MODE, W(ix));
 	end;
  	ix = ix0(NG(ix0)==k);
-	r  = test_sc(CC, D(ix,:));
+	r  = test_sc(CC, D(ix,:))
 	cl(ix,1) = r.classlabel;
 end; 
 

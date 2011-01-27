@@ -33,7 +33,7 @@ function [kap,se,H,z,p0,SA,R]=kappa(d,c,arg3,w)
 %	$Id$
 %	Copyright (c) 1997-2006,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 %
 %    BioSig is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

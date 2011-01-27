@@ -4,7 +4,7 @@ $Id$
 Copyright (c) 2007-2009 The LIBLINEAR Project.
 Copyright (c) 2010 Alois Schloegl <a.schloegl@ieee.org>
 This function is part of the NaN-toolbox
-http://hci.tugraz.at/~schloegl/matlab/NaN/
+http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 This code was extracted from liblinear-1.51 in Jan 2010 and 
 modified for the use with Octave 

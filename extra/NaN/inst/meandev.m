@@ -40,7 +40,7 @@ function R = meandev(i,DIM)
 %	$Id$
 %	Copyright (C) 2000-2002,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox for Octave and Matlab 
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 	
 if nargin==1,
         DIM = find(size(i)>1,1);

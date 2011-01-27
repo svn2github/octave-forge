@@ -2,9 +2,9 @@ function make(arg1)
 % This make.m is used for Matlab under Windows
 
 %	$Id$
-%	Copyright (C) 2010 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2010,2011 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 % add -largeArrayDims on 64-bit machines
 

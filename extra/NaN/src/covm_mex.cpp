@@ -1,7 +1,5 @@
 /*
 //-------------------------------------------------------------------
-#pragma hdrstop
-//-------------------------------------------------------------------
 //   C-MEX implementation of COVM - this function is part of the NaN-toolbox. 
 //
 //
@@ -35,9 +33,9 @@
 //        computed more efficiently 
 //
 //    $Id$
-//    Copyright (C) 2009 Alois Schloegl <a.schloegl@ieee.org>
+//    Copyright (C) 2009,2010,2011 Alois Schloegl <a.schloegl@ieee.org>
 //    This function is part of the NaN-toolbox
-//    http://hci.tugraz.at/~schloegl/matlab/NaN/
+//    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 //
 //-------------------------------------------------------------------
 */

@@ -49,7 +49,7 @@ function [X,T]=detrend(t,X,p)
 %       $Id$
 %       Copyright (C) 2001,2007 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 
 if (nargin == 1)

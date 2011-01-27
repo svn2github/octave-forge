@@ -38,9 +38,9 @@
 //      x = sort(X)(k)  
 //
 //    $Id$
-//    Copyright (C) 2010 Alois Schloegl <a.schloegl@ieee.org>
+//    Copyright (C) 2010,2011 Alois Schloegl <a.schloegl@ieee.org>
 //    This function is part of the NaN-toolbox
-//    http://biosig-consulting.com/matlab/NaN/
+//    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 //
 //-------------------------------------------------------------------
 

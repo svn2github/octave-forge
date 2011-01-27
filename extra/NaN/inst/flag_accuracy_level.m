@@ -44,7 +44,7 @@ function FLAG = flag_accuracy_level(i)
 %	$Id$
 % 	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 
 persistent FLAG_ACCURACY_LEVEL;

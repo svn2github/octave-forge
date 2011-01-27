@@ -36,7 +36,7 @@ function o=meansq(x,DIM,W)
 %	Copyright (C) 2000-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
 %	$Id$
 %       This function is part of the NaN-toolbox for Octave and Matlab 
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 
 if nargin<3,

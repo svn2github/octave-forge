@@ -43,7 +43,7 @@ function FLAG = flag_implicit_skip_nan(i)
 %	$Id$
 % 	Copyright (C) 2001-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 
 persistent FLAG_implicit_skip_nan;

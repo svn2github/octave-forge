@@ -50,7 +50,7 @@ function [o,v]=std(x,opt,DIM,W)
 %	$Id$
 %	Copyright (C) 2000-2003,2006,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the NaN-toolbox for Octave and Matlab 
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 if nargin<4,
 	W = []; 

@@ -13,7 +13,7 @@ function [mu,sd,COV,xc,M,R2]=decovm(XCN,NN)
 %	$Id: decovm.m 2140 2009-07-02 12:03:55Z schloegl $
 %	Copyright (c) 1999-2002,2009 by  Alois Schloegl
 %       This function is part of the NaN-toolbox
-%       http://biosig-consulting.com/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License

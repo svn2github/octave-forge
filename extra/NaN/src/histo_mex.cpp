@@ -1,7 +1,5 @@
 //-------------------------------------------------------------------
-#pragma hdrstop
-//-------------------------------------------------------------------
-//   C-MEX implementation of SUMSKIPNAN - this function is part of the NaN-toolbox. 
+//   C-MEX implementation of Histogram - this function is part of the NaN-toolbox. 
 //
 //
 //   This program is free software; you can redistribute it and/or modify
@@ -30,9 +28,9 @@
 //     HIS.H
 //
 //    $Id$
-//    Copyright (C) 2009,2010 Alois Schloegl <a.schloegl@ieee.org>
+//    Copyright (C) 2009,2010,2011 Alois Schloegl <a.schloegl@ieee.org>
 //    This function is part of the NaN-toolbox
-//    http://hci.tugraz.at/~schloegl/matlab/NaN/
+//    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 //
 //-------------------------------------------------------------------
 

@@ -43,7 +43,7 @@
 */
 
 #ifdef __GNUC__ 
-        #include <inttypes.h>
+        #include <stdint.h>
 #endif
 #include <math.h>
 #include "mex.h"

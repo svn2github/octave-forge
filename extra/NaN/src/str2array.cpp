@@ -45,8 +45,8 @@
 
 
 #include <ctype.h>
-#include <inttypes.h>
 #include <math.h>
+#include <stdint.h>
 #include <string.h>
 #include "mex.h"
 

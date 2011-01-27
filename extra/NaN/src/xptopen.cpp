@@ -51,8 +51,8 @@ SPSS file format
 #define DEBUG 0
 
 #include <ctype.h>
-#include <inttypes.h>
 #include <math.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>

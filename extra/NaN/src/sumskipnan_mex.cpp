@@ -49,8 +49,8 @@
 
 
 
-#include <inttypes.h>
 #include <math.h>
+#include <stdint.h>
 #include "mex.h"
 
 inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W);

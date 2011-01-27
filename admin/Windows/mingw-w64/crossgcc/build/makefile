@@ -305,13 +305,13 @@ headers-install
 # --------------------------------------
 binutils-download :$(SRC_DIR)/binutils/.co.marker
 $(SRC_DIR)/binutils/.co.marker : $(SRC_DIR)/binutils/.mkdir.marker 
-	cd $(dir $@) && $(CVS) -d ":pserver:anoncvs@sourceware.org:/cvs/src" -z3 checkout -d . -N binutils
+	cd $(dir $@) && $(CVS) -d ":pserver:anoncvs@sourceware.org:/cvs/src" checkout -d . -N binutils
 	touch $@
 
 binutils-update : $(SRC_DIR)/binutils/.update.marker
 ifeq ($(BINUTILS_UPDATE),1)
 $(SRC_DIR)/binutils/.update.marker :
-	cd $(dir $@) && $(CVS) -d ":pserver:anoncvs@sourceware.org:/cvs/src" -z3 update
+	cd $(dir $@) && $(CVS) -d ":pserver:anoncvs@sourceware.org:/cvs/src" update
 else
 .PHONY: $(SRC_DIR)/binutils/.update.marker
 endif
@@ -363,8 +363,6 @@ ifeq ($(GCC_UPDATE),0)
 .PHONY: $(SRC_DIR)/gcc/.update.marker
 else
 $(SRC_DIR)/gcc/.update.marker : $(SRC_DIR)/gcc/.co.marker
-	cd $(dir $@) && $(SVN) revert gcc/doc/tm.texi
-	cd $(dir $@) && $(SVN) revert gcc/doc/tm.texi.in
 	cd $(dir $@) && $(SVN) update --revision ${GCC_REVISION}
 endif
 
@@ -397,7 +395,6 @@ $(BUILD_DIR)/gcc/.config.marker : \
 # --------------------------------------
 gcc-bootstrap-compile : $(BUILD_DIR)/gcc/.bootstrap.compile.marker
 $(BUILD_DIR)/gcc/.bootstrap.compile.marker : $(BUILD_DIR)/gcc/.config.marker
-	u2d $(SRC_DIR)/gcc/gcc/doc/tm.texi $(SRC_DIR)/gcc/gcc/doc/tm.texi.in
 	$(MAKE) -C $(dir $@) $(MAKE_PARALLEL) all-gcc
 	touch $@
 

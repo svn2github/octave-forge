@@ -1,0 +1,229 @@
+diff --git a/aclocal.m4 b/aclocal.m4
+--- a/aclocal.m4
++++ b/aclocal.m4
+@@ -2879,7 +2879,7 @@
+     _LT_AC_TAGVAR(enable_shared_with_static_runtimes, $1)=yes
+ 
+     if $LD --help 2>&1 | grep 'auto-import' > /dev/null; then
+-      _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++      _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+       # If the export-symbols file already is a .def file (1st line
+       # is EXPORTS), use it as is; otherwise, prepend...
+       _LT_AC_TAGVAR(archive_expsym_cmds, $1)='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -2888,7 +2888,7 @@
+ 	echo EXPORTS > $output_objdir/$soname.def;
+ 	cat $export_symbols >> $output_objdir/$soname.def;
+       fi~
+-      $CC -shared -nostdlib $output_objdir/$soname.def $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++      $CC -shared -nostdlib $output_objdir/$soname.def $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+     else
+       _LT_AC_TAGVAR(ld_shlibs, $1)=no
+     fi
+@@ -5112,7 +5112,7 @@
+       _LT_AC_TAGVAR(export_symbols_cmds, $1)='$NM $libobjs $convenience | $global_symbol_pipe | $SED -e '\''/^[[BCDGS]] /s/.* \([[^ ]]*\)/\1 DATA/'\'' | $SED -e '\''/^[[AITW]] /s/.* //'\'' | sort | uniq > $export_symbols'
+ 
+       if $LD --help 2>&1 | grep 'auto-import' > /dev/null; then
+-        _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000 ${wl}--out-implib,$lib'
++        _LT_AC_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--out-implib,$lib'
+ 	# If the export-symbols file already is a .def file (1st line
+ 	# is EXPORTS), use it as is; otherwise, prepend...
+ 	_LT_AC_TAGVAR(archive_expsym_cmds, $1)='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -5121,7 +5121,7 @@
+ 	  echo EXPORTS > $output_objdir/$soname.def;
+ 	  cat $export_symbols >> $output_objdir/$soname.def;
+ 	fi~
+-	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--image-base=0x10000000  ${wl}--out-implib,$lib'
++	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname  ${wl}--out-implib,$lib'
+       else
+ 	ld_shlibs=no
+       fi
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -772,7 +772,7 @@
+ ],[	if test "x$prefix" = "xNONE"; then
+ 		WMF_FONTDIR=$ac_default_prefix/share/$PACKAGE/fonts
+ 	else
+-		WMF_FONTDIR=$prefix/share/$PACKAGE/fonts
++		WMF_FONTDIR=\${prefix}/share/$PACKAGE/fonts
+ 	fi
+ ])
+ 
+diff --git a/src/Makefile.am b/src/Makefile.am
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -37,6 +37,8 @@
+ 
+ libwmflite_la_SOURCES = api.c bbuf.c meta.c player.c recorder.c
+ 
++libwmflite_la_LIBADD = $(srcdir)/libwmflite.def 
++
+ libwmflite_la_LDFLAGS = $(SYS_LIBM) \
+ 	-no-undefined \
+ 	-version-info $(LT_LITE_CURRENT):$(LT_LITE_REVISION):$(LT_LITE_AGE) \
+@@ -56,7 +58,7 @@
+ LIBGD = extra/gd/libgd.la
+ endif
+ 
+-libwmf_la_LIBADD = ipa/libipa.la libwmflite.la $(LIBGD) $(LIBTRIO) @WMF_LIBFLAGS@
++libwmf_la_LIBADD = $(srcdir)/libwmf.def ipa/libipa.la libwmflite.la $(LIBGD) $(LIBTRIO) @WMF_LIBFLAGS@
+ 
+ libwmf_la_LDFLAGS = \
+ 	-no-undefined \
+diff --git a/src/extra/gd/gd.h b/src/extra/gd/gd.h
+--- a/src/extra/gd/gd.h
++++ b/src/extra/gd/gd.h
+@@ -6,8 +6,8 @@
+ #endif
+ 
+ /* default fontpath for unix systems */
+-#define DEFAULT_FONTPATH "/usr/share/fonts/truetype"
+-#define PATHSEPARATOR ":"
++#define DEFAULT_FONTPATH "C:\\WINDOWS\\FONTS;C:\\WINNT\\FONTS"
++#define PATHSEPARATOR ";"
+ 
+ /* gd.h: declarations file for the graphic-draw module.
+  * Permission to use, copy, modify, and distribute this software and its
+diff --git a/src/font.c b/src/font.c
+--- a/src/font.c
++++ b/src/font.c
+@@ -45,7 +45,7 @@
+ 
+ 	if (retval[0] == '\0')
+ 	{	strcpy (retval, _libwmf_get_fontdir ());
+-		strcat (retval, "\\share\\libwmf\\fonts\\fontmap");
++		strcat (retval, "\\fontmap");
+ 	}
+ 
+ 	return retval;
+diff --git a/src/libwmf.def b/src/libwmf.def
+new file mode 100644
+--- /dev/null
++++ b/src/libwmf.def
+@@ -0,0 +1,48 @@
++EXPORTS
++wmf_api_create
++wmf_api_destroy
++wmf_eps_function
++wmf_fig_function
++wmf_foreign_function
++wmf_gd_function
++wmf_gd_image_pixels
++wmf_help
++wmf_image_free
++wmf_image_load_jpg
++wmf_image_load_png
++wmf_image_save_eps
++wmf_ipa_bmp_b64
++wmf_ipa_bmp_color
++wmf_ipa_bmp_copy
++wmf_ipa_bmp_eps
++wmf_ipa_bmp_free
++wmf_ipa_bmp_interpolate
++wmf_ipa_bmp_jpg
++wmf_ipa_bmp_png
++wmf_ipa_bmp_read
++wmf_ipa_bmp_setcolor
++wmf_ipa_draw_text
++wmf_ipa_font_dir
++wmf_ipa_font_init
++wmf_ipa_font_lookup
++wmf_ipa_font_map
++wmf_ipa_font_map_gs
++wmf_ipa_font_map_set
++wmf_ipa_font_map_xml
++wmf_ipa_font_stringwidth
++wmf_ipa_page_format
++wmf_ipa_page_height
++wmf_ipa_page_width
++wmf_plot_function
++wmf_stream_create
++wmf_stream_destroy
++wmf_stream_printf
++wmf_stream_reset
++wmf_stream_rezet
++wmf_stream_sputs
++wmf_stream_zputs
++wmf_svg_function
++wmf_wmfxml_import
++wmf_x_function
++wmf_ztream_create
++wmf_ztream_destroy
+diff --git a/src/libwmflite.def b/src/libwmflite.def
+new file mode 100644
+--- /dev/null
++++ b/src/libwmflite.def
+@@ -0,0 +1,73 @@
++EXPORTS
++wmf_aldus_checksum
++wmf_assert
++wmf_attr_add
++wmf_attr_clear
++wmf_attr_free
++wmf_attr_new
++wmf_attr_query
++wmf_bbuf_input
++wmf_calloc
++wmf_canvas
++wmf_canvas_arc
++wmf_canvas_bitmap
++wmf_canvas_done
++wmf_canvas_ellipse
++wmf_canvas_line
++wmf_canvas_polygon
++wmf_canvas_polygons
++wmf_canvas_polyline
++wmf_canvas_rect
++wmf_canvas_roundrect
++wmf_canvas_set_background
++wmf_canvas_set_bgcolor
++wmf_canvas_set_brush
++wmf_canvas_set_font
++wmf_canvas_set_pen
++wmf_canvas_set_polyfill
++wmf_canvas_set_textcolor
++wmf_canvas_text
++wmf_debug
++wmf_detach
++wmf_display_size
++wmf_error
++wmf_file_close
++wmf_file_open
++wmf_file_read
++wmf_file_seek
++wmf_file_tell
++wmf_free
++wmf_header_read
++wmf_ipa_color
++wmf_ipa_color_add
++wmf_ipa_color_count
++wmf_ipa_color_index
++wmf_ipa_color_init
++wmf_lite_create
++wmf_lite_destroy
++wmf_malloc
++wmf_mem_close
++wmf_mem_open
++wmf_mem_read
++wmf_mem_seek
++wmf_mem_tell
++wmf_play
++wmf_player_init
++wmf_printf
++wmf_read_16
++wmf_read_32
++wmf_realloc
++wmf_rgb_black
++wmf_rgb_color
++wmf_rgb_white
++wmf_scan
++wmf_set_viewport_origin
++wmf_size
++wmf_status_function
++wmf_str_append
++wmf_strbuf_grow
++wmf_strdup
++wmf_strstr
++wmf_write
++wmf_write_begin
++wmf_write_end

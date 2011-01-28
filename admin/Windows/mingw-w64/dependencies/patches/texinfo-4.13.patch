@@ -1,0 +1,38 @@
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' texinfo-4.13-orig/info/man.c texinfo-4.13/info/man.c
+--- texinfo-4.13-orig/info/man.c	2008-07-06 01:32:19 +0200
++++ texinfo-4.13/info/man.c	2008-12-26 18:06:04 +0100
+@@ -20,7 +20,9 @@
+    Originally written by Brian Fox Thu May  4 09:17:52 1995. */
+ 
+ #include "info.h"
++#ifdef HAVE_SYS_IOCTL_H
+ #include <sys/ioctl.h>
++#endif /* HAVE_SYS_IOCTL_H */
+ #include "signals.h"
+ #if defined (HAVE_SYS_TIME_H)
+ #include <sys/time.h>
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' texinfo-4.13-orig/info/session.c texinfo-4.13/info/session.c
+--- texinfo-4.13-orig/info/session.c	2008-06-12 14:39:21 +0200
++++ texinfo-4.13/info/session.c	2008-12-26 18:06:19 +0100
+@@ -21,7 +21,9 @@
+ 
+ #include "info.h"
+ #include "search.h"
++#ifdef HAVE_SYS_IOCTL_H
+ #include <sys/ioctl.h>
++#endif /* HAVE_SYS_IOCTL_H */
+ 
+ #if defined (HAVE_SYS_TIME_H)
+ #  include <sys/time.h>
+diff -urN -x '*.exe' -x '*.dll' -x '*.o' -x '*.a' -x '*.bak' texinfo-4.13-orig/install-info/Makefile.in texinfo-4.13/install-info/Makefile.in
+--- texinfo-4.13-orig/install-info/Makefile.in	2008-09-18 20:46:24 +0200
++++ texinfo-4.13/install-info/Makefile.in	2008-12-26 18:02:37 +0100
+@@ -507,7 +507,7 @@
+ 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+ ginstall-info$(EXEEXT): $(ginstall_info_OBJECTS) $(ginstall_info_DEPENDENCIES) 
+ 	@rm -f ginstall-info$(EXEEXT)
+-	$(LINK) $(ginstall_info_OBJECTS) $(ginstall_info_LDADD) $(LIBS)
++	$(LINK) $(ginstall_info_OBJECTS) $(ginstall_info_LDADD) $(LIBS) -lregex
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)

@@ -1,0 +1,115 @@
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -143,37 +143,37 @@
+ fi
+ 
+ #
+-eval "eval PREFIX_DIR=${prefix}"
++eval "eval PREFIX_DIR=\${prefix}"
+ AC_SUBST(PREFIX_DIR)
+-eval "eval EXEC_PREFIX_DIR=${exec_prefix}"
++eval "eval EXEC_PREFIX_DIR=\${exec_prefix}"
+ AC_SUBST(EXEC_PREFIX_DIR)
+-eval "eval BIN_DIR=$bindir"
++eval "eval BIN_DIR=\${bindir}"
+ AC_SUBST(BIN_DIR)
+-eval "eval SBIN_DIR=$sbindir"
++eval "eval SBIN_DIR=\${sbindir}"
+ AC_SUBST(SBIN_DIR)
+-eval "eval LIBEXEC_DIR=$libexecdir"
++eval "eval LIBEXEC_DIR=\${libexecdir}"
+ AC_SUBST(LIBEXEC_DIR)
+-eval "eval DATA_DIR=$datadir"
++eval "eval DATA_DIR=\${datadir}"
+ AC_SUBST(DATA_DIR)
+-eval "eval DOC_DIR=$docdir"
++eval "eval DOC_DIR=\${docdir}"
+ AC_SUBST(DOC_DIR)
+-eval "eval HTML_DIR=$htmldir"
++eval "eval HTML_DIR=\${htmldir}"
+ AC_SUBST(HTML_DIR)
+-eval "eval SYSCONF_DIR=$sysconfdir"
++eval "eval SYSCONF_DIR=\${sysconfdir}"
+ AC_SUBST(SYSCONF_DIR)
+-eval "eval SHAREDSTATE_DIR=$sharedstatedir"
++eval "eval SHAREDSTATE_DIR=\${sharedstatedir}"
+ AC_SUBST(SHAREDSTATE_DIR)
+-eval "eval LOCALSTATE_DIR=$localstatedir"
++eval "eval LOCALSTATE_DIR=\${localstatedir}"
+ AC_SUBST(LOCALSTATE_DIR)
+-eval "eval LIB_DIR=$libdir"
++eval "eval LIB_DIR=\${libdir}"
+ AC_SUBST(LIB_DIR)
+-eval "eval INCLUDE_DIR=$includedir"
++eval "eval INCLUDE_DIR=\${includedir}"
+ AC_SUBST(INCLUDE_DIR)
+-eval "eval OLDINCLUDE_DIR=$oldincludedir"
++eval "eval OLDINCLUDE_DIR=\${oldincludedir}"
+ AC_SUBST(OLDINCLUDE_DIR)
+-eval "eval INFO_DIR=$infodir"
++eval "eval INFO_DIR=\${infodir}"
+ AC_SUBST(INFO_DIR)
+-eval "eval MAN_DIR=$mandir"
++eval "eval MAN_DIR=\${mandir}"
+ AC_SUBST(MAN_DIR)
+ 
+ # Get full paths to source and build directories
+diff --git a/magick/blob.c b/magick/blob.c
+--- a/magick/blob.c
++++ b/magick/blob.c
+@@ -1535,7 +1535,7 @@
+ %
+ */
+ 
+-#if !defined(UseInstalledMagick) && defined(POSIX)
++#if !defined(UseInstalledMagick)
+ static void ChopPathComponents(char *path,const unsigned long components)
+ {
+   long
+@@ -1683,7 +1683,7 @@
+     magick_home=getenv("MAGICK_HOME");
+     if (magick_home)
+       {
+-#if defined(POSIX)
++
+         FormatString(path,"%.1024s/share/%s/",magick_home,
+           MagickShareConfigSubDir);
+         AddConfigurePath(path_map,&path_index,path,exception);
+@@ -1691,11 +1691,11 @@
+         FormatString(path,"%.1024s/lib/%s/",magick_home,
+           MagickLibConfigSubDir);
+         AddConfigurePath(path_map,&path_index,path,exception);
+-#else
++
+         FormatString(path,"%.1024s%s",magick_home,
+           DirectorySeparator);
+         AddConfigurePath(path_map,&path_index,path,exception);
+-#endif /* defined(POSIX) */
++
+       }
+     }
+ 
+@@ -1711,7 +1711,7 @@
+ 
+   if (*SetClientPath((char *) NULL) != '\0')
+     {
+-#if defined(POSIX)
++
+       char
+         prefix[MaxTextExtent];
+ 
+@@ -1726,11 +1726,11 @@
+ 
+       FormatString(path,"%.1024s/share/%s/",prefix,MagickShareConfigSubDir);
+       AddConfigurePath(path_map,&path_index,path,exception);
+-#else /* defined(POSIX) */
++
+       FormatString(path,"%.1024s%s",SetClientPath((char *) NULL),
+         DirectorySeparator);
+       AddConfigurePath(path_map,&path_index,path,exception);
+-#endif /* !defined(POSIX) */
++
+     }
+ 
+   /*

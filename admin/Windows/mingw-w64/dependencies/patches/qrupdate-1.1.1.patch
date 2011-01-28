@@ -1,0 +1,124 @@
+diff --git a/Makeconf b/Makeconf
+--- a/Makeconf
++++ b/Makeconf
+@@ -1,9 +1,9 @@
+ # set this to your compiler's executable name (e.g. gfortran, g77)
+-FC=gfortran
++FC=$(CROSS)gfortran
+ # requested flags
+ FFLAGS=-fimplicit-none -O3 -funroll-loops 
+ # set if you need shared library
+-FPICFLAGS=-fPIC
++FPICFLAGS=
+ 
+ # BLAS library (only required for tests)
+ BLAS=-lblas
+@@ -24,3 +24,5 @@
+ ifeq ($(strip $(PREFIX)),)
+   PREFIX=/usr/local
+ endif
++
++AR=$(CROSS)ar
+diff --git a/Makefile b/Makefile
+--- a/Makefile
++++ b/Makefile
+@@ -19,7 +19,9 @@
+ # <http://www.gnu.org/licenses/>.
+ #
+ 
+-include Makeconf
++SRCDIR=.
++
++include $(SRCDIR)/Makeconf
+ 
+ help:
+ 	@echo
+@@ -39,7 +41,7 @@
+ 	make -C test/
+ 
+ clean:
+-	rm -f libqrupdate.a libqrupdate.so
++	rm -f libqrupdate.a libqrupdate.dll
+ 	make -C src/ clean
+ 	make -C test/ clean
+ 
+diff --git a/src/Makefile b/src/Makefile
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -18,7 +18,10 @@
+ # along with this software; see the file COPYING.  If not, see
+ # <http://www.gnu.org/licenses/>.
+ #
+-include ../Makeconf
++SRCDIR=..
++include $(SRCDIR)/Makeconf
++
++vpath %.f  $(SRCDIR)/src
+ 
+ SRC = caxcpy.f cch1dn.f cch1up.f cchdex.f cchinx.f cchshx.f cgqvec.f   \
+ cqhqr.f cqr1up.f cqrdec.f cqrder.f cqrinc.f cqrinr.f cqrot.f cqrqh.f   \
+@@ -41,10 +44,14 @@
+ else
+ SOEXT=.so
+ endif
+-solib: ../libqrupdate$(SOEXT)
++solib: ../qrupdate.dll
++
++qrupdate.def : $(SRCDIR)/src/EXPORTS
++	echo EXPORTS>$@
++	cat $^ >> $@
+ 
+ ../libqrupdate.a: $(OBJS)
+-	ar -cr $@ $(OBJS)
++	$(AR) -cr $@ $(OBJS)
+ 
+ ../libqrupdate.so: $(OBJS)
+ 	$(FC) $(FFLAGS) -shared -o $@ -Wl,-soname=libqrupdate.so.$(MAJOR) $(OBJS) \
+@@ -54,6 +61,15 @@
+ 	$(FC) $(FFLAGS) $(LDFLAGS) -dynamiclib -o $@ -install_name $(PREFIX)/$(LIBDIR)/libqrupdate.$(MAJOR).dylib $(OBJS) \
+ 		$(BLAS) $(LAPACK)
+ 
++../qrupdate.dll: $(OBJS) qrupdate.def
++	$(FC) $(FFLAGS) $(FLDFLAGS) $(LDFLAGS) \
++		-Wl,--out-implib=../libqrupdate.dll.a \
++		-Wl,--output-def=../qrupdate.exp \
++		-shared -o $@ \
++		-Wl,qrupdate.def \
++		$(OBJS) \
++		$(LAPACK) $(BLAS)
++
+ $(OBJS): %.o: %.f
+ 	$(FC) $(FFLAGS) $(FPICFLAGS) -c $<
+ 
+diff --git a/test/Makefile b/test/Makefile
+--- a/test/Makefile
++++ b/test/Makefile
+@@ -18,7 +18,10 @@
+ # along with this software; see the file COPYING.  If not, see
+ # <http://www.gnu.org/licenses/>.
+ #
+-include ../Makeconf
++SRCDIR=..
++include $(SRCDIR)/Makeconf
++
++vpath %.f  $(SRCDIR)/test
+ 
+ LIBS= $(BLAS) $(LAPACK)
+ PROGS=tqr1up tqrinc tqrdec tqrshc tqrinr tqrder \
+@@ -28,14 +31,14 @@
+ OUTS=$(PROGS:%=%.out)
+ 
+ tests: $(OUTS)
+-	./report_results $(OUTS)
++	$(SRCDIR)/test/report_results $(OUTS)
+ 
+ $(OUTS): %.out: %
+ 	echo > $@
+ 	./$< | tee $@
+ 
+ $(PROGS): % : %.f utils.o ../libqrupdate.a
+-	$(FC) $(FFLAGS) -o $@ $^ $(LIBS)
++	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
+ 
+ utils.o: utils.f
+ 	$(FC) $(FFLAGS) -c $<

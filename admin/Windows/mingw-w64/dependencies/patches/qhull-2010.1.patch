@@ -1,0 +1,57 @@
+diff --git a/src/Makefile b/src/Makefile
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -34,8 +34,15 @@
+ #
+ # Do not replace tabs with spaces.  Needed by 'make' for build rules
+ 
+-BINDIR	= /usr/local/bin
+-MANDIR	= /usr/local/man/man1
++SRCTOP = ../
++
++vpath %.c $(SRCTOP)/src
++vpath %.h $(SRCTOP)/src
++
++PREFIX ?= /usr/local
++
++BINDIR	= $(PREFIX)/bin
++MANDIR	= $(PREFIX)/man/man1
+ 
+ # if you do not have enscript, try a2ps or just use lpr.  The files are text.
+ PRINTMAN = enscript -2rl
+@@ -45,8 +52,9 @@
+ 
+ #for Gnu's gcc compiler -O2 for optimization, -g for debugging, -Wall for check
+ #   -fno-strict-aliasing not needed for gcc 4.4+ (segfault in qset.c)
+-CC  = gcc
++CC  = $(CROSS)gcc
+ CCOPTS1 = -O2 -ansi -fno-strict-aliasing 
++AR = $(CROSS)ar
+ 
+ # for Sun's cc compiler, -fast or O2 for optimization, -g for debugging, -Xc for ANSI
+ #CC = cc
+@@ -84,6 +92,15 @@
+ 
+ all: rbox qconvex qdelaunay qhalf qvoronoi qhull
+ 
++lib: libqhull.a qhull.dll
++
++qhull.dll : libqhull.a
++	$(CC) -shared $(LDFLAGS) -o $@ \
++	-Wl,--out-implib=$(<:.a=.dll.a) \
++	-Wl,--output-def=$@.exp \
++	-Wl,--whole-archive $< \
++	-Wl,--no-whole-archive
++
+ unix.o:	    libqhull.h user.h mem.h
+ qconvex.o:  libqhull.h user.h mem.h
+ qdelaun.o:  libqhull.h user.h mem.h
+@@ -142,7 +159,7 @@
+ 
+ libqhull.a: $(OBJS)
+ 	@echo if 'ar' or 'ranlib' fails, try 'make qhullx'
+-	ar -r libqhull.a $(OBJS)
++	$(AR) -r libqhull.a $(OBJS)
+ 	@echo the next line may need to be removed.
+ 	-test -x /bin/ranlib -o -x /usr/bin/ranlib && ranlib libqhull.a
+ 

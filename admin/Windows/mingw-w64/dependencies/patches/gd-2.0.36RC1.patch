@@ -1,0 +1,52 @@
+diff --git a/configure b/configure
+--- a/configure
++++ b/configure
+@@ -2609,6 +2609,10 @@
+ { echo "$as_me:$LINENO: result: $os_cygwin" >&5
+ echo "${ECHO_T}$os_cygwin" >&6; }
+ 
++case "$target" in
++  *-*-mingw*) XTRA_LDFLAGS="-no-undefined"
++               ;;
++esac
+ 
+ ac_ext=c
+ ac_cpp='$CPP $CPPFLAGS'
+diff --git a/gd.h b/gd.h
+--- a/gd.h
++++ b/gd.h
+@@ -70,11 +70,19 @@
+ 
+ /* 2.0.23: more Type 1 fonts */
+ #ifndef DEFAULT_FONTPATH
++#ifdef WIN32
++#define DEFAULT_FONTPATH "C:\\WINDOWS\\FONTS;C:\\WINNT\\FONTS"
++#else   /* #ifdef WIN32 */
+ /* default fontpath for unix systems  - whatever happened to standards ! */
+ #define DEFAULT_FONTPATH "/usr/X11R6/lib/X11/fonts/TrueType:/usr/X11R6/lib/X11/fonts/truetype:/usr/X11R6/lib/X11/fonts/TTF:/usr/share/fonts/TrueType:/usr/share/fonts/truetype:/usr/openwin/lib/X11/fonts/TrueType:/usr/X11R6/lib/X11/fonts/Type1:/usr/lib/X11/fonts/Type1:/usr/openwin/lib/X11/fonts/Type1"
++#endif   /* #ifdef WIN32 */
+ #endif
+ #ifndef PATHSEPARATOR
++#ifdef WIN32
++#define PATHSEPARATOR ";"
++#else  /* #ifdef WIN32 */
+ #define PATHSEPARATOR ":"
++#endif  /* #ifdef WIN32 */
+ #endif
+ 
+ /* gd.h: declarations file for the graphic-draw module.
+diff --git a/gd_jpeg.c b/gd_jpeg.c
+--- a/gd_jpeg.c
++++ b/gd_jpeg.c
+@@ -43,6 +43,11 @@
+ #undef HAVE_STDDEF_H
+ #undef HAVE_STDLIB_H
+ 
++#ifdef gdHACK_BOOLEAN
++#define HAVE_BOOLEAN
++#define boolean gdHACK_BOOLEAN
++#endif
++
+ /* 1.8.1: remove dependency on jinclude.h */
+ #include "jpeglib.h"
+ #include "jerror.h"

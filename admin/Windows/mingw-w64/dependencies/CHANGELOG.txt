@@ -1,3 +1,14 @@
+2011-Jan-28  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	add patches & makefiles
+	
+	* libtool_remove_versuffix.sh: new script
+	* pkg-config-stub: new dummy script
+	* makefile: new file
+	
+	makefiles/: new subdir
+	patches/: new subdir
+
 2011-Jan-27  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	add the readme file

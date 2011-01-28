@@ -1,0 +1,55 @@
+diff --git a/Makefile.in b/Makefile.in
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -87,7 +87,7 @@
+ 		echo '** Will overwrite non-ncurses curses.h'
+ 
+ dlls:	libs
+-	$(SHELL) $(srcdir)/mk-dlls.sh
++	$(SHELL) ./mk-dlls.sh
+ 
+ distclean \
+ realclean ::
+diff --git a/mk-dlls.sh.in b/mk-dlls.sh.in
+--- a/mk-dlls.sh.in
++++ b/mk-dlls.sh.in
+@@ -65,7 +65,7 @@
+           if [ -f libncurses${t}${m}.a ]; then
+             f=libncurses${t}${m}.a
+             g=ncurses${t}${m}
+-            gi=libw${g}.dll.a
++            gi=lib${g}.dll.a
+             td=$TEMP/tmp-${g}
+             bd=`pwd`
+             rm -rf "${td}"
+@@ -73,10 +73,8 @@
+             pushd "${td}"
+               ar x "${bd}/${f}" `ar t "${bd}/${f}"`
+               @CC@ $cf -o w${g}.dll -Wl,--out-implib,${gi} -Wl,--output-def,w${g}.def -Wl,$lf `ar t "${bd}/$f"` @LIBS@
+-              lib //NOLOGO /MACHINE:i386 /DEF:w${g}.def
+               rm -f `ar t "${bd}/$f"`
+               mv w${g}.dll "${bd}"
+-              mv w${g}.lib "${bd}"
+               mv ${gi} "${bd}"
+             popd
+             rm -rf "${td}"
+@@ -87,7 +85,7 @@
+               do
+                 g=${l}${t}${m}
+                 td=$TEMP/tmp-${g}
+-                gi2=libw${g}.dll.a
++                gi2=lib${g}.dll.a
+                 bd=`pwd`
+                 rm -rf "${td}"
+                 mkdir "${td}"
+@@ -95,10 +93,8 @@
+                 pushd "${td}"
+                   ar x "${bd}/$f" `ar t "${bd}/$f"`
+                   @CC@ $cf -o w${g}.dll -Wl,--out-implib,${gi2} -Wl,--output-def,w${g}.def -Wl,$lf `ar t "${bd}/$f"` "${bd}/${gi}" @LIBS@
+-                  lib //NOLOGO /MACHINE:i386 /DEF:w${g}.def
+                   rm -f `ar t "${bd}/$f"`
+                   mv w${g}.dll "${bd}"
+-                  mv w${g}.lib "${bd}"
+                   mv ${gi2} "${bd}"
+                 popd
+                 rm -rf "${td}"

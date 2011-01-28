@@ -1,0 +1,12 @@
+diff --git a/src/Makefile.in b/src/Makefile.in
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -235,7 +235,7 @@
+ INCLUDES = -I$(srcdir)/../include
+ lib_LTLIBRARIES = libglpk.la
+ libglpk_la_LDFLAGS = -version-info 28:0:28 \
+--export-symbols-regex '^(glp_|_glp_lpx_).*'
++-export-symbols-regex '^(glp_|_glp_lpx_).*' -no-undefined
+ 
+ libglpk_la_SOURCES = \
+ glpapi01.c \

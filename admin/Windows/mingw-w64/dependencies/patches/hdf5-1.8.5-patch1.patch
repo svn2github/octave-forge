@@ -1,0 +1,222 @@
+diff --git a/config/i686-pc-mingw32 b/config/i686-pc-mingw32
+new file mode 100644
+--- /dev/null
++++ b/config/i686-pc-mingw32
+@@ -0,0 +1,52 @@
++#							-*- shell-script -*-
++#
++# Copyright by The HDF Group.
++# Copyright by the Board of Trustees of the University of Illinois.
++# All rights reserved.
++#
++# This file is part of HDF5.  The full HDF5 copyright notice, including
++# terms governing use, modification, and redistribution, is contained in
++# the files COPYING and Copyright.html.  COPYING can be found at the root
++# of the source code distribution tree; Copyright.html can be found at the
++# root level of an installed copy of the electronic HDF5 document set and
++# is linked from the top-level documents page.  It can also be found at
++# http://hdfgroup.org/HDF5/doc/Copyright.html.  If you do not have
++# access to either file, you may request a copy from help@hdfgroup.org.
++
++
++# This file is part of the HDF5 build script.  It is processed shortly
++# after configure starts and defines, among other things, flags for
++# the various compile modes.
++
++
++LIBS+="-lws2_32"
++
++#----------------------------------------------------------------------------
++# Compiler flags. The CPPFLAGS values should not include package debug
++# flags like `-DH5G_DEBUG' since these are added with the
++# `--enable-debug' switch of configure.
++#----------------------------------------------------------------------------
++
++
++# Choosing a C Compiler
++# ---------------------
++#
++# The user should be able to specify the compiler by setting the CC
++# environment variable to the name of the compiler and any switches it 
++# requires for proper operation.  If CC is unset then this script may
++# set it.  If CC is unset by time this script completes then configure 
++# will try `gcc' and `cc' in that order (perhaps some others too).
++#
++# Note: Code later in this file may depend on the value of $CC_BASENAME
++#       in order to distinguish between different compilers when
++#       deciding which compiler command-line switches to use.  This
++#       variable is set based on the incoming value of $CC and is only
++#       used within this file.
++
++if test "X-" =  "X-$CC"; then
++    CC=gcc
++    CC_BASENAME=$CC
++fi
++
++# Don't build with -O3 optimization flags
++# It doesn't work!
+diff --git a/configure.in b/configure.in
+--- a/configure.in
++++ b/configure.in
+@@ -1972,6 +1972,17 @@
+ AC_MSG_RESULT([yes]),
+ AC_MSG_RESULT([no]))
+ 
++dnl Check whether the global variable `_timezone' is defined.
++AC_MSG_CHECKING([for global _timezone variable])
++AC_TRY_LINK([
++#include <sys/time.h>
++#include <time.h>], [long i = _timezone;],
++AC_DEFINE([HAVE__TIMEZONE], [1],
++          [Define if `_timezone' is a global variable])
++AC_MSG_RESULT([yes]),
++AC_MSG_RESULT([no]))
++
++
+ dnl Check whether the global variable `timezone' is defined.
+ AC_MSG_CHECKING([for global timezone variable])
+ 
+@@ -1980,6 +1991,9 @@
+   CYGWIN*)
+     AC_MSG_RESULT([disabled in CYGWIN])
+     ;;
++  MINGW*)
++    AC_MSG_RESULT([disabled in MINGW])
++    ;;
+   *)
+     AC_TRY_LINK([
+     #include <sys/time.h>
+@@ -2970,6 +2984,14 @@
+     AC_MSG_RESULT([yes])
+     default_vfd=yes
+     vfd_define=H5FD_STDIO
++elif test "X$withval" = "Xwindows"; then
++    AC_MSG_RESULT([yes])
++    default_vfd=yes
++    vfd_define=H5FD_WINDOWS
++    AC_DEFINE([HAVE_WINDOWS], [1],
++            [Define if the Windows virtual file driver should be compiled])
++    AC_DEFINE([WINDOWS_MAX_BUF], [(1024 * 1024 * 1024)],
++            [Define the maximum write size for the Windows file driver])
+ else
+     AC_MSG_RESULT([no])
+     default_vfd=no
+diff --git a/src/H5FDwindows.c b/src/H5FDwindows.c
+--- a/src/H5FDwindows.c
++++ b/src/H5FDwindows.c
+@@ -821,7 +821,7 @@
+     while (size>0) {
+ #ifndef WINDOWS_USE_STDIO
+         do {
+-			nbytes = _read(file->fd, buf, (unsigned)(size <= WINDOWS_MAX_BUF ? size: WINDOWS_MAX_BUF));
++			nbytes = _read(file->fd, buf, (unsigned)(size <= H5_WINDOWS_MAX_BUF ? size: H5_WINDOWS_MAX_BUF));
+         } while (-1==nbytes && EINTR==errno);
+         if (-1==nbytes) /* error */
+             HSYS_GOTO_ERROR(H5E_IO, H5E_READERROR, FAIL, "file read failed")
+@@ -832,7 +832,7 @@
+         }
+ #else
+         do {
+-            nbytes = fread(buf,(size_t)1,(size <= WINDOWS_MAX_BUF ? size: WINDOWS_MAX_BUF),file->fp);
++            nbytes = fread(buf,(size_t)1,(size <= H5_WINDOWS_MAX_BUF ? size: H5_WINDOWS_MAX_BUF),file->fp);
+         } while (!nbytes && EINTR==errno);
+ 		if(!nbytes) {
+             if (ferror(file->fp)) /* error */
+@@ -930,14 +930,14 @@
+ 	while (size>0) {
+         do {
+ #ifndef WINDOWS_USE_STDIO
+-            nbytes = _write(file->fd, buf, (unsigned)(size <= WINDOWS_MAX_BUF ? size: WINDOWS_MAX_BUF));
++            nbytes = _write(file->fd, buf, (unsigned)(size <= H5_WINDOWS_MAX_BUF ? size: H5_WINDOWS_MAX_BUF));
+         } while (-1==nbytes && EINTR==errno);
+         if (-1==nbytes) /* error */
+ #else
+ 
+ 
+ 		/* Write 1GB or less at a time */
+-			nbytes = fwrite(buf, 1, (size <= WINDOWS_MAX_BUF ? size: WINDOWS_MAX_BUF),file->fp);
++			nbytes = fwrite(buf, 1, (size <= H5_WINDOWS_MAX_BUF ? size: H5_WINDOWS_MAX_BUF),file->fp);
+ 		} while (!nbytes && EINTR==errno);
+         if (!nbytes) /* error */
+ #endif /* WINDOWS_USE_STDIO */
+diff --git a/src/H5Omtime.c b/src/H5Omtime.c
+--- a/src/H5Omtime.c
++++ b/src/H5Omtime.c
+@@ -221,6 +221,9 @@
+ #elif defined(H5_HAVE___TM_GMTOFF)
+     /* Linux libc-4 */
+     the_time += tm.__tm_gmtoff;
++#elif defined(H5_HAVE__TIMEZONE)
++    /* MinGW32/64 */
++    the_time -= _timezone - (tm.tm_isdst?3600:0);
+ #elif defined(H5_HAVE_TIMEZONE)
+     /* Linux libc-5 */
+     the_time -= timezone - (tm.tm_isdst?3600:0);
+diff --git a/src/H5config.h.in b/src/H5config.h.in
+--- a/src/H5config.h.in
++++ b/src/H5config.h.in
+@@ -1,5 +1,24 @@
+ /* src/H5config.h.in.  Generated from configure.in by autoheader.  */
+ 
++
++/*
++ * Windows Specific Definitions
++ */
++
++/* Define if the Windows virtual file driver should be compiled */
++#undef HAVE_WINDOWS
++
++/* Define if the Windows virtual file driver should use buffered IO functions */
++/* #undef WINDOWS_USE_STDIO */
++
++/* Define the maximum write size for the Windows file driver.  Larger writes
++   will be split into many writes.  Safe values are 1 <= WINDOWS_MAX_BUF <= 2GB-1. */
++#undef WINDOWS_MAX_BUF 
++
++/*
++ * End of Windows Specific Definitions
++ */
++
+ /* Define if building universal (internal helper macro) */
+ #undef AC_APPLE_UNIVERSAL_BUILD
+ 
+@@ -365,6 +384,9 @@
+ /* Define if we have thread safe support */
+ #undef HAVE_THREADSAFE
+ 
++/* Define if `_timezone' is a global variable */
++#undef HAVE__TIMEZONE
++
+ /* Define if `timezone' is a global variable */
+ #undef HAVE_TIMEZONE
+ 
+diff --git a/src/Makefile.am b/src/Makefile.am
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -33,7 +33,7 @@
+ lib_LTLIBRARIES=libhdf5.la
+ 
+ # Add libtool numbers to the HDF5 library (from config/lt_vers.am)
+-libhdf5_la_LDFLAGS= -version-info $(LT_VERS_INTERFACE):$(LT_VERS_REVISION):$(LT_VERS_AGE) $(AM_LDFLAGS)
++libhdf5_la_LDFLAGS= -version-info $(LT_VERS_INTERFACE):$(LT_VERS_REVISION):$(LT_VERS_AGE) $(AM_LDFLAGS) -no-undefined
+ 
+ # H5Tinit.c and H5lib_settings.c are generated files and should be cleaned.
+ MOSTLYCLEANFILES=H5Tinit.c H5lib_settings.c
+@@ -55,7 +55,7 @@
+         H5Fsfile.c H5Fsuper.c H5Fsuper_cache.c H5Ftest.c \
+         H5FD.c H5FDcore.c  \
+         H5FDdirect.c H5FDfamily.c H5FDint.c H5FDlog.c H5FDmpi.c H5FDmpio.c \
+-        H5FDmpiposix.c H5FDmulti.c H5FDsec2.c H5FDspace.c H5FDstdio.c \
++        H5FDmpiposix.c H5FDmulti.c H5FDsec2.c H5FDspace.c H5FDstdio.c H5FDwindows.c \
+         H5FL.c H5FO.c H5FS.c H5FScache.c H5FSdbg.c H5FSsection.c H5FSstat.c H5FStest.c \
+         H5G.c H5Gbtree2.c H5Gcache.c \
+         H5Gcompact.c H5Gdense.c H5Gdeprec.c H5Gent.c \
+@@ -108,7 +108,7 @@
+         H5Cpublic.h H5Dpublic.h \
+         H5Epubgen.h H5Epublic.h H5Fpublic.h H5FDpublic.h H5FDcore.h H5FDdirect.h \
+ 	H5FDfamily.h H5FDlog.h H5FDmpi.h H5FDmpio.h H5FDmpiposix.h              \
+-        H5FDmulti.h H5FDsec2.h  H5FDstdio.h \
++        H5FDmulti.h H5FDsec2.h  H5FDstdio.h H5FDwindows.h \
+         H5Gpublic.h  H5Ipublic.h H5Lpublic.h \
+         H5MMpublic.h H5Opublic.h H5Ppublic.h H5Rpublic.h H5Spublic.h \
+         H5Tpublic.h H5Zpublic.h

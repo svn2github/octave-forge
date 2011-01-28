@@ -1,0 +1,76 @@
+diff --git a/UTIL/second.f b/UTIL/second.f
+--- a/UTIL/second.f
++++ b/UTIL/second.f
+@@ -21,7 +21,7 @@
+ *     ..
+ *     .. External Functions ..
+       REAL               ETIME
+-      EXTERNAL           ETIME
++      INTRINSIC           ETIME
+ *     ..
+ *     .. Executable Statements ..
+ *
+diff --git a/makefile.mingw b/makefile.mingw
+new file mode 100644
+--- /dev/null
++++ b/makefile.mingw
+@@ -0,0 +1,58 @@
++SRCTOP=./
++F77=$(CROSS)gfortran
++
++NAME = arpack
++
++LIBTARGET = $(NAME).dll
++LIBIMPLIB  = lib$(NAME).dll.a
++LIBSTATIC = lib$(NAME).a
++
++FSOURCES = $(wildcard $(SRCTOP)/SRC/*.f) $(wildcard $(SRCTOP)/UTIL/*.f)
++OBJECTS = $(patsubst %.f,%.o, $(notdir $(FSOURCES)))
++
++DEF_FILES = $(patsubst %.f,%.def, $(notdir $(FSOURCES)))
++LIB_DEFFILE = $(patsubst %.dll,%.def, $(LIBTARGET))
++
++vpath %.f $(SRCTOP)/SRC
++vpath %.f $(SRCTOP)/UTIL
++
++all: $(LIBSTATIC) $(LIBTARGET) 
++
++.SUFFIXES: .f .o .def
++
++%.o : %.f
++	$(CROSS)$(F77) $(FFLAGS) -o $@ -c $<
++
++%.def : %.f
++	@echo "Making $@"
++	@sed -n \
++	     -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' \
++	     -e 's/^\(      \|	\)\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$$/\3_/p' < $< > $@
++
++$(LIB_DEFFILE): $(DEF_FILES)
++	echo "EXPORTS" > $@
++	cat $(DEF_FILES) >> $@
++
++$(LIBTARGET): $(OBJECTS) $(LIB_DEFFILE)
++	$(F77) -shared -o $@ \
++		$(LDFLAGS) \
++		-Wl,$(LIB_DEFFILE) \
++		-Wl,--out-implib=$(LIBIMPLIB) \
++		-Wl,--output-def=$(LIBTARGET).def  \
++		-Wl,--whole-archive \
++		$(LIBSTATIC) \
++		-Wl,--no-whole-archive \
++		-llapack -lblas
++
++$(LIBSTATIC): $(OBJECTS)
++	$(CROSS)ar cr $@ $^
++
++OTHER_CLEANFILES = $(patsubst %.dll, %.exp, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.ilk, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.lib, $(LIBTARGET)) \
++		   $(patsubst %.dll, %.pdb, $(LIBTARGET))
++
++clean:
++	rm $(OBJECTS) $(CSOURCES)
++	rm $(DEF_FILES) $(LIB_DEFFILE)
++	rm $(LIBTARGET) $(OTHER_CLEANFILES)
+\ No newline at end of file

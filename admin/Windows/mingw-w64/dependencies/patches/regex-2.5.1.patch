@@ -1,0 +1,50 @@
+diff --git a/Makefile.in b/Makefile.in
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -48,7 +48,7 @@
+ MSVCLIB = lib
+ 
+ BINDIST_FILES = libgnurx-$(DLLVERSION).dll
+-DEVDIST_FILES = libgnurx.dll.a libregex.a @GNURX_LIB@
++DEVDIST_FILES = libregex.dll.a libregex.a @GNURX_LIB@
+ SRCDIST_FILES = ${srcdir}/configure ${srcdir}/configure.ac ${srcdir}/aclocal.m4 \
+   ${srcdir}/pkgid.m4 ${srcdir}/Makefile.in ${srcdir}/README ${srcdir}/COPYING.LIB \
+   $(SOURCES) $(wildcard ${srcdir}/*.[37]) ${srcdir}/ChangeLog
+@@ -56,7 +56,7 @@
+ ZIPCMD = @ZIPCMD@
+ ZIPEXT = @ZIPEXT@
+ 
+-all: libgnurx-$(DLLVERSION).dll libgnurx.dll.a libregex.a @GNURX_LIB@
++all: libgnurx-$(DLLVERSION).dll libregex.dll.a libregex.a @GNURX_LIB@
+ 
+ Makefile: config.status Makefile.in
+ 	./config.status
+@@ -66,11 +66,11 @@
+ 
+ $(OBJECTS): Makefile
+ 
+-libgnurx-$(DLLVERSION).dll libgnurx.dll.a: $(OBJECTS)
++libgnurx-$(DLLVERSION).dll libregex.dll.a: $(OBJECTS)
+ 	$(CC) $(CFLAGS) -shared -o libgnurx-$(DLLVERSION).dll $(LDFLAGS) $(OBJECTS)
+ 
+-libregex.a: libgnurx.dll.a
+-	cp -p libgnurx.dll.a $@
++libregex.a: $(OBJECTS)
++	$(AR) cru $@ $(OBJECTS)
+ 
+ gnurx.lib: libgnurx-$(DLLVERSION).dll
+ 	$(MSVCLIB) -def:libgnurx.def -out:gnurx.lib
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -75,8 +75,8 @@
+ #
+   AC_SUBST([GNURX_LIB])
+   AC_SUBST([CC_QUALIFIED], ["$CC $CC_QUALIFIED"])
+-  LDFLAGS="$LDFLAGS -Wl,--enable-auto-image-base -Wl,--out-implib,libgnurx.dll.a"
+-  test -n "${GNURX_LIB}" && LDFLAGS="$LDFLAGS -Wl,--output-def,libgnurx.def"
++  LDFLAGS="$LDFLAGS -Wl,--enable-auto-image-base -Wl,--out-implib,libregex.dll.a"
++  test -n "${GNURX_LIB}" && LDFLAGS="$LDFLAGS -Wl,--output-def,libregex.def"
+   AC_CONFIG_FILES([Makefile])
+   AC_OUTPUT
+ #

@@ -87,6 +87,10 @@ static const char *field_names[] = {
 	"SVs"
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 const char *model_to_matlab_structure(mxArray *plhs[], int num_of_feature, struct svm_model *model)
 {
 	int i, j, n;
@@ -409,3 +413,8 @@ struct svm_model *matlab_matrix_to_model(const mxArray *matlab_struct, const cha
 
 	return model;
 }
+
+#ifdef __cplusplus
+}
+#endif
+

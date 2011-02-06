@@ -50,6 +50,10 @@ static const char *field_names[] = {
 	"w",
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 const char *model_to_matlab_structure(mxArray *plhs[], struct model *model_)
 {
 	int i;
@@ -196,4 +200,8 @@ const char *matlab_matrix_to_model(struct model *model_, const mxArray *matlab_s
 
 	return NULL;
 }
+
+#ifdef __cplusplus
+}
+#endif
 

@@ -703,7 +703,7 @@ octave_value ov_nc_get_vars(int ncid, int varid,std::list<Range> ranges,nc_type 
   int status;
   // permutation vector for Fortran-storage to C-storage
   // not used if ncndim == 1
-  Array<int> perm_vector(1,ncndim);
+  Array<int> perm_vector(ncndim,1);
 
 #  ifdef OV_NETCDF_VERBOSE
   octave_stdout << " ov_nc_get_vars" << std::endl;
@@ -829,7 +829,7 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
   int status;
   // permutation vector for Fortran-storage to C-storage
   // not used if ncndim == 1
-  Array<int> perm_vector(1,ncndim);
+  Array<int> perm_vector(ncndim,1);
 
 
 #  ifdef OV_NETCDF_VERBOSE
@@ -908,8 +908,9 @@ void ov_nc_put_vars(int ncid, int varid,std::list<Range> ranges,nc_type nctype,o
 	  else {							\
 	    Array<double> arr = rhs.array_value();                      \
 									\
-	    if (STORAGE_ORDER == C_ORDER && ncndim > 1)		       	\
+	    if (STORAGE_ORDER == C_ORDER && ncndim > 1)	{	       	\
 	      arr = arr.permute(perm_vector);				\
+	    }								\
 									\
 	    for (int i = 0; i < sliced_numel; i++) {			\
 		var[i] =  (c_type)arr.xelem(i);				\

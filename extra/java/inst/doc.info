@@ -417,7 +417,7 @@ File: octave-java.info,  Node: javaMethod,  Next: java_invoke,  Prev: java_new, 
 
 
 
- -- Function File: RET = javaMethod (OBJECT, NAME[, ARG1, ..., ARGN])
+ -- Function File: RET = javaMethod (NAME, OBJECT[, ARG1, ..., ARGN])
      
  Invoke the method NAME on the Java object OBJECT with the
      arguments ARG1, ... For static methods, OBJECT can be a string

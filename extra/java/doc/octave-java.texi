@@ -447,14 +447,14 @@ ans = Initial
 @cindex method, invoking a method of a Java object
 @c - index -
 
-@deftypefn  {Function File} {RET =} javaMethod (@var{OBJECT}, @var{NAME}[, @var{ARG1}, ...,  @var{ARGN}])
+@deftypefn  {Function File} {RET =} javaMethod (@var{NAME}, @var{OBJECT}[, @var{ARG1}, ...,  @var{ARGN}])
 
 Invoke the method @var{NAME} on the Java object @var{OBJECT} with the arguments @var{ARG1}, ... For static methods, @var{OBJECT} can be a string representing the fully qualified name of the corresponding class. The function returns the result of the method invocation. 
 When @var{OBJECT} is a regular Java object, the structure-like indexing can be used as a shortcut syntax. For instance, the two statements in the example are equivalent. 
 
 Example: 
 @example
-Octave > ret = javaMethod(x, "method1", 1.0, "a string")
+Octave > ret = javaMethod("method1", x, 1.0, "a string")
 Octave > ret = x.method1(1.0, "a string") 
 @end example
 

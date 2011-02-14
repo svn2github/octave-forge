@@ -23,12 +23,12 @@
 ## @end deftypefn
 ## @seealso{methods}
 
-function varargout = javamethods(classname)
+function varargout = javamethods (classname)
   
   if (nargin != 1)
      print_usage ();
   else
-     c_methods = java_invoke ("org.octave.ClassHelper", "getMethods",classname);
+     c_methods = java_invoke ("org.octave.ClassHelper", "getMethods", classname);
      method_list = strsplit (c_methods, ';');
 
      switch nargout

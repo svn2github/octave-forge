@@ -38,7 +38,7 @@ function javarmpath (class_path)
     end
     success = java_invoke ('org.octave.ClassHelper', 'removeClassPath', old_path);
     if (! success)
-      disp(['Warning: ', old_path, ' not found in Java classpath.',10]);
+      disp (['Warning: ', old_path, ' not found in Java classpath.', 10]);
     end
   end
 

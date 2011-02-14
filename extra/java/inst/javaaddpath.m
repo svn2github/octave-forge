@@ -30,7 +30,7 @@ function javaaddpath (class_path)
     print_usage ();
   else
     % MH 30-08-2010: added tilde_expand to allow for specification of user's home
-    new_path = canonicalize_file_name (tilde_expand(class_path));
+    new_path = canonicalize_file_name (tilde_expand (class_path));
     if (exist (new_path, "dir"))
       if (! strcmp (new_path (end), filesep))
         new_path = [new_path, filesep];

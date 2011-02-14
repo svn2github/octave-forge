@@ -50,7 +50,7 @@ function varargout = javaclasspath(which)
   dynamic_path_list = strsplit (dynamic_path, ';');
 
   % static classpath
-  static_path = javaMethod('java.lang.System','getProperty','java.class.path');
+  static_path = java_invoke ('getProperty', 'java.lang.System', 'java.class.path');
   static_path_list = strsplit (static_path, ';');
   if length(static_path_list) > 1
     % remove first element (which is .../octave.jar)

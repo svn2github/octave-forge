@@ -11,11 +11,11 @@ function dlgtest ( reinstall )
    if ispc()
       % NOTE: do NOT use backslashes as separator, only forward slashes!
       pkgpath = 'z:/java-1.2.8.tar.gz';
-      java_home = 'C:/Java/jdk1.6.0_21';
+      java_home = getenv ("JAVA_HOME");
    elseif isunix()
       % Linux example paths
       pkgpath = '~/java-1.2.8.tar.gz';
-      java_home = '/usr/local/jdk1.6.0_21';
+      java_home = getenv ("JAVA_HOME");
    else
       pkgpath = 'unknown';
       java_home = 'unknown';   

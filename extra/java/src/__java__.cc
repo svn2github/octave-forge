@@ -59,7 +59,7 @@ static octave_shlib jvm_lib;
 
 static std::map<int,octave_value> listener_map;
 static std::map<int,octave_value> octave_ref_map;
-static int octave_refcount = 0;
+static int octave_java_refcount = 0;
 static long octave_thread_ID = -1;
 
 bool Vjava_convert_matrix = false;
@@ -1167,7 +1167,7 @@ int unbox (JNIEnv* jni_env, const octave_value& val, jobject_ref& jobj, jclass_r
     {
       jclass rcls = find_octave_class (jni_env, (char*)"org/octave/OctaveReference");
       jmethodID mID = jni_env->GetMethodID (rcls, "<init>", "(I)V");
-      int ID = octave_refcount++;
+      int ID = octave_java_refcount++;
 
       jobj = jni_env->NewObject (rcls, mID, ID);
       jcls = rcls;
@@ -1371,7 +1371,7 @@ as a shortcut syntax. For instance, the two following statements are equivalent\
 
 DEFUN_DLD (javaMethod, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{ret} =} javaMethod (@var{obj}, @var{name}, @var{arg1}, ...)\n\
+@deftypefn {Loadable Function} {@var{ret} =} javaMethod (@var{name}, @var{obj}, @var{arg1}, ...)\n\
 Invoke the method @var{name} on the Java object @var{obj} with the arguments\n\
 @var{arg1}, ... For static methods, @var{obj} can be a string representing the\n\
 fully qualified name of the corresponding class. The function returns the result\n\
@@ -1381,14 +1381,31 @@ When @var{obj} is a regular Java object, the structure-like indexing can be used
 as a shortcut syntax. For instance, the two following statements are equivalent\n\
 \n\
 @example\n\
-  ret = javaMethod (x, \"method1\", 1.0, \"a string\")\n\
+  ret = javaMethod (\"method1\", x, 1.0, \"a string\")\n\
   ret = x.method1 (1.0, \"a string\")\n\
 @end example\n\
 \n\
 @seealso{java_get, java_set, java_new}\n\
 @end deftypefn")
 {
-  return _java_invoke ( args );
+  octave_value retval;
+
+  if (args.length() > 1)
+    {
+    // swap first two arguments
+      octave_value_list tmp;
+      tmp(0) = args(1);
+      tmp(1) = args(0);
+      // copy remaining arguments
+      for (int i=2; i<args.length (); i++)
+        tmp(i) = args(i);
+        retval = _java_invoke ( tmp );
+     }
+     else
+     {
+       print_usage ();
+     }
+  return retval;
 }
 
 // internally called from java_invoke and javaMethod for backward compatibility

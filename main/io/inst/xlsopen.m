@@ -90,7 +90,7 @@
 ## 2010-12-01 Small bugfix - reset xlssupport in l. 102
 ## 2010-12-06 Textual changes to info header 
 ##
-## 2010-11-05 Latest subfunction update
+## 2011-02-15 Latest subfunction update
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -340,6 +340,7 @@ endfunction
 ## 2010-09-27 More code cleanup
 ## 2010-10-20 Added check for minimum Java version (should be >= 6 / 1.6)
 ## 2010-11-05 Slight change to reporting to screen
+## 2011-02-15 Adapted to javaclasspath calling style of java-1.2.8 pkg
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -372,7 +373,8 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 	if (isempty (tmp1))
 		# Check Java support. First try javaclasspath
 		try
-			jcp = javaclasspath;
+			jcp = javaclasspath ('-all');					# For java pkg > 1.2.7
+			if (isempty (jcp)), jcp = javaclasspath; endif	# For java pkg < 1.2.8
 			# If we get here, at least Java works. Now check for proper version (>= 1.6)
 			jver = char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
 			cjver = strsplit (jver, '.');

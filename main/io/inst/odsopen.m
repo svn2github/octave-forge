@@ -78,7 +78,7 @@
 ##     "      Added try-catch to file open sections to create fallback to other intf
 ## 2010-12-06 Textual changes to info header 
 ##
-## Latest change on subfunction below: 2010-09-27
+## Latest change on subfunction below: 2011-02-15
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -181,7 +181,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			ods.odfvsn = odsinterfaces.odfvsn;
 			odssupport += 1;
 		catch
-			if (xlsinterfaces.JOD && ~rw && chk2)
+			if (odsinterfaces.JOD && ~rw && chk2)
 				printf ('Couldn''t open file %s using OTK; trying .sxc format with JOD...\n', filename);
 			else
 				error ('Couldn''t open file %s using OTK', filename);
@@ -301,6 +301,7 @@ endfunction
 ##     "      Rearranged code a bit; fixed typos in OTK detection code (odfdvsn -> odfvsn)
 ## 2010-09-27 More code cleanup
 ## 2010-11-12 Warning added about waning support for odfdom v. 0.7.5
+## 2011-02-15 Adapted to new java-1.2.8 javaclasspath() calling style
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -313,7 +314,8 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
 	# Check Java support
 	try
-		tmp1 = javaclasspath;
+		tmp1 = javaclasspath ('-all');						# For java pkg > 1.2.7
+		if (isempty (tmp1)), tmp1 = javaclasspath; endif	# For java pkg < 1.2.8
 		# If we get here, at least Java works. Now check for proper entries
 		# in class path. Under *nix the classpath must first be split up
 		if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
@@ -323,7 +325,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		# No Java support
 		odsinterfaces.OTK = 0;
 		odsinterfaces.JOD = 0;
-		if ~(isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL))
+		if ~(isempty (odsinterfaces.POI) && isempty (odsinterfaces.JXL))
 			# Some Java-based interface requested but Java support is absent
 			error ('No Java support found.');
 		else

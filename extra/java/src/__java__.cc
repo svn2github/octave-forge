@@ -423,9 +423,9 @@ static void initialize_jvm ()
       {
 	jvm_bin_path = (jvm_bin_path + std::string ("\\bin"));
 #ifdef HAVE_OCTAVE_32
-    old_cwd = octave_env::getcwd ());
+    old_cwd = octave_env::getcwd ();
 #else
-    old_cwd = octave_env::get_current_directory ());
+    old_cwd = octave_env::get_current_directory ();
 #endif
 	set_dll_directory (jvm_bin_path);
 	octave_env::chdir (jvm_bin_path);

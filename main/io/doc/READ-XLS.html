@@ -1,591 +1,529 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
-	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.2  (Win32)">
-	<META NAME="AUTHOR" CONTENT="Philip Nienhuis">
-	<META NAME="CREATED" CONTENT="20091211;17230700">
-	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-	<META NAME="CHANGED" CONTENT="20101114;18083900">
-	<META NAME="Info 1" CONTENT="">
-	<META NAME="Info 2" CONTENT="">
-	<META NAME="Info 3" CONTENT="">
-	<META NAME="Info 4" CONTENT="">
-	<META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-</HEAD>
-<BODY LANG="en-US" DIR="LTR">
-<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=2>README
+<html><head>
+	<meta http-equiv="CONTENT-TYPE" content="text/html; charset=windows-1252">
+	
+	<title></title><meta name="GENERATOR" content="OpenOffice.org 3.2  (Win32)">
+	<meta name="AUTHOR" content="Philip Nienhuis">
+	<meta name="CREATED" content="20091211;17230700">
+	<meta name="CHANGEDBY" content="Philip Nienhuis">
+	<meta name="CHANGED" content="20101114;18083900">
+	<meta name="Info 1" content="">
+	<meta name="Info 2" content="">
+	<meta name="Info 3" content="">
+	<meta name="Info 4" content="">
+	<meta name="CHANGEDBY" content="Philip Nienhuis"></head>
+
+<body dir="ltr" lang="en-US">
+<p align="center"><font face="Arial, sans-serif"><font size="2">README
 for Excel spreadsheet file r/w access scripts for octave (&gt;
-3.2.0)<BR><BR>Copyright (C) 2009, 2010 Philip Nienhuis &lt;prnienhuis
-at users.sf.net&gt;<BR><BR>This version November 14, 2010.</FONT></FONT><P ALIGN=CENTER>
-<BR>
-<DL>
-	<DT><P><BR>
-</DL>
-<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>EXCEL
-.XLS SUPPORT FILES</B></U></FONT></FONT><DL>
-	<DT><P>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><BR><B>doc/README-XLS.html</B></FONT></FONT><DT><P>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>This file.</FONT></FONT><DT><P>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><BR><B>xlsread.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>All-in-one function for
-	reading data from one specific worksheet in an Excel spreadsheet
-	file. This script has Matlab-compatible functionality.<BR><BR><B>xlswrite.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>All-in-one function for
+3.4.0)<br><br>Copyright (C) 2009 - 2011 Philip Nienhuis &lt;prnienhuis
+at users.sf.net&gt;<br><br>This version February 16, 2011</font></font></p><dl>
+	<dt><p><br>
+</p></dt></dl>
+<p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>EXCEL
+.XLS SUPPORT FILES</b></u></font></font></p><dl>
+	<dt><p>
+	<font face="Arial, sans-serif"><font size="2"><br><b style="font-style: italic;">doc/README-XLS.html</b><br>This file.</font></font><br></p></dt><dt><font face="Arial, sans-serif"><font size="2"></font></font><dt style="font-style: italic;"><font face="Arial, sans-serif"><font size="2"><b>xlsread.m</b></font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">All-in-one function for
+	writing data from one specific worksheet in an Excel spreadsheet file.
+	This script has Matlab-compatible functionality. <br><br></font></font></dt><font style="font-style: italic;" face="Arial, sans-serif"><font size="2"><b>xlswrite.m</b></font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">All-in-one function for
 	writing data to one specific worksheet in an Excel spreadsheet file.
-	This script has Matlab-compatible functionality. <BR><BR><B>xlsfinfo.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>All-in-one function for
+	This script has Matlab-compatible functionality. <br><br><b style="font-style: italic;">xlsfinfo.m</b></font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">All-in-one function for
 	exploring basic properties of an Excel spreadsheet file. This script
-	has Matlab-compatible functionality.<BR><BR><B>xlsopen.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Function for &quot;opening&quot;
-	(= providing a handle to) an Excel spreadsheet file (&quot;workbook&quot;).
+	has Matlab-compatible functionality.<br><br><b style="font-style: italic;">xlsopen.m</b></font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">Function for "opening"
+	(= providing a handle to) an Excel spreadsheet file ("workbook").
 	This function sorts out which interface to use for .xls access
 	(i.e.,COM; Java &amp; Apache POI; JexcelAPI; etc.), but it's choice
-	can be overridden.<BR><BR><B>xls2oct.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Function for reading
+	can be overridden.<br><br><b style="font-style: italic;">xls2oct.m</b></font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">Function for reading
 	data from a specific worksheet pointed to in a struct created by
 	xlsopen.m. xls2oct can be called multiple times consecutively using
 	the same pointer struct, each time allowing to read data from
 	different ranges and/or worksheets. Data are returned in the form of
 	a 2D heterogeneous cell array that can be parsed by parsecell.m.
 	xls2oct is a mere wrapper for interface-dependent scripts that do
-	the actual low-level reading .<BR><BR><B>oct2xls.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Function for writing
+	the actual low-level reading .<br><br><b style="font-style: italic;">oct2xls.m</b></font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">Function for writing
 	data to a specific worksheet pointed to in a struct created by
 	xlsopen.m. octxls can be called multiple times consecutively using
 	the same pointer struct, each time allowing to write data to
 	different ranges and/or worksheets. oct2xls is a mere wrapper for
 	interface-dependent scripts that do the actual low-level
-	writing.<BR><BR><B>xlsclose.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Function for closing
+	writing.<br><br><b style="font-style: italic;">xlsclose.m</b></font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">Function for closing
 	(the handle to) an Excel workbook. When data have been written to
 	the workbook oct2xls will write the workbook to disk. Otherwise, the
 	file pointer is simply closed and possibly used interfaces for Excel
 	access (COM/ActiveX/Excel.exe) will be shut down
-	properly.<BR><BR><B>parsecell.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Function for separating
+	properly.<br><br><b style="font-style: italic;">parsecell.m</b></font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">Function for separating
 	the data in raw arrays returned by xls2oct, into numerical/logical
-	and text (cell) arrays.</FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>spsh_chkrange.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>spsh_prstype.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>getusedrange.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>calccelladdress.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>parse_sp_range.m</B></FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Support files called by
-	the scripts and not meant for direct invocation by users.</FONT></FONT><DT>
-	<BR>
-</DL>
-<P ALIGN=CENTER><BR>
-<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=2><BR><FONT SIZE=4><U><B>REQUIRED
-SUPPORT SOFTWARE</B></U></FONT></FONT></FONT><DL>
-	<DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><BR>For the Excel/COM
-	interface:</FONT></FONT></DL>
-<UL>
-	<LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>A windows computer with
-	Excel installed</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Octave-forge
-	Windows-1.0.8 or later package WITH LATEST SVN PATCHES APPLIED</FONT></FONT></UL>
-<DL>
-	<DD><BR>
-	<DD><FONT FACE="Arial, sans-serif"><FONT SIZE=2>For the Java /
-	Apache POI / JExcelAPI interfaces (general):</FONT></FONT></DL>
-<UL>
-	<LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>octave-forge java-1.2.5
-	package or later version on Linux</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>octave-forge java-1.2.6
-	with latest svn fixes on Windows/MingW</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Java jre or jdk &gt;
-	1.6.0 (hasn't been tested with earlier versions)</FONT></FONT></UL>
-<DL>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Apache POI specific:</FONT></FONT></DL>
-<UL>
-	<LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>class .jars:
-	<B>poi-3.5-FINAL-&lt;date&gt;.jar</B> &amp;
-	<B>poi-ooxml-3.5-FINAL-&lt;date&gt;.jar</B> (or later versions) in
-	classpath</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Get it here:
-	<A HREF="http://poi.apache.org/download.html">http://poi.apache.org/download.html</A></FONT></FONT><P>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>and here:</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>for OOXML support (only
-	available with Apache POI): </FONT></FONT>
-	<P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>poi-ooxml-schemas-&lt;version&gt;.jar</B>,
-	<B>xbean.jar</B>, <B>dom4j-1.6.1.jar</B> in javaclasspath. </FONT></FONT>
-	<P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Get them here:</FONT></FONT><P>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><A HREF="http://poi.apache.org/download.html">http://poi.apache.org/download.html</A>
-	(&ldquo;xmlbeans&rdquo; and poi-ooxml-schemas)</FONT></FONT><P>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><A HREF="http://sourceforge.net/projects/dom4j/files">http://sourceforge.net/projects/dom4j/files</A>
-	(dom4j-&lt;version&gt;)</FONT></FONT></UL>
-<DL>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>JExcelAPI specific:</FONT></FONT></DL>
-<UL>
-	<LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>class .jar: <B>jxl.jar</B>
-	in classpath</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Get it here:
-	<A HREF="http://sourceforge.net/projects/jexcelapi/files/">http://sourceforge.net/projects/jexcelapi/files/</A></FONT></FONT></UL>
-<DL>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Hint: simply put the
-	relevant javaaddpath statements in the .octaverc file.</FONT></FONT></DL>
-<P ALIGN=CENTER>
-<BR>
-<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=2><BR><FONT SIZE=4><U><B>USAGE</B></U></FONT></FONT></FONT><DL>
-	<DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><BR><B>xlsread</B> and
-	<B>xlswrite</B> are mere wrappers for
-	<B>xlsopen</B>-<B>xls2oct</B>-<B>xlsclose</B>-<B>parsecell</B> and
-	<B>xlsopen</B>-<B>oct2xls</B>-<B>xlsclose</B> sequences, resp. They
-	exist for the sake of Matlab compatibility.<BR><BR><B>xlsfinf</B>o
+	and text (cell) arrays.</font></font></dt><dt>
+	<br>
+	</dt><dt style="font-style: italic;"><font face="Arial, sans-serif"><font size="2"><b>spsh_chkrange.m</b></font></font></dt><dt style="font-style: italic;">
+	<font face="Arial, sans-serif"><font size="2"><b>spsh_prstype.m</b></font></font></dt><dt style="font-style: italic;">
+	<font face="Arial, sans-serif"><font size="2"><b>getusedrange.m</b></font></font></dt><dt style="font-style: italic;">
+	<font face="Arial, sans-serif"><font size="2"><b>calccelladdress.m</b></font></font></dt><dt style="font-style: italic;">
+	<font face="Arial, sans-serif"><font size="2"><b>parse_sp_range.m</b></font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">Support files called by
+	the scripts and not meant for direct invocation by users.</font></font></dt></dl>
+<p align="center"><font face="Arial, sans-serif"><font size="2"><br><font size="4"><u><b>REQUIRED
+SUPPORT SOFTWARE</b></u></font></font></font></p><dl>
+	<dt>
+	<font face="Arial, sans-serif"><font size="2"><br>For the Excel/COM
+	interface:</font></font></dt></dl>
+<ul>
+	<li>
+	<font face="Arial, sans-serif"><font size="2">A windows computer with
+	Excel installed</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">Octave-forge
+	Windows-1.0.8 or later package WITH LATEST SVN PATCHES APPLIED</font></font></li></ul>
+	<font face="Arial, sans-serif"><font size="2">For the Java /
+	Apache POI / JExcelAPI interfaces (general):</font></font>
+<ul>
+	<li>
+	<font face="Arial, sans-serif"><font size="2">octave-forge java-1.2.8
+	package or later version on Linux</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">octave-forge java-1.2.8
+	with latest svn fixes on Windows/MingW</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">Java jre or jdk &gt;
+	1.6.0 (hasn't been tested with earlier versions)</font></font></li></ul>
+<dl>
+	<dt><font face="Arial, sans-serif"><font size="2">Apache POI specific:</font></font></dt></dl>
+<ul>
+	<li>
+	<font face="Arial, sans-serif"><font size="2">class .jars:
+	<b>poi-3.5-FINAL-&lt;date&gt;.jar</b> &amp;
+	<b>poi-ooxml-3.5-FINAL-&lt;date&gt;.jar</b> (or later versions) in
+	classpath</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">Get it here:
+	<a href="http://poi.apache.org/download.html">http://poi.apache.org/download.html</a></font></font><p>
+	<font face="Arial, sans-serif"><font size="2">and here:</font></font></p></li><li>
+	<font face="Arial, sans-serif"><font size="2">for OOXML support (only
+	available with Apache POI): </font></font>
+	<p><font face="Arial, sans-serif"><font size="2"><b>poi-ooxml-schemas-&lt;version&gt;.jar</b>,
+	<b>xbean.jar</b>, <b>dom4j-1.6.1.jar</b> in javaclasspath. </font></font>
+	</p><p><font face="Arial, sans-serif"><font size="2">Get them here:</font></font></p><p>
+	<font face="Arial, sans-serif"><font size="2"><a href="http://poi.apache.org/download.html">http://poi.apache.org/download.html</a>
+	(“xmlbeans” and poi-ooxml-schemas)</font></font></p><p>
+	<font face="Arial, sans-serif"><font size="2"><a href="http://sourceforge.net/projects/dom4j/files">http://sourceforge.net/projects/dom4j/files</a>
+	(dom4j-&lt;version&gt;)</font></font></p></li></ul>
+<dl>
+	<dt><font face="Arial, sans-serif"><font size="2">JExcelAPI specific:</font></font></dt></dl>
+<ul>
+	<li>
+	<font face="Arial, sans-serif"><font size="2">class .jar: <b>jxl.jar</b>
+	in classpath</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">Get it here:
+	<a href="http://sourceforge.net/projects/jexcelapi/files/">http://sourceforge.net/projects/jexcelapi/files/</a></font></font></li></ul>
+<dl>
+	<dt><font face="Arial, sans-serif"><font size="2">Hint: simply put the
+	relevant javaaddpath statements in the .octaverc file.</font></font></dt></dl>
+<p align="center"><font face="Arial, sans-serif"><font size="2"><br><font size="4"><u><b>USAGE</b></u></font></font></font></p><dl>
+	<dt>
+	<font face="Arial, sans-serif"><font size="2"><br><b>xlsread</b> and
+	<b>xlswrite</b> are mere wrappers for
+	<b>xlsopen</b>-<b>xls2oct</b>-<b>xlsclose</b>-<b>parsecell</b> and
+	<b>xlsopen</b>-<b>oct2xls</b>-<b>xlsclose</b> sequences, resp. They
+	exist for the sake of Matlab compatibility.<br><br><b>xlsfinf</b>o
 	can be used for finding out what worksheet names exist in the file.
 	For OOXML files you either need MS-Excel 2007 for Windows (or later
 	version) installed, and/or the input parameter REQINTF should be
 	specified with a value of 'poi' (case-insensitive) and -obviously-
-	the complete POI interface must have been installed.<BR><BR>Invoking
-	<B>xlsopen</B>/..../<B>xlsclose</B> directly provides for much more
-	flexibility, speed, and robustness than <B>xlsread</B> / <B>xlswrite</B>.
+	the complete POI interface must have been installed.<br><br>Invoking
+	<b>xlsopen</b>/..../<b>xlsclose</b> directly provides for much more
+	flexibility, speed, and robustness than <b>xlsread</b> / <b>xlswrite</b>.
 	Indeed, using the same file handle (pointer struct) you can mix
 	reading &amp; writing before writing the workbook out to disk using
-	xlsclose.<BR>And: <B>xlsopen </B>/ <B>xlsclose</B> hide the gory
-	interface details from the user.<BR>Currently only .xls files
+	xlsclose.<br>And: <b>xlsopen </b>/ <b>xlsclose</b> hide the gory
+	interface details from the user.<br>Currently only .xls files
 	(BIFF8) can be read/written; using JExcelAPI BIFF5 can be read as
 	well. For OOXML files either Excel 2007 for Windows (or higher)
 	and/or the complete Apache POI interface must be installed (and
 	probably the REQINTF parameter specified with a value of
-	'poi').<BR><BR>When using <B>xlsopen</B>....<B>xlsclose</B> be sure
-	to keep track of the file handle struct.<BR><BR>A possible
-	scenario:<BR><BR><B>xlh = xlsopen (&lt;excel_filename&gt; , [rw],
-	[&lt;requested interface&gt;])</B><BR><I># Set rw to 1 if you want
-	to write to a workbook immediately.<BR># In that case the check for
-	file existence is skipped and<BR># -if needed- a new workbook
-	created.<BR># If you really want an other interface than
-	auto-selected<BR># by xlsopen you can request that. But xlsopen
-	still checks<BR># proper support for your choice.</I><BR><BR><I>#
-	Read some data</I><BR><B>[ rawarr1, xlh ] = xls2oct (xlh,
-	&lt;SomeWorksheet&gt;, &lt;Range&gt;)</B><BR><I># Be sure to specify
-	xlh as output argument as xls2oct keeps<BR># track of changes and
-	the need to write the workbook to disk <BR># in the xlhstruct. And
-	the origin range is conveyed through<BR># the xlh pointer struct.</I><BR><BR><I>#
-	Separate data into numeric and text data</I><BR><B>[ numarr1,
-	txtarr1, lim1 ] = parsecell (rawarr1)</B><BR><I><BR></I># Get more
-	data from another worksheet in the same workbook<BR><B>[ rawarr2,
-	xlh ] = xls2oct (xlh, &lt;SomeOtherWorksheet&gt;, &lt;Range&gt;)</B><BR><B>[
-	numarr2, txtarr2, lim2 ] = parsecell (rawarr2)</B><BR><BR># &lt;...
-	Analysis and preparation of new data in cell array Newdata....&gt;<BR><BR><I>#
-	Add new data to spreadsheet</I><BR><B>xlh = oct2xls (Newdata, xlh,
-	&lt;AnotherWorksheet&gt;, &lt;Range&gt;)</B><BR><BR><I># Close the
-	workbook and write it to disk; then clear the handle</I><BR><B>xlh =
-	xlsclose (xlh)</B><BR><B>clear xlh</B></FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>When not using the
+	'poi').<br><br>When using <b>xlsopen</b>....<b>xlsclose</b> be sure
+	to keep track of the file handle struct.<br><br>A possible
+	scenario:<br><br><b>xlh = xlsopen (&lt;excel_filename&gt; , [rw],
+	[&lt;requested interface&gt;])</b><br><i># Set rw to 1 if you want
+	to write to a workbook immediately.<br># In that case the check for
+	file existence is skipped and<br># -if needed- a new workbook
+	created.<br># If you really want an other interface than
+	auto-selected<br># by xlsopen you can request that. But xlsopen
+	still checks<br># proper support for your choice.</i><br><br><i>#
+	Read some data</i><br><b>[ rawarr1, xlh ] = xls2oct (xlh,
+	&lt;SomeWorksheet&gt;, &lt;Range&gt;)</b><br><i># Be sure to specify
+	xlh as output argument as xls2oct keeps<br># track of changes and
+	the need to write the workbook to disk <br># in the xlhstruct. And
+	the origin range is conveyed through<br># the xlh pointer struct.</i><br><br><i>#
+	Separate data into numeric and text data</i><br><b>[ numarr1,
+	txtarr1, lim1 ] = parsecell (rawarr1)</b><br><i><br></i># Get more
+	data from another worksheet in the same workbook<br><b>[ rawarr2,
+	xlh ] = xls2oct (xlh, &lt;SomeOtherWorksheet&gt;, &lt;Range&gt;)</b><br><b>[
+	numarr2, txtarr2, lim2 ] = parsecell (rawarr2)</b><br><br># &lt;...
+	Analysis and preparation of new data in cell array Newdata....&gt;<br><br><i>#
+	Add new data to spreadsheet</i><br><b>xlh = oct2xls (Newdata, xlh,
+	&lt;AnotherWorksheet&gt;, &lt;Range&gt;)</b><br><br><i># Close the
+	workbook and write it to disk; then clear the handle</i><br><b>xlh =
+	xlsclose (xlh)</b><br><b>clear xlh</b></font></font></dt><dt>
+	<br>
+	</dt><dt><font face="Arial, sans-serif"><font size="2">When not using the
 	COM interface, specify a value of 'POI' for parameter REQINTF when
 	accessing OOXML files in xlsread, xlswrite, xlsopen, xlsfinfo (and
 	be sure the complete Apache POI interface is installed). If you
 	haven't got ActiveX installed (i.e., not having MS-Excel under
 	Windows) specifying 'POI' may not be needed as in such cases Apache
-	POI is the next default interface.</FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>When using JExcelAPI
-	(JXL), after writing into a worksheet you MUST save the file &ndash;
+	POI is the next default interface.</font></font></dt><dt>
+	<br>
+	</dt><dt><font face="Arial, sans-serif"><font size="2">When using JExcelAPI
+	(JXL), after writing into a worksheet you MUST save the file –
 	adding data to the same or another worksheet is no more possible
 	after the first call to oct2xls(). This is a limitation of
-	JExcelAPI.</FONT></FONT><DT>
-	<BR>
-	<DT><BR>
-</DL>
-<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>SPREADSHEET
-FORMULA SUPPORT</B></U></FONT></FONT><DL>
-	<DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><BR>When using the POI
-	and JXL interfaces you can:</FONT></FONT></DL>
-<UL>
-	<LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>(When reading, xls2oct)
+	JExcelAPI.</font></font></dt><dt>
+	<br>
+	</dt><dt><br>
+</dt></dl>
+<p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>SPREADSHEET
+FORMULA SUPPORT</b></u></font></font></p><dl>
+	<dt>
+	<font face="Arial, sans-serif"><font size="2"><br>When using the POI
+	and JXL interfaces you can:</font></font></dt></dl>
+<ul>
+	<li>
+	<font face="Arial, sans-serif"><font size="2">(When reading, xls2oct)
 	either read spreadsheet formula results (like in COM interface), or
-	the literal formula text strings;</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>(When writing, oct2xls)
+	the literal formula text strings;</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">(When writing, oct2xls)
 	either enter formulas in the worksheet as formulas, or enter them as
-	literal text strings. The former is also like in COM.</FONT></FONT></UL>
-<DL>
-	<DT><BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>In short, you can
+	literal text strings. The former is also like in COM.</font></font></li></ul>
+	<font face="Arial, sans-serif"><font size="2">In short, you can
 	enter spreadsheet formulas and in a later stage read them back,
-	change them and re-enter them in the worksheet.</FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>The behaviour is
-	controlled by an option structure </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>options</B></FONT></FONT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>which for now has only
-	one (logical) field:</FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>options.formulas_as_text</B></FONT></FONT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>= 0 (the default)
-	implies enter formulas as formulas and read back formula results</FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>options.formulas_as_text
-	</B></FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>=1 (or
+	change them and re-enter them in the worksheet.&nbsp;</font></font><dl><dt><font face="Arial, sans-serif"><font size="2">The behaviour is
+	controlled by an option structure </font></font><font face="Arial, sans-serif"><font size="2"><b>options</b></font></font>
+	<font face="Arial, sans-serif"><font size="2">which for now has only
+	one (logical) field:</font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2"><b>options.formulas_as_text</b></font></font>
+	<font face="Arial, sans-serif"><font size="2">= 0 (the default)
+	implies enter formulas as formulas and read back formula results</font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2"><b>options.formulas_as_text
+	</b></font></font><font face="Arial, sans-serif"><font size="2">=1 (or
 	any positive integer) means enter formulas as text strings and read
-	them back as text strings.</FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Be aware that
+	them back as text strings.</font></font></dt><dt><font face="Arial, sans-serif"><font size="2">Be aware that
 	there's no formula evaluator in JExcelAPI (JXL). So if you create
 	formulas in your spreadsheet using oct2xls or xlswrite with 'JXL',
 	do not expect meaningful results when reading those files later on
-	</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>unless</B></FONT></FONT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>you open them in Excel
-	and write them back to disk.</FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>While both Apache
+	</font></font><font face="Arial, sans-serif"><font size="2"><b>unless</b></font></font>
+	<font face="Arial, sans-serif"><font size="2">you open them in Excel
+	and write them back to disk.</font></font></dt><dt><font face="Arial, sans-serif"><font size="2">While both Apache
 	POI and JExcelAPI feature a formula validator, not all spreadsheet
-	functions present in Excel have been implemented (yet).</FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Worse, older Excel
+	functions present in Excel have been implemented (yet).</font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">Worse, older Excel
 	versions feature less functions than newer versions. So be wary as
-	this may make for interesting confusion.</FONT></FONT><DT>
-	<BR>
-	<DT><BR>
-</DL>
-<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>MATLAB
-COMPATIBILITY</B></U></FONT></FONT><DL>
-	<DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2><BR><B>xlsread</B>,
-	<B>xlswrite</B> and <B>xlsfinfo</B> are for the most part
+	this may make for interesting confusion.</font></font><br>
+	</dt><dt><br>
+</dt></dl>
+<p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>MATLAB
+COMPATIBILITY</b></u></font></font></p><dl>
+	<dt>
+	<font face="Arial, sans-serif"><font size="2"><br><b>xlsread</b>,
+	<b>xlswrite</b> and <b>xlsfinfo</b> are for the most part
 	Matlab-compatible. Some small differences are mentioned below. When
 	using the Java interfaces octave supplies some formula manipulation
-	support.<BR><BR><U><B>xlsread</B></U><BR>Matlab's <B>xlsread</B>
-	supports invoking extra functions while reading (&quot;passing
-	function handle&quot;); octave not. But this can be simulated
-	outside <B>xlsread</B>.<BR><BR>Matlab's <B>xlsread</B> flags some
+	support.<br><br><u><b>xlsread</b></u><br>Matlab's <b>xlsread</b>
+	supports invoking extra functions while reading ("passing
+	function handle"); octave not. But this can be simulated
+	outside <b>xlsread</b>.<br><br>Matlab's <b>xlsread</b> flags some
 	spreadsheet errors, octave-forge just returns blank
-	cells.<BR><BR>Octave-forge returns info about the actual (rather
+	cells.<br><br>Octave-forge returns info about the actual (rather
 	than the requested) cell range where the data came from. Personally
 	I find it very useful to know from what part of a worksheet the data
-	originate so I've put quite some effort in it :-)</FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Matlab can't, due to
+	originate so I've put quite some effort in it :-)</font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">Matlab can't, due to
 	Excel automatically trimming returned arrays from empty outer
 	columns and rows. Octave is more clever but the Visual Basic call
 	used for determining the actually used range has some limitations:
 	(1) it relies on cached range values and thus may be out-of-date,
 	and (2) it counts empty formatted cells too. When using ActiveX/COM,
-	if octave's <B>xlsfinfo</B>.m returns wrong data ranges it is most
-	often an overestimation.</FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Matlab's <B>xlsread</B>
+	if octave's <b>xlsfinfo</b>.m returns wrong data ranges it is most
+	often an overestimation.</font></font></dt><dt>
+	<br>
+	</dt><dt><font face="Arial, sans-serif"><font size="2">Matlab's <b>xlsread</b>
 	ignores all non-numeric data values outside the smallest rectangle
-	encompassing all numerical values. Octave's <B>xlsread</B> doesn't.
+	encompassing all numerical values. Octave's <b>xlsread</b> doesn't.
 	This means that Matlab ignores all row/column headers, not very
-	user-friendly IMO. <BR><BR>When using the Java interface, reading
+	user-friendly IMO. <br><br>When using the Java interface, reading
 	and writing xls-files by octave-forge is platform-independent. On
 	systems w/o installed Excel, Matlab can only read Excel 95 formatted
-	.xls files (written using ML <B>xlswrite</B>'s 'Basic&rdquo; option)
-	&ndash; and then differently than under Windows.....</FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Matlab's <B>xlsread</B>
+	.xls files (written using ML <b>xlswrite</b>'s 'Basic” option)
+	– and then differently than under Windows.....</font></font></dt><dt>
+	<br>
+	</dt><dt><font face="Arial, sans-serif"><font size="2">Matlab's <b>xlsread</b>
 	returns strings for cells containing date values. This makes for
 	endless if-then-elseif-else-end constructs to catch all expected
-	date formates. Octave returns numerical data (where 0 = 1/1/1900 &ndash;
+	date formates. Octave returns numerical data (where 0 = 1/1/1900 –
 	you can easily transfer them into proper octave date values yourself
 	using e.g. datestr(), see bottom of this document for more
-	info).<BR><BR>Matlab's <B>xlsread</B> invokes <B>csvread</B> if no
-	Excel interface is present. Octave-forge's <B>xlsread</B>
-	doesn't.<BR><BR><U><B>xlswrite</B></U><BR>Octave-forge's <B>xlswrite</B>
-	works on systems w/o Excel support, Matlab's doesn't (properly).</FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>When specifying a
+	info).<br><br>Matlab's <b>xlsread</b> invokes <b>csvread</b> if no
+	Excel interface is present. Octave-forge's <b>xlsread</b>
+	doesn't.<br><br><u><b>xlswrite</b></u><br>Octave-forge's <b>xlswrite</b>
+	works on systems w/o Excel support, Matlab's doesn't (properly).</font></font></dt><dt>
+	<br>
+	</dt><dt><font face="Arial, sans-serif"><font size="2">When specifying a
 	sheet number larger than the number of existing sheets in an .xls
-	file, Matlab's <B>xlswrite</B> adds empty sheets until the new sheet
-	number is created; Octave's <B>xlswrite</B> only adds one sheet
-	called &ldquo;Sheet&lt;number&gt;&rdquo; where &lt;number&gt; is the
-	specified sheet number. </FONT></FONT>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Even better (IMO)
-	while M's <B>xlswrite</B> always creates Sheet1/Sheet2/Sheet3 when
-	creating a new spreadsheet, octave's <B>xlswrite</B> only creates
+	file, Matlab's <b>xlswrite</b> adds empty sheets until the new sheet
+	number is created; Octave's <b>xlswrite</b> only adds one sheet
+	called “Sheet&lt;number&gt;” where &lt;number&gt; is the
+	specified sheet number. </font></font>
+	</dt><dt><font face="Arial, sans-serif"><font size="2">Even better (IMO)
+	while M's <b>xlswrite</b> always creates Sheet1/Sheet2/Sheet3 when
+	creating a new spreadsheet, octave's <b>xlswrite</b> only creates
 	the requested worksheet. (Did you know that you can instruct Excel
 	to create spreadsheets with just one, or any number of, worksheets?
-	Look in Tools | Options, General tab.)</FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Oh and octave doesn't
-	touch the &ldquo;active sheet&rdquo; - but that's not automatically
-	an advantage.</FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>If the specified
-	write range is larger than the actual data array, Matlab's <B>xlswrite</B>
+	Look in Tools | Options, General tab.)</font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">Oh and octave doesn't
+	touch the “active sheet” - but that's not automatically
+	an advantage.</font></font></dt><dt>
+	<br>
+	</dt><dt><font face="Arial, sans-serif"><font size="2">If the specified
+	write range is larger than the actual data array, Matlab's <b>xlswrite</b>
 	adds #N/A cells to fill up the lowermost rows and rightmost columns;
-	octave-forge's <B>xlswrite</B> doesn't. <BR><BR><B>xlsfinfo</B><BR>When
-	invoking Excel/COM interface, octave-forge's <B>xlsfinfo</B> also
+	octave-forge's <b>xlswrite</b> doesn't. <br><br><b>xlsfinfo</b><br>When
+	invoking Excel/COM interface, octave-forge's <b>xlsfinfo</b> also
 	echoes the type of sheet (worksheet, chart), not just the sheet
-	names. Using Java I haven't found similar functionality (yet).</FONT></FONT><DT>
-	<BR>
-	<DT><BR>
-</DL>
-<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>COMPARISON
-OF INTERFACES &amp; USAGE</B></U></FONT></FONT><DL>
-	<DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Using Excel itself
+	names. Using Java I haven't found similar functionality (yet).</font></font></dt><dt>
+	<br>
+	</dt><dt><br>
+</dt></dl>
+<p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>COMPARISON
+OF INTERFACES &amp; USAGE</b></u></font></font></p><dl>
+	<dt>
+	<br>
+	</dt><dt><font face="Arial, sans-serif"><font size="2">Using Excel itself
 	(through COM / ActiveX on Windows systems) is probably the most
 	robust and versatile and especially FAST option. There's one gotcha:
 	in case of some type of COM errors Excel will keep running
-	invisibly; you can only end it through Task Manager.<BR>A tiny
+	invisibly; you can only end it through Task Manager.<br>A tiny
 	problem is that one cannot find out easily through COM what file
-	types are supported; xls, wks, wk1, xlsx, etc.<BR>Another -obvious-
+	types are supported; xls, wks, wk1, xlsx, etc.<br>Another -obvious-
 	limitation is that COM Excel access only works on Windows systems
-	where Excel is installed.<BR><BR>JExcelAPI (Java-based and therefore
+	where Excel is installed.<br><br>JExcelAPI (Java-based and therefore
 	platform-independent) is proven technology but switching between
 	reading and writing is quite involved and memory-hungry when
 	processing large spreadsheets. As the docs state, JExcelAPI is
 	optimized for reading and it does do that well - but still slower
 	than Excel/COM. The fact that upon a switch from reading to writing
-	the existing spreadsheet is overwritten <B>in place</B> by a blank
+	the existing spreadsheet is overwritten <b>in place</b> by a blank
 	one and that you can only get the contents back wen writing out all
 	of the changes is worrying - and any change after the first write()
 	is lost as a next write() doesn't seem to work, worse yet, you may
 	completely loose the spreadsheet in question. The first is by
 	JExcelAPI design, the second is probably a bug (in octave-forge/Java
 	or JExcelAPI ? I don't know). Adding data to existing spreadsheets
-	does work, but IMO undue user confidence is needed.</FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>JExcelAPI supports BIFF5
+	does work, but IMO undue user confidence is needed.</font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">JExcelAPI supports BIFF5
 	(only reading) and BIFF8 (Excel 95 and Excel 97-2003, respectively).
 	Upon overwriting, BIFF5 spreadsheets are converted silently to
-	BIFF8.</FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>JexcelAPI, unlike
+	BIFF8.</font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">JexcelAPI, unlike
 	ApachePOI, doesn't evaluate functions while reading but instead
 	relies on cached results (i.e. results computed by Excel itself).
-	Depending on Excel settings (&ldquo;Automatic calculation&rdquo; ON
+	Depending on Excel settings (“Automatic calculation” ON
 	or OFF) this may or may not yield incorrect (or expected)
-	results.<BR><BR>Apache POI (Java-based and platform-independent too)
+	results.<br><br>Apache POI (Java-based and platform-independent too)
 	is based on the OpenOffice.org I/O Excel r/w routines. It is a more
 	versatile than JExcelAPI, while it doesn't support BIFF5 it does
-	support BIFF8 (Excel 97 &ndash; 2003) and OOXML (Excel 2007).</FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>It is slower than native
+	support BIFF8 (Excel 97 – 2003) and OOXML (Excel 2007).</font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">It is slower than native
 	JXL let alone Excel &amp; COM but it features active formula
 	evaluation, although at the moment (v. 3.7) not all Excel functions
 	have been implemented. I've made the relevant subfunction
 	(xls2jpoi2oct) fall back to cached formula results (and yield a
 	suitable warning) for non-implemented Excel functions while reading
-	Excel files.<BR><BR>All in all, of the two Java options I'd prefer
+	Excel files.<br><br>All in all, of the two Java options I'd prefer
 	Apache POI rather than JexcelAPI. But the latter is indispensable
-	for BIFF5 formats.</FONT></FONT><DT>
-	<BR>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Some notes on the
-	choice for Java:</FONT></FONT></DL>
-<OL>
-	<LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>It saves a LOT of
+	for BIFF5 formats.</font></font></dt><dt>
+	<br>
+	</dt><dt><font face="Arial, sans-serif"><font size="2">Some notes on the
+	choice for Java:</font></font></dt></dl>
+<ol>
+	<li>
+	<font face="Arial, sans-serif"><font size="2">It saves a LOT of
 	development time to use ready-baked Java classes rather than
 	developing your own routines and thus effectively reinvent the
-	wheel.</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>A BIG advantage is that
-	a Java-based solution is platform-independent (&ldquo;portable&rdquo;).</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>But Java is known to be
+	wheel.</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">A BIG advantage is that
+	a Java-based solution is platform-independent (“portable”).</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">But Java is known to be
 	not very conservative with resources, especially not when processing
-	XML-based formats.</FONT></FONT></OL>
-<DL>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>So Java is a
+	XML-based formats.</font></font></li></ol>
+<dl>
+	<dt><font face="Arial, sans-serif"><font size="2">So Java is a
 	compromise between portability and rapid development time versus
-	capacity (and speed).</FONT></FONT><DT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>But IMO data sets larger
-	than 5.10<SUP>5</SUP> cells should not be kept in spreadsheets
-	anyway. Better use real databases for such data sets.</FONT></FONT><DT>
-	<BR>
-	<DT><BR>
-</DL>
-<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>A
-NOTE ON JAVA MEMORY USAGE</B></U></FONT></FONT><DL>
-	<DT>
-	<BR>
-	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>Java memory
-	pool allocation size</B></FONT></FONT><DT><P>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>The Java virtual machine
+	capacity (and speed).</font></font></dt><dt>
+	<font face="Arial, sans-serif"><font size="2">But IMO data sets larger
+	than 5.10<sup>5</sup> cells should not be kept in spreadsheets
+	anyway. Better use real databases for such data sets.</font></font></dt><dt><br>
+</dt></dl>
+<p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>A
+NOTE ON JAVA MEMORY USAGE</b></u></font></font></p>
+	<p><font face="Arial, sans-serif"><font size="2"><b>Java memory
+	pool allocation size</b></font></font></p><dl><dt><p>
+	<font face="Arial, sans-serif"><font size="2">The Java virtual machine
 	(JVM), when initialized by octave, reserves one big chunk of your
 	computer's RAM in which all java classes and methods etc. are to be
 	loaded: the java memory pool. It does this because java has a very
-	sophisticated &ldquo;garbage collection&rdquo; system. At least on
+	sophisticated “garbage collection” system. At least on
 	Windows, the initial size is 2MB and the maximum size is 16 MB. On
 	Linux this allocated size might differ (e.g., my Mandriva box with
 	openJDK has a 512 MB default max setting). This part of memory is
 	where the Java-based XLS/ODS octave routines live and keep their
-	variables etc.</FONT></FONT><DT><P>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>For transferring large
+	variables etc.</font></font></p></dt><dt><p>
+	<font face="Arial, sans-serif"><font size="2">For transferring large
 	pieces of information to and from spreadsheets you might hit the
 	limits of this pool. E.g. to be able to handle I/O of an array of
-	around 500,000 cells I needed a memory pool size of 512 MB.</FONT></FONT><DT><P>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>The memory size can be
-	increased by inserting a file called &ldquo;java.opts&rdquo;
+	around 500,000 cells I needed a memory pool size of 512 MB.</font></font></p></dt><dt><p>
+	<font face="Arial, sans-serif"><font size="2">The memory size can be
+	increased by inserting a file called “java.opts”
 	(without quotes) in the directory
 	./share/octave/packages/java-&lt;version&gt; (where the script file
-	javaclasspath.m is located), containing just the following lines:</FONT></FONT><DT><P>
-	<BR>
-	<DT><P><FONT FACE="Courier New, monospace"><FONT SIZE=2><B>-Xms16m</B></FONT></FONT><DT><P>
-	<FONT FACE="Courier New, monospace"><FONT SIZE=2><B>-Xmx512m</B></FONT></FONT><DT><P>
-	<BR>
-	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>(where 16 =
+	javaclasspath.m is located), containing just the following lines:</font></font></p></dt><dt><p><font face="Courier New, monospace"><font size="2"><b>-Xms16m<br>-Xmx512m</b></font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2">(where 16 =
 	initial size, 512 = maximum size (in this example), m stands for
 	Megabyte. This maximum is system-dependent. E.g., I have a 1 GB
-	setting).</FONT></FONT><DT><P>
-	<BR>
-	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>After processing
+	setting).</font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2">After processing
 	a large chunk of spreadsheet information you might notice that
 	octave's memory footprint does not shrink so it looks like Java's
 	memory pool does not shrink back; but rest assured, the memory
-	footprint is the <I>allocated</I> (reserved) memory size, not the
+	footprint is the <i>allocated</i> (reserved) memory size, not the
 	actual used size. After the JVM has done its garbage collection,
-	only the so-called &ldquo;working set&rdquo; of the memory
+	only the so-called “working set” of the memory
 	allocation is really in use and that is a trimmed-down part of the
 	memory allocation pool. On Windows systems it often suffices to
 	minimize the octave terminal for a few seconds to get a more
-	reasonable memory footprint.</FONT></FONT><DT><P>
-	<BR>
-	<DT><BR>
-</DL>
-<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>TROUBLESHOOTING</B></U></FONT></FONT><P ALIGN=CENTER>
-<BR>
-<DL>
-	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Some hints for
-	troubleshooting Excel support are contained in this thread:</FONT></FONT><DT><P>
-	<BR>
-	<DT><P><A HREF="http://sourceforge.net/mailarchive/forum.php?thread_name=4C61B649.9090802%40hccnet.nl&amp;forum_name=octave-dev"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>http://sourceforge.net/mailarchive/forum.php?thread_name=4C61B649.9090802%40hccnet.nl&amp;forum_name=octave-dev</FONT></FONT></A><DT><P>
-	<BR>
-	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>dated August 10,
-	2010.</FONT></FONT><DT><P>
-	<BR>
-	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>A more structured
-	approach is below:</FONT></FONT><DT><P>
-	<BR>
-</DL>
-<OL>
-	<LI><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Check
-	if COM / ActiveXworks (only under Windows OS). Do a </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>pkg
-	list </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>and
-	see</FONT></FONT><P>
-	a. <FONT FACE="Arial, sans-serif"><FONT SIZE=2>If there's a windows
-	package mentioned (then it's installed). If not, install it.</FONT></FONT></P>
-	<P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>b. If
+	reasonable memory footprint.</font></font></p></dt><dt><br>
+</dt></dl>
+<p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>TROUBLESHOOTING</b></u></font></font></p><dl>
+	<dt><p><font face="Arial, sans-serif"><font size="2">Some hints for
+	troubleshooting Excel support are contained in this thread:</font></font></p></dt><dt><p><a href="http://sourceforge.net/mailarchive/forum.php?thread_name=4C61B649.9090802%40hccnet.nl&amp;forum_name=octave-dev"><font face="Arial, sans-serif"><font size="2">http://sourceforge.net/mailarchive/forum.php?thread_name=4C61B649.9090802%40hccnet.nl&amp;forum_name=octave-dev</font></font></a></p></dt><dt><p><font face="Arial, sans-serif"><font size="2">dated August 10,
+	2010.</font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2">A more structured
+	approach is below:</font></font></p></dt></dl>
+<ol>
+	<li><p align="left"><font face="Arial, sans-serif"><font size="2">Check
+	if COM / ActiveXworks (only under Windows OS). Do a </font></font><font face="Courier New, monospace"><font size="2">pkg
+	list </font></font><font face="Arial, sans-serif"><font size="2">and
+	see</font></font></p><p>
+	a. <font face="Arial, sans-serif"><font size="2">If there's a windows
+	package mentioned (then it's installed). If not, install it.</font></font></p>
+	<p align="left"><font face="Arial, sans-serif"><font size="2">b. If
 	there's an asterisk on the windows package line (then the package is
-	loaded). If not, do a </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>pkg
-	load windows</FONT></FONT> 
-	<LI><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Check
-	if the ActiveX server works. Do:</FONT></FONT><P ALIGN=LEFT>
-	<FONT FACE="Courier New, monospace"><FONT SIZE=2>exl = actxserver
-	('Excel.Application')</FONT></FONT> <FONT FACE="Arial, sans-serif"><FONT SIZE=2>##
-	Note the period between &ldquo;Excel&rdquo; and &ldquo;Application&rdquo;</FONT></FONT><P ALIGN=LEFT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>If a COM object is
-	returned, ActiveX / COM / Excel works. Do: </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>exl.Quit();
-	delete (exl)</FONT></FONT> <FONT FACE="Arial, sans-serif"><FONT SIZE=2>to
-	shut down the (hidden) Excel invocation.</FONT></FONT><P ALIGN=LEFT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>If you get an error
+	loaded). If not, do a </font></font><font face="Courier New, monospace"><font size="2">pkg
+	load windows</font></font> 
+	</p></li><li><p align="left"><font face="Arial, sans-serif"><font size="2">Check
+	if the ActiveX server works. Do:</font></font></p><p align="left">
+	<font face="Courier New, monospace"><font size="2">exl = actxserver
+	('Excel.Application')</font></font> <font face="Arial, sans-serif"><font size="2">##
+	Note the period between “Excel” and “Application”</font></font></p><p align="left">
+	<font face="Arial, sans-serif"><font size="2">If a COM object is
+	returned, ActiveX / COM / Excel works. Do: </font></font><font face="Courier New, monospace"><font size="2">exl.Quit();
+	delete (exl)</font></font> <font face="Arial, sans-serif"><font size="2">to
+	shut down the (hidden) Excel invocation.</font></font></p><p align="left">
+	<font face="Arial, sans-serif"><font size="2">If you get an error
 	message, your last resort is re-installing the windows package, or
-	trying the Java-based interfaces.</FONT></FONT><LI><P ALIGN=LEFT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Check if java works. Do
-	a </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>pkg
-	list </FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>and
-	see</FONT></FONT><P>
-	a. <FONT FACE="Arial, sans-serif"><FONT SIZE=2>If there's a java
-	package mentioned (then it's installed). If not, install it.</FONT></FONT></P>
-	<P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>b. If there's an
+	trying the Java-based interfaces.</font></font></p></li><li><p align="left">
+	<font face="Arial, sans-serif"><font size="2">Check if java works. Do
+	a </font></font><font face="Courier New, monospace"><font size="2">pkg
+	list </font></font><font face="Arial, sans-serif"><font size="2">and
+	see</font></font></p><p>
+	a. <font face="Arial, sans-serif"><font size="2">If there's a java
+	package mentioned (then it's installed). If not, install it.</font></font></p>
+	<p><font face="Arial, sans-serif"><font size="2">b. If there's an
 	asterisk on the java package line (then the package is loaded). If
-	not, do a </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>pkg
-	rebuild -auto java</FONT></FONT></P>
-</OL>
-<DL>
-	<DT><P><BR>
-</DL>
-<OL START=4>
-	<LI><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Check
-	</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>J</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>ava
-	memory settings. Try </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>javamem</FONT></FONT><P>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>a. If it works, check if
+	not, do a </font></font><font face="Courier New, monospace"><font size="2">pkg
+	rebuild -auto java</font></font></p>
+</li></ol>
+
+<ol start="4">
+	<li><p align="left"><font face="Arial, sans-serif"><font size="2">Check
+	</font></font><font face="Arial, sans-serif"><font size="2">J</font></font><font face="Arial, sans-serif"><font size="2">ava
+	memory settings. Try </font></font><font face="Courier New, monospace"><font size="2">javamem</font></font></p><p>
+	<font face="Arial, sans-serif"><font size="2">a. If it works, check if
 	it reports sufficiently large max memory (had better be 200 MiB, the
-	bigger the better)</FONT></FONT></P>
-	<P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>b. If it
-	doesn't work, do:</FONT></FONT>
-	<OL TYPE=a><P ALIGN=LEFT>
-		<FONT FACE="Courier New, monospace"><FONT SIZE=2>rt = java_invoke
-		('java.lang.Runtime', 'getRuntime')</FONT></FONT><P ALIGN=LEFT>
-		<FONT FACE="Courier New, monospace"><FONT SIZE=2>rt.gc</FONT></FONT><P ALIGN=LEFT>
-		<FONT FACE="Courier New, monospace"><FONT SIZE=2>rt.maxMemory
-		().doubleValue () / 1024 / 1024</FONT></FONT><P ALIGN=LEFT>
-		<FONT FACE="Arial, sans-serif"><FONT SIZE=2>The last command will
-		show MaxMemory in MiB.</FONT></FONT></OL>
-	<P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>c. In case
-	you have insufficient memory, see in &ldquo;GOTCHAS&rdquo;, &ldquo;Java
-	memory pool allocation size&rdquo;, how to increase java's memory
-	pre-reservation.</FONT></FONT><LI><P ALIGN=LEFT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Check if all classes
-	(.jarfiles) are in class path. Do a '</FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>javaclasspath</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>'
-	(under unix/linux, do '</FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>tmp
-	= javaclasspath; strsplit (tmp,&rdquo;:&rdquo;)</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>'
-	(w/o quotes). See above under &ldquo;REQUIRED SUPPORT SOFTWARE&rdquo;
-	what classes should be mentioned.</FONT></FONT><P ALIGN=LEFT>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>If classes (.jar files)
+	bigger the better)</font></font></p>
+	<p align="left"><font face="Arial, sans-serif"><font size="2">b. If it
+	doesn't work, do:</font></font>
+	</p><ol type="a"><p align="left">
+		<font face="Courier New, monospace"><font size="2">rt = java_invoke
+		('java.lang.Runtime', 'getRuntime')<br>rt.gc<br>rt.maxMemory
+		().doubleValue () / 1024 / 1024</font></font></p><p align="left">
+		<font face="Arial, sans-serif"><font size="2">The last command will
+		show MaxMemory in MiB.</font></font></p></ol>
+	<p align="left"><font face="Arial, sans-serif"><font size="2">c. In case
+	you have insufficient memory, see in “GOTCHAS”, “Java
+	memory pool allocation size”, how to increase java's memory
+	pre-reservation.</font></font></p></li><li><p align="left">
+	<font face="Arial, sans-serif"><font size="2">Check if all classes
+	(.jarfiles) are in class path. Do a '</font></font><font face="Courier New, monospace"><font size="2">javaclasspath</font></font><font face="Arial, sans-serif"><font size="2">'
+	(under unix/linux, do '</font></font><font face="Courier New, monospace"><font size="2">tmp
+	= javaclasspath; strsplit (tmp,”:”)</font></font><font face="Arial, sans-serif"><font size="2">'
+	(w/o quotes). See above under “REQUIRED SUPPORT SOFTWARE”
+	what classes should be mentioned.</font></font></p><p align="left">
+	<font face="Arial, sans-serif"><font size="2">If classes (.jar files)
 	are missing, download and put them somewhere and add them to the
 	javaclass path with their fully qualified pathname (in quotes) using
-	</FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>javaaddpath()</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>.</FONT></FONT></OL>
-<DL>
-	<DT><P><BR>
-	<DT><P><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Once all classes
+	</font></font><font face="Courier New, monospace"><font size="2">javaaddpath()</font></font><font face="Arial, sans-serif"><font size="2">.</font></font></p></li></ol>
+	<p><font face="Arial, sans-serif"><font size="2">Once all classes
 	are present and in the javaclasspath, the xls interfaces should just
 	work. The only remaining showstoppers are insufficient write
 	privileges for the working directory, a wrecked up octave or some
-	other problem outside octave.</FONT></FONT><DT><P>
-	<BR>
-</DL>
-<OL START=6>
-	<LI><P ALIGN=LEFT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Try
-	opening an xls file: </FONT></FONT>
-	<P ALIGN=LEFT><FONT FACE="Courier New, monospace"><FONT SIZE=2>xls1
-	= xlsopen ('test.xls', 1, 'poi')</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>.
+	other problem outside octave.</font></font></p><ol start="6">
+	<li><p align="left"><font face="Arial, sans-serif"><font size="2">Try
+	opening an xls file: </font></font>
+	</p><p align="left"><font face="Courier New, monospace"><font size="2">xls1
+	= xlsopen ('test.xls', 1, 'poi')</font></font><font face="Arial, sans-serif"><font size="2">.
 	If this works and xls1 is a struct with various fields containing
-	objects, the Apache POI interface (POI) works. Do an </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>xls1
-	= xlsclose (xls1)</FONT></FONT> <FONT FACE="Arial, sans-serif"><FONT SIZE=2>to
-	close the file.</FONT></FONT><P ALIGN=LEFT>
-	<FONT FACE="Courier New, monospace"><FONT SIZE=2>xls2 = xlsopen
-	('test.xls', 1, 'jxl')</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>.
+	objects, the Apache POI interface (POI) works. Do an </font></font><font face="Courier New, monospace"><font size="2">xls1
+	= xlsclose (xls1)</font></font> <font face="Arial, sans-serif"><font size="2">to
+	close the file.</font></font></p><p align="left">
+	<font face="Courier New, monospace"><font size="2">xls2 = xlsopen
+	('test.xls', 1, 'jxl')</font></font><font face="Arial, sans-serif"><font size="2">.
 	If this works and xls2 is a struct with various fields containing
 	objects, the JExcelAPI interface (JXL) works as well. Don't forget
-	to do </FONT></FONT><FONT FACE="Courier New, monospace"><FONT SIZE=2>xls2
-	= xlsclose (xls2)</FONT></FONT> <FONT FACE="Arial, sans-serif"><FONT SIZE=2>to
-	close the file.</FONT></FONT></OL>
-<DL>
-	<DT><P><BR>
-	<DT><P><BR>
-</DL>
-<P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=4><U><B>DEVELOPMENT</B></U></FONT></FONT><P ALIGN=CENTER>
-<BR>
-<DL>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><B>xlsopen</B>/<B>xlsclos</B>e
+	to do </font></font><font face="Courier New, monospace"><font size="2">xls2
+	= xlsclose (xls2)</font></font> <font face="Arial, sans-serif"><font size="2">to
+	close the file.</font></font></p></li></ol><br>
+
+<p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>DEVELOPMENT</b></u></font></font></p><dl>
+	<dt><font face="Arial, sans-serif"><font size="2"><b>xlsopen</b>/<b>xlsclos</b>e
 	and friends have been written so that adding other interfaces (Perl?
-	native octave? ...?) should be very easily accomplished. <B>Xlsopen.m</B>
-	merely needs two stanzas, <B>xlsfinfo.m</B> and <B>getusedrange.m</B>
-	each need an additional elseif stanza, and <B>xlsclose.m</B> needs a
-	small stanza for closing the pointer struct and writing to disk. </FONT></FONT>
-	<DT><FONT FACE="Arial, sans-serif"><FONT SIZE=2>The real work lies
-	in creating the relevant <I><B>xls2&lt;...&gt;2oct</B></I> &amp;
-	<I><B>oct2&lt;...&gt;2xls</B></I> &amp; <I><B>&lt;getusedrange_...&gt;</B></I>
-	subfunction scripts in <B>xls2oct.m</B>, <B>oct2xls.m</B> and
-	<B>getusedrange.m</B>, resp., but that shouldn't be really hard,
+	native octave? ...?) should be very easily accomplished. <b>Xlsopen.m</b>
+	merely needs two stanzas, <b>xlsfinfo.m</b> and <b>getusedrange.m</b>
+	each need an additional elseif stanza, and <b>xlsclose.m</b> needs a
+	small stanza for closing the pointer struct and writing to disk. </font></font>
+	</dt><dt><font face="Arial, sans-serif"><font size="2">The real work lies
+	in creating the relevant <i><b>xls2&lt;...&gt;2oct</b></i> &amp;
+	<i><b>oct2&lt;...&gt;2xls</b></i> &amp; <i><b>&lt;getusedrange_...&gt;</b></i>
+	subfunction scripts in <b>xls2oct.m</b>, <b>oct2xls.m</b> and
+	<b>getusedrange.m</b>, resp., but that shouldn't be really hard,
 	depending on the interface support libraries' quality and
 	documentation. Separating the file access functions and the actual
 	reading/writing from/to the workbook in memory has made developer's
-	life (I mean: my time developing this stuff) much easier.<BR><BR>Some
-	other options for development (who?):</FONT></FONT></DL>
-<UL>
-	<LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Speeding up, especially
-	Java worksheet/cell access. For cracks, not me.</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Automatic conversion of
-	Excel date/time values into octave ones and vice versa. But then
+	life (I mean: my time developing this stuff) much easier.<br><br>Some
+	other options for development (who?):</font></font></dt></dl>
+<ul>
+	<li>
+	<font face="Arial, sans-serif"><font size="2">Speeding up, especially
+	Java worksheet/cell access. For cracks, not me.</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">Automatic conversion of
+	Excel date/time values into octave ones and vice versa (adding or subtracting 636960). But then
 	again Excel's dates are 01-01-1900 based (octave's 0-0-0000) and
 	buggy (Excel thinks 1900 is a leap year), and I sometimes have to
-	use dates from before 1900. Maybe as an option?</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Creating Excel graphs (a
-	significant enterprise to write from scratch).</FONT></FONT><LI>
-	<FONT FACE="Arial, sans-serif"><FONT SIZE=2>Support for &quot;passing
-	function handle&quot; in xlsread.</FONT></FONT></UL>
-<DL>
-	<DD><BR>
-	<DD><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Enjoy!</FONT></FONT><DD>
-	<BR>
-	<DD><P ALIGN=CENTER><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Philip
-	Nienhuis, November 14, 2010</FONT></FONT></DL>
-</BODY>
-</HTML>
+	use dates from before 1900. Maybe as an option?</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">Creating Excel graphs (a
+	significant enterprise to write from scratch).</font></font></li><li>
+	<font face="Arial, sans-serif"><font size="2">Support for "passing
+	function handle" in xlsread.</font></font></li></ul>
+<font face="Arial, sans-serif"><font size="2">Enjoy!</font></font><dl>
+	<dd><p align="center"><font face="Arial, sans-serif"><font size="2">Philip
+	Nienhuis, February 16, 2011</font></font></p></dd><dt></dt></dl>
+</body></html>

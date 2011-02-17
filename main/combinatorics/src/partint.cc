@@ -221,6 +221,9 @@ Joerg Arndt: Algorithms for programmers (http://www.jjj.de), 2006.\n\n\
 
 %!assert(partint(1), 1);
 %!assert(all(partint(n=17) * [1:n]' == n) - 1, 0); 
+%!test
+%! expected = [4,0,0,0; 2,1,0,0; 0,2,0,0; 1,0,1,0; 0,0,0,1];
+%! assert(partint(4), expected);
 %!fail("partint()", "partint");
 %!fail("partint(1,2)", "partint");
 %!fail("partint('xyz')", "partint");

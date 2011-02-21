@@ -3,7 +3,8 @@
 #
 
 REGEX_VER=2.5.1
-REGEX_CONFIGURE_ARGS = 
+REGEX_CONFIGURE_ARGS = \
+AR=$(CROSS)ar
 
 # these should be overridden by the main makefile
 PREFIX ?= /usr/local

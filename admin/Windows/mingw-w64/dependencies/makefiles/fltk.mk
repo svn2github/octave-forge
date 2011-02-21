@@ -10,8 +10,8 @@ FLTK_CONFIGURE_ARGS = \
 CFLAGS="-DFL_DLL" \
 CXXFLAGS="-DFL_DLL" \
 CPPFLAGS="-I$(PREFIX)/include" \
-LDFLAGS="-L$(PREFIX)/lib"
-
+LDFLAGS="-L$(PREFIX)/lib" \
+AR=$(CROSS)ar
 
 # these should be overridden by the main makefile
 PREFIX ?= /usr/local
@@ -44,14 +44,14 @@ $(BUILDDIR)/fltk/.config.marker : \
 	--prefix=$(PREFIX) \
 	$(COMMON_CONFIGURE_ARGS) $(HOST_CONFIGURE_ARGS) \
 	$(FLTK_CONFIGURE_ARGS) $(FLTK_CONFIGURE_XTRA_ARGS)
-	mkdir $(BUILDDIR)/fltk/src
-	mkdir $(BUILDDIR)/fltk/lib
-	mkdir $(BUILDDIR)/fltk/fluid
-	mkdir $(BUILDDIR)/fltk/test
-	cp -a $(SRCDIR)/fltk/makefile $(BUILDDIR)/fltk
-	cp -a $(SRCDIR)/fltk/src/makefile $(BUILDDIR)/fltk/src
-	cp -a $(SRCDIR)/fltk/fluid/makefile $(BUILDDIR)/fltk/fluid
-	cp -a $(SRCDIR)/fltk/test/makefile $(BUILDDIR)/fltk/test
+	-mkdir $(BUILDDIR)/fltk/src
+	-mkdir $(BUILDDIR)/fltk/lib
+	-mkdir $(BUILDDIR)/fltk/fluid
+	-mkdir $(BUILDDIR)/fltk/test
+	cp -af $(SRCDIR)/fltk/makefile $(BUILDDIR)/fltk
+	cp -af $(SRCDIR)/fltk/src/makefile $(BUILDDIR)/fltk/src
+	cp -af $(SRCDIR)/fltk/fluid/makefile $(BUILDDIR)/fltk/fluid
+	cp -af $(SRCDIR)/fltk/test/makefile $(BUILDDIR)/fltk/test
 	sed -e \
 	    "s@../FL@\$$(srcdir)/FL@g" \
 	    $(SRCDIR)/fltk/src/makedepend > $(BUILDDIR)/fltk/src/makedepend

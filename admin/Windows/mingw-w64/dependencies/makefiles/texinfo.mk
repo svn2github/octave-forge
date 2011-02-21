@@ -41,9 +41,9 @@ $(BUILDDIR)/texinfo/.config.marker : \
 	$(TOUCH) $@
 
 texinfo-rebuild : 
-	cd $(BUILDDIR)/texinfo/gnulib/lib && $(MAKE) $(MAKE_PARALLEL)
-	cd $(BUILDDIR)/texinfo/lib && $(MAKE) $(MAKE_PARALLEL)
-	cd $(BUILDDIR)/texinfo/makeinfo && $(MAKE) $(MAKE_PARALLEL)
+	cd $(BUILDDIR)/texinfo/gnulib/lib && $(MAKE) $(MAKE_PARALLEL) AR=$(CROSS)ar
+	cd $(BUILDDIR)/texinfo/lib && $(MAKE) $(MAKE_PARALLEL) AR=$(CROSS)ar
+	cd $(BUILDDIR)/texinfo/makeinfo && $(MAKE) $(MAKE_PARALLEL) AR=$(CROSS)ar
 
 texinfo-build : $(BUILDDIR)/texinfo/.build.marker 
 $(BUILDDIR)/texinfo/.build.marker : $(BUILDDIR)/texinfo/.config.marker

@@ -90,11 +90,12 @@ $(BUILDDIR)/ncurses/.config.marker : \
 	--prefix=$(PREFIX) \
 	$(COMMON_CONFIGURE_ARGS) $(HOST_CONFIGURE_ARGS) \
 	$(NCURSES_CONFIGURE_ARGS) $(NCURSES_CONFIGURE_XTRA_ARGS)
+	sed -e "s/ar /\$$\{CROSS\}ar /g" < $(dir $@)mk-dlls.sh > $(dir $@)mk-dlls.sh.mod && mv $(dir $@)mk-dlls.sh.mod $(dir $@)mk-dlls.sh
 	$(TOUCH) $@
 
 ncurses-rebuild : 
 	$(MAKE) common-configure-make TGT=all PKG=ncurses
-	$(MAKE) common-configure-make TGT=dlls PKG=ncurses
+	export CROSS=$(CROSS); $(MAKE) common-configure-make TGT=dlls PKG=ncurses
 
 ncurses-build : $(BUILDDIR)/ncurses/.build.marker 
 $(BUILDDIR)/ncurses/.build.marker : $(BUILDDIR)/ncurses/.config.marker

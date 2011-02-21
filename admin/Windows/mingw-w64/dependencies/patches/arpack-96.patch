@@ -38,7 +38,7 @@ new file mode 100644
 +.SUFFIXES: .f .o .def
 +
 +%.o : %.f
-+	$(CROSS)$(F77) $(FFLAGS) -o $@ -c $<
++	$(F77) $(FFLAGS) -o $@ -c $<
 +
 +%.def : %.f
 +	@echo "Making $@"

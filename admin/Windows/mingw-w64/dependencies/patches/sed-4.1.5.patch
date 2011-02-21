@@ -1,0 +1,23 @@
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -13,6 +13,8 @@
+ 
+ AC_PROG_CC
+ AC_PROG_RANLIB
++AC_CHECK_PROG(AR, ar, , ar)
++AC_SUBST(AR)
+ AC_GNU_SOURCE
+ AC_AIX
+ AC_MINIX
+diff --git a/lib/Makefile.in b/lib/Makefile.in
+--- a/lib/Makefile.in
++++ b/lib/Makefile.in
+@@ -87,6 +87,7 @@
+ AMDEP_FALSE = @AMDEP_FALSE@
+ AMDEP_TRUE = @AMDEP_TRUE@
+ AMTAR = @AMTAR@
++AR = @AR@
+ AUTOCONF = @AUTOCONF@
+ AUTOHEADER = @AUTOHEADER@
+ AUTOMAKE = @AUTOMAKE@

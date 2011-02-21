@@ -9,7 +9,8 @@ SED_CONFIGURE_ARGS = \
 --with-gnu-ld \
 --without-included-regex \
 CPPFLAGS="-I$(PREFIX)/include" \
-LDFLAGS="-L$(PREFIX)/lib"
+LDFLAGS="-L$(PREFIX)/lib" \
+AR=$(CROSS)ar
 
 # these should be overridden by the main makefile
 PREFIX ?= /usr/local
@@ -27,14 +28,17 @@ $(SRCTARDIR)/sed-$(SED_VER).tar.gz : $(SRCTARDIR)/.mkdir.marker
 sed-unpack : $(SRCDIR)/sed/.unpack.marker
 $(SRCDIR)/sed/.unpack.marker : \
     $(SRCTARDIR)/sed-$(SED_VER).tar.gz \
+    $(PATCHDIR)/sed-$(SED_VER).patch \
     $(SRCDIR)/sed/.mkdir.marker 
 	$(TAR) -C $(dir $@) --strip-components=1 -xzf $<
+	cd $(dir $@) && patch -p 1 -u -i $(CURDIR)/$(PATCHDIR)/sed-$(SED_VER).patch
 	$(TOUCH) $@
 
 sed-configure : $(BUILDDIR)/sed/.config.marker
 $(BUILDDIR)/sed/.config.marker : \
     $(SRCDIR)/sed/.unpack.marker \
     $(BUILDDIR)/sed/.mkdir.marker
+	cd $(SRCDIR)/sed && export WANT_AUTOMAKE=1.11.1; autoconf --force
 	cd $(dir $@) && $(CURDIR)/$(SRCDIR)/sed/configure \
 	--prefix=$(PREFIX) \
 	$(COMMON_CONFIGURE_ARGS) $(HOST_CONFIGURE_ARGS) \
@@ -42,7 +46,7 @@ $(BUILDDIR)/sed/.config.marker : \
 	$(TOUCH) $@
 
 sed-rebuild : 
-	$(MAKE) common-configure-make TGT=all PKG=sed
+	$(ADDPATH); $(MAKE) common-configure-make TGT=all PKG=sed
 
 sed-build : $(BUILDDIR)/sed/.build.marker 
 $(BUILDDIR)/sed/.build.marker : $(BUILDDIR)/sed/.config.marker

@@ -53,6 +53,15 @@ diff --git a/defines.wn b/defines.wn
  
  /* Define HAVE_VOID if your compiler supports the "void" type. */
  #define HAVE_VOID 1
+@@ -323,7 +333,7 @@
+ #define HAVE_UNISTD_H 0
+ 
+ /* Define if you have the <values.h> header file.  */
+-#ifdef _MSC_VER
++#if defined(_MSC_VER) || defined(__MINGW32__)
+ #define HAVE_VALUES_H 0
+ #else
+ #define HAVE_VALUES_H 1
 diff --git a/lglob.h b/lglob.h
 --- a/lglob.h
 +++ b/lglob.h

@@ -28,6 +28,7 @@ arpack-unpack : $(SRCDIR)/arpack/.unpack.marker
 $(SRCDIR)/arpack/.unpack.marker : \
     $(SRCTARDIR)/arpack-$(ARPACK_VER).tar.gz \
     $(SRCTARDIR)/arpack-$(ARPACK_VER)-patch.tar.gz \
+    $(PATCHDIR)/arpack-$(ARPACK_VER).patch \
     $(SRCDIR)/arpack/.mkdir.marker 
 	$(TAR) -C $(dir $@) --strip-components=1 -xz -f $(word 1,$^)
 	$(TAR) -C $(dir $@) --strip-components=1 -xz -f $(word 2,$^)

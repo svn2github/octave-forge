@@ -8,7 +8,8 @@ READLINE_CONFIGURE_ARGS = \
 --enable-static \
 --with-curses \
 CPPFLAGS=-I$(PREFIX)/include \
-LDFLAGS=-L$(PREFIX)/lib
+LDFLAGS=-L$(PREFIX)/lib \
+AR=$(CROSS)ar
 
 
 # these should be overridden by the main makefile

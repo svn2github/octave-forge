@@ -1,7 +1,15 @@
 diff --git a/Makefile.in b/Makefile.in
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -48,7 +48,7 @@
+@@ -41,6 +41,7 @@
+ CC = @CC_QUALIFIED@
+ CFLAGS = @CFLAGS@ -I ${srcdir}
+ LDFLAGS = @LDFLAGS@
++AR = @AR@
+ 
+ SOURCES = $(wildcard ${srcdir}/*.c ${srcdir}/*.h)
+ OBJECTS = regex.o
+@@ -48,7 +49,7 @@
  MSVCLIB = lib
  
  BINDIST_FILES = libgnurx-$(DLLVERSION).dll
@@ -10,7 +18,7 @@ diff --git a/Makefile.in b/Makefile.in
  SRCDIST_FILES = ${srcdir}/configure ${srcdir}/configure.ac ${srcdir}/aclocal.m4 \
    ${srcdir}/pkgid.m4 ${srcdir}/Makefile.in ${srcdir}/README ${srcdir}/COPYING.LIB \
    $(SOURCES) $(wildcard ${srcdir}/*.[37]) ${srcdir}/ChangeLog
-@@ -56,7 +56,7 @@
+@@ -56,7 +57,7 @@
  ZIPCMD = @ZIPCMD@
  ZIPEXT = @ZIPEXT@
  
@@ -19,7 +27,7 @@ diff --git a/Makefile.in b/Makefile.in
  
  Makefile: config.status Makefile.in
  	./config.status
-@@ -66,11 +66,11 @@
+@@ -66,11 +67,11 @@
  
  $(OBJECTS): Makefile
  
@@ -37,7 +45,16 @@ diff --git a/Makefile.in b/Makefile.in
 diff --git a/configure.ac b/configure.ac
 --- a/configure.ac
 +++ b/configure.ac
-@@ -75,8 +75,8 @@
+@@ -60,6 +60,8 @@
+ #
+   AC_PROG_CC
+   MINGW_AC_PROG_CC_OPTIONS([CC_QUALIFIED], [-m], [threads tune=pentium3])
++  AC_CHECK_PROG(AR, ar, , ar)
++  AC_SUBST(AR)
+ 
+ # Set the release version for the resultant DLL.
+ #
+@@ -75,8 +77,8 @@
  #
    AC_SUBST([GNURX_LIB])
    AC_SUBST([CC_QUALIFIED], ["$CC $CC_QUALIFIED"])

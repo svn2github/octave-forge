@@ -1,3 +1,29 @@
+2011-Feb-21  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	fix various build & cross-build issues
+	
+	dependencies/: modify svn:ignore property
+	
+	makefiles/
+	  * arpack.mk: fix missing patch file dpendency
+	  * fltk.mk: fix cross-compile issues
+	  * hdf5.mk: ... likewise
+	  * ncurses.mk: ... likewise
+	  * readline.mk: ... likewise
+	  * regex.mk: ... likeswise
+	  * sed.mk: ... likewise
+	  * texinfo.mk: ... likewise
+	  * freetype.mk: fix header install location
+	  * pcre.mk: install missing pcre-config script 
+	
+	patches/
+	  * arpack-96.patch: fix cross-compile issues
+	  * fltk-1.1.10.patch: ... likewise
+	  * hdf5-1.8.5-patch1.patch: ... likewise
+	  * less-436.patch: ... likewise
+	  * regex-2.5.1.patch: ... likewise
+	  * sed-4.1.5.patch: new file
+
 2011-Jan-28  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	add patches & makefiles

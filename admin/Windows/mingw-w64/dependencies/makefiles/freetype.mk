@@ -58,6 +58,17 @@ $(BUILDDIR)/freetype/.build.marker : $(BUILDDIR)/freetype/.config.marker
 freetype-reinstall : 
 	$(MAKE) common-make TGT=install PKG=freetype
 	$(MAKE) freetype-install-lic
+	$(MAKE) freetype-install-post
+
+# move the headers from 
+#  $prefix/include/freetype2/freetype/config
+# to
+#  $prefix/include/freetype/config
+freetype-install-post :
+	if test ! -e $(PREFIX)/include/freetype; then mkdir $(PREFIX)/include/freetype; fi
+	mv -t $(PREFIX)/include/freetype $(PREFIX)/include/freetype2/freetype/*
+	rmdir $(PREFIX)/include/freetype2/freetype
+	rmdir $(PREFIX)/include/freetype2
 
 freetype-install-lic : 
 	mkdir -p $(PREFIX)/license/freetype

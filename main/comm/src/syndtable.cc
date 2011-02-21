@@ -63,7 +63,7 @@ DEFUN_DLD (syndtable, args, nargout,
 "\n"
 "Create the syndrome decoding table from the parity check matrix @var{h}.\n"
 "Each row of the returned matrix @var{t} represents the error vector in\n"
-"a recieved symbol for a certain syndrome. The row selected is determined\n"
+"a received symbol for a certain syndrome. The row selected is determined\n"
 "by a conversion of the syndrome to an integer representation, and using\n"
 "this to reference each row of @var{t}.\n"
 "@end deftypefn\n"

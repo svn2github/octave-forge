@@ -1,3 +1,9 @@
+2011-Feb-21  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	*  build/makefile (gcc-post-install): new target
+	    (dist): don't include .la files
+	    (dist-src): new target
+
 2011-Jan-27  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	*  build/makefile (binutils-download): remove explicit -z3

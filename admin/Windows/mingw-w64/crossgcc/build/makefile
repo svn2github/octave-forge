@@ -120,6 +120,7 @@ else
   $(error Unknown CPU for target arch ${TARGET_ARCH})
 endif
 
+GCC_VERSION=$(shell cat $(SRC_DIR)/gcc/gcc/BASE-VER)
 
 # --------------------------------------
 #  GMP
@@ -453,7 +454,7 @@ $(BUILD_DIR)/gcc/.libgcc.build.marker : $(BUILD_DIR)/crt/obj/.install.marker
 gcc-libgcc-install : $(BUILD_DIR)/gcc/.libgcc.install.marker
 $(BUILD_DIR)/gcc/.libgcc.install.marker : $(BUILD_DIR)/gcc/.libgcc.build.marker
 	$(MAKE) -C $(dir $@) install-target-libgcc
-	cp -av $(PREFIX)/lib/gcc/$(TARGET_ARCH)/lib/libgcc_s.a $(PREFIX)/lib/gcc/$(TARGET_ARCH)/`cat $(SRC_DIR)/gcc/gcc/BASE-VER`
+	cp -av $(PREFIX)/lib/gcc/$(TARGET_ARCH)/lib/libgcc_s.a $(PREFIX)/lib/gcc/$(TARGET_ARCH)/$(GCC_VERSION)
 	rm -f $(PREFIX)/lib/gcc/$(TARGET_ARCH)/lib/libgcc_s.a
 	touch $@
 
@@ -601,6 +602,18 @@ $(BUILD_DIR)/gcc/.install.marker : $(BUILD_DIR)/gcc/.build.marker
 	$(ADD_BIN_PATH); $(MAKE) -C $(dir $@) install
 	touch $@
 
+gcc-post-install : $(BUILD_DIR)/gcc/.postinstall.marker
+$(BUILD_DIR)/gcc/.postinstall.marker : $(BUILD_DIR)/gcc/.install.marker
+	mv $(PREFIX)/lib/gcc/$(TARGET_ARCH)/libgcc_s_*.dll $(PREFIX)/bin
+	mv $(PREFIX)/lib/gcc/$(TARGET_ARCH)/$(GCC_VERSION)/libgfortran-*.dll $(PREFIX)/bin
+ifeq ($(TARGET_ARCH),i686-w64-mingw32)
+	mv $(PREFIX)/lib/gcc/$(TARGET_ARCH)/$(GCC_VERSION)/libgomp-*.dll $(PREFIX)/bin
+endif
+	mv $(PREFIX)/lib/gcc/$(TARGET_ARCH)/$(GCC_VERSION)/libquadmath-*.dll $(PREFIX)/bin
+	mv $(PREFIX)/lib/gcc/$(TARGET_ARCH)/$(GCC_VERSION)/libssp-*.dll $(PREFIX)/bin
+	mv $(PREFIX)/lib/gcc/$(TARGET_ARCH)/$(GCC_VERSION)/libstdc++-*.dll $(PREFIX)/bin
+	touch $@
+
 GCC_FORWARDERS=\
 gcc.exe \
 g++.exe \
@@ -638,15 +651,20 @@ all : \
     gcc-libgcc-all \
     pthreads-all \
     gcc-build \
-    gcc-install
+    gcc-install \
+    gcc-post-install
 
 strip-exe :
 	find $(PREFIX) -iname '*.exe' \
 	-print -exec strip.exe --strip-unneeded '{}' \;
 
-dist :
-	cd $(PREFIX) && $(TAR) c --exclude '*.marker' --exclude '*.la' * | lzma -czv7 > $(CURDIR)/$(TARGET_ARCH)_gcc-$(GCC_BRANCH)_`date "+%Y%m%d"`.tar.lzma
-	cd $(PREFIX) && zip -r -9 $(CURDIR)/$(TARGET_ARCH)_gcc-$(GCC_BRANCH)_`date "+%Y%m%d"`.zip . -x '.*.marker' '*.*.marker' '*.la'
+dist : DISTNAME=$(shell echo $(TARGET_ARCH)_gcc-$(GCC_BRANCH)_`date "+%Y%m%d"`)
+dist : 
+	cd $(PREFIX) && $(TAR) c --exclude '*.marker' --exclude '*.la' * | lzma -czv7 > $(CURDIR)/$(DISTNAME).tar.lzma
+	cd $(PREFIX) && zip -r -9 $(CURDIR)/$(DISTNAME).zip . -x '.*.marker' '*.*.marker' '*.la'
+
+dist-src :
+	$(TAR) c --exclude-vcs $(SRC_DIR) patches makefile | lzma -czv7 > $(CURDIR)/gcc-$(GCC_BRANCH)_`date "+%Y%m%d"`-src.tar.lzma
 
 mostly-clean :
 	if test -e $(PREFIX)/mingw; then junction -d $(PREFIX)/mingw; fi

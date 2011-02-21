@@ -59,10 +59,16 @@ $(BUILDDIR)/gd/.build.marker : $(BUILDDIR)/gd/.config.marker
 gd-reinstall :
 	$(MAKE) common-make TGT=install PKG=gd
 	$(MAKE) gd-install-lic
+	$(MAKE) gd-install-post
 
 gd-install-lic :
 	mkdir -p $(PREFIX)/license/gd
 	cp -a $(SRCDIR)/gd/COPYING $(PREFIX)/license/gd
+
+gd-install-post :
+	sed -e "/^[	 ]*echo / s/-L[^ ']\+//g" \
+	  < $(PREFIX)/bin/gdlib-config > $(PREFIX)/bin/gdlib-config.mod && \
+	mv $(PREFIX)/bin/gdlib-config.mod $(PREFIX)/bin/gdlib-config 
 
 gd-install : $(BUILDDIR)/gd/.install.marker 
 $(BUILDDIR)/gd/.install.marker : $(BUILDDIR)/gd/.build.marker
@@ -72,6 +78,7 @@ $(BUILDDIR)/gd/.install.marker : $(BUILDDIR)/gd/.build.marker
 gd-reinstall-strip : 
 	$(MAKE) common-make TGT=install-strip PKG=gd
 	$(MAKE) gd-install-lic
+	$(MAKE) gd-install-post
 
 gd-install-strip : $(BUILDDIR)/gd/.installstrip.marker 
 $(BUILDDIR)/gd/.installstrip.marker : $(BUILDDIR)/gd/.build.marker

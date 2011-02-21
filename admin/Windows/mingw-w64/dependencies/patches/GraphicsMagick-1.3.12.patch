@@ -1,3 +1,19 @@
+diff --git a/Magick++/bin/GraphicsMagick++-config.in b/Magick++/bin/GraphicsMagick++-config.in
+--- a/Magick++/bin/GraphicsMagick++-config.in
++++ b/Magick++/bin/GraphicsMagick++-config.in
+@@ -21,10 +21,10 @@
+ while test $# -gt 0; do
+   case $1 in
+     --prefix)
+-      echo @PREFIX_DIR@
++      echo 
+       ;;
+     --exec-prefix)
+-      echo @EXEC_PREFIX_DIR@
++      echo 
+       ;;
+     --version)
+       echo @PACKAGE_VERSION@
 diff --git a/configure.ac b/configure.ac
 --- a/configure.ac
 +++ b/configure.ac
@@ -55,6 +71,22 @@ diff --git a/configure.ac b/configure.ac
  AC_SUBST(MAN_DIR)
  
  # Get full paths to source and build directories
+diff --git a/magick/GraphicsMagick-config.in b/magick/GraphicsMagick-config.in
+--- a/magick/GraphicsMagick-config.in
++++ b/magick/GraphicsMagick-config.in
+@@ -21,10 +21,10 @@
+ while test $# -gt 0; do
+   case $1 in
+     --prefix)
+-      echo @PREFIX_DIR@
++      echo 
+       ;;
+     --exec-prefix)
+-      echo @EXEC_PREFIX_DIR@
++      echo 
+       ;;
+     --version)
+       echo @PACKAGE_VERSION@
 diff --git a/magick/blob.c b/magick/blob.c
 --- a/magick/blob.c
 +++ b/magick/blob.c
@@ -113,3 +145,19 @@ diff --git a/magick/blob.c b/magick/blob.c
      }
  
    /*
+diff --git a/wand/GraphicsMagickWand-config.in b/wand/GraphicsMagickWand-config.in
+--- a/wand/GraphicsMagickWand-config.in
++++ b/wand/GraphicsMagickWand-config.in
+@@ -21,10 +21,10 @@
+ while test $# -gt 0; do
+   case $1 in
+     --prefix)
+-      echo @PREFIX_DIR@
++      echo 
+       ;;
+     --exec-prefix)
+-      echo @EXEC_PREFIX_DIR@
++      echo 
+       ;;
+     --version)
+       echo @PACKAGE_VERSION@

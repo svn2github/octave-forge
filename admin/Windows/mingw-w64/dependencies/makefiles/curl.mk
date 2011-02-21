@@ -25,8 +25,10 @@ $(SRCTARDIR)/curl-$(CURL_VER).tar.lzma : $(SRCTARDIR)/.mkdir.marker
 curl-unpack : $(SRCDIR)/curl/.unpack.marker
 $(SRCDIR)/curl/.unpack.marker : \
     $(SRCTARDIR)/curl-$(CURL_VER).tar.lzma \
+    $(PATCHDIR)/curl-$(CURL_VER).patch \
     $(SRCDIR)/curl/.mkdir.marker 
 	$(TAR) -C $(dir $@) --strip-components=1 -x --lzma -f $<
+	cd $(dir $@) && patch -p 1 -u -i $(CURDIR)/$(PATCHDIR)/curl-$(CURL_VER).patch
 	$(TOUCH) $@
 
 curl-configure : $(BUILDDIR)/curl/.config.marker
@@ -51,6 +53,12 @@ $(BUILDDIR)/curl/.build.marker : $(BUILDDIR)/curl/.config.marker
 curl-reinstall :
 	$(MAKE) common-make TGT=install PKG=curl
 	$(MAKE) curl-install-lic
+	$(MAKE) curl-install-post
+
+curl-install-post :
+	sed -e "/echo / s/-L[^' ]\+//g" \
+	    < $(PREFIX)/bin/curl-config > $(PREFIX)/bin/curl-config.mod && \
+	mv $(PREFIX)/bin/curl-config.mod $(PREFIX)/bin/curl-config 
 
 curl-install-lic :
 	mkdir -p $(PREFIX)/license/curl
@@ -64,6 +72,7 @@ $(BUILDDIR)/curl/.install.marker : $(BUILDDIR)/curl/.build.marker
 curl-reinstall-strip : 
 	$(MAKE) common-make TGT=install-strip PKG=curl
 	$(MAKE) curl-install-lic
+	$(MAKE) curl-install-post
 
 curl-install-strip : $(BUILDDIR)/curl/.installstrip.marker 
 $(BUILDDIR)/curl/.installstrip.marker : $(BUILDDIR)/curl/.build.marker
@@ -99,5 +108,5 @@ $(BUILDDIR)/curl/.pkg.marker :
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/curl-$(CURL_VER)-$(BUILD_ARCH)$(ID)-ext.zip bin/curl.exe
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/curl-$(CURL_VER)-$(BUILD_ARCH)$(ID)-dev.zip lib include bin/curl-config
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/curl-$(CURL_VER)-$(BUILD_ARCH)$(ID)-lic.zip license
-	zip -qr9 curl-$(CURL_VER)-src.zip $(SRCTARDIR)/curl-$(CURL_VER).tar.lzma $(MAKEFILEDIR)curl.mk makefile
+	zip -qr9 curl-$(CURL_VER)-src.zip $(SRCTARDIR)/curl-$(CURL_VER).tar.lzma $(MAKEFILEDIR)curl.mk $(PATCHDIR)/curl-$(CURL_VER).patch makefile
 	$(TOUCH) $@

@@ -60,6 +60,15 @@ $(BUILDDIR)/graphicsmagick/.build.marker : $(BUILDDIR)/graphicsmagick/.config.ma
 graphicsmagick-reinstall :
 	$(MAKE) common-make TGT=install PKG=graphicsmagick
 	$(MAKE) graphicsmagick-install-lic
+	$(MAKE) graphicsmagick-install-post
+
+graphicsmagick-install-post :
+	for a in GraphicsMagick-config GraphicsMagickWand-config GraphicsMagick++-config; do \
+	    sed -e "/echo '/ s/-I[^ ']\+//g" \
+		-e "/echo '/ s/-L[^ ']\+//g" \
+		< $(PREFIX)/bin/$$a > $(PREFIX)/bin/$$a.mod && \
+	    mv $(PREFIX)/bin/$$a.mod $(PREFIX)/bin/$$a; \
+	done
 
 graphicsmagick-install-lic :
 	mkdir -p $(PREFIX)/license/graphicsmagick
@@ -75,6 +84,7 @@ $(BUILDDIR)/graphicsmagick/.install.marker : $(BUILDDIR)/graphicsmagick/.build.m
 graphicsmagick-reinstall-strip : 
 	$(MAKE) common-make TGT=install-strip PKG=graphicsmagick
 	$(MAKE) graphicsmagick-install-lic
+	$(MAKE) graphicsmagick-install-post
 
 graphicsmagick-install-strip : $(BUILDDIR)/graphicsmagick/.installstrip.marker 
 $(BUILDDIR)/graphicsmagick/.installstrip.marker : $(BUILDDIR)/graphicsmagick/.build.marker

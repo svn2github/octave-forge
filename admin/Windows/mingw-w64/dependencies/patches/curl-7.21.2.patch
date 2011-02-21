@@ -1,0 +1,28 @@
+diff --git a/curl-config.in b/curl-config.in
+--- a/curl-config.in
++++ b/curl-config.in
+@@ -131,13 +131,13 @@
+        	if test "X@includedir@" = "X/usr/include"; then
+           echo ""
+         else
+-          echo "-I@includedir@"
++          echo ""
+         fi
+        	;;
+ 
+     --libs)
+ 	if test "X@libdir@" != "X/usr/lib" -a "X@libdir@" != "X/usr/lib64"; then
+-	   CURLLIBDIR="-L@libdir@ "
++	   CURLLIBDIR=""
+ 	else
+ 	   CURLLIBDIR=""
+ 	fi
+@@ -149,7 +149,7 @@
+ 	;;
+ 
+     --static-libs)
+-	echo @libdir@/libcurl.@libext@ @LDFLAGS@ @LIBCURL_LIBS@ @LIBS@
++	echo libcurl.@libext@ @LDFLAGS@ @LIBCURL_LIBS@ @LIBS@
+ 	;;
+ 
+     --configure)

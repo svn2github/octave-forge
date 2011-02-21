@@ -1,5 +1,28 @@
 2011-Feb-21  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
+	fix various build issues
+	
+	makefiles/
+	  * curl.mk: remove local build-time paths from configure script
+	  * fltk.mk: ... likewise
+	  * fontconfig.mk: ... likewise
+	  * freetype.mk: ... likewise
+	  * gd.mk: ... likewise
+	  * graphicsmagick.mk: ... likewise
+	  * ncurses.mk: ... likewise
+	  * pcre.mk: ... likewise
+	  
+	patches/
+	  * curl-7.21.2.patch: new file
+	  * freetype-2.3.12.patch: new file
+	  * pcre-8.10.patch: new file
+	  * gd-2.0.26RC1.patch: update
+	  * GraphicsMagick-1.3.12.patch: ... likewise
+	  * ncurses-5.7.patch: ... likewise
+	  * wmf-0.2.8.4.patch: ... likewise
+
+2011-Feb-21  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
 	fix various build & cross-build issues
 	
 	dependencies/: modify svn:ignore property

@@ -32,8 +32,10 @@ $(SRCTARDIR)/freetype-$(FREETYPE_VER).tar.bz2 : $(SRCTARDIR)/.mkdir.marker
 freetype-unpack : $(SRCDIR)/freetype/.unpack.marker
 $(SRCDIR)/freetype/.unpack.marker : \
     $(SRCTARDIR)/freetype-$(FREETYPE_VER).tar.bz2 \
+    $(PATCHDIR)/freetype-$(FREETYPE_VER).patch \
     $(SRCDIR)/freetype/.mkdir.marker 
 	$(TAR) -C $(dir $@) --strip-components=1 -xjf $<
+	cd $(dir $@) && patch -p 1 -u -i $(CURDIR)/$(PATCHDIR)/freetype-$(FREETYPE_VER).patch
 	cd $(dir $@) && ./autogen.sh
 	$(TOUCH) $@
 
@@ -64,11 +66,21 @@ freetype-reinstall :
 #  $prefix/include/freetype2/freetype/config
 # to
 #  $prefix/include/freetype/config
+# and remove all build-time local paths from the config scripts
 freetype-install-post :
 	if test ! -e $(PREFIX)/include/freetype; then mkdir $(PREFIX)/include/freetype; fi
 	mv -t $(PREFIX)/include/freetype $(PREFIX)/include/freetype2/freetype/*
 	rmdir $(PREFIX)/include/freetype2/freetype
 	rmdir $(PREFIX)/include/freetype2
+	sed -e "s/^srcdir=.*/srcdir=/" \
+	    -e "s/^prefix=.*/prefix=/" \
+	    -e "s/^exec_prefix=.*/exec_prefix=/" \
+	    -e "s/^bindir=.*/bindir=/" \
+	    -e "s/^includedir=.*/includedir=/" \
+	    -e "s/^libdir=.*/libdir=/" \
+	    < $(PREFIX)/bin/freetype-config > $(PREFIX)/bin/freetype-config-mod && \
+	mv $(PREFIX)/bin/freetype-config-mod $(PREFIX)/bin/freetype-config
+
 
 freetype-install-lic : 
 	mkdir -p $(PREFIX)/license/freetype
@@ -118,5 +130,5 @@ $(BUILDDIR)/freetype/.pkg.marker :
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/freetype-$(FREETYPE_VER)-$(BUILD_ARCH)$(ID)-bin.zip bin/libfreetype-6.dll
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/freetype-$(FREETYPE_VER)-$(BUILD_ARCH)$(ID)-dev.zip bin/freetype-config include lib
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/freetype-$(FREETYPE_VER)-$(BUILD_ARCH)$(ID)-lic.zip license
-	zip -qr9 freetype-$(FREETYPE_VER)-src.zip $(SRCTARDIR)/freetype-$(FREETYPE_VER).tar.bz2 $(MAKEFILEDIR)freetype.mk makefile
+	zip -qr9 freetype-$(FREETYPE_VER)-src.zip $(SRCTARDIR)/freetype-$(FREETYPE_VER).tar.bz2 $(MAKEFILEDIR)freetype.mk $(PATCHDIR)/freetype-$(FREETYPE_VER).patch makefile
 	$(TOUCH) $@

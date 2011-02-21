@@ -27,8 +27,10 @@ $(SRCTARDIR)/pcre-$(PCRE_VER).tar.bz2 : $(SRCTARDIR)/.mkdir.marker
 pcre-unpack : $(SRCDIR)/pcre/.unpack.marker
 $(SRCDIR)/pcre/.unpack.marker : \
     $(SRCTARDIR)/pcre-$(PCRE_VER).tar.bz2 \
+    $(PATCHDIR)/pcre-$(PCRE_VER).patch \
     $(SRCDIR)/pcre/.mkdir.marker 
 	$(TAR) -C $(dir $@) --strip-components=1 -xjf $<
+	cd $(dir $@) && patch -p 1 -u -i $(CURDIR)/$(PATCHDIR)/pcre-$(PCRE_VER).patch
 	$(TOUCH) $@
 
 pcre-configure : $(BUILDDIR)/pcre/.config.marker
@@ -102,7 +104,7 @@ pcre-pkg : $(BUILDDIR)/pcre/.pkg.marker
 $(BUILDDIR)/pcre/.pkg.marker :
 	$(MAKE) PREFIX=$(PREFIX) pcre-reinstall-strip
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/pcre-$(PCRE_VER)-$(BUILD_ARCH)$(ID)-bin.zip bin/libpcre-0.dll
-	cd $(PREFIX) && zip -qr9 $(CURDIR)/pcre-$(PCRE_VER)-$(BUILD_ARCH)$(ID)-dev.zip include lib bin/pcre-config
+	cd $(PREFIX) && zip -qr9 $(CURDIR)/pcre-$(PCRE_VER)-$(BUILD_ARCH)$(ID)-dev.zip lib bin/pcre-config
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/pcre-$(PCRE_VER)-$(BUILD_ARCH)$(ID)-lic.zip license
-	zip -qr9 pcre-$(PCRE_VER)-src.zip $(SRCTARDIR)/pcre-$(PCRE_VER).tar.bz2 $(MAKEFILEDIR)pcre.mk makefile
+	zip -qr9 pcre-$(PCRE_VER)-src.zip $(SRCTARDIR)/pcre-$(PCRE_VER).tar.bz2 $(MAKEFILEDIR)pcre.mk $(PATCHDIR)/prec-$(PCRE_VER).patch makefile
 	$(TOUCH) $@

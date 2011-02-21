@@ -74,6 +74,18 @@ $(BUILDDIR)/fltk/.build.marker : $(BUILDDIR)/fltk/.config.marker
 fltk-reinstall :
 	$(MAKE) common-make TGT=install PKG=fltk DIRS=src
 	$(MAKE) fltk-install-lic
+	$(MAKE) fltk-post-install
+
+fltk-post-install :
+	sed -e "/^LDFLAGS=\"/ s/-L[^ ]\+//" \
+	    -e "s/^srcdir=.*/srcdir=/" \
+	    -e "s/^prefix=.*/prefix=/" \
+	    -e "s/^exec_prefix=.*/exec_prefix=/" \
+	    -e "s/^bindir=.*/bindir=/" \
+	    -e "s/^includedir=.*/includedir=/" \
+	    -e "s/^libdir=.*/libdir=/" \
+	    < $(PREFIX)/bin/fltk-config > $(PREFIX)/bin/fltk-config-mod && \
+	mv $(PREFIX)/bin/fltk-config-mod $(PREFIX)/bin/fltk-config
 
 fltk-install-lic :
 	mkdir -p $(PREFIX)/license/fltk

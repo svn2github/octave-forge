@@ -49,6 +49,40 @@ diff --git a/configure.ac b/configure.ac
  	fi
  ])
  
+diff --git a/libwmf-config.in b/libwmf-config.in
+--- a/libwmf-config.in
++++ b/libwmf-config.in
+@@ -11,8 +11,8 @@
+     exec_prefix="$prefix"
+   ;;
+   *)
+-    prefix=@prefix@
+-    exec_prefix=@exec_prefix@
++    prefix=
++    exec_prefix=
+   ;;
+ esac
+ 
+@@ -113,16 +113,16 @@
+ if test "$echo_cflags" = "yes"; then
+ 	includes="$wmf_cflags"
+ 	if test "$lib_gd" = "yes"; then
+-		includes="$includes -I@includedir@/libwmf/gd"
++		includes="$includes"
+ 	fi
+ 	if test "$lib_wmf" = "yes"; then
+-		includes="$includes -I@includedir@"
++		includes="$includes"
+ 	fi
+ 	echo $includes
+ fi
+ 
+ if test "$echo_libs" = "yes"; then
+-	libdirs=-L@libdir@
++	libdirs=
+ 	my_wmf_libs=
+ 	for i in $wmf_libs ; do
+ 		if test "x$i" != "x-L@libdir@" ; then
 diff --git a/src/Makefile.am b/src/Makefile.am
 --- a/src/Makefile.am
 +++ b/src/Makefile.am

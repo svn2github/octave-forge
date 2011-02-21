@@ -42,6 +42,7 @@ ncurses-unpack : $(SRCDIR)/ncurses/.unpack.marker
 $(SRCDIR)/ncurses/.unpack.marker : \
     $(SRCTARDIR)/ncurses-$(NCURSES_VER).tar.gz \
     $(PATCHDIR)/ncurses-$(NCURSES_VER).patch \
+    $(addprefix $(SRCTARDIR)/, $(NCURSES_PATCHES) $(NCURSES_ROLLUPPATCH)) \
     $(SRCDIR)/ncurses/.mkdir.marker 
 	$(TAR) -C $(dir $@)  --no-same-permissions --no-same-owner --strip-components=1 -xzf $<
 	chmod 777 -R $(SRCDIR)/ncurses

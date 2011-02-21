@@ -7,7 +7,9 @@ FONTCONFIG_CONFIGURE_ARGS = \
 --enable-shared \
 --enable-static \
 --with-expat=$(PREFIX) \
---with-freetype-config=$(PREFIX)/bin/freetype-config
+--with-freetype-config=$(PREFIX)/bin/freetype-config \
+CPPFLAGS="-I$(PREFIX)/include" \
+LDFLAGS="-L$(PREFIX)/lib"
 
 #  --- FIXME
 #  fontconfig requires native gcc present when building

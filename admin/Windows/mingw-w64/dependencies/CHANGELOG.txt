@@ -1,5 +1,12 @@
 2011-Feb-21  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
+	remove arpack, sed
+	
+	* makefile: remove arpack and sed from "make all", fix distribution 
+	    archives
+
+2011-Feb-21  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
 	fix various build issues
 	
 	makefiles/

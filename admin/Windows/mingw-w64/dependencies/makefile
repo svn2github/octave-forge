@@ -71,8 +71,12 @@ endif
 
 w32_DIST=jpeg zlib tiff png expat freetype fontconfig gd iconv gettext pcre \
 glib pkg-config pixman cairo pango blas lapack qrupdate fftw fftwf suitesparse \
-ncurses readline gmp glpk wmf graphicsmagick fltk regex qhull curl hdf5 arpack \
-less sed texinfo
+ncurses readline gmp glpk wmf graphicsmagick fltk regex qhull curl hdf5 \
+less texinfo
+w64-x86_DIST = jpeg zlib tiff png expat freetype fontconfig gd iconv gettext pcre \
+glib pkg-config pixman cairo pango blas lapack qrupdate fftw fftwf suitesparse \
+ncurses readline gmp glpk wmf graphicsmagick fltk regex qhull curl hdf5 \
+less texinfo
 
 # for each NAME in w32_DIST, w32-tdm_DIST, w64-x86_DIST, or w64-x64_DIST
 # include the corresponding makefile NAME.mk located in MAKEFILEDIR
@@ -131,11 +135,11 @@ $(TARGET_ARCHIVE)-src.zip : SRCPART=*
 
 $(TARGET_ARCHIVE)-dev.zip $(TARGET_ARCHIVE)-bin.zip $(TARGET_ARCHIVE)-src.zip : 
 	for a in $($(ARCH)_DIST); do \
-	    find . -maxdepth 1 -iname "$$a-$(SRCPART)$(TYP).zip"; \
+	    find . -maxdepth 1 -iname "$$a$(SRCPART)$(TYP).zip"; \
 	done | tee $(ARCH)-dist.lst
 	if test -e /tmp/$(ARCH)-$(TYP)-pkg; then rm -rf /tmp/$(ARCH)-$(TYP)-pkg; fi
 	while read line; do \
 	    unzip -oq $$line -d /tmp/$(ARCH)-$(TYP)-pkg; \
 	done < $(ARCH)-dist.lst
 	if test -e $@; then rm $@; fi
-	cd /tmp/$(ARCH)-$(TYP)-pkg && zip -qr9 $(CURDIR)/$@ *
+	cd /tmp/$(ARCH)-$(TYP)-pkg && zip -qr9 $(CURDIR)/$@ * -x '*.la'

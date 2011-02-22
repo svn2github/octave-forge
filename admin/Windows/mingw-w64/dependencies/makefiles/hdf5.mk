@@ -25,7 +25,7 @@ STRIP ?= $(CROSS)strip
 
 hdf5-download : $(SRCTARDIR)/hdf5-$(HDF5_VER).tar.bz2
 $(SRCTARDIR)/hdf5-$(HDF5_VER).tar.bz2 : $(SRCTARDIR)/.mkdir.marker
-	$(WGET) -O $@ http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-$(HDF5_VER).tar.bz2
+	$(WGET) -O $@ http://www.hdfgroup.org/ftp/HDF5/prev-releases/hdf5-$(HDF5_VER)/src/hdf5-$(HDF5_VER).tar.bz2
 
 hdf5-unpack : $(SRCDIR)/hdf5/.unpack.marker
 $(SRCDIR)/hdf5/.unpack.marker : \

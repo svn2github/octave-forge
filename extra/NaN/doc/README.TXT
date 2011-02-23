@@ -1,6 +1,6 @@
 NaN-Tb: A statistics toolbox 
 ------------------------------------------------------------
-Copyright (C) 2000-2005,2009,2010 Alois Schloegl <a.schloegl@ieee.org>
+Copyright (C) 2000-2005,2009,2010,2011 Alois Schloegl <alois.schloegl@gmail.com>
 
 
 FEATURES of the NaN-tb:
@@ -31,9 +31,6 @@ level 1: basic functions (not derived)
 			Round-off errors avoided by using internally extended accuracy
 	DECOVM		decomposes the extended covarianced matrix into mean and cov 
 	XCOVF		cross-correlation function
-	NANFILTER	filter function
-	CONVSKIPNAN     convolution
-	CONV2SKIPNAN (CONV2NAN)   2-dimensional convolution
 	FLAG_NANS_OCCURED	returns 0 if no NaN's appeared in the input data 
 			of the last call to one of the following functions, and 1 otherwise:  
 			sumskipnan, covm, center, cor, coefficient of variation, corrcoef, geomean, harmmean, 
@@ -47,6 +44,13 @@ level 1: basic functions (not derived)
 	STR2ARRAY	convert string to array - useful to extract numeric data from 
 			delimiter files
 	XPTOPEN		read and write SAS Transport Format (XPT); reads ARFF and STATA files
+
+		The following functions are experimental, not all effects of missing values are fully understood. 
+		E.g. Missing values can cause aliasing, also effects on bandpass und highpass filters need to be investigated. 
+	NANCONV         convolution
+	NANCONV2        2-dimensional convolution
+	NANFILTER	filter function
+	NANFFT		Fourier transform
 
 level 2a: derived functions
 	MEAN	 	mean (options: arithmetic, geometric, harmonic)
@@ -202,6 +206,14 @@ In Stats-tb V2.2(R11) TINV has also the same problem.
 For these reasons, the NaN-tb is a bug fix. Furthermore, the check of the input 
 arguments is implemented simpler. Overall, the code becomes cleaner and leaner. 
 
+14) NANCONV, NANCONV2, NANFFT, NANFILTER, NANFILTER1UC
+are signal processing functions for graceful handling of data with
+missing values. These functions are very experimental, because the behavior in 
+case of data with missing values is not fully investigated. 
+E.g. missing values can cause aliasing, and also the behavior of bandpass and highpass
+filters is not sufficiently investigated. Therefore, these functions should be
+used with care. 
+
 
 Q: WHY SKIPPING NaN's?:
 ------------------------
@@ -260,22 +272,13 @@ This checks whether the installation was successful.
 d) Compile mex files:  
   This is useful to improve speed, and is required if you used weighted samples. 
   Check if precompiled binaries are provided. If your platform is not supported, 
-  compile the C-Mex-function SUMSKIPNAN_MEX.CPP using
-    mex sumskipnan_mex.cpp
-    mex covm_mex.cpp
-    mex histo_mex.cpp
-
+  compile the C-Mex-functions using "make". 
+	
   Run NANINSTTEST again to check the stability of the compiled SUMSKIPNAN.  
 
-e) [OPTIONAL]
-   In case you want to use some other SVM classifiers (besides libSVM and LibLinear), 
-   you need to install additional toolboxes: 
-     OSU-SVM: https://sourceforge.net/projects/svm/     
-     simpleSVM: https://sourceforge.net/projects/simplesvm/
-
 	$Id$
-	Copyright (C) 2000-2005,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
-	WWW: http://biosig-consulting.com/matlab/NaN/
+	Copyright (C) 2000-2005,2009,2010,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
+        http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 
 LICENSE:

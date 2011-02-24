@@ -31,8 +31,6 @@
 ## off, and @code{hold} with no arguments toggles the current hold state.
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command hold
-
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Created: 25.7.2003
 

@@ -19,7 +19,6 @@
 ## Manual for test triangular matrix user type.
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command triangular
 function retval = triangular ()
   doc ("triangular");
 endfunction

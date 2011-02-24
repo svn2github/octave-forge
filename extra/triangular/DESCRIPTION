@@ -5,7 +5,7 @@ Author: David Bateman
 Maintainer: David Bateman
 Title: Triangular.
 Description: Simple example of a user type implementing a simple matrix type for triangular matrices.
-Depends: octave (> 3.1.54)
+Depends: octave (>= 3.2)
 Autoload: no
 License: GPL version 2 or later
 Url: http://octave.sf.net

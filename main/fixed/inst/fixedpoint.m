@@ -57,8 +57,6 @@
 ## use of this toolbox.
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command fixedpoint
-
 function retval = fixedpoint(typ, tests)
 
   if (nargin < 1)

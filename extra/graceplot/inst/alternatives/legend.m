@@ -83,7 +83,6 @@
 ## 2005-01-11 Teemu Ikonen
 ##   * modify to support Grace
 
-## PKG_ADD mark_as_command legend
 function legend (varargin)
 
   args = nargin();

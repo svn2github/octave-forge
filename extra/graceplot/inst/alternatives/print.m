@@ -54,15 +54,7 @@
 ##
 ## The filename and options can be given in any order.
 ##
-## If you are using Octave 2.1.x or above, mark_as_command("print") 
-## will change  print from a function to a command, so instead of typing
-##    print("-depsc", "out.ps")
-## you can type
-##    print -depsc out.ps
-##
-## See also: orient, mark_as_command
-
-## PKG_ADD: mark_as_command print
+## See also: orient
 
 ##   -solid | -dashed
 ##      Solid or dashed lines.

@@ -108,8 +108,6 @@ Functions
  mex
  mexext
  source
- mark_as_command unmark_command
- mark_as_rawcommand unmark_rawcommand
  iscommand israwcommand
 Load path
  path 

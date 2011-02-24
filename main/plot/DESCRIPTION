@@ -6,7 +6,7 @@ Maintainer: The Octave Community
 Title: Plotting.
 Description: Additional ploting tools for Octave.
 Categories: Plotting
-Depends: octave (>= 2.9.7)
+Depends: octave (>= 3.2)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

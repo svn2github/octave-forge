@@ -64,7 +64,6 @@
 ## use of this toolbox.
 ## @end deftypefn
 
-## PKG_ADD: mark_as_command comms
 function retval = comms(typ, tests)
 
   if (nargin < 1)

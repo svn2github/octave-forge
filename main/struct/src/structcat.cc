@@ -2,7 +2,7 @@
 
 Copyright (C) 2009 John W. Eaton
 Copyright (C) 2009 Jaroslav Hajek
-Copyright (C) 2010 Olaf Till
+Copyright (C) 2010, 2011 Olaf Till
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -136,13 +136,13 @@ Return the concatenation of N-d structures @var{struct1}, @dots{}, @var{structn}
 	  // be some additional setup needed, and so this should be avoided.
 
 	  octave_value tmp = args (1);
-	  tmp = tmp.resize (dim_vector (0,0)).resize (dv);
+	  tmp = tmp.resize (dim_vector (0, 0)).resize (dv);
 
 	  if (error_state)
 	    return retval;
 
 	  int dv_len = dv.length ();
-	  Array<octave_idx_type> ra_idx (dv_len, 0);
+	  Array<octave_idx_type> ra_idx (dim_vector (dv_len, 1), 0);
 
 	  for (int j = 1; j < n_args; j++)
 	    {

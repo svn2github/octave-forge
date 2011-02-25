@@ -538,8 +538,9 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   hook.eq_idx = false (size (vc, 1) + n_gencstr, 1);
   hook.eq_idx(eq_idx) = true; % logical index of equality constraints in
 				% all constraints
-  hook.bounds = bounds; % bounds, subset of linear inequality
+  hook.lbound = bounds(:, 1); % bounds, subset of linear inequality
 				% constraints in mc and vc
+  hook.ubound = bounds(:, 2);
 
   %% passed values of constraints for initial parameters
   hook.pin_cstr = pin_cstr;
@@ -783,7 +784,7 @@ function fval = scalar_ifelse (cond, tval, fval)
 %!  %% other configuration (default values):
 %!  tolerance = .0001;
 %!  max_iterations = 20;
-%!  weights = ones (5, 1);
+%!  weights = ones (1, 5);
 %!  dp = [.001; .001]; % bidirectional numeric gradient stepsize
 %!  dFdp = 'dfdp'; % function for gradient (numerical)
 %!

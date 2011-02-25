@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010 Olaf Till
+Copyright (C) 2010, 2011 Olaf Till
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -36,16 +36,16 @@ do_partarray (const NDA& a, const std::string& fname,
 
   int maxdims = ndims > nidc ? ndims : nidc;
 
-  Array<octave_idx_type> alldims (maxdims, 1);
+  Array<octave_idx_type> alldims (dim_vector (maxdims, 1));
   for (int i = 0; i < maxdims; alldims(i) = i < ndims ? dv(i) : 1, i++);
 
   int nc = 1;
-  Array<int> nidx (maxdims, 1);
+  Array<int> nidx (dim_vector (maxdims, 1));
   // Octave-3.2.4 reports "missing symbol" with Array<Array< > >,
   // though 3.3.54+ does not
   Array<octave_idx_type> bidc [maxdims], eidc [maxdims];
   //
-  Array<octave_idx_type> step (maxdims, 1);
+  Array<octave_idx_type> step (dim_vector (maxdims, 1));
   step(0) = 1;
   for (int i = 0; i < maxdims; i++)
     {
@@ -53,10 +53,8 @@ do_partarray (const NDA& a, const std::string& fname,
       octave_value arg;
       if (i >= nidc || (arg = args(i + 1)).is_empty ())
 	{
-	  Array<octave_idx_type> bidx (1, 1);
-	  Array<octave_idx_type> eidx (1, 1);
-	  bidx(0) = 1;
-	  eidx(0) = alldims(i);
+	  Array<octave_idx_type> bidx (dim_vector (1, 1), 1);
+	  Array<octave_idx_type> eidx (dim_vector (1, 1), alldims(i));
 	  bidc[i] = bidx;
 	  eidc[i] = eidx;
 	  cnidx = 1;
@@ -100,13 +98,12 @@ do_partarray (const NDA& a, const std::string& fname,
   // one-based, since given by user
 
   // go through all combinations of indices into user indices
-  Array<int> cidx (maxdims, 1); // current combination
-  cidx.fill (0);
+  Array<int> cidx (dim_vector (maxdims, 1), 0); // current combination
   for (int i = 0; i < nc; i++)
     {
       // set cursor to start of subarray and calculate some lengths
       octave_idx_type n = 1, cursor = 0;
-      Array<octave_idx_type> lengths (maxdims, 1);
+      Array<octave_idx_type> lengths (dim_vector (maxdims, 1));
       for (int j = 0; j < maxdims; j++)
 	{
 	  octave_idx_type begin = bidc[j](cidx(j));
@@ -116,10 +113,8 @@ do_partarray (const NDA& a, const std::string& fname,
 	  n *= length;
 	  cursor += (begin - 1) * step(j);
 	}
-      Array<octave_idx_type> starts (maxdims - 1, 1);
-      starts.fill (cursor);
-      Array<octave_idx_type> idx_cursors (maxdims, 1);
-      idx_cursors.fill (0);
+      Array<octave_idx_type> starts (dim_vector (maxdims - 1, 1), cursor);
+      Array<octave_idx_type> idx_cursors (dim_vector (maxdims, 1), 0);
       // copy the subarray
       dim_vector subdv;
       subdv.resize (maxdims);

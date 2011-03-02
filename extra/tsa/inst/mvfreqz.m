@@ -67,6 +67,7 @@ function [S,h,PDC,COH,DTF,DC,pCOH,dDTF,ffDTF, pCOH2, PDCF, coh,GGC,Af,GPDC,GGC2]
 %       (Eds.) C. Neuper and W. Klimesch, 
 %       Progress in Brain Research: Event-related Dynamics of Brain Oscillations. 
 %       Analysis of dynamics of brain oscillations: methodological advances. Elsevier. 
+%       Progress in Brain Research 159, 2006, p. 135 - 147
 % [7] Bressler S.L., Richter C.G., Chen Y., Ding M. (2007)
 %	Cortical fuctional network organization from autoregressive modelling of loal field potential oscillations.
 %	Statistics in Medicine, doi: 10.1002/sim.2935 

@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{filetype}] = odsfinfo (@var{filename} [, @var{reqintf}])
 ## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}] = odsfinfo (@var{filename} [, @var{reqintf}])
-## Query an OpenOffice_org spreadsheet file @var{filename} (with .ods
+## Query an OpenOffice_org Calc spreadsheet file @var{filename} (with ods
 ## suffix) for some info about its contents.
 ##
 ## If @var{filename} is a recognizable OpenOffice.org spreadsheet file,
@@ -70,6 +70,7 @@
 ## 2010-03-20 "Beautified" output (for OTK ), used range now in more tabular form
 ## 2010-05-23 Updated jOpenDocument support (can also get occupied data range now)
 ## 2010-05-31 Added remark about delays when determining occupied data range
+## 2011-03-04 Minor textual header change (deleted a ".")
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010 Philip
+## Copyright (C) 2009,2010,2011 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## Compute spreadsheet style cell address from row & column index (both 1-based).
+## Compute spreadsheet style cell address from 1-based row & column index.
 ## 
 ## Max column index: 18278 (max ODS: 1024, OOXML: 16384).
 ## Max row index 1048576 (max ODS 1.2: 65536; OOXML / ODS 1.2-extended: 1048576).
@@ -26,7 +26,7 @@
 ## 2010-03-17 Simplified argument list, only row + column needed
 ## 2010-09-27 Made error message more comprehensible
 ## 2010-10-11 Added check for row range
-## 2011-03-01 Textual fixes in header
+## 2011-03-04 Textual fixes in header
 
 function [ celladdress ] = calccelladdress (row, column)
 

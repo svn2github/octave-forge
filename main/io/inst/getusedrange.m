@@ -16,9 +16,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [ @var{toprow#}, @var{bottomrow#}, @var{leftcol#}, @var{rightcol#} ] = getusedrange (@var{spptr}, @var{shindex#})
-## Find occupied data range in worksheet @var{shindex#} in a spreadsheet
-## pointed to in struct @var{spptr} (either MS-Excel or
-## OpenOffice Calc).
+## Find occupied data range in a specific worksheet in a spreadsheet
+## (either MS-Excel or OOo Calc).
 ##
 ## @var{shindex#} must be numeric and is 1-based. @var{spptr} can either
 ## refer to an MS-Excel spreadsheet (spptr returned by xlsopen) or an
@@ -61,6 +60,7 @@
 ## 2010-08-27 Added checks for input arguments
 ##      "     Indentation changed from tab to doublespace
 ## 2010-10-07 Added COM support (at last!)
+## 2010-03-04 Textual adaptations in header
 ##
 ## Last subfunc update: 2010-12-01 (COM)
 

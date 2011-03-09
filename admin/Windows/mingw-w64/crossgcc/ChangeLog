@@ -1,3 +1,7 @@
+2011-Mar-09  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	*  build/makefile (pthreads-download): fix double cvs on command line
+
 2011-Feb-21  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	*  build/makefile (gcc-post-install): new target

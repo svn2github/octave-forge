@@ -467,7 +467,7 @@ gcc-libgcc-install
 # --------------------------------------
 pthreads-download : $(SRC_DIR)/pthreads/.co.marker
 $(SRC_DIR)/pthreads/.co.marker : $(SRC_DIR)/pthreads/.mkdir.marker
-	cd ${SRC_DIR} && $(CVS) cvs -z9 -d $(PTHREADS_CVS_PULL) checkout -D ${PTHREADS_CVS_DATE} pthreads
+	cd ${SRC_DIR} && $(CVS) -d $(PTHREADS_CVS_PULL) checkout -D ${PTHREADS_CVS_DATE} pthreads
 	@touch $@
 
 pthreads-update : $(SRC_DIR)/pthreads/.update.marker

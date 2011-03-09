@@ -1,0 +1,7 @@
+2011-Mar-09  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	add minimal installer for msys 
+	
+	msysinstaller\
+	* install.cmd: new file
+	* bin\README.txt: new file

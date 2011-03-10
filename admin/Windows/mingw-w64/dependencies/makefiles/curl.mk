@@ -108,5 +108,5 @@ $(BUILDDIR)/curl/.pkg.marker :
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/curl-$(CURL_VER)-$(BUILD_ARCH)$(ID)-ext.zip bin/curl.exe
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/curl-$(CURL_VER)-$(BUILD_ARCH)$(ID)-dev.zip lib include bin/curl-config
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/curl-$(CURL_VER)-$(BUILD_ARCH)$(ID)-lic.zip license
-	zip -qr9 curl-$(CURL_VER)-src.zip $(SRCTARDIR)/curl-$(CURL_VER).tar.lzma $(MAKEFILEDIR)curl.mk $(PATCHDIR)/curl-$(CURL_VER).patch makefile
+	zip -qr9 curl-$(CURL_VER)-src.zip $(SRCTARDIR)/curl-$(CURL_VER).tar.lzma $(MAKEFILEDIR)curl.mk $(PATCHDIR)/curl-$(CURL_VER).patch makefile libtool_remove_versuffix.sh
 	$(TOUCH) $@

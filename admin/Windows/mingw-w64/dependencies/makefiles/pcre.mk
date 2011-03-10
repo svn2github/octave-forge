@@ -104,7 +104,7 @@ pcre-pkg : $(BUILDDIR)/pcre/.pkg.marker
 $(BUILDDIR)/pcre/.pkg.marker :
 	$(MAKE) PREFIX=$(PREFIX) pcre-reinstall-strip
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/pcre-$(PCRE_VER)-$(BUILD_ARCH)$(ID)-bin.zip bin/libpcre-0.dll
-	cd $(PREFIX) && zip -qr9 $(CURDIR)/pcre-$(PCRE_VER)-$(BUILD_ARCH)$(ID)-dev.zip lib bin/pcre-config
+	cd $(PREFIX) && zip -qr9 $(CURDIR)/pcre-$(PCRE_VER)-$(BUILD_ARCH)$(ID)-dev.zip lib include bin/pcre-config
 	cd $(PREFIX) && zip -qr9 $(CURDIR)/pcre-$(PCRE_VER)-$(BUILD_ARCH)$(ID)-lic.zip license
 	zip -qr9 pcre-$(PCRE_VER)-src.zip $(SRCTARDIR)/pcre-$(PCRE_VER).tar.bz2 $(MAKEFILEDIR)pcre.mk $(PATCHDIR)/prec-$(PCRE_VER).patch makefile
 	$(TOUCH) $@

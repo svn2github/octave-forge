@@ -66,7 +66,7 @@ gd-install-lic :
 	cp -a $(SRCDIR)/gd/COPYING $(PREFIX)/license/gd
 
 gd-install-post :
-	sed -e "/^[	 ]*echo / s/-L[^ ']\+//g" \
+	sed -e "/^[	 ]*echo / s/-L[^ '\"]\+//g" \
 	  < $(PREFIX)/bin/gdlib-config > $(PREFIX)/bin/gdlib-config.mod && \
 	mv $(PREFIX)/bin/gdlib-config.mod $(PREFIX)/bin/gdlib-config 
 

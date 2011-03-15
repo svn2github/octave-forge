@@ -19,11 +19,11 @@ GNUMEX  = $(HOME)/bin/gnumex
 
 CC  	= gcc
 CXX 	= g++
-CFLAGS 	= -Wall -Wconversion -O3 -fPIC
+CFLAGS 	= -fopenmp -Wall -Wconversion -O3 -fPIC 
 OCTMEX	= mkoctfile --mex
 RM      = rm
 
-MEX_OPTION  = CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
+MEX_OPTION  += CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
 MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
 PROGS = histo_mex.mex covm_mex.mex kth_element.mex sumskipnan_mex.mex str2array.mex train.mex svmtrain_mex.mex svmpredict_mex.mex xptopen.mex 
@@ -75,6 +75,8 @@ linear.o: linear.cpp linear.h
 tron.o: tron.cpp tron.h
 	$(CXX) $(CFLAGS) -c tron.cpp
 
+
+clean: ; -$(RM) *.o core octave-core *.oct *~ *.mex*
 
 #########################################################
 #	MATLAB/WIN32

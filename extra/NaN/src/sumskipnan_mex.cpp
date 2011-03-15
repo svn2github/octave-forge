@@ -1,3 +1,4 @@
+
 //-------------------------------------------------------------------
 //   C-MEX implementation of SUMSKIPNAN - this function is part of the NaN-toolbox. 
 //
@@ -172,7 +173,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	POutput[0] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
 	LOutputSum = mxGetPr(POutput[0]);
 	if (D1!=1 && D2>0) LongOutputSum = (long double*) mxCalloc(D1*D3,sizeof(long double));
-
     	if (POutputCount >= 2) {
 		POutput[1] = mxCreateNumericArray(ND2, SZ2, TYP, mxREAL);
 		LOutputCount = mxGetPr(POutput[1]);
@@ -185,26 +185,35 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	}
 	mxFree(SZ2);
 
+
 	if (D1*D2*D3<1) // zero size array
 		; 	// do nothing 
-	else if ((D1==1) && (ACC_LEVEL<1)) {
+	else 
+ 
+   #pragma omp parallel // private(ix0,ix1,ix2,j,t,x)
+   {
+	
+	if ((D1==1) && (ACC_LEVEL<1)) {
 		// double accuray, naive summation, error = N*2^-52 
 		switch (POutputCount) {
 		case 1: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				double count;
 				__sumskipnan2wr__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
-			} 
+			}
 			break;
 		case 2: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				__sumskipnan2wr__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
-			} 
+			}
 			break;
 		case 3: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				__sumskipnan3wr__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
-			} 
+			}
 			break;
 		}
 	}
@@ -212,20 +221,23 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		// extended accuray, naive summation, error = N*2^-64 
 		switch (POutputCount) {
 		case 1: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				double count;
 				__sumskipnan2w__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
-			} 
+			}
 			break;
 		case 2: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				__sumskipnan2w__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
-			} 
+			}
 			break;
 		case 3: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				__sumskipnan3w__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
-			} 
+			}
 			break;
 		}
 	}
@@ -233,20 +245,23 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		// ACC_LEVEL==3: extended accuracy and Kahan Summation, error = 2^-64
 		switch (POutputCount) {
 		case 1: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				double count;
 				__sumskipnan2we__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
-			} 
+			}
 			break;
 		case 2: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				__sumskipnan2we__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
-			} 
+			}
 			break;
 		case 3: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				__sumskipnan3we__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
-			} 
+			}
 			break;
 		}
 	}
@@ -254,26 +269,29 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		// ACC_LEVEL==2: double accuracy and Kahan Summation, error = 2^-52
 		switch (POutputCount) {
 		case 1: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				double count;
 				__sumskipnan2wer__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
-			} 
+			}
 			break;
 		case 2: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				__sumskipnan2wer__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
-			} 
+			}
 			break;
 		case 3: 
+			#pragma omp for schedule(dynamic) nowait
 			for (l = 0; l<D3; l++) {
 				__sumskipnan3wer__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
-			} 
+			}
 			break;
 		}
 	}
 	else if (POutputCount <= 1) {
 		// OUTER LOOP: along dimensions > DIM
-		for (l = 0; l<D3; l++) {
+ 		for (l = 0; l<D3; l++) {
 			ix0 = l*D1; 	// index for output
 			ix1 = ix0*D2;	// index for input 
 			for (j=0; j<D2; j++) {
@@ -406,6 +424,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			}
                	}		
 	}
+
+    } // end pragma omp parallel
+
 	if (LongOutputSum) mxFree(LongOutputSum);
 	if (LongOutputCount) mxFree(LongOutputCount);
 	if (LongOutputSum2) mxFree(LongOutputSum2);
@@ -452,7 +473,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	}
 #endif
 }
-
 
 #define stride 1 
 inline int __sumskipnan2w__(double *data, size_t Ni, double *s, double *No, char *flag_anyISNAN, double *W)

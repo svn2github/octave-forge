@@ -51,13 +51,13 @@
 
 void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const mxArray *PInputs[]) 
 {
-    	double 		*X0,*Y0=NULL,*X,*Y,*W=NULL;
-    	double	 	*CC,cc,nw;
-    	double 		*NN=NULL;
+    	double 		*X0=NULL, *Y0=NULL, *W=NULL;
+    	double	 	*CC;
+    	double 		*NN = NULL;
 
-    	size_t		rX,cX,rY,cY,nW = 0;
-    	size_t    	i,j,k,nn; 
-	char	 	flag_isNaN = 0, flag_speed=0;
+    	size_t		rX,cX,rY,cY;
+    	size_t    	i; 
+	char	 	flag_isNaN = 0;
         int             ACC_LEVEL;
 
 	/*********** check input arguments *****************/
@@ -106,7 +106,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
     	// get weight vector for weighted sumskipnan 
        	if  (PInputCount > 3)	{
 		// get 4th argument
-		nW = mxGetNumberOfElements(PInputs[3]);		
+		size_t nW = mxGetNumberOfElements(PInputs[3]);		
 		if (!nW) 
 			; 
 		else if (nW == rX) 	
@@ -207,6 +207,9 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	}
 	
 #else
+
+   #pragma omp parallel 
+   {
 #ifdef __GNUC__
    if (ACC_LEVEL == 0) 
 #endif
@@ -217,12 +220,14 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if ( (X0 != Y0) || (cX != cY) )
 		/******** X!=Y, output is not symetric *******/	
 	    if (W) /* weighted version */
-	    for (i=0; i<cX; i++)
-	    for (j=0; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
-		cc=0.0;
-		nw=0.0;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		double *X = X0 + (i%cX) * rX;
+		double *Y = Y0 + (i/cX) * rY;
+		double cc = 0.0;
+		double nw = 0.0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
 			if (isnan(z)) {
@@ -234,17 +239,19 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			cc += z*W[k];
 			nw += W[k];
 		}	
-		CC[i+j*cX] = cc; 
+		CC[i] = cc; 
 		if (NN != NULL) 
-			NN[i+j*cX] = nw; 
+			NN[i] = nw; 
 	    }
 	    else /* no weights, all weights are 1 */
-  	    for (i=0; i<cX; i++)
-	    for (j=0; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
-		cc=0.0;
-		nn=0;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		double *X = X0 + (i%cX) * rX;
+		double *Y = Y0 + (i/cX) * rY;
+		double cc = 0.0;
+		size_t nn = 0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
 			if (isnan(z)) {
@@ -256,19 +263,24 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			cc += z;
 			nn++;
 		}	
-		CC[i+j*cX] = cc; 
+		CC[i] = cc; 
 		if (NN != NULL) 
-			NN[i+j*cX] = (double)nn; 
+			NN[i] = (double)nn; 
 	    }
 	else // if (X0==Y0) && (cX==cY)
 		/******** X==Y, output is symetric *******/	
 	    if (W) /* weighted version */
-	    for (i=0; i<cX; i++)
-	    for (j=i; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
-		cc=0.0;
-		nw=0.0;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		size_t ii = i%cX;
+		size_t jj = i/cX;
+	        if (ii < jj) continue;     
+		double *X = X0 + ii * rX;
+		double *Y = Y0 + jj * rY;
+		double cc = 0.0;
+		double nw = 0.0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
 			if (isnan(z)) {
@@ -279,21 +291,27 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			}
 			cc += z*W[k];
 			nw += W[k];
-		}	
-		CC[i+j*cX] = cc; 
-		CC[j+i*cX] = cc; 
+		}
+		size_t j = jj + ii*cX;
+		CC[i] = cc; 
+		CC[j] = cc; 
 		if (NN != NULL) {
-			NN[i+j*cX] = nw; 
-			NN[j+i*cX] = nw; 
-		}	
+			NN[i] = nw; 
+			NN[j] = nw; 
+		}
 	    }
 	    else /* no weights, all weights are 1 */
-	    for (i=0; i<cX; i++)
-	    for (j=i; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
-		cc=0.0;
-		nn=0;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		size_t ii = i%cX;
+		size_t jj = i/cX;
+	        if (ii < jj) continue;     
+		double *X = X0 + ii * rX;
+		double *Y = Y0 + jj * rY;
+		double cc = 0.0;
+		size_t nn = 0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 			double z = X[k]*Y[k];
 			if (isnan(z)) {
@@ -305,11 +323,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			cc += z;
 			nn++;
 		}	
-		CC[i+j*cX] = cc; 
-		CC[j+i*cX] = cc; 
+		size_t j = jj + ii*cX;
+		CC[i] = cc; 
+		CC[j] = cc; 
 		if (NN != NULL) {
-			NN[i+j*cX] = (double)nn; 
-			NN[j+i*cX] = (double)nn; 
+			NN[i] = (double)nn; 
+			NN[j] = (double)nn; 
 		}	
 	    }
 
@@ -324,12 +343,14 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if ( (X0 != Y0) || (cX != cY) )
 		/******** X!=Y, output is not symetric *******/	
 	    if (W) /* weighted version */
-	    for (i=0; i<cX; i++)
-	    for (j=0; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		double *X = X0 + (i%cX) * rX;
+		double *Y = Y0 + (i/cX) * rY;
 		long double cc=0.0;
 		long double nn=0.0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 			long double z = ((long double)X[k])*Y[k];
 			if (isnan(z)) {
@@ -341,17 +362,19 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			cc += z*W[k];
 			nn += W[k];
 		}	
-		CC[i+j*cX] = cc; 
+		CC[i] = cc; 
 		if (NN != NULL) 
-			NN[i+j*cX] = nn; 
+			NN[i] = nn; 
 	    }
 	    else /* no weights, all weights are 1 */
-  	    for (i=0; i<cX; i++)
-	    for (j=0; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		double *X = X0 + (i%cX) * rX;
+		double *Y = Y0 + (i/cX) * rY;
 		long double cc=0.0;
 		size_t nn=0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 			long double z = ((long double)X[k])*Y[k];
 			if (isnan(z)) {
@@ -363,19 +386,24 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			cc += z;
 			nn++;
 		}	
-		CC[i+j*cX] = cc; 
+		CC[i] = cc; 
 		if (NN != NULL) 
-			NN[i+j*cX] = (double)nn; 
+			NN[i] = (double)nn; 
 	    }
 	else // if (X0==Y0) && (cX==cY)
 		/******** X==Y, output is symetric *******/	
 	    if (W) /* weighted version */
-	    for (i=0; i<cX; i++)
-	    for (j=i; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		size_t ii = i%cX;
+		size_t jj = i/cX;
+	        if (ii < jj) continue;     
+		double *X = X0 + ii * rX;
+		double *Y = Y0 + jj * rY;
 		long double cc=0.0;
 		long double nn=0.0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 			long double z = ((long double)X[k])*Y[k];
 			if (isnan(z)) {
@@ -387,20 +415,26 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			cc += z*W[k];
 			nn += W[k];
 		}	
-		CC[i+j*cX] = cc; 
-		CC[j+i*cX] = cc; 
+		size_t j = jj + ii*cX;
+		CC[i] = cc; 
+		CC[j] = cc; 
 		if (NN != NULL) {
-			NN[i+j*cX] = nn; 
-			NN[j+i*cX] = nn; 
+			NN[i] = nn; 
+			NN[j] = nn; 
 		}	
 	    }
 	    else /* no weights, all weights are 1 */
-	    for (i=0; i<cX; i++)
-	    for (j=i; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		size_t ii = i%cX;
+		size_t jj = i/cX;
+	        if (ii < jj) continue;     
+		double *X = X0 + ii * rX;
+		double *Y = Y0 + jj * rY;
 		long double cc=0.0;
 		size_t nn=0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 			long double z = ((long double)X[k])*Y[k];
 			if (isnan(z)) {
@@ -412,11 +446,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			cc += z;
 			nn++;
 		}	
-		CC[i+j*cX] = cc; 
-		CC[j+i*cX] = cc; 
+		size_t j = jj + ii*cX;
+		CC[i] = cc; 
+		CC[j] = cc; 
 		if (NN != NULL) {
-			NN[i+j*cX] = (double)nn; 
-			NN[j+i*cX] = (double)nn; 
+			NN[i] = (double)nn; 
+			NN[j] = (double)nn; 
 		}	
 	    }
 
@@ -434,14 +469,16 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if ( (X0 != Y0) || (cX != cY) )
 		/******** X!=Y, output is not symetric *******/	
 	    if (W) /* weighted version */
-	    for (i=0; i<cX; i++)
-	    for (j=0; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		double *X = X0 + (i%cX) * rX;
+		double *Y = Y0 + (i/cX) * rY;
 		long double cc=0.0;
 		long double nn=0.0;
 		long double rc=0.0;
 		long double rn=0.0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 		        long double t,y; 
 			long double z = ((long double)X[k])*Y[k];
@@ -463,18 +500,20 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			rn= (t-nn)-y;
 			nn= t; 
 		}	
-		CC[i+j*cX] = cc; 
+		CC[i] = cc; 
 		if (NN != NULL) 
-			NN[i+j*cX] = nn; 
+			NN[i] = nn; 
 	    }
 	    else /* no weights, all weights are 1 */
-  	    for (i=0; i<cX; i++)
-	    for (j=0; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		double *X = X0 + (i%cX) * rX;
+		double *Y = Y0 + (i/cX) * rY;
 		long double cc=0.0;
 		long double rc=0.0;
 		size_t nn=0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 		        long double t,y; 
 			long double z = ((long double)X[k])*Y[k];
@@ -492,21 +531,26 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 			nn++;
 		}	
-		CC[i+j*cX] = cc; 
+		CC[i] = cc; 
 		if (NN != NULL) 
-			NN[i+j*cX] = (double)nn; 
+			NN[i] = (double)nn; 
 	    }
 	else // if (X0==Y0) && (cX==cY)
 		/******** X==Y, output is symetric *******/	
 	    if (W) /* weighted version */
-	    for (i=0; i<cX; i++)
-	    for (j=i; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		size_t ii = i%cX;
+		size_t jj = i/cX;
+	        if (ii < jj) continue;     
+		double *X = X0 + ii * rX;
+		double *Y = Y0 + jj * rY;
 		long double cc=0.0;
 		long double nn=0.0;
 		long double rc=0.0;
 		long double rn=0.0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 		        long double t,y; 
 			long double z = ((long double)X[k])*Y[k];
@@ -528,21 +572,27 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			rn= (t-nn)-y;
 			nn= t; 
 		}	
-		CC[i+j*cX] = cc; 
-		CC[j+i*cX] = cc; 
+		size_t j = jj + ii*cX;
+		CC[i] = cc; 
+		CC[j] = cc; 
 		if (NN != NULL) {
-			NN[i+j*cX] = nn; 
-			NN[j+i*cX] = nn; 
+			NN[i] = nn; 
+			NN[j] = nn; 
 		}	
 	    }
 	    else /* no weights, all weights are 1 */
-	    for (i=0; i<cX; i++)
-	    for (j=i; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		size_t ii = i%cX;
+		size_t jj = i/cX;
+	        if (ii < jj) continue;     
+		double *X = X0 + ii * rX;
+		double *Y = Y0 + jj * rY;
 		long double cc=0.0;
 		long double rc=0.0;
 		size_t nn=0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 		        long double t,y; 
 			long double z = ((long double)X[k])*Y[k];
@@ -560,11 +610,12 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 			nn++;
 		}	
-		CC[i+j*cX] = cc; 
-		CC[j+i*cX] = cc; 
+		size_t j = jj + ii*cX;
+		CC[i] = cc; 
+		CC[j] = cc; 
 		if (NN != NULL) {
-			NN[i+j*cX] = (double)nn; 
-			NN[j+i*cX] = (double)nn; 
+			NN[i] = (double)nn; 
+			NN[j] = (double)nn; 
 		}	
 	    }
     }
@@ -581,14 +632,16 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if ( (X0 != Y0) || (cX != cY) )
 		/******** X!=Y, output is not symetric *******/	
 	    if (W) /* weighted version */
-	    for (i=0; i<cX; i++)
-	    for (j=0; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		double *X = X0 + (i%cX) * rX;
+		double *Y = Y0 + (i/cX) * rY;
 		double cc=0.0;
 		double nn=0.0;
 		double rc=0.0;
 		double rn=0.0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 		        double t,y; 
 			double z = X[k]*Y[k];
@@ -610,18 +663,20 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			rn= (t-nn)-y;
 			nn= t; 
 		}	
-		CC[i+j*cX] = cc; 
+		CC[i] = cc; 
 		if (NN != NULL) 
-			NN[i+j*cX] = nn; 
+			NN[i] = nn; 
 	    }
 	    else /* no weights, all weights are 1 */
-  	    for (i=0; i<cX; i++)
-	    for (j=0; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		double *X = X0 + (i%cX) * rX;
+		double *Y = Y0 + (i/cX) * rY;
 		double cc=0.0;
 		double rc=0.0;
 		size_t nn=0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 		        double t,y; 
 			double z = X[k]*Y[k];
@@ -639,21 +694,26 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 			nn++;
 		}	
-		CC[i+j*cX] = cc; 
+		CC[i] = cc; 
 		if (NN != NULL) 
-			NN[i+j*cX] = (double)nn; 
+			NN[i] = (double)nn; 
 	    }
 	else // if (X0==Y0) && (cX==cY)
 		/******** X==Y, output is symetric *******/	
 	    if (W) /* weighted version */
-	    for (i=0; i<cX; i++)
-	    for (j=i; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		size_t ii = i%cX;
+		size_t jj = i/cX;
+	        if (ii < jj) continue;     
+		double *X = X0 + ii * rX;
+		double *Y = Y0 + jj * rY;
 		double cc=0.0;
 		double nn=0.0;
 		double rc=0.0;
 		double rn=0.0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 		        double t,y; 
 			double z = X[k]*Y[k];
@@ -675,21 +735,27 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			rn= (t-nn)-y;
 			nn= t; 
 		}	
-		CC[i+j*cX] = cc; 
-		CC[j+i*cX] = cc; 
+		size_t j = jj + ii*cX;
+		CC[i] = cc; 
+		CC[j] = cc; 
 		if (NN != NULL) {
-			NN[i+j*cX] = nn; 
-			NN[j+i*cX] = nn; 
+			NN[i] = nn; 
+			NN[j] = nn; 
 		}	
 	    }
 	    else /* no weights, all weights are 1 */
-	    for (i=0; i<cX; i++)
-	    for (j=i; j<cY; j++) {
-		X = X0+i*rX;
-		Y = Y0+j*rY;
+            #pragma omp for schedule(dynamic) nowait
+	    for (i = 0; i < cX * cY; i++)
+	    {
+		size_t ii = i%cX;
+		size_t jj = i/cX;
+	        if (ii < jj) continue;     
+		double *X = X0 + ii * rX;
+		double *Y = Y0 + jj * rY;
 		double cc=0.0;
 		double rc=0.0;
 		size_t nn=0;
+		size_t k; 
 		for (k=0; k<rX; k++) {
 		        double t,y; 
 			double z = X[k]*Y[k];
@@ -707,16 +773,19 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 			nn++;
 		}	
-		CC[i+j*cX] = cc; 
-		CC[j+i*cX] = cc; 
+		size_t j = jj + ii*cX;
+		CC[i] = cc; 
+		CC[j] = cc; 
 		if (NN != NULL) {
-			NN[i+j*cX] = (double)nn; 
-			NN[j+i*cX] = (double)nn; 
+			NN[i] = (double)nn; 
+			NN[j] = (double)nn; 
 		}	
 	    }
     }
 #endif
-
+   } // end pragma omg parallel 
+   
+   
 #ifndef NO_FLAG
 	//mexPrintf("Third argument must be not empty - otherwise status whether a NaN occured or not cannot be returned.");
 	/* this is a hack, the third input argument is used to return whether a NaN occured or not. 

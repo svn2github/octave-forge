@@ -5,10 +5,19 @@
 ####################################################
 
 ### modify directories according to your needs 
+
+# Octave - global install  (e.g. from debian package)
+OCTAVE_VERSION = 
 INCOCTAVE = -I /usr/include/octave 
-MATLABDIR = /usr/local/MATLAB/R2010b/
+# Octave - local install (e.g. compiled from sources) 
+OCTAVE_VERSION = -3.4.0
+INCOCTAVE = -I /usr/local/include/octave$(OCTAVE_VERSION)/octave 
+
+# Matlab configuration
+MATLABDIR = /usr/local/MATLAB/R2010b
 # comment the following line if you use MATLAB on 32-bit operating system
 MEX_OPTION += -largeArrayDims
+
 # Mingw crosscompiler: available at http://www.nongnu.org/mingw-cross-env/
 CROSS   = $(HOME)/src/mingw-cross-env/usr/bin/i686-pc-mingw32-
 # include directory for Win32-Matlab include
@@ -20,7 +29,7 @@ GNUMEX  = $(HOME)/bin/gnumex
 CC  	= gcc
 CXX 	= g++
 CFLAGS 	= -fopenmp -Wall -Wconversion -O3 -fPIC 
-OCTMEX	= mkoctfile --mex
+OCTMEX	= mkoctfile$(OCTAVE_VERSION) --mex
 RM      = rm
 
 MEX_OPTION  += CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
@@ -40,12 +49,12 @@ $(PROGS): Makefile
 #	Octave, MATLAB on Linux 
 #########################################################
 %.oct: %.cc
-	mkoctfile $<
+	mkoctfile$(OCTAVE_VERSION) $<
 
 %.mex: %.cpp
 	$(OCTMEX) $<           ## Octave
 %.$(MEX_EXT): %.cpp
-	$(MATMEX) $<  -lz         ## Matlab
+	$(MATMEX) $<  -lz lgomp      ## Matlab
 
 svmtrain_mex.mex svmpredict_mex.mex:     svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c
 	$(CXX) $(CFLAGS) $(INCOCTAVE) -c svm.cpp

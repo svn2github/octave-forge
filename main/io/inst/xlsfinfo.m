@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -80,6 +80,7 @@
 ##     "      Added occupieded range echo for COM interface (may be a bit off too)
 ## 2010-10-10 Made output arg2 contain only address ranges (or other sheet type names)
 ## 2010-11-01 Added other file type strings for return arg #3 (fformat)
+## 2011-03-26 Added OpenXLS support
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
@@ -163,6 +164,22 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 				sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
 			else
 				sh_names(ii, 2) = "Empty";
+			endif
+		endfor
+		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; else, fformat = ''; endif
+
+	elseif (strcmp (xls.xtype, 'OXS'))
+		sh_cnt = xls.workbook.getNumWorkSheets ();
+		sh_names = cell (sh_cnt, 2); nsrows = zeros (sh_cnt, 1);
+		for ii=1:sh_cnt
+			sh = xls.workbook.getWorkSheet (ii-1);   # OpenXLS starts counting at 0 
+			sh_names(ii, 1) = char (sh.getSheetName());
+			# OpenXLS doesn't distinguish between worksheets and graph sheets
+			[tr, lr, lc, rc] = getusedrange (xls, ii);
+			if (tr)
+				sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
+			else
+				sh_names(ii, 2) = "Empty or Chart";
 			endif
 		endfor
 		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; else, fformat = ''; endif

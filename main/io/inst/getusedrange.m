@@ -1,4 +1,4 @@
-## Copyright (C) 2010 Philip Nienhuis, pr.nienhuis@users.sf.net
+## Copyright (C) 2010,2011 Philip Nienhuis, pr.nienhuis@users.sf.net
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -16,8 +16,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [ @var{toprow#}, @var{bottomrow#}, @var{leftcol#}, @var{rightcol#} ] = getusedrange (@var{spptr}, @var{shindex#})
-## Find occupied data range in a specific worksheet in a spreadsheet
-## (either MS-Excel or OOo Calc).
+## Find occupied data range in worksheet @var{shindex#} in a spreadsheet
+## pointed to in struct @var{spptr} (either MS-Excel or
+## OpenOffice Calc).
 ##
 ## @var{shindex#} must be numeric and is 1-based. @var{spptr} can either
 ## refer to an MS-Excel spreadsheet (spptr returned by xlsopen) or an
@@ -60,9 +61,9 @@
 ## 2010-08-27 Added checks for input arguments
 ##      "     Indentation changed from tab to doublespace
 ## 2010-10-07 Added COM support (at last!)
-## 2010-03-04 Textual adaptations in header
+## 2011-03-26 Added OpenXLS support
 ##
-## Last subfunc update: 2010-12-01 (COM)
+## Last subfunc update: 2011-03-26 (OXS)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -79,6 +80,8 @@ function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
     [ trow, lrow, lcol, rcol ] = getusedrange_poi (spptr, ii);
   elseif (strcmp (spptr.xtype, 'JXL'))
     [ trow, lrow, lcol, rcol ] = getusedrange_jxl (spptr, ii);
+  elseif (strcmp (spptr.xtype, 'OXS'))
+    [ trow, lrow, lcol, rcol ] = getusedrange_oxs (spptr, ii);
   else
     error ('Only OTK, JOD, POI and JXL interface implemented');
   endif
@@ -114,12 +117,16 @@ endfunction
 ## 2010-11-13 Catched jOpenDocument bug (1.2bx) where string cells have no office:value-type
 ##            attrib set (by JOD). Somehow OTK is more robust as it catches these cells;
 ##            Currently this fix is just commented.
+## 2011-03-23 Adapted to odfdom 0.8.7 (getXPath method call changed)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
 
   odfcont = ods.workbook;		# Local copy just in case
-
-  xpath = ods.app.getXPath;
+  if (strcmp (ods.odfvsn, '0.8.7'))
+    xpath = ods.workbook.getXPath;
+  else
+    xpath = ods.app.getXPath;
+  endif
   # Create an instance of type NODESET for use in subsequent statement
   NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
   # Get table-rows in sheet no. wsh. Sheet count = 1-based (!)
@@ -482,4 +489,42 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jxl (xls, wsh)
 		endfor
 	endif
 
+endfunction
+
+
+## Copyright (C) 2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## getusedrange_oxs - get occupied data cell range from Excel sheet
+## using java/OpenXLS
+
+## Author: Philip Nienhuis
+## Created: 2011-03-26
+
+function [ trow, brow, lcol, rcol ] = getusedrange_oxs (xls, wsh)
+
+	sh = xls.workbook.getWorkSheet (wsh - 1);			# OXS sheet count 0-based
+	if (sh.getNumRows)
+		trow = sh.getFirstRow () + 1;
+		brow = sh.getLastRow ();
+		lcol = sh.getFirstCol () + 1;
+		rcol = sh.getLastCol ();
+	else
+		# Might be a chart sheet
+		trow = brow = lcol = rcol = 0;
+	endif
+	
 endfunction

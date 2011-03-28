@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -9,7 +9,7 @@
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
@@ -35,7 +35,7 @@
 ## with JXL (JExcelAPI) interface.
 ##
 ## You need MS-Excel (95 - 2010), and/or the Java package > 1.2.6 plus Apache
-## POI > 3.5 and/or JExcelAPI installed on your computer + proper
+## POI > 3.5 and/or JExcelAPI and/or OpenXLS installed on your computer + proper
 ## javaclasspath set, to make this function work at all.
 ##
 ## @var{xls} must be a valid pointer struct made by xlsopen() in the same
@@ -65,6 +65,7 @@
 ##     "      untouched file ptr struct in case of errors rather than wipe it
 ## 2010-11-12 Replaced 'keepxls' by new filename arg; catch write errors and
 ##            always keep file pointer in case of write errors
+## 2011-03-26 Added OpenXLS support
 
 function [ xls ] = xlsclose (xls, filename=[])
 
@@ -136,8 +137,11 @@ function [ xls ] = xlsclose (xls, filename=[])
 		if (xls.changed > 0 && xls.changed < 3)
 			try
 				xlsout = java_new ("java.io.FileOutputStream", xls.filename);
+				bufout = java_new ("java.io.BufferedOutputStream", xlsout);
 				if (xls.changed == 2) printf ("Saving file %s...\n", xls.filename); endif
-				xls.workbook.write (xlsout);
+				xls.workbook.write (bufout);
+				bufout.flush ();
+				bufout.close ();
 				xlsout.close ();
 				xls.changed = 0;
 			catch
@@ -160,6 +164,25 @@ function [ xls ] = xlsclose (xls, filename=[])
 				xls.changed = 0;
 			catch
 			end_try_catch
+		endif
+
+	elseif (strcmp (xls.xtype, 'OXS'))
+		if (xls.changed > 0 && xls.changed < 3)
+			try
+				xlsout = java_new ("java.io.FileOutputStream", xls.filename);
+				bufout = java_new ("java.io.BufferedOutputStream", xlsout);
+				if (xls.changed == 2) printf ("Saving file %s...\n", xls.filename); endif
+				xls.workbook.writeBytes (bufout);
+				xls.workbook.close ();
+				bufout.flush ();
+				bufout.close ();
+				xlsout.close ();
+				xls.changed = 0;
+			catch
+#				xlsout.close ();
+			end_try_catch
+		else
+			xls.workbook.close ();
 		endif
 
 #	elseif   <other interfaces here>

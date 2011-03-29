@@ -115,6 +115,7 @@
 ## 2010-11-12 Moved pointer check into main func
 ## 2010-11-13 Catch empty sheets when no range was specified
 ## 2011-03-26 OpenXLS support added
+## 2011-03-29 Test for proper input xls struct extended
 ##
 ## Latest subfunc update: 2011-03-26 (OXS)
 
@@ -126,6 +127,7 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=
 	test1 = test1 || ~isfield (xls, "workbook");
 	test1 = test1 || isempty (xls.workbook);
 	test1 = test1 || isempty (xls.app);
+	test1 = test1 || ~ischar (xls.xtype);
 	if test1
 		error ("Invalid xls file pointer struct");
 	endif
@@ -516,7 +518,7 @@ endfunction
 
 
 #==================================================================================
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -765,14 +767,14 @@ function [ rawarr, xls, status ] = xls2oxs2oct (xls, wsh, cellrange=[], spsh_opt
 
 	persistent ctype;
 	if (isempty (ctype))
-		ctype = cell (11, 1);
+		ctype = cell (6, 1);
 		# Get enumerated cell types. Beware as they start at 0 not 1
-		ctype( 1) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_STRING'));
-		ctype( 2) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_FP'));
-		ctype( 3) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_INT'));
-		ctype( 4) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_FORMULA'));
-		ctype( 5) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_BOOLEAN'));
-		ctype( 6) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_DOUBLE'));
+		ctype( 1) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_STRING'));  # 0
+		ctype( 2) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_FP'));      # 1
+		ctype( 3) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_INT'));     # 2
+		ctype( 4) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_FORMULA')); # 3
+		ctype( 5) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_BOOLEAN')); # 4
+		ctype( 6) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_DOUBLE'));  # 5
 	endif
 	
 	status = 0; 
@@ -829,6 +831,7 @@ function [ rawarr, xls, status ] = xls2oxs2oct (xls, wsh, cellrange=[], spsh_opt
 					rawarr {ii+1-firstrow, jj+1-lcol} = scell.getDoubleVal ();
 				endif
 			catch
+				# Empty or non-existing cell
 			end_try_catch
 		endfor
 	endfor

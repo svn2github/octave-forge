@@ -33,12 +33,13 @@
 ## Updates: 
 ## 2010-08-25 Option for supplying file pointer rather than interface_type & filename
 ##            (but this can be wasteful if the file ptr is copied)
+## 2011-03-29 Bug fix - unrecognized pointer struct & wrong type error msg
 
 function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, intf, filename=[])
 
 	if (nargin == 4)
 		# File pointer input assumed
-		if (isstruct (xtype))
+		if (isstruct (intf))
 			xtype = intf.xtype;
 			filename = intf.filename;
 		else
@@ -59,14 +60,14 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 				# OOXML (COM needs Excel 2007+ for this)
 				ROW_CAP = 1048576; COL_CAP = 16384;
 			endif
-		case 'JXL'
-			# JExcelAPI can only process BIFF5 & BIFF8
+		case {'JXL', 'OXS'}
+			# JExcelAPI & OpenXLS can only process BIFF5 & BIFF8
 			ROW_CAP = 65536;   COL_CAP = 256;
 		case {'OTK', 'JOD'}
 			# ODS
 			ROW_CAP = 65536;   COL_CAP = 1024;
 		otherwise
-			error (sprintf ("Unknown interface type - %s\n", spptr.xtype));
+			error (sprintf ("Unknown interface type - %s\n", xtype));
 	endswitch
 
 	if (isempty (deblank (crange)))

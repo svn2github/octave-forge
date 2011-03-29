@@ -99,6 +99,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 	# xlsinterfaces.<intf> = [] (not yet checked), 0 (found to be unsupported) or 1 (OK)
 	if (isempty (chkintf));
 		chkintf = 1;
+		xlsinterfaces = struct ('COM', [], 'POI', [], 'JXL', [], 'OXS', []);
 	endif
 
 	xlssupport = 0;

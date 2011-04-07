@@ -1,10 +1,18 @@
 function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
-% MVAR estimates Multi-Variate AutoRegressive model parameters
+% MVAR estimates parameters of the Multi-Variate AutoRegressive model 
+%
+%    Y(t) = Y(t-1) * A1 + ... + Y(t-p) * Ap + X(t);  
+% whereas
+%    Y(t) is a row vecter with M elements Y(t) = y(t,1:M) 
+%
 % Several estimation algorithms are implemented, all estimators 
 % can handle data with missing values encoded as NaNs.  
 %
 % 	[AR,RC,PE] = mvar(Y, p);
 % 	[AR,RC,PE] = mvar(Y, p, Mode);
+% 
+% with 
+%       AR = [A1, ..., Ap];
 %
 % INPUT:
 %  Y	 Multivariate data series 
@@ -14,7 +22,8 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 % OUTPUT:
 %  AR    multivariate autoregressive model parameter
 %  RC    reflection coefficients (= -PARCOR coefficients)
-%  PE    remaining error variance
+%  PE    remaining error variances for increasing model order
+%	   PE(:,p*M+[1:M]) is the residual variance for model order p
 %
 % All input and output parameters are organized in columns, one column 
 % corresponds to the parameters of one channel.

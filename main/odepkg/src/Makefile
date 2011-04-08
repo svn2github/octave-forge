@@ -9,6 +9,7 @@ PATCHPROG = patch -p0 # Needed to patch the Fortran codes
 
 # MKOCTFILE = $(MKOCTFILE) has already been defined in Makeconf
 # MKMEXFILE = $(MKOCTFILE) --mex
+MKOCTFILE = mkoctfile
 ifeq (gfortran,$(findstring gfortran,$(F77)))
   MKF77FILE = FFLAGS="-fno-automatic $(FFLAGS)" $(MKOCTFILE)
 endif

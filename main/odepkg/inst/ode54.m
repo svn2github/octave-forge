@@ -310,6 +310,24 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
   %# The solver main loop - stop if the endpoint has been reached
   vcntloop = 2; vcntcycles = 1; vu = vinit; vk = vu.' * zeros(1,7);
   vcntiter = 0; vunhandledtermination = true; vcntsave = 2;
+
+  %# FSAL optimizations: sent by Bruce Minaker 20110326, find the slope k1
+  %# (k1 is copied from last k7, so set k7) for first time step only
+  if (vhavemasshandle)   %# Handle only the dynamic mass matrix,
+    if (vmassdependence) %# constant mass matrices have already
+      vmass = feval ...  %# been set before (if any)
+        (vodeoptions.Mass, vtimestamp, vinit.', vfunarguments{:});
+    else                 %# if (vmassdependence == false)
+      vmass = feval ...  %# then we only have the time argument
+        (vodeoptions.Mass, vtimestamp, vfunarguments{:});
+    end
+    vk(:,7) = vmass \ feval ...
+      (vfun, vtimestamp, vinit.', vfunarguments{:});
+  else
+    vk(:,7) = feval ...
+      (vfun, vtimestamp, vinit.', vfunarguments{:});
+  end
+
   while ((vdirection * (vtimestamp) < vdirection * (vtimestop)) && ...
          (vdirection * (vstepsize) >= vdirection * (vminstepsize)))
 
@@ -320,8 +338,10 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
       vstepsize = vtimestop - vdirection * vtimestamp;
     end
 
-    %# Estimate the seven results when using this solver
-    for j = 1:7
+    %# Estimate the seven results when using this solver (FSAL)
+    %# skip the first result as we already know it from last time step
+    vk(:,1)=vk(:,7);
+    for j = 2:7              %# Start at two instead of one (FSAL)
       vthetime  = vtimestamp + vc(j,1) * vstepsize;
       vtheinput = vu.' + vstepsize * vk(:,1:j-1) * va(j,1:j-1).';
       if (vhavemasshandle)   %# Handle only the dynamic mass matrix,
@@ -341,8 +361,11 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
     end
 
     %# Compute the 4th and the 5th order estimation
-    y4 = vu.' + vstepsize * (vk * vb4);
-    y5 = vu.' + vstepsize * (vk * vb5);
+    y4 = vu.' + vstepsize * (vk * vb4); 
+    %# y5 = vu.' + vstepsize * (vk * vb5); vb5 is the same as va(6,:), 
+    %# means that we already know y5 from the first six vk's (FSAL)
+    y5 = vtheinput;
+
     if (vhavenonnegative)
       vu(vodeoptions.NonNegative) = abs (vu(vodeoptions.NonNegative));
       y4(vodeoptions.NonNegative) = abs (y4(vodeoptions.NonNegative));
@@ -370,8 +393,13 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
       vu = y5.'; %# MC2001: the higher order estimation as "local extrapolation"
       %# Save the solution every vodeoptions.OutputSave steps             
       if (mod (vcntloop-1,vodeoptions.OutputSave) == 0)             
-        vretvaltime(vcntsave,:) = vtimestamp;
-        vretvalresult(vcntsave,:) = vu;
+        if (vhaveoutputselection)
+          vretvaltime(vcntsave,:) = vtimestamp;
+          vretvalresult(vcntsave,:) = vu(vodeoptions.OutputSel);
+        else
+          vretvaltime(vcntsave,:) = vtimestamp;
+          vretvalresult(vcntsave,:) = vu;
+        end
         vcntsave = vcntsave + 1;    
       end     
       vcntloop = vcntloop + 1; vcntiter = 0;
@@ -417,6 +445,10 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
           vunhandledtermination = false; break;
         end
       end
+    else
+    vk(:,7)=vk(:,1);  %# If we're here, then we've overwritten the k7 that 
+    %# we need to copy to k1 to redo the step Since we copy k7 into k1, 
+    %# we'll put the k1 back in k7 for now, until it's copied back again (FSAL)
     end %# If the error is acceptable ...
 
     %# Update the step size for the next integration step
@@ -503,7 +535,8 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
     vhavestats = true;
     vnsteps    = vcntloop-2;                    %# vcntloop from 2..end
     vnfailed   = (vcntcycles-1)-(vcntloop-2)+1; %# vcntcycl from 1..end
-    vnfevals   = 7*(vcntcycles-1);              %# number of ode evaluations
+%#  vnfevals   = 7*(vcntcycles-1);              %# number of ode evaluations
+    vnfevals   = 6*(vcntcycles-1)+1;            %# 7 stages & one first step (FSAL)
     vndecomps  = 0;                             %# number of LU decompositions
     vnpds      = 0;                             %# number of partial derivatives
     vnlinsols  = 0;                             %# no. of solutions of linear systems

@@ -566,10 +566,12 @@ endfunction
 ##      "     calling function
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2010-11-13 Catch empty sheets when no range was specified
+## 2011-04-11 (Ron Goldman <ron@ocean.org.il>) Fixed missing months var, wrong arg
+##      "     order in strsplit, wrong isTime condition
 
 function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_opts)
 
-	persistent ctype;
+	persistent ctype; persistent months;
 	if (isempty (ctype))
 		ctype = cell (11, 1);
 		# Get enumerated cell types. Beware as they start at 0 not 1
@@ -584,6 +586,7 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 		ctype( 9) = (java_get ('jxl.CellType', 'LABEL')).toString ();
 		ctype(10) = (java_get ('jxl.CellType', 'NUMBER_FORMULA')).toString ();
 		ctype(11) = (java_get ('jxl.CellType', 'STRING_FORMULA')).toString ();
+		months = {'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'};
 	endif
 	
 	status = 0; 
@@ -655,14 +658,14 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 						rawarr {ii+1-firstrow, jj+1-lcol} = scell.getValue ();
 					catch
 						% Newer JXL.JAR, returns date string w. epoch = 1-1-1900 :-(
-						tmp = strsplit (' ', char (scell.getDate ()));
+						tmp = strsplit (char (scell.getDate ()), ' ');
 						yy = str2num (tmp{6});
 						mo = find (ismember (months, upper (tmp{2})) == 1);
 						dd = str2num (tmp{3});
 						hh = str2num (tmp{4}(1:2));
 						mi = str2num (tmp{4}(4:5));
 						ss = str2num (tmp{4}(7:8));
-						if (~scell.isTime ())
+						if (scell.isTime ())
 							yy = mo = dd = 0;
 						endif
 						rawarr {ii+1-firstrow, jj+1-lcol} = datenum (yy, mo, dd, hh, mi, ss);
@@ -686,7 +689,7 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 						unwind_protect_cleanup
 							if (isempty (rawarr {ii+1-firstrow, jj+1-lcol}))
 								% Newer JXL.JAR, returns date string w. epoch = 1-1-1900 :-(
-								tmp = strsplit (' ', char (scell.getDate ()));
+								tmp = strsplit (char (scell.getDate ()), ' ');
 								yy = str2num (tmp{6});
 								mo = find (ismember (months, upper (tmp{2})) == 1);
 								dd = str2num (tmp{3});

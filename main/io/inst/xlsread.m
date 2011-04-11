@@ -144,6 +144,7 @@
 ## 2010-10-21 Formally added 'BASIC' option as synonym for 'JXL'
 ## 2010-11-05 Updated help text
 ## 2010-11-13 Added some input checks
+## 2010-04-11 Return upon empty xls struct from xlsopen()
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
@@ -185,8 +186,12 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 	unwind_protect	# Needed to catch COM errors & able to close stray Excel invocations
 	# Get pointer array to Excel file
 	xls_ok = 0;
-	xls = xlsopen (fn, 0, reqintf);
-	xls_ok = 1;
+	xls = xlsopen (fn, 0, reqintf)
+	if (~isempty (xls))
+		xls_ok = 1;
+	else
+		return
+	endif
 
 	if (strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'POI') || strcmp (xls.xtype, 'JXL'))
 

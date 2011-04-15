@@ -63,7 +63,7 @@
 ## 2010-10-07 Added COM support (at last!)
 ## 2011-03-26 Added OpenXLS support
 ##
-## Last subfunc update: 2011-03-26 (OXS)
+## Last subfunc update: 2011-04-15 (OTK)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -118,6 +118,7 @@ endfunction
 ##            attrib set (by JOD). Somehow OTK is more robust as it catches these cells;
 ##            Currently this fix is just commented.
 ## 2011-03-23 Adapted to odfdom 0.8.7 (getXPath method call changed)
+## 2011-04-15 Bugfix (around l. 176) wrong test syntax for finding rightm filler table cells
 
 function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
 
@@ -174,7 +175,7 @@ function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
           rc = rc + lcell.getTableNumberColumnsRepeatedAttribute ();
         endfor
         # Watch out for filler tablecells
-        if isempty (findstr ('office:value-type', char (lcell)) || findstr ('<text:', char (lcell)))
+        if isempty (findstr ('office:value-type', char (lcell))) || isempty (findstr ('<text:', char (lcell)))
           rc = rc - lcell.getTableNumberColumnsRepeatedAttribute ();
         endif
         rcol = max (rcol, rc);

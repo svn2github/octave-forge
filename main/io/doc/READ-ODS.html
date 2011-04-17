@@ -30,7 +30,7 @@
 <p align="center"><u><font face="Arial, sans-serif"><font size="4"><b>ODS
 support for Octave</b></font></font></u></p><p align="center"><font face="Arial, sans-serif"><font size="2">Copyright
 © 2009 - 2011 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">This
-version February 16, 2011</font></font></p>
+version April 17, 2011</font></font></p>
 	<p><font face="Arial, sans-serif"><font size="2"><i>(ODS = Open
 	Document Format spreadsheet data format, used by e.g.,
 	OpenOffice.org.)</i></font></font></p><p><font face="Arial, sans-serif"><font size="2"><i></i></font></font></p><dl><dt><p align="left"><font face="Arial, sans-serif"><font size="2"><u><b>Files
@@ -42,15 +42,25 @@ version February 16, 2011</font></font></p>
 			</dl>
 		</dl>
 	</dl>
-	<dt><p><font face="Arial, sans-serif"><font size="2"><i><b>ods2oct.m</b></i><br>Read raw data from an
-	ODS spreadsheet file using the file pointer handed by odsopen.</font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2"><i><b>oct2ods.m</b></i><br>Write data to an ODS
-	spreadsheet file using the file pointer handed by odsopen.</font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2"><i><b>odsclose.m</b></i><br>Close file handle made
-	by odsopen and -if data have been transfered to a spreadsheet- save
-	data.</font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2"><i><b>odsfinfo.m</b></i><br>Explore sheet names and
-	optionally estimated data size of ods files with unknown content.</font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2"><i><b>calccelladdress.m</b></i><br>Utility function needed
-	for jOpenDocument class.</font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2"><i><b>parsecell.m</b></i><br>(contained in Excel
-	xlsread scripts, but works also for ods support) parse raw data
-	(cell array) into separate numeric array and text (cell) array.)</font></font></p></dt><dt style="font-style: italic;"><font face="Arial, sans-serif"><font size="2"><b>spsh_chkrange.m</b></font></font></dt><dt style="font-style: italic;">
+	<dt><p><font face="Arial, sans-serif"><font size="2"><i><b>ods2oct.m</b></i>
+	<br>Read raw data from an ODS spreadsheet file using the file pointer handed by odsopen.</font></font></p></dt><dt>
+	<p><font face="Arial, sans-serif"><font size="2"><i><b>oct2ods.m</b></i>
+	<br>Write data to an ODS spreadsheet file using the file pointer handed by odsopen.</font></font></p></dt><dt>
+	<p><font face="Arial, sans-serif"><font size="2"><i><b>odsclose.m</b></i>
+	<br>Close file handle made by odsopen and -if data have been transfered to a spreadsheet- save
+	data.</font></font></p></dt><dt>
+	<p><font face="Arial, sans-serif"><font size="2"><i><b>odsfinfo.m</b></i>
+	<br>Explore sheet names and optionally estimated data size of ods files with unknown content.</font></font></p></dt><dt>
+	<p><font face="Arial, sans-serif"><font size="2"><i><b>calccelladdress.m</b></i>
+	<br>Utility function needed for jOpenDocument class.</font></font></p></dt><dt>
+	<p><font face="Arial, sans-serif"><font size="2"><i><b>parsecell.m</b></i>
+	<br>(contained in Excel xlsread scripts, but works also for ods support) parse raw data (cell array) into separate numeric array and text (cell) array.)</font></font></p></dt><dt>
+	<p><font face="Arial, sans-serif"><font size="2"><i><b>chk_spreadsheet_support.m</b></i>
+	<br>Internal function for (1) checking, (2) setting up, (3) debugging spreadsheet support. While
+	not specifically meant for direct invocation from the Octave prompt (it
+	is more useful during initialization of Octave itself) it can be very
+	helpful when hunting down issues with spreadsheet support in Octave.</font></font></p></dt>
+	<dt style="font-style: italic;"><font face="Arial, sans-serif"><font size="2"><b>spsh_chkrange.m</b></font></font></dt><dt style="font-style: italic;">
 	<font face="Arial, sans-serif"><font size="2"><b>spsh_prstype.m</b></font></font></dt><dt style="font-style: italic;">
 	<font face="Arial, sans-serif"><font size="2"><b>getusedrange.m</b></font></font></dt><dt style="font-style: italic;">
 	<font face="Arial, sans-serif"><font size="2"><b>calccelladdress.m</b></font></font></dt><dt style="font-style: italic;">
@@ -85,8 +95,8 @@ SUPPORT SOFTWARE</b></u></font></font></p><dl>
 <ul>
 	<li><p align="left">
 	<font face="Arial, sans-serif"><font size="2">(currently the preferred
-	option) <b>odfdom.jar</b> (<u>only</u> versions <b>0.7.5</b> and
-	<b>0.8.6</b> work OK!) &amp; <b>xercesImpl.jar</b>. Get them here:</font></font></p></li><li><p align="left">
+	option) <b>odfdom.jar</b> (<u>only</u> versions <b>0.7.5</b>,
+	<b>0.8.6</b>, and <b>0.8.7</b> work OK!) &amp; <b>xercesImpl.jar</b>. Get them here:</font></font></p></li><li><p align="left">
 	<a href="http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases"><font face="Arial, sans-serif"><font size="2">http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases</font></font></a></p></li><li><p align="left" lang="zxx">
 	<font color="#000080"><font face="Arial, sans-serif"><font size="2"><u>http://odftoolkit.org/projects/odfdom/downloads/directory/current-version</u></font></font></font></p></li><li><p align="left">
 	<a href="http://xerces.apache.org/mirrors.cgi"><font face="Arial, sans-serif"><font size="2">http://xerces.apache.org/mirrors.cgi</font></font></a></p></li></ul>
@@ -314,7 +324,11 @@ OF INTERFACES</b></u></font></font></p>
 	hamper progress for a while.</font></font></p></dt><dd></dd></dl>
 <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>TROUBLESHOOTING</b></u></font></font></p><dl>
 	<dt><p><font face="Arial, sans-serif"><font size="2">Some hints for
-	troubleshooting ODS support are given here. </font></font>
+	troubleshooting ODS support are given here.<br>
+	Since April 2011 the function chk_spreadsheet_support() has been included in
+	the io package. Calling it with arguments ('', 3) (empty string and debug level 3)
+	will echo a lot of diagnostics to the screen. Large parts of the steps
+	outlined below have been automated in this script.</font></font>
 	</p></dt></dl>
 <ol>
 	<li><p align="left"><font face="Arial, sans-serif"><font size="2">Check
@@ -435,10 +449,12 @@ OF INTERFACES</b></u></font></font></p>
 	have implemented support for odfdom-0.8.6.jar – that version
 	is at last sufficiently reliable to use. The few remaining bugs and
 	limitations could easily be worked around by diving in the older
-	TableTable API.</font></font></dt><dt>
+	TableTable API. Later on (early 2011) version 0.8.7 has been tested
+	too - this needed a few adjustments; clearly the odfdom API (currently at main
+	version 0) is not stable yet.</font></font></dt><dt>
 	<font face="Arial, sans-serif"><font size="2">So at the moment
-	(January 2011 = last I looked) only odfdom versions <b>0.7.5</b>
-	and <b>0.8.6</b> are supported. Ihaven't tried the odfdom-0.8.7 snapshot.</font></font></dt><dt>
+	(April 2011 = last I looked) only odfdom versions <b>0.7.5</b>,
+	<b>0.8.6</b> and <b>0.8.7</b> are supported.</font></font></dt><dt>
 	<br>
 	</dt><dt><font face="Arial, sans-serif"><font size="2">If you want to
 	experiment with odfdom 0.8 &amp; 0.8.5, you can try:</font></font></dt></dl>
@@ -451,7 +467,7 @@ OF INTERFACES</b></u></font></font></p>
 	<font face="Arial, sans-serif"><font size="2">oct2ods.m (revision
 	7159)</font></font></li></ul>
 	<p><font face="Arial, sans-serif"><font size="2">Enjoy!</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">Philip
-	Nienhuis, February 16, 2011</font></font></p><dl><dd><p align="center">
+	Nienhuis, April 17, 2011</font></font></p><dl><dd><p align="center">
 	<br>
 </p></dd></dl>
 </body></html>

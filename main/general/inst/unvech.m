@@ -49,5 +49,5 @@ function x = unvech (v)
   endfor
 endfunction
 
-%!assert(unvech([1;0;0;1;0;1]), eye(3,3) );
+%!assert(unvech([1;0;0;1;0;1]), full(eye(3,3)) );
 %!error <does not generate a square matrix> unvech([1;0;0;1;0;1;1]);

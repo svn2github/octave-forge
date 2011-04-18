@@ -52,9 +52,9 @@ $(PROGS): Makefile
 	mkoctfile$(OCTAVE_VERSION) $<
 
 %.mex: %.cpp
-	$(OCTMEX) $<           ## Octave
+	$(OCTMEX) $<  -lz -lgomp         ## Octave
 %.$(MEX_EXT): %.cpp
-	$(MATMEX) $<  -lz lgomp      ## Matlab
+	$(MATMEX) $<  -lz -lgomp      ## Matlab
 
 svmtrain_mex.mex svmpredict_mex.mex:     svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c
 	$(CXX) $(CFLAGS) $(INCOCTAVE) -c svm.cpp

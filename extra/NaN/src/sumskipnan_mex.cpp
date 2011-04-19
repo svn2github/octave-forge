@@ -188,29 +188,24 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 
 	if (D1*D2*D3<1) // zero size array
 		; 	// do nothing 
-	else 
- 
-   #pragma omp parallel // private(ix0,ix1,ix2,j,t,x)
-   {
-	
-	if ((D1==1) && (ACC_LEVEL<1)) {
+	else if ((D1==1) && (ACC_LEVEL<1)) {
 		// double accuray, naive summation, error = N*2^-52 
 		switch (POutputCount) {
 		case 1: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				double count;
 				__sumskipnan2wr__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
 			}
 			break;
 		case 2: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				__sumskipnan2wr__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
 			}
 			break;
 		case 3: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				__sumskipnan3wr__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
 			}
@@ -221,20 +216,20 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		// extended accuray, naive summation, error = N*2^-64 
 		switch (POutputCount) {
 		case 1: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				double count;
 				__sumskipnan2w__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
 			}
 			break;
 		case 2: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				__sumskipnan2w__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
 			}
 			break;
 		case 3: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				__sumskipnan3w__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
 			}
@@ -245,20 +240,20 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		// ACC_LEVEL==3: extended accuracy and Kahan Summation, error = 2^-64
 		switch (POutputCount) {
 		case 1: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				double count;
 				__sumskipnan2we__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
 			}
 			break;
 		case 2: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				__sumskipnan2we__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
 			}
 			break;
 		case 3: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				__sumskipnan3we__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
 			}
@@ -269,20 +264,20 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		// ACC_LEVEL==2: double accuracy and Kahan Summation, error = 2^-52
 		switch (POutputCount) {
 		case 1: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				double count;
 				__sumskipnan2wer__(LInput+l*D2, D2, LOutputSum+l, &count, &flag_isNaN, W);
 			}
 			break;
 		case 2: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				__sumskipnan2wer__(LInput+l*D2, D2, LOutputSum+l, LOutputCount+l, &flag_isNaN, W);
 			}
 			break;
 		case 3: 
-			#pragma omp for schedule(dynamic) nowait
+			#pragma omp parallel for schedule(dynamic)
 			for (l = 0; l<D3; l++) {
 				__sumskipnan3wer__(LInput+l*D2, D2, LOutputSum+l, LOutputSum2+l, LOutputCount+l, &flag_isNaN, W);
 			}
@@ -424,8 +419,6 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			}
                	}		
 	}
-
-    } // end pragma omp parallel
 
 	if (LongOutputSum) mxFree(LongOutputSum);
 	if (LongOutputCount) mxFree(LongOutputCount);

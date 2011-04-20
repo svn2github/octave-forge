@@ -33,7 +33,7 @@ function o=meansq(x,DIM,W)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-%	Copyright (C) 2000-2003,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003,2009 by Alois Schloegl <alois.schloegl@gmail.com>	
 %	$Id$
 %       This function is part of the NaN-toolbox for Octave and Matlab 
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/

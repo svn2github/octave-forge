@@ -1,7 +1,7 @@
 % TEST_XPTOPEN tests XPTOPEN  
 
 %	$Id$
-%	Copyright (C) 2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://biosig-consulting.com/matlab/NaN/
 

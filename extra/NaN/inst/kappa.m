@@ -31,7 +31,7 @@ function [kap,se,H,z,p0,SA,R]=kappa(d,c,arg3,w)
 % [5] http://ourworld.compuserve.com/homepages/jsuebersax/kappa.htm
 
 %	$Id$
-%	Copyright (c) 1997-2006,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (c) 1997-2006,2008,2009 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 %

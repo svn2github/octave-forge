@@ -15,7 +15,7 @@ function [d] = mahal(X,Y)
 % References: 
 
 %	$Id: train_sc.m 2140 2009-07-02 12:03:55Z schloegl $
-%	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2009 by Alois Schloegl <alois.schloegl@gmail.com>
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

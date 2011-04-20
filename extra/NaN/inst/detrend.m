@@ -47,7 +47,7 @@ function [X,T]=detrend(t,X,p)
 
 % Copyright (C) 1995, 1996 Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 %       $Id$
-%       Copyright (C) 2001,2007 by Alois Schloegl <a.schloegl@ieee.org>	
+%       Copyright (C) 2001,2007 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

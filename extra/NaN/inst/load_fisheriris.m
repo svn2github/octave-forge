@@ -8,7 +8,7 @@
 %        (Q327.D83) John Wiley & Sons. ISBN 0-471-22361-1. See page 218.
 
 %	$Id$
-%	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2009,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

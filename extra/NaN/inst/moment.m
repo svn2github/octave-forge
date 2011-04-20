@@ -25,7 +25,7 @@ function M=moment(i,p,opt,DIM)
 % http://mathworld.wolfram.com/Moment.html
 
 %    $Id$
-%    Copyright (C) 2000-2002,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%    Copyright (C) 2000-2002,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    This functions is part of the NaN-toolbox
 %    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

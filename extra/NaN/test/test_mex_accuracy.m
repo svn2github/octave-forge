@@ -9,9 +9,9 @@
 %       ACM Computing Surveys, Vol 23, No 1, March 1991. 
 
 %	$Id$
-% 	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>
+% 	Copyright (C) 2009,2010 by Alois Schloegl <alois.schloegl@gmail.com>
 %       This function is part of the NaN-toolbox
-%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

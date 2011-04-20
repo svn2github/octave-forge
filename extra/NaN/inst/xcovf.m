@@ -13,7 +13,7 @@ function [C,N,LAGS] = xcovf(X,Y,MAXLAG,SCALEOPT)
 % see also: COVM, XCORR
 
 %	$Id$
-%	Copyright (C) 2005,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2005,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

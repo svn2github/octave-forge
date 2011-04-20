@@ -2,7 +2,7 @@
 
 $Id$
 Copyright (c) 2007-2009 The LIBLINEAR Project.
-Copyright (c) 2010 Alois Schloegl <a.schloegl@ieee.org>
+Copyright (c) 2010 Alois Schloegl <alois.schloegl@gmail.com>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

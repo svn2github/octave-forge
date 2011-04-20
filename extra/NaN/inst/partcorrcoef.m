@@ -50,7 +50,7 @@ function [R,sig,ci1,ci2] = partcorrcoef(X,Y,Z,Mode)
 % [2] http://www.nag.co.uk/numeric/fl/manual/pdf/G02/g02byf.pdf
 
 %    $Id$
-%    Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%    Copyright (C) 2000-2002,2009 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    This function is part of the NaN-toolbox
 %    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

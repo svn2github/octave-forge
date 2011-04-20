@@ -24,7 +24,7 @@ function [B,BLab]=cat2bin(D, Label, MODE)
 %             0     0     1
 
 %	$Id$
-%	Copyright (C) 2009 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2009 by Alois Schloegl <alois.schloegl@gmail.com>
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

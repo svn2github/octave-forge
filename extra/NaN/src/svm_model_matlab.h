@@ -32,7 +32,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010 Alois Schloegl <a.schloegl@ieee.org>
+Copyright (C) 2010 Alois Schloegl <alois.schloegl@gmail.com>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

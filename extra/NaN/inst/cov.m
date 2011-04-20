@@ -26,7 +26,7 @@ function CC = cov(X,Y,Mode)
 % http://mathworld.wolfram.com/Covariance.html
 
 %	$Id$
-%	Copyright (C) 2000-2003,2005,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2003,2005,2009 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox 
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

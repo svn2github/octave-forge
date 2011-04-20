@@ -43,7 +43,7 @@ function [h, pval, ci, stats] = ttest (x, m, alpha, tail, vartype, DIM)
 %       $Id$
 %       Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2005, 2006, 2007
 %               Kurt Hornik
-%       Copyright (C) 2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%       Copyright (C) 2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

@@ -26,7 +26,7 @@ function R = mad(i,DIM)
 % [4] Kenney, J. F. and Keeping, E. S. "Mean Absolute Deviation." §6.4 in Mathematics of Statistics, Pt. 1, 3rd ed. Princeton, NJ: Van Nostrand, pp. 76-77 1962. 
 
 %	$Id$
-%	Copyright (C) 2000-2002,2010 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2000-2002,2010 by Alois Schloegl <alois.schloegl@gmail.com>
 %    	This is part of the NaN-toolbox. For more details see
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

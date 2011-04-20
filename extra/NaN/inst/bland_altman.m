@@ -19,7 +19,7 @@ function RES = bland_altman(data,group,arg3)
 %       doi:10.1177/09622802990080204
 
 %	$Id$
-%	Copyright (C) 2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

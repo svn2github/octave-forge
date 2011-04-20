@@ -37,7 +37,7 @@ function [y] = harmmean(x,DIM,W)
 
 
 %	$Id$ 
-%	Copyright (C) 2000-2002,2009 by Alois Schloegl <a.schloegl@ieee.org>
+%	Copyright (C) 2000-2002,2009 by Alois Schloegl <alois.schloegl@gmail.com>
 %    	This is part of the NaN-toolbox. For more details see
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

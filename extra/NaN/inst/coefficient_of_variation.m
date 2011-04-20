@@ -10,7 +10,7 @@ function cv=coefficient_of_variation(i,DIM)
 %   http://mathworld.wolfram.com/VariationCoefficient.html
 
 %	$Id$
-%	Copyright (C) 1997-2003 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1997-2003 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

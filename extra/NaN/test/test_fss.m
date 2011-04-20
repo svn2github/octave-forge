@@ -1,9 +1,9 @@
 % TEST_FSS test of fss.m 
 
 %	$Id$
-%	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2009,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
-%       http://hci.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -23,10 +23,10 @@ if 1,
 clear 
 if ~exist('ue6.mat','file')	
 	if strncmp(computer,'PCWIN',5)
-		fprintf(1,'Download http://hci.tugraz.at/~schloegl/LV/SMBS/UE6/ue6.mat and save in local directory %s\nPress any key to continue ...\n',pwd);
+		fprintf(1,'Download http://pub.ist.ac.at/~schloegl//LV/SMBS/UE6/ue6.mat and save in local directory %s\nPress any key to continue ...\n',pwd);
 		pause;
 	else 	
-		unix('wget http://hci.tugraz.at/~schloegl/LV/SMBS/UE6/ue6.mat'); 
+		unix('wget http://pub.ist.ac.at/~schloegl//LV/SMBS/UE6/ue6.mat'); 
 	end; 	
 end
 load ue6; 

@@ -39,7 +39,7 @@ function [idx,score] = fss(D,cl,N,MODE)
 %   http://dx.doi.org/10.1016/j.chemolab.2006.08.007
 
 %	$Id$
-%	Copyright (C) 2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2009,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

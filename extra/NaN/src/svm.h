@@ -1,6 +1,6 @@
 /*
 This code was extracted from libsvm-mat-2.9-1 in Jan 2010 
-Copyright (C) 2010 Alois Schloegl <a.schloegl@ieee.org>
+Copyright (C) 2010 Alois Schloegl <alois.schloegl@gmail.com>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

@@ -14,7 +14,7 @@ function Q=percentile(Y,q,DIM)
 % see also: HISTO2, HISTO3, QUANTILE
 
 %	$Id$
-%	Copyright (C) 1996-2003,2005,2006,2007 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2003,2005,2006,2007 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

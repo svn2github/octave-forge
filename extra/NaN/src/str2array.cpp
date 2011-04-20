@@ -34,7 +34,7 @@
 //
 // Output:
 //    $Id: STR2ARRAY.cpp 7142 2010-03-30 18:48:06Z schloegl $
-//    Copyright (C) 2010,2011 Alois Schloegl <a.schloegl@ieee.org>
+//    Copyright (C) 2010,2011 Alois Schloegl <alois.schloegl@gmail.com>
 //    This function is part of the NaN-toolbox
 //    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 //

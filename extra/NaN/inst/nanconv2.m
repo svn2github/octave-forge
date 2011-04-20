@@ -9,12 +9,12 @@ function [C,N,c] = conv2nan(X,Y,arg3)
 % [C]   = CONV2NAN(X,Y);
 
 %    This function is part of the NaN-toolbox
-%    http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 %	$Id$
-%	Copyright (C) 2000-2005,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 2000-2005,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
-%       http://www.dpmi.tu-graz.ac.at/~schloegl/matlab/NaN/
+%       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 %    This program is free software; you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by

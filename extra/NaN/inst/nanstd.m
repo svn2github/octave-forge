@@ -18,7 +18,7 @@ function [y] = nanstd(x,FLAG,DIM)
 % see also: SUM, SUMSKIPNAN, NANSUM, STD
 
 %    $Id$
-%    Copyright (C) 2000-2003,2006,2008,2009,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%    Copyright (C) 2000-2003,2006,2008,2009,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    This is part of the NaN-toolbox. For more details see
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

@@ -28,7 +28,7 @@
 //     HIS.H
 //
 //    $Id$
-//    Copyright (C) 2009,2010,2011 Alois Schloegl <a.schloegl@ieee.org>
+//    Copyright (C) 2009,2010,2011 Alois Schloegl <alois.schloegl@gmail.com>
 //    This function is part of the NaN-toolbox
 //    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 //

@@ -24,7 +24,7 @@ function r = ranks(X,DIM,Mode)
 
 
 %    $Id$
-%    Copyright (C) 2000-2002,2005,2010 by Alois Schloegl <a.schloegl@ieee.org>	
+%    Copyright (C) 2000-2002,2005,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    This script is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -141,7 +141,7 @@ elseif strcmp(Mode,'=='),
                 r1 = ranks(X,'traditional');
         end;
         if ~all(all(r==r1)),
-                fprintf(2,'WARNING RANKS: advanced algorithm does not agree with traditional one\n Please report to <a.schloegl@ieee.org>\n');
+                fprintf(2,'WARNING RANKS: advanced algorithm does not agree with traditional one\n Please report to <alois.schloegl@gmail.com>\n');
                 r = r1;
         end;
         r(isnan(X)) = nan;

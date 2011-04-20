@@ -9,6 +9,7 @@ FEATURES of the NaN-tb:
  - machine learning and classification toolbox
  - NaN's are treated as missing values 
  - supports weightening of data
+ - usage of multiple CPU cores 
 
  - supports DIM argument
  - less round-off errors using extended double

@@ -14,10 +14,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## Compute spreadsheet style cell address from 1-based row & column index.
+## calccelladdress (R, C) - compute spreadsheet style cell address from
+## row & column index (both 1-based).
 ## 
-## Max column index: 18278 (max ODS: 1024, OOXML: 16384).
-## Max row index 1048576 (max ODS 1.2: 65536; OOXML / ODS 1.2-extended: 1048576).
+## Max column index currently set to 18278 (max ODS: 1024, OOXML: 16384).
+## Row limits for ODF and OOXML are 65536 and 1048576, resp.
 
 ## Author: Philip Nienhuis <prnienhuis at users.sf.net>
 ## Created: 2009-12-12
@@ -26,7 +27,6 @@
 ## 2010-03-17 Simplified argument list, only row + column needed
 ## 2010-09-27 Made error message more comprehensible
 ## 2010-10-11 Added check for row range
-## 2011-03-04 Textual fixes in header
 
 function [ celladdress ] = calccelladdress (row, column)
 
@@ -49,3 +49,19 @@ function [ celladdress ] = calccelladdress (row, column)
 	celladdress = sprintf ("%s%d", str, row);
 
 endfunction
+
+%!test
+%! a = calccelladdress (1, 1);
+%! assert (a, 'A1');
+
+%!test
+%! a = calccelladdress (378, 28);
+%! assert (a, 'AB378');
+
+%!test
+%! a = calccelladdress (65536, 1024);
+%! assert (a, 'AMJ65536');
+
+%!test
+%! a = calccelladdress (1048576, 16384);
+%! assert (a, 'XFD1048576');

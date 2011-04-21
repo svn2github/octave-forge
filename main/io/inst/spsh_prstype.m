@@ -1,4 +1,4 @@
-## Copyright (C) 2010 Philip Nienhuis
+## Copyright (C) 2010,2011 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@
 ## Created: 2010-08-02
 ## Updates:
 ## 2010-08-25 Corrected help text (square -> rectangular; stressed "internal" use)
+## 2011-04-21 Formulas now don't need closing ")" (e.g., =A1+B1 is OK as well)
+##     "      Formula ptrs in output arg now OK (cellfun(@(x).... skips empty cells)
 
 function [ typearr ] = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts)
 
@@ -60,7 +62,7 @@ function [ typearr ] = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts)
 
 	obj(txtptr) = obj2(txtptr);							# Copy strings back into place
 	obj(lptr) = obj2(lptr);								# Same for logicals
-	obj(emptr) = [];									# And empty cells
+	obj(emptr) = -1;									# Add in a filler value for empty cells
 
 	typearr(txtptr) = ctype(3);							# ...and clean up 
 	typearr(emptr) = ctype(5);							# EMPTY
@@ -68,8 +70,20 @@ function [ typearr ] = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts)
 
 	if ~(spsh_opts.formulas_as_text)
 		# Find formulas (designated by a string starting with "=" and ending in ")")
-		fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1) && strncmp (x(end:end), ")", 1), obj);
+		#fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1) && strncmp (x(end:end), ")", 1), obj);
+		# Find formulas (designated by a string starting with "=")
+		fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1), obj);
 		typearr(fptr) = ctype(4);						# FORMULA
 	endif
 
 endfunction
+
+%!test
+%! tstobj = {1.5, true, []; 'Text1', '=A1+B1', '=SQRT(A1)'; NaN, {}, 0};
+%! typarr = spsh_prstype (tstobj, 3, 3, [1 2 3 4 5], struct ("formulas_as_text", 0));
+%! assert (typarr, [1 2 5; 3 4 4; 5 5 1]);
+
+%!test
+%! tstobj = {1.5, true, []; 'Text1', '=A1+B1', '=SQRT(A1)'; NaN, {}, 0};
+%! typarr = spsh_prstype (tstobj, 3, 3, [1 2 3 4 5], struct ("formulas_as_text", 1));
+%! assert (typarr, [1 2 5; 3 3 3; 5 5 1]);

@@ -52,6 +52,7 @@ SPSS file format
 
 #include <ctype.h>
 #include <math.h>
+#include <sqlite.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -179,7 +180,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	const  char DATEFORMAT[] = "%d%b%y:%H:%M:%S";
 	char   *fn = NULL;
 	char   Mode[3] = "r";
-	size_t count = 0, NS = 0, HeadLen0=80*8, HeadLen2=0, sz2 = 0, M=0;
+	size_t count = 0, HeadLen0=80*8, HeadLen2=0, sz2 = 0, M=0;
+	uint32_t NS = 0;
 	char   H0[HeadLen0];
 	char   *H2 = NULL;
 	char   SWAP = 0;
@@ -217,7 +219,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		return;
 	}
 
-	if ( PInputCount > 1)
+	if (PInputCount > 1)
 	if (mxGetClassID(PInputs[1])==mxCHAR_CLASS && mxGetNumberOfElements(PInputs[1])) {
 		mxGetString(PInputs[1],Mode,3);
 		Mode[2]=0;
@@ -231,7 +233,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	if (Mode[0]=='r' || Mode[0]=='a' ) {
 		count += fread(H0,1,80*8,fid);
 		enum FileFormat {
-			noFile, unknown, ARFF, SASXPT, SPSS, STATA
+			noFile, unknown, ARFF, SASXPT, SPSS, SQLite, STATA
 		};
 		enum FileFormat TYPE; 		/* type of file format */
 		uint8_t		LittleEndian;   /* 1 if file is LittleEndian data format and 0 for big endian data format*/
@@ -346,6 +348,15 @@ if present.
 
 */			;
 		}
+
+		else if (!memcmp(H0,"SQLite format 3\000",16) && H0[21]==64 && H0[22]==32 && H0[23]==32 ) {
+			TYPE = SQLite;
+
+			fclose(fid);
+			mexErrMsgTxt("SQLite format not supported yet");
+			return;
+		}
+
 		else if ((H0[0]>=0x6e || H0[0]<=114) && (H0[1]==1 || H0[1]==2) && H0[2]==1 && H0[3]==0) {
 		/*
 			STATA File Format

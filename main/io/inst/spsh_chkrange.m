@@ -34,6 +34,8 @@
 ## 2010-08-25 Option for supplying file pointer rather than interface_type & filename
 ##            (but this can be wasteful if the file ptr is copied)
 ## 2011-03-29 Bug fix - unrecognized pointer struct & wrong type error msg
+## 2011-04-21 Bug fix - wouldn't properly detect OOXML from extension
+##      ''    Added tests
 
 function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, intf, filename=[])
 
@@ -53,7 +55,7 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 	# Define max row & column capacity from interface type & file suffix
 	switch xtype
 		case {'COM', 'POI'}
-			if (strmatch (tolower (filename(end-3:end)), '.xls'))
+			if (strcmp ('xls', tolower (filename(end-2:end))))
 				# BIFF5 & BIFF8
 				ROW_CAP = 65536;   COL_CAP = 256;
 			else
@@ -95,3 +97,52 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 	ncols = min (ncols, nc);
 
 endfunction
+
+# Test COM using ptr struct
+%!test
+%! intf = struct ("xtype", 'COM', "app", [], "filename", 'test.xls', "workbook", [], "changed", 0, "limits", []);
+%! tstrange = 'D2:IY67356';
+%! [a1, a2, a3, a4, a5] = spsh_chkrange (tstrange, 65536, 257, intf);
+%! assert ([a1, a2, a3, a4, a5], ['D2', 65535, 253, 2, 4]);
+
+# Test COM using ptr struct
+%!test
+%! intf = struct ("xtype", 'COM', "app", [], "filename", 'test.xls', "workbook", [], "changed", 0, "limits", []);
+%! tstrange = 'D2:IY67356';
+%! [a1, a2, a3, a4, a5] = spsh_chkrange (tstrange, 65536, 257, 'COM', 'filename.xls');
+%! assert ([a1, a2, a3, a4, a5], ['D2', 65535, 253, 2, 4]);
+
+# Test POI using ptr struct
+%!test
+%! intf = struct ("xtype", 'POI', "app", [], "filename", 'test.xls', "workbook", [], "changed", 0, "limits", []);
+%! tstrange = 'D2:IY67356';
+%! [a1, a2, a3, a4, a5] = spsh_chkrange (tstrange, 65536, 257, intf);
+%! assert ([a1, a2, a3, a4, a5], ['D2', 65535, 253, 2, 4]);
+
+# Test POI OOXML using ptr struct
+%!test
+%! intf = struct ("xtype", "POI", "app", [], "filename", 'test.xlsx', "workbook", [], "changed", 0, "limits", []);
+%! tstrange = 'D3:xfe1058888';
+%! [a1, a2, a3, a4, a5] = spsh_chkrange (tstrange, 1200000, 20000, intf);
+%! assert ([a1, a2, a3, a4, a5], ['D3', 1048574, 16381, 3, 4]);
+
+# Test JXL using ptr struct
+%!test
+%! intf = struct ("xtype", "JXL", "app", [], "filename", 'test.xls', "workbook", [], "changed", 0, "limits", []);
+%! tstrange = 'D2:IY67356';
+%! [a1, a2, a3, a4, a5] = spsh_chkrange (tstrange, 65536, 257, intf);
+%! assert ([a1, a2, a3, a4, a5], ['D2', 65535, 253, 2, 4]);
+
+# Test OTK using ptr struct
+%!test
+%! intf = struct ("xtype", 'OTK', "app", [], "filename", 'test.ods', "workbook", [], "changed", 0, "limits", []);
+%! tstrange = 'D2:AML67356';
+%! [a1, a2, a3, a4, a5] = spsh_chkrange (tstrange, 65536, 1200, intf);
+%! assert ([a1, a2, a3, a4, a5], ['D2', 65535, 1021, 2, 4]);
+
+# Test JOD using ptr struct
+%!test
+%! intf = struct ("xtype", 'JOD', "app", [], "filename", 'test.ods', "workbook", [], "changed", 0, "limits", []);
+%! tstrange = 'D2:AML67356';
+%! [a1, a2, a3, a4, a5] = spsh_chkrange (tstrange, 65536, 1200, intf);
+%! assert ([a1, a2, a3, a4, a5], ['D2', 65535, 1021, 2, 4]);

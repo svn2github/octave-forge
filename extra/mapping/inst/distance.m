@@ -10,35 +10,101 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} @var{dist} = distance(@var{pt1}, @var{pt2})
+## @deftypefn {Function File} {} [@var{dist},@var{az}] = distance(@var{pt1}, @var{pt2})
+## @deftypefnx {Function File} {} [@var{dist},@var{az}] = distance(@var{pt1}, @var{pt2},@var{units})
+## @deftypefnx {Function File} {} [@var{dist},@var{az}] = distance(@var{lat1},@var{lon1},@var{lat2},@var{lon2})
+## @deftypefnx {Function File} {} [@var{dist},@var{az}] = distance(@var{lat1},@var{lon1},@var{lat2},@var{lon2},@var{units})
 ##
-## Calculates the distance (in degrees) between @var{pt1} and @var{pt2}.
-##
+## Calculates the great circle distance @var{dist} between @var{pt1} and @var{pt2} and optionally the azimuth @var{az}.
 ## @var{pt1} and @var{pt2} are two-column matrices of the form [latitude longitude].
+## The coordinates can also be given by the parameters @var{lat1}, @var{lon1}, @var{lat2} and @var{lon2}.
+## Units can be either 'degrees' (the default) or 'radians'.
+##
 ##
 ## @example
 ## >> distance([37,-76], [37,-9]) 
 ## ans = 52.309
 ## >> distance([37,-76], [67,-76])
 ## ans = 30.000
+## >> distance(0,0, 0,pi,'radians') 
+## ans = 3.1416
 ## @end example
 ##
 ## @seealso{azimuth,elevation}
 ## @end deftypefn
 
 ## Author: Andrew Collier <abcollier@users.sourceforge.net>
+## Adapted-by: Alexander Barth <abarth93@users.sourceforge.net>
 
 ## Uses "cosine formula".
 
-function dist = distance(pt1, pt2)
-  pt1 = deg2rad(pt1);
-  pt2 = deg2rad(pt2);
+function [dist,az] = distance(varargin)
+  ## default units are degrees
 
-  c = pi / 2 - pt1(1);
-  b = pi / 2 - pt2(1);
-  A = pt2(2) - pt1(2);
+  units = 'degrees';
 
-  dist = rad2deg(acos(cos(b) * cos(c) + sin(b) * sin(c) * cos(A)));
+  [reg,prop] = parseparams(varargin);
+
+  if length(reg) == 2
+    pt1 = reg{1};
+    pt2 = reg{2};
+
+    a = pt1(:,1);
+    b = pt2(:,1);
+    C = pt2(:,2) - pt1(:,2);    
+  elseif length(reg) == 4
+    a = reg{1};
+    b = reg{3};
+    C = reg{4} - reg{2};
+  else
+     error('Wrong number of type of arguments');
+  end
+
+  if length(prop) == 1    
+    units = prop{1};
+
+    if (~strcmp(units,'degrees') && ~strcmp(units,'radians'))
+      error('Only degrees and radians are allowed as units');
+    end
+  elseif length(prop) > 1
+    error('Wrong number of type of arguments');
+  end
+
+  if (strcmp(units,'degrees'))
+    a = deg2rad(a);
+    b = deg2rad(b);
+    C = deg2rad(C);
+  end
+  
+  dist = acos(sin(b) .* sin(a) + cos(b) .* cos(a) .* cos(C));
+  
+  if (strcmp(units,'degrees'))
+     dist = rad2deg(dist);
+  end
+
+  if nargout == 2
+    az = atan2(sin(C) , cos(a) .* tan(b) - sin(a) .* cos(C) );
+
+    ## bring the angle in the interval [0 2*pi[
+
+    az = mod(az,2*pi);
+
+    ## convert to degrees if desired
+
+    if (strcmp(units,'degrees'))
+       az = rad2deg(az);
+    end     
+  end
+  
 endfunction
 
-## http://www.mathworks.com/access/helpdesk/help/toolbox/map/distance.shtml
+## http://www.mathworks.com/help/toolbox/map/ref/distance.html
+
+%!test
+%! assert(distance([37,-76], [37,-9]), 52.30942093, 1e-7)
+
+%!test
+%! [d,az] = distance(0,0, 0,pi,'radians');
+%! assert(d,pi,1e-7)
+%! assert(az,pi/2,1e-7)
+

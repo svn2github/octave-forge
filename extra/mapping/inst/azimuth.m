@@ -65,7 +65,7 @@ function az = azimuth(varargin)
   if length(prop) == 1    
     units = prop{1};
 
-    if (~strcmp(units,"degrees") & ~strcmp(units,"radians"))
+    if (~strcmp(units,"degrees") && ~strcmp(units,"radians"))
       error("Only degrees and radians are allowed as units");
     end
   elseif length(prop) > 1
@@ -91,4 +91,9 @@ function az = azimuth(varargin)
   end
 endfunction
 
-## http://www.mathworks.com/access/helpdesk/help/toolbox/map/azimuth.shtml
+## http://www.mathworks.com/help/toolbox/map/ref/azimuth.html
+
+%!test
+%! assert(azimuth([10,10], [10,40]), 87.336, 1e-3)
+%! assert(azimuth([0,10], [0,40]),   90, 1e-3)
+%! assert(azimuth(pi/4,0,pi/4,-pi/2,"radians"), 5.3279, 1e-4)

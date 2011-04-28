@@ -1,9 +1,8 @@
 ## Copyright (C) 2006 Muthiah Annamalai
-## Copyright (C) 2010 Carnë Draug
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
+## the Free Software Foundation; either version 2 of the License, or
 ## (at your option) any later version.
 ## 
 ## This program is distributed in the hope that it will be useful,
@@ -64,16 +63,9 @@ function output = zenity_scale(title,text, value, minval, maxval, step, print_pa
   else
     error("zenity_scale: %s", output); ##kill -9 
   endif
-
-
-  ## In the future, this can be changed to return a file-handle if --print-partial
-  ## is selected. If so, a pipe can be open with
-  ## fid  = fopen("zenity --scale --print-partial", "r")
-  ## read = fgets(fid)
-  ##
-  ## However, fgets can't read the value currently selected, only the one right
-  ## before the last selection
-
-
-
 endfunction
+%
+%(Shamelessly copied from Søren Hauberg's zenity_calendar).
+%zenity --scale --text 'What is in your Wallet' --value 10 --min-value 0 --max-value 100 --step 5
+%zenity_scale('','What is in your Wallet',10,0,100,5)
+%

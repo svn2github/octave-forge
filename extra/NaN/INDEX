@@ -9,4 +9,4 @@ A statistics and machine learning toolbox for data with and w/o missing values
  conv2nan flag_implicit_significance xcovf train_sc test_sc
  xval classify train_lda_sparse decovm gscatter mahal
  cdfplot hist2res fss cat2bin ttest ttest2 xptopen 
- bland_altmann
+ bland_altmann nancumsum

@@ -50,6 +50,7 @@ level 1: basic functions (not derived)
 		E.g. Missing values can cause aliasing, also effects on bandpass und highpass filters need to be investigated. 
 	NANCONV         convolution
 	NANCONV2        2-dimensional convolution
+	NANCUMSUM	Cumulative sum, skipping NaN's
 	NANFILTER	filter function
 	NANFFT		Fourier transform
 

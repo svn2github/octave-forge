@@ -1,8 +1,8 @@
-function [x] = nancumsum(x, DIM)
-% NANCUMSUM  Cumulative sum while skiping NaN's. 
+function [x] = cumsumskipnan(x, DIM)
+% CUMSUMSKIPNAN  Cumulative sum while skiping NaN's. 
 % If DIM is omitted, it defaults to the first non-singleton dimension.
 % 
-% Y = nancumsum(x [,DIM])
+% Y = cumsumskipnan(x [,DIM])
 % 
 % x	input data 	
 % DIM	dimension (default: [])
@@ -35,14 +35,14 @@ function [x] = nancumsum(x, DIM)
 i = isnan(x);
 x(i) = 0;
 
-if nargout==2,
+if nargin==2,
 	x = cumsum(x,DIM);
 	x(i) = NaN;
-elseif nargout==1,
+elseif nargin==1,
 	x = cumsum(x);
 	x(i) = NaN;
 else
-	help nancumsum
+	help cumsumskipnan
 end; 	
 
 

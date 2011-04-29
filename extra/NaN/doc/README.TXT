@@ -30,6 +30,7 @@ level 1: basic functions (not derived)
 			DIM-argument and returns the number of valid elements, too.
 	COVM		covariance estimation (several modes)
 			Round-off errors avoided by using internally extended accuracy
+	CUMSUMSKIPNAN	Cumulative sum, skipping NaN's
 	DECOVM		decomposes the extended covarianced matrix into mean and cov 
 	XCOVF		cross-correlation function
 	FLAG_NANS_OCCURED	returns 0 if no NaN's appeared in the input data 
@@ -50,7 +51,6 @@ level 1: basic functions (not derived)
 		E.g. Missing values can cause aliasing, also effects on bandpass und highpass filters need to be investigated. 
 	NANCONV         convolution
 	NANCONV2        2-dimensional convolution
-	NANCUMSUM	Cumulative sum, skipping NaN's
 	NANFILTER	filter function
 	NANFFT		Fourier transform
 

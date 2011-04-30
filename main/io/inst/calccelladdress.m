@@ -27,6 +27,8 @@
 ## 2010-03-17 Simplified argument list, only row + column needed
 ## 2010-09-27 Made error message more comprehensible
 ## 2010-10-11 Added check for row range
+## 2011-04-21 Added tests
+## 2011-04-30 Simplified column name computation
 
 function [ celladdress ] = calccelladdress (row, column)
 
@@ -34,18 +36,14 @@ function [ celladdress ] = calccelladdress (row, column)
 
 	if (column > 18278 || column < 1) error ("Specified column out of range (1..18278)"); endif
 	if (row > 1048576 || row < 1), error ('Specified row out of range (1..1048576)'); endif
-	rem1 = rem ((column-1), 26);
-	str = char (rem1 + 'A');								# A-Z; rightmost digit
-	if (column > 26 && column < 703)						# AA-ZZ
-		tmp = char (floor(column - rem1) / 26 - 1 + 'A');	# Leftmost digit
-		str = [tmp str];
-	elseif (column > 702 && column < 18279)					# AAA-ZZZ
-		rem2 = rem ((column - 26 - rem1) - 1, 676);
-		str2 = char (rem2 / 26 + 'A');						# Middle digit
-		column = column -  rem2 - rem1;
-		str3 = char (column / 676 - 1 + 'A');				# Leftmost digit
-		str = [str3 str2 str];
-	endif	
+
+	str = '';
+	while (column > 0.01)
+		rmd = floor (column / 26);
+		str = [char(column - rmd * 26 + 'A' - 1) str];
+		column = rmd;
+	endwhile
+
 	celladdress = sprintf ("%s%d", str, row);
 
 endfunction

@@ -51,6 +51,7 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 	jcp = []; retval = 0;
 	isOctave = exist ('OCTAVE_VERSION', 'builtin') ~= 0;
 	if (ispc), filesep = '\'; else, filesep = '/'; end %if
+	dbug = min (max (dbug, 0), 3);
     fprintf ('\n');
 
 	% Check if MS-Excel COM ActiveX server runs
@@ -62,7 +63,8 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 		% Close Excel to avoid zombie Excel invocation
 		app.Quit();
 		delete(app);
-		if (dbug), fprintf ('OK.\n\n'); retval = 1; end %if
+		if (dbug), fprintf ('OK.\n\n'); end %if
+		retval = 1;
 	catch
 		% COM not supported
 		if (dbug), fprintf ('not working.\n\n'); end %if
@@ -78,8 +80,8 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 		else
 			jtst = (!system ('java -version 2> /dev/null'));
 		end %if
-	#else
-	#	jtst = (version -java 
+	else
+		jtst = (version -java)
 	end %if
 	if (~jtst)
 		error ("\nApparently no Java JRE installed.");
@@ -95,7 +97,6 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 		% Now check for proper version
 		% (> 1.6.x.x)
 		jver = char (javaMethod ('getProperty', 'java.lang.System', 'java.version'));
-#		jver = char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
 		cjver = strsplit (jver, '.');
 		if (sscanf (cjver{2}, '%d') < 6)
 			if (dbug)
@@ -117,7 +118,6 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 		if (dbug > 1)
 			% Check JVM virtual memory settings
 			jmem = javaMethod ('getRuntime', 'java.lang.Runtime');
-#			jmem = java_invoke ('java.lang.Runtime', 'getRuntime');
 			jmem = jmem.maxMemory().doubleValue();
 			jmem = int16 (jmem/1024/1024);
 			fprintf ('  Maximum JVM memory: %5d MiB; ', jmem);
@@ -159,10 +159,10 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 			missing1(jj) = 1; 
 		end %if
 	end %for
+	retval = jpchk1 > 1;
 	if (dbug > 1)
 		if (jpchk1 > 1)
 			fprintf ('  => Apache (POI) OK\n');
-			retval = 1;
 		else
 			fprintf ('  => Not all classes (.jar) required for POI in classpath\n');
 		end %if
@@ -208,6 +208,7 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 			missing3(jj) = 1; 
 		end %if
 	end %for
+	retval = jpchk > 0;
 	if (dbug > 1)
 		if (jpchk > 0)
 			fprintf ('  => Java/JExcelAPI (JXL) OK.\n');
@@ -217,8 +218,8 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 		end %if
 	end %if
 
-	% Try Java & OpenXLS
-	if (dbug > 1), fprintf ('\nOpenXLS (.xls (BIFF8)) <OpenXLS>:\n'); end %if
+	% Try Java & OpenXLS (experimental)
+	if (dbug > 1), fprintf ('\nOpenXLS (.xls (BIFF8)) <OpenXLS> (experimental):\n'); end %if
 	jpchk = 0; entries6 = {'OpenXLS'}; missing6 = zeros (1, numel (entries3));
 	for jj=1:length (entries6)
 		found = 0;
@@ -233,6 +234,7 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 			missing6(jj) = 1; 
 		end %if
 	end %for
+	retval = jpchk > 0;
 	if (dbug > 1)
 		if (jpchk > 0)
 			fprintf ('  => Java/OpenXLS (OXS) OK.\n');
@@ -268,14 +270,12 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 		try
 			% New in 0.8.6
 			odfvsn = javaMethod ('getOdfdomVersion', 'org.odftoolkit.odfdom.JarManifest');
-#			odfvsn = java_invoke ('org.odftoolkit.odfdom.JarManifest', 'getOdfdomVersion');
 		catch
 			% Worked in 0.7.5
 			odfvsn = javaMethod ('getApplicationVersion', 'org.odftoolkit.odfdom.Version');
-#			odfvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
 		end %try_catch
-		if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6'))
-			warning ('  *** odfdom version (%s) is not supported - use v. 0.7.5 or 0.8.6.\n', odfvsn);
+		if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6') || strcmp (odfvsn, '0.8.7'))
+			warning ('  *** odfdom version (%s) is not supported - use v. 0.7.5, or 0.8.6+.\n', odfvsn);
 		else	
 			if (dbug > 1), fprintf ('  => ODFtoolkit (OTK) OK.\n'); end %if
 			retval = 1;
@@ -300,10 +300,10 @@ function [ retval ] = chk_spreadsheet_support (path_to_jars, dbug=0)
 			missing5(jj) = 1; 
 		end %if
 	end %for
+	retval = jpchk >= 1;
 	if (dbug > 1)
 		if (jpchk >= 1)
 			fprintf ('  => jOpenDocument (JOD) OK.\n');
-			retval = 1;
 		else
 			fprintf ('  => Not all required classes (.jar) in classpath for JOD\n');
 		end %if

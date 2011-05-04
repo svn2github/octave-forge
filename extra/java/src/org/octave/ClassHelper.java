@@ -547,6 +547,8 @@ public class ClassHelper
       return (
          cls.equals ( Integer.TYPE ) ||
          cls.equals ( Integer.class ) ||
+         cls.equals ( Short.TYPE ) ||
+         cls.equals ( Short.class ) ||
          cls.equals ( Long.TYPE ) ||
          cls.equals ( Long.class ) ||
          cls.equals ( Float.TYPE ) ||
@@ -619,6 +621,14 @@ public class ClassHelper
          else if ( expType.equals ( Double.TYPE ) || expType.equals ( Double.class ) )
          {
             return new Double ( ( ( Number ) obj ).doubleValue () );
+         }
+         else if ( expType.equals ( Short.TYPE ) || expType.equals ( Short.class ) )
+         {
+            return new Short ( ( ( Number ) obj ).shortValue () );
+         }
+         else if ( expType.equals ( Long.TYPE ) || expType.equals ( Long.class ) )
+         {
+            return new Long ( ( ( Number ) obj ).longValue () );
          }
       }
       else if ( isBooleanClass ( expType ) )

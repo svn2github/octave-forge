@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 ## @deftypefnx {Function File} @var{ods} = odsopen (@var{filename}, @var{readwrite})
 ## @deftypefnx {Function File} @var{ods} = odsopen (@var{filename}, @var{readwrite}, @var{reqintf})
 ## Get a pointer to an OpenOffice_org spreadsheet in the form of return
-## argument (file pointer struct) @var{ods}.
+## argument @var{ods}.
 ##
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
@@ -28,6 +28,9 @@
 ## installed on your computer + proper javaclasspath set. These interfaces are
 ## referred to as OTK and JOD, resp., and are preferred in that order by default
 ## (depending on their presence).
+## For (currently experimental) UNO support, Octave-Java package 1.2.8 + latest
+## fixes is imperative; furthermore the relevant classes had best be added to
+## the javaclasspath by utility function chk_spreadsheet_support().
 ##
 ## @var{filename} must be a valid .ods OpenOffice.org file name including
 ## .ods suffix. If @var{filename} does not contain any directory path,
@@ -76,15 +79,15 @@
 ## 2010-10-27 Improved tracking of file changes tru ods.changed
 ## 2010-11-12 Small changes to help text
 ##     "      Added try-catch to file open sections to create fallback to other intf
-## 2010-12-06 Textual changes to info header 
+## 2011-05-06 Experimental UNO support
 ##
-## Latest change on subfunction below: 2011-02-15
+## Latest change on subfunction below: 2011-05-06
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
 	persistent odsinterfaces; persistent chkintf;
 	if (isempty (chkintf))
-		odsinterfaces = struct ( "OTK", [], "JOD", [] );
+		odsinterfaces = struct ( "OTK", [], "JOD", [], "UNO", [] );
 		chkintf = 1;
 	endif
 	
@@ -99,10 +102,13 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		# is supported anyway by emptying the corresponding var.
 		if (strcmp (tolower (reqinterface), tolower ('OTK')))
 			printf ("Java/ODFtoolkit interface requested... ");
-			odsinterfaces.OTK = []; odsinterfaces.JOD = 0;
+			odsinterfaces.OTK = []; odsinterfaces.JOD = 0; odsinterfaces.UNO = 0;
 		elseif (strcmp (tolower (reqinterface), tolower ('JOD')))
 			printf ("Java/jOpenDocument interface requested... "); 
-			odsinterfaces.OTK = 0; odsinterfaces.JOD = [];
+			odsinterfaces.OTK = 0; odsinterfaces.JOD = []; odsinterfaces.UNO = 0;
+		elseif (strcmp (tolower (reqinterface), tolower ('UNO')))
+			printf ("Java/UNO bridge interface requested... "); 
+			odsinterfaces.OTK = 0; odsinterfaces.JOD = 0; odsinterfaces.UNO = [];
 		else
 			usage (sprintf ("Unknown .ods interface \"%s\" requested. Only OTK or JOD supported", reqinterface));
 		endif
@@ -181,7 +187,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			ods.odfvsn = odsinterfaces.odfvsn;
 			odssupport += 1;
 		catch
-			if (odsinterfaces.JOD && ~rw && chk2)
+			if (xlsinterfaces.JOD && ~rw && chk2)
 				printf ('Couldn''t open file %s using OTK; trying .sxc format with JOD...\n', filename);
 			else
 				error ('Couldn''t open file %s using OTK', filename);
@@ -223,6 +229,38 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		end_try_catch
 	endif
 
+	if (odsinterfaces.UNO && ~odssupport)
+		# First the file name must be transformed into a URL
+		filename = 'file:///c:/Home/philip/MyDocs/octave/spreadsheet-tst/foo3_.ods';
+		try
+			xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap")
+			xMCF = xContext.getServiceManager ()
+			oDesktop = xMCF.createInstanceWithContext ("com.sun.star.frame.Desktop", xContext);
+			# Workaround:
+			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XComponentLoader');
+			aLoader = oDesktop.queryInterface (unotmp);
+			# Some trickery as Octave Java cannot create non-numeric arrays
+			lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
+			lProp = java_new ('com.sun.star.beans.PropertyValue', "Hidden", 0, true, []);
+			lProps(1) = lProp;
+				# save in ods struct: 
+			xComp = aLoader.loadComponentFromURL (filename, "_blank", 0, lProps);
+			# Workaround:
+			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheetDocument');
+				# save in ods struct:
+			xSpdoc = xComp.queryInterface (unotmp);
+			ods.workbook = xSpdoc;			# Needed to be able to close soffice in odsclose()
+			ods.filename = filename;
+			ods.xtype = 'UNO';
+			ods.app.xComp = xComp;			# Needed to be able to close soffice in odsclose()
+			ods.app.aLoader = aLoader;		# Needed to be able to close soffice in odsclose()
+			ods.odfvsn = 'UNO';
+			odssupport += 4;
+		catch
+			error ('Couldn''t open file %s using UNO', filename);
+		end_try_catch
+	endif
+
 #	if 
 #		<other interfaces here>
 
@@ -249,7 +287,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 endfunction
 
 
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -277,6 +315,7 @@ endfunction
 ## Currently implemented interfaces comprise:
 ## - Java & ODFtoolkit (www.apache.org)
 ## - Java & jOpenDocument (www.jopendocument.org)
+## - Java & UNO bridge (OpenOffice.org)
 ##
 ## Examples:
 ##
@@ -301,7 +340,8 @@ endfunction
 ##     "      Rearranged code a bit; fixed typos in OTK detection code (odfdvsn -> odfvsn)
 ## 2010-09-27 More code cleanup
 ## 2010-11-12 Warning added about waning support for odfdom v. 0.7.5
-## 2011-02-15 Adapted to new java-1.2.8 javaclasspath() calling style
+## 2011-05-06 Fixed wrong strfind tests
+##     "      Experimental UNO support added
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -314,25 +354,50 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
 	# Check Java support
 	try
-		tmp1 = javaclasspath ('-all');						# For java pkg > 1.2.7
-		if (isempty (tmp1)), tmp1 = javaclasspath; endif	# For java pkg < 1.2.8
+		jcp = javaclasspath;
 		# If we get here, at least Java works. Now check for proper entries
 		# in class path. Under *nix the classpath must first be split up
-		if (isunix) tmp1 = strsplit (char(tmp1), ":"); endif
+		if (isunix) jcp = strsplit (char(tmp1), ":"); endif
 		## FIXME implement more rigid Java version check a la xlsopen.
 		## ods / Java stuff is less critical than xls / Java, however
 	catch
 		# No Java support
-		odsinterfaces.OTK = 0;
-		odsinterfaces.JOD = 0;
-		if ~(isempty (odsinterfaces.POI) && isempty (odsinterfaces.JXL))
+		if ~(isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD))
 			# Some Java-based interface requested but Java support is absent
 			error ('No Java support found.');
 		else
 			# No specific Java-based interface requested. Just return
 			return;
 		endif
+		odsinterfaces.OTK = 0;
+		odsinterfaces.JOD = 0;
+		odsinterfaces.UNO = 0;
 	end_try_catch
+
+	# Try Java & UNO
+	if (isempty (odsinterfaces.UNO))
+		# entries0(1) = not a jar but a directory (<000_install_dir/program/>)
+		jpchk = 0; entries = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
+		# Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
+		# as javaclasspath is one long string. Under Windows however classpath is a cell array
+		# so we need the following more subtle, platform-independent approach:
+		for jj=1:numel (entries)
+			for ii=1:numel (jcp)
+				jcplst = strsplit (jcp{ii}, filesep);
+				jcpentry = jcplst {end};
+				if (~isempty (strfind (lower (jcpentry), lower (entries{jj}))))
+					jpchk = jpchk + 1;
+				endif
+			endfor
+		endfor
+		if (jpchk >= numel (entries))
+			odsinterfaces.UNO = 1;
+			fprintf ('  => UNO (OOo) OK\n');
+			chk1 = 1;
+		else
+			warning ('\nOne or more UNO classes (.jar) missing in javaclasspath');
+		endif
+	endif
 
 	# Try Java & ODF toolkit
 	if (isempty (odsinterfaces.OTK))
@@ -342,10 +407,10 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		# under Windows we need the following more subtle, platform-independent approach:
 		for ii=1:length (tmp1)
 			for jj=1:length (entries)
-				if (strfind ( tmp1{ii}, entries{jj})), ++jpchk; endif
+				if (~isempty (strfind ( tmp1{ii}, entries{jj}))), ++jpchk; endif
 			endfor
 		endfor
-		if (jpchk >= 2)		# Apparently all requested classes present.
+		if (jpchk >= numel(entries))		# Apparently all requested classes present.
 			# Only now we can check for proper odfdom version (only 0.7.5 & 0.8.6 work OK).
 			# The odfdom team deemed it necessary to change the version call so we need this:
 			odfvsn = ' ';
@@ -377,10 +442,10 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		jpchk = 0; entries = {"jOpenDocument"};
 		for ii=1:length (tmp1)
 			for jj=1:length (entries)
-				if (strfind (tmp1{ii}, entries{jj})), ++jpchk; endif
+				if (~isempty (strfind (tmp1{ii}, entries{jj}))), ++jpchk; endif
 			endfor
 		endfor
-		if (jpchk >= 1)
+		if (jpchk >= numel(entries))
 			odsinterfaces.JOD = 1;
 			printf (" Java/jOpenDocument (JOD) OK. ");
 			chk1 = 1;

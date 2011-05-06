@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@
 ## You need the Java package > 1.2.6 plus odfdom.jar + xercesImpl.jar
 ## and/or jopendocument-<version>.jar installed on your computer +
 ## proper javaclasspath set, to make this function work at all.
+## For UNO support, Octave-Java package 1.2.8 + latest fixes is imperative;
+## furthermore the relevant classes had best be added to the javaclasspath by
+## utility function chk_spreadsheet_support().
 ##
 ## @var{ods} must be a valid pointer struct made by odsopen() in the same
 ## octave session.
@@ -53,6 +56,8 @@
 ## 2010-10-27 Improved file change tracking tru ods.changed
 ## 2010-11-12 Keep ods file pointer when write errors occur.
 ##      "     Added optional filename arg to change filename to be written to
+## 2011-05-06 Experimental UNO support
+## 2011-05-07 Soffice now properly closed using xDesk
 
 function [ ods ] = odsclose (ods, filename=[])
 
@@ -93,6 +98,39 @@ function [ ods ] = odsclose (ods, filename=[])
 				ods.changed = 0;
 			endif
 		catch
+		end_try_catch
+
+	elseif (strcmp (ods.xtype, 'UNO'))
+		# Java & UNO bridge
+		try
+			if (ods.changed && ods.changed < 3)
+keyboard
+				# Workaround:
+				unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
+				xModel = ods.workbook.queryInterface (unotmp);
+				unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XModifiable');
+				xModified = xModel.queryInterface (unotmp);
+				if (xModified.isModified ())
+					unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XStorable');	# isReadonly() ?  	
+					xStore = ods.app.queryInterface (unotmp);
+					xStore.store;										# storeAsURL   ?
+				endif
+			endif
+			ods.changed = -1;		# Needed for check op properly shutting down OOo
+			# Workaround:
+			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
+			xModel = ods.app.xComp.queryInterface (unotmp);
+			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XCloseable');
+			xClosbl = xModel.queryInterface (unotmp);
+			xClosbl.close (true);
+			# xModel.dispose();  # Is this needed? Consistently gives com.sun.star.lang.DisposedException
+			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
+			xDesk = ods.app.aLoader.queryInterface (unotmp);
+			xDesk.terminate();
+			ods.changed = 0;
+		catch
+			warning ("Error closing ods pointer (UNO)");
+			return
 		end_try_catch
 
 #	elseif ---- < Other interfaces here >

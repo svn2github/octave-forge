@@ -26,7 +26,7 @@
 ## To make this function work at all, you need the Java package > 1.2.5 plus
 ## ODFtoolkit (version 0.7.5 or 0.8.6) & xercesImpl, and/or jOpenDocument
 ## installed on your computer + proper javaclasspath set. These interfaces are
-## referred to as OTK and JOD, resp., and are preferred in that order by default
+## referred to as OTK and JOD resp., and are preferred in that order by default
 ## (depending on their presence).
 ## For (currently experimental) UNO support, Octave-Java package 1.2.8 + latest
 ## fixes is imperative; furthermore the relevant classes had best be added to
@@ -35,6 +35,9 @@
 ## @var{filename} must be a valid .ods OpenOffice.org file name including
 ## .ods suffix. If @var{filename} does not contain any directory path,
 ## the file is saved in the current directory.
+## For UNO bridge, filenames need to be in the form "file:///<path_to_file>/filename";
+## a URL will also work. If a plain file name is given (absolute or relative)\
+## odsopen() will transform it into proper form.
 ##
 ## @var{readwrite} must be set to true ornumerical 1 if writing to spreadsheet
 ## is desired immediately after calling odsopen(). It merely serves proper
@@ -80,8 +83,9 @@
 ## 2010-11-12 Small changes to help text
 ##     "      Added try-catch to file open sections to create fallback to other intf
 ## 2011-05-06 Experimental UNO support
+## 2011-05-07 UNO support (ods2uno2oct) incorporated; relevant help text added
 ##
-## Latest change on subfunction below: 2011-05-06
+## Latest change on subfunction below: 2011-05-07
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -231,7 +235,21 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
 	if (odsinterfaces.UNO && ~odssupport)
 		# First the file name must be transformed into a URL
-		filename = 'file:///c:/Home/philip/MyDocs/octave/spreadsheet-tst/foo3_.ods';
+		if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http:///", filename))...
+			|| ~isempty (strmatch ("ftp:///", filename)) || ~isempty (strmatch ("www:///", filename)))
+			# Seems in proper shape for OOO (at first sight)
+		else
+			# Transform into URL form
+			fname = canonicalize_file_name (strsplit (filename, filesep){end});
+			# On Windows, change backslash file separator into forward slash
+			if (strcmp (filesep, "\\"))
+				tmp = strsplit (fname, filesep);
+				flen = numel (tmp);
+				tmp(2:2:2*flen) = tmp;
+				tmp(1:2:2*flen) = '/';
+				filename = [ 'file://' tmp{:} ];
+			endif
+		endif
 		try
 			xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap")
 			xMCF = xContext.getServiceManager ()

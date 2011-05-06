@@ -9,9 +9,9 @@
 # Octave - global install  (e.g. from debian package)
 OCTAVE_VERSION = 
 INCOCTAVE = -I /usr/include/octave 
-# Octave - local install (e.g. compiled from sources) 
-OCTAVE_VERSION = -3.4.0
-INCOCTAVE = -I /usr/local/include/octave$(OCTAVE_VERSION)/octave 
+# Octave - local install (e.g. compiled from sources): I recomend to compile with --enable-openmp 
+#OCTAVE_VERSION = -3.4.0
+#INCOCTAVE = -I /usr/local/include/octave$(OCTAVE_VERSION)/octave 
 
 # Matlab configuration
 MATLABDIR = /usr/local/MATLAB/R2010b
@@ -20,10 +20,16 @@ MEX_OPTION += -largeArrayDims
 
 # Mingw crosscompiler: available at http://www.nongnu.org/mingw-cross-env/
 CROSS   = $(HOME)/src/mingw-cross-env/usr/bin/i686-pc-mingw32-
+CROSS64 = $(HOME)/src/mce-w64/usr/bin/x86_64-w64-mingw32-
 # include directory for Win32-Matlab include
-W32MAT_INC = $(HOME)/bin/Matlab/R2010/extern/include/
+W32MAT_INC = $(HOME)/bin/win32/Matlab/R2010b/extern/include/
+W64MAT_INC = $(HOME)/bin/win64/Matlab/R2010b/extern/include/
 # path to GNUMEX libraries, available from here http://sourceforge.net/projects/gnumex/
-GNUMEX  = $(HOME)/bin/gnumex
+GNUMEX   = $(HOME)/bin/win32/gnumex
+GNUMEX64 = $(HOME)/bin/win64/gnumex
+# building gnumex64 was difficult, these hints were quite useful: 
+# http://sourceforge.net/mailarchive/forum.php?thread_name=AANLkTinZvxgC9ezp2P3UCX_a7TAUYuVsp2U40MQUV6qr%40mail.gmail.com&forum_name=gnumex-users
+# Instead of building "mex shortpath.c" and "mex uigetpath.c", I used empty m-functions within argout=argin; 
 ####################################################
 
 CC  	= gcc
@@ -38,10 +44,14 @@ MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 PROGS = histo_mex.mex covm_mex.mex kth_element.mex sumskipnan_mex.mex str2array.mex train.mex svmtrain_mex.mex svmpredict_mex.mex xptopen.mex 
 
 MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
-octave: $(PROGS)
-matlab: $(patsubst %.mex, %.$(MEX_EXT), $(PROGS))
+mex4o octave: $(PROGS)
+mex4m matlab: $(patsubst %.mex, %.$(MEX_EXT), $(PROGS))
 mexw32 win32:  $(patsubst %.mex, %.mexw32, $(PROGS))
-all:    octave matlab win32
+mexw64 win64:  $(patsubst %.mex, %.mexw64, $(PROGS))
+all:    octave matlab win32 win64
+
+clean:
+	-$(RM) *.o *.obj *.o64 core octave-core *.oct *~ *.mex* 
 
 $(PROGS): Makefile
 
@@ -85,8 +95,6 @@ tron.o: tron.cpp tron.h
 	$(CXX) $(CFLAGS) -c tron.cpp
 
 
-clean: ; -$(RM) *.o core octave-core *.oct *~ *.mex*
-
 #########################################################
 #	MATLAB/WIN32
 #########################################################
@@ -94,8 +102,6 @@ clean: ; -$(RM) *.o core octave-core *.oct *~ *.mex*
 	$(CROSS)$(CXX) -fopenmp -c -DMATLAB_MEX_FILE -x c++ -o $@ -I$(W32MAT_INC) -O2 -DMX_COMPAT_32 $<
 %.obj: %.c
 	$(CROSS)$(CXX) -fopenmp -c -DMATLAB_MEX_FILE -x c++ -o $@ -I$(W32MAT_INC) -O2 -DMX_COMPAT_32 $< 
-#%.obj: LAPACK/%.f
-#	$(CROSS)$(CXX) -c -DMATLAB_MEX_FILE -o$@ -I$(W32MAT_INC) -O3 -DMX_COMPAT_32 $< 
 
 train.mexw32 predict.mexw32:  train.obj linear.obj linear_model_matlab.obj tron.obj
 	$(CROSS)$(CXX) -shared $(GNUMEX)/mex.def -o $@ -L$(GNUMEX) -s $< linear_model_matlab.obj linear.obj tron.obj -llibmx -llibmex -llibmat -lz -lcholmod -lblas
@@ -108,8 +114,26 @@ svmtrain_mex.mexw32 : svmtrain_mex.obj svm.obj svm_model_matlab.obj
 %.mexw32: %.obj
 	$(CROSS)$(CXX) -shared $(GNUMEX)/mex.def -o $@ -L$(GNUMEX) -s $< -llibmx -llibmex -llibmat -lz -lcholmod -lgomp -lpthread
 
-clean:
-	-$(RM) *.o *.obj core octave-core *.oct *~ *.mex*
 
 
+#########################################################
+#	MATLAB/WIN64
+#########################################################
+
+## ToDO: fix OpenMP support: currently -fopenmp causes Matlab to crash
+%.o64: %.cpp
+	$(CROSS64)$(CXX) -c -DMATLAB_MEX_FILE -x c++ -o $@ -I$(W64MAT_INC) -O2 $<
+%.o64: %.c
+	$(CROSS64)$(CXX) -c -DMATLAB_MEX_FILE -x c++ -o $@ -I$(W64MAT_INC) -O2 $< 
+
+train.mexw64 predict.mexw64:  train.o64 linear.o64 linear_model_matlab.o64 tron.o64
+	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< linear_model_matlab.o64 linear.o64 tron.o64 -llibmx -llibmex -llibmat -lz -lcholmod -lblas
+
+svmpredict_mex.mexw64 :  svmpredict_mex.o64 svm.o64 svm_model_matlab.o64
+	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< svm_model_matlab.o64 svm.o64 -llibmx -llibmex -llibmat -lz -lcholmod
+svmtrain_mex.mexw64 : svmtrain_mex.o64 svm.o64 svm_model_matlab.o64
+	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< svm_model_matlab.o64 svm.o64 -llibmx -llibmex -llibmat -lz -lcholmod
+
+%.mexw64: %.o64
+	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< -llibmx -llibmex -llibmat -lz -lcholmod -lgomp -lpthread
 

@@ -23,10 +23,12 @@
 ## @var{shindex#} must be numeric and is 1-based. @var{spptr} can either
 ## refer to an MS-Excel spreadsheet (spptr returned by xlsopen) or an
 ## OpenOffice.org Calc spreadsheet (spptr returned by odsopen).
+## None of these inputs are checked!
 ##
 ## Be aware that especially for OpenOffice.org Calc (ODS) spreadsheets 
 ## the results can only be obtained by counting all cells in all rows;
-## this can be fairly time-consuming.
+## this can be fairly time-consuming. Reliable ods data size results can
+## only be obtained using UNO interface.
 ## For the ActiveX (COM) interface the underlying Visual Basic call relies
 ## on cached range values and counts empty cells with only formatting too,
 ## so COM returns only approximate (but usually too big) range values.
@@ -36,7 +38,7 @@
 ## @example
 ##   [trow, brow, lcol, rcol] = getusedrange (ods2, 3);
 ##   (which returns the outermost row & column numbers of the rectangle
-##    enveloping the occupied cells in the third sheet of an OpenOffice.org
+##    enveloping the occupied cells in the third sheet of an OpenOffice_org
 ##    Calc spreadsheet pointedto in struct ods2)
 ## @end example
 ##
@@ -61,9 +63,9 @@
 ## 2010-08-27 Added checks for input arguments
 ##      "     Indentation changed from tab to doublespace
 ## 2010-10-07 Added COM support (at last!)
-## 2011-03-26 Added OpenXLS support
+## 2011-05-06 Experimental support for Java/UNO bridge
 ##
-## Last subfunc update: 2011-04-15 (OTK)
+## Last subfunc update: 2011-05-06 (UNO)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -74,14 +76,14 @@ function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
     [ trow, lrow, lcol, rcol ] = getusedrange_otk (spptr, ii);
   elseif (strcmp (spptr.xtype, 'JOD'))
     [ trow, lrow, lcol, rcol ] = getusedrange_jod (spptr, ii);
+  elseif (strcmp (spptr.xtype, 'UNO'))
+    [ trow, lrow, lcol, rcol ] = getusedrange_uno (spptr, ii);
   elseif (strcmp (spptr.xtype, 'COM'))
     [ trow, lrow, lcol, rcol ] = getusedrange_com (spptr, ii);
   elseif (strcmp (spptr.xtype, 'POI'))
     [ trow, lrow, lcol, rcol ] = getusedrange_poi (spptr, ii);
   elseif (strcmp (spptr.xtype, 'JXL'))
     [ trow, lrow, lcol, rcol ] = getusedrange_jxl (spptr, ii);
-  elseif (strcmp (spptr.xtype, 'OXS'))
-    [ trow, lrow, lcol, rcol ] = getusedrange_oxs (spptr, ii);
   else
     error ('Only OTK, JOD, POI and JXL interface implemented');
   endif
@@ -117,17 +119,12 @@ endfunction
 ## 2010-11-13 Catched jOpenDocument bug (1.2bx) where string cells have no office:value-type
 ##            attrib set (by JOD). Somehow OTK is more robust as it catches these cells;
 ##            Currently this fix is just commented.
-## 2011-03-23 Adapted to odfdom 0.8.7 (getXPath method call changed)
-## 2011-04-15 Bugfix (around l. 176) wrong test syntax for finding rightm filler table cells
 
 function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
 
   odfcont = ods.workbook;		# Local copy just in case
-  if (strcmp (ods.odfvsn, '0.8.7'))
-    xpath = ods.workbook.getXPath;
-  else
-    xpath = ods.app.getXPath;
-  endif
+
+  xpath = ods.app.getXPath;
   # Create an instance of type NODESET for use in subsequent statement
   NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
   # Get table-rows in sheet no. wsh. Sheet count = 1-based (!)
@@ -175,7 +172,7 @@ function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
           rc = rc + lcell.getTableNumberColumnsRepeatedAttribute ();
         endfor
         # Watch out for filler tablecells
-        if isempty (findstr ('office:value-type', char (lcell))) || isempty (findstr ('<text:', char (lcell)))
+        if isempty (findstr ('office:value-type', char (lcell)) || findstr ('<text:', char (lcell)))
           rc = rc - lcell.getTableNumberColumnsRepeatedAttribute ();
         endif
         rcol = max (rcol, rc);
@@ -341,6 +338,67 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 endfunction
 
 
+## Copyright (C) 2011 Philip Nienhuis
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## getusedrange_uno
+
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
+## Created: 2011-05-06
+
+function [ srow, erow, scol, ecol ] = getusedrange_uno (ods, ii)
+
+  # Get desired sheet
+  sheets = ods.workbook.getSheets ();
+  sh_names = sheets.getElementNames ();
+  unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
+  sh = sheets.getByName(sh_names(ii)).getObject.queryInterface (unotmp);
+
+  # Prepare cell range query
+  unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XCellRangesQuery');
+  xRQ = sh.queryInterface (unotmp);
+  Cellflgs = javaObject ("java.lang.Short", "23");
+  ccells = xRQ.queryContentCells (Cellflgs);
+
+  # Get addresses of all blocks containing data
+  addrs = ccells.getRangeAddressesAsString ();
+  # Strip sheet name from addresses
+  adrblks = strsplit (addrs, ',');
+  if (isempty (adrblks))
+    trow = brow = lcol = rcol = 0;
+    return
+  endif
+
+  # Find leftmost & rightmost columns, and highest and lowest row with data
+  srow = scol = 1e10;
+  erow = ecol = 0;
+  for ii=1:numel (adrblks)
+    range = strsplit (adrblks{ii}, '.'){2};
+    [dummy, nrows, ncols, trow, lcol] = parse_sp_range (range);
+    brow = trow + nrows - 1;
+    rcol = lcol + ncols - 1;
+    srow = min (srow, trow);
+    scol = min (scol, lcol);
+    erow = max (erow, brow);
+    ecol = max (ecol, rcol);
+  endfor
+
+endfunction
+
+
 ## Copyright (C) 2010 Philip Nienhuis
 ## 
 ## This program is free software; you can redistribute it and/or modify
@@ -361,16 +419,26 @@ endfunction
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2010-10-07
-## Updates:
-## 2010-12-01 Found much simpler trick which also works on Excel 97
 
 function [ trow, brow, lcol, rcol ] = getusedrange_com (xls, ii)
 
 	sh = xls.workbook.Worksheets (ii);
 	
-    [tl, nrows, ncols, trow, lcol] = parse_sp_range (strrep (sh.UsedRange.Address, '$', ''));
-    brow = trow + nrows - 1;
-    rcol = lcol + ncols - 1;
+	# Decipher used range. Beware, UsedRange() returns *cached* rectangle of
+	# all spreadsheet cells containing *anything*, including just formatting
+	# (i.e., empty cells are included too). ==> This is an approximation only
+	allcells = sh.UsedRange;
+	
+	# Get top left cell as a Range object
+	toplftcl = allcells.Columns(1).Rows(1);
+	
+	# Count number of rows & cols in virtual range from A1 to top left cell
+	lcol = sh.Range ("A1", toplftcl).columns.Count;
+	trow = sh.Range ("A1", toplftcl).rows.Count;
+	
+	# Add real occupied rows & cols to obtain end row & col
+	brow = trow + allcells.rows.Count() - 1;
+	rcol = lcol + allcells.columns.Count() - 1;
 	
 	# Check if there are real data
 	if ((lcol == rcol) && (trow = brow))
@@ -490,42 +558,4 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jxl (xls, wsh)
 		endfor
 	endif
 
-endfunction
-
-
-## Copyright (C) 2011 Philip Nienhuis <prnienhuis at users.sf.net>
-## 
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-## 
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-## 
-## You should have received a copy of the GNU General Public License
-## along with Octave; see the file COPYING.  If not, see
-## <http://www.gnu.org/licenses/>.
-
-## getusedrange_oxs - get occupied data cell range from Excel sheet
-## using java/OpenXLS
-
-## Author: Philip Nienhuis
-## Created: 2011-03-26
-
-function [ trow, brow, lcol, rcol ] = getusedrange_oxs (xls, wsh)
-
-	sh = xls.workbook.getWorkSheet (wsh - 1);			# OXS sheet count 0-based
-	if (sh.getNumRows)
-		trow = sh.getFirstRow () + 1;
-		brow = sh.getLastRow ();
-		lcol = sh.getFirstCol () + 1;
-		rcol = sh.getLastCol ();
-	else
-		# Might be a chart sheet
-		trow = brow = lcol = rcol = 0;
-	endif
-	
 endfunction

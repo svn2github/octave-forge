@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{ods}, @var{rstatus} ] = ods2oct (@var{ods}, @var{wsh}, @var{range}, @var{options})
 ##
 ## Read data contained within range @var{range} from worksheet @var{wsh}
-## in an OpenOffice_org spreadsheet file pointed to in struct @var{ods}.
+## in an OpenOffice.org spreadsheet file pointed to in struct @var{ods}.
 ##
 ## @var{wsh} is either numerical or text, in the latter case it is 
 ## case-sensitive and it may be max. 31 characters long.
@@ -111,7 +111,7 @@
 ## 2010-08-27 Added ods3jotk2oct - internal function for odfdom-0.8.6.jar
 ##      "     Extended check on spsh_opts (must be a struct) 
 ## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to here
-## 2010-12-06 Textual changes to info header 
+## 2011-05-06 Experimental UNO support
 ##
 ## (Latest update of subfunctions below: 2010-11-13)
 
@@ -157,6 +157,9 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
 	elseif (strcmp (ods.xtype, 'JOD'))
 		# Read ods file tru Java & jOpenDocument. JOD doesn't know about formulas :-(
 		[rawarr, ods, rstatus] = ods2jod2oct  (ods, wsh, datrange);
+	elseif (strcmp (ods.xtype, 'UNO'))
+		# Read ods file tru Java & UNO
+		[rawarr, ods, rstatus] = ods2uno2oct (ods, wsh, datrange, spsh_opts);
 #	elseif 
 	#	---- < Other interfaces here >
 	else
@@ -164,7 +167,7 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
 	endif
 
 	# Optionally strip empty outer rows and columns & keep track of original data location
-	if (spsh_opts.strip_array)
+	if (spsh_opts.strip_array && ~isempty (rawarr))
 		emptr = cellfun ('isempty', rawarr);
 		if (all (all (emptr)))
 			rawarr = {};
@@ -754,5 +757,117 @@ function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 	ods.limits = [lcol, rcol; trow, brow];
 	
 	rstatus = ~isempty (rawarr);
+
+endfunction
+
+
+## Copyright (C) 2011 Philip Nienhuis <prnienhuis@users.sf.net>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## ods2uno2oct
+
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
+## Created: 2011-05-05
+## Updates:
+##
+
+function [rawarr, ods, rstatus] = ods2uno2oct  (ods, wsh, datrange, spsh_opts)
+
+  sheets = ods.workbook.getSheets ();
+  sh_names = sheets.getElementNames ();
+
+  # Check sheet pointer
+  if (isnumeric (wsh))
+	if (wsh < 1 || wsh > numel (sh_names))
+      error ("Sheet index %d out of range 1-%d", wsh, numel (sh_names));
+    endif
+  else
+    ii = strmatch (wsh, {sh_names});
+    if (isempty (ii)), error ("Sheet '%s' not found", wsh); endif
+    wsh = ii;
+  endif
+  unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
+  sh = sheets.getByName(sh_names(wsh)).getObject.queryInterface (unotmp);
+
+  unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XCellRangesQuery');
+  xRQ = sh.queryInterface (unotmp);
+  # Get cell ranges of all rectangles containing data. Type values:
+  #java_get ('com.sun.star.sheet.CellFlags', 'VALUE')  ans =  1
+  #java_get ('com.sun.star.sheet.CellFlags', 'DATETIME')  ans =  2
+  #java_get ('com.sun.star.sheet.CellFlags', 'STRING')  ans =  4
+  #java_get ('com.sun.star.sheet.CellFlags', 'FORMULA')  ans =  16
+  # Yep, boolean is lacking...
+  Cellflgs = javaObject ("java.lang.Short", "23");
+  ccells = xRQ.queryContentCells (Cellflgs);
+  addrs = ccells.getRangeAddressesAsString ();
+
+  # Strip sheet name from addresses
+  adrblks = strsplit (addrs, ',');
+  if (isempty (adrblks))
+    warning ('Sheet %s contains no data', sh_names{wsh});
+    return
+  endif
+
+  # Either parse (given cell range) or prepare (unknown range) help variables.
+  # As OpenOffice knows the occupied range, we need the limits anyway to avoid
+  # out-of-range errors
+  [ trow, brow, lcol, rcol ] = getusedrange (ods, wsh);
+  if (isempty (datrange))
+    nrows = brow - trow + 1;	# Number of rows to be read
+    ncols = rcol - lcol + 1;	# Number of columns to be read
+  else
+    [dummy, nrows, ncols, srow, scol] = parse_sp_range (datrange);
+    # Truncate range silently if needed
+    brow = min (srow + nrows - 1, brow);
+    rcol = min (scol + ncols - 1, rcol);
+    trow = max (trow, srow);
+    lcol = max (lcol, scol);
+    nrows = min (brow - trow + 1, nrows);	# Number of rows to be read
+    ncols = min (rcol - lcol + 1, ncols);	# Number of columns to be read
+  endif
+  # Create storage for data at Octave side
+  rawarr = cell (nrows, ncols);
+
+  # Get data. Apparently row & column indices are 0-based in UNO
+  for ii=trow-1:brow-1
+    for jj=lcol-1:rcol-1
+      XCell = sh.getCellByPosition (jj, ii);
+      cType = XCell.getType().getValue ();
+      switch cType
+        case 1	# Value
+          rawarr{ii-trow+2, jj-lcol+2} = XCell.getValue ();
+        case 2	# String
+          unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.text.XText');
+          rawarr{ii-trow+2, jj-lcol+2} = XCell.queryInterface (unotmp).getString ();
+        case 3	# Formula
+          if (spsh_opts.formulas_as_text)
+            rawarr{ii-trow+2, jj-lcol+2} = XCell.getFormula ();
+          else
+            unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.text.XText');
+            rawarr{ii-trow+2, jj-lcol+2} = XCell.queryInterface (unotmp).getString ();
+          endif
+        otherwise
+          # Empty cell
+      endswitch
+    endfor
+  endfor 
+
+  # Keep track of data rectangle limits
+  ods.limits = [lcol, rcol; trow, brow];
+
+  rstatus = ~isempty (rawarr);
 
 endfunction

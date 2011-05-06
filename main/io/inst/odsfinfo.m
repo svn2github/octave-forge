@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{filetype}] = odsfinfo (@var{filename} [, @var{reqintf}])
 ## @deftypefnx {Function File} [@var{filetype}, @var{sh_names}] = odsfinfo (@var{filename} [, @var{reqintf}])
-## Query an OpenOffice_org Calc spreadsheet file @var{filename} (with ods
+## Query an OpenOffice_org spreadsheet file @var{filename} (with .ods
 ## suffix) for some info about its contents.
 ##
 ## If @var{filename} is a recognizable OpenOffice.org spreadsheet file,
@@ -70,7 +70,8 @@
 ## 2010-03-20 "Beautified" output (for OTK ), used range now in more tabular form
 ## 2010-05-23 Updated jOpenDocument support (can also get occupied data range now)
 ## 2010-05-31 Added remark about delays when determining occupied data range
-## 2011-03-04 Minor textual header change (deleted a ".")
+## 2011-03-23 Adapted to odfdom 0.8.7 (changed getXPath method call)
+## 2011-05-07 Experimental UNO support added
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 
@@ -88,7 +89,11 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 		if (strcmp (ods.xtype, 'OTK'))
 			# Get contents and table (= sheet) stuff from the workbook
 			odfcont = ods.workbook;		# Local copy just in case
-			xpath = ods.app.getXPath;
+			if (strcmp (ods.odfvsn, '0.8.7'))
+				xpath = ods.workbook.getXPath;
+			else
+				xpath = ods.app.getXPath;
+			endif
 
 			# Create an instance of type NODESET for use in subsequent statement
 			NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
@@ -106,10 +111,10 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 					[ tr, lr, lc, rc ] = getusedrange (ods, ii);
 					if (tr)
 						printf (sprintf("%s (used range = %s:%s)", \
-						adj_str(1:(30 - length(sheetnames{ii}))), \
+						adj_str(1:(30 - length (sheetnames{ii}))), \
 						calccelladdress (tr, lc), calccelladdress (lr, rc)));
 					else
-						printf ("%s (empty)", adj_str(1:(30 - length(sheetnames{ii}))));
+						printf ("%s (empty)", adj_str(1:(30 - length (sheetnames{ii}))));
 					endif
 					printf ("\n");
 				endif
@@ -125,10 +130,29 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 					[ tr, lr, lc, rc ] = getusedrange (ods, ii);
 					if (tr)
 						printf (sprintf("%s (used range = %s:%s)", \
-						adj_str(1:(30 - length(sheetnames{ii}))), \
+						adj_str(1:(30 - length (sheetnames{ii}))), \
 						calccelladdress (tr, lc), calccelladdress (lr, rc)));
 					else
-						printf ("%s (empty)", adj_str(1:(30 - length(sheetnames{ii}))));
+						printf ("%s (empty)", adj_str(1:(30 - length (sheetnames{ii}))));
+					endif
+					printf ("\n");
+				endif
+			endfor
+			
+		elseif (strcmp (ods.xtype, 'UNO'))
+			sheets = ods.workbook.getSheets ();
+			sheetnames = sheets.getElementNames ();		# A Java object, NOT a cell array
+			nr_of_sheets = numel (sheetnames);
+			for ii=1:nr_of_sheets
+				printf (sprintf("%s", sheetnames(ii)));	# () as it is a Java object
+				if (onscreen) 
+					[ tr, lr, lc, rc ] = getusedrange (ods, ii);
+					if (tr)
+						printf (sprintf ("%s (used range = %s:%s)", \
+						adj_str (1:(30 - length (sheetnames(ii)))), \
+						calccelladdress (tr, lc), calccelladdress (lr, rc)));
+					else
+						printf ("%s (empty)", adj_str(1:(30 - length (sheetnames(ii)))));
 					endif
 					printf ("\n");
 				endif

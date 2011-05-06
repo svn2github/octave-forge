@@ -6,7 +6,7 @@ endif
 
 TARGETS=waitbar.oct $(LISTEN) xmlread.oct  \
 	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct \
-	cell2cell.oct partarray.oct
+	cell2cell.oct partarray.oct sample.oct
 
 all:	$(TARGETS)
 
@@ -65,6 +65,9 @@ cell2cell.oct: cell2cell.cc
 	$(MKOCTFILE) $(MISCDEFS) $<
 
 partarray.oct: partarray.cc
+	$(MKOCTFILE) $(MISCDEFS) $<
+
+sample.oct: sample.cc
 	$(MKOCTFILE) $(MISCDEFS) $<
 
 clean: ; -$(RM) *.o octave-core core *.oct *~ $(t2.1.58)

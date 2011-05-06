@@ -251,8 +251,8 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			endif
 		endif
 		try
-			xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap")
-			xMCF = xContext.getServiceManager ()
+			xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap");
+			xMCF = xContext.getServiceManager ();
 			oDesktop = xMCF.createInstanceWithContext ("com.sun.star.frame.Desktop", xContext);
 			# Workaround:
 			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XComponentLoader');

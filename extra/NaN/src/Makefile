@@ -43,12 +43,14 @@ MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
 PROGS = histo_mex.mex covm_mex.mex kth_element.mex sumskipnan_mex.mex str2array.mex train.mex svmtrain_mex.mex svmpredict_mex.mex xptopen.mex 
 
-MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
 mex4o octave: $(PROGS)
+ifneq (, $(ls -1 $(MATLABDIR)))
+MEX_EXT = $(shell $(MATLABDIR)/bin/mexext)
 mex4m matlab: $(patsubst %.mex, %.$(MEX_EXT), $(PROGS))
+endif
 mexw32 win32:  $(patsubst %.mex, %.mexw32, $(PROGS))
 mexw64 win64:  $(patsubst %.mex, %.mexw64, $(PROGS))
-all:    octave matlab win32 win64
+all:    octave
 
 clean:
 	-$(RM) *.o *.obj *.o64 core octave-core *.oct *~ *.mex* 

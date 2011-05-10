@@ -1,7 +1,7 @@
 diff --git a/bind.c b/bind.c
 --- a/bind.c
 +++ b/bind.c
-@@ -849,7 +849,7 @@
+@@ -849,10 +849,10 @@
        filename = SYS_INPUTRC;
      }
  
@@ -9,7 +9,11 @@ diff --git a/bind.c b/bind.c
 +#if defined (__MSDOS__) || defined (_WIN32)
    if (_rl_read_init_file (filename, 0) == 0)
      return 0;
-   filename = "~/_inputrc";
+-  filename = "~/_inputrc";
++  filename = "~/.inputrc";
+ #endif
+   return (_rl_read_init_file (filename, 0));
+ }
 diff --git a/complete.c b/complete.c
 --- a/complete.c
 +++ b/complete.c
@@ -271,11 +275,18 @@ diff --git a/input.c b/input.c
  
  #define any_typein (push_index != pop_index)
  
-@@ -160,6 +168,163 @@
+@@ -160,6 +168,183 @@
    return (push_index != pop_index);
  }
  
 +#if defined (_WIN32)
++#include <ctype.h>
++#define METAFY(c) \
++  if( rec.Event.KeyEvent.dwControlKeyState & (LEFT_ALT_PRESSED) ) { \
++    buf[bufidx++] = (c); \
++    return 0033; \
++  };
++
 +static int win32_getch ()
 +{
 +  INPUT_RECORD rec;
@@ -310,9 +321,11 @@ diff --git a/input.c b/input.c
 +                        char c = rec.Event.KeyEvent.uChar.AsciiChar;
 +                        if (GetOEMCP () == GetConsoleCP ())
 +                          OemToCharBuff (&c, &c, 1);
++                        METAFY(c);
 +                        return (int)(unsigned char)c;
 +                      }
 +                    else
++                      METAFY(rec.Event.KeyEvent.uChar.UnicodeChar);
 +                      return (int)rec.Event.KeyEvent.uChar.UnicodeChar;
 +                  }
 +                else
@@ -327,11 +340,21 @@ diff --git a/input.c b/input.c
 +                        buf[bufidx++] = '[';
 +                        return 0033;
 +                      case VK_RIGHT:
-+                        buf[bufidx++] = 'C';
++                        if (rec.Event.KeyEvent.dwControlKeyState & (RIGHT_CTRL_PRESSED|LEFT_CTRL_PRESSED)) {
++                          /* Ctrl-RIGHT */
++                          buf[bufidx++] = 'R';
++                        } else {
++                          buf[bufidx++] = 'C';
++                        }
 +                        buf[bufidx++] = '[';
 +                        return 0033;
 +                      case VK_LEFT:
-+                        buf[bufidx++] = 'D';
++                        if (rec.Event.KeyEvent.dwControlKeyState & (RIGHT_CTRL_PRESSED|LEFT_CTRL_PRESSED)) {
++                          /* Ctrl-RIGHT */
++                          buf[bufidx++] = 'L';
++                        } else {
++                          buf[bufidx++] = 'D';
++                        }
 +                        buf[bufidx++] = '[';
 +                        return 0033;
 +                      case VK_HOME:
@@ -343,10 +366,10 @@ diff --git a/input.c b/input.c
 +                        buf[bufidx++] = '[';
 +                        return 0033;
 +                      case VK_DELETE:
-+                        buf[bufidx++] = '~';
-+                        buf[bufidx++] = '3';
-+                        buf[bufidx++] = '[';
-+                        return 0033;
++                        /* support for META-DEL: same as META-D */
++                        METAFY('d');
++                        /* otherwise DEL corresponds to Ctrl-D */
++                        return 4;
 +                      default:
 +                        break;
 +                    }
@@ -357,6 +380,7 @@ diff --git a/input.c b/input.c
 +        }
 +    } while (1);
 +}
++#undef METAFY
 +
 +static int win32_read (int fh, void *buf, int size)
 +{
@@ -435,7 +459,7 @@ diff --git a/input.c b/input.c
  /* If a character is available to be read, then read it and stuff it into
     IBUFFER.  Otherwise, just return.  Returns number of characters read
     (0 if none available) and -1 on error (EIO). */
-@@ -216,11 +381,28 @@
+@@ -216,11 +401,28 @@
      }
  #endif /* O_NDELAY */
  
@@ -469,7 +493,7 @@ diff --git a/input.c b/input.c
  #endif
  
    /* If there's nothing available, don't waste time trying to read
-@@ -462,10 +644,33 @@
+@@ -462,10 +664,33 @@
      {
        RL_CHECK_SIGNALS ();
  
@@ -586,7 +610,19 @@ diff --git a/parens.c b/parens.c
 diff --git a/readline.c b/readline.c
 --- a/readline.c
 +++ b/readline.c
-@@ -220,7 +220,11 @@
+@@ -95,6 +95,11 @@
+ static int _rl_subseq_result PARAMS((int, Keymap, int, int));
+ static int _rl_subseq_getchar PARAMS((int));
+ 
++#if defined(__MINGW32__)
++static int operate_and_get_next PARAMS((int, int));
++static int set_saved_history PARAMS((void));
++#endif
++
+ /* **************************************************************** */
+ /*								    */
+ /*			Line editing input utility		    */
+@@ -220,7 +225,11 @@
  
  /* The style of `bell' notification preferred.  This can be set to NO_BELL,
     AUDIBLE_BELL, or VISIBLE_BELL. */
@@ -598,7 +634,19 @@ diff --git a/readline.c b/readline.c
       
  /* String inserted into the line by rl_insert_comment (). */
  char *_rl_comment_begin;
-@@ -1123,6 +1127,27 @@
+@@ -998,6 +1007,11 @@
+   /* Each line starts in insert mode (the default). */
+   _rl_set_insert_mode (RL_IM_DEFAULT, 1);
+ 
++#if defined(__MINGW32__)
++  rl_add_defun ("operate-and-get-next", operate_and_get_next, -1);
++  rl_bind_key_if_unbound_in_map (CTRL ('O'), operate_and_get_next, emacs_standard_keymap);
++#endif
++
+   return 0;
+ }
+ 
+@@ -1123,6 +1137,27 @@
      }
  }
  
@@ -626,18 +674,73 @@ diff --git a/readline.c b/readline.c
  /* Bind some common arrow key sequences in MAP. */
  static void
  bind_arrow_keys_internal (map)
-@@ -1159,6 +1184,11 @@
+@@ -1159,6 +1194,7 @@
    rl_bind_keyseq_if_unbound ("\340P", rl_get_next_history);
    rl_bind_keyseq_if_unbound ("\340M", rl_forward_char);
    rl_bind_keyseq_if_unbound ("\340K", rl_backward_char);
-+  rl_bind_keyseq_if_unbound ("\340G", rl_beg_of_line);
-+  rl_bind_keyseq_if_unbound ("\340O", rl_end_of_line);
-+  rl_bind_keyseq_if_unbound ("\340S", rl_delete);
-+  rl_bind_keyseq_if_unbound ("\033[3~", rl_delete);
 +  rl_bind_keyseq_if_unbound ("\033[X", _rl_update_terminal_size);
  #endif
  
    _rl_keymap = xkeymap;
+@@ -1255,3 +1291,58 @@
+ 
+   return (0);
+ }
++
++/* 2011-Feb-18  Benjamin Lindner <lindnerb@users.sourceforge.net>
++   
++   Add the very cool feature of operate-and-get-next, and bind it to Ctrl-O
++   
++   Shamelessly copied verbatim from bashline.c from 
++   http://ftp.gnu.org/gnu/bash/bash-4.2.tar.gz
++ */
++
++#if defined(__MINGW32__)
++static rl_hook_func_t *old_rl_startup_hook = (rl_hook_func_t *)NULL;
++
++/* start verbatim copy from bashline.c */
++
++/* The equivalent of the Korn shell C-o operate-and-get-next-history-line
++   editing command. */
++static int saved_history_line_to_use = -1;
++
++static int
++set_saved_history ()
++{
++  if (saved_history_line_to_use >= 0)
++    rl_get_previous_history (history_length - saved_history_line_to_use, 0);
++  saved_history_line_to_use = -1;
++  rl_startup_hook = old_rl_startup_hook;
++  return (0);
++}
++
++static int
++operate_and_get_next (count, c)
++     int count, c;
++{
++  int where;
++
++  /* Accept the current line. */
++  rl_newline (1, c);
++
++  /* Find the current line, and find the next line to use. */
++  where = where_history ();
++
++  if ((history_is_stifled () && (history_length >= history_max_entries)) ||
++      (where >= history_length - 1))
++    saved_history_line_to_use = where;
++  else
++    saved_history_line_to_use = where + 1;
++
++  old_rl_startup_hook = rl_startup_hook;
++  rl_startup_hook = set_saved_history;
++
++  return 0;
++}
++
++/* end verbatim copy from bashline.c */
++
++#endif   /* defined(__MINGW32__) */
 diff --git a/support/shobj-conf b/support/shobj-conf
 --- a/support/shobj-conf
 +++ b/support/shobj-conf
@@ -653,7 +756,20 @@ diff --git a/support/shobj-conf b/support/shobj-conf
 diff --git a/terminal.c b/terminal.c
 --- a/terminal.c
 +++ b/terminal.c
-@@ -628,10 +628,12 @@
+@@ -429,8 +429,12 @@
+   _rl_term_clrpag = _rl_term_cr = _rl_term_clreol = (char *)NULL;
+   tty = rl_instream ? fileno (rl_instream) : 0;
+ 
++/* the win32 driver from ncurses expects either an empty TERM name
++   or "unknown". If it's empty, keep it empty (don't use "dumb") */
++#if !defined(__MINGW32__)
+   if (term == 0)
+     term = "dumb";
++#endif
+ 
+   /* I've separated this out for later work on not calling tgetent at all
+      if the calling application has supplied a custom redisplay function,
+@@ -628,10 +632,12 @@
  {
    register int i;
  
@@ -666,7 +782,7 @@ diff --git a/terminal.c b/terminal.c
      for (i = 0; i < count; i++)
        putc ('\b', _rl_out_stream);
    return 0;
-@@ -661,11 +663,16 @@
+@@ -661,11 +667,16 @@
  	default:
  	  break;
  	case VISIBLE_BELL:

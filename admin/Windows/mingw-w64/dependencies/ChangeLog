@@ -1,5 +1,14 @@
 2011-May-10  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
+	update readline patch
+	
+	patches/:
+	    * readline-6.1.patch: update patch to support meta-key and the
+		operate-and-get-next feature (C-x-o). Add C-Left (\033[L) and 
+		C-Right (\033[R) sequences. Fix TERM name.
+
+2011-May-10  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
 	fix install issues with fltk and freetype
 	
 	makefiles/: 

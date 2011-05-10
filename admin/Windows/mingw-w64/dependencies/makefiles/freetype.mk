@@ -68,9 +68,8 @@ freetype-reinstall :
 #  $prefix/include/freetype/config
 # and remove all build-time local paths from the config scripts
 freetype-install-post :
-	if test ! -e $(PREFIX)/include/freetype; then mkdir $(PREFIX)/include/freetype; fi
-	mv -t $(PREFIX)/include/freetype $(PREFIX)/include/freetype2/freetype/*
-	rmdir $(PREFIX)/include/freetype2/freetype
+	if test -d $(PREFIX)/include/freetype; then rm -rf $(PREFIX)/include/freetype; fi
+	mv -t $(PREFIX)/include $(PREFIX)/include/freetype2/freetype
 	rmdir $(PREFIX)/include/freetype2
 	sed -e "s/^srcdir=.*/srcdir=/" \
 	    -e "s/^prefix=.*/prefix=/" \

@@ -1,3 +1,12 @@
+2011-May-10  Benjamin Lindner <lindnerb@users.sourceforge.net>
+
+	fix install issues with fltk and freetype
+	
+	makefiles/: 
+	   * fltk.mk: remove build-time -l libraries and -I paths from 
+		fltk-config
+	   * freetype.mk: fix post-install include path
+
 2011-Mar-10  Benjamin Lindner <lindnerb@users.sourceforge.net>
 
 	fix various build issues

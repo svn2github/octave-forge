@@ -84,6 +84,8 @@ fltk-post-install :
 	    -e "s/^bindir=.*/bindir=/" \
 	    -e "s/^includedir=.*/includedir=/" \
 	    -e "s/^libdir=.*/libdir=/" \
+	    -e "s/includes=-I.*/includes=/" \
+	    -e "s/libs=-L.*/libs=/" \
 	    < $(PREFIX)/bin/fltk-config > $(PREFIX)/bin/fltk-config-mod && \
 	mv $(PREFIX)/bin/fltk-config-mod $(PREFIX)/bin/fltk-config
 

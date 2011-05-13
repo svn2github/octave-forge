@@ -1,116 +1,186 @@
-changeset:   22:1ff84dc91041
-tag:         tip
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Feb 09 10:52:42 2010 +0100
-summary:     Use fortran_vec() method instead const_cast<double*> to obtain pointers and improve the use of warning function
+2011-05-13  José Luis García Pallero  <jgpallero@gmail.com>
 
-changeset:   21:2f1c7488eace
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Sat Feb 06 17:43:12 2010 +0100
-summary:     Date change
+	* .hgtags:
+	version 1.0.2
+	[9f5db47ce5c1] [tip]
 
-changeset:   20:671ddf3e2a77
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Sat Feb 06 17:40:53 2010 +0100
-summary:     Change criteria for catching errors
+	* DESCRIPTION:
+	Update the DESCRIPTION file with the new version number
+	[eb30fc53c157] [OctPROJ-1.0.2]
 
-changeset:   19:bcdb32b735f9
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Sat Feb 06 17:40:41 2010 +0100
-summary:     Update documentation
+	* src/_op_fwd.cc, src/_op_inv.cc, src/_op_transform.cc:
+	Update the C++ functions in order to work with the modified PROJ.4
+	wrapper functions
+	[95cf6373e173]
 
-changeset:   18:a402765a20b8
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Sat Feb 06 17:39:59 2010 +0100
-summary:     Change criteria for catching errors
+	* src/projwrap.c, src/projwrap.h:
+	Added new variables to the wrapper functions in order to allow the
+	possibility of work with arrays whose elements are not contiguous in
+	memory and use new internal variables
+	[22a510622b4b]
 
-changeset:   17:56e3823d72cf
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Sat Feb 06 15:43:48 2010 +0100
-summary:     Changes in test sentences and auxiliary subfunctions
+2010-11-29  José Luis García Pallero  <jgpallero@gmail.com>
 
-changeset:   16:045b046bc43a
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Sat Feb 06 14:04:26 2010 +0100
-summary:     Changes in test sentences
+	* .hgtags:
+	Version 1.0.1
+	[debd482d705d]
 
-changeset:   15:91f6ea5161f7
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Sat Feb 06 13:59:59 2010 +0100
-summary:     Testing input arguments with auxiliary subfunctions
+	* DESCRIPTION:
+	Change the date in DESCRIPTION file
+	[e6a0252bfc2a] [OctPROJ-1.0.1]
 
-changeset:   14:13ef8e3568c5
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Sat Feb 06 12:37:57 2010 +0100
-summary:     Comment correction
+2010-11-28  José Luis García Pallero  <jgpallero@gmail.com>
 
-changeset:   13:6cf0c2c16261
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Jan 19 10:17:13 2010 +0100
-summary:     Documentation update
+	* src/Makefile:
+	Update CC variable in Makefile
+	[639149f94f76]
 
-changeset:   12:8e2c9f00c63c
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 22 18:43:50 2009 +0100
-summary:     Changes in parsing input arguments
+2010-11-26  José Luis García Pallero  <jgpallero@gmail.com>
 
-changeset:   11:56d5916bed60
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 22 17:39:28 2009 +0100
-summary:     Update general documentation
+	* DESCRIPTION:
+	Update version number
+	[963c366cf9ad]
 
-changeset:   10:1391300aa003
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Fri Dec 18 08:56:04 2009 +0100
-summary:     Change in general documentation
+	* inst/op_fwd.m, inst/op_geoc2geod.m, inst/op_geod2geoc.m,
+	inst/op_inv.m, inst/op_transform.m:
+	Put '||' and '&&' operators instead of '|' and '&' in *.m files in
+	order to prevent warnings in testing versions (>=3.3.53) of GNU
+	Octave
+	[a9e87b3e7ca1]
 
-changeset:   9:d41ef12f4913
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Thu Dec 17 12:04:54 2009 +0100
-summary:     Add tex documentation file
+	* src/Makefile:
+	Use $(CC) instead of 'cc' command and add '-rf' flags to 'rm'
+	command in 'make clean' option of Makefile
+	[8cf100676021]
 
-changeset:   8:3bcfd7da0c87
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 15 17:06:48 2009 +0100
-summary:     Correction in documentation
+2010-11-25  José Luis García Pallero  <jgpallero@gmail.com>
 
-changeset:   7:4ea6a2cb26ba
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 15 16:56:19 2009 +0100
-summary:     Comment the function and small changes
+	* src/Makefile:
+	Add coding information to the Makefile
+	[afffeac83cf8]
 
-changeset:   6:39501324d391
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 15 16:54:23 2009 +0100
-summary:     Style correction
+2010-10-03  José Luis García Pallero  <jgpallero@gmail.com>
 
-changeset:   5:791641326573
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 15 16:53:52 2009 +0100
-summary:     Creation of op_transform.m
+	* .hgignore:
+	Adición del fichero de archivos ignorados
+	[1d3fe6664b87]
 
-changeset:   4:6ccec5b0b0b5
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 15 16:52:54 2009 +0100
-summary:     Comment corrections
+	* doc/octproj.pdf:
+	Adición del pdf de documentación
+	[9eb45004d3e5]
 
-changeset:   3:63eb65628b12
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 15 16:51:40 2009 +0100
-summary:     Add support to check if input arguments are both scalars or vectors and add support to convert scalars in column vectors if neccessary
+2010-02-09  José Luis García Pallero  <jgpallero@gmail.com>
 
-changeset:   2:29774e2ea3b5
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 15 16:49:46 2009 +0100
-summary:     Comments corrections and add support to convert scalars in column vectors if neccessary
+	* src/_op_fwd.cc, src/_op_geoc2geod.cc, src/_op_geod2geoc.cc,
+	src/_op_inv.cc, src/_op_transform.cc:
+	Use fortran_vec() method instead const_cast<double*> to obtain
+	pointers and improve the use of warning function
+	[1ff84dc91041]
 
-changeset:   1:6b515a6b5933
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 15 16:47:15 2009 +0100
-summary:     Change date
+2010-02-06  José Luis García Pallero  <jgpallero@gmail.com>
 
-changeset:   0:d89be78337c2
-user:        José Luis García Pallero <jgpallero@gmail.com>
-date:        Tue Dec 15 12:29:46 2009 +0100
-summary:     Creating Mercurial repository for OctPROJ
+	* DESCRIPTION:
+	Date change
+	[2f1c7488eace]
+
+	* src/_op_fwd.cc, src/_op_inv.cc:
+	Change criteria for catching errors
+	[671ddf3e2a77]
+
+	* doc/octproj.tex:
+	Update documentation
+	[bcdb32b735f9]
+
+	* src/projwrap.c:
+	Change criteria for catching errors
+	[a402765a20b8]
+
+	* inst/op_fwd.m, inst/op_inv.m, inst/op_transform.m:
+	Changes in test sentences and auxiliary subfunctions
+	[56e3823d72cf]
+
+	* inst/op_transform.m:
+	Changes in test sentences
+	[045b046bc43a]
+
+	* inst/op_fwd.m, inst/op_geoc2geod.m, inst/op_geod2geoc.m,
+	inst/op_inv.m, inst/op_transform.m:
+	Testing input arguments with auxiliary subfunctions
+	[91f6ea5161f7]
+
+	* src/projwrap.h:
+	Comment correction
+	[13ef8e3568c5]
+
+2010-01-19  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* doc/octproj.tex:
+	Documentation update
+	[6cf0c2c16261]
+
+2009-12-22  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* inst/op_fwd.m:
+	Changes in parsing input arguments
+	[8e2c9f00c63c]
+
+	* doc/octproj.tex:
+	Update general documentation
+	[56d5916bed60]
+
+2009-12-18  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* doc/octproj.tex:
+	Change in general documentation
+	[1391300aa003]
+
+2009-12-17  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* doc/octproj.tex:
+	Add tex documentation file
+	[d41ef12f4913]
+
+2009-12-15  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* inst/op_transform.m:
+	Correction in documentation
+	[3bcfd7da0c87]
+
+	* src/_op_transform.cc:
+	Comment the function and small changes
+	[4ea6a2cb26ba]
+
+	* src/projwrap.c:
+	Style correction
+	[39501324d391]
+
+	* inst/op_transform.m:
+	Creation of op_transform.m
+	[791641326573]
+
+	* src/_op_fwd.cc, src/_op_inv.cc:
+	Comment corrections
+	[6ccec5b0b0b5]
+
+	* inst/op_fwd.m, inst/op_inv.m:
+	Add support to check if input arguments are both scalars or vectors
+	and add support to convert scalars in column vectors if neccessary
+	[63eb65628b12]
+
+	* inst/op_geoc2geod.m, inst/op_geod2geoc.m:
+	Comments corrections and add support to convert scalars in column
+	vectors if neccessary
+	[29774e2ea3b5]
+
+	* DESCRIPTION:
+	Change date
+	[6b515a6b5933]
+
+	* COPYING, DESCRIPTION, INDEX, inst/op_fwd.m, inst/op_geoc2geod.m,
+	inst/op_geod2geoc.m, inst/op_inv.m, inst/op_transform.m,
+	src/Makefile, src/_op_fwd.cc, src/_op_geoc2geod.cc,
+	src/_op_geod2geoc.cc, src/_op_inv.cc, src/_op_transform.cc,
+	src/projwrap.c, src/projwrap.h:
+	Creating Mercurial repository for OctPROJ
+	[d89be78337c2]
 

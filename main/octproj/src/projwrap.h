@@ -31,18 +31,25 @@ extern "C" {
 #endif
 /******************************************************************************/
 /******************************************************************************/
+/**
+\def PROJWRAP_ERR_NOT_INV_PROJ
+\brief Error identifier. Do not exist inverse step for a defined projection.
+\date 12-12-2009: Constant creation.
+*/
 #define PROJWRAP_ERR_NOT_INV_PROJ 10001
 /******************************************************************************/
 /******************************************************************************/
 /**
 \brief Wrapper around pj_fwd.
-\param[in,out] lon Array containing the geodetic longitude, in radians. On
-               output, this argument contains the X projected coordinates.
-\param[in,out] lat Array containing the geodetic latitude, in radians. On
-               output, this argument contains the Y projected coordinates.
-\param[in] nElem Number of elements in \em lon and \em lat arrays.
+\param[in,out] u Array containing the geodetic longitude, in radians. On output,
+               this argument contains the X projected coordinates.
+\param[in,out] v Array containing the geodetic latitude, in radians. On output,
+               this argument contains the Y projected coordinates.
+\param[in] nElem Number of elements in \em u and \em v arrays.
+\param[in] incElem Number of positions between each element in the arrays \em u
+           and \em v (must be a positive number).
 \param[in] params List containing the parameters of the projection, in PROJ.4
-           format.
+           format with \p + signs (see PROJ.4 manual).
 \param[out] errorText If an error occurs, explanation text about the error.
 \param[out] projectionError Two posibilities:
             - 0: All projected points are OK.
@@ -53,13 +60,17 @@ extern "C" {
         - 0: No error.
         - Otherwise: Error code of PROJ.4, see documentation.
 \note If projection errors occur, the positions of the erroneous points in
-      \em lon and \em lat arrays store the value HUGE_VAL (constant from
-      math.h).
+      \em u and \em v arrays store the value HUGE_VAL (constant from math.h).
 \date 12-12-2009: Function creation.
+\date 13-05-2011: Change the name of \em lon and \em lat variables to \em u and
+      \em v, add the new variable \em incElem and use internally \em projLP and
+      \em projXY stryctures instead only \em projXY (actually, both are
+      synonyms).
 */
-int proj_fwd(double* lon,
-             double* lat,
+int proj_fwd(double* u,
+             double* v,
              const size_t nElem,
+             const size_t incElem,
              const char params[],
              char errorText[],
              int* projectionError);
@@ -67,13 +78,15 @@ int proj_fwd(double* lon,
 /******************************************************************************/
 /**
 \brief Wrapper around pj_inv.
-\param[in,out] x Array containing the X projected coordinates. On output, this
+\param[in,out] u Array containing the X projected coordinates. On output, this
                argument contains the geodetic longitude, in radians.
-\param[in,out] y Array containing the Y projected coordinates. On output, this
+\param[in,out] v Array containing the Y projected coordinates. On output, this
                argument contains the geodetic latitude, in radians.
-\param[in] nElem Number of elements in \em x and \em y arrays.
+\param[in] nElem Number of elements in \em u and \em v arrays.
+\param[in] incElem Number of positions between each element in the arrays \em u
+           and \em v (must be a positive number).
 \param[in] params List containing the parameters of the projection, in PROJ.4
-           format.
+           format with \p + signs (see PROJ.4 manual).
 \param[out] errorText If an error occurs, explanation text about the error.
 \param[out] projectionError Two posibilities:
             - 0: All projected points are OK.
@@ -86,12 +99,17 @@ int proj_fwd(double* lon,
           projection.
         - Otherwise: Error code of PROJ.4, see documentation.
 \note If projection errors occur, the positions of the erroneous points in
-      \em x and \em y arrays store the value HUGE_VAL (constant from math.h).
+      \em u and \em v arrays store the value HUGE_VAL (constant from math.h).
 \date 12-12-2009: Function creation.
+\date 13-05-2011: Change the name of \em x and \em y variables to \em u and
+      \em v, add the new variable \em incElem and use internally \em projLP and
+      \em projXY stryctures instead only \em projXY (actually, both are
+      synonyms).
 */
-int proj_inv(double* x,
-             double* y,
+int proj_inv(double* u,
+             double* v,
              const size_t nElem,
+             const size_t incElem,
              const char params[],
              char errorText[],
              int* projectionError);
@@ -99,24 +117,25 @@ int proj_inv(double* x,
 /******************************************************************************/
 /**
 \brief Wrapper around pj_transform.
-\param[in,out] x Array containing the first coordinate. On output, this argument
+\param[in,out] u Array containing the first coordinate. On output, this argument
                  contains the transformed coordinates. This array can store two
                  types of values:
                  - If the system (start or end) is geodetic, this array contains
                    geodetic longitude, in radians.
                  - Otherwise (geocentric or cartographic coordinates) this array
                    contains \em X euclidean coordinates.
-\param[in,out] y Array containing the second coordinate. On output, this argument
+\param[in,out] v Array containing the second coordinate. On output, this argument
                  contains the transformed coordinates. This array can store two
                  types of values:
                  - If the system (start or end) is geodetic, this array contains
                    geodetic latitude, in radians.
                  - Otherwise (geocentric or cartographic coordinates) this array
                    contains \em Y euclidean coordinates.
-\param[in,out] z Array containing ellipsoidal heights.
-\param[in] nElem Number of elements in \em x and \em y arrays.
-\param[in] nElemZ Number of elements in \em z array. If this argument is 0, the
-           function assumes that \em z array is NULL.
+\param[in,out] z Array containing ellipsoidal heights. This argument can be
+               \p NULL. In that case it is not used.
+\param[in] nElem Number of elements in \em u, \em v and \em z arrays.
+\param[in] incElem Number of positions between each element in the arrays \em u,
+           \em v and \em z (must be a positive number).
 \param[in] paramsStart List containing the parameters of the start system, in
            PROJ.4 format.
 \param[in] paramsEnd List containing the parameters of the end system, in PROJ.4
@@ -125,15 +144,17 @@ int proj_inv(double* x,
             argument must be assigned enough memory.
 \return Error code. Two posibilities:
         - 0: No error.
-        - Otherwise: Error code of pj_init_plus or pj_transform functions. See
-          PROJ.4 documentation.
+        - Otherwise: Error code of pj_init_plus() or pj_transform() PROJ.4
+          functions. See PROJ.4 documentation.
 \date 05-12-2009: Function creation.
+\date 13-05-2011: Change the name of \em x and \em y variables to \em u and
+      \em v and add the new variable \em incElem.
 */
-int proj_transform(double* x,
-                   double* y,
+int proj_transform(double* u,
+                   double* v,
                    double* z,
                    const size_t nElem,
-                   const size_t nElemZ,
+                   const size_t incElem,
                    const char paramsStart[],
                    const char paramsEnd[],
                    char errorText[]);

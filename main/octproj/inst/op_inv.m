@@ -112,7 +112,7 @@ else
     error('The second input argument is not numeric');
 end
 %checking a and b dimensions
-if (rowA~=rowB)|(colA~=colB)
+if (rowA~=rowB)||(colA~=colB)
     error('The dimensions of input arguments are not the same');
 else
     %working dimensions

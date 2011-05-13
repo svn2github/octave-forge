@@ -1,5 +1,5 @@
 /* -*- coding: utf-8 -*- */
-/* Copyright (C) 2009  José Luis García Pallero, <jgpallero@gmail.com>
+/* Copyright (C) 2009, 2011  José Luis García Pallero, <jgpallero@gmail.com>
  *
  * This file is part of OctPROJ.
  *
@@ -112,8 +112,8 @@ DEFUN_DLD(_op_fwd,args,,HELPTEXT)
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         //projection
-        idErr = proj_fwd(x,y,nElem,params.c_str(),&errorText[strlen(errorText)],
-                         &projectionError);
+        idErr = proj_fwd(x,y,nElem,1,params.c_str(),
+                         &errorText[strlen(errorText)],&projectionError);
         //error checking
         if(idErr||projectionError)
         {

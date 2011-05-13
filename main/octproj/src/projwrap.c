@@ -19,9 +19,10 @@ or http://www.gnu.org
 #include"projwrap.h"
 /******************************************************************************/
 /******************************************************************************/
-int proj_fwd(double* lon,
-             double* lat,
+int proj_fwd(double* u,
+             double* v,
              const size_t nElem,
+             const size_t incElem,
              const char params[],
              char errorText[],
              int* projectionError)
@@ -30,8 +31,11 @@ int proj_fwd(double* lon,
     int* idErr=NULL;
     //index for loop
     size_t i=0;
+    //position in the arrays
+    size_t pos=0;
     //input and output coordinates
-    projXY data;
+    projLP in;
+    projXY out;
     //proj structure
     projPJ pjStruct;
     ////////////////////////////////////////////////////////////////////////////
@@ -55,18 +59,23 @@ int proj_fwd(double* lon,
     //transformation
     for(i=0;i<nElem;i++)
     {
+        //position in the arrays
+        pos = i*incElem;
         //assign input coordinates
-        data.u = lon[i];
-        data.v = lat[i];
+        in.u = u[pos];
+        in.v = v[pos];
         //projection
-        data = pj_fwd(data,pjStruct);
+        out = pj_fwd(in,pjStruct);
         //testing of results
-        if((data.u==HUGE_VAL)||(data.v==HUGE_VAL))
+        if((out.u==HUGE_VAL)||(out.v==HUGE_VAL))
         {
+            //the two coordinates must be HUGE_VAL
+            out.u = HUGE_VAL;
+            out.v = HUGE_VAL;
             //assign error code
             idErr = pj_get_errno_ref();
             //error text (only the first time)
-            if(i==0)
+            if(pos==0)
             {
                 //error text
                 sprintf(errorText,"Projection error\n\t%s",pj_strerrno(*idErr));
@@ -75,8 +84,8 @@ int proj_fwd(double* lon,
             *projectionError = 1;
         }
         //assign output coordinates
-        lon[i] = data.u;
-        lat[i] = data.v;
+        u[pos] = out.u;
+        v[pos] = out.v;
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -96,9 +105,10 @@ int proj_fwd(double* lon,
 }
 /******************************************************************************/
 /******************************************************************************/
-int proj_inv(double* x,
-             double* y,
+int proj_inv(double* u,
+             double* v,
              const size_t nElem,
+             const size_t incElem,
              const char params[],
              char errorText[],
              int* projectionError)
@@ -107,8 +117,11 @@ int proj_inv(double* x,
     int* idErr=NULL;
     //index for loop
     size_t i=0;
+    //position in the arrays
+    size_t pos=0;
     //input and output coordinates
-    projXY data;
+    projXY in;
+    projLP out;
     //proj structure
     projPJ pjStruct;
     ////////////////////////////////////////////////////////////////////////////
@@ -129,7 +142,7 @@ int proj_inv(double* x,
     if(pjStruct->inv==0)
     {
         //error text
-        sprintf(errorText,"Inverse step do no exists\n\t%s",params);
+        sprintf(errorText,"Inverse step do not exists\n\t%s",params);
         //exit
         return PROJWRAP_ERR_NOT_INV_PROJ;
     }
@@ -140,18 +153,23 @@ int proj_inv(double* x,
     //transformation
     for(i=0;i<nElem;i++)
     {
+        //position in the arrays
+        pos = i*incElem;
         //assign input coordinates
-        data.u = x[i];
-        data.v = y[i];
+        in.u = u[pos];
+        in.v = v[pos];
         //projection
-        data = pj_inv(data,pjStruct);
+        out = pj_inv(in,pjStruct);
         //testing of results
-        if((data.u==HUGE_VAL)||(data.v==HUGE_VAL))
+        if((out.u==HUGE_VAL)||(out.v==HUGE_VAL))
         {
+            //the two coordinates must be HUGE_VAL
+            out.u = HUGE_VAL;
+            out.v = HUGE_VAL;
             //assign error code
             idErr = pj_get_errno_ref();
             //error text (only the first time)
-            if(i==0)
+            if(pos==0)
             {
                 //error text
                 sprintf(errorText,"Projection error\n\t%s",pj_strerrno(*idErr));
@@ -160,8 +178,8 @@ int proj_inv(double* x,
             *projectionError = 1;
         }
         //assign output coordinates
-        x[i] = data.u;
-        y[i] = data.v;
+        u[pos] = out.u;
+        v[pos] = out.v;
     }
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -181,11 +199,11 @@ int proj_inv(double* x,
 }
 /******************************************************************************/
 /******************************************************************************/
-int proj_transform(double* x,
-                   double* y,
+int proj_transform(double* u,
+                   double* v,
                    double* z,
                    const size_t nElem,
-                   const size_t nElemZ,
+                   const size_t incElem,
                    const char paramsStart[],
                    const char paramsEnd[],
                    char errorText[])
@@ -227,14 +245,7 @@ int proj_transform(double* x,
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //transformation
-    if(nElemZ)
-    {
-        idErr2 = pj_transform(pjStart,pjEnd,nElem,1,x,y,z);
-    }
-    else
-    {
-        idErr2 = pj_transform(pjStart,pjEnd,nElem,1,x,y,NULL);
-    }
+    idErr2 = pj_transform(pjStart,pjEnd,nElem,incElem,u,v,z);
     //catching possible errors
     if(idErr2)
     {

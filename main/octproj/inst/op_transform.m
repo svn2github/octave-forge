@@ -61,7 +61,7 @@ try
 %*******************************************************************************
 
     %number of input arguments checking
-    if (nargin<minArgNumber)|(nargin>maxArgNumber)
+    if (nargin<minArgNumber)||(nargin>maxArgNumber)
         error(['Incorrect number of input arguments (%d)\n\t         ',...
                'Correct number of input arguments = %d or %d'],...
               nargin,minArgNumber,maxArgNumber);
@@ -140,14 +140,14 @@ else
     error('The third/fourth input argument is not numeric');
 end
 %checking a, b and c dimensions
-if (max([rowA rowB])~=min([rowA rowB]))|(max([colA colB])~=min([colA colB]))
+if (max([rowA rowB])~=min([rowA rowB]))||(max([colA colB])~=min([colA colB]))
     error('The dimensions of input arguments are not the same');
 else
     %working dimensions
     rowWork = rowA;
     colWork = colA;
-    if (rowC~=0)&(colC~=0)
-        if (rowC==rowWork)&(colC==colWork)
+    if (rowC~=0)&&(colC~=0)
+        if (rowC==rowWork)&&(colC==colWork)
             c = reshape(c,rowWork*colWork,1);
         else
             error('The dimensions of input arguments are not the same');

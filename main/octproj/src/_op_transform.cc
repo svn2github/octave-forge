@@ -1,5 +1,5 @@
 /* -*- coding: utf-8 -*- */
-/* Copyright (C) 2009  José Luis García Pallero, <jgpallero@gmail.com>
+/* Copyright (C) 2009, 2011  José Luis García Pallero, <jgpallero@gmail.com>
  *
  * This file is part of OctPROJ.
  *
@@ -131,8 +131,8 @@ DEFUN_DLD(_op_transform,args,,HELPTEXT)
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         //transformation
-        if(proj_transform(x,y,z,nElem,nElemZ,paramsStart.c_str(),
-                          paramsEnd.c_str(),&errorText[strlen(errorText)]))
+        if(proj_transform(x,y,z,nElem,1,paramsStart.c_str(),paramsEnd.c_str(),
+                          &errorText[strlen(errorText)]))
         {
             //error message
             error(errorText);

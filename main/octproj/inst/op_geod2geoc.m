@@ -130,7 +130,7 @@ if ~isscalar(e)
     error('The fifth input argument is not a scalar');
 end
 %checking a, b and c dimensions
-if (max([rowA rowB rowC])~=min([rowA rowB rowC]))|...
+if (max([rowA rowB rowC])~=min([rowA rowB rowC]))||...
    (max([colA colB colC])~=min([colA colB colC]))
     error('The dimensions of input arguments are not the same');
 else

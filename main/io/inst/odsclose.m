@@ -57,25 +57,34 @@
 ## 2010-11-12 Keep ods file pointer when write errors occur.
 ##      "     Added optional filename arg to change filename to be written to
 ## 2011-05-06 Experimental UNO support
-## 2011-05-07 Soffice now properly closed using xDesk
+## 2011-05-07 In case of UNO, soffice now properly closed using xDesk
 
-function [ ods ] = odsclose (ods, filename=[])
+function [ ods ] = odsclose (ods, varargs)
 
 	# If needed warn that dangling spreadsheet pointers may be left
 	if (nargout < 1) warning ("return argument missing - ods invocation not reset."); endif
 
-	if (~isempty (filename))
-		if (ischar (filename))
-			if (ods.changed == 0 || ods.changed > 2)
-				warning ("File %s wasn't changed, new filename ignored.", ods.filename);
-			else
-				if (strfind (tolower (filename), '.sxc') || strfind (tolower (filename), '.ods'))
-					ods.filename = filename;
+	force = 0;
+
+	if (nargin > 1)
+		for ii=2:nargin
+			if (strcmp (lower (varargin{ii}), "force"))
+				# Close .ods anyway even if write errors occur
+				force = 1;
+			elseif (~isempty (strfind (tolower (varargin{ii}), '.ods')) || ...
+					~isempty (strfind (tolower (varargin{ii}), '.sxc')))
+				# Apparently a file name
+				if (ods.changed == 0 || ods.changed > 2)
+					warning ("File %s wasn't changed, new filename ignored.", ods.filename);
 				else
-					error ('No .sxc or .ods filename extension specified');
+					if (strfind (tolower (filename), '.sxc') || strfind (tolower (filename), '.ods'))
+						ods.filename = filename;
+					else
+						error ('No .sxc or .ods filename extension specified');
+					endif
 				endif
 			endif
-		endif
+		endfor
 	endif
 
 	if (strcmp (ods.xtype, 'OTK'))
@@ -87,6 +96,9 @@ function [ ods ] = odsclose (ods, filename=[])
 			endif
 			ods.app.close ();
 		catch
+			if (force)
+				ods.app.close ();
+			endif
 		end_try_catch
 
 	elseif (strcmp (ods.xtype, 'JOD'))
@@ -104,7 +116,6 @@ function [ ods ] = odsclose (ods, filename=[])
 		# Java & UNO bridge
 		try
 			if (ods.changed && ods.changed < 3)
-keyboard
 				# Workaround:
 				unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
 				xModel = ods.workbook.queryInterface (unotmp);
@@ -112,8 +123,8 @@ keyboard
 				xModified = xModel.queryInterface (unotmp);
 				if (xModified.isModified ())
 					unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XStorable');	# isReadonly() ?  	
-					xStore = ods.app.queryInterface (unotmp);
-					xStore.store;										# storeAsURL   ?
+					xStore = ods.app.xComp.queryInterface (unotmp);
+					xStore.store ();										# storeAsURL   ?
 				endif
 			endif
 			ods.changed = -1;		# Needed for check op properly shutting down OOo
@@ -123,13 +134,19 @@ keyboard
 			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XCloseable');
 			xClosbl = xModel.queryInterface (unotmp);
 			xClosbl.close (true);
-			# xModel.dispose();  # Is this needed? Consistently gives com.sun.star.lang.DisposedException
 			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
 			xDesk = ods.app.aLoader.queryInterface (unotmp);
 			xDesk.terminate();
 			ods.changed = 0;
 		catch
-			warning ("Error closing ods pointer (UNO)");
+			if (force)
+				# Force closing OOo
+				unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
+				xDesk = ods.app.aLoader.queryInterface (unotmp);
+				xDesk.terminate();
+			else
+				warning ("Error dbclosing ods pointer (UNO)");
+			endif
 			return
 		end_try_catch
 
@@ -142,6 +159,9 @@ keyboard
 
 	if (ods.changed && ods.changed < 3)
 		error ( sprintf ("Could not save file %s - read-only or in use elsewhere?\nFile pointer preserved", ods.filename));
+		if (force)
+			ods = [];
+		endif
 	else
 		# Reset file pointer
 		ods = [];

@@ -62,6 +62,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2011-05-04 Added in UNO support (OpenOffice.org & clones)
 %     ''     Improved finding jar names in javaclasspath
 % 2011-05-07 Improved help text
+% 2011-05-15 Better error msg if OOo instal dir isn't found
 
 	jcp = []; retval = 0;
     if (nargin < 2), dbug = 0; end %if
@@ -402,7 +403,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 					if (dbug > 2), fprintf ('FAILED\n'); end %if
 				end% try_catch
 			else
-				if (dbug > 2), fprintf ('  ? %s directory ?\n', entries0{1}); end %if
+				if (dbug > 2), error ('Suggested OpenOffice.org install directory: %s not found!\n', path_to_ooo); end %if
 			end %if
 		end %if
 		% Rest of missing entries. Find where URE is located

@@ -375,7 +375,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		jcp = javaclasspath;
 		# If we get here, at least Java works. Now check for proper entries
 		# in class path. Under *nix the classpath must first be split up
-		if (isunix) jcp = strsplit (char(tmp1), ":"); endif
+		if (isunix) jcp = strsplit (char (jcp), ":"); endif
 		## FIXME implement more rigid Java version check a la xlsopen.
 		## ods / Java stuff is less critical than xls / Java, however
 	catch
@@ -423,9 +423,9 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		jpchk = 0; entries = {"odfdom", "xercesImpl"};
 		# Only under *nix we might use brute force: e.g., strfind(classpath, classname);
 		# under Windows we need the following more subtle, platform-independent approach:
-		for ii=1:length (tmp1)
+		for ii=1:length (jcp)
 			for jj=1:length (entries)
-				if (~isempty (strfind ( tmp1{ii}, entries{jj}))), ++jpchk; endif
+				if (~isempty (strfind ( jcp{ii}, entries{jj}))), ++jpchk; endif
 			endfor
 		endfor
 		if (jpchk >= numel(entries))		# Apparently all requested classes present.
@@ -458,9 +458,9 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 	if (isempty (odsinterfaces.JOD))
 		odsinterfaces.JOD = 0;
 		jpchk = 0; entries = {"jOpenDocument"};
-		for ii=1:length (tmp1)
+		for ii=1:length (jcp)
 			for jj=1:length (entries)
-				if (~isempty (strfind (tmp1{ii}, entries{jj}))), ++jpchk; endif
+				if (~isempty (strfind (jcp{ii}, entries{jj}))), ++jpchk; endif
 			endfor
 		endfor
 		if (jpchk >= numel(entries))

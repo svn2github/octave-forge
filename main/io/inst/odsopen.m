@@ -191,7 +191,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			ods.odfvsn = odsinterfaces.odfvsn;
 			odssupport += 1;
 		catch
-			if (xlsinterfaces.JOD && ~rw && chk2)
+			if (odsinterfaces.JOD && ~rw && chk2)
 				printf ('Couldn''t open file %s using OTK; trying .sxc format with JOD...\n', filename);
 			else
 				error ('Couldn''t open file %s using OTK', filename);
@@ -247,8 +247,10 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 				flen = numel (tmp);
 				tmp(2:2:2*flen) = tmp;
 				tmp(1:2:2*flen) = '/';
-				filename = [ 'file://' tmp{:} ];
+			else
+				tmp = {fname};
 			endif
+			filename = [ 'file://' tmp{:} ];
 		endif
 		try
 			xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap");

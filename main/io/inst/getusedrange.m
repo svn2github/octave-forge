@@ -378,7 +378,7 @@ function [ srow, erow, scol, ecol ] = getusedrange_uno (ods, ii)
   # Strip sheet name from addresses
   adrblks = strsplit (addrs, ',');
   if (isempty (adrblks))
-    trow = brow = lcol = rcol = 0;
+    srow = erow = scol = ecol = 0;
     return
   endif
 

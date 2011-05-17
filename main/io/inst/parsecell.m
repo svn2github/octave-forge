@@ -59,6 +59,8 @@
 ## 2009-12-29
 ## 2010-08-25 Added option for second argument to be a file ptr
 ## 2010-10-15 Simplified code for numerical array
+## 2011-05-17 Fixed subscript indexing bug in cropping section when rawarr is
+##      "     numeric scalar
 
 function [ numarr, txtarr, lim ] = parsecell (rawarr, arg2=[])
 
@@ -146,7 +148,10 @@ function [ numarr, txtarr, lim ] = parsecell (rawarr, arg2=[])
 				rawarr = rawarr (irowt:irowb, icoll:icolr);
 				# Build numerical array
 				numarr = zeros (irowb-irowt+1, icolr-icoll+1);
-				numarr (emptr(irowt:irowb, icoll:icolr)) = NaN;
+				# Watch out for scalar (non-empty) numarr where emptr = 0
+				if (sum (emptr(:)) > 0)
+					numarr (emptr(irowt:irowb, icoll:icolr)) = NaN;
+				endif
 				numarr(~emptr(irowt:irowb, icoll:icolr)) = cell2mat (rawarr(~emptr(irowt:irowb, icoll:icolr)));
 				# Save limits
 				lim.numlimits = [icoll, icolr; irowt, irowb];

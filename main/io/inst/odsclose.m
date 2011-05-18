@@ -17,6 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{ods}] = odsclose (@var{ods})
 ## @deftypefnx {Function File} [@var{ods}] = odsclose (@var{ods}, @var{filename})
+## @deftypefnx {Function File} [@var{ods}] = odsclose (@var{ods}, "FORCE")
 ## Close the OpenOffice_org Calc spreadsheet pointed to in struct
 ## @var{ods}, if needed write the file to disk.
 ## odsclose will determine if the file must be written to disk based on
@@ -24,11 +25,14 @@
 ## An empty pointer struct will be returned if no errors occurred. 
 ## Optional argument @var{filename} can be used to write changed spreadsheet
 ## files to an other file than opened by odsopen().
+## Optional string argument "FORCE" can be specified to force resetting the
+## file pointer struct. However, in case of UNO, a hidden OOo invocation
+## may linger on in memory then, preventing proper closing of Octave.
 ##
-## You need the Java package > 1.2.6 plus odfdom.jar + xercesImpl.jar
+## You need the Java package >= 1.2.6 plus odfdom.jar + xercesImpl.jar
 ## and/or jopendocument-<version>.jar installed on your computer +
 ## proper javaclasspath set, to make this function work at all.
-## For UNO support, Octave-Java package 1.2.8 + latest fixes is imperative;
+## For UNO support, Octave-Java package >= 1.2.8 + latest fixes is imperative;
 ## furthermore the relevant classes had best be added to the javaclasspath by
 ## utility function chk_spreadsheet_support().
 ##
@@ -42,7 +46,7 @@
 ##   (Close spreadsheet file pointed to in pointer struct ods1; ods1 is reset)
 ## @end example
 ##
-## @seealso odsopen, odsread, odswrite, ods2oct, oct2ods, odsfinfo
+## @seealso odsopen, odsread, odswrite, ods2oct, oct2ods, odsfinfo, chk_spreadsheet_support
 ##
 ## @end deftypefn
 
@@ -58,6 +62,7 @@
 ##      "     Added optional filename arg to change filename to be written to
 ## 2011-05-06 Experimental UNO support
 ## 2011-05-07 In case of UNO, soffice now properly closed using xDesk
+## 2011-05-18 Saving newly created files using UNO supported now
 
 function [ ods ] = odsclose (ods, varargs)
 
@@ -124,7 +129,16 @@ function [ ods ] = odsclose (ods, varargs)
 				if (xModified.isModified ())
 					unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XStorable');	# isReadonly() ?  	
 					xStore = ods.app.xComp.queryInterface (unotmp);
-					xStore.store ();										# storeAsURL   ?
+					if (ods.changed == 2)
+						# Some trickery as Octave Java cannot create non-numeric arrays
+						lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
+						lProp = java_new ('com.sun.star.beans.PropertyValue', "Overwrite", 0, true, []);
+						lProps(1) = lProp;
+						# OK, save file to disk
+						xStore.storeAsURL (ods.filename, lProps);
+					else
+						xStore.store ();
+					endif
 				endif
 			endif
 			ods.changed = -1;		# Needed for check op properly shutting down OOo

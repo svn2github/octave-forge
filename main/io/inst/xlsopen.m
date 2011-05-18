@@ -25,19 +25,22 @@
 ## Calling xlsopen without specifying a return argument is fairly useless!
 ##
 ## To make this function work at all, you need MS-Excel (95 - 2003), and/or
-## the Java package > 1.2.6 plus either Apache POI > 3.5 or JExcelAPI or OpenXLS
-## installed on your computer + proper javaclasspath set. These interfaces
-## are referred to as COM, POI, JXL and OXS, resp., and are preferred in that
-## order by default (depending on their presence).
+## the Java package >= 1.2.8 plus Apache POI >= 3.5 and/or JExcelAPI and/or
+## OpenXLS and/or OpenOffice.org (or clones) installed on your computer +
+## proper javaclasspath set. These interfaces are referred to as COM, POI,
+## JXL, OXS, and UNO, resp., and are preferred in that order by default
+## (depending on their presence).
 ## For OOXML support, in addition to Apache POI support you also need the
 ## following jars in your javaclasspath: poi-ooxml-schemas-3.5.jar,
-## xbean.jar and dom4j-1.6.1.jar (or later versions).
+## xbean.jar and dom4j-1.6.1.jar (or later versions). Later OpenOffice.org
+## versions (UNO) have support for OOXML as well.
 ##
 ## @var{filename} should be a valid .xls or xlsx Excel file name (including
-## extension); but if you use the COM interface you can specify any extension
-## that your installed Excel version can read AND write, using the Java
-## interfaces only .xls or .xlsx are allowed. If @var{filename} does not
-## contain any directory path, the file is saved in the current directory.
+## extension). But if you use the COM interface you can specify any extension
+## that your installed Excel version can read AND write; the same goes for UNO
+## (OpenOffice.org). Using the other Java interfaces, only .xls or .xlsx are
+## allowed. If @var{filename} does not contain any directory path, the file
+## is saved in the current directory.
 ##
 ## If @var{readwrite} is set to 0 (default value) or omitted, the Excel file
 ## is opened for reading. If @var{readwrite} is set to True or 1, an Excel
@@ -45,11 +48,13 @@
 ##
 ## Optional input argument @var{reqintf} can be used to override the Excel
 ## interface that otherwise is automatically selected by xlsopen. Currently
-## implemented interfaces (in order of preference) are 'COM' (Excel / COM),
-## 'POI' (Java / Apache POI), 'JXL' (Java / JExcelAPI) or 'OXS' (OpenXLS).
+## implemented interfaces (in order of preference) are 'COM' (Excel/COM),
+## 'POI' (Java/Apache POI), 'JXL' (Java/JExcelAPI), 'OXS' (Java/OpenXLS), or
+## 'UNO' (Java/OpenOffice.org).
 ##
-## Beware: Excel invocations may be left running invisibly in case of COM errors
-## or forgetting to close the file pointer.
+## Beware: Excel invocations may be left running invisibly in case of COM
+## errors or forgetting to close the file pointer. Similarly for OpenOffice.org
+## which may even prevent Octave from being closed.
 ##
 ## Examples:
 ##
@@ -90,8 +95,9 @@
 ## 2010-12-01 Small bugfix - reset xlssupport in l. 102
 ## 2010-12-06 Textual changes to info header 
 ## 2011-03-26 OpenXLS support added
+## 2011-05-18 Experimental UNO support added, incl. creating new spreadsheets
 ##
-## 2011-03-26 Latest subfunction update
+## 2011-05-18 Latest subfunction update
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -99,7 +105,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 	# xlsinterfaces.<intf> = [] (not yet checked), 0 (found to be unsupported) or 1 (OK)
 	if (isempty (chkintf));
 		chkintf = 1;
-		xlsinterfaces = struct ('COM', [], 'POI', [], 'JXL', [], 'OXS', []);
+		xlsinterfaces = struct ('COM', [], 'POI', [], 'JXL', [], 'OXS', [], 'UNO', []);
 	endif
 
 	xlssupport = 0;
@@ -114,7 +120,8 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		if ~(ischar (reqinterface) || iscell (reqinterface)), usage ("Arg # 3 not recognized"); endif
 		# Turn arg3 into cell array if needed
 		if (~iscell (reqinterface)), reqinterface = {reqinterface}; endif
-		xlsinterfaces.COM = 0; xlsinterfaces.POI = 0; xlsinterfaces.JXL = 0; xlsinterfaces.OXS = 0;
+		xlsinterfaces.COM = 0; xlsinterfaces.POI = 0; xlsinterfaces.JXL = 0;
+		xlsinterfaces.OXS = 0; xlsinterfaces.UNO = 0;
 		for ii=1:numel (reqinterface)
 			reqintf = toupper (reqinterface {ii});
 			# Try to invoke requested interface(s) for this call. Check if it
@@ -127,8 +134,10 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 				xlsinterfaces.JXL = [];
 			elseif (strcmp (reqintf, 'OXS'))
 				xlsinterfaces.OXS = [];
+			elseif (strcmp (reqintf, 'UNO'))
+				xlsinterfaces.UNO = [];
 			else 
-				usage (sprintf ("Unknown .xls interface \"%s\" requested. Only COM, POI, JXL or OXS supported\n", reqinterface{}));
+				usage (sprintf ("Unknown .xls interface \"%s\" requested. Only COM, POI, JXL, OXS or UNO supported\n", reqinterface{}));
 			endif
 		endfor
 		printf ("Checking interface(s):\n");
@@ -139,7 +148,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		for ii=1:numel (reqinterface)
 			if (~xlsinterfaces.(toupper (reqinterface{ii})))
 				# No it aint
-				warning ("%s is not supported!", reqinterface{ii});
+				warning ("%s is not supported!", toupper (reqinterface{ii}));
 			else
 				++xlsintf_cnt;
 			endif
@@ -147,6 +156,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		# Reset interface check indicator if no requested support found
 		if (~xlsintf_cnt)
 			chkintf = [];
+			xls = [];
 			return
 		endif
 	endif
@@ -189,7 +199,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 	# Keep track of which interface is selected
 	xlssupport = 0;
 
-	# Interface preference order is defined below: currently COM -> POI -> JXL -> OXS
+	# Interface preference order is defined below: currently COM -> POI -> JXL -> OXS -> UNO
 	if (xlsinterfaces.COM && ~xlssupport)
 		# Excel functioning has been tested above & file exists, so we just invoke it
 		app = actxserver ("Excel.Application");
@@ -292,6 +302,55 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		end_try_catch
 	endif
 
+	if (xlsinterfaces.UNO && ~xlssupport)
+		# First the file name must be transformed into a URL
+		if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http:///", filename))...
+			|| ~isempty (strmatch ("ftp:///", filename)) || ~isempty (strmatch ("www:///", filename)))
+			# Seems in proper shape for OOo (at first sight)
+		else
+			# Transform into URL form
+			fname = canonicalize_file_name (strsplit (filename, filesep){end});
+			# On Windows, change backslash file separator into forward slash
+			if (strcmp (filesep, "\\"))
+				tmp = strsplit (fname, filesep);
+				flen = numel (tmp);
+				tmp(2:2:2*flen) = tmp;
+				tmp(1:2:2*flen) = '/';
+				filename = [ 'file://' tmp{:} ];
+			endif
+		endif
+		try
+			xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap");
+			xMCF = xContext.getServiceManager ();
+			oDesktop = xMCF.createInstanceWithContext ("com.sun.star.frame.Desktop", xContext);
+			# Workaround:
+			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XComponentLoader');
+			aLoader = oDesktop.queryInterface (unotmp);
+			# Some trickery as Octave Java cannot create non-numeric arrays
+			lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
+			lProp = java_new ('com.sun.star.beans.PropertyValue', "Hidden", 0, true, []);
+			lProps(1) = lProp;
+			if (xwrite > 2)
+				xComp = aLoader.loadComponentFromURL ("private:factory/scalc", "_blank", 0, lProps);
+			else
+				xComp = aLoader.loadComponentFromURL (filename, "_blank", 0, lProps);
+			endif
+			# Workaround:
+			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheetDocument');
+			xSpdoc = xComp.queryInterface (unotmp);
+			# save in ods struct:
+			xls.xtype = 'UNO';
+			xls.workbook = xSpdoc;			# Needed to be able to close soffice in odsclose()
+			xls.filename = filename;
+			xls.app.xComp = xComp;			# Needed to be able to close soffice in odsclose()
+			xls.app.aLoader = aLoader;		# Needed to be able to close soffice in odsclose()
+			xls.odfvsn = 'UNO';
+			xlssupport += 16;
+		catch
+			error ('Couldn''t open file %s using UNO', filename);
+		end_try_catch
+	endif
+
 	# if 
 	#	---- other interfaces
 	# endif
@@ -354,6 +413,7 @@ endfunction
 ## - Java & Apache POI
 ## - Java & JExcelAPI
 ## - Java & OpenXLS (only JRE >= 1.4 needed)
+## - Java & UNO bridge (OpenOffice.org invocation)
 ##
 ## Examples:
 ##
@@ -372,6 +432,7 @@ endfunction
 ## 2011-02-15 Adapted to javaclasspath calling style of java-1.2.8 pkg
 ## 2011-03-26 OpenXLS support added
 ##      ''    Bug fix: javaclasspath change wasn't picked up between calls with req.intf
+## 2011-05-18 Experimental UNO support added
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -424,7 +485,9 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			xlsinterfaces.POI = 0;
 			xlsinterfaces.JXL = 0;
 			xlsinterfaces.OXS = 0;
-			if ~(isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL) && isempty (xlsinterfaces.OXS))
+			xlsinterfaces.UNO = 0;
+			if ~(isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL)...
+			  && isempty (xlsinterfaces.OXS) && isempty (xlsinterfaces.UNO))
 				# Some Java-based interface requested but Java support is absent
 				error ('No Java support found.');
 			else
@@ -503,7 +566,34 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			warning ("\n Not all classes (.jar) required for OXS in classpath");
 		endif
 	endif
-	
+
+	# Try Java & UNO
+	if (isempty (xlsinterfaces.UNO))
+		printf ("Java/UNO bridge... "); 
+		xlsinterfaces.UNO = 0;
+		# entries0(1) = not a jar but a directory (<00o_install_dir/program/>)
+		jpchk = 0; entries = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
+		# Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
+		# as javaclasspath is one long string. Under Windows however classpath is a cell array
+		# so we need the following more subtle, platform-independent approach:
+		for jj=1:numel (entries)
+			for ii=1:numel (jcp)
+				jcplst = strsplit (jcp{ii}, filesep);
+				jcpentry = jcplst {end};
+				if (~isempty (strfind (lower (jcpentry), lower (entries{jj}))))
+					jpchk = jpchk + 1;
+				endif
+			endfor
+		endfor
+		if (jpchk >= numel (entries))
+			xlsinterfaces.UNO = 1;
+			fprintf ('OK\n');
+			chk1 = 1;
+		else
+			warning ('\nOne or more UNO classes (.jar) missing in javaclasspath');
+		endif
+	endif
+
 	# ---- Other interfaces here, similar to the ones above
 
 endfunction

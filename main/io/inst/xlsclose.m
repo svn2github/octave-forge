@@ -17,6 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} [@var{xls}] = xlsclose (@var{xls})
 ## @deftypefnx {Function File} [@var{xls}] = xlsclose (@var{xls}, @var{filename})
+## @deftypefnx {Function File} [@var{xls}] = xlsclose (@var{xls}, "FORCE")
 ## Close the Excel spreadsheet pointed to in struct @var{xls}, if needed
 ## write the file to disk. Based on information contained in @var{xls},
 ## xlsclose will determine if the file should be written to disk.
@@ -26,22 +27,24 @@
 ## However if errors occurred, the file pinter will be ontouched so you can
 ## clean up before a next try with xlsclose().
 ## Be warned that until xlsopen is called again with the same @var{xls} pointer
-## struct and @var{_keepxls_} omitted or set to false, hidden Excel or Java
-## applications with associated (possibly large) memory chunks are kept alive
-## taking up resources.
+## struct, hidden Excel or Java applications with associated (possibly large)
+## memory chunks are kept in memory, taking up resources.
+## If (string) argument "FORCE" is supplied, the file pointer will be reset 
+## regardless, whether the possibly modified file has been saved successfully
+## or not. Hidden Excel (COM) or OpenOffice.org (UNO) invocations may live on,
+## possibly even impeding proper shutdown of Octave.
 ##
 ## @var{filename} can be used to write changed spreadsheet files to
 ## an other file than opened with xlsopen(); unfortunately this doesn't work
 ## with JXL (JExcelAPI) interface.
 ##
-## You need MS-Excel (95 - 2010), and/or the Java package > 1.2.6 plus Apache
-## POI > 3.5 and/or JExcelAPI and/or OpenXLS installed on your computer + proper
-## javaclasspath set, to make this function work at all.
+## You need MS-Excel (95 - 2010), and/or the Java package => 1.2.8 plus Apache
+## POI > 3.5 and/or JExcelAPI and/or OpenXLS and/or OpenOffice.org or clones
+## installed on your computer + proper javaclasspath set, to make this
+## function work at all.
 ##
 ## @var{xls} must be a valid pointer struct made by xlsopen() in the same
 ## octave session.
-##
-## Beware: Excel invocations may be left running invisibly in case of COM errors.
 ##
 ## Examples:
 ##
@@ -66,31 +69,56 @@
 ## 2010-11-12 Replaced 'keepxls' by new filename arg; catch write errors and
 ##            always keep file pointer in case of write errors
 ## 2011-03-26 Added OpenXLS support
+## 2011-05-18 Added experimental UNO support, incl. saving newly created files
 
-function [ xls ] = xlsclose (xls, filename=[])
+function [ xls ] = xlsclose (xls, varargs)
 
-	if (~isempty (filename))
-		if (ischar (filename))
-			if (xls.changed == 0)
-				warning ("File %s wasn't changed, new filename ignored.", filename);
-			else
-				if (strcmp (xls.xtype, 'JXL'))
-					warning ("JXL doesn't support changing filename, new filename ignored.");
-				elseif ~(strcmp (xls.xtype, 'COM') || strmatch ('.xls', filename))
-					# Excel / ActiveX will write any filename extension
-					error ('No .xls or .xlsx extension lacking in filename %s', filename);
+	force = 0;
+
+	if (nargin > 1)
+		for ii=2:nargin
+			if (strcmp (lower (varargin{ii}), "force"))
+				# Close .ods anyway even if write errors occur
+				force = 1;
+			elseif (~isempty (strfind (tolower (varargin{ii}), '.')))
+				# Apparently a file name
+				if (xls.changed == 0 || xls.changed > 2)
+					printf ("File %s wasn't changed, new filename ignored.", xls.filename);
+				elseif (strcmp (xls.xtype, 'JXL'))
+					error ("JXL doesn't support changing filename, new filename ignored.");
+				elseif ~((strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'UNO')) && isempty (strfind ('filename', '.xls')))
+					# Excel/ActiveX && OOo (UNO bridge) will write any valid filetype; POI/JXL/OXS need .xls[x]
+					error ('.xls or .xlsx extension lacking in filename %s', filename);
 				else
 					### For multi-user environments, uncomment below AND relevant stanza in xlsopen
 					# In case of COM, be sure to first close the open workbook
-					#if (strcmp (xls.xtype, ÇOM'))
+					#if (strcmp (xls.xtype, 'COM'))
 					#	xls.app.Application.DisplayAlerts = 0;
 					#	xls.workbook.close();
 					#	xls.app.Application.DisplayAlerts = 0;
 					#endif
+					if (strcmp (xls.xtype, 'UNO'))
+						# If needed, turn filename into URL
+						if (~isempty (strmatch ("file:///", filename)) || ~isempty (strmatch ("http:///", filename))...
+							|| ~isempty (strmatch ("ftp:///", filename)) || ~isempty (strmatch ("www:///", filename)))
+							# Seems in proper shape for OOo (at first sight)
+						else
+							# Transform into URL form
+							fname = canonicalize_file_name (strsplit (filename, filesep){end});
+							# On Windows, change backslash file separator into forward slash
+							if (strcmp (filesep, "\\"))
+								tmp = strsplit (fname, filesep);
+								flen = numel (tmp);
+								tmp(2:2:2*flen) = tmp;
+								tmp(1:2:2*flen) = '/';
+								filename = [ 'file://' tmp{:} ];
+							endif
+						endif
+					endif
 					xls.filename = filename;
 				endif
 			endif
-		endif
+		endfor
 	endif
 
 	if (strcmp (xls.xtype, 'COM'))
@@ -185,12 +213,62 @@ function [ xls ] = xlsclose (xls, filename=[])
 			xls.workbook.close ();
 		endif
 
+	elseif (strcmp (xls.xtype, 'UNO'))
+		# Java & UNO bridge
+		try
+			if (xls.changed && xls.changed < 3)
+				# Workaround:
+				unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
+				xModel = xls.workbook.queryInterface (unotmp);
+				unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XModifiable');
+				xModified = xModel.queryInterface (unotmp);
+				if (xModified.isModified ())
+					unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XStorable');	# isReadonly() ?  	
+					xStore = xls.app.xComp.queryInterface (unotmp);
+					if (xls.changed == 2)
+						# Some trickery as Octave Java cannot create non-numeric arrays
+						lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
+						lProp = java_new ('com.sun.star.beans.PropertyValue', "Overwrite", 0, true, []);
+						lProps(1) = lProp;
+						# OK, store file
+						xStore.storeAsURL (xls.filename, lProps);
+					else
+						xStore.store ();
+					endif
+				endif
+			endif
+			xls.changed = -1;		# Needed for check on properly shutting down OOo
+			# Workaround:
+			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XModel');
+			xModel = xls.app.xComp.queryInterface (unotmp);
+			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.util.XCloseable');
+			xClosbl = xModel.queryInterface (unotmp);
+			xClosbl.close (true);
+			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
+			xDesk = xls.app.aLoader.queryInterface (unotmp);
+			xDesk.terminate();
+			xls.changed = 0;
+		catch
+			if (force)
+				# Force closing OOo
+				unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XDesktop');
+				xDesk = xls.app.aLoader.queryInterface (unotmp);
+				xDesk.terminate();
+			else
+				warning ("Error closing xls pointer (UNO)");
+			endif
+			return
+		end_try_catch
+
 #	elseif   <other interfaces here>
 		
 	endif
 
-	if (xls.changed)
+	if (xls.changed && xls.changed < 3)
 		warning (sprintf ("File %s could not be saved. Read-only or in use elsewhere?\nFile pointer preserved.", xls.filename));
+		if (force)
+			xls = [];
+		endif
 	else
 		xls = [];
 	endif

@@ -81,6 +81,7 @@
 ## 2010-10-10 Made output arg2 contain only address ranges (or other sheet type names)
 ## 2010-11-01 Added other file type strings for return arg #3 (fformat)
 ## 2011-03-26 Added OpenXLS support
+## 2011-05-18 Experimental UNO support
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
@@ -88,7 +89,8 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 	persistent lstr2; lstr2 = length (str2);
 
 	xls = xlsopen (filename, 0, reqintf);
-	
+	if (isempty (xls)); return; endif
+
 	toscreen = nargout < 1;
 
 	xlWorksheet = -4167; xlChart = 4;
@@ -182,7 +184,23 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 				sh_names(ii, 2) = "Empty or Chart";
 			endif
 		endfor
-		if (sh_cnt > 0) fformat = "xlWorkbookNormal"; else, fformat = ''; endif
+		if (sh_cnt > 0); fformat = "xlWorkbookNormal"; else; fformat = ''; endif
+			
+	elseif (strcmp (xls.xtype, 'UNO'))
+		sheets = xls.workbook.getSheets ();
+		sheetnames = sheets.getElementNames ();		# A Java object, NOT a cell array
+		sh_cnt = numel (sheetnames);
+		sh_names = cell (sh_cnt, 2);
+		for ii=1:sh_cnt
+			sh_names(ii, 1) = sheetnames(ii);
+			[ tr, lr, lc, rc ] = getusedrange (xls, ii);
+			if (tr)
+				sh_names(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
+			else
+				sh_names(ii, 2) = "Empty or Chart";
+			endif
+		endfor
+		if (sh_cnt > 0); fformat = "xlWorkbookNormal"; else; fformat = ''; endif
 		
 #	elseif     <Other Excel interfaces below>
 
@@ -190,6 +208,7 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 		error (sprintf ("xlsfinfo: unknown Excel .xls interface - %s.", xls.xtype));
 
 	endif
+
 	if (toscreen)
 		# Echo sheet names to screen
 		for ii=1:sh_cnt

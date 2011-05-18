@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -69,11 +69,12 @@
 ## Beware that -if invoked- Excel invocations may be left running silently
 ## in case of COM errors. Invoke xlsclose with proper pointer struct to
 ## close them.
-## When using java, note that large data array sizes elements may exhaust
-## the java shared memory space for the default java memory settings.
+## When using Java, note that large data array sizes elements may exhaust
+## the Java shared memory space for the default java memory settings.
 ## For larger arrays, appropriate memory settings are needed in the file
-## java.opts; then the maximum array size for the java-based spreadsheet
-## options may be in the order of 10^6 elements.
+## java.opts; then the maximum array size for the Java-based spreadsheet
+## options may be in the order of 10^6 elements. In caso of UNO this
+## limit is not applicable and spreadsheets may be much larger.
 ##
 ## Examples:
 ##
@@ -103,8 +104,9 @@
 ## 2010-12-01 Better check on file pointer struct (ischar (xls.xtype))
 ## 2011-03-29 OpenXLS support added. Works but saving to file (xlsclose) doesn't work yet 
 ##      "     Bug fixes (stray variable c_arr, and wrong test for valid xls struct)
+## 2011-05-18 Experimental UNO support
 
-## Last script file update (incl. subfunctions): 2011-03-29 (oct2oxs2xls)
+## Last script file update (incl. subfunctions): 2011-05-18 (oct2uno2xls)
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
 
@@ -160,9 +162,13 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
 	elseif (strcmp (xls.xtype, 'JXL'))
 		# Invoke Java and JExcelAPI
 		[xls, rstatus] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts);
-#	elseif (strcmp (xls.xtype, 'OXS'))
+	elseif (strcmp (xls.xtype, 'OXS'))
 #		# Invoke Java and OpenXLS     ##### Not complete, saving file doesn't work yet!
+		printf ('Sorry, writing with OpenXLS not supported yet\n');
 #		[xls, rstatus] = oct2oxs2xls (obj, xls, wsh, crange, spsh_opts);
+	elseif (strcmp (xls.xtype, 'UNO'))
+		# Invoke Java and UNO bridge (OpenOffice.org)
+		[xls, rstatus] = oct2uno2xls (obj, xls, wsh, crange, spsh_opts);
 #	elseif (strcmp'xls.xtype, '<whatever>'))
 #		<Other Excel interfaces>
 	else
@@ -867,5 +873,139 @@ function [ xls, rstatus ] = oct2oxs2xls (obj, xls, wsh, crange, spsh_opts)
 
 	if (changed), xls.changed = max (xls.changed, 1); endif   # Preserve 2 for new files
 	rstatus = 1;
+
+endfunction
+
+
+## Copyright (C) 2011 Philip Nienhuis <prnienhuis@users.sf.net>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## oct2uno2xls
+
+## Author: Philip Nienhuis <prnienhuis@users.sf.net>
+## Created: 2011-05-18
+
+function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
+
+  changed = 0;
+  newsh = 0;
+  ctype = [1, 2, 3, 4, 5];  # Float, Logical, String, Formula, Empty
+
+  # Get handle to sheet, create a new one if needed
+  sheets = xls.workbook.getSheets ();
+  sh_names = sheets.getElementNames ();
+  # Check sheet pointer
+  # FIXME sheet capacity check needed
+  if (isnumeric (wsh))
+    if (wsh < 1)
+      error ("Illegal sheet index: %d", wsh);
+    elseif (wsh > numel (sh_names))
+      # New sheet to be added. First create sheet name but check if it already exists
+      shname = sprintf ("Sheet%d", numel (sh_names) + 1);
+      jj = strmatch (wsh, {sh_names});
+      if (~isempty (jj))
+        # New sheet name already in file, try to create a unique & reasonable one
+        ii = 1; filler = ''; maxtry = 5;
+        while (ii <= maxtry)
+          shname = sprintf ("Sheet%s%d", [filler "_"], numel (sh_names + 1));
+          if (isempty (strmatch (wsh, {sh_names})))
+            ii = 10;
+          else
+            ++ii;
+          endif
+        endwhile
+        if (ii > maxtry + 1)
+          error ("Could not add sheet with a unique name to file %s");
+        endif
+      endif
+      wsh = shname;
+      newsh = 1;
+    else
+      # turn wsh index into the associated sheet name
+      wsh = sh_names (wsh);
+    endif
+  else
+    # wsh is a sheet name. See if it exists already
+    if (isempty (strmatch (wsh, {sh_names})))
+      # Not found. New sheet to be added
+	  newsh = 1;
+    endif
+  endif
+  if (newsh)
+    # Add a new sheet. Sheet index MUST be a Java Short object
+    shptr = java_new ("java.lang.Short", sprintf ("%d", numel (sh_names) + 1));
+    sh = sheets.insertNewByName (wsh, shptr);
+    sheets = xls.workbook.getSheets ();
+    sh_names = sheets.getElementNames ();
+  endif
+  # At this point we have a valid sheet name. Use it to get a sheet handle
+  unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
+  sh = sheets.getByName (wsh).getObject.queryInterface (unotmp);
+
+  # Check size of data array & range / capacity of worksheet & prepare vars
+  [nr, nc] = size (c_arr);
+  [topleft, nrows, ncols, trow, lcol] = spsh_chkrange (crange, nr, nc, xls.xtype, xls.filename);
+  --trow; --lcol;                      # Zero-based row # & col #
+  if (nrows < nr || ncols < nc)
+    warning ("Array truncated to fit in range");
+    c_arr = c_arr(1:nrows, 1:ncols);
+  endif
+	
+  # Parse data array, setup typarr and throw out NaNs  to speed up writing;
+  typearr = spsh_prstype (c_arr, nrows, ncols, ctype, spsh_opts, 0);
+  if ~(spsh_opts.formulas_as_text)
+    # Find formulas (designated by a string starting with "=" and ending in ")")
+    fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1), c_arr);
+    typearr(fptr) = ctype(4);          # FORMULA
+  endif
+
+  # Transfer data to sheet
+  for ii=1:nrows
+    for jj=1:ncols
+      try
+        XCell = sh.getCellByPosition (lcol+jj-1, trow+ii-1);
+        switch typearr(ii, jj)
+          case 1	# Float
+            XCell.setValue (c_arr{ii, jj});
+          case 2	# Logical. Convert to float
+            XCell.setValue (double (c_arr{ii, jj}));
+          case 3	# String
+            unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.text.XText');
+            XCell.queryInterface (unotmp).setString (c_arr{ii, jj});
+          case 4	# Formula
+            if (spsh_opts.formulas_as_text)
+              unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.text.XText');
+              XCell.queryInterface (unotmp).setString (c_arr{ii, jj});
+            else
+              XCell.setFormula (c_arr{ii, jj});
+            endif
+          otherwise
+            # Empty cell
+        endswitch
+		changed = 1;
+      catch
+        printf ("Error writing cell %s (typearr() = %d)\n", calccelladdress(trow+ii, lcol+jj), typearr(ii, jj));
+        keyboard
+		end_try_catch
+    endfor
+  endfor
+
+  if (changed)	
+    xls.changed = max (min (xls.changed, 2), changed);	# Preserve 2 (new file), 1 (existing)
+    rstatus = 1;
+  endif
 
 endfunction

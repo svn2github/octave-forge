@@ -23,11 +23,11 @@
 ##
 ## Calling odsopen without specifying a return argument is fairly useless!
 ##
-## To make this function work at all, you need the Java package > 1.2.5 plus
-## ODFtoolkit (version 0.7.5 or 0.8.6) & xercesImpl, and/or jOpenDocument
-## installed on your computer + proper javaclasspath set. These interfaces are
-## referred to as OTK and JOD resp., and are preferred in that order by default
-## (depending on their presence).
+## To make this function work at all, you need the Java package >= 1.2.5 plus
+## ODFtoolkit (version 0.7.5 or 0.8.6) & xercesImpl, and/or jOpenDocument, and/or
+## OpenOffice.org (or clones) installed on your computer + proper javaclasspath
+## set. These interfaces are referred to as OTK, JOD, adn UNO resp., and are
+## preferred in that order by default (depending on their presence).
 ## For (currently experimental) UNO support, Octave-Java package 1.2.8 + latest
 ## fixes is imperative; furthermore the relevant classes had best be added to
 ## the javaclasspath by utility function chk_spreadsheet_support().
@@ -36,16 +36,17 @@
 ## .ods suffix. If @var{filename} does not contain any directory path,
 ## the file is saved in the current directory.
 ## For UNO bridge, filenames need to be in the form "file:///<path_to_file>/filename";
-## a URL will also work. If a plain file name is given (absolute or relative)\
+## a URL will also work. If a plain file name is given (absolute or relative),
 ## odsopen() will transform it into proper form.
 ##
-## @var{readwrite} must be set to true ornumerical 1 if writing to spreadsheet
+## @var{readwrite} must be set to true or numerical 1 if writing to spreadsheet
 ## is desired immediately after calling odsopen(). It merely serves proper
 ## handling of file errors (e.g., "file not found" or "new file created").
 ##
 ## Optional input argument @var{reqintf} can be used to override the ODS
 ## interface automatically selected by odsopen. Currently implemented interfaces
-## are 'OTK' (Java / ODFtoolkit) or 'JOD' (Java / jOpenDocument).
+## are 'OTK' (Java/ODF Toolkit), 'JOD' (Java/jOpenDocument) and 'UNO'
+## (Java/OpenOffice.org UNO bridge).
 ##
 ## Examples:
 ##
@@ -58,7 +59,7 @@
 ##    the jOpenDocument interface is requested)
 ## @end example
 ##
-## @seealso odsclose, odsread, ods2oct, odsfinfo
+## @seealso odsclose, odsread, ods2oct, odsfinfo, chk_spreadsheet_support
 ##
 ## @end deftypefn
 
@@ -83,7 +84,7 @@
 ## 2010-11-12 Small changes to help text
 ##     "      Added try-catch to file open sections to create fallback to other intf
 ## 2011-05-06 Experimental UNO support
-## 2011-05-07 UNO support (ods2uno2oct) incorporated; relevant help text added
+## 2011-05-18 Creating new spreadsheet docs in UNO now works
 ##
 ## Latest change on subfunction below: 2011-05-07
 
@@ -104,7 +105,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 	if (~isempty (reqinterface))
 		# Try to invoke requested interface for this call. Check if it
 		# is supported anyway by emptying the corresponding var.
-		if (strcmp (tolower (reqinterface), tolower ('OTK')))
+		if     (strcmp (tolower (reqinterface), tolower ('OTK')))
 			printf ("Java/ODFtoolkit interface requested... ");
 			odsinterfaces.OTK = []; odsinterfaces.JOD = 0; odsinterfaces.UNO = 0;
 		elseif (strcmp (tolower (reqinterface), tolower ('JOD')))
@@ -191,7 +192,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			ods.odfvsn = odsinterfaces.odfvsn;
 			odssupport += 1;
 		catch
-			if (odsinterfaces.JOD && ~rw && chk2)
+			if (xlsinterfaces.JOD && ~rw && chk2)
 				printf ('Couldn''t open file %s using OTK; trying .sxc format with JOD...\n', filename);
 			else
 				error ('Couldn''t open file %s using OTK', filename);
@@ -247,10 +248,8 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 				flen = numel (tmp);
 				tmp(2:2:2*flen) = tmp;
 				tmp(1:2:2*flen) = '/';
-			else
-				tmp = {fname};
+				filename = [ 'file://' tmp{:} ];
 			endif
-			filename = [ 'file://' tmp{:} ];
 		endif
 		try
 			xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap");
@@ -263,11 +262,14 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
 			lProp = java_new ('com.sun.star.beans.PropertyValue', "Hidden", 0, true, []);
 			lProps(1) = lProp;
-				# save in ods struct: 
-			xComp = aLoader.loadComponentFromURL (filename, "_blank", 0, lProps);
+			if (rw > 2)
+				xComp = aLoader.loadComponentFromURL ("private:factory/scalc", "_blank", 0, lProps);
+			else
+				xComp = aLoader.loadComponentFromURL (filename, "_blank", 0, lProps);
+			endif
 			# Workaround:
 			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheetDocument');
-				# save in ods struct:
+			# save in ods struct:
 			xSpdoc = xComp.queryInterface (unotmp);
 			ods.workbook = xSpdoc;			# Needed to be able to close soffice in odsclose()
 			ods.filename = filename;
@@ -362,6 +364,7 @@ endfunction
 ## 2010-11-12 Warning added about waning support for odfdom v. 0.7.5
 ## 2011-05-06 Fixed wrong strfind tests
 ##     "      Experimental UNO support added
+## 2011-05-18 Forgot to initialize odsinterfaces.UNO
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
@@ -374,7 +377,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
 	# Check Java support
 	try
-		jcp = javaclasspath;
+		jcp = javaclasspath ("-all");
 		# If we get here, at least Java works. Now check for proper entries
 		# in class path. Under *nix the classpath must first be split up
 		if (isunix) jcp = strsplit (char (jcp), ":"); endif
@@ -396,7 +399,8 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
 	# Try Java & UNO
 	if (isempty (odsinterfaces.UNO))
-		# entries0(1) = not a jar but a directory (<000_install_dir/program/>)
+		odsinterfaces.UNO = 0;
+		# entries(1) = not a jar but a directory (<000_install_dir/program/>)
 		jpchk = 0; entries = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
 		# Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
 		# as javaclasspath is one long string. Under Windows however classpath is a cell array

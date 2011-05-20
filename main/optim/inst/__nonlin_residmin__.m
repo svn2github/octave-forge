@@ -178,8 +178,7 @@ function [p, resid, cvg, outp] = \
       error ("lengths of 'param_order' and 'param_dims' not equal");
     endif
     pnel = cellfun (@ prod, pdims);
-    ppartidx = cumsum (pnel);
-    ppartidx = [[1; ppartidx(1:end-1)+1], ppartidx];
+    ppartidx = pnel;
     if (any (pnel > 1))
       pnonscalar = true;
       cpnel = num2cell (pnel);
@@ -210,10 +209,10 @@ function [p, resid, cvg, outp] = \
     endif
   endif
 
-  plabels = cell2cell (num2cell ((1:np).'), 1);
+  plabels = num2cell (num2cell ((1:np).'));
   if (! isempty (pord))
-    plabels = cat (2, plabels, cell2cell (epord, 1), \
-		   cell2cell (num2cell (psubidx), 1));
+    plabels = cat (2, plabels, num2cell (epord), \
+		   num2cell (num2cell (psubidx)));
   endif
 
   ## some useful vectors
@@ -422,7 +421,7 @@ function [p, resid, cvg, outp] = \
     if (pnonscalar)
       f = @ (p, varargin) \
 	  f (cell2struct \
-	     (cellfun (@ reshape, partarray (p, ppartidx), \
+	     (cellfun (@ reshape, mat2cell (p, ppartidx), \
 		       pdims, "UniformOutput", false), \
 	      pord, 1), varargin{:});
     else
@@ -449,7 +448,7 @@ function [p, resid, cvg, outp] = \
 	  cat (2, \
 	       fields2cell \
 	       (dfdp (cell2struct \
-		      (cellfun (@ reshape, partarray (p, ppartidx), \
+		      (cellfun (@ reshape, mat2cell (p, ppartidx), \
 				pdims, "UniformOutput", false), \
 		       pord, 1), hook), \
 		pord){:});
@@ -467,7 +466,7 @@ function [p, resid, cvg, outp] = \
     if (pnonscalar)
       f_genicstr = @ (p, varargin) \
 	  f_genicstr (cell2struct \
-		      (cellfun (@ reshape, partarray (p, ppartidx), \
+		      (cellfun (@ reshape, mat2cell (p, ppartidx), \
 				pdims, "UniformOutput", false), \
 		       pord, 1), varargin{:});
     else
@@ -488,7 +487,7 @@ function [p, resid, cvg, outp] = \
 	       fields2cell \
 	       (df_gencstr \
 		(cell2struct \
-		 (cellfun (@ reshape, partarray (p, ppartidx), \
+		 (cellfun (@ reshape, mat2cell (p, ppartidx), \
 			   pdims, "UniformOutput", false), pord, 1), \
 		 func, idx, hook), \
 		pord){:});
@@ -507,7 +506,7 @@ function [p, resid, cvg, outp] = \
     if (pnonscalar)
       f_genecstr = @ (p, varargin) \
 	  f_genecstr (cell2struct \
-		      (cellfun (@ reshape, partarray (p, ppartidx), \
+		      (cellfun (@ reshape, mat2cell (p, ppartidx), \
 				pdims, "UniformOutput", false), \
 		       pord, 1), varargin{:});
     else
@@ -528,7 +527,7 @@ function [p, resid, cvg, outp] = \
 	       fields2cell \
 	       (df_genecstr \
 		(cell2struct \
-		 (cellfun (@ reshape, partarray (p, ppartidx), \
+		 (cellfun (@ reshape, mat2cell (p, ppartidx), \
 			   pdims, "UniformOutput", false), pord, 1), \
 		 func, idx, hook), \
 		pord){:});
@@ -564,40 +563,39 @@ function [p, resid, cvg, outp] = \
     emc(idx(prepidx), :) = cat (1, fields2cell (semc, pord(idx)){:});
   endif
 
-  ## parameter-related configuration for jacobi functions
+  ## parameter-related configuration for jacobian functions
   if (dfdp_pstruct || df_inequc_pstruct || df_equc_pstruct)
     if(pnonscalar)
       s_diffp = cell2struct \
-	  (cellfun (@ reshape, partarray (diffp, ppartidx), \
+	  (cellfun (@ reshape, mat2cell (diffp, ppartidx), \
 		    pdims, "UniformOutput", false), pord, 1);
       s_diff_onesided = cell2struct \
-	  (cellfun (@ reshape, partarray (diff_onesided, ppartidx), \
+	  (cellfun (@ reshape, mat2cell (diff_onesided, ppartidx), \
 		    pdims, "UniformOutput", false), pord, 1);
       s_orig_lbound = cell2struct \
-	  (cellfun (@ reshape, partarray (lbound, ppartidx), \
+	  (cellfun (@ reshape, mat2cell (lbound, ppartidx), \
 		    pdims, "UniformOutput", false), pord, 1);
       s_orig_ubound = cell2struct \
-	  (cellfun (@ reshape, partarray (ubound, ppartidx), \
+	  (cellfun (@ reshape, mat2cell (ubound, ppartidx), \
 		    pdims, "UniformOutput", false), pord, 1);
       s_plabels = cell2struct \
-	  (cell2cell \
+	  (num2cell \
 	   (cat (2, cellfun \
 		 (@ (x) cellfun \
-		  (@ reshape, partarray (cat (1, x{:}), ppartidx), \
+		  (@ reshape, mat2cell (cat (1, x{:}), ppartidx), \
 		   pdims, "UniformOutput", false), \
-		  cell2cell (plabels, 2), "UniformOutput", false){:}), \
-	    1), \
+		  num2cell (plabels, 1), "UniformOutput", false){:}), \
+	    2), \
 	   pord, 1);
-      s_plabels = cell2struct (cell2cell (plabels, 1), pord, 1);
       s_orig_fixed = cell2struct \
-	  (cellfun (@ reshape, partarray (fixed, ppartidx), \
+	  (cellfun (@ reshape, mat2cell (fixed, ppartidx), \
 		    pdims, "UniformOutput", false), pord, 1);
     else
       s_diffp = cell2struct (num2cell (diffp), pord, 1);
       s_diff_onesided = cell2struct (num2cell (diff_onesided), pord, 1);
       s_orig_lbound = cell2struct (num2cell (lbound), pord, 1);
       s_orig_ubound = cell2struct (num2cell (ubound), pord, 1);
-      s_plabels = cell2struct (cell2cell (plabels, 1), pord, 1);
+      s_plabels = cell2struct (num2cell (plabels, 2), pord, 1);
       s_orig_fixed = cell2struct (num2cell (fixed), pord, 1);
     endif
   endif
@@ -913,7 +911,7 @@ function [p, resid, cvg, outp] = \
   if (pin_struct)
     if (pnonscalar)
       p = cell2struct \
-	  (cellfun (@ reshape, partarray (p, ppartidx), \
+	  (cellfun (@ reshape, mat2cell (p, ppartidx), \
 		    pdims, "UniformOutput", false), \
 	   pord, 1);
     else

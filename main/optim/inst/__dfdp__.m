@@ -66,7 +66,7 @@ function prt = __dfdp__ (p, func, hook)
     if (isfield (hook, 'plabels'))
       plabels = hook.plabels;
     else
-      plabels = cell2cell (num2cell ((1:n).'), 1);
+      plabels = num2cell (num2cell ((1:n).'));
     end
 
   else
@@ -75,7 +75,7 @@ function prt = __dfdp__ (p, func, hook)
     diffp = .001 * ones (n, 1);
     lbound = - Inf (n, 1);
     ubound = Inf (n, 1);
-    plabels = cell2cell (num2cell ((1:n).'), 1);
+    plabels = num2cell (num2cell ((1:n).'));
   end    
 
   prt = zeros (m, n); % initialise Jacobian to Zero

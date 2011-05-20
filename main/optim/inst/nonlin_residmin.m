@@ -174,9 +174,10 @@
 ##
 ## The setting @code{param_order} is a cell-array with names of the
 ## optimized parameters. If not given, and initial parameters are a
-## structure, all parameters in the structure are optimized. It is an
-## error if @code{param_order} is not given and there are any
-## non-structure-based configuration items or functions.
+## structure, all parameters in the structure are optimized. If initial
+## parameters are a structure, it is an error if @code{param_order} is
+## not given and there are any non-structure-based configuration items
+## or functions.
 ##
 ## The initial parameters @var{pin} can be given as a structure
 ## containing at least all fields named in @code{param_order}. In this

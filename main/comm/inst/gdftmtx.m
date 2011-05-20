@@ -54,7 +54,7 @@ function d = gdftmtx(a)
   endif
 
   mp = minpol(a);
-  if ((mp(1) ~= 1) | !isprimitive(mp))
+  if ((mp(1) ~= 1) || !isprimitive(mp))
     error("gdftmtx: argument must be a primitive nth root of unity");
   endif
   

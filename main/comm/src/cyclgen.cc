@@ -34,8 +34,8 @@ Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a,
 			const Array<int>& x, const int& n) {
 
   int x_len = x.length ();
-  Array<int> si (n, 0);
-  Array<int> y (x_len, 0);
+  Array<int> si (dim_vector (n, 1), 0);
+  Array<int> y (dim_vector (x_len, 1), 0);
 
   for (int i=0; i < x_len; i++) {
     y(i) = si(0);
@@ -65,15 +65,15 @@ Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a,
 static bool
 do_is_cyclic_polynomial (const Array<int>& a, const int& n, const int& m)
 {
-  Array<int> y (n+1, 0);
-  Array<int> x (n-m+2, 0);
+  Array<int> y (dim_vector (n+1, 1), 0);
+  Array<int> x (dim_vector (n-m+2, 1), 0);
   y(0) = 1;
   y(n) = 1;
   x(0) = 1;
 
   Array<int> b = filter_gf2 (y, a, x, n);
-  b.resize(n+1,0);
-  Array<int> p (m+1,0);
+  b.resize(dim_vector (n+1, 1), 0);
+  Array<int> p (dim_vector (m+1, 1), 0);
   p(0) = 1;
   Array<int> q = filter_gf2 (a, p, b, m);
 
@@ -141,7 +141,7 @@ DEFUN_DLD (cyclgen, args, nargout,
   m = 1;
   while (n > (1<<(m+1)))
     m++;
-  pp.resize(n+1, 0);
+  pp.resize(dim_vector (n+1, 1), 0);
 
   if (args(1).is_scalar_type ()) {
     p = (unsigned long long)(args(1).int_value());

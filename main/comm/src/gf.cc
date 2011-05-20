@@ -502,7 +502,7 @@ static inline int modn(int x, int m, int n)
 
 galois filter(galois& b, galois& a, galois& x, galois& si) {
   int ab_len = (a.length() > b.length() ? a.length() : b.length());
-  b.resize(ab_len, 1, 0);
+  b.resize(dim_vector (ab_len, 1), 0);
   galois retval(x.length(), 1, 0, b.m(), b.primpoly());
   int norm = a(0,0);
 
@@ -523,7 +523,7 @@ galois filter(galois& b, galois& a, galois& x, galois& si) {
     }
   }
   if (a.length() > 1) {
-    a.resize(ab_len, 1, 0);
+    a.resize(dim_vector (ab_len, 1), 0);
 
     if (norm != 1) {
       int idx_norm = a.index_of(norm);
@@ -1298,7 +1298,7 @@ DEFUN_DLD (rsenc, args, nargout,
     genpoly(i,0) = genpoly.index_of(genpoly(i,0));
 
   // Add space for parity block
-  msg.resize(nsym,n,0);
+  msg.resize(dim_vector (nsym, n), 0);
 
   // The code below basically finds the parity bits by treating the 
   // message as a polynomial and dividing it by the generator polynomial.
@@ -1814,7 +1814,7 @@ DEFUN_DLD (rsdec, args, nargout,
   ColumnVector nerr(nsym,0);
 
   if (nn != n) {
-    code.resize(nsym,nn,0);
+    code.resize(dim_vector (nsym, nn),0);
     if (parity_at_end) 
       for (int l = 0; l < nsym; l++)
 	for (int i=n; i > 0; i--)
@@ -1829,7 +1829,7 @@ DEFUN_DLD (rsdec, args, nargout,
       for (int l = 0; l < nsym; l++)
 	for (int i=0; i > n; i--)
 	  code(l,i) = code(l,i+nn-n);
-    code.resize(nsym,n,0);
+    code.resize(dim_vector (nsym, n), 0);
   }
 
   if (parity_at_end) {
@@ -1962,7 +1962,7 @@ DEFUN_DLD (bchenco, args, ,
     found(0) = 1;
     galois c(1,m,0,m);
     c(0,0) == c.index_of(1);
-    Array<int> cs(1,1);
+    Array<int> cs(dim_vector (1, 1), 1);
 
     int nc = 1;
 
@@ -1973,8 +1973,8 @@ DEFUN_DLD (bchenco, args, ,
 	if ((found(i) == 0) && (c.index_of(i+1) < idx))
 	  idx = c.index_of(i+1);
 
-      c.resize(nc+1,m);
-      cs.resize(nc+1);
+      c.resize(dim_vector (nc+1, m));
+      cs.resize(dim_vector (nc+1, 1));
       c(nc,0) = idx; 
       found(c.alpha_to(idx)-1) = 1;
       cs(nc) = 1;
@@ -2001,7 +2001,7 @@ DEFUN_DLD (bchenco, args, ,
 	    int flag = 0;
 	    for (int l=0; l<cs(i); l++) {
 	      if (c(i,l) == j+1) {
-		f.resize(1,nf+cs(i));
+		f.resize(dim_vector (1, nf+cs(i)));
 		for (int ll=0; ll<cs(i); ll++)
 		  f(0,nf+ll) = c(i,ll);
 		found(i) = 0;
@@ -2229,7 +2229,7 @@ DEFUN_DLD (bchdeco, args, ,
 
   for (int lsym = 0; lsym < nsym; lsym++) {
     /* first form the syndromes */
-    Array<int> s(t2+1,0);
+    Array<int> s(dim_vector(t2+1, 1) ,0);
     bool syn_error = false;
 
     for (int i = 1; i <= t2; i++) {
@@ -2249,8 +2249,9 @@ DEFUN_DLD (bchdeco, args, ,
 
     if (syn_error) {	/* if there are errors, try to correct them */
       int q, u;
-      Array<int> d(t2+2), l(t2+2), u_lu(t2+2), reg(t2+2);
-      Array2<int> elp(t2+2,t2+2);
+      Array<int> d(dim_vector (t2+2, 1)), l(dim_vector (t2+2, 1)), 
+	u_lu(dim_vector (t2+2, 1)), reg(dim_vector (t2+2, 1)),
+	elp(dim_vector (t2+2, t2+2));
 
       /* convert syndrome from polynomial form to index form  */
       for (int i = 1; i <= t2; i++)
@@ -2348,7 +2349,7 @@ DEFUN_DLD (bchdeco, args, ,
       u++;
       if (l(u) <= t) {/* Can correct errors */
 	int count;
-	Array<int> loc(t+2);
+	Array<int> loc(dim_vector (t+2, 1));
 
 	/* put elp into index form */
 	for (int i = 0; i <= l(u); i++)

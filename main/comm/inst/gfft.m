@@ -41,9 +41,9 @@ function y = gfft(x)
   
   alph = gf(2, x.m, x.prim_poly);
   [nr,nc] = size(x);
-  if ((nc == 1) & (nr == n))
+  if ((nc == 1) && (nr == n))
     y = gdftmtx(alph) * x;
-  elseif ((nc == n) & (nr == 1))
+  elseif ((nc == n) && (nr == 1))
     y = (gdftmtx(alph) * x')';
   else
     error ("gfft: argument must be a vector in GF(2^m) of length 2^m-1");

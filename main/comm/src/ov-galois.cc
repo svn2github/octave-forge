@@ -29,10 +29,6 @@ Open Source Initiative (www.opensource.org)
 #include "galois.h"
 #include "ov-galois.h"
 
-#if ! defined (HAVE_OCTAVE_29) && ! defined (HAVE_OCTAVE_30)
-extern int Vstruct_levels_to_print;
-#endif
-
 #include <octave/byte-swap.h>
 #include <octave/ls-oct-ascii.h>
 
@@ -47,7 +43,7 @@ octave_value octave_galois::resize (const dim_vector& dv, bool) const
       return octave_value ();
     }
   galois retval (gval); 
-  retval.resize (dv(0), dv(1)); 
+  retval.resize (dv); 
   return new octave_galois (retval);
 }
 
@@ -205,10 +201,6 @@ octave_galois::print (std::ostream& os, bool) const
 void
 octave_galois::print_raw (std::ostream& os, bool) const
 {
-  unwind_protect::begin_frame ("octave_galois_print");
-
-  unwind_protect_int (Vstruct_levels_to_print);
-
   bool first = true;
   int m = gval.m();
   int primpoly = gval.primpoly();
@@ -256,8 +248,6 @@ octave_galois::print_raw (std::ostream& os, bool) const
 
   octave_print_internal (os, data, false, current_print_indent_level ());
   newline (os);
-
-  unwind_protect::run_frame ("octave_galois_print");
 }
 
 bool
@@ -267,7 +257,13 @@ octave_galois::print_name_tag (std::ostream& os, const std::string& name) const
 
   indent (os);
 
+  // Vstruct_levels_to_print was made static in Octave 3.4, which means
+  // the name_tag might be printed on a seperate line when it shouldn't be.
+#if 0
   if (Vstruct_levels_to_print < 0)
+#else
+  if (false)
+#endif
     os << name << " = ";
   else
     {
@@ -731,7 +727,7 @@ octave_galois::load_hdf5 (hid_t loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
 
   H5Sget_simple_extent_dims (space_id, hdims, maxdims);
-  MArray2<int> m (hdims[1], hdims[0]);
+  MArray<int> m (dim_vector (hdims[1], hdims[0]));
 
   int *re = m.fortran_vec ();
   if (H5Dread (data_hid, H5T_NATIVE_UINT, H5S_ALL, H5S_ALL, 

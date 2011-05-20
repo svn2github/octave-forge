@@ -31,22 +31,22 @@ Open Source Initiative (www.opensource.org)
 #define COL_MAJ(N) (N / (SIZEOF_INT << 3))
 #define COL_MIN(N) (N % (SIZEOF_INT << 3))
 
-Array2<int> get_errs (const int& nmin, const int& nmax, const int &nerrs)
+Array<int> get_errs (const int& nmin, const int& nmax, const int &nerrs)
 {
-  Array2<int> pos;
+  Array<int> pos;
   int cols = COL_MAJ(nmax)+1;
 
   OCTAVE_QUIT;
   if (nerrs == 1) {
-    pos.resize(nmax-nmin,cols,0);
+    pos.resize(dim_vector (nmax-nmin, cols), 0);
     for (int i = nmin; i < nmax; i++) {
       pos(i-nmin,COL_MAJ(i)) = (1<<COL_MIN(i));
     } 
   } else {
     for (int i = nmin; i < nmax - nerrs + 1; i++) {
-      Array2<int> new_pos = get_errs(i+1, nmax, nerrs-1);
+      Array<int> new_pos = get_errs(i+1, nmax, nerrs-1);
       int l = pos.rows();
-      pos.resize(l+new_pos.rows(),cols,0);
+      pos.resize(dim_vector (l+new_pos.rows(), cols), 0);
       for (int j=0; j<new_pos.rows(); j++) {
 	for (int k=0; k<cols; k++)
 	  pos(l+j,k) = new_pos(j,k);
@@ -117,7 +117,7 @@ DEFUN_DLD (syndtable, args, nargout,
 
   while (nfilled != 0) {
     // Get all possible combinations of nerrs bit errors in n bits
-    Array2<int> errpos = get_errs(0, n, nerrs);
+    Array<int> errpos = get_errs(0, n, nerrs);
 
     // Calculate the syndrome with the error vectors just calculated
     for (int j = 0;  j < errpos.rows(); j++) {

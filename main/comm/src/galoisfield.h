@@ -28,7 +28,6 @@ Open Source Initiative (www.opensource.org)
 #include <string>
 
 #include "MArray.h"
-#include "MArray2.h"
 
 #include "mx-defs.h"
 #include "mx-op-defs.h"

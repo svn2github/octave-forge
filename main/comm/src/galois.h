@@ -56,12 +56,12 @@ Open Source Initiative (www.opensource.org)
 typedef void (*solve_singularity_handler) (double rcond);
 
 class
-galois : public MArray2<int>
+galois : public MArray<int>
 {
 public:
   galois (void) : field (NULL) { }
   galois (const Array<int>& a, const int& m=1, const int& primpoly=0);
-  galois (const MArray2<int>& a, const int& m=1, const int& primpoly=0);
+  galois (const MArray<int>& a, const int& m=1, const int& primpoly=0);
   galois (const Matrix& a, const int& m=1, const int& primpoly=0);
   galois (int nr, int nc, const int& val=0, const int& _m=1, const int& _primpoly=0);
   galois (int nr, int nc, double val=0., const int& _m=1, const int& _primpoly=0);

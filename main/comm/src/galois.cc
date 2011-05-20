@@ -34,7 +34,7 @@ galois_field_list stored_galois_fields;
 
 // galois class
 
-galois::galois (const Array<int>& a, const int& _m, const int& _primpoly) : MArray2<int> (a.rows(), a.cols()), field (NULL) {
+galois::galois (const Array<int>& a, const int& _m, const int& _primpoly) : MArray<int> (a.dims ()), field (NULL) {
   int _n = (1<<_m) - 1;
 
   // Check the validity of the data in the matrix
@@ -51,7 +51,7 @@ galois::galois (const Array<int>& a, const int& _m, const int& _primpoly) : MArr
   field = stored_galois_fields.create_galois_field(_m, _primpoly);
 }
 
-galois::galois (const MArray2<int>& a, const int& _m, const int& _primpoly) : MArray2<int> (a.rows(), a.cols()), field (NULL) {
+galois::galois (const MArray<int>& a, const int& _m, const int& _primpoly) : MArray<int> (a.dims ()), field (NULL) {
   int _n = (1<<_m) - 1;
 
   // Check the validity of the data in the matrix
@@ -68,7 +68,7 @@ galois::galois (const MArray2<int>& a, const int& _m, const int& _primpoly) : MA
   field = stored_galois_fields.create_galois_field(_m, _primpoly);
 }
 
-galois::galois (const Matrix& a, const int& _m, const int& _primpoly) : MArray2<int> (a.rows(), a.cols()), field (NULL) {
+galois::galois (const Matrix& a, const int& _m, const int& _primpoly) : MArray<int> (a.dims()), field (NULL) {
   int _n = (1<<_m) - 1;
 
   // Check the validity of the data in the matrix
@@ -89,7 +89,7 @@ galois::galois (const Matrix& a, const int& _m, const int& _primpoly) : MArray2<
   field = stored_galois_fields.create_galois_field(_m, _primpoly);
 }
 
-galois::galois (int nr, int nc, const int& val, const int& _m, const int& _primpoly) : MArray2<int> (nr, nc, val), field (NULL) {
+galois::galois (int nr, int nc, const int& val, const int& _m, const int& _primpoly) : MArray<int> (dim_vector (nr, nc), val), field (NULL) {
   int _n = (1<<_m) - 1;
 
   // Check the validity of the data in the matrix
@@ -101,7 +101,7 @@ galois::galois (int nr, int nc, const int& val, const int& _m, const int& _primp
   field = stored_galois_fields.create_galois_field(_m, _primpoly);
 }
 
-galois::galois (int nr, int nc, double val, const int& _m, const int& _primpoly) : MArray2<int> (nr, nc, (int)val), field (NULL) {
+galois::galois (int nr, int nc, double val, const int& _m, const int& _primpoly) : MArray<int> (dim_vector (nr, nc), (int)val), field (NULL) {
   int _n = (1<<_m) - 1;
 
   // Check the validity of the data in the matrix
@@ -119,7 +119,7 @@ galois::galois (int nr, int nc, double val, const int& _m, const int& _primpoly)
 }
 
 galois :: galois (const galois& a) :
-  MArray2<int>(a) {
+  MArray<int>(a) {
 
   if (!a.have_field()) {
     gripe_copy_invalid_galois();
@@ -156,7 +156,7 @@ galois & galois::operator = (const galois& t)
     field = stored_galois_fields.create_galois_field(t.m(), t.primpoly());
 
   // Copy the data
-  MArray2<int>::operator = (t);
+  MArray<int>::operator = (t);
 
   return *this;
 }
@@ -227,7 +227,7 @@ galois::operator -= (const galois& a)
 
 galois galois::index (idx_vector& i, int resize_ok, const int& rfv) const
 {
-  galois retval(MArray2<int>::index(i, resize_ok, rfv), m(), primpoly());
+  galois retval(MArray<int>::index(i, resize_ok, rfv), m(), primpoly());
 
   return retval;
 }
@@ -235,7 +235,7 @@ galois galois::index (idx_vector& i, int resize_ok, const int& rfv) const
 galois  galois::index (idx_vector& i, idx_vector& j, int resize_ok,
 		   const int& rfv) const
 {
-  galois retval(MArray2<int>::index(i, j, resize_ok, rfv), m(), primpoly());
+  galois retval(MArray<int>::index(i, j, resize_ok, rfv), m(), primpoly());
 
   return retval;
 }
@@ -258,7 +258,7 @@ galois::concat (const Matrix& rb, const Array<int>& ra_idx)
   int _n = (1<<m()) - 1;
   int r = rb.rows();
   int c = rb.columns();
-  tmp.resize (r, c);
+  tmp.resize (dim_vector (r, c));
 
   // Check the validity of the data in the matrix
   for (int i=0; i<r; i++) {
@@ -285,7 +285,7 @@ galois concat (const Matrix& ra, const galois& rb,  const Array<int>& ra_idx)
   int _n = (1<<rb.m()) - 1;
   int r = ra.rows();
   int c = ra.columns();
-  retval.resize (r, c);
+  retval.resize (dim_vector(r, c));
   if (ra.numel() < 1)
     return retval;
 
@@ -349,7 +349,7 @@ galois galois::diag (int k) const
   if (nnr > 0 && nnc > 0)
     {
       int ndiag = (nnr < nnc) ? nnr : nnc;
-      retval.resize(ndiag, 1);
+      retval.resize(dim_vector(ndiag, 1));
 
       if (k > 0)
 	{
@@ -397,7 +397,7 @@ galois :: transpose (void) const
   int d1 = rows();
   int d2 = cols();
 
-  a.resize(d2,d1);
+  a.resize(dim_vector(d2, d1));
   for (int j = 0; j < d2; j++)
     for (int i = 0; i < d1; i++)
       a (j, i) = xelem (i, j);
@@ -435,7 +435,7 @@ galois elem_pow (const galois& a, const galois& b)
 
   if (a_nr == 1 && a_nc == 1)
     {
-      result.resize(b_nr,b_nc,0);
+      result.resize(dim_vector(b_nr, b_nc), 0);
       int tmp = a.index_of(a(0,0));
       for (int j = 0; j < b_nc; j++)
 	for (int i = 0; i < b_nr; i++)
@@ -711,13 +711,13 @@ operator * (const galois& a, const galois& b)
 boolMatrix
 galois::all (int dim) const
 {
-  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, int> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 galois::any (int dim) const
 {
-  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, int> (*this, dim, mx_inline_any);
 }
 
 galois
@@ -890,7 +890,7 @@ LU::factor (const galois& a, const pivot_type& typ)
 
   ptype = typ;
   info = 0;
-  ipvt.resize (mn);
+  ipvt.resize (dim_vector (mn, 1));
 
   a_fact = a;
 
@@ -1126,7 +1126,7 @@ galois::solve (const galois& b, int& info,
 
       // Resize the number of solution rows if needed
       if (nc > nr)
-	retval.resize(b_nr+nc-nr,b_nc,0);
+	retval.resize(dim_vector(b_nr+nc-nr, b_nc), 0);
 
       //Solve L*X = B, overwriting B with X.
       int mn = (nc < nr ? nc : nr);
@@ -1230,7 +1230,7 @@ galois::solve (const galois& b, int& info,
 
       // Resize the number of solution rows if needed
       if (nc < nr)
-	retval.resize(b_nr+nc-nr,b_nc);
+	retval.resize(dim_vector(b_nr+nc-nr, b_nc));
 
     }
   }

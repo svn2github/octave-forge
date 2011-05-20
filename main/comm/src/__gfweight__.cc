@@ -80,7 +80,7 @@ DEFUN_DLD (__gfweight__, args, ,
       flush_octave_stdout ();
     }
 
-  Array<char> codeword (n, 0);
+  Array<char> codeword (dim_vector (n, 1), 0);
   return octave_value((double)get_weight (codeword, gen, n - k + 1, 1, 0, n, k));
 }
 

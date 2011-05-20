@@ -69,8 +69,8 @@ galois_field_node::galois_field_node (const int& _m, const int& _primpoly)
     primpoly = default_galois_primpoly[m-1];
 
   // Setup the lookup table, etc
-  alpha_to.resize((1<<m));
-  index_of.resize((1<<m));
+  alpha_to.resize(dim_vector (1<<m, 1));
+  index_of.resize(dim_vector (1<<m, 1));
 
   // Put an illegal value in index_of and if it is still there after fill
   // we have a reducible polynomial

@@ -42,8 +42,8 @@ Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a,
 			const Array<int>& x, const int& n) {
 
   int x_len = x.length ();
-  Array<int> si (n, 0);
-  Array<int> y (x_len, 0);
+  Array<int> si (dim_vector (n, 1), 0);
+  Array<int> y (dim_vector (x_len, 1), 0);
 
   for (int i=0; i < x_len; i++) {
     y(i) = si(0);
@@ -73,9 +73,9 @@ Array<int> filter_gf2 (const Array<int>& b, const Array<int>& a,
 static bool
 do_is_cyclic_polynomial (const unsigned long long& a1, const int& n, const int& m)
 {
-  Array<int> a (n+1,0);
-  Array<int> y (n+1, 0);
-  Array<int> x (n-m+2, 0);
+  Array<int> a (dim_vector (n+1, 1),0);
+  Array<int> y (dim_vector (n+1, 1), 0);
+  Array<int> x (dim_vector (n-m+2, 1), 0);
   y(0) = 1;
   y(n) = 1;
   x(0) = 1;
@@ -83,8 +83,8 @@ do_is_cyclic_polynomial (const unsigned long long& a1, const int& n, const int& 
     a(i) = (a1 & (1UL <<  i) ? 1 : 0);
 
   Array<int> b = filter_gf2 (y, a, x, n);
-  b.resize(n+1,0);
-  Array<int> p (m+1,0);
+  b.resize(dim_vector (n+1, 1), 0);
+  Array<int> p (dim_vector (m+1, 1), 0);
   p(0) = 1;
   Array<int> q = filter_gf2 (a, p, b, m);
 

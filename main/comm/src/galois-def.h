@@ -128,14 +128,14 @@ void gripe_init_galois (void);
       { \
 	if ((m1_nr == 1 && m1_nc == 1) && (m2_nr > 0 && m2_nc > 0)) \
 	  { \
-	    r.resize(m2_nr,m2_nc); \
+	    r.resize(dim_vector(m2_nr,m2_nc));	\
 	    for (int i=0; i<m2_nr; i++) \
 	      for (int j=0; j<m2_nc; j++) \
 		r(i,j) = (int)m1(0,0) ^ (int)m2(i,j); \
 	  } \
 	else if ((m2_nr == 1 && m2_nc == 1) && (m1_nr > 0 && m1_nc > 0)) \
 	  { \
-	    r.resize(m1_nr,m1_nc); \
+	    r.resize(dim_vector(m1_nr,m1_nc));	\
 	    for (int i=0; i<m1_nr; i++) \
 	      for (int j=0; j<m1_nc; j++) \
 	        r(i,j) = (int)m1(i,j) ^ (int)m2(0,0); \
@@ -174,7 +174,7 @@ void gripe_init_galois (void);
       { \
 	if ((m1_nr == 1 && m1_nc == 1) && (m2_nr > 0 && m2_nc > 0)) \
 	  { \
-	    r.resize(m2_nr,m2_nc); \
+	    r.resize(dim_vector(m2_nr,m2_nc));	\
 	    if (m1(0,0) == 0) \
 	      { \
 		for (int i=0; i<m2_nr; i++) \
@@ -200,7 +200,7 @@ void gripe_init_galois (void);
 	  } \
 	else if ((m2_nr == 1 && m2_nc == 1) && (m1_nr > 0 && m1_nc > 0)) \
 	  { \
-	    r.resize(m1_nr,m1_nc); \
+	    r.resize(dim_vector(m1_nr,m1_nc));	\
 	    if (m2(0,0) == 0) \
 	      { \
 		for (int i=0; i<m1_nr; i++) \
@@ -270,7 +270,7 @@ void gripe_init_galois (void);
  \
     if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
-	  r.resize (m1_nr, m1_nc); \
+	r.resize (m1_nr, m1_nc);	\
  \
 	  for (int j = 0; j < m1_nc; j++) \
 	    for (int i = 0; i < m1_nr; i++) \
@@ -280,14 +280,14 @@ void gripe_init_galois (void);
       { \
 	if ((m1_nr == 1 && m1_nc == 1) && (m2_nr > 0 && m2_nc > 0)) \
 	  { \
-	    r.resize(m2_nr,m2_nc); \
+	    r.resize(m2_nr,m2_nc);	\
 	    for (int i=0; i<m2_nr; i++) \
 	      for (int j=0; j<m2_nc; j++) \
 		r(i, j) = C1 (m1(0, 0)) OP C2 (m2(i, j)); \
 	  } \
 	else if ((m2_nr == 1 && m2_nc == 1) && (m1_nr > 0 && m1_nc > 0)) \
 	  { \
-	    r.resize(m1_nr,m1_nc); \
+	    r.resize(m1_nr,m1_nc);	\
 	    for (int i=0; i<m1_nr; i++) \
 	      for (int j=0; j<m1_nc; j++) \
 		r(i, j) = C1 (m1(i, j)) OP C2 (m2(0, 0)); \
@@ -325,7 +325,7 @@ void gripe_init_galois (void);
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
-	    r.resize (m1_nr, m1_nc); \
+	    r.resize (m1_nr,m1_nc);	\
  \
 	    for (int j = 0; j < m1_nc; j++) \
 	      for (int i = 0; i < m1_nr; i++) \
@@ -339,7 +339,7 @@ void gripe_init_galois (void);
       { \
 	if ((m1_nr == 1 && m1_nc == 1) && (m2_nr > 0 && m2_nc > 0)) \
 	  { \
-	    r.resize(m2_nr,m2_nc); \
+	    r.resize(m2_nr,m2_nc);	\
 	    for (int i=0; i<m2_nr; i++) \
 	      for (int j=0; j<m2_nc; j++) \
 		r(i, j) = (m1(0, 0) != ZERO) \
@@ -347,7 +347,7 @@ void gripe_init_galois (void);
 	  } \
 	else if ((m2_nr == 1 && m2_nc == 1) && (m1_nr > 0 && m1_nc > 0)) \
 	  { \
-	    r.resize(m1_nr,m1_nc); \
+	    r.resize(m1_nr,m1_nc);	\
 	    for (int i=0; i<m1_nr; i++) \
 	      for (int j=0; j<m1_nc; j++) \
 		r(i, j) = (m1(i, j) != ZERO) \
@@ -374,7 +374,7 @@ void gripe_init_galois (void);
     { \
       if ((nr == 1 && dim == -1) || dim == 1) \
 	{ \
-	  RET.resize (nr, 1); \
+	  RET.resize (dim_vector(nr, 1));	\
 	  for (int i = 0; i < nr; i++) \
 	    { \
 	      RET (i, 0) = INIT_VAL; \
@@ -386,7 +386,7 @@ void gripe_init_galois (void);
 	} \
       else \
 	{ \
-	  RET.resize (1, nc); \
+	  RET.resize (dim_vector(1, nc));	\
 	  for (int j = 0; j < nc; j++) \
 	    { \
 	      RET (0, j) = INIT_VAL; \
@@ -398,13 +398,13 @@ void gripe_init_galois (void);
 	} \
     } \
   else if (nc == 0 && (nr == 0 || (nr == 1 && dim == -1))) \
-    RET.resize (1, 1, MT_RESULT); \
+    RET.resize (dim_vector(1, 1), MT_RESULT);		   \
   else if (nr == 0 && (dim == 0 || dim == -1)) \
-    RET.resize (1, nc, MT_RESULT); \
+    RET.resize (dim_vector(1, nc), MT_RESULT); \
   else if (nc == 0 && dim == 1) \
-    RET.resize (nr, 1, MT_RESULT); \
+    RET.resize (dim_vector(nr, 1), MT_RESULT);	\
   else \
-    RET.resize (nr > 0, nc > 0);
+    RET.resize (dim_vector(nr > 0, nc > 0));
 
 #endif
 

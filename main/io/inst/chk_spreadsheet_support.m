@@ -63,12 +63,10 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 %     ''     Improved finding jar names in javaclasspath
 % 2011-05-07 Improved help text
 % 2011-05-15 Better error msg if OOo instal dir isn't found
-% 2011-05-16 Added missing end %if
-%     ''     Improved java pkg install dir for Octave
-%     ''     Distinguish URE subdir tree buildup between *nix & Windows OOo install
+% 2011-05-20 Attempt to cope with case variations in subdir names of OOo install dir (_get_dir_)
 
 	jcp = []; retval = 0;
-    if (nargin < 2), dbug = 0; path_to_ooo = []; end %if
+    if (nargin < 2), dbug = 0; end %if
 	isOctave = exist ('OCTAVE_VERSION', 'builtin') ~= 0;
 	if (ispc), filesep = '\'; else, filesep = '/'; end %if
     fprintf ('\n');
@@ -86,7 +84,9 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 	catch
 		% COM not supported
 		if (dbug), fprintf ('not working.\n\n'); end %if
-	end %try_catch
+    end %try_catch
+
+%----------------------------------------------------------------------------------
 
     % Check Java
 	if (dbug), fprintf ('Checking Java support...\n'); end %if
@@ -109,8 +109,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 	end %if
 	if (dbug > 1 && isOctave), fprintf ('  2. Checking Octave Java support... '); end %if
 	try
-		jcp = javaclasspath ('-all');					%# For Octave java pkg > 1.2.7
-		if (isempty (jcp)), jcp = javaclasspath; end %if	%# For Octave java pkg < 1.2.8
+		jcp = javaclasspath ('-all');						% For Octave java pkg > 1.2.7
+		if (isempty (jcp)), jcp = javaclasspath; end %if	% For Octave java pkg < 1.2.8
 		% If we get here, at least Java works.
 		if (dbug > 1 && isOctave), fprintf ('Java package seems to work OK.\n'); end %if
 		% Now check for proper version
@@ -138,16 +138,14 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 			% Check JVM virtual memory settings
 			jrt = javaMethod ('getRuntime', 'java.lang.Runtime');
 			jmem = jrt.maxMemory ();
-			if (isOctave), jmem = jmem.doubleValue(); end %if
+            if (isOctave), jmem = jmem.doubleValue(); end %if
 			jmem = int16 (jmem/1024/1024);
 			fprintf ('  Maximum JVM memory: %5d MiB; ', jmem);
 			if (jmem < 400)
 				fprintf ('should better be at least 400 MB!\n');
 				fprintf ('    Hint: adapt setting -Xmx in file "java.opts" (supposed to be here:)\n');
 				if (isOctave)
-					tmp = eval ("which javaclasspath");
-				  jidx = strfind (tmp, filesep);
-				  fprintf ('    %s\n', tmp(jidx(1) : jidx(end))); 
+					fprintf ('    %s\n', [matlabroot filesep 'share' filesep 'octave' filesep 'packages' filesep 'java-<version>' filesep 'java.opts']);
 				else
 					fprintf ('    $matlabroot/bin/<arch>]\n');
 				end %if
@@ -156,9 +154,11 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 			end %if
 		end %if
 		if (dbug), fprintf ('Java support OK\n'); end %if
-	catch
+    catch
 		error ('No Java support found.');
 	end %try_catch
+
+%---------------------------------------------------------------------------------
 
 	if (dbug), fprintf ('\nChecking javaclasspath for .jar class libraries needed for spreadsheet I/O...:\n'); end %if
 
@@ -183,7 +183,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 		if (~found)
 			if (dbug > 2)
 				if (jj == 1)
-					# Just a dir
+					% Just a dir
 					fprintf ('  %s.... (directory) not found\n', entries0{jj}); 
 				else
 					fprintf ('  %s....jar missing\n', entries0{jj}); 
@@ -380,26 +380,19 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 		end %if
 	end %if
 
+%----------------------------------------------------------------------------
+
 	% If requested, try to add UNO stuff to javaclasspath
 	ujars_complete = isempty (find (missing0));
-	if (dbug > 1)
-		if (ujars_complete)
-			fprintf ('UNO bridge (OpenOffice.org) supported.\n\n');
-		else
-			fprintf ('Some UNO class libs lacking yet...\n\n'); 
-		end %if
-	end %if
-
-	if (~ujars_complete && nargin > 2 && ~isempty (path_to_ooo))
-		if (dbug), fprintf ('Trying to add missing UNO java class libs to javaclasspath...\n'); end %if
+	if (~ujars_complete && nargin > 0 && ~isempty (path_to_ooo))
+		if (dbug), fprintf ('\nTrying to add missing UNO java class libs to javaclasspath...\n'); end %if
 		if (~ischar (path_to_jars)), error ('Path expected for arg # 1'); end %if
 		% Add missing jars to javaclasspath. First combine all entries
 		targt = sum (missing0);
 		if (missing0(1))
 			% Add program dir (= where soffice or soffice.exe or ooffice resides)
 			programdir = [path_to_ooo filesep entries0{1}];
-			if (exist (programdir, 'dir') == 7)
-%			if (fexist (programdir, 'd'))
+			if (fexist (programdir, 'd'))
 				if (dbug > 2), fprintf ('  Found %s, adding it to javaclasspath ... ', programdir); end %if
 				try
 					javaaddpath (programdir);
@@ -407,30 +400,27 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 					if (dbug > 2), fprintf ('OK\n'); end %if
 				catch
 					if (dbug > 2), fprintf ('FAILED\n'); end %if
-				end% try_catch
+				end %try_catch
 			else
 				if (dbug > 2), error ('Suggested OpenOffice.org install directory: %s not found!\n', path_to_ooo); end %if
 			end %if
 		end %if
-		% Rest of missing entries. Find where URE is located
-		uredirlst = dir ([path_to_ooo]);
-		jj = 1;
-		while (jj <= size (uredirlst, 1) && jj > 0)
-			uredir = uredirlst(jj).name;
-			if (uredirlst(jj).isdir && ~isempty (strfind (lower (uredirlst(jj).name), 'ure')))
-				uredir = uredirlst(jj).name;
-				jj = 0;
-			else
-				++jj;
-			end %if
-		end %while
+		% Rest of missing entries. Find where URE is located. The below code snippets are
+		% ridiculously long because we don't know the exact case of the subdirs, and that
+		% is killing on *nix where case in file names matters...
+		uredir = _get_dir_ (path_to_ooo, 'ure');
+		if (isempty (uredir))
+			fprintf ('Could not find path to <OOo install dir>/URE/\n');
+			return; 
+		end %if
 		% Now search for UNO jars
 		for ii=2:length (entries0)
 			if (missing0(ii))
 				if (ii == 2)
-					% Special case as unoil.jar usuaally resides in ./Basis.../program/classes
+					% Special case as unoil.jar usually resides in ./Basis<something>/program/classes
 					% Find out the exact name of Basis.....
 					basisdirlst = dir ([path_to_ooo filesep 'basis' '*']);
+					idx = strmatch ('basis', lower ({basisdirlst.name}));
 					jj = 1;
 					while (jj < size (basisdirlst, 1) && jj > 0)
 						% basisdir = basisdirlst(jj).name;
@@ -438,45 +428,61 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 							basisdir = basisdirlst(jj).name;
 							jj = 0;
 						else
-							++jj;
+							jj = jj + 1;
 						end %if
 					end %while
-					unojarpath = [ path_to_ooo filesep basisdir filesep 'program' filesep 'classes' filesep ];
-					file = dir ([ unojarpath entries0{ii} '*' ]);
-				else
-					% Rest of jars in ./ure/share/java (case not sure)
-					if (ispc)
-						unojarpath = [ path_to_ooo filesep uredir filesep 'java' filesep ];
-					else
-						unojarpath = [ path_to_ooo filesep uredir filesep 'share' filesep 'java' filesep ]
+					basisdir = [path_to_ooo filesep basisdir ];
+					% Search rest of path to unoil.jar (<basis...>/program/classes/)
+					basisdirentries = {'program', 'classes'};
+					tmp = basisdir; jj=1;
+					while (~isempty (tmp) & jj <= numel (basisdirentries))
+						tmp = _get_dir_ (tmp, basisdirentries{jj});
+						jj = jj + 1;
 					end %if
-					file = dir ([unojarpath entries0{ii} '*']);
+					if (isempty (tmp))
+						fprintf ('Could not find path to <OOo install dir>/Basis.../\n');
+						return; 
+					end %if
+					unojarpath = tmp;
+					file = dir ([ unojarpath filesep entries0{2} '*' ]);
+				else
+					% Rest of jars in ./ure/share/java or ./ure/java
+					unojardir = _get_dir_ (uredir, 'share');
+					if (isempty (unojardir))
+						tmp = uredir;
+					else
+						tmp = unojardir;
+					end %if
+					unojarpath = _get_dir_ (tmp, 'java');
+					file = dir ([unojarpath filesep entries0{ii} '*']);
 				end %if
+				% Path found, now try to add jar
 				if (isempty (file))
 					if (dbug > 2), fprintf ('  ? %s<...>.jar ?\n', entries0{ii}); end %if
 				else
 					if (dbug > 2), fprintf ('  Found %s, adding it to javaclasspath ... ', file.name); end %if
 					try
-						javaaddpath ([unojarpath file.name]);
+						javaaddpath ([unojarpath filesep file.name]);
 						targt = targt - 1;
 						if (dbug > 2), fprintf ('OK\n'); end %if
 					catch
 						if (dbug > 2), fprintf ('FAILED\n'); end %if
-					end %try_catch
+                    end %try_catch
 				end %if
 			end %if
 		end %for
 		if (dbug)
 			if (targt)
-				fprintf ('Some class libs still lacking...\n\n'); 
+				fprintf ('Some UNO class libs still lacking...\n\n'); 
 			else
-				fprintf ('All interfaces fully supported.now.\n\n');
+				fprintf ('UNO interface supported now.\n\n');
 				retval = 1;
 			end %if
 		end %f
 	end %if
 
-	% Rest of Java interfaces
+% ----------Rest of Java interfaces----------------------------------
+
 	missing = [missing1 missing2 missing3 missing4 missing5 missing6];
 	jars_complete = isempty (find (missing));
 	if (dbug)
@@ -507,18 +513,43 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 						if (dbug > 2), fprintf ('OK\n'); end %if
 					catch
 						if (dbug > 2), fprintf ('FAILED\n'); end %if
-					end% try_catch
+                    end% try_catch
 				end %if
 			end %if
 		end %for
 		if (dbug)
 			if (targt)
-				fprintf ('Some class libs still lacking...\n\n'); 
+				fprintf ('Some other class libs still lacking...\n\n'); 
 			else
 				fprintf ('All interfaces fully supported.now.\n\n');
 				retval = 1;
 			end %if
 		end %f
+	end %if
+
+end %function
+
+
+function [ ret_dir ] = _get_dir_ (base_dir, req_dir)
+
+% Construct path to subdirectory req_dir in a subdir tree, aimed
+% at taking care of proper case (esp. for *nix) of existing subdir
+% in the result. Case of input var req_dir is ignored on purpose.
+
+	ret_dir = '';
+	% Get list of directory entries:
+	ret_dir_list = dir (base_dir);
+	% Find matching entries: (may not work in Matlab)
+	idx = find (strcmpi ({ret_dir_list.name}, req_dir));
+	% On *nix, several files and subdirs in one dir may have the same name as long as case differs
+	if (~isempty (idx))
+		ii = 1;
+		while (~ret_dir_list(idx(ii)).isdir)
+			ii = ii + 1;
+			if (ii > numel (idx)); return; end %if
+		end %while
+		% If we get here, a dir with proper name has been found. Construct path:
+		ret_dir = [ base_dir filesep  ret_dir_list(idx(ii)).name ];
 	end %if
 
 end %function

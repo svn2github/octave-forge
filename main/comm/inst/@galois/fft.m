@@ -14,39 +14,37 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gifft (@var{x})
+## @deftypefn {Function File} {} fft (@var{x})
 ##
-## If @var{x} is a column vector, finds the IFFT over the primitive element
+## If @var{x} is a column vector, finds the FFT over the primitive element
 ## of the Galois Field of @var{x}. If @var{x} is in the Galois  Field
 ## GF(2^@var{m}), then @var{x} must have @code{2^@var{m} - 1} elements.
 ## @end deftypefn
-## @seealso{ifft}
 
-## PKG_ADD: dispatch ("ifft", "gifft", "galois");
-function y = gifft(x)
+function y = fft(x)
 
   if (nargin != 1)
-    error ("usage: y = gifft (x)");
+    error ("usage: y = fft (x)");
   endif
     
   if (!isgalois(x))
-    error("gifft: argument must be a galois variable");
+    error("fft: argument must be a galois variable");
   endif
 
   n = 2^x.m - 1;
   if (n > 255)
-    error ([ "gifft: argument must be in Galois Field GF(2^m), where", ...
+    error ([ "fft: argument must be in Galois Field GF(2^m), where", ...
            " m is not greater than 8"]); 
   endif
   
   alph = gf(2, x.m, x.prim_poly);
   [nr,nc] = size(x);
   if ((nc == 1) && (nr == n))
-    y = gdftmtx(1/alph) * x;
+    y = dftmtx(alph) * x;
   elseif ((nc == n) && (nr == 1))
-    y = (gdftmtx(1/alph) * x')';
+    y = (dftmtx(alph) * x')';
   else
-    error ("gifft: argument must be a vector in GF(2^m) of length 2^m-1");
+    error ("fft: argument must be a vector in GF(2^m) of length 2^m-1");
   endif
     
 endfunction

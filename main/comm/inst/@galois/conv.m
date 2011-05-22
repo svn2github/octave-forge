@@ -14,35 +14,34 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gconv (@var{a}, @var{b})
+## @deftypefn {Function File} {} conv (@var{a}, @var{b})
 ## Convolve two Galois vectors.
 ##
-## @code{y = gconv (a, b)} returns a vector of length equal to
+## @code{y = conv (a, b)} returns a vector of length equal to
 ## @code{length (a) + length (b) - 1}.
-## If @var{a} and @var{b} are polynomial coefficient vectors, @code{gconv}
+## If @var{a} and @var{b} are polynomial coefficient vectors, @code{conv}
 ## returns the coefficients of the product polynomial.
 ## @end deftypefn
-## @seealso{gdeconv,conv,deconv}
+## @seealso{deconv}
 
-## PKG_ADD: dispatch ("conv", "gconv", "galois");
-function y = gconv (a, b)
+function y = conv (a, b)
 
   if (nargin != 2)
-    usage ("gconv(a, b)");
+    usage ("conv(a, b)");
   endif
 
   if (!isgalois (a) && !isgalois (b))
-    error("gconv: at least one argument must be a galois variable");
+    error("conv: at least one argument must be a galois variable");
   elseif (!isgalois (a))
     a = gf(a, b.m, b.prim_poly);
   elseif (!isgalois (b))
     b = gf(b, a.m, a.prim_poly);
   elseif (a.m != b.m && a.prim_poly != b.prim_poly)
-    error("gconv: both vectors must be in the same galois field");
+    error("conv: both vectors must be in the same galois field");
   endif
   
   if (min(size(a)) > 1 || min(size(b)) > 1)
-    error("gconv: both arguments must be vectors");
+    error("conv: both arguments must be vectors");
   endif
 
   la = length (a);

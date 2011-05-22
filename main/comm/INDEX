@@ -114,31 +114,31 @@ Galois Fields of Even Characateristic
  all
  any
  cosets
- gconv
- gconvmtx
- gdeconv
- gdet
- gdftmtx
- gdiag
- gexp
+ conv
+ convmtx
+ deconv
+ det
+ dftmtx
+ diag
+ exp
  gf
- gfft
- gfilter
+ fft
+ filter
  gftable
  gfweight
- gifft
- ginv
- ginverse
- gisequal
- glog
- glu
- gprod
- gsqrt
- grank
- greshape
- groots
- gsum
- gsumsq
+ ifft
+ inv
+ inverse
+ isequal
+ log
+ lu
+ prod
+ sqrt
+ rank
+ reshape
+ roots
+ sum
+ sumsq
  isempty
  isgalois
  isprimitive

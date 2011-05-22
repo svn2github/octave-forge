@@ -459,7 +459,7 @@ function retval = comms(typ, tests)
 	if (isempty(gone) || !isempty(gempty))
           error("FAILED");
 	endif
-	tmp = gdiag(grow);
+	tmp = diag(grow);
 	if (size(tmp,1) != 2^m || size(tmp,2) != 2^m)
           error("FAILED");
 	endif
@@ -472,7 +472,7 @@ function retval = comms(typ, tests)
             endif
           end
 	end
-	tmp = gdiag(gmat);
+	tmp = diag(gmat);
 	if (length(tmp) != matlen)
           error("FAILED");
 	endif
@@ -481,14 +481,14 @@ function retval = comms(typ, tests)
             error("FAILED");
           endif
 	end          
-	tmp = greshape(gmat,prod(size(gmat)),1);
+	tmp = reshape(gmat,prod(size(gmat)),1);
 	if (length(tmp) != prod(size(gmat)))
           error("FAILED");
 	endif
-	if (gexp(glog(gf([1:n],m))) != [1:n])
+	if (exp(log(gf([1:n],m))) != [1:n])
           error("FAILED");
 	endif
-	tmp = gsqrt(gmat);
+	tmp = sqrt(gmat);
 	if (tmp .* tmp != gmat)
           error("FAILED");
 	endif
@@ -586,7 +586,7 @@ function retval = comms(typ, tests)
 	fprintf("PASSED\n");
 
 	fprintf("  Linear Algebra:                           ");
-	[l,u,p] = glu(gmat);
+	[l,u,p] = lu(gmat);
 	if (any(l*u-p*gmat))       
           error("FAILED");
 	endif
@@ -601,9 +601,9 @@ function retval = comms(typ, tests)
 	matdet = 0;
 	while (!matdet)
           granmat = gf(floor(2^m*rand(matlen)),m);
-          matdet = gdet(granmat);
+          matdet = det(granmat);
 	endwhile
-	matrank = grank(granmat);
+	matrank = rank(granmat);
 	smallcol = gf([0:matlen-1],m)';
 	sol1 = granmat \ smallcol;
 	sol2 = smallcol' / granmat;
@@ -619,12 +619,12 @@ function retval = comms(typ, tests)
 	a = gf([1,0,1,1],m);
 	x = gf([1,zeros(1,99)],m);
 	y0 = filter(b, a, x);
-	y1 = gconv(grow+1, grow);
-	y2 = grow * gconvmtx(grow+1, length(grow));
+	y1 = conv(grow+1, grow);
+	y2 = grow * convmtx(grow+1, length(grow));
 	if (any(y1 != y2))
           error("FAILED");
 	endif
-	[y3,remd] = gdeconv(y2, grow+1);
+	[y3,remd] = deconv(y2, grow+1);
 	if (any(y3 != grow))
           error("FAILED");
 	endif
@@ -633,14 +633,14 @@ function retval = comms(typ, tests)
 	endif
 	alph = gf(2,m);
 	x = gf(floor(2^m*rand(n,1)),m);
-	fm = gdftmtx(alph);
-	ifm = gdftmtx(1/alph);
-	y0 = gfft(x);
+	fm = dftmtx(alph);
+	ifm = dftmtx(1/alph);
+	y0 = fft(x);
 	y1 = fm * x;
 	if (any(y0 != y1))
           error("FAILED");
 	endif
-	z0 = gifft(y0);
+	z0 = ifft(y0);
 	z1 = ifm * y1;
 	if (any(z0 != x))
           error("FAILED");

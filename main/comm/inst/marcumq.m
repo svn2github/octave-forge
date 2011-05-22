@@ -34,7 +34,7 @@ function Q = marcumq(a,b,m)
 	b = padarray(b,[l-size(b,1) c-size(b,2)],'replicate','post');
 	m = padarray(m,[l-size(m,1) c-size(m,2)],'replicate','post');
 	
-	if min(a(:)) <0 | min(b(:)) <0
+	if (min(a(:)) < 0 || min(b(:)) < 0)
 		error("a and b must be positive");
 	end
 	

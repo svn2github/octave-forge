@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{d} = } gdftmtx (@var{a})
+## @deftypefn {Function File} {@var{d} = } dftmtx (@var{a})
 ##
 ## Form a matrix, that can be used to perform Fourier transforms in
 ## a Galois Field.
@@ -24,43 +24,41 @@
 ## is equal to one is @code{2^m - 1}, then this function produces a 
 ## @var{k}-by-@var{k} matrix representing the discrete Fourier transform    
 ## over a Galois Field with respect to @var{a}. The Fourier transform of
-## a column vector is then given by @code{gdftmtx(@var{a}) * @var{x}}.
+## a column vector is then given by @code{dftmtx(@var{a}) * @var{x}}.
 ##
-## The inverse Fourier transform is given by @code{gdftmtx(1/@var{a})}
+## The inverse Fourier transform is given by @code{dftmtx(1/@var{a})}
 ## @end deftypefn
-## @seealso{dftmtx}
 
-## PKG_ADD: dispatch ("dftmtx", "gdftmtx", "galois");
-function d = gdftmtx(a)
+function d = dftmtx(a)
 
   if (nargin != 1)
-    error ("usage: d = gdftmtx (a)");
+    error ("usage: d = dftmtx (a)");
   endif
     
   if (!isgalois(a))
-    error("gdftmtx: argument must be a galois variable");
+    error("dftmtx: argument must be a galois variable");
   endif
 
   m = a.m;
   prim = a.prim_poly;
   n = 2^a.m - 1;
   if (n > 255)
-    error ([ "gdftmtx: argument must be in Galois Field GF(2^m), where" ...
+    error ([ "dftmtx: argument must be in Galois Field GF(2^m), where" ...
            " m is not greater than 8"]); 
   endif
 
   if (length(a) ~= 1)
-    error ("gdftmtx: argument must be a scalar");
+    error ("dftmtx: argument must be a scalar");
   endif
 
   mp = minpol(a);
   if ((mp(1) ~= 1) || !isprimitive(mp))
-    error("gdftmtx: argument must be a primitive nth root of unity");
+    error("dftmtx: argument must be a primitive nth root of unity");
   endif
   
-  step = glog(a);
+  step = log(a);
   step = step.x;
-  row = gexp(gf([0:n-1], m, prim));
+  row = exp(gf([0:n-1], m, prim));
   d = zeros(n);
   for i=1:n;
     d(i,:) = row .^ mod(step*(i-1),n);

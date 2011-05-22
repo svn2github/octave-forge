@@ -192,7 +192,6 @@ make_gdiag (const octave_value& a, const octave_value& b)
 }
 
 // PKG_ADD: autoload ("gdiag", "gf.oct");
-// PKG_ADD: dispatch ("diag", "gdiag", "galois");
 DEFUN_DLD (gdiag, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} gdiag (@var{v}, @var{k})\n"
@@ -232,7 +231,6 @@ DEFUN_DLD (gdiag, args, ,
 }
 
 // PKG_ADD: autoload ("greshape", "gf.oct");
-// PKG_ADD: dispatch ("reshape", "greshape", "galois");
 DEFUN_DLD (greshape, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} greshape (@var{a}, @var{m}, @var{n})\n"
@@ -354,7 +352,6 @@ DEFUN_DLD (greshape, args, ,
   return retval
 
 // PKG_ADD: autoload ("gprod", "gf.oct");
-// PKG_ADD: dispatch ("prod", "gprod", "galois");
 DEFUN_DLD (gprod, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} gprod (@var{x}, @var{dim})\n"
@@ -367,7 +364,6 @@ DEFUN_DLD (gprod, args, ,
 }
 
 // PKG_ADD: autoload ("gsum", "gf.oct");
-// PKG_ADD: dispatch ("sum", "gsum", "galois");
 DEFUN_DLD (gsum, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} gsum (@var{x}, @var{dim})\n"
@@ -380,7 +376,6 @@ DEFUN_DLD (gsum, args, ,
 }
 
 // PKG_ADD: autoload ("gsumsq", "gf.oct");
-// PKG_ADD: dispatch ("sumsq", "gsumsq", "galois");
 DEFUN_DLD (gsumsq, args, ,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} gsumsq (@var{x}, @var{dim})\n"
@@ -399,7 +394,6 @@ DEFUN_DLD (gsumsq, args, ,
 }
 
 // PKG_ADD: autoload ("gsqrt", "gf.oct");
-// PKG_ADD: dispatch ("sqrt", "gsqrt", "galois");
 DEFUN_DLD (gsqrt, args, ,
     "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} gsqrt (@var{x})\n"
@@ -429,7 +423,6 @@ DEFUN_DLD (gsqrt, args, ,
 }
 
 // PKG_ADD: autoload ("glog", "gf.oct");
-// PKG_ADD: dispatch ("log", "glog", "galois");
 DEFUN_DLD (glog, args, ,
     "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} glog (@var{x})\n"
@@ -461,7 +454,6 @@ DEFUN_DLD (glog, args, ,
 
 
 // PKG_ADD: autoload ("gexp", "gf.oct");
-// PKG_ADD: dispatch ("exp", "gexp", "galois");
 DEFUN_DLD (gexp, args, ,
     "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} gexp (@var{x})\n"
@@ -602,7 +594,6 @@ galois filter(galois& b, galois& a, galois& x, galois& si) {
 
 
 // PKG_ADD: autoload ("gfilter", "gf.oct");
-// PKG_ADD: dispatch ("filter", "gfilter", "galois");
 DEFUN_DLD (gfilter, args, nargout,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {y =} gfilter (@var{b}, @var{a}, @var{x})\n"
@@ -782,7 +773,6 @@ DEFUN_DLD (gfilter, args, nargout,
 }
 
 // PKG_ADD: autoload ("glu", "gf.oct");
-// PKG_ADD: dispatch ("lu", "glu", "galois");
 DEFUN_DLD (glu, args, nargout,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} glu (@var{a})\n"
@@ -894,7 +884,6 @@ DEFUN_DLD (glu, args, nargout,
 }
 
 // PKG_ADD: autoload ("ginv", "gf.oct");
-// PKG_ADD: dispatch ("inv", "ginv", "galois");
 DEFUN_DLD (ginv, args, nargout,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {[@var{x}, @var{rcond}] = } ginv (@var{a})\n"
@@ -965,7 +954,6 @@ DEFUN_DLD (ginv, args, nargout,
 // dynamic linking.
 
 // PKG_ADD: autoload ("ginverse", "gf.oct");
-// PKG_ADD: dispatch ("inverse", "ginverse", "galois");
 DEFUN_DLD (ginverse, args, nargout,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {} ginverse (@var{a})\n"
@@ -976,7 +964,6 @@ DEFUN_DLD (ginverse, args, nargout,
 }
 
 // PKG_ADD: autoload ("gdet", "gf.oct");
-// PKG_ADD: dispatch ("det", "gdet", "galois");
 DEFUN_DLD (gdet, args, nargout,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{d} = } gdet (@var{a})\n"
@@ -1025,7 +1012,6 @@ DEFUN_DLD (gdet, args, nargout,
 }
 
 // PKG_ADD: autoload ("grank", "gf.oct");
-// PKG_ADD: dispatch ("rank", "grank", "galois");
 DEFUN_DLD (grank, args, nargout,
   "-*- texinfo -*-\n"
 "@deftypefn {Loadable Function} {@var{d} = } grank (@var{a})\n"

@@ -32,7 +32,7 @@
 
 function c = lz77enco(m, alph, la, n)
 
-  if la <= 0 | n <= 0
+  if (la <= 0 || n <= 0)
     error("lz77enco: Lookahead buffer size and window size must be higher than 0.2");
   endif
   if n - la < la
@@ -67,7 +67,7 @@ function c = lz77enco(m, alph, la, n)
     enco = [0 0 0];
     for y=(n-la):-1:1
       z = 0;
-      while(z ~= la & (window(y+z) == window(n-la+z+1)))
+      while(z ~= la && (window(y+z) == window(n-la+z+1)))
 	z += 1;
       endwhile
 		

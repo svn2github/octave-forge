@@ -1,4 +1,4 @@
-## Copyright (C) 2000 Paul Kienzle
+## Copyright (C) 2011 David Bateman
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,20 +14,12 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gisequal (@var{x1}, @var{x2}, @dots{})
-## Return true if all of @var{x1}, @var{x2}, @dots{} are equal.
-## @seealso{isequalwithequalnans}
+## @deftypefn {Loadable Function} {@var{d} = } rank (@var{a})
+## Compute the rank of the Galois array @var{a} by counting the independent
+## rows and columns.
 ## @end deftypefn
 
-## PKG_ADD: dispatch ("isequal", "gisequal", "galois");
-function t = gisequal(x,varargin)
-  if nargin < 2
-    usage("isequal(x,y,...)");
-  endif
-
-  for arg = 1:length(varargin)
-    y = varargin{arg};
-    t = all (x (:) == y (:));
-    if !t, return; endif
-  endfor
+function varargout = rank (varargin)
+  varargout = cell (1, nargout);
+  [varargout{:}] = grank (varargin{:});
 endfunction

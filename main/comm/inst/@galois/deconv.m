@@ -14,10 +14,10 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gdeconv (@var{y}, @var{a})
+## @deftypefn {Function File} {} deconv (@var{y}, @var{a})
 ## Deconvolve two Galois vectors.
 ##
-## @code{[b, r] = gdeconv (y, a)} solves for @var{b} and @var{r} such that
+## @code{[b, r] = deconv (y, a)} solves for @var{b} and @var{r} such that
 ## @code{y = gconv (a, b) + r}.
 ##
 ## If @var{y} and @var{a} are polynomial coefficient vectors, @var{b} will
@@ -26,26 +26,25 @@
 ## @end deftypefn
 ## @seealso{gconv,deconv,conv}
 
-## PKG_ADD: dispatch ("deconv", "gdeconv", "galois");
-function [b, r] = gdeconv (y, a)
+function [b, r] = deconv (y, a)
 
 
   if (nargin != 2)
-    usage ("gdeconv(a, b)");
+    usage ("deconv(a, b)");
   endif
 
   if (!isgalois (y) && !isgalois (a))
-    error("gdeconv: at least one argument must be a galois variable");
+    error("deconv: at least one argument must be a galois variable");
   elseif (!isgalois (y))
     y = gf(y, a.m, a.prim_poly);
   elseif (!isgalois (a))
     a = gf(a, y.m, y.prim_poly);
   elseif (a.m != y.m && a.prim_poly != y.prim_poly)
-    error("gdeconv: both vectors must be in the same galois field");
+    error("deconv: both vectors must be in the same galois field");
   endif
   
   if (min(size(a)) > 1 || min(size(y)) > 1)
-    error("gdeconv: both arguments must be vectors");
+    error("deconv: both arguments must be vectors");
   endif
 
   la = length (a);
@@ -55,16 +54,16 @@ function [b, r] = gdeconv (y, a)
 
   ## Ensure that both vectors are row vectors.
   if (rows (a) > 1)
-    a = greshape (a, 1, la);
+    a = reshape (a, 1, la);
   endif
   if (rows (y) > 1)
-    y = greshape (y, 1, ly);
+    y = reshape (y, 1, ly);
   endif
   
   if (ly > la)
-    b = gfilter (y, a, [1, (zeros (1, ly - la))]);
+    b = filter (y, a, [1, (zeros (1, ly - la))]);
   elseif (ly == la)
-    b = gfilter (y, a, 1);
+    b = filter (y, a, 1);
   else
     b = gf(0, y.m, y.prim_poly);
   endif

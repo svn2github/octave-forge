@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} groots (@var{v})
+## @deftypefn {Function File} {} roots (@var{v})
 ##
 ## For a vector @var{v} with @math{N} components, return
 ## the roots of the polynomial over a Galois Field
@@ -35,24 +35,22 @@
 ## The number of roots returned and their value will be determined 
 ## by the order and primitive polynomial of the Galios Field
 ## @end deftypefn
-## @seealso{roots}
 
-## PKG_ADD: dispatch ("roots", "groots", "galois");
-function r = groots (v)
+function r = roots (v)
 
   if (nargin != 1)
-    error("usage: r = groots(v)");
+    error("usage: r = roots(v)");
   endif
 
   if (!isgalois(v))
-    error("groots: argument must be a galois variable");
+    error("roots: argument must be a galois variable");
   endif
 
   if (min (size (v)) > 1 || nargin != 1)
-    usage ("groots (v), where v is a galois vector");
+    usage ("roots (v), where v is a galois vector");
   endif
 
-  v = greshape (v, 1, length(v));
+  v = reshape (v, 1, length(v));
   m = v.m;
   prim_poly = v.prim_poly; 
   n = 2^m - 1;
@@ -62,7 +60,7 @@ function r = groots (v)
   r = [];        
 
   while ((t <= n)  && (length(poly) > 1))
-    [npoly, nrem] = gdeconv(poly,gf([1,t],m,prim_poly));
+    [npoly, nrem] = deconv(poly,gf([1,t],m,prim_poly));
     if (any(nrem))
       t = t + 1;
     else

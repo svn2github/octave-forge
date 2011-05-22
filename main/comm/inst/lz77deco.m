@@ -33,7 +33,7 @@
 ## @end deftypefn
 
 function m = lz77deco(c, alph, la, n)
-  if la <= 0 | n <= 0
+  if (la <= 0 || n <= 0)
     error("lz77deco: Lookahead buffer size and window size must be higher than 0.");
   endif
   if n - la < la

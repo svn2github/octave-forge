@@ -37,7 +37,7 @@ function deintrlvd = deintrlv(data,elements)
 		end
 		deintrlvd = data(invperm);
 	else
-		if(length(elements) ~= size(data,1) | any(sort(elements) ~= 1:size(data,1)))
+		if(length(elements) ~= size(data,1) || any(sort(elements) ~= 1:size(data,1)))
 			error("elements must be a permutation of data indices");
 		end
 		deintrlvd = data(invperm,:);

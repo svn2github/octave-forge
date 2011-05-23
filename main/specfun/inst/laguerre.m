@@ -27,7 +27,7 @@ function [y,p]=laguerre(x,n)
   usage("laguerre.m: [y,p]=laguerre(x,n)");
   end;
 
-  if (n<0)|~isscalar(n)
+  if (n<0) || ~isscalar(n)
     error("laguerre.m: n must be a positive integer");
   endif
 

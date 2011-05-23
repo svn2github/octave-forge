@@ -51,10 +51,10 @@ function y = conv (a, b)
 
   ## Ensure that both vectors are row vectors.
   if (rows (a) > 1)
-    a = greshape (a, 1, la);
+    a = reshape (a, 1, la);
   endif
   if (rows (b) > 1)
-    b = greshape (b, 1, lb);
+    b = reshape (b, 1, lb);
   endif
 
   ## Use the shortest vector as the coefficent vector to filter.
@@ -66,7 +66,7 @@ function y = conv (a, b)
     else
       x = b;
     endif
-    y = gfilter (a, 1, x);
+    y = filter (a, 1, x);
   else
     if(ly > la)
       ## Can't concatenate galois variables like this yet
@@ -75,7 +75,7 @@ function y = conv (a, b)
     else
       x = a;
     endif
-    y = gfilter (b, 1, x);
+    y = filter (b, 1, x);
   endif
 
 endfunction

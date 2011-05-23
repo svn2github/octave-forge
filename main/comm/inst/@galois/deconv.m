@@ -18,13 +18,13 @@
 ## Deconvolve two Galois vectors.
 ##
 ## @code{[b, r] = deconv (y, a)} solves for @var{b} and @var{r} such that
-## @code{y = gconv (a, b) + r}.
+## @code{y = conv (a, b) + r}.
 ##
 ## If @var{y} and @var{a} are polynomial coefficient vectors, @var{b} will
 ## contain the coefficients of the polynomial quotient and @var{r} will be
 ## a remander polynomial of lowest order.
 ## @end deftypefn
-## @seealso{gconv,deconv,conv}
+## @seealso{conv}
 
 function [b, r] = deconv (y, a)
 
@@ -70,11 +70,11 @@ function [b, r] = deconv (y, a)
 
   lc = la + length (b) - 1;
   if (ly == lc)
-    r = y - gconv (a, b);
+    r = y - conv (a, b);
   else
     ## Can't concatenate galois variables like this yet
-    ## r = [(zeros (1, lc - ly)), y] - gconv (a, b);
-    r = gf([(zeros (1, lc - ly)), y], y.m, y.prim_poly) - gconv (a, b);
+    ## r = [(zeros (1, lc - ly)), y] - conv (a, b);
+    r = gf([(zeros (1, lc - ly)), y], y.m, y.prim_poly) - conv (a, b);
   endif
 
 endfunction

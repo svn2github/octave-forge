@@ -61,7 +61,7 @@ function r = minpol (v)
       ## Create the minimum polynomial from its roots 
       ptmp = gf([1,rv(1)], m, prim_poly);
       for i=2:length(rv)
-        ptmp = gconv(ptmp, [1,rv(i)]);
+        ptmp = conv(ptmp, [1,rv(i)]);
       end
 
       ## Need to left-shift polynomial to divide by x while can

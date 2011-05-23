@@ -145,7 +145,7 @@ function [g, t] = rsgenpoly(n, k, _prim, _b, _s)
   
   g = gf(1, m, prim);
   for i= 1:2*t
-    g = gconv(g, gf([1,alph^((b+i-1)*s)], m, prim));
+    g = conv(g, gf([1,alph^((b+i-1)*s)], m, prim));
   end
   
 endfunction

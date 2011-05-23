@@ -565,7 +565,7 @@ function retval = comms(typ, tests)
 	if (!isequal(y0,y1))
           error("FAILED");
 	endif
-	roots1 = groots(poly1);
+	roots1 = roots(poly1);
 	ck1 = polyval(poly1, roots1);
 	if (any(ck1))
           error("FAILED");
@@ -590,7 +590,7 @@ function retval = comms(typ, tests)
 	if (any(l*u-p*gmat))       
           error("FAILED");
 	endif
-	g1 = ginv(gmat);
+	g1 = inv(gmat);
 	g2 = gmat ^ -1;
 	if (any(g1*gmat != eye(matlen)))
           error("FAILED");

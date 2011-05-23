@@ -34,7 +34,7 @@ function c = cosets(m, prim)
   c{1} = gf(1,m,prim);
   found(1) = 1;
   nc = 2;
-  f = glog(gf(1:n,m,prim));
+  f = log(gf(1:n,m,prim));
 
   while ((!all(found)))
     t = find(!found);
@@ -45,7 +45,7 @@ function c = cosets(m, prim)
       set =[set,r];
       r = rem(r*2,n);
     end
-    c{nc} = gf(sort(gexp(gf(set,m,prim)).x),m,prim);
+    c{nc} = gf(sort(exp(gf(set,m,prim)).x),m,prim);
     found(c{nc}.x) = ones(1,length(c{nc}));
     nc = nc + 1;
   end

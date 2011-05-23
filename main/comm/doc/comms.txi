@@ -1473,35 +1473,16 @@ octave:2> a = gf(a.x,a.m,13);
 
 An important consideration in the use of the Galois Field package is
 that many of the internal functions of Octave, such as @dfn{roots}, can
-not accept Galois Fields as an input. This package therefore uses the
-@dfn{dispatch} function of Octave-Forge to @emph{overload} the internal
-Octave functions with equivalent functions that work with Galois Fields,
-so that the standard function names can be used. However, at any time the
-Galois field specific version of the function can be used by explicitly
-calling its function name. The correspondence between the internal
-function names and the Galois Field versions is as follows
-
-@multitable @columnfractions .11 .036 .17 .122 .036 .17 .122 .036 .17
-@item @code{conv} @tab - @tab @code{gconv}, 
-@tab @code{convmtx} @tab - @tab @code{gconvmtx}, 
-@tab @code{diag} @tab - @tab @code{gdiag}, 
-@item @code{deconv} @tab - @tab @code{gdeconv}, 
-@tab @code{det} @tab - @tab @code{gdet},
-@tab @code{exp} @tab - @tab @code{gexp},
-@item @code{filter} @tab - @tab @code{gfilter},
-@tab @code{inv}  @tab - @tab @code{ginv},
-@tab @code{log} @tab - @tab @code{glog},
-@item @code{lu}  @tab - @tab @code{glu},
-@tab @code{prod} @tab - @tab @code{gprod},
-@tab @code{reshape} @tab - @tab @code{greshape},
-@item @code{rank}  @tab - @tab @code{grank},
-@tab @code{roots} @tab - @tab @code{groots},
-@tab @code{sum} @tab - @tab @code{gsum},
-@item @code{sumsq} @tab - @tab @code{gsumsq}.
-@end multitable
+not accept Galois Fields as an input. This package therefore uses Octave
+classes to @emph{overload} the internal Octave functions with equivalent
+functions that work with Galois Fields, so that the standard function names 
+can be used. 
 
 The version of the function that is chosen is determined by the first 
-argument of the function. So, considering the @dfn{filter} function,
+argument of the function. This is a temporary situation until the 
+Galois Field class constructor can be rewritten to allow the use of the 
+@code{superiorto} function to define the galois class with a higher
+precedence. So, considering the @dfn{filter} function,
 if the first argument is a @emph{Matrix}, then the normal version of
 the function is called regardless of whether the other arguments of the
 function are Galois vectors or not.
@@ -1520,7 +1501,12 @@ octave:2> b = de2bi(a.x,"left-msb");
 @end example
 
 converts the polynomial form of the minimum polynomial of 14 in GF(2^5) into
-an integer.
+an integer. Finally help for the Galois specific versions of the functions
+must explicitly call the correct function as
+
+@example
+octave:1> help @galois/conv
+@end example
 
 @node Known Problems, , Function Overloading, Galois Field Basics
 @subsection Known Problems

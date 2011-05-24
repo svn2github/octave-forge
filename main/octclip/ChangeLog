@@ -1,0 +1,26 @@
+2011-05-24  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* .hgtags:
+	Version 1.0.0
+	[39df102c277c] [tip]
+
+	* doc/octclip.pdf, doc/octclip.tex:
+	Starting general documentation about the package
+	[26a79c7b76ae] [OctCLIP-1.0.0]
+
+	* .hgignore:
+	Add '.hgignore' file
+	[85599f3bc399]
+
+	* COPYING, DESCRIPTION, INDEX, inst/oc_polybool.m, src/Makefile,
+	src/_oc_polybool.cc, src/compilador.c, src/errores.c, src/eucli.c,
+	src/fgeneral.c, src/greiner.c, src/libgeoc/compilador.h,
+	src/libgeoc/constantes.h, src/libgeoc/errores.h,
+	src/libgeoc/eucli.h, src/libgeoc/fgeneral.h, src/libgeoc/general.h,
+	src/libgeoc/geom.h, src/libgeoc/greiner.h, src/libgeoc/polig.h,
+	src/libgeoc/ptopol.h, src/libgeoc/segmento.h,
+	src/libgeoc/ventorno.h, src/octclip.h, src/polig.c, src/ptopol.c,
+	src/segmento.c, src/ventorno.c:
+	Creating Mercurial repository for OctCLIP
+	[63a589ce04ed]
+

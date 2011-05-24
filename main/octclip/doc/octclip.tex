@@ -1,0 +1,216 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage{tocbibind}
+\usepackage{hyperref}
+\hypersetup{colorlinks,citecolor=red,linkcolor=red,urlcolor=red}
+
+\newcommand{\octclip}{\texttt{OctCLIP}}
+\newcommand{\octave}{GNU Octave}
+
+\title{Clipping polygons from \octave\footnote{This document is distributed
+       under the terms of the GNU Free Documentation License. Please, see
+       \url{http://www.gnu.org/licenses/}}}
+\author{Jos\'e Luis Garc\'ia Pallero\footnote{Instituto de Astronom\'ia y
+        Geodesia, Fac. de CC Matem\'aticas, Universidad Complutense de Madrid.
+        \texttt{jlgpallero@pdi.ucm.es}, \texttt{jgpallero@gmail.com}}}
+\date{\today}
+
+\begin{document}
+\maketitle
+% \tableofcontents
+
+\nocite{eat-om}
+\nocite{greiner1998}
+\nocite{kim2006a}
+
+\begin{abstract}
+Hello.
+\end{abstract}
+
+\section{Overview}
+
+Hello again.
+
+\section{Installation}
+
+As several \octave{} packages, \octclip{} installation consists in compiling the
+C++ kernel sources, link them against \octave{} library to generate
+\texttt{*.oct} functions and copy this \texttt{*.oct} executables and other
+\texttt{*.m} functions into a working directory.
+
+The automatic procedure can be easily done by running the command:
+
+\begin{verbatim}
+octave:1> pkg install octclip-x.x.x.tar.gz
+\end{verbatim}
+where \texttt{x.x.x} is the version number.
+
+After that, the functions and documentation are installed in your machine and
+you are ready for use the package.
+
+\section{\octave{} functions}
+
+Two types of functions are programmed for \octave: one \texttt{*.oct} function
+and one \texttt{*.m} function.
+
+\subsection{\texttt{*.oct} function}
+\label{op-of}
+
+This function are linked with the C code that actually make the computations.
+You can use it, but is no recommended because the input arguments are more
+strict than \texttt{*.m} functions and don't check for some errors.
+
+The function is:
+\begin{itemize}
+\item \texttt{\_oc\_polybool}: boolean operation between two polygons.
+\end{itemize}
+
+\subsection{\texttt{*.m} function}
+
+This function makes the computations by calling the \texttt{*.oct} function. You
+must call this function because you can use different number of input arguments
+and checking of input arguments is performed.
+
+The function is the same as in section \ref{op-of} (without the \texttt{\_} at
+the beginning of the name):
+\begin{itemize}
+\item \texttt{oc\_polybool}: calls \texttt{\_oc\_polybool}.
+\end{itemize}
+
+\subsection{Error handling}
+
+% \texttt{*.oct} and \texttt{*.m} functions can emit errors or warnings, some due
+% to errors in input arguments and other due to errors in functions from
+% \texttt{projwrap} kernel execution (see section \ref{op-kw}).
+%
+% Errors due to wrong input arguments (data types, dimensions, etc.) can be only
+% given for \texttt{*.m} functions and this is the reason because the use of these
+% functions are recommended. In this case, the execution is aborted and nothing is
+% stored in output arguments.
+%
+% Errors due to the execution of \texttt{projwrap} kernel can be emitted for both
+% \texttt{*.oct} and \texttt{*.m} functions. If the error is due to an erroneous
+% projection parameter, the execution is aborted and nothing is stored in output
+% arguments; but if the error is due to a wrong or out of domain input coordinate,
+% a warning is emitted and the execution has a normal end.
+
+\section{Examples}
+
+% \subsection{Geodetic to geocentric and vice versa}
+%
+% \begin{verbatim}
+% lon=-6*pi/180;lat=43*pi/180;h=1000;
+% [x,y,z]=op_geod2geoc(lon,lat,h,6378388,1/297)
+% x =  4647300.72326257
+% y = -488450.988568138
+% z =  4328259.36425774
+%
+% [lon,lat,h]=op_geoc2geod(x,y,z,6378388,1/297);
+% lon*=180/pi,lat*=180/pi,h
+% lon = -6
+% lat =  43
+% h =  1000.00000000074
+% \end{verbatim}
+%
+% \subsection{Forward and inverse projection}
+%
+% \begin{verbatim}
+% lon=-6*pi/180;lat=43*pi/180;
+% [x,y]=op_fwd(lon,lat,'+proj=utm +lon_0=3w +ellps=GRS80')
+% x =  255466.980547577
+% y =  4765182.93268401
+%
+% [lon,lat]=op_inv(x,y,'+proj=utm +lon_0=3w +ellps=GRS80');
+% lon*=180/pi,lat*=180/pi
+% lon = -6.00000000003597
+% lat =  42.9999999999424
+% \end{verbatim}
+%
+% \subsection{Forward and inverse projection: \texttt{op\_transform}}
+%
+% \subsubsection{With altitude}
+%
+% \begin{verbatim}
+% lon=-6*pi/180;lat=43*pi/180;h=1000;
+% [x,y,h]=op_transform(lon,lat,h,'+proj=latlong +ellps=GRS80',...
+%                      '+proj=utm +lon_0=3w +ellps=GRS80')
+% x =  255466.980547577
+% y =  4765182.93268401
+% h =  1000
+%
+% [lon,lat,h]=op_transform(x,y,h,...
+%                          '+proj=utm +lon_0=3w +ellps=GRS80',...
+%                          '+proj=latlong +ellps=GRS80');
+% lon*=180/pi,lat*=180/pi,h
+% lon = -6.00000000003597
+% lat =  42.9999999999424
+% h =  1000
+% \end{verbatim}
+%
+% \subsubsection{Without altitude}
+%
+% \begin{verbatim}
+% lon=-6*pi/180;lat=43*pi/180;
+% [x,y]=op_transform(lon,lat,'+proj=latlong +ellps=GRS80',...
+%                    '+proj=utm +lon_0=3w +ellps=GRS80')
+% x =  255466.980547577
+% y =  4765182.93268401
+%
+% [lon,lat]=op_transform(x,y,'+proj=utm +lon_0=3w +ellps=GRS80',...
+%                        '+proj=latlong +ellps=GRS80');
+% lon*=180/pi,lat*=180/pi
+% lon = -6.00000000003597
+% lat =  42.9999999999424
+% \end{verbatim}
+%
+% \subsection{Error due to an erroneous parameter}
+%
+% \begin{verbatim}
+% lon=-6*pi/180;lat=43*pi/180;
+% [x,y]=op_fwd(lon,lat,'+proj=utm +lon_0=3w +ellps=GRS8')
+% error:
+%         In function op_fwd:
+%         In function _op_fwd:
+%         Projection parameters
+%         unknown elliptical parameter name
+%         +proj=utm +lon_0=3w +ellps=GRS8
+% \end{verbatim}
+%
+% \subsection{Error due to latitude too big}
+%
+% \begin{verbatim}
+% lon=[-6*pi/180;-6*pi/180];lat=[43*pi/180;43];
+% [x,y]=op_fwd(lon,lat,'+proj=utm +lon_0=3w +ellps=GRS80')
+% warning: _op_fwd:
+%
+% warning: Projection error in point 2 (index starts at 1)
+% x =
+%
+%    255466.980547577
+%                 Inf
+%
+% y =
+%
+%    4765182.93268401
+%                 Inf
+% \end{verbatim}
+
+\begin{thebibliography}{99}
+\bibitem{eat-om} \textsc{Eaton}, John W.; \textsc{Bateman}, David, and
+                 \textsc{Hauberg}, S\o{}ren; GNU Octave. A high-level
+                 interactive language for numerical computations; Edition 3 for
+                 Octave version 3.2.3; July 2007; Permanently updated at
+                 \url{http://www.gnu.org/software/octave/docs.html}.
+\bibitem{greiner1998} \textsc{Greiner}, G\"unter, and \textsc{Hormann}, Kai;
+                      \textit{Efficient clipping of arbitrary polygons};
+                      ACM Transactions on Graphics; Volume 17(2), April 1998;
+                      Pages 71--83.
+                      There is a web link with some example code at
+                      \url{http://davis.wpi.edu/~matt/courses/clipping/}.
+\bibitem{kim2006a} \textsc{Kim}, Dae Hyun, and \textsc{Kim}, Myoung-Jun;
+                   \textit{An Extension of Polygon Clipping To Resolve
+                           Degenerate Cases};
+                   Computer-Aided Design \& Applications; Vol. 3; Numbers 1--4,
+                   2006; Pages 447--456.
+\end{thebibliography}
+
+\end{document}

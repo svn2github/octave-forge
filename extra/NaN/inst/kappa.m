@@ -20,6 +20,11 @@ function [kap,se,H,z,p0,SA,R]=kappa(d,c,arg3,w)
 % sACC	specific accuracy 
 % MI 	Mutual information or transfer information (in [bits])
 % X 	is a struct containing all the fields above
+%       For two classes, a number of additional summary statistics including 
+%         TPR, FPR, FDR, PPV, NPF, F1, dprime, Matthews Correlation coefficient (MCC), Specificity and Sensitivity 
+%       are provided. Note, the positive category must the larger label (in d and c), otherwise 
+%       the confusion matrix becomes transposed and the summary statistics are messed up. 
+%
 %
 % Reference(s):
 % [1] Cohen, J. (1960). A coefficient of agreement for nominal scales. Educational and Psychological Measurement, 20, 37-46.
@@ -29,6 +34,7 @@ function [kap,se,H,z,p0,SA,R]=kappa(d,c,arg3,w)
 % [4] Kraemer, H. C. (1982). Kappa coefficient. In S. Kotz and N. L. Johnson (Eds.), 
 %        Encyclopedia of Statistical Sciences. New York: John Wiley & Sons.
 % [5] http://ourworld.compuserve.com/homepages/jsuebersax/kappa.htm
+% [6] http://en.wikipedia.org/wiki/Receiver_operating_characteristic
 
 %	$Id$
 %	Copyright (c) 1997-2006,2008,2009 by Alois Schloegl <alois.schloegl@gmail.com>	
@@ -167,17 +173,35 @@ if (nargout>1), return; end;
 X.kappa = kap; 
 X.kappa_se = se; 
 X.data = H;
-X.H = X.data;
-X.z = z; 
-X.ACC = p0; 
+X.H    = X.data;
+X.z    = z; 
+X.ACC  = p0; 
 X.sACC = SA;
-X.MI = R;
-X.datatype='confusion';
+X.MI   = R;
+X.datatype = 'confusion';
 
 if length(H)==2,
-	X.FNR = H(2,1)/sum(H(2,:));
-	X.FPR = H(1,2)/sum(H(1,:));
-	X.TPR = H(2,2)/sum(H(2,:));
+	% see http://en.wikipedia.org/wiki/Receiver_operating_characteristic
+  	% Note that the confusion matrix used here is has positive values in 
+	% the 2nd row and column, moreover the true values are indicated by
+	% rows (transposed). Thus, in summary H(1,1) and H(2,2) are exchanged 
+	% as compared to the wikipedia article.  
+	X.TP  = H(2,2);
+	X.TN  = H(1,1);
+	X.FP  = H(1,2);
+	X.FN  = H(2,1);
+	X.FNR = H(2,1) / sum(H(2,:));
+	X.FPR = H(1,2) / sum(H(1,:));
+	X.TPR = H(2,2) / sum(H(2,:));
+	X.PPV = H(2,2) / sum(H(:,2));
+	X.NPV = H(1,1) / sum(H(:,1));
+	X.FDR = H(1,2) / sum(H(:,2));
+	X.MCC = det(H) / sqrt(prod([sum(H), sum(H')]));
+	X.F1  = 2 * X.TP / (sum(H(2,:)) + sum(H(:,2)));
+	X.Sensitivity = X.TPR;	%% hit rate, recall
+	X.Specificity = 1 - X.FPR;
+	X.Precision   = X.PPV;
+	X.dprime = norminv(X.TPR) - norminv(X.FDR);
 end;
 
 kap = X;  

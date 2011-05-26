@@ -62,10 +62,10 @@ extern "C" {
        para un valor. Esta variable se usa en la función \ref CantPerturbMin.
 
        A base de hacer pruebas he visto que es desaconsejable un valor por
-       debajo de 25.0.
+       debajo de 10.0.
 \date 22 de mayo de 2011: Creación de la constante.
 */
-#define GEOC_GREINER_FAC_EPS_PERTURB 25.0
+#define GEOC_GREINER_FAC_EPS_PERTURB 10.0
 /******************************************************************************/
 /******************************************************************************/
 /**
@@ -516,8 +516,9 @@ size_t NumeroVertPoliClip(vertPoliClip* poli);
         distinto de \em x.
 \note Esta función no comprueba internamente si \em factor es menor o igual que
       1, lo que daría lugar a que la función entrase en un bucle infinito.
-\note Como valor inicial de la cantidad a añadir se toma la constante
-      \p DBL_EPSILON, perteneciente al fichero \p float.h de C estándar.
+\note Como valor inicial de la cantidad a añadir se toma el producto de
+      \em factor por la constante \p DBL_EPSILON, perteneciente al fichero
+      \p float.h de C estándar.
 \date 22 de mayo de 2011: Creación de la función.
 \todo Esta función no está probada.
 */

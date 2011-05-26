@@ -694,11 +694,9 @@ double CantPerturbMin(const double x,
     double sal=fabs(DBL_EPSILON);
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //inicializamos la variable auxiliar como la coordenada de entrada más la
-    //primera aproximación a la cantidad perturbadora
-    aux = xAbs+sal;
-    //mientras la variable auxiliar sea igual a la de antrada
-    while(aux==xAbs)
+    //mientras la variable auxiliar sea igual a la de antrada (la primera vuelta
+    //del bucle se ejecuta siempre)
+    do
     {
         //escalamos la variable de salida
         sal *= factor;
@@ -709,7 +707,7 @@ double CantPerturbMin(const double x,
         //comparación puede que se almacenen en registros de más precisión que
         //el tipo de dato
         aux = xAbs+sal;
-    }
+    }while(aux==xAbs);
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //salimos de la función

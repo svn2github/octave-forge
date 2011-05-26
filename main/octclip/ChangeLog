@@ -1,8 +1,45 @@
+2011-05-26  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* doc/octclip.pdf, doc/octclip.tex:
+	Update general documentation
+	[c92173ff0cfa] [tip]
+
+	* INDEX, inst/test_octclip.m:
+	Update test script
+	[e8e240b6156a]
+
+2011-05-25  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* inst/test_octclip.m:
+	Rewrite the test script
+	[dc05adf39fd7]
+
+	* inst/oc_polybool.m:
+	Manage the new output arguments
+	[b31892460542]
+
+	* src/_oc_polybool.cc:
+	Adding number of polygons output argument and rearrange the
+	sentences of the function
+	[4a7dc86280e9]
+
 2011-05-24  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* src/greiner.c, src/libgeoc/greiner.h:
+	Correct the way of calculation of the minumum perturbation number
+	[be062b52838d]
+
+	* inst/oc_polybool.m:
+	Fix number of input arguments control
+	[47bbcb38dd31]
+
+	* inst/test_octclip.m:
+	Add test script
+	[51ddc256aaf5]
 
 	* .hgtags:
 	Version 1.0.0
-	[39df102c277c] [tip]
+	[39df102c277c]
 
 	* doc/octclip.pdf, doc/octclip.tex:
 	Starting general documentation about the package

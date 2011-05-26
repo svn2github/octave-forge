@@ -19,16 +19,26 @@
 % \tableofcontents
 
 \nocite{eat-om}
-\nocite{greiner1998}
 \nocite{kim2006a}
 
 \begin{abstract}
-Hello.
+This is a small introduction to using the \octclip{} package. In this text, you
+can overview the basic usage of the functions in
+\octave\footnote{\url{http://www.octave.org}}. If you need a detailed
+description about the Greiner-Hormann implemented algorithm, please read
+\cite{greiner1998} and visit \url{http://davis.wpi.edu/~matt/courses/clipping/}.
 \end{abstract}
 
 \section{Overview}
 
-Hello again.
+The \octclip{} package allows you to perform boolean operations (intersection,
+union and difference) between two polygons in \octave{} using the
+Greiner-Hormann algorithm\footnote{\cite{greiner1998} and
+\url{http://davis.wpi.edu/~matt/courses/clipping/}}.
+
+Greiner-Hormann is an efficient algorithm for clipping arbitrary 2D polygons.
+The algorithm can handle arbitrary closed polygons, speciﬁcally where the
+subject and clip polygons may self-intersect.
 
 \section{Installation}
 
@@ -76,24 +86,35 @@ the beginning of the name):
 \item \texttt{oc\_polybool}: calls \texttt{\_oc\_polybool}.
 \end{itemize}
 
+A test script for the package exists too:
+
+\begin{itemize}
+\item \texttt{test\_octclip}: plots an example of the \texttt{oc\_polybool}
+      usage.
+\end{itemize}
+
 \subsection{Error handling}
 
-% \texttt{*.oct} and \texttt{*.m} functions can emit errors or warnings, some due
-% to errors in input arguments and other due to errors in functions from
-% \texttt{projwrap} kernel execution (see section \ref{op-kw}).
-%
-% Errors due to wrong input arguments (data types, dimensions, etc.) can be only
-% given for \texttt{*.m} functions and this is the reason because the use of these
-% functions are recommended. In this case, the execution is aborted and nothing is
-% stored in output arguments.
-%
-% Errors due to the execution of \texttt{projwrap} kernel can be emitted for both
-% \texttt{*.oct} and \texttt{*.m} functions. If the error is due to an erroneous
-% projection parameter, the execution is aborted and nothing is stored in output
-% arguments; but if the error is due to a wrong or out of domain input coordinate,
-% a warning is emitted and the execution has a normal end.
+\texttt{*.oct} and \texttt{*.m} functions can emit errors, some due to errors in
+input arguments and other due to errors in functions from the C\footnote{The
+algorithm is internally implemented in C (C99 standard).} code.
+
+Errors due to wrong input arguments (data types, dimensions, etc.) can be only
+given for \texttt{*.m} function and this is the reason because the use of this
+function is recommended. In this case, the execution is aborted and nothing is
+stored in output arguments.
+
+The \texttt{*.oct} function can emit errors due to wrong number of input
+arguments, wrong value of the operation identifier and internal errors of memory
+allocation.
+
+\section{Caveats}
+
+To do.
 
 \section{Examples}
+
+To do.
 
 % \subsection{Geodetic to geocentric and vice versa}
 %
@@ -196,8 +217,8 @@ the beginning of the name):
 
 \begin{thebibliography}{99}
 \bibitem{eat-om} \textsc{Eaton}, John W.; \textsc{Bateman}, David, and
-                 \textsc{Hauberg}, S\o{}ren; GNU Octave. A high-level
-                 interactive language for numerical computations; Edition 3 for
+                 \textsc{Hauberg}, S\o{}ren; \textit{GNU Octave. A high-level
+                 interactive language for numerical computations}; Edition 3 for
                  Octave version 3.2.3; July 2007; Permanently updated at
                  \url{http://www.gnu.org/software/octave/docs.html}.
 \bibitem{greiner1998} \textsc{Greiner}, G\"unter, and \textsc{Hormann}, Kai;

@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File}{[@var{X},@var{Y},@var{nInt},@var{nPert}] =}_oc_polybool(@var{sub},@var{clip},@var{op})
-## @deftypefnx{Function File}{[@var{X},@var{Y},@var{nInt},@var{nPert}] =}_oc_polybool(@var{sub},@var{clip})
+## @deftypefn{Function File}{[@var{X},@var{Y},@var{nPol},@var{nInt},@var{nPert}] =}_oc_polybool(@var{sub},@var{clip},@var{op})
+## @deftypefnx{Function File}{[@var{X},@var{Y},@var{nPol},@var{nInt},@var{nPert}] =}_oc_polybool(@var{sub},@var{clip})
 ##
 ## This function performs boolean operations between two polygons using the
 ## Greiner-Hormann algorithm (http://davis.wpi.edu/~matt/courses/clipping/).
@@ -53,6 +53,8 @@
 ## @var{Y} is a column vector containing the Y coordinates of the vertices for.
 ## resultant polygon(s).
 ##
+## @var{nPol} is the number of output polygons.
+##
 ## @var{nInt} is the number of intersections between @var{sub} and @var{clip}.
 ##
 ## @var{nPert} is the number of perturbed points of the @var{clip} polygon in
@@ -63,7 +65,7 @@
 
 
 
-function [X,Y,nInt,nPert] = oc_polybool(sub,clip,op)
+function [X,Y,nPol,nInt,nPert] = oc_polybool(sub,clip,op)
 
 try
     functionName = 'oc_polybool';
@@ -79,6 +81,11 @@ try
         error(['Incorrect number of input arguments (%d)\n\t         ',...
                'Correct number of input arguments = %d or %d'],...
               nargin,minArg,maxArg);
+    end
+    %check if we omit the op argument
+    if nargin==minArg
+        %by default, use AND
+        op = 'AND';
     end
 
 %*******************************************************************************
@@ -98,7 +105,7 @@ end
 
 try
     %calling oct function
-    [X,Y,nInt,nPert] = _oc_polybool(sub,clip,op);
+    [X,Y,nPol,nInt,nPert] = _oc_polybool(sub,clip,op);
 catch
     %error message
     error('\n\tIn function %s:\n\tIn function %s ',functionName,lasterr);
@@ -135,21 +142,16 @@ if (colSub~=2)||(colClip~=2)
     error('The columns of input arguments must be 2');
 end
 %operation must be a text string
-if nargin==3
-    if ~ischar(inOp)
-        error('The third input argument is not a text string');
-    else
-        %upper case
-        outOp = toupper(inOp);
-        %check values
-        if (~strcmp(outOp,'AND'))&&(~strcmp(outOp,'OR'))&& ...
-           (~strcmp(outOp,'AB'))&&(~strcmp(outOp,'BA'))
-            error('The third input argument is not correct');
-        end
-    end
+if ~ischar(inOp)
+    error('The third input argument is not a text string');
 else
-    %value by default
-    outOp = 'AND';
+    %upper case
+    outOp = toupper(inOp);
+    %check values
+    if (~strcmp(outOp,'AND'))&&(~strcmp(outOp,'OR'))&& ...
+        (~strcmp(outOp,'AB'))&&(~strcmp(outOp,'BA'))
+        error('The third input argument is not correct');
+    end
 end
 
 

@@ -21,8 +21,8 @@
 /******************************************************************************/
 #define HELPTEXT "\
 -*- texinfo -*-\n\
-@deftypefn{Loadable Function}{[@var{X},@var{Y},@var{nInt},@var{nPert}] =}\
-_oc_polybool(@var{sub},@var{clip},@var{op})\n\
+@deftypefn{Loadable Function}{[@var{X},@var{Y},@var{nPol},@var{nInt},\
+@var{nPert}] =}_oc_polybool(@var{sub},@var{clip},@var{op})\n\
 \n\
 @cindex Performs boolean operations between two polygons.\n\
 \n\
@@ -55,10 +55,14 @@ be repeated at the end (but is permitted). Pairs of (NaN,NaN) coordinates in\n\
 resultant polygon(s).\n\n\
 @var{Y} is a column vector containing the Y coordinates of the vertices for.\n\
 resultant polygon(s).\n\n\
+@var{nPol} is the number of output polygons.\n\n\
 @var{nInt} is the number of intersections between @var{sub} and @var{clip}.\n\n\
 @var{nPert} is the number of perturbed points of the @var{clip} polygon in\n\
 any particular case (points in the oborder of the other polygon) occurs see\n\
 http://davis.wpi.edu/~matt/courses/clipping/ for details.\n\
+\n\
+This function do not check if the dimensions of @var{sub} and @var{clip} are\n\
+correct.\n\
 \n\
 @end deftypefn"
 /******************************************************************************/
@@ -96,20 +100,12 @@ DEFUN_DLD(_oc_polybool,args,,HELPTEXT)
     {
         //loop index
         size_t i=0;
-        //operation identifier: intersection by default
-        enum GEOC_OP_BOOL_POLIG op=GeocOpBoolInter;
-        //number of intersections and perturbations
-        size_t nInter=0,nPert=0;
         //polygons and operation
-        Matrix subject=args(0).matrix_value();
-        Matrix clipper=args(1).matrix_value();
+        ColumnVector xSubj=args(0).matrix_value().column(0);
+        ColumnVector ySubj=args(0).matrix_value().column(1);
+        ColumnVector xClip=args(1).matrix_value().column(0);
+        ColumnVector yClip=args(1).matrix_value().column(1);
         std::string opchar=args(2).string_value();
-        //number of vertices
-        size_t subjElem=static_cast<size_t>(subject.rows());
-        size_t clipElem=static_cast<size_t>(clipper.rows());
-        //polygon coordinates
-        ColumnVector xSubj(subjElem),ySubj(subjElem);
-        ColumnVector xClip(subjElem),yClip(subjElem);
         //computation vectors
         double* xA=NULL;
         double* yA=NULL;
@@ -118,50 +114,32 @@ DEFUN_DLD(_oc_polybool,args,,HELPTEXT)
         //double linked lists
         vertPoliClip* polA=NULL;
         vertPoliClip* polB=NULL;
+        //operation identifier
+        enum GEOC_OP_BOOL_POLIG op=GeocOpBoolInter;
         //output struct
         poligGreiner* result=NULL;
+        //number of polygons, intersections and perturbations
+        size_t nPol=0,nInter=0,nPert=0;
+        //number of elements for the output vectors
+        size_t nElem=0;
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
-        //copy subject polygon coordinates
-        for(i=0;i<subjElem;i++)
-        {
-            xSubj(i) = subject(i,0);
-            ySubj(i) = subject(i,1);
-        }
-        //copy clipper polygon coordinates
-        for(i=0;i<clipElem;i++)
-        {
-            xClip(i) = clipper(i,0);
-            yClip(i) = clipper(i,1);
-        }
         //pointers to data
         xA = xSubj.fortran_vec();
         yA = ySubj.fortran_vec();
         xB = xClip.fortran_vec();
         yB = yClip.fortran_vec();
-        //create double linked list for subject polygon
-        polA = CreaPoliClip(xA,yA,subjElem,1,1);
+        //create double linked lists for subject and clipper polygons
+        polA = CreaPoliClip(xA,yA,static_cast<size_t>(xSubj.length()),1,1);
+        polB = CreaPoliClip(xB,yB,static_cast<size_t>(xClip.length()),1,1);
         //error checking
-        if(polA==NULL)
-        {
-            //error text
-            sprintf(&errorText[strlen(errorText)],
-                    "Error in memory allocation");
-            //error message
-            error(errorText);
-            //exit
-            return outputList;
-        }
-        //create double linked list for clipper polygon
-        polB = CreaPoliClip(xB,yB,clipElem,1,1);
-        //error checking
-        if(polB==NULL)
+        if((polB==NULL)||(polB==NULL))
         {
             //free peviously allocated memory
             LibMemPoliClip(polA);
+            LibMemPoliClip(polB);
             //error text
-            sprintf(&errorText[strlen(errorText)],
-                    "Error in memory allocation");
+            sprintf(&errorText[strlen(errorText)],"Error in memory allocation");
             //error message
             error(errorText);
             //exit
@@ -170,7 +148,11 @@ DEFUN_DLD(_oc_polybool,args,,HELPTEXT)
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         //select operation
-        if((!strcmp(opchar.c_str(),"OR"))||(!strcmp(opchar.c_str(),"or")))
+        if((!strcmp(opchar.c_str(),"AND"))||(!strcmp(opchar.c_str(),"and")))
+        {
+            op = GeocOpBoolInter;
+        }
+        else if((!strcmp(opchar.c_str(),"OR"))||(!strcmp(opchar.c_str(),"or")))
         {
             op = GeocOpBoolUnion;
         }
@@ -181,6 +163,20 @@ DEFUN_DLD(_oc_polybool,args,,HELPTEXT)
         else if((!strcmp(opchar.c_str(),"BA"))||(!strcmp(opchar.c_str(),"ba")))
         {
             op = GeocOpBoolBA;
+        }
+        else
+        {
+            //free peviously allocated memory
+            LibMemPoliClip(polA);
+            LibMemPoliClip(polB);
+            //error text
+            sprintf(&errorText[strlen(errorText)],
+                    "The third input argument (op=%s) is not correct",
+                    opchar.c_str());
+            //error message
+            error(errorText);
+            //exit
+            return outputList;
         }
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
@@ -194,18 +190,30 @@ DEFUN_DLD(_oc_polybool,args,,HELPTEXT)
             LibMemPoliClip(polA);
             LibMemPoliClip(polB);
             //error text
-            sprintf(&errorText[strlen(errorText)],
-                    "Error in memory allocation");
+            sprintf(&errorText[strlen(errorText)],"Error in memory allocation");
             //error message
             error(errorText);
             //exit
             return outputList;
         }
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        //number or output polygons
+        nPol = result->nPolig;
+        //dimensions for the output vectors
+        if(nPol)
+        {
+            nElem = result->nElem;
+        }
+        else
+        {
+            nElem = 0;
+        }
         //output vectors
-        ColumnVector xResult(result->nElem);
-        ColumnVector yResult(result->nElem);
+        ColumnVector xResult(nElem);
+        ColumnVector yResult(nElem);
         //copy output data
-        for(i=0;i<result->nElem;i++)
+        for(i=0;i<nElem;i++)
         {
             xResult(i) = result->x[i];
             yResult(i) = result->y[i];
@@ -215,8 +223,9 @@ DEFUN_DLD(_oc_polybool,args,,HELPTEXT)
         //output parameters list
         outputList(0) = xResult;
         outputList(1) = yResult;
-        outputList(2) = nInter;
-        outputList(3) = nPert;
+        outputList(2) = nPol;
+        outputList(3) = nInter;
+        outputList(4) = nPert;
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         //free memory

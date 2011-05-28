@@ -56,6 +56,7 @@ SPSS file format
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/param.h>
 #include <time.h>
 #include "mex.h"
 
@@ -71,7 +72,6 @@ SPSS file format
 #define max(a,b)	(((a) > (b)) ? (a) : (b))
 #define min(a,b)	(((a) < (b)) ? (a) : (b))
 
-
 #ifdef __linux__
 /* use byteswap macros from the host system, hopefully optimized ones ;-) */
 #include <byteswap.h>
@@ -81,6 +81,13 @@ SPSS file format
 #define __LITTLE_ENDIAN 1234
 #define __BIG_ENDIAN 4321
 #define __BYTE_ORDER __LITTLE_ENDIAN
+#endif
+
+#if (defined(BSD) && (BSD >= 199103))
+#include <machine/endian.h>
+#define __BIG_ENDIAN _BIG_ENDIAN
+#define __LITTLE_ENDIAN _LITTLE_ENDIAN
+#define __BYTE_ORDER _BYTE_ORDER
 #endif
 
 #ifndef _BYTESWAP_H

@@ -50,7 +50,7 @@
 ## @seealso{`:'}
 
 function varargout = reshape (varargin)
-  varargout = cell (1, nargout);
+  varargout = cell (1, max(1, nargout));
   [varargout{:}] = greshape (varargin{:});
 endfunction
 

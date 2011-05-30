@@ -19,6 +19,6 @@
 ## @end deftypefn
 
 function varargout = det (varargin)
-  varargout = cell (1, nargout);
+  varargout = cell (1, max(1, nargout));
   [varargout{:}] = gdet (varargin{:});
 endfunction

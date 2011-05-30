@@ -20,6 +20,6 @@
 ## @end deftypefn
 
 function varargout = exp (varargin)
-  varargout = cell (1, nargout);
+  varargout = cell (1, max(1, nargout));
   [varargout{:}] = gexp (varargin{:});
 endfunction

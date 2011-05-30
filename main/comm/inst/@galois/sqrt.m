@@ -20,6 +20,7 @@
 ## @seealso{exp}
 
 function varargout = sqrt (varargin)
-  varargout = cell (1, nargout);
+
+  varargout = cell (1, max(1, nargout));
   [varargout{:}] = gsqrt (varargin{:});
 endfunction

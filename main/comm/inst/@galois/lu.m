@@ -58,6 +58,6 @@
 ## @end deftypefn
 
 function varargout = lu (varargin)
-  varargout = cell (1, nargout);
+  varargout = cell (1, max(1, nargout));
   [varargout{:}] = glu (varargin{:});
 endfunction

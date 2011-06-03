@@ -70,7 +70,10 @@ function op = zenity_options (dialog, varargin)
     op.pulsate  = op.auto_kill  = op.hide_cancel  = "";
   elseif (strcmpi(dialog, "piped progress"))
     op.percent  = op.text = "";
-  elseif (strcmpi(dialog, "scale"))
+  elseif (strcmpi(dialog, "new scale"))
+    op.text     = op.ini        = op.start  = "";
+    op.hide     = op.end        = op.step   = "";
+  elseif (strcmpi(dialog, "piped scale"))
   elseif (strcmpi(dialog, "text info"))
   else
     error ("The type of dialog '%s' is not supported", dialog);
@@ -83,7 +86,7 @@ function op = zenity_options (dialog, varargin)
 
   ## Identifies when it's being called to process stuff to send through pipes
   ## since that will have major differences in the processing
-  if ( strcmpi(dialog, "piped notification") || strcmpi(dialog, "piped progress") )
+  if ( any (strcmpi(dialog, {"piped notification", "piped progress", "piped scale"})) )
     pipelining = 1;
   else
     pipelining = 0;

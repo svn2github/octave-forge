@@ -292,7 +292,7 @@ function [val, status] = zenity_list(col, data, varargin)
   options.data  = sprintf("\"%s\" ", data{:});
 
   ## Set separator
-  options.separator = '--separator="/\\|/\\"';   # Will use /\|/\ as separator
+  options.separator = '--separator="/\\\|/\\\\"';   # Will use /\|/\ as separator
 
   pre_cmd = sprintf("%s ", ...
                     options.title, ...

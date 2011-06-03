@@ -293,6 +293,9 @@ function [val, status] = zenity_list(col, data, varargin)
 
   ## Set separator
   options.separator = '--separator="/\\\|/\\\\"';   # Will use /\|/\ as separator
+  ## we enter the delimiter here as well, as it appears in the zenity output,
+  ## to prevent bugs from appearing if we change it one day
+  sep_for_find      = '/\|/\';
 
   pre_cmd = sprintf("%s ", ...
                     options.title, ...
@@ -356,12 +359,12 @@ function [val, status] = zenity_list(col, data, varargin)
     ## When 'multiple' values are expected, always place the output in a cell
     ## array, even if only one file is selected.
     if (multi)
-      idx = strfind(output, '/\|/\');
+      idx = strfind(output, sep_for_find);
       if (idx)
         tmp_val   = cell(length(idx)+1, 1);
-        idx       = [-4, idx, length(output)+1];
+        idx       = [(-(length(sep_for_find))+1), idx, length(output)+1];
         for i = 1 : (length(idx)-1)
-          tmp_val{i}  = output( idx(i)+5 : idx(i+1)-1 );
+          tmp_val{i}  = output( idx(i)+(length(sep_for_find)) : idx(i+1)-1 );
         endfor
         ## Order of the output will have them ordered by row. Must create an
         ## inversed cell array to allocate the values and transverse it at the end

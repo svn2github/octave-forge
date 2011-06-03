@@ -391,9 +391,9 @@ function [val, status] = zenity_list(col, data, varargin)
 
   ## If user asked for numeric output, convert it to matrix
   if (options.num_out)
-    [val, sta] = str2double(val);
+    val = str2double(val)
     if (strcmpi(options.num_out, "error"))
-      if ( any(sta(:)) )
+      if ( any(isnan( val(:) )) )
         error("Conversion of output to numeric form was unsucessful")
       endif
     elseif (strcmpi(options.num_out, "nan"))

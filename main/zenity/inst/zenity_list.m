@@ -399,7 +399,7 @@ function [val, status] = zenity_list(col, data, varargin)
     elseif (strcmpi(options.num_out, "nan"))
       ## Do nothing
     else
-      error("Unknow value '%s' for the parameter 'numeric output'", option)
+      error("Unknow value '%s' for the parameter 'numeric output'", option.num_out)
     endif
   endif
 

@@ -390,7 +390,11 @@ function [val, status] = zenity_list(col, data, varargin)
   endif
 
   ## If user asked for numeric output, convert it to matrix
-  if (options.num_out)
+  ## TODO: currently, if timeout is reached, zenity returns nothing and an empty
+  ## cell array gives an error on str2double. However, in the future (gnome
+  ## bug #651948) this may be changed. When it does, the condition should accept
+  ## status == 5 AND check if the cell array is not completely empty
+  if (status == 0 && options.num_out)
     val = str2double(val);
     if (strcmpi(options.num_out, "error"))
       if ( any(isnan( val(:) )) )

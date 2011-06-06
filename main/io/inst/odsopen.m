@@ -85,6 +85,8 @@
 ##     "      Added try-catch to file open sections to create fallback to other intf
 ## 2011-05-06 Experimental UNO support
 ## 2011-05-18 Creating new spreadsheet docs in UNO now works
+## 2011-06-06 Tamed down interface verbosity on first startup
+##      "     Multiple requested interfaces now possible 
 ##
 ## Latest change on subfunction below: 2011-05-07
 
@@ -98,38 +100,50 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 	
 	if (nargout < 1) usage ("ODS = odsopen (ODSfile, [Rw]). But no return argument specified!"); endif
 
-	## FIXME: if ever another interface is implemented the below stanzas
-	## should be remodeled after xlsopen() to allow for multiple
-	## user-desired interface requests (for just 2 interfaces there's
-	## no need yet)
 	if (~isempty (reqinterface))
-		# Try to invoke requested interface for this call. Check if it
-		# is supported anyway by emptying the corresponding var.
-		if     (strcmp (tolower (reqinterface), tolower ('OTK')))
-			printf ("Java/ODFtoolkit interface requested... ");
-			odsinterfaces.OTK = []; odsinterfaces.JOD = 0; odsinterfaces.UNO = 0;
-		elseif (strcmp (tolower (reqinterface), tolower ('JOD')))
-			printf ("Java/jOpenDocument interface requested... "); 
-			odsinterfaces.OTK = 0; odsinterfaces.JOD = []; odsinterfaces.UNO = 0;
-		elseif (strcmp (tolower (reqinterface), tolower ('UNO')))
-			printf ("Java/UNO bridge interface requested... "); 
-			odsinterfaces.OTK = 0; odsinterfaces.JOD = 0; odsinterfaces.UNO = [];
-		else
-			usage (sprintf ("Unknown .ods interface \"%s\" requested. Only OTK or JOD supported", reqinterface));
-		endif
-		[odsinterfaces] = getodsinterfaces (odsinterfaces);
-
-		# Well, is the requested interface supported on the system?
-		if (~odsinterfaces.(toupper (reqinterface)))
-			# No it aint
-			error (" ...but %s is not supported.", toupper (reqinterface));
+		if ~(ischar (reqinterface) || iscell (reqinterface)), usage ("Arg # 3 not recognized"); endif
+		# Turn arg3 into cell array if needed
+		if (~iscell (reqinterface)), reqinterface = {reqinterface}; endif
+		odsinterfaces.OTK = 0; odsinterfaces.JOD = 0; odsinterfaces.UNO = 0;
+		for ii=1:numel (reqinterface)
+			reqintf = toupper (reqinterface {ii});
+			# Try to invoke requested interface(s) for this call. Check if it
+			# is supported anyway by emptying the corresponding var.
+			if     (strcmp (reqintf, 'OTK'))
+				odsinterfaces.OTK = [];
+			elseif (strcmp (reqintf, 'JOD'))
+				odsinterfaces.JOD = [];
+			elseif (strcmp (reqintf, 'UNO'))
+				odsinterfaces.UNO = [];
+			else 
+				usage (sprintf ("Unknown .ods interface \"%s\" requested. Only OTK, JOD or UNO supported\n", reqinterface{}));
+			endif
+		endfor
+		printf ("Checking requested interface(s):\n");
+		odsinterfaces = getodsinterfaces (odsinterfaces);
+		# Well, is/are the requested interface(s) supported on the system?
+		# FIXME check for multiple interfaces
+		odsintf_cnt = 0;
+		for ii=1:numel (reqinterface)
+			if (~odsinterfaces.(toupper (reqinterface{ii})))
+				# No it aint
+				printf ("%s is not supported.\n", toupper (reqinterface{ii}));
+			else
+				++odsintf_cnt;
+			endif
+		endfor
+		# Reset interface check indicator if no requested support found
+		if (~odsintf_cnt)
+			chkintf = [];
+			ods = [];
+			return
 		endif
 	endif
 	
 	# Var rw is really used to avoid creating files when wanting to read, or
 	# not finding not-yet-existing files when wanting to write.
 
-	if (rw) rw = 1; endif		# Be sure it's either 0 or 1 initially
+	if (rw), rw = 1; endif		# Be sure it's either 0 or 1 initially
 
 	# Check if ODS file exists. Set open mode based on rw argument
 	if (rw), fmode = 'r+b'; else fmode = 'rb'; endif
@@ -192,7 +206,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			ods.odfvsn = odsinterfaces.odfvsn;
 			odssupport += 1;
 		catch
-			if (xlsinterfaces.JOD && ~rw && chk2)
+			if (odsinterfaces.JOD && ~rw && chk2)
 				printf ('Couldn''t open file %s using OTK; trying .sxc format with JOD...\n', filename);
 			else
 				error ('Couldn''t open file %s using OTK', filename);
@@ -248,8 +262,9 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 				flen = numel (tmp);
 				tmp(2:2:2*flen) = tmp;
 				tmp(1:2:2*flen) = '/';
-				filename = [ 'file://' tmp{:} ];
+				fname = [ tmp{:} ];
 			endif
+			filename = [ 'file://' fname ]
 		endif
 		try
 			xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap");
@@ -365,62 +380,55 @@ endfunction
 ## 2011-05-06 Fixed wrong strfind tests
 ##     "      Experimental UNO support added
 ## 2011-05-18 Forgot to initialize odsinterfaces.UNO
+## 2011-06-06 Fix for javaclasspath format in *nix w. java-1.2.8 pkg
+##      "     Implemented more rigid Java check
+##      "     Tamed down verbosity
+
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
-	if (isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD))
-		chk1 = 1;
-		printf ("Supported interfaces: ");
-	else
-		chk1= 0;
+	persistent tmp1 = []; persistent jcp;
+
+	if (isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) && isempty (odsinterfaces.UNO))
+		printf ("Detected interfaces: ");
+	elseif (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) || isempty (odsinterfaces.UNO))
+		tmp1 = [];
 	endif
+	deflt = 0;
 
+	if (isempty (tmp1))
 	# Check Java support
-	try
-		jcp = javaclasspath ("-all");
-		# If we get here, at least Java works. Now check for proper entries
-		# in class path. Under *nix the classpath must first be split up
-		if (isunix) jcp = strsplit (char (jcp), ":"); endif
-		## FIXME implement more rigid Java version check a la xlsopen.
-		## ods / Java stuff is less critical than xls / Java, however
-	catch
-		# No Java support
-		if ~(isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD))
-			# Some Java-based interface requested but Java support is absent
-			error ('No Java support found.');
-		else
-			# No specific Java-based interface requested. Just return
-			return;
-		endif
-		odsinterfaces.OTK = 0;
-		odsinterfaces.JOD = 0;
-		odsinterfaces.UNO = 0;
-	end_try_catch
-
-	# Try Java & UNO
-	if (isempty (odsinterfaces.UNO))
-		odsinterfaces.UNO = 0;
-		# entries(1) = not a jar but a directory (<000_install_dir/program/>)
-		jpchk = 0; entries = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
-		# Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
-		# as javaclasspath is one long string. Under Windows however classpath is a cell array
-		# so we need the following more subtle, platform-independent approach:
-		for jj=1:numel (entries)
-			for ii=1:numel (jcp)
-				jcplst = strsplit (jcp{ii}, filesep);
-				jcpentry = jcplst {end};
-				if (~isempty (strfind (lower (jcpentry), lower (entries{jj}))))
-					jpchk = jpchk + 1;
-				endif
-			endfor
-		endfor
-		if (jpchk >= numel (entries))
-			odsinterfaces.UNO = 1;
-			fprintf ('  => UNO (OOo) OK\n');
-			chk1 = 1;
-		else
-			warning ('\nOne or more UNO classes (.jar) missing in javaclasspath');
-		endif
+		try
+			jcp = javaclasspath ("-all");					# For java pkg >= 1.2.8
+			if (isempty (jcp)), jcp = javaclasspath; endif	# For java pkg <  1.2.8
+			# If we get here, at least Java works. Now check for proper version (>= 1.6)
+			jver = char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
+			cjver = strsplit (jver, '.');
+			if (sscanf (cjver{2}, '%d') < 6)
+				warning ("\nJava version too old - you need at least Java 6 (v. 1.6.x.x)\n");
+				return
+			endif
+			# Now check for proper entries in class path. Under *nix the classpath
+			# must first be split up. In java 1.2.8+ javaclasspath is already a cell array
+			if (isunix && ~iscell (jcp)) jcp = strsplit (char (jcp), pathsep ()); endif
+			tmp1 = 1;
+		catch
+			# No Java support
+			odsinterfaces.OTK = 0;
+			odsinterfaces.JOD = 0;
+			odsinterfaces.UNO = 0;
+			if ~(isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) && isempty (odsinterfaces.UNO))
+				# Some Java-based interface requested but Java support is absent
+				error ('No Java support found.');
+			else
+				# No specific Java-based interface requested. Just return (This is needed if
+				# ever a non-Java based interfaces will be implemented
+				return;
+			endif
+		end_try_catch
+	elseif (~tmp1)
+		% Earlier on no Java support detected
+		error (" No Java support found.");
 	endif
 
 	# Try Java & ODF toolkit
@@ -444,15 +452,15 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			catch
 				odfvsn = java_invoke ('org.odftoolkit.odfdom.Version', 'getApplicationVersion');
 			end_try_catch
-			if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6'))
-				warning ("\nodfdom version %s is not supported - use v. 0.7.5 or 0.8.6.\n", odfvsn);
+			if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6') || strcmp (odfvsn, '0.8.7'))
+				warning ("\nodfdom version %s is not supported - use v. 0.8.6 or 0.8.7.\n", odfvsn);
 			else
 				if (strcmp (odfvsn, '0.7.5'))
 					warning ("odfdom v. 0.7.5 support won't be maintained - please upgrade to 0.8.6 or higher."); 
 				endif
 				odsinterfaces.OTK = 1;
-				printf (" Java/ODFtoolkit (OTK) OK. ");
-				chk1 = 1;
+				printf ("OTK");
+				if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
 			endif
 			odsinterfaces.odfvsn = odfvsn;
 		else
@@ -471,15 +479,41 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		endfor
 		if (jpchk >= numel(entries))
 			odsinterfaces.JOD = 1;
-			printf (" Java/jOpenDocument (JOD) OK. ");
-			chk1 = 1;
+			printf ("JOD");
+			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
 		else
 			warning ("\nNot all required classes (.jar) in classpath for JOD");
+		endif
+	endif
+
+	# Try Java & UNO
+	if (isempty (odsinterfaces.UNO))
+		odsinterfaces.UNO = 0;
+		# entries(1) = not a jar but a directory (<000_install_dir/program/>)
+		jpchk = 0; entries = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
+		# Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
+		# as javaclasspath is one long string. Under Windows however classpath is a cell array
+		# so we need the following more subtle, platform-independent approach:
+		for jj=1:numel (entries)
+			for ii=1:numel (jcp)
+				jcplst = strsplit (jcp{ii}, filesep);
+				jcpentry = jcplst {end};
+				if (~isempty (strfind (lower (jcpentry), lower (entries{jj}))))
+					jpchk = jpchk + 1;
+				endif
+			endfor
+		endfor
+		if (jpchk >= numel (entries))
+			odsinterfaces.UNO = 1;
+			printf ("UNO");
+			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+		else
+			warning ('\nOne or more UNO classes (.jar) missing in javaclasspath');
 		endif
 	endif
 	
 	# ---- Other interfaces here, similar to the ones above
 
-	if (chk1) printf ("\n"); endif
+	if (deflt), printf ("(* = active interface)\n"); endif
 	
 endfunction

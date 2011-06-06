@@ -43,18 +43,18 @@
 ## @end deftypefn
 ## @seealso{javaaddpath,javarmpath}
 
-function varargout = javaclasspath(which)
+function varargout = javaclasspath (which)
 
   % dynamic classpath
   dynamic_path = java_invoke ("org.octave.ClassHelper", "getClassPath");
-  dynamic_path_list = strsplit (dynamic_path, ';');
+  dynamic_path_list = strsplit (dynamic_path, pathsep ());
 
   % static classpath
   static_path = java_invoke ('java.lang.System', 'getProperty', 'java.class.path');
-  static_path_list = strsplit (static_path, ';');
-  if length(static_path_list) > 1
+  static_path_list = strsplit (static_path, pathsep ());
+  if (length (static_path_list) > 1)
     % remove first element (which is .../octave.jar)
-    static_path_list = static_path_list(2:length(static_path_list));
+    static_path_list = static_path_list(2:length (static_path_list));
   else
     static_path_list = {};
   end
@@ -76,31 +76,31 @@ function varargout = javaclasspath(which)
     case 1
       switch nargout
         case 0
-          if strcmp(which,'-static') == 1
+          if (strcmp (which, '-static') == 1)
             disp_path_list ( 'STATIC', static_path_list )
-          elseif strcmp(which,'-dynamic') == 1
+          elseif (strcmp (which, '-dynamic') == 1)
             disp_path_list ( 'DYNAMIC', dynamic_path_list )
           end
         case 1
-          if strcmp(which,'-static') == 1
+          if (strcmp (which, '-static') == 1)
             varargout{1} = cellstr (static_path_list);
-          elseif strcmp(which,'-dynamic') == 1
+          elseif (strcmp (which, '-dynamic') == 1)
             varargout{1} = cellstr (dynamic_path_list);
-          elseif strcmp(which,'-all') == 1
-            varargout{1} = cellstr ([static_path_list,dynamic_path_list]);
+          elseif (strcmp (which, '-all') == 1)
+            varargout{1} = cellstr ([static_path_list, dynamic_path_list]);
           end
       endswitch
   endswitch
   
 end
 #
-# Display cell aray of paths
+# Display cell array of paths
 #
 function disp_path_list ( which, path_list )
-  printf('   %s JAVA PATH\n\n', which);
-  if length(path_list) > 0
-    printf('      %s\n', path_list{:});
+  printf ('   %s JAVA PATH\n\n', which);
+  if (length (path_list) > 0)
+    printf ('      %s\n', path_list{:});
   else
-    printf('      - empty -\n');
+    printf ('      - empty -\n');
   endif
 end

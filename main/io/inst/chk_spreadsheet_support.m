@@ -78,6 +78,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2011-05-20 Attempt to cope with case variations in subdir names of OOo install dir (_get_dir_)
 % 2011-05-27 Fix proper return value (retval); header text improved
 % 2011-05-29 Made retval value dependent on detected interfaces & adapted help text
+% 2011-06-07 Fix for javaclasspath format in *nix w. octave-java-1.2.8 pkg
+
 
 	jcp = []; retval = 0;
 	if (nargin < 3); path_to_ooo= ''; end %if
@@ -146,7 +148,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 		% Under *nix the classpath must first be split up.
 		% Matlab is braindead here. For ML we need a replacement for Octave's builtin strsplit()
 		% This is found on ML Central (BSD license so this is allowed) & adapted for input arg order
- 		if (isunix); jcp = strsplit (char (jcp), ':'); end %if
+ 		if (isunix & ~iscell (jcp)); jcp = strsplit (char (jcp), ':'); end %if
 		if (dbug > 1)
 			% Check JVM virtual memory settings
 			jrt = javaMethod ('getRuntime', 'java.lang.Runtime');

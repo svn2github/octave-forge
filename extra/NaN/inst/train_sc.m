@@ -714,7 +714,10 @@ elseif ~isempty(strfind(lower(MODE.TYPE),'svm'))
                         Bias = model.rho * cl(1);
 
                 elseif strcmp(MODE.TYPE, 'SVM:bioinfo');
-                        CC.SVMstruct = svmtrain(D, cl,'AUTOSCALE', 0);    % 
+                        % SVM classifier from bioinformatics toolbox.
+                        % Settings suggested by Ian Daly, 2011-06-06
+                        options = optimset('Display','iter','maxiter',20000, 'largescale','off');
+                        CC.SVMstruct = svmtrain(D, cl, 'AUTOSCALE', 0, 'quadprog_opts', options, 'Method', 'LS', 'kernel_function', 'polynomial');
                         Bias = -CC.SVMstruct.Bias;
                         w = -CC.SVMstruct.Alpha'*CC.SVMstruct.SupportVectors;
 

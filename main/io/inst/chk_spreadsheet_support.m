@@ -78,8 +78,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2011-05-20 Attempt to cope with case variations in subdir names of OOo install dir (_get_dir_)
 % 2011-05-27 Fix proper return value (retval); header text improved
 % 2011-05-29 Made retval value dependent on detected interfaces & adapted help text
-% 2011-06-07 Fix for javaclasspath format in *nix w. octave-java-1.2.8 pkg
-
+% 2011-06-06 Fix for javaclasspath format in *nix w. octave-java-1.2.8 pkg
+%     ''     Fixed wrong return value update when adding UNO classes
 
 	jcp = []; retval = 0;
 	if (nargin < 3); path_to_ooo= ''; end %if
@@ -316,8 +316,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 			% Worked in 0.7.5
 			odfvsn = javaMethod ('getApplicationVersion', 'org.odftoolkit.odfdom.Version');
 		end %try_catch
-		if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6'))
-			warning ('  *** odfdom version (%s) is not supported - use v. 0.7.5 or 0.8.6.\n', odfvsn);
+		if ~(strcmp (odfvsn, '0.7.5') || strcmp (odfvsn, '0.8.6') || strcmp (odfvsn, '0.8.7'))
+			warning ('  *** odfdom version (%s) is not supported - use v. 0.8.6 or 0.8.7.\n', odfvsn);
 		else	
 			if (dbug > 1), fprintf ('  => ODFtoolkit (OTK) OK.\n'); end %if
 			retval = retval + 32;
@@ -468,12 +468,12 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 				end %if
 			end %if
 		end %for
+		if (~target); retval = retval + 128; end %if
 		if (dbug)
 			if (targt)
 				fprintf ('Some UNO class libs still lacking...\n\n'); 
 			else
 				fprintf ('UNO interface supported now.\n\n');
-				retval = retval + 128;
 			end %if
 		end %f
 	end %if

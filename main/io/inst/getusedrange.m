@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011 Philip Nienhuis, pr.nienhuis@users.sf.net
+## Copyright (C) 2010,2011 Philip Nienhuis, <pr.nienhuis@users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@
 ## 2010-10-07 Added COM support (at last!)
 ## 2011-05-06 Experimental support for Java/UNO bridge
 ##
-## Last subfunc update: 2011-05-06 (UNO)
+## Last subfunc update: 2011-06-06 (OTK)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -119,6 +119,7 @@ endfunction
 ## 2010-11-13 Catched jOpenDocument bug (1.2bx) where string cells have no office:value-type
 ##            attrib set (by JOD). Somehow OTK is more robust as it catches these cells;
 ##            Currently this fix is just commented.
+## 2011-06-06 Fixed wrong if clause for finding last filler cells (L.160 & L.176)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
 
@@ -156,8 +157,8 @@ function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
       cl_char = char (lcell);
 	  # Swap the following lines into comment to catch a jOpenDocument bug
 	  # (JOD doesn't set <office:value-type='string'> attribute when writing strings
-      #if isempty (findstr ('office:value-type', cl_char) || findstr ('<text:', cl_char))
-      if isempty (findstr ('office:value-type', cl_char))
+      #if (isempty (findstr ('office:value-type', cl_char)) || isempty (findstr ('<text:', cl_char)))
+      if (isempty (findstr ('office:value-type', cl_char)))
         lcol = min (lcol, lcell.getTableNumberColumnsRepeatedAttribute () + 1);
       else
         lcol = 1;
@@ -172,7 +173,7 @@ function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
           rc = rc + lcell.getTableNumberColumnsRepeatedAttribute ();
         endfor
         # Watch out for filler tablecells
-        if isempty (findstr ('office:value-type', char (lcell)) || findstr ('<text:', char (lcell)))
+        if (isempty (findstr ('office:value-type', char (lcell))) || isempty (findstr ('<text:', char (lcell))))
           rc = rc - lcell.getTableNumberColumnsRepeatedAttribute ();
         endif
         rcol = max (rcol, rc);

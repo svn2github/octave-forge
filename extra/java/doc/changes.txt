@@ -1,8 +1,6 @@
 Changes 1-September-2010
 ----------------------
 - src/__java__.cc - code duplication for javaObject and javaMethod unified
-  Windows CR/LF to Unix LF converted
-
 
 Changes 30-August-2010
 ----------------------

@@ -23,12 +23,12 @@
 @titlepage
 @title GNU Octave and Java
 @subtitle Some notes on using Octave (and Matlab) with Java@*
-@subtitle August 2010 
+@subtitle June 2011 
 @author Martin Hepperle
 @c ------------------------------------------------------------------------
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2010 Martin Hepperle
+Copyright @copyright{} 2010-2011 Martin Hepperle
 
 This document is intended to be an additional source of information
 for the useful Java package, created by Michael Goffioul.
@@ -201,7 +201,7 @@ Octave > javaclasspath('-all')
    DYNAMIC JAVA PATH
       - empty -
 
-Octave > javaaddclasspath('z:/dynamic');
+Octave > javaaddpath('z:/dynamic');
 Octave > ps = javaclasspath('-all')
 ps =
 @{
@@ -405,7 +405,7 @@ ans = Initial
 @end example
 
 Equivalent to the @code{java_new} function.
-For compatibility with Matlab is is recommended to use the @code{javaObject} function. 
+For compatibility with Matlab it is recommended to use the @code{javaObject} function. 
 
 @seealso{@ref{doc-java_new,,java_new}}
 @end deftypefn
@@ -423,7 +423,7 @@ For compatibility with Matlab is is recommended to use the @code{javaObject} fun
 
 Create a Java object of class @var{CLASS}, by calling the class constructor with the given arguments @var{ARG1}, ..., @var{ARGN}. 
 Equivalent to the @code{javaObject} function. 
-For compatibility with Matlab is is recommended to use the @code{javaObject} function. 
+For compatibility with Matlab it is recommended to use the @code{javaObject} function. 
 
 Example: 
 @example
@@ -644,7 +644,7 @@ Octave > msgbox(['I \heartsuit Octave!',10, ...
                  'I Confess','warn');
 @end example
 
-@image{images/image003,,,,gif}
+@image{images/image003}
 
 @seealso{@ref{doc-errordlg,,errordlg},
          @ref{doc-helpdlg,,helpdlg},
@@ -1052,7 +1052,7 @@ Example 2, which works in Octave as well as in Matlab:
 @settitle How can I handle memory limitations? 
 @cindex memory, limitations
 
-In order to execute Java code Octave creates a Java Virtual Machine (JVM). Such a JVM allocates a fixed amount of initial memory and may exoand this pool up to a fixed maximum memory limit. The default values depend on the Java version (see @ref{doc-javamem,,javamem}).
+In order to execute Java code Octave creates a Java Virtual Machine (JVM). Such a JVM allocates a fixed amount of initial memory and may expand this pool up to a fixed maximum memory limit. The default values depend on the Java version (see @ref{doc-javamem,,javamem}).
 The memory pool is shared by all Java objects running in the JVM.
 This strict memory limit is intended mainly to avoid that runaway applications inside web browsers or in enterprise servers can consume all memory and crash the system. 
 When the maximum memory limit is hit, Java code will throw exceptions so that applications will fail or behave unexpectedly.

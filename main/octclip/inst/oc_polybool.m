@@ -167,11 +167,96 @@ end
 
 
 
+%tests for input arguments
 %!error(oc_polybool)
 %!error(oc_polybool(1,2,3,4))
 %!error(oc_polybool('string',2,3))
 %!error(oc_polybool(1,'string',3))
 %!error(oc_polybool(1,2,3))
+%demo program
+%!demo
+%!  %subject polygon
+%!  clSub = [9.0 7.5
+%!           9.0 3.0
+%!           2.0 3.0
+%!           2.0 4.0
+%!           8.0 4.0
+%!           8.0 5.0
+%!           2.0 5.0
+%!           2.0 6.0
+%!           8.0 6.0
+%!           8.0 7.0
+%!           2.0 7.0
+%!           2.0 7.5
+%!           9.0 7.5];
+%!  %clipper polygon
+%!  clClip = [2.5 1.0
+%!            7.0 1.0
+%!            7.0 8.0
+%!            6.0 8.0
+%!            6.0 2.0
+%!            5.0 2.0
+%!            5.0 8.0
+%!            4.0 8.0
+%!            4.0 2.0
+%!            3.0 2.0
+%!            3.0 8.0
+%!            2.5 8.0
+%!            2.5 1.0];
+%!  %limits for the plots
+%!  clXLim = [1.5 11.75];
+%!  clYLim = [0.5  8.50];
+%!  %compute intersection
+%!  [clXI,clYI] = oc_polybool(clSub,clClip,'and');
+%!  %compute union
+%!  [clXU,clYU] = oc_polybool(clSub,clClip,'or');
+%!  %compute A-B
+%!  [clXA,clYA] = oc_polybool(clSub,clClip,'ab');
+%!  %compute B-A
+%!  [clXB,clYB] = oc_polybool(clSub,clClip,'ba');
+%!  %plot window for intersection
+%!  subplot(2,2,1);
+%!  plot(clXI,clYI,'r.-','markersize',10,'linewidth',3,clSub(:,1),clSub(:,2),...
+%!       clClip(:,1),clClip(:,2));
+%!  axis('equal');
+%!  xlim(clXLim);
+%!  ylim(clYLim);
+%!  title('OctCLIP intersection');
+%!  legend('Intersection','Subject polygon','Clipper polygon',...
+%!         'location','southeast');
+%!  %plot window for union
+%!  subplot(2,2,2);
+%!  plot(clXU,clYU,'r.-','markersize',10,'linewidth',3,clSub(:,1),clSub(:,2),...
+%!       clClip(:,1),clClip(:,2));
+%!  axis('equal');
+%!  xlim(clXLim);
+%!  ylim(clYLim);
+%!  title('OctCLIP union');
+%!  legend('Union','Subject polygon','Clipper polygon','location','southeast');
+%!  %plot window for A-B
+%!  subplot(2,2,3);
+%!  plot(clXA,clYA,'r.-','markersize',10,'linewidth',3,clSub(:,1),clSub(:,2),...
+%!       clClip(:,1),clClip(:,2));
+%!  axis('equal');
+%!  xlim(clXLim);
+%!  ylim(clYLim);
+%!  title('OctCLIP A-B');
+%!  legend('A-B','Subject polygon','Clipper polygon','location','southeast');
+%!  %plot window for B-A
+%!  subplot(2,2,4);
+%!  plot(clXB,clYB,'r.-','markersize',10,'linewidth',3,clSub(:,1),clSub(:,2),...
+%!       clClip(:,1),clClip(:,2));
+%!  axis('equal');
+%!  xlim(clXLim);
+%!  ylim(clYLim);
+%!  title('OctCLIP B-A');
+%!  legend('B-A','Subject polygon','Clipper polygon','location','southeast');
+%!  %input message
+%!  disp('Press ENTER to continue ...');
+%!  pause();
+%!  %kill and close the plot window
+%!  clf();
+%!  close();
 
 
 

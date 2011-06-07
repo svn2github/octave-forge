@@ -1,8 +1,29 @@
+2011-06-07  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* INDEX:
+	Remove test_octclip from 'INDEX' file
+	[5e2dd1fd23fc] [tip]
+
+	* inst/oc_polybool.m:
+	Add the content of old 'test_octclip.m' program into 'oc_polybool.m'
+	function via the '%!demo' block
+	[13657d8e19c2]
+
+	* inst/test_octclip.m:
+	Remove 'test_octclip.m' test program
+	[bd457310ee35]
+
+2011-06-06  José Luis García Pallero  <jgpallero@gmail.com>
+
+	* src/Makefile:
+	Update include path in the Makefile
+	[ad4c659778fc]
+
 2011-05-26  José Luis García Pallero  <jgpallero@gmail.com>
 
 	* doc/octclip.pdf, doc/octclip.tex:
 	Update general documentation
-	[c92173ff0cfa] [tip]
+	[c92173ff0cfa]
 
 	* INDEX, inst/test_octclip.m:
 	Update test script

@@ -1,0 +1,51 @@
+fuzzy-logic-toolkit >> Octave Fuzzy Logic Toolkit
+
+Evaluation
+ defuzz
+ evalfis
+ evalmf
+
+Plotting
+ gensurf
+ plotmf
+
+File Input/Output of Fuzzy Inference Systems
+ readfis
+ writefis
+
+Command-Line Creation and Modification of Fuzzy Inference Systems
+ addmf
+ addrule
+ addvar
+ newfis
+ rmmf
+ rmvar
+ setfis
+
+Text Representation of Fuzzy Inference Systems
+ getfis
+ showfis
+ showrule
+
+Membership Functions (with Demos)
+ dsigmf
+ gauss2mf
+ gaussmf
+ gbellmf
+ pimf
+ psigmf
+ sigmf
+ smf
+ trapmf
+ trimf
+ zmf
+
+Fuzzy Inference System Demos
+ addmf_demo
+ addvar_demo
+ commandline_demo
+ heart_demo
+ mamdani_demo
+ showrule_demo
+ tipping_demo
+

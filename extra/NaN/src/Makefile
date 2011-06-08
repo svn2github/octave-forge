@@ -52,6 +52,8 @@ all:    octave win32 win64 mex4m
 clean:
 	-$(RM) *.o *.obj *.o64 core octave-core *.oct *~ *.mex* 
 
+$(PROGS): Makefile
+
 #########################################################
 #	Octave, MATLAB on Linux 
 #########################################################
@@ -63,13 +65,13 @@ clean:
 %.$(MEX_EXT): %.cpp
 	$(MATMEX) $<  -lz -lgomp      ## Matlab
 
-svmtrain_mex.mex svmpredict_mex.mex:     svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c
+svmtrain_mex.mex svmpredict_mex.mex:     svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c svmpredict_mex.cpp
 	$(CXX) $(CFLAGS) -c svm.cpp
 	#$(CC)  $(CFLAGS) $(INCOCTAVE) -c svm_model_matlab.c
 	env CC=$(CXX) $(OCTMEX) svmtrain_mex.cpp svm.o svm_model_matlab.c
 	env CC=$(CXX) $(OCTMEX) svmpredict_mex.cpp svm.o svm_model_matlab.c
 
-svmtrain_mex.$(MEX_EXT) svmpredict_mex.$(MEX_EXT):     svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c
+svmtrain_mex.$(MEX_EXT) svmpredict_mex.$(MEX_EXT):     svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c svmpredict_mex.cpp
 	$(CXX) $(CFLAGS) -I $(MATLABDIR)/extern/include -c svm.cpp
 	$(CC) $(CFLAGS) -I $(MATLABDIR)/extern/include -c svm_model_matlab.c
 	$(MATMEX) svmtrain_mex.cpp svm.o svm_model_matlab.o

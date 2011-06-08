@@ -2,7 +2,7 @@
 
 $Id$
 Copyright (c) 2000-2009 Chih-Chung Chang and Chih-Jen Lin
-Copyright (c) 2010 Alois Schloegl <alois.schloegl@gmail.com>
+Copyright (c) 2010,2011 Alois Schloegl <alois.schloegl@gmail.com>
 This function is part of the NaN-toolbox
 http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -239,7 +239,9 @@ void predict(mxArray *plhs[], const mxArray *prhs[], struct svm_model *model, co
 		sumpt += predict_label*target_label;
 		++total;
 	}
-	if(svm_type==NU_SVR || svm_type==EPSILON_SVR)
+	if (1)
+		;	// avoid output to command line
+	else if(svm_type==NU_SVR || svm_type==EPSILON_SVR)
 	{
 		mexPrintf("Mean squared error = %g (regression)\n",error/total);
 		mexPrintf("Squared correlation coefficient = %g (regression)\n",

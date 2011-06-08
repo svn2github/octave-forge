@@ -162,7 +162,7 @@ for k = 1:max(NG),
 		CC = train_sc(D(ix,:), C(ix), MODE, W(ix));
 	end;
  	ix = ix0(NG(ix0)==k);
-	r  = test_sc(CC, D(ix,:))
+	r  = test_sc(CC, D(ix,:));
 	cl(ix,1) = r.classlabel;
 end; 
 

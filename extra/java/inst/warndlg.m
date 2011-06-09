@@ -16,7 +16,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function file} {@var{P} =} warndlg (@var{MESSAGE} [,@var{TITLE}])
 ##
-## Displays the @var{MESSAGE} using an warning dialog box. 
+## Displays the @var{MESSAGE} using a warning dialog box. 
 ## The @var{TITLE} can be used optionally to decorate the dialog caption.
 ##
 ## @end deftypefn

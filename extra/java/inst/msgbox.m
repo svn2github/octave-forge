@@ -16,7 +16,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function file} {@var{P} =} msgbox (@var{MESSAGE} [,@var{TITLE} [,@var{ICON}]])
 ##
-## Displays the @var{MESSAGE} using an message dialog. 
+## Displays the @var{MESSAGE} using a message dialog. 
 ## The @var{TITLE} is an optional string, which can be used to decorate the dialog caption.
 ## The @var{ICON} can be used optionally to select a dialog icon. 
 ## It can be one of @code{'error'}, @code{'help'} or @code{'warn'}.

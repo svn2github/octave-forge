@@ -36,7 +36,7 @@
 ## If called with a single input parameter @var{WHAT}:@*
 ## @itemize
 ## @item If @var{WHAT} is '-static' the static classpath is returned.
-## @item If @var{WHAT} is '-dynamic' the dynamic  classpath is returned.'
+## @item If @var{WHAT} is '-dynamic' the dynamic  classpath is returned.
 ## @item If @var{WHAT} is '-all' the static and the dynamic classpath 
 ## are returned in a single cell array
 ## @end itemize

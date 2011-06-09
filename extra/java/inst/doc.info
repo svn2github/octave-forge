@@ -27,12 +27,12 @@ Note on calling Octave from Java
 The `java' package is designed for calling Java from Octave. If you
 want to call Octave from Java, you might want to use a library like 
 `javaOctave' [http://kenai.com/projects/javaOctave] or `joPas'
-[http://jopas.sourceforge.net].  
+[http://jopas.sourceforge.net]. 
 
-2 Available Functions
-*********************
+2 Table of Contents
+*******************
 
-
+ Available Functions
 
 * Menu:
 
@@ -56,7 +56,11 @@ want to call Octave from Java, you might want to use a library like
 * helpdlg::       display a dialog with a help symbol
 * inputdlg::      display a dialog with edit fields
 * questdlg::      display a dialog with a question icon
-Frequently Asked Questions
+
+   Frequently Asked Questions
+
+* Menu:
+
 * How to distinguish between Octave and Matlab?::
 * How to make Java classes available?::
 * How to create an instance of a Java class?::
@@ -65,12 +69,15 @@ Frequently Asked Questions
 * Which TeX symbols are implemented in the dialog functions?::
    
 
+3 Available Functions
+*********************
+
 
 File: octave-java.info,  Node: javaclasspath,  Next: javaaddpath,  Prev: Top,  Up: Top
 
-   
 
-2.1 javaclasspath
+
+3.1 javaclasspath
 =================
 
 
@@ -132,7 +139,7 @@ File: octave-java.info,  Node: javaclasspath,  Next: javaaddpath,  Prev: Top,  U
 
 File: octave-java.info,  Node: javaaddpath,  Next: javarmpath,  Prev: javaclasspath,  Up: Top
 
-2.2 javaaddpath
+3.2 javaaddpath
 ===============
 
 
@@ -161,7 +168,7 @@ File: octave-java.info,  Node: javaaddpath,  Next: javarmpath,  Prev: javaclassp
 
 File: octave-java.info,  Node: javarmpath,  Next: javamem,  Prev: javaaddpath,  Up: Top
 
-2.3 javarmpath
+3.3 javarmpath
 ==============
 
 
@@ -187,7 +194,7 @@ File: octave-java.info,  Node: javarmpath,  Next: javamem,  Prev: javaaddpath,  
 
 File: octave-java.info,  Node: javamem,  Next: javaArray,  Prev: javarmpath,  Up: Top
 
-2.4 javamem
+3.4 javamem
 ===========
 
 
@@ -248,7 +255,7 @@ File: octave-java.info,  Node: javamem,  Next: javaArray,  Prev: javarmpath,  Up
 
 File: octave-java.info,  Node: javaArray,  Next: javaObject,  Prev: javamem,  Up: Top
 
-2.5 javaArray
+3.5 javaArray
 =============
 
 
@@ -273,7 +280,7 @@ File: octave-java.info,  Node: javaArray,  Next: javaObject,  Prev: javamem,  Up
 
 File: octave-java.info,  Node: javaObject,  Next: java_new,  Prev: javaArray,  Up: Top
 
-2.6 javaObject
+3.6 javaObject
 ==============
 
 
@@ -306,7 +313,7 @@ File: octave-java.info,  Node: javaObject,  Next: java_new,  Prev: javaArray,  U
 
 File: octave-java.info,  Node: java_new,  Next: javaMethod,  Prev: javaObject,  Up: Top
 
-2.7 java_new
+3.7 java_new
 ============
 
 
@@ -331,7 +338,7 @@ File: octave-java.info,  Node: java_new,  Next: javaMethod,  Prev: javaObject,  
 
 File: octave-java.info,  Node: javaMethod,  Next: java_invoke,  Prev: java_new,  Up: Top
 
-2.8 javaMethod
+3.8 javaMethod
 ==============
 
 
@@ -354,7 +361,7 @@ File: octave-java.info,  Node: javaMethod,  Next: java_invoke,  Prev: java_new, 
 
 File: octave-java.info,  Node: java_invoke,  Next: java_get,  Prev: javaMethod,  Up: Top
 
-2.9 java_invoke
+3.9 java_invoke
 ===============
 
 
@@ -378,7 +385,7 @@ File: octave-java.info,  Node: java_invoke,  Next: java_get,  Prev: javaMethod, 
 
 File: octave-java.info,  Node: java_get,  Next: java_set,  Prev: java_invoke,  Up: Top
 
-2.10 java_get
+3.10 java_get
 =============
 
 
@@ -401,7 +408,7 @@ File: octave-java.info,  Node: java_get,  Next: java_set,  Prev: java_invoke,  U
 
 File: octave-java.info,  Node: java_set,  Next: javamethods,  Prev: java_get,  Up: Top
 
-2.11 java_set
+3.11 java_set
 =============
 
 
@@ -424,7 +431,7 @@ File: octave-java.info,  Node: java_set,  Next: javamethods,  Prev: java_get,  U
 
 File: octave-java.info,  Node: javamethods,  Next: javafields,  Prev: java_set,  Up: Top
 
-2.12 javamethods
+3.12 javamethods
 ================
 
 
@@ -464,7 +471,7 @@ File: octave-java.info,  Node: javamethods,  Next: javafields,  Prev: java_set, 
 
 File: octave-java.info,  Node: javafields,  Next: msgbox,  Prev: javamethods,  Up: Top
 
-2.13 javafields
+3.13 javafields
 ===============
 
 
@@ -504,7 +511,7 @@ File: octave-java.info,  Node: javafields,  Next: msgbox,  Prev: javamethods,  U
 
 File: octave-java.info,  Node: msgbox,  Next: errordlg,  Prev: javafields,  Up: Top
 
-2.14 msgbox
+3.14 msgbox
 ===========
 
 
@@ -537,7 +544,7 @@ File: octave-java.info,  Node: msgbox,  Next: errordlg,  Prev: javafields,  Up: 
 
 File: octave-java.info,  Node: errordlg,  Next: helpdlg,  Prev: msgbox,  Up: Top
 
-2.15 errordlg
+3.15 errordlg
 =============
 
 
@@ -563,7 +570,7 @@ File: octave-java.info,  Node: errordlg,  Next: helpdlg,  Prev: msgbox,  Up: Top
 
 File: octave-java.info,  Node: helpdlg,  Next: inputdlg,  Prev: errordlg,  Up: Top
 
-2.16 helpdlg
+3.16 helpdlg
 ============
 
 
@@ -594,7 +601,7 @@ File: octave-java.info,  Node: helpdlg,  Next: inputdlg,  Prev: errordlg,  Up: T
 
 File: octave-java.info,  Node: inputdlg,  Next: listdlg,  Prev: helpdlg,  Up: Top
 
-2.17 inputdlg
+3.17 inputdlg
 =============
 
 
@@ -655,7 +662,7 @@ File: octave-java.info,  Node: inputdlg,  Next: listdlg,  Prev: helpdlg,  Up: To
 
 File: octave-java.info,  Node: listdlg,  Next: questdlg,  Prev: inputdlg,  Up: Top
 
-2.18 listdlg
+3.18 listdlg
 ============
 
 
@@ -718,7 +725,7 @@ File: octave-java.info,  Node: listdlg,  Next: questdlg,  Prev: inputdlg,  Up: T
 
 File: octave-java.info,  Node: questdlg,  Next: warndlg,  Prev: listdlg,  Up: Top
 
-2.19 questdlg
+3.19 questdlg
 =============
 
 
@@ -755,7 +762,7 @@ File: octave-java.info,  Node: questdlg,  Next: warndlg,  Prev: listdlg,  Up: To
 
 File: octave-java.info,  Node: warndlg,  Next: How to distinguish between Octave and Matlab?,  Prev: questdlg,  Up: Top
 
-2.20 warndlg
+3.20 warndlg
 ============
 
 
@@ -788,13 +795,13 @@ File: octave-java.info,  Node: warndlg,  Next: How to distinguish between Octave
      doc-questdlg.
    
 
-3 FAQ - Frequently asked Questions
+4 FAQ - Frequently asked Questions
 **********************************
 
 
 File: octave-java.info,  Node: How to distinguish between Octave and Matlab?,  Next: How to make Java classes available?,  Prev: warndlg,  Up: Top
 
-3.1 How to distinguish between Octave and Matlab?
+4.1 How to distinguish between Octave and Matlab?
 =================================================
 
  Octave and Matlab are very similar, but handle Java slightly
@@ -819,7 +826,7 @@ repeatedly without a heavy performance hit.   Example:
 
 File: octave-java.info,  Node: How to make Java classes available?,  Next: How to create an instance of a Java class?,  Prev: How to distinguish between Octave and Matlab?,  Up: Top
 
-3.2 How to make Java classes available to Octave?
+4.2 How to make Java classes available to Octave?
 =================================================
 
  Java finds classes by searching a CLASSPATH. This is a list of Java
@@ -896,7 +903,7 @@ adds the directory `octave' to Octave's search path and  the archive
 
 File: octave-java.info,  Node: How to create an instance of a Java class?,  Next: How can I handle memory limitations?,  Prev: How to make Java classes available?,  Up: Top
 
-3.3 How to create an instance of a Java class?
+4.3 How to create an instance of a Java class?
 ==============================================
 
  If your code shall work under Octave as well as Matlab you should
@@ -911,7 +918,7 @@ environment.  Example 1, suitable for Octave but not for Matlab:
 
 File: octave-java.info,  Node: How can I handle memory limitations?,  Next: How to compile the java package in Octave?,  Prev: How to create an instance of a Java class?,  Up: Top
 
-3.4 How can I handle memory limitations?
+4.4 How can I handle memory limitations?
 ========================================
 
  In order to execute Java code Octave creates a Java Virtual Machine
@@ -970,14 +977,14 @@ Java object or in Octave:
 
 File: octave-java.info,  Node: How to compile the java package in Octave?,  Next: Which TeX symbols are implemented in the dialog functions?,  Prev: How can I handle memory limitations?,  Up: Top
 
-3.5 How to compile the java package in Octave?
+4.5 How to compile the java package in Octave?
 ==============================================
 
  Most Octave installations come with the JAVA package pre-installed.
 In case you want to replace this package with a more recent version,
 you must perform the following steps:  
 
-3.5.1 Uninstall the currently installed package JAVA
+4.5.1 Uninstall the currently installed package JAVA
 ----------------------------------------------------
 
 Check whether the JAVA package is already installed by issuing the
@@ -997,7 +1004,7 @@ exit and restart Octave before you can uninstall the package. This is
 because the system keeps certain libraries in memory after they have
 been loaded once. 
 
-3.5.2 Make sure that the build environment is configured properly
+4.5.2 Make sure that the build environment is configured properly
 -----------------------------------------------------------------
 
 The installation process requires that the environment variable
@@ -1021,7 +1028,7 @@ If you are using a Linux system this would look probably more like:
      Octave > setenv("JAVA_HOME","/usr/local/jdk1.6.0_21");
    
 
-3.5.3 Compile and install the package in Octave
+4.5.3 Compile and install the package in Octave
 -----------------------------------------------
 
 If you have for example saved the package archive on your Z: drive the
@@ -1042,7 +1049,7 @@ then produce a list of all installed packages:
      Octave > 
    
 
-3.5.4 Test the java package installation
+4.5.4 Test the java package installation
 ----------------------------------------
 
  The following code creates a Java string object, which however is
@@ -1082,7 +1089,7 @@ objects you must specify an initializer:
 
 File: octave-java.info,  Node: Which TeX symbols are implemented in the dialog functions?,  Prev: How to compile the java package in Octave?,  Up: Top
 
-3.6 Which TeX symbols are implemented in the dialog functions?
+4.6 Which TeX symbols are implemented in the dialog functions?
 ==============================================================
 
  The dialog functions contain a translation table for TeX like symbol
@@ -1192,53 +1199,53 @@ Index
 
 Tag Table:
 Node: Top87
-Node: javaclasspath2536
-Ref: doc-javaclasspath2669
-Node: javaaddpath4724
-Ref: doc-javaaddpath4854
-Node: javarmpath5753
-Ref: doc-javarmpath5875
-Node: javamem6577
-Ref: doc-javamem6691
-Node: javaArray9221
-Ref: doc-javaArray9339
-Node: javaObject10177
-Ref: doc-javaObject10298
-Node: java_new11563
-Ref: doc-java_new11681
-Node: javaMethod12311
-Ref: doc-javaMethod12434
-Node: java_invoke13160
-Ref: doc-java_invoke13285
-Node: java_get14058
-Ref: doc-java_get14177
-Node: java_set14794
-Ref: doc-java_set14913
-Node: javamethods15564
-Ref: doc-javamethods15691
-Node: javafields16910
-Ref: doc-javafields17033
-Node: msgbox18327
-Ref: doc-msgbox18439
-Node: errordlg19789
-Ref: doc-errordlg19902
-Node: helpdlg20706
-Ref: doc-helpdlg20819
-Node: inputdlg22050
-Ref: doc-inputdlg22164
-Node: listdlg24891
-Ref: doc-listdlg25004
-Node: questdlg27209
-Ref: doc-questdlg27323
-Node: warndlg28923
-Ref: doc-warndlg29073
-Node: How to distinguish between Octave and Matlab?30686
-Ref: doc-FAQ30937
-Node: How to make Java classes available?31585
-Node: How to create an instance of a Java class?35339
-Node: How can I handle memory limitations?36075
-Node: How to compile the java package in Octave?39198
-Node: Which TeX symbols are implemented in the dialog functions?43991
+Node: javaclasspath2609
+Ref: doc-javaclasspath2739
+Node: javaaddpath4789
+Ref: doc-javaaddpath4919
+Node: javarmpath5818
+Ref: doc-javarmpath5940
+Node: javamem6642
+Ref: doc-javamem6756
+Node: javaArray9286
+Ref: doc-javaArray9404
+Node: javaObject10242
+Ref: doc-javaObject10363
+Node: java_new11628
+Ref: doc-java_new11746
+Node: javaMethod12376
+Ref: doc-javaMethod12499
+Node: java_invoke13225
+Ref: doc-java_invoke13350
+Node: java_get14123
+Ref: doc-java_get14242
+Node: java_set14859
+Ref: doc-java_set14978
+Node: javamethods15629
+Ref: doc-javamethods15756
+Node: javafields16975
+Ref: doc-javafields17098
+Node: msgbox18392
+Ref: doc-msgbox18504
+Node: errordlg19854
+Ref: doc-errordlg19967
+Node: helpdlg20771
+Ref: doc-helpdlg20884
+Node: inputdlg22115
+Ref: doc-inputdlg22229
+Node: listdlg24956
+Ref: doc-listdlg25069
+Node: questdlg27274
+Ref: doc-questdlg27388
+Node: warndlg28988
+Ref: doc-warndlg29138
+Node: How to distinguish between Octave and Matlab?30751
+Ref: doc-FAQ31002
+Node: How to make Java classes available?31650
+Node: How to create an instance of a Java class?35404
+Node: How can I handle memory limitations?36140
+Node: How to compile the java package in Octave?39263
+Node: Which TeX symbols are implemented in the dialog functions?44056
 
 End Tag Table
 

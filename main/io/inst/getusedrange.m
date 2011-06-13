@@ -84,6 +84,8 @@ function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
     [ trow, lrow, lcol, rcol ] = getusedrange_poi (spptr, ii);
   elseif (strcmp (spptr.xtype, 'JXL'))
     [ trow, lrow, lcol, rcol ] = getusedrange_jxl (spptr, ii);
+  elseif (strcmp (spptr.xtype, 'OXS'))
+    [ trow, lrow, lcol, rcol ] = getusedrange_oxs (spptr, ii);
   else
     error ('Only OTK, JOD, POI and JXL interface implemented');
   endif
@@ -540,7 +542,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jxl (xls, wsh)
 	
 	if (brow == 0 || rcol == 0)
 		# Empty sheet
-		trow = 0; lcol = 0;
+		trow = 0; lcol = 0; brow = 0; rcol = 0;
 	else
 		trow = brow + 1;
 		lcol = rcol + 1;
@@ -558,5 +560,40 @@ function [ trow, brow, lcol, rcol ] = getusedrange_jxl (xls, wsh)
 			if ~(emptyrow) trow = min (trow, ii + 1); endif
 		endfor
 	endif
+
+endfunction
+
+
+## Copyright (C) 2010 Philip Nienhuis, <prnienhuis at users.sf.net>
+## 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+## 
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## getusedrange_oxs
+
+## Author: Philip <Philip@DESKPRN>
+## Created: 2011-06-13
+
+function [ trow, brow, lcol, rcol ] = getusedrange_oxs (xls, wsh)
+
+	sh = xls.workbook.getWorkSheet (wsh - 1);
+	# Intriguing:  sh.first<> is off by one, sh.getLast<> = OK... 
+	trow = sh.getFirstRow () + 1;
+	brow = sh.getLastRow ();
+	lcol = sh.getFirstCol () + 1;
+	rcol = sh.getLastCol ();
+	# Check for empty sheet
+	if ((trow > brow) || (lcol > rcol)), trow = brow = lcol = rcol = 0; endif
 
 endfunction

@@ -101,7 +101,7 @@
 ## 2011-05-22 Textual changes in header
 ## 2011-05-29 Cleanup of comments & messages
 ##
-## 2011-05-22 Latest subfunction update
+## 2011-06-13 Latest subfunction update
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -194,8 +194,8 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 	xlsinterfaces = getxlsinterfaces (xlsinterfaces);
 
 # Supported interfaces determined; Excel file type check moved to seperate interfaces.
-	chk1 = strcmp (tolower (filename(end-3:end)), '.xls');
-	chk2 = strcmp (tolower (filename(end-4:end-1)), '.xls');
+	chk1 = strcmpi (filename(end-3:end), '.xls');
+	chk2 = strcmpi (filename(end-4:end-1), '.xls');
 	
 	# Initialize file ptr struct
 	xls = struct ("xtype", 'NONE', "app", [], "filename", [], "workbook", [], "changed", 0, "limits", []); 
@@ -302,7 +302,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 			xls.filename = filename;
 			xlssupport += 8;
 		catch
-			printf ('Unsupported file format for OpenXLS - %s\n', filename);
+			printf ('Unsupported file format for OpenXLS - %s\n');
 		end_try_catch
 	endif
 
@@ -331,7 +331,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 			# Workaround for <UNOruntime>.queryInterface():
 			unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.frame.XComponentLoader');
 			aLoader = oDesktop.queryInterface (unotmp);
-			# Some trickery as Octave Java cannot create non-numeric arrays
+			# Some trickery as Octave Java cannot create initialized arrays
 			lProps = javaArray ('com.sun.star.beans.PropertyValue', 1);
 			lProp = java_new ('com.sun.star.beans.PropertyValue', "Hidden", 0, true, []);
 			lProps(1) = lProp;
@@ -440,6 +440,7 @@ endfunction
 ## 2011-05-18 Experimental UNO support added
 ## 2011-05-29 Reduced verbosity
 ## 2011-06-06 Fix for javaclasspath format in *nix w java-1.2.8 pkg
+## 2011-06-13 Fixed potentially faulty tests for java classlib presence
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -448,7 +449,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 	if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL) && isempty (xlsinterfaces.OXS))
 		printf ("Detected interfaces: ");
 	elseif (isempty (xlsinterfaces.COM) || isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL) || isempty (xlsinterfaces.OXS))
-		tmp1 = [];
+		tmp1 = [];		# tmp1 = [] (not initialized), 0 (No java detected), or 1 (Working Java found)
 	endif
 	deflt = 0;
 
@@ -518,7 +519,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 		# under Windows we need the following more subtle, platform-independent approach:
 		for ii=1:length (jcp)
 			for jj=1:length (entries1)
-				if (strfind (tolower (jcp{ii}), entries1{jj})), ++jpchk1; endif
+				if (isempty (strfind (tolower (jcp{ii}), entries1{jj}))), ++jpchk1; endif
 			endfor
 		endfor
 		if (jpchk1 > 1)
@@ -529,7 +530,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 		jpchk2 = 0; entries2 = {"xbean", "poi-ooxml-schemas", "dom4j"};
 		for ii=1:length (jcp)
 			for jj=1:length (entries2)
-				if (strfind (tolower (jcp{ii}), entries2{jj})), ++jpchk2; endif
+				if (isempty (strfind (tolower (jcp{ii}), entries2{jj}))), ++jpchk2; endif
 			endfor
 		endfor
 		if (jpchk2 > 2), printf (" (& OOXML)"); endif
@@ -544,7 +545,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 		jpchk = 0; entries = {"jxl"};
 		for ii=1:length (jcp)
 			for jj=1:length (entries)
-				if (strfind (tolower (jcp{ii}), entries{jj})), ++jpchk; endif
+				if (isempty (strfind (tolower (jcp{ii}), entries{jj}))), ++jpchk; endif
 			endfor
 		endfor
 		if (jpchk > 0)
@@ -560,7 +561,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 		jpchk = 0; entries = {"openxls"};
 		for ii=1:length (jcp)
 			for jj=1:length (entries)
-				if (strfind (tolower (jcp{ii}), entries{jj})), ++jpchk; endif
+				if (isempty (strfind (tolower (jcp{ii}), entries{jj}))), ++jpchk; endif
 			endfor
 		endfor
 		if (jpchk > 0)
@@ -579,16 +580,13 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			for ii=1:numel (jcp)
 				jcplst = strsplit (jcp{ii}, filesep);
 				jcpentry = jcplst {end};
-				if (~isempty (strfind (lower (jcpentry), lower (entries{jj}))))
-					jpchk = jpchk + 1;
-				endif
+				if (~isempty (strfind (lower (jcpentry), lower (entries{jj})))); ++jpchk; endif
 			endfor
 		endfor
 		if (jpchk >= numel (entries))
 			xlsinterfaces.UNO = 1;
 			printf ('UNO');
 			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
-			chk1 = 1;
 		endif
 	endif
 

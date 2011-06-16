@@ -1,4 +1,4 @@
-%# Copyright (C) 2006-2009, Thomas Treichl <treichl@users.sourceforge.net>
+%# Copyright (C) 2006-2011, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -187,7 +187,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
   %# Implementation of the option MaxStep has been finished. This option
   %# can be set by the user to another value than default value.
   if (isempty (vodeoptions.MaxStep) && ~vstepsizefixed)
-    vodeoptions.MaxStep = (vslot(1,2) - vslot(1,1)) / 10;
+    vodeoptions.MaxStep = abs (vslot(1,2) - vslot(1,1)) / 10;
     warning ('OdePkg:InvalidArgument', ...
       'Option "MaxStep" not set, new value %f is used', vodeoptions.MaxStep);
   end
@@ -267,10 +267,17 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
   vtimestamp  = vslot(1,1);           %# timestamp = start time
   vtimelength = length (vslot);       %# length needed if fixed steps
   vtimestop   = vslot(1,vtimelength); %# stop time = last value
-  vdirection  = sign (vtimestop);     %# Flag for direction to solve
+  %# 20110611, reported by Nils Strunk
+  %# Make it possible to solve equations from negativ to zero, 
+  %# eg. vres = ode78 (@(t,y) y, [-2 0], 2);
+  vdirection  = sign (vtimestop - vtimestamp); %# Direction flag
 
   if (~vstepsizefixed)
-    vstepsize = vodeoptions.InitialStep;
+    if (sign (vodeoptions.InitialStep) == vdirection)
+      vstepsize = vodeoptions.InitialStep;
+    else %# Fix wrong direction of InitialStep.
+      vstepsize = - vodeoptions.InitialStep;
+    end
     vminstepsize = (vtimestop - vtimestamp) / (1/eps);
   else %# If step size is given then use the fixed time steps
     vstepsize = vslot(1,2) - vslot(1,1);
@@ -334,10 +341,12 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
          (vdirection * (vstepsize) >= vdirection * (vminstepsize)))
 
     %# Hit the endpoint of the time slot exactely
-    if ((vtimestamp + vstepsize) > vdirection * vtimestop)
-%# if (((vtimestamp + vstepsize) > vtimestop) || ...
-%#   (abs(vtimestamp + vstepsize - vtimestop) < eps))
-      vstepsize = vtimestop - vdirection * vtimestamp;
+    if (vdirection * (vtimestamp + vstepsize) > vdirection * vtimestop)
+      %# vstepsize = vtimestop - vdirection * vtimestamp;
+      %# 20110611, reported by Nils Strunk
+      %# The endpoint of the time slot must be hit exactly,
+      %# eg. vsol = ode78 (@(t,y) y, [0 -1], 1); 
+      vstepsize = vdirection * abs (abs (vtimestop) - abs (vtimestamp));
     end
 
     %# Estimate the thirteen results when using this solver
@@ -368,7 +377,9 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
       y7(vodeoptions.NonNegative) = abs (y7(vodeoptions.NonNegative));
       y8(vodeoptions.NonNegative) = abs (y8(vodeoptions.NonNegative));
     end
-    vSaveVUForRefine = vu;
+    if (vhaveoutputfunction && vhaverefine) 
+      vSaveVUForRefine = vu;
+    end
 
     %# Calculate the absolute local truncation error and the acceptable error
     if (~vstepsizefixed)
@@ -454,7 +465,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
         vstepsize = min (vodeoptions.MaxStep, ...
            min (0.8 * vstepsize * (vtau ./ vdelta) .^ vpow));
       else
-        vstepsize = max (vodeoptions.MaxStep, ...
+        vstepsize = max (- vodeoptions.MaxStep, ...
           max (0.8 * vstepsize * (vtau ./ vdelta) .^ vpow));
       end
 
@@ -529,9 +540,9 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
     vnlinsols  = 0;                             %# no. of solutions of linear systems
     %# Print cost statistics if no output argument is given
     if (nargout == 0)
-      vmsg = fprintf (1, 'Number of successful steps: %d', vnsteps);
-      vmsg = fprintf (1, 'Number of failed attempts:  %d', vnfailed);
-      vmsg = fprintf (1, 'Number of function calls:   %d', vnfevals);
+      vmsg = fprintf (1, 'Number of successful steps: %d\n', vnsteps);
+      vmsg = fprintf (1, 'Number of failed attempts:  %d\n', vnfailed);
+      vmsg = fprintf (1, 'Number of function calls:   %d\n', vnfevals);
     end
   else
     vhavestats = false;
@@ -632,7 +643,7 @@ end
 %!  fvdb = @(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
 %!  vsol = ode78 (fvdb, [0 2], [2 0]);
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
-%!test %# extra input arguments passed trhough
+%!test %# extra input arguments passed through
 %!  vsol = ode78 (@fpol, [0 2], [2 0], 12, 13, 'KL');
 %!  assert ([vsol.x(end), vsol.y(end,:)], [2, fref], 1e-3);
 %!test %# empty OdePkg structure *but* extra input arguments
@@ -647,13 +658,21 @@ end
 %!  assert (vsol.x(:), [0:0.1:2]');
 %!  assert (vsol.y(end,:), fref, 1e-3);
 %!test %# Solve in backward direction starting at t=0
-%! %# vref = [-1.2054034414, 0.9514292694];
+%!  vref = [-1.205364552835178, 0.951542399860817];
 %!  vsol = ode78 (@fpol, [0 -2], [2 0]);
-%! %# assert ([vsol.x(end), vsol.y(end,:)], [-2, fref], 1e-3);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [-2, vref], 1e-3);
 %!test %# Solve in backward direction starting at t=2
-%! %# vref = [-1.2154183302, 0.9433018000];
-%!  vsol = ode78 (@fpol, [2 -2], [0.3233166627 -1.8329746843]);
-%! %# assert ([vsol.x(end), vsol.y(end,:)], [-2, fref], 1e-3);
+%!  vref = [-1.205364552835178, 0.951542399860817];
+%!  vsol = ode78 (@fpol, [2 -2], fref);
+%!  assert ([vsol.x(end), vsol.y(end,:)], [-2, vref], 1e-3);
+%!test %# Solve another anonymous function in backward direction
+%!  vref = [-1, 0.367879437558975];
+%!  vsol = ode78 (@(t,y) y, [0 -1], 1);
+%!  assert ([vsol.x(end), vsol.y(end,:)], vref, 1e-3);
+%!test %# Solve another anonymous function below zero
+%!  vref = [0, 14.77810590694212];
+%!  vsol = ode78 (@(t,y) y, [-2 0], 2);
+%!  assert ([vsol.x(end), vsol.y(end,:)], vref, 1e-3);
 %!test %# AbsTol option
 %!  vopt = odeset ('AbsTol', 1e-5);
 %!  vsol = ode78 (@fpol, [0 2], [2 0], vopt);

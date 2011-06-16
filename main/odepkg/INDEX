@@ -10,6 +10,7 @@ OdePkg DAE Solver Functions
  ode2r
  ode5r
  odebda
+ odebwe
  oders
  odesx
 OdePkg IDE Solver Functions
@@ -49,3 +50,5 @@ OdePkg Testsuite Functions
 OdePkg Internal Functions
  odepkg_event_handle
  odepkg_structure_check
+OdePkg Other Functions
+ bvp4c

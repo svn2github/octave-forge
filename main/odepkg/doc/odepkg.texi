@@ -9,7 +9,7 @@
 @setfilename odepkg.info
 @settitle OdePkg - A package for solving ordinary differential equations and more
 @afourpaper
-@set VERSION 0.6.0
+@set VERSION 0.8.0
 @c @afourwide
 @c %*** End of the HEADER
 

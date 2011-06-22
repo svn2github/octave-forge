@@ -27,7 +27,7 @@
 ## Example:
 ## @example
 ## [z, p] = ghrule (5);
-## abs (dot (z, p), quad (@(x) exp (-x.^2)))
+## abs (dot (z, p), quad (@(x) exp (-x.^2), -100, 100, eps))
 ## @end example
 ##
 ## @seealso{grule}

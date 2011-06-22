@@ -30,7 +30,7 @@
 ## abs (sum (p) - quad (@(x) exp (-x.^2), -100, 100, eps))
 ## @end example
 ##
-## @seealso{grule}
+## @seealso{grule,glagrule}
 ## @end deftypefn
 
 function [z, p] = ghrule (n)

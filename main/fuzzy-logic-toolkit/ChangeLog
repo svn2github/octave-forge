@@ -1,0 +1,35 @@
+2011-06-21  Version 0.2.2
+
+	* ChangeLog: New file.
+	* DESCRIPTION: Update file.
+	* inst/addmf.m: Modify to workaround a bug in Octave 3.4.0.
+	* inst/addrule.m: Modify to workaround a bug in Octave 3.4.0.
+	* inst/addvar.m: Modify to workaround a bug in Octave 3.4.0.
+	* inst/gaussmf.m: Modify demo and texinfo comment string.
+	* inst/getfis.m: Modify to workaround a bug in Octave 3.4.0.
+	* inst/readfis.m: Modify to workaround a bug in Octave 3.4.0.
+	* inst/private/aggregate_output_mamdani.m: Modify to workaround a bug in Octave 3.4.0.
+	* inst/private/evalmf_private.m: Modify to workaround a bug in Octave 3.4.0.
+	* Demos tested under: Fedora 15/Octave 3.4.0
+	* Demos tested under: Fedora 15/Octave 3.2.4
+
+2011-06-08  Version 0.2.1
+
+	* Initial release on Octave-Forge.
+	* Merge membership function demos into related function files.
+	* Create documentation for Octave-Forge website.
+	* DESCRIPTION: Update file.
+	* Demos tested under: Fedora 13/Octave 3.2.4
+
+2011-05-25  Version 0.2
+
+	* Move tests/demos/* and tests/fis/* to inst/*.
+	* Change indentation and spacing to conform to Octave style.
+	* Convert comments to texinfo.
+	* DESCRIPTION: Update file.
+	* Demos tested under: Fedora 13/Octave 3.2.4
+
+2011-04-19  Version 0.1
+
+	* Initial release on SourceForge.
+	* Demos tested under: Fedora 13/Octave 3.2.4

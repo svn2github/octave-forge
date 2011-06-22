@@ -1,6 +1,6 @@
 Name: fuzzy-logic-toolkit
-Version: 0.2.1
-Date: 2011-6-8
+Version: 0.2.2
+Date: 2011-6-21
 Author: L. Markowsky <lmarkov@users.sourceforge.net>
 Maintainer: L. Markowsky <lmarkov@users.sourceforge.net>
 Title: Octave Fuzzy Logic Toolkit
@@ -9,3 +9,4 @@ Depends: octave (>= 3.2.4)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net
+ http://sf.net/projects/octave-fuzzy

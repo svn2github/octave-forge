@@ -69,7 +69,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      aggregate_output_sugeno.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 21 Jun 2011
 
 ##------------------------------------------------------------------------------
 
@@ -87,7 +87,11 @@ function retval = aggregate_output_sugeno (fis, rule_output)
     aggregated_output = aggregate_fis_output (fis.aggMethod, unagg_output);
     next_agg_output = struct ('index', i, ...
                               'aggregated_output', aggregated_output);
-    retval = [retval, next_agg_output];
+    if (i == 1)
+      retval = next_agg_output;
+    else
+      retval = [retval, next_agg_output];
+    endif
   endfor
 endfunction
 
@@ -135,7 +139,11 @@ function y = remove_null_rows (x)
   y = [];
   for i = 1 : rows (x)
     if (x(i, 2) != 0)
-      y = [y; x(i, :)];
+      if (isequal (y, []))
+        y = x(i, :);
+      else
+        y = [y; x(i, :)];
+      endif
     endif
   endfor
 endfunction

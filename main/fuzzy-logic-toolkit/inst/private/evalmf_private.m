@@ -30,7 +30,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function evaluate
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      evalmf_private.m
-## Last-Modified: 20 May 2011
+## Last-Modified: 21 Jun 2011
 
 function y = evalmf_private (x, params, mf_type)
 
@@ -54,7 +54,7 @@ endfunction
 function y = eval_constant (x, c)
   y = zeros (length (x));
   delta = x(2) - x(1);
-  y_val = @(x_val) (abs (c - x_val) < delta);
+  y_val = @(x_val) ((abs (c - x_val) < delta) * 1);
   y = arrayfun (y_val, x);
 endfunction
 

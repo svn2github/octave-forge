@@ -26,8 +26,8 @@
 ## 
 ## Example:
 ## @example
-## [z, p] = ghrule (5);
-## abs (dot (z, p), quad (@(x) exp (-x.^2), -100, 100, eps))
+## [z, p] = ghrule (50);
+## abs (sum (p) - quad (@(x) exp (-x.^2), -100, 100, eps))
 ## @end example
 ##
 ## @seealso{grule}
@@ -50,3 +50,18 @@ function [z, p] = ghrule (n)
   z = diag (z);		   
 
 endfunction
+
+%!shared z, p 
+%!
+%!test
+%! [z, p] = ghrule (5);
+%! err = abs (sum (p) - quad (@(x) exp (-x.^2), -100, 100, eps));
+%! assert (err, 0, sqrt (eps))
+%!
+%!test
+%! err = abs (dot (z, p));
+%! assert (err, 0, sqrt (eps))
+%!
+%!test
+%! err = abs (dot (z.^7, p));
+%! assert (err, 0, sqrt (eps))

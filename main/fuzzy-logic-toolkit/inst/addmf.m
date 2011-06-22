@@ -96,7 +96,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function membership
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addmf.m
-## Last-Modified: 8 Jun 2011
+## Last-Modified: 20 Jun 2011
 
 function fis = addmf (fis, in_or_out, var_index, mf_name, mf_type, mf_params)
 
@@ -128,9 +128,17 @@ function fis = addmf (fis, in_or_out, var_index, mf_name, mf_type, mf_params)
 
   new_mf = struct ('name', mf_name, 'type', mf_type, 'params', mf_params);
   if (strcmp (tolower (in_or_out), 'input'))
-    fis.input(var_index).mf = [fis.input(var_index).mf, new_mf];
+    if (length (fis.input(var_index).mf) == 0)
+      fis.input(var_index).mf = new_mf;
+    else
+      fis.input(var_index).mf = [fis.input(var_index).mf, new_mf];
+    endif
   else
-    fis.output(var_index).mf = [fis.output(var_index).mf, new_mf];
+    if (length (fis.output(var_index).mf) == 0)
+      fis.output(var_index).mf = new_mf;
+    else
+      fis.output(var_index).mf = [fis.output(var_index).mf, new_mf];
+    endif
   endif
 
 endfunction

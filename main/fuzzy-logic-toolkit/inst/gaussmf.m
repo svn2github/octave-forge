@@ -22,9 +22,9 @@
 ##
 ## For a given domain @var{x} and parameters @var{params} (or @var{[sig c]}),
 ## return the corresponding @var{y} values for the Gaussian membership
-## function, a curve shaped like the Gaussian (normal) distribution, but scaled
-## to have a maximum value of 1. By contrast, the area under the Gaussian
-## distribution curve is 1.
+## function. This membership function is shaped like the Gaussian (normal)
+## distribution, but scaled to have a maximum value of 1. By contrast, the 
+## area under the Gaussian distribution curve is 1.
 ##
 ## The argument @var{x} must be a real number or a non-empty vector of strictly
 ## increasing real numbers, and @var{sig} and @var{c} must be real numbers.
@@ -64,7 +64,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function gaussian
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      gaussmf.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 20 Jun 2011
 
 function y = gaussmf (x, params)
 
@@ -102,12 +102,13 @@ endfunction
 %! params = [2 0];
 %! y3 = gaussmf(x, params);
 %! figure('NumberTitle', 'off', 'Name', 'gaussmf demo');
-%! plot(x, y1, 'r;params = [0.5 0];');
+%! plot(x, y1, 'r;params = [0.5 0];', 'LineWidth', 2);
 %! hold on ;
-%! plot(x, y2, 'b;params = [1 0];');
+%! plot(x, y2, 'b;params = [1 0];', 'LineWidth', 2);
 %! hold on ;
-%! plot(x, y3, 'g;params = [2 0];');
+%! plot(x, y3, 'g;params = [2 0];', 'LineWidth', 2);
 %! ylim([-0.1 1.1]);
 %! xlabel('Crisp Input Value');
 %! ylabel('Degree of Membership');
+%! grid;
 %! hold;

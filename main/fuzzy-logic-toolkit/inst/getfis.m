@@ -93,7 +93,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      getfis.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 21 Jun 2011
 
 ##------------------------------------------------------------------------------
 
@@ -196,56 +196,92 @@ function retval = getfis_two_args (fis, arg2)
     case 'numinputmfs'
       retval = [];
       for i = 1 : columns (fis.input)
-        retval = [retval columns(fis.input(i).mf)];
+        if (i == 1)
+          retval = columns(fis.input(i).mf);
+        else
+          retval = [retval columns(fis.input(i).mf)];
+        endif
       endfor
 
     case 'numoutputmfs'
       retval = [];
       for i = 1 : columns (fis.output)
-        retval = [retval columns(fis.output(i).mf)];
+        if (i == 1)
+          retval = columns(fis.output(i).mf);
+        else
+          retval = [retval columns(fis.output(i).mf)];
+        endif
       endfor
 
     case 'inlabels'
       retval = [];
       for i = 1 : columns (fis.input)
-        retval = [retval; fis.input(i).name];
+        if (i == 1)
+          retval = fis.input(i).name;
+        else
+          retval = [retval; fis.input(i).name];
+        endif
       endfor
 
     case 'outlabels'
       retval = [];
       for i = 1 : columns (fis.output)
-        retval = [retval; fis.output(i).name];
+        if (i == 1)
+          retval = fis.output(i).name;
+        else
+          retval = [retval; fis.output(i).name];
+        endif
       endfor
 
     case 'inrange'
       retval = [];
       for i = 1 : columns (fis.input)
-        retval = [retval; fis.input(i).range];
+        if (i == 1)
+          retval = fis.input(i).range;
+        else
+          retval = [retval; fis.input(i).range];
+        endif
       endfor
 
     case 'outrange'
       retval = [];
       for i = 1 : columns (fis.output)
-        retval = [retval; fis.output(i).range];
+        if (i == 1)
+          retval = fis.output(i).range;
+        else
+          retval = [retval; fis.output(i).range];
+        endif
       endfor
 
     case 'inmfs'
       retval = [];
       for i = 1 : columns (fis.input)
-        retval = [retval columns(fis.input(i).mf)];
+        if (i == 1)
+          retval = columns(fis.input(i).mf);
+        else
+          retval = [retval columns(fis.input(i).mf)];
+        endif
       endfor
 
     case 'outmfs'
       retval = [];
       for i = 1 : columns (fis.output)
-        retval = [retval columns(fis.output(i).mf)];
+        if (i == 1)
+          retval = columns(fis.output(i).mf);
+        else
+          retval = [retval columns(fis.output(i).mf)];
+        endif
       endfor
 
     case 'inmflabels'
       retval = [];
       for i = 1 : columns (fis.input)
         for j = 1 : columns (fis.input(i).mf)
-          retval = [retval; fis.input(i).mf(j).name];
+          if (i == 1 && y == 1)
+            retval = fis.input(i).mf(j).name;
+          else
+            retval = [retval; fis.input(i).mf(j).name];
+          endif
         endfor
       endfor
 
@@ -253,7 +289,11 @@ function retval = getfis_two_args (fis, arg2)
       retval = [];
       for i = 1 : columns (fis.output)
         for j = 1 : columns (fis.output(i).mf)
-          retval = [retval; fis.output(i).mf(j).name];
+          if (i == 1 && y == 1)
+            retval = fis.output(i).mf(j).name;
+          else
+            retval = [retval; fis.output(i).mf(j).name];
+          endif
         endfor
       endfor
 
@@ -261,7 +301,11 @@ function retval = getfis_two_args (fis, arg2)
       retval = [];
       for i = 1 : columns (fis.input)
         for j = 1 : columns (fis.input(i).mf)
-          retval = [retval; fis.input(i).mf(j).type];
+          if (i == 1 && y == 1)
+            retval = fis.input(i).mf(j).type;
+          else
+            retval = [retval; fis.input(i).mf(j).type];
+          endif
         endfor
       endfor
 
@@ -269,7 +313,11 @@ function retval = getfis_two_args (fis, arg2)
       retval = [];
       for i = 1 : columns (fis.output)
         for j = 1 : columns (fis.output(i).mf)
-          retval = [retval; fis.output(i).mf(j).type];
+          if (i == 1 && y == 1)
+            retval = fis.output(i).mf(j).type;
+          else
+            retval = [retval; fis.output(i).mf(j).type];
+          endif
         endfor
       endfor
 

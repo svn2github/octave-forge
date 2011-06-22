@@ -66,7 +66,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      readfis.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 20 Jun 2011
 
 ##------------------------------------------------------------------------------
 
@@ -108,7 +108,11 @@ function fis = readfis (filename='')
   for i = 1 : num_inputs
     [next_fis_input, num_mfs, line_num] = ...
       get_next_fis_io (fid, line_num, i, 'input');
-    fis.input = [fis.input, next_fis_input];
+    if (i == 1)
+      fis.input = next_fis_input;
+    else
+      fis.input = [fis.input, next_fis_input];
+    endif
 
     ##----------------------------------------------------------------------
     ## Read membership function info for the new FIS input from file.
@@ -117,7 +121,11 @@ function fis = readfis (filename='')
 
     for j = 1 : num_mfs
       [next_mf, line_num] = get_next_mf (fid, line_num, i, j, 'input');
-      fis.input(i).mf = [fis.input(i).mf, next_mf];
+      if (j == 1)
+        fis.input(i).mf = next_mf;
+      else
+        fis.input(i).mf = [fis.input(i).mf, next_mf];
+      endif
     endfor
   endfor
 
@@ -129,7 +137,11 @@ function fis = readfis (filename='')
   for i = 1 : num_outputs
     [next_fis_output, num_mfs, line_num] = ...
       get_next_fis_io (fid, line_num, i, 'output');
-    fis.output = [fis.output, next_fis_output];
+    if (i == 1)
+      fis.output = next_fis_output;
+    else
+      fis.output = [fis.output, next_fis_output];
+    endif
 
     ##----------------------------------------------------------------------
     ## Read membership function info for the new FIS output from file.
@@ -138,7 +150,11 @@ function fis = readfis (filename='')
 
     for j = 1 : num_mfs
       [next_mf, line_num] = get_next_mf (fid, line_num, i, j, 'output');
-      fis.output(i).mf = [fis.output(i).mf, next_mf];
+      if (j == 1)
+        fis.output(i).mf = next_mf;
+      else
+        fis.output(i).mf = [fis.output(i).mf, next_mf];
+      endif
     endfor
   endfor
 
@@ -152,7 +168,11 @@ function fis = readfis (filename='')
   for i = 1 : num_rules
     [next_rule, line_num] = ...
       get_next_rule (fid, line_num, num_inputs, num_outputs);
-    fis.rule = [fis.rule, next_rule];
+    if (i == 1)
+      fis.rule = next_rule;
+    else
+      fis.rule = [fis.rule, next_rule];
+    endif
   endfor
 endfunction
 

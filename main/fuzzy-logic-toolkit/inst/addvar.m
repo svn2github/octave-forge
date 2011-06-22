@@ -61,7 +61,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy variable
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addvar.m
-## Last-Modified: 8 Jun 2011
+## Last-Modified: 20 Jun 2011
 
 function fis = addvar (fis, in_or_out, var_name, var_range)
 
@@ -91,9 +91,17 @@ function fis = addvar (fis, in_or_out, var_name, var_range)
 
   new_variable = struct ('name', var_name, 'range', var_range, 'mf', []);
   if (strcmp (tolower (in_or_out), 'input'))
-    fis.input = [fis.input, new_variable];
+    if (length (fis.input) == 0)
+      fis.input = new_variable;
+    else
+      fis.input = [fis.input, new_variable];
+    endif
   else
-    fis.output = [fis.output, new_variable];
+    if (length (fis.output) == 0)
+      fis.output = new_variable;
+    else
+      fis.output = [fis.output, new_variable];
+    endif
   endif
 
 endfunction

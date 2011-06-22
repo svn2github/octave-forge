@@ -69,7 +69,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy rule
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addrule.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 21 Jun 2011
 
 function fis = addrule (fis, rule_matrix) 
 
@@ -104,6 +104,10 @@ function fis = addrule (fis, rule_matrix)
                            'connection', connection);
   endfor
 
-  fis.rule = [fis.rule, new_rules];
+  if (length (fis.rule) == 0)
+    fis.rule = new_rules;
+  else
+    fis.rule = [fis.rule, new_rules];
+  endif
 
 endfunction

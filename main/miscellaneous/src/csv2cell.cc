@@ -78,6 +78,9 @@ DEFUN_DLD (csv2cell, args, nargout,
   long fdend = fd.tellg ();
   fd.seekg (0, std::ios::beg);
 
+  if (fd.tellg () >= fdend)
+    return retval;
+
   /* Buffers */
   char line [MAXSTRINGLENGTH];
   std::string str, word;

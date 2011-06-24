@@ -79,7 +79,7 @@ DEFUN_DLD (csv2cell, args, nargout,
   fd.seekg (0, std::ios::beg);
 
   if (fd.tellg () >= fdend)
-    return retval;
+    return octave_value (Cell (0, 0));
 
   /* Buffers */
   char line [MAXSTRINGLENGTH];

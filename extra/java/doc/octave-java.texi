@@ -18,6 +18,9 @@
 @strong{See also:} \args\.
 @end macro
 @c ------------------------------------------------------------------------
+@c suppress black boxes in TeX for overfull hboxes
+@finalout
+@c ------------------------------------------------------------------------
 @settitle Octave and Java
 @c ------------------------------------------------------------------------
 @titlepage
@@ -77,9 +80,9 @@ Java on the other hand offers a rich, object oriented and platform independent
 environment for many applications. The core Java classes can be easily extended 
 by many freely available libraries.
 
-This document refers to the package @code{java}, which is part of the 
-GNU Octave project. This package allows you to access Java classes from inside Octave. 
-Thus it is possible to use existing class files or complete Java libraries 
+This document refers to the package @code{java}, which is part of the
+GNU Octave project. This package allows you to access Java classes from inside Octave.
+Thus it is possible to use existing class files or complete Java libraries
 directly from Octave. 
 @end ifnotinfo
 
@@ -91,7 +94,7 @@ with the name of a function from this package:
 Octave > help javaObject
 @end example
 
-You can view this help file in Octave by executing the info command with 
+You can view this help file in Octave by executing the info command with
 just the word java:
 @example
 Octave > doc java
@@ -101,19 +104,21 @@ Octave > doc java
 @cindex calling Octave from Java
 @cindex  Octave, calling from Java
 @c - index -
-@unnumberedsec Note on calling Octave from Java
+@heading Note on calling Octave from Java
 The @code{java} package is designed for calling Java from Octave.
-If you want to call Octave from Java, you might want to use a library like 
+If you want to call Octave from Java, you might want to use a library like
 @code{javaOctave} [http://kenai.com/projects/javaOctave] or
 @code{joPas} [http://jopas.sourceforge.net]. 
 
-@chapter Available Functions
+@ifnottex
+@chapter Table of Contents
 @c - index -
 @cindex available functions
 @cindex functions, available in the package java
 @cindex package java, available functions
 @c - index -
 
+Available Functions
 @menu
 * javaclasspath:: get the class path of the JVM
 * javaaddpath::   add a path to the class path of the JVM
@@ -135,7 +140,10 @@ If you want to call Octave from Java, you might want to use a library like
 * helpdlg::       display a dialog with a help symbol
 * inputdlg::      display a dialog with edit fields
 * questdlg::      display a dialog with a question icon
+@end menu
+
 Frequently Asked Questions
+@menu
 * How to distinguish between Octave and Matlab?::
 * How to make Java classes available?::
 * How to create an instance of a Java class?::
@@ -143,7 +151,10 @@ Frequently Asked Questions
 * How to compile the java package in Octave?::
 * Which @TeX{} symbols are implemented in the dialog functions?::
 @end menu
+@end ifnottex
 
+
+@chapter Available Functions
 @c ------------------------------------------------------------------------
 @node javaclasspath, javaaddpath, Top, Top
 
@@ -168,13 +179,9 @@ Return the class path of the Java virtual machine as a cell array of strings.
 
 If called without an input parameter:
 @itemize
-@item If no output variable is given, the result is simply printed 
-to the standard output.
-@item If one output variable @var{STATIC} is given, the result is
-the static classpath.
-@item If two output variables @var{STATIC} and @var{DYNAMIC} are 
-given, the first variable will contain the static classpath,
-the second will be filled with the dynamic claspath.
+@item If no output variable is given, the result is simply printed to the standard output.
+@item If one output variable @var{STATIC} is given, the result is the static classpath.
+@item If two output variables @var{STATIC} and @var{DYNAMIC} are given, the first variable will contain the static classpath, the second will be filled with the dynamic claspath.
 @end itemize
 
 If called with a single input parameter @var{WHAT}:
@@ -184,7 +191,7 @@ If no output parameter is given:
 If the output parameter @var{PATH} is used:
 @item If @var{WHAT} is '-static' the static classpath is returned.
 @item If @var{WHAT} is '-dynamic' the dynamic  classpath is returned.
-@item If @var{WHAT} is '-all' the static and the dynamic classpath 
+@item If @var{WHAT} is '-all' the static and the dynamic classpath
 are returned in a single cell array.
 @end itemize
 
@@ -297,39 +304,27 @@ When no return argument is given the info is echoed to the screen.
 Otherwise, cell array @var{JMEM} contains @var{Maximum}, @var{Total}, and
 @var{Free} memory (in bytes).
 
-All java-based routines are run in the JVM's shared memory pool,
-a dedicated and separate part of memory claimed by the JVM from
-your computer's total memory (which comprises physical RAM and
-virtual memory / swap space on hard disk).
+All java-based routines are run in the JVM's shared memory pool, a dedicated and separate part of memory claimed by the JVM from your computer's total memory (which comprises physical RAM and virtual memory / swap space on hard disk).
 
-The maximum available memory can be set using the file @code{java.opts}
-(in the same subdirectory where @code{javaaddpath.m} lives, see 
+The maximum available memory can be set using the file @code{java.opts} (in the same subdirectory where @code{javaaddpath.m} lives, see 
 @samp{which javaaddpath}. Usually that is: @*
 [/usr]/share/Octave/packages/java-1.2.8.
 
-@code{java.opts} is a plain text file. It can contain memory related 
-options, starting with @code{-X}.
-In the following exmaple, the first line specifies the initial 
-memory size in megabytes, the second line specifies the requested 
-maximum size:
+@code{java.opts} is a plain text file. It can contain memory related options, starting with @code{-X}.
+In the following exmaple, the first line specifies the initial memory size in megabytes, the second line specifies the requested maximum size:
 @example
 -Xms64m
 -Xmx512m
 @end example
-You can adapt these values if your system has limited available
-physical memory. When no @code{java.opts} file is present, the default
+You can adapt these values if your system has limited available physical memory. When no @code{java.opts} file is present, the default
 assignments are depending on system hardware and Java version. 
-Typically these are an initial memory size of @var{RAM/64} and 
-a maximum memory size of @var{min(RAM/4, 1GB)}, where @var{RAM}
+Typically these are an initial memory size of @var{RAM/64} and a maximum memory size of @var{min(RAM/4, 1GB)}, where @var{RAM}
 is the amount of installed memory.
 
-In the output of javamem @var{Total memory} is what the operating
-system has currently assigned to the JVM and depends on actual 
+In the output of javamem @var{Total memory} is what the operating system has currently assigned to the JVM and depends on actual 
 and active memory usage.
-@var{Free memory} is self-explanatory. During operation of java-based
-Octave functions the amounts of Total and Free memory will vary,
-due to java's own cleaning up and your operating system's memory
-management.
+@var{Free memory} is self-explanatory. During operation of java-based Octave functions the amounts of Total and Free memory will vary,
+due to java's own cleaning up and your operating system's memory management.
 
 Example:
 @example
@@ -936,7 +931,7 @@ function ret = isOctave
   persistent retval; % speeds up repeated calls 
 
   if isempty(retval)
-    retval = (exist('Octave_VERSION','builtin') > 0); 
+    retval = (exist('OCTAVE_VERSION','builtin') > 0); 
   end 
 
   ret = retval; 
@@ -965,8 +960,7 @@ In Octave and Matlab the @var{classpath} is composed of two parts:
 Octave searches the @var{static classpath} first, then the @var{dynamic classpath}.
 Classes appearing in the @var{static} as well as in the @var{dynamic classpath} will therefore be found in the @var{static classpath} and loaded from this location.
 @*
-Classes which shall be used regularly or must be available to all users should be 
-added to the @var{static classpath}. 
+Classes which shall be used regularly or must be available to all users should be added to the @var{static classpath}. 
 The @var{static classpath} is populated once from the contents of a plain text file named @code{classpath.txt} when the Java Virtual Machine starts. This file contains one line for each individual classpath to be added to the @var{static classpath}.
 These lines can identify single class files, directories containing class files or Java archives with complete class file hierarchies.
 Comment lines starting with a @code{#} or a  @code{%} character are ignored.
@@ -1145,12 +1139,18 @@ If you are using a Windows system that might be:
 @example
 Octave > setenv("JAVA_HOME","C:/Java/jdk1.6.0_21");
 @end example
-Note, that on both system types, Windows as well as Linux, you must use the forward slash '/' as the separator, not the backslash '\'.
 
 If you are using a Linux system this would look probably more like: 
 @example
 Octave > setenv("JAVA_HOME","/usr/local/jdk1.6.0_21");
 @end example
+
+Note, that on all systems you must use the forward slash '/' as the separator, not the backslash '\'.
+If on a Windows system the environment variable @code{JAVA_HOME} is already defined using the backslash, you can easily change this by issuing the following Octave command before starting the installation:
+@example
+Octave > setenv('JAVA_HOME',strrep(getenv('JAVA_HOME'),'\','/'))
+@end example
+
 
 @c ---------
 @subsection Compile and install the package in Octave

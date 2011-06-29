@@ -64,8 +64,9 @@
 ##      "     Indentation changed from tab to doublespace
 ## 2010-10-07 Added COM support (at last!)
 ## 2011-05-06 Experimental support for Java/UNO bridge
+## 2011-06-13 OpenXLS support added
 ##
-## Last subfunc update: 2011-06-06 (OTK)
+## Last subfunc update: 2011-06-29 (OXS)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -361,6 +362,8 @@ endfunction
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2011-05-06
+## Updates:
+## 2011-06-29 Fixed wrong address range inference in case of sheet names containing period(s)
 
 function [ srow, erow, scol, ecol ] = getusedrange_uno (ods, ii)
 
@@ -389,7 +392,15 @@ function [ srow, erow, scol, ecol ] = getusedrange_uno (ods, ii)
   srow = scol = 1e10;
   erow = ecol = 0;
   for ii=1:numel (adrblks)
-    range = strsplit (adrblks{ii}, '.'){2};
+    # Check if address contains a sheet name in quotes (happens if name contains a period)
+	if (int8 (adrblks{ii}(1)) == 39)
+      # Strip sheet name part
+      idx = findstr (adrblks{ii}, "'.");
+      range = adrblks{ii}(idx+2 : end);
+    else
+      # Same, but tru strsplit()
+      range = strsplit (adrblks{ii}, '.'){2};
+    endif
     [dummy, nrows, ncols, trow, lcol] = parse_sp_range (range);
     brow = trow + nrows - 1;
     rcol = lcol + ncols - 1;
@@ -584,15 +595,22 @@ endfunction
 
 ## Author: Philip <Philip@DESKPRN>
 ## Created: 2011-06-13
+## Updates:
+## 2011-06-29 try-catch to be able to skip non-data (e.g., graph) sheets
 
 function [ trow, brow, lcol, rcol ] = getusedrange_oxs (xls, wsh)
 
 	sh = xls.workbook.getWorkSheet (wsh - 1);
-	# Intriguing:  sh.first<> is off by one, sh.getLast<> = OK... 
-	trow = sh.getFirstRow () + 1;
-	brow = sh.getLastRow ();
-	lcol = sh.getFirstCol () + 1;
-	rcol = sh.getLastCol ();
+	try
+		# Intriguing:  sh.first<> is off by one, sh.getLast<> = OK... 
+		trow = sh.getFirstRow () + 1;
+		brow = sh.getLastRow ();
+		lcol = sh.getFirstCol () + 1;
+		rcol = sh.getLastCol ();
+	catch
+		# Might be an empty sheet
+		trow = brow = lcol = rcol = 0;
+	end_try_catch
 	# Check for empty sheet
 	if ((trow > brow) || (lcol > rcol)), trow = brow = lcol = rcol = 0; endif
 

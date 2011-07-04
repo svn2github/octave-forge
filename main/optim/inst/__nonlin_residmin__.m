@@ -129,10 +129,10 @@ function [p, resid, cvg, outp] = \
   if (! user_df_genecstr) df_equc_pstruct = false; endif
 
   ## some settings require a parameter order
-  if ((pin_struct || ! isempty (pconf) || f_inequc_pstruct || \
-       f_equc_pstruct || f_pstruct || dfdp_pstruct || \
-       df_inequc_pstruct || df_equc_pstruct || mc_struct || \
-       emc_struct))
+  if (pin_struct || ! isempty (pconf) || f_inequc_pstruct || \
+      f_equc_pstruct || f_pstruct || dfdp_pstruct || \
+      df_inequc_pstruct || df_equc_pstruct || mc_struct || \
+      emc_struct)
     if (isempty (pord))
       if (pin_struct)
 	if (any_vector_conf || \

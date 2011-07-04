@@ -53,8 +53,11 @@ function [p, fy, cvg, outp] = nonlin_curvefit (f, pin, x, y, settings)
     settings = struct ();
   endif
 
-  ## optimset mechanism is broken in Octave 3.2.4
-  optimget = @ __optimget__;
+  if (compare_versions (version (), "3.3.55", "<"))
+    ## optimset mechanism was fixed for option names with underscores
+    ## sometime in 3.3.54+, if I remember right
+    optimget = @ __optimget__;
+  endif
   if (! isempty (dfdp = optimget (settings, "dfdp")))
     if (ischar (dfdp))
       dfdp = str2func (dfdp);

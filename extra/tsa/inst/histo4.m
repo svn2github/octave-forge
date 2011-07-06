@@ -24,9 +24,9 @@ function [R,tix]=histo4(Y)
 
 
 %	$Id$
-%	Copyright (C) 1996-2005,2008,2009 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2005,2008,2009,2011 by Alois Schloegl <a.schloegl@ieee.org>	
 %    	This is part of the TSA-toolbox 
-%	http://hci.tugraz.at/~schloegl/matlab/tsa/
+%	http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ function [R,tix]=histo4(Y)
 
 
 if 0, exist('histo_mex','file')
-	% TODO: Performance tests showing an advantage  
+	% TODO: Performance tests showing an advantage and correctness  
 	[R,tix] = histo_mex(Y,'rows');
 	return; 
 end; 	
@@ -63,11 +63,9 @@ end;
 
 %[ix, iy] = (diff(Y,1)>0);
 ix = logical(zeros(yr-1,1));
-for k = 1:yr-1,
-        d = Y(k,:)-Y(k+1,:);
-        d = (~isnan(d) & d~=0) | (isnan(Y(k,:)) ~= isnan(Y(k+1,:)));
-        ix(k) = any(d);
-end;
+
+d = diff(Y,[],1);
+ix = any((~isnan(d) & (d~=0)) | diff(isnan(Y),[],1),2);
 
 tmp = [find(ix); yr];
 R.H = diff([0; tmp]);

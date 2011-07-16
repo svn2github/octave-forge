@@ -70,7 +70,7 @@ if prod(size(Mode))==2
         aMode=Mode(1);
         vMode=Mode(2);
 end;
-if any(aMode==(0:14)) & any(vMode==(0:7)), 
+if any(aMode==(0:14)) && any(vMode==(0:7)), 
         fprintf(1,['a' int2str(aMode) 'e' int2str(vMode) ' ']);
 else
         fprintf(2,'Error AAR.M: invalid Mode argument\n');

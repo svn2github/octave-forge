@@ -1,11 +1,19 @@
-function [R,tix]=histo3(Y)
-% HISTO3 calculates histogram and performs data compression
-% 
+function [R, tix] = histo3(Y, W)
+% HISTO3 calculates histogram for multiple columns with common bin values 
+%    among all data columns, and can be useful for data compression. 
+%
 % R = HISTO3(Y)
-% 	R is a struct with th fields 
-%       R.X  are the bin-values 
-%       R.H  is the frequency of occurence of value X 
-%  	R.N  are the number of valid (not NaN) samples 
+% R = HISTO3(Y, W)
+%	Y	data
+%	W	weight vector containing weights of each sample, 
+%		number of rows of Y and W must match.
+%		default W=[] indicates that each sample is weighted with 1. 
+% 	R 	struct with these fields 
+%       R.X  	the bin-values, bin-values are equal for each channel
+%		thus R.X is a column vector. If bin values should 
+%		be computed separately for each data column, use HISTO2
+%       R.H  	is the frequency of occurence of value X 
+%  	R.N  	are the number of valid (not NaN) samples 
 %
 % Data compression can be performed in this way
 %   	[R,tix] = histo3(Y) 
@@ -27,7 +35,7 @@ function [R,tix]=histo3(Y)
 
 
 %	$Id$
-%	Copyright (C) 1996-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2002,2008,2011 by Alois Schloegl <a.schloegl@ieee.org>	
 %       This is part of the TSA-toolbox. See also 
 %       http://hci.tugraz.at/schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
@@ -47,35 +55,33 @@ function [R,tix]=histo3(Y)
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-[yr,yc]=size(Y);
-if yr==1,
-        % Makes sure there is a second row
-        % Sort does not support the DIM-argument, therefore,
-        % this function would not work correctly with this software
-        % Once this is fixed, this part can be removed. 
-        Y = [Y; NaN+ones(size(Y))];  
+%%%%% check input arguments %%%%%
+[yr,yc] = size(Y);
+if nargin < 2, 
+	W = []; 
+end; 
+if ~isempty(W) && (yr ~= numel(W)),
+	error('number of rows of Y does not match number of elements in W');
 end;
 
-% identify all possible X's and overall Histogram
-[sY ,idx] = sort(Y(:));
-[tmp,idx] = sort(idx);        % generate inverse index
+%%%%% identify all possible X's and generate overall Histogram %%%%%
+[sY, idx] = sort(Y(:),1);
+[tmp,idx1] = sort(idx);        % generate inverse index
 
-ix  = diff(sY,1)>0;
+ix  = diff(sY, [], 1) > 0;
 tmp = [find(ix); sum(~isnan(sY))];
-H   = diff([0; tmp]);
 
 R.datatype = 'HISTOGRAM';
 R.X = sY(tmp);
-R.N = sum(~isnan(Y),1);
-
+R.N = sum(~isnan(Y), 1);
 
 % generate inverse index
 if nargout>1,
-        tix = cumsum([1;ix]);	% rank 
-        tix = reshape(tix(idx),yr,yc);		% inverse sort rank
+        tix = cumsum([1; ix]);	% rank 
+        tix = reshape(tix(idx1), yr, yc);		% inverse sort rank
         cc  = 1;
-        tmp = sum(ix)+1;
-	if exist('OCTAVE_VERSION')>=5,
+        tmp = sum(ix) + 1;
+	if exist('OCTAVE_VERSION') >= 5,
 		; % NOP; no support for integer datatyp 
         elseif tmp <= 2^8;
                 tix = uint8(tix);
@@ -92,17 +98,29 @@ if nargout>1,
 end;
 
 
-% if yc==1, we are all set; else 
-if yc>1,	% a few more steps are necessary
-        H0 = H; %overall histogram	
+if yc==1, 
+	if isempty(W)
+		R.H = [tmp(1); diff(tmp)];
+	else
+		C = cumsum(W(idx));  	% cumulative weights  
+		R.H = [C(tmp(1)); diff(C(tmp))];
+	end;
+	return;
+
+elseif yc>1,
         % allocate memory
         H = zeros(size(R.X,1),yc);
         
         % scan each channel
         for k = 1:yc,
-		sY = sort(Y(:,k));
-		ix = find(diff(sY,1)>0);
-                if size(ix,1)>0,
+		if isempty(W)
+			sY = sort(Y(:,k));
+		else
+			[sY,ix] = sort(Y(:,k));
+			C = cumsum(W(ix));
+		end
+		ix = find(diff(sY,[],1) > 0);
+                if size(ix,1) > 0,
                         tmp = [ix; R.N(k)];
                 else
                         tmp = R.N(k);
@@ -110,21 +128,26 @@ if yc>1,	% a few more steps are necessary
 
                 t = 0;
                 j = 1;
-                for x = tmp',
+		if isempty(W)
+                    for x = tmp',
                         acc = sY(x);
                         while R.X(j)~=acc, j=j+1; end;
                         %j = find(sY(x)==R.X);   % identify position on X 
                         H(j,k) = H(j,k) + (x-t);  % add diff(tmp)
                         t = x;
-                end;
+                    end;
+		else
+                    for x = tmp',
+                        acc = sY(x);
+                        while R.X(j)~=acc, j=j+1; end;
+                        %j = find(sY(x)==R.X);   % identify position on X 
+                        H(j,k) = H(j,k) + C(x)-t;  % add diff(tmp)
+                        t = C(x);
+                    end;
+		end; 
         end;
         
-        if any(H0~=sum(H,2)),  %%% CHECK 
-                fprintf(2,'ERROR HISTO\n');
-        end;	
+	R.H = H;
 end;
 
-R.H = H;
 
-
- 

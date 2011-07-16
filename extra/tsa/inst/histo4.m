@@ -1,11 +1,16 @@
-function [R,tix]=histo4(Y)
-% HISTO4 calculates histogram for rows and supports data compression
+function [R, tix] = histo4(Y, W)
+% HISTO4 calculates histogram of multidimensional data samples 
+%   and supports data compression
 %
 % R = HISTO4(Y)
-% 	R is a struct with th fields 
+% R = HISTO4(Y, W)
+%	Y    data: on sample per row, each sample has with size(Y,2) elements 
+%	W    weights of each sample (default: [])
+%	     W = [] indicates that each sample has equal weight	
+% 	R is a struct with these fields: 
 %       R.X  are the bin-values 
-%       R.H  is the frequency of occurence of value X 
-%  	R.N  are the total number of samples 
+%       R.H  is the frequency of occurence of value X (weighted with W)
+%  	R.N  are the total number of samples (or sum of W)
 %
 % HISTO4 might be useful for data compression, because
 % [R,tix] = histo4(Y) 
@@ -23,7 +28,7 @@ function [R,tix]=histo4(Y)
 
 
 %	$Id$
-%	Copyright (C) 1996-2005,2008,2009,2011 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2005,2008,2009,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    	This is part of the TSA-toolbox 
 %	http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %
@@ -41,21 +46,34 @@ function [R,tix]=histo4(Y)
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+%%%%% check input arguments %%%%%
 [yr, yc] = size(Y);
+if nargin<2, 
+	W = []; 
+end; 
+if ~isempty(W) && (yr ~= numel(W)),
+	error('number of rows of Y does not match number of elements in W');
+end; 
 
-% identify all possible X's and overall Histogram
+%%%%% identify all possible X's and generate overall Histogram %%%%%
 [Y, idx] = sortrows(Y);
 
 d  = diff(Y,[],1);
 ix = any( (~isnan(d) & (d~=0) ) | diff(isnan(Y),[],1), 2);
 
 tmp = [find(ix); yr];
-R.H = [tmp(1); diff(tmp)];
 R.X = Y(tmp,:);
-R.N = yr;
 R.datatype = 'HISTOGRAM';
+if isempty(W)
+	R.H = [tmp(1); diff(tmp)];
+	R.N = yr;
+else
+	W   = cumsum(W(idx));
+	R.H = [W(tmp(1)); diff(W(tmp))];
+	R.N = W(end);
+end; 
 
-% generate inverse index
+%%%%% generate inverse index %%%%%
 if nargout>1,
         tix = cumsum([1;ix]);	% rank 
         cc  = 1;

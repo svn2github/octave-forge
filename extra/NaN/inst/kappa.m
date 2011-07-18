@@ -74,50 +74,33 @@ if nargin>1,
 	d = d(:);
 	c = c(:);
 	
-	tmp = [d;c];
-	maxCLASS = max(tmp); 
-	tmp(isnan(tmp)) = maxCLASS+1;
+	tmp    = [d;c];
+	maxtmp = max(tmp);
+	tmp(isnan(tmp)) = maxtmp+1;
 	[X.Label,i,j]   = unique(tmp);
 	c = j(1+numel(d):end);
 	d = j(1:numel(d));
+	kk = max(j);
+	maxCLASS = kk - any(tmp>maxtmp);
 
 	if mode.ignoreNAN,
-		if any(tmp>maxCLASS)
+		if any(j > maxCLASS)
 %			fprintf(2,'Warning KAPPA: some elements are NaN. These are handled as missing values and are ignored.\n');
 %			fprintf(2,'If NaN should be handled as just another label, use kappa(..,''notIgnoreNaN'').\n');
-			ix = find(c<=maxCLASS & d<=maxCLASS);
+			ix = find((c<=maxCLASS) & (d<=maxCLASS));
 			d = d(ix); c=c(ix);
 			if ~isempty(w), w = w(ix); end; 
+			kk = kk - 1;
 		end;
-		X.Label(X.Label>maxCLASS) = []; 
+		X.Label(X.Label>maxtmp) = []; 
 	else 
-		X.Label(X.Label>maxCLASS) = NaN; 
+		X.Label(X.Label>maxtmp) = NaN; 
 	end;
-	
-    	N  = length(d);
-    	ku = max([d;c]); % upper range
-    	kl = min([d;c]); % lower range
-	
-    	if isempty(kk),
-            	kk = length(X.Label);  	% maximum element
-    	else
-            	if kk<ku;  	% maximum element
-                    	fprintf(2,'Error KAPPA: some element is larger than arg3(%i)\n',kk);
-            	end;
-    	end;
-    
-	ix  = ~any(isnan([d(:),c(:)]),2);
-	if 0;   
-	elseif isempty(w), 
-		H   = full( sparse(d(ix), c(ix), 1, kk, kk) );
 
-	elseif ~isempty(w), 
-		H   = full( sparse(d(ix), c(ix), w, kk, kk) );
-
-	elseif 0, exist('histo4.m','file'),
-		HIS = histo4([d(ix),c(ix)], w);
-		H   = full( sparse( HIS.X(:,1), HIS.X(:,2), HIS.H, kk, kk) );
-
+	if isempty(w)
+		H = full( sparse (d, c, 1, kk, kk) );
+	elseif ~isempty(w),
+		H = full( sparse (d, c, w, kk, kk) );
 	end;
 
 else

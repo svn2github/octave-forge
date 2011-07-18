@@ -37,7 +37,7 @@ function [kap,se,H,z,p0,SA,R]=kappa(d,c,arg3,w)
 % [6] http://en.wikipedia.org/wiki/Receiver_operating_characteristic
 
 %	$Id$
-%	Copyright (c) 1997-2006,2008,2009 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (c) 1997-2006,2008,2009,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 %
@@ -97,9 +97,6 @@ if nargin>1,
     	N  = length(d);
     	ku = max([d;c]); % upper range
     	kl = min([d;c]); % lower range
-    	if isempty(w)
-    		w = ones(N,1);
-    	end; 	
 	
     	if isempty(kk),
             	kk = length(X.Label);  	% maximum element
@@ -109,28 +106,26 @@ if nargin>1,
             	end;
     	end;
     
-	if 0,
-        	h = histo([d+c*kk; kk*kk+1; 1]); 
-        	H = reshape(h(1:length(h)-1));
-        	H(1,1) = H(1,1)-1;
-        else
-                if 1;   % exist('OCTAVE_VERSION')>=5;
-	        	H = zeros(kk);
-    			for k = 1:N, 
-    				if ~isnan(d(k)) && ~isnan(c(k)),
-		    			H(d(k),c(k)) = H(d(k),c(k)) + w(k);
-		    		end;	
-        		end;
-		elseif isempty(w)
-			H = accumarray(d(1:N),c(1:N),1,kk,kk);
-		else
-			H = accumarray(d(1:N),c(1:N),w(1:N),kk,kk);
-                end;
+	ix  = ~any(isnan([d(:),c(:)]),2);
+	if 0;   
+	elseif isempty(w), 
+		H   = full( sparse(d(ix), c(ix), 1, kk, kk) );
+
+	elseif ~isempty(w), 
+		H   = full( sparse(d(ix), c(ix), w, kk, kk) );
+
+	elseif 0, exist('histo4.m','file'),
+		HIS = histo4([d(ix),c(ix)], w);
+		H   = full( sparse( HIS.X(:,1), HIS.X(:,2), HIS.H, kk, kk) );
+
 	end;
+
 else
 	X.Label = 1:min(size(d));
     	H = d(X.Label,X.Label);
+
 end;
+
 s = warning; 
 warning('off');
 
@@ -158,9 +153,11 @@ if ~isreal(se),
 else
         z = kap/se;
 end
-warning(s); 
 
-if ((1 < nargout) && (nargout<7)) return; end; 
+if ((1 < nargout) && (nargout<7)) 
+	warning(s);	
+	return; 
+end; 
 
 % Nykopp's entropy
 pwi = sum(H,2)/N;                       % p(x_i)
@@ -205,4 +202,4 @@ if length(H)==2,
 end;
 
 kap = X;  
-
+warning(s);

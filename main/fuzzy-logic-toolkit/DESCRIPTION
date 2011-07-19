@@ -6,7 +6,6 @@ Maintainer: L. Markowsky <lmarkov@users.sourceforge.net>
 Title: Octave Fuzzy Logic Toolkit
 Description: A mostly MATLAB-compatible fuzzy logic toolkit for Octave.
 Depends: octave (>= 3.2.4)
- zenity (>= 3.0.0)
 Autoload: yes
 License: GPL version 2 or later
 Url: http://octave.sf.net

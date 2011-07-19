@@ -17,24 +17,24 @@
 ## see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Script File} {} heart_demo
+## @deftypefn {Script File} {} linear_tip_demo
 ##
-## Demonstrate the use of the fuzzy_logic_toolkit to read and evaluate a
-## Sugeno-type FIS stored in a file.
+## Demonstrate the use of linear output membership functions to simulate
+## constant membership functions.
 ##
 ## The demo:
 ## @itemize @minus
 ## @item
 ## reads an FIS structure from a file
 ## @item
-## plots the input and output membership functions
+## plots the input membership functions
 ## @item
 ## plots the output as a function of the inputs
 ## @item
-## evaluates the Sugeno-type FIS for four inputs
+## evaluates the Sugeno-type FIS for six inputs
 ## @end itemize
 ##
-## @seealso{commandline_demo, tipping_demo}
+## @seealso{cubic_approx_demo, heart_demo_1, heart_demo_2, mamdani_tip_demo, sugeno_tip_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
@@ -42,25 +42,21 @@
 ## Note:          This example is based on an assignment written by
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
-## Filename:      heart_demo.m
-## Last-Modified: 7 Jun 2011
+## Filename:      linear_tip_demo.m
+## Last-Modified: 17 Jul 2011
 
 ## Read the FIS structure from a file.
-## (Alternatively, to select heart-disease-risk.fis using the dialog,
-## replace the following line with
-##    fis = readfis ();
-fis = readfis('heart-disease-risk.fis');
+fis = readfis ('linear-tip-calculator.fis');
 
-## Plot the input and output membership functions.
+## Plot the input membership functions.
 plotmf (fis, 'input', 1);
 plotmf (fis, 'input', 2);
-plotmf (fis, 'output', 1);
 
-## Plot the Heart Disease Risk as a function of LDL-Level and HDL-Level.
+## Plot the Tip as a function of Food-Quality and Service.
 gensurf (fis);
 
-## Calculate the Heart Disease Risk for 4 sets of LDL-HDL values: 
-puts ("\nFor the following four sets of LDL-HDL values:\n\n");
-ldl_hdl = [129 59; 130 60; 90 65; 205 40]
-puts ("\nThe Heart Disease Risk is:\n\n");
-heart_disease_risk = evalfis (ldl_hdl, fis, 1001)
+## Calculate the Tip for 6 sets of input values: 
+puts ("\nFor the following values of (Food Quality, Service):\n\n");
+food_service = [1 1; 5 5; 10 10; 4 6; 6 4; 7 4]
+puts ("\nThe Tip is:\n\n");
+tip = evalfis (food_service, fis, 1001)

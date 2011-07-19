@@ -19,30 +19,32 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{rule_input} =} fuzzify_input (@var{fis}, @var{user_input})
 ##
-## @example
-## @group
-## crisp input values  =>  matching degree for each (rule, input value) pair
-## & rule antecedents
-## @end group
-## @end example
+## Return the matching degree for each (rule, input value) pair.
+## For an FIS that has Q rules and N FIS input variables, the return value
+## will be a Q x N matrix.
 ##
+## @noindent
 ## The crisp input values are given by a row vector:
+##
 ## @example
-## input:  [input_1 input_2 ... input_N]
+## user_input:  [input_1 input_2 ... input_N]
 ## @end example
 ##
+## @noindent
 ## The rule antecedents are stored in the FIS structure as row vectors:
+##
 ## @example
 ## @group
-## rule 1 antecedent: [in_1 in_2 ... in_N]
-## rule 2 antecedent: [in_1 in_2 ... in_N]
+## rule 1 antecedent: [in_11 in_12 ... in_1N]
+## rule 2 antecedent: [in_21 in_22 ... in_2N]
 ##        ...                 ...
-## rule Q antecedent: [in_1 in_2 ... in_N]
+## rule Q antecedent: [in_Q1 in_Q2 ... in_QN]
 ## @end group
 ## @end example
 ##
+## @noindent
 ## Finally, the output of the function gives the matching degree
-## for each input value in the form of an Q x N matrix:
+## for each (rule, input value) pair as an Q x N matrix:
 ##
 ## @example
 ## @group
@@ -54,10 +56,8 @@
 ## @end group
 ## @end example
 ##
-## @noindent
-## where Q is the number of rules and N is the number of inputs to the FIS.
-##
-## Function fuzzify_input does no error checking of the argument values.
+## Because fuzzify_input is called only by the private function
+## evalfis_private, it does no error checking of the argument values.
 ##
 ## @end deftypefn
 
@@ -65,7 +65,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      fuzzify_input.m
-## Last-Modified: 20 May 2011
+## Last-Modified: 18 Jul 2011
 
 function rule_input = fuzzify_input (fis, user_input)
 

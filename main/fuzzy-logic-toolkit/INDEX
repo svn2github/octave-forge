@@ -43,9 +43,11 @@ Membership Functions (with Demos)
 Fuzzy Inference System Demos
  addmf_demo
  addvar_demo
- commandline_demo
- heart_demo
- mamdani_demo
+ cubic_approx_demo
+ heart_demo_1
+ heart_demo_2
+ linear_tip_demo
+ mamdani_tip_demo
  showrule_demo
- tipping_demo
+ sugeno_tip_demo
 

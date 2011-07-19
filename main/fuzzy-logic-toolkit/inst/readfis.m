@@ -47,16 +47,20 @@
 ## sugeno-tip-calculator.fis
 ## @end itemize
 ##
-## Four examples that use readfis:
+## Six examples that use readfis:
 ## @itemize @bullet
 ## @item
-## heart_demo.m
+## cubic_approx_demo.m
 ## @item
-## mamdani_demo.m
+## heart_demo_2.m
+## @item
+## linear_tip_demo.m
+## @item
+## mamdani_tip_demo.m
 ## @item
 ## showrule_demo.m
 ## @item
-## tipping_demo.m
+## sugeno_tip_demo.m
 ## @end itemize
 ##
 ## @seealso{writefis}
@@ -66,7 +70,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      readfis.m
-## Last-Modified: 20 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 ##------------------------------------------------------------------------------
 

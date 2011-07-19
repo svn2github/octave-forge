@@ -17,47 +17,36 @@
 ## see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Script File} {} tipping_demo
+## @deftypefn {Script File} {} cubic_approx_demo
 ##
-## Demonstrate the use of the fuzzy_logic_toolkit to read and evaluate a
-## Sugeno-type FIS stored in a file.
+## Demonstrate the use of the Octave Fuzzy Logic Toolkit to approximate a
+## non-linear function using a Sugeno-type FIS with linear output membership
+## functions.
 ##
 ## The demo:
 ## @itemize @minus
 ## @item
 ## reads an FIS structure from a file
 ## @item
-## plots the input and output membership functions
+## plots the input membership functions
 ## @item
-## plots the output as a function of the inputs
-## @item
-## evaluates the Sugeno-type FIS for six inputs
+## plots the output as a function of the input
 ## @end itemize
 ##
-## @seealso{commandline_demo, heart_demo, mamdani_demo}
+## @seealso{heart_demo_1, heart_demo_2, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy tests demos
-## Note:          This example is based on an assignment written by
-##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
-## Filename:      tipping_demo.m
-## Last-Modified: 7 Jun 2011
+## Filename:      cubic_approx_demo.m
+## Last-Modified: 17 Jul 2011
 
 ## Read the FIS structure from a file.
-fis = readfis ('sugeno-tip-calculator.fis');
+fis = readfis ('cubic-approximator.fis');
 
-## Plot the input and output membership functions.
+## Plot the input membership functions.
 plotmf (fis, 'input', 1);
-plotmf (fis, 'input', 2);
-plotmf (fis, 'output', 1);
 
-## Plot the Tip as a function of Food-Quality and Service.
+## Plot the output y as a function of the input x.
 gensurf (fis);
-
-## Calculate the Tip for 6 sets of input values: 
-puts ("\nFor the following values of (Food Quality, Service):\n\n");
-food_service = [1 1; 5 5; 10 10; 4 6; 6 4; 7 4]
-puts ("\nThe Tip is:\n\n");
-tip = evalfis (food_service, fis, 1001)

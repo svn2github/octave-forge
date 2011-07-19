@@ -22,18 +22,18 @@
 ## @deftypefnx {Function File} {[@var{output}, @var{rule_input}, @var{rule_output}, @var{fuzzy_output}] =} evalfis (@var{user_input}, @var{fis})
 ## @deftypefnx {Function File} {[@var{output}, @var{rule_input}, @var{rule_output}, @var{fuzzy_output}] =} evalfis (@var{user_input}, @var{fis}, @var{num_points})
 ##
-## Evaluate the FIS for each line in the user_input matrix, and for each row of
-## crisp input values, return the crisp output of the FIS. Also, for the last
-## row of user_input, return:
+## Return the crisp output(s) of an FIS for each row in a matrix of crisp input
+## values.
+## Also, for the last row of @var{user_input}, return the intermediate results:
 ##
 ## @table @var
 ## @item rule_input
-## a matrix (num_rules x num_inputs) of the degree to which
-## each input matched the membership function for each rule
+## a matrix of the degree to which
+## each FIS rule matches each FIS input variable
 ## @item rule_output
-## a matrix of the output of each rule
+## a matrix of the fuzzy output for each (rule, FIS output) pair
 ## @item fuzzy_output
-## a matrix of the aggregated output for each FIS output
+## a matrix of the aggregated output for each FIS output variable
 ## @end table
 ##
 ## The optional argument @var{num_points} specifies the number of points over
@@ -41,41 +41,44 @@
 ## 101.
 ##
 ## @noindent
-## Format of user_input:
+## Argument @var{user_input}:
 ## 
-## The @var{user_input} is a matrix of crisp input values. Each row of the
-## matrix represents one set of input values to the FIS and has the form:
+## @var{user_input} is a matrix of crisp input values. Each row 
+## represents one set of crisp FIS input values. For an FIS that has N inputs,
+## an input matrix of z sets of input values will have the form:
 ##
 ## @example
 ## @group
-## [input_1a input_2a ... input_Ma]  <-- 1st row is 1st set of inputs
-## [input_1b input_2b ... input_Mb]  <-- 2nd row is 2nd set of inputs
+## [input_11 input_12 ... input_1N]  <-- 1st row is 1st set of inputs
+## [input_21 input_22 ... input_2N]  <-- 2nd row is 2nd set of inputs
 ## [             ...              ]                 ...
-## [input_1z input_2z ... input_Mz]  <-- zth row is zth set of inputs
+## [input_z1 input_z2 ... input_zN]  <-- zth row is zth set of inputs
 ## @end group
 ## @end example
 ##
 ## @noindent
-## Format of output:
+## Return value @var{output}:
 ##
-## The @var{output} of the FIS is also a matrix of crisp values. Each row
-## of the matrix represents the set of outputs for the corresponding row of
-## @var{user_input}:
+## @var{output} is a matrix of crisp output values. Each row represents
+## the set of crisp FIS output values for the corresponding row of
+## @var{user_input}. For an FIS that has M outputs, an @var{output} matrix
+## corresponding to the preceding input matrix will have the form:
 ##
 ## @example
 ## @group
-## [output_1a output_2a ... output_Na]  <-- 1st row is 1st set of outputs
-## [output_1b output_2b ... output_Nb]  <-- 2nd row is 2nd set of outputs
+## [output_11 output_12 ... output_1M]  <-- 1st row is 1st set of outputs
+## [output_21 output_22 ... output_2M]  <-- 2nd row is 2nd set of outputs
 ## [               ...               ]                 ...
-## [output_1z output_2z ... output_Nz]  <-- zth row is zth set of outputs
+## [output_z1 output_z2 ... output_zM]  <-- zth row is zth set of outputs
 ## @end group
 ## @end example
 ##
 ## @noindent
-## Format of rule_input:
+## The intermediate result @var{rule_input}:
 ## 
-## The matching degree for each (rule, input value) pair is specified by an
-## Q x N matrix:
+## The matching degree for each (rule, input value) pair is specified by the
+## @var{rule_input} matrix. For an FIS that has Q rules and N input variables,
+## the matrix will have the form:
 ## @example
 ## @group
 ##          in_1  in_2 ...  in_N
@@ -87,30 +90,26 @@
 ## @end example
 ##
 ## @noindent
-## where Q is the number of rules and N is the number of inputs to the FIS.
 ##
 ## @noindent
-## Format of rule_output:
-##
-## The format of rule_output depends on the FIS type ('mamdani' or 'sugeno').
+## The intermediate result @var{rule_output}:
 ##
 ## For either a Mamdani-type FIS (that is, an FIS that does not have constant or
 ## linear output membership functions) or a Sugeno-type FIS (that is, an FIS
 ## that has only constant and linear output membership functions),
-## @var{rule_output} specifies the fuzzy output for each rule and for each
-## output variable.
+## @var{rule_output} specifies the fuzzy output for each (rule, FIS output) pair.
+## The format of rule_output depends on the FIS type.
 ##
-## For a Mamdani-type FIS, @var{rule_output} is a num_points x (Q*L) matrix,
-## where num_points is the number of points at which the fuzzy output is
-## evaluated, Q is the number of rules, and L is the number of outputs of the
-## FIS. Each column of this matrix gives the y-values of the corresponding fuzzy
-## output (of a single rule for a single FIS output).
+## For a Mamdani-type FIS, @var{rule_output} is a @var{num_points} x (Q * M)
+## matrix, where Q is the number of rules and M is the number of FIS output
+## variables. Each column of this matrix gives the y-values of the fuzzy
+## output for a single (rule, FIS output) pair.
 ##
 ## @example
 ## @group
-##              num_rules cols    num_rules cols      num_rules cols 
+##                  Q cols            Q cols              Q cols 
 ##             ---------------   ---------------     ---------------
-##             out_1 ... out_1   out_2 ... out_2 ... out_L ... out_L
+##             out_1 ... out_1   out_2 ... out_2 ... out_M ... out_M
 ##          1 [                                                     ]
 ##          2 [                                                     ]
 ##        ... [                                                     ]
@@ -118,23 +117,22 @@
 ## @end group
 ## @end example
 ##
-## For a Sugeno-type FIS, @var{rule_output} is a 2 x (Q*L) matrix, where
-## Q is the number of rules and L is the number of outputs of the FIS.
+## For a Sugeno-type FIS, @var{rule_output} is a 2 x (Q * M) matrix.
 ## Each column of this matrix gives the (location, height) pair of the
-## corresponding singleton output (of a single rule for a single FIS output).
+## singleton output for a single (rule, FIS output) pair.
 ##
 ## @example
 ## @group
-##           num_rules cols    num_rules cols          num_rules cols 
+##                Q cols            Q cols                  Q cols 
 ##           ---------------   ---------------         ---------------
-##           out_1 ... out_1   out_2 ... out_2   ...   out_L ... out_L
+##           out_1 ... out_1   out_2 ... out_2   ...   out_M ... out_M
 ## location [                                                         ]
 ##   height [                                                         ]
 ## @end group
 ## @end example
 ##
 ## @noindent
-## Format of fuzzy_output:
+## The intermediate result @var{fuzzy_output}:
 ##
 ## The format of @var{fuzzy_output} depends on the FIS type ('mamdani' or
 ## 'sugeno').
@@ -142,56 +140,62 @@
 ## For either a Mamdani-type FIS or a Sugeno-type FIS, @var{fuzzy_output}
 ## specifies the aggregated fuzzy output for each FIS output.
 ##
-## For a Mamdani-type FIS, the aggregated @var{fuzzy_output} is an num_pts x L
-## matrix. Each column of this matrix gives the y-values of the corresponding
-## fuzzy output (for a single FIS output, aggregated over all rules).
+## For a Mamdani-type FIS, the aggregated @var{fuzzy_output} is a
+## @var{num_points} x M matrix. Each column of this matrix gives the y-values
+## of the fuzzy output for a single FIS output, aggregated over all rules.
 ##
 ## @example
 ## @group
-##          out_1  out_2  ...  out_L
-##       1 [                        ]
-##       2 [                        ]
-##     ... [                        ]
-## num_pts [                        ]
+##             out_1  out_2  ...  out_M
+##          1 [                        ]
+##          2 [                        ]
+##        ... [                        ]
+## num_points [                        ]
 ## @end group
 ## @end example
 ##
-## For a Sugeno-type FIS, the aggregated output for each FIS output is a 2 x M
-## matrix, where M is the number of distinct singleton locations in the
-## @var{rule_output} (above) for that FIS output:
+## For a Sugeno-type FIS, the aggregated output for each FIS output is a 2 x L
+## matrix, where L is the number of distinct singleton locations in the
+## @var{rule_output} for that FIS output:
 ##
 ## @example
 ## @group
-##           singleton_1  singleton_2 ... singleton_M
+##           singleton_1  singleton_2 ... singleton_L
 ## location [                                        ]
 ##   height [                                        ]
 ## @end group
 ## @end example
 ##
-## Then @var{fuzzy_output} is a vector of L structures, each of which has an index and
+## Then @var{fuzzy_output} is a vector of M structures, each of which has an index and
 ## one of these matrices.
 ##
 ## @noindent
 ## Examples:
 ##
-## Three examples of using evalfis are shown in:
+## Six examples of using evalfis are shown in:
 ## @itemize @bullet
 ## @item
-## heart_demo.m
+## cubic_approx_demo.m
 ## @item
-## mamdani_demo.m
+## heart_demo_1.m
 ## @item
-## tipping_demo.m
+## heart_demo_2.m
+## @item
+## linear_tip_demo.m
+## @item
+## mamdani_tip_demo.m
+## @item
+## sugeno_tip_demo.m
 ## @end itemize
 ##
-## @seealso{heart_demo, mamdani_demo, tipping_demo}
+## @seealso{cubic_approx_demo, heart_demo_1, heart_demo_2, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      evalfis.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 16 Jul 2011
 
 function [output, rule_input, rule_output, fuzzy_output] = ...
            evalfis (user_input, fis, num_points=101)

@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} showrule (@var{fis}, @var{index_list}, @var{format})
 ## @deftypefnx {Function File} {} showrule (@var{fis}, @var{index_list}, @var{format}, @var{language})
 ##
-## Show the rules for the FIS structure given by the first argument.
+## Show the rules for an FIS structure in verbose, symbolic, or indexed format.
 ##
 ## For example:
 ## @example
@@ -64,7 +64,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy rule
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      showrule.m
-## Last-Modified: 8 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 function showrule (fis, index_list=[], format='verbose', language='english')
 

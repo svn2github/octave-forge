@@ -69,7 +69,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      writefis.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 16 Jul 2011
 
 function writefis (fis, filename='filename.fis', dialog='dummy')
 

@@ -25,9 +25,9 @@
 ## @deftypefnx {Function File} {} gensurf (@var{fis}, @var{input_axes}, @var{output_axes}, @var{grids}, @var{ref_input}, @var{num_points})
 ## @deftypefnx {Function File} {@var{[x, y, z]} =} gensurf (...)
 ##
-## Generate and plot a surface showing the output_axis as a function of the 
-## two input_axes. The reference input is used for all FIS inputs that are not
-## in the input_axes vector.
+## Generate and plot a surface (or 2-dimensional curve) showing one FIS output
+## as a function of two (or one) of the FIS inputs. The reference input is used
+## for all FIS inputs that are not in the input_axes vector.
 ##
 ## Grids, which specifies the number of grids to show on the input axes, may be
 ## a scalar or a vector of length 2. If a scalar, then both axes will use the
@@ -52,47 +52,45 @@
 ## num_points == 101
 ## @end itemize
 ##
-## Four examples of using gensurf are shown in:
+## Six demo scripts that use gensurf are:
 ## @itemize @bullet
 ## @item
-## commandline_demo.m
+## cubic_approx_demo.m
 ## @item
-## heart_demo.m
+## heart_demo_1.m
 ## @item
-## mamdani_demo.m
+## heart_demo_2.m
 ## @item
-## tipping_demo.m
+## linear_tip_demo.m
+## @item
+## mamdani_tip_demo.m
+## @item
+## sugeno_tip_demo.m
 ## @end itemize
 ##
 ## CURRENT LIMITATIONS:
 ## @itemize @bullet
 ## @item
-## input_axes must have length 2, so that gensurf plots a surface.
-## @item
-## Output for only 1 input axis (a 2-D plot) is not yet implemented.
-## @item
 ## The FIS for which the surface is generated must have only one output.
 ## @item
 ## grids must have length 2.
 ## @item
-## The final form of gensurf (that suppresses plotting) is not yet
+## The form of gensurf that suppresses plotting (the final form above) is not yet
 ## implemented.
 ## @end itemize
 ##
-## @seealso{commandline_demo, heart_demo, mamdani_demo, tipping_demo, plotmf}
+## @seealso{cubic_approx_demo, heart_demo_1, heart_demo_2, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo, plotmf}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis plot
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      gensurf.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 18 Jul 2011
 
 function [x, y, z] = gensurf (fis, input_axes=[1 2], output_axis=1, ...
                               grids=[15 15], ref_input=[], num_points=101)
 
-  ## TO DO: RESET INPUT_AXES=1 IF NARGIN==1 AND THE FIS HAS ONLY 1 INPUT
-  ## TO DO: GENERATE 2-D PLOT IF LENGTH(INPUTS_AXES)==1
   ## TO DO: HANDLE FIS STRUCTURES THAT HAVE MORE THAN 1 OUTPUT
   ## TO DO: HANDLE SCALAR GRIDS ARGUMENT
   ## TO DO: RENAME X, Y, AND Z. MAKE SURE THEY ARE ASSIGNED VALUES.
@@ -123,6 +121,66 @@ function [x, y, z] = gensurf (fis, input_axes=[1 2], output_axis=1, ...
     error ("gensurf's sixth argument to gensurf must be an integer >= 2\n");
   endif
 
+  if (length (input_axes) == 1 || columns (fis.input) == 1)
+    generate_plot (fis, input_axes, output_axis, grids, ref_input, num_points);
+  else
+    generate_surface (fis, input_axes, output_axis, grids, ref_input, ...
+                      num_points);
+  endif
+
+endfunction
+
+##------------------------------------------------------------------------------
+## Function: generate_plot
+## Purpose:  Generate a plot representing one of the FIS outputs as a
+##           function of one of the FIS inputs.
+##------------------------------------------------------------------------------
+
+function [x, y, z] = generate_plot (fis, input_axis, output_axis, grids, ...
+                                    ref_input, num_points)
+
+  ## Create input to FIS using grid points and reference values.
+
+  num_inputs = columns (fis.input);
+  num_grid_pts = grids(1);
+  fis_input = zeros (num_grid_pts, num_inputs);
+
+  if (num_inputs == 1)
+    input_axis = 1;
+  endif
+
+  for i = 1 : num_inputs
+    if (i == input_axis)
+      x_axis = (linspace (fis.input(i).range(1), ...
+                          fis.input(i).range(2), ...
+                          num_grid_pts))';
+      fis_input(:, i) = x_axis;
+    else
+      fis_input(:, i) = ref_input(i) * ones (num_grid_pts, 1);
+    endif
+  endfor
+
+  ## Compute and plot the output.
+
+  output = evalfis_private (fis_input, fis, num_points);
+  figure ('NumberTitle', 'off', 'Name', fis.name);
+  plot (x_axis, output, 'LineWidth', 2);
+  xlabel (fis.input(input_axis).name, 'FontWeight', 'bold');
+  ylabel (fis.output(output_axis).name, 'FontWeight', 'bold');
+  grid;
+  hold;
+
+endfunction
+
+##------------------------------------------------------------------------------
+## Function: generate_surface
+## Purpose:  Generate a surface representing one of the FIS outputs as a
+##           function of two of the FIS inputs.
+##------------------------------------------------------------------------------
+
+function [x, y, z] = generate_surface (fis, input_axes, output_axis, grids, ...
+                                       ref_input, num_points)
+
   ## Create input to FIS using grid points and reference values.
 
   num_inputs = columns (fis.input);
@@ -139,7 +197,7 @@ function [x, y, z] = gensurf (fis, input_axes=[1 2], output_axis=1, ...
                           fis.input(i).range(2), ...
                           grids(2)))';
     else
-      fis_input(:, i) = (ref_input(i) * ones (num_grid_pts))';
+      fis_input(:, i) = ref_input(i) * ones (num_grid_pts, 1);
     endif
   endfor
 

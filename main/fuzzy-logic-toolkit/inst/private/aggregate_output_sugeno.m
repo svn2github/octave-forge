@@ -17,70 +17,75 @@
 ## see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retval} =} aggregate_output_sugeno (@var{fis}, @var{rule_output})
+## @deftypefn {Function File} {@var{fuzzy_output} =} aggregate_output_sugeno (@var{fis}, @var{rule_output})
 ##
-## Function aggregate_output_sugeno:
+## @noindent
+## Given the:
+## @itemize @bullet
+## @item @var{fis.aggMethod}
+## the aggregation method for the given @var{fis}
+## @item @var{rule_output}
+## a matrix of the singleton output of each (rule, FIS output) pair
+## @end itemize
+##
+## @noindent
+## Return:
+## @itemize @bullet
+## @item @var{fuzzy_output}
+## a vector of structures containing the aggregated output for each FIS output
+## @end itemize
+##
+## @var{rule_output} is a 2 x (Q * M) matrix, where Q is the number of rules
+## and M is the number of FIS output variables. Each column of @var{rule_matrix}
+## gives the (location, height) pair of the singleton output for one
+## (rule, FIS output) pair:
 ##
 ## @example
 ## @group
-## singleton output for each (rule, var) pair  =>  aggregated singleton output
-## aggregation method                              for each FIS output var
-## @end group
-## @end example
-##
-## The rule_output (input to this function) is a 2 x (Q*L) matrix, where
-## Q is the number of rules and L is the number of outputs of the FIS.
-## Each column of this matrix gives the (location, height) pair of the
-## corresponding singleton output (of a single rule for a single FIS output).
-##
-## @example
-## @group
-##           num_rules cols    num_rules cols          num_rules cols 
+##                Q cols            Q cols                  Q cols 
 ##           ---------------   ---------------         ---------------
-##           out_1 ... out_1   out_2 ... out_2   ...   out_L ... out_L
+##           out_1 ... out_1   out_2 ... out_2   ...   out_M ... out_M
 ## location [                                                         ]
 ##   height [                                                         ]
 ## @end group
 ## @end example
 ##
-## The aggregation method is stored in @var{fis.aggMethod}.
-##
-## The aggregated output for the FIS is a 2 x M matrix, where M is the
-## number of distinct singleton locations in the rule_output (above) for that
-## FIS output:
+## The return value @var{fuzzy_output} is a vector of M structures,
+## each of which has an index i and a matrix of singletons that form the
+## aggregated output for the ith FIS output variable.
+## For each FIS output variable, the matrix of singletons is a 2 x L matrix
+## where L is the number of distinct singleton locations in the fuzzy output
+## for that FIS output variable. The first row gives the (distinct) locations,
+## and the second gives the (non-zero) heights:
 ##
 ## @example
 ## @group
-##           singleton_1  singleton_2 ... singleton_M
+##           singleton_1  singleton_2 ... singleton_L
 ## location [                                        ]
 ##   height [                                        ]
 ## @end group
 ## @end example
 ##
-## The return value of this function is a vector of L structures, each of
-## which has an index and one of these matrices.
-##
-## Function aggregate_output_sugeno does no error checking of the argument
-## values.
-##
+## Because aggregate_output_sugeno is called only by the private
+## function evalfis_private, it does no error checking of the argument values.
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      aggregate_output_sugeno.m
-## Last-Modified: 21 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 ##------------------------------------------------------------------------------
 
-function retval = aggregate_output_sugeno (fis, rule_output)
+function fuzzy_output = aggregate_output_sugeno (fis, rule_output)
 
-  retval = [];
+  fuzzy_output = [];
   num_outputs = columns (fis.output);
   num_rules = columns (fis.rule);
 
   ## For each FIS output, aggregate the slice of the rule_output matrix, 
-  ## then store the result as a structure in retval.
+  ## then store the result as a structure in fuzzy_output.
 
   for i = 1 : num_outputs
     unagg_output = rule_output(:, (i-1)*num_rules+1 : i*num_rules);
@@ -88,9 +93,9 @@ function retval = aggregate_output_sugeno (fis, rule_output)
     next_agg_output = struct ('index', i, ...
                               'aggregated_output', aggregated_output);
     if (i == 1)
-      retval = next_agg_output;
+      fuzzy_output = next_agg_output;
     else
-      retval = [retval, next_agg_output];
+      fuzzy_output = [fuzzy_output, next_agg_output];
     endif
   endfor
 endfunction

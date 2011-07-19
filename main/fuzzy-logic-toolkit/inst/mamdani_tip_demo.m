@@ -17,8 +17,8 @@
 ## see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Script File} {} mamdani_demo
-## Demonstrate the use of the fuzzy_logic_toolkit to read and evaluate a
+## @deftypefn {Script File} {} mamdani_tip_demo
+## Demonstrate the use of the Octave Fuzzy Logic Toolkit to read and evaluate a
 ## Mamdani-type FIS stored in a file.
 ##
 ## The demo:
@@ -35,7 +35,7 @@
 ## plots the aggregated fuzzy output and the crisp output
 ## @end itemize
 ##
-## @seealso{commandline_demo, heart_demo, tipping_demo}
+## @seealso{cubic_approx_demo, heart_demo_1, heart_demo_2, linear_tip_demo, sugeno_tip_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
@@ -43,8 +43,8 @@
 ## Note:          This example is based on an assignment written by
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
-## Filename:      mamdani_demo.m
-## Last-Modified: 7 Jun 2011
+## Filename:      mamdani_tip_demo.m
+## Last-Modified: 17 Jul 2011
 
 ## Read the FIS structure from a file.
 fis=readfis ('mamdani-tip-calculator');

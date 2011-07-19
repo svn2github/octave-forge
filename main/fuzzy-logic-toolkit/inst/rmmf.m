@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{fis} =} rmmf (@var{fis}, @var{in_or_out}, @var{var_index}, @var{mf}, @var{mf_index})
 ##
-## Delete a membership function from an existing FIS (Fuzzy Inference System)
+## Remove a membership function from an existing FIS
 ## structure and return the updated FIS.
 ##
 ## The types of the arguments are expected to be:
@@ -46,7 +46,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function membership
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      rmmf.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 16 Jul 2011
 
 function fis = rmmf (fis, in_or_out, var_index, mf, mf_index)
 

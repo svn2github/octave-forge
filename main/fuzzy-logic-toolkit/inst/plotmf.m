@@ -19,8 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} plotmf (@var{fis}, @var{in_or_out}, @var{var_index})
 ##
-## Plot the membership functions for the specified FIS variable on a single set
-## of axes. The types of the arguments are expected to be:
+## Plot all of the the membership functions for the specified FIS input or
+## output variable on a single set of axes. The types of the arguments are
+## expected to be:
 ## @itemize @bullet
 ## @item
 ## @var{fis} - an FIS structure
@@ -30,16 +31,20 @@
 ## @var{var_index} - an FIS input or output variable index
 ## @end itemize
 ##
-## Four examples that use plotmf are:
+## Six examples that use plotmf are:
 ## @itemize @bullet
 ## @item
-## commandline_demo.m
+## cubic_approx_demo.m
 ## @item
-## heart_demo.m
+## heart_demo_1.m
 ## @item
-## mamdani_demo.m
+## heart_demo_2.m
 ## @item
-## tipping_demo.m
+## linear_tip_demo.m
+## @item
+## mamdani_tip_demo.m
+## @item
+## sugeno_tip_demo.m
 ## @end itemize
 ##
 ## @seealso{gensurf}
@@ -49,7 +54,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function plot
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      plotmf.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 16 Jul 2011
 
 function plotmf (fis, in_or_out, var_index)
 

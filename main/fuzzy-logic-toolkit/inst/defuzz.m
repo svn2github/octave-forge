@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {@var{crisp_x} =} defuzz (@var{x}, @var{y}, @var{defuzz_method})
 ## @deftypefnx {Function File} {@var{crisp_x} =} defuzz (@var{[x1 x2 ... xn]}, @var{[y1 y2 ... yn]}, @var{defuzz_method})
 ##
-## Return the defuzzified (crisp) value of @var{x} using the defuzzification
-## method specified by the third argument for the given domain and y-values.
+## For a given domain, set of fuzzy function values, and defuzzification method,
+## return the defuzzified (crisp) value of the fuzzy function.
 ##
 ## The arguments @var{x} and @var{y} must be either two real numbers or
 ## two equal-length, non-empty vectors of reals, with the elements of @var{x}
@@ -53,7 +53,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy defuzzification
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      defuzz.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 ##------------------------------------------------------------------------------
 

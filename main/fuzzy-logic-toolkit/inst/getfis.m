@@ -24,8 +24,8 @@
 ## @deftypefnx {Function File} {@var{retval} =} getfis (@var{fis}, @var{in_or_out}, @var{var_index}, @var{mf}, @var{mf_index})
 ## @deftypefnx {Function File} {@var{retval} =} getfis (@var{fis}, @var{in_or_out}, @var{var_index}, @var{mf}, @var{mf_index}, @var{mf_property})
 ##
-## Return (or print) property (field) values of an FIS structure.
-## There are six forms of getfis:
+## Return or print the property (field) values of an FIS structure
+## specified by the arguments. There are six forms of getfis:
 ##
 ## @table @asis
 ## @item # Arguments
@@ -93,7 +93,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      getfis.m
-## Last-Modified: 21 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 ##------------------------------------------------------------------------------
 

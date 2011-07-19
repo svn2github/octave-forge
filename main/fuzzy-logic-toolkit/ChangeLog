@@ -1,31 +1,51 @@
+2011-07-19  Version 0.2.3
+
+	* ChangeLog: Updated file.
+	* DESCRIPTION: Updated file.
+	* INDEX: Updated file.
+	* inst/*.m: Edited numerous comments and texinfo comment blocks.
+	* inst/private/*.m: Edited numerous comments and texinfo comment blocks.
+	* inst/cubic_approx_demo.m: New file.
+	* inst/cubic-approximator.fis: New file.
+	* inst/linear-tip-calculator.fis: New file.
+	* inst/linear_tip_demo.m: New file.
+	* inst/heart_demo_1.m: Renamed commandline_demo.m.
+	* inst/heart_demo_2.m: Renamed heart_demo.m.
+	* inst/mamdani_tip_demo.m: Renamed mamdani_demo.m.
+	* inst/sugeno_tip_demo.m: Renamed tipping_demo.m.
+	* inst/gensurf.m: Edited to handle 2-dimensional plots.
+	* inst/private/eval_rules_sugeno.m: Edited to handle linear output membership functions.
+	* Demos tested under: Fedora 15/Octave 3.4.0
+	* Demos tested under: Fedora 15/Octave 3.2.4
+
 2011-06-21  Version 0.2.2
 
 	* ChangeLog: New file.
-	* DESCRIPTION: Update file.
-	* inst/addmf.m: Modify to workaround a bug in Octave 3.4.0.
-	* inst/addrule.m: Modify to workaround a bug in Octave 3.4.0.
-	* inst/addvar.m: Modify to workaround a bug in Octave 3.4.0.
-	* inst/gaussmf.m: Modify demo and texinfo comment string.
-	* inst/getfis.m: Modify to workaround a bug in Octave 3.4.0.
-	* inst/readfis.m: Modify to workaround a bug in Octave 3.4.0.
-	* inst/private/aggregate_output_mamdani.m: Modify to workaround a bug in Octave 3.4.0.
-	* inst/private/evalmf_private.m: Modify to workaround a bug in Octave 3.4.0.
+	* DESCRIPTION: Updated file.
+	* inst/addmf.m: Modified to workaround a bug in Octave 3.4.0.
+	* inst/addrule.m: Modified to workaround a bug in Octave 3.4.0.
+	* inst/addvar.m: Modified to workaround a bug in Octave 3.4.0.
+	* inst/gaussmf.m: Modified demo and texinfo comment string.
+	* inst/getfis.m: Modified to workaround a bug in Octave 3.4.0.
+	* inst/readfis.m: Modified to workaround a bug in Octave 3.4.0.
+	* inst/private/aggregate_output_mamdani.m: Modified to workaround a bug in Octave 3.4.0.
+	* inst/private/evalmf_private.m: Modified to workaround a bug in Octave 3.4.0.
 	* Demos tested under: Fedora 15/Octave 3.4.0
 	* Demos tested under: Fedora 15/Octave 3.2.4
 
 2011-06-08  Version 0.2.1
 
 	* Initial release on Octave-Forge.
-	* Merge membership function demos into related function files.
-	* Create documentation for Octave-Forge website.
-	* DESCRIPTION: Update file.
+	* Merged membership function demos into related function files.
+	* Created documentation for Octave-Forge website.
+	* DESCRIPTION: Updated file.
 	* Demos tested under: Fedora 13/Octave 3.2.4
 
 2011-05-25  Version 0.2
 
-	* Move tests/demos/* and tests/fis/* to inst/*.
-	* Change indentation and spacing to conform to Octave style.
-	* Convert comments to texinfo.
+	* Moved tests/demos/* and tests/fis/* to inst/*.
+	* Changed indentation and spacing to conform to Octave style.
+	* Converted comments to texinfo.
 	* DESCRIPTION: Update file.
 	* Demos tested under: Fedora 13/Octave 3.2.4
 

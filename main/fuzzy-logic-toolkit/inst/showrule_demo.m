@@ -22,14 +22,14 @@
 ## Demonstrate the function @t{showrule} by executing the examples
 ## given in the comment at the top of showrule.m.
 ##
-## @seealso{showrule}
+## @seealso{heart_demo_1, showrule}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy tests demos
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      showrule_demo.m
-## Last-Modified: 8 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 fis = readfis ('sugeno-tip-calculator.fis');
 

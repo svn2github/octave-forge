@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {@var{firing_strength} =} eval_firing_strength (@var{fis}, @var{rule_input})
 ##
 ## Return the firing strength for each FIS rule given a matrix of matching
-## degrees of each (rule, input) pair.
+## degrees for each (rule, rule_input) pair.
 ##
 ## The second argument (@var{rule_input}) gives the fuzzified input values to
 ## the FIS rules as a Q x N matrix:
@@ -36,9 +36,10 @@
 ## @end example
 ##
 ## @noindent
-## where Q is the number of rules and N is the number of inputs to the FIS.
+## where Q is the number of rules and N is the number of FIS input variables.
 ##
-## The fuzzy antecedent, connection, and weight for each rule are given by:
+## For i = 1 .. Q, the fuzzy antecedent, connection, and weight for rule i
+## are given by:
 ## @itemize @bullet
 ## @item
 ## @var{fis.rule(i).antecedent}
@@ -48,12 +49,10 @@
 ## @var{fis.rule(i).weight}
 ## @end itemize
 ##
-## @noindent
-## where i = 1 .. Q.
-##
 ## The output is a row vector of length Q.
 ##
-## Function eval_firing_strength does no error checking of the argument values.
+## Because eval_firing_strength is called only by the private function
+## evalfis_private, it does no error checking of the argument values.
 ##
 ## @end deftypefn
 
@@ -61,7 +60,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_firing_strength.m
-## Last-Modified: 20 May 2011
+## Last-Modified: 18 Jul 2011
 
 function firing_strength = eval_firing_strength (fis, rule_input)
 

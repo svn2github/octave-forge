@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{fis} =} addvar (@var{fis}, @var{in_or_out}, @var{var_name}, @var{var_range})
 ##
-## Add an input or output variable to an existing FIS (Fuzzy Inference System)
+## Add an input or output variable to an existing FIS
 ## structure and return the updated FIS.
 ##
 ## The types of the arguments are expected to be:
@@ -61,7 +61,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy variable
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addvar.m
-## Last-Modified: 20 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 function fis = addvar (fis, in_or_out, var_name, var_range)
 

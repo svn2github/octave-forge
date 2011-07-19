@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{fis} =} addrule (@var{fis}, @var{rule_matrix})
 ##
-## Add a list of rules to an existing FIS (Fuzzy Inference System) and return
+## Add a list of rules to an existing FIS structure and return
 ## the updated FIS.
 ##
 ## Each row of the @var{rule_matrix} represents one rule and has the form:
@@ -60,16 +60,16 @@
 ## @end example
 ##
 ## @noindent
-## For a complete example that uses addrule, see commandline_demo.m.
+## For a complete example that uses addrule, see heart_demo_1.m.
 ##
-## @seealso{commandline_demo, showrule}
+## @seealso{heart_demo_1, showrule}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy rule
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addrule.m
-## Last-Modified: 21 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 function fis = addrule (fis, rule_matrix) 
 

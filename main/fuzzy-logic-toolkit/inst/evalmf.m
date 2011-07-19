@@ -20,14 +20,13 @@
 ## @deftypefn {Function File} {@var{y} =} evalmf (@var{x}, @var{param}, @var{mf_type})
 ## @deftypefnx {Function File} {@var{y} =} evalmf (@var{[x1 x2 ... xn]}, @var{[param1 ... ]}, @var{mf_type})
 ##
-## For a given domain @var{x} and parameters @var{param}, return the
-## corresponding @var{y} values for the membership function corresponding to
-## the @var{mf_type}.
+## For a given domain, set of parameters, and membership function type,
+## return the corresponding y-values for the membership function.
 ##
 ## The argument @var{x} must be a real number or a non-empty list of strictly
 ## increasing real numbers, @var{param} must be a valid parameter or a vector
 ## of valid parameters for @var{mf_type}, and @var{mf_type} must be a string
-## corresponding to a membership function. Evalmf handles both built-in and
+## corresponding to a membership function type. Evalmf handles both built-in and
 ## custom membership functions.
 ##
 ## @noindent
@@ -40,7 +39,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function evaluate
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      evalmf.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 function y = evalmf (x, params, mf_type)
 

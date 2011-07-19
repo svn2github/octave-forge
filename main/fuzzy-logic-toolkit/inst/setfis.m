@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{fis} =} setfis (@var{fis}, @var{in_or_out}, @var{var_index}, @var{var_property}, @var{var_property_value})
 ## @deftypefnx {Function File} {@var{fis} =} setfis (@var{fis}, @var{in_or_out}, @var{var_index}, @var{mf}, @var{mf_index}, @var{mf_property}, @var{mf_property_value})
 ##
-## Set a property (field) value of an FIS structure, and return the
+## Set a property (field) value of an FIS structure and return the
 ## updated FIS. There are three forms of setfis:
 ##
 ## @table @asis
@@ -80,7 +80,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      setfis.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 16 Jul 2011
 
 ##------------------------------------------------------------------------------
 

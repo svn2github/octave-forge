@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{fis} =} addmf (@var{fis}, @var{in_or_out}, @var{var_index}, @var{mf_name}, @var{mf_type}, @var{mf_params})
 ##
-## Add a membership function to an existing FIS (Fuzzy Inference System)
+## Add a membership function to an existing FIS 
 ## structure and return the updated FIS.
 ##
 ## The types of the arguments are expected to be:
@@ -96,7 +96,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function membership
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addmf.m
-## Last-Modified: 20 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 function fis = addmf (fis, in_or_out, var_index, mf_name, mf_type, mf_params)
 

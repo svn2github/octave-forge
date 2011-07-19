@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{rule_output} =} eval_rules_sugeno (@var{fis}, @var{firing_strength}, @var{user_input})
 ##
-## Return the fuzzy output for each rule and for each output variable of a
-## Sugeno-type FIS (that is, an FIS that has only constant and linear output
+## Return the fuzzy output for each (rule, FIS output) pair for a
+## Sugeno-type FIS (an FIS that has only constant and linear output
 ## membership functions).
 ##
 ## The firing strength of each rule is given by a row vector of length Q, where
@@ -37,22 +37,23 @@
 ## fis.rule(i).consequent     for i = 1..Q
 ## @end example
 ##
-## Finally, the output of the function is a 2 x (Q*L) matrix, where
-## Q is the number of rules and L is the number of outputs of the FIS.
+## The return value of the function is a 2 x (Q * M) matrix, where
+## M is the number of FIS output variables.
 ## Each column of this matrix gives the (location, height) pair of the
-## corresponding singleton output (of a single rule for a single FIS output).
+## singleton output for a single (rule, FIS output) pair.
 ##
 ## @example
 ## @group
-##           num_rules cols    num_rules cols          num_rules cols 
+##               Q cols            Q cols                  Q cols 
 ##           ---------------   ---------------         ---------------
-##           out_1 ... out_1   out_2 ... out_2   ...   out_L ... out_L
+##           out_1 ... out_1   out_2 ... out_2   ...   out_M ... out_M
 ## location [                                                         ]
 ##   height [                                                         ]
 ## @end group
 ## @end example
 ##
-## Function eval_rules_sugeno does no error checking of the argument values.
+## Because eval_rules_sugeno is called only by the private function
+## evalfis_private, it does no error checking of the argument values.
 ##
 ## @end deftypefn
 
@@ -60,7 +61,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_rules_sugeno.m
-## Last-Modified: 20 May 2011
+## Last-Modified: 18 Jul 2011
 
 function rule_output = eval_rules_sugeno (fis, firing_strength, user_input)
 
@@ -96,7 +97,7 @@ function rule_output = eval_rules_sugeno (fis, firing_strength, user_input)
             case 'constant'
               location = mf.params;
             case 'linear'
-              location = mf.params .* [user_input 1];
+              location = mf.params * [user_input 1]';
             otherwise
               location = str2func (mf.type) (mf.params, user_input);
           endswitch

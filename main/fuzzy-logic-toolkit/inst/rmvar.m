@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{fis} =} rmvar (@var{fis}, @var{in_or_out}, @var{var_index})
 ##
-## Delete an input or output variable from an existing FIS
-## (Fuzzy Inference System) structure and return the updated FIS.
+## Remove an input or output variable from an existing FIS
+## structure and return the updated FIS.
 ##
 ## The types of the arguments are expected to be:
 ## @itemize @bullet
@@ -42,7 +42,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy variable
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      rmvar.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 16 Jul 2011
 
 function fis = rmvar (fis, in_or_out, var_index)
 

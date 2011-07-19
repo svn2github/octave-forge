@@ -19,42 +19,55 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{output} =} defuzzify_output_mamdani (@var{fis}, @var{fuzzy_output})
 ##
-## Return the crisp output values given the aggregated fuzzy output for each
-## FIS output variable and the FIS defuzzification method.
+## @noindent
+## Given the:
+## @itemize @bullet
+## @item @var{fis.defuzzMethod}
+## the defuzzification method for the given @var{fis}
+## @item @var{fuzzy_output}
+## a matrix of the aggregated output for each FIS output variable
+## @end itemize
 ##
-## The aggregated fuzzy output (the second argument to this function) for
-## the FIS is an num_pts x L matrix. Each column of this matrix gives the
-## y-values of the corresponding fuzzy output (for a single FIS output,
-## aggregated over all rules).
+## @noindent
+## Return:
+## @itemize @bullet
+## @item @var{output}
+## a vector of crisp output values
+## @end itemize
+##
+## @var{fuzzy_output} is a @var{num_points} x M matrix, where @var{num_points}
+## is the number of points over which fuzzy values are evaluated and M is the 
+## number of FIS output variables. Each
+## column of @var{fuzzy_output} gives the y-values of the fuzzy output for a
+## single FIS output variable, aggregated over all rules:
 ##
 ## @example
 ## @group
-##          out_1  out_2  ...  out_L
-##       1 [                        ]
-##       2 [                        ]
-##     ... [                        ]
-## num_pts [                        ]
+##             out_1  out_2  ...  out_M
+##          1 [                        ]
+##          2 [                        ]
+##        ... [                        ]
+## num_points [                        ]
 ## @end group
 ## @end example
 ##
-## The defuzzification method is stored in the FIS structure:
-##     fis.defuzzMethod
+## The crisp @var{output} values are computed from the corresponding fuzzy
+## values using the FIS defuzzification method. The @var{output}
+## vector has the form:
 ##
-## Finally, the crisp output values (the output of this function) are given by:
 ## @example
-## output:  [output_1 output_2 ... output_N]
+## output:  [output_1 output_2 ... output_M]
 ## @end example
 ##
-## Function defuzzify_output_mamdani does no error checking of the argument
-## values.
-##
+## Because defuzzify_output_mamdani is called only by the private
+## function evalfis_private, it does no error checking of the argument values.
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      defuzzify_output_mamdani.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 16 Jul 2011
 
 function output = defuzzify_output_mamdani (fis, fuzzy_output)
 

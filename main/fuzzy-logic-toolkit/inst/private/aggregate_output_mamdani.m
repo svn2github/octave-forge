@@ -19,40 +19,48 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{fuzzy_output} =} aggregate_output_mamdani (@var{fis}, @var{rule_output})
 ##
+## @noindent
+## Given the:
+## @itemize @bullet
+## @item @var{fis.aggMethod}
+## the aggregation method for the given @var{fis}
+## @item @var{rule_output}
+## a matrix of the fuzzy output for each (rule, FIS output) pair
+## @end itemize
+##
+## @noindent
+## Return:
+## @itemize @bullet
+## @item @var{fuzzy_output}
+## a matrix of the aggregated output for each FIS output variable
+## @end itemize
+##
+## @var{rule_output} is a @var{num_points} x (Q * M) matrix, where
+## @var{num_points} is the number of points over which the fuzzy
+## values are evaluated, Q is the number of rules and M is the number
+## of FIS output variables. Each column of @var{rule_output} gives
+## the y-values of the fuzzy output for a single (rule, FIS output)
+## pair:
+##
 ## @example
 ## @group
-## fuzzy output for each (rule, output var) pair  =>  aggregated fuzzy output
-## aggregation method                                 for each output var
+##                  Q cols            Q cols              Q cols 
+##             ---------------   ---------------     ---------------
+##             out_1 ... out_1   out_2 ... out_2 ... out_M ... out_M
+##          1 [                                                     ]
+##          2 [                                                     ]
+##        ... [                                                     ]
+## num_points [                                                     ]
 ## @end group
 ## @end example
 ##
-## The fuzzy output for each rule and FIS output is a num_pts x (Q*L) matrix,
-## where num_pts is the number of points at which the fuzzy output is evaluated,
-## Q is the number of rules, and L is the number of outputs of the FIS.
-## Each column of this matrix gives the y-values of the corresponding fuzzy
-## output (of a single rule for a single FIS output).
+## The return value @var{fuzzy_output} is a @var{num_points} x M matrix. Each
+## column of @var{fuzzy_output} gives the y-values of the fuzzy output for a
+## single FIS output variable, aggregated over all rules:
 ##
 ## @example
 ## @group
-##              num_rules cols    num_rules cols          num_rules cols 
-##             ---------------   ---------------         ---------------
-##             out_1 ... out_1   out_2 ... out_2   ...   out_L ... out_L
-##          1 [                                                         ]
-##          2 [                                                         ]
-##        ... [                                                         ]
-## num_points [                                                         ]
-## @end group
-## @end example
-##
-## The aggregation method is stored in @var{fis.aggMethod}.
-##
-## The aggregated fuzzy output for the FIS is an num_pts x L matrix.
-## Each column of this matrix gives the y-values of the corresponding fuzzy
-## output (for a single FIS output, aggregated over all rules).
-##
-## @example
-## @group
-##             out_1  out_2  ...  out_L
+##             out_1  out_2  ...  out_M
 ##          1 [                        ]
 ##          2 [                        ]
 ##        ... [                        ]
@@ -60,15 +68,15 @@
 ## @end group
 ## @end example
 ##
-## Function aggregate_output_mamdani does no error checking of the argument
-## values.
+## Because aggregate_output_mamdani is called only by the private
+## function evalfis_private, it does no error checking of the argument values.
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      aggregate_output_mamdani.m
-## Last-Modified: 20 May 2011
+## Last-Modified: 16 Jul 2011
 
 function fuzzy_output = aggregate_output_mamdani (fis, rule_output)
 

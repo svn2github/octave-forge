@@ -22,7 +22,7 @@
 ## Demonstrate the function @t{addmf} by executing the code
 ## given in the comment at the top of addmf.m.
 ##
-## @seealso{addmf}
+## @seealso{addmf, heart_demo_1}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
@@ -31,7 +31,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy tests demos
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      addmf_demo.m
-## Last-Modified: 8 Jun 2011
+## Last-Modified: 16 Jul 2011
 
 ## Create new FIS.
 a = newfis ('Heart-Disease-Risk', 'sugeno', ...

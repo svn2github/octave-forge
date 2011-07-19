@@ -17,9 +17,10 @@
 ## see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Script File} {} commandline_demo
+## @deftypefn {Script File} {} heart_demo_1
 ##
-## Demonstrate the use of command-line functions to build and evaluate an FIS.
+## Demonstrate the use of newfis, addvar, addmf, addrule, and evalfis
+## to build and evaluate an FIS.
 ##
 ## The demo:
 ## @itemize @minus
@@ -33,7 +34,7 @@
 ## displays information about the FIS in the Octave window
 ## @end itemize
 ##
-## @seealso{addmf_demo, addvar_demo, heart_demo, mamdani_demo, tipping_demo}
+## @seealso{addmf_demo, addvar_demo, heart_demo_2, showrule_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
@@ -41,8 +42,8 @@
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Keywords:      fuzzy-logic-toolkit fuzzy tests demos
 ## Directory:     fuzzy-logic-toolkit/inst
-## Filename:      commandline_demo.m
-## Last-Modified: 7 Jun 2011
+## Filename:      heart_demo_1.m
+## Last-Modified: 16 Jul 2011
 
 ## Create new FIS.
 a = newfis ('Heart-Disease-Risk', 'sugeno', ...

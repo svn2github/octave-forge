@@ -47,6 +47,8 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 % 11:  BURGV [4] 
 % 13:  modified BURGV -  
 % 14:  modified BURGV [4] 
+% 802: Modified Partial Correlation Estimation: Vieira-Morf [2,5] using unbiased covariance estimates.
+% 805: Modified Partial Correlation Estimation: Vieira-Morf [2,5] using biased covariance estimates.
 %
 % REFERENCES:
 %  [1] A. Schloegl, Comparison of Multivariate Autoregressive Estimators.
@@ -55,6 +57,8 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 %  [2] S.L. Marple 'Digital Spectral Analysis with Applications' Prentice Hall, 1987.
 %  [3] Schneider and Neumaier)
 %  [4] Stijn de Waele, 2003
+%  [5]  M. Morf, et al. Recursive Multichannel Maximum Entropy Spectral Estimation, 
+%      IEEE trans. GeoSci. Elec., 1978, Vol.GE-16, No.2, pp85-94.
 %
 %
 % A multivariate inverse filter can be realized with 
@@ -255,7 +259,7 @@ elseif Mode==5 %%%%% Partial Correlation Estimation: Vieira-Morf Method [2] with
                 F(K+1:N,:) = tmp;
                 
                 for L = 1:K-1,
-                        tmp      = ARF(:,L*M+(1-M:0))   - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
+                        tmp = ARF(:,L*M+(1-M:0)) - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
                         ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
                         ARF(:,L*M+(1-M:0))   = tmp;
                 end;
@@ -421,6 +425,102 @@ elseif Mode==4,  %%%%% Kay, not fixed yet.
                 PEB = PEB*[eye(M) - ARF(:,K*M+(1-M:0)) *ARB(:,K*M+(1-M:0)) ];
                 PE(:,K*M+(1:M))  = PEF;        
         end;
+
+elseif Mode==802 %%%%% Modified Partial Correlation Estimation: Vieira-Morf [2,5] using unbiased covariance estimates.
+        %--------Initialization----------
+        F = Y;
+        B = Y;
+        [PEF n] = covm(Y(2:N,:),'M');
+        PEF=PEF./n;
+        [PEB n] = covm(Y(1:N-1,:),'M');
+        PEB = PEB./n;
+        %---------------------------------
+        for K = 1:Pmax,
+            %---Update the estimated error covariances(15.89) in [2]---
+            [PEFhat,n] = covm(F(K+1:N,:),'M');
+            PEFhat = PEFhat./n;
+                
+            [PEBhat,n] = covm(B(1:N-K,:),'M');
+            PEBhat = PEBhat./n;
+        
+            [PEFBhat,n] = covm(F(K+1:N,:),B(1:N-K,:),'M');
+            PEFBhat = PEFBhat./n;
+            
+            %---Compute estimated normalized partial correlation matrix(15.88)in [2]---
+            Rho = inv(chol(PEFhat)')*PEFBhat*inv(chol(PEBhat));
+            
+            %---Update forward and backward reflection coefficients (15.82) and (15.83) in [2]---
+            ARF(:,K*M+(1-M:0)) = chol(PEF)'*Rho*inv(chol(PEB)');
+            ARB(:,K*M+(1-M:0)) = chol(PEB)'*Rho'*inv(chol(PEF)');
+            
+            %---------------------------------
+            tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0)).';
+            B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0)).';
+            F(K+1:N,:) = tmp;
+
+            for L = 1:K-1,
+                    tmp      = ARF(:,L*M+(1-M:0))   - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
+                    ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
+                    ARF(:,L*M+(1-M:0))   = tmp;
+            end;
+
+            RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0));
+            RCB(:,K*M+(1-M:0)) = ARB(:,K*M+(1-M:0));
+            
+            %---Update forward and backward error covariances (15.75) and (15.76) in [2]---
+            PEF = (eye(M)-ARF(:,K*M+(1-M:0))*ARB(:,K*M+(1-M:0)))*PEF;
+            PEB = (eye(M)-ARB(:,K*M+(1-M:0))*ARF(:,K*M+(1-M:0)))*PEB;
+            
+            PE(:,K*M+(1:M)) = PEF;
+        end
+        
+elseif Mode==805 %%%%Modified Partial Correlation Estimation: Vieira-Morf [2,5] using biased covariance estimates.
+        %--------Initialization----------
+        F = Y;
+        B = Y;
+        [PEF n] = covm(Y(2:N,:),'M');
+        PEF=PEF./N;
+        [PEB n] = covm(Y(1:N-1,:),'M');
+        PEB = PEB./N;
+        %---------------------------------
+        for K = 1:Pmax,
+            %---Update the estimated error covariances(15.89) in [2]---
+            [PEFhat,n] = covm(F(K+1:N,:),'M');
+            PEFhat = PEFhat./N;
+                
+            [PEBhat,n] = covm(B(1:N-K,:),'M');
+            PEBhat = PEBhat./N;
+        
+            [PEFBhat,n] = covm(F(K+1:N,:),B(1:N-K,:),'M');
+            PEFBhat = PEFBhat./N;
+            
+            %---Compute estimated normalized partial correlation matrix(15.88)in [2]---
+            Rho = inv(chol(PEFhat)')*PEFBhat*inv(chol(PEBhat));
+            
+            %---Update forward and backward reflection coefficients (15.82) and (15.83) in [2]---
+            ARF(:,K*M+(1-M:0)) = chol(PEF)'*Rho*inv(chol(PEB)');
+            ARB(:,K*M+(1-M:0)) = chol(PEB)'*Rho'*inv(chol(PEF)');
+            
+            %---------------------------------
+            tmp        = F(K+1:N,:) - B(1:N-K,:)*ARF(:,K*M+(1-M:0)).';
+            B(1:N-K,:) = B(1:N-K,:) - F(K+1:N,:)*ARB(:,K*M+(1-M:0)).';
+            F(K+1:N,:) = tmp;
+
+            for L = 1:K-1,
+                    tmp      = ARF(:,L*M+(1-M:0))   - ARF(:,K*M+(1-M:0))*ARB(:,(K-L)*M+(1-M:0));
+                    ARB(:,(K-L)*M+(1-M:0)) = ARB(:,(K-L)*M+(1-M:0)) - ARB(:,K*M+(1-M:0))*ARF(:,L*M+(1-M:0));
+                    ARF(:,L*M+(1-M:0))   = tmp;
+            end;
+
+            RCF(:,K*M+(1-M:0)) = ARF(:,K*M+(1-M:0));
+            RCB(:,K*M+(1-M:0)) = ARB(:,K*M+(1-M:0));
+            
+            %---Update forward and backward error covariances (15.75) and (15.76) in [2]---
+            PEF = (eye(M)-ARF(:,K*M+(1-M:0))*ARB(:,K*M+(1-M:0)))*PEF;
+            PEB = (eye(M)-ARB(:,K*M+(1-M:0))*ARF(:,K*M+(1-M:0)))*PEB;
+            
+            PE(:,K*M+(1:M)) = PEF;
+        end
 
 
 elseif Mode==10,  %%%%% ARFIT

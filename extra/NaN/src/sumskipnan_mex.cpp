@@ -186,9 +186,10 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 	mxFree(SZ2);
 
 
-	if (D1*D2*D3<1) // zero size array
+	if (!D1 || !D2 || !D3) // zero size array
 		; 	// do nothing 
-	else if ((D1==1) && (ACC_LEVEL<1)) {
+	else if (D1==1) {
+	    if (ACC_LEVEL<1) {
 		// double accuray, naive summation, error = N*2^-52 
 		switch (POutputCount) {
 		case 1: 
@@ -211,8 +212,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			}
 			break;
 		}
-	}
-	else if ((D1==1) && (ACC_LEVEL==1)) {
+	    }
+	    else if (ACC_LEVEL==1) {
 		// extended accuray, naive summation, error = N*2^-64 
 		switch (POutputCount) {
 		case 1: 
@@ -235,8 +236,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			}
 			break;
 		}
-	}
-	else if ((D1==1) && (ACC_LEVEL==3)) {
+	    }
+	    else if (ACC_LEVEL==3) {
 		// ACC_LEVEL==3: extended accuracy and Kahan Summation, error = 2^-64
 		switch (POutputCount) {
 		case 1: 
@@ -259,8 +260,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			}
 			break;
 		}
-	}
-	else if ((D1==1) && (ACC_LEVEL==2)) {
+	    }
+	    else if (ACC_LEVEL==2) {
 		// ACC_LEVEL==2: double accuracy and Kahan Summation, error = 2^-52
 		switch (POutputCount) {
 		case 1: 
@@ -283,6 +284,7 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 			}
 			break;
 		}
+            }
 	}
 	else if (POutputCount <= 1) {
 		// OUTER LOOP: along dimensions > DIM

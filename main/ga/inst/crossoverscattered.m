@@ -1,4 +1,4 @@
-## Copyright (C) 2008, 2009 Luca Favatella <slackydeb@gmail.com>
+## Copyright (C) 2008, 2009, 2011 Luca Favatella <slackydeb@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## Author: Luca Favatella <slackydeb@gmail.com>
-## Version: 6.3.2
+## Version: 7.0
 
 function xoverKids = crossoverscattered (parents, options, nvars, FitnessFcn,
                                          unused,
@@ -31,7 +31,7 @@ function xoverKids = crossoverscattered (parents, options, nvars, FitnessFcn,
       thisPopulation(parents(1, 1:n_children), 1:nvars);
   p2(1:n_children, 1:nvars) = \
       thisPopulation(parents(1, n_children + (1:n_children)), 1:nvars);
-  b(1:n_children, 1:nvars) = randint (n_children, nvars);
+  b(1:n_children, 1:nvars) = randi (1, n_children, nvars); ## TODO: test randi
   xoverKids(1:n_children, 1:nvars) = \
       b .* p1 + (ones (n_children, nvars) - b) .* p2;
 endfunction

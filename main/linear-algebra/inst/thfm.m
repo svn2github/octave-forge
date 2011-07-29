@@ -2,8 +2,8 @@
 %
 %       trigonometric/hyperbolic functions of square matrix x
 %
-%MODE	cos   sin   tan   sec   csc   cot
-%	cosh  sinh  tanh  sech  csch  coth
+%MODE   cos   sin   tan   sec   csc   cot
+%       cosh  sinh  tanh  sech  csch  coth
 %       acos  asin  atan  asec  acsc  acot
 %       acosh asinh atanh asech acsch acoth
 %       sqrt  log   exp
@@ -26,6 +26,8 @@
 % 2001-03-15 Paul Kienzle
 %     * extend with inverse functions and power functions
 %     * optimize handling of real input
+% 2011-03-27 Philip Nienhuis
+%     * Dropped call to funm at bottom (as funm now calls thfm...)
 
 function y=thfm(x,M)
 				#% minimal arg check only
@@ -131,8 +133,8 @@ function y=thfm(x,M)
 
   endif
 
-  ## if no known function found, use generic solver
+  ## if no known function found, issue warning
   if (match == 0)
-    y = funm( x, M );
+    warning ("thfm doesn't support function M - try to use funm instead");
   endif
 endfunction

@@ -16,6 +16,11 @@ function r = ranks(X,DIM,Mode)
 % r = ranks(X,DIM,'advanced   ')
 %   implements an advanced algorithm with O(n*log(n)) computational 
 %   and O(n.log(n)) memory effort
+% r = ranks(X,DIM,'advanced-ties')
+%   implements an advanced algorithm with O(n*log(n)) computational 
+%   and O(n.log(n)) memory effort
+%   but without correction for ties 
+%   This is the fastest algorithm 
 %
 % see also: CORRCOEF, SPEARMAN, RANKCORR
 %
@@ -83,7 +88,7 @@ r = zeros(size(X));
         end;
         % r(r<1)=NaN;
         
-elseif strcmp(Mode(1:min(12,length(Mode))),'mtraditional'), % advanced
+elseif strcmp(Mode(1:min(12,length(Mode))),'mtraditional'), 
         % + memory effort is lower
         
 	r = zeros(size(X));
@@ -94,7 +99,19 @@ elseif strcmp(Mode(1:min(12,length(Mode))),'mtraditional'), % advanced
         end;
         % r(r<1)=NaN;
         
-elseif strcmp(Mode(1:min(11,length(Mode))),'advanced   '), % advanced
+elseif strcmp(Mode(1:min(13,length(Mode))),'advanced-ties'), % advanced
+        % + uses sorting, hence needs only O(m.n.log(n)) computations         
+        % - does not fix ties
+
+        r = zeros(size(X));
+        [sX, ix] = sort(X,1); 
+	for k=1:M,
+	        [tmp,r(:,k)] = sort(ix(:,k),1);	    % r yields the rank of each element 	
+	end;        
+	r(isnan(X)) = nan;
+
+        
+elseif strcmp(Mode(1:min(8,length(Mode))),'advanced'), % advanced
         % + uses sorting, hence needs only O(m.n.log(n)) computations         
         
         % [tmp,ix] = sort([X,Y]);     

@@ -17,9 +17,12 @@ function RES = bland_altman(data,group,arg3)
 % [1] JM Bland and DG Altman, Measuring agreement in method comparison studies. 
 %       Statistical Methods in Medical Research, 1999; 8; 135. 
 %       doi:10.1177/09622802990080204
+% [2] P.S. Myles, Using the Bland– Altman method to measure agreement with repeated measures
+%	British Journal of Anaesthesia 99(3):309–11 (2007)
+%	doi:10.1093/bja/aem214
 
 %	$Id$
-%	Copyright (C) 2010 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (C) 2010,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -67,7 +70,7 @@ if isempty(group)
 	
 elseif ~isempty(group)
 	%% TODO: this is not finished  	
-	warning('analysis of data with repetitions is experimental!')
+	warning('analysis of data with repetitions is experimental - it might yield incorrect results - you are warned.!')
 	[G,I,J] = unique (group);
 	R       = zeros(size(data));
 	m       = repmat(NaN,length(G),1);
@@ -79,15 +82,29 @@ elseif ~isempty(group)
 	for i   = 1:length(G),
 		ix         = find(group==G(i));
 		n(i)       = length(ix);
-		[R(ix,:), data2(i,:)] = center(data(ix,:));
-		d(i)       = mean(D(ix,:));
-		m(i)       = mean(M(ix,:));
-		d2(i)      = mean(D(ix,:).^2);
+%		IX((i-1)*N+1:i*N) = ix(ceil(rand(N,1)*n(i)));		
+		
+		[R(ix,:), data2(i,:)] = center(data(ix,:),1);
+		d(i)       = mean(D(ix,:),1);
+		m(i)       = mean(M(ix,:),1);
+		d2(i)      = mean(D(ix,:).^2,1);
+		RES.SW2(i,:)   = var(data(ix,:),[],1);
+		RES.avg(i,:)   = mean(data(ix,:),1);
 	end;
-	RES.group = bland_altman(data2);
-	RES.repeatability_coefficient = var(R,1); 	% variance with factor group removed
-	RES.var_d_ = var(d);
-	RES.var_m_ = var(m);	
+
+	W = 1./n(J);
+	RES.SSW = sumskipnan(R.^2,1,W);
+	RES.SSB = var(data,[],1,W)*sum(W)*(sum(W)-1);
+	RES.sigma2_w= RES.SSW/(sum(W)*(length(G)-1));
+	RES.sigma2_u= RES.SSB/(sum(W)*(length(G)-1)) - RES.sigma2_w/(length(G));
+	RES.group = bland_altman(data2); 	% FIXME: this plot shows incorrect interval, it does not account for the group/repeated samples. 
+	RES.repeatability_coefficient1 = 2.77*sqrt(var(R,1,1)); 	% variance with factor group removed
+	RES.repeatability_coefficient = 2.77*sqrt(mean(SW2,1)); 	% variance with factor group removed
+	RES.std_d_ = std(d);
+	RES.std_D_ = std(D);
+	RES.std_m_ = std(m);	
+	
+	RES.n = n;
 	return; 
 
 	D = d; 

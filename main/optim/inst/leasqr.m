@@ -26,8 +26,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   %%
   %% Version 3.beta
   %% Optional parameters are in braces {}.
-  %% x = vector or matrix of independent variables, 1 entry or row per
-  %%   observation.
+  %% x = vector or matrix of independent variables.
   %% y = vector or matrix of observed values.
   %% wt = statistical weights (same dimensions as y).  These should be
   %%   set to be proportional to (sqrt of var(y))^-1; (That is, the

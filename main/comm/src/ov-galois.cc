@@ -550,7 +550,11 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 {
   Matrix mval = matrix_value ();
   hid_t group_hid = -1;
+#if HAVE_HDF5_18
+  group_hid = H5Gcreate (loc_id, name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   group_hid = H5Gcreate (loc_id, name, 0);
+#endif
   if (group_hid < 0 ) return false;
 
   dim_vector d = dims ();
@@ -567,8 +571,13 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       return false;
     }
 
+#if HAVE_HDF5_18
+  data_hid = H5Dcreate (group_hid, "m", H5T_NATIVE_UCHAR, space_hid, 
+			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_hid = H5Dcreate (group_hid, "m", H5T_NATIVE_UCHAR, space_hid, 
 			H5P_DEFAULT);
+#endif
   if (data_hid < 0) 
     {
       H5Sclose (space_hid);
@@ -587,8 +596,13 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       return false;
     }    
 
+#if HAVE_HDF5_18
+  data_hid = H5Dcreate (group_hid, "prim", H5T_NATIVE_UINT, space_hid, 
+			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_hid = H5Dcreate (group_hid, "prim", H5T_NATIVE_UINT, space_hid, 
 			H5P_DEFAULT);
+#endif
   if (data_hid < 0) 
     {
       H5Sclose (space_hid);
@@ -639,8 +653,13 @@ octave_galois::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 	vtmp[i] = (uint32_t) mtmp[i];
     }
 
+#if HAVE_HDF5_18
+  data_hid = H5Dcreate (group_hid, "val", save_type_hid, space_hid, 
+			H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+#else
   data_hid = H5Dcreate (group_hid, "val", save_type_hid, space_hid, 
 			H5P_DEFAULT);
+#endif
   if (data_hid < 0)
     {
       H5Sclose (space_hid);
@@ -667,10 +686,18 @@ octave_galois::load_hdf5 (hid_t loc_id, const char *name,
   hid_t group_hid, data_hid, space_id;
   hsize_t rank;
 
+#if HAVE_HDF5_18
+  group_hid = H5Gopen (loc_id, name, H5P_DEFAULT);
+#else
   group_hid = H5Gopen (loc_id, name);
+#endif
   if (group_hid < 0 ) return false;
 
+#if HAVE_HDF5_18
+  data_hid = H5Dopen (group_hid, "m", H5P_DEFAULT);
+#else
   data_hid = H5Dopen (group_hid, "m");
+#endif
   space_id = H5Dget_space (data_hid);
   rank = H5Sget_simple_extent_ndims (space_id);
 
@@ -690,7 +717,11 @@ octave_galois::load_hdf5 (hid_t loc_id, const char *name,
     }
 
   H5Dclose (data_hid);
+#if HAVE_HDF5_18
+  data_hid = H5Dopen (group_hid, "prim", H5P_DEFAULT);
+#else
   data_hid = H5Dopen (group_hid, "prim");
+#endif
   space_id = H5Dget_space (data_hid);
   rank = H5Sget_simple_extent_ndims (space_id);
 
@@ -710,7 +741,11 @@ octave_galois::load_hdf5 (hid_t loc_id, const char *name,
     }
 
   H5Dclose (data_hid);
+#if HAVE_HDF5_18
+  data_hid = H5Dopen (group_hid, "val", H5P_DEFAULT);
+#else
   data_hid = H5Dopen (group_hid, "val");
+#endif
   space_id = H5Dget_space (data_hid);
   rank = H5Sget_simple_extent_ndims (space_id);
 

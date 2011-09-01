@@ -67,13 +67,13 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      defuzzify_output_mamdani.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 30 Aug 2011
 
 function output = defuzzify_output_mamdani (fis, fuzzy_output)
 
   num_outputs = columns (fis.output);             ## num_outputs == L (above)
   num_points = rows (fuzzy_output);
-  output = zeros (num_outputs);
+  output = zeros (1, num_outputs);
 
   for i = 1 : num_outputs
     range = fis.output(i).range;

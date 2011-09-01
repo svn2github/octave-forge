@@ -67,7 +67,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_rules_mamdani.m
-## Last-Modified: 18 Jul 2011
+## Last-Modified: 30 Aug 2011
 
 function rule_output = eval_rules_mamdani (fis, firing_strength, num_points)
 
@@ -110,7 +110,7 @@ function rule_output = eval_rules_mamdani (fis, firing_strength, num_points)
           ## Store result in column of rule_output corresponding
           ## to the (rule, output) pair.
 
-          rule_output(:, (i - 1) * num_outputs + j) = fuzzy_out';
+          rule_output(:, (j - 1) * num_rules + i) = fuzzy_out';
         endif
       endfor
     endif

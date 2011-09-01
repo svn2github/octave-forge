@@ -30,7 +30,7 @@
 ## @item 3
 ## Set a property of the FIS structure. The properties that may
 ## be set are: name, type, andmethod, ormethod, impmethod,
-## addmethod, and defuzzmethod.
+## addmethod, defuzzmethod, and version.
 ## @item 5
 ## Set a property of an input or output variable of the FIS
 ## structure. The properties that may be set are: name and range.
@@ -45,10 +45,10 @@
 ## an FIS structure
 ## @item property
 ## a string; one of 'name', 'type', 'andmethod',
-## 'ormethod', 'impmethod', 'addmethod', and
-## 'defuzzmethod'
+## 'ormethod', 'impmethod', 'addmethod', 
+## 'defuzzmethod', and 'version' (case-insensitive)
 ## @item property_value
-## a string
+## a number (if property is 'version'); a string (otherwise)
 ## @item in_or_out
 ## either 'input' or 'output' (case-insensitive)
 ## @item var_index
@@ -80,7 +80,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      setfis.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 31 Aug 2011
 
 ##------------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ endfunction
 ##           See the comment at the top of this file for more complete info.
 ##------------------------------------------------------------------------------
 
-function setfis_three_args (fis, arg2, arg3)
+function fis = setfis_three_args (fis, arg2, arg3)
 
   ## If not all of the arguments have the correct types, print an error
   ## message and halt.
@@ -114,18 +114,22 @@ function setfis_three_args (fis, arg2, arg3)
     error ("setfis's first argument must be an FIS structure\n");
   elseif (!(is_string (arg2) && ismember (tolower (arg2), ...
           {'name', 'type', 'andmethod', 'ormethod', 'impmethod', ...
-           'aggmethod', 'defuzzmethod'})))
+           'aggmethod', 'defuzzmethod', 'version'})))
     puts ("Type 'help setfis' for more information.\n");
     error ("incorrect second argument to setfis\n");
-  elseif (!is_string (arg3))
+  elseif (strcmp(tolower (arg2), 'version') && !is_real (arg3))
     puts ("Type 'help setfis' for more information.\n");
-    error ("setfis's third argument must be a string\n");
+    error ("the third argument to setfis must be a number\n");
+  elseif (!strcmp(tolower (arg2), 'version') && !is_string (arg3))
+    puts ("Type 'help setfis' for more information.\n");
+    error ("the third argument to setfis must be a string\n");
   endif
 
   ## Set the property (arg2) of the FIS to the property value (arg3).
 
   switch (tolower(arg2))
     case 'name'         fis.name = arg3;
+    case 'version'      fis.version = arg3;
     case 'type'         fis.type = arg3;
     case 'andmethod'    fis.andMethod = arg3;
     case 'ormethod'     fis.orMethod = arg3;
@@ -142,7 +146,7 @@ endfunction
 ##           See the comment at the top of this file for more complete info.
 ##------------------------------------------------------------------------------
 
-function setfis_five_args (fis, arg2, arg3, arg4, arg5)
+function fis = setfis_five_args (fis, arg2, arg3, arg4, arg5)
 
   ## If not all of the arguments have the correct types, print an error
   ## message and halt.
@@ -190,7 +194,7 @@ endfunction
 ##           See the comment at the top of this file for more complete info.
 ##------------------------------------------------------------------------------
 
-function setfis_seven_args (fis, arg2, arg3, arg4, arg5, arg6, arg7)
+function fis = setfis_seven_args (fis, arg2, arg3, arg4, arg5, arg6, arg7)
 
   ## If not all of the arguments have the correct types, print an error
   ## message and halt.

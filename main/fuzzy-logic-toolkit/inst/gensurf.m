@@ -68,16 +68,9 @@
 ## sugeno_tip_demo.m
 ## @end itemize
 ##
-## CURRENT LIMITATIONS:
-## @itemize @bullet
-## @item
-## The FIS for which the surface is generated must have only one output.
-## @item
-## grids must have length 2.
-## @item
+## CURRENT LIMITATION:
 ## The form of gensurf that suppresses plotting (the final form above) is not yet
 ## implemented.
-## @end itemize
 ##
 ## @seealso{cubic_approx_demo, heart_demo_1, heart_demo_2, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo, plotmf}
 ## @end deftypefn
@@ -86,14 +79,10 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis plot
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      gensurf.m
-## Last-Modified: 18 Jul 2011
+## Last-Modified: 30 Aug 2011
 
 function [x, y, z] = gensurf (fis, input_axes=[1 2], output_axis=1, ...
                               grids=[15 15], ref_input=[], num_points=101)
-
-  ## TO DO: HANDLE FIS STRUCTURES THAT HAVE MORE THAN 1 OUTPUT
-  ## TO DO: HANDLE SCALAR GRIDS ARGUMENT
-  ## TO DO: RENAME X, Y, AND Z. MAKE SURE THEY ARE ASSIGNED VALUES.
 
   ## If gensurf was called with an incorrect number of arguments, or the
   ## arguments do not have the correct type, print an error message and halt.
@@ -184,6 +173,9 @@ function [x, y, z] = generate_surface (fis, input_axes, output_axis, grids, ...
   ## Create input to FIS using grid points and reference values.
 
   num_inputs = columns (fis.input);
+  if (length (grids) == 1)
+    grids = [grids grids];
+  endif
   num_grid_pts = prod (grids);
   fis_input = zeros (num_grid_pts, num_inputs);
 

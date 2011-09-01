@@ -24,47 +24,18 @@
 ##
 ## Show the rules for an FIS structure in verbose, symbolic, or indexed format.
 ##
-## For example:
-## @example
-## @group
-## fis = readfis('sugeno-top-calculator.fis');
+## @noindent
+## To run the demonstration code below, type @t{demo('showrule')} at the
+## Octave prompt.
 ##
-## showrule(fis) ==>
-##       1. If (Food-Quality is Bad) and (Service is Bad)
-##          then (Tip is Ten-Percent) (1)
-##       2. If (Food-Quality is Bad) and (Service is Good)
-##          then (Tip is Fifteen-Percent) (1)
-##       3. If (Food-Quality is Good) and (Service is Bad)
-##          then (Tip is Fifteen-Percent) (1)
-##       4. If (Food-Quality is Good) and (Service is Good)
-##          then (Tip is Twenty-Percent) (1)
-##
-## showrule(fis, [2 4], 'symbolic') ==>
-##       2.  (Food-Quality == Bad) & (Service == Good)
-##           => (Tip = Fifteen-Percent) (1)
-##       4.  (Food-Quality == Good) & (Service == Good)
-##           => (Tip = Twenty-Percent) (1)
-##
-## showrule(fis, 1:4, 'indexed') ==>
-##          1 1, 1 (1) : 1
-##          1 2, 2 (1) : 1
-##          2 1, 2 (1) : 1
-##          2 2, 3 (1) : 1
-##
-## showrule(fis, 1, 'verbose', 'francais') ==>
-##       1. Si (Food-Quality est Bad) et (Service est Bad)
-##          alors (Tip est Ten-Percent) (1)
-## @end group
-## @end example
-##
-## @seealso{addrule, getfis, showfis, showrule_demo}
+## @seealso{addrule, getfis, showfis}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy rule
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      showrule.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 31 Aug 2011
 
 function showrule (fis, index_list=[], format='verbose', language='english')
 
@@ -269,3 +240,27 @@ function showrule (fis, index_list=[], format='verbose', language='english')
   endif
 
 endfunction
+
+%!demo
+%! fis = readfis ('sugeno_tip_calculator.fis');
+%! puts ("Output of: showrule(fis)\n");
+%! showrule (fis)
+%! puts ("\n");
+
+%!demo
+%! fis = readfis ('sugeno_tip_calculator.fis');
+%! puts ("Output of: showrule(fis, [2 4], 'symbolic')\n");
+%! showrule (fis, [2 4], 'symbolic')
+%! puts ("\n");
+
+%!demo
+%! fis = readfis ('sugeno_tip_calculator.fis');
+%! puts ("Output of: showrule(fis, 1:4, 'indexed')\n");
+%! showrule (fis, 1:4, 'indexed')
+%! puts ("\n");
+
+%!demo
+%! fis = readfis ('sugeno_tip_calculator.fis');
+%! puts ("Output of: showrule(fis, 1, 'verbose', 'francais')\n");
+%! showrule (fis, 1, 'verbose', 'francais')
+%! puts ("\n");

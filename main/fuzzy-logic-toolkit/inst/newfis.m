@@ -24,9 +24,10 @@
 ## @deftypefnx {Function File} {@var{a} =} newfis (@var{fis_name}, @var{fis_type}, @var{and_method}, @var{or_method}, @var{imp_method})
 ## @deftypefnx {Function File} {@var{a} =} newfis (@var{fis_name}, @var{fis_type}, @var{and_method}, @var{or_method}, @var{imp_method}, @var{agg_method})
 ## @deftypefnx {Function File} {@var{a} =} newfis (@var{fis_name}, @var{fis_type}, @var{and_method}, @var{or_method}, @var{imp_method}, @var{agg_method}, @var{defuzz_method})
+## @deftypefnx {Function File} {@var{a} =} newfis (@var{fis_name}, @var{fis_type}, @var{and_method}, @var{or_method}, @var{imp_method}, @var{agg_method}, @var{defuzz_method}, @var{fis_version})
 ##
 ## Create and return a new FIS structure using the argument values provided.
-## Only the first argument is required. If fewer than seven arguments are given,
+## Only the first argument is required. If fewer than eight arguments are given,
 ## then some or all of the following default arguments will be used:
 ## @itemize @bullet
 ## @item
@@ -41,6 +42,8 @@
 ## @var{agg_method} = 'max'
 ## @item
 ## @var{defuzz_method} = 'centroid'
+## @item
+## @var{fis_version} = 1.0
 ## @end itemize
 ##
 ## @seealso{addmf, addrule, addvar, setfis}
@@ -50,31 +53,32 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      newfis.m
-## Last-Modified: 19 May 2011
+## Last-Modified: 26 Aug 2011
 
 function fis = newfis (fis_name, fis_type='mamdani', and_method='min', ...
                        or_method='max', imp_method='min', agg_method='max', ...
-                       defuzz_method='centroid')
+                       defuzz_method='centroid', fis_version=1.0)
 
-  ## If the caller did not supply the between 1 and 7 argument values, or if
+  ## If the caller did not supply the between 1 and 8 argument values, or if
   ## any of the argument values were not strings, print an error message and
   ## halt.
 
-  if (!(nargin >= 1 && nargin <= 7))
+  if (!(nargin >= 1 && nargin <= 8))
     puts ("Type 'help newfis' for more information.\n");
-    error ("newfis requires between 1 and 7 arguments\n");
+    error ("newfis requires between 1 and 8 arguments\n");
   elseif (!(is_string (fis_name) && is_string (fis_type) && ...
            is_string (and_method) && is_string (or_method) && ...
            is_string (imp_method) && is_string (agg_method) && ...
-           is_string (defuzz_method)))
+           is_string (defuzz_method) && isfloat (fis_version)))
     puts ("Type 'help newfis' for more information.\n");
-    error ("all arguments to newfis must be strings\n");
+    error ("incorrect argument type in newfis argument list\n");
   endif
 
   ## Create and return the new FIS structure.
 
   fis = struct ('name', fis_name, ...
                 'type', fis_type, ...
+                'version', fis_version, ...
                 'andMethod', and_method, ...
                 'orMethod', or_method, ...
                 'impMethod', imp_method, ...

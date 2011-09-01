@@ -43,13 +43,13 @@
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      heart_demo_2.m
-## Last-Modified: 17 Jul 2011
+## Last-Modified: 28 Aug 2011
 
 ## Read the FIS structure from a file.
-## (Alternatively, to select heart-disease-risk.fis using the dialog,
+## (Alternatively, to select heart_disease_risk.fis using the dialog,
 ## replace the following line with
 ##    fis = readfis ();
-fis = readfis('heart-disease-risk.fis');
+fis = readfis('heart_disease_risk.fis');
 
 ## Plot the input and output membership functions.
 plotmf (fis, 'input', 1);

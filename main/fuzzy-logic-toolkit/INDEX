@@ -27,7 +27,7 @@ Text Representation of Fuzzy Inference Systems
  showfis
  showrule
 
-Membership Functions (with Demos)
+Membership Functions
  dsigmf
  gauss2mf
  gaussmf
@@ -40,14 +40,11 @@ Membership Functions (with Demos)
  trimf
  zmf
 
-Fuzzy Inference System Demos
- addmf_demo
- addvar_demo
+Complete Fuzzy Inference System Demos
  cubic_approx_demo
  heart_demo_1
  heart_demo_2
  linear_tip_demo
  mamdani_tip_demo
- showrule_demo
  sugeno_tip_demo
 

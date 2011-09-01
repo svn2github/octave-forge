@@ -26,25 +26,14 @@
 ## with a @var{filename} that does not end with '.fis', append '.fis' to the
 ## @var{filename}. The @var{filename} is expected to be a string.
 ##
-## CURRENT LIMITATIONS:
-## @itemize @bullet
-## @item
-## Custom membership functions are limited to 1-10 parameters.
-## @item
-## "Version" is not yet implemented.
-## @item
-## The input file must strictly adhere to the format, without
-## comments or extra whitespace.
-## @end itemize
-##
 ## Three examples of the input file format:
 ## @itemize @bullet
 ## @item
-## heart-disease-risk.fis
+## heart_disease_risk.fis
 ## @item
-## mamdani-tip-calculator.fis
+## mamdani_tip_calculator.fis
 ## @item
-## sugeno-tip-calculator.fis
+## sugeno_tip_calculator.fis
 ## @end itemize
 ##
 ## Six examples that use readfis:
@@ -70,16 +59,12 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      readfis.m
-## Last-Modified: 16 Jul 2011
-
-##------------------------------------------------------------------------------
+## Last-Modified: 28 Aug 2011
 
 function fis = readfis (filename='')
 
-  ##--------------------------------------------------------------------------
   ## If readfis was not called with 0 or 1 arguments, or if the argument is
   ## not a string, print an error message and halt.
-  ##--------------------------------------------------------------------------
 
   if (nargin > 1)
     puts ("Type 'help readfis' for more information.\n");
@@ -89,95 +74,23 @@ function fis = readfis (filename='')
     error ("readfis's argument must be a string\n");
   endif
 
-  ##--------------------------------------------------------------------------
   ## Open the input file.
-  ##--------------------------------------------------------------------------
 
   fid = open_input_file (filename);
 
-  ##--------------------------------------------------------------------------
-  ## Read the [System] section.
-  ## Using the strings read from the input file, initialize an FIS structure.
-  ##--------------------------------------------------------------------------
+  ## Read the [System], [Input<number>], [Output<number>], and [Rules]
+  ## sections of the input file.
 
-  line_num = 1;
   [fis, num_inputs, num_outputs, num_rules, line_num] = ...
-    init_fis_struct (fid, line_num);
+    init_fis_struct (fid);
+  [fis, line_num] = read_fis_inputs (fid, fis, num_inputs, line_num);
+  [fis, line_num] = read_fis_outputs (fid, fis, num_outputs, line_num);
+  fis = read_rules (fid, fis, num_inputs, num_outputs, num_rules, line_num);
 
-  ##--------------------------------------------------------------------------
-  ## For each FIS input, read [Input<number>] section from file.
-  ## Add each new input to the FIS structure.
-  ##--------------------------------------------------------------------------
+  ## Close the input file.
 
-  for i = 1 : num_inputs
-    [next_fis_input, num_mfs, line_num] = ...
-      get_next_fis_io (fid, line_num, i, 'input');
-    if (i == 1)
-      fis.input = next_fis_input;
-    else
-      fis.input = [fis.input, next_fis_input];
-    endif
+  fclose (fid);
 
-    ##----------------------------------------------------------------------
-    ## Read membership function info for the new FIS input from file.
-    ## Add each new membership function to the FIS struct.
-    ##----------------------------------------------------------------------
-
-    for j = 1 : num_mfs
-      [next_mf, line_num] = get_next_mf (fid, line_num, i, j, 'input');
-      if (j == 1)
-        fis.input(i).mf = next_mf;
-      else
-        fis.input(i).mf = [fis.input(i).mf, next_mf];
-      endif
-    endfor
-  endfor
-
-  ##--------------------------------------------------------------------------
-  ## For each FIS output, read [Output<number>] section from file.
-  ## Add each new output to the FIS structure.
-  ##--------------------------------------------------------------------------
-
-  for i = 1 : num_outputs
-    [next_fis_output, num_mfs, line_num] = ...
-      get_next_fis_io (fid, line_num, i, 'output');
-    if (i == 1)
-      fis.output = next_fis_output;
-    else
-      fis.output = [fis.output, next_fis_output];
-    endif
-
-    ##----------------------------------------------------------------------
-    ## Read membership function info for the new FIS output from file.
-    ## Add each new membership function to the FIS struct.
-    ##----------------------------------------------------------------------
-
-    for j = 1 : num_mfs
-      [next_mf, line_num] = get_next_mf (fid, line_num, i, j, 'output');
-      if (j == 1)
-        fis.output(i).mf = next_mf;
-      else
-        fis.output(i).mf = [fis.output(i).mf, next_mf];
-      endif
-    endfor
-  endfor
-
-  ##--------------------------------------------------------------------------
-  ## Read [Rules] section from file.
-  ## Add the rules to the FIS.
-  ##--------------------------------------------------------------------------
-
-  line = get_line (fid, line_num++);
-  line = get_line (fid, line_num++);
-  for i = 1 : num_rules
-    [next_rule, line_num] = ...
-      get_next_rule (fid, line_num, num_inputs, num_outputs);
-    if (i == 1)
-      fis.rule = next_rule;
-    else
-      fis.rule = [fis.rule, next_rule];
-    endif
-  endfor
 endfunction
 
 ##------------------------------------------------------------------------------
@@ -240,81 +153,82 @@ endfunction
 ##------------------------------------------------------------------------------
 
 function [fis, num_inputs, num_outputs, num_rules, line_num] = ...
-            init_fis_struct (fid, line_num)
+            init_fis_struct (fid)
 
   ##--------------------------------------------------------------------------
   ## Read the [System] section.
   ##--------------------------------------------------------------------------
 
-  line = get_line (fid, line_num++);
-  line = get_line (fid, line_num++);
-  [fis_name, count] = sscanf (line, "Name='%s", "C");
+  line_num = 1;
+  [line, line_num] = get_line (fid, line_num);
+  [line, line_num] = get_line (fid, line_num);
+  [fis_name, count] = sscanf (line, "Name = '%s", "C");
   if (count != 1)
     error ("line %d: name of FIS expected\n", --line_num);
   endif
   fis_name = trim_last_char (fis_name);
 
-  line = get_line (fid, line_num++);
-  [fis_type, count] = sscanf (line, "Type='%s", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [fis_type, count] = sscanf (line, "Type = '%s", "C");
   if (count != 1)
     error ("line %d: type of FIS expected\n", --line_num);
   endif
   fis_type = trim_last_char (fis_type);
 
-  line = get_line (fid, line_num++);
-  [fis_version, count] = sscanf (line, "Version=%f", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [fis_version, count] = sscanf (line, "Version = %f", "C");
   if (count != 1)
     error ("line %d: version of FIS expected\n", --line_num);
   endif
 
-  line = get_line (fid, line_num++);
-  [num_inputs, count] = sscanf (line, "NumInputs=%d", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [num_inputs, count] = sscanf (line, "NumInputs = %d", "C");
   if (count != 1)
     error ("line %d: number of inputs expected\n", --line_num);
   endif
 
-  line = get_line (fid, line_num++);
-  [num_outputs, count] = sscanf (line, "NumOutputs=%d", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [num_outputs, count] = sscanf (line, "NumOutputs = %d", "C");
   if (count != 1)
     error ("line %d: number of oututs expected\n", --line_num);
   endif
 
-  line = get_line (fid, line_num++);
-  [num_rules, count] = sscanf (line, "NumRules=%d", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [num_rules, count] = sscanf (line, "NumRules = %d", "C");
   if (count != 1)
     error ("line %d: number of rules expected\n", --line_num);
   endif
 
-  line = get_line (fid, line_num++);
-  [and_method, count] = sscanf (line, "AndMethod='%s", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [and_method, count] = sscanf (line, "AndMethod = '%s", "C");
   if (count != 1)
     error ("line %d: and method expected\n", --line_num);
   endif
   and_method = trim_last_char (and_method);
 
-  line = get_line (fid, line_num++);
-  [or_method, count] = sscanf (line, "OrMethod='%s", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [or_method, count] = sscanf (line, "OrMethod = '%s", "C");
   if (count != 1)
     error ("line %d: or method expected\n", --line_num);
   endif
   or_method = trim_last_char (or_method);
 
-  line = get_line (fid, line_num++);
-  [imp_method, count] = sscanf (line, "ImpMethod='%s", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [imp_method, count] = sscanf (line, "ImpMethod = '%s", "C");
   if (count != 1)
     error ("line %d: implication method expected\n", --line_num);
   endif
   imp_method = trim_last_char (imp_method);
 
-  line = get_line (fid, line_num++);
-  [agg_method, count] = sscanf (line, "AggMethod='%s", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [agg_method, count] = sscanf (line, "AggMethod = '%s", "C");
   if (count != 1)
     error ("line %d: aggregation method expected\n", --line_num);
   endif
   agg_method = trim_last_char (agg_method);
 
-  line = get_line (fid, line_num++);
-  [defuzz_method, count] = sscanf (line, "DefuzzMethod='%s", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [defuzz_method, count] = sscanf (line, "DefuzzMethod = '%s", "C");
   if (count != 1)
     error ("line %d: defuzzification method expected\n", --line_num);
   endif
@@ -326,6 +240,7 @@ function [fis, num_inputs, num_outputs, num_rules, line_num] = ...
 
   fis = struct ('name', fis_name, ...
                 'type', fis_type, ...
+                'version', fis_version, ...
                 'andMethod', and_method, ...
                 'orMethod', or_method, ...
                 'impMethod', imp_method, ...
@@ -334,6 +249,97 @@ function [fis, num_inputs, num_outputs, num_rules, line_num] = ...
                 'input', [], ...
                 'output', [], ...
                 'rule', []);
+
+endfunction
+
+##------------------------------------------------------------------------------
+## Function: read_fis_inputs
+## Purpose:  For each FIS input, read the [Input<number>] section from file.
+##           Add each new input and its membership functions to the FIS
+##           structure.
+##------------------------------------------------------------------------------
+
+function [fis, line_num] = read_fis_inputs (fid, fis, num_inputs, line_num)
+
+  for i = 1 : num_inputs
+    [next_fis_input, num_mfs, line_num] = ...
+      get_next_fis_io (fid, line_num, i, 'input');
+    if (i == 1)
+      fis.input = next_fis_input;
+    else
+      fis.input = [fis.input, next_fis_input];
+    endif
+
+    ##----------------------------------------------------------------------
+    ## Read membership function info for the current FIS input from file.
+    ## Add each new membership function to the FIS struct.
+    ##----------------------------------------------------------------------
+
+    for j = 1 : num_mfs
+      [next_mf, line_num] = get_next_mf (fid, line_num, i, j, 'input');
+      if (j == 1)
+        fis.input(i).mf = next_mf;
+      else
+        fis.input(i).mf = [fis.input(i).mf, next_mf];
+      endif
+    endfor
+  endfor
+
+endfunction
+
+##------------------------------------------------------------------------------
+## Function: read_fis_outputs
+## Purpose:  For each FIS output, read the [Output<number>] section from file.
+##           Add each new output and its membership functions to the FIS
+##           structure.
+##------------------------------------------------------------------------------
+
+function [fis, line_num] = read_fis_outputs (fid, fis, num_outputs, line_num)
+
+  for i = 1 : num_outputs
+    [next_fis_output, num_mfs, line_num] = ...
+      get_next_fis_io (fid, line_num, i, 'output');
+    if (i == 1)
+      fis.output = next_fis_output;
+    else
+      fis.output = [fis.output, next_fis_output];
+    endif
+
+    ##----------------------------------------------------------------------
+    ## Read membership function info for the current FIS output from file.
+    ## Add each new membership function to the FIS struct.
+    ##----------------------------------------------------------------------
+
+    for j = 1 : num_mfs
+      [next_mf, line_num] = get_next_mf (fid, line_num, i, j, 'output');
+      if (j == 1)
+        fis.output(i).mf = next_mf;
+      else
+        fis.output(i).mf = [fis.output(i).mf, next_mf];
+      endif
+    endfor
+  endfor
+
+endfunction
+
+##------------------------------------------------------------------------------
+## Function: read_rules
+## Purpose:  Read the [Rules] section from file, and add the rules to the FIS.
+##------------------------------------------------------------------------------
+
+function fis = read_rules (fid, fis, num_inputs, num_outputs, ...
+                           num_rules, line_num)
+
+  [line, line_num] = get_line (fid, line_num);
+  for i = 1 : num_rules
+    [next_rule, line_num] = ...
+      get_next_rule (fid, line_num, num_inputs, num_outputs);
+    if (i == 1)
+      fis.rule = next_rule;
+    else
+      fis.rule = [fis.rule, next_rule];
+    endif
+  endfor
 
 endfunction
 
@@ -352,32 +358,31 @@ function [next_fis_io, num_mfs, line_num] = ...
   ## Read [Input<i>] or [Output<i>] section from file.
   ##--------------------------------------------------------------------------
 
-  line = get_line (fid, line_num++);
-  line = get_line (fid, line_num++);
+  [line, line_num] = get_line (fid, line_num);
   if (strcmp ('input', in_or_out))
-    [io_index, count] = sscanf (line, "[Input%d", "C");
+    [io_index, count] = sscanf (line, "[Input %d", "C");
   else
-    [io_index, count] = sscanf (line, "[Output%d", "C");
+    [io_index, count] = sscanf (line, "[Output %d", "C");
   endif
   if ((count != 1) || (io_index != i))
     error ("line %d: next input or output expected\n", --line_num);
   endif
 
-  line = get_line (fid, line_num++);
-  [var_name, count] = sscanf (line, "Name='%s", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [var_name, count] = sscanf (line, "Name = '%s", "C");
   if (count != 1)
     error ("line %d: name of %s %d expected\n", --line_num, in_or_out, i);
   endif
   var_name = trim_last_char (var_name);
 
-  line = get_line (fid, line_num++);
-  [range_low, range_high, count] = sscanf (line, "Range=[%f %f]", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [range_low, range_high, count] = sscanf (line, "Range = [ %f %f ]", "C");
   if ((count != 2) || (range_low > range_high))
     error ("line %d: range for %s %d expected\n", --line_num, in_or_out, i);
   endif
 
-  line = get_line (fid, line_num++);
-  [num_mfs, count] = sscanf (line, "NumMFs=%d", "C");
+  [line, line_num] = get_line (fid, line_num);
+  [num_mfs, count] = sscanf (line, "NumMFs = %d", "C");
   if (count != 1)
     error ("line %d: number of MFs for %s %d expected\n", --line_num, ...
            in_or_out, i);
@@ -407,9 +412,9 @@ function [next_mf, line_num] = get_next_mf (fid, line_num, i, j, in_or_out)
   ## Read membership function info for the new FIS input or output from file.
   ##--------------------------------------------------------------------------
 
-  line = get_line (fid, line_num++);
-  line_vec = strsplit (line, ":'[]", true);
-  mf_index = sscanf (line_vec{1}, "MF%d", "C");
+  [line, line_num] = get_line (fid, line_num);
+  line_vec = discard_empty_strings (strsplit (line, "=':,[] \t", true));
+  mf_index = sscanf (line_vec{1}, "MF %d", "C");
   mf_name = line_vec{2};
   mf_type = line_vec{3};
   if (mf_index != j)
@@ -417,12 +422,14 @@ function [next_mf, line_num] = get_next_mf (fid, line_num, i, j, in_or_out)
            in_or_out, i);
   endif
 
-  [mf_params, count] = sscanf (line_vec{5}, ...
-                       "%f %f %f %f %f %f %f %f %f %f", [1, Inf]);
-  if (count == 0)
-    error ("line %d: %s %d MF%d params expected\n", --line_num,
-           in_or_out, i, j);
-  endif
+  j = 1;
+  for i = 4 : length (line_vec)
+    [mf_params(j++), count] = sscanf (line_vec{i}, "%f", "C");
+    if (count != 1)
+      error ("line %d: %s %d MF%d params expected\n", --line_num,
+             in_or_out, i, j);
+    endif
+  endfor
 
   ##--------------------------------------------------------------------------
   ## Create a new membership function structure.
@@ -442,7 +449,7 @@ endfunction
 function [next_rule, line_num] = get_next_rule (fid, line_num, num_inputs, ...
                                                 num_outputs)
 
-  line = get_line (fid, line_num++);
+  [line, line_num] = get_line (fid, line_num);
   line_vec = strsplit (line, ",():", true);
 
   ##--------------------------------------------------------------------------
@@ -501,12 +508,34 @@ endfunction
 ##           line. Print an error message and halt on eof.
 ##------------------------------------------------------------------------------
 
-function line = get_line (fid, line_num)
+function [line, line_num] = get_line (fid, line_num)
 
-  line = fgetl (fid);
-  if (isequal (line, -1))
-    error ("unexpected end of file at line %d", line_num);
-  endif
+  do
+    line = fgetl (fid);
+    if (isequal (line, -1))
+      error ("unexpected end of file at line %d", line_num);
+    endif
+    line = trim_leading_whitespace (line);
+    line_num++;
+  until (!comment_or_empty (line))
+
+endfunction
+
+##------------------------------------------------------------------------------
+## Function: discard_empty_strings
+## Purpose:  Return a copy of the input cell array without any 
+##           empty string elements.
+##------------------------------------------------------------------------------
+
+function ret_val =  discard_empty_strings (cell_array)
+
+  ret_val = {};
+  j = 1;
+  for i = 1 : length (cell_array)
+    if (!strcmp (cell_array{i}, ""))
+      ret_val{j++} = cell_array{i};
+    endif
+  endfor
 
 endfunction
 
@@ -519,4 +548,36 @@ function str = trim_last_char (str)
 
   str = str(1 : length (str) - 1);
 
+endfunction
+
+##------------------------------------------------------------------------------
+## Function: trim_leading_whitespace
+## Purpose:  Return a copy of the input string without leading whitespace.
+##------------------------------------------------------------------------------
+
+function str = trim_leading_whitespace (str)
+  str_length = length (str);
+  i = 1;
+  while (i <= str_length && ...
+         (str (i) == ' ' || str (i) == '\t' || str (i) == '\n' || ...
+          str (i) == '\f' || str (i) == '\r' || str (i) == '\v'))
+    i++;
+  endwhile
+  if (i > str_length)
+    str = "";
+  else
+    str = str (i : str_length);
+  endif
+endfunction
+
+##------------------------------------------------------------------------------
+## Function: comment_or_empty
+## Purpose:  Return true if the line is a comment (that is, it begins with
+##           '#' or '%') or an empty line, and return false otherwise.
+##           It is assumed that leading whitespace has been removed from the
+##           input line.
+##------------------------------------------------------------------------------
+
+function ret_val = comment_or_empty (line)
+  ret_val = (length (line) == 0) || (line (1) == '#') || (line (1) == '%');
 endfunction

@@ -35,7 +35,7 @@
 ## Return the empty set.
 ## @item 2
 ## Return a specified property of the FIS structure. The properties
-## that may be specified are: name, type, numinputs, numoutputs,
+## that may be specified are: name, type, version, numinputs, numoutputs,
 ## numinputmfs, numoutputmfs, numrules, andmethod, ormethod,
 ## impmethod, addmethod, defuzzmethod, inlabels, outlabels,
 ## inrange, outrange, inmfs, outmfs, inmflabels, outmflabels,
@@ -60,7 +60,7 @@
 ## @item fis
 ## an FIS structure
 ## @item property
-## a string; one of: 'name', 'type', 'numinputs',
+## a string; one of: 'name', 'type', 'version', 'numinputs',
 ## 'numoutputs', 'numinputmfs', 'numoutputmfs',
 ## 'numrules', 'andmethod', 'ormethod', 'impmethod',
 ## 'addmethod', 'defuzzmethod' 'inlabels', 'outlabels',
@@ -93,7 +93,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      getfis.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 31 Aug 2011
 
 ##------------------------------------------------------------------------------
 
@@ -169,8 +169,8 @@ function retval = getfis_two_args (fis, arg2)
     puts ("Type 'help getfis' for more information.\n");
     error ("the first argument to getfis must be an FIS structure\n");
   elseif (!(is_string (arg2) && ismember (tolower (arg2), {'name', 'type', ...
-           'numinputs', 'numoutputs', 'numinputmfs', 'numoutputmfs', ...
-           'numrules', 'andmethod', 'ormethod', 'impmethod', ...
+           'version', 'numinputs', 'numoutputs', 'numinputmfs', ...
+           'numoutputmfs', 'numrules', 'andmethod', 'ormethod', 'impmethod', ...
            'aggmethod', 'defuzzmethod', 'inlabels', 'outlabels', ...
            'inrange', 'outrange', 'inmfs', 'outmfs', 'inmflabels', ...
            'outmflabels', 'inmftypes', 'outmftypes', 'inmfparams', ...
@@ -184,6 +184,7 @@ function retval = getfis_two_args (fis, arg2)
   switch (tolower (arg2))
     case 'name'         retval = fis.name;
     case 'type'         retval = fis.type;
+    case 'version'      retval = fis.version;
     case 'numinputs'    retval = columns (fis.input);
     case 'numoutputs'   retval = columns (fis.output);
     case 'numrules'     retval = columns(fis.rule);

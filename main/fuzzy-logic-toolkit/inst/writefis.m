@@ -53,14 +53,9 @@
 ## @end table
 ##
 ## @noindent
-## CURRENT LIMITATION AND KNOWN ERROR:
-## @itemize @bullet
-## @item
-## "Version" is not yet implemented. (Always printed as 1.0.)
-## @item
+## KNOWN ERROR:
 ## When using the file dialog, if the user clicks "Cancel" instead of
 ## saving the file, an error message is generated.
-## @end itemize
 ##
 ## @seealso{readfis}
 ## @end deftypefn
@@ -69,7 +64,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      writefis.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 27 Aug 2011
 
 function writefis (fis, filename='filename.fis', dialog='dummy')
 
@@ -164,7 +159,7 @@ function write_system_section (fid, fis)
   fprintf (fid, "[System]\n");
   fprintf (fid, "Name='%s'\n", fis.name);
   fprintf (fid, "Type='%s'\n", fis.type);
-  fprintf (fid, "Version=%.1f\n", 1.0);
+  fprintf (fid, "Version=%.1f\n", fis.version);
   fprintf (fid, "NumInputs=%d\n", columns(fis.input));
   fprintf (fid, "NumOutputs=%d\n", columns(fis.output));
   fprintf (fid, "NumRules=%d\n", columns(fis.rule));

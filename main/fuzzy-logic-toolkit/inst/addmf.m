@@ -50,53 +50,22 @@
 ## structure outputs or to Sugeno-type FIS structures, and the result of using
 ## them for FIS inputs or Mamdani-type FIS outputs has not yet been tested.
 ##
-## For example, the following code produces two figures, each showing a term
-## set for one of the FIS input variables:
-##
-## @example
-## @group
-## ## Create new FIS.
-## a = newfis ('Heart-Disease-Risk', 'sugeno', ...
-##             'min', 'max', 'min', 'max', 'wtaver');
-##
-## ## Add two inputs and their membership functions.
-## a = addvar (a, 'input', 'LDL-Level', [0 300]);
-## a = addmf (a, 'input', 1, 'Low', 'trapmf', ...
-##            [-1 0 90 110]);
-## a = addmf (a, 'input', 1, 'Low-Borderline', 'trapmf', ...
-##            [90 110 120 140]);
-## a = addmf (a, 'input', 1, 'Borderline', 'trapmf', ...
-##            [120 140 150 170]);
-## a = addmf (a, 'input', 1, 'High-Borderline', 'trapmf', ...
-##            [150 170 180 200]);
-## a = addmf (a, 'input', 1, 'High', 'trapmf', ...
-##            [180 200 300 301]);
-##
-## a = addvar (a, 'input', 'HDL-Level', [0 100]);
-## a = addmf (a, 'input', 2, 'Low-HDL', 'trapmf', ...
-##            [-1 0 35 45]);
-## a = addmf (a, 'input', 2, 'Moderate-HDL', 'trapmf', ...
-##            [35 45 55 65]);
-## a = addmf (a, 'input', 2, 'High-HDL', 'trapmf', ...
-##            [55 65 100 101]);
-##
-## ## Plot the input membership functions.
-## plotmf (a, 'input', 1);
-## plotmf (a, 'input', 2);
-## @end group
-## @end example
-##
 ## @noindent
-## To run this code, type @t{addmf_demo} at the Octave prompt.
+## To run the demonstration code below, type @t{demo('addmf')} at the
+## Octave prompt. This demo creates two FIS input variables and associated
+## membership functions and then produces two figures showing the term
+## sets for the two FIS inputs.
 ##
-## @seealso{addmf_demo, rmmf, setfis}
+## @seealso{rmmf, setfis}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function membership
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addmf.m
-## Last-Modified: 16 Jul 2011
+## Note:          The demo code is based on an assignment written by
+##                Dr. Bruce Segee (University of Maine Dept. of ECE).
+## Last-Modified: 30 Aug 2011
 
 function fis = addmf (fis, in_or_out, var_index, mf_name, mf_type, mf_params)
 
@@ -142,3 +111,25 @@ function fis = addmf (fis, in_or_out, var_index, mf_name, mf_type, mf_params)
   endif
 
 endfunction
+
+%!demo
+%! ## Create new FIS.
+%! a = newfis ('Heart-Disease-Risk', 'sugeno', ...
+%!             'min', 'max', 'min', 'max', 'wtaver');
+%! 
+%! ## Add two inputs and their membership functions.
+%! a = addvar (a, 'input', 'LDL-Level', [0 300]);
+%! a = addmf (a, 'input', 1, 'Low', 'trapmf', [-1 0 90 110]);
+%! a = addmf (a, 'input', 1, 'Low-Borderline', 'trapmf', [90 110 120 140]);
+%! a = addmf (a, 'input', 1, 'Borderline', 'trapmf', [120 140 150 170]);
+%! a = addmf (a, 'input', 1, 'High-Borderline', 'trapmf', [150 170 180 200]);
+%! a = addmf (a, 'input', 1, 'High', 'trapmf', [180 200 300 301]);
+%! 
+%! a = addvar (a, 'input', 'HDL-Level', [0 100]);
+%! a = addmf (a, 'input', 2, 'Low-HDL', 'trapmf', [-1 0 35 45]);
+%! a = addmf (a, 'input', 2, 'Moderate-HDL', 'trapmf', [35 45 55 65]);
+%! a = addmf (a, 'input', 2, 'High-HDL', 'trapmf', [55 65 100 101]);
+%! 
+%! ## Plot the input membership functions.
+%! plotmf (a, 'input', 1);
+%! plotmf (a, 'input', 2);

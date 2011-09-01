@@ -60,7 +60,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_firing_strength.m
-## Last-Modified: 18 Jul 2011
+## Last-Modified: 30 Aug 2011
 
 function firing_strength = eval_firing_strength (fis, rule_input)
 
@@ -68,7 +68,7 @@ function firing_strength = eval_firing_strength (fis, rule_input)
   num_inputs = columns (fis.input);               ## num_inputs  == N
 
   ## Initialize output matrix to prevent inefficient resizing.
-  firing_strength = zeros (num_rules);
+  firing_strength = zeros (1, num_rules);
 
   ## For each rule
   ##    1. Apply connection to find matching degree of the rule antecedent.

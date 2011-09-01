@@ -34,7 +34,7 @@
 ## displays information about the FIS in the Octave window
 ## @end itemize
 ##
-## @seealso{addmf_demo, addvar_demo, heart_demo_2, showrule_demo}
+## @seealso{cubic_approx_demo, heart_demo_2, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
@@ -43,7 +43,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy tests demos
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      heart_demo_1.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 30 Aug 2011
 
 ## Create new FIS.
 a = newfis ('Heart-Disease-Risk', 'sugeno', ...

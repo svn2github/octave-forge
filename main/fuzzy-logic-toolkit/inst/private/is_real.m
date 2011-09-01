@@ -17,32 +17,35 @@
 ## see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Script File} {} showrule_demo
+## @deftypefn {Function File} {@var{y} =} is_real (@var{x})
 ##
-## Demonstrate the function @t{showrule} by executing the examples
-## given in the comment at the top of showrule.m.
+## Return 1 if @var{x} is an real scalar, and return 0 otherwise.
 ##
-## @seealso{heart_demo_1, showrule}
+## is_real is a private function that localizes the test for real scalars.
+##
+## Examples:
+## @example
+## @group
+## is_real(6)         ==> 1
+## is_real(6.2)       ==> 1
+## is_real(ones(2))   ==> 0
+## is_real(6 + 0i)    ==> 1
+## is_real(6 + i)     ==> 0
+## is_real([0])       ==> 1
+## is_real([0 0])     ==> 0
+## @end group
+## @end example
+##
 ## @end deftypefn
 
 ## Author:        L. Markowsky
-## Keywords:      fuzzy-logic-toolkit fuzzy tests demos
-## Directory:     fuzzy-logic-toolkit/inst
-## Filename:      showrule_demo.m
-## Last-Modified: 16 Jul 2011
+## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
+## Directory:     fuzzy-logic-toolkit/inst/private/
+## Filename:      is_real.m
+## Last-Modified: 26 Aug 2011
 
-fis = readfis ('sugeno-tip-calculator.fis');
+function y = is_real (x)
 
-puts ("\nOutput of: showrule(fis)\n");
-showrule (fis)
+  y = isscalar (x) && isreal (x);
 
-puts ("\nOutput of: showrule(fis, [2 4], 'symbolic')\n");
-showrule (fis, [2 4], 'symbolic')
-
-puts ("\nOutput of: showrule(fis, 1:4, 'indexed')\n");
-showrule (fis, 1:4, 'indexed')
-
-puts ("\nOutput of: showrule(fis, 1, 'verbose', 'francais')\n");
-showrule (fis, 1, 'verbose', 'francais')
-
-puts ("\n");
+endfunction

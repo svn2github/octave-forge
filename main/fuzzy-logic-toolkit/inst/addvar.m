@@ -37,31 +37,17 @@
 ## The vector components x1 and x2, which must also satisfy x1 <= x2,
 ## specify the lower and upper bounds of the variable's domain.
 ##
-## For example:
-## @example
-## @group
-## a = newfis('Heart-Disease-Risk', 'sugeno', ...
-##            'min', 'max', 'min', 'max', 'wtaver');
-## a = addvar(a, 'input', 'LDL-Level', [0 300]);
-## getfis(a, 'input', 1);
-##     ==> Name = LDL_Level
-##         NumMFs = 0
-##         MFLabels =
-##         Range = [0 300]
-## @end group
-## @end example
-##
 ## @noindent
-## To run this code, type @t{addvar_demo} at the Octave prompt.
+## To run the demonstration code below, type @t{demo('addvar')} at the
+## Octave prompt.
 ##
-## @seealso{addvar_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy variable
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addvar.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 30 Aug 2011
 
 function fis = addvar (fis, in_or_out, var_name, var_range)
 
@@ -105,3 +91,9 @@ function fis = addvar (fis, in_or_out, var_name, var_range)
   endif
 
 endfunction
+
+%!demo
+%! a = newfis ('Heart-Disease-Risk', 'sugeno', ...
+%!             'min', 'max', 'min', 'max', 'wtaver');
+%! a = addvar (a, 'input', 'LDL-Level', [0 300]);
+%! getfis (a, 'input', 1);

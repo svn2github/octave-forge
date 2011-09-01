@@ -1,55 +1,103 @@
+2011-09-01  Version 0.2.4
+
+  * ChangeLog: Updated file.
+  * DESCRIPTION: Updated file.
+  * INDEX: Updated file.
+  * inst/*.m: Numerous trivial changes.
+  * inst/addmf_demo.m: Merged into addmf.m as an embedded demo
+      and then removed.
+  * inst/addvar_demo.m: Merged into addvar.m as an embedded demo
+      and then removed.
+  * inst/showrule_demo.m: Merged into showrule.m as four embedded
+      demos and then removed.
+  * inst/gensurf.m: Edited to permit scalar grids argument.
+  * inst/getfis.m: Edited to implement "version" field in the FIS.
+  * inst/newfis.m: Edited to implement "version" field in the FIS.
+  * inst/readfis.m: Edited to implement "version" field in the FIS
+      and to handle comments, whitespace, and variable number of
+      membership function parameters.
+  * inst/setfis.m: Edited to implement "version" field in the FIS.
+      Fixed several bugs.
+  * inst/writefis.m: Edited to implement "version" field in the FIS.
+  * inst/cubic_approximator.fis: Renamed cubic-approximator.fis.
+  * inst/heart_disease_risk.fis: Renamed heart-disease-risk.fis.
+      Added comments and whitespace.
+  * inst/linear_tip_calculator.fis: Renamed linear-tip-calculator.fis.
+  * inst/mamdani_tip_calculator.fis: Renamed mamdani-tip-calculator.fis
+      and edited to have multiple outputs.
+  * inst/mamdani_tip_demo.m: Edited to demonstrate multiple outputs.
+  * inst/sugeno_tip_calculator.fis: Renamed sugeno-tip-calculator.fis
+      and edited to have multiple outputs.
+  * inst/sugeno_tip_demo.m: Edited to demonstrate multiple outputs.
+  * inst/private/defuzzify_output_mamdani.m: Bug fix (to handle an FIS
+      with multiple outputs).
+  * inst/private/defuzzify_output_sugeno.m: Bug fix (to handle an FIS
+      with multiple outputs).
+  * inst/private/eval_firing_strength.m: Bug fix.
+  * inst/private/eval_rules_mamdani.m: Bug fix (to handle an FIS with
+      multiple outputs).
+  * inst/private/eval_rules_sugeno.m: Bug fix (to handle an FIS with
+      multiple outputs).
+  * inst/private/is_grid_spec.m: Edited test to make more efficient.
+  * inst/private/is_real.m: New file.
+  * Demos tested under: Fedora 15/Octave 3.4.2
+  * Demos tested under: Fedora 15/Octave 3.2.4
+
 2011-07-19  Version 0.2.3
 
-	* ChangeLog: Updated file.
-	* DESCRIPTION: Updated file.
-	* INDEX: Updated file.
-	* inst/*.m: Edited numerous comments and texinfo comment blocks.
-	* inst/private/*.m: Edited numerous comments and texinfo comment blocks.
-	* inst/cubic_approx_demo.m: New file.
-	* inst/cubic-approximator.fis: New file.
-	* inst/linear-tip-calculator.fis: New file.
-	* inst/linear_tip_demo.m: New file.
-	* inst/heart_demo_1.m: Renamed commandline_demo.m.
-	* inst/heart_demo_2.m: Renamed heart_demo.m.
-	* inst/mamdani_tip_demo.m: Renamed mamdani_demo.m.
-	* inst/sugeno_tip_demo.m: Renamed tipping_demo.m.
-	* inst/gensurf.m: Edited to handle 2-dimensional plots.
-	* inst/private/eval_rules_sugeno.m: Edited to handle linear output membership functions.
-	* Demos tested under: Fedora 15/Octave 3.4.0
-	* Demos tested under: Fedora 15/Octave 3.2.4
+  * ChangeLog: Updated file.
+  * DESCRIPTION: Updated file.
+  * INDEX: Updated file.
+  * inst/*.m: Edited numerous comments and texinfo comment blocks.
+  * inst/private/*.m: Edited numerous comments and texinfo comment blocks.
+  * inst/cubic_approx_demo.m: New file.
+  * inst/cubic-approximator.fis: New file.
+  * inst/linear-tip-calculator.fis: New file.
+  * inst/linear_tip_demo.m: New file.
+  * inst/heart_demo_1.m: Renamed commandline_demo.m.
+  * inst/heart_demo_2.m: Renamed heart_demo.m.
+  * inst/mamdani_tip_demo.m: Renamed mamdani_demo.m.
+  * inst/sugeno_tip_demo.m: Renamed tipping_demo.m.
+  * inst/gensurf.m: Edited to handle 2-dimensional plots.
+  * inst/private/eval_rules_sugeno.m: Edited to handle linear output
+      membership functions.
+  * Demos tested under: Fedora 15/Octave 3.4.0
+  * Demos tested under: Fedora 15/Octave 3.2.4
 
 2011-06-21  Version 0.2.2
 
-	* ChangeLog: New file.
-	* DESCRIPTION: Updated file.
-	* inst/addmf.m: Modified to workaround a bug in Octave 3.4.0.
-	* inst/addrule.m: Modified to workaround a bug in Octave 3.4.0.
-	* inst/addvar.m: Modified to workaround a bug in Octave 3.4.0.
-	* inst/gaussmf.m: Modified demo and texinfo comment string.
-	* inst/getfis.m: Modified to workaround a bug in Octave 3.4.0.
-	* inst/readfis.m: Modified to workaround a bug in Octave 3.4.0.
-	* inst/private/aggregate_output_mamdani.m: Modified to workaround a bug in Octave 3.4.0.
-	* inst/private/evalmf_private.m: Modified to workaround a bug in Octave 3.4.0.
-	* Demos tested under: Fedora 15/Octave 3.4.0
-	* Demos tested under: Fedora 15/Octave 3.2.4
+  * ChangeLog: New file.
+  * DESCRIPTION: Updated file.
+  * inst/addmf.m: Modified to workaround a bug in Octave 3.4.0.
+  * inst/addrule.m: Modified to workaround a bug in Octave 3.4.0.
+  * inst/addvar.m: Modified to workaround a bug in Octave 3.4.0.
+  * inst/gaussmf.m: Modified demo and texinfo comment string.
+  * inst/getfis.m: Modified to workaround a bug in Octave 3.4.0.
+  * inst/readfis.m: Modified to workaround a bug in Octave 3.4.0.
+  * inst/private/aggregate_output_mamdani.m: Modified to workaround
+      a bug in Octave 3.4.0.
+  * inst/private/evalmf_private.m: Modified to workaround a bug in
+      Octave 3.4.0.
+  * Demos tested under: Fedora 15/Octave 3.4.0
+  * Demos tested under: Fedora 15/Octave 3.2.4
 
 2011-06-08  Version 0.2.1
 
-	* Initial release on Octave-Forge.
-	* Merged membership function demos into related function files.
-	* Created documentation for Octave-Forge website.
-	* DESCRIPTION: Updated file.
-	* Demos tested under: Fedora 13/Octave 3.2.4
+  * Initial release on Octave-Forge.
+  * Merged membership function demos into related function files.
+  * Created documentation for Octave-Forge website.
+  * DESCRIPTION: Updated file.
+  * Demos tested under: Fedora 13/Octave 3.2.4
 
 2011-05-25  Version 0.2
 
-	* Moved tests/demos/* and tests/fis/* to inst/*.
-	* Changed indentation and spacing to conform to Octave style.
-	* Converted comments to texinfo.
-	* DESCRIPTION: Update file.
-	* Demos tested under: Fedora 13/Octave 3.2.4
+  * Moved tests/demos/* and tests/fis/* to inst/*.
+  * Changed indentation and spacing to conform to Octave style.
+  * Converted comments to texinfo.
+  * DESCRIPTION: Update file.
+  * Demos tested under: Fedora 13/Octave 3.2.4
 
 2011-04-19  Version 0.1
 
-	* Initial release on SourceForge.
-	* Demos tested under: Fedora 13/Octave 3.2.4
+  * Initial release on SourceForge.
+  * Demos tested under: Fedora 13/Octave 3.2.4

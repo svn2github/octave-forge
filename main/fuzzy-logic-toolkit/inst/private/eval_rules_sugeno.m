@@ -61,7 +61,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_rules_sugeno.m
-## Last-Modified: 18 Jul 2011
+## Last-Modified: 29 Aug 2011
 
 function rule_output = eval_rules_sugeno (fis, firing_strength, user_input)
 
@@ -105,8 +105,8 @@ function rule_output = eval_rules_sugeno (fis, firing_strength, user_input)
           ## Store result in column of rule_output corresponding
           ## to the (rule, output) pair.
 
-          rule_output(1, (i - 1) * num_outputs + j) = location;
-          rule_output(2, (i - 1) * num_outputs + j) = height;
+          rule_output(1, (j - 1) * num_rules + i) = location;
+          rule_output(2, (j - 1) * num_rules + i) = height;
         endif
       endfor
     endif

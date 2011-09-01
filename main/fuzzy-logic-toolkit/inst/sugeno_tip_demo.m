@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Script File} {} sugeno_tip_demo
 ##
-## Demonstrate the use of the Octave Fuzzy Logic Toolkit to read and evaluate a
-## Sugeno-type FIS stored in a file.
+## Demonstrate the use of the Octave Fuzzy Logic Toolkit to read and evaluate
+## a Sugeno-type FIS with multiple outputs stored in a text file.
 ##
 ## The demo:
 ## @itemize @minus
@@ -29,7 +29,7 @@
 ## @item
 ## plots the input and output membership functions
 ## @item
-## plots the output as a function of the inputs
+## plots the three outputs as a function of the inputs
 ## @item
 ## evaluates the Sugeno-type FIS for six inputs
 ## @end itemize
@@ -43,21 +43,26 @@
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      sugeno_tip_demo.m
-## Last-Modified: 17 Jul 2011
+## Last-Modified: 29 Aug 2011
 
 ## Read the FIS structure from a file.
-fis = readfis ('sugeno-tip-calculator.fis');
+fis = readfis ('sugeno_tip_calculator.fis');
 
 ## Plot the input and output membership functions.
 plotmf (fis, 'input', 1);
 plotmf (fis, 'input', 2);
 plotmf (fis, 'output', 1);
+plotmf (fis, 'output', 2);
+plotmf (fis, 'output', 3);
 
-## Plot the Tip as a function of Food-Quality and Service.
-gensurf (fis);
+## Plot the cheap, average, and generous tips as a function of
+## Food-Quality and Service.
+gensurf (fis, [1 2], 1);
+gensurf (fis, [1 2], 2);
+gensurf (fis, [1 2], 3);
 
 ## Calculate the Tip for 6 sets of input values: 
 puts ("\nFor the following values of (Food Quality, Service):\n\n");
 food_service = [1 1; 5 5; 10 10; 4 6; 6 4; 7 4]
-puts ("\nThe Tip is:\n\n");
+puts ("\nThe cheap, average, and generous tips are:\n\n");
 tip = evalfis (food_service, fis, 1001)

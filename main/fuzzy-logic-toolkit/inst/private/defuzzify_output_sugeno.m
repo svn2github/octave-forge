@@ -67,12 +67,12 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      defuzzify_output_sugeno.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 29 Aug 2011
 
 function output = defuzzify_output_sugeno (fis, aggregated_output)
 
   num_outputs = columns (fis.output);
-  output = zeros (num_outputs);
+  output = zeros (1, num_outputs);
 
   for i = 1 : num_outputs
     next_agg_output = aggregated_output(i).aggregated_output;

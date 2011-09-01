@@ -44,23 +44,26 @@
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      mamdani_tip_demo.m
-## Last-Modified: 17 Jul 2011
+## Last-Modified: 30 Aug 2011
 
 ## Read the FIS structure from a file.
-fis=readfis ('mamdani-tip-calculator');
+fis=readfis ('mamdani_tip_calculator');
 
 ## Plot the input and output membership functions.
 plotmf (fis, 'input', 1);
 plotmf (fis, 'input', 2);
 plotmf (fis, 'output', 1);
+plotmf (fis, 'output', 2);
 
-## Plot the Tip as a function of Food-Quality and Service.
-gensurf (fis);
+## Plot the Tip and Check + Tip as functions of Food-Quality and Service.
+gensurf (fis, [1 2], 1);
+gensurf (fis, [1 2], 2);
 
-## Calculate the Tip using (Food-Quality, Service) = (4, 6).
+## Calculate the Tip and Check + Tip using (Food-Quality, Service) = (4, 6).
 [output, rule_input, rule_output, fuzzy_output] = evalfis ([4 6], fis, 1001);
 
-## Plot the output of the individual fuzzy rules (on one set of axes).
+## Plot the first output (Tip) of the individual fuzzy rules
+## on one set of axes.
 x_axis = linspace (fis.output(1).range(1), fis.output(1).range(2), 1001);
 colors = ['r' 'b' 'm' 'g'];
 figure ('NumberTitle', 'off', 'Name', ...
@@ -77,12 +80,13 @@ xlabel ('Tip', 'FontWeight', 'bold');
 grid;
 hold;
 
-## Plot the aggregated fuzzy output and the crisp output (on one set of axes).
+## Plot the first aggregated fuzzy output and the first crisp output (Tip)
+## on one set of axes.
 figure('NumberTitle', 'off', 'Name', 'Aggregation and Defuzzification for Input = (4, 6)');
-plot (x_axis, fuzzy_output, "b;Aggregated Fuzzy Output;", 'LineWidth', 2);
+plot (x_axis, fuzzy_output(:, 1), "b;Aggregated Fuzzy Output;", 'LineWidth', 2);
 hold on;
-crisp_output = evalmf(x_axis, output, 'constant');
-y_label = ["r;Crisp Output = " num2str(output) "%;"];
+crisp_output = evalmf(x_axis, output(1), 'constant');
+y_label = ["r;Crisp Output = " num2str(output(1)) "%;"];
 plot (x_axis, crisp_output, y_label, 'LineWidth', 2);
 ylim ([-0.1, 1.1]);
 xlabel ('Tip', 'FontWeight', 'bold');

@@ -80,7 +80,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2011-05-29 Made retval value dependent on detected interfaces & adapted help text
 % 2011-06-06 Fix for javaclasspath format in *nix w. octave-java-1.2.8 pkg
 %     ''     Fixed wrong return value update when adding UNO classes
-% 2011-08-08 Extend Java JRE check for misconfigured Java installs that nevertheless work OK
+% 2011-09-03 Small fix to better detect Basis* subdir when searching unoil.jar
 
 	jcp = []; retval = 0;
 	if (nargin < 3); path_to_ooo= ''; end %if
@@ -120,14 +120,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
         jtst = isempty (strfind (tst1, 'Java'));
 	end %if
 	if (jtst)
-    % Java my have been misconfigure, so just try...
-    try
-      jtst = javamem;
-      % if empty, provoke fall-through to catch
-      if (isempty (jtst)); jtst = 1 / jtst; end
-    catch
-  		error ('Apparently no Java JRE installed.');
-    end
+		error ('Apparently no Java JRE installed.');
 	else
 		if (dbug > 1), fprintf ('OK, found one.\n'); end %if
 	end %if
@@ -430,10 +423,10 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 				if (ii == 2)
 					% Special case as unoil.jar usually resides in ./Basis<something>/program/classes
 					% Find out the exact name of Basis.....
-					basisdirlst = dir ([path_to_ooo filesep 'basis' '*']);
+					basisdirlst = dir ([path_to_ooo filesep '?asis' '*']);
 					jj = 1;
 					while (jj <= size (basisdirlst, 1) && jj > 0)
-						% basisdir = basisdirlst(jj).name;
+					  basisdir = basisdirlst(jj).name;
 						if (basisdirlst(jj).isdir)
 							basisdir = basisdirlst(jj).name;
 							jj = 0;
@@ -476,7 +469,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 				end %if
 			end %if
 		end %for
-		if (~target); retval = retval + 128; end %if
+		if (~targt); retval = retval + 128; end %if
 		if (dbug)
 			if (targt)
 				fprintf ('Some UNO class libs still lacking...\n\n'); 

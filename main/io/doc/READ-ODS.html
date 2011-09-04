@@ -8,41 +8,37 @@
 	<meta name="CHANGEDBY" content="Philip Nienhuis">
 	<meta name="CHANGED" content="20101114;18275600">
 	<meta name="Info 1" content="">
-	<meta name="Info 2" content="">
-	<meta name="Info 3" content="">
-	<meta name="Info 4" content="">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGEDBY" content="Philip Nienhuis">
 	<meta name="CHANGEDBY" content="Philip Nienhuis"></head>
 
 <body dir="ltr" lang="en-US">
-<p align="center"><u><font face="Arial, sans-serif"><font size="4"><b>ODS
-support for Octave</b></font></font></u></p><p align="center"><font face="Arial, sans-serif"><font size="2">Copyright
-© 2009 - 2011 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">This
-version April 17, 2011</font></font></p>
-	<p><font face="Arial, sans-serif"><font size="2"><i>(ODS = Open
-	Document Format spreadsheet data format, used by e.g.,
-	OpenOffice.org.)</i></font></font></p><p><font face="Arial, sans-serif"><font size="2"><i></i></font></font></p><dl><dt><p align="left"><font face="Arial, sans-serif"><font size="2"><u><b>Files
-	content</b></u></font></font></p></dt><dt><p align="left"><font face="Arial, sans-serif"><font size="2"><i><b>odsread.m</b></i><br>No-hassle read script
-	for reading from an ODS file and parsing the numeric and text data
-	into separate arrays.<br></font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2"><i><b>odswrite.m</b></i><br>No-hassle write script
-	for writing to an ODS file.</font></font></p></dt><dt><font face="Arial, sans-serif"><font size="2"><i><b>odsopen.m</b></i></font></font>&nbsp;</dt><dt><font face="Arial, sans-serif"><font size="2">Get a file pointer
-					to an ODS spreadsheet file.</font></font></dt><dl><dl><dl>
-			</dl>
-		</dl>
-	</dl>
-	<dt><p><font face="Arial, sans-serif"><font size="2"><i><b>ods2oct.m</b></i>
+<p align="center"><u><font face="Arial, sans-serif"><font size="4">
+	<b>ODS support for Octave</b></font></font></u>
+</p>
+<p align="center"><font face="Arial, sans-serif"><font size="2">
+	Copyright © 2009 - 2011 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
+</p>
+	<p align="center"><font face="Arial, sans-serif"><font size="2">
+	This version May 28, 2011</font></font>
+</p>
+<p><font face="Arial, sans-serif"><font size="2">
+	<i>(ODS = Open Document Format spreadsheet data format, used by e.g., OpenOffice.org.)</i></font></font>
+</p>
+<dl><dt>
+<p align="left"><font face="Arial, sans-serif"><font size="2">
+	<u><b>Files content</b></u></font></font>
+</p></dt>
+<dt><p align="left"><font face="Arial, sans-serif"><font size="2">
+	<i><b>odsread.m</b></i>
+	<br>No-hassle read script for reading from an ODS file and parsing the numeric
+	and text data into separate arrays.<br></font></font>
+</p></dt>
+<dt><p><font face="Arial, sans-serif"><font size="2">
+	<i><b>odswrite.m</b></i>
+	<br>No-hassle write script for writing to an ODS file.</font></font>
+</p></dt>
+	<dt><font face="Arial, sans-serif"><font size="2"><i><b>odsopen.m</b></i></font></font>&nbsp;</dt>
+	<dt><font face="Arial, sans-serif"><font size="2">Get a file pointer to an ODS spreadsheet file.</font></font></dt>
+<dt><p><font face="Arial, sans-serif"><font size="2"><i><b>ods2oct.m</b></i>
 	<br>Read raw data from an ODS spreadsheet file using the file pointer handed by odsopen.</font></font></p></dt><dt>
 	<p><font face="Arial, sans-serif"><font size="2"><i><b>oct2ods.m</b></i>
 	<br>Write data to an ODS spreadsheet file using the file pointer handed by odsopen.</font></font></p></dt><dt>
@@ -66,47 +62,62 @@ version April 17, 2011</font></font></p>
 	<font face="Arial, sans-serif"><font size="2"><b>calccelladdress.m</b></font></font></dt><dt style="font-style: italic;">
 	<font face="Arial, sans-serif"><font size="2"><b>parse_sp_range.m</b></font></font></dt><dt>
 	<font face="Arial, sans-serif"><font size="2">Support files called by
-	the scripts and not meant for direct invocation by users.</font></font></dt><dd></dd></dl>
+	the scripts and not meant for direct invocation by users.</font></font></dt><dd></dd>
+</dl>
 <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>REQUIRED
 SUPPORT SOFTWARE</b></u></font></font></p><dl>
-	<dl>
-		<dl>
-			<dl>
-				<dl>
-					</dl></dl></dl></dl></dl><font style="font-weight: bold; font-style: italic;" face="Arial, sans-serif"><font size="2">For
-					Windows (MingW):</font></font><dl><dl><dl><dl>
-			</dl>
-		</dl>
-	</dl>
-</dl>
+	</dl><font style="font-weight: bold; font-style: italic;" face="Arial, sans-serif"><font size="2">For
+					Windows (MingW):</font></font>
 <ul>
 	<li><p align="left">
-	<font face="Arial, sans-serif"><font size="2">octave with java package
-	(&gt;= 1.2.8)</font></font></p></li></ul>
+	<font face="Arial, sans-serif"><font size="2">Octave with Java package
+	(preferrably &gt;= 1.2.8, although 1.2.6 will do for most functionality)</font></font></p></li></ul>
 <dl style="font-style: italic; font-weight: bold;">
 	<dt><p><font face="Arial, sans-serif"><font size="2">For Linux:</font></font></p></dt></dl>
 <ul>
 	<li><p align="left">
-	<font face="Arial, sans-serif"><font size="2">octave with java package
-	(&gt;= 1.2.8)</font></font></p></li></ul>
+	<font face="Arial, sans-serif"><font size="2">Octave with Java package
+	(preferrably &gt;= 1.2.8, although 1.2.5 will do for most functionality)</font></font></p></li></ul>
 	<p><font face="Arial, sans-serif"><font size="2">For ODS access,
 	you'll need to choose at least one of the following java class files
 	collections:</font></font></p>
 <ul>
-	<li><p align="left">
-	<font face="Arial, sans-serif"><font size="2">(currently the preferred
-	option) <b>odfdom.jar</b> (<u>only</u> versions <b>0.7.5</b>,
-	<b>0.8.6</b>, and <b>0.8.7</b> work OK!) &amp; <b>xercesImpl.jar</b>. Get them here:</font></font></p></li><li><p align="left">
+	<li>
+		<p align="left"><font face="Arial, sans-serif"><font size="2">
+		(currently the preferred option) <b>odfdom.jar</b> (<u>only</u> versions <b>0.7.5</b>,
+	<b>0.8.6</b>, and <b>0.8.7</b> work OK!) &amp; <b>xercesImpl.jar</b>. Get them here:
+	</font></font></p>
+	</li><li><p align="left">
 	<a href="http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases"><font face="Arial, sans-serif"><font size="2">http://odftoolkit.org/projects/odfdom/downloads/directory/previous-versions%252Freleases</font></font></a></p></li><li><p align="left" lang="zxx">
 	<font color="#000080"><font face="Arial, sans-serif"><font size="2"><u>http://odftoolkit.org/projects/odfdom/downloads/directory/current-version</u></font></font></font></p></li><li><p align="left">
-	<a href="http://xerces.apache.org/mirrors.cgi"><font face="Arial, sans-serif"><font size="2">http://xerces.apache.org/mirrors.cgi</font></font></a></p></li></ul>
-<dl>
-	<dt><p><br><font face="Arial, sans-serif"><font size="2">and/or</font></font></p></dt></dl>
+	<a href="http://xerces.apache.org/mirrors.cgi"><font face="Arial, sans-serif"><font size="2">http://xerces.apache.org/mirrors.cgi</font></font></a></p></li>
+</ul>
+<dl><dt><p>
+	<br><font face="Arial, sans-serif"><font size="2">and/or</font></font>
+</p></dt></dl>
 <ul>
-	<li><p align="left"><font face="Arial, sans-serif"><font size="2"><b>jopendocument</b></font></font><font face="Arial, sans-serif"><font size="2">&lt;version&gt;</font></font><font face="Arial, sans-serif"><font size="2"><b>.jar</b></font></font><font face="Arial, sans-serif"><font size="2">.
+	<li>
+	<p align="left"><font face="Arial, sans-serif"><font size="2"><b>jopendocument</b></font></font><font face="Arial, sans-serif"><font size="2">&lt;version&gt;</font></font><font face="Arial, sans-serif"><font size="2"><b>.jar</b></font></font><font face="Arial, sans-serif"><font size="2">.
 	Get it from <a href="http://www.jopendocument.org/">http://www.jopendocument.org</a></font></font></p><p align="left">
-	<font face="Arial, sans-serif"><font size="2">(jOpenDocument 1.2
-	(final) is the most recent one and recommended for Octave)</font></font></p></li></ul><dl><dt><p><font face="Arial, sans-serif"><font size="2">These must be referenced with
+	<font face="Arial, sans-serif"><font size="2">(jOpenDocument 1.2 (final) is the most recent one and recommended for Octave)</font></font>
+	</p>
+	</li>
+</ul>
+<dl><dt><p>
+	<br><font face="Arial, sans-serif"><font size="2">and/or</font></font>
+</p></dt></dl>
+<ul>
+	<li>
+	<p align="left"><font face="Arial, sans-serif"><font size="2"><b>OpenOffice.org</b> (or clones like <b>LibreOffice</b>, <b>Go-Office</b>, ...)</font></font></font></font><font face="Arial, sans-serif"><font size="2">.
+	Get it from <a href="http://www.openoffice.org/">http://www.openoffice.org</a>. The relevant Java class libs are <b>unoil.jar</b>, 
+	<b>unoloader.jar</b>, <b>jurt.jar</b>, <b>juh.jar</b> and <b>ridl.jar</b> (which are scattered around the OOo installation directory), while also the <b>&lt;OOo&gt;/program/</b> 
+	directory needs to be in the classpath.</font></font></p>
+	<p align="left">
+	</p>
+	</li>
+</ul>
+	<dl><dt>
+	<p><font face="Arial, sans-serif"><font size="2">These must be referenced with
 	full pathnames in your javaclasspath. Hint: add it in
 	./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate
 	javaaddpath statements</font></font>
@@ -146,14 +157,16 @@ SUPPORT SOFTWARE</b></u></font></font></p><dl>
 	filename in the ods file pointer struct to save the data into
 	another, possibly new spreadsheet file.</font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2">If you use
 	<b>odsopen</b> / <b>ods2oct</b> / … / <b>oct2ods</b> / ….
-	/  <b>odsclose</b>, DO NOT FORGET to invoke <b>odsclose</b> in the
+	/  <b>odsclose</b>, <b><u><i>DO NOT FORGET</i></u></b> to invoke <b>odsclose</b> in the
 	end. The file pointers can contain an enormous amount of data and
-	may needlessly keep precious memory allocated.</font></font></p></dt><dt><br>
+	may needlessly keep precious memory allocated. In case of the UNO interface, the
+	hidden OpenOffice.org invocation (soffice.bin) can even block proper closing of
+	Octave.</font></font></p></dt><dt><br>
 </dt></dl>
 <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>SPREADSHEET
 FORMULA SUPPORT</b></u></font></font></p><dl>
 	<dt>
-	<font face="Arial, sans-serif"><font size="2">When using the OTK
+	<font face="Arial, sans-serif"><font size="2">When using the OTK or UNO
 	interface you can:</font></font></dt></dl>
 <ul>
 	<li>
@@ -192,7 +205,11 @@ FORMULA SUPPORT</b></u></font></font></p><dl>
 	OpenOffice.org Calc to read such faulty spreadsheets, so I don't
 	know what will happen with spreadsheets containing invalid formulas.
 	But using the above options, you can at least repair them using
-	octave....</font></font></dt><dd></dd></dl>
+	octave....<br>
+	The only exception is if you select the UNO interface, as that invokes
+	OpenOffice.org behind the scenes, and OOo obviously has a validator and
+	evaluator built-in.</font></font></dt><dd></dd></dl>
+	
 <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>GOTCHAS</b></u></font></font></p><dl>
 	<dt><p><font face="Arial, sans-serif"><font size="2">I know of one big
 	gotcha: i.e. reading dates (&amp; time). A less obvious one is Java
@@ -294,6 +311,7 @@ COMPATIBILITY</b></u></font></font></p>
 	function-compatible to <b>xlsread</b>, however.</font></font></p><p><font face="Arial, sans-serif"><font size="2">Same goes for <b>odswrite</b>,
 	<b>odsfinfo</b> and <b>xlsfinfo</b> – however <b>ods</b><b>f</b><b>info</b>
 	has better functionality IMO.</font></font></p><br>
+	
 <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>COMPARISON
 OF INTERFACES</b></u></font></font></p>
 	<p><font face="Arial, sans-serif"><font size="2">The ODFtoolkit is
@@ -309,9 +327,10 @@ OF INTERFACES</b></u></font></font></p>
 	yet in which case you'll need to add various types of parent nodes.
 	Inserting new cells (“nodes”) or deleting nodes implies
 	rebuilding possibly large parts of the tree in memory - nothing for
-	the faint-of-heart. Only with ODFToolkit (odfdom) 0.8.6 things have
-	been simplified for developers.</font></font></p></dt><dt><p><font face="Arial, sans-serif"><font size="2">The jOpenDocument
-	interface is the most promising, as it does shield the xml tree
+	the faint-of-heart. Only with ODFToolkit (odfdom) 0.8.6 and 0.8.7 things have
+	been simplified for developers.</font></font></p></dt>
+<dt><p><font face="Arial, sans-serif"><font size="2">The jOpenDocument
+	interface is more promising, as it does shield the xml tree
 	details and presents developers something which looks like a
 	spreadsheet model.<br>However, unfortunately
 	the developers decided to shield essential methods by making them
@@ -321,14 +340,47 @@ OF INTERFACES</b></u></font></font></p>
 	the jOpenDocument developers state that their development is
 	primarily driven by requests from customers who pay for support. I
 	do sympathize with this business model but for octave needs this may
-	hamper progress for a while.</font></font></p></dt><dd></dd></dl>
+	hamper progress for a while.</font></font></p></dt>
+<dt><p><font face="Arial, sans-serif"><font size="2">The (still experimental)
+	UNO interface, based on a Java/UNO bridge linking a hidden OpenOffice.org
+	invocation to Octave, is the most promising:
+	</font></font>
+	<ul><li><font face="Arial, sans-serif"><font size="2">
+	Admittedly OOo needs some tens of seconds to start for the first time,
+	but once OOo is in the operating system's disk cache, it operates much
+	faster than ODF or JOD;
+	</font></font></li>
+	<li><font face="Arial, sans-serif"><font size="2">
+	It has built-in formula validator and evaluator;
+	</font></font></li>
+	<li><font face="Arial, sans-serif"><font size="2">
+	It has a much more reliable data parser;
+	<li><font face="Arial, sans-serif"><font size="2">
+	It can read much more spreadsheet formats than just ODS; .sxc (older OOo and
+	StarOffice), but also .xls, .xlsx (Excel), .wk1 (Lotus 123), dbf, etc.
+	</font></font></li>
+	</font></font></li>
+	<li><font face="Arial, sans-serif"><font size="2">
+	It consumes only a fraction of the JVM heap memory that the other Java ODS
+	spreadsheet solutions need because OOo reads the spreadsheet in its own memory 
+	chunk in RAM. The other solutions read, expand, parse and manipulate
+	all data in the JVM. In addition, OOo's code is outside the JVM (and
+	Octave) while the ODF Toolkit and jOpenDocument classes also reside in the 
+	JVM.
+	</font></font></li></ul>
+</p></dt>
+</dl>
+	
 <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>TROUBLESHOOTING</b></u></font></font></p><dl>
 	<dt><p><font face="Arial, sans-serif"><font size="2">Some hints for
 	troubleshooting ODS support are given here.<br>
 	Since April 2011 the function chk_spreadsheet_support() has been included in
 	the io package. Calling it with arguments ('', 3) (empty string and debug level 3)
 	will echo a lot of diagnostics to the screen. Large parts of the steps
-	outlined below have been automated in this script.</font></font>
+	outlined below have been automated in this script.<br>
+	Problems with UNO are too complicated to treat them here; most of the troubleshooting has been
+	implemented in chk_spreadsheet_support.m, only some general guidelines are
+	given below.</font></font>
 	</p></dt></dl>
 <ol>
 	<li><p align="left"><font face="Arial, sans-serif"><font size="2">Check
@@ -364,13 +416,13 @@ OF INTERFACES</b></u></font></font></p>
 	<p align="left"><font face="Arial, sans-serif"><font size="2">c. In case
 	you have insufficient memory, see in “GOTCHAS”, “Java
 	memory pool allocation size”, how to increase java's memory
-	pre-reservation.</font></font></p></li><li><p align="left">
-	<font face="Arial, sans-serif"><font size="2">Check if all classes
+	pre-reservation.</font></font></p></li>
+	<li><p align="left"><font face="Arial, sans-serif"><font size="2">Check if all classes
 	(.jarfiles) are in class path. Do a '</font></font><font face="Courier New, monospace"><font size="2">jcp = javaclasspath</font></font><font face="Arial, sans-serif"><font size="2"> (-all)'&nbsp;	(under unix/linux, do '</font></font><font face="Courier New, monospace"><font size="2">jcp
 	= javaclasspath; strsplit (jcp,”:”)</font></font><font face="Arial, sans-serif"><font size="2">'
 	(w/o quotes). See above under “REQUIRED SUPPORT SOFTWARE”
-	what classes should be mentioned.</font></font></p><p align="left">
-	<font face="Arial, sans-serif"><font size="2">If classes (.jar files)
+	what classes should be mentioned.</font></font></p>
+	<p align="left"><font face="Arial, sans-serif"><font size="2">If classes (.jar files)
 	ar</font></font><font face="Arial, sans-serif"><font size="2">e</font></font><font face="Arial, sans-serif"><font size="2">
 	missing, download and put them somewhere and add them to the
 	javaclass path with their fully qualified pathname (in quotes) using
@@ -394,8 +446,24 @@ OF INTERFACES</b></u></font></font></p>
 	If this works and ods2 is a struct with various fields containing
 	objects, jOpenDocument interface (JOD) works as well. Do </font></font><font face="Courier New, monospace"><font size="2">ods2
 	= odsclose (ods2)</font></font> <font face="Arial, sans-serif"><font size="2">to
-	close the file.</font></font></p></li></ol>
-	<p><br>
+	close the file.</font></font></p></li>
+
+	<li><p align="left"><font face="Arial, sans-serif"><font size="2">For the UNO
+	interface, at least version 1.2.8 of the Java package is needed plus the following
+	Java class libs (jars) and directory:<br>
+	* <b>unoil.jar</b> (usually found in subdirectory Basis&lt;version&gt;/program/classes/
+	or the like of the OpenOffice.org (&lt;OOo&gt;) installation directory;<br>
+	* <b>juh.jar</b>, <b>jurt.jar</b>, <b>unoloader.jar</b> and <b>ridl.jar</b>, usually
+	found in the subdirectory URE/share/java/ (or the like) of OOo's installation directory;<br>
+	* The subdirectory <b>program/</b> (where soffice[.exe] (or ooffice) resides).<br>
+	The exact case (URE or ure, Basis or basis), name ("Basis3.2" or just "basis") and
+	subdirectory tree (URE/java or URE/share/java) varies across OOo versions and -clones,
+	so chk_spreadsheet_support.m can have a hard time finding all needed classes. In
+	particularly bad cases, when chk_spreadsheet_support cannot find them, you might need
+	to add one or more of these these classes manually to the javaclasspath.
+	</font></font></font></p></li>
+</ol>
+<p><br>
 </p>
 <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>DEVELOPMENT</b></u></font></font></p>
 	<p><font face="Arial, sans-serif"><font size="2">As with the Excel
@@ -408,7 +476,14 @@ OF INTERFACES</b></u></font></font></p>
 	write support (maybe when jOpenDocument is more mature)</font></font></li></ul><ul><li><p align="left">
 	<font face="Arial, sans-serif"><font size="2">Speeding up (ODS is 10 X
 	slower than e.g. OOXML !!!). jOpenDocument is much faster but still
-	immature</font></font></p></li><li><p align="left">
+	immature.<br>
+	UNO *is* MUCH faster than jOpenDocument but starting up OpenOffice.org
+	for the first time can take tens of seconds...<br>
+  Note that UNO is still experimental. The issue is that odsclose() will simply
+  kill ALL other OpenOffice.org invocations, also those that were not opened
+  through Octave! This is related to UNO-Java limitations. A way out is in
+  development stage.
+  </font></font></p></li><li><p align="left">
 	“<font face="Arial, sans-serif"><font size="2">Passing function
 	handle” a la Matlab's </font></font><font face="Arial, sans-serif"><font size="2"><b>xlsread</b></font></font></p></li><li><p align="left">
 	<font face="Arial, sans-serif"><font size="2">Adding styles (borders,
@@ -453,7 +528,7 @@ OF INTERFACES</b></u></font></font></p>
 	too - this needed a few adjustments; clearly the odfdom API (currently at main
 	version 0) is not stable yet.</font></font></dt><dt>
 	<font face="Arial, sans-serif"><font size="2">So at the moment
-	(April 2011 = last I looked) only odfdom versions <b>0.7.5</b>,
+	(May 2011 = last I looked) only odfdom versions <b>0.7.5</b>,
 	<b>0.8.6</b> and <b>0.8.7</b> are supported.</font></font></dt><dt>
 	<br>
 	</dt><dt><font face="Arial, sans-serif"><font size="2">If you want to
@@ -467,7 +542,7 @@ OF INTERFACES</b></u></font></font></p>
 	<font face="Arial, sans-serif"><font size="2">oct2ods.m (revision
 	7159)</font></font></li></ul>
 	<p><font face="Arial, sans-serif"><font size="2">Enjoy!</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">Philip
-	Nienhuis, April 17, 2011</font></font></p><dl><dd><p align="center">
+	Nienhuis, May 28, 2011</font></font></p><dl><dd><p align="center">
 	<br>
 </p></dd></dl>
 </body></html>

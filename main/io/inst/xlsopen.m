@@ -100,8 +100,10 @@
 ## 2011-05-18 Experimental UNO support added, incl. creating new spreadsheets
 ## 2011-05-22 Textual changes in header
 ## 2011-05-29 Cleanup of comments & messages
+## 2011-09-03 Reset chkintf to [] if no xls support was discovered (to allow
+##            rediscovery of interfaces between xlsopen calls, e.g. javaclasspath changes)
 ##
-## 2011-06-13 Latest subfunction update
+## 2011-09-03 Latest subfunction update
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -292,7 +294,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
 	if (xlsinterfaces.OXS && ~xlssupport)
 		if (~chk1)
-			error ("OXS can only read reliably from .xls files")
+			error ("OXS can only read from .xls files")
 		endif
 		try
 			wb = javaObject ('com.extentech.ExtenXLS.WorkBookHandle', filename);
@@ -381,7 +383,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 	
 # Rounding up. If none of the xlsinterfaces is supported we're out of luck.
 	
-	if (~isempty (reqinterface))
+	if (~isempty (reqinterface) || ~xlssupport)
 		# Reset found interfaces for re-testing in the next call. Add interfaces if needed.
 		chkintf = [];
 	endif
@@ -418,7 +420,7 @@ endfunction
 ## - Java & Apache POI
 ## - Java & JExcelAPI
 ## - Java & OpenXLS (only JRE >= 1.4 needed)
-## - Java & UNO bridge (native OpenOffice.org in background)
+## - Java & UNO bridge (native OpenOffice.org in background) - EXPERIMENTAL!!
 ##
 ## Examples:
 ##
@@ -441,15 +443,19 @@ endfunction
 ## 2011-05-29 Reduced verbosity
 ## 2011-06-06 Fix for javaclasspath format in *nix w java-1.2.8 pkg
 ## 2011-06-13 Fixed potentially faulty tests for java classlib presence
+## 2011-09-03 Fixed order of xlsinterfaces.<member> statements in Java detection try-catch
+##      ''    Reset tmp1 (always allow interface rediscovery) for empty xlsinterfaces arg
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
+  # tmp1 = [] (not initialized), 0 (No java detected), or 1 (Working Java found)
 	persistent tmp1 = []; persistent jcp;	# Java class path
 
 	if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL) && isempty (xlsinterfaces.OXS))
 		printf ("Detected interfaces: ");
+    tmp1 = [];
 	elseif (isempty (xlsinterfaces.COM) || isempty (xlsinterfaces.POI) || isempty (xlsinterfaces.JXL) || isempty (xlsinterfaces.OXS))
-		tmp1 = [];		# tmp1 = [] (not initialized), 0 (No java detected), or 1 (Working Java found)
+		tmp1 = [];
 	endif
 	deflt = 0;
 
@@ -491,16 +497,16 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			tmp1 = 1;
 		catch
 			# No Java support found
-			xlsinterfaces.POI = 0;
-			xlsinterfaces.JXL = 0;
-			xlsinterfaces.OXS = 0;
-			xlsinterfaces.UNO = 0;
 			if ~(isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL)...
 			  && isempty (xlsinterfaces.OXS) && isempty (xlsinterfaces.UNO))
 				# Some Java-based interface requested but Java support is absent
 				error (' No Java support found.');
 			else
 				# No specific Java-based interface requested. Just return
+        xlsinterfaces.POI = 0;
+        xlsinterfaces.JXL = 0;
+        xlsinterfaces.OXS = 0;
+        xlsinterfaces.UNO = 0;
 				return;
 			endif
 			tmp1 = 0;

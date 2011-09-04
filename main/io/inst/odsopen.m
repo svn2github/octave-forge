@@ -87,8 +87,10 @@
 ## 2011-05-18 Creating new spreadsheet docs in UNO now works
 ## 2011-06-06 Tamed down interface verbosity on first startup
 ##      "     Multiple requested interfaces now possible 
+## 2011-09-03 Reset chkintf if no ods support was found to allow full interface rediscovery
+##            (otherwise javaclasspath additions will never be picked up)
 ##
-## Latest change on subfunction below: 2011-05-07
+## Latest change on subfunction below: 2011-09-03
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -316,7 +318,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 		if (ods.changed == 1) ods.changed = 0; endif
 	endif
 
-	if (~isempty (reqinterface))
+	if (~isempty (reqinterface) || ~odssupport)
 		# Reset all found interfaces for re-testing in the next call. Add interfaces if needed.
 		chkintf = [];
 	endif
@@ -383,6 +385,8 @@ endfunction
 ## 2011-06-06 Fix for javaclasspath format in *nix w. java-1.2.8 pkg
 ##      "     Implemented more rigid Java check
 ##      "     Tamed down verbosity
+## 2011-09-03 Fixed order of odsinterfaces.<member> statement in Java detection try-catch
+##      "     Reset tmp1 (always allow interface rediscovery) for empty odsinterfaces arg
 
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
@@ -390,8 +394,11 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 	persistent tmp1 = []; persistent jcp;
 
 	if (isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) && isempty (odsinterfaces.UNO))
+    # Assume no interface detection has happened yet
 		printf ("Detected interfaces: ");
+    tmp1 = [];
 	elseif (isempty (odsinterfaces.OTK) || isempty (odsinterfaces.JOD) || isempty (odsinterfaces.UNO))
+    # At least one interface is requested by user
 		tmp1 = [];
 	endif
 	deflt = 0;
@@ -410,19 +417,19 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			endif
 			# Now check for proper entries in class path. Under *nix the classpath
 			# must first be split up. In java 1.2.8+ javaclasspath is already a cell array
-			if (isunix && ~iscell (jcp)) jcp = strsplit (char (jcp), pathsep ()); endif
+			if (isunix && ~iscell (jcp)), jcp = strsplit (char (jcp), pathsep ()); endif
 			tmp1 = 1;
 		catch
 			# No Java support
-			odsinterfaces.OTK = 0;
-			odsinterfaces.JOD = 0;
-			odsinterfaces.UNO = 0;
 			if ~(isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) && isempty (odsinterfaces.UNO))
 				# Some Java-based interface requested but Java support is absent
 				error ('No Java support found.');
 			else
-				# No specific Java-based interface requested. Just return (This is needed if
-				# ever a non-Java based interfaces will be implemented
+				# No specific Java-based interface requested. Just return (needed for if
+				# ever a non-Java based interfaces will be implemented)
+        odsinterfaces.OTK = 0;
+        odsinterfaces.JOD = 0;
+        odsinterfaces.UNO = 0;
 				return;
 			endif
 		end_try_catch
@@ -491,9 +498,6 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		odsinterfaces.UNO = 0;
 		# entries(1) = not a jar but a directory (<000_install_dir/program/>)
 		jpchk = 0; entries = {'program', 'unoil', 'jurt', 'juh', 'unoloader', 'ridl'};
-		# Only under *nix we might use brute force: e.g., strfind (javaclasspath, classname)
-		# as javaclasspath is one long string. Under Windows however classpath is a cell array
-		# so we need the following more subtle, platform-independent approach:
 		for jj=1:numel (entries)
 			for ii=1:numel (jcp)
 				jcplst = strsplit (jcp{ii}, filesep);
@@ -508,7 +512,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 			printf ("UNO");
 			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
 		else
-			warning ('\nOne or more UNO classes (.jar) missing in javaclasspath');
+			warning ("\nOne or more UNO classes (.jar) missing in javaclasspath");
 		endif
 	endif
 	

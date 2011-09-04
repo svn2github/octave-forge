@@ -72,19 +72,16 @@
 ## 2010-05-31 Added remark about delays when determining occupied data range
 ## 2011-03-23 Adapted to odfdom 0.8.7 (changed getXPath method call)
 ## 2011-05-07 Experimental UNO support added
-## 2011-07-29 Catch empty ods struct
+## 2011-09-03 Normal return in case of no ODS support (empty ods struct)
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 
 	onscreen = nargout < 1;
 
 	ods = odsopen (filename, 0, reqintf);
+  # If no ods support was found, odsopen will have complained. Just return here
+  if (isempty (ods)), return; endif
 	
- if (isempty (ods))
-   # odsopen will have complained sufficiently, so we just return here
-   return;
- endif
- 
 	filetype = 'OpenOffice.org Calc Document';
 	
 	persistent adj_str; adj_str = '                              '; # 30 char filler string

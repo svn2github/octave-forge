@@ -14,10 +14,15 @@
 %% along with Octave; see the file COPYING.  If not, see
 %% <http://www.gnu.org/licenses/>.
 %% object2json.m
-%% Ultima modificacion: 2010-12-06
+%% Created: 2010-12-06
+%% Updates:
+%% 2011-01-23 Added support for especial chars and escaped sequences
+%% 2011-04-01 Fixed error: Column vectors not working correctly
+%% 2011-09-08 (Philip Nienhuis) layout & style changes cf. Octave coding style
 
-function json=object2json(object)
-  % function json=object2json(object)
+function json = object2json (object)
+
+  % function json = object2json (object)
   % This function returns a valid json string that will describe object
   % The string will be in a compact form (i.e. no spaces or line breaks)
   %
@@ -41,97 +46,145 @@ function json=object2json(object)
   %   strings or char vectors: they will be mapped to the same string
   %     enclosed by double quotes
   % Other octave values will be mapped to a string enclosed by double
-  % quuotes with the value that the class() function returns
+  % quotes with the value that the class() function returns
+  % It can handle escape sequences and special chars automatically.
+  % If they're valid in JSON it will keep them if not they'll be
+  % escaped so they can become valid
   
-  s=size(object);
-  if(all(s==1))
+  s = size (object);
+  if (all (s==1))
     % It's not a vector so we must check how to map it
     % Depending on the class of the object we must do one or another thing
-    switch(class(object))
+    switch (class (object))
       case 'function_handle'
         % For a function handle we will only print the name
-        fun=functions(object);
-        json=['"',fun.function,'"'];
+        fun = functions (object);
+        json = [ '"', fun.function, '"' ];
+
       case 'struct'
-        fields=fieldnames(object);
-       
-results=cellfun(@object2json,struct2cell(object),"UniformOutput",false);
-        json='{';
-        if(numel(fields)>1)
-          sep=',';
+        fields = fieldnames (object);
+        results = cellfun (@object2json, struct2cell (object), "UniformOutput", false);
+        json = '{';
+        if (numel (fields) > 1)
+          sep = ',';
         else
-          sep='';
+          sep = '';
         endif
-        for(tmp=1:numel(fields))
-          json=[json,'"',fields{tmp},'":',results{tmp},sep];
-          if(tmp>=numel(fields)-1)
-            sep='';
+        for (tmp = 1:numel (fields))
+          json = [ json, '"', fields{tmp}, '":', results{tmp}, sep ];
+          if(tmp >= numel (fields)-1)
+            sep = '';
           endif
         endfor
-        json(end+1)='}';
+        json(end+1) = '}';
+
       case 'cell'
         % We dereference the cell and use it as a new value
-        json=object2json(object{1});
+        json = object2json (object{1});
+
       case 'double'
-        if(isreal(object))
-          json=num2str(object);
+        if (isreal (object))
+          json = num2str (object);
         else
-          if(iscomplex(object))
-           
-json=['{"real":',num2str(real(object)),',"imag":',num2str(imag(object)),'}'];
+          if (iscomplex (object))
+            json = [ '{"real":', num2str(real(object)), ',"imag":' , num2str(imag(object)), '}' ];
           endif
         endif
+
       case 'char'
         % Here we handle a single char
-        json=['"',object,'"'];
+        % JSON only admits the next escape sequences:
+        % \", \\, \/, \b, \f, \n, \r, \t and \u four-hex-digits
+        % so we must be sure that every other sequence gets replaced
+        object = replace_non_JSON_escapes (object);
+        json = [ '"', object, '"' ];
+
       otherwise
         % We don't know what is it so we'll put the class name
-        json=['"',class(object),'"'];
+        json = [ '"', class(object), '"' ];
     endswitch
+
   else
     % It's a vector so it maps to an array
-    sep='';
-    if(numel(s)>2)
-      json='[';
-      for(tmp=1:s(1))
-        json=[json,sep,object2json(reshape(object(tmp,:),s(2:end)))];
-        sep=',';
+    sep = '';
+    if (numel (s) > 2)
+      json = '[';
+      for (tmp=1:s(1))
+        json = [ json, sep, object2json(reshape(object(tmp, :), s(2:end))) ];
+        sep = ',';
       endfor
-      json(end+1)=']';
+      json(end+1) = ']';
+
     else
       % We can have three cases here:
       % Object is a row -> array with all the elements
       % Object is a column -> each element is an array in it's own
       % Object is a 2D matrix -> separate each row
-      if(s(1)==1)
+      if (s(1) == 1)
         % Object is a row
-        if(ischar(object))
+        if (ischar (object))
           % If it's a row of chars we will take it as a string
-          json=['"',object,'"'];
+          % JSON only admits the next escape sequences:
+          % \", \\, \/, \b, \f, \n, \r, \t and \u four-hex-digits
+          % so we must be sure that every other sequence gets replaced
+          object = replace_non_JSON_escapes (object);
+          json = [ '"', object, '"'];
+
         else
-          json='[';
-          for(tmp=1:s(2))
-            json=[json,sep,object2json(object(1,tmp))];
-            sep=',';
+          json = '[';
+          for (tmp=1:s(2))
+            json = [ json, sep, object2json(object(1, tmp)) ];
+            sep = ',';
           endfor
-          json(end+1)=']';
+          json(end+1) = ']';
         endif
-      elseif(s(2)==1)
+
+      elseif (s(2) == 1)
         % Object is a column
-        json='[';
-        for(tmp=1:s(1))
-          json=[json,'[',object2json(object(tmp,1)),']'];
+        json = '[';
+        for (tmp=1:s(1))
+          json = [ json, sep, '[', object2json(object(tmp, 1)), ']' ];
+          sep = ',';
         endfor
-        json(end+1)=']';
+        json(end+1) = ']';
+
       else
         % Object is a 2D matrix
-        json='[';
-        for(tmp=1:s(1))
-          json=[json,sep,object2json(object(tmp,:))];
-          sep=',';
+        json = '[';
+        for (tmp=1:s(1))
+          json = [ json, sep, object2json(object(tmp, :)) ];
+          sep = ',';
         endfor
-        json(end+1)=']';
+        json(end+1) = ']';
+
       endif
     endif
   endif
+
+endfunction
+
+
+% JSON only admits the next escape sequences:
+% \", \\, \/, \b, \f, \n, \r, \t and \u four-hex-digits
+% This function replace every escaped sequence that isn't on that list
+% with a compatible version
+% Note that this function uses typeinfo so it may need to be updated
+% with each octave release
+
+function object = replace_non_JSON_escapes (object)
+
+  if (strcmp (typeinfo (object), 'string'))
+    % It's a double quoted string so newlines and other chars need
+    % to be converted back into escape sequences before anything
+    object = undo_string_escapes (object);
+  endif
+  % This first regex handles double quotes and slashes that are not
+  % after a backslash and thus aren't escaped
+  object = regexprep (object, '(?<!\\)(["/])', "\\$1");
+  % This regex handle double quotes and slashes that are after an even
+  % number of backslashes and thus aren't escaped
+  object = regexprep (object, '(?<!\\)(\\\\)*(["/])', "$1\\$2");
+  % This last one regexp handle any other valid JSON escape sequence
+  object = regexprep (object, '(?<!\\)\\(?=(\\\\)*(?!([\"\\\/bfnrt]|([u][0-9A-Fa-f]{4}))+?))', "\\\\");
+
 endfunction

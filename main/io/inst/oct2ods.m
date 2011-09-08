@@ -111,7 +111,7 @@
 ## 2011-03-23 First try of odfdom 0.8.7
 ## 2011-05-15 Experimental UNO support added
 ##
-## Last update of subfunctions below: 2012-12-08
+## Last update of subfunctions below: 2011-09-08
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 
@@ -188,7 +188,7 @@ endfunction
 
 #=============================================================================
 
-## Copyright (C) 2010 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2010,2011 Philip Nienhuis <prnienhuis@users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -630,7 +630,7 @@ endfunction
 
 #=============================================================================
 
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis _at- users.sf.net>
+## Copyright (C) 2010,2011 Philip Nienhuis <prnienhuis _at- users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -828,7 +828,7 @@ endfunction
 
 #=============================================================================
 
-## Copyright (C) 2009-2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -1007,6 +1007,9 @@ endfunction
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2011-05-15
+## Updates:
+## 2011-summer <many many improvements>
+## 2011-09-08 Stylistic changes
 
 function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -1018,7 +1021,7 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
   sheets = ods.workbook.getSheets ();
   sh_names = sheets.getElementNames ();
   # Check sheet pointer
-  # FIXME sheet capacity check needed
+  # FIXME sheet capacity check needed. How many can fit in an OOo sprsh.file?
   if (isnumeric (wsh))
     if (wsh < 1)
       error ("Illegal sheet index: %d", wsh);
@@ -1105,11 +1108,11 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
           otherwise
             # Empty cell
         endswitch
-		changed = 1;
+		    changed = 1;
       catch
         printf ("Error writing cell %s (typearr() = %d)\n", calccelladdress(trow+ii, lcol+jj), typearr(ii, jj));
         keyboard
-		end_try_catch
+		  end_try_catch
     endfor
   endfor
 

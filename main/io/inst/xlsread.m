@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010 by Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 by Philip Nienhuis <prnienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -146,16 +146,17 @@
 ## 2010-11-13 Added some input checks
 ## 2011-04-11 Return upon empty xls struct from xlsopen()
 ## 2011-04-17 Suppress xlsopen messages (";" was missing)
+## 2011-09-08 Minor code cleanup; included UNO & OXS support in test
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 
 	rstatus = 0;
 
 	if (nargout < 1)
-		usage ("xlsread: no output argument(s) specified");
+		usage ("xlsread: no output argument(s) specified that should receive data");
 	endif
 	if (nargin < 1) 
-		error ("xlsread: no arguments specified") 
+		error ("xlsread: no input arguments specified") 
 		numarr = []; txtarr={}; rawarr = {};
 		return
 	elseif (nargin == 1)
@@ -163,7 +164,7 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 		datrange = ''; 
 	elseif (nargin == 2)
 		# Find out whether 2nd argument = worksheet or range
-		if (isnumeric (wsh) || (isempty (findstr(wsh,':')) && ~isempty (wsh)))
+		if (isnumeric (wsh) || (isempty (findstr (wsh,':')) && ~isempty (wsh)))
 			# Apparently a worksheet specified
 			datrange = '';
 		else
@@ -174,15 +175,13 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 	endif
 
 	# A small gesture for Matlab compatibility. JExcelAPI supports BIFF5.
-	if (~isempty (reqintf) && ischar (reqintf) && strcmp (toupper(reqintf), 'BASIC')) 
+	if (~isempty (reqintf) && ischar (reqintf) && strcmpi (reqintf, 'BASIC')) 
 		reqintf= {"JXL"} ; 
-		printf ("BASIC (BIFF5) support request translated to JXL. \n");
+		printf ("(BASIC (BIFF5) support request translated to JXL.) \n");
 	endif
-	
-	if (nargout < 1) printf ("Warning: no output spreadsheet file pointer specified as argument.\n"); endif
 
 	# Checks done. Get raw data into cell array "rawarr". xlsopen finds out
-	# what interface to use. If none found, suggest csv
+	# what interface to use. If none found, just return as xlsopen will complain enough
 
 	unwind_protect	# Needed to catch COM errors & able to close stray Excel invocations
 	# Get pointer array to Excel file
@@ -194,7 +193,8 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 		return
 	endif
 
-	if (strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'POI') || strcmp (xls.xtype, 'JXL'))
+#	if (strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'POI') || strcmp (xls.xtype, 'JXL')...
+#                               || strcmp (xls.xtype, 'OXS') || strcmp (xls.xtype, 'UNO'))
 
 		# Get data from Excel file & return handle
 		[rawarr, xls, rstatus] = xls2oct (xls, wsh, datrange);
@@ -209,12 +209,12 @@ function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=
 			rawarr = {}; numarr = []; txtarr = {};
 		endif
 
-	else
-		printf ("Error XLSREAD: reading EXCEL file (BIFF- or OOXML Format) isn\'t supported on this system.\n");
-		printf ("You need to convert the file into a tab- or comma delimited text file or .csv file\n");
-		printf ("and then invoke csvread(), dlmread() or textread()\n\n");
-
-	endif
+#	else
+#		printf ("Error XLSREAD: reading EXCEL file (BIFF- or OOXML Format) isn\'t supported on this system.\n");
+#		printf ("You need to convert the file into a tab- or comma delimited text file or .csv file\n");
+#		printf ("and then invoke csvread(), dlmread() or textread()\n\n");
+#
+#	endif
 
 	unwind_protect_cleanup	
 	# Close Excel file

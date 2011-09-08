@@ -117,6 +117,7 @@
 ## 2011-03-26 OpenXLS support added
 ## 2011-03-29 Test for proper input xls struct extended
 ## 2011-05-18 Experimental UNO support added
+## 2011-09-08 Minor code layout
 ##
 ## Latest subfunc update: 2011-05-18 (UNO)
 
@@ -132,6 +133,7 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=
 	if test1
 		error ("Invalid xls file pointer struct");
 	endif
+
 	# Check worksheet ptr
 	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 2"); endif
 	# Check range
@@ -467,7 +469,7 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_op
 					type_of_cell = scell.getCellType ();
 					if (type_of_cell == ctype(3))        # Formula
 						if ~(spsh_opts.formulas_as_text)
-							try		# Because not al Excel formulas have been implemented
+							try		# Because not al Excel formulas have been implemented in POI
 								cvalue = frm_eval.evaluate (scell);
 								type_of_cell = cvalue.getCellType();
 								# Separate switch because form.eval. yields different type
@@ -601,7 +603,7 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 	shnames = char (wb.getSheetNames ());
 	if (isnumeric (wsh))
 		if (wsh > nr_of_sheets), error (sprintf ("Worksheet # %d bigger than nr. of sheets (%d) in file %s", wsh, nr_of_sheets, xls.filename)); endif
-		sh = wb.getSheet (wsh - 1);			# POI sheet count 0-based
+		sh = wb.getSheet (wsh - 1);			# JXL sheet count 0-based
 		printf ("(Reading from worksheet %s)\n", shnames {wsh});
 	else
 		sh = wb.getSheet (wsh);

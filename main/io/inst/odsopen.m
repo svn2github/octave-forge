@@ -242,7 +242,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			catch
 				# 1.2b2 has not
 				ods.odfvsn = 2;
-				printf ("NOTE: jOpenDocument v. 1.2b2 has limited functionality. Try upgrading to 1.2b3+\n");
+				printf ("NOTE: jOpenDocument v. 1.2b2 has limited functionality. Try upgrading to 1.2\n");
 			end_try_catch
 			odssupport += 2;
 		catch

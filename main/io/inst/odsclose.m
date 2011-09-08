@@ -63,6 +63,7 @@
 ## 2011-05-06 Experimental UNO support
 ## 2011-05-07 In case of UNO, soffice now properly closed using xDesk
 ## 2011-05-18 Saving newly created files using UNO supported now
+## 2011-09-08 FIXME - closing OOo kills all other OOo invocations (known Java-UNO issue)
 
 function [ ods ] = odsclose (ods, varargs)
 

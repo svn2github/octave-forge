@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@
 ## 2010-10-15 Simplified code for numerical array
 ## 2011-05-17 Fixed subscript indexing bug in cropping section when rawarr is
 ##      "     numeric scalar
+## 2011-09-08 Copyright string updated
 
 function [ numarr, txtarr, lim ] = parsecell (rawarr, arg2=[])
 

@@ -105,6 +105,7 @@
 ## 2011-03-29 OpenXLS support added. Works but saving to file (xlsclose) doesn't work yet 
 ##      "     Bug fixes (stray variable c_arr, and wrong test for valid xls struct)
 ## 2011-05-18 Experimental UNO support
+## 2011-09-08 Bug fix in range arg check; code cleanup
 
 ## Last script file update (incl. subfunctions): 2011-05-18 (oct2uno2xls)
 
@@ -138,7 +139,7 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
 	# Check worksheet ptr
 	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 3"); endif
 	# Check range
-	if (~(isempty (crange) || ischar (crange))), error ("Character string (range) expected for arg # 4"); endif
+	if (isempty (crange) || ~ischar (crange)), error ("Character string (range) expected for arg # 4"); endif
 	# Various options 
 	if (isempty (spsh_opts))
 		spsh_opts.formulas_as_text = 0;
@@ -164,7 +165,7 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
 		[xls, rstatus] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts);
 	elseif (strcmp (xls.xtype, 'OXS'))
 #		# Invoke Java and OpenXLS     ##### Not complete, saving file doesn't work yet!
-		printf ('Sorry, writing with OpenXLS not supported yet\n');
+		printf ('Sorry, writing with OpenXLS not reliable => not supported yet\n');
 #		[xls, rstatus] = oct2oxs2xls (obj, xls, wsh, crange, spsh_opts);
 	elseif (strcmp (xls.xtype, 'UNO'))
 		# Invoke Java and UNO bridge (OpenOffice.org)
@@ -243,7 +244,7 @@ endfunction
 function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 
 	# Preliminary sanity checks
-	if (~strmatch (tolower (xls.filename(end-4:end)), '.xls'))
+	if (~strmatch (lower (xls.filename(end-4:end)), '.xls'))
 		error ("oct2com2xls can only write to Excel .xls or .xlsx files")
 	endif
 	if (isnumeric (wsh))
@@ -718,7 +719,7 @@ function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 					# First make sure formula functions are all uppercase
 					obj{ii, jj} = toupper (obj{ii, jj});
 					# There's no guarantee for formula correctness, so....
-					try		# Actually JExcelAPI flags formula errors as warnings :-(
+					try		# Actually JExcelAPI flags formula errors as mere warnings :-(
 						tmp = java_new ('jxl.write.Formula', kk, ll, obj{ii, jj});
 						# ... while errors are actually detected in addCell(), so
 						#     that should be within the try-catch
@@ -980,7 +981,7 @@ function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
         switch typearr(ii, jj)
           case 1	# Float
             XCell.setValue (c_arr{ii, jj});
-          case 2	# Logical. Convert to float
+          case 2	# Logical. Convert to float as OOo has no Boolean type
             XCell.setValue (double (c_arr{ii, jj}));
           case 3	# String
             unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.text.XText');

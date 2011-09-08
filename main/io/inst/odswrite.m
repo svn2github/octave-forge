@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -88,6 +88,7 @@
 ## 2010-08-25 Removed text about 31 char limit for sheet names (invalid)
 ## 2010-11-13 Added note about required file extension in help text
 ## 2010-11-13 Added some input arg checks
+## 2011-09-08 Minor filename error text adaptation
 
 function [ rstatus ] = odswrite (filename, data, wsh=1, range=[], reqintf=[])
 
@@ -95,7 +96,7 @@ function [ rstatus ] = odswrite (filename, data, wsh=1, range=[], reqintf=[])
 	if (nargin < 2)
 		usage ("Insufficient arguments - see 'help odswrite'");
 	elseif (~ischar (filename) || isempty (findstr ('.ods', tolower (filename))))
-		error ("First argument must be a filename (incl. .ods suffix)");
+		error ("First argument must be a filename (incl. .ods suffix for OTK & JOD)");
 	endif
 
 	ods = odsopen (filename, 1, reqintf);

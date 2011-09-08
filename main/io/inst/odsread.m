@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -113,6 +113,7 @@
 ## 2010-05-31 Updated help text (delays i.c.o. empty range due to getusedrange call)
 ## 2010-11-10 Updated help text (filename extension req'd)
 ## 2010-11-13 Added some input validity checks
+## 2011-09-08 Catch empty ods structs after failed odsopen attempts
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
@@ -124,15 +125,19 @@ function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[]
 	endif
 
 	ods = odsopen (filename, 0, reqintf);
+  
+  if (~isempty (ods))
 
-	[rawarr, ods, rstatus] = ods2oct (ods, wsh, datrange);
+  	[rawarr, ods, rstatus] = ods2oct (ods, wsh, datrange);
 
-	if (rstatus)
-		[numarr, txtarr, lim] = parsecell (rawarr, ods.limits);
-	else
-		warning (sprintf ("No data read from %s.", filename));
-	endif
+	  if (rstatus)
+		  [numarr, txtarr, lim] = parsecell (rawarr, ods.limits);
+	  else
+		  warning (sprintf ("No data read from %s.", filename));
+  	endif
 	
-	ods = odsclose (ods);
+	  ods = odsclose (ods);
+
+  endif
 
 endfunction

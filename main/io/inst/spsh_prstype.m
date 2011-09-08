@@ -42,30 +42,30 @@ function [ typearr ] = spsh_prstype (obj, nrows, ncols, ctype, spsh_opts)
 	# 1 = numeric
 	# 2 = boolean
 	# 3 = text
-	# 4 = formula
+	# 4 = formula 
 	# 5 = error / NaN / empty
 
 	typearr = ctype(5) * ones (nrows, ncols);			# type "EMPTY", provisionally
 	obj2 = cell (size (obj));							# Temporary storage for strings
 
-	txtptr = cellfun ('isclass', obj, 'char');			# type "STRING" replaced by "NUMERIC"
+	txtptr = cellfun ('isclass', obj, 'char');		# type "STRING" replaced by "NUMERIC"
 	obj2(txtptr) = obj(txtptr); obj(txtptr) = ctype(3);	# Save strings in a safe place
 
 	emptr = cellfun ("isempty", obj);
 	obj(emptr) = ctype(5);								# Set empty cells to NUMERIC
 
-	lptr = cellfun ("islogical" , obj);					# Find logicals...
+	lptr = cellfun ("islogical" , obj);		# Find logicals...
 	obj2(lptr) = obj(lptr);								# .. and set them to BOOLEAN
 
-	ptr = cellfun ("isnan", obj);						# Find NaNs & set to BLANK
+	ptr = cellfun ("isnan", obj);					# Find NaNs & set to BLANK
 	typearr(ptr) = ctype(5); typearr(~ptr) = ctype(1);	# All other cells are now numeric
 
-	obj(txtptr) = obj2(txtptr);							# Copy strings back into place
+	obj(txtptr) = obj2(txtptr);						# Copy strings back into place
 	obj(lptr) = obj2(lptr);								# Same for logicals
-	obj(emptr) = -1;									# Add in a filler value for empty cells
+	obj(emptr) = -1;									    # Add in a filler value for empty cells
 
-	typearr(txtptr) = ctype(3);							# ...and clean up 
-	typearr(emptr) = ctype(5);							# EMPTY
+	typearr(txtptr) = ctype(3);						# ...and clean up 
+	typearr(emptr) = ctype(5);						# EMPTY
 	typearr(lptr) = ctype(2);							# BOOLEAN
 
 	if ~(spsh_opts.formulas_as_text)

@@ -24,7 +24,7 @@
 ##
 ## If no errors occured during writing, the xls file pointer struct will be
 ## reset and -if COM interface was used- ActiveX/Excel will be closed.
-## However if errors occurred, the file pinter will be ontouched so you can
+## However if errors occurred, the file pinter will be untouched so you can
 ## clean up before a next try with xlsclose().
 ## Be warned that until xlsopen is called again with the same @var{xls} pointer
 ## struct, hidden Excel or Java applications with associated (possibly large)
@@ -70,6 +70,7 @@
 ##            always keep file pointer in case of write errors
 ## 2011-03-26 Added OpenXLS support
 ## 2011-05-18 Added experimental UNO support, incl. saving newly created files
+## 2011-09-08 Bug fix in check for filename input arg
 
 function [ xls ] = xlsclose (xls, varargs)
 
@@ -86,16 +87,16 @@ function [ xls ] = xlsclose (xls, varargs)
 					printf ("File %s wasn't changed, new filename ignored.", xls.filename);
 				elseif (strcmp (xls.xtype, 'JXL'))
 					error ("JXL doesn't support changing filename, new filename ignored.");
-				elseif ~((strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'UNO')) && isempty (strfind ('filename', '.xls')))
+				elseif ~((strcmp (xls.xtype, 'COM') || strcmp (xls.xtype, 'UNO')) && isempty (strfind ( lower (filename), '.xls')))
 					# Excel/ActiveX && OOo (UNO bridge) will write any valid filetype; POI/JXL/OXS need .xls[x]
 					error ('.xls or .xlsx extension lacking in filename %s', filename);
 				else
 					### For multi-user environments, uncomment below AND relevant stanza in xlsopen
 					# In case of COM, be sure to first close the open workbook
 					#if (strcmp (xls.xtype, 'COM'))
-					#	xls.app.Application.DisplayAlerts = 0;
-					#	xls.workbook.close();
-					#	xls.app.Application.DisplayAlerts = 0;
+					#	 xls.app.Application.DisplayAlerts = 0;
+					#	 xls.workbook.close();
+					#	 xls.app.Application.DisplayAlerts = 0;
 					#endif
 					if (strcmp (xls.xtype, 'UNO'))
 						# If needed, turn filename into URL
@@ -115,6 +116,7 @@ function [ xls ] = xlsclose (xls, varargs)
 							endif
 						endif
 					endif
+          # Preprocessing / -checking ready. Assign filename arg to file ptr struct
 					xls.filename = filename;
 				endif
 			endif

@@ -102,6 +102,7 @@
 ## 2011-05-29 Cleanup of comments & messages
 ## 2011-09-03 Reset chkintf to [] if no xls support was discovered (to allow
 ##            rediscovery of interfaces between xlsopen calls, e.g. javaclasspath changes)
+## 2011-09-08 Minor code cleanup
 ##
 ## 2011-09-03 Latest subfunction update
 
@@ -119,9 +120,11 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 	if (nargout < 1)
 		usage ("XLS = xlsopen (Xlfile [, Rw] [, reqintf]). But no return argument specified!"); 
 	endif
+
 	if (~(islogical (xwrite) || isnumeric (xwrite)))
 		usage ("Numerical or logical value expected for arg # 2")
 	endif
+
 	if (~isempty (reqinterface))
 		if ~(ischar (reqinterface) || iscell (reqinterface)), usage ("Arg # 3 not recognized"); endif
 		# Turn arg3 into cell array if needed
@@ -154,7 +157,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		for ii=1:numel (reqinterface)
 			if (~xlsinterfaces.(toupper (reqinterface{ii})))
 				# No it aint
-				printf ("%s is not supported.\n", toupper (reqinterface{ii}));
+				printf ("%s is not supported.\n", upper (reqinterface{ii}));
 			else
 				++xlsintf_cnt;
 			endif
@@ -196,8 +199,8 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 	xlsinterfaces = getxlsinterfaces (xlsinterfaces);
 
 # Supported interfaces determined; Excel file type check moved to seperate interfaces.
-	chk1 = strcmpi (filename(end-3:end), '.xls');
-	chk2 = strcmpi (filename(end-4:end-1), '.xls');
+	chk1 = strcmpi (filename(end-3:end), '.xls');      # Regular (binary) BIFF 
+	chk2 = strcmpi (filename(end-4:end-1), '.xls');    # Zipped XML / OOXML
 	
 	# Initialize file ptr struct
 	xls = struct ("xtype", 'NONE', "app", [], "filename", [], "workbook", [], "changed", 0, "limits", []); 
@@ -245,8 +248,6 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 					wb = java_new ('org.apache.poi.hssf.usermodel.HSSFWorkbook');
 				elseif (chk2)
 					wb = java_new ('org.apache.poi.xssf.usermodel.XSSFWorkbook');
-				else
-					# Nothing; we let the user encounter the full java error text
 				endif
 				xls.app = 'new_POI';
 			else
@@ -287,7 +288,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		catch
 			clear xlsin;
 			if (xlsinterfaces.POI)
-				printf ('... No luck with JXL, unsupported file format.\n', filename);
+				printf ('... No luck with JXL either, unsupported file format.\n', filename);
 			endif
 		end_try_catch
 	endif
@@ -378,7 +379,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 		# Until something was written to existing files we keep status "unchanged".
 		# xls.changed = 0 (existing/only read from), 1 (existing/data added), 2 (new,
 		# data added) or 3 (pristine, no data added).
-		if (xls.changed == 1) xls.changed = 0; endif
+		if (xls.changed == 1), xls.changed = 0; endif
 	endif
 	
 # Rounding up. If none of the xlsinterfaces is supported we're out of luck.
@@ -445,10 +446,11 @@ endfunction
 ## 2011-06-13 Fixed potentially faulty tests for java classlib presence
 ## 2011-09-03 Fixed order of xlsinterfaces.<member> statements in Java detection try-catch
 ##      ''    Reset tmp1 (always allow interface rediscovery) for empty xlsinterfaces arg
+## 2011-09-08 Minor code cleanup
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
-  # tmp1 = [] (not initialized), 0 (No java detected), or 1 (Working Java found)
+  # tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
 	persistent tmp1 = []; persistent jcp;	# Java class path
 
 	if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL) && isempty (xlsinterfaces.OXS))
@@ -488,7 +490,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 			jver = char (java_invoke ('java.lang.System', 'getProperty', 'java.version'));
 			cjver = strsplit (jver, '.');
 			if (sscanf (cjver{2}, '%d') < 6)
-				warning ("\nJava version too old - you need at least Java 6 (v. 1.6.x.x)\n");
+				warning ("\nJava version might be too old - you need at least Java 6 (v. 1.6.x.x)\n");
 				return
 			endif
 			# Now check for proper entries in class path. Under *nix the classpath
@@ -502,7 +504,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 				# Some Java-based interface requested but Java support is absent
 				error (' No Java support found.');
 			else
-				# No specific Java-based interface requested. Just return
+				# No specific Java-based interface requested
         xlsinterfaces.POI = 0;
         xlsinterfaces.JXL = 0;
         xlsinterfaces.OXS = 0;
@@ -536,7 +538,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 		jpchk2 = 0; entries2 = {"xbean", "poi-ooxml-schemas", "dom4j"};
 		for ii=1:length (jcp)
 			for jj=1:length (entries2)
-				if (isempty (strfind (tolower (jcp{ii}), entries2{jj}))), ++jpchk2; endif
+				if (isempty (strfind (lower (jcp{ii}), entries2{jj}))), ++jpchk2; endif
 			endfor
 		endfor
 		if (jpchk2 > 2), printf (" (& OOXML)"); endif
@@ -551,7 +553,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 		jpchk = 0; entries = {"jxl"};
 		for ii=1:length (jcp)
 			for jj=1:length (entries)
-				if (isempty (strfind (tolower (jcp{ii}), entries{jj}))), ++jpchk; endif
+				if (isempty (strfind (lower (jcp{ii}), entries{jj}))), ++jpchk; endif
 			endfor
 		endfor
 		if (jpchk > 0)
@@ -567,7 +569,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 		jpchk = 0; entries = {"openxls"};
 		for ii=1:length (jcp)
 			for jj=1:length (entries)
-				if (isempty (strfind (tolower (jcp{ii}), entries{jj}))), ++jpchk; endif
+				if (isempty (strfind (lower (jcp{ii}), entries{jj}))), ++jpchk; endif
 			endfor
 		endfor
 		if (jpchk > 0)

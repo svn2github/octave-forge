@@ -194,7 +194,7 @@ endfunction
 
 #=====================================================================
 
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis _at- users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis _at- users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -410,7 +410,7 @@ endfunction
 
 #===========================================================================
 
-## Copyright (C) 2010 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2010,2011 Philip Nienhuis <prnienhuis@users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -544,7 +544,7 @@ function [ rawarr, ods, rstatus ] = ods3jotk2oct (ods, wsh, crange, spsh_opts)
 						rawarr(ii-trow+1, jj-lcol+1) = ocell.getBooleanValue ();
 					case 'string'
 						rawarr(ii-trow+1, jj-lcol+1) = ocell.getStringValue ();
-#						# Code left in for in case odfdom 0.8.6 has similar bug
+#						# Code left in for in case odfdom 0.8.6+ has similar bug
 #						# as 0.7.5
 #						cvalue = tcell.getOfficeStringValueAttribute ();
 #						if (isempty (cvalue))     # Happens with e.g., hyperlinks
@@ -577,7 +577,7 @@ endfunction
 
 #===========================================================================
 
-## Copyright (C) 2009,2010 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by

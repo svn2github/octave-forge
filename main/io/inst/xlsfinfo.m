@@ -82,6 +82,7 @@
 ## 2010-11-01 Added other file type strings for return arg #3 (fformat)
 ## 2011-03-26 Added OpenXLS support
 ## 2011-05-18 Experimental UNO support
+## 2011-09-08 Some code simplifications
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 
@@ -118,13 +119,13 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 			endif
 		endfor
 		if (ws_cnt > 0 || ch_cnt > 0)
-			if (strcmp (tolower (xls.filename(end-2:end)), 'xls'))
+			if (strcmpi (xls.filename(end-2:end), 'xls'))
 				fformat = "xlWorkbookNormal";
-			elseif (strcmp (tolower (xls.filename(end-2:end)), 'csv'))
+			elseif (strcmpi (xls.filename(end-2:end), 'csv'))
 				fformat = "xlCSV";			# Works only with COM
-			elseif (strcmp (tolower (xls.filename(end-3:end-1)), 'xls'))
+			elseif (strcmpi (xls.filename(end-3:end-1), 'xls'))
 				fformat = "xlOpenXMLWorkbook";
-			elseif (strmatch ('htm', tolower (xls.filename(end-3:end))))
+			elseif (strmatch ('htm', lower (xls.filename(end-3:end))))
 				fformat = "xlHtml";			# Works only with COM
 			else
 				fformat = '';
@@ -147,9 +148,9 @@ function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 			endif
 		endfor
 		if (sh_cnt > 0)
-			if (strcmp (tolower (xls.filename(end-2:end)), 'xls'))
+			if (strcmpi (xls.filename(end-2:end), 'xls'))
 				fformat = "xlWorkbookNormal";
-			elseif (strcmp (tolower (xls.filename(end-3:end-1)), 'xls'))
+			elseif (strcmpi (xls.filename(end-3:end-1), 'xls'))
 				fformat = "xlOpenXMLWorkbook";
 			else
 				fformat = '';

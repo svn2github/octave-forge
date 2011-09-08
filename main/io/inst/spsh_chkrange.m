@@ -70,6 +70,7 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 		case { 'UNO' }
 			# ODS; LibreOffice has a higher row capacity
 			# FIXME - use UNO calls to check physical row capacity
+      # FIXME - LibreOffice has higher row capacity but it's Java classes haven't been updated
 			ROW_CAP = 65536;   COL_CAP = 1024;
 		otherwise
 			error (sprintf ("Unknown interface type - %s\n", xtype));

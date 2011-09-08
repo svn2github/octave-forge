@@ -31,7 +31,7 @@
 ## only be obtained using UNO interface.
 ## For the ActiveX (COM) interface the underlying Visual Basic call relies
 ## on cached range values and counts empty cells with only formatting too,
-## so COM returns only approximate (but usually too big) range values.
+## so COM returns only approximate (but then usually too big) range values.
 ##
 ## Examples:
 ##
@@ -65,6 +65,7 @@
 ## 2010-10-07 Added COM support (at last!)
 ## 2011-05-06 Experimental support for Java/UNO bridge
 ## 2011-06-13 OpenXLS support added
+## 2011-09-08 Style & layout updates
 ##
 ## Last subfunc update: 2011-06-29 (OXS)
 
@@ -94,7 +95,7 @@ function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 endfunction
 
 
-## Copyright (C) 2010 Philip Nienhuis, pr.nienhuis -at- users.sf.net
+## Copyright (C) 2010,2011 Philip Nienhuis, pr.nienhuis -at- users.sf.net
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -158,7 +159,7 @@ function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
 	  # Get leftmost cell column number
       lcell = row.getFirstChild ();
       cl_char = char (lcell);
-	  # Swap the following lines into comment to catch a jOpenDocument bug
+	  # Swap the following lines into comment to catch a jOpenDocument bug which foobars OTK
 	  # (JOD doesn't set <office:value-type='string'> attribute when writing strings
       #if (isempty (findstr ('office:value-type', cl_char)) || isempty (findstr ('<text:', cl_char)))
       if (isempty (findstr ('office:value-type', cl_char)))
@@ -602,7 +603,7 @@ function [ trow, brow, lcol, rcol ] = getusedrange_oxs (xls, wsh)
 
 	sh = xls.workbook.getWorkSheet (wsh - 1);
 	try
-		# Intriguing:  sh.first<> is off by one, sh.getLast<> = OK... 
+		# Intriguing:  sh.getFirst<> is off by one, sh.getLast<> = OK.... 8-Z 
 		trow = sh.getFirstRow () + 1;
 		brow = sh.getLastRow ();
 		lcol = sh.getFirstCol () + 1;

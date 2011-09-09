@@ -18,6 +18,8 @@
 %%
 %%  author: Carlo de Falco     <cdf _AT_ users.sourceforge.net>
 
+% single gate MOS data
+
 load constants;
 
 SiDsides = [ 36 41 35 25 5 10 15 30 40 ];

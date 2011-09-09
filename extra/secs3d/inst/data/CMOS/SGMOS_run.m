@@ -18,6 +18,8 @@
 %%
 %%  author: Carlo de Falco     <cdf _AT_ users.sourceforge.net>
 
+% Simulate a single gate MOS with a classical model
+
 clear all
 
 fprintf ('build mesh\n');

@@ -18,6 +18,8 @@
 %%
 %%  author: Carlo de Falco     <cdf _AT_ users.sourceforge.net>
 
+% single gate MOS mesh
+
 close all
 clear all
 

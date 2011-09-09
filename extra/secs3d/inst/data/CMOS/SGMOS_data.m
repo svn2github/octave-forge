@@ -23,7 +23,7 @@ ym = (max(y)-min(y))/2;
 zm = (max(z)-min(z))/2;
 
 vs   = 0;
-vd   = 0.1;
+vd   = 0.3;
 vg   = 0.1;
 vb   = 0.0;
 
@@ -82,7 +82,7 @@ toll     = 1e-4;
 stoll    = 1e-4;
 ptoll    = 1e-10;
 smaxit   = 10;
-maxit    = 30;
+maxit    = 50;
 pmaxit   = 100;
 verbose  = 2;
 options.holes = 0;

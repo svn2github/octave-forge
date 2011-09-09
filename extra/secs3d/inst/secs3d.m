@@ -28,7 +28,7 @@
 
 # Run this only if the package is installed
 ## PKG_DEL: if (! exist (fullfile (fileparts (mfilename ("fullpath")), "inst"), "dir"))
-## PKG_DEL:  dirlist= {"Utilities","DDG","DDN"};
+## PKG_DEL:  dirlist= {"Utilities", "DDG", "DDGOX", "DDGt", "QDDGOX"};
 ## PKG_DEL:  for ii=1:length(dirlist)
 ## PKG_DEL:     rmpath ( [ fileparts( mfilename("fullpath")) "/" dirlist{ii}])
 ## PKG_DEL:  end

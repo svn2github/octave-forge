@@ -17,10 +17,10 @@ void mumps::init ()
   dmumps_c (&id);
   
   // streams    
-  id.icntl[0] =   6; // Output stream for error messages
-  id.icntl[1] =   6; // Output stream for diagnostic messages
-  id.icntl[2] =   6; // Output stream for global information
-  id.icntl[3] =   2; // Level of printing 
+  id.icntl[0] =   -1; // Output stream for error messages
+  id.icntl[1] =   -1; // Output stream for diagnostic messages
+  id.icntl[2] =   -1; // Output stream for global information
+  id.icntl[3] =    0; // Level of printing 
 
   // Matrix input format
   id.icntl[4]  =   0; 

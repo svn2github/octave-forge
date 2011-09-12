@@ -159,39 +159,6 @@ int main (void)
 
   mumps_solver.cleanup ();
   
-  MPI::COMM_WORLD.Barrier ();
-  
-  if (rank == 0)
-    {  
-      std::cout << "\n\n*****\ntest 3\n*****\n";
-      
-      std::cout << "read mesh" << std::endl;
-      mesh msh (std::string("mesh_in.msh"));
-      std::cout << "export mesh" << std::endl;
-      msh.write (std::string("mesh_out.m"));
-      
-      std::cout << "compute mesh props" << std::endl;
-      msh.precompute_properties ();
-      
-      std::cout << "assemble stiffness matrix. nnodes = " << msh.nnodes << std::endl;      
-      sparse_matrix M;
-      
-      bim3a_structure (msh, M);
-      std::vector<double> ecoeff (msh.nelements, 1.0);
-      std::vector<double> v (msh.nnodes, 0.0);
-      std::vector<double> b (msh.nnodes, 0.0);
-      std::vector<double> ncoeff (msh.nnodes, 1.0);
-      
-      bim3a_advection_diffusion (msh, ecoeff, v, M);
-      bim3a_reaction (msh, ecoeff, ncoeff, M);
-      bim3a_rhs (msh, ecoeff, ncoeff, b);
-      
-      std::cout << "export stiffness matrix. nnodes = " << msh.nnodes << std::endl;      
-      std::ofstream fout ("SG.m");
-      fout << M;
-      fout.close ();
-    }
-  
   MPI::Finalize();
   return (0);
 }

@@ -124,12 +124,23 @@ endfunction
 ##            attrib set (by JOD). Somehow OTK is more robust as it catches these cells;
 ##            Currently this fix is just commented.
 ## 2011-06-06 Fixed wrong if clause for finding last filler cells (L.160 & L.176)
+## 2011-09-12 Support for odfdom-0.8.7 added (API change for XPATH)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange_otk (ods, ii)
 
   odfcont = ods.workbook;		# Local copy just in case
 
-  xpath = ods.app.getXPath;
+  if (isfield (ods, 'odfvsn'))
+    if (strcmp (ods.odfvsn, '0.8.6') || strcmp (ods.odfvsn, '0.7.5'))
+      xpath = ods.app.getXPath;
+    else
+      # API changed in odfdom-0.8.7
+      xpath = ods.workbook.getXPath;
+    endif
+  else
+    error ("ODS file ptr struct for OTK interface seems broken.");
+  endif
+  
   # Create an instance of type NODESET for use in subsequent statement
   NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
   # Get table-rows in sheet no. wsh. Sheet count = 1-based (!)

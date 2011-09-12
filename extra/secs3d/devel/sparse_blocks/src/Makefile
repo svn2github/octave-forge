@@ -10,19 +10,25 @@ LIBMUMPS    = -L$(LIBLOC) -ldmumps -lmumps_common -lpord -L/opt/openmpi/1.4.3/li
 /opt/blacs/lib/blacsC.a
 MPICXX      = /opt/openmpi/1.4.3/bin/mpic++
 
-sparse_test: sparse_test.o sparse.o mumps_class.o
+sparse_test: sparse.o mumps_class.o mesh.o operators.o sparse_test.o
 	$(MPICXX) $(CXXFLAGS) \
 	$(LIBMUMPS) \
 	$(LIBGFORTRAN) \
 	$(LIBBLAS) \
 	-I$(MPIINC) \
-	sparse.o mumps_class.o sparse_test.o -o sparse_test
+	sparse.o mumps_class.o sparse_test.o mesh.o operators.o -o sparse_test
 
 sparse_test.o: sparse_test.cc mumps_solve.h sparse.h
 	$(MPICXX) $(CXXFLAGS) -I$(INCLOC) -I. -c sparse_test.cc
 
 sparse.o: sparse.cc sparse.h
 	$(MPICXX) $(CXXFLAGS) -I. -c sparse.cc
+
+mesh.o: mesh.cc mesh.h
+	$(MPICXX) $(CXXFLAGS) -I. -c mesh.cc
+
+operators.o: operators.cc operators.h
+	$(MPICXX) $(CXXFLAGS) -I. -c operators.cc
 
 mumps_class.o: mumps_class.cc mumps_class.h sparse.h
 	$(MPICXX) $(CXXFLAGS) -I. -I$(INCLOC) -c mumps_class.cc
@@ -31,9 +37,9 @@ mumps_solve.o: mumps_solve.cc mumps_solve.h mumps_class.h sparse.h
 	$(MPICXX) $(CXXFLAGS) -I. -I$(INCLOC) -c mumps_solve.cc
 
 clean:
-	$(RM) sparse.o sparse_test.o mumps_solve.o mumps_class.o
+	$(RM) sparse.o sparse_test.o mumps_solve.o mumps_class.o mesh.o operators.o
 
 distclean: clean
-	$(RM) sparse_test
+	$(RM) sparse_test mesh_in.msh mesh_out.m mesh_out.vtu L.m SG.m mesh_out.m
 
 .PHONY: clean distclean

@@ -25,3 +25,12 @@ void sparse_matrix::extract_block_pointer (const std::vector<int> &rows, const s
 
   out.set_properties ();
 }
+
+void sparse_matrix::reset ()
+{  
+  double_sparse_matrix::row_iterator ii;
+  double_sparse_matrix::col_iterator jj;
+  for (ii = this->begin (); ii != this->end (); ++ii)    
+    for (jj = (*ii).begin (); jj != (*ii).end (); ++jj)
+      (*jj).second = 0.0; 
+}

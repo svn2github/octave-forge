@@ -7,9 +7,17 @@
 #ifndef HAVE_MUMPS_CLASS_H
 #define HAVE_MUMPS_CLASS_H 1
 
+#define F77_COMM_WORLD -987654
+#define JOB_INIT -1
+#define JOB_ANALYZE 1
+#define JOB_FACTORIZE 2
+#define JOB_SOLVE 3
+#define JOB_END  -2
+
 #include <sparse.h>
 #include <dmumps_c.h>
 
+/// Wrapper class around the MUMPS linear solver.
 class mumps
 {
  public :

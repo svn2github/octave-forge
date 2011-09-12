@@ -7,21 +7,24 @@
 
 #include <mumps_class.h>
 
-
 void mumps::init ()
 {
-  id.job =  -1;               // -1 = init
-  id.par =   1;               // work serially
-  id.sym =   0;               // non symmetric
-  id.comm_fortran = -987654;  // MPI_COMM_WORLD
+  id.job =  JOB_INIT;
+  id.par =   1;                      // host working
+  id.sym =   0;                      // non symmetric
+  id.comm_fortran = F77_COMM_WORLD;  // MPI_COMM_WORLD
   
   dmumps_c (&id);
   
   // streams    
-  id.icntl[0] =  -1; // Output stream for error messages
-  id.icntl[1] =  -1; // Output stream for diagnostic messages
-  id.icntl[2] =  -1; // Output stream for global information
-  id.icntl[3] =   0; // Level of printing 
+  id.icntl[0] =   6; // Output stream for error messages
+  id.icntl[1] =   6; // Output stream for diagnostic messages
+  id.icntl[2] =   6; // Output stream for global information
+  id.icntl[3] =   2; // Level of printing 
+
+  // Matrix input format
+  id.icntl[4]  =   0; 
+  id.icntl[17] =   0; 
 
   // ordering
   id.icntl[6] =  0; // metis (5), or pord (4), or AMD (0), AMF (2), QAMD (6)	  
@@ -39,7 +42,7 @@ void mumps::set_lhs_structure (int n, std::vector<int> &ir, std::vector<int> &jc
 
 void mumps::analyze ()
 {
-  id.job = 1;
+  id.job = JOB_ANALYZE;
   dmumps_c (&id);
 }
 
@@ -59,20 +62,20 @@ void mumps::set_rhs (std::vector<double> &rhs)
 
 void mumps::factorize ()
 {
-  id.job = 2;
+  id.job = JOB_FACTORIZE;
   dmumps_c (&id);
 }
 
 void mumps::solve ()
 {
-  id.job = 3;
+  id.job = JOB_SOLVE;
   dmumps_c (&id);
 }
 
 void mumps::cleanup ()
 {
   // clean up
-  id.job =  -2; 
+  id.job =  JOB_END; 
   dmumps_c (&id);
 }
 

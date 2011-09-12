@@ -11,6 +11,7 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 
 /// Templated class for sparse row-oriented matrix.
 template <class T> 
@@ -43,7 +44,7 @@ public:
    
   /// Init an empty sparse matrix.
   void init ();
-
+  
   /// Recompute sparse matrix properties.
   void set_properties ();
 
@@ -72,13 +73,17 @@ void sparse_matrix_template<Y>::init () {nnz = 0; m = 0;}
 template<class Y>
 void sparse_matrix_template<Y>::set_properties ()
 {
-  nnz = 0; m = this->size ();
+  typename sparse_matrix_template<Y>::col_iterator j;
+  nnz = 0; m = 0;
   for (int i = 0; i < this->size (); ++i)
     {
-      int tmp = (*this)[i].size ();
-      nnz    += tmp;
-      m       = m < tmp ? tmp : m;  
-    }    
+      nnz    += (*this)[i].size ();
+      for (j = (*this)[i].begin (); j != (*this)[i].end (); ++j)
+        {
+          int tmp = (*this).col_idx (j) + 1;
+          m       = m < tmp ? tmp : m;  
+        }    
+    }
 }
 
 
@@ -89,19 +94,19 @@ std::ostream & operator<<(std::ostream &stream, sparse_matrix_template<Y> &sp)
   typename sparse_matrix_template<Y>::col_iterator j;
 
   sp.set_properties ();
-  stream << "rows = " << sp.rows () << "; cols = " << sp.cols ();
-  stream << "; nnz = " << sp.nnz << std::endl;
+  stream << "nrows = " << sp.rows () << "; ncols = " << sp.cols ();
+  stream << "; nnz = " << sp.nnz << ";" << std::endl;
+  stream << "mat = spconvert ([" ;
   for (int i = 0; i < sp.size (); ++i)
     {
       if (sp[i].size ())
-        {
-          stream << "row: " << i << " ";
-          for (j = sp[i].begin (); j != sp[i].end (); ++j)            
-            stream << "column: " << sp.col_idx (j) << " value: " << sp.col_val (j) << " ";
-          stream << std::endl;
-        }
+        for (j = sp[i].begin (); j != sp[i].end (); ++j)
+          {
+            stream << i+1 << ", " << sp.col_idx (j) + 1 << ", ";
+            stream << std::setprecision(17) << sp.col_val (j) << ";" << std::endl;
+          }
     }
-  
+  stream << "]);" << std::endl ;
   return stream;
 }
 
@@ -146,7 +151,13 @@ class p_sparse_matrix : public double_p_sparse_matrix {};
 class sparse_matrix : public double_sparse_matrix 
 {
  public :
+
+  /// Build a p_sparse_matrix whose entries are point to given rows and columns.
   void extract_block_pointer (const std::vector<int> &rows, const std::vector<int> &cols, p_sparse_matrix &out);
+  
+  /// Set all entries to 0 preserving storage structure.
+  void reset ();
+
 };
 
 

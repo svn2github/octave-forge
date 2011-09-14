@@ -27,7 +27,7 @@ If you don't already have one, request a SourceForge (SF) account
 <a href="http://sourceforge.net/account/register.php"> here</a>.
 To register as a developer send a request 
 to the octave-forge mailing list 
-<a href="mailto:octave-dev@lists.sf.net">octave-dev@lists.sf.net</a>.
+<a href="mailto:octave-dev@lists.sourceforge.net">octave-dev@lists.sourceforge.net</a>.
 Include your SourceForge username. Include a bit of information about the code
 you plan to submit and also a first code contribution under the form of a patch.
 Use

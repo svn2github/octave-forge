@@ -30,12 +30,12 @@ function ret = corr2cov (sigma, corr)
     print_usage ();
   endif
 
-  if ( rows(corr) != columns(corr) )
+  if ( rows(corr) != columns(corr) || ndims(corr) != 2 )
     error("correlation coefficients must be a NxN matrix");
-  elseif ( rows(sigma) != 1 )
+  elseif ( rows(sigma) != 1 || ndims(sigma) != 2 )
     error("sigma must be a 1xN vector (single row) with the standard deviation values");
   elseif ( columns(sigma) < columns(1) )
-    error("sigma: must be 1xN \ncorr: must be nxn"); 
+    error("sigma: must be 1xN \ncorr: must be NxN"); 
   endif
 
   sigma = sigma(:);

@@ -15,7 +15,14 @@ __HEADER__([[[Octave-Forge]]])
     <h2 class="flash">Installing packages</h2>
     <p>
       You can find the list of packages by clicking on the <em>Packages</em> link at the top.
-      To install a package, download the package file, and install it from the Octave prompt
+      To install a package in octave 3.4.0 or later, type at the Octave prompt
+    </p>
+      <code>
+      pkg install -forge package_name
+      </code>
+    <p>
+      where <em>package_name</em> is the name of the package you want to install.
+      To install a package in a previous version, download the package file, and install it from the Octave prompt
       by typing
     </p>
     <p>

@@ -1,5 +1,5 @@
 ## Copyright (c) 2010-2011 Andrew V. Knyazev <andrew.knyazev@ucdenver.edu>
-## Copyright (c) 2010-2011 Bryan C. Smith <smithb32@gmail.com>
+## Copyright (c) 2010-2011 Bryan C. Smith <bryan.c.smith@ucdenver.edu>
 ## All rights reserved.
 ##
 ## Redistribution and use in source and binary forms, with or without

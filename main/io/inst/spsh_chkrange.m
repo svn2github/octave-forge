@@ -35,6 +35,7 @@
 ##            (but this can be wasteful if the file ptr is copied)
 ## 2011-03-29 Bug fix - unrecognized pointer struct & wrong type error msg
 ## 2011-05-15 Experimental UNO support added (OpenOffice.org & clones)
+## 2011-09-18 Updated UNO data row capacity for LibreOffice 3.4+ (now 1,048,576 rows)
 
 function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, intf, filename=[])
 
@@ -71,7 +72,7 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 			# ODS; LibreOffice has a higher row capacity
 			# FIXME - use UNO calls to check physical row capacity
       # FIXME - LibreOffice has higher row capacity but it's Java classes haven't been updated
-			ROW_CAP = 65536;   COL_CAP = 1024;
+			ROW_CAP = 1048576;   COL_CAP = 1024;
 		otherwise
 			error (sprintf ("Unknown interface type - %s\n", xtype));
 	endswitch

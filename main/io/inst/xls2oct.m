@@ -119,7 +119,7 @@
 ## 2011-05-18 Experimental UNO support added
 ## 2011-09-08 Minor code layout
 ##
-## Latest subfunc update: 2011-05-18 (UNO)
+## Latest subfunc update: 2011-09-18
 
 function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=[])
 
@@ -872,12 +872,18 @@ endfunction
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2011-05-05
 ## Updates:
-##
+## 2011-09-18 Adapted sh_names type to LO 3.4.1
 
 function [rawarr, xls, rstatus] = xls2uno2oct  (xls, wsh, datrange, spsh_opts)
 
   sheets = xls.workbook.getSheets ();
   sh_names = sheets.getElementNames ();
+  if (! iscell (sh_names))
+    # Java array (LibreOffice 3.4.+); convert to cellstr
+    sh_names = char (sh_names);
+  else
+    sh_names = {sh_names};
+  endif
 
   # Check sheet pointer
   if (isnumeric (wsh))
@@ -885,7 +891,7 @@ function [rawarr, xls, rstatus] = xls2uno2oct  (xls, wsh, datrange, spsh_opts)
       error ("Sheet index %d out of range 1-%d", wsh, numel (sh_names));
     endif
   else
-    ii = strmatch (wsh, {sh_names});
+    ii = strmatch (wsh, sh_names);
     if (isempty (ii)), error ("Sheet '%s' not found", wsh); endif
     wsh = ii;
   endif

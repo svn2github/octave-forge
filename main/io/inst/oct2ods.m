@@ -111,7 +111,7 @@
 ## 2011-03-23 First try of odfdom 0.8.7
 ## 2011-05-15 Experimental UNO support added
 ##
-## Last update of subfunctions below: 2011-09-08
+## Last update of subfunctions below: 2011-09-18
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 
@@ -136,7 +136,7 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 	test1 = test1 || isempty (ods.workbook);
 	test1 = test1 || isempty (ods.app);
 	if test1
-		error ("Invalid ods file pointer struct");
+		error ("Arg #2: Invalid ods file pointer struct");
 	endif
 	# Check worksheet ptr
 	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 3"); endif
@@ -1010,6 +1010,7 @@ endfunction
 ## Updates:
 ## 2011-summer <many many improvements>
 ## 2011-09-08 Stylistic changes
+## 2011-09-18 Adapted sh_names type to LO 3.4.1
 
 function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -1020,6 +1021,12 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
   # Get handle to sheet, create a new one if needed
   sheets = ods.workbook.getSheets ();
   sh_names = sheets.getElementNames ();
+  if (! iscell (sh_names))
+    # Java array (LibreOffice 3.4.+); convert to cellstr
+    sh_names = char (sh_names);
+  else
+    sh_names = {sh_names};
+  endif
   # Check sheet pointer
   # FIXME sheet capacity check needed. How many can fit in an OOo sprsh.file?
   if (isnumeric (wsh))
@@ -1028,13 +1035,13 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
     elseif (wsh > numel (sh_names))
       # New sheet to be added. First create sheet name but check if it already exists
       shname = sprintf ("Sheet%d", numel (sh_names) + 1);
-      jj = strmatch (wsh, {sh_names});
+      jj = strmatch (wsh, sh_names);
       if (~isempty (jj))
         # New sheet name already in file, try to create a unique & reasonable one
         ii = 1; filler = ''; maxtry = 5;
         while (ii <= maxtry)
           shname = sprintf ("Sheet%s%d", [filler "_"], numel (sh_names + 1));
-          if (isempty (strmatch (wsh, {sh_names})))
+          if (isempty (strmatch (wsh, sh_names)))
             ii = 10;
           else
             ++ii;
@@ -1052,7 +1059,7 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
     endif
   else
     # wsh is a sheet name. See if it exists already
-    if (isempty (strmatch (wsh, {sh_names})))
+    if (isempty (strmatch (wsh, sh_names)))
       # Not found. New sheet to be added
 	  newsh = 1;
     endif
@@ -1062,7 +1069,6 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
     shptr = java_new ("java.lang.Short", sprintf ("%d", numel (sh_names) + 1));
     sh = sheets.insertNewByName (wsh, shptr);
     sheets = ods.workbook.getSheets ();
-    sh_names = sheets.getElementNames ();
   endif
   # At this point we have a valid sheet name. Use it to get a sheet handle
   unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');

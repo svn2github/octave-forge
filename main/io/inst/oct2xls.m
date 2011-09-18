@@ -107,7 +107,7 @@
 ## 2011-05-18 Experimental UNO support
 ## 2011-09-08 Bug fix in range arg check; code cleanup
 
-## Last script file update (incl. subfunctions): 2011-05-18 (oct2uno2xls)
+## Last script file update (incl. subfunctions): 2011-09-18
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
 
@@ -898,6 +898,7 @@ endfunction
 
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2011-05-18
+## 2011-09-18 Adapted sh_names type to LO 3.4.1
 
 function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
 
@@ -908,6 +909,12 @@ function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
   # Get handle to sheet, create a new one if needed
   sheets = xls.workbook.getSheets ();
   sh_names = sheets.getElementNames ();
+  if (! iscell (sh_names))
+    # Java array (LibreOffice 3.4.+); convert to cellstr
+    sh_names = char (sh_names);
+  else
+    sh_names = {sh_names};
+  endif
   # Check sheet pointer
   # FIXME sheet capacity check needed
   if (isnumeric (wsh))
@@ -916,13 +923,13 @@ function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
     elseif (wsh > numel (sh_names))
       # New sheet to be added. First create sheet name but check if it already exists
       shname = sprintf ("Sheet%d", numel (sh_names) + 1);
-      jj = strmatch (wsh, {sh_names});
+      jj = strmatch (wsh, sh_names);
       if (~isempty (jj))
         # New sheet name already in file, try to create a unique & reasonable one
         ii = 1; filler = ''; maxtry = 5;
         while (ii <= maxtry)
           shname = sprintf ("Sheet%s%d", [filler "_"], numel (sh_names + 1));
-          if (isempty (strmatch (wsh, {sh_names})))
+          if (isempty (strmatch (wsh, sh_names)))
             ii = 10;
           else
             ++ii;
@@ -940,7 +947,7 @@ function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
     endif
   else
     # wsh is a sheet name. See if it exists already
-    if (isempty (strmatch (wsh, {sh_names})))
+    if (isempty (strmatch (wsh, sh_names)))
       # Not found. New sheet to be added
 	  newsh = 1;
     endif
@@ -950,7 +957,6 @@ function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
     shptr = java_new ("java.lang.Short", sprintf ("%d", numel (sh_names) + 1));
     sh = sheets.insertNewByName (wsh, shptr);
     sheets = xls.workbook.getSheets ();
-    sh_names = sheets.getElementNames ();
   endif
   # At this point we have a valid sheet name. Use it to get a sheet handle
   unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');

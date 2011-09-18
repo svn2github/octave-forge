@@ -81,6 +81,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2011-06-06 Fix for javaclasspath format in *nix w. octave-java-1.2.8 pkg
 %     ''     Fixed wrong return value update when adding UNO classes
 % 2011-09-03 Small fix to better detect Basis* subdir when searching unoil.jar
+% 2011-09-18 FIxed 'Matlab style short circuit' warning in L. 152
 
 	jcp = []; retval = 0;
 	if (nargin < 3); path_to_ooo= ''; end %if
@@ -149,7 +150,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 		% Under *nix the classpath must first be split up.
 		% Matlab is braindead here. For ML we need a replacement for Octave's builtin strsplit()
 		% This is found on ML Central (BSD license so this is allowed) & adapted for input arg order
- 		if (isunix & ~iscell (jcp)); jcp = strsplit (char (jcp), ':'); end %if
+ 		if (isunix && ~iscell (jcp)); jcp = strsplit (char (jcp), ':'); end %if
 		if (dbug > 1)
 			% Check JVM virtual memory settings
 			jrt = javaMethod ('getRuntime', 'java.lang.Runtime');

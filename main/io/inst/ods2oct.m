@@ -112,6 +112,7 @@
 ##      "     Extended check on spsh_opts (must be a struct) 
 ## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to here
 ## 2011-05-06 Experimental UNO support
+## 2011-09-18 Set rstatus var here
 ##
 ## (Latest update of subfunctions below: 2011-09-18)
 
@@ -148,26 +149,28 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
 		# Read ods file tru Java & ODF toolkit
 		switch ods.odfvsn
 			case '0.7.5'
-				[rawarr, ods, rstatus] = ods2jotk2oct (ods, wsh, datrange, spsh_opts);
+				[rawarr, ods] = ods2jotk2oct (ods, wsh, datrange, spsh_opts);
 			case '0.8.6'
-				[rawarr, ods, rstatus] = ods3jotk2oct (ods, wsh, datrange, spsh_opts);
+				[rawarr, ods] = ods3jotk2oct (ods, wsh, datrange, spsh_opts);
 			otherwise
 				error ("Unsupported odfdom version or invalid ods file pointer.");
 		endswitch
 	elseif (strcmp (ods.xtype, 'JOD'))
 		# Read ods file tru Java & jOpenDocument. JOD doesn't know about formulas :-(
-		[rawarr, ods, rstatus] = ods2jod2oct  (ods, wsh, datrange);
+		[rawarr, ods] = ods2jod2oct  (ods, wsh, datrange);
 	elseif (strcmp (ods.xtype, 'UNO'))
 		# Read ods file tru Java & UNO
-		[rawarr, ods, rstatus] = ods2uno2oct (ods, wsh, datrange, spsh_opts);
+		[rawarr, ods] = ods2uno2oct (ods, wsh, datrange, spsh_opts);
 #	elseif 
 	#	---- < Other interfaces here >
 	else
 		error (sprintf ("ods2oct: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
 	endif
 
+  rstatus = ~isempty (rawarr);
+
 	# Optionally strip empty outer rows and columns & keep track of original data location
-	if (spsh_opts.strip_array && ~isempty (rawarr))
+	if (spsh_opts.strip_array && rstatus)
 		emptr = cellfun ('isempty', rawarr);
 		if (all (all (emptr)))
 			rawarr = {};
@@ -225,14 +228,13 @@ endfunction
 ## 2010-03-19 More code cleanup & fixes for bugs introduced 18/3/2010 8-()
 ## 2010-08-03 Added preliminary support for reading back formulas as text strings
 ## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to caller
+## 2011-09-18 Remove rstatus var (now set in caller)
 
-function [ rawarr, ods, rstatus ] = ods2jotk2oct (ods, wsh, crange, spsh_opts)
+function [ rawarr, ods ] = ods2jotk2oct (ods, wsh, crange, spsh_opts)
 
 	# Parts after user gfterry in
 	# http://www.oooforum.org/forum/viewtopic.phtml?t=69060
 	
-	rstatus = 0;
-
 	# Get contents and table stuff from the workbook
 	odfcont = ods.workbook;		# Use a local copy just to be sure. octave 
 								# makes physical copies only when needed (?)
@@ -433,10 +435,11 @@ endfunction
 ## Updates:
 ## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to caller
 ## 2010-11-13 Added workaround for reading text cells in files made by jOpenDocument 1.2bx
+## 2011-09-18 Comment out workaround for jOpenDocument bug (no OfficeValueAttr set)
+##            because this casts all numeric cells to string type for properly written ODS1.2
+##     ''     Remove rstatus var (now set in caller)
 
-function [ rawarr, ods, rstatus ] = ods3jotk2oct (ods, wsh, crange, spsh_opts)
-
-	rstatus = 0;
+function [ rawarr, ods ] = ods3jotk2oct (ods, wsh, crange, spsh_opts)
 
 	# Get contents and table stuff from the workbook
 	odfcont = ods.workbook;		# Use a local copy just to be sure. octave 
@@ -502,16 +505,16 @@ function [ rawarr, ods, rstatus ] = ods3jotk2oct (ods, wsh, crange, spsh_opts)
 			ocell = row.getCellByIndex (jj-1);
 			if ~isempty (ocell)
 				otype = deblank (tolower (ocell.getValueType ()));
-				if (spsh_opts.formulas_as_text)
+   			if (spsh_opts.formulas_as_text)
 					if ~isempty (ocell.getFormula ())
 						otype = 'formula';
 					endif
 				endif
-				# Provisions for catching jOpenDocument 1.2b bug where text cells
-				# haven't been assigned an <office:value-type='string'> attribute
-				if (~isempty (ocell))
-					if (findstr ('<text:', char (ocell.getOdfElement ()))), otype = 'string'; endif
-				endif
+#				# Provisions for catching jOpenDocument 1.2b bug where text cells
+#				# haven't been assigned an <office:value-type='string'> attribute
+#				if (~isempty (ocell))
+#					if (findstr ('<text:', char (ocell.getOdfElement ()))), otype = 'string'; endif
+#				endif
 				# At last, read the data
 				switch otype
 					case  {'float', 'currency', 'percentage'}
@@ -604,8 +607,11 @@ endfunction
 ##            allows better cell type parsing and is therefore more reliable
 ## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to here
 ## 2010-11-13 Added workaround for reading text cells in files made by jOpenDocument 1.2bx
+## 2011-09-18 Comment out workaround for jOpenDocument bug (no OfficeValueAttr set)
+##            because this casts all numeric cells to string type for properly written ODS1.2
+##     ''     Remove rstatus var (now set in caller)
 
-function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
+function [ rawarr, ods] = ods2jod2oct (ods, wsh, crange)
 
 	persistent months;
 	months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
@@ -674,10 +680,10 @@ function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 				try
 					scell = sh.getCellAt (lcol+jj-2, trow+ii-2);
 					sctype = char (scell.getValueType ());
-					# Workaround for sheets written by jOpenDocument 1.2bx (no value-type attrb):
-					if (~isempty (scell))
-						if (findstr ('<text:', char (scell))), sctype = STRING; endif
-					endif
+#					# Workaround for sheets written by jOpenDocument 1.2bx (no value-type attrb):
+#					if (~isempty (scell))
+#						if (findstr ('<text:', char (scell))), sctype = STRING; endif
+#					endif
 					switch sctype
 						case { FLOAT, CURRENCY, PERCENTAGE }
 							rawarr{ii, jj} = scell.getValue ().doubleValue ();
@@ -755,8 +761,6 @@ function [ rawarr, ods, rstatus] = ods2jod2oct (ods, wsh, crange)
 
 	# Keep track of data rectangle limits
 	ods.limits = [lcol, rcol; trow, brow];
-	
-	rstatus = ~isempty (rawarr);
 
 endfunction
 
@@ -783,8 +787,10 @@ endfunction
 ## Created: 2011-05-05
 ## Updates:
 ## 2011-09-18 Adapted sh_names type to LO 3.4.1
+##     ''     Remove default 2 last sheets (LibreOffice 3.4.+)
+##     ''     Remove rstatus var (now set in caller)
 
-function [rawarr, ods, rstatus] = ods2uno2oct  (ods, wsh, datrange, spsh_opts)
+function [rawarr, ods] = ods2uno2oct  (ods, wsh, datrange, spsh_opts)
 
   sheets = ods.workbook.getSheets ();
   sh_names = sheets.getElementNames ();
@@ -797,7 +803,7 @@ function [rawarr, ods, rstatus] = ods2uno2oct  (ods, wsh, datrange, spsh_opts)
 
   # Check sheet pointer
   if (isnumeric (wsh))
-	if (wsh < 1 || wsh > numel (sh_names))
+	  if (wsh < 1 || wsh > numel (sh_names))
       error ("Sheet index %d out of range 1-%d", wsh, numel (sh_names));
     endif
   else
@@ -806,7 +812,7 @@ function [rawarr, ods, rstatus] = ods2uno2oct  (ods, wsh, datrange, spsh_opts)
     wsh = ii;
   endif
   unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
-  sh = sheets.getByName(sh_names(wsh)).getObject.queryInterface (unotmp);
+  sh = sheets.getByName(sh_names{wsh}).getObject.queryInterface (unotmp);
 
   unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XCellRangesQuery');
   xRQ = sh.queryInterface (unotmp);
@@ -873,7 +879,5 @@ function [rawarr, ods, rstatus] = ods2uno2oct  (ods, wsh, datrange, spsh_opts)
 
   # Keep track of data rectangle limits
   ods.limits = [lcol, rcol; trow, brow];
-
-  rstatus = ~isempty (rawarr);
 
 endfunction

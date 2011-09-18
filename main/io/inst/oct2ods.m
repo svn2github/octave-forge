@@ -1027,52 +1027,70 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
   else
     sh_names = {sh_names};
   endif
-  # Check sheet pointer
-  # FIXME sheet capacity check needed. How many can fit in an OOo sprsh.file?
-  if (isnumeric (wsh))
-    if (wsh < 1)
-      error ("Illegal sheet index: %d", wsh);
-    elseif (wsh > numel (sh_names))
-      # New sheet to be added. First create sheet name but check if it already exists
-      shname = sprintf ("Sheet%d", numel (sh_names) + 1);
-      jj = strmatch (wsh, sh_names);
-      if (~isempty (jj))
-        # New sheet name already in file, try to create a unique & reasonable one
-        ii = 1; filler = ''; maxtry = 5;
-        while (ii <= maxtry)
-          shname = sprintf ("Sheet%s%d", [filler "_"], numel (sh_names + 1));
-          if (isempty (strmatch (wsh, sh_names)))
-            ii = 10;
-          else
-            ++ii;
-          endif
-        endwhile
-        if (ii > maxtry + 1)
-          error ("Could not add sheet with a unique name to file %s");
-        endif
-      endif
-      wsh = shname;
-      newsh = 1;
-    else
-      # turn wsh index into the associated sheet name
-      wsh = sh_names (wsh);
-    endif
+
+  # Clear default 2 last sheets in case of a new spreadsheet file
+  if (ods.changed > 2)
+    ii = numel (sh_names);
+    while (ii > 1)
+      shnm = sh_names{ii};
+      sheets.removeByName (shnm);
+      --ii;
+    endwhile
+    # Give remaining sheet a name
+    unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
+    sh = sheets.getByName (sh_names{1}).getObject.queryInterface (unotmp);
+    if (isnumeric (wsh)); wsh = sprintf ("Sheet%d", wsh); endif
+    unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.container.XNamed');
+    sh.queryInterface (unotmp).setName (wsh);
   else
-    # wsh is a sheet name. See if it exists already
-    if (isempty (strmatch (wsh, sh_names)))
-      # Not found. New sheet to be added
-	  newsh = 1;
+
+    # Check sheet pointer
+    # FIXME sheet capacity check needed. How many can fit in an OOo sprsh.file?
+    if (isnumeric (wsh))
+      if (wsh < 1)
+        error ("Illegal sheet index: %d", wsh);
+      elseif (wsh > numel (sh_names))
+        # New sheet to be added. First create sheet name but check if it already exists
+        shname = sprintf ("Sheet%d", numel (sh_names) + 1);
+        jj = strmatch (wsh, sh_names);
+        if (~isempty (jj))
+          # New sheet name already in file, try to create a unique & reasonable one
+          ii = 1; filler = ''; maxtry = 5;
+          while (ii <= maxtry)
+            shname = sprintf ("Sheet%s%d", [filler "_"], numel (sh_names + 1));
+            if (isempty (strmatch (wsh, sh_names)))
+              ii = 10;
+            else
+              ++ii;
+            endif
+          endwhile
+          if (ii > maxtry + 1)
+            error ("Could not add sheet with a unique name to file %s");
+          endif
+        endif
+        wsh = shname;
+        newsh = 1;
+      else
+        # turn wsh index into the associated sheet name
+        wsh = sh_names (wsh);
+      endif
+    else
+      # wsh is a sheet name. See if it exists already
+      if (isempty (strmatch (wsh, sh_names)))
+        # Not found. New sheet to be added
+	      newsh = 1;
+      endif
+    endif
+    if (newsh)
+      # Add a new sheet. Sheet index MUST be a Java Short object
+      shptr = java_new ("java.lang.Short", sprintf ("%d", numel (sh_names) + 1));
+      sh = sheets.insertNewByName (wsh, shptr);
+    else
+      # At this point we have a valid sheet name. Use it to get a sheet handle
+      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
+      sh = sheets.getByName (wsh).getObject.queryInterface (unotmp);
     endif
   endif
-  if (newsh)
-    # Add a new sheet. Sheet index MUST be a Java Short object
-    shptr = java_new ("java.lang.Short", sprintf ("%d", numel (sh_names) + 1));
-    sh = sheets.insertNewByName (wsh, shptr);
-    sheets = ods.workbook.getSheets ();
-  endif
-  # At this point we have a valid sheet name. Use it to get a sheet handle
-  unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
-  sh = sheets.getByName (wsh).getObject.queryInterface (unotmp);
 
   # Check size of data array & range / capacity of worksheet & prepare vars
   [nr, nc] = size (c_arr);
@@ -1090,7 +1108,7 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
     fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1), c_arr);
     typearr(fptr) = ctype(4);          # FORMULA
   endif
-
+keyboard
   # Transfer data to sheet
   for ii=1:nrows
     for jj=1:ncols

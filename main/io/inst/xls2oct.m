@@ -397,7 +397,7 @@ endfunction
 ## 2010-11-14 Fixed sheet # index (was offset by -1) in call to getusedrange() in case
 #3            of text sheet name arg
 
-function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_opts)
+function [ rawarr, xls, rstatus ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_opts)
 
 	persistent ctype;
 	if (isempty (ctype))
@@ -410,7 +410,7 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_op
 		ctype(6) = java_get ('org.apache.poi.ss.usermodel.Cell', 'CELL_TYPE_ERROR');
 	endif
 	
-	status = 0; jerror = 0;
+	rstatus = 0; jerror = 0;
 	wb = xls.workbook;
 	
 	# Check if requested worksheet exists in the file & if so, get pointer
@@ -517,7 +517,7 @@ function [ rawarr, xls, status ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_op
 
 	if (jerror > 0) warning (sprintf ("xls2oct: %d cached values instead of formula evaluations.\n", jerror)); endif
 	
-	status = 1;
+	rstatus = 1;
 	xls.limits = [lcol, rcol; firstrow, lastrow];
 	
 endfunction
@@ -575,7 +575,7 @@ endfunction
 ## 2011-04-11 (Ron Goldman <ron@ocean.org.il>) Fixed missing months var, wrong arg
 ##      "     order in strsplit, wrong isTime condition
 
-function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_opts)
+function [ rawarr, xls, rstatus ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_opts)
 
 	persistent ctype; persistent months;
 	if (isempty (ctype))
@@ -595,7 +595,7 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 		months = {'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'};
 	endif
 	
-	status = 0; 
+	rstatus = 0; 
 	wb = xls.workbook;
 	
 	# Check if requested worksheet exists in the file & if so, get pointer
@@ -735,7 +735,7 @@ function [ rawarr, xls, status ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_op
 		endfor
 	endfor
 
-	status = 1;
+	rstatus = 1;
 	xls.limits = [lcol, rcol; firstrow, lastrow];
 	
 endfunction
@@ -772,7 +772,7 @@ endfunction
 ## Created: 2011-03-26
 ## Updates:
 
-function [ rawarr, xls, status ] = xls2oxs2oct (xls, wsh, cellrange=[], spsh_opts)
+function [ rawarr, xls, rstatus ] = xls2oxs2oct (xls, wsh, cellrange=[], spsh_opts)
 
 	persistent ctype;
 	if (isempty (ctype))
@@ -786,7 +786,7 @@ function [ rawarr, xls, status ] = xls2oxs2oct (xls, wsh, cellrange=[], spsh_opt
 		ctype( 6) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_DOUBLE'));  # 5
 	endif
 	
-	status = 0; 
+	rstatus = 0; 
 	wb = xls.workbook;
 	
 	# Check if requested worksheet exists in the file & if so, get pointer
@@ -845,7 +845,7 @@ function [ rawarr, xls, status ] = xls2oxs2oct (xls, wsh, cellrange=[], spsh_opt
 		endfor
 	endfor
 
-	status = 1;
+	rstatus = 1;
 	xls.limits = [lcol, rcol; firstrow, lastrow];
 	
 endfunction
@@ -887,7 +887,7 @@ function [rawarr, xls, rstatus] = xls2uno2oct  (xls, wsh, datrange, spsh_opts)
 
   # Check sheet pointer
   if (isnumeric (wsh))
-	if (wsh < 1 || wsh > numel (sh_names))
+	  if (wsh < 1 || wsh > numel (sh_names))
       error ("Sheet index %d out of range 1-%d", wsh, numel (sh_names));
     endif
   else
@@ -896,7 +896,7 @@ function [rawarr, xls, rstatus] = xls2uno2oct  (xls, wsh, datrange, spsh_opts)
     wsh = ii;
   endif
   unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
-  sh = sheets.getByName(sh_names(wsh)).getObject.queryInterface (unotmp);
+  sh = sheets.getByName(sh_names{wsh}).getObject.queryInterface (unotmp);
 
   unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XCellRangesQuery');
   xRQ = sh.queryInterface (unotmp);

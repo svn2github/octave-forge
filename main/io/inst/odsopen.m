@@ -90,7 +90,7 @@
 ## 2011-09-03 Reset chkintf if no ods support was found to allow full interface rediscovery
 ##            (otherwise javaclasspath additions will never be picked up)
 ##
-## Latest change on subfunction below: 2011-09-03
+## Latest change on subfunctions below: 2011-09-18
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -292,7 +292,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 			ods.filename = filename;
 			ods.xtype = 'UNO';
 			ods.app.xComp = xComp;			# Needed to be able to close soffice in odsclose()
-			ods.app.aLoader = aLoader;		# Needed to be able to close soffice in odsclose()
+			ods.app.aLoader = aLoader;	# Needed to be able to close soffice in odsclose()
 			ods.odfvsn = 'UNO';
 			odssupport += 4;
 		catch
@@ -387,11 +387,12 @@ endfunction
 ##      "     Tamed down verbosity
 ## 2011-09-03 Fixed order of odsinterfaces.<member> statement in Java detection try-catch
 ##      "     Reset tmp1 (always allow interface rediscovery) for empty odsinterfaces arg
-
+## 2011-09-18 Added temporary warning about UNO interface
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
 	persistent tmp1 = []; persistent jcp;
+  persistent uno_1st_time = [];
 
 	if (isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) && isempty (odsinterfaces.UNO))
     # Assume no interface detection has happened yet
@@ -519,5 +520,16 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 	# ---- Other interfaces here, similar to the ones above
 
 	if (deflt), printf ("(* = active interface)\n"); endif
+
+  ## FIXME the below stanza should be dropped once UNO is stable.
+  # Echo a suitable warning about experimental status:
+  if (isempty (uno_1st_time) && odsinterfaces.UNO);
+    uno_1st_time = 1;
+    printf ("\nPLEASE NOTE: UNO (=OpenOffice.org-behind-the-scenes) is EXPERIMENTAL\n");
+    printf ("After you've opened a spreadsheet file using the UNO interface,\n");
+    printf ("odsclose on that file will kill ALL OpenOffice.org invocations,\n");
+    printf ("also those that were started outside and/or before Octave!\n");
+    printf ("Trying to quit Octave w/o invoking odsclose will only hang Octave.\n\n");
+  endif
 	
 endfunction

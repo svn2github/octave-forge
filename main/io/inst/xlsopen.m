@@ -50,7 +50,7 @@
 ## interface that otherwise is automatically selected by xlsopen. Currently
 ## implemented interfaces (in order of preference) are 'COM' (Excel/COM),
 ## 'POI' (Java/Apache POI), 'JXL' (Java/JExcelAPI), 'OXS' (Java/OpenXLS), or
-## 'UNO' (Java/OpenOffice.org).
+## 'UNO' (Java/OpenOffice.org - EXPERIMENTAL!).
 ## In most situations this parameter is unneeded as xlsopen automatically
 ## selects the most useful interface present.
 ##
@@ -104,7 +104,7 @@
 ##            rediscovery of interfaces between xlsopen calls, e.g. javaclasspath changes)
 ## 2011-09-08 Minor code cleanup
 ##
-## 2011-09-03 Latest subfunction update
+## 2011-09-18 Latest subfunction update
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -447,11 +447,13 @@ endfunction
 ## 2011-09-03 Fixed order of xlsinterfaces.<member> statements in Java detection try-catch
 ##      ''    Reset tmp1 (always allow interface rediscovery) for empty xlsinterfaces arg
 ## 2011-09-08 Minor code cleanup
+## 2011-09-18 Added temporary warning about UNO interface
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
   # tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
 	persistent tmp1 = []; persistent jcp;	# Java class path
+  persistent uno_1st_time;
 
 	if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL) && isempty (xlsinterfaces.OXS))
 		printf ("Detected interfaces: ");
@@ -601,5 +603,16 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 	# ---- Other interfaces here, similar to the ones above
 
 	if (deflt), printf ("(* = active interface)\n"); endif
+
+  ## FIXME the below stanza should be dropped once UNO is stable.
+  # Echo a suitable warning about experimental status:
+  if (isempty (uno_1st_time) && xlsinterfaces.UNO);
+    uno_1st_time = 1;
+    printf ("\nPLEASE NOTE: UNO (=OpenOffice.org-behind-the-scenes) is EXPERIMENTAL\n");
+    printf ("After you've opened a spreadsheet file using the UNO interface,\n");
+    printf ("xlsclose on that file will kill ALL OpenOffice.org invocations,\n");
+    printf ("also those that were started outside and/or before Octave!\n");
+    printf ("Trying to quit Octave w/o invoking xlsclose will only hang Octave.\n\n");
+  endif
 
 endfunction

@@ -114,6 +114,7 @@
 ## 2010-11-10 Updated help text (filename extension req'd)
 ## 2010-11-13 Added some input validity checks
 ## 2011-09-08 Catch empty ods structs after failed odsopen attempts
+## 2011-09-18 Return empty output arg in case of empty rawarr
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 
@@ -134,6 +135,7 @@ function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[]
 		  [numarr, txtarr, lim] = parsecell (rawarr, ods.limits);
 	  else
 		  warning (sprintf ("No data read from %s.", filename));
+      numarr = [];
   	endif
 	
 	  ods = odsclose (ods);

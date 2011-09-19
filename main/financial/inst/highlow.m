@@ -15,9 +15,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {h =} highlow (high, low, close)
-## @deftypefnx {Function File} {h =} highlow (high, low, close, open)
-## @deftypefnx {Function File} {h =} highlow (high, low, close, open, color)
+## @deftypefn {Function File} {@var{h} =} highlow (@var{high}, @var{low}, @var{close})
+## @deftypefnx {Function File} {@var{h} =} highlow (@var{high}, @var{low}, @var{close}, @var{open})
+## @deftypefnx {Function File} {@var{h} =} highlow (@var{high}, @var{low}, @var{close}, @var{open}, @var{color})
 ##
 ## Plot the @var{high}, @var{low}, and @var{close} of a security.  The
 ## @var{close} is plotted as a tick to the right, and if @var{open} is

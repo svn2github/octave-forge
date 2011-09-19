@@ -15,10 +15,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {pvi} = posvolidx (closeprice, vol)
-## @deftypefnx {Function File} {pvi} = posvolidx ([closeprice vol])
-## @deftypefnx {Function File} {pvi} = posvolidx (closeprice, vol, initpvi)
-## @deftypefnx {Function File} {pvi} = posvolidx ([closeprice vol], initpvi)
+## @deftypefn {Function File} {@var{pvi} =} posvolidx (@var{closeprice}, @var{vol})
+## @deftypefnx {Function File} {@var{pvi} =} posvolidx ([@var{closeprice} @var{vol}])
+## @deftypefnx {Function File} {@var{pvi} =} posvolidx (@var{closeprice}, @var{vol}, @var{initpvi})
+## @deftypefnx {Function File} {@var{pvi} =} posvolidx ([@var{closeprice} @var{vol}], @var{initpvi})
 ##
 ## Compute the positive volume index of a security based on its closing
 ## price (@var{closeprice}) and @var{vol}ume.  They may be given as

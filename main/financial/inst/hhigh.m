@@ -15,9 +15,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {hhv} = hhigh (data)
-## @deftypefnx {Function File} {hhv} = hhigh (data, nperiods)
-## @deftypefnx {Function File} {hhv} = hhigh (data, nperiods, dim)
+## @deftypefn {Function File} {@var{hhv} =} hhigh (@var{data})
+## @deftypefnx {Function File} {@var{hhv} =} hhigh (@var{data}, @var{nperiods})
+## @deftypefnx {Function File} {@var{hhv} =} hhigh (@var{data}, @var{nperiods}, @var{dim})
 ##
 ## Compute the highest high value of @var{data} for the past
 ## @var{nperiods} (default: 14) across the dimension, @var{dim}

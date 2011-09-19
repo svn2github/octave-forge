@@ -15,9 +15,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} movavg (asset, lead, lag)
-## @deftypefnx {Function File} {} movavg (asset, lead, lag, alpha)
-## @deftypefnx {Function File} {[short, long] =} movavg (asset, lead, lag, alpha)
+## @deftypefn {Function File} {} movavg (@var{asset}, @var{lead}, @var{lag})
+## @deftypefnx {Function File} {} movavg (@var{asset}, @var{lead}, @var{lag}, @var{alpha})
+## @deftypefnx {Function File} {[@var{short}, @var{long}] =} movavg (@var{asset}, @var{lead}, @var{lag}, @var{alpha})
 ##
 ## Calculate the @var{lead}ing and @var{lag}ging moving average of an
 ## @var{asset}. If given, @var{alpha} is the weighting power of the

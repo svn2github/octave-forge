@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} [@var{dur}, @var{mod_dur}] = cfdur (@var{cf}, @var{yield})
+## @deftypefn {Function File} {[@var{dur}, @var{mod_dur}] =} cfdur (@var{cf}, @var{yield})
 ## Calculate duration @var{dur} and modified duration @var{mod_dur}, from given
 ## fixed-paid cash flow @var{cf} and period yield @var{yield}.
 ##

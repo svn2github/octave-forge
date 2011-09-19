@@ -16,10 +16,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dateaxis ()
-## @deftypefnx {Function File} {} dateaxis (ax)
-## @deftypefnx {Function File} {} dateaxis (ax, dateform)
-## @deftypefnx {Function File} {} dateaxis (ax, dateform, startdate)
-## @deftypefnx {Function File} {} dateaxis (h, ...)
+## @deftypefnx {Function File} {} dateaxis (@var{ax})
+## @deftypefnx {Function File} {} dateaxis (@var{ax}, @var{dateform})
+## @deftypefnx {Function File} {} dateaxis (@var{ax}, @var{dateform}, @var{startdate})
+## @deftypefnx {Function File} {} dateaxis (@var{h}, ...)
 ##
 ## Convert the current axis tick labels (or the axis handle @var{h}) to
 ## a date format.  The axis given by @var{ax} ("x", "y", or "z") will be

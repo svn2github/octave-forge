@@ -15,10 +15,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} bolling (asset, samples)
-## @deftypefnx {Function File} {} bolling (asset, samples, alpha)
-## @deftypefnx {Function File} {} bolling (asset, samples, alpha, width)
-## @deftypefnx {Function File} {[movavg, upperband, lowerband] =} bolling (asset, samples, ...)
+## @deftypefn {Function File} {} bolling (@var{asset}, @var{samples})
+## @deftypefnx {Function File} {} bolling (@var{asset}, @var{samples}, @var{alpha})
+## @deftypefnx {Function File} {} bolling (@var{asset}, @var{samples}, @var{alpha}, @var{width})
+## @deftypefnx {Function File} {[@var{movavg}, @var{upperband}, @var{lowerband}] =} bolling (@var{asset}, @var{samples}, ...)
 ##
 ## If no output is requested, plot the bollinger bands of the
 ## @var{asset}. If output is requested, return the values for the

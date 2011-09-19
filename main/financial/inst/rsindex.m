@@ -15,8 +15,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {rsi} = rsindex (closeprice)
-## @deftypefnx {Function File} {rsi} = rsindex (closeprice, nperiods)
+## @deftypefn {Function File} {@var{rsi} =} rsindex (@var{closeprice})
+## @deftypefnx {Function File} {@var{rsi} =} rsindex (@var{closeprice}, @var{nperiods})
 ##
 ## Compute the relative strength index (RSI) of an asset from the vector
 ## of closing prices (@var{closeprice}).  @var{nperiods} defines the

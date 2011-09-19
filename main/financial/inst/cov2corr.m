@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} [@var{sigma}, @var{corr}] = cov2corr (@var{cov})
+## @deftypefn {Function File} {[@var{sigma}, @var{corr}] =} cov2corr (@var{cov})
 ## Convert covariance @var{cov} from input to standard deviation @var{sigma} and
 ## correlation coefficients @var{corr}.
 ##

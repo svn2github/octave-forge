@@ -15,8 +15,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {obv} = onbalvol (closeprice, vol)
-## @deftypefnx {Function File} {obv} = onbalvol ([closeprice vol])
+## @deftypefn {Function File} {@var{obv} =} onbalvol (@var{closeprice}, @var{vol})
+## @deftypefnx {Function File} {@var{obv} =} onbalvol ([@var{closeprice} @var{vol}])
 ##
 ## Compute the on balance volume of a security based on its closing
 ## price (@var{closeprice}) and @var{vol}ume.  They may be given as

@@ -15,10 +15,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {nvi} = negvolidx (closeprice, vol)
-## @deftypefnx {Function File} {nvi} = negvolidx ([closeprice vol])
-## @deftypefnx {Function File} {nvi} = negvolidx (closeprice, vol, initnvi)
-## @deftypefnx {Function File} {nvi} = negvolidx ([closeprice vol], initnvi)
+## @deftypefn {Function File} {@var{nvi} =} negvolidx (@var{closeprice}, @var{vol})
+## @deftypefnx {Function File} {@var{nvi} =} negvolidx ([@var{closeprice} @var{vol}])
+## @deftypefnx {Function File} {@var{nvi} =} negvolidx (@var{closeprice}, @var{vol}, @var{initnvi})
+## @deftypefnx {Function File} {@var{nvi} =} negvolidx ([@var{closeprice} @var{vol}], @var{initnvi})
 ##
 ## Compute the negative volume index of a security based on its closing
 ## price (@var{closeprice}) and @var{vol}ume.  They may be given as

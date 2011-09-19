@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} pointfig (asset)
+## @deftypefn {Function File} {} pointfig (@var{asset})
 ##
 ## Plot the point figure chart of an @var{asset}.  Upward price
 ## movements are plotted as Xs and downward movements are plotted as Os.

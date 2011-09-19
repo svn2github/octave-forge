@@ -119,7 +119,7 @@
 ## 2011-05-18 Experimental UNO support added
 ## 2011-09-08 Minor code layout
 ##
-## Latest subfunc update: 2011-09-18
+## Latest subfunc update: 2011-09-19
 
 function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=[])
 
@@ -873,6 +873,7 @@ endfunction
 ## Created: 2011-05-05
 ## Updates:
 ## 2011-09-18 Adapted sh_names type to LO 3.4.1
+## 2011-09-19 Try to decipher if formulas return numeric or string values
 
 function [rawarr, xls, rstatus] = xls2uno2oct  (xls, wsh, datrange, spsh_opts)
 
@@ -952,8 +953,12 @@ function [rawarr, xls, rstatus] = xls2uno2oct  (xls, wsh, datrange, spsh_opts)
           if (spsh_opts.formulas_as_text)
             rawarr{ii-trow+2, jj-lcol+2} = XCell.getFormula ();
           else
+            # Unfortunately OOo gives no clue as to the type of formula result
             unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.text.XText');
             rawarr{ii-trow+2, jj-lcol+2} = XCell.queryInterface (unotmp).getString ();
+            tmp = str2double (rawarr{ii-trow+2, jj-lcol+2});
+            # If the string happens to contain just a number we'll assume it is numeric
+            if (~isnan (tmp)); rawarr{ii-trow+2, jj-lcol+2} = tmp; endif
           endif
         otherwise
           # Empty cell

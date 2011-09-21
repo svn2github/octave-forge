@@ -314,7 +314,7 @@ COMPATIBILITY</b></u></font></font></p>
 	
 <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>COMPARISON
 OF INTERFACES</b></u></font></font></p>
-	<p><font face="Arial, sans-serif"><font size="2">The ODFtoolkit is
+	<p><font face="Arial, sans-serif"><font size="2">The <b>ODFtoolkit</b> is
 	the one that gives the best (but slow) results at present. However,
 	parsing xml trees into rectangular arrays is not quite
 	straightforward and the other way round is a real nightmare;
@@ -329,7 +329,7 @@ OF INTERFACES</b></u></font></font></p>
 	rebuilding possibly large parts of the tree in memory - nothing for
 	the faint-of-heart. Only with ODFToolkit (odfdom) 0.8.6 and 0.8.7 things have
 	been simplified for developers.</font></font></p></dt>
-<dt><p><font face="Arial, sans-serif"><font size="2">The jOpenDocument
+<dt><p><font face="Arial, sans-serif"><font size="2">The <b>jOpenDocument</b>
 	interface is more promising, as it does shield the xml tree
 	details and presents developers something which looks like a
 	spreadsheet model.<br>However, unfortunately
@@ -342,7 +342,7 @@ OF INTERFACES</b></u></font></font></p>
 	do sympathize with this business model but for octave needs this may
 	hamper progress for a while.</font></font></p></dt>
 <dt><p><font face="Arial, sans-serif"><font size="2">The (still experimental)
-	UNO interface, based on a Java/UNO bridge linking a hidden OpenOffice.org
+	<b>UNO interface</b>, based on a Java/UNO bridge linking a hidden OpenOffice.org
 	invocation to Octave, is the most promising:
 	</font></font>
 	<ul><li><font face="Arial, sans-serif"><font size="2">
@@ -368,6 +368,7 @@ OF INTERFACES</b></u></font></font></p>
 	Octave) while the ODF Toolkit and jOpenDocument classes also reside in the 
 	JVM.
 	</font></font></li></ul>
+  <font face="Arial, sans-serif"><font size="2">However, UNO is not stable yet (see below)</font>.
 </p></dt>
 </dl>
 	
@@ -477,12 +478,16 @@ OF INTERFACES</b></u></font></font></p>
 	<font face="Arial, sans-serif"><font size="2">Speeding up (ODS is 10 X
 	slower than e.g. OOXML !!!). jOpenDocument is much faster but still
 	immature.<br>
-	UNO *is* MUCH faster than jOpenDocument but starting up OpenOffice.org
+	<b>UNO</b> *is* MUCH faster than jOpenDocument but starting up OpenOffice.org
 	for the first time can take tens of seconds...<br>
   Note that UNO is still experimental. The issue is that odsclose() will simply
   kill ALL other OpenOffice.org invocations, also those that were not opened
-  through Octave! This is related to UNO-Java limitations. A way out is in
-  development stage.
+  through Octave! This is related to UNO-Java limitations.<br>
+  The underlying issue is that when Octave starts an OpenOffice.org invocation,
+  OpenOffice.org must be closed for Octave to be able to exit; otherwise Octave will
+  wait for OOo to shut down before it can terminate itself. So Octave must kill
+  OOo to be able to terminate.<br>
+  A way out hasn't been found yet.
   </font></font></p></li><li><p align="left">
 	“<font face="Arial, sans-serif"><font size="2">Passing function
 	handle” a la Matlab's </font></font><font face="Arial, sans-serif"><font size="2"><b>xlsread</b></font></font></p></li><li><p align="left">

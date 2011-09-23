@@ -107,7 +107,7 @@
 ## 2011-05-18 Experimental UNO support
 ## 2011-09-08 Bug fix in range arg check; code cleanup
 
-## Last script file update (incl. subfunctions): 2011-09-18
+## Last script file update (incl. subfunctions): 2011-09-23
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
 
@@ -899,6 +899,7 @@ endfunction
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2011-05-18
 ## 2011-09-18 Adapted sh_names type to LO 3.4.1
+## 2011-09-23 Removed stray debug statements
 
 function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
 
@@ -1020,11 +1021,10 @@ function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
           otherwise
             # Empty cell
         endswitch
-		changed = 1;
+		    changed = 1;
       catch
         printf ("Error writing cell %s (typearr() = %d)\n", calccelladdress(trow+ii, lcol+jj), typearr(ii, jj));
-        keyboard
-		end_try_catch
+		  end_try_catch
     endfor
   endfor
 

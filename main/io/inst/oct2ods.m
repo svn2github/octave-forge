@@ -111,7 +111,7 @@
 ## 2011-03-23 First try of odfdom 0.8.7
 ## 2011-05-15 Experimental UNO support added
 ##
-## Last update of subfunctions below: 2011-09-18
+## Last update of subfunctions below: 2011-09-23
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 
@@ -1011,6 +1011,7 @@ endfunction
 ## 2011-summer <many many improvements>
 ## 2011-09-08 Stylistic changes
 ## 2011-09-18 Adapted sh_names type to LO 3.4.1
+## 2011-09-23 Removed stray debug statements
 
 function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -1108,7 +1109,7 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
     fptr = cellfun (@(x) ischar (x) && strncmp (x, "=", 1), c_arr);
     typearr(fptr) = ctype(4);          # FORMULA
   endif
-keyboard
+
   # Transfer data to sheet
   for ii=1:nrows
     for jj=1:ncols
@@ -1135,7 +1136,6 @@ keyboard
 		    changed = 1;
       catch
         printf ("Error writing cell %s (typearr() = %d)\n", calccelladdress(trow+ii, lcol+jj), typearr(ii, jj));
-        keyboard
 		  end_try_catch
     endfor
   endfor

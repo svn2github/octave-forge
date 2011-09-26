@@ -1,0 +1,8 @@
+mechanics >> Classical Mechanics
+1D Mechanics
+2D Mechanics
+ area_poly2d
+ center_mass_poly2d
+ inertia_moment_poly2d
+ inertia_moment_ncpoly2d
+ second_moment_poly2d

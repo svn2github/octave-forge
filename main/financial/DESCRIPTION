@@ -2,7 +2,7 @@ Name: financial
 Version: 0.3.2
 Date: 2008-08-17
 Author: Bill Denney <bill@denney.ws>, Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
-Maintainer: Bill Denney <bill@denney.ws>
+Maintainer: Octave Community
 Title: Financial
 Description: Financial manipulation and plotting functions
 Categories: Financial

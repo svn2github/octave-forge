@@ -57,6 +57,7 @@ sub get_files {
     next if $file =~ m/^\.\.?$/;
     next if $file eq 'Makefile';
     next if $file =~ m/^\.svn(ignore)?$/;
+    next if ($file eq 'private' && -d File::Spec->catfile ($dirname, $file) );
     $file =~ s/\.m$// if $dirname =~ m/inst$/;
     $file =~ s/\.c(c)?$// if $dirname =~ m/src$/;
     push (@files, $file);

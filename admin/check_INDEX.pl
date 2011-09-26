@@ -51,6 +51,10 @@ foreach my $package_dir (@ARGV) {
 
 sub get_files {
   my $dirname = $_[0];
+  unless (-e $dirname) {
+    say "There is no dir $dirname. That may be ok...";
+    return;
+  }
   opendir (DIR, $dirname) or die "Could not opendir $dirname: $!";
   my @files;
   while (my $file = readdir(DIR)) {

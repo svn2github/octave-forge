@@ -20,14 +20,16 @@
 %% The polygon is described in @var{p}, where each row is a different vertex.
 %% @var{m} is the total mass of the polygon, assumed uniformly distributed.
 %% The optional argument @var{offset} is an origin translation vector. All vertex 
-%% are transformed to the reference frame with origin at @var{offset} respect to
-%% the center of mass.
+%% are transformed to the reference frame with origin at @var{offset}. 
 %%
 %% This expression assumes that the polygon is star-shaped. The position of the
 %% vertices is assumed to be given from the center of mass of the polygon.
 %% To change a general polygon to this description you can use:
 %% @code{P = P - repmat(center_mass_poly2d(P),size(P,1))}.
+%% or call the function using the offset:
+%% @code{inertia_moment_poly2d (@var{p}, @var{m}, center_mass_poly2d(P))}
 %%
+%% @seealso{inertia_moment_ncpoly2d, center_mass_poly2d}
 %% @end deftypefn
 
 function I = inertia_moment_poly2d(poly,mass,offset=[0 0])

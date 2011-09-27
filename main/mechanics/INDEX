@@ -1,6 +1,6 @@
 mechanics >> Classical Mechanics
 1D Mechanics
- nloscilator
+ nloscillator
  setnloscillator
  pendulum
  setpendulum
@@ -10,3 +10,4 @@ mechanics >> Classical Mechanics
  inertia_moment_poly2d
  inertia_moment_ncpoly2d
  second_moment_poly2d
+

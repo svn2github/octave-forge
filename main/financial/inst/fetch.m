@@ -122,9 +122,9 @@ function [data fields] = fetch (conn=[], symbol="", varargin)
   endif
 
   if strcmpi (conn.url, "http://quote.yahoo.com")
-    [data fields] = __fetch_yahoo__ (conn, symbol, fromdate, todate, period);
+    [data fields] = fetch_yahoo (conn, symbol, fromdate, todate, period);
   elseif strcmpi (conn.url, "http://finance.google.com")
-    [data fields] = __fetch_google__ (conn, symbol, fromdate, todate, period);
+    [data fields] = fetch_google (conn, symbol, fromdate, todate, period);
   else
     error ("Unrecgonized connection type")
   endif

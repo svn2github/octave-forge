@@ -16,7 +16,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {[@var{data} @var{fields}] =}
-##  __fetch_google__ (@var{conn}, @var{symbol}, @var{fromdate}, @var{todate}, @var{period})
+##  fetch_google (@var{conn}, @var{symbol}, @var{fromdate}, @var{todate}, @var{period})
 ##
 ## Download stock data from google. (Helper for fetch.)
 ##
@@ -39,7 +39,7 @@
 ## FIXME: Actually use the proxy info if given in the connection.
 ## FIXME: Do not ignore the fields input.
 
-function [data fields] = __fetch_google__ (conn=[], symbol="",
+function [data fields] = fetch_google (conn=[], symbol="",
                                           fromdate, todate, period="d")
 
   periods = struct("d", "daily", "w", "weekly");
@@ -90,16 +90,16 @@ endfunction
 %! wgood = [732501,34.25,35.08,33.72,34.62,61542100;
 %!          732494,35.88,36.24,34.22,34.44,68433900];
 %!test
-%! [d f] = __fetch_google__ (google(), "yhoo", 732494, 732501, "d");
+%! [d f] = fetch_google (google(), "yhoo", 732494, 732501, "d");
 %! assert(d, dgood, eps);
 %! assert(f, fgood, eps);
 ## test that the automatic period works
 %!test
-%! [d f] = __fetch_google__ (google(), "yhoo", 732494, 732501);
+%! [d f] = fetch_google (google(), "yhoo", 732494, 732501);
 %! assert(d, dgood, eps);
 %! assert(f, fgood, eps);
 ## Test that weekly works
 %!test
-%! [d f] = __fetch_google__ (google(), "yhoo", 732494, 732501, "w");
+%! [d f] = fetch_google (google(), "yhoo", 732494, 732501, "w");
 %! assert(d, wgood, eps);
 %! assert(f, fgood, eps);

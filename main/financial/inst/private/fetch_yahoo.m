@@ -16,7 +16,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {[@var{data} @var{fields}] =}
-##  __fetch_yahoo__ (@var{conn}, @var{symbol}, @var{fromdate}, @var{todate}, @var{period})
+##  fetch_yahoo (@var{conn}, @var{symbol}, @var{fromdate}, @var{todate}, @var{period})
 ##
 ## Download stock data from yahoo. (Helper for fetch.)
 ##
@@ -41,7 +41,7 @@
 ## FIXME: Actually use the proxy info if given in the connection.
 ## FIXME: Do not ignore the fields input.
 
-function [data fields] = __fetch_yahoo__ (conn=[], symbol="",
+function [data fields] = fetch_yahoo (conn=[], symbol="",
                                           fromdate, todate, period="d")
 
   if strcmpi (conn.url, "http://quote.yahoo.com")
@@ -83,12 +83,12 @@ endfunction
 %!          732498,34.25,35.08,34.20,34.60,16086700,34.60;
 %!          732494,34.76,34.85,34.22,34.44,9861600,34.44];
 %!test
-%! [d f] = __fetch_yahoo__ (yahoo(), "yhoo", 732494, 732501, "d");
+%! [d f] = fetch_yahoo (yahoo(), "yhoo", 732494, 732501, "d");
 %! assert(d, dgood, eps);
 %! assert(f, fgood, eps);
 ## test that the automatic period works
 %!test
-%! [d f] = __fetch_yahoo__ (yahoo(), "yhoo", 732494, 732501);
+%! [d f] = fetch_yahoo (yahoo(), "yhoo", 732494, 732501);
 %! assert(d, dgood, eps);
 %! assert(f, fgood, eps);
 

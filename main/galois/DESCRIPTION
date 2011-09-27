@@ -1,8 +1,8 @@
 Name: Galois Field
 Version: 0.0.1
 Date: 2008-11-14
-Author: David Bateman
-Maintainer: David Bateman
+Author: David Bateman <adb014@gmail.com>
+Maintainer: David Bateman <adb014@gmail.com>
 Title: Galois Field Test Package
 Description: Test package for new implementation galois field code.
 Depends: octave (>= 3.4.0)

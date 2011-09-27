@@ -1,8 +1,8 @@
 Name: PhysicalConstants
 Version: 0.1.7
 Date: 2009-05-06
-Author: Muthiah Annamalai
-Maintainer: Muthiah Annamalai
+Author: Muthiah Annamalai <muthiah.annamalai@uta.edu>
+Maintainer: Muthiah Annamalai <muthiah.annamalai@uta.edu>
 Title: Physical Constants
 Description: Physical Constants from Atomic & Molecular Physics, taken from NIST database
 Categories: Physics

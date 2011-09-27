@@ -1,7 +1,7 @@
 Name: ftp
 Version: 1.0.3
 Date: 2009-01-09
-Author: Xavier Delacour
+Author: Xavier Delacour <xavier.delacour@gmail.com>
 Maintainer: The Octave Community
 Title: FTP functions
 Description: These are bindings for ftplib, and MATLAB compatible APIs. Superceded in Octave 3.4.0.

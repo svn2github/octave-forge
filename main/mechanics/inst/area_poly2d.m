@@ -38,7 +38,7 @@ function A = area_poly2d(poly)
 end
 
 %!demo
-%! % A parametrized arbitrary triagle and its area
+%! % A parametrized arbitrary triangle and its area
 %!
 %!  triangle = @(a,b,h) [0 0; b 0; a h];
 %!  h = linspace(0.1,1,10);

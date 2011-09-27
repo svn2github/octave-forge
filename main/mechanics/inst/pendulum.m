@@ -14,7 +14,7 @@
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} {[ @var{dotx}, @var{dotxdx}, @var{u}] =} pendulum (@var{t}, @var{x}, @{opt})
+%% @deftypefn {Function File} {[ @var{dotx}, @var{dotxdx}, @var{u}] =} pendulum (@var{t}, @var{x}, @var{opt})
 %% Implements a general pendulum.
 %% @tex
 %% $$
@@ -31,8 +31,6 @@
 %% @noindent
 %% where q is the angle of the pendulum and q' its angular velocity
 %%
-%% @end ifnottex
-%% 
 %% This function can be used with the ODE integrators. 
 %%
 %% @strong{INPUTS}
@@ -43,12 +41,12 @@
 %% the number of time values given. The first row corresponds to the configurations
 %% of the system and the second row to its derivatives with respect to time.
 %%
-%% @var{opt}: An options strcuture. See the complementary function
+%% @var{opt}: An options structure. See the complementary function
 %% @code{setpendulum}. The structure containing the fields: 
 %%
 %% @code{Coefficients}: Contains the coefficients (g/l).
 %%
-%% @code{Damping}: Containst the coefficient d.
+%% @code{Damping}: Contains the coefficient d.
 %%
 %% @code{Actuation}: An optional field of the structure. If it is present, it
 %% defines the function f(t,q,q'). It can be a handle to a function of the form f =

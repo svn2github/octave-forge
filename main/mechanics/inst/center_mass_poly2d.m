@@ -19,7 +19,7 @@
 %%
 %% The polygon is described in @var{p}, where each row is a different vertex.
 %% The algorithm was adapted from P. Bourke web page
-%% @uref{http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/}
+%% @url{http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/}
 %%
 %% @seealso{inertia_moment_poly2d, area_poly2d}
 %% @end deftypefn

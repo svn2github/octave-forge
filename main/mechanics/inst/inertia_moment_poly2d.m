@@ -19,7 +19,7 @@
 %%
 %% The polygon is described in @var{p}, where each row is a different vertex.
 %% @var{m} is the total mass of the polygon, assumed uniformly distributed.
-%% The optinal argument @var{offset} is an origin translation vector. All vertex 
+%% The optional argument @var{offset} is an origin translation vector. All vertex 
 %% are transformed to the reference frame with origin at @var{offset} respect to
 %% the center of mass.
 %%
@@ -28,7 +28,6 @@
 %% To change a general polygon to this description you can use:
 %% @code{P = P - repmat(center_mass_poly2d(P),size(P,1))}.
 %%
-%% @seealso{}
 %% @end deftypefn
 
 function I = inertia_moment_poly2d(poly,mass,offset=[0 0])

@@ -21,7 +21,7 @@
 %% The output @var{J} contains Ix, Iy and Ixy, in that order.
 %%
 %% The algorithm was adapted from P. Bourke web page
-%% @uref{http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/}
+%% @url{http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/}
 %%
 %% @seealso{inertia_moment_poly2d, center_mass_poly2d}
 %% @end deftypefn

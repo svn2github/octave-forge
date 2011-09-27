@@ -15,8 +15,8 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {[ @var{opts}, @var{desc}] =} setpendulum ()
-%% Returns the requiered options structure for the function pendulum and a
-%% description of the fileds in the structure.
+%% Returns the required options structure for the function pendulum and a
+%% description of the fields in the structure.
 %%
 %% @seealso{pendulum}
 %% @end deftypefn
@@ -25,11 +25,11 @@ function [opt desc] = setpendulum(varargin)
 
 required_fields = {'Coefficients','Damping'};
 reqf_default = {1;0};
-reqf_description = {['Ration (g/l), relation between gravity and legnth of the pendulum'];...
+reqf_description = {['Ration (g/l), relation between gravity and length of the pendulum'];...
          ['Damping coefficient, damping is proportional to angular speed.']};
 
 optional_fields = {'Actuation'};
-optf_description = {['Optinonal field. It defines the forcing function (source)'...
+optf_description = {['Optional field. It defines the forcing function (source)'...
  "f(t,q,q'). It can be a handle to a function of the form f = func(t,x,opt)" ...
  'or it can be a 1xnT array.']};
 

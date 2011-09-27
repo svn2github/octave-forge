@@ -28,7 +28,7 @@
 %% To change a general polygon to this description you can use:
 %% @code{P = P - repmat(center_mass_poly2d(P),size(P,1))}.
 %%
-%% @seealso{}
+%% @seealso{inertia_moment_poly2d, center_mass_poly2d}
 %% @end deftypefn
 
 function I = inertia_moment_ncpoly2d (poly, M)

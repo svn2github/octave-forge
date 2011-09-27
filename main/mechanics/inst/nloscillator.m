@@ -14,8 +14,8 @@
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} {[ @var{dotx}, @var{dotxdx}, @var{u}] =} nloscilator (@var{t}, @var{x}, @{opt})
-%% Implements a general nonlinear ocscilator.
+%% @deftypefn {Function File} {[ @var{dotx}, @var{dotxdx}, @var{u}] =} nloscillator (@var{t}, @var{x}, @var{opt})
+%% Implements a general nonlinear oscillator.
 %% @tex
 %% $$
 %% \ddot{q} + p(q) + g(\dot{q}) = f(t,q,\dot{q})
@@ -29,7 +29,7 @@
 %%
 %% @end ifnottex
 %% @noindent
-%% where q is the configuration of the system and p(q), g(q') are homogenous
+%% where q is the configuration of the system and p(q), g(q') are homogeneous
 %% polynomials of arbitrary degree.
 %% @tex
 %% $$
@@ -61,24 +61,25 @@
 %% the number of time values given. The first row corresponds to the configurations
 %% of the system and the second row to its derivatives with respect to time.
 %%
-%% @var{opt}: An options strcuture. See the complementary function
+%% @var{opt}: An options structure. See the complementary function
 %% @code{setnloscillator}. The structure containing the fields: 
 %%
 %% @code{Coefficients}: Contains a vector of coefficients for p(x). It follows
-%% the format used for function ppval @code{opt.Coefficients(i) = a_{P+1-i}}.
+%% the format used for function ppval @code{opt.Coefficients(i) = a(P+1-i)}.
 %%
-%% @code{Damping}: Containst a vector of the coefficients for g(x'). Same format
+%% @code{Damping}: Contains a vector of the coefficients for g(x'). Same format
 %% as before.
 %%
 %% @code{Actuation}: An optional field of the structure. If it is present, it
 %% defines the function f(t,q,q'). It can be a handle to a function of the form f =
-%% func(@var{t},@var{x},@var{opt}) or it can be a @code{1xnT} vector.
+%% func(@var{t}, @var{x}, @var{opt}) or it can be a @code{1xnT} vector.
 %%
 %% @strong{OUTPUT}
 %% 
 %% @var{dotx}: Derivative of the state space vector with respect to time. A @code{2xnT} array.
 %%
-%% @var{dotxdx}: When requested, it contains the Jacobian of the system. It is a multidimensional array of size @code{2x2xnT}.
+%% @var{dotxdx}: When requested, it contains the Jacobian of the system. It is a
+%% multidimensional array of size @code{2x2xnT}.
 %%
 %% @var{u}: If present, the function returns the inputs that generate the
 %% sequence of state space vectors provided in @var{x}. To do this the functions

@@ -45,3 +45,17 @@ function [cfConv] = cfconv (cf, yield)
   cfConv = (cf*t2') / (cf*t1') / (1+yield) / (1+yield);
 
 endfunction
+
+%!demo
+%! cf = [2.5 2.5 2.5 2.5 2.5 2.5 2.5 2.5 2.5 102.5];
+%! yield = 0.025;
+%! cfConv = cfconv( cf, yield )
+%! %--------------------------------------------------
+%! % Input cash flow and yield, output convexity
+
+%!test
+%! cf = [2.5 2.5 2.5 2.5 2.5 2.5 2.5 2.5 2.5 102.5];
+%! cfConv = cfconv( cf, 0.025 );
+%! errVal = round(cfConv*(1e+4))*(1e-4) - 90.4493;
+%! errVal = round(errVal*(1e+10));
+%! assert(errVal, 0)

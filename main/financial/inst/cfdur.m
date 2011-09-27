@@ -32,7 +32,9 @@ function [dur, modDur] = cfdur (cf, yield)
     print_usage ();
   elseif ( ! isscalar(yield) )
     error("input yield must be a scalar");
-  elseif ( rows(1) != 1 )
+  endif
+
+  if ( rows(1) != 1 )
     error("input cash flow must be a 1xN matrix");
   endif
 
@@ -44,3 +46,18 @@ function [dur, modDur] = cfdur (cf, yield)
   modDur  = dur / (1+yield);
 
 endfunction
+
+%!demo
+%! cf = [2.5 2.5 2.5 2.5 2.5 2.5 2.5 2.5 2.5 102.5];
+%! yield = 0.025;
+%! [ duration, modDuration ] = cfdur( cf, yield )
+%! %--------------------------------------------------
+%! % Input cash flow and yield, output duration and modified duration
+
+%!test
+%! cf = [2.5 2.5 2.5 2.5 2.5 2.5 2.5 2.5 2.5 102.5];
+%! [dur modDur] = cfdur( cf, 0.025 );
+%! errVal1 = round(dur*(1e+4))*(1e-4) - 8.9709;
+%! errVal2 = round(modDur*(1e+4))*(1e-4) - 8.7521;
+%! assert( errVal1, 0 )
+%! assert( errVal2, 0 )

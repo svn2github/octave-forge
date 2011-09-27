@@ -26,9 +26,7 @@ function [sigma, corr] = cov2corr (cov_m)
 
   if ( nargin != 1 )
     print_usage ();
-  endif
-
-  if ( ndims (cov_m) != 2 || rows(cov_m) != columns(cov_m) )
+  elseif ( ndims (cov_m) != 2 || rows(cov_m) != columns(cov_m) )
     error("covariances must be a NxN matrix");
   endif
 
@@ -41,3 +39,16 @@ function [sigma, corr] = cov2corr (cov_m)
   corr  = cov_m ./ ( sigma' * sigma );
 
 endfunction
+
+%!demo
+%! cov = [ 0.25 -0.5; -0.5 4.0 ];
+%! [ sigma, corr ] = cov2corr( cov )
+%! %--------------------------------------------------
+%! % Input covariance matrix, output standard deviations and correlation 
+%! % matrix 
+
+%!test
+%! cov = [ 0.25 -0.5; -0.5 4.0 ];
+%! [sigma, corr] = cov2corr( cov );
+%! assert( sigma, [0.5 2.0] )
+%! assert( corr, [1.0 -0.5; -0.5 1.0] );

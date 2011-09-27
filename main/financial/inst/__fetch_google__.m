@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -39,16 +39,13 @@
 ## FIXME: Actually use the proxy info if given in the connection.
 ## FIXME: Do not ignore the fields input.
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 31 Aug 2008
-
 function [data fields] = __fetch_google__ (conn=[], symbol="",
                                           fromdate, todate, period="d")
 
   periods = struct("d", "daily", "w", "weekly");
   if strcmpi (conn.url, "http://finance.google.com")
     fromdatestr = datestr (fromdate);
-    todatestr = datestr (todate);
+    todatestr   = datestr (todate);
     ## http://finance.google.com/finance/historical?q=T&startdate=Sep+1%2C+2007&enddate=Aug+31%2C+2008&histperiod=weekly&output=csv
     geturl = sprintf (["http://finance.google.com/finance/" ...
                        "historical?" ...

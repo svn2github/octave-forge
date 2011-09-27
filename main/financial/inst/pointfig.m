@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -23,43 +23,41 @@
 ## @seealso{bolling, candle, dateaxis, highlow, movavg}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 24 Feb 2008
-
 function pointfig (asset)
 
-  if nargin ~= 1
-	print_usage ();
+  if nargin != 1
+    print_usage ();
   endif
 
-  upmask = asset(2:end) > asset(1:end-1);
+  upmask    = asset(2:end) > asset(1:end-1);
   # if the data is equal, it will not change the trend
   equalmask = asset(2:end) == asset(1:end-1);
-  downmask = asset(2:end) < asset(1:end-1);
+  downmask  = asset(2:end) < asset(1:end-1);
 
-  lx = 0;
-  ly = 0;
+  lx        = 0;
+  ly        = 0;
   direction = 0;
-  up = zeros(0,2);
-  down = zeros(0,2);
+  up        = zeros(0,2);
+  down      = zeros(0,2);
+
   for i = 1:length (upmask)
     if direction > 0 && (upmask(i) || equalmask(i))
       ## moving in the same direction as previously: up
-      ly += 1;
+      ly         += 1;
       up(end+1,:) = [lx ly];
     elseif direction < 0 && (downmask(i) || equalmask(i))
       ## moving in the same direction as previously: down
-      ly -= 1;
+      ly           -= 1;
       down(end+1,:) = [lx ly];
     else
       ## moving in a different direction than previously
       lx += 1;
       if upmask(i)
         up(end+1,:) = [lx ly];
-        direction = 1;
+        direction   = 1;
       else
         down(end+1,:) = [lx ly];
-        direction = -1;
+        direction     = -1;
       endif
     endif
   endfor
@@ -68,7 +66,7 @@ function pointfig (asset)
   hold("on");
   plot(up(:,1), up(:,2), "x", "color", [0 0 1]);
   plot(down(:,1), down(:,2), "o", "color", [1 0 0]);
-  if ~ hstat
+  if ! hstat
     hold("off");
   endif
 

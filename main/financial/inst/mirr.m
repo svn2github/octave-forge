@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -26,9 +26,6 @@
 ## Algorithm from
 ## http://en.wikipedia.org/wiki/Modified_Internal_Rate_of_Return
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 26 Apr 2008
-
 function rate = mirr (flow, finrate, reinvestrate)
 
   if (nargin != 3)
@@ -37,8 +34,8 @@ function rate = mirr (flow, finrate, reinvestrate)
 
   posflow = zeros (size (flow));
   negflow = zeros (size (flow));
-  mask = flow >= 0;
-  posflow(mask) = flow(mask);
+  mask    = flow >= 0;
+  posflow(mask)  = flow(mask);
   negflow(!mask) = flow(!mask);
 
   n = numel (flow);

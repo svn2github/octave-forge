@@ -1,5 +1,5 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2004, 2005, 2006,
-##               2007 Kurt Hornik
+##               2007 Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -24,20 +24,13 @@
 ## @seealso{npv, pv, rate}
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Internal rate of return of an investment
-
 function r = irr (p, i = 0)
   ## Check input
   if (nargin != 1 && nargin != 2)
     print_usage ();
-  endif
-
-  if (! (isvector (p)))
+  elseif (! (isvector (p)))
     error ("irr: p must be a vector");
-  endif
-
-  if (! isscalar (i))
+  elseif (! isscalar (i))
     error ("irr: i must be a scalar");
   endif
 

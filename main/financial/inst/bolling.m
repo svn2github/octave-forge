@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -31,16 +31,13 @@
 ## @seealso{movavg, candle, dateaxis, highlow, pointfig}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 24 Feb 2008
-
 function [varargout] = bolling (asset, samples, alpha, width)
 
   ## Check input and set the defaults
   if nargin < 2 || nargin > 4
-	print_usage ();
+    print_usage ();
   elseif nargin < 3
-	alpha = 0;
+    alpha = 0;
   endif
   if nargin < 4
     width = 2;
@@ -52,7 +49,7 @@ function [varargout] = bolling (asset, samples, alpha, width)
 
   ## the moving average and the standard deviation
   avg = movavg(asset, samples, samples, alpha);
-  s = zeros(size(avg));
+  s   = zeros(size(avg));
 
   ## Assume that the standard deviation is constant for the first samples
   ## FIXME: is this what matlab assumes

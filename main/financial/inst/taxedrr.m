@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -20,9 +20,6 @@
 ## rate and a @var{taxrate}.
 ## @seealso{irr, effrr, nomrr, pvvar, xirr}
 ## @end deftypefn
-
-## Author: Bill Denney <bill@denney.ws>
-## Created: 26 Apr 2008
 
 function rate = taxedrr (pretax, taxrate)
 

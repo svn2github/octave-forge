@@ -1,5 +1,5 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2005, 2006, 2007
-##               Friedrich Leisch
+##               Friedrich Leisch <Friedrich.Leisch@ci.tuwien.ac.at>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -16,18 +16,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} vol (@var{x}, @var{m}, @var{n})
-## Return the volatility of each column of the input matrix @var{x}.
+## @deftypefn {Function File} {@var{volat} =} vol (@var{x}, @var{m}, @var{n})
+## Return the volatility @var{volat} of each column of the input matrix @var{x}.
+##
 ## The number of data sets per period is given by @var{m} (e.g. the
 ## number of data per year if you want to compute the volatility per
 ## year).  The optional parameter @var{n} gives the number of past
 ## periods used for computation, if it is omitted, a value of 1 is used.
+##
 ## If @var{t} is the number of rows of @var{x}, @code{vol} returns the
 ## volatility from @code{n*m} to @var{t}.
+##
 ## @end deftypefn
-
-## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description: Volatility of financial time series data
 
 function retval = vol (X, m, n)
 
@@ -70,4 +70,3 @@ function retval = vol (X, m, n)
   retval = sqrt (retval * m / (n * m - 1));
 
 endfunction
-

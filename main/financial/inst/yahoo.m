@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -30,9 +30,6 @@
 
 ## FIXME: Actually use the proxy info if given.
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 17 Aug 2008
-
 function conn = yahoo (url="http://quote.yahoo.com", ipaddr="", port=[])
 
   if ! strcmpi (url, "http://quote.yahoo.com")
@@ -41,8 +38,8 @@ function conn = yahoo (url="http://quote.yahoo.com", ipaddr="", port=[])
     warning ("Proxy information is currently ignored")
   endif
 
-  conn.url = url;
-  conn.ip = ipaddr;
+  conn.url  = url;
+  conn.ip   = ipaddr;
   conn.port = port;
 
 endfunction

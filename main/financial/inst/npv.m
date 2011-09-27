@@ -1,5 +1,5 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 1999, 2000, 2002, 2004, 2005,
-##               2006, 2007 Kurt Hornik
+##               2006, 2007 Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} npv (@var{r}, @var{p}, @var{i})
+## Net present value of a series of payments.
+##
 ## Returns the net present value of a series of irregular (i.e., not
 ## necessarily identical) payments @var{p} which occur at the ends of @var{n}
 ## consecutive periods.  @var{r} specifies the one-period interest rates and
@@ -30,9 +32,6 @@
 ## not 5 percent).
 ## @seealso{irr, pv}
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Net present value of a series of payments
 
 function v = npv (r, p, i)
 

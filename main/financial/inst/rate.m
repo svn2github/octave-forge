@@ -1,5 +1,5 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2004, 2005, 2006,
-##               2007 Kurt Hornik
+##               2007 Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rate (@var{n}, @var{p}, @var{v}, @var{l}, @var{method})
-## Return the rate of return on an investment of present value @var{v} which
-## pays @var{p} in @var{n} consecutive periods.
+## @deftypefn {Function File} {@var{r} =} rate (@var{n}, @var{p}, @var{v}, @var{l}, @var{method})
+## Return the rate of return @var{r} on an investment of present value @var{v}
+## which pays @var{p} in @var{n} consecutive periods.
 ##
 ## The optional argument @var{l} may be used to specify an additional
 ## lump-sum payment made at the end of @var{n} periods.
@@ -28,9 +28,6 @@
 ## beginning (@code{"b"}) of each period.
 ## @seealso{pv, pmt, nper, npv}
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Rate of return of an investment
 
 function r = rate (n, p, v, l, m)
 
@@ -67,6 +64,6 @@ function r = rate (n, p, v, l, m)
   endif
 
   r = fsolve (sprintf ("pv (x, %g, %g, %g, \"%s\") - %g",
-		       n, p, l, m, v), 0);
+                       n, p, l, m, v), 0);
 
 endfunction

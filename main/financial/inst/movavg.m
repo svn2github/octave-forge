@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -32,51 +32,48 @@
 ## @seealso{bolling, candle, dateaxis, highlow, pointfig}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 13 Feb 2008
-
 function [varargout] = movavg (asset, lead, lag, alpha)
 
   if nargin < 3 || nargin > 4
-	print_usage ();
+    print_usage ();
   elseif nargin < 4
-	alpha = 0;
+    alpha = 0;
   endif
 
   if lead > lag
     error ("lead must be <= lag")
   elseif ischar (alpha)
-    if ~ strcmpi (alpha, "e")
+    if ! strcmpi (alpha, "e")
       error ("alpha must be 'e' if it is a char");
     endif
-  elseif ~ isnumeric (alpha)
+  elseif ! isnumeric (alpha)
     error ("alpha must be numeric or 'e'")
   endif
 
   ## Compute the weights
   if ischar (alpha)
     lead = exp(1:lead);
-    lag = exp(1:lag);
+    lag  = exp(1:lag);
   else
     lead = (1:lead).^alpha;
-    lag = (1:lag).^alpha;
+    lag  = (1:lag).^alpha;
   endif
   ## Adjust the weights to equal 1
   lead = lead / sum (lead);
-  lag = lag / sum (lag);
+  lag  = lag / sum (lag);
 
   short = asset;
-  long = asset;
+  long  = asset;
   for i = 1:length (asset)
     if i < length (lead)
       ## Compute the run-in period
-      r = length (lead) - i + 1:length(lead);
+      r        = length (lead) - i + 1:length(lead);
       short(i) = dot (asset(1:i), lead(r))./sum (lead(r));
     else
       short(i) = dot (asset(i - length(lead) + 1:i), lead);
     endif
     if i < length (lag)
-      r = length (lag) - i + 1:length(lag);
+      r       = length (lag) - i + 1:length(lag);
       long(i) = dot (asset(1:i), lag(r))./sum (lag(r));
     else
       long(i) = dot (asset(i - length(lag) + 1:i), lag);

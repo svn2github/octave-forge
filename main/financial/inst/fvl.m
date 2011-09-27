@@ -1,5 +1,5 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2005, 2006, 2007
-##               Kurt Hornik
+##               Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -24,9 +24,6 @@
 ## Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
 ## not 5 percent).
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Future value of an initial lump sum investment
 
 function v = fvl (r, n, l)
 

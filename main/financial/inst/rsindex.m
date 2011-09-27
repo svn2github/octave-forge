@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -29,9 +29,6 @@
 ## @seealso{}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 24 Feb 2008
-
 function rsi = rsindex (cl, n)
 
   if nargin < 2
@@ -39,28 +36,28 @@ function rsi = rsindex (cl, n)
   endif
 
   if nargin < 1 || nargin > 2
-	print_usage ();
+    print_usage ();
   elseif n > length(cl)
     error ("nperiods must be <= the length of closeprice")
-  elseif ~ isvector (cl)
+  elseif ! isvector (cl)
     error ("closeprice must be a vector")
   endif
 
   diff = cl(2:end) - cl(1:end-1);
-  rsi = nan (size (cl));
+  rsi  = nan (size (cl));
 
   for i = n:length (cl)
     changes = diff(i-n+1:i-1);
-    downs = changes < 0;
-    ups = changes > 0;
+    downs   = changes < 0;
+    ups     = changes > 0;
     if isempty (downs)
       ## prevent division by zero
       rsi(i) = 100;
     elseif isempty (ups)
       rsi(i) = 0;
     else
-      ups = sum(changes(ups));
-      downs = -sum(changes(downs));
+      ups    = sum(changes(ups));
+      downs  = -sum(changes(downs));
       rsi(i) = 100*(1-1/(1+ups/downs));
     endif
   endfor

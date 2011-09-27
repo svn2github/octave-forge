@@ -1,5 +1,5 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 2000, 2001, 2002, 2004, 2005,
-##               2006, 2007 Kurt Hornik
+##               2006, 2007 Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -28,9 +28,6 @@
 ## (@var{"b"}) of each period.
 ## @seealso{pv, nper, rate}
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Amount of periodic payment needed to amortize a loan
 
 function p = pmt (r, n, a, l, m)
 
@@ -68,9 +65,4 @@ function p = pmt (r, n, a, l, m)
     p = p / (1 + r);
   endif
 
-
 endfunction
-
-
-
-

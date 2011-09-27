@@ -1,5 +1,5 @@
 ## Copyright (C) 1995, 1996, 1998, 2000, 2002, 2004, 2005, 2006, 2007
-##               Kurt Hornik
+##               Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -31,9 +31,6 @@
 ## not 5 percent).
 ## @seealso{pmt, nper, rate, npv}
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Present value of an investment
 
 function v = pv (r, n, p, l, m)
 
@@ -77,4 +74,3 @@ function v = pv (r, n, p, l, m)
   endif
 
 endfunction
-

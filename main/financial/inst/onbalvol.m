@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -27,9 +27,6 @@
 ##
 ## @seealso{negvolidx, posvolidx}
 ## @end deftypefn
-
-## Author: Bill Denney <bill@denney.ws>
-## Created: 24 Feb 2008
 
 function obv = onbalvol (c, vol)
 

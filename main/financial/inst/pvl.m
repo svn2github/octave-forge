@@ -1,5 +1,5 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2005, 2006, 2007
-##               Kurt Hornik
+##               Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -16,17 +16,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} pvl (@var{r}, @var{n}, @var{p})
-## Return the present value of an investment that will pay off @var{p}
+## @deftypefn {Function File} {@var{v} =} pvl (@var{r}, @var{n}, @var{p})
+## Return the present value @var{v} of an investment that will pay off @var{p}
 ## in one lump sum at the end of @var{n} periods, given the interest
 ## rate @var{r}.
 ##
 ## Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
 ## not 5 percent).
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Present value of an investment that pays off at the end
 
 function v = pvl (r, n, p)
 

@@ -41,4 +41,3 @@ function [sigma, corr] = cov2corr (cov_m)
   corr  = cov_m ./ ( sigma' * sigma );
 
 endfunction
-

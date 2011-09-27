@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -27,15 +27,12 @@
 ## @seealso{bolling, candle, dateaxis, movavg, pointfig}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 2 Feb 2008
-
 function h = highlow (high, low, close, open, color)
 
   if nargin < 3 || nargin > 5
-	print_usage ();
+    print_usage ();
   elseif nargin < 4
-	open = [];
+    open = [];
   endif
   if nargin < 5
     plotargs = {};
@@ -44,14 +41,13 @@ function h = highlow (high, low, close, open, color)
   endif
 
   if isempty (high) || isempty (low) || isempty (close)
-	error ("high, low, and close may not be empty")
+    error ("high, low, and close may not be empty")
   elseif ~(isvector (high) && isvector (low) && isvector (close))
-	error ("high, low, and close must be vectors")
-  elseif ((numel (high) ~= numel (low)) ||
-		  (numel (high) ~= numel (close)))
-	error ("high, low, and close must have the same number of elements")
-  elseif (~isempty (open) && (numel (high) ~= numel (open)))
-	error ("open must have the same number of elements as high, low, and close")
+    error ("high, low, and close must be vectors")
+  elseif ( (numel (high) != numel (low)) || (numel (high) != numel (close)) )
+    error ("high, low, and close must have the same number of elements")
+  elseif ( !isempty (open) && (numel (high) != numel (open)) )
+    error ("open must have the same number of elements as high, low, and close")
   endif
 
   holdstat = ishold ();
@@ -66,13 +62,14 @@ function h = highlow (high, low, close, open, color)
   x = reshape([x+0.5;x+1;nan(size(x))], [], 1);
   y = reshape([close(:)';close(:)';nan(1, length(close))], [], 1);
   plot(x, y, plotargs{:});
-  if ~ isempty(open)
+  if ! isempty(open)
     x -= 0.5;
     y = reshape([open(:)';open(:)';nan(1, length(open))], [], 1);
     plot(x, y, plotargs{:});
   endif
 
-  if ~holdstat
+  if !holdstat
     hold off;
   endif
+
 endfunction

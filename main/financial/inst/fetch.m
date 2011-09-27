@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -63,19 +63,16 @@
 ## FIXME: Actually use the proxy info if given in the connection.
 ## FIXME: Do not ignore the fields input.
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 17 Aug 2008
-
 function [data fields] = fetch (conn=[], symbol="", varargin)
 
-  fields = {"Symbol", "Last", "Date", "Time", "Change", "Open", ...
-            "High", "Low", "Volume"};
+  fields   = {"Symbol", "Last", "Date", "Time", "Change", "Open", ...
+              "High", "Low", "Volume"};
   fromdate = [];
-  todate = [];
-  period = "d";
+  todate   = [];
+  period   = "d";
 
   firstdate = datenum (1900, 1, 1);
-  lastdate = today ();
+  lastdate  = today ();
 
   if isempty (conn)
     ## By default, use yahoo now since it's the only connection
@@ -121,7 +118,7 @@ function [data fields] = fetch (conn=[], symbol="", varargin)
 
   if isempty (fromdate)
     fromdate = firstdate;
-    todate = lastdate;
+    todate   = lastdate;
   endif
 
   if strcmpi (conn.url, "http://quote.yahoo.com")

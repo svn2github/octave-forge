@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -31,15 +31,12 @@
 ## @seealso{bolling, candle, highlow, movavg, pointfig}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 2 Feb 2008
-
 function dateaxis (varargin)
 
   ## defaults
-  h = [];
-  ax = "x";
-  dateform = [];
+  h         = [];
+  ax        = "x";
+  dateform  = [];
   startdate = [];
 
   ## check inputs
@@ -58,7 +55,7 @@ function dateaxis (varargin)
       startdate = varargin{3};
       if ischar(startdate)
         startdate = datenum(startdate);
-      elseif ~isnumeric(startdate)
+      elseif !isnumeric(startdate)
         error ("dateaxis: startdate must be either a datenum or numeric")
       endif
     endif

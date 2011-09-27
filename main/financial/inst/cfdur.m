@@ -30,13 +30,9 @@ function [dur, modDur] = cfdur (cf, yield)
 
   if ( nargin != 2 )
     print_usage ();
-  endif
-
-  if ( ! isscalar(yield) )
+  elseif ( ! isscalar(yield) )
     error("input yield must be a scalar");
-  endif
-
-  if ( rows(1) != 1 )
+  elseif ( rows(1) != 1 )
     error("input cash flow must be a 1xN matrix");
   endif
 

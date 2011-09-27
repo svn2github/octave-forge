@@ -42,4 +42,3 @@ function ret = corr2cov (sigma, corr)
   ret   = corr .* (sigma * sigma');
 
 endfunction
-

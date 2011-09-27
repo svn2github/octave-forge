@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -30,13 +30,10 @@
 ## @seealso{onbalvol, negvolidx}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 24 Feb 2008
-
 function pvi = posvolidx (c, vol, initpvi)
 
   default_pvi = 100;
-  pvi = zeros (length (c), 1);
+  pvi         = zeros (length (c), 1);
   if isvector (c)
     if nargin < 2
       ## a closing price was given without a volume
@@ -44,9 +41,9 @@ function pvi = posvolidx (c, vol, initpvi)
     elseif isscalar (vol)
       ## probably initpvi was given as the second argument
       print_usage ();
-    elseif ~isvector (vol)
+    elseif !isvector (vol)
       print_usage ();
-    elseif length (c) ~= length (vol)
+    elseif length (c) != length (vol)
       error ("closeprice and vol must be the same length");
     endif
     c = [c(:) vol(:)];
@@ -55,7 +52,7 @@ function pvi = posvolidx (c, vol, initpvi)
     else
       pvi(1) = initpvi;
     endif
-  elseif size (c, 2) ~= 2
+  elseif size (c, 2) != 2
     error ("If given as a matrix, c must have exactly two columns.")
   elseif size (c, 2) == 2
     if nargin == 2

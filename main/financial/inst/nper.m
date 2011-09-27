@@ -1,5 +1,5 @@
 ## Copyright (C) 1995, 1996, 1997, 1998, 2000, 2002, 2004, 2005, 2006,
-##               2007 Kurt Hornik
+##               2007 Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -31,9 +31,6 @@
 ## not 5 percent).
 ## @seealso{pv, pmt, rate, npv}
 ## @end deftypefn
-
-## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: Number of payments needed for amortizing a loan
 
 function n = nper (r, p, a, l, m)
 
@@ -78,4 +75,3 @@ function n = nper (r, p, a, l, m)
   endif
 
 endfunction
-

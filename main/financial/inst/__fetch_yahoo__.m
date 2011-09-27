@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -41,21 +41,18 @@
 ## FIXME: Actually use the proxy info if given in the connection.
 ## FIXME: Do not ignore the fields input.
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 17 Aug 2008
-
 function [data fields] = __fetch_yahoo__ (conn=[], symbol="",
                                           fromdate, todate, period="d")
 
   if strcmpi (conn.url, "http://quote.yahoo.com")
     fromdate = datevec (fromdate);
-    todate = datevec (todate);
-    geturl = sprintf (["http://ichart.finance.yahoo.com/table.csv" ...
-                       "?s=%s&d=%d&e=%d&f=%d&g=%s&a=%d&b=%d&c=%d&" ...
-                       "ignore=.csv"],
-                      symbol, todate(2)-1, todate(3), todate(1),
-                      period,
-                      fromdate(2)-1, fromdate(3), fromdate(1));
+    todate   = datevec (todate);
+    geturl   = sprintf (["http://ichart.finance.yahoo.com/table.csv" ...
+                         "?s=%s&d=%d&e=%d&f=%d&g=%s&a=%d&b=%d&c=%d&" ...
+                         "ignore=.csv"],
+                         symbol, todate(2)-1, todate(3), todate(1),
+                         period,
+                         fromdate(2)-1, fromdate(3), fromdate(1));
     ## FIXME: This would be more efficient if csv2cell could work on
     ## strings instead of files.
     [f, success, msg] = urlwrite (geturl, tmpnam ());
@@ -67,11 +64,11 @@ function [data fields] = __fetch_yahoo__ (conn=[], symbol="",
     ## Pull off the header
     fields = d(1,:);
     d(1,:) = [];
-    dates = strvcat (d(:,1));
-    dates = datenum(str2num(dates(:,1:4)),
-                    str2num(dates(:,6:7)),
-                    str2num(dates(:,9:10)));
-    data = [dates, cell2mat(d(:,2:end))];
+    dates  = strvcat (d(:,1));
+    dates  = datenum(str2num(dates(:,1:4)),
+                     str2num(dates(:,6:7)),
+                     str2num(dates(:,9:10)));
+    data   = [dates, cell2mat(d(:,2:end))];
   else
     error ("Non-yahoo connection passed to yahoo fetch")
   endif

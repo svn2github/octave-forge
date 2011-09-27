@@ -1,4 +1,4 @@
-## Copyright (C) 2008 Bill Denney
+## Copyright (C) 2008 Bill Denney <bill@denney.ws>
 ##
 ## This software is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -26,14 +26,11 @@
 ## @seealso{llow}
 ## @end deftypefn
 
-## Author: Bill Denney <bill@denney.ws>
-## Created: 24 Feb 2008
-
 function hhv = hhigh (data, nperiods, dim)
 
   if nargin < 1 || nargin > 3
     print_usage ();
-  elseif ~ isvector (data)
+  elseif ! isvector (data)
     ## FIXME
     error ("cannot yet handle more than one dimensional data")
   endif
@@ -49,7 +46,7 @@ function hhv = hhigh (data, nperiods, dim)
     error ("dim cannot be greater than the number of dimensions in data");
   endif
 
-  sz = size (data);
+  sz  = size (data);
   hhv = data;
   for i = 1:sz(dim)
     hhv(i) = max (data(max (i-nperiods+1, 1):i));

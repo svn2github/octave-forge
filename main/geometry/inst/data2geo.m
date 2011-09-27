@@ -79,6 +79,6 @@ function strFile = data2geo(data,lc,varargin)
 end
 
 %!demo
-%! points = [0 0 0; 0.1 0 0; 0.1 .3 0; 0 0.3 0];
+%! points  = [0 0 0; 0.1 0 0; 0.1 .3 0; 0 0.3 0];
 %! strFile = data2geo(points,0.009);
 %! disp(strFile)

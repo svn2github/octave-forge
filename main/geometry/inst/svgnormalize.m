@@ -55,13 +55,13 @@ function SVGn = svgnormalize (SVG)
 end
 
 %!demo
-%! file = 'tmp__.svg';
-%! fid = fopen (file,'w');
+%! file    = 'tmp__.svg';
+%! fid     = fopen (file,'w');
 %! svgfile = '<html><body><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="250" width="250"><path d="M150,0 75,200 225,200 Z" /></svg></body></html>';
 %! fprintf (fid,"%s\n",svgfile);
 %! fclose (fid);
-%! SVG = svgload (file);
-%! SVGn = svgnormalize (SVG);
+%! SVG     = svgload (file);
+%! SVGn    = svgnormalize (SVG);
 %! SVGn
 %! plot([SVGn.path.coord(:,1); SVGn.path.coord(1,1)], ...
 %!      [SVGn.path.coord(:,2); SVGn.path.coord(1,2)]);

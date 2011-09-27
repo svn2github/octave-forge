@@ -16,7 +16,7 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} @var{P} = SVGpath2polygon (@var{SVGpath})
 %% Converts the SVG path structure @var{SVGpath} to an array of polygons 
-%% compatible with matGeom (@uref{https://sourceforge.net/projects/matgeom/}).
+%% compatible with matGeom (@url{https://matgeom.sf.net}).
 %% 
 %% @var{SVGpath} is a substructure of the SVG structure output by loadSVG. This
 %% function extracts the field named "coord" if there is only one path. If there

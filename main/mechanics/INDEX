@@ -1,5 +1,9 @@
 mechanics >> Classical Mechanics
 1D Mechanics
+ nloscilator
+ setnloscillator
+ pendulum
+ setpendulum
 2D Mechanics
  area_poly2d
  center_mass_poly2d

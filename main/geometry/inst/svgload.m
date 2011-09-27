@@ -15,7 +15,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} @var{SVG} = loadSVG (@var{filename})
-%% Reads the plain SVG file @var{filename} and retunrs an SVG structure.
+%% Reads the plain SVG file @var{filename} and returns an SVG structure.
 %% 
 %% In the current version only SVG path elements are parsed and stored in the field
 %% path of the @var{SVG} structure.

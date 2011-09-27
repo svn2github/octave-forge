@@ -14,7 +14,7 @@
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} @var{fileStr} = data2geo (@var{data}, @var{lc},@{opt})
+%% @deftypefn {Function File} {@var{fileStr} =} data2geo (@var{data}, @var{lc},@var{opt})
 %% Takes data assuming certain order and builds a .geo file compatible with gmsh.
 %%
 %% @end deftypefn

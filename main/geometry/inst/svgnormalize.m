@@ -15,7 +15,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} @var{SVGn} = loadSVG (@var{SVG})
-%% Scales and reflects the @var{SVG} structure and returns a modified \var{SVGn}
+%% Scales and reflects the @var{SVG} structure and returns a modified @var{SVGn}
 %% structure.
 %% 
 %% The height and width of the SVG are scaled such that the diagonal of the 

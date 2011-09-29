@@ -13,4 +13,11 @@ mechanics-1.0.1   Release Date: 2011-09-27   Release Manager: Juan Pablo Carbaja
 Improvements in docstrings of all functions.
 
 ===============================================================================
+mechanics-1.0.2   Release Date: 2011-09-xx   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* verletstep : Verlet integrator.
+* verletstep_boxed: idem with periodic boundary conditions.
+
+===============================================================================
 

@@ -1,6 +1,6 @@
 #include <octave/oct.h>
 #include <octave/parse.h>
-     
+
 DEFUN_DLD (verletstep, args, nargout, "Verlet velocity step")
      {
        int nargin = args.length();
@@ -24,7 +24,7 @@ DEFUN_DLD (verletstep, args, nargout, "Verlet velocity step")
             Matrix P = args(0).array_value ();
             Matrix V = args(1).array_value ();
             Matrix M = args(2).array_value ();
-            Matrix dt = args(3).array_value ();
+            double dt = args(3).scalar_value ();
             
             dim_vector dv = P.dims();
             octave_idx_type Nparticles = dv(0);

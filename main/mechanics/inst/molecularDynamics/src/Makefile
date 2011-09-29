@@ -1,4 +1,4 @@
-all: verletstep.oct
+all: verletstep.oct verletstep_boxed.oct
 
 %.oct: %.cc
 	mkoctfile -Wall $<

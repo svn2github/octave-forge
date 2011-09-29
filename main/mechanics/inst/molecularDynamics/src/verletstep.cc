@@ -6,7 +6,7 @@ DEFUN_DLD (verletstep, args, nargout, "Verlet velocity step")
        int nargin = args.length();
        octave_value_list retval;
 
-       unsigned int fcn_str;
+       unsigned int fcn_str = 0;
        
        if (nargin < 5)
          print_usage ();
@@ -27,8 +27,8 @@ DEFUN_DLD (verletstep, args, nargout, "Verlet velocity step")
             Matrix dt = args(3).array_value ();
             
             dim_vector dv = P.dims();
-            unsigned int Nparticles = dv(0);
-            unsigned int Ndim = dv(1);
+            octave_idx_type Nparticles = dv(0);
+            octave_idx_type Ndim = dv(1);
 
             octave_value_list newargs;
             Matrix A (dim_vector(Nparticles, Ndim),0);

@@ -14,9 +14,21 @@
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} @var{A} = area_poly2d (@var{p})
-%% Calculates the Area of a 2D polygon.
+%% @deftypefn {Function File} {@var{f},@var{v}} = lennardjones (@var{dx},@var{r02},@var{v0})
+%% Returns force and energy of the Lennard-Jonnes potential evaluated at @var{dx}.
+%%
+%% @end deftypefn
 
-function minimage(P,BB)
-  
+function [f V] = lennardjones (dx,r02,V0)
+
+  r2 = sumsq(dx,2);
+  dr = dx ./ r2;
+
+  rr3 = (r02 ./ r2).^3;
+  rr6 = rr3.^2;
+
+  V = V0 * ( rr6 - 2*rr3 );
+
+  f = bsxfun(@times, 12 * V0 * ( rr6 - rr3 ), dr);
+
 end

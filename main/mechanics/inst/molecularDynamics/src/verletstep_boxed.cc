@@ -40,9 +40,9 @@ DEFUN_DLD (verletstep_boxed, args, nargout, "Verlet velocity step in periodic sp
             else
               error ("verletstep: expected string,"," inline or function handle");
 
-            Matrix P = args(0).array_value ();
-            Matrix V = args(1).array_value ();
-            Matrix M = args(2).array_value ();
+            Matrix P = args(0).matrix_value ();
+            Matrix V = args(1).matrix_value ();
+            Matrix M = args(2).matrix_value ();
             double dt = args(3).scalar_value ();
             
             dim_vector dv = P.dims();

@@ -19,6 +19,7 @@ mechanics-1.0.2   Release Date: 2011-09-xx   Release Manager: Juan Pablo Carbaja
 * verletstep : Verlet integrator.
 * verletstep_boxed: idem with periodic boundary conditions.
 * mdsim: Integrates a system of particle susing the algorithms above.
+* several helper functions.
 
 ===============================================================================
 

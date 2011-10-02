@@ -1,8 +1,8 @@
 Name: data-smoothing
 Version: 1.2.1
 Date: 2009-11-16
-Author: Jonathan Stickel
-Maintainer: Jonathan Stickel
+Author: Jonathan Stickel <jonathan.stickel@nrel.gov>
+Maintainer: Jonathan Stickel <jonathan.stickel@nrel.gov>
 Title: Data smoothing
 Description: Algorithms for smoothing noisy data
 Categories: Data-smoothing

@@ -223,7 +223,7 @@ Another -obvious- limitation is that COM Excel access only works on Windows syst
 <b>Apache POI</b> (Java-based and platform-independent too) is based on the OpenOffice.org I/O Excel r/w routines. It is a more versatile than JExcelAPI, while it doesn't support BIFF5 it does support BIFF8 (Excel 97 – 2003) and OOXML (Excel 2007).</DT>
 <DT>It is slower than native JXL let alone Excel &amp; COM but it features active formula evaluation, although at the moment (v. 3.7) not all Excel functions have been implemented. I've made the relevant subfunction (xls2jpoi2oct) fall back to cached formula results (and yield a suitable warning) for non-implemented Excel functions while reading Excel files. <BR>
 <BR>
-<b>OpenXLS</b> (an open source version of Extentech's commercial Java-xls product) is still experimental. It seems to work faster than JExcelAPI, but it has other issues - i.e., it locks the .xls file and the unlocking mechanism is a bit wonky. Sometimes xls files keep being locked until Octave is shut down. <BR>
+<b>OpenXLS</b> (an open source version of Extentech's commercial Java-xls product) is still experimental. It seems to work faster than JExcelAPI, but it has other issues - i.e., it locks the .xls file and the unlocking mechanism is a bit wonky. Sometimes xls files keep being locked until Octave is shut down. Currently OXS write support is disabled (but the code is there).<BR>
 <BR>
 <b>UNO</b> (invoking OpenOffice.org or clones behind the scenes, a la ActiveX) is experimental. It works FAST (i.e., once OOo itself is loaded which can take some time) and can process much larger spreadsheets than the other Java-based interfaces because the data are not entered in the JVM but in OOo's memory.<BR>
 A big stumbling block is that odsclose() on a UNO xls struct will kill ALL OpenOffice.org invocations, also those that were not related to Octave! This is due to UNO-Java limitations.<br>
@@ -287,7 +287,7 @@ Since April 2011 a special purpose setup file has been included in the io packag
 <FONT FACE="Courier New, monospace" SIZE=2><FONT FACE="Courier New, monospace" SIZE=2><P>rt = java_invoke ('java.lang.Runtime', 'getRuntime')<BR>
 rt.gc<BR>
 rt.maxMemory ().doubleValue () / 1024 / 1024</P>
-</FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><P>The last command will show MaxMemory in MiB.</P>
+</FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><P>The last command will show MaxMemory in MiB.<br></P>
 <P>c. In case you have insufficient memory, see in &quot;GOTCHAS&quot;, &quot;Java memory pool allocation size&quot;, how to increase java's memory pre-reservation.</P>
 <LI>Check if all classes (.jarfiles) are in class path. Do a '</FONT></FONT><FONT FACE="Courier New, monospace" SIZE=2><FONT FACE="Courier New, monospace" SIZE=2>javaclasspath</FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>' (under unix/linux, do '</FONT></FONT><FONT FACE="Courier New, monospace" SIZE=2><FONT FACE="Courier New, monospace" SIZE=2>tmp = javaclasspath; strsplit (tmp,&quot;:&quot;)</FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2>' (w/o quotes). See above under &quot;REQUIRED SUPPORT SOFTWARE&quot; what classes should be mentioned.</LI></OL>
 <DIR>

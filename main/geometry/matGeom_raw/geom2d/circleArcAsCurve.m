@@ -1,3 +1,13 @@
+%% Copyright (c) 2010, David Legland <david.legland@grignon.inra.fr>
+%%
+%% All rights reserved.
+%%
+%% This program is free software; you can redistribute it and/or modify
+%% it under the terms of the BSD License. For details see the COPYING
+%% file included as part of this distribution.
+
+%% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+
 function varargout = circleArcAsCurve(arc, N)
 %CIRCLEARCASCURVE Convert a circle arc into a series of points
 %

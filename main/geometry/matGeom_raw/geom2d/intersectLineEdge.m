@@ -1,3 +1,13 @@
+%% Copyright (c) 2010, David Legland <david.legland@grignon.inra.fr>
+%%
+%% All rights reserved.
+%%
+%% This program is free software; you can redistribute it and/or modify
+%% it under the terms of the BSD License. For details see the COPYING
+%% file included as part of this distribution.
+
+%% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+
 function point = intersectLineEdge(line, edge)
 %INTERSECTLINEEDGE Return intersection between a line and an edge
 %

@@ -1,3 +1,13 @@
+%% Copyright (c) 2010, David Legland <david.legland@grignon.inra.fr>
+%%
+%% All rights reserved.
+%%
+%% This program is free software; you can redistribute it and/or modify
+%% it under the terms of the BSD License. For details see the COPYING
+%% file included as part of this distribution.
+
+%% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+
 function trans = fitAffineTransform2d(pts1, pts2)
 %FITAFFINETRANSFORM2D Fit an affine transform using two point sets
 %   TRANS = fitAffineTransform2d(PTS1, PTS2)

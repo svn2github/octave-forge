@@ -15,3 +15,9 @@ Molecular Dynamics
  verletstep_boxed
  mdsim
  lennardjones
+2D Structural analysis (statics)
+ MSNForces
+ PlotDiagrams
+ PlotFrame
+ SolveFrame
+ SolveFrameCases

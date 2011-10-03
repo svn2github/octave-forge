@@ -5,7 +5,7 @@ function pre_install (desc)
   subfld = {"molecularDynamics","ocframe"};
 
   %% Create correct strings
-  subfld_ready = strcat({[pwd() filesep() "inst" filesep()]},
+  subfld_ready = strcat({[pwd() filesep()]},
                          subfld,[filesep() "*"]);
 
   %% Destination folder
@@ -14,6 +14,7 @@ function pre_install (desc)
 
   %% Copy files to package/ folder
   for from_fld = subfld_ready
+  %% TODO handle merging of Makefiles
     system (["cp -Rf " from_fld{1} " " to_fld]);
     system (["rm -R " from_fld{1}(1:end-2)]);
   end

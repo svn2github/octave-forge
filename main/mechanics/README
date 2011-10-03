@@ -1,0 +1,5 @@
+This package is organized in subfolder.
+When adding a new subproject with a src folder, make sure to provide a unique makefile
+merged with the previous one. The installation scripts doesn't hanlde multiple Makefiles yet.
+
+JPi Carbajal 10-2011

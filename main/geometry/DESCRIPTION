@@ -7,5 +7,5 @@ Title: Computational Geometry
 Description: Library for geometric computing extending MatGeom functions. Useful to create, transform, manipulate and display geometric primitives.
 Depends: octave (>= 3.4.0)
 Autoload: no
-License: GPL version 3 or later
+License: GPL version 3 and BSD (see files)
 Url: http://octave.sf.net, http://matgeom.sf.net

@@ -1,4 +1,4 @@
-dirlist = {"molecularDyanmics", "ocframe"};
+dirlist = {"molecularDynamics", "ocframe"};
 dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
 
 if (! exist (fullfile (dirname, "inst"), "dir"))

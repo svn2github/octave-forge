@@ -2,7 +2,7 @@ function pre_install (desc)
 %% Prepares for installation a package that is organized in subfolders 
 
   %% List of subfolders
-  subfld = {"molecularDynamics"};
+  subfld = {"molecularDynamics","ocframe"};
 
   %% Create correct strings
   subfld_ready = strcat({[pwd() filesep() "inst" filesep()]},

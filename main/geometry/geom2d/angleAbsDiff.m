@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,49 +31,36 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{dif} =} angleAbsDiff (@var{angle1}, @var{angle2})
+%% Computes the absolute angular difference between two angles in radians.
+%% The result is comprised between 0 and pi.
+%%
+%% @example
+%%     A = angleAbsDiff(pi/2, pi/3)
+%%     A = 
+%%         0.5236   % equal to pi/6
+%% @end example
+%% 
+%% @seealso{angles2d, angleDiff}
+%% @end deftypefn
 
-function alpha = normalizeAngle(alpha, varargin)
-%NORMALIZEANGLE  Normalize an angle value within a 2*PI interval
-%
-%   ALPHA2 = normalizeAngle(ALPHA);
-%   ALPHA2 is the same as ALPHA modulo 2*PI and is positive.
-%
-%   ALPHA2 = normalizeAngle(ALPHA, CENTER);
-%   Specifies the center of the angle interval.
-%   If CENTER==0, the interval is [-pi ; +pi]
-%   If CENTER==PI, the interval is [0 ; 2*pi] (default).
-%
-%   Example:
-%   % normalization between 0 and 2*pi (default)
-%   normalizeAngle(5*pi)
-%   ans =
-%       3.1416
-%
-%   % normalization between -pi and +pi
-%   normalizeAngle(7*pi/2, 0)
-%   ans =
-%       -1.5708
-%
-%   See also
-%   vectorAngle, lineAngle
-%
-%   References
-%   Follows the same convention as apache commons library, see:
-%   http://commons.apache.org/math/api-2.2/org/apache/commons/math/util/MathUtils.html
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2008-03-10,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2008 INRA - BIA PV Nantes - MIAJ Jouy-en-Josas.
+function dif = angleAbsDiff(angle1, angle2)
 
-% HISTORY
-% 2010-03-31 rename as normalizeAngle, and add psb to specify interval
-%   center
+  % first, normalization
+  angle1 = normalizeAngle(angle1);
+  angle2 = normalizeAngle(angle2);
 
-center = pi;
-if ~isempty(varargin)
-    center = varargin{1};
-end
+  % compute difference and normalize
+  dif = normalizeAngle(angle1 - angle2);
+  dif = min(dif, 2*pi - dif);
 
-alpha = mod(alpha-center+pi, 2*pi) + center-pi;
+endfunction
+
+%!shared xp
+%! xp = pi/2;
+%!assert (xp, angleAbsDiff (pi/2, 0), 1e-6);
+%!assert (xp, angleAbsDiff (0, pi/2), 1e-6);
+%!assert (xp, angleAbsDiff (0, 3*pi/2), 1e-6);
+%!assert (xp, angleAbsDiff (3*pi/2, 0), 1e-6);
+

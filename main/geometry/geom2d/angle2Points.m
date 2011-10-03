@@ -42,7 +42,6 @@
 %% Result is always given in radians, between 0 and 2*pi.
 %% 
 %% @seealso{points2d, angles2d, angle3points, normalizeAngle, vectorAngle}
-%%
 %% @end deftypefn
 
 function theta = angle2Points(varargin)

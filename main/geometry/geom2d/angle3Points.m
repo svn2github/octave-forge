@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,42 +31,52 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{alpha} =} angle3Points (@var{p1}, @var{p2}, @var{p3})
+%% Computes the angle between the points @var{p1}, @var{p2} and @var{p3}.
+%%
+%% @var{p1}, @var{p2} and @var{p3} are either [1x2] arrays, or [Nx2] arrays, in this case
+%% @var{alpha} is a [Nx1] array. The angle computed is the directed angle between line 
+%% (@var{p2}@var{p1}) and line (@var{p2}@var{p3}).
+%%
+%% Result is always given in radians, between 0 and 2*pi.
+%% 
+%% @seealso{points2d, angles2d, angle2points}
+%% @end deftypefn
 
 function theta = angle3Points(varargin)
-%ANGLE3POINTS Compute oriented angle made by 3 points
-%
-%   ALPHA = angle3Points(P1, P2, P3);
-%   Computes the angle between the points P1, P2 and P3.
-%   Pi are either [1*2] arrays, or [N*2] arrays, in this case ALPHA is a 
-%   [N*1] array. The angle computed is the directed angle between line 
-%   (P2P1) and line (P2P3).
-%   Result is always given in radians, between 0 and 2*pi.
-%
-%   See Also:
-%   points2d, angles2d, angle2points
-%
-%
-%   ---------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% created the 23/02/2004.
-% Copyright 2010 INRA - Cepia Software Platform.
 
+  if length(varargin)==3
+      p1 = varargin{1};
+      p2 = varargin{2};
+      p3 = varargin{3};
+  elseif length(varargin)==1
+      var = varargin{1};
+      p1 = var(1,:);
+      p2 = var(2,:);
+      p3 = var(3,:);
+  end
 
-%   HISTORY :
-%   25/09/2005 : enable single parameter
+  % angle line (P2 P1)
+  theta = lineAngle(createLine(p2, p1), createLine(p2, p3));
 
-if length(varargin)==3
-    p1 = varargin{1};
-    p2 = varargin{2};
-    p3 = varargin{3};
-elseif length(varargin)==1
-    var = varargin{1};
-    p1 = var(1,:);
-    p2 = var(2,:);
-    p3 = var(3,:);
-end    
+endfunction
 
-% angle line (P2 P1)
-theta = lineAngle(createLine(p2, p1), createLine(p2, p3));
+%!test
+%! % all points inside window, possibly touching edges
+%! p1 = [10 0];
+%! p2 = [0 0];
+%! p3 = [0 10];
+%! angle_ = angle3Points(p1, p2, p3);
+%! assert(pi/2, angle_,1e-6);
+%! angle_ = angle3Points([p1; p2; p3]);
+%! assert(pi/2, angle_, 1e-6);
+
+%!test
+%! p1 = [10 0; 20 0];
+%! p2 = [0 0;0 0];
+%! p3 = [0 10; 0 20];
+%! angle_ = angle3Points(p1, p2, p3);
+%! assert(2, size(angle_, 1));
+%! assert([pi/2;pi/2], angle_, 1e-6);
 

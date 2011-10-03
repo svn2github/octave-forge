@@ -34,25 +34,25 @@ function out = rgdtsmcorewrap (log10lambda, x, y, d, mincell, varargin)
     relative = 0;
     for i = 1:length(varargin)
       if strcmp(varargin{i},"relative")
-	relative = 1;
+        relative = 1;
       elseif strcmp(varargin{i},"xhat")
-	xhatprov = 1;
-	xhat = varargin{i+1};
+        xhatprov = 1;
+        xhat = varargin{i+1};
       endif
     endfor
 
     if (xhatprov)
       idx = interp1(xhat,1:length(xhat),x,"nearest");
       if relative
-	stdevd = std((y-yhat(idx))./y);
+        stdevd = std((y-yhat(idx))./y);
       else
-	stdevd = std(y-yhat(idx));
+        stdevd = std(y-yhat(idx));
       endif
     else
       if (relative)
-	stdevd = std((y-yhat)./y);
+        stdevd = std((y-yhat)./y);
       else
-	stdevd = std(y-yhat);
+        stdevd = std(y-yhat);
       endif
     endif
     

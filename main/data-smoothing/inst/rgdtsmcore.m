@@ -58,20 +58,20 @@ function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
     for i = 1:length(varargin)
       arg = varargin{i};
       if ischar(arg)
-	switch arg
-	  case "xhat"
-	    xhatprov = 1;
-	    xhat = varargin{i+1};
-	  case "weights"
-	    weights = 1;
-	    weightv = varargin{i+1};
-	  case "relative"
-	    relative = 1;
-	  case "midpointrule"
-	    midpr = 1;
-	  otherwise
-	    printf("Option '%s' is not implemented;\n", arg)
-	endswitch
+        switch arg
+          case "xhat"
+            xhatprov = 1;
+            xhat = varargin{i+1};
+          case "weights"
+            weights = 1;
+            weightv = varargin{i+1};
+          case "relative"
+            relative = 1;
+          case "midpointrule"
+            midpr = 1;
+          otherwise
+            printf("Option '%s' is not implemented;\n", arg)
+        endswitch
       endif
     endfor
   endif

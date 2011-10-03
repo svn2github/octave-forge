@@ -76,22 +76,22 @@ function [yhat, lambda] = regdatasmooth (x, y, varargin)
     for i = 1:nargin-2
       arg = varargin{i};
       if ischar(arg)
-	switch arg
-	  case "d"
-	    d = varargin{i+1};
-	    idx = [idx,i,i+1];
-	  case "lambda"
-	    lambda = varargin{i+1};
-	    idx = [idx,i,i+1];
-	  case "stdev"
-	    stdev = varargin{i+1};
-	    idx = [idx,i,i+1];
-	  case "gcv"
-	    idx = [idx,i];
-	  case "lguess"
-	    guess = log10(varargin{i+1});
-	    idx = [idx,i,i+1];
-	endswitch
+        switch arg
+          case "d"
+            d = varargin{i+1};
+            idx = [idx,i,i+1];
+          case "lambda"
+            lambda = varargin{i+1};
+            idx = [idx,i,i+1];
+          case "stdev"
+            stdev = varargin{i+1};
+            idx = [idx,i,i+1];
+          case "gcv"
+            idx = [idx,i];
+          case "lguess"
+            guess = log10(varargin{i+1});
+            idx = [idx,i,i+1];
+        endswitch
       endif
     endfor
   endif

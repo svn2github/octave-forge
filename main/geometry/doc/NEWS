@@ -13,3 +13,22 @@ geometry-1.0.1   Release Date: 2011-09-27   Release Manager: Juan Pablo Carbajal
 Improvements to the docstrings of all functions.
 
 ===============================================================================
+geometry-1.1   Release Date: 2011-10-04   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* Starting to add geom2d from matGeom
+angle2Points.m
+angle3Points.m
+angleAbsDiff.m
+angleDiff.m
+angles2d.m
+angleSort.m
+createLine.m
+deg2rad.m
+edgeAngle.m
+lineAngle.m
+normalizeAngle.m
+rad2deg.m
+vectorAngle.m
+
+===============================================================================

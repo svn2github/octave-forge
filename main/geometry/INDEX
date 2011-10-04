@@ -1,14 +1,25 @@
 geometry >> Computational Geometry
+Geometry 2D
+ angle2Points
+ angle3Points
+ angleAbsDiff
+ angleDiff
+ angles2d
+ angleSort
+ createLine
+ deg2rad
+ edgeAngle
+ lineAngle
+ normalizeAngle
+ rad2deg
+ vectorAngle
 Input
  svgload
  svgnormalize
  svgpath2polygon
 Output
  data2geo
-Geometry 2D
- 
 Geometry 3D
- 
 Graphs
 
 

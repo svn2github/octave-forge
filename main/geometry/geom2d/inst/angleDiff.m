@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,29 +31,46 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{dif} =} angleDiff (@var{angle1}, @var{angle2})
+%% ANGLEDIFF Difference between two angles
+%%
+%%   Computes the signed angular difference between two angles in radians.
+%%   The result is comprised between -PI and +PI.
+%%
+%%   Example
+%%     A = angleDiff(-pi/4, pi/4)
+%%     A = 
+%%         1.5708    % equal to pi/2
+%%     A = angleDiff(pi/4, -pi/4)
+%%     A = 
+%%        -1.5708    % equal to -pi/2
+%% 
+%% @seealso{angles2d, angleAbsDiff}
+%% @end deftypefn
 
-function deg = rad2deg(rad)
-%RAD2DEG Convert angle from radians to degrees
-%
-%   Usage:
-%   R = rad2deg(D)
-%   convert an angle in radians to angle in degrees
-%
-%   Example:
-%   rad2deg(pi)
-%   ans =
-%       180
-%   rad2deg(pi/3)
-%   ans =
-%       60
-%
-%   See Also
-%   angles2d, deg2rad
-%
-%   ---------
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 09/12/2004.
-%
+function dif = angleDiff(angle1, angle2)
 
-deg = rad*180/pi;
+  % first, normalization
+  angle1 = normalizeAngle(angle1);
+  angle2 = normalizeAngle(angle2);
+
+  % compute difference and normalize in [-pi pi]
+  dif = normalizeAngle(angle2 - angle1, 0);
+endfunction
+
+%!test
+%! dif = angleDiff(0, pi/2);
+%! assert (pi/2, dif, 1e-6);
+
+%!test
+%! dif = angleDiff(pi/2, 0);
+%! assert (-pi/2, dif, 1e-6);
+
+%!test
+%! dif = angleDiff(0, 3*pi/2);
+%! assert (-pi/2, dif, 1e-6);
+
+%!test
+%! dif = angleDiff(3*pi/2, 0);
+%! assert (pi/2, dif, 1e-6);

@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2003-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,28 +31,31 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{theta} =} edgeAngle(@var{edge})
+%% EDGEANGLE Return angle of edge
+%%
+%%   A = edgeAngle(EDGE)
+%%   Returns the angle between horizontal, right-axis and the edge EDGE.
+%%   Angle is given in radians, between 0 and 2*pi, in counter-clockwise
+%%   direction. 
+%%   Notation for edge is [x1 y1 x2 y2] (coordinates of starting and ending
+%%   points).
+%%
+%%   Example
+%%   p1 = [10 20];
+%%   p2 = [30 40];
+%%   rad2deg(edgeAngle([p1 p2]))
+%%   ans = 
+%%       45
+%% 
+%% @seealso{edges2d, angles2d, edgeAngle, lineAngle, edgeLength}
+%% @end deftypefn
 
-function angles2d
-%ANGLES2D  Description of functions for manipulating angles
-%
-%   Angles are normalized in an interval of width 2*PI. Most geom2d
-%   functions return results in the [0 2*pi] interval, but it can be
-%   convenient to consider the [-pi pi] interval as well. See the
-%   normalizeAngle function to switch between conventions.
-%
-%   Angles are usually oriented. The default orientation is the CCW
-%   (Counter-Clockwise) orientation.
-%
-%   See also:
-%   normalizeAngle, angleDiff, angleAbsDiff, angleSort
-%   angle2Points, angle3Points, vectorAngle, lineAngle, edgeAngle
-%   deg2rad, rad2deg
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2010-03-31,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2010 INRA - Cepia Software Platform.
+function theta = edgeAngle(edge)
 
+  line = createLine(edge(:,1:2), edge(:,3:4));
+  theta = lineAngle(line);
 
-help('angles2d');
+endfunction
+

@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,32 +31,28 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{deg} =} rad2deg(@var{rad})
+% RAD2DEG Convert angle from radians to degrees
+%
+%   Usage:
+%   R = rad2deg(D)
+%   convert an angle in radians to angle in degrees
+%
+%   Example:
+%   rad2deg(pi)
+%   ans =
+%       180
+%   rad2deg(pi/3)
+%   ans =
+%       60
+%% 
+%% @seealso{angles2d, deg2rad}
+%% @end deftypefn
 
-function theta = edgeAngle(edge)
-%EDGEANGLE Return angle of edge
-%
-%   A = edgeAngle(EDGE)
-%   Returns the angle between horizontal, right-axis and the edge EDGE.
-%   Angle is given in radians, between 0 and 2*pi, in counter-clockwise
-%   direction. 
-%   Notation for edge is [x1 y1 x2 y2] (coordinates of starting and ending
-%   points).
-%
-%   Example
-%   p1 = [10 20];
-%   p2 = [30 40];
-%   rad2deg(edgeAngle([p1 p2]))
-%   ans = 
-%       45
-%
-%   See also
-%   edges2d, angles2d, edgeAngle, lineAngle, edgeLength
-%
-%   ---------
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 06/04/2003.
-%
+function deg = rad2deg(rad)
 
-line = createLine(edge(:,1:2), edge(:,3:4));
-theta = lineAngle(line);
+  deg = rad*180/pi;
+
+endfunction
+

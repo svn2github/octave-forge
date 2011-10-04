@@ -33,7 +33,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{alpha} =} vectorAngle (@var{v1})
-%%VECTORANGLE Angle of a vector, or between 2 vectors
+%% VECTORANGLE Angle of a vector, or between 2 vectors
 %%
 %%   A = vectorAngle(V);
 %%   Returns angle between Ox axis and vector direction, in Counter
@@ -194,28 +194,28 @@ endfunction
 %!test
 %! vecs = [1 0;0 1;0 -1;1 1;1 -1];
 %! angs = [0;pi/2;-pi/2;pi/4;-pi/4];
-%! assert(angs, vectorAngle(vecs, 0));
+%! assert(angs, vectorAngle(vecs, 0), 1e-6);
 
 %!test
 %! v1 = [1 0];
 %! v2 = [0 1];
 %! ang = pi /2 ;
-%! assert(ang, vectorAngle(v1, v2));
+%! assert(ang, vectorAngle(v1, v2), 1e-6);
 
 %!test
 %! v1 = [1 0];
 %! v2 = [0 1; 0 1; 1 1; -1 1];
 %! ang = [pi / 2 ;pi / 2 ;pi / 4 ; 3 * pi / 4];
-%! assert(ang, vectorAngle(v1, v2));
+%! assert(ang, vectorAngle(v1, v2), 1e-6);
 
 %!test
 %! v1 = [0 1; 0 1; 1 1; -1 1];
 %! v2 = [-1 0];
 %! ang = [pi / 2 ;pi / 2 ; 3 * pi / 4 ; pi / 4];
-%! assert(ang, vectorAngle(v1, v2));
+%! assert(ang, vectorAngle(v1, v2), 1e-6);
 
 %!test
 %! v1 = [1 0; 0 1; 1 1; -1 1];
 %! v2 = [0 1; 1 0; -1 1; -1 0];
 %! ang = [pi / 2 ;3 * pi / 2 ;pi / 2 ; pi / 4];
-%! assert(ang, vectorAngle(v1, v2));
+%! assert(ang, vectorAngle(v1, v2), 1e-6);

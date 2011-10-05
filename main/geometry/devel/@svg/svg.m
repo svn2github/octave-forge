@@ -27,6 +27,21 @@ function obj = svg
   endif
 
   obj = struct;
+  
+  ## SVG data. All the attributes of the <svg> node.
+  ## The field unparsed contains all the attributes that are not being parsed.
+  svg.Data = struct('height',[],'width',[],'id','null','unparsed',' ');
+  
+  ## SVG metadata. All the attributes of the <metadata> node. 
+  ## The field unparsed contains all the attributes that are not being parsed.
+  svg.Metadata = struct('unparsed',' ');
+  
+  ## SVG paths. It is a vector of path structs. Maybe path can be a object too?
+  ## Order of Path.Data is important so we store in a cell (could be a matrix padded with zeros). 
+  ## All the paths stored in polyval compatible format. Straigth segments are also stored as a polynomial.
+  svg.Path = struct('data',cell(),'id','null','unparsed',' ');
+  
+  ## SVG paths. All the paths of the svg
   obj = class (obj, 'svg');
 
 endfunction

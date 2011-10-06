@@ -18,8 +18,13 @@ def parsePaths (filen=None):
       cmdlst.append(cmd)
       parlst.append(params)
     
-    print 'svgpath = struct("cmd","{0}","data",{{{1}}});$' \
+    print 'svgpath = struct("cmd","{0}","data",{{{1}}});' \
         .format(''.join(cmdlst),str(parlst).replace('[[','[').replace(']]',']'))
+
+    print 'svgpathid = "{0}"; $'.format(path.attrib['id'])
+
+  
+  
 # ----------------------------
 
 if __name__=="__main__":

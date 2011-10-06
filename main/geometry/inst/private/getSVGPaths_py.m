@@ -13,30 +13,30 @@
 %%    You should have received a copy of the GNU General Public License
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-function paths = getSVGPaths_py (svg, varargin)
+function Paths = getSVGPaths_py (svg, varargin)
 
   %% Call python script
   [st str]=system (sprintf ('python parsePath.py %s', svg));
 
   %% Parse ouput
-  strs = strsplit (str(1:end-1), '$', true);
+  strpath = strsplit (str(1:end-1), '$', true);
 
-  npaths = numel (strs);
-  paths = cell(npaths,1);
+  npaths = numel (strpath);
+
   %% Convert path data to polygons
   for ip = 1:npaths
 
-    eval (strs{ip});
+    eval (strpath{ip});
     %% FIXME: intialize struct with cell field
     svgpath2.cmd = svgpath(1).cmd;
     svgpath2.data = {svgpath.data};
     
     nD = length(svgpath2.cmd);
-    paths{ip} = cell (nD-1,1);
+    pathdata = cell (nD-1,1);
     
     point_end=[];
+    %% If the path is closed, last command is Z and we set initial point == final
     if svgpath2.cmd(end) == 'Z'
-      paths{ip}(nD-1) = [];
       nD -= 1;
       point_end = svgpath2.data{1};
     end
@@ -61,7 +61,7 @@ function paths = getSVGPaths_py (svg, varargin)
           points(1,:) = [polyval(pp(1,:),1) polyval(pp(2,:),1)];
       end
       
-      paths{ip}{jp-1} = pp;
+      pathdata{jp-1} = pp;
     end
     
     if ~isempty(point_end)
@@ -69,24 +69,33 @@ function paths = getSVGPaths_py (svg, varargin)
       points(2,:) = point_end;
       pp = [(points(2,:)-points(1,:))' points(1,:)'];
       
-      paths{ip}{end} = pp;
+      pathdata{end} = pp;
     end
     
+    Paths.(svgpathid).data = pathdata;
   end
-  
 endfunction
 
 %!test
 %! figure(1)
 %! hold on
 %! paths = getSVGPaths_py ('../drawing.svg');
+%!
+%! % Get path ids
+%! ids = fieldnames(paths);
+%! npath = numel(ids);
+%!
 %! t = linspace (0, 1, 64);
-%! for i = 1:numel(paths)
+%!
+%! for i = 1:npath
 %!    x = []; y = [];
-%!    for j = 1:numel(paths{i})
-%!     x = cat (2, x, polyval (paths{i}{j}(1,:),t));
-%!     y = cat (2, y, polyval (paths{i}{j}(2,:),t));
+%!    data = paths.(ids(i)).data;
+%!
+%!    for j = 1:numel(data)
+%!     x = cat (2, x, polyval (data{j}(1,:),t));
+%!     y = cat (2, y, polyval (data{j}(2,:),t));
 %!    end
+%!
 %!    plot(x,y,'-');
 %! end
 %! axis ij

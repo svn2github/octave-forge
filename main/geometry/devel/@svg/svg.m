@@ -45,16 +45,12 @@ function svg = svg(name='')
   ## SVG paths. All the paths of the svg
   svg = class (svg, 'svg');
 
-
   if !isempty (name)
-  
-    paths = loadpaths(name);
+    paths = @svg/loadpaths(svg, name);
     svg.Path = paths;
-    
   elseif !ischar(name)
-  
     print_usage ;
-    
   endif
+
 
 endfunction

@@ -16,19 +16,19 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{obj} =} svg ()
+## @deftypefnx {Function File} {@var{obj} =} svg (@var{str})
 ## Create object @var{obj} of the svn class.
 ##
-## @seealso{@svn/plot}
+## If no input argument is provided the object is empty. @var{str} can be a filename
+## or a string defining an inline SVG.
+##
+## @seealso{@svn/parsePaths}
 ## @end deftypefn
 
-function svg = svg
-
-  if (nargin != 0)
-    print_usage ;
-  endif
+function svg = svg(name='')
 
   svg = struct;
-  
+
   ## SVG data. All the attributes of the <svg> node.
   ## The field unparsed contains all the attributes that are not being parsed.
   svg.Data = struct('height',[],'width',[],'id','null','unparsed',' ');
@@ -44,5 +44,17 @@ function svg = svg
   
   ## SVG paths. All the paths of the svg
   svg = class (svg, 'svg');
+
+
+  if !isempty (name)
+  
+    paths = loadpaths(name);
+    svg.Path = paths;
+    
+  elseif !ischar(name)
+  
+    print_usage ;
+    
+  endif
 
 endfunction

@@ -13,7 +13,7 @@
 %%    You should have received a copy of the GNU General Public License
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-function Paths = getSVGPaths_py (svg, varargin)
+function Paths = loadpaths (svg, varargin)
 
   %% Call python script
   if exist (name,'file')

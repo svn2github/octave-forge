@@ -1,4 +1,5 @@
 ## Copyright (C) 2003 Paul Eilers
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2 of the License, or
@@ -13,28 +14,27 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>. 
 
 ## -*- texinfo -*-
-##@deftypefn {Function File} {@var{D} =} ddmat (@var{x}, @var{o})
+## @deftypefn {Function File} {@var{D} =} ddmat (@var{x}, @var{o})
 ## Compute divided differencing matrix of order @var{o}
 ##
 ## @itemize @w
 ## @item Input
 ##   @itemize @w
-##   @item @var{x}:  vector of sampling positions
-##   @item @var{o}:  order of diffferences
+##     @item @var{x}:  vector of sampling positions
+##     @item @var{o}:  order of diffferences
 ##   @end itemize
 ## @item Output
 ##   @itemize @w
-##   @item @var{D}:  the matrix; @var{D} * Y gives divided differences of order @var{o}
+##     @item @var{D}:  the matrix; @var{D} * Y gives divided differences of order @var{o}
 ##   @end itemize
 ## @end itemize
 ##
-##References:  Anal. Chem. (2003) 75, 3631.
+## References:  Anal. Chem. (2003) 75, 3631.
 ##
 ## @end deftypefn
 
 ## corrected the recursion multiplier; JJS 2/25/08
 ## added error check that x is a column vector; JJS 4/13/09
-
 
 function D = ddmat(x, d)
   if ( size(x,2) != 1 )

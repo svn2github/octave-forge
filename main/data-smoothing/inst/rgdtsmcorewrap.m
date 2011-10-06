@@ -1,4 +1,5 @@
 ## Copyright (C) 2008 Jonathan Stickel <jonathan.stickel@nrel.gov>
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2 of the License, or
@@ -13,12 +14,14 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>. 
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{cve}|@var{stdevdif} =} rgdtsmcorewrap (@var{log10lambda}, @var{x}, @var{y}, @var{d}, @var{mincell}, @var{options})
+## @deftypefn {Function File} {@var{cve} =} rgdtsmcorewrap (@var{log10lambda}, @var{x}, @var{y}, @var{d}, @var{mincell}, @var{options})
+## @deftypefnx {Function File} {@var{stdevdif} =} rgdtsmcorewrap (@var{log10lambda}, @var{x}, @var{y}, @var{d}, @var{mincell}, @var{options})
 ##
 ##  Wrapper function for rgdtsmcore in order to minimize over
 ##  @var{lambda} w.r.t. cross-validation error OR the squared difference
 ##  between the standard deviation of (@var{y}-@var{yhat}) and the given
 ##  standard deviation.  This function is called from regdatasmooth.
+## @seealso{regdatasmooth}
 ## @end deftypefn
 
 
@@ -26,9 +29,9 @@ function out = rgdtsmcorewrap (log10lambda, x, y, d, mincell, varargin)
 
   lambda = 10^(log10lambda);
 
-   if ( length(mincell)==2 ) # using stdev to find optimal lambda
+   if ( length(mincell) == 2 ) # using stdev to find optimal lambda
     stdev = mincell{2};
-    yhat = rgdtsmcore (x, y, d, lambda, varargin{:});
+    yhat  = rgdtsmcore (x, y, d, lambda, varargin{:});
 
     xhatprov = 0;
     relative = 0;
@@ -59,8 +62,7 @@ function out = rgdtsmcorewrap (log10lambda, x, y, d, mincell, varargin)
     out = (stdevd - stdev)^2;
 
   else # use gcv to find optimal lambda
-    [yhat, cve] = rgdtsmcore (x, y, d, lambda, varargin{:});
-    out = cve;
+    [yhat, out] = rgdtsmcore (x, y, d, lambda, varargin{:});
   endif
 
 endfunction

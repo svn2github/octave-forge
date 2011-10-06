@@ -1,4 +1,5 @@
 ## Copyright (C) 2008 Jonathan Stickel <jonathan.stickel@nrel.gov>
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2 of the License, or
@@ -57,7 +58,7 @@
 ## Please run the demos for example usage.
 ##
 ## References:  Anal. Chem. (2003) 75, 3631; AIChE J. (2006) 52, 325
-## @seealso{rgdtsmcore}
+## @seealso{rgdtsmcorewrap, rgdtsmcore}
 ## @end deftypefn
 
 function [yhat, lambda] = regdatasmooth (x, y, varargin)
@@ -100,13 +101,13 @@ function [yhat, lambda] = regdatasmooth (x, y, varargin)
 
   ## add warning if more than one gcv, lambda, or stdev options provided?
 
-  if (length(x)!=length(y))
+  if ( length(x) != length(y) )
     error("x and y must be equal length vectors")
   endif
-  if ( size(x,1)==1 )
+  if ( size(x,1) == 1 )
     x = x';
   endif
-  if ( size(y,1)==1 )
+  if ( size(y,1) == 1 )
     y = y';
   endif
 
@@ -128,7 +129,7 @@ function [yhat, lambda] = regdatasmooth (x, y, varargin)
     ##[log10lambda,fout,exitflag] = fminunc_compat (fhandle, guess, opt);
     ## derivative-free optimization; should use "fminsearch" for Matlab
     ## compatibility, but fminsearch needs updates to be more compatible itself
-    [log10lambda,fout,niter] = nelder_mead_min (fhandle, guess, "ftol",1e-6, "maxev",maxiter);
+    [log10lambda, fout, niter] = nelder_mead_min (fhandle, guess, "ftol", 1e-6, "maxev", maxiter);
     if (niter > maxiter)
       exitflag = 0;
     else

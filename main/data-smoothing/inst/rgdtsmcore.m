@@ -1,4 +1,5 @@
 ## Copyright (C) 2008 Jonathan Stickel <jonathan.stickel@nrel.gov>
+##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2 of the License, or
@@ -26,22 +27,23 @@
 ## Note:  the options have changed!
 ## Currently supported input options are (multiple options are allowed):
 ##
-##@table @code
-##@item "xhat", @var{vector}
-## A vector of x-values to use for the smooth curve; must be
-## monotonically increasing and must at least span the data
-##@item "weights", @var{vector}
-## A vector of weighting values for fitting each point in the data.
-##@item "relative"
-## use relative differences for the goodnes of fit term.  Conflicts
-## with the "weights" option.
-##@item "midpointrule"
-## use the midpoint rule for the integration terms rather than a direct
-## sum; this option conflicts with the option "xhat"
-##@end table
+## @table @code
+## @item "xhat", @var{vector}
+##  A vector of x-values to use for the smooth curve; must be
+##  monotonically increasing and must at least span the data
+## @item "weights", @var{vector}
+##  A vector of weighting values for fitting each point in the data.
+## @item "relative"
+##  use relative differences for the goodnes of fit term.  Conflicts
+##  with the "weights" option.
+## @item "midpointrule"
+##  use the midpoint rule for the integration terms rather than a direct
+##  sum; this option conflicts with the option "xhat"
+## @end table
 ##
 ## References:  Anal. Chem. (2003) 75, 3631; AIChE J. (2006) 52, 325
-##@end deftypefn
+## @seealso{regdatasmooth}
+## @end deftypefn
 
 
 function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
@@ -95,7 +97,7 @@ function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
     endif
   endif
   ## test that xhat spans x
-  if ( min(x) < min(xhat) | max(xhat) < max(x) )
+  if ( min(x) < min(xhat) || max(xhat) < max(x) )
     error("xhat must at least span the data")
   endif
 

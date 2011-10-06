@@ -14,6 +14,12 @@ Geometry 2D
  rad2deg
  vectorAngle
  cbezier2poly
+ boxes2d
+ clipEdge
+ clipLine
+ clipPoints
+ drawBezierCurve
+ drawBox
 Input
  svgload
  svgnormalize

@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2010-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,53 +31,47 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
-
-function points = randomPointInBox(box, N, varargin)
-%RANDOMPOINTINBOX Generate random point within a box
-%
-%   PTS = randomPointInBox(BOX)
-%   Generate a random point within the box BOX. The result is a 1-by-2 row
-%   vector.
-%
-%   PTS = randomPointInBox(BOX, N)
-%   Generates N points within the box. The result is a N-by-2 array.
-%
-%   BOX has the format:
-%   BOX = [xmin xmax ymin ymax].
-%
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{box} =} mergeBoxes (@var{box1}, @var{box2})
+%% Merge two boxes, by computing their greatest extent.
+%% 
 %   Example
-%     % draw points within a box
-%     box = [10 80 20 60];
-%     pts =  randomPointInBox(box, 500);
-%     figure(1); clf; hold on;
-%     drawBox(box);
-%     drawPoint(pts, '.');
-%     axis('equal');
-%     axis([0 100 0 100]);
-%
-%   See also
-%   points2d, boxes2d
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2007-10-10,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2007 INRA - BIA PV Nantes - MIAJ Jouy-en-Josas.
+%%
+%% @example
+%%   box1 = [5 20 5 30];
+%%   box2 = [0 15 0 15];
+%%   mergeBoxes(box1, box2)
+%%   ans = 
+%%       0 20 0 30
+%% @end example
+%%
+%% @seealso{boxes2d, drawBox, intersectBoxes}
+%% @end deftypefn
 
-if nargin < 2
-    N = 1;
-end
+function bb = mergeBoxes(box1, box2)
 
-% extract box bounds
-xmin = box(1);
-xmax = box(2);
-ymin = box(3);
-ymax = box(4);
+  % unify sizes of data
+  if size(box1,1) == 1
+      box1 = repmat(box1, size(box2,1), 1);
+  elseif size(box2, 1) == 1
+      box2 = repmat(box2, size(box1,1), 1);
+  elseif size(box1,1) != size(box2,1)
+      error('geom2d:Error', 'Bad size for inputs');
+  end
 
-% compute size of box
-dx = xmax - xmin;
-dy = ymax - ymin;
+  % compute extreme coords
+  mini = min(box1(:,[1 3]), box2(:,[1 3]));
+  maxi = max(box1(:,[2 4]), box2(:,[2 4]));
 
-% compute point coordinates
-points = [rand(N, 1)*dx+xmin , rand(N, 1)*dy+ymin];
+  % concatenate result into a new box structure
+  bb = [mini(:,1) maxi(:,1) mini(:,2) maxi(:,2)];
+
+endfunction
+
+%!test
+%! box1 = [5 20 10 25];
+%! box2 = [0 15 15 20];
+%! res  = [0 20 10 25];
+%! bb = mergeBoxes(box1, box2);
+%! assert (res, bb, 1e-6);
+

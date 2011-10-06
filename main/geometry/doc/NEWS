@@ -32,9 +32,16 @@ rad2deg.m
 vectorAngle.m
 
 ===============================================================================
-geometry-1.2   Release Date: 2011-10-xx   Release Manager: Juan Pablo Carbajal
+geometry-1.1.1   Release Date: 2011-10-xx   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
-* Continue to add geom2d from matGeom
+* Continue to add geom2d from matGeom (boxes and clips)
  cbezier2poly.m
+ boxes2d.m
+ clipEdge.m
+ clipLine.m
+ clipPoints.m
+ drawBezierCurve.m
+ drawBox.m
+
 ===============================================================================

@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2010-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,41 +31,46 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{box} =} intersectBoxes (@var{box1}, @var{box2})
+%% Intersection of two bounding boxes.
+%% 
+%%   Example
+%%
+%% @example
+%%   box1 = [5 20 5 30];
+%%   box2 = [0 15 0 15];
+%%   intersectBoxes(box1, box2)
+%%   ans = 
+%%       5 15 5 15
+%% @end example
+%%
+%% @seealso{boxes2d, drawBox, mergeBoxes}
+%% @end deftypefn
 
-function box = intersectBoxes(box1, box2)
-%INTERSECTBOXES Intersection of two bounding boxes
-%
-%   RES = intersectBoxes(BOX1, BOX2)
-%
-%   Example
-%   box1 = [5 20 5 30];
-%   box2 = [0 15 0 15];
-%   intersectBoxes(box1, box2)
-%   ans = 
-%       5 15 5 15
-%
-%   See also
-%   boxes2d, drawBox, mergeBoxes
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2010-07-26,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2010 INRA - Cepia Software Platform.
+function bb = intersectBoxes(box1, box2)
 
-% unify sizes of data
-if size(box1,1) == 1
-    box1 = repmat(box1, size(box2,1), 1);
-elseif size(box2, 1) == 1
-    box2 = repmat(box2, size(box1,1), 1);
-elseif size(box1,1) ~= size(box2,1)
-    error('Bad size for inputs');
-end
+  % unify sizes of data
+  if size(box1,1) == 1
+      box1 = repmat(box1, size(box2,1), 1);
+  elseif size(box2, 1) == 1
+      box2 = repmat(box2, size(box1,1), 1);
+  elseif size(box1,1) != size(box2,1)
+      error('geom2d:Error',"Bad size for inputs.\n");
+  end
 
-% compute extreme coords
-mini = min(box1(:,[2 4]), box2(:,[2 4]));
-maxi = max(box1(:,[1 3]), box2(:,[1 3]));
+  % compute extreme coords
+  mini = min(box1(:,[2 4]), box2(:,[2 4]));
+  maxi = max(box1(:,[1 3]), box2(:,[1 3]));
 
-% concatenate result into a new box structure
-box = [maxi(:,1) mini(:,1) maxi(:,2) mini(:,2)];
+  % concatenate result into a new box structure
+  bb = [maxi(:,1) mini(:,1) maxi(:,2) mini(:,2)];
+  
+endfunction
+
+%!test
+%! box1 = [5 20 10 25];
+%! box2 = [0 15 15 20];
+%! res  = [5 15 15 20];
+%! bb = intersectBoxes(box1, box2);
+%! assert (res, bb, 1e-6);

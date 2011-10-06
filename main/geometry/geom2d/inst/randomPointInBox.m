@@ -31,42 +31,55 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{points} =} randomPointInBox (@var{box})
+%% @deftypefnx {Function File} {@var{points} =} randomPointInBox (@var{box}, @var{n})
+%% Generate random points within a box.
+%% 
+%%   Generate a random point within the box @var{box}. The result is a 1-by-2 row
+%% vector. If @var{n} is given, generates @var{n} points. The result is a
+%% @var{n}-by-2 array.
+%%
+%%   Example
+%%
+%% @example
+%%     % draw points within a box
+%%     box = [10 80 20 60];
+%%     pts =  randomPointInBox(box, 500);
+%%     figure(1); clf; hold on;
+%%     drawBox(box);
+%%     drawPoint(pts, '.');
+%%     axis('equal');
+%%     axis([0 100 0 100]);
+%% @end example
+%%
+%% @seealso{edges2d, boxes2d, clipLine}
+%% @end deftypefn
 
-function box = mergeBoxes(box1, box2)
-%MERGEBOXES Merge two boxes, by computing their greatest extent
-%
-%   BOX = mergeBoxes(BOX1, BOX2);
-%
-%   Example
-%   box1 = [5 20 5 30];
-%   box2 = [0 15 0 15];
-%   mergeBoxes(box1, box2)
-%   ans = 
-%       0 20 0 30
-%
-%
-%   See also
-%   boxes2d, drawBox, intersectBoxes
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2010-07-26,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2010 INRA - Cepia Software Platform.
+function points = randomPointInBox(box, N=1, varargin)
 
-% unify sizes of data
-if size(box1,1) == 1
-    box1 = repmat(box1, size(box2,1), 1);
-elseif size(box2, 1) == 1
-    box2 = repmat(box2, size(box1,1), 1);
-elseif size(box1,1) ~= size(box2,1)
-    error('Bad size for inputs');
-end
+  % extract box bounds
+  xmin = box(1);
+  xmax = box(2);
+  ymin = box(3);
+  ymax = box(4);
 
-% compute extreme coords
-mini = min(box1(:,[1 3]), box2(:,[1 3]));
-maxi = max(box1(:,[2 4]), box2(:,[2 4]));
+  % compute size of box
+  dx = xmax - xmin;
+  dy = ymax - ymin;
 
-% concatenate result into a new box structure
-box = [mini(:,1) maxi(:,1) mini(:,2) maxi(:,2)];
+  % compute point coordinates
+  points = [rand(N, 1)*dx+xmin , rand(N, 1)*dy+ymin];
+
+endfunction
+
+%!demo
+%!     % draw points within a box
+%!     bb = [10 80 20 60];
+%!     pts =  randomPointInBox(bb, 500);
+%!     figure(1); clf; hold on;
+%!     drawBox(bb);
+%!     drawPoint(pts, '.');
+%!     axis equal
+%!     axis([0 100 0 100]);
+

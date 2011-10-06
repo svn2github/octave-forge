@@ -22,6 +22,7 @@ function paths = getSVGPaths_py (svg, varargin)
   strs = strsplit (str(1:end-1), '$', true);
 
   npaths = numel (strs);
+  paths = cell(npaths,1);
   %% Convert path data to polygons
   for ip = 1:npaths
 
@@ -31,11 +32,11 @@ function paths = getSVGPaths_py (svg, varargin)
     svgpath2.data = {svgpath.data};
     
     nD = length(svgpath2.cmd);
-    paths = cell (nD,1);
+    paths{ip} = cell (nD-1,1);
     
     point_end=[];
     if svgpath2.cmd(end) == 'Z'
-      paths(nD) = [];
+      paths{ip}(nD-1) = [];
       nD -= 1;
       point_end = svgpath2.data{1};
     end
@@ -44,7 +45,6 @@ function paths = getSVGPaths_py (svg, varargin)
     points(1,:) = svgpath2.data{1};
     
     for jp = 2:nD
-    
       switch svgpath2.cmd(jp)
         case 'L'
           %% Straigth segment to polygon
@@ -55,13 +55,13 @@ function paths = getSVGPaths_py (svg, varargin)
           
         case 'C'
           %% Cubic bezier to polygon
-          points(2:4,:) = reshape (svgpath2.data{jp}, 3, 2);
+          points(2:4,:) = reshape (svgpath2.data{jp}, 2, 3).';
           pp = cbezier2poly (points);
           clear points
           points(1,:) = [polyval(pp(1,:),1) polyval(pp(2,:),1)];
       end
       
-      paths{jp-1} = pp;
+      paths{ip}{jp-1} = pp;
     end
     
     if ~isempty(point_end)
@@ -69,9 +69,29 @@ function paths = getSVGPaths_py (svg, varargin)
       points(2,:) = point_end;
       pp = [(points(2,:)-points(1,:))' points(1,:)'];
       
-      paths{end} = pp;
+      paths{ip}{end} = pp;
     end
     
   end
   
 endfunction
+
+%!test
+%! figure(1)
+%! hold on
+%! paths = getSVGPaths_py ('../drawing.svg');
+%! t = linspace (0, 1, 64);
+%! for i = 1:numel(paths)
+%!    x = []; y = [];
+%!    for j = 1:numel(paths{i})
+%!     x = cat (2, x, polyval (paths{i}{j}(1,:),t));
+%!     y = cat (2, y, polyval (paths{i}{j}(2,:),t));
+%!    end
+%!    plot(x,y,'-');
+%! end
+%! axis ij
+%! if strcmpi(input('You should see drawing.svg [y/n] ','s'),'n')
+%!  error ("didn't get what was expected.");
+%! end
+%! close 
+

@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2003-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,25 +31,51 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{h} =} drawBox (@var{box})
+%% @deftypefnx {Function File} {@var{h} =} drawBox (@var{box}, @var{param}, @var{value}, ...)
+%% Draw a box defined by coordinate extents
+%% 
+%% Draws a box defined by its extent: @var{box} = [@var{xmin} @var{xmax}
+%% @var{ymin} @var{ymax}]. Addtional
+%% arguments are passed to function @code{plot}. If requested, it returns the
+%% handle to the graphics object created.
+%%
+%% @seealso{drawOrientedBox, drawRect, plot}
+%% @end deftypefn
 
-function boxes2d(varargin)
-%BOXES2D Description of functions operating on bounding boxes
-%
-%   A box is represented as a set of limits in each direction:
-%   BOX = [XMIN XMAX YMIN YMAX].
-%
-%   Boxes are used as result of computation for bounding boxes, and to clip
-%   shapes.
-%
-%   See also
-%   clipPoints, clipLine, clipEdge, clipRay
-%   mergeBoxes, intersectBoxes, randomPointInBox
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2008-10-13,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2010 INRA - Cepia Software Platform.
+function varargout = drawBox(box, varargin)
 
-help('boxes2d');
+  % default values
+  xmin = box(:,1);
+  xmax = box(:,2);
+  ymin = box(:,3);
+  ymax = box(:,4);
+
+  nBoxes = size(box, 1);
+  r = zeros(nBoxes, 1);
+
+  % iterate on boxes
+  for i = 1:nBoxes
+      % exract min and max values
+      tx(1) = xmin(i);
+      ty(1) = ymin(i);
+      tx(2) = xmax(i);
+      ty(2) = ymin(i);
+      tx(3) = xmax(i);
+      ty(3) = ymax(i);
+      tx(4) = xmin(i);
+      ty(4) = ymax(i);
+      tx(5) = xmin(i);
+      ty(5) = ymin(i);
+
+      % display polygon
+      r(i) = plot(tx, ty, varargin{:});
+  end
+
+  % format output
+  if nargout > 0
+      varargout = {r};
+  end
+  
+endfunction

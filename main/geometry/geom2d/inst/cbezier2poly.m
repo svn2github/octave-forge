@@ -34,7 +34,7 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{pp} =} cbezier2poly (@var{points})
 %% @deftypefnx {Command} {Function File} {[@var{x} @var{y}] =} cbezier2poly (@var{points},@var{t})
-%% Returns the polynomial representation of the cubic Bezier define dby the control points @var{points}.
+%% Returns the polynomial representation of the cubic Bezier defined by the control points @var{points}.
 %%
 %% With only one input argument, calculates the polynomial @var{pp} of the cubic
 %% Bezier curve defined by the 4 control points stored in @var{points}.

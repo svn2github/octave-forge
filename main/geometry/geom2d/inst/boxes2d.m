@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2008-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,33 +31,23 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} boxes2d ()
+%% Description of functions operating on bounding boxes.
+%%
+%% A box is represented as a set of limits in each direction:
+%% @example
+%% BOX = [XMIN XMAX YMIN YMAX].
+%% @end example
+%% @noindent
+%% Boxes are used as result of computation for bounding boxes, and to clip
+%% shapes.
+%%
+%% @seealso{clipPoints, clipLine, clipEdge, clipRay, mergeBoxes, 
+%%          intersectBoxes, randomPointInBox, drawBox}
+%% @end deftypefn
 
-function points = clipPoints(points, box)
-%CLIPPOINTS Clip a set of points by a box
-%
-%   CLIP = clipPoints(POINTS, BOX);
-%   Returns the set of points which are located inside of the box BOX.
-%
-%
-%   See also
-%   points2d, boxes2d, clipLine, drawPoint
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2008-10-13,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2010 INRA - Cepia Software Platform.
+function boxes2d(varargin)
+  help('boxes2d');
+endfunction
 
-% get bounding box limits
-xmin = box(1);
-xmax = box(2);
-ymin = box(3);
-ymax = box(4);
-
-% compute indices of points inside visible area
-xOk = points(:,1)>=xmin & points(:,1)<=xmax;
-yOk = points(:,2)>=ymin & points(:,2)<=ymax;
-
-% keep only points inside box
-points = points(xOk & yOk, :);

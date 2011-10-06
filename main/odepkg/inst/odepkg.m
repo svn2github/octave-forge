@@ -17,9 +17,16 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{}] =} odepkg ()
 %#
-%# OdePkg is part of the GNU Octave Repository (the Octave--Forge project). The package includes commands for setting up various options, output functions etc. before solving a set of differential equations with the solver functions that are also included. At this time OdePkg is under development with the main target to make a package that is mostly compatible to proprietary solver products.
+%# OdePkg is part of the GNU Octave Repository (the Octave--Forge project). The
+%# package includes commands for setting up various options, output functions
+%# etc. before solving a set of differential equations with the solver functions
+%# that are also included. At this time OdePkg is under development with the
+%# main target to make a package that is mostly compatible to proprietary solver
+%# products.
 %#
-%# If this function is called without any input argument then open the OdePkg tutorial in the Octave window. The tutorial can also be opened with the following command
+%# If this function is called without any input argument then open the OdePkg
+%# tutorial in the Octave window. The tutorial can also be opened with the
+%# following command
 %#
 %# @example
 %# doc odepkg
@@ -41,7 +48,7 @@ function [] = odepkg (vstr)
 
 function [] = odepkg_validate_mfiles ()
 
-  %# From command line in the 'inst' directory do something like this: 
+  %# From command line in the 'inst' directory do something like this:
   %#   octave --quiet --eval "odepkg ('odepkg_validate_mfiles')"
 
   vfun = {'ode23', 'ode45', 'ode54', 'ode78', ...
@@ -58,10 +65,10 @@ function [] = odepkg_validate_mfiles ()
 
 function [] = odepkg_validate_ccfiles ()
 
-  %# From command line in the 'src' directory do something like this: 
+  %# From command line in the 'src' directory do something like this:
   %#   octave --quiet --eval "odepkg ('odepkg_validate_ccfiles')"
 
-  vfile = {'odepkg_octsolver_mebdfdae.cc', 'odepkg_octsolver_mebdfi.cc', ... 
+  vfile = {'odepkg_octsolver_mebdfdae.cc', 'odepkg_octsolver_mebdfi.cc', ...
            'odepkg_octsolver_ddaskr.cc', ...
            'odepkg_octsolver_radau.cc', 'odepkg_octsolver_radau5.cc', ...
            'odepkg_octsolver_rodas.cc', 'odepkg_octsolver_seulex.cc'};

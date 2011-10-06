@@ -17,19 +17,30 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{ret}] =} odeplot (@var{t}, @var{y}, @var{flag})
 %#
-%# Open a new figure window and plot the results from the variable @var{y} of type column vector over time while solving. The types and the values of the input parameter @var{t} and the output parameter @var{ret} depend on the input value @var{flag} that is of type string. If @var{flag} is
+%# Open a new figure window and plot the results from the variable @var{y} of
+%# type column vector over time while solving. The types and the values of the
+%# input parameter @var{t} and the output parameter @var{ret} depend on the
+%# input value @var{flag} that is of type string. If @var{flag} is
 %# @table @option
 %# @item  @code{"init"}
-%# then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
+%# then @var{t} must be a double column vector of length 2 with the first and
+%# the last time step and nothing is returned from this function,
 %# @item  @code{""}
-%# then @var{t} must be a double scalar specifying the actual time step and the return value is false (resp. value 0) for 'not stop solving',
+%# then @var{t} must be a double scalar specifying the actual time step and the
+%# return value is false (resp. value 0) for 'not stop solving',
 %# @item  @code{"done"}
-%# then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
+%# then @var{t} must be a double scalar specifying the last time step and
+%# nothing is returned from this function.
 %# @end table
 %#
-%# This function is called by a OdePkg solver function if it was specified in an OdePkg options structure with the @command{odeset}. This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
+%# This function is called by a OdePkg solver function if it was specified in an
+%# OdePkg options structure with the @command{odeset}. This function is an OdePkg
+%# internal helper function therefore it should never be necessary that this
+%# function is called directly by a user. There is only little error detection
+%# implemented in this function file to achieve the highest performance.
 %#
-%# For example, solve an anonymous implementation of the "Van der Pol" equation and display the results while solving
+%# For example, solve an anonymous implementation of the "Van der Pol" equation
+%# and display the results while solving
 %# @example
 %# fvdb = @@(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
 %# 
@@ -43,13 +54,13 @@
 function [varargout] = odeplot (vt, vy, vflag, varargin)
 
   %# No input argument check is done for a higher processing speed
-  persistent vfigure; persistent vtold; 
+  persistent vfigure; persistent vtold;
   persistent vyold; persistent vcounter;
 
-  if (strcmp (vflag, 'init')) 
+  if (strcmp (vflag, 'init'))
     %# Nothing to return, vt is either the time slot [tstart tstop]
     %# or [t0, t1, ..., tn], vy is the inital value vector 'vinit'
-    vfigure = figure; vtold = vt(1,1); vyold = vy(:,1); 
+    vfigure = figure; vtold = vt(1,1); vyold = vy(:,1);
     vcounter = 1;
 
   elseif (isempty (vflag))
@@ -61,7 +72,7 @@ function [varargout] = odeplot (vt, vy, vflag, varargin)
     plot (vtold, vyold, '-o', 'markersize', 1); drawnow;
     varargout{1} = false;
 
-  elseif (strcmp (vflag, 'done')) 
+  elseif (strcmp (vflag, 'done'))
     %# Cleanup has to be done, clear the persistent variables because
     %# we don't need them anymore
     clear ('vfigure', 'vtold', 'vyold', 'vcounter');

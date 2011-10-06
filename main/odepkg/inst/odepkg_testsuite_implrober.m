@@ -17,7 +17,12 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{solution}] =} odepkg_testsuite_implrober (@var{@@solver}, @var{reltol})
 %#
-%# If this function is called with two input arguments and the first input argument @var{@@solver} is a function handle describing an OdePkg solver and the second input argument @var{reltol} is a double scalar describing the relative error tolerance then return a cell array @var{solution} with performance informations about the implicit form of the modified ROBERTSON testsuite of implicit differential algebraic equations after solving (IDE--test).
+%# If this function is called with two input arguments and the first input
+%# argument @var{@@solver} is a function handle describing an OdePkg solver and
+%# the second input argument @var{reltol} is a double scalar describing the
+%# relative error tolerance then return a cell array @var{solution} with
+%# performance informations about the implicit form of the modified ROBERTSON
+%# testsuite of implicit differential algebraic equations after solving (IDE--test).
 %#
 %# Run examples with the command
 %# @example

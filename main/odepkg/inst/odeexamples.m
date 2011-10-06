@@ -17,7 +17,8 @@
 
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{}] =} odeexamples (@var{})
-%# Open the differential equations examples menu and allow the user to select a submenu of ODE, DAE, IDE or DDE examples.
+%# Open the differential equations examples menu and allow the user to select a
+%# submenu of ODE, DAE, IDE or DDE examples.
 %# @end deftypefn
 
 function [] = odeexamples (varargin)

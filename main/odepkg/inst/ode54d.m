@@ -19,20 +19,42 @@
 %# @deftypefnx {Command} {[@var{sol}] =} ode54d (@var{@@fun}, @var{slot}, @var{init}, @var{lags}, @var{hist}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 %# @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode54d (@var{@@fun}, @var{slot}, @var{init}, @var{lags}, @var{hist}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 %#
-%# This function file can be used to solve a set of non--stiff delay differential equations (non--stiff DDEs) with a modified version of the well known explicit Runge--Kutta method of order (2,3).
+%# This function file can be used to solve a set of non--stiff delay differential
+%# equations (non--stiff DDEs) with a modified version of the well known explicit
+%# Runge--Kutta method of order (2,3).
 %#
-%# If this function is called with no return argument then plot the solution over time in a figure window while solving the set of DDEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{lags} is a double vector that describes the lags of time, @var{hist} is a double matrix and describes the history of the DDEs, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.
+%# If this function is called with no return argument then plot the solution over
+%# time in a figure window while solving the set of DDEs that are defined in a
+%# function and specified by the function handle @var{@@fun}. The second input
+%# argument @var{slot} is a double vector that defines the time slot, @var{init}
+%# is a double vector that defines the initial values of the states, @var{lags}
+%# is a double vector that describes the lags of time, @var{hist} is a double
+%# matrix and describes the history of the DDEs, @var{opt} can optionally be a
+%# structure array that keeps the options created with the command @command{odeset}
+%# and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments
+%# of any type that have to be passed to the function defined by @var{@@fun}.
 %#
 %# In other words, this function will solve a problem of the form
 %# @example
 %# dy/dt = fun (t, y(t), y(t-lags(1), y(t-lags(2), @dots{})))
 %# y(slot(1)) = init
-%# y(slot(1)-lags(1)) = hist(1), y(slot(1)-lags(2)) = hist(2), @dots{} 
+%# y(slot(1)-lags(1)) = hist(1), y(slot(1)-lags(2)) = hist(2), @dots{}
 %# @end example
 %#
-%# If this function is called with one return argument then return the solution @var{sol} of type structure array after solving the set of DDEs. The solution @var{sol} has the fields @var{x} of type double column vector for the steps chosen by the solver, @var{y} of type double column vector for the solutions at each time step of @var{x}, @var{solver} of type string for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector that keep the informations of the event function if an event function handle is set in the option argument @var{opt}.
+%# If this function is called with one return argument then return the solution
+%# @var{sol} of type structure array after solving the set of DDEs. The solution
+%# @var{sol} has the fields @var{x} of type double column vector for the steps
+%# chosen by the solver, @var{y} of type double column vector for the solutions
+%# at each time step of @var{x}, @var{solver} of type string for the solver name
+%# and optionally the extended time stamp information @var{xe}, the extended
+%# solution information @var{ye} and the extended index information @var{ie}
+%# all of type double column vector that keep the informations of the event
+%# function if an event function handle is set in the option argument @var{opt}.
 %#
-%# If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.
+%# If this function is called with more than one return argument then return the
+%# time stamps @var{t}, the solution values @var{y} and optionally the extended
+%# time stamp information @var{xe}, the extended solution information @var{ye}
+%# and the extended index information @var{ie} all of type double column vector.
 %#
 %# For example:
 %# @itemize @minus
@@ -124,7 +146,7 @@ function [varargout] = ode54d (vfun, vslot, vinit, vlags, vhist, varargin)
     end
 
   else %# if (nargin == 5)
-    vodeoptions = odeset; 
+    vodeoptions = odeset;
     vfunarguments = {};
   end
 
@@ -137,7 +159,7 @@ function [varargout] = ode54d (vfun, vslot, vinit, vlags, vhist, varargin)
 
   %# Check if the user has given fixed points of time
   if (length (vslot) > 2), vstepsizegiven = true; %# Step size checking
-  else vstepsizegiven = false; end  
+  else vstepsizegiven = false; end
 
   %# Get the default options that can be set with 'odeset' temporarily
   vodetemp = odeset;
@@ -270,7 +292,7 @@ function [varargout] = ode54d (vfun, vslot, vinit, vlags, vhist, varargin)
 
   %# Implementation of the option MStateDependence has been finished.
   %# This option can be set by the user to another value than default
-  %# value. 
+  %# value.
   if (strcmp (vodeoptions.MStateDependence, 'none'))
     vmassdependence = false;
   else vmassdependence = true;
@@ -299,7 +321,7 @@ function [varargout] = ode54d (vfun, vslot, vinit, vlags, vhist, varargin)
       'Option "BDF" will be ignored by this solver');
   end
 
-  %# Starting the initialisation of the core solver ode54d 
+  %# Starting the initialisation of the core solver ode54d
   vtimestamp  = vslot(1,1);           %# timestamp = start time
   vtimelength = length (vslot);       %# length needed if fixed steps
   vtimestop   = vslot(1,vtimelength); %# stop time = last value
@@ -453,7 +475,7 @@ function [varargout] = ode54d (vfun, vslot, vinit, vlags, vhist, varargin)
       end
       vcntloop = vcntloop + 1; vcntiter = 0;
 
-      %# Update DDE values for next history calculation      
+      %# Update DDE values for next history calculation
       vsaveddetime(end+1) = vtimestamp;
       vsaveddeinput(end+1,:) = vtheinput';
       vsavedderesult(end+1,:) = vu;
@@ -496,7 +518,7 @@ function [varargout] = ode54d (vfun, vslot, vinit, vlags, vhist, varargin)
     %# Update the step size for the next integration step
     if (~vstepsizegiven)
       %# vdelta may be 0 or even negative - could be an iteration problem
-      vdelta = max (vdelta, eps); 
+      vdelta = max (vdelta, eps);
       vstepsize = min (vodeoptions.MaxStep, ...
         min (0.8 * vstepsize * (vtau ./ vdelta) .^ vpow));
     elseif (vstepsizegiven)
@@ -573,7 +595,7 @@ function [varargout] = ode54d (vfun, vslot, vinit, vlags, vhist, varargin)
     varargout{1}.x = vretvaltime;   %# Time stamps are saved in field x
     varargout{1}.y = vretvalresult; %# Results are saved in field y
     varargout{1}.solver = 'ode54d'; %# Solver name is saved in field solver
-    if (vhaveeventfunction) 
+    if (vhaveeventfunction)
       varargout{1}.ie = vevent{2};  %# Index info which event occured
       varargout{1}.xe = vevent{3};  %# Time info when an event occured
       varargout{1}.ye = vevent{4};  %# Results when an event occured
@@ -596,7 +618,7 @@ function [varargout] = ode54d (vfun, vslot, vinit, vlags, vhist, varargin)
     varargout{3} = [];              %# LabMat doesn't accept lines like
     varargout{4} = [];              %# varargout{3} = varargout{4} = [];
     varargout{5} = [];
-    if (vhaveeventfunction) 
+    if (vhaveeventfunction)
       varargout{3} = vevent{3};     %# Time info when an event occured
       varargout{4} = vevent{4};     %# Results when an event occured
       varargout{5} = vevent{2};     %# Index info which event occured

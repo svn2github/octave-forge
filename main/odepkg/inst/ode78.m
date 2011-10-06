@@ -19,13 +19,34 @@
 %# @deftypefnx {Command} {[@var{sol}] =} ode78 (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 %# @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode78 (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 %#
-%# This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) or non--stiff differential algebraic equations (non--stiff DAEs) with the well known explicit Runge--Kutta method of order (7,8).
+%# This function file can be used to solve a set of non--stiff ordinary differential
+%# equations (non--stiff ODEs) or non--stiff differential algebraic equations
+%# (non--stiff DAEs) with the well known explicit Runge--Kutta method of order (7,8).
 %#
-%# If this function is called with no return argument then plot the solution over time in a figure window while solving the set of ODEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.
+%# If this function is called with no return argument then plot the solution over
+%# time in a figure window while solving the set of ODEs that are defined in a
+%# function and specified by the function handle @var{@@fun}. The second input
+%# argument @var{slot} is a double vector that defines the time slot, @var{init}
+%# is a double vector that defines the initial values of the states, @var{opt}
+%# can optionally be a structure array that keeps the options created with the
+%# command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally
+%# be other input arguments of any type that have to be passed to the function
+%# defined by @var{@@fun}.
 %#
-%# If this function is called with one return argument then return the solution @var{sol} of type structure array after solving the set of ODEs. The solution @var{sol} has the fields @var{x} of type double column vector for the steps chosen by the solver, @var{y} of type double column vector for the solutions at each time step of @var{x}, @var{solver} of type string for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector that keep the informations of the event function if an event function handle is set in the option argument @var{opt}.
+%# If this function is called with one return argument then return the solution
+%# @var{sol} of type structure array after solving the set of ODEs. The solution
+%# @var{sol} has the fields @var{x} of type double column vector for the steps
+%# chosen by the solver, @var{y} of type double column vector for the solutions
+%# at each time step of @var{x}, @var{solver} of type string for the solver name
+%# and optionally the extended time stamp information @var{xe}, the extended
+%# solution information @var{ye} and the extended index information @var{ie} all
+%# of type double column vector that keep the informations of the event function
+%# if an event function handle is set in the option argument @var{opt}.
 %#
-%# If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.
+%# If this function is called with more than one return argument then return the
+%# time stamps @var{t}, the solution values @var{y} and optionally the extended
+%# time stamp information @var{xe}, the extended solution information @var{ye}
+%# and the extended index information @var{ie} all of type double column vector.
 %#
 %# For example, solve an anonymous implementation of the Van der Pol equation
 %#
@@ -90,7 +111,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
     end
 
   else %# if (nargin == 3)
-    vodeoptions = odeset; 
+    vodeoptions = odeset;
     vfunarguments = {};
   end
 
@@ -102,7 +123,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
     vstepsizefixed = true;
   else
     vstepsizefixed = false;
-  end  
+  end
 
   %# Get the default options that can be set with 'odeset' temporarily
   vodetemp = odeset;
@@ -234,7 +255,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
 
   %# Implementation of the option MStateDependence has been finished.
   %# This option can be set by the user to another value than default
-  %# value. 
+  %# value.
   if (strcmp (vodeoptions.MStateDependence, 'none'))
     vmassdependence = false;
   else vmassdependence = true;
@@ -263,12 +284,12 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
       'Option "BDF" will be ignored by this solver');
   end
 
-  %# Starting the initialisation of the core solver ode78 
+  %# Starting the initialisation of the core solver ode78
   vtimestamp  = vslot(1,1);           %# timestamp = start time
   vtimelength = length (vslot);       %# length needed if fixed steps
   vtimestop   = vslot(1,vtimelength); %# stop time = last value
   %# 20110611, reported by Nils Strunk
-  %# Make it possible to solve equations from negativ to zero, 
+  %# Make it possible to solve equations from negativ to zero,
   %# eg. vres = ode78 (@(t,y) y, [-2 0], 2);
   vdirection  = sign (vtimestop - vtimestamp); %# Direction flag
 
@@ -290,7 +311,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
   %# Initialize the OutputFcn
   if (vhaveoutputfunction)
     if (vhaveoutputselection) vretout = vretvalresult(vodeoptions.OutputSel);
-    else vretout = vretvalresult; end     
+    else vretout = vretvalresult; end
     feval (vodeoptions.OutputFcn, vslot.', ...
       vretout.', 'init', vfunarguments{:});
   end
@@ -345,7 +366,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
       %# vstepsize = vtimestop - vdirection * vtimestamp;
       %# 20110611, reported by Nils Strunk
       %# The endpoint of the time slot must be hit exactly,
-      %# eg. vsol = ode78 (@(t,y) y, [0 -1], 1); 
+      %# eg. vsol = ode78 (@(t,y) y, [0 -1], 1);
       vstepsize = vdirection * abs (abs (vtimestop) - abs (vtimestamp));
     end
 
@@ -377,7 +398,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
       y7(vodeoptions.NonNegative) = abs (y7(vodeoptions.NonNegative));
       y8(vodeoptions.NonNegative) = abs (y8(vodeoptions.NonNegative));
     end
-    if (vhaveoutputfunction && vhaverefine) 
+    if (vhaveoutputfunction && vhaverefine)
       vSaveVUForRefine = vu;
     end
 
@@ -399,12 +420,12 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
     if (all (vdelta <= vtau))
       vtimestamp = vtimestamp + vstepsize;
       vu = y8.'; %# MC2001: the higher order estimation as "local extrapolation"
-      %# Save the solution every vodeoptions.OutputSave steps             
-      if (mod (vcntloop-1,vodeoptions.OutputSave) == 0)             
+      %# Save the solution every vodeoptions.OutputSave steps
+      if (mod (vcntloop-1,vodeoptions.OutputSave) == 0)
         vretvaltime(vcntsave,:) = vtimestamp;
         vretvalresult(vcntsave,:) = vu;
-        vcntsave = vcntsave + 1;    
-      end     
+        vcntsave = vcntsave + 1;
+      end
       vcntloop = vcntloop + 1; vcntiter = 0;
 
       %# Call plot only if a valid result has been found, therefore this
@@ -422,12 +443,12 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
           end
           if (vhaveoutputselection)
             vapproxvals = vapproxvals(vodeoptions.OutputSel);
-          end          
+          end
           vpltret = feval (vodeoptions.OutputFcn, vapproxtime, ...
-            vapproxvals, [], vfunarguments{:});          
+            vapproxvals, [], vfunarguments{:});
           if vpltret %# Leave refinement loop
             break;
-          end         
+          end
         end
         if (vpltret) %# Leave main loop
           vunhandledtermination = false;
@@ -454,7 +475,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
     if (~vstepsizefixed)
       %# 20080425, reported by Marco Caliari
       %# vdelta cannot be negative (because of the absolute value that
-      %# has been introduced) but it could be 0, then replace the zeros 
+      %# has been introduced) but it could be 0, then replace the zeros
       %# with the maximum value of vdelta
       vdelta(find (vdelta == 0)) = max (vdelta);
       %# It could happen that max (vdelta) == 0 (ie. that the original
@@ -527,7 +548,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
   if (mod (vcntloop-2,vodeoptions.OutputSave) ~= 0)
     vretvaltime(vcntsave,:) = vtimestamp;
     vretvalresult(vcntsave,:) = vu;
-  end 
+  end
 
   %# Print additional information if option Stats is set
   if (strcmp (vodeoptions.Stats, 'on'))
@@ -552,7 +573,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
     varargout{1}.x = vretvaltime;   %# Time stamps are saved in field x
     varargout{1}.y = vretvalresult; %# Results are saved in field y
     varargout{1}.solver = 'ode78';  %# Solver name is saved in field solver
-    if (vhaveeventfunction) 
+    if (vhaveeventfunction)
       varargout{1}.ie = vevent{2};  %# Index info which event occured
       varargout{1}.xe = vevent{3};  %# Time info when an event occured
       varargout{1}.ye = vevent{4};  %# Results when an event occured
@@ -575,7 +596,7 @@ function [varargout] = ode78 (vfun, vslot, vinit, varargin)
     varargout{3} = [];              %# LabMat doesn't accept lines like
     varargout{4} = [];              %# varargout{3} = varargout{4} = [];
     varargout{5} = [];
-    if (vhaveeventfunction) 
+    if (vhaveeventfunction)
       varargout{3} = vevent{3};     %# Time info when an event occured
       varargout{4} = vevent{4};     %# Results when an event occured
       varargout{5} = vevent{2};     %# Index info which event occured

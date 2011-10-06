@@ -17,19 +17,33 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{ret}] =} odeprint (@var{t}, @var{y}, @var{flag})
 %#
-%# Display the results of the set of differential equations in the Octave window while solving. The first column of the screen output shows the actual time stamp that is given with the input arguemtn @var{t}, the following columns show the results from the function evaluation that are given by the column vector @var{y}. The types and the values of the input parameter @var{t} and the output parameter @var{ret} depend on the input value @var{flag} that is of type string. If @var{flag} is
+%# Display the results of the set of differential equations in the Octave window
+%# while solving. The first column of the screen output shows the actual time
+%# stamp that is given with the input arguemtn @var{t}, the following columns
+%# show the results from the function evaluation that are given by the column
+%# vector @var{y}. The types and the values of the input parameter @var{t} and
+%# the output parameter @var{ret} depend on the input value @var{flag} that is
+%# of type string. If @var{flag} is
 %# @table @option
 %# @item  @code{"init"}
-%# then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
+%# then @var{t} must be a double column vector of length 2 with the first and
+%# the last time step and nothing is returned from this function,
 %# @item  @code{""}
-%# then @var{t} must be a double scalar specifying the actual time step and the return value is false (resp. value 0) for 'not stop solving',
+%# then @var{t} must be a double scalar specifying the actual time step and the
+%# return value is false (resp. value 0) for 'not stop solving',
 %# @item  @code{"done"}
-%# then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
+%# then @var{t} must be a double scalar specifying the last time step and
+%# nothing is returned from this function.
 %# @end table
 %#
-%# This function is called by a OdePkg solver function if it was specified in an OdePkg options structure with the @command{odeset}. This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
+%# This function is called by a OdePkg solver function if it was specified in an
+%# OdePkg options structure with the @command{odeset}. This function is an OdePkg
+%# internal helper function therefore it should never be necessary that this
+%# function is called directly by a user. There is only little error detection
+%# implemented in this function file to achieve the highest performance.
 %#
-%# For example, solve an anonymous implementation of the "Van der Pol" equation and print the results while solving
+%# For example, solve an anonymous implementation of the "Van der Pol" equation
+%# and print the results while solving
 %# @example
 %# fvdb = @@(vt,vy) [vy(2); (1 - vy(1)^2) * vy(2) - vy(1)];
 %# 
@@ -53,9 +67,9 @@ function [varargout] = odeprint (vt, vy, vflag, varargin)
 
   elseif (isempty (vflag)) %# Return value varargout{1} needed
     fprintf (1, '%f%s\n', vt (1,1), sprintf (' %f', vy) );
-    fflush (1); varargout{1} = false; 
+    fflush (1); varargout{1} = false;
 
-  elseif (strcmp (vflag, 'done')) 
+  elseif (strcmp (vflag, 'done'))
     %# Cleanup could be done, but nothing to do in this function
 
   end

@@ -17,7 +17,12 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{solution}] =} odepkg_testsuite_pollution (@var{@@solver}, @var{reltol})
 %#
-%# If this function is called with two input arguments and the first input argument @var{@@solver} is a function handle describing an OdePkg solver and the second input argument @var{reltol} is a double scalar describing the relative error tolerance then return the cell array @var{solution} with performance informations about the POLLUTION testsuite of ordinary differential equations after solving (ODE--test).
+%# If this function is called with two input arguments and the first input
+%# argument @var{@@solver} is a function handle describing an OdePkg solver and
+%# the second input argument @var{reltol} is a double scalar describing the
+%# relative error tolerance then return the cell array @var{solution} with
+%# performance informations about the POLLUTION testsuite of ordinary
+%# differential equations after solving (ODE--test).
 %#
 %# Run examples with the command
 %# @example
@@ -101,7 +106,7 @@ function f = odepkg_testsuite_pollutionfun (t, y, varargin)
   f(16,1) = + 0.350e-3 * y(4) - 0.100e9 * y(16) - 0.444e12 * y(16);
   f(17,1) = - 0.124e4 * y(6) * y(17);
   f(18,1) = + 0.124e4 * y(6) * y(17);
-  f(19,1) = - 0.210e1 * y(19) - 0.578e1 * y(19) + 0.474e-1 * y(1) * y(4) - ... 
+  f(19,1) = - 0.210e1 * y(19) - 0.578e1 * y(19) + 0.474e-1 * y(1) * y(4) - ...
               0.178e4 * y(1) * y(19) + 0.312e1 * y(20);
   f(20,1) = + 0.178e4 * y(1) * y(19) - 0.312e1 * y(20);
 

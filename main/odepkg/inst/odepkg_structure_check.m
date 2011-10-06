@@ -17,9 +17,19 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{newstruct}] =} odepkg_structure_check (@var{oldstruct}, [@var{"solver"}])
 %#
-%# If this function is called with one input argument of type structure array then check the field names and the field values of the OdePkg structure @var{oldstruct} and return the structure as @var{newstruct} if no error is found. Optionally if this function is called with a second input argument @var{"solver"} of type string taht specifies the name of a valid OdePkg solver then a higher level error detection is performed. The function does not modify any of the field names or field values but terminates with an error if an invalid option or value is found.
+%# If this function is called with one input argument of type structure array
+%# then check the field names and the field values of the OdePkg structure
+%# @var{oldstruct} and return the structure as @var{newstruct} if no error is
+%# found. Optionally if this function is called with a second input argument
+%# @var{"solver"} of type string taht specifies the name of a valid OdePkg solver
+%# then a higher level error detection is performed. The function does not modify
+%# any of the field names or field values but terminates with an error if an invalid
+%# option or value is found.
 %#
-%# This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
+%# This function is an OdePkg internal helper function therefore it should never
+%# be necessary that this function is called directly by a user. There is only
+%# little error detection implemented in this function file to achieve the highest
+%# performance.
 %#
 %# Run examples with the command
 %# @example
@@ -423,7 +433,7 @@ function [vret] = odepkg_structure_check (varargin)
 %! odepkg_structure_check (odeset);
 %!
 %!demo
-%! # Create the OdePkg options structure A with odeset and check it 
+%! # Create the OdePkg options structure A with odeset and check it
 %! # with odepkg_structure_check. This actually is unnecessary
 %! # because odeset automtically calls odepkg_structure_check before
 %! # returning.

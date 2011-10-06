@@ -17,7 +17,12 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{scd}] =} odepkg_testsuite_calcscd (@var{solution}, @var{reference}, @var{abstol}, @var{reltol})
 %#
-%# If this function is called with four input arguments of type double scalar or column vector then return a normalized value for the minimum number of correct digits @var{scd} that is calculated from the solution at the end of an integration interval @var{solution} and a set of reference values @var{reference}. The input arguments @var{abstol} and @var{reltol} are unused but present because of compatibility to the function @command{odepkg_testsuite_calcmescd}.
+%# If this function is called with four input arguments of type double scalar or
+%# column vector then return a normalized value for the minimum number of correct
+%# digits @var{scd} that is calculated from the solution at the end of an
+%# integration interval @var{solution} and a set of reference values
+%# @var{reference}. The input arguments @var{abstol} and @var{reltol} are unused
+%# but present because of compatibility to the function @command{odepkg_testsuite_calcmescd}.
 %# 
 %# Run examples with the command
 %# @example
@@ -33,8 +38,8 @@ function vscd = odepkg_testsuite_calcscd (vsol, vref, vatol, vrtol)
   vscd = -log10 (norm (vrel, inf));
 
 %!demo
-%! # Displays the value for the mimum number of correct digits in 
-%! # the vector sol = [1, 2, 2.9] compared to the reference vector 
+%! # Displays the value for the mimum number of correct digits in
+%! # the vector sol = [1, 2, 2.9] compared to the reference vector
 %! # ref = [1, 2, 3].
 %!
 %! odepkg_testsuite_calcscd ([1, 2, 2.9], [1, 2, 3], NaN, NaN)

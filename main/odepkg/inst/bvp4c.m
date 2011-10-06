@@ -115,7 +115,7 @@ function sol = bvp4c(odefun,bcfun,solinit,options)
       
       u_0 = [];
       for nn=1:Nvar
-	u_0(nn,:) = interp1(t_old, u(nn,:), t);
+        u_0(nn,:) = interp1(t_old, u(nn,:), t);
       end
       Nvar = rows(u_0);
       Nint = length(t)-1
@@ -147,12 +147,12 @@ function diff_K = __bvp4c_fun_K__ (t, u, Kin, f, h, s, Nint, Nvar)
   
   persistent A = [0      0      0;
                   5/24   1/3   -1/24;
-                  1/6    2/3    1/6];	
+                  1/6    2/3    1/6];
 
   for jj = 1:s
     for kk = 1:Nint
       Y = repmat(u(:,kk),1,s) + ...
-	  (reshape(Kin(:,kk,:),Nvar,s) * A.') * h(kk);
+          (reshape(Kin(:,kk,:),Nvar,s) * A.') * h(kk);
       diff_K(:,kk,jj) = Kin(:,kk,jj) - f (t(kk)+C(jj)*h(kk), Y);
     endfor
   endfor
@@ -175,23 +175,23 @@ endfunction
 
 function x = __bvp4c_solve__ (t, x, h, odefun, bcfun, Nvar, Nint, s)
   fun = @( x ) ( [__bvp4c_fun_u__(t, 
-				  reshape(x(1:Nvar*(Nint+1)),Nvar,(Nint+1)), 
-				  reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s),
-				  h,
-				  s,
-				  Nint,
-				  Nvar)(:) ;
-		  __bvp4c_fun_K__(t, 
-				  reshape(x(1:Nvar*(Nint+1)),Nvar,(Nint+1)), 
-				  reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s),
-				  odefun,
-				  h,
-				  s,
-				  Nint,
-				  Nvar)(:);
-		  bcfun(reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1)(:,1),
-			reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1)(:,end));
-		  ] );
+                                  reshape(x(1:Nvar*(Nint+1)),Nvar,(Nint+1)), 
+                                  reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s),
+                                  h,
+                                  s,
+                                  Nint,
+                                  Nvar)(:) ;
+                  __bvp4c_fun_K__(t, 
+                                  reshape(x(1:Nvar*(Nint+1)),Nvar,(Nint+1)), 
+                                  reshape(x([1:Nvar*Nint*s]+Nvar*(Nint+1)),Nvar,Nint,s),
+                                  odefun,
+                                  h,
+                                  s,
+                                  Nint,
+                                  Nvar)(:);
+                  bcfun(reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1)(:,1),
+                        reshape(x(1:Nvar*(Nint+1)),Nvar,Nint+1)(:,end));
+                  ] );
   
   x    = fsolve ( fun, x );
 endfunction

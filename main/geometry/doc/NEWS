@@ -43,5 +43,11 @@ geometry-1.1.1   Release Date: 2011-10-xx   Release Manager: Juan Pablo Carbajal
  clipPoints.m
  drawBezierCurve.m
  drawBox.m
-
+ clipRay.m
+ intersectBoxes.m
+ intersectLines.m
+ linePosition.m
+ mergeBoxes.m
+ randomPointInBox.m
+ drawLine.m
 ===============================================================================

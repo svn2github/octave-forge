@@ -97,7 +97,7 @@ function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
     endif
   endif
   ## test that xhat spans x
-  if ( min(x) < min(xhat) || max(xhat) < max(x) )
+  if ( min(x) < min(xhat) | max(xhat) < max(x) )
     error("xhat must at least span the data")
   endif
 

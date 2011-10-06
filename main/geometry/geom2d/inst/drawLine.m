@@ -48,7 +48,7 @@
 %%   axis([0 100 0 100]);
 %%   drawLine([30 40 10 20]);
 %%   drawLine([30 40 20 -10], 'color', 'm', 'linewidth', 2);
-%% @ed example
+%% @end example
 %%
 %% @seealso{lines2d, createLine, drawEdge}
 %% @end deftypefn

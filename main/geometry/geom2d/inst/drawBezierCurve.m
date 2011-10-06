@@ -34,7 +34,7 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} drawBezierCurve (@var{points})
 %% @deftypefnx {Command} {Function File} drawBezierCurve (@var{pp})
-%% @deftypefnx {Command} {Function File} drawBezierCurve (@ldots, @var{param}, @var{value}, ...)
+%% @deftypefnx {Command} {Function File} drawBezierCurve (..., @var{param}, @var{value}, ...)
 %% @deftypefnx {Command} {Function File} {@var{h} =}drawBezierCurve (...)
 %% Draw a cubic bezier curve defined by the control points @var{points}.
 %%

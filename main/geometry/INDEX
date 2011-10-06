@@ -20,6 +20,13 @@ Geometry 2D
  clipPoints
  drawBezierCurve
  drawBox
+ clipRay
+ intersectBoxes
+ intersectLines
+ linePosition
+ mergeBoxes
+ randomPointInBox
+ drawLine
 Input
  svgload
  svgnormalize

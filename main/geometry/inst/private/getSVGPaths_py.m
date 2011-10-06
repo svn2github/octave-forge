@@ -16,7 +16,7 @@
 function paths = getSVGPaths_py (svg, varargin)
 
   %% Call python script
-  [st str]=system (sprintf ('python parseTest.py %s', svg));
+  [st str]=system (sprintf ('python parsePath.py %s', svg));
 
   %% Parse ouput
   strs = strsplit (str(1:end-1), '$', true);

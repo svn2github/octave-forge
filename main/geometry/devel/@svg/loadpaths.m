@@ -16,7 +16,7 @@
 function Paths = loadpaths (svg, varargin)
 
   %% Call python script
-  if exist (name,'file')
+  if exist (svg,'file')
   % read from file  
     [st str]=system (sprintf ('python parsePath.py %s', svg));
     

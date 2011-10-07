@@ -15,10 +15,14 @@
 
 function Paths = loadpaths (obj, svg, varargin)
 
+  here   = which ("@svg/loadpaths");
+  here   = fileparts (here);
+  script = fullfile (here, 'parsePath.py');
+
   %% Call python script
   if exist (svg,'file')
   % read from file  
-    [st str]=system (sprintf ('python parsePath.py %s', svg));
+    [st str]=system (sprintf ('python %s %s', script, svg));
     
   else
   % inline SVG  

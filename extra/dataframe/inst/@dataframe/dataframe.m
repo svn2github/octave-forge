@@ -90,6 +90,7 @@ endif
 
 %# default values
 seeked = []; trigger =[]; unquot = true; sep = "\t,"; cmt_lines = [];
+locales = "C";
 
 if (length(varargin) > 0)
   indi = 1;
@@ -140,6 +141,9 @@ if (length(varargin) > 0)
           varargin(indi:indi+1) = [];
         case 'sep',
           sep = varargin{indi + 1};
+          varargin(indi:indi+1) = [];
+        case 'locales'
+          locales = varargin{indi + 1};
           varargin(indi:indi+1) = [];
         otherwise %# FIXME: just skip it for now
           disp (sprintf ("Ignoring unkown argument %s", varargin{indi}));
@@ -251,7 +255,7 @@ while (indi <= size(varargin, 2))
               continue;
             endif
             %# try to convert to float
-            the_line = cellfun (@(x) sscanf (x, "%f", ""), dummy, \
+            the_line = cellfun (@(x) sscanf (x, "%f", locales), dummy, \
                                 'UniformOutput', false);
             for indk = (1:size (the_line, 2))
               if (isempty (the_line{indk}) || any (size (the_line{indk}) > 1)) 

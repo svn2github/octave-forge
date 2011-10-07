@@ -14,44 +14,12 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} function_name ()
-## @end deftypefn
+function display (obj)
 
-function paths = getpath(obj, ids={})
-
-  if !isempty(ids)
-  
-    if iscell (ids) && iscell(ids{1}) % dealing with ids given as cell
-      ids = ids{1};
-
-      if !all ( cellfun (@ischar, ids) )
-       print_usage
-      end
-
-    elseif !all ( cellfun (@ischar, ids) )
-     print_usage
-    end
-    
-  else
-    paths = obj.Path;
-    return
-  end
-
-  tf = ismember (ids, fieldnames (obj.Path));
-
-  cellfun (@(s) printf("'%s' is not a valid path id.\n", s) , {ids{!tf}});
-
-  paths = [];
-  if any (tf)
-    stuff = {ids{tf}};
-    for i = 1: numel(stuff)
-      paths{i} = obj.Path.(ids{i}).data;
-    endfor
-    if numel(paths) == 1
-      paths = paths{1};
-    end
+  fields = fieldnames (obj);
+  for i = 1 : numel(fields)
+    printf ("%s\n", fields{i});
+    obj.(fields{i})
   end
 
 endfunction
-

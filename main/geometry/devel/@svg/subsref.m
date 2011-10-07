@@ -46,16 +46,6 @@ function out = subsref (obj, idx)
        error (typeNotImplemented,[method idx(2).type], class (obj));
      end
       
-    case {'path','Path'} % Have to consider Path otherwise obj.Path doesn't work anymore.
-      
-      if numel (idx) == 1 % user asks for field Path
-        out = obj.Path;
-        
-      elseif strcmp (idx(2).type, '()') % A nice behavior obj.path(id) calls method getpath
-        out = getpath (obj, idx(2).subs);
-        
-      end
-      
     case 'getpath'
 
      if numel (idx) == 1 % obj.getpath doesn't exists

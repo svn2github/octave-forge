@@ -46,7 +46,7 @@ function svg = svg(name='')
   svg = class (svg, 'svg');
 
   if !isempty (name)
-    paths = @svg/loadpaths(svg, name);
+    paths = loadpaths(svg, name);
     svg.Path = paths;
   elseif !ischar(name)
     print_usage ;

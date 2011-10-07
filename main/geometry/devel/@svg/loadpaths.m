@@ -26,7 +26,7 @@ function Paths = loadpaths (obj, svg, varargin)
     
   else
   % inline SVG  
-    [st str]=system (sprintf ('python parsePath.py < %s', svg));
+    [st str]=system (sprintf ('python %s < %s', script, svg));
   end
   
   %% Parse ouput
@@ -50,8 +50,9 @@ function Paths = loadpaths (obj, svg, varargin)
     if svgpath2.cmd(end) == 'Z'
       nD -= 1;
       point_end = svgpath2.data{1};
+      svgpath2.data(end) = [];
     end
-
+    
     %% Initial point
     points(1,:) = svgpath2.data{1};
     
@@ -80,7 +81,13 @@ function Paths = loadpaths (obj, svg, varargin)
       points(2,:) = point_end;
       pp = [(points(2,:)-points(1,:))' points(1,:)'];
       
-      pathdata{end} = pp;
+      if all ( abs(pp(:,1)) < sqrt(eps) )
+      % Final point of last segment is already initial point
+        pathdata(end) = [];
+      else
+        pathdata{end} = pp;
+      end
+      
     end
     
     Paths.(svgpathid).data = pathdata;

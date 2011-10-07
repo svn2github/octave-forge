@@ -14,32 +14,41 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} function_name ()
+## @end deftypefn
 
-function h = plot(obj, varargin)
+function paths = getpath(obj, ids={})
 
-  % Get path ids
-  ids = fieldnames(obj.Path);
-  npath = numel(ids);
+  if !isempty(ids)
+  
+    if iscell (ids) && iscell(ids{1}) % dealing with ids given as cell
+      ids = ids{1};
 
-  t = linspace (0, 1, 64);
+      if !all ( cellfun (@ischar, ids) )
+       print_usage
+      end
 
-  for i = 1:npath
-    x = []; y = [];
-    data = obj.Path.(ids(i)).data;
-
-    for j = 1:numel(data)
-      x = cat (2, x, polyval (data{j}(1,:),t));
-      y = cat (2, y, polyval (data{j}(2,:),t));
+    elseif !all ( cellfun (@ischar, ids) )
+     print_usage
     end
+    
+  else
+    paths = obj.Path;
+    return
+  end
 
-    h = plot(x,y,'-');
-    if i == 1
-      hold on
+  tf = ismember (ids, fieldnames (obj.Path));
+
+  cellfun (@(s) printf("'%s' is not a valid path id.\n", s) , {ids{!tf}});
+
+  paths = [];
+  if any (tf)
+    paths = cellfun(@(s) getfield (obj.Path, s).data, {ids{tf}}, 'UniformOutput', false);
+    if numel(paths) == 1
+      paths = paths{1};
     end
- end
- hold off
- axis ij
- axis equal
+  end
 
 endfunction
 

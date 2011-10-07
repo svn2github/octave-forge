@@ -29,11 +29,46 @@ function out = subsref (obj, idx)
 #  ori = inputname(1);
 #  assignin('caller', ori, inPar);
 
+# Error strings
+  method4field = "Class %s has no field %s. Use %s() for the method.";
+  typeNotImplemented = "%s no implemented for Class %s.";
+  
   method = idx(1).subs;
 
   switch method
     case 'plot'
-      out = plot(obj);
+    
+     if numel (idx) == 1 % obj.plot doesn't exists
+       error (method4field, class (obj), method, method);
+     elseif strcmp (idx(2).type, '()')
+        out = plot (obj, idx(2).subs);
+     else 
+       error (typeNotImplemented,[method idx(2).type], class (obj));
+     end
+      
+    case {'path','Path'} % Have to consider Path otherwise obj.Path doesn't work anymore.
+      
+      if numel (idx) == 1 % user asks for field Path
+        out = obj.Path;
+        
+      elseif strcmp (idx(2).type, '()') % A nice behavior obj.path(id) calls method getpath
+        out = getpath (obj, idx(2).subs);
+        
+      end
+      
+    case 'getpath'
+
+     if numel (idx) == 1 % obj.getpath doesn't exists
+       error (method4field, class (obj), method, method);
+     elseif strcmp (idx(2).type, '()')
+        out = getpath (obj, idx(2).subs);
+     else 
+       error (typeNotImplemented,[method idx(2).type], class (obj));
+     end
+
+    case 'pathid'
+      out = fieldnames(obj.Path);
+
     otherwise
       error ("invalid index for reference of class %s", class (obj) );
   endswitch

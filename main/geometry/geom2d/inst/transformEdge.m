@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,43 +31,41 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{edge2} = } transformEdge (@var{edge1}, @var{T})
+%% Transform an edge with an affine transform.
+%%
+%%   Where @var{edge1} has the form [x1 y1 x2 y1], and @var{T} is a transformation
+%%   matrix, return the edge transformed with affine transform @var{T}. 
+%%
+%%   Format of TRANS can be one of :
+%%   [a b]   ,   [a b c] , or [a b c]
+%%   [d e]       [d e f]      [d e f]
+%%                            [0 0 1]
+%%
+%%   Also works when @var{edge1} is a [Nx4] array of double. In this case, @var{edge2}
+%%   has the same size as @var{edge1}. 
+%%
+%%   @seealso{edges2d, transforms2d, transformPoint, translation, rotation}
+%% @end deftypefn
 
-function trans = fitAffineTransform2d(pts1, pts2)
-%FITAFFINETRANSFORM2D Fit an affine transform using two point sets
-%   TRANS = fitAffineTransform2d(PTS1, PTS2)
-%
-%   Example
-%   N = 10;
-%   pts = rand(N, 2)*10;
-%   trans = createRotation(3, 4, pi/4);
-%   pts2 = transformPoint(pts, trans);
-%   pts3 = pts2 + randn(N, 2)*2;
-%   fitted = fitAffineTransform2d(pts, pts2);
-%   
-%
-%   See also
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2009-07-31,    using Matlab 7.7.0.471 (R2008b)
-% Copyright 2009 INRA - Cepia Software Platform.
+function dest = transformEdge(edge, trans)
 
+  dest = zeros(size(edge));
 
-% number of points 
-N = size(pts1, 1);
+  % compute position
+  dest(:,1) = edge(:,1)*trans(1,1) + edge(:,2)*trans(1,2);
+  dest(:,2) = edge(:,1)*trans(2,1) + edge(:,2)*trans(2,2);
+  dest(:,3) = edge(:,3)*trans(1,1) + edge(:,3)*trans(1,2);
+  dest(:,4) = edge(:,4)*trans(2,1) + edge(:,4)*trans(2,2);
 
-% main matrix of the problem
-A = [...
-    pts1(:,1) pts1(:,2) ones(N,1) zeros(N, 3) ; ...
-    zeros(N, 3) pts1(:,1) pts1(:,2) ones(N,1)  ];
+  % add translation vector, if exist
+  if size(trans, 2)>2
+      dest(:,1) = dest(:,1)+trans(1,3);
+      dest(:,2) = dest(:,2)+trans(2,3);
+      dest(:,3) = dest(:,3)+trans(1,3);
+      dest(:,4) = dest(:,4)+trans(2,3);
+  end
 
-% conditions initialisations
-B = [pts2(:,1) ; pts2(:,2)];
+endfunction
 
-% compute coefficients using least square
-coefs = A\B;
-
-% format to a matrix
-trans = [coefs(1:3)' ; coefs(4:6)'; 0 0 1];

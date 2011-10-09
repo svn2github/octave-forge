@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,43 +31,36 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{line2} = } transformLine (@var{line1}, @var{T})
+%% Transform a line with an affine transform.
+%%
+%%   Returns the line @var{line1} transformed with affine transform @var{T}.
+%%   @var{line1} has the form [x0 y0 dx dy], and @var{T} is a transformation
+%%   matrix.
+%%
+%%   Format of @var{T} can be one of :
+%%   [a b]   ,   [a b c] , or [a b c]
+%%   [d e]       [d e f]      [d e f]
+%%                            [0 0 1]
+%%
+%%   Also works when @var{line1} is a [Nx4] array of double. In this case, @var{line2}
+%%   has the same size as @var{line1}. 
+%%
+%%   @seealso{lines2d, transforms2d, transformPoint}
+%% @end deftypefn
 
 function dest = transformLine(line, trans)
-%TRANSFORMLINE Transform a line with an affine transform
-%
-%   LINE2 = transformLine(LINE1, TRANS);
-%   returns the line LINE1 transformed with affine transform TRANS. 
-%   LINE1 has the form [x0 y0 dx dy], and TRANS is a transformation
-%   matrix.
-%
-%   Format of TRANS can be one of :
-%   [a b]   ,   [a b c] , or [a b c]
-%   [d e]       [d e f]      [d e f]
-%                            [0 0 1]
-%
-%   LINE2 = transformLine(LINES, TRANS);
-%   Also work when LINES is a [N*4] array of double. In this case, LINE2
-%   has the same size as LINE. 
-%
-%   See also:
-%   lines2d, transforms2d, transformPoint
-%
-%   ---------
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 06/04/2004.
-%
 
-%   HISTORY
-%   02/03/2007: rewrite function
+  % isolate points
+  points1 = line(:, 1:2);
+  points2 = line(:, 1:2) + line(:, 3:4);
 
+  % transform points 
+  points1 = transformPoint(points1, trans);
+  points2 = transformPoint(points2, trans);
 
-% isolate points
-points1 = line(:, 1:2);
-points2 = line(:, 1:2) + line(:, 3:4);
+  dest = createLine(points1, points2);
 
-% transform points 
-points1 = transformPoint(points1, trans);
-points2 = transformPoint(points2, trans);
+endfunction
 
-dest = createLine(points1, points2);

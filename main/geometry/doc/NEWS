@@ -70,3 +70,17 @@ geometry-1.1.2   Release Date: 2011-10-09   Release Manager: Juan Pablo Carbajal
  vectors2d.m
 
 ===============================================================================
+geometry-1.1.3   Release Date: 2011-10-10   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* Continue to add geom2d from matGeom (transforms)
+ createBasisTransform.m
+ createHomothecy.m
+ createLineReflection.m
+ createRotation.m
+ createScaling.m
+ createTranslation.m
+ transformPoint.m
+ transforms2d.m
+
+===============================================================================

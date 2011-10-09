@@ -31,55 +31,34 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{vr} = } rotateVector (@var{v}, @var{theta})
+%% Rotate a vector by a given angle
+%%
+%%  Rotate the vector @var{v} by an angle @var{theta}, given in radians.
+%%
+%%   Example
+%%
+%% @example
+%%   rotateVector([1 0], pi/2)
+%%   ans = 
+%%       0   1
+%% @end example
+%%
+%% @seealso{vectors2d, transformVector, createRotation}
+%% @end deftypefn
 
-function b = isPointOnRay(point, ray, varargin)
-%ISPOINTONRAY Test if a point belongs to a ray
-%
-%   B = isPointOnRay(PT, RAY);
-%   Returns 1 if point PT belongs to the ray RAY.
-%   PT is given by [x y] and RAY by [x0 y0 dx dy].
-%
-%   See also:
-%   rays2d, points2d, isPointOnLine
-%
-%   ---------
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 31/10/2003.
-%
+function vr = rotateVector(v, angle)
 
-%   HISTORY
-%   07/07/2005 normalize condition to test if on the line and add support
-%       of multiple rays or points
-%   22/05/2009 rename to isPointOnRay, add psb to specify tolerance
-%   26/01/2010 was drawing a line before making test
+  % precomputes angles
+  cot = cos(angle);
+  sit = sin(angle);
 
-% extract computation tolerance
-tol = 1e-14;
-if ~isempty(varargin)
-    tol = varargin{1};
-end
+  % compute rotated coordinates
+  vr = [cot * v(:,1) - sit * v(:,2) , sit * v(:,1) + cot * v(:,2)];
+  
+endfunction
 
-% number of rays and points
-Nr = size(ray, 1);
-Np = size(point, 1);
+%!assert ([0 1],rotateVector([1 0],pi/2), 1e-6)
+%!assert (sqrt([0.5 0.5]),rotateVector([1 0],pi/4), 1e-6)
 
-% if several rays or several points, adapt sizes of arrays
-x0 = repmat(ray(:,1)', Np, 1);
-y0 = repmat(ray(:,2)', Np, 1);
-dx = repmat(ray(:,3)', Np, 1);
-dy = repmat(ray(:,4)', Np, 1);
-xp = repmat(point(:,1), 1, Nr);
-yp = repmat(point(:,2), 1, Nr);
-
-% test if points belongs to the supporting line
-b1 = abs((xp-x0).*dy-(yp-y0).*dx)./hypot(dx, dy) < tol;
-
-% check if points lie the good direction on the rays
-ind     = abs(dx)>abs(dy);
-t       = zeros(size(b1));
-t(ind)  = (xp(ind)-x0(ind))./dx(ind);
-t(~ind) = (yp(~ind)-y0(~ind))./dy(~ind);
-
-% combine the two tests
-b = b1 && (t>0);

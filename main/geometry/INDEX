@@ -6,27 +6,32 @@ Geometry 2D
  angleDiff
  angles2d
  angleSort
- createLine
- deg2rad
- edgeAngle
- lineAngle
- normalizeAngle
- rad2deg
- vectorAngle
- cbezier2poly
  boxes2d
+ cbezier2poly
  clipEdge
  clipLine
  clipPoints
+ clipRay
+ createLine
+ createRay
+ deg2rad
  drawBezierCurve
  drawBox
- clipRay
+ drawEdge
+ drawLine
+ drawRay
+ edgeAngle
  intersectBoxes
  intersectLines
+ isPointOnRay
+ lineAngle
  linePosition
  mergeBoxes
+ normalizeAngle
+ rad2deg
  randomPointInBox
- drawLine
+ rays2d
+ vectorAngle
 Input
  svgload
  svgnormalize
@@ -35,6 +40,4 @@ Output
  data2geo
 Geometry 3D
 Graphs
-
-
 

@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,30 +31,42 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{vn} = } normalizeVector (@var{v})
+%% Normalize a vector to have norm equal to 1
+%%
+%% Returns the normalization of vector @var{v}, such that ||@var{v}|| = 1.
+%% @var{v} can be either a row or a column vector.
+%%
+%% When @var{v} is a MxN array, normalization is performed for each row of the
+%% array.
+%%
+%%   Example:
+%%
+%% @example
+%%   vn = normalizeVector([3 4])
+%%   vn =
+%%       0.6000   0.8000
+%%   vectorNorm(vn)
+%%   ans =
+%%       1
+%% @end example
+%%
+%% @seealso{vectors2d, vectorNorm}
+%% @end deftypefn
 
-function vr = rotateVector(v, angle)
-%ROTATEVECTOR Rotate a vector by a given angle
-%
-%   VR = rotateVector(V, THETA)
-%   Rotate the vector V by an angle THETA, given in radians.
-%
-%   Example
-%   rotateVector([1 0], pi/2)
-%   ans = 
-%       0   1
-%
-%   See also
-%   vectors2d, transformVector, createRotation
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2011-04-14,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2011 INRA - Cepia Software Platform.
+function vn = normalizeVector(v)
 
-% precomputes angles
-cot = cos(angle);
-sit = sin(angle);
+  dim = size(v);
 
-% compute rotated coordinates
-vr = [cot * v(:,1) - sit * v(:,2) , sit * v(:,1) + cot * v(:,2)];
+  if dim(1)==1 || dim(2)==1
+      vn = v / sqrt(sum(v.^2));
+  else
+      %same as: vn = v./repmat(sqrt(sum(v.*v, 2)), [1 dim(2)]);
+      vn = bsxfun(@rdivide, v, sqrt(sum(v.^2, 2)));
+  end
+
+endfunction
+
+%!assert (1,vectorNorm (normalizeVector ([3 4])))
+

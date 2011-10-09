@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2008-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,46 +31,24 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} vectors2d ()
+%% Description of functions operating on plane vectors
+%%
+%%   A vector is defined by its two cartesian coordinates, put into a row
+%%   vector of 2 elements:
+%%   @code{V = [vx vy];}
+%%
+%%   Several vectors are stored in a matrix with two columns, one for the
+%%   x-coordinate, one for the y-coordinate.
+%%   @voce{VS = [vx1 vy1 ; vx2 vy2 ; vx3 vy3];}
+%%
+%%   @seealso{vectorNorm, vectorAngle, isPerpendicular, isParallel,
+%%   normalizeVector, transformVector, rotateVector}
+%% @end deftypefn
 
-function vn = normalizeVector(v)
-%NORMALIZEVECTOR Normalize a vector to have norm equal to 1
-%
-%   V2 = normalizeVector(V);
-%   Returns the normalization of vector V, such that ||V|| = 1. V can be
-%   either a row or a column vector.
-%
-%   When V is a MxN array, normalization is performed for each row of the
-%   array.
-%
-%   Example:
-%   vn = normalizeVector([3 4])
-%   vn =
-%       0.6000   0.8000
-%   vectorNorm(vn)
-%   ans =
-%       1
-%
-%   See Also:
-%   vectors2d, vecnorm
-%
-%
-%   ---------
-%
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 29/11/2004.
-%
+function vectors2d
 
-%   HISTORY
-%   2005-01-14 correct bug
-%   2009-05-22 rename as normalizeVector
-%   2011-01-20 use bsxfun
+  help('vectors2d');
 
-dim = size(v);
-
-if dim(1)==1 || dim(2)==1
-    vn = v / sqrt(sum(v.^2));
-else
-    %same as: vn = v./repmat(sqrt(sum(v.*v, 2)), [1 dim(2)]);
-    vn = bsxfun(@rdivide, v, sqrt(sum(v.^2, 2)));
-end
+endfunction

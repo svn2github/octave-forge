@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2003-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,27 +31,36 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{h} = } drawRay (@var{ray})
+%% @deftypefnx {Function File} {@var{h} = } drawRay (@var{ray}, @var{param}, @var{value})
+%% Draw a ray on the current axis.
+%%
+%% With @var{ray} having the syntax: [x0 y0 dx dy], draws the ray starting from
+%%  point (x0 y0) and going to direction (dx dy), clipped with the current
+%%  window axis. @var{param}, @var{value} pairs are passed to function @code{line}.
+%%
+%%   @seealso{rays2d, drawLine, line}
+%% @end deftypefn
 
-function vectors2d
-%VECTORS2D Description of functions operating on plane vectors
-%
-%   A vector is defined by its two cartesian coordinates, put into a row
-%   vector of 2 elements:
-%   V = [vx vy];
-%
-%   Several vectors are stored in a matrix with two columns, one for the
-%   x-coordinate, one for the y-coordinate.
-%   VS = [vx1 vy1 ; vx2 vy2 ; vx3 vy3];
-%
-%   See also: 
-%   vectorNorm, vectorAngle, isPerpendicular, isParallel
-%   normalizeVector, transformVector, rotateVector
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2008-10-13,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2008 INRA - BIA PV Nantes - MIAJ Jouy-en-Josas.
+function varargout = drawRay(ray, varargin)
 
-help('vectors2d');
+  % get bounding box limits
+  bb = axis(gca);
+
+  % compute clipped shapes
+  [clipped isInside] = clipRay(ray, bb);
+
+  % allocate memory for handle
+  h = -ones(size(ray, 1), 1);
+
+  % draw visible rays
+  h(isInside) = drawEdge(clipped(isInside, :), varargin{:});
+
+  % process output
+  if nargout>0
+      varargout = {h};
+  end
+
+endfunction
+

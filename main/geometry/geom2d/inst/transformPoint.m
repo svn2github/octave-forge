@@ -32,75 +32,61 @@
 %% policies, either expressed or implied, of copyright holder.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} {varargout =} angleSort (@var{pts}, varargin)
-%% Sort points in the plane according to their angle to origin
+%% @deftypefn {Function File} {@var{pt2} = } transformPoint (@var{pt1}, @var{Trans})
+%% @deftypefnx {Function File} {[@var{px2} @var{py2}]= } transformPoint (@var{px1}, @var{py1}, @var{Trans})
+%% Transform a point with an affine transform.
 %%
+%%   where @var{pt1} has the form [xp yp], and @var{Trans} is a [2x2], [2x3] or [3x3]
+%%   matrix, returns the point transformed with affine transform @var{Trans}.
 %%
-%%   PTS2 = angleSort(PTS);
-%%   Computes angle of points with origin, and sort points with increasing
-%%   angles in Counter-Clockwise direction.
+%%   Format of @var{Trans} can be one of :
+%%   [a b]   ,   [a b c] , or [a b c]
+%%   [d e]       [d e f]      [d e f]
+%%                            [0 0 1]
 %%
-%%   PTS2 = angleSort(PTS, PTS0);
-%%   Computes angles between each point of PTS and PT0, which can be
-%%   different from origin.
+%%   Also works when @var{pt1} is a [Nx2] array of double. In this case, @var{pt2} has
+%%   the same size as @var{pt1}.
 %%
-%%   PTS2 = angleSort(..., THETA0);
-%%   Specifies the starting angle for sorting.
+%%   Also works when @var{px1} and @var{py1} are arrays the same size. The function
+%%   transform each couple of (@var{px1}, @var{py1}), and return the result in 
+%%   (@var{px2}, @var{py2}), which is the same size as (@var{px1} @var{py1}).
 %%
-%%   [PTS2, I] = angleSort(...);
-%%   Also returns in I the indices of PTS, such that PTS2 = PTS(I, :);
-%% 
-%% @seealso{points2d, angles2d, angle2points, normalizeAngle}
+%%   @seealso{points2d, transforms2d, createTranslation, createRotation}
 %% @end deftypefn
 
-function varargout = angleSort(pts, varargin)
+function varargout = transformPoint(varargin)
 
-  % default values
-  pt0 = [0 0];
-  theta0 = 0;
-
-  if length(varargin)==1
+  if length(varargin)==2
       var = varargin{1};
-      if size(var, 2)==1
-          % specify angle
-          theta0 = var;
-      else
-          pt0 = var;
-      end
-  elseif length(varargin)==2
-      pt0 = varargin{1};
-      theta0 = varargin{2};
+      px = var(:,1);
+      py = var(:,2);
+      trans = varargin{2};
+  elseif length(varargin)==3
+      px = varargin{1};
+      py = varargin{2};
+      trans = varargin{3};
+  else
+      error('wrong number of arguments in "transformPoint"');
   end
 
 
-  n = size(pts, 1);
-  pts2 = pts - repmat(pt0, [n 1]);
-  angle = lineAngle([zeros(n, 2) pts2]);
-  angle = mod(angle - theta0 + 2*pi, 2*pi);
+  % compute position
+  px2 = px*trans(1,1) + py*trans(1,2);
+  py2 = px*trans(2,1) + py*trans(2,2);
 
-  [dummy, I] = sort(angle);
+  % add translation vector, if exist
+  if size(trans, 2)>2
+      px2 = px2 + trans(1,3);
+      py2 = py2 + trans(2,3);
+  end
 
-  % format output
-  if nargout<2
-      varargout{1} = pts(I, :);
+
+  if nargout==0 || nargout==1
+      varargout{1} = [px2 py2];
   elseif nargout==2
-      varargout{1} = pts(I, :);
-      varargout{2} = I;
+      varargout{1} = px2;
+      varargout{2} = py2;
   end
 
 endfunction
-
-%!shared p1,p2,p3,p4,pts,center
-%! p1 = [0 0];
-%! p2 = [10 0];
-%! p3 = [10 10];
-%! p4 = [0 10];
-%! pts = [p1;p2;p3;p4];
-%! center = [5 5];
-
-%!test
-%! expected = pts([3 4 1 2], :);
-%! assert (expected, angleSort (pts, center), 1e-6);
-
-%!assert (pts, angleSort (pts, center, -pi), 1e-6);
 

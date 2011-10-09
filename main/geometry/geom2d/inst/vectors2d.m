@@ -41,7 +41,7 @@
 %%
 %%   Several vectors are stored in a matrix with two columns, one for the
 %%   x-coordinate, one for the y-coordinate.
-%%   @voce{VS = [vx1 vy1 ; vx2 vy2 ; vx3 vy3];}
+%%   @code{VS = [vx1 vy1 ; vx2 vy2 ; vx3 vy3];}
 %%
 %%   @seealso{vectorNorm, vectorAngle, isPerpendicular, isParallel,
 %%   normalizeVector, transformVector, rotateVector}

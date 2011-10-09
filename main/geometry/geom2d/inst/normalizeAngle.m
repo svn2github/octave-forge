@@ -34,7 +34,7 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{alpha2} =} normalizeAngle (@var{alpha})
 %% @deftypefnx {Function File} {@var{alpha2} =} normalizeAngle (@var{alpha}, @var{center})
-%% NORMALIZEANGLE  Normalize an angle value within a 2*PI interval
+%% Normalize an angle value within a 2*PI interval
 %%
 %%   ALPHA2 = normalizeAngle(ALPHA);
 %%   ALPHA2 is the same as ALPHA modulo 2*PI and is positive.

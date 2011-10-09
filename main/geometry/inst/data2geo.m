@@ -15,8 +15,11 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{fileStr} =} data2geo (@var{data}, @var{lc},@var{opt})
-%% Takes data assuming certain order and builds a .geo file compatible with gmsh.
+%% Builds a file compatible with gmsh form data.
 %%
+%% @var{data} is assumed to describe a polygon in @code{polygon2d} format.
+%%
+%% @seealso{polygon2d}
 %% @end deftypefn
 
 function strFile = data2geo(data,lc,varargin)

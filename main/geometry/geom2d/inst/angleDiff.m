@@ -33,7 +33,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{dif} =} angleDiff (@var{angle1}, @var{angle2})
-%% ANGLEDIFF Difference between two angles
+%% Difference between two angles
 %%
 %%   Computes the signed angular difference between two angles in radians.
 %%   The result is comprised between -PI and +PI.

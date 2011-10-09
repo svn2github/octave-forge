@@ -33,7 +33,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{rad} =} deg2rad(@var{deg})
-%% DEG2RAD Convert angle from degrees to radians
+%% Convert angle from degrees to radians
 %%
 %%   Usage:
 %%   R = deg2rad(D)

@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,32 +31,41 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{T} = } createTranslation (@var{vector})
+%% @deftypefnx {Function File} {@var{T} = } createTranslation (@var{dx},@var{dy})
+%% Create the 3*3 matrix of a translation.
+%%
+%%   Returns the matrix corresponding to a translation by the vector [@var{dx} @var{dy}].
+%%   The components can be given as two arguments.
+%%   The returned matrix has the form :
+%%   [1 0 TX]
+%%   [0 1 TY]
+%%   [0 0  1]
+%%
+%%   @seealso{transforms2d, transformPoint, createRotation, createScaling}
+%% @end deftypefn
 
-function transforms2d(varargin)
-%TRANSFORMS2D Description of functions operating on transforms
-%
-%   By 'transform' we mean an affine transform. A planar affine transform
-%   can be represented by a 3x3 matrix.
-%
-%   Example
-%   % create a translation by the vector [10 20]:
-%   T = createTranslation([10 20])
-%   T =
-%        1     0    10
-%        0     1    20
-%        0     0     1
-%
-%
-%   See also:
-%   createTranslation, createRotation, createScaling, createBasisTransform
-%   createHomothecy, createLineReflection, fitAffineTransform2d
-%   transformPoint, transformVector, transformLine, transformEdge
-%   rotateVector
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2008-10-13,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2008 INRA - BIA PV Nantes - MIAJ Jouy-en-Josas.
+function trans = createTranslation(varargin)
 
-help('transforms2d');
+  % process input arguments
+  if isempty(varargin)
+      tx = 0;
+      ty = 0;
+  elseif length(varargin)==1
+      var = varargin{1};
+      tx = var(1);
+      ty = var(2);
+  else
+      tx = varargin{1};
+      ty = varargin{2};
+  end
+
+  % create the matrix representing the translation
+  trans = [1 0 tx ; 0 1 ty ; 0 0 1];
+  
+endfunction
+
+%!test
+%!  trans = createTranslation(2, 3);
+%!  assert (trans, [1 0 2;0 1 3;0 0 1], 1e-6);

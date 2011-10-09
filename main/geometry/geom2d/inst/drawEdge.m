@@ -38,7 +38,7 @@
 %% @deftypefnx {Function File} {@var{h} = } drawEdge (@var{x1}, @var{y1}, @var{z1}, @var{x2}, @var{y2}, @var{z2})
 %% @deftypefnx {Function File} {@var{h} = } drawEdge ([@var{x1} @var{y1} @var{z1} @var{x2} @var{y2} @var{z2}])
 %% @deftypefnx {Function File} {@var{h} = } drawEdge ([@var{x1} @var{y1} @var{z1}], [@var{x2} @var{y2} @var{z2}])
-%% @deftypefnx {Function File} {@var{h} = } drawEdge (@dots, @var{opt})
+%% @deftypefnx {Function File} {@var{h} = } drawEdge (@dots{}, @var{opt})
 %% Draw an edge given by 2 points.
 %%
 %%   Draw an edge between the points (x1 y1) and  (x2 y2). Data can be bundled as an edge.

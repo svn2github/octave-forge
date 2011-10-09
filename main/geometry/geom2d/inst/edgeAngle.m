@@ -33,7 +33,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{theta} =} edgeAngle(@var{edge})
-%% EDGEANGLE Return angle of edge
+%% Return angle of edge
 %%
 %%   A = edgeAngle(EDGE)
 %%   Returns the angle between horizontal, right-axis and the edge EDGE.

@@ -39,7 +39,7 @@
 %% Without extra arguments, returns the euclidean norm of vector V.
 %% Optional argument @var{n} specifies the norm to use. N can be any value
 %% greater than 0. 
-%% @table
+%% @table @samp
 %% @item  N=1 
 %%   City lock norm.
 %% @item  N=2 

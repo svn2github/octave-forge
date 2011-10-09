@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2008-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,62 +31,33 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} transforms2d ()
+%% Description of functions operating on transforms
+%%
+%%   By 'transform' we mean an affine transform. A planar affine transform
+%%   can be represented by a 3x3 matrix.
+%%
+%%   Example
+%%
+%% @example
+%%   % create a translation by the vector [10 20]:
+%%   T = createTranslation([10 20])
+%%   T =
+%%        1     0    10
+%%        0     1    20
+%%        0     0     1
+%%@end example
+%%
+%%  @seealso{createTranslation, createRotation, createScaling, createBasisTransform,
+%%   createHomothecy, createLineReflection, fitAffineTransform2d,
+%%   transformPoint, transformVector, transformLine, transformEdge,
+%%   rotateVector}
+%% @end deftypefn
 
-function trans = createRotation(varargin)
-%CREATEROTATION Create the 3*3 matrix of a rotation
-%
-%   TRANS = createRotation(THETA);
-%   Returns the rotation corresponding to angle THETA (in radians)
-%   The returned matrix has the form :
-%   [cos(theta) -sin(theta)  0]
-%   [sin(theta)  cos(theta)  0]
-%   [0           0           1]
-%
-%   TRANS = createRotation(POINT, THETA);
-%   TRANS = createRotation(X0, Y0, THETA);
-%   Also specifies origin of rotation. The result is similar as performing
-%   translation(-X0, -Y0), rotation(THETA), and translation(X0, Y0).
-%
-%
-%   See also:
-%   transforms2d, transformPoint, createTranslation, createScaling
-%
-%   ---------
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 06/04/2004.
-%
+function transforms2d(varargin)
 
-%   HISTORY
-%   22/04/2009: rename as createRotation
+  help('transforms2d');
 
-% default values
-cx = 0;
-cy = 0;
-theta = 0;
+endfunction
 
-% get input values
-if length(varargin)==1
-    % only angle
-    theta = varargin{1};
-elseif length(varargin)==2
-    % origin point (as array) and angle
-    var = varargin{1};
-    cx = var(1);
-    cy = var(2);
-    theta = varargin{2};
-elseif length(varargin)==3
-    % origin (x and y) and angle
-    cx = varargin{1};
-    cy = varargin{2};
-    theta = varargin{3};
-end
-
-% compute coefs
-cot = cos(theta);
-sit = sin(theta);
-tx =  cy*sit - cx*cot + cx;
-ty = -cy*cot - cx*sit + cy;
-
-% create transformation matrix
-trans = [cot -sit tx; sit cot ty; 0 0 1];

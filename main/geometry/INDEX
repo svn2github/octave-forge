@@ -23,15 +23,22 @@ Geometry 2D
  edgeAngle
  intersectBoxes
  intersectLines
+ isParallel
+ isPerpendicular
  isPointOnRay
  lineAngle
  linePosition
  mergeBoxes
  normalizeAngle
+ normalizeVector
  rad2deg
  randomPointInBox
  rays2d
+ rotateVector
+ transformVector
  vectorAngle
+ vectorNorm
+ vectors2d
 Input
  svgload
  svgnormalize
@@ -40,4 +47,6 @@ Output
  data2geo
 Geometry 3D
 Graphs
+
+
 

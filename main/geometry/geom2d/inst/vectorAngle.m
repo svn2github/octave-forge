@@ -33,7 +33,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{alpha} =} vectorAngle (@var{v1})
-%% VECTORANGLE Angle of a vector, or between 2 vectors
+%% Angle of a vector, or between 2 vectors
 %%
 %%   A = vectorAngle(V);
 %%   Returns angle between Ox axis and vector direction, in Counter

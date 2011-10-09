@@ -33,7 +33,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} angles2d ()
-%% ANGLES2D  Description of functions for manipulating angles
+%% Description of functions for manipulating angles
 %%
 %%   Angles are normalized in an interval of width 2*PI. Most geom2d
 %%   functions return results in the [0 2*pi] interval, but it can be

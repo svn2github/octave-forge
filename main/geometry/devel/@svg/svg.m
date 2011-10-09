@@ -54,3 +54,16 @@ function svg = svg(name='')
 
 
 endfunction
+
+%!test
+%!  dc = svg('../inst/drawing5.svg');
+%!  dc.path
+%!  dc.Path
+%!  dc.getpath()
+%!  dc.pathid
+%!  dc.getpath('path3756')
+%!   
+%!  dc = svg('../inst/drawing.svg');
+%!  ids = dc.pathid;
+%!  dc.path({ids{[1 3]}})
+

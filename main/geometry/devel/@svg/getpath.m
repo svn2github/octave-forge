@@ -45,9 +45,20 @@ function paths = getpath(obj, ids={})
   paths = [];
   if any (tf)
     stuff = {ids{tf}};
+    %{
     for i = 1: numel(stuff)
       paths{i} = obj.Path.(ids{i}).data;
     endfor
+    %}
+    % Variation
+    paths = cellfun(@(s) obj.Path.(s).data, stuff,'UniformOutput',false);
+    
+    % Another variation
+%    paths = cellfun(@(s) getfield(obj,'Path').(s).data, stuff,'UniformOutput',false);
+    
+    % Yet another
+%    paths = cellfun(@(s) getfield(obj.Path,s).data, stuff,'UniformOutput',false);    
+
     if numel(paths) == 1
       paths = paths{1};
     end

@@ -43,25 +43,26 @@
 ##    Output is formated as follows (rownumber corresponds to
 ##    node or member number):
 ##
-##    Reactions = [Fx,Fy,Mz;...] where NaN it was a non supported dof
+##    Reactions = [Fx,Fy,Mz;...] where NaN if it was a non supported dof
 ##
 ##    Displacements = [x,y,rotation;...]
 ##
 ##    MemF = [FxN, FyN, MzN, FxF, FyF, MzF; ...] 
 ## @end deftypefn
 
-function [Reactions,Displacements,MemF]=SolveFrame(joints,members,nodeloads,dist,point)
+function [Reactions,Displacements,MemF]=SolveFrameOpt(joints,members,nodeloads,dist,point)
 	if (nargin < 5)
 		usage("[Reactions,Displacements,MemF]=SolveFrame(joints,members,nodeloads,dist,point) Use the help command for more information");
 	end
+	% calc info:
 	%	Elements Axis
 	%	y|
 	%	 |
 	%	 |___________________________ x
-	%  Near                          far
-	%joints: [x, y, constraints; ...] 1= fixed
-	%members [nodeN,nodeF,E,I,A; ...]
-	%nodeloads [node,Fx,Fy,Mz; ...]
+	%      Near                         far
+	%	joints: [x, y, constraints; ...] 1= fixed
+	%	members [nodeN,nodeF,E,I,A; ...]
+	%	nodeloads [node,Fx,Fy,Mz; ...]
 	
 	P=D=zeros(rows(joints)*3,1);
 	%add nodal loads to P matrix
@@ -91,11 +92,14 @@ function [Reactions,Displacements,MemF]=SolveFrame(joints,members,nodeloads,dist
 	%% Solutions:
 	%% Delta_f = K_ff^-1 (P_f - P_F_f)
 	%% P_s = K_sf * Delta_f + P_F_s
-	
+
+	%calculate transformation matrix and stiffnesmatrix for all members
+	k_array=MemberStiffnessMatrices(joints,members);
+	T_array=MemberTransformationMatrices(joints,members);
+
 	%stiffness matrix
-	tic
-	[ K_ff, K_sf ] = GlobalStiffnessMatrixRegrouped (joints, members,free,supported); %K_ss, K_fs are not used and if not calculated script is faster
-	toc
+	[ K_ff, K_sf ] = GlobalStiffnessMatrixRegrouped (joints, members,free,supported,k_array,T_array); %K_ss, K_fs are not used and if not calculated script is faster
+
 	
 	%nodal forces and equivalent nodal ones
 	[P_F,MemFEF]=EquivalentJointLoads(joints,members,dist,point);
@@ -108,30 +112,19 @@ function [Reactions,Displacements,MemF]=SolveFrame(joints,members,nodeloads,dist
 	P_F_f=P_F(free,:);
 	P_F_s=P_F(supported,:);
 	
-
 	%solution: find unknown displacements
-	%can be quicker for large systems with sparse matrix ! 
 	
-	tic
-	[D_f, flag] = pcg(K_ff,P_f-P_F_f,1e-6,1000);
-	if (flag==1)
-		%max iteration
-		printf('max iteration');
-		try
-			%A X = B => solve with cholesky => X = R\(R'\B)
-			r = chol (K_ff);
-			D_f=r\(r'\(P_f-P_F_f)); 
-		catch
-			error("System is unstable because K_ff is singular. Please check the support constraints!");
-		end_try_catch
-	end
-	if (flag==3)
-		%K_ff was found not positive defnite
+	try
+		%A X = B => solve with cholesky => X = R\(R'\B)
+		r = chol (K_ff);
+		D_f=r\(r'\(P_f-P_F_f)); 
+		%D_f=cholinv(K_ff)*(P_f-P_F_f); %TODO: use this line but for testing purposes same method as old on
+	catch
 		error("System is unstable because K_ff is singular. Please check the support constraints!");
-	end
-	toc
-	
-	
+	end_try_catch
+
+	%TODO: make use of iterative solver as an option. How???? (old code below endfunction)	
+
 	D(free,1)=D_f;
 	
 	%solution: find unknown (reaction) forces
@@ -139,7 +132,7 @@ function [Reactions,Displacements,MemF]=SolveFrame(joints,members,nodeloads,dist
 	P(supported,1)=P_s;
 	
 	
-	%find unknown member forces
+	%solution: find unknown member forces
 	MemF=[];
 	for member=1:rows(members)
 		N=members(member,1);
@@ -148,14 +141,15 @@ function [Reactions,Displacements,MemF]=SolveFrame(joints,members,nodeloads,dist
 		yN=joints(N,2);
 		xF=joints(F,1);
 		yF=joints(F,2);
-		T=TransformationMatrix(xN,yN,xF,yF);
-		k=MemberStiffnessMatrix(sqrt((xN-xF)**2+(yN-yF)**2),members(member,3),members(member,4),members(member,5));
+		%T=TransformationMatrix(xN,yN,xF,yF);
+		%k=MemberStiffnessMatrix(sqrt((xN-xF)**2+(yN-yF)**2),members(member,3),members(member,4),members(member,5));
 		c=[node2code(N),node2code(F)];
-		MemF=[MemF;(k*T*D(c'))'];
+		MemF=[MemF;(k_array{member,1}*T_array{member,1}*D(c'))'];
 	end
 	MemF=MemF+MemFEF;%+fixed end forces
 
 	%format codenumbers to real output
+	%TODO: not efficient enough due to A=[A;newrow]
 	Displacements=[];
 	Reactions=[];
 	for i=0:rows(joints)-1
@@ -170,3 +164,21 @@ function [Reactions,Displacements,MemF]=SolveFrame(joints,members,nodeloads,dist
 		end
 	end
 end
+
+
+%[D_f, flag] = pcg(K_ff,P_f-P_F_f,1e-6,1000);
+%if (flag==1)
+	%max iteration
+%	printf('max iteration');
+%	try
+%		%A X = B => solve with cholesky => X = R\(R'\B)
+%		r = chol (K_ff);
+%		D_f=r\(r'\(P_f-P_F_f)); 
+%	catch
+%		error("System is unstable because K_ff is singular. Please check the support constraints!");
+%	end_try_catch
+%end
+%if (flag==3)
+	%K_ff was found not positive definite
+%	error("System is unstable because K_ff is singular. Please check the support constraints!");
+%end

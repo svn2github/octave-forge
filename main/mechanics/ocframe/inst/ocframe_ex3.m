@@ -37,10 +37,11 @@ function [P,D,MemF]=ocframe_ex3()
 	nodeloads=[3,0,-30e3,0;
 	5,0,-30e3,0;
 	12,30e3,0,0];
-
-
-	tic
-	[P,D,MemF]=SolveFrame(joints,members,nodeloads,[],[]);
-	toc
-	PlotFrame(joints,members,D,1);
+	
+	if (nargout>0)
+		[P,D,MemF]=SolveFrame(joints,members,nodeloads,[],[]);
+	else
+		[P,D,MemF]=SolveFrame(joints,members,nodeloads,[],[])
+		PlotFrame(joints,members,D,1);
+	end
 end

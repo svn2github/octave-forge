@@ -18,7 +18,7 @@ function [P,D,MemF]=ocframe_ex1()
 	point=[];%1,0,-3e4,3,1
 
 	[P,D,MemF]=SolveFrame(joints,members,nodeloads,dist,point);
-	PlotFrame(joints,members,D,10);
+	%PlotFrame(joints,members,D,10);
 	%plot moment diagram
 	PlotDiagrams(joints,members,dist,point,MemF,"S");
 end

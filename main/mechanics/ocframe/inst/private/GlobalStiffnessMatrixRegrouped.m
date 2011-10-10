@@ -14,7 +14,7 @@
 ## along with this software; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-function [ K_ff, K_sf, K_ss, K_fs  ] = GlobalStiffnessMatrixRegrouped (joints, members,free,supported)
+function [ K_ff, K_sf, K_ss, K_fs  ] = GlobalStiffnessMatrixRegrouped (joints, members,free,supported,memberstiffnessmatrices,membertransformationmatrices)
 	%% Returns the components of the global stiffness matrix regrouped as in the following equation:
 	%% { P_f }   [ K_ff   K_fs ]   { Delta_f }
 	%% {     } = [             ] . {         }
@@ -32,8 +32,11 @@ function [ K_ff, K_sf, K_ss, K_fs  ] = GlobalStiffnessMatrixRegrouped (joints, m
 	%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	%TODO: for large systems this function is still slow
 	%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	
-	K=GlobalStiffnessMatrix(joints,members);
+	if (nargin>4)
+		K=GlobalStiffnessMatrix(joints,members,memberstiffnessmatrices,membertransformationmatrices);
+	else
+		K=GlobalStiffnessMatrix(joints,members);
+	end
 	
 	%K_ff
 	K_ff=K(free,free);

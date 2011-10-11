@@ -108,3 +108,5 @@ autoload ("zeta_int", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"
 autoload ("zeta", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));
 autoload ("hyperg_1F1", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));
 autoload ("hyperg_U", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));
+autoload ("hyperg_2F1", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));
+autoload ("hyperg_2F0", fullfile (fileparts (mfilename ("fullpath")), "gsl_sf.oct"));

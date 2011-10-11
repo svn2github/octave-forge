@@ -81,6 +81,8 @@ Special functions
  hazard
  hyperg_0F1
  hyperg_1F1
+ hyperg_2F1
+ hyperg_2F0
  hyperg_U
  hzeta
  lambert_W0

@@ -9911,3 +9911,382 @@ see @url{http://www.gnu.org/software/gsl/} for documentation.\n\
 ;;; mode: C++ ***
 ;;; End: ***
 */
+DEFUN_DLD(hyperg_2F1, args, nargout, "  -*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{out} =} hyperg_2F1 (@var{x0}, @var{x1}, @var{x2}, @var{x3})\n\
+@deftypefnx {Loadable Function} {[@var{out}, @var{err}] =} hyperg_2F1 (@dots{})\n\
+\n\
+Computes the Gauss hypergeometric function \n\
+2F1(a,b,c,x) = F(a,b,c,x) for |x| < 1.\n\
+If the arguments (a,b,c,x) are too close to a singularity then \n\
+the function can return the error code GSL_EMAXITER when the \n\
+series approximation converges too slowly. \n\
+This occurs in the region of x=1, c - a - b = m for integer m. \n\
+\n\
+@var{err} contains an estimate of the absolute error in the value @var{out}.a.\n\
+\n\
+This function is from the GNU Scientific Library,\n\
+see @url{http://www.gnu.org/software/gsl/} for documentation.\n\
+@end deftypefn\n\
+")
+//
+//
+// Generated R. Rogers 4/21/2008
+// Version 1   Expanded to three argument input and added maintainence hints
+// Version 2   Expanded to four argument input (M. Helm 2011-10-08)
+//
+{
+    int i;
+    dim_vector dv;
+    
+    gsl_set_error_handler (octave_gsl_errorhandler);
+// Check number of arguments here    
+    if((args.length() != 4 )|| (nargout > 2)) {
+	print_usage ();
+	return octave_value();
+    }
+// Check argument types here
+    if(!args(0).is_real_type() || !args(1).is_real_type() || 
+       !args(2).is_real_type() || !args(3).is_real_type()) {
+        error("The arguments must be real.");
+	print_usage ();	    
+	return octave_value();
+    }
+
+    // Nice combinatorial explosion here
+// Generate internal variables
+    NDArray x0 = args(0).array_value();
+    NDArray x1 = args(1).array_value();  
+    NDArray x2 = args(2).array_value();
+    NDArray x3 = args(3).array_value();
+ //  
+// Case one; all inputs the same length A A A A
+    if((x0.length() == x1.length() ) && (x0.length()==x2.length()) && (x0.length()==x3.length())) {
+	dv = x0.dims();
+    	NDArray out(dv);
+	int len = x0.length();
+	// One output argument
+	if(nargout < 2) {
+	    for(i = 0; i < len; i++) {
+		out.xelem(i) = gsl_sf_hyperg_2F1 (x0.xelem(i), x1.xelem(i),x2.xelem(i), x3.xelem(i));
+	    }
+	    return octave_value(out);
+	// Two arguments	    
+	} else {
+	    NDArray err(dv);
+	    gsl_sf_result result;
+	    octave_value_list retval;
+	    for(i = 0; i < len; i++) {
+		gsl_sf_hyperg_2F1_e (x0.xelem(i), x1.xelem(i), x2.xelem(i), x3.xelem(i), &result);
+		out.xelem(i) = result.val;
+		err.xelem(i) = result.err;
+	    }
+	    retval(1) = octave_value(err);
+	    retval(0) = octave_value(out);
+	    return retval;
+	}
+//
+// Now we start on having only one array and three scalars, A S S S
+    } else if(( x0.length() != 1) &&  (x1.length() == 1) && (x2.length()==1) && (x3.length()==1)) {
+	dv = x0.dims();
+    	NDArray out(dv);
+	int len = x0.length();
+	//	int x1_int = static_cast<int>(x1.xelem(0));
+	//	int x2_int = static_cast<int>(x2.xelem(0));
+	double x1_real = x1.xelem(0);
+        double x2_real = x2.xelem(0);
+        double x3_real = x3.xelem(0);
+	// One output argument
+	if(nargout < 2) {
+	    for(i = 0; i < len; i++) {
+		out.xelem(i) = gsl_sf_hyperg_2F1 (x0.xelem(i),x1_real,x2_real, x3_real);
+	    }
+	    return octave_value(out);	
+	// Two output argument    
+	} else {
+	    NDArray err(dv);
+	    gsl_sf_result result;
+	    octave_value_list retval;
+	    for(i = 0; i < len; i++) {
+		gsl_sf_hyperg_2F1_e (x0.xelem(i),x1_real,x2_real, x3_real, &result);
+		out.xelem(i) = result.val;
+		err.xelem(i) = result.err;
+	    }
+	    retval(1) = octave_value(err);
+	    retval(0) = octave_value(out);
+	    return retval;
+	}
+// S A S S input form
+    } else if((x0.length() == 1)&&  ( x1.length() != 1) && (x2.length()==1) && (x3.length()==1)) {
+	dv = x1.dims();
+    	NDArray out(dv);
+	int len = x1.length();
+	//	int x0_int = static_cast<int>(x0.xelem(0));
+	//	int x2_int = static_cast<int>(x2.xelem(0));
+	double x0_real = x0.xelem(0);
+        double x2_real = x2.xelem(0);
+        double x3_real = x3.xelem(0);
+	// One output argument
+	if(nargout < 2) {
+	    for(i = 0; i < len; i++) {
+		out.xelem(i) = gsl_sf_hyperg_2F1 (x0_real,x1.xelem(i),x2_real,x3_real);
+	    }
+	    return octave_value(out);	
+	// Two output argument    
+	} else {
+	    NDArray err(dv);
+	    gsl_sf_result result;
+	    octave_value_list retval;
+	    for(i = 0; i < len; i++) {
+		gsl_sf_hyperg_2F1_e (x0_real,x1.xelem(i),x2_real, x3_real, &result);
+		out.xelem(i) = result.val;
+		err.xelem(i) = result.err;
+	    }
+	    retval(1) = octave_value(err);
+	    retval(0) = octave_value(out);
+	    return retval;
+	}
+// S S A S input form
+    } else if((x0.length() == 1)&&  ( x1.length() == 1) && ( x2.length()!=1) && ( x3.length()==1)) {
+        dv = x2.dims();
+        NDArray out(dv);
+        int len = x2.length();
+        //      int x0_int = static_cast<int>(x0.xelem(0));
+        //      int x1_int = static_cast<int>(x1.xelem(0));
+        double x0_real = x0.xelem(0);
+        double x1_real = x1.xelem(0);
+        double x3_real = x3.xelem(0);
+        // One output argument
+        if(nargout < 2) {
+            for(i = 0; i < len; i++) {
+                out.xelem(i) = gsl_sf_hyperg_2F1 (x0_real,x1_real,x2.xelem(i),x3_real);
+            }
+            return octave_value(out);   
+        // Two output argument    
+        } else {
+            NDArray err(dv);
+            gsl_sf_result result;
+            octave_value_list retval;
+            for(i = 0; i < len; i++) {
+                gsl_sf_hyperg_2F1_e (x0_real,x1_real,x2.xelem(i),x3_real, &result);
+                out.xelem(i) = result.val;
+                err.xelem(i) = result.err;
+            }
+            retval(1) = octave_value(err);
+            retval(0) = octave_value(out);
+            return retval;
+         } 
+// S S S A input form
+    } else if((x0.length() == 1)&&  ( x1.length() == 1) && ( x2.length()==1) && ( x3.length()!=1)) {
+        dv = x3.dims();
+        NDArray out(dv);
+        int len = x3.length();
+        //      int x0_int = static_cast<int>(x0.xelem(0));
+        //      int x1_int = static_cast<int>(x1.xelem(0));
+        double x0_real = x0.xelem(0);
+        double x1_real = x1.xelem(0);
+        double x2_real = x2.xelem(0);
+        // One output argument
+        if(nargout < 2) {
+            for(i = 0; i < len; i++) {
+                out.xelem(i) = gsl_sf_hyperg_2F1 (x0_real,x1_real,x2_real,x3.xelem(i));
+            }
+            return octave_value(out);   
+        // Two output argument    
+        } else {
+            NDArray err(dv);
+            gsl_sf_result result;
+            octave_value_list retval;
+            for(i = 0; i < len; i++) {
+                gsl_sf_hyperg_2F1_e (x0_real,x1_real,x2_real,x3.xelem(i), &result);
+                out.xelem(i) = result.val;
+                err.xelem(i) = result.err;
+            }
+            retval(1) = octave_value(err);
+            retval(0) = octave_value(out);
+            return retval;
+         } 
+    } else {
+	error("All arguments must either have the same size, or three of them must be scalar.");
+	print_usage ();	
+    }
+
+    return octave_value();
+
+}
+
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/
+DEFUN_DLD(hyperg_2F0, args, nargout, "  -*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{out} =} hyperg_2F0 (@var{x0}, @var{x1}, @var{x2})\n\
+@deftypefnx {Loadable Function} {[@var{out}, @var{err}] =} hyperg_2F0 (@dots{})\n\
+\n\
+Computes the hypergeometric function 2F0(a,b,x). \n\
+The series representation is a divergent hypergeometric series. \n\
+However, for x < 0 we have 2F0(a,b,x) = (-1/x)^a U(a,1+a-b,-1/x) \n\
+\n\
+@var{err} contains an estimate of the absolute error in the value @var{out}.a.\n\
+\n\
+This function is from the GNU Scientific Library,\n\
+see @url{http://www.gnu.org/software/gsl/} for documentation.\n\
+@end deftypefn\n\
+")
+//
+//
+// Generated R. Rogers 4/21/2008
+// Version 1   Expanded to three argument input and added maintainence hints
+//
+{
+    int i;
+    dim_vector dv;
+    
+    gsl_set_error_handler (octave_gsl_errorhandler);
+// Check number of arguments here    
+    if((args.length() != 3 )|| (nargout > 2)) {
+	print_usage ();
+	return octave_value();
+    }
+// Check argument types here
+    if(!args(0).is_real_type() || !args(1).is_real_type()|| !args(2).is_real_type()) {
+        error("The arguments must be real.");
+	print_usage ();	    
+	return octave_value();
+    }
+
+    // Nice combinatorial explosion here
+// Generate internal variables
+    NDArray x0 = args(0).array_value();
+    NDArray x1 = args(1).array_value();  
+    NDArray x2 = args(2).array_value();
+ //  
+// Case one; all inputs the same length A A A
+    if((x0.length() == x1.length() )&& (x0.length()==x2.length())) {
+	dv = x0.dims();
+    	NDArray out(dv);
+	int len = x0.length();
+	// One output argument
+	if(nargout < 2) {
+	    for(i = 0; i < len; i++) {
+		out.xelem(i) = gsl_sf_hyperg_2F0 (x0.xelem(i), x1.xelem(i),x2.xelem(i));
+	    }
+	    return octave_value(out);
+	// Two arguments	    
+	} else {
+	    NDArray err(dv);
+	    gsl_sf_result result;
+	    octave_value_list retval;
+	    for(i = 0; i < len; i++) {
+		gsl_sf_hyperg_2F0_e (x0.xelem(i), x1.xelem(i), x2.xelem(i), &result);
+		out.xelem(i) = result.val;
+		err.xelem(i) = result.err;
+	    }
+	    retval(1) = octave_value(err);
+	    retval(0) = octave_value(out);
+	    return retval;
+	}
+//
+// Now we start on having only one array and two scalars, A S S
+    } else if(( x0.length() != 1)&&  (x1.length() == 1) && (x2.length()==1)) {
+	dv = x0.dims();
+    	NDArray out(dv);
+	int len = x0.length();
+	//	int x1_int = static_cast<int>(x1.xelem(0));
+	//	int x2_int = static_cast<int>(x2.xelem(0));
+	double x1_real = x1.xelem(0);
+	double x2_real = x2.xelem(0);
+	// One output argument
+	if(nargout < 2) {
+	    for(i = 0; i < len; i++) {
+		out.xelem(i) = gsl_sf_hyperg_2F0 (x0.xelem(i),x1_real,x2_real);
+	    }
+	    return octave_value(out);	
+	// Two output argument    
+	} else {
+	    NDArray err(dv);
+	    gsl_sf_result result;
+	    octave_value_list retval;
+	    for(i = 0; i < len; i++) {
+		gsl_sf_hyperg_2F0_e (x0.xelem(i),x1_real,x2_real, &result);
+		out.xelem(i) = result.val;
+		err.xelem(i) = result.err;
+	    }
+	    retval(1) = octave_value(err);
+	    retval(0) = octave_value(out);
+	    return retval;
+	}
+// S A S input form
+    } else if((x0.length() == 1)&&  ( x1.length() != 1) && (x2.length()==1)) {
+	dv = x1.dims();
+    	NDArray out(dv);
+	int len = x1.length();
+	//	int x0_int = static_cast<int>(x0.xelem(0));
+	//	int x2_int = static_cast<int>(x2.xelem(0));
+	double x0_real = x0.xelem(0);
+	double x2_real = x2.xelem(0);
+	// One output argument
+	if(nargout < 2) {
+	    for(i = 0; i < len; i++) {
+		out.xelem(i) = gsl_sf_hyperg_2F0 (x0_real,x1.xelem(i),x2_real);
+	    }
+	    return octave_value(out);	
+	// Two output argument    
+	} else {
+	    NDArray err(dv);
+	    gsl_sf_result result;
+	    octave_value_list retval;
+	    for(i = 0; i < len; i++) {
+		gsl_sf_hyperg_2F0_e (x0_real,x1.xelem(i),x2_real, &result);
+		out.xelem(i) = result.val;
+		err.xelem(i) = result.err;
+	    }
+	    retval(1) = octave_value(err);
+	    retval(0) = octave_value(out);
+	    return retval;
+	}
+// S S A input form
+    } else if((x0.length() == 1)&&  ( x1.length() == 1) && ( x2.length()!=1)) {
+	dv = x2.dims();
+    	NDArray out(dv);
+	int len = x2.length();
+	//	int x0_int = static_cast<int>(x0.xelem(0));
+	//	int x1_int = static_cast<int>(x1.xelem(0));
+	double x0_real = x0.xelem(0);
+	double x1_real = x1.xelem(0);
+	// One output argument
+	if(nargout < 2) {
+	    for(i = 0; i < len; i++) {
+		out.xelem(i) = gsl_sf_hyperg_2F0 (x0_real,x1_real,x2.xelem(i));
+	    }
+	    return octave_value(out);	
+	// Two output argument    
+	} else {
+	    NDArray err(dv);
+	    gsl_sf_result result;
+	    octave_value_list retval;
+	    for(i = 0; i < len; i++) {
+		gsl_sf_hyperg_2F0_e (x0_real,x1_real,x2.xelem(i), &result);
+		out.xelem(i) = result.val;
+		err.xelem(i) = result.err;
+	    }
+	    retval(1) = octave_value(err);
+	    retval(0) = octave_value(out);
+	    return retval;
+         } 
+    } else {
+	error("First, second, and third argument must either have the same size, or two of them must be scalar.");
+	print_usage ();	
+    }
+
+    return octave_value();
+
+}
+
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

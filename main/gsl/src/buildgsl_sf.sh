@@ -1201,3 +1201,26 @@ EOF
 ./replace_template.sh DDD_to_D.cc.template >> gsl_sf.cc
 
 
+export octave_name=hyperg_2F1
+export    funcname=gsl_sf_hyperg_2F1
+cat << \EOF > docstring.txt
+Computes the Gauss hypergeometric function 
+2F1(a,b,c,x) = F(a,b,c,x) for |x| < 1.
+If the arguments (a,b,c,x) are too close to a singularity then 
+the function can return the error code GSL_EMAXITER when the 
+series approximation converges too slowly. 
+This occurs in the region of x=1, c - a - b = m for integer m. 
+EOF
+./replace_template.sh DDDD_to_D.cc.template >> gsl_sf.cc
+
+
+export octave_name=hyperg_2F0
+export    funcname=gsl_sf_hyperg_2F0
+cat << \EOF > docstring.txt
+Computes the hypergeometric function 2F0(a,b,x). 
+The series representation is a divergent hypergeometric series. 
+However, for x < 0 we have 2F0(a,b,x) = (-1/x)^a U(a,1+a-b,-1/x) 
+EOF
+./replace_template.sh DDD_to_D.cc.template >> gsl_sf.cc
+
+

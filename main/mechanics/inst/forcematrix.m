@@ -51,6 +51,9 @@
 %% distances between the points.
 %% @end itemize
 %%
+%% @html
+%% @verbatiminclude ../doc/forcematrix.svg
+%% @end html
 %% @seealso{pointmassmesh, polyval, vech, sub2ind}
 %% @end deftypefn
 

@@ -26,15 +26,15 @@
 %%
 %% @item
 %% @var{A} is the a connectivity (adjacency) matrix expressed as a vector. That is, if
-%% @var{M} is the complete NxN symmetric connectivity matrix, then @code{
-%% @var{A} = vech(@var{M})}. The diagonal of @var{M} is not used. The elements
+%% @var{M} is the complete NxN symmetric connectivity matrix, then 
+%% @code{@var{A}= vech(@var{M})}. The diagonal of @var{M} is not used. The elements
 %% of A are indexes to the corresponding interaction force in @var{funcs}. For
 %% example, there are 3 points and points 2 and 3 interact with a force
 %% described in the 5th element of @var{funcs}, then @code{ M(2, 3) = 5}.
 %%
 %% @item
 %% @var{funcs} is a Nfx1 cell. Elements that are matrices are evaluated with
-%% @{polyval}. elements that are function handles are evaluated directly
+%% @code{polyval}. elements that are function handles are evaluated directly
 %% Functions handles must be of the form @(@var{x})
 %% f(@var{x}), where x is the distance between two interacting points.
 %%

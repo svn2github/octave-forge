@@ -130,7 +130,7 @@ endfunction
 %!demo
 %!   lin = [30 40 10 0];
 %!   bb = [0 100 0 100];
-%!   res = clipLine(line, bb)
+%!   res = clipLine(lin, bb)
 %!
 %! drawBox(bb,'color','k');
 %! line(lin([1 3]),lin([2 4]),'color','b');

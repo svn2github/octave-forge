@@ -37,6 +37,7 @@ Geometry 2D
  isCounterClockwise
  isParallel
  isPerpendicular
+ isPointOnEdge
  isPointOnRay
  lineAngle
  linePosition

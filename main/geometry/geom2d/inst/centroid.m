@@ -38,9 +38,9 @@
 %% Compute centroid (center of mass) of a set of points.
 %%
 %%   Computes the ND-dimensional centroid of a set of points. 
-%%   @{points} is an array with as many rows as the number of points, and as
+%%   @var{points} is an array with as many rows as the number of points, and as
 %%   many columns as the number of dimensions. 
-%%   @{px} and @{py} are two column vectors containing coordinates of the
+%%   @var{px} and @var{py} are two column vectors containing coordinates of the
 %%   2-dimensional points.
 %%   The result @var{c} is a row vector with ND columns.
 %%

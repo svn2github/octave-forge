@@ -39,7 +39,7 @@
 %% @deftypefnx {Function File} {[@var{dist} @var{j}] = } minDistancePoints (@var{pts1}, @var{pts2}, @dots{})
 %% Minimal distance between several points.
 %%
-%%   Returns the minimum distance between all couple of points in @var{pts}. var{pts} is
+%%   Returns the minimum distance between all couple of points in @var{pts}. @var{pts} is
 %%   an array of [NxND] values, N being the number of points and ND the
 %%   dimension of the points.
 %%
@@ -55,11 +55,11 @@
 %%   to the biggest coordinate difference among dimensions. 
 %%   
 %%
-%%   Returns indices I and J of the 2 points which are the closest. @var{dist}
+%%   Returns indices @var{i} and @var{j} of the 2 points which are the closest. @var{dist}
 %%   verifies relation:
 %%   @var{dist} = distancePoints(@var{pts}(@var{i},:), @var{pts}(@var{j},:));
 %%
-%%   If only 2 output arguments are given, it returns the indices of points which are the closest. J has the
+%%   If only 2 output arguments are given, it returns the indices of points which are the closest. @var{j} has the
 %%   same size as @var{dist}. for each I It verifies the relation : 
 %%   @var{dist}(I) = distancePoints(@var{pts1}(I,:), @var{pts2}(@var{J},:));
 %%

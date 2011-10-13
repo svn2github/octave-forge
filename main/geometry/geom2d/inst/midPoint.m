@@ -33,8 +33,8 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{mid} = } midPoint (@var{p1}, @var{p2})
-%% @deftypefn {Function File} {@var{mid} = } midPoint (@var{edge})
-%% @deftypefn {Function File} {[@var{midx}, @var{midy}] = } midPoint (@var{edge})
+%% @deftypefnx {Function File} {@var{mid} = } midPoint (@var{edge})
+%% @deftypefnx {Function File} {[@var{midx}, @var{midy}] = } midPoint (@var{edge})
 %% Middle point of two points or of an edge
 %%
 %%   Computes the middle point of the two points @var{p1} and @var{p2}.

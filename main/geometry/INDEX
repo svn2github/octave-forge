@@ -8,33 +8,53 @@ Geometry 2D
  angleSort
  boxes2d
  cbezier2poly
+ centroid
  clipEdge
  clipLine
  clipPoints
  clipRay
+ createBasisTransform
+ createHomothecy
  createLine
+ createLineReflection
  createRay
+ createRotation
+ createScaling
+ createTranslation
  deg2rad
+ distancePoints
  drawBezierCurve
  drawBox
  drawEdge
  drawLine
+ drawPoint
  drawRay
  edgeAngle
+ fitAffineTransform2d
  intersectBoxes
  intersectLines
+ isCounterClockwise
  isParallel
  isPerpendicular
  isPointOnRay
  lineAngle
  linePosition
  mergeBoxes
+ midPoint
+ minDistancePoints
  normalizeAngle
  normalizeVector
+ pointOnLine
+ points2d
+ polarPoint
  rad2deg
  randomPointInBox
  rays2d
  rotateVector
+ transformEdge
+ transformLine
+ transformPoint
+ transforms2d
  transformVector
  vectorAngle
  vectorNorm

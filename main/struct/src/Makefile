@@ -2,8 +2,7 @@ ifndef MKOCTFILE
 MKOCTFILE := mkoctfile
 endif
 
-OCTS = arefields.oct fields2cell.oct fieldempty.oct structcat.oct \
-       cell2fields.oct
+OCTS = fields2cell.oct fieldempty.oct structcat.oct cell2fields.oct
 
 all: $(OCTS)
 

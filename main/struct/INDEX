@@ -3,7 +3,6 @@ Structure handling
  getfields
  setfields
  tars
- arefields
  fields2cell
  cell2fields
  fieldempty

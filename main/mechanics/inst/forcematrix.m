@@ -34,9 +34,9 @@
 %%
 %% @item
 %% @var{funcs} is a Nfx1 cell. Elements that are matrices are evaluated with
-%% @code{polyval}. elements that are function handles are evaluated directly
-%% Functions handles must be of the form @(@var{x})
-%% f(@var{x}), where x is the distance between two interacting points.
+%% @code{polyval}. elements that are function handles are evaluated directly.
+%% Functions handles must be of the form @code{@@(@var{x})f(@var{x})}, where x is
+%% the distance between two interacting points.
 %%
 %% @end itemize
 %%
@@ -52,7 +52,7 @@
 %% @end itemize
 %%
 %% @html
-%% @verbatiminclude ../doc/forcematrix.svg
+%% @include doc/matrixforce.svg
 %% @end html
 %% @seealso{pointmassmesh, polyval, vech, sub2ind}
 %% @end deftypefn

@@ -32,6 +32,7 @@ Geometry 2D
  edgeAngle
  fitAffineTransform2d
  intersectBoxes
+ intersectLineEdge
  intersectLines
  isCounterClockwise
  isParallel

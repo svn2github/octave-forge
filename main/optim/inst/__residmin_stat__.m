@@ -122,7 +122,7 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
       endif
     endif
     pord = pord(:);
-    if (p_struct && ! all (arefields (pfin, pord)))
+    if (p_struct && ! all (isfield (pfin, pord)))
       error ("some parameters lacking");
     endif
     if ((nnames = rows (unique (pord))) < rows (pord))
@@ -205,7 +205,7 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
     endif
 
     ## supplement parameter names lacking in param_config
-    nidx = ! arefields (pconf, pord);
+    nidx = ! isfield (pconf, pord);
     pconf = cell2fields ({struct()}(ones (1, sum (nidx))), \
 			 pord(nidx), 2, pconf);
 

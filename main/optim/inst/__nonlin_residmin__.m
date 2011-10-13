@@ -153,7 +153,7 @@ function [p, resid, cvg, outp] = \
       endif
     endif
     pord = pord(:);
-    if (pin_struct && ! all (arefields (pin, pord)))
+    if (pin_struct && ! all (isfield (pin, pord)))
       error ("some initial parameters lacking");
     endif
     if ((nnames = rows (unique (pord))) < rows (pord))
@@ -234,7 +234,7 @@ function [p, resid, cvg, outp] = \
     endif
 
     ## supplement parameter names lacking in param_config
-    nidx = ! arefields (pconf, pord);
+    nidx = ! isfield (pconf, pord);
     pconf = cell2fields ({struct()}(ones (1, sum (nidx))), \
 			 pord(nidx), 2, pconf);
 
@@ -543,7 +543,7 @@ function [p, resid, cvg, outp] = \
 
   ## linear inequality constraints
   if (mc_struct)
-    idx = arefields (mc, pord);
+    idx = isfield (mc, pord);
     if (rows (fieldnames (mc)) > sum (idx))
       error ("unknown fields in structure of linear inequality constraints");
     endif
@@ -554,7 +554,7 @@ function [p, resid, cvg, outp] = \
 
   ## linear equality constraints
   if (emc_struct)
-    idx = arefields (emc, pord);
+    idx = isfield (emc, pord);
     if (rows (fieldnames (emc)) > sum (idx))
       error ("unknown fields in structure of linear equality constraints");
     endif

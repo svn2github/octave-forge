@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,31 +31,23 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{point} = } pointOnLine (@var{line}, @var{d})
+%% Create a point on a line at a given position on the line.
+%%
+%%   Creates the point belonging to the line @var{line}, and located at the
+%%   distance @var{d} from the line origin.
+%%   @var{line} has the form [x0 y0 dx dy].
+%%   @var{line} and @var{d} should have the same number N of rows. The result will have
+%%   N rows and 2 column (x and y positions).
+%%
+%%   @seealso{lines2d, points2d, onLine, onLine, linePosition}
+%% @end deftypefn
 
-function points2d
-%POINTS2D  Description of functions operating on points
-%
-%   A point is defined by its two cartesian coordinate, put into a row
-%   vector of 2 elements:
-%   P = [x y];
-%
-%   Several points are stores in a matrix with two columns, one for the
-%   x-coordinate, one for the y-coordinate.
-%   PTS = [x1 y1 ; x2 y2 ; x3 y3];
-%   
-%   Example
-%   P = [5 6];
-%
-%   See also:
-%   centroid, midPoint, polarPoint, pointOnLine
-%   isCounterClockwise, angle2Points, angle3Points, angleSort
-%   distancePoints, minDistancePoints
-%   transformPoint, clipPoints, drawPoint
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2008-10-13,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2008 INRA - BIA PV Nantes - MIAJ Jouy-en-Josas.
+function point = pointOnLine(lin, pos)
 
-help('points2d');
+  ang = lineAngle(lin);
+  point = [lin(:,1) + pos .* cos(ang), lin(:,2) + pos .* sin(ang)];
+
+endfunction
+

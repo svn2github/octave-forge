@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,28 +31,61 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{h} = } drawPoint (@var{x}, @var{y})
+%% @deftypefnx {Function File} {@var{h} = } drawPoint (@var{coord})
+%% @deftypefnx {Function File} {@var{h} = } drawPoint (@dots{}, @var{opt})
+%% Draw the point on the axis.
+%
+%   Draws points defined by coordinates @var{x} and @var{y}Y.
+%   @var{x} and @var{y} should be array the same size. Coordinates can be 
+%   packed coordinates in a single [N*2] array @var{coord}. Options @var{opt}
+%   are passed to the @code{plot} function.
+%
+%   @seealso{points2d, clipPoints}
+%
+%% @end deftypefn
 
-function point = pointOnLine(line, pos)
-%POINTONLINE Create a point on a line at a given position on the line
-%
-%   P = pointOnLine(LINE, POS);
-%   Creates the point belonging to the line LINE, and located at the
-%   distance D from the line origin.
-%   LINE has the form [x0 y0 dx dy].
-%   LINE and D should have the same number N of rows. The result will have
-%   N rows ans 2 column (x and y positions).
-%
-%   See also:
-%   lines2d, points2d, onLine, onLine, linePosition
-%
-%   ---------
-%
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 07/04/2004.
-%
+function varargout = drawPoint(varargin)
 
+  % process input arguments
+  var = varargin{1};
+  if size(var, 2)==1
+      % points stored in separate arrays
+      px = varargin{1};
+      py = varargin{2};
+      varargin(1:2) = [];
+  else
+      % points packed in one array
+      px = var(:, 1);
+      py = var(:, 2);
+      varargin(1) = [];
+  end
 
-angle = lineAngle(line);
-point = [line(:,1) + pos .* cos(angle), line(:,2) + pos .* sin(angle)];
-    
+  % ensure we have column vectors
+  px = px(:);
+  py = py(:);
+
+  % default drawing options, but keep specified options if it has the form of
+  % a bundled string
+  if length(varargin)~=1
+      varargin = [{'linestyle', 'none', 'marker', 'o', 'color', 'b'}, varargin];
+  end
+
+  % plot the points, using specified drawing options
+  h = plot(px(:), py(:), varargin{:});
+
+  % process output arguments
+  if nargout>0
+      varargout{1}=h;
+  end
+
+endfunction
+
+%!demo
+%!   drawPoint(10, 10);
+
+%!demo
+%!   t = linspace(0, 2*pi, 20)';
+%!   drawPoint([5*cos(t)+10 3*sin(t)+10], 'r+');
+

@@ -1,3 +1,8 @@
+homedir = pwd ();
+develdir = fileparts (which ("makefile_slconred"));
+srcdir = [develdir, "/../src"];
+cd (srcdir);
+
 mkoctfile SB16AD.f TB01ID.f SB16AY.f TB01KD.f AB09IX.f \
           MB04OD.f MB01WD.f SB03OD.f MB03UD.f AB05PD.f \
           AB09DD.f AB07ND.f TB01LD.f AB05QD.f SB03OU.f \
@@ -17,3 +22,5 @@ mkoctfile SB16CD.f SB16CY.f AB09IX.f SB03OD.f MB02UD.f \
           SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
 
 system ("rm *.o");
+cd (homedir);
+

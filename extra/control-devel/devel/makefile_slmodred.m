@@ -1,3 +1,8 @@
+homedir = pwd ();
+develdir = fileparts (which ("makefile_slmodred"));
+srcdir = [develdir, "/../src"];
+cd (srcdir);
+
 mkoctfile AB09ID.f TB01PD.f SB08DD.f TB01ID.f TB01KD.f \
           AB09IX.f AB09IY.f SB08CD.f MB04ND.f TB01XD.f \
           MB04OD.f MB01WD.f MB03UD.f AB07MD.f SB01FY.f \
@@ -26,3 +31,5 @@ mkoctfile AB09HD.f TB01ID.f AB04MD.f TB01KD.f AB09HY.f \
           SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
 
 system ("rm *.o");
+cd (homedir);
+

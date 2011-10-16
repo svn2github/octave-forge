@@ -1,4 +1,4 @@
-      SUBROUTINE MB04OD( UPLO, N, M, P, R, LDR, A, LDA, B, LDB, C, LDC,
+      SUBROUTINE MB04KD( UPLO, N, M, P, R, LDR, A, LDA, B, LDB, C, LDC,
      $                   TAU, DWORK )
 C
 C     SLICOT RELEASE 5.0.
@@ -24,13 +24,16 @@ C
 C     To calculate a QR factorization of the first block column and
 C     apply the orthogonal transformations (from the left) also to the
 C     second block column of a structured matrix, as follows
-C                          _   _
-C            [ R   B ]   [ R   B ]
-C       Q' * [       ] = [     _ ]
-C            [ A   C ]   [ 0   C ]
+C                          _
+C            [ R   0 ]   [ R   C ]
+C       Q' * [       ] = [       ]
+C            [ A   B ]   [ 0   D ]
 C                 _
 C     where R and R are upper triangular. The matrix A can be full or
 C     upper trapezoidal/triangular. The problem structure is exploited.
+C     This computation is useful, for instance, in combined measurement
+C     and time update of one iteration of the Kalman filter (square
+C     root information filter).
 C
 C     ARGUMENTS
 C
@@ -47,10 +50,10 @@ C     N       (input) INTEGER                 _
 C             The order of the matrices R and R.  N >= 0.
 C
 C     M       (input) INTEGER
-C             The number of columns of the matrices B and C.  M >= 0.
+C             The number of columns of the matrices B, C and D.  M >= 0.
 C
 C     P       (input) INTEGER
-C             The number of rows of the matrices A and C.  P >= 0.
+C             The number of rows of the matrices A, B and D.  P >= 0.
 C
 C     R       (input/output) DOUBLE PRECISION array, dimension (LDR,N)
 C             On entry, the leading N-by-N upper triangular part of this
@@ -79,49 +82,43 @@ C     LDA     INTEGER
 C             The leading dimension of array A.  LDA >= MAX(1,P).
 C
 C     B       (input/output) DOUBLE PRECISION array, dimension (LDB,M)
-C             On entry, the leading N-by-M part of this array must
+C             On entry, the leading P-by-M part of this array must
 C             contain the matrix B.
-C             On exit, the leading N-by-M part of this array contains
-C                                 _
-C             the computed matrix B.
+C             On exit, the leading P-by-M part of this array contains
+C             the computed matrix D.
 C
 C     LDB     INTEGER
-C             The leading dimension of array B.  LDB >= MAX(1,N).
+C             The leading dimension of array B.  LDB >= MAX(1,P).
 C
-C     C       (input/output) DOUBLE PRECISION array, dimension (LDC,M)
-C             On entry, the leading P-by-M part of this array must
-C             contain the matrix C.
-C             On exit, the leading P-by-M part of this array contains
-C                                 _
-C             the computed matrix C.
+C     C       (output) DOUBLE PRECISION array, dimension (LDC,M)
+C             The leading N-by-M part of this array contains the
+C             computed matrix C.
 C
 C     LDC     INTEGER
-C             The leading dimension of array C.  LDC >= MAX(1,P).
+C             The leading dimension of array C.  LDC >= MAX(1,N).
 C
 C     TAU     (output) DOUBLE PRECISION array, dimension (N)
 C             The scalar factors of the elementary reflectors used.
 C
 C     Workspace
 C
-C     DWORK   DOUBLE PRECISION array, dimension (MAX(N-1,M))
+C     DWORK   DOUBLE PRECISION array, dimension (N)
 C
 C     METHOD
 C
 C     The routine uses N Householder transformations exploiting the zero
 C     pattern of the block matrix.  A Householder matrix has the form
 C
-C                                     ( 1 )
-C        H  = I - tau *u *u',    u  = ( v ),
+C                                     ( 1 ),
+C        H  = I - tau *u *u',    u  = ( v )
 C         i          i  i  i      i   (  i)
 C
-C     where v  is a P-vector, if UPLO = 'F', or a min(i,P)-vector, if
+C     where v  is a P-vector, if UPLO = 'F', or an min(i,P)-vector, if
 C            i
 C     UPLO = 'U'.  The components of v  are stored in the i-th column
 C                                     i
 C     of A, and tau  is stored in TAU(i).
 C                  i
-C     In-line code for applying Householder transformations is used
-C     whenever possible (see MB04OY routine).
 C
 C     NUMERICAL ASPECTS
 C
@@ -133,7 +130,7 @@ C     V. Sima, Katholieke Univ. Leuven, Belgium, Feb. 1997.
 C
 C     REVISIONS
 C
-C     Dec. 1997.
+C     -
 C
 C     KEYWORDS
 C
@@ -157,101 +154,56 @@ C     .. External Functions ..
       LOGICAL           LSAME
       EXTERNAL          LSAME
 C     .. External Subroutines ..
-      EXTERNAL          DLARFG, MB04OY
+      EXTERNAL          DAXPY, DCOPY, DGEMV, DGER, DLARFG, DSCAL
 C     .. Intrinsic Functions ..
       INTRINSIC         MIN
 C     .. Executable Statements ..
-C
-C     For efficiency reasons, the parameters are not checked.
 C
       IF( MIN( N, P ).EQ.0 )
      $   RETURN
 C
       LUPLO = LSAME( UPLO, 'U' )
-      IF ( LUPLO ) THEN
+      IM = P
 C
-         DO 10 I = 1, N
+      DO 10 I = 1, N
 C
-C           Annihilate the I-th column of A and apply the
-C           transformations to the entire block matrix, exploiting
-C           its structure.
+C        Annihilate the I-th column of A and apply the transformations
+C        to the entire block matrix, exploiting its structure.
 C
-            IM = MIN( I, P )
-            CALL DLARFG( IM+1, R(I,I), A(1,I), 1, TAU(I) )
+         IF( LUPLO ) IM = MIN( I, P )
+         CALL DLARFG( IM+1, R(I,I), A(1,I), 1, TAU(I) )
+         IF( TAU(I).NE.ZERO ) THEN
 C
-C           Compute
-C                           [ R(I,I+1:N)    ]
-C           w := [ 1 v' ] * [               ],
-C                           [ A(1:IM,I+1:N) ]
+C                                      [ R(I,I+1:N)        0     ]
+C           [ w C(I,:) ] := [ 1 v' ] * [                         ]
+C                                      [ A(1:IM,I+1:N) B(1:IM,:) ]
 C
-C           [ R(I,I+1:N)    ]    [ R(I,I+1:N)    ]         [ 1 ]
-C           [               ] := [               ] - tau * [   ] * w .
-C           [ A(1:IM,I+1:N) ]    [ A(1:IM,I+1:N) ]         [ v ]
+            IF( I.LT.N ) THEN
+               CALL DCOPY( N-I, R(I,I+1), LDR, DWORK, 1 )
+               CALL DGEMV( 'Transpose', IM, N-I, ONE, A(1,I+1), LDA,
+     $                     A(1,I), 1, ONE, DWORK, 1 )
+            END IF
+            CALL DGEMV( 'Transpose', IM, M, ONE, B, LDB, A(1,I), 1,
+     $                  ZERO, C(I,1), LDC )
 C
-            IF ( N-I.GT.0 )
-     $         CALL MB04OY( IM, N-I, A(1,I), TAU(I), R(I,I+1), LDR,
-     $                      A(1,I+1), LDA, DWORK )
+C           [ R(I,I+1:N)      C(I,:)  ]    [ R(I,I+1:N)        0     ]
+C           [                         ] := [                         ]
+C           [ A(1:IM,I+1:N) D(1:IM,:) ]    [ A(1:IM,I+1:N) B(1:IM,:) ]
 C
-C           Compute
-C                           [  B(I,:)   ]
-C           w := [ 1 v' ] * [           ],
-C                           [ C(1:IM,:) ]
+C                                                 [ 1 ]
+C                                         - tau * [   ] * [ w C(I,:) ]
+C                                                 [ v ]
 C
-C           [   B(I,:)  ]    [  B(I,:)   ]         [ 1 ]
-C           [           ] := [           ] - tau * [   ] * w.
-C           [ C(1:IM,:) ]    [ C(1:IM,:) ]         [ v ]
-C
-C
-            IF ( M.GT.0 )
-     $         CALL MB04OY( IM, M, A(1,I), TAU(I), B(I,1), LDB, C, LDC,
-     $                      DWORK )
-   10    CONTINUE
-C
-      ELSE
-C
-         DO 20 I = 1, N - 1
-C
-C           Annihilate the I-th column of A and apply the
-C           transformations to the first block column, exploiting its
-C           structure.
-C
-            CALL DLARFG( P+1, R(I,I), A(1,I), 1, TAU(I) )
-C
-C           Compute
-C                           [ R(I,I+1:N) ]
-C           w := [ 1 v' ] * [            ],
-C                           [ A(:,I+1:N) ]
-C
-C           [ R(I,I+1:N) ]    [ R(I,I+1:N) ]         [ 1 ]
-C           [            ] := [            ] - tau * [   ] * w .
-C           [ A(:,I+1:N) ]    [ A(:,I+1:N) ]         [ v ]
-C
-            CALL MB04OY( P, N-I, A(1,I), TAU(I), R(I,I+1), LDR,
-     $                   A(1,I+1), LDA, DWORK )
-   20    CONTINUE
-C
-         CALL DLARFG( P+1, R(N,N), A(1,N), 1, TAU(N) )
-         IF ( M.GT.0 ) THEN
-C
-C           Apply the transformations to the second block column.
-C
-            DO 30 I = 1, N
-C
-C              Compute
-C                              [ B(I,:) ]
-C              w := [ 1 v' ] * [        ],
-C                              [   C    ]
-C
-C              [ B(I,:) ]    [ B(I,:) ]         [ 1 ]
-C              [        ] := [        ] - tau * [   ] * w.
-C              [   C    ]    [   C    ]         [ v ]
-C
-               CALL MB04OY( P, M, A(1,I), TAU(I), B(I,1), LDB, C, LDC,
-     $                      DWORK )
-   30       CONTINUE
-C
+            IF( I.LT.N ) THEN
+               CALL DAXPY( N-I, -TAU(I), DWORK, 1, R(I,I+1), LDR )
+               CALL DGER( IM, N-I, -TAU(I), A(1,I), 1, DWORK, 1,
+     $                    A(1,I+1), LDA )
+            END IF
+            CALL DSCAL( M, -TAU(I), C(I,1), LDC )
+            CALL DGER( IM, M, ONE, A(1,I), 1, C(I,1), LDC, B, LDB )
          END IF
-      END IF
+   10 CONTINUE
+C
       RETURN
-C *** Last line of MB04OD ***
+C *** Last line of MB04KD ***
       END

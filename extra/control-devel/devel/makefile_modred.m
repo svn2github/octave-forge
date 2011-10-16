@@ -1,5 +1,5 @@
 homedir = pwd ();
-develdir = fileparts (which ("makefile_slmodred"));
+develdir = fileparts (which ("makefile_modred"));
 srcdir = [develdir, "/../src"];
 cd (srcdir);
 

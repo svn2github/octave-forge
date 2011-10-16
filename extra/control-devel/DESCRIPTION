@@ -1,0 +1,11 @@
+Name: Control-Devel
+Version: 0.1.50
+Date: 2011-10-16
+Author: Lukas Reichlin <lukas.reichlin@gmail.com>
+Maintainer: Lukas Reichlin <lukas.reichlin@gmail.com>
+Title: Control Systems Developer's Playground
+Description: SLICOT system identification plus model and controller reduction
+Depends: octave (>= 3.3.90), control (>= 2.2.0)
+Autoload: yes
+License: GPL version 3 or later
+Url: http://octave.sf.net, http://www.slicot.org

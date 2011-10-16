@@ -3,7 +3,7 @@
 C
 C     SLICOT RELEASE 5.0.
 C
-C     Copyright (c) 2002-2009 NICONET e.V.
+C     Copyright (c) 2002-2010 NICONET e.V.
 C
 C     This program is free software: you can redistribute it and/or
 C     modify it under the terms of the GNU General Public License as

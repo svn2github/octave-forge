@@ -23,4 +23,18 @@ mechanics-1.1.0   Release Date: 2011-10-05   Release Manager: Juan Pablo Carbaja
 * Package ocframe integrated.
 
 ===============================================================================
+mechanics-1.2.0   Release Date: 2011-10-16   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* Rigid body object representation
+@rigidbody
+@rigidbody/display.m
+@rigidbody/plot.m
+@rigidbody/rigidbody.m
+@rigidbody/subsref.m
+
+* Added inverse to vech
+* Minor fixes to other functions
+
+===============================================================================
 

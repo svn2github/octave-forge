@@ -32,12 +32,17 @@
 %% @seealso{inertia_moment_ncpoly2d, center_mass_poly2d}
 %% @end deftypefn
 
-function I = inertia_moment_poly2d(poly,mass,offset=[0 0])
+function I = inertia_moment_poly2d(poly,mass,offset=[])
+
   numVerts = size(poly,1);
-  R = repmat(offset,numVerts,1);
   
-  V = poly - R;
-  Vnext = poly([2:numVerts 1],:) - R;
+  if !isempty (offset)
+    V = bsxfun(@minus, poly, offset);
+    Vnext = bsxfun(@minus, poly([2:numVerts 1],:),offset);
+  else
+    V = poly; 
+    Vnext = poly([2:numVerts 1],:);
+  end
   
   %% Area of the parallelograms
   A = sqrt(sumsq(cross([Vnext zeros(numVerts,1)],[V zeros(numVerts,1)],2),2));
@@ -62,3 +67,5 @@ end
 %! Pc = P2 -repmat(center_mass_poly2d(P2), size(P2,1), 1);
 %! inertia_moment_poly2d(Pc,1)
 
+%!test %Triangle
+%!

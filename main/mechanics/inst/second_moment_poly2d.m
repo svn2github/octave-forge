@@ -14,35 +14,57 @@
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} @var{J} = second_moment_poly2d (@var{p})
-%% Calculates the second moment of area of a 2D polygon.
+%% @deftypefn {Function File} @var{J} = second_moment_shape2d (@var{p})
+%% @deftypefnx{Function File} @var{J} = second_moment_shape2d (@var{p}),@var{type}, @var{matrix})
+%% Calculates the second moment of area of a 2D shape. 
 %%
-%% The polygon is described in @var{p}, where each row is a different vertex.
-%% The output @var{J} contains Ix, Iy and Ixy, in that order.
+%% The polygon is described in @var{p}, where each row is a different vertex as seen
+%% from the center of mass of the shape (see @code{center_mass_shape2d}).
 %%
-%% The algorithm was adapted from P. Bourke web page
-%% @url{http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/}
+%% The output @var{J} contains Ix, Ixy and Iy, in that order. It is assumed to be
+%% oriented counter clockwise, otherwise multiply output by -1.
 %%
-%% @seealso{inertia_moment_poly2d, center_mass_poly2d}
+%% If @var{matrix} is @code{true} then @var{J} is the symmetric second moment of area
+%% matrix, instead of the vector @code{vech(J)}.
+%% @var{type} indicates how is the shape described. So far the only case handled
+%% is when @var{shape} is a 2D polygon, where each row of @var{shape} is a vertex.
+%%
+%% @seealso{inertia_moment_shape2d, center_mass_shape2d}
 %% @end deftypefn
 
-function J = second_moment_poly2d(poly)
+function J = second_moment_poly2d(shape, typep='polygon', matrix=false)
 
-  N = size(poly,1);
-  nxt = [2:N 1];
-  px = poly(:,1);
-  px_nxt = poly(nxt,1);
-  py = poly(:,2);
-  py_nxt = poly(nxt,2);
-  
-  cm = zeros(1,2);
-  cr_prod = (px.*py_nxt - px_nxt.*py);
+  if strcmpi (typep, 'polygon')
 
-  J = zeros(1,3);
-  J(1) = sum((py.^2 + py.*py_nxt + py_nxt.^2).*cr_prod);
-  J(2) = sum((px.^2 + px.*px_nxt + py_nxt.^2).*cr_prod);
-  J(3) = 0.5*sum((px.*py_nxt + 2*px.*py + px_nxt.*py_nxt + px_nxt.*py).*cr_prod);
-  J = J/12;
-  
+    [N dim] = size (shape);
+    nxt = [2:N 1];
+    px = shape(:,1);
+    px_nxt = shape(nxt,1);
+    py = shape(:,2);
+    py_nxt = shape(nxt,2);
+    
+    cr_prod = px.*py_nxt - px_nxt.*py;
+
+    J = zeros (3, 1);
+    J(1) = sum ( (py.^2 + py.*py_nxt + py_nxt.^2) .* cr_prod); % Jx
+    J(3) = sum ( (px.^2 + px.*px_nxt + px_nxt.^2) .* cr_prod); % Jy
+    J(2) = 0.5 * sum ( (px.*py_nxt + 2*(px.*py + px_nxt.*py_nxt) + px_nxt.*py) .* cr_prod);
+    J = J/12;
+
+  elseif strcmpi (typep, 'polyline')
+
+    error('second_moment_poly2d:Devel','Polyline, not implemented yet.');
+    #TODO
+  elseif strcmpi (typep, 'cbezier')
+
+    error('second_moment_poly2d:Devel', 'Cubic bezier, not implemented yet');
+    #TODO
+
+  end
+
+  if matrix
+    J = vech2mat (J);
+  end
+
 end
 

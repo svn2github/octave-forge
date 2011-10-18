@@ -32,6 +32,15 @@ mechanics-1.2.0   Release Date: 2011-10-16   Release Manager: Juan Pablo Carbaja
 @rigidbody/plot.m
 @rigidbody/rigidbody.m
 @rigidbody/subsref.m
+ inertiamoment.m
+ masscenter.m
+
+* deprecating
+area_poly2d.m
+center_mass_poly2d.m
+inertia_moment_ncpoly2d.m
+inertia_moment_poly2d.m
+second_moment_poly2d.m
 
 * Added inverse to vech
 * Minor fixes to other functions

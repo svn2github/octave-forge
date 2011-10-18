@@ -27,8 +27,9 @@ function h = plot(obj, varargin)
   if has_shape
     shapedata = obj.Shape.Data;
     if iscell (shapedata)
-      error('rigidBody.plot:Devel','Polyline shape, not yet implemented.');
+      shapedata = shape2polygon (shapedata);
     end
+
     # Rotate
     R = cos(obj.Angle)*eye(2) + sin(obj.Angle)*[0 1; -1 0];
     shapedata = shapedata * R;

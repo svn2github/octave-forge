@@ -14,22 +14,19 @@
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{axes} @var{l} @var{moments}] =} principalaxes (@var{shape}, type)
+## @deftypefn {Function File} {[@var{axes} @var{l} @var{moments}] =} principalaxes (@var{shape})
 ## Calculates the principal axes of a shape.
 ##
 ## Returns a matrix @var{axes} where each row corresponds to one of the principal
 ## axes of the shape. @{l} is the second moment of area around to the correspoding axis.
 ## @var{axes} is order from lower to higher @var{l}. 
 ##
-## @var{type} indicates how is the shape described. So far the only case handled
-## is when @var{shape} is a 2D polygon, where each row of @var{shape} is a vertex.
-##
 ## @seealso{second_moment_poly2d}
 ## @end deftypefn
 
-function [PA l Jm] = principalaxes (shape, typep='polygon')
+function [PA l Jm] = principalaxes (shape)
 
-  Jm = second_moment_poly2d (shape, typep);
+  Jm = shapemoment (shape);
 
   Jsq = Jm(2)^2;
   if Jsq > eps;

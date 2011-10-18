@@ -17,7 +17,7 @@
 ## @deftypefn {Function File} {@var{obj} =} rigidbody ()
 ## Create object @var{obj} of the rigid_body class.
 ##
-## If no input argument is provided the object is empty.
+## If no input argument is provided the object is filled with default values.
 ##
 ## @end deftypefn
 
@@ -68,40 +68,30 @@ function rigidbody = rigidbody(varargin)
     ## Shape given
     if pargiven(1)
       shapedata = varargin{idx(1)+1};
-      if isnumeric (shapedata)
-
-        ## Fill Shape struct
-        ## Shape is always describd with axis with lower moment in positive
-        ## x-axis direction and centered in [0 0].
-        baricenter = center_mass_poly2d(shapedata,1);
-
-        shapedata = bsxfun(@minus, shapedata, baricenter);
-
-        [PA l] = principalaxes(shapedata);
-        ## Put 1st axis positive in x
-        if PA(1,1) < 0 ;
-          PA = -PA;
-        end
-        rigidbody.Shape.PrincipalAxes = PA;
-        rigidbody.Shape.AreaMoments = l;
-
-        rigidbody.Shape.Data = varargin{idx(1)+1} * PA.';
-
-        if size(shapedata,1) <= 4
-          rigidbody.InertiaMoment = ...
-                  inertia_moment_poly2d (shapedata, rigidbody.Mass);
-        else
-          rigidbody.InertiaMoment = ...
-                  inertia_moment_ncpoly2d (shapedata, rigidbody.Mass);
-        end
-        
-      elseif iscell (shapedata)
-        #TODO
-        error('rigidBody:Devel','Polycurve shape, not yet implemented.');
+      if !iscell(shapedata)
+        shapedata = polygon2shape(shapedata);
       else 
         error('rigidBody:IvalidArgument','Unrecognized shape data.');
       end
 
+      ## Fill Shape struct
+      ## Shape is always describd with axis with lower moment in positive
+      ## x-axis direction and centered in [0 0].
+      baricenter = masscenter(shapedata);
+
+      shapedata = shapetranslate(shapedata, -baricenter);
+
+      [PA l] = principalaxes(shapedata);
+      ## Put 1st axis positive in x
+      if PA(1,1) < 0 ;
+        PA = -PA;
+      end
+      rigidbody.Shape.PrincipalAxes = PA;
+      rigidbody.Shape.AreaMoments = l;
+
+      rigidbody.Shape.Data = varargin{idx(1)+1} * PA.';
+
+      rigidbody.InertiaMoment = inertiamoment (shapedata, rigidbody.Mass);
     end
     
     ## Mass given

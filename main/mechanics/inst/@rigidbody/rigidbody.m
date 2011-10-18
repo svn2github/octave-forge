@@ -15,9 +15,27 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{obj} =} rigidbody ()
+## @deftypefnx {Function File} {@var{obj} =} rigidbody (@var{param},@var{value})
 ## Create object @var{obj} of the rigid_body class.
 ##
-## If no input argument is provided the object is filled with default values.
+## If no input arguments are provided the object is filled with default values.
+## Valid values for @var{param} are:
+## 
+## @strong{Mass}: Scalar. Sets the total mass of the body.
+##
+## @strong{CoM}: 1x2 matrix. Sets the position of the center of mass of the body.
+##
+## @strong{Angle}: Scalar. Sets the angle of the rigid body, respect to the
+## positive x-axis.
+##
+## @strong{Shape}: A cell with the polynomial descriptions of the edges of the
+## shape or a Nx2 matrix of vertices. If no shape is provided the body is assumed
+## to be a point mass. The moment of inertia respect to an axis perpendicular to the
+## plane passing through the center of mass of the body is calculated based on
+## this shape.
+##
+## @strong{CoMOffset}: 1x2 matrix. Set the displacement of the baricenter of the 
+## shape respect to the center of mass. Use with care! Check demos.
 ##
 ## @end deftypefn
 

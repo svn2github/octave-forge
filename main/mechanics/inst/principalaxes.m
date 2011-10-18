@@ -18,10 +18,10 @@
 ## Calculates the principal axes of a shape.
 ##
 ## Returns a matrix @var{axes} where each row corresponds to one of the principal
-## axes of the shape. @{l} is the second moment of area around to the correspoding axis.
-## @var{axes} is order from lower to higher @var{l}. 
+## axes of the shape. @{l} is the second moment of area around the correspoding
+## principal axis. @var{axes} is order from lower to higher @var{l}. 
 ##
-## @seealso{second_moment_poly2d}
+## @seealso{inertiamoment, masscenter}
 ## @end deftypefn
 
 function [PA l Jm] = principalaxes (shape)

@@ -15,17 +15,19 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} { @var{Iz} =} inertiamoment (@var{pp}, @var{m})
-%% @deftypefnx {Function File} { [@var{Iz}, @var{error}] =} inertiamoment (@dots{})
-%% @deftypefnx {Function File} { @dots{} =} inertiamoment (@dots{}, @var{tol})
 %%  Moment of intertia of a plane shape. 
+%%
+%% Calculates the moment of inertia respect to an axis perpendicular to the
+%% plane passing through the center of mass of the body.
 %%
 %% The shape is defined with piecewise smooth polynomials. @var{pp} is a
 %% cell where each elements is a 2-by-(poly_degree+1) matrix containing px(i,:) =
 %% pp{i}(1,:) and py(i,:) = pp{i}(2,:).
 %%
+%% @seealso{masscenter, principalaxis}
 %% @end deftypefn
 
-function Iz = inertiamoment (pp, m, tol=sqrt(eps)*[1 1])
+function Iz = inertiamoment (pp, m)
 
   Iz = sum(cellfun (@Iint, pp));
   A = shapearea(pp);

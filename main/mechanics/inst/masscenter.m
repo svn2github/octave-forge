@@ -14,15 +14,14 @@
 %% along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} { @var{cm} =} masscenter (@var{pp}, @var{mass})
-%% @deftypefnx {Function File} { [@var{cm}, @var{error}] =} masscenter (@dots{})
-%% @deftypefnx {Function File} { @dots{} =} masscenter (@dots{}, @var{tol})
+%% @deftypefn {Function File} { @var{cm} =} masscenter (@var{pp})
 %%  Center of mass of a plane shape. 
 %%
 %% The shape is defined with piecewise smooth polynomials. @var{pp} is a
 %% cell where each elements is a 2-by-(poly_degree+1) matrix containing px(i,:) =
 %% pp{i}(1,:) and py(i,:) = pp{i}(2,:).
 %%
+%% @seealso{inertiamoment}
 %% @end deftypefn
 
 function cm = masscenter (shape)

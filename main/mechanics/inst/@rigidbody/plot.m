@@ -13,6 +13,12 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{obj} =} plot ()
+## Plots the rigid body.
+##
+## @end deftypefn
+
 function h = plot(obj, varargin)
 
   ax = [];

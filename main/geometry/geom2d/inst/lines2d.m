@@ -31,42 +31,36 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
-
-function line = cartesianLine(varargin)
-%CARTESIANLINE Create a straight line from cartesian equation coefficients
+%% -*- texinfo -*-
+%% @deftypefn {Function File}  lines2d ()
+%% Description of functions operating on planar lines.
 %
-%   L = cartesianLine(A, B, C);
-%   Create a line verifying the Cartesian equation:
-%   A*x + B*x + C = 0;
+%   The term 'line' refers to a planar straight line, which is an unbounded
+%   curve. Line segments defined between 2 points, which are bounded, are
+%   called 'edge', and are presented in file 'edges2d'.
 %
-%   See also:
-%   lines2d, createLine
+%   A straight line is defined by a point (its origin), and a vector (its
+%   direction). The different parameters are bundled into a row vector:
+%   LINE = [x0 y0 dx dy];
 %
-%   ---------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% created the 25/05/2004.
-% Copyright 2010 INRA - Cepia Software Platform.
+%   A line contains all points (x,y) such that:
+%       x = x0 + t*dx
+%       y = y0 + t*dy;
+%   for all t between -infinity and +infinity.
+%
+%   @seealso{points2d, vectors2d, edges2d, rays2d
+%   createLine, cartesianLine, medianLine, edgeToLine
+%   orthogonalLine, parallelLine, bisector, radicalAxis
+%   lineAngle, linePosition, projPointOnLine
+%   isPointOnLine, distancePointLine, isLeftOriented
+%   intersectLines, intersectLineEdge, clipLine
+%   invertLine, transformLine, drawLine
+%   lineFit}
+%% @end deftypefn
 
+function lines2d(varargin)
 
-if length(varargin)==1
-    var = varargin{1};
-    a = var(:,1);
-    b = var(:,2);
-    c = var(:,3);
-elseif length(varargin)==3
-    a = varargin{1};
-    b = varargin{2};
-    c = varargin{3};
-end
+  help('lines2d');
 
-% normalisation factor
-d = a.*a + b.*b;
+endfunction
 
-x0 = -a.*c./d;
-y0 = -b.*c./d;
-theta = atan2(-a, b);
-dx = cos(theta);
-dy = sin(theta);
-
-line = [x0 y0 dx dy];

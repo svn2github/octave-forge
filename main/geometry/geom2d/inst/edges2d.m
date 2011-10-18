@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2008-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,41 +31,26 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
-
-function res = orthogonalLine(line, point)
-%ORTHOGONALLINE Create a line orthogonal to another one.
+%% -*- texinfo -*-
+%% @deftypefn {Function File}  edges2d ()
+%% Description of functions operating on planar edges
 %
-%   PERP = orthogonalLine(LINE, POINT);
-%   Returns the line orthogonal to the line LINE and going through the
-%   point given by POINT. Directed angle from LINE to PERP is pi/2.
-%   LINE is given as [x0 y0 dx dy] and POINT is [xp yp].
+%   An edge is represented by the corodinate of its end points:
+%   EDGE = [X1 Y1 X2 Y2];
 %
-%   See also:
-%   lines2d, parallelLine
+%   A set of edges is represented by a N*4 array, each row representing an
+%   edge.
 %
-%   ---------
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 31/10/2003.
 %
+%   @seealso{lines2d, rays2d, points2d
+%   createEdge, edgeAngle, edgeLength, edgeToLine, midPoint
+%   intersectEdges, intersectLineEdge, isPointOnEdge
+%   clipEdge, transformEdge
+%   drawEdge, drawCenteredEdge}
+%% @end deftypefn
+function edges2d(varargin)
 
-%   HISTORY
-%   19/02/2004 added control for multiple lines and/or points
+  help('edges2d');
 
-
-N = max(size(point, 1), size(line, 1));
-
-if size(point, 1)>1
-    res = point;
-else
-    res = ones(N, 1)*point;
-end
-
-if size(line, 1)>1
-    res(:,3) = -line(:,4);
-    res(:,4) = line(:,3);
-else
-    res(:,3) = -ones(N,1)*line(4);
-    res(:,4) = ones(N,1)*line(3);
-end
+endfunction
 

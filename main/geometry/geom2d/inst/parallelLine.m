@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2003-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,38 +31,34 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{res} = } parallelLine (@var{line}, @var{point})
+%% @deftypefnx {Function File} {@var{res} = } parallelLine (@var{line}, @var{dist})
+%% Create a line parallel to another one.
+%%
+%%   Returns the line with same direction vector than @var{line} and going through
+%%   the point given by @var{point}. 
+%%   @var{line} is given as [x0 y0 dx dy] and @var{point} is [xp yp].
+%%
+%%   Uses relative distance to specify position. The new line will be
+%%   located at distance @var{dist}, counted positive in the right side of @var{line}
+%%   and negative in the left side.
+%%
+%%   @seealso{lines2d, orthogonalLine, distancePointLine}
+%% @end deftypefn
 
-function lines2d(varargin)
-%LINES2D  Description of functions operating on planar lines
-%
-%   The term 'line' refers to a planar straight line, which is an unbounded
-%   curve. Line segments defined between 2 points, which are bounded, are
-%   called 'edge', and are presented in file 'edges2d'.
-%
-%   A straight line is defined by a point (its origin), and a vector (its
-%   direction). The different parameters are bundled into a row vector:
-%   LINE = [x0 y0 dx dy];
-%
-%   A line contains all points (x,y) such that:
-%       x = x0 + t*dx
-%       y = y0 + t*dy;
-%   for all t between -infinity and +infinity.
-%
-%   See also:
-%   points2d, vectors2d, edges2d, rays2d
-%   createLine, cartesianLine, medianLine, edgeToLine
-%   orthogonalLine, parallelLine, bisector, radicalAxis
-%   lineAngle, linePosition, projPointOnLine
-%   isPointOnLine, distancePointLine, isLeftOriented
-%   intersectLines, intersectLineEdge, clipLine
-%   invertLine, transformLine, drawLine
-%   lineFit
-%
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2008-10-13,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2008 INRA - BIA PV Nantes - MIAJ Jouy-en-Josas.
+function res = parallelLine(line, point)
 
-help('lines2d');
+  if size(point, 1)==1
+      % use a distance. Compute position of point located at distance DIST on
+      % the line orthogonal to the first one.
+      point = pointOnLine([line(:,1) line(:,2) line(:,4) -line(:,3)], point);
+  end
+
+  % normal case: compute line through a point with given direction
+  res = zeros(1, 4);
+  res(1:2) = point;
+  res(3:4) = line(3:4);
+
+endfunction
+

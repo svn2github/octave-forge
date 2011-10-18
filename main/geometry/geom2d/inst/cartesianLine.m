@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,43 +31,39 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{line} = } cartesianLine (@var{A}, @var{B},@var{C})
+%% Create a straight line from cartesian equation coefficients.
+%%
+%%   Create a line verifying the Cartesian equation:
+%%   @var{A}*x + @var{B}*x + @var{C} = 0;
+%%
+%%   @seealso{lines2d, createLine}
+%% @end deftypefn
 
-function res = parallelLine(line, point)
-%PARALLELLINE Create a line parallel to another one.
-%
-%   RES = parallelLine(LINE, POINT);
-%   Returns the line with same direction vector than LINE and going through
-%   the point given by POINT. 
-%   LINE is given as [x0 y0 dx dy] and POINT is [xp yp].
-%
-%
-%   RES = parallelLine(LINE, DIST);
-%   Uses relative distance to specify position. The new line will be
-%   located at distance DIST, counted positive in the right side of LINE
-%   and negative in the left side.
-%
-%   See also:
-%   lines2d, orthogonalLine, distancePointLine
-%
-%   ---------
-%
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 31/10/2003.
-%
+function line = cartesianLine(varargin)
 
-%   HISTORY
-%   31/07/2005 add usage of distance
-%   15/06/2009 change convention for distance sign
+  if length(varargin)==1
+      var = varargin{1};
+      a = var(:,1);
+      b = var(:,2);
+      c = var(:,3);
+  elseif length(varargin)==3
+      a = varargin{1};
+      b = varargin{2};
+      c = varargin{3};
+  end
 
+  % normalisation factor
+  d = a.*a + b.*b;
 
-if size(point, 1)==1
-    % use a distance. Compute position of point located at distance DIST on
-    % the line orthogonal to the first one.
-    point = pointOnLine([line(:,1) line(:,2) line(:,4) -line(:,3)], point);
-end
+  x0 = -a.*c./d;
+  y0 = -b.*c./d;
+  theta = atan2(-a, b);
+  dx = cos(theta);
+  dy = sin(theta);
 
-% normal case: compute line through a point with given direction
-res = zeros(1, 4);
-res(1:2) = point;
-res(3:4) = line(3:4);
+  line = [x0 y0 dx dy];
+
+endfunction
+

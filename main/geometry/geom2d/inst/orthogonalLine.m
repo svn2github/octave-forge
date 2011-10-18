@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2003-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,68 +31,34 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
-
-function ray = bisector(varargin)
-%BISECTOR Return the bisector of two lines, or 3 points
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{perp} = } orthogonalLine (@var{line}, @var{point})
+%% Create a line orthogonal to another one.
 %
-%   RAY = bisector(LINE1, LINE2);
-%   create the bisector of the two lines, given as [x0 y0 dx dy].
+%   Returns the line orthogonal to the line @var{line} and going through the
+%   point given by @var{point}. Directed angle from @var{line} to @var{perp} is pi/2.
+%   @var{line} is given as [x0 y0 dx dy] and @var{point} is [xp yp].
 %
-%   RAY = bisector(P1, P2, P3);
-%   create the bisector of lines (P2 P1) and (P2 P3).
-%
-%   The result has the form [x0 y0 dx dy], with [x0 y0] being the origin
-%   point ans [dx dy] being the direction vector, normalized to have unit
-%   norm.
-%   
-%   See also:
-%   lines2d, rays2d
-%
-%   ---------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% created the 31/10/2003.
-% Copyright 2010 INRA - Cepia Software Platform.
+%   @seealso{lines2d, parallelLine}
+%% @end deftypefn
 
-%   HISTORY
-%   2005-07-07 add bisector of 3 points
-%   2010-11-05 ode cleanup
+function res = orthogonalLine(line, point)
 
-if length(varargin)==2
-    % two lines
-    line1 = varargin{1};
-    line2 = varargin{2};
-    
-    point = intersectLines(line1, line2);    
-    
-elseif length(varargin)==3
-    % three points
-    p1 = varargin{1};
-    p2 = varargin{2};
-    p3 = varargin{3};
+  N = max(size(point, 1), size(line, 1));
 
-    line1 = createLine(p2, p1);
-    line2 = createLine(p2, p3);
-    point = p2;
-    
-elseif length(varargin)==1
-    % three points, given in one array
-    var = varargin{1};
-    p1 = var(1, :);
-    p2 = var(2, :);
-    p3 = var(3, :);
+  if size(point, 1)>1
+      res = point;
+  else
+      res = ones(N, 1)*point;
+  end
 
-    line1 = createLine(p2, p1);
-    line2 = createLine(p2, p3);
-    point = p2;
-end
+  if size(line, 1)>1
+      res(:,3) = -line(:,4);
+      res(:,4) = line(:,3);
+  else
+      res(:,3) = -ones(N,1)*line(4);
+      res(:,4) = ones(N,1)*line(3);
+  end
 
-% compute line angles
-a1 = lineAngle(line1);
-a2 = lineAngle(line2);
+endfunction
 
-% compute bisector angle (angle of first line + half angle between lines)
-angle = mod(a1 + mod(a2-a1+2*pi, 2*pi)/2, pi*2);
-
-% create the resulting ray
-ray = [point cos(angle) sin(angle)];

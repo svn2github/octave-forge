@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2005-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,28 +31,39 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{point} = } projPointOnLine (@var{pt1}, @var{line})
+%%  Project of a point orthogonally onto a line
+%%
+%%   Computes the (orthogonal) projection of point @var{pt1} onto the line @var{line}.
+%%   
+%%   Function works also for multiple points and lines. In this case, it
+%%   returns multiple points.
+%%   Point @var{pt1} is a [N*2] array, and @var{line} is a [N*4] array (see createLine
+%%   for details). Result @var{point} is a [N*2] array, containing coordinates of
+%%   orthogonal projections of @var{pt1} onto lines @var{line}.
+%%
+%%   @seealso{lines2d, points2d, isPointOnLine, linePosition}
+%% @end deftypefn
 
-function edges2d(varargin)
-%EDGES2D  Description of functions operating on planar edges
-%
-%   An edge is represented by the corodinate of its end points:
-%   EDGE = [X1 Y1 X2 Y2];
-%
-%   A set of edges is represented by a N*4 array, each row representing an
-%   edge.
-%
-%
-%   See also:
-%   lines2d, rays2d, points2d
-%   createEdge, edgeAngle, edgeLength, edgeToLine, midPoint
-%   intersectEdges, intersectLineEdge, isPointOnEdge
-%   clipEdge, transformEdge
-%   drawEdge, drawCenteredEdge
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2008-10-13,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2008 INRA - BIA PV Nantes - MIAJ Jouy-en-Josas.
+function point = projPointOnLine(point, line)
 
-help('edges2d');
+  % ensure input arguments have same size
+  if size(line, 1)==1 && size(point, 1)>1
+      line = repmat(line, [size(point, 1) 1]);
+  end
+  if size(point, 1)==1 && size(line, 1)>1
+      point = repmat(point, [size(line, 1) 1]);
+  end
+
+  % slope of line
+  dx = line(:, 3);
+  dy = line(:, 4);
+
+  % first find relative position of projection on the line,
+  tp = ((point(:, 2) - line(:, 2)).*dy + (point(:, 1) - line(:, 1)).*dx) ./ (dx.*dx+dy.*dy);
+
+  % convert position on line to cartesian coordinate
+  point = line(:,1:2) + [tp tp].*[dx dy];
+
+endfunction

@@ -61,4 +61,3 @@ function res = parallelLine(line, point)
   res(3:4) = line(3:4);
 
 endfunction
-

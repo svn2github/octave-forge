@@ -98,14 +98,23 @@ geometry-1.1.3   Release Date: 2011-10-13   Release Manager: Juan Pablo Carbajal
  isPointOnEdge.m
 
 ===============================================================================
-geometry-1.2   Release Date: 2011-10-13   Release Manager: Juan Pablo Carbajal
+geometry-1.2   Release Date: 2011-10-xx   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
-* Continue all geom2d added
+* All geom2d added
  createCircle.m
  createDirectedCircle.m
  createEdge.m
  medianLine.m
+ Contents.m
+ bisector.m
+ cartesianLine.m
+ drawArrow.m
+ edges2d.m
+ lines2d.m
+ orthogonalLine.m
+ parallelLine.m
+ projPointOnLine.m
 
 ===============================================================================
 

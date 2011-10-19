@@ -23,6 +23,12 @@ mkoctfile IB01CD.f TB01WD.f IB01RD.f IB01QD.f select.f \
           MB01TD.f MA02AD.f MB04OD.f MB04OY.f MB02UD.f \
           MB03UD.f MB01SD.f
 
+## fit state-space model to frequency response data
+mkoctfile SB10YD.f DG01MD.f AB04MD.f SB10ZP.f AB07ND.f \
+          MC01PD.f TD04AD.f TD03AY.f TB01PD.f TB01XD.f \
+          AB07MD.f TB01UD.f TB01ID.f MB01PD.f MB03OY.f \
+          MB01QD.f
+
 system ("rm *.o");
 cd (homedir);
 

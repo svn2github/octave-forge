@@ -16,7 +16,7 @@
   along with this file.  If not, see <http://www.gnu.org/licenses/>.
   
   Author: Carlo de Falco <cdf _AT_ users _DOT_ sourceforge _DOT_ net>
-          Jaroslav Hajek
+          Jaroslav Hajek <highegg@gmail.com>
 */
 
 

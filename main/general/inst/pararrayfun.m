@@ -1,4 +1,4 @@
-## Copyright (C) 2009 Jaroslav Hajek
+## Copyright (C) 2009 Jaroslav Hajek <highegg@gmail.com>
 ## Copyright (C) 2009 VZLU Prague, a.s., Czech Republic
 ##
 ## Author: Jaroslav Hajek <highegg@gmail.com>

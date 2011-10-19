@@ -7,7 +7,7 @@
 # $Id$
 # Copyright 2001,2002,2003,2004 Paul Kienzle
 # Copyright 2010 Alois Schloegl 
-# Copyright 2010 Jaroslav Hajek 
+# Copyright 2010 Jaroslav Hajek <highegg@gmail.com>
 # This is part of Octave-Forge's Oct2Mat toolbox
 #
 # Goal: automatically convert most octave code so that it will run on matlab.

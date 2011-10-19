@@ -1,5 +1,5 @@
 ## Copyright (C) 2006  Michael Creel <michael.creel@uab.es>
-## Copyright (C) 2009  Jaroslav Hajek
+## Copyright (C) 2009  Jaroslav Hajek <highegg@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by

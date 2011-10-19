@@ -1,6 +1,7 @@
 ## test_oct2mat is a script for testing oct2mat conversion 
 ##
-## Copyright (C) 2010 Jaroslav Hajek, Alois Schloegl 
+## Copyright (C) 2010 Jaroslav Hajek <highegg@gmail.com>
+## Copyright (C0 2010 Alois Schloegl
 
 b=zeros(5);
 c=ones(5);

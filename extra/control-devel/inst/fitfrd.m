@@ -17,45 +17,29 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {[@var{sys}, @var{n}] =} fitfrd (@var{dat}, @var{n})
+## @deftypefnx{Function File} {[@var{sys}, @var{n}] =} fitfrd (@var{dat}, @var{n}, @var{flag})
 ## Fit frequency response data with a stable, minimum-phase state-space system.
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item G
-## LTI model of plant.
-## @item W1
-## LTI model of precompensator.  Model must be SISO or of appropriate size.
-## An identity matrix is taken if @var{W1} is not specified or if an empty model
-## @code{[]} is passed.
-## @item W2
-## LTI model of postcompensator.  Model must be SISO or of appropriate size.
-## An identity matrix is taken if @var{W2} is not specified or if an empty model
-## @code{[]} is passed.
-## @item factor
-## @code{factor = 1} implies that an optimal controller is required.
-## @code{factor > 1} implies that a suboptimal controller is required,
-## achieving a performance that is @var{factor} times less than optimal.
-## Default value is 1.
+## @item dat
+## LTI model containing frequency response data of a SISO system.
+## @item n
+## The desired order of the system to be fitted.  @code{n <= length(dat.w)}.
+## @item flag = 0
+## The system zeros and poles are not constrained.  Default value
+## @item flag = 1
+## The system zeros and poles will have negative real parts in the
+## continuous-time case, or moduli less than 1 in the discrete-time case.
 ## @end table
 ##
 ## @strong{Outputs}
 ## @table @var
-## @item K
+## @item sys
 ## State-space model of the H-infinity loop-shaping controller.
-## @item N
-## State-space model of the closed loop depicted below.
-## @item gamma
-## L-infinity norm of @var{N}.
-## @item info
-## Structure containing additional information.
-## @item info.emax
-## Nugap robustness.  @code{emax = inv (gamma)}.
-## @item info.Gs
-## Shaped plant.  @code{Gs = W2 * G * W1}.
-## @item info.Ks
-## Controller for shaped plant.  @code{Ks = ncfsyn (Gs)}.
-## @item info.rcond
-## Estimates of the reciprocal condition numbers of the Riccati equations.
+## @item n
+## The order of the obtained system.  The value of @var{n}
+## could only be modified if inputs @code{n > 0} and @code{flag = 1}.
 ## @end table
 ##
 ## @strong{Algorithm}@*
@@ -84,7 +68,11 @@ function [sys, n] = fitfrd (dat, n, flag = 0)
   [H, w, tsam] = frdata (dat, "vector");
   dt = isdt (dat);
   
-  [a, b, c, d, n] = slsb10yd (real (H), imag (H), w, n, dt, flag);
+  if (n > length (w))
+    error ("fitfrd: require n <= length (dat.w)");
+  endif
+  
+  [a, b, c, d, n] = slsb10yd (real (H), imag (H), w, n, dt, logical (flag));
   
   sys = ss (a, b, c, d, tsam);
 

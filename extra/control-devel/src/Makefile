@@ -1,4 +1,4 @@
-all: slab09jd.oct
+all: slab09jd.oct slsb10yd.oct
 
 # TODO: leading and trailing underscores for sl* functions
 #       (__sl*__.oct) would be nice, but this can be an issue
@@ -15,6 +15,14 @@ slab09jd.oct: slab09jd.cc
               SB04PX.f SB03OU.f MB03QD.f MB03QY.f SB03OT.f \
               MB04ND.f MB04OD.f SB03OR.f SB03OY.f MB04NY.f \
               MB04OY.f SB03OV.f
+
+# fit state-space model to frequency response data
+slsb10yd.oct: slsb10yd.cc
+	mkoctfile slsb10yd.cc \
+              SB10YD.f DG01MD.f AB04MD.f SB10ZP.f AB07ND.f \
+              MC01PD.f TD04AD.f TD03AY.f TB01PD.f TB01XD.f \
+              AB07MD.f TB01UD.f TB01ID.f MB01PD.f MB03OY.f \
+              MB01QD.f
 
 clean:
 	rm *.o core octave-core *.oct *~

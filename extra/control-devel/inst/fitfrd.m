@@ -16,9 +16,8 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{K}, @var{N}, @var{gamma}, @var{info}] =} ncfsyn (@var{G}, @var{W1}, @var{W2}, @var{factor})
-## Normalized Coprime Factor (NCF) H-infinity synthesis.
-## Compute positive feedback controller using the McFarlane/Glover Loop Shaping Design Procedure.
+## @deftypefn{Function File} {[@var{sys}, @var{n}] =} fitfrd (@var{dat}, @var{n})
+## Fit frequency response data with a stable, minimum-phase state-space system.
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -68,8 +67,25 @@
 ## Created: October 2011
 ## Version: 0.1
 
-function [retsys, n] = fitfrd (sys, n, code)
+function [sys, n] = fitfrd (dat, n, flag = 0)
 
+  if (nargin == 0 || nargin > 3)
+    print_usage ();
+  endif
   
+  if (! isa (dat, "frd"))
+    dat = frd (dat);
+  endif
+  
+  if (! issample (n, 0) || n != round (n))
+    error ("fitfrd: second argument must be an integer >= 0");
+  endif
+
+  [H, w, tsam] = frdata (dat, "vector");
+  dt = isdt (dat);
+  
+  [a, b, c, d, n] = slsb10yd (real (H), imag (H), w, n, dt, flag);
+  
+  sys = ss (a, b, c, d, tsam);
 
 endfunction

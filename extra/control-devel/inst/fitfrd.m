@@ -60,7 +60,11 @@ function [sys, n] = fitfrd (dat, n, flag = 0)
   if (! isa (dat, "frd"))
     dat = frd (dat);
   endif
-  
+
+  if (! issiso (dat))
+    error ("fitfrd: require SISO system");
+  endif
+
   if (! issample (n, 0) || n != round (n))
     error ("fitfrd: second argument must be an integer >= 0");
   endif

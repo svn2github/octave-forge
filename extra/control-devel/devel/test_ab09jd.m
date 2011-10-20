@@ -29,10 +29,34 @@ cv = [ -1.8000         0 ];
 
 dv = [       1 ];
 
+[ar, br, cr, dr] = slab09jd (a, b, c, d, 0, 0, 0, 1, 0.0, \
+                             1, av, bv, cv, dv, \
+                             0, [], [], [], [], \
+                             2, 1e-1, 1e-14)
+                             
+                             
+%{                             
+                             0, 0.0, \
+                             1, 0, 2, 0, 0, 1, \
+                             1e-1, 1e-14)
 
+  [ar, br, cr, dr, nr] = slab09jd (a, b, c, d, dt, scaled, nr, ordsel, alpha, \
+                                   jobv, av, bv, cv, dv, \
+                                   jobw, aw, bw, cw, dw, \
+                                   jobinv, tol1, tol2);
+%}
+%{
+sys = ss (a, b, c, d);
+sysv = ss (av, bv, cv, dv);
+
+sysr = hnamodred (sys, 0, sysv, [])
+%}
+
+%{
 [ar, br, cr, dr] = slab09jd (a, b, c, d, av, bv, cv, dv, [], [], [], [], 0, 0.0, \
                              1, 0, 2, 0, 0, 1, \
                              1e-1, 1e-14)
+%}
 
 %{
  The reduced state dynamics matrix Ar is 

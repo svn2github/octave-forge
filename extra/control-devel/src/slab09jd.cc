@@ -87,26 +87,25 @@ For internal use only.")
         Matrix c = args(2).matrix_value ();
         Matrix d = args(3).matrix_value ();
         
-        Matrix av = args(4).matrix_value ();
-        Matrix bv = args(5).matrix_value ();
-        Matrix cv = args(6).matrix_value ();
-        Matrix dv = args(7).matrix_value ();
-        
-        Matrix aw = args(8).matrix_value ();
-        Matrix bw = args(9).matrix_value ();
-        Matrix cw = args(10).matrix_value ();
-        Matrix dw = args(11).matrix_value ();
+        const int idico = args(4).int_value ();
+        const int iequil = args(5).int_value ();
+        int nr = args(6).int_value ();
+        const int iordsel = args(7).int_value ();
+        double alpha = args(8).double_value ();
+                 
+        const int ijobv = args(9).int_value ();       
+        Matrix av = args(10).matrix_value ();
+        Matrix bv = args(11).matrix_value ();
+        Matrix cv = args(12).matrix_value ();
+        Matrix dv = args(13).matrix_value ();
 
-        int nr = args(12).int_value ();
-        double alpha = args(13).double_value ();
-        
-        const int ijobv = args(14).int_value ();
-        const int ijobw = args(15).int_value ();
-        const int ijobinv = args(16).int_value ();
-        const int idico = args(17).int_value ();
-        const int iequil = args(18).int_value ();
-        const int iordsel = args(19).int_value ();
-        
+        const int ijobw = args(14).int_value ();        
+        Matrix aw = args(15).matrix_value ();
+        Matrix bw = args(16).matrix_value ();
+        Matrix cw = args(17).matrix_value ();
+        Matrix dw = args(18).matrix_value ();
+
+        const int ijobinv = args(19).int_value ();
         double tol1 = args(20).double_value ();
         double tol2 = args(21).double_value ();
 
@@ -308,6 +307,7 @@ For internal use only.")
         retval(1) = b;
         retval(2) = c;
         retval(3) = d;
+        retval(4) = octave_value (nr);
         // retval(0) = hsv;
         // retval(1) = octave_value (ns);
     }

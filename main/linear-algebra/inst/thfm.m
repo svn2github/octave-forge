@@ -1,6 +1,7 @@
 ## Copyright (C) 2001 Rolf Fabian <fabian@tu-cottbus.de>
 ## Copyright (C) 2001 Paul Kienzle <pkienzle@users.sf.net>
 ## Copyright (C) 2011 Philip Nienhuis <pr.nienhuis@hccnet.nl>
+## Copyright (C) 2011 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -37,111 +38,62 @@
 ## end deftypefn
 
 function y = thfm (x,M)
-  #% minimal arg check only
-  if ( nargin ~= 2 || ~ischar (M) || ischar (x) )
+  ## minimal arg check only
+  if ( nargin != 2 || !ischar (M) || ischar (x) )
     print_usage;
   endif
 
   ## look for known functions of sqrt, log, exp
-  I = eye(size(x));
-  match = 1;
-  len =  length(M);
-  if	len==3
-    
-    if	M=='cos',
-      if (isreal(x))     y = real( expm( i*x ) );
-      else               y = ( expm( i*x ) + expm( -i*x ) ) / 2;
+  I = eye (size (x));
+
+  switch (M)
+    case {'cos'}
+      if (isreal(x))  y = real( expm( i*x ) );
+      else            y = ( expm( i*x ) + expm( -i*x ) ) / 2;
       endif
-      
-    elseif	M=='sin',
-      if (isreal(x))     y = imag( expm( i*x ) );
-      else               y = ( expm( i*x ) - expm( -i*x ) ) / (2*i);
+    case {'sin'}
+      if (isreal(x))  y = imag( expm( i*x ) );
+      else            y = ( expm( i*x ) - expm( -i*x ) ) / (2*i);
       endif
-      
-    elseif	M=='tan',
-      if (isreal(x))     t = expm( i*x );    y = imag(t)/real(t);
-      else     	         t = expm( -2*i*x ); y = -i*(I-t)/(I+t);
+    case {'tan'}
+      if (isreal(x))  t = expm( i*x );    y = imag(t)/real(t);
+      else            t = expm( -2*i*x ); y = -i*(I-t)/(I+t);
       endif
-      
-    elseif	M=='cot',		% == cos/sin
-      if (isreal(x))     t = expm( i*x );    y = real(t)/imag(t);
-      else	         t = expm( -2*i*x ); y = i*(I+t)/(I-t);
+    case {'cot'}
+      if (isreal(x))  t = expm( i*x );    y = real(t)/imag(t);
+      else            t = expm( -2*i*x ); y = i*(I+t)/(I-t);
       endif
-      
-    elseif	M=='sec',
-      if (isreal(x))     y = inv( real(expm(i*x)) );
-      else               y = inv( expm(i*x)+expm(-i*x) )*2 ;
+    case {'sec'}
+      if (isreal(x))  y = inv( real(expm(i*x)) );
+      else            y = inv( expm(i*x)+expm(-i*x) )*2 ;
       endif
-      
-    elseif	M=='csc',
-      if (isreal(x))     y = inv( imag(expm(i*x)) );
-      else               y = inv( expm(i*x)-expm(-i*x) )*2i;
+    case {'csc'}
+      if (isreal(x))  y = inv( imag(expm(i*x)) );
+      else            y = inv( expm(i*x)-expm(-i*x) )*2i;
       endif
+    case {'log'}      y = logm(x);
+    case {'exp'}      y = expm(x);
+    case {'cosh'}     y = ( expm(x)+expm(-x) )/2;
+    case {'sinh'}     y = ( expm(x)-expm(-x) )/2;
+    case {'tanh'}     t = expm( -2*x ); y = (I - t)/(I + t);
+    case {'coth'}     t = expm( -2*x ); y = (I + t)/(I - t);
+    case {'sech'}     y = 2 * inv( expm(x) + expm(-x) );
+    case {'csch'}     y = 2 * inv( expm(x) - expm(-x) );
+    case {'asin'}     y = -i * logm( i*x + sqrtm(I - x*x) );
+    case {'acos'}     y =  i * logm( x - i*sqrtm(I - x*x) );
+    case {'atan'}     y = -i/2 * logm( (I + i*x)/(I - i*x) );
+    case {'acot'}     y =  i/2 * logm( (I + i*x)/(i*x - I) );
+    case {'asec'}     y = i * logm( ( I - sqrtm(I - x*x) ) / x );
+    case {'acsc'}     y = -i * logm( i*( I + sqrtm(I - x*x) ) / x );
+    case {'sqrt'}     y = sqrtm(x);
+    case {'asinh'}    y = logm( x + sqrtm (x*x + I) );
+    case {'acosh'}    y = logm( x + sqrtm (x*x - I) );
+    case {'atanh'}    y = logm( (I + x)/(I - x) ) / 2;
+    case {'acoth'}    y = logm( (I + x)/(x - I) ) / 2;
+    case {'asech'}    y = logm( (I + sqrtm (I - x*x)) / x );
+    case {'acsch'}    y = logm( (I + sqrtm (I + x*x)) / x );
+    otherwise
+      error ("thfm doesn't support function %s - try to use funm instead.", M);
+  endswitch
 
-    elseif    M=='log',  y = logm(x);
-      
-    elseif    M=='exp',  y = expm(x);
-      
-    else match = 0;
-
-    endif
-    
-  elseif	len==4
-    
-    if      M=='cosh',   y = ( expm(x)+expm(-x) )/2;
-      
-    elseif  M=='sinh',   y = ( expm(x)-expm(-x) )/2;
-      
-    elseif  M=='tanh'    t = expm( -2*x ); y = (I - t)/(I + t);
-     
-    elseif  M=='coth', 	 t = expm( -2*x ); y = (I + t)/(I - t);
-      
-    elseif  M=='sech',   y = 2 * inv( expm(x) + expm(-x) );
-      
-    elseif  M=='csch',   y = 2 * inv( expm(x) - expm(-x) );
-      
-    elseif  M=='asin',   y = -i * logm( i*x + sqrtm(I - x*x) );
-      
-    elseif  M=='acos',   y =  i * logm( x - i*sqrtm(I - x*x) );
-
-    elseif  M=='atan',   y = -i/2 * logm( (I + i*x)/(I - i*x) );
-
-    elseif  M=='acot',   y =  i/2 * logm( (I + i*x)/(i*x - I) );
-
-    elseif  M=='asec',   y = i * logm( ( I - sqrtm(I - x*x) ) / x );
-
-    elseif  M=='acsc',   y = -i * logm( i*( I + sqrtm(I - x*x) ) / x );
-
-    elseif  M=='sqrt',   y = sqrtm(x);
-
-    else match = 0;
-
-    end
-
-  elseif   len==5
-
-    if      M=='asinh',  y = logm( x + sqrtm (x*x + I) );
-      
-    elseif  M=='acosh',  y = logm( x + sqrtm (x*x - I) );
-      
-    elseif  M=='atanh',  y = logm( (I + x)/(I - x) ) / 2;
-      
-    elseif  M=='acoth',  y = logm( (I + x)/(x - I) ) / 2;
-
-    elseif  M=='asech',  y = logm( (I + sqrtm (I - x*x)) / x );
-
-    elseif  M=='acsch',  y = logm( (I + sqrtm (I + x*x)) / x );
-
-    else match = 0;
-
-    endif
-
-  else match = 0;
-
-  endif
-
-  ## if no known function found, issue warning
-  if (match == 0)
-    warning ("thfm doesn't support function M - try to use funm instead");
-  endif
 endfunction

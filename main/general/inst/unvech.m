@@ -15,7 +15,7 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{m} =} unvech (@var{v}, @var{scale})
 ## Performs the reverse of @code{vech} on the vector @var{v}.
@@ -29,9 +29,12 @@
 ##
 ## @seealso{vech, ind2sub}
 ## @end deftypefn
- 
+
+## TODO remove subfunction ind2sub_tril after new release of octave that will have
+## it builtin standard ind2sub
+
 function M = unvech (v, scale = 1)
- 
+
   if ( nargin < 1 || nargin > 2 )
     print_usage;
   elseif ( !ismatrix (v) && any (size (v) != 1) )
@@ -39,32 +42,26 @@ function M = unvech (v, scale = 1)
   elseif ( !isnumeric (scale) || !isscalar (scale) )
     error ("SCALE must be a scalar")
   endif
- 
+
   N      = length (v);
   dim    = (sqrt ( 1 + 8*N ) - 1)/2;
-  [r, c] = ind2sub_tril (dim, 1:N);
+  [r, c] = ind2sub_tril (dim, 1:N);   # replace with core ind2sub after octave 3.6
   M      = accumarray ([r; c].', v);
   M     += scale * tril (M, -1).';
- 
+
 endfunction
 
 function [r c] = ind2sub_tril(N,idx)
 
-  %% Horrible lengthly check
-  if nargin < 2 ||( !isnumeric (N) && all(size(N)==1) )|| ...
-    !( ismatrix (idx) && any (size (idx)==1) ) 
-    print_usage;
-  endif
-  
   endofrow = 0.5*(1:N) .* (2*N:-1:N + 1);
   c = lookup(endofrow, idx-1)+1;
 
   r = N - endofrow(c) + idx ;
 
-end
+endfunction
 
 %!assert(unvech([1;0;0;1;0;1]), full(eye(3,3)) );
- 
+
 %!test %symmetric
 %! dim = 10;
 %! A = tril( floor ( 5*(2*rand(dim)-1) ) );
@@ -72,7 +69,7 @@ end
 %! M = vech(A);
 %! M = unvech(M, 1);
 %! assert (A, M);
- 
+
 %!test %antisymmetric
 %! dim = 10;
 %! A = tril( floor ( 5*(2*rand(dim)-1) ) );
@@ -80,4 +77,3 @@ end
 %! M = vech(A);
 %! M = unvech(M, -1);
 %! assert (A, M);
-

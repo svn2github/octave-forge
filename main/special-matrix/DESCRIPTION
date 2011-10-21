@@ -8,5 +8,5 @@ Description: Additional Special Matrices for Octave.
 Categories: Special Matrices
 Depends: octave (>= 2.9.7)
 Autoload: yes
-License: GPL version 2 or later
+License: Public domain
 Url: http://octave.sf.net

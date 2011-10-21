@@ -1,3 +1,6 @@
+## Copyright (C) Paul Kienzle <pkienzle@users.sf.net>
+## This program is in the public domain
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{a}} = lauchli (@var{n})
 ## @deftypefnx {Function File} {@var{a}} = lauchli (@var{n},@var{mu})
@@ -16,9 +19,7 @@
 ## @end example
 ## @end deftypefn
 ## @seealso {ones,zeros,eye}
-
-## This program is in the public domain
-## Author: Paul Kienzle <pkienzle@users.sf.net>
+## @end deftypefn
 
 function A = lauchli(n,mu)
   if (nargin < 1 || nargin > 2)

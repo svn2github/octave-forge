@@ -1,7 +1,9 @@
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{a}} = arecibo ()
+## @deftypefn {Function File} {@var{a} =} arecibo ()
 ## Returns the 73x23 logical matrix corresponding to the Arecibo message.
 ## @seealso {ones,zeros,eye}
+## @end deftypefn
+
 function a = arecibo ()
   persistent aa = [
     "00000010101010000000000";
@@ -80,5 +82,3 @@ function a = arecibo ()
   ] == "1";
   a = aa;
 endfunction
-
-

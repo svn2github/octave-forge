@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,28 +31,47 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{dist} = } distancePointLine (@var{point}, @var{line})
+%% Minimum distance between a point and a line
+%%
+%%   D = distancePointLine(POINT, LINE)
+%%   Return the euclidean distance between line LINE and point POINT. 
+%%
+%%   LINE has the form : [x0 y0 dx dy], and POINT is [x y].
+%%
+%%   If LINE is N-by-4 array, result is N-by-1 array computes for each line.
+%%
+%%   If POINT is N-by-2, then result is computed for each point.
+%%
+%%   If both POINT and LINE are array, result is N-by-1, computed for each
+%%   corresponding point and line.
+%%
+%%
+%%   @seealso{lines2d, points2d, distancePoints, distancePointEdge}
+%% @end deftypefn
 
-function line = reverseLine(line)
-%REVERSELINE Return same line but with opposite orientation
-%
-%   INVLINE = reverseLine(LINE);
-%   Returns the opposite line of LINE.
-%   LINE has the format [x0 y0 dx dy], then INVLINE will have following
-%   parameters: [x0 y0 -dx -dy].
-%
-%   See also:
-%   lines2d, createLine
-%
-%   ---------
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 20/01/2004.
-%
+function dist = distancePointLine(point, line)
 
-%   HISTORY
-%   30/06/2009 rename as reverseLine
-%   15/03/2011 simplify code
+  if size(line, 1)==1 && size(point, 1)>1
+      line = repmat(line, [size(point, 1) 1]);
+  end
 
-line(:, 3:4) = -line(:, 3:4);
+  if size(point, 1)==1 && size(line, 1)>1
+      point = repmat(point, [size(line, 1) 1]);
+  end
 
-    
+  dx = line(:, 3);
+  dy = line(:, 4);
+
+  % compute position of points projected on line
+  tp = ((point(:, 2) - line(:, 2)).*dy + (point(:, 1) - line(:, 1)).*dx) ./ (dx.*dx+dy.*dy);
+  p0 = line(:, 1:2) + [tp tp].*[dx dy];
+
+
+  % compute distances between points and their projections
+  dx = point - p0;
+  dist  = sqrt(sum(dx.*dx, 2));
+
+endfunction
+

@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2006-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,51 +31,49 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{p} = } circleArcAsCurve (@var{arc}, @var{N})
+%% Convert a circle arc into a series of points
+%%
+%%   P = circleArcAsCurve(ARC, N);
+%%   convert the circle ARC into a series of N points. 
+%%   ARC is given in the format: [XC YC R THETA1 DTHETA]
+%%   where XC and YC define the center of the circle, R its radius, THETA1
+%%   is the start of the arc and DTHETA is the angle extent of the arc. Both
+%%   angles are given in degrees. 
+%%   N is the number of vertices of the resulting polyline, default is 65.
+%%
+%%   The result is a N-by-2 array containing coordinates of the N points. 
+%%
+%%   [X Y] = circleArcAsCurve(ARC, N);
+%%   Return the result in two separate arrays with N lines and 1 column.
+%%
+%%
+%%   @seealso{circles2d, circleAsPolygon, drawCircle, drawPolygon}
+%% @end deftypefn
 
-function varargout = circleAsPolygon(circle, varargin)
-%CIRCLEASPOLYGON Convert a circle into a series of points
-%
-%   P = circleAsPolygon(CIRCLE, N);
-%   convert circle given as [x0 y0 r], where x0 and y0 are coordinate of
-%   center, and r is the radius, into an array of  [(N+1)x2] double, 
-%   containing x and y values of points. 
-%   The polygon is closed
-%
-%   P = circleAsPolygon(CIRCLE);
-%   uses a default value of N=64 points
-%
-%   Example
-%   circle = circleAsPolygon([10 0 5], 16);
-%   figure;
-%   drawPolygon(circle);
-%
-%   See also:
-%   circles2d, polygons2d, createCircle
-%
-%
-% ---------
-% author : David Legland 
-% created the 06/04/2005.
-% Copyright 2010 INRA - Cepia Software Platform.
-%
+function varargout = circleArcAsCurve(arc, N)
 
-%   HISTORY
-%   20/04/2007: return a closed polygon with N+1 vertices, use default N=64
+  % default value for N
+  if nargin < 2
+      N = 65;
+  end
 
-% determines number of points
-N = 64;
-if ~isempty(varargin)
-    N = varargin{1};
-end
+  % vector of positions
+  t0 = deg2rad(arc(4));
+  t1 = t0 + deg2rad(arc(5));
+  t = linspace(t0, t1, N)';
 
-% create circle
-t = linspace(0, 2*pi, N+1)';
-x = circle(1) + circle(3)*cos(t);
-y = circle(2) + circle(3)*sin(t);
+  % compute coordinates of vertices
+  x = arc(1) + arc(3) * cos(t);
+  y = arc(2) + arc(3) * sin(t);
 
-if nargout==1
-    varargout{1}=[x y];
-elseif nargout==2
-    varargout{1}=x;
-    varargout{2}=y;    
-end
+  % format output
+  if nargout <= 1
+      varargout = {[x y]};
+  else
+      varargout = {x, y};
+  end
+
+endfunction
+

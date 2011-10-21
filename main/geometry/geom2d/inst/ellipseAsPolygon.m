@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,22 +31,63 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{p} = } ellipseAsPolygon (@var{ell}, @var{n})
+%% Convert an ellipse into a series of points
+%%
+%%   P = ellipseAsPolygon(ELL, N);
+%%   converts ELL given as [x0 y0 a b] or [x0 y0 a b theta] into a polygon
+%%   with N edges. The result P is (N+1)-by-2 array containing coordinates
+%%   of the N+1 vertices of the polygon.
+%%   The resulting polygon is closed, i.e. the last point is the same as the
+%%   first one.
+%%
+%%   P = ellipseAsPolygon(ELL);
+%%   Use a default number of edges equal to 72. This result in one piont for
+%%   each 5 degrees.
+%%   
+%%   [X Y] = ellipseAsPolygon(...);
+%%   Return the coordinates o fvertices in two separate arrays.
+%%
+%%   @seealso{ellipses2d, circleAsPolygon, rectAsPolygon, drawEllipse}
+%% @end deftypefn
 
-function res = reverseEdge(edge)
-%REVERSEEDGE Intervert the source and target vertices of edge
-%
-%   REV = reverseEdge(EDGE);
-%   Returns the opposite edge of EDGE.
-%   EDGE has the format [X1 Y1 X2 Y2]. The resulting edge REV has value
-%   [X2 Y2 X1 Y1];
-%
-%   See also:
-%   edges2d, createEdge, reverseLine
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2010-05-13,    using Matlab 7.9.0.529 (R2009b)
-% Copyright 2010 INRA - Cepia Software Platform.
+function varargout = ellipseAsPolygon(ellipse, N)
 
-res = [edge(:,3:4) edge(:,1:2)];
+  % default value for N
+  if nargin < 2
+      N = 72;
+  end
+
+  % angle of ellipse
+  theta = 0;
+  if size(ellipse, 2) > 4
+      theta = ellipse(:,5);
+  end
+
+  % get ellipse parameters
+  xc = ellipse(:,1);
+  yc = ellipse(:,2);
+  a  = ellipse(:,3);
+  b  = ellipse(:,4);
+
+  % create time basis
+  t = linspace(0, 2*pi, N+1)';
+
+  % pre-compute trig functions (angles is in degrees)
+  cot = cosd(theta);
+  sit = sind(theta);
+
+  % position of points
+  x = xc + a * cos(t) * cot - b * sin(t) * sit;
+  y = yc + a * cos(t) * sit + b * sin(t) * cot;
+
+  % format output depending on number of a param.
+  if nargout == 1
+      varargout = {[x y]};
+  elseif nargout == 2
+      varargout = {x, y};
+  end
+
+endfunction
+

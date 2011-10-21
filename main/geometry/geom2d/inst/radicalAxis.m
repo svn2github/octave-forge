@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2004-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,54 +31,58 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{line} = } radicalAxis (@var{circle1}, @var{circle2})
+%% Compute the radical axis (or radical line) of 2 circles
+%%
+%%   L = radicalAxis(C1, C2)
+%%   Computes the radical axis of 2 circles.
+%%
+%%   Example
+%%   C1 = [10 10 5];
+%%   C2 = [60 50 30];
+%%   L = radicalAxis(C1, C2);
+%%   hold on; axis equal;axis([0 100 0 100]); 
+%%   drawCircle(C1);drawCircle(C2);drawLine(L);
+%%
+%%   Ref:
+%%   http://mathworld.wolfram.com/RadicalLine.html
+%%   http://en.wikipedia.org/wiki/Radical_axis
+%%
+%%   @seealso{lines2d, circles2d, createCircle}
+%%
+%% @end deftypefn
 
-function varargout = circleArcAsCurve(arc, N)
-%CIRCLEARCASCURVE Convert a circle arc into a series of points
-%
-%   P = circleArcAsCurve(ARC, N);
-%   convert the circle ARC into a series of N points. 
-%   ARC is given in the format: [XC YC R THETA1 DTHETA]
-%   where XC and YC define the center of the circle, R its radius, THETA1
-%   is the start of the arc and DTHETA is the angle extent of the arc. Both
-%   angles are given in degrees. 
-%   N is the number of vertices of the resulting polyline, default is 65.
-%
-%   The result is a N-by-2 array containing coordinates of the N points. 
-%
-%   [X Y] = circleArcAsCurve(ARC, N);
-%   Return the result in two separate arrays with N lines and 1 column.
-%
-%
-%   See also:
-%   circles2d, circleAsPolygon, drawCircle, drawPolygon
-%
-%
-% ---------
-% author : David Legland 
-% created the 22/05/2006.
-% Copyright 2010 INRA - Cepia Software Platform.
-%
+function line = radicalAxis(circle1, circle2)
 
-% HISTORY
-% 2011-03-30 use angles in degrees, add default value for N
+  % extract circles parameters
+  x1 = circle1(:,1);
+  x2 = circle2(:,1);
+  y1 = circle1(:,2);
+  y2 = circle2(:,2);
+  r1 = circle1(:,3);
+  r2 = circle2(:,3);
 
-% default value for N
-if nargin < 2
-    N = 65;
-end
+  % distance between each couple of centers
+  dist  = sqrt((x2-x1).^2 + (y2-y1).^2);
 
-% vector of positions
-t0 = deg2rad(arc(4));
-t1 = t0 + deg2rad(arc(5));
-t = linspace(t0, t1, N)';
+  % relative position of intersection point of 
+  % the radical line with the line joining circle centers
+  d = (dist.^2 + r1.^2 - r2.^2) * .5 ./ dist;
 
-% compute coordinates of vertices
-x = arc(1) + arc(3) * cos(t);
-y = arc(2) + arc(3) * sin(t);
+  % compute angle of radical axis
+  angle = lineAngle(createLine([x1 y1], [x2 y2]));
+  cot = cos(angle);
+  sit = sin(angle);
 
-% format output
-if nargout <= 1
-    varargout = {[x y]};
-else
-    varargout = {x, y};
-end
+  % parameters of the line
+  x0 = x1 + d*cot;
+  y0 = y1 + d*sit;
+  dx = -sit;
+  dy = cot;
+
+  % concatenate into one structure
+  line = [x0 y0 dx dy];
+
+endfunction
+

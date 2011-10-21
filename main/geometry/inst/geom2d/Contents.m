@@ -188,15 +188,8 @@
 %%
 %%   Credits:
 %%   * function 'enclosingCircle' rewritten from a file from Yazan Ahed
-%%       (yash78@gmail.com), available on Matlab File Exchange
+%%    , available on Matlab File Exchange
 %%
-%% -----
-%% Author: David Legland
-%% e-mail: david.legland@grignon.inra.fr
-%% Created: 2005-11-07
-%% Copyright INRA - Cepia Software Platform.
-%% Homepage: http://matgeom.sourceforge.net/
-%% http://www.pfl-cepia.inra.fr/index.php?page=geom2d
 %% @end deftypefn
 
 function Contents ()

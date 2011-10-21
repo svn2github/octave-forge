@@ -33,8 +33,8 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} Contents ()
-%% GEOM2D Geometry 2D Toolbox
-%% Version 1.0 21-Mar-2011 .
+%% Geometry 2D Toolbox
+%% Version 1.2.0 21-Oct-2011 .
 %%
 %% 	Library to handle and visualize geometric primitives such as points,
 %% 	lines, circles and ellipses, polygons...

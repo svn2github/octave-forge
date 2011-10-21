@@ -1,126 +1,133 @@
 geometry >> Computational Geometry
-Geometry 2D
+2D Descriptive
+ Contents
+ points2d
+ vectors2d
+ angles2d
+ edges2d
+ rays2d
+ lines2d
+ boxes2d
+ circles2d
+ ellipses2d
+ transforms2d
+2D Points
+ centroid
+ distancePoints
+ drawPoint
+ isPointOnRay
+ isPointInCircle
+ isPointOnCircle
+ isPointOnLine
+ isPointInEllipse
+ midPoint
+ minDistancePoints
+ polarPoint
+2D Vectors
+ createVector
+ vectorNorm
+ normalizeVector
+ rotateVector
+2D Angles
  angle2Points
  angle3Points
  angleAbsDiff
  angleDiff
- angles2d
+ normalizeAngle
+ vectorAngle
  angleSort
- bisector
- boxes2d
+ lineAngle
+ edgeAngle
+ deg2rad
+ rad2deg
+2D Edges
+ createEdge
+ distancePointEdge
+ drawCenteredEdge
+ drawEdge
+ edgeLength
+ edgePosition
+ edgeToLine
+ intersectEdges
+ intersectLineEdge
+ reverseEdge
+ transformEdge
+ isPointOnEdge
+2D Rays
+ drawRay
+ createRay
+2D Lines
  cartesianLine
- cbezier2poly
- centroid
- circleArcAsCurve
- circleAsPolygon
- circles2d
+ createLine
+ distancePointLine
+ drawLine
+ intersectLines
+ isParallel
+ isPerpendicular
+ linePosition
+ medianLine
+ isLeftOriented
+ orthogonalLine
+ parallelLine
+ pointOnLine
+ projPointOnLine
+ reverseLine
+2D Boxes
  clipEdge
  clipLine
  clipPoints
  clipRay
- Contents
- crackPattern2
- crackPattern
- createBasisTransform
+ mergeBoxes
+ intersectBoxes
+ drawBox
+ randomPointInBox
+ drawRect
+ drawOrientedBox
+2D Circles
  createCircle
  createDirectedCircle
- createEdge
+ circleArcAsCurve
+ circleAsPolygon
+ drawCircleArc
+ drawCircle
+ enclosingCircle
+ intersectCircles
+ intersectLineCircle
+ radicalAxis
+2D Ellipses
+ ellipseAsPolygon
+ drawEllipseArc
+ drawEllipse
+ inertiaEllipse
+2D Transformations
+ transformLine
+ transformPoint
+ transformVector
+ createBasisTransform
  createHomothecy
- createLine
  createLineReflection
- createRay
  createRotation
  createScaling
  createTranslation
- createVector
- deg2rad
- distancePointEdge
- distancePointLine
- distancePoints
- drawArrow
- drawBezierCurve
- drawBox
- drawCenteredEdge
- drawCircleArc
- drawCircle
- drawEdge
- drawEllipseArc
- drawEllipse
- drawLabels
- drawLine
- drawOrientedBox
- drawParabola
- drawPoint
- drawRay
- drawRect
- drawShape
- edgeAngle
- edgeLength
- edgePosition
- edges2d
- edgeToLine
- ellipseAsPolygon
- ellipses2d
- enclosingCircle
  fitAffineTransform2d
+2D Cubic Bezier
+ drawBezierCurve
+ cbezier2poly
+2D Others
+ bisector
+ crackPattern2
+ crackPattern
+ drawArrow
+ drawLabels
+ drawParabola
+ drawShape
  hexagonalGrid
- inertiaEllipse
- intersectBoxes
- intersectCircles
- intersectEdges
- intersectLineCircle
- intersectLineEdge
- intersectLines
  isCounterClockwise
- isLeftOriented
- isParallel
- isPerpendicular
- isPointInCircle
- isPointInEllipse
- isPointOnCircle
- isPointOnEdge
- isPointOnLine
- isPointOnRay
- lineAngle
- linePosition
- lines2d
- medianLine
- mergeBoxes
- midPoint
- minDistancePoints
- normalizeAngle
- normalizeVector
- orthogonalLine
- parallelLine
- pointOnLine
- points2d
- polarPoint
- projPointOnLine
- rad2deg
- radicalAxis
- randomPointInBox
- rays2d
- reverseEdge
- reverseLine
- rotateVector
  squareGrid
- transformEdge
- transformLine
- transformPoint
- transforms2d
- transformVector
  triangleGrid
- vectorAngle
- vectorNorm
- vectors2d
 Input
  svgload
  svgnormalize
  svgpath2polygon
 Output
  data2geo
-Geometry 3D
-Graphs
-
-
-

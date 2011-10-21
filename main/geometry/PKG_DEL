@@ -4,9 +4,9 @@ dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
 
 if (! exist (fullfile (dirname, "inst"), "dir"))
   for ii=1:length (dirlist)
-    addpath ( [ dirname filesep dirlist{ii}],"-end")
-  endfor
-endif
+      ## Run this if the package is installed
+      rmpath ( [ dirname filesep dirlist{ii}])
+  end
+end
 
-warning('off', 'Octave:fopen-file-in-path');
 clear dirlist dirname

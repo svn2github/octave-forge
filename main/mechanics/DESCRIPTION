@@ -5,7 +5,7 @@ Author: Juan Pablo Carbajal <carbajal@ifi.uzh.ch>, Johan Beke <johanbeke@hotmail
 Maintainer: Juan Pablo Carbajal <carbajal@ifi.uzh.ch>, Johan Beke <johanbeke@hotmail.com>
 Title: Classical Mechanics & Structural Analysis
 Description: Library with functions useful for numerical computation in classical mechanics and structural analysis.
-Depends: octave (>= 3.4.0)
+Depends: octave (>= 3.4.0), linear-algebra (>= 2.0.0), general (> 1.2.2)
 Autoload: no
 License: GPL version 3 or later
 Url: http://octave.sf.net, http://ocframe.sourceforge.net/

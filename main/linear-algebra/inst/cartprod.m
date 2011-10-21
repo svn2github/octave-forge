@@ -13,7 +13,6 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
-##
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cartprod (@var{varargin} )
@@ -44,7 +43,6 @@
 ## @end deftypefn
 ## @seealso{kron}
 
-
 function p = cartprod (varargin)
    if (nargin < 1)
      print_usage ();
@@ -61,4 +59,3 @@ endfunction
 %!
 %!assert(cartprod(1:2,0:1),[1 0; 2 0; 1 1; 2 1])
 %!
-

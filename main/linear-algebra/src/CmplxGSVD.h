@@ -36,13 +36,13 @@ public:
   ComplexGSVD (void) { }
 
   ComplexGSVD (const ComplexMatrix& a, const ComplexMatrix& b,  
-	       GSVD::type gsvd_type = GSVD::economy) 
+           GSVD::type gsvd_type = GSVD::economy) 
     { 
       init (a, b, gsvd_type); 
     }
 
   ComplexGSVD (const ComplexMatrix& a, const ComplexMatrix& b, 
-	       octave_idx_type& info, GSVD::type gsvd_type = GSVD::economy)
+           octave_idx_type& info, GSVD::type gsvd_type = GSVD::economy)
     {
       info = init (a, b, gsvd_type);
     }
@@ -56,15 +56,15 @@ public:
   ComplexGSVD& operator = (const ComplexGSVD& a)
     {
       if (this != &a)
-	{
-	  type_computed = a.type_computed;
-	  sigmaA = a.sigmaA;
-	  sigmaB = a.sigmaB;
-	  left_smA = a.left_smA;
-	  left_smB = a.left_smB;
-	  right_sm = a.right_sm;
-	  R = a.R;
-	}
+    {
+      type_computed = a.type_computed;
+      sigmaA = a.sigmaA;
+      sigmaB = a.sigmaB;
+      left_smA = a.left_smA;
+      left_smB = a.left_smB;
+      right_sm = a.right_sm;
+      R = a.R;
+    }
 
       return *this;
     }
@@ -91,7 +91,7 @@ private:
   ComplexMatrix right_sm, R;
 
   octave_idx_type init (const ComplexMatrix& a, const ComplexMatrix& b, 
-			GSVD::type gsvd_type = GSVD::economy);
+            GSVD::type gsvd_type = GSVD::economy);
 };
 
 #endif

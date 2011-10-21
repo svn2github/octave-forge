@@ -27,7 +27,7 @@ along with this software; see the file COPYING.  If not, see
 #include "dbleGSVD.h"
 #include "f77-fcn.h"
 
-/* 
+/*
    uncomment those lines to monitor k and l
    #include "oct-obj.h"
    #include "pager.h"
@@ -36,31 +36,31 @@ along with this software; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dggsvd, DGGSVD)  
+  F77_FUNC (dggsvd, DGGSVD)
    (
-     F77_CONST_CHAR_ARG_DECL, 	// JOBU    (input) CHARACTER*1
-     F77_CONST_CHAR_ARG_DECL, 	// JOBV    (input) CHARACTER*1
-     F77_CONST_CHAR_ARG_DECL, 	// JOBQ    (input) CHARACTER*1
-     const octave_idx_type&,	// M       (input) INTEGER
-     const octave_idx_type&,	// N       (input) INTEGER
-     const octave_idx_type&,	// P       (input) INTEGER
-     octave_idx_type &, 	// K       (output) INTEGER
-     octave_idx_type &,		// L       (output) INTEGER
-     double*,			// A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-     const octave_idx_type&, 	// LDA     (input) INTEGER
-     double*, 			// B       (input/output) DOUBLE PRECISION array, dimension (LDB,N)
-     const octave_idx_type&, 	// LDB     (input) INTEGER
-     double*, 			// ALPHA   (output) DOUBLE PRECISION array, dimension (N)
-     double*, 			// BETA    (output) DOUBLE PRECISION array, dimension (N)
-     double*,			// U       (output) DOUBLE PRECISION array, dimension (LDU,M)
-     const octave_idx_type&,	// LDU     (input) INTEGER 
-     double*, 			// V       (output) DOUBLE PRECISION array, dimension (LDV,P)
-     const octave_idx_type&,	// LDV     (input) INTEGER
-     double*,			// Q       (output) DOUBLE PRECISION array, dimension (LDQ,N) 
-     const octave_idx_type&,	// LDQ     (input) INTEGER
-     double*, 			// WORK    (workspace) DOUBLE PRECISION array
-     int*,	 		// IWORK   (workspace/output) INTEGER array, dimension (N)
-     octave_idx_type&		// INFO    (output)INTEGER
+     F77_CONST_CHAR_ARG_DECL,   // JOBU    (input) CHARACTER*1
+     F77_CONST_CHAR_ARG_DECL,   // JOBV    (input) CHARACTER*1
+     F77_CONST_CHAR_ARG_DECL,   // JOBQ    (input) CHARACTER*1
+     const octave_idx_type&,    // M       (input) INTEGER
+     const octave_idx_type&,    // N       (input) INTEGER
+     const octave_idx_type&,    // P       (input) INTEGER
+     octave_idx_type &,         // K       (output) INTEGER
+     octave_idx_type &,         // L       (output) INTEGER
+     double*,                   // A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+     const octave_idx_type&,    // LDA     (input) INTEGER
+     double*,                   // B       (input/output) DOUBLE PRECISION array, dimension (LDB,N)
+     const octave_idx_type&,    // LDB     (input) INTEGER
+     double*,                   // ALPHA   (output) DOUBLE PRECISION array, dimension (N)
+     double*,                   // BETA    (output) DOUBLE PRECISION array, dimension (N)
+     double*,                   // U       (output) DOUBLE PRECISION array, dimension (LDU,M)
+     const octave_idx_type&,    // LDU     (input) INTEGER
+     double*,                   // V       (output) DOUBLE PRECISION array, dimension (LDV,P)
+     const octave_idx_type&,    // LDV     (input) INTEGER
+     double*,                   // Q       (output) DOUBLE PRECISION array, dimension (LDQ,N)
+     const octave_idx_type&,    // LDQ     (input) INTEGER
+     double*,                   // WORK    (workspace) DOUBLE PRECISION array
+     int*,                      // IWORK   (workspace/output) INTEGER array, dimension (N)
+     octave_idx_type&           // INFO    (output)INTEGER
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
      F77_CHAR_ARG_LEN_DECL
@@ -73,7 +73,7 @@ GSVD::left_singular_matrix_A (void) const
   if (type_computed == GSVD::sigma_only)
     {
       (*current_liboctave_error_handler)
-	("dbleGSVD: U not computed because type == GSVD::sigma_only");
+        ("dbleGSVD: U not computed because type == GSVD::sigma_only");
       return Matrix ();
     }
   else
@@ -86,7 +86,7 @@ GSVD::left_singular_matrix_B (void) const
   if (type_computed == GSVD::sigma_only)
     {
       (*current_liboctave_error_handler)
-	("dbleGSVD: V not computed because type == GSVD::sigma_only");
+        ("dbleGSVD: V not computed because type == GSVD::sigma_only");
       return Matrix ();
     }
   else
@@ -99,7 +99,7 @@ GSVD::right_singular_matrix (void) const
   if (type_computed == GSVD::sigma_only)
     {
       (*current_liboctave_error_handler)
-	("dbleGSVD: X not computed because type == GSVD::sigma_only");
+        ("dbleGSVD: X not computed because type == GSVD::sigma_only");
       return Matrix ();
     }
   else
@@ -111,7 +111,7 @@ GSVD::R_matrix (void) const
   if (type_computed != GSVD::std)
     {
       (*current_liboctave_error_handler)
-	("dbleGSVD: R not computed because type != GSVD::std");
+        ("dbleGSVD: R not computed because type != GSVD::std");
       return Matrix ();
     }
   else
@@ -185,7 +185,7 @@ GSVD::init (const Matrix& a, const Matrix& b, GSVD::type gsvd_type)
   if (! (jobq == 'N' || jobq == 'O')) {
     right_sm.resize (nrow_q, n);
   }
-  double *q = right_sm.fortran_vec ();  
+  double *q = right_sm.fortran_vec ();
   
   octave_idx_type lwork = 3*n;
   lwork = lwork > m ? lwork : m;
@@ -194,19 +194,19 @@ GSVD::init (const Matrix& a, const Matrix& b, GSVD::type gsvd_type)
   Array<double> work (lwork, 1);
   Array<double> alpha (n, 1);
   Array<double> beta (n, 1);
-  Array<int> 	iwork (n, 1);
+  Array<int>    iwork (n, 1);
 
   F77_XFCN (dggsvd, DGGSVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-			     F77_CONST_CHAR_ARG2 (&jobv, 1),
-			     F77_CONST_CHAR_ARG2 (&jobq, 1),
-			     m, n, p, k, l, tmp_dataA, m, 
-			     tmp_dataB, p, alpha.fortran_vec (),
-			     beta.fortran_vec (), u, nrow_u, 
-			     v, nrow_v, q, nrow_q, work.fortran_vec (), 
-			     iwork.fortran_vec (), info
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)
-			     F77_CHAR_ARG_LEN (1)));
+                             F77_CONST_CHAR_ARG2 (&jobv, 1),
+                             F77_CONST_CHAR_ARG2 (&jobq, 1),
+                             m, n, p, k, l, tmp_dataA, m,
+                             tmp_dataB, p, alpha.fortran_vec (),
+                             beta.fortran_vec (), u, nrow_u,
+                             v, nrow_v, q, nrow_q, work.fortran_vec (),
+                             iwork.fortran_vec (), info
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)
+                             F77_CHAR_ARG_LEN (1)));
   
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dggsvd");
@@ -215,71 +215,70 @@ GSVD::init (const Matrix& a, const Matrix& b, GSVD::type gsvd_type)
     (*current_liboctave_error_handler) ("dggsvd.f: argument %d illegal", -info);
   } else {
     if (info > 0) {
-      (*current_liboctave_error_handler) ("dggsvd.f: Jacobi-type procedure failed to converge."); 
-	
+      (*current_liboctave_error_handler) ("dggsvd.f: Jacobi-type procedure failed to converge.");
     } else {
       octave_idx_type i, j;
       
       if (GSVD::std == gsvd_type) {
-	R.resize(k+l, k+l); 
-	int astart = n-k-l;
-	if (m - k - l >=  0) {
-	  int astart = n-k-l;
-	  /*
-	   *  R is stored in A(1:K+L,N-K-L+1:N)
-	   */
-	  for (i = 0; i < k+l; i++) 	    
-	    for (j = 0; j < k+l; j++)
-	      R.xelem(i, j) = atmp.xelem(i, astart + j); 
-	} else {  
-	  /*
-	   *    (R11 R12 R13 ) is stored in A(1:M, N-K-L+1:N), 
-	   *    ( 0  R22 R23 )
-	   */
+        R.resize(k+l, k+l);
+        int astart = n-k-l;
+        if (m - k - l >=  0) {
+          int astart = n-k-l;
+          /*
+           *  R is stored in A(1:K+L,N-K-L+1:N)
+           */
+          for (i = 0; i < k+l; i++)
+            for (j = 0; j < k+l; j++)
+              R.xelem(i, j) = atmp.xelem(i, astart + j);
+        } else {
+          /*
+           *    (R11 R12 R13 ) is stored in A(1:M, N-K-L+1:N),
+           *    ( 0  R22 R23 )
+           */
 
-	   for (i = 0; i < m; i++)
-	     for (j = 0; j < k+l; j++)
-	       R.xelem(i, j) = atmp.xelem(i, astart + j);
-	   /*
-	    * and R33 is stored in B(M-K+1:L,N+M-K-L+1:N)
-	    */
-	   for (i = k+l-1; i >=m; i--) {
-	     for (j = 0; j < m; j++)
-	       R.xelem(i, j) = 0.0;
-	     for (j = m; j < k+l; j++)
-	       R.xelem(i, j) = btmp.xelem(i - k, astart + j);
-	   }
-	}
+           for (i = 0; i < m; i++)
+             for (j = 0; j < k+l; j++)
+               R.xelem(i, j) = atmp.xelem(i, astart + j);
+           /*
+            * and R33 is stored in B(M-K+1:L,N+M-K-L+1:N)
+            */
+           for (i = k+l-1; i >=m; i--) {
+             for (j = 0; j < m; j++)
+               R.xelem(i, j) = 0.0;
+             for (j = m; j < k+l; j++)
+               R.xelem(i, j) = btmp.xelem(i - k, astart + j);
+           }
+        }
       }
       /*
-	uncomment this to monitor k and l
-	octave_value tmp;
-	octave_stdout << "dbleGSVD k: "; 
-	tmp = k;
-	tmp.print(octave_stdout);
-	octave_stdout << "\n";
-	octave_stdout << "dbleGSVD l: "; 
-	tmp = l;
-	tmp.print(octave_stdout);
-	octave_stdout << "\n";
+        uncomment this to monitor k and l
+        octave_value tmp;
+        octave_stdout << "dbleGSVD k: ";
+        tmp = k;
+        tmp.print(octave_stdout);
+        octave_stdout << "\n";
+        octave_stdout << "dbleGSVD l: ";
+        tmp = l;
+        tmp.print(octave_stdout);
+        octave_stdout << "\n";
       */
 
-      if (m-k-l >= 0) { 
-	// Fills in C and S
-	sigmaA.resize (l, l);
-	sigmaB.resize (l, l);
-	for (i = 0; i < l; i++) {
-	  sigmaA.dgxelem(i) = alpha.elem(k+i);
-	  sigmaB.dgxelem(i) = beta.elem(k+i);
-	} 
+      if (m-k-l >= 0) {
+        // Fills in C and S
+        sigmaA.resize (l, l);
+        sigmaB.resize (l, l);
+        for (i = 0; i < l; i++) {
+          sigmaA.dgxelem(i) = alpha.elem(k+i);
+          sigmaB.dgxelem(i) = beta.elem(k+i);
+        }
       } else {
-	// Fills in C and S
-	sigmaA.resize (m-k, m-k);
-	sigmaB.resize (m-k, m-k);
-	for (i = 0; i < m-k; i++) {
-	  sigmaA.dgxelem(i) = alpha.elem(k+i);
-	  sigmaB.dgxelem(i) = beta.elem(k+i);
-	}
+        // Fills in C and S
+        sigmaA.resize (m-k, m-k);
+        sigmaB.resize (m-k, m-k);
+        for (i = 0; i < m-k; i++) {
+          sigmaA.dgxelem(i) = alpha.elem(k+i);
+          sigmaB.dgxelem(i) = beta.elem(k+i);
+        }
       }
     }
   }

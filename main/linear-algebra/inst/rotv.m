@@ -1,4 +1,4 @@
-## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
+## Copyright (C) 2002 Etienne Grossmann <etienne@cs.uky.edu>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
@@ -10,6 +10,9 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 ##
+## You should have received a copy of the GNU General Public License
+## along with this program; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {@var{r} = } rotv ( v, ang ) 
@@ -30,48 +33,44 @@
 ## @example
 ## 
 ## @end example
-## @seealso{rotparams}
+## @seealso{rotparams, rota, rot}
 ## @end deftypefn
-
-## See also : rota, rot
-##
-
-## Author:        Etienne Grossmann <etienne@cs.uky.edu>
-## Last modified: Setembro 2002
 
 function r = rotv(v ,ang)
 
-if nargin > 1
-  v = v.*((ang(:)./sqrt(sum(v'.^2))')*ones(1,3));
-end
-## For checking only
-## v00 = v ;
-## static toto = floor(rand(1)*100) ;
-## toto
-a = sqrt(sum(v'.^2))' ; 
-oka = find(a!=0);
-if all(size(oka)),
-  v(oka,:) = v(oka,:)./(a(oka)*ones(1,3)) ; 
-end
-## ca = cos(a);
-## sa = sin(a);
+  if nargin > 1
+    v = v.*((ang(:)./sqrt(sum(v'.^2))')*ones(1,3));
+  end
+  ## For checking only
+  ## v00 = v ;
+  ## static toto = floor(rand(1)*100) ;
+  ## toto
+  a = sqrt(sum(v'.^2))' ; 
+  oka = find(a!=0);
+  if all(size(oka)),
+    v(oka,:) = v(oka,:)./(a(oka)*ones(1,3)) ; 
+  end
+  ## ca = cos(a);
+  ## sa = sin(a);
 
-N = size(v,1) ; N3 = 3*N ;
-r = (reshape( v', N3,1 )*ones(1,3)).*kron(v,ones(3,1)) ;
-r += kron(cos(a),ones(3,3)) .* (kron(ones(N,1),eye(3))-r) ;
+  N = size(v,1) ; N3 = 3*N ;
+  r = (reshape( v', N3,1 )*ones(1,3)).*kron(v,ones(3,1)) ;
+  r += kron(cos(a),ones(3,3)) .* (kron(ones(N,1),eye(3))-r) ;
 
-## kron(cos(a),ones(3,3)) .* (kron(ones(N,1),eye(3))-r0) 
-## cos(a)
+  ## kron(cos(a),ones(3,3)) .* (kron(ones(N,1),eye(3))-r0) 
+  ## cos(a)
 
-tmp = zeros(N3,3) ;
-tmp( 2:3:N3,1 ) =  v(:,3) ;
-tmp( 1:3:N3,2 ) = -v(:,3) ;
-tmp( 3:3:N3,1 ) = -v(:,2) ;
-tmp( 1:3:N3,3 ) =  v(:,2) ;
-tmp( 2:3:N3,3 ) = -v(:,1) ;
-tmp( 3:3:N3,2 ) =  v(:,1) ;
-## keyboard
-r -= kron(sin(a),ones(3)) .* tmp ;
+  tmp = zeros(N3,3) ;
+  tmp( 2:3:N3,1 ) =  v(:,3) ;
+  tmp( 1:3:N3,2 ) = -v(:,3) ;
+  tmp( 3:3:N3,1 ) = -v(:,2) ;
+  tmp( 1:3:N3,3 ) =  v(:,2) ;
+  tmp( 2:3:N3,3 ) = -v(:,1) ;
+  tmp( 3:3:N3,2 ) =  v(:,1) ;
+  ## keyboard
+  r -= kron(sin(a),ones(3)) .* tmp ;
+
+endfunction
 
 ## For checking only
 ## r2 = zeros(N3,3) ;
@@ -82,4 +81,3 @@ r -= kron(sin(a),ones(3)) .* tmp ;
 ##   r2(3*i-2:3*i,:) = v0'*v0 + cos(t)*(eye(3)-v0'*v0) + -sin(t)*[0, -v0(3), v0(2);v0(3), 0, -v0(1);-v0(2), v0(1), 0];
 ## end 
 ## max(abs(r2(:)-r(:)))
-

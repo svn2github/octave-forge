@@ -1,4 +1,5 @@
 ## Copyright (C) 2000, 2011 P.R. Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2001 Paul Kienzle <pkienzle@users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,15 +16,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} [ @var{B} ] = funm (@var{A}, @var{F})
+## @deftypefn {Function File} {@var{B} =} funm (@var{A}, @var{F})
 ## Compute matrix equivalent of function F; F can be a function name or
 ## a function handle.
 ##
-## For trigonometric and hyperbolic functions, thfm() is automatically
-## invoked as that is based on expm() and diagonalization is avoided.
+## For trigonometric and hyperbolic functions, @code{thfm} is automatically
+## invoked as that is based on @code{expm} and diagonalization is avoided.
 ## For other functions diagonalization is invoked, which implies that
 ## -depending on the properties of input matrix @var{A}- the results
-## can be very inaccurate WITHOUT ANY WARNING. For easy diagonizable and
+## can be very inaccurate @emph{without any warning}. For easy diagonizable and
 ## stable matrices results of funm will be sufficiently accurate.
 ##
 ## Note that you should not use funm for 'sqrt', 'log' or 'exp'; instead
@@ -45,8 +46,7 @@
 ##    is needed here to convey extra args for besselk() )
 ## @end example
 ##
-## @seealso thfm, expm, logm, sqrtm
-##
+## @seealso{thfm, expm, logm, sqrtm}
 ## @end deftypefn
 
 ## Author: P.R. Nienhuis <prnienhuis@users.sf.net> (somewhere in 2000)
@@ -62,13 +62,13 @@
 
 function B = funm (A, name)
 
-  persistent thfuncs  = {"cos",   "sin",   "tan",   "sec",   "csc",   "cot",   \
-                         "cosh",  "sinh",  "tanh",  "sech",  "csch",  "coth",  \
-                         "acos",  "asin",  "atan",  "asec",  "acsc",  "acot",  \
-                         "acosh", "asinh", "atanh", "asech", "acsch", "acoth", \
+  persistent thfuncs  = {"cos",   "sin",   "tan",   "sec",   "csc",   "cot",   ...
+                         "cosh",  "sinh",  "tanh",  "sech",  "csch",  "coth",  ...
+                         "acos",  "asin",  "atan",  "asec",  "acsc",  "acot",  ...
+                         "acosh", "asinh", "atanh", "asech", "acsch", "acoth", ...
                         }
 
-  ## Function handle supplied? 
+  ## Function handle supplied?
   try 
     ishndl = isstruct (functions (name));
     fname = functions (name).function;
@@ -93,6 +93,6 @@ function B = funm (A, name)
     [V, D] = eig (A + tol * randn (size(A)));
     D = diag (feval (name, diag(D)));
     B = V * D / V;
-  endif  
+  endif
   
 endfunction

@@ -56,15 +56,15 @@ public:
   GSVD& operator = (const GSVD& a)
     {
       if (this != &a)
-	{
-	  type_computed = a.type_computed;
-	  sigmaA = a.sigmaA;
-	  sigmaB = a.sigmaB;
-	  left_smA = a.left_smA;
-	  left_smB = a.left_smB;
-	  right_sm = a.right_sm;
-	  R = a.R;
-	}
+    {
+      type_computed = a.type_computed;
+      sigmaA = a.sigmaA;
+      sigmaB = a.sigmaB;
+      left_smA = a.left_smA;
+      left_smB = a.left_smB;
+      right_sm = a.right_sm;
+      R = a.R;
+    }
 
       return *this;
     }

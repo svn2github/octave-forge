@@ -1,38 +1,47 @@
-%USAGE  y = thfm ( x, MODE )
-%
-%       trigonometric/hyperbolic functions of square matrix x
-%
-%MODE   cos   sin   tan   sec   csc   cot
-%       cosh  sinh  tanh  sech  csch  coth
-%       acos  asin  atan  asec  acsc  acot
-%       acosh asinh atanh asech acsch acoth
-%       sqrt  log   exp
-%
-%NOTE		--- IMPORTANT ---
-%	This algorithm does  NOT USE an eigensystem
-%	similarity transformation. It maps the MODE
-%	functions to functions of expm, logm and sqrtm, 
-%       which are known to be robust with respect to
-%	non-diagonalizable ('defective') x
-%
-%EXA	thfm( x ,'cos' )  calculates  matrix cosinus
-%	EVEN IF input matrix x IS NOT DIAGONALIZABLE
-%
-%ASSOC	expm, sqrtm, logm, funm
-% Copyright	(C) 2001 Rolf Fabian <fabian@tu-cottbus.de>
-% 010213
-%	published under current GNU GENERAL PUBLIC LICENSE
+## Copyright (C) 2001 Rolf Fabian <fabian@tu-cottbus.de>
+## Copyright (C) 2001 Paul Kienzle <pkienzle@users.sf.net>
+## Copyright (C) 2011 Philip Nienhuis <pr.nienhuis@hccnet.nl>
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
-% 2001-03-15 Paul Kienzle
-%     * extend with inverse functions and power functions
-%     * optimize handling of real input
-% 2011-03-27 Philip Nienhuis
-%     * Dropped call to funm at bottom (as funm now calls thfm...)
+#%USAGE  y = thfm ( x, MODE )
+#%
+#%       trigonometric/hyperbolic functions of square matrix x
+#%
+#%MODE   cos   sin   tan   sec   csc   cot
+#%       cosh  sinh  tanh  sech  csch  coth
+#%       acos  asin  atan  asec  acsc  acot
+#%       acosh asinh atanh asech acsch acoth
+#%       sqrt  log   exp
+#%
+#%NOTE		--- IMPORTANT ---
+#%	This algorithm does  NOT USE an eigensystem
+#%	similarity transformation. It maps the MODE
+#%	functions to functions of expm, logm and sqrtm, 
+#%       which are known to be robust with respect to
+#%	non-diagonalizable ('defective') x
+#%
+#%EXA	thfm( x ,'cos' )  calculates  matrix cosinus
+#%	EVEN IF input matrix x IS NOT DIAGONALIZABLE
+#%
+#%ASSOC	expm, sqrtm, logm, funm
 
 function y=thfm(x,M)
-				#% minimal arg check only
-  if	nargin~=2||~ischar(M)||ischar(x)	
-    usage ("y = thfm (x, MODE)");
+  #% minimal arg check only
+  if ( nargin ~= 2 || ~ischar (M) || ischar (x) )
+    print_usage;
   endif
 
   ## look for known functions of sqrt, log, exp
@@ -41,7 +50,7 @@ function y=thfm(x,M)
   len =  length(M);
   if	len==3
     
-    if	M=='cos',  
+    if	M=='cos',
       if (isreal(x))     y = real( expm( i*x ) );
       else               y = ( expm( i*x ) + expm( -i*x ) ) / 2;
       endif
@@ -61,12 +70,12 @@ function y=thfm(x,M)
       else	         t = expm( -2*i*x ); y = i*(I+t)/(I-t);
       endif
       
-    elseif	M=='sec',  
+    elseif	M=='sec',
       if (isreal(x))     y = inv( real(expm(i*x)) );
       else               y = inv( expm(i*x)+expm(-i*x) )*2 ;
       endif
       
-    elseif	M=='csc',  
+    elseif	M=='csc',
       if (isreal(x))     y = inv( imag(expm(i*x)) );
       else               y = inv( expm(i*x)-expm(-i*x) )*2i;
       endif

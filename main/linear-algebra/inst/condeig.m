@@ -1,4 +1,4 @@
-## Copyright (C) 2006, 2007  Arno Onken
+## Copyright (C) 2006, 2007 Arno Onken <asnelt@asnelt.org>
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -53,9 +53,6 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-
-## Author: Arno Onken <asnelt@asnelt.org>
-## Description: Condition numbers of eigenvalues
 
 function [v, lambda, c] = condeig (a)
 

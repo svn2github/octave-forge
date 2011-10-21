@@ -137,6 +137,11 @@ geometry-1.2   Release Date: 2011-10-xx   Release Manager: Juan Pablo Carbajal
  intersectCircles.m
  intersectEdges.m
  intersectLineCircle.m
+ isLeftOriented.m
+ isPointInCircle.m
+ isPointInEllipse.m
+ isPointOnCircle.m
+ isPointOnLine.m
 
 ===============================================================================
 

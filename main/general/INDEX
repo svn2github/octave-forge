@@ -4,19 +4,21 @@ Parallel Computing
  parcellfun
 Various Functions
  adresamp2
+ fload
+ fsave
+ majle
+ mark_for_deletion
+ packfields
  safeprod
+ unpackfields
  unresamp2
  unvech
  ztvals
  SHA1
- fload
- fsave
- mark_for_deletion
- packfields
- unpackfields
 Dictionaries
  @dict/dict
  @dict/display
+ @dict/end
  @dict/get
  @dict/has
  @dict/isempty

@@ -145,6 +145,17 @@ geometry-1.2   Release Date: 2011-10-xx   Release Manager: Juan Pablo Carbajal
  edgeLength.m
  edgePosition.m
  edgeToLine.m
+ circleArcAsCurve.m
+ circleAsPolygon.m
+ crackPattern.m
+ crackPattern2.m
+ distancePointEdge.m
+ distancePointLine.m
+ ellipseAsPolygon.m
+ enclosingCircle.m
+ radicalAxis.m
+ reverseEdge.m
+ reverseLine.m
 
 ===============================================================================
 

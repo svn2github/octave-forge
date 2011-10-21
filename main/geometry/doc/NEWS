@@ -131,6 +131,12 @@ geometry-1.2   Release Date: 2011-10-xx   Release Manager: Juan Pablo Carbajal
  inertiaEllipse.m
  changelog.txt
  readme.txt
- 
+ hexagonalGrid.m
+ squareGrid.m
+ triangleGrid.m
+ intersectCircles.m
+ intersectEdges.m
+ intersectLineCircle.m
+
 ===============================================================================
 

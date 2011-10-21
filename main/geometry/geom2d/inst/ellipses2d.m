@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2008-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,35 +31,20 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} ellipses2d ()
+%% Description of functions operating on ellipses.
+%%   
+%%   Ellipses are represented by their center, the length of their 2
+%%   semi-axes length, and their angle from the Ox direction (in degrees). 
+%%   E = [XC YC A B THETA];
+%%
+%%   @seealso{circles2d, inertiaEllipse, isPointInEllipse, ellipseAsPolygon
+%%   drawEllipse, drawEllipseArc}
+%% @end deftypefn
 
-function circles2d(varargin)
-%CIRCLES2D Description of functions operating on circles
-%
-%   Circles are represented by their center and their radius:
-%   C = [xc yc r];
-%   One sometimes considers orientation of circle, by adding an extra
-%   boolean value in 4-th position, with value TRUE for direct (i.e.
-%   turning Counter-clockwise) circles.
-%
-%   Circle arcs are represented by their center, their radius, the starting
-%   angle and the angle extent, both in degrees:
-%   CA = [xc yc r theta0 dtheta];
-%   
-%   Ellipses are represented by their center, their 2 semi-axis length, and
-%   their angle (in degrees) with Ox direction.
-%   E = [xc yc A B theta];
-%
-%   See also:
-%   ellipses2d, createCircle, createDirectedCircle, enclosingCircle
-%   isPointInCircle, isPointOnCircle
-%   intersectLineCircle, intersectCircles, radicalAxis
-%   circleAsPolygon, circleArcAsCurve
-%   drawCircle, drawCircleArc
-%
-% ------
-% Author: David Legland
-% e-mail: david.legland@grignon.inra.fr
-% Created: 2008-10-13,    using Matlab 7.4.0.287 (R2007a)
-% Copyright 2010 INRA - Cepia Software Platform.
+function ellipses2d(varargin)
 
-help('circles2d');
+  help('ellipses2d');
+
+endfunction

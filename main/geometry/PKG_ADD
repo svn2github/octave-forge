@@ -1,0 +1,12 @@
+dirlist = {"geom2d"};
+dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
+
+fullfile (dirname, "inst")
+%if (! exist (fullfile (dirname, "inst"), "dir"))
+%  for ii=1:length (dirlist)
+%    addpath ( [ dirname "/../" dirlist{ii}],"-end")
+%  endfor
+%endif
+
+warning('off', 'Octave:fopen-file-in-path');
+clear dirlist dirname

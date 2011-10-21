@@ -199,8 +199,9 @@
 %% http://www.pfl-cepia.inra.fr/index.php?page=geom2d
 %% @end deftypefn
 
-  help('Contents');
+function Contents ()
 
+  help('Contents');
 
   %%   Deprecated functions
 

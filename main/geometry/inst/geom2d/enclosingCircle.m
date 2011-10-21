@@ -41,8 +41,7 @@
 %%
 %%
 %%   Rewritten from a file from
-%%           Yazan Ahed (@url{yash78@gmail.com})
-%%
+%%           Yazan Ahed 
 %%   which was rewritten from a Java applet by Shripad Thite :
 %%   @url{http://heyoka.cs.uiuc.edu/~thite/mincircle/}
 %%

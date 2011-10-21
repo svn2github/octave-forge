@@ -41,10 +41,10 @@
 %%
 %%
 %%   Rewritten from a file from
-%%           Yazan Ahed (yash78@gmail.com)
+%%           Yazan Ahed (@url{yash78@gmail.com})
 %%
 %%   which was rewritten from a Java applet by Shripad Thite :
-%%   http://heyoka.cs.uiuc.edu/~thite/mincircle/
+%%   @url{http://heyoka.cs.uiuc.edu/~thite/mincircle/}
 %%
 %%   @seealso{circles2d, points2d, boxes2d}
 %% @end deftypefn

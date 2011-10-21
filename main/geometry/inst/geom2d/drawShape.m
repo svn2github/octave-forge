@@ -38,17 +38,18 @@
 %%
 %%   drawShape(TYPE, PARAM)
 %%   Draw the shape of type TYPE, specified by given parameter PARAM. TYPE
-%%   can be one of {'circle', 'ellipse', 'rect', 'polygon', 'curve'}
+%%   can be one of 'circle', 'ellipse', 'rect', 'polygon', 'curve'
 %%   PARAM depend on the type. For example, if TYPE is 'circle', PARAM will
 %%   contain [x0 y0 R].
 %%
 %%   Examples :
+%%   @example
 %%   drawShape('circle', [20 10 30]);
 %%   Draw circle centered on [20 10] with radius 10.
 %%   drawShape('rect', [20 20 40 10 pi/3]);
 %%   Draw rectangle centered on [20 20] with length 40 and width 10, and
 %%   oriented pi/3 wrt axis Ox.
-%%   
+%% @end example
 %%
 %%   drawShape(..., OPTION)
 %%   also specifies drawing options. OPTION can be 'draw' (default) or

@@ -57,7 +57,8 @@
 %%   -> Parameters can also be arrays. In this case, all arrays are supposed 
 %%   to have the same size.
 %%
-%%   @example:
+%%   Example: 
+%%   @example
 %%   % Draw an ellipse centered in [50 50], with semi major axis length of
 %%   % 40, semi minor axis length of 20, and rotated by 30 degrees.
 %%     figure(1); clf; hold on;

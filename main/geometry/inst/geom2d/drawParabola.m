@@ -66,7 +66,8 @@
 %%   Returns an handle to the created graphical object.
 %%
 %%
-%%   @example:
+%%   Example:
+%%   @example
 %%   figure(1); clf; hold on;
 %%   drawParabola([50 50 .2 30]);
 %%   drawParabola([50 50 .2 30], [-1 1], 'color', 'r', 'linewidth', 2);

@@ -16,29 +16,27 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-#%USAGE  y = thfm ( x, MODE )
-#%
-#%       trigonometric/hyperbolic functions of square matrix x
-#%
-#%MODE   cos   sin   tan   sec   csc   cot
-#%       cosh  sinh  tanh  sech  csch  coth
-#%       acos  asin  atan  asec  acsc  acot
-#%       acosh asinh atanh asech acsch acoth
-#%       sqrt  log   exp
-#%
-#%NOTE		--- IMPORTANT ---
-#%	This algorithm does  NOT USE an eigensystem
-#%	similarity transformation. It maps the MODE
-#%	functions to functions of expm, logm and sqrtm, 
-#%       which are known to be robust with respect to
-#%	non-diagonalizable ('defective') x
-#%
-#%EXA	thfm( x ,'cos' )  calculates  matrix cosinus
-#%	EVEN IF input matrix x IS NOT DIAGONALIZABLE
-#%
-#%ASSOC	expm, sqrtm, logm, funm
+## -*- texinfo -*-
+## @deftypefn{Function File} {@var{y} =} thfm (@var{x}, @var{mode})
+## Trigonometric/hyperbolic functions of square matrix @var{x}.
+##
+## @var{mode} must be the name of a function. Valid functions are 'sin', 'cos',
+## 'tan', 'sec', 'csc', 'cot' and all their inverses and/or hyperbolic variants,
+## and 'sqrt', 'log' and 'exp'.
+##
+## The code @code{thfm( x ,'cos' )} calculates matrix cosinus @emph{even if} input
+## matrix @var{x} is @emph{not} diagonalizable.
+##
+## @heading{Important note}
+## This algorithm does @emph{not use} an eigensystem similarity transformation. It
+## maps the @var{mode} functions to functions of @code{expm}, @code{logm} and
+## @code{sqrtm}, which are known to be robust with respect to non-diagonalizable
+## ('defective') @var{x}.
+##
+## @seealso{funm}
+## end deftypefn
 
-function y=thfm(x,M)
+function y = thfm (x,M)
   #% minimal arg check only
   if ( nargin ~= 2 || ~ischar (M) || ischar (x) )
     print_usage;

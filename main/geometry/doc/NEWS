@@ -142,6 +142,9 @@ geometry-1.2   Release Date: 2011-10-xx   Release Manager: Juan Pablo Carbajal
  isPointInEllipse.m
  isPointOnCircle.m
  isPointOnLine.m
+ edgeLength.m
+ edgePosition.m
+ edgeToLine.m
 
 ===============================================================================
 

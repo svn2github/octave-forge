@@ -1,5 +1,5 @@
 %% Copyright (c) 2011, INRA
-%% 2007-2011, David Legland <david.legland@grignon.inra.fr>
+%% 2009-2011, David Legland <david.legland@grignon.inra.fr>
 %% 2011 Adapted to Octave by Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 %%
 %% All rights reserved.
@@ -31,36 +31,26 @@
 %% those of the authors and should not be interpreted as representing official
 %% policies, either expressed or implied, of copyright holder.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{line} = } edgeToLine (@var{edge})
+%% Convert an edge to a straight line
+%%
+%%   LINE = edgeToLine(EDGE);
+%%   Returns the line containing the edge EDGE.
+%%
+%%   Example
+%%       edge = [2 3 4 5];
+%%       line = edgeToLine(edge);
+%%       figure(1); hold on; axis([0 10 0 10]);
+%%       drawLine(line, 'color', 'g')
+%%       drawEdge(edge, 'linewidth', 2)
+%%   
+%%   @seealso{edges2d, lines2d}
+%% @end deftypefn
 
-function len = edgeLength(varargin)
-%EDGELENGTH Return length of an edge
-%
-%   L = edgeLength(EDGE);  
-%   Returns the length of an edge, with parametric representation:
-%   [x1 y1 x2 y2].
-%
-%   The function also works for several edges, in this case input is a
-%   [N*4] array, containing parametric representation of each edge, and
-%   output is a [N*1] array containing length of each edge.
-%
-%   See also:
-%   edges2d, edgeAngle
-%
-%   ---------
-%
-%   author : David Legland 
-%   INRA - TPV URPOI - BIA IMASTE
-%   created the 19/02/2004
-%
+function line = edgeToLine(edge)
 
-%   HISTORY
-%   15/04/2005 changes definition for edge, uses [x1 y1 x2 y2] instead of
-%       [x0 y0 dx dy].
+  line = [edge(:, 1:2) edge(:, 3:4)-edge(:, 1:2)];
 
-%   TODO : specify norm (euclidian, taxi, ...).
+endfunction
 
-nargs = length(varargin);
-if nargs == 1
-    edge = varargin{1};
-    len = sqrt(power(edge(:,3)-edge(:,1), 2) + power(edge(:,4)-edge(:,2), 2));
-end

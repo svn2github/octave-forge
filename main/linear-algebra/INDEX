@@ -1,15 +1,17 @@
 matrix >> Linear Algebra
 Matrix functions
+ cartprod
+ cod
  condeig
  funm
- thfm
- cartprod
+ lobpcg
+ ndcovlt
  rotparams
  rotv
- mgorth
- sprand
+ smwsolve
+ thfm
 Matrix factorization
- gsvd 
+ gsvd
 Test
  test_gsvd
 
@@ -20,10 +22,13 @@ Block sparse matrices
  @blksparse/ctranspose
  @blksparse/display
  @blksparse/full
+ @blksparse/ismatrix
+ @blksparse/isreal
+ @blksparse/issparse
  @blksparse/minus
- @blksparse/mtimes
  @blksparse/mldivide
  @blksparse/mrdivide
+ @blksparse/mtimes
  @blksparse/plus
  @blksparse/size
  @blksparse/sparse
@@ -33,36 +38,36 @@ Block sparse matrices
  @blksparse/uplus
 
 Iterative techniques
- bicg pgmres
+ pgmres
 
 Kronecker Products
  @kronprod/kronprod
- @kronprod/rows
  @kronprod/columns
- @kronprod/numel
- @kronprod/size
- @kronprod/display
+ @kronprod/ctranspose
+ @kronprod/det
  @kronprod/disp
- @kronprod/issquare
- @kronprod/issparse
- @kronprod/isreal
+ @kronprod/display
+ @kronprod/full
+ @kronprod/inv
  @kronprod/iscomplex
  @kronprod/ismatrix
- @kronprod/sparse
- @kronprod/full
- @kronprod/transpose
- @kronprod/ctranspose
- @kronprod/uplus
- @kronprod/uminus
- @kronprod/plus
+ @kronprod/isreal
+ @kronprod/issparse
+ @kronprod/issquare
  @kronprod/minus
- @kronprod/times
- @kronprod/rdivide
  @kronprod/mldivide
- @kronprod/mtimes
  @kronprod/mpower
- @kronprod/inv
- @kronprod/det
+ @kronprod/mtimes
+ @kronprod/numel
+ @kronprod/plus
  @kronprod/rank
+ @kronprod/rdivide
+ @kronprod/rows
+ @kronprod/size
+ @kronprod/size_equal
+ @kronprod/sparse
+ @kronprod/times
  @kronprod/trace
-
+ @kronprod/transpose
+ @kronprod/uminus
+ @kronprod/uplus

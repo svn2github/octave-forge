@@ -21,7 +21,6 @@
 ## If @var{f} is not an absolute filename, and 
 ## is not an immediately accessible file, slurp_file () 
 ## will look for @var{f} in the path.
-## @seealso{}
 ## @end deftypefn
 
 ## Author  : Etienne Grossmann <etienne@cs.uky.edu>

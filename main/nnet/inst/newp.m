@@ -36,8 +36,6 @@
 ##
 ## @end deftypefn
 
-## @seealso{}
-
 ## Author: Michel D. Schmid
 
 function net = newp(Pr,ss,transFunc,learnFunc)

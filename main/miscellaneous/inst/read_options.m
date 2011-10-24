@@ -59,7 +59,6 @@
 ## [is_man, is_plane, flies] = getfields (s,"is_man", "is_plane", "flies")
 ## pre 2.1.39 function [op,nread] = read_options (args, ...)
 ## @end example
-## @seealso{}
 ## @end deftypefn
 
 function [op,nread] = read_options (args, varargin) ## pos 2.1.39

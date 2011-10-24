@@ -26,7 +26,6 @@
 ## The beginning of the @var{rsi} is padded with nans to match the size
 ## of @var{closeprice}.
 ##
-## @seealso{}
 ## @end deftypefn
 
 function rsi = rsindex (cl, n)

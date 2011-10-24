@@ -26,7 +26,6 @@
 ## temp_name() will find the smallest acceptable number for the name.
 ## Otherwise, a hopefully quicker method is used.
 ##
-## @seealso{}
 ## @end deftypefn
 function n = temp_name (rootname, quick)
 

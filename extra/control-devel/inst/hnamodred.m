@@ -1,31 +1,84 @@
-function [sysr, nr] = hnamodred (sys, nr = 0, sysv = [], sysw = [])
+function [sysr, nr] = hnamodred (sys, varargin)
 
+  if (nargin == 0)
+    print_usage ();
+  endif
+  
+  if (! isa (sys, "lti"))
+    error ("hnamodred: first argument must be an LTI system");
+  endif
+  
   [a, b, c, d, tsam, scaled] = ssdata (sys);
   dt = isdt (sys);
   
-  if (isempty (sysv))
-    av = bv = cv = dv = [];
-    jobv = 0;
-  else
-    sysv = ss (sysv);
-    [av, bv, cv, dv] = ssdata (sysv);
-    jobv = 1;
-  endif
-
-  if (isempty (sysw))
-    aw = bw = cw = dw = [];
-    jobw = 0;
-  else
-    sysw = ss (sysw);
-    [aw, bw, cw, dw] = ssdata (sysw);
-    jobw = 1;
-  endif
-
+  ## default arguments
+  av = bv = cv = dv = [];
+  jobv = 0;
+  aw = bw = cw = dw = [];
+  jobw = 0;
   jobinv = 2;
   tol1 = 1e-1; 
   tol2 = 1e-14;
   alpha = 0.0;
   ordsel = 1;
+  nr = 0
+
+  for k = 1 : 2 : (nargin-1)
+    prop = lower (varargin{k});
+    val = varargin{k+1};
+    switch (prop)
+      case {"left", "v"}
+        val = ss (val);  # val could be non-lti, therefore ssdata would fail
+        [av, bv, cv, dv, tsamv] = ssdata (val);
+        jobv = 1;
+
+      case {"right", "w"}
+        val = ss (val);
+        [aw, bw, cw, dw, tsamw] = ssdata (val);
+        jobw = 1;
+        ## TODO: check ct/dt
+
+      case {"order", "n", "nr"}
+        if (! issample (val, 0) || val != round (val))
+          error ("hnamodred: argument %s must be an integer >= 0", varargin{k});
+        endif
+        nr = val;
+        ordsel = 0;
+
+      case "tol1"
+        if (! is_real_scalar (val))
+          error ("hnamodred: argument %s must be a real scalar", varargin{k});
+        endif
+        tol1 = val;
+
+      case "tol2"
+        if (! is_real_scalar (val))
+          error ("hnamodred: argument %s must be a real scalar", varargin{k});
+        endif
+        tol2 = val;
+
+      case "alpha"
+        if (! is_real_scalar (val))
+          error ("hnamodred: argument %s must be a real scalar", varargin{k});
+        endif
+        if (dt)  # discrete-time
+          if (val < 0 || val > 1)
+            error ("hnamodred: argument %s must be 0 <= ALPHA <= 1", varargin{k});
+          endif
+        else     # continuous-time
+          if (val > 0)
+            error ("hnamodred: argument %s must be ALPHA <= 0", varargin{k});
+          endif
+        endif
+        alpha = val;
+
+
+      otherwise
+        error ("hnamodred: invalid property name");
+    endswitch
+  endfor
+  
+
 
   [ar, br, cr, dr, nr] = slab09jd (a, b, c, d, dt, scaled, nr, ordsel, alpha, \
                                    jobv, av, bv, cv, dv, \

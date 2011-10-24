@@ -42,7 +42,7 @@
 %% When @var{r} and @var{c} are row or column matrices of subindeces of the same
 %% size then @var{ind} have the same shape as any of them.
 %%
-%% @seealse{vech, sub2ind, ind2sub_tril}
+%% @seealso{vech, sub2ind, ind2sub_tril}
 %% @end deftypefn
 
 function ind = sub2ind_tril(N,r,c)

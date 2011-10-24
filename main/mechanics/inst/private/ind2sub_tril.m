@@ -43,7 +43,7 @@
 %% when @var{idx} is a row or column matrix of linear indeces then @var{r} and
 %% @var{c} have the same shape as @var{idx}.
 %%
-%% @seealse{vech, ind2sub, sub2ind_tril}
+%% @seealso{vech, ind2sub, sub2ind_tril}
 %% @end deftypefn
 
 function [r c] = ind2sub_tril(N,idx)

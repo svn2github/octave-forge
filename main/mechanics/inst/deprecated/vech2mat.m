@@ -24,7 +24,7 @@
 %% If @var{symm} is omitted a symmetric matrix is returned.
 %% 
 %%
-%% @seealse{vech, ind2sub, sub2ind_tril}
+%% @seealso{vech, ind2sub, sub2ind_tril}
 %% @end deftypefn
 
 function M = vech2mat(v, symm=1)

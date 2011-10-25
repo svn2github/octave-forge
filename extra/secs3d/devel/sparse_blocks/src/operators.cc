@@ -60,7 +60,7 @@ void bim3a_reaction  (const mesh& msh, const std::vector<double>& ecoeff, const 
         if (ig >= msh.nnodes)
           std::cout << " out of bounds" << std::endl;
         
-        A[ig][ig] += ncoeff[ig] * ecoeff[iel] * msh.volume (iel);
+        A[ig][ig] += ncoeff[ig] * ecoeff[iel] * msh.volume (iel) / 4.0;
       }
 };
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env octave -q 
 pkg load bim
 
-xx = linspace (0,1,7);
-yy = linspace (0,1,9);
+xx = linspace (0,8,120);
+yy = linspace (0,1,11);
 zz = linspace (0,1,15);
 msh = msh3m_structured_mesh (xx, yy, zz, 1, 1:6);
 
@@ -25,7 +25,7 @@ fprintf (fid, "\n");
 fclose (fid);
 
 system ("make");
-system ("./sparse_test");
+system ("./bim3_test");
 
 mesh_out
 

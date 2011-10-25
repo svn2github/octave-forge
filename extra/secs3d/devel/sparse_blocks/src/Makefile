@@ -26,7 +26,7 @@ bim3_test: sparse.o mumps_class.o mesh.o operators.o bim3_test.o
 	$(LIBGFORTRAN) \
 	$(LIBBLAS) \
 	-I$(MPIINC) \
-	sparse.o mumps_class.o sparse_test.o mesh.o operators.o -o bim3_test
+	sparse.o mumps_class.o bim3_test.o mesh.o operators.o -o bim3_test
 
 sparse_test.o: sparse_test.cc mumps_class.h mumps_solve.h sparse.h mesh.h operators.h
 	$(MPICXX) $(CXXFLAGS) -I$(INCLOC) -I. -c sparse_test.cc

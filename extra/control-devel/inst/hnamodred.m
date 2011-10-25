@@ -133,6 +133,8 @@ function [sysr, nr] = hnamodred (sys, varargin)
     endswitch
   endfor
   
+  ## TODO: handle jobv, jobw, (jobinv)
+  
   ## perform model order reduction
   [ar, br, cr, dr, nr] = slab09jd (a, b, c, d, dt, scaled, nr, ordsel, alpha, \
                                    jobv, av, bv, cv, dv, \

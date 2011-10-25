@@ -54,11 +54,17 @@ function mu_b = Uphilipsmobiltymodeln (n, p, N_D, N_A, T)
 
   N_sc = N_D_star + N_A_star + p;
 
-  F = @(P) fF (P, m_n_star, m_p_star);
-  G = @(P) fG (P, T, T_300, m_n_star, m_0, a_g, b_g, c_g, alpha_g, alpha_prime_g, beta_g, gamma_g);
   P = (T ./ T_300).^2 ./ (f_CW ./ (3.97e13 .* N_sc .^ (-2/3)) + f_BH ./ ( 1.36e20 .* m_n_star ./ (m_0 .* (n + p))));
 
-  N_sc_eff = N_D_star + G(P) .* N_A_star + p ./ F(P);
+  %%  F = @(P) fF (P, m_n_star, m_p_star);
+  F = (0.7643 .* P .^ (0.6478) + 2.2999 + 6.5502 .* (m_n_star ./ m_p_star)) ./ ...
+      (P .^ (0.6478) + 2.3670 - 0.8552 .* (m_n_star ./ m_p_star));
+  %%  G = @(P) fG (P, T, T_300, m_n_star, m_0, a_g, b_g, c_g, alpha_g, alpha_prime_g, beta_g, gamma_g);
+  G = 1 - a_g ./ (b_g + P .* (m_0 .* T ./ (m_n_star .* T_300)) .^ alpha_g) .^ beta_g + ...
+      c_g ./ (P .* (m_0 .* T ./ (m_n_star .* T_300)) .^ alpha_prime_g) .^ gamma_g;
+
+
+  N_sc_eff = N_D_star + G .* N_A_star + p ./ F;
 
   mu_c = ((mu_max .* mu_min) ./ (mu_max - mu_min)) .* (T./T_300).^(1/2);
   mu_N = (mu_max.^2 ./ (mu_max - mu_min)) .* (T./T_300).^(3.*(alpha - 1/2));
@@ -70,15 +76,15 @@ function mu_b = Uphilipsmobiltymodeln (n, p, N_D, N_A, T)
 
 endfunction
 
-function F = fF (P, m_n_star, m_p_star)
-  F = (0.7643 .* P .^ (0.6478) + 2.2999 + 6.5502 .* (m_n_star ./ m_p_star)) ./ ...
-      (P .^ (0.6478) + 2.3670 - 0.8552 .* (m_n_star ./ m_p_star));
-endfunction
-
-function G = fG (P, T, T_300, m_n_star, m_0, a_g, b_g, c_g, alpha_g, alpha_prime_g, beta_g, gamma_g)
-  G = 1 - a_g ./ (b_g + P .* (m_0 .* T ./ (m_n_star .* T_300)) .^ alpha_g) .^ beta_g + ...
-      c_g ./ (P .* (m_0 .* T ./ (m_n_star .* T_300)) .^ alpha_prime_g) .^ gamma_g;
-endfunction
+%%function F = fF (P, m_n_star, m_p_star)
+%%  F = (0.7643 .* P .^ (0.6478) + 2.2999 + 6.5502 .* (m_n_star ./ m_p_star)) ./ ...
+%%      (P .^ (0.6478) + 2.3670 - 0.8552 .* (m_n_star ./ m_p_star));
+%%endfunction
+%%
+%%function G = fG (P, T, T_300, m_n_star, m_0, a_g, b_g, c_g, alpha_g, alpha_prime_g, beta_g, gamma_g)
+%%  G = 1 - a_g ./ (b_g + P .* (m_0 .* T ./ (m_n_star .* T_300)) .^ alpha_g) .^ beta_g + ...
+%%      c_g ./ (P .* (m_0 .* T ./ (m_n_star .* T_300)) .^ alpha_prime_g) .^ gamma_g;
+%%endfunction
 
 %!demo
 %! N_D = logspace (14, 20, 30);

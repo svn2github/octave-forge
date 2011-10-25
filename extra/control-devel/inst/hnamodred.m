@@ -1,3 +1,50 @@
+## Copyright (C) 2011   Lukas F. Reichlin
+##
+## This file is part of LTI Syncope.
+##
+## LTI Syncope is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## LTI Syncope is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} hnamodred (@var{sys}, @dots{})
+## Model order reduction by frequency weighted optimal Hankel-norm approximation method.
+##
+## @strong{Inputs}
+## @table @var
+## @item sys
+## LTI model to be reduced.
+## @item @dots{}
+## Pairs of properties and values.
+## TODO: describe options.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item sysr
+## Reduced order state-space model.
+## @item n
+## The order of the obtained system @var{sysr}.
+## @end table
+##
+## @strong{Algorithm}@*
+## Uses SLICOT AB09JD by courtesy of
+## @uref{http://www.slicot.org, NICONET e.V.}
+## @end deftypefn
+
+## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
+## Created: October 2011
+## Version: 0.1
+
 function [sysr, nr] = hnamodred (sys, varargin)
 
   if (nargin == 0)
@@ -7,7 +54,11 @@ function [sysr, nr] = hnamodred (sys, varargin)
   if (! isa (sys, "lti"))
     error ("hnamodred: first argument must be an LTI system");
   endif
-  
+
+  if (rem (nargin-1, 2))
+    error ("hnamodred: properties and values must come in pairs");
+  endif
+
   [a, b, c, d, tsam, scaled] = ssdata (sys);
   dt = isdt (sys);
   
@@ -17,11 +68,16 @@ function [sysr, nr] = hnamodred (sys, varargin)
   aw = bw = cw = dw = [];
   jobw = 0;
   jobinv = 2;
-  tol1 = 1e-1; 
-  tol2 = 1e-14;
-  alpha = 0.0;
+  tol1 = 0; 
+  tol2 = 0;
   ordsel = 1;
   nr = 0
+  
+  if (dt)       # discrete-time
+    alpha = 1;  # ALPHA <= 0
+  else          # continuous-time
+    alpha = 0;  # 0 <= ALPHA <= 1
+  endif
 
   for k = 1 : 2 : (nargin-1)
     prop = lower (varargin{k});
@@ -72,7 +128,6 @@ function [sysr, nr] = hnamodred (sys, varargin)
         endif
         alpha = val;
 
-
       otherwise
         error ("hnamodred: invalid property name");
     endswitch
@@ -91,57 +146,57 @@ endfunction
 
 
 %!shared Mo, Me
-%! a =  [ -3.8637   -7.4641   -9.1416   -7.4641   -3.8637   -1.0000
+%! A =  [ -3.8637   -7.4641   -9.1416   -7.4641   -3.8637   -1.0000
 %!         1.0000,         0         0         0         0         0
 %!              0    1.0000         0         0         0         0
 %!              0         0    1.0000         0         0         0
 %!              0         0         0    1.0000         0         0
 %!              0         0         0         0    1.0000         0 ];
 %!
-%! b =  [       1
+%! B =  [       1
 %!              0
 %!              0
 %!              0
 %!              0
 %!              0 ];
 %!
-%! c =  [       0         0         0         0         0         1 ];
+%! C =  [       0         0         0         0         0         1 ];
 %!
-%! d =  [       0 ];
+%! D =  [       0 ];
 %!
-%! sys = ss (a, b, c, d);
+%! sys = ss (A, B, C, D);
 %!
-%! av = [  0.2000   -1.0000
+%! AV = [  0.2000   -1.0000
 %!         1.0000         0 ];
 %!
-%! bv = [       1
+%! BV = [       1
 %!              0 ];
 %!
-%! cv = [ -1.8000         0 ];
+%! CV = [ -1.8000         0 ];
 %!
-%! dv = [       1 ];
+%! DV = [       1 ];
 %!
-%! sysv = ss (av, bv, cv, dv);
+%! sysv = ss (AV, BV, CV, DV);
 %!
-%! sysr = hnamodred (sys, 0, sysv, []);
-%! [ao, bo, co, do] = ssdata (sysr);
+%! sysr = hnamodred (sys, "left", sysv, "tol1", 1e-1, "tol2", 1e-14);
+%! [Ao, Bo, Co, Do] = ssdata (sysr);
 %!
-%! ae = [ -0.2391   0.3072   1.1630   1.1967
+%! Ae = [ -0.2391   0.3072   1.1630   1.1967
 %!        -2.9709  -0.2391   2.6270   3.1027
 %!         0.0000   0.0000  -0.5137  -1.2842
 %!         0.0000   0.0000   0.1519  -0.5137 ];
 %!
-%! be = [ -1.0497
+%! Be = [ -1.0497
 %!        -3.7052
 %!         0.8223
 %!         0.7435 ];
 %!
-%! ce = [ -0.4466   0.0143  -0.4780  -0.2013 ];
+%! Ce = [ -0.4466   0.0143  -0.4780  -0.2013 ];
 %!
-%! de = [  0.0219 ];
+%! De = [  0.0219 ];
 %!
-%! Mo = [ao, bo; co, do];
-%! Me = [ae, be; ce, de];
+%! Mo = [Ao, Bo; Co, Do];
+%! Me = [Ae, Be; Ce, De];
 %!
 %!assert (Mo, Me, 1e-4);
 

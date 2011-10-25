@@ -113,7 +113,7 @@ for i=1:1:maxit
 
   
   if (verbose>1)
-    fprintf (1,' max(|phin_(k+1)-phinn_(k)| , |phip_(k+1)-phip_(k)| , |v_(k+1)- v_(k)| )= %d\n',nrm(i));
+    fprintf (1,' max(|phin_(k+1)-phinn_(k)| , |phip_(k+1)-phip_(k)| , |v_(k+1)- v_(k)| )= %g\n',nrm(i));
   end
   if (nrm(i)<toll)
     break

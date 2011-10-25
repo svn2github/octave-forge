@@ -32,7 +32,7 @@
 ## @table @var
 ## @item sysr
 ## Reduced order state-space model.
-## @item n
+## @item nr
 ## The order of the obtained system @var{sysr}.
 ## @end table
 ##
@@ -133,13 +133,13 @@ function [sysr, nr] = hnamodred (sys, varargin)
     endswitch
   endfor
   
-
-
+  ## perform model order reduction
   [ar, br, cr, dr, nr] = slab09jd (a, b, c, d, dt, scaled, nr, ordsel, alpha, \
                                    jobv, av, bv, cv, dv, \
                                    jobw, aw, bw, cw, dw, \
                                    jobinv, tol1, tol2);
 
+  ## assemble reduced order model
   sysr = ss (ar, br, cr, dr, tsam);
 
 endfunction

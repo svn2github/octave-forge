@@ -23,7 +23,9 @@ mkoctfile "-Wl,-framework" "-Wl,vecLib" \
           MB04ND.f MB04OD.f SB03OR.f SB03OY.f MB04NY.f \
           MB04OY.f SB03OV.f
 
-mkoctfile AB09HD.f TB01ID.f AB04MD.f TB01KD.f AB09HY.f \
+mkoctfile "-Wl,-framework" "-Wl,vecLib" \
+          slab09hd.cc \
+          AB09HD.f TB01ID.f AB04MD.f TB01KD.f AB09HY.f \
           AB09IX.f MB03UD.f SB02MD.f AB09DD.f TB01LD.f \
           SB03OU.f MA02AD.f MB03QX.f select.f SB03OT.f \
           SB02MR.f SB02MS.f MB03QD.f SB02MU.f SB02MV.f \

@@ -291,10 +291,95 @@ For internal use only.")
                   iwarn, info));
 
         if (f77_exception_encountered)
-            error ("hsvd: slab09jd: exception in SLICOT subroutine AB09JD");
+            error ("hnamodred: exception in SLICOT subroutine AB09JD");
             
         if (info != 0)
-            error ("hsvd: slab09jd: AB09JD returned info = %d", info);
+        {
+            //error ("hsvd: slab09jd: AB09JD returned info = %d", info);
+            if (info < 0)
+                error ("hnamodred: the %d-th argument had an invalid value", info);
+            else
+            {
+                switch (info)
+                {
+                    // FIXME: The code below looks nice, but the error message does not
+                    //        because there is much white space after each line break
+                    case 1:
+                        error ("hnamodred: 1: the computation of the ordered real Schur form of A\
+                                failed");
+                    case 2:
+                        error ("hnamodred: 2: the separation of the ALPHA-stable/unstable\
+                                diagonal blocks failed because of very close eigenvalues");
+                    case 3:
+                        error ("hnamodred: 3: the reduction of AV to a real Schur form failed");
+                    case 4:
+                        error ("hnamodred: 4: the reduction of AW to a real Schur form failed");
+                    case 5:
+                        error ("hnamodred: 5: the reduction to generalized Schur form of the\
+                                descriptor pair corresponding to the inverse of V\
+                                failed");
+                    case 6:
+                        error ("hnamodred: 6: the reduction to generalized Schur form of the\
+                                descriptor pair corresponding to the inverse of W\
+                                failed");
+                    case 7:
+                        error ("hnamodred: 7: the computation of Hankel singular values failed");
+                    case 8:
+                        error ("hnamodred: 8: the computation of stable projection in the\
+                                Hankel-norm approximation algorithm failed");
+                    case 9:
+                        error ("hnamodred: 9: the order of computed stable projection in the\
+                                Hankel-norm approximation algorithm differs\
+                                from the order of Hankel-norm approximation");
+                    case 10:
+                        error ("hnamodred: 10: the reduction of AV-BV*inv(DV)*CV to a\
+                                real Schur form failed");
+                    case 11:
+                        error ("hnamodred: 11: the reduction of AW-BW*inv(DW)*CW to a\
+                                real Schur form failed");
+                    case 12:
+                        error ("hnamodred: 12: the solution of the Sylvester equation failed\
+                                because the poles of V (if JOBV = 'V') or of\
+                                conj(V) (if JOBV = 'C') are not distinct from\
+                                the poles of G1 (see METHOD)");
+                    case 13:
+                        error ("hnamodred: 13: the solution of the Sylvester equation failed\
+                                because the poles of W (if JOBW = 'W') or of\
+                                conj(W) (if JOBW = 'C') are not distinct from\
+                                the poles of G1 (see METHOD)");
+                    case 14:
+                        error ("hnamodred: 14: the solution of the Sylvester equation failed\
+                                because the zeros of V (if JOBV = 'I') or of\
+                                conj(V) (if JOBV = 'R') are not distinct from\
+                                the poles of G1sr (see METHOD)");
+                    case 15:
+                        error ("hnamodred: 15: the solution of the Sylvester equation failed\
+                                because the zeros of W (if JOBW = 'I') or of\
+                                conj(W) (if JOBW = 'R') are not distinct from\
+                                the poles of G1sr (see METHOD)");
+                    case 16:
+                        error ("hnamodred: 16: the solution of the generalized Sylvester system\
+                                failed because the zeros of V (if JOBV = 'I') or\
+                                of conj(V) (if JOBV = 'R') are not distinct from\
+                                the poles of G1sr (see METHOD)");
+                    case 17:
+                        error ("hnamodred: 17: the solution of the generalized Sylvester system\
+                                failed because the zeros of W (if JOBW = 'I') or\
+                                of conj(W) (if JOBW = 'R') are not distinct from\
+                                the poles of G1sr (see METHOD)");
+                    case 18:
+                        error ("hnamodred: 18: op(V) is not antistable");
+                    case 19:
+                        error ("hnamodred: 19: op(W) is not antistable");
+                    case 20:
+                        error ("hnamodred: 20: V is not invertible");
+                    case 21:
+                        error ("hnamodred: 21: W is not invertible");
+                    default:
+                        error ("hnamodred: unknown error, info = %d", info);
+                }
+            }
+        }
 
         // resize
         a.resize (nr, nr);

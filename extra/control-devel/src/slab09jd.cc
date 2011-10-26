@@ -380,6 +380,29 @@ For internal use only.")
                 }
             }
         }
+        
+        if (iwarn != 0)
+        {
+            switch (iwarn)
+            {
+                case 1:
+                    warning ("hnamodred: 1: with ORDSEL = 'F', the selected order NR is greater\
+                              than NSMIN, the sum of the order of the\
+                              ALPHA-unstable part and the order of a minimal\
+                              realization of the ALPHA-stable part of the given\
+                              system. In this case, the resulting NR is set equal\
+                              to NSMIN.");
+                    break;
+                case 2:
+                    warning ("hnamodred: 2: with ORDSEL = 'F', the selected order NR is less\
+                              than the order of the ALPHA-unstable part of the\
+                              given system. In this case NR is set equal to the\
+                              order of the ALPHA-unstable part.");
+                    break;
+                default:
+                    warning ("hnamodred: unknown warning, iwarn = %d", info);
+            }
+        }
 
         // resize
         a.resize (nr, nr);

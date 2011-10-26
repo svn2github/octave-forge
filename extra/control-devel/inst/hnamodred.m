@@ -178,7 +178,7 @@ endfunction
 %!
 %! DV = [       1 ];
 %!
-%! sysv = ss (AV, BV, CV, DV);
+%! sysv = ss (AV, BV, CV, DV, "scaled", true);
 %!
 %! sysr = hnamodred (sys, "left", sysv, "tol1", 1e-1, "tol2", 1e-14);
 %! [Ao, Bo, Co, Do] = ssdata (sysr);

@@ -37,7 +37,7 @@
 ## @end table
 ##
 ## @strong{Algorithm}@*
-## Uses SLICOT AB09JD by courtesy of
+## Uses SLICOT AB09HD by courtesy of
 ## @uref{http://www.slicot.org, NICONET e.V.}
 ## @end deftypefn
 
@@ -45,33 +45,31 @@
 ## Created: October 2011
 ## Version: 0.1
 
-function [sysr, nr] = hnamodred (sys, varargin)
+function [sysr, nr] = bstmodred (sys, varargin)
 
   if (nargin == 0)
     print_usage ();
   endif
   
   if (! isa (sys, "lti"))
-    error ("hnamodred: first argument must be an LTI system");
+    error ("bstmodred: first argument must be an LTI system");
   endif
 
   if (rem (nargin-1, 2))
-    error ("hnamodred: properties and values must come in pairs");
+    error ("bstmodred: properties and values must come in pairs");
   endif
 
   [a, b, c, d, tsam, scaled] = ssdata (sys);
   dt = isdt (sys);
   
   ## default arguments
-  av = bv = cv = dv = [];
-  jobv = 0;
-  aw = bw = cw = dw = [];
-  jobw = 0;
-  jobinv = 2;
+  beta = 1; # ?
   tol1 = 0; 
   tol2 = 0;
   ordsel = 1;
   nr = 0;
+  
+  job = 1; ## ?
   
   if (dt)       # discrete-time
     alpha = 1;  # ALPHA <= 0
@@ -83,20 +81,9 @@ function [sysr, nr] = hnamodred (sys, varargin)
     prop = lower (varargin{k});
     val = varargin{k+1};
     switch (prop)
-      case {"left", "v"}
-        val = ss (val);  # val could be non-lti, therefore ssdata would fail
-        [av, bv, cv, dv, tsamv] = ssdata (val);
-        jobv = 1;
-
-      case {"right", "w"}
-        val = ss (val);
-        [aw, bw, cw, dw, tsamw] = ssdata (val);
-        jobw = 1;
-        ## TODO: check ct/dt
-
       case {"order", "n", "nr"}
         if (! issample (val, 0) || val != round (val))
-          error ("hnamodred: argument %s must be an integer >= 0", varargin{k});
+          error ("bstmodred: argument %s must be an integer >= 0", varargin{k});
         endif
         nr = val;
         ordsel = 0;
@@ -115,31 +102,35 @@ function [sysr, nr] = hnamodred (sys, varargin)
 
       case "alpha"
         if (! is_real_scalar (val))
-          error ("hnamodred: argument %s must be a real scalar", varargin{k});
+          error ("bstmodred: argument %s must be a real scalar", varargin{k});
         endif
         if (dt)  # discrete-time
           if (val < 0 || val > 1)
-            error ("hnamodred: argument %s must be 0 <= ALPHA <= 1", varargin{k});
+            error ("bstmodred: argument %s must be 0 <= ALPHA <= 1", varargin{k});
           endif
         else     # continuous-time
           if (val > 0)
-            error ("hnamodred: argument %s must be ALPHA <= 0", varargin{k});
+            error ("bstmodred: argument %s must be ALPHA <= 0", varargin{k});
           endif
         endif
         alpha = val;
+
+      case "beta"
+        if (! issample (val, 0))
+          error ("bstmodred: argument %s must be BETA >= 0", varargin{k});
+        endif
+        beta = val;
 
       otherwise
         error ("hnamodred: invalid property name");
     endswitch
   endfor
   
-  ## TODO: handle jobv, jobw, (jobinv)
+  ## TODO: handle job
   
   ## perform model order reduction
-  [ar, br, cr, dr, nr] = slab09jd (a, b, c, d, dt, scaled, nr, ordsel, alpha, \
-                                   jobv, av, bv, cv, dv, \
-                                   jobw, aw, bw, cw, dw, \
-                                   jobinv, tol1, tol2);
+  [ar, br, cr, dr, nr] = slab09hd (a, b, c, d, dt, scaled, job, nr, ordsel, alpha, beta, \
+                                   tol1, tol2);
 
   ## assemble reduced order model
   sysr = ss (ar, br, cr, dr, tsam);
@@ -148,54 +139,54 @@ endfunction
 
 
 %!shared Mo, Me
-%! A =  [ -3.8637   -7.4641   -9.1416   -7.4641   -3.8637   -1.0000
-%!         1.0000,         0         0         0         0         0
-%!              0    1.0000         0         0         0         0
-%!              0         0    1.0000         0         0         0
-%!              0         0         0    1.0000         0         0
-%!              0         0         0         0    1.0000         0 ];
+%! A =  [ -0.04165  0.0000  4.9200  -4.9200  0.0000  0.0000  0.0000
+%!        -5.2100  -12.500  0.0000   0.0000  0.0000  0.0000  0.0000
+%!         0.0000   3.3300 -3.3300   0.0000  0.0000  0.0000  0.0000
+%!         0.5450   0.0000  0.0000   0.0000 -0.5450  0.0000  0.0000
+%!         0.0000   0.0000  0.0000   4.9200 -0.04165 0.0000  4.9200
+%!         0.0000   0.0000  0.0000   0.0000 -5.2100 -12.500  0.0000
+%!         0.0000   0.0000  0.0000   0.0000  0.0000  3.3300 -3.3300 ];
 %!
-%! B =  [       1
-%!              0
-%!              0
-%!              0
-%!              0
-%!              0 ];
+%! B =  [  0.0000   0.0000
+%!         12.500   0.0000
+%!         0.0000   0.0000
+%!         0.0000   0.0000
+%!         0.0000   0.0000
+%!         0.0000   12.500
+%!         0.0000   0.0000 ];
 %!
-%! C =  [       0         0         0         0         0         1 ];
+%! C =  [  1.0000   0.0000  0.0000   0.0000  0.0000  0.0000  0.0000
+%!         0.0000   0.0000  0.0000   1.0000  0.0000  0.0000  0.0000
+%!         0.0000   0.0000  0.0000   0.0000  1.0000  0.0000  0.0000 ];
 %!
-%! D =  [       0 ];
+%! D =  [  0.0000   0.0000
+%!         0.0000   0.0000
+%!         0.0000   0.0000 ];
 %!
-%! sys = ss (A, B, C, D);  # "scaled", false
+%! sys = ss (A, B, C, D, "scaled", true);
 %!
-%! AV = [  0.2000   -1.0000
-%!         1.0000         0 ];
-%!
-%! BV = [       1
-%!              0 ];
-%!
-%! CV = [ -1.8000         0 ];
-%!
-%! DV = [       1 ];
-%!
-%! sysv = ss (AV, BV, CV, DV);
-%!
-%! sysr = hnamodred (sys, "left", sysv, "tol1", 1e-1, "tol2", 1e-14);
+%! sysr = bstmodred (sys, "beta", 1.0, "tol1", 0.1, "tol2", 0.0);
 %! [Ao, Bo, Co, Do] = ssdata (sysr);
 %!
-%! Ae = [ -0.2391   0.3072   1.1630   1.1967
-%!        -2.9709  -0.2391   2.6270   3.1027
-%!         0.0000   0.0000  -0.5137  -1.2842
-%!         0.0000   0.0000   0.1519  -0.5137 ];
+%! Ae = [  1.2729   0.0000   6.5947   0.0000  -3.4229
+%!         0.0000   0.8169   0.0000   2.4821   0.0000
+%!        -2.9889   0.0000  -2.9028   0.0000  -0.3692
+%!         0.0000  -3.3921   0.0000  -3.1126   0.0000
+%!        -1.4767   0.0000  -2.0339   0.0000  -0.6107 ];
 %!
-%! Be = [ -1.0497
-%!        -3.7052
-%!         0.8223
-%!         0.7435 ];
+%! Be = [  0.1331  -0.1331
+%!        -0.0862  -0.0862
+%!        -2.6777   2.6777
+%!        -3.5767  -3.5767
+%!        -2.3033   2.3033 ];
 %!
-%! Ce = [ -0.4466   0.0143  -0.4780  -0.2013 ];
+%! Ce = [ -0.6907  -0.6882   0.0779   0.0958  -0.0038
+%!         0.0676   0.0000   0.6532   0.0000  -0.7522
+%!         0.6907  -0.6882  -0.0779   0.0958   0.0038 ];
 %!
-%! De = [  0.0219 ];
+%! De = [  0.0000   0.0000
+%!         0.0000   0.0000
+%!         0.0000   0.0000 ];
 %!
 %! Mo = [Ao, Bo; Co, Do];
 %! Me = [Ae, Be; Ce, De];

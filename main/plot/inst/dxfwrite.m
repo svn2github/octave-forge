@@ -16,7 +16,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{nb} =} dxfwrite (@var{filename}, @var{pl}, @dots)
+## @deftypefn {Function File} {@var{nb} =} dxfwrite (@var{filename}, @var{pl}, @dots{})
 ##
 ## Write @var{filename} as a DXF file. Polyline @var{pl} must be defined as
 ## matrix of 1, 2 or 3 columns respectively for x, y and z coordinates. The

@@ -5,7 +5,7 @@
 ## This program is in the public domain
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} tics (@var{axis}, [@var{pos1}, @var{pos2}, @dots], [@var{lab1}, @var{lab2}, @dots],)
+## @deftypefn {Function File} {} tics (@var{axis}, [@var{pos1}, @var{pos2}, @dots], [@var{lab1}, @var{lab2}, @dots{}],)
 ## Explicitly set the tic positions and labels for the given axis.
 ##
 ## @var{axis} must be 'x', 'y' or 'z'.

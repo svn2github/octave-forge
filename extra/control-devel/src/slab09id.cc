@@ -316,13 +316,12 @@ For internal use only.")
                   iwarn, info));
 
         if (f77_exception_encountered)
-            error ("hnamodred: exception in SLICOT subroutine AB09ID");
+            error ("modred: exception in SLICOT subroutine AB09ID");
             
         if (info != 0)
         {
-            //error ("hsvd: slab09id: AB09ID returned info = %d", info);
             if (info < 0)
-                error ("hnamodred: the %d-th argument had an invalid value", info);
+                error ("modred: the %d-th argument had an invalid value", info);
             else
             {
                 switch (info)
@@ -330,78 +329,44 @@ For internal use only.")
                     // FIXME: The code below looks nice, but the error message does not
                     //        because there is much white space after each line break
                     case 1:
-                        error ("hnamodred: 1: the computation of the ordered real Schur form of A\
+                        error ("modred: 1: the computation of the ordered real Schur form of A\
                                 failed");
                     case 2:
-                        error ("hnamodred: 2: the separation of the ALPHA-stable/unstable\
-                                diagonal blocks failed because of very close eigenvalues");
+                        error ("modred: 2: the separation of the ALPHA-stable/unstable\
+                                diagonal blocks failed because of very close\
+                                eigenvalues");
                     case 3:
-                        error ("hnamodred: 3: the reduction of AV to a real Schur form failed");
+                        error ("modred: 3: the reduction to a real Schur form of the state\
+                                matrix of a minimal realization of V failed");
                     case 4:
-                        error ("hnamodred: 4: the reduction of AW to a real Schur form failed");
+                        error ("modred: 4: a failure was detected during the ordering of the\
+                                real Schur form of the state matrix of a minimal\
+                                realization of V or in the iterative process to\
+                                compute a left coprime factorization with inner\
+                                denominator");
                     case 5:
-                        error ("hnamodred: 5: the reduction to generalized Schur form of the\
-                                descriptor pair corresponding to the inverse of V\
-                                failed");
+                        error ("modred: 5: if DICO = 'C' and the matrix AV has an observable\
+                                eigenvalue on the imaginary axis, or DICO = 'D' and\
+                                AV has an observable eigenvalue on the unit circle");
                     case 6:
-                        error ("hnamodred: 6: the reduction to generalized Schur form of the\
-                                descriptor pair corresponding to the inverse of W\
-                                failed");
+                        error ("modred: 6: the reduction to a real Schur form of the state\
+                                matrix of a minimal realization of W failed");
                     case 7:
-                        error ("hnamodred: 7: the computation of Hankel singular values failed");
+                        error ("modred: 7: a failure was detected during the ordering of the\
+                                real Schur form of the state matrix of a minimal\
+                                realization of W or in the iterative process to\
+                                compute a right coprime factorization with inner\
+                                denominator");
                     case 8:
-                        error ("hnamodred: 8: the computation of stable projection in the\
-                                Hankel-norm approximation algorithm failed");
+                        error ("modred: 8: if DICO = 'C' and the matrix AW has a controllable\
+                                eigenvalue on the imaginary axis, or DICO = 'D' and\
+                                AW has a controllable eigenvalue on the unit circle");
                     case 9:
-                        error ("hnamodred: 9: the order of computed stable projection in the\
-                                Hankel-norm approximation algorithm differs\
-                                from the order of Hankel-norm approximation");
+                        error ("modred: 9: the computation of eigenvalues failed");
                     case 10:
-                        error ("hnamodred: 10: the reduction of AV-BV*inv(DV)*CV to a\
-                                real Schur form failed");
-                    case 11:
-                        error ("hnamodred: 11: the reduction of AW-BW*inv(DW)*CW to a\
-                                real Schur form failed");
-                    case 12:
-                        error ("hnamodred: 12: the solution of the Sylvester equation failed\
-                                because the poles of V (if JOBV = 'V') or of\
-                                conj(V) (if JOBV = 'C') are not distinct from\
-                                the poles of G1 (see METHOD)");
-                    case 13:
-                        error ("hnamodred: 13: the solution of the Sylvester equation failed\
-                                because the poles of W (if JOBW = 'W') or of\
-                                conj(W) (if JOBW = 'C') are not distinct from\
-                                the poles of G1 (see METHOD)");
-                    case 14:
-                        error ("hnamodred: 14: the solution of the Sylvester equation failed\
-                                because the zeros of V (if JOBV = 'I') or of\
-                                conj(V) (if JOBV = 'R') are not distinct from\
-                                the poles of G1sr (see METHOD)");
-                    case 15:
-                        error ("hnamodred: 15: the solution of the Sylvester equation failed\
-                                because the zeros of W (if JOBW = 'I') or of\
-                                conj(W) (if JOBW = 'R') are not distinct from\
-                                the poles of G1sr (see METHOD)");
-                    case 16:
-                        error ("hnamodred: 16: the solution of the generalized Sylvester system\
-                                failed because the zeros of V (if JOBV = 'I') or\
-                                of conj(V) (if JOBV = 'R') are not distinct from\
-                                the poles of G1sr (see METHOD)");
-                    case 17:
-                        error ("hnamodred: 17: the solution of the generalized Sylvester system\
-                                failed because the zeros of W (if JOBW = 'I') or\
-                                of conj(W) (if JOBW = 'R') are not distinct from\
-                                the poles of G1sr (see METHOD)");
-                    case 18:
-                        error ("hnamodred: 18: op(V) is not antistable");
-                    case 19:
-                        error ("hnamodred: 19: op(W) is not antistable");
-                    case 20:
-                        error ("hnamodred: 20: V is not invertible");
-                    case 21:
-                        error ("hnamodred: 21: W is not invertible");
+                        error ("modred: 10: the computation of Hankel singular values failed");
                     default:
-                        error ("hnamodred: unknown error, info = %d", info);
+                        error ("modred: unknown error, info = %d", info);
                 }
             }
         }
@@ -411,21 +376,31 @@ For internal use only.")
             switch (iwarn)
             {
                 case 1:
-                    warning ("hnamodred: 1: with ORDSEL = 'F', the selected order NR is greater\
+                    warning ("modred: 1: with ORDSEL = 'F', the selected order NR is greater\
                               than NSMIN, the sum of the order of the\
                               ALPHA-unstable part and the order of a minimal\
                               realization of the ALPHA-stable part of the given\
-                              system. In this case, the resulting NR is set equal\
+                              system; in this case, the resulting NR is set equal\
                               to NSMIN.");
                     break;
                 case 2:
-                    warning ("hnamodred: 2: with ORDSEL = 'F', the selected order NR is less\
+                    warning ("modred: 2: with ORDSEL = 'F', the selected order NR corresponds\
+                              to repeated singular values for the ALPHA-stable\
+                              part, which are neither all included nor all\
+                              excluded from the reduced model; in this case, the\
+                              resulting NR is automatically decreased to exclude\
+                              all repeated singular values.");
+                    break;
+                case 3:
+                    warning ("modred: 3: with ORDSEL = 'F', the selected order NR is less\
                               than the order of the ALPHA-unstable part of the\
-                              given system. In this case NR is set equal to the\
+                              given system; in this case NR is set equal to the\
                               order of the ALPHA-unstable part.");
                     break;
                 default:
-                    warning ("hnamodred: unknown warning, iwarn = %d", info);
+                    warning ("modred: 10+%d: %d violations of the numerical stability condition\
+                              occured during the assignment of eigenvalues in the\
+                              SLICOT Library routines SB08CD and/or SB08DD.", info, info);
             }
         }
 

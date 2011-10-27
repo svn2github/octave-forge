@@ -35,11 +35,12 @@ Version: 0.1
 extern "C"
 { 
     int F77_FUNC (ab09id, AB09ID)
-                 (char& JOBV, char& JOBW, char& JOBINV,
-                  char& DICO, char& EQUIL, char& ORDSEL,
-                  int& N, int& NV, int& NW, int& M, int& P,
+                 (char& DICO, char& JOBC, char& JOBO, char& JOB,
+                  char& WEIGHT, char& EQUIL, char& ORDSEL,
+                  int& N, int& M, int& P,
+                  int& NV, int& PV, int& NW, int& MW,
                   int& NR,
-                  double& ALPHA,
+                  double& ALPHA, double& ALPHAC, double& ALPHAO,
                   double* A, int& LDA,
                   double* B, int& LDB,
                   double* C, int& LDC,
@@ -69,17 +70,18 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 22)
+    if (nargin != 26)
     {
         print_usage ();
     }
     else
     {
         // arguments in
-        char jobv;
-        char jobw;
-        char jobinv;
         char dico;
+        char jobc;
+        char jobo;
+        char job;
+        char weigth
         char equil;
         char ordsel;
         
@@ -93,79 +95,26 @@ For internal use only.")
         int nr = args(6).int_value ();
         const int iordsel = args(7).int_value ();
         double alpha = args(8).double_value ();
-                 
-        const int ijobv = args(9).int_value ();       
+        const int ijob = args(9).int_value ();
+                       
         Matrix av = args(10).matrix_value ();
         Matrix bv = args(11).matrix_value ();
         Matrix cv = args(12).matrix_value ();
         Matrix dv = args(13).matrix_value ();
-
-        const int ijobw = args(14).int_value ();        
+      
         Matrix aw = args(15).matrix_value ();
         Matrix bw = args(16).matrix_value ();
         Matrix cw = args(17).matrix_value ();
         Matrix dw = args(18).matrix_value ();
+        
+        const int iweight = args(19).int_value ();
+        const int ijobc = args(20).int_value ();
+        double alphac = args(21).double_value ();
+        const int ijobo = args(22).int_value ();
+        double alphao = args(23).double_value ();
 
-        const int ijobinv = args(19).int_value ();
-        double tol1 = args(20).double_value ();
-        double tol2 = args(21).double_value ();
-
-        switch (ijobv)
-        {
-            case 0:
-                jobv = 'N';
-                break;
-            case 1:
-                jobv = 'V';
-                break;
-            case 2:
-                jobv = 'I';
-                break;
-            case 3:
-                jobv = 'C';
-                break;
-            case 4:
-                jobv = 'R';
-                break;
-            default:
-                error ("slab09id: argument jobv invalid");
-        }
-
-        switch (ijobw)
-        {
-            case 0:
-                jobw = 'N';
-                break;
-            case 1:
-                jobw = 'W';
-                break;
-            case 2:
-                jobw = 'I';
-                break;
-            case 3:
-                jobw = 'C';
-                break;
-            case 4:
-                jobw = 'R';
-                break;
-            default:
-                error ("slab09id: argument jobw invalid");
-        }
-            
-        switch (ijobinv)
-        {
-            case 0:
-                jobinv = 'N';
-                break;
-            case 1:
-                jobinv = 'I';
-                break;
-            case 2:
-                jobinv = 'A';
-                break;
-            default:
-                error ("slab09id: argument jobinv invalid");
-        }
+        double tol1 = args(24).double_value ();
+        double tol2 = args(25).double_value ();
 
         if (idico == 0)
             dico = 'C';
@@ -182,11 +131,60 @@ For internal use only.")
         else
             ordsel = 'A';
 
+        if (ijobc == 0)
+            jobc = 'S';
+        else
+            jobc = 'E';
+
+        if (ijobo == 0)
+            jobo = 'S';
+        else
+            jobo = 'E';
+
+        switch (ijob)
+        {
+            case 0:
+                job = 'B';
+                break;
+            case 1:
+                job = 'F';
+                break;
+            case 2:
+                job = 'S';
+                break;
+            case 3:
+                job = 'P';
+                break;
+            default:
+                error ("slab09id: argument job invalid");
+        }
+
+        switch (iweight)
+        {
+            case 0:
+                weight = 'N';
+                break;
+            case 1:
+                weight = 'L';
+                break;
+            case 2:
+                weight = 'R';
+                break;
+            case 3:
+                weight = 'B';
+                break;
+            default:
+                error ("slab09id: argument weight invalid");
+        }
+
         int n = a.rows ();      // n: number of states
-        int nv = av.rows ();
-        int nw = aw.rows ();
         int m = b.columns ();   // m: number of inputs
         int p = c.rows ();      // p: number of outputs
+        
+        int nv = av.rows ();
+        int pw = cv.rows ();
+        int nw = aw.rows ();
+        int mw = bw.columns ();
 
         int lda = max (1, n);
         int ldb = max (1, n);
@@ -195,8 +193,8 @@ For internal use only.")
 
         int ldav = max (1, nv);
         int ldbv = max (1, nv);
-        int ldcv = max (1, p);
-        int lddv = max (1, p);
+        int ldcv = max (1, pv);
+        int lddv = max (1, pv);
 
         int ldaw = max (1, nw);
         int ldbw = max (1, nw);
@@ -209,8 +207,58 @@ For internal use only.")
 
         // workspace
         int liwork;
-        int tmpc;
-        int tmpd;
+        int liwrk1;
+        int liwrk2;
+        int liwrk3;
+
+        switch (job)
+        {
+            case 'B':
+                liwrk1 = 0;
+                break;
+            case 'F':
+                liwrk1 = n;
+                break;
+            default:
+                liwrk1 = 2*n;
+        }
+
+        if (nv == 0 || weight == 'R' || weight == 'N')
+            liwrk2 = 0;
+        else
+            liwrk2 = nv + max (p, pv);
+
+        if (nw == 0 || weight == 'L' || weight == 'N')
+            liwrk3 = 0;
+        else
+            liwrk3 = nw + max (m, mw);
+
+        liwork = max (3, liwrk1, liwrk2, liwrk3));
+
+        int ldwork;
+        int 
+        
+        ldwork =  max (lminl, lminr, lrcf,
+                       2*n*n + max (1, lleft, lright, 2*n*n+5*n, n*max (m, p)));
+c             where
+c             lminl  = 0, if weight = 'r' or 'n' or nv = 0; otherwise,
+c             lminl  = max(llcf,nv+max(nv,3*p))           if p =  pv;
+c             lminl  = max(p,pv)*(2*nv+max(p,pv))+
+c                      max(llcf,nv+max(nv,3*p,3*pv))      if p <> pv;
+c             lrcf   = 0, and
+c             lminr  = 0, if weight = 'l' or 'n' or nw = 0; otherwise,
+c             lminr  = nw+max(nw,3*m)                     if m =  mw;
+c             lminr  = 2*nw*max(m,mw)+nw+max(nw,3*m,3*mw) if m <> mw;
+c             llcf   = pv*(nv+pv)+pv*nv+max(nv*(nv+5), pv*(pv+2),
+c                                           4*pv, 4*p);
+c             lrcf   = mw*(nw+mw)+max(nw*(nw+5),mw*(mw+2),4*mw,4*m)
+c             lleft  = (n+nv)*(n+nv+max(n+nv,pv)+5)
+c                              if weight = 'l' or 'b' and pv > 0;
+c             lleft  = n*(p+5) if weight = 'r' or 'n' or  pv = 0;
+c             lright = (n+nw)*(n+nw+max(n+nw,mw)+5)
+c                              if weight = 'r' or 'b' and mw > 0;
+c             lright = n*(m+5) if weight = 'l' or 'n' or  mw = 0.
+
 
         if (jobv == 'N')
             tmpc = 0;
@@ -267,11 +315,12 @@ For internal use only.")
 
         // SLICOT routine AB09ID
         F77_XFCN (ab09id, AB09ID,
-                 (jobv, jobw, jobinv,
-                  dico, equil, ordsel,
-                  n, nv, nw, m, p,
+                 (dico, jobc, jobo, job,
+                  weight, equil, ordsel,
+                  n, m, p,
+                  nv, pv, nw, mw,
                   nr,
-                  alpha,
+                  alpha, alphac, alphao,
                   a.fortran_vec (), lda,
                   b.fortran_vec (), ldb,
                   c.fortran_vec (), ldc,

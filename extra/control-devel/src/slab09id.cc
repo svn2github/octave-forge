@@ -81,7 +81,7 @@ For internal use only.")
         char jobc;
         char jobo;
         char job;
-        char weigth
+        char weight;
         char equil;
         char ordsel;
         
@@ -182,7 +182,7 @@ For internal use only.")
         int p = c.rows ();      // p: number of outputs
         
         int nv = av.rows ();
-        int pw = cv.rows ();
+        int pv = cv.rows ();
         int nw = aw.rows ();
         int mw = bw.columns ();
 
@@ -233,77 +233,52 @@ For internal use only.")
         else
             liwrk3 = nw + max (m, mw);
 
-        liwork = max (3, liwrk1, liwrk2, liwrk3));
+        liwork = max (3, liwrk1, liwrk2, liwrk3);
 
         int ldwork;
-        int 
-        
+        int lminl;
+        int lrcf;
+        int lminr;
+        int llcf;
+        int lleft;
+        int lright;
+
+        if (nw == 0 || weight == 'L' || weight == 'N')
+        {
+            lrcf = 0;
+            lminr = 0;
+        }
+        else
+        {
+            lrcf = mw*(nw+mw) + max (nw*(nw+5), mw*(mw+2), 4*mw, 4*m);
+            if (m == mw)
+                lminr = nw + max (nw, 3*m);
+            else
+                lminr = 2*nw*max (m, mw) + nw + max (nw, 3*m, 3*mw);
+        }
+
+        llcf = pv*(nv+pv) + pv*nv + max (nv*(nv+5), pv*(pv+2), 4*pv, 4*p);
+
+        if (nv == 0 || weight == 'R' || weight == 'N')
+            lminl = 0;
+        else if (p == pv)
+            lminl  = max (llcf, nv + max (nv, 3*p));
+        else
+            lminl  = max (p, pv) * (2*nv + max (p, pv)) + max (llcf, nv + max (nv, 3*p, 3*pv));
+
+
+        if (pv == 0 || weight == 'R' || weight == 'N')
+            lleft = n*(p+5);
+        else
+            lleft = (n+nv) * (n + nv + max (n+nv, pv) + 5);
+
+        if (mw == 0 || weight == 'L' || weight == 'N')
+            lright = n*(m+5);
+        else
+            lright = (n+nw) * (n + nw + max (n+nw, mw) + 5);
+
         ldwork =  max (lminl, lminr, lrcf,
                        2*n*n + max (1, lleft, lright, 2*n*n+5*n, n*max (m, p)));
-c             where
-c             lminl  = 0, if weight = 'r' or 'n' or nv = 0; otherwise,
-c             lminl  = max(llcf,nv+max(nv,3*p))           if p =  pv;
-c             lminl  = max(p,pv)*(2*nv+max(p,pv))+
-c                      max(llcf,nv+max(nv,3*p,3*pv))      if p <> pv;
-c             lrcf   = 0, and
-c             lminr  = 0, if weight = 'l' or 'n' or nw = 0; otherwise,
-c             lminr  = nw+max(nw,3*m)                     if m =  mw;
-c             lminr  = 2*nw*max(m,mw)+nw+max(nw,3*m,3*mw) if m <> mw;
-c             llcf   = pv*(nv+pv)+pv*nv+max(nv*(nv+5), pv*(pv+2),
-c                                           4*pv, 4*p);
-c             lrcf   = mw*(nw+mw)+max(nw*(nw+5),mw*(mw+2),4*mw,4*m)
-c             lleft  = (n+nv)*(n+nv+max(n+nv,pv)+5)
-c                              if weight = 'l' or 'b' and pv > 0;
-c             lleft  = n*(p+5) if weight = 'r' or 'n' or  pv = 0;
-c             lright = (n+nw)*(n+nw+max(n+nw,mw)+5)
-c                              if weight = 'r' or 'b' and mw > 0;
-c             lright = n*(m+5) if weight = 'l' or 'n' or  mw = 0.
-
-
-        if (jobv == 'N')
-            tmpc = 0;
-        else
-            tmpc = max (2*p, nv+p+n+6, 2*nv+p+2);
-
-        if (jobw == 'N')
-            tmpd = 0;
-        else
-            tmpd = max (2*m, nw+m+n+6, 2*nw+m+2);
-        
-        if (dico == 'C')
-            liwork = max (1, m, tmpc, tmpd);
-        else
-            liwork = max (1, n, m, tmpc, tmpd);
-
-        int ldwork;
-        int nvp = nv + p;
-        int nwm = nw + m;
-        int ldw1;
-        int ldw2;
-        int ldw3 = n*(2*n + max (n, m, p) + 5) + n*(n+1)/2;
-        int ldw4 = n*(m+p+2) + 2*m*p + min (n, m) + max (3*m+1, min (n, m) + p);
-        
-        if (jobv == 'N')
-        {
-            ldw1 = 0;
-        }
-        else
-        {
-            ldw1 = 2*nvp*(nvp+p) + p*p + max (2*nvp*nvp + max (11*nvp+16, p*nvp),
-                                              nvp*n + max (nvp*n+n*n, p*n, p*m));
-        }
-
-        if (jobw == 'N')
-        {
-            ldw2 = 0;
-        }
-        else
-        {
-            ldw2 = 2*nwm*(nwm+m) + m*m + max (2*nwm*nwm + max (11*nwm+16, m*nwm),
-                                              nwm*n + max (nwm*n+n*n, m*n, p*m));
-        }
-        
-        ldwork = max (ldw1, ldw2, ldw3, ldw4);
 
         OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
         OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);

@@ -3,7 +3,18 @@ develdir = fileparts (which ("makefile_modred"));
 srcdir = [develdir, "/../src"];
 cd (srcdir);
 
-mkoctfile AB09ID.f TB01PD.f SB08DD.f TB01ID.f TB01KD.f \
+mkoctfile "-Wl,-framework" "-Wl,vecLib" \
+          slab09hd.cc \
+          AB09HD.f TB01ID.f AB04MD.f TB01KD.f AB09HY.f \
+          AB09IX.f MB03UD.f SB02MD.f AB09DD.f TB01LD.f \
+          SB03OU.f MA02AD.f MB03QX.f select.f SB03OT.f \
+          SB02MR.f SB02MS.f MB03QD.f SB02MU.f SB02MV.f \
+          SB02MW.f MB04ND.f MB04OD.f MB03QY.f SB03OR.f \
+          SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
+
+mkoctfile "-Wl,-framework" "-Wl,vecLib" \
+          slab09id.cc \
+          AB09ID.f TB01PD.f SB08DD.f TB01ID.f TB01KD.f \
           AB09IX.f AB09IY.f SB08CD.f MB04ND.f TB01XD.f \
           MB04OD.f MB01WD.f MB03UD.f AB07MD.f SB01FY.f \
           AB09DD.f TB01LD.f SB03OU.f TB01UD.f MA02AD.f \
@@ -23,14 +34,6 @@ mkoctfile "-Wl,-framework" "-Wl,vecLib" \
           MB04ND.f MB04OD.f SB03OR.f SB03OY.f MB04NY.f \
           MB04OY.f SB03OV.f
 
-mkoctfile "-Wl,-framework" "-Wl,vecLib" \
-          slab09hd.cc \
-          AB09HD.f TB01ID.f AB04MD.f TB01KD.f AB09HY.f \
-          AB09IX.f MB03UD.f SB02MD.f AB09DD.f TB01LD.f \
-          SB03OU.f MA02AD.f MB03QX.f select.f SB03OT.f \
-          SB02MR.f SB02MS.f MB03QD.f SB02MU.f SB02MV.f \
-          SB02MW.f MB04ND.f MB04OD.f MB03QY.f SB03OR.f \
-          SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
 
 system ("rm *.o");
 cd (homedir);

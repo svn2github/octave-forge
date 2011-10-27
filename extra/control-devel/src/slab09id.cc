@@ -70,7 +70,7 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 26)
+    if (nargin != 25)
     {
         print_usage ();
     }
@@ -102,19 +102,19 @@ For internal use only.")
         Matrix cv = args(12).matrix_value ();
         Matrix dv = args(13).matrix_value ();
       
-        Matrix aw = args(15).matrix_value ();
-        Matrix bw = args(16).matrix_value ();
-        Matrix cw = args(17).matrix_value ();
-        Matrix dw = args(18).matrix_value ();
+        Matrix aw = args(14).matrix_value ();
+        Matrix bw = args(15).matrix_value ();
+        Matrix cw = args(16).matrix_value ();
+        Matrix dw = args(17).matrix_value ();
         
-        const int iweight = args(19).int_value ();
-        const int ijobc = args(20).int_value ();
-        double alphac = args(21).double_value ();
-        const int ijobo = args(22).int_value ();
-        double alphao = args(23).double_value ();
+        const int iweight = args(18).int_value ();
+        const int ijobc = args(19).int_value ();
+        double alphac = args(20).double_value ();
+        const int ijobo = args(21).int_value ();
+        double alphao = args(22).double_value ();
 
-        double tol1 = args(24).double_value ();
-        double tol2 = args(25).double_value ();
+        double tol1 = args(23).double_value ();
+        double tol2 = args(24).double_value ();
 
         if (idico == 0)
             dico = 'C';

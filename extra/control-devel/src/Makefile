@@ -1,10 +1,20 @@
-all: slab09jd.oct slsb10yd.oct
+all: slab09hd.oct slab09jd.oct slsb10yd.oct
 
 # TODO: leading and trailing underscores for sl* functions
 #       (__sl*__.oct) would be nice, but this can be an issue
 #       for fortran compilers.
 
-# Frequency-weighted Hankel norm approximation with invertible weights
+# model reduction based on balanced stochastic truncation method
+slab09hd.oct: slab09hd.cc
+	mkoctfile slab09hd.cc \
+              AB09HD.f TB01ID.f AB04MD.f TB01KD.f AB09HY.f \
+              AB09IX.f MB03UD.f SB02MD.f AB09DD.f TB01LD.f \
+              SB03OU.f MA02AD.f MB03QX.f select.f SB03OT.f \
+              SB02MR.f SB02MS.f MB03QD.f SB02MU.f SB02MV.f \
+              SB02MW.f MB04ND.f MB04OD.f MB03QY.f SB03OR.f \
+              SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
+
+# frequency-weighted Hankel norm approximation with invertible weights
 slab09jd.oct: slab09jd.cc
 	mkoctfile slab09jd.cc \
               AB09JD.f TB01ID.f TB01KD.f AB07ND.f AB09JV.f \

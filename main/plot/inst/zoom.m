@@ -1,4 +1,9 @@
-## zoom ...
-##   Compatibility function; does nothing
+## Copyright (C) 2004 Paul Kienzle <pkienzle@users.sf.net>
+## This program is in the public domain
 
-function zoom
+## -*- texinfo -*-
+## @deftypefn {Function File} {} zoom
+## Compatibility function; does nothing.
+## @end deftypefn
+
+function zoom endfunction

@@ -1,5 +1,5 @@
+## Copyright (C) 2006 Paul Kienzle <pkienzle@users.sf.net>
 ## This program is in the public domain
-## Authors: Paul Kienzle <pkienzle@users.sf.net>
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{counts}, @var{xbins}, @var{ybins}] =} hist2d ([@var{x}, @var{y}], @var{xbins}, @var{ybins}, @var{norm})

@@ -1,8 +1,8 @@
+## Copyright (C) 2002 Paul Kienzle <pkienzle@users.sf.net>
+## Copyright (C) 2005 Dmitri A. Sergatskov <dasergatskov@gmail.com>
+## Copyright (C) 2007 Russel Valentine
+## Copyright (C) 2007 Peter Gustafson
 ## This program is in the public domain
-## Authors: Paul Kienzle <pkienzle@users.sf.net>
-##          Dmitri A. Sergatskov <dasergatskov@gmail.com>
-##          Russel Valentine
-##          Peter Gustafson
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} tics (@var{axis}, [@var{pos1}, @var{pos2}, @dots], [@var{lab1}, @var{lab2}, @dots],)

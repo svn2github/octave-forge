@@ -1,5 +1,6 @@
 ## Copyright (C) 2004 Patrick Labbe
-## Copyright (C) 2004 Laurent Mazet
+## Copyright (C) 2004 Laurent Mazet <mazet@crm.mot.com>
+## Copyright (C) 2005 Larry Doolittle <ldoolitt@recycle.lbl.gov>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,23 +16,14 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{nb} =} dxfwrite (@var{filename}, @var{pl}, @var{...})
+## @deftypefn {Function File} {@var{nb} =} dxfwrite (@var{filename}, @var{pl}, @dots)
 ##
 ## Write @var{filename} as a DXF file. Polyline @var{pl} must be defined as
 ## matrix of 1, 2 or 3 columns respectively for x, y and z coordinates. The
 ## number of polyline (@var{nb}) or 0 is returned.
 ## @end deftypefn
 
-## 2004-01-07
-##   initial release
-## 2005-01-07
-##   Made it work for me (Larry Doolittle, <ldoolitt@recycle.lbl.gov>).
-##   I used Autodesk's DXF reference at
-##   http://www.autodesk.com/techpubs/autocad/acad2000/dxf/
-##   I don't know which of the many changes I made are essential.
-##   Tested on AutoCAD 2002 with only a single closed curve.
-
-function [nb] = dxfwrite (filename, varargin) 
+function [nb] = dxfwrite (filename, varargin)
   
   ## Check file name
   sn = split(filename, ".");
@@ -153,7 +145,7 @@ function [nb] = dxfwrite (filename, varargin)
 
     ## List of vertex
     fprintf(fid, ["0\nVERTEX\n", layspec, \
-		  "10\n",FMT,"\n", "20\n",FMT,"\n", "30\n",FMT,"\n"], pl.');
+                  "10\n",FMT,"\n", "20\n",FMT,"\n", "30\n",FMT,"\n"], pl.');
 
     ## End of polyline
     fprintf(fid, "0\nSEQEND\n");

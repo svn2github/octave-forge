@@ -1,29 +1,26 @@
-## tics(axis,[pos1,pos2,...],['lab1';'lab2';...])
-##
+## This program is in the public domain
+## Authors: Paul Kienzle <pkienzle@users.sf.net>
+##          Dmitri A. Sergatskov <dasergatskov@gmail.com>
+##          Russel Valentine
+##          Peter Gustafson
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {} tics (@var{axis}, [@var{pos1}, @var{pos2}, @dots], [@var{lab1}, @var{lab2}, @dots],)
 ## Explicitly set the tic positions and labels for the given axis.
+##
+## @var{axis} must be 'x', 'y' or 'z'.
 ##
 ## If no positions or labels are given, then restore the default.
 ## If positions are given but no labels, use those positions with the
-## normal labels.  If positions and labels are given, each position
+## normal labels. If positions and labels are given, each position
 ## labeled with the corresponding row from the label matrix.
 ##
-## Axis is 'x', 'y' or 'z'.
+## @end deftypefn
 
-## This program is in the public domain
-## Author: Paul Kienzle <pkienzle@users.sf.net>
+function tics (axis, pos, lab)
 
-## Modified to use new gnuplot interface in octave > 2.9.0
-## Dmitri A. Sergatskov <dasergatskov@gmail.com>
-## April 18, 2005
-
-## Modifications which makes the y, z axis tics work. It was set to
-## always do x axis before.
-## 2007-08-12 Russel Valentine and Peter Gustafson
-
-function tics (axis,pos,lab)
-
-  if (nargin == 0)
-    usage ("tics(axis,[pos1,pos2,...],['lab1';'lab2';...])");
+  if ( nargin < 1 || nargin > 3 )
+    print_usage;
   endif
 
   t = lower (axis);
@@ -44,7 +41,8 @@ function tics (axis,pos,lab)
     set (gca(), [t, "tick"], pos);
     set (gca(), [t, "ticklabel"], lab);
   else
-    usage ("tics(axis,[pos1,pos2,...],['lab1';'lab2';...])");
+    ## we should never get here anyway
+    print_usage;
   endif
 
 endfunction

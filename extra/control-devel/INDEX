@@ -6,9 +6,13 @@ Experimental Data Handling
   @iddata/set
   @iddata/size
 System Identification
+  fitfrd
   moesp
   n4sid
 Model Reduction
-  hna
+  bstmodred
+  btamodred
+  hnamodred
+  spamodred
 Controller Reduction
 

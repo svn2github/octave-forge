@@ -1,4 +1,4 @@
-## Copyright (C) 2010 Soren Hauberg
+## Copyright (C) 2010 Soren Hauberg <soren@hauberg.org>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ function [x, y, z] = gplot3 (A, xyz, varargin)
   zcoord = [xyz(i,3), xyz(j,3), NA(length(i),1)]'(:);
 
   if (nargout == 0)
-    plot3 (xcoord, ycoord, zcoord, varargin {:}); 
+    plot3 (xcoord, ycoord, zcoord, varargin {:});
   else
     x = xcoord;
     y = ycoord;
@@ -72,4 +72,3 @@ endfunction
 %!
 %! ## Plot the 3D graph
 %! gplot3 (A, xyz);
-

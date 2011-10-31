@@ -1,4 +1,5 @@
-## Copyright (C) 2000 Ben Sapp.  All rights reserved.
+## Copyright (C) 2000 Ben Sapp <bsapp@nua.lampf.lanl.gov>
+## Copyright (C) 2011 Joaquín Ignacio Aramendía <samsagax@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
@@ -11,7 +12,7 @@
 ## for more details.
 
 ## deriv(f,x0[,h,O,N])
-##
+
 ## Reference -> Numerical Methods for Mathematics, Science, and
 ## Engineering by John H. Mathews.
 
@@ -20,10 +21,10 @@ function dx = deriv(f,x0,varargin)
   if(nargin < 2)
     error("not enough arguments\n");
   endif
-  if(!ischar(f))
-    error("The first argument must be a string\n");
+  if(!isa(f, 'function_handle'))
+    error("The first argument must be a function handle\n");
   endif
-  if(!is_scalar(x0))
+  if(!isscalar(x0))
     error("The second argument must be a scalar.\n");
   endif
   if(nargin >= 3)
@@ -50,6 +51,7 @@ function dx = deriv(f,x0,varargin)
   else
     h = 0.0000001;
     O = 2;
+    N = 1;
   endif
 
   switch O
@@ -83,4 +85,3 @@ function dx = deriv(f,x0,varargin)
       error("Only order 4 or 2 supported\n");
   endswitch
 endfunction
-

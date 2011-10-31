@@ -19,8 +19,9 @@
 ## @deftypefnx {Function File} {dx =} deriv (@var{f}, @var{x0}, @var{h}, @var{O}, @var{N})
 ## Calculate derivate of function @var{f}.
 ##
-## @var{f} must be a function handle and @var{x0} a scalar.The optional arguments
-## @var{h}, @var{O} and @var{N} default to 1e-7, 2, and 1 respectively.
+## @var{f} must be a function handle or the name of a function while @var{x0}
+## must be a scalar.The optional arguments @var{h}, @var{O} and @var{N} default
+## to 1e-7, 2, and 1 respectively.
 ##
 ## Reference: Numerical Methods for Mathematics, Science, and Engineering by
 ## John H. Mathews.
@@ -30,7 +31,7 @@ function dx = deriv (f, x0, h = 0.0000001, O = 2, N = 1)
 
   if (nargin < 2)
     error ("Not enough arguments.");
-  elseif (!isa (f, 'function_handle'))
+  elseif (!isa (f, 'function_handle') || !ischar (f)) # let's also support a string with str2func
     error ("The first argument 'f' must be a function handle.");
   elseif (!isscalar (x0) || !isnumeric (x0))
     error ("The second argument 'x0' must be a scalar.");
@@ -46,6 +47,10 @@ function dx = deriv (f, x0, h = 0.0000001, O = 2, N = 1)
     error("Only 1st,2nd,3rd or 4th order derivatives are acceptable.");
   elseif (nargin > 5)
     warning("Ignoring arguements beyond the 5th.");
+  endif
+
+  if (ischar (f))
+    f = str2func (f);
   endif
 
   switch O

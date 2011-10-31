@@ -12,10 +12,19 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## deriv(f,x0[,h,O,N])
-
-## Reference -> Numerical Methods for Mathematics, Science, and
-## Engineering by John H. Mathews.
+## -*- texinfo -*-
+## @deftypefn {Function File} {dx =} deriv (@var{f}, @var{x0})
+## @deftypefnx {Function File} {dx =} deriv (@var{f}, @var{x0}, @var{h})
+## @deftypefnx {Function File} {dx =} deriv (@var{f}, @var{x0}, @var{h}, @var{O})
+## @deftypefnx {Function File} {dx =} deriv (@var{f}, @var{x0}, @var{h}, @var{O}, @var{N})
+## Calculate derivate of function @var{f}.
+##
+## @var{f} must be a function handle and @var{x0} a scalar.The optional arguments
+## @var{h}, @var{O} and @var{N} default to 1e-7, 2, and 1 respectively.
+##
+## Reference: Numerical Methods for Mathematics, Science, and Engineering by
+## John H. Mathews.
+## @end deftypefn
 
 function dx = deriv (f, x0, h = 0.0000001, O = 2, N = 1)
 

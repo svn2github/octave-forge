@@ -1,9 +1,10 @@
 ## Copyright (C) 2000 Ben Sapp <bsapp@nua.lampf.lanl.gov>
 ## Copyright (C) 2011 Joaquín Ignacio Aramendía <samsagax@gmail.com>
+## Copyright (C) 2011 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
-## Free Software Foundation; either version 2, or (at your option) any
+## Free Software Foundation; either version 3, or (at your option) any
 ## later version.
 ##
 ## This is distributed in the hope that it will be useful, but WITHOUT
@@ -16,42 +17,26 @@
 ## Reference -> Numerical Methods for Mathematics, Science, and
 ## Engineering by John H. Mathews.
 
-function dx = deriv(f,x0,varargin)
+function dx = deriv (f, x0, h = 0.0000001, O = 2, N = 1)
 
-  if(nargin < 2)
-    error("not enough arguments\n");
-  endif
-  if(!isa(f, 'function_handle'))
-    error("The first argument must be a function handle\n");
-  endif
-  if(!isscalar(x0))
-    error("The second argument must be a scalar.\n");
-  endif
-  if(nargin >= 3)
-    va_arg_cnt = 1;
-    h = varargin{va_arg_cnt++};
-    if(!is_scalar(h))
-      error("h must be a scalar.");
-    endif
-    if(nargin >= 4)
-      O = varargin{va_arg_cnt++};
-      if((O != 2) && (O != 4))
-        error("Only order 2 or 4 is supported.\n");
-      endif
-      if(nargin >= 5)
-        N = varargin{va_arg_cnt++};
-        if((N > 4)||(N < 1))
-          error("Only 1st,2nd,3rd or 4th order derivatives are acceptable.\n");
-        endif
-        if(nargin >= 6)
-          warning("Ignoring arguements beyond the 5th.\n");
-        endif
-      endif
-    endif
-  else
-    h = 0.0000001;
-    O = 2;
-    N = 1;
+  if (nargin < 2)
+    error ("Not enough arguments.");
+  elseif (!isa (f, 'function_handle'))
+    error ("The first argument 'f' must be a function handle.");
+  elseif (!isscalar (x0))
+    error ("The second argument 'x0' must be a scalar.");
+  elseif (!isscalar (h))
+    error ("The third argument 'h' must be a scalar.");
+  elseif (!isscalar (O) || !isnumeric (O))
+    error ("The fourth argument 'O' must be a scalar.");
+  elseif (O != 2 && O != 4)
+    error ("Only order 2 or 4 is supported.");
+  elseif (!isscalar (N) || !isnumeric (N))
+    error ("The fifth argument 'N' must be a scalar.");
+  elseif ((N > 4) || (N < 1))
+    error("Only 1st,2nd,3rd or 4th order derivatives are acceptable.");
+  elseif (nargin > 5)
+    warning("Ignoring arguements beyond the 5th.");
   endif
 
   switch O
@@ -66,7 +51,7 @@ function dx = deriv(f,x0,varargin)
         case (4)
           dx = (feval(f,x0+2*h)-4*feval(f,x0+h)+6*feval(f,x0)-4*feval(f,x0-h)+feval(f,x0-2*h))/(h^4);
         otherwise
-          error("I can only take the 1st,2nd,3rd or 4th derivative\n");
+          error("Only 1st,2nd,3rd or 4th order derivatives are acceptable.");
       endswitch
     case (4)
       switch N
@@ -79,9 +64,9 @@ function dx = deriv(f,x0,varargin)
         case (4)
           dx = (-feval(f,x0+3*h)+12*feval(f,x0+2*h)-39*feval(f,x0+h)+56*feval(f,x0)-39*feval(f,x0-h)+12*feval(f,x0-2*h)-feval(f,x0-3*h))/(6*h^4);
         otherwise
-          error("I can only take the 1st,2nd,3rd or 4th derivative\n");
+          error("Only 1st,2nd,3rd or 4th order derivatives are acceptable.");
       endswitch
     otherwise
-      error("Only order 4 or 2 supported\n");
+      error ("Only order 2 or 4 is supported.");
   endswitch
 endfunction

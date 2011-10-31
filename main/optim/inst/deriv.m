@@ -32,9 +32,9 @@ function dx = deriv (f, x0, h = 0.0000001, O = 2, N = 1)
     error ("Not enough arguments.");
   elseif (!isa (f, 'function_handle'))
     error ("The first argument 'f' must be a function handle.");
-  elseif (!isscalar (x0))
+  elseif (!isscalar (x0) || !isnumeric (x0))
     error ("The second argument 'x0' must be a scalar.");
-  elseif (!isscalar (h))
+  elseif (!isscalar (h) || !isnumeric (h))
     error ("The third argument 'h' must be a scalar.");
   elseif (!isscalar (O) || !isnumeric (O))
     error ("The fourth argument 'O' must be a scalar.");

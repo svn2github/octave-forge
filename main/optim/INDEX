@@ -25,6 +25,7 @@ Zero finding
  vfzero
 Compatibility
  fminunc_compat
+ optimset_compat
  quadprog= try Yinyu Ye's <a href="http://dollar.biz.uiowa.edu/col/ye/matlab.html">code</a>
  linprog
 Numerical derivatives

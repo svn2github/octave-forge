@@ -10,7 +10,7 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## test_fminunc_compat_1              - Test that fminunc_compat works
+## test_fminunc_compat_1              - Test that fminunc_compat and optimset_compat work
 ##
 ## A quadratic function is fminunc_compatd. Various options are tested. Options
 ## are passed incomplete (to see if properly completed) and

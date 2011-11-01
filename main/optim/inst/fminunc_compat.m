@@ -13,7 +13,9 @@
 ## [x,v,flag,out,df,d2f] = fminunc_compat (f,x,opt,...) - M*tlab-like optimization
 ##
 ## Imitation of m*tlab's fminunc(). The optional 'opt' argument is a struct,
-## e.g. produced by 'optimset()'.
+## e.g. produced by 'optimset()'. 'fminunc_compat' has been deprecated in
+## favor of 'fminunc', which is now part of core Octave. This function
+## will possibly be removed from future versions of the 'optim' package.
 ##
 ## Supported options
 ## -----------------
@@ -41,6 +43,8 @@
 ##
 ## This function is a front-end to minimize().
 function [x,fval,flag,out,df,d2f] = fminunc_compat (fun,x0,opt,varargin)
+
+  warning ("'fminunc_compat' has been deprecated in favor of 'fminunc', which is now part of core Octave. This function will possibly be removed from future versions of the 'optim' package.");
 
 if nargin < 3, opt = struct (); end
 if nargin > 3, 

@@ -13,7 +13,9 @@
 ## opt = optimset_compat (...)         - manipulate m*tlab-style options structure
 ## 
 ## This function returns a m*tlab-style options structure that can be used
-## with the fminunc() function.
+## with the fminunc() function. 'optimset_compat' has been deprecated in
+## favor of 'optimset', which is now part of core Octave. This function
+## will possibly be removed from future versions of the 'optim' package.
 ##
 ## INPUT : Input consist in one or more structs followed by option-value
 ## pairs. The option that can be passed are those of m*tlab's 'optimset'.
@@ -38,6 +40,8 @@ function opt = optimset_compat (varargin)
 ## DiffMinChange, [scalar>0]     : N/A (I don't know what it does)
 ## Display      , ["off","iter","notify","final"] 
 ##                               : N/A
+
+  warning ("'optimset_compat' has been deprecated in favor of 'optimset', which is now part of core Octave. This function will possibly be removed from future versions of the 'optim' package.");
 
 args = varargin;
 

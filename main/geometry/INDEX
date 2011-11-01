@@ -129,5 +129,6 @@ Input
  svgload
  svgnormalize
  svgpath2polygon
+ @svg
 Output
  data2geo

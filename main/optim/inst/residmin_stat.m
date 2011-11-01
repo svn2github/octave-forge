@@ -39,7 +39,7 @@
 ##
 ## @code{dfdp}: Jacobian of model function with respect to parameters.
 ##
-## @code{covr}: Covariance matrix of data (typically guessed by applying
+## @code{covd}: Covariance matrix of data (typically guessed by applying
 ## a factor to the covariance matrix of the residuals).
 ##
 ## @code{covp}: Covariance matrix of final parameters.
@@ -54,10 +54,10 @@
 ## The following settings have the same meaning as in
 ## @code{nonlin_residmin} (please refer to there): @code{param_order},
 ## @code{param_dims}, @code{f_pstruct}, @code{dfdp_pstruct},
-## @code{diffp}, @code{diff_onesided}, @code{fixed}, and @code{weights}.
-## Similarly, @code{param_config} can be used, but only with fields
-## corresponding to the settings @code{fixed}, @code{diffp}, and
-## @code{diff_onesided}.
+## @code{diffp}, @code{diff_onesided}, @code{complex_step_derivative},
+## @code{cstep}, @code{fixed}, and @code{weights}. Similarly,
+## @code{param_config} can be used, but only with fields corresponding
+## to the settings @code{fixed}, @code{diffp}, and @code{diff_onesided}.
 ##
 ## @code{dfdp} can be set in the same way as in @code{nonlin_residmin},
 ## but alternatively may already contain the computed Jacobian of the

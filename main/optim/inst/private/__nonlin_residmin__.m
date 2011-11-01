@@ -36,6 +36,7 @@ function [p, resid, cvg, outp] = \
   ## NA here in the frontend
   diffp_default = .001;
   stol_default = .0001;
+  cstep_default = 1e-20;
 
   if (nargin == 1 && ischar (f) && strcmp (f, "defaults"))
     p = optimset ("param_config", [], \
@@ -55,6 +56,10 @@ function [p, resid, cvg, outp] = \
 		  "fract_prec", [], \
 		  "diffp", [], \
 		  "diff_onesided", [], \
+		  "complex_step_derivative", false, \
+		  "complex_step_derivative_inequc", false, \
+		  "complex_step_derivative_equc", false, \
+		  "cstep", cstep_default, \
 		  "fixed", [], \
 		  "inequc", [], \
 		  "equc", [], \
@@ -107,6 +112,14 @@ function [p, resid, cvg, outp] = \
   diffp = optimget (settings, "diffp");
   diff_onesided = optimget (settings, "diff_onesided");
   fixed = optimget (settings, "fixed");
+  do_cstep = optimget (settings, "complex_step_derivative", false);
+  cstep = optimget (settings, "cstep", cstep_default);
+  if (do_cstep && ! isempty (dfdp))
+    error ("both 'complex_step_derivative' and 'dfdp' are set");
+  endif
+  do_cstep_inequc = \
+      optimget (settings, "complex_step_derivative_inequc", false);
+  do_cstep_equc = optimget (settings, "complex_step_derivative_equc", false);
 
   any_vector_conf = ! (isempty (lbound) && isempty (ubound) && \
 		       isempty (max_fract_change) && \
@@ -115,9 +128,11 @@ function [p, resid, cvg, outp] = \
 
   ## collect constraints
   [mc, vc, f_genicstr, df_gencstr, user_df_gencstr] = \
-      __collect_constraints__ (optimget (settings, "inequc"));
+      __collect_constraints__ (optimget (settings, "inequc"), \
+			       do_cstep_inequc, "inequality constraints");
   [emc, evc, f_genecstr, df_genecstr, user_df_genecstr] = \
-      __collect_constraints__ (optimget (settings, "equc"));
+      __collect_constraints__ (optimget (settings, "equc"), \
+			       do_cstep_equc, "equality constraints");
   mc_struct = isstruct (mc);
   emc_struct = isstruct (emc);
 
@@ -440,8 +455,12 @@ function [p, resid, cvg, outp] = \
 
   ## jacobian of model function
   if (isempty (dfdp))
-    __dfdp__ = @ __dfdp__; # for bug #31484 (Octave <= 3.2.4)
-    dfdp = @ (p, hook) __dfdp__ (p, f, hook);
+    if (do_cstep)
+      dfdp = @ (p, hook) jacobs (p, f, hook);
+    else
+      __dfdp__ = @ __dfdp__; # for bug #31484 (Octave <= 3.2.4)
+      dfdp = @ (p, hook) __dfdp__ (p, f, hook);
+    endif
   endif
   if (dfdp_pstruct)
     if (pnonscalar)
@@ -730,17 +749,18 @@ function [p, resid, cvg, outp] = \
 	      ({s_diffp, s_diff_onesided, s_orig_lbound, \
 		s_orig_ubound, s_plabels, \
 		cell2fields(num2cell(hook.fixed), pord(nonfixed), \
-			    1, s_orig_fixed)}, \
+			    1, s_orig_fixed), cstep}, \
 	       {"diffp", "diff_onesided", "lbound", "ubound", \
-		"plabels", "fixed"}, \
+		"plabels", "fixed", "h"}, \
 	       2, hook));
   else
     dfdp = @ (p, hook) \
 	dfdp (p, cell2fields \
 	      ({diffp, diff_onesided, orig_lbound, orig_ubound, \
-		plabels, assign(orig_fixed, nonfixed, hook.fixed)}, \
+		plabels, assign(orig_fixed, nonfixed, hook.fixed), \
+		cstep}, \
 	       {"diffp", "diff_onesided", "lbound", "ubound", \
-		"plabels", "fixed"}, \
+		"plabels", "fixed", "h"}, \
 	       2, hook));
   endif
 
@@ -751,18 +771,18 @@ function [p, resid, cvg, outp] = \
 		    ({s_diffp, s_diff_onesided, s_orig_lbound, \
 		      s_orig_ubound, s_plabels, \
 		      cell2fields(num2cell(hook.fixed), pord(nonfixed), \
-				  1, s_orig_fixed)}, \
+				  1, s_orig_fixed), cstep}, \
 		     {"diffp", "diff_onesided", "lbound", "ubound", \
-		      "plabels", "fixed"}, \
+		      "plabels", "fixed", "h"}, \
 		     2, hook));
   else
     df_gencstr = @ (p, func, idx, hook) \
 	df_gencstr (p, func, idx, cell2fields \
 		    ({diffp, diff_onesided, orig_lbound, \
 		      orig_ubound, plabels, \
-		      assign(orig_fixed, nonfixed, hook.fixed)}, \
+		      assign(orig_fixed, nonfixed, hook.fixed), cstep}, \
 		     {"diffp", "diff_onesided", "lbound", "ubound", \
-		      "plabels", "fixed"}, \
+		      "plabels", "fixed", "h"}, \
 		     2, hook));
   endif
 
@@ -773,18 +793,18 @@ function [p, resid, cvg, outp] = \
 		     ({s_diffp, s_diff_onesided, s_orig_lbound, \
 		       s_orig_ubound, s_plabels, \
 		       cell2fields(num2cell(hook.fixed), pord(nonfixed), \
-				   1, s_orig_fixed)}, \
+				   1, s_orig_fixed), cstep}, \
 		      {"diffp", "diff_onesided", "lbound", "ubound", \
-		       "plabels", "fixed"}, \
+		       "plabels", "fixed", "h"}, \
 		      2, hook));
   else
     df_genecstr = @ (p, func, idx, hook) \
 	df_genecstr (p, func, idx, cell2fields \
 		     ({diffp, diff_onesided, orig_lbound, \
 		       orig_ubound, plabels, \
-		       assign(orig_fixed, nonfixed, hook.fixed)}, \
+		       assign(orig_fixed, nonfixed, hook.fixed), cstep}, \
 		      {"diffp", "diff_onesided", "lbound", "ubound", \
-		       "plabels", "fixed"}, \
+		       "plabels", "fixed", "h"}, \
 		      2, hook));
   endif
 

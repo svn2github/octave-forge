@@ -44,6 +44,10 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
     optimget = @ __optimget__;
   endif
 
+  ## scalar defaults
+  diffp_default = .001;
+  cstep_default = 1e-20;
+
   if (nargin == 1 && ischar (f) && strcmp (f, "defaults"))
     ret = optimset ("param_config", [], \
 		    "param_order", [], \
@@ -53,6 +57,8 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
 		    "dfdp", [], \
 		    "diffp", [], \
 		    "diff_onesided", [], \
+		    "complex_step_derivative", false, \
+		    "cstep", cstep_default, \
 		    "fixed", [], \
 		    "weights", [], \
 		    "residuals", [], \
@@ -64,9 +70,6 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
 		    "ret_corp", false);
     return;
   endif
-
-  ## scalar defaults
-  diffp_default = .001;
 
   assign = @ assign; # Is this faster in repeated calls?
 
@@ -98,6 +101,11 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
   diff_onesided = optimget (settings, "diff_onesided");
   fixed = optimget (settings, "fixed");
   residuals = optimget (settings, "residuals");
+  do_cstep = optimget (settings, "complex_step_derivative", false);
+  cstep = optimget (settings, "cstep", cstep_default);
+  if (do_cstep && ! isempty (dfdp))
+    error ("both 'complex_step_derivative' and 'dfdp' are set");
+  endif
 
   any_vector_conf = ! (isempty (diffp) && isempty (diff_onesided) && \
 		       isempty (fixed));
@@ -335,8 +343,12 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
   ## jacobian of model function
   if (isempty (dfdp))
     if (! isempty (f))
-      __dfdp__ = @ __dfdp__; # for bug #31484 (Octave <= 3.2.4)
-      dfdp = @ (p, hook) __dfdp__ (p, f, hook);
+      if (do_cstep)
+	dfdp = @ (p, hook) jacobs (p, f, hook);
+      else
+	__dfdp__ = @ __dfdp__; # for bug #31484 (Octave <= 3.2.4)
+	dfdp = @ (p, hook) __dfdp__ (p, f, hook);
+      endif
     endif
   elseif (! isa (dfdp, "function_handle"))
     if (ismatrix (dfdp))
@@ -484,15 +496,15 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
   if (dfdp_pstruct)
     dfdp = @ (p, hook) \
 	dfdp (p, cell2fields \
-	      ({s_diffp, s_diff_onesided, s_plabels, s_fixed}, \
-	       {"diffp", "diff_onesided", "plabels", "fixed"}, \
+	      ({s_diffp, s_diff_onesided, s_plabels, s_fixed, cstep}, \
+	       {"diffp", "diff_onesided", "plabels", "fixed", "h"}, \
 	       2, hook));
   else
     if (! isempty (dfdp))
       dfdp = @ (p, hook) \
 	  dfdp (p, cell2fields \
-		({diffp, diff_onesided, plabels, fixed}, \
-		 {"diffp", "diff_onesided", "plabels", "fixed"}, \
+		({diffp, diff_onesided, plabels, fixed, cstep}, \
+		 {"diffp", "diff_onesided", "plabels", "fixed", "h"}, \
 		 2, hook));
     endif
   endif

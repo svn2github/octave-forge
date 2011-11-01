@@ -91,6 +91,18 @@
 ## intervals should be used by jacobian functions performing finite
 ## differencing. Default: @code{false (size (parameters))}.
 ##
+## @code{complex_step_derivative}, @code{complex_step_derivative_inequc},
+## @code{complex_step_derivative_equc}: logical scalars, default: false.
+## Estimate Jacobian of model function, general inequality constraints,
+## and general equality constraints, respectively, with complex step
+## derivative approximation. Use only if you know that your model
+## function, function of general inequality constraints, or function of
+## general equality constraints, respectively, is suitable for this. No
+## user function for the respective Jacobian must be specified.
+##
+## @code{cstep}: scalar step size for complex step derivative
+## approximation. Default: 1e-20.
+##
 ## @code{fixed}: logical column vector indicating which parameters
 ## should not be optimized, but kept to their inital value. Fixing is
 ## done independently of the backend, but the backend may choose to fix

@@ -14,7 +14,7 @@
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
 function [mc, vc, f_gencstr, df_gencstr, user_df] = \
-      __collect_constraints__ (cstr)
+      __collect_constraints__ (cstr, do_cstep, context)
 
   mc = vc = f_gencstr = df_gencstr = [];
   user_df = false;
@@ -59,13 +59,21 @@ function [mc, vc, f_gencstr, df_gencstr, user_df] = \
 	tf_gencstr (f_gencstr, varargin{:});
 
     if (user_df)
+      if (do_cstep)
+	error ("both complex step derivative chosen and user Jacobian function specified for %s", context);
+      endif
       if (ischar (df_gencstr))
 	df_gencstr = str2func (df_gencstr);
       endif
       df_gencstr = @ (p, func, idx, hook) \
 	  df_gencstr (p, idx, hook);
     else
-      df_gencstr = @ (p, func, idx, hook) __dfdp__ (p, func, hook);
+      if (do_cstep)
+	df_gencstr = @ (p, func, idx, hook) jacobs (p, func, hook);
+      else
+	__dfdp__ = @ __dfdp__; # for bug #31484 (Octave <= 3.2.4)
+	df_gencstr = @ (p, func, idx, hook) __dfdp__ (p, func, hook);
+      endif
     endif
   endif
 

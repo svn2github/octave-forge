@@ -562,6 +562,7 @@ function [f,p,cvg,iter,corp,covp,covr,stdresid,Z,r2]= ...
   hook.fixed = dp == 0;
   if (verbose)
     hook.Display = 'iter';
+    __plot_cmds__ = @ __plot_cmds__; # for bug #31484 (Octave <= 3.2.4)
     hook.plot_cmd = @ (f) __plot_cmds__ (x, y, y - f);
   else
     hook.Display = 'off';

@@ -335,6 +335,7 @@ function ret = __residmin_stat__ (f, pfin, settings, hook)
   ## jacobian of model function
   if (isempty (dfdp))
     if (! isempty (f))
+      __dfdp__ = @ __dfdp__; # for bug #31484 (Octave <= 3.2.4)
       dfdp = @ (p, hook) __dfdp__ (p, f, hook);
     endif
   elseif (! isa (dfdp, "function_handle"))

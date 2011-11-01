@@ -18,16 +18,18 @@ Data fitting
  nonlin_residmin
  nonlin_curvefit
  LinearRegression
+Optimization statistics
+ residmin_stat
+ curvefit_stat
 Zero finding
  vfzero
 Compatibility
  fminunc_compat
- optimset_compat
  quadprog= try Yinyu Ye's <a href="http://dollar.biz.uiowa.edu/col/ye/matlab.html">code</a>
  linprog
 Numerical derivatives
  dfdp dcdp dfpdp dfxpdp cdiff deriv
- numgradient numhessian
+ numgradient numhessian jacobs
 Pivoting
  cpiv_bard
  gjp

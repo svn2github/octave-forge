@@ -14,39 +14,29 @@
 %% along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} { @var{a} =} areashape (@var{pp})
+%% @deftypefn {Function File} { @var{a} =} shapearea (@var{pp})
 %%  Shape is defined with piecewise smooth polynomials. @var{pp} is a
 %% cell where each elements is a 2-by-(poly_degree+1) array containing px(i,:) =
 %% pp{i}(1,:) and py(i,:) = pp{i}(2,:).
 %%
 %% @end deftypefn
 
-function A = shapearea (pp, tol=sqrt(eps)*[1 1])
+function A = shapearea (shape)
 
-  A = 0;
-
-  integrand = @(t_, px_, py_) polyval (px_, t_) .* polyval ( polyderiv (py_), t_);
-  d3_integral = @(px,py) py(1) * ( 20*px(4) + 15*px(3) + 12*px(2) + 10*px(1)) / 20 + ...
-                       py(2) * ( 30*px(4) + 20*px(3) + 15*px(2) + 12*px(1)) / 30 + ...
-                       py(3) * ( 12*px(4) + 6*px(3) + 4*px(2) + 3*px(1)) / 12;
-
-  for is = 1:numel(pp)
-    px = pp{is}(1,:);
-    py = pp{is}(2,:);
-    
-    if length(px) > 4
-    % degree> 3
-      A += quad(@(t) integrand (t, px, py), 0, 1, tol);
-    else
-    % cubic polynomial
-      px = padarray(px,[0 4-length(px)],0,'pre')
-      py = padarray(py,[0 4-length(py)],0,'pre');
-      A += d3_integral(px,py);
-    end
-    
-  end
+  A = sum(cellfun (@Aint, shape));
 
 endfunction
+
+function dA = Aint (x)
+
+    px = x(1,:);
+    py = x(2,:);
+
+    P = polyint (conv (px, polyderiv(py)));
+    
+    dA = diff(polyval(P,[0 1]));
+
+end
 
 %!demo % non-convex bezier shape
 %! weirdhearth ={[-17.6816  -34.3989    7.8580    3.7971; ...

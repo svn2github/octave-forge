@@ -16,8 +16,8 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} { @var{a} =} shapearea (@var{pp})
 %%  Shape is defined with piecewise smooth polynomials. @var{pp} is a
-%% cell where each elements is a 2-by-(poly_degree+1) array containing px(i,:) =
-%% pp{i}(1,:) and py(i,:) = pp{i}(2,:).
+%% cell where each elements is a 2-by-(poly_degree+1) array containing 
+%% @code{px(i,:) = pp{i}(1,:) and py(i,:) = pp{i}(2,:)}.
 %%
 %% @end deftypefn
 

@@ -16,7 +16,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {Df =} jacobs (@var{x}, @var{f})
 ## @deftypefnx {Function File} {Df =} jacobs (@var{x}, @var{f}, @var{hook})
-## Calculate the jacobian of a function.
+## Calculate the jacobian of a function using the complex step method.
 ##
 ## Let @var{f} be a user-supplied function. Given a point @var{x} at
 ## which we seek for the Jacobian, the function @command{jacobs} returns

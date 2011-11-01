@@ -56,12 +56,12 @@ function svg = svg(name='')
 endfunction
 
 %!test
-%!  dc = svg('/home/juanpi/Resources/3rdPartyCode/octave-forge/main/geometry/inst/io/drawing5.svg');
+%!  dc = svg('../drawing5.svg');
 %!  dc.getpath()
 %!  dc.pathid
 %!  dc.getpath('path3756')
 %!   
-%!  dc = svg('/home/juanpi/Resources/3rdPartyCode/octave-forge/main/geometry/inst/io/drawing.svg');
+%!  dc = svg('../drawing.svg');
 %!  ids = dc.pathid;
 %!  dc.getpath({ids{[1 3]}})
 

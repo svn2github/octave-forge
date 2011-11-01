@@ -59,6 +59,15 @@ function out = subsref (obj, idx)
     case 'pathid'
       out = fieldnames(obj.Path);
 
+    case 'path2polygon'
+     if numel (idx) == 1 % obj.path2polygon doesn't exists
+       error (method4field, class (obj), method, method);
+     elseif strcmp (idx(2).type, '()')
+       out = path2polygon (obj, idx(2).subs);
+     else 
+       error (typeNotImplemented,[method idx(2).type], class (obj));
+     end
+
     otherwise
       error ("invalid index for reference of class %s", class (obj) );
   endswitch

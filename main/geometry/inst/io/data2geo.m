@@ -14,12 +14,17 @@
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} {@var{fileStr} =} data2geo (@var{data}, @var{lc},@var{opt})
+%% @deftypefn {Function File} {@var{fileStr} =} data2geo (@var{data}, @var{lc})
+%% @deftypefnx {Function File} {@var{fileStr} =} data2geo (@dots{}, @var{param}, @var{value})
 %% Builds a file compatible with gmsh form data.
 %%
 %% @var{data} is assumed to describe a polygon in @code{polygon2d} format.
+%% The argument @var{lc} specifies the edge size.
+%% The optional parameters can be 'output' followed with a string specifying a file
+%% to write. 'spehrical' following by a real number @var{r} indcating that the
+%  polygon describes a spherical surface of radious @var{r}.
 %%
-%% @seealso{polygon2d}
+%% @seealso{polygon2d, @svg/path2polygon}
 %% @end deftypefn
 
 function strFile = data2geo(data,lc,varargin)
@@ -85,3 +90,6 @@ end
 %! points  = [0 0 0; 0.1 0 0; 0.1 .3 0; 0 0.3 0];
 %! strFile = data2geo(points,0.009);
 %! disp(strFile)
+
+%!demo
+%! 

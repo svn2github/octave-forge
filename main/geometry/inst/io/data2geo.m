@@ -92,4 +92,20 @@ end
 %! disp(strFile)
 
 %!demo
-%! 
+%! dc = svg('drawing6.svg');
+%! ids = dc.pathid;
+%! P = dc.path2polygon(ids{1},12);
+%! filename = tmpnam ();
+%! meshsize = sqrt(mean(sumsq(diff(P,1,1),2)))/2;
+%! data2geo (P(1:end-1,:), meshsize, 'output', [filename '.geo']);
+%!
+%! pkg load msh fpl
+%! T = msh2m_gmsh(filename);
+%! pdemesh(T.p,T.e,T.t)
+%!
+%! ----------------------------------------------------------------------------
+%!
+%! We load the drawing6.svg file into Octave and transform it into a polygon.
+%! Teh we create a temporary fiel where the .geo mesh will be written.
+%! If the packages msh and fplare available, a mesh is created from the .geo file.
+

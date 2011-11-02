@@ -188,7 +188,7 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.\n\
   octave_idx_type nr = argA.rows ();
   octave_idx_type nc = argA.columns ();
 
-  octave_idx_type  nn = argB.rows ();
+//  octave_idx_type  nn = argB.rows ();
   octave_idx_type  np = argB.columns ();
   
   if (nr == 0 || nc == 0)

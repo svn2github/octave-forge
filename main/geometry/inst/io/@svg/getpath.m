@@ -15,7 +15,9 @@
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} function_name ()
+## @deftypefn {Function File} {@var{paths} = } getpath (@var{ids})
+## Returns paths in @var{ids}.
+##
 ## @end deftypefn
 
 function paths = getpath(obj, ids={})

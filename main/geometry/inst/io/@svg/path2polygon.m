@@ -15,8 +15,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} @var{P} = path2polygon (@var{id})
-%% Converts the SVG path to an array of polygons 
-%% compatible with the geometry package and matGeom (@url{http://matgeom.sf.net}).
+%% Converts the SVG path to an array of polygons.
 %% 
 %% @end deftypefn
 

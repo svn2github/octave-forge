@@ -14,15 +14,8 @@
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 %% -*- texinfo -*-
-%% @deftypefn {Function File} @var{SVGn} = loadSVG (@var{SVG})
-%% Scales and reflects the @var{SVG} structure and returns a modified @var{SVGn}
-%% structure.
-%% 
-%% The height and width of the SVG are scaled such that the diagonal of the 
-%% bounding box has length 1. Coordinates are trasnfomed such that a plot of the
-%% paths coincides with the visualization of the original SVG.
-%%
-%% @seealso{svgload, svgpath2polygon}
+%% @deftypefn {Function File} @var{SVGn} = normalize (@var{SVG})
+%% TODO: normalizes and SVG.
 %% @end deftypefn
 
 function SVGn = normalize (obj)

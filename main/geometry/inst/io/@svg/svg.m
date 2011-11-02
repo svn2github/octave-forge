@@ -17,7 +17,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{obj} =} svg ()
 ## @deftypefnx {Function File} {@var{obj} =} svg (@var{str})
-## Create object @var{obj} of the svn class.
+## Create object of the svg class.
 ##
 ## If no input argument is provided the object is empty. @var{str} can be a filename
 ## or a string defining an inline SVG.

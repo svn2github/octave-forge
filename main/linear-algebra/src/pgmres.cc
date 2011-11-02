@@ -81,6 +81,7 @@ DEFUN_DLD(pgmres,args,nargout,"\
 \n   inline function g such that g(x) = P\\x.\n\n")
 {
   
+  warning("'pgmres' has been deprecated in favor of 'gmres' now part of Octave core. This function will be removed from future versions of the 'linear-algebra' package");
   octave_value_list retval;
   int nargin = args.length();
  

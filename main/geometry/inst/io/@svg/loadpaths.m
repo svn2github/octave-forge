@@ -34,7 +34,7 @@ function Paths = loadpaths (obj, svg, varargin)
 
   npaths = numel (strpath);
 
-  %% Convert path data to polygons
+  %% Convert path data to polynoms
   for ip = 1:npaths
 
     eval (strpath{ip});
@@ -77,7 +77,7 @@ function Paths = loadpaths (obj, svg, varargin)
     end
     
     if ~isempty(point_end)
-      %% Straight segmet to close the path
+      %% Straight segment to close the path
       points(2,:) = point_end;
       pp = [(points(2,:)-points(1,:))' points(1,:)'];
       
@@ -89,6 +89,8 @@ function Paths = loadpaths (obj, svg, varargin)
       end
       
     end
+    %% TODO
+    % pathdata = shapetransform(pathdata);
     
     Paths.(svgpathid).data = pathdata;
   end

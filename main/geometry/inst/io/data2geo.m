@@ -24,7 +24,7 @@
 %% to write. 'spehrical' following by a real number @var{r} indcating that the
 %  polygon describes a spherical surface of radious @var{r}.
 %%
-%% @seealso{polygon2d, @svg/path2polygon}
+%% @seealso{polygon2d, @@svg/path2polygon}
 %% @end deftypefn
 
 function strFile = data2geo(data,lc,varargin)
@@ -84,7 +84,7 @@ function strFile = data2geo(data,lc,varargin)
         fclose(fid);
         disp(['DATA2GEO: Geometry file saved to ' outfile])
     end
-end
+endfunction
 
 %!demo
 %! points  = [0 0 0; 0.1 0 0; 0.1 .3 0; 0 0.3 0];
@@ -103,9 +103,8 @@ end
 %! T = msh2m_gmsh(filename);
 %! pdemesh(T.p,T.e,T.t)
 %!
-%! ----------------------------------------------------------------------------
-%!
-%! We load the drawing6.svg file into Octave and transform it into a polygon.
-%! Teh we create a temporary fiel where the .geo mesh will be written.
-%! If the packages msh and fplare available, a mesh is created from the .geo file.
-
+%! % --------------------------------------------------------------------------
+%! % We load the drawing6.svg file into Octave and transform it into a polygon.
+%! % Teh we create a temporary fiel where the .geo mesh will be written.
+%! % If the packages msh and fplare available, a mesh is created from the .geo 
+%! % file.

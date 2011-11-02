@@ -22,7 +22,6 @@
 ## If no input argument is provided the object is empty. @var{str} can be a filename
 ## or a string defining an inline SVG.
 ##
-## @seealso{@svn/parsePaths}
 ## @end deftypefn
 
 function svg = svg(name='')
@@ -31,7 +30,7 @@ function svg = svg(name='')
 
   ## SVG data. All the attributes of the <svg> node.
   ## The field unparsed contains all the attributes that are not being parsed.
-  svg.Data = struct('height',[],'width',[],'id','null','unparsed',' ');
+  svg.Data = struct('height',[],'width',[],'id','null','normalized',false);
   
   ## SVG metadata. All the attributes of the <metadata> node. 
   ## The field unparsed contains all the attributes that are not being parsed.
@@ -48,6 +47,9 @@ function svg = svg(name='')
   if !isempty (name)
     paths = loadpaths(svg, name);
     svg.Path = paths;
+    data = loadsvgdata(svg, name);
+    svg.Data = data;
+    svg.Data.normalized = false;
   elseif !ischar(name)
     print_usage ;
   endif

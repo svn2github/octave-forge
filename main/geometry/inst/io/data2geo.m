@@ -20,8 +20,9 @@
 %%
 %% @var{data} is assumed to describe a polygon in @code{polygon2d} format.
 %% The argument @var{lc} specifies the edge size.
+%%
 %% The optional parameters can be 'output' followed with a string specifying a file
-%% to write. 'spehrical' following by a real number @var{r} indcating that the
+%% to write, and 'spherical' followed by a real number @var{r} indicating that the
 %  polygon describes a spherical surface of radious @var{r}.
 %%
 %% @seealso{polygon2d, @@svg/path2polygon}

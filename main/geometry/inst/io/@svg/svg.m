@@ -45,8 +45,9 @@ function svg = svg(name='')
   svg = class (svg, 'svg');
 
   if !isempty (name)
-    name
-    if ~exist(name,'file')
+    if exist(name,"file") == 2
+      name = file_in_path(path(), "drawing5.svg");
+    else
       error("svg:BadArguemnt", "File %s doesn't exist",name);
     end
     paths = loadpaths(svg, name);

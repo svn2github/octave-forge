@@ -25,17 +25,17 @@
 ## 'tan', 'sec', 'csc', 'cot' and all their inverses and/or hyperbolic variants,
 ## and 'sqrt', 'log' and 'exp'.
 ##
-## The code @code{thfm( x ,'cos' )} calculates matrix cosinus @emph{even if} input
+## The code @code{thfm (x, 'cos')} calculates matrix cosinus @emph{even if} input
 ## matrix @var{x} is @emph{not} diagonalizable.
 ##
-## @heading{Important note}
-## This algorithm does @emph{not use} an eigensystem similarity transformation. It
+## @emph{Important note}:
+## This algorithm does @emph{not} use an eigensystem similarity transformation. It
 ## maps the @var{mode} functions to functions of @code{expm}, @code{logm} and
 ## @code{sqrtm}, which are known to be robust with respect to non-diagonalizable
 ## ('defective') @var{x}.
 ##
 ## @seealso{funm}
-## end deftypefn
+## @end deftypefn
 
 function y = thfm (x,M)
   ## minimal arg check only

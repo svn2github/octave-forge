@@ -4,19 +4,15 @@ ifndef OCTAVE_FORGE
 MKOCTFILE = mkoctfile
 endif
 
-DEFINES = -DHAVE_CONFIG_H
+DEFINES = -DHAVE_CONFIG_H -Wall
 GSVD_OBJECTS = gsvd.o dbleGSVD.o CmplxGSVD.o 
 GSVD_TARGET = gsvd.oct
 GSVD_TEST = gsvd
 GSVD_DEPENDS = gsvd.d dbleGSVD.d CmplxGSVD.d
 
-OTHER_OBJECTS = mgorth.o
-OTHER_TARGETS = $(patsubst %.o,%.oct,$(OTHER_OBJECTS))
-OTHER_DEPENDS = $(patsubst %.o,%.d,$(OTHER_OBJECTS))
-
-OBJECTS = $(OTHER_OBJECTS) $(GSVD_OBJECTS) 
-TARGETS = $(OTHER_TARGETS) $(GSVD_TARGET) 
-DEPENDS = $(OTHER_DEPENDS) $(GSVD_DEPENDS) 
+OBJECTS = $(GSVD_OBJECTS) 
+TARGETS = $(GSVD_TARGET) 
+DEPENDS = $(GSVD_DEPENDS) 
 
 .PHONY: all test clean count
 
@@ -24,7 +20,7 @@ DEPENDS = $(OTHER_DEPENDS) $(GSVD_DEPENDS)
 
 .PRECIOUS: %.d %.o
 
-all : $(TARGETS)
+all : $(TARGETS) pgmres.oct
 
 $(GSVD_TARGET) : $(GSVD_DEPENDS) $(GSVD_OBJECTS)
 	$(MKOCTFILE) $(DEFINES) $(GSVD_OBJECTS) -o $@
@@ -46,6 +42,9 @@ endif
 	$(MKOCTFILE) $(DEFINES) -c $<
 %.oct:%.o
 	$(MKOCTFILE) $(DEFINES) $< -o $@
+
+%.oct: %.cc
+	mkoctfile $(DEFINES) $< -o $@
 
 .phony: test
 test: $(GSVD_TEST)

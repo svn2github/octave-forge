@@ -194,118 +194,117 @@ The code is a wrapper to the corresponding Lapack dggsvd and zggsvd routines.\n\
   if (nr == 0 || nc == 0)
     {
       if (nargout >= 5)
-	{ 
-	  for (int i = 3; i <= nargout; i++)
-	    retval(i) = identity_matrix (nr, nr);
-	  retval(2) = Matrix (nr, nc);
-	  retval(1) = identity_matrix (nc, nc);
-	  retval(0) = identity_matrix (nc, nc);
-	}
+        { 
+          for (int i = 3; i <= nargout; i++)
+            retval(i) = identity_matrix (nr, nr);
+          retval(2) = Matrix (nr, nc);
+          retval(1) = identity_matrix (nc, nc);
+          retval(0) = identity_matrix (nc, nc);
+        }
       else
-	retval(0) = Matrix (0, 1);
+        retval(0) = Matrix (0, 1);
     }
   else
     {
       if ((nc != np))
-	{
-	  print_usage ();
-	  return retval;
-	}
+        {
+          print_usage ();
+          return retval;
+        }
 
       GSVD::type type = ((nargout == 0 || nargout == 1)
-			? GSVD::sigma_only
-			: (nargout > 5) ? GSVD::std : GSVD::economy );
+                        ? GSVD::sigma_only
+                        : (nargout > 5) ? GSVD::std : GSVD::economy );
 
       if (argA.is_real_type () && argB.is_real_type ())
-	{
-	  Matrix tmpA = argA.matrix_value ();
-	  Matrix tmpB = argB.matrix_value ();
+        {
+          Matrix tmpA = argA.matrix_value ();
+          Matrix tmpB = argB.matrix_value ();
 
-	  if (! error_state)
-	    {
-	      if (tmpA.any_element_is_inf_or_nan ())
-		{
-		  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values"); 
-		  return retval;
-		}
-	      
-	      if (tmpB.any_element_is_inf_or_nan ())
-		{
-		  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values"); 
-		  return retval;
-		}
-	      
+          if (! error_state)
+            {
+              if (tmpA.any_element_is_inf_or_nan ())
+                {
+                  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values");
+                  return retval;
+                }
+              
+              if (tmpB.any_element_is_inf_or_nan ())
+                {
+                  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values");
+                  return retval;
+                }
 
-	      GSVD result (tmpA, tmpB, type);
+              GSVD result (tmpA, tmpB, type);
 
-	      // DiagMatrix sigma = result.singular_values ();
+              // DiagMatrix sigma = result.singular_values ();
 
-	      if (nargout == 0 || nargout == 1)
-		{
-		  DiagMatrix sigA =  result.singular_values_A ();
-		  DiagMatrix sigB =  result.singular_values_B ();
-		  for (int i = sigA.rows() - 1; i >=0; i--)
-		    sigA.dgxelem(i) /= sigB.dgxelem(i);
-		  retval(0) = sigA.diag();
-		}
-	      else
-		{ 
-		  if (nargout > 5) retval(5) = result.R_matrix ();
-		  retval(4) = result.right_singular_matrix ();
-		  retval(3) = result.singular_values_B ();
-		  retval(2) = result.singular_values_A ();
-		  retval(1) = result.left_singular_matrix_B ();
-		  retval(0) = result.left_singular_matrix_A ();
-		}
-	    }
-	}
+              if (nargout == 0 || nargout == 1)
+                {
+                  DiagMatrix sigA =  result.singular_values_A ();
+                  DiagMatrix sigB =  result.singular_values_B ();
+                  for (int i = sigA.rows() - 1; i >=0; i--)
+                    sigA.dgxelem(i) /= sigB.dgxelem(i);
+                  retval(0) = sigA.diag();
+                }
+              else
+                { 
+                  if (nargout > 5) retval(5) = result.R_matrix ();
+                  retval(4) = result.right_singular_matrix ();
+                  retval(3) = result.singular_values_B ();
+                  retval(2) = result.singular_values_A ();
+                  retval(1) = result.left_singular_matrix_B ();
+                  retval(0) = result.left_singular_matrix_A ();
+                }
+            }
+        }
       else if (argA.is_complex_type () || argB.is_complex_type ())
-	{
-	  ComplexMatrix ctmpA = argA.complex_matrix_value ();
-	  ComplexMatrix ctmpB = argB.complex_matrix_value ();
+        {
+          ComplexMatrix ctmpA = argA.complex_matrix_value ();
+          ComplexMatrix ctmpB = argB.complex_matrix_value ();
 
-	  if (! error_state)
-	    {
-	      if (ctmpA.any_element_is_inf_or_nan ())
-		{
-		  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values"); 
-		  return retval;
-		}
-	      if (ctmpB.any_element_is_inf_or_nan ())
-		{
-		  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values"); 
-		  return retval;
-		}
+          if (! error_state)
+            {
+              if (ctmpA.any_element_is_inf_or_nan ())
+                {
+                  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values");
+                  return retval;
+                }
+              if (ctmpB.any_element_is_inf_or_nan ())
+                {
+                  error ("gsvd: cannot take GSVD of matrix containing Inf or NaN values");
+                  return retval;
+                }
 
-	      ComplexGSVD result (ctmpA, ctmpB, type);
+              ComplexGSVD result (ctmpA, ctmpB, type);
 
-	      // DiagMatrix sigma = result.singular_values ();
+              // DiagMatrix sigma = result.singular_values ();
 
-	      if (nargout == 0 || nargout == 1)
-		{
-		  DiagMatrix sigA =  result.singular_values_A ();
-		  DiagMatrix sigB =  result.singular_values_B ();
-		  for (int i = sigA.rows() - 1; i >=0; i--)
-		    sigA.dgxelem(i) /= sigB.dgxelem(i);
-		  retval(0) = sigA.diag();
-		}
-	      else
-		{
-		  if (nargout > 5) retval(5) = result.R_matrix ();
-		  retval(4) = result.right_singular_matrix ();
-		  retval(3) = result.singular_values_B ();
-		  retval(2) = result.singular_values_A ();
-		  retval(1) = result.left_singular_matrix_B ();
-		  retval(0) = result.left_singular_matrix_A ();
-		}
-	    }
-	}
+              if (nargout == 0 || nargout == 1)
+                {
+                  DiagMatrix sigA =  result.singular_values_A ();
+                  DiagMatrix sigB =  result.singular_values_B ();
+                  for (int i = sigA.rows() - 1; i >=0; i--)
+                    sigA.dgxelem(i) /= sigB.dgxelem(i);
+                  retval(0) = sigA.diag();
+                }
+              else
+                {
+                  if (nargout > 5) retval(5) = result.R_matrix ();
+                  retval(4) = result.right_singular_matrix ();
+                  retval(3) = result.singular_values_B ();
+                  retval(2) = result.singular_values_A ();
+                  retval(1) = result.left_singular_matrix_B ();
+                  retval(0) = result.left_singular_matrix_A ();
+                }
+            }
+        }
       else
-	{
-	  gripe_wrong_type_arg ("gsvd", argA);
-	  gripe_wrong_type_arg ("gsvd", argB);
-	  return retval;
-	}
+        {
+          gripe_wrong_type_arg ("gsvd", argA);
+          gripe_wrong_type_arg ("gsvd", argB);
+          return retval;
+        }
     }
 
   return retval;

@@ -13,15 +13,23 @@
 ## for more details.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {dx =} deriv (@var{f}, @var{x0})
-## @deftypefnx {Function File} {dx =} deriv (@var{f}, @var{x0}, @var{h})
-## @deftypefnx {Function File} {dx =} deriv (@var{f}, @var{x0}, @var{h}, @var{O})
-## @deftypefnx {Function File} {dx =} deriv (@var{f}, @var{x0}, @var{h}, @var{O}, @var{N})
+## @deftypefn {Function File} {@var{dx} =} deriv (@var{f}, @var{x0})
+## @deftypefnx {Function File} {@var{dx} =} deriv (@var{f}, @var{x0}, @var{h})
+## @deftypefnx {Function File} {@var{dx} =} deriv (@var{f}, @var{x0}, @var{h}, @var{O})
+## @deftypefnx {Function File} {@var{dx} =} deriv (@var{f}, @var{x0}, @var{h}, @var{O}, @var{N})
 ## Calculate derivate of function @var{f}.
 ##
-## @var{f} must be a function handle or the name of a function while @var{x0}
-## must be a scalar.The optional arguments @var{h}, @var{O} and @var{N} default
-## to 1e-7, 2, and 1 respectively.
+## @var{f} must be a function handle or the name of a function that takes @var{x0}
+## and returns a variable of equal length and orientation. @var{x0} must be a
+## numeric vector or scalar.
+##
+## @var{h} defines the step taken for the derivative calculation. Defaults to 1e-7.
+##
+## @var{O} defines the order of the calculation. Supported values are 2 (h^2 order)
+## or 4 (h^4 order). Defaults to 2.
+##
+## @var{N} defines the derivative order. Defaults to the 1st derivative of the
+## function. Can be up to the 4th derivative.
 ##
 ## Reference: Numerical Methods for Mathematics, Science, and Engineering by
 ## John H. Mathews.
@@ -29,12 +37,17 @@
 
 function dx = deriv (f, x0, h = 0.0000001, O = 2, N = 1)
 
+  if (ischar(f))
+    f = str2func(f); # let's also support a string with str2func
+  endif
+
   if (nargin < 2)
     error ("Not enough arguments.");
-  elseif (!isa (f, 'function_handle') || !ischar (f)) # let's also support a string with str2func
+  elseif (!isa (f, 'function_handle'))
     error ("The first argument 'f' must be a function handle.");
-  elseif (!isscalar (x0) || !isnumeric (x0))
-    error ("The second argument 'x0' must be a scalar.");
+  elseif (!isvector (x0) || !isnumeric (x0))
+    ## a scalar is 1x1 therefore counts as a vector too
+    error ("The second argument 'x0' must be a numeric vector.");
   elseif (!isscalar (h) || !isnumeric (h))
     error ("The third argument 'h' must be a scalar.");
   elseif (!isscalar (O) || !isnumeric (O))
@@ -47,10 +60,6 @@ function dx = deriv (f, x0, h = 0.0000001, O = 2, N = 1)
     error("Only 1st,2nd,3rd or 4th order derivatives are acceptable.");
   elseif (nargin > 5)
     warning("Ignoring arguements beyond the 5th.");
-  endif
-
-  if (ischar (f))
-    f = str2func (f);
   endif
 
   switch O

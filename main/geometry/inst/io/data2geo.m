@@ -92,7 +92,7 @@ endfunction
 %! disp(strFile)
 
 %!demo
-%! dc = svg('drawing6.svg');
+%! dc = svg('../drawing6.svg');
 %! ids = dc.pathid;
 %! P = dc.path2polygon(ids{1},12);
 %! filename = tmpnam ();

@@ -72,7 +72,25 @@ end
 %! assert ([b*h^3; h*b^3]/12, l);
 
 %!demo
-%! elli = elli*rotv([0 0 1],-n(i))(1:2,1:2); [PA l] = principalaxes(ellir); L(:,i)=l; plot(ellir(:,1),ellir(:,2),'-k'); line([0 PA(1,1)],[0 PA(1,2)],'color','r'); line([0 PA(2,1)],[0 PA(2,2)],'color','b'); axis equal; pause; end
+%! t = linspace(0,2*pi,64).';
+%! shape = [cos(t)-0.3*cos(3*t) sin(t)](1:end-1,:);
+%! shapeR = shape*rotv([0 0 1],pi/4)(1:2,1:2); 
+%! [PAr l] = principalaxes(shapeR); 
+%! [PA l] = principalaxes(shape); 
+%!
+%! cla
+%! plot(shape(:,1),shape(:,2),'-k'); 
+%! line([0 PA(1,1)],[0 PA(1,2)],'color','r'); 
+%! line([0 PA(2,1)],[0 PA(2,2)],'color','b'); 
+%!
+%! hold on
+%!
+%! plot(shapeR(:,1)+3,shapeR(:,2),'-k'); 
+%! line([3 PAr(1,1)+3],[0 PAr(1,2)],'color','r'); 
+%! line([3 PAr(2,1)+3],[0 PAr(2,2)],'color','b'); 
+%!
+%! axis equal
+%! axis square
 
 
 

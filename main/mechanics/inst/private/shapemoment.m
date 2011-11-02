@@ -60,7 +60,7 @@ function J = shapemoment(shape, matrix=false)
   end
 
   if matrix
-    J = vech2mat (J);
+    J = unvech (J);
   end
 
 end

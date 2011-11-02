@@ -85,9 +85,10 @@ function rigidbody = rigidbody(varargin)
     
     ## Shape given
     if pargiven(1)
-      shapedata = varargin{idx(1)+1};
-      if !iscell(shapedata)
-        shapedata = polygon2shape(shapedata);
+      if iscell (varargin{idx(1)+1})
+        shapedata = varargin{idx(1)+1};
+      elseif !iscell(varargin{idx(1)+1})
+        shapedata = polygon2shape(varargin{idx(1)+1});
       else 
         error('rigidBody:IvalidArgument','Unrecognized shape data.');
       end
@@ -97,7 +98,7 @@ function rigidbody = rigidbody(varargin)
       ## x-axis direction and centered in [0 0].
       baricenter = masscenter(shapedata);
 
-      shapedata = shapetranslate(shapedata, -baricenter);
+      shapedata = shapetransform(shapedata, -baricenter(:));
 
       [PA l] = principalaxes(shapedata);
       ## Put 1st axis positive in x
@@ -107,7 +108,7 @@ function rigidbody = rigidbody(varargin)
       rigidbody.Shape.PrincipalAxes = PA;
       rigidbody.Shape.AreaMoments = l;
 
-      rigidbody.Shape.Data = varargin{idx(1)+1} * PA.';
+      rigidbody.Shape.Data = shapetransform(shapedata, PA);
 
       rigidbody.InertiaMoment = inertiamoment (shapedata, rigidbody.Mass);
     end

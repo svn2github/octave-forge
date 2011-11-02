@@ -20,7 +20,6 @@
   
 */
 
-
 #include <octave/oct.h>
 #include <octave/parse.h>
 #include <octave/oct-norm.h>
@@ -60,7 +59,7 @@ public:
 };
 
 bool converged (double pbn, double prn, octave_idx_type iter,
-	        double prtol, octave_idx_type max_it)
+                double prtol, octave_idx_type max_it)
 {
   return (((prtol != 0) && (prn <= prtol*pbn)) || (iter >= max_it));
 }
@@ -84,15 +83,15 @@ DEFUN_DLD(pgmres,args,nargout,"\
   warning("'pgmres' has been deprecated in favor of 'gmres' now part of Octave core. This function will be removed from future versions of the 'linear-algebra' package");
   octave_value_list retval;
   int nargin = args.length();
- 
+  
   if (nargin != 7)
     {
       print_usage ();
     }
-  else 
+  else
     {
       
-      matrixfreematrix *A, *invP;
+      matrixfreematrix *A=NULL, *invP=NULL;
       Matrix V, H;
       
       ColumnVector b, x0, x_old, res, B, resids;
@@ -128,7 +127,6 @@ DEFUN_DLD(pgmres,args,nargout,"\
 
       if (! error_state)
         {
-      
           x_old = x0; 
           x = x_old;
           res = b - (*A) * x_old;
@@ -160,8 +158,7 @@ DEFUN_DLD(pgmres,args,nargout,"\
                   V = Matrix (b.length (), 1, 0.0);
                   for (octave_idx_type ii = 0; ii < V.rows (); ii++)
                     V(ii,0) = res(ii) / prn;
-        }
-              
+                }
               
               //basic iteration
               tmp = (*A) * (V.column (reit-1));
@@ -188,18 +185,16 @@ DEFUN_DLD(pgmres,args,nargout,"\
               resids(iter++) = prn ;
               reit++ ;
             }
-      
-      
+          
           retval(1) = octave_value(resids);
           retval(0) = octave_value(x);
         }
-      else 
+      else
         print_usage ();
-  
+      
       delete A;
       delete invP;
     }
-  
   
   return retval;
 }
@@ -214,16 +209,17 @@ matrixfreematrixfun::matrixfreematrixfun  (octave_value A)
     error ("error extracting function from first argument");
 }
   
-ColumnVector matrixfreematrixfun::operator * (ColumnVector b) 
+ColumnVector matrixfreematrixfun::operator * (ColumnVector b)
 {
   ColumnVector res;
   octave_value_list retval;
   retval = feval (fun, octave_value(b), 1);
   res = retval(0).column_vector_value ();
-  if (! error_state)
-    return res;
-  else
-    error ("error applying linear operator");
+  if ( error_state)
+    {
+      error ("error applying linear operator");
+    }
+  return res;
 }
 
 //----------------------//----------------------//
@@ -233,8 +229,8 @@ matrixfreematrixmat::matrixfreematrixmat  (octave_value A)
   if (error_state)
     error ("error extracting matrix value from first argument");
 }
-  
-ColumnVector matrixfreematrixmat::operator * (ColumnVector b) 
+
+ColumnVector matrixfreematrixmat::operator * (ColumnVector b)
 {
   return ColumnVector (mat * Matrix(b));
 }
@@ -246,12 +242,11 @@ matrixfreematrixinvmat::matrixfreematrixinvmat  (octave_value A)
   if (error_state)
     error ("error extracting matrix value from first argument");
 }
-  
-ColumnVector matrixfreematrixinvmat::operator * (ColumnVector b) 
+
+ColumnVector matrixfreematrixinvmat::operator * (ColumnVector b)
 {
   return mat.solve(b);
 }
-
 
 /*
 

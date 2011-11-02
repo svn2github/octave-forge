@@ -11,6 +11,7 @@ geometry >> Computational Geometry
  circles2d
  ellipses2d
  transforms2d
+ polygons2d
 2D Points
  centroid
  distancePoints
@@ -113,6 +114,15 @@ geometry >> Computational Geometry
 2D Cubic Bezier
  drawBezierCurve
  cbezier2poly
+2D Polygons
+ drawPolygon
+ simplifypolygon.m
+2D Piecewise polynomial shapes
+ polygon2shape.m
+ shape2polygon.m
+ shapecentroid.m
+ shapeplot.m
+ shapetransform.m
 2D Others
  bisector
  crackPattern2
@@ -135,3 +145,4 @@ Input
  @svg/path2polygon
 Output
  data2geo
+

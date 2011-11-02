@@ -37,7 +37,7 @@ class matrixfreematrixfun: public  matrixfreematrix
 private:
     octave_function *fun;
 public:
-  matrixfreematrixfun  (octave_value);  
+  matrixfreematrixfun  (octave_value);
   ColumnVector operator * (ColumnVector);
 };
 
@@ -46,7 +46,7 @@ class matrixfreematrixmat: public  matrixfreematrix
 private:
     SparseMatrix mat;
 public:
-  matrixfreematrixmat  (octave_value);  
+  matrixfreematrixmat  (octave_value);
   ColumnVector operator * (ColumnVector);
 };
 
@@ -55,7 +55,7 @@ class matrixfreematrixinvmat: public  matrixfreematrix
 private:
   SparseMatrix mat;
 public:
-  matrixfreematrixinvmat  (octave_value);  
+  matrixfreematrixinvmat  (octave_value);
   ColumnVector operator * (ColumnVector);
 };
 
@@ -102,11 +102,11 @@ DEFUN_DLD(pgmres,args,nargout,"\
       
       // arg #1
       if (args(0).is_function_handle () || args(0).is_inline_function ())
-	A = new matrixfreematrixfun (args (0));
+        A = new matrixfreematrixfun (args (0));
       else if (args(0).is_real_matrix ())
-	A = new matrixfreematrixmat (args (0));
+        A = new matrixfreematrixmat (args (0));
       else
-	error ("pgmres: first argument is expected to be a function or matrix");
+        error ("pgmres: first argument is expected to be a function or matrix");
       
       // arg #2
       b = args(1).column_vector_value ();
@@ -120,81 +120,81 @@ DEFUN_DLD(pgmres,args,nargout,"\
       restart = args(5).idx_type_value ();
       // arg #7
       if (args(6).is_function_handle () || args(6).is_inline_function ())
-	invP = new matrixfreematrixfun (args (6));
+        invP = new matrixfreematrixfun (args (6));
       else if (args(6).is_real_matrix ())
-	invP = new matrixfreematrixinvmat (args (6));
+        invP = new matrixfreematrixinvmat (args (6));
       else
-	error ("pgmres: last argument is expected to be a function or matrix");
+        error ("pgmres: last argument is expected to be a function or matrix");
 
       if (! error_state)
-	{
+        {
       
-	  x_old = x0; 
-	  x = x_old;
-	  res = b - (*A) * x_old;
-	  res = (*invP) * res;
-	  prn = xnorm (res, 2.0);
-	  
-	  B = ColumnVector (restart + 1, 0.0);
-	  B(0) = prn;
-	  
-	  //begin loop
-	  iter = 0;
-	  reit = restart + 1; 
-	  resids(0) = prn;
-	  pbn = xnorm ((*invP) * b, 2.0);
-	  
-	  while (! converged(pbn, prn, iter, prtol, max_it))
-	    {
-	      
-	      // restart
-	      if (reit > restart)
-		{
-		  reit = 1;
-		  x_old = x;	      
-		  res = b - (*A) * x_old;
-		  res = (*invP) * res;
-		  prn = xnorm (res, 2.0);
-		  B(0) = prn;
-		  H = Matrix (1, 1, 0.0);
-		  V = Matrix (b.length (), 1, 0.0);
-		  for (octave_idx_type ii = 0; ii < V.rows (); ii++)
-		    V(ii,0) = res(ii) / prn;
-		}
-	      
-	      
-	      //basic iteration
-	      tmp = (*A) * (V.column (reit-1));	  
-	      tmp = (*invP) * tmp;
-	      
-	      H.resize (reit+1, reit, 0.0);
-	      for (octave_idx_type j = 0; j < reit; j++)
-		{
-		  H(j, reit-1) = (V.column (j).transpose ()) * tmp;
-		  tmp = tmp - (H (j, reit-1) * V.column (j));
-		}
-	      
-	      H(reit, reit-1) = xnorm (tmp, 2.0);
-	      V = V.append (tmp / H(reit, reit-1));
-	      
-	      Y = (H.lssolve (B.extract_n (0, reit+1)));
-	      
-	      little_res = B.extract_n (0,reit+1) - H * Y.extract_n (0,reit);
-	      prn = xnorm (little_res, 2.0);
-	      
-	      x = x_old + V.extract_n (0, 0, V.rows (), reit) * Y.extract_n (0, reit);
-	      
-	      resids.resize (iter+1);
-	      resids(iter++) = prn ;
-	      reit++ ;
-	    }
+          x_old = x0; 
+          x = x_old;
+          res = b - (*A) * x_old;
+          res = (*invP) * res;
+          prn = xnorm (res, 2.0);
+          
+          B = ColumnVector (restart + 1, 0.0);
+          B(0) = prn;
+          
+          //begin loop
+          iter = 0;
+          reit = restart + 1;
+          resids(0) = prn;
+          pbn = xnorm ((*invP) * b, 2.0);
+          
+          while (! converged(pbn, prn, iter, prtol, max_it))
+            {
+              
+              // restart
+              if (reit > restart)
+                {
+                  reit = 1;
+                  x_old = x;
+                  res = b - (*A) * x_old;
+                  res = (*invP) * res;
+                  prn = xnorm (res, 2.0);
+                  B(0) = prn;
+                  H = Matrix (1, 1, 0.0);
+                  V = Matrix (b.length (), 1, 0.0);
+                  for (octave_idx_type ii = 0; ii < V.rows (); ii++)
+                    V(ii,0) = res(ii) / prn;
+        }
+              
+              
+              //basic iteration
+              tmp = (*A) * (V.column (reit-1));
+              tmp = (*invP) * tmp;
+              
+              H.resize (reit+1, reit, 0.0);
+              for (octave_idx_type j = 0; j < reit; j++)
+                {
+                  H(j, reit-1) = (V.column (j).transpose ()) * tmp;
+                  tmp = tmp - (H (j, reit-1) * V.column (j));
+                }
+              
+              H(reit, reit-1) = xnorm (tmp, 2.0);
+              V = V.append (tmp / H(reit, reit-1));
+              
+              Y = (H.lssolve (B.extract_n (0, reit+1)));
+              
+              little_res = B.extract_n (0,reit+1) - H * Y.extract_n (0,reit);
+              prn = xnorm (little_res, 2.0);
+              
+              x = x_old + V.extract_n (0, 0, V.rows (), reit) * Y.extract_n (0, reit);
+              
+              resids.resize (iter+1);
+              resids(iter++) = prn ;
+              reit++ ;
+            }
       
       
-	  retval(1) = octave_value(resids);
-	  retval(0) = octave_value(x);
-	}
+          retval(1) = octave_value(resids);
+          retval(0) = octave_value(x);
+        }
       else 
-	print_usage ();
+        print_usage ();
   
       delete A;
       delete invP;

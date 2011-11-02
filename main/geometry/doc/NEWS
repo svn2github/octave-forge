@@ -158,4 +158,10 @@ geometry-1.2   Release Date: 2011-10-21   Release Manager: Juan Pablo Carbajal
  reverseLine.m
 
 ===============================================================================
+geometry-1.2.1   Release Date: 2011-11-02   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* Adding SVG object and demo for data2geom (converting SVG to msh format)
+
+===============================================================================
 

@@ -165,13 +165,13 @@
 %%
 %% -----
 %% Author: David Legland
-%% e-mail: david.legland@grignon.inra.fr
+%% e-mail: david.legland@@grignon.inra.fr
 %% created the  07/11/2005.
-%% Homepage: http://matgeom.sourceforge.net/
-%% http://www.pfl-cepia.inra.fr/index.php?page=geom2d
+%% Homepage: @url{http://matgeom.sourceforge.net/}
+%% @url{http://www.pfl-cepia.inra.fr/index.php?page=geom2d}
 %% Copyright INRA - Cepia Software Platform.
 %%
-%% @end deftypefn% 
+%% @end deftypefn 
 
 function polygons2d ()
 

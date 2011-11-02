@@ -18,7 +18,7 @@
 ## @deftypefn {Function File} {} function_name ()
 ## @end deftypefn
 
-function out = subsref (obj, idx)
+function varargout = subsref (obj, idx)
   if ( !strcmp (class (obj), 'svg') )
     error ("object must be of the svg class but '%s' was used", class (obj) );
   elseif ( idx(1).type != '.' )
@@ -42,6 +42,9 @@ function out = subsref (obj, idx)
        error (method4field, class (obj), method, method);
      elseif strcmp (idx(2).type, '()')
         out = plot (obj, idx(2).subs);
+        if nargout >= 1
+          varargout{1} = out;
+        end
      else 
        error (typeNotImplemented,[method idx(2).type], class (obj));
      end
@@ -52,18 +55,28 @@ function out = subsref (obj, idx)
        error (method4field, class (obj), method, method);
      elseif strcmp (idx(2).type, '()')
         out = getpath (obj, idx(2).subs);
+        if nargout >= 1
+          varargout{1} = out;
+        end
      else 
        error (typeNotImplemented,[method idx(2).type], class (obj));
      end
 
     case 'pathid'
       out = fieldnames(obj.Path);
+      if nargout >= 1
+        varargout{1} = out;
+      end
 
     case 'path2polygon'
      if numel (idx) == 1 % obj.path2polygon doesn't exists
        error (method4field, class (obj), method, method);
      elseif strcmp (idx(2).type, '()')
        out = path2polygon (obj, idx(2).subs);
+       if nargout >= 1
+         varargout{1} = out;
+       end
+
      else 
        error (typeNotImplemented,[method idx(2).type], class (obj));
      end
@@ -72,7 +85,15 @@ function out = subsref (obj, idx)
      if numel (idx) == 1 % obj.path2polygon doesn't exists
        error (method4field, class (obj), method, method);
      elseif strcmp (idx(2).type, '()')
-       out = normalize (obj, idx(2).subs);
+       [out out2] = normalize (obj, idx(2).subs);
+       pause
+        if nargout >= 1
+          varargout{1} = out;
+          if nargout >= 2
+          varargout{2} = out2;
+          end
+        end
+        varargout
      else 
        error (typeNotImplemented,[method idx(2).type], class (obj));
      end

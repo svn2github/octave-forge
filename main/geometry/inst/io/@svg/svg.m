@@ -46,7 +46,7 @@ function svg = svg(name='')
 
   if !isempty (name)
     if exist(name,"file") == 2
-      name = file_in_path(path(), "drawing5.svg");
+      name = file_in_path(path(), name);
     else
       error("svg:BadArguemnt", "File %s doesn't exist",name);
     end
@@ -63,17 +63,17 @@ function svg = svg(name='')
 endfunction
 
 %!test
-%!  dc = svg('../drawing5.svg');
+%!  dc = svg('drawing5.svg');
 %!  dc.getpath()
 %!  dc.pathid
 %!  dc.getpath('path3756')
 %!   
-%!  dc = svg('../drawing.svg');
+%!  dc = svg('drawing.svg');
 %!  ids = dc.pathid;
 %!  dc.getpath({ids{[1 3]}})
 
 %!test
-%!  dc = svg('../drawing6.svg');
+%!  dc = svg('drawing6.svg');
 %!  ids = dc.pathid;
 %!  P = dc.path2polygon(ids{1});
 

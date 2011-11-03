@@ -326,41 +326,39 @@ For internal use only.")
             {
                 switch (info)
                 {
-                    // FIXME: The code below looks nice, but the error message does not
-                    //        because there is much white space after each line break
                     case 1:
-                        error ("modred: 1: the computation of the ordered real Schur form of A\
-                                failed");
+                        error ("modred: 1: the computation of the ordered real Schur form of A "
+                               "failed");
                     case 2:
-                        error ("modred: 2: the separation of the ALPHA-stable/unstable\
-                                diagonal blocks failed because of very close\
-                                eigenvalues");
+                        error ("modred: 2: the separation of the ALPHA-stable/unstable "
+                               "diagonal blocks failed because of very close "
+                               "eigenvalues");
                     case 3:
-                        error ("modred: 3: the reduction to a real Schur form of the state\
-                                matrix of a minimal realization of V failed");
+                        error ("modred: 3: the reduction to a real Schur form of the state "
+                               "matrix of a minimal realization of V failed");
                     case 4:
-                        error ("modred: 4: a failure was detected during the ordering of the\
-                                real Schur form of the state matrix of a minimal\
-                                realization of V or in the iterative process to\
-                                compute a left coprime factorization with inner\
-                                denominator");
+                        error ("modred: 4: a failure was detected during the ordering of the "
+                               "real Schur form of the state matrix of a minimal "
+                               "realization of V or in the iterative process to "
+                               "compute a left coprime factorization with inner "
+                               "denominator");
                     case 5:
-                        error ("modred: 5: if DICO = 'C' and the matrix AV has an observable\
-                                eigenvalue on the imaginary axis, or DICO = 'D' and\
-                                AV has an observable eigenvalue on the unit circle");
+                        error ("modred: 5: if DICO = 'C' and the matrix AV has an observable "
+                               "eigenvalue on the imaginary axis, or DICO = 'D' and "
+                               "AV has an observable eigenvalue on the unit circle");
                     case 6:
-                        error ("modred: 6: the reduction to a real Schur form of the state\
-                                matrix of a minimal realization of W failed");
+                        error ("modred: 6: the reduction to a real Schur form of the state "
+                               "matrix of a minimal realization of W failed");
                     case 7:
-                        error ("modred: 7: a failure was detected during the ordering of the\
-                                real Schur form of the state matrix of a minimal\
-                                realization of W or in the iterative process to\
-                                compute a right coprime factorization with inner\
-                                denominator");
+                        error ("modred: 7: a failure was detected during the ordering of the "
+                               "real Schur form of the state matrix of a minimal "
+                               "realization of W or in the iterative process to "
+                               "compute a right coprime factorization with inner "
+                               "denominator");
                     case 8:
-                        error ("modred: 8: if DICO = 'C' and the matrix AW has a controllable\
-                                eigenvalue on the imaginary axis, or DICO = 'D' and\
-                                AW has a controllable eigenvalue on the unit circle");
+                        error ("modred: 8: if DICO = 'C' and the matrix AW has a controllable "
+                               "eigenvalue on the imaginary axis, or DICO = 'D' and "
+                               "AW has a controllable eigenvalue on the unit circle");
                     case 9:
                         error ("modred: 9: the computation of eigenvalues failed");
                     case 10:
@@ -376,31 +374,31 @@ For internal use only.")
             switch (iwarn)
             {
                 case 1:
-                    warning ("modred: 1: with ORDSEL = 'F', the selected order NR is greater\
-                              than NSMIN, the sum of the order of the\
-                              ALPHA-unstable part and the order of a minimal\
-                              realization of the ALPHA-stable part of the given\
-                              system; in this case, the resulting NR is set equal\
-                              to NSMIN.");
+                    warning ("modred: 1: with ORDSEL = 'F', the selected order NR is greater "
+                             "than NSMIN, the sum of the order of the "
+                             "ALPHA-unstable part and the order of a minimal "
+                             "realization of the ALPHA-stable part of the given "
+                             "system; in this case, the resulting NR is set equal "
+                             "to NSMIN.");
                     break;
                 case 2:
-                    warning ("modred: 2: with ORDSEL = 'F', the selected order NR corresponds\
-                              to repeated singular values for the ALPHA-stable\
-                              part, which are neither all included nor all\
-                              excluded from the reduced model; in this case, the\
-                              resulting NR is automatically decreased to exclude\
-                              all repeated singular values.");
+                    warning ("modred: 2: with ORDSEL = 'F', the selected order NR corresponds "
+                             "to repeated singular values for the ALPHA-stable "
+                             "part, which are neither all included nor all "
+                             "excluded from the reduced model; in this case, the "
+                             "resulting NR is automatically decreased to exclude "
+                             "all repeated singular values.");
                     break;
                 case 3:
-                    warning ("modred: 3: with ORDSEL = 'F', the selected order NR is less\
-                              than the order of the ALPHA-unstable part of the\
-                              given system; in this case NR is set equal to the\
-                              order of the ALPHA-unstable part.");
+                    warning ("modred: 3: with ORDSEL = 'F', the selected order NR is less "
+                             "than the order of the ALPHA-unstable part of the "
+                             "given system; in this case NR is set equal to the "
+                             "order of the ALPHA-unstable part.");
                     break;
                 default:
-                    warning ("modred: 10+%d: %d violations of the numerical stability condition\
-                              occured during the assignment of eigenvalues in the\
-                              SLICOT Library routines SB08CD and/or SB08DD.", info, info);
+                    warning ("modred: 10+%d: %d violations of the numerical stability condition "
+                             "occured during the assignment of eigenvalues in the "
+                             "SLICOT Library routines SB08CD and/or SB08DD.", info, info);
             }
         }
 

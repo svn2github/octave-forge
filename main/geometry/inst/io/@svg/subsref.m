@@ -20,19 +20,23 @@
 
 function varargout = subsref (obj, idx)
 
-  persistent __method__
+  persistent __method__ method4field typeNotImplemented
   if isempty(__method__)
 
     __method__ = struct();
     
     __method__.plot = @(o,a) plot (o, a);
     __method__.getpath = @(o,a) getpath (o, a);
-    __method__.pathid = @(o,a) fieldnames(o.Path);
+    __method__.pathid = @(o,a) pathid(o,a);
     __method__.path2polygon = @(o,a) path2polygon (o, a);
     __method__.normalize = @(o,a) normalize (o, a);
     __method__.height = @(o,a) o.Data.height;
     __method__.width = @(o,a) o.Data.width;
-  
+
+    # Error strings
+    method4field = "Class %s has no field %s. Use %s() for the method.";
+    typeNotImplemented = "%s no implemented for class %s.";
+
     debug="first call"
   end
 
@@ -41,10 +45,6 @@ function varargout = subsref (obj, idx)
   elseif ( idx(1).type != '.' )
     error ("Invalid index for class %s", class (obj) );
   endif
-
-  # Error strings
-  method4field = "Class %s has no field %s. Use %s() for the method.";
-  typeNotImplemented = "%s no implemented for class %s.";
 
   method = idx(1).subs
   debug="Following calls"
@@ -55,7 +55,8 @@ function varargout = subsref (obj, idx)
   end
 
   if strcmp(method,'normalize')
-    warning("svg:Devel","Not returning second output argument of %s use method(obj) API to get it",method);
+    warning("svg:Devel",["Not returning second output argument of %s" ... 
+                         " use method(obj) API to get it"],method);
   end
 
   if numel (idx) == 1 % can't access properties, only methods
@@ -67,8 +68,14 @@ function varargout = subsref (obj, idx)
   if strcmp (idx(2).type, '()')
 
     args = idx(2).subs;
-    out = fhandle (obj, args{:});
+    if isempty(args)
+     out = fhandle (obj, []);
+    else
+      out = fhandle (obj, args{:});
+    end
 
+    varargout{1} = out;
+    
   else
 
     error (typeNotImplemented,[method idx(2).type], class (obj));

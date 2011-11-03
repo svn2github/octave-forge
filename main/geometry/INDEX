@@ -143,6 +143,9 @@ Input
  @svg/plot
  @svg/getpath
  @svg/path2polygon
+ @svg/normalize
+ @svg/pathid
+ @svg/height
+ @svg/width
 Output
  data2geo
-

@@ -36,46 +36,38 @@ function q = quaternion (a, b, c, d)
       if (isa (a, "quaternion"))
         q = a;
         return;
-      elseif (isnumeric (a))
-        w = a;
-        x = y = z = zeros (size (a), class (a));
+      elseif (is_real_matrice (a))
+        b = c = d = zeros (size (a));
       else
         print_usage ();
       endif
 
     case 3
+      if (! is_real_matrice (a, b, c))
+        error ("quaternion: arguments must be real matrices");
+      endif
       if (! size_equal (a, b, c));
         error ("quaternion: arguments must have identical sizes");
       endif
-      c_a = class (a);
-      if (isnumeric (a) && strcmp (c_a, class (b)) && strcmp (c_a, class (c)))
-        w = zeros (size (a), c_a);
-        x = a;
-        y = b;
-        z = c;
-      else
-        error ("quaternion: arguments must be numeric and of the same type");
-      endif
+      d = c;
+      c = b;
+      b = a;
+      a = zeros (size (a));
 
     case 4
+      if (! is_real_matrice (a, b, c, d))
+        error ("quaternion: arguments must be real matrices");
+      endif
       if (! size_equal (a, b, c, d));
         error ("quaternion: arguments must have identical sizes");
-      endif
-      c_a = class (a);
-      if (isnumeric (a) && strcmp (c_a, class (b)) && \
-          strcmp (c_a, class (c)) && strcmp (c_a, class (d)))
-        w = a;
-        x = b;
-        y = c;
-        z = d;
-      else
-        error ("quaternion: arguments must be numeric and of the same type");
       endif
 
     otherwise
       print_usage ();
   endswitch
   
-  q = class (struct ("w", w, "x", x, "y", y, "z", z), "quaternion");
+  q = class (struct ("w", a, "x", b, "y", c, "z", d), "quaternion");
+  
+  ## TODO: avoid duplicate code in case 3 and 4
 
 endfunction

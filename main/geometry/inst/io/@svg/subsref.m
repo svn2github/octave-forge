@@ -30,8 +30,8 @@ function varargout = subsref (obj, idx)
     __method__.pathid = @(o,a) pathid(o,a);
     __method__.path2polygon = @(o,a) path2polygon (o, a);
     __method__.normalize = @(o,a) normalize (o, a);
-    __method__.height = @(o,a) o.Data.height;
-    __method__.width = @(o,a) o.Data.width;
+    __method__.height = @(o,a) height(o, a);
+    __method__.width = @(o,a) width(o,a);
 
     # Error strings
     method4field = "Class %s has no field %s. Use %s() for the method.";

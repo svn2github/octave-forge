@@ -17,6 +17,6 @@
 ## @deftypefn {Function File} {} function_name ()
 ## @end deftypefn
 
-function ids = pathid(obj,varargin)
-  ids = fieldnames (obj.Path);
+function o = width(obj,varargin)
+  o = obj.Data.width;
 endfunction

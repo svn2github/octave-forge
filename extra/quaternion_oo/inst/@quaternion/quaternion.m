@@ -17,7 +17,7 @@
 ## @deftypefn {Function File} {@var{q} =} quaternion (@var{w})
 ## @deftypefnx {Function File} {@var{q} =} quaternion (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {@var{q} =} quaternion (@var{w}, @var{x}, @var{y}, @var{z})
-## Constructor for quaternions - create or convert to quaternion
+## Constructor for quaternions - create or convert to quaternion.
 ##
 ## @example
 ## q = w + x*i + y*j + z*k
@@ -33,41 +33,33 @@ function q = quaternion (a, b, c, d)
 
   switch (nargin)
     case 1
-      if (isa (a, "quaternion"))
+      if (isa (a, "quaternion"))        # quaternion (q)
         q = a;
         return;
-      elseif (is_real_matrice (a))
+      elseif (is_real_matrice (a))      # quaternion (w)
         b = c = d = zeros (size (a));
       else
         print_usage ();
       endif
-
-    case 3
-      if (! is_real_matrice (a, b, c))
-        error ("quaternion: arguments must be real matrices");
-      endif
-      if (! size_equal (a, b, c));
-        error ("quaternion: arguments must have identical sizes");
-      endif
+    case 3                              # quaternion (x, y, z)
       d = c;
       c = b;
       b = a;
       a = zeros (size (a));
-
-    case 4
-      if (! is_real_matrice (a, b, c, d))
-        error ("quaternion: arguments must be real matrices");
-      endif
-      if (! size_equal (a, b, c, d));
-        error ("quaternion: arguments must have identical sizes");
-      endif
-
+    case 4                              # quaternion (w, x, y, z)
+      ## nothing to do here, just prevent case "otherwise"
     otherwise
       print_usage ();
   endswitch
   
-  q = class (struct ("w", a, "x", b, "y", c, "z", d), "quaternion");
+  if (! is_real_matrice (a, b, c, d))
+    error ("quaternion: arguments must be real matrices");
+  endif
+
+  if (! size_equal (a, b, c, d));
+    error ("quaternion: arguments must have identical sizes");
+  endif
   
-  ## TODO: avoid duplicate code in case 3 and 4
+  q = class (struct ("w", a, "x", b, "y", c, "z", d), "quaternion");
 
 endfunction

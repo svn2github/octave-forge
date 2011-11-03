@@ -27,7 +27,11 @@ function h = plot(obj, varargin)
   npath = numel(ids);
 
   t = linspace (0, 1, 64);
-
+  
+  args={};
+  if !isempty (varargin)
+    args = varargin;
+  end
   for i = 1:npath
     x = []; y = [];
     data = obj.Path.(ids(i)).data;
@@ -37,7 +41,7 @@ function h = plot(obj, varargin)
       y = cat (2, y, polyval (data{j}(2,:),t));
     end
 
-    h = plot(x,y,'-');
+    h = plot(x,y,args{:});
     if i == 1
       hold on
     end

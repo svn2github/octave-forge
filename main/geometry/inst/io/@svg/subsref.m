@@ -25,13 +25,13 @@ function varargout = subsref (obj, idx)
 
     __method__ = struct();
     
-    __method__.plot = @(o,a) plot (o, a);
-    __method__.getpath = @(o,a) getpath (o, a);
-    __method__.pathid = @(o,a) pathid(o,a);
-    __method__.path2polygon = @(o,a) path2polygon (o, a);
-    __method__.normalize = @(o,a) normalize (o, a);
-    __method__.height = @(o,a) height(o, a);
-    __method__.width = @(o,a) width(o,a);
+    __method__.plot = @(o,varargin) plot (o, varargin{:});
+    __method__.getpath = @(o,varargin) getpath (o, a);
+    __method__.pathid = @(o,varargin) pathid(o,a);
+    __method__.path2polygon = @(o,varargin) path2polygon (o, varargin{:});
+    __method__.normalize = @(o,varargin) normalize (o, varargin{:});
+    __method__.height = @(o,varargin) height(o, varargin{:});
+    __method__.width = @(o,varargin) width(o,varargin{:});
 
     # Error strings
     method4field = "Class %s has no field %s. Use %s() for the method.";

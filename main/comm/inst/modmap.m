@@ -312,7 +312,7 @@ function y = modmap(varargin)
 	  text(inphase(i)+xd,quadr(i),num2str(i-1));
 	end
       endif
-      replot;
+      refresh;
     else
       y = inphase(x+1) + 1i * quadr(x+1);
       if (size(x,2) == 1)

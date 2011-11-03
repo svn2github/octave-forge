@@ -71,7 +71,7 @@ endfunction
 %!error hilbert_curve (n);
 
 %!demo
-%! clg
+%! clf
 %! n = 4;
 %! [x, y] = hilbert_curve (n);
 %! line (x, y, "linewidth", 4, "color", "blue");
@@ -80,7 +80,7 @@ endfunction
 %! % with 4 points on each axis.
 
 %!demo
-%! clg
+%! clf
 %! n = 64;
 %! [x, y] = hilbert_curve (n);
 %! line (x, y, "linewidth", 2, "color", "blue");

@@ -40,8 +40,8 @@ function nb = xmlwrite (filename, value, name)
   isopen = false;
   if ischar(filename)
 
-    ## Check file name
-    sn = split(filename, ".");
+    ## Check file name 
+    sn = char (strsplit (filename, "."));
     if !strcmp(tolower(deblank(sn(end,:))), "xml")
       filename = [filename, ".xml"];
     endif

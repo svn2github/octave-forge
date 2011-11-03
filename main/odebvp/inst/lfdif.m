@@ -52,7 +52,7 @@ function sol = lfdif(ai, bi, alpha, beta, n)
   b = -1 +(h / 2.) * p(x);
   c = -1 - (h / 2.) * p(x);
 
-  A = spdiag(c(2 : n), -1) + spdiag(a) + spdiag(b(1 : n - 1), 1);
+  A = sparse(diag(c(2 : n)), -1) + sparse(diag(a)) + sparse(diag(b(1 : n - 1), 1));
 
   d(1) = -h^2 * r(x(1)) + (1 + (h / 2.) * p(x(1))) * alpha;
   d(2 : n - 1) = -h^2 * r(x(2 : n - 1));

@@ -82,7 +82,7 @@ global TEST_FACTOR
 			str_p=index(input_line,"hyperg_1F1_e");
 			if (str_p != 0)
 				# Take it apart
-				string_split=split(input_line,",");
+				string_split=char (strsplit (input_line, ","));
 				arg1=str2double(substr(string_split(3,:),3));
 				arg2=str2double(string_split(4,:));
 				arg3=str2double(string_split(5,:));
@@ -103,7 +103,7 @@ global TEST_FACTOR
 			str_p=index(input_line,"hyperg_U_e");
 			if (str_p != 0)
 				# Take it apart
-				string_split=split(input_line,",");
+				string_split=char (strsplit (input_line, ","));
 				arg1=str2double(substr(string_split(3,:),3));
 				arg2=str2double(string_split(4,:));
 				arg3=str2double(string_split(5,:));

@@ -26,7 +26,7 @@
 function [nb] = dxfwrite (filename, varargin)
   
   ## Check file name
-  sn = split(filename, ".");
+  sn = char (strsplit (filename, "."));
   if !strcmp(tolower(deblank(sn(end,:))), "dxf")
     filename = [filename, ".dxf"];
   endif

@@ -82,7 +82,7 @@ endfunction
 %!error peano_curve (n);
 
 %!demo
-%! clg
+%! clf
 %! n = 9;
 %! [x, y] = peano_curve (n);
 %! line (x, y, "linewidth", 4, "color", "red");
@@ -91,7 +91,7 @@ endfunction
 %! % with 9 points on each axis.
 
 %!demo
-%! clg
+%! clf
 %! n = 81;
 %! [x, y] = peano_curve (n);
 %! line (x, y, "linewidth", 2, "color", "red");

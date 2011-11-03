@@ -109,7 +109,7 @@ if compute_nodes > 0 # only try this if parallel is available
 	printf("########################################################################\n");
 	printf("kernel regression example with several sample sizes serial/parallel timings\n");
 	figure();
-	clg;
+	clf;
 	title("Compute time versus nodes, kernel regression with different sample sizes");
 	xlabel("nodes");
 	ylabel("time (sec)");

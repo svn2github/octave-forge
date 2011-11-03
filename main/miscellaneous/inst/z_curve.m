@@ -73,7 +73,7 @@ endfunction
 %!error z_curve (n);
 
 %!demo
-%! clg
+%! clf
 %! n = 4;
 %! [x, y] = z_curve (n);
 %! line (x, y, "linewidth", 4, "color", "blue");
@@ -82,7 +82,7 @@ endfunction
 %! % with 4 points on each axis.
 
 %!demo
-%! clg
+%! clf
 %! n = 32;
 %! [x, y] = z_curve (n);
 %! line (x, y, "linewidth", 2, "color", "blue");

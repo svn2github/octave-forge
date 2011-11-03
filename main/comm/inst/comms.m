@@ -97,11 +97,11 @@ function retval = comms(typ, tests)
     help ("comms");
   elseif (strcmp(typ,"info"))
     infopaths = ["."];
-    if (!isempty(split(path,":")))
-      infopaths =[infopaths; split(path,":")];
+    if (!isempty(char(strsplit (path, ":"))))
+      infopaths =[infopaths; char(strsplit (path, ":"))];
     endif
-    if (!isempty(split(DEFAULT_LOADPATH,":")))
-      infopaths =[infopaths; split(DEFAULT_LOADPATH,":")];
+    if (!isempty(char(strsplit (DEFAULT_LOADPATH, ":"))))
+      infopaths =[infopaths; char(strsplit (DEFAULT_LOADPATH, ":"))];
     endif
     for i=1:size(infopaths,1)
       infopath = deblank(infopaths(i,:));
@@ -109,7 +109,7 @@ function retval = comms(typ, tests)
       if (len)
         if (len > 1 && strcmp(infopath([len-1, len]),"//"))
           [status, showfile] = system(["find '", infopath(1:len-1), ...
-				       "' -name ", infofile]);
+                              "' -name ", infofile]);
         else
           [status, showfile] = system(["find '", infopath, "' -name ", ...
                               infofile, " -maxdepth 1"]);

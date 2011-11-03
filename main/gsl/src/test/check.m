@@ -82,7 +82,7 @@ global TEST_FACTOR
 			str_p=index(input_line,"hyperg_1F1_e");
 			if (str_p != 0)
 				# Take it apart
-				string_split=split(input_line,",");
+				string_split=char (strsplit (input_line, ","));
 				arg1=str2double(substr(string_split(3,:),3));
 				arg2=str2double(string_split(4,:));
 				arg3=str2double(string_split(5,:));
@@ -98,12 +98,12 @@ global TEST_FACTOR
 				else
 					printf("\n Failed KummerM: %s\n value=%e, computed=%e, tol=%e, returned error=%e ",input_line,val,ret,tol,err)
 					printf("\n error %e", abs((ret-val)/val))
-				endif 				
+				endif
 			endif
 			str_p=index(input_line,"hyperg_U_e");
 			if (str_p != 0)
 				# Take it apart
-				string_split=split(input_line,",");
+				string_split=char (strsplit (input_line, ","));
 				arg1=str2double(substr(string_split(3,:),3));
 				arg2=str2double(string_split(4,:));
 				arg3=str2double(string_split(5,:));
@@ -119,7 +119,7 @@ global TEST_FACTOR
 				else
 					printf("\n Failed KummerU: %s\n value=%e, computed=%e, tol=%e, returned error=%e ",input_line,val,ret,tol,err)
 					printf("\n error %e", abs((ret-val)/val))
-				endif 				
+				endif
 			endif
 		endwhile
 	fclose(source_id);
@@ -133,7 +133,7 @@ global TEST_FACTOR
 	hyperg_U(1,1,mat1)
 	hyperg_U(1,mat1,1)
 	hyperg_U(mat1,1,1)
-	hyperg_U(mat1,mat1,mat1)	
+	hyperg_U(mat1,mat1,mat1)
 	
 	res="";
 end

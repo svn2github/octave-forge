@@ -83,7 +83,7 @@ function [U, ur, iu] = rbf_centers (X, nu, theta)
   endif
 
   if (nargin == 3)
-    U = dmult (U, 1./theta);
+    diag (U) * (1./theta);
     if (any(theta == 0))
       U(:,theta == 0) = 0;
     endif

@@ -1,5 +1,5 @@
 %1
-dirlist = {"geom2d","io","polygons2d"};
+dirlist = {"geom2d","io","polygons2d","shape2d"};
 dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
 
 if (! exist (fullfile (dirname, "inst"), "dir"))

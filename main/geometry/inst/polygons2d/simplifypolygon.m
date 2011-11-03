@@ -21,6 +21,7 @@
 %%
 %% @seealso{shape2polygon}
 %% @end deftypefn
+
 function polygonsimp = simplifypolygon (polygon)
 
   # Filter colinear points

@@ -21,11 +21,13 @@
 %% containing a pair of polynomials.
 %%
 %% Format of @var{T} can be one of :
+%% @example
 %% @group
-%%  [c]   ,   [a b]   ,   [a b c]   or   [a b c]
-%%  [f]       [d e]       [d e f]        [d e f]
-%%                                       [0 0 1]
+%%  [c] , [a b] , [a b c] or [a b c]
+%%  [f]   [d e]   [d e f]    [d e f]
+%%                           [0 0 1]
 %% @end group
+%% @end example
 %%
 %% @seealso{shape2polygon, shapeplot}
 %% @end deftypefn
@@ -95,7 +97,7 @@ endfunction
 %! T = shapecentroid (shape)(:);
 %! shape = shapetransform (shape,-T + [2; 0]);
 %!
-%! cla
+%! close
 %! shapeplot (shape,10,'-r','linewidth',2)
 %! hold on
 %! for i = 1:9

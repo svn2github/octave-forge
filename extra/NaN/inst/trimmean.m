@@ -1,16 +1,21 @@
 function Q=trimmean(Y,p,DIM)
-% TRIMMEAN calculates the trimmed mean by removing the upper and lower
-% (p/2)% samples. Missing values (encoded as NaN) are also removed. 
+% TRIMMEAN calculates the trimmed mean by removing the fraction p/2 from the upper and 
+% lower samples. Missing values (encoded as NaN) are ignored and not taken into account. 
+% The same number from the upper and lower values are removed, and is compatible to various
+% spreadsheet programs including GNumeric [1], LibreOffice, OpenOffice and MS Excel.
 %
-%  Q = trimmean(Y,p)
-%  Q = trimmean(Y,p,DIM)
+%  Q = trimmean(Y,percent)
+%  Q = trimmean(Y,percent,DIM)
 %     returns the TRIMMEAN along dimension DIM of sample array Y.
 %
 % see also: MAD, RANGE, HISTO2, HISTO3, PERCENTILE, QUANTILE
+%
+% References:
+% [1] http://www.fifi.org/doc/gnumeric-doc/html/C/gnumeric-trimmean.html
 
 
 %	$Id$
-%	Copyright (C) 2009,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (C) 2009,2010,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -27,7 +32,7 @@ function Q=trimmean(Y,p,DIM)
 %    You should have received a copy of the GNU General Public License
 %    along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-if nargin<2,
+if nargin<3,
         DIM = [];
 end;
 if isempty(DIM),
@@ -38,12 +43,11 @@ end;
 if nargin<2,
 	help trimmean
         
+elseif ~isscalar(p)
+	error('second argument is not a scalar')
 else
-	q1 = p/200; 
-	q2 = 1-p/200; 
-
 	sz = size(Y);
-	if DIM>length(sz),
+	if DIM > length(sz),
 	        sz = [sz,ones(1,DIM-length(sz))];
 	end;
 
@@ -53,14 +57,18 @@ else
 	for k = 0:D1-1,
 		for l = 0:D3-1,
 		        xi = k + l * D1*sz(DIM) + 1 ;
-			xo = k + l * D1*length(q) + 1;
+			xo = k + l * D1 + 1;
 		        t  = Y(xi:D1:xi+D1*sz(DIM)-1);
 		        t  = sort(t(~isnan(t)));
 		        N  = length(t); 
-		        ix = ((1:N) < N*q2) & ((1:N) > N*q1);
+			% 
+			n  = floor(N*p/2);	
+		        ix = 1+n:N-n;
 		        f  = mean(t(ix));
-			Q(xo:D1:xo + D1*length(q) - 1) = f;
+			Q(xo:D1:xo + D1 - 1) = f;
 		end;
 	end;
 end;
+
+%!assert(trimmean([11.4, 17.3, 21.3, 25.9, 40.1],.2),23.2)
 

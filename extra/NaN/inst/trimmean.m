@@ -1,12 +1,13 @@
 function Q=trimmean(Y,p,DIM)
-% TRIMMEAN calculates the trimmed mean by removing the fraction p/2 from the upper and 
-% lower samples. Missing values (encoded as NaN) are ignored and not taken into account. 
+% TRIMMEAN calculates the trimmed mean by removing the fraction of p/2 upper and 
+% p/2 lower samples. Missing values (encoded as NaN) are ignored and not taken into account. 
 % The same number from the upper and lower values are removed, and is compatible to various
 % spreadsheet programs including GNumeric [1], LibreOffice, OpenOffice and MS Excel.
 %
-%  Q = trimmean(Y,percent)
-%  Q = trimmean(Y,percent,DIM)
+%  Q = trimmean(Y,p)
+%  Q = trimmean(Y,p,DIM)
 %     returns the TRIMMEAN along dimension DIM of sample array Y.
+%  If p is a vector, the TRIMMEAN for each p is computed. 
 %
 % see also: MAD, RANGE, HISTO2, HISTO3, PERCENTILE, QUANTILE
 %
@@ -43,8 +44,6 @@ end;
 if nargin<2,
 	help trimmean
         
-elseif ~isscalar(p)
-	error('second argument is not a scalar')
 else
 	sz = size(Y);
 	if DIM > length(sz),
@@ -52,20 +51,21 @@ else
 	end;
 
 	D1 = prod(sz(1:DIM-1));
+	D2 = length(p);
 	D3 = prod(sz(DIM+1:length(sz)));
-	Q  = repmat(nan,[sz(1:DIM-1),1,sz(DIM+1:length(sz))]);
+	Q  = repmat(nan,[sz(1:DIM-1),D2,sz(DIM+1:length(sz))]);
 	for k = 0:D1-1,
 		for l = 0:D3-1,
 		        xi = k + l * D1*sz(DIM) + 1 ;
-			xo = k + l * D1 + 1;
+			xo = k + l * D1*D2;
 		        t  = Y(xi:D1:xi+D1*sz(DIM)-1);
 		        t  = sort(t(~isnan(t)));
 		        N  = length(t); 
-			% 
-			n  = floor(N*p/2);	
-		        ix = 1+n:N-n;
-		        f  = mean(t(ix));
-			Q(xo:D1:xo + D1 - 1) = f;
+			for m=1:D2,
+				n  = floor(N*p(m)/2);
+			        f  = sum(t(1+n:N-n))/(N-2*n);
+				Q(xo + m*D1) = f;
+			end; 
 		end;
 	end;
 end;

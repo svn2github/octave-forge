@@ -19,87 +19,113 @@
 ## @end deftypefn
 
 function varargout = subsref (obj, idx)
+
+  persistent __method__
+  if isempty(__method__)
+
+    __method__ = struct();
+    
+    __method__.plot = @(o,a) plot (o, a);
+    __method__.getpath = @(o,a) getpath (o, a);
+    __method__.pathid = @(o,a) fieldnames(o.Path);
+    __method__.path2polygon = @(o,a) path2polygon (o, a);
+    __method__.normalize = @(o,a) normalize (o, a);
+    __method__.height = @(o,a) o.Data.height;
+    __method__.width = @(o,a) o.Data.width;
+  
+    debug="first call"
+  end
+
   if ( !strcmp (class (obj), 'svg') )
-    error ("object must be of the svg class but '%s' was used", class (obj) );
+    error ("Object must be of the svg class but '%s' was used", class (obj) );
   elseif ( idx(1).type != '.' )
-    error ("invalid index for class %s", class (obj) );
+    error ("Invalid index for class %s", class (obj) );
   endif
 
-  ## the following at the end may allow to use the obj.method notation one day
-#  ori = inputname(1);
-#  assignin('caller', ori, inPar);
-
-# Error strings
+  # Error strings
   method4field = "Class %s has no field %s. Use %s() for the method.";
-  typeNotImplemented = "%s no implemented for Class %s.";
-  
-  method = idx(1).subs;
+  typeNotImplemented = "%s no implemented for class %s.";
 
-  switch method
-    case 'plot'
-    
-     if numel (idx) == 1 % obj.plot doesn't exists
-       error (method4field, class (obj), method, method);
-     elseif strcmp (idx(2).type, '()')
-        out = plot (obj, idx(2).subs);
-        if nargout >= 1
-          varargout{1} = out;
-        end
-     else 
-       error (typeNotImplemented,[method idx(2).type], class (obj));
-     end
-      
-    case 'getpath'
+  method = idx(1).subs
+  debug="Following calls"
+  if ~isfield(__method__, method)
+    error('Unknown method %s.',method);
+  else
+    fhandle = __method__.(method);
+  end
 
-     if numel (idx) == 1 % obj.getpath doesn't exists
-       error (method4field, class (obj), method, method);
-     elseif strcmp (idx(2).type, '()')
-        out = getpath (obj, idx(2).subs);
-        if nargout >= 1
-          varargout{1} = out;
-        end
-     else 
-       error (typeNotImplemented,[method idx(2).type], class (obj));
-     end
+  if strcmp(method,'normalize')
+    warning("svg:Devel","Not returning second output argument of %s use method(obj) API to get it",method);
+  end
 
-    case 'pathid'
-      out = fieldnames(obj.Path);
-      if nargout >= 1
-        varargout{1} = out;
-      end
+  if numel (idx) == 1 % can't access properties, only methods
 
-    case 'path2polygon'
-     if numel (idx) == 1 % obj.path2polygon doesn't exists
-       error (method4field, class (obj), method, method);
-     elseif strcmp (idx(2).type, '()')
-       out = path2polygon (obj, idx(2).subs);
-       if nargout >= 1
-         varargout{1} = out;
-       end
+    error (method4field, class (obj), method, method);
 
-     else 
-       error (typeNotImplemented,[method idx(2).type], class (obj));
-     end
+  end
 
-    case 'normalize'
-     if numel (idx) == 1 % obj.path2polygon doesn't exists
-       error (method4field, class (obj), method, method);
-     elseif strcmp (idx(2).type, '()')
-       [out out2] = normalize (obj, idx(2).subs);
-       pause
-        if nargout >= 1
-          varargout{1} = out;
-          if nargout >= 2
-          varargout{2} = out2;
-          end
-        end
-        varargout
-     else 
-       error (typeNotImplemented,[method idx(2).type], class (obj));
-     end
+  if strcmp (idx(2).type, '()')
 
-    otherwise
-      error ("invalid index for reference of class %s", class (obj) );
-  endswitch
+    args = idx(2).subs;
+    out = fhandle (obj, args{:});
+
+  else
+
+    error (typeNotImplemented,[method idx(2).type], class (obj));
+
+  end
 
 endfunction
+
+%{
+06:42:38 PM) jwe: KaKiLa: yes, I looked at it.  I still don't think you should try to fake the obj.method() style, but if you insist, you could probably shorten your code by just using case {'meth1', 'meth2', ...} and then retval = feval (method, args); ...
+(06:43:12 PM) jwe: I don't see why you should repeat the same code when the only thing that changes is the method name.
+(06:44:35 PM) jwe: Or, I think you could create a persistent structure with all the method names as fields, and each field would hold a function handle for that method.
+(06:45:28 PM) jwe: then I think you could write  fhandle = s(method); retval = fhandle (args);
+(06:45:38 PM) KaKiLa: jwe: you are right, of course. I was no improving code yet...want to get to minimal functionality...very close now. I will implement one of your suggestions in the next release. Thanks!
+(06:45:46 PM) jwe: sorry, fhandle = s.(method);
+
+persistent __method__
+if isempty(__method__)
+
+  __method__ = struct();
+  
+  __method__.plot = @(o,a) plot (o, a);
+  __method__.getpath = @(o,a) getpath (o, a);
+  __method__.pathid = @(o,a) fieldnames(o.Path);
+  __method__.path2polygon = @(o,a) path2polygon (o, a);
+  __method__.normalize = @(o,a) normalize (o, a);
+  __method__.height = @(o,a) o.Data.height;
+  __method__.width = @(o,a) o.Data.width;
+
+end
+
+method = idx(1).subs;
+if ~isfield(__method__, method)
+  error('Unknown method %s.',method);
+else
+  fhandle = __method__.(method);
+end
+
+if strcmp(method,'normalize')
+  warning("svg:Devel","Not returning second output argument of %s use method(obj) API to get it",method);
+end
+
+if numel (idx) == 1 % can't access properties, only methods
+
+  error (method4field, class (obj), method, method);
+
+end
+
+if strcmp (idx(2).type, '()')
+
+  args = idx(2).subs;
+  out = fhandle (obj, args{:});
+
+else
+
+  error (typeNotImplemented,[method idx(2).type], class (obj));
+
+end
+
+}%

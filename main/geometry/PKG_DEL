@@ -7,6 +7,11 @@ if (! exist (fullfile (dirname, "inst"), "dir"))
       ## Run this if the package is installed
       rmpath ( [ dirname filesep dirlist{ii}])
   end
-end
+else
+  warning("geometry:Devel","Removing path for testing.");
+  for ii=1:length(dirlist)
+    rmpath ([ dirname "/inst/" dirlist{ii}])
+  endfor
+endif
 
 clear dirlist dirname

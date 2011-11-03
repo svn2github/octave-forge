@@ -20,8 +20,6 @@
 
 function [SVGn bb] = normalize (obj)
 
-  warning("svg:Devel","This function is under development and is  not working correctly.");
-  
   SVGn = obj;
   bb = [];
   if ! obj.Data.normalized

@@ -6,6 +6,11 @@ if (! exist (fullfile (dirname, "inst"), "dir"))
   for ii=1:length (dirlist)
     addpath ( [ dirname filesep dirlist{ii}],"-end")
   endfor
+else
+  warning("geometry:Devel","Adding path for testing.");
+  for ii=1:length(dirlist)
+    addpath ([ dirname "/inst/" dirlist{ii}])
+  endfor
 endif
 
 warning('off', 'Octave:fopen-file-in-path');

@@ -43,7 +43,7 @@ function h = plot(obj, varargin)
     end
  end
  hold off
+ axis tight
  axis equal
-
 endfunction
 

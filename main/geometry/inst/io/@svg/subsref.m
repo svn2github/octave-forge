@@ -25,7 +25,7 @@ function varargout = subsref (obj, idx)
   if isempty(__method__)
 
     __method__ = struct();
-    
+
     __method__.plot = @(o,varargin) plot (o, varargin{:});
     __method__.getpath = @(o,varargin) getpath (o, varargin{:});
     __method__.pathid = @(o,varargin) pathid(o,varargin{:});
@@ -38,7 +38,6 @@ function varargout = subsref (obj, idx)
     method4field = "Class %s has no field %s. Use %s() for the method.";
     typeNotImplemented = "%s no implemented for class %s.";
 
-    debug="first call"
   end
 
   if ( !strcmp (class (obj), 'svg') )
@@ -48,7 +47,6 @@ function varargout = subsref (obj, idx)
   endif
 
   method = idx(1).subs
-  debug="Following calls"
   if ~isfield(__method__, method)
     error('Unknown method %s.',method);
   else
@@ -56,7 +54,7 @@ function varargout = subsref (obj, idx)
   end
 
   if strcmp(method,'normalize')
-    warning("svg:Devel",["Not returning second output argument of %s" ... 
+    warning("svg:Devel",["Not returning second output argument of %s" ...
                          " use method(obj) API to get it"],method);
   end
 
@@ -76,7 +74,7 @@ function varargout = subsref (obj, idx)
     end
 
     varargout{1} = out;
-    
+
   else
 
     error (typeNotImplemented,[method idx(2).type], class (obj));

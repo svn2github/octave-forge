@@ -76,3 +76,9 @@ endfunction
 %!  dc = svg('drawing6.svg');
 %!  ids = dc.pathid();
 %!  P = dc.path2polygon(ids{1});
+
+%!test
+%! dc = svg('drawing6.svg');
+%! dc.plot();
+%! dc.plot('color','r','linewidth',2);
+

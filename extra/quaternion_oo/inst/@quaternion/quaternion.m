@@ -1,4 +1,4 @@
-## Copyright (C) 2010   Lukas F. Reichlin
+## Copyright (C) 2010, 2011   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1
+## Version: 0.2
 
 
 function q = quaternion (a, b, c, d)
@@ -37,43 +37,37 @@ function q = quaternion (a, b, c, d)
         q = a;
         return;
       elseif (isnumeric (a))
-        z = zeros (size (a), class (a));
-        q = class (struct ("w", a, "x", z, "y", z, "z", z), "quaternion");
-        return;
+        w = a;
+        x = y = z = zeros (size (a), class (a));
       else
         print_usage ();
       endif
 
     case 3
-      s_a = size (a);
-
-      if (any (s_a != size (b)) || any (s_a != size (c)));
+      if (! size_equal (a, b, c));
         error ("quaternion: arguments must have identical sizes");
       endif
-
       c_a = class (a);
-
       if (isnumeric (a) && strcmp (c_a, class (b)) && strcmp (c_a, class (c)))
-        z = zeros (s_a, c_a);
-        q = class (struct ("w", z, "x", a, "y", b, "z", c), "quaternion");
-        return;
+        w = zeros (size (a), c_a);
+        x = a;
+        y = b;
+        z = c;
       else
         error ("quaternion: arguments must be numeric and of the same type");
       endif
 
     case 4
-      s_a = size (a);
-
-      if (any (s_a != size (b)) || any (s_a != size (c)) || any (s_a != size (d)));
+      if (! size_equal (a, b, c, d));
         error ("quaternion: arguments must have identical sizes");
       endif
-
       c_a = class (a);
-
       if (isnumeric (a) && strcmp (c_a, class (b)) && \
           strcmp (c_a, class (c)) && strcmp (c_a, class (d)))
-        q = class (struct ("w", a, "x", b, "y", c, "z", d), "quaternion");
-        return;
+        w = a;
+        x = b;
+        y = c;
+        z = d;
       else
         error ("quaternion: arguments must be numeric and of the same type");
       endif
@@ -81,5 +75,7 @@ function q = quaternion (a, b, c, d)
     otherwise
       print_usage ();
   endswitch
+  
+  q = class (struct ("w", w, "x", x, "y", y, "z", z), "quaternion");
 
 endfunction

@@ -20,11 +20,12 @@
 ##
 ## @end deftypefn
 
-function paths = getpath(obj, ids={})
+function paths = getpath(obj, varargin)
 
-  if !isempty(ids)
+  if !isempty(varargin)
   
-    if iscell (ids) && iscell(ids{1}) % dealing with ids given as cell
+    ids = varargin;
+    if iscell (ids) && numel(ids) == 1 && iscell(ids{1}) % dealing with ids given as cell
       ids = ids{1};
 
       if !all ( cellfun (@ischar, ids) )

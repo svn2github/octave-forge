@@ -31,16 +31,16 @@ function svg = svg(name='')
   ## SVG data. All the attributes of the <svg> node.
   ## The field unparsed contains all the attributes that are not being parsed.
   svg.Data = struct('height',[],'width',[],'id','null','normalized',false);
-  
-  ## SVG metadata. All the attributes of the <metadata> node. 
+
+  ## SVG metadata. All the attributes of the <metadata> node.
   ## The field unparsed contains all the attributes that are not being parsed.
   svg.Metadata = struct('unparsed',' ');
 
   ## SVG paths. It is a vector of path structs. Maybe path can be a object too?
-  ## Order of Path.Data is important so we store in a cell (could be a matrix padded with zeros). 
+  ## Order of Path.Data is important so we store in a cell (could be a matrix padded with zeros).
   ## All the paths stored in polyval compatible format. Straigth segments are also stored as a polynomial.
   svg.Path = struct();
-  
+
   ## SVG paths. All the paths of the svg
   svg = class (svg, 'svg');
 
@@ -64,16 +64,15 @@ endfunction
 
 %!test
 %!  dc = svg('drawing5.svg');
-%!  dc.getpath()
-%!  dc.pathid
-%!  dc.getpath('path3756')
-%!   
+%!  dc.getpath();
+%!  dc.pathid();
+%!  dc.getpath('path3756');
+%!
 %!  dc = svg('drawing.svg');
-%!  ids = dc.pathid;
-%!  dc.getpath({ids{[1 3]}})
+%!  ids = dc.pathid();
+%!  dc.getpath({ids{[1 3]}});
 
 %!test
 %!  dc = svg('drawing6.svg');
-%!  ids = dc.pathid;
+%!  ids = dc.pathid();
 %!  P = dc.path2polygon(ids{1});
-

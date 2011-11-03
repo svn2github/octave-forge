@@ -1,5 +1,6 @@
 ## Copyright (C) 2011 Carnë Draug <carandraug+dev@gmail.com>
 ## Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+## Improvement based on John W. Eaton's idea.
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -26,8 +27,8 @@ function varargout = subsref (obj, idx)
     __method__ = struct();
     
     __method__.plot = @(o,varargin) plot (o, varargin{:});
-    __method__.getpath = @(o,varargin) getpath (o, a);
-    __method__.pathid = @(o,varargin) pathid(o,a);
+    __method__.getpath = @(o,varargin) getpath (o, varargin{:});
+    __method__.pathid = @(o,varargin) pathid(o,varargin{:});
     __method__.path2polygon = @(o,varargin) path2polygon (o, varargin{:});
     __method__.normalize = @(o,varargin) normalize (o, varargin{:});
     __method__.height = @(o,varargin) height(o, varargin{:});
@@ -69,7 +70,7 @@ function varargout = subsref (obj, idx)
 
     args = idx(2).subs;
     if isempty(args)
-     out = fhandle (obj, []);
+     out = fhandle (obj);
     else
       out = fhandle (obj, args{:});
     end

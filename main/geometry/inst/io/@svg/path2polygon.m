@@ -21,16 +21,22 @@
 
 function P = path2polygon (obj,varargin)
 
-    args = varargin{1};
-    narg = numel(args);
+    narg = numel(varargin);
+    
     if narg == 1
-     id = args{1};
+
+     id = varargin{1};
      n = 32;
+
     elseif narg == 2
-     id = args{1};
-     n = args{2};
+
+     id = varargin{1};
+     n = varargin{2};
+
     else
+
       error("svg:path2polygon:InvalidArgument", "Wrong number of arguments.");
+
     end
     
     pd = obj.Path.(id).data;

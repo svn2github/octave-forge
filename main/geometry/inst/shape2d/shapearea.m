@@ -15,10 +15,15 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} { @var{a} =} shapearea (@var{pp})
-%%  Shape is defined with piecewise smooth polynomials. @var{pp} is a
-%% cell where each elements is a 2-by-(poly_degree+1) array containing 
+%% Calculate the area of a 2D shape defined with piecewise smooth polynomials.
+%%
+%% Shape is defined with piecewise smooth polynomials. @var{pp} is a
+%% cell where each elements is a 2-by-(poly_degree+1) array containing a pair of
+%% polynomials.
+%%
 %% @code{px(i,:) = pp@{i@}(1,:)} and @code{py(i,:) = pp@{i@}(2,:)}.
 %%
+%% @seealso{shapecentroid, shape2polygon, shapeplot}
 %% @end deftypefn
 
 function A = shapearea (shape)
@@ -27,7 +32,7 @@ function A = shapearea (shape)
   if A < 0
     A = -A;
   end
-  
+
 endfunction
 
 function dA = Aint (x)
@@ -36,7 +41,7 @@ function dA = Aint (x)
     py = x(2,:);
 
     P = polyint (conv (px, polyderiv(py)));
-    
+
     dA = diff(polyval(P,[0 1]));
 
 end
@@ -64,4 +69,3 @@ end
 %!            -1.715729   6.715729    0  -5]};
 %! A = shapearea (circle);
 %! assert (pi*5^2, A, 5e-2);
-

@@ -15,13 +15,14 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} { @var{cm} =} shapecentroid (@var{pp})
-%%  Centroid of a plane shape. 
+%%  Centroid of a plane shape defined with piecewise smooth polynomials.
 %%
 %% The shape is defined with piecewise smooth polynomials. @var{pp} is a
-%% cell where each elements is a 2-by-(poly_degree+1) matrix containing 
+%% cell where each elements is a 2-by-(poly_degree+1) matrix containing a pair
+%% of polynomials.
 %% @code{px(i,:) = pp@{i@}(1,:)} and @code{py(i,:) = pp@{i@}(2,:)}.
 %%
-%% @seealso{shapearea}
+%% @seealso{shapearea, shape2polygon}
 %% @end deftypefn
 
 function cm = shapecentroid (shape)
@@ -29,7 +30,7 @@ function cm = shapecentroid (shape)
   cm = sum( cell2mat ( cellfun (@CMint, shape, 'UniformOutput', false)));
   A = shapearea(shape);
   cm = cm / A;
-  
+
 endfunction
 
 function dcm = CMint (x)
@@ -38,7 +39,7 @@ function dcm = CMint (x)
     py = x(2,:);
     Px = polyint (conv(conv (px , px)/2 , polyderiv (py)));
     Py = polyint (conv(-conv (py , py)/2 , polyderiv (px)));
-    
+
     dcm = zeros (1,2);
     dcm(1) = diff(polyval(Px,[0 1]));
     dcm(2) = diff(polyval(Py,[0 1]));
@@ -68,4 +69,3 @@ endfunction
 %!            -1.715729   6.715729    0  -5]};
 %! CoM = shapecentroid (circle);
 %! assert (CoM , [0 0], 5e-3);
-

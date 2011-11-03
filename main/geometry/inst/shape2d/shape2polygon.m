@@ -17,19 +17,25 @@
 %% @deftypefn {Function File} {@var{polygon} = } shape2polygon (@var{shape})
 %% @deftypefnx {Function File} {@var{polygon} = } shape2polygon (@var{shape},@var{N})
 %% Transforms a 2D shape described by piecewise smooth polynomials into a polygon.
-%% 
-%% @seealso{drawPolygon}
+%%
+%% @var{shape} is a n-by-1 cell where each element is a pair of polynomials
+%% compatible with polyval.
+%% @var{polygon} is a k-by-2 matrix, where each row represents a vertex.
+%% @var{N} defines the number of points to be used in non-straigth edges.
+%%
+%% @seealso{polygon2shape, drawPolygon}
 %% @end deftypefn
+
 function polygon = shape2polygon (shape, N=16)
 
   polygon = cell2mat ( ...
              cellfun(@(x) func (x,N), shape,'UniformOutput',false) );
-             
+
   if size(polygon, 1) == 1
     polygon(2,1) = polyval(shape{1}(1,:),1);
     polygon(2,2) = polyval(shape{1}(2,:),1);
   end
-  
+
 endfunction
 
 function y = func(x,N)
@@ -43,4 +49,3 @@ function y = func(x,N)
   end
 
 endfunction
-

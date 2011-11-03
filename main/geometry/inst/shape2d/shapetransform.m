@@ -1,5 +1,5 @@
 %% Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%% 
+%%
 %%    This program is free software: you can redistribute it and/or modify
 %%    it under the terms of the GNU General Public License as published by
 %%    the Free Software Foundation, either version 3 of the License, or
@@ -17,11 +17,17 @@
 %% @deftypefn {Function File} {@var{nshape} = } shapetransform (@var{shape}, @var{T})
 %% Applies transformation to a shape defined by piecewise smooth polynomials.
 %%
+%% @var{shape} is a cell where each elements is a 2-by-(poly_degree+1) matrix
+%% containing a pair of polynomials.
+%%
 %% Format of @var{T} can be one of :
+%% @group
 %%  [c]   ,   [a b]   ,   [a b c]   or   [a b c]
 %%  [f]       [d e]       [d e f]        [d e f]
 %%                                       [0 0 1]
+%% @end group
 %%
+%% @seealso{shape2polygon, shapeplot}
 %% @end deftypefn
 
 function nshape = shapetransform (shape, Trans)
@@ -30,35 +36,35 @@ function nshape = shapetransform (shape, Trans)
     error("geometry:shapetransform:InvalidArgument", ...
                        "Transformation can be 2x1, 2x2, 2x3 or 3x3. See help.");
   end
-  
+
   if ~iscell(shape)
     error("geometry:shapetransform:InvalidArgument", "Shape must be a cell of 2D polynomials.");
   end
-  
+
   A =[];
   v = [];
-  
+
   switch size(Trans,2)
     case 1
     % Just translation
       v = Trans;
-      
+
     case 2
     % Just linear transformation
       A = Trans;
-      
+
     case 3
     % Affine transform
       A = Trans(1:2,1:2);
       v = Trans(1:2,3);
   end
-  
+
   nshape = cellfun (@(x)polytransform (x,A,v), shape, 'UniformOutput',false);
-  
+
 endfunction
 
 function np = polytransform(p,A,v)
-  
+
   np = p;
   if ~isempty (A)
     np = A*np;
@@ -134,4 +140,3 @@ endfunction
 %! nshape = shapetransform (shape, T);
 %! vn = shapecentroid (nshape)(:);
 %! assert(vn,v,1e-2);
-

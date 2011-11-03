@@ -13,22 +13,42 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+%% -*- texinfo -*-
+%% @deftypefn {Function File} {@var{shape} = } polygon2shape (@var{polygon})
+%% Converts a polygon to a shape with edges defined by smooth polynomials.
+%%
+%% @var{polygon} is a N-by-2 matrix, each row representing a vertex.
+%% @var{shape} is a N-by-1 cell, where each element is a pair of polynomials
+%% compatible with polyval.
+%%
+%% In its current state, the shape is formed by polynomials of degree 1. Therefore
+%% the shape representation costs more memory except for colinear points in the
+%% polygon.
+%%
+%% @seealso{shape2polygon, simplifypolygon, polyval}
+%% @end deftypefn
+
 function shape = polygon2shape (polygon)
 
   # Filter colinear points
   polygon = simplifypolygon (polygon);
-  
+
   np = size(polygon,1);
   # polygonal shapes are memory inefficient!!
   # TODO filter the regions where edge angles are canging slowly and fit
   # polynomial of degree 3;
   pp = nan (2*np,2);
-  
+
   # Transform edges into polynomials of degree 1;
   # pp = [(p1-p0) p0];
   pp(:,1) = diff(polygon([1:end 1],:)).'(:);
   pp(:,2) = polygon.'(:);
 
   shape = mat2cell(pp, 2*ones (1,np), 2);
-  
+
 endfunction
+
+%!test
+%! pp = [0 0; 1 0; 1 1; 0 1];
+%! s = polygon2shape (pp);
+

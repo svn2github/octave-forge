@@ -1,5 +1,5 @@
 %% Copyright (c) 2010 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%% 
+%%
 %%    This program is free software: you can redistribute it and/or modify
 %%    it under the terms of the GNU General Public License as published by
 %%    the Free Software Foundation, either version 3 of the License, or
@@ -94,7 +94,7 @@ endfunction
 
 %!demo
 %! dc = svg('drawing6.svg');
-%! ids = dc.pathid;
+%! ids = dc.pathid();
 %! P = dc.path2polygon(ids{1},12)(1:end-1,:);
 %! P = bsxfun(@minus, P, centroid(P));
 %! filename = tmpnam ();
@@ -108,5 +108,5 @@ endfunction
 %! % --------------------------------------------------------------------------
 %! % We load the drawing6.svg file into Octave and transform it into a polygon.
 %! % Then we create a temporary fiel where the .geo mesh will be written.
-%! % If the packages msh and fplare available, a mesh is created from the .geo 
+%! % If the packages msh and fplare available, a mesh is created from the .geo
 %! % file.

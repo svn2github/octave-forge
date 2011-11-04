@@ -46,7 +46,7 @@ function varargout = subsref (obj, idx)
     error ("Invalid index for class %s", class (obj) );
   endif
 
-  method = idx(1).subs
+  method = idx(1).subs;
   if ~isfield(__method__, method)
     error('Unknown method %s.',method);
   else

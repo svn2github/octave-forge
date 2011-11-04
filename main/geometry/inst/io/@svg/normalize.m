@@ -1,5 +1,5 @@
 %% Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%% 
+%%
 %%    This program is free software: you can redistribute it and/or modify
 %%    it under the terms of the GNU General Public License as published by
 %%    the Free Software Foundation, either version 3 of the License, or
@@ -15,7 +15,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} @var{SVGn} = normalize (@var{SVG})
-%% TODO: normalizes and SVG.
+%% normalizes and SVG.
 %% @end deftypefn
 
 function [SVGn bb] = normalize (obj)
@@ -34,13 +34,13 @@ function [SVGn bb] = normalize (obj)
       p = shape2polygon(obj.Path.(ids{ip}).data);
       bb = mergeBoxes(bb, [min(p) max(p)]([1 3 2 4]));
     end
-    
+
     if npath > 1
       v = mean(v)(:);
     else
       v = v.';
     end
-    
+
     %% check whether document and bounding box agree.
     bbHeight = bb(2)-bb(1);
     bbWidth = bb(4)-bb(2);
@@ -66,7 +66,7 @@ function [SVGn bb] = normalize (obj)
 
     for ip = 1:npath
       SVGn.Path.(ids{ip}).data = shapetransform(obj.Path.(ids{ip}).data,-v);
-      
+
       % Put to middle
       SVGn.Path.(ids{ip}).data = ...
                         shapetransform(SVGn.Path.(ids{ip}).data,[0; -bbHeight/2]);
@@ -76,21 +76,20 @@ function [SVGn bb] = normalize (obj)
       % Put to bottom
       SVGn.Path.(ids{ip}).data = ...
                         shapetransform(SVGn.Path.(ids{ip}).data,[0; bbHeight/2]);
-      
+
       % Scale
       SVGn.Path.(ids{ip}).data = ...
                         shapetransform(SVGn.Path.(ids{ip}).data,S);
-      
+
       p = shape2polygon(SVGn.Path.(ids{ip}).data);
       bb = mergeBoxes(bb, [min(p) max(p)]([1 3 2 4]));
     end
     bbHeight = bb(2)-bb(1);
     bbWidth = bb(4)-bb(2);
-    
+
     SVGn.Data.height = bbHeight;
     SVGn.Data.width = bbWidth;
     SVGn.Data.normalized = true;
   end
 
 end
-

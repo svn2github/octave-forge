@@ -1,104 +1,29 @@
 Summary of important user-visible changes for releases of the geometry package
 
 ===============================================================================
-geometry-1.0.0   Release Date: 2011-09-26   Release Manager: Juan Pablo Carbajal
+geometry-1.2.2   Release Date: 2011-11-04   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
-** First official release.
+* Improved SVG interface. Thanks to jwe and carandraug.
+* Adding files to manipulate and convert 2D shapes defined with smooth
+  polynomials.
+
+ shape2polygon.m
+ shapearea.m
+ shapecentroid.m
+ shapeplot.m
+ shapetransform.m
+
+* Inverted the order in the NEWS file. New entries are on top.
 
 ===============================================================================
-geometry-1.0.1   Release Date: 2011-09-27   Release Manager: Juan Pablo Carbajal
+geometry-1.2.1   Release Date: 2011-11-02   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
-Improvements to the docstrings of all functions.
+* Adding SVG object and demo for data2geom (converting SVG to msh format)
 
 ===============================================================================
-geometry-1.1   Release Date: 2011-10-04   Release Manager: Juan Pablo Carbajal
-===============================================================================
-
-* Starting to add geom2d from matGeom
-angle2Points.m
-angle3Points.m
-angleAbsDiff.m
-angleDiff.m
-angles2d.m
-angleSort.m
-createLine.m
-deg2rad.m
-edgeAngle.m
-lineAngle.m
-normalizeAngle.m
-rad2deg.m
-vectorAngle.m
-
-===============================================================================
-geometry-1.1.1   Release Date: 2011-10-06   Release Manager: Juan Pablo Carbajal
-===============================================================================
-
-* Continue to add geom2d from matGeom (boxes and clips)
- cbezier2poly.m
- boxes2d.m
- clipEdge.m
- clipLine.m
- clipPoints.m
- drawBezierCurve.m
- drawBox.m
- clipRay.m
- intersectBoxes.m
- intersectLines.m
- linePosition.m
- mergeBoxes.m
- randomPointInBox.m
- drawLine.m
- 
-===============================================================================
-geometry-1.1.2   Release Date: 2011-10-09   Release Manager: Juan Pablo Carbajal
-===============================================================================
-
-* Continue to add geom2d from matGeom (rays and vectors)
- createRay.m
- drawEdge.m
- drawRay.m
- isParallel.m
- isPerpendicular.m
- isPointOnRay.m
- normalizeVector.m
- rays2d.m
- rotateVector.m
- transformVector.m
- vectorNorm.m
- vectors2d.m
-
-===============================================================================
-geometry-1.1.3   Release Date: 2011-10-13   Release Manager: Juan Pablo Carbajal
-===============================================================================
-
-* Continue to add geom2d from matGeom (transforms and points2d)
- createBasisTransform.m
- createHomothecy.m
- createLineReflection.m
- createRotation.m
- createScaling.m
- createTranslation.m
- transformPoint.m
- transforms2d.m
- fitAffineTransform2d.m
- transformEdge.m
- transformLine.m
- centroid.m
- distancePoints.m
- midPoint.m
- polarPoint.m
- drawPoint.m
- isCounterClockwise.m
- minDistancePoints.m
- pointOnLine.m
- points2d.m
- intersectLineEdge.m
- isPointOnEdge.m
-
-===============================================================================
-geometry-1.2   Release Date: 2011-10-21   Release Manager: Juan Pablo Carbajal
+geometry-1.2.0   Release Date: 2011-10-21   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
 * All geom2d added
@@ -158,10 +83,100 @@ geometry-1.2   Release Date: 2011-10-21   Release Manager: Juan Pablo Carbajal
  reverseLine.m
 
 ===============================================================================
-geometry-1.2.1   Release Date: 2011-11-02   Release Manager: Juan Pablo Carbajal
+geometry-1.1.3   Release Date: 2011-10-13   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
-* Adding SVG object and demo for data2geom (converting SVG to msh format)
+* Continue to add geom2d from matGeom (transforms and points2d)
+ createBasisTransform.m
+ createHomothecy.m
+ createLineReflection.m
+ createRotation.m
+ createScaling.m
+ createTranslation.m
+ transformPoint.m
+ transforms2d.m
+ fitAffineTransform2d.m
+ transformEdge.m
+ transformLine.m
+ centroid.m
+ distancePoints.m
+ midPoint.m
+ polarPoint.m
+ drawPoint.m
+ isCounterClockwise.m
+ minDistancePoints.m
+ pointOnLine.m
+ points2d.m
+ intersectLineEdge.m
+ isPointOnEdge.m
 
 ===============================================================================
+geometry-1.1.2   Release Date: 2011-10-09   Release Manager: Juan Pablo Carbajal
+===============================================================================
 
+* Continue to add geom2d from matGeom (rays and vectors)
+ createRay.m
+ drawEdge.m
+ drawRay.m
+ isParallel.m
+ isPerpendicular.m
+ isPointOnRay.m
+ normalizeVector.m
+ rays2d.m
+ rotateVector.m
+ transformVector.m
+ vectorNorm.m
+ vectors2d.m
+
+===============================================================================
+geometry-1.1.1   Release Date: 2011-10-06   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* Continue to add geom2d from matGeom (boxes and clips)
+ cbezier2poly.m
+ boxes2d.m
+ clipEdge.m
+ clipLine.m
+ clipPoints.m
+ drawBezierCurve.m
+ drawBox.m
+ clipRay.m
+ intersectBoxes.m
+ intersectLines.m
+ linePosition.m
+ mergeBoxes.m
+ randomPointInBox.m
+ drawLine.m
+
+===============================================================================
+geometry-1.1.0   Release Date: 2011-10-04   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* Starting to add geom2d from matGeom
+ angle2Points.m
+ angle3Points.m
+ angleAbsDiff.m
+ angleDiff.m
+ angles2d.m
+ angleSort.m
+ createLine.m
+ deg2rad.m
+ edgeAngle.m
+ lineAngle.m
+ normalizeAngle.m
+ rad2deg.m
+ vectorAngle.m
+
+===============================================================================
+geometry-1.0.1   Release Date: 2011-09-27   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+Improvements to the docstrings of all functions.
+
+===============================================================================
+geometry-1.0.0   Release Date: 2011-09-26   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+** First official release.
+
+===============================================================================

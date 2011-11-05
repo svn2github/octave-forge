@@ -21,7 +21,7 @@
 ## Version: 0.1
 
 
-function a = minus (a)
+function a = uminus (a)
 
   a.w = -a.w;
   a.x = -a.x;

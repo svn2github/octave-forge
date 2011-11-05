@@ -1,4 +1,4 @@
-## Copyright (C) 2010   Lukas F. Reichlin
+## Copyright (C) 2010, 2011   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,35 +18,35 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1
+## Version: 0.1.1
 
 
 function ret = subsref (q, s)
 
   switch (s(1).type)
-    case "."  # q.w
+    case "."                # q.w
       switch (tolower (s.subs))
-        case {"w", "s"}
+        case {"w", "s"}     # scalar part
           ret = q.w;
 
-        case "x"
+        case {"x", "i"}
           ret = q.x;
 
-        case "y"
+        case {"y", "j"}
           ret = q.y;
 
-        case "z"
+        case {"z", "k"}
           ret = q.z;
 
-        case "v"
+        case "v"            # vector part, scalar part set to zero
           q.w = zeros (size (q.w), class (q.w));
           ret = q;
-        
+
         otherwise
           error ("quaternion: invalid subscript name");
       endswitch
 
-    case "()"  # q(...)
+    case "()"               # q(...)
       idx = s(1).subs;
 
       ## TODO: allow stuff like q(:, 1:3) to extract
@@ -56,7 +56,7 @@ function ret = subsref (q, s)
         error ("quaternion: only one index allowed");
       endif
 
-      switch (idx{1})  # q(4)
+      switch (idx{1})       # q(4)
         case {0, 4}
           ret = q.w;
 

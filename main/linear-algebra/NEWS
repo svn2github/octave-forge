@@ -1,0 +1,20 @@
+Summary of important user-visible changes for linear-algebra 2.1.0:
+-------------------------------------------------------------------
+
+ ** The following functions are new in 2.1.0:
+
+      lobpcg  ndcovlt
+
+ ** The following functions were removed since equivalents are now
+    part of GNU octave core:
+
+      bicg  mgorth
+
+ ** The following functions were deprecated since equivalents are
+    now part of GNU octave core:
+
+      pgmres
+
+ ** The function `funm' now also accepts function handles.
+
+ ** Help text of most functions has been improved.

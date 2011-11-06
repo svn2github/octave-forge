@@ -454,8 +454,8 @@ octave_idx_type odepkg_auxiliary_solstore
       // eg. if the code should be debuged or something like this
       vt = octave_value (vtstore);
       vy = octave_value (vystore);
-      vt.print_with_name (octave_stdout, "vt", true);
-      vy.print_with_name (octave_stdout, "vy", true);
+      vt.print_with_name (octave_stdout, "vt");
+      vy.print_with_name (octave_stdout, "vy");
       break;
   }
 

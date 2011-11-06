@@ -12,8 +12,6 @@ Matrix functions
  thfm
 Matrix factorization
  gsvd
-Test
- test_gsvd
 
 sparse >> Sparse matrix support
 Block sparse matrices

@@ -1,4 +1,4 @@
-%# Copyright (C) 2006-2011, Thomas Treichl <treichl@users.sourceforge.net>
+%# Copyright (C) 2006-2011, Thomas Treichl <thomas.treichl@gmx.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify

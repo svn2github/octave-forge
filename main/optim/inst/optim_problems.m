@@ -1,6 +1,6 @@
 %% Copyright (C) 2010 Olaf Till <olaf.till@uni-jena.de>
 %% Copyright (C) 2007 Paul Kienzle (sort-based lookup in ODE solver)
-%% Copyright (C) 2009 Thomas Treichl <treichl@users.sourceforge.net>
+%% Copyright (C) 2009 Thomas Treichl <thomas.treichl@gmx.net>
 %%               (ode23 code)
 %%
 %% This program is free software; you can redistribute it and/or modify
@@ -896,7 +896,7 @@ function ret = optim_problems ()
   function [varargout] = essential_ode23 (vfun, vslot, vinit, vodeoptions)
 
     %% This code is taken from the ode23 solver of Thomas Treichl
-    %% <treichl@users.sourceforge.net>, some flexibility of the
+    %% <thomas.treichl@gmx.net>, some flexibility of the
     %% interface has been removed. The idea behind this duplication is
     %% to have a fixed version of the solver here which runs both in
     %% Octave and Matlab.

@@ -1,8 +1,8 @@
 Name: OdePkg
 Version: 0.8.0
 Date: 2011-06-16
-Author: Thomas Treichl <treichl@users.sourceforge.net>
-Maintainer: Thomas Treichl <treichl@users.sourceforge.net>
+Author: Thomas Treichl <thomas.treichl@gmx.net>
+Maintainer: Thomas Treichl <thomas.treichl@gmx.net>
 Title: OdePkg
 Description: A package for solving ordinary differential equations and more.
 Categories: Differential Equations

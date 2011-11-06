@@ -1,5 +1,5 @@
 \input texinfo @c -*-texinfo-*-
-@c Copyright (c) 2006-2011, Thomas Treichl <treichl@users.sourceforge.net>
+@c Copyright (c) 2006-2011, Thomas Treichl <thomas.treichl@gmx.net>
 @c OdePkg - A package for solving ordinary differential equations and more
 
 @c For manually generating the documentation use

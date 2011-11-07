@@ -97,12 +97,11 @@ We hope not to run into the c tag.
 
 = methods =
 
-[c] inv       return inverse of quaterion
+DONE [c] inv       return inverse of quaterion
 By Monday, November 07 2011 this function is equivalent to the conj function of quaternions_oo
 not to inv of that package.
 
-[e] norm      return norm of quaternion
-We will wrap abs from quaternions_oo
+DONE [e] norm:  We will wrap abs from quaternions_oo
 
 [] unit      return unit quaternion
 [] unitize   unitize this quaternion

@@ -14,6 +14,7 @@
 %%    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 === Robotics Toolbox Port to Octave ===
+http://petercorke.com/Robotics_Toolbox.html
 With the objective of porting the robotics toolbox version 9 to octave forge
 we list the classes relate to quaternions.
 
@@ -95,8 +96,10 @@ We hope not to run into the c tag.
 == Quaternion ==
 
 = methods =
-[] inv       return inverse of quaterion
-[] norm      return norm of quaternion
+[c] inv       return inverse of quaterion
+By Monday, November 07 2011 this function is equivalent to the conj function of quaternions_oo
+
+[*] norm      return norm of quaternion
 [] unit      return unit quaternion
 [] unitize   unitize this quaternion
 [] plot      same options as trplot()
@@ -105,11 +108,11 @@ We hope not to run into the c tag.
 [] dot       derivative of quaternion with angular velocity w
 
 = Operators =
-[] q+q2      return elementwise sum of quaternions
-[] q-q2      return elementwise difference of quaternions
-[] q*q2      return quaternion product
-[] q*v       rotate vector by quaternion, v is 3x1
-[] q/q2      return q*q2.inv
+[*] q+q2      return elementwise sum of quaternions
+[*] q-q2      return elementwise difference of quaternions
+[*] q*q2      return quaternion product
+[*] q*v       rotate vector by quaternion, v is 3x1
+[*] q/q2      return q*q2.inv
 [] q^n       return q to power n (integer only)
 
 = Properties (read only)=

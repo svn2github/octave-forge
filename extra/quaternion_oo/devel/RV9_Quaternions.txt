@@ -96,10 +96,14 @@ We hope not to run into the c tag.
 == Quaternion ==
 
 = methods =
+
 [c] inv       return inverse of quaterion
 By Monday, November 07 2011 this function is equivalent to the conj function of quaternions_oo
+not to inv of that package.
 
-[*] norm      return norm of quaternion
+[e] norm      return norm of quaternion
+We will wrap abs from quaternions_oo
+
 [] unit      return unit quaternion
 [] unitize   unitize this quaternion
 [] plot      same options as trplot()
@@ -113,6 +117,7 @@ By Monday, November 07 2011 this function is equivalent to the conj function of 
 [*] q*q2      return quaternion product
 [*] q*v       rotate vector by quaternion, v is 3x1
 [*] q/q2      return q*q2.inv
+
 [] q^n       return q to power n (integer only)
 
 = Properties (read only)=

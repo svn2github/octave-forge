@@ -3,6 +3,7 @@ Examples
 Experimental Data Handling
   @iddata/get
   iddata
+  @iddata/plot
   @iddata/set
   @iddata/size
 System Identification
@@ -15,4 +16,6 @@ Model Reduction
   hnamodred
   spamodred
 Controller Reduction
-
+  btaconred
+  cfconred
+  spaconred

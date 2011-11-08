@@ -51,3 +51,4 @@ end;
 
 y = reshape(y,size(x));
 
+%!assert(tinv(NaN,4),NaN)

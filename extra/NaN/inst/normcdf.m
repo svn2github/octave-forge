@@ -13,7 +13,7 @@ function p = normcdf(x,m,s)
 % Reference(s):
 
 %    $Id$
-%    Copyright (C) 2000-2003,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
+%    Copyright (C) 2000-2003,2010,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    This function is part of the NaN-toolbox
 %    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -50,6 +50,9 @@ p((x==m)& z) = 0.5;
 p((x>m) & z) = 1;
 
 p(isnan(x) | isnan(m) | isnan(s) | (s<0)) = nan;
+
+%!assert(sum(isnan(normcdf([-inf,-2,-1,-.5,0,.5,1,2,3,inf,nan]',2,0))),1)
+
 
 
 

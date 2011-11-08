@@ -45,3 +45,5 @@ p(~ix)= NaN;
 
 % shape output
 p = reshape(p,size(x));
+
+%!assert(tpdf(NaN,4),NaN)

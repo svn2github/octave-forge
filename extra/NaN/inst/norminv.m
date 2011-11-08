@@ -13,7 +13,7 @@ function x = norminv(p,m,s)
 % Reference(s):
 
 %    $Id$
-%    Copyright (C) 2000-2003,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
+%    Copyright (C) 2000-2003,2010,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    This function is part of the NaN-toolbox
 %    http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -52,4 +52,9 @@ if numel(m)==1,
         x(k) = m;
 else
         x(k) = m(k);
-end;        
+end;
+
+
+%!assert(sum(~isnan(norminv([-inf,-.2,0,.2,.5,1,2,inf,nan],2,0))),4)
+
+

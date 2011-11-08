@@ -66,3 +66,6 @@ else
         y = sqrt(y./max(n-1,0));	% normalize with N-1
 end;
 
+
+%!assert(nanstd(0),NaN)
+

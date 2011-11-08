@@ -39,3 +39,5 @@ else
         o = sumskipnan(i);
 end;
 
+%!assert(nansum(NaN),0)
+

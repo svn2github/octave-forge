@@ -66,7 +66,8 @@ for l = 0:D3-1,
         if n==0,
                 y(xo) = nan;
         elseif flag_MexKthElement, 
-	        if (D1==1) t = t+0.0; end;	% make sure a real copy (not just a reference to x) is used        	flag_KthE = 0; % fast kth_element can be used, because t does not contain any NaN and there is need to care about in-place sorting
+	        if (D1==1) t = t+0.0; end;	% make sure a real copy (not just a reference to x) is used
+        	flag_KthE = 0; % fast kth_element can be used, because t does not contain any NaN and there is need to care about in-place sorting
                 if ~rem(n,2),
                         y(xo) = sum( kth_element( double(t), n/2 + [0,1], flag_KthE) ) / 2;
                 elseif rem(n,2),
@@ -86,3 +87,8 @@ for l = 0:D3-1,
         end; 
 end;
 end;
+
+
+%!assert(median([1,NaN,3,inf,-inf]),2)
+%!assert(median([1,NaN,3,inf,4,-inf]),3)
+

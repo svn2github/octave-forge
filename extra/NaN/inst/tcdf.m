@@ -58,4 +58,4 @@ p(ix) = 1 - p(ix);
 % shape output
 p = reshape(p,size(x));
 
-
+%!assert(tcdf(NaN,4),NaN)

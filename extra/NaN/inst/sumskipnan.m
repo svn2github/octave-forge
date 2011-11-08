@@ -185,4 +185,9 @@ end;
 
 %!assert(sumskipnan([1,2],1),[1,2])
 %!assert(sumskipnan([1,NaN],2),1)
+%!assert(sumskipnan([1,NaN],2),1)
+%!assert(sumskipnan([nan,1,4,5]),10)
+%!assert(sumskipnan([nan,1,4,5]',1,[3;2;1;0]),6)
+
+
 

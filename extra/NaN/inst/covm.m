@@ -243,4 +243,6 @@ if nargout<2
         CC = CC./NN; % unbiased
 end;
 
-return; 
+%!assert(covm([1;NaN;2],'D'),0.5)
+%!assert(covm([1;NaN;2],'M'),2.5)
+%!assert(covm([1;NaN;2],'E'),[1,1.5;1.5,2.5])

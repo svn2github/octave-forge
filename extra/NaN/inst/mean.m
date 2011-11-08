@@ -37,7 +37,7 @@ function [y]=mean(x,DIM,opt,W)
 %
 
 %	$Id$
-%	Copyright (C) 2000-2004,2008,2009 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (C) 2000-2004,2008,2009.2011 by Alois Schloegl <alois.schloegl@gmail.com>	
 %    	This is part of the NaN-toolbox. For more details see
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 %
@@ -114,4 +114,12 @@ elseif (opt == 'H')
 else
     	fprintf (2,'mean:  option `%s` not recognized', opt);
 end 
+
+%!assert(mean([1,NaN],1),[1,NaN])
+%!assert(mean([1,NaN],2),1)
+%!assert(mean([+inf,-inf]),NaN)
+%!assert(mean([+0,-0],'h'),NaN)
+%!assert(mean([1,4,NaN],'g'),2)
+      
+      
 

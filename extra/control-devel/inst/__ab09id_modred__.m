@@ -50,21 +50,25 @@ function [sysr, nr] = __ab09id_modred__ (method, varargin)
   dt = isdt (sys);
 
   ## default arguments
+  av = bv = cv = dv = [];
+  jobv = 0;
+  aw = bw = cw = dw = [];
+  jobw = 0;
   alphac = alphao = 0.0;
   tol1 = 0.0;
   tol2 = 0.0;
   dico = 0;
   jobc = jobo = 0;
-  job = 1;
+  job = 1;         # 'F':  balancing-free square-root Balance & Truncate method
   weight = 1;
   equil = 0;
   ordsel = 1;
   nr = 0;
   
-  if (dt)       # discrete-time
-    alpha = 1;  # ALPHA <= 0
-  else          # continuous-time
-    alpha = 0;  # 0 <= ALPHA <= 1
+  if (dt)          # discrete-time
+    alpha = 1;     # ALPHA <= 0
+  else             # continuous-time
+    alpha = 0;     # 0 <= ALPHA <= 1
   endif
 
   ## handle properties and values
@@ -72,6 +76,17 @@ function [sysr, nr] = __ab09id_modred__ (method, varargin)
     prop = lower (varargin{k});
     val = varargin{k+1};
     switch (prop)
+      case {"left", "v"}
+        val = ss (val);  # val could be non-lti, therefore ssdata would fail
+        [av, bv, cv, dv, tsamv] = ssdata (val);
+        jobv = 1;
+
+      case {"right", "w"}
+        val = ss (val);
+        [aw, bw, cw, dw, tsamw] = ssdata (val);
+        jobw = 1;
+        ## TODO: check ct/dt
+
       case {"order", "n", "nr"}
         if (! issample (val, 0) || val != round (val))
           error ("%smodred: argument %s must be an integer >= 0", method, varargin{k});
@@ -106,16 +121,22 @@ function [sysr, nr] = __ab09id_modred__ (method, varargin)
         endif
         alpha = val;
 
-      case "beta"
-        if (! issample (val, 0))
-          error ("bstmodred: argument %s must be BETA >= 0", varargin{k});
-        endif
-        beta = val;
+      ## TODO: alphac, alphao, jobc, jobo
 
       otherwise
         error ("hnamodred: invalid property name");
     endswitch
   endfor
+
+  if (jobv && jobw)
+    weight = 3;    # 'B':  both left and right weightings V and W are used
+  elseif (jobv)
+    weight = 1;    # 'L':  only left weighting V is used (W = I)
+  elseif (jobw)
+    weight = 2;    # 'R':  only right weighting W is used (V = I)
+  else
+    weight = 0;    # 'N':  no weightings are used (V = I, W = I)
+  endif
   
   ## TODO: handle job
   

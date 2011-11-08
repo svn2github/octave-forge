@@ -145,7 +145,7 @@ function [sysr, nr] = __ab09id_modred__ (method, varargin)
                                av, bv, cv, dv, \
                                aw, bw, cw, dw, \
                                weight, jobc, jobo, alphac, alphao, \
-                               tol1, tol2)
+                               tol1, tol2);
 
   ## assemble reduced order model
   sysr = ss (ar, br, cr, dr, tsam);

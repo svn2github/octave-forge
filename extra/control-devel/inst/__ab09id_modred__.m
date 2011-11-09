@@ -50,6 +50,7 @@ function [sysr, nr] = __ab09id_modred__ (method, varargin)
   dt = isdt (sys);
 
   ## default arguments
+  alpha = __default_alpha__ (dt);
   av = bv = cv = dv = [];
   jobv = 0;
   aw = bw = cw = dw = [];
@@ -64,12 +65,6 @@ function [sysr, nr] = __ab09id_modred__ (method, varargin)
   equil = 0;
   ordsel = 1;
   nr = 0;
-  
-  if (dt)          # discrete-time
-    alpha = 1;     # ALPHA <= 0
-  else             # continuous-time
-    alpha = 0;     # 0 <= ALPHA <= 1
-  endif
 
   ## handle properties and values
   for k = 1 : 2 : npv

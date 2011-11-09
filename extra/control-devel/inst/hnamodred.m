@@ -63,6 +63,7 @@ function [sysr, nr] = hnamodred (sys, varargin)
   dt = isdt (sys);
   
   ## default arguments
+  alpha = __default_alpha__ (dt);
   av = bv = cv = dv = [];
   jobv = 0;
   aw = bw = cw = dw = [];
@@ -72,13 +73,8 @@ function [sysr, nr] = hnamodred (sys, varargin)
   tol2 = 0;
   ordsel = 1;
   nr = 0;
-  
-  if (dt)       # discrete-time
-    alpha = 1;  # ALPHA <= 0
-  else          # continuous-time
-    alpha = 0;  # 0 <= ALPHA <= 1
-  endif
 
+  ## handle properties and values
   for k = 1 : 2 : (nargin-1)
     prop = lower (varargin{k});
     val = varargin{k+1};

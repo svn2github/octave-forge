@@ -63,6 +63,7 @@ function [sysr, nr] = bstmodred (sys, varargin)
   dt = isdt (sys);
   
   ## default arguments
+  alpha = __default_alpha__ (dt);
   beta = 1; # ?
   tol1 = 0; 
   tol2 = 0;
@@ -70,13 +71,8 @@ function [sysr, nr] = bstmodred (sys, varargin)
   nr = 0;
   
   job = 1; ## ?
-  
-  if (dt)       # discrete-time
-    alpha = 1;  # ALPHA <= 0
-  else          # continuous-time
-    alpha = 0;  # 0 <= ALPHA <= 1
-  endif
 
+  ## handle properties and values
   for k = 1 : 2 : (nargin-1)
     prop = lower (varargin{k});
     val = varargin{k+1};

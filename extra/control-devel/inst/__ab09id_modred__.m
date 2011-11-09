@@ -89,16 +89,10 @@ function [sysr, nr] = __ab09id_modred__ (method, varargin)
         ordsel = 0;
 
       case "tol1"
-        if (! is_real_scalar (val))
-          error ("%smodred: argument %s must be a real scalar", method, varargin{k});
-        endif
-        tol1 = val;
+        tol1 = __check_tol__ (val, "tol1");
 
       case "tol2"
-        if (! is_real_scalar (val))
-          error ("%smodred: argument %s must be a real scalar", method, varargin{k});
-        endif
-        tol2 = val;
+        tol2 = __check_tol__ (val, "tol2");
 
       case "alpha"
         alpha = __check_alpha__ (val, dt);

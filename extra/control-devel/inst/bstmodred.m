@@ -86,20 +86,14 @@ function [sysr, nr] = bstmodred (sys, varargin)
         ordsel = 0;
 
       case "tol1"
-        if (! is_real_scalar (val))
-          error ("hnamodred: argument %s must be a real scalar", varargin{k});
-        endif
-        tol1 = val;
+        tol1 = __check_tol__ (val, "tol1");
 
       case "tol2"
-        if (! is_real_scalar (val))
-          error ("hnamodred: argument %s must be a real scalar", varargin{k});
-        endif
-        tol2 = val;
+        tol2 = __check_tol__ (val, "tol2");
 
       case "alpha"
         alpha = __check_alpha__ (val, dt);
-
+        
       case "beta"
         if (! issample (val, 0))
           error ("bstmodred: argument %s must be BETA >= 0", varargin{k});

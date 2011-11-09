@@ -84,21 +84,15 @@ function [sysr, nr] = hnamodred (sys, varargin)
     val = varargin{k+1};
     switch (prop)
       case {"left", "v"}
-        val = ss (val);  # val could be non-lti, therefore ssdata would fail
-        [av, bv, cv, dv, tsamv] = ssdata (val);
+        [av, bv, cv, dv] = __check_weight__ (val, dt);
         jobv = 1;
 
       case {"right", "w"}
-        val = ss (val);
-        [aw, bw, cw, dw, tsamw] = ssdata (val);
+        [aw, bw, cw, dw] = __check_weight__ (val, dt);
         jobw = 1;
-        ## TODO: check ct/dt
 
       case {"order", "n", "nr"}
-        if (! issample (val, 0) || val != round (val))
-          error ("hnamodred: argument %s must be an integer >= 0", varargin{k});
-        endif
-        nr = val;
+        nr = __check_order__ (val);
         ordsel = 0;
 
       case "tol1"
@@ -114,19 +108,7 @@ function [sysr, nr] = hnamodred (sys, varargin)
         tol2 = val;
 
       case "alpha"
-        if (! is_real_scalar (val))
-          error ("hnamodred: argument %s must be a real scalar", varargin{k});
-        endif
-        if (dt)  # discrete-time
-          if (val < 0 || val > 1)
-            error ("hnamodred: argument %s must be 0 <= ALPHA <= 1", varargin{k});
-          endif
-        else     # continuous-time
-          if (val > 0)
-            error ("hnamodred: argument %s must be ALPHA <= 0", varargin{k});
-          endif
-        endif
-        alpha = val;
+        alpha = __check_alpha__ (val, dt);
 
       otherwise
         error ("hnamodred: invalid property name");

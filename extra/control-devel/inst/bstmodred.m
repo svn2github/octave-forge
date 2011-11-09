@@ -82,10 +82,7 @@ function [sysr, nr] = bstmodred (sys, varargin)
     val = varargin{k+1};
     switch (prop)
       case {"order", "n", "nr"}
-        if (! issample (val, 0) || val != round (val))
-          error ("bstmodred: argument %s must be an integer >= 0", varargin{k});
-        endif
-        nr = val;
+        nr = __check_order__ (val);
         ordsel = 0;
 
       case "tol1"
@@ -101,19 +98,7 @@ function [sysr, nr] = bstmodred (sys, varargin)
         tol2 = val;
 
       case "alpha"
-        if (! is_real_scalar (val))
-          error ("bstmodred: argument %s must be a real scalar", varargin{k});
-        endif
-        if (dt)  # discrete-time
-          if (val < 0 || val > 1)
-            error ("bstmodred: argument %s must be 0 <= ALPHA <= 1", varargin{k});
-          endif
-        else     # continuous-time
-          if (val > 0)
-            error ("bstmodred: argument %s must be ALPHA <= 0", varargin{k});
-          endif
-        endif
-        alpha = val;
+        alpha = __check_alpha__ (val, dt);
 
       case "beta"
         if (! issample (val, 0))

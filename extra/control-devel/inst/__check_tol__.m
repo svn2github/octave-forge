@@ -20,6 +20,7 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2011
+## Version: 0.1
 
 function tol = __check_tol__ (tol, str = "")
 

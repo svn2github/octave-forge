@@ -22,7 +22,7 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function [a, b, c, d] = __check_weight__ (sys, dt)
+function [a, b, c, d, job] = __check_weight__ (sys, dt)
 
   sys = ss (sys);  # could be non-lti, therefore ssdata would fail
 
@@ -31,5 +31,7 @@ function [a, b, c, d] = __check_weight__ (sys, dt)
   endif
 
   [a, b, c, d] = ssdata (sys);
+  
+  job = 1;
 
 endfunction

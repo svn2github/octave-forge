@@ -80,16 +80,13 @@ function [sysr, nr] = hnamodred (sys, varargin)
     val = varargin{k+1};
     switch (prop)
       case {"left", "v"}
-        [av, bv, cv, dv] = __check_weight__ (val, dt);
-        jobv = 1;
+        [av, bv, cv, dv, jobv] = __check_weight__ (val, dt);
 
       case {"right", "w"}
-        [aw, bw, cw, dw] = __check_weight__ (val, dt);
-        jobw = 1;
+        [aw, bw, cw, dw, jobw] = __check_weight__ (val, dt);
 
       case {"order", "n", "nr"}
-        nr = __check_order__ (val);
-        ordsel = 0;
+        [nr, ordsel] = __check_order__ (val);
 
       case "tol1"
         tol1 = __check_tol__ (val, "tol1");

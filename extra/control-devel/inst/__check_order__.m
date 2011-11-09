@@ -20,11 +20,14 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2011
+## Version: 0.1
 
-function nr = __check_order__ (nr)
+function [nr, ordsel] = __check_order__ (nr)
 
   if (! issample (nr, 0) || nr != round (nr))
     error ("modred: order of reduced model must be an integer >= 0");
   endif
+  
+  ordsel = 0;
 
 endfunction

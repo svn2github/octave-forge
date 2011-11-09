@@ -78,8 +78,7 @@ function [sysr, nr] = bstmodred (sys, varargin)
     val = varargin{k+1};
     switch (prop)
       case {"order", "n", "nr"}
-        nr = __check_order__ (val);
-        ordsel = 0;
+        [nr, ordsel] = __check_order__ (val);
 
       case "tol1"
         tol1 = __check_tol__ (val, "tol1");

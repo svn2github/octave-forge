@@ -69,8 +69,7 @@ function [sysr, nr] = bstmodred (sys, varargin)
   tol2 = 0;
   ordsel = 1;
   nr = 0;
-  
-  job = 1; ## ?
+  job = 1;
 
   ## handle properties and values
   for k = 1 : 2 : (nargin-1)
@@ -94,6 +93,20 @@ function [sysr, nr] = bstmodred (sys, varargin)
           error ("bstmodred: argument %s must be BETA >= 0", varargin{k});
         endif
         beta = val;
+
+      case {"approx", "approach"}    # approximation method
+        switch (tolower (val))
+          case {"sr-bta", "b"}       # 'B':  use the square-root Balance & Truncate method
+            job = 0;
+          case {"bfsr-bta", "f"}     # 'F':  use the balancing-free square-root Balance & Truncate method
+            job = 1;
+          case {"sr-spa", "s"}       # 'S':  use the square-root Singular Perturbation Approximation method
+            job = 2;
+          case {"bfsr-spa", "p"}     # 'P':  use the balancing-free square-root Singular Perturbation Approximation method
+            job = 3; 
+          otherwise
+            error ("bstmodred: ""%s"" is an invalid approximation method", val);
+        endswitch
 
       otherwise
         error ("hnamodred: invalid property name");

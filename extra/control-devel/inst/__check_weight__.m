@@ -33,5 +33,7 @@ function [a, b, c, d, job] = __check_weight__ (sys, dt)
   [a, b, c, d] = ssdata (sys);
   
   job = 1;
+  
+  ## TODO: check system size
 
 endfunction

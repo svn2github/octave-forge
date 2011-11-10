@@ -1,10 +1,10 @@
-all: slab09hd.oct slab09jd.oct slsb10yd.oct
+all: slab09hd.oct slab09id.oct slab09jd.oct slsb10yd.oct
 
 # TODO: leading and trailing underscores for sl* functions
 #       (__sl*__.oct) would be nice, but this can be an issue
 #       for fortran compilers.
 
-# model reduction based on balanced stochastic truncation method
+# balanced stochastic truncation model reduction
 slab09hd.oct: slab09hd.cc
 	mkoctfile slab09hd.cc \
               AB09HD.f TB01ID.f AB04MD.f TB01KD.f AB09HY.f \
@@ -14,7 +14,19 @@ slab09hd.oct: slab09hd.cc
               SB02MW.f MB04ND.f MB04OD.f MB03QY.f SB03OR.f \
               SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
 
-# frequency-weighted Hankel norm approximation with invertible weights
+# balanced truncation & singular perturbation approximation model reduction
+slab09id.oct: slab09id.cc
+	mkoctfile slab09id.cc \
+              AB09ID.f TB01PD.f SB08DD.f TB01ID.f TB01KD.f \
+              AB09IX.f AB09IY.f SB08CD.f MB04ND.f TB01XD.f \
+              MB04OD.f MB01WD.f MB03UD.f AB07MD.f SB01FY.f \
+              AB09DD.f TB01LD.f SB03OU.f TB01UD.f MA02AD.f \
+              MA02BD.f MB03OY.f MB03QX.f MB01PD.f select.f \
+              MB01YD.f MB04NY.f MB01ZD.f SB03OT.f MB04OX.f \
+              MB04OY.f MB03QD.f SB03OY.f MB03QY.f MB01QD.f \
+              SB03OR.f SB03OV.f SB04PX.f
+
+# hankel-norm approximation model reduction
 slab09jd.oct: slab09jd.cc
 	mkoctfile slab09jd.cc \
               AB09JD.f TB01ID.f TB01KD.f AB07ND.f AB09JV.f \

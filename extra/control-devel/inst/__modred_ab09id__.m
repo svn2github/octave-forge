@@ -47,6 +47,7 @@ function [sysr, nr] = __modred_ab09id__ (method, varargin)
   endif
 
   [a, b, c, d, tsam, scaled] = ssdata (sys);
+  [p, m] = size (sys);
   dt = isdt (sys);
 
   ## default arguments
@@ -72,10 +73,10 @@ function [sysr, nr] = __modred_ab09id__ (method, varargin)
     val = varargin{k+1};
     switch (prop)
       case {"left", "v"}
-        [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt);
+        [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt, p, []);
 
       case {"right", "w"}
-        [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt);
+        [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt, [], m);
 
       case {"order", "n", "nr"}
         [nr, ordsel] = __modred_check_order__ (val);

@@ -22,12 +22,22 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function [a, b, c, d, job] = __modred_check_weight__ (sys, dt)
+function [a, b, c, d, job] = __modred_check_weight__ (sys, dt, p = [], m = [])
 
   sys = ss (sys);  # could be non-lti, therefore ssdata would fail
 
   if (dt != isdt (sys))
     error ("modred: ct/dt");  # TODO: error message
+  endif
+
+  [pw, mw] = size (sys);
+  
+  if (! isempty (p) && mw != p)
+    error ("modred: left weight requires %d inputs", p);
+  endif
+  
+  if (! isempty (m) && pw != m)
+    error ("modred: right weight requires %d outputs", m);
   endif
 
   [a, b, c, d] = ssdata (sys);

@@ -31,7 +31,6 @@ function display (q)
     x = __num2str__ (q.x);
     y = __num2str__ (q.y);
     z = __num2str__ (q.z);
-    disp ("");
     disp ([name, " = ", w, x, "i" y, "j", z, "k"]);
     disp ("");
   else                                 # non-scalar quaternion
@@ -60,6 +59,6 @@ function str = __num2str__ (num)
     str = " + ";
   endif
   
-  str = [str, num2str(abs (num), 4), " "];
+  str = [str, num2str(abs (num), 4)];
 
 endfunction

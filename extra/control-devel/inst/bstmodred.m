@@ -103,11 +103,14 @@ function [sysr, nr] = bstmodred (sys, varargin)
   ## TODO: handle job
   
   ## perform model order reduction
-  [ar, br, cr, dr, nr] = slab09hd (a, b, c, d, dt, scaled, job, nr, ordsel, alpha, beta, \
-                                   tol1, tol2);
+  [ar, br, cr, dr, nr, hsv, ns] = slab09hd (a, b, c, d, dt, scaled, job, nr, ordsel, alpha, beta, \
+                                            tol1, tol2);
 
   ## assemble reduced order model
   sysr = ss (ar, br, cr, dr, tsam);
+
+  ## assemble info struct  
+  info = struct ("nr", nr, "ns", ns, "hsv", hsv);
 
 endfunction
 

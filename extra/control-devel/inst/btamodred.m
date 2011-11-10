@@ -45,9 +45,9 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function [sysr, nr] = btamodred (varargin)
+function [sysr, info] = btamodred (varargin)
 
-  [sysr, nr] = __modred_ab09id__ ("bta", varargin{:});
+  [sysr, info] = __modred_ab09id__ ("bta", varargin{:});
 
 endfunction
 

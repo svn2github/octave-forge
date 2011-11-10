@@ -414,8 +414,8 @@ For internal use only.")
         retval(2) = c;
         retval(3) = d;
         retval(4) = octave_value (nr);
-        // retval(0) = hsv;
-        // retval(1) = octave_value (ns);
+        retval(5) = hsv;
+        retval(6) = octave_value (ns);
     }
     
     return retval;

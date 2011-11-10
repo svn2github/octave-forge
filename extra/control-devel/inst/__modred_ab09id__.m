@@ -16,7 +16,7 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} __modred_ab09id__ (@var{method}, @dots{})
+## @deftypefn{Function File} {[@var{sysr}, @var{info}] =} __modred_ab09id__ (@var{method}, @dots{})
 ## Backend for btamodred and spamodred.
 ## @end deftypefn
 
@@ -24,7 +24,7 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function [sysr, nr] = __modred_ab09id__ (method, varargin)
+function [sysr, info] = __modred_ab09id__ (method, varargin)
 
   if (nargin < 2)
     print_usage ();
@@ -110,14 +110,17 @@ function [sysr, nr] = __modred_ab09id__ (method, varargin)
   ## TODO: handle job
   
   ## perform model order reduction
-  [ar, br, cr, dr] = slab09id (a, b, c, d, dico, equil, nr, ordsel, alpha, job, \
-                               av, bv, cv, dv, \
-                               aw, bw, cw, dw, \
-                               weight, jobc, jobo, alphac, alphao, \
-                               tol1, tol2);
+  [ar, br, cr, dr, nr, hsv, ns] = slab09id (a, b, c, d, dico, equil, nr, ordsel, alpha, job, \
+                                            av, bv, cv, dv, \
+                                            aw, bw, cw, dw, \
+                                            weight, jobc, jobo, alphac, alphao, \
+                                            tol1, tol2);
 
   ## assemble reduced order model
   sysr = ss (ar, br, cr, dr, tsam);
+
+  ## assemble info struct  
+  info = struct ("nr", nr, "ns", ns, "hsv", hsv);
 
 endfunction
 

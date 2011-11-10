@@ -45,9 +45,9 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function [sysr, nr] = spamodred (varargin)
+function [sysr, info] = spamodred (varargin)
 
-  [sysr, nr] = __modred_ab09id__ ("spa", varargin{:});
+  [sysr, info] = __modred_ab09id__ ("spa", varargin{:});
 
 endfunction
 

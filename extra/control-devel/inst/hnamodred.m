@@ -16,7 +16,7 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} hnamodred (@var{sys}, @dots{})
+## @deftypefn{Function File} {[@var{sysr}, @var{info}] =} hnamodred (@var{sys}, @dots{})
 ## Model order reduction by frequency weighted optimal Hankel-norm approximation method.
 ##
 ## @strong{Inputs}
@@ -45,7 +45,7 @@
 ## Created: October 2011
 ## Version: 0.1
 
-function [sysr, nr] = hnamodred (sys, varargin)
+function [sysr, info] = hnamodred (sys, varargin)
 
   if (nargin == 0)
     print_usage ();
@@ -87,6 +87,30 @@ function [sysr, nr] = hnamodred (sys, varargin)
       case {"right", "w"}
         [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt, m, m);
 
+      case {"left-inv", "inv-v"}
+        [av, bv, cv, dv] = __modred_check_weight__ (val, dt, p, p);
+        jobv = 2;
+
+      case {"right-inv", "inv-w"}
+        [aw, bw, cw, dw] = __modred_check_weight__ (val, dt, m, m);
+        jobv = 2
+
+      case {"left-conj", "conj-v"}
+        [av, bv, cv, dv] = __modred_check_weight__ (val, dt, p, p);
+        jobv = 3;
+
+      case {"right-conj", "conj-w"}
+        [aw, bw, cw, dw] = __modred_check_weight__ (val, dt, m, m);
+        jobv = 3
+
+      case {"left-conj-inv", "conj-inv-v"}
+        [av, bv, cv, dv] = __modred_check_weight__ (val, dt, p, p);
+        jobv = 4;
+
+      case {"right-conj-inv", "conj-inv-w"}
+        [aw, bw, cw, dw] = __modred_check_weight__ (val, dt, m, m);
+        jobv = 4
+
       case {"order", "n", "nr"}
         [nr, ordsel] = __modred_check_order__ (val);
 
@@ -99,6 +123,18 @@ function [sysr, nr] = hnamodred (sys, varargin)
       case "alpha"
         alpha = __modred_check_alpha__ (val, dt);
 
+      case {"approach", "jobinv"}
+        switch (tolower (val(1)))
+          case {"d", "n"}      # "descriptor"
+            jobinv = 0;
+          case {"s", "i"}      # "standard"
+            jobinv = 1;
+          case "a"             # {"auto", "automatic"}
+            jobinv = 2;
+          otherwise
+            error ("hnamodred: invalid computational approach");
+        endswitch
+
       otherwise
         error ("hnamodred: invalid property name");
     endswitch
@@ -107,13 +143,16 @@ function [sysr, nr] = hnamodred (sys, varargin)
   ## TODO: handle jobv, jobw, (jobinv)
   
   ## perform model order reduction
-  [ar, br, cr, dr, nr] = slab09jd (a, b, c, d, dt, scaled, nr, ordsel, alpha, \
-                                   jobv, av, bv, cv, dv, \
-                                   jobw, aw, bw, cw, dw, \
-                                   jobinv, tol1, tol2);
+  [ar, br, cr, dr, nr, hsv, ns] = slab09jd (a, b, c, d, dt, scaled, nr, ordsel, alpha, \
+                                            jobv, av, bv, cv, dv, \
+                                            jobw, aw, bw, cw, dw, \
+                                            jobinv, tol1, tol2);
 
   ## assemble reduced order model
   sysr = ss (ar, br, cr, dr, tsam);
+
+  ## assemble info struct  
+  info = struct ("nr", nr, "ns", ns, "hsv", hsv);
 
 endfunction
 

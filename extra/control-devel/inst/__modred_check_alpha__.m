@@ -16,16 +16,25 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## check tolerance for model reduction commands
+## check alpha for model reduction commands
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2011
 ## Version: 0.1
 
-function tol = __check_tol__ (tol, str = "")
+function alpha = __modred_check_alpha__ (alpha, dt)
 
-  if (! is_real_scalar (tol))
-    error ("modred: argument %s must be a real scalar", str);
+  if (! is_real_scalar (alpha))
+    error ("modred: argument alpha must be a real scalar");
+  endif
+  if (dt)  # discrete-time
+    if (alpha < 0 || alpha > 1)
+      error ("modred: require 0 <= ALPHA <= 1");
+    endif
+  else     # continuous-time
+    if (alpha > 0)
+      error ("modred: require ALPHA <= 0");
+    endif
   endif
 
 endfunction

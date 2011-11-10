@@ -47,7 +47,7 @@
 
 function [sysr, nr] = btamodred (varargin)
 
-  [sysr, nr] = __ab09id_modred__ ("bta", varargin{:});
+  [sysr, nr] = __modred_ab09id__ ("bta", varargin{:});
 
 endfunction
 

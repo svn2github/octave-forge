@@ -16,24 +16,18 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## check weightings for model reduction commands
+## check order for model reduction commands
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2011
 ## Version: 0.1
 
-function [a, b, c, d, job] = __check_weight__ (sys, dt)
+function [nr, ordsel] = __modred_check_order__ (nr)
 
-  sys = ss (sys);  # could be non-lti, therefore ssdata would fail
-
-  if (dt != isdt (sys))
-    error ("modred: ct/dt");  # TODO: error message
+  if (! issample (nr, 0) || nr != round (nr))
+    error ("modred: order of reduced model must be an integer >= 0");
   endif
-
-  [a, b, c, d] = ssdata (sys);
   
-  job = 1;
-  
-  ## TODO: check system size
+  ordsel = 0;
 
 endfunction

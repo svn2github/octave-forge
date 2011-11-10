@@ -63,7 +63,7 @@ function [sysr, nr] = hnamodred (sys, varargin)
   dt = isdt (sys);
   
   ## default arguments
-  alpha = __default_alpha__ (dt);
+  alpha = __modred_default_alpha__ (dt);
   av = bv = cv = dv = [];
   jobv = 0;
   aw = bw = cw = dw = [];
@@ -80,22 +80,22 @@ function [sysr, nr] = hnamodred (sys, varargin)
     val = varargin{k+1};
     switch (prop)
       case {"left", "v"}
-        [av, bv, cv, dv, jobv] = __check_weight__ (val, dt);
+        [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt);
 
       case {"right", "w"}
-        [aw, bw, cw, dw, jobw] = __check_weight__ (val, dt);
+        [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt);
 
       case {"order", "n", "nr"}
-        [nr, ordsel] = __check_order__ (val);
+        [nr, ordsel] = __modred_check_order__ (val);
 
       case "tol1"
-        tol1 = __check_tol__ (val, "tol1");
+        tol1 = __modred_check_tol__ (val, "tol1");
 
       case "tol2"
-        tol2 = __check_tol__ (val, "tol2");
+        tol2 = __modred_check_tol__ (val, "tol2");
 
       case "alpha"
-        alpha = __check_alpha__ (val, dt);
+        alpha = __modred_check_alpha__ (val, dt);
 
       otherwise
         error ("hnamodred: invalid property name");

@@ -47,7 +47,7 @@
 
 function [sysr, nr] = spamodred (varargin)
 
-  [sysr, nr] = __ab09id_modred__ ("spa", varargin{:});
+  [sysr, nr] = __modred_ab09id__ ("spa", varargin{:});
 
 endfunction
 

@@ -16,7 +16,7 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} __ab09id_modred__ (@var{method}, @dots{})
+## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} __modred_ab09id__ (@var{method}, @dots{})
 ## Backend for btamodred and spamodred.
 ## @end deftypefn
 
@@ -24,7 +24,7 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function [sysr, nr] = __ab09id_modred__ (method, varargin)
+function [sysr, nr] = __modred_ab09id__ (method, varargin)
 
   if (nargin < 2)
     print_usage ();
@@ -50,7 +50,7 @@ function [sysr, nr] = __ab09id_modred__ (method, varargin)
   dt = isdt (sys);
 
   ## default arguments
-  alpha = __default_alpha__ (dt);
+  alpha = __modred_default_alpha__ (dt);
   av = bv = cv = dv = [];
   jobv = 0;
   aw = bw = cw = dw = [];
@@ -72,22 +72,22 @@ function [sysr, nr] = __ab09id_modred__ (method, varargin)
     val = varargin{k+1};
     switch (prop)
       case {"left", "v"}
-        [av, bv, cv, dv, jobv] = __check_weight__ (val, dt);
+        [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt);
 
       case {"right", "w"}
-        [aw, bw, cw, dw, jobw] = __check_weight__ (val, dt);
+        [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt);
 
       case {"order", "n", "nr"}
-        [nr, ordsel] = __check_order__ (val);
+        [nr, ordsel] = __modred_check_order__ (val);
 
       case "tol1"
-        tol1 = __check_tol__ (val, "tol1");
+        tol1 = __modred_check_tol__ (val, "tol1");
 
       case "tol2"
-        tol2 = __check_tol__ (val, "tol2");
+        tol2 = __modred_check_tol__ (val, "tol2");
 
       case "alpha"
-        alpha = __check_alpha__ (val, dt);
+        alpha = __modred_check_alpha__ (val, dt);
 
       ## TODO: alphac, alphao, jobc, jobo
 

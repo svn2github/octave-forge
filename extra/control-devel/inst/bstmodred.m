@@ -63,7 +63,7 @@ function [sysr, nr] = bstmodred (sys, varargin)
   dt = isdt (sys);
   
   ## default arguments
-  alpha = __default_alpha__ (dt);
+  alpha = __modred_default_alpha__ (dt);
   beta = 1; # ?
   tol1 = 0; 
   tol2 = 0;
@@ -78,16 +78,16 @@ function [sysr, nr] = bstmodred (sys, varargin)
     val = varargin{k+1};
     switch (prop)
       case {"order", "n", "nr"}
-        [nr, ordsel] = __check_order__ (val);
+        [nr, ordsel] = __modred_check_order__ (val);
 
       case "tol1"
-        tol1 = __check_tol__ (val, "tol1");
+        tol1 = __modred_check_tol__ (val, "tol1");
 
       case "tol2"
-        tol2 = __check_tol__ (val, "tol2");
+        tol2 = __modred_check_tol__ (val, "tol2");
 
       case "alpha"
-        alpha = __check_alpha__ (val, dt);
+        alpha = __modred_check_alpha__ (val, dt);
         
       case "beta"
         if (! issample (val, 0))

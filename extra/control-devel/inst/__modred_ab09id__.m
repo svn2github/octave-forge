@@ -36,7 +36,7 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
 
   sys = varargin{1};
   varargin = varargin(2:end);
-  npv = nargin - 2;             # number of properties and values
+  npv = nargin - 2;                         # number of properties and values
   
   if (! isa (sys, "lti"))
     error ("%smodred: first argument must be an LTI system", method);
@@ -61,7 +61,7 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
   tol2 = 0.0;
   dico = 0;
   jobc = jobo = 0;
-  job = 1;         # 'F':  balancing-free square-root Balance & Truncate method
+  bf = true;                                # balancing-free
   weight = 1;
   equil = 0;
   ordsel = 1;
@@ -90,6 +90,16 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
       case "alpha"
         alpha = __modred_check_alpha__ (val, dt);
 
+      case "approach"
+        switch (tolower (val))
+          case "sr"
+            bf = false;
+          case "bfsr"
+            bf = true;
+          otherwise
+            error ("modred: ""%s"" is an invalid approach", val);
+        endswitch
+
       ## TODO: alphac, alphao, jobc, jobo
 
       otherwise
@@ -97,17 +107,30 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
     endswitch
   endfor
 
+  ## handle type of frequency weighting
   if (jobv && jobw)
-    weight = 3;    # 'B':  both left and right weightings V and W are used
+    weight = 3;                             # 'B':  both left and right weightings V and W are used
   elseif (jobv)
-    weight = 1;    # 'L':  only left weighting V is used (W = I)
+    weight = 1;                             # 'L':  only left weighting V is used (W = I)
   elseif (jobw)
-    weight = 2;    # 'R':  only right weighting W is used (V = I)
+    weight = 2;                             # 'R':  only right weighting W is used (V = I)
   else
-    weight = 0;    # 'N':  no weightings are used (V = I, W = I)
+    weight = 0;                             # 'N':  no weightings are used (V = I, W = I)
   endif
   
-  ## TODO: handle job
+  ## handle model reduction approach
+  if (method == "bta" && ! bf)              # 'B':  use the square-root Balance & Truncate method
+    job = 0;
+  elseif (method == "bta" && bf)            # 'F':  use the balancing-free square-root Balance & Truncate method
+    job = 1;
+  elseif (method == "spa" && ! bf)          # 'S':  use the square-root Singular Perturbation Approximation method
+    job = 2;
+  elseif ("method == "spa" && bf)           # 'P':  use the balancing-free square-root Singular Perturbation Approximation method
+    job = 3;
+  else
+    error ("modred: invalid job option");   # this should never happen
+  endif
+  
   
   ## perform model order reduction
   [ar, br, cr, dr, nr, hsv, ns] = slab09id (a, b, c, d, dico, equil, nr, ordsel, alpha, job, \

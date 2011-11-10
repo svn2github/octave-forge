@@ -60,6 +60,7 @@ function [sysr, nr] = hnamodred (sys, varargin)
   endif
 
   [a, b, c, d, tsam, scaled] = ssdata (sys);
+  [p, m] = size (sys);
   dt = isdt (sys);
   
   ## default arguments
@@ -80,10 +81,11 @@ function [sysr, nr] = hnamodred (sys, varargin)
     val = varargin{k+1};
     switch (prop)
       case {"left", "v"}
-        [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt);
+        [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt, p, p);
+        ## TODO: correct error messages for non-square weights
 
       case {"right", "w"}
-        [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt);
+        [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt, m, m);
 
       case {"order", "n", "nr"}
         [nr, ordsel] = __modred_check_order__ (val);

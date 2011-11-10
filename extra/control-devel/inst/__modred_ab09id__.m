@@ -125,7 +125,7 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
     job = 1;
   elseif (method == "spa" && ! bf)          # 'S':  use the square-root Singular Perturbation Approximation method
     job = 2;
-  elseif (method == "spa" && bf)           # 'P':  use the balancing-free square-root Singular Perturbation Approximation method
+  elseif (method == "spa" && bf)            # 'P':  use the balancing-free square-root Singular Perturbation Approximation method
     job = 3;
   else
     error ("modred: invalid job option");   # this should never happen

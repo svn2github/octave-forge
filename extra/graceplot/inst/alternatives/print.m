@@ -80,7 +80,7 @@
 ## 2001-03-23  Laurent Mazet <mazet@crm.mot.com>
 ##     * simplified interface: guess the device from the extension
 ##     * font support
-## 2001-03-25  Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+## 2001-03-25  Paul Kienzle <pkienzle@users.sf.net>
 ##     * add unwind_protect
 ##     * use tmpnam to generate temporary name
 ##     * move "set term" before "set output" as required by gnuplot
@@ -99,7 +99,7 @@
 ##     * correct correl into corel
 ##     * delete a irrelevant test
 ##     * check for convert before choosing the ouput device
-## 2001-03-31  Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+## 2001-03-31  Paul Kienzle <pkienzle@users.sf.net>
 ##     * use -Ffontname:size instead of -F"fontname size"
 ##     * add font size support to fig option
 ##     * update documentation

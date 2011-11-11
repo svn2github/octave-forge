@@ -2,7 +2,7 @@
 #
 # Copyright (C) 1998 by Jesse Bennett.
 #
-# 2000-11-23: Paul Kienzle (pkienzle@kienzle.powernet.co.uk)
+# 2000-11-23: Paul Kienzle (pkienzle@users.sf.net)
 #   - added -D_BSD_SOURCE to the compile options so mknod could be found
 # 2001-09-19 Paul Kienzle
 #   - use default $(CC), $(AR) and $(RANLIB)

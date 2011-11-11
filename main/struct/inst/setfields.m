@@ -23,7 +23,7 @@
 
 ## Author:        Etienne Grossmann <etienne@cs.uky.edu>
 ## Last modified: January 2000
-## November 2000: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+## November 2000: Paul Kienzle <pkienzle@users.sf.net>
 ##     return error rather than trapping to keyboard
 
 function s = setfields(s,varargin)

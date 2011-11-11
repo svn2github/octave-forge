@@ -18,7 +18,8 @@
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {[@var{sys}, @var{n}] =} fitfrd (@var{dat}, @var{n})
 ## @deftypefnx{Function File} {[@var{sys}, @var{n}] =} fitfrd (@var{dat}, @var{n}, @var{flag})
-## Fit frequency response data with a stable, minimum-phase state-space system.
+## Fit frequency response data with a state-space system.
+## If requested, the returned system is stable and minimum-phase.
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -27,7 +28,7 @@
 ## @item n
 ## The desired order of the system to be fitted.  @code{n <= length(dat.w)}.
 ## @item flag = 0
-## The system zeros and poles are not constrained.  Default value
+## The system zeros and poles are not constrained.  Default value.
 ## @item flag = 1
 ## The system zeros and poles will have negative real parts in the
 ## continuous-time case, or moduli less than 1 in the discrete-time case.

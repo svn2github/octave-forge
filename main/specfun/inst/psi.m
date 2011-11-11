@@ -13,26 +13,31 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-## PSI compute the psi function,
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} = } psi (@var{x})
+## Compute the psi function, for each value of @var{x}.
 ##
-##
-##
-##             d 
+## @verbatim
+##             d
 ##    psi(x) = __ log(gamma(x))
 ##             dx
+## @end verbatim
 ##
+## @seealso{gamma, gammainc, gammaln}
+## @end deftypefn
 
-function [y] = psi(x)
-	if (nargin != 1)
-			usage ("psi(x)");
-	endif
-		if(imag(x) != zeros(size(x)))
-			error('unable to handle complex arguments');
-		else
-			h = 1e-9;
-			y = x;	
-			y(x == 0) = -Inf;
-			y(x>0) = (lgamma(y(x>0)+h)-lgamma(y(x>0)-h))./(2.*h);
-			y(x<0) = (lgamma((1-y(x<0))+h)-lgamma((1-y(x<0))-h))./(2.*h) + pi.*cot(pi.*(1-y(x<0)));
-		endif
+function [y] = psi (x)
+
+  if (nargin != 1)
+    print_usage;
+  elseif (imag(x) != zeros(size(x)))
+    error("unable to handle complex arguments");
+  endif
+
+  h = 1e-9;
+  y = x;
+  y(x == 0) = -Inf;
+  y(x>0) = (gammaln(y(x>0)+h)-gammaln(y(x>0)-h))./(2.*h);
+  y(x<0) = (gammaln((1-y(x<0))+h)-gammaln((1-y(x<0))-h))./(2.*h) + pi.*cot(pi.*(1-y(x<0)));
+
 endfunction

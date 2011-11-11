@@ -36,7 +36,7 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item sys
-## State-space model of the H-infinity loop-shaping controller.
+## State-space model of order @var{n}, fitted to frequency response data @var{dat}.
 ## @item n
 ## The order of the obtained system.  The value of @var{n}
 ## could only be modified if inputs @code{n > 0} and @code{flag = 1}.
@@ -81,3 +81,15 @@ function [sys, n] = fitfrd (dat, n, flag = 0)
   sys = ss (a, b, c, d, tsam);
 
 endfunction
+
+
+%!shared Yo, Ye
+%! SYS = ss (-1, 1, 1, 0);
+%! T = 0:0.1:50;
+%! Ye = step (SYS, T);
+%! W = logspace (-2, 2, 100);
+%! FR = frd (SYS, W);
+%! N = 1;
+%! SYSID = fitfrd (FR, N, 1);
+%! Yo = step (SYSID, T);
+%!assert (Yo, Ye, 1e-2);

@@ -9,6 +9,7 @@ Quaternions
   @quaternion/columns
   @quaternion/size
   @quaternion/unit
+  @quaternion/norm
 Overloaded and Arithmetic Operators
   @quaternion/plus
   @quaternion/minus

@@ -41,35 +41,50 @@
 ## connect == antecedent connective (1 == and; 2 == or)
 ## @end itemize
 ##
-## To express the hedge "not", prepend a minus sign to the membership function
-## index. ("Not" is the only hedge supported.) To omit an input or output, use
-## 0 for the membership function index. The consequent connective is always
-## "and".
+## To express:
+## @itemize @w
+## @item
+## "not" -- prepend a minus sign to the membership function index
+## @item
+## "somewhat" -- append ".05" to the membership function index
+## @item
+## "very" -- append ".20" to the membership function index
+## @item
+## "extremely" -- append ".30" to the membership function index
+## @item
+## "very very" -- append ".40" to the membership function index
+## @item
+## custom hedge -- append .xy, where x.y is the degree to which the membership
+##   value should be raised, to the membership function index
+## @end itemize
+##
+## To omit an input or output, use 0 for the membership function index.
+## The consequent connective is always "and".
 ##
 ## @noindent
 ## For example, to express:
 ## @example
-## "If input_1 is mf_2 or input_3 is not mf_1,
-##  then output_2 is mf_1."
+## "If (input_1 is mf_2) or (input_3 is not mf_1) or (input_4 is very mf_1),
+##  then (output_1 is mf_2) and (output_2 is mf_1^0.3)."
 ## @end example
 ##
 ## @noindent
 ## with weight 1, the corresponding row of @var{rule_matrix} would be:
 ## @example
-## [2  0  -1  0  1  1  2]
+## [2   0   -1   4.2   2   1.03   1   2]
 ## @end example
 ##
 ## @noindent
-## For a complete example that uses addrule, see heart_demo_1.m.
+## For a complete example that uses addrule, see heart_disease_demo_1.m.
 ##
-## @seealso{heart_demo_1, showrule}
+## @seealso{heart_disease_demo_1, showrule}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy rule
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addrule.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 11 Nov 2011
 
 function fis = addrule (fis, rule_matrix) 
 

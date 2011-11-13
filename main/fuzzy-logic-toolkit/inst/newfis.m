@@ -53,11 +53,12 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      newfis.m
-## Last-Modified: 26 Aug 2011
+## Last-Modified: 31 Oct 2011
 
-function fis = newfis (fis_name, fis_type='mamdani', and_method='min', ...
-                       or_method='max', imp_method='min', agg_method='max', ...
-                       defuzz_method='centroid', fis_version=1.0)
+function fis = newfis (fis_name, fis_type = 'mamdani', and_method = 'min', ...
+                       or_method = 'max', imp_method = 'min', ...
+                       agg_method = 'max', defuzz_method = 'centroid', ...
+                       fis_version = 1.0)
 
   ## If the caller did not supply the between 1 and 8 argument values, or if
   ## any of the argument values were not strings, print an error message and

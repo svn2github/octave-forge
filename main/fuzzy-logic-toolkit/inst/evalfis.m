@@ -90,6 +90,44 @@
 ## @end example
 ##
 ## @noindent
+## Evaluation of hedges and "not":
+##
+## Each element of each FIS rule antecedent and consequent indicates the
+## corresponding membership function, hedge, and whether or not "not" should
+## be applied to the result. The index of the membership function to be used is
+## given by the positive whole number portion of the antecedent/consequent
+## vector entry, the hedge is given by the fractional portion (if any), and
+## "not" is indicated by a minus sign. A "0" as the integer portion in any
+## position in the rule indicates that the corresponding FIS input or output
+## variable is omitted from the rule.
+##
+## For custom hedges and the four built-in hedges "somewhat," "very,"
+## "extremely," and "very very," the membership function value (without the
+## hedge or "not") is raised to the power corresponding to the hedge. All
+## hedges are rounded to 2 digits.
+##
+## For example, if "mu(x)" denotes the matching degree of the input to the
+## corresponding membership function without a hedge or "not," then the final
+## matching degree recorded in @var{rule_input} will be computed by applying
+## the hedge and "not" in two steps. First, the hedge is applied:
+##
+## @example
+## @group
+## (fraction == .05) <=>  somewhat x       <=>  mu(x)^0.5  <=>  sqrt(mu(x))
+## (fraction == .20) <=>  very x           <=>  mu(x)^2    <=>  sqr(mu(x))
+## (fraction == .30) <=>  extremely x      <=>  mu(x)^3    <=>  cube(mu(x))
+## (fraction == .40) <=>  very very x      <=>  mu(x)^4
+## (fraction == .dd) <=>  <custom hedge> x <=>  mu(x)^(dd/10)
+## @end group
+## @end example
+##
+## After applying the appropriate hedge, "not" is calculated by:
+## @example
+## minus sign present           <=> not x         <=> 1 - mu(x)
+## minus sign and hedge present <=> not <hedge> x <=> 1 - mu(x)^(dd/10)
+## @end example
+##
+## Hedges and "not" in the consequent are handled similarly.
 ##
 ## @noindent
 ## The intermediate result @var{rule_output}:
@@ -172,14 +210,16 @@
 ## @noindent
 ## Examples:
 ##
-## Six examples of using evalfis are shown in:
+## Seven examples of using evalfis are shown in:
 ## @itemize @bullet
 ## @item
 ## cubic_approx_demo.m
 ## @item
-## heart_demo_1.m
+## heart_disease_demo_1.m
 ## @item
-## heart_demo_2.m
+## heart_disease_demo_2.m
+## @item
+## investment_portfolio_demo.m
 ## @item
 ## linear_tip_demo.m
 ## @item
@@ -188,17 +228,17 @@
 ## sugeno_tip_demo.m
 ## @end itemize
 ##
-## @seealso{cubic_approx_demo, heart_demo_1, heart_demo_2, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo}
+## @seealso{cubic_approx_demo, heart_disease_demo_1, heart_disease_demo_2, investment_portfolio_demo, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      evalfis.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 12 Nov 2011
 
 function [output, rule_input, rule_output, fuzzy_output] = ...
-           evalfis (user_input, fis, num_points=101)
+           evalfis (user_input, fis, num_points = 101)
 
   ## If evalfis was called with an incorrect number of arguments, or the
   ## arguments do not have the correct type, print an error message and halt.

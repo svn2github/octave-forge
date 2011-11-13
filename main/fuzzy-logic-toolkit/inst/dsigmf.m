@@ -59,8 +59,7 @@
 ## Here, the symbol ~ means "approximately equal".
 ##
 ## @noindent
-## To run the demonstration code below, type @t{demo('dsigmf')} at the
-## Octave prompt.
+## To run the demonstration code, type @t{demo('dsigmf')} at the Octave prompt.
 ##
 ## @seealso{gauss2mf, gaussmf, gbellmf, pimf, psigmf, sigmf, smf, trapmf, trimf, zmf}
 ## @end deftypefn
@@ -69,7 +68,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function sigmoidal
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      dsigmf.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 28 Oct 2011
 
 function y = dsigmf (x, params)
 

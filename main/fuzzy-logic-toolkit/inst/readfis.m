@@ -36,18 +36,18 @@
 ## sugeno_tip_calculator.fis
 ## @end itemize
 ##
-## Six examples that use readfis:
+## Six example scripts that use readfis:
 ## @itemize @bullet
 ## @item
 ## cubic_approx_demo.m
 ## @item
-## heart_demo_2.m
+## heart_disease_demo_2.m
+## @item
+## investment_portfolio_demo.m
 ## @item
 ## linear_tip_demo.m
 ## @item
 ## mamdani_tip_demo.m
-## @item
-## showrule_demo.m
 ## @item
 ## sugeno_tip_demo.m
 ## @end itemize
@@ -59,9 +59,9 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      readfis.m
-## Last-Modified: 28 Aug 2011
+## Last-Modified: 11 Nov 2011
 
-function fis = readfis (filename='')
+function fis = readfis (filename = '')
 
   ## If readfis was not called with 0 or 1 arguments, or if the argument is
   ## not a string, print an error message and halt.
@@ -455,9 +455,9 @@ function [next_rule, line_num] = get_next_rule (fid, line_num, num_inputs, ...
   ##--------------------------------------------------------------------------
   ## Read antecedent.
   ##--------------------------------------------------------------------------
-  format_str = "%d";
-  for j = 2 : num_inputs
-    format_str = [format_str " %d"];
+  format_str = "";
+  for j = 1 : num_inputs
+    format_str = [format_str " %f"];
   endfor
   [antecedent, count] = sscanf (line_vec{1}, format_str, [1, num_inputs]);
   if (length (antecedent) != num_inputs)
@@ -469,7 +469,7 @@ function [next_rule, line_num] = get_next_rule (fid, line_num, num_inputs, ...
   ##--------------------------------------------------------------------------
   format_str = "";
   for j = 1 : num_outputs
-    format_str = [format_str " %d"];
+    format_str = [format_str " %f"];
   endfor
   [consequent, count] = sscanf (line_vec{2}, format_str, [1, num_outputs]);
   if (length (consequent) != num_outputs)

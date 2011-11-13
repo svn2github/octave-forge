@@ -54,8 +54,7 @@
 ## @end itemize
 ##
 ## @noindent
-## To run the demonstration code below, type @t{demo('gaussmf')} at the
-## Octave prompt.
+## To run the demonstration code, type @t{demo('gaussmf')} at the Octave prompt.
 ##
 ## @seealso{dsigmf, gauss2mf, gbellmf, pimf, psigmf, sigmf, smf, trapmf, trimf, zmf}
 ## @end deftypefn
@@ -64,7 +63,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function gaussian
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      gaussmf.m
-## Last-Modified: 20 Jun 2011
+## Last-Modified: 28 Oct 2011
 
 function y = gaussmf (x, params)
 

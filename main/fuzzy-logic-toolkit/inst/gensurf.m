@@ -57,9 +57,11 @@
 ## @item
 ## cubic_approx_demo.m
 ## @item
-## heart_demo_1.m
+## heart_disease_demo_1.m
 ## @item
-## heart_demo_2.m
+## heart_disease_demo_2.m
+## @item
+## investment_portfolio_demo.m
 ## @item
 ## linear_tip_demo.m
 ## @item
@@ -72,17 +74,17 @@
 ## The form of gensurf that suppresses plotting (the final form above) is not yet
 ## implemented.
 ##
-## @seealso{cubic_approx_demo, heart_demo_1, heart_demo_2, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo, plotmf}
+## @seealso{cubic_approx_demo, heart_disease_demo_1, heart_disease_demo_2, investment_portfolio_demo, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo, plotmf}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis plot
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      gensurf.m
-## Last-Modified: 30 Aug 2011
+## Last-Modified: 11 Nov 2011
 
-function [x, y, z] = gensurf (fis, input_axes=[1 2], output_axis=1, ...
-                              grids=[15 15], ref_input=[], num_points=101)
+function [x, y, z] = gensurf (fis, input_axes = [1 2], output_axis = 1, ...
+                              grids = [15 15], ref_input = [], num_points = 101)
 
   ## If gensurf was called with an incorrect number of arguments, or the
   ## arguments do not have the correct type, print an error message and halt.

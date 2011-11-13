@@ -44,8 +44,7 @@
 ## @end example
 ##
 ## @noindent
-## To run the demonstration code below, type @t{demo('trapmf')} at the Octave
-## prompt.
+## To run the demonstration code, type @t{demo('trapmf')} at the Octave prompt.
 ##
 ## @seealso{dsigmf, gauss2mf, gaussmf, gbellmf, pimf, psigmf, sigmf, smf, trimf, zmf}
 ## @end deftypefn
@@ -54,7 +53,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function trapezoidal
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      trapmf.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 28 Oct 2011
 
 function y = trapmf (x, params)
 

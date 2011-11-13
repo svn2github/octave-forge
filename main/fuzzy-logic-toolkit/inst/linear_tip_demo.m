@@ -25,16 +25,16 @@
 ## The demo:
 ## @itemize @minus
 ## @item
-## reads an FIS structure from a file
+## reads the FIS structure from a file
 ## @item
 ## plots the input membership functions
 ## @item
-## plots the output as a function of the inputs
+## plots the FIS output as a function of the inputs
 ## @item
 ## evaluates the Sugeno-type FIS for six inputs
 ## @end itemize
 ##
-## @seealso{cubic_approx_demo, heart_demo_1, heart_demo_2, mamdani_tip_demo, sugeno_tip_demo}
+## @seealso{cubic_approx_demo, heart_disease_demo_1, heart_disease_demo_2, investment_portfolio_demo, mamdani_tip_demo, sugeno_tip_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
@@ -43,7 +43,7 @@
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      linear_tip_demo.m
-## Last-Modified: 27 Aug 2011
+## Last-Modified: 12 Nov 2011
 
 ## Read the FIS structure from a file.
 fis = readfis ('linear_tip_calculator.fis');

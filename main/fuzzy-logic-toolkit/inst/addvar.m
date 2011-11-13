@@ -38,8 +38,7 @@
 ## specify the lower and upper bounds of the variable's domain.
 ##
 ## @noindent
-## To run the demonstration code below, type @t{demo('addvar')} at the
-## Octave prompt.
+## To run the demonstration code, type @t{demo('addvar')} at the Octave prompt.
 ##
 ## @end deftypefn
 
@@ -47,7 +46,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy variable
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      addvar.m
-## Last-Modified: 30 Aug 2011
+## Last-Modified: 28 Oct 2011
 
 function fis = addvar (fis, in_or_out, var_name, var_range)
 

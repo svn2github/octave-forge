@@ -58,8 +58,7 @@
 ## differentiable and is symmetric about the line x = c.
 ##
 ## @noindent
-## To run the demonstration code below, type @t{demo('gbellmf')} at the
-## Octave prompt.
+## To run the demonstration code, type @t{demo('gbellmf')} at the Octave prompt.
 ##
 ## @seealso{dsigmf, gauss2mf, gaussmf, pimf, psigmf, sigmf, smf, trapmf, trimf, zmf}
 ## @end deftypefn
@@ -68,7 +67,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function bell-shaped bell
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      gbellmf.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 28 Oct 2011
 
 function y = gbellmf (x, params)
 

@@ -51,8 +51,7 @@
 ## @end itemize
 ##
 ## @noindent
-## To run the demonstration code below, type @t{demo('sigmf')} at the Octave
-## prompt.
+## To run the demonstration code, type @t{demo('sigmf')} at the Octave prompt.
 ##
 ## @seealso{dsigmf, gauss2mf, gaussmf, gbellmf, pimf, psigmf, smf, trapmf, trimf, zmf}
 ## @end deftypefn
@@ -61,7 +60,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function sigmoidal
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      sigmf.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 28 Oct 2011
 
 function y = sigmf (x, params)
 

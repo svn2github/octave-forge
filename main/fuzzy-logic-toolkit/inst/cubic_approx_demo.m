@@ -20,8 +20,7 @@
 ## @deftypefn {Script File} {} cubic_approx_demo
 ##
 ## Demonstrate the use of the Octave Fuzzy Logic Toolkit to approximate a
-## non-linear function using a Sugeno-type FIS with linear output membership
-## functions.
+## non-linear function using a Sugeno-type FIS with linear output functions.
 ##
 ## The demo:
 ## @itemize @minus
@@ -30,23 +29,26 @@
 ## @item
 ## plots the input membership functions
 ## @item
-## plots the output as a function of the input
+## plots the (linear) output functions
+## @item
+## plots the FIS output as a function of the input
 ## @end itemize
 ##
-## @seealso{heart_demo_1, heart_demo_2, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo}
+## @seealso{heart_disease_demo_1, heart_disease_demo_2, investment_portfolio_demo, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy tests demos
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      cubic_approx_demo.m
-## Last-Modified: 27 Aug 2011
+## Last-Modified: 12 Nov 2011
 
 ## Read the FIS structure from a file.
 fis = readfis ('cubic_approximator.fis');
 
-## Plot the input membership functions.
+## Plot the input membership functions and linear output functions.
 plotmf (fis, 'input', 1);
+plotmf (fis, 'output', 1, -150, 150);
 
-## Plot the output y as a function of the input x.
+## Plot the FIS output y as a function of the input x.
 gensurf (fis);

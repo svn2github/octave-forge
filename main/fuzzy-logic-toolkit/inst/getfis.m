@@ -93,12 +93,12 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      getfis.m
-## Last-Modified: 31 Aug 2011
+## Last-Modified: 31 Oct 2011
 
 ##------------------------------------------------------------------------------
 
-function retval = getfis (fis, arg2='dummy', arg3='dummy', arg4='dummy', ...
-                          arg5='dummy', arg6='dummy')
+function retval = getfis (fis, arg2 = 'dummy', arg3 = 'dummy', ...
+                         arg4 = 'dummy', arg5 = 'dummy', arg6 = 'dummy')
 
   switch (nargin)
     case 1  retval = getfis_one_arg (fis);

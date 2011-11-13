@@ -17,7 +17,7 @@
 ## see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Script File} {} heart_demo_2
+## @deftypefn {Script File} {} heart_disease_demo_2
 ##
 ## Demonstrate the use of the Octave Fuzzy Logic Toolkit to read and evaluate a
 ## Sugeno-type FIS stored in a file.
@@ -25,16 +25,18 @@
 ## The demo:
 ## @itemize @minus
 ## @item
-## reads an FIS structure from a file
+## reads the FIS structure from a file
 ## @item
-## plots the input and output membership functions
+## plots the input membership functions
 ## @item
-## plots the output as a function of the inputs
+## plots the (constant) output functions
+## @item
+## plots the FIS output as a function of the inputs
 ## @item
 ## evaluates the Sugeno-type FIS for four inputs
 ## @end itemize
 ##
-## @seealso{cubic_approx_demo, heart_demo_1, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo}
+## @seealso{cubic_approx_demo, heart_disease_demo_1, investment_portfolio_demo, linear_tip_demo, mamdani_tip_demo, sugeno_tip_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
@@ -42,8 +44,8 @@
 ## Note:          This example is based on an assignment written by
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
-## Filename:      heart_demo_2.m
-## Last-Modified: 28 Aug 2011
+## Filename:      heart_disease_demo_2.m
+## Last-Modified: 12 Nov 2011
 
 ## Read the FIS structure from a file.
 ## (Alternatively, to select heart_disease_risk.fis using the dialog,

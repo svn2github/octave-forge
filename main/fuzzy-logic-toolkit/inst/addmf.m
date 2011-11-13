@@ -51,10 +51,9 @@
 ## them for FIS inputs or Mamdani-type FIS outputs has not yet been tested.
 ##
 ## @noindent
-## To run the demonstration code below, type @t{demo('addmf')} at the
-## Octave prompt. This demo creates two FIS input variables and associated
-## membership functions and then produces two figures showing the term
-## sets for the two FIS inputs.
+## To run the demonstration code, type @t{demo('addmf')} at the Octave prompt.
+## This demo creates two FIS input variables and associated membership functions
+## and then produces two figures showing the term sets for the two FIS inputs.
 ##
 ## @seealso{rmmf, setfis}
 ## @end deftypefn
@@ -65,7 +64,7 @@
 ## Filename:      addmf.m
 ## Note:          The demo code is based on an assignment written by
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
-## Last-Modified: 30 Aug 2011
+## Last-Modified: 28 Oct 2011
 
 function fis = addmf (fis, in_or_out, var_index, mf_name, mf_type, mf_params)
 

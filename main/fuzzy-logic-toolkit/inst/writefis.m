@@ -53,6 +53,10 @@
 ## @end table
 ##
 ## @noindent
+## NOTE:
+## The GUI dialog requires zenity to be installed on the system.
+##
+## @noindent
 ## KNOWN ERROR:
 ## When using the file dialog, if the user clicks "Cancel" instead of
 ## saving the file, an error message is generated.
@@ -64,9 +68,9 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      writefis.m
-## Last-Modified: 27 Aug 2011
+## Last-Modified: 31 Oct 2011
 
-function writefis (fis, filename='filename.fis', dialog='dummy')
+function writefis (fis, filename = 'filename.fis', dialog = 'dummy')
 
   ## If writefis was not called with between 1 and 3 arguments, or if the
   ## argument values were of the wrong type, print an error message and halt.
@@ -242,16 +246,28 @@ function write_rules_section (fid, fis)
 
     ## Print membership functions for the inputs.
     if (num_inputs > 0)
-      fprintf (fid, "%d", next_ant(1));
+      if (is_int (next_ant(1)))
+        fprintf (fid, "%d", next_ant(1));
+      else
+        fprintf (fid, "%.2f", next_ant(1));
+      endif
     endif
     for j = 2 : num_inputs
-      fprintf (fid, " %d", next_ant(j));
+      if (is_int (next_ant(j)))
+        fprintf (fid, " %d", next_ant(j));
+      else
+        fprintf (fid, " %.2f", next_ant(j));
+      endif
     endfor
     fprintf(fid, ", ");
 
     ## Print membership functions for the outputs.
     for j = 1 : num_outputs
-      fprintf (fid, "%d ", next_con(j));
+      if (is_int (next_con(j)))
+        fprintf (fid, "%d ", next_con(j));
+      else
+        fprintf (fid, "%.2f ", next_con(j));
+      endif
     endfor
 
     ## Print the weight in parens.

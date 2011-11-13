@@ -29,7 +29,7 @@ MF11 = 'About-Five':'trimf', [4 5 6]
 
 [Output1]
 Name='Approx-X-Cubed'
-Range=[-130 130]
+Range=[-5 5]
 NumMFs=11
 MF1 = 'Tangent-at-Neg-Five':'linear', [75 250]
 MF2 = 'Tangent-at-Neg-Four':'linear', [48 128]

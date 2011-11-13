@@ -44,8 +44,7 @@
 ## which always returns values in the range [0, 1].
 ##
 ## @noindent
-## To run the demonstration code below, type @t{demo('pimf')} at the Octave
-## prompt.
+## To run the demonstration code, type @t{demo('pimf')} at the Octave prompt.
 ##
 ## @seealso{dsigmf, gauss2mf, gaussmf, gbellmf, psigmf, sigmf, smf, trapmf, trimf, zmf}
 ## @end deftypefn
@@ -54,7 +53,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function pi-shaped pi
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      pimf.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 28 Oct 2011
 
 function y = pimf (x, params)
 

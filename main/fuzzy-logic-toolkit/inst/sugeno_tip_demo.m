@@ -19,22 +19,28 @@
 ## -*- texinfo -*-
 ## @deftypefn {Script File} {} sugeno_tip_demo
 ##
-## Demonstrate the use of the Octave Fuzzy Logic Toolkit to read and evaluate
-## a Sugeno-type FIS with multiple outputs stored in a text file.
+## Demonstrate the use of the Octave Fuzzy Logic Toolkit to read and
+## evaluate a Sugeno-type FIS with multiple outputs stored in a text
+## file. Also demonstrate the use of hedges in the FIS rules and the
+## Einstein product and sum as the T-norm/S-norm pair.
 ##
 ## The demo:
 ## @itemize @minus
 ## @item
-## reads an FIS structure from a file
+## reads the FIS structure from a file
 ## @item
-## plots the input and output membership functions
+## plots the input membership functions
 ## @item
-## plots the three outputs as a function of the inputs
+## plots the (constant) output functions
+## @item
+## plots each of the three FIS outputs as a function of the inputs
+## @item
+## displays the FIS rules in verbose format in the Octave window
 ## @item
 ## evaluates the Sugeno-type FIS for six inputs
 ## @end itemize
 ##
-## @seealso{cubic_approx_demo, heart_demo_1, heart_demo_2, linear_tip_demo, mamdani_tip_demo}
+## @seealso{cubic_approx_demo, heart_disease_demo_1, heart_disease_demo_2, investment_portfolio_demo, linear_tip_demo, mamdani_tip_demo}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
@@ -43,7 +49,7 @@
 ##                Dr. Bruce Segee (University of Maine Dept. of ECE).
 ## Directory:     fuzzy-logic-toolkit/inst
 ## Filename:      sugeno_tip_demo.m
-## Last-Modified: 29 Aug 2011
+## Last-Modified: 10 Nov 2011
 
 ## Read the FIS structure from a file.
 fis = readfis ('sugeno_tip_calculator.fis');
@@ -60,6 +66,9 @@ plotmf (fis, 'output', 3);
 gensurf (fis, [1 2], 1);
 gensurf (fis, [1 2], 2);
 gensurf (fis, [1 2], 3);
+
+## Demonstrate showrule with hedges.
+showrule (fis);
 
 ## Calculate the Tip for 6 sets of input values: 
 puts ("\nFor the following values of (Food Quality, Service):\n\n");

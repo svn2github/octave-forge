@@ -54,8 +54,7 @@
 ## @end itemize
 ##
 ## @noindent
-## To run the demonstration code below, type @t{demo('zmf')} at the Octave
-## prompt.
+## To run the demonstration code, type @t{demo('zmf')} at the Octave prompt.
 ##
 ## @seealso{dsigmf, gauss2mf, gaussmf, gbellmf, pimf, psigmf, sigmf, smf, trapmf, trimf, zmf_demo}
 ## @end deftypefn
@@ -64,7 +63,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function z-shaped
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      zmf.m
-## Last-Modified: 7 Jun 2011
+## Last-Modified: 28 Oct 2011
 
 function y = zmf (x, params)
 

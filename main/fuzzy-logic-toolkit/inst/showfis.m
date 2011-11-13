@@ -20,16 +20,16 @@
 ## @deftypefn {Function File} {} showfis (@var{fis})
 ##
 ## Print all of the property (field) values of the FIS structure and its
-## substructures. For an example, see heart_demo_1.m.
+## substructures.
 ##
-## @seealso{getfis, heart_demo_1, showrule}
+## @seealso{getfis, showrule}
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/
 ## Filename:      showfis.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 11 Nov 2011
 
 function showfis (fis)
 

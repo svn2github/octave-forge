@@ -1,4 +1,4 @@
-## Copyright (C) 2010, 2011   Lukas F. Reichlin
+## Copyright (C) 2010   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -15,25 +15,25 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{qabs} =} abs (@var{q})
-## Modulus of a quaternion.
+## Normalize quaternion to length 1 (unit quaternion).
 ##
 ## @example
 ## q = w + x*i + y*j + z*k
-## abs (q) = sqrt (w.^2 + x.^2 + y.^2 + z.^2)
+## unit (q) = q ./ sqrt (w.^2 + x.^2 + y.^2 + z.^2)
 ## @end example
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: August 2010
-## Version: 0.2
+## Version: 0.1
 
 
-function b = abs (a)
+function q = unit (a)
 
   if (nargin != 1)
     print_usage ();
   endif
 
-  b = sqrt (norm2 (a));
+  q = a ./ abs (a);
 
 endfunction

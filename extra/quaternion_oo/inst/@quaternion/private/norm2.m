@@ -1,4 +1,4 @@
-## Copyright (C) 2010, 2011   Lukas F. Reichlin
+## Copyright (C) 2011   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -14,26 +14,17 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{qabs} =} abs (@var{q})
-## Modulus of a quaternion.
-##
-## @example
-## q = w + x*i + y*j + z*k
-## abs (q) = sqrt (w.^2 + x.^2 + y.^2 + z.^2)
-## @end example
+## @deftypefn {Function File} {@var{norm2} =} norm2 (@var{q})
+## Return squared norm of a quaternion.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
-## Created: August 2010
-## Version: 0.2
+## Created: November 2011
+## Version: 0.1
 
 
-function b = abs (a)
+function ret = norm2 (a)
 
-  if (nargin != 1)
-    print_usage ();
-  endif
-
-  b = sqrt (norm2 (a));
+  ret = a.w.^2 + a.x.^2 + a.y.^2 + a.z.^2;
 
 endfunction

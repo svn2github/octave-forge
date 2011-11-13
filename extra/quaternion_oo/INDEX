@@ -8,6 +8,7 @@ Quaternions
   @quaternion/rows
   @quaternion/columns
   @quaternion/size
+  @quaternion/unit
 Overloaded and Arithmetic Operators
   @quaternion/plus
   @quaternion/minus

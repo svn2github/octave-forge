@@ -1,4 +1,4 @@
-## Copyright (C) 2010   Lukas F. Reichlin
+## Copyright (C) 2010, 2011   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1
+## Version: 0.2
 
 
 function a = inv (a)
@@ -35,7 +35,7 @@ function a = inv (a)
 
   ## TODO: quaternion arrays
 
-  norm2 = a.w*a.w + a.x*a.x + a.y*a.y + a.z*a.z;
+  norm2 = norm2 (a);
 
   a.w = a.w / norm2;
   a.x = -a.x / norm2;

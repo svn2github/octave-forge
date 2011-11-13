@@ -19,23 +19,29 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} is_language (@var{x})
 ##
-## Return 1 if @var{x} is one of the strings 'english', 'francais', and
-## 'deutsch', and return 0 otherwise. The comparison is case-insensitive.
+## Return 1 if @var{x} is one of the strings representing the
+## built-in languages, and return 0 otherwise. The comparison is
+## case-insensitive.
 ##
-## is_language is a private function that localizes the test for built-in output
-## languages.
+## is_language is a private function that localizes the test for 
+## languages handled by showrule.
 ##
 ## @end deftypefn
 
 ## Author:        L. Markowsky
 ## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
 ## Directory:     fuzzy-logic-toolkit/inst/private/
-## Filename:      is_language.m
-## Last-Modified: 20 May 2011
+## Filename:      is_builtin_language.m
+## Last-Modified: 4 Nov 2011
 
-function y = is_language (x)
+function y = is_builtin_language (x)
 
   y = ischar (x) && isvector (x) && ...
-      ismember (tolower (x), {'english', 'francais', 'deutsch'});
+      ismember (tolower (x), {'english', ...
+                              'chinese', 'mandarin', 'pinyin', ...
+                              'russian', 'russkij', 'pycckii', ...
+                              'french', 'francais', ...
+                              'spanish', 'espanol', ...
+                              'german', 'deutsch'});
 
 endfunction

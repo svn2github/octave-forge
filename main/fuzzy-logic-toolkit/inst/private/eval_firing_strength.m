@@ -60,7 +60,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_firing_strength.m
-## Last-Modified: 30 Aug 2011
+## Last-Modified: 3 Nov 2011
 
 function firing_strength = eval_firing_strength (fis, rule_input)
 
@@ -97,9 +97,34 @@ function firing_strength = eval_firing_strength (fis, rule_input)
         firing_strength(i) = rule.weight * min (antecedent_mus);
       case 'max'
         firing_strength(i) = rule.weight * max (antecedent_mus);
+      case 'prod'
+        firing_strength(i) = rule.weight * prod (antecedent_mus);
+      case 'sum'
+        firing_strength(i) = rule.weight * sum (antecedent_mus);
+      case 'algebraic_product'
+        firing_strength(i) = rule.weight * prod (antecedent_mus);
+      case 'algebraic_sum'
+        firing_strength(i) = rule.weight * algebraic_sum (antecedent_mus);
+      case 'bounded_difference'
+        firing_strength(i) = rule.weight * bounded_difference (antecedent_mus);
+      case 'bounded_sum'
+        firing_strength(i) = rule.weight * bounded_sum (antecedent_mus);
+      case 'einstein_product'
+        firing_strength(i) = rule.weight * einstein_product (antecedent_mus);
+      case 'einstein_sum'
+        firing_strength(i) = rule.weight * einstein_sum (antecedent_mus);
+      case 'hamacher_product'
+        firing_strength(i) = rule.weight * hamacher_product (antecedent_mus);
+      case 'hamacher_sum'
+        firing_strength(i) = rule.weight * hamacher_sum (antecedent_mus);
+      case 'drastic_product'
+        firing_strength(i) = rule.weight * drastic_product (antecedent_mus);
+      case 'drastic_sum'
+        firing_strength(i) = rule.weight * drastic_sum (antecedent_mus);
       otherwise
         firing_strength(i) = rule.weight * ...
                              str2func (connect) (antecedent_mus);
     endswitch
   endfor
 endfunction
+

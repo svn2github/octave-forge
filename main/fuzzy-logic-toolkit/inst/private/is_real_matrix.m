@@ -30,6 +30,7 @@
 ## is_real_matrix([1 2; 3 4])   ==> 1
 ## is_real_matrix([1 2 3])      ==> 1
 ## is_real_matrix([i 2 3])      ==> 0
+## is_real_matrix("hello")      ==> 0
 ## @end group
 ## @end example
 ##
@@ -39,7 +40,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      is_real_matrix.m
-## Last-Modified: 20 May 2011
+## Last-Modified: 4 Nov 2011
 
 function y = is_real_matrix (x)
 
@@ -48,7 +49,7 @@ function y = is_real_matrix (x)
   else
     y = 1;
     for i = 1 : numel (x)
-      if (!(isscalar (x(i)) && isreal (x(i))))
+      if (!(isnumeric (x(i)) && isscalar (x(i)) && isreal (x(i))))
         y = 0;
       endif
     endfor

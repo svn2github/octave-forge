@@ -52,6 +52,9 @@
 ## @end group
 ## @end example
 ##
+## Note that for Sugeno FISs, the hedge and not flag are handled by
+## adjusting the height of the singletons for each (rule, output) pair.
+##
 ## Because eval_rules_sugeno is called only by the private function
 ## evalfis_private, it does no error checking of the argument values.
 ##
@@ -61,7 +64,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_rules_sugeno.m
-## Last-Modified: 29 Aug 2011
+## Last-Modified: 1 Nov 2011
 
 function rule_output = eval_rules_sugeno (fis, firing_strength, user_input)
 
@@ -73,7 +76,8 @@ function rule_output = eval_rules_sugeno (fis, firing_strength, user_input)
 
   ## Compute the (location, height) of the singleton output by each
   ## (rule, output) pair:
-  ##   1. The height is given by the firing strength of the rule.
+  ##   1. The height is given by the firing strength of the rule, and by
+  ##      the hedge and the not flag for the (rule, output) pair.
   ##   2. If the consequent membership function is constant, then the
   ##      membership function's parameter gives the location of the singleton.
   ##      If the consequent membership function is linear, then the
@@ -83,14 +87,26 @@ function rule_output = eval_rules_sugeno (fis, firing_strength, user_input)
 
   for i = 1 : num_rules
     rule = fis.rule(i);
-    height = firing_strength(i);
+    rule_firing_strength = firing_strength(i);
     
-    if (height != 0)
+    if (rule_firing_strength != 0)
       for j = 1 : num_outputs
+
+        ## Compute the singleton height for this (rule, output) pair.
+        ## Note that for Sugeno FISs, the hedge and not flag are handled by
+        ## adjusting the height of the singletons for each (rule, output) pair.
+
+        [mf_index hedge not_flag] = get_mf_index_and_hedge (rule.consequent(j));
+        height = rule_firing_strength;
+        if (hedge != 0)
+          height = height ^ (1 / hedge);
+        endif
+        if (not_flag)
+          height = 1 - height;
+        endif
 
         ## Compute the singleton location for this (rule, output) pair.
 
-        mf_index = rule.consequent(j);
         if (mf_index != 0)
           mf = fis.output(j).mf(mf_index);
           switch (mf.type)

@@ -67,7 +67,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      eval_rules_mamdani.m
-## Last-Modified: 30 Aug 2011
+## Last-Modified: 1 Nov 2011
 
 function rule_output = eval_rules_mamdani (fis, firing_strength, num_points)
 
@@ -91,12 +91,19 @@ function rule_output = eval_rules_mamdani (fis, firing_strength, num_points)
 
         ## Compute the fuzzy output for this (rule, output) pair.
 
-        mf_index = rule.consequent(j);
+        [mf_index hedge not_flag] = get_mf_index_and_hedge (rule.consequent(j));
         if (mf_index != 0)
+
+          ## First, get the fuzzy output, adjusting for the hedge and not_flag,
+          ## but not for the rule matching degree.
+
           range = fis.output(j).range;
           mf = fis.output(j).mf(mf_index);
           x = linspace (range(1), range(2), num_points);
-          fuzzy_out = evalmf (x, mf.params, mf.type);
+          fuzzy_out = evalmf (x, mf.params, mf.type, hedge, not_flag);
+
+          ## Adjust the fuzzy output for the rule matching degree.
+
           switch (fis.impMethod)
             case 'min'
               fuzzy_out = min (rule_matching_degree, fuzzy_out);

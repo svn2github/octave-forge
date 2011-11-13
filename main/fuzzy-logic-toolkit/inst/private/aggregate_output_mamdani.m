@@ -76,7 +76,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      aggregate_output_mamdani.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 3 Nov 2011
 
 function fuzzy_output = aggregate_output_mamdani (fis, rule_output)
 
@@ -87,6 +87,8 @@ function fuzzy_output = aggregate_output_mamdani (fis, rule_output)
   ## Initialize output matrix to prevent inefficient resizing.
   fuzzy_output = zeros (num_points, num_outputs);
 
+  ## Compute the ith fuzzy output values, then store the values in the
+  ## ith column of the fuzzy_output matrix.
   for i = 1 : num_outputs
     indiv_fuzzy_out = rule_output(:, (i - 1) * num_rules + 1 : i * num_rules);
     agg_fuzzy_out = (str2func (fis.aggMethod) (indiv_fuzzy_out'))';

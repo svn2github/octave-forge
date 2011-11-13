@@ -33,6 +33,7 @@
 ## is_real(6 + i)     ==> 0
 ## is_real([0])       ==> 1
 ## is_real([0 0])     ==> 0
+## is_real('h')       ==> 0
 ## @end group
 ## @end example
 ##
@@ -42,10 +43,10 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy private parameter-test
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      is_real.m
-## Last-Modified: 26 Aug 2011
+## Last-Modified: 4 Nov 2011
 
 function y = is_real (x)
 
-  y = isscalar (x) && isreal (x);
+  y = isnumeric(x) && isscalar (x) && isreal (x);
 
 endfunction

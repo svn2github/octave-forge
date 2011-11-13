@@ -65,7 +65,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      fuzzify_input.m
-## Last-Modified: 18 Jul 2011
+## Last-Modified: 1 Nov 2011
 
 function rule_input = fuzzify_input (fis, user_input)
 
@@ -78,17 +78,19 @@ function rule_input = fuzzify_input (fis, user_input)
   for i = 1 : num_rules
     antecedent = fis.rule(i).antecedent;
     for j = 1 : num_inputs
+      mu = 0;
       crisp_x = user_input(j);
-      mf_index = antecedent(j);
-      if (mf_index > 0)
+
+      ## Get the value of mu (with adjustment for the hedge and not_flag).
+
+      [mf_index hedge not_flag] = get_mf_index_and_hedge (antecedent(j));
+      if (mf_index != 0)
         mf = fis.input(j).mf(mf_index);
-        mu = evalmf (crisp_x, mf.params, mf.type);
-      elseif (mf_index < 0)
-        mf = fis.input(j).mf(-mf_index);
-        mu = 1 - evalmf (crisp_x, mf.params, mf.type);
-      else
-        mu = 0;
+        mu = evalmf (crisp_x, mf.params, mf.type, hedge, not_flag);
       endif
+
+      ## Store the fuzzified input in rule_input.
+
       rule_input(i, j) = mu;
     endfor
   endfor

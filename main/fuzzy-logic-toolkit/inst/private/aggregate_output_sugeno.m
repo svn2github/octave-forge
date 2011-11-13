@@ -36,7 +36,7 @@
 ## @end itemize
 ##
 ## @var{rule_output} is a 2 x (Q * M) matrix, where Q is the number of rules
-## and M is the number of FIS output variables. Each column of @var{rule_matrix}
+## and M is the number of FIS output variables. Each column of @var{rule_output}
 ## gives the (location, height) pair of the singleton output for one
 ## (rule, FIS output) pair:
 ##
@@ -74,7 +74,7 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy fuzzy-inference-system fis
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      aggregate_output_sugeno.m
-## Last-Modified: 16 Jul 2011
+## Last-Modified: 10 Nov 2011
 
 ##------------------------------------------------------------------------------
 

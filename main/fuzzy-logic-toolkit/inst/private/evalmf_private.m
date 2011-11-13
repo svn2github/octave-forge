@@ -18,7 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} evalmf_private (@var{x}, @var{param}, @var{mf_type})
+## @deftypefn {Function File} {@var{y} =} evalmf_private (@var{x}, @var{param}, @var{mf_type}, @var{hedge})
+## @deftypefn {Function File} {@var{y} =} evalmf_private (@var{x}, @var{param}, @var{mf_type}, @var{hedge}, @var{not_flag})
 ## @deftypefnx {Function File} {@var{y} =} evalmf_private (@var{[x1 x2 ... xn]}, @var{[param1 ... ]}, '<@var{mf_type}>')
+## @deftypefnx {Function File} {@var{y} =} evalmf_private (@var{[x1 x2 ... xn]}, @var{[param1 ... ]}, '<@var{mf_type}>', @var{hedge})
+## @deftypefnx {Function File} {@var{y} =} evalmf_private (@var{[x1 x2 ... xn]}, @var{[param1 ... ]}, '<@var{mf_type}>', @var{hedge}, @var{not_flag})
 ##
 ## This function localizes the membership function evaluation without the
 ## parameter tests. It is called by evalmf and plotmf. For more information,
@@ -30,17 +34,33 @@
 ## Keywords:      fuzzy-logic-toolkit fuzzy membership-function evaluate
 ## Directory:     fuzzy-logic-toolkit/inst/private/
 ## Filename:      evalmf_private.m
-## Last-Modified: 21 Jun 2011
+## Last-Modified: 2 Nov 2011
 
-function y = evalmf_private (x, params, mf_type)
+function y = evalmf_private (x, params, mf_type, hedge = 0, not_flag = false)
 
-  ## Calculate and return the y values of the membership function on the
-  ## domain x.
+  ## Calculate and return the y values of the membership function on
+  ## the domain x. First, get the value of the membership function without
+  ## correcting for the hedge and not_flag. Then, for non-linear functions,
+  ## adjust the function values for non-zero hedge and not_flag.
 
   switch (mf_type)
-    case 'constant'  y = eval_constant (x, params);
-    case 'linear'    y = eval_linear (x);
-    otherwise        y = str2func (mf_type) (x, params);
+    case 'constant'
+      y = eval_constant (x, params);
+      if (not_flag)
+        y = 1 - y;
+      endif
+
+    case 'linear'
+      y = eval_linear (x, params);
+
+    otherwise
+      y = str2func (mf_type) (x, params);
+      if (hedge != 0)
+        y = y .^ hedge;
+      endif
+      if (not_flag)
+        y = 1 - y;
+      endif
   endswitch
 
 endfunction
@@ -60,11 +80,25 @@ endfunction
 
 ##------------------------------------------------------------------------------
 ## Function: eval_linear
-## Purpose:  Return a vector of zeros (since the input is not specified, and the
-##           location of the singleton is unknown). This creates a function to
-##           display on a graph of membership functions.
+## Purpose:  For the parameters [a ... c]), return the y-values corresponding
+##           to the linear function y = a*x + c, where x takes on the the
+##           x-values in the domain. The remaining coefficients in the parameter
+##           list are not used -- this creates a two-dimensional intersection of
+##           the linear output membership function suitable for display together
+##           with other membership functions, but does not fully represent the
+##           output membership function.
 ##------------------------------------------------------------------------------
 
-function y = eval_linear (x)
+function y = eval_linear (x, params)
+  if (length (params) == 1)
+    a = 0;
+    c = params;
+  else
+    a = params(1);
+    c = params(length (params));
+  endif
+
   y = zeros (length (x));
+  y_val = @(x_val) (a * x_val + c);
+  y = arrayfun (y_val, x);
 endfunction

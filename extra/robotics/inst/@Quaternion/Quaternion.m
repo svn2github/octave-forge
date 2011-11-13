@@ -55,14 +55,46 @@ function Q = Quaternions(varargin)
 
   switch nargin
     case 0
-      Q = struct("q_wrap",quaternion(1,0,0,0), "R",eye(3),"T",[eye(3) zeros(3,1); 0 0 0 1],...
-                 "s",1,"v",[0 0 0]);
+      Q = struct ("q_wrap",quaternion(1,0,0,0),...
+                  "R",eye(3),"T",[eye(3) zeros(3,1); 0 0 0 1]);
+    case 1
+      a = varargin{1};
+      if (isa (a, "Quaternion"))        # Quaternion(Q)
+
+        Q = a;
+
+      elseif isreal (a) && size(a,2) == 1       # Quaternion (scalar part)
+
+         Q = struct ("q_wrap",quaternion(a),...
+                     "R",eye(3),"T",[eye(3) zeros(3,1); 0 0 0 1]);
+         #TODO set matrix fields
+         warning("robotics:Devel","Matrix properties not defined");
+
+      elseif isreal (a) && size(a,2) == 3 # Quaternion (vector part)
+
+         Q = struct ("q_wrap",quaternion(a(:,1), a(:,2), a(:,3)),...
+                     "R",eye(3),"T",[eye(3) zeros(3,1); 0 0 0 1]);
+
+        #TODO set matrix fields
+        warning("robotics:Devel","Matrix properties not defined");
+
+      elseif isreal (a) && size(a,2) == 4 # Quaternion (scalar & vector part)
+
+         Q = struct ("q_wrap",quaternion(a(:,1), a(:,2), a(:,3),a(:,4)),...
+                     "R",eye(3),"T",[eye(3) zeros(3,1); 0 0 0 1]);
+
+        #TODO set matrix fields
+        warning("robotics:Devel","Matrix properties not defined");
+
+      else
+        print_usage ();
+      endif
     otherwise
       error("robotics:Devel","multiple constructors not implemented");
   end
 
   Q = class (Q, 'Quaternion');
-  
+
 endfunction
 
 %!test

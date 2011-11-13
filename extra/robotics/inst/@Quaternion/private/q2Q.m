@@ -21,13 +21,7 @@
 
 function Q = q2Q (Q,q)
 
-  Q.s = q(0);
-  Q.v(1) = q(1);
-  Q.v(2) = q(2);
-  Q.v(3) = q(3);
-  
-  ## TODO Rest of the fields
-
+  ## TODO Matrix fields
   warning("robotics:Devel","Conversion from quaternion to Quaterninon not finished.");
 
 endfunction

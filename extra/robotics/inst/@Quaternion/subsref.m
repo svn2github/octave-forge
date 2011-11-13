@@ -21,18 +21,16 @@
 
 function varargout = subsref (obj, idx)
 
-  persistent __method__ method4field typeNotImplemented
+  persistent __method__ __properties__ method4field typeNotImplemented
   if isempty(__method__)
 
     __method__ = struct();
 
-    __method__.inv = @(o,a) q2Q(obj, conj(wrapperfield(obj)));
+    __method__.inv = @(o,a) q2Q(o, conj(wrapperfield(o)));
 
-    __method__.norm = @(o,a) abs(wrapperfield(obj));
+    __method__.norm = @(o,a) abs(wrapperfield(o));
 
-    __method__.unit = @(o,a) error(typeNotImplemented,'unit',o);
-
-    __method__.unitize = @(o,a) error(typeNotImplemented,'unitize',o);
+    __method__.unit = @(o,a) q2Q(o,wrapperfield(o) / abs(wrapperfield(o)));
 
     __method__.plot = @(o,a) error(typeNotImplemented,'plot',o);
 
@@ -42,11 +40,24 @@ function varargout = subsref (obj, idx)
 
     __method__.dot = @(o,a) error(typeNotImplemented,'dot',o);
 
+
+    __properties__ = struct();
+
+    __properties__.s = @(o) wrapperfield(o).w;
+
+    __properties__.v = @(o) [wrapperfield(o).x wrapperfield(o).y wrapperfield(o).z];
+
+    __properties__.R = @(o) error(typeNotImplemented,'R',o);
+
+    __properties__.T = @(o) error(typeNotImplemented,'T',o);
+
     # Error strings
     method4field = "Class %s has no field %s. Use %s() for the method.";
     typeNotImplemented = "%s no implemented for class %s.";
 
   end
+  %% Flags
+  ismet = false;
 
   if ( !strcmp (class (obj), 'Quaternion') )
     error ("Object must be of the Quaternion class but '%s' was used", class (obj) );
@@ -55,13 +66,17 @@ function varargout = subsref (obj, idx)
   endif
 
   method = idx(1).subs;
-  if ~isfield(__method__, method)
-    error('Unknown method %s.',method);
-  else
+  if ~isfield(__method__, method) && ~isfield(__properties__, method)
+    error('Unknown method or property %s.',method);
+  elseif isfield(__method__, method)
     fhandle = __method__.(method);
+    ismet = true;
+  elseif isfield(__properties__, method)
+    varargout{1} = __properties__.(method)(obj);
+    return
   end
 
-  if numel (idx) == 1 % can't access properties, only methods
+  if ismet && numel (idx) == 1 % can't access methods as properties
 
     error (method4field, class (obj), method, method);
 

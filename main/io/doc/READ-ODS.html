@@ -18,7 +18,7 @@
 	Copyright © 2009 - 2011 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
 </p>
 	<p align="center"><font face="Arial, sans-serif"><font size="2">
-	This version September 4, 2011</font></font>
+	This version November 13, 2011</font></font>
 </p>
 <p><font face="Arial, sans-serif"><font size="2">
 	<i>(ODS = Open Document Format spreadsheet data format, used by e.g., OpenOffice.org.)</i></font></font>
@@ -117,10 +117,11 @@ SUPPORT SOFTWARE</b></u></font></font></p><dl>
 	</li>
 </ul>
 	<dl><dt>
-	<p><font face="Arial, sans-serif"><font size="2">These must be referenced with
-	full pathnames in your javaclasspath. Hint: add it in
+	<p><font face="Arial, sans-serif"><font size="2">These class libs must be referenced with
+	full pathnames in your javaclasspath.<br>
+  Except for the UNO (OOo) classes, the jar files had best be put in /&lt;libdir&gt;/java where &lt;libdir&gt; on Linux is usually /usr/lib; on MinGW it is usually /lib. The PKG_ADD command expects the class libs there; if they are elsewhere, add them in
 	./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate
-	javaaddpath statements</font></font>
+	javaaddpath statements or a chk_spreadsheet_support() call.</font></font>
 	</p></dt><dt><p><br>
 </p></dt></dl>
 <p align="center"><font face="Arial, sans-serif"><font size="4"><u><b>USAGE</b></u></font></font></p>
@@ -547,7 +548,7 @@ OF INTERFACES</b></u></font></font></p>
 	<font face="Arial, sans-serif"><font size="2">oct2ods.m (revision
 	7159)</font></font></li></ul>
 	<p><font face="Arial, sans-serif"><font size="2">Enjoy!</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">Philip
-	Nienhuis, September 4, 2011</font></font></p><dl><dd><p align="center">
+	Nienhuis, November 13, 2011</font></font></p><dl><dd><p align="center">
 	<br>
 </p></dd></dl>
 </body></html>

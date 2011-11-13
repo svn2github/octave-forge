@@ -1,3 +1,61 @@
+2011-11-12  Version 0.3.0
+
+  * ChangeLog: Updated file.
+  * DESCRIPTION: Updated file.
+  * inst/*.m: Many trivial changes to comments and spacing in parameter lists.
+  * inst/addrule.m: Edited comment to describe use with hedges.
+  * inst/algebraic_product.m: New file.
+  * inst/algebraic_sum.m: New file.
+  * inst/bounded_difference.m: New file.
+  * inst/bounded_sum.m: New file.
+  * inst/cubic_approx_demo.m: Added plot of output membership functions.
+  * inst/cubic_approximator.fis: Corrected range for FIS output.
+  * inst/drastic_product.m: New file.
+  * inst/drastic_sum.m: New file.
+  * inst/einstein_product.m: New file.
+  * inst/einstein_sum.m: New file.
+  * inst/evalmf.m: Edited to add custom and new built-in hedge support.
+  * inst/hamacher_product.m: New file.
+  * inst/hamacher_sum.m: New file.
+  * inst/heart_disease_demo_1.m : Edited and renamed heart_demo_1.m.
+      Edited script to demonstrate hedges and new T-norm/S-norm pairs.
+  * inst/heart_disease_demo_2.m : Renamed heart_demo_2.m.
+  * inst/investment_portfolio.fis: New file.
+  * inst/investment_portfolio_demo.m: New file.
+  * inst/plotmf.m: Edited to add support for linear output membership functions
+      and to support optional y-limit arguments.
+  * inst/readfis.m: Edited to add custom and built-in hedge support.
+  * inst/showrule.m: Edited to add Chinese, Russian, and Spanish to the
+      built-in languages and to add custom language support. Also edited to add
+      custom hedge support and to implement the hedges "somewhat", "very",
+      "extremely", and "very very".
+  * inst/sugeno_tip_calculator.fis: Edited to demonstrate hedges.
+  * inst/sugeno_tip_demo.m: Edited to demonstrate hedges.
+  * inst/writefis.m: Edited comment to note that zenity is required by
+      the GUI. Code edited to support hedges.
+  * inst/private/*.m: Many trivial changes to spacing in parameter lists.
+  * inst/private/aggregate_output_mamdani.m: Edited to support new built-in
+      T-norm/S-norm pairs when used as the FIS aggregation method.
+  * inst/private/eval_firing_strength.m: Edited to support new built-in
+      T-norm/S-norm pairs when used as the FIS 'and' or 'or' method.
+  * inst/private/evalmf_private.m: Edited to evaluate linear membership
+      functions and to add custom and new built-in hedge support.
+  * inst/private/eval_rules_mamdani.m: Edited to add custom and built-in
+      hedge support.
+  * inst/private/eval_rules_sugeno.m: Edited to add custom and built-in
+      hedge support.
+  * inst/private/fuzzify_input.m: Edited to add custom and built-in hedge
+      support.
+  * inst/private/get_mf_index_and_hedge.m: New file to add hedge support.
+  * inst/private/is_real.m: Improved test.
+  * inst/private/is_real_matrix.m: Improved test.
+  * inst/private/is_builtin_language.m: Renamed is_language.m. Edited test to
+      add 'chinese', 'mandarin', 'pinyin', 'russian', 'pycckii', 'russkij',
+      'spanish', 'french', and 'german' to the strings specifying built-in
+      languages.
+  * Demos tested under: Fedora 15/Octave 3.4.2
+  * Demos tested under: Windows 7/Octave 3.2.4
+
 2011-09-01  Version 0.2.4
 
   * ChangeLog: Updated file.
@@ -42,6 +100,7 @@
   * inst/private/is_real.m: New file.
   * Demos tested under: Fedora 15/Octave 3.4.2
   * Demos tested under: Fedora 15/Octave 3.2.4
+  * Demos tested under: Windows 7/Octave 3.2.4
 
 2011-07-19  Version 0.2.3
 

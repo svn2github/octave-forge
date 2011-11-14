@@ -33,7 +33,8 @@ function a = power (a, b)
     a.x = -a.x ./ norm2;
     a.y = -a.y ./ norm2;
     a.z = -a.z ./ norm2;
-  else
+
+  elseif isvector (a.w)
 
     na = abs (a);
     th = acos (a.w ./ na);
@@ -46,6 +47,23 @@ function a = power (a, b)
     a.x = n(:,1) .* nab .* snt;
     a.y = n(:,2) .* nab .* snt;
     a.z = n(:,3) .* nab .* snt;
+
+  else
+
+    na = abs (a);
+    th = acos (a.w ./ na);
+    nv = sqrt ((a.x).^2 + (a.y).^2 + (a.z).^2);
+    n.x = a.x ./ nv;
+    n.y = a.y ./ nv;
+    n.z = a.z ./ nv;
+
+    nab = na.^b;
+    a.w = nab .* cos (b.*th);
+
+    snt = sin (b.*th);
+    a.x = n.x .* nab .* snt;
+    a.y = n.y .* nab .* snt;
+    a.z = n.z .* nab .* snt;
 
   endif
 

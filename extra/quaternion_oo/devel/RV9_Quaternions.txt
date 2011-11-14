@@ -106,9 +106,9 @@ DONE  Q = Quaternion(V) is a pure quaternion with the specified vector part: 0<V
 
 DONE  Q = Quaternion(TH, V) is a unit quaternion corresponding to rotation of TH about the vector V.
 
- Q = Quaternion(R) is a unit quaternion corresponding to the orthonormal rotation matrix R.
+DONE  Q = Quaternion(R) is a unit quaternion corresponding to the orthonormal rotation matrix R.
 
- Q = Quaternion(T) is a unit quaternion equivalent to the rotational
+DONE  Q = Quaternion(T) is a unit quaternion equivalent to the rotational
 
 = methods =
 DONE [c] inv       return inverse of quaterion

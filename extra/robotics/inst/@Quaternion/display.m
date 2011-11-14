@@ -60,6 +60,7 @@ function s = char(Q)
           end
           return
       end
-      s = [num2str(Q.q_wrap.w), ' < ' ...
-          num2str(Q.q_wrap(1)) ', ' num2str(Q.q_wrap(2)) ', '   num2str(Q.q_wrap(3)) ' >'];
+      n = size(Q.q_wrap,1);
+      s = [num2str(Q.q_wrap.w), repmat(' < ',n,1) ...
+          num2str(Q.q_wrap(1)) repmat(', ',n,1) num2str(Q.q_wrap(2)) repmat(', ',n,1)   num2str(Q.q_wrap(3)) repmat(' >',n,1)];
 endfunction

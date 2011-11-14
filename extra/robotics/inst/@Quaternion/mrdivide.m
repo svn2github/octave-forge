@@ -21,6 +21,14 @@
 
 function a = mrdivide (a, b)
 
-  a.q_wrap = a.q_wrap * inv (b.q_wrap);
+  if strcmp (class (b), "Quaternion")
+
+    a.q_wrap = a.q_wrap * inv (b.q_wrap);
+
+  elseif isreal (b)
+
+    a.q_wrap = a.q_wrap / b);
+
+  end
 
 endfunction

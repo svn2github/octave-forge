@@ -19,8 +19,33 @@
 %% @end deftypefn
 
 
-function a = mtimes (a, b)
+function q = mtimes (a, b)
 
-  a.q_wrap = a.q_wrap * b.q_wrap;
+  q = Quaternion();
+
+  if strcmp (class (a), "Quaternion") && strcmp (class (b), "Quaternion")
+    q.q_wrap = a.q_wrap * b.q_wrap;
+
+  elseif strcmp (class (a), "double") && strcmp (class (b), "Quaternion")
+
+    if length(a) == 3
+      q.q_wrap = b.q_wrap * Quaternion([0 a(:)']).q_wrap * conj (b.q_wrap);
+    elseif length(a) == 1
+      q.q_wrap = b.q_wrap * a;
+    else
+      error('Quaternion:InvalidArgument','Quaternion times vector: must be a 3-vector or scalar');
+    end
+
+  elseif strcmp (class (b), "double") && strcmp (class (a), "Quaternion")
+
+    if length(b) == 3
+      q.q_wrap = a.q_wrap * Quaternion([0 b(:)']).q_wrap * conj (a.q_wrap);
+    elseif length(b) == 1
+      q.q_wrap = a.q_wrap*b;
+    else
+      error('Quaternion:InvalidArgument','Quaternion times vector: must be a 3-vector or scalar');
+    end
+
+  end
 
 endfunction

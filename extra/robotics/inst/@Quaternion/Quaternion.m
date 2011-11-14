@@ -51,13 +51,14 @@
 ## @seealso{quaternion}
 ## @end deftypefn
 
-function Q = Quaternions(varargin)
+function Q = Quaternion(varargin)
 
   switch nargin
     case 0
       Q = struct ("q_wrap",quaternion (1,0,0,0));
     case 1
       a = varargin{1};
+
       if strcmp(class(a), "Quaternion")        # Quaternion(Quaternion)
 
         Q = a;
@@ -66,20 +67,28 @@ function Q = Quaternions(varargin)
 
         Q.q_wrap = a;
 
-      elseif isreal (a) && size(a,2) == 1       # Quaternion (scalar part)
+      elseif !isnumeric (a)
+        error("Quaternion:InvalidArgument","No constructor for argument of class %s",class(a));
+      end
+
+      if isreal (a) && size(a,2) == 1       # Quaternion (scalar part)
 
          q = quaternion (a);
          Q = struct ("q_wrap",q);
 
-      elseif isreal (a) && size(a,2) == 3 # Quaternion (vector part)
+      elseif isreal (a) && all (size (a) == [1 3]) # Quaternion (vector part)
 
-         q = quaternion (a(:,1), a(:,2), a(:,3));
+         q = quaternion (a(1,1), a(1,2), a(1,3));
          Q = struct ("q_wrap",q);
 
-      elseif isreal (a) && size(a,2) == 4 # Quaternion (scalar & vector part)
+      elseif isreal (a) && all (size (a) == [1 4]) # Quaternion (scalar & vector part)
 
-         q = quaternion (a(:,1), a(:,2), a(:,3),a(:,4));
+         q = quaternion (a(1,1), a(1,2), a(1,3),a(1,4));
          Q = struct ("q_wrap",q);
+
+      elseif all(size(a) == [3 3]) || all(size(a) == [4 4]) #   Q = Quaternion(R) or Q = Quaternion(T)
+
+          q = Quaternion( tr2q(a(1:3,1:3)) );
 
       else
         print_usage ();
@@ -89,10 +98,19 @@ function Q = Quaternions(varargin)
 
        vv = varargin{2};
        th = varargin{1};
-       Q = struct ("q_wrap",rot2q(vv,th));
+
+       if !isnumeric (vv) || !isnumeric (th)
+         error("Quaternion:InvalidArgument","No constructor for arguments of class %s,%s",class(vv),class(th));
+       end
+
+       if isscalar(vv) && isvector(th)
+         Q = struct ("q_wrap",rot2q(vv,th));
+       else
+         print_usage ();
+       end
 
     otherwise
-      error("robotics:Devel","several constructors are not implemented yet");
+      error("Quaternion:InvalidArgument","No constructor with more than 2 arguments");
   end
 
   Q = class (Q, 'Quaternion');
@@ -106,13 +124,15 @@ endfunction
 %!  Q = Quaternion((1:5)');
 %!  Q = Quaternion(eye(3));
 %!  Q = Quaternion(eye(4));
+%!  Q = Quaternion(rotv([0 0 1], pi/2))
+%!  Q = Quaternion(pi/2, [0 0 1])
 
 %!test
 %!  q = quaternion(2,1,3,4);
 %!  Q = Quaternion(q);
 %!  assert(Q.q == q);
 
-%!error <undefined> Quaternion(pi/2,[0 0 1]);
+%!error <No constructor> Quaternion('hola');
 
 %!shared Q
 %! Q = Quaternion([1,0,0,1]);

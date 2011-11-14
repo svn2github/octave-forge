@@ -51,7 +51,7 @@ function q = quaternion (a, b, c, d)
     otherwise
       print_usage ();
   endswitch
-  
+
   if (! is_real_matrice (a, b, c, d))
     error ("quaternion: arguments must be real matrices");
   endif
@@ -59,7 +59,7 @@ function q = quaternion (a, b, c, d)
   if (! size_equal (a, b, c, d));
     error ("quaternion: arguments must have identical sizes");
   endif
-  
+
   q = class (struct ("w", a, "x", b, "y", c, "z", d), "quaternion");
 
 endfunction

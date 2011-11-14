@@ -129,7 +129,7 @@ DONE [*] q*q2      return quaternion product
 DONE [*] q/q2      return q*q2.inv
 
 [*] q*v       rotate vector by quaternion, v is 3x1
-[] q^n       return q to power n (integer only)
+DONE [*] q^n       return q to power n (real)
 
 = Properties (read only)=
 DONE [] s         real part

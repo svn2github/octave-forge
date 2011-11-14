@@ -94,6 +94,21 @@ Then we mark inv as follows
 We hope not to run into the c tag.
 
 == Quaternion ==
+DONE  Q = Quaternion() is the identitity quaternion 1<0,0,0> representing a null rotation.
+
+DONE  Q = Quaternion(Q1) is a copy of the quaternion Q1
+
+DONE  Q = Quaternion([S V1 V2 V3]) is a quaternion formed by specifying directly its 4 elements
+
+DONE  Q = Quaternion(S) is a quaternion formed from the scalar S and zero vector part: S<0,0,0>
+
+DONE  Q = Quaternion(V) is a pure quaternion with the specified vector part: 0<V>
+
+DONE  Q = Quaternion(TH, V) is a unit quaternion corresponding to rotation of TH about the vector V.
+
+ Q = Quaternion(R) is a unit quaternion corresponding to the orthonormal rotation matrix R.
+
+ Q = Quaternion(T) is a unit quaternion equivalent to the rotational
 
 = methods =
 
@@ -101,14 +116,13 @@ DONE [c] inv       return inverse of quaterion
 By Monday, November 07 2011 this function is equivalent to the conj function of quaternions_oo
 not to inv of that package.
 
-DONE [e] norm:  We will wrap abs from quaternions_oo
+DONE [e] norm:  Wraps abs from quaternions_oo
 
-[] unit      return unit quaternion
-[] unitize   unitize this quaternion
+DONE [] unit      return unit quaternion
 [] plot      same options as trplot()
 [] interp    interpolation (slerp) between q and q2, 0<=s<=1
 [] scale     interpolation (slerp) between identity and q, 0<=s<=1
-[] dot       derivative of quaternion with angular velocity w
+DONE [x] dot  derivative of quaternion with angular velocity w
 
 = Operators =
 [*] q+q2      return elementwise sum of quaternions
@@ -120,7 +134,7 @@ DONE [e] norm:  We will wrap abs from quaternions_oo
 [] q^n       return q to power n (integer only)
 
 = Properties (read only)=
-[] s         real part
-[] v         vector part
-[] R         3x3 rotation matrix
-[] T         4x4 homogeneous transform matrix
+DONE [] s         real part
+DONE [] v         vector part
+DONE [] R         3x3 rotation matrix
+DONE [] T         4x4 homogeneous transform matrix

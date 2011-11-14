@@ -36,8 +36,8 @@ function a = power (a, b)
   else
 
     na = abs (a);
-    th = acos (a.w / na);
-    n = [a.x a.y a.z] ./ sqrt((a.x).^2 + (a.y).^2 + (a.z).^2);
+    th = acos (a.w ./ na);
+    n = bsxfun (@rdivide, [a.x a.y a.z] ,sqrt ((a.x).^2 + (a.y).^2 + (a.z).^2));
 
     nab = na.^b;
     a.w = nab .* cos (b.*th);

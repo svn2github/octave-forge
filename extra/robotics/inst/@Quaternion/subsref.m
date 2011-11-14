@@ -1,4 +1,3 @@
-## Copyright (C) 2011 Carnë Draug <carandraug+dev@gmail.com>
 ## Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 ## Improvement based on John W. Eaton's idea.
 ##
@@ -26,11 +25,11 @@ function varargout = subsref (obj, idx)
 
     __method__ = struct();
 
-    __method__.inv = @(o,a) q2Q(o, conj(wrapperfield(o)));
+    __method__.inv = @(o,a) Quaternion (conj (wrapperfield(o)));
 
-    __method__.norm = @(o,a) abs(wrapperfield(o));
+    __method__.norm = @(o,a) abs (wrapperfield(o));
 
-    __method__.unit = @(o,a) q2Q(o,wrapperfield(o) / abs(wrapperfield(o)));
+    __method__.unit = @(o,a) Quaternion (unit (wrapperfield(o)));
 
     __method__.plot = @(o,a) error(typeNotImplemented,'plot',o);
 
@@ -38,7 +37,7 @@ function varargout = subsref (obj, idx)
 
     __method__.scale = @(o,a) error(typeNotImplemented,'scale',o);
 
-    __method__.dot = @(o,a) error(typeNotImplemented,'dot',o);
+    __method__.dot = @(o,a) Quaternion (dot (wrapperfield(o),a));
 
 
     __properties__ = struct();
@@ -47,9 +46,14 @@ function varargout = subsref (obj, idx)
 
     __properties__.v = @(o) [wrapperfield(o).x wrapperfield(o).y wrapperfield(o).z];
 
-    __properties__.R = @(o) error(typeNotImplemented,'R',o);
+    __properties__.R = @(o) q2tr (o)(1:3,1:3);
 
-    __properties__.T = @(o) error(typeNotImplemented,'T',o);
+    __properties__.T = @(o) q2tr (o);
+
+    __properties__.q = @(o) wrapperfield(o);
+
+    __properties__.double = @(o) [wrapperfield(o).w ...
+                         wrapperfield(o).x wrapperfield(o).y wrapperfield(o).z];
 
     # Error strings
     method4field = "Class %s has no field %s. Use %s() for the method.";

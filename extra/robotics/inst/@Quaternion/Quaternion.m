@@ -55,42 +55,44 @@ function Q = Quaternions(varargin)
 
   switch nargin
     case 0
-      Q = struct ("q_wrap",quaternion(1,0,0,0),...
-                  "R",eye(3),"T",[eye(3) zeros(3,1); 0 0 0 1]);
+      Q = struct ("q_wrap",quaternion (1,0,0,0));
     case 1
       a = varargin{1};
-      if (isa (a, "Quaternion"))        # Quaternion(Q)
+      if strcmp(class(a), "Quaternion")        # Quaternion(Quaternion)
 
         Q = a;
 
+      elseif strcmp(class(a), "quaternion")        # Quaternion(quaternion)
+
+        Q.q_wrap = a;
+
       elseif isreal (a) && size(a,2) == 1       # Quaternion (scalar part)
 
-         Q = struct ("q_wrap",quaternion(a),...
-                     "R",eye(3),"T",[eye(3) zeros(3,1); 0 0 0 1]);
-         #TODO set matrix fields
-         warning("robotics:Devel","Matrix properties not defined");
+         q = quaternion (a);
+         Q = struct ("q_wrap",q);
 
       elseif isreal (a) && size(a,2) == 3 # Quaternion (vector part)
 
-         Q = struct ("q_wrap",quaternion(a(:,1), a(:,2), a(:,3)),...
-                     "R",eye(3),"T",[eye(3) zeros(3,1); 0 0 0 1]);
-
-        #TODO set matrix fields
-        warning("robotics:Devel","Matrix properties not defined");
+         q = quaternion (a(:,1), a(:,2), a(:,3));
+         Q = struct ("q_wrap",q);
 
       elseif isreal (a) && size(a,2) == 4 # Quaternion (scalar & vector part)
 
-         Q = struct ("q_wrap",quaternion(a(:,1), a(:,2), a(:,3),a(:,4)),...
-                     "R",eye(3),"T",[eye(3) zeros(3,1); 0 0 0 1]);
-
-        #TODO set matrix fields
-        warning("robotics:Devel","Matrix properties not defined");
+         q = quaternion (a(:,1), a(:,2), a(:,3),a(:,4));
+         Q = struct ("q_wrap",q);
 
       else
         print_usage ();
       endif
+
+    case 2 # Quaternion (angle, vector)
+
+       vv = varargin{2};
+       th = varargin{1};
+       Q = struct ("q_wrap",rot2q(vv,th));
+
     otherwise
-      error("robotics:Devel","multiple constructors not implemented");
+      error("robotics:Devel","several constructors are not implemented yet");
   end
 
   Q = class (Q, 'Quaternion');
@@ -99,5 +101,45 @@ endfunction
 
 %!test
 %!  Q = Quaternion();
+%!  Q = Quaternion(Q);
+%!  Q = Quaternion(1);
+%!  Q = Quaternion((1:5)');
+%!  Q = Quaternion(eye(3));
+%!  Q = Quaternion(eye(4));
 
-%!error Quaternion([1 0 0 0])
+%!test
+%!  q = quaternion(2,1,3,4);
+%!  Q = Quaternion(q);
+%!  assert(Q.q == q);
+
+%!error <undefined> Quaternion(pi/2,[0 0 1]);
+
+%!shared Q
+%! Q = Quaternion([1,0,0,1]);
+
+%!test %% Methods
+%! Q.norm();
+%! Q.^5;
+%! Q^5;
+
+%!assert(Quaternion([-0.5,0,0,0.5]) == Q.dot([0 0 1]))
+%!assert(Quaternion([-0.5,0.5,0.5,0.5]) == Q.dot([0 1 1]))
+
+%!assert( Q.inv() == Quaternion([1,0,0,-1]) )
+
+%!test
+%! q = Q.unit() - Quaternion([sqrt(0.5),0,0,sqrt(0.5)]);
+%! assert( q.norm() < sqrt(eps))
+
+%!error(Q.plot());
+%!error(Q.interp());
+%!error(Q.scale());
+
+%!test %% Properties
+%! Q.s;
+%! Q.v;
+%! Q.unit().R;
+%! Q.unit().T;
+
+%!assert(Q.q == quaternion(1,0,0,1));
+%!assert(Q.double, [1,0,0,1]);

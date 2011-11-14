@@ -111,26 +111,24 @@ DONE  Q = Quaternion(TH, V) is a unit quaternion corresponding to rotation of TH
  Q = Quaternion(T) is a unit quaternion equivalent to the rotational
 
 = methods =
-
 DONE [c] inv       return inverse of quaterion
-By Monday, November 07 2011 this function is equivalent to the conj function of quaternions_oo
-not to inv of that package.
-
 DONE [e] norm:  Wraps abs from quaternions_oo
+DONE [x] dot  derivative of quaternion with angular velocity w
+DONE [c] display
+DONE [] q2tr
+DONE [*] unit      return unit quaternion
 
-DONE [] unit      return unit quaternion
 [] plot      same options as trplot()
 [] interp    interpolation (slerp) between q and q2, 0<=s<=1
 [] scale     interpolation (slerp) between identity and q, 0<=s<=1
-DONE [x] dot  derivative of quaternion with angular velocity w
 
 = Operators =
-[*] q+q2      return elementwise sum of quaternions
-[*] q-q2      return elementwise difference of quaternions
-[*] q*q2      return quaternion product
-[*] q*v       rotate vector by quaternion, v is 3x1
-[*] q/q2      return q*q2.inv
+DONE [*] q+q2      return elementwise sum of quaternions
+DONE [*] q-q2      return elementwise difference of quaternions
+DONE [*] q*q2      return quaternion product
+DONE [*] q/q2      return q*q2.inv
 
+[*] q*v       rotate vector by quaternion, v is 3x1
 [] q^n       return q to power n (integer only)
 
 = Properties (read only)=

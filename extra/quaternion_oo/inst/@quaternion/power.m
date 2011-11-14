@@ -23,6 +23,10 @@
 
 function a = power (a, b)
 
+  if !isreal(b)
+    error('quaternion:InvalidArgument','Exponent must be real');
+  end
+
   if (b == -1 && isa (a, "quaternion"))
     norm2 = norm2 (a);
     a.w = a.w ./ norm2;
@@ -30,9 +34,19 @@ function a = power (a, b)
     a.y = -a.y ./ norm2;
     a.z = -a.z ./ norm2;
   else
-    error ("quaternion: power: case not implemeted");
-  endif
 
-  ## TODO: q1 .^ q2
+    na = abs (a);
+    th = acos (a.w / na);
+    n = [a.x a.y a.z] ./ sqrt((a.x).^2 + (a.y).^2 + (a.z).^2);
+
+    nab = na.^b;
+    a.w = nab .* cos (b.*th);
+
+    snt = sin (b.*th);
+    a.x = n(:,1) .* nab .* snt;
+    a.y = n(:,2) .* nab .* snt;
+    a.z = n(:,3) .* nab .* snt;
+
+  endif
 
 endfunction

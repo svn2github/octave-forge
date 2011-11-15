@@ -23,24 +23,24 @@
 function ret = subsref (q, s)
 
   switch (s(1).type)
-    case "."                # q.w
-      switch (tolower (s.subs))
-        case {"w", "s"}     # scalar part
-          ret = q.w;
+    case "."                                # q.w
+      switch (tolower (s(1).subs))
+        case {"w", "s"}                     # scalar part
+          ret = subsref (q.w, s(2:end));
         case {"x", "i"}
-          ret = q.x;
+          ret = subsref (q.x, s(2:end));
         case {"y", "j"}
-          ret = q.y;
+          ret = subsref (q.y, s(2:end));
         case {"z", "k"}
-          ret = q.z;
-        case "v"            # vector part, scalar part set to zero
+          ret = subsref (q.z, s(2:end));
+        case "v"                            # vector part, scalar part set to zero
           q.w = zeros (size (q.w), class (q.w));
-          ret = q;
+          ret = subsref (q, s(2:end));
         otherwise
           error ("quaternion: invalid subscript name");
       endswitch
 
-    case "()"               # q(...)
+    case "()"                               # q(...)
       w = subsref (q.w, s);
       x = subsref (q.x, s);
       y = subsref (q.y, s);

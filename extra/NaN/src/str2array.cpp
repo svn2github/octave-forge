@@ -139,10 +139,10 @@ void mexFunction(
 
 {
 	char *s = NULL;
-	char *cdelim = "\x09,";
-	char *rdelim = "\x0a;";
-	char *ddelim = NULL;
-	char *valid_delim = " ()[]{},;:\"|/\x21\x22\x09\0x0a\0x0b\0x0c\0x0d\x00";	// valid delimiter
+	const char *cdelim = "\x09,";
+	const char *rdelim = "\x0a;";
+	const char *ddelim = NULL;
+	const char *valid_delim = " ()[]{},;:\"|/\x21\x22\x09\0x0a\0x0b\0x0c\0x0d\x00";	// valid delimiter
 	uint8_t *u;	
 	size_t slen = 0,k;
 	size_t maxcol=0, maxrow=0, nr, nc;

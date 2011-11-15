@@ -20,7 +20,6 @@
 ## Created: May 2010
 ## Version: 0.1
 
-
 function [s, varargout] = size (a, b)
 
   switch (nargout)

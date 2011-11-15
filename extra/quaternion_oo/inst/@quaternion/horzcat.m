@@ -14,12 +14,11 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Horizontal concatenation of quaternions. Used by Octave for "[q1, q2]"
+## Horizontal concatenation of quaternions.  Used by Octave for "[q1, q2]".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
 ## Version: 0.1
-
 
 function q = horzcat (varargin)
 

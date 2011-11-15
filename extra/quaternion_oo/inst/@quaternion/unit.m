@@ -27,7 +27,6 @@
 ## Created: November 2011
 ## Version: 0.1
 
-
 function q = unit (a)
 
   if (nargin != 1)

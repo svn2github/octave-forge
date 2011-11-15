@@ -14,12 +14,11 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Transpose of a quaternion. Used by Octave for "q.'"
+## Transpose of a quaternion.  Used by Octave for "q.'".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
 ## Version: 0.1
-
 
 function a = transpose (a)
 

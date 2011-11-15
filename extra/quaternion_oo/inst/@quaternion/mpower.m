@@ -20,7 +20,6 @@
 ## Created: May 2010
 ## Version: 0.1
 
-
 function a = mpower (a, b)
 
   if (b == -1 && isa (a, "quaternion") && isscalar (a.w))

@@ -22,7 +22,6 @@
 ## Created: November 2011
 ## Version: 0.1
 
-
 function ret = norm2 (a)
 
   ret = a.w.^2 + a.x.^2 + a.y.^2 + a.z.^2;

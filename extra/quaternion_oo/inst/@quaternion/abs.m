@@ -27,7 +27,6 @@
 ## Created: August 2010
 ## Version: 0.2
 
-
 function b = abs (a)
 
   if (nargin != 1)

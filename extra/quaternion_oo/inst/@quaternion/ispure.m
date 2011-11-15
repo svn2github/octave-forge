@@ -22,7 +22,6 @@
 ## Created: May 2010
 ## Version: 0.1
 
-
 function flg = ispure (a)
 
   if (nargin != 1)

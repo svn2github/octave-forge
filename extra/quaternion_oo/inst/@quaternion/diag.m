@@ -28,7 +28,6 @@
 ## Created: May 2010
 ## Version: 0.1
 
-
 function a = diag (a, b = 0)
 
   if (nargin == 0 || nargin > 2)

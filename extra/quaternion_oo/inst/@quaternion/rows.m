@@ -20,7 +20,6 @@
 ## Created: May 2010
 ## Version: 0.1
 
-
 function r = rows (a)
 
   if (nargin != 1)

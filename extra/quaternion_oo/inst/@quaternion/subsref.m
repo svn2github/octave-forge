@@ -14,12 +14,11 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Subscripted reference for quaternions. Used by Octave for "q.w"
+## Subscripted reference for quaternions.  Used by Octave for "q.w".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
 ## Version: 0.1.1
-
 
 function ret = subsref (q, s)
 

@@ -22,7 +22,6 @@
 ## Created: May 2010
 ## Version: 0.2
 
-
 function a = inv (a)
 
   if (nargin != 1)

@@ -28,7 +28,6 @@
 ## Created: May 2010
 ## Version: 0.2
 
-
 function q = quaternion (a, b, c, d)
 
   switch (nargin)

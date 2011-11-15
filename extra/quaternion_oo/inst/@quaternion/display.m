@@ -20,7 +20,6 @@
 ## Created: May 2010
 ## Version: 0.2
 
-
 function display (q)
 
   name = inputname(1);

@@ -16,43 +16,33 @@
 
 ## -*- texinfo -*-
 ## power operator of quaternions.  Used by Octave for "q.^x".
+## Exponent x can be scalar or of appropriate size,
+## but it must be real.
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1
+## Version: 0.2
 
 function a = power (a, b)
 
-  if !isreal(b)
-    error('quaternion:InvalidArgument','Exponent must be real');
-  end
+  if (! isreal (b))
+    error("quaternion: power: exponent must be real");
+  endif
+  
+  ## NOTE: if b is real, a is always a quaternion because
+  ##       otherwise @quaternion/power is not called.
+  ##       Therefore no test is necessary for a.
 
-  if (b == -1 && isa (a, "quaternion"))
+  if (b == -1)              # special case for ldivide and rdivide
     norm2 = norm2 (a);
     a.w = a.w ./ norm2;
     a.x = -a.x ./ norm2;
     a.y = -a.y ./ norm2;
     a.z = -a.z ./ norm2;
-
-  elseif isvector (a.w)
-
+  else                      # general case
     na = abs (a);
     th = acos (a.w ./ na);
-    n = bsxfun (@rdivide, [a.x a.y a.z] ,sqrt ((a.x).^2 + (a.y).^2 + (a.z).^2));
-
-    nab = na.^b;
-    a.w = nab .* cos (b.*th);
-
-    snt = sin (b.*th);
-    a.x = n(:,1) .* nab .* snt;
-    a.y = n(:,2) .* nab .* snt;
-    a.z = n(:,3) .* nab .* snt;
-
-  else
-
-    na = abs (a);
-    th = acos (a.w ./ na);
-    nv = sqrt ((a.x).^2 + (a.y).^2 + (a.z).^2);
+    nv = sqrt (a.x.^2 + a.y.^2 + a.z.^2);
     n.x = a.x ./ nv;
     n.y = a.y ./ nv;
     n.z = a.z ./ nv;
@@ -64,7 +54,6 @@ function a = power (a, b)
     a.x = n.x .* nab .* snt;
     a.y = n.y .* nab .* snt;
     a.z = n.z .* nab .* snt;
-
   endif
 
 endfunction

@@ -18,7 +18,7 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1.1
+## Version: 0.2
 
 function ret = subsref (q, s)
 
@@ -27,51 +27,26 @@ function ret = subsref (q, s)
       switch (tolower (s.subs))
         case {"w", "s"}     # scalar part
           ret = q.w;
-
         case {"x", "i"}
           ret = q.x;
-
         case {"y", "j"}
           ret = q.y;
-
         case {"z", "k"}
           ret = q.z;
-
         case "v"            # vector part, scalar part set to zero
           q.w = zeros (size (q.w), class (q.w));
           ret = q;
-
         otherwise
           error ("quaternion: invalid subscript name");
       endswitch
 
     case "()"               # q(...)
-      idx = s(1).subs;
-
-      ## TODO: allow stuff like q(:, 1:3) to extract
-      ##       submatrices q.x(:, 1:3)
-
-      if (numel (idx) != 1)
-        error ("quaternion: only one index allowed");
-      endif
-
-      switch (idx{1})       # q(4)
-        case {0, 4}
-          ret = q.w;
-
-        case 1
-          ret = q.x;
-
-        case 2
-          ret = q.y;
-
-        case 3
-          ret = q.z;
-        
-        otherwise
-          error ("quaternion: invalid index");
-      endswitch
-
+      w = subsref (q.w, s);
+      x = subsref (q.x, s);
+      y = subsref (q.y, s);
+      z = subsref (q.z, s);
+      ret = quaternion (w, x, y, z);
+      
     otherwise
       error ("quaternion: invalid subscript type");
   endswitch

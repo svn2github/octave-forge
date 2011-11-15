@@ -22,20 +22,31 @@
 
 function ret = subsref (q, s)
 
+  ## FIXME: With the code commented out, stuff like q.w(1:2, :) works,
+  ##        but now simple things like q.w crash octave:
+  ##        panic: impossible state reached in file `ov-base-mat.cc' at line 60
+
+  ## TODO: File bug report
+
   switch (s(1).type)
     case "."                                # q.w
       switch (tolower (s(1).subs))
         case {"w", "s"}                     # scalar part
-          ret = subsref (q.w, s(2:end));
+          ## ret = subsref (q.w, s(2:end));
+          ret = q.w;
         case {"x", "i"}
-          ret = subsref (q.x, s(2:end));
+          ## ret = subsref (q.x, s(2:end));
+          ret = q.x;
         case {"y", "j"}
-          ret = subsref (q.y, s(2:end));
+          ## ret = subsref (q.y, s(2:end));
+          ret = q.y;
         case {"z", "k"}
-          ret = subsref (q.z, s(2:end));
+          ## ret = subsref (q.z, s(2:end));
+          ret = q.z;
         case "v"                            # vector part, scalar part set to zero
           q.w = zeros (size (q.w), class (q.w));
-          ret = subsref (q, s(2:end));
+          ## ret = subsref (q, s(2:end));
+          ret = q;
         otherwise
           error ("quaternion: invalid subscript name");
       endswitch

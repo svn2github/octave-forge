@@ -26,7 +26,7 @@
 function a = power (a, b)
 
   if (! isreal (b))
-    error("quaternion: power: exponent must be real");
+    error ("quaternion: power: exponent must be real");
   endif
   
   ## NOTE: if b is real, a is always a quaternion because

@@ -14,7 +14,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Element-wise left division for quaternions.  Used by Octave for "q1 .\ q2".
+## Element-wise left division for quaternions.  Used by Octave for "q1 .\\ q2".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010

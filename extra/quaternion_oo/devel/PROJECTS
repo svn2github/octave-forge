@@ -24,7 +24,7 @@ Features:
 
   * Add subsasgn.
   
-  * Implement (integer) power and mpower.
+  * Implement mpower.
   
   * Inverses of quaternion arrays.
   

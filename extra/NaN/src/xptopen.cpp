@@ -176,18 +176,18 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 {
 	const char L1[] = "HEADER RECORD*******LIBRARY HEADER RECORD!!!!!!!000000000000000000000000000000  ";
 	const char L2[] = "SAS     SAS     SASLIB 6.06     bsd4.2                          13APR89:10:20:06";
-	const char L3[] = "";
+	//const char L3[] = "";
 	const char L4[] = "HEADER RECORD*******MEMBER  HEADER RECORD!!!!!!!000000000000000001600000000140  ";
 	const char L5[] = "HEADER RECORD*******DSCRPTR HEADER RECORD!!!!!!!000000000000000000000000000000  ";
 	const char L6[] = "SAS     ABC     SASLIB 6.06     bsd4.2                          13APR89:10:20:06";
-	const char L7[] = "";
+	//const char L7[] = "";
 	const char L8[] = "HEADER RECORD*******NAMESTR HEADER RECORD!!!!!!!000000000200000000000000000000  ";
 	const char LO[] = "HEADER RECORD*******OBS     HEADER RECORD!!!!!!!000000000000000000000000000000  ";
 
 	const  char DATEFORMAT[] = "%d%b%y:%H:%M:%S";
 	char   *fn = NULL;
 	char   Mode[3] = "r";
-	size_t count = 0, HeadLen0=80*8, HeadLen2=0, sz2 = 0, M=0;
+	size_t count = 0, HeadLen0=80*8, HeadLen2=0, sz2 = 0;
 	uint32_t NS = 0;
 	char   H0[HeadLen0];
 	char   *H2 = NULL;
@@ -250,6 +250,8 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		/*
 			SPSS file format
 		*/
+                        uint32_t M=0; 
+
 		        mexWarnMsgTxt("XPTOPEN: support of for SPSS file format is very experimental (do not use it for production use)\n");
 
 			TYPE = SPSS;
@@ -371,6 +373,8 @@ if present.
 			http://www.stata.com/help.cgi?dta_113
 			Stata files written by R start with 0x6e
 		*/
+                        uint32_t M=0; 
+
 			TYPE = STATA;
 			// Header 119 bytes
 	    		LittleEndian = H0[1]==2;
@@ -391,7 +395,7 @@ if present.
 			HeadLen2 = fread(H1,1,HeadLen2,fid);
 
 			// expansion fields
-			char typ; int32_t len,c;
+			char typ; int32_t len;
 			char flagSWAP = (((__BYTE_ORDER == __BIG_ENDIAN) && LittleEndian) || ((__BYTE_ORDER == __LITTLE_ENDIAN) && !LittleEndian));
 			do {
 				fread(&typ,1,1,fid);
@@ -421,7 +425,7 @@ if present.
 				case 0xfd: sz = 4; break;
 				case 0xfe: sz = 4; break;
 				case 0xff: sz = 8; break;
-				otherwise: sz = typlist[k];
+				default: sz = typlist[k];
 				}
 				bi[k+1] = bi[k]+sz;
 			}
@@ -507,6 +511,8 @@ if present.
 		/*
 			 ARFF
 		*/
+                        uint32_t M=0; 
+
 			TYPE = ARFF;
 			rewind(fid);
 
@@ -713,6 +719,7 @@ if present.
 		/*
 			 SAS Transport file format (XPORT)
 		*/
+                        size_t M=0; 
 			TYPE = SASXPT;
 
 			/* TODO: sanity checks */
@@ -756,8 +763,8 @@ if present.
 				size_t maxlen = b_endian_u16(*(int16_t*)(H2+k*sz2+4));
 
 				ListOfVarNames[k] = VarNames+pos;
-				int n = k*sz2+8;
-				int flagDate = (!memcmp(H2+n+48,"DATE    ",8) || !memcmp(H2+n+48,"MONNAME ",8));
+				unsigned int n = k*sz2+8;
+				// int flagDate = (!memcmp(H2+n+48,"DATE    ",8) || !memcmp(H2+n+48,"MONNAME ",8)); // not used
 				do {
 					VarNames[pos++] = H2[n];
 				} while (isalnum(H2[++n]) && (n < k*sz2+16));
@@ -976,7 +983,7 @@ double xpt2d(uint64_t x) {
 	mexPrintf("%x %x %016Lx\n",s,e,x);
 #endif
 
-	double y = ldexp(x, e*4-56);
+	double y = ldexp((double)x, e*4-56);
 	if (s) return(-y);
 	else   return( y);
 
@@ -1018,7 +1025,7 @@ uint64_t d2xpt(double x) {
 	*(((char*)&m) + 6) &= 0x0f; //
 	if (e) *(((char*)&m) + 6) |= 0x10; // reconstruct implicit leading '1' for normalized numbers
 	m <<= (3-(-e & 3));
-	*(((char*)&m) + 7)  = s ? 0x80 : 0;
+	*(((uint8_t*)&m) + 7)  = s ? 0x80 : 0;
 	e = (e + (-e & 3)) / 4 + 64;
 
 	if (e >= 128) return(0x5f); // overflow

@@ -34,5 +34,9 @@ function q = log (q)
   q.x = (q.x ./ normv) .* acossq;
   q.y = (q.y ./ normv) .* acossq;
   q.z = (q.z ./ normv) .* acossq;
+  
+  ## FIXME: q = quaternion (2, 3, 4, 5)
+  ##        p = log (exp (q))
+  ##        p.v is wrong, probably somehow related to acos
 
 endfunction

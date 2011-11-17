@@ -23,6 +23,8 @@ Overloaded and Arithmetic Operators
   @quaternion/mldivide
   @quaternion/power
   @quaternion/mpower
+  @quaternion/exp
+  @quaternion/log
   @quaternion/transpose
   @quaternion/ctranspose
   @quaternion/horzcat

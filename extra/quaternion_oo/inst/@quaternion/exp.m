@@ -26,7 +26,7 @@ function q = exp (q)
     print_usage ();
   endif
 
-  normv = sqrt (q.x.^2 + q.y.^2 + q.z.^2);
+  normv = normv (q);
   exps = exp (q.w);
   sinv = sin (normv);
 

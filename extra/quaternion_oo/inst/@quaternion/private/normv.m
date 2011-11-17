@@ -14,29 +14,16 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Logarithmus naturalis of a quaternion.  Used by octave for "log (q)".
+## @deftypefn {Function File} {@var{normv} =} normv (@var{q})
+## Return norm of the vector part.
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2011
 ## Version: 0.1
 
-function q = log (q)
+function ret = normv (a)
 
-  if (nargin != 1)
-    print_usage ();
-  endif
-
-  normq = abs (q);
-  normv = normv (q);
-  acossq = acos (q.w ./ normq);
-
-  q.w = log (normq);    
-  q.x = (q.x ./ normv) .* acossq;
-  q.y = (q.y ./ normv) .* acossq;
-  q.z = (q.z ./ normv) .* acossq;
-  
-  ## FIXME: q = quaternion (2, 3, 4, 5)
-  ##        p = log (exp (q))
-  ##        p.v is wrong, probably somehow related to acos
+  ret = sqrt (a.x.^2 + a.y.^2 + a.z.^2);
 
 endfunction

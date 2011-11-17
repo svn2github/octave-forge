@@ -29,14 +29,14 @@ function a = power (a, b)
   elseif (! isreal (b))
     error ("quaternion: power: invalid exponent");    
   elseif (b == -1)                    # special case for ldivide and rdivide
-    norm2 = norm2 (a);
-    a.w = a.w ./ norm2;
-    a.x = -a.x ./ norm2;
+    norm2 = norm2 (a);                # a is quaternion because b is not,
+    a.w = a.w ./ norm2;               # otherwise octave wouldn't call
+    a.x = -a.x ./ norm2;              # quaternion's power operator.
     a.y = -a.y ./ norm2;
     a.z = -a.z ./ norm2;
   else                                # exponent is real
     na = abs (a);
-    nv = sqrt (a.x.^2 + a.y.^2 + a.z.^2);
+    nv = normv (a);
     th = acos (a.w ./ na);
     nab = na.^b;
     snt = sin (b.*th);

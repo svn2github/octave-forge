@@ -14,7 +14,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## matrix power operator of quaternions.  Used by Octave for "q^x".
+## Matrix power operator of quaternions.  Used by Octave for "q^x".
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010

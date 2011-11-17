@@ -1,4 +1,4 @@
-## Copyright (C) 2010   Lukas F. Reichlin
+## Copyright (C) 2010, 2011   Lukas F. Reichlin
 ## Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 ##
 ## This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## power operator of quaternions.  Used by Octave for "q.^x".
+## Power operator of quaternions.  Used by Octave for "q.^x".
 ## Exponent x can be scalar or of appropriate size,
 ## but it must be real.
 

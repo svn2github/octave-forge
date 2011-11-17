@@ -22,6 +22,9 @@
 ## @example
 ## q = w + x*i + y*j + z*k
 ## @end example
+##
+## Arguments @var{w}, @var{x}, @var{y} and @var{z} can be scalars or
+## matrices, but they must be real and of equal size.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

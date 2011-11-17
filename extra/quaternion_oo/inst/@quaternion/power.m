@@ -16,44 +16,34 @@
 
 ## -*- texinfo -*-
 ## Power operator of quaternions.  Used by Octave for "q.^x".
-## Exponent x can be scalar or of appropriate size,
-## but it must be real.
+## Exponent x can be scalar or of appropriate size.
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.2
+## Version: 0.3
 
 function a = power (a, b)
-
-  if (! isreal (b))
-    error ("quaternion: power: exponent must be real");
-  endif
   
-  ## NOTE: if b is real, a is always a quaternion because
-  ##       otherwise @quaternion/power is not called.
-  ##       Therefore no test is necessary for a.
-
-  if (b == -1)              # special case for ldivide and rdivide
+  if (isa (b, "quaternion"))          # exponent is a quaternion
+    a = exp (log (a) .* b);           # a could be real, but log doesn't care
+  elseif (! isreal (b))
+    error ("quaternion: power: invalid exponent");    
+  elseif (b == -1)                    # special case for ldivide and rdivide
     norm2 = norm2 (a);
     a.w = a.w ./ norm2;
     a.x = -a.x ./ norm2;
     a.y = -a.y ./ norm2;
     a.z = -a.z ./ norm2;
-  else                      # general case
+  else                                # exponent is real
     na = abs (a);
-    th = acos (a.w ./ na);
     nv = sqrt (a.x.^2 + a.y.^2 + a.z.^2);
-    n.x = a.x ./ nv;
-    n.y = a.y ./ nv;
-    n.z = a.z ./ nv;
-
+    th = acos (a.w ./ na);
     nab = na.^b;
-    a.w = nab .* cos (b.*th);
-
     snt = sin (b.*th);
-    a.x = n.x .* nab .* snt;
-    a.y = n.y .* nab .* snt;
-    a.z = n.z .* nab .* snt;
+    a.w = nab .* cos (b.*th);
+    a.x = (a.x ./ nv) .* nab .* snt;
+    a.y = (a.y ./ nv) .* nab .* snt;
+    a.z = (a.z ./ nv) .* nab .* snt;
   endif
 
 endfunction

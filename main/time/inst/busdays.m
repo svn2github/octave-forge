@@ -16,8 +16,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{bdates} =} busdays (@var{sdate}, @var{edate})
-## @deftypefn {Function File} {@var{bdates} =} busdays (@var{sdate}, @var{edate}, @var{bdmode})
-## @deftypefn {Function File} {@var{bdates} =} busdays (@var{sdate}, @var{edate}, @var{bdmode}, @var{holvec})
+## @deftypefnx {Function File} {@var{bdates} =} busdays (@var{sdate}, @var{edate}, @var{bdmode})
+## @deftypefnx {Function File} {@var{bdates} =} busdays (@var{sdate}, @var{edate}, @var{bdmode}, @var{holvec})
 ## Generate a list of business dates at the end of the periods defined
 ## between (including) @var{sdate} and @var{edate}.
 ##

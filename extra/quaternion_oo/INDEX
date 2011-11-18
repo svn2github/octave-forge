@@ -10,9 +10,12 @@ Quaternions
   @quaternion/size
   @quaternion/unit
   @quaternion/norm
+  @quaternion/exp
+  @quaternion/log
 Overloaded and Arithmetic Operators
   @quaternion/plus
   @quaternion/minus
+  @quaternion/uplus
   @quaternion/uminus
   @quaternion/times
   @quaternion/mtimes
@@ -23,12 +26,9 @@ Overloaded and Arithmetic Operators
   @quaternion/mldivide
   @quaternion/power
   @quaternion/mpower
-  @quaternion/exp
-  @quaternion/log
   @quaternion/transpose
   @quaternion/ctranspose
   @quaternion/horzcat
   @quaternion/vertcat
   @quaternion/subsref
   @quaternion/eq
-

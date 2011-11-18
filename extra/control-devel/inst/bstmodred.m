@@ -16,8 +16,12 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} hnamodred (@var{sys}, @dots{})
-## Model order reduction by frequency weighted optimal Hankel-norm approximation method.
+## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} bstmodred (@var{sys}, @dots{})
+## Model order reduction by Balanced Stochastic Truncation method.
+## Uses the stochastic balancing approach in conjunction with the square-root or
+## the balancing-free square-root Balance & Truncate (B&T)
+## or Singular Perturbation Approximation (SPA) model reduction
+## methods for the ALPHA-stable part of the system.
 ##
 ## @strong{Inputs}
 ## @table @var

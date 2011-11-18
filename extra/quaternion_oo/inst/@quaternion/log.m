@@ -38,5 +38,6 @@ function q = log (q)
   ## FIXME: q = quaternion (2, 3, 4, 5)
   ##        p = log (exp (q))
   ##        p.v is wrong, probably somehow related to acos
+  ## NOTE:  p = exp (log (q)) is calculated correctly
 
 endfunction

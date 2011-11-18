@@ -28,17 +28,15 @@ function a = inv (a)
     print_usage ();
   endif
 
-  if (! isscalar (a.w))
+  if (isscalar (a.w))
+    norm2 = norm2 (a);
+    a.w = a.w / norm2;
+    a.x = -a.x / norm2;
+    a.y = -a.y / norm2;
+    a.z = -a.z / norm2;
+  else
+    ## TODO: quaternion arrays
     error ("quaternion: inv: implemented for scalar quaternions only");
   endif
-
-  ## TODO: quaternion arrays
-
-  norm2 = norm2 (a);
-
-  a.w = a.w / norm2;
-  a.x = -a.x / norm2;
-  a.y = -a.y / norm2;
-  a.z = -a.z / norm2;
 
 endfunction

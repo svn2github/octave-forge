@@ -16,7 +16,7 @@
 @author Juan Pablo Carbajal
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2009-2011, Lukas F. Reichlin @email{lukas.reichlin@@gmail.com}
+Copyright @copyright{} 2010-2011, Lukas F. Reichlin @email{lukas.reichlin@@gmail.com}
 
 This manual is generated automatically from the texinfo help strings
 of the package's functions.
@@ -34,45 +34,32 @@ Permission is granted to copy and distribute translations of this manual
 into another language, under the same conditions as for modified versions.
 @page
 @chapheading Preface
-The @acronym{GNU} Octave control package from version 2 onwards was
-developed by Lukas F. Reichlin and is based on the proven open-source
-library @acronym{SLICOT}. This new package is intended as a replacement
-for control-1.0.11 by A. Scottedward Hodel and his students.
-Its main features are:
+The @acronym{GNU} Octave quaternion package from version 2 onwards
+was developed by Lukas F. Reichlin with important contributions by
+Juan Pablo Carbajal. This new package is intended as a replacement
+for quaternion-1.0.0 by A. Scottedward Hodel. It is loosely based
+on ideas from the Quaternion Toolbox for Matlab by Steve Sangwine
+and Nicolas Le Bihan with a special focus on code simplicity and
+vectorization. Its main features are:
 @itemize
-@item Reliable solvers for Lyapunov, Sylvester and algebraic Riccati equations.
-@item Pole placement techniques as well as @tex $ H_2 $ @end tex
-and @tex $ H_{\infty} $ @end tex
-synthesis methods.
+@item Arrays of quaternions.
 @item Overloaded operators due to the use of the object-oriented features
 introduced with Octave 3.2.
-@item Support for descriptor state-space models and non-proper transfer functions.
-@item Improved @acronym{MATLAB} compatibility.
+@item Fully vectorized code.
 @end itemize
-
-@sp 5
-@subheading Acknowledgments
-The author is indebted to several people and institutions who helped
-him to achieve his goals. I am particularly grateful to Luca Favatella
-who introduced me to Octave development as well as discussed and revised
-my early draft code with great patience. My continued support from the
-@acronym{FHNW} University of Applied Sciences of Northwestern Switzerland,
-where I could work on the control package as a semester project, has also
-been important. Furthermore, I thank the @acronym{SLICOT} authors
-Peter Benner, Vasile Sima and Andras Varga for their advice.
 
 
 @sp 5
 @subheading Using the help function
-Some functions of the control package are listed with a leading @code{@@lti/}.
+Some functions of the quaternion package are listed with a leading @code{@@quaternion/}.
 This is only needed to view the help text of the function, e.g. @w{@code{help norm}}
-shows the built-in function while @w{@code{help @@lti/norm}} shows the overloaded
-function for @acronym{LTI} systems. Note that there are @acronym{LTI} functions
-like @code{pole} that have no built-in equivalent.
+shows the built-in function while @w{@code{help @@quaternion/norm}} shows the overloaded
+function for quaternions. Note that there are quaternion functions
+like @code{unit} that have no built-in equivalent.
 
-When just using the function, the leading @code{@@lti/} must @strong{not} be typed.
-Octave selects the right function automatically. So one can type @w{@code{norm (sys, inf)}}
-and @w{@code{norm (matrix, inf)}} regardless of the class of the argument.
+When just using the function, the leading @code{@@quaternion/} must @strong{not} be typed.
+Octave selects the right function automatically. So one can type @w{@code{norm (q)}}
+and @w{@code{norm (matrix)}} regardless of the class of the argument.
 @end titlepage
 @c %*** End of TITLEPAGE
 

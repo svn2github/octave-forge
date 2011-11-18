@@ -141,7 +141,7 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
 	# Check worksheet ptr
 	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 3"); endif
 	# Check range
-	if (~(isempty (crange) || ischar (crange))), error ("Character string (range) expected for arg # 4"); endif
+	if (~isempty (crange) && ~ischar (crange)), error ("Character string (range) expected for arg # 4"); endif
 	# Various options 
 	if (isempty (spsh_opts))
 		spsh_opts.formulas_as_text = 0;

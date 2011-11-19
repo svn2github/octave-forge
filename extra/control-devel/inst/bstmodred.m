@@ -16,7 +16,9 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} bstmodred (@var{sys}, @dots{})
+## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} bstmodred (@var{sys})
+## @deftypefnx{Function File} {[@var{sysr}, @var{nr}] =} bstmodred (@var{sys}, @dots{})
+## @deftypefnx{Function File} {[@var{sysr}, @var{nr}] =} bstmodred (@var{sys}, @var{opt})
 ## Model order reduction by Balanced Stochastic Truncation method.
 ## Uses the stochastic balancing approach in conjunction with the square-root or
 ## the balancing-free square-root Balance & Truncate (B&T)

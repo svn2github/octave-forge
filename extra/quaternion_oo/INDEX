@@ -4,6 +4,7 @@ Quaternions
   @quaternion/abs
   @quaternion/conj
   @quaternion/diag
+  @quaternion/inv
   @quaternion/ispure
   @quaternion/rows
   @quaternion/columns
@@ -12,6 +13,7 @@ Quaternions
   @quaternion/norm
   @quaternion/exp
   @quaternion/log
+  @quaternion/cat
 Overloaded and Arithmetic Operators
   @quaternion/plus
   @quaternion/minus
@@ -19,7 +21,6 @@ Overloaded and Arithmetic Operators
   @quaternion/uminus
   @quaternion/times
   @quaternion/mtimes
-  @quaternion/inv
   @quaternion/rdivide
   @quaternion/ldivide
   @quaternion/mrdivide

@@ -110,6 +110,7 @@
 ## 2010-11-13 Added check for 2-D input array
 ## 2011-03-23 First try of odfdom 0.8.7
 ## 2011-05-15 Experimental UNO support added
+## 2011-11-18 Fixed bug in test for range parameter being character string
 ##
 ## Last update of subfunctions below: 2011-09-23
 

@@ -39,6 +39,12 @@
 
 function qd = dot (q, Omega)
 
+  ## FIXME: Use another name for this function.  There is already
+  ##        a "dot" command with different meaning:
+  ##        Loadable Function:  dot (X, Y, DIM) ...
+  ##        Compute the dot product of two vectors.
+  ##        This is equivalent to `sum (conj (X) .* Y, DIM)
+
   if (nargin != 2)
     print_usage ();
   endif

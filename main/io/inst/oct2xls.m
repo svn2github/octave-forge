@@ -106,6 +106,7 @@
 ##      "     Bug fixes (stray variable c_arr, and wrong test for valid xls struct)
 ## 2011-05-18 Experimental UNO support
 ## 2011-09-08 Bug fix in range arg check; code cleanup
+## 2011-11-18 Fixed another bug in test for range parameter being character string
 
 ## Last script file update (incl. subfunctions): 2011-09-23
 
@@ -466,6 +467,7 @@ endfunction
 ## 2010-10-21 Improved logic for tracking file changes
 ## 2010-10-27 File change tracking again refined, internal var 'changed' dropped
 ## 2010-11-12 Moved ptr struct check into main func
+## 2011-11-19 Try-catch added to allow for changed method name for nr of worksheets
 
 function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -487,7 +489,11 @@ function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 	rstatus = 0; f_errs = 0;
 
 	# Check if requested worksheet exists in the file & if so, get pointer
-	nr_of_sheets = xls.workbook.getNumWorkSheets ();
+	try
+    nr_of_sheets = xls.workbook.getNumWorkSheets ();
+  catch
+    nr_of_sheets = xls.workbook.getNumberOfSheets ();
+  end_try_catch
 	if (isnumeric (wsh))
 		if (wsh > nr_of_sheets)
 			# Watch out as a sheet called Sheet%d can exist with a lower index...

@@ -1,35 +1,38 @@
 quaternion >> Quaternion
 Quaternions
   quaternion
+  q2rot
+  rot2q
+Methods
   @quaternion/abs
+  @quaternion/cat
+  @quaternion/columns
   @quaternion/conj
   @quaternion/diag
+  @quaternion/exp
   @quaternion/inv
   @quaternion/ispure
+  @quaternion/log
+  @quaternion/norm
   @quaternion/rows
-  @quaternion/columns
   @quaternion/size
   @quaternion/unit
-  @quaternion/norm
-  @quaternion/exp
-  @quaternion/log
-  @quaternion/cat
-Overloaded and Arithmetic Operators
-  @quaternion/plus
-  @quaternion/minus
-  @quaternion/uplus
-  @quaternion/uminus
-  @quaternion/times
-  @quaternion/mtimes
-  @quaternion/rdivide
-  @quaternion/ldivide
-  @quaternion/mrdivide
-  @quaternion/mldivide
-  @quaternion/power
-  @quaternion/mpower
-  @quaternion/transpose
+Overloaded Operators
   @quaternion/ctranspose
-  @quaternion/horzcat
-  @quaternion/vertcat
-  @quaternion/subsref
   @quaternion/eq
+  @quaternion/horzcat
+  @quaternion/ldivide
+  @quaternion/minus
+  @quaternion/mldivide
+  @quaternion/mpower
+  @quaternion/mrdivide
+  @quaternion/mtimes
+  @quaternion/plus
+  @quaternion/power
+  @quaternion/rdivide
+  @quaternion/subsref
+  @quaternion/times
+  @quaternion/transpose
+  @quaternion/uminus
+  @quaternion/uplus
+  @quaternion/vertcat

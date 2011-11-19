@@ -1,4 +1,4 @@
-function c = opt2cell (opt)
+function c = __opt2cell__ (opt)
 
   if (! isstruct (opt))
     error ("opt2cell: argument must be a struct");

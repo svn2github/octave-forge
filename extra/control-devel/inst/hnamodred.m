@@ -55,7 +55,9 @@ function [sysr, info] = hnamodred (sys, varargin)
     error ("hnamodred: first argument must be an LTI system");
   endif
 
-  if (rem (nargin-1, 2))
+  if (nargin == 2)
+    varargin = __opt2cell__ (varargin{1});
+  elseif (rem (nargin-1, 2))
     error ("hnamodred: properties and values must come in pairs");
   endif
 
@@ -136,11 +138,10 @@ function [sysr, info] = hnamodred (sys, varargin)
         endswitch
 
       otherwise
-        error ("hnamodred: invalid property name");
+        warning ("hnamodred: invalid property name ""%s"" ignored", prop);
     endswitch
   endfor
-  
-  ## TODO: handle jobv, jobw, (jobinv)
+
   
   ## perform model order reduction
   [ar, br, cr, dr, nr, hsv, ns] = slab09jd (a, b, c, d, dt, scaled, nr, ordsel, alpha, \

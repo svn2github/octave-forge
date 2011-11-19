@@ -59,7 +59,9 @@ function [sysr, nr] = bstmodred (sys, varargin)
     error ("bstmodred: first argument must be an LTI system");
   endif
 
-  if (rem (nargin-1, 2))
+  if (nargin == 2)
+    varargin = __opt2cell__ (varargin{1});
+  elseif (rem (nargin-1, 2))
     error ("bstmodred: properties and values must come in pairs");
   endif
 
@@ -113,11 +115,9 @@ function [sysr, nr] = bstmodred (sys, varargin)
         endswitch
 
       otherwise
-        error ("hnamodred: invalid property name");
+        warning ("bstmodred: invalid property name ""%s"" ignored", prop);
     endswitch
   endfor
-  
-  ## TODO: handle job
   
   ## perform model order reduction
   [ar, br, cr, dr, nr, hsv, ns] = slab09hd (a, b, c, d, dt, scaled, job, nr, ordsel, alpha, beta, \

@@ -42,7 +42,9 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
     error ("%smodred: first argument must be an LTI system", method);
   endif
 
-  if (rem (npv, 2))
+  if (npv == 1)
+    varargin = __opt2cell__ (varargin{1});
+  elseif (rem (npv, 2))
     error ("%smodred: properties and values must come in pairs", method);
   endif
 
@@ -103,7 +105,7 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
       ## TODO: alphac, alphao, jobc, jobo
 
       otherwise
-        error ("hnamodred: invalid property name");
+        warning ("modred: invalid property name ""%s"" ignored", prop);
     endswitch
   endfor
 

@@ -37,8 +37,8 @@ use LWP::Simple qw(get);        # get web pages easily
 ################################################################################
 ## Configuration variables
 ################################################################################
-my $repo_path   = '~/development/octave-forge/';  # path for the repository
-my $date_limit  = '2010-04-01';                   # give date in format YYYY-MM-DD
+my $repo_path   = '~/development/octave-forge/main/';  # path for the repository
+my $date_limit  = '2011-01-01';                   # give date in format YYYY-MM-DD
 my $sf_dev_list = 'http://sourceforge.net/project/memberlist.php?group_id=2888';  # URL for sourceforge project member list
 
 ################################################################################
@@ -50,6 +50,7 @@ my %names       = get_member_list ($sf_dev_list);
 ## runs svn log -q -r
 my @output      = `svn log -q -r HEAD:{$date_limit} $repo_path`;
 
+my %active;
 foreach my $line (@output) {
   next if '-' eq substr $line, 0, 1; # next if 1st character is a dash
   ## the following regexp reads: a "r" at the start of the line followed by at
@@ -61,11 +62,16 @@ foreach my $line (@output) {
   $line     =~ m/^r\d+\s+\|\s+((\w|\-)+)\s+/i;
   my $name  = $1;
   ## delete key with the found username (NOT just remove the value)
+  $active{$name}++;
   delete $names{$name};
 }
 ## get list of keys, sort them alphabetically and join them with a newline for print
+say "These are inactive users since $date_limit";
 say join ("\n", sort keys %names);
-
+say "These are active users since $date_limit";
+for (sort keys %active) {
+  say "$active{$_}\t by $_";
+}
 
 ## this function takes the URL for the page with the member list and returns an
 ## hash table with their usernames as keys. The values for the keys is always true.

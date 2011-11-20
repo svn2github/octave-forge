@@ -24,8 +24,8 @@
 ##See also : Ci, Si, sinint, expint, expint_Ei.
 
 function y = cosint(z)
-	if (nargin != 1)
-		usage ("cosint(x)");
-	endif
-	y = Ci(z);
+  if (nargin != 1)
+    print_usage;
+  endif
+  y = Ci(z);
 endfunction;

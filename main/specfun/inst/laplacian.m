@@ -112,18 +112,9 @@
 function [lambda, V, A] = laplacian(varargin)
 
     % Input/Output handling.
-    if nargin > 3
-        error('BLOPEX:laplacian:TooManyInputs',...
-            '%s','Too many input arguments.');
-    elseif nargin == 0
-        error('BLOPEX:laplacian:NoInputArguments',...
-            '%s','Must have at least one input argument.');
-    end
-
-    if nargout > 3
-        error('BLOPEX:laplacian:TooManyOutputs',...
-            '%s','Maximum number of outputs is 3.');
-    end
+    if (nargin < 1 || nargin > 3)
+      print_usage;
+    endif
 
     u = varargin{1};
     dim2 = size(u);

@@ -47,7 +47,7 @@
 function [sn, cn, dn] = ellipj (u, m)
 
   if nargin < 2 || nargin > 3 
-    usage("[sn, cn, dn] = ellipj (u, m)"); 
+    print_usage;
   endif
   [err, u, m] = common_size(u,m);
   if any(size(m) != size(u))

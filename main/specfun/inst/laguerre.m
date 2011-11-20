@@ -23,12 +23,10 @@
 
 function [y,p]=laguerre(x,n)
 
-  if nargchk(2,2,nargin)
-  usage("laguerre.m: [y,p]=laguerre(x,n)");
-  end;
-
-  if (n<0) || ~isscalar(n)
-    error("laguerre.m: n must be a positive integer");
+  if (nargin != 2)
+    print_usage;
+  elseif (n < 0 || !isscalar (n))
+    error("second argument 'n' must be a positive integer");
   endif
 
   p0=1;

@@ -48,9 +48,8 @@ function w = lambertw(b,z)
         b = 0;
     else
         %% some error checking
-        %
         if (nargin != 2)
-            usage('result = lambertw(branch, argument)')
+            print_usage;
         else
             if (any(round(real(b)) != b))
                 usage('branch number for lambertw must be integer')

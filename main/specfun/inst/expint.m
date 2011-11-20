@@ -24,8 +24,8 @@
 ## See also expint_Ei, expint_E1.
 
 function y = expint(x)
-	if (nargin != 1)
-		usage ("expint(x)");
-	endif
-	y = expint_E1(x);
+  if (nargin != 1)
+    print_usage;
+  endif
+  y = expint_E1(x);
 endfunction;

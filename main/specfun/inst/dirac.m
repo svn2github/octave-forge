@@ -20,9 +20,9 @@
 ## @end deftypefn
 
 function y = dirac(x)
-		if (nargin != 1)
-			usage ("dirac(x)");
-	   endif
-		y = double(x == 0.);
-		y(x == 0) = Inf;
+  if (nargin != 1)
+    print_usage;
+  endif
+  y = double(x == 0.);
+  y(x == 0) = Inf;
 endfunction;

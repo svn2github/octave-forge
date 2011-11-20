@@ -23,19 +23,19 @@
 ##
 
 function y = Si(x)
-	if (nargin != 1)
-		usage ("Si(x)");
-	endif
-	y = zeros(size(x));
- 	if prod(size(x)) < 101
-  		for k = 1:prod(size(x))
-   		y(k) = sum(besselj([0:100]+0.5,(x(k)/2)).^2);
-  		endfor
-		y = y.*pi;
- 	else
-  		for k=0:100
-   		y += besselj(k+0.5,x/2).^2;
-  		endfor
-		y = y.*pi;
- 	endif 
-endfunction;
+  if (nargin != 1)
+    print_usage;
+  endif
+  y = zeros(size(x));
+  if prod(size(x)) < 101
+    for k = 1:prod(size(x))
+      y(k) = sum(besselj([0:100]+0.5,(x(k)/2)).^2);
+    endfor
+    y = y.*pi;
+  else
+    for k=0:100
+      y += besselj(k+0.5,x/2).^2;
+    endfor
+    y = y.*pi;
+  endif
+endfunction

@@ -60,7 +60,7 @@ int n, Nn, ii;
      warning ("ellipj: expecting 0. <= m <= 1."); /* -lc- */
      sn = cn = dn = lo_ieee_nan_value ();
      return;
-	}
+  }
   sqrt_eps = sqrt(eps);
   if (m < sqrt_eps) {
     /*  # For small m, ( Abramowitz and Stegun, Section 16.13 ) */
@@ -99,14 +99,14 @@ int n, Nn, ii;
           c[n] = (a[n-1]-b)/2;
           b = sqrt(a[n-1]*b);
           if ( c[n]/a[n] < eps) break; 
-				}
+        }
         if ( n >= Nmax-1) {
            // fprintf(stderr, "Not enough workspace\n");
            err = 1.;
            return;
         }
         Nn = n;
-        for ( ii = 1;  n>0;	ii = ii*2, --n) ; // pow(2, Nn)
+        for ( ii = 1;  n>0; ii = ii*2, --n) ; // pow(2, Nn)
         phi = ii*a[Nn]*u;
         for ( n = Nn; n > 0; --n) {
           t = phi;
@@ -279,7 +279,7 @@ return @code{NaN}.\n\
                 double err;
                 octave_value result;
 
-            		sncndn( u, m, sn, cn, dn, err);
+                sncndn( u, m, sn, cn, dn, err);
 
                 retval (0) = sn;
                 retval (1) = cn;
@@ -313,7 +313,7 @@ return @code{NaN}.\n\
                 gripe_ellipj_arg ( "first");
             /*}}}*/
           }
-	      } else
+        } else
             gripe_ellipj_arg ( "second");
      } else { // m is matrix
        Matrix m = args(1).matrix_value ();
@@ -367,7 +367,7 @@ return @code{NaN}.\n\
                 int ur = u.rows ();
                 int uc = u.cols ();
 
-              if (mr == 1 && uc == 1)	{  // u column, m row
+              if (mr == 1 && uc == 1) {  // u column, m row
                 RowVector rm = m.row ((octave_idx_type)0);
                 ColumnVector cu = u.column ((octave_idx_type)0);
 
@@ -383,7 +383,7 @@ return @code{NaN}.\n\
                 retval (1) = cn;
                 retval (2) = dn;
                 if (nargout > 3)  retval(3) = err;
-              } else if (ur == mr && uc == mc)	{
+              } else if (ur == mr && uc == mc) {
                 Matrix sn (ur, mc), cn (ur, mc), dn (ur, mc);
                 Matrix err(ur,mc);
 //               octave_value result;
@@ -406,7 +406,7 @@ return @code{NaN}.\n\
                 int ur = u.rows ();
                 int uc = u.cols ();
 
-              if (mr == 1 && uc == 1)	{
+              if (mr == 1 && uc == 1) {
                 RowVector rm = m.row ((octave_idx_type)0);
                 ComplexColumnVector cu = u.column ((octave_idx_type)0);
 
@@ -422,7 +422,7 @@ return @code{NaN}.\n\
                 retval (1) = cn;
                 retval (2) = dn;
                 if (nargout > 3)  retval(3) = err;
-              } else if (ur == mr && uc == mc)	{
+              } else if (ur == mr && uc == mc) {
 
                 ComplexMatrix sn (ur, mc), cn (ur, mc), dn (ur, mc);
                 Matrix err(ur,mc);
@@ -450,8 +450,6 @@ return @code{NaN}.\n\
        print_usage ();
    return retval;
 }
-
-
 
 /*
 ;;; Local Variables: ***

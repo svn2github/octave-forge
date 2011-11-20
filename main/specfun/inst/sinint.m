@@ -17,5 +17,5 @@
 ##See also: Si.
 
 function y = sinint(x);
-	y = Si(x);
+  y = Si(x);
 endfunction;

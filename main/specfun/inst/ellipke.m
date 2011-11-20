@@ -42,7 +42,7 @@
 function [k,e] = ellipke( m )
 
   if (nargin < 1 || nargin > 2)
-    usage("[k, e] = ellipke (m)");
+    print_usage;
   endif
 
   k = e = zeros(size(m));

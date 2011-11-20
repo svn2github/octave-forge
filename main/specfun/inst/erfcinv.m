@@ -20,8 +20,8 @@
 ## @end deftypefn
 
 function y = erfcinv(x)
-	if (nargin != 1)
-		usage ("erfcinv(x)");
-	endif
-	y = erfinv(1-x);
+  if (nargin != 1)
+    print_usage;
+  endif
+  y = erfinv(1-x);
 endfunction;

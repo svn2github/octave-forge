@@ -24,12 +24,12 @@
 ## See also expint_Ei, expint.
 
 function y = expint_E1(x)
-	if (nargin != 1)
-		usage ("expint_E1(x)");
-	endif
-	y = x;
-	y(imag(x) > 0 & imag(x) != 0) = -expint_Ei(-y(imag(x) > 0 & imag(x) != 0)) -i.*pi;
-	y(imag(x) < 0 & imag(x) != 0) = -expint_Ei(-y(imag(x) < 0 & imag(x) != 0)) +i.*pi;
-	y(real(x) >= 0 & imag(x)==0) = -expint_Ei(-y(real(x) >= 0 & imag(x)==0));
-	y(real(x) < 0 & imag(x)==0) = -expint_Ei(-y(real(x) < 0 & imag(x)==0)) -i.*pi;
+  if (nargin != 1)
+    print_usage;
+  endif
+  y = x;
+  y(imag(x) > 0 & imag(x) != 0) = -expint_Ei(-y(imag(x) > 0 & imag(x) != 0)) -i.*pi;
+  y(imag(x) < 0 & imag(x) != 0) = -expint_Ei(-y(imag(x) < 0 & imag(x) != 0)) +i.*pi;
+  y(real(x) >= 0 & imag(x)==0) = -expint_Ei(-y(real(x) >= 0 & imag(x)==0));
+  y(real(x) < 0 & imag(x)==0) = -expint_Ei(-y(real(x) < 0 & imag(x)==0)) -i.*pi;
 endfunction;

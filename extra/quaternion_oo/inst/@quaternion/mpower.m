@@ -22,12 +22,28 @@
 
 function a = mpower (a, b)
 
-  if (b == -1 && isa (a, "quaternion") && isscalar (a.w))
-    a = inv (a);
-  else
-    error ("quaternion: mpower: case not implemeted");
-  endif
+  if isa (a, "quaternion")
 
+    if isscalar (a.w)                   # power takes care of checking type of b
+      a = a .^ b;
+    elseif
+      if fix(b) == b                    # only integers are poorly implemented
+        [n m] = size (a.w);
+        w = ones (n,m);
+        x = zeros (n,m);
+        q = quaternnion(w,x,x,x);
+        while b--
+          q *= a;
+        end
+        a = q;
+      else
+        error ("quaternion:devel", ...
+                  "quaternion: power: implemented for scalar quaternions only");
+      end
+    end
+  else
+    error ("quaternion:invalidArgument", "base must be a quaternion.");
+  end
   ## TODO: - q1 ^ q2
   ##       - arrays
 

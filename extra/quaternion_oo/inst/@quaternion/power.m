@@ -23,11 +23,11 @@
 ## Version: 0.3
 
 function a = power (a, b)
-  
+
   if (isa (b, "quaternion"))          # exponent is a quaternion
     a = exp (log (a) .* b);           # a could be real, but log doesn't care
   elseif (! isreal (b))
-    error ("quaternion: power: invalid exponent");    
+    error ("quaternion:invalidArgument", "quaternion: power: invalid exponent");
   elseif (b == -1)                    # special case for ldivide and rdivide
     norm2 = norm2 (a);                # a is quaternion because b is not,
     a.w = a.w ./ norm2;               # otherwise octave wouldn't call

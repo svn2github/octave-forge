@@ -15,7 +15,45 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## TODO
+## @deftypefn{Function File} {@var{q} =} rot2q (@var{axis}, @var{angle})
+## Create unit quaternion @var{q} which describes a rotation of
+## @var{angle} radians about the vector @var{axis}.  This function uses
+## the active convention where the vector @var{axis} is rotated by @var{angle}
+## radians.  If the coordinate frame should be rotated by @var{angle}
+## radians, also called the passive convention, this is equivalent
+## to rotating the @var{axis} by @var{-angle} radians.
+##
+## @strong{Inputs}
+## @table @var
+## @item axis
+## Vector @code{[x, y, z]} describing the axis of rotation.
+## @item angle
+## Rotation angle in radians.  The positive direction is
+## determined by the right-hand rule applied to @var{axis}.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item q
+## Unit quaternion describing the rotation.
+## @end table
+##
+## @strong{Example}
+## @example
+## @group
+## octave:1> axis = [0, 0, 1];
+## octave:2> angle = pi/4;
+## octave:3> q = rot2q (axis, angle)
+## q = 0.9239 + 0i + 0j + 0.3827k
+## octave:4> v = quaternion (1, 1, 0)
+## v = 0 + 1i + 1j + 0k
+## octave:5> vr = q * v * conj (q)
+## vr = 0 + 0i + 1.414j + 0k
+## octave:6>
+## @end group
+## @end example
+##
+## @end deftypefn
 
 ## Adapted from: quaternion by A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

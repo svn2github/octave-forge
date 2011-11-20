@@ -41,7 +41,6 @@ function svg = svg(name='')
   ## All the paths stored in polyval compatible format. Straigth segments are also stored as a polynomial.
   svg.Path = struct();
 
-  ## SVG paths. All the paths of the svg
   svg = class (svg, 'svg');
 
   if !isempty (name)
@@ -81,4 +80,3 @@ endfunction
 %! dc = svg('drawing6.svg');
 %! dc.plot();
 %! dc.plot('color','r','linewidth',2);
-

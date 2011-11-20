@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -13,19 +13,22 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-## COSINT compute the cosine integral function define by:
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} =} cosint (@var{z})
+## Compute the cosine integral function defined by:
+## @verbatim
 ##                    Inf
 ##                   /
 ##       cosint(x) = | cos(t)/t dt
 ##                   /
 ##                   x
-##
-##See also : Ci, Si, sinint, expint, expint_Ei.
+## @end verbatim
+## @seealso{Ci, Si, sinint, expint, expint_Ei}
+## @end deftypefn
 
 function y = cosint(z)
   if (nargin != 1)
     print_usage;
   endif
   y = Ci(z);
-endfunction;
+endfunction

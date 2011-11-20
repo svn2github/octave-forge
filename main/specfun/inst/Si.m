@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -13,14 +13,17 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-##SI compute the sine integral function define by:
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} =} Si (@var{x})
+## Compute the sine integral defined by:
+## @verbatim
 ##                    x
 ##                   /
 ##           Si(x) = | sin(t)/t dt
 ##                   /
 ##                   0
-##
+## @end verbatim
+## @end deftypefn
 
 function y = Si(x)
   if (nargin != 1)

@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or   
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -13,26 +13,29 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-## usage: [sn,cn,dn] = ellipj(u,m[,tol])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{sn}, @var{cn}, @var{dn}] =} ellipj (@var{u}, @var{m}[,@var{tol}])
+## Compute the Jacobi elliptic functions @var{sn}(@var{u}|@var{m}),
+## @var{cn}(@var{u}|@var{m}) and @var{dn}(@var{u}|@var{m}) for complex argument
+## @var{u} and parameter 0 <= @var{m} <= 1.
 ##
-## Compute the Jacobi elliptic functions sn(u|m), cn(u|m) and dn(u|m)
-## for complex argument u and parameter 0 <= m <= 1.
+## @emph{warning}: the approximation blows up for abs(u)>20 near m=1.
 ##
-## WARNING: the approximation blows up for abs(u)>20 near m=1.
+## @var{tol} is accepted for compatibility, but ignored
 ##
-## tol is accepted for compatibility, but ignored
-##
-## Ref: Abramowitz, Milton and Stegun, Irene A
-##      Handbook of Mathematical Functions, Dover, 1965
-##      Chapter 16 (Sections 16.4, 16.13 and 16.15)
-##
-## Example
+## @example
+## @group
 ##    m = linspace(0,1,200); u=linspace(-10,10,200);
 ##    [U,M] = meshgrid(u,m);
 ##    [sn, cn, dn] = ellipj(U,M);
 ##    imagesc(sn);
+## @end group
+## @end example
 ##
-## See also: ellipke
+## Ref: Abramowitz, Milton and Stegun, Irene A. Handbook of Mathematical
+## Functions, Dover, 1965, Chapter 16 (Sections 16.4, 16.13 and 16.15)
+## @seealso{ellipke}
+## @end deftypefn
 
 ## Author: David Billinghurst <David.Billinghurst@riotinto.com>
 ## 2001-01-31 David Billinghurst <David.Billinghusrt@riotinto.com>

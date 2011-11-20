@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or   
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -13,22 +13,19 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-## Compute:
-##     complete elliptic integral of first K(m) 
-##     complete elliptic integral of second E(m)    
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{k}, @var{e}] =} ellipke (@var{m}[,@var{tol}])
+## Compute complete elliptic integral of first K(@var{m}) and second E(@var{m}).
 ##
-## usage: [k,e] = ellipke(m[,tol])
+## @var{m} is either real array or scalar with 0 <= m <= 1
 ## 
-## m is either real array or scalar with 0 <= m <= 1
-## 
-## tol  Ignored. 
-##      (Matlab uses this to allow faster, less accurate approximation)
+## @var{tol} will be ignored (@sc{Matlab} uses this to allow faster, less
+## accurate approximation)
 ##
-## Ref: Abramowitz, Milton and Stegun, Irene A
-##      Handbook of Mathematical Functions, Dover, 1965
-##      Chapter 17
-##
-## See also: ellipj
+## Ref: Abramowitz, Milton and Stegun, Irene A. Handbook of Mathematical
+## Functions, Dover, 1965, Chapter 17.
+## @seealso{ellipj}
+## @end deftypefn
 
 ## Author: David Billinghurst <David.Billinghurst@riotinto.com>
 ## Created: 31 January 2001
@@ -37,7 +34,6 @@
 ##   * included function name in error messages
 ## 2003-1-18 Jaakko Ruohio
 ##   * extended for m < 0
-
 
 function [k,e] = ellipke( m )
 

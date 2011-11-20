@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -13,15 +13,18 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-## CI compute the cosine integral function define by:
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} =} Ci (@var{z})
+## Compute the cosine integral function defined by:
+## @verbatim
 ##                    Inf
 ##                   /
 ##           Ci(x) = | cos(t)/t dt
 ##                   /
 ##                   x
-##
-##See also : cosint, Si, sinint, expint, expint_Ei.
+## @end verbatim
+## @seealso{cosint, Si, sinint, expint, expint_Ei}
+## @end deftypefn
 
 function y = Ci(z)
   if (nargin != 1)
@@ -33,4 +36,4 @@ function y = Ci(z)
   y(real(z) == 0 & imag(z) <0) = 0.5*(expint_Ei(i.*y(real(z) == 0 & imag(z) <0))+expint_Ei(-i.*y(real(z) == 0 & imag(z) <0)))-i*pi./2;
   y(real(z)>=0) = -0.5.*(expint_E1(i.*y(real(z)>=0) )+expint_E1(-i.*y(real(z)>=0) ));
   y(real(z)<0) = -0.5.*(expint_E1(-i.*y(real(z)<0))+expint_E1(i.*y(real(z)<0)))+i*pi;
-endfunction;
+endfunction

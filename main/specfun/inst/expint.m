@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -13,19 +13,22 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-## EXPINT compute the exponential integral,
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} =} expint (@var{x})
+## Compute the exponential integral,
+## @verbatim
 ##                    infinity
 ##                   /
 ##       expint(x) = | exp(t)/t dt
 ##                   /
 ##                  x
-##
-## See also expint_Ei, expint_E1.
+## @end verbatim
+## @seealso{expint_E1, expint_Ei}
+## @end deftypefn
 
 function y = expint(x)
   if (nargin != 1)
     print_usage;
   endif
   y = expint_E1(x);
-endfunction;
+endfunction

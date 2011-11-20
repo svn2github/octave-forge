@@ -1,36 +1,9 @@
-%% usage: lambertw(z) or lambertw(n,z)
-%%
-%% Compute the Lambert W function of z.  This function satisfies
-%% W(z).*exp(W(z)) = z, and can thus be used to express solutions
-%% of transcendental equations involving exponentials or logarithms.
-%%
-%% n must be integer, and specifies the branch of W to be computed;
-%% W(z) is a shorthand for W(0,z), the principal branch.  Branches
-%% 0 and -1 are the only ones that can take on non-complex values.
-%%
-%% If either n or z are non-scalar, the function is mapped to each
-%% element; both may be non-scalar provided their dimensions agree.
-%%
-%% This implementation should return values within 2.5*eps of its
-%% counterpart in Maple V, release 3 or later.  Please report any
-%% discrepancies to the author, Nici Schraudolph <schraudo@inf.ethz.ch>.
-%%
-%% For further details, see:
-%%
-%% Corless, Gonnet, Hare, Jeffrey, and Knuth (1996), "On the Lambert
-%% W Function", Advances in Computational Mathematics 5(4):329-359.
-
-%% Author:   Nicol N. Schraudolph <schraudo@inf.ethz.ch>
-%% Version:  1.0
-%% Created:  07 Aug 1998
-%% Keywords: Lambert W Omega special transcendental function
-
 %% Copyright (C) 1998 by Nicol N. Schraudolph
 %%
 %% This program is free software; you can redistribute and/or
 %% modify it under the terms of the GNU General Public
 %% License as published by the Free Software Foundation;
-%% either version 2, or (at your option) any later version.
+%% either version 3, or (at your option) any later version.
 %%
 %% This program is distributed in the hope that it will be
 %% useful, but WITHOUT ANY WARRANTY; without even the implied
@@ -41,6 +14,36 @@
 %% You should have received a copy of the GNU General Public
 %% License along with this software; see the file COPYING.  If not,
 %% see <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{x} = } lambertw (@var{z})
+## @deftypefnx {Function File} {@var{x} = } lambertw (@var{z}, @var{n})
+## Compute the Lambert W function of @var{z}.
+##
+## This function satisfies W(z).*exp(W(z)) = z, and can thus be used to express
+## solutions of transcendental equations involving exponentials or logarithms.
+##
+## @var{n} must be integer, and specifies the branch of W to be computed;
+## W(z) is a shorthand for W(0,z), the principal branch.  Branches
+## 0 and -1 are the only ones that can take on non-complex values.
+##
+## If either @var{n} or @var{z} are non-scalar, the function is mapped to each
+## element; both may be non-scalar provided their dimensions agree.
+##
+## This implementation should return values within 2.5*eps of its
+## counterpart in Maple V, release 3 or later.  Please report any
+## discrepancies to the author, Nici Schraudolph <schraudo@inf.ethz.ch>.
+##
+## For further details, see:
+##
+## Corless, Gonnet, Hare, Jeffrey, and Knuth (1996), "On the Lambert
+## W Function", Advances in Computational Mathematics 5(4):329-359.
+## @end deftypefn
+
+%% Author:   Nicol N. Schraudolph <schraudo@inf.ethz.ch>
+%% Version:  1.0
+%% Created:  07 Aug 1998
+%% Keywords: Lambert W Omega special transcendental function
 
 function w = lambertw(b,z)
     if (nargin == 1)

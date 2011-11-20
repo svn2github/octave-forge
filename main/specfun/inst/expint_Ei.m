@@ -2,7 +2,7 @@
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -13,15 +13,18 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; If not, see <http://www.gnu.org/licenses/>.
 
-## EXPINT_EI compute the exponential integral,
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{y} =} expint_Ei (@var{x})
+## Compute the exponential integral,
+## @verbatim
 ##                      infinity
 ##                     /
 ##    expint_Ei(x) = - | exp(t)/t dt
 ##                     /
 ##                     -x
-##
-## See also expint, expint_E1.
+## @end verbatim
+## @seealso{expint, expint_E1}
+## @end deftypefn
 
 function y = expint_Ei(x)
   if (nargin != 1)
@@ -48,13 +51,13 @@ function y = expint_Ei(x)
             y(t) = conj(expint_Ei(conj(x(t))));
           endif;
         ## Serie Expansion
-        else 
+        else
           for k = 1:100;
             y(t) = y(t) + x(t).^k./(k.*factorial(k));
           endfor
           y(t) = 0.577215664901532860606512090082402431 + log(x(t)) + y(t);
         endif
       endif
-    endif;
+    endif
   endfor
-endfunction;
+endfunction

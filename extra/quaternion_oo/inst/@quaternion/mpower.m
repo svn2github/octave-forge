@@ -26,12 +26,13 @@ function a = mpower (a, b)
 
     if isscalar (a.w)                   # power takes care of checking type of b
       a = a .^ b;
-    elseif
-      if fix(b) == b                    # only integers are poorly implemented
+    else
+
+      if fix (b) == b                    # only integers are poorly implemented
         [n m] = size (a.w);
         w = ones (n,m);
         x = zeros (n,m);
-        q = quaternnion(w,x,x,x);
+        q = quaternion(w,x,x,x);
         while b--
           q *= a;
         end
@@ -40,7 +41,9 @@ function a = mpower (a, b)
         error ("quaternion:devel", ...
                   "quaternion: power: implemented for scalar quaternions only");
       end
+
     end
+
   else
     error ("quaternion:invalidArgument", "base must be a quaternion.");
   end

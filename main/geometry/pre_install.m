@@ -5,19 +5,23 @@ function pre_install (desc)
   subfld = {"octclip"};
 
   %% Create correct strings
-  subfld_ready = strcat({[pwd() filesep()]},
-                         subfld,[filesep() "src"]);
+  subfld_ready = strcat ({[pwd() filesep() "inst" filesep()]},
+                         subfld,[filesep() "src" filesep() "*"]);
 
   %% Destination folder
-  to_fld = strcat(pwd,filesep ());
+  to_fld = strcat (pwd (),[filesep() "src"]);
 
 
   %% Copy files to package/src folder
-  for from_fld = subfld_ready
   %% TODO handle merging of Makefiles
-    warning("Multiple Makefiles not handled")
-    disp (["mv " from_fld{1} " " to_fld])
-    %system (["mv " from_fld{1} " " to_fld]);
+  warning ("Multiple Makefiles not handled")
+  if !exist("src","dir")
+    system(["mkdir " to_fld]);
+  end
+
+  for from_fld = subfld_ready
+    system (["mv " from_fld{1} " " to_fld]);
+    system (["rm -R " from_fld{1}(1:end-2)]);
   end
 
 end

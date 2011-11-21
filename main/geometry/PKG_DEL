@@ -2,16 +2,23 @@
 dirlist = {"geom2d","io","polygons2d","shape2d","octclip"};
 dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
 
-if (! exist (fullfile (dirname, "inst"), "dir"))
-  for ii=1:length (dirlist)
-      ## Run this if the package is installed
-      rmpath ( [ dirname filesep dirlist{ii}])
-  end
-else
-  warning("geometry:Devel","Removing path for testing.");
-  for ii=1:length(dirlist)
-    rmpath ([ dirname "/inst/" dirlist{ii}])
-  endfor
-endif
+%% If we are not in Architecture dependent folder
+arch = cstrcat (octave_config_info ("canonical_host_type"),
+                              "-", octave_config_info ("api_version"));
+if !strcmp(arch , strsplit (fileparts(dbstack ()(1).file),filesep (), true){end})
+
+  if (! exist (fullfile (dirname, "inst"), "dir"))
+    for ii=1:length (dirlist)
+        ## Run this if the package is installed
+        rmpath ( [ dirname filesep dirlist{ii}])
+    end
+  else
+    warning("geometry:Devel","Removing path for testing.");
+    for ii=1:length(dirlist)
+      rmpath ([ dirname "/inst/" dirlist{ii}])
+    endfor
+  endif
+
+end
 
 clear dirlist dirname

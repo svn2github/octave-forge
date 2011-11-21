@@ -14,7 +14,8 @@ function pre_install (desc)
 
   %% Copy files to package/src folder
   %% TODO handle merging of Makefiles
-  warning ("Multiple Makefiles not handled")
+  warning ("Copying subfolder src to package main dir, but multiple Makefiles are not handled")
+  
   if !exist("src","dir")
     system(["mkdir " to_fld]);
   end

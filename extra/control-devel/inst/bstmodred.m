@@ -16,9 +16,9 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} bstmodred (@var{sys})
-## @deftypefnx{Function File} {[@var{sysr}, @var{nr}] =} bstmodred (@var{sys}, @dots{})
-## @deftypefnx{Function File} {[@var{sysr}, @var{nr}] =} bstmodred (@var{sys}, @var{opt})
+## @deftypefn{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G})
+## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @dots{})
+## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @var{opt})
 ## Model order reduction by Balanced Stochastic Truncation method.
 ## Uses the stochastic balancing approach in conjunction with the square-root or
 ## the balancing-free square-root Balance & Truncate (B&T)
@@ -27,19 +27,51 @@
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item sys
+## @item G
 ## LTI model to be reduced.
 ## @item @dots{}
 ## Pairs of properties and values.
-## TODO: describe options.
+## @item opt
+## Struct with properties as field names.
 ## @end table
 ##
 ## @strong{Outputs}
 ## @table @var
-## @item sysr
+## @item Gr
 ## Reduced order state-space model.
+## @item info
+## Struct containing additional information.
+## @table @var
+## @item n
+## The order of the original system @var{G}.
+## @item ns
+## The order of the @var{alpha}-stable subsystem of the original system @var{G}.
+## @item hsv
+## The Hankel singular values of the phase system corresponding
+## to the @var{alpha}-stable part of the original system @var{G}.
+## The @var{ns} Hankel singular values are ordered decreasingly.
+## @item nu
+## The order of the @var{alpha}-unstable subsystem of both the original
+## system @var{G} and the reduced-order system @var{Gr}.
 ## @item nr
-## The order of the obtained system @var{sysr}.
+## The order of the obtained reduced order system @var{Gr}.
+## @end table
+## @end table
+##
+## @strong{Options}
+## @table @var
+## @item "order", "n", "nr"
+## The desired order of the resulting reduced order system @var{Gr}.
+## If not specified, @var{nr} is the sum of NU and the number of
+## Hankel singular values greater than @code{MAX(TOL1,NS*EPS)};
+## @var{nr} can be further reduced to ensure that
+## @code{HSV(NR-NU) > HSV(NR+1-NU)}.
+## @item nr
+## The order of the obtained system @var{Gr}.
+## @item nr
+## The order of the obtained system @var{Gr}.
+## @item nr
+## The order of the obtained system @var{Gr}.
 ## @end table
 ##
 ## @strong{Algorithm}@*
@@ -51,7 +83,7 @@
 ## Created: October 2011
 ## Version: 0.1
 
-function [sysr, nr] = bstmodred (sys, varargin)
+function [sysr, info] = bstmodred (sys, varargin)
 
   if (nargin == 0)
     print_usage ();
@@ -128,8 +160,10 @@ function [sysr, nr] = bstmodred (sys, varargin)
   ## assemble reduced order model
   sysr = ss (ar, br, cr, dr, tsam);
 
-  ## assemble info struct  
-  info = struct ("nr", nr, "ns", ns, "hsv", hsv);
+  ## assemble info struct
+  n = rows (a);
+  nu = n - ns;
+  info = struct ("n", n, "ns", ns, "hsv", hsv, "nu", nu, "nr", nr);
 
 endfunction
 

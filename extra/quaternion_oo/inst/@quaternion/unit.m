@@ -14,7 +14,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{qabs} =} abs (@var{q})
+## @deftypefn {Function File} {@var{qn} =} unit (@var{q})
 ## Normalize quaternion to length 1 (unit quaternion).
 ##
 ## @example

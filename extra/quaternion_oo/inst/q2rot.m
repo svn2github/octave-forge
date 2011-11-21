@@ -15,7 +15,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## TODO
+## TODO: write help.
 
 ## Adapted from: quaternion by A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

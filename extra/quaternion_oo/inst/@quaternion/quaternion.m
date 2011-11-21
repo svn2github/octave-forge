@@ -24,7 +24,51 @@
 ## @end example
 ##
 ## Arguments @var{w}, @var{x}, @var{y} and @var{z} can be scalars or
-## matrices, but they must be real and of equal size.
+## matrices, but they must be real and of equal size.  If scalar part
+## @var{w} or components @var{x}, @var{y} and @var{z} of the vector
+## part are not specified, zero matrices of appropriate size are
+## assumed.
+##
+## @strong{Example}
+## @example
+## @group
+## octave:1> q = quaternion (2)
+## q = 2 + 0i + 0j + 0k
+## 
+## octave:2> q = quaternion (3, 4, 5)
+## q = 0 + 3i + 4j + 5k
+## 
+## octave:3> q = quaternion (2, 3, 4, 5)
+## q = 2 + 3i + 4j + 5k
+## @end group
+## @end example
+## @example
+## @group
+## octave:4> w = [2, 6, 10; 14, 18, 22];
+## octave:5> x = [3, 7, 11; 15, 19, 23];
+## octave:6> y = [4, 8, 12; 16, 20, 24];
+## octave:7> z = [5, 9, 13; 17, 21, 25];
+## octave:8> q = quaternion (w, x, y, z)
+## q.w =
+##     2    6   10
+##    14   18   22
+## 
+## q.x =
+##     3    7   11
+##    15   19   23
+## 
+## q.y =
+##     4    8   12
+##    16   20   24
+## 
+## q.z =
+##     5    9   13
+##    17   21   25
+## 
+## octave:9> 
+## @end group
+## @end example
+##
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

@@ -1,5 +1,5 @@
 %% Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%% 
+%%
 %%    This program is free software: you can redistribute it and/or modify
 %%    it under the terms of the GNU General Public License as published by
 %%    the Free Software Foundation, either version 3 of the License, or
@@ -41,20 +41,20 @@
 %% @example
 %% @group
 %%         P
-%% p(x) = sum a_i q^i, 
+%% p(x) = sum a_i q^i,
 %%        i=1
 %%          G
-%% g(x') = sum a_i (q')^i, 
+%% g(x') = sum b_i (q')^i,
 %%         i=1
 %% @end group
 %% @end example
 %%
 %% @end ifnottex
-%% 
-%% This function can be used with the ODE integrators. 
+%%
+%% This function can be used with the ODE integrators.
 %%
 %% @strong{INPUTS}
-%% 
+%%
 %% @var{t}: Time. It can be a scalar or a vector of length @code{nT}.
 %%
 %% @var{x}: State space vector. An array of size @code{2xnT}, where @code{nT} is
@@ -62,7 +62,7 @@
 %% of the system and the second row to its derivatives with respect to time.
 %%
 %% @var{opt}: An options structure. See the complementary function
-%% @code{setnloscillator}. The structure containing the fields: 
+%% @code{setnloscillator}. The structure containing the fields:
 %%
 %% @code{Coefficients}: Contains a vector of coefficients for p(x). It follows
 %% the format used for function ppval @code{opt.Coefficients(i) = a(P+1-i)}.
@@ -75,7 +75,7 @@
 %% func(@var{t}, @var{x}, @var{opt}) or it can be a @code{1xnT} vector.
 %%
 %% @strong{OUTPUT}
-%% 
+%%
 %% @var{dotx}: Derivative of the state space vector with respect to time. A @code{2xnT} array.
 %%
 %% @var{dotxdx}: When requested, it contains the Jacobian of the system. It is a
@@ -102,7 +102,7 @@ function [dotx dotxdx f] = nloscillator (t, x, opt)
   ac = polyval (coef, x(1,:)) + polyval (damp, x(2,:));
 
   F= zeros (1, size (x,2));
-  
+
   if isfield (opt, 'Actuation')
      F = opt.Actuation;
      if ~isnumeric (F);
@@ -118,7 +118,7 @@ function [dotx dotxdx f] = nloscillator (t, x, opt)
       dcoef = polyder (coef);
       ddamp = polyder (damp);
 
-      dotxdx(1,:,:) = [ zeros(1,nt); ones(1,nt) ]; 
+      dotxdx(1,:,:) = [ zeros(1,nt); ones(1,nt) ];
       dotxdx(2,:,:) = [ polyval(dcoef, x(1,:)); polyval(ddamp, x(2,:)) ];
   end
 
@@ -128,5 +128,5 @@ function [dotx dotxdx f] = nloscillator (t, x, opt)
      aci = ppval (ppder (spline (t, x(2,:))), t);
      f = aci' - ac;
   end
-  
+
 end

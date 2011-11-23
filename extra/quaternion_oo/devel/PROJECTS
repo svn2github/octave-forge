@@ -17,6 +17,8 @@ General:
   
   * See if LaTEX code from Scottedward Hodel's quaternion.ps document is available.
     Update it to use the commands from quaternion-2.0.0.
+
+  * Secret Wish: Reimplement package completely in C++ similar to the sparsersb package ;-)
     
 --------
 Features:

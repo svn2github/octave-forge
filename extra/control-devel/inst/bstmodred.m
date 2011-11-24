@@ -30,9 +30,9 @@
 ## @item G
 ## LTI model to be reduced.
 ## @item @dots{}
-## Pairs of properties and values.
+## Pairs of keys and values.
 ## @item opt
-## Struct with properties as field names.
+## Struct with keys as field names.
 ## @end table
 ##
 ## @strong{Outputs}
@@ -90,16 +90,27 @@
 ## or if TOL2 <= 0 on entry.
 ## @item "approx", "approach"
 ## The order of the obtained system @var{Gr}.
-## @item nr
-## The order of the obtained system @var{Gr}.
-## @item nr
-## The order of the obtained system @var{Gr}.
-## @item nr
-## The order of the obtained system @var{Gr}.
-## @item nr
-## The order of the obtained system @var{Gr}.
-## @item nr
-## The order of the obtained system @var{Gr}.
+##
+##
+## @item "alpha"
+## Specifies the ALPHA-stability boundary for the eigenvalues
+## of the state dynamics matrix @var{G.A}.  For a continuous-time
+## system, ALPHA <= 0 is the boundary value for
+## the real parts of eigenvalues, while for a discrete-time
+## system, 0 <= ALPHA <= 1 represents the
+## boundary value for the moduli of eigenvalues.
+## The ALPHA-stability domain does not include the boundary.
+## Default value is 0 for continuous-time systems and
+## 1 for discrete-time systems.
+## @item "beta"
+## BETA > 0 specifies the absolute/relative error weighting
+## parameter.  A large positive value of BETA favours the
+## minimization of the absolute approximation error, while a
+## small value of BETA is appropriate for the minimization
+## of the relative error.
+## BETA = 0 means a pure relative error method and can be
+## used only if rank(G.D) = rows(G.D) which means that
+## the feedthrough matrice must not be rank-deficient.
 ## @end table
 ##
 ## @strong{Algorithm}@*

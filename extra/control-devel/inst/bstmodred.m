@@ -66,6 +66,34 @@
 ## Hankel singular values greater than @code{MAX(TOL1,NS*EPS)};
 ## @var{nr} can be further reduced to ensure that
 ## @code{HSV(NR-NU) > HSV(NR+1-NU)}.
+## @item "equil", "scale"
+## Boolean indicating whether equilibration (scaling) should be
+## performed on system @var{G} prior to order reduction.
+## Default value is true if @code{G.scaled == false} and
+## false if @code{G.scaled == true}.
+## @item "tol1"
+## If @var{"order"} is not specified, @var{tol1} contains the tolerance for
+## determining the order of reduced system.
+## For model reduction, the recommended value of @var{tol1} lies
+## in the interval [0.00001, 0.001].  @var{tol1} < 1.
+## If @var{tol1} <= 0 on entry, the used default value is
+## @var{tol1} = NS*EPS, where NS is the number of
+## ALPHA-stable eigenvalues of A and EPS is the machine
+## precision.
+## If @var{"order"} is specified, the value of @var{tol1} is ignored.
+## @item "tol2"
+## The tolerance for determining the order of a minimal
+## realization of the phase system (see METHOD) corresponding
+## to the ALPHA-stable part of the given system.
+## The recommended value is TOL2 = NS*EPS.  TOL2 <= TOL1 < 1.
+## This value is used by default if @var{"tol2"} is not specified
+## or if TOL2 <= 0 on entry.
+## @item "approx", "approach"
+## The order of the obtained system @var{Gr}.
+## @item nr
+## The order of the obtained system @var{Gr}.
+## @item nr
+## The order of the obtained system @var{Gr}.
 ## @item nr
 ## The order of the obtained system @var{Gr}.
 ## @item nr
@@ -147,6 +175,9 @@ function [sysr, info] = bstmodred (sys, varargin)
           otherwise
             error ("bstmodred: ""%s"" is an invalid approximation method", val);
         endswitch
+
+      case {"equil", "equilibrate", "equilibration", "scale", "scaling"}
+        scaled = __modred_check_equil__ (val);
 
       otherwise
         warning ("bstmodred: invalid property name ""%s"" ignored", prop);

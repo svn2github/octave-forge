@@ -19,7 +19,7 @@
 ## @deftypefn{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G})
 ## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @dots{})
 ## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @var{opt})
-## Model order reduction by Balanced Stochastic Truncation method.
+## Model order reduction by Balanced Stochastic Truncation (BST) method.
 ##
 ## BST is a relative error method which tries to minimize ||Deltar||,
 ## where Deltar is implicitely defined by @code{G-Gr = Deltar*G}.
@@ -27,11 +27,17 @@
 ## unsolved so far.  Nevertheless, balanced truncation and related
 ## methods can be used to obtain good approximations using this measure.
 ##
+## Available approximation methods are the standard square-root (SR) or
+## the accuracy-enhanced balancing-free square-root (BFSR) versions of
+## the Balance & Truncate (BTA) or Singular Perturbation Approximation (SPA) 
+## model reduction methods for the ALPHA-stable part of the system.
 ##
-## Uses the stochastic balancing approach in conjunction with the square-root or
-## the balancing-free square-root Balance & Truncate (B&T)
-## or Singular Perturbation Approximation (SPA) model reduction
-## methods for the ALPHA-stable part of the system.
+## Unstable models are handled by separating the stable and unstable
+## parts, applying the model reduction only to the stable part and
+## by joining the reduced stable with the original unstable part.
+## The order of the reduced system can be selected by the user or
+## can be determined automatically on the basis of the computed
+## Hankel singular values.
 ##
 ## @strong{Inputs}
 ## @table @var

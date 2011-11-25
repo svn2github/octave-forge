@@ -100,18 +100,18 @@
 ## @item info
 ## Struct containing additional information.
 ## @table @var
-## @item n
+## @item info.n
 ## The order of the original system @var{G}.
-## @item ns
+## @item info.ns
 ## The order of the @var{alpha}-stable subsystem of the original system @var{G}.
-## @item hsv
+## @item info.hsv
 ## The Hankel singular values of the phase system corresponding
 ## to the @var{alpha}-stable part of the original system @var{G}.
 ## The @var{ns} Hankel singular values are ordered decreasingly.
-## @item nu
+## @item info.nu
 ## The order of the @var{alpha}-unstable subsystem of both the original
 ## system @var{G} and the reduced-order system @var{Gr}.
-## @item nr
+## @item info.nr
 ## The order of the obtained reduced order system @var{Gr}.
 ## @end table
 ## @end table

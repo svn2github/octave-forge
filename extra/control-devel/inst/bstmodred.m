@@ -20,6 +20,14 @@
 ## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @dots{})
 ## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @var{opt})
 ## Model order reduction by Balanced Stochastic Truncation method.
+##
+## BST is a relative error method which tries to minimize ||Deltar||,
+## where Deltar is implicitely defined by @code{G-Gr = Deltar*G}.
+## For the H-infinity norm, the best approximation problem is
+## unsolved so far.  Nevertheless, balanced truncation and related
+## methods can be used to obtain good approximations using this measure.
+##
+##
 ## Uses the stochastic balancing approach in conjunction with the square-root or
 ## the balancing-free square-root Balance & Truncate (B&T)
 ## or Singular Perturbation Approximation (SPA) model reduction

@@ -38,27 +38,21 @@
 ##
 ## BST is a relative error method which tries to minimize
 ## @iftex
-## @tex
-## $|| \\Delta_r ||$
-## @end tex
+## @math{|| \\Delta_r ||,}
 ## @end iftex
 ## @ifnottex
-## Deltar
+## Deltar,
 ## @end ifnottex
 ## where
 ## @iftex
-## @tex
-## $\\Delta_r$
-## @end tex
+## @math{\\Delta_r}
 ## @end iftex
 ## @ifnottex
 ## Deltar
 ## @end ifnottex
 ## is implicitly defined by
 ## @iftex
-## @tex
-## $G - G_r = \\Delta_r \\ G$.
-## @end tex
+## @math{G - G_r = \\Delta_r \\ G.}
 ## @end iftex
 ## @ifnottex
 ## G-Gr = Deltar*G.

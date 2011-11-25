@@ -158,6 +158,7 @@
 ## BETA = 0 means a pure relative error method and can be
 ## used only if rank(G.D) = rows(G.D) which means that
 ## the feedthrough matrice must not be rank-deficient.
+## Default value is 1.
 ##
 ## @item "tol1"
 ## If @var{"order"} is not specified, @var{tol1} contains the tolerance for

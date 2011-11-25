@@ -24,7 +24,6 @@
 ## @var{nr} (nr << n) such that the input-output behaviour of @var{Gr}
 ## approximates the one from original system @var{G}.
 ## This is motivated by the relation
-##
 ## @iftex
 ## @tex
 ## $$ || y - y_r ||_2 = || G - G_r ||_{\\infty} \\ || u ||_2 $$
@@ -36,7 +35,6 @@
 ##         2           inf      2
 ## @end example
 ## @end ifnottex
-##
 ##
 ## BST is a relative error method which tries to minimize
 ## @iftex
@@ -56,10 +54,10 @@
 ## @ifnottex
 ## Deltar
 ## @end ifnottex
-## is implicitely defined by
+## is implicitly defined by
 ## @iftex
 ## @tex
-## $G - G_r = \\Delta_r * G$.
+## $G - G_r = \\Delta_r \\ G$.
 ## @end tex
 ## @end iftex
 ## @ifnottex
@@ -124,7 +122,7 @@
 ## @end table
 ## @end table
 ##
-## @strong{Options}
+## @strong{Option Keys and Values}
 ## @table @var
 ## @item "order", "n", "nr"
 ## The desired order of the resulting reduced order system @var{Gr}.
@@ -132,31 +130,19 @@
 ## Hankel singular values greater than @code{MAX(TOL1,NS*EPS)};
 ## @var{nr} can be further reduced to ensure that
 ## @code{HSV(NR-NU) > HSV(NR+1-NU)}.
-## @item "equil", "scale"
-## Boolean indicating whether equilibration (scaling) should be
-## performed on system @var{G} prior to order reduction.
-## Default value is true if @code{G.scaled == false} and
-## false if @code{G.scaled == true}.
-## @item "tol1"
-## If @var{"order"} is not specified, @var{tol1} contains the tolerance for
-## determining the order of reduced system.
-## For model reduction, the recommended value of @var{tol1} lies
-## in the interval [0.00001, 0.001].  @var{tol1} < 1.
-## If @var{tol1} <= 0 on entry, the used default value is
-## @var{tol1} = NS*EPS, where NS is the number of
-## ALPHA-stable eigenvalues of A and EPS is the machine
-## precision.
-## If @var{"order"} is specified, the value of @var{tol1} is ignored.
-## @item "tol2"
-## The tolerance for determining the order of a minimal
-## realization of the phase system (see METHOD) corresponding
-## to the ALPHA-stable part of the given system.
-## The recommended value is TOL2 = NS*EPS.  TOL2 <= TOL1 < 1.
-## This value is used by default if @var{"tol2"} is not specified
-## or if TOL2 <= 0 on entry.
 ## @item "approx", "approach"
-## The order of the obtained system @var{Gr}.
-##
+## Approximation method for the H-infinity norm.
+## Valid values corresponding to this key are:
+## @table @var
+## @item "sr-bta", "b"
+## Use the square-root Balance & Truncate method.
+## @item "bfsr-bta", "f"
+## Use the balancing-free square-root Balance & Truncate method.  Default method.
+## @item "sr-spa", "s"
+## Use the square-root Singular Perturbation Approximation method.
+## @item "bfsr-spa", "p"
+## Use the balancing-free square-root Singular Perturbation Approximation method.
+## @end table
 ##
 ## @item "alpha"
 ## Specifies the ALPHA-stability boundary for the eigenvalues
@@ -168,6 +154,7 @@
 ## The ALPHA-stability domain does not include the boundary.
 ## Default value is 0 for continuous-time systems and
 ## 1 for discrete-time systems.
+##
 ## @item "beta"
 ## BETA > 0 specifies the absolute/relative error weighting
 ## parameter.  A large positive value of BETA favours the
@@ -177,6 +164,31 @@
 ## BETA = 0 means a pure relative error method and can be
 ## used only if rank(G.D) = rows(G.D) which means that
 ## the feedthrough matrice must not be rank-deficient.
+##
+## @item "tol1"
+## If @var{"order"} is not specified, @var{tol1} contains the tolerance for
+## determining the order of reduced system.
+## For model reduction, the recommended value of @var{tol1} lies
+## in the interval [0.00001, 0.001].  @var{tol1} < 1.
+## If @var{tol1} <= 0 on entry, the used default value is
+## @var{tol1} = NS*EPS, where NS is the number of
+## ALPHA-stable eigenvalues of A and EPS is the machine
+## precision.
+## If @var{"order"} is specified, the value of @var{tol1} is ignored.
+##
+## @item "tol2"
+## The tolerance for determining the order of a minimal
+## realization of the phase system (see METHOD) corresponding
+## to the ALPHA-stable part of the given system.
+## The recommended value is TOL2 = NS*EPS.  TOL2 <= TOL1 < 1.
+## This value is used by default if @var{"tol2"} is not specified
+## or if TOL2 <= 0 on entry.
+##
+## @item "equil", "scale"
+## Boolean indicating whether equilibration (scaling) should be
+## performed on system @var{G} prior to order reduction.
+## Default value is true if @code{G.scaled == false} and
+## false if @code{G.scaled == true}.
 ## @end table
 ##
 ## @strong{Algorithm}@*

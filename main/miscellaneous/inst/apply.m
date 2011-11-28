@@ -55,6 +55,15 @@
 
 function rval=apply(fun_handle,cell_array)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "apply.m has been deprecated, and will be removed in the future.")
+    warning ("Octave:deprecated-function",
+             "Use `arrayfun' or `cellfun' instead.");
+  endif
+
   if (nargin == 0)
     print_usage();
     error("apply(): needs at least 1 argument, see usage");

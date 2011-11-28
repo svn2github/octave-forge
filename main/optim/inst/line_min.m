@@ -10,20 +10,23 @@
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
 
-## [a,fx,nev] = line_min (f, dx, args, narg) - Minimize f() along dx
+## [a,fx,nev] = line_min (f, dx, args, narg, h, nev_max) - Minimize f() along dx
 ##
 ## INPUT ----------
 ## f    : string  : Name of minimized function
 ## dx   : matrix  : Direction along which f() is minimized
-## args : list    : List of argument of f
+## args : cell    : Arguments of f
 ## narg : integer : Position of minimized variable in args.  Default=1
+## h    : scalar  : Step size to use for centered finite difference
+## approximation of first and second derivatives. Default=1E-3.
+## nev_max : integer : Maximum number of function evaluations.  Default=30
 ##
 ## OUTPUT ---------
 ## a    : scalar  : Value for which f(x+a*dx) is a minimum (*)
 ## fx   : scalar  : Value of f(x+a*dx) at minimum (*)
 ## nev  : integer : Number of function evaluations
 ##
-## (*) The notation f(x+a*dx) assumes that args == list (x).
+## (*) The notation f(x+a*dx) assumes that args == {x}.
 
 ## Author: Ben Sapp <bsapp@lanl.gov>
 ## Reference: David G Luenberger's Linear and Nonlinear Programming
@@ -39,21 +42,32 @@
 ## * Use list of args, suppress call to __pseudo_func__
 ## * Add nargs argument, assume args is a list
 ## * Change help text
-function [a,fx,nev] = line_min (f, dx, args, narg)
+## 2011-11-27 Nir Krakauer
+## * made step size h configurable
+## * modified to limit the number of function evaluations
+## * added a check to ensure that the function value returned was never more than the initial value
+
+function [a,fx,nev] = line_min (f, dx, args, narg, h, nev_max)
   velocity = 1;
   acceleration = 1;
 
-  if nargin < 4, narg = 1; end
+  if (nargin < 4) narg = 1; endif
+  if (nargin < 5) h = 0.001; endif
+  if (nargin < 6) nev_max = 30; endif
 
   nev = 0;
-  h = 0.001;			# Was 0.01 here
   x = args{narg};
   a = 0;
-				# was 1e-4
-  while (abs (velocity) > 0.000001)
+
+  min_velocity_change = 0.000001;
+
+  while (abs (velocity) > min_velocity_change && nev < nev_max)
     fx = feval (f,args{1:narg-1}, x+a*dx, args{narg+1:end});
     fxph = feval (f,args{1:narg-1}, x+(a+h)*dx, args{narg+1:end});
     fxmh = feval (f,args{1:narg-1}, x+(a-h)*dx, args{narg+1:end});
+    if (nev == 0)
+        fx0 = fx;
+    endif
 
     velocity = (fxph - fxmh)/(2*h);
     acceleration = (fxph - 2*fx + fxmh)/(h^2);
@@ -63,6 +77,18 @@ function [a,fx,nev] = line_min (f, dx, args, narg)
     a = a - velocity/abs(acceleration);
     nev += 3;
   endwhile
+
+  fx = feval (f, args{1:narg-1}, x+a*dx, args{narg+1:end});
+  nev++;
+  if fx >= fx0 # if no improvement, return the starting value
+        a = 0;
+        fx = fx0;
+  endif
+
+  if (nev >= nev_max)
+    disp ("line_min: maximum number of function evaluations reached")
+  endif
+
 endfunction
 
 ## Rem : Although not clear from the code, the returned a always seems to

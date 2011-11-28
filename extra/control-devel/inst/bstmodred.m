@@ -83,6 +83,26 @@
 ## could be neglected just because the corresponding signals have smaller
 ## numbers than those of other, less important effects of @var{G}.
 ##
+## BST is often suitable to perform model reduction in order to obtain
+## low order design models for controller synthesis.
+##
+## Approximation Properties:
+## @itemize @bullet
+## @item
+## Guaranteed stability of reduced models
+## @item
+## Approximates simultaneously gain and phase
+## @item
+## Preserves non-minimum phase zeros
+## @item
+## Guaranteed a priori error bound
+## @iftex
+## @math{|| G^{-1} (G-G_r) ||_{\\infty} <= }
+## @end iftex
+##
+## @end itemize
+## 
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item G
@@ -150,6 +170,8 @@
 ## 1 for discrete-time systems.
 ##
 ## @item "beta"
+## Use @code{[G, beta*I]} as new system @var{G} to combine
+## absolute and relative error methods.
 ## BETA > 0 specifies the absolute/relative error weighting
 ## parameter.  A large positive value of BETA favours the
 ## minimization of the absolute approximation error, while a
@@ -158,7 +180,7 @@
 ## BETA = 0 means a pure relative error method and can be
 ## used only if rank(G.D) = rows(G.D) which means that
 ## the feedthrough matrice must not be rank-deficient.
-## Default value is 1.
+## Default value is 0.
 ##
 ## @item "tol1"
 ## If @var{"order"} is not specified, @var{tol1} contains the tolerance for
@@ -216,7 +238,7 @@ function [sysr, info] = bstmodred (sys, varargin)
   
   ## default arguments
   alpha = __modred_default_alpha__ (dt);
-  beta = 1; # ?
+  beta = 0;
   tol1 = 0; 
   tol2 = 0;
   ordsel = 1;

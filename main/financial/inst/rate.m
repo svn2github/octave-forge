@@ -16,7 +16,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{r} =} rate (@var{n}, @var{p}, @var{v}, @var{l}, @var{method})
+## @deftypefn {Function File} {@var{r} =} rate (@var{n}, @var{p}, @var{v})
+## @deftypefnx {Function File} {@var{r} =} rate (@var{n}, @var{p}, @var{v}, @var{l})
+## @deftypefnx {Function File} {@var{r} =} rate (@var{n}, @var{p}, @var{v}, @var{l}, @var{method})
+## @deftypefnx {Function File} {@var{r} =} rate (@var{n}, @var{p}, @var{v}, @var{method})
 ## Return the rate of return @var{r} on an investment of present value @var{v}
 ## which pays @var{p} in @var{n} consecutive periods.
 ##
@@ -29,38 +32,35 @@
 ## @seealso{pv, pmt, nper, npv}
 ## @end deftypefn
 
-function r = rate (n, p, v, l, m)
+function r = rate (n, p, v, l = 0, m = "e")
 
   if (nargin < 3 || nargin > 5)
     print_usage ();
-  endif
+  elseif (!isnumeric (n) || !isscalar (n) || n <= 0)
+    error ("number of consecutive periods `n' must be a positive scalar");
+  elseif (!isnumeric (p) || !isscalar (p))
+    error ("second argument `p' must be a numeric scalar");
+  elseif (!isnumeric (v) || !isscalar (v))
+    error ("present value `v' must be a numeric scalar");
 
-  if (! (isscalar (n) && n > 0))
-    error ("rate: n must be a positive scalar");
-  elseif (! isscalar (p))
-    error ("rate: p must be a scalar");
-  elseif (! isscalar (v))
-    error ("rate: p must be a scalar");
-  endif
-
-  if (nargin == 5)
-    if (! ischar (m))
-      error ("rate: `method' must be a string");
+  ## the following checks is to allow using default value for `l' while specifying `m'
+  elseif (nargin == 5)
+    if (!isnumeric (l) || !isscalar (l))
+      error ("value of additional lump-sum payment `l' must be numeric scalar");
+    elseif (!ischar (m))
+      error ("`method' must be a string")
     endif
   elseif (nargin == 4)
     if (ischar (l))
       m = l;
-      l = 0;
-    else
-      m = "e";
+      l = 0;   # default value for `l' again
+    elseif (!isnumeric (l) || !isscalar (l))
+      error ("fourth argument must either be a numeric scalar for lump-sum payment `l' or a string for `method'");
     endif
-  else
-    l = 0;
-    m = "e";
   endif
 
-  if (! isscalar (l))
-    error ("rate: l must be a scalar");
+  if (!any (strcmpi (l, {"e","b"})))
+    error ("`method' must either be `e' or `b")
   endif
 
   f = @(x) pv (x, n, p, l, m) - v;

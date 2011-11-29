@@ -87,7 +87,7 @@ For internal use only.")
         
         const int idico = args(4).int_value ();
         const int iequil = args(5).int_value ();
-        int nr = args(6).int_value ();
+        int ncr = args(6).int_value ();
         const int iordsel = args(7).int_value ();
         double alpha = args(8).double_value ();
         const int ijobmr = args(9).int_value ();
@@ -210,49 +210,25 @@ For internal use only.")
         liwork = max (1, liwrk1, liwrk2);
 
         int ldwork;
-        int lminl;
-        int lrcf;
-        int lminr;
-        int llcf;
-        int lleft;
-        int lright;
+        int lfreq;
+        int lsqred;
 
-        if (nw == 0 || weight == 'L' || weight == 'N')
+        if (weight == 'N')
         {
-            lrcf = 0;
-            lminr = 0;
+            if (equil == 'N')           // if WEIGHT = 'N' and EQUIL = 'N'
+                lfreq  = nc*(max (m, p) + 5);
+            else                        // if WEIGHT = 'N' and EQUIL  = 'S'
+                lfreq  = max (n, nc*(max (m, p) + 5));
+
         }
-        else
+        else                            // if WEIGHT = 'I' or 'O' or 'P'
         {
-            lrcf = mw*(nw+mw) + max (nw*(nw+5), mw*(mw+2), 4*mw, 4*m);
-            if (m == mw)
-                lminr = nw + max (nw, 3*m);
-            else
-                lminr = 2*nw*max (m, mw) + nw + max (nw, 3*m, 3*mw);
+            lfreq = (n+nc)*(n+nc+2*m+2*p) +
+                     max ((n+nc)*(n+nc+max(n+nc,m,p)+7), (m+p)*(m+p+4));
         }
 
-        llcf = pv*(nv+pv) + pv*nv + max (nv*(nv+5), pv*(pv+2), 4*pv, 4*p);
-
-        if (nv == 0 || weight == 'R' || weight == 'N')
-            lminl = 0;
-        else if (p == pv)
-            lminl  = max (llcf, nv + max (nv, 3*p));
-        else
-            lminl  = max (p, pv) * (2*nv + max (p, pv)) + max (llcf, nv + max (nv, 3*p, 3*pv));
-
-
-        if (pv == 0 || weight == 'R' || weight == 'N')
-            lleft = n*(p+5);
-        else
-            lleft = (n+nv) * (n + nv + max (n+nv, pv) + 5);
-
-        if (mw == 0 || weight == 'L' || weight == 'N')
-            lright = n*(m+5);
-        else
-            lright = (n+nw) * (n + nw + max (n+nw, mw) + 5);
-
-        ldwork =  max (lminl, lminr, lrcf,
-                       2*n*n + max (1, lleft, lright, 2*n*n+5*n, n*max (m, p)));
+        lsqred = max (1, 2*nc*nc+5*nc);
+        ldwork = 2*nc*nc + max (1, lfreq, lsqred);
 
         OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
         OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
@@ -353,19 +329,19 @@ For internal use only.")
         }
 
         // resize
-        a.resize (nr, nr);
-        b.resize (nr, m);
-        c.resize (p, nr);
-        hsv.resize (ns);
+        ac.resize (ncr, ncr);
+        bc.resize (ncr, p);    // p: number of plant outputs
+        cc.resize (m, ncr);    // m: number of plant inputs
+        hsvc.resize (ncs);
         
         // return values
-        retval(0) = a;
-        retval(1) = b;
-        retval(2) = c;
-        retval(3) = d;
-        retval(4) = octave_value (nr);
-        retval(5) = hsv;
-        retval(6) = octave_value (ns);
+        retval(0) = ac;
+        retval(1) = bc;
+        retval(2) = cc;
+        retval(3) = dc;
+        retval(4) = octave_value (ncr);
+        retval(5) = hsvc;
+        retval(6) = octave_value (ncs);
     }
     
     return retval;

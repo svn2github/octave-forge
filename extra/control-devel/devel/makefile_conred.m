@@ -12,7 +12,9 @@ develdir = fileparts (which ("makefile_conred"));
 srcdir = [develdir, "/../src"];
 cd (srcdir);
 
-mkoctfile SB16AD.f TB01ID.f SB16AY.f TB01KD.f AB09IX.f \
+mkoctfile "-Wl,-framework" "-Wl,vecLib" \
+          slsb16ad.cc \
+          SB16AD.f TB01ID.f SB16AY.f TB01KD.f AB09IX.f \
           MB04OD.f MB01WD.f SB03OD.f MB03UD.f AB05PD.f \
           AB09DD.f AB07ND.f TB01LD.f AB05QD.f SB03OU.f \
           MA02AD.f MB03QX.f select.f MB01YD.f MB01ZD.f \

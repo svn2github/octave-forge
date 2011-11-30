@@ -61,7 +61,7 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 19)
+    if (nargin != 15)
     {
         print_usage ();
     }
@@ -69,10 +69,9 @@ For internal use only.")
     {
         // arguments in
         char dico;
-        char jobc;
-        char jobo;
+        char jobd;
         char jobmr;
-        char weight;
+        char jobcf;
         char equil;
         char ordsel;
         
@@ -85,20 +84,16 @@ For internal use only.")
         const int iequil = args(5).int_value ();
         int ncr = args(6).int_value ();
         const int iordsel = args(7).int_value ();
-        double alpha = args(8).double_value ();
+        const int ijobd = args(8).int_value ();
         const int ijobmr = args(9).int_value ();
                        
-        Matrix ac = args(10).matrix_value ();
-        Matrix bc = args(11).matrix_value ();
-        Matrix cc = args(12).matrix_value ();
-        Matrix dc = args(13).matrix_value ();
-        
-        const int iweight = args(14).int_value ();
-        const int ijobc = args(15).int_value ();
-        const int ijobo = args(16).int_value ();
+        Matrix f = args(10).matrix_value ();
+        Matrix g = args(11).matrix_value ();
 
-        double tol1 = args(17).double_value ();
-        double tol2 = args(18).double_value ();
+        const int ijobcf = args(12).int_value ();
+        
+        double tol1 = args(13).double_value ();
+        double tol2 = args(14).double_value ();
 
         if (idico == 0)
             dico = 'C';
@@ -115,15 +110,15 @@ For internal use only.")
         else
             ordsel = 'A';
 
-        if (ijobc == 0)
-            jobc = 'S';
+        if (ijobd == 0)
+            jobd = 'Z';
         else
-            jobc = 'E';
+            jobd = 'D';
 
-        if (ijobo == 0)
-            jobo = 'S';
+        if (ijobcf == 0)
+            jobcf = 'L';
         else
-            jobo = 'E';
+            jobcf = 'R';
 
         switch (ijobmr)
         {
@@ -143,88 +138,64 @@ For internal use only.")
                 error ("slsb16bd: argument jobmr invalid");
         }
 
-        switch (iweight)
-        {
-            case 0:
-                weight = 'N';
-                break;
-            case 1:
-                weight = 'O';
-                break;
-            case 2:
-                weight = 'I';
-                break;
-            case 3:
-                weight = 'P';
-                break;
-            default:
-                error ("slsb16bd: argument weight invalid");
-        }
 
         int n = a.rows ();      // n: number of states
         int m = b.columns ();   // m: number of inputs
         int p = c.rows ();      // p: number of outputs
-        
-        int nc = ac.rows ();
 
         int lda = max (1, n);
         int ldb = max (1, n);
         int ldc = max (1, p);
-        int ldd = max (1, p);
+        int ldd;
+        
+        if (jobd == 'Z')
+            ldd = 1;
+        else
+            ldd = max (1, p);
 
-        int ldac = max (1, nc);
-        int ldbc = max (1, nc);
-        int ldcc = max (1, m);
+        int ldf = max (1, m);
+        int ldg = max (1, n);
         int lddc = max (1, m);
 
         // arguments out
-        int ncs;
-        ColumnVector hsvc (n);
+        Matrix dc (lddc, p);
+        ColumnVector hsv (n);
 
         // workspace
         int liwork;
-        int liwrk1;
-        int liwrk2;
+        int pm;
+
+        int ldwork;
+        int lwr = max (1, n*(2*n+max(n,m+p)+5)+n*(n+1)/2);
 
         switch (jobmr)
         {
             case 'B':
-                liwrk1 = 0;
+                pm = 0;
                 break;
             case 'F':
-                liwrk1 = nc;
+                pm = n;
                 break;
-            default:
-                liwrk1 = 2*nc;
+            default:                // if JOBMR = 'S' or 'P'
+                pm = max (1, 2*n);
         }
 
-        if (weight == 'N')
-            liwrk2 = 0;
-        else
-            liwrk2 = 2*(m+p);
-
-        liwork = max (1, liwrk1, liwrk2);
-
-        int ldwork;
-        int lfreq;
-        int lsqred;
-
-        if (weight == 'N')
+        if (ordsel == 'F' && ncr == n)
         {
-            if (equil == 'N')           // if WEIGHT = 'N' and EQUIL = 'N'
-                lfreq  = nc*(max (m, p) + 5);
-            else                        // if WEIGHT = 'N' and EQUIL  = 'S'
-                lfreq  = max (n, nc*(max (m, p) + 5));
-
+            liwork = 0;
+            ldwork = p*n;
         }
-        else                            // if WEIGHT = 'I' or 'O' or 'P'
+        else if (jobcf == 'L')
         {
-            lfreq = (n+nc)*(n+nc+2*m+2*p) +
-                     max ((n+nc)*(n+nc+max(n+nc,m,p)+7), (m+p)*(m+p+4));
+            liwork = max (pm, m);
+            ldwork = (n+m)*(m+p) + max (lwr, 4*m);
+        }
+        else                        // if JOBCF = 'R'
+        {
+            liwork = max (pm, p);
+            ldwork = (n+p)*(m+p) + max (lwr, 4*p);
         }
 
-        lsqred = max (1, 2*nc*nc+5*nc);
-        ldwork = 2*nc*nc + max (1, lfreq, lsqred);
 
         OCTAVE_LOCAL_BUFFER (int, iwork, liwork);
         OCTAVE_LOCAL_BUFFER (double, dwork, ldwork);
@@ -300,19 +271,18 @@ For internal use only.")
         }
 
         // resize
-        ac.resize (ncr, ncr);
-        bc.resize (ncr, p);    // p: number of plant outputs
-        cc.resize (m, ncr);    // m: number of plant inputs
-        hsvc.resize (ncs);
+        a.resize (ncr, ncr);    // Ac
+        g.resize (ncr, p);      // Bc
+        f.resize (m, ncr);      // Cc
+        dc.resize (m, p);       // Dc
         
         // return values
-        retval(0) = ac;
-        retval(1) = bc;
-        retval(2) = cc;
+        retval(0) = a;
+        retval(1) = g;
+        retval(2) = f;
         retval(3) = dc;
         retval(4) = octave_value (ncr);
-        retval(5) = hsvc;
-        retval(6) = octave_value (ncs);
+        retval(5) = hsv;
     }
     
     return retval;

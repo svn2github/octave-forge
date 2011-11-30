@@ -6,6 +6,7 @@ Minimization
  nrm
  fmin
  line_min
+ powell
  fmins adsmax mdsmax nmsmax
  bfgsmin samin battery
  fminsearch

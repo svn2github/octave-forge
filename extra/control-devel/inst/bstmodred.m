@@ -61,8 +61,8 @@
 ## unsolved so far.  Nevertheless, balanced truncation and related
 ## methods can be used to obtain good approximations using this measure.
 ##
-## Available approximation methods are the standard square-root (SR) or
-## the accuracy-enhanced balancing-free square-root (BFSR) versions of
+## Available approximation methods are the accuracy-enhancing square-root (SR)
+## or the balancing-free square-root (BFSR) versions of
 ## the Balance & Truncate (BTA) or Singular Perturbation Approximation (SPA) 
 ## model reduction methods for the ALPHA-stable part of the system.
 ##

@@ -32,6 +32,6 @@ function c = __opt2cell__ (opt)
   key = fieldnames (opt);
   val = struct2cell (opt);
   
-  c = [key.'; val.'](:);  # reshape to {key1; val1; key2; val2; ...}
+  c = [key.'; val.'](:).';  # reshape to {key1, val1, key2, val2, ...}
 
 endfunction

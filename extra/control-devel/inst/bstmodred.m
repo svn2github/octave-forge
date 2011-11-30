@@ -16,9 +16,11 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G})
-## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @dots{})
-## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @var{opt})
+## @deftypefn{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @dots{})
+## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @var{nr}, @dots{})
+## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @var{opt}, @dots{})
+## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} bstmodred (@var{G}, @var{nr}, @var{opt}, @dots{})
+##
 ## Model order reduction by Balanced Stochastic Truncation (BST) method.
 ## The aim of model reduction is to find an LTI system @var{Gr} of order
 ## @var{nr} (nr << n) such that the input-output behaviour of @var{Gr}
@@ -109,9 +111,9 @@
 ## @item G
 ## LTI model to be reduced.
 ## @item @dots{}
-## Pairs of keys and values.
+## Optional pairs of keys and values.
 ## @item opt
-## Struct with keys as field names.
+## Optional struct with keys as field names.
 ## @end table
 ##
 ## @strong{Outputs}
@@ -228,10 +230,23 @@ function [sysr, info] = bstmodred (sys, varargin)
     error ("bstmodred: first argument must be an LTI system");
   endif
 
-  if (nargin == 2)
-    varargin = __opt2cell__ (varargin{1});
-  elseif (rem (nargin-1, 2))
-    error ("bstmodred: properties and values must come in pairs");
+  if (nargin > 1)                                  # bstmodred (G, ...)
+    if (isstruct (varargin{1}))                    # bstmodred (G, opt, ...)
+      varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
+    elseif (is_real_scalar (varargin{1}))          # bstmodred (G, nr)
+      varargin = horzcat ({"order"}, varargin);
+      if (nargin > 2 && isstruct (varargin{3}))    # bstmodred (G, nr, ...)
+        varargin = horzcat (__opt2cell__ (varargin{3}), varargin([1:2, 4:end]));
+        ## varargin(1:2) placed after opt such that nr from bstmodred (G, nr, opt, ...)
+        ## overrides possible nr's inside opt struct (later keys override former keys)
+      endif
+    endif
+  endif
+  
+  narg = numel (varargin);
+  
+  if (rem (narg, 2))
+    error ("bstmodred: keys and values must come in pairs");
   endif
 
   [a, b, c, d, tsam, scaled] = ssdata (sys);
@@ -247,11 +262,11 @@ function [sysr, info] = bstmodred (sys, varargin)
   job = 1;
 
   ## handle properties and values
-  for k = 1 : 2 : (nargin-1)
+  for k = 1 : 2 : narg
     prop = lower (varargin{k});
     val = varargin{k+1};
     switch (prop)
-      case {"order", "n", "nr"}
+      case {"order", "nr"}
         [nr, ordsel] = __modred_check_order__ (val);
 
       case "tol1"
@@ -360,4 +375,3 @@ endfunction
 %! Me = [Ae, Be; Ce, De];
 %!
 %!assert (Mo, Me, 1e-4);
-

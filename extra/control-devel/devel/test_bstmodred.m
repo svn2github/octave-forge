@@ -26,3 +26,12 @@ sys = ss (A, B, C, D, "scaled", true);
 
 sysr = bstmodred (sys, "beta", 1.0, "tol1", 0.1, "tol2", 0.0)
 [Ao, Bo, Co, Do] = ssdata (sysr);
+
+
+opt = options ("beta", 1.0, "tol1", 0.1, "tol2", 0.0)
+sysr = bstmodred (sys, opt)
+
+
+sysr = bstmodred (sys, 5, "beta", 1.0, "tol1", 0.1, "tol2", 0.0)
+
+sysr = bstmodred (sys, 5, opt)

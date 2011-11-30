@@ -60,7 +60,7 @@ For internal use only.")
     int nargin = args.length ();
     octave_value_list retval;
     
-    if (nargin != 15)
+    if (nargin != 13)
     {
         print_usage ();
     }

@@ -243,9 +243,9 @@ function [sysr, info] = bstmodred (sys, varargin)
     ## nr > key/value > opt)
   endif
 
-  narg = numel (varargin);
+  npv = numel (varargin);                          # number of properties and values
   
-  if (rem (narg, 2))
+  if (rem (npv, 2))
     error ("bstmodred: keys and values must come in pairs");
   endif
 
@@ -262,7 +262,7 @@ function [sysr, info] = bstmodred (sys, varargin)
   job = 1;
 
   ## handle properties and values
-  for k = 1 : 2 : narg
+  for k = 1 : 2 : npv
     prop = lower (varargin{k});
     val = varargin{k+1};
     switch (prop)

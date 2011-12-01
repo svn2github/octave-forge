@@ -16,9 +16,11 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sysr}, @var{info}] =} hnamodred (@var{sys})
-## @deftypefnx{Function File} {[@var{sysr}, @var{info}] =} hnamodred (@var{sys}, @dots{})
-## @deftypefnx{Function File} {[@var{sysr}, @var{info}] =} hnamodred (@var{sys}, @var{opt})
+## @deftypefn{Function File} {[@var{Gr}, @var{info}] =} hnamodred (@var{G}, @dots{})
+## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} hnamodred (@var{G}, @var{nr}, @dots{})
+## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} hnamodred (@var{G}, @var{opt}, @dots{})
+## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} hnamodred (@var{G}, @var{nr}, @var{opt}, @dots{})
+##
 ## Model order reduction by frequency weighted optimal Hankel-norm approximation method.
 ##
 ## @strong{Inputs}
@@ -57,9 +59,22 @@ function [sysr, info] = hnamodred (sys, varargin)
     error ("hnamodred: first argument must be an LTI system");
   endif
 
-  if (nargin == 2)
-    varargin = __opt2cell__ (varargin{1});
-  elseif (rem (nargin-1, 2))
+  if (nargin > 1)                                  # hnamodred (G, ...)
+    if (is_real_scalar (varargin{1}))              # hnamodred (G, nr)
+      varargin = horzcat (varargin(2:end), {"order"}, varargin(1));
+    endif
+    if (isstruct (varargin{1}))                    # hnamodred (G, opt, ...), hnamodred (G, nr, opt, ...)
+      varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
+    endif
+    ## order placed at the end such that nr from hnamodred (G, nr, ...)
+    ## and hnamodred (G, nr, opt, ...) overrides possible nr's from
+    ## key/value-pairs and inside opt struct (later keys override former keys,
+    ## nr > key/value > opt)
+  endif
+
+  npv = numel (varargin);                          # number of properties and values
+
+  if (rem (npv, 2))
     error ("hnamodred: properties and values must come in pairs");
   endif
 
@@ -80,7 +95,7 @@ function [sysr, info] = hnamodred (sys, varargin)
   nr = 0;
 
   ## handle properties and values
-  for k = 1 : 2 : (nargin-1)
+  for k = 1 : 2 : npv
     prop = lower (varargin{k});
     val = varargin{k+1};
     switch (prop)

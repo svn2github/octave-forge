@@ -42,9 +42,22 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
     error ("%smodred: first argument must be an LTI system", method);
   endif
 
-  if (npv == 1)
-    varargin = __opt2cell__ (varargin{1});
-  elseif (rem (npv, 2))
+  if (nargin > 2)                                  # *modred (G, ...)
+    if (is_real_scalar (varargin{1}))              # *modred (G, nr)
+      varargin = horzcat (varargin(2:end), {"order"}, varargin(1));
+    endif
+    if (isstruct (varargin{1}))                    # *modred (G, opt, ...), *modred (G, nr, opt, ...)
+      varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
+    endif
+    ## order placed at the end such that nr from *modred (G, nr, ...)
+    ## and *modred (G, nr, opt, ...) overrides possible nr's from
+    ## key/value-pairs and inside opt struct (later keys override former keys,
+    ## nr > key/value > opt)
+  endif
+
+  npv = numel (varargin);                          # number of properties and values
+
+  if (rem (npv, 2))
     error ("%smodred: properties and values must come in pairs", method);
   endif
 

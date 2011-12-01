@@ -16,9 +16,11 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sysr}, @var{nr}] =} btamodred (@var{sys})
-## @deftypefnx{Function File} {[@var{sysr}, @var{nr}] =} btamodred (@var{sys}, @dots{})
-## @deftypefnx{Function File} {[@var{sysr}, @var{nr}] =} btamodred (@var{sys}, @var{opt})
+## @deftypefn{Function File} {[@var{Gr}, @var{nr}] =} btamodred (@var{G}, @dots{})
+## @deftypefnx{Function File} {[@var{Gr}, @var{nr}] =} btamodred (@var{G}, @var{nr}, @dots{})
+## @deftypefnx{Function File} {[@var{Gr}, @var{nr}] =} btamodred (@var{G}, @var{opt}, @dots{})
+## @deftypefnx{Function File} {[@var{Gr}, @var{nr}] =} btamodred (@var{G}, @var{nr}, @var{opt}, @dots{})
+##
 ## Model order reduction by frequency weighted optimal Hankel-norm approximation method.
 ##
 ## @strong{Inputs}

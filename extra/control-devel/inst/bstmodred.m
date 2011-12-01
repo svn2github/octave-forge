@@ -234,11 +234,13 @@ function [sysr, info] = bstmodred (sys, varargin)
     if (isstruct (varargin{1}))                    # bstmodred (G, opt, ...)
       varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
     elseif (is_real_scalar (varargin{1}))          # bstmodred (G, nr)
-      varargin = horzcat ({"order"}, varargin);
-      if (nargin > 2 && isstruct (varargin{3}))    # bstmodred (G, nr, ...)
-        varargin = horzcat (__opt2cell__ (varargin{3}), varargin([1:2, 4:end]));
-        ## varargin(1:2) placed after opt such that nr from bstmodred (G, nr, opt, ...)
-        ## overrides possible nr's inside opt struct (later keys override former keys)
+      varargin = horzcat (varargin(2:end), {"order"}, varargin(1));
+      ## order placed at the end such that nr from bstmodred (G, nr, ...)
+      ## and bstmodred (G, nr, opt, ...) overrides possible nr's from
+      ## key/value-pairs and inside opt struct (later keys override former keys,
+      ## nr > key/value > opt)
+      if (nargin > 2 && isstruct (varargin{1}))    # bstmodred (G, nr, opt, ...)
+        varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
       endif
     endif
   endif

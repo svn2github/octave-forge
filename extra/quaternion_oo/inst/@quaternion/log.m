@@ -39,5 +39,6 @@ function q = log (q)
   ##        p = log (exp (q))
   ##        p.v is wrong, probably somehow related to acos
   ## NOTE:  p = exp (log (q)) is calculated correctly
+  ## NOTE:  qtfm 1.9 returns the same "wrong" result
 
 endfunction

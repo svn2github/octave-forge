@@ -16,10 +16,10 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{Gr}, @var{info}] =} spamodred (@var{G}, @dots{})
-## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} spamodred (@var{G}, @var{nr}, @dots{})
-## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} spamodred (@var{G}, @var{opt}, @dots{})
-## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} spamodred (@var{G}, @var{nr}, @var{opt}, @dots{})
+## @deftypefn{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @var{nr}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @var{opt}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @var{nr}, @var{opt}, @dots{})
 ##
 ## Model order reduction by frequency weighted optimal Hankel-norm approximation method.
 ##
@@ -41,17 +41,17 @@
 ## @end table
 ##
 ## @strong{Algorithm}@*
-## Uses SLICOT AB09ID by courtesy of
+## Uses SLICOT SB16AD by courtesy of
 ## @uref{http://www.slicot.org, NICONET e.V.}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
-## Created: November 2011
+## Created: December 2011
 ## Version: 0.1
 
-function [sysr, info] = spamodred (varargin)
+function [Kr, info] = spaconred (varargin)
 
-  [sysr, info] = __modred_ab09id__ ("spa", varargin{:});
+  [Kr, info] = __conred_sb16ad__ ("spa", varargin{:});
 
 endfunction
 

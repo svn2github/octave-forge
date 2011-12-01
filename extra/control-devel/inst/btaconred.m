@@ -83,7 +83,7 @@ endfunction
 %!
 %! DC = [        0 ];
 %!
-%! K = ss (AV, BV, CV, DV, "scaled", true);
+%! K = ss (AC, BC, CC, DC, "scaled", true);
 %!
 %! Kr = btaconred (G, K, 2, "weight", "ERROR", "tol1", 0.1, "tol2", 0.0);
 %! [Ao, Bo, Co, Do] = ssdata (Kr);

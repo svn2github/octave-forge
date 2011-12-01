@@ -8,3 +8,6 @@
 
 pdftex quaternion.tex
 q
+
+Alternatively:
+Run generate_quaternion_pdf

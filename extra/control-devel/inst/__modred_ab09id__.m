@@ -36,7 +36,6 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
 
   sys = varargin{1};
   varargin = varargin(2:end);
-  npv = nargin - 2;                         # number of properties and values
   
   if (! isa (sys, "lti"))
     error ("%smodred: first argument must be an LTI system", method);

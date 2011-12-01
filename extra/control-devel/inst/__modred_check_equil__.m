@@ -22,7 +22,7 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function scaled = __modred_check_order__ (equil)
+function scaled = __modred_check_equil__ (equil)
 
   if (isscalar (equil))
     scaled = ! logical (equil);

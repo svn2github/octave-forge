@@ -1,4 +1,5 @@
-all: slab09hd.oct slab09id.oct slab09jd.oct slsb10yd.oct
+all: slab09hd.oct slab09id.oct slab09jd.oct slsb16ad.oct slsb16bd.oct \
+     slsb16cd.oct slsb10yd.oct
 
 # TODO: leading and trailing underscores for sl* functions
 #       (__sl*__.oct) would be nice, but this can be an issue
@@ -37,6 +38,33 @@ slab09jd.oct: slab09jd.cc
               SB04PX.f SB03OU.f MB03QD.f MB03QY.f SB03OT.f \
               MB04ND.f MB04OD.f SB03OR.f SB03OY.f MB04NY.f \
               MB04OY.f SB03OV.f
+
+# balanced truncation & singular perturbation approximation controller reduction
+slsb16ad.oct: slsb16ad.cc
+	mkoctfile slsb16ad.cc \
+              SB16AD.f TB01ID.f SB16AY.f TB01KD.f AB09IX.f \
+              MB04OD.f MB01WD.f SB03OD.f MB03UD.f AB05PD.f \
+              AB09DD.f AB07ND.f TB01LD.f AB05QD.f SB03OU.f \
+              MA02AD.f MB03QX.f select.f MB01YD.f MB01ZD.f \
+              SB03OT.f MB04OY.f MB03QD.f MB04ND.f MB03QY.f \
+              SB03OR.f SB03OY.f SB04PX.f MB04NY.f SB03OV.f
+
+# coprime factorization state-feedback controller reduction
+slsb16bd.oct: slsb16bd.cc
+	mkoctfile slsb16bd.cc \
+              SB16BD.f AB09AD.f AB09BD.f SB08GD.f SB08HD.f \
+              TB01ID.f AB09AX.f MA02GD.f AB09BX.f TB01WD.f \
+              MA02DD.f MB03UD.f select.f AB09DD.f SB03OU.f \
+              MA02AD.f SB03OT.f MB04ND.f MB04OD.f SB03OR.f \
+              SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
+
+# frequency-weighted coprime factorization state-feedback controller reduction
+slsb16cd.oct: slsb16cd.cc
+	mkoctfile slsb16cd.cc \
+              SB16CD.f SB16CY.f AB09IX.f SB03OD.f MB02UD.f \
+              AB09DD.f MA02AD.f MB03UD.f select.f SB03OU.f \
+              MB01SD.f SB03OT.f MB04ND.f MB04OD.f SB03OR.f \
+              SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
 
 # fit state-space model to frequency response data
 slsb10yd.oct: slsb10yd.cc

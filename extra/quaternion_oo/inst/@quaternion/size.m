@@ -18,32 +18,27 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.1
+## Version: 0.2
 
-function [s, varargout] = size (a, b)
+function varargout = size (a, b)
 
   switch (nargout)
     case {0, 1}
       switch (nargin)
-        case 1
-          s = size (a.w);
-
-        case 2
-          s = size (a.w, b);
-
+        case 1                          # nvec = size (q)
+          varargout{1} = size (a.w);
+        case 2                          # n = size (q, dim)
+          varargout{1} = size (a.w, b);
         otherwise
           print_usage ();
       endswitch
 
-    case 2
-      if (nargin == 1)
-        [s, varargout{1}] = size (a.w);
+    otherwise
+      if (nargin == 1)                  # [nx, ny, ...] = size (q)
+        varargout = num2cell (size (a.w));
       else
         print_usage ();
       endif
-
-    otherwise
-      print_usage ();
   endswitch
 
 endfunction

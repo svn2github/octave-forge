@@ -22,7 +22,7 @@
 ## Version: 0.1
 
 function ret = subsasgn (q, idx, val)
-
+idx, val
   error ("quaternion: subsasgn: under construction");
 
   switch (idx(1).type)

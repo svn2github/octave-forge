@@ -40,3 +40,14 @@ function a = diag (a, b = 0)
   a.z = diag (a.z, b);
 
 endfunction
+
+
+%!shared R, S
+%! Q = quaternion (2, 3, 4, 5);
+%! R = diag ([Q, Q, Q]);
+%! W = diag ([2, 2, 2]);
+%! X = diag ([3, 3, 3]);
+%! Y = diag ([4, 4, 4]);
+%! Z = diag ([5, 5, 5]);
+%! S = quaternion (W, X, Y, Z);
+%!assert (R, S);

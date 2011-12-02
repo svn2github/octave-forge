@@ -27,7 +27,7 @@ function q = subsasgn (q, idx, val)
     case "()"
       if (length (idx(1).subs) == 1 && isa (q, "quaternion"))  # required by horzcat, vertcat, cat, ...
         q(idx(1).subs{:}) = val;
-      else
+      else                                                     # general case
         val = quaternion (val);
         w = subsasgn (q.w, idx, val.w);
         x = subsasgn (q.x, idx, val.x);
@@ -36,63 +36,30 @@ function q = subsasgn (q, idx, val)
         q = quaternion (w, x, y, z);
       endif
 
+    case "."
+      if (! is_real_array (val))
+        error ("quaternion: subsasgn: invalid type");
+      endif
+      if (! size_equal (q.w, val))
+        error ("quaternion: subsasgn: invalid size");
+      endif
+      switch (tolower (idx(1).subs))
+        case {"w", "s"}
+          q.w = val;
+        case {"x", "i"}
+          q.x = val;
+        case {"y", "j"}
+          q.y = val;
+        case {"z", "k"}
+          q.z = val;
+        otherwise
+          error ("quaternion: subsasgn: invalid subscript name");
+      endswitch
+
     otherwise
       error ("quaternion: subsasgn: under construction");
   endswitch
 
-  ## TODO: q.w = matrix
-  ##       q.x(:, 1) = matrix
+  ## TODO: q.x(:, 1) = matrix
 
-  ## TODO: q(1:2, 3) = quaternion
-
-%{
-  switch (idx(1).type)
-    case "."
-      if (length (idx) == 1)
-        ret = set (q, idx.subs, val);
-      else
-        prop = idx(1).subs;
-        sys = set (q, prop, subsasgn (get (q, prop), idx(2:end), val));
-      endif
-
-    otherwise
-      error ("quaternion: subsasgn: invalid subscripted assignment type");
-
-  endswitch
-
-
-  switch (s(1).type)
-    case "."                                # q.w
-      switch (tolower (s(1).subs))
-        case {"w", "s"}                     # scalar part
-          ## ret = subsref (q.w, s(2:end));
-          ret = q.w;
-        case {"x", "i"}
-          ## ret = subsref (q.x, s(2:end));
-          ret = q.x;
-        case {"y", "j"}
-          ## ret = subsref (q.y, s(2:end));
-          ret = q.y;
-        case {"z", "k"}
-          ## ret = subsref (q.z, s(2:end));
-          ret = q.z;
-        case "v"                            # vector part, scalar part set to zero
-          q.w = zeros (size (q.w), class (q.w));
-          ## ret = subsref (q, s(2:end));
-          ret = q;
-        otherwise
-          error ("quaternion: invalid subscript name");
-      endswitch
-
-    case "()"                               # q(...)
-      w = subsref (q.w, s);
-      x = subsref (q.x, s);
-      y = subsref (q.y, s);
-      z = subsref (q.z, s);
-      ret = quaternion (w, x, y, z);
-      
-    otherwise
-      error ("quaternion: invalid subscript type");
-  endswitch
-%}
 endfunction

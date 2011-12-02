@@ -31,6 +31,7 @@ Overloaded Operators
   @quaternion/plus
   @quaternion/power
   @quaternion/rdivide
+  @quaternion/subsasgn
   @quaternion/subsref
   @quaternion/times
   @quaternion/transpose

@@ -25,16 +25,25 @@ function q = subsasgn (q, idx, val)
 
   switch (idx(1).type)
     case "()"
-      if (isa (q, "quaternion"))        # required for horzcat, vertcat, cat, ...
+      if (length (idx(1).subs) == 1 && isa (q, "quaternion"))  # required by horzcat, vertcat, cat, ...
         q(idx(1).subs{:}) = val;
       else
-        error ("quaternion: subsasgn: (): under construction");
+        val = quaternion (val);
+        w = subsasgn (q.w, idx, val.w);
+        x = subsasgn (q.x, idx, val.x);
+        y = subsasgn (q.y, idx, val.y);
+        z = subsasgn (q.z, idx, val.z);
+        q = quaternion (w, x, y, z);
       endif
 
     otherwise
       error ("quaternion: subsasgn: under construction");
   endswitch
 
+  ## TODO: q.w = matrix
+  ##       q.x(:, 1) = matrix
+
+  ## TODO: q(1:2, 3) = quaternion
 
 %{
   switch (idx(1).type)
@@ -51,10 +60,6 @@ function q = subsasgn (q, idx, val)
 
   endswitch
 
-  ## TODO: q.w = matrix
-  ##       q.x(:, 1) = matrix
-
-  ## TODO: q(1:2, 3) = quaternion
 
   switch (s(1).type)
     case "."                                # q.w

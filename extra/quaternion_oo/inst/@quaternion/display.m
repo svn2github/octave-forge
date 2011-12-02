@@ -25,14 +25,14 @@ function display (q)
   name = inputname(1);
   s = size (q);
   
-  if (ndims (s) == 2 && all (s == 1))  # scalar quaternion
+  if (length (s) == 2 && all (s == 1))  # scalar quaternion
     w = num2str (q.w, 4);
     x = __num2str__ (q.x);
     y = __num2str__ (q.y);
     z = __num2str__ (q.z);
     disp ([name, " = ", w, x, "i" y, "j", z, "k"]);
     disp ("");
-  else                                 # non-scalar quaternion
+  else                                  # non-scalar quaternion
     disp ([name, ".w ="]);
     disp (q.w);
     disp ("");

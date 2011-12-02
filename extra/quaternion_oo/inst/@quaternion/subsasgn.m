@@ -21,10 +21,22 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function ret = subsasgn (q, idx, val)
-idx, val
-  error ("quaternion: subsasgn: under construction");
+function q = subsasgn (q, idx, val)
 
+  switch (idx(1).type)
+    case "()"
+      if (isa (q, "quaternion"))        # required for horzcat, vertcat, cat, ...
+        q(idx(1).subs{:}) = val;
+      else
+        error ("quaternion: subsasgn: (): under construction");
+      endif
+
+    otherwise
+      error ("quaternion: subsasgn: under construction");
+  endswitch
+
+
+%{
   switch (idx(1).type)
     case "."
       if (length (idx) == 1)
@@ -77,5 +89,5 @@ idx, val
     otherwise
       error ("quaternion: invalid subscript type");
   endswitch
-
+%}
 endfunction

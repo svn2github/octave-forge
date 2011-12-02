@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010   Lukas F. Reichlin
+Copyright (C) 2011   Lukas F. Reichlin
 
 This file is part of LTI Syncope.
 
@@ -17,24 +17,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
-Return true if argument is a real matrix.
+Return true if argument is a real array.
 
 Author: Lukas Reichlin <lukas.reichlin@gmail.com>
-Created: September 2010
-Version: 0.1
+Created: November 2011
+Version: 0.2
 
 */
 
 #include <octave/oct.h>
 
-DEFUN_DLD (is_real_matrice, args, nargout,
+DEFUN_DLD (is_real_array, args, nargout,
    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} is_real_matrice (@var{a}, @dots{})\n\
-Return true if argument is a real matrix.\n\
-@var{[]} is a valid matrix.\n\
+@deftypefn {Loadable Function} {} is_real_array (@var{a}, @dots{})\n\
+Return true if argument is a real array.\n\
+@var{[]} is a valid array.\n\
 Avoid nasty stuff like @code{true = isreal (\"a\")}.\n\
-Renamed to is_real_matrice to avoid conflicts with \n\
-is_real_matrix from the control package.\n\
 @end deftypefn")
 {
     octave_value retval = true;
@@ -48,7 +46,8 @@ is_real_matrix from the control package.\n\
     {
         for (int i = 0; i < nargin; i++)
         {
-            if (args(i).ndims () != 2 || ! args(i).is_numeric_type ()
+            // args(i).ndims () should be always >= 2
+            if (args(i).ndims () < 2 || ! args(i).is_numeric_type ()
                 || ! args(i).is_real_type ())
             {
                 retval = false;

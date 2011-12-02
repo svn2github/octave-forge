@@ -98,7 +98,7 @@ function q = quaternion (a, b, c, d)
       print_usage ();
   endswitch
 
-  if (! is_real_matrice (a, b, c, d))
+  if (! is_real_array (a, b, c, d))
     error ("quaternion: arguments must be real matrices");
   endif
 

@@ -12,7 +12,7 @@ develdir = fileparts (which ("makefile_quaternion"));
 srcdir = [develdir, "/../src"];
 cd (srcdir);
 
-mkoctfile is_real_matrice.cc
+mkoctfile is_real_array.cc
 
 system ("rm *.o");
 cd (homedir);

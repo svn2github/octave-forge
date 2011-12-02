@@ -14,7 +14,37 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @deftypefn {Function File} {@var{nvec} =} size (@var{q})
+## @deftypefnx {Function File} {@var{n} =} size (@var{q}, @var{dim})
+## @deftypefnx {Function File} {[@var{nx}, @var{ny}, @dots{}] =} size (@var{q})
 ## Return size of quaternion arrays.
+##
+## @strong{Inputs}
+## @table @var
+## @item q
+## Quaternion object.
+## @item dim
+## If given a second argument, @command{size} will return the size of the
+## corresponding dimension.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item nvec
+## Row vector.  The first element is the number of rows and the second
+## element the number of columns.  If @var{q} is an n-dimensional array
+## of quaternions, the n-th element of @var{nvec} corresponds to the
+## size of the n-th dimension of @var{q}.
+## @item n
+## Scalar value.  The size of the dimension @var{dim}.
+## @item nx
+## Number of rows.
+## @item ny
+## Number of columns.
+## @item @dots{}
+## Sizes of the 3rd to n-th dimensions.
+## @end table
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010

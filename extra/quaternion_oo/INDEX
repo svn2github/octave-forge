@@ -5,6 +5,7 @@ Quaternions
   rot2q
 Methods
   @quaternion/abs
+  @quaternion/blkdiag
   @quaternion/cat
   @quaternion/columns
   @quaternion/conj

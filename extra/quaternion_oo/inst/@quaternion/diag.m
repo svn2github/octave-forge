@@ -50,4 +50,4 @@ endfunction
 %! Y = diag ([4, 4, 4]);
 %! Z = diag ([5, 5, 5]);
 %! S = quaternion (W, X, Y, Z);
-%!assert (R, S);
+%!assert (R == S);

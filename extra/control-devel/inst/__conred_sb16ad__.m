@@ -16,7 +16,7 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sysr}, @var{info}] =} __conred_sb16ad__ (@var{method}, @dots{})
+## @deftypefn{Function File} {[@var{Kr}, @var{info}] =} __conred_sb16ad__ (@var{method}, @dots{})
 ## Backend for btaconred and spaconred.
 ## @end deftypefn
 
@@ -24,7 +24,7 @@
 ## Created: December 2011
 ## Version: 0.1
 
-function [sysr, info] = __conred_sb16ad__ (method, varargin)
+function [Kr, info] = __conred_sb16ad__ (method, varargin)
 
   if (nargin < 3)
     print_usage ();
@@ -70,6 +70,12 @@ function [sysr, info] = __conred_sb16ad__ (method, varargin)
   [p, m] = size (G);
   [pc, mc] = size (K);
   dt = isdt (G);
+
+  if (p != mc || m != pc)
+    error ("%sconred: dimensions of controller (%dx%d) and plant (%dx%d) don't match", \
+           method, pc, mc, p, c);
+  endif
+
 
   ## default arguments
   alpha = __modred_default_alpha__ (dt);
@@ -154,17 +160,15 @@ function [sysr, info] = __conred_sb16ad__ (method, varargin)
   
   
   ## perform model order reduction
-  [ar, br, cr, dr, nr, hsv, ns] = slab09id (a, b, c, d, dico, equil, nr, ordsel, alpha, job, \
-                                            av, bv, cv, dv, \
-                                            aw, bw, cw, dw, \
-                                            weight, jobc, jobo, alphac, alphao, \
-                                            tol1, tol2);
+  [acr, bcr, ccr, dcr, ncr, hsvc, ncs] = slsb16ad (a, b, c, d, dico, equil, ncr, ordsel, alpha, jobmr, \
+                                                   ac, bc, cc, dc, \
+                                                   weight, jobc, jobo, tol1, tol2);
 
-  ## assemble reduced order model
-  sysr = ss (ar, br, cr, dr, tsam);
+  ## assemble reduced order controller
+  Kr = ss (acr, bcr, ccr, dcr, tsamc);
 
   ## assemble info struct  
-  info = struct ("nr", nr, "ns", ns, "hsv", hsv);
+  info = struct ("ncr", ncr, "ncs", ncs, "hsvc", hsvc);
 
 endfunction
 

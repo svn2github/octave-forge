@@ -37,7 +37,7 @@ end;
 fn = {'buy','humid','prdsale'};
 for k1 = 1:length(fn);
 	X = xptopen(fn{k1},'r');
-%	xptopen([fn{k1},'.xpt'],'w',X);
+	xptopen([fn{k1},'.xpt'],'w',X);
 	f = fieldnames(X);
 
 	fid = fopen([fn{k1},'.csv'],'w');

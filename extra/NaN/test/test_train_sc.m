@@ -30,7 +30,7 @@ c=[1:N]'*2>N;
 
 W3 = [ones(1,N/2)/5,ones(1,N/10)];
 for l=1:length(classifier),
-	fprintf(1,'%s\n',classifier(l));
+	fprintf(1,'%s\n',classifier{l});
 for k=1:10,
 
 x=randn(N,2);

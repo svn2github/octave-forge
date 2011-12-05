@@ -54,10 +54,10 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
     ## nr > key/value > opt)
   endif
 
-  npv = numel (varargin);                          # number of properties and values
+  nkv = numel (varargin);                          # number of keys and values
 
-  if (rem (npv, 2))
-    error ("%smodred: properties and values must come in pairs", method);
+  if (rem (nkv, 2))
+    error ("%smodred: keys and values must come in pairs", method);
   endif
 
   [a, b, c, d, tsam, scaled] = ssdata (sys);
@@ -73,7 +73,6 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
   alphac = alphao = 0.0;
   tol1 = 0.0;
   tol2 = 0.0;
-  dico = 0;
   jobc = jobo = 0;
   bf = true;                                # balancing-free
   weight = 1;
@@ -81,11 +80,11 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
   ordsel = 1;
   nr = 0;
 
-  ## handle properties and values
-  for k = 1 : 2 : npv
-    prop = lower (varargin{k});
+  ## handle keys and values
+  for k = 1 : 2 : nkv
+    key = lower (varargin{k});
     val = varargin{k+1};
-    switch (prop)
+    switch (key)
       case {"left", "v"}
         [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt, p, []);
 
@@ -147,7 +146,7 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
   
   
   ## perform model order reduction
-  [ar, br, cr, dr, nr, hsv, ns] = slab09id (a, b, c, d, dico, equil, nr, ordsel, alpha, job, \
+  [ar, br, cr, dr, nr, hsv, ns] = slab09id (a, b, c, d, dt, equil, nr, ordsel, alpha, job, \
                                             av, bv, cv, dv, \
                                             aw, bw, cw, dw, \
                                             weight, jobc, jobo, alphac, alphao, \

@@ -72,10 +72,10 @@ function [sysr, info] = hnamodred (sys, varargin)
     ## nr > key/value > opt)
   endif
 
-  npv = numel (varargin);                          # number of properties and values
+  nkv = numel (varargin);                          # number of keys and values
 
-  if (rem (npv, 2))
-    error ("hnamodred: properties and values must come in pairs");
+  if (rem (nkv, 2))
+    error ("hnamodred: keys and values must come in pairs");
   endif
 
   [a, b, c, d, tsam, scaled] = ssdata (sys);
@@ -94,11 +94,11 @@ function [sysr, info] = hnamodred (sys, varargin)
   ordsel = 1;
   nr = 0;
 
-  ## handle properties and values
-  for k = 1 : 2 : npv
-    prop = lower (varargin{k});
+  ## handle keys and values
+  for k = 1 : 2 : nkv
+    key = lower (varargin{k});
     val = varargin{k+1};
-    switch (prop)
+    switch (key)
       case {"left", "v"}
         [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt, p, p);
         ## TODO: correct error messages for non-square weights

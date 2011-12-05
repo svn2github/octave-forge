@@ -59,10 +59,10 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
     ## nr > key/value > opt)
   endif
 
-  npv = numel (varargin);                          # number of properties and values
+  nkv = numel (varargin);                          # number of keys and values
 
-  if (rem (npv, 2))
-    error ("%sconred: properties and values must come in pairs", method);
+  if (rem (nkv, 2))
+    error ("%sconred: keys and values must come in pairs", method);
   endif
 
   [a, b, c, d, tsam, scaled] = ssdata (G);
@@ -79,34 +79,37 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
 
   ## default arguments
   alpha = __modred_default_alpha__ (dt);
-  av = bv = cv = dv = [];
-  jobv = 0;
-  aw = bw = cw = dw = [];
-  jobw = 0;
-  alphac = alphao = 0.0;
   tol1 = 0.0;
   tol2 = 0.0;
-  dico = 0;
+  dico = 0; %%%%%%%%%%
   jobc = jobo = 0;
   bf = true;                                # balancing-free
-  weight = 1;
+  weight = 0;
   equil = 0;
   ordsel = 1;
-  nr = 0;
+  ncr = 0;
 
-  ## handle properties and values
-  for k = 1 : 2 : npv
-    prop = lower (varargin{k});
+  ## handle keys and values
+  for k = 1 : 2 : nkv
+    key = lower (varargin{k});
     val = varargin{k+1};
-    switch (prop)
-      case {"left", "v"}
-        [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt, p, []);
+    switch (key)
+      case "weight"
+        switch (lower (val(1)))
+          case "n"                          # none
+            weight = 0;
+          case {"l", "o"}                   # left, output
+            weight = 1;
+          case {"r", "i"}                   # right, input
+            weight = 2;
+          case {"b", "p"}                   # both, performance
+            weight = 3;
+          otherwise
+            error ("%sconred: ""%s"" is an invalid value for key weight", method, val);
+        endswitch
 
-      case {"right", "w"}
-        [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt, [], m);
-
-      case {"order", "n", "nr"}
-        [nr, ordsel] = __modred_check_order__ (val);
+      case {"order", "ncr", "nr"}
+        [ncr, ordsel] = __modred_check_order__ (val);
 
       case "tol1"
         tol1 = __modred_check_tol__ (val, "tol1");
@@ -127,35 +130,25 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
             error ("modred: ""%s"" is an invalid approach", val);
         endswitch
 
-      ## TODO: alphac, alphao, jobc, jobo
+      ## TODO: jobc, jobo
 
       otherwise
         warning ("modred: invalid property name ""%s"" ignored", prop);
     endswitch
   endfor
 
-  ## handle type of frequency weighting
-  if (jobv && jobw)
-    weight = 3;                             # 'B':  both left and right weightings V and W are used
-  elseif (jobv)
-    weight = 1;                             # 'L':  only left weighting V is used (W = I)
-  elseif (jobw)
-    weight = 2;                             # 'R':  only right weighting W is used (V = I)
-  else
-    weight = 0;                             # 'N':  no weightings are used (V = I, W = I)
-  endif
   
   ## handle model reduction approach
   if (method == "bta" && ! bf)              # 'B':  use the square-root Balance & Truncate method
-    job = 0;
+    jobmr = 0;
   elseif (method == "bta" && bf)            # 'F':  use the balancing-free square-root Balance & Truncate method
-    job = 1;
+    jobmr = 1;
   elseif (method == "spa" && ! bf)          # 'S':  use the square-root Singular Perturbation Approximation method
-    job = 2;
+    jobmr = 2;
   elseif (method == "spa" && bf)            # 'P':  use the balancing-free square-root Singular Perturbation Approximation method
-    job = 3;
+    jobmr = 3;
   else
-    error ("modred: invalid job option");   # this should never happen
+    error ("modred: invalid jobmr option"); # this should never happen
   endif
   
   

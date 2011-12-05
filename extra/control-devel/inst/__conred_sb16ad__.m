@@ -136,7 +136,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
         scaled = __modred_check_equil__ (val);
 
       otherwise
-        warning ("modred: invalid property name ""%s"" ignored", key);
+        warning ("%sconred: invalid property name ""%s"" ignored", method, key);
     endswitch
   endfor
 
@@ -151,7 +151,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
   elseif (method == "spa" && bf)            # 'P':  use the balancing-free square-root Singular Perturbation Approximation method
     jobmr = 3;
   else
-    error ("modred: invalid jobmr option"); # this should never happen
+    error ("%smodred: invalid jobmr option"); # this should never happen
   endif
   
   

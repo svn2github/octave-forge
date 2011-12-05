@@ -98,7 +98,7 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
   nkv = numel (varargin);                          # number of keys and values
 
   if (rem (nkv, 2))
-    error ("%sconred: keys and values must come in pairs", method);
+    error ("cfconred: keys and values must come in pairs");
   endif
 
   [a, b, c, d, tsam, scaled] = ssdata (Go);
@@ -146,7 +146,7 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
           case {"b", "p"}                   # both, performance
             weight = 3;
           otherwise
-            error ("%sconred: ""%s"" is an invalid value for key weight", method, val);
+            error ("cfconred: ""%s"" is an invalid value for key weight", val);
         endswitch
 
       case {"order", "ncr", "nr"}
@@ -177,7 +177,7 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
         scaled = __modred_check_equil__ (val);
 
       otherwise
-        warning ("modred: invalid property name ""%s"" ignored", key);
+        warning ("cfconred: invalid property name ""%s"" ignored", key);
     endswitch
   endfor
 

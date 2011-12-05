@@ -91,7 +91,7 @@ endfunction
 %!
 %! sysv = ss (AV, BV, CV, DV);
 %!
-%! sysr = btamodred (sys, "nr", 2, "left", sysv, "tol1", 0.1, "tol2", 0.0);
+%! sysr = btamodred (sys, 2, "left", sysv, "tol1", 0.1, "tol2", 0.0);
 %! [Ao, Bo, Co, Do] = ssdata (sysr);
 %!
 %! Ae = [  9.1900   0.0000

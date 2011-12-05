@@ -302,7 +302,7 @@ function [sysr, info] = bstmodred (sys, varargin)
         scaled = __modred_check_equil__ (val);
 
       otherwise
-        warning ("bstmodred: invalid property name ""%s"" ignored", prop);
+        warning ("bstmodred: invalid property name ""%s"" ignored", key);
     endswitch
   endfor
   

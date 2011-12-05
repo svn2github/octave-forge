@@ -177,7 +177,7 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
         scaled = __modred_check_equil__ (val);
 
       otherwise
-        warning ("modred: invalid property name ""%s"" ignored", prop);
+        warning ("modred: invalid property name ""%s"" ignored", key);
     endswitch
   endfor
 

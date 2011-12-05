@@ -119,7 +119,7 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
         scaled = __modred_check_equil__ (val);
 
       otherwise
-        warning ("modred: invalid property name ""%s"" ignored", prop);
+        warning ("modred: invalid property name ""%s"" ignored", key);
     endswitch
   endfor
 

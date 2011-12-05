@@ -158,7 +158,7 @@ function [sysr, info] = hnamodred (sys, varargin)
         scaled = __modred_check_equil__ (val);
 
       otherwise
-        warning ("hnamodred: invalid property name ""%s"" ignored", prop);
+        warning ("hnamodred: invalid property name ""%s"" ignored", key);
     endswitch
   endfor
 

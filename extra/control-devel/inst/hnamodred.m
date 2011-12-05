@@ -154,6 +154,9 @@ function [sysr, info] = hnamodred (sys, varargin)
             error ("hnamodred: invalid computational approach");
         endswitch
 
+      case {"equil", "equilibrate", "equilibration", "scale", "scaling"}
+        scaled = __modred_check_equil__ (val);
+
       otherwise
         warning ("hnamodred: invalid property name ""%s"" ignored", prop);
     endswitch

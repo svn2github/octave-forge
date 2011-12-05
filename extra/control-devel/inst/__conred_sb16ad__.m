@@ -81,13 +81,13 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
   alpha = __modred_default_alpha__ (dt);
   tol1 = 0.0;
   tol2 = 0.0;
-  dico = 0; %%%%%%%%%%
   jobc = jobo = 0;
   bf = true;                                # balancing-free
   weight = 0;
-  equil = 0;
+  equil = scaled && scaledc;
   ordsel = 1;
   ncr = 0;
+
 
   ## handle keys and values
   for k = 1 : 2 : nkv
@@ -131,6 +131,9 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
         endswitch
 
       ## TODO: jobc, jobo
+      
+      case {"equil", "equilibrate", "equilibration", "scale", "scaling"}
+        scaled = __modred_check_equil__ (val);
 
       otherwise
         warning ("modred: invalid property name ""%s"" ignored", prop);
@@ -153,7 +156,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
   
   
   ## perform model order reduction
-  [acr, bcr, ccr, dcr, ncr, hsvc, ncs] = slsb16ad (a, b, c, d, dico, equil, ncr, ordsel, alpha, jobmr, \
+  [acr, bcr, ccr, dcr, ncr, hsvc, ncs] = slsb16ad (a, b, c, d, dt, equil, ncr, ordsel, alpha, jobmr, \
                                                    ac, bc, cc, dc, \
                                                    weight, jobc, jobo, tol1, tol2);
 

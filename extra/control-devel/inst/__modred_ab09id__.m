@@ -115,6 +115,9 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
 
       ## TODO: alphac, alphao, jobc, jobo
 
+      case {"equil", "equilibrate", "equilibration", "scale", "scaling"}
+        scaled = __modred_check_equil__ (val);
+
       otherwise
         warning ("modred: invalid property name ""%s"" ignored", prop);
     endswitch

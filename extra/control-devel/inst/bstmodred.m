@@ -295,14 +295,14 @@ function [sysr, info] = bstmodred (sys, varargin)
           case {"bfsr-spa", "p"}     # 'P':  use the balancing-free square-root Singular Perturbation Approximation method
             job = 3; 
           otherwise
-            error ("bstmodred: ""%s"" is an invalid approximation method", val);
+            error ("bstmodred: '%s' is an invalid approximation method", val);
         endswitch
 
       case {"equil", "equilibrate", "equilibration", "scale", "scaling"}
         scaled = __modred_check_equil__ (val);
 
       otherwise
-        warning ("bstmodred: invalid property name ""%s"" ignored", key);
+        warning ("bstmodred: invalid property name '%s' ignored", key);
     endswitch
   endfor
   

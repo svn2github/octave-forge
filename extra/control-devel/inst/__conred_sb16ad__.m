@@ -105,7 +105,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
           case {"b", "p"}                   # both, performance
             weight = 3;
           otherwise
-            error ("%sconred: ""%s"" is an invalid value for key weight", method, val);
+            error ("%sconred: '%s' is an invalid value for key weight", method, val);
         endswitch
 
       case {"order", "ncr", "nr"}
@@ -127,7 +127,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
           case "bfsr"
             bf = true;
           otherwise
-            error ("modred: ""%s"" is an invalid approach", val);
+            error ("modred: '%s' is an invalid approach", val);
         endswitch
 
       ## TODO: jobc, jobo
@@ -136,7 +136,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
         scaled = __modred_check_equil__ (val);
 
       otherwise
-        warning ("%sconred: invalid property name ""%s"" ignored", method, key);
+        warning ("%sconred: invalid property name '%s' ignored", method, key);
     endswitch
   endfor
 

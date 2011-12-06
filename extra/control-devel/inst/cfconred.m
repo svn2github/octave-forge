@@ -146,7 +146,7 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
           case {"b", "p"}                   # both, performance
             weight = 3;
           otherwise
-            error ("cfconred: ""%s"" is an invalid value for key weight", val);
+            error ("cfconred: '%s' is an invalid value for key weight", val);
         endswitch
 
       case {"order", "ncr", "nr"}
@@ -168,7 +168,7 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
           case "bfsr"
             bf = true;
           otherwise
-            error ("modred: ""%s"" is an invalid approach", val);
+            error ("modred: '%s' is an invalid approach", val);
         endswitch
 
       ## TODO: jobc, jobo
@@ -177,7 +177,7 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
         scaled = __modred_check_equil__ (val);
 
       otherwise
-        warning ("cfconred: invalid property name ""%s"" ignored", key);
+        warning ("cfconred: invalid property name '%s' ignored", key);
     endswitch
   endfor
 

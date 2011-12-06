@@ -110,7 +110,7 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
           case "bfsr"
             bf = true;
           otherwise
-            error ("modred: ""%s"" is an invalid approach", val);
+            error ("modred: '%s' is an invalid approach", val);
         endswitch
 
       ## TODO: alphac, alphao, jobc, jobo
@@ -119,7 +119,7 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
         scaled = __modred_check_equil__ (val);
 
       otherwise
-        warning ("%smodred: invalid property name ""%s"" ignored", method, key);
+        warning ("%smodred: invalid property name '%s' ignored", method, key);
     endswitch
   endfor
 

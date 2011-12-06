@@ -27,7 +27,7 @@ function scaled = __modred_check_equil__ (equil)
   if (isscalar (equil))
     scaled = ! logical (equil);
   else
-    error ("modred: property ""equil"" must be a logical value");
+    error ("modred: property 'equil' must be a logical value");
   endif
 
 endfunction

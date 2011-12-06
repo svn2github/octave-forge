@@ -32,12 +32,12 @@
 ##
 ## This implementation should return values within 2.5*eps of its
 ## counterpart in Maple V, release 3 or later.  Please report any
-## discrepancies to the author, Nici Schraudolph <schraudo@inf.ethz.ch>.
+## discrepancies to the author, Nici Schraudolph <schraudo@@inf.ethz.ch>.
 ##
 ## For further details, see:
 ##
-## Corless, Gonnet, Hare, Jeffrey, and Knuth (1996), "On the Lambert
-## W Function", Advances in Computational Mathematics 5(4):329-359.
+## Corless, Gonnet, Hare, Jeffrey, and Knuth (1996), `On the Lambert
+## W Function', Advances in Computational Mathematics 5(4):329-359.
 ## @end deftypefn
 
 %% Author:   Nicol N. Schraudolph <schraudo@inf.ethz.ch>

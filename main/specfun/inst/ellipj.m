@@ -163,9 +163,9 @@ endfunction
 %! U = u' * ones(1, length(m));
 %! [sn, cn, dn] = ellipj(U,M);
 %! c = colormap; colormap(hot(64)); 
-%! image(m,u,32*clip(sn,[-1,1])+32,1); 
-%! image(m,u,32*clip(cn,[-1,1])+32,1); 
-%! image(m,u,32*clip(dn,[-1,1])+32,1);
+%! image(m,u,32*clip(sn,[-1,1])+32,1); # clip function belongs to audio package
+%! image(m,u,32*clip(cn,[-1,1])+32,1); # clip function belongs to audio package
+%! image(m,u,32*clip(dn,[-1,1])+32,1); # clip function belongs to audio package
 %! colormap(c);
 
 %!demo

@@ -82,7 +82,7 @@ function q = quaternion (a, b, c, d)
       if (isa (a, "quaternion"))        # quaternion (q)
         q = a;
         return;
-      elseif (is_real_array (a))      # quaternion (w)
+      elseif (is_real_array (a))        # quaternion (w)
         b = c = d = zeros (size (a));
       else
         print_usage ();

@@ -29,7 +29,7 @@ function n = norm (a)
   endif
   
   if (! isscalar (a.w))
-    warning ("norm: use ""abs"" to calculate the lengths of quaternion arrays");
+    warning ("norm: use 'abs' to calculate the lengths of quaternion arrays");
     error ("norm: only the 2-norm of scalar quaternions is implemented until now");
   endif
 

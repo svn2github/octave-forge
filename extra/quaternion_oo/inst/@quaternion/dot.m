@@ -50,13 +50,13 @@ function qd = dot (q, Omega)
   endif
 
   if (! isa (q, "quaternion") || ! isscalar (q.w))
-    error ("quaternion: first argument ""%s"" must be a scalar quaternion", inputname(1));
+    error ("quaternion: first argument '%s' must be a scalar quaternion", inputname(1));
   endif
 
   Omega = vec (Omega);
 
   if (length (Omega) != 3)
-    error ("quaternion: second argument ""%s"" must be a length 3 vector", inputname(2));
+    error ("quaternion: second argument '%s' must be a length 3 vector", inputname(2));
   endif
 
   qd = 0.5 * quaternion (Omega(1), Omega(2), Omega(3)) * q;

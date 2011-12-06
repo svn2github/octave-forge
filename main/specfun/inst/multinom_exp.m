@@ -87,6 +87,6 @@ end
 %!demo
 %! m=2;
 %! n=3;
-%! alpha = multinomExp(m,n)
-%! alpha_asc = multinomExp(m,n,'ascend')
-%! alpha_dec = multinomExp(m,n,'descend')
+%! alpha = multinom_exp(m,n)
+%! alpha_asc = multinom_exp(m,n,'ascend')
+%! alpha_dec = multinom_exp(m,n,'descend')

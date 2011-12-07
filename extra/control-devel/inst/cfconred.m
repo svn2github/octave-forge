@@ -107,6 +107,7 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
   [mf, nf] = size (F);
   [ng, pg] = size (G);
   dt = isdt (Go);
+  jobd = any (d(:));
 
   if (mf != m || nf != n)
     error ("cfconred: dimensions of state-feedback matrix (%dx%d) and plant (%dx%d, %d states) don't match", \
@@ -119,12 +120,10 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
   endif
 
   ## default arguments
-  alpha = __modred_default_alpha__ (dt);
   tol1 = 0.0;
   tol2 = 0.0;
-  jobc = jobo = 0;
-  bf = true;                                # balancing-free
-  weight = 0;
+  jobcf = 0;
+  jobmr = 2;                                       # balancing-free BTA
   equil = scaled && scaledc;
   ordsel = 1;
   ncr = 0;
@@ -135,20 +134,6 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
     key = lower (varargin{k});
     val = varargin{k+1};
     switch (key)
-      case "weight"
-        switch (lower (val(1)))
-          case "n"                          # none
-            weight = 0;
-          case {"l", "o"}                   # left, output
-            weight = 1;
-          case {"r", "i"}                   # right, input
-            weight = 2;
-          case {"b", "p"}                   # both, performance
-            weight = 3;
-          otherwise
-            error ("cfconred: '%s' is an invalid value for key weight", val);
-        endswitch
-
       case {"order", "ncr", "nr"}
         [ncr, ordsel] = __modred_check_order__ (val);
 
@@ -158,59 +143,53 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
       case "tol2"
         tol2 = __modred_check_tol__ (val, "tol2");
 
-      case "alpha"
-        alpha = __modred_check_alpha__ (val, dt);
-
-      case "approach"
-        switch (tolower (val))
-          case "sr"
-            bf = false;
-          case "bfsr"
-            bf = true;
+      case "cf"
+        switch (lower (val(1)))
+          case "l"
+            jobcf = 0;
+          case "r"
+            jobcf = 1;
           otherwise
-            error ("modred: '%s' is an invalid approach", val);
+            error ("cfconred: '%s' is an invalid coprime factorization", val);
         endswitch
 
-      ## TODO: jobc, jobo
+      case {"method", "approach", "approx"}        # approximation method
+        switch (tolower (val))
+          case {"sr-bta", "b"}                     # 'B':  use the square-root Balance & Truncate method
+            jobmr = 0;
+          case {"bfsr-bta", "f"}                   # 'F':  use the balancing-free square-root Balance & Truncate method
+            jobmr = 1;
+          case {"sr-spa", "s"}                     # 'S':  use the square-root Singular Perturbation Approximation method
+            jobmr = 2;
+          case {"bfsr-spa", "p"}                   # 'P':  use the balancing-free square-root Singular Perturbation Approximation method
+            jobmr = 3; 
+          otherwise
+            error ("cfconred: '%s' is an invalid approach", val);
+        endswitch
       
       case {"equil", "equilibrate", "equilibration", "scale", "scaling"}
-        scaled = __modred_check_equil__ (val);
+        equil = __modred_check_equil__ (val);
 
       otherwise
         warning ("cfconred: invalid property name '%s' ignored", key);
     endswitch
   endfor
 
-  
-  ## handle model reduction approach
-  if (method == "bta" && ! bf)              # 'B':  use the square-root Balance & Truncate method
-    jobmr = 0;
-  elseif (method == "bta" && bf)            # 'F':  use the balancing-free square-root Balance & Truncate method
-    jobmr = 1;
-  elseif (method == "spa" && ! bf)          # 'S':  use the square-root Singular Perturbation Approximation method
-    jobmr = 2;
-  elseif (method == "spa" && bf)            # 'P':  use the balancing-free square-root Singular Perturbation Approximation method
-    jobmr = 3;
-  else
-    error ("modred: invalid jobmr option"); # this should never happen
-  endif
-  
-  
+
   ## perform model order reduction
-  [acr, bcr, ccr, dcr, ncr, hsvc, ncs] = slsb16ad (a, b, c, d, dt, equil, ncr, ordsel, alpha, jobmr, \
-                                                   ac, bc, cc, dc, \
-                                                   weight, jobc, jobo, tol1, tol2);
+  [acr, bcr, ccr, dcr, ncr, hsv] = slsb16bd (a, b, c, d, dt, equil, ncr, ordsel, jobd, jobmr, \
+                                             F, G, jobcf, tol1, tol2);
 
   ## assemble reduced order controller
-  Kr = ss (acr, bcr, ccr, dcr, tsamc);
+  Kr = ss (acr, bcr, ccr, dcr, tsam);
 
   ## assemble info struct  
-  info = struct ("ncr", ncr, "ncs", ncs, "hsvc", hsvc);
+  info = struct ("ncr", ncr, "hsv", hsv);
 
 endfunction
 
 
-%!shared Mo, Me
+%!shared Mo, Me, Info, HSVe
 %! A =  [       0    1.0000         0         0         0         0         0        0
 %!              0         0         0         0         0         0         0        0
 %!              0         0   -0.0150    0.7650         0         0         0        0
@@ -246,7 +225,7 @@ endfunction
 %!        1.2349e-003
 %!        4.2632e-003 ];
 %!
-%! Kr = cfconred (Go, F, G, 4, "ERROR", "left", "tol1", 0.1, "tol2", 0.0);
+%! [Kr, Info] = cfconred (Go, F, G, 4, "method", "bfsr-bta", "cf", "left", "tol1", 0.1, "tol2", 0.0);
 %! [Ao, Bo, Co, Do] = ssdata (Kr);
 %!
 %! Ae = [  0.5946  -0.7336   0.1914  -0.3368
@@ -263,7 +242,10 @@ endfunction
 %!
 %! De = [  0.0000 ];
 %!
+%! HSVe = [  4.9078   4.8745   3.8455   3.7811   1.2289   1.1785   0.5176   0.1148 ].';
+%!
 %! Mo = [Ao, Bo; Co, Do];
 %! Me = [Ae, Be; Ce, De];
 %!
 %!assert (Mo, Me, 1e-4);
+%!assert (Info.hsv, HSVe, 1e-4);

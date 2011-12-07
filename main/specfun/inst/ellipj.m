@@ -49,7 +49,7 @@
 
 function [sn, cn, dn] = ellipj (u, m)
 
-  if nargin < 2 || nargin > 3 
+  if nargin < 2 || nargin > 3
     print_usage;
   endif
   [err, u, m] = common_size(u,m);
@@ -67,10 +67,10 @@ function [sn, cn, dn] = ellipj (u, m)
     ## u is pure imaginary: Jacoby imag. transf.
     idx = (real(u) == 0. & imag(u) != 0.);
     [ss1,cc1,dd1] = ellipj( imag(u(idx)), m1(idx));
-    sn(idx) = 1i * ss1./cc1; 
+    sn(idx) = 1i * ss1./cc1;
     cn(idx) = 1./cc1;
     dn(idx) = dd1./cc1;
-    
+
     ## u is pure real
     idx = (imag(u) == 0.);
     [ss,cc,dd] = ellipj( real(u(idx)), m(idx));
@@ -83,7 +83,7 @@ function [sn, cn, dn] = ellipj (u, m)
     [ss1,cc1,dd1] = ellipj( imag(u(idx)), m1(idx));
     [ss,cc,dd] = ellipj( real(u(idx)), m(idx));
     ddd = cc1.^2 + m(idx).*(ss.^2).*(ss1.^2);
-    sn(idx) = (ss.*dd1 + 1i*cc.*dd.*ss1.*cc1)./ddd; 
+    sn(idx) = (ss.*dd1 + 1i*cc.*dd.*ss1.*cc1)./ddd;
     cn(idx) = (cc.*cc1 - 1i*ss.*dd.*ss1.*dd1)./ddd;
     dn(idx) = (dd.*cc1.*dd1 - 1i*m(idx).*ss.*cc.*ss1)./ddd;
     return
@@ -104,7 +104,7 @@ function [sn, cn, dn] = ellipj (u, m)
     cn(idx) = cos_u + t.*sin_u;
     dn(idx) = 1.0 - 0.5*midx.*sin_u.*sin_u;
   endif
-    
+
   ## For m1 = (1-m) small ( Abramowitz and Stegun, Section 16.15 )
   idx = ( m > hi );
   if any(idx(:))
@@ -120,7 +120,7 @@ function [sn, cn, dn] = ellipj (u, m)
     cn(idx) = sech_u - sechm1over4 .* (sinhcosh-uidx) .* tanh_u;
     dn(idx) = sech_u + sechm1over4 .* (sinhcosh+uidx) .* tanh_u;
   endif
-    
+
   ## Arithmetic-Geometric Mean (AGM) algorithm
   ## ( Abramowitz and Stegun, Section 16.4 )
   idx = ( lo <= m & m <= hi );
@@ -139,14 +139,14 @@ function [sn, cn, dn] = ellipj (u, m)
       if all (c(:,n)./a(:,n) < eps), break; endif
     endfor
     if n >= Nmax
-      error("ellipj: Not enough workspace"); 
+      error("ellipj: Not enough workspace");
     endif
     phi = 2.^(n-1) * a(:,n) .* uidx;
     for j=n:-1:2
       t = phi;
       phi = ( asin ( (c(:,j)./a(:,j)) .* sin(phi)) + phi ) / 2;
     endfor
-      
+
     sn(idx) = sin(phi);
     cn(idx) = cos(phi);
     dn(idx) = cos(phi)./cos(t-phi);
@@ -162,10 +162,17 @@ endfunction
 %! M = ones(length(u),1) * m;
 %! U = u' * ones(1, length(m));
 %! [sn, cn, dn] = ellipj(U,M);
-%! c = colormap; colormap(hot(64)); 
-%! image(m,u,32*clip(sn,[-1,1])+32,1); # clip function belongs to audio package
-%! image(m,u,32*clip(cn,[-1,1])+32,1); # clip function belongs to audio package
-%! image(m,u,32*clip(dn,[-1,1])+32,1); # clip function belongs to audio package
+%!
+%! %% Plotting
+%! figure(2)
+%! c = colormap(hot(64));
+%! data = {sn,cn,dn};
+%! dname = {"sn","cn","dn"};
+%! for i=1:3
+%!   subplot(1,3,i);
+%!   image(m,u,32*clip(data{i},[-1,1])+32); # clip function belongs to audio package
+%!   title(dname{i});
+%! end
 %! colormap(c);
 
 %!demo
@@ -177,11 +184,16 @@ endfunction
 %! M = ones(length(u),1) * m;
 %! U = u' * ones(1, length(m));
 %! [sn, cn, dn] = ellipj(U,M);
-%! grid("on"); 
-%! subplot(131); title("sn"); semilogx(m, sn, ";;");
-%! subplot(132); title("cn"); semilogx(m, cn, ";;");
-%! subplot(133); title("dn"); semilogx(m, dn, ";;");
-%! oneplot; grid("off"); title("");
+%!
+%! %% Plotting
+%! data = {sn,cn,dn};
+%! dname = {"sn","cn","dn"};
+%! for i=1:3
+%!   subplot(1,3,i);
+%!   plot(m, data{i});
+%!   title(dname{i});
+%!   grid on;
+%! end
 
 %!test
 %! ## Test Jacobi elliptic functions

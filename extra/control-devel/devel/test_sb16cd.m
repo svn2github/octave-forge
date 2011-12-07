@@ -87,6 +87,9 @@ ncr = 2;
 [ac, bc, cc] = slsb16cd (a, b, c, d, dico, ncr, ordsel, jobd, jobmr, \
                              f, g, jobcf, tol)
 
+Go = ss (a, b, c, d);
+[Kr, Info] = fwcfconred (Go, f, g, 2, "method", "bfsr", "cf", "right")
+
 %{
  SB16CD EXAMPLE PROGRAM RESULTS
 

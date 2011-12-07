@@ -16,10 +16,10 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{Kr}, @var{info}] =} conred (@var{Go}, @var{F}, @var{G}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} conred (@var{Go}, @var{F}, @var{G}, @var{nr}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} conred (@var{Go}, @var{F}, @var{G}, @var{opt}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} conred (@var{Go}, @var{F}, @var{G}, @var{nr}, @var{opt}, @dots{})
+## @deftypefn{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{Go}, @var{F}, @var{G}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{Go}, @var{F}, @var{G}, @var{nr}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{Go}, @var{F}, @var{G}, @var{opt}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{Go}, @var{F}, @var{G}, @var{nr}, @var{opt}, @dots{})
 ##
 ## Coprime factor reduction for state-feedback-observer based controllers.
 ##

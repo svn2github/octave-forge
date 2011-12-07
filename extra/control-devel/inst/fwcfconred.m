@@ -16,10 +16,10 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{Kr}, @var{info}] =} conred (@var{Go}, @var{F}, @var{G}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} conred (@var{Go}, @var{F}, @var{G}, @var{nr}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} conred (@var{Go}, @var{F}, @var{G}, @var{opt}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} conred (@var{Go}, @var{F}, @var{G}, @var{nr}, @var{opt}, @dots{})
+## @deftypefn{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{Go}, @var{F}, @var{G}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{Go}, @var{F}, @var{G}, @var{nr}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{Go}, @var{F}, @var{G}, @var{opt}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{Go}, @var{F}, @var{G}, @var{nr}, @var{opt}, @dots{})
 ##
 ## Coprime factor reduction for state-feedback-observer based controllers.
 ##
@@ -122,7 +122,7 @@ function [Kr, info] = fwcfconred (Go, F, G, varargin)
   tol1 = 0.0;
   tol2 = 0.0;
   jobcf = 0;
-  jobmr = 2;                                       # balancing-free BTA
+  jobmr = 1;                                       # balancing-free BTA
   equil = scaled && scaledc;
   ordsel = 1;
   ncr = 0;
@@ -203,35 +203,31 @@ endfunction
 %!
 %! Go = ss (A, B, C, D);  % "scaled", false
 %!
-%! F = [  4.4721e-002  6.6105e-001  4.6986e-003  3.6014e-001  1.0325e-001 -3.7541e-002 -4.2685e-002  3.2873e-002 ];
+%! F = [  4.472135954999638e-002    6.610515358414598e-001    4.698598960657579e-003  3.601363251422058e-001    1.032530880771415e-001   -3.754055214487997e-002  -4.268536964759344e-002    3.287284547842979e-002 ];
 %!
-%! G = [  4.1089e-001
-%!        8.6846e-002
-%!        3.8523e-004
-%!       -3.6194e-003
-%!       -8.8037e-003
-%!        8.4205e-003
-%!        1.2349e-003
-%!        4.2632e-003 ];
+%! G = [  4.108939884667451e-001
+%!        8.684600000000012e-002
+%!        3.852317308197148e-004
+%!       -3.619366874815911e-003
+%!       -8.803722876359955e-003
+%!        8.420521094001852e-003
+%!        1.234944428038507e-003
+%!        4.263205617645322e-003 ];
 %!
 %! [Kr, Info] = fwcfconred (Go, F, G, 2, "method", "bfsr", "cf", "right");
 %! [Ao, Bo, Co, Do] = ssdata (Kr);
 %!
-%! Ae = [  0.5946  -0.7336   0.1914  -0.3368
-%!         0.5960  -0.0184  -0.1088   0.0207
-%!         1.2253   0.2043   0.1009  -1.4948
-%!        -0.0330  -0.0243   1.3440   0.0035 ];
+%! Ae = [  -0.4334   0.4884
+%!         -0.1950  -0.1093 ];
 %!
-%! Be = [  0.0015
-%!        -0.0202
-%!         0.0159
-%!        -0.0544 ];
+%! Be = [  -0.4231
+%!         -0.1785 ];
 %!
-%! Ce = [  0.3534   0.0274   0.0337  -0.0320 ];
+%! Ce = [  -0.0326  -0.2307 ];
 %!
 %! De = [  0.0000 ];
 %!
-%! HSVe = [  4.9078   4.8745   3.8455   3.7811   1.2289   1.1785   0.5176   0.1148 ].';
+%! HSVe = [  3.3073   0.7274   0.1124   0.0784   0.0242   0.0182   0.0101   0.0094 ].';
 %!
 %! Mo = [Ao, Bo; Co, Do];
 %! Me = [Ae, Be; Ce, De];

@@ -15,28 +15,29 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {[@var{y} @var{alpha}] =} multinom (@var{x}, @var{n})
-%% @deftypefnx {Function File} {[@var{y} @var{alpha}] =} multinom (@var{x}, @var{n},@var{order})
+%% @deftypefnx {Function File} {[@var{y} @var{alpha}] =} multinom (@var{x}, @var{n},@var{sort})
 %%
 %% Returns the terms (monomials) of the multinomial expansion of degree n.
 %% @tex
 %% $$
-%% (x1 + x2 + ... + xm)^n
+%% (x_1 + x_2 + ... + x_m)^N
 %% $$
 %% @end tex
 %% @ifnottex
 %%
 %% @example
-%% (x1 + x2 + ... + xm)^n
+%% (x1 + x2 + ... + xm)^@var{n}
 %% @end example
 %%
 %% @end ifnottex
 %%
-%% @var{x} is a matrix where each column represents a different variable, the 
+%% @var{x} is a nT-by-m matrix where each column represents a different variable, the
 %% output @var{y} has the same format.
 %% The order of the terms is inherited from multinom_exp and can be controlled
-%% through the optional argument @var{order}. The exponents are returned in @var{alpha}.
+%% through the optional argument @var{sort} and is passed to the function @code{sort}.
+%% The exponents are returned in @var{alpha}.
 %%
-%% @seealso{multinom_exp, multinom_coeff}
+%% @seealso{multinom_exp, multinom_coeff, sort}
 %% @end deftypefn
 
 function [y, alpha] = multinom(x,n,sortmethod)
@@ -46,8 +47,8 @@ function [y, alpha] = multinom(x,n,sortmethod)
         alpha = multinom_exp(m,n,sortmethod);
     else
         alpha = multinom_exp(m,n);
-    end        
-    na      = size(alpha,1); 
+    end
+    na      = size(alpha,1);
 
     y = prod(repmat(x,na,1).^kron(alpha,ones(nT,1)),2);
     y = reshape(y,nT,na);

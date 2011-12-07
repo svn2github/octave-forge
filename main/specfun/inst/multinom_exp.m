@@ -1,6 +1,6 @@
 %% Copyright (c) 2011 Jordi Gutiérrez Hermoso <jordigh@octave.org>
 %% Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%% 
+%%
 %%    This program is free software: you can redistribute it and/or modify
 %%    it under the terms of the GNU General Public License as published by
 %%    the Free Software Foundation, either version 3 of the License, or
@@ -16,22 +16,22 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {@var{alpha} =} multinom_exp (@var{m}, @var{n})
-%% @deftypefnx {Function File} {@var{alpha} =} multinom_exp (@var{m}, @var{n},@var{order})
+%% @deftypefnx {Function File} {@var{alpha} =} multinom_exp (@var{m}, @var{n},@var{sort})
 %% Returns the exponents of the terms in the multinomial expansion
 %% @tex
 %% $$
-%% (x1 + x2 + ... + xm).^n
+%% (x_1 + x_2 + ... + x_m).^n
 %% $$
 %% @end tex
 %% @ifnottex
 %%
 %% @example
-%% (x1 + x2 + ... + xm).^n
+%% (x1 + x2 + ... + xm).^@var{n}
 %% @end example
 %%
 %% @end ifnottex
 %%
-%% For example, for m=2, n=3 the expansion has the terms 
+%% For example, for m=2, n=3 the expansion has the terms
 %% @tex
 %% $$
 %% x1^3, x2^3, x1^2*x2, x1*x2^2
@@ -46,14 +46,14 @@
 %% @end ifnottex
 %%
 %% then @code{alpha = [3 0; 2 1; 1 2; 0 3]};
-%% 
-%% The optional argument @var{order} is passed to function @code{sort} to
-%% sort the exponents by the maximum degree. 
-%% The example above calling @code{ multinom(m,n,"ascend")} produces 
+%%
+%% The optional argument @var{sort} is passed to function @code{sort} to
+%% sort the exponents by the maximum degree.
+%% The example above calling @code{ multinom(m,n,"ascend")} produces
 %%
 %% @code{alpha = [2 1; 1 2; 3 0; 0 3]};
 %%
-%% calling @code{ multinom(m,n,"descend")} produces 
+%% calling @code{ multinom(m,n,"descend")} produces
 %%
 %% @code{alpha = [3 0; 0 3; 2 1; 1 2]};
 %%

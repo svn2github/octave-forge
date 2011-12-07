@@ -2,7 +2,7 @@
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -26,24 +26,22 @@
 ##
 ## @example
 ## @group
-##   hd = huffmandict(1:4,[0.5 0.25 0.15 0.10])
-##   huffmanenco(1:4,hd) #  [ 1 0 1 0 0 0 0 0 1 ]
+## hd = huffmandict (1:4, [0.5 0.25 0.15 0.10]);
+## huffmanenco (1:4, hd);
+##       @result{} [1 0 1 0 0 0 0 0 1]
 ## @end group
 ## @end example
-## @end deftypefn
 ## @seealso{huffmandict, huffmandeco}
+## @end deftypefn
 
-function hcode=huffmanenco(sig,dict)
-  if ( nargin < 2 || strcmp(class(dict),"cell")~=1 )
-    error('usage: huffmanenco(sig,dict)');
-  end
-  if (max(sig) > length(dict)) || ( min(sig) < 1)
-    error("signal has elements that are outside alphabet set ...
-	Cannot encode.");
-  end
-  hcode=[dict{sig}];
+function hcode = huffmanenco (sig, dict)
+  if (nargin != 2 || strcmp (class (dict),"cell") != 1)
+    print_usage;
+  elseif (max (sig) > length (dict) || min (sig) < 1)
+    error("signal has elements that are outside alphabet set. Cannot encode.");
+  endif
+  hcode = [dict{sig}];
   return
 end
-%! 
-%! assert(huffmanenco(1:4, huffmandict(1:4,[0.5 0.25 0.15 0.10])), [ 1   0   1   0   0   0   0   0   1 ],0)
-%!
+
+%!assert(huffmanenco(1:4, huffmandict(1:4,[0.5 0.25 0.15 0.10])), [ 1   0   1   0   0   0   0   0   1 ],0)

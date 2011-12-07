@@ -2,7 +2,7 @@
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -49,8 +49,8 @@
 ## @end example
 ##
 ## Reference: Dr.Rao's course EE5351 Digital Video Coding, at UT-Arlington.
-## @end deftypefn
 ## @seealso{huffmandeco, huffmanenco}
+## @end deftypefn
 
 ## Huffman code algorithm.
 ## while (uncombined_symbols_remain)
@@ -69,18 +69,11 @@
 ## reverse each symbol, and dump it out.
 ##
 
-function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
+function cw_list = huffmandict (sym, source_prob, togglecode = 0, minvar = 0)
   if nargin < 2
-    error("Usage: huffman_dict(source_prob,{togglecode 1-0 in code});")
-  elseif nargin < 3
-    togglecode=0;
-    minvar=0;
-  elseif nargin < 4
-    minvar=0;
-  end
-  
-  %need to compare to 1
-  if((sum(source_prob)-1.0) > 1e-7 )
+    print_usage;
+  ## need to compare to 1
+  elseif((sum(source_prob)-1.0) > 1e-7 )
     error("source probabilities must add up to 1.0");
   end
 
@@ -103,19 +96,19 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
   for itr1=1:L
     for itr2=itr1:L
       if(source_prob(itr1) < source_prob(itr2))
-	t=source_prob(itr1);
-	source_prob(itr1)=source_prob(itr2);
-	source_prob(itr2)=t;
+        t=source_prob(itr1);
+        source_prob(itr1)=source_prob(itr2);
+        source_prob(itr2)=t;
 
-	t=index(itr1);
-	index(itr1)=index(itr2);
-	index(itr2)=t;
+        t=index(itr1);
+        index(itr1)=index(itr2);
+        index(itr2)=t;
       end
     end
   end
   
-  stage_list={};
-  cw_list{1:L}=[];
+  stage_list = {};
+  cw_list    = cell(1,L);
 
   stage_curr={};
   stage_curr.prob_list=source_prob;
@@ -145,8 +138,8 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
     %
     for i=1:(L-2)
       if((minvar && stage_curr.prob_list(i)<=nprob) || \
-	 stage_curr.prob_list(i) < nprob)
-	break;
+          stage_curr.prob_list(i) < nprob)
+        break;
       end
     end
     
@@ -202,7 +195,7 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
   %disp('Before resorting')
   %cw_list
 
-  nw_list{1:L}=[];
+  nw_list = cell(1,L);
   %
   % Re-sort the indices according to the probability list.
   %
@@ -224,8 +217,7 @@ function cw_list=huffmandict(sym,source_prob,togglecode,minvar)
 
   return
 end
-%!
+
 %!assert(huffmandict(1:4,[0.5 0.25 0.15 0.1],1), {[0],[1 0],[1 1 1],[1 1 0]},0)
 %!assert(huffmandict(1:4,0.25*ones(1,4),1),{[1 1],[1 0],[0 1],[0 0]},0)
 %!assert(huffmandict(1:4,[1  0 0 0 ]),{[1],[0 1],[0 0 0],[0 0 1]},0)
-%!

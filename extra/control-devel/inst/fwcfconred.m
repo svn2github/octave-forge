@@ -166,7 +166,7 @@ function [Kr, info] = fwcfconred (Go, F, G, varargin)
 
 
   ## perform model order reduction
-  [acr, bcr, ccr, ncr, hsv] = slsb16bd (a, b, c, d, dt, ncr, ordsel, jobd, jobmr, \
+  [acr, bcr, ccr, ncr, hsv] = slsb16cd (a, b, c, d, dt, ncr, ordsel, jobd, jobmr, \
                                         F, G, jobcf, tol1);
 
   ## assemble reduced order controller

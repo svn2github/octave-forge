@@ -85,7 +85,7 @@ endfunction
 %!
 %! K = ss (AC, BC, CC, DC, "scaled", true);
 %!
-%! Kr = btaconred (G, K, 2, "weight", "input", "tol1", 0.1, "tol2", 0.0);
+%! Kr = btaconred (G, K, 2, "weight", "input");
 %! [Ao, Bo, Co, Do] = ssdata (Kr);
 %!
 %! Ae = [   9.1900   0.0000

@@ -55,7 +55,7 @@
 ##
 ##
 ## @strong{Algorithm}@*
-## Uses SLICOT SB16BD by courtesy of
+## Uses SLICOT SB16CD by courtesy of
 ## @uref{http://www.slicot.org, NICONET e.V.}
 ## @end deftypefn
 
@@ -63,7 +63,7 @@
 ## Created: December 2011
 ## Version: 0.1
 
-function [Kr, info] = cfconred (Go, F, G, varargin)
+function [Kr, info] = fwcfconred (Go, F, G, varargin)
 
   if (nargin < 3)
     print_usage ();
@@ -81,15 +81,15 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
     error ("cfconred: third argument must be a real matrix");
   endif
 
-  if (nargin > 3)                                  # cfconred (Go, F, G, ...)
-    if (is_real_scalar (varargin{1}))              # cfconred (Go, F, G, nr)
+  if (nargin > 3)                                  # fwcfconred (Go, F, G, ...)
+    if (is_real_scalar (varargin{1}))              # fwcfconred (Go, F, G, nr)
       varargin = horzcat (varargin(2:end), {"order"}, varargin(1));
     endif
-    if (isstruct (varargin{1}))                    # cfconred (Go, F, G, opt, ...), cfconred (Go, F, G, nr, opt, ...)
+    if (isstruct (varargin{1}))                    # fwcfconred (Go, F, G, opt, ...), fwcfconred (Go, F, G, nr, opt, ...)
       varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
     endif
-    ## order placed at the end such that nr from cfconred (Go, F, G, nr, ...)
-    ## and cfconred (Go, F, G, nr, opt, ...) overrides possible nr's from
+    ## order placed at the end such that nr from fwcfconred (Go, F, G, nr, ...)
+    ## and fwcfconred (Go, F, G, nr, opt, ...) overrides possible nr's from
     ## key/value-pairs and inside opt struct (later keys override former keys,
     ## nr > key/value > opt)
   endif
@@ -136,11 +136,8 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
       case {"order", "ncr", "nr"}
         [ncr, ordsel] = __modred_check_order__ (val);
 
-      case "tol1"
+      case {"tol1", "tol"}
         tol1 = __modred_check_tol__ (val, "tol1");
-
-      case "tol2"
-        tol2 = __modred_check_tol__ (val, "tol2");
 
       case "cf"
         switch (lower (val(1)))
@@ -154,20 +151,13 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
 
       case {"method", "approach", "approx"}        # approximation method
         switch (tolower (val))
-          case {"sr-bta", "b"}                     # 'B':  use the square-root Balance & Truncate method
+          case {"sr-bta", "b", "sr"}               # 'B':  use the square-root Balance & Truncate method
             jobmr = 0;
-          case {"bfsr-bta", "f"}                   # 'F':  use the balancing-free square-root Balance & Truncate method
+          case {"bfsr-bta", "f", "bfsr"}           # 'F':  use the balancing-free square-root Balance & Truncate method
             jobmr = 1;
-          case {"sr-spa", "s"}                     # 'S':  use the square-root Singular Perturbation Approximation method
-            jobmr = 2;
-          case {"bfsr-spa", "p"}                   # 'P':  use the balancing-free square-root Singular Perturbation Approximation method
-            jobmr = 3; 
           otherwise
             error ("cfconred: '%s' is an invalid approach", val);
         endswitch
-      
-      case {"equil", "equilibrate", "equilibration", "scale", "scaling"}
-        equil = __modred_check_equil__ (val);
 
       otherwise
         warning ("cfconred: invalid property name '%s' ignored", key);
@@ -176,11 +166,11 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
 
 
   ## perform model order reduction
-  [acr, bcr, ccr, dcr, ncr, hsv] = slsb16bd (a, b, c, d, dt, equil, ncr, ordsel, jobd, jobmr, \
-                                             F, G, jobcf, tol1, tol2);
+  [acr, bcr, ccr, ncr, hsv] = slsb16bd (a, b, c, d, dt, ncr, ordsel, jobd, jobmr, \
+                                        F, G, jobcf, tol1);
 
   ## assemble reduced order controller
-  Kr = ss (acr, bcr, ccr, dcr, tsam);
+  Kr = ss (acr, bcr, ccr, [], tsam);
 
   ## assemble info struct  
   info = struct ("ncr", ncr, "hsv", hsv);
@@ -224,7 +214,7 @@ endfunction
 %!        1.2349e-003
 %!        4.2632e-003 ];
 %!
-%! [Kr, Info] = cfconred (Go, F, G, 4, "method", "bfsr-bta", "cf", "left");
+%! [Kr, Info] = fwcfconred (Go, F, G, 2, "method", "bfsr", "cf", "right");
 %! [Ao, Bo, Co, Do] = ssdata (Kr);
 %!
 %! Ae = [  0.5946  -0.7336   0.1914  -0.3368

@@ -56,7 +56,7 @@ function [Kr, info] = btaconred (varargin)
 endfunction
 
 
-%!shared Mo, Me
+%!shared Mo, Me, Info, HSVCe
 %! A =  [ -1.  0.   4.
 %!         0.  2.   0.
 %!         0.  0.  -3. ];
@@ -85,7 +85,7 @@ endfunction
 %!
 %! K = ss (AC, BC, CC, DC, "scaled", true);
 %!
-%! Kr = btaconred (G, K, 2, "weight", "input");
+%! [Kr, Info] = btaconred (G, K, 2, "weight", "input");
 %! [Ao, Bo, Co, Do] = ssdata (Kr);
 %!
 %! Ae = [   9.1900   0.0000
@@ -98,7 +98,10 @@ endfunction
 %!
 %! De = [   0.0000 ];
 %!
+%! HSVCe = [  3.8253   0.2005 ].';
+%!
 %! Mo = [Ao, Bo; Co, Do];
 %! Me = [Ae, Be; Ce, De];
 %!
 %!assert (Mo, Me, 1e-4);
+%!assert (Info.hsvc, HSVCe, 1e-4);

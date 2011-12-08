@@ -328,7 +328,7 @@ function [sysr, info] = bstmodred (sys, varargin)
 endfunction
 
 
-%!shared Mo, Me
+%!shared Mo, Me, Info, HSVe
 %! A =  [ -0.04165  0.0000  4.9200  -4.9200  0.0000  0.0000  0.0000
 %!        -5.2100  -12.500  0.0000   0.0000  0.0000  0.0000  0.0000
 %!         0.0000   3.3300 -3.3300   0.0000  0.0000  0.0000  0.0000
@@ -353,10 +353,10 @@ endfunction
 %!         0.0000   0.0000
 %!         0.0000   0.0000 ];
 %!
-%! sys = ss (A, B, C, D, "scaled", true);
+%! G = ss (A, B, C, D, "scaled", true);
 %!
-%! sysr = bstmodred (sys, "beta", 1.0, "tol1", 0.1, "tol2", 0.0);
-%! [Ao, Bo, Co, Do] = ssdata (sysr);
+%! [Gr, Info] = bstmodred (G, "beta", 1.0, "tol1", 0.1, "tol2", 0.0);
+%! [Ao, Bo, Co, Do] = ssdata (Gr);
 %!
 %! Ae = [  1.2729   0.0000   6.5947   0.0000  -3.4229
 %!         0.0000   0.8169   0.0000   2.4821   0.0000
@@ -378,7 +378,10 @@ endfunction
 %!         0.0000   0.0000
 %!         0.0000   0.0000 ];
 %!
+%! HSVe = [  0.8803   0.8506   0.8038   0.4494   0.3973   0.0214   0.0209 ].';
+%!
 %! Mo = [Ao, Bo; Co, Do];
 %! Me = [Ae, Be; Ce, De];
 %!
 %!assert (Mo, Me, 1e-4);
+%!assert (Info.hsv, HSVe, 1e-4);

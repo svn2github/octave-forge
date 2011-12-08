@@ -96,7 +96,7 @@ function [sysr, info] = btamodred (varargin)
 endfunction
 
 
-%!shared Mo, Me
+%!shared Mo, Me, Info, HSVe
 %! A =  [ -26.4000,    6.4023,    4.3868;
 %!         32.0000,         0,         0;
 %!               0,    8.0000,         0 ];
@@ -109,7 +109,7 @@ endfunction
 %!
 %! D =  [        0 ];
 %!
-%! sys = ss (A, B, C, D);  % "scaled", false
+%! G = ss (A, B, C, D);  % "scaled", false
 %!
 %! AV = [  -1.0000,         0,    4.0000,   -9.2994,   -1.1624,   -0.1090;
 %!               0,    2.0000,         0,   -9.2994,   -1.1624,   -0.1090;
@@ -129,10 +129,10 @@ endfunction
 %!
 %! DV = [        0 ];
 %!
-%! sysv = ss (AV, BV, CV, DV);
+%! V = ss (AV, BV, CV, DV);
 %!
-%! sysr = btamodred (sys, 2, "left", sysv);
-%! [Ao, Bo, Co, Do] = ssdata (sysr);
+%! [Gr, Info] = btamodred (G, 2, "left", V);
+%! [Ao, Bo, Co, Do] = ssdata (Gr);
 %!
 %! Ae = [  9.1900   0.0000
 %!         0.0000 -34.5297 ];
@@ -144,7 +144,10 @@ endfunction
 %!
 %! De = [  0.0000 ];
 %!
+%! HSVe = [  3.8253   0.2005 ].';
+%!
 %! Mo = [Ao, Bo; Co, Do];
 %! Me = [Ae, Be; Ce, De];
 %!
 %!assert (Mo, Me, 1e-4);
+%!assert (Info.hsv, HSVe, 1e-4);

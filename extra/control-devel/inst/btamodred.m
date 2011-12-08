@@ -21,7 +21,47 @@
 ## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} btamodred (@var{G}, @var{opt}, @dots{})
 ## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} btamodred (@var{G}, @var{nr}, @var{opt}, @dots{})
 ##
-## Model order reduction by frequency weighted optimal Hankel-norm approximation method.
+## Model order reduction by frequency weighted Balanced Truncation Approximation (BTA) method.
+## The aim of model reduction is to find an LTI system @var{Gr} of order
+## @var{nr} (nr << n) such that the input-output behaviour of @var{Gr}
+## approximates the one from original system @var{G}.
+##
+## BTA is an absolute error method which tries to minimize
+## @iftex
+## @tex
+## $$ || G - G_r ||_{\\infty} = min $$
+## $$ || W_o \\ (G - G_r) \\ W_i ||_{\\infty} = min $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## ||G-Gr||    = min
+##         inf
+##
+## ||Wo (G-Gr) Wi||    = min
+##                 inf
+## @end example
+## @end ifnottex
+## where @var{Wo} and @var{Wi} denote output and input weightings.
+##
+## UNSTABLE (from bstmodred)
+##
+## MIMO (from bstmodred)
+##
+## Approximation Properties:
+## @itemize @bullet
+## @item
+## Guaranteed stability of reduced models
+## @item
+## Lower guaranteed error bound
+## @item
+## Guaranteed a priori error bound
+## @iftex
+## @tex
+## $$ \\sigma_{r+1} \\leq || (G-G_r) ||_{\\infty} \\leq 2 \\sum_{j=r+1}^{n} \\sigma_j $$
+## @end tex
+## @end iftex
+## @end itemize
 ##
 ## @strong{Inputs}
 ## @table @var

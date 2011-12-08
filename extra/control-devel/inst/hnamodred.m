@@ -21,12 +21,16 @@
 ## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} hnamodred (@var{G}, @var{opt}, @dots{})
 ## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} hnamodred (@var{G}, @var{nr}, @var{opt}, @dots{})
 ##
-## Model order reduction by frequency weighted optimal Hankel-norm approximation method.
+## Model order reduction by frequency weighted optimal Hankel-norm (HNA) method.
+## The aim of model reduction is to find an LTI system @var{Gr} of order
+## @var{nr} (nr << n) such that the input-output behaviour of @var{Gr}
+## approximates the one from original system @var{G}.
 ##
+## HNA is an absolute error method which tries to minimize
 ## @iftex
 ## @tex
 ## $$ || G - G_r ||_H = min $$
-## $$ || W_o (G - G_r) W_i ||_H = min $$
+## $$ || W_o \\ (G - G_r) \\ W_i ||_H = min $$
 ## @end tex
 ## @end iftex
 ## @ifnottex
@@ -38,6 +42,11 @@
 ##                 H
 ## @end example
 ## @end ifnottex
+## where @var{Wo} and @var{Wi} denote output and input weightings.
+##
+## UNSTABLE (from bstmodred)
+##
+## MIMO (from bstmodred)
 ##
 ## Approximation Properties:
 ## @itemize @bullet
@@ -46,33 +55,92 @@
 ## @item
 ## Lower guaranteed error bound
 ## @item
-## Reduction of unstable systems in combination with modal
-## or coprime factorization techniques.
-## @item
 ## Guaranteed a priori error bound
 ## @iftex
 ## @tex
-## $$ || (G-G_r) ||_{\\infty} \\leq 2 \\sum_{j=r+1}^{n} \\sigma_j $$
+## $$ \\sigma_{r+1} \\leq || (G-G_r) ||_{\\infty} \\leq 2 \\sum_{j=r+1}^{n} \\sigma_j $$
 ## @end tex
 ## @end iftex
 ## @end itemize
-
+##
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item sys
+## @item G
 ## LTI model to be reduced.
+## @item nr
+## The desired order of the resulting reduced order system @var{Gr}.
+## If not specified, @var{nr} is chosen automatically according
+## to the description of key @var{"order"}.
 ## @item @dots{}
-## Pairs of properties and values.
-## TODO: describe options.
+## Optional pairs of keys and values.  @code{"key1", value1, "key2", value2}.
+## @item opt
+## Optional struct with keys as field names.
+## Struct @var{opt} can be created directly or
+## by command @command{options}.  @code{opt.key1 = value1, opt.key2 = value2}.
 ## @end table
 ##
 ## @strong{Outputs}
 ## @table @var
-## @item sysr
+## @item Gr
 ## Reduced order state-space model.
-## @item nr
-## The order of the obtained system @var{sysr}.
+## @item info
+## Struct containing additional information.
+## @table @var
+## @item info.n
+## The order of the original system @var{G}.
+## @item info.ns
+## The order of the @var{alpha}-stable subsystem of the original system @var{G}.
+## @item info.hsv
+## The Hankel singular values of the phase system corresponding
+## to the @var{alpha}-stable part of the original system @var{G}.
+## The @var{ns} Hankel singular values are ordered decreasingly.
+## @item info.nu
+## The order of the @var{alpha}-unstable subsystem of both the original
+## system @var{G} and the reduced-order system @var{Gr}.
+## @item info.nr
+## The order of the obtained reduced order system @var{Gr}.
+## @end table
+## @end table
+##
+##
+## @strong{Option Keys and Values}
+## @table @var
+## @item "order", "nr"
+## The desired order of the resulting reduced order system @var{Gr}.
+## If not specified, @var{nr} is the sum of NU and the number of
+## Hankel singular values greater than @code{MAX(TOL1,NS*EPS*HNORM(As,Bs,Cs))};
+##
+## @item "method", "approach"
+## Specifies the computational approach to be used.
+## Valid values corresponding to this key are:
+## @table @var
+## @item "descriptor"
+## Use the inverse free descriptor system approach.
+## @item "standard"
+## Use the inversion based standard approach.
+## @item "auto"
+## Switch automatically to the inverse free
+## descriptor approach in case of badly conditioned
+## feedthrough matrices in V or W.  Default method.
+## @end table
+##
+## @item "alpha"
+## Specifies the ALPHA-stability boundary for the eigenvalues
+## of the state dynamics matrix @var{G.A}.  For a continuous-time
+## system, ALPHA <= 0 is the boundary value for
+## the real parts of eigenvalues, while for a discrete-time
+## system, 0 <= ALPHA <= 1 represents the
+## boundary value for the moduli of eigenvalues.
+## The ALPHA-stability domain does not include the boundary.
+## Default value is 0 for continuous-time systems and
+## 1 for discrete-time systems.
+##
+## @item "equil", "scale"
+## Boolean indicating whether equilibration (scaling) should be
+## performed on system @var{G} prior to order reduction.
+## Default value is true if @code{G.scaled == false} and
+## false if @code{G.scaled == true}.
 ## @end table
 ##
 ## @strong{Algorithm}@*
@@ -134,11 +202,11 @@ function [sysr, info] = hnamodred (sys, varargin)
     key = lower (varargin{k});
     val = varargin{k+1};
     switch (key)
-      case {"left", "v"}
+      case {"left", "v", "wo"}
         [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt, p, p);
         ## TODO: correct error messages for non-square weights
 
-      case {"right", "w"}
+      case {"right", "w", "wi"}
         [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt, m, m);
 
       case {"left-inv", "inv-v"}
@@ -165,7 +233,7 @@ function [sysr, info] = hnamodred (sys, varargin)
         [aw, bw, cw, dw] = __modred_check_weight__ (val, dt, m, m);
         jobv = 4
 
-      case {"order", "n", "nr"}
+      case {"order", "nr"}
         [nr, ordsel] = __modred_check_order__ (val);
 
       case "tol1"
@@ -177,7 +245,7 @@ function [sysr, info] = hnamodred (sys, varargin)
       case "alpha"
         alpha = __modred_check_alpha__ (val, dt);
 
-      case {"approach", "jobinv"}
+      case {"method", "approach", "jobinv"}
         switch (tolower (val(1)))
           case {"d", "n"}      # "descriptor"
             jobinv = 0;
@@ -208,12 +276,14 @@ function [sysr, info] = hnamodred (sys, varargin)
   sysr = ss (ar, br, cr, dr, tsam);
 
   ## assemble info struct  
-  info = struct ("nr", nr, "ns", ns, "hsv", hsv);
+  n = rows (a);
+  nu = n - ns;
+  info = struct ("n", n, "ns", ns, "hsv", hsv, "nu", nu, "nr", nr);
 
 endfunction
 
 
-%!shared Mo, Me
+%!shared Mo, Me, Info, HSVe
 %! A =  [ -3.8637   -7.4641   -9.1416   -7.4641   -3.8637   -1.0000
 %!         1.0000,         0         0         0         0         0
 %!              0    1.0000         0         0         0         0
@@ -232,7 +302,7 @@ endfunction
 %!
 %! D =  [       0 ];
 %!
-%! sys = ss (A, B, C, D);  # "scaled", false
+%! G = ss (A, B, C, D);  # "scaled", false
 %!
 %! AV = [  0.2000   -1.0000
 %!         1.0000         0 ];
@@ -244,10 +314,10 @@ endfunction
 %!
 %! DV = [       1 ];
 %!
-%! sysv = ss (AV, BV, CV, DV);
+%! V = ss (AV, BV, CV, DV);
 %!
-%! sysr = hnamodred (sys, "left", sysv, "tol1", 1e-1, "tol2", 1e-14);
-%! [Ao, Bo, Co, Do] = ssdata (sysr);
+%! [Gr, Info] = hnamodred (G, "left", V, "tol1", 1e-1, "tol2", 1e-14);
+%! [Ao, Bo, Co, Do] = ssdata (Gr);
 %!
 %! Ae = [ -0.2391   0.3072   1.1630   1.1967
 %!        -2.9709  -0.2391   2.6270   3.1027
@@ -263,8 +333,10 @@ endfunction
 %!
 %! De = [  0.0219 ];
 %!
+%! HSVe = [  2.6790   2.1589   0.8424   0.1929   0.0219   0.0011 ].';
+%!
 %! Mo = [Ao, Bo; Co, Do];
 %! Me = [Ae, Be; Ce, De];
 %!
 %!assert (Mo, Me, 1e-4);
-
+%!assert (Info.hsv, HSVe, 1e-4);

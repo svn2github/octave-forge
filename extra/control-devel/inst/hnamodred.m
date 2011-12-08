@@ -23,6 +23,41 @@
 ##
 ## Model order reduction by frequency weighted optimal Hankel-norm approximation method.
 ##
+## @iftex
+## @tex
+## $$ || G - G_r ||_H = min $$
+## $$ || W_o (G - G_r) W_i ||_H = min $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## ||G-Gr||  = min
+##         H
+##
+## ||Wo (G-Gr) Wi||  = min
+##                 H
+## @end example
+## @end ifnottex
+##
+## Approximation Properties:
+## @itemize @bullet
+## @item
+## Guaranteed stability of reduced models
+## @item
+## Lower guaranteed error bound
+## @item
+## Reduction of unstable systems in combination with modal
+## or coprime factorization techniques.
+## @item
+## Guaranteed a priori error bound
+## @iftex
+## @tex
+## $$ || (G-G_r) ||_{\\infty} \\leq 2 \\sum_{j=r+1}^{n} \\sigma_j $$
+## @end tex
+## @end iftex
+## @end itemize
+
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item sys

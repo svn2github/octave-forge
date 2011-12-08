@@ -110,10 +110,16 @@
 ## @table @var
 ## @item G
 ## LTI model to be reduced.
+## @item nr
+## The desired order of the resulting reduced order system @var{Gr}.
+## If not specified, @var{nr} is chosen automatically according
+## to the description of key @var{"order"}.
 ## @item @dots{}
-## Optional pairs of keys and values.
+## Optional pairs of keys and values.  @code{"key1", value1, "key2", value2}.
 ## @item opt
 ## Optional struct with keys as field names.
+## Struct @var{opt} can be created directly or
+## by command @command{options}.  @code{opt.key1 = value1, opt.key2 = value2}.
 ## @end table
 ##
 ## @strong{Outputs}
@@ -141,12 +147,13 @@
 ##
 ## @strong{Option Keys and Values}
 ## @table @var
-## @item "order", "n", "nr"
+## @item "order", "nr"
 ## The desired order of the resulting reduced order system @var{Gr}.
 ## If not specified, @var{nr} is the sum of NU and the number of
 ## Hankel singular values greater than @code{MAX(TOL1,NS*EPS)};
 ## @var{nr} can be further reduced to ensure that
 ## @code{HSV(NR-NU) > HSV(NR+1-NU)}.
+##
 ## @item "approx", "approach"
 ## Approximation method for the H-infinity norm.
 ## Valid values corresponding to this key are:

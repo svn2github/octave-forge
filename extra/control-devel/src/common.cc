@@ -21,7 +21,7 @@ Common code for oct-files.
 
 Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 Created: April 2010
-Version: 0.2
+Version: 0.3
 
 */
 
@@ -55,4 +55,28 @@ int min (int a, int b)
         return a;
     else
         return b;
+}
+
+void error_msg (const char name[], int index, int max, const char* msg[])
+{
+    if (index == 0)
+        return;
+
+    if (index < 0)
+        error ("%s: the %d-th argument had an invalid value", name, index);
+    else if (index <= max)
+        error ("%s: %s", name, msg[index]);
+    else
+        error ("%s: unknown error, info = %d", name, index);
+}
+
+void warning_msg (const char name[], int index, int max, const char* msg[])
+{
+    if (index == 0)
+        return;
+
+    if (index > 0 && index <= max)
+        warning ("%s: %s", name, msg[index]);
+    else
+        warning ("%s: unknown warning, iwarn = %d", name, index);
 }

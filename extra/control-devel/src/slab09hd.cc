@@ -176,78 +176,50 @@ For internal use only.")
 
         if (f77_exception_encountered)
             error ("bstmodred: exception in SLICOT subroutine AB09HD");
-            
-        if (info != 0)
-        {
-            if (info < 0)
-                error ("bstmodred: the %d-th argument had an invalid value", info);
-            else
-            {
-                switch (info)
-                {
-                    case 1:
-                        error ("bstmodred: 1: the computation of the ordered real Schur form of A "
-                               "failed");
-                    case 2:
-                        error ("bstmodred: 2: the reduction of the Hamiltonian matrix to real "
-                               "Schur form failed");
-                    case 3:
-                        error ("bstmodred: 3: the reordering of the real Schur form of the "
-                               "Hamiltonian matrix failed");
-                    case 4:
-                        error ("bstmodred: 4: the Hamiltonian matrix has less than N stable "
-                               "eigenvalues");
-                    case 5:
-                        error ("bstmodred: 5: the coefficient matrix U11 in the linear system "
-                               "X*U11 = U21 to determine X is singular to working "
-                               "precision");
-                    case 6:
-                        error ("bstmodred: 6: BETA = 0 and D has not a maximal row rank");
-                    case 7:
-                        error ("bstmodred: 7: the computation of Hankel singular values failed");
-                    case 8:
-                        error ("bstmodred: 8: the separation of the ALPHA-stable/unstable diagonal "
-                               "blocks failed because of very close eigenvalues");
-                    case 9:
-                        error ("bstmodred: 9: the resulting order of reduced stable part is less "
-                               "than the number of unstable zeros of the stable "
-                               "part");
-                    default:
-                        error ("bstmodred: unknown error, info = %d", info);
-                }
-            }
-        }
 
-        if (iwarn != 0)
-        {
-            switch (iwarn)
-            {
-                case 1:
-                    warning ("bstmodred: 1: with ORDSEL = 'F', the selected order NR is greater "
-                             "than NSMIN, the sum of the order of the "
-                             "ALPHA-unstable part and the order of a minimal "
-                             "realization of the ALPHA-stable part of the given "
-                             "system; in this case, the resulting NR is set equal "
-                             "to NSMIN.");
-                    break;
-                case 2:
-                    warning ("bstmodred: 2: with ORDSEL = 'F', the selected order NR corresponds "
-                             "to repeated singular values for the ALPHA-stable "
-                             "part, which are neither all included nor all "
-                             "excluded from the reduced model; in this case, the "
-                             "resulting NR is automatically decreased to exclude "
-                             "all repeated singular values.");
-                    break;
-                case 3:
-                    warning ("bstmodred: 3: with ORDSEL = 'F', the selected order NR is less "
-                             "than the order of the ALPHA-unstable part of the "
-                             "given system; in this case NR is set equal to the "
-                             "order of the ALPHA-unstable part.");
-                    break;
-                default:
-                    warning ("bstmodred: unknown warning, iwarn = %d", info);
-            }
-        }
+
+        static const char* err_msg[] = {
+            "0: OK",
+            "1: the computation of the ordered real Schur form of A "
+                "failed",
+            "2: the reduction of the Hamiltonian matrix to real "
+                "Schur form failed",
+            "3: the reordering of the real Schur form of the "
+                "Hamiltonian matrix failed",
+            "4: the Hamiltonian matrix has less than N stable "
+                "eigenvalues",
+            "5: the coefficient matrix U11 in the linear system "
+                "X*U11 = U21 to determine X is singular to working "
+                "precision",
+            "6: BETA = 0 and D has not a maximal row rank",
+            "7: the computation of Hankel singular values failed",
+            "8: the separation of the ALPHA-stable/unstable diagonal "
+                "blocks failed because of very close eigenvalues",
+            "9: the resulting order of reduced stable part is less "
+                "than the number of unstable zeros of the stable "
+                "part"}; 
+
+        static const char* warn_msg[] = {
+            "0: OK",
+            "1: with ORDSEL = 'F', the selected order NR is greater "
+                "than NSMIN, the sum of the order of the "
+                "ALPHA-unstable part and the order of a minimal "
+                "realization of the ALPHA-stable part of the given "
+                "system; in this case, the resulting NR is set equal "
+                "to NSMIN.",
+            "2: with ORDSEL = 'F', the selected order NR corresponds "
+                "to repeated singular values for the ALPHA-stable "
+                "part, which are neither all included nor all "
+                "excluded from the reduced model; in this case, the "
+                "resulting NR is automatically decreased to exclude "
+                "all repeated singular values.",
+            "3: with ORDSEL = 'F', the selected order NR is less "
+                "than the order of the ALPHA-unstable part of the "
+                "given system; in this case NR is set equal to the "
+                "order of the ALPHA-unstable part."};
+ 
+        error_msg ("bstmodred", info, 9, err_msg);
+        warning_msg ("bstmodred", iwarn, 3, warn_msg);
 
         // resize
         a.resize (nr, nr);

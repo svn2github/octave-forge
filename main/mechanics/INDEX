@@ -5,11 +5,19 @@ mechanics >> Classical Mechanics
  pendulum
  setpendulum
 2D Mechanics
- area_poly2d
- center_mass_poly2d
- inertia_moment_poly2d
- inertia_moment_ncpoly2d
- second_moment_poly2d
+ inertiamoment.m
+ masscenter.m
+ principalaxes.m
+3D Mechanics
+ EAmatrix.m
+ RBequations_rot.m
+ RBexample.m
+ drawAxis3D.m
+ mat2quat.m
+ quat2mat.m
+ quatconj.m
+ quatprod.m
+ quatvrot.m
 Molecular Dynamics
  verletstep
  verletstep_boxed

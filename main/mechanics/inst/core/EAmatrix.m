@@ -1,5 +1,5 @@
-%%copyright (c) 2011 Juan Pablocarbajal <carbajal@ifi.uzh.ch>
-%% 
+%%copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
+%%
 %%    This program is free software: youcan redistribute itand/or modify
 %%    it under the terms of the GNU General Public Licenseas publishedby
 %%    the Free Software Foundation, either version 3 of the License, or
@@ -36,7 +36,7 @@
 %% @end deftypefn
 
 function varargout =  EAmatrix (ang,convention = [3 1 3], handle = false)
-  
+
   if handle
 
     if !ischar (convention)
@@ -45,7 +45,7 @@ function varargout =  EAmatrix (ang,convention = [3 1 3], handle = false)
     end
 
     varargout{1} = eval(["@" toupper(convention)]);
-    
+
     if nargout > 1
       varargout{2} = eval(["@d" toupper(convention)]);
     end
@@ -56,12 +56,12 @@ function varargout =  EAmatrix (ang,convention = [3 1 3], handle = false)
     end
 
     I = eye(3)(convention,:);
-    R1 = rotv (I(1,:),-ang(1)); 
+    R1 = rotv (I(1,:),-ang(1));
     %% Rotation of axes
     M = R1 * rotv (I(2,:),-ang(2)) * rotv (I(3,:),-ang(3));
-    
+
     varargout{1} = M;
-    
+
     if nargout > 1
     %% Conversion from angle derivatives to angular speed
     R1e2 = I(2,:)*R1';
@@ -110,8 +110,8 @@ endfunction
 function M =   XYX(ang)
   c = cos(ang);
   s = sin(ang);
-  M = [c(2),0,s(2); ... 
-       c(1)*s(2)*s(3)+s(1)*s(2)*c(3),c(1)*c(3)-s(1)*s(3),-c(1)*c(2)*s(3)-s(1)*c(2)*c(3); ... 
+  M = [c(2),0,s(2); ...
+       c(1)*s(2)*s(3)+s(1)*s(2)*c(3),c(1)*c(3)-s(1)*s(3),-c(1)*c(2)*s(3)-s(1)*c(2)*c(3); ...
        s(1)*s(2)*s(3)-c(1)*s(2)*c(3),c(1)*s(3)+s(1)*c(3),c(1)*c(2)*c(3)-s(1)*c(2)*s(3)];
 endfunction
 
@@ -127,8 +127,8 @@ endfunction
 function M =   YXY(ang)
   c = cos(ang);
   s = sin(ang);
-  M = [c(1)*c(3)-s(1)*c(2)*s(3),s(1)*s(2),c(1)*s(3)+s(1)*c(2)*c(3); ... 
-       s(2)*s(3),c(2),-s(2)*c(3); ... 
+  M = [c(1)*c(3)-s(1)*c(2)*s(3),s(1)*s(2),c(1)*s(3)+s(1)*c(2)*c(3); ...
+       s(2)*s(3),c(2),-s(2)*c(3); ...
        -c(1)*c(2)*s(3)-s(1)*c(3),c(1)*s(2),c(1)*c(2)*c(3)-s(1)*s(3)];
 endfunction
 
@@ -144,8 +144,8 @@ endfunction
 function M =   XZY(ang)
   c = cos(ang);
   s = sin(ang);
-  M = [c(2)*c(3),-s(2),c(2)*s(3); ... 
-       s(1)*s(3)+c(1)*s(2)*c(3),c(1)*c(2),c(1)*s(2)*s(3)-s(1)*c(3); ... 
+  M = [c(2)*c(3),-s(2),c(2)*s(3); ...
+       s(1)*s(3)+c(1)*s(2)*c(3),c(1)*c(2),c(1)*s(2)*s(3)-s(1)*c(3); ...
        s(1)*s(2)*c(3)-c(1)*s(3),s(1)*c(2),s(1)*s(2)*s(3)+c(1)*c(3)];
 endfunction
 
@@ -161,8 +161,8 @@ endfunction
 function M =   XYZ(ang)
   c = cos(ang);
   s = sin(ang);
-  M = [c(2)*c(3),-c(2)*s(3),s(2); ... 
-       c(1)*s(3)+s(1)*s(2)*c(3),c(1)*c(3)-s(1)*s(2)*s(3),-s(1)*c(2); ... 
+  M = [c(2)*c(3),-c(2)*s(3),s(2); ...
+       c(1)*s(3)+s(1)*s(2)*c(3),c(1)*c(3)-s(1)*s(2)*s(3),-s(1)*c(2); ...
        s(1)*s(3)-c(1)*s(2)*c(3),c(1)*s(2)*s(3)+s(1)*c(3),c(1)*c(2)];
 endfunction
 
@@ -178,8 +178,8 @@ endfunction
 function M =   YXZ(ang)
   c = cos(ang);
   s = sin(ang);
-  M = [s(1)*s(2)*s(3)+c(1)*c(3),s(1)*s(2)*c(3)-c(1)*s(3),s(1)*c(2); ... 
-       c(2)*s(3),c(2)*c(3),-s(2); ... 
+  M = [s(1)*s(2)*s(3)+c(1)*c(3),s(1)*s(2)*c(3)-c(1)*s(3),s(1)*c(2); ...
+       c(2)*s(3),c(2)*c(3),-s(2); ...
        c(1)*s(2)*s(3)-s(1)*c(3),s(1)*s(3)+c(1)*s(2)*c(3),c(1)*c(2)];
 endfunction
 
@@ -195,8 +195,8 @@ endfunction
 function M =  YZX(ang)
   c = cos(ang);
   s = sin(ang);
-  M = [s(1)*s(2)*s(3)+c(1)*c(2),s(1)*c(2)*s(3)-c(1)*s(2),s(1)*c(3); ... 
-       s(2)*c(3),c(2)*c(3),-s(3); ... 
+  M = [s(1)*s(2)*s(3)+c(1)*c(2),s(1)*c(2)*s(3)-c(1)*s(2),s(1)*c(3); ...
+       s(2)*c(3),c(2)*c(3),-s(3); ...
        c(1)*s(2)*s(3)-s(1)*c(2),c(1)*c(2)*s(3)+s(1)*s(2),c(1)*c(3)];
 endfunction
 
@@ -212,8 +212,8 @@ endfunction
 function M =   ZXY(ang)
   c = cos(ang);
   s = sin(ang);
-  M = [c(1)*c(3)-s(1)*s(2)*s(3),-s(1)*c(2),c(1)*s(3)+s(1)*s(2)*c(3); ... 
-       c(1)*s(2)*s(3)+s(1)*c(3),c(1)*c(2),s(1)*s(3)-c(1)*s(2)*c(3); ... 
+  M = [c(1)*c(3)-s(1)*s(2)*s(3),-s(1)*c(2),c(1)*s(3)+s(1)*s(2)*c(3); ...
+       c(1)*s(2)*s(3)+s(1)*c(3),c(1)*c(2),s(1)*s(3)-c(1)*s(2)*c(3); ...
        -c(2)*s(3),s(2),c(2)*c(3)];
 endfunction
 
@@ -304,5 +304,3 @@ endfunction
 %!
 %!  assert (dM, dZXZ);
 %!  assert (dMh(ANG(1,:)), dZXZ);
-
-

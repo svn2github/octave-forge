@@ -15,11 +15,11 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} { @var{cm} =} masscenter (@var{pp})
-%%  Center of mass of a plane shape. 
+%%  Center of mass of a plane shape.
 %%
 %% The shape is defined with piecewise smooth polynomials. @var{pp} is a
-%% cell where each elements is a 2-by-(poly_degree+1) matrix containing px(i,:) =
-%% pp{i}(1,:) and py(i,:) = pp{i}(2,:).
+%% cell where each elements is a 2-by-(poly_degree+1) matrix containing
+%% @code{px(i,:) = pp{i}(1,:)} and @code{py(i,:) = pp{i}(2,:)}.
 %%
 %% @seealso{inertiamoment}
 %% @end deftypefn
@@ -29,7 +29,7 @@ function cm = masscenter (shape)
   cm = sum( cell2mat ( cellfun (@CMint, shape, 'UniformOutput', false)));
   A = shapearea(shape);
   cm = cm / A;
-  
+
 endfunction
 
 function dcm = CMint (x)
@@ -38,7 +38,7 @@ function dcm = CMint (x)
     py = x(2,:);
     Px = polyint (conv(conv (px , px)/2 , polyderiv (py)));
     Py = polyint (conv(-conv (px , px)/2 , polyderiv (px)));
-    
+
     dcm = zeros (1,2);
     dcm(1) = diff(polyval(Px,[0 1]));
     dcm(2) = diff(polyval(Py,[0 1]));
@@ -68,4 +68,3 @@ endfunction
 %!            -1.715729   6.715729    0  -5]};
 %! CoM = masscenter (circle);
 %! assert (CoM , [0 0], 5e-3);
-

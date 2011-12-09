@@ -1,8 +1,8 @@
 function pre_install (desc)
 %% Prepares for installation a package that is organized in subfolders
 
-  %% List of subfolders
-  subfld = {"molecularDynamics","ocframe", "core"};
+  %% List of subfolders with SRC folder
+  subfld = {"molecularDynamics"};
 
   %% Create correct strings
   subfld_ready = strcat ({[pwd() filesep() "inst" filesep()]},

@@ -317,90 +317,64 @@ For internal use only.")
 
         if (f77_exception_encountered)
             error ("modred: exception in SLICOT subroutine AB09ID");
-            
-        if (info != 0)
-        {
-            if (info < 0)
-                error ("modred: the %d-th argument had an invalid value", info);
-            else
-            {
-                switch (info)
-                {
-                    case 1:
-                        error ("modred: 1: the computation of the ordered real Schur form of A "
-                               "failed");
-                    case 2:
-                        error ("modred: 2: the separation of the ALPHA-stable/unstable "
-                               "diagonal blocks failed because of very close "
-                               "eigenvalues");
-                    case 3:
-                        error ("modred: 3: the reduction to a real Schur form of the state "
-                               "matrix of a minimal realization of V failed");
-                    case 4:
-                        error ("modred: 4: a failure was detected during the ordering of the "
-                               "real Schur form of the state matrix of a minimal "
-                               "realization of V or in the iterative process to "
-                               "compute a left coprime factorization with inner "
-                               "denominator");
-                    case 5:
-                        error ("modred: 5: if DICO = 'C' and the matrix AV has an observable "
-                               "eigenvalue on the imaginary axis, or DICO = 'D' and "
-                               "AV has an observable eigenvalue on the unit circle");
-                    case 6:
-                        error ("modred: 6: the reduction to a real Schur form of the state "
-                               "matrix of a minimal realization of W failed");
-                    case 7:
-                        error ("modred: 7: a failure was detected during the ordering of the "
-                               "real Schur form of the state matrix of a minimal "
-                               "realization of W or in the iterative process to "
-                               "compute a right coprime factorization with inner "
-                               "denominator");
-                    case 8:
-                        error ("modred: 8: if DICO = 'C' and the matrix AW has a controllable "
-                               "eigenvalue on the imaginary axis, or DICO = 'D' and "
-                               "AW has a controllable eigenvalue on the unit circle");
-                    case 9:
-                        error ("modred: 9: the computation of eigenvalues failed");
-                    case 10:
-                        error ("modred: 10: the computation of Hankel singular values failed");
-                    default:
-                        error ("modred: unknown error, info = %d", info);
-                }
-            }
-        }
-        
-        if (iwarn != 0)
-        {
-            switch (iwarn)
-            {
-                case 1:
-                    warning ("modred: 1: with ORDSEL = 'F', the selected order NR is greater "
-                             "than NSMIN, the sum of the order of the "
-                             "ALPHA-unstable part and the order of a minimal "
-                             "realization of the ALPHA-stable part of the given "
-                             "system; in this case, the resulting NR is set equal "
-                             "to NSMIN.");
-                    break;
-                case 2:
-                    warning ("modred: 2: with ORDSEL = 'F', the selected order NR corresponds "
-                             "to repeated singular values for the ALPHA-stable "
-                             "part, which are neither all included nor all "
-                             "excluded from the reduced model; in this case, the "
-                             "resulting NR is automatically decreased to exclude "
-                             "all repeated singular values.");
-                    break;
-                case 3:
-                    warning ("modred: 3: with ORDSEL = 'F', the selected order NR is less "
-                             "than the order of the ALPHA-unstable part of the "
-                             "given system; in this case NR is set equal to the "
-                             "order of the ALPHA-unstable part.");
-                    break;
-                default:
-                    warning ("modred: 10+%d: %d violations of the numerical stability condition "
-                             "occured during the assignment of eigenvalues in the "
-                             "SLICOT Library routines SB08CD and/or SB08DD.", info, info);
-            }
-        }
+
+
+        static const char* err_msg[] = {
+            "0: OK",
+            "1: the computation of the ordered real Schur form of A "
+                "failed",
+            "2: the separation of the ALPHA-stable/unstable "
+                "diagonal blocks failed because of very close "
+                "eigenvalues",
+            "3: the reduction to a real Schur form of the state "
+                "matrix of a minimal realization of V failed",
+            "4: a failure was detected during the ordering of the "
+                "real Schur form of the state matrix of a minimal "
+                "realization of V or in the iterative process to "
+                "compute a left coprime factorization with inner "
+                "denominator",
+            "5: if DICO = 'C' and the matrix AV has an observable "
+                "eigenvalue on the imaginary axis, or DICO = 'D' and "
+                "AV has an observable eigenvalue on the unit circle",
+            "6: the reduction to a real Schur form of the state "
+                "matrix of a minimal realization of W failed",
+            "7: a failure was detected during the ordering of the "
+                "real Schur form of the state matrix of a minimal "
+                "realization of W or in the iterative process to "
+                "compute a right coprime factorization with inner "
+                "denominator",
+            "8: if DICO = 'C' and the matrix AW has a controllable "
+                "eigenvalue on the imaginary axis, or DICO = 'D' and "
+                "AW has a controllable eigenvalue on the unit circle",
+            "9: the computation of eigenvalues failed",
+            "10: the computation of Hankel singular values failed"};
+
+        static const char* warn_msg[] = {
+            "0: OK",
+            "1: with ORDSEL = 'F', the selected order NR is greater "
+                "than NSMIN, the sum of the order of the "
+                "ALPHA-unstable part and the order of a minimal "
+                "realization of the ALPHA-stable part of the given "
+                "system; in this case, the resulting NR is set equal "
+                "to NSMIN.",
+            "2: with ORDSEL = 'F', the selected order NR corresponds "
+                "to repeated singular values for the ALPHA-stable "
+                "part, which are neither all included nor all "
+                "excluded from the reduced model; in this case, the "
+                "resulting NR is automatically decreased to exclude "
+                "all repeated singular values.",
+            "3: with ORDSEL = 'F', the selected order NR is less "
+                "than the order of the ALPHA-unstable part of the "
+                "given system; in this case NR is set equal to the "
+                "order of the ALPHA-unstable part.",
+            "10+%d: %d violations of the numerical stability condition "
+                "occured during the assignment of eigenvalues in the "
+                "SLICOT Library routines SB08CD and/or SB08DD."};//, info, info);
+
+        // TODO: handle case 10+info
+
+        error_msg ("modred", info, 10, err_msg);
+        warning_msg ("modred", iwarn, 4, warn_msg);
 
         // resize
         a.resize (nr, nr);

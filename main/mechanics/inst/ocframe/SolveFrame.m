@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{Reactions}, @var{Displacements}, @var{MemF}] = } SolveFrame(@var{joints}, @var{members}, @var{nodeloads}, @var{dist}, @var{point}) 
+## @deftypefn {Function File} {[@var{Reactions}, @var{Displacements}, @var{MemF}] = } SolveFrame(@var{joints}, @var{members}, @var{nodeloads}, @var{dist}, @var{point})
 ##
 ##
 ## Solves a 2D frame with the matrix displacement method for
@@ -47,10 +47,10 @@
 ##
 ##    Displacements = [x,y,rotation;...]
 ##
-##    MemF = [FxN, FyN, MzN, FxF, FyF, MzF; ...] 
+##    MemF = [FxN, FyN, MzN, FxF, FyF, MzF; ...]
 ## @end deftypefn
 
-function [Reactions,Displacements,MemF]=SolveFrameOpt(joints,members,nodeloads,dist,point)
+function [Reactions,Displacements,MemF] = SolveFrame(joints,members,nodeloads,dist,point)
 	if (nargin < 5)
 		usage("[Reactions,Displacements,MemF]=SolveFrame(joints,members,nodeloads,dist,point) Use the help command for more information");
 	end
@@ -63,7 +63,7 @@ function [Reactions,Displacements,MemF]=SolveFrameOpt(joints,members,nodeloads,d
 	%	joints: [x, y, constraints; ...] 1= fixed
 	%	members [nodeN,nodeF,E,I,A; ...]
 	%	nodeloads [node,Fx,Fy,Mz; ...]
-	
+
 	P=D=zeros(rows(joints)*3,1);
 	%add nodal loads to P matrix
 	for load=1:rows(nodeloads)
@@ -84,7 +84,7 @@ function [Reactions,Displacements,MemF]=SolveFrameOpt(joints,members,nodeloads,d
 			end
 		end
 	end
-	
+
 	%% global equation
 	%% { P_f }   [ K_ff   K_fs ]   { Delta_f }     { P_F_f }
 	%% {     } = [             ] . {         }  +  {       }
@@ -100,38 +100,38 @@ function [Reactions,Displacements,MemF]=SolveFrameOpt(joints,members,nodeloads,d
 	%stiffness matrix
 	[ K_ff, K_sf ] = GlobalStiffnessMatrixRegrouped (joints, members,free,supported,k_array,T_array); %K_ss, K_fs are not used and if not calculated script is faster
 
-	
+
 	%nodal forces and equivalent nodal ones
 	[P_F,MemFEF]=EquivalentJointLoads(joints,members,dist,point);
-	
+
 
 	%reduced matrices
 	P_f=P(free,:);
 	P_s=P(supported,:);
-	
+
 	P_F_f=P_F(free,:);
 	P_F_s=P_F(supported,:);
-	
+
 	%solution: find unknown displacements
-	
+
 	try
 		%A X = B => solve with cholesky => X = R\(R'\B)
 		r = chol (K_ff);
-		D_f=r\(r'\(P_f-P_F_f)); 
+		D_f=r\(r'\(P_f-P_F_f));
 		%D_f=cholinv(K_ff)*(P_f-P_F_f); %TODO: use this line but for testing purposes same method as old on
 	catch
 		error("System is unstable because K_ff is singular. Please check the support constraints!");
 	end_try_catch
 
-	%TODO: make use of iterative solver as an option. How???? (old code below endfunction)	
+	%TODO: make use of iterative solver as an option. How???? (old code below endfunction)
 
 	D(free,1)=D_f;
-	
+
 	%solution: find unknown (reaction) forces
 	P_s=K_sf*D_f+P_F_s;
 	P(supported,1)=P_s;
-	
-	
+
+
 	%solution: find unknown member forces
 	MemF=[];
 	for member=1:rows(members)
@@ -173,7 +173,7 @@ end
 %	try
 %		%A X = B => solve with cholesky => X = R\(R'\B)
 %		r = chol (K_ff);
-%		D_f=r\(r'\(P_f-P_F_f)); 
+%		D_f=r\(r'\(P_f-P_F_f));
 %	catch
 %		error("System is unstable because K_ff is singular. Please check the support constraints!");
 %	end_try_catch

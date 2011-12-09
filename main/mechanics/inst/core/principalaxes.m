@@ -18,8 +18,8 @@
 ## Calculates the principal axes of a shape.
 ##
 ## Returns a matrix @var{axes} where each row corresponds to one of the principal
-## axes of the shape. @{l} is the second moment of area around the correspoding
-## principal axis. @var{axes} is order from lower to higher @var{l}. 
+## axes of the shape. @var{l} is the second moment of area around the correspoding
+## principal axis. @var{axes} is order from lower to higher @var{l}.
 ##
 ## @seealso{inertiamoment, masscenter}
 ## @end deftypefn
@@ -30,23 +30,23 @@ function [PA l Jm] = principalaxes (shape)
 
   Jsq = Jm(2)^2;
   if Jsq > eps;
-  
+
     TrJ = Jm(1) + Jm(3);
     DetJ = Jm(1)*Jm(3) - Jsq;
-    
+
     %% Eigenvalues
     l = ( [TrJ;  TrJ] + [1; -1]*sqrt(TrJ^2 - 4*DetJ) )/2;
-    
+
     %% Eginevectors (Exchanged Jx with Jy)
     PA(:,1) = (l - Jm(1)) .* (l - Jm(3)) / Jsq;
     PA(:,2) = (l - Jm(1)) .* (l - Jm(3)).^2 / Jm(2)^3;
-    
+
     %% Normalize
     PAnorm = sqrt ( sumsq(PA,2));
     PA(1,:) = PA(1,:) ./ PAnorm(1);
     PA(2,:) = PA(2,:) ./ PAnorm(2);
   else
-  
+
     %% Matrix already diagonal
     PA(:,1) = [1 ; 0];
     PA(:,2) = [0 ; 1];
@@ -58,7 +58,7 @@ function [PA l Jm] = principalaxes (shape)
   [l ind] = sort (l, 'ascend');
   PA = PA(ind([2 1]),:);
 
-  %% Check that is a right hand oriented pair of axis 
+  %% Check that is a right hand oriented pair of axis
   if PA(1,1)*PA(2,2) - PA(1,2)*PA(2,1) < 0
     PA(1,:) = -PA(1,:);
   end
@@ -74,23 +74,20 @@ end
 %!demo
 %! t = linspace(0,2*pi,64).';
 %! shape = [cos(t)-0.3*cos(3*t) sin(t)](1:end-1,:);
-%! shapeR = shape*rotv([0 0 1],pi/4)(1:2,1:2); 
-%! [PAr l] = principalaxes(shapeR); 
-%! [PA l] = principalaxes(shape); 
+%! shapeR = shape*rotv([0 0 1],pi/4)(1:2,1:2);
+%! [PAr l] = principalaxes(shapeR);
+%! [PA l] = principalaxes(shape);
 %!
 %! cla
-%! plot(shape(:,1),shape(:,2),'-k'); 
-%! line([0 PA(1,1)],[0 PA(1,2)],'color','r'); 
-%! line([0 PA(2,1)],[0 PA(2,2)],'color','b'); 
+%! plot(shape(:,1),shape(:,2),'-k');
+%! line([0 PA(1,1)],[0 PA(1,2)],'color','r');
+%! line([0 PA(2,1)],[0 PA(2,2)],'color','b');
 %!
 %! hold on
 %!
-%! plot(shapeR(:,1)+3,shapeR(:,2),'-k'); 
-%! line([3 PAr(1,1)+3],[0 PAr(1,2)],'color','r'); 
-%! line([3 PAr(2,1)+3],[0 PAr(2,2)],'color','b'); 
+%! plot(shapeR(:,1)+3,shapeR(:,2),'-k');
+%! line([3 PAr(1,1)+3],[0 PAr(1,2)],'color','r');
+%! line([3 PAr(2,1)+3],[0 PAr(2,2)],'color','b');
 %!
 %! axis equal
 %! axis square
-
-
-

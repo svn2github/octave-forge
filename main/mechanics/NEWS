@@ -13,14 +13,16 @@ mechanics-1.2.0   Release Date: 2011-10-16   Release Manager: Juan Pablo Carbaja
  inertiamoment.m
  masscenter.m
 
-* deprecating
-area_poly2d.m
-center_mass_poly2d.m
-inertia_moment_ncpoly2d.m
-inertia_moment_poly2d.m
-second_moment_poly2d.m
+* Functions that changed names
+center_mass_poly2d.m --> masscenter.m
+inertia_moment_ncpoly2d.m |
+                          | - inertiamoment.m
+inertia_moment_poly2d.m   |
 
-* Added inverse to vech
+
+* The functions second_moment_poly2d.m and area_poly2d.m can be found in the
+geometry package. Mechanics is now dpeendt on that package.
+
 * Minor fixes to other functions
 * Major structure change of the package: multipackage
 * Fixed the order of this NEWS file.

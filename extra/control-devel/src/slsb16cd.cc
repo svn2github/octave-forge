@@ -191,57 +191,34 @@ For internal use only.")
 
 
         if (f77_exception_encountered)
-            error ("conred: exception in SLICOT subroutine SB16CD");
-            
-        if (info != 0)
-        {
-            if (info < 0)
-                error ("conred: the %d-th argument had an invalid value", info);
-            else
-            {
-                switch (info)
-                {
-                    case 1:
-                        error ("conred: 1: eigenvalue computation failure");
-                    case 2:
-                        error ("conred: 2: the matrix A+G*C is not stable");
-                    case 3:
-                        error ("conred: 3: the matrix A+B*F is not stable");
-                    case 4:
-                        error ("conred: 4: the Lyapunov equation for computing the "
-                               "observability Grammian is (nearly) singular");
-                    case 5:
-                        error ("conred: 5: the Lyapunov equation for computing the "
-                               "controllability Grammian is (nearly) singular");
-                    case 6:
-                        error ("conred: 6: the computation of Hankel singular values failed");
-                    default:
-                        error ("conred: unknown error, info = %d", info);
-                }
-            }
-        }
-        
-        if (iwarn != 0)
-        {
-            switch (iwarn)
-            {
-                case 1:
-                    warning ("conred: 1: with ORDSEL = 'F', the selected order NCR is "
-                             "greater than the order of a minimal realization "
-                             "of the controller.");
-                    break;
-                case 2:
-                    warning ("conred: 2: with ORDSEL = 'F', the selected order NCR "
-                             "corresponds to repeated singular values, which are "
-                             "neither all included nor all excluded from the "
-                             "reduced controller. In this case, the resulting NCR "
-                             "is set automatically to the largest value such that "
-                             "HSV(NCR) > HSV(NCR+1).");
-                    break;
-                default:
-                    warning ("conred: unknown warning, iwarn = %d", iwarn);
-            }
-        }
+            error ("fwcfconred: exception in SLICOT subroutine SB16CD");
+
+        static const char* err_msg[] = {
+            "0: OK",
+            "1: eigenvalue computation failure",
+            "2: the matrix A+G*C is not stable",
+            "3: the matrix A+B*F is not stable",
+            "4: the Lyapunov equation for computing the "
+                "observability Grammian is (nearly) singular",
+            "5: the Lyapunov equation for computing the "
+                "controllability Grammian is (nearly) singular",
+            "6: the computation of Hankel singular values failed"};
+
+        static const char* warn_msg[] = {
+            "0: OK",
+            "1: with ORDSEL = 'F', the selected order NCR is "
+                "greater than the order of a minimal realization "
+                "of the controller.",
+            "2: with ORDSEL = 'F', the selected order NCR "
+                "corresponds to repeated singular values, which are "
+                "neither all included nor all excluded from the "
+                "reduced controller. In this case, the resulting NCR "
+                "is set automatically to the largest value such that "
+                "HSV(NCR) > HSV(NCR+1)."};
+
+        error_msg ("fwcfconred", info, 6, err_msg);
+        warning_msg ("fwcfconred", iwarn, 2, warn_msg);
+
 
         // resize
         a.resize (ncr, ncr);    // Ac

@@ -263,70 +263,44 @@ For internal use only.")
 
         if (f77_exception_encountered)
             error ("conred: exception in SLICOT subroutine SB16AD");
-            
-        if (info != 0)
-        {
-            if (info < 0)
-                error ("conred: the %d-th argument had an invalid value", info);
-            else
-            {
-                switch (info)
-                {
-                    case 1:
-                        error ("conred: 1: the closed-loop system is not well-posed; "
-                               "its feedthrough matrix is (numerically) singular");
-                    case 2:
-                        error ("conred: 2: the computation of the real Schur form of the "
-                               "closed-loop state matrix failed");
-                    case 3:
-                        error ("conred: 3: the closed-loop state matrix is not stable");
-                    case 4:
-                        error ("conred: 4: the solution of a symmetric eigenproblem failed");
-                    case 5:
-                        error ("conred: 5: the computation of the ordered real Schur form "
-                               "of Ac failed");
-                    case 6:
-                        error ("conred: 6: the separation of the ALPHA-stable/unstable "
-                               "diagonal blocks failed because of very close eigenvalues");
-                    case 7:
-                        error ("conred: 7: the computation of Hankel singular values failed");
-                    default:
-                        error ("conred: unknown error, info = %d", info);
-                }
-            }
-        }
-        
-        if (iwarn != 0)
-        {
-            switch (iwarn)
-            {
-                case 1:
-                    warning ("conred: 1: with ORDSEL = 'F', the selected order NCR is greater "
-                             "than NSMIN, the sum of the order of the "
-                             "ALPHA-unstable part and the order of a minimal "
-                             "realization of the ALPHA-stable part of the given "
-                             "controller; in this case, the resulting NCR is set "
-                             "equal to NSMIN.");
-                    break;
-                case 2:
-                    warning ("conred: 2: with ORDSEL = 'F', the selected order NCR "
-                             "corresponds to repeated singular values for the "
-                             "ALPHA-stable part of the controller, which are "
-                             "neither all included nor all excluded from the "
-                             "reduced model; in this case, the resulting NCR is "
-                             "automatically decreased to exclude all repeated "
-                             "singular values.");
-                    break;
-                case 3:
-                    warning ("conred: 3: with ORDSEL = 'F', the selected order NCR is less "
-                             "than the order of the ALPHA-unstable part of the "
-                             "given controller. In this case NCR is set equal to "
-                             "the order of the ALPHA-unstable part.");
-                    break;
-                default:
-                    warning ("conred: unknown warning, iwarn = %d", iwarn);
-            }
-        }
+
+        static const char* err_msg[] = {
+            "0: OK",
+            "1: the closed-loop system is not well-posed; "
+                "its feedthrough matrix is (numerically) singular",
+            "2: the computation of the real Schur form of the "
+                "closed-loop state matrix failed",
+            "3: the closed-loop state matrix is not stable",
+            "4: the solution of a symmetric eigenproblem failed",
+            "5: the computation of the ordered real Schur form "
+                "of Ac failed",
+            "6: the separation of the ALPHA-stable/unstable "
+                "diagonal blocks failed because of very close eigenvalues",
+            "7: the computation of Hankel singular values failed"};
+
+        static const char* warn_msg[] = {
+            "0: OK",
+            "1: with ORDSEL = 'F', the selected order NCR is greater "
+                "than NSMIN, the sum of the order of the "
+                "ALPHA-unstable part and the order of a minimal "
+                "realization of the ALPHA-stable part of the given "
+                "controller; in this case, the resulting NCR is set "
+                "equal to NSMIN.",
+            "2: with ORDSEL = 'F', the selected order NCR "
+                "corresponds to repeated singular values for the "
+                "ALPHA-stable part of the controller, which are "
+                "neither all included nor all excluded from the "
+                "reduced model; in this case, the resulting NCR is "
+                "automatically decreased to exclude all repeated "
+                "singular values.",
+            "3: with ORDSEL = 'F', the selected order NCR is less "
+                "than the order of the ALPHA-unstable part of the "
+                "given controller. In this case NCR is set equal to "
+                "the order of the ALPHA-unstable part."};
+
+        error_msg ("conred", info, 7, err_msg);
+        warning_msg ("conred", iwarn, 3, warn_msg);
+
 
         // resize
         ac.resize (ncr, ncr);

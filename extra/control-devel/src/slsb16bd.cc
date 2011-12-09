@@ -226,49 +226,29 @@ For internal use only.")
 
 
         if (f77_exception_encountered)
-            error ("conred: exception in SLICOT subroutine SB16BD");
-            
-        if (info != 0)
-        {
-            if (info < 0)
-                error ("conred: the %d-th argument had an invalid value", info);
-            else
-            {
-                switch (info)
-                {
-                    case 1:
-                        error ("conred: 1: the reduction of A+G*C to a real Schur form "
-                               "failed");
-                    case 2:
-                        error ("conred: 2: the matrix A+G*C is not stable (if DICO = 'C'), "
-                               "or not convergent (if DICO = 'D')");
-                    case 3:
-                        error ("conred: 3: the computation of Hankel singular values failed");
-                    case 4:
-                        error ("conred: 4: the reduction of A+B*F to a real Schur form "
-                               "failed");
-                    case 5:
-                        error ("conred: 5: the matrix A+B*F is not stable (if DICO = 'C'), "
-                               "or not convergent (if DICO = 'D')");
-                    default:
-                        error ("conred: unknown error, info = %d", info);
-                }
-            }
-        }
-        
-        if (iwarn != 0)
-        {
-            switch (iwarn)
-            {
-                case 1:
-                    warning ("conred: 1: with ORDSEL = 'F', the selected order NCR is "
-                             "greater than the order of a minimal "
-                             "realization of the controller.");
-                    break;
-                default:
-                    warning ("conred: unknown warning, iwarn = %d", iwarn);
-            }
-        }
+            error ("cfconred: exception in SLICOT subroutine SB16BD");
+
+        static const char* err_msg[] = {
+            "0: OK",
+            "1: the reduction of A+G*C to a real Schur form "
+                "failed",
+            "2: the matrix A+G*C is not stable (if DICO = 'C'), "
+                "or not convergent (if DICO = 'D')",
+            "3: the computation of Hankel singular values failed",
+            "4: the reduction of A+B*F to a real Schur form "
+                "failed",
+            "5: the matrix A+B*F is not stable (if DICO = 'C'), "
+                "or not convergent (if DICO = 'D')"};
+
+        static const char* warn_msg[] = {
+            "0: OK",
+            "1: with ORDSEL = 'F', the selected order NCR is "
+                "greater than the order of a minimal "
+                "realization of the controller."};
+
+        error_msg ("cfconred", info, 5, err_msg);
+        warning_msg ("cfconred", iwarn, 1, warn_msg);
+
 
         // resize
         a.resize (ncr, ncr);    // Ac

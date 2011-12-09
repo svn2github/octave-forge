@@ -18,4 +18,5 @@ Model Reduction
 Controller Reduction
   btaconred
   cfconred
+  fwcfconred
   spaconred

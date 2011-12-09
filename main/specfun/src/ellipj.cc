@@ -148,69 +148,6 @@ double m1 = 1.-m, ss1, cc1, dd1;
  return;
 }
 
-/*
-
-## tests taken from test_ellipj.m
-%!test
-%! u1 = pi/3; m1 = 0;
-%! res1 = [sin(pi/3), cos(pi/3), 1];
-%! [sn,cn,dn]=ellipj(u1,m1);
-%! assert([sn,cn,dn], res1, 10*eps);
-
-%!test
-%! u2 = log(2); m2 = 1;
-%! res2 = [ 3/5, 4/5, 4/5 ];
-%! [sn,cn,dn]=ellipj(u2,m2);
-%! assert([sn,cn,dn], res2, 10*eps);
-
-%!test
-%! u3 = log(2)*1i; m3 = 0;
-%! res3 = [3i/4,5/4,1];
-%! [sn,cn,dn]=ellipj(u3,m3);
-%! assert([sn,cn,dn], res3, 10*eps);
-
-%!test
-%! u4 = -1; m4 = tan(pi/8)^4;
-%! res4 = [-0.8392965923,0.5436738271,0.9895776106];
-%! [sn,cn,dn]=ellipj(u4, m4);
-%! assert([sn,cn,dn], res4, 1e-10);
-
-%!test
-%! u5 = -0.2 + 0.4i; m5 = tan(pi/8)^4;
-%! res5 = [ -0.2152524522 + 0.402598347i, ...
-%!           1.059453907  + 0.08179712295i, ...
-%!           1.001705496  + 0.00254669712i ];
-%! [sn,cn,dn]=ellipj(u5,m5);
-%! assert([sn,cn,dn], res5, 1e-9);
-
-%!test
-%! u6 = 0.2 + 0.6i; m6 = tan(pi/8)^4;
-%! res6 = [ 0.2369100139 + 0.624633635i, ...
-%!          1.16200643   - 0.1273503824i, ...
-%!          1.004913944 - 0.004334880912i ];
-%! [sn,cn,dn]=ellipj(u6,m6);
-%! assert([sn,cn,dn], res6, 1e-8);
-
-%!test
-%! u7 = 0.8 + 0.8i; m7 = tan(pi/8)^4;
-%! res7 = [0.9588386397 + 0.6107824358i, ...
-%!         0.9245978896 - 0.6334016187i, ...
-%!         0.9920785856 - 0.01737733806i ];
-%! [sn,cn,dn]=ellipj(u7,m7);
-%! assert([sn,cn,dn], res7, 1e-10);
-
-%!test
-%! u=[0,pi/6,pi/4,pi/2]; m=0;
-%! res = [0,1/2,1/sqrt(2),1;1,cos(pi/6),1/sqrt(2),0;1,1,1,1];
-%! [sn,cn,dn]=ellipj(u,m);
-%! assert([sn;cn;dn],res, 100*eps);
-%! [sn,cn,dn]=ellipj(u',0);
-%! assert([sn,cn,dn],res', 100*eps);
-
-## XXX FIXME XXX
-## need to check [real,complex]x[scalar,rowvec,colvec,matrix]x[u,m]
-
-*/
 DEFUN_DLD (ellipj, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{sn}, @var{cn}, @var{dn}] =} \
@@ -837,6 +774,93 @@ return @code{NaN}.\n\
 %!     assert (DN (ii, 2), dn, tol);
 %!   endfor
 %! endfor
+
+## tests taken from test_ellipj.m
+%!test
+%! u1 = pi/3; m1 = 0;
+%! res1 = [sin(pi/3), cos(pi/3), 1];
+%! [sn,cn,dn]=ellipj(u1,m1);
+%! assert([sn,cn,dn], res1, 10*eps);
+
+%!test
+%! u2 = log(2); m2 = 1;
+%! res2 = [ 3/5, 4/5, 4/5 ];
+%! [sn,cn,dn]=ellipj(u2,m2);
+%! assert([sn,cn,dn], res2, 10*eps);
+
+%!test
+%! u3 = log(2)*1i; m3 = 0;
+%! res3 = [3i/4,5/4,1];
+%! [sn,cn,dn]=ellipj(u3,m3);
+%! assert([sn,cn,dn], res3, 10*eps);
+
+%!test
+%! u4 = -1; m4 = tan(pi/8)^4;
+%! res4 = [-0.8392965923,0.5436738271,0.9895776106];
+%! [sn,cn,dn]=ellipj(u4, m4);
+%! assert([sn,cn,dn], res4, 1e-10);
+
+%!test
+%! u5 = -0.2 + 0.4i; m5 = tan(pi/8)^4;
+%! res5 = [ -0.2152524522 + 0.402598347i, ...
+%!           1.059453907  + 0.08179712295i, ...
+%!           1.001705496  + 0.00254669712i ];
+%! [sn,cn,dn]=ellipj(u5,m5);
+%! assert([sn,cn,dn], res5, 1e-9);
+
+%!test
+%! u6 = 0.2 + 0.6i; m6 = tan(pi/8)^4;
+%! res6 = [ 0.2369100139 + 0.624633635i, ...
+%!          1.16200643   - 0.1273503824i, ...
+%!          1.004913944 - 0.004334880912i ];
+%! [sn,cn,dn]=ellipj(u6,m6);
+%! assert([sn,cn,dn], res6, 1e-8);
+
+%!test
+%! u7 = 0.8 + 0.8i; m7 = tan(pi/8)^4;
+%! res7 = [0.9588386397 + 0.6107824358i, ...
+%!         0.9245978896 - 0.6334016187i, ...
+%!         0.9920785856 - 0.01737733806i ];
+%! [sn,cn,dn]=ellipj(u7,m7);
+%! assert([sn,cn,dn], res7, 1e-10);
+
+%!test
+%! u=[0,pi/6,pi/4,pi/2]; m=0;
+%! res = [0,1/2,1/sqrt(2),1;1,cos(pi/6),1/sqrt(2),0;1,1,1,1];
+%! [sn,cn,dn]=ellipj(u,m);
+%! assert([sn;cn;dn],res, 100*eps);
+%! [sn,cn,dn]=ellipj(u',0);
+%! assert([sn,cn,dn],res', 100*eps);
+
+## XXX FIXME XXX
+## need to check [real,complex]x[scalar,rowvec,colvec,matrix]x[u,m]
+
+%!test
+%! ## Test Jacobi elliptic functions
+%! ## against "exact" solution from Mathematica 3.0
+%! ## David Billinghurst <David.Billinghurst@riotinto.com>
+%! ## 1 February 2001
+%! u = [ 0.25; 0.25; 0.20; 0.20; 0.672; 0.5];
+%! m = [ 0.0;  1.0;  0.19; 0.81; 0.36;  0.9999999999];
+%! S = [ sin(0.25); tanh(0.25);
+%!  0.19842311013970879516;
+%!  0.19762082367187648571;
+%!  0.6095196917919021945;
+%!  0.4621171572617320908 ];
+%! C = [ cos(0.25); sech(0.25);
+%!  0.9801164570409401062;
+%!  0.9802785369736752032;
+%!  0.7927709286533560550;
+%!  0.8868188839691764094 ];
+%! D = [ 1.0;  sech(0.25);
+%!  0.9962526643271134302;
+%!  0.9840560289645665155;
+%!  0.9307281387786906491;
+%!  0.8868188839812167635 ];
+%! [sn,cn,dn] = ellipj(u,m);
+%! assert(sn,S,8*eps);
+%! assert(cn,C,8*eps);
+%! assert(dn,D,8*eps);
 
 */
 

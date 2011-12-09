@@ -1,0 +1,25 @@
+%1
+dirlist = {"molecularDynamics", "ocframe", "core"};
+dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
+
+%% If we are not in Architecture dependent folder
+arch = cstrcat (octave_config_info ("canonical_host_type"),
+                              "-", octave_config_info ("api_version"));
+pp = strsplit (dirname,filesep (), true);
+if strcmp(arch , pp{end})
+  dirname = [strcat(filesep(),{pp{1:end-1}}){:}];
+end
+
+if (! exist (fullfile (dirname, "inst"), "dir"))
+  for ii=1:length (dirlist)
+      ## Run this if the package is installed
+      rmpath ( [ dirname filesep dirlist{ii}])
+  end
+else
+  warning("mechanics:Devel","Removing path for testing.");
+  for ii=1:length(dirlist)
+    rmpath ([ dirname "/inst/" dirlist{ii}])
+  endfor
+endif
+
+clear dirlist dirname pp

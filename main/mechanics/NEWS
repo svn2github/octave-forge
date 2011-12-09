@@ -1,28 +1,6 @@
 Summary of important user-visible changes for releases of the mechanics package
 
 ===============================================================================
-mechanics-1.0.0   Release Date: 2011-09-26   Release Manager: Juan Pablo Carbajal
-===============================================================================
-
-** First official release.
-
-===============================================================================
-mechanics-1.0.1   Release Date: 2011-09-27   Release Manager: Juan Pablo Carbajal
-===============================================================================
-
-Improvements in docstrings of all functions.
-
-===============================================================================
-mechanics-1.1.0   Release Date: 2011-10-05   Release Manager: Juan Pablo Carbajal
-===============================================================================
-
-* verletstep : Verlet integrator.
-* verletstep_boxed: idem with periodic boundary conditions.
-* mdsim: Integrates a system of particle susing the algorithms above.
-* several helper functions.
-* Package ocframe integrated.
-
-===============================================================================
 mechanics-1.2.0   Release Date: 2011-10-16   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 
@@ -44,6 +22,22 @@ second_moment_poly2d.m
 
 * Added inverse to vech
 * Minor fixes to other functions
+* Major structure change of the package: multipackage
+* Fixed the order of this NEWS file.
 
 ===============================================================================
+mechanics-1.1.0   Release Date: 2011-10-05   Release Manager: Juan Pablo Carbajal
+===============================================================================
 
+* verletstep : Verlet integrator.
+* verletstep_boxed: idem with periodic boundary conditions.
+* mdsim: Integrates a system of particle susing the algorithms above.
+* several helper functions.
+* Package ocframe integrated.
+
+
+===============================================================================
+mechanics-1.0.0   Release Date: 2011-09-26   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+** First official release.

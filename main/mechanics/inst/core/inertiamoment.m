@@ -21,8 +21,8 @@
 %% plane passing through the center of mass of the body.
 %%
 %% The shape is defined with piecewise smooth polynomials. @var{pp} is a
-%% cell where each elements is a 2-by-(poly_degree+1) matrix containing 
-%% @code{px(i,:) =pp{i}(1,:)} and @code{py(i,:) = pp{i}(2,:)}.
+%% cell where each elements is a 2-by-(poly_degree+1) matrix containing
+%% @code{px(i,:) =pp@{i@}(1,:)} and @code{py(i,:) = pp@{i@}(2,:)}.
 %%
 %% @seealso{masscenter, principalaxis}
 %% @end deftypefn

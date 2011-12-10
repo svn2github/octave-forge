@@ -17,27 +17,47 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @var{nr}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @var{ncr}, @dots{})
 ## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @var{opt}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @var{nr}, @var{opt}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @var{ncr}, @var{opt}, @dots{})
 ##
-## Model order reduction by frequency weighted optimal Hankel-norm approximation method.
+## Controller reduction by frequency-weighted Singular Perturbation Approximation (SPA).
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item sys
-## LTI model to be reduced.
+## @item G
+## LTI model of the plant.
+## It has m inputs, p outputs and n states.
+## @item K
+## LTI model of the controller.
+## It has p inputs, m outputs and nc states.
+## @item ncr
+## The desired order of the resulting reduced order controller @var{Kr}.
+## If not specified, @var{ncr} is chosen automatically according
+## to the description of key @var{"order"}.
 ## @item @dots{}
-## Pairs of properties and values.
-## TODO: describe options.
+## Optional pairs of keys and values.  @code{"key1", value1, "key2", value2}.
+## @item opt
+## Optional struct with keys as field names.
+## Struct @var{opt} can be created directly or
+## by command @command{options}.  @code{opt.key1 = value1, opt.key2 = value2}.
 ## @end table
 ##
 ## @strong{Outputs}
 ## @table @var
-## @item sysr
-## Reduced order state-space model.
-## @item nr
-## The order of the obtained system @var{sysr}.
+## @item Kr
+## State-space model of reduced order controller.
+## @item info
+## Struct containing additional information.
+## @table @var
+## @item info.ncr
+## The order of the obtained reduced order controller @var{Kr}.
+## @item info.ncs
+## The order of the alpha-stable part of original controller @var{K}.
+## @item info.hsvc
+## The Hankel singular values of the alpha-stable part of @var{K}.
+## The @var{ncs} Hankel singular values are ordered decreasingly.
+## @end table
 ## @end table
 ##
 ## @strong{Algorithm}@*

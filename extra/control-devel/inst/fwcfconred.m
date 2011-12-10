@@ -17,11 +17,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{Go}, @var{F}, @var{G}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{Go}, @var{F}, @var{G}, @var{nr}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{Go}, @var{F}, @var{G}, @var{ncr}, @dots{})
 ## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{Go}, @var{F}, @var{G}, @var{opt}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{Go}, @var{F}, @var{G}, @var{nr}, @var{opt}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{Go}, @var{F}, @var{G}, @var{ncr}, @var{opt}, @dots{})
 ##
-## Coprime factor reduction for state-feedback-observer based controllers.
+## Reduction of state-feedback-observer based controller by frequency-weighted coprime factorization (FW CF). 
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -32,10 +32,16 @@
 ## Stabilizing state feedback matrix (m-by-n).
 ## @item G
 ## Stabilizing observer gain matrix (n-by-p).
+## @item ncr
+## The desired order of the resulting reduced order controller @var{Kr}.
+## If not specified, @var{ncr} is chosen automatically according
+## to the description of key @var{"order"}.
 ## @item @dots{}
-## Optional pairs of keys and values.
+## Optional pairs of keys and values.  @code{"key1", value1, "key2", value2}.
 ## @item opt
 ## Optional struct with keys as field names.
+## Struct @var{opt} can be created directly or
+## by command @command{options}.  @code{opt.key1 = value1, opt.key2 = value2}.
 ## @end table
 ##
 ## @strong{Outputs}

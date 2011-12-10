@@ -65,19 +65,40 @@
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item sys
+## @item G
 ## LTI model to be reduced.
+## @item nr
+## The desired order of the resulting reduced order system @var{Gr}.
+## If not specified, @var{nr} is chosen automatically according
+## to the description of key @var{"order"}.
 ## @item @dots{}
-## Pairs of properties and values.
-## TODO: describe options.
+## Optional pairs of keys and values.  @code{"key1", value1, "key2", value2}.
+## @item opt
+## Optional struct with keys as field names.
+## Struct @var{opt} can be created directly or
+## by command @command{options}.  @code{opt.key1 = value1, opt.key2 = value2}.
 ## @end table
 ##
 ## @strong{Outputs}
 ## @table @var
-## @item sysr
+## @item Gr
 ## Reduced order state-space model.
-## @item nr
-## The order of the obtained system @var{sysr}.
+## @item info
+## Struct containing additional information.
+## @table @var
+## @item info.n
+## The order of the original system @var{G}.
+## @item info.ns
+## The order of the @var{alpha}-stable subsystem of the original system @var{G}.
+## @item info.hsv
+## The Hankel singular values of the @var{alpha}-stable part of
+## the original system @var{G}, ordered decreasingly.
+## @item info.nu
+## The order of the @var{alpha}-unstable subsystem of both the original
+## system @var{G} and the reduced-order system @var{Gr}.
+## @item info.nr
+## The order of the obtained reduced order system @var{Gr}.
+## @end table
 ## @end table
 ##
 ## @strong{Algorithm}@*
@@ -89,9 +110,9 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function [sysr, info] = btamodred (varargin)
+function [Gr, info] = btamodred (varargin)
 
-  [sysr, info] = __modred_ab09id__ ("bta", varargin{:});
+  [Gr, info] = __modred_ab09id__ ("bta", varargin{:});
 
 endfunction
 

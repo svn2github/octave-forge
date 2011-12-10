@@ -16,7 +16,7 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{sysr}, @var{info}] =} __modred_ab09id__ (@var{method}, @dots{})
+## @deftypefn{Function File} {[@var{Gr}, @var{info}] =} __modred_ab09id__ (@var{method}, @dots{})
 ## Backend for btamodred and spamodred.
 ## @end deftypefn
 
@@ -24,7 +24,7 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function [sysr, info] = __modred_ab09id__ (method, varargin)
+function [Gr, info] = __modred_ab09id__ (method, varargin)
 
   if (nargin < 2)
     print_usage ();
@@ -34,10 +34,10 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
     error ("modred: invalid method");
   endif
 
-  sys = varargin{1};
+  G = varargin{1};
   varargin = varargin(2:end);
   
-  if (! isa (sys, "lti"))
+  if (! isa (G, "lti"))
     error ("%smodred: first argument must be an LTI system", method);
   endif
 
@@ -60,9 +60,9 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
     error ("%smodred: keys and values must come in pairs", method);
   endif
 
-  [a, b, c, d, tsam, scaled] = ssdata (sys);
-  [p, m] = size (sys);
-  dt = isdt (sys);
+  [a, b, c, d, tsam, scaled] = ssdata (G);
+  [p, m] = size (G);
+  dt = isdt (G);
 
   ## default arguments
   alpha = __modred_default_alpha__ (dt);
@@ -156,7 +156,7 @@ function [sysr, info] = __modred_ab09id__ (method, varargin)
                                             tol1, tol2);
 
   ## assemble reduced order model
-  sysr = ss (ar, br, cr, dr, tsam);
+  Gr = ss (ar, br, cr, dr, tsam);
 
   ## assemble info struct  
   info = struct ("nr", nr, "ns", ns, "hsv", hsv);

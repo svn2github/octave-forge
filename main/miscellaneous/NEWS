@@ -1,0 +1,8 @@
+Summary of important user-visible changes for releases of the miscellaneous package
+
+===============================================================================
+miscellaneous-X.Y.Z   Release Date: 2011-YY-XX   Release Manager:
+===============================================================================
+
+* This NEWS file was created.
+* Function clip imported from audio.

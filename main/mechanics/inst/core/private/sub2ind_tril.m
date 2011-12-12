@@ -1,5 +1,5 @@
 %% Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%% 
+%%
 %%    This program is free software: you can redistribute it and/or modify
 %%    it under the terms of the GNU General Public License as published by
 %%    the Free Software Foundation, either version 3 of the License, or
@@ -32,7 +32,7 @@
 %% @end example
 %%
 %% The following example shows how to convert the two-dimensional
-%% index `(3,2)' of the 4-by-4 matrix in the example to a linear index.
+%% index `(3,2)' of the 4-by-4 matrix in the previous example to a linear index.
 %%
 %% @example
 %%          linear_index = sub2ind_tril (4, 3, 2)
@@ -54,15 +54,15 @@ function ind = sub2ind_tril(N,r,c)
     any(size(r) != size(c))
     print_usage;
   endif
-  
+
   R = zeros(size(r));
   C = zeros(size(c));
-  
+
   below = r >= c;
   above = !below;
   R(below) = r(below);
   C(below) = c(below);
-  
+
   R(above) = c(above);
   C(above) = r(above);
 

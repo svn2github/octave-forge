@@ -30,7 +30,7 @@ function a = mpower (a, b)
 
       if fix (b) == b                    # only integers are poorly implemented
         [n m] = size (a.w);
-        w = ones (n,m);
+        w = eye (n,m);
         x = zeros (n,m);
         q = quaternion(w,x,x,x);
         while b--
@@ -39,8 +39,9 @@ function a = mpower (a, b)
         a = q;
       else
         error ("quaternion:devel", ...
-                  "quaternion: power: implemented for scalar quaternions only");
-      end
+                  "quaternion: power: implemented for integer exponents only");
+        a = expm(b * logm (a));
+      endif
 
     end
 

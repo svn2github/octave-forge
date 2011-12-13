@@ -278,7 +278,28 @@ while (indi <= size(varargin, 2))
                   x(indj, indk) = regexp (dummy{indk}, '[^ ].*', 'match');
                 endif
               else
-                x(indj, indk) = the_line{indk}; 
+                if (!isempty (regexp (dummy{indk}, '[/:]')))
+                  %# try to convert to a date
+                  [timeval, nfields] = strptime( dummy{indk}, 
+                                                [char(37) 'd/' char(37) 'm/' char(37) 'Y ' char(37) 'T']);
+                  if (nfields > 0) %# at least a few fields are OK
+                    timestr =  strftime ([char(37) 'H:' char(37) 'M:' char(37) 'S'], 
+                                         timeval);
+                    %# try to extract the usec field, if any
+                    idx = regexp (dummy{indk}, timestr, 'end');
+                    if (!isempty (idx))
+                      idx = idx + 1;
+                      if (ispunct (dummy{indk}(idx)))
+                        idx = idx + 1;
+                      endif
+                      timeval.usec = str2num(dummy{indk}(idx:end));
+                    endif
+                    x(indj, indk) =  str2num (strftime ([char(37) 's'], timeval)) + ...
+                        timeval.usec * 1e-6;
+                  endif
+                else
+                  x(indj, indk) = the_line{indk}; 
+                endif
               endif
             endfor
             indl = indl + 1; indj = indj + 1;
@@ -292,6 +313,7 @@ while (indi <= size(varargin, 2))
             x(:, empty_lines) = [];
           endif
           clear UTF8_BOM fid in lines indl the_line content empty_lines
+          clear timeval timestr nfields idx
         endif
       end_try_catch
     endif

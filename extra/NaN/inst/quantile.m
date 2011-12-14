@@ -45,6 +45,9 @@ if nargin<2,
 	help quantile
         
 else
+	[q, rix]  = sort(q); 	% sort quantile values 
+	[tmp,rix] = sort(rix);	% generate reverse index 
+
         SW = isstruct(Y);
         if SW, SW = isfield(Y,'datatype'); end;
         if SW, SW = strcmp(Y.datatype,'HISTOGRAM'); end;
@@ -67,7 +70,8 @@ else
 			x(1)=0; 
 			x(2:2:2*length(t)) = x2;
 			x(3:2:2*length(t)) = x2(1:end-1);
-                        for k2 = 1:length(q),
+			n = 1; 
+			for k2 = 1:length(q),
                                 if (q(k2)<0) || (q(k2)>1) 	
 					Q(k2,k1) = NaN;  
 				elseif 	q(k2)==0,
@@ -75,7 +79,6 @@ else
 				elseif 	q(k2)==1,
 					Q(k2,k1) = t2(end);
 				else
-					n=1;
 					while (q(k2)*N > x(n)),
 						n=n+1; 
 					end;
@@ -88,6 +91,7 @@ else
 					end;
                                 end;
                         end
+			Q = Q(rix,:);	% order resulting quantiles according to original input q 
                 end;
 
 
@@ -116,6 +120,7 @@ else
   			    t2(1:2:2*length(t)) = t; 
 			    t2(2:2:2*length(t)) = t;
 			    x = floor((1:2*length(t))/2);
+			    n = 1; 
 			    for k2=1:length(q)
 				if (q(k2)<0) || (q(k2)>1)
 					f(k2) = NaN;
@@ -124,7 +129,6 @@ else
 				elseif 	q(k2)==1,
 					f(k2) = t2(end);
 				else 	
-					n = 1;
 					while (q(k2)*N > x(n)),
 						n = n+1;
 					end;
@@ -138,7 +142,7 @@ else
 				end; 		
 			    end;
 			end; 
-			Q(xo:D1:xo + D1*length(q) - 1) = f;
+			Q(xo:D1:xo + D1*length(q) - 1) = f(rix);
 		end;
 		end;
 

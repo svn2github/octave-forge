@@ -45,14 +45,14 @@ if nargin<2,
 	help quantile
         
 else
-	[q, rix]  = sort(q); 	% sort quantile values 
+	[q, rix]  = sort(q(:)'); 	% sort quantile values 
 	[tmp,rix] = sort(rix);	% generate reverse index 
 
         SW = isstruct(Y);
         if SW, SW = isfield(Y,'datatype'); end;
         if SW, SW = strcmp(Y.datatype,'HISTOGRAM'); end;
         if SW,                 
-                [yr,yc]=size(Y.H);
+                [yr, yc] = size(Y.H);
                 Q = repmat(nan,length(q),yc);
                 if ~isfield(Y,'N');
                         Y.N = sum(Y.H,1);
@@ -70,27 +70,23 @@ else
 			x(1)=0; 
 			x(2:2:2*length(t)) = x2;
 			x(3:2:2*length(t)) = x2(1:end-1);
-			n = 1; 
-			for k2 = 1:length(q),
-                                if (q(k2)<0) || (q(k2)>1) 	
-					Q(k2,k1) = NaN;  
-				elseif 	q(k2)==0,
-					Q(k2,k1) = t2(1);
-				elseif 	q(k2)==1,
-					Q(k2,k1) = t2(end);
-				else
-					while (q(k2)*N > x(n)),
-						n=n+1; 
-					end;
 
-					if q(k2)*N==x(n)
-						% mean of upper and lower bound 
-						Q(k2,k1) = (t2(n)+t2(n+1))/2;
-					else
-						Q(k2,k1) = t2(n);
-					end;
-                                end;
-                        end
+			% Q(q < 0 | 1 < q,:) = NaN;  % already done at initialization
+			Q(q==0,k1) = t2(1);
+			Q(q==1,k1) = t2(end);
+			n = 1; 
+		    	for k2 = find( (0 < q) & (q < 1) )
+				while (q(k2)*N > x(n)),
+					n=n+1; 
+				end;
+
+				if q(k2)*N==x(n)
+					% mean of upper and lower bound 
+					Q(k2,k1) = (t2(n)+t2(n+1))/2;
+				else
+					Q(k2,k1) = t2(n);
+				end;
+                        end;
 			Q = Q(rix,:);	% order resulting quantiles according to original input q 
                 end;
 
@@ -101,7 +97,8 @@ else
 		        sz = [sz,ones(1,DIM-length(sz))];
 		end;
 
-                f  = zeros(1,length(q));        
+		f  = zeros(1,length(q));        
+		f( (q < 0) | (1 < q) ) = NaN;
 		D1 = prod(sz(1:DIM-1));
 		D3 = prod(sz(DIM+1:length(sz)));
 		Q  = repmat(nan,[sz(1:DIM-1),length(q),sz(DIM+1:length(sz))]);
@@ -116,19 +113,16 @@ else
 			if (N==0)
 		            	f(:) = NaN;        
 			else
-  			    t  = sort(t);
-  			    t2(1:2:2*length(t)) = t; 
-			    t2(2:2:2*length(t)) = t;
-			    x = floor((1:2*length(t))/2);
-			    n = 1; 
-			    for k2=1:length(q)
-				if (q(k2)<0) || (q(k2)>1)
-					f(k2) = NaN;
-				elseif 	q(k2)==0
-					f(k2) = t2(1);
-				elseif 	q(k2)==1,
-					f(k2) = t2(end);
-				else 	
+				t  = sort(t);
+				t2(1:2:2*length(t)) = t; 
+				t2(2:2:2*length(t)) = t;
+				x = floor((1:2*length(t))/2);
+				%f(q < 0 | 1 < q) = NaN;  % for efficiency its defined outside loop 
+				f(q==0) = t2(1);
+				f(q==1) = t2(end);
+
+				n = 1; 
+			    	for k2 = find( (0 < q) & (q < 1) )
 					while (q(k2)*N > x(n)),
 						n = n+1;
 					end;
@@ -140,7 +134,6 @@ else
 						f(k2) = t2(n);
 					end; 
 				end; 		
-			    end;
 			end; 
 			Q(xo:D1:xo + D1*length(q) - 1) = f(rix);
 		end;

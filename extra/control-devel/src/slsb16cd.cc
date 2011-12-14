@@ -196,8 +196,8 @@ For internal use only.")
         static const char* err_msg[] = {
             "0: OK",
             "1: eigenvalue computation failure",
-            "2: the matrix A+G*C is not stable",
-            "3: the matrix A+B*F is not stable",
+            "2: the matrix A-L*C is not stable",
+            "3: the matrix A-B*F is not stable",
             "4: the Lyapunov equation for computing the "
                 "observability Grammian is (nearly) singular",
             "5: the Lyapunov equation for computing the "

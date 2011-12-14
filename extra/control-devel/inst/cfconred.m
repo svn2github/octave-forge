@@ -16,21 +16,21 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{Go}, @var{F}, @var{G}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{Go}, @var{F}, @var{G}, @var{ncr}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{Go}, @var{F}, @var{G}, @var{opt}, @dots{})
-## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{Go}, @var{F}, @var{G}, @var{ncr}, @var{opt}, @dots{})
+## @deftypefn{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{G}, @var{F}, @var{L}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{G}, @var{F}, @var{L}, @var{ncr}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{G}, @var{F}, @var{L}, @var{opt}, @dots{})
+## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{G}, @var{F}, @var{L}, @var{ncr}, @var{opt}, @dots{})
 ##
 ## Reduction of state-feedback-observer based controller by coprime factorization (CF). 
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item Go
+## @item G
 ## LTI model of the open-loop plant (A,B,C,D).
 ## It has m inputs, p outputs and n states.
 ## @item F
 ## Stabilizing state feedback matrix (m-by-n).
-## @item G
+## @item L
 ## Stabilizing observer gain matrix (n-by-p).
 ## @item ncr
 ## The desired order of the resulting reduced order controller @var{Kr}.
@@ -69,13 +69,13 @@
 ## Created: December 2011
 ## Version: 0.1
 
-function [Kr, info] = cfconred (Go, F, G, varargin)
+function [Kr, info] = cfconred (G, F, L, varargin)
 
   if (nargin < 3)
     print_usage ();
   endif
 
-  if (! isa (Go, "lti"))
+  if (! isa (G, "lti"))
     error ("cfconred: first argument must be an LTI system");
   endif
 
@@ -83,19 +83,19 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
     error ("cfconred: second argument must be a real matrix");
   endif
   
-  if (! is_real_matrix (G))
+  if (! is_real_matrix (L))
     error ("cfconred: third argument must be a real matrix");
   endif
 
-  if (nargin > 3)                                  # cfconred (Go, F, G, ...)
-    if (is_real_scalar (varargin{1}))              # cfconred (Go, F, G, nr)
+  if (nargin > 3)                                  # cfconred (G, F, L, ...)
+    if (is_real_scalar (varargin{1}))              # cfconred (G, F, L, nr)
       varargin = horzcat (varargin(2:end), {"order"}, varargin(1));
     endif
-    if (isstruct (varargin{1}))                    # cfconred (Go, F, G, opt, ...), cfconred (Go, F, G, nr, opt, ...)
+    if (isstruct (varargin{1}))                    # cfconred (G, F, L, opt, ...), cfconred (G, F, L, nr, opt, ...)
       varargin = horzcat (__opt2cell__ (varargin{1}), varargin(2:end));
     endif
-    ## order placed at the end such that nr from cfconred (Go, F, G, nr, ...)
-    ## and cfconred (Go, F, G, nr, opt, ...) overrides possible nr's from
+    ## order placed at the end such that nr from cfconred (G, F, L, nr, ...)
+    ## and cfconred (G, F, L, nr, opt, ...) overrides possible nr's from
     ## key/value-pairs and inside opt struct (later keys override former keys,
     ## nr > key/value > opt)
   endif
@@ -106,12 +106,12 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
     error ("cfconred: keys and values must come in pairs");
   endif
 
-  [a, b, c, d, tsam, scaled] = ssdata (Go);
-  [p, m] = size (Go);
+  [a, b, c, d, tsam, scaled] = ssdata (G);
+  [p, m] = size (G);
   n = rows (a);
   [mf, nf] = size (F);
-  [ng, pg] = size (G);
-  dt = isdt (Go);
+  [nl, pl] = size (L);
+  dt = isdt (G);
   jobd = any (d(:));
 
   if (mf != m || nf != n)
@@ -119,9 +119,9 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
            mf, nf, p, m, n);
   endif
 
-  if (ng != n || pg != p)
+  if (nl != n || pl != p)
     error ("cfconred: dimensions of observer matrix (%dx%d) and plant (%dx%d, %d states) don't match", \
-           ng, pg, p, m, n);
+           nl, pl, p, m, n);
   endif
 
   ## default arguments
@@ -183,7 +183,8 @@ function [Kr, info] = cfconred (Go, F, G, varargin)
 
   ## perform model order reduction
   [acr, bcr, ccr, dcr, ncr, hsv] = slsb16bd (a, b, c, d, dt, equil, ncr, ordsel, jobd, jobmr, \
-                                             F, G, jobcf, tol1, tol2);
+                                             -F, -L, jobcf, tol1, tol2);
+  ## A - B*F --> A + B*F  ;    A - L*C --> A + L*C
 
   ## assemble reduced order controller
   Kr = ss (acr, bcr, ccr, dcr, tsam);
@@ -217,20 +218,20 @@ endfunction
 %!
 %! D =  [  0.0 ];
 %!
-%! Go = ss (A, B, C, D);  % "scaled", false
+%! G = ss (A, B, C, D);  % "scaled", false
 %!
-%! F = [  4.4721e-002  6.6105e-001  4.6986e-003  3.6014e-001  1.0325e-001 -3.7541e-002 -4.2685e-002  3.2873e-002 ];
+%! F = -[  4.4721e-002  6.6105e-001  4.6986e-003  3.6014e-001  1.0325e-001 -3.7541e-002 -4.2685e-002  3.2873e-002 ];
 %!
-%! G = [  4.1089e-001
-%!        8.6846e-002
-%!        3.8523e-004
-%!       -3.6194e-003
-%!       -8.8037e-003
-%!        8.4205e-003
-%!        1.2349e-003
-%!        4.2632e-003 ];
+%! L = -[  4.1089e-001
+%!         8.6846e-002
+%!         3.8523e-004
+%!        -3.6194e-003
+%!        -8.8037e-003
+%!         8.4205e-003
+%!         1.2349e-003
+%!         4.2632e-003 ];
 %!
-%! [Kr, Info] = cfconred (Go, F, G, 4, "method", "bfsr-bta", "cf", "left");
+%! [Kr, Info] = cfconred (G, F, L, 4, "method", "bfsr-bta", "cf", "left");
 %! [Ao, Bo, Co, Do] = ssdata (Kr);
 %!
 %! Ae = [  0.5946  -0.7336   0.1914  -0.3368

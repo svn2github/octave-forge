@@ -230,14 +230,14 @@ For internal use only.")
 
         static const char* err_msg[] = {
             "0: OK",
-            "1: the reduction of A+G*C to a real Schur form "
+            "1: the reduction of A-L*C to a real Schur form "
                 "failed",
-            "2: the matrix A+G*C is not stable (if DICO = 'C'), "
+            "2: the matrix A-L*C is not stable (if DICO = 'C'), "
                 "or not convergent (if DICO = 'D')",
             "3: the computation of Hankel singular values failed",
-            "4: the reduction of A+B*F to a real Schur form "
+            "4: the reduction of A-B*F to a real Schur form "
                 "failed",
-            "5: the matrix A+B*F is not stable (if DICO = 'C'), "
+            "5: the matrix A-B*F is not stable (if DICO = 'C'), "
                 "or not convergent (if DICO = 'D')"};
 
         static const char* warn_msg[] = {

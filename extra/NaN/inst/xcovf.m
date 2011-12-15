@@ -35,9 +35,9 @@ if nargin<2,
         MAXLAG = [];
         SCALEOPT = 'none';
 elseif ischar(Y),
-        SCALEOPT=Y;
+        MAXLAG = Y;
+        SCALEOPT=MAXLAG;
         Y=[];
-        MAXLAG = [];
 elseif all(size(Y)==1),
         if nargin<3
                 SCALEOPT = 'none';

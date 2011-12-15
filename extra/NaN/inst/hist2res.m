@@ -45,7 +45,7 @@ function [R]=hist2res(H,fun)
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
 
-if strcmp(H.datatype,'HISTOGRAM')
+if strcmp(H.datatype,'HISTOGRAM'),
 
 elseif strcmp(H.datatype,'qc:histo')
 	HDR = H; 

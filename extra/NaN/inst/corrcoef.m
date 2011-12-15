@@ -87,9 +87,10 @@ function [R,sig,ci1,ci2,nan_sig] = corrcoef(X,Y,varargin)
 % [15] http://www.statsoft.com/textbook/stbasic.html%Correlations
 % others
 % [20] http://www.tufts.edu/~gdallal/corr.htm
+% [21] Fisher transformation http://en.wikipedia.org/wiki/Fisher_transformation
 
 %       $Id$
-%       Copyright (C) 2000-2004,2008,2009 by Alois Schloegl <alois.schloegl@gmail.com>	
+%       Copyright (C) 2000-2004,2008,2009,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -344,7 +345,7 @@ end;
 
 tmp = R;
 %tmp(ix1 | ix2) = nan;		% avoid division-by-zero warning
-z   = log((1+tmp)./(1-tmp))/2; 	% Fisher's z-transform; 
+z   = log((1+tmp)./(1-tmp))/2; 	% Fisher transformation [21]
 %sz = 1./sqrt(NN-3);		% standard error of z
 sz  = sqrt(2)*erfinv(1-alpha)./sqrt(NN-3);	% confidence interval for alpha of z
 

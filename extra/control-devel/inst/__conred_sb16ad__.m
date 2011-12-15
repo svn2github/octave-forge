@@ -120,7 +120,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
       case "alpha"
         alpha = __modred_check_alpha__ (val, dt);
 
-      case "approach"
+      case "method"
         switch (tolower (val))
           case "sr"
             bf = false;

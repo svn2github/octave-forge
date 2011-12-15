@@ -154,7 +154,7 @@
 ## @var{nr} can be further reduced to ensure that
 ## @code{HSV(NR-NU) > HSV(NR+1-NU)}.
 ##
-## @item "method", "approx", "approach"
+## @item "method"
 ## Approximation method for the H-infinity norm.
 ## Valid values corresponding to this key are:
 ## @table @var
@@ -291,7 +291,7 @@ function [sysr, info] = bstmodred (sys, varargin)
         endif
         beta = val;
 
-      case {"method", "approx", "approach"}    # approximation method
+      case "method"                  # approximation method
         switch (tolower (val))
           case {"sr-bta", "b"}       # 'B':  use the square-root Balance & Truncate method
             job = 0;

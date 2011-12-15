@@ -111,7 +111,7 @@
 ## If not specified, @var{nr} is the sum of NU and the number of
 ## Hankel singular values greater than @code{MAX(TOL1,NS*EPS*HNORM(As,Bs,Cs))};
 ##
-## @item "method", "approach"
+## @item "method"
 ## Specifies the computational approach to be used.
 ## Valid values corresponding to this key are:
 ## @table @var
@@ -245,7 +245,7 @@ function [sysr, info] = hnamodred (sys, varargin)
       case "alpha"
         alpha = __modred_check_alpha__ (val, dt);
 
-      case {"method", "approach", "jobinv"}
+      case "method"
         switch (tolower (val(1)))
           case {"d", "n"}      # "descriptor"
             jobinv = 0;

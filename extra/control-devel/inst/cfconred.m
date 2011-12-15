@@ -65,7 +65,7 @@
 ## The desired order of the resulting reduced order controller @var{Kr}.
 ## If not specified, @var{ncr} is chosen automatically.
 ##
-## @item "method", "approx", "approach"
+## @item "method"
 ## Order reduction approach to be used as follows:
 ## @table @var
 ## @item "sr-bta", "b"
@@ -206,7 +206,7 @@ function [Kr, info] = cfconred (G, F, L, varargin)
             error ("cfconred: '%s' is an invalid coprime factorization", val);
         endswitch
 
-      case {"method", "approach", "approx"}        # approximation method
+      case "method"                                # approximation method
         switch (tolower (val))
           case {"sr-bta", "b"}                     # 'B':  use the square-root Balance & Truncate method
             jobmr = 0;

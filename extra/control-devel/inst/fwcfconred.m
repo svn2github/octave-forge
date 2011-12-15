@@ -59,6 +59,38 @@
 ## @end table
 ## @end table
 ##
+## @strong{Option Keys and Values}
+## @table @var
+## @item "order", "ncr"
+## The desired order of the resulting reduced order controller @var{Kr}.
+## If not specified, @var{ncr} is chosen automatically.
+##
+## @item "method", "approx", "approach"
+## Order reduction approach to be used as follows:
+## @table @var
+## @item "sr", "sr-bta", "b"
+## Use the square-root Balance & Truncate method.
+## @item "bfsr", "bfsr-bta", "f"
+## Use the balancing-free square-root Balance & Truncate method.  Default method.
+## @end table
+##
+## @item "cf"
+## Specifies whether left or right coprime factorization is
+## to be used as follows:
+## @table @var
+## @item "left", "l"
+## Use left coprime factorization.  Default method.
+## @item "right", "r"
+## Use right coprime factorization.
+## @end table
+##
+## @item "tol1"
+## If @var{"order"} is not specified, @var{tol1} contains the tolerance for
+## determining the order of the reduced system.
+## For model reduction, the recommended value of @var{tol1} is
+## c*info.hsv(1), where c lies in the interval [0.00001, 0.001].
+## If @var{"order"} is specified, the value of @var{tol1} is ignored.
+## @end table
 ##
 ## @strong{Algorithm}@*
 ## Uses SLICOT SB16CD by courtesy of

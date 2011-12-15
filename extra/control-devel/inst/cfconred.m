@@ -59,6 +59,54 @@
 ## @end table
 ## @end table
 ##
+## @strong{Option Keys and Values}
+## @table @var
+## @item "order", "ncr"
+## The desired order of the resulting reduced order controller @var{Kr}.
+## If not specified, @var{ncr} is chosen automatically.
+##
+## @item "method", "approx", "approach"
+## Order reduction approach to be used as follows:
+## @table @var
+## @item "sr-bta", "b"
+## Use the square-root Balance & Truncate method.
+## @item "bfsr-bta", "f"
+## Use the balancing-free square-root Balance & Truncate method.  Default method.
+## @item "sr-spa", "s"
+## Use the square-root Singular Perturbation Approximation method.
+## @item "bfsr-spa", "p"
+## Use the balancing-free square-root Singular Perturbation Approximation method.
+## @end table
+##
+## @item "cf"
+## Specifies whether left or right coprime factorization is
+## to be used as follows:
+## @table @var
+## @item "left", "l"
+## Use left coprime factorization.  Default method.
+## @item "right", "r"
+## Use right coprime factorization.
+## @end table
+##
+## @item "tol1"
+## If @var{"order"} is not specified, @var{tol1} contains the tolerance for
+## determining the order of the reduced system.
+## For model reduction, the recommended value of @var{tol1} is
+## c*info.hsv(1), where c lies in the interval [0.00001, 0.001].
+## If @var{"order"} is specified, the value of @var{tol1} is ignored.
+##
+## @item "tol2"
+## The tolerance for determining the order of a minimal
+## realization of the coprime factorization controller.
+## TOL2 <= TOL1.
+## If not specified, n*eps*info.hsv(1) is chosen.
+##
+## @item "equil", "scale"
+## Boolean indicating whether equilibration (scaling) should be
+## performed on system @var{G} prior to order reduction.
+## Default value is true if @code{G.scaled == false} and
+## false if @code{G.scaled == true}.
+## @end table
 ##
 ## @strong{Algorithm}@*
 ## Uses SLICOT SB16BD by courtesy of

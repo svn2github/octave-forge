@@ -85,10 +85,10 @@ function [Gr, info] = __modred_ab09id__ (method, varargin)
     key = lower (varargin{k});
     val = varargin{k+1};
     switch (key)
-      case {"left", "v"}
+      case {"left", "output", "v"}
         [av, bv, cv, dv, jobv] = __modred_check_weight__ (val, dt, p, []);
 
-      case {"right", "w"}
+      case {"right", "input", "w"}
         [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt, [], m);
 
       case {"order", "n", "nr"}

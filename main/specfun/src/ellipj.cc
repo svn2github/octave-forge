@@ -1,5 +1,4 @@
-/* % -*- mode: C; mode: fold -*-
-
+/*
  Copyright (C) 2001 Leopoldo Cerbaro <redbliss@libero.it>
 
  This program is free software; you can redistribute it and/or modify
@@ -195,7 +194,7 @@ return @code{NaN}.\n\
               double  u = args(0).double_value ();
 
               if (! error_state) {
-                double sn, cn, dn; 
+                double sn, cn, dn;
                 double err=0;
                 octave_value result;
 
@@ -334,7 +333,7 @@ return @code{NaN}.\n\
                 retval (2) = dn;
                 if (nargout > 3)  retval(3) = err;
               } else
-                 error("u m invalid");   
+                 error("u m invalid");
               } else
                 gripe_ellipj_arg ( "first ");
             } else {  // u complex matrix
@@ -374,7 +373,7 @@ return @code{NaN}.\n\
                 retval (2) = dn;
                 if (nargout > 3)  retval(3) = err;
               } else
-                 error("u m invalid");   
+                 error("u m invalid");
               } else
                 gripe_ellipj_arg ( "second");
             }
@@ -389,8 +388,54 @@ return @code{NaN}.\n\
 }
 
 /*
+## demos taken from inst/ellipj.m
 
+%!demo
+%! N = 150;
+%! % m = [1-logspace(0,log(eps),N-1), 1]; ## m near 1
+%! % m = [0, logspace(log(eps),0,N-1)];   ## m near 0
+%!   m = linspace(0,1,N);                 ## m equally spaced
+%! u = linspace(-20,20,N);
+%! M = ones(length(u),1) * m;
+%! U = u' * ones(1, length(m));
+%! [sn, cn, dn] = ellipj(U,M);
+%!
+%! %% Plotting
+%! figure(2)
+%! c = colormap(hot(64));
+%! data = {sn,cn,dn};
+%! dname = {"sn","cn","dn"};
+%! for i=1:3
+%!   subplot(1,3,i);
+%!   image(m,u,32*clip(data{i},[-1,1])+32); # clip function belongs to audio package
+%!   title(dname{i});
+%! end
+%! colormap(c);
+
+%!demo
+%! N = 200;
+%! % m = [1-logspace(0,log(eps),N-1), 1]; ## m near 1
+%! % m = [0, logspace(log(eps),0,N-1)];   ## m near 0
+%!   m = linspace(0,1,N);                 ## m equally spaced
+%! u = linspace(0,20,5);
+%! M = ones(length(u),1) * m;
+%! U = u' * ones(1, length(m));
+%! [sn, cn, dn] = ellipj(U,M);
+%!
+%! %% Plotting
+%! data = {sn,cn,dn};
+%! dname = {"sn","cn","dn"};
+%! for i=1:3
+%!   subplot(1,3,i);
+%!   plot(m, data{i});
+%!   title(dname{i});
+%!   grid on;
+%! end
+*/
+
+/*
 ## tests taken from inst/test_sncndn.m
+
 %!test
 %! k = (tan(pi/8.))^2; m = k*k;
 %! SN = [ 
@@ -861,11 +906,4 @@ return @code{NaN}.\n\
 %! assert(sn,S,8*eps);
 %! assert(cn,C,8*eps);
 %! assert(dn,D,8*eps);
-
-*/
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; End: ***
 */

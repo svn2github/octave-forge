@@ -11,3 +11,6 @@ Summary of important user-visible changes for specfun 1.1.0:
       erfcx
 
  ** Help text of most functions has been improved
+
+ ** The function `ellipj' was replaced by a C++ implementation that
+    should perform faster.

@@ -29,10 +29,12 @@ q1 = 1e-6;
 q2 = 100;   # [100, 1000, 2000]
 
 Q = q1 * H.' * H;
+%Q = q1 * (H.' * H);
 R = 1;
 
 W = q2 * B * B.';
 V = 1;
 
 F = lqr (G, Q, R)
-[~, L] = kalman (G, W, V)
+L = lqr (G.', W, V)
+%[~, L] = kalman (G, W, V)

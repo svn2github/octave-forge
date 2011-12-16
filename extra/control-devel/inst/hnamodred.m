@@ -125,13 +125,40 @@
 ## feedthrough matrices in V or W.  Default method.
 ## @end table
 ##
-## @item 'left', 'output'
+## @item 'left', 'v'
 ## LTI model of the left/output frequency weighting.
 ## Default value is an identity matrix.
 ##
-## @item 'right', 'input'
+## @item 'right', 'w'
 ## LTI model of the right/input frequency weighting.
 ## Default value is an identity matrix.
+##
+## @item 'left-inv', 'inv-v'
+## LTI model of the left/output frequency weighting.
+## Default value is an identity matrix.
+##
+## @item 'right-inv', 'inv-w'
+## LTI model of the right/input frequency weighting.
+## Default value is an identity matrix.
+##
+##
+## @item 'left-conj', 'conj-v'
+## LTI model of the left/output frequency weighting.
+## Default value is an identity matrix.
+##
+## @item 'right-conj', 'conj-w'
+## LTI model of the right/input frequency weighting.
+## Default value is an identity matrix.
+##
+##
+## @item 'left-conj-inv', 'conj-inv-v'
+## LTI model of the left/output frequency weighting.
+## Default value is an identity matrix.
+##
+## @item 'right-conj-inv', 'conj-inv-w'
+## LTI model of the right/input frequency weighting.
+## Default value is an identity matrix.
+##
 ##
 ## @item 'alpha'
 ## Specifies the ALPHA-stability boundary for the eigenvalues

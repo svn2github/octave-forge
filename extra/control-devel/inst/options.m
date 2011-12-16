@@ -17,7 +17,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {@var{opt} =} options (@var{"key1"}, @var{value1}, @var{"key2"}, @var{value2}, @dots{})
-## Create options struct @var{opt} from a number of property and value pairs.
+## Create options struct @var{opt} from a number of key and value pairs.
 ## For use with order reduction commands.
 ##
 ## @strong{Inputs}
@@ -45,7 +45,14 @@
 ##     method = spa
 ##     tol =  1.0000e-06
 ## 
-## octave:2> 
+## @end group
+## @end example
+## @example
+## @group
+## octave:2> save filename opt
+## octave:3> # save the struct 'opt' to file 'filename' for later use
+## octave:4> load filename
+## octave:5> # load struct 'opt' from file 'filename'
 ## @end group
 ## @end example
 ##

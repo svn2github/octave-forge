@@ -36,6 +36,6 @@ function r = irr (p, i = 0)
 
   ## Solve system
   f = @(x) npv (x, p) - i;
-  r = fsolve (f, 0.01);
+  r = fsolve (f, 0);
 
 endfunction

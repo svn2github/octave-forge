@@ -227,13 +227,13 @@
 ## Created: October 2011
 ## Version: 0.1
 
-function [sysr, info] = bstmodred (sys, varargin)
+function [Gr, info] = bstmodred (G, varargin)
 
   if (nargin == 0)
     print_usage ();
   endif
   
-  if (! isa (sys, "lti"))
+  if (! isa (G, "lti"))
     error ("bstmodred: first argument must be an LTI system");
   endif
 
@@ -256,8 +256,8 @@ function [sysr, info] = bstmodred (sys, varargin)
     error ("bstmodred: keys and values must come in pairs");
   endif
 
-  [a, b, c, d, tsam, scaled] = ssdata (sys);
-  dt = isdt (sys);
+  [a, b, c, d, tsam, scaled] = ssdata (G);
+  dt = isdt (G);
   
   ## default arguments
   alpha = __modred_default_alpha__ (dt);
@@ -318,7 +318,7 @@ function [sysr, info] = bstmodred (sys, varargin)
                                             tol1, tol2);
 
   ## assemble reduced order model
-  sysr = ss (ar, br, cr, dr, tsam);
+  Gr = ss (ar, br, cr, dr, tsam);
 
   ## assemble info struct
   n = rows (a);

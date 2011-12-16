@@ -152,13 +152,13 @@
 ## Created: October 2011
 ## Version: 0.1
 
-function [sysr, info] = hnamodred (sys, varargin)
+function [Gr, info] = hnamodred (G, varargin)
 
   if (nargin == 0)
     print_usage ();
   endif
   
-  if (! isa (sys, "lti"))
+  if (! isa (G, "lti"))
     error ("hnamodred: first argument must be an LTI system");
   endif
 
@@ -181,9 +181,9 @@ function [sysr, info] = hnamodred (sys, varargin)
     error ("hnamodred: keys and values must come in pairs");
   endif
 
-  [a, b, c, d, tsam, scaled] = ssdata (sys);
-  [p, m] = size (sys);
-  dt = isdt (sys);
+  [a, b, c, d, tsam, scaled] = ssdata (G);
+  [p, m] = size (G);
+  dt = isdt (G);
   
   ## default arguments
   alpha = __modred_default_alpha__ (dt);
@@ -273,7 +273,7 @@ function [sysr, info] = hnamodred (sys, varargin)
                                             jobinv, tol1, tol2);
 
   ## assemble reduced order model
-  sysr = ss (ar, br, cr, dr, tsam);
+  Gr = ss (ar, br, cr, dr, tsam);
 
   ## assemble info struct  
   n = rows (a);

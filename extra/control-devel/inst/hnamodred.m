@@ -92,8 +92,8 @@
 ## @item info.ns
 ## The order of the @var{alpha}-stable subsystem of the original system @var{G}.
 ## @item info.hsv
-## The Hankel singular values of the phase system corresponding
-## to the @var{alpha}-stable part of the original system @var{G}.
+## The Hankel singular values corresponding to the projection @code{op(V)*G1*op(W)},
+## where G1 denotes the @var{alpha}-stable part of the original system @var{G}. 
 ## The @var{ns} Hankel singular values are ordered decreasingly.
 ## @item info.nu
 ## The order of the @var{alpha}-unstable subsystem of both the original
@@ -108,8 +108,8 @@
 ## @table @var
 ## @item 'order', 'nr'
 ## The desired order of the resulting reduced order system @var{Gr}.
-## If not specified, @var{nr} is the sum of NU and the number of
-## Hankel singular values greater than @code{MAX(TOL1,NS*EPS*HNORM(As,Bs,Cs))};
+## If not specified, @var{nr} is the sum of @var{info.nu} and the number of
+## Hankel singular values greater than @code{max(tol1, ns*eps*info.hsv(1)};
 ##
 ## @item 'method'
 ## Specifies the computational approach to be used.
@@ -125,39 +125,113 @@
 ## feedthrough matrices in V or W.  Default method.
 ## @end table
 ##
+##
 ## @item 'left', 'v'
 ## LTI model of the left/output frequency weighting.
-## Default value is an identity matrix.
+## The weighting must be antistable.
+## @iftex
+## @math{|| V \\ (G-G_r) \\dots ||_H = min}
+## @end iftex
+## @ifnottex
+## @example
+## || V (G-Gr) . ||  = min
+##                 H
+## @end example
+## @end ifnottex
 ##
 ## @item 'right', 'w'
 ## LTI model of the right/input frequency weighting.
-## Default value is an identity matrix.
+## The weighting must be antistable.
+## @iftex
+## @math{|| \\dots (G-G_r) \\ W ||_H = min}
+## @end iftex
+## @ifnottex
+## @example
+## || . (G-Gr) W ||  = min
+##                 H
+## @end example
+## @end ifnottex
+##
 ##
 ## @item 'left-inv', 'inv-v'
 ## LTI model of the left/output frequency weighting.
-## Default value is an identity matrix.
+## The weighting must have only antistable zeros.
+## @iftex
+## @math{|| inv(V) \\ (G-G_r) \\dots ||_H = min}
+## @end iftex
+## @ifnottex
+## @example
+## || inv(V) (G-Gr) . ||  = min
+##                      H
+## @end example
+## @end ifnottex
 ##
 ## @item 'right-inv', 'inv-w'
 ## LTI model of the right/input frequency weighting.
-## Default value is an identity matrix.
+## The weighting must have only antistable zeros.
+## @iftex
+## @math{|| \\dots (G-G_r) \\ inv(W) ||_H = min}
+## @end iftex
+## @ifnottex
+## @example
+## || . (G-Gr) inv(W) ||  = min
+##                      H
+## @end example
+## @end ifnottex
 ##
 ##
 ## @item 'left-conj', 'conj-v'
 ## LTI model of the left/output frequency weighting.
-## Default value is an identity matrix.
+## The weighting must be stable.
+## @iftex
+## @math{|| conj(V) \\ (G-G_r) \\dots ||_H = min}
+## @end iftex
+## @ifnottex
+## @example
+## || V (G-Gr) . ||  = min
+##                 H
+## @end example
+## @end ifnottex
 ##
 ## @item 'right-conj', 'conj-w'
 ## LTI model of the right/input frequency weighting.
-## Default value is an identity matrix.
+## The weighting must be stable.
+## @iftex
+## @math{|| \\dots (G-G_r) \\ conj(W) ||_H = min}
+## @end iftex
+## @ifnottex
+## @example
+## || . (G-Gr) W ||  = min
+##                 H
+## @end example
+## @end ifnottex
 ##
 ##
 ## @item 'left-conj-inv', 'conj-inv-v'
 ## LTI model of the left/output frequency weighting.
-## Default value is an identity matrix.
+## The weighting must be minimum-phase.
+## @iftex
+## @math{|| conj(inv(V)) \\ (G-G_r) \\dots ||_H = min}
+## @end iftex
+## @ifnottex
+## @example
+## || V (G-Gr) . ||  = min
+##                 H
+## @end example
+## @end ifnottex
 ##
 ## @item 'right-conj-inv', 'conj-inv-w'
 ## LTI model of the right/input frequency weighting.
-## Default value is an identity matrix.
+## The weighting must be minimum-phase.
+## @iftex
+## @math{|| \\dots (G-G_r) \\ conj(inv(W)) ||_H = min}
+## @end iftex
+## @ifnottex
+## @example
+## || . (G-Gr) W ||  = min
+##                 H
+## @end example
+## @end ifnottex
 ##
 ##
 ## @item 'alpha'
@@ -170,6 +244,20 @@
 ## The ALPHA-stability domain does not include the boundary.
 ## Default value is 0 for continuous-time systems and
 ## 1 for discrete-time systems.
+##
+## @item 'tol1'
+## If @var{'order'} is not specified, @var{tol1} contains the tolerance for
+## determining the order of the reduced model.
+## For model reduction, the recommended value of @var{tol1} is
+## c*info.hsv(1), where c lies in the interval [0.00001, 0.001].
+## @var{tol1} < 1.
+## If @var{'order'} is specified, the value of @var{tol1} is ignored.
+##
+## @item 'tol2'
+## The tolerance for determining the order of a minimal
+## realization of the ALPHA-stable part of the given
+## model.  @var{tol2} <= @var{tol1} < 1.
+## If not specified, ns*eps*info.hsv(1) is chosen.
 ##
 ## @item 'equil', 'scale'
 ## Boolean indicating whether equilibration (scaling) should be

@@ -35,7 +35,7 @@
 ## @item ncr
 ## The desired order of the resulting reduced order controller @var{Kr}.
 ## If not specified, @var{ncr} is chosen automatically according
-## to the description of key @var{"order"}.
+## to the description of key @var{'order'}.
 ## @item @dots{}
 ## Optional pairs of keys and values.  @code{"key1", value1, "key2", value2}.
 ## @item opt
@@ -61,35 +61,35 @@
 ##
 ## @strong{Option Keys and Values}
 ## @table @var
-## @item "order", "ncr"
+## @item 'order', 'ncr'
 ## The desired order of the resulting reduced order controller @var{Kr}.
 ## If not specified, @var{ncr} is chosen automatically.
 ##
-## @item "method"
+## @item 'method'
 ## Order reduction approach to be used as follows:
 ## @table @var
-## @item "sr", "b"
+## @item 'sr', 'b'
 ## Use the square-root Balance & Truncate method.
-## @item "bfsr", "f"
+## @item 'bfsr', 'f'
 ## Use the balancing-free square-root Balance & Truncate method.  Default method.
 ## @end table
 ##
-## @item "cf"
+## @item 'cf'
 ## Specifies whether left or right coprime factorization is
 ## to be used as follows:
 ## @table @var
-## @item "left", "l"
+## @item 'left', 'l'
 ## Use left coprime factorization.  Default method.
-## @item "right", "r"
+## @item 'right', 'r'
 ## Use right coprime factorization.
 ## @end table
 ##
-## @item "tol1"
-## If @var{"order"} is not specified, @var{tol1} contains the tolerance for
+## @item 'tol1'
+## If @var{'order'} is not specified, @var{tol1} contains the tolerance for
 ## determining the order of the reduced system.
 ## For model reduction, the recommended value of @var{tol1} is
 ## c*info.hsv(1), where c lies in the interval [0.00001, 0.001].
-## If @var{"order"} is specified, the value of @var{tol1} is ignored.
+## If @var{'order'} is specified, the value of @var{tol1} is ignored.
 ## @end table
 ##
 ## @strong{Algorithm}@*

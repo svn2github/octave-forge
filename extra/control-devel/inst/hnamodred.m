@@ -106,26 +106,34 @@
 ##
 ## @strong{Option Keys and Values}
 ## @table @var
-## @item "order", "nr"
+## @item 'order', 'nr'
 ## The desired order of the resulting reduced order system @var{Gr}.
 ## If not specified, @var{nr} is the sum of NU and the number of
 ## Hankel singular values greater than @code{MAX(TOL1,NS*EPS*HNORM(As,Bs,Cs))};
 ##
-## @item "method"
+## @item 'method'
 ## Specifies the computational approach to be used.
 ## Valid values corresponding to this key are:
 ## @table @var
-## @item "descriptor"
+## @item 'descriptor'
 ## Use the inverse free descriptor system approach.
-## @item "standard"
+## @item 'standard'
 ## Use the inversion based standard approach.
-## @item "auto"
+## @item 'auto'
 ## Switch automatically to the inverse free
 ## descriptor approach in case of badly conditioned
 ## feedthrough matrices in V or W.  Default method.
 ## @end table
 ##
-## @item "alpha"
+## @item 'left', 'output'
+## LTI model of the left/output frequency weighting.
+## Default value is an identity matrix.
+##
+## @item 'right', 'input'
+## LTI model of the right/input frequency weighting.
+## Default value is an identity matrix.
+##
+## @item 'alpha'
 ## Specifies the ALPHA-stability boundary for the eigenvalues
 ## of the state dynamics matrix @var{G.A}.  For a continuous-time
 ## system, ALPHA <= 0 is the boundary value for
@@ -136,7 +144,7 @@
 ## Default value is 0 for continuous-time systems and
 ## 1 for discrete-time systems.
 ##
-## @item "equil", "scale"
+## @item 'equil', 'scale'
 ## Boolean indicating whether equilibration (scaling) should be
 ## performed on system @var{G} prior to order reduction.
 ## Default value is true if @code{G.scaled == false} and

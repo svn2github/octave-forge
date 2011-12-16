@@ -113,7 +113,7 @@
 ## @item nr
 ## The desired order of the resulting reduced order system @var{Gr}.
 ## If not specified, @var{nr} is chosen automatically according
-## to the description of key @var{"order"}.
+## to the description of key @var{'order'}.
 ## @item @dots{}
 ## Optional pairs of keys and values.  @code{"key1", value1, "key2", value2}.
 ## @item opt
@@ -147,28 +147,28 @@
 ##
 ## @strong{Option Keys and Values}
 ## @table @var
-## @item "order", "nr"
+## @item 'order', 'nr'
 ## The desired order of the resulting reduced order system @var{Gr}.
 ## If not specified, @var{nr} is the sum of NU and the number of
 ## Hankel singular values greater than @code{MAX(TOL1,NS*EPS)};
 ## @var{nr} can be further reduced to ensure that
 ## @code{HSV(NR-NU) > HSV(NR+1-NU)}.
 ##
-## @item "method"
+## @item 'method'
 ## Approximation method for the H-infinity norm.
 ## Valid values corresponding to this key are:
 ## @table @var
-## @item "sr-bta", "b"
+## @item 'sr-bta', 'b'
 ## Use the square-root Balance & Truncate method.
-## @item "bfsr-bta", "f"
+## @item 'bfsr-bta', 'f'
 ## Use the balancing-free square-root Balance & Truncate method.  Default method.
-## @item "sr-spa", "s"
+## @item 'sr-spa', 's'
 ## Use the square-root Singular Perturbation Approximation method.
-## @item "bfsr-spa", "p"
+## @item 'bfsr-spa', 'p'
 ## Use the balancing-free square-root Singular Perturbation Approximation method.
 ## @end table
 ##
-## @item "alpha"
+## @item 'alpha'
 ## Specifies the ALPHA-stability boundary for the eigenvalues
 ## of the state dynamics matrix @var{G.A}.  For a continuous-time
 ## system, ALPHA <= 0 is the boundary value for
@@ -179,7 +179,7 @@
 ## Default value is 0 for continuous-time systems and
 ## 1 for discrete-time systems.
 ##
-## @item "beta"
+## @item 'beta'
 ## Use @code{[G, beta*I]} as new system @var{G} to combine
 ## absolute and relative error methods.
 ## BETA > 0 specifies the absolute/relative error weighting
@@ -192,8 +192,8 @@
 ## the feedthrough matrice must not be rank-deficient.
 ## Default value is 0.
 ##
-## @item "tol1"
-## If @var{"order"} is not specified, @var{tol1} contains the tolerance for
+## @item 'tol1'
+## If @var{'order'} is not specified, @var{tol1} contains the tolerance for
 ## determining the order of reduced system.
 ## For model reduction, the recommended value of @var{tol1} lies
 ## in the interval [0.00001, 0.001].  @var{tol1} < 1.
@@ -201,17 +201,17 @@
 ## @var{tol1} = NS*EPS, where NS is the number of
 ## ALPHA-stable eigenvalues of A and EPS is the machine
 ## precision.
-## If @var{"order"} is specified, the value of @var{tol1} is ignored.
+## If @var{'order'} is specified, the value of @var{tol1} is ignored.
 ##
-## @item "tol2"
+## @item 'tol2'
 ## The tolerance for determining the order of a minimal
 ## realization of the phase system (see METHOD) corresponding
 ## to the ALPHA-stable part of the given system.
 ## The recommended value is TOL2 = NS*EPS.  TOL2 <= TOL1 < 1.
-## This value is used by default if @var{"tol2"} is not specified
+## This value is used by default if @var{'tol2'} is not specified
 ## or if TOL2 <= 0 on entry.
 ##
-## @item "equil", "scale"
+## @item 'equil', 'scale'
 ## Boolean indicating whether equilibration (scaling) should be
 ## performed on system @var{G} prior to order reduction.
 ## Default value is true if @code{G.scaled == false} and

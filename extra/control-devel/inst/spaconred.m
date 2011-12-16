@@ -34,7 +34,7 @@
 ## @item ncr
 ## The desired order of the resulting reduced order controller @var{Kr}.
 ## If not specified, @var{ncr} is chosen automatically according
-## to the description of key @var{"order"}.
+## to the description of key @var{'order'}.
 ## @item @dots{}
 ## Optional pairs of keys and values.  @code{"key1", value1, "key2", value2}.
 ## @item opt
@@ -62,37 +62,37 @@
 ##
 ## @strong{Option Keys and Values}
 ## @table @var
-## @item "order", "ncr"
+## @item 'order', 'ncr'
 ## The desired order of the resulting reduced order controller @var{Kr}.
 ## If not specified, @var{ncr} is chosen automatically.
 ##
-## @item "method"
+## @item 'method'
 ## Order reduction approach to be used as follows:
 ## @table @var
-## @item "sr", "s"
+## @item 'sr', 's'
 ## Use the square-root Singular Perturbation Approximation method.
-## @item "bfsr", "p"
+## @item 'bfsr', 'p'
 ## Use the balancing-free square-root Singular Perturbation Approximation method.  Default method.
 ## @end table
 ##
-## @item "weight"
+## @item 'weight'
 ## Specifies the type of frequency-weighting as follows:
 ## @table @var
-## @item "none"
+## @item 'none'
 ## No weightings are used (V = I, W = I).  Default value.
-## @item "left", "output"
+## @item 'left', 'output'
 ## Use stability enforcing left (output) weighting
 ## @example
 ##           -1
 ## V = (I-G*K) *G ,  (W = I)
 ## @end example         
-## @item "right", "input"
+## @item 'right', 'input'
 ## Use stability enforcing right (input) weighting
 ## @example
 ##           -1
 ## W = (I-G*K) *G ,  (V = I)
 ## @end example                    
-## @item "both", "performance"
+## @item 'both', 'performance'
 ## Use stability and performance enforcing weightings
 ## @example
 ##           -1                -1
@@ -100,7 +100,7 @@
 ## @end example
 ## @end table
 ##
-## @item "alpha"
+## @item 'alpha'
 ## Specifies the ALPHA-stability boundary for the eigenvalues
 ## of the state dynamics matrix @var{K.A}.  For a continuous-time
 ## controller, ALPHA <= 0 is the boundary value for
@@ -111,20 +111,20 @@
 ## Default value is 0 for continuous-time controllers and
 ## 1 for discrete-time controllers.
 ##
-## @item "tol1"
-## If @var{"order"} is not specified, @var{tol1} contains the tolerance for
+## @item 'tol1'
+## If @var{'order'} is not specified, @var{tol1} contains the tolerance for
 ## determining the order of the reduced controller.
 ## For model reduction, the recommended value of @var{tol1} is
 ## c*info.hsvc(1), where c lies in the interval [0.00001, 0.001].
-## If @var{"order"} is specified, the value of @var{tol1} is ignored.
+## If @var{'order'} is specified, the value of @var{tol1} is ignored.
 ##
-## @item "tol2"
+## @item 'tol2'
 ## The tolerance for determining the order of a minimal
 ## realization of the ALPHA-stable part of the given
 ## controller.  TOL2 <= TOL1.
 ## If not specified, ncs*eps*info.hsvc(1) is chosen.
 ##
-## @item "equil", "scale"
+## @item 'equil', 'scale'
 ## Boolean indicating whether equilibration (scaling) should be
 ## performed on @var{G} and @var{K} prior to order reduction.
 ## Default value is false if both @code{G.scaled == true, K.scaled == true}

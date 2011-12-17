@@ -79,9 +79,9 @@
 ## to be used as follows:
 ## @table @var
 ## @item 'left', 'l'
-## Use left coprime factorization.  Default method.
+## Use left coprime factorization.
 ## @item 'right', 'r'
-## Use right coprime factorization.
+## Use right coprime factorization.  Default method.
 ## @end table
 ##
 ## @item 'tol1'
@@ -158,8 +158,7 @@ function [Kr, info] = fwcfconred (G, F, L, varargin)
 
   ## default arguments
   tol1 = 0.0;
-  tol2 = 0.0;
-  jobcf = 0;
+  jobcf = 1;
   jobmr = 1;                                       # balancing-free BTA
   equil = scaled && scaledc;
   ordsel = 1;

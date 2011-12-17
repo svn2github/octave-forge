@@ -38,3 +38,5 @@ V = 1;
 F = lqr (G, Q, R)
 L = lqr (G.', W, V).'
 %[~, L] = kalman (G, W, V)
+
+[Kr, info] = fwcfconred (G, F, L, "cf", "right")

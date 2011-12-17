@@ -29,6 +29,7 @@
 ## 2010-10-11 Added check for row range
 ## 2011-04-21 Added tests
 ## 2011-04-30 Simplified column name computation
+## 2011-12-17 Bugfix for wrong column address if column equals multiple of 26
 
 function [ celladdress ] = calccelladdress (row, column)
 
@@ -39,7 +40,7 @@ function [ celladdress ] = calccelladdress (row, column)
 
 	str = '';
 	while (column > 0.01)
-		rmd = floor (column / 26);
+		rmd = floor ((column - 1) / 26);
 		str = [char(column - rmd * 26 + 'A' - 1) str];
 		column = rmd;
 	endwhile

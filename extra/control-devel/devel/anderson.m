@@ -36,5 +36,5 @@ W = q2 * B * B.';
 V = 1;
 
 F = lqr (G, Q, R)
-L = lqr (G.', W, V)
+L = lqr (G.', W, V).'
 %[~, L] = kalman (G, W, V)

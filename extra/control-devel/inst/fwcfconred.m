@@ -63,7 +63,8 @@
 ## @table @var
 ## @item 'order', 'ncr'
 ## The desired order of the resulting reduced order controller @var{Kr}.
-## If not specified, @var{ncr} is chosen automatically.
+## If not specified, @var{ncr} is chosen automatically such that states with
+## Hankel singular values @var{info.hsv} > @var{tol1} are retained.
 ##
 ## @item 'method'
 ## Order reduction approach to be used as follows:
@@ -89,6 +90,7 @@
 ## determining the order of the reduced system.
 ## For model reduction, the recommended value of @var{tol1} is
 ## c*info.hsv(1), where c lies in the interval [0.00001, 0.001].
+## Default value is n*eps*info.hsv(1).
 ## If @var{'order'} is specified, the value of @var{tol1} is ignored.
 ## @end table
 ##

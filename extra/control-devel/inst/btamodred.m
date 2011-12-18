@@ -106,7 +106,8 @@
 ## @table @var
 ## @item 'order', 'nr'
 ## The desired order of the resulting reduced order system @var{Gr}.
-## If not specified, @var{nr} is chosen automatically.
+## If not specified, @var{nr} is chosen automatically such that states with
+## Hankel singular values @var{info.hsv} > @var{tol1} are retained.
 ##
 ## @item 'left', 'output'
 ## LTI model of the left/output frequency weighting.
@@ -141,6 +142,7 @@
 ## determining the order of the reduced model.
 ## For model reduction, the recommended value of @var{tol1} is
 ## c*info.hsv(1), where c lies in the interval [0.00001, 0.001].
+## Default value is info.ns*eps*info.hsv(1).
 ## If @var{'order'} is specified, the value of @var{tol1} is ignored.
 ##
 ## @item 'tol2'

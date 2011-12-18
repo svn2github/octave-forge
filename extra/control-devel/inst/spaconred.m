@@ -22,6 +22,24 @@
 ## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} spaconred (@var{G}, @var{K}, @var{ncr}, @var{opt}, @dots{})
 ##
 ## Controller reduction by frequency-weighted Singular Perturbation Approximation (SPA).
+## Given a plant @var{G} and a stabilizing controller @var{K}, determine a reduced
+## order controller @var{Kr} such that the closed-loop system is stable and closed-loop
+## performance is retained.
+##
+## The algorithm tries to minimize the frequency-weighted error
+## @iftex
+## @tex
+## $$ || V \\ (K - K_r) \\ W ||_{\\infty} = min $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## ||V (K-Kr) W||    = min
+##               inf
+## @end example
+## @end ifnottex
+## where @var{V} and @var{W} denote output and input weightings.
+##
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -81,24 +99,48 @@
 ## @table @var
 ## @item 'none'
 ## No weightings are used (V = I, W = I).  Default value.
+##
 ## @item 'left', 'output'
 ## Use stability enforcing left (output) weighting
+## @iftex
+## @tex
+## $$ V = (I - G K)^{-1} G,  \\qquad W = I $$
+## @end tex
+## @end iftex
+## @ifnottex
 ## @example
 ##           -1
-## V = (I-G*K) *G ,  (W = I)
+## V = (I-G*K) *G ,  W = I
 ## @end example         
+## @end ifnottex
+##
 ## @item 'right', 'input'
 ## Use stability enforcing right (input) weighting
+## @iftex
+## @tex
+## $$ V = I,  \\qquad W = (I - G K)^{-1} G  $$
+## @end tex
+## @end iftex
+## @ifnottex
 ## @example
-##           -1
-## W = (I-G*K) *G ,  (V = I)
+##                    -1
+## V = I ,  W = (I-G*K) *G
 ## @end example                    
+## @end ifnottex
+##
 ## @item 'both', 'performance'
 ## Use stability and performance enforcing weightings
+## @iftex
+## @tex
+## $$ V = (I - G K)^{-1} G,  \\qquad W = (I - G K)^{-1}  $$
+## @end tex
+## @end iftex
+## @ifnottex
 ## @example
 ##           -1                -1
 ## V = (I-G*K) *G ,  W = (I-G*K)
 ## @end example
+## @end ifnottex
 ## @end table
 ##
 ## @item 'alpha'

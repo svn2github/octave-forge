@@ -173,7 +173,7 @@ function [Kr, info] = fwcfconred (G, F, L, varargin)
     val = varargin{k+1};
     switch (key)
       case {"order", "ncr", "nr"}
-        [ncr, ordsel] = __modred_check_order__ (val);
+        [ncr, ordsel] = __modred_check_order__ (val, n);
 
       case {"tol1", "tol"}
         tol1 = __modred_check_tol__ (val, "tol1");

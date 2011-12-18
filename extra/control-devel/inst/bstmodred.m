@@ -274,7 +274,7 @@ function [Gr, info] = bstmodred (G, varargin)
     val = varargin{k+1};
     switch (key)
       case {"order", "nr"}
-        [nr, ordsel] = __modred_check_order__ (val);
+        [nr, ordsel] = __modred_check_order__ (val, rows (a));
 
       case "tol1"
         tol1 = __modred_check_tol__ (val, "tol1");

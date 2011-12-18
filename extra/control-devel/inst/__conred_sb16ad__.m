@@ -109,7 +109,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
         endswitch
 
       case {"order", "ncr", "nr"}
-        [ncr, ordsel] = __modred_check_order__ (val);
+        [ncr, ordsel] = __modred_check_order__ (val, rows (ac));
 
       case "tol1"
         tol1 = __modred_check_tol__ (val, "tol1");

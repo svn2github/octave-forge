@@ -92,7 +92,7 @@ function [Gr, info] = __modred_ab09id__ (method, varargin)
         [aw, bw, cw, dw, jobw] = __modred_check_weight__ (val, dt, [], m);
 
       case {"order", "n", "nr"}
-        [nr, ordsel] = __modred_check_order__ (val);
+        [nr, ordsel] = __modred_check_order__ (val, rows (a));
 
       case "tol1"
         tol1 = __modred_check_tol__ (val, "tol1");

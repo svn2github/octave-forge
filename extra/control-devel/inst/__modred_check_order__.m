@@ -22,10 +22,14 @@
 ## Created: November 2011
 ## Version: 0.1
 
-function [nr, ordsel] = __modred_check_order__ (nr)
+function [nr, ordsel] = __modred_check_order__ (nr, n)
 
   if (! issample (nr, 0) || nr != round (nr))
     error ("modred: order of reduced model must be an integer >= 0");
+  endif
+
+  if (nr > n)
+    error ("modred: order of reduced model can't be larger than the original one")
   endif
   
   ordsel = 0;

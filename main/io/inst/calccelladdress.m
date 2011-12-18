@@ -30,6 +30,7 @@
 ## 2011-04-21 Added tests
 ## 2011-04-30 Simplified column name computation
 ## 2011-12-17 Bugfix for wrong column address if column equals multiple of 26
+## 2011-12-18 Added tests for multiple-of-26 cases
 
 function [ celladdress ] = calccelladdress (row, column)
 
@@ -64,3 +65,25 @@ endfunction
 %!test
 %! a = calccelladdress (1048576, 16384);
 %! assert (a, 'XFD1048576');
+
+%!test
+%! a = calccelladdress (378, 26);
+%! assert (a, 'Z378');
+
+%!test
+%! a = calccelladdress (378, 702);
+%! assert (a, 'ZZ378');
+
+%!test
+%! a = calccelladdress (378, 701);
+%! assert (a, 'ZY378');
+
+%!test
+%! a = calccelladdress (378, 703);
+%! assert (a, 'AAA378');
+
+%!test
+%! a = calccelladdress (378, 676);
+%! assert (a, 'YZ378');
+
+

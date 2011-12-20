@@ -80,3 +80,16 @@ void warning_msg (const char name[], int index, int max, const char* msg[])
     else
         warning ("%s: unknown warning, iwarn = %d", name, index);
 }
+
+void warning_msg (const char name[], int index, int max, const char* msg[], int offset)
+{
+    if (index == 0)
+        return;
+
+    if (index > 0 && index <= max)
+        warning ("%s: %s", name, msg[index]);
+    else if (index > offset)
+        warning ("%s: %d+%d: %d %s", name, offset, index-offset, index-offset, msg[max+1]);
+    else
+        warning ("%s: unknown warning, iwarn = %d", name, index);
+}

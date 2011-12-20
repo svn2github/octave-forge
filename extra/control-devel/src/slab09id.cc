@@ -367,14 +367,13 @@ For internal use only.")
                 "than the order of the ALPHA-unstable part of the "
                 "given system; in this case NR is set equal to the "
                 "order of the ALPHA-unstable part.",
-            "10+%d: %d violations of the numerical stability condition "
+/* 10+%d: %d */ "violations of the numerical stability condition "
                 "occured during the assignment of eigenvalues in the "
-                "SLICOT Library routines SB08CD and/or SB08DD."};//, info, info);
+                "SLICOT Library routines SB08CD and/or SB08DD."};
 
-        // TODO: handle case 10+info
 
         error_msg ("modred", info, 10, err_msg);
-        warning_msg ("modred", iwarn, 4, warn_msg);
+        warning_msg ("modred", iwarn, 3, warn_msg, 10);
 
         // resize
         a.resize (nr, nr);

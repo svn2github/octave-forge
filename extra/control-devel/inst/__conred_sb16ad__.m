@@ -130,7 +130,11 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
             error ("modred: '%s' is an invalid approach", val);
         endswitch
 
-      ## TODO: jobc, jobo
+      case {"jobc", "gram-ctrb"}
+        jobc = __modred_check_gram__ (val, "gram-ctrb");
+
+      case {"jobo", "gram-obsv"}
+        jobo = __modred_check_gram__ (val, "gram-obsv");
       
       case {"equil", "equilibrate", "equilibration", "scale", "scaling"}
         scaled = __modred_check_equil__ (val);

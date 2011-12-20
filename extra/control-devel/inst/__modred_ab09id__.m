@@ -113,7 +113,17 @@ function [Gr, info] = __modred_ab09id__ (method, varargin)
             error ("modred: '%s' is an invalid approach", val);
         endswitch
 
-      ## TODO: alphac, alphao, jobc, jobo
+      case {"jobc", "gram-ctrb"}
+        jobc = __modred_check_gram__ (val, "gram-ctrb");
+
+      case {"jobo", "gram-obsv"}
+        jobo = __modred_check_gram__ (val, "gram-obsv");
+
+      case {"alphac", "alpha-ctrb"}
+        alphac = __modred_check_alpha_gram__ (val, "alpha-ctrb");
+
+      case {"alphao", "alpha-obsv"}
+        alphao = __modred_check_alpha_gram__ (val, "alpha-obsv");
 
       case {"equil", "equilibrate", "equilibration", "scale", "scaling"}
         scaled = __modred_check_equil__ (val);

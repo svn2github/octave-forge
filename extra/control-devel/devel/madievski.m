@@ -60,3 +60,21 @@ Pd = c2d (P, tau);
 s = tf ('s');
 F = 5 / (s + 5);
 
+L = P * K;
+Ld = Pd * Kd;
+
+T = feedback (L);
+Td = feedback (Ld);
+
+figure (1)
+step (T, 100)
+
+figure (2)
+bode (L)
+
+figure (3)
+step (Td, 100)
+
+figure (4)
+bode (Ld)
+

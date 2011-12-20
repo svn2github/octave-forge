@@ -39,4 +39,47 @@ F = lqr (G, Q, R)
 L = lqr (G.', W, V).'
 %[~, L] = kalman (G, W, V)
 
+%{
 [Kr, info] = fwcfconred (G, F, L, "cf", "right")
+
+figure (1)
+T = feedback (G*Kr)
+step (T, 150)
+%}
+
+figure (1)
+clf
+
+for k = 8:-1:2
+  Kr = cfconred (G, F, L, k);
+  T = feedback (G*Kr);
+  step (T, 200)
+  hold on
+endfor
+
+hold off
+
+figure (2)
+clf
+
+for k = 8:-1:2
+  Kr = cfconred (G, F, L, k, 'method', 'bfsr-spa');
+  T = feedback (G*Kr);
+  step (T, 200)
+  hold on
+endfor
+
+hold off
+
+
+figure (3)
+clf
+
+for k = 8:-1:2
+  Kr = fwcfconred (G, F, L, k);
+  T = feedback (G*Kr);
+  step (T, 300)
+  hold on
+endfor
+
+hold off

@@ -168,6 +168,28 @@
 ## controller.  TOL2 <= TOL1.
 ## If not specified, ncs*eps*info.hsvc(1) is chosen.
 ##
+## @item 'gram-ctrb'
+## Specifies the choice of frequency-weighted controllability
+## Grammian as follows:
+## @table @var
+## @item 'standard'
+## Choice corresponding to standard Enns' method [1].  Default method.
+## @item 'enhanced'
+## Choice corresponding to the stability enhanced
+## modified Enns' method of [2].
+## @end table
+##
+## @item 'gram-obsv'
+## Specifies the choice of frequency-weighted observability
+## Grammian as follows:
+## @table @var
+## @item 'standard'
+## Choice corresponding to standard Enns' method [1].  Default method.
+## @item 'enhanced'
+## Choice corresponding to the stability enhanced
+## modified Enns' method of [2].
+## @end table
+##
 ## @item 'equil', 'scale'
 ## Boolean indicating whether equilibration (scaling) should be
 ## performed on @var{G} and @var{K} prior to order reduction.

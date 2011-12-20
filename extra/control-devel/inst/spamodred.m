@@ -111,6 +111,50 @@
 ## model.  TOL2 <= TOL1.
 ## If not specified, ns*eps*info.hsv(1) is chosen.
 ##
+## @item 'gram-ctrb'
+## Specifies the choice of frequency-weighted controllability
+## Grammian as follows:
+## @table @var
+## @item 'standard'
+## Choice corresponding to a combination method [4]
+## of the approaches of Enns [1] and Lin-Chiu [2,3].  Default method.
+## @item 'enhanced'
+## Choice corresponding to the stability enhanced
+## modified combination method of [4].
+## @end table
+##
+## @item 'gram-obsv'
+## Specifies the choice of frequency-weighted observability
+## Grammian as follows:
+## @table @var
+## @item 'standard'
+## Choice corresponding to a combination method [4]
+## of the approaches of Enns [1] and Lin-Chiu [2,3].  Default method.
+## @item 'enhanced'
+## Choice corresponding to the stability enhanced
+## modified combination method of [4].
+## @end table
+##
+## @item 'alpha-ctrb'
+## Combination method parameter for defining the
+## frequency-weighted controllability Grammian.
+## abs(alphac) <= 1.
+## If alphac = 0, the choice of
+## Grammian corresponds to the method of Enns [1], while if
+## alphac = 1, the choice of Grammian corresponds
+## to the method of Lin and Chiu [2,3].
+## Default value is 0.
+##
+## @item 'alpha-obsv'
+## Combination method parameter for defining the
+## frequency-weighted observability Grammian.
+## abs(alphao) <= 1.
+## If alphao = 0, the choice of
+## Grammian corresponds to the method of Enns [1], while if
+## alphao = 1, the choice of Grammian corresponds
+## to the method of Lin and Chiu [2,3].
+## Default value is 0.
+##
 ## @item 'equil', 'scale'
 ## Boolean indicating whether equilibration (scaling) should be
 ## performed on system @var{G} prior to order reduction.

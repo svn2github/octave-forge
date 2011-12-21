@@ -143,6 +143,15 @@
 ## @end ifnottex
 ## @end table
 ##
+## @item 'feedback'
+## Specifies whether @var{K} is a positive or negative feedback controller:
+## @table @var
+## @item '+'
+## Use positive feedback controller.  Default value.
+## @item '-'
+## Use negative feedback controller.
+## @end table
+##
 ## @item 'alpha'
 ## Specifies the ALPHA-stability boundary for the eigenvalues
 ## of the state dynamics matrix @var{K.A}.  For a continuous-time

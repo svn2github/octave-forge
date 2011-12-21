@@ -85,6 +85,15 @@
 ## Use right coprime factorization.  Default method.
 ## @end table
 ##
+## @item 'feedback'
+## Specifies whether @var{F} and @var{L} are fed back positively or negatively:
+## @table @var
+## @item '+'
+## A+BK and A+LC are both Hurwitz matrices.
+## @item '-'
+## A-BK and A-LC are both Hurwitz matrices.  Default value.
+## @end table
+##
 ## @item 'tol1'
 ## If @var{'order'} is not specified, @var{tol1} contains the tolerance for
 ## determining the order of the reduced system.
@@ -165,6 +174,7 @@ function [Kr, info] = fwcfconred (G, F, L, varargin)
   equil = scaled && scaledc;
   ordsel = 1;
   ncr = 0;
+  negfb = true;                                    # A-BK, A-LC Hurwitz
 
 
   ## handle keys and values
@@ -198,16 +208,24 @@ function [Kr, info] = fwcfconred (G, F, L, varargin)
             error ("cfconred: '%s' is an invalid approach", val);
         endswitch
 
+      case "feedback"
+        negfb = __conred_check_feedback_sign__ (val);
+
       otherwise
         warning ("cfconred: invalid property name '%s' ignored", key);
     endswitch
   endfor
 
 
+  ## A - B*F --> A + B*F  ;    A - L*C --> A + L*C
+  if (negfb)
+    F = -F;
+    L = -L;
+  endif
+
   ## perform model order reduction
   [acr, bcr, ccr, ncr, hsv] = slsb16cd (a, b, c, d, dt, ncr, ordsel, jobd, jobmr, \
-                                        -F, -L, jobcf, tol1);
-  ## A - B*F --> A + B*F  ;    A - L*C --> A + L*C
+                                        F, L, jobcf, tol1);
 
   ## assemble reduced order controller
   Kr = ss (acr, bcr, ccr, [], tsam);

@@ -141,7 +141,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
         scaled = __modred_check_equil__ (val);
 
       case "feedback"
-        negfb = __conred_check_feedback_sign__ (val, "feedback");
+        negfb = __conred_check_feedback_sign__ (val);
 
       otherwise
         warning ("%sconred: invalid property name '%s' ignored", method, key);

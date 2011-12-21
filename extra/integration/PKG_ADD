@@ -6,6 +6,6 @@ if (! exist (fullfile (fileparts (mfilename ("fullpath")), "inst"), "dir"))
   end
 end
 # Preserve compatibility with old versions of Octave
-if (!exist ("meshgrid","file") & exist ("meshdom","file"))
+if (!exist ("meshgrid","file") && exist ("meshdom","file"))
    dispatch("meshgrid","meshdom","any")
 end

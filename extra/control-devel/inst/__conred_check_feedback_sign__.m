@@ -16,25 +16,25 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## check choice of frequency-weighted grammians.
+## check the feedback sign.
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: December 2011
 ## Version: 0.1
 
-function job = __modred_check_gram__ (choice, key)
+function negfb = __conred_check_feedback_sign__ (fbsign, key = "feedback")
 
-  if (! ischar (choice))
-    error ("modred: key '%s' requires string value", key);
+  if (! ischar (fbsign))
+    error ("conred: key '%s' requires string value", key);
   endif
-  
-  switch (tolower (choice (1)))
-    case "s"    # standard
-      job = 0;
-    case "e"    # enhanced
-      job = 1;
+
+  switch (fbsign)
+    case "+"
+      negfb = false;
+    case "-"
+      negfb = true;
     otherwise
-      error ("modred: key '%s' has an invalid value", key);
+      error ("conred: key '%s' has an invalid value", key);
   endswitch
 
 endfunction

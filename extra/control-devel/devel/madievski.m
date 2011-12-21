@@ -52,9 +52,8 @@ Dc = [   0.0     ];
 
 K = ss (Ac, Bc, Cc, Dc);
 
-Kr = btaconred (P, -K, 4, 'weight', 'both')
+Kr = btaconred (P, K, 4, 'weight', 'both', 'feedback', '-')
 
-% TODO: change feedback sign to match negative feedback controller in btaconred, spaconred
 
 tau = 0.1;
 Kd = c2d (K, tau);
@@ -82,5 +81,4 @@ figure (4)
 bode (Ld)
 
 figure (5)
-step (feedback (P*-Kr), 100)
-% step (feedback (P*Kr, '+'), 100)
+step (feedback (P*Kr), 100)

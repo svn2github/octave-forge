@@ -87,6 +87,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
   equil = scaled && scaledc;
   ordsel = 1;
   ncr = 0;
+  negfb = false;                            # positive feedback controller
 
 
   ## handle keys and values
@@ -139,6 +140,9 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
       case {"equil", "equilibrate", "equilibration", "scale", "scaling"}
         scaled = __modred_check_equil__ (val);
 
+      case "feedback"
+        negfb = __conred_check_feedback_sign__ (val, "feedback");
+
       otherwise
         warning ("%sconred: invalid property name '%s' ignored", method, key);
     endswitch
@@ -157,7 +161,12 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
   else
     error ("%smodred: invalid jobmr option"); # this should never happen
   endif
-  
+
+  ## handle negative feedback controllers
+  if (negfb)
+    [ac, bc, cc, dc] = ssdata (-K);
+  endif
+
   
   ## perform model order reduction
   [acr, bcr, ccr, dcr, ncr, hsvc, ncs] = slsb16ad (a, b, c, d, dt, equil, ncr, ordsel, alpha, jobmr, \
@@ -166,6 +175,11 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
 
   ## assemble reduced order controller
   Kr = ss (acr, bcr, ccr, dcr, tsamc);
+
+  ## handle negative feedback controllers
+  if (negfb)
+    Kr = -Kr;
+  endif
 
   ## assemble info struct  
   info = struct ("ncr", ncr, "ncs", ncs, "hsvc", hsvc);

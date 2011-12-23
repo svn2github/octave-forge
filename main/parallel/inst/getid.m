@@ -17,6 +17,6 @@ function retval = getid (sockets)
 
   ## getid (sockets)
 
-  retval = find(sockets==0)(1);
+  retval = find (sockets==0, 1);
   
 endfunction

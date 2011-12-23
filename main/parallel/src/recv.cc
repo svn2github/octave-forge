@@ -64,40 +64,28 @@ Receive a variable from the computer specified by the row vector 'socket'.\n")
 	      sockaddr_in r_addr;
 	      struct hostent *hehe;
 	      socklen_t len = sizeof (r_addr);
-	      getpeername (spollfd.fd, (sockaddr*)&r_addr, &len);
-	      hehe = gethostbyaddr ((char *)&r_addr.sin_addr.s_addr,
-				    sizeof(r_addr.sin_addr), AF_INET);
+	      getpeername (spollfd.fd, (sockaddr*) &r_addr, &len);
+	      hehe = gethostbyaddr ((char *) &r_addr.sin_addr.s_addr,
+				    sizeof (r_addr.sin_addr), AF_INET);
 
 	      if (spollfd.revents & POLLIN)
 		{
 		  pid = getpid ();
-		  if (read (spollfd.fd, &nl, sizeof (int)) <
-		      sizeof (int))
-		    {
-		      error ("read error");
-		    }
+		  if (read (spollfd.fd, &nl, sizeof (int)) < sizeof (int))
+		    error ("read error");
 		  error_code = ntohl (nl);
-		  if (write (spollfd.fd, &nl, sizeof (int)) <
-		      sizeof (int))
-		    {
-		      error ("write error");
-		    }
+		  if (write (spollfd.fd, &nl, sizeof (int)) < sizeof (int))
+		    error ("write error");
 		  error ("error occurred in %s\n\tsee "
 			 "%s:/tmp/octave_error-%s_%5d.log for detail",
 			 hehe->h_name, hehe->h_name, hehe->h_name, pid);
 		}
 	      if (spollfd.revents & POLLERR)
-		{
-		  error ("Error condition - %s", hehe->h_name);
-		}
+		error ("Error condition - %s", hehe->h_name);
 	      if (spollfd.revents & POLLHUP)
-		{
-		  error("Hung up - %s", hehe->h_name);
-		}
+		error("Hung up - %s", hehe->h_name);
 	      if (spollfd.revents & POLLNVAL)
-		{
-		  error("fd not open - %s", hehe->h_name);
-		}
+		error("fd not open - %s", hehe->h_name);
 	    }
 	}
 

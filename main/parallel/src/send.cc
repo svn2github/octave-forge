@@ -71,9 +71,9 @@ Send the variable 'X' to the computers specified by matrix 'sockets'\n.")
 		  sockaddr_in r_addr;
 		  struct hostent *hehe;
 		  socklen_t len = sizeof (r_addr);
-		  getpeername (pollfd[k].fd, (sockaddr*)&r_addr, &len);
-		  hehe = gethostbyaddr ((char *)&r_addr.sin_addr.s_addr,
-					sizeof(r_addr.sin_addr), AF_INET);
+		  getpeername (pollfd[k].fd, (sockaddr*) &r_addr, &len);
+		  hehe = gethostbyaddr ((char *) &r_addr.sin_addr.s_addr,
+					sizeof (r_addr.sin_addr), AF_INET);
 
 		  if (pollfd[k].revents & POLLIN)
 		    {

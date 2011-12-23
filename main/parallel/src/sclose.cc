@@ -48,79 +48,81 @@ along with this program; If not, see <http://www.gnu.org/licenses/>.
 DEFUN_DLD (sclose, args, ,
   "sclose (sockets)\n\
 \n\
-Close sockets")
+Close sockets.")
 {
   octave_value retval;
-  errno=0;
+  errno = 0;
 
-  if(args.length () == 1)
+  if (args.length () == 1)
     {
-      int i,nsock=0,sock,k,err=0,nl, rows;
+      int i, nsock = 0, sock, k, err = 0, nl, rows;
 
-      rows = args(0).matrix_value().rows();
+      rows = args(0).matrix_value().rows ();
       nsock = rows * 2;
-      
-      if((int)args(0).matrix_value().data()[0]==0){
-	int num,pid;
-	struct pollfd *pollfd;
-	pollfd=(struct pollfd *)malloc(nsock*sizeof(struct pollfd));
-	for(i=0;i<nsock;i++){
-	  sock=(int)args(0).matrix_value().data()[i+nsock];
-	  pollfd[i].fd=sock;
-	  pollfd[i].events=POLLIN;
-	}
-	
-	num=poll(pollfd,nsock,0);
-	if(num){
-	  for(k=0;k<nsock;k++){
-	    if(pollfd[k].revents && (pollfd[k].fd !=0)){
-	      sockaddr_in r_addr;
-	      struct hostent *hehe;
-	      socklen_t len = sizeof(r_addr);
-	      getpeername(pollfd[k].fd, (sockaddr*)&r_addr, &len );
-	      hehe=gethostbyaddr((char *)&r_addr.sin_addr.s_addr,sizeof(r_addr.sin_addr), AF_INET);
-	      
-	      if(pollfd[k].revents&POLLIN){
-		pid=getpid();
 
-		if (read(pollfd[k].fd,&nl,sizeof(int)) < (ssize_t)sizeof(int))
-		  error ("read error");
-		if (! error_state)
-		  if (write(pollfd[k].fd,&nl,sizeof(int)) < (ssize_t)sizeof(int))
-		    error ("write error");
-		error("error occurred in %s\n\tsee %s:/tmp/octave_error-%s_%5d.log for detail",hehe->h_name,hehe->h_name,hehe->h_name,pid );
-	      }
-	      if(pollfd[k].revents&POLLERR){
-		error("Error condition - %s",hehe->h_name );
-	      }
-	      if(pollfd[k].revents&POLLHUP){
-		error("Hung up - %s",hehe->h_name );
-	      }
-	      if(pollfd[k].revents&POLLNVAL){
-		error("fd not open - %s",hehe->h_name );
-	      }
+      if ((int) args(0).matrix_value ().data ()[0] == 0)
+	{
+	  int num, pid;
+	  struct pollfd *pollfd;
+	  pollfd = (struct pollfd *) malloc (nsock * sizeof (struct pollfd));
+	  for (i = 0; i < nsock; i++)
+	    {
+	      sock = (int) args(0).matrix_value ().data ()[i+nsock];
+	      pollfd[i].fd = sock;
+	      pollfd[i].events = POLLIN;
 	    }
-	  }
-	}
-      }
 
-      for(i=nsock-1;i>=rows;i--){
-	sock=(int)args(0).matrix_value().data()[i];
-	if(sock!=0){
-	  if(close(sock)!=0)
+	num = poll (pollfd, nsock, 0);
+	if(num)
+	  for(k=0;k<nsock;k++)
+	    if(pollfd[k].revents && (pollfd[k].fd !=0))
+	      {
+		sockaddr_in r_addr;
+		struct hostent *hehe;
+		socklen_t len = sizeof (r_addr);
+		getpeername (pollfd[k].fd, (sockaddr *) &r_addr, &len);
+		hehe = gethostbyaddr ((char *) &r_addr.sin_addr.s_addr,
+				      sizeof (r_addr.sin_addr), AF_INET);
+
+		if (pollfd[k].revents & POLLIN)
+		  {
+		    pid=getpid();
+
+		    if (read (pollfd[k].fd, &nl, sizeof(int)) <
+			(ssize_t) sizeof (int))
+		      error ("read error");
+		    if (! error_state)
+		      if (write (pollfd[k].fd, &nl, sizeof(int)) <
+			  (ssize_t) sizeof (int))
+			error ("write error");
+		    error ("error occurred in %s\n\tsee "
+			   "%s:/tmp/octave_error-%s_%5d.log for detail",
+			   hehe->h_name, hehe->h_name, hehe->h_name, pid);
+		  }
+		if (pollfd[k].revents & POLLERR)
+		  error ("Error condition - %s", hehe->h_name);
+		if (pollfd[k].revents & POLLHUP)
+		  error ("Hung up - %s", hehe->h_name);
+		if (pollfd[k].revents & POLLNVAL)
+		  error ("fd not open - %s", hehe->h_name);
+	      }
+	}
+
+      for (i = nsock - 1; i >= rows; i--)
+	{
+	  sock = (int) args(0).matrix_value ().data ()[i];
+	  if (sock && close (sock))
 	    err++;
 	}
-      }
-      for(i=rows-1;i>=0;i--){
-	sock=(int)args(0).matrix_value().data()[i];
-	if(sock!=0){
-	  if(octave_stream_list::remove (octave_value (sock), "") != 0)
+      for (i = rows - 1; i >= 0; i--)
+	{
+	  sock = (int) args(0).matrix_value ().data ()[i];
+	  if (sock && octave_stream_list::remove (octave_value (sock), ""))
 	    err++;
 	}
-      }
-      if(err)
-	error("sclose error %d",err);
-      retval=(double)err;
+      if (err)
+	error("sclose error %d", err);
+      retval = (double) err;
     }
   else
     print_usage ();

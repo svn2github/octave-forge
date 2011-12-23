@@ -69,110 +69,112 @@ Evaluate 'commands' at the remote hosts specified by the matrix 'sockets'.")
 {
   octave_value retval;
 
-  if(args.length () ==2)
+  if(args.length () == 2)
     {
-      int sock,row=0,col=0,nsock=0,i,j,k, fin;
-      int error_code,count=0,r_len=0,nl;
-      octave_value val=args(0);
-      Matrix sock_m=args(1).matrix_value();
-      charMatrix cm=val.char_matrix_value();
+      int sock, rows = 0, cols = 0, nsock = 0, i, j, k, fin;
+      int error_code, count = 0, r_len = 0, nl;
+      octave_value val = args(0);
+      Matrix sock_m = args(1).matrix_value ();
+      charMatrix cm = val.char_matrix_value ();
       char comm[256];
-      
-      nsock=sock_m.rows();
 
-      row=val.rows();
-      col=val.columns();
+      nsock = sock_m.rows ();
 
-      int num,pid;
+      rows = val.rows ();
+      cols = val.columns ();
+
+      int num, pid;
       struct pollfd *pollfd;
-      pollfd=(struct pollfd *)malloc(nsock*sizeof(struct pollfd));
-      for(i=0;i<nsock;i++){
-	sock=(int)sock_m.data()[i+nsock];
-	pollfd[i].fd=sock;
-	pollfd[i].events = POLLIN;
-      }
-
-      num=poll(pollfd,nsock,0);
-      if(num){
-	for(k=0;k<nsock;k++){
-	  if(pollfd[k].revents && (pollfd[k].fd !=0)){
-	    sockaddr_in r_addr;
-	    struct hostent *hehe;
-	    socklen_t len = sizeof(r_addr);
-	    getpeername(pollfd[k].fd, (sockaddr*)&r_addr, &len );
-	    hehe=gethostbyaddr((char *)&r_addr.sin_addr.s_addr,sizeof(r_addr.sin_addr), AF_INET);
-
-	    if(pollfd[k].revents&POLLIN){
-	      pid=getpid();
-	      if (read (pollfd[k].fd, &nl, sizeof (int)) < sizeof (int))
-		{
-		  error ("read error");
-		  break;
-		}
-	      error_code=ntohl(nl);
-	      if (write (pollfd[k].fd, &nl, sizeof (int)) < sizeof (int))
-		{
-		  error ("write error");
-		  break;
-		}
-	      error("error occurred in %s\n\tsee %s:/tmp/octave_error-%s_%5d.log for detail",hehe->h_name,hehe->h_name,hehe->h_name,pid );
-	    }
-	    if(pollfd[k].revents&POLLERR){
-	      error("Error condition - %s",hehe->h_name );
-	      break;
-	    }
-	    if(pollfd[k].revents&POLLHUP){
-	      error("Hung up - %s",hehe->h_name );
-	      break;
-	    }
-	    if(pollfd[k].revents & POLLNVAL){
-	      error ("fd not open - %s", hehe->h_name);
-	      break;
-	    }
-	  }
+      pollfd = (struct pollfd *) malloc (nsock * sizeof (struct pollfd));
+      for (i = 0; i < nsock; i++)
+	{
+	  sock = (int) sock_m.data ()[i+nsock];
+	  pollfd[i].fd = sock;
+	  pollfd[i].events = POLLIN;
 	}
-      }
+
+      num = poll (pollfd, nsock, 0);
+      if (num)
+	for (k = 0; k < nsock; k++)
+	  if (pollfd[k].revents && pollfd[k].fd)
+	    {
+	      sockaddr_in r_addr;
+	      struct hostent *hehe;
+	      socklen_t len = sizeof (r_addr);
+	      getpeername (pollfd[k].fd, (sockaddr *) &r_addr, &len );
+	      hehe = gethostbyaddr ((char *) &r_addr.sin_addr.s_addr,
+				    sizeof (r_addr.sin_addr), AF_INET);
+
+	      if (pollfd[k].revents & POLLIN)
+		{
+		  pid = getpid ();
+		  if (read (pollfd[k].fd, &nl, sizeof (int)) < sizeof (int))
+		    {
+		      error ("read error");
+		      break;
+		    }
+		  error_code = ntohl (nl);
+		  if (write (pollfd[k].fd, &nl, sizeof (int)) < sizeof (int))
+		    {
+		      error ("write error");
+		      break;
+		    }
+		  error ("error occurred in %s\n\tsee "
+			 "%s:/tmp/octave_error-%s_%5d.log for detail",
+			 hehe->h_name, hehe->h_name, hehe->h_name, pid);
+		}
+	      if (pollfd[k].revents & POLLERR)
+		{
+		  error ("Error condition - %s", hehe->h_name);
+		  break;
+		}
+	      if (pollfd[k].revents & POLLHUP)
+		{
+		  error ("Hung up - %s", hehe->h_name);
+		  break;
+		}
+	      if (pollfd[k].revents & POLLNVAL)
+		{
+		  error ("fd not open - %s", hehe->h_name);
+		  break;
+		}
+	    }
 
       free (pollfd);
 
       if (error_state)
 	return retval;
 
-      for(i=0;i<nsock;i++){
-	sock=(int)sock_m.data()[i+nsock];
-	if(sock!=0){
-	  for(j=0;j<row;j++){
-	    strncpy(comm,(cm.extract(j,0,j,col-1).data()),col);
-	    comm[col]='\n';
-	    comm[col+1]='\0';
-	    nl=htonl(col);
-	    if (write(sock,&nl,sizeof(int)) < sizeof (int))
+      for (i = 0; i < nsock; i++)
+	{
+	  sock = (int) sock_m.data ()[i+nsock];
+	  if (sock)
+	    for(j=0;j<rows;j++)
 	      {
-		error ("write error");
-		return retval;
+		strncpy (comm, cm.extract (j, 0, j, cols - 1).data (), cols);
+		comm[cols] = '\n';
+		comm[cols+1] = '\0';
+		nl = htonl (cols);
+		if (write (sock, &nl, sizeof (int)) < sizeof (int))
+		  {
+		    error ("write error");
+		    return retval;
+		  }
+		count = 0;
+		r_len = BUFF_SIZE;
+		while (count < cols)
+		  {
+		    if (cols - count < BUFF_SIZE)
+		      r_len = cols - count;
+		    count += (fin = write (sock, (comm + count), r_len));
+		    if (fin <= 0)
+		      {
+			error ("write error");
+			return retval;
+		      }
+		  }
 	      }
-	    count=0;
-	    r_len=BUFF_SIZE;
-	    while(count <col){
-	      if((col-count) < BUFF_SIZE)
-		r_len=col-count;
-	      count += (fin = write (sock, (comm + count), r_len));
-	      if (fin <= 0)
-		{
-		  error ("write error");
-		  return retval;
-		}
-	    }
-
-	    // Blocking Execution
-//	    read(sock,&error_state,sizeof(int));
-//	    if(error_state){
-//	      error("Error occurred on %d" sock);
-//	    }
-
-	  }
 	}
-      }
     }
   else
     print_usage ();

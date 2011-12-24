@@ -81,15 +81,14 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 % 2011-06-06 Fix for javaclasspath format in *nix w. octave-java-1.2.8 pkg
 %     ''     Fixed wrong return value update when adding UNO classes
 % 2011-09-03 Small fix to better detect Basis* subdir when searching unoil.jar
-% 2011-09-18 FIxed 'Matlab style short circuit' warning in L. 152
-% 2011-10-27 Relaxed error msgs in Java detection, just return gracefully now.
-%     ''     This was changed to allow invocation during Octave start up
+% 2011-09-18 Fixed 'Matlab style short circuit' warning in L. 152
+% 2012-12-24 Amended code stanze to find unoil.jar; now works in LibreOffice 3.5b2 as well
 
 	jcp = []; retval = 0;
 	if (nargin < 3); path_to_ooo= ''; end %if
-  if (nargin < 2); dbug = 0; end %if
+    if (nargin < 2); dbug = 0; end %if
 	isOctave = exist ('OCTAVE_VERSION', 'builtin') ~= 0;
-  if (dbug); fprintf ('\n'); end %if
+    if (dbug); fprintf ('\n'); end %if
 	% interfaces = {'COM', 'POI', 'POI+OOXML', 'JXL', 'OXS', 'OTK', 'JOD', 'UNO'}; % Order  = vital
 
 	% Check if MS-Excel COM ActiveX server runs
@@ -106,9 +105,9 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 	catch
 		% COM not supported
 		if (dbug), fprintf ('not working.\n\n'); end %if
-  end %try_catch
+    end %try_catch
 
-  % Check Java
+    % Check Java
 	if (dbug), fprintf ('Checking Java support...\n'); end %if
 	if (dbug > 1), fprintf ('  1. Checking Java JRE presence.... '); end %if
 	% Try if Java is installed at all
@@ -122,15 +121,12 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 		tst1 = version ('-java');
         jtst = isempty (strfind (tst1, 'Java'));
 	end %if
-	if (dbug > 1)
-    if (jtst)
-		  fprintf ('Apparently no Java JRE installed.');
-      return;
-	  else
-		  fprintf ('OK, found one.\n');
-	  end %if
-  end %if
-  if (dbug > 1 && isOctave), fprintf ('  2. Checking Octave Java support... '); end %if
+	if (jtst)
+		error ('Apparently no Java JRE installed.');
+	else
+		if (dbug > 1), fprintf ('OK, found one.\n'); end %if
+	end %if
+	if (dbug > 1 && isOctave), fprintf ('  2. Checking Octave Java support... '); end %if
 	try
 		jcp = javaclasspath ('-all');						% For Octave java pkg > 1.2.7
 		if (isempty (jcp)), jcp = javaclasspath; end %if	% For Octave java pkg < 1.2.8
@@ -160,7 +156,7 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 			% Check JVM virtual memory settings
 			jrt = javaMethod ('getRuntime', 'java.lang.Runtime');
 			jmem = jrt.maxMemory ();
-      if (isOctave), jmem = jmem.doubleValue(); end %if
+            if (isOctave), jmem = jmem.doubleValue(); end %if
 			jmem = int16 (jmem/1024/1024);
 			fprintf ('  Maximum JVM memory: %5d MiB; ', jmem);
 			if (jmem < 400)
@@ -176,11 +172,8 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 			end %if
 		end %if
 		if (dbug), fprintf ('Java support OK\n'); end %if
-  catch
-    if (dbug > 1)
-  		fprintf ('No functional Java support found.');
-      return
-    end %if
+    catch
+		error ('No Java support found.');
 	end %try_catch
 
 	if (dbug), fprintf ('\nChecking javaclasspath for .jar class libraries needed for spreadsheet I/O...:\n'); end %if
@@ -434,16 +427,20 @@ function  [ retval ]  = chk_spreadsheet_support (path_to_jars, dbug, path_to_ooo
 					% Find out the exact name of Basis.....
 					basisdirlst = dir ([path_to_ooo filesep '?asis' '*']);
 					jj = 1;
-					while (jj <= size (basisdirlst, 1) && jj > 0)
-					  basisdir = basisdirlst(jj).name;
-						if (basisdirlst(jj).isdir)
-							basisdir = basisdirlst(jj).name;
-							jj = 0;
-						else
-							jj = jj + 1;
-						end %if
-					end %while
-					basisdir = [path_to_ooo filesep basisdir ];
+          if (numel (basisdirlst) > 0) 
+            while (jj <= size (basisdirlst, 1) && jj > 0)
+              basisdir = basisdirlst(jj).name;
+              if (basisdirlst(jj).isdir)
+                basisdir = basisdirlst(jj).name;
+                jj = 0;
+              else
+                jj = jj + 1;
+              end %if
+            end %while
+            basisdir = [path_to_ooo filesep basisdir ];
+          else
+            basisdir = path_to_ooo;
+          endif
 					basisdirentries = {'program', 'classes'};
 					tmp = basisdir; jj=1;
 					while (~isempty (tmp) && jj <= numel (basisdirentries))

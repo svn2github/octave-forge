@@ -22,6 +22,8 @@
 ## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} cfconred (@var{G}, @var{F}, @var{L}, @var{ncr}, @var{opt}, @dots{})
 ##
 ## Reduction of state-feedback-observer based controller by coprime factorization (CF). 
+## Given a plant @var{G}, state feedback gain @var{F} and full observer gain @var{L},
+## determine a reduced order controller @var{Kr}.
 ##
 ## @strong{Inputs}
 ## @table @var

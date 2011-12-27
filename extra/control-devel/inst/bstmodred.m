@@ -23,88 +23,24 @@
 ##
 ## Model order reduction by Balanced Stochastic Truncation (BST) method.
 ## The aim of model reduction is to find an LTI system @var{Gr} of order
-## @var{nr} (nr << n) such that the input-output behaviour of @var{Gr}
+## @var{nr} (nr < n) such that the input-output behaviour of @var{Gr}
 ## approximates the one from original system @var{G}.
-## This is motivated by the relation
+##
+## BST is a relative error method which tries to minimize
 ## @iftex
 ## @tex
-## $$ || y - y_r ||_2 = || G - G_r ||_{\\infty} \\ || u ||_2 $$
+## $$ || G^{-1} (G-G_r) ||_{\\infty} = min $$
 ## @end tex
 ## @end iftex
 ## @ifnottex
 ## @example
-## ||y-yr||  = ||G-Gr||    ||u||
-##         2           inf      2
+##    -1
+## ||G  (G-Gr)||    = min
+##              inf
 ## @end example
 ## @end ifnottex
 ##
-## BST is a relative error method which tries to minimize
-## @iftex
-## @math{|| \\Delta_r ||,}
-## @end iftex
-## @ifnottex
-## Deltar,
-## @end ifnottex
-## where
-## @iftex
-## @math{\\Delta_r}
-## @end iftex
-## @ifnottex
-## Deltar
-## @end ifnottex
-## is implicitly defined by
-## @iftex
-## @math{G - G_r = \\Delta_r \\ G.}
-## @end iftex
-## @ifnottex
-## G-Gr = Deltar*G.
-## @end ifnottex
-## For the H-infinity norm, the best approximation problem is
-## unsolved so far.  Nevertheless, balanced truncation and related
-## methods can be used to obtain good approximations using this measure.
 ##
-## Available approximation methods are the accuracy-enhancing square-root (SR)
-## or the balancing-free square-root (BFSR) versions of
-## the Balance & Truncate (BTA) or Singular Perturbation Approximation (SPA) 
-## model reduction methods for the ALPHA-stable part of the system.
-##
-## Unstable models are handled by separating the stable and unstable
-## parts additively, applying the model reduction only to the stable
-## part and by joining the reduced stable with the original unstable part.
-## The order of the reduced system can be selected by the user or
-## can be determined automatically on the basis of the computed
-## Hankel singular values.
-##
-## For MIMO models, proper scaling of input-output channels is of
-## utmost importance.  This can @strong{not} be done by the equilibration
-## option or the @command{prescale} command because these perform state
-## transformations only.  While enhancing numerics, state transformations
-## have no influence on the input-output behaviour and the magnitude of
-## the corresponding signals.  Since the algorithm calculates the
-## H-infinity norm of these signals, important behaviour of @var{G}
-## could be neglected just because the corresponding signals have smaller
-## numbers than those of other, less important effects of @var{G}.
-##
-## BST is often suitable to perform model reduction in order to obtain
-## low order design models for controller synthesis.
-##
-## Approximation Properties:
-## @itemize @bullet
-## @item
-## Guaranteed stability of reduced models
-## @item
-## Approximates simultaneously gain and phase
-## @item
-## Preserves non-minimum phase zeros
-## @item
-## Guaranteed a priori error bound
-## @iftex
-## @tex
-## $$ || G^{-1} (G-G_r) ||_{\\infty} \\leq 2 \\sum_{j=r+1}^{n} \\frac{1+\\sigma_j}{1-\\sigma_j} - 1 $$
-## @end tex
-## @end iftex
-## @end itemize
-## 
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -218,6 +154,53 @@
 ## false if @code{G.scaled == true}.
 ## @end table
 ##
+##
+## For the H-infinity norm, the best approximation problem is
+## unsolved so far.  Nevertheless, balanced truncation and related
+## methods can be used to obtain good approximations using this measure.
+##
+## Available approximation methods are the accuracy-enhancing square-root (SR)
+## or the balancing-free square-root (BFSR) versions of
+## the Balance & Truncate (BTA) or Singular Perturbation Approximation (SPA) 
+## model reduction methods for the ALPHA-stable part of the system.
+##
+## Unstable models are handled by separating the stable and unstable
+## parts additively, applying the model reduction only to the stable
+## part and by joining the reduced stable with the original unstable part.
+## The order of the reduced system can be selected by the user or
+## can be determined automatically on the basis of the computed
+## Hankel singular values.
+##
+## For MIMO models, proper scaling of input-output channels is of
+## utmost importance.  This can @strong{not} be done by the equilibration
+## option or the @command{prescale} command because these perform state
+## transformations only.  While enhancing numerics, state transformations
+## have no influence on the input-output behaviour and the magnitude of
+## the corresponding signals.  Since the algorithm calculates the
+## H-infinity norm of these signals, important behaviour of @var{G}
+## could be neglected just because the corresponding signals have smaller
+## numbers than those of other, less important effects of @var{G}.
+##
+## BST is often suitable to perform model reduction in order to obtain
+## low order design models for controller synthesis.
+##
+## Approximation Properties:
+## @itemize @bullet
+## @item
+## Guaranteed stability of reduced models
+## @item
+## Approximates simultaneously gain and phase
+## @item
+## Preserves non-minimum phase zeros
+## @item
+## Guaranteed a priori error bound
+## @iftex
+## @tex
+## $$ || G^{-1} (G-G_r) ||_{\\infty} \\leq 2 \\sum_{j=r+1}^{n} \\frac{1+\\sigma_j}{1-\\sigma_j} - 1 $$
+## @end tex
+## @end iftex
+## @end itemize
+## 
 ## @strong{Algorithm}@*
 ## Uses SLICOT AB09HD by courtesy of
 ## @uref{http://www.slicot.org, NICONET e.V.}

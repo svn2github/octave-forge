@@ -22,6 +22,8 @@
 ## @deftypefnx{Function File} {[@var{Kr}, @var{info}] =} fwcfconred (@var{G}, @var{F}, @var{L}, @var{ncr}, @var{opt}, @dots{})
 ##
 ## Reduction of state-feedback-observer based controller by frequency-weighted coprime factorization (FW CF). 
+## Given a plant @var{G}, state feedback gain @var{F} and full observer gain @var{L},
+## determine a reduced order controller @var{Kr} by using stability enforcing frequency weights.
 ##
 ## @strong{Inputs}
 ## @table @var

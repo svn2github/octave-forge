@@ -23,14 +23,14 @@
 ##
 ## Model order reduction by frequency weighted Balanced Truncation Approximation (BTA) method.
 ## The aim of model reduction is to find an LTI system @var{Gr} of order
-## @var{nr} (nr << n) such that the input-output behaviour of @var{Gr}
+## @var{nr} (nr < n) such that the input-output behaviour of @var{Gr}
 ## approximates the one from original system @var{G}.
 ##
 ## BTA is an absolute error method which tries to minimize
 ## @iftex
 ## @tex
 ## $$ || G - G_r ||_{\\infty} = min $$
-## $$ || W_o \\ (G - G_r) \\ W_i ||_{\\infty} = min $$
+## $$ || V \\ (G - G_r) \\ W ||_{\\infty} = min $$
 ## @end tex
 ## @end iftex
 ## @ifnottex
@@ -38,30 +38,12 @@
 ## ||G-Gr||    = min
 ##         inf
 ##
-## ||Wo (G-Gr) Wi||    = min
-##                 inf
+## ||V (G-Gr) W||    = min
+##               inf
 ## @end example
 ## @end ifnottex
-## where @var{Wo} and @var{Wi} denote output and input weightings.
+## where @var{V} and @var{W} denote output and input weightings.
 ##
-## UNSTABLE (from bstmodred)
-##
-## MIMO (from bstmodred)
-##
-## Approximation Properties:
-## @itemize @bullet
-## @item
-## Guaranteed stability of reduced models
-## @item
-## Lower guaranteed error bound
-## @item
-## Guaranteed a priori error bound
-## @iftex
-## @tex
-## $$ \\sigma_{r+1} \\leq || (G-G_r) ||_{\\infty} \\leq 2 \\sum_{j=r+1}^{n} \\sigma_j $$
-## @end tex
-## @end iftex
-## @end itemize
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -110,15 +92,15 @@
 ## Hankel singular values @var{info.hsv} > @var{tol1} are retained.
 ##
 ## @item 'left', 'output'
-## LTI model of the left/output frequency weighting.
+## LTI model of the left/output frequency weighting @var{V}.
 ## Default value is an identity matrix.
 ##
 ## @item 'right', 'input'
-## LTI model of the right/input frequency weighting.
+## LTI model of the right/input frequency weighting @var{W}.
 ## Default value is an identity matrix.
 ##
 ## @item 'method'
-## Order reduction approach to be used as follows:
+## Approximation method for the L-infinity norm to be used as follows:
 ## @table @var
 ## @item 'sr', 'b'
 ## Use the square-root Balance & Truncate method.
@@ -201,6 +183,26 @@
 ## Default value is true if @code{G.scaled == false} and
 ## false if @code{G.scaled == true}.
 ## @end table
+##
+##
+## UNSTABLE (from bstmodred)
+##
+## MIMO (from bstmodred)
+##
+## Approximation Properties:
+## @itemize @bullet
+## @item
+## Guaranteed stability of reduced models
+## @item
+## Lower guaranteed error bound
+## @item
+## Guaranteed a priori error bound
+## @iftex
+## @tex
+## $$ \\sigma_{r+1} \\leq || (G-G_r) ||_{\\infty} \\leq 2 \\sum_{j=r+1}^{n} \\sigma_j $$
+## @end tex
+## @end iftex
+## @end itemize
 ##
 ## @strong{Algorithm}@*
 ## Uses SLICOT AB09ID by courtesy of

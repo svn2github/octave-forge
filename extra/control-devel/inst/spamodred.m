@@ -22,6 +22,28 @@
 ## @deftypefnx{Function File} {[@var{Gr}, @var{info}] =} spamodred (@var{G}, @var{nr}, @var{opt}, @dots{})
 ##
 ## Model order reduction by frequency weighted Singular Perturbation Approximation (SPA).
+## The aim of model reduction is to find an LTI system @var{Gr} of order
+## @var{nr} (nr < n) such that the input-output behaviour of @var{Gr}
+## approximates the one from original system @var{G}.
+##
+## SPA is an absolute error method which tries to minimize
+## @iftex
+## @tex
+## $$ || G - G_r ||_{\\infty} = min $$
+## $$ || V \\ (G - G_r) \\ W ||_{\\infty} = min $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## ||G-Gr||    = min
+##         inf
+##
+## ||V (G-Gr) W||    = min
+##               inf
+## @end example
+## @end ifnottex
+## where @var{V} and @var{W} denote output and input weightings.
+##
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -70,15 +92,15 @@
 ## Hankel singular values @var{info.hsv} > @var{tol1} are retained.
 ##
 ## @item 'left', 'output'
-## LTI model of the left/output frequency weighting.
+## LTI model of the left/output frequency weighting @var{V}.
 ## Default value is an identity matrix.
 ##
 ## @item 'right', 'input'
-## LTI model of the right/input frequency weighting.
+## LTI model of the right/input frequency weighting @var{W}.
 ## Default value is an identity matrix.
 ##
 ## @item 'method'
-## Order reduction approach to be used as follows:
+## Approximation method for the L-infinity norm to be used as follows:
 ## @table @var
 ## @item 'sr', 's'
 ## Use the square-root Singular Perturbation Approximation method.

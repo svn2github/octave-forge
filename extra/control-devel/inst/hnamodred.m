@@ -23,14 +23,14 @@
 ##
 ## Model order reduction by frequency weighted optimal Hankel-norm (HNA) method.
 ## The aim of model reduction is to find an LTI system @var{Gr} of order
-## @var{nr} (nr << n) such that the input-output behaviour of @var{Gr}
+## @var{nr} (nr < n) such that the input-output behaviour of @var{Gr}
 ## approximates the one from original system @var{G}.
 ##
 ## HNA is an absolute error method which tries to minimize
 ## @iftex
 ## @tex
 ## $$ || G - G_r ||_H = min $$
-## $$ || W_o \\ (G - G_r) \\ W_i ||_H = min $$
+## $$ || V \\ (G - G_r) \\ W ||_H = min $$
 ## @end tex
 ## @end iftex
 ## @ifnottex
@@ -38,30 +38,11 @@
 ## ||G-Gr||  = min
 ##         H
 ##
-## ||Wo (G-Gr) Wi||  = min
-##                 H
+## ||V (G-Gr) W||  = min
+##               H
 ## @end example
 ## @end ifnottex
-## where @var{Wo} and @var{Wi} denote output and input weightings.
-##
-## UNSTABLE (from bstmodred)
-##
-## MIMO (from bstmodred)
-##
-## Approximation Properties:
-## @itemize @bullet
-## @item
-## Guaranteed stability of reduced models
-## @item
-## Lower guaranteed error bound
-## @item
-## Guaranteed a priori error bound
-## @iftex
-## @tex
-## $$ \\sigma_{r+1} \\leq || (G-G_r) ||_{\\infty} \\leq 2 \\sum_{j=r+1}^{n} \\sigma_j $$
-## @end tex
-## @end iftex
-## @end itemize
+## where @var{V} and @var{W} denote output and input weightings.
 ##
 ##
 ## @strong{Inputs}
@@ -265,6 +246,26 @@
 ## Default value is true if @code{G.scaled == false} and
 ## false if @code{G.scaled == true}.
 ## @end table
+##
+##
+## UNSTABLE (from bstmodred)
+##
+## MIMO (from bstmodred)
+##
+## Approximation Properties:
+## @itemize @bullet
+## @item
+## Guaranteed stability of reduced models
+## @item
+## Lower guaranteed error bound
+## @item
+## Guaranteed a priori error bound
+## @iftex
+## @tex
+## $$ \\sigma_{r+1} \\leq || (G-G_r) ||_{\\infty} \\leq 2 \\sum_{j=r+1}^{n} \\sigma_j $$
+## @end tex
+## @end iftex
+## @end itemize
 ##
 ## @strong{Algorithm}@*
 ## Uses SLICOT AB09JD by courtesy of

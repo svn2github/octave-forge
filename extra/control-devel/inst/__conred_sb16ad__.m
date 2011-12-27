@@ -83,7 +83,7 @@ function [Kr, info] = __conred_sb16ad__ (method, varargin)
   tol2 = 0.0;
   jobc = jobo = 0;
   bf = true;                                # balancing-free
-  weight = 0;
+  weight = 3;
   equil = scaled && scaledc;
   ordsel = 1;
   ncr = 0;

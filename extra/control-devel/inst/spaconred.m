@@ -98,7 +98,7 @@
 ## Specifies the type of frequency-weighting as follows:
 ## @table @var
 ## @item 'none'
-## No weightings are used (V = I, W = I).  Default value.
+## No weightings are used (V = I, W = I).
 ##
 ## @item 'left', 'output'
 ## Use stability enforcing left (output) weighting
@@ -141,6 +141,7 @@
 ## V = (I-G*K) *G ,  W = (I-G*K)
 ## @end example
 ## @end ifnottex
+## Default value.
 ## @end table
 ##
 ## @item 'feedback'

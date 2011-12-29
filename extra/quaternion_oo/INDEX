@@ -1,6 +1,9 @@
 quaternion >> Quaternion
 Quaternions
   quaternion
+  qi
+  qj
+  qk
   q2rot
   rot2q
 Methods

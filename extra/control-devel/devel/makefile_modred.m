@@ -18,7 +18,9 @@ mkoctfile slab09hd.cc \
           SB03OU.f MA02AD.f MB03QX.f select.f SB03OT.f \
           SB02MR.f SB02MS.f MB03QD.f SB02MU.f SB02MV.f \
           SB02MW.f MB04ND.f MB04OD.f MB03QY.f SB03OR.f \
-          SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
+          SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f \
+          "$(mkoctfile -p LAPACK_LIBS)" \
+          "$(mkoctfile -p BLAS_LIBS)"
 
 mkoctfile slab09id.cc \
           AB09ID.f TB01PD.f SB08DD.f TB01ID.f TB01KD.f \
@@ -28,7 +30,9 @@ mkoctfile slab09id.cc \
           MA02BD.f MB03OY.f MB03QX.f MB01PD.f select.f \
           MB01YD.f MB04NY.f MB01ZD.f SB03OT.f MB04OX.f \
           MB04OY.f MB03QD.f SB03OY.f MB03QY.f MB01QD.f \
-          SB03OR.f SB03OV.f SB04PX.f
+          SB03OR.f SB03OV.f SB04PX.f \
+          "$(mkoctfile -p LAPACK_LIBS)" \
+          "$(mkoctfile -p BLAS_LIBS)"
 
 mkoctfile slab09jd.cc \
           AB09JD.f TB01ID.f TB01KD.f AB07ND.f AB09JV.f \
@@ -38,8 +42,9 @@ mkoctfile slab09jd.cc \
           MB03PY.f MA02DD.f MB03UD.f MB03QX.f select.f \
           SB04PX.f SB03OU.f MB03QD.f MB03QY.f SB03OT.f \
           MB04ND.f MB04OD.f SB03OR.f SB03OY.f MB04NY.f \
-          MB04OY.f SB03OV.f
-
+          MB04OY.f SB03OV.f \
+          "$(mkoctfile -p LAPACK_LIBS)" \
+          "$(mkoctfile -p BLAS_LIBS)"
 
 system ("rm *.o");
 cd (homedir);

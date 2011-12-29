@@ -18,20 +18,26 @@ mkoctfile slsb16ad.cc \
           AB09DD.f AB07ND.f TB01LD.f AB05QD.f SB03OU.f \
           MA02AD.f MB03QX.f select.f MB01YD.f MB01ZD.f \
           SB03OT.f MB04OY.f MB03QD.f MB04ND.f MB03QY.f \
-          SB03OR.f SB03OY.f SB04PX.f MB04NY.f SB03OV.f
+          SB03OR.f SB03OY.f SB04PX.f MB04NY.f SB03OV.f \
+          "$(mkoctfile -p LAPACK_LIBS)" \
+          "$(mkoctfile -p BLAS_LIBS)"
 
 mkoctfile slsb16bd.cc \
           SB16BD.f AB09AD.f AB09BD.f SB08GD.f SB08HD.f \
           TB01ID.f AB09AX.f MA02GD.f AB09BX.f TB01WD.f \
           MA02DD.f MB03UD.f select.f AB09DD.f SB03OU.f \
           MA02AD.f SB03OT.f MB04ND.f MB04OD.f SB03OR.f \
-          SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
+          SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f \
+          "$(mkoctfile -p LAPACK_LIBS)" \
+          "$(mkoctfile -p BLAS_LIBS)"
 
 mkoctfile slsb16cd.cc \
           SB16CD.f SB16CY.f AB09IX.f SB03OD.f MB02UD.f \
           AB09DD.f MA02AD.f MB03UD.f select.f SB03OU.f \
           MB01SD.f SB03OT.f MB04ND.f MB04OD.f SB03OR.f \
-          SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f
+          SB03OY.f SB04PX.f MB04NY.f MB04OY.f SB03OV.f \
+          "$(mkoctfile -p LAPACK_LIBS)" \
+          "$(mkoctfile -p BLAS_LIBS)"
 
 system ("rm *.o");
 cd (homedir);

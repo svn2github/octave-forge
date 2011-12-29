@@ -1,0 +1,6 @@
+Summary of important user-visible changes for optim 1.0.18:
+-------------------------------------------------------------------
+
+ ** The package makefile has been adapted for compatibility with Octave 3.6.0.
+
+ ** There is now a 'NEWS' file.

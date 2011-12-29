@@ -15,7 +15,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{q} =} rot2q (@var{axis}, @var{angle})
+## @deftypefn {Function File} {@var{q} =} rot2q (@var{axis}, @var{angle})
 ## Create unit quaternion @var{q} which describes a rotation of
 ## @var{angle} radians about the vector @var{axis}.  This function uses
 ## the active convention where the vector @var{axis} is rotated by @var{angle}

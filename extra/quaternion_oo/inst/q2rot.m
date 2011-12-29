@@ -15,7 +15,45 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## TODO: write help.
+## @deftypefn {Function File} {[@var{axis}, @var{angle}] =} q2rot (@var{q})
+## Extract vector/angle form of a unit quaternion @var{q}.
+##
+## @strong{Inputs}
+## @table @var
+## @item q
+## Unit quaternion describing the rotation.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item axis
+## Eigenaxis as a 3-d unit vector @code{[x, y, z]}.
+## @item angle
+## Rotation angle in radians.  The positive direction is
+## determined by the right-hand rule applied to @var{axis}.
+## @end table
+##
+## @strong{Example}
+## @example
+## @group
+## octave:1> axis = [0, 0, 1]
+## axis =
+##    0   0   1
+## octave:2> angle = pi/4
+## angle =  0.78540
+## octave:3> q = rot2q (axis, angle)
+## q = 0.9239 + 0i + 0j + 0.3827k
+## octave:4> [vv, th] = q2rot (q)
+## vv =
+##    0   0   1
+## th =  0.78540
+## octave:5> theta = th*180/pi
+## theta =  45.000
+## octave:6> 
+## @end group
+## @end example
+##
+## @end deftypefn
 
 ## Adapted from: quaternion by A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
@@ -28,15 +66,17 @@ function [vv, theta] = q2rot (q)
     print_usage ();
   endif
 
+  if (! isa (q, "quaternion") || ! isscalar (q.w))
+    error ("q2rot: require scalar quaternion as input");
+  endif
+
   if (abs (norm (q) - 1) > 1e-12)
-    warning ("quaternion: ||q||=%e, setting=1 for vv, theta", norm (q));
+    warning ("q2rot: ||q||=%e, setting=1 for vv, theta", norm (q));
     q = unit (q);
   endif
 
   s = q.s;
-  x = q.x;
-  y = q.y;
-  z = q.z;
+  vv = [q.x, q.y, q.z];
 
   theta = acos (s) * 2;
 
@@ -44,12 +84,10 @@ function [vv, theta] = q2rot (q)
     theta = theta - sign (theta) * pi;
   endif
 
-  sin_th_2 = norm ([x, y, z]);
+  sin_th_2 = norm (vv);
 
   if (sin_th_2 != 0)
-    vv = [x, y, z] / sin_th_2;
-  else
-    vv = [x, y, z];
+    vv ./= sin_th_2;
   endif
 
 endfunction

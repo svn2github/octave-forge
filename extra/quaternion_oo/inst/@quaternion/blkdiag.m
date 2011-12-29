@@ -14,7 +14,10 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @deftypefn {Function File} {@var{q} =} blkdiag (@var{q1}, @var{q2}, @dots{})
 ## Block-diagonal concatenation of quaternions.
+## @end deftypefn
+
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: December 2011

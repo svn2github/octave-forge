@@ -14,7 +14,9 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Return number of rows of quaternion arrays.
+## @deftypefn {Function File} {@var{nr} =} rows (@var{q})
+## Return number of rows @var{nr} of quaternion array @var{q}.
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010

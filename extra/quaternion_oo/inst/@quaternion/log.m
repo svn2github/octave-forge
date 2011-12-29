@@ -14,7 +14,9 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Logarithmus naturalis of a quaternion.  Used by octave for "log (q)".
+## @deftypefn {Function File} {@var{qlog} =} log (@var{q})
+## Logarithmus naturalis of a quaternion.
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2011

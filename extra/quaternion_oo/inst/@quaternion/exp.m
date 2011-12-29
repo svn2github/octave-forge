@@ -14,7 +14,9 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Exponential of a quaternion.  Used by octave for "exp (q)".
+## @deftypefn {Function File} {@var{qexp} =} exp (@var{q})
+## Exponential of a quaternion.
+## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2011

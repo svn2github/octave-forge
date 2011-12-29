@@ -14,7 +14,10 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## Return number of columns of quaternion arrays.
+## @deftypefn {Function File} {@var{nc} =} columns (@var{q})
+## Return number of columns @var{nc} of quaternion array @var{q}.
+## @end deftypefn
+
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010

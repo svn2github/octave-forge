@@ -19,7 +19,7 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: November 2011
-## Version: 0.1
+## Version: 0.2
 
 function q = subsasgn (q, idx, val)
 
@@ -40,23 +40,18 @@ function q = subsasgn (q, idx, val)
       if (! is_real_array (val))
         error ("quaternion: subsasgn: invalid type");
       endif
-      if (! size_equal (q.w, val))
-      ## if (! size_equal (subsref (q.w, idx(2:end)), val))
+      if (! size_equal (subsref (q.w, idx(2:end)), val))
         error ("quaternion: subsasgn: invalid size");
       endif
       switch (tolower (idx(1).subs))
         case {"w", "s"}
-          ## q.w = subsasgn (q.w, idx(2:end), val);
-          q.w = val;
+          q.w = subsasgn (q.w, idx(2:end), val);
         case {"x", "i"}
-          ## q.x = subsasgn (q.x, idx(2:end), val);
-          q.x = val;
+          q.x = subsasgn (q.x, idx(2:end), val);
         case {"y", "j"}
-          ## q.y = subsasgn (q.y, idx(2:end), val);
-          q.y = val;
+          q.y = subsasgn (q.y, idx(2:end), val);
         case {"z", "k"}
-          ## q.z = subsasgn (q.z, idx(2:end), val);
-          q.z = val;
+          q.z = subsasgn (q.z, idx(2:end), val);
         otherwise
           error ("quaternion: subsasgn: invalid subscript name");
       endswitch
@@ -64,9 +59,5 @@ function q = subsasgn (q, idx, val)
     otherwise
       error ("quaternion: subsasgn: under construction");
   endswitch
-
-  ## TODO: q.x(:, 1) = matrix
-  ##       wait until the jwe's bugfix makes it into a release
-  ##       probably Octave 3.6.0
 
 endfunction

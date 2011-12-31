@@ -24,10 +24,10 @@
 function q = subsasgn (q, idx, val)
 
   switch (idx(1).type)
-    case "()"
-      if (length (idx(1).subs) == 1 && isa (q, "quaternion"))  # required by horzcat, vertcat, cat, ...
-        q(idx(1).subs{:}) = val;
-      else                                                     # general case
+    case "()"                                                   # q(...) = val
+      if (length (idx(1).subs) == 1 && isa (q, "quaternion"))   # required by horzcat, vertcat, cat, ...
+        q(idx(1).subs{:}) = val;                                # q = cellfun (@quaternion, varargin)
+      else                                                      # general case
         val = quaternion (val);
         w = subsasgn (q.w, idx, val.w);
         x = subsasgn (q.x, idx, val.x);
@@ -36,12 +36,13 @@ function q = subsasgn (q, idx, val)
         q = quaternion (w, x, y, z);
       endif
 
-    case "."
+    case "."                                                    # q.w = val
       if (! is_real_array (val))
-        error ("quaternion: subsasgn: invalid type");
+        error ("quaternion: subsasgn: invalid argument type, require real array");
       endif
       if (! size_equal (subsref (q.w, idx(2:end)), val))
-        error ("quaternion: subsasgn: invalid size");
+        error ("quaternion: subsasgn: invalid argument size [%s], require dimensions [%s]", \
+               num2str (size (val), "%d "), num2str (size (subsref (q.w, idx(2:end))), "%d "));
       endif
       switch (tolower (idx(1).subs))
         case {"w", "s"}
@@ -53,11 +54,11 @@ function q = subsasgn (q, idx, val)
         case {"z", "k"}
           q.z = subsasgn (q.z, idx(2:end), val);
         otherwise
-          error ("quaternion: subsasgn: invalid subscript name");
+          error ("quaternion: subsasgn: invalid subscript name '%s'", idx(1).subs);
       endswitch
 
     otherwise
-      error ("quaternion: subsasgn: under construction");
+      error ("quaternion: subsasgn: invalid subscript type '%s'", idx(1).type);
   endswitch
 
 endfunction

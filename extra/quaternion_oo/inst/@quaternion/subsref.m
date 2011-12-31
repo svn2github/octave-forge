@@ -37,7 +37,7 @@ function ret = subsref (q, s)
           q.w = zeros (size (q.w));
           ret = subsref (q, s(2:end));
         otherwise
-          error ("quaternion: invalid subscript name");
+          error ("quaternion: invalid subscript name '%s'", s(1).subs);
       endswitch
 
     case "()"                               # q(...)
@@ -48,7 +48,7 @@ function ret = subsref (q, s)
       ret = quaternion (w, x, y, z);
       
     otherwise
-      error ("quaternion: invalid subscript type");
+      error ("quaternion: invalid subscript type '%s'", s(1).type);
   endswitch
 
 endfunction

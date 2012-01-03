@@ -121,15 +121,15 @@ function [Kr, info] = fwcfconred (G, F, L, varargin)
   endif
 
   if (! isa (G, "lti"))
-    error ("cfconred: first argument must be an LTI system");
+    error ("fwcfconred: first argument must be an LTI system");
   endif
 
   if (! is_real_matrix (F))
-    error ("cfconred: second argument must be a real matrix");
+    error ("fwcfconred: second argument must be a real matrix");
   endif
   
   if (! is_real_matrix (L))
-    error ("cfconred: third argument must be a real matrix");
+    error ("fwcfconred: third argument must be a real matrix");
   endif
 
   if (nargin > 3)                                  # fwcfconred (G, F, L, ...)
@@ -148,7 +148,7 @@ function [Kr, info] = fwcfconred (G, F, L, varargin)
   nkv = numel (varargin);                          # number of keys and values
 
   if (rem (nkv, 2))
-    error ("cfconred: keys and values must come in pairs");
+    error ("fwcfconred: keys and values must come in pairs");
   endif
 
   [a, b, c, d, tsam, scaled] = ssdata (G);
@@ -160,12 +160,12 @@ function [Kr, info] = fwcfconred (G, F, L, varargin)
   jobd = any (d(:));
 
   if (mf != m || nf != n)
-    error ("cfconred: dimensions of state-feedback matrix (%dx%d) and plant (%dx%d, %d states) don't match", \
+    error ("fwcfconred: dimensions of state-feedback matrix (%dx%d) and plant (%dx%d, %d states) don't match", \
            mf, nf, p, m, n);
   endif
 
   if (nl != n || pl != p)
-    error ("cfconred: dimensions of observer matrix (%dx%d) and plant (%dx%d, %d states) don't match", \
+    error ("fwcfconred: dimensions of observer matrix (%dx%d) and plant (%dx%d, %d states) don't match", \
            nl, pl, p, m, n);
   endif
 
@@ -214,7 +214,7 @@ function [Kr, info] = fwcfconred (G, F, L, varargin)
         negfb = __conred_check_feedback_sign__ (val);
 
       otherwise
-        warning ("cfconred: invalid property name '%s' ignored", key);
+        warning ("fwcfconred: invalid property name '%s' ignored", key);
     endswitch
   endfor
 

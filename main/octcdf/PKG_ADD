@@ -1,32 +1,3 @@
-
-dispatch('close','ncclose','ncfile');
-dispatch('redef','ncredef','ncfile');
-dispatch('endef','endef','ncfile');
-dispatch('sync','ncsync','ncfile');
-
-dispatch('var','ncvar','ncfile');
-
-dispatch('att','ncatt','ncfile');
-dispatch('att','ncatt','ncvar');
-
-dispatch('dim','ncdim','ncfile');
-dispatch('dim','ncdim','ncvar');
-
-dispatch('name','ncname','ncfile');
-dispatch('name','ncname','ncvar');
-dispatch('name','ncname','ncatt');
-dispatch('name','ncname','ncdim');
-
-dispatch('datatype','ncdatatype','ncvar');
-dispatch('datatype','ncdatatype','ncatt');
-
-dispatch('autoscale','ncautoscale','ncvar');
-dispatch('autonan','ncautonan','ncvar');
-dispatch('fillval','ncfillval','ncvar');
-
-dispatch('isrecord','ncisrecord','ncdim');
-
-
 autoload ("ncclose", fullfile (fileparts (mfilename ("fullpath")), "netcdf.oct"));
 autoload ("ncredef", fullfile (fileparts (mfilename ("fullpath")), "netcdf.oct"));
 autoload ("ncenddef", fullfile (fileparts (mfilename ("fullpath")), "netcdf.oct"));

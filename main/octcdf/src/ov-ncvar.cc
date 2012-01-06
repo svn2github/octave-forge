@@ -87,6 +87,15 @@ octave_ncvar::octave_ncvar(octave_ncfile* ncfilep, int varidp):octave_base_value
 // destructor
 
 octave_ncvar::~octave_ncvar() {
+
+    if (!ncv) {
+      // nothing to do
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "ncv already NULL " << ncv  << endl;
+#     endif
+      return;
+    }
+
     ncv->count--;
 #   ifdef OV_NETCDF_VERBOSE
     octave_stdout << "ncv count " << count << endl;

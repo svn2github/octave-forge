@@ -69,8 +69,17 @@ public:
 
   ~octave_ncatt()  {
 #   ifdef OV_NETCDF_VERBOSE
-    octave_stdout << "destruct nca " << nca << " count " << nca->count << endl;
+    octave_stdout << "destruct nca " << nca  << endl;
 #   endif
+
+    if (!nca) {
+      // nothing to do
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "nca already NULL " << nca  << endl;
+#     endif
+      return;
+    }
+
     nca->count--;
 
     if (nca->count == 0) {

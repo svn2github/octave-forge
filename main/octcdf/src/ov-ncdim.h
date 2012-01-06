@@ -33,7 +33,12 @@ typedef struct {
 
 class octave_ncdim:public octave_base_value {
 public:
-  octave_ncdim(void):octave_base_value(), ncd(NULL) { } 
+  octave_ncdim(void):octave_base_value(), ncd(NULL) {
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "constructor NULL " << this << endl;
+#   endif
+    abort();
+  } 
 
   octave_ncdim(const octave_ncdim& ncdim_val):octave_base_value(), ncd(ncdim_val.ncd) { 
     ncd->count++;  
@@ -65,8 +70,17 @@ public:
 
   ~octave_ncdim() { 
 #   ifdef OV_NETCDF_VERBOSE
-    octave_stdout << "destruct ncdim " << ncd << " count " << ncd->count << endl;
+    octave_stdout << "destruct ncdim " << ncd  << "-" << this << endl;
 #   endif
+
+    if (!ncd) {
+      // nothing to do
+#     ifdef OV_NETCDF_VERBOSE
+      octave_stdout << "ncd already NULL " << ncd  << endl;
+#     endif
+      return;
+    }
+
     ncd->count--;
 
     if (ncd->count == 0) {

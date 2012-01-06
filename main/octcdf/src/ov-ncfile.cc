@@ -378,8 +378,17 @@ octave_value octave_ncfile::subsref(const std::string &type,
 octave_ncfile::~octave_ncfile(void)
 {
 # ifdef OV_NETCDF_VERBOSE
-  octave_stdout << "destructor octave_ncfile " << nf  << " count " << nf->count << endl;
+  octave_stdout << "destructor octave_ncfile " << nf  << endl;
 # endif
+
+  if (!nf) {
+    // nothing to do
+#   ifdef OV_NETCDF_VERBOSE
+    octave_stdout << "nf already NULL " << nf  << endl;
+#   endif
+    return;
+  }
+
   nf->count--;
 
   if (nf->count == 0)

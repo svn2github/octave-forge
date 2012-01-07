@@ -44,3 +44,18 @@ function q = log (q)
   ## NOTE:  qtfm 1.9 returns the same "wrong" result
 
 endfunction
+
+
+%!shared A, B
+%! Aw = [2, 6, 10; 14, 18, 22];
+%! Ax = [3, 7, 11; 15, 19, 23];
+%! Ay = [4, 8, 12; 16, 20, 24];
+%! Az = [5, 9, 13; 17, 21, 25];
+%! A = quaternion (Aw, Ax, Ay, Az);
+%!
+%! B = exp (log (A));
+%!
+%!assert (A.w, B.w, 1e-4);
+%!assert (A.x, B.x, 1e-4);
+%!assert (A.y, B.y, 1e-4);
+%!assert (A.z, B.z, 1e-4);

@@ -20,23 +20,23 @@
 ## of the matrix @var{a}
 ## @end deftypefn
 
-function [M] = porcentual (a,dim)
+function [M] = porcentual (a, dim)
 
-if (nargin==0)
- usage("no data");
-end
+  if (nargin==0)
+   print_usage;
+  end
 
-[m,n] = size(a);
+  [m,n] = size(a);
 
-if (nargin == 1) 
- M = a./sum(sum(a));
-else
- if (dim ==1)
- M = a./ (ones(1,m)'*sum(a));
- elseif (dim==2)
- M = (a'./ (ones(1,n)'*sum(a')))';
- else
- usage("invalid dimension");
-end
+  if (nargin == 1) 
+    M = a./sum(sum(a));
+  else
+    if (dim ==1)
+      M = a./ (ones(1,m)'*sum(a));
+    elseif (dim==2)
+      M = (a'./ (ones(1,n)'*sum(a')))';
+    else
+     error("invalid dimension");
+  end
 
 end

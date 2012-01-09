@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{quotas} =} quotaad (@var{s},@var{v})
+## @deftypefn {Function File} {@var{quotas} =} quotaad (@var{s}, @var{v})
 ## Calculate the cumulative quotas by the Additive method.
 ##
 ## @var{s} is a mxn matrix that contains the run-off triangle, where m is the number of accident-years
@@ -56,30 +56,30 @@
 
 function [quotas] = quotaad (S,V)
 
-[m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
-u = m - n;                                     #rows of the upper square
-S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
-if (size(V) ~= [m,1])
- usage(strcat("volume V must be of size [",num2str(m),",1]" ));
-end
+  [m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
+  u = m - n;                                     #rows of the upper square
+  S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular
+  if (size(V) ~= [m,1])
+    error(strcat("volume V must be of size [",num2str(m),",1]" ));
+  end
 
-# Z triangle
-Z = [S(:,1), S(:,2:n)-S(:,1:n-1)];
-Z = fliplr(triu(fliplr(Z),-u));                #clean Z
+  # Z triangle
+  Z = [S(:,1), S(:,2:n)-S(:,1:n-1)];
+  Z = fliplr(triu(fliplr(Z),-u));                #clean Z
 
-# calc the empirical incremental loss ratios
-LRI = Z ./ repmat (V,1,n);
- 
-#weights V(i)/sum(1,n-k,V(i))
-W = repmat(V,1,n);                             #numerator
-W =fliplr(triu(fliplr(W),-u));                 #clean low triangle
-a = repmat(sum(W),m,1);                        #denominator
-a = fliplr(triu(fliplr(a),-u));                #clean low triangle
-W = W./a;                                      #divide by
-W = fliplr(triu(fliplr(W),-u));
+  # calc the empirical incremental loss ratios
+  LRI = Z ./ repmat (V,1,n);
 
-# incremental Loss Ratios AD
-LRI_AD  = diag(LRI' * W)';                     #weighted product
-quotas = cumsum(porcentual(LRI_AD));           #calc cumulated quota 
+  #weights V(i)/sum(1,n-k,V(i))
+  W = repmat(V,1,n);                             #numerator
+  W =fliplr(triu(fliplr(W),-u));                 #clean low triangle
+  a = repmat(sum(W),m,1);                        #denominator
+  a = fliplr(triu(fliplr(a),-u));                #clean low triangle
+  W = W./a;                                      #divide by
+  W = fliplr(triu(fliplr(W),-u));
+
+  # incremental Loss Ratios AD
+  LRI_AD = diag(LRI' * W)';                     #weighted product
+  quotas = cumsum(porcentual(LRI_AD));           #calc cumulated quota 
 
 end

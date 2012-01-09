@@ -49,24 +49,24 @@
 
 function quotas = quotald(S)
 
-[m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
-u = m - n;                                     #rows of the upper square
-S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
+  [m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
+  u = m - n;                                     #rows of the upper square
+  S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular
 
-# calculate the triangle of individual development factors (LDI).
-LDI = [ones(m,1), S(:,2:n)./S(:,1:n-1)];
-LDI = fliplr(triu(fliplr(LDI),-u));
-LDI (m,1) = 0;                     #last row element without partner
+  # calculate the triangle of individual development factors (LDI)
+  LDI = [ones(m,1), S(:,2:n)./S(:,1:n-1)];
+  LDI = fliplr(triu(fliplr(LDI),-u));
+  LDI (m,1) = 0;                     #last row element without partner
 
-# weights
-W =  fliplr(triu(fliplr(S),1-u));  #get T values to use
-W =  shift (W,1,2);                #redim k = k-1, 
-W = porcentual(W,1);
+  # weights
+  W =  fliplr(triu(fliplr(S),1-u));  #get T values to use
+  W =  shift (W,1,2);                #redim k = k-1,
+  W = porcentual(W,1);
 
-#individual development factors (LDI) or Chainladder factors
-LDI_CL  = diag(LDI' * W)';                 #weighted product
-quotas = 1./cumprod(fliplr(LDI_CL));       #calcs cumulated quota
-quotas (n) = 1;                            #last value is 1
-quotas = fliplr(shift(quotas,1));
+  #individual development factors (LDI) or Chainladder factors
+  LDI_CL = diag(LDI' * W)';                 #weighted product
+  quotas = 1./cumprod(fliplr(LDI_CL));       #calcs cumulated quota
+  quotas (n) = 1;                            #last value is 1
+  quotas = fliplr(shift(quotas,1));
 
 end

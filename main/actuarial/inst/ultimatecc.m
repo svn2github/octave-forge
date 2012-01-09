@@ -69,26 +69,25 @@
 
 function ultimate = ultimatecc (S,V,quotas)
 
-[m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
-u = m - n;                                     #rows of the upper square
-S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
+  [m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
+  u = m - n;                                     #rows of the upper square
+  S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular
 
-if (size(V) ~= [m,1])
- usage(strcat("volume V must be of size [",num2str(m),",1]" ));
-end  
-if (size(quotas) ~= [1,n])
- usage("quotas must be of dimension [1,n]");
-end  
+  if (size(V) ~= [m,1])
+    error(strcat("volume V must be of size [",num2str(m),",1]" ));
+  elseif (size(quotas) ~= [1,n])
+    error("quotas must be of dimension [1,n]");
+  end
 
-# CapeCods K   K = S(i+k = n)/quotas*V
+  # CapeCods K   K = S(i+k = n)/quotas*V
 
-if (u==0)
-K = sum(diag(fliplr(S))')/ (fliplr(quotas)*V);
-else
-K = sum([diag(fliplr(S),-u)' S(1:u,n)])/ (fliplr([quotas ones(u)])*V);
-end
+  if (u==0)
+    K = sum(diag(fliplr(S))')/ (fliplr(quotas)*V);
+  else
+    K = sum([diag(fliplr(S),-u)' S(1:u,n)])/ (fliplr([quotas ones(u)])*V);
+  end
 
-#ultimate value
-ultimate = K * V;
+  #ultimate value
+  ultimate = K * V;
 
 end

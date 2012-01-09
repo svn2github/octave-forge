@@ -53,23 +53,23 @@
 ## @seealso {bferguson, quotaad, quotapanning}
 ## @end deftypefn
 
-function ultimate = ultimateld (S,quotas)
+function ultimate = ultimateld (S, quotas)
 
-[m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
-u = m - n;                                     #rows of the upper square
-S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
+  [m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
+  u = m - n;                                     #rows of the upper square
+  S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular
 
-if (size(quotas) ~= [1,n])
- usage(strcat("quotas must be of size [1,",num2str(n),"]" ));
-end  
+  if (size(quotas) ~= [1,n])
+    error(strcat("quotas must be of size [1,",num2str(n),"]" ));
+  end
 
-#calculate the ultimate value
+  #calculate the ultimate value
 
-if (u==0)
-ultimate = flipud(diag(fliplr(S))) ./ quotas';
-else
-ultimate = [(flipud(diag(fliplr(S),-u)) ./ quotas')', S(1:u,n)]';
-end
-ultimate = flipud(ultimate);
+  if (u==0)
+    ultimate = flipud(diag(fliplr(S))) ./ quotas';
+  else
+    ultimate = [(flipud(diag(fliplr(S),-u)) ./ quotas')', S(1:u,n)]';
+  end
+  ultimate = flipud(ultimate);
 
 end

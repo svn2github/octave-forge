@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{ultimate} =} ultimatead (@var{s},@var{v})
+## @deftypefn {Function File} {@var{ultimate} =} ultimatead (@var{s}, @var{v})
 ## Calculate the ultimate values by the Additive method.
 ##
 ## @var{s} is a mxn matrix that contains the run-off triangle, where m is the number of accident-years
@@ -49,8 +49,8 @@
 ## @seealso {bferguson, quotald, quotapanning}
 ## @end deftypefn
 
-function [ultimate] = ultimatead (S,V)
+function [ultimate] = ultimatead (S, V)
 
-ultimate = ultimatecc(S,V,quotaad(S,V));
+  ultimate = ultimatecc(S,V,quotaad(S,V));
 
 end

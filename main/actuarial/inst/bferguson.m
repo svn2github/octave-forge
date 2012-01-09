@@ -46,20 +46,20 @@
 
 function [BF] = bferguson (S, quotas,ultimate,k)
 
-[m,n] = size (S);        #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
-if (size(quotas) ~= [1,n])
-    usage(strcat("quotas must be of size [1,",num2str(n),"]" ))
-end
-if (size(ultimate) ~= [m,1])
-    usage(strcat("ultimate must be of size [",num2str(m),",1]" ))
-end
+  [m,n] = size (S);        #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
+  if (size(quotas) ~= [1,n])
+      error(strcat("quotas must be of size [1,",num2str(n),"]" ))
+  end
+  if (size(ultimate) ~= [m,1])
+      error(strcat("ultimate must be of size [",num2str(m),",1]" ))
+  end
 
-u = m - n;                #rows of the upper square 
-S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
-diagS = diag(fliplr(S),-u);
+  u = m - n;                #rows of the upper square 
+  S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
+  diagS = diag(fliplr(S),-u);
 
-#calcs the proyection by the bornhuetter-ferguson method
-BF = diagS((n-k+1):n,1) + (quotas(k+1)*ones(1,k) - quotas(k:-1:1))' .* ultimate((m-k+1):m);
-BF = [S(1:m-k,k+1); BF];
+  #calcs the proyection by the bornhuetter-ferguson method
+  BF = diagS((n-k+1):n,1) + (quotas(k+1)*ones(1,k) - quotas(k:-1:1))' .* ultimate((m-k+1):m);
+  BF = [S(1:m-k,k+1); BF];
 
 end

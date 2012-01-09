@@ -71,78 +71,77 @@
 
 function [quotas,outcome] = bfanalisis (S,V,quota_ext,ultimate_ext)
 
-#check number of arguments in
-if (nargin==0)
- usage("insuficient args. Enter a mxn triangle of losses at least");
-else
- #check S 
- [m,n] = size (S);  #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
- u = m - n;                                        #rows of the upper square
- S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
- quotas.ld = quotald(S);                           #quotas LD
- quotas.panning = quotapanning(S);                 #Panning quotas
- for k=1:n
-  outcome.ultld.quotasld(:,k) = bferguson(S,quotas.ld,ultimateld(S,quotas.ld),k-1);
-  outcome.ultld.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimateld(S,quotas.panning),k-1);
-  outcome.ultpanning.quotasld(:,k) = bferguson(S,quotas.ld,ultimatepanning(S,quotas.ld),k-1);
-  outcome.ultpanning.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimatepanning(S,quotas.panning),k-1);
- endfor
- 
- if (nargin>1)
-  # verify V
-  if (size(V) ~= [m,1])
-   usage(strcat("volume V must be of size [",num2str(m),",1]" ));
-  else 
-  for k=1:n	
-  quotas.ad = quotaad(S,V);                                #quotas AD
-  quotas.mack = quotamack(S,V);                            #quotas Mack  
-  outcome.ultld.quotasad(:,k) = bferguson(S,quotas.ad,ultimateld(S,quotas.ad),k-1);
-  outcome.ultld.quotasmack(:,k) = bferguson(S,quotas.mack,ultimateld(S,quotas.mack),k-1);
-  outcome.ultpanning.quotasad(:,k) = bferguson(S,quotas.ad,ultimatepanning(S,quotas.ad),k-1);
-  outcome.ultpanning.quotasmack(:,k) = bferguson(S,quotas.mack,ultimatepanning(S,quotas.mack),k-1);  
-  outcome.ultad.quotasld(:,k) = bferguson(S,quotas.ld,ultimatead(S,V),k-1);
-  outcome.ultad.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimatead(S,V),k-1);
-  outcome.ultad.quotasad(:,k) = bferguson(S,quotas.ad,ultimatead(S,V),k-1);
-  outcome.ultad.quotasmack(:,k) = bferguson(S,quotas.mack,ultimatead(S,V),k-1);
-  outcome.ultcc.quotasld(:,k) = bferguson(S,quotas.ld,ultimatecc(S,V,quotas.ld),k-1);
-  outcome.ultcc.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimatecc(S,V,quotas.panning),k-1);
-  outcome.ultcc.quotasad(:,k) = bferguson(S,quotas.ad,ultimatecc(S,V,quotas.ad),k-1);
-  outcome.ultcc.quotasmack(:,k) = bferguson(S,quotas.mack,ultimatecc(S,V,quotas.mack),k-1);
-  outcome.ultmack.quotasld(:,k) = bferguson(S,quotas.ld,ultimatemack(S,V),k-1);
-  outcome.ultmack.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimatemack(S,V),k-1);
-  outcome.ultmack.quotasad(:,k) = bferguson(S,quotas.ad,ultimatemack(S,V),k-1);
-  outcome.ultmack.quotasmack(:,k) = bferguson(S,quotas.mack,ultimatemack(S,V),k-1);  
-  endfor
-  if (nargin>2)
-   #check out quota_ext
-   if (size(quota_ext) ~= [1,n])
-     usage(strcat("quota_ext must be of size [1,",num2str(n),"]" ));
-   else
-     for k=1:n	 
-     quotas.external = quota_ext;                           #external quotas    	
-     outcome.ultld.quotasexternal(:,k) = bferguson(S,quotas.external,ultimateld(S,quotas.external),k-1);   	
-     outcome.ultpanning.quotasexternal(:,k) = bferguson(S,quotas.external,ultimatepanning(S,quotas.external),k-1);
-     outcome.ultad.quotasexternal(:,k) = bferguson(S,quotas.external,ultimatead(S,V),k-1);
-     outcome.ultcc.quotasexternal(:,k) = bferguson(S,quotas.external,ultimatecc(S,V,quotas.external),k-1);
-     outcome.ultmack.quotasexternal(:,k) = bferguson(S,quotas.external,ultimatemack(S,V),k-1);
-     endfor
-     if (nargin>3)
-      #verify ultimate_ext
-      if (size(ultimate_ext) ~= [m,1])
-       usage(strcat("ultimate_ext must be of size [",num2str(m),",1]" ));
-      else 
-        for k=1:n
-        outcome.ultexternal.quotasld(:,k) = bferguson(S,quotas.ld,ultimate_ext,k-1);
-        outcome.ultexternal.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimate_ext,k-1);
-        outcome.ultexternal.quotasad(:,k) = bferguson(S,quotas.ad,ultimate_ext,k-1);
-        outcome.ultexternal.quotasmack(:,k) = bferguson(S,quotas.mack,ultimate_ext,k-1);
-        outcome.ultexternal.quotasexternal(:,k) = bferguson(S,quotas.external,ultimate_ext,k-1);
-        endfor
-      end
-    end   
-   end	
-  end
- end 
-end
+  #check number of arguments in
+  if (nargin==0)
+    print_usage;
+  else
+    #check S 
+    [m,n] = size (S);  #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
+    u = m - n;                                        #rows of the upper square
+    S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular
+    quotas.ld = quotald(S);                           #quotas LD
+    quotas.panning = quotapanning(S);                 #Panning quotas
+    for k=1:n
+      outcome.ultld.quotasld(:,k) = bferguson(S,quotas.ld,ultimateld(S,quotas.ld),k-1);
+      outcome.ultld.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimateld(S,quotas.panning),k-1);
+      outcome.ultpanning.quotasld(:,k) = bferguson(S,quotas.ld,ultimatepanning(S,quotas.ld),k-1);
+      outcome.ultpanning.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimatepanning(S,quotas.panning),k-1);
+    endfor
 
+     if (nargin>1)
+      # verify V
+      if (size(V) ~= [m,1])
+        error(strcat("volume V must be of size [",num2str(m),",1]" ));
+      else
+        for k=1:n
+        quotas.ad = quotaad(S,V);                                #quotas AD
+        quotas.mack = quotamack(S,V);                            #quotas Mack
+        outcome.ultld.quotasad(:,k) = bferguson(S,quotas.ad,ultimateld(S,quotas.ad),k-1);
+        outcome.ultld.quotasmack(:,k) = bferguson(S,quotas.mack,ultimateld(S,quotas.mack),k-1);
+        outcome.ultpanning.quotasad(:,k) = bferguson(S,quotas.ad,ultimatepanning(S,quotas.ad),k-1);
+        outcome.ultpanning.quotasmack(:,k) = bferguson(S,quotas.mack,ultimatepanning(S,quotas.mack),k-1);
+        outcome.ultad.quotasld(:,k) = bferguson(S,quotas.ld,ultimatead(S,V),k-1);
+        outcome.ultad.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimatead(S,V),k-1);
+        outcome.ultad.quotasad(:,k) = bferguson(S,quotas.ad,ultimatead(S,V),k-1);
+        outcome.ultad.quotasmack(:,k) = bferguson(S,quotas.mack,ultimatead(S,V),k-1);
+        outcome.ultcc.quotasld(:,k) = bferguson(S,quotas.ld,ultimatecc(S,V,quotas.ld),k-1);
+        outcome.ultcc.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimatecc(S,V,quotas.panning),k-1);
+        outcome.ultcc.quotasad(:,k) = bferguson(S,quotas.ad,ultimatecc(S,V,quotas.ad),k-1);
+        outcome.ultcc.quotasmack(:,k) = bferguson(S,quotas.mack,ultimatecc(S,V,quotas.mack),k-1);
+        outcome.ultmack.quotasld(:,k) = bferguson(S,quotas.ld,ultimatemack(S,V),k-1);
+        outcome.ultmack.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimatemack(S,V),k-1);
+        outcome.ultmack.quotasad(:,k) = bferguson(S,quotas.ad,ultimatemack(S,V),k-1);
+        outcome.ultmack.quotasmack(:,k) = bferguson(S,quotas.mack,ultimatemack(S,V),k-1);
+        endfor
+      if (nargin>2)
+        #check out quota_ext
+        if (size(quota_ext) ~= [1,n])
+          error(strcat("quota_ext must be of size [1,",num2str(n),"]" ));
+        else
+          for k=1:n
+            quotas.external = quota_ext;                           #external quotas
+            outcome.ultld.quotasexternal(:,k) = bferguson(S,quotas.external,ultimateld(S,quotas.external),k-1);
+            outcome.ultpanning.quotasexternal(:,k) = bferguson(S,quotas.external,ultimatepanning(S,quotas.external),k-1);
+            outcome.ultad.quotasexternal(:,k) = bferguson(S,quotas.external,ultimatead(S,V),k-1);
+            outcome.ultcc.quotasexternal(:,k) = bferguson(S,quotas.external,ultimatecc(S,V,quotas.external),k-1);
+            outcome.ultmack.quotasexternal(:,k) = bferguson(S,quotas.external,ultimatemack(S,V),k-1);
+          endfor
+          if (nargin>3)
+            #verify ultimate_ext
+            if (size(ultimate_ext) ~= [m,1])
+              error(strcat("ultimate_ext must be of size [",num2str(m),",1]" ));
+            else
+              for k=1:n
+                outcome.ultexternal.quotasld(:,k) = bferguson(S,quotas.ld,ultimate_ext,k-1);
+                outcome.ultexternal.quotaspanning(:,k) = bferguson(S,quotas.panning,ultimate_ext,k-1);
+                outcome.ultexternal.quotasad(:,k) = bferguson(S,quotas.ad,ultimate_ext,k-1);
+                outcome.ultexternal.quotasmack(:,k) = bferguson(S,quotas.mack,ultimate_ext,k-1);
+                outcome.ultexternal.quotasexternal(:,k) = bferguson(S,quotas.external,ultimate_ext,k-1);
+              endfor
+            end
+          end
+        end
+      end
+    end
+  end
 end

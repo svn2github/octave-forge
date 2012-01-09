@@ -55,27 +55,27 @@
 
 function quotas = quotapanning (S)
 
-[m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
-u = m - n;                                     #rows of the upper square
-S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
+  [m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
+  u = m - n;                                     #rows of the upper square
+  S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular
 
-# calculate Z
-Z = [S(:,1), S(:,2:n)-S(:,1:n-1)];
-Z = fliplr(triu(fliplr(Z),-u));        #clean Z
+  # calculate Z
+  Z = [S(:,1), S(:,2:n)-S(:,1:n-1)];
+  Z = fliplr(triu(fliplr(Z),-u));        #clean Z
 
-# calc empirical values of the incremental factors
-B = Z ./ (Z * [ones(n,1),zeros(n,n-1)]');
- 
-# weights Z(i,0)^2/Z(0)^2
- W = repmat((Z(:,1).^2),1,n);          #numerator
- W =fliplr(triu(fliplr(W),-u));        #clean low triangle
- a = repmat(sum(W),m,1);               #denominator
- a = fliplr(triu(fliplr(a),-u));       #clean low triangle
- W = W./a; #divido
- W = fliplr(triu(fliplr(W),-u));       #clean low triangle
+  # calc empirical values of the incremental factors
+  B = Z ./ (Z * [ones(n,1),zeros(n,n-1)]');
 
-# Pannings incremental factors
-B_Pan  = diag(B' * W)';                #weighted product
-quotas = cumsum(porcentual(B_Pan));    #cumulated quota
- 
+  # weights Z(i,0)^2/Z(0)^2
+   W = repmat((Z(:,1).^2),1,n);          #numerator
+   W =fliplr(triu(fliplr(W),-u));        #clean low triangle
+   a = repmat(sum(W),m,1);               #denominator
+   a = fliplr(triu(fliplr(a),-u));       #clean low triangle
+   W = W./a; #divido
+   W = fliplr(triu(fliplr(W),-u));       #clean low triangle
+
+  # Pannings incremental factors
+  B_Pan  = diag(B' * W)';                #weighted product
+  quotas = cumsum(porcentual(B_Pan));    #cumulated quota
+
 end

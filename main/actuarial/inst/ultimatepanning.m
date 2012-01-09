@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{ultimate} =} ultimatepanning (@var{s},@var{quotas})
+## @deftypefn {Function File} {@var{ultimate} =} ultimatepanning (@var{s}, @var{quotas})
 ## Calculate the ultimate value by the Panning method.
 ##
 ## @var{s} is a mxn matrix that contains the run-off triangle, where m is the number of accident-years
@@ -49,14 +49,14 @@
 
 function [ultimate] = ultimatepanning (S,quotas)
 
-[m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
-u = m - n;                                     #rows of the upper square
-S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
+  [m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
+  u = m - n;                                     #rows of the upper square
+  S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular
 
-if (size(quotas) ~= [1,n])
- usage(strcat("quotas must be of size [1,",num2str(n),"]" ));
-end  
+  if (size(quotas) ~= [1,n])
+    error(strcat("quotas must be of size [1,",num2str(n),"]" ));
+  end
 
-ultimate = S(:,1) / quotas(1);
+  ultimate = S(:,1) / quotas(1);
 
 end

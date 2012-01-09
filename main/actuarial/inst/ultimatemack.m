@@ -76,50 +76,50 @@
 ## @seealso {bferguson, quotald, quotapanning, quotaad, quotamack}
 ## @end deftypefn
 
-function ultimate = ultimatemack (S,V)
+function ultimate = ultimatemack (S, V)
 
-[m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
-u = m - n;                                     #rows of the upper square
-S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
+  [m,n] = size (S);           #triangle with m years (i=1,2,u,...u+1,u+2,....m) and n periods (k=0,1,2,...n-1)
+  u = m - n;                                     #rows of the upper square
+  S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular
 
-if (size(V) ~= [m,1])
- usage(strcat("volume V must be of size [",num2str(m),",1]" ));
-end  
+  if (size(V) ~= [m,1])
+    error(strcat("volume V must be of size [",num2str(m),",1]" ));
+  end
 
-# calcs Z triangle
-Z = [S(:,1), S(:,2:n)-S(:,1:n-1)];
-Z = fliplr(triu(fliplr(Z),-u));          #clean Z
+  # calcs Z triangle
+  Z = [S(:,1), S(:,2:n)-S(:,1:n-1)];
+  Z = fliplr(triu(fliplr(Z),-u));          #clean Z
 
-# calculate empirical individual loss ratios
-a = repmat (V,1,n);
-LRI = Z ./ a;
+  # calculate empirical individual loss ratios
+  a = repmat (V,1,n);
+  LRI = Z ./ a;
 
-# weights V(i)/sum(1,n-k,V(i));     
-num =fliplr(triu(fliplr(a),-u));          #numerator, and clean low triangle
-den = repmat(sum(num),m,1);               #denominator
-den = fliplr(triu(fliplr(den),-u));       #clean low triangle
-W = num./den;                             #divide
-W = fliplr(triu(fliplr(W),-u));
+  # weights V(i)/sum(1,n-k,V(i));     
+  num =fliplr(triu(fliplr(a),-u));          #numerator, and clean low triangle
+  den = repmat(sum(num),m,1);               #denominator
+  den = fliplr(triu(fliplr(den),-u));       #clean low triangle
+  W = num./den;                             #divide
+  W = fliplr(triu(fliplr(W),-u));
 
-# incremental Loss Ratios AD
-LRI_AD  = diag(LRI' * W)';                #weighted product
+  # incremental Loss Ratios AD
+  LRI_AD  = diag(LRI' * W)';                #weighted product
 
-if (u==0)
-b = (diag(fliplr(S),-u) ./ flipud(cumsum(LRI_AD)') ) ./ V;
-else
-b = ([S(1:u,n); diag(fliplr(S),-u)] ./ [sum(LRI_AD)*ones(1,u);flipud(cumsum(LRI_AD)')] ) ./ V;
-end
+  if (u==0)
+    b = (diag(fliplr(S),-u) ./ flipud(cumsum(LRI_AD)') ) ./ V;
+  else
+    b = ([S(1:u,n); diag(fliplr(S),-u)] ./ [sum(LRI_AD)*ones(1,u);flipud(cumsum(LRI_AD)')] ) ./ V;
+  end
 
-sZ = sum (Z);                             # sum of Z
-sb = repmat(b,1,n);
-sb = fliplr(triu(fliplr(sb),-u));
-sV = repmat(V,1,n);
-sV =fliplr(triu(fliplr(sV),-u));
+  sZ = sum (Z);                             # sum of Z
+  sb = repmat(b,1,n);
+  sb = fliplr(triu(fliplr(sb),-u));
+  sV = repmat(V,1,n);
+  sV =fliplr(triu(fliplr(sV),-u));
 
-LRI_Mack = sZ ./ (diag(sb'*sV))';
+  LRI_Mack = sZ ./ (diag(sb'*sV))';
 
-K_Mack = b * sum(LRI_Mack); 
+  K_Mack = b * sum(LRI_Mack); 
 
-ultimate = K_Mack .* V;
+  ultimate = K_Mack .* V;
 
 end

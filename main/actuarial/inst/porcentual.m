@@ -20,21 +20,11 @@
 ## of the matrix @var{a}
 ## @end deftypefn
 
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
-
 function [M] = porcentual (a,dim)
 
 if (nargin==0)
  usage("no data");
-end  
+end
 
 [m,n] = size(a);
 

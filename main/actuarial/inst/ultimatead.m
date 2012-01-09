@@ -21,22 +21,22 @@
 ## @var{s} is a mxn matrix that contains the run-off triangle, where m is the number of accident-years
 ## and n is the number of periods to final development. @var{s} may contain u = m-n complete years.
 ## The value @var{s}(i,k), 1<=i<=m, 0<=k<=n-1 represents the cumulative losses from accident-period i
-## settled with a delay of at most k years. 
+## settled with a delay of at most k years.
 ## The values @var{s}(i,k) with i + k > m must be zero because is future time. 
 ## @var{v} is an mx1 vector of known volume measures (like premiums or the number of contracts).
-##  
+##
 ## The Additive method asumes that exists a development pattern on the incremental loss ratios (IRL).
 ## This means that the identity 
-## @group                
-## @example
-##            E[Z(i,k) ] 
+##
+## @verbatim
+##            E[Z(i,k) ]
 ## IRL(k) =  ------------
-##               V(i)    
-## @end example
-## @end group
-## holds for all k = {0,...,n-1} and for all i = {1,...,m}. 
+##               V(i)
+## @end verbatim
+##
+## holds for all k = @{0, @dots{}, n-1@} and for all i = @{1, @dots{}, m@}.
 ## Z represents the incremental losses; then losses satisfy 
-## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = {1,...,m}.
+## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = @{1, @dots{}, m@}.
 ##
 ## @var{ultimate} returns a column vector with the ultimate values. Their values are:
 ## @group
@@ -48,16 +48,6 @@
 ##
 ## @seealso {bferguson, quotald, quotapanning}
 ## @end deftypefn
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
 
 function [ultimate] = ultimatead (S,V)
 

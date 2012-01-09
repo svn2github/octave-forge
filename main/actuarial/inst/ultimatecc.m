@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{ultimate} =} ultimatecc (@var{s},@var{v},@var{quotas})
+## @deftypefn {Function File} {@var{ultimate} =} ultimatecc (@var{s}, @var{v}, @var{quotas})
 ## Calculate the ultimate values by the Cape Cod method.
 ##
 ## @var{s} is a mxn matrix that contains the run-off triangle, where m is the number of accident-years
@@ -28,56 +28,44 @@
 ## 
 ## The Cape Cod method asumes that exists a development pattern on the cumulative quotas (Q).
 ## This means that the identity 
-## @group
-## @example
+##
+## @verbatim
 ##          E[S(i,k) ]
 ## Q(k) = -------------
 ##          E[S(i,n) ]
-## @end example
-## @end group
-## holds for all k = {0,...,n-1} and for all i = {1,...,m}.
+## @end verbatim
+##
+## holds for all k = @{0, @dots{}, n-1@} and for all i = @{1, @dots{}, m@}.
 ## 
 ## Also, the Cape Cod Method asumes the existence of a value "H" in a way that satisfy
-## @group
-## @example
+##
+## @verbatim
 ##        S(i,n)
 ## H = E [------]
 ##         V(i)
-## @end example
-## @end group
-## holds for all i = {1,...,m}.
+## @end verbatim
+##
+## holds for all i = @{1, @dots{}, m@}.
 ## H is called the Cape Cod loss ratio and it can be prove this value is
-## @group
-## @example
-##                    j=n-1        
-##                     E   S(j,n-j)
-##                    j=0            
-## @var{quotas}(k) =  ----------------
-##                   j=n-1            
-##                     E   Q(n-j)V(j)
-##                    j=0             
-## @end example
-## @end group
+##
+## @verbatim
+##              j=n-1
+##               E   S(j,n-j)
+##              j=0
+## quotas(k) = -----------------
+##              j=n-1
+##               E   Q(n-j)V(j)
+##              j=0
+## @end verbatim
 ##
 ## @var{ultimate} returns a row column with the ultimate values. Their values are:
-## @group
-## @example
-## @var{ultimate}(i) = H * @var{v}(i)
-## @end example
-## @end group
+##
+## @verbatim
+## ULTIMATE(i) = H * V(i)
+## @end verbatim
 ##
 ## @seealso {bferguson}
 ## @end deftypefn
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
 
 function ultimate = ultimatecc (S,V,quotas)
 

@@ -27,36 +27,25 @@
 ##
 ## The Panning method asumes that exists a development pattern on the incremental ratios.
 ## This means that the identity 
-## @group
-## @example
+##
+## @verbatim
 ##          E[Z(i,k) ]
 ## B(k) =  ------------
 ##          E[Z(i,0) ]
-## @end example
-## @end group
-## holds for all k = {0,...,n-1} and for all i = {1,...,m}. 
+## @end verbatim
+##
+## holds for all k = @{0, @dots{}, n-1@} and for all i = @{1, @dots{}, m@}.
 ## Z represents the incremental losses; then losses satisfy 
-## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = {1,...,m}.
+## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = @{1, @dots{}, m@}.
 ##
 ## @var{ultimate} returns a column vector with the ultimate values. Their values are:
-## @group
-## @example
-## @var{ultimate}(i) = Z(i,0)*quotas(0)
-## @end example
-## @end group
+##
+## @verbatim
+## ULTIMATE(i) = Z(i,0)*quotas(0)
+## @end verbatim
 ##
 ## @seealso {bferguson, quotapanning, quotald, quotaad}
 ## @end deftypefn
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
 
 function [ultimate] = ultimatepanning (S,quotas)
 

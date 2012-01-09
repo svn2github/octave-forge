@@ -24,46 +24,35 @@
 ## settled with a delay of at most k years. 
 ## The values @var{s}(i,k) with i + k > m must be zero because is future time. 
 ## @var{v} is an mx1 vector of known volume measures (like premiums or the number of contracts).
-##  
+##
 ## The Additive method asumes that exists a development pattern on the incremental loss ratios (IRL).
 ## This means that the identity 
-## @group
-## @example                
-##            E[Z(i,k) ] 
+##
+## @verbatim
+##            E[Z(i,k)]
 ## IRL(k) =  ------------
-##               V(i)    
-## @end example
-## @end group
-## holds for all k = {0,...,n-1} and for all i = {1,...,m}. 
+##               V(i)
+## @end verbatim
+##
+## holds for all k = @{0, @dots{}, n-1@} and for all i = @{1, @dots{}, m@}.
 ## Z represents the incremental losses; then losses satisfy 
-## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = {1,...,m}.
+## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = @{1, @dots{}, m@}.
 ##
 ## @var{quotas} returns a row vector with the cumulative quotas. The transformation
 ## from incremental loss ratios to cumulative quotas is:
-## @group
-## @example
-##                    l=k        
-##                     E   IRL(l)
-##                    l=0            
-## @var{quotas}(k) =  -----------
-##                   l=n-1            
-##                     E   IRL(l)
-##                    l=0             
-## @end example
-## @end group
+##
+## @verbatim
+##                 l=k
+##                  E   IRL(l)
+##                 l=0
+## quotas(k) =  -----------
+##                 l=n-1
+##                  E   IRL(l)
+##                 l=0
+## @end verbatim
 ##
 ## @seealso {bferguson, quotald, quotapanning}
 ## @end deftypefn
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
 
 function [quotas] = quotaad (S,V)
 
@@ -72,7 +61,7 @@ u = m - n;                                     #rows of the upper square
 S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular  
 if (size(V) ~= [m,1])
  usage(strcat("volume V must be of size [",num2str(m),",1]" ));
-end  
+end
 
 # Z triangle
 Z = [S(:,1), S(:,2:n)-S(:,1:n-1)];

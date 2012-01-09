@@ -26,37 +26,26 @@
 ##
 ## The LD method asumes that exists a development pattern on the individual factors.
 ## This means that the identity 
-## @group
-## @example
+##
+## @verbatim
 ##             E[S(i,k) ]
 ## LDI(k) =   -------------
 ##            E[S(i,k-1) ]
-## @end example
-## @end group
-## holds for all k = {0,...,n-1} and for all i = {1,...,m}.
+## @end verbatim
+##
+## holds for all k = @{0, @dots{}, n-1@} and for all i = @{1, @dots{}, m@}.
 ##
 ## @var{quotas} returns a row vector with the cumulative quotas. The transformation
 ## from individual factors to cumulative quotas is:
-## @group
-## @example
-##                    l=n-1    1
-## @var{quotas}(k) =  II    -------
-##                    l=k+1    LDI(l) 
-## @end example
-## @end group
+##
+## @verbatim
+##             l=n-1   1
+## quotas(k) =  II   -------
+##             l=k+1  LDI(l)
+## @end verbatim
 ##
 ## @seealso {bferguson, ultimateld, quotapanning, quotaad, quotamack}
 ## @end deftypefn
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
 
 function quotas = quotald(S)
 
@@ -68,7 +57,7 @@ S = fliplr(triu(fliplr(S),-u));                   #ensure S is triangular
 LDI = [ones(m,1), S(:,2:n)./S(:,1:n-1)];
 LDI = fliplr(triu(fliplr(LDI),-u));
 LDI (m,1) = 0;                     #last row element without partner
- 
+
 # weights
 W =  fliplr(triu(fliplr(S),1-u));  #get T values to use
 W =  shift (W,1,2);                #redim k = k-1, 

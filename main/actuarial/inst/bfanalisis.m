@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{quotas}, @var{outcome} =} bfanalisis (@var{S}, @var{V}, @var{quota_ext}, @var{ultimate_ext})
+## @deftypefn {Function File} {[@var{quotas}, @var{outcome}] =} bfanalisis (@var{S}, @var{V}, @var{quota_ext}, @var{ultimate_ext})
 ## Calculate the extended Bornhuetter-Ferguson method for reserves in many ways. If all arguments are provided,
 ## it calculates 30 different estimations included in the @var{outcome} structure. It also returns the @var{quotas} used.
 ## 
@@ -40,7 +40,6 @@
 ##level 2: Type of Quotas
 ## list of posible estimative methods:
 ##@example
-##
 ##@multitable {xxxxxxxxxxxxxxxx} {xxxxxxxxxxxxxxxxxx} {xxxxxxxxxxxxx} {xxxxxxxxxxxxxxxxxx}
 ##@headitem FLAG @tab METHOD @tab REQUIRES @tab RELATED FUNCTION 
 ##@item quotasad         @tab  Loss Ratio AD    @tab S,V       @tab  quotaad.m          
@@ -58,31 +57,17 @@
 ## Optional:
 ## @var{v} is an mx1 vector of known volume measures (like premiums or the number of contracts).
 ## @var{quota_ext} is an 1xn vector with an external scheme of quotas.
-## @group
-## @example
+## @verbatim
 ## 
 ##                E[S(i,k+1)]
 ## quota(k) =   -------------,    k={0,1,n-1}
 ##                E[S(i,n) ]
 ##
-## @end example
-## @end group
+## @end verbatim
 ## @var{ultimate_ext} is a mx1 vector wuth an external estimatios of the ultimate column.
-##
 ##
 ## @seealso {bferguson}
 ## @end deftypefn
-## @bye
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
 
 function [quotas,outcome] = bfanalisis (S,V,quota_ext,ultimate_ext)
 

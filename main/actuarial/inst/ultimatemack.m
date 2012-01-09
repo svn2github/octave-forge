@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{ultimate} =} ultimatemack (@var{s},@var{v})
+## @deftypefn {Function File} {@var{ultimate} =} ultimatemack (@var{s}, @var{v})
 ## Calculate the ultimate value by the Mack method.
 ##
 ## @var{s} is a mxn matrix that contains the run-off triangle, where m is the number of accident-years
@@ -26,28 +26,23 @@
 ## @var{v} is a mx1 vector of known volume measures (like premiums or the number of contracts).
 ##  
 ## The Mack method asumes that exists a vector @var{v} and a vector P(i) 1<=i<=m of parameters 
-## such that holds for all i = {1,...,m} the next identity:
+## such that holds for all i = @{1, @dots{}, m@} the next identity:
 ##
-## @group
-## @example
+## @verbatim
 ## ultimate(i) = V(i)*P(i)
-## @end example
-## @end group
+## @end verbatim
 ##
 ## where
 ## 
-## @group
-## @example
+## @verbatim
 ##                   l=n-1            
 ## P(i)= O_mack(i) *   E   IRL_Mack(l)
 ##                    l=0             
-## @end example
-## @end group
+## @end verbatim
 ##
 ## ,
 ##
-## @group
-## @example
+## @verbatim
 ##                   l=n-k-1             
 ##                     E     Z(j,k)      
 ##                    j=0                
@@ -55,13 +50,11 @@
 ##                   l=n-k-1                 
 ##                     E   V(i)*O_Mack(l)    
 ##                    l=0                
-## @end example
-## @end group
+## @end verbatim
 ##
 ## and
 ##
-## @group
-## @example
+## @verbatim
 ##                   l=n-i-1                                                      
 ##                     E     Z(i,l)                                               
 ##                    l=0                                                         
@@ -69,32 +62,19 @@
 ##                   l=n-1                                                         
 ##                     E   V(i)*IRL(l)    (see IRL definition in quotaad function)
 ##                    l=0                                                               
-## @end example
-## @end group
+## @end verbatim
 ## 
 ## Z represents the incremental losses; then losses satisfy 
-## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = {1,...,m}.
+## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = @{1, @dots{}, m@}.
 ##
 ## @var{ultimate} returns a column vector with the m ultimate values. Following the main equation:
-## @group
-## @example
-## @var{ultimate}(i) = V(i)*P(i)
-## @end example
-## @end group
+##
+## @verbatim
+## ULTIMATE(i) = V(i)*P(i)
+## @end verbatim
 ## 
 ## @seealso {bferguson, quotald, quotapanning, quotaad, quotamack}
 ## @end deftypefn
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
-
 
 function ultimate = ultimatemack (S,V)
 

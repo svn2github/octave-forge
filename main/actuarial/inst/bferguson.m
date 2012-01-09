@@ -17,7 +17,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{BF} =} bferguson (@var{s}, @var{quotas}, @var{ultimate}, @var{k})
 ## Calculate the extended Bornhuetter-Ferguson method for reserves.
-## @var{BF} provides a column vector with the elements of @var{k}-th period of development. 
+##
+## @var{BF} provides a column vector with the elements of @var{k}-th period of development.
 ## @var{s} is a mxn matrix that contains the run-off triangle, where m is the number of accident-years
 ## and n is the number of periods to final development. @var{s} may contain u = m-n complete years.
 ## @var{k} may vary from 0 (first period) to n-1 (final period).
@@ -42,17 +43,6 @@
 ##
 ## @seealso {bfanalysis}
 ## @end deftypefn
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
-
 
 function [BF] = bferguson (S, quotas,ultimate,k)
 

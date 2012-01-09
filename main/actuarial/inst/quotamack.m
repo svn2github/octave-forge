@@ -24,82 +24,63 @@
 ## settled with a delay of at most k years. 
 ## The values @var{s}(i,k) with i + k > m must be zero because is future time. 
 ## @var{v} is a mx1 vector of known volume measures (like premiums or the number of contracts).
-##  
-## The Mack method asumes that exists a vector @var{v} and a vector P(i) 1<=i<=m of parameters 
-## such that holds for all i = {1,...,m} the next identity:
 ##
-## @group
-## @example
+## The Mack method asumes that exists a vector @var{v} and a vector P(i) 1<=i<=m of parameters 
+## such that holds for all i = @{1, @dots{}, m@} the next identity:
+##
+## @verbatim
 ## ultimate(i) = V(i)*P(i)
-## @end example
-## @end group
+## @end verbatim
 ##
 ## where
 ## 
-## @group
-## @example
-##                   l=n-1            
+## @verbatim
+##                   l=n-1
 ## P(i)= O_mack(i) *   E   IRL_Mack(l)
-##                    l=0             
-## @end example
-## @end group
+##                    l=0
+## @end verbatim
 ##
 ## ,
 ##
-## @group
-## @example
-##                   l=n-k-1             
-##                     E     Z(j,k)      
-##                    j=0                
+## @verbatim
+##                   l=n-k-1
+##                     E     Z(j,k)
+##                    j=0
 ## IRL_Mack(i)   =  ---------------------
-##                   l=n-k-1                 
-##                     E   V(i)*O_Mack(l)    
-##                    l=0                
-## @end example
-## @end group
+##                   l=n-k-1
+##                     E   V(i)*O_Mack(l)
+##                    l=0
+## @end verbatim
 ##
 ## and
 ##
-## @group
-## @example
-##                   l=n-i-1                                                      
-##                     E     Z(i,l)                                               
-##                    l=0                                                         
+## @verbatim
+##                   l=n-i-1
+##                     E     Z(i,l)
+##                    l=0
 ## O_Mack(i)     =  ------------------                                            
-##                   l=n-1                                                         
+##                   l=n-1
 ##                     E   V(i)*IRL(l)    (see IRL definition in quotaad function)
-##                    l=0                                                               
-## @end example
-## @end group
+##                    l=0
+## @end verbatim
 ## 
 ## Z represents the incremental losses; then losses satisfy 
-## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = {1,...,m}.
+## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = @{1, @dots{}, m@}.
 ##
 ## @var{quotas} returns a row vector with the cumulative quotas. The formula is:
-## @group
-## @example
-##                    l=k               
-##                     E   IRL_Mack(l)  
-##                    l=0                
-## @var{quotas}(k) =  ------------------
-##                   l=n-1              
-##                     E   IRL_Mack(l)  
-##                    l=0               
-## @end example
-## @end group
-## 
+##
+## @verbatim
+##               l=k
+##                E   IRL_Mack(l)
+##               l=0
+## quotas(k) =  ------------------
+##               l=n-1
+##                E   IRL_Mack(l)
+##               l=0
+## @end verbatim
+##
 ## @seealso {bferguson, quotald, quotapanning, quotaad}
 ## @end deftypefn
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
 
 function [quotas] = quotamack (S,V)
 

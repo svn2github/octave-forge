@@ -21,48 +21,37 @@
 ## @var{s} is a mxn matrix that contains the run-off triangle, where m is the number of accident-years
 ## and n is the number of periods to final development. @var{s} may contain u = m-n complete years.
 ## The value @var{s}(i,k), 1<=i<=m, 0<=k<=n-1 represents the cumulative losses from accident-period i
-## settled with a delay of at most k years. 
-## The values @var{s}(i,k) with i + k > m must be zero because is future time. 
+## settled with a delay of at most k years.
+## The values @var{s}(i,k) with i + k > m must be zero because is future time.
 ##
 ## The Panning method asumes that exists a development pattern on the incremental ratios.
 ## This means that the identity 
-## @group
-## @example
+##
+## @verbatim
 ##          E[Z(i,k) ]
 ## B(k) =  ------------
 ##          E[Z(i,0) ]
-## @end example
-## @end group
-## holds for all k = {0,...,n-1} and for all i = {1,...,m}. 
+## @end verbatim
+##
+## holds for all k = @{0, @dots{}, n-1@} and for all i = @{1, @dots{}, m@}.
 ## Z represents the incremental losses; then losses satisfy 
-## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = {1,...,m}.
+## Z(k) = (S(k) - S(k-1) ),Z(0) = S(0) for all i = @{1, @dots{}, m@}.
 ##
 ## @var{quotas} returns a row vector with the cumulative quotas. The transformation
 ## from incremental ratios to cumulative quotas is:
-## @group
-## @example
-##                    l=k  
-##                     E    B(l)
-#                     l=0   
-## @var{quotas}(k) =  -----------
-##                   l=n-1    
-##                     E    B(l)
-##                    l=0     
-## @end example
-## @end group
+##
+## @verbatim
+##               l=k
+##                E    B(l)
+##               l=0
+## quotas(k) =  -----------
+##               l=n-1
+##                E    B(l)
+##               l=0
+## @end verbatim
 ##
 ## @seealso {bferguson, ultimatepanning, quotald, quotaad, quotamack}
 ## @end deftypefn
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
 
 function quotas = quotapanning (S)
 

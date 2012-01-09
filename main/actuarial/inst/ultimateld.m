@@ -15,7 +15,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{ultimate} =} ultimateld (@var{s},@var{quotas})
+## @deftypefn {Function File} {@var{ultimate} =} ultimateld (@var{s}, @var{quotas})
 ## Calculate the ultimate values by the Loss Development (Chainladder) method.
 ##
 ## @var{s} is a mxn matrix that contains the run-off triangle, where m is the number of accident-years
@@ -27,42 +27,31 @@
 ##
 ## The LD method asumes that exists a development pattern on the individual factors.
 ## This means that the identity 
-## @group
-## @example
+##
+## @verbatim
 ##             E[S(i,k) ]
 ## LDI(k) =   -------------
 ##            E[S(i,k-1) ]
-## @end example
-## @end group
-## holds for all k = {0,...,n-1} and for all i = {1,...,m}.
 ##
-## This follows to 
-## @quotas
-## @example
+## @end verbatim
+## holds for all k = @{0, @dots{}, n-1@} and for all i = @{1, @dots{}, m@}.
+##
+## This follows to
+##
+## @verbatim
 ##                    l=n-1    1
-## @var{quotas}(k) =  II    -------
+## quotas(k) =  II    -------
 ##                    l=k+1  LDI(l) 
-## @end example
-## @end group
-## and the ultimate value is
-## @quotas
-## @example
-## @var{ultimate}(i) = @var{s}(i,n-i-1) / @var{quotas}(n-i-1)
-## @end example
-## @end group
+## @end verbatim
+##
+## and the @var{ultimate} value is
+##
+## @verbatim
+## ULTIMATE(i) = S(i,n-i-1) / QUOTAS(n-i-1)
+## @end verbatim
 ##
 ## @seealso {bferguson, quotaad, quotapanning}
 ## @end deftypefn
-
-## Author: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Maintainer: Act. Esteban Cervetto ARG <estebancster@gmail.com>
-##
-## Created: jul-2009
-##
-## Version: 1.1.0 
-##
-## Keywords: actuarial reserves insurance bornhuetter ferguson chainladder
 
 function ultimate = ultimateld (S,quotas)
 

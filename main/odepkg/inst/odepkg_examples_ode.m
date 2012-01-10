@@ -41,7 +41,7 @@ function [] = odepkg_examples_ode ()
        '   your patch with your added example to the OdePkg developer team.\n', ...
        '\n' ]);
     vode = input ('Please choose a number from above or press <Enter> to return: ');
-    clc; if (vode > 0 & vode < 6)
+    clc; if (vode > 0 && vode < 6)
       %# We can't use the function 'demo' directly here because it does
       %# not allow to run other functions within a demo.
       vexa = example (mfilename (), vode);

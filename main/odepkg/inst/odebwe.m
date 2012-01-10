@@ -362,7 +362,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
           %# that is the matrix pencil of the mass matrix and
           %# the right-hand-side's Jacobian. Perform a (sparse)
           %# LU-Decomposition afterwards.
-          if (vnewtit<=1) | (~vsimplified)
+          if (vnewtit<=1) || (~vsimplified)
             %# Get the mass matrix from the left-hand-side
             if (vhavemasshandle)   %# Handle only the dynamic mass matrix,
               if (vmassdependence) %# constant mass matrices have already

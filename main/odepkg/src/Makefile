@@ -20,6 +20,9 @@ else
   MKF77FILE = FFLAGS="$(FFLAGS)" $(MKOCTFILE)
 endif
 
+LAPACK_LIBS := $(shell mkoctfile -p LAPACK_LIBS)
+FLIBS := $(shell mkoctfile -p FLIBS)
+
 EXTERNALDIRS  = hairer cash daskr
 EXTERNALPACKS = $(patsubst %, %.tgz,  $(EXTERNALDIRS))
 EXTERNALDIFFS = $(patsubst %, %.diff, $(EXTERNALDIRS))
@@ -44,7 +47,8 @@ SOLVEROCTFILE = dldsolver.oct
 all : $(EXTERNALDIRS) $(SOLVEROCTFILE)
 
 $(SOLVEROCTFILE) : $(EXTERNALDIRS) $(SOLVEROBJECTS)
-	$(MKOCTFILE) $(SOLVEROBJECTS) -o $(SOLVEROCTFILE)
+	$(MKOCTFILE) $(SOLVEROBJECTS) -o $(SOLVEROCTFILE) \
+        $(LAPACK_LIBS) $(FLIBS)
 
 install :
 	@$(INSTALL) -d $(DESTDIR)$(MPATH)/odepkg

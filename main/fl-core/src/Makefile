@@ -1,8 +1,11 @@
 OCT = fl_compose.oct
 SRC := $(OCT:.oct=.cc)
 BASE := $(OCT:.oct=)
+
 ifdef COMSPEC 
+ifneq ($(shell uname -o),Cygwin)
 	ADDPARAM := -lpthreadVC2
+endif
 endif
 
 .phony: all

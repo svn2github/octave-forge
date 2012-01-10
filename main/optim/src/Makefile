@@ -2,7 +2,7 @@ ifndef MKOCTFILE
 MKOCTFILE := mkoctfile
 endif
 
-LAPACK_LIBS = $$(mkoctfile -p LAPACK_LIBS)
+LAPACK_LIBS := $(shell mkoctfile -p LAPACK_LIBS)
 
 all: __bfgsmin.oct numgradient.oct numhessian.oct samin.oct __disna_optim__.oct
 

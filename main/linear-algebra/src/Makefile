@@ -4,6 +4,8 @@ ifndef OCTAVE_FORGE
 MKOCTFILE = mkoctfile
 endif
 
+LAPACK_LIBS := $(shell mkoctfile -p LAPACK_LIBS)
+
 DEFINES = -DHAVE_CONFIG_H -Wall
 GSVD_OBJECTS = gsvd.o dbleGSVD.o CmplxGSVD.o 
 GSVD_TARGET = gsvd.oct
@@ -23,7 +25,7 @@ DEPENDS = $(GSVD_DEPENDS)
 all : $(TARGETS) pgmres.oct
 
 $(GSVD_TARGET) : $(GSVD_DEPENDS) $(GSVD_OBJECTS)
-	$(MKOCTFILE) $(DEFINES) $(GSVD_OBJECTS) -o $@
+	$(MKOCTFILE) $(DEFINES) $(GSVD_OBJECTS) -o $@ ${LAPACK_LIBS}
 
 $(GSVD_TEST) : $(GSVD_TARGET)
 
@@ -44,7 +46,7 @@ endif
 	$(MKOCTFILE) $(DEFINES) $< -o $@
 
 %.oct: %.cc
-	mkoctfile $(DEFINES) $< -o $@
+	mkoctfile $(DEFINES) $< -o $@ ${LAPACK_LIBS}
 
 .phony: test
 test: $(GSVD_TEST)

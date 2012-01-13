@@ -58,6 +58,7 @@ for k = 8:-1:2
 endfor
 
 hold off
+print -depsc2 anderson-figure1.eps
 
 figure (2)
 clf
@@ -70,6 +71,7 @@ for k = 8:-1:2
 endfor
 
 hold off
+print -depsc2 anderson-figure2.eps
 
 
 figure (3)
@@ -83,3 +85,4 @@ for k = 8:-1:2
 endfor
 
 hold off
+print -depsc2 anderson-figure3.eps

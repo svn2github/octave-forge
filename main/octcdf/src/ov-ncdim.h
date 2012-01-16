@@ -37,7 +37,6 @@ public:
 #   ifdef OV_NETCDF_VERBOSE
     octave_stdout << "constructor NULL " << this << endl;
 #   endif
-    abort();
   } 
 
   octave_ncdim(const octave_ncdim& ncdim_val):octave_base_value(), ncd(ncdim_val.ncd) { 

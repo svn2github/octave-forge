@@ -15,7 +15,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{qdot} =} dot (@var{q}, @var{omega})
+## @deftypefn {Function File} {@var{qdot} =} diff (@var{q}, @var{omega})
 ## Derivative of a quaternion.
 ##
 ## Let Q be a quaternion to transform a vector from a fixed frame to
@@ -24,26 +24,20 @@
 ## of Q is given by
 ##
 ## @example
-## Q' = dot(Q, omega)
+## Q' = diff(Q, omega)
 ## @end example
 ##
 ## If the passive convention is used (rotate the frame, not the vector),
 ## then
 ##
 ## @example
-## Q' = dot(Q,-omega)
+## Q' = diff(Q,-omega)
 ## @end example
 ## @end deftypefn
 
 ## Adapted from: qderiv by A. S. Hodel <a.s.hodel@eng.auburn.edu>
 
-function qd = dot (q, Omega)
-
-  ## FIXME: Use another name for this function.  There is already
-  ##        a "dot" command with different meaning:
-  ##        Loadable Function:  dot (X, Y, DIM) ...
-  ##        Compute the dot product of two vectors.
-  ##        This is equivalent to `sum (conj (X) .* Y, DIM)
+function qd = diff (q, Omega)
 
   if (nargin != 2)
     print_usage ();
@@ -66,6 +60,5 @@ endfunction
 %!shared q
 %! q = quaternion(3,1,0,0);
 
-%!assert(quaternion(0,0,0.5,1.5) == dot(q,[0 0 1]))
-%!assert(quaternion(0,0,2,1) == dot(q,[0 1 1]))
-
+%!assert(quaternion(0,0,0.5,1.5) == diff(q,[0 0 1]))
+%!assert(quaternion(0,0,2,1) == diff(q,[0 1 1]))

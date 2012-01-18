@@ -13,6 +13,7 @@ Methods
   @quaternion/columns
   @quaternion/conj
   @quaternion/diag
+  @quaternion/diff
   @quaternion/exp
   @quaternion/inv
   @quaternion/ispure

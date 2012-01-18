@@ -1,4 +1,4 @@
 test @quaternion/blkdiag
 test @quaternion/diag
-test @quaternion/dot
+test @quaternion/diff
 test @quaternion/log

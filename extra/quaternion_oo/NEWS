@@ -1,0 +1,14 @@
+Summary of important user-visible changes for releases of the control package
+
+===============================================================================
+quaternion-2.0.0   Release Date: 2012-xx-yy   Release Manager: Lukas Reichlin
+===============================================================================
+
+** First official release.  Its main features are:
+   -- Matrices and n-dimensional arrays of quaternions.
+   -- Overloaded operators due to the use of classes.
+   -- Operator semantics similar to Octave’s built-in complex numbers.
+   -- Vectorized code for crunching large quaternion arrays in a speedy manner.
+
+
+===============================================================================

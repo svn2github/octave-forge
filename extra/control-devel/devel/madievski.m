@@ -1,3 +1,5 @@
+%clear all, close all, clc;
+
 Ap1 = [  0.0         1.0
          0.0         0.0     ];
 
@@ -52,7 +54,7 @@ Dc = [   0.0     ];
 
 K = ss (Ac, Bc, Cc, Dc);
 
-Kr = btaconred (P, K, 4, 'weight', 'both', 'feedback', '-')
+Kr = btaconred (P, K, 4, 'feedback', '-')
 
 
 tau = 0.1;
@@ -63,22 +65,78 @@ s = tf ('s');
 F = 5 / (s + 5);
 
 L = P * K;
-Ld = Pd * Kd;
+%Ld = Pd * Kd;
+Lr = P * Kr;
 
 T = feedback (L);
-Td = feedback (Ld);
+%Td = feedback (Ld);
+Tr = feedback (Lr);
+
+w = {1e-2, 1e1};
 
 figure (1)
 step (T, 100)
 
 figure (2)
-bode (L)
+%bode (L)
+bode (K, w)
 
 figure (3)
-step (Td, 100)
+%step (Td, 100)
+step (Tr, 100)
 
 figure (4)
-bode (Ld)
+%bode (Ld)
+bode (Kr, w)
 
 figure (5)
-step (feedback (P*Kr), 100)
+%step (feedback (P*Kr), 100)
+
+
+
+[mag, pha, w] = bode (K, w);
+[magr, phar, wr] = bode (Kr, w);
+
+mag = 20 * log10 (mag);
+magr = 20 * log10 (magr);
+
+
+%figure (6)
+
+
+      xl_str = "Frequency [rad/s]";
+
+
+    subplot (2, 1, 1)
+    semilogx (w, mag, "b", wr, magr, "r")
+    axis ("tight")
+    ylim (__axis_margin__ (ylim))
+    grid ("on")
+    title ("Bode Diagrams of K and Kr")
+    ylabel ("Magnitude [dB]")
+
+    subplot (2, 1, 2)
+    semilogx (w, pha, "b", wr, phar, "r")
+    axis ("tight")
+    ylim (__axis_margin__ (ylim))
+    grid ("on")
+    xlabel (xl_str)
+    ylabel ("Phase [deg]")
+    legend ("K (8 states)", "Kr (4 states)", "location", "southwest")
+    
+    print -depsc2 madievski-bode.eps
+
+
+[y, t] = step (T, 100);
+[yr, tr] = step (Tr, 100);
+
+figure (6)
+plot (t, y, 'b', tr, yr, 'r')
+grid ('on')
+title ('Step Response of Closed Loop')
+xlabel ('Time [s]')
+ylabel ('Output [-]')
+legend ('K (8 states)', 'Kr (4 states)', 'Location', 'SouthEast')
+
+print -depsc2 madievski-step.eps
+

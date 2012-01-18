@@ -37,7 +37,7 @@ function varargout = subsref (obj, idx)
 
     __method__.scale = @(o,a) error(typeNotImplemented,'scale',o);
 
-    __method__.dot = @(o,a) Quaternion (dot (wrapperfield(o),a));
+    __method__.dot = @(o,a) Quaternion (diff (wrapperfield(o),a));
 
 
     __properties__ = struct();

@@ -29,7 +29,8 @@
 ##              and 'h'. See also the '--comment' option.
 ##
 ##  --license   License to use. Defaults to "GPL". Valid options are "GPL",
-##              "modified BSD", "FreeBSD", "simplified BSD" and "public domain".
+##              "LGPL", "AGPL", "modified BSD", "FreeBSD", "simplified BSD" and
+##              "public domain".
 ##
 ##  --replace   Replace existing copyright notice on the files for the new one.
 ##              A copyright notice is identified as the first block of comments
@@ -161,6 +162,42 @@ given ($license) {
              "",
              "You should have received a copy of the GNU General Public License along with",
              "this program; if not, see <http://www.gnu.org/licenses/>.",
+             );
+  }
+  when (/LGPL/i) {
+    @text = (
+             @copyR_line,
+             "",
+             "This program is free software; you can redistribute it and/or modify it under",
+             "the terms of the GNU Lesser General Public License as published by the Free",
+             "Software Foundation; either version 3 of the License, or (at your option) any",
+             "later version.",
+             "",
+             "This program is distributed in the hope that it will be useful, but WITHOUT",
+             "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or",
+             "FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License",
+             "for more details.",
+             "",
+             "You should have received a copy of the GNU Lesser General Public License",
+             "along with this program; if not, see <http://www.gnu.org/licenses/>.",
+             );
+  }
+  when (/AGPL/i) {
+    @text = (
+             @copyR_line,
+             "",
+             "This program is free software; you can redistribute it and/or modify it under",
+             "the terms of the GNU Affero General Public License as published by the Free",
+             "Software Foundation; either version 3 of the License, or (at your option) any",
+             "later version.",
+             "",
+             "This program is distributed in the hope that it will be useful, but WITHOUT",
+             "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or",
+             "FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License",
+             "for more details.",
+             "",
+             "You should have received a copy of the GNU Affero General Public License",
+             "along with this program; if not, see <http://www.gnu.org/licenses/>.",
              );
   }
   when (/modified BSD/i)   { @text = (@BSD_header, @{$BSD_clauses[0]}, @{$BSD_clauses[1]}, @{$BSD_clauses[2]}, @BSD_disclaimer); }

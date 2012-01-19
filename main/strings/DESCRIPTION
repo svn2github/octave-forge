@@ -5,7 +5,7 @@ Author: Various Authors
 Maintainer: The Octave Community
 Title: String Handling.
 Description: Additional manipulation functions
-Depends: octave (>= 2.9.7), control
+Depends: octave (>= 3.6.0), control
 Autoload: yes
 BuildRequires: pcre-devel
 License: See individual files

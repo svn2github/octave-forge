@@ -882,7 +882,7 @@ galois::exp (void) const
 template class base_lu <galois>;
 
 void
-LU::factor (const galois& a, const pivot_type& typ)
+galoisLU::factor (const galois& a, const pivot_type& typ)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
@@ -898,7 +898,7 @@ LU::factor (const galois& a, const pivot_type& typ)
     int jp = j;
 
     // Find the pivot and test for singularity
-    if (ptype == LU::ROW) { 
+    if (ptype == galoisLU::ROW) { 
       for (int i = j+1; i < a_nr; i++)
 	if (a_fact(i,j) > a_fact(jp,j))
 	  jp = i;
@@ -911,7 +911,7 @@ LU::factor (const galois& a, const pivot_type& typ)
     ipvt(j) = jp;
 
     if (a_fact(jp,j) != 0) {
-      if (ptype == LU::ROW) { 
+      if (ptype == galoisLU::ROW) { 
 	// Apply the interchange to columns 1:NC.
 	if (jp != j)
 	  for (int i = 0; i < a_nc; i++) {
@@ -962,7 +962,7 @@ LU::factor (const galois& a, const pivot_type& typ)
 }
 
 galois
-LU::L (void) const
+galoisLU::L (void) const
 {
   int a_nr = a_fact.rows ();
   int a_nc = a_fact.cols ();
@@ -981,7 +981,7 @@ LU::L (void) const
 }
 
 galois
-LU::U (void) const
+galoisLU::U (void) const
 {
   int a_nr = a_fact.rows ();
   int a_nc = a_fact.cols ();
@@ -1049,7 +1049,7 @@ galois::determinant (int& info) const
     info = 0;
     retval(0,0) = 1;
   } else {
-    LU fact (*this);
+    galoisLU fact (*this);
 
     if ( ! fact.singular()) {
       galois A (fact.a_fact);
@@ -1110,7 +1110,7 @@ galois::solve (const galois& b, int& info,
     return galois();
   } else if (nc > nr) {
     // Under-determined system, use column interchanges.
-    LU fact ((*this), LU::COL);
+    galoisLU fact ((*this), galoisLU::COL);
 
     if (fact.singular()) {
       info = -1;
@@ -1173,7 +1173,7 @@ galois::solve (const galois& b, int& info,
     }
     
   } else {
-    LU fact (*this);
+    galoisLU fact (*this);
 
     if (fact.singular()) {
       info = -1;

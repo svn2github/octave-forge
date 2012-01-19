@@ -131,7 +131,7 @@ public:
 };
 
 class
-LU : public base_lu <galois>
+galoisLU : public base_lu <galois>
 {
   friend class galois;
 public:
@@ -141,15 +141,15 @@ public:
     COL
   };
 
-  LU (void) : base_lu <galois> () { }
+  galoisLU (void) : base_lu <galois> () { }
 
-  LU (const galois& a, const pivot_type& typ) { factor (a, typ); }
+  galoisLU (const galois& a, const pivot_type& typ) { factor (a, typ); }
 
-  LU (const galois& a) { factor (a, LU::ROW); }
+  galoisLU (const galois& a) { factor (a, galoisLU::ROW); }
 
-  LU (const LU& a) : base_lu <galois> (a) { }
+  galoisLU (const galoisLU& a) : base_lu <galois> (a) { }
 
-  LU& operator = (const LU& a)
+  galoisLU& operator = (const galoisLU& a)
     {
       if (this != &a)
 	base_lu <galois> :: operator = (a);
@@ -157,7 +157,7 @@ public:
       return *this;
     }
 
-  ~LU (void) { }
+  ~galoisLU (void) { }
 
   galois L (void) const;
 

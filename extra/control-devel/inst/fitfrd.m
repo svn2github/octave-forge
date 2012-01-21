@@ -27,11 +27,15 @@
 ## LTI model containing frequency response data of a SISO system.
 ## @item n
 ## The desired order of the system to be fitted.  @code{n <= length(dat.w)}.
-## @item flag = 0
+## @item flag
+## The flag controls whether the returned system is stable and minimum-phase.
+## @table @var
+## @item 0
 ## The system zeros and poles are not constrained.  Default value.
-## @item flag = 1
+## @item 1
 ## The system zeros and poles will have negative real parts in the
 ## continuous-time case, or moduli less than 1 in the discrete-time case.
+## @end table
 ## @end table
 ##
 ## @strong{Outputs}

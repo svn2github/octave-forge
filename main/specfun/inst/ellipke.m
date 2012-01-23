@@ -1,17 +1,19 @@
-## Copyright (C) 2001 David Billinghurst
+## Copyright (C) 2001 David Billinghurst <David.Billinghurst@riotinto.com>
+## Copyright (C) 2001 Paul Kienzle <pkienzle@users.sf.net>
+## Copyright (C) 2003 Jaakko Ruohio
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or
-## (at your option) any later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
 ##
-## You should have received a copy of the GNU General Public License
-## along with this program; If not, see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{k}, @var{e}] =} ellipke (@var{m}[,@var{tol}])
@@ -26,14 +28,6 @@
 ## Functions, Dover, 1965, Chapter 17.
 ## @seealso{ellipj}
 ## @end deftypefn
-
-## Author: David Billinghurst <David.Billinghurst@riotinto.com>
-## Created: 31 January 2001
-## 2001-02-01 Paul Kienzle
-##   * vectorized
-##   * included function name in error messages
-## 2003-1-18 Jaakko Ruohio
-##   * extended for m < 0
 
 function [k,e] = ellipke( m )
 
@@ -94,12 +88,9 @@ function [k,e] = ellipke( m )
 
 endfunction
 
+## Test complete elliptic functions of first and second kind
+## against "exact" solution from Mathematica 3.0
 %!test
-%! ## Test complete elliptic functions of first and second kind
-%! ## against "exact" solution from Mathematica 3.0
-%! ##
-%! ## David Billinghurst <David.Billinghurst@riotinto.com>
-%! ## 1 February 2001
 %! m = [0.0; 0.01; 0.1; 0.5; 0.9; 0.99; 1.0 ];
 %! [k,e] = ellipke(m);
 %!

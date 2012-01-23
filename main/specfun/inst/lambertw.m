@@ -1,19 +1,17 @@
-%% Copyright (C) 1998 by Nicol N. Schraudolph
-%%
-%% This program is free software; you can redistribute and/or
-%% modify it under the terms of the GNU General Public
-%% License as published by the Free Software Foundation;
-%% either version 3, or (at your option) any later version.
-%%
-%% This program is distributed in the hope that it will be
-%% useful, but WITHOUT ANY WARRANTY; without even the implied
-%% warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-%% PURPOSE.  See the GNU General Public License for more
-%% details.
-%%
-%% You should have received a copy of the GNU General Public
-%% License along with this software; see the file COPYING.  If not,
-%% see <http://www.gnu.org/licenses/>.
+## Copyright (C) 1998 by Nicol N. Schraudolph <schraudo@inf.ethz.ch>
+##
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{x} = } lambertw (@var{z})
@@ -39,11 +37,6 @@
 ## Corless, Gonnet, Hare, Jeffrey, and Knuth (1996), `On the Lambert
 ## W Function', Advances in Computational Mathematics 5(4):329-359.
 ## @end deftypefn
-
-%% Author:   Nicol N. Schraudolph <schraudo@inf.ethz.ch>
-%% Version:  1.0
-%% Created:  07 Aug 1998
-%% Keywords: Lambert W Omega special transcendental function
 
 function w = lambertw(b,z)
     if (nargin == 1)

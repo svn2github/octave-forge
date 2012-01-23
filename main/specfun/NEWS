@@ -3,7 +3,7 @@ Summary of important user-visible changes for specfun 1.2.0:
 
  ** The following functions are new:
 
-      big_factorial
+      big_factorial  lfactorial
 
 
 Summary of important user-visible changes for specfun 1.1.0:

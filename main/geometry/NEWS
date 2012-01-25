@@ -1,6 +1,13 @@
 Summary of important user-visible changes for releases of the geometry package
 
 ===============================================================================
+geometry-1.4.0   Release Date: 2012-01-25   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* Added basic geometric graphs creation and manipulation.
+
+
+===============================================================================
 geometry-1.3.0   Release Date: 2011-11-24   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 

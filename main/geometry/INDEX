@@ -136,6 +136,8 @@ geometry >> Computational Geometry
  isCounterClockwise
  squareGrid
  triangleGrid
+Geometric graphs
+ 
 Input
  svgload
  svgnormalize

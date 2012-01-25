@@ -1,5 +1,5 @@
 %1
-dirlist = {"geom2d","io","polygons2d","shape2d","octclip"};
+dirlist = {"geom2d","io","polygons2d","shape2d","octclip", "graphs"};
 dirname = fileparts (canonicalize_file_name (mfilename ("fullpath")));
 
 %% If we are in Architecture dependent folder add from outside

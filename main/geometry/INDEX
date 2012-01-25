@@ -136,8 +136,13 @@ geometry >> Computational Geometry
  isCounterClockwise
  squareGrid
  triangleGrid
-Geometric graphs
- 
+Geometric graphs creation
+ delaunayGraph.m
+ knnGraph.m
+ voronoi2d.m
+Geometric graphs visualization
+ drawGraph.m
+Geometric graphs manipulation
 Input
  svgload
  svgnormalize

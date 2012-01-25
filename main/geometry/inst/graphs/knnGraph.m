@@ -70,4 +70,4 @@ endfunction
 %! nodes = rand(10, 2);
 %! edges = knnGraph(nodes);
 %! drawGraph(nodes, edges);
-
+%! axis tight

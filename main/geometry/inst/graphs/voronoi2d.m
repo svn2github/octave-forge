@@ -66,3 +66,4 @@ endfunction
 %!demo
 %! [n e f] = voronoi2d(rand(100, 2)*100);
 %! drawGraph(n, e);
+%! axis tight

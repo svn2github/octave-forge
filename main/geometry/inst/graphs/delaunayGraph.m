@@ -80,6 +80,7 @@ endfunction
 %! [nodes edges] = delaunayGraph(points);
 %! figure;
 %! drawGraph(nodes, edges);
+%! axis tight
 
 %!demo
 %! % WARNING 3d pltottig works correctly in Octave >= 3.6
@@ -89,3 +90,4 @@ endfunction
 %! figure;
 %! drawGraph(nodes, edges);
 %! view(3);
+%! axis tight

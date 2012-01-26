@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 by Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 by Philip Nienhuis <prnienhuis at users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -127,7 +127,7 @@
 ##    or COM interface (i.e, exclude POI interface). 
 ## @end example
 ##
-## @seealso xlswrite, xlsopen, xls2oct, xlsclose, xlsfinfo, oct2xls
+## @seealso {xlswrite, xlsopen, xls2oct, xlsclose, xlsfinfo, oct2xls}
 ##
 ## @end deftypefn
 
@@ -147,6 +147,7 @@
 ## 2011-04-11 Return upon empty xls struct from xlsopen()
 ## 2011-04-17 Suppress xlsopen messages (";" was missing)
 ## 2011-09-08 Minor code cleanup; included UNO & OXS support in test
+## 2012-01-26 Fixed "seealso" help string
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 

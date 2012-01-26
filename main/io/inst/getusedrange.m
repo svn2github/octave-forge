@@ -49,7 +49,7 @@
 ##    spreadsheet pointed to in struct xls3)
 ## @end example
 ##
-## @seealso xlsopen, xlsclose, odsopen, odsclose, xlsfinfo, odsfinfo
+## @seealso {xlsopen, xlsclose, odsopen, odsclose, xlsfinfo, odsfinfo}
 ##
 ## @end deftypefn
 
@@ -66,6 +66,7 @@
 ## 2011-05-06 Experimental support for Java/UNO bridge
 ## 2011-06-13 OpenXLS support added
 ## 2011-09-08 Style & layout updates
+## 2012-01-26 Fixed "seealso" help string
 ##
 ## Last subfunc update: 2011-06-29 (OXS)
 

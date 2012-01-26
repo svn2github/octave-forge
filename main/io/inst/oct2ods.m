@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@
 ##   Put a character string into cell B15 in sheet Oldsheet3
 ## @end example
 ##
-## @seealso ods2oct, odsopen, odsclose, odsread, odswrite, odsfinfo
+## @seealso {ods2oct, odsopen, odsclose, odsread, odswrite, odsfinfo}
 ##
 ## @end deftypefn
 
@@ -111,6 +111,7 @@
 ## 2011-03-23 First try of odfdom 0.8.7
 ## 2011-05-15 Experimental UNO support added
 ## 2011-11-18 Fixed bug in test for range parameter being character string
+## 2012-01-26 Fixed "seealso" help string
 ##
 ## Last update of subfunctions below: 2011-09-23
 

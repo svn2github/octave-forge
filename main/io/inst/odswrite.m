@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@
 ##   True (= numerical 1) in status if al went well) 
 ## @end example
 ##
-## @seealso odsread, oct2ods, ods2oct, odsopen, odsclose, odsfinfo
+## @seealso {odsread, oct2ods, ods2oct, odsopen, odsclose, odsfinfo}
 ##
 ## @end deftypefn
 
@@ -89,6 +89,7 @@
 ## 2010-11-13 Added note about required file extension in help text
 ## 2010-11-13 Added some input arg checks
 ## 2011-09-08 Minor filename error text adaptation
+## 2012-01-26 Fixed "seealso" help string
 
 function [ rstatus ] = odswrite (filename, data, wsh=1, range=[], reqintf=[])
 

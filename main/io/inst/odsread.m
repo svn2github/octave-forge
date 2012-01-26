@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -101,7 +101,7 @@
 ##   cell array Ra and the ranges from where the actual data came in limits)
 ## @end example
 ##
-## @seealso odsopen, ods2oct, oct2ods, odsclose, odswrite, odsfinfo, parsecell
+## @seealso {odsopen, ods2oct, oct2ods, odsclose, odswrite, odsfinfo, parsecell}
 ##
 ## @end deftypefn
 
@@ -115,6 +115,7 @@
 ## 2010-11-13 Added some input validity checks
 ## 2011-09-08 Catch empty ods structs after failed odsopen attempts
 ## 2011-09-18 Return empty output arg in case of empty rawarr
+## 2012-01-26 Fixed "seealso" help string
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 

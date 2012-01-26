@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,12 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@
 ##   [An, xls2, status] = xls2oct (xls2, 'Third_sheet');
 ## @end example
 ##
-## @seealso oct2xls, xlsopen, xlsclose, parsecell, xlsread, xlsfinfo, xlswrite 
+## @seealso {ct2xls, xlsopen, xlsclose, parsecell, xlsread, xlsfinfo, xlswrite }
 ##
 ## @end deftypefn
 
@@ -118,8 +118,9 @@
 ## 2011-03-29 Test for proper input xls struct extended
 ## 2011-05-18 Experimental UNO support added
 ## 2011-09-08 Minor code layout
+## 2012-01-26 Fixed "seealso" help string
 ##
-## Latest subfunc update: 2011-09-19
+## Latest subfunc update: 2012-01-26
 
 function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=[])
 
@@ -202,7 +203,7 @@ endfunction
 
 
 #====================================================================================
-## Copyright (C) 2009,2010 P.R. Nienhuis, <pr.nienhuis at hccnet.nl>
+## Copyright (C) 2009,2010,2011,2012 P.R. Nienhuis, <pr.nienhuis at hccnet.nl>
 ##
 ## based on mat2xls by Michael Goffioul (2007) <michael.goffioul@swing.be>
 ##
@@ -235,7 +236,7 @@ endfunction
 ##   Arr = xls2com2oct (xls, 'Second_sheet');
 ## @end example
 ##
-## @seealso xls2oct, oct2xls, xlsopen, xlsclose, xlsread, xlswrite
+## @seealso {xls2oct, oct2xls, xlsopen, xlsclose, xlsread, xlswrite}
 ##
 ## @end deftypefn
 
@@ -250,6 +251,7 @@ endfunction
 ## 2010-10-24 Added check for "live" ActiveX server
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2010-11-13 Catch empty sheets when no range was specified
+## 2012-01-26 Fixed "seealso" help string
 
 function [rawarr, xls, rstatus ] = xls2com2oct (xls, wsh, crange)
 
@@ -346,7 +348,7 @@ endfunction
 
 #==================================================================================
 
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -379,7 +381,7 @@ endfunction
 ##   B = xls2jpoi2oct (xls, 'Second_sheet', 'B3');
 ## @end example
 ##
-## @seealso xls2oct, oct2xls, xlsopen, xlsclose, xlsread, xlswrite, oct2jpoi2xls
+## @seealso {xls2oct, oct2xls, xlsopen, xlsclose, xlsread, xlswrite, oct2jpoi2xls}
 ##
 ## @end deftypefn
 
@@ -395,7 +397,8 @@ endfunction
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2010-11-13 Catch empty sheets when no range was specified
 ## 2010-11-14 Fixed sheet # index (was offset by -1) in call to getusedrange() in case
-#3            of text sheet name arg
+##            of text sheet name arg
+## 2012-01-26 Fixed "seealso" help string
 
 function [ rawarr, xls, rstatus ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_opts)
 
@@ -524,7 +527,7 @@ endfunction
 
 
 #==================================================================================
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -557,7 +560,7 @@ endfunction
 ##   B = xls2jxla2oct (xls, 'Second_sheet');
 ## @end example
 ##
-## @seealso xls2oct, oct2xls, xlsopen, xlsclose, xlsread, xlswrite, oct2jxla2xls
+## @seealso {xls2oct, oct2xls, xlsopen, xlsclose, xlsread, xlswrite, oct2jxla2xls}
 ##
 ## @end deftypefn
 
@@ -574,6 +577,7 @@ endfunction
 ## 2010-11-13 Catch empty sheets when no range was specified
 ## 2011-04-11 (Ron Goldman <ron@ocean.org.il>) Fixed missing months var, wrong arg
 ##      "     order in strsplit, wrong isTime condition
+## 2012-01-26 Fixed "seealso" help string
 
 function [ rawarr, xls, rstatus ] = xls2jxla2oct (xls, wsh, cellrange=[], spsh_opts)
 

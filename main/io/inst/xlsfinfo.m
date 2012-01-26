@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@
 ##    list of sheet names and -types) 
 ## @end example
 ##
-## @seealso oct2xls, xlsread, xls2oct, xlswrite
+## @seealso {oct2xls, xlsread, xls2oct, xlswrite}
 ##
 ## @end deftypefn
 
@@ -83,6 +83,7 @@
 ## 2011-03-26 Added OpenXLS support
 ## 2011-05-18 Experimental UNO support
 ## 2011-09-08 Some code simplifications
+## 2012-01-26 Fixed "seealso" help string
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 

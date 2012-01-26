@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@
 ##    and the Apache POI interface are requested)
 ## @end example
 ##
-## @seealso xlsclose, xlsread, xlswrite, xls2oct, oct2xls, xlsfinfo
+## @seealso {xlsclose, xlsread, xlswrite, xls2oct, oct2xls, xlsfinfo}
 ##
 ## @end deftypefn
 
@@ -105,6 +105,7 @@
 ## 2011-09-08 Minor code cleanup
 ##
 ## 2011-09-18 Latest subfunction update
+## 2012-01-26 Fixed "seealso" help string
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -392,7 +393,7 @@ function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 endfunction
 
 
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by

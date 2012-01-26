@@ -82,7 +82,7 @@
 ##   [xlso, status] = xls2oct ('arr', xlsi, 'Third_sheet', 'AA31:AB278');
 ## @end example
 ##
-## @seealso xls2oct, xlsopen, xlsclose, xlsread, xlswrite, xlsfinfo
+## @seealso {xls2oct, xlsopen, xlsclose, xlsread, xlswrite, xlsfinfo}
 ##
 ## @end deftypefn
 
@@ -107,6 +107,7 @@
 ## 2011-05-18 Experimental UNO support
 ## 2011-09-08 Bug fix in range arg check; code cleanup
 ## 2011-11-18 Fixed another bug in test for range parameter being character string
+## 2012-01-26 Fixed "seealso" help string
 
 ## Last script file update (incl. subfunctions): 2011-09-23
 
@@ -215,7 +216,7 @@ endfunction
 ##   xls = oct2com2xls (rand (10, 15), xls, 'Third_sheet', 'BF24');
 ## @end example
 ##
-## @seealso oct2xls, xls2oct, xlsopen, xlsclose, xlswrite, xlsread, xls2com2oct
+## @seealso {oct2xls, xls2oct, xlsopen, xlsclose, xlswrite, xlsread, xls2com2oct}
 ##
 ## @end deftypefn
 
@@ -241,6 +242,7 @@ endfunction
 ##     "      replaced by while loop
 ##     "      Added check for "live" ActiveX server
 ## 2010-11-12 Moved ptr struct check into main func
+## 2012-01-26 Fixed "seealso" help string
 
 function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -448,7 +450,7 @@ endfunction
 ##   [xlso, status] = xls2jpoi2oct ('arr', xlsi, 'Third_sheet', 'AA31');
 ## @end example
 ##
-## @seealso oct2xls, xls2oct, xlsopen, xlsclose, xlsread, xlswrite
+## @seealso {oct2xls, xls2oct, xlsopen, xlsclose, xlsread, xlswrite}
 ##
 ## @end deftypefn
 
@@ -468,6 +470,7 @@ endfunction
 ## 2010-10-27 File change tracking again refined, internal var 'changed' dropped
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2011-11-19 Try-catch added to allow for changed method name for nr of worksheets
+## 2012-01-26 Fixed "seealso" help string
 
 function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -610,7 +613,7 @@ endfunction
 ##   [xlso, status] = oct2jxla2oct ('arr', xlsi, 'Third_sheet', 'AA31');
 ## @end example
 ##
-## @seealso oct2xls, xls2oct, xlsopen, xlsclose, xlsread, xlswrite, xls2jxla2oct
+## @seealso {oct2xls, xls2oct, xlsopen, xlsclose, xlsread, xlswrite, xls2jxla2oct}
 ##
 ## @end deftypefn
 
@@ -632,6 +635,7 @@ endfunction
 ##     "      internal variable 'changed'
 ## 2010-10-27 File change tracking again refined
 ## 2010-11-12 Moved ptr struct check into main func
+## 2012-01-26 Fixed "seealso" help string
 
 function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@
 ##   (Close spreadsheet file pointed to in pointer struct ods1; ods1 is reset)
 ## @end example
 ##
-## @seealso odsopen, odsread, odswrite, ods2oct, oct2ods, odsfinfo, chk_spreadsheet_support
+## @seealso {odsopen, odsread, odswrite, ods2oct, oct2ods, odsfinfo, chk_spreadsheet_support}
 ##
 ## @end deftypefn
 
@@ -64,6 +64,7 @@
 ## 2011-05-07 In case of UNO, soffice now properly closed using xDesk
 ## 2011-05-18 Saving newly created files using UNO supported now
 ## 2011-09-08 FIXME - closing OOo kills all other OOo invocations (known Java-UNO issue)
+## 2012-01-26 Fixed "seealso" help string
 
 function [ ods ] = odsclose (ods, varargs)
 

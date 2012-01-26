@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@
 ##    the jOpenDocument interface is requested)
 ## @end example
 ##
-## @seealso odsclose, odsread, ods2oct, odsfinfo, chk_spreadsheet_support
+## @seealso {odsclose, odsread, ods2oct, odsfinfo, chk_spreadsheet_support}
 ##
 ## @end deftypefn
 
@@ -89,6 +89,7 @@
 ##      "     Multiple requested interfaces now possible 
 ## 2011-09-03 Reset chkintf if no ods support was found to allow full interface rediscovery
 ##            (otherwise javaclasspath additions will never be picked up)
+## 2012-01-26 Fixed "seealso" help string
 ##
 ## Latest change on subfunctions below: 2011-09-18
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@
 ##    list of sheet names) 
 ## @end example
 ##
-## @seealso odsread, odsopen, ods2oct, odsclose
+## @seealso {odsread, odsopen, ods2oct, odsclose}
 ##
 ## @end deftypefn
 
@@ -73,6 +73,7 @@
 ## 2011-03-23 Adapted to odfdom 0.8.7 (changed getXPath method call)
 ## 2011-05-07 Experimental UNO support added
 ## 2011-09-03 Normal return in case of no ODS support (empty ods struct)
+## 2012-01-26 Fixed "seealso" help string
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 

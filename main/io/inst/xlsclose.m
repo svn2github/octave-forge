@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@
 ##   (Close spreadsheet file pointed to in pointer struct xls1; xls1 is reset)
 ## @end example
 ##
-## @seealso xlsopen, xlsread, xlswrite, xls2oct, oct2xls, xlsfinfo
+## @seealso {xlsopen, xlsread, xlswrite, xls2oct, oct2xls, xlsfinfo}
 ##
 ## @end deftypefn
 
@@ -71,6 +71,7 @@
 ## 2011-03-26 Added OpenXLS support
 ## 2011-05-18 Added experimental UNO support, incl. saving newly created files
 ## 2011-09-08 Bug fix in check for filename input arg
+## 2012-01-26 Fixed "seealso" help string
 
 function [ xls ] = xlsclose (xls, varargs)
 

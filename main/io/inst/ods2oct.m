@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <pr.nienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <pr.nienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@
 ##   [An, ods2, status] = ods2oct (ods2, 'Third_sheet');
 ## @end example
 ##
-## @seealso odsopen, odsclose, parsecell, odsread, odsfinfo, oct2ods, odswrite
+## @seealso {odsopen, odsclose, parsecell, odsread, odsfinfo, oct2ods, odswrite}
 ##
 ## @end deftypefn
 
@@ -113,6 +113,7 @@
 ## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to here
 ## 2011-05-06 Experimental UNO support
 ## 2011-09-18 Set rstatus var here
+## 2012-01-26 Fixed "seealso" help string
 ##
 ## (Latest update of subfunctions below: 2011-09-19)
 

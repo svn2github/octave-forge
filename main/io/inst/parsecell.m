@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@
 ##    text data into array Tn.)
 ## @end example
 ##
-## @seealso xlsread, odsread, xls2oct, ods2oct
+## @seealso {xlsread, odsread, xls2oct, ods2oct}
 ##
 ## @end deftypefn
 
@@ -62,6 +62,7 @@
 ## 2011-05-17 Fixed subscript indexing bug in cropping section when rawarr is
 ##      "     numeric scalar
 ## 2011-09-08 Copyright string updated
+## 2012-01-26 Fixed "seealso" help string
 
 function [ numarr, txtarr, lim ] = parsecell (rawarr, arg2=[])
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@
 ##   True (= numerical 1) in status if al went well) 
 ## @end example
 ##
-## @seealso xlsread, oct2xls, xls2oct, xlsopen, xlsclose, xlsfinfo
+## @seealso {xlsread, oct2xls, xls2oct, xlsopen, xlsclose, xlsfinfo}
 ##
 ## @end deftypefn
 
@@ -97,6 +97,7 @@
 ##	          avoid unneeded error message clutter
 ## 2010-10-27 Changed range -> crange to unhide other range functions
 ## 2011-09-08 Minor code syntax updates
+## 2012-01-26 Fixed "seealso" help string
 
 function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 
@@ -154,14 +155,14 @@ function [ rstatus ] = xlswrite (filename, arr, arg3, arg4, arg5)
 	endif
 
 	unwind_protect				# Needed to be sure Excel can be closed i.c.o. errors
-	xls_ok = 0;
-	xls = xlsopen (filename, 1, reqintf);
-	xls_ok = 1;
+    xls_ok = 0;
+    xls = xlsopen (filename, 1, reqintf);
+    xls_ok = 1;
 
-	[xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
+    [xls, rstatus] = oct2xls (arr(1:nr, 1:nc), xls, wsh, topleft);
 
 	unwind_protect_cleanup
-	if (xls_ok), xls = xlsclose (xls); endif
+    if (xls_ok), xls = xlsclose (xls); endif
 
 	end_unwind_protect
 

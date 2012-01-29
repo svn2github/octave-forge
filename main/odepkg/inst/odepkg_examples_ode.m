@@ -1,4 +1,4 @@
-%# Copyright (C) 2008, Thomas Treichl <thomas.treichl@gmx.net>
+%# Copyright (C) 2008, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -41,7 +41,7 @@ function [] = odepkg_examples_ode ()
        '   your patch with your added example to the OdePkg developer team.\n', ...
        '\n' ]);
     vode = input ('Please choose a number from above or press <Enter> to return: ');
-    clc; if (vode > 0 && vode < 6)
+    clc; if (vode > 0 & vode < 6)
       %# We can't use the function 'demo' directly here because it does
       %# not allow to run other functions within a demo.
       vexa = example (mfilename (), vode);
@@ -66,7 +66,7 @@ function [] = odepkg_examples_ode ()
 
 %!demo
 %! # In this example the non-stiff "Van der Pol" equation (mu = 1) is
-%! # solved in forward and backward direction and the results are
+%! # solved in forward and backward direction and the results are 
 %! # displayed in a figure after solving. Read about the Van der Pol
 %! # oscillator at http://en.wikipedia.org/wiki/Van_der_Pol_oscillator.
 %!
@@ -92,7 +92,7 @@ function [] = odepkg_examples_ode ()
 
 %!demo
 %! # In this example a simple "pendulum with damping" is solved and the
-%! # results are displayed in a figure while solving. Read about the
+%! # results are displayed in a figure while solving. Read about the 
 %! # pendulum with damping at
 %! #   http://en.wikipedia.org/wiki/Pendulum
 %!
@@ -113,7 +113,7 @@ function [] = odepkg_examples_ode ()
 %! # and the results are plot in a figure after solving. Read about
 %! # the Lorenz attractor at
 %! #   http://en.wikipedia.org/wiki/Lorenz_equation
-%! #
+%! # 
 %! # The upper left subfigure shows the three results of the integration
 %! # over time. The upper right subfigure shows the force f in a two
 %! # dimensional (x,y) plane as well as the lower left subfigure shows
@@ -129,13 +129,13 @@ function [] = odepkg_examples_ode ()
 %! A = odeset ('InitialStep', 1e-3, 'MaxStep', 1e-1);
 %! [t, y] = ode54 (@florenz, [0 25], [3 15 1], A);
 %!
-%! subplot (2, 2, 1); grid ('on');
+%! subplot (2, 2, 1); grid ('on'); 
 %!   plot (t, y(:,1), '-b', t, y(:,2), '-g', t, y(:,3), '-r');
 %!   legend ('f_x(t)', 'f_y(t)', 'f_z(t)');
-%! subplot (2, 2, 2); grid ('on');
+%! subplot (2, 2, 2); grid ('on'); 
 %!   plot (y(:,1), y(:,2), '-b');
 %!   legend ('f_{xyz}(x, y)');
-%! subplot (2, 2, 3); grid ('on');
+%! subplot (2, 2, 3); grid ('on'); 
 %!   plot (y(:,2), y(:,3), '-b');
 %!   legend ('f_{xyz}(y, z)');
 %! subplot (2, 2, 4); grid ('on');
@@ -149,7 +149,7 @@ function [] = odepkg_examples_ode ()
 %! #   http://en.wikipedia.org/wiki/R%C3%B6ssler_attractor
 %! #
 %! # The upper left subfigure shows the three results of the integration
-%! # over time. The upper right subfigure shows the force f in a two
+%! # over time. The upper right subfigure shows the force f in a two 
 %! # dimensional (x,y) plane as well as the lower left subfigure shows
 %! # the force in the (y,z) plane. The three dimensional force is plot
 %! # in the lower right subfigure.
@@ -163,14 +163,14 @@ function [] = odepkg_examples_ode ()
 %! A = odeset ('MaxStep', 1e-1);
 %! [t, y] = ode78 (@froessler, [0 70], [0.1 0.3 0.1], A);
 %!
-%! subplot (2, 2, 1); grid ('on');
+%! subplot (2, 2, 1); grid ('on'); 
 %!   plot (t, y(:,1), '-b;f_x(t);', t, y(:,2), '-g;f_y(t);', \
 %!         t, y(:,3), '-r;f_z(t);');
-%! subplot (2, 2, 2); grid ('on');
+%! subplot (2, 2, 2); grid ('on'); 
 %!   plot (y(:,1), y(:,2), '-b;f_{xyz}(x, y);');
-%! subplot (2, 2, 3); grid ('on');
+%! subplot (2, 2, 3); grid ('on'); 
 %!   plot (y(:,2), y(:,3), '-b;f_{xyz}(y, z);');
-%! subplot (2, 2, 4); grid ('on');
+%! subplot (2, 2, 4); grid ('on'); 
 %!   plot3 (y(:,1), y(:,2), y(:,3), '-b;f_{xyz}(x, y, z);');
 
 %# Local Variables: ***

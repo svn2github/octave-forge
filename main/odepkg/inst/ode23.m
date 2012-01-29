@@ -1,4 +1,4 @@
-%# Copyright (C) 2006-2011, Thomas Treichl <thomas.treichl@gmx.net>
+%# Copyright (C) 2006-2011, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -19,34 +19,13 @@
 %# @deftypefnx {Command} {[@var{sol}] =} ode23 (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 %# @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} ode23 (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 %#
-%# This function file can be used to solve a set of non--stiff ordinary differential
-%# equations (non--stiff ODEs) or non--stiff differential algebraic equations
-%# (non--stiff DAEs) with the well known explicit Runge--Kutta method of order (2,3).
+%# This function file can be used to solve a set of non--stiff ordinary differential equations (non--stiff ODEs) or non--stiff differential algebraic equations (non--stiff DAEs) with the well known explicit Runge--Kutta method of order (2,3).
 %#
-%# If this function is called with no return argument then plot the solution over
-%# time in a figure window while solving the set of ODEs that are defined in a
-%# function and specified by the function handle @var{@@fun}. The second input
-%# argument @var{slot} is a double vector that defines the time slot, @var{init}
-%# is a double vector that defines the initial values of the states, @var{opt}
-%# can optionally be a structure array that keeps the options created with the
-%# command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally
-%# be other input arguments of any type that have to be passed to the function
-%# defined by @var{@@fun}.
+%# If this function is called with no return argument then plot the solution over time in a figure window while solving the set of ODEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.
 %#
-%# If this function is called with one return argument then return the solution
-%# @var{sol} of type structure array after solving the set of ODEs. The solution
-%# @var{sol} has the fields @var{x} of type double column vector for the steps
-%# chosen by the solver, @var{y} of type double column vector for the solutions
-%# at each time step of @var{x}, @var{solver} of type string for the solver name
-%# and optionally the extended time stamp information @var{xe}, the extended
-%# solution information @var{ye} and the extended index information @var{ie} all
-%# of type double column vector that keep the informations of the event function
-%# if an event function handle is set in the option argument @var{opt}.
+%# If this function is called with one return argument then return the solution @var{sol} of type structure array after solving the set of ODEs. The solution @var{sol} has the fields @var{x} of type double column vector for the steps chosen by the solver, @var{y} of type double column vector for the solutions at each time step of @var{x}, @var{solver} of type string for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector that keep the informations of the event function if an event function handle is set in the option argument @var{opt}.
 %#
-%# If this function is called with more than one return argument then return the
-%# time stamps @var{t}, the solution values @var{y} and optionally the extended
-%# time stamp information @var{xe}, the extended solution information @var{ye}
-%# and the extended index information @var{ie} all of type double column vector.
+%# If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.
 %#
 %# For example, solve an anonymous implementation of the Van der Pol equation
 %#
@@ -394,12 +373,12 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
     if (all (vdelta <= vtau))
       vtimestamp = vtimestamp + vstepsize;
       vu = y3.'; %# MC2001: the higher order estimation as "local extrapolation"
-      %# Save the solution every vodeoptions.OutputSave steps
-      if (mod (vcntloop-1,vodeoptions.OutputSave) == 0)
+      %# Save the solution every vodeoptions.OutputSave steps             
+      if (mod (vcntloop-1,vodeoptions.OutputSave) == 0)             
         vretvaltime(vcntsave,:) = vtimestamp;
         vretvalresult(vcntsave,:) = vu;
-        vcntsave = vcntsave + 1;
-      end
+        vcntsave = vcntsave + 1;    
+      end     
       vcntloop = vcntloop + 1; vcntiter = 0;
 
       %# Call plot only if a valid result has been found, therefore this
@@ -417,12 +396,12 @@ function [varargout] = ode23 (vfun, vslot, vinit, varargin)
           end
           if (vhaveoutputselection)
             vapproxvals = vapproxvals(vodeoptions.OutputSel);
-          end
+          end          
           vpltret = feval (vodeoptions.OutputFcn, vapproxtime, ...
-            vapproxvals, [], vfunarguments{:});
+            vapproxvals, [], vfunarguments{:});          
           if vpltret %# Leave refinement loop
             break;
-          end
+          end         
         end
         if (vpltret) %# Leave main loop
           vunhandledtermination = false;

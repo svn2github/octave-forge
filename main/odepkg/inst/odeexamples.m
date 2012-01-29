@@ -1,4 +1,4 @@
-%# Copyright (C) 2007-2011, Thomas Treichl <thomas.treichl@gmx.net>
+%# Copyright (C) 2007-2011, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,7 @@
 
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{}] =} odeexamples (@var{})
-%# Open the differential equations examples menu and allow the user to select a
-%# submenu of ODE, DAE, IDE or DDE examples.
+%# Open the differential equations examples menu and allow the user to select a submenu of ODE, DAE, IDE or DDE examples.
 %# @end deftypefn
 
 function [] = odeexamples (varargin)

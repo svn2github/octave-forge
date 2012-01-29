@@ -19,34 +19,13 @@
 %# @deftypefnx {Command} {[@var{sol}] =} odebwe (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 %# @deftypefnx {Command} {[@var{t}, @var{y}, [@var{xe}, @var{ye}, @var{ie}]] =} odebwe (@var{@@fun}, @var{slot}, @var{init}, [@var{opt}], [@var{par1}, @var{par2}, @dots{}])
 %#
-%# This function file can be used to solve a set of stiff ordinary differential
-%# equations (stiff ODEs) or stiff differential algebraic equations (stiff DAEs)
-%# with the Backward Euler method.
+%# This function file can be used to solve a set of stiff ordinary differential equations (stiff ODEs) or stiff differential algebraic equations (stiff DAEs) with the Backward Euler method.
 %#
-%# If this function is called with no return argument then plot the solution over
-%# time in a figure window while solving the set of ODEs that are defined in a
-%# function and specified by the function handle @var{@@fun}. The second input
-%# argument @var{slot} is a double vector that defines the time slot, @var{init}
-%# is a double vector that defines the initial values of the states, @var{opt}
-%# can optionally be a structure array that keeps the options created with the
-%# command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally
-%# be other input arguments of any type that have to be passed to the function
-%# defined by @var{@@fun}.
+%# If this function is called with no return argument then plot the solution over time in a figure window while solving the set of ODEs that are defined in a function and specified by the function handle @var{@@fun}. The second input argument @var{slot} is a double vector that defines the time slot, @var{init} is a double vector that defines the initial values of the states, @var{opt} can optionally be a structure array that keeps the options created with the command @command{odeset} and @var{par1}, @var{par2}, @dots{} can optionally be other input arguments of any type that have to be passed to the function defined by @var{@@fun}.
 %#
-%# If this function is called with one return argument then return the solution
-%# @var{sol} of type structure array after solving the set of ODEs. The solution
-%# @var{sol} has the fields @var{x} of type double column vector for the steps
-%# chosen by the solver, @var{y} of type double column vector for the solutions
-%# at each time step of @var{x}, @var{solver} of type string for the solver name
-%# and optionally the extended time stamp information @var{xe}, the extended
-%# solution information @var{ye} and the extended index information @var{ie}
-%# all of type double column vector that keep the informations of the event
-%# function if an event function handle is set in the option argument @var{opt}.
+%# If this function is called with one return argument then return the solution @var{sol} of type structure array after solving the set of ODEs. The solution @var{sol} has the fields @var{x} of type double column vector for the steps chosen by the solver, @var{y} of type double column vector for the solutions at each time step of @var{x}, @var{solver} of type string for the solver name and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector that keep the informations of the event function if an event function handle is set in the option argument @var{opt}.
 %#
-%# If this function is called with more than one return argument then return the
-%# time stamps @var{t}, the solution values @var{y} and optionally the extended
-%# time stamp information @var{xe}, the extended solution information @var{ye}
-%# and the extended index information @var{ie} all of type double column vector.
+%# If this function is called with more than one return argument then return the time stamps @var{t}, the solution values @var{y} and optionally the extended time stamp information @var{xe}, the extended solution information @var{ye} and the extended index information @var{ie} all of type double column vector.
 %#
 %# For example, solve an anonymous implementation of the Van der Pol equation
 %#
@@ -103,7 +82,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
     end
 
   else %# if (nargin == 3)
-    vodeoptions = odeset;
+    vodeoptions = odeset; 
     vfunarguments = {};
   end
 
@@ -115,7 +94,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
     vstepsizefixed = true;
   else
     vstepsizefixed = false;
-  end
+  end  
   
   %# The adaptive method require a second estimate for
   %# the comparsion, while the fixed step size algorithm
@@ -224,7 +203,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
   elseif (isa (vodeoptions.Jacobian, 'function_handle'))
     vhavejachandle = true; %# jac defined by a function handle
   else %# no Jacobian - we will use numerical differentiation
-    vhavejachandle = false;
+    vhavejachandle = false; 
   end
   
   %# Implementation of the option Mass has been finished. This option
@@ -239,7 +218,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
 
   %# Implementation of the option MStateDependence has been finished.
   %# This option can be set by the user to another value than default
-  %# value.
+  %# value. 
   if (strcmp (vodeoptions.MStateDependence, 'none'))
     vmassdependence = false;
   else vmassdependence = true;
@@ -254,7 +233,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
   if (~isequal (vodeoptions.Refine, vodetemp.Refine))
     warning ('OdePkg:InvalidArgument', ...
       'Option "Refine" will be ignored by this solver');
-  end
+  end   
   if (~isequal (vodeoptions.JPattern, vodetemp.JPattern))
     warning ('OdePkg:InvalidArgument', ...
       'Option "JPattern" will be ignored by this solver');
@@ -284,7 +263,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
       'Option "BDF" will be ignored by this solver');
   end
 
-  %# Starting the initialisation of the core solver odebwe
+  %# Starting the initialisation of the core solver odebwe 
   vtimestamp  = vslot(1,1);           %# timestamp = start time
   vtimelength = length (vslot);       %# length needed if fixed steps
   vtimestop   = vslot(1,vtimelength); %# stop time = last value
@@ -307,7 +286,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
       vretout = vretvalresult(vodeoptions.OutputSel);
     else
       vretout = vretvalresult;
-    end
+    end     
     feval (vodeoptions.OutputFcn, vslot.', ...
       vretout.', 'init', vfunarguments{:});
   end
@@ -319,9 +298,9 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
   end
 
   %# Initialize parameters and counters
-  vcntloop = 2; vcntcycles = 1; vu = vinit; vcntsave = 2;
-  vunhandledtermination = true; vpow = 1/2; vnpds = 0;
-  vcntiter = 0; vcntnewt = 0; vndecomps = 0; vnlinsols = 0;
+  vcntloop = 2; vcntcycles = 1; vu = vinit; vcntsave = 2; 
+  vunhandledtermination = true; vpow = 1/2; vnpds = 0; 
+  vcntiter = 0; vcntnewt = 0; vndecomps = 0; vnlinsols = 0; 
   
   %# the following option enables the simplified Newton method
   %# which evaluates the Jacobian only once instead of the
@@ -337,9 +316,9 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
       vstepsize = vtimestop - vdirection * vtimestamp;
     end
     
-    %# Run the time integration for each estimator
+    %# Run the time integration for each estimator 
     %# from vtimestamp -> vtimestamp+vstepsize
-    for j = 1:vestimators
+    for j = 1:vestimators      
       %# Initial value (result of the previous timestep)
       y0 = vu;
       %# Initial guess for Newton-Raphson
@@ -348,7 +327,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
       %# comparsion, but two steps by the Backward Euler
       %# method
       for i=1:j
-        % Initialize the time stepping parameters
+        % Initialize the time stepping parameters 
         vthestep = vstepsize/j;
         vthetime = vtimestamp + i*vthestep;
         vnewtit  = 1;
@@ -362,7 +341,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
           %# that is the matrix pencil of the mass matrix and
           %# the right-hand-side's Jacobian. Perform a (sparse)
           %# LU-Decomposition afterwards.
-          if (vnewtit<=1) || (~vsimplified)
+          if (vnewtit<=1) | (~vsimplified)
             %# Get the mass matrix from the left-hand-side
             if (vhavemasshandle)   %# Handle only the dynamic mass matrix,
               if (vmassdependence) %# constant mass matrices have already
@@ -380,12 +359,12 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
             elseif isempty(vodeoptions.Jacobian) %# If no Jacobian is given
               vjac = feval(@jacobian, vfun, vthetime,y(j,:)',...
                 vfunarguments);    %# then we differentiate
-            end
+            end            
             vnpds = vnpds + 1;
             vfulljac  = vmass/vthestep - vjac;
-            %# one could do a matrix decomposition of vfulljac here,
+            %# one could do a matrix decomposition of vfulljac here, 
             %# but the choice of decomposition depends on the problem
-            %# and therefore we use the backslash-operator in row 374
+            %# and therefore we use the backslash-operator in row 374 
           end
           
           %# Compute the residual
@@ -393,8 +372,8 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
           vresnrm(vnewtit+1) = norm(vres,inf);
           %# Solve the linear system
           y(j,:) = vfulljac\(-vres+vfulljac*y(j,:)');
-          %# the backslash operator decomposes the matrix
-          %# and solves the system in a single step.
+          %# the backslash operator decomposes the matrix 
+          %# and solves the system in a single step. 
           vndecomps = vndecomps + 1;
           vnlinsols = vnlinsols + 1;
           %# Prepare next iteration
@@ -408,7 +387,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
         %# Save intermediate solution as initial value
         %# for the next intermediate step
         y0 = y(j,:);
-        %# Count all Newton iterations
+        %# Count all Newton iterations 
         vcntnewt = vcntnewt + (vnewtit-1);
       end %# for steps
       
@@ -430,8 +409,8 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
       y3 = y2 + (y2-y1);
     end
     
-    %# If Newton did not converge, repeat step with reduced
-    %# step size, otherwise calculate the absolute local
+    %# If Newton did not converge, repeat step with reduced 
+    %# step size, otherwise calculate the absolute local 
     %# truncation error and the acceptable error
     if vresnrm(vnewtit)>vodeoptions.NewtonTol
       vdelta = 2; vtau = 1;
@@ -453,12 +432,12 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
       vtimestamp = vtimestamp + vstepsize;
       vu = y2; % or y3 if we want the extrapolation....
 
-      %# Save the solution every vodeoptions.OutputSave steps
-      if (mod (vcntloop-1,vodeoptions.OutputSave) == 0)
+      %# Save the solution every vodeoptions.OutputSave steps             
+      if (mod (vcntloop-1,vodeoptions.OutputSave) == 0)             
         vretvaltime(vcntsave,:) = vtimestamp;
         vretvalresult(vcntsave,:) = vu;
-        vcntsave = vcntsave + 1;
-      end
+        vcntsave = vcntsave + 1;    
+      end     
       vcntloop = vcntloop + 1; vcntiter = 0;
 
       %# Call plot only if a valid result has been found, therefore this
@@ -469,12 +448,12 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
           vpltout = vu(vodeoptions.OutputSel);
         else
           vpltout = vu;
-        end
+        end          
         vpltret = feval (vodeoptions.OutputFcn, vtimestamp, ...
-          vpltout.', [], vfunarguments{:});
+          vpltout.', [], vfunarguments{:});          
         if vpltret %# Leave loop
           vunhandledtermination = false; break;
-        end
+        end         
       end
 
       %# Call event only if a valid result has been found, therefore this
@@ -496,7 +475,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
     if (~vstepsizefixed)
       %# 20080425, reported by Marco Caliari
       %# vdelta cannot be negative (because of the absolute value that
-      %# has been introduced) but it could be 0, then replace the zeros
+      %# has been introduced) but it could be 0, then replace the zeros 
       %# with the maximum value of vdelta
       vdelta(find (vdelta == 0)) = max (vdelta);
       %# It could happen that max (vdelta) == 0 (ie. that the original
@@ -572,7 +551,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
   if (mod (vcntloop-2,vodeoptions.OutputSave) ~= 0)
     vretvaltime(vcntsave,:) = vtimestamp;
     vretvalresult(vcntsave,:) = vu;
-  end
+  end 
 
   %# Print additional information if option Stats is set
   if (strcmp (vodeoptions.Stats, 'on'))
@@ -597,7 +576,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
     varargout{1}.x = vretvaltime;   %# Time stamps are saved in field x
     varargout{1}.y = vretvalresult; %# Results are saved in field y
     varargout{1}.solver = 'odebwe'; %# Solver name is saved in field solver
-    if (vhaveeventfunction)
+    if (vhaveeventfunction) 
       varargout{1}.ie = vevent{2};  %# Index info which event occured
       varargout{1}.xe = vevent{3};  %# Time info when an event occured
       varargout{1}.ye = vevent{4};  %# Results when an event occured
@@ -620,7 +599,7 @@ function [varargout] = odebwe (vfun, vslot, vinit, varargin)
     varargout{3} = [];              %# LabMat doesn't accept lines like
     varargout{4} = [];              %# varargout{3} = varargout{4} = [];
     varargout{5} = [];
-    if (vhaveeventfunction)
+    if (vhaveeventfunction) 
       varargout{3} = vevent{3};     %# Time info when an event occured
       varargout{4} = vevent{4};     %# Results when an event occured
       varargout{5} = vevent{2};     %# Index info which event occured
@@ -645,7 +624,7 @@ function df = jacobian(vfun,vthetime,vtheinput,vfunarguments);
      end
      vtheinput(j) = vbuffer + vh;
      df(:,j) = (feval(vfun,vthetime,vtheinput,...
-                vfunarguments{:}) - vfun0) / vh;
+                vfunarguments{:}) - vfun0) / vh;   
      vtheinput(j) = vbuffer;
   end
 end

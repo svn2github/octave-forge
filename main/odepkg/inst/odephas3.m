@@ -1,4 +1,4 @@
-%# Copyright (C) 2006-2011, Thomas Treichl <thomas.treichl@gmx.net>
+%# Copyright (C) 2006-2011, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -17,31 +17,19 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{ret}] =} odephas3 (@var{t}, @var{y}, @var{flag})
 %#
-%# Open a new figure window and plot the first result from the variable @var{y}
-%# that is of type double column vector over the second and the third result
-%# from the variable @var{y} while solving. The types and the values of the
-%# input parameter @var{t} and the output parameter @var{ret} depend on the
-%# input value @var{flag} that is of type string. If @var{flag} is
+%# Open a new figure window and plot the first result from the variable @var{y} that is of type double column vector over the second and the third result from the variable @var{y} while solving. The types and the values of the input parameter @var{t} and the output parameter @var{ret} depend on the input value @var{flag} that is of type string. If @var{flag} is
 %# @table @option
 %# @item  @code{"init"}
-%# then @var{t} must be a double column vector of length 2 with the first and
-%# the last time step and nothing is returned from this function,
+%# then @var{t} must be a double column vector of length 2 with the first and the last time step and nothing is returned from this function,
 %# @item  @code{""}
-%# then @var{t} must be a double scalar specifying the actual time step and the
-%# return value is false (resp. value 0) for 'not stop solving',
+%# then @var{t} must be a double scalar specifying the actual time step and the return value is false (resp. value 0) for 'not stop solving',
 %# @item  @code{"done"}
-%# then @var{t} must be a double scalar specifying the last time step and
-%# nothing is returned from this function.
+%# then @var{t} must be a double scalar specifying the last time step and nothing is returned from this function.
 %# @end table
 %#
-%# This function is called by a OdePkg solver function if it was specified in an
-%# OdePkg options structure with the @command{odeset}. This function is an
-%# OdePkg internal helper function therefore it should never be necessary that
-%# this function is called directly by a user. There is only little error
-%# detection implemented in this function file to achieve the highest performance.
+%# This function is called by a OdePkg solver function if it was specified in an OdePkg options structure with the @command{odeset}. This function is an OdePkg internal helper function therefore it should never be necessary that this function is called directly by a user. There is only little error detection implemented in this function file to achieve the highest performance.
 %#
-%# For example, solve the "Lorenz attractor" and display the results while
-%# solving in a 3D plane
+%# For example, solve the "Lorenz attractor" and display the results while solving in a 3D plane
 %# @example
 %# function vyd = florenz (vt, vx)
 %#   vyd = [10 * (vx(2) - vx(1));
@@ -49,7 +37,7 @@
 %#          vx(1) * vx(2) - 8/3 * vx(3)];
 %# endfunction
 %#
-%# vopt = odeset ('OutputFcn', @@odephas3);
+%# vopt = odeset ('OutputFcn', @@odephas3); 
 %# vsol = ode23 (@@florenz, [0:0.01:7.5], [3 15 1], vopt);
 %# @end example
 %# @end deftypefn
@@ -82,8 +70,6 @@ function [varargout] = odephas3 (vt, vy, vflag)
     clear ('vfigure', 'vyold', 'vcounter');
 
   end
-
-end
 
 %# Local Variables: ***
 %# mode: octave ***

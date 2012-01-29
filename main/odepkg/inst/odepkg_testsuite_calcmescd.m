@@ -1,4 +1,4 @@
-%# Copyright (C) 2007-2011, Thomas Treichl <thomas.treichl@gmx.net>
+%# Copyright (C) 2007-2011, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -17,13 +17,7 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{mescd}] =} odepkg_testsuite_calcmescd (@var{solution}, @var{reference}, @var{abstol}, @var{reltol})
 %#
-%# If this function is called with four input arguments of type double scalar or
-%# column vector then return a normalized value for the minimum number of correct
-%# digits @var{mescd} that is calculated from the solution at the end of an
-%# integration interval @var{solution} and a set of reference values
-%# @var{reference}. The input arguments @var{abstol} and @var{reltol} are used
-%# to calculate a reference solution that depends on the relative and absolute
-%# error tolerances.
+%# If this function is called with four input arguments of type double scalar or column vector then return a normalized value for the minimum number of correct digits @var{mescd} that is calculated from the solution at the end of an integration interval @var{solution} and a set of reference values @var{reference}. The input arguments @var{abstol} and @var{reltol} are used to calculate a reference solution that depends on the relative and absolute error tolerances.
 %# 
 %# Run examples with the command
 %# @example
@@ -47,7 +41,7 @@ function vmescd = odepkg_testsuite_calcmescd (vsol, vref, vatol, vrtol)
 %!
 %!demo
 %! # Display the value for the mimum number of correct digits in the vector
-%! # sol = [1 + 1e10, 2 + 1e10, 3 + 1e10] compared to the reference vector
+%! # sol = [1 + 1e10, 2 + 1e10, 3 + 1e10] compared to the reference vector 
 %! # ref = [1, 2, 3].
 %!
 %! odepkg_testsuite_calcmescd ([1 + 1e10, 2 + 1e10, 3 + 1e10], [1, 2, 3], ...

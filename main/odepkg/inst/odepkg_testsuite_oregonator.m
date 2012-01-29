@@ -1,4 +1,4 @@
-%# Copyright (C) 2007-2011, Thomas Treichl <thomas.treichl@gmx.net>
+%# Copyright (C) 2007-2011, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -17,12 +17,7 @@
 %# -*- texinfo -*-
 %# @deftypefn {Function File} {[@var{solution}] =} odepkg_testsuite_oregonator (@var{@@solver}, @var{reltol})
 %#
-%# If this function is called with two input arguments and the first input
-%# argument @var{@@solver} is a function handle describing an OdePkg solver and
-%# the second input argument @var{reltol} is a double scalar describing the
-%# relative error tolerance then return a cell array @var{solution} with
-%# performance informations about the OREGONATOR testsuite of ordinary
-%# differential equations after solving (ODE--test).
+%# If this function is called with two input arguments and the first input argument @var{@@solver} is a function handle describing an OdePkg solver and the second input argument @var{reltol} is a double scalar describing the relative error tolerance then return a cell array @var{solution} with performance informations about the OREGONATOR testsuite of ordinary differential equations after solving (ODE--test).
 %#
 %# Run examples with the command
 %# @example

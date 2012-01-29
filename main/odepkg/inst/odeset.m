@@ -1,4 +1,4 @@
-%# Copyright (C) 2006-2011, Thomas Treichl <thomas.treichl@gmx.net>
+%# Copyright (C) 2006-2011, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -20,31 +20,15 @@
 %# @deftypefnx {Command}  {[@var{odestruct}] =} odeset (@var{oldstruct}, @var{"field1"}, @var{value1}, @var{"field2"}, @var{value2}, @dots{})
 %# @deftypefnx {Command}  {[@var{odestruct}] =} odeset (@var{oldstruct}, @var{newstruct})
 %#
-%# If this function is called without an input argument then return a new OdePkg
-%# options structure array that contains all the necessary fields and sets the
-%# values of all fields to default values.
+%# If this function is called without an input argument then return a new OdePkg options structure array that contains all the necessary fields and sets the values of all fields to default values.
 %#
-%# If this function is called with string input arguments @var{"field1"},
-%# @var{"field2"}, @dots{} identifying valid OdePkg options then return a new
-%# OdePkg options structure with all necessary fields and set the values of the
-%# fields @var{"field1"}, @var{"field2"}, @dots{} to the values @var{value1},
-%# @var{value2}, @dots{}
+%# If this function is called with string input arguments @var{"field1"}, @var{"field2"}, @dots{} identifying valid OdePkg options then return a new OdePkg options structure with all necessary fields and set the values of the fields @var{"field1"}, @var{"field2"}, @dots{} to the values @var{value1}, @var{value2}, @dots{}
 %#
-%# If this function is called with a first input argument @var{oldstruct} of type
-%# structure array then overwrite all values of the options @var{"field1"},
-%# @var{"field2"}, @dots{} of the structure @var{oldstruct} with new values
-%# @var{value1}, @var{value2}, @dots{} and return the modified structure array.
+%# If this function is called with a first input argument @var{oldstruct} of type structure array then overwrite all values of the options @var{"field1"}, @var{"field2"}, @dots{} of the structure @var{oldstruct} with new values @var{value1}, @var{value2}, @dots{} and return the modified structure array.
 %#
-%# If this function is called with two input argumnets @var{oldstruct} and
-%# @var{newstruct} of type structure array then overwrite all values in the
-%# fields from the structure @var{oldstruct} with new values of the fields from
-%# the structure @var{newstruct}. Empty values of @var{newstruct} will not
-%# overwrite values in @var{oldstruct}.
+%# If this function is called with two input argumnets @var{oldstruct} and @var{newstruct} of type structure array then overwrite all values in the fields from the structure @var{oldstruct} with new values of the fields from the structure @var{newstruct}. Empty values of @var{newstruct} will not overwrite values in @var{oldstruct}.
 %#
-%# For a detailed explanation about valid fields and field values in an OdePkg
-%# structure aaray have a look at the @file{odepkg.pdf}, Section
-%# 'ODE/DAE/IDE/DDE options' or run the command @command{doc odepkg} to open the
-%# tutorial.
+%# For a detailed explanation about valid fields and field values in an OdePkg structure aaray have a look at the @file{odepkg.pdf}, Section 'ODE/DAE/IDE/DDE options' or run the command @command{doc odepkg} to open the tutorial.
 %#
 %# Run examples with the command
 %# @example
@@ -185,7 +169,7 @@ end
 %! odeoptA = odeset ();
 %!
 %!demo
-%! # A new OdePkg options structure with manually set options
+%! # A new OdePkg options structure with manually set options 
 %! # "AbsTol" and "RelTol" is created.
 %!
 %! odeoptB = odeset ('AbsTol', 1e-2, 'RelTol', 1e-1);

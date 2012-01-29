@@ -1,4 +1,4 @@
-%# Copyright (C) 2006-2011, Thomas Treichl <thomas.treichl@gmx.net>
+%# Copyright (C) 2006-2011, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -18,23 +18,9 @@
 %# @deftypefn  {Function File} {[@var{value}] =} odeget (@var{odestruct}, @var{option}, [@var{default}])
 %# @deftypefnx {Command} {[@var{values}] =} odeget (@var{odestruct}, @{@var{opt1}, @var{opt2}, @dots{}@}, [@{@var{def1}, @var{def2}, @dots{}@}])
 %#
-%# If this function is called with two input arguments and the first input
-%# argument @var{odestruct} is of type structure array and the second input
-%# argument @var{option} is of type string then return the option value
-%# @var{value} that is specified by the option name @var{option} in the OdePkg
-%# option structure @var{odestruct}. Optionally if this function is called with
-%# a third input argument then return the default value @var{default} if
-%# @var{option} is not set in the structure @var{odestruct}.
+%# If this function is called with two input arguments and the first input argument @var{odestruct} is of type structure array and the second input argument @var{option} is of type string then return the option value @var{value} that is specified by the option name @var{option} in the OdePkg option structure @var{odestruct}. Optionally if this function is called with a third input argument then return the default value @var{default} if @var{option} is not set in the structure @var{odestruct}.
 %#
-%# If this function is called with two input arguments and the first input
-%# argument @var{odestruct} is of type structure array and the second input
-%# argument @var{option} is of type cell array of strings then return the option
-%# values @var{values} that are specified by the option names @var{opt1},
-%# @var{opt2}, @dots{} in the OdePkg option structure @var{odestruct}. Optionally
-%# if this function is called with a third input argument of type cell array then
-%# return the default value @var{def1} if @var{opt1} is not set in the structure
-%# @var{odestruct}, @var{def2} if @var{opt2} is not set in the structure
-%# @var{odestruct}, @dots{}
+%# If this function is called with two input arguments and the first input argument @var{odestruct} is of type structure array and the second input argument @var{option} is of type cell array of strings then return the option values @var{values} that are specified by the option names @var{opt1}, @var{opt2}, @dots{} in the OdePkg option structure @var{odestruct}. Optionally if this function is called with a third input argument of type cell array then return the default value @var{def1} if @var{opt1} is not set in the structure @var{odestruct}, @var{def2} if @var{opt2} is not set in the structure @var{odestruct}, @dots{}
 %#
 %# Run examples with the command
 %# @example

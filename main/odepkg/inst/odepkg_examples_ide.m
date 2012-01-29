@@ -1,4 +1,4 @@
-%# Copyright (C) 2008, Thomas Treichl <thomas.treichl@gmx.net>
+%# Copyright (C) 2008, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -83,7 +83,7 @@ function [] = odepkg_examples_ide ()
 %!
 %! function [vres] = fvanderpol (vt, vy, vyd, varargin)
 %!   mu = varargin{1};
-%!   vres = [vy(2) - vyd(1);
+%!   vres = [vy(2) - vyd(1); 
 %!           mu * (1 - vy(1)^2) * vy(2) - vy(1) - vyd(2)];
 %! endfunction
 %!
@@ -97,7 +97,7 @@ function [] = odepkg_examples_ide ()
 %!
 %! function [vres] = fvanderpol (vt, vy, vyd, varargin)
 %!   mu = varargin{1};
-%!   vres = [vy(2) - vyd(1);
+%!   vres = [vy(2) - vyd(1); 
 %!           mu * (1 - vy(1)^2) * vy(2) - vy(1) - vyd(2)];
 %! endfunction
 %!

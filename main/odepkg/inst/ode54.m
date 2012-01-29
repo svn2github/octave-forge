@@ -1,4 +1,4 @@
-%# Copyright (C) 2006-2011, Thomas Treichl <treichl@users.sourceforge.net>
+%# Copyright (C) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
 %# OdePkg - A package for solving ordinary differential equations and more
 %#
 %# This program is free software; you can redistribute it and/or modify
@@ -466,7 +466,7 @@ function [varargout] = ode54 (vfun, vslot, vinit, varargin)
 
     %# Update the step size for the next integration step
     if (~vstepsizefixed)
-      %# 20080425, reported by Marco Caliari
+      %# 2008-20120425, reported by Marco Caliari
       %# vdelta cannot be negative (because of the absolute value that
       %# has been introduced) but it could be 0, then replace the zeros 
       %# with the maximum value of vdelta

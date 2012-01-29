@@ -1,5 +1,5 @@
 \input texinfo @c -*-texinfo-*-
-@c Copyright (c) 2006-2011, Thomas Treichl <thomas.treichl@gmx.net>
+@c Copyright (c) 2006-2012, Thomas Treichl <treichl@users.sourceforge.net>
 @c OdePkg - A package for solving ordinary differential equations and more
 
 @c For manually generating the documentation use
@@ -21,7 +21,7 @@
 @author by Thomas Treichl
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2006-2011, Thomas Treichl
+Copyright @copyright{} 2006-2012, Thomas Treichl
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -43,7 +43,7 @@ into another language, under the same conditions as for modified versions.
 @node Top, Beginners Guide, (dir), (dir)
 @top Copyright
 
-Copyright @copyright{} 2006-2011, Thomas Treichl 
+Copyright @copyright{} 2006-2012, Thomas Treichl 
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice

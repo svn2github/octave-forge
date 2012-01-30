@@ -3,7 +3,7 @@
 ## vrml_newname ("-clear")
 function n = vrml_newname (root)
 
-static vrml_namespace = struct();
+persistent vrml_namespace = struct();
 
 if nargin < 1, root = ""; end
 

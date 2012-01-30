@@ -30,7 +30,7 @@
 function n = temp_name (rootname, quick)
 
 ### Keep track of previously asked names
-static cnt = struct ("dummy",0);
+persistent cnt = struct ("dummy",0);
 
 if nargin<1 || !length(rootname), rootname = "temp_name_" ; end
 

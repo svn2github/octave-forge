@@ -62,7 +62,7 @@ endfunction
 ## Returns the cputime since last call to 'mytic'.
 
 function dt = mytic()
-   static last_mytic = 0 ;
+   persistent last_mytic = 0 ;
    [t,u,s] = cputime() ;
    dt = t - last_mytic ;
    last_mytic = t ;

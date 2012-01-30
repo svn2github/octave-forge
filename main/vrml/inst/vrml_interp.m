@@ -15,7 +15,7 @@ elseif nargin > 2
 end
 
 
-static nname = struct ("col"        , "Color",
+persistent nname = struct ("col"        , "Color",
 		       "Color"      , "Color",
 		       "coord"      , "Coordinate",
 		       "Coordinate" , "Coordinate",

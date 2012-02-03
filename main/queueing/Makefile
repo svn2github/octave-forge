@@ -4,7 +4,8 @@ PROGNAME=queueing
 
 DISTNAME=$(PROGNAME)-$(VERSIONNUM)
 SUBDIRS=inst scripts examples doc test broken
-DISTFILES=COPYING README Makefile DESCRIPTION DESCRIPTION.in INSTALL
+DISTFILES=COPYING NEWS Makefile DESCRIPTION INSTALL
+DISTSUBDIRS=inst doc
 
 .PHONY: clean check
 
@@ -44,7 +45,7 @@ dist: ALL
 	\rm -r -f $(DISTNAME) fname
 	mkdir $(DISTNAME)
 	echo "$(DISTNAME)" > fname
-	for d in $(SUBDIRS); do \
+	for d in $(DISTSUBDIRS); do \
 		mkdir -p $(DISTNAME)/$$d; \
 		$(MAKE) -C $$d dist; \
 	done

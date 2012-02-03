@@ -1,4 +1,4 @@
-DISTFILES=$(wildcard *.m) Makefile
+DISTFILES=grabdemo.m Makefile
 
 .PHONY: clean distclean check
 

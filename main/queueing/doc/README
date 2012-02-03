@@ -42,7 +42,7 @@ test/
         This directory contains the script used to execute all
         tests embedded within functions in the inst/ directory.
 
-broken/
+devel/
 	This directory contains scripts which are currently known
 	not to work correctly, or which are work-in-progress.
 

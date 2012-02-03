@@ -106,7 +106,7 @@ subdirectories:
      This directory contains examples which are automatically extracted
      from the `demo' blocks of the function files.
 
-`broken/'
+`devel/'
      This directory contains function files which are either not working
      properly, or need additional testing before they can be moved to
      the `inst/' directory.

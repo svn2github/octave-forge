@@ -3,7 +3,7 @@ VERSIONDATE="2012-02-03"
 PROGNAME=queueing
 
 DISTNAME=$(PROGNAME)-$(VERSIONNUM)
-SUBDIRS=inst scripts examples doc test broken
+SUBDIRS=inst scripts examples doc test devel
 DISTFILES=COPYING NEWS Makefile DESCRIPTION INSTALL
 DISTSUBDIRS=inst doc
 

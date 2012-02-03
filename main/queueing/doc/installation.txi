@@ -168,7 +168,7 @@ in the @verb{|m|}-files.
 This directory contains examples which are automatically extracted
 from the @samp{demo} blocks of the function files.
 
-@item broken/
+@item devel/
 This directory contains function files which are either not working
 properly, or need additional testing before they can be moved to the
 @file{inst/} directory.

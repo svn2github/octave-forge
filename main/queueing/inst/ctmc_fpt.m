@@ -112,17 +112,17 @@ endfunction
 %! M = ctmc_fpt(Q)
 %! m = ctmc_fpt(Q,1,3)
 
-%!test
+%!xtest
 %! Q = unifrnd(0.1,0.9,10,10);
 %! Q -= diag(sum(Q,2));
 %! M = ctmc_fpt(Q);
 
-%!test
+%!xtest
 %! Q = unifrnd(0.1,0.9,10,10);
 %! Q -= diag(sum(Q,2));
 %! m = ctmc_fpt(Q,1,3);
 
-%!test
+%!xtest
 %! Q = unifrnd(0.1,0.9,10,10);
 %! Q -= diag(sum(Q,2));
 %! m = ctmc_fpt(Q,1,[3 5 6]);

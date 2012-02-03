@@ -1,6 +1,6 @@
 DOC=queueing
 CHAPTERS=summary.texi installation.texi markovchains.texi singlestation.texi queueingnetworks.texi conf.texi ack.texi contributing.texi gpl.texi gettingstarted.texi
-DISTFILES=$(wildcard *.txi) Makefile $(DOC).pdf $(DOC).html $(DOC).texi
+DISTFILES=README $(DOC).pdf $(DOC).html $(DOC).texi
 
 .PHONY: clean
 

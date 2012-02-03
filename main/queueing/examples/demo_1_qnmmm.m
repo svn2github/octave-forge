@@ -1,0 +1,13 @@
+ disp("This is figure 6.4 on p. 220 Bolch et al.");
+ rho = 0.9;
+ ntics = 21;
+ lambda = 0.9;
+ m = linspace(1,ntics,ntics);
+ mu = lambda./(rho .* m);
+ [U R Q X] = qnmmm(lambda, mu, m);
+ qlen = X.*(R-1./mu);
+ plot(m,Q,"o",qlen,"*");
+ axis([0,ntics,0,25]);
+ legend("Jobs in the system","Queue Length","location","northwest");
+ xlabel("Number of servers (m)");
+ title("\lambda = 0.9, \mu = 0.9");

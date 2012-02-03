@@ -1,0 +1,16 @@
+Name: queueing
+Version: 1.0.0
+Date: 2012-02-03
+Author: Moreno Marzolla <marzolla@cs.unibo.it>
+Maintainer: Moreno Marzolla <marzolla@cs.unibo.it>
+Title: Queueing Networks and Markov chains analysis package for GNU Octave
+Description: This package provides functions
+ for analyzing single station queueing systems,
+ Queueing Network and Markov chains.  Open, closed and mixed
+ networks with single or multiple job classes are supported;
+ exact and approximate solution techniques are available.
+Categories: Misc
+Depends: octave (>= 3.0.0)
+Autoload: yes
+License: GPL version 3 or later
+Url: http://www.moreno.marzolla.name/software/queueing/

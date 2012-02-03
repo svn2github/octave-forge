@@ -1,0 +1,52 @@
+===============================================================================
+                        The Octave queueing toolbox
+===============================================================================
+
+Copyright (C) 2008, 2009, 2010, 2011, 2012
+Moreno Marzolla <marzolla (at) cs.unibo.it>
+
+The queueing toolbox ("queueing", in short) is a collection of GNU
+Octave scripts for numerical evaluation of queueing network
+models. Open, closed and mixed networks are supported, with single or
+multiple classes of customers. The queueing toolbox also provides
+functions for steady-state and transient analysis of Markov chains, as
+well as fo single station queueing systems.
+
+The latest version of the queueing package can be downloaded from
+
+http://www.moreno.marzolla.name/software/queueing/
+
+This package requires GNU Octave; version 3.0.0 or later should work.
+The package contains the following directories:
+
+inst/        
+	Contains the Octave m-scripts implementing all functions
+	provided by the queueing toolbox.
+
+doc/
+        Contains the user documentation, which is automatically
+        generated from the texinfo strings embedded in the m-scripts.
+
+scripts/ 
+        This directory contains some scripts used to extract
+        documentation strings from the m-files. The scripts here have
+        been taken almost verbatim from the GNU Octave distribution.
+
+examples/
+        This directory contains demo functions which are automatically
+        extracted from the scripts included in the inst/
+        directory. The demo functions are put in this directory so
+        that they can be easily embedded into the package documentation.
+
+test/
+        This directory contains the script used to execute all
+        tests embedded within functions in the inst/ directory.
+
+broken/
+	This directory contains scripts which are currently known
+	not to work correctly, or which are work-in-progress.
+
+This package can be distributed according to the terms of the GNU
+General Public License, version 3 or later. See the file COPYING for
+details.
+

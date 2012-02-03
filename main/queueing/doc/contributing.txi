@@ -1,0 +1,61 @@
+@c -*- texinfo -*-
+
+@c Copyright (C) 2008, 2009, 2010, 2011, 2012 Moreno Marzolla
+@c
+@c This file is part of the queueing toolbox, a Queueing Networks
+@c analysis package for GNU Octave.
+@c
+@c The queueing toolbox is free software; you can redistribute it
+@c and/or modify it under the terms of the GNU General Public License
+@c as published by the Free Software Foundation; either version 3 of
+@c the License, or (at your option) any later version.
+@c
+@c The queueing toolbox is distributed in the hope that it will be
+@c useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+@c of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with the queueing toolbox; see the file COPYING.  If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@node Contributing Guidelines
+@appendix Contributing Guidelines
+
+Contributions and bug reports are @emph{always} welcome. If you want
+to contribute to the @code{queueing} package, here are some
+guidelines:
+
+@itemize
+
+@item If you are contributing a new function, please embed proper
+documentation within the function itself. The documentation must be in
+@code{texinfo} format, so that it will be extracted and formatted into
+the printable manual. See the existing functions of the
+@code{queueing} package for the documentation style.
+
+@item The documentation should be as precise as possible. In particular,
+always state what the valid ranges of the parameters are.
+
+@item If you are contributing a new function, ensure that the function
+properly checks the validity of its input parameters. For example,
+each function accepting vectors should check whether the dimensions
+match.
+
+@item Always provide bibliographic references for each algorithm you 
+contribute. If your implementation differs in some way from the
+reference you give, please describe how and why your implementation
+differs.
+
+@item Include Octave test and demo blocks with your code.
+Test blocks are particularly important, because Queueing Network
+algorithms tend to be quite complex to implement correctly, and we
+must ensure that the implementations provided with the
+@code{queueing} package are (mostly) correct.
+
+@end itemize
+
+Send your contribution to Moreno Marzolla
+(@email{marzolla@@cs.unibo.it}). Even if you are just a user of
+@code{queueing}, and find this package useful, let me know by
+dropping me a line. Thanks.

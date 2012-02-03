@@ -1,0 +1,167 @@
+This file documents the installation procedure of the `queueing'
+toolbox.
+
+   `queueing' is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License, version 3 or
+later, as published by the Free Software Foundation.
+
+     Note: This file (`INSTALL') is automatically generated from
+     `doc/installation.txi' in the `queueing' sources.  Do not modify
+     this document directly, as changes will be lost. Modify the source
+     `doc/installation.txi' instead.
+
+1 Installing the queueing toolbox
+*********************************
+
+1.1 Installation through Octave package management system
+=========================================================
+
+The most recent version of `queueing' is 1.0.0 and can be downloaded
+from
+
+`http://www.moreno.marzolla.name/software/queueing/queueing-1.0.0.tar.gz'
+
+   To install `queueing' in the system-wide location, such that all
+functions are automatically available when Octave starts, you can use
+`pkg install' command. At the Octave prompt, type the following:
+
+     octave:1> pkg install queueing-1.0.0.tar.gz
+
+   (Note: you may need to start Octave as root in order to allow the
+installation to copy the files to the target locations). After this,
+all functions will be readily available each time Octave starts,
+without the need to tweak the search path. To uninstall `queueing', use
+the `pkg uninstall queueing' command.
+
+   If you do not have root access, you can do a local installation by
+issuing the following command at the Octave prompt:
+
+     octave:1> pkg install -local queueing-1.0.0.tar.gz
+
+   This will install `queueing' within the user's home directory, and
+the package will be available to that user only. *Note:* Octave version
+3.2.3 as shipped with Ubuntu 10.04 seems to ignore `-local' and always
+tries to install the package on the system directory.
+
+1.2 Manual installation
+=======================
+
+If you want to install `queueing' in a custom location, you can
+download the source tarball from the URL above, and unpack it somewhere:
+
+     tar xfz queueing-1.0.0.tar.gz
+     cd queueing-1.0.0/
+
+   Copy all `.m' files from the `inst/' directory to some target
+location. Then, you can start Octave with the `-p' option to add the
+target location to the search path, so that Octave will find all
+`queueing' functions automatically:
+
+     octave -p _/path/to/queueing_
+
+   For example, if all `queueing' m-files are in `/usr/local/queueing',
+you can start Octave as follows:
+
+     octave -p `/usr/local/queueing'
+
+   If you want, you can add the following line to `~/.octaverc':
+
+     addpath("_/path/to/queueing_");
+
+so that the path `/usr/local/queueing' is automatically added to the
+search path each time Octave is started, and you no longer need to
+specify the `-p' option on the command line.
+
+1.3 Content of the source distribution
+======================================
+
+The `queueing' source distribution contains the following
+subdirectories:
+
+`doc/'
+     Documentation source. Most of the documentation is extracted from
+     the comment blocks of individual function files from the `inst/'
+     directory.
+
+`inst/'
+     This directory contains the m-files which implement the various
+     Queueing Network algorithms provided by `queueing'. As a
+     notational convention, the names of source files containing
+     functions for Queueing Networks start with the `qn' prefix; the
+     name of source files containing functions for Continuous-Time
+     Markov Chains (CTMSs) start with the `ctmc' prefix, and the names
+     of files containing functions for Discrete-Time Markov Chains
+     (DTMCs) start with the `dtmc' prefix.
+
+`test/'
+     This directory contains the test functions used to invoke all
+     tests on all function files.
+
+`scripts/'
+     This directory contains some utility scripts mostly from GNU
+     Octave, which extract the documentation from the
+     specially-formatted comments in the m-files.
+
+`examples/'
+     This directory contains examples which are automatically extracted
+     from the `demo' blocks of the function files.
+
+`broken/'
+     This directory contains function files which are either not working
+     properly, or need additional testing before they can be moved to
+     the `inst/' directory.
+
+
+   The `queueing' package ships with a Makefile which can be used to
+produce the documentation (in PDF and HTML format), and automatically
+execute all function tests. Specifically, the following targets are
+defined:
+
+`all'
+     Running `make' (or `make all') on the top-level directory builds
+     the programs used to extract the documentation from the comments
+     embedded in the m-files, and then produce the documentation in PDF
+     and HTML format (`doc/queueing.pdf' and `doc/queueing.html',
+     respectively).
+
+`check'
+     Running `make check' will execute all tests contained in the
+     m-files. If you modify the code of any function in the `inst/'
+     directory, you should run the tests to ensure that no errors have
+     been introduced. You are also encouraged to contribute new tests,
+     especially for functions which are not adequately validated.
+
+`clean'
+`distclean'
+`dist'
+     The `make clean', `make distclean' and `make dist' commands are
+     used to clean up the source directory and prepare the distribution
+     archive in compressed tar format.
+
+
+1.4 Using the queueing toolbox
+==============================
+
+You can use all functions by simply invoking their name with the
+appropriate parameters; the `queueing' package should display an error
+message in case of missing/wrong parameters. You can display the help
+text for any function using the `help' command. For example:
+
+     octave:2> help qnmvablo
+
+   prints the documentation for the `qnmvablo' function.  Additional
+information can be found in the `queueing' manual, which is available
+in PDF format in `doc/queueing.pdf' and in HTML format in
+`doc/queueing.html'.
+
+   Within GNU Octave, you can also run the test and demo blocks
+associated to the functions, using the `test' and `demo' commands
+respectively. To run all the tests of, say, the `qnmvablo' function:
+
+     octave:3> test qnmvablo
+     -| PASSES 4 out of 4 tests
+
+   To execute the demos of the `qnclosed' function, use the following:
+
+     octave:4> demo qnclosed
+

@@ -1,5 +1,5 @@
 VERSIONNUM=1.0.0
-VERSIONDATE="2012-02-03"
+VERSIONDATE="2012-02-04"
 PROGNAME=queueing
 
 DISTNAME=$(PROGNAME)-$(VERSIONNUM)
@@ -31,23 +31,25 @@ check:
 
 clean:
 	for d in $(SUBDIRS); do \
-		$(MAKE) -C $$d clean; \
+		$(MAKE) -C $$d $(MAKECMDGOALS); \
 	done
-	\rm -r -f *~ *.tar.gz $(DISTNAME)
+	\rm -r -f *~ $(DISTNAME).tar.gz $(DISTNAME).tar.gz.uue $(PROGNAME)
 
 distclean: clean
 	for d in $(SUBDIRS); do \
-		$(MAKE) -C $$d distclean; \
+		$(MAKE) -C $$d $(MAKECMDGOALS); \
 	done
-	\rm -r -f doc/conf.texi fname DESCRIPTION $(DISTNAME) $(DISTNAME).tar.gz
+	\rm -r -f doc/conf.texi fname DESCRIPTION
 
 dist: ALL
-	\rm -r -f $(DISTNAME) fname
-	mkdir $(DISTNAME)
-	echo "$(DISTNAME)" > fname
+	\rm -r -f $(PROGNAME) fname
+	echo "$(PROGNAME)" > fname
+	mkdir $(PROGNAME)
 	for d in $(DISTSUBDIRS); do \
-		mkdir -p $(DISTNAME)/$$d; \
-		$(MAKE) -C $$d dist; \
+		mkdir -p $(PROGNAME)/$$d; \
+		$(MAKE) -C $$d $(MAKECMDGOALS); \
 	done
-	ln $(DISTFILES) $(DISTNAME)/
-	tar cfz $(DISTNAME).tar.gz $(DISTNAME)/
+	ln $(DISTFILES) $(PROGNAME)/
+	tar cfz $(DISTNAME).tar.gz $(PROGNAME)/
+	uuencode $(DISTNAME).tar.gz < $(DISTNAME).tar.gz > $(DISTNAME).tar.gz.uue
+

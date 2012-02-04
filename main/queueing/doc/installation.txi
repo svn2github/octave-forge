@@ -56,9 +56,13 @@ source @file{doc/installation.txi} instead.
 @section Installation through Octave package management system
 
 The most recent version of @code{queueing} is @value{VERSION} and can
-be downloaded from
+be downloaded from Octave-forge
 
-@url{http://www.moreno.marzolla.name/software/queueing/queueing-@value{VERSION}.tar.gz}
+@url{http://octave.sourceforge.net/}
+
+The package Web page is
+
+@url{http://www.moreno.marzolla.name/software/queueing/}
 
 To install @code{queueing} in the system-wide location, such that all
 functions are automatically available when Octave starts, you can use
@@ -136,8 +140,9 @@ longer need to specify the @option{-p} option on the command line.
 @node Content of the source distribution
 @section Content of the source distribution
 
-The @code{queueing} source distribution contains the following
-subdirectories:
+The @code{queueing} package source code in the Subversion repository
+contains the following subdirectories (some of which are not included
+in the installation archive):
 
 @table @file
 @item doc/
@@ -170,7 +175,7 @@ from the @samp{demo} blocks of the function files.
 
 @item devel/
 This directory contains function files which are either not working
-properly, or need additional testing before they can be moved to the
+properly, or need additional testing before they are moved to the
 @file{inst/} directory.
 
 @end table

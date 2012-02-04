@@ -17,9 +17,13 @@ later, as published by the Free Software Foundation.
 =========================================================
 
 The most recent version of `queueing' is 1.0.0 and can be downloaded
-from
+from Octave-forge
 
-`http://www.moreno.marzolla.name/software/queueing/queueing-1.0.0.tar.gz'
+   `http://octave.sourceforge.net/'
+
+   The package Web page is
+
+   `http://www.moreno.marzolla.name/software/queueing/'
 
    To install `queueing' in the system-wide location, such that all
 functions are automatically available when Octave starts, you can use
@@ -75,8 +79,9 @@ specify the `-p' option on the command line.
 1.3 Content of the source distribution
 ======================================
 
-The `queueing' source distribution contains the following
-subdirectories:
+The `queueing' package source code in the Subversion repository
+contains the following subdirectories (some of which are not included
+in the installation archive):
 
 `doc/'
      Documentation source. Most of the documentation is extracted from
@@ -108,8 +113,8 @@ subdirectories:
 
 `devel/'
      This directory contains function files which are either not working
-     properly, or need additional testing before they can be moved to
-     the `inst/' directory.
+     properly, or need additional testing before they are moved to the
+     `inst/' directory.
 
 
    The `queueing' package ships with a Makefile which can be used to

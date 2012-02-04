@@ -1,10 +1,10 @@
 DOC=queueing
 CHAPTERS=summary.texi installation.texi markovchains.texi singlestation.texi queueingnetworks.texi conf.texi ack.texi contributing.texi gpl.texi gettingstarted.texi
-DISTFILES=README $(DOC).pdf $(DOC).html $(DOC).texi
+DISTFILES=README INSTALL $(DOC).pdf $(DOC).html $(DOC).texi
 
 .PHONY: clean
 
-ALL: pdf html ../INSTALL
+ALL: pdf html INSTALL
 
 html: $(DOC).html
 
@@ -12,10 +12,10 @@ pdf: $(DOC).pdf
 
 info: $(DOC).info
 
-../INSTALL: installation.texi
+INSTALL: installation.texi
 	rm -f ../INSTALL	
 	-$(MAKEINFO) -D INSTALLONLY \
-	  --no-validate --no-headers --no-split --output ../INSTALL $<
+	  --no-validate --no-headers --no-split --output INSTALL $<
 
 $(DOC).html: $(DOC).texi $(CHAPTERS)
 	-$(MAKEINFO) --html --no-split $(DOC).texi

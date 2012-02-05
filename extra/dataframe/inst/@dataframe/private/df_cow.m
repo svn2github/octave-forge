@@ -5,7 +5,7 @@ function [df, S] = df_cow(df, S, col)
   %# specified in inds is aliased to another one, duplicate it and
   %# adjust the repetition index to remove the aliasing
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%
@@ -54,13 +54,13 @@ function [df, S] = df_cow(df, S, col)
       t1 = 1+max(df._rep{col}); 
       %# duplicate the touched column
       df._data{col} = horzcat(df._data{col}, \
-			      df._data{col}(:, df._rep{col}(indj)));  
+                              df._data{col}(:, df._rep{col}(indj)));  
       if (indi > 1),
-	%# a new column has been created
-	df._rep{col}(indi) = t1;
+        %# a new column has been created
+        df._rep{col}(indi) = t1;
       else
-	%# update repetition index aliasing this one
-	df._rep{col}(find(dummy == indi)) = t1;
+        %# update repetition index aliasing this one
+        df._rep{col}(find(dummy == indi)) = t1;
       endif
     endfor
   endfor

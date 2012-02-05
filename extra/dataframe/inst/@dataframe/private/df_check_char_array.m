@@ -2,7 +2,7 @@ function resu = df_check_char_array(x, nelem, required)
 
   %# auxiliary function: pad a char array to some width
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

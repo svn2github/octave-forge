@@ -3,7 +3,7 @@ function resu = subsindex(df, base)
   %# This function convert a dataframe to an index. Do not expect a
   %# meaningfull result when mixing numeric and logical columns.
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

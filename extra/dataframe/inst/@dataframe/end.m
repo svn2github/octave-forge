@@ -3,7 +3,7 @@ function resu = end(df, k, n)
   %# This is the end operator for a dataframe object, returning the
   %# maximum number of rows or columns
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

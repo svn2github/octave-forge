@@ -5,7 +5,7 @@ function resu = cat(dim, A, varargin)
   %# dataframe, vector/matrix, or two elements cells. First one is taken
   %# as row/column name, second as data.
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

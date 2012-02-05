@@ -1,4 +1,4 @@
-function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname, missingOK=false);
+function [idx, nelem, subs, mask] = df_name2idx(names, subs, count, dimname, missingOK=false);
 
   %# This is a helper routine to translate rownames or columnames into
   %# real index. Input: names, a char array, and subs, a cell array as
@@ -6,7 +6,7 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname, missingOK
   %# ranges, two values separated by ':'. On output, subs is
   %# 'sanitised' from names, and is either a vector, either a single ':'
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%
@@ -30,102 +30,101 @@ function [idx, nelem, subs] = df_name2idx(names, subs, count, dimname, missingOK
   %# $Id$
   %#
 
-  if (isempty(subs)),
+  if (isempty (subs))
     %# not caring about rownames ? Avoid generating an error.
     idx = []; nelem = 0; return
   endif
 
-  if (isa(subs, 'char')),
+  if (isa (subs, 'char')),
     orig_name = subs;
-    if 1 == size(subs, 1),
-      if strcmp(subs, ':') %# range operator
-	idx = 1:count; nelem = count;
-	return
+    if (1 == size (subs, 1))
+      if (strcmp(subs, ':')) %# range operator
+        idx = 1:count; nelem = count;
+        return
       endif
     endif
-    subs = cellstr(subs);
+    subs = cellstr (subs);
   else
-    if (!isvector(subs)),
+    if (~isvector(subs))
       %# yes/no ?
       %# error("Trying to access column as a matrix");
     endif
-    switch class(subs)
-      case {"cell" }
-	orig_name = char(subs);
+    switch (class (subs))
+      case {"cell"}
+        orig_name = char (subs);
       case {"dataframe"}
-	orig_name = "elements indexed by a dataframe";
+        orig_name = "elements indexed by a dataframe";
       otherwise
-	orig_name = num2str(subs);
+        orig_name = num2str (subs);
     endswitch
   endif
 
-  if (isa(subs, 'cell')),
-    subs = subs(:); idx = [];
+  if (isa (subs, 'cell'))
+    subs = subs(:); idx = []; mask = logical (zeros (size (subs, 1), 1));
     %# translate list of variables to list of indices
-    for indi= 1:size(subs, 1),
+    for indi = (1:size(subs, 1))
       %# regexp doesn't like empty patterns
-      if isempty(subs{indi}), continue, endif
+      if (isempty (subs{indi})) continue; endif
       %# convert  from standard pattern to regexp pattern
-      subs{indi} = regexprep(subs{indi}, '([^\.\\])(\*|\?)', "$1.$2");
+      subs{indi} = regexprep (subs{indi}, '([^\.\\])(\*|\?)', "$1.$2");
       %# quote repetition ops at begining of line, otherwise the regexp
       %# will stall forever/fail
-      subs{indi} = regexprep(subs{indi}, \
-			     '^([\*\+\?\{\}\|])', "\\$1");
+      subs{indi} = regexprep (subs{indi}, \
+                              '^([\*\+\?\{\}\|])', "\\$1");
       %# detect | followed by EOL 
-      subs{indi} = regexprep(subs{indi}, '([^\\])\|$', "$1\\|");
-    
-      if (0 == index(subs{indi}, ':')),
-	for indj = 1:min(length(names), count), %# sanity check
-	  if (~isempty(regexp(names{indj}, subs{indi}))),
-	    idx = [idx indj];
-	  endif
-	endfor
+      subs{indi} = regexprep (subs{indi}, '([^\\])\|$', "$1\\|");
+      if (0 == index (subs{indi}, ':'))
+        for indj = (1:min (length (names), count)) %# sanity check
+          if (~isempty (regexp (names{indj}, subs{indi})))
+            idx = [idx indj]; mask(indi) = true;
+          endif
+        endfor
       else
-	dummy = strsplit( subs{indi}, ':');
-	ind_start = 1;
-	if (!isempty(dummy{1})),
-	  ind_start = sscanf(dummy{1}, "%d");
-	  if (isempty(ind_start)),
-	    ind_start = 1;
-	    for indj = 1:min(length(names), count), %# sanity check
-	      if (~isempty(regexp(names{indj}, subs{indi}))),
-		ind_start = indj; break; %# stop at the first match
-	      endif
-	    endfor
-	  endif
-	endif
-	
-	if (isempty(dummy{2}) || strcmp(dummy{2}, 'end')),
-	  ind_stop = count;
-	else
-	  ind_stop = sscanf(dummy{2}, "%d");
-	  if (isempty(ind_stop)),
-	    ind_stop = 1;
-	    for indj = min(length(names), count):-1:1, %# sanity check
-	      if (~isempty(regexp(names{indj}, subs{indi}))),
-		ind_stop = indj; break; %# stop at the last match
-	      endif
-	    endfor
-	  endif
-	endif
-	idx = [idx ind_start:ind_stop];
+        dummy = strsplit (subs{indi}, ':');
+        ind_start = 1;
+        if (!isempty (dummy{1}))
+          ind_start = sscanf (dummy{1}, "%d");
+          if (isempty (ind_start))
+            ind_start = 1;
+            for indj = (1:min(length (names), count)) %# sanity check
+              if (~isempty (regexp (names{indj}, subs{indi}))),
+                ind_start = indj; break; %# stop at the first match
+              endif
+            endfor
+          endif
+        endif
+        
+        if (isempty (dummy{2}) || strcmp (dummy{2}, 'end'))
+          ind_stop = count;
+        else
+          ind_stop = sscanf(dummy{2}, "%d");
+          if (isempty (ind_stop))
+            ind_stop = 1;
+            for indj = (min (length (names), count):-1:1) %# sanity check
+              if (~isempty (regexp (names{indj}, subs{indi})))
+                ind_stop = indj; break; %# stop at the last match
+              endif
+            endfor
+          endif
+        endif
+        idx = [idx ind_start:ind_stop];
       endif
     endfor
-    if (isempty(idx) && !missingOK),
-      dummy = sprintf("Unknown %s name while searching for %s", ...
-		      dimname, orig_name);
-      error(dummy);
+    if (isempty (idx) && ~missingOK)
+      dummy = sprintf ("Unknown %s name while searching for %s", ...
+                       dimname, orig_name);
+      error (dummy);
     endif
-  elseif (isa(subs, 'logical')),
-    idx = 1:length(subs(:)); idx = reshape(idx, size(subs));
-    idx(~subs) = [];
-  elseif (isa(subs, 'dataframe')),
-    idx = subsindex(subs, 1);
+  elseif (isa (subs, 'logical'))
+    idx = 1:length (subs(:)); idx = reshape (idx, size (subs));
+    idx(~subs) = []; mask = subs;
+  elseif (isa (subs, 'dataframe'))
+    idx = subsindex (subs, 1);
   else
     idx = subs;
   endif
 
   subs = idx;
-  nelem = length(idx);
+  nelem = length (idx);
   
 endfunction

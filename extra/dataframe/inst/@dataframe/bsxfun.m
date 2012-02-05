@@ -3,7 +3,7 @@ function resu = bsxfun(func, A, B)
   %# function resu = bsxfun(func, A, B)
   %# Implements a wrapper around internal bsxfun
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

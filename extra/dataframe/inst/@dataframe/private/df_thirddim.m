@@ -4,7 +4,7 @@ function [df] = df_thirddim(df)
   %# This is a small helper function which recomputes the third dim each
   %# time a change may have occured.
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

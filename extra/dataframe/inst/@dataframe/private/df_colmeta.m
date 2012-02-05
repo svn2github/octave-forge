@@ -4,7 +4,7 @@ function resu = df_colmeta(df)
   %# Returns a new dataframe, initalised with the meta-information
   %# about columns from the source, but with empty data
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

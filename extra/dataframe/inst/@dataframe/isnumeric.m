@@ -2,7 +2,7 @@ function resu = ismatrix(df)
   %# function resu = isnumeric(df)
   %# returns true if the dataframe contains only numeric columns
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

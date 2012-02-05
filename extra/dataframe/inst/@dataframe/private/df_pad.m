@@ -6,7 +6,7 @@ function df = df_pad(df, dim, n, coltype=[])
   %# dim = 2 => type of the added column(s)
   %# dim = 3 => index of columns receiving a new sheet (default: all)
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

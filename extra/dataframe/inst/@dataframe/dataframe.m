@@ -35,7 +35,7 @@ function df = dataframe(x = [], varargin)
   %# The remaining data are concatenated (right-appended) to the existing ones.
   %# @end deftypefn
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

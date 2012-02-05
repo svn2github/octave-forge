@@ -4,7 +4,7 @@ function resu = df_mapper2(func, df, varargin)
   %# dataframe. This one is specifically adapted to all functions where
   %# the first argument, if numeric, is 'dim'.
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

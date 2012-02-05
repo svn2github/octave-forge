@@ -3,7 +3,7 @@ function resu = rdivide(A, B);
   %# function resu = rdivide(A, B)
   %# Implements the dotted '\' operator when at least one argument is a dataframe.
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

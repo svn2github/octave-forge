@@ -3,7 +3,7 @@ function resu = display(df)
   %# function resu = display(df)
   %# Tries to produce a nicely formatted output of a dataframe.
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%
@@ -90,11 +90,10 @@ function resu = display(df)
                 if (isna (tmp_str{indr})),
                   tmp_str{indr} = "NA";
                 else
-                  try
-                    tmp_str{indr} = undo_string_escapes (tmp_str{indr});
-                  catch
-                    disp('line 93 '); keyboard
-                    end
+                  if (~ischar (tmp_str{indr}))
+                    tmp_str{indr} = char (tmp_str{indr});
+                  endif
+                  tmp_str{indr} = undo_string_escapes (tmp_str{indr});
                 endif
               endif
             endfor

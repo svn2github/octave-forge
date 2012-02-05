@@ -6,7 +6,7 @@ function [A, B, C] = df_basecomp(A, B, itercol=true, func=@plus);
   %# or a dataframe. Cell arrays are converted to df. Third output
   %# contains a merge of the metadata.
 
-  %% Copyright (C) 2009-2010 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
+  %% Copyright (C) 2009-2012 Pascal Dupuis <Pascal.Dupuis@uclouvain.be>
   %%
   %% This file is part of Octave.
   %%

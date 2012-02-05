@@ -9,4 +9,4 @@ Categories: data manipulation, statistics
 Depends: octave (>= 3.2.0)
 License: GPL version 3 or later
 Url: http://octave.sf.net
-SVNRelease: 7906
+SVNRelease: $Revision$

@@ -28,7 +28,7 @@ function retval = mldivide (M1, M2)
     error ("mldivide: both input arguments must be matrices");
   endif
   
-  if (rows (M1) != rows (M2)
+  if (rows (M1) != rows (M2))
     error ("mldivide: nonconformant arguments (op1 is %dx%d, op2 is %dx%d)",
            rows (M1), columns (M1), rows (M2), columns (M2));
   endif

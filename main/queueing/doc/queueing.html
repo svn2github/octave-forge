@@ -313,38 +313,55 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Installation">Installation</a>
 <h3 class="section">2.1 Installation through Octave package management system</h3>
 
 <p>The most recent version of <code>queueing</code> is 1.0.0 and can
-be downloaded from Octave-forge
+be downloaded from Octave-Forge
 
-   <p><a href="http://octave.sourceforge.net/">http://octave.sourceforge.net/</a>
+   <p><a href="http://octave.sourceforge.net/queueing/">http://octave.sourceforge.net/queueing/</a>
 
    <p>The package Web page is
 
    <p><a href="http://www.moreno.marzolla.name/software/queueing/">http://www.moreno.marzolla.name/software/queueing/</a>
 
-   <p>To install <code>queueing</code> in the system-wide location, such that all
-functions are automatically available when Octave starts, you can use
-&lsquo;<samp><span class="samp">pkg install</span></samp>&rsquo; command. At the Octave prompt, type the following:
+   <p>If you have a recent version of GNU Octave and a network connection,
+you can install <code>queueing</code> directly from the prompt using this
+command:
 
-<pre class="example">     octave:1&gt; <kbd>pkg install queueing-1.0.0.tar.gz</kbd>
+<pre class="example">     octave:1&gt; <kbd>pkg install -forge queueing</kbd>
 </pre>
-   <p>(Note: you may need to start Octave as root in order to allow the
+   <p>The command above will automaticall download and install the latest
+version of the queueing toolbox from Octave Forge, and install it on
+your machine. You can verify that the package is indeed installed:
+
+<pre class="example">     octave:1&gt;<kbd>pkg list queueing</kbd>
+     Package Name  | Version | Installation directory
+     --------------+---------+-----------------------
+         queueing *|   1.0.0 | /home/moreno/octave/queueing-1.0.0
+</pre>
+   <p>Alternatively, you can first download <code>queueing</code> from
+Octave-Forge; then, to install the package in the system-wide
+location issue this command at the Octave prompt:
+
+<pre class="example">     octave:1&gt; <kbd>pkg install </kbd><em>queueing-1.0.0.tar.gz</em>
+</pre>
+   <p class="noindent">(you may need to start Octave as root in order to allow the
 installation to copy the files to the target locations). After this,
 all functions will be readily available each time Octave starts,
-without the need to tweak the search path. To uninstall
-<code>queueing</code>, use the &lsquo;<samp><span class="samp">pkg uninstall queueing</span></samp>&rsquo; command.
+without the need to tweak the search path.
 
-   <p>If you do not have root access, you can do a local installation by
-issuing the following command at the Octave prompt:
+   <p>If you do not have root access, you can do a local install using:
 
 <pre class="example">     octave:1&gt; <kbd>pkg install -local queueing-1.0.0.tar.gz</kbd>
 </pre>
-   <p>This will install <code>queueing</code> within the user's home directory,
-and the package will be available to that user only. <strong>Note:</strong>
-Octave version 3.2.3 as shipped with Ubuntu 10.04 seems to ignore
+   <p>This will install <code>queueing</code> within your home directory, and the
+package will be available to your user only. <strong>Note:</strong> Octave
+version 3.2.3 as shipped with Ubuntu 10.04 seems to ignore
 <code>-local</code> and always tries to install the package on the system
 directory.
 
-<div class="node">
+   <p>To remove <code>queueing</code> you can use
+
+<pre class="example">     octave:1&gt; <kbd>pkg uninstall queueing</kbd>
+</pre>
+   <div class="node">
 <a name="Manual-installation"></a>
 <p><hr>
 Next:&nbsp;<a rel="next" accesskey="n" href="#Content-of-the-source-distribution">Content of the source distribution</a>,
@@ -355,24 +372,23 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Installation">Installation</a>
 
 <h3 class="section">2.2 Manual installation</h3>
 
-<p>If you want to install <code>queueing</code> in a custom location, you can
-download the source tarball from the URL above, and unpack it
-somewhere:
+<p>If you want to manually install <code>queueing</code> in a custom location,
+you can download the tarball and unpack it somewhere:
 
-<pre class="example">     <kbd>tar xfz queueing-1.0.0.tar.gz</kbd>
-     <kbd>cd queueing-1.0.0/</kbd>
+<pre class="example">     <kbd>tar xvfz queueing-1.0.0.tar.gz</kbd>
+     <kbd>cd queueing-1.0.0/queueing/</kbd>
 </pre>
    <p>Copy all <code>.m</code> files from the <samp><span class="file">inst/</span></samp> directory to some
-target location. Then, you can start Octave with the <samp><span class="option">-p</span></samp>
-option to add the target location to the search path, so that Octave
-will find all <code>queueing</code> functions automatically:
+target location. Then, start Octave with the <samp><span class="option">-p</span></samp> option to add
+the target location to the search path, so that Octave will find all
+<code>queueing</code> functions automatically:
 
 <pre class="example">     <kbd>octave -p </kbd><em>/path/to/queueing</em>
 </pre>
    <p>For example, if all <code>queueing</code> m-files are in
 <samp><span class="file">/usr/local/queueing</span></samp>, you can start Octave as follows:
 
-<pre class="example">     <kbd>octave -p </kbd><samp><span class="file">/usr/local/queueing</span></samp>
+<pre class="example">     <kbd>octave -p </kbd><em>/usr/local/queueing</em>
 </pre>
    <p>If you want, you can add the following line to <samp><span class="file">~/.octaverc</span></samp>:
 
@@ -393,9 +409,13 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Installation">Installation</a>
 
 <h3 class="section">2.3 Content of the source distribution</h3>
 
-<p>The <code>queueing</code> package source code in the Subversion repository
-contains the following subdirectories (some of which are not included
-in the installation archive):
+<p>The source code of the latest version of the <code>queueing</code>
+package can be found in the Subversion repository at the URL:
+
+   <p><a href="http://octave.svn.sourceforge.net/viewvc/octave/trunk/octave-forge/main/queueing/">http://octave.svn.sourceforge.net/viewvc/octave/trunk/octave-forge/main/queueing/</a>
+
+   <p>The source distribution contains the following directories (some of
+which are not included in the installation tarball):
 
      <dl>
 <dt><samp><span class="file">doc/</span></samp><dd>Documentation source. Most of the documentation is extracted from the

@@ -17,56 +17,72 @@ later, as published by the Free Software Foundation.
 =========================================================
 
 The most recent version of `queueing' is 1.0.0 and can be downloaded
-from Octave-forge
+from Octave-Forge
 
-   `http://octave.sourceforge.net/'
+   `http://octave.sourceforge.net/queueing/'
 
    The package Web page is
 
    `http://www.moreno.marzolla.name/software/queueing/'
 
-   To install `queueing' in the system-wide location, such that all
-functions are automatically available when Octave starts, you can use
-`pkg install' command. At the Octave prompt, type the following:
+   If you have a recent version of GNU Octave and a network connection,
+you can install `queueing' directly from the prompt using this command:
 
-     octave:1> pkg install queueing-1.0.0.tar.gz
+     octave:1> pkg install -forge queueing
 
-   (Note: you may need to start Octave as root in order to allow the
+   The command above will automaticall download and install the latest
+version of the queueing toolbox from Octave Forge, and install it on
+your machine. You can verify that the package is indeed installed:
+
+     octave:1>pkg list queueing
+     Package Name  | Version | Installation directory
+     --------------+---------+-----------------------
+         queueing *|   1.0.0 | /home/moreno/octave/queueing-1.0.0
+
+   Alternatively, you can first download `queueing' from Octave-Forge;
+then, to install the package in the system-wide location issue this
+command at the Octave prompt:
+
+     octave:1> pkg install _queueing-1.0.0.tar.gz_
+
+(you may need to start Octave as root in order to allow the
 installation to copy the files to the target locations). After this,
 all functions will be readily available each time Octave starts,
-without the need to tweak the search path. To uninstall `queueing', use
-the `pkg uninstall queueing' command.
+without the need to tweak the search path.
 
-   If you do not have root access, you can do a local installation by
-issuing the following command at the Octave prompt:
+   If you do not have root access, you can do a local install using:
 
      octave:1> pkg install -local queueing-1.0.0.tar.gz
 
-   This will install `queueing' within the user's home directory, and
-the package will be available to that user only. *Note:* Octave version
+   This will install `queueing' within your home directory, and the
+package will be available to your user only. *Note:* Octave version
 3.2.3 as shipped with Ubuntu 10.04 seems to ignore `-local' and always
 tries to install the package on the system directory.
+
+   To remove `queueing' you can use
+
+     octave:1> pkg uninstall queueing
 
 1.2 Manual installation
 =======================
 
-If you want to install `queueing' in a custom location, you can
-download the source tarball from the URL above, and unpack it somewhere:
+If you want to manually install `queueing' in a custom location, you
+can download the tarball and unpack it somewhere:
 
-     tar xfz queueing-1.0.0.tar.gz
-     cd queueing-1.0.0/
+     tar xvfz queueing-1.0.0.tar.gz
+     cd queueing-1.0.0/queueing/
 
    Copy all `.m' files from the `inst/' directory to some target
-location. Then, you can start Octave with the `-p' option to add the
-target location to the search path, so that Octave will find all
-`queueing' functions automatically:
+location. Then, start Octave with the `-p' option to add the target
+location to the search path, so that Octave will find all `queueing'
+functions automatically:
 
      octave -p _/path/to/queueing_
 
    For example, if all `queueing' m-files are in `/usr/local/queueing',
 you can start Octave as follows:
 
-     octave -p `/usr/local/queueing'
+     octave -p _/usr/local/queueing_
 
    If you want, you can add the following line to `~/.octaverc':
 
@@ -79,9 +95,13 @@ specify the `-p' option on the command line.
 1.3 Content of the source distribution
 ======================================
 
-The `queueing' package source code in the Subversion repository
-contains the following subdirectories (some of which are not included
-in the installation archive):
+The source code of the latest version of the `queueing' package can be
+found in the Subversion repository at the URL:
+
+`http://octave.svn.sourceforge.net/viewvc/octave/trunk/octave-forge/main/queueing/'
+
+   The source distribution contains the following directories (some of
+which are not included in the installation tarball):
 
 `doc/'
      Documentation source. Most of the documentation is extracted from

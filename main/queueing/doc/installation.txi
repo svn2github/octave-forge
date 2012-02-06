@@ -56,40 +56,63 @@ source @file{doc/installation.txi} instead.
 @section Installation through Octave package management system
 
 The most recent version of @code{queueing} is @value{VERSION} and can
-be downloaded from Octave-forge
+be downloaded from Octave-Forge
 
-@url{http://octave.sourceforge.net/}
+@url{http://octave.sourceforge.net/queueing/}
 
 The package Web page is
 
 @url{http://www.moreno.marzolla.name/software/queueing/}
 
-To install @code{queueing} in the system-wide location, such that all
-functions are automatically available when Octave starts, you can use
-@samp{pkg install} command. At the Octave prompt, type the following:
+If you have a recent version of GNU Octave and a network connection,
+you can install @code{queueing} directly from the prompt using this
+command:
 
 @example
-octave:1> @kbd{pkg install queueing-@value{VERSION}.tar.gz}
+octave:1> @kbd{pkg install -forge queueing}
 @end example
 
-(Note: you may need to start Octave as root in order to allow the
+The command above will automaticall download and install the latest
+version of the queueing toolbox from Octave Forge, and install it on
+your machine. You can verify that the package is indeed installed:
+
+@example
+octave:1>@kbd{pkg list queueing}
+Package Name  | Version | Installation directory
+--------------+---------+-----------------------
+    queueing *|   @value{VERSION} | /home/moreno/octave/queueing-@value{VERSION}
+@end example
+
+Alternatively, you can first download @code{queueing} from
+Octave-Forge; then, to install the package in the system-wide
+location issue this command at the Octave prompt:
+
+@example
+octave:1> @kbd{pkg install @emph{queueing-@value{VERSION}.tar.gz}}
+@end example
+
+@noindent (you may need to start Octave as root in order to allow the
 installation to copy the files to the target locations). After this,
 all functions will be readily available each time Octave starts,
-without the need to tweak the search path. To uninstall
-@code{queueing}, use the @samp{pkg uninstall queueing} command.
+without the need to tweak the search path.
 
-If you do not have root access, you can do a local installation by
-issuing the following command at the Octave prompt:
+If you do not have root access, you can do a local install using:
 
 @example
 octave:1> @kbd{pkg install -local queueing-@value{VERSION}.tar.gz}
 @end example
 
-This will install @code{queueing} within the user's home directory,
-and the package will be available to that user only. @strong{Note:}
-Octave version 3.2.3 as shipped with Ubuntu 10.04 seems to ignore
+This will install @code{queueing} within your home directory, and the
+package will be available to your user only. @strong{Note:} Octave
+version 3.2.3 as shipped with Ubuntu 10.04 seems to ignore
 @code{-local} and always tries to install the package on the system
 directory.
+
+To remove @code{queueing} you can use
+
+@example
+octave:1> @kbd{pkg uninstall queueing}
+@end example
 
 @c
 @c
@@ -98,19 +121,18 @@ directory.
 @node Manual installation
 @section Manual installation
 
-If you want to install @code{queueing} in a custom location, you can
-download the source tarball from the URL above, and unpack it
-somewhere:
+If you want to manually install @code{queueing} in a custom location,
+you can download the tarball and unpack it somewhere:
 
 @example
-@kbd{tar xfz queueing-@value{VERSION}.tar.gz}
-@kbd{cd queueing-@value{VERSION}/}
+@kbd{tar xvfz queueing-@value{VERSION}.tar.gz}
+@kbd{cd queueing-@value{VERSION}/queueing/}
 @end example
 
 Copy all @code{.m} files from the @file{inst/} directory to some
-target location. Then, you can start Octave with the @option{-p}
-option to add the target location to the search path, so that Octave
-will find all @code{queueing} functions automatically:
+target location. Then, start Octave with the @option{-p} option to add
+the target location to the search path, so that Octave will find all
+@code{queueing} functions automatically:
 
 @example
 @kbd{octave -p @emph{/path/to/queueing}}
@@ -120,7 +142,7 @@ For example, if all @code{queueing} m-files are in
 @file{/usr/local/queueing}, you can start Octave as follows:
 
 @example
-@kbd{octave -p @file{/usr/local/queueing}}
+@kbd{octave -p @emph{/usr/local/queueing}}
 @end example
 
 If you want, you can add the following line to @file{~/.octaverc}:
@@ -140,9 +162,14 @@ longer need to specify the @option{-p} option on the command line.
 @node Content of the source distribution
 @section Content of the source distribution
 
-The @code{queueing} package source code in the Subversion repository
-contains the following subdirectories (some of which are not included
-in the installation archive):
+
+The source code of the latest version of the @code{queueing} 
+package can be found in the Subversion repository at the URL:
+
+@url{http://octave.svn.sourceforge.net/viewvc/octave/trunk/octave-forge/main/queueing/}
+
+The source distribution contains the following directories (some of
+which are not included in the installation tarball):
 
 @table @file
 @item doc/

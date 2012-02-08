@@ -23,9 +23,9 @@
 %# @example
 %# demo odepkg_testsuite_implrober
 %# @end example
-%# @end deftypefn
 %#
 %# This function has been ported from the "Test Set for IVP solvers" which is developed by the INdAM Bari unit project group "Codes and Test Problems for Differential Equations", coordinator F. Mazzia.
+%# @end deftypefn
 %#
 %# @seealso{odepkg}
 

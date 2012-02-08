@@ -9,7 +9,7 @@
 @setfilename odepkg.info
 @settitle OdePkg - A package for solving ordinary differential equations and more
 @afourpaper
-@set VERSION 0.8.0
+@set VERSION 0.8.2
 @c @afourwide
 @c %*** End of the HEADER
 
@@ -107,8 +107,10 @@ OdePkg includes commands for setting up various options, output functions etc. b
 @tab Added a new solver function @command{odekdi} for the direct method (not the Krylov method) of the @file{daskr.f} solver from the authors Peter N. Brown, Alan C. Hindmarsh, Linda R. Petzold and Clement W. Ulrich that is available under a modified BSD license (without advertising clause). Ongoing work with this manual.
 @item OdePkg Version 0.5.x
 @tab Added new solver functions @command{ode23d}, @command{ode45d}, @command{ode54d} and @command{ode78d} for solving non--stiff delay differential equations (non-stiff DDEs). These solvers are based on the Runge--Kutta solvers @command{ode23}..@command{ode78}. Tests and demos have been included for this type of solvers. Added new functions @command{odeexamples}, @command{odepkg_examples_ode}, @command{odepkg_examples_dae}, @command{odepkg_examples_ide} and @command{odepkg_examples_ide}. Ongoing work with this manual.
-@item @b{(current)} Version 0.6.x
-@tab A lot of compatibility tests. Final release before version 1.0.0.
+@item OdePkg Version 0.6.x
+@tab A lot of compatibility tests, improvements, bugfixes, etc.
+@item @b{(current)} Version 0.8.x
+@tab Final releases before version 1.0.0.
 @item @b{(future)} Version 1.0.0
 @tab Completed OdePkg release 1.0.0 with M--solvers and DLD--solvers.
 @end multitable

@@ -55,10 +55,6 @@ modified versions.
 <li><a name="toc_Markov-Chains" href="#Markov-Chains">4 Markov Chains</a>
 <ul>
 <li><a href="#Discrete_002dTime-Markov-Chains">4.1 Discrete-Time Markov Chains</a>
-<ul>
-<li><a href="#DTMC-Stationary-Probability">4.1.1 Stationary Probability</a>
-<li><a href="#DTMC-First-Passage-Times">4.1.2 First Passage Times</a>
-</li></ul>
 <li><a href="#Continuous_002dTime-Markov-Chains">4.2 Continuous-Time Markov Chains</a>
 <ul>
 <li><a href="#CTMC-Stationary-Probability">4.2.1 Stationary Probability</a>
@@ -788,22 +784,49 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Markov-Chains">Markov Chains</a>
 
 <h3 class="section">4.1 Discrete-Time Markov Chains</h3>
 
-<ul class="menu">
-<li><a accesskey="1" href="#DTMC-Stationary-Probability">DTMC Stationary Probability</a>
-<li><a accesskey="2" href="#DTMC-First-Passage-Times">DTMC First Passage Times</a>
-</ul>
+<p>Let X_0, X_1, <small class="dots">...</small>, X_n, <small class="dots">...</small>  be a sequence of random
+variables, each one defined over a discete state space 0, 1, 2,
+<small class="dots">...</small>. The sequence X_0, X_1, <small class="dots">...</small>, X_n, <small class="dots">...</small>  is a
+<em>stochastic process</em> with discrete time 0, 1, 2,
+<small class="dots">...</small>. A <em>Markov chain</em> is a stochastic process {X_n,
+n=0, 1, 2, <small class="dots">...</small>} which satisfies the following Marrkov property:
 
-<div class="node">
-<a name="DTMC-Stationary-Probability"></a>
-<p><hr>
-Next:&nbsp;<a rel="next" accesskey="n" href="#DTMC-First-Passage-Times">DTMC First Passage Times</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a>
+<pre class="example">     P(X_{n+1} = x_{n+1} | X_n = x_n, X_{n-1} = x_{n-1}, ..., X_0 = x_0) = P(X_{n+1} = x_{n+1} | X_n = x_n)
+</pre>
+   <p class="noindent">which means that the probability that the system is in
+a particular state at time n+1 only depends on the state the
+system was at time n.
 
-</div>
+   <p>The evolution of a Markov chain with finite state space {1, 2,
+<small class="dots">...</small>, N} can be fully described by a stochastic matrix \bf
+P(n) = P_i,j(n) such that P_i, j(n) = P( X_n+1 = j\ |\
+X_n = j ).  If the Markov chain is homogeneous (that is, the
+transition probability matrix \bf P(n) is time-independent),
+we can simply write \bf P = P_i, j, where P_i, j =
+P( X_n+1 = j\ |\ X_n = j ) for all n=0, 1, 2, <small class="dots">...</small>.
 
-<h4 class="subsection">4.1.1 Stationary Probability</h4>
+   <p>The transition probability matrix \bf P must satisfy the
+following two properties: (1) P_i, j &ge; 0 for all
+i, j, and (2) \sum_j=1^N P_i,j = 1. We denote with
+\bf \pi(n) = (\pi_1(n), \pi_2(n), <small class="dots">...</small>, \pi_N(n) ) the
+<em>state occupancy probability vector</em> at step
+n. \pi_i(n) denotes the probability that the system is
+in state i at step n.
 
-<p><a name="doc_002ddtmc"></a>
+   <p>Given the transition probability matrix \bf P and the initial
+state occupancy probability vector \bf \pi(0) = (\pi_1(0),
+\pi_2(0), <small class="dots">...</small>, \pi_N(0)) at step 0, the state occupancy
+probability vector \bf \pi(n) at step n can be
+computed as:
+
+<pre class="example">     \pi(n) = \pi(0) P^n
+</pre>
+   <p>Under certain conditions, there exists a <em>stationary state
+occupancy probability</em> \bf \pi = \lim_n \rightarrow +\infty
+\bf \pi(n), which is independent from the initial state occupancy
+\bf \pi(0).
+
+   <p><a name="doc_002ddtmc"></a>
 
 <div class="defun">
 &mdash; Function File: <var>p</var> = <b>dtmc</b> (<var>P</var>)<var><a name="index-dtmc-1"></a></var><br>
@@ -848,17 +871,24 @@ i.
 
         </blockquote></div>
 
-<div class="node">
-<a name="DTMC-First-Passage-Times"></a>
-<p><hr>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="#DTMC-Stationary-Probability">DTMC Stationary Probability</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a>
+<p class="noindent"><strong>EXAMPLE</strong>
 
-</div>
-
-<h4 class="subsection">4.1.2 First Passage Times</h4>
-
-<p>The First Passage Time M_i j is defined as the average
+<pre class="example"><pre class="verbatim">      a = 0.2;
+      b = 0.15;
+      P = [ 1-a a; b 1-b];
+      T = 0:14;
+      pp = zeros(2,length(T));
+      for i=1:length(T)
+        pp(:,i) = dtmc(P,T(i),[1 0]);
+      endfor
+      ss = dtmc(P); # compute steady state probabilities
+      plot( T, pp(1,:), "b+;p_0(t);", "linewidth", 2, \
+            T, ss(1)*ones(size(T)), "b;Steady State;", \
+            T, pp(2,:), "r+;p_1(t);", "linewidth", 2, \
+            T, ss(2)*ones(size(T)), "r;Steady State;" );
+      xlabel("Time Step");</pre>
+</pre>
+   <p>The First Passage Time M_i j is defined as the average
 number of transitions needed to visit state j for the first
 time, starting from state i. Matrix \bf M satisfies the
 property that
@@ -5337,10 +5367,10 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-Continuous-time-Markov-chain-14">Continuous time Markov chain</a>: <a href="#CTMC-Stationary-Probability">CTMC Stationary Probability</a></li>
 <li><a href="#index-convolution-algorithm-100">convolution algorithm</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-copyright-282">copyright</a>: <a href="#Copying">Copying</a></li>
-<li><a href="#index-Discrete-time-Markov-chain-4">Discrete time Markov chain</a>: <a href="#DTMC-Stationary-Probability">DTMC Stationary Probability</a></li>
+<li><a href="#index-Discrete-time-Markov-chain-4">Discrete time Markov chain</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
 <li><a href="#index-Expected-sojourn-time-22">Expected sojourn time</a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
 <li><a href="#index-First-passage-times-36">First passage times</a>: <a href="#CTMC-First-Passage-Times">CTMC First Passage Times</a></li>
-<li><a href="#index-First-passage-times-10">First passage times</a>: <a href="#DTMC-First-Passage-Times">DTMC First Passage Times</a></li>
+<li><a href="#index-First-passage-times-10">First passage times</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
 <li><a href="#index-Jackson-network-91">Jackson network</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-load_002ddependent-service-center-110">load-dependent service center</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-g_t_0040math_007bM_002fG_002f1_007d-system-72">M/G/1 system</a>: <a href="#The-M_002fG_002f1-System">The M/G/1 System</a></li>
@@ -5356,10 +5386,9 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-Markov-chain_002c-continuous-time-21">Markov chain, continuous time</a>: <a href="#Expected-Sojourn-Time">Expected Sojourn Time</a></li>
 <li><a href="#index-Markov-chain_002c-continuous-time-18">Markov chain, continuous time</a>: <a href="#Birth_002dDeath-process">Birth-Death process</a></li>
 <li><a href="#index-Markov-chain_002c-continuous-time-13">Markov chain, continuous time</a>: <a href="#CTMC-Stationary-Probability">CTMC Stationary Probability</a></li>
-<li><a href="#index-Markov-chain_002c-discrete-time-9">Markov chain, discrete time</a>: <a href="#DTMC-First-Passage-Times">DTMC First Passage Times</a></li>
-<li><a href="#index-Markov-chain_002c-discrete-time-3">Markov chain, discrete time</a>: <a href="#DTMC-Stationary-Probability">DTMC Stationary Probability</a></li>
+<li><a href="#index-Markov-chain_002c-discrete-time-3">Markov chain, discrete time</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
 <li><a href="#index-Markov-chain_002c-state-occupancy-probabilities-15">Markov chain, state occupancy probabilities</a>: <a href="#CTMC-Stationary-Probability">CTMC Stationary Probability</a></li>
-<li><a href="#index-Markov-chain_002c-stationary-probabilities-5">Markov chain, stationary probabilities</a>: <a href="#DTMC-Stationary-Probability">DTMC Stationary Probability</a></li>
+<li><a href="#index-Markov-chain_002c-stationary-probabilities-5">Markov chain, stationary probabilities</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
 <li><a href="#index-Mean-time-to-absorption-28">Mean time to absorption</a>: <a href="#Expected-Time-to-Absorption">Expected Time to Absorption</a></li>
 <li><a href="#index-Mean-Value-Analysys-_0028MVA_0029-136">Mean Value Analysys (MVA)</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
 <li><a href="#index-Mean-Value-Analysys-_0028MVA_0029_002c-approximate-165">Mean Value Analysys (MVA), approximate</a>: <a href="#Algorithms-for-Product_002dForm-QNs">Algorithms for Product-Form QNs</a></li>
@@ -5374,7 +5403,7 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-queueing-networks-75">queueing networks</a>: <a href="#Queueing-Networks">Queueing Networks</a></li>
 <li><a href="#index-RS-blocking-226">RS blocking</a>: <a href="#Algorithms-for-non-Product_002dform-QNs">Algorithms for non Product-form QNs</a></li>
 <li><a href="#index-Stationary-probabilities-16">Stationary probabilities</a>: <a href="#CTMC-Stationary-Probability">CTMC Stationary Probability</a></li>
-<li><a href="#index-Stationary-probabilities-6">Stationary probabilities</a>: <a href="#DTMC-Stationary-Probability">DTMC Stationary Probability</a></li>
+<li><a href="#index-Stationary-probabilities-6">Stationary probabilities</a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
 <li><a href="#index-Time_002dalveraged-sojourn-time-25">Time-alveraged sojourn time</a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
 <li><a href="#index-traffic-intensity-52">traffic intensity</a>: <a href="#The-M_002fM_002finf-System">The M/M/inf System</a></li>
 <li><a href="#index-warranty-281">warranty</a>: <a href="#Copying">Copying</a></li>
@@ -5398,8 +5427,8 @@ Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
 <li><a href="#index-ctmc_005ffpt-33"><code>ctmc_fpt</code></a>: <a href="#CTMC-First-Passage-Times">CTMC First Passage Times</a></li>
 <li><a href="#index-ctmc_005fmtta-26"><code>ctmc_mtta</code></a>: <a href="#Expected-Time-to-Absorption">Expected Time to Absorption</a></li>
 <li><a href="#index-ctmc_005ftaexps-23"><code>ctmc_taexps</code></a>: <a href="#Time_002dAveraged-Expected-Sojourn-Time">Time-Averaged Expected Sojourn Time</a></li>
-<li><a href="#index-dtmc-1"><code>dtmc</code></a>: <a href="#DTMC-Stationary-Probability">DTMC Stationary Probability</a></li>
-<li><a href="#index-dtmc_005ffpt-7"><code>dtmc_fpt</code></a>: <a href="#DTMC-First-Passage-Times">DTMC First Passage Times</a></li>
+<li><a href="#index-dtmc-1"><code>dtmc</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
+<li><a href="#index-dtmc_005ffpt-7"><code>dtmc_fpt</code></a>: <a href="#Discrete_002dTime-Markov-Chains">Discrete-Time Markov Chains</a></li>
 <li><a href="#index-population_005fmix-271"><code>population_mix</code></a>: <a href="#Utility-functions">Utility functions</a></li>
 <li><a href="#index-qnammm-65"><code>qnammm</code></a>: <a href="#The-Asymmetric-M_002fM_002fm-System">The Asymmetric M/M/m System</a></li>
 <li><a href="#index-qnclosed-265"><code>qnclosed</code></a>: <a href="#Utility-functions">Utility functions</a></li>

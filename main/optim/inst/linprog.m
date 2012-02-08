@@ -93,7 +93,7 @@ function [x fval] = linprog (f, A, b,
 
     ## Sanitize lb
     if (isempty (lb))
-      LB = - Inf (nr_f, 1);
+      lb = - Inf (nr_f, 1);
     endif
     if (size (lb) != [nr_f 1])
       error ("size (lb) != [(rows (f)) 1]");
@@ -101,7 +101,7 @@ function [x fval] = linprog (f, A, b,
 
     ## Sanitize ub
     if (isempty (ub))
-      UB = Inf (nr_f, 1);
+      ub = Inf (nr_f, 1);
     endif
     if (size (ub) != [nr_f 1])
       error ("size (ub) != [(rows (f)) 1]");

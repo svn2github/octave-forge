@@ -131,18 +131,13 @@ elseif strcmp(CC.datatype,'classifier:csp')
 
 
 elseif strcmp(CC.datatype,'classifier:svm:lib:1vs1') || strcmp(CC.datatype,'classifier:svm:lib:rbf');
-
-        cl = svmpredict_mex(ones(size(D,1),1), D, CC.model);   %Use the classifier
-
+        nr = size(D,1);
+	[cl] = svmpredict_mex(ones(nr,1), D, CC.model);   %Use the classifier
         %Create a pseudo tsd matrix for bci4eval
-        d = zeros(size(D,1), CC.model.nr_class);
-        for i = 1:size(cl,1)
-                d(i,cl(i)) = 1;
-        end
+	d = full(sparse(1:nr,cl,1,nr,CC.model.nr_class));
 
 
 elseif isfield(CC,'weights'); %strcmpi(t2,'svm') || (strcmpi(t2,'statistical') & strncmpi(t3,'ld',2)) ;
-
         % linear classifiers like: LDA, SVM, LPM 
         %d = [ones(size(D,1),1), D] * CC.weights;
         d = repmat(NaN,size(D,1),size(CC.weights,2));

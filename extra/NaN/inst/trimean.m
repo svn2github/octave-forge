@@ -1,5 +1,5 @@
 function y=trimean(x,DIM)
-% TRIMEAN evaluates basic statistics of a data series
+% TRIMEAN yields the weighted mean of the median and the quartiles
 %    m = TRIMEAN(y).
 %
 % The trimean is  m = (Q1+2*MED+Q3)/4

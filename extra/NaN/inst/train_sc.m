@@ -94,8 +94,9 @@ function [CC]=train_sc(D,classlabel,MODE,W)
 %            z=2 LibLinear with -- L2-loss support vector machines (primal)
 %            z=3 LibLinear with -- L1-loss support vector machines (dual)
 %    'SVM:LIN4'  LibLinear with -- multi-class support vector machines by Crammer and Singer
+%    'DT'	decision tree - not implemented yet.  
 %
-% {'REG','MDA','MD2','QDA','QDA2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse', 'PLA', 'LMS','LDA/DELETION','MDA/DELETION','NBC/DELETION','RDA/DELETION','REG/DELETION','RDA','GDBC','SVM','RBF','PSVM','SVM11','SVM:LIN4','SVM:LIN0','SVM:LIN1','SVM:LIN2','SVM:LIN3','WINNOW'};
+% {'REG','MDA','MD2','QDA','QDA2','LD2','LD3','LD4','LD5','LD6','NBC','aNBC','WienerHopf','LDA/GSVD','MDA/GSVD', 'LDA/sparse','MDA/sparse', 'PLA', 'LMS','LDA/DELETION','MDA/DELETION','NBC/DELETION','RDA/DELETION','REG/DELETION','RDA','GDBC','SVM','RBF','PSVM','SVM11','SVM:LIN4','SVM:LIN0','SVM:LIN1','SVM:LIN2','SVM:LIN3','WINNOW', 'DT'};
 %
 % CC contains the model parameters of a classifier. Some time ago,     
 % CC was a statistical classifier containing the mean 

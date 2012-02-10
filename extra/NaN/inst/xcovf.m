@@ -10,10 +10,22 @@ function [C,N,LAGS] = xcovf(X,Y,MAXLAG,SCALEOPT)
 % [C,N,LAGS] = xcovf(X,Y,MAXLAG,SCALEOPT);
 %      calculates the crosscorrelation function between X and Y
 %
+%  SCALEOPT   [character string] specifies the type of scaling applied
+%          to the correlation vector (or matrix). is one of:
+%    'none'      return the unscaled correlation, R,
+%    'biased'    return the biased average, R/N, 
+%    'unbiased'  return the unbiassed average, R(k)/(N-|k|), 
+%    'coeff'     return the correlation coefficient, R/(rms(x).rms(y)),
+%          where "k" is the lag, and "N" is the length of X.
+%          If omitted, the default value is "none".
+%          If Y is supplied but does not have the ame length as X,
+%          scale must be "none".
+%
+%
 % see also: COVM, XCORR
 
 %	$Id$
-%	Copyright (C) 2005,2010 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (C) 2005,2010,2011 by Alois Schloegl <alois.schloegl@gmail.com>	
 %       This function is part of the NaN-toolbox
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 
@@ -103,3 +115,4 @@ elseif strcmp(SCALEOPT,'unbiased')
 else
         warning('invalid SCALEOPT - not supported');
 end;
+

@@ -21,7 +21,8 @@ function [kap,se,H,z,p0,SA,R]=kappa(d,c,arg3,w)
 % MI 	Mutual information or transfer information (in [bits])
 % X 	is a struct containing all the fields above
 %       For two classes, a number of additional summary statistics including 
-%         TPR, FPR, FDR, PPV, NPF, F1, dprime, Matthews Correlation coefficient (MCC), Specificity and Sensitivity 
+%         TPR, FPR, FDR, PPV, NPF, F1, dprime, Matthews Correlation coefficient (MCC) or 
+%	Phi coefficient (PHI=MCC), Specificity and Sensitivity 
 %       are provided. Note, the positive category must the larger label (in d and c), otherwise 
 %       the confusion matrix becomes transposed and the summary statistics are messed up. 
 %
@@ -177,6 +178,7 @@ if length(H)==2,
 	X.NPV = H(1,1) / sum(H(:,1));
 	X.FDR = H(1,2) / sum(H(:,2));
 	X.MCC = det(H) / sqrt(prod([sum(H), sum(H')]));
+	X.PHI = X.MCC; 
 	X.F1  = 2 * X.TP / (sum(H(2,:)) + sum(H(:,2)));
 	X.Sensitivity = X.TPR;	%% hit rate, recall
 	X.Specificity = 1 - X.FPR;

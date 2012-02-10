@@ -43,8 +43,8 @@ other useful staff. Demo programs can be started with "demo" or "demotsa".
 % License along with this library; if not, see
 % <http://www.gnu.org/licenses/>.
 
-Copyright (c) 1996-2003,2010 by Alois Schloegl 
-E-Mail:   a.schloegl@ieee.org
-WWW:      http://biosig-consulting.com/matlab/tsa
+Copyright (C) 1996-2003,2010,2012 by Alois Schloegl 
+E-Mail:   alois.schloegl@ist.ac.at
+WWW:      http://pub.ist.ac.at/~schloegl/matlab/tsa/
 
 

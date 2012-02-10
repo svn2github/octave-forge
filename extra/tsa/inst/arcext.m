@@ -22,7 +22,11 @@ function  [AR,RC] = arcext(MX,P);
 %  W.S. Wei "Time Series Analysis" Addison Wesley, 1990.
 
 %  $Id$
-%  Copyright (C) 1998-2003,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%  Copyright (C) 1998-2003,2008,2012 by Alois Schloegl <alois.schloegl@ist.ac.at>	
+%       This is part of the TSA-toolbox. See also 
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
+%       http://octave.sourceforge.net/
+%       http://biosig.sourceforge.net/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -48,7 +52,7 @@ else		% invalid number of elements
 	fprintf(2,'Warning ARCEXT: Number of elements is different than a triangular matrix\n');
 end;
 
-if (K~=P) & (lc~=K*(K+1)/2),
+if (K~=P) && (lc~=K*(K+1)/2),
 	[AR,RC,PE]=rc2ar(MX(:,(1:P).*(2:P+1)/2));
 else
 	AR = MX(:,P*(P-1)/2+(1:P));

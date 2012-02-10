@@ -34,7 +34,11 @@ function [w, MAR, C, sbc, fpe, th] = arfit2(Y, pmin, pmax, selector, no_const)
 %	of multivariate autoregressive models. ACM-Transactions on Mathematical Software. 27, (Mar.), 58-65.
 
 %       $Id$
-%	Copyright (C) 1996-2005,2008 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2005,2008,2012 by Alois Schloegl <alois.schloegl@ist.ac.at>	
+%       This is part of the TSA-toolbox. See also 
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
+%       http://octave.sourceforge.net/
+%       http://biosig.sourceforge.net/
 
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -51,7 +55,7 @@ function [w, MAR, C, sbc, fpe, th] = arfit2(Y, pmin, pmax, selector, no_const)
 
 
 %%%%% checking of the input arguments was done the same way as ARFIT
-if (pmin ~= round(pmin) | pmax ~= round(pmax))
+if (pmin ~= round(pmin) || pmax ~= round(pmax))
         error('Order must be integer.');
 end
 if (pmax < pmin)

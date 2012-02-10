@@ -40,10 +40,14 @@ function [z,e,REV,ESU,V,Z,SPUR] = aarmam(y, Mode, MOP, UC, z0, Z0, V0, W);
 %     ISBN 3-8265-7640-3 Shaker Verlag, Aachen, Germany. 
 %
 % More references can be found at 
-%     http://www.dpmi.tu-graz.ac.at/~schloegl/publications/
+%     http://pub.ist.ac.at/~schloegl/publications/
 
 %       $Id$
-%       Copyright (C) 1998-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 1998-2002,2008,2012 by Alois Schloegl <alois.schloegl@ist.ac.at>
+%       This is part of the TSA-toolbox. See also 
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
+%       http://octave.sourceforge.net/
+%       http://biosig.sourceforge.net/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -106,7 +110,7 @@ if m,
 		return;        
         end;
 end; 
-if (p<0) | (q<0) | (round(p)~=p) | (round(q)~=q),
+if (p<0) || (q<0) || (round(p)~=p) || (round(q)~=q),
         fprintf(2,'Error AARMAM: p and q must be positive integers\n');
 	return;        
 end;

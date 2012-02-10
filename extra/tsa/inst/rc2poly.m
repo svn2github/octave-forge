@@ -6,7 +6,11 @@ function [a,efinal] = rc2poly(RC,E);
 % 
 
 %       $Id$
-%       Copyright (C) 1998-2002,2008 by Alois Schloegl <a.schloegl@ieee.org>
+%       Copyright (C) 1998-2002,2008,2012 by Alois Schloegl <alois.schloegl@ist.ac.at>
+%       This is part of the TSA-toolbox. See also 
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
+%       http://octave.sourceforge.net/
+%       http://biosig.sourceforge.net/
 %
 %    This program is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
@@ -22,7 +26,7 @@ function [a,efinal] = rc2poly(RC,E);
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-if nargout>1 & nargin<2
+if nargout>1 && nargin<2
    fprintf('Zero-lag autocorrelation, R0 not specified\n')
    return; 
 end;

@@ -61,7 +61,7 @@ coef1=-(e0+N*d1)/((N-1)*d1);
 ti=-(N*c1)/((N-1)*d1);
 raices=roots([coef3 coef2 coef1 ti]);
 for o=1:3
-    if raices(o)>-1 & raices(o)<1
+    if raices(o)>-1 && raices(o)<1
         a_aux(2,1)=raices(o);    
         b_aux(p+1,1)=raices(o);
     end
@@ -80,7 +80,7 @@ for k=2:p
     tire=-(N*ck)/((N-k)*dk);
     raices=roots([coef3re coef2re coef1re tire]);
     for o=1:3
-        if raices(o,1)>-1 & raices(o,1)<1
+        if raices(o,1)>-1 && raices(o,1)<1
             MLE(o,1)=((1-raices(o)^2)^(k/2))/(((e_aux(k-1)+2*ck*raices(o)+dk*(raices(o)^2))/N)^(N/2));
         end
     end

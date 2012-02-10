@@ -86,9 +86,9 @@ function [ARF,RCF,PE,DC,varargout] = mvar(Y, Pmax, Mode);
 % see also: MVFILTER, MVFREQZ, COVM, SUMSKIPNAN, ARFIT2
 
 %	$Id$
-%	Copyright (C) 1996-2006 by Alois Schloegl <a.schloegl@ieee.org>	
+%	Copyright (C) 1996-2006,2011,2012 by Alois Schloegl <alois.schloegl@ist.ac.at>	
 %       This is part of the TSA-toolbox. See also 
-%       http://hci.tugraz.at/schloegl/matlab/tsa/
+%       http://pub.ist.ac.at/~schloegl/matlab/tsa/
 %       http://octave.sourceforge.net/
 %       http://biosig.sourceforge.net/
 %
@@ -921,7 +921,7 @@ elseif Mode<100,
 else
 
 	Mode0 = rem(Mode,100); 	
-	if ((Mode0>=10) & (Mode0<20)), 
+	if ((Mode0 >= 10) && (Mode0 < 20)), 
 		Mode0 = 1; 
 	end;
 

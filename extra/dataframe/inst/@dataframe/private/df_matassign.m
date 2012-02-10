@@ -145,13 +145,12 @@ function df = df_matassign(df, S, indc, ncol, RHS)
             %# row names.
             if (isempty (S.subs{2}))
               %# extract columns position from columns names 
-              [indc, ncol, ~, dummy] = df_name2idx (df._name{2}, cname, \
-                                                    df._cnt(2), 'column');
+              [indc, ncol,  S.subs{2}, dummy] = ...
+                  df_name2idx (df._name{2}, cname, df._cnt(2), 'column');
               if (length (dummy) ~= sum (dummy))
                 warning ("Not all RHS column names used");
                 cname = cname(dummy); RHS = RHS(:, dummy);
               endif
-              S.subs{2} = indc; 
             endif
           endif
         endif

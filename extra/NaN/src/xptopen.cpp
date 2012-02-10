@@ -151,7 +151,9 @@ SPSS file format
 	The output files can be zipped, too. 
  */
 
+#ifdef WITH_ZLIB
 #include <zlib.h>
+#endif
 
 
 double xpt2d(uint64_t x);
@@ -217,7 +219,11 @@ void mexFunction(int POutputCount,  mxArray* POutput[], int PInputCount, const m
 		mexPrintf("\n\tX = xptopen(filename)\n");
 		mexPrintf("\tX = xptopen(filename,'r')\n");
 		mexPrintf("\t\tread filename and return variables in struct X\n");
+#ifdef ZLIB_H		
 		mexPrintf("\tSupported are ARFF, SAS-XPT and STATA files with or w/o zlib/gzip compression.\n");
+#else
+		mexPrintf("\tSupported are ARFF, SAS-XPT and STATA files.\n");
+#endif
 		mexPrintf("\n\tX = xptopen(filename,'w',X)\n");
 		mexPrintf("\t\tsave fields of struct X in filename.\n\n");
 		mexPrintf("\tThe fields of X must be column vectors of equal length.\n");

@@ -30,11 +30,11 @@ GNUMEX64 = $(HOME)/bin/win64/gnumex
 
 CC  	= gcc
 CXX 	= g++
-CFLAGS 	= -fopenmp -Wall -Wconversion -O2 -fPIC 
+CFLAGS 	= -fopenmp -Wall -Wextra -Wconversion -O2 -fPIC 
 OCTMEX	= mkoctfile$(OCTAVE_VERSION) --mex
 RM      = rm
 
-MEX_OPTION  += -lz -lgomp CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
+MEX_OPTION  += -lgomp CC\#$(CXX) CXX\#$(CXX) CFLAGS\#"$(CFLAGS)" CXXFLAGS\#"$(CFLAGS)"
 MATMEX      = $(MATLABDIR)/bin/mex $(MEX_OPTION)
 
 PROGS = histo_mex.mex covm_mex.mex kth_element.mex sumskipnan_mex.mex str2array.mex train.mex svmtrain_mex.mex svmpredict_mex.mex xptopen.mex 
@@ -61,9 +61,9 @@ $(PROGS): Makefile
 	mkoctfile$(OCTAVE_VERSION) $<
 
 %.mex: %.cpp
-	$(OCTMEX) $<  -lz -lgomp         ## Octave
+	$(OCTMEX) $<  -lgomp         ## Octave
 %.$(MEX_EXT): %.cpp
-	$(MATMEX) $<  -lz -lgomp      ## Matlab
+	$(MATMEX) $<  -lgomp      ## Matlab
 
 svmtrain_mex.mex svmpredict_mex.mex:     svmtrain_mex.cpp svm.h svm.cpp svm_model_matlab.c svmpredict_mex.cpp
 	$(CXX) $(CFLAGS) -c svm.cpp
@@ -102,15 +102,15 @@ tron.o: tron.cpp tron.h
 	$(CROSS)$(CXX) -fopenmp -c -DMATLAB_MEX_FILE -x c++ -o $@ -I$(W32MAT_INC) -O2 -DMX_COMPAT_32 $< 
 
 train.mexw32 predict.mexw32:  train.obj linear.obj linear_model_matlab.obj tron.obj
-	$(CROSS)$(CXX) -shared $(GNUMEX)/mex.def -o $@ -L$(GNUMEX) -s $< linear_model_matlab.obj linear.obj tron.obj -llibmx -llibmex -llibmat -lz -lcholmod -lblas
+	$(CROSS)$(CXX) -shared $(GNUMEX)/mex.def -o $@ -L$(GNUMEX) -s $< linear_model_matlab.obj linear.obj tron.obj -llibmx -llibmex -llibmat -lcholmod -lblas
 
 svmpredict_mex.mexw32 :  svmpredict_mex.obj svm.obj svm_model_matlab.obj 
-	$(CROSS)$(CXX) -shared $(GNUMEX)/mex.def -o $@ -L$(GNUMEX) -s $< svm_model_matlab.obj svm.obj -llibmx -llibmex -llibmat -lz -lcholmod
+	$(CROSS)$(CXX) -shared $(GNUMEX)/mex.def -o $@ -L$(GNUMEX) -s $< svm_model_matlab.obj svm.obj -llibmx -llibmex -llibmat -lcholmod
 svmtrain_mex.mexw32 : svmtrain_mex.obj svm.obj svm_model_matlab.obj
-	$(CROSS)$(CXX) -shared $(GNUMEX)/mex.def -o $@ -L$(GNUMEX) -s $< svm_model_matlab.obj svm.obj -llibmx -llibmex -llibmat -lz -lcholmod
+	$(CROSS)$(CXX) -shared $(GNUMEX)/mex.def -o $@ -L$(GNUMEX) -s $< svm_model_matlab.obj svm.obj -llibmx -llibmex -llibmat -lcholmod
 
 %.mexw32: %.obj
-	$(CROSS)$(CXX) -shared $(GNUMEX)/mex.def -o $@ -L$(GNUMEX) -s $< -llibmx -llibmex -llibmat -lz -lcholmod -lgomp -lpthread
+	$(CROSS)$(CXX) -shared $(GNUMEX)/mex.def -o $@ -L$(GNUMEX) -s $< -llibmx -llibmex -llibmat -lcholmod -lgomp -lpthread
 
 
 
@@ -125,13 +125,13 @@ svmtrain_mex.mexw32 : svmtrain_mex.obj svm.obj svm_model_matlab.obj
 	$(CROSS64)$(CXX) -c -DMATLAB_MEX_FILE -x c++ -o $@ -I$(W64MAT_INC) -O2 $< 
 
 train.mexw64 predict.mexw64:  train.o64 linear.o64 linear_model_matlab.o64 tron.o64
-	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< linear_model_matlab.o64 linear.o64 tron.o64 -llibmx -llibmex -llibmat -lz -lcholmod -lblas
+	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< linear_model_matlab.o64 linear.o64 tron.o64 -llibmx -llibmex -llibmat -lcholmod -lblas
 
 svmpredict_mex.mexw64 :  svmpredict_mex.o64 svm.o64 svm_model_matlab.o64
-	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< svm_model_matlab.o64 svm.o64 -llibmx -llibmex -llibmat -lz -lcholmod
+	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< svm_model_matlab.o64 svm.o64 -llibmx -llibmex -llibmat -lcholmod
 svmtrain_mex.mexw64 : svmtrain_mex.o64 svm.o64 svm_model_matlab.o64
-	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< svm_model_matlab.o64 svm.o64 -llibmx -llibmex -llibmat -lz -lcholmod
+	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< svm_model_matlab.o64 svm.o64 -llibmx -llibmex -llibmat -lcholmod
 
 %.mexw64: %.o64
-	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< -llibmx -llibmex -llibmat -lz -lcholmod -lgomp -lpthread
+	$(CROSS64)$(CXX) -shared $(GNUMEX64)/mex.def -o $@ -L$(GNUMEX64) -s $< -llibmx -llibmex -llibmat -lcholmod -lgomp -lpthread
 

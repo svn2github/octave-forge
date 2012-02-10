@@ -37,7 +37,7 @@ function dcm = CMint (x)
     px = x(1,:);
     py = x(2,:);
     Px = polyint (conv(conv (px , px)/2 , polyderiv (py)));
-    Py = polyint (conv(-conv (px , px)/2 , polyderiv (px)));
+    Py = polyint (conv(-conv (py , py)/2 , polyderiv (px)));
 
     dcm = zeros (1,2);
     dcm(1) = diff(polyval(Px,[0 1]));
@@ -51,6 +51,14 @@ endfunction
 %!                 [-27.7359   18.1039  -34.5718    3.7878; ...
 %!                  -40.7440   49.7999  -25.5011    2.2304]};
 %! CoM = masscenter (weirdhearth)
+
+%!test
+%! square = {[1 -0.5; 0 -0.5]; [0 0.5; 1 -0.5]; [-1 0.5; 0 0.5]; [0 -0.5; -1 0.5]};
+%! CoM = masscenter (square);
+%! square_t = shapetransform (square,[1;1]);
+%! CoM_t = masscenter (square_t);
+%! assert (CoM, [0 0], sqrt(eps));
+%! assert (CoM_t, [1 1], sqrt(eps));
 
 %!test
 %! square = {[1 -0.5; 0 -0.5]; [0 0.5; 1 -0.5]; [-1 0.5; 0 0.5]; [0 -0.5; -1 0.5]};

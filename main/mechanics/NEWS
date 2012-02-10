@@ -1,6 +1,14 @@
 Summary of important user-visible changes for releases of the mechanics package
 
 ===============================================================================
+mechanics-1.2.X   Release Date: XX   Release Manager: Juan Pablo Carbajal
+===============================================================================
+
+* Bug fixes
+ - masscenter.m
+
+
+===============================================================================
 mechanics-1.2.0   Release Date: 2011-10-16   Release Manager: Juan Pablo Carbajal
 ===============================================================================
 

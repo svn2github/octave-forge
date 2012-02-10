@@ -57,6 +57,10 @@ endfunction
 %! square = {[1 -0.5; 0 -0.5]; [0 0.5; 1 -0.5]; [-1 0.5; 0 0.5]; [0 -0.5; -1 0.5]};
 %! CoM = shapecentroid (square);
 %! assert (CoM, [0 0], sqrt(eps));
+%! square_t = shapetransform (square,[1;1]);
+%! CoM_t = shapecentroid (square_t);
+%! assert (CoM, [0 0], sqrt(eps));
+%! assert (CoM_t, [1 1], sqrt(eps));
 
 %!test
 %! circle = {[1.715729  -6.715729    0   5; ...
@@ -69,3 +73,5 @@ endfunction
 %!            -1.715729   6.715729    0  -5]};
 %! CoM = shapecentroid (circle);
 %! assert (CoM , [0 0], 5e-3);
+
+%!test

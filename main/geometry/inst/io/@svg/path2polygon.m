@@ -1,5 +1,5 @@
 %% Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%% 
+%%
 %%    This program is free software: you can redistribute it and/or modify
 %%    it under the terms of the GNU General Public License as published by
 %%    the Free Software Foundation, either version 3 of the License, or
@@ -16,13 +16,13 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} @var{P} = path2polygon (@var{id})
 %% Converts the SVG path to an array of polygons.
-%% 
+%%
 %% @end deftypefn
 
 function P = path2polygon (obj,varargin)
 
     narg = numel(varargin);
-    
+
     if narg == 1
 
      id = varargin{1};
@@ -38,16 +38,21 @@ function P = path2polygon (obj,varargin)
       error("svg:path2polygon:InvalidArgument", "Wrong number of arguments.");
 
     end
-    
+
+    P = shape2polygon(getpath(obj, id));
+
+endfunction
+
+%{
     pd = obj.Path.(id).data;
     P = cellfun(@(x)convertpath(x,n),pd,'UniformOutput',false);
     P = cell2mat(P);
-    
+
 end
 
 function p = convertpath(x,np)
   n = size(x,2);
-  
+
   switch n
     case 2
       p = zeros(2,2);
@@ -63,3 +68,4 @@ function p = convertpath(x,np)
   end
 
 end
+%}

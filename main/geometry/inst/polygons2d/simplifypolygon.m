@@ -35,6 +35,11 @@ function polygonsimp = simplifypolygon (polygon)
 
   polygonsimp = polygon(circshift (ind,1),:);
 
+  if isempty(polygonsimp)
+    warning('simplifypolygon:devel',"The simplification gives an empty polygon. Returning original\n");
+    polygonsimp = polygon;
+  end
+
 endfunction
 
 %!test

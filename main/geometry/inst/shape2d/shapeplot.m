@@ -17,7 +17,7 @@
 %% @deftypefn {Function File} {@var{h} = } shapeplot (@var{shape})
 %% @deftypefnx {Function File} {@var{h} = } shapeplot (@var{shape}, @var{N})
 %% @deftypefnx {Function File} {@var{h} = } shapeplot (@dots{}, @var{param}, @var{value})
-%% Pots a 2D shape defined by piecewise smooth polynomials.
+%% Pots a 2D shape defined by piecewise smooth polynomials in the current axis.
 %%
 %% @var{pp} is a cell where each elements is a 2-by-(poly_degree+1) matrix
 %% containing a pair of polynomials.

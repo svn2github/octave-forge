@@ -47,11 +47,36 @@ function dcm = CMint (x)
 endfunction
 
 %!demo % non-convex bezier shape
-%! weirdhearth ={[-17.6816  -34.3989    7.8580    3.7971; ...
-%!                15.4585  -28.3820  -18.7645    9.8519]; ...
-%!                 [-27.7359   18.1039  -34.5718    3.7878; ...
-%!                  -40.7440   49.7999  -25.5011    2.2304]};
+%! weirdhearth ={[34.81947,-63.60585 41.35964,1.61093; ...
+%!                73.22086,4.95439 7.1796,-34.7948]; ...
+%!                 [30.26599,-50.0316 77.6279,8.52058; ...
+%!                  -18.66371,58.02699 -168.20415,52.74819]};
 %! CoM = shapecentroid (weirdhearth)
+%! Gcentriod = centroid(shape2polygon(weirdhearth))
+%!
+%! shapeplot(weirdhearth);
+%! hold on
+%! drawPoint(CoM,'ok');
+%! drawPoint(Gcentriod,'or');
+%! hold off
+%! axis equal
+
+%!demo
+%! Lshape = {[0.00000   0.76635; -0.67579  -0.24067]; ...
+%!             [0.77976   0.76635; 0.00000  -0.91646]; ...
+%!             [0.00000   1.54611; 0.38614  -0.91646]; ...
+%!             [-0.43813   1.54611; 0.00000  -0.53032]; ...
+%!             [0.00000   1.10798; 0.28965  -0.53032]; ...
+%!             [-0.34163   1.10798; 0.00000  -0.24067]};...
+%! CoM = shapecentroid (Lshape)
+%! Gcentriod = centroid (shape2polygon (Lshape))
+%!
+%! shapeplot(Lshape);
+%! hold on
+%! drawPoint(CoM,'ok');
+%! drawPoint(Gcentriod,'or');
+%! hold off
+%! axis equal
 
 %!test
 %! square = {[1 -0.5; 0 -0.5]; [0 0.5; 1 -0.5]; [-1 0.5; 0 0.5]; [0 -0.5; -1 0.5]};
@@ -73,5 +98,3 @@ endfunction
 %!            -1.715729   6.715729    0  -5]};
 %! CoM = shapecentroid (circle);
 %! assert (CoM , [0 0], 5e-3);
-
-%!test

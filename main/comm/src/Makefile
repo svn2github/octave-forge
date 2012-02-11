@@ -1,5 +1,7 @@
 sinclude Makeconf
 
+HDF5_LIBS := $(shell  grep "\#define OCTAVE_CONF_HDF5_LIBS"  $(shell  mkoctfile -p OCTINCLUDEDIR)/oct-conf.h | sed "s/^.*LIBS //"  )
+
 GALOISTARGET = gf.oct
 GALOISSOURCES = galois.cc galois-def.cc galoisfield.cc gf.cc \
 	      op-gm-gm.cc op-gm-m.cc op-gm-s.cc op-m-gm.cc op-s-gm.cc \
@@ -38,7 +40,7 @@ install :
 
 $(GALOISTARGET) : $(DEPENDS) $(GALOISOBJECTS) 
 	@echo "Linking $@"; \
-	$(MKOCTFILE) $(MOFLAGS) $(GALOISOBJECTS) -o $@
+	$(MKOCTFILE) $(MOFLAGS) $(GALOISOBJECTS) -o $@ $(HDF5_LIBS)
 
 ifneq (,$(DEPENDS))
   sinclude $(DEPENDS)
@@ -46,7 +48,7 @@ endif
 
 %.oct : %.d %.o
 	@echo "Linking $@"; \
-	$(MKOCTFILE) $(MOFLAGS) $(@:.oct=.o) -o $@
+	$(MKOCTFILE) $(MOFLAGS) $(@:.oct=.o) -o $@ $(HDF5_LIBS)
 
 %.d: %.cc
 	@echo "Depending $<"; \

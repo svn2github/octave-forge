@@ -20,10 +20,12 @@ function dat = iddata (y = [], u = [], tsam = -1, varargin)
 
   outname = repmat ({""}, p, 1);
   inname = repmat ({""}, m, 1);
+  exname = repmat ({""}, e, 1);
 
-  dat = struct ("y", y, "outname", {outname}, "outunit", {outname},
-                "u", u, "inname", {inname}, "inunit", {inname},
+  dat = struct ("y", {y}, "outname", {outname}, "outunit", {outname},
+                "u", {u}, "inname", {inname}, "inunit", {inname},
                 "tsam", tsam, "timeunit", {""},
+                "exname", {exname},
                 "name", "", "notes", {{}}, "userdata", []);
 
   dat = class (dat, "iddata");

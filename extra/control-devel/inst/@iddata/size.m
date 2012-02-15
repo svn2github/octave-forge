@@ -54,10 +54,19 @@ function [ret, varargout] = size (dat, dim = 0)
     print_usage ();
   endif
 
+  n = cellfun (@rows, dat.y).';
   p = numel (dat.outname);
   m = numel (dat.inname);
-  n = rows (dat.y);
-
+  e = numel (dat.y);
+  
+  if (nargout > 1)
+    ret = n;
+    varargout = {p; m; e};
+  else
+    ret = [sum(n), p, m, e];
+  endif
+  
+%{
   switch (dim)
     case 0
       switch (nargout)
@@ -94,5 +103,6 @@ function [ret, varargout] = size (dat, dim = 0)
     otherwise
       print_usage ();
   endswitch
+%}
 
 endfunction

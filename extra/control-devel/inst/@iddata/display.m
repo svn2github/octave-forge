@@ -30,9 +30,19 @@ function display (dat)
   [exname, e] = __labels__ (dat.exname, "exp");
   
   [n, p, m, e] = size (dat);
+  
+  str = ["Time domain dataset '", datname, "' containing ", num2str(e), " experiment"];
+  if (e > 1)
+    str = [str, "s"];
+  endif
 
   disp ("");
-  disp (["Time domain data set '", datname, "' containing ", num2str(e), " experiments"]);
-
-
+  disp (str);
+%{
+  str = strvcat (exname)
+  space = (repmat ("  ", e, 1))
+  %str = [space, exname]
+  class (space)
+  class (str)
+%}
 endfunction

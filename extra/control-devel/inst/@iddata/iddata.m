@@ -2,20 +2,21 @@
 ## Created: October 2011
 ## Version: 0.1
 
-function dat = iddata (y = [], u = [], tsam = [], varargin)
+function dat = iddata (y = [], u = [], tsam = -1, varargin)
 
   if (nargin == 1 && isa (y, "iddata"))
     dat = y;
     return;
-  elseif (nargin < 3)
+  elseif (nargin < 2)
     print_usage ();
   endif
 
-  if (! issample (tsam, 1))
+  if (! issample (tsam, -1))
     error ("iddata: invalid sampling time");
   endif
 
-  [p, m] = __iddata_dim__ (y, u);
+  [y, u] = __adjust_iddata__ (y, u);
+  [p, m, e] = __iddata_dim__ (y, u);
 
   outname = repmat ({""}, p, 1);
   inname = repmat ({""}, m, 1);
@@ -29,6 +30,25 @@ function dat = iddata (y = [], u = [], tsam = [], varargin)
   
   if (nargin > 3)
     dat = set (dat, varargin{:});
+  endif
+
+endfunction
+
+
+function [y, u] = __adjust_iddata__ (y, u)
+
+  if (iscell (y))
+    y = reshape (y, [], 1);
+  else
+    y = {y};
+  endif
+  
+  if (isempty (u))
+    u = [];     # avoid [](nx0) and the like
+  elseif (iscell (u))
+    u = reshape (u, [], 1);
+  else
+    u = {u};
   endif
 
 endfunction

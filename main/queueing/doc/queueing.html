@@ -791,9 +791,9 @@ variables, each one defined over a discete state space 0, 1, 2,
 <small class="dots">...</small>. A <em>Markov chain</em> is a stochastic process {X_n,
 n=0, 1, 2, <small class="dots">...</small>} which satisfies the following Marrkov property:
 
-<pre class="example">     P(X_{n+1} = x_{n+1} | X_n = x_n, X_{n-1} = x_{n-1}, ..., X_0 = x_0) = P(X_{n+1} = x_{n+1} | X_n = x_n)
-</pre>
-   <p class="noindent">which means that the probability that the system is in
+   <p>P(X_n+1 = x_n+1 | X_n = x_n, X_n-1 = x_n-1, ..., X_0 = x_0) = P(X_n+1 = x_n+1 | X_n = x_n)
+
+<p class="noindent">which means that the probability that the system is in
 a particular state at time n+1 only depends on the state the
 system was at time n.
 
@@ -824,7 +824,8 @@ computed as:
    <p>Under certain conditions, there exists a <em>stationary state
 occupancy probability</em> \bf \pi = \lim_n \rightarrow +\infty
 \bf \pi(n), which is independent from the initial state occupancy
-\bf \pi(0).
+\bf \pi(0). The stationary state occupancy probability vector
+\bf \pi satisfies \bf \pi = \bf \pi \bf P.
 
    <p><a name="doc_002ddtmc"></a>
 
@@ -3445,7 +3446,7 @@ service times <strong>must</strong> be class-independent.
           <br><dt><var>V</var><dd><var>V</var><code>(c,k)</code> is the average number of visits of class c
 customers to service center k; <var>V</var><code>(c,k) &ge; 0</code>,
 default is 1. 
-<strong>If you pass this parameter, no class switching is not
+<strong>If you pass this parameter, class switching is not
 allowed</strong>
 
           <br><dt><var>P</var><dd><var>P</var><code>(r,i,s,j)</code> is the probability that a class r

@@ -43,11 +43,7 @@ $$P(X_{n+1} = x_{n+1}\ |\ X_n = x_n, X_{n-1} = x_{n-1}, \ldots, X_0 = x_0) = P(X
 @end tex
 @end iftex
 @ifnottex
-@example
-@group
-P(X_@{n+1@} = x_@{n+1@} | X_n = x_n, X_@{n-1@} = x_@{n-1@}, ..., X_0 = x_0) = P(X_@{n+1@} = x_@{n+1@} | X_n = x_n)
-@end group
-@end example
+@math{P(X_{n+1} = x_{n+1} | X_n = x_n, X_{n-1} = x_{n-1}, ..., X_0 = x_0) = P(X_{n+1} = x_{n+1} | X_n = x_n)}
 @end ifnottex
 
 @noindent which means that the probability that the system is in 
@@ -92,7 +88,8 @@ $${\bf \pi}(n) = {\bf \pi}(0) {\bf P}^n$$
 Under certain conditions, there exists a @emph{stationary state
 occupancy probability} @math{{\bf \pi} = \lim_{n \rightarrow +\infty}
 {\bf \pi}(n)}, which is independent from the initial state occupancy
-@math{{\bf \pi}(0)}. 
+@math{{\bf \pi}(0)}. The stationary state occupancy probability vector
+@math{\bf \pi} satisfies @math{{\bf \pi} = {\bf \pi} {\bf P}}.
 
 @DOCSTRING(dtmc)
 
@@ -103,7 +100,6 @@ occupancy probability} @math{{\bf \pi} = \lim_{n \rightarrow +\infty}
 @verbatiminclude @value{top_srcdir}/examples/demo_1_dtmc.m
 @end group
 @end example
-
 
 The First Passage Time @math{M_{i j}} is defined as the average
 number of transitions needed to visit state @math{j} for the first

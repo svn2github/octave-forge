@@ -91,7 +91,7 @@
 ## @code{@var{V}(c,k)} is the average number of visits of class @math{c}
 ## customers to service center @math{k}; @code{@var{V}(c,k) @geq{} 0},
 ## default is 1.
-## @strong{If you pass this parameter, no class switching is not
+## @strong{If you pass this parameter, class switching is not
 ## allowed}
 ##
 ## @item P

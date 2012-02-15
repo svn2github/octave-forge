@@ -1,6 +1,6 @@
-LAPACK_LIBS = $$(mkoctfile -p LAPACK_LIBS)
-BLAS_LIBS = $$(mkoctfile -p BLAS_LIBS)
-FLIBS = $$(mkoctfile -p FLIBS)
+LAPACK_LIBS := $(shell mkoctfile -p LAPACK_LIBS)
+BLAS_LIBS := $(shell mkoctfile -p BLAS_LIBS)
+FLIBS := $(shell mkoctfile -p FLIBS)
 
 all: slab09hd.oct slab09id.oct slab09jd.oct slsb16ad.oct slsb16bd.oct \
      slsb16cd.oct slsb10yd.oct

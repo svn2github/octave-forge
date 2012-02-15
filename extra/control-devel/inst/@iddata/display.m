@@ -32,65 +32,7 @@ function display (dat)
   [n, p, m, e] = size (dat);
 
   disp ("");
+  disp (["Time domain data set '", datname, "' containing ", num2str(e), " experiments"]);
 
-  if (! isempty (sys.e))
-    __disp_mat__ (sys.e, [sysname, ".e"], stname, stname);
-  endif
-
-  if (! isempty (sys.a))
-    __disp_mat__ (sys.a, [sysname, ".a"], stname, stname);
-    __disp_mat__ (sys.b, [sysname, ".b"], stname, inname);
-    __disp_mat__ (sys.c, [sysname, ".c"], outname, stname);
-  endif
-
-  __disp_mat__ (sys.d, [sysname, ".d"], outname, inname);
-
-  display (sys.lti);  # display sampling time
-
-  if (tsam == -2)
-    disp ("Static gain.");
-  elseif (tsam == 0)
-    disp ("Continuous-time model.");
-  else
-    disp ("Discrete-time model.");
-  endif
-
-endfunction
-
-
-function __disp_mat__ (m, mname, rname, cname)
-
-  MAX_LEN = 12;       # max length of row name and column name
-  [mrows, mcols] = size (m);
-
-  row_name = strjust (strvcat (" ", rname), "left");
-  row_name = row_name(:, 1 : min (MAX_LEN, end));
-  row_name = horzcat (repmat (" ", mrows+1, 3), row_name);
-
-  mat = cell (1, mcols);
-  
-  for k = 1 : mcols
-    cname{k} = cname{k}(:, 1 : min (MAX_LEN, end));
-    acol = vertcat (cname(k), cellstr (deblank (num2str (m(:, k), 4))));
-    mat{k} = strjust (strvcat (acol{:}), "right");
-  endfor
-
-  lcols = cellfun (@columns, mat);
-  lcols_max = 2 + max (horzcat (lcols, 1));
-
-  for k = 1 : mcols
-    mat{k} = horzcat (repmat (" ", mrows+1, lcols_max-lcols(k)), mat{k});
-  endfor
-
-  tsize = terminal_size ();
-  dispcols = max (1, floor ((tsize(2) - columns (row_name)) / lcols_max));
-  disprows = max (1, ceil (mcols / dispcols));
-
-  disp ([mname, " ="]);
-
-  for k = 1 : disprows
-    disp (horzcat (row_name, mat{1+(k-1)*dispcols : min (mcols, k*dispcols)}));
-    disp ("");
-  endfor
 
 endfunction

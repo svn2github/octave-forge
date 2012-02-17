@@ -1,3 +1,3 @@
-function var(self)
- ncvar(self)
+function v = var(self)
+ v = ncvar(self);
 end

@@ -1,3 +1,3 @@
-function isrecord(self)
- ncisrecord(self)
+function isr = isrecord(self)
+ isr = ncisrecord(self);
 end

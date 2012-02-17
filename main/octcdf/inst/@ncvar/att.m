@@ -1,3 +1,3 @@
-function att(self)
- ncatt(self)
+function a = att(self)
+ a = ncatt(self);
 end

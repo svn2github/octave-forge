@@ -1,3 +1,3 @@
-function dim(self)
- ncdim(self)
+function d = dim(self)
+  d = ncdim(self);
 end

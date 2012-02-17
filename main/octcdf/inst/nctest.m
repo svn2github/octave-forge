@@ -37,6 +37,7 @@ endfunction
 %!test
 %! nc('time') = 5;
 %! nc('space') = 3;
+%! nc('record') = 0;
 %! assert(length(nc('time')),5);
 %! assert(length(nc('space')),3);
 
@@ -126,25 +127,33 @@ endfunction
 
 %!# Test ncdim
 %!test
-%! dimlist = ncdim(nc);
-%! assert(length(dimlist),2);
+%! dimlist = dim(nc);
+%! assert(length(dimlist),3);
 %! assert(dimlist{1}(:),5);
 %! assert(dimlist{2}(:),3);
 
+%!# Test isrecord
+%!test
+%! assert(isrecord(nc('record')) == 1);
+
+%!# Test name on file
+%!test
+%! assert(name(nc),fname);
+
 %!# Test ncatt
 %!test
-%! attlist = ncatt(nc);
+%! attlist = att(nc);
 %! assert(length(attlist),7);
-%! assert(ncname(attlist{1}),'byte_att');
-%! assert(ncdatatype(attlist{1}),'byte');
+%! assert(name(attlist{1}),'byte_att');
+%! assert(datatype(attlist{1}),'byte');
 %! assert(attlist{1}(:),123);
 
 %!# Test ncvar
 %!test
-%! varlist = ncvar(nc);
+%! varlist = var(nc);
 %! assert(length(varlist),7);
-%! assert(ncname(varlist{1}),'byte_var');
-%! assert(ncdatatype(varlist{1}),'byte');
+%! assert(name(varlist{1}),'byte_var');
+%! assert(datatype(varlist{1}),'byte');
 
 %!# Test to write a variable by slices
 %!test
@@ -181,19 +190,22 @@ endfunction
 %!
 %! scaled = nc{'autoscale_var',1}(:);                          
 %! assert(var,scaled,1e-6);
+%!
+%! nf = autoscale(nc{'autoscale_var'},1);
+%! assert(nf(:),scaled,1e-6);
 
 %!# Test autonan
 %!test
 %! nc{'variable_with_gaps'}=ncdouble('time'); 
 %! nv = nc{'variable_with_gaps'}; 
-%! nv = ncautonan(nv,1);
+%! nv = autonan(nv,1);
 %! nv.FillValue_ = 99; 
 %! nv(:) = NaN;
 %! 
-%! nv = ncautonan(nv,0);
+%! nv = autonan(nv,0);
 %! assert(all(nv(:) == 99))
 %! 
-%! nv = ncautonan(nv,1);
+%! nv = autonan(nv,1);
 %! assert(all(isnan(nv(:))))
 
 %!# Test size of vector
@@ -212,7 +224,7 @@ endfunction
  
 %!# Close file
 %!test
-%! ncclose(nc);
+%! close(nc);
 %! delete(fname);
 
 
@@ -226,25 +238,25 @@ endfunction
 %! 
 %! nf.old_name = 'example attribute';
 %! 
-%! d = ncdim(nf){1};
-%! ncname(d,'new_name');
-%! assert(ncname(d),'new_name')
+%! d = dim(nf){1};
+%! name(d,'new_name');
+%! assert(name(d),'new_name')
 %! 
-%! a = ncatt(nf){1};
-%! ncname(a,'new_name');
-%! assert(ncname(a),'new_name');
+%! a = att(nf){1};
+%! name(a,'new_name');
+%! assert(name(a),'new_name');
 %! 
 %! nf{'old_name'} = ncdouble('new_name','latitude');
 %! v = nf{'old_name'};
-%! ncname(v,'new_name')
-%! assert(ncname(v),'new_name');
-%! ncclose(nf);
+%! name(v,'new_name')
+%! assert(name(v),'new_name');
+%! close(nf);
 %! delete(filename);
 
 %!# Test 64bit-offset function
 %!test
 %! filename = [tmpnam '-octcdf.nc'];
 %! nf = netcdf(filename,'c','64bit-offset');
-%! ncclose(nf);
+%! close(nf);
 %! delete(filename);
 

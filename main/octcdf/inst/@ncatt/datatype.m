@@ -1,3 +1,3 @@
-function datatype(self)
- ncdatatype(self)
+function dt = datatype(self)
+ dt = ncdatatype(self);
 end

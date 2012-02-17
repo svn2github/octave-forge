@@ -1,3 +1,3 @@
-function autoscale(self)
- ncautoscale(self)
+function nv = autoscale(self,varargin)
+  nv = ncautoscale(self,varargin{:});
 end

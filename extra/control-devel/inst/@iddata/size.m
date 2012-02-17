@@ -48,7 +48,7 @@
 ## Created: October 2011
 ## Version: 0.1
 
-function [ret, varargout] = size (dat, dim = 0)
+function [x, p, m, e] = size (dat, dim = 0)
 
   if (nargin > 2)
     print_usage ();
@@ -58,51 +58,40 @@ function [ret, varargout] = size (dat, dim = 0)
   p = numel (dat.outname);
   m = numel (dat.inname);
   e = numel (dat.y);
-  
-  if (nargout > 1)
-    ret = n;
-    varargout = {p; m; e};
-  else
-    ret = [sum(n), p, m, e];
-  endif
-  
-%{
+
   switch (dim)
     case 0
       switch (nargout)
         case 0
-          if (p == 1)
-            stry = "";
-          else
+          stry = stru = stre = "";
+          if (p != 1)
             stry = "s";
           endif          
-          if (m == 1)
-            stru = "";
-          else
+          if (m != 1)
             stru = "s";
           endif
-          disp (sprintf ("IDDATA set with %d output%s and %d input%s.", p, stry, m, stru));
+          if (e != 1)
+            stre = "s";
+          endif
+          fprintf ("IDDATA set with [%s] samples, %d output%s, %d input%s and %d experiment%s.\n", \
+                   num2str (n, "%d "), p, stry, m, stru, e, stre);
         case 1
-          ret = [n, p, m, 1];
+          x = [sum(n), p, m, e];
         case {2, 3, 4}
-          ret = n;
-          varargout{1} = p;
-          varargout{2} = m;
-          varargout{3} = 1;
+          x = n;
         otherwise
           print_usage ();
       endswitch
     case 1
-      ret = n;
+      x = n;
     case 2
-      ret = p;
+      x = p;
     case 3
-      ret = m;
+      x = m;
     case 4
-      ret = 1;
+      x = e;
     otherwise
       print_usage ();
   endswitch
-%}
 
 endfunction

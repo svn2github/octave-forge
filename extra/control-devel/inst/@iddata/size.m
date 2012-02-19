@@ -1,4 +1,4 @@
-## Copyright (C) 2011   Lukas F. Reichlin
+## Copyright (C) 2011, 2012   Lukas F. Reichlin
 ##
 ## This file is part of LTI Syncope.
 ##
@@ -54,15 +54,15 @@ function [x, p, m, e] = size (dat, dim = 0)
     print_usage ();
   endif
 
-  n = cellfun (@rows, dat.y).';
-  p = numel (dat.outname);
-  m = numel (dat.inname);
-  e = numel (dat.y);
+  n = cellfun (@rows, dat.y).';     # number of samples
+  p = numel (dat.outname);          # number of output channels
+  m = numel (dat.inname);           # number of input channels
+  e = numel (dat.y);                # number of experiments
 
   switch (dim)
-    case 0
+    case 0                          # ... size (dat)
       switch (nargout)
-        case 0
+        case 0                      # size (dat)
           stry = stru = stre = "";
           if (p != 1)
             stry = "s";
@@ -73,24 +73,24 @@ function [x, p, m, e] = size (dat, dim = 0)
           if (e != 1)
             stre = "s";
           endif
-          fprintf ("IDDATA set with [%s] samples, %d output%s, %d input%s and %d experiment%s.\n", \
-                   num2str (n, "%d "), p, stry, m, stru, e, stre);
-        case 1
+          printf ("IDDATA set with [%s] samples, %d output%s, %d input%s and %d experiment%s.\n", \
+                  num2str (n, "%d "), p, stry, m, stru, e, stre);
+        case 1                      # x = size (dat)
           x = [sum(n), p, m, e];
-        case {2, 3, 4}
+        case {2, 3, 4}              # [n, p, m, e] = size (dat)
           x = n;
-        otherwise
+        otherwise                   # more than 4 return values
           print_usage ();
       endswitch
-    case 1
+    case 1                          # nvec = size (dat, 1)
       x = n;
-    case 2
+    case 2                          # p = size (dat, 2)
       x = p;
-    case 3
+    case 3                          # m = size (dat, 3)
       x = m;
-    case 4
+    case 4                          # e = size (dat, 4)
       x = e;
-    otherwise
+    otherwise                       # invalid dimension
       print_usage ();
   endswitch
 

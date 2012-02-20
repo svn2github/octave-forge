@@ -108,10 +108,11 @@
 ## 2011-09-08 Bug fix in range arg check; code cleanup
 ## 2011-11-18 Fixed another bug in test for range parameter being character string
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 
-## Last script file update (incl. subfunctions): 2011-09-23
+## Last script file update (incl. subfunctions): 2012-02-20
 
-function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange=[], spsh_opts=[])
+function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange='', spsh_opts=[])
 
 	if (nargin < 2) error ("oct2xls needs a minimum of 2 arguments."); endif
 	# Make sure input array is a cell array

@@ -112,10 +112,11 @@
 ## 2011-05-15 Experimental UNO support added
 ## 2011-11-18 Fixed bug in test for range parameter being character string
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 ##
 ## Last update of subfunctions below: 2011-09-23
 
-function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange=[], spsh_opts=[])
+function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
 
 	if (nargin < 2) error ("oct2xls needs a minimum of 2 arguments."); endif
 	# Check if input array is cell

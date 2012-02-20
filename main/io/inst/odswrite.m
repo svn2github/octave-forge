@@ -90,8 +90,9 @@
 ## 2010-11-13 Added some input arg checks
 ## 2011-09-08 Minor filename error text adaptation
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 
-function [ rstatus ] = odswrite (filename, data, wsh=1, range=[], reqintf=[])
+function [ rstatus ] = odswrite (filename, data, wsh=1, crange='', reqintf=[])
 
 	# Input validity checks
 	if (nargin < 2)
@@ -103,7 +104,7 @@ function [ rstatus ] = odswrite (filename, data, wsh=1, range=[], reqintf=[])
 	ods = odsopen (filename, 1, reqintf);
 
 	if (~isempty (ods)) 
-		[ods, rstatus] = oct2ods (data, ods, wsh, range);
+		[ods, rstatus] = oct2ods (data, ods, wsh, crange);
 
 		# If rstatus was not OK, reset change indicator in ods pointer
 		if (~rstatus)

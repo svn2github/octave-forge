@@ -282,6 +282,32 @@ endfunction
 %! V = qnvisits(P);
 %! assert( V, [1 0 1; 0 1 1], 1e-5 );
 
+%!test
+%! C = 2;
+%! K = 3;
+%! P = zeros(C,K,C,K);
+%! P(1,1,1,2) = 1;
+%! P(1,2,1,3) = 1;
+%! P(1,3,2,2) = 1;
+%! P(2,2,1,1) = 1;
+%! [V ch] = qnvisits(P);
+%! assert( ch, [1 1] );
+
+## The following transition probability matrix is not well formed: note
+## that there is an outgoing transition from center 1, class 1 but not
+## incoming transition.
+%!test
+%! C = 2;
+%! K = 3;
+%! P = zeros(C,K,C,K);
+%! P(1,1,1,2) = 1;
+%! P(1,2,1,3) = 1;
+%! P(1,3,2,2) = 1;
+%! P(2,2,2,1) = 1;
+%! P(2,1,1,2) = 1;
+%! [V ch] = qnvisits(P);
+%! assert( ch, [1 1] );
+
 %!demo
 %! P = [ 0 0.4 0.6 0; \
 %!       0.2 0 0.2 0.6; \
@@ -415,7 +441,9 @@ function s = __scc(G)
       fw = __dfs(GF,n);
       bw = __dfs(GB,n);
       r = (fw & bw);
-      s(r) = c++;
+      if (any(r))
+	s(r) = c++;
+      endif
     endif
   endfor
 endfunction

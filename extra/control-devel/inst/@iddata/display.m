@@ -27,7 +27,7 @@ function display (dat)
   datname = inputname (1);
   [outname, p] = __labels__ (dat.outname, "y");
   [inname, m] = __labels__ (dat.inname, "u");
-  [exname, e] = __labels__ (dat.exname, "exp");
+  [expname, e] = __labels__ (dat.expname, "exp");
   
   [n, p, m, e] = size (dat);
   
@@ -40,7 +40,7 @@ function display (dat)
   disp (str);
   disp ("");
   
-  disp (__col2str__ (exname, "Experiment"));
+  disp (__col2str__ (expname, "Experiment"));
   disp ("");
   disp (__col2str__ (outname, "Outputs"));
   disp ("");
@@ -48,7 +48,7 @@ function display (dat)
   disp ("");
   
 %{
-  str = strjust (strvcat (exname), "left");
+  str = strjust (strvcat (expname), "left");
   space = (repmat ("  ", e, 1));
   str = [space, str];
 %}

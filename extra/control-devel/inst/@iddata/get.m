@@ -54,8 +54,8 @@ function varargout = get (dat, varargin)
           val = dat.tsam;
         case {"timeunit"}
           val = dat.timeunit
-        case {"exname", "experimentname"}
-          val = dat.exname;
+        case {"expname", "experimentname"}
+          val = dat.expname;
         case "name"
           val = dat.name;
         case "notes"

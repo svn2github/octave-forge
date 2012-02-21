@@ -79,8 +79,8 @@ function retdat = set (dat, varargin)
           dat.tsam;
         case {"timeunit"}
           dat.timeunit
-        case {"exname", "experimentname"}
-          dat.exname = __adjust_labels__ (val, e);
+        case {"expname", "experimentname"}
+          dat.expname = __adjust_labels__ (val, e);
 
         case {"tsam", "ts"}
           if (issample (val, -1))

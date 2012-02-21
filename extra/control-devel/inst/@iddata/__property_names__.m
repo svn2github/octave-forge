@@ -35,7 +35,7 @@ function [props, vals] = __property_names__ (dat)
            "inunit";
            "tsam";
            "timeunit";
-           "exname";
+           "expname";
            "name";
            "notes";
            "userdata"};

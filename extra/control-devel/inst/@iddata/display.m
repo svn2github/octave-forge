@@ -38,10 +38,14 @@ function display (dat)
 
   disp ("");
   disp (str);
+  disp ("");
   
   disp (__col2str__ (exname, "Experiment"));
-  disp (__col2str__ (outname, "Output Channel"));
-  disp (__col2str__ (inname, "Input Channel"));
+  disp ("");
+  disp (__col2str__ (outname, "Outputs"));
+  disp ("");
+  disp (__col2str__ (inname, "Inputs"));
+  disp ("");
   
 %{
   str = strjust (strvcat (exname), "left");
@@ -63,7 +67,7 @@ function str = __col2str__ (col, title)
 
   len = rows (col);
   str = strjust (strvcat (col), "left");
-  str = [repmat("  ", len, 1), str];
+  str = [repmat("   ", len, 1), str];
   str = strvcat (title, str);
 
 endfunction

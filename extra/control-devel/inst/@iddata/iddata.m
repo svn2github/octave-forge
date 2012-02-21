@@ -61,7 +61,7 @@ function dat = iddata (y = [], u = [], tsam = -1, varargin)
   if (nargin == 1 && isa (y, "iddata"))
     dat = y;
     return;
-  elseif (nargin < 2)
+  elseif (nargin < 1)
     print_usage ();
   endif
 
@@ -109,3 +109,11 @@ function [y, u] = __adjust_iddata__ (y, u)
   endif
 
 endfunction
+
+
+%!error (iddata);
+%!error (iddata ((1:10).', (1:11).'));
+%!warning (iddata (1:10));
+%!warning (iddata (1:10, 1:10));
+
+

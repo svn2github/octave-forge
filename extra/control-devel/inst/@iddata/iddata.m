@@ -92,25 +92,6 @@ function dat = iddata (y = [], u = [], tsam = -1, varargin)
 endfunction
 
 
-function [y, u] = __adjust_iddata__ (y, u)
-
-  if (iscell (y))
-    y = reshape (y, [], 1);
-  else
-    y = {y};
-  endif
-  
-  if (isempty (u))
-    u = [];     # avoid [](nx0) and the like
-  elseif (iscell (u))
-    u = reshape (u, [], 1);
-  else
-    u = {u};
-  endif
-
-endfunction
-
-
 %!error (iddata);
 %!error (iddata ((1:10).', (1:11).'));
 %!warning (iddata (1:10));

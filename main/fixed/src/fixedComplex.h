@@ -122,6 +122,8 @@ public:
 					 (unsigned int)a.imag(), 
 					 (unsigned int)b.imag())) { }
 
+  operator bool () const { return fixedpoint() != 0.0; }
+
   Complex sign (void) const;
   Complex getdecsize (void) const;
   Complex getintsize (void) const;

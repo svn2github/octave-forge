@@ -53,10 +53,10 @@ public:
 
   FixedComplexColumnVector (void) : MArray<FixedPointComplex> () { }
 
-  explicit FixedComplexColumnVector (int n) : MArray<FixedPointComplex> (n) { }
+  explicit FixedComplexColumnVector (int n) : MArray<FixedPointComplex> (dim_vector (n, 1)) { }
 
   FixedComplexColumnVector (int n, FixedPointComplex val) : 
-    MArray<FixedPointComplex> (n, val) { }
+    MArray<FixedPointComplex> (dim_vector (n, 1), val) { }
 
   FixedComplexColumnVector (const MArray<int> &is, const MArray<int> &ds);
 
@@ -244,9 +244,11 @@ public:
   friend std::ostream& operator << (std::ostream& os, const FixedComplexColumnVector& a);
   friend std::istream& operator >> (std::istream& is, FixedComplexColumnVector& a);
 
-private:
-
-  FixedComplexColumnVector (FixedPointComplex *d, int l) : MArray<FixedPointComplex> (d, l) { }
+  void resize (octave_idx_type n,
+               const FixedPointComplex& rfv = Array<FixedPointComplex>::resize_fill_value ())
+  {
+    Array<FixedPointComplex>::resize (dim_vector (n, 1), rfv);
+  }
 };
 
 

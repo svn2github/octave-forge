@@ -228,9 +228,9 @@ octave_fixed_complex::fixed_matrix_value (bool force_conversion) const
 }
 
 static void
-restore_precision (void *p)
+restore_precision (int *p)
 {
-  bind_internal_variable ("output_precision", *(static_cast<int *> (p)));
+  bind_internal_variable ("output_precision", *p);
 }
 
 void
@@ -245,13 +245,15 @@ octave_fixed_complex::print_raw (std::ostream& os,
 
   octave_value_list tmp = feval ("output_precision");
   int prec = tmp(0).int_value ();
-  unwind_protect::add (restore_precision, &prec);
+
+  unwind_protect frame;
+
+  frame.add_fcn (restore_precision, &prec);
+
   bind_internal_variable ("output_precision", new_prec);
 
   indent (os);
   octave_print_internal (os, complex_value(), pr_as_read_syntax);
-
-  unwind_protect::run ();
 }
 
 bool 

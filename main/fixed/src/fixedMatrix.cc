@@ -44,8 +44,8 @@ Open Source Initiative (www.opensource.org)
 
 // Fixed Point Matrix class.
 
-FixedMatrix::FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds)
-  : MArray2<FixedPoint> (is.rows(), is.cols())
+FixedMatrix::FixedMatrix (const MArray<int> &is, const MArray<int> &ds)
+  : MArray<FixedPoint> (dim_vector (is.rows(), is.cols()))
 {
   if ((rows() != ds.rows()) || (cols() != ds.cols())) {
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -59,7 +59,7 @@ FixedMatrix::FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds)
 
 
 FixedMatrix::FixedMatrix (const Matrix &is, const Matrix &ds)
-  : MArray2<FixedPoint> (is.rows(), is.cols())
+  : MArray<FixedPoint> (dim_vector (is.rows(), is.cols()))
 {
   if ((rows() != ds.rows()) || (cols() != ds.cols())) {
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -71,9 +71,9 @@ FixedMatrix::FixedMatrix (const Matrix &is, const Matrix &ds)
       elem (i, j) = FixedPoint((unsigned int)is(i,j), (unsigned int)ds(i,j));
 }
 
-FixedMatrix::FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds, 
+FixedMatrix::FixedMatrix (const MArray<int> &is, const MArray<int> &ds,
 			  const FixedMatrix& a)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -89,7 +89,7 @@ FixedMatrix::FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds,
 
 FixedMatrix::FixedMatrix (const Matrix &is, const Matrix &ds, 
 			  const FixedMatrix& a)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -105,16 +105,16 @@ FixedMatrix::FixedMatrix (const Matrix &is, const Matrix &ds,
 
 FixedMatrix::FixedMatrix (unsigned int is, unsigned int ds, 
 			  const FixedMatrix& a)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
       elem (i, j) = FixedPoint(is, ds, a.elem (i, j));
 }
 
-FixedMatrix::FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds, 
+FixedMatrix::FixedMatrix (const MArray<int> &is, const MArray<int> &ds,
 			  const Matrix& a)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -130,7 +130,7 @@ FixedMatrix::FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds,
 
 FixedMatrix::FixedMatrix (const Matrix &is, const Matrix &ds, 
 			  const Matrix& a)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -145,7 +145,7 @@ FixedMatrix::FixedMatrix (const Matrix &is, const Matrix &ds,
 }
 
 FixedMatrix::FixedMatrix (unsigned int is, unsigned int ds, const Matrix& a)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
@@ -154,7 +154,7 @@ FixedMatrix::FixedMatrix (unsigned int is, unsigned int ds, const Matrix& a)
 
 FixedMatrix::FixedMatrix (unsigned int is, unsigned int ds, const Matrix& a, 
 			  const Matrix& b)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != b.rows()) || (cols() != b.cols())) {
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -167,9 +167,9 @@ FixedMatrix::FixedMatrix (unsigned int is, unsigned int ds, const Matrix& a,
 			       (unsigned int)b.elem (i,j));
 }
 
-FixedMatrix::FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds, 
+FixedMatrix::FixedMatrix (const MArray<int> &is, const MArray<int> &ds,
 			  const Matrix& a, const Matrix& b)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != b.rows()) || (cols() != b.cols()) || (rows() != is.rows())
       || (cols() != is.cols()) || (rows() != ds.rows()) 
@@ -187,7 +187,7 @@ FixedMatrix::FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds,
 
 FixedMatrix::FixedMatrix (const Matrix &is, const Matrix &ds, const Matrix& a,
 			  const Matrix& b)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != b.rows()) || (cols() != b.cols()) || (rows() != is.rows())
       || (cols() != is.cols()) || (rows() != ds.rows()) 
@@ -203,8 +203,8 @@ FixedMatrix::FixedMatrix (const Matrix &is, const Matrix &ds, const Matrix& a,
 			       (unsigned int)b.elem (i,j));
 }
 
-FixedMatrix::FixedMatrix (const MArray2<int> &a)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+FixedMatrix::FixedMatrix (const MArray<int> &a)
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
 
   for (int j = 0; j < cols (); j++)
@@ -213,7 +213,7 @@ FixedMatrix::FixedMatrix (const MArray2<int> &a)
 }
 
 FixedMatrix::FixedMatrix (const Matrix &a)
-  : MArray2<FixedPoint> (a.rows(), a.cols())
+  : MArray<FixedPoint> (dim_vector (a.rows(), a.cols()))
 {
 
   for (int j = 0; j < cols (); j++)
@@ -222,14 +222,14 @@ FixedMatrix::FixedMatrix (const Matrix &a)
 }
 
 FixedMatrix::FixedMatrix (const FixedRowVector& rv)
-  : MArray2<FixedPoint> (1, rv.length (), FixedPoint())
+  : MArray<FixedPoint> (dim_vector (1, rv.length ()), FixedPoint())
 {
   for (int i = 0; i < rv.length (); i++)
     elem (0, i) = rv.elem (i);
 }
 
 FixedMatrix::FixedMatrix (const FixedColumnVector& cv)
-  : MArray2<FixedPoint> (cv.length (), 1, FixedPoint())
+  : MArray<FixedPoint> (dim_vector (cv.length (), 1), FixedPoint())
 {
   for (int i = 0; i < cv.length (); i++)
     elem (i, 0) = cv.elem (i);
@@ -262,7 +262,7 @@ FixedMatrix::chdecsize (const double n)
 {
   int nr = rows();
   int nc = cols();
-  FixedMatrix retval(nr,nc);
+  FixedMatrix retval(dim_vector (nr,nc));
 
   for (int i = 0; i < nr; i++)
     for (int j = 0; j < nc; j++)
@@ -282,7 +282,7 @@ FixedMatrix::chdecsize (const Matrix &n)
     return FixedMatrix();
   }
 
-  FixedMatrix retval(nr,nc);
+  FixedMatrix retval(dim_vector (nr, nc));
 
   for (int i = 0; i < nr; i++)
     for (int j = 0; j < nc; j++)
@@ -296,7 +296,7 @@ FixedMatrix::chintsize (const double n)
 {
   int nr = rows();
   int nc = cols();
-  FixedMatrix retval(nr,nc);
+  FixedMatrix retval(dim_vector (nr, nc));
 
   for (int i = 0; i < nr; i++)
     for (int j = 0; j < nc; j++)
@@ -316,7 +316,7 @@ FixedMatrix::chintsize (const Matrix &n)
     return FixedMatrix();
   }
 
-  FixedMatrix retval(nr,nc);
+  FixedMatrix retval(dim_vector (nr, nc));
 
   for (int i = 0; i < nr; i++)
     for (int j = 0; j < nc; j++)
@@ -418,7 +418,7 @@ FixedMatrix::concat (const FixedComplexMatrix& rb, const Array<int>& ra_idx)
 FixedMatrix&
 FixedMatrix::insert (const FixedMatrix& a, int r, int c)
 {
-  Array2<FixedPoint>::insert (a, r, c);
+  Array<FixedPoint>::insert (a, r, c);
   return *this;
 }
 
@@ -761,7 +761,7 @@ operator * (const FixedColumnVector& v, const FixedRowVector& a)
     {
       int a_len = a.length ();
 
-      retval.resize (len, a_len);
+    retval.resize (len, a_len);
 
       for (int i = 0; i < len; i++)
 	for (int j = 0; j < a_len; j++)
@@ -794,43 +794,43 @@ FixedMatrix::apply (fp_fp_Mapper f)
 boolMatrix
 FixedMatrix::all (int dim) const
 {
-  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, FixedPoint> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 FixedMatrix::any (int dim) const
 {
-  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, FixedPoint> (*this, dim, mx_inline_any);
 }
 
 FixedMatrix
 FixedMatrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<FixedMatrix> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<FixedPoint, FixedPoint> (*this, dim, mx_inline_cumprod);
 }
 
 FixedMatrix
 FixedMatrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<FixedMatrix> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<FixedPoint, FixedPoint> (*this, dim, mx_inline_cumsum);
 }
 
 FixedMatrix
 FixedMatrix::prod (int dim) const
 {
-  return do_mx_red_op<FixedMatrix> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<FixedPoint, FixedPoint> (*this, dim, mx_inline_prod);
 }
 
 FixedMatrix
 FixedMatrix::sum (int dim) const
 {
-  return do_mx_red_op<FixedMatrix> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<FixedPoint, FixedPoint> (*this, dim, mx_inline_sum);
 }
 
 FixedMatrix
 FixedMatrix::sumsq (int dim) const
 {
-  return do_mx_red_op<FixedMatrix> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<FixedPoint, FixedPoint> (*this, dim, mx_inline_sumsq);
 }
 
 FixedMatrix
@@ -912,7 +912,7 @@ FixedMatrix::row_min (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      index.resize (nr);
+      index.resize (dim_vector (nr, 1));
 
       for (int i = 0; i < nr; i++)
         {
@@ -956,7 +956,7 @@ FixedMatrix::row_max (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      index.resize (nr);
+      index.resize (dim_vector (nr, 1));
 
       for (int i = 0; i < nr; i++)
         {
@@ -1000,7 +1000,7 @@ FixedMatrix::column_min (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      index.resize (nc);
+      index.resize (dim_vector (1, nc));
 
       for (int j = 0; j < nc; j++)
         {
@@ -1044,7 +1044,7 @@ FixedMatrix::column_max (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      index.resize (nc);
+      index.resize (dim_vector (1, nc));
 
       for (int j = 0; j < nc; j++)
         {
@@ -1440,14 +1440,14 @@ max (const FixedMatrix& a, const FixedMatrix& b)
   return result;
 }
 
-MS_CMP_OPS(FixedMatrix, , FixedPoint, )
-MS_BOOL_OPS(FixedMatrix, FixedPoint, FixedPoint())
+MS_CMP_OPS(FixedMatrix, FixedPoint)
+MS_BOOL_OPS(FixedMatrix, FixedPoint)
 
-SM_CMP_OPS(FixedPoint, , FixedMatrix, )
-SM_BOOL_OPS(FixedPoint, FixedMatrix, FixedPoint())
+SM_CMP_OPS(FixedPoint, FixedMatrix)
+SM_BOOL_OPS(FixedPoint, FixedMatrix)
 
-MM_CMP_OPS(FixedMatrix, , FixedMatrix, )
-MM_BOOL_OPS(FixedMatrix, FixedMatrix, FixedPoint())
+MM_CMP_OPS(FixedMatrix, FixedMatrix)
+MM_BOOL_OPS(FixedMatrix, FixedMatrix)
 
 /*
 ;;; Local Variables: ***

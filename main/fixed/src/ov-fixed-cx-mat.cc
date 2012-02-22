@@ -113,7 +113,7 @@ octave_fixed_complex_matrix::resize (const dim_vector& dv, bool) const
       return octave_value ();
     }
   FixedComplexMatrix retval (matrix); 
-  retval.resize (dv(0), dv(1)); 
+  retval.resize (dv); 
   return new octave_fixed_complex_matrix (retval);
 }
 
@@ -296,8 +296,8 @@ octave_fixed_complex_matrix::try_narrowing_conversion (void)
     {
       FixedPointComplex c = matrix (0, 0);
 
-      if (::imag (c) == 0.0)
-	retval = new octave_fixed (::real (c));
+      if (imag (c) == 0)
+	retval = new octave_fixed (real (c));
       else
 	retval = new octave_fixed_complex (c);
     }
@@ -403,9 +403,9 @@ octave_fixed_complex_matrix::complex_value (bool) const
 }
 
 static void
-restore_precision (void *p)
+restore_precision (int *p)
 {
-  bind_internal_variable ("output_precision", *(static_cast<int *> (p)));
+  bind_internal_variable ("output_precision", *p);
 }
 
 void
@@ -420,13 +420,15 @@ octave_fixed_complex_matrix::print_raw (std::ostream& os,
 
   octave_value_list tmp = feval ("output_precision");
   int prec = tmp(0).int_value ();
-  unwind_protect::add (restore_precision, &prec);
+
+  unwind_protect frame;
+
+  frame.add_fcn (restore_precision, &prec);
+
   bind_internal_variable ("output_precision", new_prec);
 
   octave_print_internal (os, complex_matrix_value(), false, 
 			 current_print_indent_level ());
-
-  unwind_protect::run ();
 }
 
 bool 
@@ -594,7 +596,7 @@ octave_fixed_complex_matrix::load_binary (std::istream& is, bool swap,
     return false;
   
   // This is ugly, is there a better way?
-  matrix.resize (dv(0), dv(1));
+  matrix.resize (dim_vector (dv(0), dv(1)));
   for (int i = 0; i < dv(0); i++)
     for (int j = 0; j < dv(1); j++)
       matrix (i, j) = 
@@ -936,7 +938,7 @@ octave_fixed_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
     return false;
 
   // This is ugly, is there a better way?
-  matrix.resize (dv(0), dv(1));
+  matrix.resize (dim_vector (dv(0), dv(1)));
   unsigned int * ivec = intsize;
   unsigned int * dvec = decsize;
   unsigned int * nvec = number;

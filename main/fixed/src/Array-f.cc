@@ -29,6 +29,30 @@ Open Source Initiative (www.opensource.org)
 //#include "fixedMatrix.h"
 //#include "fixedCMatrix.h"
 
+inline FixedPoint
+xmin (const FixedPoint& x, const FixedPoint& y)
+{
+  return x <= y ? x : y;
+}
+
+inline FixedPoint
+xmax (const FixedPoint& x, const FixedPoint& y)
+{
+  return x >= y ? x : y;
+}
+
+inline FixedPointComplex
+xmin (const FixedPointComplex& x, const FixedPointComplex& y)
+{
+  return x <= y ? x : y;
+}
+
+inline FixedPointComplex
+xmax (const FixedPointComplex& x, const FixedPointComplex& y)
+{
+  return x >= y ? x : y;
+}
+
 #include <octave/Array.h>
 #include <octave/Array.cc>
 #include <octave/MArray.h>
@@ -50,38 +74,13 @@ operator > (const FixedPointComplex& a, const FixedPointComplex& b)
 				    (arg (a) > arg (b))));
 }
 
-INSTANTIATE_ARRAY(FixedPoint, OCTAVE_FIXED_API);
+INSTANTIATE_ARRAY (FixedPoint, );
 template class MArray<FixedPoint>;
-INSTANTIATE_ARRAY(FixedPointComplex, OCTAVE_FIXED_API);
-template class MArray<FixedPointComplex>;
-
 INSTANTIATE_MARRAY_FRIENDS (FixedPoint, )
+
+INSTANTIATE_ARRAY (FixedPointComplex, );
+template class MArray<FixedPointComplex>;
 INSTANTIATE_MARRAY_FRIENDS (FixedPointComplex, )
-
-#include <octave/Array2.h>
-#include <octave/MArray2.h>
-#include <octave/MArray2.cc>
-
-template class Array2<FixedPoint>;
-template class MArray2<FixedPoint>;
-template class Array2<FixedPointComplex>;
-template class MArray2<FixedPointComplex>;
-
-INSTANTIATE_MARRAY2_FRIENDS (FixedPoint, OCTAVE_FIXED_API)
-INSTANTIATE_MARRAY2_FRIENDS (FixedPointComplex, OCTAVE_FIXED_API)
-
-#include <octave/ArrayN.h>
-#include <octave/ArrayN.cc>
-#include <octave/MArrayN.h>
-#include <octave/MArrayN.cc>
-
-template class ArrayN<FixedPoint>;
-template class MArrayN<FixedPoint>;
-template class ArrayN<FixedPointComplex>;
-template class MArrayN<FixedPointComplex>;
-
-INSTANTIATE_MARRAYN_FRIENDS (FixedPoint, )
-INSTANTIATE_MARRAYN_FRIENDS (FixedPointComplex, )
 
 /*
 ;;; Local Variables: ***

@@ -26,7 +26,7 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_FixedCMatrix_h)
 #define octave_FixedCMatrix_h 1
 
-#include <octave/MArray2.h>
+#include <octave/MArray.h>
 
 #include <octave/mx-defs.h>
 #include <octave/mx-op-defs.h>
@@ -51,20 +51,21 @@ typedef FixedPointComplex (*fpc_fpc_Mapper)(FixedPointComplex);
 
 class
 OCTAVE_FIXED_API
-FixedComplexMatrix : public MArray2<FixedPointComplex>
+FixedComplexMatrix : public MArray<FixedPointComplex>
 {
 public:
 
-  FixedComplexMatrix (void) : MArray2<FixedPointComplex> () { }
+  FixedComplexMatrix (void) : MArray<FixedPointComplex> () { }
 
-  FixedComplexMatrix (const dim_vector& dv) : MArray2<FixedPointComplex> (dv) { }
+  FixedComplexMatrix (const dim_vector& dv) : MArray<FixedPointComplex> (dv) { }
 
-  FixedComplexMatrix (int r, int c) : MArray2<FixedPointComplex> (r, c) { }
+  FixedComplexMatrix (int r, int c)
+    : MArray<FixedPointComplex> (dim_vector (r, c)) { }
 
-  FixedComplexMatrix (int r, int c, const FixedPointComplex val) :
-    MArray2<FixedPointComplex> (r, c, val) { }
+  FixedComplexMatrix (int r, int c, const FixedPointComplex val) 
+    : MArray<FixedPointComplex> (dim_vector (r, c), val) { }
 
-  FixedComplexMatrix (const MArray2<int> &is, const MArray2<int> &ds);
+  FixedComplexMatrix (const MArray<int> &is, const MArray<int> &ds);
 
   FixedComplexMatrix (const Matrix &is, const Matrix &ds);
 
@@ -75,7 +76,7 @@ public:
 
   FixedComplexMatrix (Complex is, Complex ds, const FixedComplexMatrix& a);
 
-  FixedComplexMatrix (const MArray2<int> &is, const MArray2<int> &ds, 
+  FixedComplexMatrix (const MArray<int> &is, const MArray<int> &ds, 
 		      const FixedComplexMatrix& a);
 
   FixedComplexMatrix (const Matrix &is, const Matrix &ds, 
@@ -88,7 +89,7 @@ public:
 
   FixedComplexMatrix (Complex is, Complex ds, const FixedMatrix& a);
 
-  FixedComplexMatrix (const MArray2<int> &is, const MArray2<int> &ds, 
+  FixedComplexMatrix (const MArray<int> &is, const MArray<int> &ds, 
 		      const FixedMatrix& a);
 
   FixedComplexMatrix (const Matrix &is, const Matrix &ds, 
@@ -102,7 +103,7 @@ public:
 
   FixedComplexMatrix (Complex is, Complex ds, const ComplexMatrix& a);
 
-  FixedComplexMatrix (const MArray2<int> &is, const MArray2<int> & ds, 
+  FixedComplexMatrix (const MArray<int> &is, const MArray<int> & ds, 
 		      const ComplexMatrix& a);
 
   FixedComplexMatrix (const Matrix &is, const Matrix & ds, 
@@ -115,7 +116,7 @@ public:
 
   FixedComplexMatrix (Complex is, Complex ds, const Matrix& a);
 
-  FixedComplexMatrix (const MArray2<int> &is, const MArray2<int> & ds, 
+  FixedComplexMatrix (const MArray<int> &is, const MArray<int> & ds, 
 		      const Matrix& a);
 
   FixedComplexMatrix (const Matrix &is, const Matrix & ds, const Matrix& a);
@@ -129,7 +130,7 @@ public:
   FixedComplexMatrix (Complex is, Complex ds, const ComplexMatrix &a, 
 		      const ComplexMatrix &b);
 
-  FixedComplexMatrix (const MArray2<int> &is, const MArray2<int> &ds,
+  FixedComplexMatrix (const MArray<int> &is, const MArray<int> &ds,
 		      const ComplexMatrix &a, const ComplexMatrix &b);
 
   FixedComplexMatrix (const Matrix &is, const Matrix &ds,
@@ -143,10 +144,13 @@ public:
   FixedComplexMatrix (const FixedMatrix& a, const FixedMatrix& b);
 
   FixedComplexMatrix (const FixedComplexMatrix& a) : 
-    MArray2<FixedPointComplex> (a) { }
+    MArray<FixedPointComplex> (a) { }
 
-  FixedComplexMatrix (const MArray2<FixedPointComplex>& a) : 
-    MArray2<FixedPointComplex> (a) { }
+  FixedComplexMatrix (const MArray<FixedPointComplex>& a) : 
+    MArray<FixedPointComplex> (a) { }
+
+  FixedComplexMatrix (const Array<FixedPointComplex>& a) : 
+    MArray<FixedPointComplex> (a) { }
 
   explicit FixedComplexMatrix (const FixedComplexRowVector& rv);
 
@@ -174,7 +178,7 @@ public:
 
   FixedComplexMatrix& operator = (const FixedComplexMatrix& a)
     {
-      MArray2<FixedPointComplex>::operator = (a);
+      MArray<FixedPointComplex>::operator = (a);
       return *this;
     }
 
@@ -208,7 +212,7 @@ public:
   FixedComplexMatrix stack (const FixedComplexColumnVector& a) const;
 
   FixedComplexMatrix hermitian (void) const;
-  FixedComplexMatrix transpose (void) const { return MArray2<FixedPointComplex>::transpose (); }
+  FixedComplexMatrix transpose (void) const { return MArray<FixedPointComplex>::transpose (); }
 
   // resize is the destructive equivalent for this one
 
@@ -312,11 +316,6 @@ public:
 
   static FixedPointComplex resize_fill_value (void) 
       { return FixedPointComplex(); }
-
-private:
-
-  FixedComplexMatrix (FixedPointComplex *d, int r, int c) : 
-    MArray2<FixedPointComplex> (d, r, c) { }
 };
 
 OCTAVE_FIXED_API FixedComplexMatrix operator * (const FixedComplexColumnVector& a, 
@@ -403,7 +402,7 @@ SM_BOOL_OP_DECLS (FixedPointComplex, FixedComplexMatrix, )
 MM_CMP_OP_DECLS (FixedComplexMatrix, FixedComplexMatrix, )
 MM_BOOL_OP_DECLS (FixedComplexMatrix, FixedComplexMatrix, )
 
-MARRAY_FORWARD_DEFS (MArray2, FixedComplexMatrix, FixedPointComplex)
+MARRAY_FORWARD_DEFS (MArray, FixedComplexMatrix, FixedPointComplex)
 
 #endif
 

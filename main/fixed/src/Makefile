@@ -27,8 +27,8 @@ FIXEDSOURCES = fixedColVector.cc fixedRowVector.cc \
 	op-fcs-fs.cc  op-fcs-fm.cc  op-fcm-fs.cc  op-fcm-fm.cc \
 	op-fcs-fcs.cc op-fcs-fcm.cc op-fcm-fcs.cc op-fcm-fcm.cc \
 	fixed-var.cc fixed.cc
-FIXEDOBJECTS = fixed-int.o $(patsubst %.cc,%.o,$(FIXEDSOURCES))
-FIXEDDEPENDS = fixed-int.d $(patsubst %.cc,%.d,$(FIXEDSOURCES))
+FIXEDOBJECTS = int/fixed.o $(patsubst %.cc,%.o,$(FIXEDSOURCES))
+FIXEDDEPENDS = int/fixed.d $(patsubst %.cc,%.d,$(FIXEDSOURCES))
 
 TARGETS = $(FIXEDTARGET)
 OBJECTS = $(FIXEDOBJECTS)
@@ -73,45 +73,42 @@ $(FIXEDOBJECTS) $(FIXEDDEPENDS): DEFINES := $(DEFINES) $(DLLDEF)
 endif
 
 $(FIXEDTARGET) : $(DEPENDS) $(FIXEDOBJECTS) 
-	@echo "Linking $@"; \
+	@echo "Linking $@";
 	$(MKOCTFILE) $(ADD_FLAGS) $(MOFLAGS) $(FIXEDOBJECTS) $(EXTRALIBS) -o $@
 
 $(FIXEDVERTARGET) :
-	@echo "Creating $@"; $(RM) -f $@; \
+	@echo "Creating $@"; $(RM) -f $@;
 	echo "#define OCTAVEFIXEDVERSION \"$(OCTAVEFIXEDVERSION)\"" > $@
 
 ifneq (,$(DEPENDS))
   sinclude $(DEPENDS)
 endif
 
-fixed-int.d : int/fixed.cc
-	@echo "Depending $<"; \
-	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -M int/fixed.cc; \
-	$(LN_S) $(patsubst %.cc,%.d,$<) $@
+int/fixed.d : int/fixed.cc
+	@echo "Depending $<";
+	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -M int/fixed.cc;
 
 fixed-var.d : $(FIXEDVERTARGET)
 
-fixed-int.o : int/fixed.cc fixed-int.d
-	@echo "Compiling $@ from $<"; \
-	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $<; \
-	$(RM) -f $@ ; \
-	$(LN_S) $(patsubst %.cc,%.o,$<) $@
+int/fixed.o : int/fixed.cc int/fixed.d
+	@echo "Compiling $@ from $<"
+	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c -o $@ $<
 
 %.d: %.cc
-	@echo "Depending $<"; \
+	@echo "Depending $<"
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -M $<
 
 %.o:%.cc
 %.o:%.cc %.d
-	@echo "Compiling $@"; \
+	@echo "Compiling $@"
 	$(MKOCTFILE) $(MOFLAGS) $(DEFINES) -c $< 
 
 clean:
-	@echo "Cleaning..."; \
+	@echo "Cleaning..."
 	$(RM) -f $(DELETES)
 
 realclean:
-	@echo "Cleaning..."; \
+	@echo "Cleaning..."
 	$(RM) -f $(DELETES) Makeconf config.log config.status
 
 dist:

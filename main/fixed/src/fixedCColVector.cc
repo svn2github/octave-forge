@@ -41,7 +41,8 @@ Open Source Initiative (www.opensource.org)
 
 
 FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is, 
-	const MArray<int> &ds) : MArray<FixedPointComplex> (is.length())
+                                                    const MArray<int> &ds)
+  : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if (length() != ds.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -53,7 +54,8 @@ FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is,
 }
 
 FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is, 
-	const ColumnVector &ds) : MArray<FixedPointComplex> (is.length())
+                                                    const ColumnVector &ds)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if (length() != ds.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -64,9 +66,9 @@ FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is,
     elem (i) = FixedPointComplex((unsigned int)is(i), (unsigned int)ds(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (
-	const ComplexColumnVector &is, const ComplexColumnVector &ds) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ComplexColumnVector &is, const ComplexColumnVector &ds)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if (length() != ds.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -77,25 +79,26 @@ FixedComplexColumnVector::FixedComplexColumnVector (
     elem (i) = FixedPointComplex(is(i), ds(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (unsigned int is, 
-	unsigned int ds, const FixedComplexColumnVector& a) : 
-	MArray<FixedPointComplex> (a.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (unsigned int is, unsigned int ds, const FixedComplexColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (a.length(), 1))
 {
   for (int i = 0; i < length (); i++)
     elem (i) = FixedPointComplex(is, ds, a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (Complex is, 
-	Complex ds, const FixedComplexColumnVector& a) : 
-	MArray<FixedPointComplex> (a.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (Complex is, Complex ds, const FixedComplexColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (a.length(), 1))
 {
   for (int i = 0; i < length (); i++)
     elem (i) = FixedPointComplex(is, ds, a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is, 
-	const MArray<int> &ds, const FixedComplexColumnVector& a) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const MArray<int> &is, const MArray<int> &ds,
+   const FixedComplexColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -107,9 +110,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is,
 				 a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is, 
-	const ColumnVector &ds, const FixedComplexColumnVector& a) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ColumnVector &is, const ColumnVector &ds,
+   const FixedComplexColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -121,10 +125,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is,
 				 a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (
-	const ComplexColumnVector &is, const ComplexColumnVector &ds, 
-	const FixedComplexColumnVector& a) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ComplexColumnVector &is, const ComplexColumnVector &ds, 
+   const FixedComplexColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -135,25 +139,25 @@ FixedComplexColumnVector::FixedComplexColumnVector (
     elem (i) = FixedPointComplex(is(i), ds(i), a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (unsigned int is, 
-	unsigned int ds, const FixedColumnVector& a) : 
-	MArray<FixedPointComplex> (a.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (unsigned int is, unsigned int ds, const FixedColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (a.length(), 1))
 {
   for (int i = 0; i < length (); i++)
     elem (i) = FixedPointComplex(is, ds, a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (Complex is, 
-	Complex ds, const FixedColumnVector& a) : 
-	MArray<FixedPointComplex> (a.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (Complex is, Complex ds, const FixedColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (a.length(), 1))
 {
   for (int i = 0; i < length (); i++)
     elem (i) = FixedPointComplex(is, ds, FixedPointComplex(a(i)));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is, 
-	const MArray<int> &ds, const FixedColumnVector& a) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const MArray<int> &is, const MArray<int> &ds, const FixedColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -165,9 +169,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is,
 				 a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is, 
-	const ColumnVector &ds, const FixedColumnVector& a) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ColumnVector &is, const ColumnVector &ds,
+   const FixedColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -179,9 +184,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is,
 				 a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (
-	const ComplexColumnVector &is, const ComplexColumnVector &ds, 
-	const FixedColumnVector& a) : MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ComplexColumnVector &is, const ComplexColumnVector &ds, 
+   const FixedColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -192,25 +198,25 @@ FixedComplexColumnVector::FixedComplexColumnVector (
     elem (i) = FixedPointComplex(is(i), ds(i), FixedPointComplex(a(i)));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (unsigned int is, 
-	unsigned int ds, const ComplexColumnVector& a) : 
-	MArray<FixedPointComplex> (a.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (unsigned int is, unsigned int ds, const ComplexColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (a.length(), 1))
 {
   for (int i = 0; i < length (); i++)
     elem (i) = FixedPointComplex(is, ds, a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (Complex is, 
-	Complex ds, const ComplexColumnVector& a) : 
-	MArray<FixedPointComplex> (a.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (Complex is, Complex ds, const ComplexColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (a.length(), 1))
 {
   for (int i = 0; i < length (); i++)
     elem (i) = FixedPointComplex(is, ds, a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is, 
-	const MArray<int> &ds, const ComplexColumnVector& a) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+ (const MArray<int> &is, const MArray<int> &ds, const ComplexColumnVector& a)
+   : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -222,9 +228,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is,
 				 a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is, 
-	const ColumnVector &ds, const ComplexColumnVector& a) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ColumnVector &is, const ColumnVector &ds,
+   const ComplexColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -236,9 +243,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is,
 				 a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (
-	const ComplexColumnVector &is, const ComplexColumnVector &ds, 
-	const ComplexColumnVector& a) : MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ComplexColumnVector &is, const ComplexColumnVector &ds, 
+   const ComplexColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -249,25 +257,25 @@ FixedComplexColumnVector::FixedComplexColumnVector (
     elem (i) = FixedPointComplex(is(i), ds(i), a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (unsigned int is, 
-	unsigned int ds, const ColumnVector& a) : 
-	MArray<FixedPointComplex> (a.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (unsigned int is, unsigned int ds, const ColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (a.length(), 1))
 {
   for (int i = 0; i < length (); i++)
     elem (i) = FixedPointComplex(is, ds, a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (Complex is, 
-	Complex ds, const ColumnVector& a) : 
-	MArray<FixedPointComplex> (a.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (Complex is, Complex ds, const ColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (a.length(), 1))
 {
   for (int i = 0; i < length (); i++)
     elem (i) = FixedPointComplex(is, ds, a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is, 
-	const MArray<int> &ds, const ColumnVector& a) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const MArray<int> &is, const MArray<int> &ds, const ColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -279,9 +287,9 @@ FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is,
 				 a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is, 
-	const ColumnVector &ds, const ColumnVector& a) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ColumnVector &is, const ColumnVector &ds, const ColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -293,9 +301,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is,
 				 a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (
-	const ComplexColumnVector &is, const ComplexColumnVector &ds, 
-	const ColumnVector& a) : MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ComplexColumnVector &is, const ComplexColumnVector &ds, 
+   const ColumnVector& a)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -306,9 +315,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (
     elem (i) = FixedPointComplex(is(i), ds(i), a(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (unsigned int is, 
-	unsigned int ds, const ComplexColumnVector& a, 
-	const ComplexColumnVector& b) : MArray<FixedPointComplex> (a.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (unsigned int is, unsigned int ds, const ComplexColumnVector& a, 
+   const ComplexColumnVector& b)
+    : MArray<FixedPointComplex> (dim_vector (a.length(), 1))
 {
   if (length() != b.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -319,9 +329,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (unsigned int is,
     elem (i) = FixedPointComplex(is, ds, a(i), b(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (Complex is, 
-	Complex ds, const ComplexColumnVector& a, 
-	const ComplexColumnVector& b) : MArray<FixedPointComplex> (a.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (Complex is, Complex ds, const ComplexColumnVector& a, 
+   const ComplexColumnVector& b)
+    : MArray<FixedPointComplex> (dim_vector (a.length(), 1))
 {
   if (length() != b.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -332,9 +343,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (Complex is,
     elem (i) = FixedPointComplex(is, ds, a(i), b(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is, 
-	const MArray<int> &ds, const ComplexColumnVector& a, 
-	const ComplexColumnVector& b) : MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const MArray<int> &is, const MArray<int> &ds,
+   const ComplexColumnVector& a, const ComplexColumnVector& b)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length()) || 
       (length() != b.length())) {
@@ -347,9 +359,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (const MArray<int> &is,
 				 a(i), b(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is, 
-	const ColumnVector &ds, const ComplexColumnVector& a, 
-	const ComplexColumnVector& b) : MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ColumnVector &is, const ColumnVector &ds,
+   const ComplexColumnVector& a, const ComplexColumnVector& b)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length()) || 
       (length() != b.length())) {
@@ -362,10 +375,10 @@ FixedComplexColumnVector::FixedComplexColumnVector (const ColumnVector &is,
 				 a(i), b(i));
 }
 
-FixedComplexColumnVector::FixedComplexColumnVector (
-	const ComplexColumnVector &is, const ComplexColumnVector &ds, 
-	const ComplexColumnVector& a, const ComplexColumnVector& b) : 
-	MArray<FixedPointComplex> (is.length())
+FixedComplexColumnVector::FixedComplexColumnVector
+  (const ComplexColumnVector &is, const ComplexColumnVector &ds, 
+   const ComplexColumnVector& a, const ComplexColumnVector& b)
+    : MArray<FixedPointComplex> (dim_vector (is.length(), 1))
 {
   if ((length() != ds.length()) || (length() != a.length()) || 
       (length() != b.length())) {
@@ -472,7 +485,7 @@ FixedComplexColumnVector::incdecsize (const ComplexColumnVector &n) {
 
 FixedComplexColumnVector 
 FixedComplexColumnVector::incdecsize () {
-  return chdecsize(1 + getdecsize());
+  return chdecsize(Complex (1) + getdecsize());
 }
 
 FixedComplexColumnVector 
@@ -491,7 +504,7 @@ FixedComplexColumnVector::incintsize (const ComplexColumnVector &n) {
 
 FixedComplexColumnVector 
 FixedComplexColumnVector::incintsize () {
-  return chintsize(1 + getintsize());
+  return chintsize(Complex (1) + getintsize());
 }
 
 // Fixed Point Complex Column Vector class.

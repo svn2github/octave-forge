@@ -158,13 +158,13 @@ public:
 
 #ifdef _MSC_VER
   FixedPoint (const long double x) { *this = FixedPoint((const double)x); }
-
-  operator double () const { return fixedpoint(); }
 #endif
 
   FixedPoint (const FixedPoint &x) : number(x.number), decsize(x.decsize),
                                      intsize(x.intsize), filter(x.filter),
                                      value(x.value) { }
+
+  operator double () const { return fixedpoint(); }
 
   // Changing FixedPoint dynamic
 
@@ -229,6 +229,23 @@ public:
   
   // FixedPoint operators
 
+  friend FixedPoint operator +  (const FixedPoint &x, int y) { return x + FixedPoint (y); }
+
+  friend FixedPoint operator -  (const FixedPoint &x, int y) { return x - FixedPoint (y); }
+
+  friend FixedPoint operator *  (const FixedPoint &x, int y) { return x * FixedPoint (y); }
+
+  friend FixedPoint operator /  (const FixedPoint &x, int y) { return x / FixedPoint (y); }
+
+  friend FixedPoint operator +  (int x, const FixedPoint &y) { return FixedPoint (x) + y; }
+
+  friend FixedPoint operator -  (int x, const FixedPoint &y) { return FixedPoint (x) - y; }
+
+  friend FixedPoint operator *  (int x, const FixedPoint &y) { return FixedPoint (x) * y; }
+
+  friend FixedPoint operator /  (int x, const FixedPoint &y) { return FixedPoint (x) / y; }
+
+
   friend FixedPoint operator +  (const FixedPoint &x, const FixedPoint &y);
 
   friend FixedPoint operator -  (const FixedPoint &x, const FixedPoint &y);
@@ -242,6 +259,30 @@ public:
   friend FixedPoint operator >>  (const FixedPoint &x, const int s);
   
   // FixedPoint comparators
+
+  friend OCTAVE_FIXED_API bool operator ==  (int x, const FixedPoint &y) { return FixedPoint (x) == y; }
+
+  friend OCTAVE_FIXED_API bool operator !=  (int x, const FixedPoint &y) { return FixedPoint (x) != y; }
+
+  friend OCTAVE_FIXED_API bool operator >  (int x, const FixedPoint &y) { return FixedPoint (x) > y; }
+  
+  friend OCTAVE_FIXED_API bool operator >=  (int x, const FixedPoint &y) { return FixedPoint (x) >= y; }
+  
+  friend OCTAVE_FIXED_API bool operator <  (int x, const FixedPoint &y) { return FixedPoint (x) < y; }
+  
+  friend OCTAVE_FIXED_API bool operator <=  (int x, const FixedPoint &y) { return FixedPoint (x) <= y; }
+
+  friend OCTAVE_FIXED_API bool operator ==  (const FixedPoint& y, int x) { return x == FixedPoint (y); }
+
+  friend OCTAVE_FIXED_API bool operator !=  (const FixedPoint& y, int x) { return x != FixedPoint (y); }
+
+  friend OCTAVE_FIXED_API bool operator >  (const FixedPoint& y, int x) { return x > FixedPoint (y); }
+  
+  friend OCTAVE_FIXED_API bool operator >=  (const FixedPoint& y, int x) { return x >= FixedPoint (y); }
+  
+  friend OCTAVE_FIXED_API bool operator <  (const FixedPoint& y, int x) { return x < FixedPoint (y); }
+  
+  friend OCTAVE_FIXED_API bool operator <=  (const FixedPoint& y, int x) { return x <= FixedPoint (y); }
 
   friend OCTAVE_FIXED_API bool operator ==  (const FixedPoint &x, const FixedPoint &y);
 

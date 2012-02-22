@@ -1178,7 +1178,7 @@ std::ostream &operator <<  (std::ostream &os, const FixedPoint &x) {
   */
 
   fp_uint i = num >> x.decsize;
-  fp_uint d = (num & ((x.filter >> x.intsize+1) & x.filter));
+  fp_uint d = (num & ((x.filter >> (x.intsize+1)) & x.filter));
 
   /*
     Print sign.

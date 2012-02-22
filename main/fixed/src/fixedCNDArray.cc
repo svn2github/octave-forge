@@ -45,9 +45,9 @@ Open Source Initiative (www.opensource.org)
 
 // Fixed Point Complex Matrix class.
 
-FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is, 
-					const MArrayN<int> &ds)
-  : MArrayN<FixedPointComplex> (is.dims())
+FixedComplexNDArray::FixedComplexNDArray (const MArray<int> &is, 
+					const MArray<int> &ds)
+  : MArray<FixedPointComplex> (is.dims())
 {
   if (dims () != ds.dims ()) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -60,7 +60,7 @@ FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is,
 
 FixedComplexNDArray::FixedComplexNDArray (const NDArray &is, 
 					  const NDArray &ds)
-  : MArrayN<FixedPointComplex> (is.dims())
+  : MArray<FixedPointComplex> (is.dims())
 {
   if (dims () != ds.dims ()) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -73,7 +73,7 @@ FixedComplexNDArray::FixedComplexNDArray (const NDArray &is,
 
 FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is, 
 					const ComplexNDArray &ds)
-  : MArrayN<FixedPointComplex> (is.dims())
+  : MArray<FixedPointComplex> (is.dims())
 {
   if (dims () != ds.dims ()) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -87,7 +87,7 @@ FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is,
 FixedComplexNDArray::FixedComplexNDArray (unsigned int is, 
 					  unsigned int ds, 
 					  const FixedComplexNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
     elem (i) = FixedPointComplex(is, ds, a.elem (i));
@@ -95,16 +95,16 @@ FixedComplexNDArray::FixedComplexNDArray (unsigned int is,
 
 FixedComplexNDArray::FixedComplexNDArray (Complex is, Complex ds, 
 					  const FixedComplexNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
     elem (i) = FixedPointComplex(is, ds, a.elem (i));
 }
 
-FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is,
-					  const MArrayN<int> &ds, 
+FixedComplexNDArray::FixedComplexNDArray (const MArray<int> &is,
+					  const MArray<int> &ds, 
 					  const FixedComplexNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -119,7 +119,7 @@ FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is,
 FixedComplexNDArray::FixedComplexNDArray (const NDArray &is, 
 					  const NDArray &ds, 
 					  const FixedComplexNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -134,7 +134,7 @@ FixedComplexNDArray::FixedComplexNDArray (const NDArray &is,
 FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is,
 					  const ComplexNDArray &ds, 
 					  const FixedComplexNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -148,7 +148,7 @@ FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is,
 FixedComplexNDArray::FixedComplexNDArray (unsigned int is, 
 					  unsigned int ds, 
 					  const FixedNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
     elem (i) = FixedPointComplex(is, ds, a.elem (i));
@@ -156,16 +156,16 @@ FixedComplexNDArray::FixedComplexNDArray (unsigned int is,
 
 FixedComplexNDArray::FixedComplexNDArray (Complex is, Complex ds, 
 					  const FixedNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
     elem (i) = FixedPointComplex(is, ds, FixedPointComplex(a.elem (i)));
 }
 
-FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is,
-					  const MArrayN<int> &ds, 
+FixedComplexNDArray::FixedComplexNDArray (const MArray<int> &is,
+					  const MArray<int> &ds, 
 					  const FixedNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -180,7 +180,7 @@ FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is,
 FixedComplexNDArray::FixedComplexNDArray (const NDArray &is, 
 					  const NDArray &ds, 
 					  const FixedNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -195,7 +195,7 @@ FixedComplexNDArray::FixedComplexNDArray (const NDArray &is,
 FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is,
 					  const ComplexNDArray &ds, 
 					  const FixedNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -209,7 +209,7 @@ FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is,
 FixedComplexNDArray::FixedComplexNDArray (unsigned int is, 
 					  unsigned int ds, 
 					  const ComplexNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
     elem (i) = FixedPointComplex(is, ds, a.elem (i));
@@ -217,16 +217,16 @@ FixedComplexNDArray::FixedComplexNDArray (unsigned int is,
 
 FixedComplexNDArray::FixedComplexNDArray (Complex is, Complex ds, 
 					  const ComplexNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
     elem (i) = FixedPointComplex(is, ds, a.elem (i));
 }
 
-FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is, 
-					  const MArrayN<int> &ds, 
+FixedComplexNDArray::FixedComplexNDArray (const MArray<int> &is, 
+					  const MArray<int> &ds, 
 					  const ComplexNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -241,7 +241,7 @@ FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is,
 FixedComplexNDArray::FixedComplexNDArray (const NDArray &is, 
 					  const NDArray &ds, 
 					  const ComplexNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -256,7 +256,7 @@ FixedComplexNDArray::FixedComplexNDArray (const NDArray &is,
 FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is,
 					  const ComplexNDArray &ds, 
 					  const ComplexNDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -270,7 +270,7 @@ FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is,
 FixedComplexNDArray::FixedComplexNDArray (unsigned int is, 
 					  unsigned int ds, 
 					  const NDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
     elem (i) = FixedPointComplex(is, ds, a.elem (i));
@@ -278,16 +278,16 @@ FixedComplexNDArray::FixedComplexNDArray (unsigned int is,
 
 FixedComplexNDArray::FixedComplexNDArray (Complex is, Complex ds, 
 					  const NDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
     elem (i) = FixedPointComplex(is, ds, a.elem (i));
 }
 
-FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is, 
-					  const MArrayN<int> &ds, 
+FixedComplexNDArray::FixedComplexNDArray (const MArray<int> &is, 
+					  const MArray<int> &ds, 
 					  const NDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -302,7 +302,7 @@ FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is,
 FixedComplexNDArray::FixedComplexNDArray (const NDArray &is, 
 					  const NDArray &ds, 
 					  const NDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -317,7 +317,7 @@ FixedComplexNDArray::FixedComplexNDArray (const NDArray &is,
 FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is, 
 					  const ComplexNDArray &ds, 
 					  const NDArray& a)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != is.dims()) || (dims() != ds.dims())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -332,7 +332,7 @@ FixedComplexNDArray::FixedComplexNDArray (unsigned int is,
 					  unsigned int ds, 
 					  const ComplexNDArray& a, 
 					  const ComplexNDArray& b)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if (dims() != b.dims()) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -346,7 +346,7 @@ FixedComplexNDArray::FixedComplexNDArray (unsigned int is,
 FixedComplexNDArray::FixedComplexNDArray (Complex is, Complex ds, 
 					  const ComplexNDArray& a, 
 					  const ComplexNDArray& b)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if (dims() != b.dims()) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -357,11 +357,11 @@ FixedComplexNDArray::FixedComplexNDArray (Complex is, Complex ds,
     elem (i) = FixedPointComplex(is, ds, a.elem (i), b.elem (i));
 }
 
-FixedComplexNDArray::FixedComplexNDArray (const MArrayN<int> &is, 
-					  const MArrayN<int> &ds, 
+FixedComplexNDArray::FixedComplexNDArray (const MArray<int> &is, 
+					  const MArray<int> &ds, 
 					  const ComplexNDArray& a, 
 					  const ComplexNDArray& b)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != b.dims()) || (dims() != is.dims()) 
       || (dims() != ds.dims())) {
@@ -377,7 +377,7 @@ FixedComplexNDArray::FixedComplexNDArray (const NDArray &is,
 					  const NDArray &ds, 
 					  const ComplexNDArray& a, 
 					  const ComplexNDArray& b)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != b.dims()) || (dims() != is.dims()) 
       || (dims() != ds.dims())) {
@@ -394,7 +394,7 @@ FixedComplexNDArray::FixedComplexNDArray (const NDArray &is,
 FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is, 
 		const ComplexNDArray &ds, const ComplexNDArray& a, 
 		const ComplexNDArray& b)
-  : MArrayN<FixedPointComplex> (a.dims())
+  : MArray<FixedPointComplex> (a.dims())
 {
   if ((dims() != b.dims()) || (dims() != is.dims()) 
       || (dims() != ds.dims())) {
@@ -407,7 +407,7 @@ FixedComplexNDArray::FixedComplexNDArray (const ComplexNDArray &is,
 }
 
 FixedComplexNDArray::FixedComplexNDArray (const FixedNDArray& m)
-  : MArrayN<FixedPointComplex> (m.dims (), FixedPointComplex())
+  : MArray<FixedPointComplex> (m.dims (), FixedPointComplex())
 {
   for (int i = 0; i < nelem (); i++)
     elem (i) = FixedPointComplex(m.elem (i));
@@ -415,7 +415,7 @@ FixedComplexNDArray::FixedComplexNDArray (const FixedNDArray& m)
 
 FixedComplexNDArray::FixedComplexNDArray (const FixedNDArray& a,
 					  const FixedNDArray& b)
-  : MArrayN<FixedPointComplex> (a.dims (), FixedPointComplex())
+  : MArray<FixedPointComplex> (a.dims (), FixedPointComplex())
 {
   if (dims() != b.dims()) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -576,43 +576,43 @@ FixedComplexNDArray::operator ! (void) const
 boolNDArray
 FixedComplexNDArray::all (octave_idx_type dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, FixedPointComplex> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 FixedComplexNDArray::any (octave_idx_type dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, FixedPointComplex> (*this, dim, mx_inline_any);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::cumprod (octave_idx_type dim) const
 {
-  return do_mx_cum_op<FixedComplexNDArray> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<FixedPointComplex, FixedPointComplex> (*this, dim, mx_inline_cumprod);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::cumsum (octave_idx_type dim) const
 {
-  return do_mx_cum_op<FixedComplexNDArray> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<FixedPointComplex, FixedPointComplex> (*this, dim, mx_inline_cumsum);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::prod (octave_idx_type dim) const
 {
-  return do_mx_red_op<FixedComplexNDArray> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<FixedPointComplex, FixedPointComplex> (*this, dim, mx_inline_prod);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::sum (octave_idx_type dim) const
 {
-  return do_mx_red_op<FixedComplexNDArray> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<FixedPointComplex, FixedPointComplex> (*this, dim, mx_inline_sum);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::sumsq (octave_idx_type dim) const
 {
-  return do_mx_red_op<FixedComplexNDArray> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<FixedPointComplex, FixedPointComplex> (*this, dim, mx_inline_sumsq);
 }
 
 FixedNDArray
@@ -708,23 +708,23 @@ FixedComplexNDArray elem_pow (const FixedComplexNDArray &a,
 
 FixedComplexNDArray elem_pow (const FixedComplexNDArray &a, const FixedPointComplex &b)
 {
-  return elem_pow (a, FixedComplexNDArray(dim_vector(1), b));
+  return elem_pow (a, FixedComplexNDArray(dim_vector (1, 1), b));
 }
 
 FixedComplexNDArray elem_pow (const FixedPointComplex &a, const FixedComplexNDArray &b)
 {
-  return elem_pow (FixedComplexNDArray(dim_vector(1), a), b);
+  return elem_pow (FixedComplexNDArray(dim_vector (1, 1), a), b);
 }
 
 FixedComplexNDArray
 FixedComplexNDArray::max (octave_idx_type dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
+  Array<octave_idx_type> dummy_idx;
   return max (dummy_idx, dim);
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::max (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim) const
+FixedComplexNDArray::max (Array<octave_idx_type>& idx_arg, octave_idx_type dim) const
 {
   dim_vector dv = dims ();
   dim_vector dr = dims ();
@@ -786,12 +786,12 @@ FixedComplexNDArray::max (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim)
 FixedComplexNDArray
 FixedComplexNDArray::min (octave_idx_type dim) const
 {
-  ArrayN<octave_idx_type> dummy_idx;
+  Array<octave_idx_type> dummy_idx;
   return min (dummy_idx, dim);
 }
 
 FixedComplexNDArray
-FixedComplexNDArray::min (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim) const
+FixedComplexNDArray::min (Array<octave_idx_type>& idx_arg, octave_idx_type dim) const
 {
   dim_vector dv = dims ();
   dim_vector dr = dims ();
@@ -860,13 +860,13 @@ FixedComplexNDArray::fixed_complex_matrix_value (void) const
   switch (nd)
     {
     case 1:
-      retval = FixedComplexMatrix (Array2<FixedPointComplex> 
-				   (*this, dimensions(0), 1));
+      retval = FixedComplexMatrix (Array<FixedPointComplex> 
+				   (*this, dim_vector (dimensions(0), 1)));
       break;
 
     case 2:
-      retval = FixedComplexMatrix (Array2<FixedPointComplex> 
-				   (*this, dimensions(0), dimensions(1)));
+      retval = FixedComplexMatrix (Array<FixedPointComplex> 
+				   (*this, dim_vector (dimensions(0), dimensions(1))));
       break;
 
     default:
@@ -1094,14 +1094,14 @@ max (const FixedComplexNDArray& a, const FixedComplexNDArray& b)
   return result;
 }
 
-NDS_CMP_OPS(FixedComplexNDArray, real, FixedPointComplex, real)
-NDS_BOOL_OPS(FixedComplexNDArray, FixedPointComplex, FixedPointComplex())
+NDS_CMP_OPS(FixedComplexNDArray, FixedPointComplex)
+NDS_BOOL_OPS(FixedComplexNDArray, FixedPointComplex)
 
-SND_CMP_OPS(FixedPointComplex, real, FixedComplexNDArray, real)
-SND_BOOL_OPS(FixedPointComplex, FixedComplexNDArray, FixedPointComplex())
+SND_CMP_OPS(FixedPointComplex, FixedComplexNDArray)
+SND_BOOL_OPS(FixedPointComplex, FixedComplexNDArray)
 
-NDND_CMP_OPS(FixedComplexNDArray, real, FixedComplexNDArray, real)
-NDND_BOOL_OPS(FixedComplexNDArray, FixedComplexNDArray, FixedPointComplex())
+NDND_CMP_OPS(FixedComplexNDArray, FixedComplexNDArray)
+NDND_BOOL_OPS(FixedComplexNDArray, FixedComplexNDArray)
 
 /*
 ;;; Local Variables: ***

@@ -41,7 +41,7 @@ Open Source Initiative (www.opensource.org)
 
 FixedColumnVector::FixedColumnVector (const MArray<int> &is, 
 				      const MArray<int> &ds)
-  : MArray<FixedPoint> (is.length())
+  : MArray<FixedPoint> (dim_vector (is.length(), 1))
 {
   if (length() != ds.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -54,7 +54,7 @@ FixedColumnVector::FixedColumnVector (const MArray<int> &is,
 
 FixedColumnVector::FixedColumnVector (const ColumnVector &is, 
 				      const ColumnVector &ds)
-  : MArray<FixedPoint> (is.length())
+  : MArray<FixedPoint> (dim_vector (is.length(), 1))
 {
   if (length() != ds.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -66,8 +66,9 @@ FixedColumnVector::FixedColumnVector (const ColumnVector &is,
 }
 
 FixedColumnVector::FixedColumnVector (const MArray<int> &is, 
-		const MArray<int> &ds, const FixedColumnVector& a)
-  : MArray<FixedPoint> (a.length())
+                                      const MArray<int> &ds,
+                                      const FixedColumnVector& a)
+  : MArray<FixedPoint> (dim_vector (a.length(), 1))
 {
   if ((length() != is.length()) || (length() != ds.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -80,8 +81,9 @@ FixedColumnVector::FixedColumnVector (const MArray<int> &is,
 }
 
 FixedColumnVector::FixedColumnVector (const ColumnVector &is, 
-		const ColumnVector &ds, const FixedColumnVector& a)
-  : MArray<FixedPoint> (a.length())
+                                      const ColumnVector &ds,
+                                      const FixedColumnVector& a)
+  : MArray<FixedPoint> (dim_vector (a.length(), 1))
 {
   if ((length() != is.length()) || (length() != ds.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -95,15 +97,16 @@ FixedColumnVector::FixedColumnVector (const ColumnVector &is,
 
 FixedColumnVector::FixedColumnVector (unsigned int is, unsigned int ds, 
 				const FixedColumnVector& a)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (a.length(), 1))
 {
   for (int i = 0; i < length (); i++)
     elem (i) = FixedPoint(is, ds, a.elem (i));
 }
 
 FixedColumnVector::FixedColumnVector (const MArray<int> &is, 
-		const MArray<int> &ds, const ColumnVector& a)
-  : MArray<FixedPoint> (a.length())
+                                      const MArray<int> &ds,
+                                      const ColumnVector& a)
+  : MArray<FixedPoint> (dim_vector (a.length(), 1))
 {
   if ((length() != is.length()) || (length() != ds.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -116,8 +119,9 @@ FixedColumnVector::FixedColumnVector (const MArray<int> &is,
 }
 
 FixedColumnVector::FixedColumnVector (const ColumnVector &is, 
-		const ColumnVector &ds, const ColumnVector& a)
-  : MArray<FixedPoint> (a.length())
+                                      const ColumnVector &ds,
+                                      const ColumnVector& a)
+  : MArray<FixedPoint> (dim_vector (a.length(), 1))
 {
   if ((length() != is.length()) || (length() != ds.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -131,16 +135,17 @@ FixedColumnVector::FixedColumnVector (const ColumnVector &is,
 
 FixedColumnVector::FixedColumnVector (unsigned int is, unsigned int ds, 
 				const ColumnVector& a)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (a.length(), 1))
 {
   for (int i = 0; i < length (); i++)
       elem (i) = FixedPoint(is, ds, a.elem (i));
 }
 
 FixedColumnVector::FixedColumnVector (const MArray<int> &is, 
-			const MArray<int> &ds, const ColumnVector& a, 
+                                      const MArray<int> &ds,
+                                      const ColumnVector& a,
 			const ColumnVector& b)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (a.length(), 1))
 {
   if ((length() != b.length())  || (length() != is.length()) ||
       (length() != ds.length())) {
@@ -155,9 +160,10 @@ FixedColumnVector::FixedColumnVector (const MArray<int> &is,
 }
 
 FixedColumnVector::FixedColumnVector (const ColumnVector &is, 
-		const ColumnVector &ds, const ColumnVector& a, 
+                                      const ColumnVector &ds,
+                                      const ColumnVector& a,
 		const ColumnVector& b)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (a.length(), 1))
 {
   if ((length() != b.length())  || (length() != is.length()) ||
       (length() != ds.length())) {
@@ -171,9 +177,11 @@ FixedColumnVector::FixedColumnVector (const ColumnVector &is,
 			  (unsigned int)b.elem (i));
 }
 
-FixedColumnVector::FixedColumnVector (unsigned int is, unsigned int ds, 
-				const ColumnVector& a, const ColumnVector& b)
-  : MArray<FixedPoint> (a.length())
+FixedColumnVector::FixedColumnVector (unsigned int is,
+                                      unsigned int ds,
+                                      const ColumnVector& a,
+                                      const ColumnVector& b)
+  : MArray<FixedPoint> (dim_vector (a.length(), 1))
 {
   if (length() != b.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -446,7 +454,7 @@ operator * (const FixedMatrix& m, const FixedColumnVector& a)
     gripe_nonconformant ("operator *", nr, nc, a_len, 1);
   else
     {
-      retval.resize (nr, FixedPoint());
+    retval.resize (nr, FixedPoint());
       if (nr != 0 && nc != 0)
 	for (int i = 0; i <  nc; i++) 
 	  for (int j = 0; j <  nr; j++)
@@ -551,21 +559,21 @@ FixedColumnVector elem_pow (const FixedColumnVector &a,
 
   if (a_len == 1)
     {
-      retval.resize(b_len);
+    retval.resize(b_len);
       FixedPoint ad = a(0);
       for (int i = 0; i < b_len; i++)
 	retval(i) = pow(ad, b(i));
     }
   else if (b_len == 1)
     {
-      retval.resize(a_len);
+    retval.resize(a_len);
       FixedPoint bd = b(0);
       for (int i = 0; i < a_len; i++)
 	  retval(i) = pow(a(i), bd);
     }
   else if (a_len == b_len)
     {
-      retval.resize(a_len);
+      retval.resize(a_len, 1);
       for (int i = 0; i < a_len; i++)
 	  retval(i) = pow(a(i), b(i));
     }

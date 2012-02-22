@@ -50,7 +50,8 @@ public:
 
   FixedColumnVector (void) : MArray<FixedPoint> () { }
 
-  explicit FixedColumnVector (int n) : MArray<FixedPoint> (n) { }
+  explicit FixedColumnVector (int n)
+    : MArray<FixedPoint> (dim_vector (n, 1)) { }
 
   FixedColumnVector (const MArray<int> &is, const MArray<int> &ds);
 
@@ -82,7 +83,8 @@ public:
   FixedColumnVector (const ColumnVector &is, const ColumnVector &ds, 
 		  const ColumnVector& a, const ColumnVector& b);
 
-  FixedColumnVector (int n, FixedPoint val) : MArray<FixedPoint> (n, val) { }
+  FixedColumnVector (int n, FixedPoint val)
+    : MArray<FixedPoint> (dim_vector (n,1), val) { }
 
   FixedColumnVector (const FixedColumnVector& a) : MArray<FixedPoint> (a) { }
 
@@ -140,7 +142,8 @@ public:
   FixedPoint min (void) const;
   FixedPoint max (void) const;
 
-  friend FixedColumnVector operator * (const FixedMatrix& a, const FixedColumnVector& b);
+  friend FixedColumnVector operator * (const FixedMatrix& a,
+                                       const FixedColumnVector& b);
 
   friend FixedColumnVector real (const FixedColumnVector &x);
   friend FixedColumnVector imag (const FixedColumnVector &x);
@@ -174,15 +177,21 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const FixedColumnVector& a);
-  friend std::istream& operator >> (std::istream& is, FixedColumnVector& a);
+  friend std::ostream& operator << (std::ostream& os,
+                                    const FixedColumnVector& a);
+  friend std::istream& operator >> (std::istream& is,
+                                    FixedColumnVector& a);
 
-private:
+  void resize (octave_idx_type n,
+               const FixedPoint& rfv = Array<FixedPoint>::resize_fill_value ())
+  {
+    Array<FixedPoint>::resize (dim_vector (n, 1), rfv);
+  }
 
-  FixedColumnVector (FixedPoint *d, int l) : MArray<FixedPoint> (d, l) { }
 };
 
-FixedColumnVector operator * (const FixedMatrix& a, const FixedColumnVector& b);
+FixedColumnVector operator * (const FixedMatrix& a,
+                              const FixedColumnVector& b);
 
 FixedColumnVector real (const FixedColumnVector &x);
 FixedColumnVector imag (const FixedColumnVector &x);

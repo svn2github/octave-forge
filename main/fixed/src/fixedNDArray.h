@@ -26,7 +26,7 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_FixedNDArray_h)
 #define octave_FixedNDArray_h 1
 
-#include <octave/MArrayN.h>
+#include <octave/MArray.h>
 #include <octave/dMatrix.h>
 #include <octave/dNDArray.h>
 #include <octave/boolNDArray.h>
@@ -43,30 +43,30 @@ Open Source Initiative (www.opensource.org)
 class FixedComplexNDArray;
 
 class
-FixedNDArray : public MArrayN<FixedPoint>
+FixedNDArray : public MArray<FixedPoint>
 {
 public:
-  FixedNDArray (void) : MArrayN<FixedPoint> () { }
+  FixedNDArray (void) : MArray<FixedPoint> () { }
 
-  FixedNDArray (const dim_vector& dv) : MArrayN<FixedPoint> (dv) { }
+  FixedNDArray (const dim_vector& dv) : MArray<FixedPoint> (dv) { }
 
   FixedNDArray (const dim_vector& dv, const FixedPoint val) 
-    : MArrayN<FixedPoint> (dv, val) { }
+    : MArray<FixedPoint> (dv, val) { }
 
-  FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds);
+  FixedNDArray (const MArray<int> &is, const MArray<int> &ds);
 
   FixedNDArray (const NDArray &is, const NDArray &ds);
 
   FixedNDArray (unsigned int is, unsigned int ds, const FixedNDArray& a);
 
-  FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds, 
+  FixedNDArray (const MArray<int> &is, const MArray<int> &ds, 
 	       const FixedNDArray& a);
 
   FixedNDArray (const NDArray &is, const NDArray &ds, const FixedNDArray& a);
 
   FixedNDArray (unsigned int is, unsigned int ds, const NDArray& a);
 
-  FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds, 
+  FixedNDArray (const MArray<int> &is, const MArray<int> &ds, 
 	       const NDArray& a);
 
   FixedNDArray (const NDArray &is, const NDArray &ds, const NDArray& a);
@@ -74,19 +74,19 @@ public:
   FixedNDArray (unsigned int is, unsigned int ds, const NDArray& a, 
 	       const NDArray& b);
 
-  FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds, 
+  FixedNDArray (const MArray<int> &is, const MArray<int> &ds, 
 	       const NDArray& a, const NDArray& b);
 
   FixedNDArray (const NDArray &is, const NDArray &ds, const NDArray& a, 
 	       const NDArray& b);
 
-  FixedNDArray (const MArrayN<int> &a);
+  FixedNDArray (const MArray<int> &a);
 
   FixedNDArray (const NDArray &a);
 
-  FixedNDArray (const FixedNDArray& a) : MArrayN<FixedPoint> (a) { }
-  FixedNDArray (const MArrayN<FixedPoint>& a) : MArrayN<FixedPoint> (a) { }
-  FixedNDArray (const ArrayN<FixedPoint>& a) : MArrayN<FixedPoint> (a) { }
+  FixedNDArray (const FixedNDArray& a) : MArray<FixedPoint> (a) { }
+  FixedNDArray (const MArray<FixedPoint>& a) : MArray<FixedPoint> (a) { }
+  FixedNDArray (const Array<FixedPoint>& a) : MArray<FixedPoint> (a) { }
 
   NDArray sign (void) const;
   NDArray signbit (void) const;
@@ -107,7 +107,7 @@ public:
 
   FixedNDArray& operator = (const FixedNDArray& a)
     {
-      MArrayN<FixedPoint>::operator = (a);
+      MArray<FixedPoint>::operator = (a);
       return *this;
     }
 
@@ -132,15 +132,15 @@ public:
   FixedNDArray sumsq (octave_idx_type dim = -1) const;
 
   FixedNDArray max (octave_idx_type dim = 0) const;
-  FixedNDArray max (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
+  FixedNDArray max (Array<octave_idx_type>& index, octave_idx_type dim = 0) const;
   FixedNDArray min (octave_idx_type dim = 0) const;
-  FixedNDArray min (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
+  FixedNDArray min (Array<octave_idx_type>& index, octave_idx_type dim = 0) const;
   
   FixedNDArray abs (void) const;
 
   FixedMatrix fixed_matrix_value (void) const;
 
-  FixedNDArray squeeze (void) const { return ArrayN<FixedPoint>::squeeze (); }
+  FixedNDArray squeeze (void) const { return Array<FixedPoint>::squeeze (); }
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
@@ -186,11 +186,6 @@ public:
   friend std::istream& operator >> (std::istream& is, FixedNDArray& a);
 
   static FixedPoint resize_fill_value (void) { return FixedPoint(); }
-
-private:
-
-  FixedNDArray (FixedPoint *d, const dim_vector& dv) : MArrayN<FixedPoint> (d, dv) { }
-  
 };
 
 // FixedNDArray abs  (const FixedNDArray &x);
@@ -248,7 +243,7 @@ SND_BOOL_OP_DECLS (FixedPoint, FixedNDArray, )
 NDND_CMP_OP_DECLS (FixedNDArray, FixedNDArray, )
 NDND_BOOL_OP_DECLS (FixedNDArray, FixedNDArray, )
 
-MARRAY_FORWARD_DEFS (MArrayN, FixedNDArray, FixedPoint)
+MARRAY_FORWARD_DEFS (MArray, FixedNDArray, FixedPoint)
 
 #endif
 

@@ -26,7 +26,7 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_FixedMatrix_h)
 #define octave_FixedMatrix_h 1
 
-#include <octave/MArray2.h>
+#include <octave/MArray.h>
 
 #include <octave/mx-defs.h>
 #include <octave/mx-op-defs.h>
@@ -50,32 +50,34 @@ typedef FixedPoint (*fp_fp_Mapper)(FixedPoint);
 
 class
 OCTAVE_FIXED_API
-FixedMatrix : public MArray2<FixedPoint>
+FixedMatrix : public MArray<FixedPoint>
 {
 public:
 
-  FixedMatrix (void) : MArray2<FixedPoint> () { }
+  FixedMatrix (void) : MArray<FixedPoint> () { }
 
-  FixedMatrix (const dim_vector& dv) : MArray2<FixedPoint> (dv) { }
+  FixedMatrix (const dim_vector& dv) : MArray<FixedPoint> (dv) { }
 
-  FixedMatrix (int r, int c) : MArray2<FixedPoint> (r, c) { }
+  FixedMatrix (int r, int c)
+    : MArray<FixedPoint> (dim_vector(r, c)) { }
 
-  FixedMatrix (int r, int c, const FixedPoint val) : MArray2<FixedPoint> (r, c, val) { }
+  FixedMatrix (int r, int c, const FixedPoint val)
+    : MArray<FixedPoint> (dim_vector(r, c), val) { }
 
-  FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds);
+  FixedMatrix (const MArray<int> &is, const MArray<int> &ds);
 
   FixedMatrix (const Matrix &is, const Matrix &ds);
 
   FixedMatrix (unsigned int is, unsigned int ds, const FixedMatrix& a);
 
-  FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds, 
+  FixedMatrix (const MArray<int> &is, const MArray<int> &ds, 
 	       const FixedMatrix& a);
 
   FixedMatrix (const Matrix &is, const Matrix &ds, const FixedMatrix& a);
 
   FixedMatrix (unsigned int is, unsigned int ds, const Matrix& a);
 
-  FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds, 
+  FixedMatrix (const MArray<int> &is, const MArray<int> &ds, 
 	       const Matrix& a);
 
   FixedMatrix (const Matrix &is, const Matrix &ds, const Matrix& a);
@@ -83,19 +85,19 @@ public:
   FixedMatrix (unsigned int is, unsigned int ds, const Matrix& a, 
 	       const Matrix& b);
 
-  FixedMatrix (const MArray2<int> &is, const MArray2<int> &ds, 
+  FixedMatrix (const MArray<int> &is, const MArray<int> &ds, 
 	       const Matrix& a, const Matrix& b);
 
   FixedMatrix (const Matrix &is, const Matrix &ds, const Matrix& a, 
 	       const Matrix& b);
 
-  FixedMatrix (const MArray2<int> &a);
+  FixedMatrix (const MArray<int> &a);
 
   FixedMatrix (const Matrix &a);
 
-  FixedMatrix (const FixedMatrix& a) : MArray2<FixedPoint> (a) { }
-  FixedMatrix (const MArray2<FixedPoint>& a) : MArray2<FixedPoint> (a) { }
-  FixedMatrix (const Array2<FixedPoint> &a) : MArray2<FixedPoint> (a) { }
+  FixedMatrix (const FixedMatrix& a) : MArray<FixedPoint> (a) { }
+  FixedMatrix (const MArray<FixedPoint>& a) : MArray<FixedPoint> (a) { }
+  FixedMatrix (const Array<FixedPoint> &a) : MArray<FixedPoint> (a) { }
 
   explicit FixedMatrix (const FixedRowVector& rv);
 
@@ -120,7 +122,7 @@ public:
 
   FixedMatrix& operator = (const FixedMatrix& a)
     {
-      MArray2<FixedPoint>::operator = (a);
+      MArray<FixedPoint>::operator = (a);
       return *this;
     }
 
@@ -151,7 +153,7 @@ public:
   FixedMatrix stack (const FixedColumnVector& a) const;
 
   FixedMatrix transpose (void) const 
-       { return MArray2<FixedPoint>::transpose (); }
+       { return MArray<FixedPoint>::transpose (); }
 
   // resize is the destructive equivalent for this one
 
@@ -166,6 +168,12 @@ public:
 
   FixedColumnVector column (int i) const;
   FixedColumnVector column (char *s) const;
+
+  void resize (octave_idx_type nr, octave_idx_type nc,
+               const FixedPoint& rfv = resize_fill_value ())
+  {
+    MArray<FixedPoint>::resize (dim_vector (nr, nc), rfv);
+  }
 
   // unary operations
 
@@ -246,9 +254,6 @@ public:
 
   static FixedPoint resize_fill_value (void) { return FixedPoint(); }
 
-private:
-
-  FixedMatrix (FixedPoint *d, int r, int c) : MArray2<FixedPoint> (d, r, c) { }
 };
 
 OCTAVE_FIXED_API FixedMatrix operator * (const FixedColumnVector& a, const FixedRowVector& b);
@@ -314,7 +319,7 @@ SM_BOOL_OP_DECLS (FixedPoint, FixedMatrix, )
 MM_CMP_OP_DECLS (FixedMatrix, FixedMatrix, )
 MM_BOOL_OP_DECLS (FixedMatrix, FixedMatrix, )
 
-MARRAY_FORWARD_DEFS (MArray2, FixedMatrix, FixedPoint)
+MARRAY_FORWARD_DEFS (MArray, FixedMatrix, FixedPoint)
 
 #endif
 

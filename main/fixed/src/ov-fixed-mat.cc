@@ -354,7 +354,7 @@ octave_fixed_matrix::convert_to_str (bool) const
 	}
       else
 	{
-	  charMatrix chm (nr, nc);
+	  charMatrix chm (dim_vector (nr, nc));
 	  
 	  bool warned = false;
 
@@ -386,7 +386,7 @@ octave_fixed_matrix::convert_to_str (bool) const
 		}
 	    }
 
-	  retval = octave_value (chm, 1);
+	  retval = octave_value (chm);
 	}
     }
 
@@ -394,9 +394,9 @@ octave_fixed_matrix::convert_to_str (bool) const
 }
 
 static void
-restore_precision (void *p)
+restore_precision (int *p)
 {
-  bind_internal_variable ("output_precision", *(static_cast<int *> (p)));
+  bind_internal_variable ("output_precision", *p);
 }
 
 void
@@ -409,13 +409,15 @@ octave_fixed_matrix::print_raw (std::ostream& os,
 
   octave_value_list tmp = feval ("output_precision");
   int prec = tmp(0).int_value ();
-  unwind_protect::add (restore_precision, &prec);
+
+  unwind_protect frame;
+
+  frame.add_fcn (restore_precision, &prec);
+
   bind_internal_variable ("output_precision", new_prec);
 
   octave_print_internal (os, matrix_value(), false, 
 			 current_print_indent_level ());
-
-  unwind_protect::run ();
 }
 
 bool 

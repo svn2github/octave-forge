@@ -26,7 +26,7 @@ Open Source Initiative (www.opensource.org)
 #if !defined (octave_FixedCNDArray_h)
 #define octave_FixedCNDArray_h 1
 
-#include <octave/MArrayN.h>
+#include <octave/MArray.h>
 #include <octave/dMatrix.h>
 
 #include <octave/dNDArray.h>
@@ -45,19 +45,19 @@ Open Source Initiative (www.opensource.org)
 #include "fixedNDArray.h"
 
 class
-FixedComplexNDArray : public MArrayN<FixedPointComplex>
+FixedComplexNDArray : public MArray<FixedPointComplex>
 {
 public:
 
-  FixedComplexNDArray (void) : MArrayN<FixedPointComplex> () { }
+  FixedComplexNDArray (void) : MArray<FixedPointComplex> () { }
 
   FixedComplexNDArray (const dim_vector& dv) 
-    : MArrayN<FixedPointComplex> (dv) { }
+    : MArray<FixedPointComplex> (dv) { }
 
   FixedComplexNDArray (const dim_vector& dv, const FixedPointComplex val) :
-    MArrayN<FixedPointComplex> (dv, val) { }
+    MArray<FixedPointComplex> (dv, val) { }
 
-  FixedComplexNDArray (const MArrayN<int> &is, const MArrayN<int> &ds);
+  FixedComplexNDArray (const MArray<int> &is, const MArray<int> &ds);
 
   FixedComplexNDArray (const NDArray &is, const NDArray &ds);
 
@@ -69,7 +69,7 @@ public:
   FixedComplexNDArray (Complex is, Complex ds, 
 		       const FixedComplexNDArray& a);
 
-  FixedComplexNDArray (const MArrayN<int> &is, const MArrayN<int> &ds, 
+  FixedComplexNDArray (const MArray<int> &is, const MArray<int> &ds, 
 		      const FixedComplexNDArray& a);
 
   FixedComplexNDArray (const NDArray &is, const NDArray &ds, 
@@ -83,7 +83,7 @@ public:
 
   FixedComplexNDArray (Complex is, Complex ds, const FixedNDArray& a);
 
-  FixedComplexNDArray (const MArrayN<int> &is, const MArrayN<int> &ds, 
+  FixedComplexNDArray (const MArray<int> &is, const MArray<int> &ds, 
 		       const FixedNDArray& a);
 
   FixedComplexNDArray (const NDArray &is, const NDArray &ds, 
@@ -97,7 +97,7 @@ public:
 
   FixedComplexNDArray (Complex is, Complex ds, const ComplexNDArray& a);
 
-  FixedComplexNDArray (const MArrayN<int> &is, const MArrayN<int> & ds, 
+  FixedComplexNDArray (const MArray<int> &is, const MArray<int> & ds, 
 		       const ComplexNDArray& a);
 
   FixedComplexNDArray (const NDArray &is, const NDArray & ds, 
@@ -111,7 +111,7 @@ public:
 
   FixedComplexNDArray (Complex is, Complex ds, const NDArray& a);
 
-  FixedComplexNDArray (const MArrayN<int> &is, const MArrayN<int> & ds, 
+  FixedComplexNDArray (const MArray<int> &is, const MArray<int> & ds, 
 		       const NDArray& a);
 
   FixedComplexNDArray (const NDArray &is, const NDArray & ds, 
@@ -126,7 +126,7 @@ public:
   FixedComplexNDArray (Complex is, Complex ds, const ComplexNDArray &a, 
 		       const ComplexNDArray &b);
 
-  FixedComplexNDArray (const MArrayN<int> &is, const MArrayN<int> &ds,
+  FixedComplexNDArray (const MArray<int> &is, const MArray<int> &ds,
 		       const ComplexNDArray &a, const ComplexNDArray &b);
 
   FixedComplexNDArray (const NDArray &is, const NDArray &ds,
@@ -140,13 +140,13 @@ public:
   FixedComplexNDArray (const FixedNDArray& a, const FixedNDArray& b);
 
   FixedComplexNDArray (const FixedComplexNDArray& a)
-    : MArrayN<FixedPointComplex> (a) { }
+    : MArray<FixedPointComplex> (a) { }
 
-  FixedComplexNDArray (const MArrayN<FixedPointComplex>& a)
-    : MArrayN<FixedPointComplex> (a) { }
+  FixedComplexNDArray (const MArray<FixedPointComplex>& a)
+    : MArray<FixedPointComplex> (a) { }
 
-  FixedComplexNDArray (const ArrayN<FixedPointComplex>& a)
-    : MArrayN<FixedPointComplex> (a) { }
+  FixedComplexNDArray (const Array<FixedPointComplex>& a)
+    : MArray<FixedPointComplex> (a) { }
 
   ComplexNDArray sign (void) const;
   ComplexNDArray getdecsize (void) const;
@@ -166,7 +166,7 @@ public:
 
   FixedComplexNDArray& operator = (const FixedComplexNDArray& a)
     {
-      MArrayN<FixedPointComplex>::operator = (a);
+      MArray<FixedPointComplex>::operator = (a);
       return *this;
     }
 
@@ -194,16 +194,16 @@ public:
   FixedComplexNDArray sumsq (octave_idx_type dim = -1) const;
 
   FixedComplexNDArray max (octave_idx_type dim = 0) const;
-  FixedComplexNDArray max (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
+  FixedComplexNDArray max (Array<octave_idx_type>& index, octave_idx_type dim = 0) const;
   FixedComplexNDArray min (octave_idx_type dim = 0) const;
-  FixedComplexNDArray min (ArrayN<octave_idx_type>& index, octave_idx_type dim = 0) const;
+  FixedComplexNDArray min (Array<octave_idx_type>& index, octave_idx_type dim = 0) const;
 
   FixedNDArray abs (void) const;
 
   FixedComplexMatrix fixed_complex_matrix_value (void) const;
 
   FixedComplexNDArray squeeze (void) const 
-    { return ArrayN<FixedPointComplex>::squeeze (); }
+    { return Array<FixedPointComplex>::squeeze (); }
 
   static void increment_index (Array<octave_idx_type>& ra_idx,
 			       const dim_vector& dimensions,
@@ -251,11 +251,6 @@ public:
 
   static FixedPointComplex resize_fill_value (void) 
       { return FixedPointComplex(); }
-
-private:
-
-  FixedComplexNDArray (FixedPointComplex *d, const dim_vector& dv) 
-    : MArrayN<FixedPointComplex> (d, dv) { }
 };
 
 
@@ -330,7 +325,7 @@ SND_BOOL_OP_DECLS (FixedPointComplex, FixedComplexNDArray, )
 NDND_CMP_OP_DECLS (FixedComplexNDArray, FixedComplexNDArray, )
 NDND_BOOL_OP_DECLS (FixedComplexNDArray, FixedComplexNDArray, )
 
-MARRAY_FORWARD_DEFS (MArrayN, FixedComplexNDArray, FixedPointComplex)
+MARRAY_FORWARD_DEFS (MArray, FixedComplexNDArray, FixedPointComplex)
 
 #endif
 

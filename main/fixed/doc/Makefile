@@ -5,7 +5,7 @@ ifeq ($(MKDOC),)
 MKDOC = ../../../admin/mkdoc
 MKTEXI = ../../../admin/mktexi
 MAKEINFO = makeinfo --no-split
-TEXI2PDF = texi2ppf --clean
+TEXI2PDF = texi2pdf --clean
 DVIPS = dvips
 LN_S = ln -s
 endif

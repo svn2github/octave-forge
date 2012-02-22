@@ -45,8 +45,8 @@ Open Source Initiative (www.opensource.org)
 
 // Fixed Point NDArray class.
 
-FixedNDArray::FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds)
-  : MArrayN<FixedPoint> (is.dims())
+FixedNDArray::FixedNDArray (const MArray<int> &is, const MArray<int> &ds)
+  : MArray<FixedPoint> (is.dims())
 {
   if (dims () != ds.dims ()) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -59,7 +59,7 @@ FixedNDArray::FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds)
 
 
 FixedNDArray::FixedNDArray (const NDArray &is, const NDArray &ds)
-  : MArrayN<FixedPoint> (is.dims())
+  : MArray<FixedPoint> (is.dims())
 {
   if (dims () != ds.dims ()) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -70,9 +70,9 @@ FixedNDArray::FixedNDArray (const NDArray &is, const NDArray &ds)
     elem (i) = FixedPoint((unsigned int)is(i), (unsigned int)ds(i));
 }
 
-FixedNDArray::FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds, 
+FixedNDArray::FixedNDArray (const MArray<int> &is, const MArray<int> &ds, 
 			  const FixedNDArray& a)
-  : MArrayN<FixedPoint> (a.dims())
+  : MArray<FixedPoint> (a.dims())
 {
   if ((dims () != is.dims ()) || (dims () != ds.dims ())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -86,7 +86,7 @@ FixedNDArray::FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds,
 
 FixedNDArray::FixedNDArray (const NDArray &is, const NDArray &ds, 
 			  const FixedNDArray& a)
-  : MArrayN<FixedPoint> (a.dims())
+  : MArray<FixedPoint> (a.dims())
 {
   if ((dims () != is.dims ()) || (dims () != ds.dims ())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -100,16 +100,16 @@ FixedNDArray::FixedNDArray (const NDArray &is, const NDArray &ds,
 
 FixedNDArray::FixedNDArray (unsigned int is, unsigned int ds, 
 			  const FixedNDArray& a)
-  : MArrayN<FixedPoint> (a.dims())
+  : MArray<FixedPoint> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
       elem (i) = FixedPoint(is, ds, a.elem (i));
 }
 
-FixedNDArray::FixedNDArray (const MArrayN<int> &is, 
-			    const MArrayN<int> &ds, 
+FixedNDArray::FixedNDArray (const MArray<int> &is, 
+			    const MArray<int> &ds, 
 			    const NDArray& a)
-  : MArrayN<FixedPoint> (a.dims())
+  : MArray<FixedPoint> (a.dims())
 {
   if ((dims () != is.dims ()) || (dims () != ds.dims ())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -123,7 +123,7 @@ FixedNDArray::FixedNDArray (const MArrayN<int> &is,
 
 FixedNDArray::FixedNDArray (const NDArray &is, const NDArray &ds, 
 			  const NDArray& a)
-  : MArrayN<FixedPoint> (a.dims())
+  : MArray<FixedPoint> (a.dims())
 {
   if ((dims () != is.dims ()) || (dims () != ds.dims ())) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -137,7 +137,7 @@ FixedNDArray::FixedNDArray (const NDArray &is, const NDArray &ds,
 
 FixedNDArray::FixedNDArray (unsigned int is, unsigned int ds,
 			    const NDArray& a)
-  : MArrayN<FixedPoint> (a.dims())
+  : MArray<FixedPoint> (a.dims())
 {
   for (int i = 0; i < nelem (); i++)
     elem (i) = FixedPoint(is, ds, a.elem (i));
@@ -145,7 +145,7 @@ FixedNDArray::FixedNDArray (unsigned int is, unsigned int ds,
 
 FixedNDArray::FixedNDArray (unsigned int is, unsigned int ds, 
 			    const NDArray& a, const NDArray& b)
-  : MArrayN<FixedPoint> (a.dims())
+  : MArray<FixedPoint> (a.dims())
 {
   if (dims() != b.dims()) {
     (*current_liboctave_error_handler) ("NDArray size mismatch");
@@ -157,9 +157,9 @@ FixedNDArray::FixedNDArray (unsigned int is, unsigned int ds,
 			  (unsigned int)b.elem (i));
 }
 
-FixedNDArray::FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds, 
+FixedNDArray::FixedNDArray (const MArray<int> &is, const MArray<int> &ds, 
 			  const NDArray& a, const NDArray& b)
-  : MArrayN<FixedPoint> (a.dims())
+  : MArray<FixedPoint> (a.dims())
 {
   if ((dims() != b.dims()) || (dims() != is.dims()) || 
       (dims() != ds.dims())) {
@@ -175,7 +175,7 @@ FixedNDArray::FixedNDArray (const MArrayN<int> &is, const MArrayN<int> &ds,
 
 FixedNDArray::FixedNDArray (const NDArray &is, const NDArray &ds, 
 			    const NDArray& a, const NDArray& b)
-  : MArrayN<FixedPoint> (a.dims())
+  : MArray<FixedPoint> (a.dims())
 {
   if ((dims() != b.dims()) || (dims() != is.dims()) || 
       (dims() != ds.dims())) {
@@ -189,15 +189,15 @@ FixedNDArray::FixedNDArray (const NDArray &is, const NDArray &ds,
 			       (unsigned int)b.elem (i));
 }
 
-FixedNDArray::FixedNDArray (const MArrayN<int> &a)
-  : MArrayN<FixedPoint> (a.dims())
+FixedNDArray::FixedNDArray (const MArray<int> &a)
+  : MArray<FixedPoint> (a.dims())
 {
   for (octave_idx_type i = 0; i < nelem (); i++)
     elem (i) = FixedPoint(a.elem (i));
 }
 
 FixedNDArray::FixedNDArray (const NDArray &a)
-  : MArrayN<FixedPoint> (a.dims())
+  : MArray<FixedPoint> (a.dims())
 {
   for (octave_idx_type i = 0; i < nelem (); i++)
     elem (i) = FixedPoint(a.elem (i));
@@ -359,67 +359,67 @@ FixedNDArray::operator ! (void) const
 boolNDArray
 FixedNDArray::all (octave_idx_type dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, FixedPoint> (*this, dim, mx_inline_all);
 }
 
 boolNDArray
 FixedNDArray::any (octave_idx_type dim) const
 {
-  return do_mx_red_op<boolNDArray> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, FixedPoint> (*this, dim, mx_inline_any);
 }
 
 FixedNDArray
 FixedNDArray::cumprod (octave_idx_type dim) const
 {
-  return do_mx_cum_op<FixedNDArray> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<FixedPoint, FixedPoint> (*this, dim, mx_inline_cumprod);
 }
 
 FixedNDArray
 FixedNDArray::cumsum (octave_idx_type dim) const
 {
-  return do_mx_cum_op<FixedNDArray> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<FixedPoint, FixedPoint> (*this, dim, mx_inline_cumsum);
 }
 
 FixedNDArray
 FixedNDArray::prod (octave_idx_type dim) const
 {
-  return do_mx_red_op<FixedNDArray> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<FixedPoint, FixedPoint> (*this, dim, mx_inline_prod);
 }
 
 FixedNDArray
 FixedNDArray::sum (octave_idx_type dim) const
 {
-  return do_mx_red_op<FixedNDArray> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<FixedPoint, FixedPoint> (*this, dim, mx_inline_sum);
 }
 
 FixedNDArray
 FixedNDArray::sumsq (octave_idx_type dim) const
 {
-  return do_mx_red_op<FixedNDArray> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<FixedPoint, FixedPoint> (*this, dim, mx_inline_sumsq);
 }
 
 FixedNDArray
 FixedNDArray::max (octave_idx_type dim) const
 {
-  return do_mx_minmax_op<FixedNDArray> (*this, dim, mx_inline_max);
+  return do_mx_minmax_op<FixedPoint> (*this, dim, mx_inline_max);
 }
 
 FixedNDArray
-FixedNDArray::max (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim) const
+FixedNDArray::max (Array<octave_idx_type>& idx_arg, octave_idx_type dim) const
 {
-  return do_mx_minmax_op<FixedNDArray> (*this, idx_arg, dim, mx_inline_max);
+  return do_mx_minmax_op<FixedPoint> (*this, idx_arg, dim, mx_inline_max);
 }
 
 FixedNDArray
 FixedNDArray::min (octave_idx_type dim) const
 {
-  return do_mx_minmax_op<FixedNDArray> (*this, dim, mx_inline_min);
+  return do_mx_minmax_op<FixedPoint> (*this, dim, mx_inline_min);
 }
 
 FixedNDArray
-FixedNDArray::min (ArrayN<octave_idx_type>& idx_arg, octave_idx_type dim) const
+FixedNDArray::min (Array<octave_idx_type>& idx_arg, octave_idx_type dim) const
 {
-  return do_mx_minmax_op<FixedNDArray> (*this, idx_arg, dim, mx_inline_min);
+  return do_mx_minmax_op<FixedPoint> (*this, idx_arg, dim, mx_inline_min);
 }
 
 FixedNDArray
@@ -445,12 +445,12 @@ FixedNDArray::fixed_matrix_value (void) const
   switch (nd)
     {
     case 1:
-      retval = FixedMatrix (Array2<FixedPoint> (*this, dimensions(0), 1));
+      retval = FixedMatrix (Array<FixedPoint> (*this, dim_vector (dimensions(0), 1)));
       break;
 
     case 2:
-      retval = FixedMatrix (Array2<FixedPoint> (*this, dimensions(0), 
-						dimensions(1)));
+      retval = FixedMatrix (Array<FixedPoint> (*this, dim_vector (dimensions(0), 
+                                                                  dimensions(1))));
       break;
 
     default:
@@ -527,12 +527,12 @@ FixedNDArray elem_pow (const FixedNDArray &a, const FixedNDArray &b)
 
 FixedNDArray elem_pow (const FixedNDArray &a, const FixedPoint &b)
 {
-  return elem_pow (a, FixedNDArray(dim_vector (1), b));
+  return elem_pow (a, FixedNDArray(dim_vector (1, 1), b));
 }
 
 FixedNDArray elem_pow (const FixedPoint &a, const FixedNDArray &b)
 {
-  return elem_pow (FixedNDArray(dim_vector (1), a), b);
+  return elem_pow (FixedNDArray(dim_vector (1, 1), a), b);
 }
 
 FixedNDArray atan2 (const FixedNDArray &x, const FixedNDArray &y)
@@ -758,14 +758,14 @@ max (const FixedNDArray& a, const FixedNDArray& b)
   return result;
 }
 
-NDS_CMP_OPS(FixedNDArray, , FixedPoint, )
-NDS_BOOL_OPS(FixedNDArray, FixedPoint, FixedPoint())
+NDS_CMP_OPS(FixedNDArray, FixedPoint)
+NDS_BOOL_OPS(FixedNDArray, FixedPoint)
 
-SND_CMP_OPS(FixedPoint, , FixedNDArray, )
-SND_BOOL_OPS(FixedPoint, FixedNDArray, FixedPoint())
+SND_CMP_OPS(FixedPoint, FixedNDArray)
+SND_BOOL_OPS(FixedPoint, FixedNDArray)
 
-NDND_CMP_OPS(FixedNDArray, , FixedNDArray, )
-NDND_BOOL_OPS(FixedNDArray, FixedNDArray, FixedPoint())
+NDND_CMP_OPS(FixedNDArray, FixedNDArray)
+NDND_BOOL_OPS(FixedNDArray, FixedNDArray)
 
 /*
 ;;; Local Variables: ***

@@ -213,7 +213,7 @@ DEFUN_DLD (fixed, args, nargout,
     } else {
       if (args(0).is_complex_type()) {
 	ComplexMatrix a = args(0).complex_matrix_value();
-	MArray2<int> b(a.rows(),a.cols());
+	MArray<int> b(dim_vector (a.rows(),a.cols()));
 	for (int j = 0; j < a.cols(); j++)
 	  for (int i = 0; i < a.rows(); i++)
 	    b(i,j) = (int)real(a(i,j));
@@ -225,7 +225,7 @@ DEFUN_DLD (fixed, args, nargout,
 	retval = new octave_fixed_complex_matrix (fr, fi);
       } else {
 	Matrix a = args(0).matrix_value();
-	MArray2<int> b(a.rows(),a.cols());
+	MArray<int> b(dim_vector (a.rows(),a.cols()));
 	for (int j = 0; j < a.cols(); j++)
 	  for (int i = 0; i < a.rows(); i++)
 	    b(i,j) = (int)a(i,j);
@@ -237,7 +237,7 @@ DEFUN_DLD (fixed, args, nargout,
     if (args(0).is_complex_type() || args(1).is_complex_type() || 
 	((nargin > 2) && args(2).is_complex_type())) {
 
-      MArray2<int> mir, mii, mdr, mdi;
+      MArray<int> mir, mii, mdr, mdi;
       ComplexMatrix a, b;
       if (args(0).is_complex_type())
 	a = args(0).complex_matrix_value();
@@ -252,8 +252,8 @@ DEFUN_DLD (fixed, args, nargout,
 	b = b + Complex(0.,1.)*b;
       }
 
-      mir.resize(a.rows(),a.cols());
-      mii.resize(a.rows(),a.cols());
+      mir.resize(dim_vector (a.rows(),a.cols()));
+      mii.resize(dim_vector (a.rows(),a.cols()));
       for (int j = 0; j < a.cols(); j++)
 	for (int i = 0; i < a.rows(); i++) {
 	  mir(i,j) = (int) real(a(i,j));
@@ -266,8 +266,8 @@ DEFUN_DLD (fixed, args, nargout,
 	  }
 	}
 
-      mdr.resize(b.rows(),b.cols());
-      mdi.resize(b.rows(),b.cols());
+      mdr.resize(dim_vector (b.rows(),b.cols()));
+      mdi.resize(dim_vector (b.rows(),b.cols()));
       for (int j = 0; j < b.cols(); j++)
 	for (int i = 0; i < b.rows(); i++) {
 	  mdr(i,j) = (int) real(b(i,j));
@@ -281,12 +281,12 @@ DEFUN_DLD (fixed, args, nargout,
 	}
 
       if ((mir.rows() == 1) && (mir.cols() == 1)) {
-	mir.resize(mdr.rows(),mdr.cols(),mir(0,0));
-	mii.resize(mdr.rows(),mdr.cols(),mii(0,0));
+	mir.resize(dim_vector (mdr.rows(),mdr.cols()), mir(0,0));
+	mii.resize(dim_vector (mdr.rows(),mdr.cols()), mii(0,0));
       }
       if ((mdr.rows() == 1) && (mdr.cols() == 1)) {
-	mdr.resize(mir.rows(),mir.cols(),mdr(0,0));
-	mdi.resize(mir.rows(),mir.cols(),mdi(0,0));
+	mdr.resize(dim_vector (mir.rows(),mir.cols()), mdr(0,0));
+	mdi.resize(dim_vector (mir.rows(),mir.cols()), mdi(0,0));
       }
 
       if ((mir.rows() != mdr.rows()) || (mir.cols() != mdr.cols())) {
@@ -326,11 +326,11 @@ DEFUN_DLD (fixed, args, nargout,
 	}
       }
     } else {
-      MArray2<int> mis, mds;
+      MArray<int> mis, mds;
       Matrix a = args(0).matrix_value();
       Matrix b = args(1).matrix_value();
 
-      mis.resize(a.rows(),a.cols());
+      mis.resize(dim_vector (a.rows(),a.cols()));
       for (int j = 0; j < a.cols(); j++)
 	for (int i = 0; i < a.rows(); i++) {
 	  mis(i,j) = (int)a(i,j);
@@ -339,7 +339,7 @@ DEFUN_DLD (fixed, args, nargout,
 	    return retval;
 	  }
 	}
-      mds.resize(b.rows(),b.cols());
+      mds.resize(dim_vector (b.rows(),b.cols()));
       for (int j=0; j < b.cols(); j++)
 	for (int i=0; i < b.rows(); i++) {
 	  mds(i,j) = (int)b(i,j);
@@ -350,9 +350,9 @@ DEFUN_DLD (fixed, args, nargout,
 	}
 
       if ((mis.rows() == 1) && (mis.cols() == 1))
-	mis.resize(mds.rows(),mds.cols(),mis(0,0));
+	mis.resize(dim_vector (mds.rows(),mds.cols()),mis(0,0));
       if ((mds.rows() == 1) && (mds.cols() == 1))
-	mds.resize(mis.rows(),mis.cols(),mds(0,0));
+	mds.resize(dim_vector (mis.rows(),mis.cols()),mds(0,0));
     
       if ((mis.rows() != mds.rows()) || (mis.cols() != mds.cols())) {
 	error("fixed: dimension mismatch in args");
@@ -414,8 +414,8 @@ DEFUN_DLD (fixed, args, nargout,
         if (args(0).type_id () == octave_fixed::static_type_id ()) { \
 	  FixedPoint f = ((const octave_fixed&) args(0).get_rep()) \
 	    .fixed_value (); \
-          if ((REAL_CAN_RET_CMPLX_UPPER && (f.fixedpoint() > UPPER)) || \
-              (REAL_CAN_RET_CMPLX_LOWER && (f.fixedpoint() < LOWER))) \
+          if ((REAL_CAN_RET_CMPLX_UPPER && (f > UPPER)) || \
+              (REAL_CAN_RET_CMPLX_LOWER && (f < LOWER))) \
 	    retval = new octave_fixed_complex \
                     (FUNC (FixedPointComplex(f,FixedPoint(f.getintsize(), \
 						f.getdecsize())))); \
@@ -425,9 +425,9 @@ DEFUN_DLD (fixed, args, nargout,
 				octave_fixed_matrix::static_type_id ()) { \
 	  FixedMatrix f = ((const octave_fixed_matrix&) args(0).get_rep()) \
 	    .fixed_matrix_value (); \
-          if ((REAL_CAN_RET_CMPLX_UPPER && (f.row_max().max().fixedpoint() \
+          if ((REAL_CAN_RET_CMPLX_UPPER && (f.row_max().max() \
 							> UPPER)) || \
-              (REAL_CAN_RET_CMPLX_LOWER && (f.row_min().min().fixedpoint() \
+              (REAL_CAN_RET_CMPLX_LOWER && (f.row_min().min() \
 							< LOWER))) { \
              retval = new octave_fixed_complex_matrix \
                      (FUNC (FixedComplexMatrix(f))); \
@@ -955,9 +955,9 @@ make_fdiag (const octave_value& a, const octave_value& b)
 	    int n = nc + k;
 	    FixedComplexMatrix r;
 	    if (same)
-	      r.resize(n,n,FixedPointComplex(is,ds));
+	      r.resize(dim_vector (n,n), FixedPointComplex(is,ds));
 	    else
-	      r.resize(n,n);
+	      r.resize(dim_vector (n,n));
 	    for (int i = 0; i < nc; i++)
 	      r (i+roff, i+coff) = m (0, i);
 	    retval = new octave_fixed_complex_matrix (r);
@@ -965,9 +965,9 @@ make_fdiag (const octave_value& a, const octave_value& b)
 	    int n = nr + k;
 	    FixedComplexMatrix r;
 	    if (same)
-	      r.resize(n,n,FixedPointComplex(is,ds));
+	      r.resize(dim_vector (n,n), FixedPointComplex(is,ds));
 	    else
-	      r.resize(n,n);
+	      r.resize(dim_vector (n,n));
 	    for (int i = 0; i < nr; i++)
 	      r (i+roff, i+coff) = m (i, 0);
 	    retval = new octave_fixed_complex_matrix (r);
@@ -1024,7 +1024,7 @@ make_fdiag (const octave_value& a, const octave_value& b)
 	    int n = nc + k;
 	    FixedMatrix r;
 	    if (same)
-	      r.resize(n,n,FixedPoint(is,ds));
+	      r.resize(n,n, FixedPoint(is,ds));
 	    else
 	      r.resize(n,n);
 	    for (int i = 0; i < nc; i++)

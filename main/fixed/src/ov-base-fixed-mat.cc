@@ -101,7 +101,7 @@ octave_base_fixed_matrix<MT>::assign (const octave_value_list& idx,
 	     len);
   else
     {
-      Array<idx_vector> ra_idx (len);
+      Array<idx_vector> ra_idx (dim_vector (len, 1));
 
       for (octave_idx_type i = 0; i < len; i++)
 	ra_idx(i) = idx(i).index_vector ();

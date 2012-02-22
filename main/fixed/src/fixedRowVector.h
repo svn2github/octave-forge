@@ -50,7 +50,7 @@ public:
 
   FixedRowVector (void) : MArray<FixedPoint> () { }
 
-  explicit FixedRowVector (int n) : MArray<FixedPoint> (n) { }
+  explicit FixedRowVector (int n) : MArray<FixedPoint> (dim_vector (1,n)) { }
 
   FixedRowVector (const MArray<int> &is, const MArray<int> &ds);
 
@@ -81,7 +81,8 @@ public:
   FixedRowVector (const RowVector &is, const RowVector &ds, 
 		  const RowVector& a, const RowVector& b);
 
-  FixedRowVector (int n, FixedPoint val) : MArray<FixedPoint> (n, val) { }
+  FixedRowVector (int n, FixedPoint val)
+    : MArray<FixedPoint> (dim_vector(1, n), val) { }
 
   FixedRowVector (const FixedRowVector& a) : MArray<FixedPoint> (a) { }
 
@@ -176,9 +177,11 @@ public:
   friend std::ostream& operator << (std::ostream& os, const FixedRowVector& a);
   friend std::istream& operator >> (std::istream& is, FixedRowVector& a);
 
-private:
-
-  FixedRowVector (FixedPoint *d, int l) : MArray<FixedPoint> (d, l) { }
+  void resize (octave_idx_type n,
+               const FixedPoint& rfv = Array<FixedPoint>::resize_fill_value ())
+  {
+    Array<FixedPoint>::resize (dim_vector (1, n), rfv);
+  }
 };
 
 FixedPoint operator * (const FixedRowVector& a, const FixedColumnVector& b);

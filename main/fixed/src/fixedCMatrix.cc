@@ -46,9 +46,9 @@ Open Source Initiative (www.opensource.org)
 
 // Fixed Point Complex Matrix class.
 
-FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is, 
-					const MArray2<int> &ds)
-  : MArray2<FixedPointComplex> (is.rows(), is.cols())
+FixedComplexMatrix::FixedComplexMatrix (const MArray<int> &is, 
+					const MArray<int> &ds)
+  : MArray<FixedPointComplex> (dim_vector (is.rows(), is.cols()))
 {
   if ((rows() != ds.rows()) || (cols() != ds.cols())) {
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -62,7 +62,7 @@ FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is,
 }
 
 FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds)
-  : MArray2<FixedPointComplex> (is.rows(), is.cols())
+  : MArray<FixedPointComplex> (dim_vector (is.rows(), is.cols()))
 {
   if ((rows() != ds.rows()) || (cols() != ds.cols())) {
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -77,7 +77,7 @@ FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds)
 
 FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is, 
 					const ComplexMatrix &ds)
-  : MArray2<FixedPointComplex> (is.rows(), is.cols())
+  : MArray<FixedPointComplex> (dim_vector (is.rows(), is.cols()))
 {
   if ((rows() != ds.rows()) || (cols() != ds.cols())) {
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -91,7 +91,7 @@ FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is,
 
 FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds, 
 					const FixedComplexMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
@@ -100,16 +100,16 @@ FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds,
 
 FixedComplexMatrix::FixedComplexMatrix (Complex is, Complex ds, 
 					const FixedComplexMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
       elem (i, j) = FixedPointComplex(is, ds, a.elem (i, j));
 }
 
-FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is,
-		const MArray2<int> &ds, const FixedComplexMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+FixedComplexMatrix::FixedComplexMatrix (const MArray<int> &is,
+		const MArray<int> &ds, const FixedComplexMatrix& a)
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -125,7 +125,7 @@ FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is,
 
 FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds, 
 					const FixedComplexMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -141,7 +141,7 @@ FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds,
 
 FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is,
 		const ComplexMatrix &ds, const FixedComplexMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -156,7 +156,7 @@ FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is,
 
 FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds, 
 					const FixedMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
@@ -165,16 +165,16 @@ FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds,
 
 FixedComplexMatrix::FixedComplexMatrix (Complex is, Complex ds, 
 					const FixedMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
       elem (i, j) = FixedPointComplex(is, ds, FixedPointComplex(a.elem (i, j)));
 }
 
-FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is,
-		const MArray2<int> &ds, const FixedMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+FixedComplexMatrix::FixedComplexMatrix (const MArray<int> &is,
+		const MArray<int> &ds, const FixedMatrix& a)
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -190,7 +190,7 @@ FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is,
 
 FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds, 
 					const FixedMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -206,7 +206,7 @@ FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds,
 
 FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is,
 		const ComplexMatrix &ds, const FixedMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -221,7 +221,7 @@ FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is,
 
 FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds, 
 					const ComplexMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
@@ -230,16 +230,16 @@ FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds,
 
 FixedComplexMatrix::FixedComplexMatrix (Complex is, Complex ds, 
 					const ComplexMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
       elem (i, j) = FixedPointComplex(is, ds, a.elem (i, j));
 }
 
-FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is, 
-		const MArray2<int> &ds, const ComplexMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+FixedComplexMatrix::FixedComplexMatrix (const MArray<int> &is, 
+		const MArray<int> &ds, const ComplexMatrix& a)
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -255,7 +255,7 @@ FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is,
 
 FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds, 
 					const ComplexMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -271,7 +271,7 @@ FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds,
 
 FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is, 
 		const ComplexMatrix &ds, const ComplexMatrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -286,7 +286,7 @@ FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is,
 
 FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds, 
 					const Matrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
@@ -295,16 +295,16 @@ FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds,
 
 FixedComplexMatrix::FixedComplexMatrix (Complex is, Complex ds, 
 					const Matrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
       elem (i, j) = FixedPointComplex(is, ds, a.elem (i, j));
 }
 
-FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is, 
-		const MArray2<int> &ds, const Matrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+FixedComplexMatrix::FixedComplexMatrix (const MArray<int> &is, 
+		const MArray<int> &ds, const Matrix& a)
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -320,7 +320,7 @@ FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is,
 
 FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds, 
 					const Matrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -336,7 +336,7 @@ FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds,
 
 FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is, 
 		const ComplexMatrix &ds, const Matrix& a)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != is.rows()) || (cols() != is.cols()) || (rows() != ds.rows())
       || (cols() != ds.cols())) {
@@ -352,7 +352,7 @@ FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is,
 
 FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds, 
 			const ComplexMatrix& a, const ComplexMatrix& b)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != b.rows()) || (cols() != b.cols())) {
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -366,7 +366,7 @@ FixedComplexMatrix::FixedComplexMatrix (unsigned int is, unsigned int ds,
 
 FixedComplexMatrix::FixedComplexMatrix (Complex is, Complex ds, 
 			const ComplexMatrix& a, const ComplexMatrix& b)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != b.rows()) || (cols() != b.cols())) {
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -378,10 +378,10 @@ FixedComplexMatrix::FixedComplexMatrix (Complex is, Complex ds,
       elem (i, j) = FixedPointComplex(is, ds, a.elem (i, j), b.elem(i,j));
 }
 
-FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is, 
-		const MArray2<int> &ds, const ComplexMatrix& a, 
+FixedComplexMatrix::FixedComplexMatrix (const MArray<int> &is, 
+		const MArray<int> &ds, const ComplexMatrix& a, 
 		const ComplexMatrix& b)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != b.rows()) || (cols() != b.cols()) || (rows() != is.rows())
       || (cols() != is.cols()) || (rows() != ds.rows()) 
@@ -398,7 +398,7 @@ FixedComplexMatrix::FixedComplexMatrix (const MArray2<int> &is,
 
 FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds, 
 		const ComplexMatrix& a, const ComplexMatrix& b)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != b.rows()) || (cols() != b.cols()) || (rows() != is.rows())
       || (cols() != is.cols()) || (rows() != ds.rows()) 
@@ -416,7 +416,7 @@ FixedComplexMatrix::FixedComplexMatrix (const Matrix &is, const Matrix &ds,
 FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is, 
 		const ComplexMatrix &ds, const ComplexMatrix& a, 
 		const ComplexMatrix& b)
-  : MArray2<FixedPointComplex> (a.rows(), a.cols())
+  : MArray<FixedPointComplex> (dim_vector (a.rows(), a.cols()))
 {
   if ((rows() != b.rows()) || (cols() != b.cols()) || (rows() != is.rows())
       || (cols() != is.cols()) || (rows() != ds.rows()) 
@@ -432,35 +432,35 @@ FixedComplexMatrix::FixedComplexMatrix (const ComplexMatrix &is,
 }
 
 FixedComplexMatrix::FixedComplexMatrix (const FixedComplexRowVector& rv)
-  : MArray2<FixedPointComplex> (1, rv.length (), FixedPointComplex())
+  : MArray<FixedPointComplex> (dim_vector (1, rv.length ()), FixedPointComplex())
 {
   for (int i = 0; i < rv.length (); i++)
     elem (0, i) = rv.elem (i);
 }
 
 FixedComplexMatrix::FixedComplexMatrix (const FixedRowVector& rv)
-  : MArray2<FixedPointComplex> (1, rv.length (), FixedPointComplex())
+  : MArray<FixedPointComplex> (dim_vector (1, rv.length ()), FixedPointComplex())
 {
   for (int i = 0; i < rv.length (); i++)
     elem (0, i) = FixedPointComplex(rv.elem (i));
 }
 
 FixedComplexMatrix::FixedComplexMatrix (const FixedComplexColumnVector& cv)
-  : MArray2<FixedPointComplex> (cv.length (), 1, FixedPointComplex())
+  : MArray<FixedPointComplex> (dim_vector (cv.length (), 1), FixedPointComplex())
 {
   for (int i = 0; i < cv.length (); i++)
     elem (i, 0) = cv.elem (i);
 }
 
 FixedComplexMatrix::FixedComplexMatrix (const FixedColumnVector& cv)
-  : MArray2<FixedPointComplex> (cv.length (), 1, FixedPointComplex())
+  : MArray<FixedPointComplex> (dim_vector (cv.length (), 1), FixedPointComplex())
 {
   for (int i = 0; i < cv.length (); i++)
     elem (i, 0) = FixedPointComplex(cv.elem (i));
 }
 
 FixedComplexMatrix::FixedComplexMatrix (const FixedMatrix& m)
-  : MArray2<FixedPointComplex> (m.rows (), m.cols (), FixedPointComplex())
+  : MArray<FixedPointComplex> (dim_vector (m.rows (), m.cols ()), FixedPointComplex())
 {
   for (int j = 0; j < m.cols (); j++)
     for (int i = 0; i < m.rows (); i++)
@@ -469,7 +469,7 @@ FixedComplexMatrix::FixedComplexMatrix (const FixedMatrix& m)
 
 FixedComplexMatrix::FixedComplexMatrix (const FixedMatrix& a,
 					const FixedMatrix& b)
-  : MArray2<FixedPointComplex> (a.rows (), a.cols (), FixedPointComplex())
+  : MArray<FixedPointComplex> (dim_vector (a.rows (), a.cols ()), FixedPointComplex())
 {
   if ((rows() != b.rows()) || (cols() != b.cols())) {
     (*current_liboctave_error_handler) ("matrix size mismatch");
@@ -665,7 +665,7 @@ FixedComplexMatrix::concat (const FixedMatrix& rb,
 FixedComplexMatrix&
 FixedComplexMatrix::insert (const FixedComplexMatrix& a, int r, int c)
 {
-  Array2<FixedPointComplex>::insert (a, r, c);
+  Array<FixedPointComplex>::insert (a, r, c);
   return *this;
 }
 
@@ -1008,7 +1008,7 @@ operator * (const FixedComplexColumnVector& v, const FixedComplexRowVector& a)
     {
       int a_len = a.length ();
 
-      retval.resize (len, a_len);
+      retval.resize (dim_vector (len, a_len));
 
       for (int i = 0; i < len; i++)
 	for (int j = 0; j < a_len; j++)
@@ -1041,43 +1041,43 @@ FixedComplexMatrix::apply (fpc_fpc_Mapper f)
 boolMatrix
 FixedComplexMatrix::all (int dim) const
 {
-  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_all);
+  return do_mx_red_op<bool, FixedPointComplex> (*this, dim, mx_inline_all);
 }
 
 boolMatrix
 FixedComplexMatrix::any (int dim) const
 {
-  return do_mx_red_op<boolMatrix> (*this, dim, mx_inline_any);
+  return do_mx_red_op<bool, FixedPointComplex> (*this, dim, mx_inline_any);
 }
 
 FixedComplexMatrix
 FixedComplexMatrix::cumprod (int dim) const
 {
-  return do_mx_cum_op<FixedComplexMatrix> (*this, dim, mx_inline_cumprod);
+  return do_mx_cum_op<FixedPointComplex, FixedPointComplex> (*this, dim, mx_inline_cumprod);
 }
 
 FixedComplexMatrix
 FixedComplexMatrix::cumsum (int dim) const
 {
-  return do_mx_cum_op<FixedComplexMatrix> (*this, dim, mx_inline_cumsum);
+  return do_mx_cum_op<FixedPointComplex, FixedPointComplex> (*this, dim, mx_inline_cumsum);
 }
 
 FixedComplexMatrix
 FixedComplexMatrix::prod (int dim) const
 {
-  return do_mx_red_op<FixedComplexMatrix> (*this, dim, mx_inline_prod);
+  return do_mx_red_op<FixedPointComplex, FixedPointComplex> (*this, dim, mx_inline_prod);
 }
 
 FixedComplexMatrix
 FixedComplexMatrix::sum (int dim) const
 {
-  return do_mx_red_op<FixedComplexMatrix> (*this, dim, mx_inline_sum);
+  return do_mx_red_op<FixedPointComplex, FixedPointComplex> (*this, dim, mx_inline_sum);
 }
 
 FixedComplexMatrix
 FixedComplexMatrix::sumsq (int dim) const
 {
-  return do_mx_red_op<FixedMatrix> (*this, dim, mx_inline_sumsq);
+  return do_mx_red_op<FixedPointComplex, FixedPointComplex> (*this, dim, mx_inline_sumsq);
 }
 
 FixedComplexMatrix
@@ -1159,7 +1159,7 @@ FixedComplexMatrix::row_min (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      index.resize (nr);
+      index.resize (dim_vector (nr, 1));
 
       for (int i = 0; i < nr; i++)
         {
@@ -1206,7 +1206,7 @@ FixedComplexMatrix::row_max (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      index.resize (nr);
+      index.resize (dim_vector (nr, 1));
 
       for (int i = 0; i < nr; i++)
         {
@@ -1253,7 +1253,7 @@ FixedComplexMatrix::column_min (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      index.resize (nc);
+      index.resize (dim_vector (1, nc));
 
       for (int j = 0; j < nc; j++)
         {
@@ -1300,7 +1300,7 @@ FixedComplexMatrix::column_max (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      index.resize (nc);
+      index.resize (dim_vector (1, nc));
 
       for (int j = 0; j < nc; j++)
         {
@@ -1385,7 +1385,7 @@ FixedComplexMatrix elem_pow (const FixedComplexMatrix &a, const FixedComplexMatr
 
   if (a_nr == 1 && a_nc == 1)
     {
-      retval.resize(b_nr,b_nc);
+      retval.resize(dim_vector (b_nr,b_nc));
       FixedPointComplex ad = a(0,0);
       for (int j = 0; j < b_nc; j++)
 	for (int i = 0; i < b_nr; i++)
@@ -1393,7 +1393,7 @@ FixedComplexMatrix elem_pow (const FixedComplexMatrix &a, const FixedComplexMatr
     }
   else if (b_nr == 1 && b_nc == 1)
     {
-      retval.resize(a_nr,a_nc);
+      retval.resize(dim_vector (a_nr,a_nc));
       FixedPointComplex bd = b(0,0);
       for (int j = 0; j < a_nc; j++)
 	for (int i = 0; i < a_nr; i++)
@@ -1401,7 +1401,7 @@ FixedComplexMatrix elem_pow (const FixedComplexMatrix &a, const FixedComplexMatr
     }
   else if ((a_nr == b_nr) && (a_nc == b_nc))
     {
-      retval.resize(a_nr,a_nc);
+      retval.resize(dim_vector (a_nr,a_nc));
       for (int j = 0; j < a_nc; j++)
 	for (int i = 0; i < a_nr; i++)
 	  retval(i,j) = pow(a(i,j), b(i,j));
@@ -1548,7 +1548,7 @@ FixedComplexMatrix::hermitian (void) const
   FixedComplexMatrix result;
   if (length () > 0)
     {
-      result.resize (nc, nr);
+      result.resize (dim_vector (nc, nr));
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
 	  result.elem (j, i) = conj (elem (i, j));
@@ -1612,7 +1612,7 @@ operator * (const FixedComplexMatrix& a, const FixedComplexMatrix& b)
     gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
   else
     {
-      retval.resize (a_nr, b_nc, FixedPointComplex());
+      retval.resize (dim_vector (a_nr, b_nc), FixedPointComplex());
       if (a_nr != 0 && a_nc != 0 && b_nc != 0)
 	{
 	  for (int j = 0; j <  b_nr; j++) 
@@ -1773,14 +1773,14 @@ max (const FixedComplexMatrix& a, const FixedComplexMatrix& b)
   return result;
 }
 
-MS_CMP_OPS(FixedComplexMatrix, real, FixedPointComplex, real)
-MS_BOOL_OPS(FixedComplexMatrix, FixedPointComplex, FixedPointComplex())
+MS_CMP_OPS(FixedComplexMatrix, FixedPointComplex)
+MS_BOOL_OPS(FixedComplexMatrix, FixedPointComplex)
 
-SM_CMP_OPS(FixedPointComplex, real, FixedComplexMatrix, real)
-SM_BOOL_OPS(FixedPointComplex, FixedComplexMatrix, FixedPointComplex())
+SM_CMP_OPS(FixedPointComplex, FixedComplexMatrix)
+SM_BOOL_OPS(FixedPointComplex, FixedComplexMatrix)
 
-MM_CMP_OPS(FixedComplexMatrix, real, FixedComplexMatrix, real)
-MM_BOOL_OPS(FixedComplexMatrix, FixedComplexMatrix, FixedPointComplex())
+MM_CMP_OPS(FixedComplexMatrix, FixedComplexMatrix)
+MM_BOOL_OPS(FixedComplexMatrix, FixedComplexMatrix)
 
 /*
 ;;; Local Variables: ***

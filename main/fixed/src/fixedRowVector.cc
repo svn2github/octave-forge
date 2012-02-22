@@ -40,7 +40,7 @@ Open Source Initiative (www.opensource.org)
 // Fixed Point Row Vector class
 
 FixedRowVector::FixedRowVector (const MArray<int> &is, const MArray<int> &ds)
-  : MArray<FixedPoint> (is.length())
+  : MArray<FixedPoint> (dim_vector (1, is.length()))
 {
   if (length() != ds.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -52,7 +52,7 @@ FixedRowVector::FixedRowVector (const MArray<int> &is, const MArray<int> &ds)
 }
 
 FixedRowVector::FixedRowVector (const RowVector &is, const RowVector &ds)
-  : MArray<FixedPoint> (is.length())
+  : MArray<FixedPoint> (dim_vector (1, is.length()))
 {
   if (length() != ds.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -65,7 +65,7 @@ FixedRowVector::FixedRowVector (const RowVector &is, const RowVector &ds)
 
 FixedRowVector::FixedRowVector (const MArray<int> &is, const MArray<int> &ds, 
 				const FixedRowVector& a)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (1, a.length()))
 {
   if ((length() != is.length()) || (length() != ds.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -79,7 +79,7 @@ FixedRowVector::FixedRowVector (const MArray<int> &is, const MArray<int> &ds,
 
 FixedRowVector::FixedRowVector (const RowVector &is, const RowVector &ds, 
 				const FixedRowVector& a)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (1, a.length()))
 {
   if ((length() != is.length()) || (length() != ds.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -93,7 +93,7 @@ FixedRowVector::FixedRowVector (const RowVector &is, const RowVector &ds,
 
 FixedRowVector::FixedRowVector (unsigned int is, unsigned int ds, 
 				const FixedRowVector& a)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (1, a.length()))
 {
   for (int i = 0; i < length (); i++)
     elem (i) = FixedPoint(is, ds, a.elem (i));
@@ -101,7 +101,7 @@ FixedRowVector::FixedRowVector (unsigned int is, unsigned int ds,
 
 FixedRowVector::FixedRowVector (const MArray<int> &is, const MArray<int> &ds, 
 				const RowVector& a)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (1, a.length()))
 {
   if ((length() != is.length()) || (length() != ds.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -115,7 +115,7 @@ FixedRowVector::FixedRowVector (const MArray<int> &is, const MArray<int> &ds,
 
 FixedRowVector::FixedRowVector (const RowVector &is, const RowVector &ds, 
 				const RowVector& a)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (1, a.length()))
 {
   if ((length() != is.length()) || (length() != ds.length())) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -129,7 +129,7 @@ FixedRowVector::FixedRowVector (const RowVector &is, const RowVector &ds,
 
 FixedRowVector::FixedRowVector (unsigned int is, unsigned int ds, 
 				const RowVector& a)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (1, a.length()))
 {
   for (int i = 0; i < length (); i++)
       elem (i) = FixedPoint(is, ds, a.elem (i));
@@ -137,7 +137,7 @@ FixedRowVector::FixedRowVector (unsigned int is, unsigned int ds,
 
 FixedRowVector::FixedRowVector (const MArray<int> &is, const MArray<int> &ds, 
 				const RowVector& a, const RowVector& b)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (1, a.length()))
 {
   if ((length() != b.length())  || (length() != is.length()) ||
       (length() != ds.length())) {
@@ -153,7 +153,7 @@ FixedRowVector::FixedRowVector (const MArray<int> &is, const MArray<int> &ds,
 
 FixedRowVector::FixedRowVector (const RowVector &is, const RowVector &ds, 
 				const RowVector& a, const RowVector& b)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (1, a.length()))
 {
   if ((length() != b.length())  || (length() != is.length()) ||
       (length() != ds.length())) {
@@ -169,7 +169,7 @@ FixedRowVector::FixedRowVector (const RowVector &is, const RowVector &ds,
 
 FixedRowVector::FixedRowVector (unsigned int is, unsigned int ds, 
 				const RowVector& a, const RowVector& b)
-  : MArray<FixedPoint> (a.length())
+  : MArray<FixedPoint> (dim_vector (1, a.length()))
 {
   if (length() != b.length()) {
     (*current_liboctave_error_handler) ("vector size mismatch");
@@ -462,21 +462,21 @@ FixedRowVector elem_pow (const FixedRowVector &a,
 
   if (a_len == 1)
     {
-      retval.resize(b_len);
+    retval.resize(b_len);
       FixedPoint ad = a(0);
       for (int i = 0; i < b_len; i++)
 	retval(i) = pow(ad, b(i));
     }
   else if (b_len == 1)
     {
-      retval.resize(a_len);
+    retval.resize(a_len);
       FixedPoint bd = b(0);
       for (int i = 0; i < a_len; i++)
 	  retval(i) = pow(a(i), bd);
     }
   else if (a_len == b_len)
     {
-      retval.resize(a_len);
+    retval.resize(a_len);
       for (int i = 0; i < a_len; i++)
 	  retval(i) = pow(a(i), b(i));
     }
@@ -515,7 +515,7 @@ operator * (const FixedRowVector& v, const FixedMatrix& a)
       int a_nr = a.rows ();
       int a_nc = a.cols ();
 
-      retval.resize (a_nc, FixedPoint());
+    retval.resize (a_nc, FixedPoint());
       if (len != 0)
 	for (int i = 0; i <  a_nc; i++) 
 	  for (int j = 0; j <  a_nr; j++)

@@ -7,6 +7,16 @@
 ##        * run makefile_devel
 ## ==============================================================================
 
-makefile_conred
-makefile_ident
-makefile_modred
+homedir = pwd ();
+develdir = fileparts (which ("makefile_devel"));
+srcdir = [develdir, "/../src"];
+cd (srcdir);
+
+%makefile_conred
+%makefile_ident
+%makefile_modred
+
+system ("make clean");
+system ("make -j4 all");
+
+cd (homedir);

@@ -16,7 +16,7 @@ slicotlibrary.a: slicot.tar.gz
 	mkoctfile *.f \
 	${LAPACK_LIBS} ${BLAS_LIBS} ${FLIBS}
 	ar -r slicotlibrary.a *.o
-	rm *.o *.f *.oct
+	rm -rf *.o *.f *.oct slicot
 
 # balanced stochastic truncation model reduction
 slab09hd.oct: slab09hd.cc slicotlibrary.a
@@ -54,4 +54,4 @@ slsb10yd.oct: slsb10yd.cc slicotlibrary.a
               ${LAPACK_LIBS} ${BLAS_LIBS}
 
 clean:
-	rm -f *.o core octave-core *.oct *~ *.a *.f
+	rm -rf *.o core octave-core *.oct *~ *.a *.f slicot

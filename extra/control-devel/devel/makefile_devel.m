@@ -18,5 +18,6 @@ cd (srcdir);
 
 system ("make clean");
 system ("make -j4 all");
+system ("rm *.o");
 
 cd (homedir);

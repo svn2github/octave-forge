@@ -55,3 +55,6 @@ slsb10yd.oct: slsb10yd.cc slicotlibrary.a
 
 clean:
 	rm -rf *.o core octave-core *.oct *~ *.a *.f slicot
+
+realclean: clean
+	rm -rf *.a

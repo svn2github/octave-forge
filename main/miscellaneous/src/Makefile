@@ -4,14 +4,14 @@ ifdef HAVE_LIB_TERMCAP
 	TERM_LIB=-ltermcap
 endif
 
-TARGETS=waitbar.oct $(LISTEN) xmlread.oct  \
+TARGETS=text_waitbar.oct $(LISTEN) xmlread.oct  \
 	csvexplode.oct csv2cell.oct csvconcat.oct cell2csv.oct \
 	cell2cell.oct sample.oct
 
 all:	$(TARGETS)
 
-waitbar.oct: waitbar.cc
-	$(MKOCTFILE) $(MISCDEFS) waitbar.cc $(TERM_LIB)
+text_waitbar.oct: text_waitbar.cc
+	$(MKOCTFILE) $(MISCDEFS) text_waitbar.cc $(TERM_LIB)
 
 server.oct: server.o listencanfork.o stringmatch.o
 	$(MKOCTFILE) server.o listencanfork.o stringmatch.o

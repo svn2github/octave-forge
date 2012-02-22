@@ -39,18 +39,18 @@ extern "C" {
 
 static bool no_terminal=false;
 
-DEFUN_DLD(waitbar, args, nargout,
-"waitbar(...);\n\
- WAITBAR displays a text-based wait bar. This function\n\
+DEFUN_DLD(text_waitbar, args, nargout,
+"text_waitbar(...);\n\
+ TEXT_WAITBAR displays a text-based wait bar. This function\n\
  is similar to the Matlab waitbar command, but it is\n\
  a text, rather than graphical function.\n\n\
- A typical usage of WAITBAR in a lengthy computation\n\
+ A typical usage of TEXT_WAITBAR in a lengthy computation\n\
  (inside a FOR loop, for example) is as follows:\n\n\
  for i=1:1000\n\
      ## computation\n\
-     waitbar(i/1000);\n\
+     text_waitbar(i/1000);\n\
  end\n\n\
- WAITBAR(X,TITLE), where 0 <= X <= 1, sets the position of\n\
+ TEXT_WAITBAR(X,TITLE), where 0 <= X <= 1, sets the position of\n\
  the waitbar to the fractional length X. Values of X exactly\n\
  equal to 0 or 1 clear the waitbar. The optional second\n\
  argument TITLE sets the waitbar caption to TITLE.\n\n\
@@ -59,7 +59,7 @@ DEFUN_DLD(waitbar, args, nargout,
  waitbar (and truncated if it is too long). Otherwise, the\n\
  title is not displayed and the width is initialized to a\n\
  default of 50 characters, or it can be set to N characters\n\
- with WAITBAR(0,N). If no terminal is detected (such as when\n\
+ with TEXT_WAITBAR(0,N). If no terminal is detected (such as when\n\
  Octave is run in batch mode and output is redirected), no\n\
  output is generated.\n\n\
  For compatibility with the Matlab version of this function\n\
@@ -197,7 +197,7 @@ DEFUN_DLD(waitbar, args, nargout,
       // check to see if we got this far without initialization
       if(init==false)
 	{
-	  Fwaitbar(octave_value(0.0),0);
+	  Ftext_waitbar(octave_value(0.0),0);
 	  fputs(print_buf,stdout);
 	  fflush(stdout);
 	}

@@ -31,11 +31,11 @@ extern "C" {
 #endif
 };
 
-#define BUF_SIZE	256
-#define MAX_LEN		240
-#define DEFAULT_LEN	50
-#define	BAR_CHAR	'#'
-#define SPACING		3
+#define BUF_SIZE        256
+#define MAX_LEN         240
+#define DEFAULT_LEN     50
+#define BAR_CHAR        '#'
+#define SPACING         3
 
 static bool no_terminal=false;
 
@@ -97,8 +97,8 @@ DEFUN_DLD(text_waitbar, args, nargout,
   if(no_terminal)
     return retval;
 
-  pct	= args(0).double_value();
-  if(pct>1.0)	pct	= 1.0;		// to prevent overflow
+  pct   = args(0).double_value();
+  if(pct>1.0)   pct     = 1.0;          // to prevent overflow
 
 #if defined(USE_TERM)
   if(nargin==2 && args(1).is_string())
@@ -118,73 +118,72 @@ DEFUN_DLD(text_waitbar, args, nargout,
       init = true;
       term = getenv("TERM");
       if(!term)
-	{
-	  no_terminal	= true;
-	  return retval;
-	}
+        {
+          no_terminal = true;
+          return retval;
+        }
 #if defined (USE_TERM)
       i = tgetnum("co");
       smart_term = i ? true : false;
       if(nargin==1 || args(1).is_string())
-	length = smart_term ? i-1 : DEFAULT_LEN;
+        length = smart_term ? i-1 : DEFAULT_LEN;
 #else
       if(nargin==1)
         length = DEFAULT_LEN;
 #endif
       else
-	if(nargin==2 && !(args(1).is_string()))
-	{
-	  length	= args(1).int_value();
-	  if(length>MAX_LEN)	length	= MAX_LEN;
-	  if(length<=0)		length	= DEFAULT_LEN;
-	}
+        if(nargin==2 && !(args(1).is_string()))
+        {
+          length = args(1).int_value();
+          if(length>MAX_LEN)    length  = MAX_LEN;
+          if(length<=0)         length  = DEFAULT_LEN;
+        }
 #if defined (USE_TERM)
       pct_pos = length/2-2;
       if(smart_term)
-	{
-	  // get terminal strings ("rv"="reverse video")
-	  char* buf_ptr	= term_buffer;
-	  begin_rv	= tgetstr("so", &buf_ptr);
-	  end_rv	= tgetstr("se", &buf_ptr);
-	  
-	  // Display a progress bar, but only if the current terminal has a
-	  // standout mode
-	  if (begin_rv && end_rv)
-	    {
-	      brvlen = 0;	
-	      buf_ptr = begin_rv;
-	      while(buf_ptr[++brvlen]);
-	      ervlen = 0;	buf_ptr = end_rv;
-	      while(buf_ptr[++ervlen]);
-	    }
-	 	  
-	  // initialize print buffer
-	  for(i=0; i<BUF_SIZE; ++i)
-	    print_buf[i]	= ' ';
-	  print_buf[length+brvlen+ervlen+1] = '\r';
-	  print_buf[length+brvlen+ervlen+2] = '\0';
-	  for(i=0; i<brvlen; ++i)
-	    print_buf[i]	= begin_rv[i];
-	  for(i=0; i<ervlen; ++i)
-	    print_buf[i+brvlen]	= end_rv[i];
-	  fputs(print_buf,stdout);
-	  if(title.length())
-	    newtitle	= true;
-	}
+        {
+          // get terminal strings ("rv"="reverse video")
+          char* buf_ptr = term_buffer;
+          begin_rv      = tgetstr("so", &buf_ptr);
+          end_rv        = tgetstr("se", &buf_ptr);
+          
+          // Display a progress bar, but only if the current terminal has a
+          // standout mode
+          if (begin_rv && end_rv)
+            {
+              brvlen = 0;
+              buf_ptr = begin_rv;
+              while(buf_ptr[++brvlen]);
+              ervlen = 0;       buf_ptr = end_rv;
+              while(buf_ptr[++ervlen]);
+            }
+          // initialize print buffer
+          for(i=0; i<BUF_SIZE; ++i)
+            print_buf[i]        = ' ';
+          print_buf[length+brvlen+ervlen+1] = '\r';
+          print_buf[length+brvlen+ervlen+2] = '\0';
+          for(i=0; i<brvlen; ++i)
+            print_buf[i]        = begin_rv[i];
+          for(i=0; i<ervlen; ++i)
+            print_buf[i+brvlen] = end_rv[i];
+          fputs(print_buf,stdout);
+          if(title.length())
+            newtitle    = true;
+        }
       else
-	{
+        {
 #endif
-	  for(i=0; i<BUF_SIZE; ++i)
-	    print_buf[i]	= ' ';
-	  print_buf[length+8]	= '\r';
-	  print_buf[length+9]	= '\0';
-	  fputs(print_buf,stdout);
-	  print_buf[0]		= '[';
-	  print_buf[length+1]	= ']';
+          for(i=0; i<BUF_SIZE; ++i)
+            print_buf[i]        = ' ';
+          print_buf[length+8]   = '\r';
+          print_buf[length+9]   = '\0';
+          fputs(print_buf,stdout);
+          print_buf[0]          = '[';
+          print_buf[length+1]   = ']';
 #if defined (USE_TERM)
-	}
+        }
 #endif
-      n_chars_old	= 0;
+      n_chars_old       = 0;
       fflush(stdout);
       return retval;
     }
@@ -196,70 +195,70 @@ DEFUN_DLD(text_waitbar, args, nargout,
 
       // check to see if we got this far without initialization
       if(init==false)
-	{
-	  Ftext_waitbar(octave_value(0.0),0);
-	  fputs(print_buf,stdout);
-	  fflush(stdout);
-	}
+        {
+          Ftext_waitbar(octave_value(0.0),0);
+          fputs(print_buf,stdout);
+          fflush(stdout);
+        }
 
       // check to see of output needs to be updated
 #if !defined (USE_TERM)
       if(n_chars!=n_chars_old || pct_int!=pct_int_old)
-	{
+        {
 #else
       if(n_chars!=n_chars_old || pct_int!=pct_int_old || newtitle)
-	{
-	  if(smart_term)
-	    {
-	      static char pct_str[5];
-	      sprintf(pct_str,"%3i%%",pct_int);
+        {
+          if(smart_term)
+            {
+              static char pct_str[5];
+              sprintf(pct_str,"%3i%%",pct_int);
 
-	      // Insert the title
-	      if(newtitle)
-		{
-		  pct_pos	= length-SPACING*2;
-		  for(i=SPACING+brvlen; i<pct_pos+brvlen-SPACING;  ++i)
-		    print_buf[ i>=n_chars_old+brvlen ? i+ervlen : i ] = ' ';
-		  for(i=SPACING+brvlen, j=0; j<title.length(); ++i, ++j)
-		    if(i<pct_pos+brvlen-SPACING)
-		      print_buf[ i>=n_chars_old ? i+ervlen : i ] = title(0,j);
-		  newtitle	= false;
-		}
+              // Insert the title
+              if(newtitle)
+                {
+                  pct_pos       = length-SPACING*2;
+                  for(i=SPACING+brvlen; i<pct_pos+brvlen-SPACING;  ++i)
+                    print_buf[ i>=n_chars_old+brvlen ? i+ervlen : i ] = ' ';
+                  for(i=SPACING+brvlen, j=0; j<title.length(); ++i, ++j)
+                    if(i<pct_pos+brvlen-SPACING)
+                      print_buf[ i>=n_chars_old ? i+ervlen : i ] = title(0,j);
+                  newtitle      = false;
+                }
 
-	      // Insert the percentage string
-	      for(i=pct_pos+brvlen, j=0; j<4; ++i, ++j)
-		print_buf[ i>=n_chars_old+brvlen ? i+ervlen : i ] = pct_str[j];
+              // Insert the percentage string
+              for(i=pct_pos+brvlen, j=0; j<4; ++i, ++j)
+                print_buf[ i>=n_chars_old+brvlen ? i+ervlen : i ] = pct_str[j];
 
-	      // Move print_buf characters
-	      if(n_chars_old<n_chars)
-		for(i=n_chars_old+brvlen; i<n_chars+brvlen; ++i)
-		  print_buf[i]	= print_buf[i+ervlen];
-	      else
-		for(i=n_chars_old+brvlen-1; i>=n_chars+brvlen; --i)
-		  print_buf[i+ervlen]	= print_buf[i];
+              // Move print_buf characters
+              if(n_chars_old<n_chars)
+                for(i=n_chars_old+brvlen; i<n_chars+brvlen; ++i)
+                  print_buf[i]  = print_buf[i+ervlen];
+              else
+                for(i=n_chars_old+brvlen-1; i>=n_chars+brvlen; --i)
+                  print_buf[i+ervlen]   = print_buf[i];
 
-	      // Insert end of reverse video
-	      for(i=n_chars+brvlen, j=0; j<ervlen; ++i, ++j)
-		print_buf[i]	= end_rv[j];
-	    }
-	  else
-	    {
+              // Insert end of reverse video
+              for(i=n_chars+brvlen, j=0; j<ervlen; ++i, ++j)
+                print_buf[i]    = end_rv[j];
+            }
+          else
+            {
 #endif
-	      if(n_chars>=n_chars_old)
-		for(int i=n_chars_old+1; i<=n_chars; ++i)
-		  print_buf[i]	= BAR_CHAR;
-	      else
-		for(int i=n_chars+1; i<=n_chars_old; ++i)
-		  print_buf[i]	= ' ';
-	      sprintf(&(print_buf[length+3])," %3i%%\r",pct_int);
+              if(n_chars>=n_chars_old)
+                for(int i=n_chars_old+1; i<=n_chars; ++i)
+                  print_buf[i]  = BAR_CHAR;
+              else
+                for(int i=n_chars+1; i<=n_chars_old; ++i)
+                  print_buf[i]  = ' ';
+              sprintf(&(print_buf[length+3])," %3i%%\r",pct_int);
 #if defined (USE_TERM)
-	    }
+            }
 #endif
-	  fputs(print_buf,stdout);
-	  fflush(stdout);
-	  n_chars_old	= n_chars;
-	  pct_int_old	= pct_int;
-	}
+          fputs(print_buf,stdout);
+          fflush(stdout);
+          n_chars_old   = n_chars;
+          pct_int_old   = pct_int;
+        }
     }
   return retval;
 }

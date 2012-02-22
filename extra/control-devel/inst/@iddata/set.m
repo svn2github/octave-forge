@@ -42,11 +42,11 @@ function retdat = set (dat, varargin)
 
     disp (str);
 
-    if (nargout != 0)    # function dat = set (dat, varargin)
-      retdat = dat;      # would lead to unwanted output when using
-    endif                # set (dat)
+    if (nargout != 0)       # function dat = set (dat, varargin)
+      retdat = dat;         # would lead to unwanted output when using
+    endif                   # set (dat)
 
-  else                   # set (dat, "prop1", val1, ...), sys = set (dat, "prop1", val1, ...)
+  else                      # set (dat, "prop1", val1, ...), dat = set (dat, "prop1", val1, ...)
 
     if (rem (nargin-1, 2))
       error ("iddata: set: properties and values must come in pairs");
@@ -61,11 +61,20 @@ function retdat = set (dat, varargin)
       switch (prop)
         case {"y", "outdata", "outputdata"}
           val = __adjust_iddata__ (val, dat.u);
-          __iddata_dim__ (val, dat.u);
+          [pval, ~, eval] = __iddata_dim__ (val, dat.u);
+          if (pval != p)
+            error ("iddata: set: argument has %d instead of %d outputs", pval, p);
+          endif
+          if (eval != e)    # iddata_dim is not sufficient if dat.u = []
+            error ("iddata: set: argument has %d instead of %d experiments", eval, e);
+          endif
           dat.y = val;
         case {"u", "indata", "inputdata"}
           [~, val] = __adjust_iddata__ (dat.y, val);
-          __iddata_dim__ (dat.y, val);
+          [~, mval] = __iddata_dim__ (dat.y, val);
+          if (mval != m)
+            error ("iddata: set: argument has %d instead of %d inputs", mval, m);
+          endif
           dat.u = val;
         case {"outname", "outputname"}
           dat.outname = __adjust_labels__ (val, p);
@@ -116,7 +125,7 @@ function retdat = set (dat, varargin)
       endswitch
     endfor
 
-    if (nargout == 0)    # set (sys, "prop1", val1, ...)
+    if (nargout == 0)    # set (dat, "prop1", val1, ...)
       assignin ("caller", inputname (1), dat);
     else                 # dat = set (dat, "prop1", val1, ...)
       retdat = dat;

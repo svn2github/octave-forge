@@ -61,8 +61,9 @@
 ## @math{i}.
 ##
 ## @item ch
-## (For closed networks only). @code{@var{ch}(c,k)} is the
-## number of the chain that class @math{c} at center @math{k} belongs to. 
+## (For closed networks only). @code{@var{ch}(c)} is the chain number
+## that class @math{c} belongs to. Different classes can belong to the
+## same chain. Chains are numbered @math{1, 2, @dots{}}. 
 ## The total number of chains is @code{max(@var{ch})}. 
 ##
 ## @end table

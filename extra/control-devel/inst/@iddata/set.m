@@ -90,16 +90,8 @@ function retdat = set (dat, varargin)
           dat.timeunit
         case {"expname", "experimentname"}
           dat.expname = __adjust_labels__ (val, e);
-
         case {"tsam", "ts"}
-          if (issample (val, -1))
-            sys.tsam = val;
-            warning ("lti: set: use the editing of property '%s' with caution", prop);
-            warning ("          it may lead to corrupted models");
-          else
-            error ("lti: set: invalid sampling time");
-          endif
-          ## TODO: use of c2d, d2c and d2d if tsam changes?
+          dat.tsam = __adjust_iddata_tsam__ (val, e);
 
         case "name"
           if (ischar (val))

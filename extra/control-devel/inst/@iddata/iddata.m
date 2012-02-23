@@ -56,7 +56,7 @@
 ## Created: October 2011
 ## Version: 0.1
 
-function dat = iddata (y = [], u = [], tsam = -1, varargin)
+function dat = iddata (y = [], u = [], tsam = [], varargin)
 
   if (nargin == 1 && isa (y, "iddata"))
     dat = y;
@@ -65,13 +65,9 @@ function dat = iddata (y = [], u = [], tsam = -1, varargin)
     print_usage ();
   endif
 
-  ## TODO: individual tsam for each experiment
-  if (! issample (tsam, -1))
-    error ("iddata: invalid sampling time");
-  endif
-
   [y, u] = __adjust_iddata__ (y, u);
   [p, m, e] = __iddata_dim__ (y, u);
+  tsam = __adjust_iddata_tsam__ (tsam, e);
 
   outname = repmat ({""}, p, 1);
   inname = repmat ({""}, m, 1);
@@ -79,7 +75,7 @@ function dat = iddata (y = [], u = [], tsam = -1, varargin)
 
   dat = struct ("y", {y}, "outname", {outname}, "outunit", {outname},
                 "u", {u}, "inname", {inname}, "inunit", {inname},
-                "tsam", tsam, "timeunit", {""},
+                "tsam", {tsam}, "timeunit", {""},
                 "expname", {expname},
                 "name", "", "notes", {{}}, "userdata", []);
 

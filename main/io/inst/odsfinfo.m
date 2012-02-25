@@ -74,101 +74,114 @@
 ## 2011-05-07 Experimental UNO support added
 ## 2011-09-03 Normal return in case of no ODS support (empty ods struct)
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-25 Return occupied sheet ranges in output args
+##     ''     Improve echo of sheet names & ranges if interactive.
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 
-	onscreen = nargout < 1;
+  onscreen = nargout < 1;
 
-	ods = odsopen (filename, 0, reqintf);
+  ods = odsopen (filename, 0, reqintf);
   # If no ods support was found, odsopen will have complained. Just return here
   if (isempty (ods)), return; endif
-	
-	filetype = 'OpenOffice.org Calc Document';
-	
-	persistent adj_str; adj_str = '                              '; # 30 char filler string
+  
+  filetype = 'OpenOffice.org Calc Document';
+  
+  persistent adj_str; adj_str = '                              '; # 30 char filler string
 
-	# To save execution time, only proceed if sheet names are wanted
-	if ~(nargout == 1)
+  # To save execution time, only proceed if sheet names are wanted
+  if ~(nargout == 1)
 
-		if (strcmp (ods.xtype, 'OTK'))
-			# Get contents and table (= sheet) stuff from the workbook
-			odfcont = ods.workbook;		# Local copy just in case
-			if (strcmp (ods.odfvsn, '0.8.7'))
-				xpath = ods.workbook.getXPath;
-			else
-				xpath = ods.app.getXPath;
-			endif
+    if (strcmp (ods.xtype, 'OTK'))
+      # Get contents and table (= sheet) stuff from the workbook
+      odfcont = ods.workbook;    # Local copy just in case
+      if (strcmp (ods.odfvsn, '0.8.7'))
+        xpath = ods.workbook.getXPath;
+      else
+        xpath = ods.app.getXPath;
+      endif
 
-			# Create an instance of type NODESET for use in subsequent statement
-			NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
-			# Parse sheets ("tables") from ODS file
-			sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
-			nr_of_sheets = sheets.getLength(); 
-			sheetnames = cell (nr_of_sheets, 1);
+      # Create an instance of type NODESET for use in subsequent statement
+      NODESET = java_get ('javax.xml.xpath.XPathConstants', 'NODESET');
+      # Parse sheets ("tables") from ODS file
+      sheets = xpath.evaluate ("//table:table", odfcont, NODESET);
+      nr_of_sheets = sheets.getLength(); 
+      sheetnames = cell (nr_of_sheets, 2);
 
-			# Get sheet names (& optionally date row count estimate)
-			for ii=1:nr_of_sheets
-				# Check in first part of the sheet nodeset
-				sheetnames (ii) = sheets.item(ii-1).getTableNameAttribute ();
-				printf (sprintf("%s", sheetnames{ii}));
-				if (onscreen) 
-					[ tr, lr, lc, rc ] = getusedrange (ods, ii);
-					if (tr)
-						printf (sprintf("%s (used range = %s:%s)", \
-						adj_str(1:(30 - length (sheetnames{ii}))), \
-						calccelladdress (tr, lc), calccelladdress (lr, rc)));
-					else
-						printf ("%s (empty)", adj_str(1:(30 - length (sheetnames{ii}))));
-					endif
-					printf ("\n");
-				endif
-			endfor
-			
-		elseif (strcmp (ods.xtype, 'JOD'))
-			nr_of_sheets = ods.workbook.getSheetCount ();
-			sheetnames = cell (nr_of_sheets, 1);
-			for ii=1:nr_of_sheets
-				sheetnames(ii) = ods.workbook.getSheet (ii-1).getName ();
-				printf (sprintf("%s", sheetnames{ii}));
-				if (onscreen) 
-					[ tr, lr, lc, rc ] = getusedrange (ods, ii);
-					if (tr)
-						printf (sprintf("%s (used range = %s:%s)", \
-						adj_str(1:(30 - length (sheetnames{ii}))), \
-						calccelladdress (tr, lc), calccelladdress (lr, rc)));
-					else
-						printf ("%s (empty)", adj_str(1:(30 - length (sheetnames{ii}))));
-					endif
-					printf ("\n");
-				endif
-			endfor
-			
-		elseif (strcmp (ods.xtype, 'UNO'))
-			sheets = ods.workbook.getSheets ();
-			sheetnames = sheets.getElementNames ();		# A Java object, NOT a cell array
-			nr_of_sheets = numel (sheetnames);
-			for ii=1:nr_of_sheets
-				printf (sprintf("%s", sheetnames(ii)));	# () as it is a Java object
-				if (onscreen) 
-					[ tr, lr, lc, rc ] = getusedrange (ods, ii);
-					if (tr)
-						printf (sprintf ("%s (used range = %s:%s)", \
-						adj_str (1:(30 - length (sheetnames(ii)))), \
-						calccelladdress (tr, lc), calccelladdress (lr, rc)));
-					else
-						printf ("%s (empty)", adj_str(1:(30 - length (sheetnames(ii)))));
-					endif
-					printf ("\n");
-				endif
-			endfor
+      # Get sheet names (& optionally date row count estimate)
+      for ii=1:nr_of_sheets
+        # Check in first part of the sheet nodeset
+        sheetnames (ii) = sheets.item(ii-1).getTableNameAttribute ();
+        [ tr, lr, lc, rc ] = getusedrange (ods, ii);
+        if (onscreen) 
+          printf (sprintf("%s", sheetnames{ii}));
+          if (tr)
+            printf (sprintf("%s (used range = %s:%s)", \
+            adj_str(1:(30 - length (sheetnames{ii}))), \
+            calccelladdress (tr, lc), calccelladdress (lr, rc)));
+          else
+            printf ("%s (empty)", adj_str(1:(30 - length (sheetnames{ii}))));
+          endif
+          printf ("\n");
+        endif
+        if (tr)
+          sheetnames(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
+        endif
+      endfor
+      
+    elseif (strcmp (ods.xtype, 'JOD'))
+      nr_of_sheets = ods.workbook.getSheetCount ();
+      sheetnames = cell (nr_of_sheets, 2);
+      for ii=1:nr_of_sheets
+        sheetnames(ii) = ods.workbook.getSheet (ii-1).getName ();
+        [ tr, lr, lc, rc ] = getusedrange (ods, ii);
+        if (onscreen) 
+          printf (sprintf("%s", sheetnames{ii}));
+          if (tr)
+            printf (sprintf("%s (used range = %s:%s)", \
+            adj_str(1:(30 - length (sheetnames{ii}))), \
+            calccelladdress (tr, lc), calccelladdress (lr, rc)));
+          else
+            printf ("%s (empty)", adj_str(1:(30 - length (sheetnames{ii}))));
+          endif
+          printf ("\n");
+        endif
+        if (tr)
+          sheetnames(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
+        endif
+      endfor
+      
+    elseif (strcmp (ods.xtype, 'UNO'))
+      sheets = ods.workbook.getSheets ();
+      sheetnames = sheets.getElementNames ();    # A Java object, NOT a cell array
+      nr_of_sheets = numel (sheetnames);
+      sheetnames = char (sheetnames);
+      for ii=1:nr_of_sheets
+        [ tr, lr, lc, rc ] = getusedrange (ods, ii);
+        if (onscreen) 
+          printf (sprintf("%s", sheetnames(ii)));  # () as it is a Java object
+          if (tr)
+            printf (sprintf ("%s (used range = %s:%s)", \
+            adj_str (1:(30 - length (sheetnames(ii)))), \
+            calccelladdress (tr, lc), calccelladdress (lr, rc)));
+          else
+            printf ("%s (empty)", adj_str(1:(30 - length (sheetnames(ii)))));
+          endif
+          printf ("\n");
+        endif
+        if (tr)
+          sheetnames(ii, 2) = sprintf ("%s:%s", calccelladdress (tr, lc), calccelladdress (lr, rc));
+        endif
 
-		else
-#			error (sprintf ("odsfinfo: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
+      endfor
 
-		endif
-	endif
+    else
+#      error (sprintf ("odsfinfo: unknown OpenOffice.org .ods interface - %s.", ods.xtype));
 
-	ods = odsclose (ods);
-	
+    endif
+  endif
+
+  ods = odsclose (ods);
+  
 endfunction
 

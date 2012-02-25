@@ -97,7 +97,7 @@
 ##   [An, xls2, status] = xls2oct (xls2, 'Third_sheet');
 ## @end example
 ##
-## @seealso {ct2xls, xlsopen, xlsclose, parsecell, xlsread, xlsfinfo, xlswrite }
+## @seealso {oct2xls, xlsopen, xlsclose, parsecell, xlsread, xlsfinfo, xlswrite }
 ##
 ## @end deftypefn
 
@@ -119,8 +119,9 @@
 ## 2011-05-18 Experimental UNO support added
 ## 2011-09-08 Minor code layout
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-25 Fixed missing quotes in struct check L.149-153
 ##
-## Latest subfunc update: 2012-01-26
+## Latest subfunc update: 2012-02-25
 
 function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=[])
 
@@ -146,8 +147,8 @@ function [ rawarr, xls, rstatus ] = xls2oct (xls, wsh=1, datrange='', spsh_opts=
 		spsh_opts.strip_array = 1;
 		# Future options:
 	elseif (isstruct (spsh_opts))
-		if (~isfield (spsh_opts', formulas_as_text')), spsh_opts.formulas_as_text = 0; endif
-		if (~isfield (spsh_opts', strip_array')), spsh_opts.strip_array = 1; endif
+		if (~isfield (spsh_opts', 'formulas_as_text')), spsh_opts.formulas_as_text = 0; endif
+		if (~isfield (spsh_opts', 'strip_array')), spsh_opts.strip_array = 1; endif
 		% Future options:
 	else
 		error ("Structure expected for arg # 4");
@@ -415,7 +416,7 @@ function [ rawarr, xls, rstatus ] = xls2jpoi2oct (xls, wsh, cellrange=[], spsh_o
 	
 	rstatus = 0; jerror = 0;
 	wb = xls.workbook;
-	
+
 	# Check if requested worksheet exists in the file & if so, get pointer
 	nr_of_sheets = wb.getNumberOfSheets ();
 	if (isnumeric (wsh))
@@ -775,12 +776,13 @@ endfunction
 ## Author: Philip Nienhuis
 ## Created: 2011-03-26
 ## Updates:
+## 2012-02-25 Changed ctype into num array rather than cell array
 
 function [ rawarr, xls, rstatus ] = xls2oxs2oct (xls, wsh, cellrange=[], spsh_opts)
 
 	persistent ctype;
 	if (isempty (ctype))
-		ctype = cell (6, 1);
+		ctype = zeros (6, 1);
 		# Get enumerated cell types. Beware as they start at 0 not 1
 		ctype( 1) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_STRING'));  # 0
 		ctype( 2) = (java_get ('com.extentech.ExtenXLS.CellHandle', 'TYPE_FP'));      # 1

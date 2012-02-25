@@ -114,8 +114,9 @@
 ## 2011-05-06 Experimental UNO support
 ## 2011-09-18 Set rstatus var here
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-25 Added 0.8.7 to supported odfdom versions in L.155
 ##
-## (Latest update of subfunctions below: 2011-09-19)
+## (Latest update of subfunctions below: 2012-02-25)
 
 function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=[])
 
@@ -151,7 +152,7 @@ function [ rawarr, ods, rstatus ] = ods2oct (ods, wsh=1, datrange=[], spsh_opts=
 		switch ods.odfvsn
 			case '0.7.5'
 				[rawarr, ods] = ods2jotk2oct (ods, wsh, datrange, spsh_opts);
-			case '0.8.6'
+			case {'0.8.6', '0.8.7'}
 				[rawarr, ods] = ods3jotk2oct (ods, wsh, datrange, spsh_opts);
 			otherwise
 				error ("Unsupported odfdom version or invalid ods file pointer.");
@@ -611,6 +612,8 @@ endfunction
 ## 2011-09-18 Comment out workaround for jOpenDocument bug (no OfficeValueAttr set)
 ##            because this casts all numeric cells to string type for properly written ODS1.2
 ##     ''     Remove rstatus var (now set in caller)
+## 2012-02-25 Fix reading string values written y JOD itself (no text attribue!!). But
+##            the cntents could be BOOLEAN as well (JOD doesn't write OffVal attr either)
 
 function [ rawarr, ods] = ods2jod2oct (ods, wsh, crange)
 
@@ -681,10 +684,6 @@ function [ rawarr, ods] = ods2jod2oct (ods, wsh, crange)
 				try
 					scell = sh.getCellAt (lcol+jj-2, trow+ii-2);
 					sctype = char (scell.getValueType ());
-#					# Workaround for sheets written by jOpenDocument 1.2bx (no value-type attrb):
-#					if (~isempty (scell))
-#						if (findstr ('<text:', char (scell))), sctype = STRING; endif
-#					endif
 					switch sctype
 						case { FLOAT, CURRENCY, PERCENTAGE }
 							rawarr{ii, jj} = scell.getValue ().doubleValue ();
@@ -708,6 +707,12 @@ function [ rawarr, ods] = ods2jod2oct (ods, wsh, crange)
 							ss = str2num (tmp{4}(7:8)) / 86600.0;
 							rawarr {ii, jj} = hh + mi + ss;
 						otherwise
+              # Workaround for sheets written by jOpenDocument 1.2bx (no value-type attrb):
+              if (~isempty (scell) )
+                # FIXME Assume cell contains string if there's a text attr. But it could be BOOLEAN too...
+                if (findstr ('<text:', char (scell))), sctype = STRING; endif
+                rawarr{ii, jj} = scell.getValue();
+              endif
 							# Nothing
 					endswitch
 				catch

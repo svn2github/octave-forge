@@ -114,7 +114,7 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 ##
-## Last update of subfunctions below: 2011-09-23
+## Last update of subfunctions below: 2012-02-25
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
 
@@ -1015,6 +1015,7 @@ endfunction
 ## 2011-09-08 Stylistic changes
 ## 2011-09-18 Adapted sh_names type to LO 3.4.1
 ## 2011-09-23 Removed stray debug statements
+## 2012-02-25 Work around LO3.5rc1 Java Runtime Exception bug L.1043+
 
 function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -1037,7 +1038,10 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
     ii = numel (sh_names);
     while (ii > 1)
       shnm = sh_names{ii};
-      sheets.removeByName (shnm);
+      # Work around LibreOffice 3.5.rc1 bug (Java Runtime Exception)
+      try
+        sheets.removeByName (shnm);
+      end_try_catch
       --ii;
     endwhile
     # Give remaining sheet a name

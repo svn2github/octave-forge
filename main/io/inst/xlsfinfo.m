@@ -35,10 +35,10 @@
 ## string) unless @var{filename} is a readable Excel 97-2003 .xls file or
 ## an Excel 2007 .xlsx / .xlsb file in which case @var{fformat} is set to
 ## "xlWorkbookNormal". Excel 95 .xls files can only be read through the JXL
-## (JExcelAPI) java-based interface.
+## (JExcelAPI) or UNO (OpenOffice.org) Java-based interfaces.
 ##
 ## If no return arguments are specified the sheet names are echoed to the 
-## terminal screen; in case of java interfaces for each sheet the actual
+## terminal screen; in case of Java interfaces for each sheet the actual
 ## occupied data range is echoed as well. The occupied cell range will have
 ## to be determined behind the scenes first; this can take some time for the
 ## Java-based interfaces.
@@ -48,8 +48,9 @@
 ## cell ranges in each worksheet using a java-based interface (the COM / ActiveX
 ## interface can't supply this information).
 ##
-## For use on OOXML spreadsheets one needs full POI support (see xlsopen) and
-## 'poi' needs to be specified for @var{reqintf}. For Excel 95 file use 'jxl'.
+## For use on OOXML spreadsheets one needs full POI and/or UNO support (see
+## xlsopen) and 'poi' or 'uno' needs to be specified for @var{reqintf}. For
+## Excel 95 file use 'jxl' or 'uno'.
 ##
 ## Examples:
 ##

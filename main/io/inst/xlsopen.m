@@ -34,6 +34,7 @@
 ## following jars in your javaclasspath: poi-ooxml-schemas-3.5.jar,
 ## xbean.jar and dom4j-1.6.1.jar (or later versions). Later OpenOffice.org
 ## versions (UNO) have support for OOXML as well.
+## Excel'95 spreadsheets can only be read by JExcelAPI and OpenOffice.org.
 ##
 ## @var{filename} should be a valid .xls or xlsx Excel file name (including
 ## extension). But if you use the COM interface you can specify any extension

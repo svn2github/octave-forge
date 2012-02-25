@@ -62,9 +62,12 @@
 ##
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by xlswrite of one interface out of the
-## supported ones: COM/Excel, Java/Apache POI, or Java/JExcelAPI.
-## For writing to OOXML files (.xlsx) a value of 'poi' (case-insensitive)
-## must be specified for @var{reqintf}.
+## supported ones: 'com' (ActiveX/Excel), 'poi' (Java/Apache POI), 'jxl'
+## (Java/JExcelAPI), or 'uno' (Java/OpenOffice.org). 'oxs' (Java/OpenXLS)
+## is implemented but disabled for writing. For writing to OOXML files
+## (.xlsx) a value of 'poi' or 'uno' must be specified for @var{reqintf}.
+## The value of @var{reqintf} is case-insensitive. Multiple interfaces
+## can be selected if entered as a cell array of strings.
 ##
 ## xlswrite is a mere wrapper for various scripts which find out what
 ## Excel interface to use (COM, Java/POI) plus code to mimic the other

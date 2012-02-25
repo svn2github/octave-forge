@@ -72,7 +72,7 @@
 ## Be aware that Excel trims @var{rawarr} from empty outer rows & columns, 
 ## so any returned cell array may turn out to be smaller than requested
 ## in @var{range}.
-## When using COM or POI interface, formulas in cells are evaluated; if
+## When using COM, POI, or UNO interface, formulas in cells are evaluated; if
 ## that fails cached values are retrieved. These may be outdated 
 ## depending on Excel's "Automatic calculation" settings when the
 ## spreadsheet was saved.

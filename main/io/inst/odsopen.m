@@ -26,7 +26,7 @@
 ## To make this function work at all, you need the Java package >= 1.2.5 plus
 ## ODFtoolkit (version 0.7.5 or 0.8.6) & xercesImpl, and/or jOpenDocument, and/or
 ## OpenOffice.org (or clones) installed on your computer + proper javaclasspath
-## set. These interfaces are referred to as OTK, JOD, adn UNO resp., and are
+## set. These interfaces are referred to as OTK, JOD, and UNO resp., and are
 ## preferred in that order by default (depending on their presence).
 ## For (currently experimental) UNO support, Octave-Java package 1.2.8 + latest
 ## fixes is imperative; furthermore the relevant classes had best be added to

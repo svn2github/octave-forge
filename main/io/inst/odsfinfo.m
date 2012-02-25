@@ -38,7 +38,7 @@
 ## spreadsheet has to be parsed to get the sheet names, let alone exploring
 ## used data ranges.
 ##
-## By specifying a value of 'jod' or 'otk' for @var{reqintf} the automatic
+## By specifying a value of 'jod', 'otk' or 'uno' for @var{reqintf} the automatic
 ## selection of the java interface is bypassed and the specified interface
 ## will be used (if at all present).
 ##

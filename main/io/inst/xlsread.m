@@ -74,9 +74,9 @@
 ## the automatic selection by xlsread of one interface out of the
 ## supported ones: COM/Excel, Java/Apache POI, or Java/JExcelAPI
 ## (in that built-in order of preference).
-## For reading from OOXML files a value of 'poi' must be specified
+## For reading from OOXML files a value of 'poi' or 'uno' must be specified
 ## for @var{reqintf} (see help for xlsopen); for Excel'95 files use
-## 'com', or if Excel is not installed use 'jxl' or 'basic' (POI
+## 'com', or if Excel is not installed use 'jxl', 'basic', or 'uno' (POI
 ## can't read Excel 95 but will try to fall back to JXL).
 ## As @var{reqintf} can also be a cell array of strings, one can
 ## select or exclude one or more interfaces.

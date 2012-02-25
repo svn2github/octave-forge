@@ -57,7 +57,8 @@
 ##
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by odswrite of one interface out of the
-## supported ones: Java/ODFtooolkit ('OTK'), or Java/jOpenDocument ('JOD').
+## supported ones: Java/ODFtooolkit ('OTK'), Java/jOpenDocument ('JOD'),
+## or Java/OpenOffice.org ('UNO').
 ##
 ## odswrite is a mere wrapper for various scripts which find out what
 ## ODS interface to use (ODF toolkit or jOpenDocument) plus code to mimic

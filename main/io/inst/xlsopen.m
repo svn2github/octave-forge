@@ -86,12 +86,12 @@
 ## 2010-08-25 Improved help text
 ## 2010-09-27 Improved POI help message for unrecognized .xls format to hint for BIFF5/JXL
 ## 2010-10-20 Improved code for tracking changes to new/existing files
-##     "      Lots of code cleanup, improved error checking and catching
-##     "      Implemented fallback to JXL if POI can't read a file.
+##     ''     Lots of code cleanup, improved error checking and catching
+##     ''     Implemented fallback to JXL if POI can't read a file.
 ## 2010-10-30 More fine-grained file existence/writable checks
 ## 2010-11-01 Added <COM>.Application.DisplayAlerts=0 in COM section to avoid Excel pop-ups
 ## 2010-11-05 Option for multiple requested interface types (cell array)
-##     "      Bug fix: JXL fallback from POI for BIFF5 is only useful for reading
+##     ''     Bug fix: JXL fallback from POI for BIFF5 is only useful for reading
 ## 2010-11-05 Slight change to reporting to screen
 ## 2010-11-08 Tested with POI 3.7 (OK)
 ## 2010-11-10 Texinfo header updated

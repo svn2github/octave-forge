@@ -90,6 +90,7 @@
 ## 2011-09-03 Reset chkintf if no ods support was found to allow full interface rediscovery
 ##            (otherwise javaclasspath additions will never be picked up)
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-26 Added ";" to suppress echo of filename f UNO
 ##
 ## Latest change on subfunctions below: 2011-09-18
 
@@ -267,7 +268,7 @@ function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 				tmp(1:2:2*flen) = '/';
 				fname = [ tmp{:} ];
 			endif
-			filename = [ 'file://' fname ]
+			filename = [ 'file://' fname ];
 		endif
 		try
 			xContext = java_invoke ("com.sun.star.comp.helper.Bootstrap", "bootstrap");

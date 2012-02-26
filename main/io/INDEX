@@ -30,3 +30,7 @@ Spreadsheet I/O internal functions
   parse_sp_range
   spsh_chkrange
   spsh_prstype
+Spreadsheet function test scripts
+  io_xls_testscript
+  io_ods_testscript
+ 

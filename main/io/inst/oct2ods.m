@@ -871,6 +871,7 @@ endfunction
 ## 2010-08-15 Fixed bug with invalid first sheet in new spreadsheets
 ## 2010-10-27 Improved file change tracking tru ods.changed
 ## 2010-11-12 Improved file change tracking tru ods.changed
+## 2012-02-26 Write logicals as doubles (bug in jOpenDocument, would write as text)
 
 function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 
@@ -969,6 +970,8 @@ function [ ods, rstatus ] = oct2jod2ods (c_arr, ods, wsh, crange)
 		for jj = 1 : ncols
 			val = c_arr {ii, jj};
 			if ((isnumeric (val) && ~isnan (val)) || ischar (val) || islogical (val))
+        # FIXME: jOpenDocument doesn't really support writing booleans (doesn't set OffValAttr)
+        if (islogical (val)); val = double (val); endif
 				try
 					sh.getCellAt (jj + lcol - 1, ii + trow - 1).clearValue();
 					jcell = sh.getCellAt (jj + lcol - 1, ii + trow - 1).setValue (val);

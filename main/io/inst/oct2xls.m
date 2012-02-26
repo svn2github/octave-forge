@@ -1,4 +1,4 @@
-## Copyright (C) 2009,2010,2011 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -103,14 +103,14 @@
 ## 2010-11-13 Added check for 2-D input array
 ## 2010-12-01 Better check on file pointer struct (ischar (xls.xtype))
 ## 2011-03-29 OpenXLS support added. Works but saving to file (xlsclose) doesn't work yet 
-##      "     Bug fixes (stray variable c_arr, and wrong test for valid xls struct)
+##      ''    Bug fixes (stray variable c_arr, and wrong test for valid xls struct)
 ## 2011-05-18 Experimental UNO support
 ## 2011-09-08 Bug fix in range arg check; code cleanup
 ## 2011-11-18 Fixed another bug in test for range parameter being character string
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 
-## Last script file update (incl. subfunctions): 2012-02-25
+## Last script file update (incl. subfunctions): 2012-02-26
 
 function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange='', spsh_opts=[])
 
@@ -913,6 +913,7 @@ endfunction
 ## 2011-09-23 Removed stray debug statements
 ## 2012-02-25 Fixed wrong var name in L.933
 ## 2012-02-25 Catch stray Java RuntimeException when deleting sheets
+## 2012-02-26 Bug fix when adding sheets near L.994 (wrong if-else-end construct).
 
 function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
 
@@ -983,18 +984,17 @@ function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
       # wsh is a sheet name. See if it exists already
       if (isempty (strmatch (wsh, sh_names)))
         # Not found. New sheet to be added
-	    newsh = 1;
+        newsh = 1;
       endif
     endif
     if (newsh)
       # Add a new sheet. Sheet index MUST be a Java Short object
       shptr = java_new ("java.lang.Short", sprintf ("%d", numel (sh_names) + 1));
       sh = sheets.insertNewByName (wsh, shptr);
-    else
-      # At this point we have a valid sheet name. Use it to get a sheet handle
-      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
-      sh = sheets.getByName (wsh).getObject.queryInterface (unotmp);
     endif
+    # At this point we have a valid sheet name. Use it to get a sheet handle
+    unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
+    sh = sheets.getByName (wsh).getObject.queryInterface (unotmp);
   endif
 
   # Check size of data array & range / capacity of worksheet & prepare vars

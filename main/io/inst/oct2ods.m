@@ -102,7 +102,7 @@
 ## 2010-08-15 Texinfo header edits
 ## 2010-08-16 Added check on presence of output argument
 ## 2010-08-23 Added check on validity of ods file ptr
-##     "      Experimental support for odfdom 0.8.6 (in separate subfunc, to be integrated later)
+##    ''      Experimental support for odfdom 0.8.6 (in separate subfunc, to be integrated later)
 ## 2010-08-25 Improved help text (java memory, ranges)
 ## 2010-10-27 Improved file change tracking tru ods.changed
 ## 2010-11-12 Better input argument checks
@@ -114,7 +114,7 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 ##
-## Last update of subfunctions below: 2012-02-25
+## Last update of subfunctions below: 2012-02-26
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
 
@@ -1019,6 +1019,7 @@ endfunction
 ## 2011-09-18 Adapted sh_names type to LO 3.4.1
 ## 2011-09-23 Removed stray debug statements
 ## 2012-02-25 Work around LO3.5rc1 Java Runtime Exception bug L.1043+
+## 2012-02-26 Bug fix when adding sheets near L.1101 (wrong if-else-end construct).
 
 function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
 
@@ -1096,11 +1097,10 @@ function [ ods, rstatus ] = oct2uno2ods (c_arr, ods, wsh, crange, spsh_opts)
       # Add a new sheet. Sheet index MUST be a Java Short object
       shptr = java_new ("java.lang.Short", sprintf ("%d", numel (sh_names) + 1));
       sh = sheets.insertNewByName (wsh, shptr);
-    else
-      # At this point we have a valid sheet name. Use it to get a sheet handle
-      unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
-      sh = sheets.getByName (wsh).getObject.queryInterface (unotmp);
     endif
+    # At this point we have a valid sheet name. Use it to get a sheet handle
+    unotmp = java_new ('com.sun.star.uno.Type', 'com.sun.star.sheet.XSpreadsheet');
+    sh = sheets.getByName (wsh).getObject.queryInterface (unotmp);
   endif
 
   # Check size of data array & range / capacity of worksheet & prepare vars

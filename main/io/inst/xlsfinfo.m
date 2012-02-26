@@ -45,8 +45,9 @@
 ##
 ## If multiple xls interfaces have been installed, @var{reqintf} can be
 ## specified. This can sometimes be handy, e.g. to get an idea of occupied
-## cell ranges in each worksheet using a java-based interface (the COM / ActiveX
-## interface can't supply this information).
+## cell ranges in each worksheet using different interfaces (due to cached
+## info and/or different treatment of empty but formatted cells, each
+## interfaces may give different results).
 ##
 ## For use on OOXML spreadsheets one needs full POI and/or UNO support (see
 ## xlsopen) and 'poi' or 'uno' needs to be specified for @var{reqintf}. For
@@ -78,13 +79,14 @@
 ## 2010-05-31 Added remark about delays when determining occupied data range
 ## 2010-08-25 Improved help text (Excel file types)
 ## 2010-10-06 Added ";" to str2 declaration
-##     "      Added occupieded range echo for COM interface (may be a bit off too)
+##     ''     Added occupied range echo for COM interface (may be a bit off too)
 ## 2010-10-10 Made output arg2 contain only address ranges (or other sheet type names)
 ## 2010-11-01 Added other file type strings for return arg #3 (fformat)
 ## 2011-03-26 Added OpenXLS support
 ## 2011-05-18 Experimental UNO support
 ## 2011-09-08 Some code simplifications
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-25 Added info on occupied ranges to sh_names outarg for all interfaces
 
 function [ filetype, sh_names, fformat ] = xlsfinfo (filename, reqintf=[])
 

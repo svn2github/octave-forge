@@ -6,7 +6,7 @@
 	<meta name="AUTHOR" content="Philip Nienhuis">
 	<meta name="CREATED" content="20091229;22213000">
 	<meta name="CHANGEDBY" content="Philip Nienhuis">
-	<meta name="CHANGED" content="20101114;18275600">
+	<meta name="CHANGED" content="20120226;18275600">
 	<meta name="Info 1" content="">
 	<meta name="CHANGEDBY" content="Philip Nienhuis"></head>
 
@@ -15,10 +15,10 @@
 	<b>ODS support for Octave</b></font></font></u>
 </p>
 <p align="center"><font face="Arial, sans-serif"><font size="2">
-	Copyright © 2009 - 2011 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
+	Copyright © 2009 - 2012 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;</font></font>
 </p>
 	<p align="center"><font face="Arial, sans-serif"><font size="2">
-	This version November 16, 2011</font></font>
+	This version February 26, 2012</font></font>
 </p>
 <p><font face="Arial, sans-serif"><font size="2">
 	<i>(ODS = Open Document Format spreadsheet data format, used by e.g., OpenOffice.org.)</i></font></font>
@@ -342,7 +342,8 @@ OF INTERFACES</b></u></font></font></p>
 	the jOpenDocument developers state that their development is
 	primarily driven by requests from customers who pay for support. I
 	do sympathize with this business model but for octave needs this may
-	hamper progress for a while.</font></font></p></dt>
+	hamper progress for a while.<br>
+  In addition, jOpenDocument 1.2 has bugs here and there. For one, it doesn't write appropriate OfficeValueType attributes to the cells, so there's no way to reliably read and distinguish boolean, string amnd integer values.</font></font></p></dt>
 <dt><p><font face="Arial, sans-serif"><font size="2">The (still experimental)
 	<b>UNO interface</b>, based on a Java/UNO bridge linking a hidden OpenOffice.org
 	invocation to Octave, is the most promising:
@@ -370,7 +371,7 @@ OF INTERFACES</b></u></font></font></p>
 	Octave) while the ODF Toolkit and jOpenDocument classes also reside in the 
 	JVM.
 	</font></font></li></ul>
-  <font face="Arial, sans-serif"><font size="2">However, UNO is not stable yet (see below)</font>.
+  <font face="Arial, sans-serif"><font size="2">However, UNO is not stable yet (see below).</font>.
 </p></dt>
 </dl>
 	
@@ -549,7 +550,7 @@ OF INTERFACES</b></u></font></font></p>
 	<font face="Arial, sans-serif"><font size="2">oct2ods.m (revision
 	7159)</font></font></li></ul>
 	<p><font face="Arial, sans-serif"><font size="2">Enjoy!</font></font></p><p align="center"><font face="Arial, sans-serif"><font size="2">Philip
-	Nienhuis, November 16, 2011</font></font></p><dl><dd><p align="center">
+	Nienhuis, February 26, 2012</font></font></p><dl><dd><p align="center">
 	<br>
 </p></dd></dl>
 </body></html>

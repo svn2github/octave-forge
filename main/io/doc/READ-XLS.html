@@ -4,21 +4,21 @@
 <META NAME="Generator" CONTENT="Microsoft Word 97">
 <META NAME="CREATED" CONTENT="20091211;17230700">
 <META NAME="CHANGEDBY" CONTENT="Philip Nienhuis">
-<META NAME="CHANGED" CONTENT="20101113;18083900">
+<META NAME="CHANGED" CONTENT="20120226;18083900">
 </HEAD>
 <BODY LINK="#0000ff" VLINK="#800080">
 
 <P><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"></P>
 <FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><P ALIGN="CENTER">README for Excel spreadsheet file r/w access scripts for octave (&gt; 3.4.0)<BR>
 <BR>
-Copyright (C) 2009 - 2011 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;<BR>
+Copyright (C) 2009 - 2012 Philip Nienhuis &lt;prnienhuis at users.sf.net&gt;<BR>
 <BR>
-This version November 13, 2011</P>
+This version Februari 26, 2012</P>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">EXCEL .XLS SUPPORT FILES</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
 <DT><BR>
 <B>doc/README-XLS.html</B><BR>
-This file.</FONT></FONT> </DT><BR><BR>
+This file.</FONT></FONT> </DT><BR>
 <B><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DT>xlsread.m</DT>
 </B><DT>All-in-one function for reading data from one specific worksheet in an Excel spreadsheet file. This script has Matlab-compatible functionality. <BR>
 </DT><BR>
@@ -58,14 +58,14 @@ For the Excel/COM interface:</DT>
 
 <UL>
 <LI>A windows computer with Excel installed</LI>
-<LI>Octave-forge Windows-1.0.8 or later package WITH LATEST SVN PATCHES APPLIED</LI></UL>
+<LI>Octave-forge Windows-1.0.8 (WITH LATEST SVN PATCHES APPLIED) or later package (preferrably 1.1.10 or later)</LI></UL>
 
 <P>For the Java / Apache POI / JExcelAPI interfaces (general):</FONT></FONT> </P>
 
 <UL>
 <FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><LI>octave-forge java-1.2.8 package or later version on Linux</LI>
 <LI>octave-forge java-1.2.8 with latest svn fixes on Windows/MingW</LI>
-<LI>Java jre or jdk &gt; 1.6.0 (hasn't been tested with earlier versions)</LI></UL>
+<LI>Java JRE or JDK &gt; 1.6.0 (hasn't been tested with earlier versions)</LI></UL>
 
 <DL>
 <DT>Apache POI specific:</DT>
@@ -111,7 +111,7 @@ For the Excel/COM interface:</DT>
 <FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
 <DT>These class libs must be referenced with full pathnames in your javaclasspath.<br>They had best be put in /&lt;libdir&gt;/java where &lt;libdir&gt; on Linux is usually /usr/lib; on MinGW it is usually /lib. The PKG_ADD command expects the class libs there; if they are elsewhere, add them in ./share/octave/&lt;version&gt;/m/startup/octaverc using appropriate javaaddpath statements or a chk_spreadsheet_support() call.</DT></DL>
 <DL><DT>UNO specific  (invoking OpenOffice.org (or clones) behind the scenes):<BR>
-NOTE: EXPERIMENTAL!!  A working OpenOffice.org installation. The utility function chk_spreadsheet_support can be used to add the needed entries to the javaclasspath.</DT>
+NOTE: EXPERIMENTAL!!  A working OpenOffice.org installation. The utility function chk_spreadsheet_support can be used to add the needed entries to the javaclasspath.<BR></DT>
 </DL>
 <P ALIGN="CENTER"><BR>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4>USAGE</P>
@@ -165,7 +165,7 @@ A possible scenario:<BR>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">SPREADSHEET FORMULA SUPPORT</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
 <DT><BR>
-When using the POI and JXL interfaces you can:</DT>
+When using the POI, JXL and UNO interfaces you can:</DT>
 </DL>
 
 <UL>
@@ -191,24 +191,24 @@ Matlab's <B>xlsread</B> supports invoking extra functions while reading ("passin
 <BR>
 Matlab's <B>xlsread</B> flags some spreadsheet errors, octave-forge just returns blank cells.<BR>
 <BR>
-Octave-forge returns info about the actual (rather than the requested) cell range where the data came from. Personally I find it very useful to know from what part of a worksheet the data originate so I've put quite some effort in it :-)</DT>
+Octave's xlsread returns info about the actual (rather than the requested) cell range where the data came from. Personally I find it very useful to know from what part of a worksheet the data originate so I've put quite some effort in it :-)</DT>
 <DT>Matlab can't, due to Excel automatically trimming returned arrays from empty outer columns and rows. Octave is more clever but the Visual Basic call used for determining the actually used range has some limitations: (1) it relies on cached range values and thus may be out-of-date, and (2) it counts empty formatted cells too. When using ActiveX/COM, if octave's <B>xlsfinfo</B>.m returns wrong data ranges it is most often an overestimation.</DT>
 <DT>Matlab's <B>xlsread</B> ignores all non-numeric data values outside the smallest rectangle encompassing all numerical values. Octave's <B>xlsread</B> doesn't. This means that Matlab ignores all row/column headers, not very user-friendly IMO. <BR>
 <BR>
-When using the Java interface, reading and writing xls-files by octave-forge is platform-independent. On systems w/o installed Excel, Matlab can only read Excel 95 formatted .xls files (written using ML <B>xlswrite</B>'s 'Basic&quot; option) – and then differently than under Windows.....</DT>
+When using the Java interface, reading and writing xls-files by octave's xlsread is platform-independent. On systems w/o installed Excel, Matlab can only read Excel 95 formatted .xls files (written using ML <B>xlswrite</B>'s 'Basic&quot; option) – and then differently than under Windows.....</DT>
 <DT>Matlab's <B>xlsread</B> returns strings for cells containing date values. This makes for endless if-then-elseif-else-end constructs to catch all expected date formates. Octave returns numerical data (where 0 = 1/1/1900 – you can easily transfer them into proper octave date values yourself using e.g. datestr(), see bottom of this document for more info).<BR>
 <BR>
-Matlab's <B>xlsread</B> invokes <B>csvread</B> if no Excel interface is present. Octave-forge's <B>xlsread</B> doesn't.<BR>
+Matlab's <B>xlsread</B> invokes <B>csvread</B> if no Excel interface is present. Octave's <B>xlsread</B> doesn't.<BR>
 <BR>
 <B><U>xlswrite</B></U><BR>
-Octave-forge's <B>xlswrite</B> works on systems w/o Excel support, Matlab's doesn't (properly).</DT>
+Octave's <B>xlswrite</B> works on systems w/o Excel support, Matlab's doesn't (properly).</DT>
 <DT>When specifying a sheet number larger than the number of existing sheets in an .xls file, Matlab's <B>xlswrite</B> adds empty sheets until the new sheet number is created; Octave's <B>xlswrite</B> only adds one sheet called &quot;Sheet&lt;number&gt;&quot; where &lt;number&gt; is the specified sheet number. </DT>
 <DT>Even better (IMO) while M's <B>xlswrite</B> always creates Sheet1/Sheet2/Sheet3 when creating a new spreadsheet, octave's <B>xlswrite</B> only creates the requested worksheet. (Did you know that you can instruct Excel to create spreadsheets with just one, or any number of, worksheets? Look in Tools | Options, General tab.)</DT>
 <DT>Oh and octave doesn't touch the &quot;active sheet&quot; - but that's not automatically an advantage.</DT>
 <DT>If the specified write range is larger than the actual data array, Matlab's <B>xlswrite</B> adds #N/A cells to fill up the lowermost rows and rightmost columns; octave-forge's <B>xlswrite</B> doesn't. <BR>
 <BR>
 <B>xlsfinfo</B><BR>
-When invoking Excel/COM interface, octave-forge's <B>xlsfinfo</B> also echoes the type of sheet (worksheet, chart), not just the sheet names. Using Java I haven't found similar functionality (yet).</DT>
+When invoking Excel/COM interface, octave's <B>xlsfinfo</B> also echoes the type of sheet (worksheet, chart), not just the sheet names. Using Java I haven't found similar functionality (yet).</DT>
 </DL>
 </FONT></FONT><B><U><FONT FACE="Arial, sans-serif" SIZE=4><FONT FACE="Arial, sans-serif" SIZE=4><P ALIGN="CENTER">COMPARISON OF INTERFACES &amp; USAGE</P>
 </B></U></FONT></FONT><FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
@@ -223,7 +223,7 @@ Another -obvious- limitation is that COM Excel access only works on Windows syst
 <b>Apache POI</b> (Java-based and platform-independent too) is based on the OpenOffice.org I/O Excel r/w routines. It is a more versatile than JExcelAPI, while it doesn't support BIFF5 it does support BIFF8 (Excel 97 – 2003) and OOXML (Excel 2007).</DT>
 <DT>It is slower than native JXL let alone Excel &amp; COM but it features active formula evaluation, although at the moment (v. 3.7) not all Excel functions have been implemented. I've made the relevant subfunction (xls2jpoi2oct) fall back to cached formula results (and yield a suitable warning) for non-implemented Excel functions while reading Excel files. <BR>
 <BR>
-<b>OpenXLS</b> (an open source version of Extentech's commercial Java-xls product) is still experimental. It seems to work faster than JExcelAPI, but it has other issues - i.e., it locks the .xls file and the unlocking mechanism is a bit wonky. Sometimes xls files keep being locked until Octave is shut down. Currently OXS write support is disabled (but the code is there).<BR>
+<b>OpenXLS</b> (an open source version of Extentech's commercial Java-xls product) is still experimental. It seems to work faster than JExcelAPI, but it has other issues - i.e., it locks the .xls file and the unlocking mechanism is a bit wonky. Sometimes xls files keep being locked until Octave is shut down. Currently OXS write support is disabled (but the code is there). OpenmXLS doesn't support reading back formulas astext strings.<BR>
 <BR>
 <b>UNO</b> (invoking OpenOffice.org or clones behind the scenes, a la ActiveX) is experimental. It works FAST (i.e., once OOo itself is loaded which can take some time) and can process much larger spreadsheets than the other Java-based interfaces because the data are not entered in the JVM but in OOo's memory.<BR>
 A big stumbling block is that odsclose() on a UNO xls struct will kill ALL OpenOffice.org invocations, also those that were not related to Octave! This is due to UNO-Java limitations.<br>
@@ -323,6 +323,6 @@ Some other options for development (who?):</DT>
 
 <P>Enjoy!</FONT></FONT> </P>
 <FONT FACE="Arial, sans-serif" SIZE=2><FONT FACE="Arial, sans-serif" SIZE=2><DL>
-<DD ALIGN="CENTER">Philip Nienhuis, November 13, 2011</DD>
+<DD ALIGN="CENTER">Philip Nienhuis, Februari 26, 2012</DD>
 </DL></FONT></FONT></BODY>
 </HTML>

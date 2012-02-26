@@ -23,6 +23,9 @@
 ## Read data contained within range @var{range} from worksheet @var{wsh}
 ## in an Excel spreadsheet file pointed to in struct @var{xls}.
 ##
+## @var{xls} is supposed to have been created earlier by xlsopen in the
+## same octave session.
+##
 ## @var{wsh} is either numerical or text, in the latter case it is 
 ## case-sensitive and it may be max. 31 characters long.
 ## Note that in case of a numerical @var{wsh} this number refers to the
@@ -39,31 +42,41 @@
 ## reliable in this respect albeit much slower.
 ##
 ## Optional argument @var{options}, a structure, can be used to
-## specify various read modes. Currently the only option field is
-## "formulas_as_text"; if set to TRUE or 1, spreadsheet formulas
-## (if at all present) are read as formula strings rather than the
-## evaluated formula result values. This only works for the Java
-## based interfaces (POI and JXL).
+## specify various read modes by setting option fields in the struct
+## to true (1) or false (0). Currently recognized option fields are:
 ##
-## If only the first argument is specified, xls2oct will try to read
-## all contents from the first = leftmost (or the only) worksheet (as
-## if a range of @'' (empty string) was specified).
+## @table @asis
+## @item "formulas_as_text"
+## If set to TRUE or 1, spreadsheet formulas (if at all present)
+## are read as formula strings rather than the evaluated formula
+## result values. This only works for the Java based interfaces
+## POI, JXL and UNO. The default value is 0 (FALSE).
+##
+## @item 'strip_array'
+## Set the value of this field set to TRUE or 1 to strip the returned
+## output array @var{rawarr} from empty outer columns and rows. The
+## spreadsheet cell rectangle limits from where the data actually
+## came will be updated. The default value is FALSE or 0 (no cropping).
+## When using the COM interface, the output array is always cropped.
+## @end table
+##
+## If only the first argument @var{xls} is specified, xls2oct will try
+## to read all contents from the first = leftmost (or the only)
+## worksheet (as if a range of @'' (empty string) was specified).
 ## 
 ## If only two arguments are specified, xls2oct assumes the second
 ## argument to be @var{wsh}. In that case xls2oct will try to read
 ## all data contained in that worksheet.
 ##
 ## Return argument @var{rawarr} contains the raw spreadsheet cell data.
-## Optional return argument @var{xls} contains the pointer struct,
-## @var{rstatus} will be set to 1 if the requested data have been read
-## successfully, 0 otherwise.
 ## Use parsecell() to separate numeric and text values from @var{rawarr}.
 ##
-## @var{xls} is supposed to have been created earlier by xlsopen in the
-## same octave session. It is only referred to, not changed.
+## Optional return argument @var{xls} contains the pointer struct,
+## If any data have been read, field @var{xls}.limits contains the
+## outermost column and row numbers of the actually returned cell range.
 ##
-## If one of the Java interfaces is used, field @var{xls}.limits contains
-## the outermost column and row numbers of the actually read cell range.
+## Optional return argument @var{rstatus} will be set to 1 if the
+## requested data have been read successfully, 0 otherwise. 
 ##
 ## Erroneous data and empty cells turn up empty in @var{rawarr}.
 ## Date/time values in Excel are returned as numerical values.
@@ -71,11 +84,10 @@
 ## 1/1/0000, resp.)
 ## Be aware that Excel trims @var{rawarr} from empty outer rows & columns, 
 ## so any returned cell array may turn out to be smaller than requested
-## in @var{range}.
+## in @var{range}, independent of field 'formulas_as_text' in @var{options}.
 ## When using COM, POI, or UNO interface, formulas in cells are evaluated; if
-## that fails cached values are retrieved. These may be outdated 
-## depending on Excel's "Automatic calculation" settings when the
-## spreadsheet was saved.
+## that fails cached values are retrieved. These may be outdated depending
+## on Excel's "Automatic calculation" settings when the spreadsheet was saved.
 ##
 ## When reading from merged cells, all array elements NOT corresponding 
 ## to the leftmost or upper Excel cell will be treated as if the
@@ -120,6 +132,7 @@
 ## 2011-09-08 Minor code layout
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-25 Fixed missing quotes in struct check L.149-153
+## 2012-02-26 Updated texinfo header help text
 ##
 ## Latest subfunc update: 2012-02-25
 

@@ -21,10 +21,13 @@
 ## @deftypefnx {Function File} [ @var{rawarr}, @var{ods}, @var{rstatus} ] = ods2oct (@var{ods}, @var{wsh}, @var{range}, @var{options})
 ##
 ## Read data contained within range @var{range} from worksheet @var{wsh}
-## in an OpenOffice.org spreadsheet file pointed to in struct @var{ods}.
+## in an OpenOffice_org Calc spreadsheet file pointed to in struct @var{ods}.
+##
+## @var{ods} is supposed to have been created earlier by odsopen in the
+## same octave session.
 ##
 ## @var{wsh} is either numerical or text, in the latter case it is 
-## case-sensitive and it may be max. 31 characters long.
+## case-sensitive.
 ## Note that in case of a numerical @var{wsh} this number refers to the
 ## position in the worksheet stack, counted from the left in a Calc
 ## window. The default is numerical 1, i.e. the leftmost worksheet
@@ -36,30 +39,40 @@
 ## determined behind the scenes first; this can take some time.
 ##
 ## Optional argument @var{options}, a structure, can be used to
-## specify various read modes. Currently the only option field is
-## "formulas_as_text"; if set to TRUE or 1, spreadsheet formulas
-## (if at all present) are read as formula strings rather than the
-## evaluated formula result values. This only works for the OTK (Open
-## Document Toolkit) interface.
+## specify various read modes by setting option fields in the struct
+## to true (1) or false (0). Currently recognized option fields are:
 ##
-## If only the first argument is specified, ods2oct will try to read
-## all contents from the first = leftmost (or the only) worksheet (as
-## if a range of @'' (empty string) was specified).
+## @table @asis
+## @item "formulas_as_text"
+## If set to TRUE or 1, spreadsheet formulas (if at all present)
+## are read as formula strings rather than the evaluated formula
+## result values. This only works for the OTK and UNO interfaces.
+## The default value is 0 (FALSE).
+##
+## @item 'strip_array'
+## Set the value of this field set to TRUE or 1 to strip the returned
+## output array @var{rawarr} from empty outer columns and rows. The
+## spreadsheet cell rectangle limits from where the data actually
+## came will be updated. The default value is FALSE or 0 (no cropping).
+## @end table
+##
+## If only the first argument @var{ods} is specified, ods2oct will
+## try to read all contents from the first = leftmost (or the only)
+## worksheet (as if a range of @'' (empty string) was specified).
 ## 
 ## If only two arguments are specified, ods2oct assumes the second
 ## argument to be @var{wsh}. In that case ods2oct will try to read
 ## all data contained in that worksheet.
 ##
 ## Return argument @var{rawarr} contains the raw spreadsheet cell data.
+## Use parsecell() to separate numeric and text values from @var{rawarr}.
+##
 ## Optional return argument @var{ods} contains the pointer struct. Field
 ## @var{ods}.limits contains the outermost column and row numbers of the
 ## actually read cell range.
-## @var{rstatus} will be set to 1 if the requested data have been read
-## successfully, 0 otherwise.
-## Use parsecell() to separate numeric and text values from @var{rawarr}.
 ##
-## @var{ods} is supposed to have been created earlier by odsopen in the
-## same octave session. It is only referred to, not changed.
+## Optional return argument @var{rstatus} will be set to 1 if the
+## requested data have been read successfully, 0 otherwise.
 ##
 ## Erroneous data and empty cells turn up empty in @var{rawarr}.
 ## Date/time values in OpenOffice.org are returned as numerical values
@@ -67,16 +80,9 @@
 ## rewritten by OpenOffice.org into .ods format may have numerical date
 ## cells with base 01-01-1900 (same as MS-Excel).
 ##
-## Be aware that ods2oct trims @var{rawarr} from empty outer rows & columns, 
-## so any returned cell array may turn out to be smaller than requested
-## in @var{range}.
-##
 ## When reading from merged cells, all array elements NOT corresponding 
 ## to the leftmost or upper OpenOffice.org cell will be treated as if the
 ## "corresponding" cells are empty.
-##
-## ods2oct is a mere wrapper for interface-dependent scripts (e.g.,
-## ods2jotk2oct and ods2jod2oct) that do the actual reading.
 ##
 ## Examples:
 ##
@@ -109,12 +115,13 @@
 ## 2010-08-12 Added explicit support for jOpenDocument v 1.2b3+
 ## 2010-08-25 Improved helptext (moved some text around)
 ## 2010-08-27 Added ods3jotk2oct - internal function for odfdom-0.8.6.jar
-##      "     Extended check on spsh_opts (must be a struct) 
+##     ''     Extended check on spsh_opts (must be a struct) 
 ## 2010-10-27 Moved cropping rawarr from empty outer rows & columns to here
 ## 2011-05-06 Experimental UNO support
 ## 2011-09-18 Set rstatus var here
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-25 Added 0.8.7 to supported odfdom versions in L.155
+## 2012-02-26 Updated texinfo header help text
 ##
 ## (Latest update of subfunctions below: 2012-02-25)
 

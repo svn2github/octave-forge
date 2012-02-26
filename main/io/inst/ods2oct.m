@@ -612,8 +612,9 @@ endfunction
 ## 2011-09-18 Comment out workaround for jOpenDocument bug (no OfficeValueAttr set)
 ##            because this casts all numeric cells to string type for properly written ODS1.2
 ##     ''     Remove rstatus var (now set in caller)
-## 2012-02-25 Fix reading string values written y JOD itself (no text attribue!!). But
+## 2012-02-25 Fix reading string values written by JOD itself (no text attribue!!). But
 ##            the cntents could be BOOLEAN as well (JOD doesn't write OffVal attr either)
+## 2012-02-26 Further workaround for reading strings (actually: cells w/o OfficeValueAttr)
 
 function [ rawarr, ods] = ods2jod2oct (ods, wsh, crange)
 
@@ -707,8 +708,8 @@ function [ rawarr, ods] = ods2jod2oct (ods, wsh, crange)
 							ss = str2num (tmp{4}(7:8)) / 86600.0;
 							rawarr {ii, jj} = hh + mi + ss;
 						otherwise
-              # Workaround for sheets written by jOpenDocument 1.2bx (no value-type attrb):
-              if (~isempty (scell) )
+              # Workaround for sheets written by jOpenDocument (no value-type attrb):
+              if (~isempty (scell.getValue) )
                 # FIXME Assume cell contains string if there's a text attr. But it could be BOOLEAN too...
                 if (findstr ('<text:', char (scell))), sctype = STRING; endif
                 rawarr{ii, jj} = scell.getValue();

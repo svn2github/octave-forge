@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
-CC=mkoctfile
+ifndef MKOCTFILE
+MKOCTFILE := mkoctfile
+endif
 
-.PHONY: all
-all: compile clean
+CLIPOBJECT = compilador.o errores.o eucli.o fgeneral.o greiner.o polig.o \
+             ptopol.o segmento.o ventorno.o
 
-.PHONY: compile
-compile:
-	$(CC) -c -Wall -Wextra -I. compilador.c -o compilador.o
-	$(CC) -c -Wall -Wextra -I. errores.c -o errores.o
-	$(CC) -c -Wall -Wextra -I. eucli.c -o eucli.o
-	$(CC) -c -Wall -Wextra -I. fgeneral.c -o fgeneral.o
-	$(CC) -c -Wall -Wextra -I. greiner.c -o greiner.o
-	$(CC) -c -Wall -Wextra -I. polig.c -o polig.o
-	$(CC) -c -Wall -Wextra -I. ptopol.c -o ptopol.o
-	$(CC) -c -Wall -Wextra -I. segmento.c -o segmento.o
-	$(CC) -c -Wall -Wextra -I. ventorno.c -o ventorno.o
-	$(CC) -s -Wall -Wextra -I. _oc_polybool.cc *.o
+all:   _oc_polybool.oct
 
-.PHONY: clean
+%.o: %.c
+	$(MKOCTFILE) -I. -c $<
+
+%.oct: %.cc $(CLIPOBJECT)
+	$(MKOCTFILE) -v  -I. $(CLIPOBJECT) -s $<
+
+
 clean:
 	rm -rf *.o *~

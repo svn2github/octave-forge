@@ -1,4 +1,4 @@
-## Copyright (C) 2010,2011 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2010,2011,2012 Philip Nienhuis <prnienhuis@users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 		case { 'UNO' }
 			# ODS; LibreOffice has a higher row capacity
 			# FIXME - use UNO calls to check physical row capacity
-      # FIXME - LibreOffice has higher row capacity but it's Java classes haven't been updated
+      # FIXME - LibreOffice has higher row capacity but its Java classes haven't been updated
 			ROW_CAP = 1048576;   COL_CAP = 1024;
 		otherwise
 			error (sprintf ("Unknown interface type - %s\n", xtype));
@@ -82,7 +82,7 @@ function [ topleft, nrows, ncols, trow, lcol ] = spsh_chkrange (crange, nr, nc, 
 		lcol = 1;
 		nrows = nr;
 		ncols = nc;
-		topleft= 'A1';
+		topleft = 'A1';
 	elseif (isempty (strfind (deblank (crange), ':')))
 		# Only top left cell specified
 		[topleft, dummy1, dummy2, trow, lcol] = parse_sp_range (crange);

@@ -109,6 +109,7 @@
 ## 2011-11-18 Fixed another bug in test for range parameter being character string
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
+## 2012-02-27 More range param fixes
 
 ## Last script file update (incl. subfunctions): 2012-02-26
 
@@ -139,10 +140,17 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange='', spsh_opts=[])
 	if (test1)
 		error ("Invalid xls file pointer struct");
 	endif
+
 	# Check worksheet ptr
 	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 3"); endif
+
 	# Check range
-	if (~isempty (crange) && ~ischar (crange)), error ("Character string (range) expected for arg # 4"); endif
+	if (~isempty (crange) && ~ischar (crange))
+    error ("Character string (range) expected for arg # 4");
+  elseif (isempty (crange))
+    crange = '';
+  endif
+
 	# Various options 
 	if (isempty (spsh_opts))
 		spsh_opts.formulas_as_text = 0;
@@ -157,23 +165,23 @@ function [ xls, rstatus ] = oct2xls (obj, xls, wsh=1, crange='', spsh_opts=[])
 	if (nargout < 1) printf ("Warning: no output spreadsheet file pointer specified.\n"); endif
 	
 	# Select interface to be used
-	if (strcmp (xls.xtype, 'COM'))
+	if (strcmpi (xls.xtype, 'COM'))
 		# Call oct2com2xls to do the work
 		[xls, rstatus] = oct2com2xls (obj, xls, wsh, crange, spsh_opts);
-	elseif (strcmp (xls.xtype, 'POI'))
+	elseif (strcmpi (xls.xtype, 'POI'))
 		# Invoke Java and Apache POI
 		[xls, rstatus] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts);
-	elseif (strcmp (xls.xtype, 'JXL'))
+	elseif (strcmpi (xls.xtype, 'JXL'))
 		# Invoke Java and JExcelAPI
 		[xls, rstatus] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts);
-	elseif (strcmp (xls.xtype, 'OXS'))
-#		# Invoke Java and OpenXLS     ##### Not complete, saving file doesn't work yet!
+	elseif (strcmpi (xls.xtype, 'OXS'))
+		# Invoke Java and OpenXLS     ##### Not complete, saving file doesn't work yet!
 		printf ('Sorry, writing with OpenXLS not reliable => not supported yet\n');
 #		[xls, rstatus] = oct2oxs2xls (obj, xls, wsh, crange, spsh_opts);
-	elseif (strcmp (xls.xtype, 'UNO'))
+	elseif (strcmpi (xls.xtype, 'UNO'))
 		# Invoke Java and UNO bridge (OpenOffice.org)
 		[xls, rstatus] = oct2uno2xls (obj, xls, wsh, crange, spsh_opts);
-#	elseif (strcmp'xls.xtype, '<whatever>'))
+#	elseif (strcmpi (xls.xtype, '<whatever>'))
 #		<Other Excel interfaces>
 	else
 		error (sprintf ("oct2xls: unknown Excel .xls interface - %s.", xls.xtype));
@@ -183,7 +191,7 @@ endfunction
 
 
 #===================================================================================
-## Copyright (C) 2009,2010 by Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 by Philip Nienhuis <prnienhuis@users.sf.net>
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -236,7 +244,7 @@ endfunction
 ## 2010-08-01 Added range vs. array size vs. capacity checks
 ## 2010-08-03 Moved range checks and type array parsing to separate functions
 ## 2010-10-20 Bug fix removing new empty sheets in new workbook that haven't been 
-##            created in the first place duetoExcelsetting (thanks Ian Journeaux)
+##            created in the first place due to Excel setting (thanks Ian Journeaux)
 ##     "      Changed range use in COM transfer call
 ## 2010-10-21 Improved file change tracking (var xls.changed)
 ## 2010-10-24 Fixed bug introduced in above fix: for loops have no stride param,
@@ -244,6 +252,7 @@ endfunction
 ##     "      Added check for "live" ActiveX server
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-27 Copyright strings updated
 
 function [ xls, status ] = oct2com2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -415,7 +424,7 @@ endfunction
 
 #====================================================================================
 
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -472,6 +481,7 @@ endfunction
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2011-11-19 Try-catch added to allow for changed method name for nr of worksheets
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-27 Copyright strings updated
 
 function [ xls, rstatus ] = oct2jpoi2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -578,7 +588,7 @@ endfunction
 
 
 #====================================================================================
-## Copyright (C) 2009,2010 Philip Nienhuis <prnienhuis at users.sf.net>
+## Copyright (C) 2009,2010,2011,2012 Philip Nienhuis <prnienhuis at users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -633,10 +643,11 @@ endfunction
 ## 2010-08-03 Moved range checks and cell type parsing to separate routines
 ## 2010-08-11 Moved addcell() into try-catch as it is addCell which throws fatal errors
 ## 2010-10-20 Improved logic for tracking file changes (xls.changed 2 or 3); dropped
-##     "      internal variable 'changed'
+##     ''      internal variable 'changed'
 ## 2010-10-27 File change tracking again refined
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-02-27 Copyright strings updated
 
 function [ xls, rstatus ] = oct2jxla2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -794,7 +805,7 @@ endfunction
 ## Author: Philip Nienhuis <prnienhuis@users.sf.net>
 ## Created: 2011-03-29
 ## Updates:
-##oct2oxs2xls
+##
 
 function [ xls, rstatus ] = oct2oxs2xls (obj, xls, wsh, crange, spsh_opts)
 
@@ -889,7 +900,7 @@ function [ xls, rstatus ] = oct2oxs2xls (obj, xls, wsh, crange, spsh_opts)
 endfunction
 
 
-## Copyright (C) 2011 Philip Nienhuis <prnienhuis@users.sf.net>
+## Copyright (C) 2011,2012 Philip Nienhuis <prnienhuis@users.sf.net>
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -914,6 +925,7 @@ endfunction
 ## 2012-02-25 Fixed wrong var name in L.933
 ## 2012-02-25 Catch stray Java RuntimeException when deleting sheets
 ## 2012-02-26 Bug fix when adding sheets near L.994 (wrong if-else-end construct).
+## 2012-02-27 Copyright strings updated
 
 function [ xls, rstatus ] = oct2uno2xls (c_arr, xls, wsh, crange, spsh_opts)
 

@@ -113,12 +113,14 @@
 ## 2011-11-18 Fixed bug in test for range parameter being character string
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
+## 2012-02-27 More range arg fixes
 ##
 ## Last update of subfunctions below: 2012-02-26
 
 function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
 
 	if (nargin < 2) error ("oct2xls needs a minimum of 2 arguments."); endif
+  
 	# Check if input array is cell
 	if (isempty (c_arr))
 		warning ("Request to write empty matrix - ignored."); 
@@ -133,7 +135,8 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
 		error ("oct2ods: input array neither cell nor numeric array");
 	endif
 	if (ndims (c_arr) > 2), error ("Only 2-dimensional arrays can be written to spreadsheet"); endif
-	# Check ods file pointer struct
+
+  # Check ods file pointer struct
 	test1 = ~isfield (ods, "xtype");
 	test1 = test1 || ~isfield (ods, "workbook");
 	test1 = test1 || isempty (ods.workbook);
@@ -141,10 +144,17 @@ function [ ods, rstatus ] = oct2ods (c_arr, ods, wsh=1, crange='', spsh_opts=[])
 	if test1
 		error ("Arg #2: Invalid ods file pointer struct");
 	endif
+
 	# Check worksheet ptr
 	if (~(ischar (wsh) || isnumeric (wsh))), error ("Integer (index) or text (wsh name) expected for arg # 3"); endif
+
 	# Check range
-	if (~isempty (crange) && ~ischar (crange)), error ("Character string (range) expected for arg # 4"); endif
+	if (~isempty (crange) && ~ischar (crange))
+    error ("Character string (range) expected for arg # 4");
+  elseif (isempty (crange))
+    crange = '';
+  endif
+
 	# Various options 
 	if (isempty (spsh_opts))
 		spsh_opts.formulas_as_text = 0;

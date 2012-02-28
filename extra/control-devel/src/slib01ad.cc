@@ -29,7 +29,7 @@ Version: 0.1
 
 #include <octave/oct.h>
 #include <f77-fcn.h>
-#include "common.cc"
+#include "common.h"
 
 extern "C"
 { 
@@ -50,7 +50,8 @@ extern "C"
                   double* DWORK, int& LDWORK,
                   int& IWARN, int& INFO);
 }
-     
+
+// PKG_ADD: autoload ("slib01ad", "devel_slicot_functions.oct");
 DEFUN_DLD (slib01ad, args, nargout,
    "-*- texinfo -*-\n\
 Slicot IB01AD Release 5.0\n\

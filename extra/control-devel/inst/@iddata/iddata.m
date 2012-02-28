@@ -76,6 +76,7 @@ function dat = iddata (y = [], u = [], tsam = [], varargin)
   dat = struct ("y", {y}, "outname", {outname}, "outunit", {outname},
                 "u", {u}, "inname", {inname}, "inunit", {inname},
                 "tsam", {tsam}, "timeunit", {""},
+                "timedomain", true,
                 "expname", {expname},
                 "name", "", "notes", {{}}, "userdata", []);
 

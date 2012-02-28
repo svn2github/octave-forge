@@ -12,10 +12,7 @@ develdir = fileparts (which ("makefile_devel"));
 srcdir = [develdir, "/../src"];
 cd (srcdir);
 
-%makefile_conred
-%makefile_ident
-%makefile_modred
-
+## system ("make realclean");  # recompile slicotlibrary.a
 system ("make clean");
 system ("make -j4 all");
 system ("rm *.o");

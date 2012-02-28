@@ -1,5 +1,5 @@
 %% Copyright (c) 2011 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
-%% 
+%%
 %%    This program is free software: you can redistribute it and/or modify
 %%    it under the terms of the GNU General Public License as published by
 %%    the Free Software Foundation, either version 3 of the License, or
@@ -16,7 +16,7 @@
 %% -*- texinfo -*-
 %% @deftypefn {Function File} @var{J} = shapemoment(@var{polycurve})
 %% @deftypefnx{Function File} @var{J} = shapemoment(@dots{}, @var{matrix})
-%% Calculates the second moment of area of a 2D shape. 
+%% Calculates the second moment of area of a 2D shape.
 %%
 %% The polygon is described in @var{p}, where each row is a different vertex as seen
 %% from the center of mass of the shape (see @code{center_mass_shape2d}).
@@ -35,7 +35,7 @@
 function J = shapemoment(shape, matrix=false)
 
   J = zeros (3,1);
-  
+
   if isnumeric (shape)
 
     [N dim] = size (shape);
@@ -44,7 +44,7 @@ function J = shapemoment(shape, matrix=false)
     px_nxt = shape(nxt,1);
     py = shape(:,2);
     py_nxt = shape(nxt,2);
-    
+
     cr_prod = px.*py_nxt - px_nxt.*py;
 
     J = zeros (3, 1);
@@ -71,15 +71,15 @@ function dJ = Jint (x)
       py = x(2,:);
 
       paux = conv (py, py)/3;
-      paux2 = conv (py, polyderiv (px)) ;
+      paux2 = conv (py, polyder (px)) ;
       Px = -polyint ( conv (paux, paux2) );
 
       paux = conv (px, px)/3;
-      paux2 = conv (px, polyderiv (py)) ;
+      paux2 = conv (px, polyder (py)) ;
       Py = polyint ( conv (paux, paux2));
 
       paux = conv (px, px)/2;
-      paux2 = conv (py, polyderiv (py)) ;
+      paux2 = conv (py, polyder (py)) ;
       Pxy = polyint ( conv (paux, paux2));
 
       dJ = zeros(1,3);

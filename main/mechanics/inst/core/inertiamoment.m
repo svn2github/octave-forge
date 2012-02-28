@@ -41,7 +41,7 @@ function dI = Iint (x)
     py = x(2,:);
 
     paux = conv (px, px)/3 + conv(py, py);
-    paux2 = conv (px, polyderiv (py)) ;
+    paux2 = conv (px, polyder (py)) ;
     P = polyint (conv (paux, paux2));
 
     %% Faster than quad

@@ -40,7 +40,7 @@ function dA = Aint (x)
     px = x(1,:);
     py = x(2,:);
 
-    P = polyint (conv (px, polyderiv(py)));
+    P = polyint (conv (px, polyder(py)));
 
     dA = diff(polyval(P,[0 1]));
 

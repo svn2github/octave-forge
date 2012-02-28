@@ -40,11 +40,11 @@ function display (dat)
   disp (str);
   disp ("");
   
-  disp (__col2str__ (expname, "Experiment"));
+  disp (horzcat (__col2str__ (expname, "Experiment"), __vec2str__ (n, "Samples"), __vec2str__ (cell2mat (dat.tsam), "Sampling Interval")));
   disp ("");
-  disp (__col2str__ (outname, "Outputs"));
+  disp (horzcat (__col2str__ (outname, "Outputs"), __col2str__ (dat.outunit, "Unit (if specified)")));
   disp ("");
-  disp (__col2str__ (inname, "Inputs"));
+  disp (horzcat (__col2str__ (inname, "Inputs"), __col2str__ (dat.inunit, "Unit (if specified)")));
   disp ("");
   
 %{
@@ -71,3 +71,29 @@ function str = __col2str__ (col, title)
   str = strvcat (title, str);
 
 endfunction
+
+
+function str = __vec2str__ (vec, title)
+
+  vec = vec(:);
+  tmp = isfinite (vec);
+  tmp = abs (vec(tmp & vec != 0));
+  if (isempty (tmp) || min (tmp) < 1e-3 || max (tmp) > 1e4)
+    str = arrayfun (@(x) sprintf ("   %.3e", x), vec, "uniformoutput", false);
+  elseif (all (floor (tmp) == tmp))
+    str = arrayfun (@(x) sprintf ("   %d", x), vec, "uniformoutput", false);
+  else
+    str = arrayfun (@(x) sprintf ("   %.4f", x), vec, "uniformoutput", false);
+  endif
+  str = strjust (char (str), "right");
+  %str = [repmat("   ", len, 1), str];
+  str = strvcat (title, str);
+  
+  %if (nargin > 1)
+  %  str = [str, repmat(post, length (vec), 1)];
+  %endif
+
+endfunction
+
+
+

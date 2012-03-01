@@ -75,7 +75,8 @@
 ## 2011-09-03 Normal return in case of no ODS support (empty ods struct)
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-25 Return occupied sheet ranges in output args
-##     ''     Improve echo of sheet names & ranges if interactive.
+##     ''     Improve echo of sheet names & ranges if interactive
+## 2012-03-01 Fix wrong cell refs in UNO section ("(..)" rather than "{..}"
 
 function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
 
@@ -159,13 +160,13 @@ function [ filetype, sheetnames ] = odsfinfo (filename, reqintf=[])
       for ii=1:nr_of_sheets
         [ tr, lr, lc, rc ] = getusedrange (ods, ii);
         if (onscreen) 
-          printf (sprintf("%s", sheetnames(ii)));  # () as it is a Java object
+          printf (sprintf("%s", sheetnames{ii}));  # () as it is a Java object
           if (tr)
             printf (sprintf ("%s (used range = %s:%s)", \
-            adj_str (1:(30 - length (sheetnames(ii)))), \
+            adj_str (1:(30 - length (sheetnames{ii}))), \
             calccelladdress (tr, lc), calccelladdress (lr, rc)));
           else
-            printf ("%s (empty)", adj_str(1:(30 - length (sheetnames(ii)))));
+            printf ("%s (empty)", adj_str(1:(30 - length (sheetnames{ii}))));
           endif
           printf ("\n");
         endif

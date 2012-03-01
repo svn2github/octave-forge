@@ -63,12 +63,20 @@
 
 function [yhat, lambda] = regdatasmooth (x, y, varargin)
 
+  if (nargin < 2)
+    print_usage;
+  elseif ( length(x) != length(y) )
+    error("x and y must be equal length vectors")
+  endif
+  if ( isrow(x) ) x = x'; endif
+  if ( isrow(y) ) y = y'; endif
+
   ## defaults
   d = 2;
   lambda = 0;
   stdev = 0;
   guess = 0;
-  
+
   ## parse options for d, lambda, stdev, gcv, lguess;
   ## remaining options (gridx, Nhat, range, relative, midpointrule)
   ## will be sent directly to the core function
@@ -98,18 +106,7 @@ function [yhat, lambda] = regdatasmooth (x, y, varargin)
   endif
   varargin(idx) = [];
   options = varargin;
-
   ## add warning if more than one gcv, lambda, or stdev options provided?
-
-  if ( length(x) != length(y) )
-    error("x and y must be equal length vectors")
-  endif
-  if ( size(x,1) == 1 )
-    x = x';
-  endif
-  if ( size(y,1) == 1 )
-    y = y';
-  endif
 
   maxiter = 50;
   if (lambda)
@@ -144,7 +141,6 @@ function [yhat, lambda] = regdatasmooth (x, y, varargin)
   yhat = rgdtsmcore (x, y, d, lambda, options{:});
   
 endfunction
-
 
 %!demo
 %! npts = 100;

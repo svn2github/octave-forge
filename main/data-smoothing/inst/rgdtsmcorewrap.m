@@ -24,12 +24,15 @@
 ## @seealso{regdatasmooth}
 ## @end deftypefn
 
-
 function out = rgdtsmcorewrap (log10lambda, x, y, d, mincell, varargin)
+
+  if (nargin < 5)
+    print_usage;
+  endif
 
   lambda = 10^(log10lambda);
 
-   if ( length(mincell) == 2 ) # using stdev to find optimal lambda
+  if ( length(mincell) == 2 ) # using stdev to find optimal lambda
     stdev = mincell{2};
     yhat  = rgdtsmcore (x, y, d, lambda, varargin{:});
 
@@ -58,7 +61,7 @@ function out = rgdtsmcorewrap (log10lambda, x, y, d, mincell, varargin)
         stdevd = std(y-yhat);
       endif
     endif
-    
+
     out = (stdevd - stdev)^2;
 
   else # use gcv to find optimal lambda

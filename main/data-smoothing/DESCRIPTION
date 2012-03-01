@@ -6,7 +6,7 @@ Maintainer: Jonathan Stickel <jonathan.stickel@nrel.gov>
 Title: Data smoothing
 Description: Algorithms for smoothing noisy data
 Categories: Data-smoothing
-Depends: octave (>= 3.0.0), optim (>= 1.0.3)
+Depends: octave (>= 3.6.0), optim (>= 1.0.3)
 Autoload: no
 License: GPL version 3 or later
 Url: http://octave.sf.net

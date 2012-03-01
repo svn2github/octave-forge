@@ -37,7 +37,9 @@
 ## added error check that x is a column vector; JJS 4/13/09
 
 function D = ddmat(x, d)
-  if ( size(x,2) != 1 )
+  if (nargin != 2)
+    print_usage;
+  elseif ( !iscolumn (x) )
     error("x should be a column vector")
   endif
   m = length(x);

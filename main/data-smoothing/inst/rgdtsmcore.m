@@ -48,6 +48,10 @@
 
 function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
 
+  if (nargin < 4)
+    print_usage;
+  endif
+
   ## Defaults if not provided
   xhatprov = 0;
   xhat = x;

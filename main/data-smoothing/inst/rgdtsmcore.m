@@ -77,11 +77,11 @@ function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
       endif
     endfor
   endif
-  if (xhatprov & midpr)
+  if (xhatprov && midpr)
     warning("midpointrule is currently not used if xhat is provided (since x,y may be scattered)")
     midpr = 0;
   endif
-  if (weights & relative)
+  if (weights && relative)
     warning("relative differences is not used if a weighting vector is provided")
   endif
   
@@ -97,7 +97,7 @@ function [yhat, v] = rgdtsmcore (x, y, d, lambda, varargin)
     endif
   endif
   ## test that xhat spans x
-  if ( min(x) < min(xhat) | max(xhat) < max(x) )
+  if ( min(x) < min(xhat) || max(xhat) < max(x) )
     error("xhat must at least span the data")
   endif
 

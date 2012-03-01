@@ -92,7 +92,7 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-26 Added ";" to suppress echo of filename f UNO
 ##
-## Latest change on subfunctions below: 2011-09-18
+## Latest change on subfunctions below: 2012-02-01
 
 function [ ods ] = odsopen (filename, rw=0, reqinterface=[])
 
@@ -375,26 +375,26 @@ endfunction
 ## 2010-06-## dropped 0.8.5, too buggy
 ## 2010-08-22 Experimental odfdom 0.8.6 support
 ## 2010-08-23 Added odfvsn (odfdom version string) to output struct argument
-##     "      Bugfix: moved JOD version check to main function (it can't work here)
-##     "      Finalized odfdom 0.8.6 support (even prefered version now)
+##     ''     Bugfix: moved JOD version check to main function (it can't work here)
+##     ''     Finalized odfdom 0.8.6 support (even prefered version now)
 ## 2010-09-11 Somewhat clarified messages about missing java classes
-##     "      Rearranged code a bit; fixed typos in OTK detection code (odfdvsn -> odfvsn)
+##     ''     Rearranged code a bit; fixed typos in OTK detection code (odfdvsn -> odfvsn)
 ## 2010-09-27 More code cleanup
 ## 2010-11-12 Warning added about waning support for odfdom v. 0.7.5
 ## 2011-05-06 Fixed wrong strfind tests
-##     "      Experimental UNO support added
+##     ''     Experimental UNO support added
 ## 2011-05-18 Forgot to initialize odsinterfaces.UNO
 ## 2011-06-06 Fix for javaclasspath format in *nix w. java-1.2.8 pkg
-##      "     Implemented more rigid Java check
-##      "     Tamed down verbosity
+##     ''     Implemented more rigid Java check
+##     ''     Tamed down verbosity
 ## 2011-09-03 Fixed order of odsinterfaces.<member> statement in Java detection try-catch
-##      "     Reset tmp1 (always allow interface rediscovery) for empty odsinterfaces arg
+##     ''     Reset tmp1 (always allow interface rediscovery) for empty odsinterfaces arg
 ## 2011-09-18 Added temporary warning about UNO interface
 
 function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
 	persistent tmp1 = []; persistent jcp;
-  persistent uno_1st_time = [];
+  persistent uno_1st_time = 0;
 
 	if (isempty (odsinterfaces.OTK) && isempty (odsinterfaces.JOD) && isempty (odsinterfaces.UNO))
     # Assume no interface detection has happened yet
@@ -513,7 +513,7 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 		if (jpchk >= numel (entries))
 			odsinterfaces.UNO = 1;
 			printf ("UNO");
-			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; uno_1st_time = min (++uno_1st_time, 2); endif
 		else
 			warning ("\nOne or more UNO classes (.jar) missing in javaclasspath");
 		endif
@@ -525,8 +525,8 @@ function [odsinterfaces] = getodsinterfaces (odsinterfaces)
 
   ## FIXME the below stanza should be dropped once UNO is stable.
   # Echo a suitable warning about experimental status:
-  if (isempty (uno_1st_time) && odsinterfaces.UNO);
-    uno_1st_time = 1;
+  if (uno_1st_time == 1)
+    ++uno_1st_time;
     printf ("\nPLEASE NOTE: UNO (=OpenOffice.org-behind-the-scenes) is EXPERIMENTAL\n");
     printf ("After you've opened a spreadsheet file using the UNO interface,\n");
     printf ("odsclose on that file will kill ALL OpenOffice.org invocations,\n");

@@ -104,9 +104,9 @@
 ## 2011-09-03 Reset chkintf to [] if no xls support was discovered (to allow
 ##            rediscovery of interfaces between xlsopen calls, e.g. javaclasspath changes)
 ## 2011-09-08 Minor code cleanup
-##
-## 2011-09-18 Latest subfunction update
 ## 2012-01-26 Fixed "seealso" help string
+##
+## Latest subfunction update: 2012-02-01
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -450,12 +450,13 @@ endfunction
 ##      ''    Reset tmp1 (always allow interface rediscovery) for empty xlsinterfaces arg
 ## 2011-09-08 Minor code cleanup
 ## 2011-09-18 Added temporary warning about UNO interface
+## 2012-03-01 Changed UNO warning so that it is suppressed when UNO is not yet chosen
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
   # tmp1 = [] (not initialized), 0 (No Java detected), or 1 (Working Java found)
 	persistent tmp1 = []; persistent jcp;	# Java class path
-  persistent uno_1st_time;
+  persistent uno_1st_time = 0;
 
 	if (isempty (xlsinterfaces.COM) && isempty (xlsinterfaces.POI) && isempty (xlsinterfaces.JXL) && isempty (xlsinterfaces.OXS))
 		printf ("Detected interfaces: ");
@@ -598,7 +599,7 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 		if (jpchk >= numel (entries))
 			xlsinterfaces.UNO = 1;
 			printf ('UNO');
-			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; uno_1st_time = min (++uno_1st_time, 2); endif
 		endif
 	endif
 
@@ -608,8 +609,8 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
   ## FIXME the below stanza should be dropped once UNO is stable.
   # Echo a suitable warning about experimental status:
-  if (isempty (uno_1st_time) && xlsinterfaces.UNO);
-    uno_1st_time = 1;
+  if (uno_1st_time == 1)
+    ++uno_1st_time;
     printf ("\nPLEASE NOTE: UNO (=OpenOffice.org-behind-the-scenes) is EXPERIMENTAL\n");
     printf ("After you've opened a spreadsheet file using the UNO interface,\n");
     printf ("xlsclose on that file will kill ALL OpenOffice.org invocations,\n");

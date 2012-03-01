@@ -7,6 +7,6 @@ Title: Data smoothing
 Description: Algorithms for smoothing noisy data
 Categories: Data-smoothing
 Depends: octave (>= 3.0.0), optim (>= 1.0.3)
-Autoload: yes
+Autoload: no
 License: GPL version 2 or later
 Url: http://octave.sf.net

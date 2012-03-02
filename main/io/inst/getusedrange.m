@@ -61,14 +61,14 @@
 ## 2010-05-31 Fixed bugs in getusedrange_jod.m
 ## 2010-08-24 Added support for odfdom 0.8.6 (ODF Toolkit)
 ## 2010-08-27 Added checks for input arguments
-##      "     Indentation changed from tab to doublespace
+##     ''     Indentation changed from tab to doublespace
 ## 2010-10-07 Added COM support (at last!)
 ## 2011-05-06 Experimental support for Java/UNO bridge
 ## 2011-06-13 OpenXLS support added
 ## 2011-09-08 Style & layout updates
 ## 2012-01-26 Fixed "seealso" help string
 ##
-## Last subfunc update: 2011-06-29 (OXS)
+## Last subfunc update: 2012-03-02 (UNO)
 
 function [ trow, lrow, lcol, rcol ] = getusedrange (spptr, ii)
 
@@ -238,7 +238,7 @@ endfunction
 ##            Added option for wsh being a string argument 
 ## 2010-08-12 Little textual adaptations
 ## 2010-11-13 Catched jOpenDocument bug (1.2bx) where string cells have no office:value-type
-##      "     attrb set (by JOD). Somehow OTK is more robust as it catches these cells
+##     ''     attrb set (by JOD). Somehow OTK is more robust as it catches these cells
 
 function [ trow, brow, lcol, rcol ] = getusedrange_jod (ods, wsh)
 
@@ -377,6 +377,7 @@ endfunction
 ## Created: 2011-05-06
 ## Updates:
 ## 2011-06-29 Fixed wrong address range inference in case of sheet names containing period(s)
+## 2012-03-02 Adapted code to assess nr of range blocks to ';' separator fo LO3.5+
 
 function [ srow, erow, scol, ecol ] = getusedrange_uno (ods, ii)
 
@@ -394,8 +395,17 @@ function [ srow, erow, scol, ecol ] = getusedrange_uno (ods, ii)
 
   # Get addresses of all blocks containing data
   addrs = ccells.getRangeAddressesAsString ();
-  # Strip sheet name from addresses
+
+  # Strip sheet name from addresses. Watch out, in LO3.5 they changed
+  # the separator from ',' to ';' (without telling me!)
+  # 1. Get nr of range blocks
+  nblks = numel (strfind (addrs, sh_names(ii)));
+  # 2. First try with ',' separator...
   adrblks = strsplit (addrs, ',');
+  if (numel (adrblks) < nblks)
+    # Apparently we have a ';' separator, so try with semicolon
+    adrblks = strsplit (addrs, ';');
+  endif
   if (isempty (adrblks))
     srow = erow = scol = ecol = 0;
     return

@@ -79,8 +79,11 @@
 ##
 ## @item R
 ## @code{@var{R}(k)} is the response time at center @math{k}.
+## The @emph{Residence Time} at center @math{k} is
+## @code{@var{R}(k) * @var{V}(k)}.
 ## The system response time @var{Rsys}
-## can be computed as @code{@var{Rsys} = @var{N}/@var{Xsys} - Z}
+## can be computed either as @code{@var{Rsys} = @var{N}/@var{Xsys} - Z}
+## or as @code{@var{Rsys} = dot(@var{R},@var{V})}
 ##
 ## @item Q
 ## @code{@var{Q}(k)} is the average number of requests at center

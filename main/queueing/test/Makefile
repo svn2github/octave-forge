@@ -5,7 +5,7 @@ DISTFILES=Makefile fntests.m
 ALL:
 
 check:
-	cd ../inst && octave -q ../test/fntests.m
+	cd ../inst && octave -qf ../test/fntests.m
 
 dist:
 	ln $(DISTFILES) ../`cat ../fname`/test/

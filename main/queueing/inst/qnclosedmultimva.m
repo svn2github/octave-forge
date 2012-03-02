@@ -128,8 +128,10 @@
 ##
 ## @item R
 ## @code{@var{R}(c,k)} is the class @math{c} response time at
-## center @math{k}. The total class @math{c} system response time
-## can be computed as @code{dot(@var{R}, @var{V}, 2)}.
+## center @math{k}. The class @math{c} @emph{residence time}
+## at center @math{k} is @code{@var{R}(c,k) * @var{C}(c,k)}.
+## The total class @math{c} system response time
+## is @code{dot(@var{R}, @var{V}, 2)}.
 ##
 ## @item Q
 ## @code{@var{Q}(c,k)} is the average number of
@@ -158,12 +160,19 @@ function [U R Q X] = qnclosedmultimva( N, S, V, varargin )
     print_usage();
   endif
 
+  ## basic sanity checks
+  isvector(N) && all( N>=0 ) || \
+      usage( "N must be a vector >=0" );
+  C = length(N); ## Number of classes
+  ( ndims(S) == 2 ) || \
+      usage( "S must be a matrix" );
+
   if ( nargin == 2 )
     V = ones(size(S));
   endif
 
   ( ismatrix(V) && (ndims(V) == 2 || ndims(V) == 4) ) || \
-      usage("The third parameter has %d dimensions (must be 2- or 4-dimensional)", ndims(V) );
+      usage("The third parametermust be a 2- or 4-dimensional matrix" );
 
   if ( ndims(V) == 2 )
     [U R Q X] = __qnclosedmultimva_nocs( N, S, V, varargin{:} );
@@ -185,13 +194,13 @@ function [U R Q X] = __qnclosedmultimva_cs( N, S, P, m )
       usage( "N must be >=0" );
   N = N(:)'; # make N a row vector
   C = length(N); ## Number of classes
-  K = columns(S); ## Number of service centers
   ( ndims(S) == 2 ) || \
-      usage( "S must be a %dx%d matrix", C, K );
+      usage( "S must be a matrix" );
+  K = columns(S); ## Number of service centers
   size(S) == [C,K] || \
       usage( "S size mismatch (is %dx%d, should be %dx%d)", rows(S), columns(S), C, K );
   ndims(P) == 4 && size(P) == [C,K,C,K] || \
-      usage( "P size mismatch" );
+      usage( "P size mismatch (should be %dx%dx%dx%d)",C,K,C,K );
 
   if ( nargin < 4 ) 
     m = ones(1,K);
@@ -205,7 +214,7 @@ function [U R Q X] = __qnclosedmultimva_cs( N, S, P, m )
 
   ## Check consistency of parameters
   all( all( S >= 0 ) ) || \
-      usage( "S must be >0" );
+      usage( "S must be >= 0" );
   all( any(S>0,2) ) || \
       usage( "S must contain at least a value >0 for each row" );
   all( all( P >= 0 ) ) || \
@@ -217,7 +226,6 @@ function [U R Q X] = __qnclosedmultimva_cs( N, S, P, m )
   [V ch] = qnvisits(P);
 
   ## 2. Identify chains
-  ## ch = qnchains(P);
   nch = max(ch);
   
   ## 3. Compute visit counts for the equivalent network
@@ -311,7 +319,7 @@ function [U R Q X Qnm1] = __qnclosedmultimva_nocs( N, S, V, m, Z )
 
   ## Check consistency of parameters
   all( all( S >= 0 ) ) || \
-      usage( "S must be >=0" );
+      usage( "S must be >= 0" );
   all( any(S>0,2) ) || \
       usage( "S must contain at least a value >0 for each row" );
   all( all( V >= 0 ) ) || \

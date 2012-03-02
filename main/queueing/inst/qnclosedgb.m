@@ -65,6 +65,13 @@
 ## Web: http://www.moreno.marzolla.name/
 
 function [X_lower X_upper Q_lower Q_upper] = qnclosedgb( N, L, Z, X_minus, X_plus )
+
+  ## This implementation is based on the paper: G.Casale, R.R.Muntz,
+  ## G.Serazzi. Geometric Bounds: a Noniterative Analysis Technique for
+  ## Closed Queueing Networks IEEE Transactions on Computers,
+  ## 57(6):780-794, Jun 2008.
+  ## http://doi.ieeecomputersociety.org/10.1109/TC.2008.37
+
   ## The original paper uses the symbol "L" instead of "D" to denote the
   ## loadings of service centers. In this function we adopt the same
   ## notation as the paper.
@@ -132,10 +139,8 @@ function [ Q_lower Q_upper ] = __compute_Q( N, L, Z, X_plus, X_minus )
   Q_upper(i) = Y(i)./(1-Y(i)) .- (Y(i).^(N+1))./(1-Y(i)); # Eq. (13)
   ## now, handle the case of servers with demand equal to the maximum
   i=find(L==L_max);
-  Q_lower(i) = 1/m_max*(N-Z*X_plus - sum( Q_upper( find(L<L_max) ) ) ); \
-				# Eq. (8)
-      Q_upper(i) = 1/m_max*(N-Z*X_minus - sum( Q_lower( find(L<L_max) \
-						       ) ) ); # Eq. (13)
+  Q_lower(i) = 1/m_max*(N-Z*X_plus - sum( Q_upper( L<L_max ))); # Eq. (8)
+  Q_upper(i) = 1/m_max*(N-Z*X_minus - sum( Q_lower( L<L_max ))); # Eq. (13)
 endfunction
 
 %!test
@@ -183,16 +188,17 @@ endfunction
 %! m = ones(1,3);
 %! V = qnvisits(P);
 %! Nmax = 20;
+%! tol = 1e-5; # compensate for numerical errors
 %!
 %! ## Test case with Z>0
 %! for n=1:Nmax
 %!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qnclosedgb(n, S.*V, 2);
 %!   [U R Q X] = qnclosed( n, S, V, m, 2 );
 %!   X_mva = X(1)/V(1);
-%!   assert( X_gb_lower <= X_mva );
-%!   assert( X_gb_upper >= X_mva );
-%!   assert( Q_gb_lower <= Q+1e-5 ); # compensate for numerical errors
-%!   assert( Q_gb_upper >= Q-1e-5 ); # compensate for numerical errors
+%!   assert( X_gb_lower <= X_mva+tol );
+%!   assert( X_gb_upper >= X_mva-tol );
+%!   assert( Q_gb_lower <= Q+tol ); # compensate for numerical errors
+%!   assert( Q_gb_upper >= Q-tol ); # compensate for numerical errors
 %! endfor
 
 %!test
@@ -201,14 +207,15 @@ endfunction
 %! m = ones(1,3);
 %! V = qnvisits(P);
 %! Nmax = 20;
+%! tol = 1e-5; # compensate for numerical errors
 %!
 %! ## Test case with Z=0
 %! for n=1:Nmax
 %!   [X_gb_lower X_gb_upper Q_gb_lower Q_gb_upper] = qnclosedgb(n, S.*V, 0);
 %!   [U R Q X] = qnclosed( n, S, V, m, 0 );
 %!   X_mva = X(1)/V(1);
-%!   assert( X_gb_lower <= X_mva );
-%!   assert( X_gb_upper >= X_mva );
-%!   assert( Q_gb_lower <= Q );
-%!   assert( Q_gb_upper >= Q );
+%!   assert( X_gb_lower <= X_mva+tol );
+%!   assert( X_gb_upper >= X_mva-tol );
+%!   assert( Q_gb_lower <= Q+tol );
+%!   assert( Q_gb_upper >= Q-tol );
 %! endfor

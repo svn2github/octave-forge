@@ -30,15 +30,19 @@ function dat = cat (dim, varargin)
     case 1      # add samples; p, m, e identical
       %[~, p, m, e]
       %nvec = cellfun (@size
-      [~, p, m, e] = cellfun (@size, varargin, "uniformoutput", false)
+      %[~, p, m, e] = cellfun (@size, varargin, "uniformoutput", false)
       
       %y = cellfun (@(dat) vertcat (dat.y) 
       %dat = cellfun (@iddata, varargin)
       #y = cellfun (@vertcat
       
-      ycell = cellfun (@(dat) dat.y, varargin, "uniformoutput", false)
+      #ycell = cellfun (@(dat) dat.y, varargin, "uniformoutput", false)
 
-
+      tmp = cellfun (@iddata, varargin);
+      y = cellfun (@vertcat, tmp.y, "uniformoutput", false);
+      u = cellfun (@vertcat, tmp.u, "uniformoutput", false);
+      
+      dat = iddata (y, u);
 
       %varargin{:}.y
       %varargin(:).y

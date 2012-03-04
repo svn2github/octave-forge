@@ -24,10 +24,10 @@
 function q = subsasgn (q, idx, val)
 
   switch (idx(1).type)
-    case "()"                                                   # q(...) = val
-      if (length (idx(1).subs) == 1 && isa (q, "quaternion"))   # required by horzcat, vertcat, cat, ...
-        q(idx(1).subs{:}) = val;                                # q = cellfun (@quaternion, varargin)
-      else                                                      # general case
+    case "()"                                                    # q(...) = val
+      if (length (idx(1).subs) == 1 && isa (val, "quaternion"))  # required by horzcat, vertcat, cat, ...
+        q(idx(1).subs{:}) = val;                                 # q = cellfun (@quaternion, varargin)
+      else                                                       # general case
         val = quaternion (val);
         w = subsasgn (q.w, idx, val.w);
         x = subsasgn (q.x, idx, val.x);
@@ -36,7 +36,7 @@ function q = subsasgn (q, idx, val)
         q = quaternion (w, x, y, z);
       endif
 
-    case "."                                                    # q.w = val
+    case "."                                                     # q.w = val
       if (! is_real_array (val))
         error ("quaternion: subsasgn: invalid argument type, require real array");
       endif

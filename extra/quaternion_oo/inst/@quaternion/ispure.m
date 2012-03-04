@@ -28,6 +28,6 @@ function flg = ispure (a)
     print_usage ();
   endif
 
-  flg = all (all (abs (a.w) < eps));
+  flg = all ((abs (a.w) < eps)(:));
 
 endfunction

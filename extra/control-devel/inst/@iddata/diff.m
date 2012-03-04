@@ -24,27 +24,9 @@
 ## Created: March 2012
 ## Version: 0.1
 
-function dat = cat (dim, varargin)
+function dat = diff (dat, k)
 
-  tmp = cellfun (@iddata, varargin);
-
-  switch (dim)
-    case 1      # vertcat - catenate samples
-      y = cellfun (@vertcat, tmp.y, "uniformoutput", false);
-      u = cellfun (@vertcat, tmp.u, "uniformoutput", false);
-    
-    case 2      # horzcat - catenate channels;
-      y = cellfun (@horzcat, tmp.y, "uniformoutput", false);
-      u = cellfun (@horzcat, tmp.u, "uniformoutput", false);
-    
-    case 3      # merge - catenate experiments
-      y = vertcat (tmp.y);
-      u = vertcat (tmp.u);
-    
-    otherwise
-      error ("iddata: cat: '%s' is an invalid dimension", num2str (dim));
-  endswitch
-  
-  dat = iddata (y, u);
+  dat.y = cellfun (@(y) diff (y, k), dat.y, "uniformoutput", false);
+  dat.u = cellfun (@(u) diff (u, k), dat.u, "uniformoutput", false);
 
 endfunction

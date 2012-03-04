@@ -26,12 +26,19 @@
 function dat = subsasgn (dat, idx, val)
 
   switch (idx(1).type)
-    case "."
-      if (length (idx) == 1)
+    case "()"                                                   # dat(...) = val
+      if (length (idx(1).subs) == 1 && isa (val, "iddata"))     # dat(x) = dat, required by cat for ...
+        dat(idx.subs{:}) = val;                                 # dat = cellfun (@iddata, varargin)
+      else                                                      # dat(...) = val, general case
+        error ("iddata: subsasgn type not implemented yet");
+      endif
+
+    case "."                                                    # dat.y... = val
+      if (length (idx) == 1)                                    # dat.y = val
         dat = set (dat, idx.subs, val);
-      else
-        prop = idx(1).subs;
-        dat = set (dat, prop, subsasgn (get (dat, prop), idx(2:end), val));
+      else                                                      # dat.y(...) = val, dat.expname{3} = val
+        key = idx(1).subs;
+        dat = set (dat, key, subsasgn (get (dat, key), idx(2:end), val));
       endif
     otherwise
       error ("iddata: subsasgn: invalid subscripted assignment type");

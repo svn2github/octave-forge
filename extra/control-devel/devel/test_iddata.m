@@ -15,3 +15,18 @@ x.u = x.y
 d = iddata ({(1:10).', (21:25).'}, {(31:40).', (41:45).'})
 
 e = iddata ({(1:10).', (21:25).', (21:125).'}, {(31:40).', (41:45).', (41:145).'})
+
+
+oy = ones (200, 5);
+ou = ones (200, 4);
+y = repmat ({oy}, 6, 1);
+u = repmat ({ou}, 6, 1);
+
+f = iddata (y, u)
+%{
+f.expname = strseq ("experiment", 1:6)
+f.expname(2) = "value 1"
+f.expname{2} = "value 2"
+%}
+
+cat (4, f, f, f)

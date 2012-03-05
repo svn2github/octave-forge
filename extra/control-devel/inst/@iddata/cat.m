@@ -31,29 +31,25 @@ function dat = cat (dim, varargin)
 
   switch (dim)
     case 1      # vertcat - catenate samples
-      if (nargin > 2)       # isequal only works for 2 or more arguments (dim doesn't count)
-        if (! isequal (e{:}))
-          error ("iddata: cat: number of experiments don't match [%s]", \
-                 num2str (cell2mat (e), "%d "));
-        endif
-        if (! isequal (p{:})
-          error ("iddata: cat: number of outputs don't match [%s]", \
-                 num2str (cell2mat (p), "%d "));
-        endif
-        if (! isequal (m{:})
-          error ("iddata: cat: number of inputs don't match [%s]", \
-                 num2str (cell2mat (m), "%d "));
-        endif
-      endif
+      check_experiments (e);
+      check_outputs (p);
+      check_inputs (m);
     
       y = cellfun (@vertcat, tmp.y, "uniformoutput", false);
       u = cellfun (@vertcat, tmp.u, "uniformoutput", false);
     
     case 2      # horzcat - catenate channels;
+      check_experiments (e);
+      check_samples (n);
+
       y = cellfun (@horzcat, tmp.y, "uniformoutput", false);
       u = cellfun (@horzcat, tmp.u, "uniformoutput", false);
     
     case 3      # merge - catenate experiments
+      check_outputs (p);
+      check_inputs (m);
+      check_samples (n);
+
       y = vertcat (tmp.y);
       u = vertcat (tmp.u);
     
@@ -62,6 +58,46 @@ function dat = cat (dim, varargin)
   endswitch
   
   dat = iddata (y, u);
+
+endfunction
+
+
+function check_experiments (e)
+
+  if (numel (e) > 1 && ! isequal (e{:}))
+    error ("iddata: cat: number of experiments don't match [%s]", \
+           num2str (cell2mat (e), "%d "));
+  endif
+
+endfunction
+
+
+function check_outputs (p)
+
+  if (numel (p) > 1 && ! isequal (p{:}))
+    error ("iddata: cat: number of outputs don't match [%s]", \
+           num2str (cell2mat (p), "%d "));
+  endif
+
+endfunction
+
+
+function check_inputs (m)
+
+  if (numel (m) > 1 && ! isequal (m{:}))
+    error ("iddata: cat: number of inputs don't match [%s]", \
+           num2str (cell2mat (m), "%d "));
+  endif
+
+endfunction
+
+
+function check_samples (n)
+
+  if (numel (n) > 1 && ! isequal (n{:}))
+    error ("iddata: cat: number of samples don't match [%s]", \
+           num2str (cell2mat (n), "%d "));
+  endif
 
 endfunction
 

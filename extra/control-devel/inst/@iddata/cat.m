@@ -48,7 +48,6 @@ function dat = cat (dim, varargin)
     case 3      # merge - catenate experiments
       check_outputs (p);
       check_inputs (m);
-      check_samples (n);
 
       y = vertcat (tmp.y);
       u = vertcat (tmp.u);
@@ -95,8 +94,8 @@ endfunction
 function check_samples (n)
 
   if (numel (n) > 1 && ! isequal (n{:}))
-    error ("iddata: cat: number of samples don't match [%s]", \
-           num2str (cell2mat (n), "%d "));
+    error ("iddata: cat: number of samples don't match %s", \
+           mat2str (vertcat (n{:}), 10));
   endif
 
 endfunction

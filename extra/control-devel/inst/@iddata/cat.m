@@ -27,9 +27,25 @@
 function dat = cat (dim, varargin)
 
   tmp = cellfun (@iddata, varargin);
+  [n, p, m, e] = cellfun (@size, varargin, "uniformoutput", false);
 
   switch (dim)
     case 1      # vertcat - catenate samples
+      if (nargin > 2)       # isequal only works for 2 or more arguments (dim doesn't count)
+        if (! isequal (e{:}))
+          error ("iddata: cat: number of experiments don't match [%s]", \
+                 num2str (cell2mat (e), "%d "));
+        endif
+        if (! isequal (p{:})
+          error ("iddata: cat: number of outputs don't match [%s]", \
+                 num2str (cell2mat (p), "%d "));
+        endif
+        if (! isequal (m{:})
+          error ("iddata: cat: number of inputs don't match [%s]", \
+                 num2str (cell2mat (m), "%d "));
+        endif
+      endif
+    
       y = cellfun (@vertcat, tmp.y, "uniformoutput", false);
       u = cellfun (@vertcat, tmp.u, "uniformoutput", false);
     
@@ -48,3 +64,6 @@ function dat = cat (dim, varargin)
   dat = iddata (y, u);
 
 endfunction
+
+
+%!error (cat (1, iddata (1, 1), iddata ({2, 3}, {2, 3})));

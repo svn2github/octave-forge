@@ -22,12 +22,12 @@
 
 function q = horzcat (varargin)
 
-  qstr = cellfun (@quaternion, varargin);  # uniformoutput = true !
+  tmp = cellfun (@quaternion, varargin);  # uniformoutput = true !
 
-  w = horzcat (qstr.w);
-  x = horzcat (qstr.x);
-  y = horzcat (qstr.y);
-  z = horzcat (qstr.z);
+  w = horzcat (tmp.w);
+  x = horzcat (tmp.x);
+  y = horzcat (tmp.y);
+  z = horzcat (tmp.z);
 
   q = quaternion (w, x, y, z);
 

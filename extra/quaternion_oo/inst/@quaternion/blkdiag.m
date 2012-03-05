@@ -25,12 +25,12 @@
 
 function q = blkdiag (varargin)
 
-  qstr = cellfun (@quaternion, varargin);  # uniformoutput = true !
+  tmp = cellfun (@quaternion, varargin);  # uniformoutput = true !
 
-  w = blkdiag (qstr.w);
-  x = blkdiag (qstr.x);
-  y = blkdiag (qstr.y);
-  z = blkdiag (qstr.z);
+  w = blkdiag (tmp.w);
+  x = blkdiag (tmp.x);
+  y = blkdiag (tmp.y);
+  z = blkdiag (tmp.z);
 
   q = quaternion (w, x, y, z);
 

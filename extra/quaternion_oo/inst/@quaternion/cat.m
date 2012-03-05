@@ -24,12 +24,12 @@
 
 function q = cat (dim, varargin)
 
-  qstr = cellfun (@quaternion, varargin);  # uniformoutput = true !
+  tmp = cellfun (@quaternion, varargin);  # uniformoutput = true !
 
-  w = cat (dim, qstr.w);
-  x = cat (dim, qstr.x);
-  y = cat (dim, qstr.y);
-  z = cat (dim, qstr.z);
+  w = cat (dim, tmp.w);
+  x = cat (dim, tmp.x);
+  y = cat (dim, tmp.y);
+  z = cat (dim, tmp.z);
 
   q = quaternion (w, x, y, z);
 

@@ -22,12 +22,12 @@
 
 function q = vertcat (varargin)
 
-  qstr = cellfun (@quaternion, varargin);  # uniformoutput = true !
+  tmp = cellfun (@quaternion, varargin);  # uniformoutput = true !
 
-  w = vertcat (qstr.w);
-  x = vertcat (qstr.x);
-  y = vertcat (qstr.y);
-  z = vertcat (qstr.z);
+  w = vertcat (tmp.w);
+  x = vertcat (tmp.x);
+  y = vertcat (tmp.y);
+  z = vertcat (tmp.z);
 
   q = quaternion (w, x, y, z);
 

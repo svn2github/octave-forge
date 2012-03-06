@@ -107,6 +107,6 @@ endfunction
 %!
 %! % --------------------------------------------------------------------------
 %! % We load the drawing6.svg file into Octave and transform it into a polygon.
-%! % Then we create a temporary fiel where the .geo mesh will be written.
-%! % If the packages msh and fplare available, a mesh is created from the .geo
+%! % Then we create a temporary file where the .geo mesh will be written.
+%! % If the packages msh and fpl are available, a mesh is created from the .geo
 %! % file.

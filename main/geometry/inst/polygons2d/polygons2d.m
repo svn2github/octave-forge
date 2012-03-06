@@ -33,7 +33,7 @@
 
 %% -*- texinfo -*-
 %% @deftypefn {Function File} {} polygons2d ()
-%% MATGEOM-POLYGONS
+%% Description of functions operating on 2D polygons
 %%
 %%   The 'polygons' module contains functions operating on shapes composed
 %%   of a vertex list, like polygons or polylines.

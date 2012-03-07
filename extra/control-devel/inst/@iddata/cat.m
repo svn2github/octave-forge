@@ -26,54 +26,78 @@
 
 function dat = cat (dim, varargin)
 
+  ## I think this code is pretty elegant because it works for
+  ## any number of arguments and without a single for-loop :-)
+
+  ## if this overloaded cat method is called, it is guaranteed that
+  ## * nargin > 0
+  ## * at least one argument is an iddata object
+  if (! is_real_scalar (dim))
+    print_usage ();
+  endif
+
+  ## store all datasets in a single struct 'tmp'
   tmp = cellfun (@iddata, varargin);
   [n, p, m, e] = cellfun (@size, varargin, "uniformoutput", false);
 
+  ## default values for metadata
+  ## some of them are overwritten in the switch statement below
+  expname = tmp(1).expname;
+  outname = tmp(1).outname;
+  outunit = tmp(1).outunit;
+  inname = tmp(1).inname;
+  inunit = tmp(1).inunit;
+
   switch (dim)
-    case 1                                              # vertcat - catenate samples
+    case 1                                          # vertcat - catenate samples
       check_experiments (tmp, e);
       check_outputs (tmp, p);
       check_inputs (tmp, m);
     
       y = cellfun (@vertcat, tmp.y, "uniformoutput", false);
       u = cellfun (@vertcat, tmp.u, "uniformoutput", false);
+      ## note that this also works for time series (u = {})
     
-    case 2                                              # horzcat - catenate channels
+    case 2                                          # horzcat - catenate channels
       check_experiments (tmp, e);
       check_samples (n);
+
+      y = cellfun (@horzcat, tmp.y, "uniformoutput", false);
+      u = cellfun (@horzcat, tmp.u, "uniformoutput", false);
 
       outname = vertcat (tmp.outname);
       outunit = vertcat (tmp.outunit);
       inname = vertcat (tmp.inname);
       inunit = vertcat (tmp.inunit);
 
-      y = cellfun (@horzcat, tmp.y, "uniformoutput", false);
-      u = cellfun (@horzcat, tmp.u, "uniformoutput", false);
-
-    case 3                                              # merge - catenate experiments
+    case 3                                          # merge - catenate experiments
       check_outputs (tmp, p);
       check_inputs (tmp, m);
-      
-      expname = vertcat (tmp.expname);
 
       y = vertcat (tmp.y);
       u = vertcat (tmp.u);
-    
+
+      expname = vertcat (tmp.expname);
+
     otherwise
-      error ("iddata: cat: '%s' is an invalid dimension", num2str (dim));
+      error ("iddata: cat: '%d' is an invalid dimension", dim);
   endswitch
   
   dat = iddata (y, u);
-  
-  %dat.outname = tmp(1).outname;
-  %dat.outuni
+
+  ## copy metadata
+  dat.expname = expname;  
+  dat.outname = outname;
+  dat.outunit = outunit;
+  dat.inname = inname;
+  dat.inunit = inunit;
 
 endfunction
 
 
 function check_experiments (tmp, e)
 
-  if (numel (e) > 1 && ! isequal (e{:}))                # isequal doesn't work with less than 2 arguments
+  if (numel (e) > 1 && ! isequal (e{:}))            # isequal doesn't work with less than 2 arguments
     error ("iddata: cat: number of experiments don't match [%s]", \
            num2str (cell2mat (e), "%d "));
   endif

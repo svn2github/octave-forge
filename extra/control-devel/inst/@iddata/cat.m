@@ -30,22 +30,32 @@ function dat = cat (dim, varargin)
   [n, p, m, e] = cellfun (@size, varargin, "uniformoutput", false);
 
   switch (dim)
-    case 1      # vertcat - catenate samples
+    case 1                                              # vertcat - catenate samples
       check_experiments (tmp, e);
       check_outputs (tmp, p);
       check_inputs (tmp, m);
     
       y = cellfun (@vertcat, tmp.y, "uniformoutput", false);
-      u = cellfun (@vertcat, tmp.u, "uniformoutput", false);
+
+      if (m{1} > 0)                                     # m(2:end) are equal, tested by check_inputs
+        u = cellfun (@vertcat, tmp.u, "uniformoutput", false);
+      else                                              # time series don't have inputs
+        u = [];
+      endif
     
-    case 2      # horzcat - catenate channels;
+    case 2                                              # horzcat - catenate channels
       check_experiments (tmp, e);
       check_samples (n);
 
       y = cellfun (@horzcat, tmp.y, "uniformoutput", false);
-      u = cellfun (@horzcat, tmp.u, "uniformoutput", false);
+      
+      if (m{1} > 0)
+        u = cellfun (@horzcat, tmp.u, "uniformoutput", false);
+      else
+        u = [];
+      endif
     
-    case 3      # merge - catenate experiments
+    case 3                                              # merge - catenate experiments
       check_outputs (tmp, p);
       check_inputs (tmp, m);
 
@@ -63,7 +73,7 @@ endfunction
 
 function check_experiments (tmp, e)
 
-  if (numel (e) > 1 && ! isequal (e{:}))        # isequal doesn't work with less than 2 arguments
+  if (numel (e) > 1 && ! isequal (e{:}))                # isequal doesn't work with less than 2 arguments
     error ("iddata: cat: number of experiments don't match [%s]", \
            num2str (cell2mat (e), "%d "));
   endif

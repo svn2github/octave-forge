@@ -31,23 +31,23 @@ function dat = cat (dim, varargin)
 
   switch (dim)
     case 1      # vertcat - catenate samples
-      check_experiments (e);
-      check_outputs (p);
-      check_inputs (m);
+      check_experiments (tmp, e);
+      check_outputs (tmp, p);
+      check_inputs (tmp, m);
     
       y = cellfun (@vertcat, tmp.y, "uniformoutput", false);
       u = cellfun (@vertcat, tmp.u, "uniformoutput", false);
     
     case 2      # horzcat - catenate channels;
-      check_experiments (e);
+      check_experiments (tmp, e);
       check_samples (n);
 
       y = cellfun (@horzcat, tmp.y, "uniformoutput", false);
       u = cellfun (@horzcat, tmp.u, "uniformoutput", false);
     
     case 3      # merge - catenate experiments
-      check_outputs (p);
-      check_inputs (m);
+      check_outputs (tmp, p);
+      check_inputs (tmp, m);
 
       y = vertcat (tmp.y);
       u = vertcat (tmp.u);
@@ -61,31 +61,51 @@ function dat = cat (dim, varargin)
 endfunction
 
 
-function check_experiments (e)
+function check_experiments (tmp, e)
 
-  if (numel (e) > 1 && ! isequal (e{:}))
+  if (numel (e) > 1 && ! isequal (e{:}))        # isequal doesn't work with less than 2 arguments
     error ("iddata: cat: number of experiments don't match [%s]", \
            num2str (cell2mat (e), "%d "));
+  endif
+  
+  if (! compare_strings (tmp.expname))
+    warning ("iddata: cat: experiment names don't match")
   endif
 
 endfunction
 
 
-function check_outputs (p)
+function check_outputs (tmp, p)
 
   if (numel (p) > 1 && ! isequal (p{:}))
     error ("iddata: cat: number of outputs don't match [%s]", \
            num2str (cell2mat (p), "%d "));
   endif
+  
+  if (! compare_strings (tmp.outname))
+    warning ("iddata: cat: output names don't match")
+  endif
+
+  if (! compare_strings (tmp.outunit))
+    warning ("iddata: cat: output units don't match")
+  endif
 
 endfunction
 
 
-function check_inputs (m)
+function check_inputs (tmp, m)
 
   if (numel (m) > 1 && ! isequal (m{:}))
     error ("iddata: cat: number of inputs don't match [%s]", \
            num2str (cell2mat (m), "%d "));
+  endif
+
+  if (! compare_strings (tmp.inname))
+    warning ("iddata: cat: input names don't match")
+  endif
+
+  if (! compare_strings (tmp.inunit))
+    warning ("iddata: cat: input units don't match")
   endif
 
 endfunction
@@ -96,6 +116,22 @@ function check_samples (n)
   if (numel (n) > 1 && ! isequal (n{:}))
     error ("iddata: cat: number of samples don't match %s", \
            mat2str (vertcat (n{:}), 10));
+  endif
+
+endfunction
+
+
+## kind of strcmp for more than two arguments
+## return true if all cells of strings are equal
+## and false otherwise
+function bool = compare_strings (str, varargin)
+
+  if (nargin > 1)
+    tmp = cellfun (@(x) strcmp (str, x), varargin, "uniformoutput", false);
+    tmp = cellfun (@all, tmp);
+    bool = all (tmp);
+  else
+    bool = true;
   endif
 
 endfunction

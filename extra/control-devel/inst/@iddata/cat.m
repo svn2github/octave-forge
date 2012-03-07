@@ -36,25 +36,15 @@ function dat = cat (dim, varargin)
       check_inputs (tmp, m);
     
       y = cellfun (@vertcat, tmp.y, "uniformoutput", false);
-
-      if (m{1} > 0)                                     # m(2:end) are equal, tested by check_inputs
-        u = cellfun (@vertcat, tmp.u, "uniformoutput", false);
-      else                                              # time series don't have inputs
-        u = [];
-      endif
+      u = cellfun (@vertcat, tmp.u, "uniformoutput", false);
     
     case 2                                              # horzcat - catenate channels
       check_experiments (tmp, e);
       check_samples (n);
 
       y = cellfun (@horzcat, tmp.y, "uniformoutput", false);
-      
-      if (m{1} > 0)
-        u = cellfun (@horzcat, tmp.u, "uniformoutput", false);
-      else
-        u = [];
-      endif
-    
+      u = cellfun (@horzcat, tmp.u, "uniformoutput", false);
+
     case 3                                              # merge - catenate experiments
       check_outputs (tmp, p);
       check_inputs (tmp, m);

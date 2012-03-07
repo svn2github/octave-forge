@@ -56,7 +56,7 @@
 ## Created: October 2011
 ## Version: 0.1
 
-function dat = iddata (y = [], u = [], tsam = [], varargin)
+function dat = iddata (y = {}, u = {}, tsam = {}, varargin)
 
   if (nargin == 1 && isa (y, "iddata"))
     dat = y;

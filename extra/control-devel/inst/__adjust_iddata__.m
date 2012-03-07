@@ -28,7 +28,7 @@ function [y, u] = __adjust_iddata__ (y, u)
   endif
   
   if (isempty (u))
-    u = [];     # avoid [](nx0) and the like
+    u = {};     # avoid [](nx0) and the like
   elseif (iscell (u))
     u = reshape (u, [], 1);
   else

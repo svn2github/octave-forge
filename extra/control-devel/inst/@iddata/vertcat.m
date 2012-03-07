@@ -16,8 +16,13 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dat} =} cat (@var{dim}, @var{dat1}, @var{dat2}, @dots{})
-## Concatenation of iddata objects along dimension @var{dim}.
+## @deftypefn {Function File} {@var{dat} =} vertcat (@var{dat1}, @var{dat2}, @dots{})
+## Vertical concatenation of iddata datasets.
+## The samples are concatenated in the following way:
+## @code{dat.y@{e@} = [dat1.y@{e@}; dat2.y@{e@}; @dots{}]}
+## @code{dat.u@{e@} = [dat1.u@{e@}; dat2.u@{e@}; @dots{}]}
+## where @var{e} denotes the experiment.
+## The number of experiments, outputs and inputs must be equal for all datasets.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

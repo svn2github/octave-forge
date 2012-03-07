@@ -41,6 +41,8 @@ w = cat (1, u, v)
 
 cat (3, d, e)
 
+%cat (1, b, 4)
+
 
 un = iddata ({(1:10).', (21:30).'}, {(41:50).', (61:70).'}, [], "expname", strseq ("alpha", 1:2));
 vn = iddata ({(11:20).', (31:40).'}, {(51:60).', (71:80).'}, [], "expname", strseq ("beta", 1:2));
@@ -49,4 +51,5 @@ cat (1, un)
 
 cat (1, un, un, vn, vn, vn)
 
-cat (1, b)
+%dat = iddata (ones (100, 3));
+%dat2 = cat (1, dat, zeros (4, 3), dat)

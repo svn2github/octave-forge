@@ -37,8 +37,13 @@ function dat = cat (dim, varargin)
   endif
 
   ## store all datasets in a single struct 'tmp'
+  ## tmp is not a valid iddata set anymore,
+  ## but it doesn't matter, we want just a struct
   tmp = cellfun (@iddata, varargin);
   [n, p, m, e] = cellfun (@size, varargin, "uniformoutput", false);
+  
+  ## TODO: dat = iddata (ones (100, 3));
+  ##       dat = cat (1, dat, zeros (4, 3), dat)
 
   ## default values for metadata
   ## some of them are overwritten in the switch statement below
@@ -151,6 +156,8 @@ function check_samples (n)
     error ("iddata: cat: number of samples don't match %s", \
            mat2str (vertcat (n{:}), 10));
   endif
+
+  ## TODO: check sampling times
 
 endfunction
 

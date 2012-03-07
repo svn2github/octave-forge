@@ -16,15 +16,21 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dat} =} cat (@var{dim}, @var{dat1}, @var{dat2}, @dots{})
-## Concatenation of iddata objects along dimension @var{dim}.
+## @deftypefn {Function File} {@var{dat} =} diff (@var{dat})
+## @deftypefnx {Function File} {@var{dat} =} diff (@var{dat}, @var{k})
+## Return @var{k}-th difference of outputs and inputs of dataset @var{dat}.
+## If @var{k} is not specified, default value 1 is taken.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: March 2012
 ## Version: 0.1
 
-function dat = diff (dat, k)
+function dat = diff (dat, k = 1)
+
+  if (nargin > 2)       # no need to test nargin == 0, this is handled by built-in diff
+    print_usage ();
+  endif
 
   dat.y = cellfun (@(y) diff (y, k), dat.y, "uniformoutput", false);
   dat.u = cellfun (@(u) diff (u, k), dat.u, "uniformoutput", false);

@@ -165,8 +165,12 @@ function df = df_matassign(df, S, indc, ncol, RHS)
                 && ~all (df._over{2}(indc)))
             warning ("Trying to overwrite colum names");
           endif
-                                         
-          ctype = RHS(1, :); RHS = RHS(2:end, :);
+          
+          if (sum (~cellfun ('isempty', RHS(1, indc))) == ncol)
+            ctype = RHS(1, :); 
+          endif
+
+          RHS = RHS(2:end, :);
           if (~indr_was_set)
             nrow = nrow - 1; indr = 1:nrow;
           endif
@@ -244,7 +248,7 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       df = df_pad (df, 1, max (indr)-df._cnt(1), rname_width);
     endif
   endif
-  
+
   if (iscell(RHS)) %# we must pad on a column-by-column basis
     %# verify that each cell contains a non-empty vector, and that sizes
     %# are compatible
@@ -268,6 +272,28 @@ function df = df_matassign(df, S, indc, ncol, RHS)
       keyboard
     endif
 
+    %# try to detect and remove bottom garbage
+    eff_len = zeros(nrow, 1);
+    for indi = (indr)
+      eff_len(indi, 1) = sum (~cellfun ('isempty', RHS(indi, :)));
+    endfor
+    indi = nrow;
+    while (indi > 0)
+      if (1 == eff_len(indi))
+        nrow = nrow - 1;
+        indr(end) = [];
+        RHS(end, :) = [];
+        indi = indi - 1;
+        if (~indr_was_set && isempty (df._name{1, 1}))
+          df._cnt(1) = nrow;
+          df._ridx(end) = [];
+        endif
+      else
+        break;
+      endif
+    endwhile
+    clear eff_len;
+   
     %# the real assignement
     if (1 == size (RHS, 1)) %# each cell contains one vector
       fillfunc = @(x) RHS{x};
@@ -275,8 +301,8 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     else %# use cell2mat to pad on a column-by-column basis
       fillfunc = @(x) cell2mat (RHS(:, x));
     endif
-
-    indj = 1;
+    
+    indj = 1; 
     for indi = (1:ncol)
       if (indc(indi) > df._cnt(2))
         %# perform dynamic resizing one-by-one, to get type right
@@ -492,7 +518,18 @@ function df = df_matassign(df, S, indc, ncol, RHS)
     try
       df._name{2}(indc, 1) = genvarname (cname);
     catch
-      disp('line 472 '); keyboard
+      %# there was a problem with genvarname. 
+      dummy = sum (~cellfun ('isempty', cname));
+      if (1 == dummy)
+        dummy =  strsplit(cname{1}, ' ', true);
+        if (length (dummy) == ncol)
+          df._name{2}(indc, 1) = dummy;
+        else
+          disp('line 528 '); keyboard
+        endif
+      else
+        disp('line 531 '); keyboard
+      endif
     end_try_catch
     df._over{2}(1, indc) = false;
   endif

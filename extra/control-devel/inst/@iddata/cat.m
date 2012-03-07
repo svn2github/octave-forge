@@ -127,10 +127,14 @@ endfunction
 function bool = compare_strings (str, varargin)
 
   if (nargin > 1)
+    ## compare n-th string of first cell with n-th string of remaining cells
     tmp = cellfun (@(x) strcmp (str, x), varargin, "uniformoutput", false);
+    ## check whether all strings of each pair are equal
     tmp = cellfun (@all, tmp);
+    ## check whether all pairs are equal
     bool = all (tmp);
   else
+    ## one or no cell at all is always equal to itself
     bool = true;
   endif
 

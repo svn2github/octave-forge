@@ -24,8 +24,10 @@
 ## in OpenOffice_org Calc spreadsheet file @var{filename}.
 ##
 ## You need the octave-forge java package (> 1.2.6) and one or both of
-## jopendocument-<version>.jar or preferrably: (odfdom.jar (version 0.7.5
-#3 or 0.8.6) & xercesImpl.jar) in your javaclasspath.
+## jopendocument-<version>.jar or preferrably: (odfdom.jar (versions
+## 0.7.5, 0.8.6 or 0.8.7) & xercesImpl.jar v. 2.9.1) in your javaclasspath.
+## There is also experimental support invoking OpenOffice.org or clones
+## through Java/UNO bridge.
 ##
 ## Return argument @var{numarr} contains the numeric data, optional
 ## return arguments @var{txtarr} and @var{rawarr} contain text strings
@@ -59,8 +61,8 @@
 ##
 ## The optional last argument @var{reqintf} can be used to override 
 ## the automatic selection by odsread of one interface out of the
-## supported ones: Java/ODFtoolkit ('OTK') or Java/jOpenDocument 
-## ('JOD').
+## supported ones: Java/ODFtoolkit ('OTK'), Java/jOpenDocument 
+## ('JOD') or Java/UNO bridge ('UNO').
 ##
 ## Erroneous data and empty cells are set to NaN in @var{numarr} and
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values
@@ -116,6 +118,7 @@
 ## 2011-09-08 Catch empty ods structs after failed odsopen attempts
 ## 2011-09-18 Return empty output arg in case of empty rawarr
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-03-07 Updated texinfo help text
 
 function [ numarr, txtarr, rawarr, lim ] = odsread (filename, wsh=1, datrange=[], reqintf=[])
 

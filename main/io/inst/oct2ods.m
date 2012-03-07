@@ -30,8 +30,9 @@
 ## odsclose is needed to write the updated spreadsheet to disk (and
 ## -if needed- close the Java invocation holding the file pointer).
 ##
-## @var{arr} can be any array type save complex. Mixed numeric/text arrays
-## can only be cell arrays.
+## @var{arr} can be any 1D or 2D array containing numerical or character
+## data (cellstr) except complex. Mixed numeric/text arrays can only be
+## cell arrays.
 ##
 ## @var{ods} must be a valid pointer struct created earlier by odsopen.
 ##
@@ -114,6 +115,7 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 ## 2012-02-27 More range arg fixes
+## 2012-03-07 Updated texinfo help text
 ##
 ## Last update of subfunctions below: 2012-02-26
 
@@ -237,11 +239,11 @@ endfunction
 ## 2010-03-08 Some comment lines adapted
 ## 2010-03-25 Try-catch added f. unpatched-for-booleans java-1.2.6 / 1.2.7 package
 ## 2010-04-11 Changed all references to "cell" to "scell" to avoid reserved keyword
-##     "      Small bugfix for cases with empty left columns (wrong cell reference)
+##     ''     Small bugfix for cases with empty left columns (wrong cell reference)
 ## 2010-04-13 Fixed bug with stray cell copies beyond added data rectangle
 ## 2010-07-29 Added formula input support (based on xls patch by Benjamin Lindner)
 ## 2010-08-01 Added try-catch around formula input
-##     "      Changed range arg to also allow just topleft cell
+##     ''     Changed range arg to also allow just topleft cell
 ## 2010-08-03 Moved range checks and type array parsing to separate functions
 ## 2010-08-13 Fixed empty Sheet1 in case of new spreadsheets, fix input text sheet name
 ## 2010-10-27 Improved file change tracking tru ods.changed
@@ -872,11 +874,11 @@ endfunction
 ## 2010-06-01 Checked logic. AFAICS all should work with upcoming jOpenDocument 1.2b4;
 ##            in 1.2b3 adding a newsheet always leaves an incomplete upper row;
 ##            supposedly (hopefully) that will be fixed in 1.2b4.
-##      "     Added check for jOpenDocument version. Adding sheets only works for
+##     ''     Added check for jOpenDocument version. Adding sheets only works for
 ##            1.2b3+ (barring bug above)
 ## 2010-06-02 Fixed first sheet remaining in new spreadsheets
 ## 2010-08-01 Added option for crange to be only topleft cell address
-##     "      Code cleanup
+##     ''     Code cleanup
 ## 2010-08-13 Fixed bug of ignoring text sheet name in case of new spreadsheet
 ## 2010-08-15 Fixed bug with invalid first sheet in new spreadsheets
 ## 2010-10-27 Improved file change tracking tru ods.changed

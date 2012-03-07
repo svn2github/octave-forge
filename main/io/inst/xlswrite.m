@@ -28,18 +28,20 @@
 ## name extension). If @var{filename} does not contain any directory path,
 ## the file is saved in the current directory.
 ##
-## @var{arr} can be any array type save complex. Mixed numeric/text arrays
-## can only be cell arrays.
+## @var{arr} can be any 1D or 2D array containing numerical or character
+## data (cellstr) except complex. Mixed numeric/text arrays can only be
+## cell arrays.
 ##
 ## If only 3 arguments are given, the 3rd is assumed to be a spreadsheet
 ## range if it contains a ":" or is a completely empty string (corresponding
-## to A1:IV65336). The 3rd argument is assumed to refer to a worksheet if
-## it is a numeric value or a non-empty text string not containing ":"
+## to A1:IV65336 for regular .xls or A1:XFD1048576 for OOXML .xlsx). The
+## 3rd argument is assumed to refer to a worksheet if it is a numeric value
+## or a non-empty text string not containing ":"
 ##
 ## @var{wsh} can be a number or string (max. 31 chars).
 ## In case of a not yet existing Excel file, the first worksheet will be
 ## used & named according to @var{wsh} - the extra worksheets that Excel
-## creates by default are deleted.
+## normally creates by default are deleted.
 ## In case of existing files, some checks are made for existing worksheet
 ## names or numbers, or whether @var{wsh} refers to an existing sheet with
 ## a type other than worksheet (e.g., chart).
@@ -53,7 +55,8 @@
 ## Array @var{arr} will be clipped at the right and/or bottom if its size
 ## is bigger than can be accommodated in @var{range}.
 ## If @var{arr} is smaller than the @var{range} allows, it is placed
-## in the top left of @var{range}.
+## in the top left rectangle of @var{range} and remaining cell values
+## outside the rectangle will be retained.
 ##
 ## If @var{range} contains merged cells, only the elements of @var{arr}
 ## corresponding to the top or left Excel cells of those merged cells
@@ -64,18 +67,21 @@
 ## the automatic selection by xlswrite of one interface out of the
 ## supported ones: 'com' (ActiveX/Excel), 'poi' (Java/Apache POI), 'jxl'
 ## (Java/JExcelAPI), or 'uno' (Java/OpenOffice.org). 'oxs' (Java/OpenXLS)
-## is implemented but disabled for writing. For writing to OOXML files
-## (.xlsx) a value of 'poi' or 'uno' must be specified for @var{reqintf}.
-## The value of @var{reqintf} is case-insensitive. Multiple interfaces
-## can be selected if entered as a cell array of strings.
+## is implemented but disabled for writing as it is too buggy. For
+## writing to OOXML files (.xlsx) a value of 'com', 'poi' or 'uno' must
+## be specified for @var{reqintf}. The value of @var{reqintf} is
+## case-insensitive. Multiple interfaces can be selected if entered as
+## a cell array of strings.
 ##
 ## xlswrite is a mere wrapper for various scripts which find out what
-## Excel interface to use (COM, Java/POI) plus code to mimic the other
+## Excel interface to use (COM, POI, etc) plus code to mimic the other
 ## brand's syntax. For each call to xlswrite such an interface must be
 ## started and possibly an Excel file loaded. When writing to multiple
 ## ranges and/or worksheets in the same Excel file, a speed bonus can be
-## obtained by invoking those scripts (xlsopen / octxls / .... / xlsclose)
-## directly.
+## obtained by invoking those scripts directly with multiple calls to
+## oct2xls (one for each sheet or range) surrounded by one call to
+## xlsopen and xlsclose:
+## (xlsopen / octxls / oct2xls / .... / xlsclose)
 ##
 ## Examples:
 ##

@@ -28,8 +28,9 @@
 ## file name extension). If @var{filename} does not contain any directory
 ## path, the file is saved in the current directory.
 ##
-## @var{arr} can be any array type save complex. Mixed numeric/text arrays
-## can only be cell arrays.
+## @var{arr} can be any 1D or 2D array containing numerical or character
+## data (cellstr) except complex. Mixed numeric/text arrays can only be
+## cell arrays.
 ##
 ## @var{wsh} can be a number or string. In case of a not yet existing
 ## OpenOffice.org spreadsheet, the first sheet will be used & named
@@ -48,7 +49,8 @@
 ## Array @var{arr} will be clipped at the right and/or bottom if its size
 ## is bigger than can be accommodated in @var{range}.
 ## If @var{arr} is smaller than the @var{range} allows, it is placed
-## in the top left of @var{range}.
+## in the top left rectangle of @var{range} and cell values outside that
+## rectangle will be untouched.
 ##
 ## If @var{range} contains merged cells, only the elements of @var{arr}
 ## corresponding to the top or left Calc cells of those merged cells
@@ -92,6 +94,7 @@
 ## 2011-09-08 Minor filename error text adaptation
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
+## 2010-03-07 Updated texinfo help text
 
 function [ rstatus ] = odswrite (filename, data, wsh=1, crange='', reqintf=[])
 

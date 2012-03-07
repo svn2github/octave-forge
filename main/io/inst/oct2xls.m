@@ -29,8 +29,9 @@
 ## A subsequent call to xlsclose is needed to write the updated spreadsheet
 ## to disk (and -if needed- close the Excel or Java invocation).
 ##
-## @var{arr} can be any array type save complex. Mixed numeric/text arrays
-## can only be cell arrays.
+## @var{arr} can be any 1D or 2D array containing numerical or character
+## data (cellstr) except complex. Mixed numeric/text arrays can only be
+## cell arrays.
 ##
 ## @var{xls} must be a valid pointer struct created earlier by xlsopen.
 ##
@@ -93,8 +94,8 @@
 ## 2010-03-14 Updated help text section on java memory usage
 ## 2010-07-27 Added formula writing support (based on patch by Benjamin Lindner)
 ## 2010-08-01 Added check on input array size vs. spreadsheet capacity
-##     "      Changed argument topleft into range (now compatible with ML); the
-##     "      old argument version (just topleft cell) is still recognized, though
+##     ''     Changed argument topleft into range (now compatible with ML); the
+##     ''     old argument version (just topleft cell) is still recognized, though
 ## 2010-08014 Added char array conversion to 1x1 cell for character input arrays
 ## 2010-08-16 Added check on presence of output argument. Made wsh = 1 default
 ## 2010-08-17 Corrected texinfo ("topleft" => "range")
@@ -110,6 +111,7 @@
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-20 Fixed range parameter to be default empty string rather than empty numeral
 ## 2012-02-27 More range param fixes
+## 2012-03-07 Updated texinfo help text
 
 ## Last script file update (incl. subfunctions): 2012-02-26
 
@@ -238,18 +240,18 @@ endfunction
 ## 2010-01-13 Removed an extraneous statement used for debugging 
 ##            I plan look at it when octave v.3.4 is about to arrive.
 ## 2010-08-01 Added checks for input array size vs check on capacity
-##     "      Changed topleft arg into range arg (just topleft still recognized)
-##     "      Some code cleanup
-##     "      Added option for formula input as text string
+##     ''     Changed topleft arg into range arg (just topleft still recognized)
+##     ''     Some code cleanup
+##     ''     Added option for formula input as text string
 ## 2010-08-01 Added range vs. array size vs. capacity checks
 ## 2010-08-03 Moved range checks and type array parsing to separate functions
 ## 2010-10-20 Bug fix removing new empty sheets in new workbook that haven't been 
 ##            created in the first place due to Excel setting (thanks Ian Journeaux)
-##     "      Changed range use in COM transfer call
+##     ''     Changed range use in COM transfer call
 ## 2010-10-21 Improved file change tracking (var xls.changed)
 ## 2010-10-24 Fixed bug introduced in above fix: for loops have no stride param,
-##     "      replaced by while loop
-##     "      Added check for "live" ActiveX server
+##     ''     replaced by while loop
+##     ''     Added check for "live" ActiveX server
 ## 2010-11-12 Moved ptr struct check into main func
 ## 2012-01-26 Fixed "seealso" help string
 ## 2012-02-27 Copyright strings updated
@@ -638,8 +640,8 @@ endfunction
 ##            Added check for valid file pointer struct
 ## 2010-08-01 Improved try-catch for formulas to enter wrong formulas as text strings
 ## 2010-08-01 Added range vs. array size vs. capacity checks
-##     "      Code cleanup
-##     "      Changed topleft arg into range arg (topleft version still recognized)
+##     ''     Code cleanup
+##     ''     Changed topleft arg into range arg (topleft version still recognized)
 ## 2010-08-03 Moved range checks and cell type parsing to separate routines
 ## 2010-08-11 Moved addcell() into try-catch as it is addCell which throws fatal errors
 ## 2010-10-20 Improved logic for tracking file changes (xls.changed 2 or 3); dropped

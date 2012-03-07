@@ -25,11 +25,7 @@
 ## in Excel spreadsheet file @var{filename}.
 ## Return argument @var{numarr} contains the numeric data, optional
 ## return arguments @var{txtarr} and @var{rawarr} contain text strings
-## and the raw spreadsheet cell data, respectively.
-##
-## If neither Excel, Java/Apache POI or Java/JExcelAPI are installed,
-## xlsread will fail and suggest .csv file reading.
-##
+## and the raw spreadsheet cell data, respectively. Return argument
 ## @var{limits} contains the outer column/row numbers of the read
 ## spreadsheet range where @var{numarr}, @var{txtarr} and @var{rawarr}
 ## have come from (remember, xlsread trims outer rows and columns).
@@ -37,16 +33,15 @@
 ## If @var{filename} does not contain any directory, the file is
 ## assumed to be in the current directory. The filename extension
 ## (.xls or .xlsx) must be included in the file name; when using the
-## COM interface any file format can be read from that can be read
-## and written by the locally installed MS-Excel version (e.g., wk1,
-## csv, dbf, ...).
+## COM interface all file formats can be read that are supported by the
+## locally installed MS-Excel version (e.g., wk1, csv, dbf, etc.).
 ##
 ## @var{range} is expected to be a regular spreadsheet range format,
 ## or "" (empty string, indicating all data in a worksheet).
 ## If no range is specified the occupied cell range will have to be
 ## determined behind the scenes first; this can take some time for the
-## Java-based interfaces (but the results are more reliable than that
-## of ActiveX/COM).
+## Java-based interfaces (but the results may be more reliable than
+## that of ActiveX/COM).
 ##
 ## @var{wsh} is either numerical or text; in the latter case it is 
 ## case-sensitive and it may be max. 31 characters long.
@@ -56,12 +51,12 @@
 ## in the Excel file.
 ##
 ## If only the first argument is specified, xlsread will try to read
-## all contents from the first = leftmost (or the only) worksheet (as
-## if a range of @'' (empty string) was specified).
+## all contents (as if a range of @'' (empty string) was specified)
+## from the first = leftmost (or the only) worksheet
 ## 
 ## If only two arguments are specified, xlsread assumes the second
 ## argument to be @var{range} if it is a string argument and contains 
-##  a ":" or if it is @'' (empty string) and in those cases assumes
+##  a ":" or if it is @'' (empty string), and in those cases assumes
 ## the data must be read from the first worksheet (not necessarily
 ## Sheet1! but the leftmost sheet).
 ##
@@ -71,13 +66,13 @@
 ## xlsread tries to read all data contained in that worksheet.
 ##
 ## The optional last argument @var{reqintf} can be used to override 
-## the automatic selection by xlsread of one interface out of the
-## supported ones: COM/Excel, Java/Apache POI, or Java/JExcelAPI
-## (in that built-in order of preference).
-## For reading from OOXML files a value of 'poi' or 'uno' must be specified
-## for @var{reqintf} (see help for xlsopen); for Excel'95 files use
-## 'com', or if Excel is not installed use 'jxl', 'basic', or 'uno' (POI
-## can't read Excel 95 but will try to fall back to JXL).
+## the automatic interface selection by xlsread out of the supported
+## ones: COM/Excel, Java/Apache POI, Java/JExcelAPI, Java/OpenXLS, or 
+## Java/UNO (OpenOffice.org) (in that -built in- order of preference).
+## For reading from OOXML files a value of 'com', 'poi' or 'uno' must
+## be specified for @var{reqintf} (see help for xlsopen); for Excel'95
+## files use 'com', or if Excel is not installed use 'jxl', 'basic'
+## or 'uno' (POI can't read Excel 95 but will try to fall back to JXL).
 ## As @var{reqintf} can also be a cell array of strings, one can
 ## select or exclude one or more interfaces.
 ##
@@ -85,7 +80,8 @@
 ## turn up empty in @var{txtarr} and @var{rawarr}. Date/time values in
 ## Excel are returned as numerical values in @var{numarr}. Note that
 ## Excel and Octave have different date base values (1/1/1900 & 
-## 1/1/0000, resp.)
+## 1/1/0000, resp.). Spreadsheet date values lying before 1/1/1900 are
+## returned as strings, formatted as they appear in the spreadsheet.
 ## @var{numarr} and @var{txtarr} are trimmed from empty outer rows
 ## and columns. Be aware that Excel does the same for @var{rawarr}, 
 ## so any returned array may turn out to be smaller than requested in
@@ -96,11 +92,11 @@
 ## "corresponding" Excel cells are empty.
 ##
 ## xlsread is just a wrapper for a collection of scripts that find out
-## the interface to be used (COM, Java/POI, Java/JXL) and do the actual
-## reading. For each call to xlsread the interface must be started and
-## the Excel file read into memory. When reading multiple ranges (in
-## optionally multiple worksheets) a significant speed boost can be
-## obtained by invoking those scripts directly as in:
+## the interface to be used (COM, Java/POI, Java/JXL Java/OXS, Java/UNO)
+## and do the actual reading. For each call to xlsread the interface must
+## be started and the Excel file read into memory. When reading multiple
+## ranges (in optionally multiple worksheets) a significant speed boost
+## can be obtained by invoking those scripts directly as in:
 ## xlsopen / xls2oct [/ parsecell] / ... / xlsclose
 ##
 ## Beware: when using the COM interface, hidden Excel invocations may be
@@ -138,7 +134,7 @@
 ## 2010-01-12 added unwind_protect to get rid of stray Excel invocations i.c.o. COM errors
 ## 2010-05-31 Updated help text (delays i.c.o. empty range due to getusedrange call)
 ## 2010-08-18 Added check for existence of xls after call to xlsopen to 
-##	   "      avoid unneeded error message clutter
+##	   ''     avoid unneeded error message clutter
 ## 2010-08-25 Improved help text, esp. sections Excel file types and interfaces
 ## 2010-10-20 Dropped wiping xls.limits for COM (nowadays COM can return those)
 ## 2010-10-21 Formally added 'BASIC' option as synonym for 'JXL'
@@ -148,6 +144,7 @@
 ## 2011-04-17 Suppress xlsopen messages (";" was missing)
 ## 2011-09-08 Minor code cleanup; included UNO & OXS support in test
 ## 2012-01-26 Fixed "seealso" help string
+## 2012-03-07 Updated texinfo help header
 
 function [ numarr, txtarr, rawarr, lims ] = xlsread (fn, wsh, datrange, reqintf=[])
 

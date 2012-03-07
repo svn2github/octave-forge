@@ -1,11 +1,16 @@
 control-devel >> Control Theory
 Examples
 Experimental Data Handling
-  @iddata/get
   iddata
+  @iddata/cat
+  @iddata/diff
+  @iddata/get
+  @iddata/horzcat
+  @iddata/merge
   @iddata/plot
   @iddata/set
   @iddata/size
+  @iddata/vertcat
 System Identification
   fitfrd
   moesp

@@ -16,7 +16,7 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dat} =} vertcat (@var{dat1}, @var{dat2}, @dots{})
+## @deftypefn {Function File} {@var{dat} =} merge (@var{dat1}, @var{dat2}, @dots{})
 ## Concatenate experiments of iddata datasets.
 ## The experiments are concatenated in the following way:
 ## @code{dat.y = [dat1.y; dat2.y; @dots{}]}

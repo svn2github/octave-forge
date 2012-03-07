@@ -40,36 +40,40 @@ function display (dat)
   disp (str);
   disp ("");
   
-  disp (horzcat (__col2str__ (expname, "Experiment"), __vec2str__ (n, "Samples"), __vec2str__ (cell2mat (dat.tsam), "Sampling Interval")));
+  disp (__horzcat__ (__col2str__ (expname, "Experiment"), __vec2str__ (n, "Samples"), __vec2str__ (cell2mat (dat.tsam), "Sampling Interval")));
   disp ("");
-  disp (horzcat (__col2str__ (outname, "Outputs"), __col2str__ (dat.outunit, "Unit (if specified)")));
+  disp (__horzcat__ (__col2str__ (outname, "Outputs"), __col2str__ (dat.outunit, "Unit (if specified)")));
   disp ("");
-  disp (horzcat (__col2str__ (inname, "Inputs"), __col2str__ (dat.inunit, "Unit (if specified)")));
+  disp (__horzcat__ (__col2str__ (inname, "Inputs"), __col2str__ (dat.inunit, "Unit (if specified)")));
   disp ("");
+
+endfunction
+
+
+function str = __horzcat__ (col, varargin)
+
+  len = rows (col);
+  sp2 = repmat ("  ", len, 1);
+  sp4 = repmat ("    ", len, 1);
+  str = [sp2, col];
   
-%{
-  str = strjust (strvcat (expname), "left");
-  space = (repmat ("  ", e, 1));
-  str = [space, str];
-%}
-endfunction
-
-%{
-function str = __
-
-  space = repmat ("    ", len+2, 1);
-  str = [space, str];
+  for k = 2 : nargin
+    str = [str, sp4, varargin{k-1}];
+  endfor
 
 endfunction
-%}
+
 
 function str = __col2str__ (col, title)
 
   len = rows (col);
   str = strjust (strvcat (col), "left");
-  str = [repmat("   ", len, 1), str];
-  str = strvcat (title, str);
-
+  if (columns (str) == 0)
+    str = repmat (" ", len, 1); %[repmat("   ", len, 1), str];
+  endif
+  line = repmat ("-", 1, max (columns (str), columns (title)));
+  str = strvcat (title, line, str);
+  %str = strvcat (title, str);
 endfunction
 
 
@@ -79,19 +83,16 @@ function str = __vec2str__ (vec, title)
   tmp = isfinite (vec);
   tmp = abs (vec(tmp & vec != 0));
   if (isempty (tmp) || min (tmp) < 1e-3 || max (tmp) > 1e4)
-    str = arrayfun (@(x) sprintf ("   %.3e", x), vec, "uniformoutput", false);
+    str = arrayfun (@(x) sprintf ("%.3e", x), vec, "uniformoutput", false);
   elseif (all (floor (tmp) == tmp))
-    str = arrayfun (@(x) sprintf ("   %d", x), vec, "uniformoutput", false);
+    str = arrayfun (@(x) sprintf ("%d", x), vec, "uniformoutput", false);
   else
-    str = arrayfun (@(x) sprintf ("   %.4f", x), vec, "uniformoutput", false);
+    str = arrayfun (@(x) sprintf ("%.4f", x), vec, "uniformoutput", false);
   endif
   str = strjust (char (str), "right");
-  %str = [repmat("   ", len, 1), str];
-  str = strvcat (title, str);
-  
-  %if (nargin > 1)
-  %  str = [str, repmat(post, length (vec), 1)];
-  %endif
+  line = repmat ("-", 1, max (columns (str), columns (title)));
+  %str = strvcat (title, str)
+  str = strvcat (title, line, str);
 
 endfunction
 

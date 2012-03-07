@@ -47,4 +47,6 @@ vn = iddata ({(11:20).', (31:40).'}, {(51:60).', (71:80).'}, [], "expname", strs
 n = [un; vn]
 cat (1, un)
 
+cat (1, un, un, vn, vn, vn)
+
 cat (1, b)

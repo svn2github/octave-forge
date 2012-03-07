@@ -42,12 +42,19 @@ function dat = cat (dim, varargin)
       check_experiments (tmp, e);
       check_samples (n);
 
+      outname = vertcat (tmp.outname);
+      outunit = vertcat (tmp.outunit);
+      inname = vertcat (tmp.inname);
+      inunit = vertcat (tmp.inunit);
+
       y = cellfun (@horzcat, tmp.y, "uniformoutput", false);
       u = cellfun (@horzcat, tmp.u, "uniformoutput", false);
 
     case 3                                              # merge - catenate experiments
       check_outputs (tmp, p);
       check_inputs (tmp, m);
+      
+      expname = vertcat (tmp.expname);
 
       y = vertcat (tmp.y);
       u = vertcat (tmp.u);
@@ -57,6 +64,9 @@ function dat = cat (dim, varargin)
   endswitch
   
   dat = iddata (y, u);
+  
+  %dat.outname = tmp(1).outname;
+  %dat.outuni
 
 endfunction
 

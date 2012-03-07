@@ -106,7 +106,7 @@
 ## 2011-09-08 Minor code cleanup
 ## 2012-01-26 Fixed "seealso" help string
 ##
-## Latest subfunction update: 2012-02-01
+## Latest subfunction update: 2012-03-07
 
 function [ xls ] = xlsopen (filename, xwrite=0, reqinterface=[])
 
@@ -451,6 +451,7 @@ endfunction
 ## 2011-09-08 Minor code cleanup
 ## 2011-09-18 Added temporary warning about UNO interface
 ## 2012-03-01 Changed UNO warning so that it is suppressed when UNO is not yet chosen
+## 2012-03-07 Only check for COM if run on Windows
 
 function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 
@@ -466,24 +467,26 @@ function [xlsinterfaces] = getxlsinterfaces (xlsinterfaces)
 	endif
 	deflt = 0;
 
-	# Check if MS-Excel COM ActiveX server runs
+	# Check if MS-Excel COM ActiveX server runs (only on Windows!)
 	if (isempty (xlsinterfaces.COM))
 		xlsinterfaces.COM = 0;
-		try
-			app = actxserver ("Excel.application");
-			# If we get here, the call succeeded & COM works.
-			xlsinterfaces.COM = 1;
-			# Close Excel. Yep this is inefficient when we need only one r/w action,
-			# but it quickly pays off when we need to do more with the same file
-			# (+, MS-Excel code is in OS cache anyway after this call so no big deal)
-			app.Quit();
-			delete(app);
-			printf ("COM");
-			if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
-		catch
-			# COM non-existent
-			printf ("not working.\n");
-		end_try_catch
+    if (ispc)
+      try
+        app = actxserver ("Excel.application");
+        # If we get here, the call succeeded & COM works.
+        xlsinterfaces.COM = 1;
+        # Close Excel. Yep this is inefficient when we need only one r/w action,
+        # but it quickly pays off when we need to do more with the same file
+        # (+, MS-Excel code is in OS cache anyway after this call so no big deal)
+        app.Quit();
+        delete(app);
+        printf ("COM");
+        if (deflt), printf ("; "); else, printf ("*; "); deflt = 1; endif
+      catch
+        # COM non-existent
+        printf ("not working.\n");
+      end_try_catch
+    endif
 	endif
 
 	if (isempty (tmp1))

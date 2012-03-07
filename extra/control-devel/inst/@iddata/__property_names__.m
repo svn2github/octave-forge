@@ -16,8 +16,8 @@
 ## along with LTI Syncope.  If not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{props}, @var{vals}] =} __property_names__ (@var{sys})
-## Return the list of properties as well as the assignable values for an LTI object sys.
+## @deftypefn {Function File} {[@var{props}, @var{vals}] =} __property_names__ (@var{dat})
+## Return the list of properties as well as the assignable values for an iddata set.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
@@ -25,6 +25,8 @@
 ## Version: 0.1
 
 function [props, vals] = __property_names__ (dat)
+
+  [n, p, m, e] = size (dat);
 
   ## cell vector of iddata-specific properties
   props = {"y";
@@ -41,15 +43,15 @@ function [props, vals] = __property_names__ (dat)
            "userdata"};
 
   ## cell vector of lti-specific assignable values
-  vals = {"p-by-1 cell vector of matrices";
-          "p-by-1 cell vector of strings";
-          "p-by-1 cell vector of strings";
-          "m-by-1 cell vector of matrices";
-          "m-by-1 cell vector of strings";
-          "m-by-1 cell vector of strings";
-          "scalar (sample time in seconds)";
+  vals = {sprintf("(%dx1) cell vector of (nx%d) matrices", e, p);
+          sprintf("(%dx1) cell vector of strings", p);
+          sprintf("(%dx1) cell vector of strings", p);
+          sprintf("(%dx1) cell vector of (nx%d) matrices", e, m);
+          sprintf("(%dx1) cell vector of strings", m);
+          sprintf("(%dx1) cell vector of strings", m);
+          sprintf("(%dx1) cell vector of scalars", e);
           "string";
-          "e-by-1 cell vector of strings";
+          sprintf("(%dx1) cell vector of strings", e);
           "string";
           "string or cell of strings";
           "any data type"};

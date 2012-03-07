@@ -233,7 +233,13 @@ while (indi <= size(varargin, 2))
               if (all (cellfun ('size', dummy, 2) == 0))
                 continue;
               endif
-              if (strcmp (dummy{1}, trigger))
+              if (size (dummy, 2) >= 1 && ...
+                  ~isempty (regexp (dummy{1}, trigger, 'match')))
+                break;
+              endif
+              if (size (dummy, 2) >= 2 && ...
+                  ~isempty (regexp (dummy{2}, trigger, 'match')))
+                %#was  (strcmp (dummy{1}, trigger))
                 break;
               endif
             endwhile

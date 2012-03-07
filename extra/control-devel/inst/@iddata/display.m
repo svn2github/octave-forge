@@ -31,20 +31,21 @@ function display (dat)
   
   [n, p, m, e] = size (dat);
   
-  str = ["Time domain dataset '", datname, "' containing ", num2str(e), " experiment"];
-  if (e > 1)
-    str = [str, "s"];
-  endif
+  str = ["Time domain dataset '", datname, "' containing ", num2str(sum(n)), " samples"];
 
   disp ("");
   disp (str);
   disp ("");
   
-  disp (__horzcat__ (__col2str__ (expname, "Experiment"), __vec2str__ (n, "Samples"), __vec2str__ (cell2mat (dat.tsam), "Sampling Interval")));
+  disp (__horzcat__ (__col2str__ (expname, "Experiment"), \
+                     __vec2str__ (n, "Samples"), \
+                     __vec2str__ (cell2mat (dat.tsam), "Sampling Interval")));
   disp ("");
-  disp (__horzcat__ (__col2str__ (outname, "Outputs"), __col2str__ (dat.outunit, "Unit (if specified)")));
+  disp (__horzcat__ (__col2str__ (outname, "Outputs"), \
+                     __col2str__ (dat.outunit, "Unit (if specified)")));
   disp ("");
-  disp (__horzcat__ (__col2str__ (inname, "Inputs"), __col2str__ (dat.inunit, "Unit (if specified)")));
+  disp (__horzcat__ (__col2str__ (inname, "Inputs"), \
+                     __col2str__ (dat.inunit, "Unit (if specified)")));
   disp ("");
 
 endfunction
@@ -69,11 +70,11 @@ function str = __col2str__ (col, title)
   len = rows (col);
   str = strjust (strvcat (col), "left");
   if (columns (str) == 0)
-    str = repmat (" ", len, 1); %[repmat("   ", len, 1), str];
+    str = repmat (" ", len, 1);
   endif
   line = repmat ("-", 1, max (columns (str), columns (title)));
   str = strvcat (title, line, str);
-  %str = strvcat (title, str);
+
 endfunction
 
 
@@ -95,6 +96,3 @@ function str = __vec2str__ (vec, title)
   str = strvcat (title, line, str);
 
 endfunction
-
-
-

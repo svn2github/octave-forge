@@ -26,6 +26,10 @@
 ## @var{function_handle}(arg1, arg2, ... ,argn), where the arguments are 
 ## extracted from each elements of the 1-row cell array @var{cell_array_of_args}. 
 ##
+## @emph{warning}: @code{apply} has been deprecated in favor of @code{arrayfun}
+## and @code{cellfun} for arrays and cells respectively. This function will be
+## removed from future versions of the 'miscellaneous' package".
+##
 ## Apply also works on array of function handles if
 ## @var{function_handle} is passed as a cell array of a handles; in this
 ## case apply, evaluates each function (using the handle) with the same

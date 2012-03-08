@@ -35,32 +35,31 @@ extern "C" {
 static bool no_terminal=false;
 
 DEFUN_DLD(text_waitbar, args, nargout,
-"text_waitbar(...);\n\
- TEXT_WAITBAR displays a text-based wait bar. This function\n\
- is similar to the Matlab waitbar command, but it is\n\
- a text, rather than graphical function.\n\n\
- A typical usage of TEXT_WAITBAR in a lengthy computation\n\
- (inside a FOR loop, for example) is as follows:\n\n\
- for i=1:1000\n\
-     ## computation\n\
-     text_waitbar(i/1000);\n\
- end\n\n\
- TEXT_WAITBAR(X,TITLE), where 0 <= X <= 1, sets the position of\n\
- the waitbar to the fractional length X. Values of X exactly\n\
- equal to 0 or 1 clear the waitbar. The optional second\n\
- argument TITLE sets the waitbar caption to TITLE.\n\n\
- If Octave is running in a smart terminal, the width is\n\
- automatically detected, and the title is displayed in the\n\
- waitbar (and truncated if it is too long). Otherwise, the\n\
- title is not displayed and the width is initialized to a\n\
- default of 50 characters, or it can be set to N characters\n\
- with TEXT_WAITBAR(0,N). If no terminal is detected (such as when\n\
- Octave is run in batch mode and output is redirected), no\n\
- output is generated.\n\n\
- For compatibility with the Matlab version of this function\n\
- (which is graphical rather than text-based), additional\n\
- arguments are ignored, but there are no guarantees of perfect\n\
- compatibility.")
+"  -*- texinfo -*-\n\
+@deftypefn {Function File}  {} text_waitbar (@var{frac})\n\
+@deftypefnx {Function File} {} text_waitbar (@var{frac}, @var{msg})\n\
+@deftypefnx {Function File} {} text_waitbar (0, @var{n})\n\
+Display text-based waitbar/progress bar.\n\
+\n\
+This function is similar to the @code{waitbar} function but is a text, rather\n\
+than graphical bar. The waitbar is filled to fraction @var{frac} which must\n\
+be in the range [0, 1]. Values exactly equal to 0 or 1 clear the waitbar.\n\
+\n\
+The optional message @var{msg} sets the waitbar caption. If Octave is running\n\
+in a smart terminal, the width is automatically detected, and @var{msg} is\n\
+displayed in the waitbar (and truncated if it is too long). Otherwise,\n\
+@var{msg} is not displayed and the width is initialized to a default of 50\n\
+characters, or it can be set to @var{n} characters with\n\
+@code{text_waitbar (0, @var{n}). If no terminal is detected (such as when\n\
+Octave is run in batch mode and output is redirected), no output is\n\
+generated.\n\
+\n\
+Additional arguments are ignored for compatibility with the graphical\n\
+counterpart of this function but there are no guarantees of perfect\n\
+compatibility.\n\
+\n\
+@seealso{waitbar}\n\
+@end deftypefn\n")
 {
   static char print_buf[BUF_SIZE];
   static int n_chars_old;

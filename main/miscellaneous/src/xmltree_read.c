@@ -1425,7 +1425,7 @@ char *xml_text;
  *
  * This program was generated with the FleXML XML processor generator,
  * (Id: flexml.pl,v 1.28 2003/02/12 02:55:41 krisrose Exp).
- * Copyright © 1999 Kristoffer Rose.  All rights reserved.
+ * Copyright Â© 1999 Kristoffer Rose.  All rights reserved.
  *
  * You can redistribute and/or modify this program provided the following
  * two conditions hold:

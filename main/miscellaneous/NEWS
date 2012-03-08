@@ -10,21 +10,25 @@ Summary of important user-visible changes for miscellaneous 1.1.0:
         2. fix your `waitbar' calls for the new API as per octave core. Note
            that `waitbar' is graphical tool only;
         3. use an old version of the miscellaneous package or modify the source
-           to keep shadowing the octave core `waitbar'
+           to keep shadowing the octave core `waitbar'.
 
  ** The following functions are new:
 
-      clip
-      text_waitbar
+      clip      normr     text_waitbar
+      normc     sample
 
- ** The function clip was imported from the audio package
+ ** The function clip was imported from the audio package.
 
- ** The following functions have been deprecated (see their help text
-    for the recommended alternatives):
+ ** The function `apply' has been deprecated. `cellfun' and `arrayfun' from
+    octave core should be used instead.
 
-      apply
+ ** The function `partarray' has been removed. `mat2cell' from octave core
+    should be used instead.
 
- ** Package is no longer automatically loaded
+ ** Multiple bug fixes and increased input check on many functions.
 
- ** improvements to help text
+ ** The function `csv2cell' now returns an empty cell in the case of empty file
 
+ ** Package is no longer automatically loaded.
+
+ ** improvements to help text.

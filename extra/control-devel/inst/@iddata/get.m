@@ -17,8 +17,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} get (@var{sys})
-## @deftypefnx {Function File} {@var{value} =} get (@var{sys}, @var{"property"})
-## Access property values of LTI objects.
+## @deftypefnx {Function File} {@var{value} =} get (@var{dat}, @var{"property"})
+## Access property values of iddata objects.
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

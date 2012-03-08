@@ -1,4 +1,5 @@
 ## Copyright (C) 2007 Muthiah Annamalai <muthiah.annamalai@mavs.uta.edu>
+## Copyright (C) 2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -35,39 +36,39 @@
 ## [1, 2]
 ## @end example
 ## @end deftypefn
- 
-## Last Modified by Muthiah Annamalai
 
-function rval = match (fun_handle,data)
-  
-  if (nargin >= 1)
+function rval = match (fun_handle, data)
 
-    try
-      if ( ischar(fun_handle) )
-	fun_handle=eval(strcat("@",fun_handle));
-      end
-      fstr=typeinfo(fun_handle);
-    catch
-      error('Error: Cannot find function handle, or funtion doesnt exist')
-    end
-  end
+  if (nargin != 2)
+    print_usage;
+  endif
 
-  if (nargin<2)
-    error("match: incorrect number of arguments; expecting at least two.");
-  end
-  
-  LD=length(data);
-  rval=[];
-  for idx=1:LD
-    if fun_handle(data(idx)) %anything thats true
-      rval=[rval, data(idx)];
-    end
-  end
-  return
+  if (isa (fun_handle, "function_handle"))
+    ##do nothing
+  elseif (ischar (fun_handle))
+    fun_handle = str2func (fun_handle);
+  else
+    error ("fun_handle must either be a function handle or the name of a function");
+  endif
+
+  LD   = length(data);
+
+  if (iscell (data))
+    rval = {};
+    for idx=1:LD
+      if fun_handle(data{idx}), rval = [rval, data{idx}]; endif
+    endfor
+  elseif (ismatrix (data))
+    rval = [];
+    for idx=1:LD
+      if fun_handle(data(idx)), rval = [rval, data(idx)]; endif
+    endfor
+  else
+    error("data must either be a cell array or matrix");
+  endif
 endfunction
-%!
+
 %!assert(match(@(x) mod(x,2),1:10),[1:2:10],0)
 %!assert(match(@sin,1:10),[1:10],0)
 %!assert(match(@(x) strcmp('Octave',x),{'Matlab','Octave'}),{'Octave'},0)
 %!assert(match(@(x) (x>0), [-10:+10]),[1:10],0)
-%!

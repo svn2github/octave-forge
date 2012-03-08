@@ -1,14 +1,17 @@
-## Copyright (C) 2002 Etienne Grossmann.  All rights reserved.
+## Copyright (C) 2002 Etienne Grossmann <etienne@isr.ist.utl.pt>
 ##
-## This program is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by the
-## Free Software Foundation; either version 2, or (at your option) any
-## later version.
+## This program is free software; you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation; either version 3 of the License, or (at your option) any later
+## version.
 ##
-## This is distributed in the hope that it will be useful, but WITHOUT
+## This program is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-## for more details.
+## FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {@var{s} = } slurp_file ( f ) 
@@ -23,7 +26,6 @@
 ## will look for @var{f} in the path.
 ## @end deftypefn
 
-## Author  : Etienne Grossmann <etienne@cs.uky.edu>
 function s = slurp_file (f)
 
 if ! ischar (f),  error ("slurp_file :  f  is not a string"); end

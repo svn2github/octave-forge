@@ -10,5 +10,5 @@ Depends: octave (>= 3.2.4)
 Autoload: no
 SystemRequirements: units
 BuildRequires: termcap-devel
-License: GPL version 2 or later
+License: GPL version 3 or later
 Url: http://octave.sf.net

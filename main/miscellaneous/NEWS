@@ -1,8 +1,28 @@
-Summary of important user-visible changes for releases of the miscellaneous package
+Summary of important user-visible changes for miscellaneous 1.1.0:
+-------------------------------------------------------------------
 
-===============================================================================
-miscellaneous-X.Y.Z   Release Date: 2011-YY-XX   Release Manager:
-===============================================================================
+ ** IMPORTANT NOTE:
+    * the function `waitbar' has been renamed `text_waitbar'. Octave core has
+      implemented a Matlab compatible `waitbar' which is imcompatible with the
+      old miscellaneous `waitbar'. If you use the `waitbar' function from the
+      miscellaneous package you have 3 options:
+        1. replace all `waitbar' calls by `text_waitbar';
+        2. fix your `waitbar' calls for the new API as per octave core. Note
+           that `waitbar' is graphical tool only;
+        3. use an old version of the miscellaneous package or modify the source
+           to keep shadowing the octave core `waitbar'
 
-* This NEWS file was created.
-* Function clip imported from audio.
+ ** The following functions are new:
+
+      clip
+      text_waitbar
+
+ ** The function clip was imported from the audio package
+
+ ** The following functions have been deprecated (see their help text
+    for the recommended alternatives):
+
+      apply
+
+ ** improvements to help text
+

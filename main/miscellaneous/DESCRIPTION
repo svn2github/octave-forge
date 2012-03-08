@@ -7,7 +7,7 @@ Title: Miscellaneous functions
 Description: Miscellaneous tools that don't fit somewhere else.
 Categories: Miscellaneous
 Depends: octave (>= 3.2.4)
-Autoload: yes
+Autoload: no
 SystemRequirements: units
 BuildRequires: termcap-devel
 License: GPL version 2 or later

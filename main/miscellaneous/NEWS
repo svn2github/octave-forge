@@ -24,5 +24,7 @@ Summary of important user-visible changes for miscellaneous 1.1.0:
 
       apply
 
+ ** Package is no longer automatically loaded
+
  ** improvements to help text
 

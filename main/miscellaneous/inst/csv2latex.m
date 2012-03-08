@@ -13,7 +13,6 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
-function csv2latex(csv_file, csv_sep, latex_file, tabular_alignments, has_hline, column_titles, row_titles)
 ## Creates a latex file from a csv file. The generated latex file contains a 
 ## tabular with all values of the csv file. The tabular can be decorated with 
 ## row and column titles. The generated latex file can be inserted in any latex
@@ -47,6 +46,8 @@ function csv2latex(csv_file, csv_sep, latex_file, tabular_alignments, has_hline,
 ##  # creates the latex file with row and column titles
 ##  csv2latex('example.csv', '\t', 'example.tex', {'|l|', 'l|'}, true, 
 ##            {'Column 1', 'Column 2', 'Column 3'}, {'Row 1', 'Row 2'});
+
+function csv2latex(csv_file, csv_sep, latex_file, tabular_alignments, has_hline, column_titles, row_titles)
 
   ## set up the default values
   if nargin < 7

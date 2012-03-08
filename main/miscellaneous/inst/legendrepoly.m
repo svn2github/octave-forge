@@ -27,34 +27,36 @@
 ##
 ## @end deftypefn
 
-function h=legendrepoly(order,val)
-	if nargin < 1, error('usage: legendrepoly(order,val)'), end
-	
-	h_prev=[0 1];
-        h_now=[1 0];
+function h = legendrepoly (order, val)
+  if (nargin < 1 || nargin > 2)
+    print_usage
+  endif
 
-	if order == 0
-	   h=h_prev;
-        else
-           h=h_now;
-        end
+  h_prev = [0 1];
+  h_now  = [1 0];
 
-	for ord=2:order
-         x=[];y=[];
-         if (length(h_now) < (1+ord))
-	   x=0;
-         end;
-	 y=zeros(1,(1+ord)-length(h_prev));
-	 p1=[h_now, x];
-         p3=[y, h_prev];
-         h=((2*ord -1).*p1  -(ord -1).*p3)./(ord);
-	 h_prev=h_now;
-	 h_now=h;
-	end
+  if order == 0
+    h=h_prev;
+  else
+    h=h_now;
+  endif
 
-        if nargin == 2
-    	 h=polyval(h,val);
-	end
-	
-	return
-end
+  for ord=2:order
+    x=[];
+    y=[];
+    if (length(h_now) < (1+ord))
+      x=0;
+    endif
+    y=zeros(1,(1+ord)-length(h_prev));
+    p1=[h_now, x];
+    p3=[y, h_prev];
+    h=((2*ord -1).*p1  -(ord -1).*p3)./(ord);
+    h_prev=h_now;
+    h_now=h;
+  endfor
+
+  if nargin == 2
+    h=polyval(h,val);
+  endif
+
+endfunction

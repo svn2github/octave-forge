@@ -1,5 +1,5 @@
-%# Copyright (C) 2008, Thomas Treichl <thomas.treichl@gmx.net>
-%#
+## Copyright (C) 2008, Thomas Treichl <thomas.treichl@gmx.net>
+##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
 ## Foundation; either version 3 of the License, or (at your option) any later
@@ -13,16 +13,25 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
-%# -*- texinfo -*-
-%# @deftypefn {Function} {[@var{string}] =} asci ([@var{columns}])
-%# If this function is called without any input argument and without any output argument then print a nice ASCI-table (excluding special characters with hexcode 0x00 to 0x20) on screen with four columns per default. If this function is called with one output argument then return an ASCI-table string and don't print anything on screen. Finally, if this function is called with one input argument of type scalar then either print (no output argument) or return (one output argument) an ASCI-table with a number of columns given in @var{columns}.
-%#
-%# For example,
-%# @example
-%# A = asci (3);
-%# disp (A);
-%# @end example
-%# @end deftypefn
+## -*- texinfo -*-
+## @deftypefn {Function} {[@var{string}] =} asci ([@var{columns}])
+## Print ASCI table.
+##
+## If this function is called without any input argument and without any output
+## argument then print a nice ASCI-table (excluding special characters with
+## hexcode 0x00 to 0x20) on screen with four columns per default. If this
+## function is called with one output argument then return an ASCI-table string
+## and don't print anything on screen. Finally, if this function is called with
+## one input argument of type scalar then either print (no output argument) or
+## return (one output argument) an ASCI-table with a number of columns given in
+## @var{columns}.
+##
+## For example,
+## @example
+## A = asci (3);
+## disp (A);
+## @end example
+## @end deftypefn
 
 function [varargout] = asci (varargin)
 
@@ -77,7 +86,3 @@ endfunction
 %!  A = asci ();
 %!test
 %!  A = asci (2);
-
-%# Local Variables: ***
-%# mode: octave ***
-%# End: ***

@@ -93,11 +93,11 @@ function infoskeleton( prototype , index_str, seealso)
   ## generate the code
   fprintf("## -*- texinfo -*-\n")
   if ( length( retval ) > 0 )
-    fprintf("## @deftypefn{Function File} {@var{%s} = } %s (", \
-	    retval,fname );
+    fprintf("## @deftypefn{Function File} {@var{%s} = } %s (", ...
+            retval,fname );
   else
-    fprintf("## @deftypefn{Function File} { } %s (", \
-	    fname );
+    fprintf("## @deftypefn{Function File} { } %s (", ...
+            fname );
   end
 
   pos = 0;
@@ -124,8 +124,7 @@ function infoskeleton( prototype , index_str, seealso)
   fprintf("## @seealso{%s}\n",seealso);
   fprintf("## @end deftypefn\n");
 end
-##   examples: 
-##   infoskeleton( ' [x,y,z]=infoskeleton(func , z , z9 , jj, fjh, x)  ')
-##   infoskeleton('[V,Q] = eig( A )','linear algebra','eigs, chol, qr, det')
-##   infoskeleton( 'function [x,y,z] =  indian_languages ( x)  ')
-##
+
+%!demo infoskeleton( ' [x,y,z]=infoskeleton(func , z , z9 , jj, fjh, x)  ')
+%!demo infoskeleton('[V,Q] = eig( A )','linear algebra','eigs, chol, qr, det')
+%!demo infoskeleton( 'function [x,y,z] =  indian_languages ( x)  ')

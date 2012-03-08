@@ -25,8 +25,8 @@
 ## 
 ## @end deftypefn
 
-function h=hermitepoly(order,val)
-  if nargin < 1, error('usage: hermitepoly(order.val)'), end
+function h = hermitepoly (order, val)
+  if nargin < 1, print_usage, end
   
   ## contains the first 50 hermite-polynomials
   H = [ 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 2.00000000e+00 0.00000000e+00
@@ -101,7 +101,7 @@ function h=hermitepoly(order,val)
     for ord=51:order
       x=[];y=[];
       if (length(h_now) < (1+ord))
-    	x=0;
+        x=0;
       end;
       y=zeros(1,(1+ord)-length(h_prev));
       h=[2*h_now, x] -[y, 2*(ord-1)*h_prev];
@@ -113,7 +113,4 @@ function h=hermitepoly(order,val)
   if nargin == 2
     h = polyval(h,val);
   end
-	
-  return
-end
-
+endfunction

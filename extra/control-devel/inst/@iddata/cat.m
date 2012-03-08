@@ -17,7 +17,51 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{dat} =} cat (@var{dim}, @var{dat1}, @var{dat2}, @dots{})
-## Concatenation of iddata objects along dimension @var{dim}.
+## Concatenate iddata sets along dimension @var{dim}.
+##
+## @strong{Inputs}
+## @table @var
+## @item dim
+## Dimension along which the concatenation takes place.
+## @table @var
+## @item 1
+## Concatenate samples.
+## The samples are concatenated in the following way:
+## @code{dat.y@{e@} = [dat1.y@{e@}; dat2.y@{e@}; @dots{}]}
+## @code{dat.u@{e@} = [dat1.u@{e@}; dat2.u@{e@}; @dots{}]}
+## where @var{e} denotes the experiment.
+## The number of experiments, outputs and inputs must be equal for all datasets.
+## Equivalent to @command{vertcat}.
+##
+## @item 2
+## Concatenate inputs and outputs.
+## The outputs and inputs are concatenated in the following way:
+## @code{dat.y@{e@} = [dat1.y@{e@}, dat2.y@{e@}, @dots{}]}
+## @code{dat.u@{e@} = [dat1.u@{e@}, dat2.u@{e@}, @dots{}]}
+## where @var{e} denotes the experiment.
+## The number of experiments and samples must be equal for all datasets.
+## Equivalent to @command{horzcat}.
+##
+## @item 3
+## Concatenate experiments.
+## The experiments are concatenated in the following way:
+## @code{dat.y = [dat1.y; dat2.y; @dots{}]}
+## @code{dat.u = [dat1.u; dat2.u; @dots{}]}
+## The number of outputs and inputs must be equal for all datasets.
+## Equivalent to @command{merge}.
+## @end table
+##
+## @item dat1, dat2, @dots{}
+## iddata sets to be concatenated.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item dat
+## iddata set.
+## @end table
+##
+## @seealso{horzcat, merge, vertcat}
 ## @end deftypefn
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>

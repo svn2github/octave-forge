@@ -32,7 +32,7 @@
 
 function X = normr(M)
   if (1 != nargin)
-    usage("normr(M)");
+    print_usage;
   endif
   
   norm = sqrt(sum(M .* conj(M),2));

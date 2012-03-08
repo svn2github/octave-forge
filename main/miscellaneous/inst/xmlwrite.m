@@ -17,7 +17,7 @@
 ## @deftypefn {Function File} {@var{nb} =} xmlwrite (@var{filename}, @var{value})
 ## @deftypefnx {Function File} {@var{nb} =} xmlwrite (@var{fd}, @var{value}, [@var{name}])
 ##
-## Write a @var{value} into @var{filename} (@var{fd}) as a XML file. 
+## Write a @var{value} into @var{filename} (@var{fd}) as a XML file.
 ##
 ##The number of elements (@var{nb}) or 0 is returned.
 ## @end deftypefn
@@ -29,15 +29,14 @@ function nb = xmlwrite (filename, value, name)
   ## Check argument number
   nb = 0;
   if (nargin < 2) || (nargin > 3)
-    usage("xmlwrite (filename, value, [name])");
-    return;
+    print_usage;
   endif
   
   ## Get the file identificator
   isopen = false;
   if ischar(filename)
 
-    ## Check file name 
+    ## Check file name
     sn = char (strsplit (filename, "."));
     if !strcmp(tolower(deblank(sn(end,:))), "xml")
       filename = [filename, ".xml"];
@@ -71,7 +70,7 @@ function nb = xmlwrite (filename, value, name)
     ## String type
     
     fprintf (fd, "%s<string%s length=\"%d\">%s</string>%s",
-	     indent, opt, length(value), value, separator);
+             indent, opt, length(value), value, separator);
     
   elseif ischar(value)
     ## String array type
@@ -101,20 +100,20 @@ function nb = xmlwrite (filename, value, name)
       ## Boolean type
     
       if value
-	fprintf (fd, "%s<scalar%s value=\"true\"/>%s", indent, opt, separator);
+        fprintf (fd, "%s<scalar%s value=\"true\"/>%s", indent, opt, separator);
       else
-	fprintf (fd, "%s<scalar%s value=\"false\"/>%s", indent, opt, separator);  
+        fprintf (fd, "%s<scalar%s value=\"false\"/>%s", indent, opt, separator);
       endif
     
     elseif isinf(value)
       ## Infinite type
     
       if value > 0
-	fprintf (fd, "%s<scalar%s value=\"inf\"/>%s",
-		 indent, opt, separator);
+        fprintf (fd, "%s<scalar%s value=\"inf\"/>%s",
+                 indent, opt, separator);
       else
-	fprintf (fd, "%s<scalar%s value=\"neginf\"/>%s",
-		 indent, opt, separator);
+        fprintf (fd, "%s<scalar%s value=\"neginf\"/>%s",
+                 indent, opt, separator);
       endif
     
     elseif isnan(value)
@@ -129,21 +128,21 @@ function nb = xmlwrite (filename, value, name)
       
     else
       sc = sprintf(sprintf("%%.%dg", save_precision), value);
-      fprintf (fd, "%s<scalar%s>%s</scalar>%s", indent, opt, sc, \
-	       separator);
+      fprintf (fd, "%s<scalar%s>%s</scalar>%s", indent, opt, sc, ...
+               separator);
     endif
     
   elseif ismatrix(value) && isnumeric(value) && (length(size(value)) <= 2)
     ## Matrix type
     
     fprintf (fd, "%s<matrix%s rows=\"%d\" columns=\"%d\">\n",
-	     indent, opt, rows(value), columns(value));
+             indent, opt, rows(value), columns(value));
     _indent = indent; indent = ""; separator = "";
     for k=1:rows(value),
       fprintf (fd, "%s  ", _indent);
       for l=1:columns(value)-1,
-	nb += xmlwrite (fd, value(k, l));
-	fprintf (fd, " ");
+        nb += xmlwrite (fd, value(k, l));
+        fprintf (fd, " ");
       endfor
       nb += xmlwrite (fd, value(k, end));
       fprintf (fd, "\n");
@@ -167,11 +166,11 @@ function nb = xmlwrite (filename, value, name)
     ## Cell type
     
     fprintf (fd, "%s<cell%s rows=\"%d\" columns=\"%d\">\n",
-	     indent, opt, rows(value), columns(value));
+             indent, opt, rows(value), columns(value));
     _indent = indent; indent = [indent, "  "];
     for k=1:rows(value),
       for l=1:columns(value),
-	nb += xmlwrite (fd, value{k, l});
+        nb += xmlwrite (fd, value{k, l});
       endfor
     endfor
     indent = _indent;

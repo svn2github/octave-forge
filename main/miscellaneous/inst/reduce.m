@@ -27,49 +27,47 @@
 ## contains only one item, the first item is returned.
 ##
 ## @example
-## 	reduce(@@add,[1:10])
-## 	@result{} 55
+##  reduce(@@add,[1:10])
+##  @result{} 55
 ##      reduce(@@(x,y)(x*y),[1:7]) 
-##	@result{} 5040  (actually, 7!)
+##  @result{} 5040  (actually, 7!)
 ## @end example
 ## @seealso{map}
 ## @end deftypefn
 
 ## Parts of documentation copied from the "Python Library Reference, v2.5"
-##
 
-function rv=reduce(func,lst,init)
-	if (nargin < 2) || (class(func)!='function_handle') || (nargin == 2 && length(lst)<2)
-		print_usage();
-	end
+function rv = reduce (func, lst, init)
+  if (nargin < 2) || nargin > 3 || (class(func)!='function_handle') || (nargin == 2 && length(lst)<2)
+    print_usage();
+  end
 
-	l=length(lst);
-	if(l<2 && nargin==3)
-		if(l==0)
-			rv=init;
-		elseif (l==1)
-			rv=func(init,lst(1));
-		end
-		return;
-	end
-	
-	if(nargin == 3)
-		rv=func(init,lst(1));
-		start=2;
-	else
-		rv=func(lst(1),lst(2));
-		start=3;
-	end
-	
-	for i=start:l
-		rv=func(rv,lst(i));
-	end
-	return;
+  l=length(lst);
+
+  if (l<2 && nargin==3)
+    if(l==0)
+      rv=init;
+    elseif (l==1)
+      rv=func(init,lst(1));
+    end
+    return;
+  end
+
+  if(nargin == 3)
+    rv=func(init,lst(1));
+    start=2;
+  else
+    rv=func(lst(1),lst(2));
+    start=3;
+  end
+
+  for i=start:l
+    rv=func(rv,lst(i));
+  end
 end
-%!
+
 %!assert(reduce(@(x,y)(x+y),[],-1),-1)
 %!assert(reduce(@(x,y)(x+y),[+1],-1),0)
 %!assert(reduce(@(x,y)(x+y),[-10:-1]),-55)
 %!assert(reduce(@(x,y)(x+y),[-10:-1],+55),0)
 %!assert(reduce(@(x,y)(y*x),[1:4],5),120)
-%!

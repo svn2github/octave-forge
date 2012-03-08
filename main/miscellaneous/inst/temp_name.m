@@ -33,31 +33,32 @@
 
 function n = temp_name (rootname, quick)
 
-### Keep track of previously asked names
-persistent cnt = struct ("dummy",0);
+  ### Keep track of previously asked names
+  persistent cnt = struct ("dummy",0);
 
-if nargin<1 || !length(rootname), rootname = "temp_name_" ; end
+  if nargin<1 || !length(rootname), rootname = "temp_name_" ; endif
 
-if nargin<2, quick = 1; end
+  if nargin<2, quick = 1; endif
 
-if quick
-  if ! isfield (cnt, rootname)
-    cnt.(rootname) = 0;
-    c = 0 ;
+  if quick
+    if ! isfield (cnt, rootname)
+      cnt.(rootname) = 0;
+      c = 0 ;
+    else
+      c = cnt.(rootname) ;
+    endif
   else
-    c = cnt.(rootname) ;
-  end
-else
-  c = 0;
-end
+    c = 0;
+  endif
 
-n = sprintf ([rootname,"%i"], c);
-
-while exist (n),
-  c++ ;
   n = sprintf ([rootname,"%i"], c);
-end
 
-if quick
-  cnt.(rootname) = c ;
-end
+  while exist (n),
+    c++ ;
+    n = sprintf ([rootname,"%i"], c);
+  endwhile
+
+  if quick
+    cnt.(rootname) = c ;
+  endif
+endfunction

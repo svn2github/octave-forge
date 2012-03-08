@@ -13,7 +13,6 @@
 ## You should have received a copy of the GNU General Public License along with
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
-
 ## -*- texinfo -*-
 ## @deftypefn {Function file} {@var{x}, @var{y}} z_curve (@var{n})
 ## Creates an iteration of the Z-order space-filling curve with @var{n} points. 

@@ -111,8 +111,6 @@
 ## @end example
 ## @end deftypefn
 
-## Author: Fotios Kasolis <fotios.kasolis@gmail.com>
-
 function publish (file_name, varargin)
 
   if ((nargin < 1) || (rem (numel (varargin), 2) != 0))

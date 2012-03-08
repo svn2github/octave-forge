@@ -14,11 +14,14 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} rolldices (n)
-## @deftypefnx{Function File} rolldices (n, nrep, delay)
-## Returns n random numbers from the 1:6 range, displaying a visual selection
-## effect. nrep sets the number of rolls, delay specifies time between successive
-## rolls in seconds. Default is nrep = 25 and delay = 0.1.
+## @deftypefn{Function File} rolldices (@var{n})
+## @deftypefnx{Function File} rolldices (@var{n}, @var{nrep}, @var{delay})
+## Returns @var{n} random numbers from the 1:6 range, displaying a visual selection
+## effect.
+##
+## @var{nrep} sets the number of rolls, @var{delay} specifies time between
+## successive rolls in seconds. Default is nrep = 25 and delay = 0.1.
+##
 ## Requires a terminal with ANSI escape sequences enabled.
 ## @end deftypefn
 

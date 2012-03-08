@@ -28,22 +28,27 @@
 
 function s = slurp_file (f)
 
-if ! ischar (f),  error ("slurp_file :  f  is not a string"); end
-if isempty (f), error ("slurp_file :  f  is empty"); end
+  if (nargin != 1)
+    print_usage;
+  elseif ! ischar (f)
+    error ("f  is not a string");
+  elseif isempty (f)
+    error ("f  is empty");
+  endif
 
-s = "";
+  s = "";
 
-f0 = f;
-[st,err,msg] = stat (f);
-if err && f(1) != "/", 
-  f = file_in_loadpath (f);
-				# Could not find it anywhere. Open will
-				# fail.
-  if isempty (f)
-    f = f0;
-    error ("slurp_file : Can't find '%s' anywhere",f0);
+  f0 = f;
+  [st,err,msg] = stat (f);
+  if err && f(1) != "/", 
+    f = file_in_loadpath (f);
+    if isempty (f)
+      ## Could not find it anywhere. Open will fail
+      f = f0;
+      error ("slurp_file : Can't find '%s' anywhere",f0);
+    end
   end
-end
 
-## I'll even get decent error messages!
-[status, s] = system (sprintf ("cat '%s'",f), 1);
+  ## I'll even get decent error messages!
+  [status, s] = system (sprintf ("cat '%s'",f), 1);
+endfunction

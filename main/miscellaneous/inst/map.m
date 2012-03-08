@@ -1,5 +1,6 @@
 ## Copyright (C) 2003 Tomer Altman <taltman@lbl.gov>
 ## Copyright (C) 2007 Muthiah Annamalai <muthiah.annamalai@mavs.uta.edu>
+## Copyright (C) 2012 Carnë Draug <carandraug+dev@gmail.com>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -15,10 +16,8 @@
 ## this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{result} = } map ( fun_handle, varargin ) 
-## @cindex  
-## 
-## usage: result = map ( FUN_HANDLE, ARG1, ... )
+## @deftypefn{Function File} {@var{result} =} map (@var{function}, @var{iterable}, @dots{})
+## Apply @var{function} to every item of @var{iterable} and return the results.
 ##
 ## @code{map}, like Lisp's ( & numerous other language's ) function for
 ## iterating the result of a function applied to each of the data
@@ -61,81 +60,70 @@
 ## @end deftypefn
 
 function return_type = map (fun_handle, data_struct, varargin)
-  if (nargin >= 1)
-    try
-      if (ischar (fun_handle))
-	fun_handle = eval (strcat ("@", fun_handle));
-      end
-      fstr = typeinfo (fun_handle);
-    catch
-      error ("Error: Cannot find function handle, or funtion doesnt exist");
-    end_try_catch
-  endif
 
   if (nargin < 2)
-    error ("map: incorrect number of arguments; expecting at least two");
-  elseif (strcmp (fstr, "function handle") == 0)
-    error ("map: first argument is not a valid function handle");
+    print_usage;
   elseif (!(isnumeric (data_struct) || iscell (data_struct)))
-    error ("map: second argument must be either a matrix or a cell object");
+    error ("second argument must be either a matrix or a cell object");
   endif
 
-  [rows, cols] = size (data_struct);
-  typecell = 0;
-  
-  if (iscell (data_struct))
-    typecell = 1;
-    return_type = cell (rows, cols);
+  if (isa (fun_handle, "function_handle"))
+    ##do nothing
+  elseif (ischar (fun_handle))
+    fun_handle = str2func (fun_handle);
   else
-    typecell = 0;
-    return_type = zeros (rows, cols);
+    error ("fun_handle must either be a function handle or the name of a function");
   endif
-  
-  otherdata = length (varargin);
-  val = cell (1, otherdata+1);
-  val (:) = 0;
 
-  if (typecell)
+  nRows = rows    (data_struct);
+  nCols = columns (data_struct);
+
+  otherdata = length (varargin);
+  val       = cell (1, otherdata+1);
+  val (:)   = 0;
+
+  if (iscell (data_struct))
+    return_type = cell (nRows, nCols);
     if (otherdata >= 1)
-      for i = 1:rows	  
-	for j = 1:cols
-	  val {1} = data_struct {i, j};
-	  for idx = 2:otherdata+1
-	    val {idx} = varargin {idx-1}{i,j};
-	  endfor
-  	  return_type {i,j} = apply (fun_handle, val);
-	endfor
+      for i = 1:nRows
+        for j = 1:nCols
+          val {1} = data_struct {i, j};
+          for idx = 2:otherdata+1
+            val {idx} = varargin {idx-1}{i,j};
+          endfor
+            return_type {i,j} = apply (fun_handle, val);
+        endfor
       endfor
     else
-      for i = 1:rows	  
-	for j = 1:cols	    
-	  return_type {i,j} = fun_handle (data_struct {i,j});
-	endfor
+      for i = 1:nRows
+        for j = 1:nCols
+          return_type {i,j} = fun_handle (data_struct {i,j});
+        endfor
       endfor
     endif
   else
+    return_type = zeros (nRows, nCols);
     if (otherdata >= 1)
-      for i = 1:rows
-	for j = 1:cols
-	  val {1} = data_struct (i,j);
-	  for idx = 2:otherdata+1
-	    val {idx} = varargin {idx-1}(i,j);
-	  endfor
-  	  return_type (i, j) = apply (fun_handle, val);
-	endfor
+      for i = 1:nRows
+        for j = 1:nCols
+          val {1} = data_struct (i,j);
+          for idx = 2:otherdata+1
+            val {idx} = varargin {idx-1}(i,j);
+          endfor
+            return_type (i, j) = apply (fun_handle, val);
+        endfor
       endfor
     else
-      for i = 1:rows
-	for j = 1:cols
-	  return_type (i, j) = fun_handle (data_struct (i, j));
-	endfor
+      for i = 1:nRows
+        for j = 1:nCols
+          return_type (i, j) = fun_handle (data_struct (i, j));
+        endfor
       endfor
     endif
   endif
 
 endfunction
 
-%!test
-%! assert(map(@min,[1 2 3 4 5],[5 4 3 2 1]), [1 2 3 2 1])
-%! assert(map(@min,rand(1,5),[0 0 0 0 0]), [0 0 0 0 0])
-%! assert(map(@(x,y) (sin(x).^2 + cos(y).^2),-pi:0.5:+pi,-pi:0.5:+pi),ones(1,13))
+%!assert(map(@min,[1 2 3 4 5],[5 4 3 2 1]), [1 2 3 2 1])
+%!assert(map(@min,rand(1,5),[0 0 0 0 0]), [0 0 0 0 0])
+%!assert(map(@(x,y) (sin(x).^2 + cos(y).^2),-pi:0.5:+pi,-pi:0.5:+pi),ones(1,13))

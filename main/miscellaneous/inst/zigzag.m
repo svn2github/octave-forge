@@ -40,12 +40,10 @@
 ## @end deftypefn
 ## @seealso{zagzig}
 
-## Author:   Fredrik Bulow <fredrik.bulow@gmail.com>
-
 function rval = zigzag(mtrx)
-  if nargin < 1
-    error('usage: zigzag(matrix); see help zigzag');
-  end
+  if nargin != 1
+    print_usage;
+  endif
   n=size(mtrx);
   
   if(issquare(mtrx)) #Square matrix (quick case)
@@ -75,13 +73,12 @@ function rval = zigzag(mtrx)
     for i = n(2)-1:-1:1-n(1)
       new = diag(mtrx,i);
       if(floor(i/2)==i/2) ##Even?
-	rval=[rval new'];
+        rval=[rval new'];
       else                ##Odd!
-	rval=[rval new((1+length(new))-(1:length(new)))'];
+        rval=[rval new((1+length(new))-(1:length(new)))'];
       endif
     endfor
   endif
 endfunction
-%!
+
 %!assert(zigzag(reshape(1:9,3,3)),[1   2   4   7   5   3   6   8   9])
-%!

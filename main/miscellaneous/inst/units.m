@@ -35,11 +35,9 @@
 ## @end example
 ## @end deftypefn
 
-## Author: Carl Osterwisch <osterwischc@asme.org>
-
 function y = units(fromUnit, toUnit, x)
     if 2 > nargin || 3 < nargin || !ischar(fromUnit) || !ischar(toUnit)
-        usage('units(fromUnit, toUnit [, x])')
+        print_usage;
     endif
 
     [status, rawoutput] = system(sprintf('units "%s" "%s"', fromUnit, toUnit), 1);

@@ -33,8 +33,9 @@
 ## Typically you can use it as,
 ## @example
 ## match(@@(x) ( x >= 1 ), [-1 0 1 2])
-## [1, 2]
+##       @result{}   1   2
 ## @end example
+## @seealso{reduce, map, cellfun, arrayfun, cellfun, structfun, spfun}
 ## @end deftypefn
 
 function rval = match (fun_handle, data)

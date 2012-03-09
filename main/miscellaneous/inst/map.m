@@ -32,7 +32,7 @@
 ## @example
 ##
 ## octave> A
-## A 
+## A
 ## @{
 ##   [1,1] = 0.0096243
 ##   [2,1] = 0.82781
@@ -83,43 +83,51 @@ function return_type = map (fun_handle, data_struct, varargin)
   val (:)   = 0;
 
   if (iscell (data_struct))
-    return_type = cell (nRows, nCols);
-    if (otherdata >= 1)
-      for i = 1:nRows
-        for j = 1:nCols
-          val {1} = data_struct {i, j};
-          for idx = 2:otherdata+1
-            val {idx} = varargin {idx-1}{i,j};
-          endfor
-            return_type {i,j} = apply (fun_handle, val);
-        endfor
-      endfor
-    else
-      for i = 1:nRows
-        for j = 1:nCols
-          return_type {i,j} = fun_handle (data_struct {i,j});
-        endfor
-      endfor
-    endif
+# KaKiLa Fri 09 Mar 2012 09:47:52 AM CET
+# Works even if varargin is empty
+    return_type = cellfun (fun_handle, data_struct,varargin{:});
+#    return_type = cell (nRows, nCols);
+#    if (otherdata >= 1)
+#      return_type = cellfun (fun_handle, data_struct,varargin{:});
+#      for i = 1:nRows
+#        for j = 1:nCols
+#         val {1} = data_struct {i, j};
+#          for idx = 2:otherdata+1
+#            val {idx} = varargin {idx-1}{i,j};
+#          endfor
+#            return_type {i,j} = apply (fun_handle, val);
+#        endfor
+#      endfor
+#    else
+#       return_type = cellfun (fun_handle, data_struct);
+#      for i = 1:nRows
+#        for j = 1:nCols
+#          return_type {i,j} = fun_handle (data_struct {i,j});
+#        endfor
+#      endfor
+#    endif
   else
-    return_type = zeros (nRows, nCols);
-    if (otherdata >= 1)
-      for i = 1:nRows
-        for j = 1:nCols
-          val {1} = data_struct (i,j);
-          for idx = 2:otherdata+1
-            val {idx} = varargin {idx-1}(i,j);
-          endfor
-            return_type (i, j) = apply (fun_handle, val);
-        endfor
-      endfor
-    else
-      for i = 1:nRows
-        for j = 1:nCols
-          return_type (i, j) = fun_handle (data_struct (i, j));
-        endfor
-      endfor
-    endif
+# KaKiLa Fri 09 Mar 2012 09:47:52 AM CET
+# Works even if varargin is empty
+    return_type = arrayfun (fun_handle, data_struct,varargin{:});
+#    return_type = zeros (nRows, nCols);
+#    if (otherdata >= 1)
+#      for i = 1:nRows
+#        for j = 1:nCols
+#          val {1} = data_struct (i,j);
+#          for idx = 2:otherdata+1
+#            val {idx} = varargin {idx-1}(i,j);
+#          endfor
+#            return_type (i, j) = apply (fun_handle, val);
+#        endfor
+#      endfor
+#    else
+#      for i = 1:nRows
+#        for j = 1:nCols
+#          return_type (i, j) = fun_handle (data_struct (i, j));
+#        endfor
+#      endfor
+#    endif
   endif
 
 endfunction

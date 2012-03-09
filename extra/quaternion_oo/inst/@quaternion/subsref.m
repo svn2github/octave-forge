@@ -1,4 +1,4 @@
-## Copyright (C) 2010, 2011   Lukas F. Reichlin
+## Copyright (C) 2010, 2011, 2012   Lukas F. Reichlin
 ##
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,9 +18,14 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: May 2010
-## Version: 0.3
+## Version: 0.4
 
 function ret = subsref (q, s)
+
+  if (numel (s) == 0)
+    ret = q;
+    return;
+  endif
 
   switch (s(1).type)
     case "."                                # q.w
@@ -41,11 +46,12 @@ function ret = subsref (q, s)
       endswitch
 
     case "()"                               # q(...)
-      w = subsref (q.w, s);
-      x = subsref (q.x, s);
-      y = subsref (q.y, s);
-      z = subsref (q.z, s);
-      ret = quaternion (w, x, y, z);
+      w = subsref (q.w, s(1));
+      x = subsref (q.x, s(1));
+      y = subsref (q.y, s(1));
+      z = subsref (q.z, s(1));
+      tmp = quaternion (w, x, y, z);
+      ret = subsref (tmp, s(2:end));
       
     otherwise
       error ("quaternion: invalid subscript type '%s'", s(1).type);

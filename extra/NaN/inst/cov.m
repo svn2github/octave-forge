@@ -4,6 +4,14 @@ function CC = cov(X,Y,Mode)
 % NaN's are skipped, NaN do not result in a NaN output. 
 % The output gives NaN only if there are insufficient input data
 % The mean is removed from the data. 
+% 
+% Remark: for data contains missing values, the resulting 
+% matrix might not be positiv definite, and its elements have magnitudes
+% larger than one. This ill-behavior is more likely for small sample 
+% sizes, but there is no garantee that the result "behaves well" for larger
+% sample sizes. If you want the a "well behaved" result (i.e. positive 
+% definiteness and magnitude of elements not larger than 1), use CORRCOEF. 
+% However, COV is faster than CORRCOEF and might be good enough in some cases.
 %
 % C = COV(X [,Mode]);
 %      calculates the (auto-)correlation matrix of X
@@ -26,7 +34,7 @@ function CC = cov(X,Y,Mode)
 % http://mathworld.wolfram.com/Covariance.html
 
 %	$Id$
-%	Copyright (C) 2000-2003,2005,2009 by Alois Schloegl <alois.schloegl@gmail.com>	
+%	Copyright (C) 2000-2003,2005,2009,2011,2012 by Alois Schloegl <alois.schloegl@ist.ac.at>	
 %       This function is part of the NaN-toolbox 
 %       http://pub.ist.ac.at/~schloegl/matlab/NaN/
 

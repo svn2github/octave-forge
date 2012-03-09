@@ -75,12 +75,12 @@ function return_type = map (fun_handle, data_struct, varargin)
     error ("fun_handle must either be a function handle or the name of a function");
   endif
 
-  nRows = rows    (data_struct);
-  nCols = columns (data_struct);
+#  nRows = rows    (data_struct);
+#  nCols = columns (data_struct);
 
-  otherdata = length (varargin);
-  val       = cell (1, otherdata+1);
-  val (:)   = 0;
+#  otherdata = length (varargin);
+#  val       = cell (1, otherdata+1);
+#  val (:)   = 0;
 
   if (iscell (data_struct))
 # KaKiLa Fri 09 Mar 2012 09:47:52 AM CET

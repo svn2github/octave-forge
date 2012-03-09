@@ -56,7 +56,7 @@
 ##   [2,2] = 0.84645
 ## @}
 ## @end example
-## @seealso{reduce, match, apply}
+## @seealso{reduce, match}
 ## @end deftypefn
 
 function return_type = map (fun_handle, data_struct, varargin)

@@ -1,6 +1,7 @@
 ## Copyright (C) 2003 Tomer Altman <taltman@lbl.gov>
 ## Copyright (C) 2007 Muthiah Annamalai <muthiah.annamalai@mavs.uta.edu>
 ## Copyright (C) 2012 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2012 Juan Pablo Carbajal <carbajal@ifi.uzh.ch>
 ##
 ## This program is free software; you can redistribute it and/or modify it under
 ## the terms of the GNU General Public License as published by the Free Software
@@ -75,59 +76,10 @@ function return_type = map (fun_handle, data_struct, varargin)
     error ("fun_handle must either be a function handle or the name of a function");
   endif
 
-#  nRows = rows    (data_struct);
-#  nCols = columns (data_struct);
-
-#  otherdata = length (varargin);
-#  val       = cell (1, otherdata+1);
-#  val (:)   = 0;
-
   if (iscell (data_struct))
-# KaKiLa Fri 09 Mar 2012 09:47:52 AM CET
-# Works even if varargin is empty
     return_type = cellfun (fun_handle, data_struct,varargin{:});
-#    return_type = cell (nRows, nCols);
-#    if (otherdata >= 1)
-#      return_type = cellfun (fun_handle, data_struct,varargin{:});
-#      for i = 1:nRows
-#        for j = 1:nCols
-#         val {1} = data_struct {i, j};
-#          for idx = 2:otherdata+1
-#            val {idx} = varargin {idx-1}{i,j};
-#          endfor
-#            return_type {i,j} = apply (fun_handle, val);
-#        endfor
-#      endfor
-#    else
-#       return_type = cellfun (fun_handle, data_struct);
-#      for i = 1:nRows
-#        for j = 1:nCols
-#          return_type {i,j} = fun_handle (data_struct {i,j});
-#        endfor
-#      endfor
-#    endif
   else
-# KaKiLa Fri 09 Mar 2012 09:47:52 AM CET
-# Works even if varargin is empty
     return_type = arrayfun (fun_handle, data_struct,varargin{:});
-#    return_type = zeros (nRows, nCols);
-#    if (otherdata >= 1)
-#      for i = 1:nRows
-#        for j = 1:nCols
-#          val {1} = data_struct (i,j);
-#          for idx = 2:otherdata+1
-#            val {idx} = varargin {idx-1}(i,j);
-#          endfor
-#            return_type (i, j) = apply (fun_handle, val);
-#        endfor
-#      endfor
-#    else
-#      for i = 1:nRows
-#        for j = 1:nCols
-#          return_type (i, j) = fun_handle (data_struct (i, j));
-#        endfor
-#      endfor
-#    endif
   endif
 
 endfunction

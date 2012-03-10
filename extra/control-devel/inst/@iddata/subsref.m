@@ -21,35 +21,30 @@
 
 ## Author: Lukas Reichlin <lukas.reichlin@gmail.com>
 ## Created: February 2012
-## Version: 0.1
+## Version: 0.2
 
 function a = subsref (a, s)
 
-  if (isempty (s))
-    error ("iddata: subsref: missing index");
+  if (numel (s) == 0)
+    return;
   endif
 
-  for k = 1 : numel (s)
-    if (isa (a, "iddata"))
-      switch (s(k).type)
-        case "()"
-          idx = s(k).subs;
-          if (numel (idx) > 4)
-            error ("iddata: subsref: need four or less indices");
-          else
-            a = __dat_prune__ (a, idx{:}); 
-          endif
-        case "."
-          fld = s(k).subs;
-          a = get (a, fld);
-        otherwise
-          error ("iddata: subsref: invalid subscript type");
-      endswitch
-    else  # not an iddata set
-      a = subsref (a, s(k:end));
-      return;
-    endif
-  endfor
+  switch (s(1).type)
+    case "()"
+      idx = s(1).subs;
+      if (numel (idx) > 4)
+        error ("iddata: subsref: need four or less indices");
+      else
+        a = __dat_prune__ (a, idx{:}); 
+      endif
+    case "."
+      fld = s(1).subs;
+      a = get (a, fld);
+    otherwise
+      error ("iddata: subsref: invalid subscript type");
+  endswitch
+
+  a = subsref (a, s(2:end));
 
 endfunction
 
@@ -69,5 +64,6 @@ function dat = __dat_prune__ (dat, spl_idx = ":", out_idx = ":", in_idx = ":", e
   endif
 
   dat.expname = dat.expname(exp_idx);
+  dat.tsam = dat.tsam(exp_idx);
 
 endfunction

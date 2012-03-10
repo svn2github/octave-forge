@@ -27,7 +27,7 @@
 ## spent in each state @math{j} during the time interval
 ## @code{[0,@var{tt}(t))}, assuming that at time 0 the state occupancy
 ## probability was @var{p}. With two arguments, compute the expected
-## time @code{@var{L}(j}} spent in each state @math{j} until absorption.
+## time @code{@var{L}(j)} spent in each state @math{j} until absorption.
 ##
 ## @strong{INPUTS}
 ##
